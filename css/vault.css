@@ -1,0 +1,74 @@
+tr.noBorder td {
+	border: 0;
+}
+
+#IFRA-red{
+	background-color: #F00;
+	color: white;
+}
+
+#IFRA-yellow{
+	color: white;
+	background-color: #FC3;
+}
+
+
+.table th,
+.table td {
+  padding: 0.2rem;
+  vertical-align: top;
+  border-top: 1px solid #e3e6f0;
+}
+
+th {
+	text-align:center;
+}
+
+html {
+	font-size: 15px;
+}
+
+.card-body {
+	padding: 1.25rem;
+}
+
+.row {
+	margin-left: 0.75rem;
+	margin-right: 0.75rem;
+
+}
+
+.h5 {
+	font-size: 1.6rem;
+}
+
+.text-xs {
+	font-size: 14px;
+}
+
+.fa-2x {
+	font-size: 2.5em;
+}
+
+
+
+.popup_content {
+  margin: 10px;
+  padding: 0 10px;
+  max-width: 60%;
+  border: 2px solid #444;
+  background: white;
+}
+
+.white-popup {
+  position: relative;
+  background: #FFF;
+  padding: 20px;
+  width: auto;
+  max-width: 500px;
+  margin: 20px auto;
+}
+
+.mfp-iframe-scaler iframe {
+	background-color:#FFF;
+}
