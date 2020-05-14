@@ -95,7 +95,8 @@ $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg F
                       <form action="/?do=Formula&name=<?php echo $f_name; ?>&action=addIng" method="post" enctype="multipart/form-data" name="form1" id="form1">
                          <table width="100%" border="0" class="table table-bordered">
                                     <tr>  
-                                         <td><select name="ingredient" id="ingredient" class="form-control">
+                                         <td>
+                                         <select name="ingredient" id="ingredient" class="form-control selectpicker" data-live-search="true">
                                          <?php
 										 	$res_ing = mysqli_query($conn, "SELECT id,name FROM ingredients ORDER BY name ASC");
 										 	while ($r_ing = mysqli_fetch_array($res_ing)){
@@ -227,13 +228,6 @@ $(document).ready(function(){
  });
  
 });
-
-$('#json').on('click',function(){
-  $("#formula").tableHTMLExport({
-	type:'json',
-	filename:'<?php echo $f_name; ?>.json'
-  });
-})
 
 $('#csv').on('click',function(){
   $("#formula").tableHTMLExport({

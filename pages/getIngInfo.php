@@ -1,4 +1,4 @@
-  <link href="../css/sb-admin-2.css" rel="stylesheet">
+<link href="../css/sb-admin-2.css" rel="stylesheet">
 
 <?php
 require_once('../inc/config.php');

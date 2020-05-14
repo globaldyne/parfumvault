@@ -2,13 +2,11 @@
 <?php require_once('pages/top.php'); ?>
 <div class="container-fluid">
 <?php 
-/*
-print '<pre>';
-print_r($_REQUEST);
-*/
+
 if($_POST['fname'] && $_POST['concentration'] && $_POST['quantity']){
 	$number = count($_POST['ingredient']); 
 	$fname = mysqli_real_escape_string($conn, $_POST['fname']);
+	$notes = mysqli_real_escape_string($conn, $_POST['notes']);
 
 
 if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM formulas WHERE name = '$fname'"))){
@@ -28,18 +26,12 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM formulas WHERE name = '
 			
 			$qin = mysqli_real_escape_string($conn,$_POST["ingredient"][$i]);
 			$ingIDq = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$qin'"));
-			$sql = "INSERT INTO formulas(fid,name,ingredient,ingredient_id,concentration,quantity) VALUES('".base64_encode($_POST["fname"])."','".$fname."','".mysqli_real_escape_string($conn, $_POST["ingredient"][$i])."','$ingIDq[0]','".mysqli_real_escape_string($conn, $_POST["concentration"][$i])."','".mysqli_real_escape_string($conn, $_POST["quantity"][$i])."')";
+			$sql = "INSERT INTO formulas(fid,name,ingredient,ingredient_id,concentration,quantity) VALUES('".base64_encode($_POST["fname"])."','$fname','".mysqli_real_escape_string($conn, $_POST["ingredient"][$i])."','$ingIDq[0]','".mysqli_real_escape_string($conn, $_POST["concentration"][$i])."','".mysqli_real_escape_string($conn, $_POST["quantity"][$i])."')";
 			 $fq = mysqli_query($conn, $sql);
-			 
+			 mysqli_query($conn, "INSERT INTO formulasMetaData (name,notes) VALUES ('$fname','$notes')");
 			 
 		}
 		if($fq){
-			/*
-			echo '<div class="alert alert-success alert-dismissible">
-				<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-				<strong><a href="/?do=Formula&name='.$fname.'">'.$fname.'</a></strong> Added!
-				</div>';
-			*/
 			header("Location: /?do=Formula&name=$fname");
 		}else{
 			echo '<div class="alert alert-danger alert-dismissible">
@@ -72,7 +64,7 @@ $(document).ready(function(){
 })
 </script>
 <h2 class="m-0 mb-4 text-primary">New Formula</h2>
-<p>*All fields required</p>
+<p>*All ingredient fields required</p>
 <?php echo $msg;?>
         </div>
 <table width="94%" border="0" align="center">
@@ -85,6 +77,10 @@ $(document).ready(function(){
                                     <tr>
                                       <td>Formula name</td>
                                       <td colspan="4"><input name="fname" type="text" class="form-control" /></td>
+                                    </tr>
+                                    <tr>
+                                      <td>Notes:</td>
+                                      <td colspan="4"><textarea name="notes" id="notes" cols="45" rows="5" class="form-control"></textarea></td>
                                     </tr>
                                     <tr>  
                                          <td>Ingredient</td>
@@ -104,7 +100,7 @@ $(document).ready(function(){
                                     </tr>  
                                </table>  
                                <input type="submit" name="submit" id="submit" class="btn btn-info" value="Submit" />  
-                       </div>  
+              </div>  
      </form>  
                 </div></td>
         </tr>

@@ -73,7 +73,7 @@ $sup_c = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM ingSuppliers"));
 $(function() {
 	$('a[rel=tipsy]').tipsy();
 	
-	$('.test-popup-link').magnificPopup({
+	$('.popup-link').magnificPopup({
 		type: 'iframe',
   		//modal: 'true',
   		showCloseBtn: 'true',

@@ -35,7 +35,6 @@
                 </div>
               </div>
             </div>
-            
             <div class="col-xl-3 col-md-6 mb-4">
               <div class="card border-left-info shadow h-100 py-2">
                 <div class="card-body">
@@ -85,16 +84,21 @@
                 <table width="100%" border="0" cellspacing="0" class="table table-bordered">
                   <thead>
                     <tr>
-                      <th>Name</th>
-                      <th>Actions</th>
+                      <th width="14%">Name</th>
+                      <th width="20%">Notes</th>
+                      <th width="23%">Created</th>
+                      <th width="21%">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                   <?php while ($formula = mysqli_fetch_array($formulas_n)) {
 					  echo'
                     <tr>
-                      <td><a href="/?do=Formula&name='.$formula['name'].'">'.$formula['name'].'</a></td>
-					  <td align="center"><a> <a href="/?do=dashboard&action=delete&name='.$formula['name'].'" onclick="return confirm(\'Delete '.$formula['name'].' Formula?\');" class="fas fa-trash"></a></td>
+                      <td align="center"><a href="/?do=Formula&name='.$formula['name'].'">'.$formula['name'].'</a></td>';
+					  $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE name = '".$formula['name']."'"));
+					  echo '<td align="center"><a href="pages/getFormMeta.php?id='.$meta['id'].'" class="fas fa-comment-dots popup-link"></a></td>';
+					  echo '<td align="center">'.$meta['created'].'</td>';
+					  echo '<td align="center"><a> <a href="/?do=dashboard&action=delete&name='.$formula['name'].'" onclick="return confirm(\'Delete '.$formula['name'].' Formula?\');" class="fas fa-trash" rel="tipsy" title="Delete '.$formula['name'].'"></a></td>
                     </tr>';
 				  }
                   ?>

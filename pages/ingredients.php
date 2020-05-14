@@ -34,13 +34,13 @@ $ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC
           <div>
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h2 class="m-0 font-weight-bold text-primary">Ingredients</h2>
+              <h2 class="m-0 font-weight-bold text-primary"><a href="/?do=ingredients">Ingredients</a></h2>
             </div>
             <div class="card-body">
               <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <table class="table table-bordered" id="ingredients" width="100%" cellspacing="0">
                   <thead>
-                    <tr class="noBorder">
+                    <tr class="noBorder noexport">
                       <th>&nbsp;</th>
                       <th>&nbsp;</th>
                       <th>&nbsp;</th>
@@ -50,7 +50,15 @@ $ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC
                       <th>&nbsp;</th>  
                       <th>&nbsp;</th>  
                       <th>&nbsp;</th>  
-                      <th align="center"><a href="/?do=addIngredient" name="add" id="tip" title="Add new ingredient" class="btn btn-success">+</a></th>
+                      <th align="center">
+                      <div class="btn-group">
+                      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
+                      <div class="dropdown-menu dropdown-menu-right">
+                        <a class="dropdown-item" href="/?do=addIngredient">Add new ingredient</a>
+                        <a class="dropdown-item" id="csv" href="#">Export to CSV</a>
+                      </div>
+                    </div>
+                    </th>
                     </tr>
                     <tr>
                       <th>Name</th>
@@ -60,9 +68,9 @@ $ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC
                       <th>Category</th>
                       <th>IFRA</th>
                       <th>Supplier</th>
-                      <th>SDS</th>
-                      <th>TGSC</th>
-                      <th>Actions</th>
+                      <th class="noexport">SDS</th>
+                      <th class="noexport">TGSC</th>
+                      <th class="noexport">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -70,7 +78,7 @@ $ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC
 				  while ($ingredient = mysqli_fetch_array($ingredient_q)) {
 					  echo'
                     <tr>
-                      <td align="center"><a href="pages/getIngInfo.php?id='.$ingredient['id'].'" class="test-popup-link">'.$ingredient['name'].'</a></td>';
+                      <td align="center"><a href="pages/getIngInfo.php?id='.$ingredient['id'].'" class="popup-link">'.$ingredient['name'].'</a></td>';
 					  if($ingredient['cas']){
 						  echo '<td align="center">'.$ingredient['cas'].'</td>';
 					  }else{
@@ -93,17 +101,17 @@ $ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC
 						  echo '<td align="center">N/A</td>';
 					  }	
 					  if ($ingredient['SDS']){
-						  echo '<td align="center"><a href="'.$ingredient['SDS'].'" target="_blanc" class="fa fa-save"></a></td>';
+						  echo '<td align="center" class="noexport"><a href="'.$ingredient['SDS'].'" target="_blanc" class="fa fa-save"></a></td>';
 					  }else{
-						  echo '<td align="center">N/A</td>';
+						  echo '<td align="center" class="noexport">N/A</td>';
 					  }	
 					  if ($ingredient['cas']){
-						  echo '<td align="center"><a href="http://www.thegoodscentscompany.com/search3.php?qName='.$ingredient['cas'].'" target="_blanc" class="fa fa-external-link-alt"></a></td>';
+						  echo '<td align="center" class="noexport"><a href="http://www.thegoodscentscompany.com/search3.php?qName='.$ingredient['cas'].'" target="_blanc" class="fa fa-external-link-alt"></a></td>';
 					  }else{
-						  echo '<td align="center"><a href="http://www.thegoodscentscompany.com/search3.php?qName='.$ingredient['name'].'" target="_blanc" class="fa fa-external-link-alt"></a></td>';
+						  echo '<td align="center" class="noexport"><a href="http://www.thegoodscentscompany.com/search3.php?qName='.$ingredient['name'].'" target="_blanc" class="fa fa-external-link-alt"></a></td>';
 					  }
-                      echo '<td align="center"><a href="/?do=editIngredient&id='.$ingredient['id'].'" class="fas fa-edit"><a> <a href="/?do=ingredients&action=delete&id='.$ingredient['id'].'&name='.$ingredient['name'].'" onclick="return confirm(\'Delete ingredient\');" class="fas fa-trash"></a></td>
-					</tr>';
+                      echo '<td class="noexport" align="center"><a href="/?do=editIngredient&id='.$ingredient['name'].'" class="fas fa-edit"><a> <a href="/?do=ingredients&action=delete&id='.$ingredient['id'].'&name='.$ingredient['name'].'" onclick="return confirm(\'Delete ingredient\');" class="fas fa-trash"></a></td>';
+					  echo '</tr>';
 				  }
                     ?>
                     </tr>
@@ -181,3 +189,27 @@ if ($total_no_of_pages <= 10){
         </div>
       </div>
     </div>
+    
+<script type="text/javascript" language="javascript" >
+
+$('#csv').on('click',function(){
+  $("#ingredients").tableHTMLExport({
+	type:'csv',
+	filename:'ingredients.csv',
+	separator: ',',
+  	newline: '\r\n',
+  	trimContent: true,
+  	quoteFields: true,
+	
+	ignoreColumns: '.noexport',
+  	ignoreRows: '.noexport',
+	
+	htmlContent: false,
+  
+  	// debug
+  	consoleLog: true   
+});
+ 
+})
+
+</script>
