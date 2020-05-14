@@ -77,21 +77,21 @@ $formula_q = mysqli_query($conn, "SELECT * FROM formulas WHERE name = '$f_name' 
 
 $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE name = '$f_name'"));
 ?>
+
 <div id="content-wrapper" class="d-flex flex-column">
+
 <?php require_once('pages/top.php'); ?>
         <div class="container-fluid">
           <div>
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h2 class="m-0 font-weight-bold text-primary"><?php echo $f_name; ?></h2>
+              <h2 class="m-0 font-weight-bold text-primary"><a href="?do=Formula&name=<?php echo $f_name; ?>"><?php echo $f_name; ?></a></h2>
             </div>
             <div class="card-body">
             <?php echo $msg; ?>
               <div>
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                  <thead>
-                    <tr>
-                      <th colspan="6">
+                  <tr>
+                    <th colspan="6">
                       <form action="/?do=Formula&name=<?php echo $f_name; ?>&action=addIng" method="post" enctype="multipart/form-data" name="form1" id="form1">
                          <table width="100%" border="0" class="table table-bordered">
                                     <tr>  
@@ -112,9 +112,18 @@ $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg F
                       </form>
                       </th>
                     </tr>
-                    <tr>
-                      <th colspan="5">&nbsp;</th>
-                      <th><a href="/?do=Formula&action=printLabel&name=<?php echo $f_name; ?>" onclick="return confirm('Print label?');" class="fas fa-tag" rel="tipsy" title="Print label"></a> <a href="pages/export.php?name=<?php echo htmlspecialchars($f_name); ?>" class="fas fa-file-excel" rel="tipsy" title="Export to excel"></a></th>
+                <table class="table table-bordered" id="formula" width="100%" cellspacing="0">
+                  <thead>
+                    <tr class="noexport">
+                      <th colspan="5"></th>
+                      <th>
+                      <div class="btn-group">
+                      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
+                      <div class="dropdown-menu">
+                        <a class="dropdown-item" id="csv" href="#">Export to CSV</a>
+                        <a class="dropdown-item" href="/?do=Formula&action=printLabel&name=<?php echo $f_name; ?>" onclick="return confirm('Print label?');">Print Label</a>
+                      </div>
+                    </div>
                     </tr>
                     <tr>
                       <th width="22%">Ingredient</th>
@@ -122,18 +131,15 @@ $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg F
                       <th width="15%">Quantity</th>
                       <th width="15%">Concentration*</th>
                       <th width="15%">Cost <a href="#" class="fas fa-question-circle" rel="tipsy" title="Cost per used quantity, if ingredient concentration is not given then assuming 10ml"></a></th>
-                      <th width="15%">Actions</th>
+                      <th class="noexport" width="15%">Actions</th>
                     </tr>
                   </thead>
                   <tbody id="formula_data">
                   <?php while ($formula = mysqli_fetch_array($formula_q)) {
 					  echo'
                     <tr>
-                      <td align="center"><a href="/?do=editIngredient&id='.$formula['ingredient_id'].'">'.$formula['ingredient'].'</a></td>
+                      <td align="center"><a href="/?do=editIngredient&id='.$formula['ingredient'].'">'.$formula['ingredient'].'</a></td>
                       <td data-name="concentration" class="concentration" data-type="text" align="center" data-pk="'.$formula['ingredient'].'">'.$formula['concentration'].'</td>';
-				  ?>
-
-                  <?php
 					  $ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT IFRA,price,ml FROM ingredients WHERE name = '$formula[ingredient]'"));
 					  $conc_p = number_format($formula['quantity']/$mg['total_mg'] * 100, 2);
 					  if($ing_q['IFRA'] != null){
@@ -148,9 +154,9 @@ $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg F
 					  echo'<td data-name="quantity" class="quantity" data-type="text" align="center" data-pk="'.$formula['ingredient'].'">'.$formula['quantity'].'</td>';
 					  echo'<td align="center" '.$IFRA_WARN.'>'.$conc_p.'%</td>';
 
-					  echo '<td align="center">'.utf8_encode($settings['currency']).calcCosts($ing_q['price'],$formula['quantity'], $ing_q['ml']).'</td>
+					  echo '<td align="center">'.utf8_encode($settings['currency']).calcCosts($ing_q['price'],$formula['quantity'], $ing_q['ml']).'</td>';
 					  
-					  <td align="center"><a href="/?do=Formula&action=deleteIng&name='.$formula['name'].'&id='.$formula['id'].'&ing='.$formula['ingredient'].'" onclick="return confirm(\'Remove '.$formula['ingredient'].' from formula?\');" class="fas fa-trash" rel="tipsy" title="Remove '.$formula['ingredient'].'"></a></td>
+					 echo '<td class="noexport" align="center"><a href="/?do=Formula&action=deleteIng&name='.$formula['name'].'&id='.$formula['id'].'&ing='.$formula['ingredient'].'" onclick="return confirm(\'Remove '.$formula['ingredient'].' from formula?\');" class="fas fa-trash" rel="tipsy" title="Remove '.$formula['ingredient'].'"></a></td>
                     </tr>';
 					$tot[] = calcCosts($ing_q['price'],$formula['quantity'], $ing_q['ml']);
 				  }
@@ -164,7 +170,7 @@ $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg F
                       <th width="15%" align="right"><p>Total: <?php echo number_format($mg['total_mg'], 2); ?> mg</p></th>
                       <th width="15%"></th>
                       <th width="15%" align="right">Cost: <?php echo utf8_encode($settings['currency']).number_format(array_sum($tot),2);?> <a href="#" class="fas fa-question-circle" rel="tipsy" title="Total cost"></a></th>
-                      <th width="15%"></th>
+                      <th class="noexport" width="15%"></th>
                     </tr>
                   </tfoot>                                    
                 </table> 
@@ -221,4 +227,32 @@ $(document).ready(function(){
  });
  
 });
+
+$('#json').on('click',function(){
+  $("#formula").tableHTMLExport({
+	type:'json',
+	filename:'<?php echo $f_name; ?>.json'
+  });
+})
+
+$('#csv').on('click',function(){
+  $("#formula").tableHTMLExport({
+	type:'csv',
+	filename:'<?php echo $f_name; ?>.csv',
+	separator: ',',
+  	newline: '\r\n',
+  	trimContent: true,
+  	quoteFields: true,
+	
+	ignoreColumns: '.noexport',
+  	ignoreRows: '.noexport',
+	
+	htmlContent: false,
+  
+  	// debug
+  	consoleLog: true   
+});
+ 
+})
+
 </script>

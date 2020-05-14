@@ -3,6 +3,7 @@ require_once('./inc/config.php');
 require_once('./inc/opendb.php');
 require_once('./func/sizeformat.php');
 require_once('./func/calcCosts.php');
+require_once('./func/checkDupes.php');
 
 require('./inc/settings.php');
 
@@ -48,6 +49,9 @@ $sup_c = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM ingSuppliers"));
   <link href="css/bootstrap-editable.css" rel="stylesheet">
 
   <script src="js/jquery/jquery.min.js"></script>
+
+  <script src="js/tableHTMLExport.js"></script>
+
   <script src="js/bootstrap.min.js"></script>
   
   <script src="js/magnific-popup.js"></script>

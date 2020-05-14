@@ -2,30 +2,55 @@
 <?php require_once('pages/top.php'); ?>
 <div class="container-fluid">
 <?php 
-$number = count($_POST['ingredient']); 
-$fname = mysqli_real_escape_string($conn, $_POST['fname']);
+/*
+print '<pre>';
+print_r($_REQUEST);
+*/
+if($_POST['fname'] && $_POST['concentration'] && $_POST['quantity']){
+	$number = count($_POST['ingredient']); 
+	$fname = mysqli_real_escape_string($conn, $_POST['fname']);
 
 
-if($number > 0){
-	for($i=0; $i<$number; $i++){
-		$qin = mysqli_real_escape_string($conn,$_POST["ingredient"][$i]);
-		$ingIDq = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$qin'"));
-		$sql = "INSERT INTO formulas(fid,name,ingredient,ingredient_id,concentration,quantity) VALUES('".base64_encode($_POST["fname"])."','".$fname."','".mysqli_real_escape_string($conn, $_POST["ingredient"][$i])."','$ingIDq[0]','".mysqli_real_escape_string($conn, $_POST["concentration"][$i])."','".mysqli_real_escape_string($conn, $_POST["quantity"][$i])."')";
-         $fq = mysqli_query($conn, $sql);
-	}
-	if($fq){
-		echo '<div class="alert alert-success alert-dismissible">
-			<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-  			<strong>'.$fname.'</strong> Added!
-			</div>';
+if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM formulas WHERE name = '$fname'"))){
+		$msg='<div class="alert alert-danger alert-dismissible">
+		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
+  		<strong>Error: </strong>'.$fname.' already exists! Click <a href="/?do=Formula&name='.$fname.'">here</a> to view/edit!
+		</div>';
+	}elseif(checkDupes($_POST['ingredient'])){
+			$msg='<div class="alert alert-danger alert-dismissible">
+		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
+  		<strong>Error: </strong> same ingredients!
+		</div>';
 	}else{
-		echo '<div class="alert alert-danger alert-dismissible">
-			<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-  			<strong>Error:</strong> missing fields!
-			</div>';
-	}  
-} 
 
+	if($number > 0){
+		for($i=0; $i<$number; $i++){
+			
+			$qin = mysqli_real_escape_string($conn,$_POST["ingredient"][$i]);
+			$ingIDq = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$qin'"));
+			$sql = "INSERT INTO formulas(fid,name,ingredient,ingredient_id,concentration,quantity) VALUES('".base64_encode($_POST["fname"])."','".$fname."','".mysqli_real_escape_string($conn, $_POST["ingredient"][$i])."','$ingIDq[0]','".mysqli_real_escape_string($conn, $_POST["concentration"][$i])."','".mysqli_real_escape_string($conn, $_POST["quantity"][$i])."')";
+			 $fq = mysqli_query($conn, $sql);
+			 
+			 
+		}
+		if($fq){
+			/*
+			echo '<div class="alert alert-success alert-dismissible">
+				<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
+				<strong><a href="/?do=Formula&name='.$fname.'">'.$fname.'</a></strong> Added!
+				</div>';
+			*/
+			header("Location: /?do=Formula&name=$fname");
+		}else{
+			echo '<div class="alert alert-danger alert-dismissible">
+				<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
+				<strong>Error:</strong> '.mysqli_error($conn).'
+				</div>';
+		}  
+	} 
+}
+
+}
 $res_ing = mysqli_query($conn, "SELECT id,name FROM ingredients ORDER BY name ASC");
 ?>
 <script>
@@ -37,7 +62,7 @@ $(document).ready(function(){
 										 	while ($r_ing = mysqli_fetch_array($res_ing)){
 												echo '<option value="'.$r_ing['name'].'">'.$r_ing['name'].'</option>';
 											}
-										 ?></select></td><td><input type="text" name="concentration[]" placeholder="Concentration %" class="form-control ing_list" /></td><td><input type="text" name="quantity[]" placeholder="Quantity" class="form-control ing_list" /></td><td><button type="button" name="remove" id="'+i+'" class="btn btn-danger btn_remove">-</button></td></tr>');  
+										 ?></select></td><td><input type="text" name="concentration[]" placeholder="Concentration %" class="form-control ing_list" /></td><td><input type="text" name="quantity[]" placeholder="Quantity mg" class="form-control ing_list" /></td><td><button type="button" name="remove" id="'+i+'" class="btn btn-danger btn_remove">-</button></td></tr>');  
       });  
       $(document).on('click', '.btn_remove', function(){  
            var button_id = $(this).attr("id");   
@@ -46,9 +71,9 @@ $(document).ready(function(){
 
 })
 </script>
-          <h2 class="m-0 mb-4 text-primary">New Formula</h2>
-          <p>*All fields required</p>
-
+<h2 class="m-0 mb-4 text-primary">New Formula</h2>
+<p>*All fields required</p>
+<?php echo $msg;?>
         </div>
 <table width="94%" border="0" align="center">
         <tr>
@@ -64,7 +89,7 @@ $(document).ready(function(){
                                     <tr>  
                                          <td>Ingredient</td>
                                          <td>
-                                         <select name="ingredient[]" id="ingredient[]" class="form-control ing_list">
+                                         <select name="ingredient[]" id="ingredient[]" class="form-control">
                                          <?php
 										 	$res_ing = mysqli_query($conn, "SELECT id,name FROM ingredients ORDER BY name ASC");
 										 	while ($r_ing = mysqli_fetch_array($res_ing)){
@@ -73,8 +98,8 @@ $(document).ready(function(){
 										 ?>
                                          </select>
                                          </td>
-                                         <td><input type="text" name="concentration[]" placeholder="Concentration %" class="form-control ing_list" /></td>
-                                         <td><input type="text" name="quantity[]" placeholder="Quantity" class="form-control ing_list" /></td>  
+                                         <td><input type="text" name="concentration[]" placeholder="Concentration %" class="form-control" /></td>
+                                         <td><input type="text" name="quantity[]" placeholder="Quantity mg" class="form-control" /></td>  
                                          <td><button type="button" name="add" id="add" class="btn btn-success">+</button></td>  
                                     </tr>  
                                </table>  
