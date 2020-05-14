@@ -163,6 +163,7 @@ if(($_POST) && $_GET['update'] == 'printer'){
 $cat_q = mysqli_query($conn, "SELECT * FROM ingCategory ORDER BY name ASC");
 $sup_q = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
 $prof_q = mysqli_query($conn, "SELECT * FROM ingProfiles ORDER BY name ASC");
+require('./inc/settings.php');
 
 ?>
 <link rel="stylesheet" href="../css/jquery-ui.css">

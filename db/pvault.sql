@@ -10,14 +10,26 @@
 
 CREATE TABLE `formulas` (
   `id` int(11) NOT NULL,
-  `fid` varchar(255) COLLATE utf8_bin NOT NULL,
+  `fid` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
-  `ingredient` varchar(255) COLLATE utf8_bin NOT NULL,
-  `ingredient_id` varchar(11) COLLATE utf8_bin NOT NULL,
-  `concentration` int(5) NOT NULL DEFAULT 100,
-  `quantity` varchar(10) COLLATE utf8_bin NOT NULL,
-  `created` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `updated` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE current_timestamp()
+  `ingredient` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `ingredient_id` varchar(11) COLLATE utf8_bin DEFAULT NULL,
+  `concentration` int(5) DEFAULT 100,
+  `quantity` varchar(10) COLLATE utf8_bin DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `formulasMetaData`
+--
+
+CREATE TABLE `formulasMetaData` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) COLLATE utf8_bin NOT NULL,
+  `notes` text COLLATE utf8_bin DEFAULT NULL,
+  `created` timestamp NOT NULL DEFAULT current_timestamp(),
+  `lastUpdate` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
@@ -32,15 +44,6 @@ CREATE TABLE `ingCategory` (
   `notes` text COLLATE utf8_bin DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
---
--- Dumping data for table `ingCategory`
---
-
-INSERT INTO `ingCategory` (`id`, `name`, `notes`) VALUES
-(1, 'Amber', 'Ambery note'),
-(2, 'Woody', 'Woody note'),
-(3, 'Floral', 'Floral, Rose');
-
 -- --------------------------------------------------------
 
 --
@@ -52,15 +55,6 @@ CREATE TABLE `ingProfiles` (
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
   `notes` text COLLATE utf8_bin DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
---
--- Dumping data for table `ingProfiles`
---
-
-INSERT INTO `ingProfiles` (`id`, `name`, `notes`) VALUES
-(1, 'Base', 'Base Note'),
-(2, 'Top', 'Top Note'),
-(3, 'Medium', 'Medium Note');
 
 -- --------------------------------------------------------
 
@@ -86,7 +80,7 @@ CREATE TABLE `ingredients` (
   `appearance` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `notes` text COLLATE utf8_bin DEFAULT NULL,
   `profile` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `ml` int(5) DEFAULT 10
+  `ml` int(5) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
@@ -144,7 +138,7 @@ CREATE TABLE `settings` (
 --
 
 INSERT INTO `settings` (`id`, `logo`, `label_printer_addr`, `label_printer_model`, `label_printer_size`, `label_printer_font_size`, `currency`) VALUES
-(1, NULL, '', '', '12', 70, '&pound;');
+(1, NULL, '', '', '12', 80, '&pound;');
 
 -- --------------------------------------------------------
 
@@ -167,6 +161,12 @@ CREATE TABLE `users` (
 -- Indexes for table `formulas`
 --
 ALTER TABLE `formulas`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `formulasMetaData`
+--
+ALTER TABLE `formulasMetaData`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -229,16 +229,22 @@ ALTER TABLE `formulas`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `formulasMetaData`
+--
+ALTER TABLE `formulasMetaData`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `ingCategory`
 --
 ALTER TABLE `ingCategory`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `ingProfiles`
 --
 ALTER TABLE `ingProfiles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `ingredients`
