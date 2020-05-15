@@ -2,3 +2,4 @@
 request.log
 tmp/
 uploads/
+push.sh

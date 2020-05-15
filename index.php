@@ -1,5 +1,6 @@
 <?php
 require_once('./inc/config.php');
+require_once('./inc/product.php');
 require_once('./inc/opendb.php');
 require_once('./func/sizeformat.php');
 require_once('./func/calcCosts.php');
