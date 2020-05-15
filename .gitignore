@@ -3,3 +3,4 @@ request.log
 tmp/
 uploads/
 push.sh
+inc/config.php
