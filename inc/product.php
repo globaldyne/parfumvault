@@ -9,4 +9,7 @@ error_reporting(E_ALL ^ E_NOTICE);
 $product = 'JBs Perfumers Vault';
 $ver = '0.1 Beta';
 
+$top_n = '25';
+$heart_n = '50';
+$base_n = '25';
 ?>

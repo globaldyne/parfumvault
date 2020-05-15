@@ -4,6 +4,7 @@ require_once('./inc/product.php');
 require_once('./inc/opendb.php');
 require_once('./func/sizeformat.php');
 require_once('./func/calcCosts.php');
+require_once('./func/calcPerc.php');
 require_once('./func/checkDupes.php');
 
 require('./inc/settings.php');

@@ -29,15 +29,17 @@ if($_GET['action'] == 'printLabel' && $_GET['name']){
 if($_GET['action'] == 'deleteIng' && $_GET['id'] && $_GET['ing']){
 	$id = mysqli_real_escape_string($conn, $_GET['id']);
 	$ing = mysqli_real_escape_string($conn, $_GET['ing']);
-	
+	$fname = mysqli_real_escape_string($conn, $_GET['name']);
+
 	if(mysqli_query($conn, "DELETE FROM formulas WHERE id = '$id'")){
+		
 		$msg = '<div class="alert alert-success alert-dismissible">
-				<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
+				<a href="?do=Formula&name='.$fname.'" class="close" data-dismiss="alert" aria-label="close">x</a>
 				'.$ing.' removed from the formula!
 				</div>';
 	}else{
 		$msg = '<div class="alert alert-danger alert-dismissible">
-				<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
+				<a href="?do=Formula&name='.$fname.'" class="close" data-dismiss="alert" aria-label="close">x</a>
 				'.$ing.' cannot be removed from the formula!
 				</div>';
 	}
@@ -52,7 +54,7 @@ if($_GET['action'] == 'addIng' && $_POST['concentration'] && $_POST['quantity'] 
 	
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT ingredient FROM formulas WHERE ingredient = '$ingredient' AND name = '$fname'"))){
 		$msg='<div class="alert alert-danger alert-dismissible">
-		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
+		<a href="?do=Formula&name='.$fname.'" class="close" data-dismiss="alert" aria-label="close">x</a>
   		<strong>Error: </strong>'.$ingredient.' already exists in formula!
 		'.mysqli_error($conn).'
 		</div>';
@@ -60,12 +62,12 @@ if($_GET['action'] == 'addIng' && $_POST['concentration'] && $_POST['quantity'] 
 
 		if(mysqli_query($conn,"INSERT INTO formulas(fid,name,ingredient,ingredient_id,concentration,quantity) VALUES('".base64_encode($fname)."','$fname','$ingredient','$ingredient_id','$concentration','$quantity')")){
 			$msg = '<div class="alert alert-success alert-dismissible">
-					<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
+					<a href="?do=Formula&name='.$fname.'" class="close" data-dismiss="alert" aria-label="close">x</a>
 					'.$ingredient.' added to formula!
 					</div>';
 		}else{
 			$msg = '<div class="alert alert-danger alert-dismissible">
-					<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
+					<a href="?do=Formula&name='.$fname.'" class="close" data-dismiss="alert" aria-label="close">x</a>
 					Error adding '.$ingredient.'!
 					</div>';
 		}
@@ -76,10 +78,10 @@ if($_GET['action'] == 'addIng' && $_POST['concentration'] && $_POST['quantity'] 
 $formula_q = mysqli_query($conn, "SELECT * FROM formulas WHERE name = '$f_name' ORDER BY ingredient ASC");
 
 $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE name = '$f_name'"));
+
 ?>
 
 <div id="content-wrapper" class="d-flex flex-column">
-
 <?php require_once('pages/top.php'); ?>
         <div class="container-fluid">
           <div>
@@ -123,6 +125,7 @@ $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg F
                       <div class="dropdown-menu">
                         <a class="dropdown-item" id="csv" href="#">Export to CSV</a>
                         <a class="dropdown-item" href="/?do=Formula&action=printLabel&name=<?php echo $f_name; ?>" onclick="return confirm('Print label?');">Print Label</a>
+                        <a class="dropdown-item popup-link" href="/pages/viewPyramid.php?formula=<?php echo $f_name; ?>">View Pyramid</a>
                       </div>
                     </div>
                     </tr>
@@ -141,7 +144,7 @@ $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg F
                     <tr>
                       <td align="center"><a href="/?do=editIngredient&id='.$formula['ingredient'].'">'.$formula['ingredient'].'</a></td>
                       <td data-name="concentration" class="concentration" data-type="text" align="center" data-pk="'.$formula['ingredient'].'">'.$formula['concentration'].'</td>';
-					  $ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT IFRA,price,ml FROM ingredients WHERE name = '$formula[ingredient]'"));
+					  $ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT IFRA,price,ml,profile FROM ingredients WHERE name = '$formula[ingredient]'"));
 					  $conc_p = number_format($formula['quantity']/$mg['total_mg'] * 100, 2);
 					  if($ing_q['IFRA'] != null){
 					  	if($ing_q['IFRA'] < $conc_p){
@@ -177,8 +180,8 @@ $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg F
                 </table> 
                 <div>
                 <p></p>
-                *Values in: <strong class="alert alert-danger">red</strong> exceeds IFRA limit,   <strong class="alert alert-warning">yellow</strong> have no IFRA limit set,   <strong class="alert alert-success">green</strong> are within IFRA limits
-              </div>
+                <p>*Values in: <strong class="alert alert-danger">red</strong> exceeds IFRA limit,   <strong class="alert alert-warning">yellow</strong> have no IFRA limit set,   <strong class="alert alert-success">green</strong> are within IFRA limits</p>
+                </div>
             </div>
           </div>
         </div>
