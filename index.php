@@ -29,7 +29,6 @@ $ac_c = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM ingredients WHERE typ
 $eo_c = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM ingredients WHERE type = 'EO'"));
 $sup_c = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM ingSuppliers"));
 
-
 ?>
 <!DOCTYPE html>
 <html lang="en">

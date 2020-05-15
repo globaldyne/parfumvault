@@ -3,7 +3,7 @@
 $dbhost = 'localhost'; //MySQL Hostname
 $dbuser = 'pvault'; //MySQL Username
 $dbpass = 'pvault'; //MySQL Password
-$dbname = 'vault'; //MySQL DB name
+$dbname = 'pvault'; //MySQL DB name
 
 ///////////////////////////////
 $tmp_path = 'tmp/';
