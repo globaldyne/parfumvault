@@ -62,7 +62,7 @@ CREATE TABLE `ingProfiles` (
 
 INSERT INTO `ingProfiles` (`id`, `name`, `notes`) VALUES
 (1, 'Base', 'Base Note'),
-(2, 'Medium', 'Medium Note'),
+(2, 'Heart', 'Heart Note'),
 (3, 'Top', 'Top Note');
 
 -- --------------------------------------------------------
