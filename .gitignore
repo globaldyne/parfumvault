@@ -1,2 +1,4 @@
 .htaccess
 request.log
+tmp/
+uploads/
