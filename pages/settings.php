@@ -50,12 +50,17 @@ if(($_POST) && $_GET['update'] == 'printer'){
 		 }
 
       }
-
+//ADD SUPPLIERS
 }elseif($_POST['supplier'] && $_GET['update'] == 'suppliers'){
 	$sup = mysqli_real_escape_string($conn, $_POST['supplier']);
 	$notes = mysqli_real_escape_string($conn, $_POST['sup_notes']);
 	
-	if(mysqli_query($conn, "INSERT INTO ingSuppliers (name,notes) VALUES ('$sup', '$notes')")){
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingSuppliers WHERE name = '$sup'"))){
+		$msg='<div class="alert alert-danger alert-dismissible">
+		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
+  		<strong>Error: </strong>'.$sup.' already exists!
+		</div>';
+	}elseif(mysqli_query($conn, "INSERT INTO ingSuppliers (name,notes) VALUES ('$sup', '$notes')")){
 		
 		$msg = '<div class="alert alert-success alert-dismissible">
 		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
@@ -67,12 +72,16 @@ if(($_POST) && $_GET['update'] == 'printer'){
   		Error adding supplier
 		</div>';
 	}
-
+//ADD CATEGORY
 }elseif($_POST['category'] && $_GET['update'] == 'categories'){
 	$cat = mysqli_real_escape_string($conn, $_POST['category']);
 	$notes = mysqli_real_escape_string($conn, $_POST['cat_notes']);
-	
-	if(mysqli_query($conn, "INSERT INTO ingCategory (name,notes) VALUES ('$cat', '$notes')")){
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingCategory WHERE name = '$cat'"))){
+		$msg='<div class="alert alert-danger alert-dismissible">
+		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
+  		<strong>Error: </strong>'.$cat.' already exists!
+		</div>';
+	}elseif(mysqli_query($conn, "INSERT INTO ingCategory (name,notes) VALUES ('$cat', '$notes')")){
 		
 		$msg = '<div class="alert alert-success alert-dismissible">
 		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
@@ -84,11 +93,17 @@ if(($_POST) && $_GET['update'] == 'printer'){
   		Error adding category
 		</div>';
 	}
+//ADD PROFILE
 }elseif($_POST['profile'] && $_GET['update'] == 'profiles'){
 	$profile = mysqli_real_escape_string($conn, $_POST['profile']);
 	$notes = mysqli_real_escape_string($conn, $_POST['prof_notes']);
 	
-	if(mysqli_query($conn, "INSERT INTO ingProfiles (name,notes) VALUES ('$profile', '$notes')")){
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingProfiles WHERE name = '$profile'"))){
+		$msg='<div class="alert alert-danger alert-dismissible">
+		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
+  		<strong>Error: </strong>'.$profile.' already exists!
+		</div>';
+	}elseif(mysqli_query($conn, "INSERT INTO ingProfiles (name,notes) VALUES ('$profile', '$notes')")){
 		
 		$msg = '<div class="alert alert-success alert-dismissible">
 		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>

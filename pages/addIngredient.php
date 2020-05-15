@@ -206,7 +206,7 @@ $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles");
                               </tr>
                               <tr>
                                 <td valign="top">Size (ml):</td>
-                                <td><input name="ml" type="text" class="form-control" id="ml" /></td>
+                                <td><input name="ml" type="text" class="form-control" id="ml" value="10" /></td>
                                 <td>&nbsp;</td>
                               </tr>
                               <tr>
