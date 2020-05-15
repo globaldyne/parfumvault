@@ -64,7 +64,7 @@ $ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC
                       <th>Name</th>
                       <th>CAS #</th>
                       <th>Type</th>
-                      <th>Strength</th>
+                      <th>Profile</th>
                       <th>Category</th>
                       <th>IFRA</th>
                       <th>Supplier</th>
@@ -86,7 +86,7 @@ $ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC
 					  }
 					  echo '
 					  <td align="center">'.$ingredient['type'].'</td>
-                      <td align="center">'.$ingredient['strength'].'</td>
+                      <td align="center">'.$ingredient['profile'].'</td>
 					  <td align="center">'.$ingredient['category'].'</td>';
 					  if($ingredient['IFRA']){
 						  echo '<td align="center">'.$ingredient['IFRA'].'%</td>';

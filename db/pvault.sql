@@ -56,6 +56,15 @@ CREATE TABLE `ingProfiles` (
   `notes` text COLLATE utf8_bin DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
+--
+-- Dumping data for table `ingProfiles`
+--
+
+INSERT INTO `ingProfiles` (`id`, `name`, `notes`) VALUES
+(1, 'Base', 'Base Note'),
+(2, 'Medium', 'Medium Note'),
+(3, 'Top', 'Top Note');
+
 -- --------------------------------------------------------
 
 --
@@ -94,6 +103,15 @@ CREATE TABLE `ingStrength` (
   `name` varchar(255) COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
+--
+-- Dumping data for table `ingStrength`
+--
+
+INSERT INTO `ingStrength` (`id`, `name`) VALUES
+(1, 'High'),
+(2, 'Medium'),
+(3, 'Low');
+
 -- --------------------------------------------------------
 
 --
@@ -116,6 +134,16 @@ CREATE TABLE `ingTypes` (
   `id` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- Dumping data for table `ingTypes`
+--
+
+INSERT INTO `ingTypes` (`id`, `name`) VALUES
+(1, 'EO'),
+(2, 'AC'),
+(3, 'Mixed Blend'),
+(4, 'Other');
 
 -- --------------------------------------------------------
 
@@ -244,7 +272,7 @@ ALTER TABLE `ingCategory`
 -- AUTO_INCREMENT for table `ingProfiles`
 --
 ALTER TABLE `ingProfiles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `ingredients`
@@ -256,7 +284,7 @@ ALTER TABLE `ingredients`
 -- AUTO_INCREMENT for table `ingStrength`
 --
 ALTER TABLE `ingStrength`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `ingSuppliers`
@@ -268,7 +296,7 @@ ALTER TABLE `ingSuppliers`
 -- AUTO_INCREMENT for table `ingTypes`
 --
 ALTER TABLE `ingTypes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `settings`
