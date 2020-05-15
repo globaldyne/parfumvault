@@ -2,5 +2,5 @@
 request.log
 tmp/
 uploads/
-inc/config.php
 index.php
+inc/config.php
