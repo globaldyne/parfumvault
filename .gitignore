@@ -1,7 +1,2 @@
 .htaccess
 request.log
-tmp/
-uploads/
-!tmp/labels/README.txt
-!uploads/SDS/README.txt
-!uploads/logo/README.txt
