@@ -45,7 +45,7 @@ if($_POST){
       if(empty($msgF)==true){
          move_uploaded_file($file_tmp,"uploads/SDS/".base64_encode($file_name));
 		 $SDSF = "uploads/SDS/".base64_encode($file_name);
-		 mysqli_query($conn, "UPDATE ingredients SET SDS = '$SDSF' WHERE id='$ingID'");
+		 mysqli_query($conn, "UPDATE ingredients SET SDS = '$SDSF' WHERE name='$ingID'");
 	  }
    }
 
