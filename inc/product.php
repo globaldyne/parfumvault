@@ -6,7 +6,7 @@ $max_filesize = '4194304';
 $total_records_per_page = 20;
 
 error_reporting(E_ALL ^ E_NOTICE); 
-$product = 'JBs Perfumers Vault';
+$product = 'JBs Parfum Vault';
 $ver = '0.1.2 Beta';
 
 $top_n = '25';
