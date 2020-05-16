@@ -1,9 +1,27 @@
 # Parfum Vault
-  	 
 
 A simple tool to help perfumers organize their formulas and ingredients.
 
-This is a FREE software provided as is without ANY waranty under MIT license.
+This is a FREE software provided as is without ANY warranty under MIT license.
+
+# Features 
+* Formulae management
+* Ingredient management
+* Suppliers list
+* Auto generate TGSC links based to the ingredient name or CAS number
+* Pyramid olfactory view
+* Cost calculation
+* IFRA limits calculation
+* Label printing
+* Formula export
+
+# Docker Image
+
+To run from docker:
+
+    docker run -p 8080:80  -v <yourpath>/localdb:/var/lib/mysql -v <yourpath>localupload:/var/www/html/uploads globaldyne/jbvault:latest
+
+then point your browser to http://localhost:8080
 
 # Screenshots 
 
