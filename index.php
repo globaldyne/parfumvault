@@ -13,6 +13,7 @@ require('./inc/settings.php');
 if($_GET['action'] == 'delete' && $_GET['name']){
 	$dname = mysqli_real_escape_string($conn, $_GET['name']);
 	if(mysqli_query($conn, "DELETE FROM formulas WHERE name = '$dname'")){
+		mysqli_query($conn, "DELETE FROM formulasMetaData WHERE name = '$dname'");
 		$msg = '<div class="alert alert-success alert-dismissible">
 		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
   		<strong>Formula: </strong>'.$dname.' deleted!

@@ -64,6 +64,7 @@ $(document).ready(function(){
 })
 </script>
 <h2 class="m-0 mb-4 text-primary">New Formula</h2>
+<p><a href="pages/csvImport.php" class="popup-link">or import a CSV file</a></p>
 <p>*All ingredient fields required</p>
 <?php echo $msg;?>
         </div>

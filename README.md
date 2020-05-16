@@ -14,6 +14,7 @@ This is a FREE software provided as is without ANY warranty under MIT license.
 * IFRA limits calculation
 * Label printing
 * Formula export
+* CSV Import
 
 # Docker Image
 
