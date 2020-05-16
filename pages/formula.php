@@ -142,7 +142,7 @@ $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg F
                   <?php while ($formula = mysqli_fetch_array($formula_q)) {
 					  echo'
                     <tr>
-                      <td align="center"><a href="/?do=editIngredient&id='.$formula['ingredient'].'">'.$formula['ingredient'].'</a></td>
+                      <td align="center"><a href="/?do=editIngredient&id='.$formula['ingredient'].'">'.$formula['ingredient'].'</a> '.checkIng($formula['ingredient'],$dbhost, $dbuser, $dbpass, $dbname).'</td>
                       <td data-name="concentration" class="concentration" data-type="text" align="center" data-pk="'.$formula['ingredient'].'">'.$formula['concentration'].'</td>';
 					  $ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT IFRA,price,ml,profile FROM ingredients WHERE name = '$formula[ingredient]'"));
 					  $conc_p = number_format($formula['quantity']/$mg['total_mg'] * 100, 2);

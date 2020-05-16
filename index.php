@@ -6,6 +6,7 @@ require_once('./func/sizeformat.php');
 require_once('./func/calcCosts.php');
 require_once('./func/calcPerc.php');
 require_once('./func/checkDupes.php');
+require_once('./func/checkIng.php');
 
 require('./inc/settings.php');
 
