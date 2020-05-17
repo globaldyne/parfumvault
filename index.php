@@ -7,6 +7,7 @@ require_once('./func/calcCosts.php');
 require_once('./func/calcPerc.php');
 require_once('./func/checkDupes.php');
 require_once('./func/checkIng.php');
+require_once('./func/getIngUsage.php');
 
 require('./inc/settings.php');
 
@@ -128,7 +129,13 @@ $(function() {
           <i class="fas fa-fw fa-vial"></i>
           <span>Ingredients</span></a>
       </li>
-
+      
+        <li class="nav-item">
+        <a class="nav-link" href="/?do=insights">
+          <i class="fas fa-fw fa-chart-area"></i>
+          <span>Insights</span></a>
+      </li>
+      
         <li class="nav-item">
         <a class="nav-link" href="/?do=settings">
           <i class="fas fa-fw fa-cog"></i>
@@ -152,7 +159,8 @@ $(function() {
 			require 'pages/addIngredient.php';
 		}elseif($_GET['do'] == 'editIngredient'){
 			require 'pages/editIngredient.php';
-
+		}elseif($_GET['do'] == 'insights'){
+			require 'pages/insights.php';
 					 
 		}else{
 			require 'pages/dashboard.php';

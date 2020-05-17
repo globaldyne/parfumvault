@@ -1,3 +1,10 @@
+0.1.4 - FIX: Various bug fixes
+		ADD: Check if ingredient is missing from the database
+		ADD: Show missing data from an ingredeint in formula
+		ADD: Check if ingredient is in use by any formula before deleting
+		ADD: Check if ingridient exists in db before edit
+		ADD: Ingredients usage insights
+
 0.1.3 - FIX: CSV import when missing concentration
 		ADD: Display ingredients in Pyramid view
 
@@ -5,7 +12,6 @@
 		FIX: metadata delete
 
 0.1.1 - ADD: Checking of critical ingredient data missing
+		ADD: Pyramid view
 
-15/05/2020 - Pyramid view added
-13/05/2020 - upload and tmp directory structure added
-12/05/2020 - 0.1 Beta public release
+0.1.0 - FIX: upload and tmp directory structure

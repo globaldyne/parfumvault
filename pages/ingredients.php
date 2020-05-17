@@ -3,7 +3,12 @@ $ingID = mysqli_real_escape_string($conn, $_GET['id']);
 $ingName = mysqli_real_escape_string($conn, $_GET['name']);
 
 if($_GET['action'] == "delete" && $_GET['id']){
-	if(mysqli_query($conn, "DELETE FROM ingredients WHERE id = '$ingID'")){
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT ingredient FROM formulas WHERE ingredient = '$ingName'"))){
+		$msg = '<div class="alert alert-danger alert-dismissible">
+		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
+  		<strong>'.$ingName.'</strong> is in use by at least one formula and cannot be removed!</div>';
+		
+	}elseif(mysqli_query($conn, "DELETE FROM ingredients WHERE id = '$ingID'")){
 		$msg = '<div class="alert alert-success alert-dismissible">
 		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
   		Ingredient <strong>'.$ingName.'</strong> removed from the database!
@@ -110,7 +115,7 @@ $ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC
 					  }else{
 						  echo '<td align="center" class="noexport"><a href="http://www.thegoodscentscompany.com/search3.php?qName='.$ingredient['name'].'" target="_blanc" class="fa fa-external-link-alt"></a></td>';
 					  }
-                      echo '<td class="noexport" align="center"><a href="/?do=editIngredient&id='.$ingredient['name'].'" class="fas fa-edit"><a> <a href="/?do=ingredients&action=delete&id='.$ingredient['id'].'&name='.$ingredient['name'].'" onclick="return confirm(\'Delete ingredient\');" class="fas fa-trash"></a></td>';
+                      echo '<td class="noexport" align="center"><a href="/?do=editIngredient&id='.$ingredient['name'].'" class="fas fa-edit"><a> <a href="/?do=ingredients&action=delete&id='.$ingredient['id'].'&name='.$ingredient['name'].'" onclick="return confirm(\'Delete '.$ingredient['name'].'?\');" class="fas fa-trash"></a></td>';
 					  echo '</tr>';
 				  }
                     ?>

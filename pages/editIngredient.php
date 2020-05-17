@@ -68,8 +68,15 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,name FROM ingCategory");
 $res_ingSupplier = mysqli_query($conn, "SELECT id,name FROM ingSuppliers");
 $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles");
 
-$ing = mysqli_fetch_array( mysqli_query($conn, "SELECT * FROM ingredients WHERE name = '$ingID'"));
-
+$sql = mysqli_query($conn, "SELECT * FROM ingredients WHERE name = '$ingID'");
+if(empty(mysqli_num_rows($sql))){
+	$msg='<div class="alert alert-danger alert-dismissible">
+  			<strong>Error:</strong> ingredient not found, please click <a href="/?do=addIngredient">here</a> to add it first!
+			</div>';
+	die($msg);
+}else{
+	$ing = mysqli_fetch_array($sql);
+}
 ?>
 
           <h1 class="h3 mb-4 text-gray-800"><?php echo $ing['name']; ?></h1>

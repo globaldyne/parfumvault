@@ -157,10 +157,8 @@ $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg F
 					  }
 					  echo'<td data-name="quantity" class="quantity" data-type="text" align="center" data-pk="'.$formula['ingredient'].'">'.$formula['quantity'].'</td>';
 					  echo'<td align="center" '.$IFRA_WARN.'>'.$conc_p.'%</td>';
-
 					  echo '<td align="center">'.utf8_encode($settings['currency']).calcCosts($ing_q['price'],$formula['quantity'], $ing_q['ml']).'</td>';
-					  
-					 echo '<td class="noexport" align="center"><a href="/?do=Formula&action=deleteIng&name='.$formula['name'].'&id='.$formula['id'].'&ing='.$formula['ingredient'].'" onclick="return confirm(\'Remove '.$formula['ingredient'].' from formula?\');" class="fas fa-trash" rel="tipsy" title="Remove '.$formula['ingredient'].'"></a></td>
+					  echo '<td class="noexport" align="center"><a href="/?do=Formula&action=deleteIng&name='.$formula['name'].'&id='.$formula['id'].'&ing='.$formula['ingredient'].'" onclick="return confirm(\'Remove '.$formula['ingredient'].' from formula?\');" class="fas fa-trash" rel="tipsy" title="Remove '.$formula['ingredient'].'"></a></td>
                     </tr>';
 					$tot[] = calcCosts($ing_q['price'],$formula['quantity'], $ing_q['ml']);
 				  }
