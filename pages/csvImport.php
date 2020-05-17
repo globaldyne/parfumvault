@@ -17,9 +17,10 @@ if(isset($_POST["import"]) && ($_POST['name'])){
 				if(!mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '$data[0]'"))){
 					mysqli_query($conn, "INSERT INTO ingredients (name, ml) VALUES ('$data[0]', '10')");
 				}
-
-				$sql = "INSERT INTO formulas (name,ingredient,concentration,quantity) 
-						VALUES ('$name','".$data[0]."','".$data[1]."','".$data[2]."')";
+				if(empty($data['1'])){
+					$data['1'] = '100';
+				}
+				$sql = "INSERT INTO formulas (name,ingredient,concentration,quantity) VALUES ('$name','$data[0]','$data[1]','$data[2]')";
 				$res = mysqli_query($conn, $sql);
 					
 			}

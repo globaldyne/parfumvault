@@ -5,6 +5,7 @@ require_once('../inc/product.php');
 require_once('../inc/opendb.php');
 require_once('../func/sizeformat.php');
 require_once('../func/calcPerc.php');
+require_once('../func/getFormula.php');
 
 $formula = mysqli_real_escape_string($conn, $_GET['formula']);
 
@@ -15,8 +16,6 @@ while ($formula = mysqli_fetch_array($formula_q)) {
 	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT name,profile FROM ingredients WHERE name = '$formula[ingredient]'"));
 	$prf[] = $ing_q['profile'];
 }
-//print '<pre>';
-//print_r($prf);
 $pyr = array_count_values($prf); 
 ?>
 <!DOCTYPE html>
@@ -51,17 +50,20 @@ var chart = AmCharts.makeChart( "chartdiv", {
   "dataProvider": [ {
     "title": "Base notes",
     "value": <?php echo calcPerc($pyr['Base'],$base_n);?>,
-	"desc": "%"
+	"desc": "%",
+	"notes": "<?php getFormula($_GET['formula'],'Base',$dbhost,$dbuser,$dbpass,$dbname);?>"
   }, 
   {
     "title": "Heart Notes",
     "value": <?php echo calcPerc($pyr['Heart'],$heart_n);?>,
-	"desc": "%"
+	"desc": "%",
+	"notes": "<?php getFormula($_GET['formula'],'Heart',$dbhost,$dbuser,$dbpass,$dbname);?>"
   }, 
   {
     "title": "Top Notes",
     "value": <?php echo calcPerc($pyr['Top'],$top_n);?>,
-	"desc": "%"
+	"desc": "%",
+	"notes": "<?php getFormula($_GET['formula'],'Top',$dbhost,$dbuser,$dbpass,$dbname);?>"
   }
   ],
   "balloon": {
@@ -75,7 +77,7 @@ var chart = AmCharts.makeChart( "chartdiv", {
   "rotate": true,
   "labelPosition": "right",
   "balloonText": "[[title]]: [[value]][[desc]]",
-  "labelText": "[[title]]: [[value]][[desc]]",
+  "labelText": "[[notes]]",
   "export": {
     "enabled": true
   }
