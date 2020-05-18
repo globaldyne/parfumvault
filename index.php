@@ -29,7 +29,6 @@ if($_GET['action'] == 'delete' && $_GET['name']){
 }
 
 $formulas_c = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM formulas GROUP BY name"));
-$formulas_n = mysqli_query($conn, "SELECT * FROM formulas GROUP BY name ORDER by name DESC");
 
 $ac_c = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM ingredients WHERE type = 'AC'"));
 $eo_c = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM ingredients WHERE type = 'EO'"));

@@ -1,3 +1,7 @@
+0.1.5 - FIX: Version check function
+		ADD: Backup / Restore DB
+		ADD: Display warning if missing formulas/ingredients
+		
 0.1.4 - FIX: Various bug fixes
 		ADD: Check if ingredient is missing from the database
 		ADD: Show missing data from an ingredeint in formula

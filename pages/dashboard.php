@@ -81,6 +81,14 @@
             </div>
             <div class="card-body">
               <div>
+              <?php
+              	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"))== 0){
+					echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> no ingredients yet, click <a href="/?do=ingredients">here</a> to add.</div>';
+				}elseif(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulas"))== 0){
+					echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> no formulas yet, click <a href="/?do=addFormula">here</a> to add.</div>';
+
+				}else{	
+                ?>
                 <table width="100%" border="0" cellspacing="0" class="table table-bordered">
                   <thead>
                     <tr>
@@ -91,17 +99,20 @@
                     </tr>
                   </thead>
                   <tbody>
-                  <?php while ($formula = mysqli_fetch_array($formulas_n)) {
-					  echo'
-                    <tr>
-                      <td align="center"><a href="/?do=Formula&name='.$formula['name'].'">'.$formula['name'].'</a></td>';
-					  $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE name = '".$formula['name']."'"));
-					  echo '<td align="center"><a href="pages/getFormMeta.php?id='.$meta['id'].'" class="fas fa-comment-dots popup-link"></a></td>';
-					  echo '<td align="center">'.$meta['created'].'</td>';
-					  echo '<td align="center"><a> <a href="/?do=dashboard&action=delete&name='.$formula['name'].'" onclick="return confirm(\'Delete '.$formula['name'].' Formula?\');" class="fas fa-trash" rel="tipsy" title="Delete '.$formula['name'].'"></a></td>
-                    </tr>';
-				  }
-                  ?>
+                  <?php 
+		
+			 		$formulas_n = mysqli_query($conn, "SELECT * FROM formulas GROUP BY name ORDER by name DESC");
+					while ($formula = mysqli_fetch_array($formulas_n)) {
+						echo'<tr>
+						  <td align="center"><a href="/?do=Formula&name='.$formula['name'].'">'.$formula['name'].'</a></td>';
+						  $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE name = '".$formula['name']."'"));
+						  echo '<td align="center"><a href="pages/getFormMeta.php?id='.$meta['id'].'" class="fas fa-comment-dots popup-link"></a></td>';
+						  echo '<td align="center">'.$meta['created'].'</td>';
+						  echo '<td align="center"><a> <a href="/?do=dashboard&action=delete&name='.$formula['name'].'" onclick="return confirm(\'Delete '.$formula['name'].' Formula?\');" class="fas fa-trash" rel="tipsy" title="Delete '.$formula['name'].'"></a></td>
+						</tr>';
+					  }
+					}
+				?>
                     </tr>
                   </tbody>
                 </table>

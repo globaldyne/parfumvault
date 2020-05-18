@@ -7,7 +7,7 @@ $total_records_per_page = 20;
 
 error_reporting(E_ALL ^ E_NOTICE); 
 $product = 'JBs Parfum Vault';
-$ver = '0.1.4';
+$ver = '0.1.5';
 
 $top_n = '25';
 $heart_n = '50';

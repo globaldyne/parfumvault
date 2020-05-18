@@ -198,7 +198,8 @@ $(function() {
          <li><a href="#categories"><span>Categories</span></a></li>
          <li><a href="#profiles"><span>Profiles</span></a></li>
       <li><a href="#print"><span>Printing</span></a></li>
-         <li><a href="pages/about.php"><span>About</span></a></li>
+         <li><a href="#maintenance"><span>Maintenance</span></a></li>
+        <li><a href="pages/about.php"><span>About</span></a></li>
      </ul>
      <div id="general">
      <form id="form" name="form" method="post" enctype="multipart/form-data" action="/?do=settings&update=general#general">
@@ -467,6 +468,24 @@ $(function() {
         </table>
       </form>
 </div>
+
+<div id="maintenance">
+  <table width="100%" border="0">
+    <tr>
+      <td width="13%">&nbsp;</td>
+      <td width="87%">&nbsp;</td>
+    </tr>
+    <tr>
+      <td><a href="/pages/maintenance.php?do=backupDB">Backup DB</a></td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td><a href="/pages/maintenance.php?do=restoreDB" class="popup-link">Restore DB</a></td>
+      <td>&nbsp;</td>
+    </tr>
+  </table>
+</div>
+
   </div>
       </div>
 </div>

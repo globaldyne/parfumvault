@@ -24,9 +24,9 @@ if($_POST['name']){
 
 	if(!empty($_FILES['SDS']['name'])){
       $file_name = $_FILES['SDS']['name'];
-      $file_size =$_FILES['SDS']['size'];
-      $file_tmp =$_FILES['SDS']['tmp_name'];
-      $file_type=$_FILES['SDS']['type'];
+      $file_size = $_FILES['SDS']['size'];
+      $file_tmp =  $_FILES['SDS']['tmp_name'];
+      $file_type = $_FILES['SDS']['type'];
       $file_ext=strtolower(end(explode('.',$_FILES['SDS']['name'])));
       
       $ext = explode(",",$allowed_ext);

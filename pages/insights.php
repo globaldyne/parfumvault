@@ -1,6 +1,5 @@
 <div id="content-wrapper" class="d-flex flex-column">
 <?php require_once('pages/top.php'); ?>
-<!-- Styles -->
 <style>
 #chartdiv {
   width		: 100%;
@@ -69,7 +68,13 @@ while($allIng =  mysqli_fetch_array($ing)){
 <h2 class="m-0 mb-4 text-primary">Insights</h2>
 <div id="insights">
 <div id="general">
+<?php 
+if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulas"))== 0){
+	echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> to generate insights, add at least one formula first.</div>';
+}else{
+?>
 <div id="chartdiv"></div>					
+<?php } ?>
 </div>
 </div>
 </div>
