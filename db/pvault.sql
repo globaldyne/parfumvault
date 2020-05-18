@@ -27,6 +27,7 @@ CREATE TABLE `formulas` (
 CREATE TABLE `formulasMetaData` (
   `id` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
+  `profile` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `notes` text COLLATE utf8_bin DEFAULT NULL,
   `created` timestamp NOT NULL DEFAULT current_timestamp(),
   `lastUpdate` timestamp NULL DEFAULT NULL

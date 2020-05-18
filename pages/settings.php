@@ -331,56 +331,7 @@ $(function() {
           </form>
      </div> 
      
-     <div id="profiles">
-       <form id="form" name="form" method="post" action="/?do=settings&update=profiles#profiles">
-            <table width="100%" border="0" class="table table-striped table-sm" >
-              <tr>
-                <td colspan="8"><?php echo $msg; ?></td>
-              </tr>
-              <tr>
-                <td width="4%"><p>Profile:</p></td>
-                <td width="12%"><input type="text" name="profile" id="profile" class="form-control"/></td>
-                <td width="1%">&nbsp;</td>
-                <td width="6%">Description:</td>
-                <td width="13%"><input type="text" name="prof_notes" id="prof_notes" class="form-control"/></td>
-                <td width="2%">&nbsp;</td>
-                <td width="22%"><input type="submit" name="add_prof" id="add_prof" value="Add" class="btn btn-info" /></td>
-                <td width="40%">&nbsp;</td>
-              </tr>
-              <tr>
-                <td colspan="8">
-                <div class="card-body">
-              <div>
-                <table class="table table-bordered" width="100%" cellspacing="0">
-                  <thead>
-                    <tr class="noBorder">
-                    </tr>
-                    <tr>
-                      <th>Name</th>
-                      <th>Description</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody id="prof_data">
-                  <?php while ($prof = mysqli_fetch_array($prof_q)) {
-					  echo'
-                    <tr>
-                      <td data-name="pname" class="pname" data-type="text" align="center" data-pk="'.$prof['id'].'"><a href="#">'.$prof['name'].'</a></td>
-					  <td data-name="pnotes" class="pnotes" data-type="text" align="center" data-pk="'.$prof['id'].'"align="center"><a href="#">'.$prof['notes'].'</a></td>
-                      <td align="center"><a href="/?do=settings&action=delete&prof_id='.$prof['id'].'#profiles" onclick="return confirm(\'Delete profile '.$prof['name'].'?\');" class="fas fa-trash"></a></td>
-					</tr>';
-				  		}
-                    ?>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-                </td>
-              </tr>
-            </table>
-          </form>
-     </div> 
+      
     <div id="print">
         <form id="form1" name="form1" method="post" action="/?do=settings&update=printer#print">
         <table width="100%" border="0">

@@ -1,3 +1,6 @@
+0.1.7 - FIX: Settings broken view
+		FIX: MySql schema
+
 0.1.6 - ADD: DataTables
 		ADD: Search functionality
 		ADD: Bootstrap table pagination (old method removed)
