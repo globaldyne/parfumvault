@@ -8,6 +8,7 @@ require_once('./func/calcPerc.php');
 require_once('./func/checkDupes.php');
 require_once('./func/checkIng.php');
 require_once('./func/getIngUsage.php');
+require_once('./func/checkVer.php');
 
 require('./inc/settings.php');
 

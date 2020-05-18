@@ -4,6 +4,7 @@
 		ADD: Check if ingredient is in use by any formula before deleting
 		ADD: Check if ingridient exists in db before edit
 		ADD: Ingredients usage insights
+		ADD: New version check
 
 0.1.3 - FIX: CSV import when missing concentration
 		ADD: Display ingredients in Pyramid view

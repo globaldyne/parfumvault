@@ -74,3 +74,8 @@ html {
 }
 
 a { text-decoration: none; }
+
+.navbar {
+    position: relative;
+    display: inherit;
+}
