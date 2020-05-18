@@ -15,22 +15,8 @@ if($_GET['action'] == "delete" && $_GET['id']){
 		</div>';
 	}
 }
-if (isset($_GET['page_no']) && $_GET['page_no']!="") {
-	$page_no = $_GET['page_no'];
-}else{
-	$page_no = 1;
-}
-				
-$offset = ($page_no-1) * $total_records_per_page;
-$previous_page = $page_no - 1;
-$next_page = $page_no + 1;
-$adjacents = "2"; 
-				
-$r_count = mysqli_fetch_array(mysqli_query($conn,"SELECT COUNT(*) As total_ingredients FROM ingredients"));
+$ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC");
 
-$total_no_of_pages = ceil($r_count['total_ingredients'] / $total_records_per_page);
-$second_last = $total_no_of_pages - 1;
-$ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC LIMIT $offset, $total_records_per_page");
 ?>
 <div id="content-wrapper" class="d-flex flex-column">
 <?php require_once('pages/top.php'); ?>
@@ -43,7 +29,7 @@ $ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC
             </div>
             <div class="card-body">
               <div class="table-responsive">
-                <table class="table table-bordered" id="ingredients" width="100%" cellspacing="0">
+                <table class="table table-bordered" id="tdData" width="100%" cellspacing="0">
                   <thead>
                     <tr class="noBorder noexport">
                       <th>&nbsp;</th>
@@ -122,72 +108,6 @@ $ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC
                     </tr>
                   </tbody>
                 </table>
-                <div style='padding: 10px 20px 0px; border-top: dotted 1px #CCC;'>
-                <strong>Page <?php echo $page_no." of ".$total_no_of_pages; ?></strong>
-                </div>
-                <ul class="pagination">   
-                <li <?php if($page_no <= 1){ echo "class='disabled'"; } ?>>
-                <a <?php if($page_no > 1){ echo "href='?do=ingredients&page_no=$previous_page'"; } ?>>Previous</a>
-                </li>
-<?php 
-if ($total_no_of_pages <= 10){  	 
-	for ($counter = 1; $counter <= $total_no_of_pages; $counter++){
-		if ($counter == $page_no) {
-		  echo "<li class='active'><a>$counter</a></li>";	
-		}else{
-          echo "<li><a href='?do=ingredients&page_no=$counter'>$counter</a></li>";
-		}
-     }
-}elseif($total_no_of_pages > 10){
-	if($page_no <= 4){			
-	 for ($counter = 1; $counter < 8; $counter++){		 
-			if($counter == $page_no){
-		   		echo "<li class='active'><a>$counter</a></li>";	
-			}else{
-           		echo "<li><a href='?page_no=$counter'>$counter</a></li>";
-			}
-      }
-		echo "<li><a>...</a></li>";
-		echo "<li><a href='?do=ingredients&page_no=$second_last'>$second_last</a></li>";
-		echo "<li><a href='?do=ingredients&page_no=$total_no_of_pages'>$total_no_of_pages</a></li>";
-		
-	}elseif($page_no > 4 && $page_no < $total_no_of_pages - 4){		 
-		echo "<li><a href='?do=ingredients&page_no=1'>1</a></li>";
-		echo "<li><a href='?do=ingredients&page_no=2'>2</a></li>";
-        echo "<li><a>...</a></li>";
-        for ($counter = $page_no - $adjacents; $counter <= $page_no + $adjacents; $counter++) {			
-           if ($counter == $page_no) {
-		   		echo "<li class='active'><a>$counter</a></li>";	
-			}else{
-           		echo "<li><a href='?do=ingredients&page_no=$counter'>$counter</a></li>";
-			}                  
-       }
-       echo "<li><a>...</a></li>";
-	   echo "<li><a href='?do=ingredients&page_no=$second_last'>$second_last</a></li>";
-	   echo "<li><a href='?do=ingredients&page_no=$total_no_of_pages'>$total_no_of_pages</a></li>";      
-	}else{
-        echo "<li><a href='?do=ingredients&page_no=1'>1</a></li>";
-		echo "<li><a href='?do=ingredients&page_no=2'>2</a></li>";
-        echo "<li><a>...</a></li>";
-
-        for($counter = $total_no_of_pages - 6; $counter <= $total_no_of_pages; $counter++) {
-          if($counter == $page_no){
-			  echo "<li class='active'><a>$counter</a></li>";	
-			}else{
-           	   echo "<li><a href='?do=ingredients&page_no=$counter'>$counter</a></li>";
-			}                   
-        }
-     }
-}
-?>
-    
-	<li <?php if($page_no >= $total_no_of_pages){ echo "class='disabled'"; } ?>>
-	<a <?php if($page_no < $total_no_of_pages) { echo "href='?do=ingredients&page_no=$next_page'"; } ?>>Next</a>
-	</li>
-    <?php if($page_no < $total_no_of_pages){
-		echo "<li><a href='?do=ingredients&page_no=$total_no_of_pages'>Last &rsaquo;&rsaquo;</a></li>";
-		} ?>
-</ul>
               </div>
             </div>
           </div>
@@ -198,7 +118,7 @@ if ($total_no_of_pages <= 10){
 <script type="text/javascript" language="javascript" >
 
 $('#csv').on('click',function(){
-  $("#ingredients").tableHTMLExport({
+  $("#tdData").tableHTMLExport({
 	type:'csv',
 	filename:'ingredients.csv',
 	separator: ',',
@@ -212,7 +132,7 @@ $('#csv').on('click',function(){
 	htmlContent: false,
   
   	// debug
-  	consoleLog: true   
+  	consoleLog: false   
 });
  
 })

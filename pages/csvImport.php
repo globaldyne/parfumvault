@@ -4,6 +4,7 @@ require '../inc/opendb.php';
 
 if(isset($_POST["import"]) && ($_POST['name'])){
 	$name = mysqli_real_escape_string($conn,$_POST['name']);
+	$profile = mysqli_real_escape_string($conn,$_POST['profile']);
 	 if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM formulas WHERE name = '$name'"))){
 		 $msg='<div class="alert alert-danger alert-dismissible">
 				<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
@@ -25,7 +26,7 @@ if(isset($_POST["import"]) && ($_POST['name'])){
 					
 			}
 			if($res){
-				mysqli_query($conn, "INSERT INTO formulasMetaData (name,notes) VALUES ('$name','Imported via csv')");
+				mysqli_query($conn, "INSERT INTO formulasMetaData (name,notes,profile) VALUES ('$name','Imported via csv','$profile')");
 				$msg='<div class="alert alert-success alert-dismissible">
 				<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
 				<strong>'.$name.'</strong> added!</div>';
@@ -63,12 +64,23 @@ if(isset($_POST["import"]) && ($_POST['name'])){
                               </tr>
                               <tr>
                                 <td>Name:</td>
-                                <td><input type="text" name="name" id="name" /></td>
+                                <td><input type="text" name="name" id="name" class="form-control"/></td>
+                              </tr>
+                              <tr>
+                                <td>Profile:</td>
+                                <td>
+                                <select name="profile" id="profile" class="form-control">
+                                        <option value="oriental">Oriental</option>
+                                        <option value="woody">Woody</option>
+                                        <option value="floral">Floral</option>
+                                        <option value="fresh">Fresh</option>
+                                 </select>
+                                </td>
                               </tr>
                               <tr>
                                 <td width="21%">Choose file:</td>
                                 <td width="79%"><span class="col-md-4">
-                                  <input type="file" name="file" id="file" class="input-large" />
+                                  <input type="file" name="file" id="file" class="form-control" />
                                 </span></td>
                               </tr>
                               <tr>

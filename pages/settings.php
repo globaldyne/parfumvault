@@ -196,8 +196,7 @@ $(function() {
          <li><a href="#general"><span>General</span></a></li>
          <li><a href="#suppliers"><span>Suppliers</span></a></li>
          <li><a href="#categories"><span>Categories</span></a></li>
-         <li><a href="#profiles"><span>Profiles</span></a></li>
-      <li><a href="#print"><span>Printing</span></a></li>
+         <li><a href="#print"><span>Printing</span></a></li>
          <li><a href="#maintenance"><span>Maintenance</span></a></li>
         <li><a href="pages/about.php"><span>About</span></a></li>
      </ul>
@@ -234,7 +233,7 @@ $(function() {
 	 </div>
      <div id="suppliers">
        <form id="form" name="form" method="post" action="/?do=settings&update=suppliers#suppliers">
-      <table width="100%" border="0">
+      <table width="100%" border="0"  class="table table-striped table-sm">
               <tr>
                 <td colspan="7"><?php echo $msg; ?></td>
               </tr>
@@ -283,7 +282,7 @@ $(function() {
      </div>
      <div id="categories">
        <form id="form" name="form" method="post" action="/?do=settings&update=categories#categories">
-            <table width="100%" border="0">
+            <table width="100%" border="0" class="table table-striped table-sm">
               <tr>
                 <td colspan="8"><?php echo $msg; ?></td>
               </tr>
@@ -301,7 +300,7 @@ $(function() {
                 <td colspan="8">
                 <div class="card-body">
               <div>
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <table class="table table-bordered" width="100%" cellspacing="0">
                   <thead>
                     <tr class="noBorder">
                     </tr>
@@ -334,7 +333,7 @@ $(function() {
      
      <div id="profiles">
        <form id="form" name="form" method="post" action="/?do=settings&update=profiles#profiles">
-            <table width="100%" border="0">
+            <table width="100%" border="0" class="table table-striped table-sm" >
               <tr>
                 <td colspan="8"><?php echo $msg; ?></td>
               </tr>
@@ -352,7 +351,7 @@ $(function() {
                 <td colspan="8">
                 <div class="card-body">
               <div>
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <table class="table table-bordered" width="100%" cellspacing="0">
                   <thead>
                     <tr class="noBorder">
                     </tr>

@@ -1,3 +1,9 @@
+0.1.6 - ADD: DataTables
+		ADD: Search functionality
+		ADD: Bootstrap table pagination (old method removed)
+		DEL: Ingredients profile add/delete page - to protect pyramid view
+		ADD: Formula type (woody, fresh, etc)
+
 0.1.5 - FIX: Version check function
 		ADD: Backup / Restore DB
 		ADD: Display warning if missing formulas/ingredients

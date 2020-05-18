@@ -7,7 +7,7 @@ if($_POST['fname'] && $_POST['concentration'] && $_POST['quantity']){
 	$number = count($_POST['ingredient']); 
 	$fname = mysqli_real_escape_string($conn, $_POST['fname']);
 	$notes = mysqli_real_escape_string($conn, $_POST['notes']);
-
+	$profile = mysqli_real_escape_string($conn, $_POST['profile']);
 
 if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM formulas WHERE name = '$fname'"))){
 		$msg='<div class="alert alert-danger alert-dismissible">
@@ -28,7 +28,7 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM formulas WHERE name = '
 			$ingIDq = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$qin'"));
 			$sql = "INSERT INTO formulas(fid,name,ingredient,ingredient_id,concentration,quantity) VALUES('".base64_encode($_POST["fname"])."','$fname','".mysqli_real_escape_string($conn, $_POST["ingredient"][$i])."','$ingIDq[0]','".mysqli_real_escape_string($conn, $_POST["concentration"][$i])."','".mysqli_real_escape_string($conn, $_POST["quantity"][$i])."')";
 			 $fq = mysqli_query($conn, $sql);
-			 mysqli_query($conn, "INSERT INTO formulasMetaData (name,notes) VALUES ('$fname','$notes')");
+			 mysqli_query($conn, "INSERT INTO formulasMetaData (name,notes,profile) VALUES ('$fname','$notes', '$profile')");
 			 
 		}
 		if($fq){
@@ -78,6 +78,17 @@ $(document).ready(function(){
                                     <tr>
                                       <td>Formula name</td>
                                       <td colspan="4"><input name="fname" type="text" class="form-control" /></td>
+                                    </tr>
+                                    <tr>
+                                      <td>Profile:</td>
+                                      <td colspan="4">
+                                      <select name="profile" id="profile" class="form-control">
+                                        <option value="oriental">Oriental</option>
+                                        <option value="woody">Woody</option>
+                                        <option value="floral">Floral</option>
+                                        <option value="fresh">Fresh</option>
+                                      </select>
+                                      </td>
                                     </tr>
                                     <tr>
                                       <td>Notes:</td>

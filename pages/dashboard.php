@@ -1,5 +1,13 @@
 <div id="content-wrapper" class="d-flex flex-column">
 <?php require_once('pages/top.php'); ?>
+
+<link rel="stylesheet" href="../css/jquery-ui.css">
+<script src="../js/jquery-ui.js"></script>
+<script>
+$(function() {
+  $("#formulasprofile").tabs();
+});
+</script>
         <div class="container-fluid">
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="m-0 mb-4 text-primary">Dashboard</h1>
@@ -87,35 +95,23 @@
 				}elseif(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulas"))== 0){
 					echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> no formulas yet, click <a href="/?do=addFormula">here</a> to add.</div>';
 
-				}else{	
+				}else{
                 ?>
-                <table width="100%" border="0" cellspacing="0" class="table table-bordered">
-                  <thead>
-                    <tr>
-                      <th width="14%">Name</th>
-                      <th width="20%">Notes</th>
-                      <th width="23%">Created</th>
-                      <th width="21%">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  <?php 
-		
-			 		$formulas_n = mysqli_query($conn, "SELECT * FROM formulas GROUP BY name ORDER by name DESC");
-					while ($formula = mysqli_fetch_array($formulas_n)) {
-						echo'<tr>
-						  <td align="center"><a href="/?do=Formula&name='.$formula['name'].'">'.$formula['name'].'</a></td>';
-						  $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE name = '".$formula['name']."'"));
-						  echo '<td align="center"><a href="pages/getFormMeta.php?id='.$meta['id'].'" class="fas fa-comment-dots popup-link"></a></td>';
-						  echo '<td align="center">'.$meta['created'].'</td>';
-						  echo '<td align="center"><a> <a href="/?do=dashboard&action=delete&name='.$formula['name'].'" onclick="return confirm(\'Delete '.$formula['name'].' Formula?\');" class="fas fa-trash" rel="tipsy" title="Delete '.$formula['name'].'"></a></td>
-						</tr>';
-					  }
-					}
-				?>
-                    </tr>
-                  </tbody>
-                </table>
+                <div id="formulasprofile">
+     <ul>
+         <li><a href="#all"><span>All</span></a></li>
+         <li><a href="#oriental"><span>Oriental</span></a></li>
+         <li><a href="#woody"><span>Woody</span></a></li>
+         <li><a href="#floral"><span>Floral</span></a></li>
+         <li><a href="#fresh"><span>Fresh</span></a></li>
+
+     </ul>
+     <div id="all"><?php formulaProfile($dbhost,$dbuser,$dbpass,$dbname); ?></div>
+     <div id="oriental"><?php formulaProfile($dbhost,$dbuser,$dbpass,$dbname,'oriental'); ?></div>
+     <div id="woody"><?php formulaProfile($dbhost,$dbuser,$dbpass,$dbname,'woody'); ?></div>
+     <div id="floral"><?php formulaProfile($dbhost,$dbuser,$dbpass,$dbname,'floral'); ?></div>
+     <div id="fresh"><?php formulaProfile($dbhost,$dbuser,$dbpass,$dbname,'fresh'); ?></div>
+				<?php } ?>
               </div>
             </div>
           </div>

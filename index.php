@@ -9,6 +9,7 @@ require_once('./func/checkDupes.php');
 require_once('./func/checkIng.php');
 require_once('./func/getIngUsage.php');
 require_once('./func/checkVer.php');
+require_once('./func/formulaProfile.php');
 
 require('./inc/settings.php');
 
@@ -58,6 +59,9 @@ $sup_c = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM ingSuppliers"));
 
   <script src="js/bootstrap.min.js"></script>
   
+  <link rel="stylesheet" type="text/css" href="css/datatables.min.css"/>
+  <script type="text/javascript" src="js/datatables.min.js"></script>
+  
   <script src="js/magnific-popup.js"></script>
  
   <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -74,7 +78,7 @@ $sup_c = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM ingSuppliers"));
   <link href="css/vault.css" rel="stylesheet">
   
 <script type='text/javascript'>
-$(function() {
+$(document).ready(function() {
 	$('a[rel=tipsy]').tipsy();
 	
 	$('.popup-link').magnificPopup({
@@ -84,6 +88,14 @@ $(function() {
   		closeOnBgClick: 'false',
   		//closeBtnInside: 'true'
 	});
+	
+	
+    $('#tdData').DataTable({
+	    "paging":   true,
+		"info":   true,
+		"lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]]
+	});
+
 });  
 </script>
 </head>

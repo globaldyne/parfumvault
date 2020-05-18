@@ -79,3 +79,8 @@ a { text-decoration: none; }
     position: relative;
     display: inherit;
 }
+
+.form-inline, .form-inline label {
+    display: initial;
+}
+
