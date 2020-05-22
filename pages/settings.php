@@ -504,15 +504,23 @@ $(function() {
       <td width="87%">&nbsp;</td>
     </tr>
     <tr>
-      <td><a href="/pages/maintenance.php?do=IFRA" class="popup-link">Import IFRA Library</a></td>
-      <td><a href="https://ifrafragrance.org/safe-use/standards-guidance" target="_blank">IFRA web site</a></td>
+      <td><ul>
+        <li><a href="/pages/maintenance.php?do=IFRA" class="popup-link">Import IFRA Library</a></li>
+      </ul></td>
+      <td><ul>
+        <li><a href="https://ifrafragrance.org/safe-use/standards-guidance" target="_blank">IFRA web site</a></li>
+      </ul></td>
     </tr>
     <tr>
-      <td><a href="/pages/maintenance.php?do=backupDB">Backup DB</a></td>
+      <td><ul>
+        <li><a href="/pages/maintenance.php?do=backupDB">Backup DB</a></li>
+      </ul></td>
       <td>&nbsp;</td>
     </tr>
     <tr>
-      <td><a href="/pages/maintenance.php?do=restoreDB" class="popup-link">Restore DB</a></td>
+      <td><ul>
+        <li><a href="/pages/maintenance.php?do=restoreDB" class="popup-link">Restore DB</a></li>
+      </ul></td>
       <td>&nbsp;</td>
     </tr>
   </table>

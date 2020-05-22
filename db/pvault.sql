@@ -1,13 +1,7 @@
---
--- Database: `pvault`
---
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 
--- --------------------------------------------------------
 
---
--- Table structure for table `formulas`
---
-
+DROP TABLE IF EXISTS `formulas`;
 CREATE TABLE `formulas` (
   `id` int(11) NOT NULL,
   `fid` varchar(255) COLLATE utf8_bin DEFAULT NULL,
@@ -18,60 +12,87 @@ CREATE TABLE `formulas` (
   `quantity` varchar(10) COLLATE utf8_bin DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
--- --------------------------------------------------------
-
---
--- Table structure for table `formulasMetaData`
---
-
+DROP TABLE IF EXISTS `formulasMetaData`;
 CREATE TABLE `formulasMetaData` (
   `id` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
   `profile` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `sex` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `notes` text COLLATE utf8_bin DEFAULT NULL,
   `created` timestamp NOT NULL DEFAULT current_timestamp(),
   `lastUpdate` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
--- --------------------------------------------------------
+DROP TABLE IF EXISTS `IFRALibrary`;
+CREATE TABLE `IFRALibrary` (
+  `id` int(11) NOT NULL,
+  `ifra_key` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `amendment` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `prev_pub` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `last_pub` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `deadline_existing` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `deadline_new` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `cas` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `cas_comment` text COLLATE utf8_unicode_ci DEFAULT NULL,
+  `synonyms` text COLLATE utf8_unicode_ci DEFAULT NULL,
+  `formula` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `flavor_use` text COLLATE utf8_unicode_ci DEFAULT NULL,
+  `prohibited_notes` text COLLATE utf8_unicode_ci DEFAULT NULL,
+  `restricted_photo_notes` text COLLATE utf8_unicode_ci DEFAULT NULL,
+  `restricted_notes` text COLLATE utf8_unicode_ci DEFAULT NULL,
+  `specified_notes` text COLLATE utf8_unicode_ci DEFAULT NULL,
+  `type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `risk` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `contrib_others` text COLLATE utf8_unicode_ci DEFAULT NULL,
+  `contrib_others_notes` text COLLATE utf8_unicode_ci DEFAULT NULL,
+  `cat1` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `cat2` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `cat3` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `cat4` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `cat5A` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `cat5B` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `cat5C` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `cat5D` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `cat6` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `cat7A` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `cat7B` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `cat8` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `cat9` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `cat10A` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `cat10B` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `cat11A` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `cat11B` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `cat12` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
---
--- Table structure for table `ingCategory`
---
-
+DROP TABLE IF EXISTS `ingCategory`;
 CREATE TABLE `ingCategory` (
   `id` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
   `notes` text COLLATE utf8_bin DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
--- --------------------------------------------------------
+INSERT INTO `ingCategory` (`id`, `name`, `notes`) VALUES
+(1, 'Woody', 'Woody Notes'),
+(2, 'Floral', 'Floral notes'),
+(3, 'Amber', 'Amber, Ambergris, etc'),
+(4, 'Fixative', 'Fixative ingredients');
 
---
--- Table structure for table `ingProfiles`
---
-
+DROP TABLE IF EXISTS `ingProfiles`;
 CREATE TABLE `ingProfiles` (
   `id` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
   `notes` text COLLATE utf8_bin DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
---
--- Dumping data for table `ingProfiles`
---
-
 INSERT INTO `ingProfiles` (`id`, `name`, `notes`) VALUES
-(1, 'Base', 'Base Note'),
-(2, 'Heart', 'Heart Note'),
-(3, 'Top', 'Top Note');
+(1, 'Top', 'Top Note'),
+(2, 'Base', 'Base Note'),
+(4, 'Heart', 'Heart Note');
 
--- --------------------------------------------------------
-
---
--- Table structure for table `ingredients`
---
-
+DROP TABLE IF EXISTS `ingredients`;
 CREATE TABLE `ingredients` (
   `id` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
@@ -90,68 +111,41 @@ CREATE TABLE `ingredients` (
   `appearance` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `notes` text COLLATE utf8_bin DEFAULT NULL,
   `profile` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `ml` int(5) DEFAULT NULL
+  `ml` int(5) DEFAULT NULL,
+  `odor` varchar(255) COLLATE utf8_bin DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
--- --------------------------------------------------------
-
---
--- Table structure for table `ingStrength`
---
-
+DROP TABLE IF EXISTS `ingStrength`;
 CREATE TABLE `ingStrength` (
   `id` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
---
--- Dumping data for table `ingStrength`
---
-
 INSERT INTO `ingStrength` (`id`, `name`) VALUES
-(1, 'High'),
-(2, 'Medium'),
-(3, 'Low');
+(1, 'Medium'),
+(2, 'Low'),
+(3, 'High');
 
--- --------------------------------------------------------
-
---
--- Table structure for table `ingSuppliers`
---
-
+DROP TABLE IF EXISTS `ingSuppliers`;
 CREATE TABLE `ingSuppliers` (
   `id` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
   `notes` text COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
--- --------------------------------------------------------
-
---
--- Table structure for table `ingTypes`
---
-
+DROP TABLE IF EXISTS `ingTypes`;
 CREATE TABLE `ingTypes` (
   `id` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
---
--- Dumping data for table `ingTypes`
---
-
 INSERT INTO `ingTypes` (`id`, `name`) VALUES
-(1, 'EO'),
-(2, 'AC'),
-(3, 'Mixed Blend'),
-(4, 'Other');
+(1, 'AC'),
+(2, 'EO'),
+(3, 'Other/Uknown'),
+(4, 'Custom Blend');
 
--- --------------------------------------------------------
-
---
--- Table structure for table `settings`
---
-
+DROP TABLE IF EXISTS `settings`;
 CREATE TABLE `settings` (
   `id` int(11) NOT NULL,
   `logo` varchar(255) COLLATE utf8_bin DEFAULT NULL,
@@ -162,152 +156,88 @@ CREATE TABLE `settings` (
   `currency` varchar(40) COLLATE utf8_bin DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
---
--- Dumping data for table `settings`
---
-
 INSERT INTO `settings` (`id`, `logo`, `label_printer_addr`, `label_printer_model`, `label_printer_size`, `label_printer_font_size`, `currency`) VALUES
-(1, NULL, '', '', '12', 80, '&pound;');
+(1, NULL, '', NULL, '12', 70, NULL);
 
--- --------------------------------------------------------
-
---
--- Table structure for table `users`
---
-
+DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `username` varchar(255) COLLATE utf8_bin NOT NULL,
   `password` varchar(255) COLLATE utf8_bin NOT NULL,
-  `fullName` varchar(255) COLLATE utf8_bin NOT NULL
+  `fullName` varchar(255) COLLATE utf8_bin NOT NULL,
+  `email` varchar(255) COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin ROW_FORMAT=COMPACT;
 
---
--- Indexes for dumped tables
---
 
---
--- Indexes for table `formulas`
---
 ALTER TABLE `formulas`
   ADD PRIMARY KEY (`id`);
 
---
--- Indexes for table `formulasMetaData`
---
 ALTER TABLE `formulasMetaData`
   ADD PRIMARY KEY (`id`);
 
---
--- Indexes for table `ingCategory`
---
+ALTER TABLE `IFRALibrary`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `id` (`id`),
+  ADD KEY `id_2` (`id`);
+
 ALTER TABLE `ingCategory`
   ADD PRIMARY KEY (`id`);
 
---
--- Indexes for table `ingProfiles`
---
 ALTER TABLE `ingProfiles`
   ADD UNIQUE KEY `id` (`id`);
 
---
--- Indexes for table `ingredients`
---
 ALTER TABLE `ingredients`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `id` (`id`);
 
---
--- Indexes for table `ingStrength`
---
 ALTER TABLE `ingStrength`
   ADD PRIMARY KEY (`id`);
 
---
--- Indexes for table `ingSuppliers`
---
 ALTER TABLE `ingSuppliers`
   ADD PRIMARY KEY (`id`);
 
---
--- Indexes for table `ingTypes`
---
 ALTER TABLE `ingTypes`
   ADD PRIMARY KEY (`id`);
 
---
--- Indexes for table `settings`
---
 ALTER TABLE `settings`
   ADD PRIMARY KEY (`id`);
 
---
--- Indexes for table `users`
---
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`);
 
---
--- AUTO_INCREMENT for dumped tables
---
 
---
--- AUTO_INCREMENT for table `formulas`
---
+
 ALTER TABLE `formulas`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
---
--- AUTO_INCREMENT for table `formulasMetaData`
---
 ALTER TABLE `formulasMetaData`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
---
--- AUTO_INCREMENT for table `ingCategory`
---
+ALTER TABLE `IFRALibrary`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
 ALTER TABLE `ingCategory`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
---
--- AUTO_INCREMENT for table `ingProfiles`
---
 ALTER TABLE `ingProfiles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
---
--- AUTO_INCREMENT for table `ingredients`
---
 ALTER TABLE `ingredients`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
---
--- AUTO_INCREMENT for table `ingStrength`
---
 ALTER TABLE `ingStrength`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
---
--- AUTO_INCREMENT for table `ingSuppliers`
---
 ALTER TABLE `ingSuppliers`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
---
--- AUTO_INCREMENT for table `ingTypes`
---
 ALTER TABLE `ingTypes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
---
--- AUTO_INCREMENT for table `settings`
---
 ALTER TABLE `settings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
---
--- AUTO_INCREMENT for table `users`
---
 ALTER TABLE `users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-COMMIT;
+
+

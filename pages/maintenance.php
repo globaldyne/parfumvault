@@ -22,7 +22,12 @@ if($_GET['do'] == 'backupDB'){
 		passthru($cmd,$e);
 				
 		if(!$e){
-			header("Location: /pages/maintenance.php?do=restoreDB&err=0");
+			//header("Location: /pages/maintenance.php?do=restoreDB&err=0");
+			if(isset($_SESSION['parfumvault'])) {
+				unset($_SESSION['parfumvault']);
+			}
+			session_unset();
+			header('Location: /login.php');
 		}else{
 			header("Location: /pages/maintenance.php?do=restoreDB&err=1");
 		}
@@ -34,45 +39,44 @@ if($_GET['do'] == 'backupDB'){
 }elseif(isset($_POST['import_ifra'])){
 	$filename=$_FILES["file"]["tmp_name"];  
     $file_ext=strtolower(end(explode('.',$_FILES['file']['name'])));
-
-    $ext = explode(",","xls,xlsx");
+	$all_ext = "xls,xlsx";
+    $ext = explode(",",$all_ext);
 
     if(in_array($file_ext,$ext)=== false){
-		 echo '<div class="alert alert-danger alert-dismissible"><strong>File upload error: </strong>Extension not allowed, please choose a '.$ext.' file.</div>';
+		 echo '<div class="alert alert-danger alert-dismissible"><strong>File upload error: </strong>Extension not allowed, please choose a '.$all_ext.' file.</div>';
 	}else{
-		
-	if($_FILES["file"]["size"] > 0){
-	require_once('../func/SimpleXLSX.php');
-   	mysqli_query($conn, "TRUNCATE IFRALibrary");
-
-	$xlsx = SimpleXLSX::parse($filename);
-
-	try {
-       $link = new PDO( "mysql:host=$dbhost;dbname=$dbname", $dbuser, $dbpass);
-       $link->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    }
-    catch(PDOException $e)
-    {
-        echo $sql . "<br>" . $e->getMessage();
-    }
-
-	$fields = 'ifra_key,image,amendment,prev_pub,last_pub,deadline_existing ,deadline_new,name,cas,cas_comment,synonyms,formula,flavor_use,prohibited_notes,restricted_photo_notes,restricted_notes,specified_notes,type,risk,contrib_others,contrib_others_notes,cat1,cat2,cat3,cat4,cat5A ,cat5B,cat5C,cat5D,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12';
-	$values = substr(str_repeat('?,', count(explode(',' , $fields))), 0 , strlen($x) - 1);
-	$stmt = $link->prepare( "INSERT INTO IFRALibrary ($fields) VALUES ($values)");
-	$cols = $xlsx->dimension()[0];//$dim[0];
-		foreach ( $xlsx->rows() as $k => $r ) {
-			for ( $i = 0; $i < $cols; $i ++ ) {
-				$l = $i+1;
-				$stmt->bindValue( $l, $r[ $i]);
+		if($_FILES["file"]["size"] > 0){
+		require_once('../func/SimpleXLSX.php');
+		mysqli_query($conn, "TRUNCATE IFRALibrary");
+	
+		$xlsx = SimpleXLSX::parse($filename);
+	
+		try {
+		   $link = new PDO( "mysql:host=$dbhost;dbname=$dbname", $dbuser, $dbpass);
+		   $link->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		}
+		catch(PDOException $e)
+		{
+			echo $sql . "<br>" . $e->getMessage();
+		}
+	
+		$fields = 'ifra_key,image,amendment,prev_pub,last_pub,deadline_existing ,deadline_new,name,cas,cas_comment,synonyms,formula,flavor_use,prohibited_notes,restricted_photo_notes,restricted_notes,specified_notes,type,risk,contrib_others,contrib_others_notes,cat1,cat2,cat3,cat4,cat5A ,cat5B,cat5C,cat5D,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12';
+		$values = substr(str_repeat('?,', count(explode(',' , $fields))), 0 , strlen($x) - 1);
+		$stmt = $link->prepare( "INSERT INTO IFRALibrary ($fields) VALUES ($values)");
+		$cols = $xlsx->dimension()[0];//$dim[0];
+			foreach ( $xlsx->rows() as $k => $r ) {
+				for ( $i = 0; $i < $cols; $i ++ ) {
+					$l = $i+1;
+					$stmt->bindValue( $l, $r[ $i]);
+				}
+				try {
+					$stmt->execute();
+					$err = '0';
+				} catch (Exception $e) {
+					$err = '1';
+				}
 			}
-			try {
-		    	$stmt->execute();
-				$err = '0';
-			} catch (Exception $e) {
-				$err = '1';
-			}
-   		}
-		header("Location: /pages/maintenance.php?do=IFRA&err=$err");
+			header("Location: /pages/maintenance.php?do=IFRA&err=$err");
 	}
 }
 	

@@ -2,7 +2,7 @@
 define('pvault_panel', TRUE);
 
 if(file_exists('./inc/config.php') == FALSE){
-	
+
 	require 'install.php';
 	
 }else{

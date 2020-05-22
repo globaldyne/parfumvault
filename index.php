@@ -1,7 +1,10 @@
 <?php
 
 require('./inc/sec.php');
-
+if(file_exists('./inc/config.php') == FALSE){
+	session_destroy();
+	header('Location: /login.php');
+}
 require_once('./inc/config.php');
 require_once('./inc/product.php');
 require_once('./inc/opendb.php');
