@@ -1,3 +1,5 @@
+<?php if (!defined('pvault_panel')){ die('Not Found');}  ?>
+
 <div class="container-fluid">
 <?php require_once('pages/top.php'); ?>
 <?php 
@@ -21,6 +23,7 @@ if($_POST['name']){
 	$appearance = mysqli_real_escape_string($conn, $_POST["appearance"]);
 	$ml = mysqli_real_escape_string($conn, $_POST["ml"]);
 	$notes = mysqli_real_escape_string($conn, $_POST["notes"]);
+	$odor = mysqli_real_escape_string($conn, $_POST["odor"]);
 
 	if(!empty($_FILES['SDS']['name'])){
       $file_name = $_FILES['SDS']['name'];
@@ -28,18 +31,18 @@ if($_POST['name']){
       $file_tmp =  $_FILES['SDS']['tmp_name'];
       $file_type = $_FILES['SDS']['type'];
       $file_ext=strtolower(end(explode('.',$_FILES['SDS']['name'])));
-      
+      if(empty($err)==true){
+		if (!file_exists("../$SDS_path")) {
+    	 mkdir("../$SDS_path", 0740, true);
+	  	}
+	  }
       $ext = explode(",",$allowed_ext);
 
  	  if(in_array($file_ext,$ext)=== false){
-         $msgF.="File upload error: Extension not allowed, please choose a pdf, doc or docx file.";
-      }
-      
-      if($file_size > $max_filesize){
-         $msgF.='File upload error: File size must be '.fileSize($max_filesize).' Max';
-      }
-      
-      if(empty($msgF)==true){
+		 $msg.='<div class="alert alert-danger alert-dismissible"><strong>File upload error: </strong>Extension not allowed, please choose a '.$allowed_ext.' file.</div>';
+      }elseif($file_size > $max_filesize){
+		 $msg.='<div class="alert alert-danger alert-dismissible"><strong>File upload error: </strong>File size must not exceed '.formatBytes($max_filesize).'</div>';
+      }else{
          move_uploaded_file($file_tmp,"uploads/SDS/".base64_encode($file_name));
 		 $SDSF = "uploads/SDS/".base64_encode($file_name);
       }
@@ -52,7 +55,7 @@ if($_POST['name']){
 		</div>';
 	}else{
 		
-		if(mysqli_query($conn, "INSERT INTO ingredients (name, cas, type, strength, SDS, IFRA, category, supplier, supplier_link, profile, price, tenacity, chemical_name, flash_point, appearance, notes, ml) VALUES ('$name', '$cas', '$type', '$strength', '$SDSF', '$IFRA', '$category', '$supplier', '$supplier_link', '$profile', '$price', '$tenacity', '$chemical_name', '$flash_point', '$appearance', '$notes', '$ml')")){
+		if(mysqli_query($conn, "INSERT INTO ingredients (name, cas, type, strength, SDS, IFRA, category, supplier, supplier_link, profile, price, tenacity, chemical_name, flash_point, appearance, notes, ml, odor) VALUES ('$name', '$cas', '$type', '$strength', '$SDSF', '$IFRA', '$category', '$supplier', '$supplier_link', '$profile', '$price', '$tenacity', '$chemical_name', '$flash_point', '$appearance', '$notes', '$ml', '$odor')")){
 			$msg.='<div class="alert alert-success alert-dismissible">
 			<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
   			Ingredient <strong>'.$name.'</strong> added!
@@ -78,7 +81,7 @@ $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles");
 ?>
 
           <!-- Page Heading -->
-          <h1 class="h3 mb-4 text-gray-800">Add New Ingredient</h1>
+          <h1 class="h1 mb-4 text-gray-800"><a href="/?do=ingredients"> New Ingredient</a></h1>
 
         </div>
         <!-- /.container-fluid -->
@@ -210,6 +213,11 @@ $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles");
                                 <td>&nbsp;</td>
                               </tr>
                               <tr>
+                                <td valign="top">Odor:</td>
+                                <td><input name="odor" type="text" class="form-control" id="odor" /></td>
+                                <td>&nbsp;</td>
+                              </tr>
+                              <tr>
                                 <td valign="top">Notes:</td>
                                 <td><textarea name="notes" id="notes" cols="45" rows="5" class="form-control"></textarea></td>
                                 <td>&nbsp;</td>
@@ -217,10 +225,10 @@ $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles");
                               <tr>
                                 <td>SDS Document:</td>
                                 <td><input type="file" class="form-control" name="SDS" id="SDS"></td>
-                                <td><a href="#" class="fas fa-question-circle" rel="tipsy" title="<?php echo 'Allowed filetypes: '.$allowed_ext.' Max file size: '.sizeFormat($max_filesize); ?>"></a></td>
+                                <td><a href="#" class="fas fa-question-circle" rel="tipsy" title="<?php echo 'Allowed filetypes: '.$allowed_ext.' Max file size: '.formatBytes($max_filesize); ?>"></a></td>
                               </tr>
                             </table>
-                            <p>&nbsp;                            </p>
+                            <p>&nbsp;</p>
                             <p>
                               <input type="submit" name="submit" id="submit" class="btn btn-info" value="Submit" />
                             </p>

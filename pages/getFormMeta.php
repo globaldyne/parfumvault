@@ -1,4 +1,6 @@
 <?php
+require('../inc/sec.php');
+
 require_once('../inc/config.php');
 require_once('../inc/opendb.php');
 require_once('../inc/settings.php');
@@ -32,7 +34,7 @@ if($_GET['id']){
 
 <table class="table table-bordered" id="formula_metadata" cellspacing="0">
   <tr>
-    <td colspan="2"><h1><?php echo $info['name'];?></h1></td>
+    <td colspan="2"><h1 class="badge-primary"><?php echo $info['name'];?></h1></td>
   </tr>
   <tr>
     <td width="20%">Created:</td>
@@ -41,6 +43,10 @@ if($_GET['id']){
   <tr>
     <td>Profile:</td>
     <td><a href="#" id="profile" data-type="select" data-pk="profile" data-title="<?php echo $info['profile'];?>"></a></td>
+  </tr>
+  <tr>
+    <td>Sex:</td>
+    <td><a href="#" id="sex" data-type="select" data-pk="sex" data-title="<?php echo $info['sex'];?>"></a></td>
   </tr>
   <tr>
     <td>Notes:</td>
@@ -84,5 +90,14 @@ $(document).ready(function(){
           ]
     });
   
+    $('#sex').editable({
+	value: "<?php echo $info['sex'];?>",
+  	url: "/pages/update_data.php?formulaMeta=<?php echo $info['name']; ?>",
+    source: [
+             {value: 'unisex', text: 'Unisex'},
+             {value: 'men', text: 'Men'},
+             {value: 'women', text: 'Women'},
+          ]
+    });
   })
 </script>

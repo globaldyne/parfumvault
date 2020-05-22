@@ -1,3 +1,4 @@
+<?php if (!defined('pvault_panel')){ die('Not Found');}?>
 <div id="content-wrapper" class="d-flex flex-column">
 <?php require_once('pages/top.php'); ?>
 <div class="container-fluid">
@@ -20,6 +21,7 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM formulas WHERE name = '
   		<strong>Error: </strong> same ingredients!
 		</div>';
 	}else{
+		mysqli_query($conn, "INSERT INTO formulasMetaData (name,notes,profile) VALUES ('$fname','$notes', '$profile')");
 
 	if($number > 0){
 		for($i=0; $i<$number; $i++){
@@ -28,16 +30,16 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM formulas WHERE name = '
 			$ingIDq = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$qin'"));
 			$sql = "INSERT INTO formulas(fid,name,ingredient,ingredient_id,concentration,quantity) VALUES('".base64_encode($_POST["fname"])."','$fname','".mysqli_real_escape_string($conn, $_POST["ingredient"][$i])."','$ingIDq[0]','".mysqli_real_escape_string($conn, $_POST["concentration"][$i])."','".mysqli_real_escape_string($conn, $_POST["quantity"][$i])."')";
 			 $fq = mysqli_query($conn, $sql);
-			 mysqli_query($conn, "INSERT INTO formulasMetaData (name,notes,profile) VALUES ('$fname','$notes', '$profile')");
 			 
 		}
 		if($fq){
-			header("Location: /?do=Formula&name=$fname");
+			$msg='<div class="alert alert-success alert-dismissible">
+				<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
+  				<strong><a href="/?do=Formula&name='.$fname.'">'.$fname.'</a></strong> added!</div>';
 		}else{
 			echo '<div class="alert alert-danger alert-dismissible">
 				<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-				<strong>Error:</strong> '.mysqli_error($conn).'
-				</div>';
+				<strong>Error:</strong> '.mysqli_error($conn).'</div>';
 		}  
 	} 
 }

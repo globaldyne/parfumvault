@@ -84,3 +84,12 @@ a { text-decoration: none; }
     display: initial;
 }
 
+.bg-login-image {
+  background: url("https://www.johnbelekios.com/wp-content/uploads/2017/04/JB.png");
+  background-position: center;
+  background-size: cover;
+}
+
+.vault-top {
+    float: right;
+}

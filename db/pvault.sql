@@ -179,7 +179,7 @@ CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `username` varchar(255) COLLATE utf8_bin NOT NULL,
   `password` varchar(255) COLLATE utf8_bin NOT NULL,
-  `Name` varchar(255) COLLATE utf8_bin NOT NULL
+  `fullName` varchar(255) COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin ROW_FORMAT=COMPACT;
 
 --

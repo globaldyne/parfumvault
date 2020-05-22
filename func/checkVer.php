@@ -1,7 +1,7 @@
+<?php if (!defined('pvault_panel')){ die('Not Found');}?>
 <?php
 
 function checkVer($ver) {
-
 	$githubVer = 'https://raw.githubusercontent.com/globaldyne/parfumvault/master/VERSION.md';
 	$changeLog = 'https://raw.githubusercontent.com/globaldyne/parfumvault/master/CHANGELOG.md';
 	$gitHubRep = 'https://github.com/globaldyne/parfumvault';

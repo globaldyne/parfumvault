@@ -1,3 +1,13 @@
+2.0 - ADD: IFRA Lirary support
+		ADD: IFRA insights
+		ADD: IFRA lookup first then local db
+		ADD: Ingredient odor
+		ADD: Formula sex (men,women,unisex)
+		ADD: Authentication
+		ADD: User management
+		FIX: SDS Upload function
+		FIX: MetaData duplicate entries
+
 0.1.7 - FIX: Settings broken view
 		FIX: MySql schema
 

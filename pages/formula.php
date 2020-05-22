@@ -1,4 +1,7 @@
+<?php if (!defined('pvault_panel')){ die('Not Found');}  ?>
+
 <?php
+
 $f_name =  mysqli_real_escape_string($conn, $_GET['name']);
 
 if($_GET['action'] == 'printLabel' && $_GET['name']){
@@ -131,7 +134,7 @@ $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg F
                     </tr>
                     <tr>
                       <th width="22%">Ingredient</th>
-                      <th width="11%">Concentration %</th>
+                      <th width="11%">Strength %</th>
                       <th width="15%">Quantity</th>
                       <th width="15%">Concentration*</th>
                       <th width="15%">Cost <a href="#" class="fas fa-question-circle" rel="tipsy" title="Cost per used quantity, if ingredient concentration is not given then assuming 10ml"></a></th>
@@ -142,12 +145,31 @@ $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg F
                   <?php while ($formula = mysqli_fetch_array($formula_q)) {
 					  echo'
                     <tr>
-                      <td align="center"><a href="/?do=editIngredient&id='.$formula['ingredient'].'">'.$formula['ingredient'].'</a> '.checkIng($formula['ingredient'],$dbhost, $dbuser, $dbpass, $dbname).'</td>
+                      <td align="center"><a href="/pages/editIngredient.php?id='.$formula['ingredient'].'" class="popup-link">'.$formula['ingredient'].'</a> '.checkIng($formula['ingredient'],$dbhost, $dbuser, $dbpass, $dbname).'</td>
                       <td data-name="concentration" class="concentration" data-type="text" align="center" data-pk="'.$formula['ingredient'].'">'.$formula['concentration'].'</td>';
-					  $ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT IFRA,price,ml,profile FROM ingredients WHERE name = '$formula[ingredient]'"));
+					  //TODO: Search by cas as well
+					  if($limit = searchIFRA(null,$formula['ingredient'],$dbhost,$dbuser,$dbpass,$dbname)){
+
+						//$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT price,ml,profile FROM ingredients WHERE name = '$formula[ingredient]'"));
+
+					  }//else{
+						  
+					 // 	$limit_local = mysqli_fetch_array(mysqli_query($conn, "SELECT IFRA,price,ml,profile FROM ingredients WHERE name = '$formula[ingredient]'"));
+					  
+					  //}
+					   $ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT IFRA,price,ml,profile FROM ingredients WHERE name = '$formula[ingredient]'"));
+				$limit_local = $ing_q;
 					  $conc_p = number_format($formula['quantity']/$mg['total_mg'] * 100, 2);
-					  if($ing_q['IFRA'] != null){
-					  	if($ing_q['IFRA'] < $conc_p){
+					  
+					  if($limit != null){
+						 if($limit < $conc_p){
+							$IFRA_WARN = 'class="alert-danger"';
+					  	}else{
+							$IFRA_WARN = 'class="alert-success"';
+						}
+					  }else
+					  if($limit_local['IFRA'] != null){
+					  	if($limit_local['IFRA'] < $conc_p){
 							$IFRA_WARN = 'class="alert-danger"';
 					  	}else{
 							$IFRA_WARN = 'class="alert-success"';

@@ -1,1 +1,0 @@
-Will store the logo file if uploaded

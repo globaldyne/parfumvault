@@ -1,3 +1,5 @@
+<?php if (!defined('pvault_panel')){ die('Not Found');}?>
+
 <div id="content-wrapper" class="d-flex flex-column">
 <?php require_once('pages/top.php'); ?>
 <?php 
@@ -27,29 +29,42 @@ if(($_POST) && $_GET['update'] == 'printer'){
       $file_tmp = $_FILES['logo']['tmp_name'];
       $file_type = $_FILES['logo']['type'];
       $file_ext = strtolower(end(explode('.',$_FILES['logo']['name'])));
-
-      $expensions = array("png","jpg","jpeg");
-     
-      if(in_array($file_ext,$expensions)=== false){
-         $err = "File upload error: Extension not allowed, please choose a png, jpg or jpeg file.";
-      }
-     
+	  
       if(empty($err)==true){
+		  if (!file_exists('uploads/logo/')) {
+    		mkdir('uploads/logo/', 0740, true);
+	  	}
+	  }
+	  $ext = explode(', ', $allowed_ext);
+
+	  if(in_array($file_ext,$ext)=== false){
+		 $msg.='<div class="alert alert-danger alert-dismissible"><strong>File upload error: </strong>Extension not allowed, please choose a '.$allowed_ext.' file.</div>';
+      }else{
+		  
          move_uploaded_file($file_tmp,"uploads/logo/".base64_encode($file_name));
 		 $logo = "uploads/logo/".base64_encode($file_name);
 		 if(mysqli_query($conn, "UPDATE settings SET logo='$logo'")){
-			$msg = '<div class="alert alert-success alert-dismissible">
-		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-  		Logo updated!
-		</div>';
+			$msg.= '<div class="alert alert-success alert-dismissible">
+		    <a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
+			Logo updated!</div>';
 		 }else{
-			$msg = '<div class="alert alert-danger alert-dismissible">
-		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-  		Error updating logo '.$err.'
-		</div>';
+			$msg.= '<div class="alert alert-danger alert-dismissible">
+			<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
+  			Error updating logo '.$err.'</div>';
 		 }
-
       }
+//Update Admin password
+}elseif($_POST['admPass']){
+	if(mysqli_query($conn, "UPDATE users SET password=PASSWORD('$_POST[admPass]') WHERE username = 'admin'")){
+			$msg.= '<div class="alert alert-success alert-dismissible">
+		    <a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
+			Password updated!</div>';
+		 }else{
+			$msg.= '<div class="alert alert-danger alert-dismissible">
+			<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
+  			Error updating password '.$err.'</div>';
+		 }
+	
 //ADD SUPPLIERS
 }elseif($_POST['supplier'] && $_GET['update'] == 'suppliers'){
 	$sup = mysqli_real_escape_string($conn, $_POST['supplier']);
@@ -93,28 +108,7 @@ if(($_POST) && $_GET['update'] == 'printer'){
   		Error adding category
 		</div>';
 	}
-//ADD PROFILE
-}elseif($_POST['profile'] && $_GET['update'] == 'profiles'){
-	$profile = mysqli_real_escape_string($conn, $_POST['profile']);
-	$notes = mysqli_real_escape_string($conn, $_POST['prof_notes']);
-	
-	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingProfiles WHERE name = '$profile'"))){
-		$msg='<div class="alert alert-danger alert-dismissible">
-		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-  		<strong>Error: </strong>'.$profile.' already exists!
-		</div>';
-	}elseif(mysqli_query($conn, "INSERT INTO ingProfiles (name,notes) VALUES ('$profile', '$notes')")){
-		
-		$msg = '<div class="alert alert-success alert-dismissible">
-		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-  		Profile added!
-		</div>';
-	}else{
-		$msg = '<div class="alert alert-danger alert-dismissible">
-		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-  		Error adding profile
-		</div>';
-	}	
+
 
 }elseif($_POST['currency'] && $_GET['update'] == 'general'){
 	$currency = utf8_encode(htmlentities($_POST['currency']));
@@ -130,7 +124,36 @@ if(($_POST) && $_GET['update'] == 'printer'){
   		Error updating currency'.mysqli_error($conn).'
 		</div>';
 	}	
+//USERS
+}elseif($_GET['update'] == 'users' && $_POST['username'] && $_POST['password']){
+	$username = mysqli_real_escape_string($conn, $_POST['username']);
+	$password = mysqli_real_escape_string($conn, $_POST['password']);
+	$fullName = mysqli_real_escape_string($conn, $_POST['fullName']);
+	$email = mysqli_real_escape_string($conn, $_POST['email']);
+	if (strlen($password) < '5') {
+		$msg='<div class="alert alert-danger alert-dismissible">
+		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
+  		<strong>Error: </strong>Password must be at least 5 chars long!</div>';
+	}elseif(mysqli_num_rows(mysqli_query($conn, "SELECT username FROM users WHERE username = '$username' OR email = '$email' "))){
+		$msg='<div class="alert alert-danger alert-dismissible">
+		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
+  		<strong>Error: </strong>'.$username.' already exists!
+		</div>';
+	}elseif(mysqli_query($conn, "INSERT INTO users (username,password,fullName,email) VALUES ('$username', PASSWORD('$password'), '$fullName', '$email')")){
+		
+		$msg = '<div class="alert alert-success alert-dismissible">
+		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
+  		User added!
+		</div>';
+	}else{
+		$msg = '<div class="alert alert-danger alert-dismissible">
+		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
+  		Error adding user. ('.mysqli_error($conn).')
+		</div>';
+	}
+	
 
+	
 }elseif($_GET['action'] == 'delete' && $_GET['sup_id']){
 	$sup_id = mysqli_real_escape_string($conn, $_GET['sup_id']);
 	if(mysqli_query($conn, "DELETE FROM ingSuppliers WHERE id = '$sup_id'")){
@@ -159,34 +182,39 @@ if(($_POST) && $_GET['update'] == 'printer'){
   		Error deleting category.
 		</div>';
 	}
-}elseif($_GET['action'] == 'delete' && $_GET['prof_id']){
-	$prof_id = mysqli_real_escape_string($conn, $_GET['prof_id']);
-	if(mysqli_query($conn, "DELETE FROM ingProfiles WHERE id = '$prof_id'")){
-		
+
+}elseif($_GET['action'] == 'delete' && $_GET['user_id']){
+	$user_id = mysqli_real_escape_string($conn, $_GET['user_id']);
+	if(mysqli_query($conn, "DELETE FROM users WHERE id = '$user_id'")){
 		$msg = '<div class="alert alert-success alert-dismissible">
-		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-  		Profile deleted!
-		</div>';
+		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>User deleted!</div>';
 	}else{
 		$msg = '<div class="alert alert-danger alert-dismissible">
-		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-  		Error deleting profile.
-		</div>';
+		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error deleting user.</div>';
 	}
+
+
+
 }												   
  
 $cat_q = mysqli_query($conn, "SELECT * FROM ingCategory ORDER BY name ASC");
 $sup_q = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
-$prof_q = mysqli_query($conn, "SELECT * FROM ingProfiles ORDER BY name ASC");
+$users_q = mysqli_query($conn, "SELECT * FROM users ORDER BY username ASC");
+
 require('./inc/settings.php');
 
 ?>
-<link rel="stylesheet" href="../css/jquery-ui.css">
-<script src="../js/jquery-ui.js"></script>
 <script>
 $(function() {
   $("#settings").tabs();
+  $("#username").val('');
+  $("#password").val('');
+  $("#fname").val('');
+  $("#email").val('');
+
 });
+
+
 </script>
 <div class="container-fluid">
 
@@ -197,6 +225,7 @@ $(function() {
          <li><a href="#suppliers"><span>Suppliers</span></a></li>
          <li><a href="#categories"><span>Categories</span></a></li>
          <li><a href="#print"><span>Printing</span></a></li>
+         <li><a href="#users"><span>Users</span></a></li>
          <li><a href="#maintenance"><span>Maintenance</span></a></li>
         <li><a href="pages/about.php"><span>About</span></a></li>
      </ul>
@@ -204,29 +233,26 @@ $(function() {
      <form id="form" name="form" method="post" enctype="multipart/form-data" action="/?do=settings&update=general#general">
      <table width="100%" border="0">
         <tr>
-          <td colspan="4"><?php echo $msg; ?></td>
+          <td colspan="3"><?php echo $msg; ?></td>
           </tr>
         <tr>
-          <td width="6%">Logo:</td>
-          <td width="15%"><input type="file" class="form-control" name="logo" id="logo" /></td>
-          <td width="1%">&nbsp;</td>
-          <td width="78%">&nbsp;</td>
+          <td width="8%">Logo:</td>
+          <td width="28%"><input type="file" class="form-control" name="logo" id="logo" /></td>
+          <td width="64%">&nbsp;</td>
           </tr>
         <tr>
           <td>Currency:</td>
           <td><input name="currency" type="text" class="form-control" id="currency" value="<?php echo utf8_encode($settings['currency']);?>"/></td>
           <td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
           <td>&nbsp;</td>
           </tr>
         <tr>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-        </tr>
-        <tr>
           <td><input type="submit" name="button" id="button" value="Submit" class="btn btn-info"/></td>
-          <td colspan="3">&nbsp;</td>
+          <td colspan="2">&nbsp;</td>
           </tr>
       </table>
      </form>
@@ -264,8 +290,8 @@ $(function() {
                   <?php while ($sup = mysqli_fetch_array($sup_q)) {
 					  echo'
                     <tr>
-                      <td data-name="sname" class="sname" data-type="text" align="center" data-pk="'.$sup['id'].'"><a href="#">'.$sup['name'].'</a></td>
-					  <td data-name="snotes" class="snotes" data-type="text" align="center" data-pk="'.$sup['id'].'"><a href="#">'.$sup['notes'].'</a></td>
+                      <td data-name="name" class="name" data-type="text" align="center" data-pk="'.$sup['id'].'"><a href="#">'.$sup['name'].'</a></td>
+					  <td data-name="notes" class="notes" data-type="text" align="center" data-pk="'.$sup['id'].'"><a href="#">'.$sup['notes'].'</a></td>
                       <td align="center"><a href="/?do=settings&action=delete&sup_id='.$sup['id'].'#suppliers" onclick="return confirm(\'Delete supplier '.$sup['name'].'?\');" class="fas fa-trash"></a></td>
 					</tr>';
 				  		}
@@ -314,8 +340,8 @@ $(function() {
                   <?php while ($cat = mysqli_fetch_array($cat_q)) {
 					  echo'
                     <tr>
-                      <td data-name="cname" class="cname" data-type="text" align="center" data-pk="'.$cat['id'].'"><a href="#">'.$cat['name'].'</a></td>
-					  <td width="60%" data-name="cnotes" class="cnotes" data-type="text" align="left" data-pk="'.$cat['id'].'"align="left"><a href="#">'.wordwrap($cat['notes'], 150, "<br />\n").'</a></td>
+                      <td data-name="name" class="name" data-type="text" align="center" data-pk="'.$cat['id'].'"><a href="#">'.$cat['name'].'</a></td>
+					  <td width="60%" data-name="notes" class="notes" data-type="text" align="left" data-pk="'.$cat['id'].'"align="left"><a href="#">'.wordwrap($cat['notes'], 150, "<br />\n").'</a></td>
                       <td align="center"><a href="/?do=settings&action=delete&cat_id='.$cat['id'].'#categories" onclick="return confirm(\'Delete category '.$cat['name'].'?\');" class="fas fa-trash"></a></td>
 					</tr>';
 				  		}
@@ -419,11 +445,67 @@ $(function() {
       </form>
 </div>
 
+     <div id="users">
+       <form action="/?do=settings&update=users#users" method="post" enctype="multipart/form-data" name="form" id="form">
+       <table width="100%" border="0">
+  <tr>
+    <td width="16%"><input name="username" placeholder="Username" type="text" class="form-control" id="username" /></td>
+    <td width="1%">&nbsp;</td>
+    <td width="16%"><input name="password" placeholder="Password" type="password" class="form-control" id="password" /></td>
+    <td width="1%">&nbsp;</td>
+    <td width="16%"><input name="fullName" placeholder="Full Name" type="text" class="form-control" id="Full Name" /></td>
+    <td width="1%">&nbsp;</td>
+    <td width="16%"><input name="email" placeholder="Email" type="text" class="form-control" id="email" /></td>
+    <td width="1%">&nbsp;</td>
+    <td width="16%"><input type="submit" name="add_user" id="add_user" value="Add" class="btn btn-info" /></td>
+  </tr>
+  <tr>
+    <td colspan="9">&nbsp;</td>
+    </tr>
+  <tr>
+    <td colspan="9"><?php echo $msg; ?></td>
+    </tr>
+</table>
+
+              <table class="table table-bordered" id="tdData" width="100%" cellspacing="0">
+                  <thead>
+                    <tr class="noBorder">
+                    </tr>
+                    <tr>
+                      <th>Username</th>
+                      <th>Full Name</th>
+                      <th>Email</th>
+                      <th>Actions</th>
+                    </tr>
+                </thead>
+                  <tbody id="users">
+                  <?php while ($users = mysqli_fetch_array($users_q)) {
+					  echo'
+                    <tr>
+					  <td align="center">'.$users['username'].'</td>
+					  <td align="center">'.$users['fullName'].'</td>
+					  <td align="center">'.$users['email'].'</td>
+
+                      <td align="center"><a href="pages/editUser.php?id='.$users['id'].'" class="fas fa-edit popup-link"></a> <a href="/?do=settings&action=delete&user_id='.$users['id'].'#users" onclick="return confirm(\'Delete user '.$users['fullName'].'?\');" class="fas fa-trash"></a></td>
+					</tr>';
+				  		}
+                    ?>
+                    </tr>
+                  </tbody>
+          </table>
+        </form>
+     </div> 
+     
+     
 <div id="maintenance">
   <table width="100%" border="0">
     <tr>
       <td width="13%">&nbsp;</td>
       <td width="87%">&nbsp;</td>
+    </tr>
+    <tr>
+      <td><a href="/pages/maintenance.php?do=IFRA" class="popup-link">Import IFRA Library</a></td>
+      <td><a href="https://ifrafragrance.org/safe-use/standards-guidance" target="_blank">IFRA web site</a></td>
     </tr>
     <tr>
       <td><a href="/pages/maintenance.php?do=backupDB">Backup DB</a></td>
@@ -444,7 +526,7 @@ $(document).ready(function(){
  
   $('#cat_data').editable({
   container: 'body',
-  selector: 'td.cname',
+  selector: 'td.name',
   url: "/pages/update_data.php?settings=cat",
   title: 'Category',
   type: "POST",
@@ -458,7 +540,7 @@ $(document).ready(function(){
  
    $('#cat_data').editable({
   container: 'body',
-  selector: 'td.cnotes',
+  selector: 'td.notes',
   url: "/pages/update_data.php?settings=cat",
   title: 'Description',
   type: "POST",
@@ -470,9 +552,9 @@ $(document).ready(function(){
  
    $('#sup_data').editable({
   container: 'body',
-  selector: 'td.sname',
+  selector: 'td.name',
   url: "/pages/update_data.php?settings=sup",
-  title: 'Category',
+  title: 'Supplier',
   type: "POST",
   dataType: 'json',
   validate: function(value){
@@ -484,7 +566,7 @@ $(document).ready(function(){
  
    $('#sup_data').editable({
   container: 'body',
-  selector: 'td.snotes',
+  selector: 'td.notes',
   url: "/pages/update_data.php?settings=sup",
   title: 'Description',
   type: "POST",
@@ -493,30 +575,7 @@ $(document).ready(function(){
   }
  });
 
-   $('#prof_data').editable({
-  container: 'body',
-  selector: 'td.pname',
-  url: "/pages/update_data.php?settings=profile",
-  title: 'Profile',
-  type: "POST",
-  dataType: 'json',
-  validate: function(value){
-   if($.trim(value) == ''){
-    return 'This field is required';
-   }
-  }
- });
  
-   $('#prof_data').editable({
-  container: 'body',
-  selector: 'td.pnotes',
-  url: "/pages/update_data.php?settings=profile",
-  title: 'Description',
-  type: "POST",
-  dataType: 'json',
-  validate: function(value){
-  }
- });
-
+  
 });
 </script>

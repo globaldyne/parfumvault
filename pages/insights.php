@@ -1,18 +1,29 @@
+<?php if (!defined('pvault_panel')){ die('Not Found');}?>
+<script>
+$(function() {
+  $("#insights").tabs();
+});
+</script>
+
 <div id="content-wrapper" class="d-flex flex-column">
 <?php require_once('pages/top.php'); ?>
 <style>
-#chartdiv {
+#chartIngUsage, #chartIFRA{
   width		: 100%;
   height	: 500px;
   font-size	: 11px;
-}						
+}		
+
+}	
 </style>
 <script src="../js/amcharts_3.21.15.free/amcharts/amcharts.js"></script>
 <script src="../js/amcharts_3.21.15.free/amcharts/serial.js"></script>
+<script src="../js/amcharts_3.21.15.free/amcharts/pie.js"></script>
+
 <script src="../js/amcharts_3.21.15.free/amcharts/themes/light.js"></script>
 
 <script>
-var chart = AmCharts.makeChart( "chartdiv", {
+var chart = AmCharts.makeChart( "chartIngUsage", {
   "type": "serial",
   "theme": "none",
   "dataProvider": [ 
@@ -61,23 +72,53 @@ while($allIng =  mysqli_fetch_array($ing)){
   }
 
 } );
-</script>
 
+
+var chart = AmCharts.makeChart("chartIFRA",{
+  "type"    : "pie",
+  "titleField"  : "type",
+  "valueField"  : "value",
+  "dataProvider"  : [
+<?php
+$ifratypes = mysqli_query($conn, "SELECT DISTINCT type FROM IFRALibrary");
+while($types =  mysqli_fetch_array($ifratypes)){
+?>    {
+      "type": "<?php echo $types['type'];?>",
+      "value": "<?php getIFRAtypes($types['type'],$dbhost,$dbuser,$dbpass,$dbname);?>"
+    },
+<?php } ?>
+  ],
+});
+</script>
 <div class="container-fluid">
 
 <h2 class="m-0 mb-4 text-primary">Insights</h2>
-<div id="insights">
-<div id="general">
-<?php 
-if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulas"))== 0){
-	echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> to generate insights, add at least one formula first.</div>';
-}else{
-?>
-<div id="chartdiv"></div>					
-<?php } ?>
-</div>
-</div>
-</div>
+
+     <div id="insights">
+     <ul>
+         <li><a href="#ingUsage"><span>Ingredients Usage</span></a></li>
+         <li><a href="#IFRA"><span>IFRA</span></a></li>
+     </ul>
+     <div id="ingUsage">
+	 <?php 
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulas"))== 0){
+		echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> to generate insights, add at least one formula first.</div>';
+	}else{
+	?>
+	<div id="chartIngUsage"></div>
+	<?php } ?>
+	</div>
+     <div id="IFRA">
+    <?php 
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM IFRALibrary"))== 0){
+		echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> You need to <a href="/pages/maintenance.php?do=IFRA" class="popup-link">import</a> the IFRA xls first.</div>';
+	}else{
+	?>
+     <div id="chartIFRA"></div></div>
+     <?php } ?>
+    </div>
 
 
+
+</div>
 </div>

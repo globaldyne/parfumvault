@@ -1,4 +1,6 @@
 <?php
+require('../inc/sec.php');
+
 require '../inc/config.php';
 require '../inc/opendb.php';
 

@@ -1,8 +1,6 @@
 <div id="content-wrapper" class="d-flex flex-column">
 <?php require_once('pages/top.php'); ?>
 
-<link rel="stylesheet" href="../css/jquery-ui.css">
-<script src="../js/jquery-ui.js"></script>
 <script>
 $(function() {
   $("#formulasprofile").tabs();
@@ -97,25 +95,29 @@ $(function() {
 
 				}else{
                 ?>
-                <div id="formulasprofile">
+     <div id="formulasprofile">
      <ul>
          <li><a href="#all"><span>All</span></a></li>
          <li><a href="#oriental"><span>Oriental</span></a></li>
          <li><a href="#woody"><span>Woody</span></a></li>
          <li><a href="#floral"><span>Floral</span></a></li>
          <li><a href="#fresh"><span>Fresh</span></a></li>
-
+         <li><a href="#unisex"><span>Unisex</span></a></li>
+         <li><a href="#men"><span>Men</span></a></li>
+         <li><a href="#women"><span>Women</span></a></li>
      </ul>
-     <div id="all"><?php formulaProfile($dbhost,$dbuser,$dbpass,$dbname); ?></div>
-     <div id="oriental"><?php formulaProfile($dbhost,$dbuser,$dbpass,$dbname,'oriental'); ?></div>
-     <div id="woody"><?php formulaProfile($dbhost,$dbuser,$dbpass,$dbname,'woody'); ?></div>
-     <div id="floral"><?php formulaProfile($dbhost,$dbuser,$dbpass,$dbname,'floral'); ?></div>
-     <div id="fresh"><?php formulaProfile($dbhost,$dbuser,$dbpass,$dbname,'fresh'); ?></div>
+     <div id="all"><?php formulaProfile($dbhost,$dbuser,$dbpass,$dbname,null,null); ?></div>
+     <div id="oriental"><?php formulaProfile($dbhost,$dbuser,$dbpass,$dbname,'oriental',null); ?></div>
+     <div id="woody"><?php formulaProfile($dbhost,$dbuser,$dbpass,$dbname,'woody',null); ?></div>
+     <div id="floral"><?php formulaProfile($dbhost,$dbuser,$dbpass,$dbname,'floral',null); ?></div>
+     <div id="fresh"><?php formulaProfile($dbhost,$dbuser,$dbpass,$dbname,'fresh',null); ?></div>
+     <div id="unisex"><?php formulaProfile($dbhost,$dbuser,$dbpass,$dbname,null,'unisex'); ?></div>
+     <div id="men"><?php formulaProfile($dbhost,$dbuser,$dbpass,$dbname,null,'men'); ?></div>
+     <div id="women"><?php formulaProfile($dbhost,$dbuser,$dbpass,$dbname,null,'women'); ?></div>
 				<?php } ?>
               </div>
             </div>
           </div>
         </div>
       </div>
-	<?php // require_once("./pages/footer.php"); ?>
   </div>

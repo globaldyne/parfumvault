@@ -1,8 +1,10 @@
 <?php
+
+require('./inc/sec.php');
+
 require_once('./inc/config.php');
 require_once('./inc/product.php');
 require_once('./inc/opendb.php');
-require_once('./func/sizeformat.php');
 require_once('./func/calcCosts.php');
 require_once('./func/calcPerc.php');
 require_once('./func/checkDupes.php');
@@ -10,6 +12,10 @@ require_once('./func/checkIng.php');
 require_once('./func/getIngUsage.php');
 require_once('./func/checkVer.php');
 require_once('./func/formulaProfile.php');
+require_once('./func/getIFRAtypes.php');
+require_once('./func/searchIFRA.php');
+require_once('./func/formatBytes.php');
+
 
 require('./inc/settings.php');
 
@@ -70,7 +76,9 @@ $sup_c = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM ingSuppliers"));
   <script src="js/bootstrap-editable.js"></script>
   
   <script src='js/tipsy.js'></script>
- 
+  <script src="./js/jquery-ui.js"></script>
+  
+  <link rel="stylesheet" href="./css/jquery-ui.css">
   <link href="css/tipsy.css" rel="stylesheet" />
   
   <link href="css/magnific-popup.css" rel="stylesheet" />
@@ -143,6 +151,12 @@ $(document).ready(function() {
       </li>
       
         <li class="nav-item">
+        <a class="nav-link" href="/?do=IFRA">
+          <i class="fas fa-fw fa-university"></i>
+          <span>IFRA Library</span></a>
+      </li>
+
+        <li class="nav-item">
         <a class="nav-link" href="/?do=insights">
           <i class="fas fa-fw fa-chart-area"></i>
           <span>Insights</span></a>
@@ -153,7 +167,14 @@ $(document).ready(function() {
           <i class="fas fa-fw fa-cog"></i>
           <span>Settings</span></a>
       </li>
-
+      
+      <hr class="sidebar-divider d-none d-md-block">
+      
+        <li class="nav-item">
+        <a class="nav-link" href="/?do=logout">
+          <i class="fas fa-fw fa-sign-out-alt"></i>
+          <span>Logout</span></a>
+      </li>
       
       <hr class="sidebar-divider d-none d-md-block">
     </ul>
@@ -169,11 +190,18 @@ $(document).ready(function() {
 			require 'pages/settings.php';
 		}elseif($_GET['do'] == 'addIngredient'){
 			require 'pages/addIngredient.php';
-		}elseif($_GET['do'] == 'editIngredient'){
-			require 'pages/editIngredient.php';
 		}elseif($_GET['do'] == 'insights'){
 			require 'pages/insights.php';
-					 
+		}elseif($_GET['do'] == 'IFRA'){
+			require 'pages/IFRA.php';
+		
+		}elseif($_GET['do'] == 'logout'){
+			if(isset($_SESSION['parfumvault'])) {
+				unset($_SESSION['parfumvault']);
+			}
+			session_unset();
+			header('Location: /login.php');
+	 
 		}else{
 			require 'pages/dashboard.php';
 		}

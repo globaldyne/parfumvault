@@ -1,5 +1,14 @@
+<?php if (!defined('pvault_panel')){ die('Not Found');}?>
+
 <?php
-function formulaProfile($dbhost,$dbuser,$dbpass,$dbname,$profile = null){
+function formulaProfile($dbhost,$dbuser,$dbpass,$dbname, $profile, $sex){
+
+	$conn = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname) or die ('Error connecting to database');
+	if(empty($profile) && empty($sex)){
+		$formulas_n = mysqli_query($conn, "SELECT * FROM formulasMetaData ORDER by name DESC");
+	}else{
+		$formulas_n = mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE profile = '$profile' OR sex = '$sex' ORDER by name DESC");
+	}
 	echo '<table width="100%" border="0" cellspacing="0" id="tdData" class="table table-striped table-bordered table-sm">
                   <thead>
                     <tr>
@@ -9,13 +18,7 @@ function formulaProfile($dbhost,$dbuser,$dbpass,$dbname,$profile = null){
                       <th width="21%">Actions</th>
                     </tr>
                   </thead>
-                  <tbody>';
-	$conn = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname) or die ('Error connecting to database');
-	if(empty($profile)){
-		$formulas_n = mysqli_query($conn, "SELECT * FROM formulasMetaData ORDER by name DESC");
-	}else{
-		$formulas_n = mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE profile = '$profile' ORDER by name DESC");
-	}
+                  <tbody>';	
 	while ($formula = mysqli_fetch_array($formulas_n)) {
 		echo'<tr><td align="center"><a href="/?do=Formula&name='.$formula['name'].'">'.$formula['name'].'</a></td>';
 		$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE name = '".$formula['name']."'"));

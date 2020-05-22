@@ -1,6 +1,13 @@
-<div class="container-fluid">
-<?php require_once('pages/top.php'); ?>
 <?php 
+require('../inc/sec.php');
+
+require_once('../inc/config.php');
+require_once('../inc/opendb.php');
+require_once('../inc/settings.php');
+require_once('../func/formatBytes.php');
+
+require_once('../func/searchIFRA.php');
+
 $ingID = mysqli_real_escape_string($conn, $_GET["id"]);
 
 if($_POST){
@@ -22,41 +29,41 @@ if($_POST){
 	$flash_point = mysqli_real_escape_string($conn, $_POST["flash_point"]);
 	$appearance = mysqli_real_escape_string($conn, $_POST["appearance"]);
 	$ml = mysqli_real_escape_string($conn, $_POST["ml"]);
+	$odor = mysqli_real_escape_string($conn, $_POST["odor"]);
 	$notes = mysqli_real_escape_string($conn, $_POST["notes"]);
 
-
-	if(! empty($_FILES['SDS']['name'])){
+	if(($_FILES['SDS']['name'])){
       $file_name = $_FILES['SDS']['name'];
       $file_size =$_FILES['SDS']['size'];
       $file_tmp =$_FILES['SDS']['tmp_name'];
       $file_type=$_FILES['SDS']['type'];
       $file_ext=strtolower(end(explode('.',$_FILES['SDS']['name'])));
-      
-      $ext= array("pdf","doc","docx");
-     
+	  
+	  if(empty($err)==true){
+		 if (!file_exists("../$SDS_path")) {
+    		 mkdir("../$SDS_path", 0740, true);
+	  	 }
+	  }
+	  
+	  $ext = explode(', ', $allowed_ext);
       if(in_array($file_ext,$ext)=== false){
-         $msgF.="File upload error: Extension not allowed, please choose a pdf, doc or docx file.";
-      }
-      
-      if($file_size > $max_filesize){
-         $msgF.='File upload error: File size must be '.$max_filesize.' Max';
-      }
-      
-      if(empty($msgF)==true){
-         move_uploaded_file($file_tmp,"uploads/SDS/".base64_encode($file_name));
-		 $SDSF = "uploads/SDS/".base64_encode($file_name);
+		 $msg.='<div class="alert alert-danger alert-dismissible"><strong>File upload error: </strong>Extension not allowed, please choose a '.$allowed_ext.' file.</div>';
+      }elseif($file_size > $max_filesize){
+		 $msg.='<div class="alert alert-danger alert-dismissible"><strong>File upload error: </strong>File size must not exceed '.formatBytes($max_filesize).'</div>';
+      }else{
+	  
+         move_uploaded_file($file_tmp,"../$SDS_path".base64_encode($file_name));
+		 $SDSF = "../$SDS_path".base64_encode($file_name);
 		 mysqli_query($conn, "UPDATE ingredients SET SDS = '$SDSF' WHERE name='$ingID'");
 	  }
    }
 
-	if(mysqli_query($conn, "UPDATE ingredients SET cas = '$cas', type = '$type', strength = '$strength', IFRA = '$IFRA', category='$category', supplier='$supplier', supplier_link='$supplier_link', profile='$profile', price='$price', tenacity='$tenacity', chemical_name='$chemical_name', flash_point='$flash_point', appearance='$appearance', notes='$notes', ml='$ml'  WHERE name='$ingID'")){
-			$msg='<div class="alert alert-success alert-dismissible">
-			<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
+	if(mysqli_query($conn, "UPDATE ingredients SET cas = '$cas', type = '$type', strength = '$strength', IFRA = '$IFRA', category='$category', supplier='$supplier', supplier_link='$supplier_link', profile='$profile', price='$price', tenacity='$tenacity', chemical_name='$chemical_name', flash_point='$flash_point', appearance='$appearance', notes='$notes', ml='$ml', odor='$odor'  WHERE name='$ingID'")){
+			$msg.='<div class="alert alert-success alert-dismissible">
   			Ingredient <strong>'.$name.'</strong> updated!
 			</div>';
 		}else{
-			$msg='<div class="alert alert-danger alert-dismissible">
-			<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
+			$msg.='<div class="alert alert-danger alert-dismissible">
   			<strong>Error:</strong> Failed to update '.$ing['name'].'!
 			</div>';
 		}
@@ -78,32 +85,74 @@ if(empty(mysqli_num_rows($sql))){
 	$ing = mysqli_fetch_array($sql);
 }
 ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Import CSV file</title>
+  
+<link href="../css/bootstrap.min.css" rel="stylesheet">
+<style>
+.container {
+    max-width: 100%;
+}
+</style>
+<script src="../js/jquery/jquery.min.js"></script>
 
-          <h1 class="h3 mb-4 text-gray-800"><?php echo $ing['name']; ?></h1>
+<script>
+function search() {	  
+	$("#odor").val('Loading...');
+$.ajax({ 
+    url: '/pages/searchTGSC.php', 
+	type: 'get',
+    data: {
+		name: "<?php if($ing['cas']){ echo $ing['cas']; }else{ echo $ing['name'];}?>"
+		},
+    dataType: 'text',
+    success: function (data) {
+      $("#odor").val(data); 
+    }
+  });
+
+};
+</script>
+</head>
+
+<body>
+    <div id="wrap">
+        <div class="container">
+<div class="list-group-item-info">
+        <h1 class="badge-primary"><a href="/?do=ingredients"><?php echo $ing['name']; ?></a></h1>
 
         </div>
 <table width="100%" border="0">
         <tr>
           <td><div class="form-group">  
-			<form action="?do=editIngredient&id=<?php echo $ingID; ?>" method="post" enctype="multipart/form-data" name="edit_ing" target="_self" id="edit_ing">  
+			<form action="/pages/editIngredient.php?id=<?php echo $ingID; ?>" method="post" enctype="multipart/form-data" name="edit_ing" target="_self" id="edit_ing">  
                           <div class="table-responsive">
                             <table width="100%" border="0">
                               <tr>
-                                <td colspan="3"><?php echo $msg; ?></td>
+                                <td colspan="4" class="badge-primary"><?php echo $msg; ?></td>
                               </tr>
                               <tr>
-                                <td width="11%">CAS #:</td>
-                                <td width="23%"><input name="cas" type="text" class="form-control" id="cas" value="<?php echo $ing['cas']; ?>"></td>
-                                <td width="66%">&nbsp;</td>
+                                <td width="20%">CAS #:</td>
+                                <td colspan="3"><input name="cas" type="text" class="form-control" id="cas" value="<?php echo $ing['cas']; ?>"></td>
                               </tr>
                               <tr>
-                                <td>IFRA Limit %:</td>
-                                <td><input name="IFRA" type="text" class="form-control" id="IFRA" value="<?php echo $ing['IFRA']; ?>"></td>
-                                <td>&nbsp;</td>
+                                <td>IFRA Cat4 Limit %:</td>
+                                <td colspan="3">
+                                <?php
+								 	if($limit = searchIFRA($ing['cas'], $ing['name'],$dbhost,$dbuser,$dbpass,$dbname)){
+										echo $limit.' (Value retrieved from your IFRA Library)';
+									}else{
+								?>
+                                <input name="IFRA" type="text" class="form-control" id="IFRA" value="<?php echo $ing['IFRA']; ?>">
+                                <?php } ?>
+                                </td>
                               </tr>
                               <tr>
                                 <td>Profile:</td>
-                                <td>
+                                <td colspan="3">
                                 <select name="profile" id="profile" class="form-control">
                                 <option value="" selected></option>
                                 <?php 	while ($row_ingProfiles = mysqli_fetch_array($res_ingProfiles)){ ?>
@@ -111,11 +160,10 @@ if(empty(mysqli_num_rows($sql))){
 								<?php } ?>
                                 </select>
                                 </td>
-                                <td>&nbsp;</td>
                               </tr>
                               <tr>
                                 <td>Type:</td>
-                                <td>
+                                <td colspan="3">
                                 <select name="type" id="type" class="form-control">
                                 <option value="" selected></option>
                                 <?php 	while ($row_ingTypes = mysqli_fetch_array($res_ingTypes)){ ?>
@@ -123,11 +171,10 @@ if(empty(mysqli_num_rows($sql))){
 								<?php } ?>
                                 </select>
                                 </td>
-                                <td>&nbsp;</td>
                               </tr>
                               <tr>
                                 <td>Strength:</td>
-                                <td>
+                                <td colspan="3">
                                 <select name="strength" id="strength" class="form-control">
                                 <option value="" selected></option>
                                 <?php while ($row_ingStrength = mysqli_fetch_array($res_ingStrength)){ ?>
@@ -135,11 +182,10 @@ if(empty(mysqli_num_rows($sql))){
 								<?php } ?>
                                 </select>
                                 </td>
-                                <td>&nbsp;</td>
                               </tr>
                               <tr>
                                 <td>Category:</td>
-                                <td>
+                                <td colspan="3">
                                 <select name="category" id="category" class="form-control">
                                 <option value="" selected></option>
                                   <?php while ($row_ingCategory = mysqli_fetch_array($res_ingCategory)){ ?>
@@ -147,11 +193,10 @@ if(empty(mysqli_num_rows($sql))){
 								  <?php } ?>
                                 </select>
                                 </td>
-                                <td>&nbsp;</td>
                               </tr>
                               <tr>
                                 <td>Supplier:</td>
-                                <td>
+                                <td colspan="3">
                                 <select name="supplier" id="supplier" class="form-control">
                                 <option value="" selected></option>
                                   <?php while ($row_ingSupplier = mysqli_fetch_array($res_ingSupplier)){ ?>
@@ -159,52 +204,50 @@ if(empty(mysqli_num_rows($sql))){
 								  <?php	}	?>
                                 </select>
                                 </td>
-                                <td>&nbsp;</td>
                               </tr>
                               <tr>
                                 <td>Supplier URL:</td>
-                                <td><input name="supplier_link" type="text" class="form-control" id="supplier_link" value="<?php echo $ing['supplier_link']; ?>"></td>
-                                <td>&nbsp;</td>
+                                <td colspan="3"><input name="supplier_link" type="text" class="form-control" id="supplier_link" value="<?php echo $ing['supplier_link']; ?>"></td>
                               </tr>
                               <tr>
 								<td>Price (<?php echo $settings['currency']; ?>):</td>
-                                <td><input name="price" type="text" class="form-control" id="price" value="<?php echo $ing['price']; ?>"/></td>
-                                <td>&nbsp;</td>
+                                <td colspan="3"><input name="price" type="text" class="form-control" id="price" value="<?php echo $ing['price']; ?>"/></td>
                               </tr>
                               <tr>
                                 <td>Tenacity:</td>
-                                <td><input name="tenacity" type="text" class="form-control" id="tenacity" value="<?php echo $ing['tenacity']; ?>"/></td>
-                                <td>&nbsp;</td>
+                                <td colspan="3"><input name="tenacity" type="text" class="form-control" id="tenacity" value="<?php echo $ing['tenacity']; ?>"/></td>
                               </tr>
                               <tr>
                                 <td>Flash Point:</td>
-                                <td><input name="flash_point" type="text" class="form-control" id="flash_point" value="<?php echo $ing['flash_point']; ?>"/></td>
-                                <td>&nbsp;</td>
+                                <td colspan="3"><input name="flash_point" type="text" class="form-control" id="flash_point" value="<?php echo $ing['flash_point']; ?>"/></td>
                               </tr>
                               <tr>
                                 <td>Chemical Name:</td>
-                                <td><input name="chemical_name" type="text" class="form-control" id="chemical_name" value="<?php echo $ing['chemical_name']; ?>"/></td>
-                                <td>&nbsp;</td>
+                                <td colspan="3"><input name="chemical_name" type="text" class="form-control" id="chemical_name" value="<?php echo $ing['chemical_name']; ?>"/></td>
                               </tr>
                               <tr>
                                 <td>Appearance:</td>
-                                <td><input name="appearance" type="text" class="form-control" id="appearance" value="<?php echo $ing['appearance']; ?>"/></td>
-                                <td>&nbsp;</td>
+                                <td colspan="3"><input name="appearance" type="text" class="form-control" id="appearance" value="<?php echo $ing['appearance']; ?>"/></td>
                               </tr>
                               <tr>
                                 <td valign="top">Size (ml):</td>
-                                <td><input name="ml" type="text" class="form-control" id="ml" value="<?php echo $ing['ml']; ?>"/></td>
-                                <td>&nbsp;</td>
+                                <td colspan="3"><input name="ml" type="text" class="form-control" id="ml" value="<?php echo $ing['ml']; ?>"/></td>
+                              </tr>
+                              <tr>
+                                <td valign="top">Odor:</td>
+                                <td width="34%"><input name="odor" id="odor" type="text" class="form-control" value="<?php echo $ing['odor']; ?>"/> 
+                                
+                                </td>
+                                <td width="32%">&nbsp;</td>
+                                <td width="14%"><a href="javascript:search();" id="search">Try TGSC</a></td>
                               </tr>
                               <tr>
                                 <td valign="top">Notes:</td>
-                                <td><textarea name="notes" id="notes" cols="45" rows="5" class="form-control"><?php echo $ing['notes']; ?></textarea></td>
-                                <td>&nbsp;</td>
+                                <td colspan="3"><textarea name="notes" id="notes" cols="45" rows="5" class="form-control"><?php echo $ing['notes']; ?></textarea></td>
                               </tr>
                               <tr>
                                 <td>SDS Document:</td>
-                                <td><input type="file" class="form-control" name="SDS" id="SDS"></td>
-                                <td>&nbsp;</td>
+                                <td colspan="3"><input type="file" class="form-control" name="SDS" id="SDS"></td>
                               </tr>
                             </table>
                             <p>&nbsp;</p>
@@ -216,3 +259,7 @@ if(empty(mysqli_num_rows($sql))){
                 </div></td>
         </tr>
 </table>
+</div>
+</div>
+</body>
+</html>

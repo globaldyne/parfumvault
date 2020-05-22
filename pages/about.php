@@ -1,6 +1,3 @@
-<?php 
-require_once('../inc/config.php');
-?>
 <table width="100%" border="0">
   <tr>
     <td><strong><?php echo $product; ?></strong></td>

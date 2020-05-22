@@ -1,9 +1,12 @@
 <link href="../css/sb-admin-2.css" rel="stylesheet">
 
 <?php
+require('../inc/sec.php');
+
 require_once('../inc/config.php');
 require_once('../inc/opendb.php');
 require_once('../inc/settings.php');
+require_once('../func/searchIFRA.php');
 
 if($_GET['id']){
 	$id = mysqli_real_escape_string($conn, $_GET['id']);
@@ -12,7 +15,7 @@ if($_GET['id']){
 
 <table class="table table-bordered" id="dataTable" cellspacing="0">
   <tr>
-    <td colspan="2"><h1><?php echo $info['name'];?></h1></td>
+    <td colspan="2"><h1 class="badge-primary"><?php echo $info['name'];?></h1></td>
   </tr>
   <tr>
     <td width="20%">CAS#:</td>
@@ -31,8 +34,16 @@ if($_GET['id']){
     <td><?php echo $info['strength'];?></td>
   </tr>
   <tr>
-    <td>IFRA Limit:</td>
-    <td><?php echo $info['IFRA'];?>%</td>
+    <td>IFRA Cat4 Limit %:</td>
+    <td>
+	<?php
+		if($limit = searchIFRA($info['cas'],$info['name'],$dbhost,$dbuser,$dbpass,$dbname)){
+			echo $limit.' (Value retrieved from your IFRA Library)';
+		}else{
+			echo $info['IFRA'];
+		}
+	?>
+    </td>
   </tr>
   <tr>
     <td>Price:</td>
@@ -49,6 +60,10 @@ if($_GET['id']){
   <tr>
     <td>Appearance:</td>
     <td><?php echo $info['appearance'];?></td>
+  </tr>
+  <tr>
+    <td>Odor:</td>
+    <td><?php echo $info['odor'];?></td>
   </tr>
   <tr>
     <td>Notes:</td>

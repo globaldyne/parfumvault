@@ -1,3 +1,5 @@
+<?php if (!defined('pvault_panel')){ die('Not Found');}?>
+
 <?php
 $ingID = mysqli_real_escape_string($conn, $_GET['id']);
 $ingName = mysqli_real_escape_string($conn, $_GET['name']);
@@ -54,7 +56,7 @@ $ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC
                     <tr>
                       <th>Name</th>
                       <th>CAS #</th>
-                      <th>Type</th>
+                      <th>Odor</th>
                       <th>Profile</th>
                       <th>Category</th>
                       <th>IFRA</th>
@@ -76,10 +78,12 @@ $ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC
 						  echo '<td align="center">N/A</td>';
 					  }
 					  echo '
-					  <td align="center">'.$ingredient['type'].'</td>
+					  <td align="center">'.$ingredient['odor'].'</td>
                       <td align="center">'.$ingredient['profile'].'</td>
 					  <td align="center">'.$ingredient['category'].'</td>';
-					  if($ingredient['IFRA']){
+  					  if($limit = searchIFRA($ingredient['cas'],$ingredient['name'],$dbhost,$dbuser,$dbpass,$dbname)){
+						  echo '<td align="center">'.$limit.'%</td>';
+					  }elseif($ingredient['IFRA']){
 						  echo '<td align="center">'.$ingredient['IFRA'].'%</td>';
 					  }else{
 						  echo '<td align="center">N/A</a>';
@@ -101,7 +105,7 @@ $ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC
 					  }else{
 						  echo '<td align="center" class="noexport"><a href="http://www.thegoodscentscompany.com/search3.php?qName='.$ingredient['name'].'" target="_blanc" class="fa fa-external-link-alt"></a></td>';
 					  }
-                      echo '<td class="noexport" align="center"><a href="/?do=editIngredient&id='.$ingredient['name'].'" class="fas fa-edit"><a> <a href="/?do=ingredients&action=delete&id='.$ingredient['id'].'&name='.$ingredient['name'].'" onclick="return confirm(\'Delete '.$ingredient['name'].'?\');" class="fas fa-trash"></a></td>';
+                      echo '<td class="noexport" align="center"><a href="/pages/editIngredient.php?id='.$ingredient['name'].'" class="fas fa-edit popup-link"><a> <a href="/?do=ingredients&action=delete&id='.$ingredient['id'].'&name='.$ingredient['name'].'" onclick="return confirm(\'Delete '.$ingredient['name'].'?\');" class="fas fa-trash"></a></td>';
 					  echo '</tr>';
 				  }
                     ?>

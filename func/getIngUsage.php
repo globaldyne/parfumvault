@@ -1,3 +1,5 @@
+<?php if (!defined('pvault_panel')){ die('Not Found');}?>
+
 <?php
 function getIngUsage($ingredient,$dbhost,$dbuser,$dbpass,$dbname){
 	
