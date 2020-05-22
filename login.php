@@ -78,6 +78,8 @@ if($_POST['username'] && $_POST['password']){
                       Login
                     </button>
                   </form>
+		 <hr>
+		<label>Version: <?php echo $ver; ?> | <?php echo $product; ?></label>
                 </div>
               </div>
             </div>

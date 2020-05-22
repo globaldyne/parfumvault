@@ -1,4 +1,4 @@
-2.0 - ADD: IFRA Lirary support
+2.0.0 - ADD: IFRA Lirary support
 		ADD: IFRA insights
 		ADD: IFRA lookup first then local db
 		ADD: Ingredient odor
