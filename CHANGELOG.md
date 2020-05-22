@@ -7,7 +7,8 @@
 		ADD: User management
 		FIX: SDS Upload function
 		FIX: MetaData duplicate entries
-		FIX: Cost calculation to include concentration
+		FIX: Cost calculation to include strength %
+		FIX: Concentration calculation to include strength %
 
 0.1.7 - FIX: Settings broken view
 		FIX: MySql schema

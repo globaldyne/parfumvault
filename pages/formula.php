@@ -160,11 +160,10 @@ $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg F
 					  //TODO: FIX THIS
 					  $ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT IFRA,price,ml,profile FROM ingredients WHERE name = '$formula[ingredient]'"));
 					  $limit_local = $ing_q;
-					  $conc_p = number_format($formula['quantity']/$mg['total_mg'] * 100, 2);
-					  /*
-					  	$conc_x = $formula['concentration'] / 100 * $conc;
-						$conc_p = 	 number_format($conc_x,2);
-					  */
+					  $conc = number_format($formula['quantity']/$mg['total_mg'] * 100, 2);
+					  //$total = $concentration / 100 * $sub;
+					  $conc_p = number_format($formula['concentration'] / 100 * $conc, 3);
+					  
 					  if($limit != null){
 						 if($limit < $conc_p){
 							$IFRA_WARN = 'class="alert-danger"';
@@ -225,7 +224,7 @@ $(document).ready(function(){
   type: "POST",
   dataType: 'json',
       success: function(response, newValue) {
-        if(response.status == 'error') return response.msg; //msg will be shown in editable form
+        if(response.status == 'error') return response.msg;
     },
   validate: function(value){
    if($.trim(value) == ''){
@@ -241,7 +240,7 @@ $(document).ready(function(){
   container: 'body',
   selector: 'td.concentration',
   url: "/pages/update_data.php?formula=<?php echo $f_name; ?>",
-  title: 'Concentration %',
+  title: 'Strength %',
   type: "POST",
   dataType: 'json',
   validate: function(value){
