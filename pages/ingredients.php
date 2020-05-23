@@ -34,24 +34,17 @@ $ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC
                 <table class="table table-bordered" id="tdData" width="100%" cellspacing="0">
                   <thead>
                     <tr class="noBorder noexport">
-                      <th>&nbsp;</th>
-                      <th>&nbsp;</th>
-                      <th>&nbsp;</th>
-                      <th>&nbsp;</th>
-                      <th>&nbsp;</th>
-                      <th>&nbsp;</th>  
-                      <th>&nbsp;</th>  
-                      <th>&nbsp;</th>  
-                      <th>&nbsp;</th>  
-                      <th align="center">
-                      <div class="btn-group">
-                      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
-                      <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="/?do=addIngredient">Add new ingredient</a>
-                        <a class="dropdown-item" id="csv" href="#">Export to CSV</a>
-                      </div>
-                    </div>
-                    </th>
+                      <th colspan="10">
+                  <div class="text-right">
+                        <div class="btn-group">
+                          <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
+                          <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="/?do=addIngredient">Add new ingredient</a>
+                            <a class="dropdown-item" id="csv" href="#">Export to CSV</a>
+                          </div>
+                        </div>                    
+                        </div>
+                        </th>
                     </tr>
                     <tr>
                       <th>Name</th>

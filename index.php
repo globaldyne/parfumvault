@@ -40,9 +40,10 @@ if($_GET['action'] == 'delete' && $_GET['name']){
 
 $formulas_c = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM formulas GROUP BY name"));
 
-$ac_c = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM ingredients WHERE type = 'AC'"));
-$eo_c = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM ingredients WHERE type = 'EO'"));
-$sup_c = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM ingSuppliers"));
+$ac_c = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE type = 'AC'"));
+$eo_c = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE type = 'EO'"));
+$sup_c = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingSuppliers"));
+$ifra_c = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM IFRALibrary"));
 
 ?>
 <!DOCTYPE html>
@@ -133,11 +134,11 @@ $(document).ready(function() {
           <i class="fas fa-fw fa-tachometer-alt"></i>
           <span>Dashboard</span></a>
       </li>
-      
+    
         <li class="nav-item">
-        <a class="nav-link" href="/?do=addFormula">
+        <a class="nav-link" href="/?do=listFormulas">
           <i class="fas fa-fw fa-flask"></i>
-          <span>Add Formula</span></a>
+          <span>Formulas</span></a>
       </li>
 
         <li class="nav-item">
@@ -190,6 +191,9 @@ $(document).ready(function() {
 			require 'pages/insights.php';
 		}elseif($_GET['do'] == 'IFRA'){
 			require 'pages/IFRA.php';
+		}elseif($_GET['do'] == 'listFormulas'){
+			require 'pages/listFormulas.php';
+		
 		
 		}elseif($_GET['do'] == 'logout'){
 			if(isset($_SESSION['parfumvault'])) {

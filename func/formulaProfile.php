@@ -1,5 +1,4 @@
 <?php if (!defined('pvault_panel')){ die('Not Found');}?>
-
 <?php
 function formulaProfile($dbhost,$dbuser,$dbpass,$dbname, $profile, $sex){
 
@@ -24,7 +23,7 @@ function formulaProfile($dbhost,$dbuser,$dbpass,$dbname, $profile, $sex){
 		$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE name = '".$formula['name']."'"));
 		echo '<td align="center"><a href="pages/getFormMeta.php?id='.$meta['id'].'" class="fas fa-comment-dots popup-link"></a></td>';
 		echo '<td align="center">'.$meta['created'].'</td>';
-		echo '<td align="center"><a> <a href="/?do=dashboard&action=delete&name='.$formula['name'].'" onclick="return confirm(\'Delete '.$formula['name'].' Formula?\');" class="fas fa-trash" rel="tipsy" title="Delete '.$formula['name'].'"></a></td></tr>';
+		echo '<td align="center"><a> <a href="/?do=listFormulas&action=delete&name='.$formula['name'].'" onclick="return confirm(\'Delete '.$formula['name'].' Formula?\');" class="fas fa-trash" rel="tipsy" title="Delete '.$formula['name'].'"></a></td></tr>';
 	}
 	echo '</tr></tbody></table>';
 }

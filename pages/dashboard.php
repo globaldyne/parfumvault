@@ -1,11 +1,6 @@
+<?php if (!defined('pvault_panel')){ die('Not Found');}?>
 <div id="content-wrapper" class="d-flex flex-column">
 <?php require_once('pages/top.php'); ?>
-
-<script>
-$(function() {
-  $("#formulasprofile").tabs();
-});
-</script>
         <div class="container-fluid">
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="m-0 mb-4 text-primary">Dashboard</h1>
@@ -76,7 +71,23 @@ $(function() {
                 </div>
               </div>
             </div>        
-                
+              
+			<div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-success text-uppercase mb-1">IFRA Records</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $ifra_c; ?></div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-university fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div> 
+                            
             <div class="col-xl-3 col-md-6 mb-4"></div>
           </div>
           <div>
@@ -87,34 +98,7 @@ $(function() {
             </div>
             <div class="card-body">
               <div>
-              <?php
-              	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"))== 0){
-					echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> no ingredients yet, click <a href="/?do=ingredients">here</a> to add.</div>';
-				}elseif(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulas"))== 0){
-					echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> no formulas yet, click <a href="/?do=addFormula">here</a> to add.</div>';
-
-				}else{
-                ?>
-     <div id="formulasprofile">
-     <ul>
-         <li><a href="#all"><span>All</span></a></li>
-         <li><a href="#oriental"><span>Oriental</span></a></li>
-         <li><a href="#woody"><span>Woody</span></a></li>
-         <li><a href="#floral"><span>Floral</span></a></li>
-         <li><a href="#fresh"><span>Fresh</span></a></li>
-         <li><a href="#unisex"><span>Unisex</span></a></li>
-         <li><a href="#men"><span>Men</span></a></li>
-         <li><a href="#women"><span>Women</span></a></li>
-     </ul>
-     <div id="all"><?php formulaProfile($dbhost,$dbuser,$dbpass,$dbname,null,null); ?></div>
-     <div id="oriental"><?php formulaProfile($dbhost,$dbuser,$dbpass,$dbname,'oriental',null); ?></div>
-     <div id="woody"><?php formulaProfile($dbhost,$dbuser,$dbpass,$dbname,'woody',null); ?></div>
-     <div id="floral"><?php formulaProfile($dbhost,$dbuser,$dbpass,$dbname,'floral',null); ?></div>
-     <div id="fresh"><?php formulaProfile($dbhost,$dbuser,$dbpass,$dbname,'fresh',null); ?></div>
-     <div id="unisex"><?php formulaProfile($dbhost,$dbuser,$dbpass,$dbname,null,'unisex'); ?></div>
-     <div id="men"><?php formulaProfile($dbhost,$dbuser,$dbpass,$dbname,null,'men'); ?></div>
-     <div id="women"><?php formulaProfile($dbhost,$dbuser,$dbpass,$dbname,null,'women'); ?></div>
-				<?php } ?>
+              
               </div>
             </div>
           </div>
