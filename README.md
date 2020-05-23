@@ -1,4 +1,4 @@
-# JBs Parfum Vault
+# JBs Perfumers Vault
 
 A simple tool to help perfumers organize their formulas and ingredients.
 

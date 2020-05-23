@@ -10,9 +10,29 @@ if($_GET['id']){
 		$fullName = mysqli_real_escape_string($conn, $_POST['fullName']);
 		$email = mysqli_real_escape_string($conn, $_POST['email']);
 		
-	if(mysqli_num_rows(mysqli_query($conn, "SELECT email FROM users WHERE email = '$email' AND NOT id = '$id'"))){
-		$msg.= '<div class="alert alert-danger alert-dismissible">Email is already in use.</div>';
-	}else{
+		$filename = $_FILES["avatar"]["tmp_name"];  
+    	$file_ext = strtolower(end(explode('.',$_FILES['avatar']['name'])));
+		$file_tmp = $_FILES['avatar']['tmp_name'];
+    	$ext = explode(',' , array($allowed_ext));
+
+		if($filename){
+			if(in_array($file_ext,$ext)=== false){
+				echo '<div class="alert alert-danger alert-dismissible"><strong>File upload error: </strong>Extension not allowed, please choose a '.$allowed_ext.' file.</div>';
+			}else{
+				if($_FILES["avatar"]["size"] > 0){
+					move_uploaded_file($file_tmp,"../uploads/logo/".base64_encode($filename));
+					$avatar = "../uploads/logo/".base64_encode($filename);
+					if(mysqli_query($conn, "UPDATE users SET avatar='$avatar'")){
+						$msg = '<div class="alert alert-success alert-dismissible">User avatar updated!</div>';
+					}
+				}
+			}
+				
+		}
+		
+		if(mysqli_num_rows(mysqli_query($conn, "SELECT email FROM users WHERE email = '$email' AND NOT id = '$id'"))){
+			$msg.= '<div class="alert alert-danger alert-dismissible">Email is already in use.</div>';
+		}else{
 			if($password = mysqli_real_escape_string($conn, $_POST['password'])){
 				if(strlen($password) < '5'){
 					$msg.='<div class="alert alert-danger alert-dismissible"><strong>Error: </strong>Password must be at least 5 chars long!</div>';
@@ -44,7 +64,7 @@ $(function() {
     vertical-align: middle;
 }
 </style>
-<form name="form1" method="post" action="?id=<?php echo $id; ?>">
+<form action="?id=<?php echo $id; ?>" method="post" enctype="multipart/form-data" name="form1">
 <table class="table table-bordered" id="formula_metadata" cellspacing="0">
     <tr>
       <td colspan="2" class="badge-primary">Edit <?php echo $user['username']; ?></td>
@@ -64,6 +84,10 @@ $(function() {
       <td>Password:</td>
       <td><input name="password" type="password" id="password"> 
         Min 5 chars</td>
+    </tr>
+    <tr>
+      <td>Avatar:</td>
+      <td><input type="file" name="avatar" id="avatar" /></td>
     </tr>
     <tr>
       <td colspan="2"><input name="update" type="submit" class="btn-dark" id="update" value="Submit"></td>

@@ -1,6 +1,6 @@
 <table width="100%" border="0">
   <tr>
-    <td><strong><?php echo $product; ?></strong></td>
+    <td><strong>JBs Perfumers Vault</strong></td>
     <td>&nbsp;</td>
   </tr>
   <tr>

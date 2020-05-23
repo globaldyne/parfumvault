@@ -23,47 +23,7 @@ if(($_POST) && $_GET['update'] == 'printer'){
 	}
 	require('./inc/settings.php');
 
-}elseif(!empty($_FILES['logo']['name']) && $_GET['update'] == 'general'){
-	  $file_name = $_FILES['logo']['name'];
-      $file_size =$_FILES['logo']['size'];
-      $file_tmp = $_FILES['logo']['tmp_name'];
-      $file_type = $_FILES['logo']['type'];
-      $file_ext = strtolower(end(explode('.',$_FILES['logo']['name'])));
-	  
-      if(empty($err)==true){
-		  if (!file_exists('uploads/logo/')) {
-    		mkdir('uploads/logo/', 0740, true);
-	  	}
-	  }
-	  $ext = explode(', ', $allowed_ext);
 
-	  if(in_array($file_ext,$ext)=== false){
-		 $msg.='<div class="alert alert-danger alert-dismissible"><strong>File upload error: </strong>Extension not allowed, please choose a '.$allowed_ext.' file.</div>';
-      }else{
-		  
-         move_uploaded_file($file_tmp,"uploads/logo/".base64_encode($file_name));
-		 $logo = "uploads/logo/".base64_encode($file_name);
-		 if(mysqli_query($conn, "UPDATE settings SET logo='$logo'")){
-			$msg.= '<div class="alert alert-success alert-dismissible">
-		    <a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-			Logo updated!</div>';
-		 }else{
-			$msg.= '<div class="alert alert-danger alert-dismissible">
-			<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-  			Error updating logo '.$err.'</div>';
-		 }
-      }
-//Update Admin password
-}elseif($_POST['admPass']){
-	if(mysqli_query($conn, "UPDATE users SET password=PASSWORD('$_POST[admPass]') WHERE username = 'admin'")){
-			$msg.= '<div class="alert alert-success alert-dismissible">
-		    <a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-			Password updated!</div>';
-		 }else{
-			$msg.= '<div class="alert alert-danger alert-dismissible">
-			<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-  			Error updating password '.$err.'</div>';
-		 }
 	
 //ADD SUPPLIERS
 }elseif($_POST['supplier'] && $_GET['update'] == 'suppliers'){
@@ -109,21 +69,19 @@ if(($_POST) && $_GET['update'] == 'printer'){
 		</div>';
 	}
 
-
-}elseif($_POST['currency'] && $_GET['update'] == 'general'){
+//GENERAL SETTINGS
+}elseif($_POST['currency'] && $_POST['top_n'] && $_POST['heart_n'] && $_POST['base_n'] && $_GET['update'] == 'general'){
 	$currency = utf8_encode(htmlentities($_POST['currency']));
-	if(mysqli_query($conn, "UPDATE settings SET currency='$currency'")){
-		
-		$msg = '<div class="alert alert-success alert-dismissible">
-		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-  		Currency updated!
-		</div>';
+	$top_n = mysqli_real_escape_string($conn, $_POST['top_n']);
+	$heart_n = mysqli_real_escape_string($conn, $_POST['heart_n']);
+	$base_n = mysqli_real_escape_string($conn, $_POST['base_n']);
+	
+	if(mysqli_query($conn, "UPDATE settings SET currency = '$currency', top_n = '$top_n', heart_n = '$heart_n', base_n = '$base_n'")){
+		$msg = '<div class="alert alert-success alert-dismissible">Settings updated!</div>';
 	}else{
-		$msg = '<div class="alert alert-danger alert-dismissible">
-		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-  		Error updating currency'.mysqli_error($conn).'
-		</div>';
-	}	
+		$msg = '<div class="alert alert-danger alert-dismissible">An error occured. ('.mysqli_error($conn).')</div>';	
+	}
+	
 //USERS
 }elseif($_GET['update'] == 'users' && $_POST['username'] && $_POST['password']){
 	$username = mysqli_real_escape_string($conn, $_POST['username']);
@@ -141,19 +99,13 @@ if(($_POST) && $_GET['update'] == 'printer'){
 		</div>';
 	}elseif(mysqli_query($conn, "INSERT INTO users (username,password,fullName,email) VALUES ('$username', PASSWORD('$password'), '$fullName', '$email')")){
 		
-		$msg = '<div class="alert alert-success alert-dismissible">
-		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-  		User added!
-		</div>';
+		$msg = '<div class="alert alert-success alert-dismissible">User added!</div>';
 	}else{
-		$msg = '<div class="alert alert-danger alert-dismissible">
-		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-  		Error adding user. ('.mysqli_error($conn).')
-		</div>';
+		$msg = '<div class="alert alert-danger alert-dismissible">Error adding user. ('.mysqli_error($conn).')</div>';
 	}
 	
 
-	
+//DELETE ACTIONS
 }elseif($_GET['action'] == 'delete' && $_GET['sup_id']){
 	$sup_id = mysqli_real_escape_string($conn, $_GET['sup_id']);
 	if(mysqli_query($conn, "DELETE FROM ingSuppliers WHERE id = '$sup_id'")){
@@ -233,26 +185,46 @@ $(function() {
      <form id="form" name="form" method="post" enctype="multipart/form-data" action="/?do=settings&update=general#general">
      <table width="100%" border="0">
         <tr>
-          <td colspan="3"><?php echo $msg; ?></td>
+          <td colspan="4"><?php echo $msg; ?></td>
           </tr>
         <tr>
-          <td width="8%">Logo:</td>
-          <td width="28%"><input type="file" class="form-control" name="logo" id="logo" /></td>
-          <td width="64%">&nbsp;</td>
+          <td width="6%">Currency:</td>
+          <td colspan="2"><input name="currency" type="text" class="form-control" id="currency" value="<?php echo utf8_encode($settings['currency']);?>"/></td>
+          <td width="77%">&nbsp;</td>
           </tr>
         <tr>
-          <td>Currency:</td>
-          <td><input name="currency" type="text" class="form-control" id="currency" value="<?php echo utf8_encode($settings['currency']);?>"/></td>
+          <td colspan="4">&nbsp;</td>
+          </tr>
+        <tr>
+          <td colspan="3"><h4 class="m-0 mb-4 text-primary">Pyramid View</h4></td>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td>Top notes:</td>
+          <td width="10%"><input name="top_n" type="text" class="form-control" id="top_n" value="<?php echo $settings['top_n'];?>"/></td>
+          <td width="7%">%</td>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td>Heart notes:</td>
+          <td><input name="heart_n" type="text" class="form-control" id="heart_n" value="<?php echo $settings['heart_n'];?>"/></td>
+          <td>%</td>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td>Base notes:</td>
+          <td><input name="base_n" type="text" class="form-control" id="base_n" value="<?php echo $settings['base_n'];?>"/></td>
+          <td>%</td>
           <td>&nbsp;</td>
         </tr>
         <tr>
           <td>&nbsp;</td>
-          <td>&nbsp;</td>
+          <td colspan="2">&nbsp;</td>
           <td>&nbsp;</td>
           </tr>
         <tr>
           <td><input type="submit" name="button" id="button" value="Submit" class="btn btn-info"/></td>
-          <td colspan="2">&nbsp;</td>
+          <td colspan="3">&nbsp;</td>
           </tr>
       </table>
      </form>
@@ -290,8 +262,8 @@ $(function() {
                   <?php while ($sup = mysqli_fetch_array($sup_q)) {
 					  echo'
                     <tr>
-                      <td data-name="name" class="name" data-type="text" align="center" data-pk="'.$sup['id'].'"><a href="#">'.$sup['name'].'</a></td>
-					  <td data-name="notes" class="notes" data-type="text" align="center" data-pk="'.$sup['id'].'"><a href="#">'.$sup['notes'].'</a></td>
+                      <td data-name="name" class="name" data-type="text" align="center" data-pk="'.$sup['id'].'">'.$sup['name'].'</td>
+					  <td data-name="notes" class="notes" data-type="text" align="center" data-pk="'.$sup['id'].'">'.$sup['notes'].'</td>
                       <td align="center"><a href="/?do=settings&action=delete&sup_id='.$sup['id'].'#suppliers" onclick="return confirm(\'Delete supplier '.$sup['name'].'?\');" class="fas fa-trash"></a></td>
 					</tr>';
 				  		}

@@ -1,7 +1,7 @@
 <?php if (!defined('pvault_panel')){ die('Not Found');}  ?>
 <?php
 require_once('inc/product.php');
-if($_GET['do']=='save'){		
+if($_GET['do']=='install'){		
 	if(strlen($_POST['password']) < '5'){
 		$msg ='<div class="alert alert-danger alert-dismissible"><strong>Error: </strong>Password must be at least 5 chars long!</div>';
 	}else{
@@ -75,7 +75,7 @@ $max_filesize = "4194304"; //in bytes
           <div class="card-body p-0">
             <!-- Nested Row within Card Body -->
             <div class="row">
-              <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
+              <div class="col-lg-6 d-none d-lg-block bg-install-image"></div>
               <div class="col-lg-6">
                 <div class="p-5">
                   <div class="text-center">
@@ -85,7 +85,7 @@ $max_filesize = "4194304"; //in bytes
                     <hr>
                     <strong>Database Settings:</strong>
                     <hr>
-                  <form action="?do=save" method="post"" enctype="multipart/form-data" name class="user""install>
+                  <form action="?do=install" method="post" enctype="multipart/form-data" name class="user">
                     <div class="form-group">
                       <input name="dbhost" type="text" class="form-control form-control-user" value="<?php echo $_POST['dbhost'];?>"  placeholder="Database Hostname or IP...">
                     </div>

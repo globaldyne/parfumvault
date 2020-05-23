@@ -15,7 +15,22 @@ if(isset($_SESSION['parfumvault'])){
 require_once('inc/config.php');
 require_once('inc/opendb.php');
 require_once('inc/product.php');
-
+if($_GET['register'] && $_POST['regUser'] && $_POST['regPass'] && $_POST['regFullName'] && $_POST['regEmail']){
+	$ruser = mysqli_real_escape_string($conn,$_POST['regUser']);
+	$rpass = mysqli_real_escape_string($conn,$_POST['regPass']);
+	$rfname = mysqli_real_escape_string($conn,$_POST['regFullName']);
+	$remail = mysqli_real_escape_string($conn,$_POST['regEmail']);
+	if(strlen($_POST['regPass']) < '5'){
+		$msg ='<div class="alert alert-danger alert-dismissible"><strong>Error: </strong>Password must be at least 5 characters long!</div>';
+	}else{
+		if(mysqli_query($conn,"INSERT INTO users (username,password,fullName,email) VALUES ('$ruser', PASSWORD('$rpass'),'$rfname','$remail')")){
+			header('Location: /login.php');
+		}else{
+			$msg = '<div class="alert alert-danger alert-dismissible">Failed to register the user</div>';
+		}
+	}
+	
+}
 if($_POST['username'] && $_POST['password']){
 	$_POST['username'] = mysqli_real_escape_string($conn,$_POST['username']);
 	$_POST['password'] = mysqli_real_escape_string($conn,$_POST['password']);
@@ -59,14 +74,42 @@ if($_POST['username'] && $_POST['password']){
           <div class="card-body p-0">
             <!-- Nested Row within Card Body -->
             <div class="row">
+             <?php if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM users")) == 0){?>
+              <div class="col-lg-6 d-none d-lg-block bg-register-image"></div>
+              <div class="col-lg-6">
+                <div class="p-5">
+                  <div class="text-center">
+                    <h1 class="h4 text-gray-900 mb-4">Please register a user!</h1>
+                  </div>
+                  <?php echo $msg; ?>
+                   <form action="?register=1" method="post" enctype="multipart/form-data" target="_self" class="user" id="register">
+                    <hr>
+                    <div class="form-group">
+                      <input type="text" class="form-control form-control-user" name="regFullName"  value="<?php echo $_POST['regFullName'];?>" placeholder="Your full name...">
+                    </div>      
+                    <div class="form-group">
+                      <input type="text" class="form-control form-control-user" name="regEmail"  value="<?php echo $_POST['regEmail'];?>" placeholder="Your email...">
+                    </div>  
+                    <div class="form-group">
+                      <input type="text" class="form-control form-control-user" name="regUser"  value="<?php echo $_POST['regUser'];?>" placeholder="Username...">
+                    </div>
+                    <div class="form-group">
+                      <input type="text" class="form-control form-control-user" name="regPass" placeholder="Password...">
+                    </div>
+                    <div class="form-group"></div>
+                    <button class="btn btn-primary btn-user btn-block">
+                      Register
+                    </button>
+                  </form>
+                  <?php }else{ ?>
               <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
               <div class="col-lg-6">
                 <div class="p-5">
                   <div class="text-center">
-                    <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
+                    <h1 class="h4 text-gray-900 mb-4">Welcome back!</h1>
                   </div>
                   <?php echo $msg; ?>
-                  <form method="post" enctype="multipart/form-data" class="user">
+                    <form method="post" enctype="multipart/form-data" class="user" id="login">
                     <div class="form-group">
                       <input type="text" class="form-control form-control-user" name="username"  placeholder="Username...">
                     </div>
@@ -78,8 +121,11 @@ if($_POST['username'] && $_POST['password']){
                       Login
                     </button>
                   </form>
-		 <hr>
-		<label>Version: <?php echo $ver; ?> | <?php echo $product; ?></label>
+                  <?php } ?>
+		 		  <hr>
+                  <div class="text-center">
+				  <label class="badge">Version: <?php echo $ver; ?> | <?php echo $product; ?></label>
+                  </div>
                 </div>
               </div>
             </div>

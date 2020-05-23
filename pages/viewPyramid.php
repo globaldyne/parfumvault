@@ -4,11 +4,17 @@ require('../inc/sec.php');
 require_once('../inc/config.php');
 require_once('../inc/product.php');
 require_once('../inc/opendb.php');
+require_once('../inc/settings.php');
+
 require_once('../func/calcPerc.php');
 require_once('../func/getFormula.php');
-
+if(!$_GET['formula']){
+	die('No valid formula provided');
+}
 $formula = mysqli_real_escape_string($conn, $_GET['formula']);
-
+if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM formulas WHERE name = '$formula'")) == 0){
+	die('Formula not found');
+}
 $formula_q = mysqli_query($conn, "SELECT ingredient FROM formulas WHERE name = '$formula'");
 
 
@@ -49,19 +55,19 @@ var chart = AmCharts.makeChart( "chartdiv", {
   "theme": "light",
   "dataProvider": [ {
     "title": "Base notes",
-    "value": <?php echo calcPerc($pyr['Base'],$base_n);?>,
+    "value": <?php echo calcPerc($pyr['Base'],$settings['base_n']);?>,
 	"desc": "%",
 	"notes": "<?php getFormula($_GET['formula'],'Base',$dbhost,$dbuser,$dbpass,$dbname);?>"
   }, 
   {
     "title": "Heart Notes",
-    "value": <?php echo calcPerc($pyr['Heart'],$heart_n);?>,
+    "value": <?php echo calcPerc($pyr['Heart'],$settings['heart_n']);?>,
 	"desc": "%",
 	"notes": "<?php getFormula($_GET['formula'],'Heart',$dbhost,$dbuser,$dbpass,$dbname);?>"
   }, 
   {
     "title": "Top Notes",
-    "value": <?php echo calcPerc($pyr['Top'],$top_n);?>,
+    "value": <?php echo calcPerc($pyr['Top'],$settings['top_n']);?>,
 	"desc": "%",
 	"notes": "<?php getFormula($_GET['formula'],'Top',$dbhost,$dbuser,$dbpass,$dbname);?>"
   }

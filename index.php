@@ -114,25 +114,18 @@ $(document).ready(function() {
 <body id="page-top">
   <div id="wrapper">
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark">
-<?php if($settings['logo']){?>
+
       <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
         <div class="sidebar-brand-icon">            
         <p></p>
         <p></p>
         <p></p>
-          <img src="<?php echo $settings['logo']; ?>" witdh="150px" height="80px">
+          <img src="/img/logo.png" witdh="150px" height="120px">
         </div>
       </a>        
       <p></p>
       <p></p>
-<?php }else{ ?>
-      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
-        <div class="sidebar-brand-icon rotate-n-15">
-          <i class="fas fa-laugh-wink"></i>
-        </div>
-        <div class="sidebar-brand-text mx-3"><?php echo $product; ?> <sup><?php //echo $ver; ?></sup></div>
-      </a>
-<?php } ?>
+
       <!-- Divider -->
       <hr class="sidebar-divider my-0">
       <li class="nav-item">

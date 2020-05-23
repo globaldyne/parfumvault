@@ -85,11 +85,24 @@ a { text-decoration: none; }
 }
 
 .bg-login-image {
-  background: url("https://www.johnbelekios.com/wp-content/uploads/2017/04/JB.png");
+  background: url("/img/logo.png");
   background-position: center;
   background-size: cover;
 }
 
+.bg-install-image {
+  background: url("/img/logo.png");
+  background-position: center;
+  background-size: cover;
+  height: 430px;
+  margin-top: 215px;
+}
+.bg-register-image {
+  background: url("/img/logo.png");
+  background-position: center;
+  background-size: cover;
+  height: 430px;
+}
 .vault-top {
     float: right;
 }

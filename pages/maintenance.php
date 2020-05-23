@@ -133,7 +133,8 @@ if($_GET['do'] == 'backupDB'){
                               </tr>
                               <tr>
                                 <td colspan="2"><p class="alert-link">Notes:</p>
-                                <p class="bg-gray-100">File must be a valid sql backup</p></td>
+                                <p class="bg-gray-100">File must be a valid sql backup<br/>
+                                After a succesfull backup you will be automatically logged out</p></td>
                               </tr>
                             </table>
 </form>
