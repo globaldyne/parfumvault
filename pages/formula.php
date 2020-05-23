@@ -162,7 +162,7 @@ $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg F
 					  $limit_local = $ing_q;
 					  $conc = number_format($formula['quantity']/$mg['total_mg'] * 100, 2);
 					  //$total = $concentration / 100 * $sub;
-					  $conc_p = number_format($formula['concentration'] / 100 * $conc, 3);
+					  $conc_p = number_format($formula['concentration'] / 100 * $conc, 2);
 					  
 					  if($limit != null){
 						 if($limit < $conc_p){
