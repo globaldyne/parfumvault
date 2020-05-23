@@ -148,16 +148,18 @@ INSERT INTO `ingTypes` (`id`, `name`) VALUES
 DROP TABLE IF EXISTS `settings`;
 CREATE TABLE `settings` (
   `id` int(11) NOT NULL,
-  `logo` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `label_printer_addr` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `label_printer_model` varchar(225) COLLATE utf8_bin DEFAULT NULL,
   `label_printer_size` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `label_printer_font_size` int(11) DEFAULT 80,
-  `currency` varchar(40) COLLATE utf8_bin DEFAULT NULL
+  `currency` varchar(40) COLLATE utf8_bin DEFAULT NULL,
+  `top_n` varchar(10) COLLATE utf8_bin NOT NULL,
+  `heart_n` varchar(10) COLLATE utf8_bin NOT NULL,
+  `base_n` varchar(10) COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-INSERT INTO `settings` (`id`, `logo`, `label_printer_addr`, `label_printer_model`, `label_printer_size`, `label_printer_font_size`, `currency`) VALUES
-(1, NULL, '', NULL, '12', 70, NULL);
+INSERT INTO `settings` (`id`, `label_printer_addr`, `label_printer_model`, `label_printer_size`, `label_printer_font_size`, `currency`, `top_n`, `heart_n`, `base_n`) VALUES
+(1, '', NULL, '12', 70, NULL, '25', '50', '25');
 
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
@@ -206,7 +208,6 @@ ALTER TABLE `users`
   ADD PRIMARY KEY (`id`);
 
 
-
 ALTER TABLE `formulas`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
@@ -239,5 +240,3 @@ ALTER TABLE `settings`
 
 ALTER TABLE `users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
-
