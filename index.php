@@ -44,6 +44,9 @@ $ac_c = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE ty
 $eo_c = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE type = 'EO'"));
 $sup_c = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingSuppliers"));
 $ifra_c = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM IFRALibrary"));
+$all_ing_c = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"));
+$uncat_ing_c = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE type IS NULL"));
+$cat_c = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingCategory"));
 
 ?>
 <!DOCTYPE html>

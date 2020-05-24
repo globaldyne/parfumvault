@@ -87,7 +87,56 @@
                 </div>
               </div>
             </div> 
-                            
+          
+           <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-success text-uppercase mb-1">All Ingredients</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $all_ing_c; ?></div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-university fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div> 
+            
+           <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Uncategorised Ingredients</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $uncat_ing_c; ?></div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-university fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>   
+            
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Categories</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $cat_c; ?></div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-university fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+                              
           </div>
           <div>
         </div>
