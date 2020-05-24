@@ -79,12 +79,8 @@ $res_ingSupplier = mysqli_query($conn, "SELECT id,name FROM ingSuppliers");
 $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles");
 
 ?>
-
-          <!-- Page Heading -->
-          <h1 class="h1 mb-4 text-gray-800"><a href="/?do=ingredients"> New Ingredient</a></h1>
-
-        </div>
-        <!-- /.container-fluid -->
+       <h1 class="h1 mb-4 text-gray-800"><a href="/?do=ingredients"> New Ingredient</a></h1>
+       </div>
 <table width="100%" border="0">
         <tr>
           <td><div class="form-group">  
@@ -105,7 +101,7 @@ $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles");
                                 <td>&nbsp;</td>
                               </tr>
                               <tr>
-                                <td>IFRA Limit %:</td>
+                                <td>Cat4 Limit %:</td>
                                 <td><input name="IFRA" type="text" class="form-control ing_list" id="IFRA"></td>
                                 <td>&nbsp;</td>
                               </tr>

@@ -122,7 +122,7 @@ $.ajax({
     <div id="wrap">
         <div class="container">
 <div class="list-group-item-info">
-        <h1 class="badge-primary"><a href="/?do=ingredients"><?php echo $ing['name']; ?></a></h1>
+        <h1 class="badge-primary"><?php echo $ing['name']; ?></h1>
 
         </div>
 <table width="100%" border="0">
@@ -139,7 +139,7 @@ $.ajax({
                                 <td colspan="3"><input name="cas" type="text" class="form-control" id="cas" value="<?php echo $ing['cas']; ?>"></td>
                               </tr>
                               <tr>
-                                <td>IFRA Cat4 Limit %:</td>
+                                <td> Cat4 Limit %:</td>
                                 <td colspan="3">
                                 <?php
 								 	if($limit = searchIFRA($ing['cas'], $ing['name'],$dbhost,$dbuser,$dbpass,$dbname)){
