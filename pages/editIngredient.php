@@ -143,7 +143,7 @@ $.ajax({
                                 <td colspan="3">
                                 <?php
 								 	if($limit = searchIFRA($ing['cas'], $ing['name'],$dbhost,$dbuser,$dbpass,$dbname)){
-										echo $limit.' (Value retrieved from your IFRA Library)';
+										echo $limit;
 									}else{
 								?>
                                 <input name="IFRA" type="text" class="form-control" id="IFRA" value="<?php echo $ing['IFRA']; ?>">
