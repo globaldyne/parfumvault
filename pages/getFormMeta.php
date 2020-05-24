@@ -86,7 +86,8 @@ $(document).ready(function(){
              {value: 'oriental', text: 'Oriental'},
              {value: 'woody', text: 'Woody'},
              {value: 'floral', text: 'Floral'},
-             {value: 'fresh', text: 'Fresh'}
+             {value: 'fresh', text: 'Fresh'},
+             {value: 'other', text: 'Other'},
           ]
     });
   

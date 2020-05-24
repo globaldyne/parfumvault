@@ -76,6 +76,7 @@ if(isset($_POST["import"]) && ($_POST['name'])){
                                         <option value="woody">Woody</option>
                                         <option value="floral">Floral</option>
                                         <option value="fresh">Fresh</option>
+                                        <option value="other">Other</option>
                                  </select>
                                 </td>
                               </tr>

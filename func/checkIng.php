@@ -8,7 +8,7 @@ function checkIng($ingredient,$dbhost, $dbuser, $dbpass, $dbname){
 
 	if(mysqli_num_rows($chk)){
 		while ($qValues=mysqli_fetch_array($chk)){
-			$chkIFRA = mysqli_fetch_array(mysqli_query($conn, "SELECT cat4 FROM IFRALibrary WHERE  name = '$qValues[name]' OR synonyms LIKE '%$qValues[name]%'"));
+			$chkIFRA = mysqli_fetch_array(mysqli_query($conn, "SELECT cat4 FROM IFRALibrary WHERE  name = '$qValues[name]' OR synonyms LIKE '%$qValues[name]%' OR cas LIKE '%$cas%'"));
 			if(empty($chkIFRA['cat4']) && empty($qValues['IFRA'])){
 				return '<a href="#" class="fas fa-exclamation" rel="tipsy" title="Missing IFRA data"></a>';
 			//}else

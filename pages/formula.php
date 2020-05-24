@@ -149,7 +149,9 @@ $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg F
                       <td align="center"><a href="/pages/editIngredient.php?id='.$formula['ingredient'].'" class="popup-link">'.$formula['ingredient'].'</a> '.checkIng($formula['ingredient'],$dbhost, $dbuser, $dbpass, $dbname).'</td>
                       <td data-name="concentration" class="concentration" data-type="text" align="center" data-pk="'.$formula['ingredient'].'">'.$formula['concentration'].'</td>';
 					  //TODO: Search by cas as well
-					  if($limit = searchIFRA(null,$formula['ingredient'],$dbhost,$dbuser,$dbpass,$dbname)){
+					  $cas = mysqli_fetch_array(mysqli_query($conn, "SELECT cas FROM ingredients WHERE name = '$formula[ingredient]'"));
+					 
+					 if($limit = searchIFRA($cas['cas'],$formula['ingredient'],$dbhost,$dbuser,$dbpass,$dbname)){
 
 						//$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT price,ml,profile FROM ingredients WHERE name = '$formula[ingredient]'"));
 
@@ -167,19 +169,19 @@ $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg F
 					  
 					  if($limit != null){
 						 if($limit < $conc_p){
-							$IFRA_WARN = 'class="alert-danger"';
+							$IFRA_WARN = 'class="alert-danger"';//VALUE IS TO HIGH AGAINST IFRA
 					  	}else{
-							$IFRA_WARN = 'class="alert-success"';
+							$IFRA_WARN = 'class="alert-success"'; //VALUE IS OK
 						}
 					  }else
 					  if($limit_local['IFRA'] != null){
 					  	if($limit_local['IFRA'] < $conc_p){
-							$IFRA_WARN = 'class="alert-danger"';
+							$IFRA_WARN = 'class="alert-danger"'; //VALUE IS TO HIGH AGAINST LOCAL DB
 					  	}else{
-							$IFRA_WARN = 'class="alert-success"';
+							$IFRA_WARN = 'class="alert-success"'; //VALUE IS OK
 						}
 					  }else{
-						  $IFRA_WARN = 'class="alert-warning"';
+						  $IFRA_WARN = 'class="alert-warning"'; //NO RECORD FOUND
 					  }
 					  echo'<td data-name="quantity" class="quantity" data-type="text" align="center" data-pk="'.$formula['ingredient'].'">'.$formula['quantity'].'</td>';
 					  echo'<td align="center" '.$IFRA_WARN.'>'.$conc_p.'%</td>';
@@ -187,6 +189,7 @@ $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg F
 					  echo '<td class="noexport" align="center"><a href="/?do=Formula&action=deleteIng&name='.$formula['name'].'&id='.$formula['id'].'&ing='.$formula['ingredient'].'" onclick="return confirm(\'Remove '.$formula['ingredient'].' from formula?\');" class="fas fa-trash" rel="tipsy" title="Remove '.$formula['ingredient'].'"></a></td>
                     </tr>';
 					$tot[] = calcCosts($ing_q['price'],$formula['quantity'], $formula['concentration'], $ing_q['ml']);
+					$conc_tot[] = $conc_p;
 				  }
                   ?>
                     </tr>
@@ -195,8 +198,8 @@ $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg F
                     <tr>
                       <th width="22%"></th>
                       <th></th>
-                      <th width="15%" align="right"><p>Total: <?php echo number_format($mg['total_mg'], 2); ?> mg</p></th>
-                      <th width="15%"></th>
+                      <th width="15%" align="right"><p>Total: <?php echo number_format($mg['total_mg'], 2); ?>mg</p></th>
+                      <th width="15%">Total <?php echo array_sum($conc_tot);?>%</th>
                       <th width="15%" align="right">Cost: <?php echo utf8_encode($settings['currency']).number_format(array_sum($tot),2);?> <a href="#" class="fas fa-question-circle" rel="tipsy" title="Total cost"></a></th>
                       <th class="noexport" width="15%"></th>
                     </tr>
