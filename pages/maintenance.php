@@ -1,17 +1,16 @@
 <?php require('../inc/sec.php');?>
-
 <?php
 require_once('../inc/config.php');
 require_once('../inc/opendb.php');
 if($_GET['do'] == 'backupDB'){
 	
-	$file = 'backup-'.date("d-m-Y").'.sql';
-	$mime = "text/sql";
+	$file = 'backup-'.date("d-m-Y").'.sql.gz';
+	$mime = "application/x-gzip";
 	
 	header( 'Content-Type: '.$mime );
 	header( 'Content-Disposition: attachment; filename="' .$file. '"' );
 	
-	$cmd = "mysqldump -u $dbuser --password=$dbpass $dbname";   
+	$cmd = "mysqldump -u $dbuser --password=$dbpass $dbname | gzip --best";   
 	passthru($cmd);
 	
 }elseif(isset($_POST['restore'])){
