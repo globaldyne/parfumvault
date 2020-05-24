@@ -1,7 +1,5 @@
 <?php if (!defined('pvault_panel')){ die('Not Found');}  ?>
-
 <?php
-
 $f_name =  mysqli_real_escape_string($conn, $_GET['name']);
 
 if($_GET['action'] == 'printLabel' && $_GET['name']){
@@ -129,6 +127,9 @@ $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg F
                         <a class="dropdown-item" id="csv" href="#">Export to CSV</a>
                         <a class="dropdown-item" href="/?do=Formula&action=printLabel&name=<?php echo $f_name; ?>" onclick="return confirm('Print label?');">Print Label</a>
                         <a class="dropdown-item popup-link" href="/pages/viewPyramid.php?formula=<?php echo $f_name; ?>">View Pyramid</a>
+                        <a class="dropdown-item" href="/pages/manageFormula.php?do=multiply&formula=<?php echo $f_name; ?>">Multiply x2</a>
+                        <a class="dropdown-item" href="/pages/manageFormula.php?do=divide&formula=<?php echo $f_name; ?>">Divide x2</a>
+
                       </div>
                     </div>
                     </tr>
@@ -137,7 +138,7 @@ $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg F
                       <th width="11%">Strength %</th>
                       <th width="15%">Quantity</th>
                       <th width="15%">Concentration*</th>
-                      <th width="15%">Cost <a href="#" class="fas fa-question-circle" rel="tipsy" title="Cost per used quantity, if ingredient concentration is not given then assuming 10ml"></a></th>
+                      <th width="15%">Cost</th>
                       <th class="noexport" width="15%">Actions</th>
                     </tr>
                   </thead>
@@ -185,7 +186,7 @@ $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg F
 					  echo '<td align="center">'.utf8_encode($settings['currency']).calcCosts($ing_q['price'],$formula['quantity'], $formula['concentration'], $ing_q['ml']).'</td>';
 					  echo '<td class="noexport" align="center"><a href="/?do=Formula&action=deleteIng&name='.$formula['name'].'&id='.$formula['id'].'&ing='.$formula['ingredient'].'" onclick="return confirm(\'Remove '.$formula['ingredient'].' from formula?\');" class="fas fa-trash" rel="tipsy" title="Remove '.$formula['ingredient'].'"></a></td>
                     </tr>';
-					$tot[] = calcCosts($ing_q['price'],$formula['quantity'], $ing_q['ml']);
+					$tot[] = calcCosts($ing_q['price'],$formula['quantity'], $formula['concentration'], $ing_q['ml']);
 				  }
                   ?>
                     </tr>

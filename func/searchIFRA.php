@@ -12,8 +12,8 @@ function searchIFRA($cas,$name,$dbhost,$dbuser,$dbpass,$dbname){
 		$res = mysqli_fetch_array(mysqli_query($conn, "SELECT risk,cat4 FROM IFRALibrary WHERE $q"));
 	if($res){
 		return $res['cat4'].' - '.$res['risk'];
-	}else{
-		return 'N/A';
+	//}else{
+	//	return 'N/A';
 	}
 }
 ?>
