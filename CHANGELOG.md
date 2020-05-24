@@ -10,8 +10,10 @@
 **FIX:** Metadata duplicate entries
 **FIX:** Cost calculation to include strength %
 **FIX:** Concentration calculation to include strength %
+**FIX:** Total cost calculation
 **ADD:** Product Branding
 **ADD:** User Avatar
+**ADD:** Multiply or divide all formula quantity
 **ADD:** Pyramid values can now be set in settings page
 
 
