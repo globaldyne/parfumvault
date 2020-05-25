@@ -148,7 +148,6 @@ $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg F
                     <tr>
                       <td align="center"><a href="/pages/editIngredient.php?id='.$formula['ingredient'].'" class="popup-link">'.$formula['ingredient'].'</a> '.checkIng($formula['ingredient'],$dbhost, $dbuser, $dbpass, $dbname).'</td>
                       <td data-name="concentration" class="concentration" data-type="text" align="center" data-pk="'.$formula['ingredient'].'">'.$formula['concentration'].'</td>';
-					  //TODO: Search by cas as well
 					  $cas = mysqli_fetch_array(mysqli_query($conn, "SELECT cas FROM ingredients WHERE name = '$formula[ingredient]'"));
 					 
 					 if($limit = searchIFRA($cas['cas'],$formula['ingredient'],$dbhost,$dbuser,$dbpass,$dbname)){
@@ -162,7 +161,7 @@ $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg F
 					  //}
 					  //TODO: FIX THIS
 					  $ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT IFRA,price,ml,profile FROM ingredients WHERE name = '$formula[ingredient]'"));
-					  $limit_local = $ing_q;
+					  //$limit_local = $ing_q;
 					  $conc = number_format($formula['quantity']/$mg['total_mg'] * 100, 2);
 					  //$total = $concentration / 100 * $sub;
 					  $conc_p = number_format($formula['concentration'] / 100 * $conc, 2);
@@ -174,8 +173,8 @@ $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg F
 							$IFRA_WARN = 'class="alert-success"'; //VALUE IS OK
 						}
 					  }else
-					  if($limit_local['IFRA'] != null){
-					  	if($limit_local['IFRA'] < $conc_p){
+					  if($ing_q['IFRA'] != null){
+					  	if($ing_q['IFRA'] < $conc_p){
 							$IFRA_WARN = 'class="alert-danger"'; //VALUE IS TO HIGH AGAINST LOCAL DB
 					  	}else{
 							$IFRA_WARN = 'class="alert-success"'; //VALUE IS OK
