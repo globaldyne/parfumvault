@@ -17,6 +17,7 @@
 - ADD: User Avatar
 - ADD: Multiply or divide all formula quantity
 - ADD: Pyramid values can now be set in settings page
+- ADD: New Dashboard layout
 
 
 ### Version 0.1.7
@@ -49,8 +50,8 @@
 - ADD: Display ingredients in Pyramid view
 
 ### Version 0.1.2
-- ADD:** CSV import function
-- FIX:** metadata delete
+- ADD: CSV import function
+- FIX: metadata delete
 
 ### Version 0.1.1 
 - ADD: Checking of critical ingredient data missing
