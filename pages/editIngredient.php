@@ -108,9 +108,11 @@ $.ajax({
     data: {
 		name: "<?php if($ing['cas']){ echo $ing['cas']; }else{ echo $ing['name'];}?>"
 		},
-    dataType: 'text',
+    //dataType: 'text',
+	dataType: 'html',
     success: function (data) {
-      $("#odor").val(data); 
+      //$("#odor").val(data); 
+	  $('#TGSC').html(data);
     }
   });
 
@@ -235,11 +237,12 @@ $.ajax({
                               </tr>
                               <tr>
                                 <td valign="top">Odor:</td>
-                                <td width="34%"><input name="odor" id="odor" type="text" class="form-control" value="<?php echo $ing['odor']; ?>"/> 
-                                
+                                <td width="66%"><div id='TGSC'><input name="odor" id="odor" type="text" class="form-control" value="<?php echo $ing['odor']; ?>"/></div>
                                 </td>
-                                <td width="32%">&nbsp;</td>
-                                <td width="14%"><a href="javascript:search();" id="search">Try TGSC</a></td>
+                                <?php if(file_exists('searchTGSC.php')){?>
+                                <td width="2%">&nbsp;</td>
+                                <td width="12%"><a href="javascript:search();" id="search">Try TGSC</a></td>
+                                <?php } ?>
                               </tr>
                               <tr>
                                 <td valign="top">Notes:</td>

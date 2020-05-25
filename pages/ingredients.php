@@ -63,7 +63,7 @@ $ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC
 				  while ($ingredient = mysqli_fetch_array($ingredient_q)) {
 					  echo'
                     <tr>
-                      <td align="center"><a href="pages/getIngInfo.php?id='.$ingredient['id'].'" class="popup-link">'.$ingredient['name'].'</a></td>';
+                      <td align="center"><a href="pages/editIngredient.php?id='.$ingredient['name'].'" class="popup-link">'.$ingredient['name'].'</a></td>';
 					  if($ingredient['cas']){
 						  echo '<td align="center">'.$ingredient['cas'].'</td>';
 					  }else{
