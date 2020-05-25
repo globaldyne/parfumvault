@@ -16,14 +16,15 @@ This is a FREE software provided as is without ANY warranty under MIT license.
 * Formula export
 * CSV Import
 * IFRA Library
-	Import IFRA xls
-	Auto search IFRA Library for you ingredients and retrieve Cat4 limit
+* Import IFRA xls
+* Auto search IFRA Library for you ingredients and retrieve Cat4 limit
+
 
 # Docker Image
 
 To run from docker:
 
-    docker run -p 8080:80  -v <yourpath>/localdb:/var/lib/mysql -v <yourpath>localupload:/var/www/html/uploads globaldyne/jbvault:latest
+    docker run -p 8080:80  -v <yourpath>/local/db:/var/lib/mysql -v <yourpath>local/uploads:/var/www/html/uploads globaldyne/jbvault:latest
 
 then point your browser to http://localhost:8080
 
