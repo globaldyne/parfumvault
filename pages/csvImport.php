@@ -30,11 +30,9 @@ if(isset($_POST["import"]) && ($_POST['name'])){
 			if($res){
 				mysqli_query($conn, "INSERT INTO formulasMetaData (name,notes,profile) VALUES ('$name','Imported via csv','$profile')");
 				$msg='<div class="alert alert-success alert-dismissible">
-				<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
 				<strong>'.$name.'</strong> added!</div>';
 			}else{
 				$msg='<div class="alert alert-danger alert-dismissible">
-				<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
 				<strong>Error adding: </strong>'.$name;
 			}
 			fclose($file);  
