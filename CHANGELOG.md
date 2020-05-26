@@ -18,6 +18,7 @@
 - ADD: Multiply or divide all formula quantity
 - ADD: Pyramid values can now be set in settings page
 - ADD: New Dashboard layout
+- ADD: Purity levels
 
 
 ### Version 0.1.7
