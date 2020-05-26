@@ -23,6 +23,7 @@ if($_POST['name']){
 	$ml = mysqli_real_escape_string($conn, $_POST["ml"]);
 	$notes = mysqli_real_escape_string($conn, $_POST["notes"]);
 	$odor = mysqli_real_escape_string($conn, $_POST["odor"]);
+	$purity = mysqli_real_escape_string($conn, $_POST["purity"]);
 
 	if(!empty($_FILES['SDS']['name'])){
       $file_name = $_FILES['SDS']['name'];
@@ -54,7 +55,7 @@ if($_POST['name']){
 		</div>';
 	}else{
 		
-		if(mysqli_query($conn, "INSERT INTO ingredients (name, cas, type, strength, SDS, IFRA, category, supplier, supplier_link, profile, price, tenacity, chemical_name, flash_point, appearance, notes, ml, odor) VALUES ('$name', '$cas', '$type', '$strength', '$SDSF', '$IFRA', '$category', '$supplier', '$supplier_link', '$profile', '$price', '$tenacity', '$chemical_name', '$flash_point', '$appearance', '$notes', '$ml', '$odor')")){
+		if(mysqli_query($conn, "INSERT INTO ingredients (name, cas, type, strength, SDS, IFRA, category, supplier, supplier_link, profile, price, tenacity, chemical_name, flash_point, appearance, notes, ml, odor, purity) VALUES ('$name', '$cas', '$type', '$strength', '$SDSF', '$IFRA', '$category', '$supplier', '$supplier_link', '$profile', '$price', '$tenacity', '$chemical_name', '$flash_point', '$appearance', '$notes', '$ml', '$odor', '$purity')")){
 			$msg.='<div class="alert alert-success alert-dismissible">
 			<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
   			Ingredient <strong>'.$name.'</strong> added!
@@ -90,9 +91,9 @@ $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles");
                                 <td colspan="3"><?php echo $msg; ?></td>
                               </tr>
                               <tr>
-                                <td width="14%">Name:</td>
-                                <td width="20%"><input name="name" type="text" class="form-control ing_list" id="name"></td>
-                                <td width="66%">&nbsp;</td>
+                                <td width="6%">Name:</td>
+                                <td width="34%"><input name="name" type="text" class="form-control ing_list" id="name"></td>
+                                <td width="60%">&nbsp;</td>
                               </tr>
                               <tr>
                                 <td>CAS #:</td>
@@ -102,6 +103,11 @@ $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles");
                               <tr>
                                 <td>Cat4 Limit %:</td>
                                 <td><input name="IFRA" type="text" class="form-control ing_list" id="IFRA"></td>
+                                <td>&nbsp;</td>
+                              </tr>
+                              <tr>
+                                <td>Purity %:</td>
+                                <td><input name="purity" type="text" class="form-control ing_list" id="purity" value="100" /></td>
                                 <td>&nbsp;</td>
                               </tr>
                               <tr>

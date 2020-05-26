@@ -62,7 +62,7 @@ function printLabel() {
 $("#msg").html('<div class="alert alert-info alert-dismissible">Printing...</div>');
 
 $.ajax({ 
-    url: '/pages/manageFormula.php?do=printLabel', 
+    url: '/pages/manageFormula.php', 
 	type: 'get',
     data: {
 		action: "printLabel",
@@ -75,6 +75,27 @@ $.ajax({
   });
 
 };
+$(document).ready(function(){
+$('#ingredient').on('change', function(){
+
+$.ajax({ 
+    url: '/pages/getIngInfo.php', 
+	type: 'get',
+    data: {
+		filter: "purity",
+		name: $(this).val()
+		},
+	dataType: 'html',
+    success: function (data) {
+	  $('#concentration').val(data);
+    }
+  });
+
+										   
+})
+	
+});
+
 </script>
 <div id="content-wrapper" class="d-flex flex-column">
 <?php require_once('pages/top.php'); ?>
@@ -90,7 +111,7 @@ $.ajax({
                   <tr>
                     <th colspan="6">
                       <form action="/?do=Formula&name=<?php echo $f_name; ?>&action=addIng" method="post" enctype="multipart/form-data" name="form1" id="form1">
-                         <table width="100%" border="0" class="table table-bordered">
+                         <table width="100%" border="0" class="table">
                                     <tr>  
                                          <td>
                                          <select name="ingredient" id="ingredient" class="form-control selectpicker" data-live-search="true">
@@ -102,7 +123,7 @@ $.ajax({
 										 ?>
                                          </select>                                         
                                          </td>
-                                         <td><input type="text" name="concentration" placeholder="Concentration %" class="form-control" /></td>
+                                         <td><input type="text" name="concentration" id="concentration" placeholder="Concentration %" class="form-control" /></td>
                                          <td><input type="text" name="quantity" placeholder="Quantity" class="form-control" /></td>  
                                          <td><input type="submit" name="add" id="add" class="btn btn-info" value="Add" /> </td>  
                                     </tr>  
@@ -221,7 +242,7 @@ $(document).ready(function(){
   type: "POST",
   dataType: 'json',
       success: function(response, newValue) {
-        if(response.status == 'error') return response.msg;
+        if(response.status == 'error') return response.msg; else location.reload();
     },
   validate: function(value){
    if($.trim(value) == ''){
@@ -240,6 +261,9 @@ $(document).ready(function(){
   title: 'Strength %',
   type: "POST",
   dataType: 'json',
+        success: function(response, newValue) {
+        if(response.status == 'error') return response.msg; else location.reload();
+    },
   validate: function(value){
    if($.trim(value) == ''){
     return 'This field is required';
