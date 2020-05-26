@@ -2,30 +2,6 @@
 <?php
 $f_name =  mysqli_real_escape_string($conn, $_GET['name']);
 
-if($_GET['action'] == 'printLabel' && $_GET['name']){
-	$lbl = imagecreatetruecolor(720, 260);
-
-	$white = imagecolorallocate($lbl, 255, 255, 255);
-	$black = imagecolorallocate($lbl, 0, 0, 0);	
-	
-	imagefilledrectangle($lbl, 0, 0, 720, 260, $white);
-	
-	$text = trim($_GET['name']);
-	$font = './fonts/Arial.ttf';
-	
-	imagettftext($lbl, $settings['label_printer_font_size'], 0, 0, 150, $black, $font, $text);
-	$lblF = imagerotate($lbl, 90 ,0);
-	
-	$save = "tmp/labels/".base64_encode($text.'png');
-	if(imagepng($lblF, $save)){
-		imagedestroy($lblF);
-		shell_exec('/usr/bin/brother_ql -m '.$settings['label_printer_model'].' -p tcp://'.$settings['label_printer_addr'].' print -l '.$settings['label_printer_size'].' '. $save);
-			$msg = '<div class="alert alert-success alert-dismissible">
-					<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-					Print sent!
-					</div>';
-	}
-}
 
 if($_GET['action'] == 'deleteIng' && $_GET['id'] && $_GET['ing']){
 	$id = mysqli_real_escape_string($conn, $_GET['id']);
@@ -81,7 +57,25 @@ $formula_q = mysqli_query($conn, "SELECT * FROM formulas WHERE name = '$f_name' 
 $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE name = '$f_name'"));
 
 ?>
+<script>
+function printLabel() {	  
+$("#msg").html('<div class="alert alert-info alert-dismissible">Printing...</div>');
 
+$.ajax({ 
+    url: '/pages/manageFormula.php?do=printLabel', 
+	type: 'get',
+    data: {
+		action: "printLabel",
+		name: "<?php echo $f_name; ?>"
+		},
+	dataType: 'html',
+    success: function (data) {
+	  $('#msg').html(data);
+    }
+  });
+
+};
+</script>
 <div id="content-wrapper" class="d-flex flex-column">
 <?php require_once('pages/top.php'); ?>
         <div class="container-fluid">
@@ -91,7 +85,7 @@ $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg F
               <h2 class="m-0 font-weight-bold text-primary"><a href="?do=Formula&name=<?php echo $f_name; ?>"><?php echo $f_name; ?></a></h2>
             </div>
             <div class="card-body">
-            <?php echo $msg; ?>
+           <div id="msg"><?php echo $msg; ?></div>
               <div>
                   <tr>
                     <th colspan="6">
@@ -125,7 +119,7 @@ $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg F
                       <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
                       <div class="dropdown-menu">
                         <a class="dropdown-item" id="csv" href="#">Export to CSV</a>
-                        <a class="dropdown-item" href="/?do=Formula&action=printLabel&name=<?php echo $f_name; ?>" onclick="return confirm('Print label?');">Print Label</a>
+                        <a class="dropdown-item" href="javascript:printLabel();" onclick="return confirm('Print label?');">Print Label</a>
                         <a class="dropdown-item popup-link" href="/pages/viewPyramid.php?formula=<?php echo $f_name; ?>">View Pyramid</a>
                         <a class="dropdown-item" href="/pages/manageFormula.php?do=multiply&formula=<?php echo $f_name; ?>">Multiply x2</a>
                         <a class="dropdown-item" href="/pages/manageFormula.php?do=divide&formula=<?php echo $f_name; ?>">Divide x2</a>

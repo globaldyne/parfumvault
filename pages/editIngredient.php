@@ -101,7 +101,7 @@ if(empty(mysqli_num_rows($sql))){
 
 <script>
 function search() {	  
-	$("#odor").val('Loading...');
+$("#odor").val('Loading...');
 $.ajax({ 
     url: '/pages/searchTGSC.php', 
 	type: 'get',
