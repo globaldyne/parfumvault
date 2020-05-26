@@ -379,6 +379,7 @@ $(function() {
               <option value="50">50 mm</option>
               <option value="54">54 mm</option>
               <option value="62">62 mm</option>
+              <option value="62 --red">62 RED mm</option>
               <option value="102">102 mm</option>
               <option value="17x54">17x54 mm</option>
               <option value="17x87">17x87 mm</option>
