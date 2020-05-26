@@ -231,7 +231,7 @@ $(function() {
 	 </div>
      <div id="suppliers">
        <form id="form" name="form" method="post" action="/?do=settings&update=suppliers#suppliers">
-      <table width="100%" border="0"  class="table table-striped table-sm">
+      <table width="100%" border="0" class="table table-striped table-sm">
               <tr>
                 <td colspan="7"><?php echo $msg; ?></td>
               </tr>

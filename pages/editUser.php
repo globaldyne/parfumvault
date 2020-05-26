@@ -13,16 +13,16 @@ if($_GET['id']){
 		$filename = $_FILES["avatar"]["tmp_name"];  
     	$file_ext = strtolower(end(explode('.',$_FILES['avatar']['name'])));
 		$file_tmp = $_FILES['avatar']['tmp_name'];
-    	$ext = explode(',' , array($allowed_ext));
-
+    	$ext = explode(', ',strtolower($allowed_ext));
+		
 		if($filename){
-			if(in_array($file_ext,$ext)=== false){
+			if(in_array($file_ext,$ext)===false){
 				echo '<div class="alert alert-danger alert-dismissible"><strong>File upload error: </strong>Extension not allowed, please choose a '.$allowed_ext.' file.</div>';
 			}else{
 				if($_FILES["avatar"]["size"] > 0){
 					move_uploaded_file($file_tmp,"../uploads/logo/".base64_encode($filename));
 					$avatar = "../uploads/logo/".base64_encode($filename);
-					if(mysqli_query($conn, "UPDATE users SET avatar='$avatar'")){
+					if(mysqli_query($conn, "UPDATE users SET avatar = '$avatar' WHERE id = '$id'")){
 						$msg = '<div class="alert alert-success alert-dismissible">User avatar updated!</div>';
 					}
 				}
@@ -52,9 +52,11 @@ $user = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM users WHERE id = '
 ?>
 <link href="../css/sb-admin-2.css" rel="stylesheet">
 <link href="../css/bootstrap.min.css" rel="stylesheet">
+<script src="../js/jquery/jquery.min.js"></script>
+
 <script>
 $(function() {
-  $("#password").val('');
+  $("#password").val(null);
 });
 </script>
 <style>
