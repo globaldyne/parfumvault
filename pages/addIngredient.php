@@ -1,5 +1,4 @@
 <?php if (!defined('pvault_panel')){ die('Not Found');}  ?>
-
 <div class="container-fluid">
 <?php require_once('pages/top.php'); ?>
 <?php 

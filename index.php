@@ -1,5 +1,4 @@
 <?php
-
 require('./inc/sec.php');
 if(file_exists('./inc/config.php') == FALSE){
 	session_destroy();
@@ -166,14 +165,6 @@ $(document).ready(function() {
         <a class="nav-link" href="/?do=settings">
           <i class="fas fa-fw fa-cog"></i>
           <span>Settings</span></a>
-      </li>
-      
-      <hr class="sidebar-divider d-none d-md-block">
-      
-        <li class="nav-item">
-        <a class="nav-link" href="/?do=logout">
-          <i class="fas fa-fw fa-sign-out-alt"></i>
-          <span>Logout</span></a>
       </li>
       
       <hr class="sidebar-divider d-none d-md-block">

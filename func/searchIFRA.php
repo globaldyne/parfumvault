@@ -10,10 +10,13 @@ function searchIFRA($cas,$name,$dbhost,$dbuser,$dbpass,$dbname){
 			$q = "name = '$name' OR synonyms LIKE '%$name%'";
 		}
 			
-		$res = mysqli_fetch_array(mysqli_query($conn, "SELECT risk,cat4 FROM IFRALibrary WHERE $q"));
+		$res = mysqli_fetch_array(mysqli_query($conn, "SELECT risk,cat4,type FROM IFRALibrary WHERE $q"));
 		if($res){
-			return $res['cat4'].' - '.$res['risk'];
-		//}else{
+			if(!$res['cat4']){
+				return $res['type'].' - '.$res['risk'];
+			}else{
+				return $res['cat4'].' - '.$res['risk'];
+			}
 		//	return 'N/A';
 		}
 	}
