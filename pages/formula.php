@@ -150,7 +150,7 @@ $.ajax({
                     </tr>
                     <tr>
                       <th width="22%">Ingredient</th>
-                      <th width="11%">Strength %</th>
+                      <th width="11%">Purity %</th>
                       <th width="15%">Quantity</th>
                       <th width="15%">Concentration*</th>
                       <th width="15%">Cost</th>
