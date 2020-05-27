@@ -106,3 +106,9 @@ a { text-decoration: none; }
 .vault-top {
     float: right;
 }
+.alert-dismissable .close, .alert-dismissible .close {
+    position: relative;
+    top: -10px;
+    right: -21px;
+    color: inherit;
+}

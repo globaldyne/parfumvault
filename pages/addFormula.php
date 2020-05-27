@@ -49,21 +49,24 @@ $res_ing = mysqli_query($conn, "SELECT id,name FROM ingredients ORDER BY name AS
 ?>
 <script>
 $(document).ready(function(){  
-      var i=1;  
-      $('#add').click(function(){  
-           i++;  
-           $('#dynamic_field').append('<tr id="row'+i+'"><td>Ingredient '+i+'</td><td><select name="ingredient[]" id="ingredient[]" class="form-control ing_list"><?php
-										 	while ($r_ing = mysqli_fetch_array($res_ing)){
-												echo '<option value="'.$r_ing['name'].'">'.$r_ing['name'].'</option>';
-											}
-										 ?></select></td><td><input type="text" name="concentration[]" placeholder="Concentration %" class="form-control ing_list" /></td><td><input type="text" name="quantity[]" placeholder="Quantity mg" class="form-control ing_list" /></td><td><button type="button" name="remove" id="'+i+'" class="btn btn-danger btn_remove">-</button></td></tr>');  
-      });  
-      $(document).on('click', '.btn_remove', function(){  
-           var button_id = $(this).attr("id");   
-           $('#row'+button_id+'').remove();  
-      });  
+   var i=1;  
+    $('#add').click(function(){  
+       i++;  
+       $('#dynamic_field').append('<tr id="row'+i+'"><td>Ingredient '+i+'</td><td><select name="ingredient[]" id="ingredient[]" class="form-control"><?php
+								while ($r_ing = mysqli_fetch_array($res_ing)){
+									echo '<option value="'.$r_ing['name'].'">'.$r_ing['name'].'</option>';
+								}
+								?></select></td><td><input type="text" name="concentration[]" id="concentration[]" placeholder="Purity %" class="form-control" /></td><td><input type="text" name="quantity[]" placeholder="Quantity mg" class="form-control" /></td><td><button type="button" name="remove" id="'+i+'" class="btn btn-danger btn_remove">-</button></td></tr>');  
+});  
 
-})
+$(document).on('click', '.btn_remove', function(){  
+	var button_id = $(this).attr("id");   
+	$('#row'+button_id+'').remove();  
+});  
+
+
+});
+
 </script>
 <h2 class="m-0 mb-4 text-primary">New Formula</h2>
 <p>*All ingredient fields required</p>
@@ -107,7 +110,7 @@ $(document).ready(function(){
 										 ?>
                                          </select>
                                          </td>
-                                         <td><input type="text" name="concentration[]" placeholder="Concentration %" class="form-control" /></td>
+                                         <td><input type="text" name="concentration[]" id="concentration" placeholder="Purity %" class="form-control" /></td>
                                          <td><input type="text" name="quantity[]" placeholder="Quantity mg" class="form-control" /></td>  
                                          <td><button type="button" name="add" id="add" class="btn btn-success">+</button></td>  
                                     </tr>  

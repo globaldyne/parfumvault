@@ -2,56 +2,6 @@
 <?php
 $f_name =  mysqli_real_escape_string($conn, $_GET['name']);
 
-
-if($_GET['action'] == 'deleteIng' && $_GET['id'] && $_GET['ing']){
-	$id = mysqli_real_escape_string($conn, $_GET['id']);
-	$ing = mysqli_real_escape_string($conn, $_GET['ing']);
-	$fname = mysqli_real_escape_string($conn, $_GET['name']);
-
-	if(mysqli_query($conn, "DELETE FROM formulas WHERE id = '$id'")){
-		
-		$msg = '<div class="alert alert-success alert-dismissible">
-				<a href="?do=Formula&name='.$fname.'" class="close" data-dismiss="alert" aria-label="close">x</a>
-				'.$ing.' removed from the formula!
-				</div>';
-	}else{
-		$msg = '<div class="alert alert-danger alert-dismissible">
-				<a href="?do=Formula&name='.$fname.'" class="close" data-dismiss="alert" aria-label="close">x</a>
-				'.$ing.' cannot be removed from the formula!
-				</div>';
-	}
-}
-
-if($_GET['action'] == 'addIng' && $_POST['concentration'] && $_POST['quantity'] && $_POST['ingredient']){
-	$fname = mysqli_real_escape_string($conn, $_GET['name']);
-	$quantity = mysqli_real_escape_string($conn, $_POST['quantity']);
-	$concentration = mysqli_real_escape_string($conn, $_POST['concentration']);
-	$ingredient = mysqli_real_escape_string($conn, $_POST['ingredient']);
-	//$ingredient_id = mysqli_real_escape_string($conn, $_POST['ingredient']);
-	
-	if(mysqli_num_rows(mysqli_query($conn, "SELECT ingredient FROM formulas WHERE ingredient = '$ingredient' AND name = '$fname'"))){
-		$msg='<div class="alert alert-danger alert-dismissible">
-		<a href="?do=Formula&name='.$fname.'" class="close" data-dismiss="alert" aria-label="close">x</a>
-  		<strong>Error: </strong>'.$ingredient.' already exists in formula!
-		'.mysqli_error($conn).'
-		</div>';
-	}else{
-
-		if(mysqli_query($conn,"INSERT INTO formulas(fid,name,ingredient,ingredient_id,concentration,quantity) VALUES('".base64_encode($fname)."','$fname','$ingredient','$ingredient_id','$concentration','$quantity')")){
-			$msg = '<div class="alert alert-success alert-dismissible">
-					<a href="?do=Formula&name='.$fname.'" class="close" data-dismiss="alert" aria-label="close">x</a>
-					'.$ingredient.' added to formula!
-					</div>';
-		}else{
-			$msg = '<div class="alert alert-danger alert-dismissible">
-					<a href="?do=Formula&name='.$fname.'" class="close" data-dismiss="alert" aria-label="close">x</a>
-					Error adding '.$ingredient.'!
-					</div>';
-		}
-	}
-}
-
-
 $formula_q = mysqli_query($conn, "SELECT * FROM formulas WHERE name = '$f_name' ORDER BY ingredient ASC");
 
 $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE name = '$f_name'"));
@@ -75,6 +25,50 @@ $.ajax({
   });
 
 };
+//
+function deleteING(ingName,ingID) {	  
+$.ajax({ 
+    url: '/pages/manageFormula.php', 
+	type: 'get',
+    data: {
+		action: "deleteIng",
+		fname: "<?php echo $f_name; ?>",
+		ingID: ingID,
+		ing: ingName
+		},
+	dataType: 'html',
+    success: function (data) {
+		location.reload();
+	  	$('#msg').html(data);
+    }
+  });
+
+};
+//
+function addING(ingName,ingID) {	  
+$.ajax({ 
+    url: '/pages/manageFormula.php', 
+	type: 'get',
+    data: {
+		action: "addIng",
+		fname: "<?php echo $f_name; ?>",
+		quantity: $("#quantity").val(),
+		concentration: $("#concentration").val(),
+		ingredient: $("#ingredient").val()
+		},
+	dataType: 'html',
+    success: function (data) {
+        if ( data.indexOf("Error") > -1 ) {
+			$('#msg').html(data); 
+		}else{
+			$('#msg').html(data);
+			location.reload();
+		}
+    }
+  });
+
+};
+//
 $(document).ready(function(){
 $('#ingredient').on('change', function(){
 
@@ -89,11 +83,8 @@ $.ajax({
     success: function (data) {
 	  $('#concentration').val(data);
     }
-  });
-
-										   
+  });									   
 })
-	
 });
 
 </script>
@@ -110,7 +101,7 @@ $.ajax({
               <div>
                   <tr>
                     <th colspan="6">
-                      <form action="/?do=Formula&name=<?php echo $f_name; ?>&action=addIng" method="post" enctype="multipart/form-data" name="form1" id="form1">
+                      <form action="javascript:addING();" enctype="multipart/form-data" name="form1" id="form1">
                          <table width="100%" border="0" class="table">
                                     <tr>  
                                          <td>
@@ -123,8 +114,8 @@ $.ajax({
 										 ?>
                                          </select>                                         
                                          </td>
-                                         <td><input type="text" name="concentration" id="concentration" placeholder="Concentration %" class="form-control" /></td>
-                                         <td><input type="text" name="quantity" placeholder="Quantity" class="form-control" /></td>  
+                                         <td><input type="text" name="concentration" id="concentration" placeholder="Purity %" class="form-control" /></td>
+                                         <td><input type="text" name="quantity" id="quantity" placeholder="Quantity" class="form-control" /></td>  
                                          <td><input type="submit" name="add" id="add" class="btn btn-info" value="Add" /> </td>  
                                     </tr>  
                                </table>  
@@ -161,7 +152,7 @@ $.ajax({
                   <?php while ($formula = mysqli_fetch_array($formula_q)) {
 					  echo'
                     <tr>
-                      <td align="center"><a href="/pages/editIngredient.php?id='.$formula['ingredient'].'" class="popup-link">'.$formula['ingredient'].'</a> '.checkIng($formula['ingredient'],$dbhost, $dbuser, $dbpass, $dbname).'</td>
+                      <td align="center" id="ingredient"><a href="/pages/editIngredient.php?id='.$formula['ingredient'].'" class="popup-link">'.$formula['ingredient'].'</a> '.checkIng($formula['ingredient'],$dbhost, $dbuser, $dbpass, $dbname).'</td>
                       <td data-name="concentration" class="concentration" data-type="text" align="center" data-pk="'.$formula['ingredient'].'">'.$formula['concentration'].'</td>';
 					  $cas = mysqli_fetch_array(mysqli_query($conn, "SELECT cas FROM ingredients WHERE name = '$formula[ingredient]'"));
 					 
@@ -200,7 +191,7 @@ $.ajax({
 					  echo'<td data-name="quantity" class="quantity" data-type="text" align="center" data-pk="'.$formula['ingredient'].'">'.$formula['quantity'].'</td>';
 					  echo'<td align="center" '.$IFRA_WARN.'>'.$conc_p.'%</td>';
 					  echo '<td align="center">'.utf8_encode($settings['currency']).calcCosts($ing_q['price'],$formula['quantity'], $formula['concentration'], $ing_q['ml']).'</td>';
-					  echo '<td class="noexport" align="center"><a href="/?do=Formula&action=deleteIng&name='.$formula['name'].'&id='.$formula['id'].'&ing='.$formula['ingredient'].'" onclick="return confirm(\'Remove '.$formula['ingredient'].' from formula?\');" class="fas fa-trash" rel="tipsy" title="Remove '.$formula['ingredient'].'"></a></td>
+					  echo '<td class="noexport" align="center"><a href="javascript:deleteING(\''.$formula['ingredient'].'\', \''.$formula['id'].'\')" onclick="return confirm(\'Remove '.$formula['ingredient'].' from formula?\');" class="fas fa-trash" rel="tipsy" title="Remove '.$formula['ingredient'].'"></a></td>
                     </tr>';
 					$tot[] = calcCosts($ing_q['price'],$formula['quantity'], $formula['concentration'], $ing_q['ml']);
 					$conc_tot[] = $conc_p;
