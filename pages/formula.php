@@ -158,11 +158,12 @@ $.ajax({
                       <td data-name="concentration" class="concentration" data-type="text" align="center" data-pk="'.$formula['ingredient'].'">'.$formula['concentration'].'</td>';
 					  $cas = mysqli_fetch_array(mysqli_query($conn, "SELECT cas FROM ingredients WHERE name = '$formula[ingredient]'"));
 					 
-					 if($limit = searchIFRA($cas['cas'],$formula['ingredient'],$dbhost,$dbuser,$dbpass,$dbname)){
-
+					 //if($limitIFRA = searchIFRA($cas['cas'],$formula['ingredient'],$dbhost,$dbuser,$dbpass,$dbname)){
+						$limitIFRA = searchIFRA($cas['cas'],$formula['ingredient'],$dbhost,$dbuser,$dbpass,$dbname);
 						//$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT price,ml,profile FROM ingredients WHERE name = '$formula[ingredient]'"));
-
-					  }//else{
+						$limit = explode(' - ', $limitIFRA);
+						$limit = $limit['0'];
+					  //}//else{
 						  
 					 // 	$limit_local = mysqli_fetch_array(mysqli_query($conn, "SELECT IFRA,price,ml,profile FROM ingredients WHERE name = '$formula[ingredient]'"));
 					  
@@ -174,6 +175,7 @@ $.ajax({
 					  //$total = $concentration / 100 * $sub;
 					  $conc_p = number_format($formula['concentration'] / 100 * $conc, 2);
 					  
+					  //echo $formula[ingredient].$limit."\n";
 					  if($limit != null){
 						 if($limit < $conc_p){
 							$IFRA_WARN = 'class="alert-danger"';//VALUE IS TO HIGH AGAINST IFRA

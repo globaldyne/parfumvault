@@ -107,7 +107,7 @@ $(document).ready(function() {
     $('#tdData').DataTable({
 	    "paging":   true,
 		"info":   true,
-		"lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]]
+		"lengthMenu": [[20, 35, 60, -1], [20, 35, 60, "All"]]
 	});
 
 });  

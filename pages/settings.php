@@ -1,5 +1,4 @@
 <?php if (!defined('pvault_panel')){ die('Not Found');}?>
-
 <div id="content-wrapper" class="d-flex flex-column">
 <?php require_once('pages/top.php'); ?>
 <?php 
@@ -312,8 +311,8 @@ $(function() {
                   <?php while ($cat = mysqli_fetch_array($cat_q)) {
 					  echo'
                     <tr>
-                      <td data-name="name" class="name" data-type="text" align="center" data-pk="'.$cat['id'].'"><a href="#">'.$cat['name'].'</a></td>
-					  <td width="60%" data-name="notes" class="notes" data-type="text" align="left" data-pk="'.$cat['id'].'"align="left"><a href="#">'.wordwrap($cat['notes'], 150, "<br />\n").'</a></td>
+                      <td data-name="name" class="name" data-type="text" align="center" data-pk="'.$cat['id'].'">'.$cat['name'].'</td>
+					  <td width="60%" data-name="notes" class="notes" data-type="text" align="left" data-pk="'.$cat['id'].'"align="left">'.wordwrap($cat['notes'], 150, "<br />\n").'</td>
                       <td align="center"><a href="/?do=settings&action=delete&cat_id='.$cat['id'].'#categories" onclick="return confirm(\'Delete category '.$cat['name'].'?\');" class="fas fa-trash"></a></td>
 					</tr>';
 				  		}
