@@ -12,7 +12,7 @@ function formulaProfile($dbhost,$dbuser,$dbpass,$dbname, $profile, $sex){
                   <thead>
                     <tr>
                       <th width="14%">Name</th>
-                      <th width="20%">Notes</th>
+                      <th width="20%">Meta Data</th>
                       <th width="23%">Created</th>
                       <th width="21%">Actions</th>
                     </tr>

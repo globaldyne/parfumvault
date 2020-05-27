@@ -5,6 +5,7 @@ $f_name =  mysqli_real_escape_string($conn, $_GET['name']);
 $formula_q = mysqli_query($conn, "SELECT * FROM formulas WHERE name = '$f_name' ORDER BY ingredient ASC");
 
 $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE name = '$f_name'"));
+$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE name = '$f_name'"));
 
 ?>
 <script>
@@ -95,6 +96,7 @@ $.ajax({
           <div class="card shadow mb-4">
             <div class="card-header py-3">
               <h2 class="m-0 font-weight-bold text-primary"><a href="?do=Formula&name=<?php echo $f_name; ?>"><?php echo $f_name; ?></a></h2>
+              <h5 class="m-1 text-primary"><a href="/pages/getFormMeta.php?id=<?php echo $meta['id'];?>" class="popup-link">Details</a></h5>
             </div>
             <div class="card-body">
            <div id="msg"><?php echo $msg; ?></div>

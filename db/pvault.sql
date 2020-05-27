@@ -168,7 +168,7 @@ CREATE TABLE `users` (
   `password` varchar(255) COLLATE utf8_bin NOT NULL,
   `fullName` varchar(255) COLLATE utf8_bin NOT NULL,
   `email` varchar(255) COLLATE utf8_bin NOT NULL,
-  `avatar` varchar(255) COLLATE utf8_bin NOT NULL,
+  `avatar` varchar(255) COLLATE utf8_bin NOT NULL
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin ROW_FORMAT=COMPACT;
 
