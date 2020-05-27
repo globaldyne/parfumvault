@@ -46,7 +46,6 @@ $ifra_c = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM IFRALibrary"));
 $all_ing_c = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"));
 $uncat_ing_c = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE type IS NULL"));
 $cat_c = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingCategory"));
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -169,7 +168,6 @@ $(document).ready(function() {
       
       <hr class="sidebar-divider d-none d-md-block">
     </ul>
-
     <?php
 		if($_GET['do'] == 'Formula'){
 			require 'pages/formula.php';
@@ -200,7 +198,6 @@ $(document).ready(function() {
 			require 'pages/dashboard.php';
 		}
 	?>
-		<?php require_once("./pages/footer.php"); ?>
-
+	<?php require_once("./pages/footer.php"); ?>
 </body>
 </html>

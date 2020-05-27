@@ -156,26 +156,17 @@ $.ajax({
                     <tr>
                       <td align="center" id="ingredient"><a href="/pages/editIngredient.php?id='.$formula['ingredient'].'" class="popup-link">'.$formula['ingredient'].'</a> '.checkIng($formula['ingredient'],$dbhost, $dbuser, $dbpass, $dbname).'</td>
                       <td data-name="concentration" class="concentration" data-type="text" align="center" data-pk="'.$formula['ingredient'].'">'.$formula['concentration'].'</td>';
-					  $cas = mysqli_fetch_array(mysqli_query($conn, "SELECT cas FROM ingredients WHERE name = '$formula[ingredient]'"));
+					  	$cas = mysqli_fetch_array(mysqli_query($conn, "SELECT cas FROM ingredients WHERE name = '$formula[ingredient]'"));
 					 
-					 //if($limitIFRA = searchIFRA($cas['cas'],$formula['ingredient'],$dbhost,$dbuser,$dbpass,$dbname)){
 						$limitIFRA = searchIFRA($cas['cas'],$formula['ingredient'],$dbhost,$dbuser,$dbpass,$dbname);
-						//$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT price,ml,profile FROM ingredients WHERE name = '$formula[ingredient]'"));
 						$limit = explode(' - ', $limitIFRA);
-						$limit = $limit['0'];
-					  //}//else{
+					    $limit = $limit['0'];
 						  
-					 // 	$limit_local = mysqli_fetch_array(mysqli_query($conn, "SELECT IFRA,price,ml,profile FROM ingredients WHERE name = '$formula[ingredient]'"));
 					  
-					  //}
-					  //TODO: FIX THIS
-					  $ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT IFRA,price,ml,profile FROM ingredients WHERE name = '$formula[ingredient]'"));
-					  //$limit_local = $ing_q;
-					  $conc = number_format($formula['quantity']/$mg['total_mg'] * 100, 2);
-					  //$total = $concentration / 100 * $sub;
-					  $conc_p = number_format($formula['concentration'] / 100 * $conc, 2);
+					  	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT IFRA,price,ml,profile FROM ingredients WHERE name = '$formula[ingredient]'"));
+					  	$conc = number_format($formula['quantity']/$mg['total_mg'] * 100, 2);
+					  	$conc_p = number_format($formula['concentration'] / 100 * $conc, 2);
 					  
-					  //echo $formula[ingredient].$limit."\n";
 					  if($limit != null){
 						 if($limit < $conc_p){
 							$IFRA_WARN = 'class="alert-danger"';//VALUE IS TO HIGH AGAINST IFRA
