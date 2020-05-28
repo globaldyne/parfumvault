@@ -17,13 +17,14 @@ if(isset($_POST["import"]) && ($_POST['name'])){
 		if($_FILES["file"]["size"] > 0){
 			$file = fopen($filename, "r");
 			while (($data = fgetcsv($file, 10000, ",")) !== FALSE){
-				if(!mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '$data[0]'"))){
-					mysqli_query($conn, "INSERT INTO ingredients (name, ml) VALUES ('$data[0]', '10')");
+				if(!mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '".ucwords($data['0'])."'"))){
+					
+					mysqli_query($conn, "INSERT INTO ingredients (name, ml) VALUES ('".ucwords($data['0'])."', '10')");
 				}
 				if(empty($data['1'])){
 					$data['1'] = '100';
 				}
-				$sql = "INSERT INTO formulas (name,ingredient,concentration,quantity) VALUES ('$name','$data[0]','$data[1]','$data[2]')";
+				$sql = "INSERT INTO formulas (name,ingredient,concentration,quantity) VALUES ('$name','".ucwords($data['0'])."','$data[1]','$data[2]')";
 				$res = mysqli_query($conn, $sql);
 					
 			}
@@ -40,7 +41,6 @@ if(isset($_POST["import"]) && ($_POST['name'])){
 	 }
 }   
 ?>
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
