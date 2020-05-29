@@ -9,8 +9,11 @@ $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM formulasMetaData 
 
 ?>
 <script>
-function printLabel() {	  
-$("#msg").html('<div class="alert alert-info alert-dismissible">Printing...</div>');
+function printLabel() {
+	<?php if(empty($settings['label_printer_addr']) || empty($settings['label_printer_model'])){?>
+	$("#msg").html('<div class="alert alert-danger alert-dismissible">Please configure printer details in <a href="/?do=settings">settings<a> page</div>');
+	<?php }else{ ?>
+	$("#msg").html('<div class="alert alert-info alert-dismissible">Printing...</div>');
 
 $.ajax({ 
     url: '/pages/manageFormula.php', 
@@ -24,7 +27,7 @@ $.ajax({
 	  $('#msg').html(data);
     }
   });
-
+	<?php } ?>
 };
 //
 function deleteING(ingName,ingID) {	  
