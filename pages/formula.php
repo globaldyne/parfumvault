@@ -5,7 +5,7 @@ $f_name =  mysqli_real_escape_string($conn, $_GET['name']);
 $formula_q = mysqli_query($conn, "SELECT * FROM formulas WHERE name = '$f_name' ORDER BY ingredient ASC");
 
 $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE name = '$f_name'"));
-$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE name = '$f_name'"));
+$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE name = '$f_name'"));
 
 ?>
 <script>
@@ -100,9 +100,10 @@ $.ajax({
             <div class="card-header py-3">
               <h2 class="m-0 font-weight-bold text-primary"><a href="?do=Formula&name=<?php echo $f_name; ?>"><?php echo $f_name; ?></a></h2>
               <h5 class="m-1 text-primary"><a href="/pages/getFormMeta.php?id=<?php echo $meta['id'];?>" class="popup-link">Details</a></h5>
+              <?php if($meta['image']){?><div class="text-right"><img class="img-perfume rounded-circle" src="<?php echo $meta['image']; ?>"/></div><?php } ?>
             </div>
             <div class="card-body">
-           <div id="msg"><?php echo $msg; ?></div>
+           <div id="msg"></div>
               <div>
                   <tr>
                     <th colspan="6">
@@ -155,21 +156,20 @@ $.ajax({
                   </thead>
                   <tbody id="formula_data">
                   <?php while ($formula = mysqli_fetch_array($formula_q)) {
-					  echo'
-                    <tr>
-                      <td align="center" id="ingredient"><a href="/pages/editIngredient.php?id='.$formula['ingredient'].'" class="popup-link">'.$formula['ingredient'].'</a> '.checkIng($formula['ingredient'],$dbhost, $dbuser, $dbpass, $dbname).'</td>
-                      <td data-name="concentration" class="concentration" data-type="text" align="center" data-pk="'.$formula['ingredient'].'">'.$formula['concentration'].'</td>';
+					  
 					  	$cas = mysqli_fetch_array(mysqli_query($conn, "SELECT cas FROM ingredients WHERE name = '$formula[ingredient]'"));
 					 
 						$limitIFRA = searchIFRA($cas['cas'],$formula['ingredient'],$dbhost,$dbuser,$dbpass,$dbname);
 						$limit = explode(' - ', $limitIFRA);
 					    $limit = $limit['0'];
-						  
 					  
-					  	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT IFRA,price,ml,profile FROM ingredients WHERE name = '$formula[ingredient]'"));
+					  	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT IFRA,price,ml,profile,profile FROM ingredients WHERE name = '$formula[ingredient]'"));
 					  	$conc = number_format($formula['quantity']/$mg['total_mg'] * 100, 2);
 					  	$conc_p = number_format($formula['concentration'] / 100 * $conc, 2);
-					  
+					 	
+						echo'<tr>
+                      <td align="center" class="'.$ing_q['profile'].'" id="ingredient"><a href="/pages/editIngredient.php?id='.$formula['ingredient'].'" class="popup-link">'.$formula['ingredient'].'</a> '.checkIng($formula['ingredient'],$dbhost, $dbuser, $dbpass, $dbname).'</td>
+                      <td data-name="concentration" class="concentration" data-type="text" align="center" data-pk="'.$formula['ingredient'].'">'.$formula['concentration'].'</td>';
 					  if($limit != null){
 						 if($limit < $conc_p){
 							$IFRA_WARN = 'class="alert-danger"';//VALUE IS TO HIGH AGAINST IFRA
@@ -218,8 +218,6 @@ $.ajax({
       </div>
    </div>
   </div>
-  
-
 <script type="text/javascript" language="javascript" >
 $(document).ready(function(){
  

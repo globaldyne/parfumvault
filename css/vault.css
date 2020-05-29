@@ -113,8 +113,37 @@ a { text-decoration: none; }
     color: inherit;
 }
 
-#myload {
-    background-color: #f8f9fc;
-    width: 100%;
-    overflow-x: hidden;
+.img-perfume {
+  height: 6rem;
+  width: 6rem;
+}
+
+.Base a:after {
+	background-image: url('/img/Base.png');
+    background-size: 10px 10px;
+	background-repeat:no-repeat;
+    display: inline-block;
+    width: 10px; 
+    height: 20px;
+    content:"";
+}
+
+.Heart a:after {
+	background-image: url('/img/Heart.png');
+    background-size: 10px 10px;
+	background-repeat:no-repeat;
+    display: inline-block;
+    width: 10px; 
+    height: 20px;
+    content:"";
+}
+
+.Top a:after {
+	background-image: url('/img/Top.png');
+    background-size: 10px 10px;
+	background-repeat:no-repeat;
+    display: inline-block;
+    width: 10px; 
+    height: 20px;
+    content:"";
 }
