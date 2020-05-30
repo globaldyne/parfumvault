@@ -8,6 +8,27 @@ require_once('../inc/settings.php');
 if($_GET['id']){
 	$id = mysqli_real_escape_string($conn, $_GET['id']);
 	$info = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE id = '$id'"));
+
+if($_FILES["file"]["tmp_name"]){
+	if(empty($err)==true){
+		 if (!file_exists("../uploads/formulas")) {
+    		 mkdir("../uploads/formulas", 0740, true);
+	  	 }
+	  }
+		$filename=$_FILES["file"]["tmp_name"];    
+		if($_FILES["file"]["size"] > 0){
+			move_uploaded_file($filename,"../uploads/formulas/".base64_encode($filename));
+			$image = "../uploads/formulas/".base64_encode($filename);
+			if(mysqli_query($conn, "UPDATE formulasMetaData SET image = '$image' WHERE id = '$id'")){
+				$msg = '<div class="alert alert-success alert-dismissible">Image uploaded!</div>';
+			}else{
+				$msg = '<div class="alert alert-danger alert-dismissible">Error uploading the image</div>';
+			}
+			
+			
+		}
+	 }
+
 ?>
 <link href="../css/sb-admin-2.css" rel="stylesheet">
 <link href="../css/bootstrap-select.min.css" rel="stylesheet">
@@ -38,6 +59,9 @@ if($_GET['id']){
     <td colspan="2"><h1 class="badge-primary"><?php echo $info['name'];?></h1></td>
   </tr>
   <tr>
+    <td colspan="2"><?php echo $msg; ?></td>
+  </tr>
+  <tr>
     <td width="20%">Created:</td>
     <td width="80%"><?php echo $info['created'];?></td>
   </tr>
@@ -51,8 +75,9 @@ if($_GET['id']){
   </tr>
   <tr>
     <td>Picture:</td>
-    <td data-name="notes" class="notes" data-type="textarea" align="left" data-pk="notes"><form action="" method="post" enctype="multipart/form-data" name="form1" id="form1">
-      <input type="file" name="fileField" id="fileField" />
+    <td><form action="?id=<?php echo $id; ?>" method="post" enctype="multipart/form-data" name="form1" id="form1">
+      <input type="file" name="file" id="file" />
+      <input type="submit" name="button" id="button" value="Submit" />
     </form></td>
   </tr>
   <tr>

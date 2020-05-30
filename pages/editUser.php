@@ -67,7 +67,7 @@ $(function() {
 }
 </style>
 <form action="?id=<?php echo $id; ?>" method="post" enctype="multipart/form-data" name="form1">
-<table class="table table-bordered" id="formula_metadata" cellspacing="0">
+<table class="table table-bordered" cellspacing="0">
     <tr>
       <td colspan="2" class="badge-primary">Edit <?php echo $user['username']; ?></td>
     </tr>
