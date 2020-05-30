@@ -147,3 +147,10 @@ a { text-decoration: none; }
     height: 20px;
     content:"";
 }
+
+.img-formula {
+	height: 60px;
+	float: right;
+	margin-bottom: 23px;
+	margin-right: 19px;
+}

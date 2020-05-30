@@ -28,6 +28,7 @@ if($_GET['id']){
     width: 500px;
     vertical-align: middle;
 }
+
 </style>
 
 
@@ -47,6 +48,12 @@ if($_GET['id']){
   <tr>
     <td>Sex:</td>
     <td><a href="#" id="sex" data-type="select" data-pk="sex" data-title="<?php echo $info['sex'];?>"></a></td>
+  </tr>
+  <tr>
+    <td>Picture:</td>
+    <td data-name="notes" class="notes" data-type="textarea" align="left" data-pk="notes"><form action="" method="post" enctype="multipart/form-data" name="form1" id="form1">
+      <input type="file" name="fileField" id="fileField" />
+    </form></td>
   </tr>
   <tr>
     <td>Notes:</td>

@@ -95,12 +95,14 @@ $.ajax({
 <div id="content-wrapper" class="d-flex flex-column">
 <?php require_once('pages/top.php'); ?>
         <div class="container-fluid">
-          <div>
+		<div>
           <div class="card shadow mb-4">
-            <div class="card-header py-3">
+            <div class="card-header py-3"> 
+                                    
+			  <?php if($meta['image']){?><div class="img-formula"><img class="img-perfume" src="<?php echo $meta['image']; ?>"/></div><?php } ?>
               <h2 class="m-0 font-weight-bold text-primary"><a href="?do=Formula&name=<?php echo $f_name; ?>"><?php echo $f_name; ?></a></h2>
               <h5 class="m-1 text-primary"><a href="/pages/getFormMeta.php?id=<?php echo $meta['id'];?>" class="popup-link">Details</a></h5>
-              <?php if($meta['image']){?><div class="text-right"><img class="img-perfume rounded-circle" src="<?php echo $meta['image']; ?>"/></div><?php } ?>
+            
             </div>
             <div class="card-body">
            <div id="msg"></div>
