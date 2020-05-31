@@ -10,21 +10,41 @@ if($_GET['id']){
 	$info = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE id = '$id'"));
 
 if($_FILES["file"]["tmp_name"]){
+	$filename=$_FILES["file"]["tmp_name"];    
+
 	if(empty($err)==true){
 		 if (!file_exists("../uploads/formulas")) {
     		 mkdir("../uploads/formulas", 0740, true);
 	  	 }
 	  }
-		$filename=$_FILES["file"]["tmp_name"];    
-		if($_FILES["file"]["size"] > 0){
-			move_uploaded_file($filename,"../uploads/formulas/".base64_encode($filename));
-			$image = "../uploads/formulas/".base64_encode($filename);
+	  
+	  $maxDim = 60;
+	  list($width, $height, $type, $attr) = getimagesize( $filename );
+	  if ($width > $maxDim || $height > $maxDim) {
+    	$targetfilename = $filename;
+    	$ratio = $width/$height;
+    	if( $ratio > 1) {
+        	$new_width = $maxDim;
+        	$new_height = $maxDim/$ratio;
+    	}else {
+        	$new_width = $maxDim*$ratio;
+        	$new_height = $maxDim;
+    	}
+    	$src = imagecreatefromstring( file_get_contents( $filename ) );
+    	$dst = imagecreatetruecolor( $new_width, $new_height );
+    	imagecopyresampled( $dst, $src, 0, 0, 0, 0, $new_width, $new_height, $width, $height );
+    	imagedestroy( $src );
+    	imagepng( $dst, $targetfilename ); // adjust format as needed
+	 
+		//if($_FILES["file"]["size"] > 0){
+			move_uploaded_file($targetfilename,"../uploads/formulas/".base64_encode($targetfilename));
+			$image = "/uploads/formulas/".base64_encode($targetfilename);
 			if(mysqli_query($conn, "UPDATE formulasMetaData SET image = '$image' WHERE id = '$id'")){
 				$msg = '<div class="alert alert-success alert-dismissible">Image uploaded!</div>';
 			}else{
 				$msg = '<div class="alert alert-danger alert-dismissible">Error uploading the image</div>';
 			}
-			
+		imagedestroy( $dst );		
 			
 		}
 	 }

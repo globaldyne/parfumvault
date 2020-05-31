@@ -1,5 +1,10 @@
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
 
 DROP TABLE IF EXISTS `formulas`;
 CREATE TABLE `formulas` (
@@ -20,7 +25,8 @@ CREATE TABLE `formulasMetaData` (
   `sex` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `notes` text COLLATE utf8_bin DEFAULT NULL,
   `created` timestamp NOT NULL DEFAULT current_timestamp(),
-  `lastUpdate` timestamp NULL DEFAULT NULL
+  `lastUpdate` timestamp NULL DEFAULT NULL,
+  `image` varchar(255) COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 DROP TABLE IF EXISTS `IFRALibrary`;
@@ -74,23 +80,12 @@ CREATE TABLE `ingCategory` (
   `notes` text COLLATE utf8_bin DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-INSERT INTO `ingCategory` (`id`, `name`, `notes`) VALUES
-(1, 'Woody', 'Woody Notes'),
-(2, 'Floral', 'Floral notes'),
-(3, 'Amber', 'Amber, Ambergris, etc'),
-(4, 'Fixative', 'Fixative ingredients');
-
 DROP TABLE IF EXISTS `ingProfiles`;
 CREATE TABLE `ingProfiles` (
   `id` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
   `notes` text COLLATE utf8_bin DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
-INSERT INTO `ingProfiles` (`id`, `name`, `notes`) VALUES
-(1, 'Top', 'Top Note'),
-(2, 'Base', 'Base Note'),
-(4, 'Heart', 'Heart Note');
 
 DROP TABLE IF EXISTS `ingredients`;
 CREATE TABLE `ingredients` (
@@ -100,6 +95,7 @@ CREATE TABLE `ingredients` (
   `strength` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `category` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `IFRA` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `purity` varchar(11) COLLATE utf8_bin DEFAULT NULL,
   `cas` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `SDS` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `supplier` varchar(255) COLLATE utf8_bin DEFAULT NULL,
@@ -121,11 +117,6 @@ CREATE TABLE `ingStrength` (
   `name` varchar(255) COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-INSERT INTO `ingStrength` (`id`, `name`) VALUES
-(1, 'Medium'),
-(2, 'Low'),
-(3, 'High');
-
 DROP TABLE IF EXISTS `ingSuppliers`;
 CREATE TABLE `ingSuppliers` (
   `id` int(11) NOT NULL,
@@ -138,12 +129,6 @@ CREATE TABLE `ingTypes` (
   `id` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
-INSERT INTO `ingTypes` (`id`, `name`) VALUES
-(1, 'AC'),
-(2, 'EO'),
-(3, 'Other/Uknown'),
-(4, 'Custom Blend');
 
 DROP TABLE IF EXISTS `settings`;
 CREATE TABLE `settings` (
@@ -158,9 +143,6 @@ CREATE TABLE `settings` (
   `base_n` varchar(10) COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-INSERT INTO `settings` (`id`, `label_printer_addr`, `label_printer_model`, `label_printer_size`, `label_printer_font_size`, `currency`, `top_n`, `heart_n`, `base_n`) VALUES
-(1, '', NULL, '12', 70, NULL, '25', '50', '25');
-
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
@@ -169,7 +151,6 @@ CREATE TABLE `users` (
   `fullName` varchar(255) COLLATE utf8_bin NOT NULL,
   `email` varchar(255) COLLATE utf8_bin NOT NULL,
   `avatar` varchar(255) COLLATE utf8_bin NOT NULL
-
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin ROW_FORMAT=COMPACT;
 
 
@@ -242,3 +223,7 @@ ALTER TABLE `settings`
 
 ALTER TABLE `users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
