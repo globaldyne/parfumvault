@@ -80,12 +80,23 @@ CREATE TABLE `ingCategory` (
   `notes` text COLLATE utf8_bin DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
+INSERT INTO `ingCategory` (`id`, `name`, `notes`) VALUES
+(1, 'Woody', NULL),
+(2, 'Floral', NULL),
+(3, 'Fruity', NULL),
+(4, 'Amber', NULL);
+
 DROP TABLE IF EXISTS `ingProfiles`;
 CREATE TABLE `ingProfiles` (
   `id` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
   `notes` text COLLATE utf8_bin DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+INSERT INTO `ingProfiles` (`id`, `name`, `notes`) VALUES
+(1, 'Top', 'Top Note'),
+(2, 'Base', 'Base Note'),
+(3, 'Heart', 'Heart Note');
 
 DROP TABLE IF EXISTS `ingredients`;
 CREATE TABLE `ingredients` (
@@ -117,6 +128,11 @@ CREATE TABLE `ingStrength` (
   `name` varchar(255) COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
+INSERT INTO `ingStrength` (`id`, `name`) VALUES
+(1, 'High'),
+(2, 'Medium'),
+(3, 'Low');
+
 DROP TABLE IF EXISTS `ingSuppliers`;
 CREATE TABLE `ingSuppliers` (
   `id` int(11) NOT NULL,
@@ -142,6 +158,9 @@ CREATE TABLE `settings` (
   `heart_n` varchar(10) COLLATE utf8_bin NOT NULL,
   `base_n` varchar(10) COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+INSERT INTO `settings` (`id`, `label_printer_addr`, `label_printer_model`, `label_printer_size`, `label_printer_font_size`, `currency`, `top_n`, `heart_n`, `base_n`) VALUES
+(1, NULL, NULL, NULL, 80, NULL, '25', '50', '25');
 
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
@@ -170,6 +189,7 @@ ALTER TABLE `ingCategory`
 
 ALTER TABLE `ingProfiles`
   ADD UNIQUE KEY `id` (`id`);
+
 
 ALTER TABLE `ingredients`
   ADD PRIMARY KEY (`id`),
