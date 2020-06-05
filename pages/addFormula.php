@@ -9,7 +9,8 @@ if($_POST['fname'] && $_POST['concentration'] && $_POST['quantity']){
 	$fname = mysqli_real_escape_string($conn, $_POST['fname']);
 	$notes = mysqli_real_escape_string($conn, $_POST['notes']);
 	$profile = mysqli_real_escape_string($conn, $_POST['profile']);
-
+	$fid = base64_encode($fname);
+	
 if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM formulas WHERE name = '$fname'"))){
 		$msg='<div class="alert alert-danger alert-dismissible">
 		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
@@ -21,7 +22,7 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM formulas WHERE name = '
   		<strong>Error: </strong> same ingredients!
 		</div>';
 	}else{
-		mysqli_query($conn, "INSERT INTO formulasMetaData (name,notes,profile) VALUES ('$fname','$notes', '$profile')");
+		mysqli_query($conn, "INSERT INTO formulasMetaData (fid, name, notes, profile, image) VALUES ('$fid', '$fname', '$notes', '$profile', '$def_app_img')") or die(mysqli_error($conn));
 
 	if($number > 0){
 		for($i=0; $i<$number; $i++){

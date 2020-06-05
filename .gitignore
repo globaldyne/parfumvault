@@ -7,3 +7,4 @@ inc/config.php
 pages/searchTGSC.php
 api.php
 *.swp
+t.php

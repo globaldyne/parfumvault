@@ -18,7 +18,7 @@ if($_FILES["file"]["tmp_name"]){
 	  	 }
 	  }
 	  
-	  $maxDim = 60;
+	  $maxDim = 400;
 	  list($width, $height, $type, $attr) = getimagesize( $filename );
 	  if ($width > $maxDim || $height > $maxDim) {
     	$targetfilename = $filename;

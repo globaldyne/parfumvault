@@ -3,9 +3,12 @@ require('../inc/sec.php');
 
 require '../inc/config.php';
 require '../inc/opendb.php';
+require '../inc/product.php';
 
 if(isset($_POST["import"]) && ($_POST['name'])){
 	$name = mysqli_real_escape_string($conn,$_POST['name']);
+	$fid = base64_encode($name);
+
 	$profile = mysqli_real_escape_string($conn,$_POST['profile']);
 	 if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM formulas WHERE name = '$name'"))){
 		 $msg='<div class="alert alert-danger alert-dismissible">
@@ -24,12 +27,12 @@ if(isset($_POST["import"]) && ($_POST['name'])){
 				if(empty($data['1'])){
 					$data['1'] = '100';
 				}
-				$sql = "INSERT INTO formulas (name,ingredient,concentration,quantity) VALUES ('$name','".ucwords($data['0'])."','$data[1]','$data[2]')";
+				$sql = "INSERT INTO formulas (fid, name,ingredient,concentration,quantity) VALUES ('$fid', '$name','".ucwords($data['0'])."','$data[1]','$data[2]')";
 				$res = mysqli_query($conn, $sql);
 					
 			}
 			if($res){
-				mysqli_query($conn, "INSERT INTO formulasMetaData (name,notes,profile) VALUES ('$name','Imported via csv','$profile')");
+				mysqli_query($conn, "INSERT INTO formulasMetaData (fid,name,notes,profile,image) VALUES ('$fid','$name','Imported via csv','$profile','$def_app_img')");
 				$msg='<div class="alert alert-success alert-dismissible">
 				<strong>'.$name.'</strong> added!</div>';
 			}else{

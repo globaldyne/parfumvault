@@ -1,5 +1,5 @@
-<?php if (!defined('pvault_panel')){ die('Not Found');}  ?>
-<?php
+<?php 
+if (!defined('pvault_panel')){ die('Not Found');}  
 $f_name =  mysqli_real_escape_string($conn, $_GET['name']);
 
 $formula_q = mysqli_query($conn, "SELECT * FROM formulas WHERE name = '$f_name' ORDER BY ingredient ASC");
