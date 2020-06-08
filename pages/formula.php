@@ -143,6 +143,10 @@ $.ajax({
                         <a class="dropdown-item popup-link" href="/pages/viewPyramid.php?formula=<?php echo $f_name; ?>">View Pyramid</a>
                         <a class="dropdown-item" href="/pages/manageFormula.php?do=multiply&formula=<?php echo $f_name; ?>">Multiply x2</a>
                         <a class="dropdown-item" href="/pages/manageFormula.php?do=divide&formula=<?php echo $f_name; ?>">Divide x2</a>
+  						<div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="/pages/genFormula.php?type=EDP&name=<?php echo $f_name; ?>">Generate EDP</a>
+                        <a class="dropdown-item" href="/pages/genFormula.php?type=EDT&name=<?php echo $f_name; ?>">Generate EDT</a>
+                        <a class="dropdown-item" href="/pages/genFormula.php?type=EDC&name=<?php echo $f_name; ?>">Generate EDC</a>
 
                       </div>
                     </div>

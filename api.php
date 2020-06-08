@@ -34,11 +34,23 @@ if($_REQUEST['username'] && $_REQUEST['password'] && $_REQUEST['do']){
 		}elseif($_REQUEST['do'] == 'ingredients'){
 			$sql = mysqli_query($conn, "SELECT id, name, odor FROM ingredients WHERE odor IS NOT NULL");
 		}elseif($_REQUEST['do'] == 'formula' && $_REQUEST['fid']){
-			$sql = mysqli_query($conn, "SELECT ingredient AS name, concentration AS purity, quantity AS mg FROM formulas WHERE fid = '$_REQUEST[fid]' ORDER BY ingredient ASC");	
+			$sql = mysqli_query($conn, "SELECT id, ingredient AS name, concentration AS purity, quantity AS mg FROM formulas WHERE fid = '$_REQUEST[fid]' ORDER BY ingredient ASC");	
 		}elseif($_REQUEST['do'] == 'ingredient' && $_REQUEST['id']){
 			$sql = mysqli_query($conn, "SELECT name, type, strength, IFRA, price, profile, odor, notes FROM ingredients WHERE id = '$_REQUEST[id]'");	
 		}elseif($_REQUEST['do'] == 'ifra'){
 			$sql = mysqli_query($conn, "SELECT name, risk, cat4 FROM IFRALibrary ORDER BY id ASC");	
+		}elseif($_REQUEST['do'] == 'delete' && $_REQUEST['kind'] == 'ingredient'){
+			$id =  $_REQUEST['id'];
+
+			if(mysqli_query($conn, "DELETE FROM formulas WHERE id = '$id'")){
+
+				$response['status'] = "Deleted $id";
+			}else{
+
+				$response['status'] = "Failed";
+			}
+			echo json_encode($response);
+			exit;
 		}
 /*
 		//ADD	
