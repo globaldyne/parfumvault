@@ -52,15 +52,8 @@ $.ajax({
            <div id="msg"></div>
            <?php if($_GET['generate']){?>
               <div>
-                <tr>
-                    <th colspan="6">
-                    </th>
-                </tr>
                 <table class="table table-bordered" id="formula" width="100%" cellspacing="0">
                   <thead>
-                    <tr class="noexport">
-                      <th colspan="6"></th>
-                    </tr>
                     <tr class="noexport">
                       <th colspan="6">
                      <div class="text-left">
@@ -82,7 +75,6 @@ $.ajax({
                       <th colspan="2">Cost</th>
                     </tr>
                   </thead>
-                  <tbody id="formula_data">
                   <?php while ($formula = mysqli_fetch_array($formula_q)) {
 					  
 					  	$cas = mysqli_fetch_array(mysqli_query($conn, "SELECT cas FROM ingredients WHERE name = '$formula[ingredient]'"));
@@ -127,28 +119,26 @@ $.ajax({
 				  }
                   ?>
                     </tr>
-                  </tbody>
-                  <tfoot>
                     <tr>
-                      <th></th>
-                      <th></th>
-                      <th align="center">Sub Total: <?php echo number_format(array_sum($new_tot), 2); ?></th>
-                      <th>&nbsp;</th>
-                      <th colspan="2" align="center">&nbsp;</th>
+                      <td></td>
+                      <td></td>
+                      <td align="center">Sub Total: <?php echo number_format(array_sum($new_tot), 2).'ml'; ?></td>
+                      <td></td>
+                      <td colspan="2" align="center"></td>
                     </tr>
                     <tr>
-                      <th>&nbsp;</th>
-                      <th></th>
-                      <th align="center">Carrier: <?php echo $carrier; ?></th>
-                      <th>&nbsp;</th>
-                      <th colspan="2" align="center">&nbsp;</th>
+                      <td></td>
+                      <td></td>
+                      <td align="center">Carrier: <?php echo $carrier; ?>ml</td>
+                      <td></td>
+                      <td colspan="2" align="center"></td>
                     </tr>
                     <tr>
-                      <th width="22%"></th>
-                      <th></th>
-                      <th width="15%" align="right"><p>Total: <?php echo number_format(array_sum($new_tot)+ $carrier, 2); ?>mg</p></th>
-                      <th width="15%">Total <?php echo array_sum($conc_tot);?>%</th>
-                      <th colspan="2" align="right">Total Cost: <?php echo utf8_encode($settings['currency']).number_format(array_sum($tot),2);?> <a href="#" class="fas fa-question-circle" rel="tipsy" title="Total cost"></a></th>
+                      <td width="22%"></td>
+                      <td></td>
+                      <td width="15%" align="center" class="m-0 font-weight-bold text-primary">Total: <?php echo number_format(array_sum($new_tot)+ $carrier, 2); ?>mg</td>
+                      <td width="15%" align="center" class="m-0 font-weight-bold text-primary">Total <?php echo array_sum($conc_tot);?>%</td>
+                      <td colspan="2" align="center" class="m-0 font-weight-bold text-primary">Total Cost: <?php echo utf8_encode($settings['currency']).number_format(array_sum($tot),2);?></td>
                     </tr>
                   </tfoot>                                    
                 </table> 
@@ -228,13 +218,16 @@ $('#pdf').on('click',function(){
 	type:'pdf',
 	filename:'<?php echo $f_name; ?>.pdf',
 	  orientation: 'p',
-	
+	trimContent: true,
+    quoteFields: true,
 	
 	ignoreColumns: '.noexport',
   	ignoreRows: '.noexport',
+	htmlContent: true,
+
 	/*
 	 var doc = new jsPDF()
-  doc.autoTable({ html: '#my-table' })
+  doc.autoTable({ html: '#formula' })
   doc.save('table.pdf')
   */
 });
