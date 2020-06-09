@@ -1,33 +1,6 @@
 <?php 
-require('../inc/sec.php');
+if (!defined('pvault_panel')){ die('Not Found');}  
 
-require_once(__ROOT__.'/inc/config.php');
-require_once(__ROOT__.'/inc/opendb.php');
-require_once(__ROOT__.'/inc/settings.php');
-require_once(__ROOT__.'/func/searchIFRA.php');
-require_once(__ROOT__.'/func/checkIng.php');
-require_once(__ROOT__.'/func/calcCosts.php');
-
-?>
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Generate</title>
-  <link href="../css/sb-admin-2.css" rel="stylesheet">
-  <link href="../css/bootstrap.min.css" rel="stylesheet">
-  
-    <script src="../js/bootstrap.min.js"></script>
-
-  <script src="../js/jquery-ui.js"></script>
-    <script src="../js/tableHTMLExport.js"></script>
-
-
-</head>
-
-<body>
-<?php 
 $f_name =  mysqli_real_escape_string($conn, $_GET['name']);
 
 $formula_q = mysqli_query($conn, "SELECT * FROM formulas WHERE name = '$f_name' ORDER BY ingredient ASC");
@@ -37,24 +10,80 @@ $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData W
 
 $bottle = '30';
 $type = '20';
+$new_conc = $bottle/100*$type;
+$carrier = $bottle - $new_conc;
 ?>
 <div id="content-wrapper" class="d-flex flex-column">
-<?php //require_once(__ROOT__.'/pages/top.php'); ?>
+<?php require_once('pages/top.php'); ?>
         <div class="container-fluid">
 		<div>
           <div class="card shadow mb-4">
             <div class="card-header py-3"> 
                                     
-              <h2 class="m-0 font-weight-bold text-primary"><a href="?do=Formula&name=<?php echo $f_name; ?>"><?php echo $f_name; ?></a></h2>
+              <h2 class="m-0 font-weight-bold text-primary"><a href="#">Generate Finished Product</a></h2>
             
             </div>
             <div class="card-body">
            <div id="msg"></div>
+           <form action="" method="post" enctype="multipart/form-data" target="_self">
+           
+           <table width="100%" border="0">
+  <tr>
+    <td width="9%">Formula:</td>
+    <td width="91%">
+    <select name="formula" id="formula" class="form-control selectpicker" data-live-search="true">
+     <?php
+		$sql = mysqli_query($conn, "SELECT name FROM formulasMetaData ORDER BY name ASC");
+		while ($formula = mysqli_fetch_array($sql)){
+			echo '<option value="'.$formula['name'].'">'.$formula['name'].'</option>';
+		}
+	  ?>
+     </select>
+   </td>
+  </tr>
+  <tr>
+    <td>Concentration:</td>
+    <td>
+        <select name="type" id="type" class="form-control selectpicker" data-live-search="true">
+     <?php
+	 		echo '<option value="'.$settings['Parfum'].'">Parfum ('.$settings['Parfum'].'%)</option>';
+			echo '<option value="'.$settings['EDP'].'">EDP ('.$settings['EDP'].'%)</option>';
+			echo '<option value="'.$settings['EDT'].'">EDT ('.$settings['EDT'].'%)</option>';
+			echo '<option value="'.$settings['EDC'].'">EDC ('.$settings['EDC'].'%)</option>';
+
+	  ?>
+     </select>
+    </td>
+  </tr>
+  <tr>
+    <td>Bottle:</td>
+    <td>    
+    <select name="bottle" id="bottle" class="form-control selectpicker" data-live-search="true">
+     <?php
+		$sql = mysqli_query($conn, "SELECT name,ml FROM bottles ORDER BY name ASC");
+		while ($bottle = mysqli_fetch_array($sql)){
+			echo '<option value="'.$bottle['ml'].'">'.$bottle['name'].' ('.$bottle['ml'].'ml)</option>';
+		}
+	  ?>
+     </select>
+     </td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td><input type="submit" name="button" id="button" value="Generate"></td>
+    <td>&nbsp;</td>
+  </tr>
+</table>
+           </form>          
+            <?php if($_GET['generate']){?>
               <div>
                   <tr>
                     <th colspan="6">
-                      </th>
-                    </tr>
+                    </th>
+                </tr>
                 <table class="table table-bordered" id="formula" width="100%" cellspacing="0">
                   <thead>
                     <tr class="noexport">
@@ -78,11 +107,10 @@ $type = '20';
 					    $limit = $limit['0'];
 					  
 					  	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT IFRA,price,ml,profile,profile FROM ingredients WHERE name = '$formula[ingredient]'"));
-						$new_conc = $bottle/100*$type;
+					    $new_quantity = $formula['quantity']/$mg['total_mg']*$new_conc;
 						
-					    $new_quantity = 6/$formula['quantity'];
-											
-					  	$conc = number_format($new_quantity/$mg['total_mg'] * 100, 2);
+					  	$conc = $new_quantity/$bottle * 100;
+						
 					  	$conc_p = number_format($formula['concentration'] / 100 * $conc, 2);
 					 	
 						echo'<tr>
@@ -104,7 +132,7 @@ $type = '20';
 					  }else{
 						  $IFRA_WARN = 'class="alert-warning"'; //NO RECORD FOUND
 					  }
-					  echo'<td align="center">'.$new_quantity.'</td>';
+					  echo'<td align="center">'.number_format($new_quantity, 2).'</td>';
 					  echo'<td align="center" '.$IFRA_WARN.'>'.$conc_p.'%</td>';
 					  echo '<td align="center">'.utf8_encode($settings['currency']).calcCosts($ing_q['price'],$new_quantity, $formula['concentration'], $ing_q['ml']).'</td>';
 					  echo '</tr>';
@@ -119,23 +147,23 @@ $type = '20';
                     <tr>
                       <th></th>
                       <th></th>
-                      <th align="right">&nbsp;</th>
+                      <th align="center">Sub Total: <?php echo number_format(array_sum($new_tot), 2); ?></th>
                       <th>&nbsp;</th>
-                      <th colspan="2" align="right">&nbsp;</th>
+                      <th colspan="2" align="center">&nbsp;</th>
                     </tr>
                     <tr>
-                      <th>Ethanol (?)</th>
-                      <th></th>
-                      <th align="right">mg</th>
                       <th>&nbsp;</th>
-                      <th colspan="2" align="right">&nbsp;</th>
+                      <th></th>
+                      <th align="center">Carrier: <?php echo $carrier; ?></th>
+                      <th>&nbsp;</th>
+                      <th colspan="2" align="center">&nbsp;</th>
                     </tr>
                     <tr>
                       <th width="22%"></th>
                       <th></th>
-                      <th width="15%" align="right"><p>Total: <?php echo number_format(array_sum($new_tot), 2); ?>mg</p></th>
+                      <th width="15%" align="right"><p>Total: <?php echo number_format(array_sum($new_tot)+ $carrier, 2); ?>mg</p></th>
                       <th width="15%">Total <?php echo array_sum($conc_tot);?>%</th>
-                      <th colspan="2" align="right">Cost: <?php echo utf8_encode($settings['currency']).number_format(array_sum($tot),2);?> <a href="#" class="fas fa-question-circle" rel="tipsy" title="Total cost"></a></th>
+                      <th colspan="2" align="right">Total Cost: <?php echo utf8_encode($settings['currency']).number_format(array_sum($tot),2);?> <a href="#" class="fas fa-question-circle" rel="tipsy" title="Total cost"></a></th>
                     </tr>
                   </tfoot>                                    
                 </table> 
@@ -144,7 +172,8 @@ $type = '20';
                 <p>*Values in: <strong class="alert alert-danger">red</strong> exceeds IFRA limit,   <strong class="alert alert-warning">yellow</strong> have no IFRA limit set,   <strong class="alert alert-success">green</strong> are within IFRA limits</p>
                 </div>
             </div>
-          </div>
+            <?php } ?>
+           </div>
         </div>
       </div>
    </div>
@@ -173,5 +202,3 @@ $('#csv').on('click',function(){
 })
 
 </script>
-</body>
-</html>

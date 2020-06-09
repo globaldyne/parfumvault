@@ -46,6 +46,8 @@ $ifra_c = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM IFRALibrary"));
 $all_ing_c = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"));
 $uncat_ing_c = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE type IS NULL"));
 $cat_c = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingCategory"));
+$bottles_c = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM bottles"));
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -143,11 +145,30 @@ $(document).ready(function() {
       </li>
 
         <li class="nav-item">
+        <a class="nav-link" href="/?do=genFinishedProduct">
+          <i class="fas fa-fw fa-spray-can"></i>
+          <span>Generate Finished Product</span></a>
+      </li>
+      
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseInventoty" aria-expanded="true" aria-controls="collapseInventoty">
+          <i class="fas fa-fw fa-warehouse"></i>
+          <span>Inventory</span>
+        </a>
+        <div id="collapseInventoty" class="collapse" aria-labelledby="headingInventory" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <a class="collapse-item" href="/?do=ingredients">Ingredients</a>
+            <a class="collapse-item" href="/?do=bottles">Bottles</a>
+          </div>
+        </div>
+      </li>
+      <!--
+        <li class="nav-item">
         <a class="nav-link" href="/?do=ingredients">
           <i class="fas fa-fw fa-vial"></i>
           <span>Ingredients</span></a>
       </li>
-      
+      -->
         <li class="nav-item">
         <a class="nav-link" href="/?do=IFRA">
           <i class="fas fa-fw fa-university"></i>
@@ -185,8 +206,14 @@ $(document).ready(function() {
 			require 'pages/IFRA.php';
 		}elseif($_GET['do'] == 'listFormulas'){
 			require 'pages/listFormulas.php';
-		
-		
+		}elseif($_GET['do'] == 'genFinishedProduct'){
+			require 'pages/genFinishedProduct.php';		
+		}elseif($_GET['do'] == 'bottles'){
+			require 'pages/bottles.php';		
+		}elseif($_GET['do'] == 'addBottle'){
+			require 'pages/addBottle.php';		
+			
+			
 		}elseif($_GET['do'] == 'logout'){
 			if(isset($_SESSION['parfumvault'])) {
 				unset($_SESSION['parfumvault']);

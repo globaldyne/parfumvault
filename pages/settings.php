@@ -81,6 +81,20 @@ if(($_POST) && $_GET['update'] == 'printer'){
 		$msg = '<div class="alert alert-danger alert-dismissible">An error occured. ('.mysqli_error($conn).')</div>';	
 	}
 	
+//PERFUME TYPES
+
+}elseif($_POST['edp'] && $_POST['edc'] && $_POST['edt'] && $_POST['parfum'] && $_GET['update'] == 'types'){
+	$edp = utf8_encode(htmlentities($_POST['edp']));
+	$edc = mysqli_real_escape_string($conn, $_POST['edc']);
+	$edt = mysqli_real_escape_string($conn, $_POST['edt']);
+	$parfum = mysqli_real_escape_string($conn, $_POST['parfum']);
+	
+	if(mysqli_query($conn, "UPDATE settings SET EDP = '$edp', EDT = '$edt', EDC = '$edc', Parfum = '$parfum'")){
+		$msg = '<div class="alert alert-success alert-dismissible">Settings updated!</div>';
+	}else{
+		$msg = '<div class="alert alert-danger alert-dismissible">An error occured. ('.mysqli_error($conn).')</div>';	
+	}
+	
 //USERS
 }elseif($_GET['update'] == 'users' && $_POST['username'] && $_POST['password']){
 	$username = mysqli_real_escape_string($conn, $_POST['username']);
@@ -175,6 +189,7 @@ $(function() {
          <li><a href="#general"><span>General</span></a></li>
          <li><a href="#suppliers"><span>Suppliers</span></a></li>
          <li><a href="#categories"><span>Categories</span></a></li>
+         <li><a href="#types">Perfume Types</a></li>
          <li><a href="#print"><span>Printing</span></a></li>
          <li><a href="#users"><span>Users</span></a></li>
          <li><a href="#maintenance"><span>Maintenance</span></a></li>
@@ -328,6 +343,52 @@ $(function() {
           </form>
      </div> 
      
+          <div id="types">
+     <form id="form" name="form" method="post" enctype="multipart/form-data" action="/?do=settings&update=types#types">
+     <table width="100%" border="0">
+        <tr>
+          <td colspan="4"><?php echo $msg; ?></td>
+          </tr>
+        <tr>
+          <td colspan="3"><h4 class="m-0 mb-4 text-primary">&nbsp;</h4></td>
+          <td width="77%">&nbsp;</td>
+        </tr>
+        <tr>
+          <td width="6%">EDP:</td>
+          <td width="10%"><input name="edp" type="text" class="form-control" id="edp" value="<?php echo $settings['EDP'];?>"/></td>
+          <td width="7%">%</td>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td>EDT:</td>
+          <td><input name="edt" type="text" class="form-control" id="edt" value="<?php echo $settings['EDT'];?>"/></td>
+          <td>%</td>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td>EDC:</td>
+          <td><input name="edc" type="text" class="form-control" id="edc" value="<?php echo $settings['EDC'];?>"/></td>
+          <td>%</td>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td>Parfum:</td>
+          <td><input name="parfum" type="text" class="form-control" id="parfum" value="<?php echo $settings['Parfum'];?>"/></td>
+          <td>%</td>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td>&nbsp;</td>
+          <td colspan="2">&nbsp;</td>
+          <td>&nbsp;</td>
+          </tr>
+        <tr>
+          <td><input type="submit" name="button" id="button" value="Submit" class="btn btn-info"/></td>
+          <td colspan="3">&nbsp;</td>
+          </tr>
+      </table>
+     </form>
+	 </div>
       
     <div id="print">
         <form id="form1" name="form1" method="post" action="/?do=settings&update=printer#print">
