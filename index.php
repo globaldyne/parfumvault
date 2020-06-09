@@ -69,7 +69,10 @@ $bottles_c = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM bottles"));
   <script src="js/jquery/jquery.min.js"></script>
 
   <script src="js/tableHTMLExport.js"></script>
-
+	
+	<script src="https://unpkg.com/jspdf@1.5.3/dist/jspdf.min.js"></script>
+	<script src="https://unpkg.com/jspdf-autotable@3.5.3/dist/jspdf.plugin.autotable.js"></script>
+    
   <script src="js/bootstrap.min.js"></script>
   
   <link rel="stylesheet" type="text/css" href="css/datatables.min.css"/>

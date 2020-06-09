@@ -1,93 +1,78 @@
 <?php 
 if (!defined('pvault_panel')){ die('Not Found');}  
 
-$f_name =  mysqli_real_escape_string($conn, $_GET['name']);
+$f_name =  mysqli_real_escape_string($conn, $_POST['formula']);
 
 $formula_q = mysqli_query($conn, "SELECT * FROM formulas WHERE name = '$f_name' ORDER BY ingredient ASC");
 
 $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE name = '$f_name'"));
 $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE name = '$f_name'"));
 
-$bottle = '30';
-$type = '20';
+$bottle = $_POST['bottle'];
+$type = $_POST['type'];
 $new_conc = $bottle/100*$type;
 $carrier = $bottle - $new_conc;
 ?>
+<script>
+function printLabel() {
+	<?php if(empty($settings['label_printer_addr']) || empty($settings['label_printer_model'])){?>
+	$("#msg").html('<div class="alert alert-danger alert-dismissible">Please configure printer details in <a href="/?do=settings">settings<a> page</div>');
+	<?php }else{ ?>
+	$("#msg").html('<div class="alert alert-info alert-dismissible">Printing...</div>');
+
+$.ajax({ 
+    url: '/pages/manageFormula.php', 
+	type: 'get',
+    data: {
+		action: "printLabel",
+		name: "<?php echo $f_name; ?>"
+		},
+	dataType: 'html',
+    success: function (data) {
+	  $('#msg').html(data);
+    }
+  });
+	<?php } ?>
+};
+</script>
 <div id="content-wrapper" class="d-flex flex-column">
 <?php require_once('pages/top.php'); ?>
         <div class="container-fluid">
 		<div>
           <div class="card shadow mb-4">
             <div class="card-header py-3"> 
-                                    
-              <h2 class="m-0 font-weight-bold text-primary"><a href="#">Generate Finished Product</a></h2>
-            
+			<?php if($_GET['generate']){?>
+             <h2 class="m-0 font-weight-bold text-primary"><a href="/?do=genFinishedProduct"><?php echo $f_name;?> Finished Product</a></h2>
+             <h5 class="m-1 text-primary"><?php echo "Bottle: ".$bottle."ml Concentration: ".$type."%";?></h5>
+        	<?php }else{ ?>
+              <h2 class="m-0 font-weight-bold text-primary"><a href="/?do=genFinishedProduct">Generate Finished Product</a></h2>
+            <?php } ?>
             </div>
             <div class="card-body">
            <div id="msg"></div>
-           <form action="" method="post" enctype="multipart/form-data" target="_self">
-           
-           <table width="100%" border="0">
-  <tr>
-    <td width="9%">Formula:</td>
-    <td width="91%">
-    <select name="formula" id="formula" class="form-control selectpicker" data-live-search="true">
-     <?php
-		$sql = mysqli_query($conn, "SELECT name FROM formulasMetaData ORDER BY name ASC");
-		while ($formula = mysqli_fetch_array($sql)){
-			echo '<option value="'.$formula['name'].'">'.$formula['name'].'</option>';
-		}
-	  ?>
-     </select>
-   </td>
-  </tr>
-  <tr>
-    <td>Concentration:</td>
-    <td>
-        <select name="type" id="type" class="form-control selectpicker" data-live-search="true">
-     <?php
-	 		echo '<option value="'.$settings['Parfum'].'">Parfum ('.$settings['Parfum'].'%)</option>';
-			echo '<option value="'.$settings['EDP'].'">EDP ('.$settings['EDP'].'%)</option>';
-			echo '<option value="'.$settings['EDT'].'">EDT ('.$settings['EDT'].'%)</option>';
-			echo '<option value="'.$settings['EDC'].'">EDC ('.$settings['EDC'].'%)</option>';
-
-	  ?>
-     </select>
-    </td>
-  </tr>
-  <tr>
-    <td>Bottle:</td>
-    <td>    
-    <select name="bottle" id="bottle" class="form-control selectpicker" data-live-search="true">
-     <?php
-		$sql = mysqli_query($conn, "SELECT name,ml FROM bottles ORDER BY name ASC");
-		while ($bottle = mysqli_fetch_array($sql)){
-			echo '<option value="'.$bottle['ml'].'">'.$bottle['name'].' ('.$bottle['ml'].'ml)</option>';
-		}
-	  ?>
-     </select>
-     </td>
-  </tr>
-  <tr>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-  </tr>
-  <tr>
-    <td><input type="submit" name="button" id="button" value="Generate"></td>
-    <td>&nbsp;</td>
-  </tr>
-</table>
-           </form>          
-            <?php if($_GET['generate']){?>
+           <?php if($_GET['generate']){?>
               <div>
-                  <tr>
+                <tr>
                     <th colspan="6">
                     </th>
                 </tr>
                 <table class="table table-bordered" id="formula" width="100%" cellspacing="0">
                   <thead>
                     <tr class="noexport">
-                      <th colspan="6">                      </th>
+                      <th colspan="6"></th>
+                    </tr>
+                    <tr class="noexport">
+                      <th colspan="6">
+                     <div class="text-left">
+                      <div class="btn-group">
+                      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
+                      <div class="dropdown-menu">
+                        <a class="dropdown-item" id="pdf" href="#">Export to PDF</a>
+                        <a class="dropdown-item" href="javascript:printLabel();" onclick="return confirm('Print label?');">Print Label</a>
+                      </div>
+                    </div>
+                    </div>
+                    </th>
                     </tr>
                     <tr>
                       <th width="22%">Ingredient</th>
@@ -172,6 +157,63 @@ $carrier = $bottle - $new_conc;
                 <p>*Values in: <strong class="alert alert-danger">red</strong> exceeds IFRA limit,   <strong class="alert alert-warning">yellow</strong> have no IFRA limit set,   <strong class="alert alert-success">green</strong> are within IFRA limits</p>
                 </div>
             </div>
+            <?php }else{ ?>
+           <form action="/?do=genFinishedProduct&generate=1" method="post" enctype="multipart/form-data" target="_self">
+           
+           <table width="100%" border="0">
+  <tr>
+    <td width="9%">Formula:</td>
+    <td width="24%">
+    <select name="formula" id="formula" class="form-control selectpicker" data-live-search="true">
+     <?php
+		$sql = mysqli_query($conn, "SELECT name FROM formulasMetaData ORDER BY name ASC");
+		while ($formula = mysqli_fetch_array($sql)){
+			echo '<option value="'.$formula['name'].'">'.$formula['name'].'</option>';
+		}
+	  ?>
+     </select>
+   </td>
+    <td width="67%">&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Concentration:</td>
+    <td>
+        <select name="type" id="type" class="form-control selectpicker" data-live-search="true">
+     <?php
+	 		echo '<option value="'.$settings['Parfum'].'">Parfum ('.$settings['Parfum'].'%)</option>';
+			echo '<option value="'.$settings['EDP'].'">EDP ('.$settings['EDP'].'%)</option>';
+			echo '<option value="'.$settings['EDT'].'">EDT ('.$settings['EDT'].'%)</option>';
+			echo '<option value="'.$settings['EDC'].'">EDC ('.$settings['EDC'].'%)</option>';
+
+	  ?>
+     </select>
+    </td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Bottle:</td>
+    <td>    
+    <select name="bottle" id="bottle" class="form-control selectpicker" data-live-search="true">
+     <?php
+		$sql = mysqli_query($conn, "SELECT name,ml FROM bottles ORDER BY name ASC");
+		while ($bottle = mysqli_fetch_array($sql)){
+			echo '<option value="'.$bottle['ml'].'">'.$bottle['name'].' ('.$bottle['ml'].'ml)</option>';
+		}
+	  ?>
+     </select>
+     </td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td colspan="2">&nbsp;</td>
+  </tr>
+  <tr>
+    <td><input type="submit" name="button" id="button" value="Generate"></td>
+    <td colspan="2">&nbsp;</td>
+  </tr>
+</table>
+           </form>          
             <?php } ?>
            </div>
         </div>
@@ -181,22 +223,20 @@ $carrier = $bottle - $new_conc;
 <script type="text/javascript" language="javascript" >
 
 
-$('#csv').on('click',function(){
+$('#pdf').on('click',function(){
   $("#formula").tableHTMLExport({
-	type:'csv',
-	filename:'<?php echo $f_name; ?>.csv',
-	separator: ',',
-  	newline: '\r\n',
-  	trimContent: true,
-  	quoteFields: true,
+	type:'pdf',
+	filename:'<?php echo $f_name; ?>.pdf',
+	  orientation: 'p',
+	
 	
 	ignoreColumns: '.noexport',
   	ignoreRows: '.noexport',
-	
-	htmlContent: false,
-  
-  	// debug
-  	consoleLog: true   
+	/*
+	 var doc = new jsPDF()
+  doc.autoTable({ html: '#my-table' })
+  doc.save('table.pdf')
+  */
 });
  
 })
