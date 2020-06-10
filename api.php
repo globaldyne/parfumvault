@@ -51,14 +51,31 @@ if($_REQUEST['username'] && $_REQUEST['password'] && $_REQUEST['do']){
 			}
 			echo json_encode($response);
 			exit;
+		}elseif($_REQUEST['do'] == 'add' && $_REQUEST['ingredient_id'] && $_REQUEST['purity'] && $_REQUEST['quantity'] && $_REQUEST['f_name']){
+			$quantity = mysqli_real_escape_string($conn, $_REQUEST['quantity']);
+			$purity = mysqli_real_escape_string($conn, $_REQUEST['purity']);
+			$ingredient_id = mysqli_real_escape_string($conn, $_REQUEST['ingredient_id']);
+			$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE id = '$ingredient_id'"));
+			$ingredient = $ing['name'];
+			
+			$fid = mysqli_real_escape_string($conn, $_REQUEST['f_name']);
+			$name = base64_decode($fid);
+			
+			if(mysqli_num_rows(mysqli_query($conn, "SELECT ingredient FROM formulas WHERE ingredient = '$ingredient' AND name = '$name'"))){
+				$response['status']['error'] = "Ingredient already exists in formula";
+			}else{
+				if(mysqli_query($conn, "INSERT INTO formulas (fid, name, ingredient, concentration, quantity) VALUES ('$fid','$name','$ingredient','$purity','$quantity') ")){
+
+					$response['status']['success'] = "Added $ingredient to $name";
+				}else{
+
+					$response['status']['error'] = "Failed";
+				}
+			}
+			echo json_encode($response);
+			exit;
 		}
-/*
-		//ADD	
-		}elseif($_REQUEST['do'] == 'add' && $_REQUEST['kind'] == 'ingredients'){
-			$kind = mysqli_real_escape_string($conn, $_REQUEST['kind']);
-			$ing = mysqli_real_escape_string($conn, $_REQUEST['ing']);
-			$sql = mysqli_query($conn, "INSERT INTO $kind (name) VALUES ('$ing')");	
-*/
+
 		$rows = array();
 		while($r = mysqli_fetch_assoc($sql)) {
     			$rows[$_REQUEST['do']][] = $r;
