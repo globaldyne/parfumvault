@@ -154,24 +154,30 @@ $(document).ready(function() {
       </li>
       
       <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseInventoty" aria-expanded="true" aria-controls="collapseInventoty">
+      <?php 
+	  if($_GET['do'] == 'ingredients' || $_GET['do'] == 'bottles' || $_GET['do'] == 'lids'){ 
+	  	$expand = 'show'; 
+		$class = ''; 
+		$aria = 'true'; 
+	  }else{ 
+	  	$exapnd = ''; 
+		$class = 'collapsed'; 
+		$aria = 'false'; 
+	  }
+	  ?> 
+        <a class="nav-link <?php echo $class; ?>" href="#" data-toggle="collapse" data-target="#collapseInventoty" aria-expanded="<?php echo $aria; ?>" aria-controls="collapseInventoty">
           <i class="fas fa-fw fa-warehouse"></i>
           <span>Inventory</span>
         </a>
-        <div id="collapseInventoty" class="collapse" aria-labelledby="headingInventory" data-parent="#accordionSidebar">
+        <div id="collapseInventoty" class="collapse <?php echo $expand;?>" aria-labelledby="headingInventory" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item" href="/?do=ingredients">Ingredients</a>
-            <a class="collapse-item" href="/?do=bottles">Bottles</a>
+            <a class="collapse-item <?php if($_GET['do'] == 'ingredients'){ echo 'active';}?>" href="/?do=ingredients">Ingredients</a>
+            <a class="collapse-item <?php if($_GET['do'] == 'bottles'){ echo 'active';}?>" href="/?do=bottles">Bottles</a>
+            <a class="collapse-item <?php if($_GET['do'] == 'lids'){ echo 'active';}?>" href="/?do=lids">Bottle Lids</a>
           </div>
         </div>
       </li>
-      <!--
-        <li class="nav-item">
-        <a class="nav-link" href="/?do=ingredients">
-          <i class="fas fa-fw fa-vial"></i>
-          <span>Ingredients</span></a>
-      </li>
-      -->
+    
         <li class="nav-item">
         <a class="nav-link" href="/?do=IFRA">
           <i class="fas fa-fw fa-university"></i>
@@ -215,7 +221,10 @@ $(document).ready(function() {
 			require 'pages/bottles.php';		
 		}elseif($_GET['do'] == 'addBottle'){
 			require 'pages/addBottle.php';		
-			
+		}elseif($_GET['do'] == 'lids'){
+			require 'pages/lids.php';				
+		}elseif($_GET['do'] == 'addLid'){
+			require 'pages/addLid.php';	
 			
 		}elseif($_GET['do'] == 'logout'){
 			if(isset($_SESSION['parfumvault'])) {

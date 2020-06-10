@@ -51,6 +51,7 @@ $sup = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
                       <th>Supplier</th>
                       <th colspan="3">Dimensions (mm)</th>
                       <th>Photo</th>
+                      <th>Shop</th>
                       <th>Notes</th>
                       <th class="noexport">Actions</th>
                     </tr>
@@ -71,6 +72,7 @@ $sup = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
 					  <td align="center">';
 					  if(empty($bottle['photo'])){ echo 'N/A'; }else{
                       echo '<a href="'.$bottle['photo'].'" class="popup-link fas fa-image"></a>';}
+					  echo '<td align="center"><a href="'.$bottle['supplier_link'].'" target="_blank" class="fas fa-external-link-alt"></a></td>';
 					  echo '<td data-name="notes" class="notes" data-type="textarea" align="center" data-pk="'.$bottle['id'].'">'.$bottle['notes'].'
 					  <td class="noexport" align="center"><a href="/?do=bottles&action=delete&id='.$bottle['id'].'" onclick="return confirm(\'Delete '.$bottle['name'].'?\');" class="fas fa-trash"></a></td>
 					  </tr>';

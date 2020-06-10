@@ -11,9 +11,11 @@ $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData W
 $bottle = mysqli_real_escape_string($conn, $_POST['bottle']);
 $type = mysqli_real_escape_string($conn, $_POST['type']);
 $carrier_id = mysqli_real_escape_string($conn, $_POST['carrier']);
+$lid_id = mysqli_real_escape_string($conn, $_POST['lid']);
 
 $bottle_cost = mysqli_fetch_array(mysqli_query($conn, "SELECT  price,ml,name FROM bottles WHERE id = '$bottle'"));
 $carrier_cost = mysqli_fetch_array(mysqli_query($conn, "SELECT  price,ml FROM ingredients WHERE id = '$carrier_id'"));
+$lid_cost = mysqli_fetch_array(mysqli_query($conn, "SELECT  price,style FROM lids WHERE id = '$lid_id'"));
 
 $bottle = $bottle_cost['ml'];
 $new_conc = $bottle/100*$type;
@@ -147,6 +149,13 @@ $.ajax({
                       <td colspan="2" align="center" class="m-0 text-primary"><?php echo  utf8_encode($settings['currency']).$bottle_cost['price']; ?></td>
                     </tr>
                     <tr>
+                      <td></td>
+                      <td align="center" class="m-0 font-weight-bold text-primary">Lid:</td>
+                      <td align="center" class="m-0 font-weight-bold text-primary">&nbsp;</td>
+                      <td align="center" class="m-0 font-weight-bold text-primary">&nbsp;</td>
+                      <td colspan="2" align="center" class="m-0 font-weight-bold text-primary">&nbsp;</td>
+                    </tr>
+                    <tr>
                       <td width="22%"></td>
                       <td align="center" class="m-0 font-weight-bold text-primary">Total: </td>
                       <td width="15%" align="center" class="m-0 font-weight-bold text-primary"><?php echo number_format(array_sum($new_tot)+ $carrier, 2); ?>ml</td>
@@ -198,7 +207,7 @@ $.ajax({
     <td>    
     <select name="bottle" id="bottle" class="form-control selectpicker" data-live-search="true">
      <?php
-		$sql = mysqli_query($conn, "SELECT id,name,ml FROM bottles ORDER BY name ASC");
+		$sql = mysqli_query($conn, "SELECT id,name,ml FROM bottles ORDER BY ml DESC");
 		while ($bottle = mysqli_fetch_array($sql)){
 			echo '<option value="'.$bottle['id'].'">'.$bottle['name'].' ('.$bottle['ml'].'ml)</option>';
 		}
@@ -223,7 +232,14 @@ $.ajax({
   </tr>
   <tr>
     <td>Bottle Lid:</td>
-    <td>&nbsp;</td>
+    <td><select name="lid" id="lid" class="form-control selectpicker" data-live-search="true">
+      <?php
+		$sql = mysqli_query($conn, "SELECT style,id FROM lids ORDER BY name ASC");
+		while ($lid = mysqli_fetch_array($sql)){
+			echo '<option value="'.$lid['id'].'">'.$lid['style'].'</option>';
+		}
+	  ?>
+    </select></td>
     <td>&nbsp;</td>
   </tr>
   <tr>
