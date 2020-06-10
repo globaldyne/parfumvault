@@ -8,8 +8,14 @@ $formula_q = mysqli_query($conn, "SELECT * FROM formulas WHERE name = '$f_name' 
 $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE name = '$f_name'"));
 $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE name = '$f_name'"));
 
-$bottle = $_POST['bottle'];
-$type = $_POST['type'];
+$bottle = mysqli_real_escape_string($conn, $_POST['bottle']);
+$type = mysqli_real_escape_string($conn, $_POST['type']);
+$carrier_id = mysqli_real_escape_string($conn, $_POST['carrier']);
+
+$bottle_cost = mysqli_fetch_array(mysqli_query($conn, "SELECT  price,ml,name FROM bottles WHERE id = '$bottle'"));
+$carrier_cost = mysqli_fetch_array(mysqli_query($conn, "SELECT  price,ml FROM ingredients WHERE id = '$carrier_id'"));
+
+$bottle = $bottle_cost['ml'];
 $new_conc = $bottle/100*$type;
 $carrier = $bottle - $new_conc;
 ?>
@@ -121,24 +127,31 @@ $.ajax({
                     </tr>
                     <tr>
                       <td></td>
-                      <td></td>
-                      <td align="center">Sub Total: <?php echo number_format(array_sum($new_tot), 2).'ml'; ?></td>
-                      <td></td>
-                      <td colspan="2" align="center"></td>
+                      <td align="center" class="m-1 text-primary">Sub Total: </td>
+                      <td align="center" class="m-1 text-primary"><?php echo number_format(array_sum($new_tot), 2); ?>ml</td>
+                      <td align="center" class="m-1 text-primary"><?php echo array_sum($conc_tot);?>%</td>
+                      <td colspan="2" align="center" class="m-1 text-primary"><?php echo utf8_encode($settings['currency']).number_format(array_sum($tot),2);?></td>
                     </tr>
                     <tr>
                       <td></td>
+                      <td align="center" class="m-1 text-primary">Carrier: </td>
+                      <td align="center" class="m-1 text-primary"><?php echo $carrier; ?>ml</td>
+                      <td align="center" class="m-1 text-primary"><?php echo $carrier*100/$bottle;?>%</td>
+                      <td colspan="2" align="center" class="m-1 text-primary"><?php $carrier_sub_cost = $carrier_cost['price'] / $carrier_cost['ml'] * $carrier; echo utf8_encode($settings['currency']).number_format($carrier_sub_cost, 2);?></td>
+                    </tr>
+                    <tr>
                       <td></td>
-                      <td align="center">Carrier: <?php echo $carrier; ?>ml</td>
-                      <td></td>
-                      <td colspan="2" align="center"></td>
+                      <td align="center" class="m-0 text-primary">Bottle:</td>
+                      <td align="center" class="m-0 text-primary"><?php echo $bottle_cost['ml'];?>ml</td>
+                      <td align="center" class="m-0 text-primary">-</td>
+                      <td colspan="2" align="center" class="m-0 text-primary"><?php echo  utf8_encode($settings['currency']).$bottle_cost['price']; ?></td>
                     </tr>
                     <tr>
                       <td width="22%"></td>
-                      <td></td>
-                      <td width="15%" align="center" class="m-0 font-weight-bold text-primary">Total: <?php echo number_format(array_sum($new_tot)+ $carrier, 2); ?>mg</td>
-                      <td width="15%" align="center" class="m-0 font-weight-bold text-primary">Total <?php echo array_sum($conc_tot);?>%</td>
-                      <td colspan="2" align="center" class="m-0 font-weight-bold text-primary">Total Cost: <?php echo utf8_encode($settings['currency']).number_format(array_sum($tot),2);?></td>
+                      <td align="center" class="m-0 font-weight-bold text-primary">Total: </td>
+                      <td width="15%" align="center" class="m-0 font-weight-bold text-primary"><?php echo number_format(array_sum($new_tot)+ $carrier, 2); ?>ml</td>
+                      <td width="15%" align="center" class="m-0 font-weight-bold text-primary"><?php echo $carrier*100/$bottle + array_sum($conc_tot); ?>%</td>
+                      <td colspan="2" align="center" class="m-0 font-weight-bold text-primary"><?php echo utf8_encode($settings['currency']).number_format(array_sum($tot)+$carrier_sub_cost+$bottle_cost['price'],2);?></td>
                     </tr>
                   </tfoot>                                    
                 </table> 
@@ -185,13 +198,32 @@ $.ajax({
     <td>    
     <select name="bottle" id="bottle" class="form-control selectpicker" data-live-search="true">
      <?php
-		$sql = mysqli_query($conn, "SELECT name,ml FROM bottles ORDER BY name ASC");
+		$sql = mysqli_query($conn, "SELECT id,name,ml FROM bottles ORDER BY name ASC");
 		while ($bottle = mysqli_fetch_array($sql)){
-			echo '<option value="'.$bottle['ml'].'">'.$bottle['name'].' ('.$bottle['ml'].'ml)</option>';
+			echo '<option value="'.$bottle['id'].'">'.$bottle['name'].' ('.$bottle['ml'].'ml)</option>';
 		}
 	  ?>
      </select>
      </td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Carrier:</td>
+    <td>
+    <select name="carrier" id="carrier" class="form-control selectpicker" data-live-search="true">
+      <?php
+		$sql = mysqli_query($conn, "SELECT name,id FROM ingredients WHERE type = 'Carrier' ORDER BY name ASC");
+		while ($carrier = mysqli_fetch_array($sql)){
+			echo '<option value="'.$carrier['id'].'">'.$carrier['name'].'</option>';
+		}
+	  ?>
+    </select>
+    </td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Bottle Lid:</td>
+    <td>&nbsp;</td>
     <td>&nbsp;</td>
   </tr>
   <tr>

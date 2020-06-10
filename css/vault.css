@@ -103,6 +103,15 @@ a { text-decoration: none; }
   background-size: cover;
   height: 430px;
 }
+
+.bg-ptypes-image {
+  background: url("/img/perfumes-types.png");
+  background-position: left;
+  background-size: contain;
+  background-repeat: no-repeat;
+  height: 300px;
+}
+
 .vault-top {
     float: right;
 }

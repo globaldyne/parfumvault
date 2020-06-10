@@ -351,39 +351,46 @@ $(function() {
           </tr>
         <tr>
           <td colspan="3"><h4 class="m-0 mb-4 text-primary">&nbsp;</h4></td>
-          <td width="77%">&nbsp;</td>
+          <td width="77%" rowspan="9"><div class="bg-ptypes-image"></div></td>
         </tr>
         <tr>
           <td width="6%">EDP:</td>
           <td width="10%"><input name="edp" type="text" class="form-control" id="edp" value="<?php echo $settings['EDP'];?>"/></td>
           <td width="7%">%</td>
-          <td>&nbsp;</td>
-        </tr>
+          </tr>
         <tr>
           <td>EDT:</td>
           <td><input name="edt" type="text" class="form-control" id="edt" value="<?php echo $settings['EDT'];?>"/></td>
           <td>%</td>
-          <td>&nbsp;</td>
-        </tr>
+          </tr>
         <tr>
           <td>EDC:</td>
           <td><input name="edc" type="text" class="form-control" id="edc" value="<?php echo $settings['EDC'];?>"/></td>
           <td>%</td>
-          <td>&nbsp;</td>
-        </tr>
+          </tr>
         <tr>
           <td>Parfum:</td>
           <td><input name="parfum" type="text" class="form-control" id="parfum" value="<?php echo $settings['Parfum'];?>"/></td>
           <td>%</td>
+          </tr>
+        <tr>
           <td>&nbsp;</td>
+          <td colspan="2">&nbsp;</td>
+        </tr>
+        <tr>
+          <td><input type="submit" name="button2" id="button2" value="Submit" class="btn btn-info"/></td>
+          <td colspan="2">&nbsp;</td>
         </tr>
         <tr>
           <td>&nbsp;</td>
           <td colspan="2">&nbsp;</td>
+        </tr>
+        <tr>
           <td>&nbsp;</td>
+          <td colspan="2">&nbsp;</td>
           </tr>
         <tr>
-          <td><input type="submit" name="button" id="button" value="Submit" class="btn btn-info"/></td>
+          <td>&nbsp;</td>
           <td colspan="3">&nbsp;</td>
           </tr>
       </table>

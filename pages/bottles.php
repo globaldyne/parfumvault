@@ -32,7 +32,7 @@ $sup = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
                 <table class="table table-bordered" id="tdData" width="100%" cellspacing="0">
                   <thead>
                     <tr class="noBorder noexport">
-                      <th colspan="10">
+                      <th colspan="12">
                   <div class="text-right">
                         <div class="btn-group">
                           <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
@@ -47,16 +47,16 @@ $sup = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
                     <tr>
                       <th>Name</th>
                       <th>Size (ml)</th>
-                      <th>Price</th>
+                      <th>Price <?php echo $settings['currency'];?></th>
                       <th>Supplier</th>
-                      <th>Dimensions</th>
+                      <th colspan="3">Dimensions (mm)</th>
                       <th>Photo</th>
                       <th>Notes</th>
                       <th class="noexport">Actions</th>
                     </tr>
                   </thead>
                   <tbody id="bottle_data">
-                  <?php					
+                    <?php					
 				  while ($bottle = mysqli_fetch_array($q)) {
 					  echo'
                     <tr>
@@ -65,8 +65,9 @@ $sup = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
 					  <td data-name="price" class="price" data-type="text" align="center" data-pk="'.$bottle['id'].'">'.$bottle['price'].'</td>
                       <td data-name="supplier" class="supplier" data-type="select" align="center" data-pk="'.$bottle['id'].'">'.$bottle['supplier'].'</td>';
 					  if(empty($bottle['height'])){ $bottle['height'] = 'N/A';} if(empty($bottle['width'])){ $bottle['width']='N/A';} if(empty($bottle['diameter'])){ $bottle['diameter']='N/A';}?>
-                      <?php echo'
-					  <td align="center">'.$bottle['height'].' x '.$bottle['width'].' x '.$bottle['diameter'].'</td>
+                      <?php echo'<td data-name="height" class="height" data-type="text" align="center" data-pk="'.$bottle['id'].'">'.$bottle['height'].'</td>
+                  				 <td data-name="width" class="width" data-type="text" align="center" data-pk="'.$bottle['id'].'">'.$bottle['width'].'</td>
+                  				 <td data-name="diameter" class="diameter" data-type="text" align="center" data-pk="'.$bottle['id'].'">'.$bottle['diameter'].'</td>
 					  <td align="center">';
 					  if(empty($bottle['photo'])){ echo 'N/A'; }else{
                       echo '<a href="'.$bottle['photo'].'" class="popup-link fas fa-image"></a>';}
@@ -75,7 +76,6 @@ $sup = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
 					  </tr>';
 				  }
                     ?>
-                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -125,6 +125,66 @@ $sup = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
   }
  });
 
+  $('#bottle_data').editable({
+  container: 'body',
+  selector: 'td.height',
+  url: "/pages/update_data.php?bottle=1",
+  title: 'Height (mm)',
+  type: "POST",
+  dataType: 'json',
+      success: function(response, newValue) {
+        if(response.status == 'error') return response.msg; else location.reload();
+    },
+  validate: function(value){
+   if($.trim(value) == ''){
+    return 'This field is required';
+   }
+   if($.isNumeric(value) == '' ){
+    return 'Numbers only!';
+   }
+  }
+ });
+  
+   $('#bottle_data').editable({
+  container: 'body',
+  selector: 'td.width',
+  url: "/pages/update_data.php?bottle=1",
+  title: 'Width (mm)',
+  type: "POST",
+  dataType: 'json',
+      success: function(response, newValue) {
+        if(response.status == 'error') return response.msg; else location.reload();
+    },
+  validate: function(value){
+   if($.trim(value) == ''){
+    return 'This field is required';
+   }
+   if($.isNumeric(value) == '' ){
+    return 'Numbers only!';
+   }
+  }
+ });
+   
+   $('#bottle_data').editable({
+  container: 'body',
+  selector: 'td.diameter',
+  url: "/pages/update_data.php?bottle=1",
+  title: 'Diameter (mm)',
+  type: "POST",
+  dataType: 'json',
+      success: function(response, newValue) {
+        if(response.status == 'error') return response.msg; else location.reload();
+    },
+  validate: function(value){
+   if($.trim(value) == ''){
+    return 'This field is required';
+   }
+   if($.isNumeric(value) == '' ){
+    return 'Numbers only!';
+   }
+  }
+ });  
+ 
   $('#bottle_data').editable({
   container: 'body',
   selector: 'td.price',
