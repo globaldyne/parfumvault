@@ -156,7 +156,7 @@ $.ajax({
                       <td></td>
                       <td align="center" class="m-0 text-primary">Lid:</td>
                       <td align="center" class="m-0 text-primary"><?php echo $lid_cost['style'];?></td>
-                      <td align="center" class="m-0 text-primary">&nbsp;</td>
+                      <td align="center" class="m-0 text-primary">-</td>
                       <td colspan="2" align="center" class="m-0 text-primary"><?php echo $settings['currency'].$lid_cost['price'];?></td>
                     </tr>
                     <tr>
