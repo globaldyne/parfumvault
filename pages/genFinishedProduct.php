@@ -15,8 +15,12 @@ $lid_id = mysqli_real_escape_string($conn, $_POST['lid']);
 
 $bottle_cost = mysqli_fetch_array(mysqli_query($conn, "SELECT  price,ml,name FROM bottles WHERE id = '$bottle'"));
 $carrier_cost = mysqli_fetch_array(mysqli_query($conn, "SELECT  price,ml FROM ingredients WHERE id = '$carrier_id'"));
-$lid_cost = mysqli_fetch_array(mysqli_query($conn, "SELECT  price,style FROM lids WHERE id = '$lid_id'"));
-
+if($_POST['lid']){
+	$lid_cost = mysqli_fetch_array(mysqli_query($conn, "SELECT  price,style FROM lids WHERE id = '$lid_id'"));
+}else{
+	$lid_cost['price'] = 0;
+	$lid_cost['style'] = 'none';
+}
 $bottle = $bottle_cost['ml'];
 $new_conc = $bottle/100*$type;
 $carrier = $bottle - $new_conc;
@@ -150,17 +154,17 @@ $.ajax({
                     </tr>
                     <tr>
                       <td></td>
-                      <td align="center" class="m-0 font-weight-bold text-primary">Lid:</td>
-                      <td align="center" class="m-0 font-weight-bold text-primary">&nbsp;</td>
-                      <td align="center" class="m-0 font-weight-bold text-primary">&nbsp;</td>
-                      <td colspan="2" align="center" class="m-0 font-weight-bold text-primary">&nbsp;</td>
+                      <td align="center" class="m-0 text-primary">Lid:</td>
+                      <td align="center" class="m-0 text-primary"><?php echo $lid_cost['style'];?></td>
+                      <td align="center" class="m-0 text-primary">&nbsp;</td>
+                      <td colspan="2" align="center" class="m-0 text-primary"><?php echo $settings['currency'].$lid_cost['price'];?></td>
                     </tr>
                     <tr>
                       <td width="22%"></td>
                       <td align="center" class="m-0 font-weight-bold text-primary">Total: </td>
                       <td width="15%" align="center" class="m-0 font-weight-bold text-primary"><?php echo number_format(array_sum($new_tot)+ $carrier, 2); ?>ml</td>
                       <td width="15%" align="center" class="m-0 font-weight-bold text-primary"><?php echo $carrier*100/$bottle + array_sum($conc_tot); ?>%</td>
-                      <td colspan="2" align="center" class="m-0 font-weight-bold text-primary"><?php echo utf8_encode($settings['currency']).number_format(array_sum($tot)+$carrier_sub_cost+$bottle_cost['price'],2);?></td>
+                      <td colspan="2" align="center" class="m-0 font-weight-bold text-primary"><?php echo $settings['currency'].number_format(array_sum($tot)+$lid_cost['price']+$carrier_sub_cost+$bottle_cost['price'],2);?></td>
                     </tr>
                   </tfoot>                                    
                 </table> 
@@ -233,8 +237,9 @@ $.ajax({
   <tr>
     <td>Bottle Lid:</td>
     <td><select name="lid" id="lid" class="form-control selectpicker" data-live-search="true">
+      <option value="0" selected="selected">None</option>
       <?php
-		$sql = mysqli_query($conn, "SELECT style,id FROM lids ORDER BY name ASC");
+		$sql = mysqli_query($conn, "SELECT style,id FROM lids ORDER BY style ASC");
 		while ($lid = mysqli_fetch_array($sql)){
 			echo '<option value="'.$lid['id'].'">'.$lid['style'].'</option>';
 		}

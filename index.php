@@ -47,6 +47,7 @@ $all_ing_c = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"));
 $uncat_ing_c = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE type IS NULL"));
 $cat_c = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingCategory"));
 $bottles_c = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM bottles"));
+$lids_c = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM lids"));
 
 ?>
 <!DOCTYPE html>
