@@ -62,17 +62,17 @@ if($_REQUEST['username'] && $_REQUEST['password'] && $_REQUEST['do']){
 			$name = base64_decode($fid);
 			
 			if(mysqli_num_rows(mysqli_query($conn, "SELECT ingredient FROM formulas WHERE ingredient = '$ingredient' AND name = '$name'"))){
-				$response['status']['error'] = "Ingredient already exists in formula";
+				$response['status'][]['msg'] = "Ingredient already exists in formula";
 			}else{
 				if(mysqli_query($conn, "INSERT INTO formulas (fid, name, ingredient, concentration, quantity) VALUES ('$fid','$name','$ingredient','$purity','$quantity') ")){
 
-					$response['status']['success'] = "Added $ingredient to $name";
+					$response['status'][]['msg'] = "Added $ingredient to $name";
 				}else{
 
-					$response['status']['error'] = "Failed";
+					$response['status'][]['msg'] = "Failed";
 				}
 			}
-			echo json_encode($response);
+			echo json_encode($response, JSON_PRETTY_PRINT);
 			exit;
 		}
 
