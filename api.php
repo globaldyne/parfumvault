@@ -62,8 +62,6 @@ if($_REQUEST['username'] && $_REQUEST['password'] && $_REQUEST['do']){
 			}
 						
 			
-			echo json_encode($response);
-			exit;
 		
 		//ADD ING	
 		}elseif($_REQUEST['do'] == 'add' && $_REQUEST['ingredient_id'] && $_REQUEST['purity'] && $_REQUEST['quantity'] && $_REQUEST['f_name']){
@@ -88,6 +86,8 @@ if($_REQUEST['username'] && $_REQUEST['password'] && $_REQUEST['do']){
 				}
 			}
 			
+			echo json_encode($response);
+			exit;
 		//ADD FORMULA	
 		}elseif($_REQUEST['do'] == 'add' && $_REQUEST['kind'] == 'formula' && $_REQUEST['desc'] && $_REQUEST['f_name']){
 		
@@ -99,8 +99,7 @@ if($_REQUEST['username'] && $_REQUEST['password'] && $_REQUEST['do']){
 				$response['status'][]['msg'] = "Formula already exists";
 			}else{
 				
-				$sql.=mysqli_query($conn, "INSERT INTO formulas (fid, name) VALUES ('$fid','$name')");
-				$sql.=mysqli_query($conn, "INSERT INTO formulasMetaData (fid, name, notes, image) VALUES ('$fid','$name','$desc', '$def_app_img')");
+				$sql = mysqli_query($conn, "INSERT INTO formulasMetaData (fid, name, notes, image) VALUES ('$fid','$name','$desc', '$def_app_img')");
 				
 				if($sql){
 
