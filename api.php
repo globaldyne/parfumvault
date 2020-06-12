@@ -3,6 +3,7 @@ define('pvault_panel', TRUE);
 require_once('./inc/config.php');
 require_once('./inc/opendb.php');
 require_once('./func/apiCheckAuth.php');
+require_once('./inc/product.php');
 
 $req_dump = print_r($_REQUEST, TRUE);
 $fp = fopen('tmp/api.log', 'a');
@@ -10,8 +11,8 @@ fwrite($fp, $req_dump);
 fclose($fp);
 
 if (isset($_GET['login'])){
-	$username = $_REQUEST['username'];
-	$password = $_REQUEST['password'];
+	$username = mysqli_real_escape_string($conn, $_REQUEST['username']);
+	$password = mysqli_real_escape_string($conn, $_REQUEST['password']);
 
 	if(apiCheckAuth($username, $password ,$dbhost, $dbuser, $dbpass, $dbname)==true){
 		$response['status'] = "Success";
@@ -23,9 +24,9 @@ if (isset($_GET['login'])){
 	exit;
 }
 if($_REQUEST['username'] && $_REQUEST['password'] && $_REQUEST['do']){
-	$username = $_REQUEST['username'];
-	$password = $_REQUEST['password'];
-	$_REQUEST['do'] = strtolower($_REQUEST['do']);
+	$username = mysqli_real_escape_string($conn, $_REQUEST['username']);
+	$password = mysqli_real_escape_string($conn, $_REQUEST['password']);
+	$_REQUEST['do'] = strtolower(mysqli_real_escape_string($conn, $_REQUEST['do']));
 
 	if(apiCheckAuth($username, $password ,$dbhost, $dbuser, $dbpass, $dbname)==true){
 		//$LIMIT = 'LIMIT 2';
@@ -39,24 +40,38 @@ if($_REQUEST['username'] && $_REQUEST['password'] && $_REQUEST['do']){
 			$sql = mysqli_query($conn, "SELECT name, type, strength, IFRA, price, profile, odor, notes FROM ingredients WHERE id = '$_REQUEST[id]'");	
 		}elseif($_REQUEST['do'] == 'ifra'){
 			$sql = mysqli_query($conn, "SELECT name, risk, cat4 FROM IFRALibrary ORDER BY id ASC");	
+		
+		//DELETE
 		}elseif($_REQUEST['do'] == 'delete' && $_REQUEST['kind'] == 'ingredient'){
-			$id =  $_REQUEST['id'];
+			$id =  mysqli_real_escape_string($conn, $_REQUEST['id']);
 
 			if(mysqli_query($conn, "DELETE FROM formulas WHERE id = '$id'")){
-
-				$response['status'] = "Deleted $id";
+				$response['status'] = "Deleted ingredient $id";
 			}else{
-
-				$response['status'] = "Failed";
+				$response['status'] = "Failed $id";
 			}
+		}elseif($_REQUEST['do'] == 'delete' && $_REQUEST['kind'] == 'formula'){
+			$fid =  mysqli_real_escape_string($conn, $_REQUEST['fid']);
+			$sql.=mysqli_query($conn, "DELETE FROM formulas WHERE fid = '$fid'");
+			$sql.=mysqli_query($conn, "DELETE FROM formulasMetaData WHERE fid = '$fid'");
+			
+			if($sql){
+				$response['status'] = "Deleted formula $fid";
+			}else{
+				$response['status'] = "Failed to delete $fid";
+			}
+						
+			
 			echo json_encode($response);
 			exit;
+		
+		//ADD ING	
 		}elseif($_REQUEST['do'] == 'add' && $_REQUEST['ingredient_id'] && $_REQUEST['purity'] && $_REQUEST['quantity'] && $_REQUEST['f_name']){
 			$quantity = mysqli_real_escape_string($conn, $_REQUEST['quantity']);
 			$purity = mysqli_real_escape_string($conn, $_REQUEST['purity']);
 			$ingredient_id = mysqli_real_escape_string($conn, $_REQUEST['ingredient_id']);
 			$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE id = '$ingredient_id'"));
-			$ingredient = $ing['name'];
+			$ingredient = mysqli_real_escape_string($conn, $ing['name']);
 			
 			$fid = mysqli_real_escape_string($conn, $_REQUEST['f_name']);
 			$name = base64_decode($fid);
@@ -69,9 +84,34 @@ if($_REQUEST['username'] && $_REQUEST['password'] && $_REQUEST['do']){
 					$response['status'][]['msg'] = "Added $ingredient to $name";
 				}else{
 
-					$response['status'][]['msg'] = "Failed";
+					$response['status'][]['msg'] = "Failed to add $name";
 				}
 			}
+			
+		//ADD FORMULA	
+		}elseif($_REQUEST['do'] == 'add' && $_REQUEST['kind'] == 'formula' && $_REQUEST['desc'] && $_REQUEST['f_name']){
+		
+			$desc = mysqli_real_escape_string($conn, $_REQUEST['desc']);
+			$name = mysqli_real_escape_string($conn, $_REQUEST['f_name']);
+			$fid = base64_encode($name);
+			
+			if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulas WHERE fid = '$fid'"))){
+				$response['status'][]['msg'] = "Formula already exists";
+			}else{
+				
+				$sql.=mysqli_query($conn, "INSERT INTO formulas (fid, name) VALUES ('$fid','$name')");
+				$sql.=mysqli_query($conn, "INSERT INTO formulasMetaData (fid, name, notes, image) VALUES ('$fid','$name','$desc', '$def_app_img')");
+				
+				if($sql){
+
+					$response['status'][]['msg'] = "Added $name";
+				}else{
+					echo mysqli_error($conn);
+					$response['status'][]['msg'] = "Failed to add $name";
+				}
+			}
+			
+			
 			echo json_encode($response, JSON_PRETTY_PRINT);
 			exit;
 		}
