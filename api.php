@@ -4,13 +4,14 @@ require_once('./inc/config.php');
 require_once('./inc/opendb.php');
 require_once('./func/apiCheckAuth.php');
 require_once('./inc/product.php');
+require_once('./func/countElement.php');
 
 $req_dump = print_r($_REQUEST, TRUE);
 $fp = fopen('tmp/api.log', 'a');
 fwrite($fp, $req_dump);
 fclose($fp);
 
-if (isset($_GET['login'])){
+if (isset($_REQUEST['login']) && isset($_REQUEST['username']) && isset($_REQUEST['password'])){
 	$username = mysqli_real_escape_string($conn, $_REQUEST['username']);
 	$password = mysqli_real_escape_string($conn, $_REQUEST['password']);
 
@@ -113,8 +114,19 @@ if($_REQUEST['username'] && $_REQUEST['password'] && $_REQUEST['do']){
 			
 			echo json_encode($response, JSON_PRETTY_PRINT);
 			exit;
-		}
 
+		//COUNT	
+		}elseif($_REQUEST['do'] == 'count'){
+			
+			$response['count'][]['formulas'] = countElement('formulas  GROUP BY name' ,$conn);
+			$response['count'][]['ingredients'] = countElement('ingredients GROUP BY name' ,$conn);
+		
+
+		echo json_encode($response, JSON_PRETTY_PRINT);
+		exit;
+
+		}
+	
 		$rows = array();
 		while($r = mysqli_fetch_assoc($sql)) {
     			$rows[$_REQUEST['do']][] = $r;

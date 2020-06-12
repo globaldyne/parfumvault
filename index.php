@@ -37,18 +37,6 @@ if($_GET['action'] == 'delete' && $_GET['name']){
 	}
 }
 
-$formulas_c = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM formulas GROUP BY name"));
-
-$ac_c = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE type = 'AC'"));
-$eo_c = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE type = 'EO'"));
-$sup_c = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingSuppliers"));
-$ifra_c = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM IFRALibrary"));
-$all_ing_c = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"));
-$uncat_ing_c = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE type IS NULL"));
-$cat_c = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingCategory"));
-$bottles_c = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM bottles"));
-$lids_c = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM lids"));
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
