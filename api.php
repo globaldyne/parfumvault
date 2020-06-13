@@ -118,8 +118,11 @@ if($_REQUEST['username'] && $_REQUEST['password'] && $_REQUEST['do']){
 		//COUNT	
 		}elseif($_REQUEST['do'] == 'count'){
 			
-			$response['count'][0]['formulas'] = countElement('formulas  GROUP BY name' ,$conn);
-			$response['count'][0]['ingredients'] = countElement('ingredients GROUP BY name' ,$conn);
+			$response['count'][]['formulas'] = countElement('formulas  GROUP BY name' ,$conn);
+			$response['count'][0]['ingredients'] = countElement('ingredients' ,$conn);
+			$response['count'][0]['suppliers'] = countElement('ingSuppliers' ,$conn);
+			$response['count'][0]['categories'] = countElement('ingCategory' ,$conn);
+			$response['count'][0]['IFRA'] = countElement('IFRALibrary' ,$conn);
 
 		echo json_encode($response, JSON_PRETTY_PRINT);
 		exit;
