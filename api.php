@@ -118,9 +118,8 @@ if($_REQUEST['username'] && $_REQUEST['password'] && $_REQUEST['do']){
 		//COUNT	
 		}elseif($_REQUEST['do'] == 'count'){
 			
-			$response['count'][]['formulas'] = countElement('formulas  GROUP BY name' ,$conn);
-			$response['count'][]['ingredients'] = countElement('ingredients GROUP BY name' ,$conn);
-		
+			$response['count'][0]['formulas'] = countElement('formulas  GROUP BY name' ,$conn);
+			$response['count'][0]['ingredients'] = countElement('ingredients GROUP BY name' ,$conn);
 
 		echo json_encode($response, JSON_PRETTY_PRINT);
 		exit;
