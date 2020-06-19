@@ -72,6 +72,27 @@ $.ajax({
   });
 
 };
+//Clone
+function cloneMe() {	  
+$.ajax({ 
+    url: '/pages/manageFormula.php', 
+	type: 'get',
+    data: {
+		action: "clone",
+		formula: "<?php echo $f_name; ?>",
+		},
+	dataType: 'html',
+    success: function (data) {
+        if ( data.indexOf("Error") > -1 ) {
+			$('#msg').html(data); 
+		}else{
+			$('#msg').html(data);
+			location.reload();
+		}
+    }
+  });
+};
+
 //
 $(document).ready(function(){
 $('#ingredient').on('change', function(){
@@ -143,7 +164,7 @@ $.ajax({
                         <a class="dropdown-item popup-link" href="/pages/viewPyramid.php?formula=<?php echo $f_name; ?>">View Pyramid</a>
                         <a class="dropdown-item" href="/pages/manageFormula.php?do=multiply&formula=<?php echo $f_name; ?>">Multiply x2</a>
                         <a class="dropdown-item" href="/pages/manageFormula.php?do=divide&formula=<?php echo $f_name; ?>">Divide x2</a>
-  					
+                        <a class="dropdown-item" href="javascript:cloneMe();">Clone Formula</a>
                       </div>
                     </div>
                     </tr>

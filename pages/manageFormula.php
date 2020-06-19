@@ -5,7 +5,7 @@ require_once('../inc/config.php');
 require_once('../inc/opendb.php');
 require_once('../inc/settings.php');
 
-if($_GET['formula']){
+if($_GET['formula'] && $_GET['do']){
 	$formula = mysqli_real_escape_string($conn, $_GET['formula']);
 	
 	$q = mysqli_query($conn, "SELECT quantity,ingredient FROM formulas WHERE name = '$formula'");
@@ -15,6 +15,12 @@ if($_GET['formula']){
 		}elseif($_GET['do'] == 'divide'){
 			$nq = $cur['quantity']/2;
 		}
+		
+		if(empty($nq)){
+			print 'error';
+			return;
+		}
+		
 		mysqli_query($conn,"UPDATE formulas SET quantity = '$nq' WHERE name = '$formula' AND quantity = '$cur[quantity]' AND ingredient = '$cur[ingredient]'");
 	}
 	header("Location: /?do=Formula&name=$formula");
@@ -70,7 +76,29 @@ if($_GET['formula']){
 					</div>';
 		}
 	}
-
+	
+//CLONE
+}elseif($_GET['action'] == 'clone' && $_GET['formula']){
+	$fname = mysqli_real_escape_string($conn, $_GET['formula']);
+	$fid = base64_encode($fname);
+	$newName = $fname.' - (Copy)';
+	$newFid = base64_encode($newName);
+		if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulasMetaData WHERE fid = '$newFid'"))){
+			echo '<div class="alert alert-danger alert-dismissible">
+				<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
+  				<strong>Error: </strong>'.$newName.' already exists, please remove or rename it first!</div>';
+		}else{
+			$sql.=mysqli_query($conn, "INSERT INTO formulasMetaData (fid, name, notes, profile, image, sex) SELECT '$newFid', '$newName', notes, profile, image, sex FROM formulasMetaData WHERE fid = '$fid'");
+			$sql.=mysqli_query($conn, "INSERT INTO formulas (fid, name, ingredient, ingredient_id, concentration, quantity) SELECT '$newFid', '$newName', ingredient, ingredient_id, concentration, quantity FROM formulas WHERE fid = '$fid'");
+		}
+	if($sql){
+		echo '<div class="alert alert-success alert-dismissible">
+			<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
+			'.$fname.' cloned as '.$newName.'!
+			</div>';
+	}
+	
+	
 //PRINTING
 }elseif($_GET['action'] == 'printLabel' && $_GET['name']){
 	

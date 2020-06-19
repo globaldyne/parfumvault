@@ -76,4 +76,24 @@ $(function() {
   $("#listFormulas").tabs();
 });
 
+//Clone
+function cloneMe(cloneFormulaName) {	  
+$.ajax({ 
+    url: '/pages/manageFormula.php', 
+	type: 'get',
+    data: {
+		action: "clone",
+		formula: cloneFormulaName,
+		},
+	dataType: 'html',
+    success: function (data) {
+        if ( data.indexOf("Error") > -1 ) {
+			$('#msg').html(data); 
+		}else{
+			$('#msg').html(data);
+			location.reload();
+		}
+    }
+  });
+};
 </script>
