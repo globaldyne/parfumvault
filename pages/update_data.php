@@ -27,7 +27,14 @@ if($_POST['value'] && $_GET['formula'] && $_POST['pk'] && !$_GET['settings']){
 	
 	mysqli_query($conn, "UPDATE formulasMetaData SET $name = '$value' WHERE name = '$formula'");
 	
+}elseif($_GET['rename']){
+	$value = mysqli_real_escape_string($conn, $_POST['value']);
+	$formula = mysqli_real_escape_string($conn, $_GET['rename']);
+	$fid = base64_encode($formula);
 	
+	mysqli_query($conn, "UPDATE formulasMetaData SET name = '$value' WHERE name = '$formula'");
+	mysqli_query($conn, "UPDATE formulas SET name = '$value', fid = '$fid' WHERE name = '$formula'");
+
 }elseif($_GET['settings'] == 'cat'){
 	$value = mysqli_real_escape_string($conn, $_POST['value']);
 	$cat_id = mysqli_real_escape_string($conn, $_POST['pk']);

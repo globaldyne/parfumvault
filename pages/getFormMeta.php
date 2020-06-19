@@ -72,8 +72,6 @@ if($_FILES["file"]["tmp_name"]){
 
 </style>
 
-
-
 <table class="table table-bordered" id="formula_metadata" cellspacing="0">
   <tr>
     <td colspan="2"><h1 class="badge-primary"><?php echo $info['name'];?></h1></td>
@@ -82,8 +80,8 @@ if($_FILES["file"]["tmp_name"]){
     <td colspan="2"><?php echo $msg; ?></td>
   </tr>
   <tr>
-    <td width="20%">Created:</td>
-    <td width="80%"><?php echo $info['created'];?></td>
+    <td width="20%">Name:</td>
+    <td data-name="name" class="name" data-type="text" align="left" data-pk="name" width="80%"><?php echo $info['name'];?></td>
   </tr>
   <tr>
     <td>Profile:</td>
@@ -116,6 +114,20 @@ if($_FILES["file"]["tmp_name"]){
 <script type="text/javascript" language="javascript" >
 $(document).ready(function(){
  
+  $('#formula_metadata').editable({
+  container: 'body',
+  selector: 'td.name',
+  url: "/pages/update_data.php?rename=<?php echo $info['name']; ?>",
+  title: 'Name',
+  type: "POST",
+  mode: 'inline',
+  dataType: 'json',
+      success: function(response, newValue) {
+        if(response.status == 'error') return response.msg; 
+    },
+
+ });
+  
   $('#formula_metadata').editable({
   container: 'body',
   selector: 'td.notes',
