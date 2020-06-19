@@ -164,8 +164,7 @@ $.ajax({
                           <div class="table-responsive">
                             <table width="100%" border="0">
                               <tr>
-                                <td colspan="4" class="badge-primary"><?php echo $msg; ?></td>
-                                
+                                <td colspan="4"><?php echo $msg; ?></td>
                               </tr>
                               <tr>
                                 <td width="20%">CAS #:</td>
