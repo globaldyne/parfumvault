@@ -90,15 +90,19 @@ if(empty(mysqli_num_rows($sql))){
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Import CSV file</title>
-  
+<title>Edit ingredient</title>
+<link href="../css/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
 <link href="../css/bootstrap.min.css" rel="stylesheet">
+<script src="../js/jquery/jquery.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<link href="../css/sb-admin-2.css" rel="stylesheet">
+<link href="../css/vault.css" rel="stylesheet">
+
 <style>
 .container {
     max-width: 100%;
 }
 </style>
-<script src="../js/jquery/jquery.min.js"></script>
 
 <script>
 function search() {	  
@@ -116,7 +120,27 @@ $.ajax({
 	  $('#TGSC').html(data);
     }
   });
+};
 
+function printLabel() {
+	<?php if(empty($settings['label_printer_addr']) || empty($settings['label_printer_model'])){?>
+	$("#msg").html('<div class="alert alert-danger alert-dismissible">Please configure printer details in <a href="/?do=settings">settings<a> page</div>');
+	<?php }else{ ?>
+	$("#msg").html('<div class="alert alert-info alert-dismissible">Printing...</div>');
+
+$.ajax({ 
+    url: '/pages/manageFormula.php', 
+	type: 'get',
+    data: {
+		action: "printLabel",
+		name: "<?php echo $ing['name']; ?>"
+		},
+	dataType: 'html',
+    success: function (data) {
+	  $('#msg').html(data);
+    }
+  });
+	<?php } ?>
 };
 </script>
 </head>
@@ -125,9 +149,14 @@ $.ajax({
     <div id="wrap">
         <div class="container">
 <div class="list-group-item-info">
-        <h1 class="badge-primary"><?php echo $ing['name']; ?></h1>
+        <h1 class="badge-primary"><?php echo $ing['name']; ?><div class="btn-group">
+                      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
+                      <div class="dropdown-menu">
+                        <a class="dropdown-item" href="javascript:printLabel();" onclick="return confirm('Print label?');">Print Label</a>
+                      </div>
+                    </div>
+        </div></h1>
 
-        </div>
 <table width="100%" border="0">
         <tr>
           <td><div class="form-group">  
@@ -136,6 +165,7 @@ $.ajax({
                             <table width="100%" border="0">
                               <tr>
                                 <td colspan="4" class="badge-primary"><?php echo $msg; ?></td>
+                                
                               </tr>
                               <tr>
                                 <td width="20%">CAS #:</td>

@@ -59,8 +59,8 @@ if($_GET['action'] == 'delete' && $_GET['name']){
 
   <script src="js/tableHTMLExport.js"></script>
 	
-	<script src="js/jspdf.min.js"></script>
-	<script src="js/jspdf.plugin.autotable.js"></script>
+  <script src="js/jspdf.min.js"></script>
+  <script src="js/jspdf.plugin.autotable.js"></script>
     
   <script src="js/bootstrap.min.js"></script>
   
@@ -75,9 +75,9 @@ if($_GET['action'] == 'delete' && $_GET['name']){
   <script src="js/bootstrap-editable.js"></script>
   
   <script src='js/tipsy.js'></script>
-  <script src="./js/jquery-ui.js"></script>
+  <script src="js/jquery-ui.js"></script>
   
-  <link rel="stylesheet" href="./css/jquery-ui.css">
+  <link href="css/jquery-ui.css" rel="stylesheet">
   <link href="css/tipsy.css" rel="stylesheet" />
   
   <link href="css/magnific-popup.css" rel="stylesheet" />
@@ -95,7 +95,6 @@ $(document).ready(function() {
   		closeOnBgClick: 'false',
   		//closeBtnInside: 'true'
 	});
-	
 	
     $('#tdData').DataTable({
 	    "paging":   true,
