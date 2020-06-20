@@ -17,6 +17,7 @@ require_once('./func/formulaProfile.php');
 require_once('./func/getIFRAtypes.php');
 require_once('./func/searchIFRA.php');
 require_once('./func/formatBytes.php');
+require_once('./func/countElement.php');
 
 
 require('./inc/settings.php');

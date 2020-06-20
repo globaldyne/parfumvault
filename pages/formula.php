@@ -222,7 +222,7 @@ $.ajax({
                   </tbody>
                   <tfoot>
                     <tr>
-                      <th width="22%"></th>
+                      <th width="22%">Total: <?php echo countElement("formulas WHERE name = '$f_name'" ,$conn);?></th>
                       <th></th>
                       <th width="15%" align="right"><p>Total: <?php echo number_format($mg['total_mg'], 2); ?>mg</p></th>
                       <th width="15%">Total <?php echo array_sum($conc_tot);?>%</th>
