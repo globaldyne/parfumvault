@@ -252,7 +252,7 @@ $.ajax({
     <td colspan="2">&nbsp;</td>
   </tr>
   <tr>
-    <td><input type="submit" name="button" id="button" value="Generate"></td>
+    <td><input type="submit" name="button" class="btn btn-info" id="button" value="Generate"></td>
     <td colspan="2">&nbsp;</td>
   </tr>
 </table>
