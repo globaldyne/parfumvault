@@ -110,8 +110,33 @@ $.ajax({
     }
   });									   
 })
+
+$('#changeIngredient').editable({
+	//value: "",
+	type: 'get',
+	emptytext: "",
+  	url: "/pages/manageFormula.php?action=repIng&fname=<?php echo $f_name; ?>",
+    source: [
+			 <?php
+				$res_ing = mysqli_query($conn, "SELECT id,name FROM ingredients ORDER BY name ASC");
+				while ($r_ing = mysqli_fetch_array($res_ing)){
+				echo '{value: "'.$r_ing['name'].'", text: "'.$r_ing['name'].'"},';
+			}
+			?>
+          ],
+	dataType: 'html',
+    success: function (data) {
+        if ( data.indexOf("Error") > -1 ) {
+			$('#msg').html(data); 
+		}else{
+			$('#msg').html(data);
+			location.reload();
+		}
+	}
+    });
 });
 
+ 
 </script>
 <div id="content-wrapper" class="d-flex flex-column">
 <?php require_once('pages/top.php'); ?>
@@ -119,11 +144,9 @@ $.ajax({
 		<div>
           <div class="card shadow mb-4">
             <div class="card-header py-3"> 
-                                    
 			  <?php if($meta['image']){?><div class="img-formula"><img class="img-perfume" src="<?php echo $meta['image']; ?>"/></div><?php } ?>
               <h2 class="m-0 font-weight-bold text-primary"><a href="?do=Formula&name=<?php echo $f_name; ?>"><?php echo $f_name; ?></a></h2>
               <h5 class="m-1 text-primary"><a href="/pages/getFormMeta.php?id=<?php echo $meta['id'];?>" class="popup-link">Details</a></h5>
-            
             </div>
             <div class="card-body">
            <div id="msg"></div>
@@ -179,17 +202,19 @@ $.ajax({
                   </thead>
                   <tbody id="formula_data">
                   <?php while ($formula = mysqli_fetch_array($formula_q)) {
-					  
+					  //33.33/100*100-50
 					  	$cas = mysqli_fetch_array(mysqli_query($conn, "SELECT cas FROM ingredients WHERE name = '$formula[ingredient]'"));
 					 
 						$limitIFRA = searchIFRA($cas['cas'],$formula['ingredient'],$dbhost,$dbuser,$dbpass,$dbname);
 						$limit = explode(' - ', $limitIFRA);
 					    $limit = $limit['0'];
 					  
-					  	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT IFRA,price,ml,profile,profile FROM ingredients WHERE name = '$formula[ingredient]'"));
+					  	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT IFRA,price,ml,profile,profile FROM ingredients WHERE BINARY name = '$formula[ingredient]'"));
 					  	$conc = number_format($formula['quantity']/$mg['total_mg'] * 100, 2);
 					  	$conc_p = number_format($formula['concentration'] / 100 * $conc, 2);
 					 	
+						//$conc_p = $conc_n/100*100 - $formula['concentration'];
+						
 						echo'<tr>
                       <td align="center" class="'.$ing_q['profile'].'" id="ingredient"><a href="/pages/editIngredient.php?id='.$formula['ingredient'].'" class="popup-link">'.$formula['ingredient'].'</a> '.checkIng($formula['ingredient'],$dbhost, $dbuser, $dbpass, $dbname).'</td>
                       <td data-name="concentration" class="concentration" data-type="text" align="center" data-pk="'.$formula['ingredient'].'">'.$formula['concentration'].'</td>';
@@ -212,7 +237,7 @@ $.ajax({
 					  echo'<td data-name="quantity" class="quantity" data-type="text" align="center" data-pk="'.$formula['ingredient'].'">'.$formula['quantity'].'</td>';
 					  echo'<td align="center" '.$IFRA_WARN.'>'.$conc_p.'%</td>';
 					  echo '<td align="center">'.utf8_encode($settings['currency']).calcCosts($ing_q['price'],$formula['quantity'], $formula['concentration'], $ing_q['ml']).'</td>';
-					  echo '<td class="noexport" align="center"><a href="javascript:deleteING(\''.$formula['ingredient'].'\', \''.$formula['id'].'\')" onclick="return confirm(\'Remove '.$formula['ingredient'].' from formula?\');" class="fas fa-trash" rel="tipsy" title="Remove '.$formula['ingredient'].'"></a></td>
+					  echo '<td class="noexport" align="center"><a href="#" class="fas fa-exchange-alt" rel="tipsy" title="Change ingredient" data-name="'.$formula['ingredient'].'" id="changeIngredient" data-type="select" data-pk="'.$formula['ingredient'].'" data-title="Choose Ingredient"></a> &nbsp; <a href="javascript:deleteING(\''.$formula['ingredient'].'\', \''.$formula['id'].'\')" onclick="return confirm(\'Remove '.$formula['ingredient'].' from formula?\');" class="fas fa-trash" rel="tipsy" title="Remove '.$formula['ingredient'].'"></a></td>
                     </tr>';
 					$tot[] = calcCosts($ing_q['price'],$formula['quantity'], $formula['concentration'], $ing_q['ml']);
 					$conc_tot[] = $conc_p;
@@ -268,7 +293,7 @@ $(document).ready(function(){
   container: 'body',
   selector: 'td.concentration',
   url: "/pages/update_data.php?formula=<?php echo $f_name; ?>",
-  title: 'Strength %',
+  title: 'Purity %',
   type: "POST",
   dataType: 'json',
         success: function(response, newValue) {

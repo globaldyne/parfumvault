@@ -5,6 +5,11 @@ require_once('../inc/config.php');
 require_once('../inc/opendb.php');
 require_once('../inc/settings.php');
 
+$req_dump = print_r($_REQUEST, TRUE);
+$fp = fopen('../tmp/pvault.log', 'a');
+fwrite($fp, $req_dump);
+fclose($fp);
+
 if($_GET['formula'] && $_GET['do']){
 	$formula = mysqli_real_escape_string($conn, $_GET['formula']);
 	
@@ -77,6 +82,43 @@ if($_GET['formula'] && $_GET['do']){
 		}
 	}
 	
+//REPLACE
+/*
+Array
+(
+    [action] => repIng
+    [fname] => Temptation - REF
+    [name] => Applelide
+    [value] =>  Saffron Oleoresin
+    [pk] => Applelide
+)
+*/
+}elseif($_GET['action'] == 'repIng' && $_GET['fname']){
+	$fname = mysqli_real_escape_string($conn, $_GET['fname']);
+	$ingredient = mysqli_real_escape_string($conn, $_REQUEST['value']);
+	$oldIngredient = mysqli_real_escape_string($conn, $_REQUEST['pk']);
+
+			
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT ingredient FROM formulas WHERE ingredient = '$ingredient' AND name = '$fname'"))){
+		echo '<div class="alert alert-danger alert-dismissible">
+		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
+  		<strong>Error: </strong>'.$ingredient.' already exists in formula!
+		'.mysqli_error($conn).'
+		</div>';
+	}else{
+		if(mysqli_query($conn, "UPDATE formulas SET ingredient = '$ingredient' WHERE ingredient = '$oldIngredient' AND name = '$fname'")){
+			echo '<div class="alert alert-success alert-dismissible">
+					<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
+					'.$oldIngredient.' replaced with '.ingredient.'!
+					</div>';
+		}else{
+			echo '<div class="alert alert-danger alert-dismissible">
+					<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
+					Error replacing '.$oldIngredient.mysqli_error($conn).'!
+					</div>';
+		}
+	}
+
 //CLONE
 }elseif($_GET['action'] == 'clone' && $_GET['formula']){
 	$fname = mysqli_real_escape_string($conn, $_GET['formula']);
