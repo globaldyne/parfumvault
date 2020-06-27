@@ -15,6 +15,7 @@ $formula = mysqli_real_escape_string($conn, $_GET['formula']);
 if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM formulas WHERE name = '$formula'")) == 0){
 	die('Formula not found');
 }
+/*
 $formula_q = mysqli_query($conn, "SELECT ingredient FROM formulas WHERE name = '$formula'");
 
 
@@ -23,6 +24,7 @@ while ($formula = mysqli_fetch_array($formula_q)) {
 	$prf[] = $ing_q['profile'];
 }
 $pyr = array_count_values($prf); 
+*/
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -55,19 +57,19 @@ var chart = AmCharts.makeChart( "chartdiv", {
   "theme": "light",
   "dataProvider": [ {
     "title": "Base notes",
-    "value": <?php echo calcPerc($pyr['Base'],$settings['base_n']);?>,
+    "value": <?php echo calcPerc($formula, 'Base', $settings['base_n'], $conn);?>,
 	"desc": "%",
 	"notes": "<?php getFormula($_GET['formula'],'Base',$dbhost,$dbuser,$dbpass,$dbname);?>"
   }, 
   {
     "title": "Heart Notes",
-    "value": <?php echo calcPerc($pyr['Heart'],$settings['heart_n']);?>,
+    "value": <?php echo calcPerc($formula, 'Heart', $settings['heart_n'], $conn);?>,
 	"desc": "%",
 	"notes": "<?php getFormula($_GET['formula'],'Heart',$dbhost,$dbuser,$dbpass,$dbname);?>"
   }, 
   {
     "title": "Top Notes",
-    "value": <?php echo calcPerc($pyr['Top'],$settings['top_n']);?>,
+    "value": <?php echo calcPerc($formula, 'Top', $settings['top_n'], $conn);?>,
 	"desc": "%",
 	"notes": "<?php getFormula($_GET['formula'],'Top',$dbhost,$dbuser,$dbpass,$dbname);?>"
   }

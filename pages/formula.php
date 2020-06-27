@@ -7,6 +7,10 @@ $formula_q = mysqli_query($conn, "SELECT * FROM formulas WHERE name = '$f_name' 
 $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE name = '$f_name'"));
 $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE name = '$f_name'"));
 
+$top_calc = calcPerc($f_name, 'Top', $settings['top_n'], $conn);
+$heart_calc = calcPerc($f_name, 'Heart', $settings['heart_n'], $conn);
+$base_calc = calcPerc($f_name, 'Base', $settings['base_n'], $conn);
+
 ?>
 <script>
 function printLabel() {
@@ -147,7 +151,7 @@ $('.replaceIngredient').editable({
             <div class="card-header py-3"> 
 			  <?php if($meta['image']){?><div class="img-formula"><img class="img-perfume" src="<?php echo $meta['image']; ?>"/></div><?php } ?>
               <h2 class="m-0 font-weight-bold text-primary"><a href="?do=Formula&name=<?php echo $f_name; ?>"><?php echo $f_name; ?></a></h2>
-              <h5 class="m-1 text-primary"><a href="/pages/getFormMeta.php?id=<?php echo $meta['id'];?>" class="popup-link">Details</a></h5>
+              <h5 class="m-1 text-primary"><a href="pages/getFormMeta.php?id=<?php echo $meta['id'];?>" class="popup-link">Details</a></h5>
             </div>
             <div class="card-body">
            <div id="msg"></div>
@@ -160,9 +164,9 @@ $('.replaceIngredient').editable({
                                          <td>
                                          <select name="ingredient" id="ingredient" class="form-control selectpicker" data-live-search="true">
                                          <?php
-										 	$res_ing = mysqli_query($conn, "SELECT id,name FROM ingredients ORDER BY name ASC");
+										 	$res_ing = mysqli_query($conn, "SELECT id, name, profile FROM ingredients ORDER BY name ASC");
 										 	while ($r_ing = mysqli_fetch_array($res_ing)){
-												echo '<option value="'.$r_ing['name'].'">'.$r_ing['name'].'</option>';
+												echo '<option value="'.$r_ing['name'].'">'.$r_ing['name'].' ('.$r_ing['profile'].')</option>';
 											}
 										 ?>
                                          </select>                                         
@@ -178,16 +182,20 @@ $('.replaceIngredient').editable({
                 <table class="table table-bordered" id="formula" width="100%" cellspacing="0">
                   <thead>
                     <tr class="noexport">
-                      <th colspan="5"></th>
+                      <th colspan="5"><div class="progress">
+  <div class="progress-bar" role="progressbar" style="width: <?php echo $base_calc; ?>%" aria-valuenow="<?php echo $base_calc;?>" aria-valuemin="0" aria-valuemax="<?php echo $settings['base_n'];?>"><span><?php echo $base_calc;?>% Base Notes</span></div>
+  <div class="progress-bar bg-success" role="progressbar" style="width: <?php echo $heart_calc; ?>%" aria-valuenow="<?php echo $heart_calc; ?>" aria-valuemin="0" aria-valuemax="<?php echo $settings['heart_n'];?>"><span><?php echo $heart_calc;?>% Heart Notes</span></div>
+  <div class="progress-bar bg-info" role="progressbar" style="width: <?php echo $top_calc; ?>%" aria-valuenow="<?php echo $top_calc; ?>" aria-valuemin="0" aria-valuemax="<?php echo $settings['top_n'];?>"><span><?php echo $top_calc;?>% Top Notes</span></div>
+</div></th>
                       <th>
                       <div class="btn-group">
                       <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
                       <div class="dropdown-menu">
                         <a class="dropdown-item" id="csv" href="#">Export to CSV</a>
                         <a class="dropdown-item" href="javascript:printLabel();" onclick="return confirm('Print label?');">Print Label</a>
-                        <a class="dropdown-item popup-link" href="/pages/viewPyramid.php?formula=<?php echo $f_name; ?>">View Pyramid</a>
-                        <a class="dropdown-item" href="/pages/manageFormula.php?do=multiply&formula=<?php echo $f_name; ?>">Multiply x2</a>
-                        <a class="dropdown-item" href="/pages/manageFormula.php?do=divide&formula=<?php echo $f_name; ?>">Divide x2</a>
+                        <a class="dropdown-item popup-link" href="pages/viewPyramid.php?formula=<?php echo $f_name; ?>">View Pyramid</a>
+                        <a class="dropdown-item" href="pages/manageFormula.php?do=multiply&formula=<?php echo $f_name; ?>">Multiply x2</a>
+                        <a class="dropdown-item" href="pages/manageFormula.php?do=divide&formula=<?php echo $f_name; ?>">Divide x2</a>
                         <a class="dropdown-item" href="javascript:cloneMe();">Clone Formula</a>
                       </div>
                     </div>
@@ -217,7 +225,7 @@ $('.replaceIngredient').editable({
 						//$conc_p = $conc_n/100*100 - $formula['concentration'];
 						
 						echo'<tr>
-                      <td align="center" class="'.$ing_q['profile'].'" id="ingredient"><a href="/pages/editIngredient.php?id='.$formula['ingredient'].'" class="popup-link">'.$formula['ingredient'].'</a> '.checkIng($formula['ingredient'],$dbhost, $dbuser, $dbpass, $dbname).'</td>
+                      <td align="center" class="'.$ing_q['profile'].'" id="ingredient"><a href="pages/editIngredient.php?id='.$formula['ingredient'].'" class="popup-link">'.$formula['ingredient'].'</a> '.checkIng($formula['ingredient'],$conn).'</td>
                       <td data-name="concentration" class="concentration" data-type="text" align="center" data-pk="'.$formula['ingredient'].'">'.$formula['concentration'].'</td>';
 					  if($limit != null){
 						 if($limit < $conc_p){

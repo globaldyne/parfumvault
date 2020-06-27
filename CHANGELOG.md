@@ -1,5 +1,12 @@
 # Change Log
 
+### Version 2.0.1
+- ADD: Progress bar to indicate noes level usage
+- ADD: Ingredient profile in list
+- UPDATE: About page
+- FIX: Various UI improvements
+- Code Clean up
+
 ### Version 2.0.0
 - ADD: IFRA Lirary support
 - ADD: IFRA insights
