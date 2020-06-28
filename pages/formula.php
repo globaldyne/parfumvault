@@ -1,6 +1,7 @@
 <?php 
 if (!defined('pvault_panel')){ die('Not Found');}  
 $f_name =  mysqli_real_escape_string($conn, $_GET['name']);
+$fid = base64_encode($f_name);
 
 $formula_q = mysqli_query($conn, "SELECT * FROM formulas WHERE name = '$f_name' ORDER BY ingredient ASC");
 
@@ -179,6 +180,7 @@ $('.replaceIngredient').editable({
                       </form>
                       </th>
                     </tr>
+                    <?php if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulas WHERE fid = '$fid'"))){?>
                 <table class="table table-bordered" id="formula" width="100%" cellspacing="0">
                   <thead>
                     <tr class="noexport">
@@ -211,7 +213,6 @@ $('.replaceIngredient').editable({
                   </thead>
                   <tbody id="formula_data">
                   <?php while ($formula = mysqli_fetch_array($formula_q)) {
-					  //33.33/100*100-50
 					  	$cas = mysqli_fetch_array(mysqli_query($conn, "SELECT cas FROM ingredients WHERE name = '$formula[ingredient]'"));
 					 
 						$limitIFRA = searchIFRA($cas['cas'],$formula['ingredient'],$dbhost,$dbuser,$dbpass,$dbname);
@@ -223,7 +224,6 @@ $('.replaceIngredient').editable({
 					  	$conc_p = number_format($formula['concentration'] / 100 * $conc, 2);
 					 	
 						//$conc_p = $conc_n/100*100 - $formula['concentration'];
-						
 						echo'<tr>
                       <td align="center" class="'.$ing_q['profile'].'" id="ingredient"><a href="pages/editIngredient.php?id='.$formula['ingredient'].'" class="popup-link">'.$formula['ingredient'].'</a> '.checkIng($formula['ingredient'],$conn).'</td>
                       <td data-name="concentration" class="concentration" data-type="text" align="center" data-pk="'.$formula['ingredient'].'">'.$formula['concentration'].'</td>';
@@ -265,10 +265,12 @@ $('.replaceIngredient').editable({
                     </tr>
                   </tfoot>                                    
                 </table> 
+                
                 <div>
                 <p></p>
                 <p>*Values in: <strong class="alert alert-danger">red</strong> exceeds IFRA limit,   <strong class="alert alert-warning">yellow</strong> have no IFRA limit set,   <strong class="alert alert-success">green</strong> are within IFRA limits</p>
                 </div>
+                <?php } ?>
             </div>
           </div>
         </div>
