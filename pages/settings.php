@@ -74,8 +74,11 @@ if(($_POST) && $_GET['update'] == 'printer'){
 	$top_n = mysqli_real_escape_string($conn, $_POST['top_n']);
 	$heart_n = mysqli_real_escape_string($conn, $_POST['heart_n']);
 	$base_n = mysqli_real_escape_string($conn, $_POST['base_n']);
-	
-	if(mysqli_query($conn, "UPDATE settings SET currency = '$currency', top_n = '$top_n', heart_n = '$heart_n', base_n = '$base_n'")){
+	$chem_vs_brand = mysqli_real_escape_string($conn, $_POST['chem_vs_brand']);
+	if(empty($chem_vs_brand)){
+		$chem_vs_brand = '0';
+	}
+	if(mysqli_query($conn, "UPDATE settings SET currency = '$currency', top_n = '$top_n', heart_n = '$heart_n', base_n = '$base_n', chem_vs_brand = '$chem_vs_brand'")){
 		$msg = '<div class="alert alert-success alert-dismissible">Settings updated!</div>';
 	}else{
 		$msg = '<div class="alert alert-danger alert-dismissible">An error occured. ('.mysqli_error($conn).')</div>';	
@@ -183,7 +186,7 @@ $(function() {
 </script>
 <div class="container-fluid">
 
-<h2 class="m-0 mb-4 text-primary">Settings</h2>
+<h2 class="m-0 mb-4 text-primary"><a href="?do=settings">Settings</a></h2>
 <div id="settings">
      <ul>
          <li><a href="#general"><span>General</span></a></li>
@@ -204,8 +207,13 @@ $(function() {
         <tr>
           <td width="6%">Currency:</td>
           <td colspan="2"><input name="currency" type="text" class="form-control" id="currency" value="<?php echo utf8_encode($settings['currency']);?>"/></td>
-          <td width="77%">&nbsp;</td>
+          <td width="76%">&nbsp;</td>
           </tr>
+        <tr>
+          <td>Chemical names</td>
+          <td colspan="2"><input name="chem_vs_brand" type="checkbox" id="chem_vs_brand" value="1" <?php if($settings['chem_vs_brand'] == '1'){ ?> checked="checked" <?php } ?>/></td>
+          <td>&nbsp;</td>
+        </tr>
         <tr>
           <td colspan="4">&nbsp;</td>
           </tr>
@@ -216,7 +224,7 @@ $(function() {
         <tr>
           <td>Top notes:</td>
           <td width="10%"><input name="top_n" type="text" class="form-control" id="top_n" value="<?php echo $settings['top_n'];?>"/></td>
-          <td width="7%">%</td>
+          <td width="8%">%</td>
           <td>&nbsp;</td>
         </tr>
         <tr>

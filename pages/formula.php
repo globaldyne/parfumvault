@@ -124,7 +124,7 @@ $('.replaceIngredient').editable({
   	url: "/pages/manageFormula.php?action=repIng&fname=<?php echo $f_name; ?>",
     source: [
 			 <?php
-				$res_ing = mysqli_query($conn, "SELECT id,name FROM ingredients ORDER BY name ASC");
+				$res_ing = mysqli_query($conn, "SELECT id, name, chemical_name FROM ingredients ORDER BY name ASC");
 				while ($r_ing = mysqli_fetch_array($res_ing)){
 				echo '{value: "'.$r_ing['name'].'", text: "'.$r_ing['name'].'"},';
 			}
@@ -165,8 +165,15 @@ $('.replaceIngredient').editable({
                                          <td>
                                          <select name="ingredient" id="ingredient" class="form-control selectpicker" data-live-search="true">
                                          <?php
-										 	$res_ing = mysqli_query($conn, "SELECT id, name, profile FROM ingredients ORDER BY name ASC");
+										 	$res_ing = mysqli_query($conn, "SELECT id, name, profile, chemical_name FROM ingredients ORDER BY name ASC");
 										 	while ($r_ing = mysqli_fetch_array($res_ing)){
+												/*
+												if($settings['chem_vs_brand'] == '1'){
+													if($r_ing['chemical_name']){
+														$r_ing['name'] = $r_ing['chemical_name'];
+													}
+												}
+												*/
 												echo '<option value="'.$r_ing['name'].'">'.$r_ing['name'].' ('.$r_ing['profile'].')</option>';
 											}
 										 ?>
@@ -219,13 +226,24 @@ $('.replaceIngredient').editable({
 						$limit = explode(' - ', $limitIFRA);
 					    $limit = $limit['0'];
 					  
-					  	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT IFRA,price,ml,profile,profile FROM ingredients WHERE BINARY name = '$formula[ingredient]'"));
+					  	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT IFRA, price, ml, profile, profile FROM ingredients WHERE BINARY name = '$formula[ingredient]'"));
 					  	$conc = number_format($formula['quantity']/$mg['total_mg'] * 100, 2);
 					  	$conc_p = number_format($formula['concentration'] / 100 * $conc, 2);
-					 	
+						
+					 	if($settings['chem_vs_brand'] == '1'){
+							$chName = mysqli_fetch_array(mysqli_query($conn,"SELECT chemical_name FROM ingredients WHERE name = '".$formula['ingredient']."'"));
+							if($chName['chemical_name']){
+								$ingName = $chName['chemical_name'];
+							}else{
+								$ingName = $formula['ingredient'];
+							}
+						}else{
+							$ingName = $formula['ingredient'];
+						}
+						
 						//$conc_p = $conc_n/100*100 - $formula['concentration'];
 						echo'<tr>
-                      <td align="center" class="'.$ing_q['profile'].'" id="ingredient"><a href="pages/editIngredient.php?id='.$formula['ingredient'].'" class="popup-link">'.$formula['ingredient'].'</a> '.checkIng($formula['ingredient'],$conn).'</td>
+                      <td align="center" class="'.$ing_q['profile'].'" id="ingredient"><a href="pages/editIngredient.php?id='.$formula['ingredient'].'" class="popup-link">'.$ingName.'</a> '.checkIng($formula['ingredient'],$conn).'</td>
                       <td data-name="concentration" class="concentration" data-type="text" align="center" data-pk="'.$formula['ingredient'].'">'.$formula['concentration'].'</td>';
 					  if($limit != null){
 						 if($limit < $conc_p){

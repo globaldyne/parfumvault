@@ -1,7 +1,7 @@
 <?php if (!defined('pvault_panel')){ die('Not Found');}?>
 <?php
 function checkIng($ingredient,$conn){
-	$chk = mysqli_query($conn, "SELECT name, IFRA, price, profile, cas FROM ingredients WHERE name = '$ingredient'");	
+	$chk = mysqli_query($conn, "SELECT name, IFRA, price, profile, cas FROM ingredients WHERE name = '$ingredient' OR chemical_name = '$ingredient'");	
 	if(mysqli_num_rows($chk)){
 		while ($qValues=mysqli_fetch_array($chk)){
 			if($qValues['cas']){
