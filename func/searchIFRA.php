@@ -1,8 +1,6 @@
 <?php if (!defined('pvault_panel')){ die('Not Found');}?>
 <?php
-function searchIFRA($cas,$name,$dbhost,$dbuser,$dbpass,$dbname){
-	
-	$conn = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname) or die ('Error connecting to database');
+function searchIFRA($cas,$name,$conn){
 	if($cas !== '0'){//IGNORE VALUE FOR CARRIERS
 		if($cas){
 			$q = "cas LIKE '%$cas%'";

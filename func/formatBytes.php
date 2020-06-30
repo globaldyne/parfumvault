@@ -1,5 +1,4 @@
 <?php if (!defined('pvault_panel')){ die('Not Found');}?>
-
 <?php
 function formatBytes($size, $precision = 2){
     $base = log($size, 1024);
