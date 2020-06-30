@@ -91,7 +91,7 @@ $.ajax({
 					  
 					  	$cas = mysqli_fetch_array(mysqli_query($conn, "SELECT cas FROM ingredients WHERE name = '$formula[ingredient]'"));
 					 
-						$limitIFRA = searchIFRA($cas['cas'],$formula['ingredient'],$dbhost,$dbuser,$dbpass,$dbname);
+						$limitIFRA = searchIFRA($cas['cas'],$formula['ingredient'],$conn);
 						$limit = explode(' - ', $limitIFRA);
 					    $limit = $limit['0'];
 					  

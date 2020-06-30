@@ -95,8 +95,11 @@ if(empty(mysqli_num_rows($sql))){
 <link href="../css/bootstrap.min.css" rel="stylesheet">
 <script src="../js/jquery/jquery.min.js"></script>
 <script src="../js/bootstrap.min.js"></script>
+<script src="../js/bootstrap-select.js"></script>
+
 <link href="../css/sb-admin-2.css" rel="stylesheet">
 <link href="../css/vault.css" rel="stylesheet">
+<link href="../css/bootstrap-select.min.css" rel="stylesheet">
 
 <style>
 .container {
@@ -174,7 +177,7 @@ $.ajax({
                                 <td> Cat4 Limit %:</td>
                                 <td colspan="3">
                                 <?php
-								 	if($limit = searchIFRA($ing['cas'], $ing['name'],$dbhost,$dbuser,$dbpass,$dbname)){
+								 	if($limit = searchIFRA($ing['cas'], $ing['name'],$conn)){
 										echo $limit;
 									}else{
 								?>
@@ -222,7 +225,7 @@ $.ajax({
                               <tr>
                                 <td>Category:</td>
                                 <td colspan="3">
-                                <select name="category" id="category" class="form-control">
+                                <select name="category" id="category" class="form-control" data-live-search="true">
                                 <option value="" selected></option>
                                   <?php while ($row_ingCategory = mysqli_fetch_array($res_ingCategory)){ ?>
 								<option value="<?php echo $row_ingCategory['name'];?>" <?php echo ($ing['category']==$row_ingCategory['name'])?"selected=\"selected\"":""; ?>><?php echo $row_ingCategory['name'];?></option>
