@@ -226,7 +226,7 @@ $('.replaceIngredient').editable({
 						$limit = explode(' - ', $limitIFRA);
 					    $limit = $limit['0'];
 					  
-					  	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT IFRA, price, ml, profile, profile FROM ingredients WHERE BINARY name = '$formula[ingredient]'"));
+					  	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT IFRA, price, ml, profile, profile FROM ingredients WHERE BINARY name = '".$formula['ingredient']."'"));
 					  	$conc = number_format($formula['quantity']/$mg['total_mg'] * 100, 2);
 					  	$conc_p = number_format($formula['concentration'] / 100 * $conc, 2);
 						
