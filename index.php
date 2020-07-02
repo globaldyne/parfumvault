@@ -2,7 +2,7 @@
 require('./inc/sec.php');
 if(file_exists('./inc/config.php') == FALSE){
 	session_destroy();
-	header('Location: /login.php');
+	header('Location: login.php');
 }
 require_once('./inc/config.php');
 require_once('./inc/product.php');
@@ -119,7 +119,7 @@ $(document).ready(function() {
         <p></p>
         <p></p>
         <p></p>
-          <img src="/img/logo.png" witdh="150px" height="120px">
+          <img src="img/logo.png" witdh="150px" height="120px">
         </div>
       </a>        
       <p></p>
@@ -128,26 +128,26 @@ $(document).ready(function() {
       <!-- Divider -->
       <hr class="sidebar-divider my-0">
       <li class="nav-item">
-        <a class="nav-link" href="/?do=dashboard">
+        <a class="nav-link" href="?do=dashboard">
           <i class="fas fa-fw fa-tachometer-alt"></i>
           <span>Dashboard</span></a>
       </li>
     
         <li class="nav-item">
-        <a class="nav-link" href="/?do=listFormulas">
+        <a class="nav-link" href="?do=listFormulas">
           <i class="fas fa-fw fa-flask"></i>
           <span>Formulas</span></a>
       </li>
 
         <li class="nav-item">
-        <a class="nav-link" href="/?do=genFinishedProduct">
+        <a class="nav-link" href="?do=genFinishedProduct">
           <i class="fas fa-fw fa-spray-can"></i>
           <span>Generate Finished Product</span></a>
       </li>
       
       <li class="nav-item">
       <?php 
-	  if($_GET['do'] == 'ingredients' || $_GET['do'] == 'bottles' || $_GET['do'] == 'lids'){ 
+	  if($_GET['do'] == 'ingredients' || $_GET['do'] == 'bottles' || $_GET['do'] == 'lids' || $_GET['do'] == 'batches'){ 
 	  	$expand = 'show'; 
 		$class = ''; 
 		$aria = 'true'; 
@@ -163,9 +163,10 @@ $(document).ready(function() {
         </a>
         <div id="collapseInventoty" class="collapse <?php echo $expand;?>" aria-labelledby="headingInventory" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item <?php if($_GET['do'] == 'ingredients'){ echo 'active';}?>" href="/?do=ingredients">Ingredients</a>
-            <a class="collapse-item <?php if($_GET['do'] == 'bottles'){ echo 'active';}?>" href="/?do=bottles">Bottles</a>
-            <a class="collapse-item <?php if($_GET['do'] == 'lids'){ echo 'active';}?>" href="/?do=lids">Bottle Lids</a>
+            <a class="collapse-item <?php if($_GET['do'] == 'ingredients'){ echo 'active';}?>" href="?do=ingredients">Ingredients</a>
+            <a class="collapse-item <?php if($_GET['do'] == 'batches'){ echo 'active';}?>" href="?do=batches">Batch history</a>
+            <a class="collapse-item <?php if($_GET['do'] == 'bottles'){ echo 'active';}?>" href="?do=bottles">Bottles</a>
+            <a class="collapse-item <?php if($_GET['do'] == 'lids'){ echo 'active';}?>" href="?do=lids">Bottle Lids</a>
           </div>
         </div>
       </li>
@@ -217,6 +218,8 @@ $(document).ready(function() {
 			require 'pages/lids.php';				
 		}elseif($_GET['do'] == 'addLid'){
 			require 'pages/addLid.php';	
+		}elseif($_GET['do'] == 'batches'){
+			require 'pages/batches.php';				
 			
 		}elseif($_GET['do'] == 'logout'){
 			if(isset($_SESSION['parfumvault'])) {

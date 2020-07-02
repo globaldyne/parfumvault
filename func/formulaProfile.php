@@ -11,7 +11,6 @@ function formulaProfile($conn, $profile, $sex){
                   <thead>
                     <tr>
                       <th width="20%">Name</th>
-                      <th width="20%">Batch ID</th>
                       <th width="10%">Meta Data</th>
                       <th width="20%">Created</th>
                       <th width="20%">Actions</th>
@@ -21,7 +20,6 @@ function formulaProfile($conn, $profile, $sex){
 	while ($formula = mysqli_fetch_array($formulas_n)) {
 		echo'<tr><td align="center"><a href="?do=Formula&name='.$formula['name'].'">'.$formula['name'].'</a></td>';
 		$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE name = '".$formula['name']."'"));
-		echo '<td align="center">'.$meta['batchNo'].'</td>';
 		echo '<td align="center"><a href="pages/getFormMeta.php?id='.$meta['id'].'" class="fas fa-comment-dots popup-link"></a></td>';
 		echo '<td align="center">'.$meta['created'].'</td>';
 		?>

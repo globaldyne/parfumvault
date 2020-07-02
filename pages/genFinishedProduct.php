@@ -1,29 +1,41 @@
 <?php 
 if (!defined('pvault_panel')){ die('Not Found');}  
-
-$f_name =  mysqli_real_escape_string($conn, $_POST['formula']);
-
-$formula_q = mysqli_query($conn, "SELECT * FROM formulas WHERE name = '$f_name' ORDER BY ingredient ASC");
-
-$mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE name = '$f_name'"));
-$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE name = '$f_name'"));
-
-$bottle = mysqli_real_escape_string($conn, $_POST['bottle']);
-$type = mysqli_real_escape_string($conn, $_POST['type']);
-$carrier_id = mysqli_real_escape_string($conn, $_POST['carrier']);
-$lid_id = mysqli_real_escape_string($conn, $_POST['lid']);
-
-$bottle_cost = mysqli_fetch_array(mysqli_query($conn, "SELECT  price,ml,name FROM bottles WHERE id = '$bottle'"));
-$carrier_cost = mysqli_fetch_array(mysqli_query($conn, "SELECT  price,ml FROM ingredients WHERE id = '$carrier_id'"));
-if($_POST['lid']){
-	$lid_cost = mysqli_fetch_array(mysqli_query($conn, "SELECT  price,style FROM lids WHERE id = '$lid_id'"));
-}else{
-	$lid_cost['price'] = 0;
-	$lid_cost['style'] = 'none';
+if($_POST['formula']){
+	$f_name =  mysqli_real_escape_string($conn, $_POST['formula']);
+	
+	$formula_q = mysqli_query($conn, "SELECT * FROM formulas WHERE name = '$f_name' ORDER BY ingredient ASC");
+	
+	$mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE name = '$f_name'"));
+	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE name = '$f_name'"));
+	
+	$bottle = mysqli_real_escape_string($conn, $_POST['bottle']);
+	$type = mysqli_real_escape_string($conn, $_POST['type']);
+	$carrier_id = mysqli_real_escape_string($conn, $_POST['carrier']);
+	$lid_id = mysqli_real_escape_string($conn, $_POST['lid']);
+	$bottle_cost = mysqli_fetch_array(mysqli_query($conn, "SELECT  price,ml,name FROM bottles WHERE id = '$bottle'"));
+	$carrier_cost = mysqli_fetch_array(mysqli_query($conn, "SELECT  price,ml FROM ingredients WHERE id = '$carrier_id'"));
+	
+	if($_POST['lid']){
+		$lid_cost = mysqli_fetch_array(mysqli_query($conn, "SELECT  price,style FROM lids WHERE id = '$lid_id'"));
+	}else{
+		$lid_cost['price'] = 0;
+		$lid_cost['style'] = 'none';
+	}
+	
+	if($_POST['batchID'] == '1'){
+		$batchID = genBatchID();
+		//TODO
+		//GENERATE PDF
+		//CREATE DB ENTRY
+		//EXTEND UI
+	}else{
+		$batchID = 'N/A';
+	}
+			   
+	$bottle = $bottle_cost['ml'];
+	$new_conc = $bottle/100*$type;
+	$carrier = $bottle - $new_conc;
 }
-$bottle = $bottle_cost['ml'];
-$new_conc = $bottle/100*$type;
-$carrier = $bottle - $new_conc;
 ?>
 <script>
 function printLabel() {
@@ -58,6 +70,7 @@ $.ajax({
 	type: 'get',
     data: {
 		action: "printBoxLabel",
+		batchID: "<?php echo $batchID; ?>",
 		name: "<?php echo $f_name; ?>"
 		},
 	dataType: 'html',
@@ -77,7 +90,7 @@ $.ajax({
 			<?php if($_GET['generate']){?>
              <h2 class="m-0 font-weight-bold text-primary"><a href="?do=genFinishedProduct"><?php echo $f_name;?> Finished Product</a></h2>
              <h5 class="m-1 text-primary"><?php echo "Bottle: ".$bottle."ml Concentration: ".$type."%";?></h5>
-             <h5 class="m-1 text-primary"><?php echo "Batch ID: ".$meta['batchNo'];?></h5>
+             <h5 class="m-1 text-primary"><?php echo "Batch ID: ".$batchID;?></h5>
         	<?php }else{ ?>
               <h2 class="m-0 font-weight-bold text-primary"><a href="?do=genFinishedProduct">Generate Finished Product</a></h2>
             <?php } ?>
@@ -124,7 +137,7 @@ $.ajax({
 						
 					  	$conc = $new_quantity/$bottle * 100;
 						
-					  	$conc_p = number_format($formula['concentration'] / 100 * $conc, 2);
+					  	$conc_p = number_format($formula['concentration'] / 100 * $conc, 3);
 					 	
 						echo'<tr>
                       <td align="center">'.$formula['ingredient'].'</td>
@@ -146,7 +159,7 @@ $.ajax({
 					  }else{
 						  $IFRA_WARN = 'class="alert-warning"'; //NO RECORD FOUND
 					  }
-					  echo'<td align="center">'.number_format($new_quantity, 2).'</td>';
+					  echo'<td align="center">'.number_format($new_quantity, 3).'</td>';
 					  echo'<td align="center" '.$IFRA_WARN.'>'.$conc_p.'%</td>';
 					  echo '<td align="center">'.utf8_encode($settings['currency']).calcCosts($ing_q['price'],$new_quantity, $formula['concentration'], $ing_q['ml']).'</td>';
 					  echo '</tr>';
@@ -160,7 +173,7 @@ $.ajax({
                       <td></td>
                       <td></td>
                       <td align="center" class="m-1 text-primary">Sub Total: </td>
-                      <td align="center" class="m-1 text-primary"><?php echo number_format(array_sum($new_tot), 2); ?>ml</td>
+                      <td align="center" class="m-1 text-primary"><?php echo number_format(array_sum($new_tot), 3); ?>ml</td>
                       <td align="center" class="m-1 text-primary"><?php echo array_sum($conc_tot);?>%</td>
                       <td colspan="2" align="center" class="m-1 text-primary"><?php echo utf8_encode($settings['currency']).number_format(array_sum($tot),2);?></td>
                     </tr>
@@ -200,7 +213,7 @@ $.ajax({
                       <td></td>
                       <td></td>
                       <td align="center" class="m-0 font-weight-bold text-primary">Total: </td>
-                      <td width="15%" align="center" class="m-0 font-weight-bold text-primary"><?php echo number_format(array_sum($new_tot)+ $carrier, 2); ?>ml</td>
+                      <td width="15%" align="center" class="m-0 font-weight-bold text-primary"><?php echo number_format(array_sum($new_tot)+ $carrier, 3); ?>ml</td>
                       <td width="15%" align="center" class="m-0 font-weight-bold text-primary"><?php echo $carrier*100/$bottle + array_sum($conc_tot); ?>%</td>
                       <td colspan="2" align="center" class="m-0 font-weight-bold text-primary"><?php echo $settings['currency'].number_format(array_sum($tot)+$lid_cost['price']+$carrier_sub_cost+$bottle_cost['price'],2);?></td>
                     </tr>
@@ -242,6 +255,14 @@ $.ajax({
 	  ?>
      </select>
     </td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Batch ID:</td>
+    <td><select name="batchID" id="batchID" class="form-control selectpicker" data-live-search="false">
+      <option value="0">Do Not Generate</option>
+      <option value="1">Generate</option>
+    </select></td>
     <td>&nbsp;</td>
   </tr>
   <tr>

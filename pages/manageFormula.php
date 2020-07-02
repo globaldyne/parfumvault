@@ -193,10 +193,13 @@ Array
 			$getAllergen = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '".$ing['ingredient']."' AND allergen = '1'"));
 			$allergen[] = $getAllergen['name'];
 		}
-		$bNo = mysqli_fetch_array(mysqli_query($conn, "SELECT batchNo FROM formulasMetaData WHERE name = '$name'"));
-		
+		if($_GET['batchID']){
+			$bNo = $_GET['batchID'];//mysqli_fetch_array(mysqli_query($conn, "SELECT batchNo FROM formulasMetaData WHERE name = '$name'"));
+		}else{
+			$bNO = 'N/A';
+		}
 		$allergenFinal = implode(", ",array_filter($allergen));
-		$info = "FOR EXTERNAL USE ONLY. \nKEEP AWAY FROM HEAT AND FLAME. \nKEEP OUT OF REACH OF CHILDREN. \nAVOID SPRAYING IN EYES. \n \nProduction: ".date("d/m/Y")." \nB. NO: ".$bNo['batchNo'];
+		$info = "FOR EXTERNAL USE ONLY. \nKEEP AWAY FROM HEAT AND FLAME. \nKEEP OUT OF REACH OF CHILDREN. \nAVOID SPRAYING IN EYES. \n \nProduction: ".date("d/m/Y")." \nB. NO: ".$bNo;
 		$w = '720';
 		$h = '860';
 	}
