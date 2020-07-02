@@ -25,6 +25,12 @@ if($_POST['name']){
 	$odor = mysqli_real_escape_string($conn, $_POST["odor"]);
 	$purity = mysqli_real_escape_string($conn, $_POST["purity"]);
 
+	if($_POST["isAllergen"]) {
+		$allergen = '1';
+	}else{
+		$allergen = '0';
+	}
+
 	if(!empty($_FILES['SDS']['name'])){
       $file_name = $_FILES['SDS']['name'];
       $file_size = $_FILES['SDS']['size'];
@@ -55,7 +61,7 @@ if($_POST['name']){
 		</div>';
 	}else{
 		
-		if(mysqli_query($conn, "INSERT INTO ingredients (name, cas, type, strength, SDS, IFRA, category, supplier, supplier_link, profile, price, tenacity, chemical_name, flash_point, appearance, notes, ml, odor, purity) VALUES ('$name', '$cas', '$type', '$strength', '$SDSF', '$IFRA', '$category', '$supplier', '$supplier_link', '$profile', '$price', '$tenacity', '$chemical_name', '$flash_point', '$appearance', '$notes', '$ml', '$odor', '$purity')")){
+		if(mysqli_query($conn, "INSERT INTO ingredients (name, cas, type, strength, SDS, IFRA, category, supplier, supplier_link, profile, price, tenacity, chemical_name, flash_point, appearance, notes, ml, odor, purity, allergen) VALUES ('$name', '$cas', '$type', '$strength', '$SDSF', '$IFRA', '$category', '$supplier', '$supplier_link', '$profile', '$price', '$tenacity', '$chemical_name', '$flash_point', '$appearance', '$notes', '$ml', '$odor', '$purity', '$allergen')")){
 			$msg.='<div class="alert alert-success alert-dismissible">
 			<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
   			Ingredient <strong>'.$name.'</strong> added!
@@ -98,6 +104,11 @@ $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles");
                               <tr>
                                 <td>CAS #:</td>
                                 <td><input name="cas" type="text" class="form-control ing_list" id="cas"></td>
+                                <td>&nbsp;</td>
+                              </tr>
+                              <tr>
+                                <td>Is Allergen:</td>
+                                <td><input name="isAllergen" type="checkbox" id="isAllergen" value="1" /></td>
                                 <td>&nbsp;</td>
                               </tr>
                               <tr>

@@ -50,14 +50,14 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"))== 0){
          <li><a href="#men"><span>Men</span></a></li>
          <li><a href="#women"><span>Women</span></a></li>
      </ul>
-     <div id="all"><?php formulaProfile($dbhost,$dbuser,$dbpass,$dbname,null,null); ?></div>
-     <div id="oriental"><?php formulaProfile($dbhost,$dbuser,$dbpass,$dbname,'oriental',null); ?></div>
-     <div id="woody"><?php formulaProfile($dbhost,$dbuser,$dbpass,$dbname,'woody',null); ?></div>
-     <div id="floral"><?php formulaProfile($dbhost,$dbuser,$dbpass,$dbname,'floral',null); ?></div>
-     <div id="fresh"><?php formulaProfile($dbhost,$dbuser,$dbpass,$dbname,'fresh',null); ?></div>
-     <div id="unisex"><?php formulaProfile($dbhost,$dbuser,$dbpass,$dbname,null,'unisex'); ?></div>
-     <div id="men"><?php formulaProfile($dbhost,$dbuser,$dbpass,$dbname,null,'men'); ?></div>
-     <div id="women"><?php formulaProfile($dbhost,$dbuser,$dbpass,$dbname,null,'women'); ?></div>
+     <div id="all"><?php formulaProfile($conn,null,null); ?></div>
+     <div id="oriental"><?php formulaProfile($conn,'oriental',null); ?></div>
+     <div id="woody"><?php formulaProfile($conn,'woody',null); ?></div>
+     <div id="floral"><?php formulaProfile($conn,'floral',null); ?></div>
+     <div id="fresh"><?php formulaProfile($conn,'fresh',null); ?></div>
+     <div id="unisex"><?php formulaProfile($conn,null,'unisex'); ?></div>
+     <div id="men"><?php formulaProfile($conn,null,'men'); ?></div>
+     <div id="women"><?php formulaProfile($conn,null,'women'); ?></div>
 <?php } ?>
                 
               </div>

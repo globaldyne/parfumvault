@@ -28,7 +28,7 @@ $carrier = $bottle - $new_conc;
 <script>
 function printLabel() {
 	<?php if(empty($settings['label_printer_addr']) || empty($settings['label_printer_model'])){?>
-	$("#msg").html('<div class="alert alert-danger alert-dismissible">Please configure printer details in <a href="/?do=settings">settings<a> page</div>');
+	$("#msg").html('<div class="alert alert-danger alert-dismissible">Please configure printer details in <a href="?do=settings">settings<a> page</div>');
 	<?php }else{ ?>
 	$("#msg").html('<div class="alert alert-info alert-dismissible">Printing...</div>');
 
@@ -46,6 +46,27 @@ $.ajax({
   });
 	<?php } ?>
 };
+
+function printBoxLabel() {
+	<?php if(empty($settings['label_printer_addr']) || empty($settings['label_printer_model']) || $settings['label_printer_size'] != '62 --red'){?>
+	$("#msg").html('<div class="alert alert-danger alert-dismissible">Please configure printer details in <a href="?do=settings">settings<a> page. Note: For this label you need 62mm label</div>');
+	<?php }else{ ?>
+	$("#msg").html('<div class="alert alert-info alert-dismissible">Printing...</div>');
+
+$.ajax({ 
+    url: '/pages/manageFormula.php', 
+	type: 'get',
+    data: {
+		action: "printBoxLabel",
+		name: "<?php echo $f_name; ?>"
+		},
+	dataType: 'html',
+    success: function (data) {
+	  $('#msg').html(data);
+    }
+  });
+	<?php } ?>
+};
 </script>
 <div id="content-wrapper" class="d-flex flex-column">
 <?php require_once('pages/top.php'); ?>
@@ -54,10 +75,11 @@ $.ajax({
           <div class="card shadow mb-4">
             <div class="card-header py-3"> 
 			<?php if($_GET['generate']){?>
-             <h2 class="m-0 font-weight-bold text-primary"><a href="/?do=genFinishedProduct"><?php echo $f_name;?> Finished Product</a></h2>
+             <h2 class="m-0 font-weight-bold text-primary"><a href="?do=genFinishedProduct"><?php echo $f_name;?> Finished Product</a></h2>
              <h5 class="m-1 text-primary"><?php echo "Bottle: ".$bottle."ml Concentration: ".$type."%";?></h5>
+             <h5 class="m-1 text-primary"><?php echo "Batch ID: ".$meta['batchNo'];?></h5>
         	<?php }else{ ?>
-              <h2 class="m-0 font-weight-bold text-primary"><a href="/?do=genFinishedProduct">Generate Finished Product</a></h2>
+              <h2 class="m-0 font-weight-bold text-primary"><a href="?do=genFinishedProduct">Generate Finished Product</a></h2>
             <?php } ?>
             </div>
             <div class="card-body">
@@ -67,13 +89,14 @@ $.ajax({
                 <table class="table table-bordered" id="formula" width="100%" cellspacing="0">
                   <thead>
                     <tr class="noexport">
-                      <th colspan="6">
+                      <th colspan="7">
                      <div class="text-left">
                       <div class="btn-group">
                       <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
                       <div class="dropdown-menu">
                         <a class="dropdown-item" id="pdf" href="#">Export to PDF</a>
                         <a class="dropdown-item" href="javascript:printLabel();" onclick="return confirm('Print label?');">Print Label</a>
+                        <a class="dropdown-item" href="javascript:printBoxLabel();" onclick="return confirm('Print Box label?');">Print Box Label</a>
                       </div>
                     </div>
                     </div>
@@ -81,9 +104,10 @@ $.ajax({
                     </tr>
                     <tr>
                       <th width="22%">Ingredient</th>
+                      <th width="11%">CAS#</th>
                       <th width="11%">Purity %</th>
-                      <th width="15%">Quantity</th>
-                      <th width="15%">Concentration*</th>
+                      <th width="11%">Quantity</th>
+                      <th width="11%">Concentration*</th>
                       <th colspan="2">Cost</th>
                     </tr>
                   </thead>
@@ -103,7 +127,8 @@ $.ajax({
 					  	$conc_p = number_format($formula['concentration'] / 100 * $conc, 2);
 					 	
 						echo'<tr>
-                      <td align="center" class="'.$ing_q['profile'].'" id="ingredient">'.$formula['ingredient'].'</td>
+                      <td align="center">'.$formula['ingredient'].'</td>
+					  <td align="center">'.$cas['cas'].'</td>
                       <td align="center">'.$formula['concentration'].'</td>';
 					  if($limit != null){
 						 if($limit < $conc_p){
@@ -133,12 +158,14 @@ $.ajax({
                     </tr>
                     <tr>
                       <td></td>
+                      <td></td>
                       <td align="center" class="m-1 text-primary">Sub Total: </td>
                       <td align="center" class="m-1 text-primary"><?php echo number_format(array_sum($new_tot), 2); ?>ml</td>
                       <td align="center" class="m-1 text-primary"><?php echo array_sum($conc_tot);?>%</td>
                       <td colspan="2" align="center" class="m-1 text-primary"><?php echo utf8_encode($settings['currency']).number_format(array_sum($tot),2);?></td>
                     </tr>
                     <tr>
+                      <td></td>
                       <td></td>
                       <td align="center" class="m-1 text-primary">Carrier: </td>
                       <td align="center" class="m-1 text-primary"><?php echo $carrier; ?>ml</td>
@@ -147,6 +174,7 @@ $.ajax({
                     </tr>
                     <tr>
                       <td></td>
+                      <td></td>
                       <td align="center" class="m-0 text-primary">Bottle:</td>
                       <td align="center" class="m-0 text-primary"><?php echo $bottle_cost['ml'];?>ml</td>
                       <td align="center" class="m-0 text-primary">-</td>
@@ -154,13 +182,23 @@ $.ajax({
                     </tr>
                     <tr>
                       <td></td>
+                      <td></td>
                       <td align="center" class="m-0 text-primary">Lid:</td>
                       <td align="center" class="m-0 text-primary"><?php echo $lid_cost['style'];?></td>
                       <td align="center" class="m-0 text-primary">-</td>
                       <td colspan="2" align="center" class="m-0 text-primary"><?php echo $settings['currency'].$lid_cost['price'];?></td>
                     </tr>
                     <tr>
-                      <td width="22%"></td>
+                      <td></td>
+                      <td></td>
+                      <td align="center" class="m-0 text-primary">Batch No:</td>
+                      <td align="center" class="m-0 text-primary"><?php echo $meta['batchNo'];?></td>
+                      <td align="center" class="m-0 text-primary">-</td>
+                      <td colspan="2" align="center" class="m-0 text-primary">-</td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td></td>
                       <td align="center" class="m-0 font-weight-bold text-primary">Total: </td>
                       <td width="15%" align="center" class="m-0 font-weight-bold text-primary"><?php echo number_format(array_sum($new_tot)+ $carrier, 2); ?>ml</td>
                       <td width="15%" align="center" class="m-0 font-weight-bold text-primary"><?php echo $carrier*100/$bottle + array_sum($conc_tot); ?>%</td>
@@ -170,7 +208,7 @@ $.ajax({
                 </table> 
                 <div>
                 <p></p>
-                <p>*Values in: <strong class="alert alert-danger">red</strong> exceeds IFRA limit,   <strong class="alert alert-warning">yellow</strong> have no IFRA limit set,   <strong class="alert alert-success">green</strong> are within IFRA limits</p>
+                <p>*Values in: <strong class="alert alert-danger">red</strong> exceeds usage level, <strong class="alert alert-warning">yellow</strong> have no usage level set, <strong class="alert alert-success">green</strong> are within usage level</p>
                 </div>
             </div>
             <?php }else{ ?>

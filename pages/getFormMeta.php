@@ -84,6 +84,10 @@ if($_FILES["file"]["tmp_name"]){
     <td data-name="name" class="name" data-type="text" align="left" data-pk="name" width="80%"><?php echo $info['name'];?></td>
   </tr>
   <tr>
+    <td>Batch ID:</td>
+    <td><span class="name"><?php echo $info['batchNo'];?></span></td>
+  </tr>
+  <tr>
     <td>Profile:</td>
     <td><a href="#" id="profile" data-type="select" data-pk="profile" data-title="<?php echo $info['profile'];?>"></a></td>
   </tr>

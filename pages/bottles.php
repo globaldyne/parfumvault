@@ -49,7 +49,7 @@ $sup = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
                       <th>Size (ml)</th>
                       <th>Price <?php echo $settings['currency'];?></th>
                       <th>Supplier</th>
-                      <th colspan="3">Dimensions (mm)</th>
+                      <th colspan="3">Dimensions HxWxD (mm)</th>
                       <th>Photo</th>
                       <th>Shop</th>
                       <th>Notes</th>

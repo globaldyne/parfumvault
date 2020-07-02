@@ -147,7 +147,7 @@ Array
 	if($settings['label_printer_size'] == '62' || $settings['label_printer_size'] == '62 --red'){
 		$name = mysqli_real_escape_string($conn, $_GET['name']);
 		$q = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE name = '$name'"));
-		$info = "Production: ".date("d/m/Y")."\nProfile: ".$q['profile']."\nSex: ".$q['sex']."\nDescription:\n\n".wordwrap($q['notes'],30);
+		$info = "Production: ".date("d/m/Y")."\nProfile: ".$q['profile']."\nSex: ".$q['sex']."\nB. NO: ".$q['batchNo']."\nDescription:\n\n".wordwrap($q['notes'],30);
 		$w = '720';
 		$h = '860';
 	}else{
@@ -177,6 +177,56 @@ Array
 		imagedestroy($lblF);
 		shell_exec('/usr/bin/brother_ql -m '.$settings['label_printer_model'].' -p tcp://'.$settings['label_printer_addr'].' print -l '.$settings['label_printer_size'].' '. $save);
 		//echo '<img src="'.$save.'"/>';
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Print sent!</div>';
+	}
+
+//PRINT BOX LABEL
+}elseif($_GET['action'] == 'printBoxLabel' && $_GET['name']){
+	$copies = '1';
+	
+	if($settings['label_printer_size'] == '62' || $settings['label_printer_size'] == '62 --red'){
+		$name = mysqli_real_escape_string($conn, $_GET['name']);
+		
+		$qIng = mysqli_query($conn, "SELECT ingredient FROM formulas WHERE name = '$name'");
+		
+		while($ing = mysqli_fetch_array($qIng)){
+			$getAllergen = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '".$ing['ingredient']."' AND allergen = '1'"));
+			$allergen[] = $getAllergen['name'];
+		}
+		$bNo = mysqli_fetch_array(mysqli_query($conn, "SELECT batchNo FROM formulasMetaData WHERE name = '$name'"));
+		
+		$allergenFinal = implode(", ",array_filter($allergen));
+		$info = "FOR EXTERNAL USE ONLY. \nKEEP AWAY FROM HEAT AND FLAME. \nKEEP OUT OF REACH OF CHILDREN. \nAVOID SPRAYING IN EYES. \n \nProduction: ".date("d/m/Y")." \nB. NO: ".$bNo['batchNo'];
+		$w = '720';
+		$h = '860';
+	}
+		
+	$lbl = imagecreatetruecolor($h, $w);
+
+	$white = imagecolorallocate($lbl, 255, 255, 255);
+	$black = imagecolorallocate($lbl, 0, 0, 0);	
+	
+	imagefilledrectangle($lbl, 0, 0, $h, $w, $white);
+	
+	$text = trim($_GET['name']);
+	$font = '../fonts/Arial.ttf';
+				//font size 15 rotate 0 center 360 top 50
+	imagettftext($lbl, 25, 0, 300, 50, $black, $font, 'INGREDIENTS');
+	$lblF = imagerotate($lbl, 0 ,0);
+	
+	imagettftext($lblF, 22, 0, 50, 90, $black, $font, wordwrap ($allergenFinal, 60));
+	imagettftext($lblF, 22, 0, 150, 500, $black, $font, wordwrap ($info, 50));
+
+	$save = "../tmp/labels/".base64_encode($text.'png');
+
+	if(imagepng($lblF, $save)){
+		imagedestroy($lblF);
+		for ($k = 0; $k < $copies; $k++){
+
+		//echo '<img src="'.$save.'"/>';
+		
+			shell_exec('/usr/bin/brother_ql -m '.$settings['label_printer_model'].' -p tcp://'.$settings['label_printer_addr'].' print -l '.$settings['label_printer_size'].' '. $save);
+		}
 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Print sent!</div>';
 	}
 }

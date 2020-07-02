@@ -32,6 +32,12 @@ if($_POST){
 	$odor = mysqli_real_escape_string($conn, $_POST["odor"]);
 	$notes = mysqli_real_escape_string($conn, $_POST["notes"]);
 	$purity = mysqli_real_escape_string($conn, $_POST["purity"]);
+	
+	if($_POST["isAllergen"]) {
+		$allergen = '1';
+	}else{
+		$allergen = '0';
+	}
 
 	if(($_FILES['SDS']['name'])){
       $file_name = $_FILES['SDS']['name'];
@@ -59,13 +65,13 @@ if($_POST){
 	  }
    }
 
-	if(mysqli_query($conn, "UPDATE ingredients SET cas = '$cas', type = '$type', strength = '$strength', IFRA = '$IFRA', category='$category', supplier='$supplier', supplier_link='$supplier_link', profile='$profile', price='$price', tenacity='$tenacity', chemical_name='$chemical_name', flash_point='$flash_point', appearance='$appearance', notes='$notes', ml='$ml', odor='$odor', purity='$purity'  WHERE name='$ingID'")){
+	if(mysqli_query($conn, "UPDATE ingredients SET cas = '$cas', type = '$type', strength = '$strength', IFRA = '$IFRA', category='$category', supplier='$supplier', supplier_link='$supplier_link', profile='$profile', price='$price', tenacity='$tenacity', chemical_name='$chemical_name', flash_point='$flash_point', appearance='$appearance', notes='$notes', ml='$ml', odor='$odor', purity='$purity', allergen='$allergen' WHERE name='$ingID'")){
 			$msg.='<div class="alert alert-success alert-dismissible">
-  			Ingredient <strong>'.$name.'</strong> updated!
+  			Ingredient <strong>'.$ing['name'].'</strong> updated!
 			</div>';
 		}else{
 			$msg.='<div class="alert alert-danger alert-dismissible">
-  			<strong>Error:</strong> Failed to update '.$ing['name'].'!
+  			<strong>Error:</strong> Failed to update '.mysqli_error($conn).'!
 			</div>';
 		}
 }
@@ -184,6 +190,10 @@ $.ajax({
                                 <input name="IFRA" type="text" class="form-control" id="IFRA" value="<?php echo $ing['IFRA']; ?>">
                                 <?php } ?>
                                 </td>
+                              </tr>
+                              <tr>
+                                <td>Is Allergen:</td>
+                                <td colspan="3"><input name="isAllergen" type="checkbox" id="isAllergen" value="1" <?php if($ing['allergen'] == '1'){; ?> checked="checked"  <?php } ?>/></td>
                               </tr>
                               <tr>
                                 <td>Purity %:</td>

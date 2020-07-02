@@ -11,6 +11,7 @@ require_once('./func/calcCosts.php');
 require_once('./func/calcPerc.php');
 require_once('./func/checkDupes.php');
 require_once('./func/checkIng.php');
+require_once('./func/checkAllergen.php');
 require_once('./func/getIngUsage.php');
 require_once('./func/checkVer.php');
 require_once('./func/formulaProfile.php');
@@ -19,6 +20,7 @@ require_once('./func/searchIFRA.php');
 require_once('./func/formatBytes.php');
 require_once('./func/countElement.php');
 require_once('./func/goShopping.php');
+require_once('./func/genBatchID.php');
 
 
 require('./inc/settings.php');
