@@ -20,8 +20,9 @@ require_once('./func/searchIFRA.php');
 require_once('./func/formatBytes.php');
 require_once('./func/countElement.php');
 require_once('./func/goShopping.php');
+require_once('./libs/fpdf.php');
 require_once('./func/genBatchID.php');
-
+require_once('./func/genBatchPDF.php');
 
 require('./inc/settings.php');
 

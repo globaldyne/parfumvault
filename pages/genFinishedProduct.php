@@ -23,11 +23,14 @@ if($_POST['formula']){
 	}
 	
 	if($_POST['batchID'] == '1'){
+		define('FPDF_FONTPATH','./fonts');
 		$batchID = genBatchID();
-		//TODO
-		//GENERATE PDF
-		//CREATE DB ENTRY
-		//EXTEND UI
+		$fid = base64_encode($f_name);
+		$batchFile = 'batches/'.$batchID;
+		
+		mysqli_query($conn, "INSERT INTO batchIDHistory (id,fid,pdf) VALUES ('$batchID','$fid','$batchFile')");
+																				 
+		genBatchPDF($fid,$batchID,$conn);
 	}else{
 		$batchID = 'N/A';
 	}
@@ -329,7 +332,7 @@ $('#pdf').on('click',function(){
   $("#formula").tableHTMLExport({
 	type:'pdf',
 	filename:'<?php echo $f_name; ?>.pdf',
-	  orientation: 'p',
+	orientation: 'p',
 	trimContent: true,
     quoteFields: true,
 	

@@ -2,6 +2,7 @@
 request.log
 tmp/
 uploads/
+batches/
 push.sh
 inc/config.php
 pages/searchTGSC.php
