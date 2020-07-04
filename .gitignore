@@ -1,10 +1,10 @@
 .htaccess
 request.log
 tmp/
+logs/
 uploads/
 batches/
 push.sh
 inc/config.php
-pages/searchTGSC.php
 *.swp
 t.php

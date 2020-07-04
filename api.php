@@ -7,7 +7,7 @@ require_once('./inc/product.php');
 require_once('./func/countElement.php');
 
 $req_dump = print_r($_REQUEST, TRUE);
-$fp = fopen('tmp/api.log', 'a');
+$fp = fopen('logs/api.log', 'a');
 fwrite($fp, $req_dump);
 fclose($fp);
 

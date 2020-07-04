@@ -49,13 +49,13 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $ver, $conn){
 
 	$pdf->SetAutoPageBreak(true , 30);
 	$pdf->SetMargins(20, 1, 20);
+	
 	//Cover page
 	$pdf->AddPage();
 	$pdf->AliasNbPages();
 	$pdf->SetFont('Arial','B',10);
 	$pdf->MultiCell(250,10,$coverText);
 	
-
 	//Formula table
 	$pdf->AddPage();
 	$pdf->AliasNbPages();
@@ -71,9 +71,7 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $ver, $conn){
 					  
 		$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT IFRA,price,ml,profile,profile,cas FROM ingredients WHERE name = '".$formula['ingredient']."'"));
 		$new_quantity = $formula['quantity']/$mg*$new_conc;
-					
 		$conc = $new_quantity/$bottle * 100;
-						
 		$conc_p = number_format($formula['concentration'] / 100 * $conc, 3);
 		
 		$pdf->Cell(55,8,$formula['ingredient'],1,0,'C');
@@ -82,10 +80,6 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $ver, $conn){
 		
 		$pdf->Cell(55,8,number_format($new_quantity, 3),1,0,'C');
 		$pdf->Cell(55,8,$conc_p,1,0,'C');
-
-		//	$tot[] = calcCosts($ing_q['price'],$new_quantity, $formula['concentration'], $ing_q['ml']);
-		//	$conc_tot[] = $conc_p;
-		//	$new_tot[] = $new_quantity;
 	}
                  
 	//ADD Final details
@@ -93,8 +87,6 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $ver, $conn){
 	$pdf->AliasNbPages();
 	$pdf->SetFont('Arial','B',10);
 	$pdf->MultiCell(250,10,$finalText);
-	
-	
 	
 	$pdf->Output('F','batches/'.$batchID);
 	//$pdf->Output('I');

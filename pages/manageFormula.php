@@ -6,7 +6,7 @@ require_once('../inc/opendb.php');
 require_once('../inc/settings.php');
 
 $req_dump = print_r($_REQUEST, TRUE);
-$fp = fopen('../tmp/pvault.log', 'a');
+$fp = fopen('../logs/pvault.log', 'a');
 fwrite($fp, $req_dump);
 fclose($fp);
 
@@ -31,7 +31,6 @@ if($_GET['formula'] && $_GET['do']){
 	header("Location: /?do=Formula&name=$formula");
 
 //DELETING
-
 }elseif($_GET['action'] == 'deleteIng' && $_GET['ingID'] && $_GET['ing']){
 	$id = mysqli_real_escape_string($conn, $_GET['ingID']);
 	$ing = mysqli_real_escape_string($conn, $_GET['ing']);
@@ -83,16 +82,6 @@ if($_GET['formula'] && $_GET['do']){
 	}
 	
 //REPLACE
-/*
-Array
-(
-    [action] => repIng
-    [fname] => Temptation - REF
-    [name] => Applelide
-    [value] =>  Saffron Oleoresin
-    [pk] => Applelide
-)
-*/
 }elseif($_GET['action'] == 'repIng' && $_GET['fname']){
 	$fname = mysqli_real_escape_string($conn, $_GET['fname']);
 	$ingredient = mysqli_real_escape_string($conn, $_REQUEST['value']);
@@ -197,10 +186,10 @@ Array
 			$getAllergen = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '".$ing['ingredient']."' AND allergen = '1'"));
 			$allergen[] = $getAllergen['name'];
 		}
-		$allergen[] = 'Denatureted Ethyl Alcohol 90% Vol, Fragrance, Distilled Water';
+		$allergen[] = 'Denatureted Ethyl Alcohol '.$_GET['carrier'].'% Vol, Fragrance, Distilled Water';
 
 		if($_GET['batchID']){
-			$bNo = $_GET['batchID'];//mysqli_fetch_array(mysqli_query($conn, "SELECT batchNo FROM formulasMetaData WHERE name = '$name'"));
+			$bNo = $_GET['batchID'];
 		}else{
 			$bNO = 'N/A';
 		}

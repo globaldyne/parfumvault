@@ -75,6 +75,7 @@ $.ajax({
 		action: "printBoxLabel",
 		batchID: "<?php echo $batchID; ?>",
 		name: "<?php echo $f_name; ?>",
+		carrier: "<?php echo $carrier*100/$bottle;?>",
 		copies: $("#copiesToPrint").val()
 		},
 	dataType: 'html',
