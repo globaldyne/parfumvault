@@ -172,19 +172,19 @@ $(document).ready(function() {
       </li>
     
         <li class="nav-item">
-        <a class="nav-link" href="/?do=IFRA">
+        <a class="nav-link" href="?do=IFRA">
           <i class="fas fa-fw fa-university"></i>
           <span>IFRA Library</span></a>
       </li>
 
         <li class="nav-item">
-        <a class="nav-link" href="/?do=insights">
+        <a class="nav-link" href="?do=insights">
           <i class="fas fa-fw fa-chart-area"></i>
           <span>Insights</span></a>
       </li>
       
         <li class="nav-item">
-        <a class="nav-link" href="/?do=settings">
+        <a class="nav-link" href="?do=settings">
           <i class="fas fa-fw fa-cog"></i>
           <span>Settings</span></a>
       </li>
