@@ -21,6 +21,10 @@ if($_POST['formula']){
 		$lid_cost['price'] = 0;
 		$lid_cost['style'] = 'none';
 	}
+		   
+	$bottle = $bottle_cost['ml'];
+	$new_conc = $bottle/100*$type;
+	$carrier = $bottle - $new_conc;
 	
 	if($_POST['batchID'] == '1'){
 		define('FPDF_FONTPATH','./fonts');
@@ -30,14 +34,10 @@ if($_POST['formula']){
 		
 		mysqli_query($conn, "INSERT INTO batchIDHistory (id,fid,pdf) VALUES ('$batchID','$fid','$batchFile')");
 																				 
-		genBatchPDF($fid,$batchID,$conn);
+		genBatchPDF($fid,$batchID,$bottle,$new_conc,$mg['total_mg'],$ver,$conn);
 	}else{
 		$batchID = 'N/A';
 	}
-			   
-	$bottle = $bottle_cost['ml'];
-	$new_conc = $bottle/100*$type;
-	$carrier = $bottle - $new_conc;
 }
 ?>
 <script>
@@ -95,7 +95,7 @@ $.ajax({
 			<?php if($_GET['generate']){?>
              <h2 class="m-0 font-weight-bold text-primary"><a href="?do=genFinishedProduct"><?php echo $f_name;?> Finished Product</a></h2>
              <h5 class="m-1 text-primary"><?php echo "Bottle: ".$bottle."ml Concentration: ".$type."%";?></h5>
-             <h5 class="m-1 text-primary"><?php echo "Batch ID: ".$batchID;?></h5>
+             <h5 class="m-1 text-primary"><?php echo 'Batch ID: <a href="batches/'.$batchID.'">'.$batchID.'<a>';?></h5>
         	<?php }else{ ?>
               <h2 class="m-0 font-weight-bold text-primary"><a href="?do=genFinishedProduct">Generate Finished Product</a></h2>
             <?php } ?>
@@ -114,7 +114,6 @@ $.ajax({
                       <div class="dropdown-menu">
                         <a class="dropdown-item" id="pdf" href="#">Export to PDF</a>
                         <a class="dropdown-item" href="javascript:printLabel();" onclick="return confirm('Print label?');">Print Label</a>
-                        <a class="dropdown-item" href="javascript:printBoxLabel();" onclick="return confirm('Print Box label?');">Print Box Label</a>
                         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#printBoxLabel">Print Box Label</a>
                       </div>
                     </div>
