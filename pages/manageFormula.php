@@ -182,7 +182,11 @@ Array
 
 //PRINT BOX LABEL
 }elseif($_GET['action'] == 'printBoxLabel' && $_GET['name']){
-	$copies = '1';
+	if(empty($_GET['copies']) || !is_numeric($_GET['copies'])){
+		$copies = '1';
+	}else{
+		$copies = intval($_GET['copies']);
+	}
 	
 	if($settings['label_printer_size'] == '62' || $settings['label_printer_size'] == '62 --red'){
 		$name = mysqli_real_escape_string($conn, $_GET['name']);
@@ -193,6 +197,8 @@ Array
 			$getAllergen = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '".$ing['ingredient']."' AND allergen = '1'"));
 			$allergen[] = $getAllergen['name'];
 		}
+		$allergen[] = 'Denatureted Ethyl Alcohol 90% Vol, Fragrance, Distilled Water';
+
 		if($_GET['batchID']){
 			$bNo = $_GET['batchID'];//mysqli_fetch_array(mysqli_query($conn, "SELECT batchNo FROM formulasMetaData WHERE name = '$name'"));
 		}else{
@@ -225,9 +231,7 @@ Array
 	if(imagepng($lblF, $save)){
 		imagedestroy($lblF);
 		for ($k = 0; $k < $copies; $k++){
-
-		//echo '<img src="'.$save.'"/>';
-		
+			//echo '<img src="'.$save.'"/>';
 			shell_exec('/usr/bin/brother_ql -m '.$settings['label_printer_model'].' -p tcp://'.$settings['label_printer_addr'].' print -l '.$settings['label_printer_size'].' '. $save);
 		}
 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Print sent!</div>';

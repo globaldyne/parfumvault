@@ -74,10 +74,12 @@ $.ajax({
     data: {
 		action: "printBoxLabel",
 		batchID: "<?php echo $batchID; ?>",
-		name: "<?php echo $f_name; ?>"
+		name: "<?php echo $f_name; ?>",
+		copies: $("#copiesToPrint").val()
 		},
 	dataType: 'html',
     success: function (data) {
+	  $('#printBoxLabel').modal('toggle');
 	  $('#msg').html(data);
     }
   });
@@ -113,6 +115,7 @@ $.ajax({
                         <a class="dropdown-item" id="pdf" href="#">Export to PDF</a>
                         <a class="dropdown-item" href="javascript:printLabel();" onclick="return confirm('Print label?');">Print Label</a>
                         <a class="dropdown-item" href="javascript:printBoxLabel();" onclick="return confirm('Print Box label?');">Print Box Label</a>
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#printBoxLabel">Print Box Label</a>
                       </div>
                     </div>
                     </div>
@@ -129,13 +132,13 @@ $.ajax({
                   </thead>
                   <?php while ($formula = mysqli_fetch_array($formula_q)) {
 					  
-					  	$cas = mysqli_fetch_array(mysqli_query($conn, "SELECT cas FROM ingredients WHERE name = '$formula[ingredient]'"));
+					  	$cas = mysqli_fetch_array(mysqli_query($conn, "SELECT cas FROM ingredients WHERE name = '".$formula['ingredient']."'"));
 					 
 						$limitIFRA = searchIFRA($cas['cas'],$formula['ingredient'],$conn);
 						$limit = explode(' - ', $limitIFRA);
 					    $limit = $limit['0'];
 					  
-					  	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT IFRA,price,ml,profile,profile FROM ingredients WHERE name = '$formula[ingredient]'"));
+					  	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT IFRA,price,ml,profile,profile FROM ingredients WHERE name = '".$formula['ingredient']."'"));
 					    $new_quantity = $formula['quantity']/$mg['total_mg']*$new_conc;
 						
 					  	$conc = $new_quantity/$bottle * 100;
@@ -227,8 +230,32 @@ $.ajax({
                 <p>*Values in: <strong class="alert alert-danger">red</strong> exceeds usage level, <strong class="alert alert-warning">yellow</strong> have no usage level set, <strong class="alert alert-success">green</strong> are within usage level</p>
                 </div>
             </div>
+            
+<!-- Modal -->
+<div class="modal fade" id="printBoxLabel" tabindex="-1" role="dialog" aria-labelledby="printBoxLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="printBoxLabel">Print Box Label</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Copies to print:
+          <form action="javascript:printBoxLabel()" method="get" name="form1" target="_self" id="form1">
+            <input name="copiesToPrint" type="text" id="copiesToPrint" value="1" />
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <input type="submit" name="button" class="btn btn-primary" id="button" value="Print">
+      </div>
+     </form>
+    </div>
+  </div>
+</div>
             <?php }else{ ?>
-           <form action="/?do=genFinishedProduct&generate=1" method="post" enctype="multipart/form-data" target="_self">
+           <form action="?do=genFinishedProduct&generate=1" method="post" enctype="multipart/form-data" target="_self">
            
            <table width="100%" border="0">
   <tr>
