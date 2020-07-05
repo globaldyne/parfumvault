@@ -21,7 +21,7 @@ function printLabel() {
 	$("#msg").html('<div class="alert alert-info alert-dismissible">Printing...</div>');
 
 $.ajax({ 
-    url: '/pages/manageFormula.php', 
+    url: 'pages/manageFormula.php', 
 	type: 'get',
     data: {
 		action: "printLabel",
@@ -34,10 +34,28 @@ $.ajax({
   });
 	<?php } ?>
 };
-//
+//MULTIPLY - DIVIDE
+function manageQuantity(quantity) {
+	$.ajax({ 
+    url: 'pages/manageFormula.php', 
+	type: 'get',
+    data: {
+		do: quantity,
+		formula: "<?php echo $f_name; ?>",
+		},
+	dataType: 'html',
+    success: function (data) {
+		location.reload();
+	  	//$('#msg').html(data);
+    }
+  });
+
+};
+
+//Delete ingredient
 function deleteING(ingName,ingID) {	  
 $.ajax({ 
-    url: '/pages/manageFormula.php', 
+    url: 'pages/manageFormula.php', 
 	type: 'get',
     data: {
 		action: "deleteIng",
@@ -53,17 +71,18 @@ $.ajax({
   });
 
 };
-//
+//Add ingredient
 function addING(ingName,ingID) {	  
 $.ajax({ 
-    url: '/pages/manageFormula.php', 
+    url: 'pages/manageFormula.php', 
 	type: 'get',
     data: {
 		action: "addIng",
 		fname: "<?php echo $f_name; ?>",
 		quantity: $("#quantity").val(),
 		concentration: $("#concentration").val(),
-		ingredient: $("#ingredient").val()
+		ingredient: $("#ingredient").val(),
+		dilutant: $("#dilutant").val()
 		},
 	dataType: 'html',
     success: function (data) {
@@ -80,7 +99,7 @@ $.ajax({
 //Clone
 function cloneMe() {	  
 $.ajax({ 
-    url: '/pages/manageFormula.php', 
+    url: 'pages/manageFormula.php', 
 	type: 'get',
     data: {
 		action: "clone",
@@ -103,7 +122,7 @@ $(document).ready(function(){
 $('#ingredient').on('change', function(){
 
 $.ajax({ 
-    url: '/pages/getIngInfo.php', 
+    url: 'pages/getIngInfo.php', 
 	type: 'get',
     data: {
 		filter: "purity",
@@ -121,7 +140,7 @@ $('.replaceIngredient').editable({
 	type: 'get',
 	emptytext: "",
 	emptyclass: "",
-  	url: "/pages/manageFormula.php?action=repIng&fname=<?php echo $f_name; ?>",
+  	url: "pages/manageFormula.php?action=repIng&fname=<?php echo $f_name; ?>",
     source: [
 			 <?php
 				$res_ing = mysqli_query($conn, "SELECT id, name, chemical_name FROM ingredients ORDER BY name ASC");
@@ -164,6 +183,7 @@ $('.replaceIngredient').editable({
                                     <tr>  
                                          <td>
                                          <select name="ingredient" id="ingredient" class="form-control selectpicker" data-live-search="true">
+                                         <option value="" selected disabled>Ingredient</option>
                                          <?php
 										 	$res_ing = mysqli_query($conn, "SELECT id, name, profile, chemical_name FROM ingredients ORDER BY name ASC");
 										 	while ($r_ing = mysqli_fetch_array($res_ing)){
@@ -180,6 +200,19 @@ $('.replaceIngredient').editable({
                                          </select>                                         
                                          </td>
                                          <td><input type="text" name="concentration" id="concentration" placeholder="Purity %" class="form-control" /></td>
+                                      <td>
+                                         <select name="dilutant" id="dilutant" class="form-control selectpicker" data-live-search="true">
+                                         <option value="" selected disabled>Dilutant</option>
+                                         <option value="none">None</option>
+                                         <?php
+										 	$res_dil = mysqli_query($conn, "SELECT id, name FROM ingredients WHERE type = 'Solvent' OR type = 'Carrier' ORDER BY name ASC");
+										 	while ($r_dil = mysqli_fetch_array($res_dil)){
+											
+												echo '<option value="'.$r_dil['name'].'">'.$r_dil['name'].'</option>';
+											}
+										 ?>
+                                         </select>
+                                      </td>
                                          <td><input type="text" name="quantity" id="quantity" placeholder="Quantity" class="form-control" /></td>  
                                          <td><input type="submit" name="add" id="add" class="btn btn-info" value="Add" /> </td>  
                                     </tr>  
@@ -191,7 +224,7 @@ $('.replaceIngredient').editable({
                 <table class="table table-bordered" id="formula" width="100%" cellspacing="0">
                   <thead>
                     <tr class="noexport">
-                      <th colspan="5"><div class="progress">
+                      <th colspan="6"><div class="progress">
   <div class="progress-bar" role="progressbar" style="width: <?php echo $base_calc; ?>%" aria-valuenow="<?php echo $base_calc;?>" aria-valuemin="0" aria-valuemax="<?php echo $settings['base_n'];?>"><span><?php echo $base_calc;?>% Base Notes</span></div>
   <div class="progress-bar bg-success" role="progressbar" style="width: <?php echo $heart_calc; ?>%" aria-valuenow="<?php echo $heart_calc; ?>" aria-valuemin="0" aria-valuemax="<?php echo $settings['heart_n'];?>"><span><?php echo $heart_calc;?>% Heart Notes</span></div>
   <div class="progress-bar bg-info" role="progressbar" style="width: <?php echo $top_calc; ?>%" aria-valuenow="<?php echo $top_calc; ?>" aria-valuemin="0" aria-valuemax="<?php echo $settings['top_n'];?>"><span><?php echo $top_calc;?>% Top Notes</span></div>
@@ -202,19 +235,20 @@ $('.replaceIngredient').editable({
                       <div class="dropdown-menu">
                         <a class="dropdown-item" id="csv" href="#">Export to CSV</a>
                         <a class="dropdown-item" href="javascript:printLabel();" onclick="return confirm('Print label?');">Print Label</a>
-                        <a class="dropdown-item popup-link" href="pages/viewPyramid.php?formula=<?php echo $f_name; ?>">View Pyramid</a>
-                        <a class="dropdown-item" href="pages/manageFormula.php?do=multiply&formula=<?php echo $f_name; ?>">Multiply x2</a>
-                        <a class="dropdown-item" href="pages/manageFormula.php?do=divide&formula=<?php echo $f_name; ?>">Divide x2</a>
+                        <a class="dropdown-item popup-link" href="pages/viewPyramid.php?formula=<?php echo $f_name; ?>">View Pyramid</a>                                                
+                        <a class="dropdown-item" href="javascript:manageQuantity('multiply')">Multiply x2</a>
+                        <a class="dropdown-item" href="javascript:manageQuantity('divide')">Divide x2</a>
                         <a class="dropdown-item" href="javascript:cloneMe();">Clone Formula</a>
                       </div>
                     </div>
                     </tr>
                     <tr>
                       <th width="22%">Ingredient</th>
-                      <th width="11%">Purity %</th>
-                      <th width="15%">Quantity</th>
-                      <th width="15%">Concentration*</th>
-                      <th width="15%">Cost</th>
+                      <th width="10%">Purity %</th>
+                      <th width="10%">Dilutant</th>
+                      <th width="10%">Quantity</th>
+                      <th width="10%">Concentration*</th>
+                      <th width="10%">Cost</th>
                       <th class="noexport" width="15%">Actions</th>
                     </tr>
                   </thead>
@@ -244,7 +278,8 @@ $('.replaceIngredient').editable({
 						//$conc_p = $conc_n/100*100 - $formula['concentration'];
 						echo'<tr>
                       <td align="center" class="'.$ing_q['profile'].'" id="ingredient"><a href="pages/editIngredient.php?id='.$formula['ingredient'].'" class="popup-link">'.$ingName.'</a> '.checkIng($formula['ingredient'],$conn).'</td>
-                      <td data-name="concentration" class="concentration" data-type="text" align="center" data-pk="'.$formula['ingredient'].'">'.$formula['concentration'].'</td>';
+                      <td data-name="concentration" class="concentration" data-type="text" align="center" data-pk="'.$formula['ingredient'].'">'.$formula['concentration'].'</td>
+					  <td></td>';
 					  if($limit != null){
 						 if($limit < $conc_p){
 							$IFRA_WARN = 'class="alert-danger"';//VALUE IS TO HIGH AGAINST IFRA
@@ -276,6 +311,7 @@ $('.replaceIngredient').editable({
                     <tr>
                       <th width="22%">Total: <?php echo countElement("formulas WHERE name = '$f_name'" ,$conn);?></th>
                       <th></th>
+                      <th></th>
                       <th width="15%" align="right"><p>Total: <?php echo number_format($mg['total_mg'], 2); ?>mg</p></th>
                       <th width="15%">Total <?php echo array_sum($conc_tot);?>%</th>
                       <th width="15%" align="right">Cost: <?php echo utf8_encode($settings['currency']).number_format(array_sum($tot),2);?> <a href="#" class="fas fa-question-circle" rel="tipsy" title="Total cost"></a></th>
@@ -301,7 +337,7 @@ $(document).ready(function(){
   $('#formula_data').editable({
   container: 'body',
   selector: 'td.quantity',
-  url: "/pages/update_data.php?formula=<?php echo $f_name; ?>",
+  url: "pages/update_data.php?formula=<?php echo $f_name; ?>",
   title: 'mg',
   type: "POST",
   dataType: 'json',
@@ -321,7 +357,7 @@ $(document).ready(function(){
   $('#formula_data').editable({
   container: 'body',
   selector: 'td.concentration',
-  url: "/pages/update_data.php?formula=<?php echo $f_name; ?>",
+  url: "pages/update_data.php?formula=<?php echo $f_name; ?>",
   title: 'Purity %',
   type: "POST",
   dataType: 'json',

@@ -314,7 +314,7 @@ $.ajax({
     <td>
     <select name="carrier" id="carrier" class="form-control selectpicker" data-live-search="true">
       <?php
-		$sql = mysqli_query($conn, "SELECT name,id FROM ingredients WHERE type = 'Carrier' ORDER BY name ASC");
+		$sql = mysqli_query($conn, "SELECT name,id FROM ingredients WHERE type = 'Carrier' OR type = 'Solvent' ORDER BY name ASC");
 		while ($carrier = mysqli_fetch_array($sql)){
 			echo '<option value="'.$carrier['id'].'">'.$carrier['name'].'</option>';
 		}
