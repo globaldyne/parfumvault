@@ -21,18 +21,18 @@ if($_GET['do'] == 'backupDB'){
 		passthru($cmd,$e);
 				
 		if(!$e){
-			//header("Location: /pages/maintenance.php?do=restoreDB&err=0");
+			//header("Location: maintenance.php?do=restoreDB&err=0");
 			if(isset($_SESSION['parfumvault'])) {
 				unset($_SESSION['parfumvault']);
 			}
 			session_unset();
-			header('Location: /login.php');
+			header('Location: login.php');
 		}else{
-			header("Location: /pages/maintenance.php?do=restoreDB&err=1");
+			header("Location: maintenance.php?do=restoreDB&err=1");
 		}
 	}else{
 
-		header("Location: /pages/maintenance.php?do=restoreDB&err=2");
+		header("Location: maintenance.php?do=restoreDB&err=2");
 	}
 
 }elseif(isset($_POST['import_ifra'])){
@@ -75,7 +75,7 @@ if($_GET['do'] == 'backupDB'){
 					$err = '1';
 				}
 			}
-			header("Location: /pages/maintenance.php?do=IFRA&err=$err");
+			header("Location: maintenance.php?do=IFRA&err=$err");
 	}
 }
 	

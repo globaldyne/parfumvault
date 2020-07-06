@@ -34,7 +34,7 @@ $max_filesize = "4194304"; //in bytes
 						$msg = '<div class="alert alert-danger alert-dismissible">Error: failed to create config file! Make sure your web server has write permissions to the install directory.</div>';
 					}else{
 						$msg = '<div class="alert alert-success alert-dismissible">System configured!</div>';
-						header('location: /');
+						header('location: login.php');
 					}
 
 				}else{

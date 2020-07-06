@@ -9,7 +9,7 @@ if(file_exists('./inc/config.php') == FALSE){
 
 session_start();
 if(isset($_SESSION['parfumvault'])){
-	header('Location: /');
+	header('Location: index.php');
 }
 
 require_once('inc/config.php');
@@ -24,7 +24,7 @@ if($_GET['register'] && $_POST['regUser'] && $_POST['regPass'] && $_POST['regFul
 		$msg ='<div class="alert alert-danger alert-dismissible"><strong>Error: </strong>Password must be at least 5 characters long!</div>';
 	}else{
 		if(mysqli_query($conn,"INSERT INTO users (username,password,fullName,email) VALUES ('$ruser', PASSWORD('$rpass'),'$rfname','$remail')")){
-			header('Location: /login.php');
+			header('Location: login.php');
 		}else{
 			$msg = '<div class="alert alert-danger alert-dismissible">Failed to register the user</div>';
 		}
@@ -40,7 +40,7 @@ if($_POST['username'] && $_POST['password']){
 	if($row['id']){	// If everything is OK login
 			$_SESSION['parfumvault'] = true;
 			$_SESSION['userID'] = $row['id'];
-			header('Location: /');
+			header('Location: index.php');
 	}else{
 		$msg = '<div class="alert alert-danger alert-dismissible">Username or password error</div>';
 	}

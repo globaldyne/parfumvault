@@ -6,7 +6,7 @@
           <div>
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h2 class="m-0 font-weight-bold text-primary"><a href="/?do=listFormulas">Formulas</a></h2>
+              <h2 class="m-0 font-weight-bold text-primary"><a href="?do=listFormulas">Formulas</a></h2>
             </div>
             
             <table width="100%" border="0">
@@ -19,8 +19,8 @@
                   <div class="btn-group">
                     <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
                     <div class="dropdown-menu dropdown-menu-right">
-                      <a class="dropdown-item" href="/?do=addFormula">Add new formula</a>
-                      <a class="dropdown-item popup-link" id="csv" href="/pages/csvImport.php">Import from a CSV</a>
+                      <a class="dropdown-item" href="?do=addFormula">Add new formula</a>
+                      <a class="dropdown-item popup-link" id="csv" href="pages/csvImport.php">Import from a CSV</a>
                     </div>
                     </div>
                 </div></td>
@@ -79,7 +79,7 @@ $(function() {
 //Clone
 function cloneMe(cloneFormulaName) {	  
 $.ajax({ 
-    url: '/pages/manageFormula.php', 
+    url: 'pages/manageFormula.php', 
 	type: 'get',
     data: {
 		action: "clone",

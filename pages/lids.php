@@ -8,7 +8,7 @@ if($_GET['action'] == 'delete' && $_GET['id']){
 	
 	if(mysqli_query($conn, "DELETE FROM lids WHERE id = '$id'")){
 		$msg = '<div class="alert alert-success alert-dismissible">
-		<a href="/?do=lids" class="close" data-dismiss="alert" aria-label="close">x</a>
+		<a href="?do=lids" class="close" data-dismiss="alert" aria-label="close">x</a>
   		Bottle <strong>'.$lid['name'].'</strong> removed!
 		</div>';
 	}
@@ -25,7 +25,7 @@ $sup = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
           <div>
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h2 class="m-0 font-weight-bold text-primary"><a href="/?do=lids">Bottle Lids</a></h2>
+              <h2 class="m-0 font-weight-bold text-primary"><a href="?do=lids">Bottle Lids</a></h2>
             </div>
             <div class="card-body">
               <div class="table-responsive">
@@ -37,7 +37,7 @@ $sup = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
                         <div class="btn-group">
                           <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
                           <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="/?do=addLid">Add new</a>
+                            <a class="dropdown-item" href="?do=addLid">Add new</a>
                           </div>
                         </div>                    
                         </div>
@@ -65,7 +65,7 @@ $sup = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
 					  if(empty($lid['photo'])){ echo 'N/A'; }else{
                       echo '<a href="'.$lid['photo'].'" class="popup-link fas fa-image"></a>';}
 					  echo '</td><td align="center"><a href="'.$lid['supplier_link'].'" target="_blank" class="fas fa-external-link-alt"></a></td>
-					  <td class="noexport" align="center"><a href="/?do=lids&action=delete&id='.$lid['id'].'" onclick="return confirm(\'Delete '.$lid['style'].'?\');" class="fas fa-trash"></a></td>
+					  <td class="noexport" align="center"><a href="?do=lids&action=delete&id='.$lid['id'].'" onclick="return confirm(\'Delete '.$lid['style'].'?\');" class="fas fa-trash"></a></td>
 					  </tr>';
 				  }
                     ?>
@@ -84,7 +84,7 @@ $sup = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
   $('#lid_data').editable({
   container: 'body',
   selector: 'td.style',
-  url: "/pages/update_data.php?lid=1",
+  url: "pages/update_data.php?lid=1",
   title: 'Style',
   type: "POST",
   dataType: 'json',
@@ -101,7 +101,7 @@ $sup = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
   $('#lid_data').editable({
   container: 'body',
   selector: 'td.colour',
-  url: "/pages/update_data.php?lid=1",
+  url: "pages/update_data.php?lid=1",
   title: 'Colour',
   type: "POST",
   dataType: 'json',
@@ -118,7 +118,7 @@ $sup = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
   $('#lid_data').editable({
   container: 'body',
   selector: 'td.price',
-  url: "/pages/update_data.php?lid=1",
+  url: "pages/update_data.php?lid=1",
   title: 'Price',
   type: "POST",
   dataType: 'json',
@@ -140,7 +140,7 @@ $sup = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
 	container: 'body',
   	selector: 'td.supplier',
   	title: 'Supplier',
-  	url: "/pages/update_data.php?lid=1",
+  	url: "pages/update_data.php?lid=1",
     source: [<?php while($supplier = mysqli_fetch_array($sup)){?>
              {value: '<?php echo $supplier ['name'];?>', text: '<?php echo $supplier ['name'];?>'},
             <?php } ?>

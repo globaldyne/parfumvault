@@ -8,7 +8,7 @@ if($_GET['action'] == 'delete' && $_GET['id']){
 	
 	if(mysqli_query($conn, "DELETE FROM bottles WHERE id = '$id'")){
 		$msg = '<div class="alert alert-success alert-dismissible">
-		<a href="/?do=bottles" class="close" data-dismiss="alert" aria-label="close">x</a>
+		<a href="?do=bottles" class="close" data-dismiss="alert" aria-label="close">x</a>
   		Bottle <strong>'.$bottle['name'].'</strong> removed!
 		</div>';
 	}
@@ -25,7 +25,7 @@ $sup = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
           <div>
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h2 class="m-0 font-weight-bold text-primary"><a href="/?do=bottles">Bottles</a></h2>
+              <h2 class="m-0 font-weight-bold text-primary"><a href="?do=bottles">Bottles</a></h2>
             </div>
             <div class="card-body">
               <div class="table-responsive">
@@ -37,7 +37,7 @@ $sup = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
                         <div class="btn-group">
                           <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
                           <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="/?do=addBottle">Add new</a>
+                            <a class="dropdown-item" href="?do=addBottle">Add new</a>
                             <a class="dropdown-item" id="csv" href="#">Export to CSV</a>
                           </div>
                         </div>                    
@@ -74,7 +74,7 @@ $sup = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
                       echo '<a href="'.$bottle['photo'].'" class="popup-link fas fa-image"></a>';}
 					  echo '<td align="center"><a href="'.$bottle['supplier_link'].'" target="_blank" class="fas fa-external-link-alt"></a></td>';
 					  echo '<td data-name="notes" class="notes" data-type="textarea" align="center" data-pk="'.$bottle['id'].'">'.$bottle['notes'].'
-					  <td class="noexport" align="center"><a href="/?do=bottles&action=delete&id='.$bottle['id'].'" onclick="return confirm(\'Delete '.$bottle['name'].'?\');" class="fas fa-trash"></a></td>
+					  <td class="noexport" align="center"><a href="?do=bottles&action=delete&id='.$bottle['id'].'" onclick="return confirm(\'Delete '.$bottle['name'].'?\');" class="fas fa-trash"></a></td>
 					  </tr>';
 				  }
                     ?>
@@ -93,7 +93,7 @@ $sup = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
   $('#bottle_data').editable({
   container: 'body',
   selector: 'td.name',
-  url: "/pages/update_data.php?bottle=1",
+  url: "pages/update_data.php?bottle=1",
   title: 'Name',
   type: "POST",
   dataType: 'json',
@@ -110,7 +110,7 @@ $sup = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
   $('#bottle_data').editable({
   container: 'body',
   selector: 'td.ml',
-  url: "/pages/update_data.php?bottle=1",
+  url: "pages/update_data.php?bottle=1",
   title: 'ml',
   type: "POST",
   dataType: 'json',
@@ -130,7 +130,7 @@ $sup = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
   $('#bottle_data').editable({
   container: 'body',
   selector: 'td.height',
-  url: "/pages/update_data.php?bottle=1",
+  url: "pages/update_data.php?bottle=1",
   title: 'Height (mm)',
   type: "POST",
   dataType: 'json',
@@ -150,7 +150,7 @@ $sup = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
    $('#bottle_data').editable({
   container: 'body',
   selector: 'td.width',
-  url: "/pages/update_data.php?bottle=1",
+  url: "pages/update_data.php?bottle=1",
   title: 'Width (mm)',
   type: "POST",
   dataType: 'json',
@@ -170,7 +170,7 @@ $sup = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
    $('#bottle_data').editable({
   container: 'body',
   selector: 'td.diameter',
-  url: "/pages/update_data.php?bottle=1",
+  url: "pages/update_data.php?bottle=1",
   title: 'Diameter (mm)',
   type: "POST",
   dataType: 'json',
@@ -190,7 +190,7 @@ $sup = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
   $('#bottle_data').editable({
   container: 'body',
   selector: 'td.price',
-  url: "/pages/update_data.php?bottle=1",
+  url: "pages/update_data.php?bottle=1",
   title: 'Price',
   type: "POST",
   dataType: 'json',
@@ -207,7 +207,7 @@ $sup = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
   $('#bottle_data').editable({
   container: 'body',
   selector: 'td.notes',
-  url: "/pages/update_data.php?bottle=1",
+  url: "pages/update_data.php?bottle=1",
   title: 'Notes',
   type: "POST",
   dataType: 'json',
@@ -220,7 +220,7 @@ $sup = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
 	container: 'body',
   	selector: 'td.supplier',
   	title: 'Supplier',
-  	url: "/pages/update_data.php?bottle=1",
+  	url: "pages/update_data.php?bottle=1",
     source: [<?php while($supplier = mysqli_fetch_array($sup)){?>
              {value: '<?php echo $supplier ['name'];?>', text: '<?php echo $supplier ['name'];?>'},
             <?php } ?>

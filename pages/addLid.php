@@ -43,11 +43,11 @@ if($_POST['style']){
 		
 		if(mysqli_query($conn, "INSERT INTO lids (style, colour, price, supplier, supplier_link, photo) VALUES ('$style', '$colour', '$price', '$supplier', '$supplier_link', '$photo')") ){
 			$msg.='<div class="alert alert-success alert-dismissible">
-			<a href="/?do=lids" class="close" data-dismiss="alert" aria-label="close">x</a>
+			<a href="?do=lids" class="close" data-dismiss="alert" aria-label="close">x</a>
   			<strong>'.$style.'</strong> added!</div>';
 		}else{
 			$msg.='<div class="alert alert-danger alert-dismissible">
-			<a href="/?do=lids" class="close" data-dismiss="alert" aria-label="close">x</a>
+			<a href="?do=lids" class="close" data-dismiss="alert" aria-label="close">x</a>
   			<strong>Error:</strong> Failed to add '.$style.' - '.mysqli_error($conn).'</div>';
 		}
 	}
@@ -56,12 +56,12 @@ if($_POST['style']){
 $res_ingSupplier = mysqli_query($conn, "SELECT id,name FROM ingSuppliers");
 
 ?>
-       <h1 class="h1 mb-4 text-gray-800"><a href="/?do=lids"> New Bottle Lid</a></h1>
+       <h1 class="h1 mb-4 text-gray-800"><a href="?do=lids"> New Bottle Lid</a></h1>
        </div>
 <table width="100%" border="0">
         <tr>
           <td><div class="form-group">  
-<form action="/?do=addLid" method="post" enctype="multipart/form-data" target="_self">  
+<form action="?do=addLid" method="post" enctype="multipart/form-data" target="_self">  
                           <div class="table-responsive">
                             <table width="100%" border="0">
                               <tr>

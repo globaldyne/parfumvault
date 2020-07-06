@@ -16,11 +16,11 @@ $(function() {
 
 }	
 </style>
-<script src="../js/amcharts_3.21.15.free/amcharts/amcharts.js"></script>
-<script src="../js/amcharts_3.21.15.free/amcharts/serial.js"></script>
-<script src="../js/amcharts_3.21.15.free/amcharts/pie.js"></script>
+<script src="js/amcharts_3.21.15.free/amcharts/amcharts.js"></script>
+<script src="js/amcharts_3.21.15.free/amcharts/serial.js"></script>
+<script src="js/amcharts_3.21.15.free/amcharts/pie.js"></script>
 
-<script src="../js/amcharts_3.21.15.free/amcharts/themes/light.js"></script>
+<script src="js/amcharts_3.21.15.free/amcharts/themes/light.js"></script>
 
 <script>
 var chart = AmCharts.makeChart( "chartIngUsage", {
@@ -111,7 +111,7 @@ while($types =  mysqli_fetch_array($ifratypes)){
      <div id="IFRA">
     <?php 
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM IFRALibrary"))== 0){
-		echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> You need to <a href="/pages/maintenance.php?do=IFRA" class="popup-link">import</a> the IFRA xls first.</div>';
+		echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> You need to <a href="pages/maintenance.php?do=IFRA" class="popup-link">import</a> the IFRA xls first.</div>';
 	}else{
 	?>
      <div id="chartIFRA"></div></div>

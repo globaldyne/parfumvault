@@ -85,12 +85,12 @@ $res_ingSupplier = mysqli_query($conn, "SELECT id,name FROM ingSuppliers");
 $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles");
 
 ?>
-       <h1 class="h1 mb-4 text-gray-800"><a href="/?do=ingredients"> New Ingredient</a></h1>
+       <h1 class="h1 mb-4 text-gray-800"><a href="?do=ingredients"> New Ingredient</a></h1>
        </div>
 <table width="100%" border="0">
         <tr>
           <td><div class="form-group">  
-<form action="/?do=addIngredient" method="post" enctype="multipart/form-data" name="add_ing" target="_self" id="add_ing">  
+<form action="?do=addIngredient" method="post" enctype="multipart/form-data" name="add_ing" target="_self" id="add_ing">  
                           <div class="table-responsive">
                             <table width="100%" border="0">
                               <tr>

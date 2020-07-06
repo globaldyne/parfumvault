@@ -47,11 +47,11 @@ if($_POST['name']){
 		
 		if(mysqli_query($conn, "INSERT INTO bottles (name, ml, price, height, width, diameter, supplier, supplier_link, notes, photo) VALUES ('$name', '$ml', '$price', '$height', '$width', '$diameter', '$supplier', '$supplier_link', '$notes', '$photo')") ){
 			$msg.='<div class="alert alert-success alert-dismissible">
-			<a href="/?do=bottles" class="close" data-dismiss="alert" aria-label="close">x</a>
+			<a href="?do=bottles" class="close" data-dismiss="alert" aria-label="close">x</a>
   			<strong>'.$name.'</strong> added!</div>';
 		}else{
 			$msg.='<div class="alert alert-danger alert-dismissible">
-			<a href="/?do=bottles" class="close" data-dismiss="alert" aria-label="close">x</a>
+			<a href="?do=bottles" class="close" data-dismiss="alert" aria-label="close">x</a>
   			<strong>Error:</strong> Failed to add '.$name.' - '.mysqli_error($conn).'</div>';
 		}
 	}
@@ -60,12 +60,12 @@ if($_POST['name']){
 $res_ingSupplier = mysqli_query($conn, "SELECT id,name FROM ingSuppliers");
 
 ?>
-       <h1 class="h1 mb-4 text-gray-800"><a href="/?do=bottles"> New Bottle</a></h1>
+       <h1 class="h1 mb-4 text-gray-800"><a href="?do=bottles"> New Bottle</a></h1>
        </div>
 <table width="100%" border="0">
         <tr>
           <td><div class="form-group">  
-<form action="/?do=addBottle" method="post" enctype="multipart/form-data" target="_self">  
+<form action="?do=addBottle" method="post" enctype="multipart/form-data" target="_self">  
                           <div class="table-responsive">
                             <table width="100%" border="0">
                               <tr>

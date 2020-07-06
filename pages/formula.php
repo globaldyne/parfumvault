@@ -16,7 +16,7 @@ $base_calc = calcPerc($f_name, 'Base', $settings['base_n'], $conn);
 <script>
 function printLabel() {
 	<?php if(empty($settings['label_printer_addr']) || empty($settings['label_printer_model'])){?>
-	$("#msg").html('<div class="alert alert-danger alert-dismissible">Please configure printer details in <a href="/?do=settings">settings<a> page</div>');
+	$("#msg").html('<div class="alert alert-danger alert-dismissible">Please configure printer details in <a href="?do=settings">settings<a> page</div>');
 	<?php }else{ ?>
 	$("#msg").html('<div class="alert alert-info alert-dismissible">Printing...</div>');
 

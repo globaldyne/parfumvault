@@ -114,7 +114,7 @@ $(document).ready(function() {
   <div id="wrapper">
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark">
 
-      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.php">
         <div class="sidebar-brand-icon">            
         <p></p>
         <p></p>
@@ -226,12 +226,12 @@ $(document).ready(function() {
 				unset($_SESSION['parfumvault']);
 			}
 			session_unset();
-			header('Location: /login.php');
+			header('Location: login.php');
 	 
 		}else{
 			require 'pages/dashboard.php';
 		}
 	?>
-	<?php require_once("./pages/footer.php"); ?>
+	<?php require_once("pages/footer.php"); ?>
 </body>
 </html>

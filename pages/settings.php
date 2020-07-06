@@ -199,7 +199,7 @@ $(function() {
         <li><a href="pages/about.php"><span>About</span></a></li>
      </ul>
      <div id="general">
-     <form id="form" name="form" method="post" enctype="multipart/form-data" action="/?do=settings&update=general#general">
+     <form id="form" name="form" method="post" enctype="multipart/form-data" action="?do=settings&update=general#general">
      <table width="100%" border="0">
         <tr>
           <td colspan="4"><?php echo $msg; ?></td>
@@ -252,7 +252,7 @@ $(function() {
      </form>
 	 </div>
      <div id="suppliers">
-       <form id="form" name="form" method="post" action="/?do=settings&update=suppliers#suppliers">
+       <form id="form" name="form" method="post" action="?do=settings&update=suppliers#suppliers">
       <table width="100%" border="0" class="table table-striped table-sm">
               <tr>
                 <td colspan="7"><?php echo $msg; ?></td>
@@ -286,7 +286,7 @@ $(function() {
                     <tr>
                       <td data-name="name" class="name" data-type="text" align="center" data-pk="'.$sup['id'].'">'.$sup['name'].'</td>
 					  <td data-name="notes" class="notes" data-type="text" align="center" data-pk="'.$sup['id'].'">'.$sup['notes'].'</td>
-                      <td align="center"><a href="/?do=settings&action=delete&sup_id='.$sup['id'].'#suppliers" onclick="return confirm(\'Delete supplier '.$sup['name'].'?\');" class="fas fa-trash"></a></td>
+                      <td align="center"><a href="?do=settings&action=delete&sup_id='.$sup['id'].'#suppliers" onclick="return confirm(\'Delete supplier '.$sup['name'].'?\');" class="fas fa-trash"></a></td>
 					</tr>';
 				  		}
                     ?>
@@ -301,7 +301,7 @@ $(function() {
           </form>
      </div>
      <div id="categories">
-       <form id="form" name="form" method="post" action="/?do=settings&update=categories#categories">
+       <form id="form" name="form" method="post" action="?do=settings&update=categories#categories">
             <table width="100%" border="0" class="table table-striped table-sm">
               <tr>
                 <td colspan="8"><?php echo $msg; ?></td>
@@ -336,7 +336,7 @@ $(function() {
                     <tr>
                       <td data-name="name" class="name" data-type="text" align="center" data-pk="'.$cat['id'].'">'.$cat['name'].'</td>
 					  <td width="60%" data-name="notes" class="notes" data-type="text" align="left" data-pk="'.$cat['id'].'"align="left">'.wordwrap($cat['notes'], 150, "<br />\n").'</td>
-                      <td align="center"><a href="/?do=settings&action=delete&cat_id='.$cat['id'].'#categories" onclick="return confirm(\'Delete category '.$cat['name'].'?\');" class="fas fa-trash"></a></td>
+                      <td align="center"><a href="?do=settings&action=delete&cat_id='.$cat['id'].'#categories" onclick="return confirm(\'Delete category '.$cat['name'].'?\');" class="fas fa-trash"></a></td>
 					</tr>';
 				  		}
                     ?>
@@ -352,7 +352,7 @@ $(function() {
      </div> 
      
           <div id="types">
-     <form id="form" name="form" method="post" enctype="multipart/form-data" action="/?do=settings&update=types#types">
+     <form id="form" name="form" method="post" enctype="multipart/form-data" action="?do=settings&update=types#types">
      <table width="100%" border="0">
         <tr>
           <td colspan="4"><?php echo $msg; ?></td>
@@ -406,7 +406,7 @@ $(function() {
 	 </div>
       
     <div id="print">
-        <form id="form1" name="form1" method="post" action="/?do=settings&update=printer#print">
+        <form id="form1" name="form1" method="post" action="?do=settings&update=printer#print">
         <table width="100%" border="0">
           <tr>
             <td colspan="4"><?php echo $msg; ?></td>
@@ -494,7 +494,7 @@ $(function() {
 </div>
 
      <div id="users">
-       <form action="/?do=settings&update=users#users" method="post" enctype="multipart/form-data" name="form" id="form">
+       <form action="?do=settings&update=users#users" method="post" enctype="multipart/form-data" name="form" id="form">
        <table width="100%" border="0">
   <tr>
     <td width="16%"><input name="username" placeholder="Username" type="text" class="form-control" id="username" /></td>
@@ -534,7 +534,7 @@ $(function() {
 					  <td align="center">'.$users['fullName'].'</td>
 					  <td align="center">'.$users['email'].'</td>
 
-                      <td align="center"><a href="pages/editUser.php?id='.$users['id'].'" class="fas fa-edit popup-link"></a> <a href="/?do=settings&action=delete&user_id='.$users['id'].'#users" onclick="return confirm(\'Delete user '.$users['fullName'].'?\');" class="fas fa-trash"></a></td>
+                      <td align="center"><a href="pages/editUser.php?id='.$users['id'].'" class="fas fa-edit popup-link"></a> <a href="?do=settings&action=delete&user_id='.$users['id'].'#users" onclick="return confirm(\'Delete user '.$users['fullName'].'?\');" class="fas fa-trash"></a></td>
 					</tr>';
 				  		}
                     ?>
@@ -553,7 +553,7 @@ $(function() {
     </tr>
     <tr>
       <td><ul>
-        <li><a href="/pages/maintenance.php?do=IFRA" class="popup-link">Import IFRA Library</a></li>
+        <li><a href="pages/maintenance.php?do=IFRA" class="popup-link">Import IFRA Library</a></li>
       </ul></td>
       <td><ul>
         <li><a href="https://ifrafragrance.org/safe-use/standards-guidance" target="_blank">IFRA web site</a></li>
@@ -561,13 +561,13 @@ $(function() {
     </tr>
     <tr>
       <td><ul>
-        <li><a href="/pages/maintenance.php?do=backupDB">Backup DB</a></li>
+        <li><a href="pages/maintenance.php?do=backupDB">Backup DB</a></li>
       </ul></td>
       <td>&nbsp;</td>
     </tr>
     <tr>
       <td><ul>
-        <li><a href="/pages/maintenance.php?do=restoreDB" class="popup-link">Restore DB</a></li>
+        <li><a href="pages/maintenance.php?do=restoreDB" class="popup-link">Restore DB</a></li>
       </ul></td>
       <td>&nbsp;</td>
     </tr>
@@ -583,7 +583,7 @@ $(document).ready(function(){
   $('#cat_data').editable({
   container: 'body',
   selector: 'td.name',
-  url: "/pages/update_data.php?settings=cat",
+  url: "pages/update_data.php?settings=cat",
   title: 'Category',
   type: "POST",
   dataType: 'json',
@@ -597,7 +597,7 @@ $(document).ready(function(){
    $('#cat_data').editable({
   container: 'body',
   selector: 'td.notes',
-  url: "/pages/update_data.php?settings=cat",
+  url: "pages/update_data.php?settings=cat",
   title: 'Description',
   type: "POST",
   dataType: 'json',
@@ -609,7 +609,7 @@ $(document).ready(function(){
    $('#sup_data').editable({
   container: 'body',
   selector: 'td.name',
-  url: "/pages/update_data.php?settings=sup",
+  url: "pages/update_data.php?settings=sup",
   title: 'Supplier',
   type: "POST",
   dataType: 'json',
@@ -623,7 +623,7 @@ $(document).ready(function(){
    $('#sup_data').editable({
   container: 'body',
   selector: 'td.notes',
-  url: "/pages/update_data.php?settings=sup",
+  url: "pages/update_data.php?settings=sup",
   title: 'Description',
   type: "POST",
   dataType: 'json',

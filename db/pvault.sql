@@ -6,6 +6,14 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 /*!40101 SET NAMES utf8mb4 */;
 
 
+DROP TABLE IF EXISTS `batchIDHistory`;
+CREATE TABLE `batchIDHistory` (
+  `id` varchar(16) COLLATE utf8_bin NOT NULL,
+  `fid` varchar(255) COLLATE utf8_bin NOT NULL,
+  `pdf` varchar(255) COLLATE utf8_bin NOT NULL,
+  `created` timestamp NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
 DROP TABLE IF EXISTS `bottles`;
 CREATE TABLE `bottles` (
   `id` int(11) NOT NULL,
@@ -29,7 +37,8 @@ CREATE TABLE `formulas` (
   `ingredient` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `ingredient_id` varchar(11) COLLATE utf8_bin DEFAULT NULL,
   `concentration` decimal(5,2) DEFAULT 100.00,
-  `quantity` varchar(10) COLLATE utf8_bin DEFAULT NULL
+  `dilutant` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `quantity` decimal(8,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 DROP TABLE IF EXISTS `formulasMetaData`;
@@ -41,7 +50,6 @@ CREATE TABLE `formulasMetaData` (
   `sex` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `notes` text COLLATE utf8_bin DEFAULT NULL,
   `created` timestamp NOT NULL DEFAULT current_timestamp(),
-  `lastUpdate` timestamp NULL DEFAULT NULL,
   `image` varchar(255) COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
@@ -129,7 +137,8 @@ CREATE TABLE `ingredients` (
   `notes` text COLLATE utf8_bin DEFAULT NULL,
   `profile` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `ml` int(5) DEFAULT NULL,
-  `odor` varchar(255) COLLATE utf8_bin DEFAULT NULL
+  `odor` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `allergen` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 DROP TABLE IF EXISTS `ingStrength`;
@@ -161,7 +170,8 @@ INSERT INTO `ingTypes` (`id`, `name`) VALUES
 (2, 'EO'),
 (3, 'Other/Uknown'),
 (4, 'Custom Blend'),
-(5, 'Carrier');
+(5, 'Carrier'),
+(6, 'Solvent');
 
 DROP TABLE IF EXISTS `lids`;
 CREATE TABLE `lids` (
@@ -188,11 +198,12 @@ CREATE TABLE `settings` (
   `EDP` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `EDT` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `EDC` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `Parfum` varchar(255) COLLATE utf8_bin DEFAULT NULL
+  `Parfum` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `chem_vs_brand` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-INSERT INTO `settings` (`id`, `label_printer_addr`, `label_printer_model`, `label_printer_size`, `label_printer_font_size`, `currency`, `top_n`, `heart_n`, `base_n`, `EDP`, `EDT`, `EDC`, `Parfum`) VALUES
-(1, '1.2.3.4', 'QL-810W', '12', 70, '&pound;', '25', '50', '25', '20', '15', '4', '30');
+INSERT INTO `settings` (`id`, `label_printer_addr`, `label_printer_model`, `label_printer_size`, `label_printer_font_size`, `currency`, `top_n`, `heart_n`, `base_n`, `EDP`, `EDT`, `EDC`, `Parfum`, `chem_vs_brand`) VALUES
+(1, '192.168.1.106', 'QL-810W', '62 --red', 70, '&pound;', '25', '50', '25', '20', '15', '4', '30', 0);
 
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
@@ -204,6 +215,9 @@ CREATE TABLE `users` (
   `avatar` varchar(255) COLLATE utf8_bin DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin ROW_FORMAT=COMPACT;
 
+
+ALTER TABLE `batchIDHistory`
+  ADD PRIMARY KEY (`id`);
 
 ALTER TABLE `bottles`
   ADD PRIMARY KEY (`id`);
@@ -290,3 +304,4 @@ ALTER TABLE `users`
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+

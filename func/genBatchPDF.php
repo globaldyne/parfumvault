@@ -5,7 +5,7 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $ver, $conn){
 		function Header() {
 			global $fid;
 			global $batchID;
-			$this->Image('./img/logo.png',10,-1,30);
+			$this->Image('../img/logo.png',10,-1,30);
 			//TITLE
 			$this->SetFont('Arial','B',13);
 			$this->Cell(60);

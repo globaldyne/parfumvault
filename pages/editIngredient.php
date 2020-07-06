@@ -85,7 +85,7 @@ $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles");
 $sql = mysqli_query($conn, "SELECT * FROM ingredients WHERE name = '$ingID'");
 if(empty(mysqli_num_rows($sql))){
 	$msg='<div class="alert alert-danger alert-dismissible">
-  			<strong>Error:</strong> ingredient not found, please click <a href="/?do=addIngredient">here</a> to add it first!
+  			<strong>Error:</strong> ingredient not found, please click <a href="?do=addIngredient">here</a> to add it first!
 			</div>';
 	die($msg);
 }else{
@@ -117,7 +117,7 @@ if(empty(mysqli_num_rows($sql))){
 function search() {	  
 $("#odor").val('Loading...');
 $.ajax({ 
-    url: '/pages/searchTGSC.php', 
+    url: 'searchTGSC.php', 
 	type: 'get',
     data: {
 		name: "<?php if($ing['cas']){ echo $ing['cas']; }else{ echo $ing['name'];}?>"
@@ -133,12 +133,12 @@ $.ajax({
 
 function printLabel() {
 	<?php if(empty($settings['label_printer_addr']) || empty($settings['label_printer_model'])){?>
-	$("#msg").html('<div class="alert alert-danger alert-dismissible">Please configure printer details in <a href="/?do=settings">settings<a> page</div>');
+	$("#msg").html('<div class="alert alert-danger alert-dismissible">Please configure printer details in <a href="?do=settings">settings<a> page</div>');
 	<?php }else{ ?>
 	$("#msg").html('<div class="alert alert-info alert-dismissible">Printing...</div>');
 
 $.ajax({ 
-    url: '/pages/manageFormula.php', 
+    url: 'manageFormula.php', 
 	type: 'get',
     data: {
 		action: "printLabel",
@@ -169,7 +169,7 @@ $.ajax({
 <table width="100%" border="0">
         <tr>
           <td><div class="form-group">  
-			<form action="/pages/editIngredient.php?id=<?php echo $ingID; ?>" method="post" enctype="multipart/form-data" name="edit_ing" target="_self" id="edit_ing">  
+			<form action="editIngredient.php?id=<?php echo $ingID; ?>" method="post" enctype="multipart/form-data" name="edit_ing" target="_self" id="edit_ing">  
                           <div class="table-responsive">
                             <table width="100%" border="0">
                               <tr>

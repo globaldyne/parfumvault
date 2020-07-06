@@ -38,7 +38,7 @@ if($_FILES["file"]["tmp_name"]){
 	 
 		//if($_FILES["file"]["size"] > 0){
 			move_uploaded_file($targetfilename,"../uploads/formulas/".base64_encode($targetfilename));
-			$image = "/uploads/formulas/".base64_encode($targetfilename);
+			$image = "uploads/formulas/".base64_encode($targetfilename);
 			if(mysqli_query($conn, "UPDATE formulasMetaData SET image = '$image' WHERE id = '$id'")){
 				$msg = '<div class="alert alert-success alert-dismissible">Image uploaded!</div>';
 			}else{
@@ -117,7 +117,7 @@ $(document).ready(function(){
   $('#formula_metadata').editable({
   container: 'body',
   selector: 'td.name',
-  url: "/pages/update_data.php?rename=<?php echo $info['name']; ?>",
+  url: "update_data.php?rename=<?php echo $info['name']; ?>",
   title: 'Name',
   type: "POST",
   mode: 'inline',
@@ -131,7 +131,7 @@ $(document).ready(function(){
   $('#formula_metadata').editable({
   container: 'body',
   selector: 'td.notes',
-  url: "/pages/update_data.php?formulaMeta=<?php echo $info['name']; ?>",
+  url: "update_data.php?formulaMeta=<?php echo $info['name']; ?>",
   title: 'Notes',
   type: "POST",
   mode: 'inline',
@@ -145,7 +145,7 @@ $(document).ready(function(){
   $('#profile').editable({
 	value: "<?php echo $info['profile'];?>",
   	title: 'Profile',
-  	url: "/pages/update_data.php?formulaMeta=<?php echo $info['name']; ?>",
+  	url: "update_data.php?formulaMeta=<?php echo $info['name']; ?>",
     source: [
              {value: 'oriental', text: 'Oriental'},
              {value: 'woody', text: 'Woody'},
@@ -157,7 +157,7 @@ $(document).ready(function(){
   
     $('#sex').editable({
 	value: "<?php echo $info['sex'];?>",
-  	url: "/pages/update_data.php?formulaMeta=<?php echo $info['name']; ?>",
+  	url: "update_data.php?formulaMeta=<?php echo $info['name']; ?>",
     source: [
              {value: 'unisex', text: 'Unisex'},
              {value: 'men', text: 'Men'},
