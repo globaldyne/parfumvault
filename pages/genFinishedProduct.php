@@ -48,10 +48,11 @@ function printLabel() {
 	$("#msg").html('<div class="alert alert-info alert-dismissible">Printing...</div>');
 
 $.ajax({ 
-    url: '/pages/manageFormula.php', 
+    url: 'pages/manageFormula.php', 
 	type: 'get',
     data: {
 		action: "printLabel",
+		batchID: "<?php echo $batchID; ?>",
 		name: "<?php echo $f_name; ?>"
 		},
 	dataType: 'html',
@@ -69,7 +70,7 @@ function printBoxLabel() {
 	$("#msg").html('<div class="alert alert-info alert-dismissible">Printing...</div>');
 
 $.ajax({ 
-    url: '/pages/manageFormula.php', 
+    url: 'pages/manageFormula.php', 
 	type: 'get',
     data: {
 		action: "printBoxLabel",
@@ -186,7 +187,7 @@ $.ajax({
                     <tr>
                       <td></td>
                       <td></td>
-                      <td align="center" class="m-1 text-primary">Carrier: </td>
+                      <td align="center" class="m-1 text-primary">Carrier/Solvent: </td>
                       <td align="center" class="m-1 text-primary"><?php echo $carrier; ?>ml</td>
                       <td align="center" class="m-1 text-primary"><?php echo $carrier*100/$bottle;?>%</td>
                       <td colspan="2" align="center" class="m-1 text-primary"><?php $carrier_sub_cost = $carrier_cost['price'] / $carrier_cost['ml'] * $carrier; echo utf8_encode($settings['currency']).number_format($carrier_sub_cost, 2);?></td>
@@ -281,6 +282,7 @@ $.ajax({
 			echo '<option value="'.$settings['EDP'].'">EDP ('.$settings['EDP'].'%)</option>';
 			echo '<option value="'.$settings['EDT'].'">EDT ('.$settings['EDT'].'%)</option>';
 			echo '<option value="'.$settings['EDC'].'">EDC ('.$settings['EDC'].'%)</option>';
+			echo '<option value="100">Concentrated (100%)</option>';
 
 	  ?>
      </select>
