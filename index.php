@@ -221,13 +221,6 @@ $(document).ready(function() {
 		}elseif($_GET['do'] == 'batches'){
 			require 'pages/batches.php';				
 			
-		}elseif($_GET['do'] == 'logout'){
-			if(isset($_SESSION['parfumvault'])) {
-				unset($_SESSION['parfumvault']);
-			}
-			session_unset();
-			header('Location: login.php');
-	 
 		}else{
 			require 'pages/dashboard.php';
 		}
