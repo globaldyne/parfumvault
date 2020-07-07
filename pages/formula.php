@@ -3,7 +3,12 @@ if (!defined('pvault_panel')){ die('Not Found');}
 $f_name =  mysqli_real_escape_string($conn, $_GET['name']);
 $fid = base64_encode($f_name);
 
+if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$fid'")) == FALSE){
+	echo 'Formula doesn\'t exist';
+	exit;
+}
 $formula_q = mysqli_query($conn, "SELECT * FROM formulas WHERE name = '$f_name' ORDER BY ingredient ASC");
+                    
 
 $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE name = '$f_name'"));
 $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE name = '$f_name'"));
