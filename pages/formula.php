@@ -16,7 +16,7 @@ $base_calc = calcPerc($f_name, 'Base', $settings['base_n'], $conn);
 <script>
 function printLabel() {
 	<?php if(empty($settings['label_printer_addr']) || empty($settings['label_printer_model'])){?>
-	$("#msg").html('<div class="alert alert-danger alert-dismissible">Please configure printer details in <a href="?do=settings">settings<a> page</div>');
+	$("#msg").html('<div class="alert alert-danger alert-dismissible">Please configure printer details in <a href="/?do=settings">settings<a> page</div>');
 	<?php }else{ ?>
 	$("#msg").html('<div class="alert alert-info alert-dismissible">Printing...</div>');
 
@@ -162,6 +162,7 @@ $('.replaceIngredient').editable({
 });
 
  
+ 
 </script>
 <div id="content-wrapper" class="d-flex flex-column">
 <?php require_once('pages/top.php'); ?>
@@ -278,8 +279,12 @@ $('.replaceIngredient').editable({
 						//$conc_p = $conc_n/100*100 - $formula['concentration'];
 						echo'<tr>
                       <td align="center" class="'.$ing_q['profile'].'" id="ingredient"><a href="pages/editIngredient.php?id='.$formula['ingredient'].'" class="popup-link">'.$ingName.'</a> '.checkIng($formula['ingredient'],$conn).'</td>
-                      <td data-name="concentration" class="concentration" data-type="text" align="center" data-pk="'.$formula['ingredient'].'">'.$formula['concentration'].'</td>
-					  <td></td>';
+                      <td data-name="concentration" class="concentration" data-type="text" align="center" data-pk="'.$formula['ingredient'].'">'.$formula['concentration'].'</td>';
+					  if($formula['concentration'] == '100'){
+						  echo '<td align="center">None</td>';
+					  }else{
+						  echo '<td data-name="dilutant" class="dilutant" data-type="select" align="center" data-pk="'.$formula['ingredient'].'">'.$formula['dilutant'].'</td>';
+					  }
 					  if($limit != null){
 						 if($limit < $conc_p){
 							$IFRA_WARN = 'class="alert-danger"';//VALUE IS TO HIGH AGAINST IFRA
@@ -373,7 +378,26 @@ $(document).ready(function(){
    }
   }
  });
- 
+ //
+ $('#formula_data').editable({
+	container: 'body',
+	selector: 'td.dilutant',
+	type: 'POST',
+	emptytext: "",
+	emptyclass: "",
+  	url: "pages/update_data.php?formula=<?php echo $f_name; ?>",
+    source: [
+			 <?php
+				$res_ing = mysqli_query($conn, "SELECT id, name FROM ingredients WHERE type = 'Solvent' OR type = 'Carrier' ORDER BY name ASC");
+				while ($r_ing = mysqli_fetch_array($res_ing)){
+				echo '{value: "'.$r_ing['name'].'", text: "'.$r_ing['name'].'"},';
+			}
+			?>
+          ],
+	dataType: 'json',
+    
+    });
+
 });
 
 $('#csv').on('click',function(){
@@ -394,6 +418,7 @@ $('#csv').on('click',function(){
   	consoleLog: true   
 });
  
+
 })
 
 </script>
