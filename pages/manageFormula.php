@@ -190,10 +190,16 @@ if($_GET['formula'] && $_GET['do']){
 		$qIng = mysqli_query($conn, "SELECT ingredient FROM formulas WHERE name = '$name'");
 		
 		while($ing = mysqli_fetch_array($qIng)){
-			$getAllergen = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '".$ing['ingredient']."' AND allergen = '1'"));
+				$chName = mysqli_fetch_array(mysqli_query($conn, "SELECT chemical_name FROM ingredients WHERE name = '".$ing['ingredient']."' AND allergen = '1'"));
+				if($chName['chemical_name']){
+					$getAllergen['name'] = $chName['chemical_name'];
+				}else{
+					$getAllergen = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '".$ing['ingredient']."' AND allergen = '1'"));
+				}
+
 			$allergen[] = $getAllergen['name'];
 		}
-		$allergen[] = 'Denatureted Ethyl Alcohol '.$_GET['carrier'].'% Vol, Fragrance, Distilled Water';
+		$allergen[] = 'Denatureted Ethyl Alcohol '.$_GET['carrier'].'% Vol, Fragrance, DPG, Distilled Water';
 
 		if($_GET['batchID']){
 			$bNo = $_GET['batchID'];
