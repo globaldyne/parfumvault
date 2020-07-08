@@ -120,7 +120,20 @@ if(($_POST) && $_GET['update'] == 'printer'){
 		$msg = '<div class="alert alert-danger alert-dismissible">Error adding user. ('.mysqli_error($conn).')</div>';
 	}
 	
+//BRAND
+}elseif($_GET['update'] == 'brand' && $_POST['brandName']){
+	$brandName = mysqli_real_escape_string($conn, $_POST['brandName']);
+	$brandAddress = mysqli_real_escape_string($conn, $_POST['brandAddress']);
+	$brandEmail = mysqli_real_escape_string($conn, $_POST['brandEmail']);
+	$brandPhone = mysqli_real_escape_string($conn, $_POST['brandPhone']);
 
+	if(mysqli_query($conn, "UPDATE settings SET brandName = '$brandName', brandAddress = '$brandAddress', brandEmail = '$brandEmail', brandPhone = '$brandPhone'")){
+		
+		$msg = '<div class="alert alert-success alert-dismissible">Brand details updated!</div>';
+	}else{
+		$msg = '<div class="alert alert-danger alert-dismissible">Error updating brand info: ('.mysqli_error($conn).')</div>';
+	}
+	
 //DELETE ACTIONS
 }elseif($_GET['action'] == 'delete' && $_GET['sup_id']){
 	$sup_id = mysqli_real_escape_string($conn, $_GET['sup_id']);
@@ -195,6 +208,7 @@ $(function() {
          <li><a href="#types">Perfume Types</a></li>
          <li><a href="#print"><span>Printing</span></a></li>
          <li><a href="#users"><span>Users</span></a></li>
+         <li><a href="#brand"><span>My Brand</span></a></li>
          <li><a href="#maintenance"><span>Maintenance</span></a></li>
         <li><a href="pages/about.php"><span>About</span></a></li>
      </ul>
@@ -544,6 +558,38 @@ $(function() {
         </form>
      </div> 
      
+     <div id="brand">
+       <form action="?do=settings&update=brand#brand" method="post" enctype="multipart/form-data" name="form" id="form">
+         <table width="100%" border="0">
+           <tr>
+             <td colspan="2"><?php echo $msg; ?></td>
+            </tr>
+           <tr>
+             <td width="7%">Brand Name:</td>
+             <td width="93%"><input name="brandName" type="text" class="form-control" id="brandName" value="<?php echo $settings['brandName'];?>" /></td>
+           </tr>
+           <tr>
+             <td>Address:</td>
+             <td><input name="brandAddress" type="text" class="form-control" id="brandAddress" value="<?php echo $settings['brandAddress'];?>"/></td>
+           </tr>
+           <tr>
+             <td>Email:</td>
+             <td><input name="brandEmail" type="text" class="form-control" id="brandEmail" value="<?php echo $settings['brandEmail'];?>" /></td>
+           </tr>
+           <tr>
+             <td>Contact No:</td>
+             <td><input name="brandPhone" type="text" class="form-control" id="brandPhone" value="<?php echo $settings['brandPhone'];?>" /></td>
+           </tr>
+           <tr>
+             <td>&nbsp;</td>
+             <td>&nbsp;</td>
+           </tr>
+           <tr>
+             <td colspan="2"><input type="submit" name="button3" id="button3" value="Submit" class="btn btn-info"/></td>
+            </tr>
+         </table>
+       </form>
+     </div>
      
 <div id="maintenance">
   <table width="100%" border="0">
