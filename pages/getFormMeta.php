@@ -80,8 +80,12 @@ if($_FILES["file"]["tmp_name"]){
     <td colspan="2"><?php echo $msg; ?></td>
   </tr>
   <tr>
-    <td width="20%">Name:</td>
+    <td width="20%">Formula Name:</td>
     <td data-name="name" class="name" data-type="text" align="left" data-pk="name" width="80%"><?php echo $info['name'];?></td>
+  </tr>
+  <tr>
+    <td>Product Name:</td>
+    <td data-name="product_name" class="product_name" data-type="text" align="left" data-pk="product_name"><?php echo $info['product_name'];?></td>
   </tr>
   <tr>
     <td>Profile:</td>
@@ -142,6 +146,20 @@ $(document).ready(function(){
 
  });
   
+ $('#formula_metadata').editable({
+  container: 'body',
+  selector: 'td.product_name',
+  url: "update_data.php?formulaMeta=<?php echo $info['name']; ?>",
+  title: 'Product Name',
+  type: "POST",
+  mode: 'inline',
+  dataType: 'json',
+      success: function(response, newValue) {
+        if(response.status == 'error') return response.msg; 
+    },
+
+ });
+ 
   $('#profile').editable({
 	value: "<?php echo $info['profile'];?>",
   	title: 'Profile',

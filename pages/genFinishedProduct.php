@@ -33,7 +33,6 @@ if($_POST['formula']){
 		$batchFile = 'batches/'.$batchID;
 		
 		mysqli_query($conn, "INSERT INTO batchIDHistory (id,fid,pdf) VALUES ('$batchID','$fid','$batchFile')");
-																				 
 		genBatchPDF($fid,$batchID,$bottle,$new_conc,$mg['total_mg'],$ver,$conn);
 	}else{
 		$batchID = 'N/A';
@@ -95,9 +94,10 @@ $.ajax({
           <div class="card shadow mb-4">
             <div class="card-header py-3"> 
 			<?php if($_GET['generate']){?>
-             <h2 class="m-0 font-weight-bold text-primary"><a href="?do=genFinishedProduct"><?php echo $f_name;?> Finished Product</a></h2>
+             <h2 class="m-0 font-weight-bold text-primary"><a href="?do=genFinishedProduct"><?php echo $meta['product_name'];?></a></h2>
+             <h5 class="m-1 text-primary">Formula: <?php echo $meta['name'];?></h5>
              <h5 class="m-1 text-primary"><?php echo "Bottle: ".$bottle."ml Concentration: ".$type."%";?></h5>
-             <h5 class="m-1 text-primary"><?php echo 'Batch ID: <a href="batches/'.$batchID.'">'.$batchID.'<a>';?></h5>
+             <h5 class="m-1 text-primary"><?php if($_POST['batchID'] == '1'){ echo 'Batch ID: <a href="batches/'.$batchID.'">'.$batchID.'<a>'; }else{ echo 'Batch ID: <a href="#">N/A</a>';}?></h5>
         	<?php }else{ ?>
               <h2 class="m-0 font-weight-bold text-primary"><a href="?do=genFinishedProduct">Generate Finished Product</a></h2>
             <?php } ?>
@@ -115,7 +115,8 @@ $.ajax({
                       <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
                       <div class="dropdown-menu">
                         <a class="dropdown-item" id="pdf" href="#">Export to PDF</a>
-                        <a class="dropdown-item" href="javascript:printLabel();" onclick="return confirm('Print label?');">Print Label</a>
+                        <a class="dropdown-item" href="pages/genIFRAcert.php?fid=<?php echo $meta['fid'];?>" >IFRA Certificate</a>
+                        <a class="dropdown-item" href="javascript:printLabel()" onclick="return confirm('Print label?')">Print Label</a>
                         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#printBoxLabel">Print Box Label</a>
                       </div>
                     </div>
@@ -132,14 +133,13 @@ $.ajax({
                     </tr>
                   </thead>
                   <?php while ($formula = mysqli_fetch_array($formula_q)) {
-					  
-					  	$cas = mysqli_fetch_array(mysqli_query($conn, "SELECT cas FROM ingredients WHERE name = '".$formula['ingredient']."'"));
-					 
-						$limitIFRA = searchIFRA($cas['cas'],$formula['ingredient'],$conn);
+					    $ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT cas,IFRA,price,ml,profile,profile FROM ingredients WHERE name = '".$formula['ingredient']."'"));
+
+					  	//$cas = mysqli_fetch_array(mysqli_query($conn, "SELECT cas FROM ingredients WHERE name = '".$formula['ingredient']."'"));
+						$limitIFRA = searchIFRA($ing_q['cas'],$formula['ingredient'],$conn);
 						$limit = explode(' - ', $limitIFRA);
 					    $limit = $limit['0'];
 					  
-					  	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT IFRA,price,ml,profile,profile FROM ingredients WHERE name = '".$formula['ingredient']."'"));
 					    $new_quantity = $formula['quantity']/$mg['total_mg']*$new_conc;
 						
 					  	$conc = $new_quantity/$bottle * 100;
@@ -264,9 +264,9 @@ $.ajax({
     <td width="24%">
     <select name="formula" id="formula" class="form-control selectpicker" data-live-search="true">
      <?php
-		$sql = mysqli_query($conn, "SELECT name FROM formulasMetaData ORDER BY name ASC");
+		$sql = mysqli_query($conn, "SELECT fid,name,product_name FROM formulasMetaData WHERE product_name IS NOT NULL ORDER BY name ASC");
 		while ($formula = mysqli_fetch_array($sql)){
-			echo '<option value="'.$formula['name'].'">'.$formula['name'].'</option>';
+			echo '<option value="'.$formula['name'].'">'.$formula['name'].' ('.$formula['product_name'].')</option>';
 		}
 	  ?>
      </select>

@@ -260,13 +260,13 @@ $('.replaceIngredient').editable({
                   </thead>
                   <tbody id="formula_data">
                   <?php while ($formula = mysqli_fetch_array($formula_q)) {
-					  	$cas = mysqli_fetch_array(mysqli_query($conn, "SELECT cas FROM ingredients WHERE name = '".$formula['ingredient']."'"));
-					 
-						$limitIFRA = searchIFRA($cas['cas'],$formula['ingredient'],$conn);
+					  	//$cas = mysqli_fetch_array(mysqli_query($conn, "SELECT cas FROM ingredients WHERE name = '".$formula['ingredient']."'"));
+					 	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT cas, IFRA, price, ml, profile, profile FROM ingredients WHERE BINARY name = '".$formula['ingredient']."'"));
+
+						$limitIFRA = searchIFRA($ing_q['cas'],$formula['ingredient'],$conn);
 						$limit = explode(' - ', $limitIFRA);
 					    $limit = $limit['0'];
 					  
-					  	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT IFRA, price, ml, profile, profile FROM ingredients WHERE BINARY name = '".$formula['ingredient']."'"));
 					  	$conc = number_format($formula['quantity']/$mg['total_mg'] * 100, 2);
 					  	$conc_p = number_format($formula['concentration'] / 100 * $conc, 2);
 						
@@ -281,7 +281,6 @@ $('.replaceIngredient').editable({
 							$ingName = $formula['ingredient'];
 						}
 						
-						//$conc_p = $conc_n/100*100 - $formula['concentration'];
 						echo'<tr>
                       <td align="center" class="'.$ing_q['profile'].'" id="ingredient"><a href="pages/editIngredient.php?id='.$formula['ingredient'].'" class="popup-link">'.$ingName.'</a> '.checkIng($formula['ingredient'],$conn).'</td>
                       <td data-name="concentration" class="concentration" data-type="text" align="center" data-pk="'.$formula['ingredient'].'">'.$formula['concentration'].'</td>';

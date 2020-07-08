@@ -158,7 +158,7 @@ if($_GET['formula'] && $_GET['do']){
 	
 	imagefilledrectangle($lbl, 0, 0, $w, $h, $white);
 	
-	$text = trim($_GET['name']);
+	$text = trim($q['product_name']);
 	$font = '../fonts/Arial.ttf';
 
 	imagettftext($lbl, $settings['label_printer_font_size'], 0, 0, 150, $black, $font, $text);
@@ -186,7 +186,7 @@ if($_GET['formula'] && $_GET['do']){
 	
 	if($settings['label_printer_size'] == '62' || $settings['label_printer_size'] == '62 --red'){
 		$name = mysqli_real_escape_string($conn, $_GET['name']);
-		
+		$q = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE name = '$name'"));
 		$qIng = mysqli_query($conn, "SELECT ingredient FROM formulas WHERE name = '$name'");
 		
 		while($ing = mysqli_fetch_array($qIng)){
@@ -219,10 +219,10 @@ if($_GET['formula'] && $_GET['do']){
 	
 	imagefilledrectangle($lbl, 0, 0, $h, $w, $white);
 	
-	$text = trim($_GET['name']);
+	$text = strtoupper($q['product_name']);
 	$font = '../fonts/Arial.ttf';
 				//font size 15 rotate 0 center 360 top 50
-	imagettftext($lbl, 30, 0, 250, 50, $black, $font, strtoupper($name));
+	imagettftext($lbl, 30, 0, 250, 50, $black, $font, $text);
 	imagettftext($lbl, 25, 0, 300, 100, $black, $font, 'INGREDIENTS');
 	$lblF = imagerotate($lbl, 0 ,0);
 	
