@@ -1,22 +1,6 @@
 <?php
 if (!defined('pvault_panel')){ die('Not Found');}
 
-$ingID = mysqli_real_escape_string($conn, $_GET['id']);
-$ingName = mysqli_real_escape_string($conn, $_GET['name']);
-
-if($_GET['action'] == "delete" && $_GET['id']){
-	if(mysqli_num_rows(mysqli_query($conn, "SELECT ingredient FROM formulas WHERE ingredient = '$ingName'"))){
-		$msg = '<div class="alert alert-danger alert-dismissible">
-		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-  		<strong>'.$ingName.'</strong> is in use by at least one formula and cannot be removed!</div>';
-		
-	}elseif(mysqli_query($conn, "DELETE FROM ingredients WHERE id = '$ingID'")){
-		$msg = '<div class="alert alert-success alert-dismissible">
-		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-  		Ingredient <strong>'.$ingName.'</strong> removed from the database!
-		</div>';
-	}
-}
 $q = mysqli_query($conn, "SELECT * FROM IFRALibrary ORDER BY amendment DESC");
 
 ?>

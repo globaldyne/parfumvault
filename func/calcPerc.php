@@ -1,4 +1,6 @@
 <?php
+if (!defined('pvault_panel')){ die('Not Found');}
+
 function calcPerc($formula, $profile, $percent, $conn){
 	$formula_q = mysqli_query($conn, "SELECT ingredient FROM formulas WHERE name = '$formula'");
 	while ($formula = mysqli_fetch_array($formula_q)) {

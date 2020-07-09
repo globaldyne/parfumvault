@@ -115,7 +115,7 @@ $.ajax({
                       <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
                       <div class="dropdown-menu">
                         <a class="dropdown-item" id="pdf" href="#">Export to PDF</a>
-                        <a class="dropdown-item" href="pages/genIFRAcert.php?fid=<?php echo $meta['fid'];?>" >IFRA Certificate</a>
+                        <a class="dropdown-item" href="pages/genIFRAcert.php?fid=<?php echo $meta['fid'];?>&conc=<?php echo $type; ?>&bottle=<?php echo $bottle;?>" >IFRA Certificate</a>
                         <a class="dropdown-item" href="javascript:printLabel()" onclick="return confirm('Print label?')">Print Label</a>
                         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#printBoxLabel">Print Box Label</a>
                       </div>

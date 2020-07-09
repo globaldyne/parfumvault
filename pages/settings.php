@@ -581,6 +581,10 @@ $(function() {
              <td><input name="brandPhone" type="text" class="form-control" id="brandPhone" value="<?php echo $settings['brandPhone'];?>" /></td>
            </tr>
            <tr>
+             <td>Logo:</td>
+             <td><input type="file" name="brandLogo" id="brandLogo" class="form-control"/></td>
+           </tr>
+           <tr>
              <td>&nbsp;</td>
              <td>&nbsp;</td>
            </tr>
