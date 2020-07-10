@@ -45,6 +45,7 @@ DROP TABLE IF EXISTS `formulasMetaData`;
 CREATE TABLE `formulasMetaData` (
   `id` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
+  `product_name` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `fid` varchar(255) COLLATE utf8_bin NOT NULL,
   `profile` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `sex` varchar(255) COLLATE utf8_bin DEFAULT NULL,
@@ -199,11 +200,16 @@ CREATE TABLE `settings` (
   `EDT` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `EDC` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `Parfum` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `chem_vs_brand` int(11) NOT NULL
+  `chem_vs_brand` int(11) NOT NULL,
+  `brandName` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `brandAddress` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `brandEmail` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `brandPhone` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `brandLogo` varchar(255) COLLATE utf8_bin DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-INSERT INTO `settings` (`id`, `label_printer_addr`, `label_printer_model`, `label_printer_size`, `label_printer_font_size`, `currency`, `top_n`, `heart_n`, `base_n`, `EDP`, `EDT`, `EDC`, `Parfum`, `chem_vs_brand`) VALUES
-(1, '192.168.1.106', 'QL-810W', '62 --red', 70, '&pound;', '25', '50', '25', '20', '15', '4', '30', 0);
+INSERT INTO `settings` (`id`, `label_printer_addr`, `label_printer_model`, `label_printer_size`, `label_printer_font_size`, `currency`, `top_n`, `heart_n`, `base_n`, `EDP`, `EDT`, `EDC`, `Parfum`, `chem_vs_brand`, `brandName`, `brandAddress`, `brandEmail`, `brandPhone`, `brandLogo`) VALUES
+(1, '192.168.1.106', 'QL-810W', '62 --red', 70, '&pound;', '25', '50', '25', '20', '15', '4', '30', 0, 'JB Parfum LTD', '366 Queenstown Road', 'info@johnbelekios.com', '07736279074', NULL);
 
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
@@ -304,4 +310,3 @@ ALTER TABLE `users`
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
