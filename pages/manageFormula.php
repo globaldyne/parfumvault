@@ -158,7 +158,7 @@ if($_GET['formula'] && $_GET['do']){
 	
 	imagefilledrectangle($lbl, 0, 0, $w, $h, $white);
 	
-	$text = trim($q['product_name']);
+	$text = $_GET['name'];
 	$font = '../fonts/Arial.ttf';
 
 	imagettftext($lbl, $settings['label_printer_font_size'], 0, 0, 150, $black, $font, $text);

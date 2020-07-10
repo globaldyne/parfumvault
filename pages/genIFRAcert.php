@@ -70,7 +70,8 @@ of the fragrance supplier</span></b></font></p>
   <font face="Arial, sans-serif"><span >We certify that the above mixture is in compliance with the Standards of the INTERNATIONAL FRAGRANCE ASSOCIATION (IFRA), up to and including the <strong><?php echo getIFRAMeta('MAX(amendment)',$conn);?></strong> Amendment to the IFRA Standards (published </span><b><?php echo getIFRAMeta('MAX(last_pub)',$conn);?></span></b>),
   provided it is used in the following</span></font>  <font face="Arial, sans-serif"><span >category(ies)
 at a maximum concentration level of:</span></font></p>
-<table width="61%" border="1">
+<p class="western" style="margin-right: -0.12in">&nbsp;</p>
+<table width="100%" border="1">
   <tr>
     <th bgcolor="#d9d9d9"><strong>IFRA<br>
 Category(ies) [see Table 12 in Guidance for the use of IFRA<br>
@@ -78,7 +79,7 @@ Standards for details]</strong></th>
     <th bgcolor="#d9d9d9"><strong>Level of use (%)*</strong></th>
   </tr>
   <tr>
-    <td align="center"><strong>Category 4</strong></td>
+    <td align="center">Category 4</td>
     <td align="center"><?php echo $type; ?>%</td>
   </tr>
 </table>
@@ -86,12 +87,13 @@ Standards for details]</strong></th>
 <p  class="western" style="margin-right: -0.12in">
   <font face="Arial, sans-serif"><span >For other kinds of, application or use at higher concentration levels, a new evaluation may be needed; please contact </span></font><font face="Arial, sans-serif"><span ><span style="background: #ffff00">(name of the fragrance supplier)</span></span></font><font face="Arial, sans-serif"><span >.
 </span></font></p>
+<p  class="western" style="margin-right: -0.12in">&nbsp;</p>
 <p class="western" style="margin-right: -0.12in">
   <font face="Arial, sans-serif"><span ><u><b>(OPTIONAL INFORMATION):</b></u></span></font></p>
 <p class="western" style="margin-right: -0.12in">
   <font face="Arial, sans-serif"><span >Information about presence and concentration of fragrance ingredients subject to IFRA Standards in the fragrance mixture </span></font><font face="Arial, sans-serif"><B><?php echo $meta['product_name'];?></b></font><font face="Arial, sans-serif"><span> is as follows:</span></font></p>
 <p class="western" style="margin-right: -0.12in">&nbsp;</p>
-<table width="61%" border="1">
+<table width="100%" border="1">
   <tr>
     <th width="22%" bgcolor="#d9d9d9"><strong>Materials under the scope of IFRA Standards:</strong></th>
     <th width="12%" bgcolor="#d9d9d9"><strong>CAS number(s):</strong></th>
@@ -103,24 +105,25 @@ Standards for details]</strong></th>
 
 	while($ing = mysqli_fetch_array($fq)){
   		$cas = mysqli_fetch_array(mysqli_query($conn,"SELECT cas FROM ingredients WHERE name = '".$ing['ingredient']."'"));
-		//if ($cas['cas']){
-		$ifra = mysqli_fetch_array(mysqli_query($conn,"SELECT name,cat4,risk,type,cas FROM IFRALibrary WHERE cas LIKE '%".$cas['cas']."%' ")); 
+		if ($cas['cas']){
+			$q2 = mysqli_query($conn,"SELECT name,cat4,risk,type,cas FROM IFRALibrary WHERE name LIKE '".$ing['ingredient']."' OR cas = '".$cas['cas']."' ");
+			while($ifra = mysqli_fetch_array($q2)){
 		
-		$new_quantity = $ing['quantity']/$mg['total_mg']*$new_conc;
-		$conc = $new_quantity/$bottle * 100;						
-		$conc_p = number_format($ing['concentration'] / 100 * $conc, 3);
+			$new_quantity = $ing['quantity']/$mg['total_mg']*$new_conc;
+			$conc = $new_quantity/$bottle * 100;						
+			$conc_p = number_format($ing['concentration'] / 100 * $conc, 3);
 		
-		echo '<tr>
-    	<td align="center">'.$ifra['name'].'</td>
-    	<td align="center">'.$ifra['cas'].'</td>
-    	<td align="center">'.$ifra['risk']; 
-		if($ifra['cat4']){
-			echo ' - MAX usage: '.$ifra['cat4'].'%</td>';
+			echo '<tr>
+    		<td align="center">'.$ifra['name'].'</td>
+    		<td align="center">'.$ifra['cas'].'</td>
+    		<td align="center">'.$ifra['risk']; 
+			if($ifra['cat4']){
+				echo ' - MAX usage: '.$ifra['cat4'].'%</td>';
+			}
+			echo '<td align="center">'.$conc_p.'%</td> 
+ 			</tr>';
+			}
 		}
-		echo '
-    	<td align="center">'.$conc_p.'%</td> 
- 	</tr>';
-		//}
   } 
   ?>
 </table>

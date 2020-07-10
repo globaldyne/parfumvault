@@ -141,9 +141,7 @@ $.ajax({
 					    $limit = $limit['0'];
 					  
 					    $new_quantity = $formula['quantity']/$mg['total_mg']*$new_conc;
-						
-					  	$conc = $new_quantity/$bottle * 100;
-						
+					  	$conc = $new_quantity/$bottle * 100;						
 					  	$conc_p = number_format($formula['concentration'] / 100 * $conc, 3);
 					 	
 						echo'<tr>
