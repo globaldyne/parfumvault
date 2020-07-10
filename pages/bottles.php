@@ -71,10 +71,11 @@ $sup = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
                   				 <td data-name="diameter" class="diameter" data-type="text" align="center" data-pk="'.$bottle['id'].'">'.$bottle['diameter'].'</td>
 					  <td align="center">';
 					  if(empty($bottle['photo'])){ echo 'N/A'; }else{
-                      echo '<a href="'.$bottle['photo'].'" class="popup-link fas fa-image"></a>';}
+                      	echo '<a href="'.$bottle['photo'].'" class="popup-link fas fa-image"></a>';
+					  }
 					  echo '<td align="center"><a href="'.$bottle['supplier_link'].'" target="_blank" class="fas fa-external-link-alt"></a></td>';
 					  echo '<td data-name="notes" class="notes" data-type="textarea" align="center" data-pk="'.$bottle['id'].'">'.$bottle['notes'].'
-					  <td class="noexport" align="center"><a href="?do=bottles&action=delete&id='.$bottle['id'].'" onclick="return confirm(\'Delete '.$bottle['name'].'?\');" class="fas fa-trash"></a></td>
+					  <td class="noexport" align="center"><a href="pages/editBottle.php?id='.$bottle['id'].'" class="fas fa-edit popup-link"><a> <a href="?do=bottles&action=delete&id='.$bottle['id'].'" onclick="return confirm(\'Delete '.$bottle['name'].'?\');" class="fas fa-trash"></a></td>
 					  </tr>';
 				  }
                     ?>

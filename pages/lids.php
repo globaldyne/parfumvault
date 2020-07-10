@@ -4,7 +4,6 @@ if (!defined('pvault_panel')){ die('Not Found');}
 $id = mysqli_real_escape_string($conn, $_GET['id']);
 
 if($_GET['action'] == 'delete' && $_GET['id']){
-	//$lid = mysqli_fetch_array(mysqli_query($conn, "SELECT style FROM lids WHERE id = '$id'"));
 	
 	if(mysqli_query($conn, "DELETE FROM lids WHERE id = '$id'")){
 		$msg = '<div class="alert alert-success alert-dismissible">
@@ -65,7 +64,7 @@ $sup = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
 					  if(empty($lid['photo'])){ echo 'N/A'; }else{
                       echo '<a href="'.$lid['photo'].'" class="popup-link fas fa-image"></a>';}
 					  echo '</td><td align="center"><a href="'.$lid['supplier_link'].'" target="_blank" class="fas fa-external-link-alt"></a></td>
-					  <td class="noexport" align="center"><a href="?do=lids&action=delete&id='.$lid['id'].'" onclick="return confirm(\'Delete '.$lid['style'].'?\');" class="fas fa-trash"></a></td>
+					  <td class="noexport" align="center"><a href="pages/editLid.php?id='.$lid['id'].'" class="fas fa-edit popup-link"></a> <a href="?do=lids&action=delete&id='.$lid['id'].'" onclick="return confirm(\'Delete '.$lid['style'].'?\');" class="fas fa-trash"></a></td>
 					  </tr>';
 				  }
                     ?>

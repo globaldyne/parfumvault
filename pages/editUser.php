@@ -16,6 +16,9 @@ if($_GET['id']){
     	$ext = explode(', ',strtolower($allowed_ext));
 		
 		if($filename){
+			if (!file_exists("../uploads/logo/")) {
+				mkdir("../uploads/logo/", 0740, true);
+	  	 	}
 			if(in_array($file_ext,$ext)===false){
 				echo '<div class="alert alert-danger alert-dismissible"><strong>File upload error: </strong>Extension not allowed, please choose a '.$allowed_ext.' file.</div>';
 			}else{
