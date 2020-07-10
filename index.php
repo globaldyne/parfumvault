@@ -23,6 +23,7 @@ require_once('./func/goShopping.php');
 require_once('./libs/fpdf.php');
 require_once('./func/genBatchID.php');
 require_once('./func/genBatchPDF.php');
+require_once('./func/ml2L.php');
 
 require('./inc/settings.php');
 

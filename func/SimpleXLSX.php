@@ -1,6 +1,5 @@
-<?php if (!defined('pvault_panel')){ die('Not Found');}?>
+<?php if (!defined('pvault_panel')){ die('Not Found');}
 
-<?php
 /**
  *    SimpleXLSX php class v0.8.15
  *    MS Excel 2007 workbooks reader
