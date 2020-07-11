@@ -84,9 +84,7 @@ at a maximum concentration level of:</span></font></p>
 <p class="western" style="margin-right: -0.12in">&nbsp;</p>
 <table width="100%" border="1">
   <tr>
-    <th bgcolor="#d9d9d9"><strong>IFRA<br>
-Category(ies) [see Table 12 in Guidance for the use of IFRA<br>
-Standards for details]</strong></th>
+    <th bgcolor="#d9d9d9"><strong>IFRA Category(ies)</strong></th>
     <th bgcolor="#d9d9d9"><strong>Level of use (%)*</strong></th>
   </tr>
   <tr>
@@ -109,7 +107,7 @@ Standards for details]</strong></th>
     <th width="22%" bgcolor="#d9d9d9"><strong>Materials under the scope of IFRA Standards:</strong></th>
     <th width="12%" bgcolor="#d9d9d9"><strong>CAS number(s):</strong></th>
     <th width="28%" bgcolor="#d9d9d9"><strong>Recommendation from IFRA Standard:</strong></th>
-    <th width="38%" bgcolor="#d9d9d9"><strong>Concentration (%) in fragrance mixture or finished product:</strong></th>
+    <th width="38%" bgcolor="#d9d9d9"><strong>Concentration (%) in  finished product:</strong></th>
   </tr>
     <?php 
 	$fq = mysqli_query($conn, "SELECT ingredient,quantity,concentration FROM formulas WHERE fid = '$fid'");
@@ -117,7 +115,7 @@ Standards for details]</strong></th>
 	while($ing = mysqli_fetch_array($fq)){
   		$cas = mysqli_fetch_array(mysqli_query($conn,"SELECT cas FROM ingredients WHERE name = '".$ing['ingredient']."'"));
 		if ($cas['cas']){
-			$q2 = mysqli_query($conn,"SELECT name,cat4,risk,type,cas FROM IFRALibrary WHERE name LIKE '".$ing['ingredient']."' OR cas = '".$cas['cas']."' ");
+			$q2 = mysqli_query($conn,"SELECT name,cat4,risk,type,cas FROM IFRALibrary WHERE name LIKE '".$ing['ingredient']."' OR cas LIKE '%".$cas['cas']."%' ");
 			while($ifra = mysqli_fetch_array($q2)){
 		
 			$new_quantity = $ing['quantity']/$mg['total_mg']*$new_conc;
