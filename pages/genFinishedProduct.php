@@ -149,7 +149,7 @@ $.ajax({
 					 	
 						echo'<tr>
                       <td align="center">'.$formula['ingredient'].'</td>
-					  <td align="center">'.$cas['cas'].'</td>
+					  <td align="center">'.$ing_q['cas'].'</td>
                       <td align="center">'.$formula['concentration'].'</td>';
 					  if($limit != null){
 						 if($limit < $conc_p){
