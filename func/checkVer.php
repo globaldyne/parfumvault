@@ -8,6 +8,7 @@ function checkVer($ver) {
 	$data = trim(file_get_contents($githubVer));
 	if($ver < $data){	
 		echo '<div class="alert alert-info alert-dismissible">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
   		<strong>New <a href="'.$gitHubRep.'pro" target="_blanc">version ('.$data.')</a> availale!</strong>
 		</div>';
 	}
