@@ -9,13 +9,14 @@ $bottle = $_GET['bottle'];
 $type = $_GET['conc'];
 
 if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM IFRALibrary"))== 0){
-		echo 'You need to <a href="maintenance.php?do=IFRA">import</a> the IFRA xls first.';
-		exit;
+	$msg = 'You need to <a href="maintenance.php?do=IFRA">import</a> the IFRA xls first.';
+	die($msg);
 }
 
 $fid = mysqli_real_escape_string($conn, $_GET['fid']);
+$cid = mysqli_real_escape_string($conn, $_POST['customer']);
 $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE fid = '$fid'"));
-
+$customers = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM customers WHERE id = '$cid'"));
 
 $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE fid = '$fid'"));
 
@@ -27,7 +28,14 @@ if (empty($settings['brandLogo'])){
 }else{
 	$logo = $settings['brandLogo'];
 }
-
+if ( empty($settings['brandName']) || empty($settings['brandAddress']) || empty($settings['brandEmail']) || empty($settings['brandPhone']) ){
+	$msg = 'Missing brand info, please update your brand details in settings page first!';
+	die($msg);
+}
+if ( empty($customers['name']) || empty($customers['address']) || empty($customers['email']) ){
+	$msg = 'Missing customers info, please update your customers details in settings page first!';
+	die($msg);
+}
 
 ?>
 
@@ -38,27 +46,30 @@ if (empty($settings['brandLogo'])){
 </div>
 <h1 class="western"><font face="Arial, sans-serif"><span style="font-style: normal">CERTIFICATE OF CONFORMITY OF FRAGRANCE MIXTURES WITH IFRA STANDARDS</span></font><br>
 </h1>
-<p align=center style="widows: 0; orphans: 0"><font face="Helvetica 65 Medium, Arial Narrow, sans-serif"><font size=4><B><font face="Arial, sans-serif"><font size=2 style="font-size: 11pt"><u>This
-  Certificate assesses the conformity of a fragrance mixture with IFRA
-  Standards and provides restrictions for use as necessary. It is based
-  only on those materials subject to IFRA Standards for the toxicity
-  endpoint(s) described in each Standard. </u></font></font></b></font></font>
+<p align=center style="widows: 0; orphans: 0"><font face="Helvetica 65 Medium, Arial Narrow, sans-serif"><font size=4><b><font face="Arial, sans-serif"><font size=2 style="font-size: 11pt"><u>This Certificate assesses the conformity of a fragrance mixture with IFRA Standards and provides restrictions for use as necessary. It is based only on those materials subject to IFRA Standards for the toxicity endpoint(s) described in each Standard. </u></font></font></b></font></font>
 </p>
 <p align=center style="widows: 0; orphans: 0"><br>
 </p>
 <hr size="1">
 </p>
 <p class="western"><font face="Arial, sans-serif"><u><b>CERTIFYING PARTY:</b></u></font></p>
-<p class="western"><font face="Arial, sans-serif"><span><b><span style="background: #ffff00">Name
-of the fragrance supplier delivering the certificate</span></b></span></font></p>
-<p class="western"><font face="Arial, sans-serif"><B><span style="background: #ffff00">Address
-of the fragrance supplier</span></b></font></p>
+<p class="western"><font face="Arial, sans-serif"><?php echo $settings['brandName']; ?></font></p>
+<p class="western"><font face="Arial, sans-serif"><?php echo $settings['brandAddress']; ?></font></p>
+<p class="western"><font face="Arial, sans-serif"><?php echo $settings['brandEmail']; ?></font></p>
+<p class="western"><font face="Arial, sans-serif"><?php echo $settings['brandPhone']; ?></font></p>
+
+
 </p>
 <p class="western"><font face="Arial, sans-serif"><u><b>CERTIFICATE DELIVERED TO: </b></u></font>
 </p>
-<p class="western"><font face="Arial, sans-serif"><span ><b>Customer:
-</b></span></font><font face="Arial, sans-serif"><span ><B><span style="background: #ffff00">Name of the fragrance supplier or finished product manufacturer</span></b></span></font></p>
-<p  class="western"><br>
+<p class="western"><font face="Arial, sans-serif"><span ><b>Customer: </b></span></font></p>
+<p class="western"><font face="Arial, sans-serif"><?php echo $customers['name']; ?></font></p>
+<p class="western"><font face="Arial, sans-serif"><?php echo $customers['address']; ?></font></p>
+<p class="western"><font face="Arial, sans-serif"><?php echo $customers['email']; ?></font></p>
+<p class="western"><font face="Arial, sans-serif"><?php echo $customers['web']; ?></font></p>
+
+
+<p class="western"><br>
 </p>
 <p class="western"><font face="Arial, sans-serif"><u><b>SCOPE OF THE CERTIFICATE:</b></u></font></p>
 <p class="western"><font face="Arial, sans-serif"><span >Product: <B><?php echo $meta['product_name'];?></b></span></font></p>
@@ -83,11 +94,11 @@ Standards for details]</strong></th>
     <td align="center"><?php echo $type; ?>%</td>
   </tr>
 </table>
-<p  class="western" style="margin-right: -0.12in"><font face="Arial, sans-serif"><I>*Actual use level or maximum use level</I></font> </p>
-<p  class="western" style="margin-right: -0.12in">
-  <font face="Arial, sans-serif"><span >For other kinds of, application or use at higher concentration levels, a new evaluation may be needed; please contact </span></font><font face="Arial, sans-serif"><span ><span style="background: #ffff00">(name of the fragrance supplier)</span></span></font><font face="Arial, sans-serif"><span >.
+<p class="western" style="margin-right: -0.12in"><font face="Arial, sans-serif"><I>*Actual use level or maximum use level</I></font> </p>
+<p class="western" style="margin-right: -0.12in">
+  <font face="Arial, sans-serif"><span >For other kinds of, application or use at higher concentration levels, a new evaluation may be needed; please contact </span></font><font face="Arial, sans-serif"><b><?php echo $settings['brandName']; ?></b></font><font face="Arial, sans-serif"><span >.
 </span></font></p>
-<p  class="western" style="margin-right: -0.12in">&nbsp;</p>
+<p class="western" style="margin-right: -0.12in">&nbsp;</p>
 <p class="western" style="margin-right: -0.12in">
   <font face="Arial, sans-serif"><span ><u><b>(OPTIONAL INFORMATION):</b></u></span></font></p>
 <p class="western" style="margin-right: -0.12in">

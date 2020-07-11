@@ -164,13 +164,14 @@ $.ajax({
 <body>
     <div id="wrap">
         <div class="container">
-<div class="list-group-item-info">
-        <h1 class="badge-primary"><?php echo $ing['name']; ?><div class="btn-group">
-                      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
-                      <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#printLabel">Print Label</a>
-                      </div>
-                    </div>
+		<div class="list-group-item-info">
+        <h1 class="badge-primary"><?php echo $ing['name']; ?>
+            <div class="btn-group">
+              <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#printLabel">Print Label</a>
+              </div>
+            </div>
         </h1>
 </div>
 
@@ -327,7 +328,7 @@ $.ajax({
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="printLabel">Print Label</h5>
+        <h5 class="modal-title" id="printLabel">Print Label for <?php echo $ing['name']; ?></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>

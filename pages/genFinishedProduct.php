@@ -115,7 +115,7 @@ $.ajax({
                       <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
                       <div class="dropdown-menu">
                         <a class="dropdown-item" id="pdf" href="#">Export to PDF</a>
-                        <a class="dropdown-item" href="pages/genIFRAcert.php?fid=<?php echo $meta['fid'];?>&conc=<?php echo $type; ?>&bottle=<?php echo $bottle;?>" >IFRA Certificate</a>
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#IFRA">IFRA Certificate</a>
                         <a class="dropdown-item" href="javascript:printLabel()" onclick="return confirm('Print label?')">Print Label</a>
                         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#printBoxLabel">Print Box Label</a>
                       </div>
@@ -230,7 +230,7 @@ $.ajax({
                 </div>
             </div>
             
-<!-- Modal -->
+<!-- Modal PRINT-->
 <div class="modal fade" id="printBoxLabel" tabindex="-1" role="dialog" aria-labelledby="printBoxLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -248,6 +248,37 @@ $.ajax({
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
         <input type="submit" name="button" class="btn btn-primary" id="button" value="Print">
+      </div>
+     </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal IFRA CERT-->
+<div class="modal fade" id="IFRA" tabindex="-1" role="dialog" aria-labelledby="IFRA" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="IFRA">Generate IFRA Certification</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Select customer:
+          <form action="pages/genIFRAcert.php?fid=<?php echo $meta['fid'];?>&conc=<?php echo $type; ?>&bottle=<?php echo $bottle;?>" method="post" name="form1" target="_blank" id="form1">
+            <select class="form-control" name="customer" id="customer">
+            <?php
+				$res = mysqli_query($conn, "SELECT id, name FROM customers ORDER BY name ASC");
+				while ($q = mysqli_fetch_array($res)){
+				echo '<option value="'.$q['id'].'">'.$q['name'].'</option>';
+			}
+			?>
+            </select>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <input type="submit" name="button" class="btn btn-primary" id="button" value="Generate">
       </div>
      </form>
     </div>
