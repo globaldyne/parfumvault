@@ -133,15 +133,18 @@ if($_GET['formula'] && $_GET['do']){
 	
 //PRINTING
 }elseif($_GET['action'] == 'printLabel' && $_GET['name']){
+	$name = $_GET['name'];
 	
+	
+
 	if($settings['label_printer_size'] == '62' || $settings['label_printer_size'] == '62 --red'){
-		$name = mysqli_real_escape_string($conn, $_GET['name']);
 		
 		if($_GET['batchID']){
 			$bNo = $_GET['batchID'];
 		}else{
 			$bNO = 'N/A';
 		}
+				
 		$q = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE name = '$name'"));
 		$info = "Production: ".date("d/m/Y")."\nProfile: ".$q['profile']."\nSex: ".$q['sex']."\nB. NO: ".$bNo."\nDescription:\n\n".wordwrap($q['notes'],30);
 		$w = '720';
@@ -158,7 +161,7 @@ if($_GET['formula'] && $_GET['do']){
 	
 	imagefilledrectangle($lbl, 0, 0, $w, $h, $white);
 	
-	$text = $_GET['name'];
+	$text = trim($name.$extras);
 	$font = '../fonts/Arial.ttf';
 
 	imagettftext($lbl, $settings['label_printer_font_size'], 0, 0, 150, $black, $font, $text);
@@ -166,6 +169,11 @@ if($_GET['formula'] && $_GET['do']){
 	
 	if($settings['label_printer_size'] == '62' || $settings['label_printer_size'] == '62 --red'){
 		imagettftext($lblF, 25, 0, 200, 300, $black, $font, $info);
+	}
+	$extras = '';
+	if($_GET['dilution'] && $_GET['dilutant']){
+		$extras = ' @'.$_GET['dilution'].'% in '.$_GET['dilutant'];
+		imagettftext($lblF, 40, 90, 200, 600, $black, $font, $extras);
 	}
 	$save = "../tmp/labels/".base64_encode($text.'png');
 

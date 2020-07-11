@@ -98,14 +98,15 @@ if(empty(mysqli_num_rows($sql))){
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Edit ingredient</title>
 <link href="../css/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-<link href="../css/bootstrap.min.css" rel="stylesheet">
 <script src="../js/jquery/jquery.min.js"></script>
 <script src="../js/bootstrap.min.js"></script>
 <script src="../js/bootstrap-select.js"></script>
-
 <link href="../css/sb-admin-2.css" rel="stylesheet">
-<link href="../css/vault.css" rel="stylesheet">
+
 <link href="../css/bootstrap-select.min.css" rel="stylesheet">
+<link href="../css/bootstrap.min.css" rel="stylesheet">
+<link href="../css/vault.css" rel="stylesheet">
+
 
 <style>
 .container {
@@ -142,6 +143,9 @@ $.ajax({
 	type: 'get',
     data: {
 		action: "printLabel",
+		type: "ingredient",
+		dilution: $("#dilution").val(),
+		dilutant: $("#dilutant").val(),
 		name: "<?php echo $ing['name']; ?>"
 		},
 	dataType: 'html',
@@ -151,6 +155,9 @@ $.ajax({
   });
 	<?php } ?>
 };
+
+
+
 </script>
 </head>
 
@@ -161,10 +168,11 @@ $.ajax({
         <h1 class="badge-primary"><?php echo $ing['name']; ?><div class="btn-group">
                       <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
                       <div class="dropdown-menu">
-                        <a class="dropdown-item" href="javascript:printLabel();" onclick="return confirm('Print label?');">Print Label</a>
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#printLabel">Print Label</a>
                       </div>
                     </div>
-        </div></h1>
+        </h1>
+</div>
 
 <table width="100%" border="0">
         <tr>
@@ -311,5 +319,42 @@ $.ajax({
 </table>
 </div>
 </div>
+
 </body>
 </html>
+<!-- Modal -->
+<div class="modal fade" id="printLabel" tabindex="-1" role="dialog" aria-labelledby="printLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="printLabel">Print Label</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <form action="javascript:printLabel()" method="get" name="form1" target="_self" id="form1">
+            Dilution %: 
+            <input class="form-control" name="dilution" type="text" id="dilution" value="<?php echo $ing['purity']; ?>" />
+            <p>
+            Dilutant:
+            <select class="form-control" name="dilutant" id="dilutant">
+            <option selected="selected" value="">None</option>
+            <?php
+				$res_ing = mysqli_query($conn, "SELECT id, name FROM ingredients WHERE type = 'Solvent' OR type = 'Carrier' ORDER BY name ASC");
+				while ($r_ing = mysqli_fetch_array($res_ing)){
+				echo '<option value="'.$r_ing['name'].'">'.$r_ing['name'].'</option>';
+			}
+			?>
+            </select>
+            </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <input type="submit" name="button" class="btn btn-primary" id="button" value="Print">
+      </div>
+     </form>
+    </div>
+  </div>
+</div>
+</div>

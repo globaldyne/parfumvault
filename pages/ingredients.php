@@ -1,5 +1,6 @@
-<?php if (!defined('pvault_panel')){ die('Not Found');}?>
-<?php
+<?php 
+if (!defined('pvault_panel')){ die('Not Found');}
+
 $ingID = mysqli_real_escape_string($conn, $_GET['id']);
 $ingName = mysqli_real_escape_string($conn, $_GET['name']);
 
@@ -73,7 +74,6 @@ $ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC
 					  <td align="center">'.$ingredient['odor'].'</td>
                       <td align="center">'.$ingredient['profile'].'</td>
 					  <td align="center">'.$ingredient['category'].'</td>';
-					 // if
   					  if($limit = searchIFRA($ingredient['cas'],$ingredient['name'],$conn)){
 						  echo '<td align="center">'.nl2br(str_replace(' - ', "\n",$limit)).'</td>';
 					  }elseif($ingredient['IFRA']){
