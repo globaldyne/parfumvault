@@ -24,7 +24,7 @@ if($_GET['id']){
 			}else{
 				if($_FILES["avatar"]["size"] > 0){
 					move_uploaded_file($file_tmp,"../uploads/logo/".base64_encode($filename));
-					$avatar = "../uploads/logo/".base64_encode($filename);
+					$avatar = "uploads/logo/".base64_encode($filename);
 					if(mysqli_query($conn, "UPDATE users SET avatar = '$avatar' WHERE id = '$id'")){
 						$msg = '<div class="alert alert-success alert-dismissible">User avatar updated!</div>';
 					}
