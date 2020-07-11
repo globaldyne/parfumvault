@@ -27,6 +27,9 @@ if($_POST['formula']){
 	$carrier = $bottle - $new_conc;
 	
 	if($_POST['batchID'] == '1'){
+		if (!file_exists("../batches")) {
+                	mkdir("../batches", 0740, true);
+                 }
 		define('FPDF_FONTPATH','./fonts');
 		$batchID = genBatchID();
 		$fid = base64_encode($f_name);
