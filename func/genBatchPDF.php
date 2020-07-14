@@ -33,7 +33,8 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $ver, $conn){
 	
 	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE fid = '$fid'"));
 	
-	while($ing = mysqli_fetch_array($result)){
+	$fq = mysqli_query($conn, "SELECT ingredient FROM formulas WHERE fid = '$fid'");
+	while($ing = mysqli_fetch_array($fq)){
 		$getAllergen = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '".$ing['ingredient']."' AND allergen = '1'"));
 		$allergen[] = $getAllergen['name'];
 	}
@@ -43,7 +44,7 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $ver, $conn){
 	if(empty($allergenFinal)){
 		$allergenFinal = 'None found';
 	}
-	$finalText = "Allergens: \n".$allergenFinal;
+	$finalText = "Allergens and/or ingredients to be declared in the box: \n".$allergenFinal;
 	
 	$pdf = new PDF( 'L', 'mm', 'A4');
 
