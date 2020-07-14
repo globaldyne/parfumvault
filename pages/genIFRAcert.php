@@ -125,7 +125,9 @@ at a maximum concentration level of:</span></font></p>
 				$msg = 'None found';
 			}
 			*/
-				$q2 = mysqli_query($conn, "SELECT name,cat4,risk,type,cas FROM IFRALibrary WHERE name LIKE '".$ing['ingredient']."' OR cas LIKE '%".$cas['cas']."%' ");
+			//echo '<pre>';
+			//echo "SELECT name,cat4,risk,type,cas FROM IFRALibrary WHERE name LIKE '".$ing['ingredient']."' OR cas LIKE '%".$cas['cas']."%' ;";
+				$q2 = mysqli_query($conn, "SELECT name,cat4,risk,type,cas FROM IFRALibrary WHERE name LIKE '".$ing['ingredient']."' OR cas = '".$cas['cas']."' ");
 				while($ifra = mysqli_fetch_array($q2)){
 			
 					$new_quantity = $ing['quantity']/$mg['total_mg']*$new_conc;

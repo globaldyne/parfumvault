@@ -9,7 +9,7 @@ function checkVer($ver) {
 	if($ver < $data){	
 		echo '<div class="alert alert-info alert-dismissible">
                 <a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-  		<strong>New <a href="'.$gitHubRep.'pro" target="_blanc">version ('.$data.')</a> availale!</strong>
+  		<strong>New <a href="'.$gitHubRep.'pro" target="_blanc">version ('.$data.')</a> is availale!</strong>
 		</div>';
 	}
 
