@@ -2,11 +2,11 @@
 if (!defined('pvault_panel')){ die('Not Found');}  
 if($_POST['formula']){
 	$f_name =  mysqli_real_escape_string($conn, $_POST['formula']);
-	
+	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE name = '$f_name'"));
+
 	$formula_q = mysqli_query($conn, "SELECT * FROM formulas WHERE name = '$f_name' ORDER BY ingredient ASC");
 	
 	$mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE name = '$f_name'"));
-	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE name = '$f_name'"));
 	
 	$bottle = mysqli_real_escape_string($conn, $_POST['bottle']);
 	$type = mysqli_real_escape_string($conn, $_POST['type']);
@@ -26,10 +26,15 @@ if($_POST['formula']){
 	$new_conc = $bottle/100*$type;
 	$carrier = $bottle - $new_conc;
 	
+	if(validateFormula($meta['fid'], $bottle, $new_conc, $mg['total_mg'], $conn) == TRUE){
+		$msg =  '<div class="alert alert-danger alert-dismissible">Your formula contains materials, exceeding and/or missing IFRA standards. Please alter your formula.</div>';
+	}
+
+	
 	if($_POST['batchID'] == '1'){
 		if (!file_exists("batches")) {
-                	mkdir("batches", 0740, true);
-                 }
+			mkdir("batches", 0740, true);
+        }
 		define('FPDF_FONTPATH','./fonts');
 		$batchID = genBatchID();
 		$fid = base64_encode($f_name);
@@ -106,7 +111,7 @@ $.ajax({
             <?php } ?>
             </div>
             <div class="card-body">
-           <div id="msg"></div>
+           <div id="msg"><?php if($msg){ echo $msg; }?></div>
            <?php if($_GET['generate']){?>
               <div>
                 <table class="table table-bordered" id="formula" width="100%" cellspacing="0">
@@ -136,9 +141,8 @@ $.ajax({
                     </tr>
                   </thead>
                   <?php while ($formula = mysqli_fetch_array($formula_q)) {
-					    $ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT cas,IFRA,price,ml,profile,profile FROM ingredients WHERE name = '".$formula['ingredient']."'"));
+					    $ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT cas,IFRA,price,ml FROM ingredients WHERE name = '".$formula['ingredient']."'"));
 
-					  	//$cas = mysqli_fetch_array(mysqli_query($conn, "SELECT cas FROM ingredients WHERE name = '".$formula['ingredient']."'"));
 						$limitIFRA = searchIFRA($ing_q['cas'],$formula['ingredient'],$conn);
 						$limit = explode(' - ', $limitIFRA);
 					    $limit = $limit['0'];

@@ -24,6 +24,7 @@ require_once('./libs/fpdf.php');
 require_once('./func/genBatchID.php');
 require_once('./func/genBatchPDF.php');
 require_once('./func/ml2L.php');
+require_once('./func/validateFormula.php');
 
 require('./inc/settings.php');
 

@@ -5,6 +5,9 @@ require_once('../inc/config.php');
 require_once('../inc/opendb.php');
 require_once('../inc/settings.php');
 require_once('../func/getIFRAMeta.php');
+require_once('../func/searchIFRA.php');
+require_once('../func/validateFormula.php');
+
 $bottle = $_GET['bottle'];
 $type = $_GET['conc'];
 
@@ -14,6 +17,8 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM IFRALibrary"))== 0){
 }
 
 $fid = mysqli_real_escape_string($conn, $_GET['fid']);
+
+
 $cid = mysqli_real_escape_string($conn, $_POST['customer']);
 $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE fid = '$fid'"));
 $customers = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM customers WHERE id = '$cid'"));
@@ -21,6 +26,10 @@ $customers = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM customers WHE
 $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE fid = '$fid'"));
 
 $new_conc = $bottle/100*$type;
+
+if(validateFormula($fid, $bottle, $new_conc, $mg['total_mg'], $conn) == TRUE){
+	die('Error: Your formula contains materials, exceeding and/or missing IFRA standards. Please alter your formula and try again.');
+}
 
 
 if (empty($settings['brandLogo'])){ 
@@ -96,11 +105,7 @@ at a maximum concentration level of:</span></font></p>
 <p class="western" style="margin-right: -0.12in">
   <font face="Arial, sans-serif"><span >For other kinds of, application or use at higher concentration levels, a new evaluation may be needed; please contact </span></font><font face="Arial, sans-serif"><b><?php echo $settings['brandName']; ?></b></font><font face="Arial, sans-serif"><span >.
 </span></font></p>
-<p class="western" style="margin-right: -0.12in">&nbsp;</p>
-<p class="western" style="margin-right: -0.12in">
-  <font face="Arial, sans-serif"><span ><u><b>(OPTIONAL INFORMATION):</b></u></span></font></p>
-<p class="western" style="margin-right: -0.12in">
-  <font face="Arial, sans-serif"><span >Information about presence and concentration of fragrance ingredients subject to IFRA Standards in the fragrance mixture </span></font><font face="Arial, sans-serif"><B><?php echo $meta['product_name'];?></b></font><font face="Arial, sans-serif"><span> is as follows:</span></font></p>
+<p class="western" style="margin-right: -0.12in"><font face="Arial, sans-serif"><span >Information about presence and concentration of fragrance ingredients subject to IFRA Standards in the fragrance mixture </span></font><font face="Arial, sans-serif"><B><?php echo $meta['product_name'];?></b></font><font face="Arial, sans-serif"><span> is as follows:</span></font></p>
 <p class="western" style="margin-right: -0.12in">&nbsp;</p>
 <table width="100%" border="1">
   <tr>
@@ -113,30 +118,36 @@ at a maximum concentration level of:</span></font></p>
 	$fq = mysqli_query($conn, "SELECT ingredient,quantity,concentration FROM formulas WHERE fid = '$fid'");
 
 	while($ing = mysqli_fetch_array($fq)){
-  		$cas = mysqli_fetch_array(mysqli_query($conn,"SELECT cas FROM ingredients WHERE name = '".$ing['ingredient']."'"));
+  		$cas = mysqli_fetch_array(mysqli_query($conn, "SELECT cas FROM ingredients WHERE name = '".$ing['ingredient']."'"));
 		if ($cas['cas']){
-			$q2 = mysqli_query($conn,"SELECT name,cat4,risk,type,cas FROM IFRALibrary WHERE name LIKE '".$ing['ingredient']."' OR cas LIKE '%".$cas['cas']."%' ");
-			while($ifra = mysqli_fetch_array($q2)){
-		
-			$new_quantity = $ing['quantity']/$mg['total_mg']*$new_conc;
-			$conc = $new_quantity/$bottle * 100;						
-			$conc_p = number_format($ing['concentration'] / 100 * $conc, 3);
-		
-			echo '<tr>
-    		<td align="center">'.$ifra['name'].'</td>
-    		<td align="center">'.$ifra['cas'].'</td>
-    		<td align="center">'.$ifra['risk']; 
-			if($ifra['cat4']){
-				echo ' - MAX usage: '.$ifra['cat4'].'%</td>';
+			/*
+			if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM IFRALibrary WHERE name LIKE '".$ing['ingredient']."' OR cas LIKE '%".$cas['cas']."%' "))){
+				$msg = 'None found';
 			}
-			echo '<td align="center">'.$conc_p.'%</td> 
- 			</tr>';
+			*/
+				$q2 = mysqli_query($conn, "SELECT name,cat4,risk,type,cas FROM IFRALibrary WHERE name LIKE '".$ing['ingredient']."' OR cas LIKE '%".$cas['cas']."%' ");
+				while($ifra = mysqli_fetch_array($q2)){
+			
+					$new_quantity = $ing['quantity']/$mg['total_mg']*$new_conc;
+					$conc = $new_quantity/$bottle * 100;						
+					$conc_p = number_format($ing['concentration'] / 100 * $conc, 3);
+					
+						echo '<tr>
+						<td align="center">'.$ifra['name'].'</td>
+						<td align="center">'.$ifra['cas'].'</td>
+						<td align="center">'.$ifra['risk']."<br>"; 
+						if($ifra['cat4']){
+							echo 'MAX usage: '.$ifra['cat4'].'%</td>';
+						}
+						echo '<td align="center">'.$conc_p.'%</td> 
+						</tr>';
+				}
 			}
-		}
+			
   } 
   ?>
 </table>
-<p>&nbsp;</p>
+<p><?php echo $msg; ?></p>
 <p>&nbsp;</p>
   <p><font face="Arial, sans-serif"><span >Signature </span></font><font face="Arial, sans-serif"><span><I>(If generated electronically, no signature)</i></span></font></p>
   <p><font face="Arial, sans-serif"><span >Date: </span></font><strong><?php echo date('d/M/Y');?></strong></p>
