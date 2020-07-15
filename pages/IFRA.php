@@ -23,6 +23,7 @@ $q = mysqli_query($conn, "SELECT * FROM IFRALibrary ORDER BY amendment DESC");
                         <div class="btn-group">
                           <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
                           <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item popup-link" id="ifraimport" href="pages/maintenance.php?do=IFRA">Import IFRA xls</a>
                             <a class="dropdown-item" id="csv" href="#">Export to CSV</a>
                           </div>
                         </div>                      

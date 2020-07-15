@@ -21,7 +21,6 @@ if($_GET['do'] == 'backupDB'){
 		passthru($cmd,$e);
 				
 		if(!$e){
-			//header("Location: maintenance.php?do=restoreDB&err=0");
 			if(isset($_SESSION['parfumvault'])) {
 				unset($_SESSION['parfumvault']);
 			}
@@ -191,7 +190,7 @@ if($_GET['do'] == 'backupDB'){
                                   <p class="alert-link">IMPORTANT:</p>
                                   <p class="alert-link"> This operation will wipe out any data already in your IFRA Library, so please make sure the file you uploading is in right format.</p>
                                   <p class="alert-link">The IFRA xls can be downloaded from its official <a href="https://ifrafragrance.org/safe-use/standards-guidance" target="_blank">web site</a></p>
-                                  <p class="alert-link">BEFORE IMPORT:                                 </p>
+                                  <p class="alert-link">BEFORE IMPORT:</p>
                                   <ul>
                                     <li>Take a backup.</li>
                                     <li>Open the xlsx file and remove the first 3 rows which contain column names and file info.</li>
