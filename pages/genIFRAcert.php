@@ -125,11 +125,9 @@ at a maximum concentration level of:</span></font></p>
 				$msg = 'None found';
 			}
 			*/
-				//$q2 = mysqli_query($conn, "SELECT name,cat4,risk,type,cas FROM IFRALibrary WHERE name LIKE '".$ing['ingredient']."' OR cas = '".$cas['cas']."' ");
 				echo '<pre>';
-				//echo "SELECT name,cat4,risk,type,cas FROM IFRALibrary WHERE name LIKE '".$ing['ingredient']."' OR cas REGEXP '[^\n\r]'cas[$\n\r]|^'cas$'";
-				$c = $cas['cas'];
-				$q2 = mysqli_query($conn, "SELECT name,cat4,risk,type,cas FROM IFRALibrary WHERE name LIKE '".$ing['ingredient']."' OR cas REGEXP '[^\n\r]".$c."[$\n\r]|^".$c."$'");
+				
+				$q2 = mysqli_query($conn, "SELECT DISTINCT name,cat4,risk,type,cas FROM IFRALibrary WHERE name LIKE '".$ing['ingredient']."' OR cas = '".$cas['cas']."' GROUP BY name");
 
 				while($ifra = mysqli_fetch_array($q2)){
 			
