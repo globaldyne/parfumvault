@@ -3,7 +3,9 @@
 function searchIFRA($cas,$name,$conn){
 	if($cas !== '0'){//IGNORE VALUE FOR CARRIERS
 		if($cas){
-			$q = "cas LIKE '%$cas%'";
+			//$q = "cas LIKE '%$cas%'";
+			$q = "instr(`cas`, '$cas') > 0";
+			//$q = "cas REGEXP '[^\n\r]".$cas."[$\n\r]|^".$cas."$'";
 		}else{
 			$q = "name = '$name' OR synonyms LIKE '%$name%'";
 		}

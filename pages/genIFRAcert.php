@@ -121,13 +121,16 @@ at a maximum concentration level of:</span></font></p>
   		$cas = mysqli_fetch_array(mysqli_query($conn, "SELECT cas FROM ingredients WHERE name = '".$ing['ingredient']."'"));
 		if ($cas['cas']){
 			/*
-			if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM IFRALibrary WHERE name LIKE '".$ing['ingredient']."' OR cas LIKE '%".$cas['cas']."%' "))){
+			if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM IFRALibrary WHERE name LIKE '".$ing['ingredient']."' OR instr(`cas`, '".$cas['cas']."') > 0" ))){
 				$msg = 'None found';
 			}
 			*/
-			//echo '<pre>';
-			//echo "SELECT name,cat4,risk,type,cas FROM IFRALibrary WHERE name LIKE '".$ing['ingredient']."' OR cas LIKE '%".$cas['cas']."%' ;";
-				$q2 = mysqli_query($conn, "SELECT name,cat4,risk,type,cas FROM IFRALibrary WHERE name LIKE '".$ing['ingredient']."' OR cas = '".$cas['cas']."' ");
+				//$q2 = mysqli_query($conn, "SELECT name,cat4,risk,type,cas FROM IFRALibrary WHERE name LIKE '".$ing['ingredient']."' OR cas = '".$cas['cas']."' ");
+				echo '<pre>';
+				//echo "SELECT name,cat4,risk,type,cas FROM IFRALibrary WHERE name LIKE '".$ing['ingredient']."' OR cas REGEXP '[^\n\r]'cas[$\n\r]|^'cas$'";
+				$c = $cas['cas'];
+				$q2 = mysqli_query($conn, "SELECT name,cat4,risk,type,cas FROM IFRALibrary WHERE name LIKE '".$ing['ingredient']."' OR cas REGEXP '[^\n\r]".$c."[$\n\r]|^".$c."$'");
+
 				while($ifra = mysqli_fetch_array($q2)){
 			
 					$new_quantity = $ing['quantity']/$mg['total_mg']*$new_conc;
