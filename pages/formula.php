@@ -263,7 +263,7 @@ $('.replaceIngredient').editable({
 					  	//$cas = mysqli_fetch_array(mysqli_query($conn, "SELECT cas FROM ingredients WHERE name = '".$formula['ingredient']."'"));
 					 	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT cas, IFRA, price, ml, profile, profile FROM ingredients WHERE BINARY name = '".$formula['ingredient']."'"));
 
-						$limitIFRA = searchIFRA($ing_q['cas'],$formula['ingredient'],$conn);
+						$limitIFRA = searchIFRA($ing_q['cas'],$formula['ingredient'],null,$conn);
 						$limit = explode(' - ', $limitIFRA);
 					    $limit = $limit['0'];
 					  

@@ -74,7 +74,7 @@ $ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC
 					  <td align="center">'.$ingredient['odor'].'</td>
                       <td align="center">'.$ingredient['profile'].'</td>
 					  <td align="center">'.$ingredient['category'].'</td>';
-  					  if($limit = searchIFRA($ingredient['cas'],$ingredient['name'],$conn)){
+  					  if($limit = searchIFRA($ingredient['cas'],$ingredient['name'],null,$conn)){
 						  echo '<td align="center">'.nl2br(str_replace(' - ', "\n",$limit)).'</td>';
 					  }elseif($ingredient['IFRA']){
 						  echo '<td align="center">'.$ingredient['IFRA'].'%</td>';

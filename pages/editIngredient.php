@@ -65,14 +65,10 @@ if($_POST){
 	  }
    }
 
-	if(mysqli_query($conn, "UPDATE ingredients SET cas = '$cas', type = '$type', strength = '$strength', IFRA = '$IFRA', category='$category', supplier='$supplier', supplier_link='$supplier_link', profile='$profile', price='$price', tenacity='$tenacity', chemical_name='$chemical_name', flash_point='$flash_point', appearance='$appearance', notes='$notes', ml='$ml', odor='$odor', purity='$purity', allergen='$allergen' WHERE name='$ingID'")){
-			$msg.='<div class="alert alert-success alert-dismissible">
-  			Ingredient <strong>'.$ing['name'].'</strong> updated!
-			</div>';
+	if(mysqli_query($conn, "UPDATE ingredients SET cas = '$cas', type = '$type', strength = '$strength', IFRA = '$IFRA', category='$category', supplier='$supplier', supplier_link='$supplier_link', profile='$profile', price='$price', tenacity='$tenacity', chemical_name='$chemical_name', flash_point='$flash_point', appearance='$appearance', notes='$notes', ml='$ml', odor='$odor', purity='$purity', allergen='$allergen', formula='$formula' WHERE name='$ingID'")){
+			$msg.='<div class="alert alert-success alert-dismissible">Ingredient <strong>'.$ing['name'].'</strong> updated!</div>';
 		}else{
-			$msg.='<div class="alert alert-danger alert-dismissible">
-  			<strong>Error:</strong> Failed to update '.mysqli_error($conn).'!
-			</div>';
+			$msg.='<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> Failed to update!</div>';
 		}
 }
 
@@ -84,9 +80,7 @@ $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles");
 
 $sql = mysqli_query($conn, "SELECT * FROM ingredients WHERE name = '$ingID'");
 if(empty(mysqli_num_rows($sql))){
-	$msg='<div class="alert alert-danger alert-dismissible">
-  			<strong>Error:</strong> ingredient not found, please click <a href="?do=addIngredient">here</a> to add it first!
-			</div>';
+	$msg='<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> ingredient not found, please click <a href="?do=addIngredient">here</a> to add it first!</div>';
 	die($msg);
 }else{
 	$ing = mysqli_fetch_array($sql);
@@ -192,7 +186,7 @@ $.ajax({
                                 <td> Cat4 Limit %:</td>
                                 <td colspan="3">
                                 <?php
-								 	if($limit = searchIFRA($ing['cas'], $ing['name'],$conn)){
+								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn)){
 										echo $limit;
 									}else{
 								?>
@@ -282,6 +276,18 @@ $.ajax({
                               <tr>
                                 <td>Chemical Name:</td>
                                 <td colspan="3"><input name="chemical_name" type="text" class="form-control" id="chemical_name" value="<?php echo $ing['chemical_name']; ?>"/></td>
+                              </tr>
+                              <tr>
+                                <td>Formula:</td>
+                                <td colspan="3">
+								<?php
+								 	if($limit = searchIFRA($ing['cas'],$ing['name'],'formula',$conn)){
+										echo $limit;
+									}else{
+								?>
+                                <input name="formula" type="text" class="form-control" id="formula" value="<?php echo $ing['formula']; ?>">
+                                <?php } ?>
+                                </td>
                               </tr>
                               <tr>
                                 <td>Appearance:</td>
