@@ -29,6 +29,16 @@ CREATE TABLE `bottles` (
   `photo` varchar(255) COLLATE utf8_bin DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
+DROP TABLE IF EXISTS `customers`;
+CREATE TABLE `customers` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) COLLATE utf8_bin NOT NULL,
+  `address` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `email` varchar(225) COLLATE utf8_bin DEFAULT NULL,
+  `phone` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `web` varchar(255) COLLATE utf8_bin DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
 DROP TABLE IF EXISTS `formulas`;
 CREATE TABLE `formulas` (
   `id` int(11) NOT NULL,
@@ -133,6 +143,7 @@ CREATE TABLE `ingredients` (
   `price` varchar(10) COLLATE utf8_bin DEFAULT NULL,
   `tenacity` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `chemical_name` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `formula` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `flash_point` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `appearance` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `notes` text COLLATE utf8_bin DEFAULT NULL,
@@ -228,6 +239,9 @@ ALTER TABLE `batchIDHistory`
 ALTER TABLE `bottles`
   ADD PRIMARY KEY (`id`);
 
+ALTER TABLE `customers`
+  ADD UNIQUE KEY `id` (`id`);
+
 ALTER TABLE `formulas`
   ADD PRIMARY KEY (`id`);
 
@@ -271,6 +285,9 @@ ALTER TABLE `users`
 ALTER TABLE `bottles`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
+ALTER TABLE `customers`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
 ALTER TABLE `formulas`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
@@ -310,3 +327,4 @@ ALTER TABLE `users`
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
