@@ -1,7 +1,10 @@
-<?php require('../inc/sec.php');?>
 <?php
+require('../inc/sec.php');
+
 require_once('../inc/config.php');
 require_once('../inc/opendb.php');
+require_once('../func/fixIFRACas.php');
+
 if($_GET['do'] == 'backupDB'){
 	
 	$file = 'backup-'.date("d-m-Y").'.sql.gz';
@@ -73,6 +76,9 @@ if($_GET['do'] == 'backupDB'){
 				} catch (Exception $e) {
 					$err = '1';
 				}
+			}
+			if($_POST['updateCAS'] == '1'){
+				fixIFRACas($conn);
 			}
 			header("Location: maintenance.php?do=IFRA&err=$err");
 	}
@@ -174,8 +180,9 @@ if($_GET['do'] == 'backupDB'){
                                 </span></td>
                               </tr>
                               <tr>
-                                <td>&nbsp;</td>
-                                <td>&nbsp;</td>
+                                <td>Auto update CAS entries:</td>
+                                <td><input name="updateCAS" type="checkbox" id="updateCAS" value="1" />
+                                  *this is required if your IFRA file contains multiple CAS entries in the same row</td>
                               </tr>
                               <tr>
                                 <td><input type="submit" name="import_ifra" id="import" value="Import" /></td>
