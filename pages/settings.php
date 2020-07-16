@@ -1,7 +1,7 @@
 <?php if (!defined('pvault_panel')){ die('Not Found');}?>
 <div id="content-wrapper" class="d-flex flex-column">
-<?php require_once('pages/top.php'); ?>
 <?php 
+require_once('pages/top.php'); 
 
 if(($_POST) && $_GET['update'] == 'printer'){
 	$label_printer_addr = mysqli_real_escape_string($conn, $_POST['label_printer_addr']);
@@ -85,7 +85,6 @@ if(($_POST) && $_GET['update'] == 'printer'){
 	}
 	
 //PERFUME TYPES
-
 }elseif($_POST['edp'] && $_POST['edc'] && $_POST['edt'] && $_POST['parfum'] && $_GET['update'] == 'types'){
 	$edp = utf8_encode(htmlentities($_POST['edp']));
 	$edc = mysqli_real_escape_string($conn, $_POST['edc']);

@@ -319,12 +319,8 @@ $.ajax({
                             <p>
                               <input type="submit" name="save" id="submit" class="btn btn-info" value="Save" />
                             </p>
-          </div>  
-     </form>
-                </div></td>
-        </tr>
-</table>
 </div>
+</form>
 </div>
 
 </body>
