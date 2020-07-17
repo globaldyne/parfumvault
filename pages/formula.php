@@ -116,7 +116,7 @@ $.ajax({
 			$('#msg').html(data); 
 		}else{
 			$('#msg').html(data);
-			location.reload();
+			//location.reload();
 		}
     }
   });
@@ -166,7 +166,42 @@ $('.replaceIngredient').editable({
     });
 });
 
+$(document).ready(function() {
+    var groupColumn = 0;
+    var table = $('#formula').DataTable({
+        "columnDefs": [
+            { "visible": false, "targets": groupColumn }
+        ],
+        "order": [[ groupColumn, 'desc' ]],
+        "displayLength": 50,
+        "drawCallback": function ( settings ) {
+            var api = this.api();
+            var rows = api.rows( {page:'current'} ).nodes();
+            var last=null;
  
+            api.column(groupColumn, {page:'current'} ).data().each( function ( group, i ) {
+                if ( last !== group ) {
+                    $(rows).eq( i ).before(
+                        '<tr class="group noexport"><td colspan="7">'+group+' Notes</td></tr>'
+                    );
+ 
+                    last = group;
+                }
+            } );
+        }
+    } );
+ 
+    // Order by the grouping
+    $('#formula tbody').on( 'click', 'tr.group', function () {
+        var currentOrder = table.order()[0];
+        if ( currentOrder[0] === groupColumn && currentOrder[1] === 'asc' ) {
+            table.order( [ groupColumn, 'desc' ] ).draw();
+        }
+        else {
+            table.order( [ groupColumn, 'asc' ] ).draw();
+        }
+    } );
+} );
  
 </script>
 <div id="content-wrapper" class="d-flex flex-column">
@@ -227,10 +262,15 @@ $('.replaceIngredient').editable({
                       </th>
                     </tr>
                     <?php if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulas WHERE fid = '$fid'"))){?>
-                <table class="table table-bordered" id="formula" width="100%" cellspacing="0">
+                <table class="table table-bordered" <?php if($settings['grp_formula'] == '1'){?>id="formula" <?php } ?>width="100%" cellspacing="0">
                   <thead>
                     <tr class="noexport">
-                      <th colspan="6"><div class="progress">
+                    <?php if($settings['grp_formula'] == '1'){?>
+                      <th colspan="7">
+                    <?php }else{ ?>
+                      <th colspan="6">
+                    <?php } ?>                      
+                      <div class="progress">
   <div class="progress-bar" role="progressbar" style="width: <?php echo $base_calc; ?>%" aria-valuenow="<?php echo $base_calc;?>" aria-valuemin="0" aria-valuemax="<?php echo $settings['base_n'];?>"><span><?php echo $base_calc;?>% Base Notes</span></div>
   <div class="progress-bar bg-success" role="progressbar" style="width: <?php echo $heart_calc; ?>%" aria-valuenow="<?php echo $heart_calc; ?>" aria-valuemin="0" aria-valuemax="<?php echo $settings['heart_n'];?>"><span><?php echo $heart_calc;?>% Heart Notes</span></div>
   <div class="progress-bar bg-info" role="progressbar" style="width: <?php echo $top_calc; ?>%" aria-valuenow="<?php echo $top_calc; ?>" aria-valuemin="0" aria-valuemax="<?php echo $settings['top_n'];?>"><span><?php echo $top_calc;?>% Top Notes</span></div>
@@ -249,6 +289,7 @@ $('.replaceIngredient').editable({
                     </div>
                     </tr>
                     <tr>
+                      <?php if($settings['grp_formula'] == '1'){ echo '<th class="noexport"></th>'; } ?>
                       <th width="22%">Ingredient</th>
                       <th width="10%">Purity %</th>
                       <th width="10%">Dilutant</th>
@@ -260,8 +301,7 @@ $('.replaceIngredient').editable({
                   </thead>
                   <tbody id="formula_data">
                   <?php while ($formula = mysqli_fetch_array($formula_q)) {
-					  	//$cas = mysqli_fetch_array(mysqli_query($conn, "SELECT cas FROM ingredients WHERE name = '".$formula['ingredient']."'"));
-					 	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT cas, IFRA, price, ml, profile, profile FROM ingredients WHERE BINARY name = '".$formula['ingredient']."'"));
+					 	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT cas, IFRA, price, ml, profile FROM ingredients WHERE BINARY name = '".$formula['ingredient']."'"));
 
 						$limitIFRA = searchIFRA($ing_q['cas'],$formula['ingredient'],null,$conn);
 						$limit = explode(' - ', $limitIFRA);
@@ -281,8 +321,15 @@ $('.replaceIngredient').editable({
 							$ingName = $formula['ingredient'];
 						}
 						
-						echo'<tr>
-                      <td align="center" class="'.$ing_q['profile'].'" id="ingredient"><a href="pages/editIngredient.php?id='.$formula['ingredient'].'" class="popup-link">'.$ingName.'</a> '.checkIng($formula['ingredient'],$conn).'</td>
+						echo'<tr>';
+						if($settings['grp_formula'] == '1'){
+							if(empty($ing_q['profile'])){
+								echo '<td class="noexport">Unknown</td>';
+							}else{
+								echo '<td class="noexport">'.$ing_q['profile'].'</td>';
+							}
+						}
+                      echo '<td align="center" class="'.$ing_q['profile'].'" id="ingredient"><a href="pages/editIngredient.php?id='.$formula['ingredient'].'" class="popup-link">'.$ingName.'</a> '.checkIng($formula['ingredient'],$conn).'</td>
                       <td data-name="concentration" class="concentration" data-type="text" align="center" data-pk="'.$formula['ingredient'].'">'.$formula['concentration'].'</td>';
 					  if($formula['concentration'] == '100'){
 						  echo '<td align="center">None</td>';
@@ -318,6 +365,7 @@ $('.replaceIngredient').editable({
                   </tbody>
                   <tfoot>
                     <tr>
+                      <?php if($settings['grp_formula'] == '1'){ echo '<th></th>'; }?>
                       <th width="22%">Total: <?php echo countElement("formulas WHERE name = '$f_name'" ,$conn);?></th>
                       <th></th>
                       <th></th>

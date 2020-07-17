@@ -30,7 +30,7 @@ if($_GET['formula'] && $_GET['do']){
 		mysqli_query($conn,"UPDATE formulas SET quantity = '$nq' WHERE name = '$formula' AND quantity = '".$cur['quantity']."' AND ingredient = '".$cur['ingredient']."'");
 	}
 
-//DELETING
+//DELET INGREDIENT
 }elseif($_GET['action'] == 'deleteIng' && $_GET['ingID'] && $_GET['ing']){
 	$id = mysqli_real_escape_string($conn, $_GET['ingID']);
 	$ing = mysqli_real_escape_string($conn, $_GET['ing']);
@@ -47,7 +47,8 @@ if($_GET['formula'] && $_GET['do']){
 				'.$ing.' cannot be removed from the formula!
 				</div>';
 	}
-//ADDING
+	
+//ADD INGREDIENT
 }elseif($_GET['action'] == 'addIng' && $_GET['fname']){// && $_GET['quantity'] && $_GET['ingredient']){
 	$fname = mysqli_real_escape_string($conn, $_GET['fname']);
 	$ingredient = mysqli_real_escape_string($conn, $_GET['ingredient']);
@@ -56,17 +57,13 @@ if($_GET['formula'] && $_GET['do']){
 	$dilutant = mysqli_real_escape_string($conn, $_GET['dilutant']);
 
 	if (empty($quantity) || empty($concentration)){
-		echo '<div class="alert alert-danger alert-dismissible">
-		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-  		<strong>Error: </strong>Missing fields</div>';
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>Missing fields</div>';
 	}else
 		
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT ingredient FROM formulas WHERE ingredient = '$ingredient' AND name = '$fname'"))){
-		echo '<div class="alert alert-danger alert-dismissible">
-		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
   		<strong>Error: </strong>'.$ingredient.' already exists in formula!
-		'.mysqli_error($conn).'
-		</div>';
+		'.mysqli_error($conn).'</div>';
 	}else{
 
 		if(mysqli_query($conn,"INSERT INTO formulas(fid,name,ingredient,ingredient_id,concentration,quantity,dilutant) VALUES('".base64_encode($fname)."','$fname','$ingredient','$ingredient_id','$concentration','$quantity','$dilutant')")){
@@ -82,7 +79,7 @@ if($_GET['formula'] && $_GET['do']){
 		}
 	}
 	
-//REPLACE
+//REPLACE INGREDIENT
 }elseif($_GET['action'] == 'repIng' && $_GET['fname']){
 	$fname = mysqli_real_escape_string($conn, $_GET['fname']);
 	$ingredient = mysqli_real_escape_string($conn, $_REQUEST['value']);
@@ -109,7 +106,7 @@ if($_GET['formula'] && $_GET['do']){
 		}
 	}
 
-//CLONE
+//CLONE FORMULA
 }elseif($_GET['action'] == 'clone' && $_GET['formula']){
 	$fname = mysqli_real_escape_string($conn, $_GET['formula']);
 	$fid = base64_encode($fname);
@@ -121,7 +118,7 @@ if($_GET['formula'] && $_GET['do']){
   				<strong>Error: </strong>'.$newName.' already exists, please remove or rename it first!</div>';
 		}else{
 			$sql.=mysqli_query($conn, "INSERT INTO formulasMetaData (fid, name, notes, profile, image, sex) SELECT '$newFid', '$newName', notes, profile, image, sex FROM formulasMetaData WHERE fid = '$fid'");
-			$sql.=mysqli_query($conn, "INSERT INTO formulas (fid, name, ingredient, ingredient_id, concentration, quantity) SELECT '$newFid', '$newName', ingredient, ingredient_id, concentration, quantity FROM formulas WHERE fid = '$fid'");
+			$sql.=mysqli_query($conn, "INSERT INTO formulas (fid, name, ingredient, ingredient_id, concentration, dilutant, quantity) SELECT '$newFid', '$newName', ingredient, ingredient_id, concentration, dilutant, quantity FROM formulas WHERE fid = '$fid'");
 		}
 	if($sql){
 		echo '<div class="alert alert-success alert-dismissible">
@@ -131,6 +128,18 @@ if($_GET['formula'] && $_GET['do']){
 	}
 	
 	
+//DELETE FORMULA
+}elseif($_GET['action'] == 'delete' && $_GET['fid']){
+	$fid = mysqli_real_escape_string($conn, $_GET['fid']);
+	if(mysqli_query($conn, "DELETE FROM formulas WHERE fid = '$fid'")){
+		mysqli_query($conn, "DELETE FROM formulasMetaData WHERE fid = '$fid'");
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Formula deleted!</div>';
+	}else{
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error</strong> deleting '.$fid.' formula!</div>';
+	}
+
+
+
 //PRINTING
 }elseif($_GET['action'] == 'printLabel' && $_GET['name']){
 	$name = $_GET['name'];

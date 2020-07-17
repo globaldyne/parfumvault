@@ -96,4 +96,24 @@ $.ajax({
     }
   });
 };
+
+function deleteMe(deleteFormulaID) {	  
+$.ajax({ 
+    url: 'pages/manageFormula.php', 
+	type: 'get',
+    data: {
+		action: "delete",
+		fid: deleteFormulaID,
+		},
+	dataType: 'html',
+    success: function (data) {
+        if ( data.indexOf("Error") > -1 ) {
+			$('#msg').html(data); 
+		}else{
+			$('#msg').html(data);
+			location.reload();
+		}
+    }
+  });
+};
 </script>

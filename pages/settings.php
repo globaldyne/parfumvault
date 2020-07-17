@@ -74,11 +74,17 @@ if(($_POST) && $_GET['update'] == 'printer'){
 	$top_n = mysqli_real_escape_string($conn, $_POST['top_n']);
 	$heart_n = mysqli_real_escape_string($conn, $_POST['heart_n']);
 	$base_n = mysqli_real_escape_string($conn, $_POST['base_n']);
+	$grp_formula = mysqli_real_escape_string($conn, $_POST['grp_formula']);
 	$chem_vs_brand = mysqli_real_escape_string($conn, $_POST['chem_vs_brand']);
+	
 	if(empty($chem_vs_brand)){
 		$chem_vs_brand = '0';
 	}
-	if(mysqli_query($conn, "UPDATE settings SET currency = '$currency', top_n = '$top_n', heart_n = '$heart_n', base_n = '$base_n', chem_vs_brand = '$chem_vs_brand'")){
+	if(empty($grp_formula)){
+		$grp_formula = '0';
+	}
+	
+	if(mysqli_query($conn, "UPDATE settings SET currency = '$currency', top_n = '$top_n', heart_n = '$heart_n', base_n = '$base_n', chem_vs_brand = '$chem_vs_brand', grp_formula = '$grp_formula'")){
 		$msg = '<div class="alert alert-success alert-dismissible">Settings updated!</div>';
 	}else{
 		$msg = '<div class="alert alert-danger alert-dismissible">An error occured. ('.mysqli_error($conn).')</div>';	
@@ -108,10 +114,7 @@ if(($_POST) && $_GET['update'] == 'printer'){
 		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
   		<strong>Error: </strong>Password must be at least 5 chars long!</div>';
 	}elseif(mysqli_num_rows(mysqli_query($conn, "SELECT username FROM users WHERE username = '$username' OR email = '$email' "))){
-		$msg='<div class="alert alert-danger alert-dismissible">
-		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-  		<strong>Error: </strong>'.$username.' already exists!
-		</div>';
+		$msg='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$username.' already exists!</div>';
 	}elseif(mysqli_query($conn, "INSERT INTO users (username,password,fullName,email) VALUES ('$username', PASSWORD('$password'), '$fullName', '$email')")){
 		
 		$msg = '<div class="alert alert-success alert-dismissible">User added!</div>';
@@ -153,30 +156,16 @@ if(($_POST) && $_GET['update'] == 'printer'){
 }elseif($_GET['action'] == 'delete' && $_GET['sup_id']){
 	$sup_id = mysqli_real_escape_string($conn, $_GET['sup_id']);
 	if(mysqli_query($conn, "DELETE FROM ingSuppliers WHERE id = '$sup_id'")){
-		
-		$msg = '<div class="alert alert-success alert-dismissible">
-		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-  		Supplier deleted!
-		</div>';
+		$msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Supplier deleted!</div>';
 	}else{
-		$msg = '<div class="alert alert-danger alert-dismissible">
-		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-  		Error deleting supplier.
-		</div>';
+		$msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error deleting supplier.</div>';
 	}
 }elseif($_GET['action'] == 'delete' && $_GET['cat_id']){
 	$cat_id = mysqli_real_escape_string($conn, $_GET['cat_id']);
 	if(mysqli_query($conn, "DELETE FROM ingCategory WHERE id = '$cat_id'")){
-		
-		$msg = '<div class="alert alert-success alert-dismissible">
-		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-  		Category deleted!
-		</div>';
+		$msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Category deleted!</div>';
 	}else{
-		$msg = '<div class="alert alert-danger alert-dismissible">
-		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-  		Error deleting category.
-		</div>';
+		$msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error deleting category.</div>';
 	}
 
 }elseif($_GET['action'] == 'delete' && $_GET['user_id']){
@@ -241,12 +230,17 @@ $(function() {
           <td colspan="4"><?php echo $msg; ?></td>
           </tr>
         <tr>
-          <td width="6%">Currency:</td>
+          <td width="7%" height="29">Currency:</td>
           <td colspan="2"><input name="currency" type="text" class="form-control" id="currency" value="<?php echo utf8_encode($settings['currency']);?>"/></td>
           <td width="76%">&nbsp;</td>
           </tr>
         <tr>
-          <td>Chemical names</td>
+          <td height="28">Group Formula:</td>
+          <td colspan="2"><input name="grp_formula" type="checkbox" id="grp_formula" value="1" <?php if($settings['grp_formula'] == '1'){ ?> checked="checked" <?php } ?>/></td>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td height="32">Chem. names</td>
           <td colspan="2"><input name="chem_vs_brand" type="checkbox" id="chem_vs_brand" value="1" <?php if($settings['chem_vs_brand'] == '1'){ ?> checked="checked" <?php } ?>/></td>
           <td>&nbsp;</td>
         </tr>
@@ -254,12 +248,13 @@ $(function() {
           <td colspan="4">&nbsp;</td>
           </tr>
         <tr>
-          <td colspan="3"><h4 class="m-0 mb-4 text-primary">Pyramid View</h4></td>
+          <td colspan="3"><h4 class="m-0 mb-4 text-primary">Pyramid View</h4>
+            <hr></td>
           <td>&nbsp;</td>
         </tr>
         <tr>
           <td>Top notes:</td>
-          <td width="10%"><input name="top_n" type="text" class="form-control" id="top_n" value="<?php echo $settings['top_n'];?>"/></td>
+          <td width="9%"><input name="top_n" type="text" class="form-control" id="top_n" value="<?php echo $settings['top_n'];?>"/></td>
           <td width="8%">%</td>
           <td>&nbsp;</td>
         </tr>

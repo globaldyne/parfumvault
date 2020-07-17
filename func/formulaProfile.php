@@ -1,5 +1,6 @@
-<?php if (!defined('pvault_panel')){ die('Not Found');}?>
-<?php
+<?php 
+if (!defined('pvault_panel')){ die('Not Found');}
+
 function formulaProfile($conn, $profile, $sex){
 
 	if(empty($profile) && empty($sex)){
@@ -23,7 +24,7 @@ function formulaProfile($conn, $profile, $sex){
 		echo '<td align="center"><a href="pages/getFormMeta.php?id='.$meta['id'].'" class="fas fa-comment-dots popup-link"></a></td>';
 		echo '<td align="center">'.$meta['created'].'</td>';
 		?>
-		<td align="center"><a href="javascript:cloneMe('<?php echo $formula['name']; ?>');" class="fas fa-copy" rel="tipsy" title="Clone <?php echo $formula['name']; ?>"</a>  &nbsp; <a href="?do=listFormulas&action=delete&name=<?php echo $formula['name']; ?>" onclick="return confirm('Delete <?php echo $formula['name']; ?> Formula?');" class="fas fa-trash" rel="tipsy" title="Delete <?php echo $formula['name']; ?>"></a></td></tr>
+		<td align="center"><a href="javascript:cloneMe('<?php echo $formula['name']; ?>')" class="fas fa-copy" rel="tipsy" title="Clone <?php echo $formula['name']; ?>"></a>  &nbsp; <a href="javascript:deleteMe('<?php echo $formula['fid']; ?>')" onclick="return confirm('Delete <?php echo $formula['name']; ?> Formula?')" class="fas fa-trash" rel="tipsy" title="Delete <?php echo $formula['name']; ?>"></a></td></tr>
 	<?php
     }
 	echo '</tr></tbody></table>';
