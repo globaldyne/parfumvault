@@ -21,6 +21,7 @@ function fixIFRACas($conn){
 			}
 		}
 		mysqli_query($conn, "DELETE FROM IFRALibrary WHERE cas REGEXP '\n'");
+		mysqli_query($conn, "DELETE FROM IFRALibrary WHERE name = '' OR ifra_key = 'Key|String'");
 		
 }
 ?>
