@@ -11,7 +11,7 @@ function genBatchID($length=16) {
         $batchID .= $codeAlphabet[random_int(0, $max-1)];
     }
 
-    return $batchID;
+    return $batchID.date('mY');
 }
 
 ?>

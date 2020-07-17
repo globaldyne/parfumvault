@@ -10,7 +10,7 @@
   <tr>
     <td><p>A sophisticated tool to help perfumers organize their formulas, ingredients and inventory.
     </p>
-      <pre>&nbsp;</pre>
+      <pre><?php echo file_get_contents('../LICENSE.txt');?></pre>
 </td>
     <td>&nbsp;</td>
   </tr>

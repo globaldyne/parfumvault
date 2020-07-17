@@ -195,7 +195,7 @@ if($_GET['do'] == 'backupDB'){
                               <tr>
                                 <td colspan="2"><p class="alert-link">Notes:</p>
                                   <p class="alert-link">IMPORTANT:</p>
-                                  <p class="alert-link"> This operation will wipe out any data already in your IFRA Library, so please make sure the file you uploading is in right format.</p>
+                                  <p class="alert-link"> This operation will wipe out any data already in your IFRA Library, so please make sure the file you uploading is in the right format.</p>
                                   <p class="alert-link">The IFRA xls can be downloaded from its official <a href="https://ifrafragrance.org/safe-use/standards-guidance" target="_blank">web site</a></p>
                                   <p class="alert-link">BEFORE IMPORT:</p>
                                   <ul>

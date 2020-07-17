@@ -8,3 +8,4 @@ push.sh
 inc/config.php
 *.swp
 t.php
+tests/
