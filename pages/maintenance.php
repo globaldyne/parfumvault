@@ -180,9 +180,9 @@ if($_GET['do'] == 'backupDB'){
                                 </span></td>
                               </tr>
                               <tr>
-                                <td>Auto update CAS entries:</td>
+                                <td height="46">Manipulate file:</td>
                                 <td><input name="updateCAS" type="checkbox" id="updateCAS" value="1" />
-                                  *this is required if your IFRA file contains multiple CAS entries in the same row</td>
+                                  <span class="font-italic">*this is required if you are importing the original IFRA file</span></td>
                               </tr>
                               <tr>
                                 <td><input type="submit" name="import_ifra" id="import" value="Import" /></td>
@@ -193,16 +193,10 @@ if($_GET['do'] == 'backupDB'){
                                 <td>&nbsp;</td>
                               </tr>
                               <tr>
-                                <td colspan="2"><p class="alert-link">Notes:</p>
+                                <td colspan="2"><hr>
                                   <p class="alert-link">IMPORTANT:</p>
-                                  <p class="alert-link"> This operation will wipe out any data already in your IFRA Library, so please make sure the file you uploading is in the right format.</p>
-                                  <p class="alert-link">The IFRA xls can be downloaded from its official <a href="https://ifrafragrance.org/safe-use/standards-guidance" target="_blank">web site</a></p>
-                                  <p class="alert-link">BEFORE IMPORT:</p>
-                                  <ul>
-                                    <li>Take a backup.</li>
-                                    <li>Open the xlsx file and remove the first 3 rows which contain column names and file info.</li>
-                                  </ul>
-                                </td>
+<p class="alert-link"> This operation will wipe out any data already in your IFRA Library, so please make sure the file you uploading is in the right format and have taken a <a href="maintenance.php?do=backupDB">backup</a> before.</p>
+                                <p class="alert-link">The IFRA xls can be downloaded from its official <a href="https://ifrafragrance.org/safe-use/standards-guidance" target="_blank">web site</a></p></td>
                  </tr>
                             </table>
 </form>
