@@ -1,6 +1,6 @@
 # JBs Perfumers Vault
 
-A simple tool to help perfumers organize their formulas and ingredients.
+A sophisticated tool to help perfumers organize their formulas, ingredients and inventory.
 
 This is a FREE software provided as is without ANY warranty under MIT license.
 
