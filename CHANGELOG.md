@@ -1,4 +1,7 @@
-# Change Log
+# CHANGELOG
+
+### Version 2.0.5
+- ADD: Formula calculation tools
 
 ### Version 2.0.1
 - ADD: Progress bar to indicate noes level usage
