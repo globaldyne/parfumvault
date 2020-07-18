@@ -10,28 +10,21 @@ if($_POST['fname']){
 	$profile = mysqli_real_escape_string($conn, $_POST['profile']);
 	$fid = base64_encode($fname);
 	
-if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM formulasMetaData WHERE name = '$fname'"))){
-		$msg='<div class="alert alert-danger alert-dismissible">
-		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-  		<strong>Error: </strong>'.$fname.' already exists! Click <a href="?do=Formula&name='.$fname.'">here</a> to view/edit!
+if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulasMetaData WHERE fid = '$fid'"))){
+		$msg='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$fname.' already exists! Click <a href="?do=Formula&name='.$fname.'">here</a> to view/edit!
 		</div>';
 	}else{
 		$q = mysqli_query($conn, "INSERT INTO formulasMetaData (fid, name, notes, profile, image) VALUES ('$fid', '$fname', '$notes', '$profile', '$def_app_img')");
 			if($q){
-				$msg='<div class="alert alert-success alert-dismissible">
-					<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-					<strong><a href="?do=Formula&name='.$fname.'">'.$fname.'</a></strong> added!</div>';
+				$msg='<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong><a href="?do=Formula&name='.$fname.'">'.$fname.'</a></strong> added!</div>';
 			}else{
-				echo '<div class="alert alert-danger alert-dismissible">
-					<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-					<strong>Error:</strong> '.mysqli_error($conn).'</div>';
+				echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> '.mysqli_error($conn).'</div>';
 			}
 	}
 
 }
 ?>
 <h2 class="m-0 mb-4 text-primary">New Formula</h2>
-<p>*All ingredient fields required</p>
 <?php echo $msg;?>
         </div>
 <table width="94%" border="0" align="center">

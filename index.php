@@ -159,19 +159,28 @@ $(document).ready(function() {
         <a class="nav-link" href="?do=IFRA">
           <i class="fas fa-fw fa-university"></i>
           <span>IFRA Library</span></a>
-      </li>
+        </li>
 
         <li class="nav-item">
         <a class="nav-link" href="?do=insights">
           <i class="fas fa-fw fa-chart-area"></i>
           <span>Insights</span></a>
-      </li>
+        </li>
+      <hr class="sidebar-divider d-none d-md-block">
       
+        <li class="nav-item">
+        <a class="nav-link" href="?do=tools">
+          <i class="fas fa-fw fa-tools"></i>
+          <span>Tools</span></a>
+       </li>
+
+      <hr class="sidebar-divider d-none d-md-block">
+            
         <li class="nav-item">
         <a class="nav-link" href="?do=settings">
           <i class="fas fa-fw fa-cog"></i>
           <span>Settings</span></a>
-      </li>
+       </li>
       
       <hr class="sidebar-divider d-none d-md-block">
     </ul>
@@ -204,6 +213,8 @@ $(document).ready(function() {
 			require 'pages/addLid.php';	
 		}elseif($_GET['do'] == 'batches'){
 			require 'pages/batches.php';				
+		}elseif($_GET['do'] == 'tools'){
+			require 'pages/tools.php';	
 			
 		}else{
 			require 'pages/dashboard.php';
