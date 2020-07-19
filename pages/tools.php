@@ -1,10 +1,10 @@
 <?php
 //if (!defined('pvault_panel')){ die('Not Found');}
-if($_GET['wis'] && $_GET['ofp']){
+if(is_numeric($_GET['wis']) && is_numeric($_GET['ofp'])){
 	
 	echo $_GET['wis']/100*$_GET['ofp'];
 	exit;
-}elseif($_GET['pof'] && $_GET['quantity']){
+}elseif(is_numeric($_GET['pof']) && is_numeric($_GET['quantity'])){
 	
 	echo $_GET['pof'] / $_GET['quantity']*100;
 	exit;	
@@ -60,24 +60,24 @@ $.ajax({
 <table width="100%" border="0">
   <tr>
     <td width="29%">What is 
-      <input name="wis" type="text" id="wis" value="20"> 
+      <input name="wis" type="text" id="wis"> 
       % of 
-      <input name="ofp" type="text" id="ofp" value="30"></td>
+      <input name="ofp" type="text" id="ofp"></td>
     <td colspan="2"><a href="javascript:calc1()" id="calc1">Calculate</a></td>
     </tr>
   <tr>
     <td colspan="3"><hr></td>
     </tr>
   <tr>
-    <td><input name="pof" type="text" id="pof" value="20"> is what percent of 
-      <input name="quantity" type="text" id="quantity" value="30"></td>
+    <td><input name="pof" type="text" id="pof"> is what percent of 
+      <input name="quantity" type="text" id="quantity"></td>
     <td colspan="2"><a href="javascript:calc2()" id="calc2">Calculate</a></td>
     </tr>
   <tr>
     <td colspan="3"><hr></td>
     </tr>
   <tr>
-    <td><div id="res"></div></td>
+    <td><strong><div id="res"></div></strong></td>
     <td width="6%">&nbsp;</td>
     <td width="65%">&nbsp;</td>
   </tr>

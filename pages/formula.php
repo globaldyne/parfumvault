@@ -280,7 +280,6 @@ $(document).ready(function() {
                       <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
                       <div class="dropdown-menu">
                         <a class="dropdown-item" id="csv" href="#">Export to CSV</a>
-                   <!-- <a class="dropdown-item" href="javascript:printLabel();" onclick="return confirm('Print label?');">Print Label</a> -->
                         <a class="dropdown-item popup-link" href="pages/viewPyramid.php?formula=<?php echo $f_name; ?>">View Pyramid</a>                                                
                         <a class="dropdown-item" href="javascript:manageQuantity('multiply')">Multiply x2</a>
                         <a class="dropdown-item" href="javascript:manageQuantity('divide')">Divide x2</a>

@@ -8,7 +8,7 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 
 DROP TABLE IF EXISTS `batchIDHistory`;
 CREATE TABLE `batchIDHistory` (
-  `id` varchar(16) COLLATE utf8_bin NOT NULL,
+  `id` varchar(50) COLLATE utf8_bin NOT NULL,
   `fid` varchar(255) COLLATE utf8_bin NOT NULL,
   `pdf` varchar(255) COLLATE utf8_bin NOT NULL,
   `created` timestamp NULL DEFAULT current_timestamp()
@@ -212,6 +212,7 @@ CREATE TABLE `settings` (
   `EDC` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `Parfum` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `chem_vs_brand` int(11) NOT NULL,
+  `grp_formula` int(11) DEFAULT NULL,
   `brandName` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `brandAddress` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `brandEmail` varchar(255) COLLATE utf8_bin DEFAULT NULL,
@@ -219,8 +220,8 @@ CREATE TABLE `settings` (
   `brandLogo` varchar(255) COLLATE utf8_bin DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-INSERT INTO `settings` (`id`, `label_printer_addr`, `label_printer_model`, `label_printer_size`, `label_printer_font_size`, `currency`, `top_n`, `heart_n`, `base_n`, `EDP`, `EDT`, `EDC`, `Parfum`, `chem_vs_brand`, `brandName`, `brandAddress`, `brandEmail`, `brandPhone`, `brandLogo`) VALUES
-(1, '192.168.1.106', 'QL-810W', '62 --red', 70, '&pound;', '25', '50', '25', '20', '15', '4', '30', 0, 'JB Parfum LTD', '366 Queenstown Road', 'info@johnbelekios.com', '07736279074', NULL);
+INSERT INTO `settings` (`id`, `label_printer_addr`, `label_printer_model`, `label_printer_size`, `label_printer_font_size`, `currency`, `top_n`, `heart_n`, `base_n`, `EDP`, `EDT`, `EDC`, `Parfum`, `chem_vs_brand`, `grp_formula`, `brandName`, `brandAddress`, `brandEmail`, `brandPhone`, `brandLogo`) VALUES
+(1, '1.2.3.4', 'QL-810W', '12', 70, '&pound;', '25', '50', '25', '20', '15', '4', '30', 0, 1, '', '', '', '', NULL);
 
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
@@ -327,4 +328,3 @@ ALTER TABLE `users`
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
