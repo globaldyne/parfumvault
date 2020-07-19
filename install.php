@@ -30,9 +30,18 @@ $allowed_ext = "pdf, doc, docx, xls, csv, xlsx, png, jpg, jpeg, gif";
 $max_filesize = "4194304"; //in bytes
 ?>
 ';
-					if(file_put_contents('inc/config.php', $conf) == FALSE){
+					if(file_exists('.DOCKER') == TRUE){
+						$cfg = '/config/config.php';	
+					}else{
+						$cfg = 'inc/config.php';
+					}
+
+					if(file_put_contents($cfg, $conf) == FALSE){
 						$msg = '<div class="alert alert-danger alert-dismissible">Error: failed to create config file! Make sure your web server has write permissions to the install directory.</div>';
 					}else{
+						if(file_exists('.DOCKER') == TRUE){
+							symlink($cfg, 'inc/config.php');
+						}
 						$msg = '<div class="alert alert-success alert-dismissible">System configured!</div>';
 						header('location: login.php');
 					}
