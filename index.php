@@ -171,7 +171,7 @@ $(document).ready(function() {
         <li class="nav-item">
         <a class="nav-link" href="?do=tools">
           <i class="fas fa-fw fa-tools"></i>
-          <span>Tools</span></a>
+          <span>Calculation Tools</span></a>
        </li>
 
       <hr class="sidebar-divider d-none d-md-block">

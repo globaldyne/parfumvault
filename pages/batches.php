@@ -31,9 +31,13 @@ $q = mysqli_query($conn, "SELECT * FROM batchIDHistory");
                     <tr>
                       <td align="center">'.$sql['id'].'</td>
 					  <td align="center">'.base64_decode($sql['fid']).'</td>
-					  <td align="center">'.$sql['created'].'</td>
-                      <td align="center"><a href="'.$sql['pdf'].'" class="fas fa-file-pdf"></a></td>
-					</tr>';
+					  <td align="center">'.$sql['created'].'</td>';
+					  if(file_exists($sql['pdf']) === FALSE){
+                      	echo '<td align="center"><a href="#" class="fas fa-exclamation-triangle"></a></td>';
+					  }else{
+                      	echo '<td align="center"><a href="'.$sql['pdf'].'" class="fas fa-file-pdf"></a></td>';
+					  }
+					echo '</tr>';
 				  }
                     ?>
                   </tbody>

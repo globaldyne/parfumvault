@@ -16,6 +16,19 @@ if($_GET['do'] == 'backupDB'){
 	$cmd = "mysqldump -u $dbuser --password=$dbpass $dbname | gzip --best";   
 	passthru($cmd);
 	
+}elseif($_GET['do'] == 'backupFILES'){
+	
+	$file = 'backup-'.date("d-m-Y").'.files.gz';
+	$mime = "application/x-gzip";
+	
+	$cmd = "tar -czvf ../$tmp_path$file ../$uploads_path";   
+	shell_exec($cmd);
+	
+	header( 'Content-Type: '.$mime );
+	header( 'Content-Disposition: attachment; filename="' ."tmp/".$file. '"' );
+	
+	
+	
 }elseif(isset($_POST['restore'])){
 	if($_FILES["file"]["size"] > 0){
 
