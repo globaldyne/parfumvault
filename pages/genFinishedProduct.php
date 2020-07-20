@@ -32,16 +32,16 @@ if($_POST['formula']){
 
 	
 	if($_POST['batchID'] == '1'){
-		if (!file_exists("batches")) {
-			mkdir("batches", 0740, true);
+		if (!file_exists($uploads_path.'batches')) {
+			mkdir($uploads_path.'batches', 0740, true);
         }
 		define('FPDF_FONTPATH','./fonts');
 		$batchID = genBatchID();
 		$fid = base64_encode($f_name);
-		$batchFile = 'batches/'.$batchID;
+		$batchFile = $uploads_path.'batches/'.$batchID;
 		
 		mysqli_query($conn, "INSERT INTO batchIDHistory (id,fid,pdf) VALUES ('$batchID','$fid','$batchFile')");
-		genBatchPDF($fid,$batchID,$bottle,$new_conc,$mg['total_mg'],$ver,$conn);
+		genBatchPDF($fid,$batchID,$bottle,$new_conc,$mg['total_mg'],$ver,$uploads_path,$conn);
 	}else{
 		$batchID = 'N/A';
 	}
@@ -105,7 +105,7 @@ $.ajax({
              <h2 class="m-0 font-weight-bold text-primary"><a href="?do=genFinishedProduct"><?php echo $meta['product_name'];?></a></h2>
              <h5 class="m-1 text-primary">Formula: <?php echo $meta['name'];?></h5>
              <h5 class="m-1 text-primary"><?php echo "Bottle: ".$bottle."ml Concentration: ".$type."%";?></h5>
-             <h5 class="m-1 text-primary"><?php if($_POST['batchID'] == '1'){ echo 'Batch ID: <a href="batches/'.$batchID.'">'.$batchID.'<a>'; }else{ echo 'Batch ID: <a href="#">N/A</a>';}?></h5>
+             <h5 class="m-1 text-primary"><?php if($_POST['batchID'] == '1'){ echo 'Batch ID: <a href="'.$uploads_path.'batches/'.$batchID.'">'.$batchID.'<a>'; }else{ echo 'Batch ID: <a href="#">N/A</a>';}?></h5>
         	<?php }else{ ?>
               <h2 class="m-0 font-weight-bold text-primary"><a href="?do=genFinishedProduct">Generate Finished Product</a></h2>
             <?php } ?>

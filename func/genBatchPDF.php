@@ -1,6 +1,6 @@
 <?php
 if (!defined('pvault_panel')){ die('Not Found');}
-function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $ver, $conn){
+function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $ver, $uploads_path, $conn){
 	class PDF extends FPDF {
 		function Header() {
 			global $fid;
@@ -89,7 +89,7 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $ver, $conn){
 	$pdf->SetFont('Arial','B',10);
 	$pdf->MultiCell(250,10,$finalText);
 	
-	$pdf->Output('F','batches/'.$batchID);
+	$pdf->Output('F',$uploads_path.'batches/'.$batchID);
 	//$pdf->Output('I');
 }
 

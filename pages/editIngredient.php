@@ -47,8 +47,8 @@ if($_POST){
       $file_ext=strtolower(end(explode('.',$_FILES['SDS']['name'])));
 	  
 	  if(empty($err)==true){
-		 if (!file_exists("../$SDS_path")) {
-    		 mkdir("../$SDS_path", 0740, true);
+		 if (file_exists('../'.$uploads_path.'SDS/') === FALSE) {
+    		 mkdir('../'.$uploads_path.'SDS/', 0740, true);
 	  	 }
 	  }
 	  
@@ -59,8 +59,8 @@ if($_POST){
 		 $msg.='<div class="alert alert-danger alert-dismissible"><strong>File upload error: </strong>File size must not exceed '.formatBytes($max_filesize).'</div>';
       }else{
 	  
-         move_uploaded_file($file_tmp,"../$SDS_path".base64_encode($file_name));
-		 $SDSF = "../$SDS_path".base64_encode($file_name);
+         move_uploaded_file($file_tmp,'../'.$uploads_path.'SDS/'.base64_encode($file_name));
+		 $SDSF = $uploads_path.'SDS/'.base64_encode($file_name);
 		 mysqli_query($conn, "UPDATE ingredients SET SDS = '$SDSF' WHERE name='$ingID'");
 	  }
    }

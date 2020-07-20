@@ -37,11 +37,13 @@ if($_POST['name']){
       $file_tmp =  $_FILES['SDS']['tmp_name'];
       $file_type = $_FILES['SDS']['type'];
       $file_ext=strtolower(end(explode('.',$_FILES['SDS']['name'])));
-      if(empty($err)==true){
-		if (!file_exists("../$SDS_path")) {
-    	 mkdir("../$SDS_path", 0740, true);
-	  	}
-	  }
+
+		if(empty($err)==true){
+			 if (file_exists($uploads_path.'SDS/') === FALSE) {
+				 mkdir($uploads_path.'SDS/', 0740, true);
+			 }
+		  }
+		  
       $ext = explode(",",$allowed_ext);
 
  	  if(in_array($file_ext,$ext)=== false){
@@ -49,8 +51,8 @@ if($_POST['name']){
       }elseif($file_size > $max_filesize){
 		 $msg.='<div class="alert alert-danger alert-dismissible"><strong>File upload error: </strong>File size must not exceed '.formatBytes($max_filesize).'</div>';
       }else{
-         move_uploaded_file($file_tmp,"uploads/SDS/".base64_encode($file_name));
-		 $SDSF = "uploads/SDS/".base64_encode($file_name);
+         move_uploaded_file($file_tmp,$uploads_path.'SDS/'.base64_encode($file_name));
+		 $SDSF = $uploads_path.'SDS/'.base64_encode($file_name);
       }
    }
 
