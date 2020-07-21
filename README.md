@@ -24,7 +24,7 @@ This is a FREE software provided as is without ANY warranty under MIT license.
 
 To run from docker:
 
-    docker run -p 8080:80  -v <yourpath>/local/db:/var/lib/mysql -v <yourpath>local/uploads:/var/www/html/uploads globaldyne/jbvault:latest
+	sh -c "$(curl -fsSL https://raw.githubusercontent.com/globaldyne/vault-pro/master/helpers/run_pvault.sh)"
 
 then point your browser to http://localhost:8080
 
