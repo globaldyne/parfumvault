@@ -17,6 +17,10 @@
                   <i class="fas fa-book fa-sm fa-fw mr-2 text-gray-400"></i>
                   Documentation
                 </a>
+                <a class="dropdown-item" href="https://www.jbparfum.com/feature-request/" target="_blank">
+                  <i class="fas fa-lightbulb fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Request a feature / Bug report
+                </a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="logout.php">
                   <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
