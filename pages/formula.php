@@ -369,8 +369,8 @@ $(document).ready(function() {
                       <th></th>
                       <th></th>
                       <th width="15%" align="right"><p>Total: <?php echo ml2l($mg['total_mg'], 2); ?></p></th>
-                      <th width="15%">Total <?php echo array_sum($conc_tot);?>%</th>
-                      <th width="15%" align="right">Cost: <?php echo utf8_encode($settings['currency']).number_format(array_sum($tot),2);?> <a href="#" class="fas fa-question-circle" rel="tipsy" title="Total cost"></a></th>
+                      <th width="15%">Total: <?php echo array_sum($conc_tot);?>%</th>
+                      <th width="15%" align="right">Cost: <?php echo utf8_encode($settings['currency']).number_format(array_sum($tot),2);?></a></th>
                       <th class="noexport" width="15%"></th>
                     </tr>
                   </tfoot>                                    
