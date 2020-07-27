@@ -1,5 +1,10 @@
 # CHANGELOG
 
+### Version 2.0.6
+- ADD: DB schema upgrades
+- ADD: Ingredients data extend
+- Various fixes
+
 ### Version 2.0.5
 - ADD: Formula calculation tools
 

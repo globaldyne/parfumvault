@@ -101,7 +101,7 @@ function updateDB() {
 		},
 	dataType: 'html',
     success: function (data) {
-		//location.reload();
+		location.reload();
 	  	$('#msg').html(data);
     }
   });
