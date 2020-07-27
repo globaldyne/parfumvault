@@ -210,8 +210,8 @@ function updateDB() {
 			require 'pages/ingredients.php';
 		}elseif($_GET['do'] == 'settings'){
 			require 'pages/settings.php';
-		}elseif($_GET['do'] == 'addIngredient'){
-			require 'pages/addIngredient.php';
+		//}elseif($_GET['do'] == 'addIngredient'){
+		//	require 'pages/addIngredient.php';
 		}elseif($_GET['do'] == 'insights'){
 			require 'pages/insights.php';
 		}elseif($_GET['do'] == 'IFRA'){

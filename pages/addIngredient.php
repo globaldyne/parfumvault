@@ -1,7 +1,13 @@
-<?php if (!defined('pvault_panel')){ die('Not Found');}  ?>
-<div class="container-fluid">
-<?php require_once('pages/top.php'); ?>
 <?php 
+require('../inc/sec.php');
+
+require_once('../inc/config.php');
+require_once('../inc/opendb.php');
+require_once('../inc/settings.php');
+require_once('../func/formatBytes.php');
+
+require_once('../func/searchIFRA.php');
+
 
 if($_POST['name']){
 	
@@ -37,21 +43,20 @@ if($_POST['name']){
       $file_tmp =  $_FILES['SDS']['tmp_name'];
       $file_type = $_FILES['SDS']['type'];
       $file_ext=strtolower(end(explode('.',$_FILES['SDS']['name'])));
-
-		if(empty($err)==true){
-			 if (file_exists($uploads_path.'SDS/') === FALSE) {
-				 mkdir($uploads_path.'SDS/', 0740, true);
-			 }
-		  }
+	  
+	  if(empty($err)==true){
+		 if (file_exists('../'.$uploads_path.'SDS/') === FALSE) {
+    		 mkdir('../'.$uploads_path.'SDS/', 0740, true);
+	  	 }
+	  }
 		  
-      $ext = explode(",",$allowed_ext);
-
+      $ext = explode(', ',$allowed_ext);
  	  if(in_array($file_ext,$ext)=== false){
 		 $msg.='<div class="alert alert-danger alert-dismissible"><strong>File upload error: </strong>Extension not allowed, please choose a '.$allowed_ext.' file.</div>';
       }elseif($file_size > $max_filesize){
 		 $msg.='<div class="alert alert-danger alert-dismissible"><strong>File upload error: </strong>File size must not exceed '.formatBytes($max_filesize).'</div>';
       }else{
-         move_uploaded_file($file_tmp,$uploads_path.'SDS/'.base64_encode($file_name));
+		 move_uploaded_file($file_tmp,'../'.$uploads_path.'SDS/'.base64_encode($file_name));
 		 $SDSF = $uploads_path.'SDS/'.base64_encode($file_name);
       }
    }
@@ -87,45 +92,66 @@ $res_ingSupplier = mysqli_query($conn, "SELECT id,name FROM ingSuppliers");
 $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles");
 
 ?>
-       <h1 class="h1 mb-4 text-gray-800"><a href="?do=ingredients"> New Ingredient</a></h1>
-       </div>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Edit ingredient</title>
+<link href="../css/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+<script src="../js/jquery/jquery.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/bootstrap-select.js"></script>
+<link href="../css/sb-admin-2.css" rel="stylesheet">
+
+<link href="../css/bootstrap-select.min.css" rel="stylesheet">
+<link href="../css/bootstrap.min.css" rel="stylesheet">
+<link href="../css/vault.css" rel="stylesheet">
+
+
+<style>
+.container {
+    max-width: 100%;
+}
+</style>
+</head>
+
+<body>
+    <div id="wrap">
+        <div class="container">
+        <h1 class="badge-primary">Add ingredient</h1>
 <table width="100%" border="0">
         <tr>
-          <td><div class="form-group">  
-<form action="?do=addIngredient" method="post" enctype="multipart/form-data" name="add_ing" target="_self" id="add_ing">  
+          <td><div class="form-group">
+<form action="" method="post" enctype="multipart/form-data" name="add_ing" target="_self" id="add_ing">  
                           <div class="table-responsive">
                             <table width="100%" border="0">
                               <tr>
                                 <td colspan="3"><?php echo $msg; ?></td>
                               </tr>
                               <tr>
-                                <td width="6%">Name:</td>
-                                <td width="34%"><input name="name" type="text" class="form-control ing_list" id="name"></td>
-                                <td width="60%">&nbsp;</td>
+                                <td width="9%">Name:</td>
+                                <td colspan="2"><input name="name" type="text" class="form-control ing_list" id="name"></td>
                               </tr>
                               <tr>
                                 <td>CAS #:</td>
-                                <td><input name="cas" type="text" class="form-control ing_list" id="cas"></td>
-                                <td>&nbsp;</td>
+                                <td colspan="2"><input name="cas" type="text" class="form-control ing_list" id="cas"></td>
                               </tr>
                               <tr>
-                                <td>Is Allergen:</td>
-                                <td><input name="isAllergen" type="checkbox" id="isAllergen" value="1" /></td>
-                                <td>&nbsp;</td>
+                                <td height="31">Is Allergen:</td>
+                                <td width="31%"><input name="isAllergen" type="checkbox" id="isAllergen" value="1" /></td>
+                                <td width="60%">&nbsp;</td>
                               </tr>
                               <tr>
                                 <td>Cat4 Limit %:</td>
-                                <td><input name="IFRA" type="text" class="form-control ing_list" id="IFRA"></td>
-                                <td>&nbsp;</td>
+                                <td colspan="2"><input name="IFRA" type="text" class="form-control ing_list" id="IFRA"></td>
                               </tr>
                               <tr>
                                 <td>Purity %:</td>
-                                <td><input name="purity" type="text" class="form-control ing_list" id="purity" value="100" /></td>
-                                <td>&nbsp;</td>
+                                <td colspan="2"><input name="purity" type="text" class="form-control ing_list" id="purity" value="100" /></td>
                               </tr>
                               <tr>
                                 <td>Profile:</td>
-                                <td><select name="profile" id="profile" class="form-control ing_list">
+                                <td colspan="2"><select name="profile" id="profile" class="form-control ing_list">
                                   <option value="" selected="selected"></option>
                                   <?php
 									while ($row_ingProfiles = mysqli_fetch_array($res_ingProfiles)){
@@ -133,11 +159,10 @@ $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles");
 									}
 								?>
                                 </select></td>
-                                <td>&nbsp;</td>
                               </tr>
                               <tr>
                                 <td>Type:</td>
-                                <td>
+                                <td colspan="2">
                                 <select name="type" id="type" class="form-control ing_list">
                                 <option value="" selected></option>
                                 <?php
@@ -147,11 +172,10 @@ $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles");
 								?>
                                 </select>
                                 </td>
-                                <td>&nbsp;</td>
                               </tr>
                               <tr>
                                 <td>Strength:</td>
-                                <td>
+                                <td colspan="2">
                                 <select name="strength" id="strength" class="form-control ing_list">
                                 <option value="" selected></option>
                                 <?php
@@ -161,11 +185,10 @@ $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles");
 								?>
                                 </select>
                                 </td>
-                                <td>&nbsp;</td>
                               </tr>
                               <tr>
                                 <td>Category:</td>
-                                <td>
+                                <td colspan="2">
                                 <select name="category" id="category" class="form-control ing_list">
                                 <option value="" selected></option>
                                   <?php
@@ -175,11 +198,10 @@ $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles");
 								?>
                                 </select>
                                 </td>
-                                <td>&nbsp;</td>
                               </tr>
                               <tr>
                                 <td>Supplier:</td>
-                                <td>
+                                <td colspan="2">
                                 <select name="supplier" id="supplier" class="form-control ing_list">
                                 <option value="" selected></option>
                                   <?php
@@ -189,57 +211,46 @@ $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles");
 								?>
                                 </select>
                                 </td>
-                                <td>&nbsp;</td>
                               </tr>
                               <tr>
                                 <td>Supplier URL:</td>
-                                <td><input name="supplier_link" type="text" class="form-control" id="supplier_link"></td>
-                                <td>&nbsp;</td>
+                                <td colspan="2"><input name="supplier_link" type="text" class="form-control" id="supplier_link"></td>
                               </tr>
                               <tr>
                                 <td>Price (<?php echo $settings['currency'];?>):</td>
-                                <td><input name="price" type="text" class="form-control" id="price" /></td>
-                                <td>&nbsp;</td>
+                                <td colspan="2"><input name="price" type="text" class="form-control" id="price" /></td>
                               </tr>
                               <tr>
                                 <td>Tenacity:</td>
-                                <td><input name="tenacity" type="text" class="form-control" id="tenacity" /></td>
-                                <td>&nbsp;</td>
+                                <td colspan="2"><input name="tenacity" type="text" class="form-control" id="tenacity" /></td>
                               </tr>
                               <tr>
                                 <td>Flash Point:</td>
-                                <td><input name="flash_point" type="text" class="form-control" id="flash_point" /></td>
-                                <td>&nbsp;</td>
+                                <td colspan="2"><input name="flash_point" type="text" class="form-control" id="flash_point" /></td>
                               </tr>
                               <tr>
                                 <td>Chemical Name:</td>
-                                <td><input name="chemical_name" type="text" class="form-control" id="chemical_name" /></td>
-                                <td>&nbsp;</td>
+                                <td colspan="2"><input name="chemical_name" type="text" class="form-control" id="chemical_name" /></td>
                               </tr>
                               <tr>
                                 <td>Appearance:</td>
-                                <td><input name="appearance" type="text" class="form-control" id="appearance" /></td>
-                                <td>&nbsp;</td>
+                                <td colspan="2"><input name="appearance" type="text" class="form-control" id="appearance" /></td>
                               </tr>
                               <tr>
                                 <td valign="top">Size (ml):</td>
-                                <td><input name="ml" type="text" class="form-control" id="ml" value="10" /></td>
-                                <td>&nbsp;</td>
+                                <td colspan="2"><input name="ml" type="text" class="form-control" id="ml" value="10" /></td>
                               </tr>
                               <tr>
                                 <td valign="top">Odor:</td>
-                                <td><input name="odor" type="text" class="form-control" id="odor" /></td>
-                                <td>&nbsp;</td>
+                                <td colspan="2"><input name="odor" type="text" class="form-control" id="odor" /></td>
                               </tr>
                               <tr>
                                 <td valign="top">Notes:</td>
-                                <td><textarea name="notes" id="notes" cols="45" rows="5" class="form-control"></textarea></td>
-                                <td>&nbsp;</td>
+                                <td colspan="2"><textarea name="notes" id="notes" cols="45" rows="5" class="form-control"></textarea></td>
                               </tr>
                               <tr>
-                                <td>SDS Document:</td>
-                                <td><input type="file" class="form-control" name="SDS" id="SDS"></td>
-                                <td><a href="#" class="fas fa-question-circle" rel="tipsy" title="<?php echo 'Allowed filetypes: '.$allowed_ext.' Max file size: '.formatBytes($max_filesize); ?>"></a></td>
+                                <td>SDS:</td>
+                                <td colspan="2"><input type="file" class="form-control" name="SDS" id="SDS">                                  <a href="#" class="fas fa-question-circle" rel="tipsy" title="<?php echo 'Allowed filetypes: '.$allowed_ext.' Max file size: '.formatBytes($max_filesize); ?>"></a></td>
                               </tr>
                             </table>
                             <p>&nbsp;</p>
@@ -248,6 +259,7 @@ $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles");
                             </p>
           </div>  
 </form>
-                </div></td>
-        </tr>
-</table>
+               </div>
+
+</body>
+</html>

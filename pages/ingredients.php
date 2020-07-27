@@ -39,7 +39,7 @@ $ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC
                         <div class="btn-group">
                           <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
                           <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="?do=addIngredient">Add new ingredient</a>
+                            <a class="dropdown-item popup-link" href="pages/addIngredient.php">Add new ingredient</a>
                             <a class="dropdown-item" id="csv" href="#">Export to CSV</a>
                           </div>
                         </div>                    

@@ -195,7 +195,7 @@ $.ajax({
                                 </td>
                               </tr>
                               <tr>
-                                <td>Is Allergen:</td>
+                                <td height="31">Is Allergen:</td>
                                 <td colspan="3"><input name="isAllergen" type="checkbox" id="isAllergen" value="1" <?php if($ing['allergen'] == '1'){; ?> checked="checked"  <?php } ?>/></td>
                               </tr>
                               <tr>
@@ -311,7 +311,7 @@ $.ajax({
                                 <td colspan="3"><textarea name="notes" id="notes" cols="45" rows="5" class="form-control"><?php echo $ing['notes']; ?></textarea></td>
                               </tr>
                               <tr>
-                                <td>SDS Document:</td>
+                                <td>SDS:</td>
                                 <td colspan="3"><input type="file" class="form-control" name="SDS" id="SDS"></td>
                               </tr>
                             </table>
