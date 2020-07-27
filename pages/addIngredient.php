@@ -129,7 +129,7 @@ $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles");
                                 <td colspan="3"><?php echo $msg; ?></td>
                               </tr>
                               <tr>
-                                <td width="9%">Name:</td>
+                                <td width="16%">Name:</td>
                                 <td colspan="2"><input name="name" type="text" class="form-control ing_list" id="name"></td>
                               </tr>
                               <tr>
@@ -138,7 +138,7 @@ $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles");
                               </tr>
                               <tr>
                                 <td height="31">Is Allergen:</td>
-                                <td width="31%"><input name="isAllergen" type="checkbox" id="isAllergen" value="1" /></td>
+                                <td width="24%"><input name="isAllergen" type="checkbox" id="isAllergen" value="1" /></td>
                                 <td width="60%">&nbsp;</td>
                               </tr>
                               <tr>
