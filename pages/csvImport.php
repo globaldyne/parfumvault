@@ -20,14 +20,14 @@ if(isset($_POST["import"]) && ($_POST['name'])){
 		if($_FILES["file"]["size"] > 0){
 			$file = fopen($filename, "r");
 			while (($data = fgetcsv($file, 10000, ",")) !== FALSE){
-				if(!mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '".ucwords($data['0'])."'"))){
+				if(!mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '".trim(ucwords($data['0']))."'"))){
 					
-					mysqli_query($conn, "INSERT INTO ingredients (name, ml) VALUES ('".ucwords($data['0'])."', '10')");
+					mysqli_query($conn, "INSERT INTO ingredients (name, ml) VALUES ('".trim(ucwords($data['0']))."', '10')");
 				}
 				if(empty($data['1'])){
 					$data['1'] = '100';
 				}
-				$sql = "INSERT INTO formulas (fid, name,ingredient,concentration,quantity) VALUES ('$fid', '$name','".ucwords($data['0'])."','$data[1]','$data[2]')";
+				$sql = "INSERT INTO formulas (fid, name,ingredient,concentration,quantity) VALUES ('$fid', '$name','".trim(ucwords($data['0']))."','$data[1]','$data[2]')";
 				$res = mysqli_query($conn, $sql);
 					
 			}
