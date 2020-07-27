@@ -29,5 +29,7 @@
               </div>
             </li>
           </ul>
-<?php checkVer($ver);?>
+<?php checkVer($ver, NULL);?>
+<?php checkVer(NULL, $pv_meta['schema_ver']);?>
+<div id="msg"></div>
 </nav>
