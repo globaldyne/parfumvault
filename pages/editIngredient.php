@@ -106,6 +106,7 @@ if(empty(mysqli_num_rows($sql))){
 .container {
     max-width: 100%;
 }
+
 </style>
 
 <script>
@@ -156,8 +157,7 @@ $.ajax({
 </head>
 
 <body>
-    <div id="wrap">
-        <div class="container">
+<div class="container">
 		<div class="list-group-item-info">
         <h1 class="badge-primary"><?php echo $ing['name']; ?>
             <div class="btn-group">
@@ -168,13 +168,34 @@ $.ajax({
             </div>
         </h1>
 </div>
-
-<table width="100%" border="0">
-        <tr>
-          <td><div class="form-group">  
-			<form action="editIngredient.php?id=<?php echo $ingID; ?>" method="post" enctype="multipart/form-data" name="edit_ing" target="_self" id="edit_ing">  
-                          <div class="table-responsive">
-                            <table width="100%" border="0">
+<!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+      <li class="active">
+          <a href="#general" role="tab" data-toggle="tab">
+              <icon class="fa fa-table"></icon> General
+          </a>
+      </li>
+      <li><a href="#usage_limits" role="tab" data-toggle="tab">
+          <i class="fa fa-bong"></i> Usage Limits
+          </a>
+      </li>
+      <li>
+          <a href="#supply" role="tab" data-toggle="tab">
+              <i class="fa fa-shopping-cart"></i> Supply
+          </a>
+      </li>
+      <li>
+          <a href="#tech_data" role="tab" data-toggle="tab">
+              <i class="fa fa-cog"></i> Technical Data
+          </a>
+      </li>
+    </ul>
+			<form action="editIngredient.php?id=<?php echo $ingID; ?>" method="post" enctype="multipart/form-data" name="edit_ing" target="_self" id="edit_ing">
+             	<div class="tab-content">
+     				<div class="tab-pane fade active in" id="general">
+                              <h3>General</h3>
+							   <hr>
+                	         <table width="100%" border="0">
                               <tr>
                                 <td colspan="4"><?php echo $msg; ?></td>
                               </tr>
@@ -182,18 +203,7 @@ $.ajax({
                                 <td width="20%">CAS #:</td>
                                 <td colspan="3"><input name="cas" type="text" class="form-control" id="cas" value="<?php echo $ing['cas']; ?>"></td>
                               </tr>
-                              <tr>
-                                <td> Cat4 Limit %:</td>
-                                <td colspan="3">
-                                <?php
-								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn)){
-										echo $limit;
-									}else{
-								?>
-                                <input name="IFRA" type="text" class="form-control" id="IFRA" value="<?php echo $ing['IFRA']; ?>">
-                                <?php } ?>
-                                </td>
-                              </tr>
+
                               <tr>
                                 <td height="31">Is Allergen:</td>
                                 <td colspan="3"><input name="isAllergen" type="checkbox" id="isAllergen" value="1" <?php if($ing['allergen'] == '1'){; ?> checked="checked"  <?php } ?>/></td>
@@ -246,6 +256,53 @@ $.ajax({
                                 </select>
                                 </td>
                               </tr>
+
+
+                              <tr>
+                                <td valign="top">Size (ml):</td>
+                                <td colspan="3"><input name="ml" type="text" class="form-control" id="ml" value="<?php echo $ing['ml']; ?>"/></td>
+                              </tr>
+                              <tr>
+                                <td valign="top">Odor:</td>
+                                <td width="66%"><div id='TGSC'><input name="odor" id="odor" type="text" class="form-control" value="<?php echo $ing['odor']; ?>"/></div>
+                                </td>
+                                <?php if(file_exists('searchTGSC.php')){?>
+                                <td width="2%">&nbsp;</td>
+                                <td width="12%"><a href="javascript:search();" id="search">Search TGSC</a></td>
+                                <?php } ?>
+                              </tr>
+                              <tr>
+                                <td valign="top">Notes:</td>
+                                <td colspan="3"><textarea name="notes" id="notes" cols="45" rows="5" class="form-control"><?php echo $ing['notes']; ?></textarea></td>
+                              </tr>
+
+                            </table>
+                            </div><!--general tab-->
+                    
+                            <div class="tab-pane fade" id="usage_limits">
+          						 <h3>Usage Limits</h3>
+                                 <hr>
+                                 <table width="100%" border="0">
+                                <tr>
+                                <td> Cat4 Limit %:</td>
+                                <td colspan="3">
+                                <?php
+								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn)){
+										echo $limit;
+									}else{
+								?>
+                                <input name="IFRA" type="text" class="form-control" id="IFRA" value="<?php echo $ing['IFRA']; ?>">
+                                <?php } ?>
+                                </td>
+                              </tr>
+								</table>
+
+      						</div>
+                            
+                  <div class="tab-pane fade" id="supply">
+				    <h3>Supply</h3>
+                    <hr>
+                    <table width="100%" border="0">
                               <tr>
                                 <td>Supplier:</td>
                                 <td colspan="3">
@@ -265,6 +322,13 @@ $.ajax({
 								<td>Price (<?php echo $settings['currency']; ?>):</td>
                                 <td colspan="3"><input name="price" type="text" class="form-control" id="price" value="<?php echo $ing['price']; ?>"/></td>
                               </tr>
+                    </table>
+                            </div>
+                            
+                            <div class="tab-pane fade" id="tech_data">
+          						 <h3>Techical Data</h3>
+                                 <hr>
+                             <table width="100%" border="0">
                               <tr>
                                 <td>Tenacity:</td>
                                 <td colspan="3"><input name="tenacity" type="text" class="form-control" id="tenacity" value="<?php echo $ing['tenacity']; ?>"/></td>
@@ -294,35 +358,18 @@ $.ajax({
                                 <td colspan="3"><input name="appearance" type="text" class="form-control" id="appearance" value="<?php echo $ing['appearance']; ?>"/></td>
                               </tr>
                               <tr>
-                                <td valign="top">Size (ml):</td>
-                                <td colspan="3"><input name="ml" type="text" class="form-control" id="ml" value="<?php echo $ing['ml']; ?>"/></td>
-                              </tr>
-                              <tr>
-                                <td valign="top">Odor:</td>
-                                <td width="66%"><div id='TGSC'><input name="odor" id="odor" type="text" class="form-control" value="<?php echo $ing['odor']; ?>"/></div>
-                                </td>
-                                <?php if(file_exists('searchTGSC.php')){?>
-                                <td width="2%">&nbsp;</td>
-                                <td width="12%"><a href="javascript:search();" id="search">Try TGSC</a></td>
-                                <?php } ?>
-                              </tr>
-                              <tr>
-                                <td valign="top">Notes:</td>
-                                <td colspan="3"><textarea name="notes" id="notes" cols="45" rows="5" class="form-control"><?php echo $ing['notes']; ?></textarea></td>
-                              </tr>
-                              <tr>
                                 <td>SDS:</td>
                                 <td colspan="3"><input type="file" class="form-control" name="SDS" id="SDS"></td>
                               </tr>
                             </table>
-                            <p>&nbsp;</p>
-                            <p>
-                              <input type="submit" name="save" id="submit" class="btn btn-info" value="Save" />
-                            </p>
+    
+      						</div>
+                            
+                    </div> <!--tabs-->
+                    <hr>
+                    <p><input type="submit" name="save" id="submit" class="btn btn-info" value="Save" /></p>
+			</form>
 </div>
-</form>
-</div>
-
 </body>
 </html>
 <!-- Modal -->

@@ -3,6 +3,7 @@
 ### Version 2.0.6
 - ADD: DB schema upgrades
 - ADD: Ingredients data extend
+- Split edit ingredient data by category
 - Various fixes
 
 ### Version 2.0.5
