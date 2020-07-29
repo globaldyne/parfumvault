@@ -30,6 +30,6 @@
             </li>
           </ul>
 <?php checkVer($ver, NULL);?>
-<?php checkVer(NULL, $pv_meta['schema_ver']);?>
-<div id="msg"></div>
+<div id="msg"><?php checkVer(NULL, $pv_meta['schema_ver']);?>
+</div>
 </nav>
