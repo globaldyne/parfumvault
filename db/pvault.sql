@@ -1,11 +1,5 @@
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
-
 DROP TABLE IF EXISTS `batchIDHistory`;
 CREATE TABLE `batchIDHistory` (
   `id` varchar(50) COLLATE utf8_bin NOT NULL,
@@ -137,6 +131,7 @@ CREATE TABLE `ingredients` (
   `IFRA` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `purity` varchar(11) COLLATE utf8_bin DEFAULT NULL,
   `cas` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `FEMA` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `SDS` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `supplier` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `supplier_link` varchar(255) COLLATE utf8_bin DEFAULT NULL,
@@ -150,7 +145,26 @@ CREATE TABLE `ingredients` (
   `profile` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `ml` int(5) DEFAULT NULL,
   `odor` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `allergen` int(11) NOT NULL
+  `allergen` int(11) DEFAULT NULL,
+  `flavor_use` int(10) DEFAULT NULL,
+  `cat1` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `cat2` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `cat3` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `cat4` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `cat5A` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `cat5B` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `cat5C` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `cat5D` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `cat6` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `cat7A` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `cat7B` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `cat8` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `cat9` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `cat10A` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `cat10B` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `cat11A` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `cat11B` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `cat12` varchar(255) COLLATE utf8_bin DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 DROP TABLE IF EXISTS `ingStrength`;
@@ -196,6 +210,17 @@ CREATE TABLE `lids` (
   `photo` varchar(255) COLLATE utf8_bin DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
+DROP TABLE IF EXISTS `pv_meta`;
+CREATE TABLE `pv_meta` (
+  `id` int(11) NOT NULL,
+  `schema_ver` varchar(255) COLLATE utf8_bin NOT NULL,
+  `app_ver` varchar(255) COLLATE utf8_bin NOT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+INSERT INTO `pv_meta` (`id`, `schema_ver`, `app_ver`, `updated_at`) VALUES
+(1, '2.0.6', '2.0.6', '2020-07-30 07:53:35');
+
 DROP TABLE IF EXISTS `settings`;
 CREATE TABLE `settings` (
   `id` int(11) NOT NULL,
@@ -221,7 +246,7 @@ CREATE TABLE `settings` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 INSERT INTO `settings` (`id`, `label_printer_addr`, `label_printer_model`, `label_printer_size`, `label_printer_font_size`, `currency`, `top_n`, `heart_n`, `base_n`, `EDP`, `EDT`, `EDC`, `Parfum`, `chem_vs_brand`, `grp_formula`, `brandName`, `brandAddress`, `brandEmail`, `brandPhone`, `brandLogo`) VALUES
-(1, '1.2.3.4', 'QL-810W', '12', 70, '&pound;', '25', '50', '25', '20', '15', '4', '30', 0, 1, '', '', '', '', NULL);
+(1, '1.2.3.4', 'QL-810W', '12', 70, '&pound;', '25', '50', '25', '20', '15', '4', '30', 0, 1, 'My Brand Name', 'My Address', 'info@mybrand.com', '123456', NULL);
 
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
@@ -276,6 +301,10 @@ ALTER TABLE `ingTypes`
 ALTER TABLE `lids`
   ADD PRIMARY KEY (`id`);
 
+ALTER TABLE `pv_meta`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `id` (`id`);
+
 ALTER TABLE `settings`
   ADD PRIMARY KEY (`id`);
 
@@ -319,12 +348,11 @@ ALTER TABLE `ingTypes`
 ALTER TABLE `lids`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
+ALTER TABLE `pv_meta`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
 ALTER TABLE `settings`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
