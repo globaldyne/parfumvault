@@ -13,6 +13,8 @@ if($_POST['name']){
 	
 	$name = mysqli_real_escape_string($conn, $_POST["name"]);
 	$cas = mysqli_real_escape_string($conn, $_POST["cas"]);
+	$fema = mysqli_real_escape_string($conn, $_POST["fema"]);
+
 	$type = mysqli_real_escape_string($conn, $_POST["type"]);
 	$strength = mysqli_real_escape_string($conn, $_POST["strength"]);
 	$category = mysqli_real_escape_string($conn, $_POST["category"]);
@@ -68,7 +70,7 @@ if($_POST['name']){
 		</div>';
 	}else{
 		
-		if(mysqli_query($conn, "INSERT INTO ingredients (name, cas, type, strength, SDS, IFRA, category, supplier, supplier_link, profile, price, tenacity, chemical_name, flash_point, appearance, notes, ml, odor, purity, allergen) VALUES ('$name', '$cas', '$type', '$strength', '$SDSF', '$IFRA', '$category', '$supplier', '$supplier_link', '$profile', '$price', '$tenacity', '$chemical_name', '$flash_point', '$appearance', '$notes', '$ml', '$odor', '$purity', '$allergen')")){
+		if(mysqli_query($conn, "INSERT INTO ingredients (name, cas, FEMA, type, strength, SDS, IFRA, category, supplier, supplier_link, profile, price, tenacity, chemical_name, flash_point, appearance, notes, ml, odor, purity, allergen) VALUES ('$name', '$cas', '$fema', '$type', '$strength', '$SDSF', '$IFRA', '$category', '$supplier', '$supplier_link', '$profile', '$price', '$tenacity', '$chemical_name', '$flash_point', '$appearance', '$notes', '$ml', '$odor', '$purity', '$allergen')")){
 			$msg.='<div class="alert alert-success alert-dismissible">
 			<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
   			Ingredient <strong>'.$name.'</strong> added!
@@ -135,6 +137,10 @@ $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles");
                               <tr>
                                 <td>CAS #:</td>
                                 <td colspan="2"><input name="cas" type="text" class="form-control ing_list" id="cas"></td>
+                              </tr>
+                              <tr>
+                                <td height="31">FEMA #:</td>
+                                <td colspan="2"><input name="fema" type="text" class="form-control ing_list" id="fema" /></td>
                               </tr>
                               <tr>
                                 <td height="31">Is Allergen:</td>

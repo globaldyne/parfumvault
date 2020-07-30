@@ -15,6 +15,8 @@ if($_POST){
 	$ing = mysqli_fetch_array( mysqli_query($conn, "SELECT * FROM ingredients WHERE id = '$ingID'"));
 
 	$cas = mysqli_real_escape_string($conn, $_POST["cas"]);
+	$fema = mysqli_real_escape_string($conn, $_POST["fema"]);
+
 	$type = mysqli_real_escape_string($conn, $_POST["type"]);
 	$strength = mysqli_real_escape_string($conn, $_POST["strength"]);
 	$category = mysqli_real_escape_string($conn, $_POST["category"]);
@@ -65,7 +67,7 @@ if($_POST){
 	  }
    }
 
-	if(mysqli_query($conn, "UPDATE ingredients SET cas = '$cas', type = '$type', strength = '$strength', IFRA = '$IFRA', category='$category', supplier='$supplier', supplier_link='$supplier_link', profile='$profile', price='$price', tenacity='$tenacity', chemical_name='$chemical_name', flash_point='$flash_point', appearance='$appearance', notes='$notes', ml='$ml', odor='$odor', purity='$purity', allergen='$allergen', formula='$formula' WHERE name='$ingID'")){
+	if(mysqli_query($conn, "UPDATE ingredients SET cas = '$cas', FEMA = '$fema', type = '$type', strength = '$strength', IFRA = '$IFRA', category='$category', supplier='$supplier', supplier_link='$supplier_link', profile='$profile', price='$price', tenacity='$tenacity', chemical_name='$chemical_name', flash_point='$flash_point', appearance='$appearance', notes='$notes', ml='$ml', odor='$odor', purity='$purity', allergen='$allergen', formula='$formula' WHERE name='$ingID'")){
 			$msg.='<div class="alert alert-success alert-dismissible">Ingredient <strong>'.$ing['name'].'</strong> updated!</div>';
 		}else{
 			$msg.='<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> Failed to update!</div>';
@@ -204,6 +206,10 @@ $.ajax({
                                 <td colspan="3"><input name="cas" type="text" class="form-control" id="cas" value="<?php echo $ing['cas']; ?>"></td>
                               </tr>
 
+                              <tr>
+                                <td height="31">FEMA #:</td>
+                                <td colspan="3"><input name="fema" type="text" class="form-control" id="fema" value="<?php echo $ing['FEMA']; ?>" /></td>
+                              </tr>
                               <tr>
                                 <td height="31">Is Allergen:</td>
                                 <td colspan="3"><input name="isAllergen" type="checkbox" id="isAllergen" value="1" <?php if($ing['allergen'] == '1'){; ?> checked="checked"  <?php } ?>/></td>
