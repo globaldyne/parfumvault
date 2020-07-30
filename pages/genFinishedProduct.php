@@ -291,7 +291,21 @@ $.ajax({
     </div>
   </div>
 </div>
-            <?php }else{ ?>
+            <?php 
+			}else{ 
+				if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))== 0){
+					echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> You need to <a href="?do=addFormula">create</a> at least one formula first.</div>';
+					return;
+				}
+				if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM bottles"))== 0){
+					echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> You need to <a href="?do=addBottle">add</a> at least one bottle in your inventory first.</div>';
+					return;
+				}
+				if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE type = 'Carrier' OR type = 'Solvent'"))== 0){
+					echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> You need to <a href="?do=ingredients">add</a> at least one solvent or carrier first.</div>';
+					return;
+				}
+			?>
            <form action="?do=genFinishedProduct&generate=1" method="post" enctype="multipart/form-data" target="_self">
            
            <table width="100%" border="0">
