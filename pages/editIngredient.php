@@ -40,7 +40,11 @@ if($_POST){
 	}else{
 		$allergen = '0';
 	}
-
+	if($_POST["flavor_use"]) {
+		$flavor_use = '1';
+	}else{
+		$flavor_use = '0';
+	}
 	if(($_FILES['SDS']['name'])){
       $file_name = $_FILES['SDS']['name'];
       $file_size =$_FILES['SDS']['size'];
@@ -67,7 +71,7 @@ if($_POST){
 	  }
    }
 
-	if(mysqli_query($conn, "UPDATE ingredients SET cas = '$cas', FEMA = '$fema', type = '$type', strength = '$strength', IFRA = '$IFRA', category='$category', supplier='$supplier', supplier_link='$supplier_link', profile='$profile', price='$price', tenacity='$tenacity', chemical_name='$chemical_name', flash_point='$flash_point', appearance='$appearance', notes='$notes', ml='$ml', odor='$odor', purity='$purity', allergen='$allergen', formula='$formula' WHERE name='$ingID'")){
+	if(mysqli_query($conn, "UPDATE ingredients SET cas = '$cas', FEMA = '$fema', type = '$type', strength = '$strength', IFRA = '$IFRA', category='$category', supplier='$supplier', supplier_link='$supplier_link', profile='$profile', price='$price', tenacity='$tenacity', chemical_name='$chemical_name', flash_point='$flash_point', appearance='$appearance', notes='$notes', ml='$ml', odor='$odor', purity='$purity', allergen='$allergen', formula='$formula', flavor_use='$flavor_use' WHERE name='$ingID'")){
 			$msg.='<div class="alert alert-success alert-dismissible">Ingredient <strong>'.$ing['name'].'</strong> updated!</div>';
 		}else{
 			$msg.='<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> Failed to update!</div>';
@@ -97,11 +101,14 @@ if(empty(mysqli_num_rows($sql))){
 <script src="../js/jquery/jquery.min.js"></script>
 <script src="../js/bootstrap.min.js"></script>
 <script src="../js/bootstrap-select.js"></script>
-<link href="../css/sb-admin-2.css" rel="stylesheet">
+<script src="../js/bootstrap-select.js"></script>
+<script src="../js/tipsy.js"></script>
 
+<link href="../css/sb-admin-2.css" rel="stylesheet">
 <link href="../css/bootstrap-select.min.css" rel="stylesheet">
 <link href="../css/bootstrap.min.css" rel="stylesheet">
 <link href="../css/vault.css" rel="stylesheet">
+<link href="../css/tipsy.css" rel="stylesheet">
 
 
 <style>
@@ -112,6 +119,11 @@ if(empty(mysqli_num_rows($sql))){
 </style>
 
 <script>
+  
+$(document).ready(function() {
+	$('a[rel=tipsy]').tipsy();
+});  
+
 function search() {	  
 $("#odor").val('Loading...');
 $.ajax({ 
@@ -178,7 +190,7 @@ $.ajax({
           </a>
       </li>
       <li><a href="#usage_limits" role="tab" data-toggle="tab">
-          <i class="fa fa-bong"></i> Usage Limits
+          <i class="fa fa-bong"></i> Usage &amp; Limits
           </a>
       </li>
       <li>
@@ -193,7 +205,7 @@ $.ajax({
       </li>
     </ul>
 			<form action="editIngredient.php?id=<?php echo $ingID; ?>" method="post" enctype="multipart/form-data" name="edit_ing" target="_self" id="edit_ing">
-             	<div class="tab-content">
+           	  <div class="tab-content">
      				<div class="tab-pane fade active in" id="general">
                               <h3>General</h3>
 							   <hr>
@@ -211,7 +223,7 @@ $.ajax({
                                 <td colspan="3"><input name="fema" type="text" class="form-control" id="fema" value="<?php echo $ing['FEMA']; ?>" /></td>
                               </tr>
                               <tr>
-                                <td height="31">Is Allergen:</td>
+                                <td height="31"><a href="#" rel="tipsy" title="If enabled, ingredient name will be printed in the box label.">Is Allergen:</a></td>
                                 <td colspan="3"><input name="isAllergen" type="checkbox" id="isAllergen" value="1" <?php if($ing['allergen'] == '1'){; ?> checked="checked"  <?php } ?>/></td>
                               </tr>
                               <tr>
@@ -283,15 +295,20 @@ $.ajax({
                               </tr>
 
                             </table>
-                            </div><!--general tab-->
+                </div>
+                <!--general tab-->
                     
                             <div class="tab-pane fade" id="usage_limits">
-          						 <h3>Usage Limits</h3>
+       						   <h3>Usage &amp; Limits</h3>
                                  <hr>
-                                 <table width="100%" border="0">
+                               <table width="100%" border="0">
                                 <tr>
-                                <td> Cat4 Limit %:</td>
-                                <td colspan="3">
+                                  <td height="32">Flavor use:</td>
+                                  <td colspan="3"><input name="flavor_use" type="checkbox" id="flavor_use" value="1" <?php if($ing['flavor_use'] == '1'){; ?> checked="checked"  <?php } ?>/></td>
+                                </tr>
+                                <tr>
+                                <td width="20%">Cat4 Limit %:</td>
+                                <td width="80%" colspan="3">
                                 <?php
 								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn)){
 										echo $limit;
@@ -301,17 +318,17 @@ $.ajax({
                                 <?php } ?>
                                 </td>
                               </tr>
-								</table>
+							  </table>
 
-      						</div>
+   						  </div>
                             
                   <div class="tab-pane fade" id="supply">
 				    <h3>Supply</h3>
                     <hr>
                     <table width="100%" border="0">
                               <tr>
-                                <td>Supplier:</td>
-                                <td colspan="3">
+                                <td width="20%">Supplier:</td>
+                                <td width="80%" colspan="3">
                                 <select name="supplier" id="supplier" class="form-control">
                                 <option value="" selected></option>
                                   <?php while ($row_ingSupplier = mysqli_fetch_array($res_ingSupplier)){ ?>
@@ -336,8 +353,8 @@ $.ajax({
                                  <hr>
                              <table width="100%" border="0">
                               <tr>
-                                <td>Tenacity:</td>
-                                <td colspan="3"><input name="tenacity" type="text" class="form-control" id="tenacity" value="<?php echo $ing['tenacity']; ?>"/></td>
+                                <td width="20%">Tenacity:</td>
+                                <td width="80%" colspan="3"><input name="tenacity" type="text" class="form-control" id="tenacity" value="<?php echo $ing['tenacity']; ?>"/></td>
                               </tr>
                               <tr>
                                 <td>Flash Point:</td>
