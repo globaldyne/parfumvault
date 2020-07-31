@@ -7,7 +7,6 @@ require_once('../inc/settings.php');
 require_once('../func/formatBytes.php');
 
 require_once('../func/searchIFRA.php');
-require_once('../func/pubChem.php');
 
 $ingID = mysqli_real_escape_string($conn, $_GET["id"]);
 
@@ -133,14 +132,29 @@ $.ajax({
     data: {
 		name: "<?php if($ing['cas']){ echo $ing['cas']; }else{ echo $ing['name'];}?>"
 		},
-    //dataType: 'text',
 	dataType: 'html',
     success: function (data) {
-      //$("#odor").val(data); 
 	  $('#TGSC').html(data);
     }
   });
 };
+
+<?php if($ing['cas'] && $settings['pubChem'] == '1'){ ?>
+//function pubChem() {	  
+$("#pubChemData").html('Fetching data from PubChem...');
+$.ajax({ 
+    url: 'pubChem.php', 
+	type: 'get',
+    data: {
+		cas: "<?php echo $ing['cas']; ?>"
+		},
+	dataType: 'html',
+    success: function (data) {
+	  $('#pubChemData').html(data);
+    }
+  });
+//};
+<?php } ?>
 
 function printLabel() {
 	<?php if(empty($settings['label_printer_addr']) || empty($settings['label_printer_model'])){?>
@@ -204,11 +218,13 @@ $.ajax({
               <i class="fa fa-cog"></i> Technical Data
           </a>
       </li>
+      <?php if($settings['pubChem'] == '1'){?>
       <li>
          <a href="#pubChem" role="tab" data-toggle="tab">
              <i class="fa fa-atom"></i> Pub Chem
          </a>
       </li>
+      <?php } ?>
     </ul>
 			<form action="editIngredient.php?id=<?php echo $ingID; ?>" method="post" enctype="multipart/form-data" name="edit_ing" target="_self" id="edit_ing">
            	  <div class="tab-content">
@@ -393,21 +409,13 @@ $.ajax({
                             </table>
     
       						</div>
-                            
+              <?php if($settings['pubChem'] == '1'){?>
               <div class="tab-pane fade" id="pubChem">
 				   <h3>Pub Chem Data</h3>
-                                 <hr>
-                <table width="100%" border="0">
-                  <tr>
-                    <td rowspan="2" valign="top"><img src="data:image/png;base64,<?php echo pubChem($ing['cas'],'PNG');?>"/></td>
-                    <td>&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <td>&nbsp;</td>
-                  </tr>
-                </table>
-
-                </div>
+                   <hr>
+                   <div id="pubChemData"></div>
+              </div>
+              <?php } ?>
                    <!-- </div> <!--tabs-->
                     <hr>
                     <p><input type="submit" name="save" id="submit" class="btn btn-info" value="Save" /></p>

@@ -76,15 +76,18 @@ if(($_POST) && $_GET['update'] == 'printer'){
 	$base_n = mysqli_real_escape_string($conn, $_POST['base_n']);
 	$grp_formula = mysqli_real_escape_string($conn, $_POST['grp_formula']);
 	$chem_vs_brand = mysqli_real_escape_string($conn, $_POST['chem_vs_brand']);
-	
+	$pubChem = mysqli_real_escape_string($conn, $_POST['pubChem']);
+
 	if(empty($chem_vs_brand)){
 		$chem_vs_brand = '0';
 	}
 	if(empty($grp_formula)){
 		$grp_formula = '0';
 	}
-	
-	if(mysqli_query($conn, "UPDATE settings SET currency = '$currency', top_n = '$top_n', heart_n = '$heart_n', base_n = '$base_n', chem_vs_brand = '$chem_vs_brand', grp_formula = '$grp_formula'")){
+	if(empty($pubChem)){
+		$pubChem = '0';
+	}
+	if(mysqli_query($conn, "UPDATE settings SET currency = '$currency', top_n = '$top_n', heart_n = '$heart_n', base_n = '$base_n', chem_vs_brand = '$chem_vs_brand', grp_formula = '$grp_formula', pubChem='$pubChem'")){
 		$msg = '<div class="alert alert-success alert-dismissible">Settings updated!</div>';
 	}else{
 		$msg = '<div class="alert alert-danger alert-dismissible">An error occured. ('.mysqli_error($conn).')</div>';	
@@ -235,12 +238,17 @@ $(function() {
           <td width="76%">&nbsp;</td>
           </tr>
         <tr>
-          <td height="28">Group Formula:</td>
+          <td height="28"><a href="#" rel="tipsy" title="If enabled, ingredients in formula view will be grouped by type. eg: Top,Heart,Base notes">Group Formula:</a></td>
           <td colspan="2"><input name="grp_formula" type="checkbox" id="grp_formula" value="1" <?php if($settings['grp_formula'] == '1'){ ?> checked="checked" <?php } ?>/></td>
           <td>&nbsp;</td>
         </tr>
         <tr>
-          <td height="32">Chem. names</td>
+          <td height="32"><a href="#" rel="tipsy" title="If enabled, PV will query PubChem to fetch ingredient data. Please note, the CAS number of the ingredient will be send to the PubChem servers.">Use PubChem:</td>
+          <td colspan="2"><input name="pubChem" type="checkbox" id="pubChem" value="1" <?php if($settings['pubChem'] == '1'){ ?> checked="checked" <?php } ?>/></td>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td height="32"><a href="#" rel="tipsy" title="If enabled, formula will display the chemical names of ingredients, where available, instead of the commercial name">Chem. names</a></td>
           <td colspan="2"><input name="chem_vs_brand" type="checkbox" id="chem_vs_brand" value="1" <?php if($settings['chem_vs_brand'] == '1'){ ?> checked="checked" <?php } ?>/></td>
           <td>&nbsp;</td>
         </tr>
