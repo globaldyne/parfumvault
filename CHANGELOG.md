@@ -4,6 +4,7 @@
 - ADD: DB schema upgrades
 - ADD: Ingredients data extend
 - ADD: FEMA support
+- ADD: PubChem data support
 - Split edit ingredient data by category
 - Various fixes
 

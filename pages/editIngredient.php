@@ -7,6 +7,7 @@ require_once('../inc/settings.php');
 require_once('../func/formatBytes.php');
 
 require_once('../func/searchIFRA.php');
+require_once('../func/pubChem.php');
 
 $ingID = mysqli_real_escape_string($conn, $_GET["id"]);
 
@@ -203,6 +204,11 @@ $.ajax({
               <i class="fa fa-cog"></i> Technical Data
           </a>
       </li>
+      <li>
+         <a href="#pubChem" role="tab" data-toggle="tab">
+             <i class="fa fa-atom"></i> Pub Chem
+         </a>
+      </li>
     </ul>
 			<form action="editIngredient.php?id=<?php echo $ingID; ?>" method="post" enctype="multipart/form-data" name="edit_ing" target="_self" id="edit_ing">
            	  <div class="tab-content">
@@ -388,6 +394,20 @@ $.ajax({
     
       						</div>
                             
+              <div class="tab-pane fade" id="pubChem">
+				   <h3>Pub Chem Data</h3>
+                                 <hr>
+                <table width="100%" border="0">
+                  <tr>
+                    <td rowspan="2" valign="top"><img src="data:image/png;base64,<?php echo pubChem($ing['cas'],'PNG');?>"/></td>
+                    <td>&nbsp;</td>
+                  </tr>
+                  <tr>
+                    <td>&nbsp;</td>
+                  </tr>
+                </table>
+
+                </div>
                    <!-- </div> <!--tabs-->
                     <hr>
                     <p><input type="submit" name="save" id="submit" class="btn btn-info" value="Save" /></p>
