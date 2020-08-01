@@ -242,8 +242,8 @@ CREATE TABLE `settings` (
   `brandAddress` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `brandEmail` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `brandPhone` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `brandLogo` varchar(255) COLLATE utf8_bin DEFAULT NULL
-  `pubChem` int(11) DEFAULT NULL,
+  `brandLogo` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `pubChem` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 INSERT INTO `settings` (`id`, `label_printer_addr`, `label_printer_model`, `label_printer_size`, `label_printer_font_size`, `currency`, `top_n`, `heart_n`, `base_n`, `EDP`, `EDT`, `EDC`, `Parfum`, `chem_vs_brand`, `grp_formula`, `brandName`, `brandAddress`, `brandEmail`, `brandPhone`, `brandLogo`) VALUES
