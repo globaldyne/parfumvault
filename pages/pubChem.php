@@ -4,15 +4,16 @@ if(!$_GET['cas']){
 	echo 'Error: Missing CAS number';
 	return;
 }
+require_once('../func/pvFileGet.php');
 
 $cas = trim($_GET['cas']);
 $type = 'PNG';
 
 $api = 'https://pubchem.ncbi.nlm.nih.gov/rest/pug';
-$cids = trim(file_get_contents($api.'/compound/name/'.$cas.'/cids/TXT'));
+$cids = trim(pv_file_get_contents($api.'/compound/name/'.$cas.'/cids/TXT'));
 
-$image = 'data:image/png;base64,'.base64_encode(file_get_contents($api.'/compound/cid/'.$cids.'/'.$type.'?record_type=2d&image_size=large'));
-$data = json_decode(trim(file_get_contents($api.'/compound/name/'.$cas.'/JSON')),true);
+$image = 'data:image/png;base64,'.base64_encode(pv_file_get_contents($api.'/compound/cid/'.$cids.'/'.$type.'?record_type=2d&image_size=large'));
+$data = json_decode(trim(pv_file_get_contents($api.'/compound/name/'.$cas.'/JSON')),true);
 		
 
 ?>

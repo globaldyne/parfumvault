@@ -6,7 +6,7 @@ function checkVer($app_ver, $db_ver) {
 		$githubVer = 'https://www.jbparfum.com/VERSION.md';
 		$gitHubRep = 'https://www.jbparfum.com/features/';
 		
-		$data = trim(file_get_contents($githubVer));
+		$data = trim(pv_file_get_contents($githubVer));
 		if($app_ver < $data){	
 			echo '<div class="alert alert-info alert-dismissible">
 					<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
