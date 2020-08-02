@@ -218,7 +218,7 @@ $.ajax({
               <i class="fa fa-cog"></i> Technical Data
           </a>
       </li>
-      <?php if($settings['pubChem'] == '1'){?>
+      <?php if($settings['pubChem'] == '1' && $ing['cas']){?>
       <li>
          <a href="#pubChem" role="tab" data-toggle="tab">
              <i class="fa fa-atom"></i> Pub Chem
@@ -409,7 +409,7 @@ $.ajax({
                             </table>
     
       						</div>
-              <?php if($settings['pubChem'] == '1'){?>
+              <?php if($settings['pubChem'] == '1' && $ing['cas']){?>
               <div class="tab-pane fade" id="pubChem">
 				   <h3>Pub Chem Data</h3>
                    <hr>
