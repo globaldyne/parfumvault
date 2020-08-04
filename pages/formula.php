@@ -306,8 +306,8 @@ $(document).ready(function() {
 						$limit = explode(' - ', $limitIFRA);
 					    $limit = $limit['0'];
 					  
-					  	$conc = number_format($formula['quantity']/$mg['total_mg'] * 100, 2);
-					  	$conc_p = number_format($formula['concentration'] / 100 * $conc, 2);
+					  	$conc = number_format($formula['quantity']/$mg['total_mg'] * 100, 3);
+					  	$conc_p = number_format($formula['concentration'] / 100 * $conc, 3);
 						
 					 	if($settings['chem_vs_brand'] == '1'){
 							$chName = mysqli_fetch_array(mysqli_query($conn,"SELECT chemical_name FROM ingredients WHERE name = '".$formula['ingredient']."'"));
@@ -368,7 +368,7 @@ $(document).ready(function() {
                       <th width="22%">Total: <?php echo countElement("formulas WHERE name = '$f_name'" ,$conn);?></th>
                       <th></th>
                       <th></th>
-                      <th width="15%" align="right"><p>Total: <?php echo ml2l($mg['total_mg'], 2); ?></p></th>
+                      <th width="15%" align="right"><p>Total: <?php echo ml2l($mg['total_mg'], 3); ?></p></th>
                       <th width="15%">Total: <?php echo array_sum($conc_tot);?>%</th>
                       <th width="15%" align="right">Cost: <?php echo utf8_encode($settings['currency']).number_format(array_sum($tot),2);?></a></th>
                       <th class="noexport" width="15%"></th>
