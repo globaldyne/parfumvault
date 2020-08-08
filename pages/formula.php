@@ -283,7 +283,9 @@ $(document).ready(function() {
                         <a class="dropdown-item popup-link" href="pages/viewPyramid.php?formula=<?php echo $f_name; ?>">View Pyramid</a>                                                
                         <a class="dropdown-item" href="javascript:manageQuantity('multiply')">Multiply x2</a>
                         <a class="dropdown-item" href="javascript:manageQuantity('divide')">Divide x2</a>
-                        <a class="dropdown-item" href="javascript:cloneMe();">Clone Formula</a>
+                        <a class="dropdown-item" href="javascript:cloneMe()">Clone Formula</a>
+             			<div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="pages/makeFormula.php?fid=<?php echo $fid; ?>" target="_blank">Make Formula</a>
                       </div>
                     </div>
                     </tr>

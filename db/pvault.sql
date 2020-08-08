@@ -45,6 +45,19 @@ CREATE TABLE `formulas` (
   `quantity` decimal(8,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
+DROP TABLE IF EXISTS `makeFormula`;
+CREATE TABLE `makeFormula` (
+ `id` int(11) NOT NULL AUTO_INCREMENT,
+ `fid` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+ `name` varchar(255) COLLATE utf8_bin NOT NULL,
+ `ingredient` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+ `concentration` decimal(5,2) DEFAULT 100.00,
+ `dilutant` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+ `quantity` decimal(8,2) DEFAULT NULL,
+ PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+
+
 DROP TABLE IF EXISTS `formulasMetaData`;
 CREATE TABLE `formulasMetaData` (
   `id` int(11) NOT NULL,

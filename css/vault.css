@@ -175,3 +175,12 @@ tr.group:hover {
     background-color: #85969524 !important;
 	color: #0000008f;
 }
+
+.makeFormula {
+	font-size:x-large;
+}
+
+.badge-danger {
+    color: #fff;
+    background-color: #e74a3b;
+}
