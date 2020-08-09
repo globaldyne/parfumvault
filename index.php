@@ -26,6 +26,7 @@ require_once('./func/genBatchPDF.php');
 require_once('./func/ml2L.php');
 require_once('./func/validateFormula.php');
 require_once('./func/pvFileGet.php');
+require_once('./func/countPending.php');
 
 require('./inc/settings.php');
 

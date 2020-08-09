@@ -19,10 +19,15 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fi
 	echo 'Formula doesn\'t exist';
 	exit;
 }
+//COPY FORMULA
+if(mysqli_query($conn, "DELETE FROM makeFormula WHERE fid = '$fid'")){
+	mysqli_query($conn, "INSERT INTO makeFormula (fid, name, ingredient, concentration, dilutant, quantity) SELECT fid, name, ingredient, concentration, dilutant, quantity FROM formulas WHERE fid = '$fid'");
+}else{
+	echo 'Unable to copy the formula '.mysqli_error($conn);
+}
 
-$formula_q = mysqli_query($conn, "SELECT * FROM formulas WHERE fid = '$fid' ORDER BY ingredient ASC");
-                    
 
+$formula_q = mysqli_query($conn, "SELECT * FROM makeFormula WHERE fid = '$fid' ORDER BY ingredient ASC");
 $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE fid = '$fid'"));
 $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE fid = '$fid'"));
 
@@ -54,24 +59,25 @@ $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData W
   <link href="../css/vault.css" rel="stylesheet">
   
 <script type='text/javascript'>
-$(document).ready(function() {
-
-	
- 
-
-});  
-
-function updateDB() {
+  
+//UPDATE AMOUNT
+function addedToFormula() {
 	$.ajax({ 
-    url: 'pages/operations.php', 
+    url: 'manageFormula.php', 
 	type: 'get',
     data: {
-		do: 'db_update',
+		action: "makeFormula",
+		q: $("#amountAdded").val(),
+		ing: $("#ingAdded").text(),
+		ingId: $("#ingID").text(),
+		fid: "<?php echo $fid; ?>",
 		},
 	dataType: 'html',
     success: function (data) {
 		//location.reload();
 	  	$('#msg').html(data);
+		$('#added').modal('toggle');
+
     }
   });
 
@@ -84,7 +90,7 @@ function printLabel() {
 	$("#msg").html('<div class="alert alert-info alert-dismissible">Printing...</div>');
 
 $.ajax({ 
-    url: 'pages/manageFormula.php', 
+    url: 'manageFormula.php', 
 	type: 'get',
     data: {
 		action: "printLabel",
@@ -96,23 +102,6 @@ $.ajax({
     }
   });
 	<?php } ?>
-};
-//MULTIPLY - DIVIDE
-function manageQuantity(quantity) {
-	$.ajax({ 
-    url: 'pages/manageFormula.php', 
-	type: 'get',
-    data: {
-		do: quantity,
-		formula: "<?php echo $meta['name']; ?>",
-		},
-	dataType: 'html',
-    success: function (data) {
-		location.reload();
-	  	//$('#msg').html(data);
-    }
-  });
-
 };
 
 
@@ -158,12 +147,14 @@ $(document).ready(function() {
 </head>
 
 
+
 <div id="content-wrapper" class="d-flex flex-column">
         <div class="container-fluid">
 		<div>
           <div class="card shadow mb-4">
             <div class="card-header py-3"> 
               <h2 class="m-0 font-weight-bold text-primary"><a href="#"><?php echo $meta['name']; ?></a></h2>
+              <h2><a href="javascript:printLabel()" class="fas fa-print" title="Print label"></a></h2>
             </div>
             <div class="card-body">
            <div id="msg"></div>
@@ -171,7 +162,7 @@ $(document).ready(function() {
                   <tr>
                     <th colspan="6">&nbsp;</th>
                     </tr>
-                    <?php if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulas WHERE fid = '$fid'"))){?>
+                    <?php if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = '$fid'"))){?>
                 <table class="table table-bordered makeFormula" <?php if($settings['grp_formula'] == '1'){?>id="formula" <?php } ?>width="100%" cellspacing="0">
                   <thead>
                     <tr>
@@ -222,12 +213,12 @@ $(document).ready(function() {
 								echo '<td>'.$ing_q['profile'].'</td>';
 							}
 						}
-                      echo '<td align="center" class="'.$ing_q['profile'].'" id="ingredient"><a href="pages/editIngredient.php?id='.$formula['ingredient'].'" class="popup-link">'.$ingName.'</a> '.checkIng($formula['ingredient'],$conn).'</td>
-                      <td data-name="concentration" class="concentration" data-type="text" align="center" data-pk="'.$formula['ingredient'].'">'.$formula['concentration'].'</td>';
+                      echo '<td align="center" class="'.$ing_q['profile'].'">'.$ingName.'</a> '.checkIng($formula['ingredient'],$conn).'</td>';
+                      echo '<td align="center">'.$formula['concentration'].'</td>';
 					  if($formula['concentration'] == '100'){
 						  echo '<td align="center">None</td>';
 					  }else{
-						  echo '<td data-name="dilutant" class="dilutant" data-type="select" align="center" data-pk="'.$formula['ingredient'].'">'.$formula['dilutant'].'</td>';
+						  echo '<td align="center">'.$formula['dilutant'].'</td>';
 					  }
 					  if($limit != null){
 						 if($limit < $conc_p){
@@ -245,11 +236,14 @@ $(document).ready(function() {
 					  }else{
 						  $IFRA_WARN = 'class="alert-warning"'; //NO RECORD FOUND
 					  }
-					  echo'<td data-name="quantity" class="quantity" data-type="text" align="center" data-pk="'.$formula['ingredient'].'">'.$formula['quantity'].'</td>';
-					  echo'<td align="center" '.$IFRA_WARN.'>'.$conc_p.'%</td>';
+					  echo '<td align="center">'.$formula['quantity'].'</td>';
+					  echo '<td align="center" '.$IFRA_WARN.'>'.$conc_p.'%</td>';
 					  echo '<td align="center">'.utf8_encode($settings['currency']).calcCosts($ing_q['price'],$formula['quantity'], $formula['concentration'], $ing_q['ml']).'</td>';
-					  echo '<td align="center"><a href="#" class="fas fa-exchange-alt replaceIngredient" rel="tipsy" title="Replace '.$formula['ingredient'].'" id="replaceIngredient" data-name="'.$formula['ingredient'].'" data-type="select" data-pk="'.$formula['ingredient'].'" data-title="Choose Ingredient"></a> &nbsp; <a href="'.goShopping($formula['ingredient'],$conn).'" target="_blank" class="fas fa-shopping-cart"></a> &nbsp; <a href="javascript:deleteING(\''.$formula['ingredient'].'\', \''.$formula['id'].'\')" onclick="return confirm(\'Remove '.$formula['ingredient'].' from formula?\');" class="fas fa-trash" rel="tipsy" title="Remove '.$formula['ingredient'].'"></a></td>
-                    </tr>';
+					  echo '<td align="center">';
+					  echo '<a href="#" data-toggle="modal" data-target="#added" data-quantity='.$formula['quantity'].' data-ingredient="'.$formula['ingredient'].'" data-ing-id="'.$formula['id'].'" class="fas fa-check" title="Added '.$formula['ingredient'].'"</a>';
+					  echo '&nbsp; &nbsp;';
+					  echo '<a href="#" class="fas fa-shopping-cart"></a>'; 
+					  echo '</td></tr>';
 					$tot[] = calcCosts($ing_q['price'],$formula['quantity'], $formula['concentration'], $ing_q['ml']);
 					$conc_tot[] = $conc_p;
 				  }
@@ -276,3 +270,32 @@ $(document).ready(function() {
       </div>
    </div>
   </div>
+  <script>
+  $("a[data-target='#added']").on('click',function(){
+  	$("#ingAdded").html($(this).attr('data-ingredient'));
+	$("#ingID").html($(this).attr('data-ing-id'));
+	$("#amountAdded").val($(this).attr('data-quantity'));
+
+  });
+  </script>
+<!-- Modal PRINT-->
+<div class="modal fade" id="added" tabindex="-1" role="dialog" aria-labelledby="added" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+      <div style="display: none;" id="ingID"></div>
+        <h5 class="modal-title" id="ingAdded"></h5>
+      </div>
+      <div class="modal-body">
+        Amount added:
+          <form action="javascript:addedToFormula()" method="get" name="form1" target="_self" id="form1">
+            <input name="amountAdded" type="text" id="amountAdded"  />
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <input type="submit" name="button" class="btn btn-primary" id="button" value="Confirm">
+      </div>
+     </form>
+    </div>
+  </div>
+</div>

@@ -138,6 +138,17 @@ if($_GET['formula'] && $_GET['do']){
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error</strong> deleting '.$fid.' formula!</div>';
 	}
 
+//MAKE FORMULA
+}elseif($_GET['action'] == 'makeFormula' && $_GET['fid'] && $_GET['q'] && $_GET['ingId']){
+	$fid = mysqli_real_escape_string($conn, $_GET['fid']);
+	$ingId = mysqli_real_escape_string($conn, $_GET['ingId']);
+
+	if(mysqli_query($conn, "DELETE FROM makeFormula WHERE fid = '$fid' AND id = 'ingId'")){
+	//	mysqli_query($conn, "DELETE FROM formulasMetaData WHERE fid = '$fid'");
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Added!</div>';
+	}else{
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error</strong> '.mysqli_error($conn).'</div>';
+	}
 
 
 //PRINTING

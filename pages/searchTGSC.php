@@ -1,5 +1,4 @@
 <?php
-//$url = 'http://www.thegoodscentscompany.com/search3.php?qName=476332-65-7';
 
 $url = "http://www.thegoodscentscompany.com/search2.php?qName=".$_GET['name'];
 
