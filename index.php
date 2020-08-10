@@ -232,7 +232,9 @@ function updateDB() {
 			require 'pages/batches.php';				
 		}elseif($_GET['do'] == 'tools'){
 			require 'pages/tools.php';	
-			
+		}elseif($_GET['do'] == 'todo'){
+			require 'pages/todo.php';	
+		
 		}else{
 			require 'pages/dashboard.php';
 		}

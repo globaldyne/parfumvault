@@ -139,17 +139,23 @@ if($_GET['formula'] && $_GET['do']){
 	}
 
 //MAKE FORMULA
-}elseif($_GET['action'] == 'makeFormula' && $_GET['fid'] && $_GET['q'] && $_GET['ingId']){
+}elseif($_GET['action'] == 'makeFormula' && $_GET['fid'] && $_GET['q'] && $_GET['qr'] && $_GET['ingId']){
 	$fid = mysqli_real_escape_string($conn, $_GET['fid']);
 	$ingId = mysqli_real_escape_string($conn, $_GET['ingId']);
+	$qr = trim($_GET['qr']);
+	$q = trim($_GET['q']);
 
-	if(mysqli_query($conn, "DELETE FROM makeFormula WHERE fid = '$fid' AND id = 'ingId'")){
-	//	mysqli_query($conn, "DELETE FROM formulasMetaData WHERE fid = '$fid'");
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Added!</div>';
+	if($qr == $q){
+		if(mysqli_query($conn, "DELETE FROM makeFormula WHERE fid = '$fid' AND id = '$ingId'")){
+		//	mysqli_query($conn, "DELETE FROM formulasMetaData WHERE fid = '$fid'");
+			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Added!</div>';
+		}else{
+			echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error</strong> '.mysqli_error($conn).'</div>';
+		}
 	}else{
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error</strong> '.mysqli_error($conn).'</div>';
+		$sub_tot = $qr - $q;
+		echo $sub_tot;
 	}
-
 
 //PRINTING
 }elseif($_GET['action'] == 'printLabel' && $_GET['name']){

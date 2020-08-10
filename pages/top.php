@@ -7,31 +7,34 @@
               <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-bell fa-fw"></i>
                 <!-- Counter - Notifications -->
-                <span class="badge badge-danger badge-counter"><?php echo countPending($conn);?></span>
+                <span class="badge badge-danger badge-counter"><?php echo countPending(NULL, NULL, $conn);?></span>
               </a>
               <!-- Dropdown - Notifications -->
               <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="messagesDropdown">
-                <h6 class="dropdown-header">
-                  Pending to make formulas
+
+                <?php if(mysqli_num_rows(mysqli_query($conn, "SELECT name,fid FROM makeFormula GROUP BY name ORDER BY name ASC"))){ ?>
+				<h6 class="dropdown-header">
+                  Pending formulas to make
                 </h6>
-                <?php
-				if($q = mysqli_query($conn, "SELECT name,fid FROM makeFormula")){
-				while ($p = mysqli_fetch_array($q)){
+				<?php 
+				$q = mysqli_query($conn, "SELECT name,fid FROM makeFormula GROUP BY name ORDER BY name ASC");
+				while ($p = mysqli_fetch_array($q)){ 	
+					$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT image FROM formulasMetaData WHERE fid = '".$p['fid']."'"));
 				?>
                 <a class="dropdown-item d-flex align-items-center" href="pages/makeFormula.php?fid=<?php echo $p['fid'];?>" target="_blank"">
                   <div class="dropdown-list-image mr-3">
-                    <img class="rounded-circle" src="https://vault.jbparfum.com/uploads/logo/L3RtcC9waHBRb0xFNFo=" alt="">
-                    <div class="status-indicator bg-success"></div>
+                    <img class="rounded-circle" src="<?php echo $meta['image']; ?>" alt="">
+                  <!--  <div class="status-indicator bg-success"></div> -->
                   </div>
                   <div class="font-weight-bold">
                     <div class="text-truncate"><?php echo $p['name'];?></div>
-                    <div class="small text-gray-500">Emily Fowler · 58m</div>
+                    <div class="small text-gray-500">Ingredients left: <?php echo countPending(1, $p['fid'], $conn);?></div>
                   </div>
                 </a>
 				<?php } ?>
 	
 				<?php }else{ ?>
-                <a class="dropdown-item text-center small text-gray-500" href="#">No pending formulas to make</a>
+                <a class="dropdown-item text-center small text-gray-500" href="#">No formulas to make</a>
 				<?php } ?>	
 				 
               </div>

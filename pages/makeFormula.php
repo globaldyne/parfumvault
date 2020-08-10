@@ -19,12 +19,7 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fi
 	echo 'Formula doesn\'t exist';
 	exit;
 }
-//COPY FORMULA
-if(mysqli_query($conn, "DELETE FROM makeFormula WHERE fid = '$fid'")){
-	mysqli_query($conn, "INSERT INTO makeFormula (fid, name, ingredient, concentration, dilutant, quantity) SELECT fid, name, ingredient, concentration, dilutant, quantity FROM formulas WHERE fid = '$fid'");
-}else{
-	echo 'Unable to copy the formula '.mysqli_error($conn);
-}
+
 
 
 $formula_q = mysqli_query($conn, "SELECT * FROM makeFormula WHERE fid = '$fid' ORDER BY ingredient ASC");
@@ -68,6 +63,7 @@ function addedToFormula() {
     data: {
 		action: "makeFormula",
 		q: $("#amountAdded").val(),
+		qr: $("#qr").text(),
 		ing: $("#ingAdded").text(),
 		ingId: $("#ingID").text(),
 		fid: "<?php echo $fid; ?>",
@@ -240,12 +236,12 @@ $(document).ready(function() {
 					  echo '<td align="center" '.$IFRA_WARN.'>'.$conc_p.'%</td>';
 					  echo '<td align="center">'.utf8_encode($settings['currency']).calcCosts($ing_q['price'],$formula['quantity'], $formula['concentration'], $ing_q['ml']).'</td>';
 					  echo '<td align="center">';
-					  echo '<a href="#" data-toggle="modal" data-target="#added" data-quantity='.$formula['quantity'].' data-ingredient="'.$formula['ingredient'].'" data-ing-id="'.$formula['id'].'" class="fas fa-check" title="Added '.$formula['ingredient'].'"</a>';
+					  echo '<a href="#" data-toggle="modal" data-target="#added" data-quantity='.$formula['quantity'].' data-ingredient="'.$formula['ingredient'].'" data-ing-id="'.$formula['id'].'" data-qr="'.$formula['quantity'].'" class="fas fa-check" title="Added '.$formula['ingredient'].'"</a>';
 					  echo '&nbsp; &nbsp;';
 					  echo '<a href="#" class="fas fa-shopping-cart"></a>'; 
 					  echo '</td></tr>';
-					$tot[] = calcCosts($ing_q['price'],$formula['quantity'], $formula['concentration'], $ing_q['ml']);
-					$conc_tot[] = $conc_p;
+					  $tot[] = calcCosts($ing_q['price'],$formula['quantity'], $formula['concentration'], $ing_q['ml']);
+					  $conc_tot[] = $conc_p;
 				  }
                   ?>
                     </tr>
@@ -253,7 +249,7 @@ $(document).ready(function() {
                   <tfoot>
                     <tr>
                       <?php if($settings['grp_formula'] == '1'){ echo '<th></th>'; }?>
-                      <th width="22%">Total: <?php echo countElement("formulas WHERE fid = '$fid'" ,$conn);?></th>
+                      <th width="22%">Total: <?php echo countElement("makeFormula WHERE fid = '$fid'" ,$conn);?></th>
                       <th></th>
                       <th></th>
                       <th width="15%" align="right"><p>Total: <?php echo ml2l($mg['total_mg'], 3); ?></p></th>
@@ -272,9 +268,10 @@ $(document).ready(function() {
   </div>
   <script>
   $("a[data-target='#added']").on('click',function(){
-  	$("#ingAdded").html($(this).attr('data-ingredient'));
-	$("#ingID").html($(this).attr('data-ing-id'));
+  	$("#ingAdded").text($(this).attr('data-ingredient'));
+	$("#ingID").text($(this).attr('data-ing-id'));
 	$("#amountAdded").val($(this).attr('data-quantity'));
+	$("#qr").text($(this).attr('data-qr'));
 
   });
   </script>
@@ -284,6 +281,7 @@ $(document).ready(function() {
     <div class="modal-content">
       <div class="modal-header">
       <div style="display: none;" id="ingID"></div>
+      <div style="display: none;" id="qr"></div>
         <h5 class="modal-title" id="ingAdded"></h5>
       </div>
       <div class="modal-body">
