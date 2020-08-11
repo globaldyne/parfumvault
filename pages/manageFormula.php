@@ -146,17 +146,22 @@ if($_GET['formula'] && $_GET['do']){
 	$q = trim($_GET['q']);
 
 	if($qr == $q){
-		if(mysqli_query($conn, "DELETE FROM makeFormula WHERE fid = '$fid' AND id = '$ingId'")){
-		//	mysqli_query($conn, "DELETE FROM formulasMetaData WHERE fid = '$fid'");
+		//if(mysqli_query($conn, "DELETE FROM makeFormula WHERE fid = '$fid' AND id = '$ingId'")){
+		if(mysqli_query($conn, "UPDATE makeFormula SET toAdd = '0' WHERE fid = '$fid' AND id = '$ingId'")){
+			
 			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Added!</div>';
 		}else{
 			echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error</strong> '.mysqli_error($conn).'</div>';
 		}
 	}else{
 		$sub_tot = $qr - $q;
-		echo $sub_tot;
+		if(mysqli_query($conn, "UPDATE makeFormula SET quantity='$sub_tot' WHERE fid = '$fid' AND id = '$ingId'")){
+			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Updated!</div>';
+		}
+		
 	}
-
+	return;
+	
 //PRINTING
 }elseif($_GET['action'] == 'printLabel' && $_GET['name']){
 	$name = $_GET['name'];

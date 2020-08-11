@@ -11,11 +11,12 @@ if($_GET['action'] == 'delete' && $_GET['fid']){
 	}
 	
 }elseif($_GET['action'] == 'add' && $_GET['fid']){
-if(mysqli_query($conn, "DELETE FROM makeFormula WHERE fid = '$fid'")){
-	mysqli_query($conn, "INSERT INTO makeFormula (fid, name, ingredient, concentration, dilutant, quantity) SELECT fid, name, ingredient, concentration, dilutant, quantity FROM formulas WHERE fid = '$fid'");
-}else{
-	echo 'Unable to copy the formula '.mysqli_error($conn);
-}
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = '$fid'"))){
+		
+			$msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Formula <strong>'.$todo['name'].'</strong> already exists!</div>';
+	}else{							
+		mysqli_query($conn, "INSERT INTO makeFormula (fid, name, ingredient, concentration, dilutant, quantity, toAdd) SELECT fid, name, ingredient, concentration, dilutant, quantity, '1' FROM formulas WHERE fid = '$fid'");
+	}
 
 }
 $todo = mysqli_query($conn, "SELECT * FROM makeFormula GROUP BY name ORDER BY name ASC");

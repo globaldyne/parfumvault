@@ -70,7 +70,7 @@ function addedToFormula() {
 		},
 	dataType: 'html',
     success: function (data) {
-		//location.reload();
+		location.reload();
 	  	$('#msg').html(data);
 		$('#added').modal('toggle');
 
@@ -232,7 +232,11 @@ $(document).ready(function() {
 					  }else{
 						  $IFRA_WARN = 'class="alert-warning"'; //NO RECORD FOUND
 					  }
-					  echo '<td align="center">'.$formula['quantity'].'</td>';
+					  if($formula['toAdd'] == '0'){
+						  class="strikethrough"
+					  }
+						  
+					  echo '<td align="center" >'.$formula['quantity'].'</td>';
 					  echo '<td align="center" '.$IFRA_WARN.'>'.$conc_p.'%</td>';
 					  echo '<td align="center">'.utf8_encode($settings['currency']).calcCosts($ing_q['price'],$formula['quantity'], $formula['concentration'], $ing_q['ml']).'</td>';
 					  echo '<td align="center">';
@@ -287,7 +291,7 @@ $(document).ready(function() {
       <div class="modal-body">
         Amount added:
           <form action="javascript:addedToFormula()" method="get" name="form1" target="_self" id="form1">
-            <input name="amountAdded" type="text" id="amountAdded"  />
+          <input name="amountAdded" type="text" id="amountAdded"  />
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>

@@ -184,3 +184,8 @@ tr.group:hover {
     color: #fff;
     background-color: #e74a3b;
 }
+
+.strikethrough {
+  text-decoration: line-through;
+  font-style: italic;
+}
