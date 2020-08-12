@@ -41,7 +41,9 @@ if($_GET['do'] == 'backupDB'){
 				unset($_SESSION['parfumvault']);
 			}
 			session_unset();
-			header('Location: login.php');
+			echo 'Database has been restored. Please close the window and login again for the changes to take effect.';
+			return;
+			//header('Location: login.php');
 		}else{
 			header("Location: maintenance.php?do=restoreDB&err=1");
 		}
