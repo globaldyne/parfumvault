@@ -56,7 +56,7 @@ CREATE TABLE `makeFormula` (
  `quantity` decimal(8,2) DEFAULT NULL,
  `toAdd` int(11) NOT NULL,
  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 CREATE TABLE `cart` (
  `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -64,7 +64,7 @@ CREATE TABLE `cart` (
  `supplier` varchar(255) COLLATE utf8_bin NOT NULL,
  `supplier_link` varchar(255) COLLATE utf8_bin NOT NULL, 
  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 DROP TABLE IF EXISTS `formulasMetaData`;
 CREATE TABLE `formulasMetaData` (
