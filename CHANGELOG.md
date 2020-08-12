@@ -1,6 +1,7 @@
 # CHANGELOG
 
 ### Version 2.0.6
+- ADD: Cart
 - ADD: Make formula
 - ADD: DB schema upgrades
 - ADD: Ingredients data extend
