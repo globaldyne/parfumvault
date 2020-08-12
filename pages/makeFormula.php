@@ -233,7 +233,7 @@ $(document).ready(function() {
 					  echo '<td align="center">';
 	                  
 					  if($formula['toAdd'] == '1'){
-						  echo '<a href="#" data-toggle="modal" data-target="#added" data-quantity='.$formula['quantity'].' data-ingredient="'.$formula['ingredient'].'" data-ing-id="'.$formula['id'].'" data-qr="'.$formula['quantity'].'" class="fas fa-check" title="Added '.$formula['ingredient'].'"</a>';
+						  echo '<a href="#" data-toggle="modal" data-target="#added" data-quantity='.$formula['quantity'].' data-ingredient="'.$formula['ingredient'].'" data-ing-id="'.$formula['id'].'" data-qr="'.$formula['quantity'].'" class="fas fa-check" title="Added '.$formula['ingredient'].'"></a>';
 					  }
 					  
 					  echo '&nbsp; &nbsp;';
