@@ -30,7 +30,7 @@ if($_GET['formula'] && $_GET['do']){
 		mysqli_query($conn,"UPDATE formulas SET quantity = '$nq' WHERE name = '$formula' AND quantity = '".$cur['quantity']."' AND ingredient = '".$cur['ingredient']."'");
 	}
 
-//DELET INGREDIENT
+//DELETE INGREDIENT
 }elseif($_GET['action'] == 'deleteIng' && $_GET['ingID'] && $_GET['ing']){
 	$id = mysqli_real_escape_string($conn, $_GET['ingID']);
 	$ing = mysqli_real_escape_string($conn, $_GET['ing']);
@@ -174,12 +174,18 @@ if($_GET['formula'] && $_GET['do']){
 		return;
 	}
 									
-	if(mysqli_query($conn, "INSERT INTO cart (name,supplier) VALUES ('$material','".$qS['supplier_link']."')")){
+	if(mysqli_query($conn, "INSERT INTO cart (name,supplier,supplier_link) VALUES ('$material','".$qS['supplier']."','".$qS['supplier_link']."')")){
 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$material.'</strong> added to cart!</div>';
 		return;
 	}
 	
-}elseif($_GET['action'] == 'removeFromCart' && $_GET['material']){
+}elseif($_GET['action'] == 'removeFromCart' && $_GET['materialId']){
+	$materialId = mysqli_real_escape_string($conn, $_GET['materialId']);
+
+	if(mysqli_query($conn, "DELETE FROM cart WHERE id = '$materialId'")){
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Removed from cart!</div>';
+		return;
+	}
 
 
 

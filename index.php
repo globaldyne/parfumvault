@@ -27,6 +27,7 @@ require_once('./func/ml2L.php');
 require_once('./func/validateFormula.php');
 require_once('./func/pvFileGet.php');
 require_once('./func/countPending.php');
+require_once('./func/countCart.php');
 
 require('./inc/settings.php');
 
@@ -234,6 +235,9 @@ function updateDB() {
 			require 'pages/tools.php';	
 		}elseif($_GET['do'] == 'todo'){
 			require 'pages/todo.php';	
+		}elseif($_GET['do'] == 'cart'){
+			require 'pages/cart.php';	
+		
 		
 		}else{
 			require 'pages/dashboard.php';
