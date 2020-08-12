@@ -31,3 +31,10 @@ CREATE TABLE `makeFormula` (
  `toAdd` int(11) NOT NULL,
  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+
+CREATE TABLE `cart` (
+ `id` int(11) NOT NULL AUTO_INCREMENT,
+ `name` varchar(255) COLLATE utf8_bin NOT NULL,
+ `supplier` varchar(255) COLLATE utf8_bin NOT NULL,
+ PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin

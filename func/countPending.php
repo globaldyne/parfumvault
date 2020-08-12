@@ -5,7 +5,7 @@ function countPending($ing = NULL, $fid, $conn ){
 	if($ing == '1' && $fid){
 		$c = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = '$fid' AND toAdd = '1'"));
 	}else{
-		$c = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula GROUP BY name"));
+		$c = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE toAdd = '1' GROUP BY name"));
 	}
 	
 	if($c == '0'){

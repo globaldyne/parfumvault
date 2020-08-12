@@ -79,25 +79,19 @@ function addedToFormula() {
 
 };
 
-function printLabel() {
-	<?php if(empty($settings['label_printer_addr']) || empty($settings['label_printer_model'])){?>
-	$("#msg").html('<div class="alert alert-danger alert-dismissible">Please configure printer details in <a href="/?do=settings">settings<a> page</div>');
-	<?php }else{ ?>
-	$("#msg").html('<div class="alert alert-info alert-dismissible">Printing...</div>');
-
+function addToCart(material) {
 $.ajax({ 
     url: 'manageFormula.php', 
 	type: 'get',
     data: {
-		action: "printLabel",
-		name: "<?php echo $meta['name']; ?>"
+		action: "addToCart",
+		material: material
 		},
-	dataType: 'html',
+	dataType: 'text',
     success: function (data) {
 	  $('#msg').html(data);
     }
   });
-	<?php } ?>
 };
 
 
@@ -163,16 +157,15 @@ $(document).ready(function() {
                   <thead>
                     <tr>
                     <?php if($settings['grp_formula'] == '1'){?>
-                      <th colspan="7">
-                        <?php }else{ ?>
                       <th colspan="6">
+                        <?php }else{ ?>
+                      <th colspan="5">
                     <?php } ?></th>
                       <th></tr>
                     <tr>
                       <?php if($settings['grp_formula'] == '1'){ echo '<th></th>'; } ?>
                       <th width="22%">Ingredient</th>
                       <th width="10%">Purity %</th>
-                      <th width="10%">Dilutant</th>
                       <th width="10%">Quantity (ml)</th>
                       <th width="10%">Concentration*</th>
                       <th width="10%">Cost</th>
@@ -201,7 +194,11 @@ $(document).ready(function() {
 							$ingName = $formula['ingredient'];
 						}
 						
-						echo'<tr>';
+						if($formula['toAdd'] == '0'){
+						  $class = "strikeout";
+					  	}
+						
+						echo'<tr class="'.$class.'">';
 						if($settings['grp_formula'] == '1'){
 							if(empty($ing_q['profile'])){
 								echo '<td>Unknown</td>';
@@ -211,11 +208,7 @@ $(document).ready(function() {
 						}
                       echo '<td align="center" class="'.$ing_q['profile'].'">'.$ingName.'</a> '.checkIng($formula['ingredient'],$conn).'</td>';
                       echo '<td align="center">'.$formula['concentration'].'</td>';
-					  if($formula['concentration'] == '100'){
-						  echo '<td align="center">None</td>';
-					  }else{
-						  echo '<td align="center">'.$formula['dilutant'].'</td>';
-					  }
+					  
 					  if($limit != null){
 						 if($limit < $conc_p){
 							$IFRA_WARN = 'class="alert-danger"';//VALUE IS TO HIGH AGAINST IFRA
@@ -232,17 +225,19 @@ $(document).ready(function() {
 					  }else{
 						  $IFRA_WARN = 'class="alert-warning"'; //NO RECORD FOUND
 					  }
-					  if($formula['toAdd'] == '0'){
-						  class="strikethrough"
-					  }
+
 						  
 					  echo '<td align="center" >'.$formula['quantity'].'</td>';
 					  echo '<td align="center" '.$IFRA_WARN.'>'.$conc_p.'%</td>';
 					  echo '<td align="center">'.utf8_encode($settings['currency']).calcCosts($ing_q['price'],$formula['quantity'], $formula['concentration'], $ing_q['ml']).'</td>';
 					  echo '<td align="center">';
-					  echo '<a href="#" data-toggle="modal" data-target="#added" data-quantity='.$formula['quantity'].' data-ingredient="'.$formula['ingredient'].'" data-ing-id="'.$formula['id'].'" data-qr="'.$formula['quantity'].'" class="fas fa-check" title="Added '.$formula['ingredient'].'"</a>';
+	                  
+					  if($formula['toAdd'] == '1'){
+						  echo '<a href="#" data-toggle="modal" data-target="#added" data-quantity='.$formula['quantity'].' data-ingredient="'.$formula['ingredient'].'" data-ing-id="'.$formula['id'].'" data-qr="'.$formula['quantity'].'" class="fas fa-check" title="Added '.$formula['ingredient'].'"</a>';
+					  }
+					  
 					  echo '&nbsp; &nbsp;';
-					  echo '<a href="#" class="fas fa-shopping-cart"></a>'; 
+					  echo '<a href="javascript:addToCart(\''.$formula['ingredient'].'\')" class="fas fa-shopping-cart"></a>'; 
 					  echo '</td></tr>';
 					  $tot[] = calcCosts($ing_q['price'],$formula['quantity'], $formula['concentration'], $ing_q['ml']);
 					  $conc_tot[] = $conc_p;
@@ -254,7 +249,6 @@ $(document).ready(function() {
                     <tr>
                       <?php if($settings['grp_formula'] == '1'){ echo '<th></th>'; }?>
                       <th width="22%">Total: <?php echo countElement("makeFormula WHERE fid = '$fid'" ,$conn);?></th>
-                      <th></th>
                       <th></th>
                       <th width="15%" align="right"><p>Total: <?php echo ml2l($mg['total_mg'], 3); ?></p></th>
                       <th width="15%">Total: <?php echo array_sum($conc_tot);?>%</th>

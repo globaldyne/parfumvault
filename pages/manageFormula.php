@@ -146,9 +146,7 @@ if($_GET['formula'] && $_GET['do']){
 	$q = trim($_GET['q']);
 
 	if($qr == $q){
-		//if(mysqli_query($conn, "DELETE FROM makeFormula WHERE fid = '$fid' AND id = '$ingId'")){
 		if(mysqli_query($conn, "UPDATE makeFormula SET toAdd = '0' WHERE fid = '$fid' AND id = '$ingId'")){
-			
 			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Added!</div>';
 		}else{
 			echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error</strong> '.mysqli_error($conn).'</div>';
@@ -162,6 +160,30 @@ if($_GET['formula'] && $_GET['do']){
 	}
 	return;
 	
+//CART MANAGE
+}elseif($_GET['action'] == 'addToCart' && $_GET['material']){
+	$material = mysqli_real_escape_string($conn, $_GET['material']);
+	$qS = mysqli_fetch_array(mysqli_query($conn, "SELECT supplier, supplier_link FROM ingredients WHERE name = '$material'"));
+	
+	if(empty($qS['supplier_link'])){
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$material.'</strong> cannot be added to cart as missing supplier info. Please update material supply details first.</div>';
+		return;
+	}		
+	if(mysqli_num_rows(mysqli_query($conn,"SELECT id FROM cart WHERE name = '$material'"))){
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$material.'</strong> already in cart</div>';
+		return;
+	}
+									
+	if(mysqli_query($conn, "INSERT INTO cart (name,supplier) VALUES ('$material','".$qS['supplier_link']."')")){
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$material.'</strong> added to cart!</div>';
+		return;
+	}
+	
+}elseif($_GET['action'] == 'removeFromCart' && $_GET['material']){
+
+
+
+
 //PRINTING
 }elseif($_GET['action'] == 'printLabel' && $_GET['name']){
 	$name = $_GET['name'];

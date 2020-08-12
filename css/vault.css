@@ -185,7 +185,23 @@ tr.group:hover {
     background-color: #e74a3b;
 }
 
-.strikethrough {
-  text-decoration: line-through;
-  font-style: italic;
+
+table { border-collapse: collapse; empty-cells: show; }
+
+td { position: relative; }
+
+tr.strikeout td:before {
+  	content: " ";
+  	position: absolute;
+  	top: 50%;
+  	left: 0;
+	border-bottom: 1px solid #111;
+	width: 100%;
 }
+
+.strikeout {
+	font-style: italic;
+	font-size: 20px;
+}
+
+
