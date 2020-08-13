@@ -4,7 +4,8 @@ define('__ROOT__', dirname(dirname(__FILE__)));
 
 session_start();
 if(!isset($_SESSION['parfumvault'])){
-	header('Location: login.php');
+	$login = $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'].'/login.php';
+	header('Location: '.$login);
 	exit;
 }
 
