@@ -160,6 +160,31 @@ if($_GET['formula'] && $_GET['do']){
 	}
 	return;
 	
+//TODO ADD FORMULA
+}elseif($_GET['action'] == 'todo' && $_GET['fid'] && $_GET['add']){
+	$fid = mysqli_real_escape_string($conn, $_GET['fid']);
+	$name = base64_decode($fid);
+	
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = '$fid'"))){
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Formula <strong>'.$name.'</strong> already exists!</div>';
+	}else{							
+		if(mysqli_query($conn, "INSERT INTO makeFormula (fid, name, ingredient, concentration, dilutant, quantity, toAdd) SELECT fid, name, ingredient, concentration, dilutant, quantity, '1' FROM formulas WHERE fid = '$fid'")){
+			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Formula <a href="?do=todo">'.$name.'</a> added in ToDo list!</div>';
+		}
+	}
+	return;
+	
+//TODO REMOVE FORMULA
+}elseif($_GET['action'] == 'todo' && $_GET['fid'] && $_GET['remove']){
+	$fid = mysqli_real_escape_string($conn, $_GET['fid']);
+
+	$todo = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM makeFormula WHERE fid = '$fid'"));
+	
+	if(mysqli_query($conn, "DELETE FROM makeFormula WHERE fid = '$fid'")){
+		$msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Formula <strong>'.$todo['name'].'</strong> removed!</div>';
+	}
+	return;
+
 //CART MANAGE
 }elseif($_GET['action'] == 'addToCart' && $_GET['material']){
 	$material = mysqli_real_escape_string($conn, $_GET['material']);

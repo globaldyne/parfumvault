@@ -1,28 +1,29 @@
 <?php 
 if (!defined('pvault_panel')){ die('Not Found');}
 
-$fid = mysqli_real_escape_string($conn, $_GET['fid']);
 
-if($_GET['action'] == 'delete' && $_GET['fid']){
-	$todo = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM makeFormula WHERE fid = '$fid'"));
-	
-	if(mysqli_query($conn, "DELETE FROM makeFormula WHERE fid = '$fid'")){
-		$msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Formula <strong>'.$todo['name'].'</strong> removed!</div>';
-	}
-	
-}elseif($_GET['action'] == 'add' && $_GET['fid']){
-	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = '$fid'"))){
-		
-			$msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Formula <strong>'.$todo['name'].'</strong> already exists!</div>';
-	}else{							
-		mysqli_query($conn, "INSERT INTO makeFormula (fid, name, ingredient, concentration, dilutant, quantity, toAdd) SELECT fid, name, ingredient, concentration, dilutant, quantity, '1' FROM formulas WHERE fid = '$fid'");
-	}
-
-}
 $todo = mysqli_query($conn, "SELECT * FROM makeFormula GROUP BY name ORDER BY name ASC");
 
 
 ?>
+<script>
+function removeTODO(fid) {
+	$.ajax({ 
+    url: 'pages/manageFormula.php', 
+	type: 'get',
+    data: {
+		action: 'todo',
+		fid: fid,
+		remove: true,
+		},
+	dataType: 'html',
+    success: function (data) {
+		location.reload();
+	  	$('#msg').html(data);
+    }
+  });
+};
+</script>
 <div id="content-wrapper" class="d-flex flex-column">
 <?php require_once('pages/top.php'); ?>
         <div class="container-fluid">
@@ -52,7 +53,7 @@ $todo = mysqli_query($conn, "SELECT * FROM makeFormula GROUP BY name ORDER BY na
 					?>
                     <tr>
                       <td align="center"><a href="pages/makeFormula.php?fid=<?php echo $r['fid']; ?>" target="_blank" class="<?php if($r['toAdd'] == '0'){ echo $class = 'fas fa-check'; } ?>"><?php echo ' '.$r['name']; ?></a></td>
-					  <td align="center"><a href="?do=todo&action=delete&fid=<?php echo $r['fid']; ?>" onclick="return confirm('Delete <?php echo $r['name']; ?>?');" class="fas fa-trash"></a></td>
+					  <td align="center"><a href="javascript:removeTODO('<?php echo $r['fid']; ?>')" onclick="return confirm('Delete <?php echo $r['name']; ?>?');" class="fas fa-trash"></a></td>
 					  </tr>
 				  <?php } ?>
                   </tbody>

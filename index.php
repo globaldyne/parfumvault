@@ -92,24 +92,8 @@ $(document).ready(function() {
 		"info":   true,
 		"lengthMenu": [[20, 35, 60, -1], [20, 35, 60, "All"]]
 	});
-
 });  
 
-function updateDB() {
-	$.ajax({ 
-    url: 'pages/operations.php', 
-	type: 'get',
-    data: {
-		do: 'db_update',
-		},
-	dataType: 'html',
-    success: function (data) {
-		//location.reload();
-	  	$('#msg').html(data);
-    }
-  });
-
-};
 
 </script>
 </head>

@@ -195,8 +195,10 @@ $(document).ready(function() {
 						}
 						
 						if($formula['toAdd'] == '0'){
-						  $class = "strikeout";
-					  	}
+						  	$class = 'strikeout';
+					  	}else{
+							$class = "";
+						}
 						
 						echo'<tr class="'.$class.'">';
 						if($settings['grp_formula'] == '1'){

@@ -122,7 +122,24 @@ $.ajax({
   });
 };
 
-//
+//Add in TODO
+function addTODO() {
+	$.ajax({ 
+    url: 'pages/manageFormula.php', 
+	type: 'get',
+    data: {
+		action: 'todo',
+		fid: "<?php echo base64_encode($f_name); ?>",
+		add: true,
+		},
+	dataType: 'html',
+    success: function (data) {
+	  	$('#msg').html(data);
+    }
+  });
+};
+
+//Change ingredient
 $(document).ready(function(){
 $('#ingredient').on('change', function(){
 
@@ -285,7 +302,7 @@ $(document).ready(function() {
                         <a class="dropdown-item" href="javascript:manageQuantity('divide')">Divide x2</a>
                         <a class="dropdown-item" href="javascript:cloneMe()">Clone Formula</a>
              			<div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="?do=todo&action=add&fid=<?php echo $fid; ?>">To Do</a>
+                        <a class="dropdown-item" href="javascript:addTODO()">To Do</a>
                       </div>
                     </div>
                     </tr>

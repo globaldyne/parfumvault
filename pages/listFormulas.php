@@ -2,13 +2,14 @@
 <div id="content-wrapper" class="d-flex flex-column">
 <?php require_once('pages/top.php'); ?>
         <div class="container-fluid">
-<?php echo $msg; ?>
+		<?php echo $msg; ?>
           <div>
           <div class="card shadow mb-4">
             <div class="card-header py-3">
               <h2 class="m-0 font-weight-bold text-primary"><a href="?do=listFormulas">Formulas</a></h2>
+              <div id="msg2"></div>
             </div>
-            
+
             <table width="100%" border="0">
               <tr>
                 <td>&nbsp;</td>
@@ -113,6 +114,23 @@ $.ajax({
 			$('#msg').html(data);
 			location.reload();
 		}
+    }
+  });
+};
+
+function addTODO(fid) {
+	$.ajax({ 
+    url: 'pages/manageFormula.php', 
+	type: 'get',
+    data: {
+		action: 'todo',
+		fid: fid,
+		add: true,
+		},
+	dataType: 'html',
+    success: function (data) {
+		//location.reload();
+	  	$('#msg2').html(data);
     }
   });
 };
