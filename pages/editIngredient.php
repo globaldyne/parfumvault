@@ -140,8 +140,7 @@ $.ajax({
 };
 
 <?php if($ing['cas'] && $settings['pubChem'] == '1'){ ?>
-//function pubChem() {	  
-$("#pubChemData").html('Fetching data from PubChem...');
+
 $.ajax({ 
     url: 'pubChem.php', 
 	type: 'get',
@@ -153,7 +152,7 @@ $.ajax({
 	  $('#pubChemData').html(data);
     }
   });
-//};
+
 <?php } ?>
 
 function printLabel() {
@@ -413,7 +412,7 @@ $.ajax({
               <div class="tab-pane fade" id="pubChem">
 				   <h3>Pub Chem Data</h3>
                    <hr>
-                   <div id="pubChemData"></div>
+                   <div id="pubChemData"> <div class="loader"></div> </div>
               </div>
               <?php } ?>
                    <!-- </div> <!--tabs-->

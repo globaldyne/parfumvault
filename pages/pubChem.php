@@ -15,7 +15,10 @@ $cids = trim(pv_file_get_contents($api.'/compound/name/'.$cas.'/cids/TXT'));
 $image = 'data:image/png;base64,'.base64_encode(pv_file_get_contents($api.'/compound/cid/'.$cids.'/'.$type.'?record_type=2d&image_size=large'));
 $data = json_decode(trim(pv_file_get_contents($api.'/compound/name/'.$cas.'/JSON')),true);
 		
-
+if(empty($data)){
+	echo 'Error: Unable to fetch data....';
+	return;
+}
 ?>
 
 <table width="100%" border="0">
