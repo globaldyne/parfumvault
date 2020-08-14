@@ -21,11 +21,11 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fi
 }
 
 
-
-$formula_q = mysqli_query($conn, "SELECT * FROM makeFormula WHERE fid = '$fid' ORDER BY ingredient ASC");
+$formula_q = mysqli_query($conn, "SELECT * FROM makeFormula WHERE fid = '$fid' ORDER BY toAdd DESC");
 $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE fid = '$fid'"));
 $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE fid = '$fid'"));
 
+$settings['grp_formula'] = '0';
 
 ?><head>
   <meta charset="utf-8">
@@ -76,7 +76,6 @@ function addedToFormula() {
 
     }
   });
-
 };
 
 function addToCart(material) {
@@ -92,6 +91,30 @@ $.ajax({
 	  $('#msg').html(data);
     }
   });
+};
+
+function printLabel() {
+	<?php if(empty($settings['label_printer_addr']) || empty($settings['label_printer_model'])){?>
+	$("#msg").html('<div class="alert alert-danger alert-dismissible">Please configure printer details in <a href="?do=settings">settings<a> page</div>');
+	<?php }else{ ?>
+	$("#msg").html('<div class="alert alert-info alert-dismissible">Printing...</div>');
+
+$.ajax({ 
+    url: 'manageFormula.php', 
+	type: 'get',
+    data: {
+		action: "printLabel",
+		type: "ingredient",
+		dilution: $("#dilution").val(),
+		dilutant: $("#dilutant").val(),
+		name: "<?php echo $meta['name']; ?>"
+		},
+	dataType: 'html',
+    success: function (data) {
+	  $('#msg').html(data);
+    }
+  });
+	<?php } ?>
 };
 
 
