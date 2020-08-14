@@ -10,7 +10,7 @@
 #
 #Config
 PVDIR=~/Documents/pvault_pro
-
+TAG=latest
 
 
 #Check if Docker is up and runnning
@@ -24,7 +24,7 @@ if [[ $? -eq 0 ]]; then
 		mkdir -p $PVDIR
 	fi
 	#Get the image and start it
-	docker run -p 8080:80 -v $PVDIR/config:/config -v $PVDIR/db:/var/lib/mysql -v $PVDIR/uploads:/var/www/html/uploads globaldyne/jbvault
+	docker run --name PV2 -p 8080:80 -v $PVDIR/config:/config -v $PVDIR/db:/var/lib/mysql -v $PVDIR/uploads:/var/www/html/uploads globaldyne/jbvault:$TAG
 
 else
     clear
