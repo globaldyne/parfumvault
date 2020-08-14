@@ -1,11 +1,10 @@
 <?php 
 if (!defined('pvault_panel')){ die('Not Found');}
 
-
-$todo = mysqli_query($conn, "SELECT * FROM makeFormula GROUP BY name ORDER BY name ASC");
-
+$todo = mysqli_query($conn, "SELECT fid, name, SUM(toadd) AS toAdd FROM makeFormula GROUP BY name ORDER BY name ASC");
 
 ?>
+
 <script>
 function removeTODO(fid) {
 	$.ajax({ 
@@ -47,10 +46,7 @@ function removeTODO(fid) {
                     </tr>
                   </thead>
                   <tbody id="todo_data">
-                    <?php  
-					while ($r = mysqli_fetch_array($todo)) {
-						
-					?>
+                    <?php while ($r = mysqli_fetch_array($todo)) { ?>
                     <tr>
                       <td align="center"><a href="pages/makeFormula.php?fid=<?php echo $r['fid']; ?>" target="_blank" class="<?php if($r['toAdd'] == '0'){ echo $class = 'fas fa-check'; } ?>"><?php echo ' '.$r['name']; ?></a></td>
 					  <td align="center"><a href="javascript:removeTODO('<?php echo $r['fid']; ?>')" onclick="return confirm('Delete <?php echo $r['name']; ?>?');" class="fas fa-trash"></a></td>
