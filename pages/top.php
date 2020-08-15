@@ -16,11 +16,11 @@
 				<?php 
 				$q = mysqli_query($conn, "SELECT name,fid FROM makeFormula WHERE toAdd = '1' GROUP BY name ORDER BY name ASC");
 				while ($p = mysqli_fetch_array($q)){ 	
-					$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT image FROM formulasMetaData WHERE fid = '".$p['fid']."'"));
+					$todoImg = mysqli_fetch_array(mysqli_query($conn, "SELECT image FROM formulasMetaData WHERE fid = '".$p['fid']."'"));
 				?>
                 <a class="dropdown-item d-flex align-items-center" href="pages/makeFormula.php?fid=<?php echo $p['fid'];?>" target="_blank"">
                   <div class="dropdown-list-image mr-3">
-                    <img class="rounded-circle" src="<?php echo $meta['image']; ?>" alt="">
+                    <img class="rounded-circle" src="<?php echo $todoImg['image']; ?>" alt="">
                   </div>
                   <div class="font-weight-bold">
                     <div class="text-truncate"><?php echo $p['name'];?></div>
