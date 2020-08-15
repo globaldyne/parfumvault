@@ -14,17 +14,17 @@
                 <?php if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE toAdd = '1' GROUP BY name"))){ ?>
 				<a href="?do=todo" class="dropdown-header"><h6>Pending formulas to make</h6></a>
 				<?php 
-				$q = mysqli_query($conn, "SELECT name,fid FROM makeFormula WHERE toAdd = '1' GROUP BY name ORDER BY name ASC");
-				while ($p = mysqli_fetch_array($q)){ 	
-					$todoImg = mysqli_fetch_array(mysqli_query($conn, "SELECT image FROM formulasMetaData WHERE fid = '".$p['fid']."'"));
+				$toadd_q = mysqli_query($conn, "SELECT name,fid FROM makeFormula WHERE toAdd = '1' GROUP BY name ORDER BY name ASC");
+				while ($toadd_p = mysqli_fetch_array($toadd_q)){ 	
+					$todoImg = mysqli_fetch_array(mysqli_query($conn, "SELECT image FROM formulasMetaData WHERE fid = '".$toadd_p['fid']."'"));
 				?>
-                <a class="dropdown-item d-flex align-items-center" href="pages/makeFormula.php?fid=<?php echo $p['fid'];?>" target="_blank"">
+                <a class="dropdown-item d-flex align-items-center" href="pages/makeFormula.php?fid=<?php echo $toadd_p['fid'];?>" target="_blank"">
                   <div class="dropdown-list-image mr-3">
                     <img class="rounded-circle" src="<?php echo $todoImg['image']; ?>" alt="">
                   </div>
                   <div class="font-weight-bold">
-                    <div class="text-truncate"><?php echo $p['name'];?></div>
-                    <div class="small text-gray-500">Ingredients left: <?php echo countPending(1, $p['fid'], $conn);?></div>
+                    <div class="text-truncate"><?php echo $toadd_p['name'];?></div>
+                    <div class="small text-gray-500">Ingredients left: <?php echo countPending(1, $toadd_p['fid'], $conn);?></div>
                   </div>
                 </a>
 				<?php } ?>

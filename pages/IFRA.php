@@ -1,7 +1,7 @@
 <?php
 if (!defined('pvault_panel')){ die('Not Found');}
 
-$q = mysqli_query($conn, "SELECT * FROM IFRALibrary ORDER BY amendment DESC");
+$ifra_q = mysqli_query($conn, "SELECT * FROM IFRALibrary ORDER BY amendment DESC");
 
 ?>
 <div id="content-wrapper" class="d-flex flex-column">
@@ -43,7 +43,7 @@ $q = mysqli_query($conn, "SELECT * FROM IFRALibrary ORDER BY amendment DESC");
                   </thead>
                   <tbody>
                   <?php					
-				  while ($IFRA = mysqli_fetch_array($q)) {
+				  while ($IFRA = mysqli_fetch_array($ifra_q)) {
 					  echo'
                     <tr>
                       <td align="center"><a href="#">'.$IFRA['name'].'</a></td>
@@ -81,9 +81,7 @@ $('#csv').on('click',function(){
 	ignoreColumns: '.noexport',
   	ignoreRows: '.noexport',
 	
-	htmlContent: false,
-  
-  	// debug
+	htmlContent: false,  
   	consoleLog: false   
 });
  
