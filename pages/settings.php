@@ -77,6 +77,7 @@ if(($_POST) && $_GET['update'] == 'printer'){
 	$grp_formula = mysqli_real_escape_string($conn, $_POST['grp_formula']);
 	$chem_vs_brand = mysqli_real_escape_string($conn, $_POST['chem_vs_brand']);
 	$pubChem = mysqli_real_escape_string($conn, $_POST['pubChem']);
+	$chkVersion = mysqli_real_escape_string($conn, $_POST['chkVersion']);
 
 	if(empty($chem_vs_brand)){
 		$chem_vs_brand = '0';
@@ -87,7 +88,10 @@ if(($_POST) && $_GET['update'] == 'printer'){
 	if(empty($pubChem)){
 		$pubChem = '0';
 	}
-	if(mysqli_query($conn, "UPDATE settings SET currency = '$currency', top_n = '$top_n', heart_n = '$heart_n', base_n = '$base_n', chem_vs_brand = '$chem_vs_brand', grp_formula = '$grp_formula', pubChem='$pubChem'")){
+	if(empty($chkVersion)){
+		$chkVersion = '0';
+	}	
+	if(mysqli_query($conn, "UPDATE settings SET currency = '$currency', top_n = '$top_n', heart_n = '$heart_n', base_n = '$base_n', chem_vs_brand = '$chem_vs_brand', grp_formula = '$grp_formula', pubChem='$pubChem', chkVersion='$chkVersion'")){
 		$msg = '<div class="alert alert-success alert-dismissible">Settings updated!</div>';
 	}else{
 		$msg = '<div class="alert alert-danger alert-dismissible">An error occured. ('.mysqli_error($conn).')</div>';	
@@ -233,9 +237,9 @@ $(function() {
           <td colspan="4"><?php echo $msg; ?></td>
           </tr>
         <tr>
-          <td width="7%" height="29">Currency:</td>
+          <td width="10%" height="29">Currency:</td>
           <td colspan="2"><input name="currency" type="text" class="form-control" id="currency" value="<?php echo utf8_encode($settings['currency']);?>"/></td>
-          <td width="76%">&nbsp;</td>
+          <td width="74%">&nbsp;</td>
           </tr>
         <tr>
           <td height="28"><a href="#" rel="tipsy" title="If enabled, ingredients in formula view will be grouped by type. eg: Top,Heart,Base notes">Group Formula:</a></td>
@@ -243,8 +247,13 @@ $(function() {
           <td>&nbsp;</td>
         </tr>
         <tr>
-          <td height="32"><a href="#" rel="tipsy" title="If enabled, PV will query PubChem to fetch ingredient data. Please note, the CAS number of the ingredient will be send to the PubChem servers.">Use PubChem:</td>
+          <td height="32"><a href="#" rel="tipsy" title="If enabled, PV will query PubChem to fetch ingredient data. Please note, the CAS number of the ingredient will be send to the PubChem servers.">Use PubChem:</a></td>
           <td colspan="2"><input name="pubChem" type="checkbox" id="pubChem" value="1" <?php if($settings['pubChem'] == '1'){ ?> checked="checked" <?php } ?>/></td>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td height="32"><a href="#" rel="tipsy" title="Auto check for new PV version. If enabled, your ip, current PV version and browser details will be send to our servers but will not be stored.">Check for updates:</a></td>
+          <td colspan="2"><input name="chkVersion" type="checkbox" id="chkVersion" value="1" <?php if($settings['chkVersion'] == '1'){ ?> checked="checked" <?php } ?>/></td>
           <td>&nbsp;</td>
         </tr>
         <tr>
@@ -263,7 +272,7 @@ $(function() {
         <tr>
           <td>Top notes:</td>
           <td width="9%"><input name="top_n" type="text" class="form-control" id="top_n" value="<?php echo $settings['top_n'];?>"/></td>
-          <td width="8%">%</td>
+          <td width="10%">%</td>
           <td>&nbsp;</td>
         </tr>
         <tr>

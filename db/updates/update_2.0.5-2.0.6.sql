@@ -19,6 +19,7 @@ ALTER TABLE `ingredients` ADD `cat11A` varchar(255) DEFAULT NULL;
 ALTER TABLE `ingredients` ADD `cat11B` varchar(255) DEFAULT NULL;
 ALTER TABLE `ingredients` ADD `cat12` varchar(255) DEFAULT NULL;
 ALTER TABLE `settings` ADD `pubChem` INT(11) DEFAULT NULL;
+ALTER TABLE `settings` ADD `chkVersion` INT NOT NULL AFTER `pubChem`; 
 
 CREATE TABLE `makeFormula` (
  `id` int(11) NOT NULL AUTO_INCREMENT,

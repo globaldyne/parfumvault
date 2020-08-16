@@ -93,7 +93,8 @@
               </div>
             </li>
           </ul>
+<?php if($settings['chkVersion'] == '1'){ ?>          
 <?php checkVer($ver, NULL);?>
-<div id="msg"><?php checkVer(NULL, $pv_meta['schema_ver']);?>
-</div>
+<div id="msg"><?php checkVer(NULL, $pv_meta['schema_ver']);?></div>
+<?php } ?>
 </nav>
