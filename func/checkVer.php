@@ -3,7 +3,7 @@ if (!defined('pvault_panel')){ die('Not Found');}
 
 function checkVer($app_ver, $db_ver) {
 	if($app_ver){
-		$githubVer = 'https://www.jbparfum.com/VERSION.md';
+		$githubVer = 'https://raw.githubusercontent.com/globaldyne/parfumvault/master/VERSION.md';
 		$gitHubRep = 'https://www.jbparfum.com/features/';
 		
 		$data = trim(pv_file_get_contents($githubVer));
