@@ -78,6 +78,7 @@ if(($_POST) && $_GET['update'] == 'printer'){
 	$chem_vs_brand = mysqli_real_escape_string($conn, $_POST['chem_vs_brand']);
 	$pubChem = mysqli_real_escape_string($conn, $_POST['pubChem']);
 	$chkVersion = mysqli_real_escape_string($conn, $_POST['chkVersion']);
+	$pv_maker = mysqli_real_escape_string($conn, $_POST['pv_maker']);
 
 	if(empty($chem_vs_brand)){
 		$chem_vs_brand = '0';
@@ -90,8 +91,12 @@ if(($_POST) && $_GET['update'] == 'printer'){
 	}
 	if(empty($chkVersion)){
 		$chkVersion = '0';
-	}	
-	if(mysqli_query($conn, "UPDATE settings SET currency = '$currency', top_n = '$top_n', heart_n = '$heart_n', base_n = '$base_n', chem_vs_brand = '$chem_vs_brand', grp_formula = '$grp_formula', pubChem='$pubChem', chkVersion='$chkVersion'")){
+	}
+	if(empty($pv_maker)){
+		$pv_maker = '0';
+	}
+	
+	if(mysqli_query($conn, "UPDATE settings SET currency = '$currency', top_n = '$top_n', heart_n = '$heart_n', base_n = '$base_n', chem_vs_brand = '$chem_vs_brand', grp_formula = '$grp_formula', pubChem='$pubChem', chkVersion='$chkVersion', pv_maker='$pv_maker'")){
 		$msg = '<div class="alert alert-success alert-dismissible">Settings updated!</div>';
 	}else{
 		$msg = '<div class="alert alert-danger alert-dismissible">An error occured. ('.mysqli_error($conn).')</div>';	
@@ -259,6 +264,11 @@ $(function() {
         <tr>
           <td height="32"><a href="#" rel="tipsy" title="If enabled, formula will display the chemical names of ingredients, where available, instead of the commercial name">Chem. names</a></td>
           <td colspan="2"><input name="chem_vs_brand" type="checkbox" id="chem_vs_brand" value="1" <?php if($settings['chem_vs_brand'] == '1'){ ?> checked="checked" <?php } ?>/></td>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td height="32"><a href="#" rel="tipsy" title="Enable's integration with the PV Maker device">PV Maker</a></td>
+          <td colspan="2"><input name="pv_maker" type="checkbox" id="pv_maker" value="1" <?php if($settings['pv_maker'] == '1'){ ?> checked="checked" <?php } ?>/></td>
           <td>&nbsp;</td>
         </tr>
         <tr>

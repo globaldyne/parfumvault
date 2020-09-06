@@ -170,6 +170,13 @@ $(document).ready(function() {
           <i class="fas fa-fw fa-chart-area"></i>
           <span>Insights</span></a>
         </li>
+        <?php if($settings['pv_maker']){?>
+        <li class="nav-item">
+        <a class="nav-link" href="?do=pvmaker">
+          <i class="fas fa-fw fa-robot"></i>
+          <span>PV Maker</span></a>
+        </li>
+        <?php } ?>
       <hr class="sidebar-divider d-none d-md-block">
       
         <li class="nav-item">
@@ -221,8 +228,10 @@ $(document).ready(function() {
 			require 'pages/todo.php';	
 		}elseif($_GET['do'] == 'cart'){
 			require 'pages/cart.php';	
-		
-		
+
+		}elseif($_GET['do'] == 'pvmaker' && $settings['pv_maker'] == '1'){
+			require 'pages/pvmaker.php';	
+			
 		}else{
 			require 'pages/dashboard.php';
 		}
