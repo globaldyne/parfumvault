@@ -14,7 +14,7 @@
                 <?php if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE toAdd = '1' GROUP BY name"))){ ?>
 				<a href="?do=todo" class="dropdown-header"><h6>Pending formulas to make</h6></a>
 				<?php 
-				$toadd_q = mysqli_query($conn, "SELECT name,fid FROM makeFormula WHERE toAdd = '1' GROUP BY name ORDER BY name ASC");
+				$toadd_q = mysqli_query($conn, "SELECT name,fid FROM makeFormula WHERE toAdd = '1' GROUP BY name ORDER BY name ASC LIMIT 5");
 				while ($toadd_p = mysqli_fetch_array($toadd_q)){ 	
 					$todoImg = mysqli_fetch_array(mysqli_query($conn, "SELECT image FROM formulasMetaData WHERE fid = '".$toadd_p['fid']."'"));
 				?>
@@ -28,6 +28,7 @@
                   </div>
                 </a>
 				<?php } ?>
+                <a class="dropdown-item text-center small text-gray-500" href="?do=todo">See all...</a>
 	
 				<?php }else{ ?>
                 <a class="dropdown-item text-center small text-gray-500" href="?do=todo">No formulas to make</a>
@@ -48,7 +49,7 @@
                 <?php if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM cart GROUP BY name"))){ ?>
 				<a href="?do=cart" class="dropdown-header"><h6>To be ordered</h6></a>
 				<?php
-					$qC = mysqli_query($conn, "SELECT name,supplier,supplier_link FROM cart ORDER BY name ASC");
+					$qC = mysqli_query($conn, "SELECT name,supplier,supplier_link FROM cart ORDER BY name ASC LIMIT 5");
 					while ($pC = mysqli_fetch_array($qC)){ 	
 				?>
                 <a class="dropdown-item d-flex align-items-center" href="<?php echo $pC['supplier_link'];?>" target="_blank">
@@ -58,7 +59,8 @@
                   </div>
                 </a>
 				<?php } ?>
-	
+	            <a class="dropdown-item text-center small text-gray-500" href="?do=cart">See all...</a>
+
 				<?php }else{ ?>
                 <a class="dropdown-item text-center small text-gray-500" href="?do=cart">No orders to place</a>
 				<?php } ?>	
