@@ -122,14 +122,24 @@ if(empty(mysqli_num_rows($sql))){
 <script src="../js/jquery/jquery.min.js"></script>
 <script src="../js/bootstrap.min.js"></script>
 <script src="../js/bootstrap-select.js"></script>
-<script src="../js/bootstrap-select.js"></script>
 <script src="../js/tipsy.js"></script>
+<script src="../js/bootstrap-editable.js"></script>
 
+
+<style>
+.form-inline .form-control {
+    display: inline-block;
+    width: 500px;
+    vertical-align: middle;
+}
+
+</style>
 <link href="../css/sb-admin-2.css" rel="stylesheet">
 <link href="../css/bootstrap-select.min.css" rel="stylesheet">
 <link href="../css/bootstrap.min.css" rel="stylesheet">
 <link href="../css/vault.css" rel="stylesheet">
 <link href="../css/tipsy.css" rel="stylesheet">
+<link href="../css/bootstrap-editable.css" rel="stylesheet">
 
 
 <style>
@@ -600,22 +610,41 @@ $.ajax({
               <div class="tab-pane fade" id="tech_allergens">
 				   <h3>Allergens</h3>
                                  <hr>
-                    <table width="100%" border="0">
-                      <tr>
-                        <td>Name</td>
-                        <td>Contains %</td>
-                        <td>Actions</td>
-                      </tr>
-                      <?php while($allergen = mysqli_fetch_array($qAlg)){?>            
-                                  <tr>
-                                    <td><?php echo $allergen['name']; ?></td>
-                                    <td><?php echo $allergen['percentage']; ?></td>
-                                    <td></td>
-                                  </tr>
-                      <?php } ?>
-
-                  </table>
-				</div>
+                    <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered" id="tdData" width="100%" cellspacing="0">
+                  <thead>
+                    <tr class="noBorder">
+                      <th colspan="4">
+                  <div class="text-right">
+                        <div class="btn-group">
+                          <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
+                          <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="?do=addAllergen">Add new</a>
+                          </div>
+                        </div>                    
+                        </div>
+                        </th>
+                    </tr>
+                    <tr>
+                      <th>Name</th>
+                      <th>Percentage %</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="ing_allergen">
+                    <?php while ($allergen = mysqli_fetch_array($qAlg)) { ?>
+                    <tr>
+                      <td data-name="name" class="name" data-type="text" align="center" data-pk="<?=$allergen['name']?>"><?=$allergen['name']?></td>
+					  <td data-name="percentage" class="percentage" data-type="text" align="center" data-pk="<?=$allergen['percentage']?>"><?=$allergen['percentage']?></td>
+                      <td align="center"><a href="" class="fas fa-trash"></a></td>
+					</tr>
+				  	<?php } ?>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+		</div>
                             
               <?php if($settings['pubChem'] == '1' && $ing['cas']){?>
               <div class="tab-pane fade" id="pubChem">
@@ -667,3 +696,34 @@ $.ajax({
   </div>
 </div>
 </div>
+<script type="text/javascript" language="javascript" >
+$(document).ready(function(){
+ 
+  $('#ing_allergen').editable({
+  container: 'body',
+  selector: 'td.name',
+  url: "update_data.php",
+  title: 'Name',
+  type: "GET",
+  dataType: 'json',
+      success: function(response, newValue) {
+        if(response.status == 'error') return response.msg; 
+    },
+
+ });
+  
+  $('#ing_allergen').editable({
+  container: 'body',
+  selector: 'td.percentage',
+  url: "update_data.php",
+  title: 'Percentage',
+  type: "GET",
+  dataType: 'json',
+      success: function(response, newValue) {
+        if(response.status == 'error') return response.msg; 
+    },
+
+ });
+  
+})
+</script>

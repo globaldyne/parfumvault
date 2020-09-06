@@ -213,7 +213,6 @@ if($_GET['formula'] && $_GET['do']){
 	}
 
 
-
 //PRINTING
 }elseif($_GET['action'] == 'printLabel' && $_GET['name']){
 	$name = $_GET['name'];
@@ -344,12 +343,13 @@ if($_GET['formula'] && $_GET['do']){
 				if($chName['chemical_name']){
 					$getAllergen['name'] = $chName['chemical_name'];
 				}else{
-					$getAllergen = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '".$ing['ingredient']."' AND allergen = '1'"));
+				//	$getAllergen = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '".$ing['ingredient']."' AND allergen = '1'"));
+					$getAllergen = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM allergens WHERE ing = '".$ing['ingredient']."'"));
 				}
 
 			$allergen[] = $getAllergen['name'];
 		}
-		$allergen[] = 'Denatureted Ethyl Alcohol '.$_GET['carrier'].'% Vol, Fragrance, DPG, Distilled Water';
+		$allergen[] = "Denatureted Ethyl Alcohol ".$_GET['carrier']."% Vol, \nFragrance, DPG, Distilled Water";
 
 		if($_GET['batchID']){
 			$bNo = $_GET['batchID'];
@@ -380,6 +380,8 @@ if($_GET['formula'] && $_GET['do']){
 	imagettftext($lblF, 22, 0, 150, 490, $black, $font, wordwrap ($info, 50));
 
 	$save = "../tmp/labels/".base64_encode($text.'png');
+			
+			//echo '<img src="'.$save.'"/>';
 
 	if(imagepng($lblF, $save)){
 		imagedestroy($lblF);
