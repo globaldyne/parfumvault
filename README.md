@@ -24,7 +24,7 @@ This is a FREE software provided as is without ANY warranty under MIT license.
 
 To run from docker:
 
-	sh -c "$(curl -fsSL https://raw.githubusercontent.com/globaldyne/vault-pro/master/helpers/run_pvault.sh)"
+	sh -c "$(curl -fsSL https://raw.githubusercontent.com/globaldyne/parfumvault/master/helpers/run_pvault.sh)"
 
 then point your browser to http://localhost:8080
 
