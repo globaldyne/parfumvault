@@ -94,6 +94,23 @@ $.ajax({
   });
 	<?php } ?>
 };
+
+function downloadBoxLabel() {
+	$.ajax({ 
+    url: 'pages/manageFormula.php', 
+	type: 'get',
+    data: {
+		action: "downloadBoxLabel",
+		batchID: "<?php echo $batchID; ?>",
+		name: "<?php echo $f_name; ?>",
+		carrier: "<?php echo $carrier*100/$bottle;?>",
+		},
+	dataType: 'html',
+    success: function (data) {
+	  $('#msg').html(data);
+    }
+  });
+};
 </script>
 <div id="content-wrapper" class="d-flex flex-column">
 <?php require_once('pages/top.php'); ?>
@@ -126,6 +143,7 @@ $.ajax({
                         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#IFRA">IFRA Certificate</a>
                         <a class="dropdown-item" href="javascript:printLabel()" onclick="return confirm('Print label?')">Print Label</a>
                         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#printBoxLabel">Print Box Label</a>
+                        <a class="dropdown-item" href="javascript:downloadBoxLabel()">Download Box Label</a>
                       </div>
                     </div>
                     </div>

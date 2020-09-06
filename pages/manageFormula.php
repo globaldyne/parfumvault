@@ -214,7 +214,6 @@ if($_GET['formula'] && $_GET['do']){
 
 
 
-
 //PRINTING
 }elseif($_GET['action'] == 'printLabel' && $_GET['name']){
 	$name = $_GET['name'];
@@ -331,6 +330,60 @@ if($_GET['formula'] && $_GET['do']){
 		}
 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Print sent!</div>';
 	}
-}
+//}
 
+//DOWNLOAD BOX LABEL
+}elseif($_GET['action'] == 'downloadBoxLabel' && $_GET['name']){
+		
+		$name = mysqli_real_escape_string($conn, $_GET['name']);
+		$q = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE name = '$name'"));
+		$qIng = mysqli_query($conn, "SELECT ingredient FROM formulas WHERE name = '$name'");
+		
+		while($ing = mysqli_fetch_array($qIng)){
+				$chName = mysqli_fetch_array(mysqli_query($conn, "SELECT chemical_name FROM ingredients WHERE name = '".$ing['ingredient']."' AND allergen = '1'"));
+				if($chName['chemical_name']){
+					$getAllergen['name'] = $chName['chemical_name'];
+				}else{
+					$getAllergen = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '".$ing['ingredient']."' AND allergen = '1'"));
+				}
+
+			$allergen[] = $getAllergen['name'];
+		}
+		$allergen[] = 'Denatureted Ethyl Alcohol '.$_GET['carrier'].'% Vol, Fragrance, DPG, Distilled Water';
+
+		if($_GET['batchID']){
+			$bNo = $_GET['batchID'];
+		}else{
+			$bNO = 'N/A';
+		}
+		$allergenFinal = implode(", ",array_filter($allergen));
+		$info = "FOR EXTERNAL USE ONLY. \nKEEP AWAY FROM HEAT AND FLAME. \nKEEP OUT OF REACH OF CHILDREN. \nAVOID SPRAYING IN EYES. \n \nProduction: ".date("d/m/Y")." \nB. NO: ".$bNo." \nwww.johnbelekios.com";
+		$w = '720';
+		$h = '860';
+	
+		
+	$lbl = imagecreatetruecolor($h, $w);
+
+	$white = imagecolorallocate($lbl, 255, 255, 255);
+	$black = imagecolorallocate($lbl, 0, 0, 0);	
+	
+	imagefilledrectangle($lbl, 0, 0, $h, $w, $white);
+	
+	$text = strtoupper($q['product_name']);
+	$font = '../fonts/Arial.ttf';
+				//font size 15 rotate 0 center 360 top 50
+	imagettftext($lbl, 30, 0, 250, 50, $black, $font, $text);
+	imagettftext($lbl, 25, 0, 300, 100, $black, $font, 'INGREDIENTS');
+	$lblF = imagerotate($lbl, 0 ,0);
+	
+	imagettftext($lblF, 22, 0, 50, 150, $black, $font, wordwrap ($allergenFinal, 60));
+	imagettftext($lblF, 22, 0, 150, 490, $black, $font, wordwrap ($info, 50));
+
+	$save = "../tmp/labels/".base64_encode($text.'png');
+
+	if(imagepng($lblF, $save)){
+		imagedestroy($lblF);
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><a href="'.$save.'" target="_blank">Get Label here</a></div>';
+	}
+}
 ?>

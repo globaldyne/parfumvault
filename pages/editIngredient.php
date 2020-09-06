@@ -104,6 +104,8 @@ $res_ingSupplier = mysqli_query($conn, "SELECT id,name FROM ingSuppliers");
 $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles");
 
 $sql = mysqli_query($conn, "SELECT * FROM ingredients WHERE name = '$ingID'");
+$qAlg = mysqli_query($conn, "SELECT * FROM allergens WHERE ing = '$ingID'");
+
 if(empty(mysqli_num_rows($sql))){
 	$msg='<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> ingredient not found, please click <a href="?do=addIngredient">here</a> to add it first!</div>';
 	die($msg);
@@ -217,31 +219,14 @@ $.ajax({
 </div>
 <!-- Nav tabs -->
     <ul class="nav nav-tabs" role="tablist">
-      <li class="active">
-          <a href="#general" role="tab" data-toggle="tab">
-              <icon class="fa fa-table"></icon> General
-          </a>
-      </li>
-      <li><a href="#usage_limits" role="tab" data-toggle="tab">
-          <i class="fa fa-bong"></i> Usage &amp; Limits
-          </a>
-      </li>
-      <li>
-          <a href="#supply" role="tab" data-toggle="tab">
-              <i class="fa fa-shopping-cart"></i> Supply
-          </a>
-      </li>
-      <li>
-          <a href="#tech_data" role="tab" data-toggle="tab">
-              <i class="fa fa-cog"></i> Technical Data
-          </a>
-      </li>
+      <li class="active"><a href="#general" role="tab" data-toggle="tab"><icon class="fa fa-table"></icon> General</a></li>
+      <li><a href="#usage_limits" role="tab" data-toggle="tab"><i class="fa fa-bong"></i> Usage &amp; Limits</a></li>
+      <li><a href="#supply" role="tab" data-toggle="tab"><i class="fa fa-shopping-cart"></i> Supply</a></li>
+      <li><a href="#tech_data" role="tab" data-toggle="tab"><i class="fa fa-cog"></i> Technical Data</a></li>
+      <li><a href="#tech_allergens" role="tab" data-toggle="tab"><i class="fa fa-allergies"></i> Allergens</a></li>
+        
       <?php if($settings['pubChem'] == '1' && $ing['cas']){?>
-      <li>
-         <a href="#pubChem" role="tab" data-toggle="tab">
-             <i class="fa fa-atom"></i> Pub Chem
-         </a>
-      </li>
+      	<li><a href="#pubChem" role="tab" data-toggle="tab"><i class="fa fa-atom"></i> Pub Chem</a></li>
       <?php } ?>
     </ul>
 			<form action="editIngredient.php?id=<?php echo $ingID; ?>" method="post" enctype="multipart/form-data" name="edit_ing" target="_self" id="edit_ing">
@@ -611,6 +596,27 @@ $.ajax({
                             </table>
     
       						</div>
+                            
+              <div class="tab-pane fade" id="tech_allergens">
+				   <h3>Allergens</h3>
+                                 <hr>
+                    <table width="100%" border="0">
+                      <tr>
+                        <td>Name</td>
+                        <td>Contains %</td>
+                        <td>Actions</td>
+                      </tr>
+                      <?php while($allergen = mysqli_fetch_array($qAlg)){?>            
+                                  <tr>
+                                    <td><?php echo $allergen['name']; ?></td>
+                                    <td><?php echo $allergen['percentage']; ?></td>
+                                    <td></td>
+                                  </tr>
+                      <?php } ?>
+
+                  </table>
+				</div>
+                            
               <?php if($settings['pubChem'] == '1' && $ing['cas']){?>
               <div class="tab-pane fade" id="pubChem">
 				   <h3>Pub Chem Data</h3>
