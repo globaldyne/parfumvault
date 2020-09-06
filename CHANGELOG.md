@@ -1,5 +1,10 @@
 # CHANGELOG
 
+### Version 2.0.7
+- ADD: PV Maker integration (Experimental function)
+- FIX: Cart/notification menus
+
+
 ### Version 2.0.6
 - ADD: Cart
 - ADD: Make formula
