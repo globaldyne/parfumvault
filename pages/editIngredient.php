@@ -611,7 +611,7 @@ $.ajax({
 				   <h3>Allergens</h3>
                                  <hr>
                     <div class="card-body">
-              <div class="table-responsive">
+              <div>
                 <table class="table table-bordered" id="tdData" width="100%" cellspacing="0">
                   <thead>
                     <tr class="noBorder">
