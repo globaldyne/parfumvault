@@ -266,11 +266,13 @@ $(function() {
           <td colspan="2"><input name="chem_vs_brand" type="checkbox" id="chem_vs_brand" value="1" <?php if($settings['chem_vs_brand'] == '1'){ ?> checked="checked" <?php } ?>/></td>
           <td>&nbsp;</td>
         </tr>
+        <!--
         <tr>
           <td height="32"><a href="#" rel="tipsy" title="Enable's integration with the PV Maker device">PV Maker</a></td>
           <td colspan="2"><input name="pv_maker" type="checkbox" id="pv_maker" value="1" <?php if($settings['pv_maker'] == '1'){ ?> checked="checked" <?php } ?>/></td>
           <td>&nbsp;</td>
         </tr>
+        -->
         <tr>
           <td colspan="4">&nbsp;</td>
           </tr>
