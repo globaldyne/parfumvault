@@ -94,6 +94,20 @@ $(document).ready(function() {
 	});
 });  
 
+function updateDB() {
+$.ajax({ 
+    url: 'pages/operations.php', 
+	type: 'GET',
+    data: {
+		do: "db_update"
+		},
+	dataType: 'html',
+    success: function (data) {
+	  $('#msg').html(data);
+    }
+  });
+};
+
 
 </script>
 </head>
