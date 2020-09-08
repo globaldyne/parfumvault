@@ -4,12 +4,12 @@ require('../inc/sec.php');
 require_once('../inc/config.php');
 require_once('../inc/opendb.php');
 require_once('../inc/settings.php');
-
+/*
 $req_dump = print_r($_REQUEST, TRUE);
 $fp = fopen('../logs/pvault.log', 'a');
 fwrite($fp, $req_dump);
 fclose($fp);
-
+*/
 //DIVIDE - MULTIPLY
 if($_GET['formula'] && $_GET['do']){
 	$formula = mysqli_real_escape_string($conn, $_GET['formula']);
@@ -284,7 +284,11 @@ if($_GET['formula'] && $_GET['do']){
 				if($chName['chemical_name']){
 					$getAllergen['name'] = $chName['chemical_name'];
 				}else{
-					$getAllergen = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '".$ing['ingredient']."' AND allergen = '1'"));
+					//$getAllergen = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '".$ing['ingredient']."' AND allergen = '1'"));
+					$qAll = mysqli_query($conn, "SELECT name FROM allergens WHERE ing = '".$ing['ingredient']."'");
+					while($getAllergen = mysqli_fetch_array($qAll)){
+						$allergen[] = $getAllergen['name'];
+					}
 				}
 
 			$allergen[] = $getAllergen['name'];
@@ -296,8 +300,13 @@ if($_GET['formula'] && $_GET['do']){
 		}else{
 			$bNO = 'N/A';
 		}
+		if($settings['brandName']){
+			$brand = $settings['brandName'];
+		}else{
+			$brand = 'PV Pro';
+		}
 		$allergenFinal = implode(", ",array_filter($allergen));
-		$info = "FOR EXTERNAL USE ONLY. \nKEEP AWAY FROM HEAT AND FLAME. \nKEEP OUT OF REACH OF CHILDREN. \nAVOID SPRAYING IN EYES. \n \nProduction: ".date("d/m/Y")." \nB. NO: ".$bNo." \nwww.johnbelekios.com";
+		$info = "FOR EXTERNAL USE ONLY. \nKEEP AWAY FROM HEAT AND FLAME. \nKEEP OUT OF REACH OF CHILDREN. \nAVOID SPRAYING IN EYES. \n \nProduction: ".date("d/m/Y")." \nB. NO: ".$bNo." \n$brand";
 		$w = '720';
 		$h = '860';
 	}
@@ -316,8 +325,8 @@ if($_GET['formula'] && $_GET['do']){
 	imagettftext($lbl, 25, 0, 300, 100, $black, $font, 'INGREDIENTS');
 	$lblF = imagerotate($lbl, 0 ,0);
 	
-	imagettftext($lblF, 22, 0, 50, 150, $black, $font, wordwrap ($allergenFinal, 60));
-	imagettftext($lblF, 22, 0, 150, 490, $black, $font, wordwrap ($info, 50));
+	imagettftext($lblF, 20, 0, 50, 150, $black, $font, wordwrap ($allergenFinal, 60));
+	imagettftext($lblF, 20, 0, 150, 490, $black, $font, wordwrap ($info, 50));
 
 	$save = "../tmp/labels/".base64_encode($text.'png');
 
@@ -344,7 +353,10 @@ if($_GET['formula'] && $_GET['do']){
 					$getAllergen['name'] = $chName['chemical_name'];
 				}else{
 				//	$getAllergen = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '".$ing['ingredient']."' AND allergen = '1'"));
-					$getAllergen = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM allergens WHERE ing = '".$ing['ingredient']."'"));
+					$qAll = mysqli_query($conn, "SELECT name FROM allergens WHERE ing = '".$ing['ingredient']."'");
+					while($getAllergen = mysqli_fetch_array($qAll)){
+						$allergen[] = $getAllergen['name'];
+					}
 				}
 
 			$allergen[] = $getAllergen['name'];
@@ -357,7 +369,12 @@ if($_GET['formula'] && $_GET['do']){
 			$bNO = 'N/A';
 		}
 		$allergenFinal = implode(", ",array_filter($allergen));
-		$info = "FOR EXTERNAL USE ONLY. \nKEEP AWAY FROM HEAT AND FLAME. \nKEEP OUT OF REACH OF CHILDREN. \nAVOID SPRAYING IN EYES. \n \nProduction: ".date("d/m/Y")." \nB. NO: ".$bNo." \nwww.johnbelekios.com";
+		if($settings['brandName']){
+			$brand = $settings['brandName'];
+		}else{
+			$brand = 'PV Pro';
+		}
+		$info = "FOR EXTERNAL USE ONLY. \nKEEP AWAY FROM HEAT AND FLAME. \nKEEP OUT OF REACH OF CHILDREN. \nAVOID SPRAYING IN EYES. \n \nProduction: ".date("d/m/Y")." \nB. NO: ".$bNo." \n$brand";
 		$w = '720';
 		$h = '860';
 	
@@ -376,8 +393,8 @@ if($_GET['formula'] && $_GET['do']){
 	imagettftext($lbl, 25, 0, 300, 100, $black, $font, 'INGREDIENTS');
 	$lblF = imagerotate($lbl, 0 ,0);
 	
-	imagettftext($lblF, 22, 0, 50, 150, $black, $font, wordwrap ($allergenFinal, 60));
-	imagettftext($lblF, 22, 0, 150, 490, $black, $font, wordwrap ($info, 50));
+	imagettftext($lblF, 20, 0, 50, 150, $black, $font, wordwrap ($allergenFinal, 60));
+	imagettftext($lblF, 20, 0, 150, 490, $black, $font, wordwrap ($info, 50));
 
 	$save = "../tmp/labels/".base64_encode($text.'png');
 			

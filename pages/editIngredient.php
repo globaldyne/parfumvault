@@ -620,7 +620,7 @@ $.ajax({
                         <div class="btn-group">
                           <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
                           <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="?do=addAllergen">Add new</a>
+                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addAllergen">Add new</a>
                           </div>
                         </div>                    
                         </div>
@@ -635,9 +635,9 @@ $.ajax({
                   <tbody id="ing_allergen">
                     <?php while ($allergen = mysqli_fetch_array($qAlg)) { ?>
                     <tr>
-                      <td data-name="name" class="name" data-type="text" align="center" data-pk="<?=$allergen['name']?>"><?=$allergen['name']?></td>
-					  <td data-name="percentage" class="percentage" data-type="text" align="center" data-pk="<?=$allergen['percentage']?>"><?=$allergen['percentage']?></td>
-                      <td align="center"><a href="" class="fas fa-trash"></a></td>
+                      <td data-name="name" class="name" data-type="text" align="center" data-pk="<?=$allergen['id']?>"><?=$allergen['name']?></td>
+					  <td data-name="percentage" class="percentage" data-type="text" align="center" data-pk="<?=$allergen['id']?>"><?=$allergen['percentage']?></td>
+                      <td align="center"><a href="javascript:deleteAllergen('<?=$allergen['id']?>')" onclick="return confirm('Remove <?=$allergen['name']?>?');" class="fas fa-trash"></a></td>
 					</tr>
 				  	<?php } ?>
                   </tbody>
@@ -660,7 +660,7 @@ $.ajax({
 </div>
 </body>
 </html>
-<!-- Modal -->
+<!-- Modal Print-->
 <div class="modal fade" id="printLabel" tabindex="-1" role="dialog" aria-labelledby="printLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -696,34 +696,90 @@ $.ajax({
   </div>
 </div>
 </div>
+
+<!-- ADD ALLERGEN-->
+<div class="modal fade" id="addAllergen" tabindex="-1" role="dialog" aria-labelledby="addAllergen" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addAllergen">Add allergen for <?php echo $ing['name']; ?></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <form action="javascript:addAllergen()" method="get" name="form1" target="_self" id="form1">
+            Name: 
+            <input class="form-control" name="allgName" type="text" id="allgName" />
+            <p>
+            Percentage %:
+            <input class="form-control" name="allgPerc" type="text" id="allgPerc" />
+            </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <input type="submit" name="button" class="btn btn-primary" id="button" value="Add">
+      </div>
+     </form>
+    </div>
+  </div>
+</div>
+</div>
+
+
 <script type="text/javascript" language="javascript" >
 $(document).ready(function(){
  
   $('#ing_allergen').editable({
   container: 'body',
   selector: 'td.name',
-  url: "update_data.php",
+  type: 'POST',
+  url: "update_data.php?allergen=update&ing=<?=$ing['name'];?>",
   title: 'Name',
-  type: "GET",
-  dataType: 'json',
-      success: function(response, newValue) {
-        if(response.status == 'error') return response.msg; 
-    },
-
  });
   
   $('#ing_allergen').editable({
   container: 'body',
   selector: 'td.percentage',
-  url: "update_data.php",
+  type: 'POST',
+  url: "update_data.php?allergen=update&ing=<?=$ing['name'];?>",
   title: 'Percentage',
-  type: "GET",
-  dataType: 'json',
-      success: function(response, newValue) {
-        if(response.status == 'error') return response.msg; 
-    },
-
  });
   
-})
+});
+
+function deleteAllergen(allgID) {	  
+$.ajax({ 
+    url: 'update_data.php', 
+	type: 'GET',
+    data: {
+		allergen: 'delete',
+		allgID: allgID,
+		ing: '<?=$ing['name'];?>'
+		},
+	dataType: 'html',
+    success: function (data) {
+		location.reload();
+	  	$('#msg').html(data);
+    }
+  });
+};
+
+function addAllergen() {	  
+$.ajax({ 
+    url: 'update_data.php', 
+	type: 'GET',
+    data: {
+		allergen: 'add',
+		allgName: $("#allgName").val(),
+		allgPerc: $("#allgPerc").val(),		
+		ing: '<?=$ing['name'];?>'
+		},
+	dataType: 'html',
+    success: function (data) {
+		location.reload();
+	  	$('#msg').html(data);
+    }
+  });
+};
 </script>
