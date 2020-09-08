@@ -1,5 +1,25 @@
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 
+DROP TABLE IF EXISTS `allergens`;
+CREATE TABLE `allergens` (
+  `id` int(11) NOT NULL,
+  `ing` varchar(255) COLLATE utf8_bin NOT NULL,
+  `name` varchar(255) COLLATE utf8_bin NOT NULL,
+  `cas` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `percentage` varchar(255) COLLATE utf8_bin NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+DROP TABLE IF EXISTS `pv_maker_queue`;
+CREATE TABLE `pv_maker_queue` (
+  `id` int(11) NOT NULL,
+  `material` varchar(255) COLLATE utf8_bin NOT NULL,
+  `quantity_to_add` varchar(255) COLLATE utf8_bin NOT NULL,
+  `quantity_added` varchar(255) COLLATE utf8_bin NOT NULL,
+  `pending` int(11) NOT NULL,
+  `active` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+
 DROP TABLE IF EXISTS `batchIDHistory`;
 CREATE TABLE `batchIDHistory` (
   `id` varchar(50) COLLATE utf8_bin NOT NULL,
@@ -265,7 +285,9 @@ CREATE TABLE `settings` (
   `brandPhone` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `brandLogo` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `pubChem` int(11) DEFAULT NULL,
-  `chkVersion` int(11) DEFAULT NULL
+  `chkVersion` int(11) DEFAULT NULL,
+  `pv_maker` int(11) DEFAULT 0,
+  `pv_maker_host` varchar(255) COLLATE utf8_bin DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 INSERT INTO `settings` (`id`, `label_printer_addr`, `label_printer_model`, `label_printer_size`, `label_printer_font_size`, `currency`, `top_n`, `heart_n`, `base_n`, `EDP`, `EDT`, `EDC`, `Parfum`, `chem_vs_brand`, `grp_formula`, `brandName`, `brandAddress`, `brandEmail`, `brandPhone`, `brandLogo`) VALUES
