@@ -75,12 +75,14 @@ if($_POST['value'] && $_GET['formula'] && $_POST['pk'] && !$_GET['settings']){
 //ADD ALLERGEN
 }elseif($_GET['allergen'] == 'add'){
 	$allgName = mysqli_real_escape_string($conn, $_GET['allgName']);
+	$allgCAS = mysqli_real_escape_string($conn, $_GET['allgCAS']);	
 	$allgPerc = mysqli_real_escape_string($conn, $_GET['allgPerc']);
 	$ing = mysqli_real_escape_string($conn, $_GET['ing']);
+	
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM allergens WHERE name = '$allgName' AND ing = '$ing'"))){
 		echo $msg='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$allgName.' already exists!</div>';
 	}else{
-		mysqli_query($conn, "INSERT INTO allergens (name,percentage,ing) VALUES ('$allgName','$allgPerc','$ing')");	
+		mysqli_query($conn, "INSERT INTO allergens (name,cas,percentage,ing) VALUES ('$allgName','$allgCAS','$allgPerc','$ing')");	
 	}
 
 //UPDATE ALLERGEN
@@ -89,7 +91,7 @@ if($_POST['value'] && $_GET['formula'] && $_POST['pk'] && !$_GET['settings']){
 	$id = mysqli_real_escape_string($conn, $_POST['pk']);
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 	$ing = mysqli_real_escape_string($conn, $_GET['ing']);
-	
+
 	mysqli_query($conn, "UPDATE allergens SET $name = '$value' WHERE id = '$id' AND ing='$ing'");	
 
 //DELETE ALLERGEN	

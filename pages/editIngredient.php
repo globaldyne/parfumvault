@@ -628,6 +628,7 @@ $.ajax({
                     </tr>
                     <tr>
                       <th>Name</th>
+                      <th>CAS</th>
                       <th>Percentage %</th>
                       <th>Actions</th>
                     </tr>
@@ -636,6 +637,7 @@ $.ajax({
                     <?php while ($allergen = mysqli_fetch_array($qAlg)) { ?>
                     <tr>
                       <td data-name="name" class="name" data-type="text" align="center" data-pk="<?=$allergen['id']?>"><?=$allergen['name']?></td>
+                      <td data-name="cas" class="cas" data-type="text" align="center" data-pk="<?=$allergen['id']?>"><?=$allergen['cas']?></td>
 					  <td data-name="percentage" class="percentage" data-type="text" align="center" data-pk="<?=$allergen['id']?>"><?=$allergen['percentage']?></td>
                       <td align="center"><a href="javascript:deleteAllergen('<?=$allergen['id']?>')" onclick="return confirm('Remove <?=$allergen['name']?>?');" class="fas fa-trash"></a></td>
 					</tr>
@@ -712,6 +714,9 @@ $.ajax({
             Name: 
             <input class="form-control" name="allgName" type="text" id="allgName" />
             <p>
+            CAS: 
+            <input class="form-control" name="allgCAS" type="text" id="allgCAS" />
+            <p>            
             Percentage %:
             <input class="form-control" name="allgPerc" type="text" id="allgPerc" />
             </p>
@@ -746,6 +751,14 @@ $(document).ready(function(){
   title: 'Percentage',
  });
   
+  $('#ing_allergen').editable({
+  container: 'body',
+  selector: 'td.cas',
+  type: 'POST',
+  url: "update_data.php?allergen=update&ing=<?=$ing['name'];?>",
+  title: 'CAS',
+ });
+	
 });
 
 function deleteAllergen(allgID) {	  
@@ -772,7 +785,8 @@ $.ajax({
     data: {
 		allergen: 'add',
 		allgName: $("#allgName").val(),
-		allgPerc: $("#allgPerc").val(),		
+		allgPerc: $("#allgPerc").val(),
+		allgCAS: $("#allgCAS").val(),				
 		ing: '<?=$ing['name'];?>'
 		},
 	dataType: 'html',
