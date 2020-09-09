@@ -164,6 +164,20 @@ if(($_POST) && $_GET['update'] == 'printer'){
 		$msg = '<div class="alert alert-danger alert-dismissible">Error updating brand info: ('.mysqli_error($conn).')</div>';
 	}
 	
+//PV MAKER
+}elseif($_GET['update'] == 'pvmaker'){
+	$pv_maker = mysqli_real_escape_string($conn, $_POST['pv_maker']);
+	$pv_maker_host = mysqli_real_escape_string($conn, $_POST['pv_maker_host']);
+
+	if(empty($pv_maker)){
+		$pv_maker = '0';
+	}
+	if(mysqli_query($conn, "UPDATE settings SET pv_maker = '$pv_maker', pv_maker_host = '$pv_maker_host'")){
+		$msg = '<div class="alert alert-success alert-dismissible">PV Maker details updated!</div>';
+	}else{
+		$msg = '<div class="alert alert-danger alert-dismissible">Error updating PV Maker info: ('.mysqli_error($conn).')</div>';
+	}
+
 //DELETE ACTIONS
 }elseif($_GET['action'] == 'delete' && $_GET['sup_id']){
 	$sup_id = mysqli_real_escape_string($conn, $_GET['sup_id']);
@@ -233,6 +247,7 @@ $(function() {
          <li><a href="#customers"><span>Customers</span></a></li>
          <li><a href="#brand"><span>My Brand</span></a></li>
          <li><a href="#maintenance"><span>Maintenance</span></a></li>
+         <li><a href="#pvmaker">PV Maker</a></li>
         <li><a href="pages/about.php"><span>About</span></a></li>
      </ul>
      <div id="general">
@@ -266,13 +281,6 @@ $(function() {
           <td colspan="2"><input name="chem_vs_brand" type="checkbox" id="chem_vs_brand" value="1" <?php if($settings['chem_vs_brand'] == '1'){ ?> checked="checked" <?php } ?>/></td>
           <td>&nbsp;</td>
         </tr>
-        <!--
-        <tr>
-          <td height="32"><a href="#" rel="tipsy" title="Enable's integration with the PV Maker device">PV Maker</a></td>
-          <td colspan="2"><input name="pv_maker" type="checkbox" id="pv_maker" value="1" <?php if($settings['pv_maker'] == '1'){ ?> checked="checked" <?php } ?>/></td>
-          <td>&nbsp;</td>
-        </tr>
-        -->
         <tr>
           <td colspan="4">&nbsp;</td>
           </tr>
@@ -692,6 +700,46 @@ $(function() {
        </form>
      </div>
      
+     <div id="pvmaker">
+        <form id="form2" name="form2" method="post" action="?do=settings&update=pvmaker#pvmaker">
+        <table width="100%" border="0">
+          <tr>
+            <td colspan="3"><div id="pvm_r"><?php echo $msg; ?></div></td>
+            </tr>
+          <tr>
+            <td width="9%" height="29"><a href="#" rel="tipsy" title="Enable's integration with the PV Maker device">Enable PV Maker</a></td>
+            <td width="9%"><input name="pv_maker" type="checkbox" id="pv_maker" value="1" <?php if($settings['pv_maker'] == '1'){ ?> checked="checked" <?php } ?>/></td>
+            <td width="82%">&nbsp;</td>
+          </tr>
+          <tr>
+            <td height="30"><a href="#" rel="tipsy" title="Please enter the IP shown in the device">Host:</a></td>
+            <td><input name="pv_maker_host" type="text" class="form-control" id="pv_maker_host" value="<?php echo $settings['pv_maker_host'];?>" /></td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td height="24"><a  href="javascript:initPVM()" onclick="return confirm('Initialize PV Maker?')" rel="tipsy" title="Click here to auto configure the device">Initialize device</a></td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td height="24"><a href="javascript:resetPVM()" onclick="return confirm('Restore PV Maker defaults?')" rel="tipsy" title="Click here to reset device settings to its defaults.">Restore defaults</a></td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td><input type="submit" name="button4" id="button4" value="Submit" class="btn btn-info"/></td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+		</table>
+        </form>
+     </div>
+     
 <div id="maintenance">
   <table width="100%" border="0">
     <tr>
@@ -777,8 +825,37 @@ $(document).ready(function(){
   validate: function(value){
   }
  });
-
- 
   
 });
+
+function initPVM() {	  
+$.ajax({ 
+    url: 'pages/pvm.php', 
+	type: 'GET',
+    data: {
+		setup: '1',
+		ip: '192.168.1.83'
+		},
+	dataType: 'html',
+    success: function (data) {
+		//location.reload();
+	  	$('#pvm_r').html(data);
+    }
+  });
+};
+
+function resetPVM() {	  
+$.ajax({ 
+    url: 'pages/pvm.php', 
+	type: 'GET',
+    data: {
+		setup: 'rfd'
+		},
+	dataType: 'html',
+    success: function (data) {
+		//location.reload();
+	  	$('#pvm_r').html(data);
+    }
+  });
+};
 </script>

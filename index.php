@@ -184,7 +184,7 @@ $.ajax({
           <i class="fas fa-fw fa-chart-area"></i>
           <span>Insights</span></a>
         </li>
-        <?php if($settings['pv_maker']){?>
+        <?php if($settings['pv_maker'] && $settings['pv_maker_host']){?>
         <li class="nav-item">
         <a class="nav-link" href="?do=pvmaker">
           <i class="fas fa-fw fa-robot"></i>
