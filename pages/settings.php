@@ -247,7 +247,7 @@ $(function() {
          <li><a href="#customers"><span>Customers</span></a></li>
          <li><a href="#brand"><span>My Brand</span></a></li>
          <li><a href="#maintenance"><span>Maintenance</span></a></li>
-         <li><a href="#pvmaker">PV Maker</a></li>
+         <!-- <li><a href="#pvmaker">PV Maker</a></li> -->
         <li><a href="pages/about.php"><span>About</span></a></li>
      </ul>
      <div id="general">
@@ -699,7 +699,7 @@ $(function() {
          </table>
        </form>
      </div>
-     
+     <!--
      <div id="pvmaker">
         <form id="form2" name="form2" method="post" action="?do=settings&update=pvmaker#pvmaker">
         <table width="100%" border="0">
@@ -739,7 +739,7 @@ $(function() {
 		</table>
         </form>
      </div>
-     
+     -->
 <div id="maintenance">
   <table width="100%" border="0">
     <tr>
