@@ -188,6 +188,8 @@ CREATE TABLE `ingredients` (
   `odor` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `allergen` int(11) DEFAULT NULL,
   `flavor_use` int(10) DEFAULT NULL,
+  `soluble` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `impact` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `cat1` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `cat2` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `cat3` varchar(255) COLLATE utf8_bin DEFAULT NULL,

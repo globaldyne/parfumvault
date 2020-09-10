@@ -2,7 +2,9 @@
 
 ### Version 2.0.7
 - ADD: PV Maker integration (Experimental function)
+- ADD: Ingredient solubility and impact
 - FIX: Cart/notification menus
+- FIX: A bug preventing new formulas for displaying if contains no ingredients
 
 
 ### Version 2.0.6
