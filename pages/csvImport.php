@@ -11,9 +11,7 @@ if(isset($_POST["import"]) && ($_POST['name'])){
 
 	$profile = mysqli_real_escape_string($conn,$_POST['profile']);
 	 if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM formulas WHERE name = '$name'"))){
-		 $msg='<div class="alert alert-danger alert-dismissible">
-				<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-				<strong>Error: </strong>'.$name.' already exists! Click <a href="?do=Formula&name='.$name.'">here</a> to view/edit!</div>';
+		 $msg='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$name.' already exists! Click <a href="?do=Formula&name='.$name.'">here</a> to view/edit!</div>';
 	  }else{
 
 		$filename=$_FILES["file"]["tmp_name"];    

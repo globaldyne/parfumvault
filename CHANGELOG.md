@@ -1,5 +1,10 @@
 # CHANGELOG
 
+### Version 2.0.8
+- ADD: Integration with PV Online
+
+- FIX: Various bug fixes
+
 ### Version 2.0.7
 - ADD: PV Maker integration (Experimental function)
 - ADD: Ingredient solubility and impact
