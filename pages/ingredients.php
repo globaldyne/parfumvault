@@ -122,7 +122,7 @@ $ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC
         </button>
       </div>
       <div class="modal-body">
-       
+       <div id="pvImportMsg"></div>
   <form action="javascript:pv_online_import('ingredients')" method="get" name="form1" target="_self" id="form1">
       <strong>WARNING:</strong><br />
       you are about to import data from PV Online, please bear in mind, PV Online is a community driven database therefore may contain unvalidated or incorrect data. <br />
@@ -154,6 +154,7 @@ $('#csv').on('click',function(){
   	consoleLog: false   
   });
 })
+<?php if($pv_online['email'] && $pv_online['password']){?>
 
 function pv_online_import(items) {
 $.ajax({ 
@@ -165,9 +166,11 @@ $.ajax({
 		},
 	dataType: 'html',
     success: function (data) {
-	  $('#pv_online_import').modal('toggle');
-	  $('#msg').html(data);
+	 // $('#pv_online_import').modal('toggle');
+	  $('#pvImportMsg').html(data);
     }
   });
 };
+
+<?php } ?>
 </script>

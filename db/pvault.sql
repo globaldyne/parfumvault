@@ -207,7 +207,8 @@ CREATE TABLE `ingredients` (
   `cat10B` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `cat11A` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `cat11B` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `cat12` varchar(255) COLLATE utf8_bin DEFAULT NULL
+  `cat12` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 DROP TABLE IF EXISTS `ingStrength`;
@@ -305,6 +306,12 @@ CREATE TABLE `users` (
   `avatar` varchar(255) COLLATE utf8_bin DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin ROW_FORMAT=COMPACT;
 
+CREATE TABLE `pv_online` (
+ `id` int(11) NOT NULL AUTO_INCREMENT,
+ `email` varchar(255) COLLATE utf8_bin NOT NULL,
+ `password` varchar(255) COLLATE utf8_bin NOT NULL,
+ PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 ALTER TABLE `batchIDHistory`
   ADD PRIMARY KEY (`id`);
