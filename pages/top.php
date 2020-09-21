@@ -88,6 +88,11 @@
                   Request a feature / Bug report
                 </a>
                 <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="https://online.jbparfum.com/" target="_blank">
+                  <i class="fas fa-globe fa-sm fa-fw mr-2 text-gray-400"></i>
+                  PV Online
+                </a>              
+                <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="logout.php">
                   <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                   Logout

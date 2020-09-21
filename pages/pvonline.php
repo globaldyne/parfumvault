@@ -1,79 +1,34 @@
 <?php 
-if (!defined('pvault_panel')){ die('Not Found');}
+require('../inc/sec.php');
 
+require_once('../inc/config.php');
+require_once('../inc/opendb.php');
+require_once('../inc/settings.php');
+require_once('../inc/product.php');
+
+
+if($_GET['action'] == 'import' && $_GET['items']){
+	$items = $_GET['items'];
+	$tableName = 'ingredients2';
+	
+	$jAPI = $pvOnlineAPI.'?username='.$pv_online['email'].'&password='.$pv_online['password'].'&do='.$items;
+	
+	$jsonData = json_decode(file_get_contents($jAPI), true);
+	$array_data = $jsonData['ingredients'];
+	
+	foreach ($array_data as $id=>$row) {
+		$insertPairs = array();
+		foreach ($row as $key=>$val) {
+			$insertPairs[addslashes($key)] = addslashes($val);
+		}
+		$insertKeys = '`' . implode('`,`', array_keys($insertPairs)) . '`';
+		$insertVals = '"' . implode('","', array_values($insertPairs)) . '"';
+		if(!mysqli_num_rows(mysqli_query($conn, "SELECT name FROM $tableName WHERE name = '".$insertPairs['name']."'"))){
+			$jsql = "INSERT INTO `{$tableName}` ({$insertKeys}) VALUES ({$insertVals});";
+			mysqli_query($conn,$jsql) or die(mysqli_error($conn));
+		}
+	}
+	return;
+}
 
 ?>
-<div id="content-wrapper" class="d-flex flex-column">
-<?php require_once('pages/top.php'); ?>
-        <div class="container-fluid">
-<?php echo $msg; ?>
-          <div>
-          <div class="card shadow mb-4">
-            <div class="card-header py-3">
-              <h2 class="m-0 font-weight-bold text-primary"><a href="?do=pvmaker">PV Maker</a></h2>
-            </div>
-            <div class="card-body">
-              <div class="table-responsive">
-                <form action="javascript:addAllergen()" method="get" enctype="application/x-www-form-urlencoded" name="form1" id="form1">
-                 <table width="100%" border="0">
-                  <tr>
-                    <td colspan="3">&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <td width="16%">DPG:</td>
-                    <td width="9%"><input name="pvm_dpg" type="text" class="form-control" id="pvm_dpg"/></td>
-                    <td width="75%">&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <td>Ethanol:</td>
-                    <td><input name="pvm_ethanol" type="text" class="form-control" id="pvm_ethanol"/></td>
-                    <td>&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <td>Water:</td>
-                    <td><input name="pvm_water" type="text" class="form-control" id="pvm_water"/></td>
-                    <td>&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <td>Compound:</td>
-                    <td><input name="pvm_compound" type="text" class="form-control" id="pvm_compound"/></td>
-                    <td>&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <td><input type="submit" name="button" id="button" value="Submit" class="btn btn-info"/></td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                  </tr>
-                </table>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-<script>
-function addAllergen() {	  
-$.ajax({ 
-    url: 'pages/pvm.php', 
-	type: 'GET',
-    data: {
-		queue: 'add',
-		dpg: $("#pvm_dpg").val(),
-		ethanol: $("#pvm_ethanol").val(),
-		water: $("#pvm_water").val(),
-		compound: $("#pvm_compound").val(),
-		},
-	dataType: 'html',
-    success: function (data) {
-		//location.reload();
-	  	$('#msg').html(data);
-    }
-  });
-};
-</script>

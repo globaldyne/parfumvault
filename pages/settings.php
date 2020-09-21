@@ -10,15 +10,9 @@ if(($_POST) && $_GET['update'] == 'printer'){
 	$label_printer_font_size = mysqli_real_escape_string($conn, $_POST['label_printer_font_size']);
 
 	if(mysqli_query($conn, "UPDATE settings SET label_printer_addr='$label_printer_addr', label_printer_model='$label_printer_model', label_printer_size='$label_printer_size', label_printer_font_size='$label_printer_font_size'")){
-		$msg = '<div class="alert alert-success alert-dismissible">
-		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-  		Printer settings updated!
-		</div>';
+		$msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Printer settings updated!</div>';
 	}else{
-		$msg = '<div class="alert alert-danger alert-dismissible">
-		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-  		Error updating settings!
-		</div>';
+		$msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error updating settings!</div>';
 	}
 	require('./inc/settings.php');
 
@@ -30,42 +24,24 @@ if(($_POST) && $_GET['update'] == 'printer'){
 	$notes = mysqli_real_escape_string($conn, $_POST['sup_notes']);
 	
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingSuppliers WHERE name = '$sup'"))){
-		$msg='<div class="alert alert-danger alert-dismissible">
-		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-  		<strong>Error: </strong>'.$sup.' already exists!
-		</div>';
+		$msg='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$sup.' already exists!</div>';
 	}elseif(mysqli_query($conn, "INSERT INTO ingSuppliers (name,notes) VALUES ('$sup', '$notes')")){
 		
-		$msg = '<div class="alert alert-success alert-dismissible">
-		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-  		Supplier added!
-		</div>';
+		$msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Supplier added!</div>';
 	}else{
-		$msg = '<div class="alert alert-danger alert-dismissible">
-		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-  		Error adding supplier
-		</div>';
+		$msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error adding supplier</div>';
 	}
 //ADD CATEGORY
 }elseif($_POST['category'] && $_GET['update'] == 'categories'){
 	$cat = mysqli_real_escape_string($conn, $_POST['category']);
 	$notes = mysqli_real_escape_string($conn, $_POST['cat_notes']);
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingCategory WHERE name = '$cat'"))){
-		$msg='<div class="alert alert-danger alert-dismissible">
-		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-  		<strong>Error: </strong>'.$cat.' already exists!
-		</div>';
+		$msg='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$cat.' already exists!</div>';
 	}elseif(mysqli_query($conn, "INSERT INTO ingCategory (name,notes) VALUES ('$cat', '$notes')")){
 		
-		$msg = '<div class="alert alert-success alert-dismissible">
-		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-  		Category added!
-		</div>';
+		$msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Category added!</div>';
 	}else{
-		$msg = '<div class="alert alert-danger alert-dismissible">
-		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-  		Error adding category
-		</div>';
+		$msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error adding category</div>';
 	}
 
 //GENERAL SETTINGS
@@ -178,6 +154,19 @@ if(($_POST) && $_GET['update'] == 'printer'){
 		$msg = '<div class="alert alert-danger alert-dismissible">Error updating PV Maker info: ('.mysqli_error($conn).')</div>';
 	}
 
+//PV ONLINE
+}elseif($_GET['update'] == 'pvonline' && $_POST['pv_online_email'] && $_POST['pv_online_pass']){
+	$pv_online_email = mysqli_real_escape_string($conn, $_POST['pv_online_email']);
+	$pv_online_pass = mysqli_real_escape_string($conn, $_POST['pv_online_pass']);
+
+//	if(mysqli_query($conn, "UPDATE pv_online SET email = '$pv_online_email', password = '$pv_online_pass'")){
+	if(mysqli_query($conn, "INSERT pv_online (email,password) VALUES ('$pv_online_email', '$pv_online_pass') ON DUPLICATE KEY UPDATE email = '$pv_online_email', password = '$pv_online_password'")){
+
+	$msg = '<div class="alert alert-success alert-dismissible">PV Online details updated!</div>';
+	}else{
+		$msg = '<div class="alert alert-danger alert-dismissible">Error updating PV Online info: ('.mysqli_error($conn).')</div>';
+	}
+
 //DELETE ACTIONS
 }elseif($_GET['action'] == 'delete' && $_GET['sup_id']){
 	$sup_id = mysqli_real_escape_string($conn, $_GET['sup_id']);
@@ -217,6 +206,7 @@ $cat_q = mysqli_query($conn, "SELECT * FROM ingCategory ORDER BY name ASC");
 $sup_q = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
 $users_q = mysqli_query($conn, "SELECT * FROM users ORDER BY username ASC");
 $customers_q = mysqli_query($conn, "SELECT * FROM customers ORDER BY name ASC");
+$pv_online = mysqli_fetch_array(mysqli_query($conn, "SELECT email FROM pv_online"));
 
 require('./inc/settings.php');
 
@@ -228,7 +218,6 @@ $(function() {
   $("#password").val('');
   $("#fname").val('');
   $("#email").val('');
-
 });
 
 
@@ -248,6 +237,7 @@ $(function() {
          <li><a href="#brand"><span>My Brand</span></a></li>
          <li><a href="#maintenance"><span>Maintenance</span></a></li>
          <!-- <li><a href="#pvmaker">PV Maker</a></li> -->
+         <li><a href="#pvonline"><span>PV Online</span></a></li>
         <li><a href="pages/about.php"><span>About</span></a></li>
      </ul>
      <div id="general">
@@ -740,6 +730,40 @@ $(function() {
         </form>
      </div>
      -->
+     <div id="pvonline">
+        <form id="form" name="form" method="post" action="?do=settings&update=pvonline#pvonline">
+        <table width="100%" border="0">
+          <tr>
+            <td colspan="3"><div id="pvm_r"><?php echo $msg; ?></div></td>
+            </tr>
+          <tr>
+            <td width="9%" height="30"><a href="#" rel="tipsy" title="Please enter your PV Online email">Email:</a></td>
+            <td width="9%"><input name="pv_online_email" type="text" class="form-control" id="pv_online_email" value="<?php echo $pv_online['email'];?>" /></td>
+            <td width="82%">&nbsp;</td>
+          </tr>
+          <tr>
+            <td height="24"><a href="#" rel="tipsy" title="Your PV Online password.">Password:</a></td>
+            <td><input name="pv_online_pass" type="password" class="form-control" id="pv_online_pass" /></td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td><a href="https://online.jbparfum.com/register.php" target="_blank">Register here</a></td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td><input type="submit" name="button4" id="button4" value="Submit" class="btn btn-info"/></td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+		</table>
+        </form>
+     </div>
 <div id="maintenance">
   <table width="100%" border="0">
     <tr>

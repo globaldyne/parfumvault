@@ -236,7 +236,7 @@ $(document).ready(function() {
               <div>
                   <tr>
                     <th colspan="6">
-                      <form action="javascript:addING();" enctype="multipart/form-data" name="form1" id="form1">
+                      <form action="javascript:addING()" enctype="multipart/form-data" name="form1" id="form1">
                          <table width="100%" border="0" class="table">
                                     <tr>  
                                          <td>

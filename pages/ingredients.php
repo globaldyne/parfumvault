@@ -6,15 +6,10 @@ $ingName = mysqli_real_escape_string($conn, $_GET['name']);
 
 if($_GET['action'] == "delete" && $_GET['id']){
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT ingredient FROM formulas WHERE ingredient = '$ingName'"))){
-		$msg = '<div class="alert alert-danger alert-dismissible">
-		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-  		<strong>'.$ingName.'</strong> is in use by at least one formula and cannot be removed!</div>';
+		$msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$ingName.'</strong> is in use by at least one formula and cannot be removed!</div>';
 		
 	}elseif(mysqli_query($conn, "DELETE FROM ingredients WHERE id = '$ingID'")){
-		$msg = '<div class="alert alert-success alert-dismissible">
-		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-  		Ingredient <strong>'.$ingName.'</strong> removed from the database!
-		</div>';
+		$msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Ingredient <strong>'.$ingName.'</strong> removed from the database!</div>';
 	}
 }
 $ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC");
@@ -41,6 +36,10 @@ $ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC
                           <div class="dropdown-menu dropdown-menu-right">
                             <a class="dropdown-item popup-link" href="pages/addIngredient.php">Add new ingredient</a>
                             <a class="dropdown-item" id="csv" href="#">Export to CSV</a>
+                            <?php if($pv_online['email'] && $pv_online['password']){?>
+                            <div class="dropdown-divider"></div>
+	                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#pv_online_import">Import from PV Online</a>
+                            <?php } ?>
                           </div>
                         </div>                    
                         </div>
@@ -111,9 +110,35 @@ $ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC
         </div>
       </div>
     </div>
-    
+<?php if($pv_online['email'] && $pv_online['password']){?>
+<!-- Modal PV ONLINE-->
+<div class="modal fade" id="pv_online_import" tabindex="-1" role="dialog" aria-labelledby="pv_online_import" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="pv_online_import">Import ingredients from PV Online</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+       
+  <form action="javascript:pv_online_import('ingredients')" method="get" name="form1" target="_self" id="form1">
+      <strong>WARNING:</strong><br />
+      you are about to import data from PV Online, please bear in mind, PV Online is a community driven database therefore may contain unvalidated or incorrect data. <br />
+      If your local database contains already an ingredient with the same name, the ingredient data will not be imported. <p></p>
+      Ingredients online: <strong><?php echo pvOnlineStats($pvOnlineAPI, $pv_online['email'], $pv_online['password'], 'ingredients');?></strong>
+</div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <input type="submit" name="button" class="btn btn-primary" id="button" value="Import">
+      </div>
+     </form>
+    </div>
+  </div>
+</div>
+<?php } ?>
 <script type="text/javascript" language="javascript" >
-
 $('#csv').on('click',function(){
   $("#tdData").tableHTMLExport({
 	type:'csv',
@@ -122,16 +147,27 @@ $('#csv').on('click',function(){
   	newline: '\r\n',
   	trimContent: true,
   	quoteFields: true,
-	
 	ignoreColumns: '.noexport',
   	ignoreRows: '.noexport',
-	
 	htmlContent: false,
-  
   	// debug
   	consoleLog: false   
-});
- 
+  });
 })
 
+function pv_online_import(items) {
+$.ajax({ 
+    url: 'pages/pvonline.php', 
+	type: 'get',
+    data: {
+		action: "import",
+		items: items
+		},
+	dataType: 'html',
+    success: function (data) {
+	  $('#pv_online_import').modal('toggle');
+	  $('#msg').html(data);
+    }
+  });
+};
 </script>

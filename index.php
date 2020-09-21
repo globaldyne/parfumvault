@@ -28,6 +28,7 @@ require_once('./func/validateFormula.php');
 require_once('./func/pvFileGet.php');
 require_once('./func/countPending.php');
 require_once('./func/countCart.php');
+require_once('./func/pvOnline.php');
 
 require('./inc/settings.php');
 

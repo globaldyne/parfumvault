@@ -9,4 +9,7 @@ if(file_exists('.DOCKER') == TRUE){
 	$x = "DOCKER";
 }
 $ver = file_get_contents(__ROOT__.'/VERSION.md').$x;
+$pvOnlineAPI = 'https://online.jbparfum.com/api.php';
+
+
 ?>
