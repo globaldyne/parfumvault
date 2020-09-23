@@ -8,8 +8,7 @@ require_once('../inc/product.php');
 
 
 if($_GET['action'] == 'import' && $_GET['items']){
-	$items = $_GET['items'];
-	$tableName = 'ingredients2';
+	$items = trim($_GET['items']);
 	
 	$jAPI = $pvOnlineAPI.'?username='.$pv_online['email'].'&password='.$pv_online['password'].'&do='.$items;
 	
@@ -29,7 +28,7 @@ if($_GET['action'] == 'import' && $_GET['items']){
 		}
 		$insertKeys = '`' . implode('`,`', array_keys($insertPairs)) . '`';
 		$insertVals = '"' . implode('","', array_values($insertPairs)) . '"';
-		if(!mysqli_num_rows(mysqli_query($conn, "SELECT name FROM $tableName WHERE name = '".$insertPairs['name']."'"))){
+		if(!mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '".$insertPairs['name']."'"))){
 			$jsql = "INSERT INTO `{$tableName}` ({$insertKeys}) VALUES ({$insertVals});";
 			$qIns = mysqli_query($conn,$jsql);
 			$i++;

@@ -160,7 +160,7 @@ if(($_POST) && $_GET['update'] == 'printer'){
 	$pv_online_pass = mysqli_real_escape_string($conn, $_POST['pv_online_pass']);
 
 //	if(mysqli_query($conn, "UPDATE pv_online SET email = '$pv_online_email', password = '$pv_online_pass'")){
-	if(mysqli_query($conn, "INSERT pv_online (email,password) VALUES ('$pv_online_email', '$pv_online_pass') ON DUPLICATE KEY UPDATE email = '$pv_online_email', password = '$pv_online_password'")){
+	if(mysqli_query($conn, "INSERT pv_online (id,email,password) VALUES ('1','$pv_online_email', '$pv_online_pass') ON DUPLICATE KEY UPDATE id = '1', email = '$pv_online_email', password = '$pv_online_pass'")){
 
 	$msg = '<div class="alert alert-success alert-dismissible">PV Online details updated!</div>';
 	}else{
@@ -747,7 +747,12 @@ $(function() {
             <td>&nbsp;</td>
           </tr>
           <tr>
-            <td><a href="https://online.jbparfum.com/register.php" target="_blank">Register here</a></td>
+            <td height="29"><a href="https://online.jbparfum.com/register.php" target="_blank">Create an account</a></td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td height="31"><a href="https://online.jbparfum.com/forgotpass.php" target="_blank">Forgot Password?</a></td>
             <td>&nbsp;</td>
             <td>&nbsp;</td>
           </tr>
