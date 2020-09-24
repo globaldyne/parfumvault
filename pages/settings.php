@@ -348,7 +348,6 @@ $(function() {
 					</tr>';
 				  		}
                     ?>
-                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -393,12 +392,11 @@ $(function() {
 					  echo'
                     <tr>
                       <td data-name="name" class="name" data-type="text" align="center" data-pk="'.$cat['id'].'">'.$cat['name'].'</td>
-					  <td width="60%" data-name="notes" class="notes" data-type="text" align="left" data-pk="'.$cat['id'].'"align="left">'.wordwrap($cat['notes'], 150, "<br />\n").'</td>
+					  <td width="60%" data-name="notes" class="notes" data-type="text" align="center" data-pk="'.$cat['id'].'">'.wordwrap($cat['notes'], 150, "<br />\n").'</td>
                       <td align="center"><a href="?do=settings&action=delete&cat_id='.$cat['id'].'#categories" onclick="return confirm(\'Delete category '.$cat['name'].'?\');" class="fas fa-trash"></a></td>
 					</tr>';
 				  		}
                     ?>
-                    </tr>
                   </tbody>
                 </table>
               </div>
