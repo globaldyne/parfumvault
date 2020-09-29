@@ -312,12 +312,6 @@ $.ajax({
                                 </select>
                                 </td>
                               </tr>
-
-
-                              <tr>
-                                <td valign="top">Size (ml):</td>
-                                <td colspan="3"><input name="ml" type="text" class="form-control" id="ml" value="<?php echo $ing['ml']; ?>"/></td>
-                              </tr>
                               <tr>
                                 <td valign="top">Odor:</td>
                                 <td width="66%"><div id='TGSC'><input name="odor" id="odor" type="text" class="form-control" value="<?php echo $ing['odor']; ?>"/></div>
@@ -566,6 +560,10 @@ $.ajax({
                               <tr>
 								<td>Price (<?php echo $settings['currency']; ?>):</td>
                                 <td colspan="3"><input name="price" type="text" class="form-control" id="price" value="<?php echo $ing['price']; ?>"/></td>
+                              </tr>
+                              <tr>
+                                <td valign="top">Size (ml):</td>
+                                <td colspan="3"><input name="ml" type="text" class="form-control" id="ml" value="<?php echo $ing['ml']; ?>"/></td>
                               </tr>
                     </table>
                             </div>
