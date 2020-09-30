@@ -29,7 +29,7 @@ if($_GET['action'] == 'import' && $_GET['items']){
 		$insertKeys = '`' . implode('`,`', array_keys($insertPairs)) . '`';
 		$insertVals = '"' . implode('","', array_values($insertPairs)) . '"';
 		if(!mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '".$insertPairs['name']."'"))){
-			$jsql = "INSERT INTO `{$tableName}` ({$insertKeys}) VALUES ({$insertVals});";
+			$jsql = "INSERT INTO ingredients ({$insertKeys}) VALUES ({$insertVals});";
 			$qIns = mysqli_query($conn,$jsql);
 			$i++;
 		}
