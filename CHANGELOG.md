@@ -2,7 +2,7 @@
 
 ### Version 2.0.8
 - ADD: Integration with PV Online
-
+- ADD: Barcode generation in batch file
 - FIX: Various bug fixes
 
 ### Version 2.0.7
