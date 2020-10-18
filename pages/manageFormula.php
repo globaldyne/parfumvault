@@ -284,13 +284,13 @@ if($_GET['formula'] && $_GET['do']){
 				if($chName['chemical_name']){
 					$getAllergen['name'] = $chName['chemical_name'];
 				}else{
-					//$getAllergen = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '".$ing['ingredient']."' AND allergen = '1'"));
+					$getIngAlergen = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '".$ing['ingredient']."' AND allergen = '1'"));
 					$qAll = mysqli_query($conn, "SELECT name FROM allergens WHERE ing = '".$ing['ingredient']."'");
 					while($getAllergen = mysqli_fetch_array($qAll)){
 						$allergen[] = $getAllergen['name'];
 					}
 				}
-
+			$allergen[] = $getIngAlergen['name'];
 			$allergen[] = $getAllergen['name'];
 		}
 		$allergen[] = 'Denatureted Ethyl Alcohol '.$_GET['carrier'].'% Vol, Fragrance, DPG, Distilled Water';
@@ -352,13 +352,13 @@ if($_GET['formula'] && $_GET['do']){
 				if($chName['chemical_name']){
 					$getAllergen['name'] = $chName['chemical_name'];
 				}else{
-				//	$getAllergen = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '".$ing['ingredient']."' AND allergen = '1'"));
+					$getIngAlergen = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '".$ing['ingredient']."' AND allergen = '1'"));
 					$qAll = mysqli_query($conn, "SELECT name FROM allergens WHERE ing = '".$ing['ingredient']."'");
 					while($getAllergen = mysqli_fetch_array($qAll)){
 						$allergen[] = $getAllergen['name'];
 					}
 				}
-
+			$allergen[] = $getIngAlergen['name'];
 			$allergen[] = $getAllergen['name'];
 		}
 		$allergen[] = "Denatureted Ethyl Alcohol ".$_GET['carrier']."% Vol, \nFragrance, DPG, Distilled Water";
