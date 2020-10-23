@@ -4,6 +4,7 @@
 - ADD: Integration with PV Online
 - ADD: Barcode generation in batch file
 - ADD: Show CAS number in formula
+- ADD: Dilutant field in finished product page
 - FIX: Not showing allergens correctly in label
 - FIX: Message position in Generate Finished Product page
 - FIX: Various bug fixes

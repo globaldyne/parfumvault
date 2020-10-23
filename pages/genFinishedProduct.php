@@ -134,7 +134,7 @@ function downloadBoxLabel() {
                 <table class="table table-bordered" id="formula" width="100%" cellspacing="0">
                   <thead>
                     <tr class="noexport">
-                      <th colspan="7">
+                      <th colspan="8">
                      <div class="text-left">
                       <div class="btn-group">
                       <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
@@ -151,10 +151,11 @@ function downloadBoxLabel() {
                     </tr>
                     <tr>
                       <th width="22%">Ingredient</th>
-                      <th width="11%">CAS#</th>
-                      <th width="11%">Purity %</th>
-                      <th width="11%">Quantity</th>
-                      <th width="11%">Concentration*</th>
+                      <th width="10%">CAS#</th>
+                      <th width="10%">Purity %</th>
+                      <th width="10%">Dilutant</th>
+                      <th width="10%">Quantity</th>
+                      <th width="10%">Concentration*</th>
                       <th colspan="2">Cost</th>
                     </tr>
                   </thead>
@@ -173,6 +174,11 @@ function downloadBoxLabel() {
                       <td align="center">'.$formula['ingredient'].'</td>
 					  <td align="center">'.$ing_q['cas'].'</td>
                       <td align="center">'.$formula['concentration'].'</td>';
+					  if($formula['concentration'] == '100'){
+						  echo '<td align="center">None</td>';
+					  }else{
+						  echo '<td data-name="dilutant" class="dilutant" data-type="select" align="center" data-pk="'.$formula['ingredient'].'">'.$formula['dilutant'].'</td>';
+					  }
 					  if($limit != null){
 						 if($limit < $conc_p){
 							$IFRA_WARN = 'class="alert-danger"';//VALUE IS TO HIGH AGAINST IFRA
@@ -202,6 +208,8 @@ function downloadBoxLabel() {
                     <tr>
                       <td></td>
                       <td></td>
+                                            <td></td>
+
                       <td align="center" class="m-1 text-primary">Sub Total: </td>
                       <td align="center" class="m-1 text-primary"><?php echo number_format(array_sum($new_tot), 3); ?>ml</td>
                       <td align="center" class="m-1 text-primary"><?php echo array_sum($conc_tot);?>%</td>
@@ -210,6 +218,8 @@ function downloadBoxLabel() {
                     <tr>
                       <td></td>
                       <td></td>
+                                            <td></td>
+
                       <td align="center" class="m-1 text-primary">Carrier/Solvent: </td>
                       <td align="center" class="m-1 text-primary"><?php echo $carrier; ?>ml</td>
                       <td align="center" class="m-1 text-primary"><?php echo $carrier*100/$bottle;?>%</td>
@@ -218,12 +228,15 @@ function downloadBoxLabel() {
                     <tr>
                       <td></td>
                       <td></td>
+                                            <td></td>
+
                       <td align="center" class="m-0 text-primary">Bottle:</td>
                       <td align="center" class="m-0 text-primary"><?php echo $bottle_cost['ml'];?>ml</td>
                       <td align="center" class="m-0 text-primary">-</td>
                       <td colspan="2" align="center" class="m-0 text-primary"><?php echo  utf8_encode($settings['currency']).$bottle_cost['price']; ?></td>
                     </tr>
                     <tr>
+                      <td></td>
                       <td></td>
                       <td></td>
                       <td align="center" class="m-0 text-primary">Lid:</td>
@@ -234,12 +247,14 @@ function downloadBoxLabel() {
                     <tr>
                       <td></td>
                       <td></td>
+                      <td></td>
                       <td align="center" class="m-0 text-primary">Batch No:</td>
                       <td align="center" class="m-0 text-primary"><?php echo $meta['batchNo'];?></td>
                       <td align="center" class="m-0 text-primary">-</td>
                       <td colspan="2" align="center" class="m-0 text-primary">-</td>
                     </tr>
                     <tr>
+                      <td></td>
                       <td></td>
                       <td></td>
                       <td align="center" class="m-0 font-weight-bold text-primary">Total: </td>

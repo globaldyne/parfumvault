@@ -113,7 +113,7 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $ver, $uploads_pat
 	$display_heading = array('name'=> 'Product', 'ingredient'=> 'Ingredient','concentration'=> 'Concentration',);	
 	$formula_q = mysqli_query($conn, "SELECT * FROM formulas WHERE fid = '$fid' ORDER BY ingredient ASC");
 
-	$header = array('Ingredient', 'CAS#', 'Purity %', 'Quantity', 'Concentration %');
+	$header = array('Ingredient', 'CAS#', 'Purity %', 'Dilutant', 'Quantity', 'Concentration %');
 	
 	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE fid = '$fid'"));
 	
@@ -133,7 +133,7 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $ver, $uploads_pat
 	$pdf = new PDF( 'L', 'mm', 'A4');
 
 	$pdf->SetAutoPageBreak(true , 30);
-	$pdf->SetMargins(20, 1, 20);
+	$pdf->SetMargins(10, 1, 5);
 	
 	//Cover page
 	$pdf->AddPage();
@@ -150,24 +150,28 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $ver, $uploads_pat
 	$pdf->SetFont('Arial','B',10);
 	
 	foreach($header as $heading) {
-		$pdf->Cell(55,12,$heading,1,0,'C');
+		$pdf->Cell(45,12,$heading,1,0,'C');
 	}
 
 	while ($formula = mysqli_fetch_array($formula_q)) {
 		$pdf->Ln();
 		$pdf->SetFont('Arial','',9);
 					  
-		$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT IFRA,price,ml,profile,profile,cas FROM ingredients WHERE name = '".$formula['ingredient']."'"));
+		$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT IFRA,price,ml,profile,cas FROM ingredients WHERE name = '".$formula['ingredient']."'"));
 		$new_quantity = $formula['quantity']/$mg*$new_conc;
 		$conc = $new_quantity/$bottle * 100;
 		$conc_p = number_format($formula['concentration'] / 100 * $conc, 3);
 		
-		$pdf->Cell(55,8,$formula['ingredient'],1,0,'C');
-		$pdf->Cell(55,8,$ing_q['cas'],1,0,'C');
-		$pdf->Cell(55,8,$formula['concentration'],1,0,'C');
-		
-		$pdf->Cell(55,8,number_format($new_quantity, 3),1,0,'C');
-		$pdf->Cell(55,8,$conc_p,1,0,'C');
+		$pdf->Cell(45,8,$formula['ingredient'],1,0,'C');
+		$pdf->Cell(45,8,$ing_q['cas'],1,0,'C');
+		$pdf->Cell(45,8,$formula['concentration'],1,0,'C');
+		if($formula['dilutant']){
+			$pdf->Cell(45,8,$formula['dilutant'],1,0,'C');
+		}else{
+			$pdf->Cell(45,8,'None',1,0,'C');			
+		}
+		$pdf->Cell(45,8,number_format($new_quantity, 3),1,0,'C');
+		$pdf->Cell(45,8,$conc_p,1,0,'C');
 	}
                  
 	//ADD Final details
