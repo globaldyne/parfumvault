@@ -50,9 +50,9 @@ if($_POST['formula']){
 <script>
 function printLabel() {
 	<?php if(empty($settings['label_printer_addr']) || empty($settings['label_printer_model'])){?>
-	$("#msg").html('<div class="alert alert-danger alert-dismissible">Please configure printer details in <a href="?do=settings">settings<a> page</div>');
+	$("#inf").html('<div class="alert alert-danger alert-dismissible">Please configure printer details in <a href="?do=settings">settings<a> page</div>');
 	<?php }else{ ?>
-	$("#msg").html('<div class="alert alert-info alert-dismissible">Printing...</div>');
+	$("#inf").html('<div class="alert alert-info alert-dismissible">Printing...</div>');
 
 $.ajax({ 
     url: 'pages/manageFormula.php', 
@@ -64,7 +64,7 @@ $.ajax({
 		},
 	dataType: 'html',
     success: function (data) {
-	  $('#msg').html(data);
+	  $('#inf').html(data);
     }
   });
 	<?php } ?>
@@ -72,9 +72,9 @@ $.ajax({
 
 function printBoxLabel() {
 	<?php if(empty($settings['label_printer_addr']) || empty($settings['label_printer_model']) || $settings['label_printer_size'] != '62 --red'){?>
-	$("#msg").html('<div class="alert alert-danger alert-dismissible">Please configure printer details in <a href="?do=settings">settings<a> page. Note: For this label you need 62mm label</div>');
+	$("#inf").html('<div class="alert alert-danger alert-dismissible">Please configure printer details in <a href="?do=settings">settings<a> page. Note: For this label you need 62mm label</div>');
 	<?php }else{ ?>
-	$("#msg").html('<div class="alert alert-info alert-dismissible">Printing...</div>');
+	$("#inf").html('<div class="alert alert-info alert-dismissible">Printing...</div>');
 
 $.ajax({ 
     url: 'pages/manageFormula.php', 
@@ -89,7 +89,7 @@ $.ajax({
 	dataType: 'html',
     success: function (data) {
 	  $('#printBoxLabel').modal('toggle');
-	  $('#msg').html(data);
+	  $('#inf').html(data);
     }
   });
 	<?php } ?>
@@ -107,7 +107,7 @@ function downloadBoxLabel() {
 		},
 	dataType: 'html',
     success: function (data) {
-	  $('#msg').html(data);
+	  $('#inf').html(data);
     }
   });
 };
@@ -128,7 +128,7 @@ function downloadBoxLabel() {
             <?php } ?>
             </div>
             <div class="card-body">
-           <div id="msg"><?php if($msg){ echo $msg; }?></div>
+           <div id="inf"><?php if($msg){ echo $msg; }?></div>
            <?php if($_GET['generate']){?>
               <div>
                 <table class="table table-bordered" id="formula" width="100%" cellspacing="0">

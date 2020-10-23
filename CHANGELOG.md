@@ -3,7 +3,9 @@
 ### Version 2.0.8
 - ADD: Integration with PV Online
 - ADD: Barcode generation in batch file
+- ADD: Show CAS number in formula
 - FIX: Not showing allergens correctly in label
+- FIX: Message position in Generate Finished Product page
 - FIX: Various bug fixes
 
 ### Version 2.0.7
