@@ -389,6 +389,7 @@ $(document).ready(function() {
                       <th width="22%">Total: <?php echo countElement("formulas WHERE name = '$f_name'" ,$conn);?></th>
                       <th></th>
                       <th></th>
+                      <th></th>
                       <th width="15%" align="right"><p>Total: <?php echo ml2l($mg['total_mg'], 3); ?></p></th>
                       <th width="15%">Total: <?php echo array_sum($conc_tot);?>%</th>
                       <th width="15%" align="right">Cost: <?php echo utf8_encode($settings['currency']).number_format(array_sum($tot),3);?></a></th>
