@@ -199,7 +199,7 @@ $(document).ready(function() {
             api.column(groupColumn, {page:'current'} ).data().each( function ( group, i ) {
                 if ( last !== group ) {
                     $(rows).eq( i ).before(
-                        '<tr class="group noexport"><td colspan="8">'+group+' Notes</td></tr>'
+                        '<tr class="group noexport"><td colspan="9">'+group+' Notes</td></tr>'
                     );
  
                     last = group;
@@ -283,9 +283,9 @@ $(document).ready(function() {
                   <thead>
                     <tr class="noexport">
                     <?php if($settings['grp_formula'] == '1'){?>
-                      <th colspan="8">
+                      <th colspan="9">
                     <?php }else{ ?>
-                      <th colspan="7">
+                      <th colspan="8">
                     <?php } ?>                      
                       <div class="progress">
   <div class="progress-bar" role="progressbar" style="width: <?php echo $base_calc; ?>%" aria-valuenow="<?php echo $base_calc;?>" aria-valuemin="0" aria-valuemax="<?php echo $settings['base_n'];?>"><span><?php echo $base_calc;?>% Base Notes</span></div>
@@ -315,12 +315,13 @@ $(document).ready(function() {
                       <th width="10%">Quantity (ml)</th>
                       <th width="10%">Concentration*</th>
                       <th width="10%">Cost</th>
+                      <th width="10%">Properties</th>
                       <th class="noexport" width="15%">Actions</th>
                     </tr>
                   </thead>
                   <tbody id="formula_data">
                   <?php while ($formula = mysqli_fetch_array($formula_q)) {
-					 	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT cas, IFRA, price, ml, profile FROM ingredients WHERE BINARY name = '".$formula['ingredient']."'"));
+					 	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT cas, IFRA, price, ml, profile, odor FROM ingredients WHERE BINARY name = '".$formula['ingredient']."'"));
 
 						$limitIFRA = searchIFRA($ing_q['cas'],$formula['ingredient'],null,$conn);
 						$limit = explode(' - ', $limitIFRA);
@@ -375,6 +376,7 @@ $(document).ready(function() {
 					  echo'<td data-name="quantity" class="quantity" data-type="text" align="center" data-pk="'.$formula['ingredient'].'">'.$formula['quantity'].'</td>';
 					  echo'<td align="center" '.$IFRA_WARN.'>'.$conc_p.'%</td>';
 					  echo '<td align="center">'.utf8_encode($settings['currency']).calcCosts($ing_q['price'],$formula['quantity'], $formula['concentration'], $ing_q['ml']).'</td>';
+					  echo '<td>'.$ing_q['odor'].'</td>';
 					  echo '<td class="noexport" align="center"><a href="#" class="fas fa-exchange-alt replaceIngredient" rel="tipsy" title="Replace '.$formula['ingredient'].'" id="replaceIngredient" data-name="'.$formula['ingredient'].'" data-type="select" data-pk="'.$formula['ingredient'].'" data-title="Choose Ingredient"></a> &nbsp; <a href="'.goShopping($formula['ingredient'],$conn).'" target="_blank" class="fas fa-shopping-cart"></a> &nbsp; <a href="javascript:deleteING(\''.$formula['ingredient'].'\', \''.$formula['id'].'\')" onclick="return confirm(\'Remove '.$formula['ingredient'].' from formula?\');" class="fas fa-trash" rel="tipsy" title="Remove '.$formula['ingredient'].'"></a></td>
                     </tr>';
 					$tot[] = calcCosts($ing_q['price'],$formula['quantity'], $formula['concentration'], $ing_q['ml']);
@@ -393,6 +395,7 @@ $(document).ready(function() {
                       <th width="15%" align="right"><p>Total: <?php echo ml2l($mg['total_mg'], 3); ?></p></th>
                       <th width="15%">Total: <?php echo array_sum($conc_tot);?>%</th>
                       <th width="15%" align="right">Cost: <?php echo utf8_encode($settings['currency']).number_format(array_sum($tot),3);?></a></th>
+                      <th></th>
                       <th class="noexport" width="15%"></th>
                     </tr>
                   </tfoot>                                    

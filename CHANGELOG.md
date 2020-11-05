@@ -6,6 +6,7 @@
 - ADD: Show CAS number in formula
 - ADD: Dilutant field in finished product page
 - ADD: Include allergen ingredients in batch pdf file
+- ADD: Ingredient properties in formula view
 - FIX: Not showing allergens correctly in label
 - FIX: Message position in Generate Finished Product page
 - FIX: Various bug fixes
