@@ -122,7 +122,7 @@ function downloadBoxLabel() {
              <h2 class="m-0 font-weight-bold text-primary"><a href="?do=genFinishedProduct"><?php echo $meta['product_name'];?></a></h2>
              <h5 class="m-1 text-primary">Formula: <?php echo $meta['name'];?></h5>
              <h5 class="m-1 text-primary"><?php echo "Bottle: ".$bottle."ml Concentration: ".$type."%";?></h5>
-             <h5 class="m-1 text-primary"><?php if($_POST['batchID'] == '1'){ echo 'Batch ID: <a href="'.$uploads_path.'batches/'.$batchID.'">'.$batchID.'<a>'; }else{ echo 'Batch ID: <a href="#">N/A</a>';}?></h5>
+             <h5 class="m-1 text-primary"><?php if($_POST['batchID'] == '1'){ echo 'Batch ID: <a href="'.$uploads_path.'batches/'.$batchID.'" target="_blank">'.$batchID.'</a>'; }else{ echo 'Batch ID: <a href="#">N/A</a>';}?></h5>
         	<?php }else{ ?>
               <h2 class="m-0 font-weight-bold text-primary"><a href="?do=genFinishedProduct">Generate Finished Product</a></h2>
             <?php } ?>
