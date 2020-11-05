@@ -87,11 +87,11 @@ if($_POST['name']){
 	}
 }
 
-$res_ingTypes = mysqli_query($conn, "SELECT id,name FROM ingTypes");
-$res_ingStrength = mysqli_query($conn, "SELECT id,name FROM ingStrength");
-$res_ingCategory = mysqli_query($conn, "SELECT id,name FROM ingCategory");
-$res_ingSupplier = mysqli_query($conn, "SELECT id,name FROM ingSuppliers");
-$res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles");
+$res_ingTypes = mysqli_query($conn, "SELECT id,name FROM ingTypes ORDER BY name ASC");
+$res_ingStrength = mysqli_query($conn, "SELECT id,name FROM ingStrength ORDER BY name ASC");
+$res_ingCategory = mysqli_query($conn, "SELECT id,name FROM ingCategory ORDER BY name ASC");
+$res_ingSupplier = mysqli_query($conn, "SELECT id,name FROM ingSuppliers ORDER BY name ASC");
+$res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles ORDER BY name ASC");
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">

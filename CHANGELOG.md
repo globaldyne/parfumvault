@@ -7,6 +7,7 @@
 - ADD: Dilutant field in finished product page
 - ADD: Include allergen ingredients in batch pdf file
 - ADD: Ingredient properties in formula view
+- ADD: Short categories/profiles/types by name when adding or editing an ingredient
 - FIX: Not showing allergens correctly in label
 - FIX: Message position in Generate Finished Product page
 - FIX: Various bug fixes

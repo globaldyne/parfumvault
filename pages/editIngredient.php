@@ -101,11 +101,11 @@ if($_POST){
 		}
 }
 
-$res_ingTypes = mysqli_query($conn, "SELECT id,name FROM ingTypes");
-$res_ingStrength = mysqli_query($conn, "SELECT id,name FROM ingStrength");
-$res_ingCategory = mysqli_query($conn, "SELECT id,name FROM ingCategory");
-$res_ingSupplier = mysqli_query($conn, "SELECT id,name FROM ingSuppliers");
-$res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles");
+$res_ingTypes = mysqli_query($conn, "SELECT id,name FROM ingTypes ORDER BY name ASC");
+$res_ingStrength = mysqli_query($conn, "SELECT id,name FROM ingStrength ORDER BY name ASC");
+$res_ingCategory = mysqli_query($conn, "SELECT id,name FROM ingCategory ORDER BY name ASC");
+$res_ingSupplier = mysqli_query($conn, "SELECT id,name FROM ingSuppliers ORDER BY name ASC");
+$res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles ORDER BY name ASC");
 
 $sql = mysqli_query($conn, "SELECT * FROM ingredients WHERE name = '$ingID'");
 $qAlg = mysqli_query($conn, "SELECT * FROM allergens WHERE ing = '$ingID'");
