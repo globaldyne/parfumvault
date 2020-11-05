@@ -119,20 +119,25 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $ver, $uploads_pat
 	
 	$fq = mysqli_query($conn, "SELECT ingredient FROM formulas WHERE fid = '$fid'");
 	while($ing = mysqli_fetch_array($fq)){
-		$getAllergen = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '".$ing['ingredient']."' AND allergen = '1'"));
+		$getIngAlergen = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '".$ing['ingredient']."' AND allergen = '1'"));
+		$qAll = mysqli_query($conn, "SELECT name FROM allergens WHERE ing = '".$ing['ingredient']."'");
+		
+		while($getAllergen = mysqli_fetch_array($qAll)){
+			$allergen[] = $getAllergen['name'];
+		}
+		$allergen[] = $getIngAlergen['name'];
 		$allergen[] = $getAllergen['name'];
 	}
 	
 	$coverText = "Profile: ".$meta['profile']." \nSex: ".$meta['sex']." \nCreated: ".$meta['created']." \n".$meta['notes'];
-	$allergenFinal = implode(", ",array_filter($allergen));
+	$allergenFinal = implode("\n",array_filter($allergen));
 	if(empty($allergenFinal)){
 		$allergenFinal = 'None found';
 	}
-	$finalText = "Allergens and/or ingredients to be declared in the box: \n".$allergenFinal;
 	
 	$pdf = new PDF( 'L', 'mm', 'A4');
 
-	$pdf->SetAutoPageBreak(true , 30);
+	$pdf->SetAutoPageBreak(true , 15);
 	$pdf->SetMargins(10, 1, 5);
 	
 	//Cover page
@@ -177,8 +182,11 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $ver, $uploads_pat
 	//ADD Final details
 	$pdf->AddPage();
 	$pdf->AliasNbPages();
-	$pdf->SetFont('Arial','B',10);
-	$pdf->MultiCell(250,10,$finalText);
+	$pdf->SetFont('Arial','BU',10);
+	$pdf->MultiCell(250,10,"Allergens and/or ingredients to be declared in the box: \n");
+
+	$pdf->SetFont('Arial','',10);
+	$pdf->MultiCell(280,10,$allergenFinal);
 	
 	$pdf->Output('F',$uploads_path.'batches/'.$batchID);
 	//$pdf->Output('I');
