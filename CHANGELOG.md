@@ -8,6 +8,7 @@
 - ADD: Include allergen ingredients in batch pdf file
 - ADD: Ingredient properties in formula view
 - ADD: Short categories/profiles/types by name when adding or editing an ingredient
+- UPD: Rename To Do -> To Make in formula view
 - FIX: Not showing allergens correctly in label
 - FIX: Message position in Generate Finished Product page
 - FIX: Various bug fixes

@@ -302,7 +302,7 @@ $(document).ready(function() {
                         <a class="dropdown-item" href="javascript:manageQuantity('divide')">Divide x2</a>
                         <a class="dropdown-item" href="javascript:cloneMe()">Clone Formula</a>
              			<div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="javascript:addTODO()">To Do</a>
+                        <a class="dropdown-item" href="javascript:addTODO()">To Make</a>
                       </div>
                     </div>
                     </tr>
