@@ -129,7 +129,19 @@ if(empty(mysqli_num_rows($sql))){
 <script src="../js/tipsy.js"></script>
 <script src="../js/bootstrap-editable.js"></script>
 
-
+<link rel="stylesheet" type="text/css" href="../css/datatables.min.css"/>
+<script type="text/javascript" src="../js/datatables.min.js"></script>
+  
+<script type='text/javascript'>
+$(document).ready(function() {
+	
+    $('#tdData').DataTable({
+	    "paging":   true,
+		"info":   true,
+		"lengthMenu": [[5, 35, 60, -1], [20, 35, 60, "All"]]
+	});
+}); 
+</script>
 <style>
 .form-inline .form-control {
     display: inline-block;

@@ -224,8 +224,3 @@ tr.strikeout td:before {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
-
-#formula td,
-  table.table th {
-  white-space: nowrap;
-}
