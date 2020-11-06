@@ -162,7 +162,10 @@ $(document).ready(function() {
 .container {
     max-width: 100%;
 }
-
+#tdData td,
+  table.table th {
+  white-space: nowrap;
+}
 </style>
 
 <script>
