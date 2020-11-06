@@ -130,7 +130,7 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $ver, $uploads_pat
 	}
 	
 	$coverText = "Profile: ".$meta['profile']." \nSex: ".$meta['sex']." \nCreated: ".$meta['created']." \n".$meta['notes'];
-	$allergenFinal = implode("\n",array_filter($allergen));
+	$allergenFinal = implode(", ",array_filter($allergen));
 	if(empty($allergenFinal)){
 		$allergenFinal = 'None found';
 	}
@@ -178,7 +178,7 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $ver, $uploads_pat
 		$pdf->Cell(45,8,number_format($new_quantity, 3),1,0,'C');
 		$pdf->Cell(45,8,$conc_p,1,0,'C');
 	}
-                 
+               
 	//ADD Final details
 	$pdf->AddPage();
 	$pdf->AliasNbPages();
