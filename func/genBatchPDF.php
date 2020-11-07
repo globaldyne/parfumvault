@@ -114,7 +114,8 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $ver, $uploads_pat
 	$formula_q = mysqli_query($conn, "SELECT * FROM formulas WHERE fid = '$fid' ORDER BY ingredient ASC");
 
 	$header = array('Ingredient', 'CAS#', 'Purity %', 'Dilutant', 'Quantity', 'Concentration %');
-	
+	$hd_blends = array('Ingredient', 'CAS#', 'Concentration %');
+
 	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE fid = '$fid'"));
 	
 	$fq = mysqli_query($conn, "SELECT ingredient FROM formulas WHERE fid = '$fid'");
@@ -179,6 +180,38 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $ver, $uploads_pat
 		$pdf->Cell(45,8,$conc_p,1,0,'C');
 	}
                
+	//Blends or mixed bases
+
+	$pdf->AddPage();
+	$pdf->AliasNbPages();
+	$pdf->SetFont('Arial','BU',10);
+	$pdf->MultiCell(250,10,"Also contains from blends \n");
+
+	//$allergen[]
+	foreach($hd_blends as $heading) {
+		$pdf->Cell(45,12,$heading,1,0,'C');
+	}
+
+	$qAllIng = mysqli_query($conn, "SELECT ingredient,quantity,concentration FROM formulas WHERE fid = '$fid'");
+	while ($res_all_ing = mysqli_fetch_array($qAllIng)) {
+		
+	
+		$bldQ = mysqli_query($conn, "SELECT name,cas,percentage FROM allergens WHERE ing = '".$res_all_ing['ingredient']."'");
+		while($bld =mysqli_fetch_array($bldQ)){
+			
+			$pdf->Ln();
+			$pdf->SetFont('Arial','',8);
+		
+			$pdf->Cell(45,8,$bld['name'],1,0,'C');
+			$pdf->Cell(45,8,$bld['cas'],1,0,'C');
+			$pdf->Cell(45,8,$bld['percentage'],1,0,'C');
+	
+		}
+	
+	}
+
+	
+		
 	//ADD Final details
 	$pdf->AddPage();
 	$pdf->AliasNbPages();

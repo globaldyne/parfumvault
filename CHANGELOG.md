@@ -10,6 +10,7 @@
 - ADD: Short categories/profiles/types by name when adding or editing an ingredient
 - UPD: Rename To Do -> To Make in formula view
 - ADD: Search and paging in allergens view
+- ADD: Include full list of alergens in generated pdf
 - FIX: Not showing allergens correctly in label
 - FIX: Message position in Generate Finished Product page
 - FIX: Various bug fixes
