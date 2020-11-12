@@ -78,11 +78,15 @@ if($_POST['value'] && $_GET['formula'] && $_POST['pk'] && !$_GET['settings']){
 	$allgCAS = mysqli_real_escape_string($conn, $_GET['allgCAS']);	
 	$allgPerc = mysqli_real_escape_string($conn, $_GET['allgPerc']);
 	$ing = mysqli_real_escape_string($conn, $_GET['ing']);
-	
+	if(empty($allgName)){
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Name is required!</div>';
+		return;
+	}
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM allergens WHERE name = '$allgName' AND ing = '$ing'"))){
 		echo $msg='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$allgName.' already exists!</div>';
 	}else{
-		mysqli_query($conn, "INSERT INTO allergens (name,cas,percentage,ing) VALUES ('$allgName','$allgCAS','$allgPerc','$ing')");	
+		mysqli_query($conn, "INSERT INTO allergens (name,cas,percentage,ing) VALUES ('$allgName','$allgCAS','$allgPerc','$ing')");
+		echo $msg='<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$allgName.'</strong> added to the list!</div>';
 	}
 
 //UPDATE ALLERGEN
@@ -100,9 +104,12 @@ if($_POST['value'] && $_GET['formula'] && $_POST['pk'] && !$_GET['settings']){
 	$id = mysqli_real_escape_string($conn, $_GET['allgID']);
 	$ing = mysqli_real_escape_string($conn, $_GET['ing']);
 
-	mysqli_query($conn, "DELETE FROM allergens WHERE id = '$id' AND ing='$ing'");	
-	
+	$delQ = mysqli_query($conn, "DELETE FROM allergens WHERE id = '$id' AND ing='$ing'");	
+	if($delQ){
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$ing.'</strong> removed!</div>';
+	}
 }else{
 	header('Location: /');
+	exit;
 }
 ?>

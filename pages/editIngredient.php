@@ -108,7 +108,6 @@ $res_ingSupplier = mysqli_query($conn, "SELECT id,name FROM ingSuppliers ORDER B
 $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles ORDER BY name ASC");
 
 $sql = mysqli_query($conn, "SELECT * FROM ingredients WHERE name = '$ingID'");
-$qAlg = mysqli_query($conn, "SELECT * FROM allergens WHERE ing = '$ingID'");
 
 if(empty(mysqli_num_rows($sql))){
 	$msg='<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> ingredient not found, please click <a href="?do=addIngredient">here</a> to add it first!</div>';
@@ -230,7 +229,20 @@ $.ajax({
 };
 
 
-
+function reload_data() {
+$.ajax({ 
+    url: 'allergens.php', 
+	type: 'get',
+    data: {
+		id: "<?php echo $ingID ?>"
+		},
+	dataType: 'html',
+    success: function (data) {
+	  $('#fetch_allergen').html(data);
+    }
+  });
+}
+reload_data();
 </script>
 </head>
 
@@ -637,45 +649,8 @@ $.ajax({
       						</div>
                             
               <div class="tab-pane fade" id="tech_allergens">
-				   <h3>Allergens</h3>
-                                 <hr>
-                    <div class="card-body">
-              <div>
-                <table class="table table-bordered" id="tdData" width="100%" cellspacing="0">
-                  <thead>
-                    <tr class="noBorder">
-                      <th colspan="4">
-                  <div class="text-right">
-                        <div class="btn-group">
-                          <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
-                          <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addAllergen">Add new</a>
-                          </div>
-                        </div>                    
-                        </div>
-                        </th>
-                    </tr>
-                    <tr>
-                      <th>Name</th>
-                      <th>CAS</th>
-                      <th>Percentage %</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody id="ing_allergen">
-                    <?php while ($allergen = mysqli_fetch_array($qAlg)) { ?>
-                    <tr>
-                      <td data-name="name" class="name" data-type="text" align="center" data-pk="<?=$allergen['id']?>"><?=$allergen['name']?></td>
-                      <td data-name="cas" class="cas" data-type="text" align="center" data-pk="<?=$allergen['id']?>"><?=$allergen['cas']?></td>
-					  <td data-name="percentage" class="percentage" data-type="text" align="center" data-pk="<?=$allergen['id']?>"><?=$allergen['percentage']?></td>
-                      <td align="center"><a href="javascript:deleteAllergen('<?=$allergen['id']?>')" onclick="return confirm('Remove <?=$allergen['name']?>?');" class="fas fa-trash"></a></td>
-					</tr>
-				  	<?php } ?>
-                  </tbody>
-                </table>
+                   <div id="fetch_allergen"><div class="loader"></div></div>
               </div>
-            </div>
-		</div>
                             
               <?php if($settings['pubChem'] == '1' && $ing['cas']){?>
               <div class="tab-pane fade" id="pubChem">
@@ -702,6 +677,7 @@ $.ajax({
         </button>
       </div>
       <div class="modal-body">
+      <div id="msg"></div>
           <form action="javascript:printLabel()" method="get" name="form1" target="_self" id="form1">
             Dilution %: 
             <input class="form-control" name="dilution" type="text" id="dilution" value="<?php echo $ing['purity']; ?>" />
@@ -739,6 +715,7 @@ $.ajax({
         </button>
       </div>
       <div class="modal-body">
+      <div id="inf"></div>
           <form action="javascript:addAllergen()" method="get" name="form1" target="_self" id="form1">
             Name: 
             <input class="form-control" name="allgName" type="text" id="allgName" />
@@ -762,33 +739,6 @@ $.ajax({
 
 
 <script type="text/javascript" language="javascript" >
-$(document).ready(function(){
- 
-  $('#ing_allergen').editable({
-  container: 'body',
-  selector: 'td.name',
-  type: 'POST',
-  url: "update_data.php?allergen=update&ing=<?=$ing['name'];?>",
-  title: 'Name',
- });
-  
-  $('#ing_allergen').editable({
-  container: 'body',
-  selector: 'td.percentage',
-  type: 'POST',
-  url: "update_data.php?allergen=update&ing=<?=$ing['name'];?>",
-  title: 'Percentage',
- });
-  
-  $('#ing_allergen').editable({
-  container: 'body',
-  selector: 'td.cas',
-  type: 'POST',
-  url: "update_data.php?allergen=update&ing=<?=$ing['name'];?>",
-  title: 'CAS',
- });
-	
-});
 
 function deleteAllergen(allgID) {	  
 $.ajax({ 
@@ -801,8 +751,8 @@ $.ajax({
 		},
 	dataType: 'html',
     success: function (data) {
-		location.reload();
 	  	$('#msg').html(data);
+		reload_data();
     }
   });
 };
@@ -820,8 +770,8 @@ $.ajax({
 		},
 	dataType: 'html',
     success: function (data) {
-		location.reload();
-	  	$('#msg').html(data);
+	  	$('#inf').html(data);
+		reload_data();
     }
   });
 };
