@@ -771,6 +771,9 @@ $.ajax({
 	dataType: 'html',
     success: function (data) {
 	  	$('#inf').html(data);
+     	$("#allgName").val('');
+     	$("#allgCAS").val('');
+     	$("#allgPerc").val('');
 		reload_data();
     }
   });
