@@ -48,6 +48,9 @@ if($_GET['action'] == 'upload' && $_GET['items'] == 'ingredients'){
 	$i = 0;
 	while($ing = mysqli_fetch_assoc($ingQ)){
 		unset($ing['id'],$ing['created']);
+		if($_GET['excludeNotes'] == 'true'){
+			unset($ing['notes']);			
+		}
 		$ar = array_filter($ing);
 		
 		$url = http_build_query($ar);

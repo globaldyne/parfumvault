@@ -159,8 +159,9 @@ $ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC
 </div>
       <div class="dropdown-divider"></div>
       <label>
-         <input type="checkbox" name="checkbox" id="checkbox" />
-        Include notes</label>
+         <input name="excludeNotes" type="checkbox" id="excludeNotes" value="1" />
+        Exclude notes
+      </label>
 <div class="modal-footer">
   <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
   <input type="submit" name="button" class="btn btn-primary" id="button" value="Upload">
@@ -212,7 +213,8 @@ function pv_online_upload(items) {
 		type: 'get',
 		data: {
 			action: "upload",
-			items: items
+			items: items,
+			excludeNotes: $("#excludeNotes").is(':checked')
 			},
 		dataType: 'html',
 		success: function (data) {
