@@ -42,4 +42,35 @@ if($_GET['action'] == 'import' && $_GET['items']){
 	return;
 }
 
+if($_GET['action'] == 'upload' && $_GET['items'] == 'ingredients'){
+	//Do all the ingredients
+	$ingQ = mysqli_query($conn, "SELECT * FROM ingredients");
+	$i = 0;
+	while($ing = mysqli_fetch_assoc($ingQ)){
+		unset($ing['id'],$ing['created']);
+		$ar = array_filter($ing);
+		
+		$url = http_build_query($ar);
+		$jAPI = $pvOnlineAPI.'?username='.$pv_online['email'].'&password='.$pv_online['password'].'&do=add&kind=ingredient&'.$url;
+		$i++;
+		$up_req = file_get_contents($jAPI,true);
+	}
+	
+	//Do all the allergens
+	$algQ = mysqli_query($conn, "SELECT * FROM allergens");
+	while($alg = mysqli_fetch_assoc($algQ)){
+		unset($alg['id']);
+		$ar = array_filter($alg);
+		
+		$url = http_build_query($alg);
+		$jAPI = $pvOnlineAPI.'?username='.$pv_online['email'].'&password='.$pv_online['password'].'&do=add&kind=allergen&'.$url;
+		$up_req.= file_get_contents($jAPI,true);
+	}
+	
+	if($up_req){
+		echo  '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$i.' ingredients uploaded!</div>';
+	}
+
+	return;
+}
 ?>

@@ -39,6 +39,7 @@ $ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC
                             <?php if($pv_online['email'] && $pv_online['password']){?>
                             <div class="dropdown-divider"></div>
 	                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#pv_online_import">Import from PV Online</a>
+	                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#pv_online_upload">Upload to PV Online</a>
                             <?php } ?>
                           </div>
                         </div>                    
@@ -111,7 +112,7 @@ $ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC
       </div>
     </div>
 <?php if($pv_online['email'] && $pv_online['password']){?>
-<!-- Modal PV ONLINE-->
+<!--PV ONLINE IMPORT-->
 <div class="modal fade" id="pv_online_import" tabindex="-1" role="dialog" aria-labelledby="pv_online_import" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -137,6 +138,37 @@ $ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC
     </div>
   </div>
 </div>
+
+<!--PV ONLINE UPLOAD-->
+<div class="modal fade" id="pv_online_upload" tabindex="-1" role="dialog" aria-labelledby="pv_online_upload" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="pv_online_upload">Upload my ingredients to PV Online</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+       <div id="pvUploadMsg"></div>
+  <form action="javascript:pv_online_upload('ingredients')" method="get" name="form1" target="_self" id="form_pv_online_upload">
+      <strong>WARNING:</strong><br />
+      you are about to upload data to PV Online, please bear in mind, PV Online is a community driven database therefore your data will be available to others. Please make sure you not uploading any sensitive information. <br />
+      If PV Online database contains already an ingredient with the same name, the ingredient data will not be uploaded. <p></p>
+      Ingredients in your database: <strong><?php echo countElement("ingredients",$conn);?></strong>
+</div>
+      <div class="dropdown-divider"></div>
+      <label>
+         <input type="checkbox" name="checkbox" id="checkbox" />
+        Include notes</label>
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+  <input type="submit" name="button" class="btn btn-primary" id="button" value="Upload">
+</div>
+     </form>
+    </div>
+  </div>
+</div>
 <?php } ?>
 <script type="text/javascript" language="javascript" >
 $('#csv').on('click',function(){
@@ -157,20 +189,36 @@ $('#csv').on('click',function(){
 <?php if($pv_online['email'] && $pv_online['password']){?>
 
 function pv_online_import(items) {
-$.ajax({ 
-    url: 'pages/pvonline.php', 
-	type: 'get',
-    data: {
-		action: "import",
-		items: items
-		},
-	dataType: 'html',
-    success: function (data) {
-	 // $('#pv_online_import').modal('toggle');
-	  $('#pvImportMsg').html(data);
-    }
-  });
+	$('#pvImportMsg').html('<div class="alert alert-info">Please wait...</div>');
+	$.ajax({ 
+		url: 'pages/pvonline.php', 
+		type: 'get',
+		data: {
+			action: "import",
+			items: items
+			},
+		dataType: 'html',
+		success: function (data) {
+		 // $('#pv_online_import').modal('toggle');
+		  $('#pvImportMsg').html(data);
+		}
+	  });
 };
 
+function pv_online_upload(items) {
+	$('#pvUploadMsg').html('<div class="alert alert-info">Please wait...</div>');
+	$.ajax({
+		url: 'pages/pvonline.php', 
+		type: 'get',
+		data: {
+			action: "upload",
+			items: items
+			},
+		dataType: 'html',
+		success: function (data) {
+		  $('#pvUploadMsg').html(data);
+		}
+	  });
+};
 <?php } ?>
 </script>
