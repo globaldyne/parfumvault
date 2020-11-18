@@ -16,7 +16,7 @@ $image = 'data:image/png;base64,'.base64_encode(pv_file_get_contents($api.'/comp
 $data = json_decode(trim(pv_file_get_contents($api.'/compound/name/'.$cas.'/JSON')),true);
 		
 if(empty($data)){
-	echo 'Error: Unable to fetch data....';
+	echo  '<div class="alert alert-info">Data not available</div>';
 	return;
 }
 ?>
