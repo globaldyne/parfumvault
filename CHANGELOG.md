@@ -15,6 +15,7 @@
 - ADD: Upload ingredients to PV Online
 - ADD: Quantity of product to purchase in cart page
 - PRV: Option to exclude notes when uploading ingredients to PV Online
+- CHG: Moving Olfactory Pyramid view to a tab in the formula page
 - FIX: Not showing allergens correctly in label
 - FIX: Message position in Generate Finished Product page
 - FIX: Various bug fixes

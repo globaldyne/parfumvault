@@ -26,16 +26,7 @@ while ($formula = mysqli_fetch_array($formula_q)) {
 $pyr = array_count_values($prf); 
 */
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="<?php echo $product.' - '.$ver;?>">
-  <meta name="author" content="JBPARFUM">
-  <title><?php echo $product;?> - Dashboard</title>
-  <link href="../css/sb-admin-2.css" rel="stylesheet">
+
   
 <!-- Styles -->
 <style>
@@ -99,6 +90,3 @@ var chart = AmCharts.makeChart( "chartdiv", {
 		<div id="chartdiv"></div>
 	</div>
   </div>
-  
-</body>
-</html>

@@ -231,6 +231,15 @@ $(document).ready(function() {
               <h2 class="m-0 font-weight-bold text-primary"><a href="?do=Formula&name=<?php echo $f_name; ?>"><?php echo $f_name; ?></a></h2>
               <h5 class="m-1 text-primary"><a href="pages/getFormMeta.php?id=<?php echo $meta['id'];?>" class="popup-link">Details</a></h5>
             </div>
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+          <li class="active"><a href="#main_formula" role="tab" data-toggle="tab"><icon class="fa fa-bong"></icon> Formula</a></li>
+          <li><a href="#pyramid" role="tab" data-toggle="tab"><i class="fa fa-table"></i> Olfactory Pyramid</a></li>
+        </ul>
+                     
+        <div class="tab-content">
+          <div class="tab-pane fade active in tab-content" id="main_formula">
+
             <div class="card-body">
            <div id="msg"></div>
               <div>
@@ -297,7 +306,6 @@ $(document).ready(function() {
                       <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
                       <div class="dropdown-menu">
                         <a class="dropdown-item" id="csv" href="#">Export to CSV</a>
-                        <a class="dropdown-item popup-link" href="pages/viewPyramid.php?formula=<?php echo $f_name; ?>">View Pyramid</a>                                                
                         <a class="dropdown-item" href="javascript:manageQuantity('multiply')">Multiply x2</a>
                         <a class="dropdown-item" href="javascript:manageQuantity('divide')">Divide x2</a>
                         <a class="dropdown-item" href="javascript:cloneMe()">Clone Formula</a>
@@ -409,7 +417,17 @@ $(document).ready(function() {
             </div>
           </div>
         </div>
-      </div>
+      <!--Formula-->
+      
+          <div class="tab-pane fade" id="pyramid">
+            <div class="card-body">
+		        <div id="fetch_pyramid"><div class="loader"></div></div>
+			</div>            
+          </div>
+          
+        </div>
+       </div>         
+     </div><!--tabs-->
    </div>
   </div>
 <script type="text/javascript" language="javascript" >
@@ -497,4 +515,15 @@ $('#csv').on('click',function(){
 
 })
 
+$.ajax({ 
+    url: 'pages/viewPyramid.php', 
+	type: 'get',
+    data: {
+		formula: "<?php echo $f_name; ?>"
+		},
+	dataType: 'html',
+    success: function (data) {
+	  $('#fetch_pyramid').html(data);
+    }
+});
 </script>
