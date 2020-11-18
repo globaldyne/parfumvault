@@ -13,6 +13,7 @@
 - ADD: Include full list of alergens in generated pdf
 - ADD: Allergens page improvements
 - ADD: Upload ingredients to PV Online
+- ADD: Quantity of product to purchase in cart page
 - PRV: Option to exclude notes when uploading ingredients to PV Online
 - FIX: Not showing allergens correctly in label
 - FIX: Message position in Generate Finished Product page

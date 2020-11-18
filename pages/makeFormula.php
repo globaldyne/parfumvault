@@ -78,13 +78,14 @@ function addedToFormula() {
   });
 };
 
-function addToCart(material) {
+function addToCart(material, quantity) {
 $.ajax({ 
     url: 'manageFormula.php', 
 	type: 'get',
     data: {
 		action: "addToCart",
-		material: material
+		material: material,
+		quantity: quantity
 		},
 	dataType: 'text',
     success: function (data) {
@@ -262,7 +263,7 @@ $(document).ready(function() {
 					  }
 					  
 					  echo '&nbsp; &nbsp;';
-					  echo '<a href="javascript:addToCart(\''.$formula['ingredient'].'\')" class="fas fa-shopping-cart"></a>'; 
+					  echo '<a href="javascript:addToCart(\''.$formula['ingredient'].'\',\''.$formula['quantity'].'\')" class="fas fa-shopping-cart"></a>'; 
 					  echo '</td></tr>';
 					  $tot[] = calcCosts($ing_q['price'],$formula['quantity'], $formula['concentration'], $ing_q['ml']);
 					  $conc_tot[] = $conc_p;

@@ -186,20 +186,27 @@ if($_GET['formula'] && $_GET['do']){
 	return;
 
 //CART MANAGE
-}elseif($_GET['action'] == 'addToCart' && $_GET['material']){
+}elseif($_GET['action'] == 'addToCart' && $_GET['material'] && $_GET['quantity']){
 	$material = mysqli_real_escape_string($conn, $_GET['material']);
+	$quantity = mysqli_real_escape_string($conn, $_GET['quantity']);
+		
 	$qS = mysqli_fetch_array(mysqli_query($conn, "SELECT supplier, supplier_link FROM ingredients WHERE name = '$material'"));
 	
 	if(empty($qS['supplier_link'])){
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$material.'</strong> cannot be added to cart as missing supplier info. Please update material supply details first.</div>';
 		return;
-	}		
+	}
+	
 	if(mysqli_num_rows(mysqli_query($conn,"SELECT id FROM cart WHERE name = '$material'"))){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$material.'</strong> already in cart</div>';
+		if(mysqli_query($conn, "UPDATE cart SET quantity = quantity + '$quantity' WHERE name = '$material'")){
+			echo '<div class="alert alert-info alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Additional <strong>'.$quantity.'</strong> added to '.$material.'</div>';
+		}else{
+ 			echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error:<strong>'.mysqli_error($conn).'</strong></div>';
+		}
 		return;
 	}
 									
-	if(mysqli_query($conn, "INSERT INTO cart (name,supplier,supplier_link) VALUES ('$material','".$qS['supplier']."','".$qS['supplier_link']."')")){
+	if(mysqli_query($conn, "INSERT INTO cart (name,quantity,supplier,supplier_link) VALUES ('$material','$quantity','".$qS['supplier']."','".$qS['supplier_link']."')")){
 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$material.'</strong> added to cart!</div>';
 		return;
 	}
