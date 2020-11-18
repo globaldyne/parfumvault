@@ -132,7 +132,7 @@ $ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC
 </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <input type="submit" name="button" class="btn btn-primary" id="button" value="Import">
+        <input type="submit" name="button" class="btn btn-primary" id="btnImport" value="Import">
       </div>
      </form>
     </div>
@@ -158,13 +158,15 @@ $ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC
       Ingredients in your database: <strong><?php echo countElement("ingredients",$conn);?></strong>
 </div>
       <div class="dropdown-divider"></div>
+      <div class="modal-body">
       <label>
          <input name="excludeNotes" type="checkbox" id="excludeNotes" value="1" />
         Exclude notes
       </label>
+      </div>
 <div class="modal-footer">
   <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-  <input type="submit" name="button" class="btn btn-primary" id="button" value="Upload">
+  <input type="submit" name="button" class="btn btn-primary" id="btnUpload" value="Upload">
 </div>
      </form>
     </div>
@@ -190,6 +192,7 @@ $('#csv').on('click',function(){
 <?php if($pv_online['email'] && $pv_online['password']){?>
 
 function pv_online_import(items) {
+	$('#btnImport').attr('disabled', true);
 	$('#pvImportMsg').html('<div class="alert alert-info">Please wait...</div>');
 	$.ajax({ 
 		url: 'pages/pvonline.php', 
@@ -200,13 +203,14 @@ function pv_online_import(items) {
 			},
 		dataType: 'html',
 		success: function (data) {
-		 // $('#pv_online_import').modal('toggle');
-		  $('#pvImportMsg').html(data);
+			$('#btnImport').attr('disabled', false);
+		  	$('#pvImportMsg').html(data);
 		}
 	  });
 };
 
 function pv_online_upload(items) {
+	$('#btnUpload').attr('disabled', true);
 	$('#pvUploadMsg').html('<div class="alert alert-info">Please wait...</div>');
 	$.ajax({
 		url: 'pages/pvonline.php', 
@@ -218,7 +222,8 @@ function pv_online_upload(items) {
 			},
 		dataType: 'html',
 		success: function (data) {
-		  $('#pvUploadMsg').html(data);
+			$('#btnUpload').attr('disabled', false);
+		  	$('#pvUploadMsg').html(data);
 		}
 	  });
 };
