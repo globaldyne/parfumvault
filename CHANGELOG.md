@@ -14,6 +14,7 @@
 - ADD: Allergens page improvements
 - ADD: Upload ingredients to PV Online
 - ADD: Quantity of product to purchase in cart page
+- ADD: Add LOG/P in ingredients
 - PRV: Option to exclude notes when uploading ingredients to PV Online
 - CHG: Moving Olfactory Pyramid view to a tab in the formula page
 - FIX: Not showing allergens correctly in label
