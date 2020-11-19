@@ -12,9 +12,7 @@ $(function() {
   width		: 100%;
   height	: 500px;
   font-size	: 11px;
-}		
-
-}	
+}
 </style>
 <script src="js/amcharts_3.21.15.free/amcharts/amcharts.js"></script>
 <script src="js/amcharts_3.21.15.free/amcharts/serial.js"></script>
