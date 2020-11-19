@@ -660,9 +660,9 @@ reload_data();
                     <td width="9%" height="40">Top:</td>
                     <td width="19%"><select name="impact_top" id="impact_top" class="form-control">
                       <option value="none" selected="selected">None</option>
-					  <option value="high" <?php if($ing['impact_top']=="high") echo 'selected="selected"'; ?> >High</option>
-					  <option value="medium" <?php if($ing['impact_top']=="medium") echo 'selected="selected"'; ?> >Medium</option>						
-					  <option value="low" <?php if($ing['impact_top']=="low") echo 'selected="selected"'; ?> >Low</option>						
+					  <option value="100" <?php if($ing['impact_top']=="100") echo 'selected="selected"'; ?> >High</option>
+					  <option value="50" <?php if($ing['impact_top']=="50") echo 'selected="selected"'; ?> >Medium</option>						
+					  <option value="10" <?php if($ing['impact_top']=="10") echo 'selected="selected"'; ?> >Low</option>						
                     </select></td>
                     <td width="72%">&nbsp;</td>
                   </tr>
@@ -670,9 +670,9 @@ reload_data();
                     <td height="40">Heart:</td>
                     <td><select name="impact_heart" id="impact_heart" class="form-control">
                       <option value="none" selected="selected">None</option>
-                      <option value="high" <?php if($ing['impact_heart']=="high") echo 'selected="selected"'; ?> >High</option>
-                      <option value="medium" <?php if($ing['impact_heart']=="medium") echo 'selected="selected"'; ?> >Medium</option>
-                      <option value="low" <?php if($ing['impact_heart']=="low") echo 'selected="selected"'; ?> >Low</option>
+                      <option value="100" <?php if($ing['impact_heart']=="100") echo 'selected="selected"'; ?> >High</option>
+                      <option value="50" <?php if($ing['impact_heart']=="50") echo 'selected="selected"'; ?> >Medium</option>
+                      <option value="10" <?php if($ing['impact_heart']=="10") echo 'selected="selected"'; ?> >Low</option>
                     </select></td>
                     <td>&nbsp;</td>
                   </tr>
@@ -680,9 +680,9 @@ reload_data();
                     <td height="40">Base:</td>
                     <td><select name="impact_base" id="impact_base" class="form-control">
                       <option value="none" selected="selected">None</option>
-                      <option value="high" <?php if($ing['impact_base']=="high") echo 'selected="selected"'; ?> >High</option>
-                      <option value="medium" <?php if($ing['impact_base']=="medium") echo 'selected="selected"'; ?> >Medium</option>
-                      <option value="low" <?php if($ing['impact_base']=="low") echo 'selected="selected"'; ?> >Low</option>
+                      <option value="100" <?php if($ing['impact_base']=="100") echo 'selected="selected"'; ?> >High</option>
+                      <option value="50" <?php if($ing['impact_base']=="50") echo 'selected="selected"'; ?> >Medium</option>
+                      <option value="10" <?php if($ing['impact_base']=="10") echo 'selected="selected"'; ?> >Low</option>
                     </select></td>
                     <td>&nbsp;</td>
                   </tr>
