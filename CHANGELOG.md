@@ -19,6 +19,7 @@
 - FIX: Not showing allergens correctly in label
 - FIX: Message position in Generate Finished Product page
 - FIX: Various bug fixes
+- FIX: A bug caused incorrect error/success messages
 
 ### Version 2.0.7
 - ADD: PV Maker integration (Experimental function)

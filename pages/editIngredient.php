@@ -11,8 +11,7 @@ require_once('../func/searchIFRA.php');
 $ingID = mysqli_real_escape_string($conn, $_GET["id"]);
 
 if($_POST){
-	
-	$ing = mysqli_fetch_array( mysqli_query($conn, "SELECT * FROM ingredients WHERE id = '$ingID'"));
+	$ing = mysqli_fetch_array( mysqli_query($conn, "SELECT * FROM ingredients WHERE name = '$ingID'"));
 
 	$cas = mysqli_real_escape_string($conn, $_POST["cas"]);
 	$fema = mysqli_real_escape_string($conn, $_POST["fema"]);
