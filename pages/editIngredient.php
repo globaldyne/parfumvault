@@ -55,6 +55,9 @@ if($_POST){
 	$cat11B = mysqli_real_escape_string($conn, $_POST["cat11B"]);
 	$cat12 = mysqli_real_escape_string($conn, $_POST["cat12"]);
 	$manufacturer = mysqli_real_escape_string($conn, $_POST["manufacturer"]);
+	$impact_top = mysqli_real_escape_string($conn, $_POST["impact_top"]);
+	$impact_base = mysqli_real_escape_string($conn, $_POST["impact_base"]);
+	$impact_heart = mysqli_real_escape_string($conn, $_POST["impact_heart"]);
 
 	if($_POST["isAllergen"]) {
 		$allergen = '1';
@@ -92,7 +95,7 @@ if($_POST){
 	  }
    }
 
-	if(mysqli_query($conn, "UPDATE ingredients SET cas = '$cas', FEMA = '$fema', type = '$type', strength = '$strength', IFRA = '$IFRA', category='$category', supplier='$supplier', supplier_link='$supplier_link', profile='$profile', price='$price', tenacity='$tenacity', chemical_name='$chemical_name', flash_point='$flash_point', appearance='$appearance', notes='$notes', ml='$ml', odor='$odor', purity='$purity', allergen='$allergen', formula='$formula', flavor_use='$flavor_use', cat1 = '$cat1', cat2 = '$cat2', cat3 = '$cat3', cat4 = '$cat4', cat5A = '$cat5A', cat5B = '$cat5B', cat5C = '$cat5C', cat5D = '$cat5D', cat6 = '$cat6', cat7A = '$cat7A', cat5B = '$cat7B', cat8 = '$cat8', cat9 = '$cat9', cat10A = '$cat10A', cat10B = '$cat10B', cat11A = '$cat11A', cat11B = '$cat11B', cat12 = '$cat12', soluble = '$soluble', logp = '$logp', manufacturer = '$manufacturer' WHERE name='$ingID'")){
+	if(mysqli_query($conn, "UPDATE ingredients SET cas = '$cas', FEMA = '$fema', type = '$type', strength = '$strength', IFRA = '$IFRA', category='$category', supplier='$supplier', supplier_link='$supplier_link', profile='$profile', price='$price', tenacity='$tenacity', chemical_name='$chemical_name', flash_point='$flash_point', appearance='$appearance', notes='$notes', ml='$ml', odor='$odor', purity='$purity', allergen='$allergen', formula='$formula', flavor_use='$flavor_use', cat1 = '$cat1', cat2 = '$cat2', cat3 = '$cat3', cat4 = '$cat4', cat5A = '$cat5A', cat5B = '$cat5B', cat5C = '$cat5C', cat5D = '$cat5D', cat6 = '$cat6', cat7A = '$cat7A', cat5B = '$cat7B', cat8 = '$cat8', cat9 = '$cat9', cat10A = '$cat10A', cat10B = '$cat10B', cat11A = '$cat11A', cat11B = '$cat11B', cat12 = '$cat12', soluble = '$soluble', logp = '$logp', manufacturer = '$manufacturer', impact_top = '$impact_top', impact_heart = '$impact_heart', impact_base = '$impact_base' WHERE name='$ingID'")){
 		
 			$msg.='<div class="alert alert-success alert-dismissible">Ingredient <strong>'.$ing['name'].'</strong> updated!</div>';
 		}else{
@@ -159,6 +162,7 @@ $(document).ready(function() {
 <style>
 .container {
     max-width: 100%;
+	width: 950px;
 }
 #tdData td,
   table.table th {
@@ -263,6 +267,7 @@ reload_data();
       <li><a href="#usage_limits" role="tab" data-toggle="tab"><i class="fa fa-bong"></i> Usage &amp; Limits</a></li>
       <li><a href="#supply" role="tab" data-toggle="tab"><i class="fa fa-shopping-cart"></i> Supply</a></li>
       <li><a href="#tech_data" role="tab" data-toggle="tab"><i class="fa fa-cog"></i> Technical Data</a></li>
+      <li><a href="#note_impact" role="tab" data-toggle="tab"><i class="fa fa-magic"></i> Note Impact</a></li>
       <li><a href="#tech_allergens" role="tab" data-toggle="tab"><i class="fa fa-allergies"></i> Allergens</a></li>
         
       <?php if($settings['pubChem'] == '1' && $ing['cas']){?>
@@ -646,6 +651,43 @@ reload_data();
                             </table>
     
       						</div>
+              
+              <div class="tab-pane fade" id="note_impact">
+              <h3>Note Impact</h3>
+              <hr>
+              <table width="100%" border="0">
+                  <tr>
+                    <td width="9%" height="40">Top:</td>
+                    <td width="19%"><select name="impact_top" id="impact_top" class="form-control">
+                      <option value="none" selected="selected">None</option>
+					  <option value="high" <?php if($ing['impact_top']=="high") echo 'selected="selected"'; ?> >High</option>
+					  <option value="medium" <?php if($ing['impact_top']=="medium") echo 'selected="selected"'; ?> >Medium</option>						
+					  <option value="low" <?php if($ing['impact_top']=="low") echo 'selected="selected"'; ?> >Low</option>						
+                    </select></td>
+                    <td width="72%">&nbsp;</td>
+                  </tr>
+                  <tr>
+                    <td height="40">Heart:</td>
+                    <td><select name="impact_heart" id="impact_heart" class="form-control">
+                      <option value="none" selected="selected">None</option>
+                      <option value="high" <?php if($ing['impact_heart']=="high") echo 'selected="selected"'; ?> >High</option>
+                      <option value="medium" <?php if($ing['impact_heart']=="medium") echo 'selected="selected"'; ?> >Medium</option>
+                      <option value="low" <?php if($ing['impact_heart']=="low") echo 'selected="selected"'; ?> >Low</option>
+                    </select></td>
+                    <td>&nbsp;</td>
+                  </tr>
+                  <tr>
+                    <td height="40">Base:</td>
+                    <td><select name="impact_base" id="impact_base" class="form-control">
+                      <option value="none" selected="selected">None</option>
+                      <option value="high" <?php if($ing['impact_base']=="high") echo 'selected="selected"'; ?> >High</option>
+                      <option value="medium" <?php if($ing['impact_base']=="medium") echo 'selected="selected"'; ?> >Medium</option>
+                      <option value="low" <?php if($ing['impact_base']=="low") echo 'selected="selected"'; ?> >Low</option>
+                    </select></td>
+                    <td>&nbsp;</td>
+                  </tr>
+                </table>
+			  </div>
                             
               <div class="tab-pane fade" id="tech_allergens">
                    <div id="fetch_allergen"><div class="loader"></div></div>
