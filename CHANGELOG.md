@@ -16,6 +16,7 @@
 - ADD: Quantity of product to purchase in cart page
 - ADD: Add LOG/P in ingredients
 - ADD: Advanced note impact in ingredients page
+- ADD: Notes impact in formulas
 - PRV: Option to exclude notes when uploading ingredients to PV Online
 - CHG: Moving Olfactory Pyramid view to a tab in the formula page
 - FIX: Not showing allergens correctly in label

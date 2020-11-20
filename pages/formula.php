@@ -234,6 +234,7 @@ $(document).ready(function() {
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" role="tablist">
           <li class="active"><a href="#main_formula" role="tab" data-toggle="tab"><icon class="fa fa-bong"></icon> Formula</a></li>
+    	  <li><a href="#impact" role="tab" data-toggle="tab"><i class="fa fa-magic"></i> Notes Impact</a></li>
           <li><a href="#pyramid" role="tab" data-toggle="tab"><i class="fa fa-table"></i> Olfactory Pyramid</a></li>
         </ul>
                      
@@ -419,6 +420,12 @@ $(document).ready(function() {
         </div>
       <!--Formula-->
       
+          <div class="tab-pane fade" id="impact">
+            <div class="card-body">
+		        <div id="fetch_impact"><div class="loader"></div></div>
+			</div>            
+          </div>
+      
           <div class="tab-pane fade" id="pyramid">
             <div class="card-body">
 		        <div id="fetch_pyramid"><div class="loader"></div></div>
@@ -524,6 +531,18 @@ $.ajax({
 	dataType: 'html',
     success: function (data) {
 	  $('#fetch_pyramid').html(data);
+    }
+});
+
+$.ajax({ 
+    url: 'pages/impact.php', 
+	type: 'get',
+    data: {
+		id: "<?php echo $fid; ?>"
+		},
+	dataType: 'html',
+    success: function (data) {
+	  $('#fetch_impact').html(data);
     }
 });
 </script>
