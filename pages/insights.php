@@ -31,7 +31,7 @@ while($allIng =  mysqli_fetch_array($ing)){
 ?>
 {
     "ingredient": "<?php echo $allIng['name'];?>",
-    "usage": "<?php getIngUsage($allIng['name'],$dbhost,$dbuser,$dbpass,$dbname); ?>"
+    "usage": "<?php getIngUsage($allIng['name'],$conn); ?>"
 }, 
 <?php } ?>				   
 
