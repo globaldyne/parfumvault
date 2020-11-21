@@ -328,7 +328,7 @@ $(function() {
                 <td colspan="7">
               <div class="card-body">
               <div>
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <table class="table table-bordered" id="tdDataSup" width="100%" cellspacing="0">
                   <thead>
                     <tr class="noBorder">
                     </tr>
@@ -377,7 +377,7 @@ $(function() {
                 <td colspan="8">
                 <div class="card-body">
               <div>
-                <table class="table table-bordered" width="100%" cellspacing="0">
+                <table class="table table-bordered" id="tdDataCat" width="100%" cellspacing="0">
                   <thead>
                     <tr class="noBorder">
                     </tr>
@@ -571,7 +571,7 @@ $(function() {
     </tr>
 </table>
 
-              <table class="table table-bordered" id="tdData" width="100%" cellspacing="0">
+              <table class="table table-bordered" id="tdDataUsers" width="100%" cellspacing="0">
                   <thead>
                     <tr class="noBorder">
                     </tr>
@@ -621,7 +621,7 @@ $(function() {
     <td colspan="9"><?php echo $msg; ?></td>
     </tr>
 </table>
-              <table class="table table-bordered" id="tdData" width="100%" cellspacing="0">
+              <table class="table table-bordered" id="tdDataCustomers" width="100%" cellspacing="0">
                   <thead>
                     <tr class="noBorder">
                     </tr>

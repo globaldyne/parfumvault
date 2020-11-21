@@ -88,7 +88,7 @@ $(document).ready(function() {
   		closeOnBgClick: 'false',
 	});
 	
-    $('#tdData').DataTable({
+    $('#tdData,#tdDataSup,#tdDataCat,#tdDataUsers,#tdDataCustomers').DataTable({
 	    "paging":   true,
 		"info":   true,
 		"lengthMenu": [[20, 35, 60, -1], [20, 35, 60, "All"]]
