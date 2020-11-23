@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 2.0.9
+- ADD: Purity percentage in cart
 - FIX: Show an error in impact and pyramid view if no ingredients
 
 ### Version 2.0.8

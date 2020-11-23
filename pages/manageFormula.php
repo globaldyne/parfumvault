@@ -189,6 +189,8 @@ if($_GET['formula'] && $_GET['do']){
 }elseif($_GET['action'] == 'addToCart' && $_GET['material'] && $_GET['quantity']){
 	$material = mysqli_real_escape_string($conn, $_GET['material']);
 	$quantity = mysqli_real_escape_string($conn, $_GET['quantity']);
+	$purity = mysqli_real_escape_string($conn, $_GET['purity']);
+
 		
 	$qS = mysqli_fetch_array(mysqli_query($conn, "SELECT supplier, supplier_link FROM ingredients WHERE name = '$material'"));
 	
@@ -206,7 +208,7 @@ if($_GET['formula'] && $_GET['do']){
 		return;
 	}
 									
-	if(mysqli_query($conn, "INSERT INTO cart (name,quantity,supplier,supplier_link) VALUES ('$material','$quantity','".$qS['supplier']."','".$qS['supplier_link']."')")){
+	if(mysqli_query($conn, "INSERT INTO cart (name,quantity,purity,supplier,supplier_link) VALUES ('$material','$quantity','$purity','".$qS['supplier']."','".$qS['supplier_link']."')")){
 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$material.'</strong> added to cart!</div>';
 		return;
 	}
