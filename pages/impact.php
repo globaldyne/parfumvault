@@ -7,6 +7,11 @@ require_once('../inc/opendb.php');
 require_once('../func/getIngUsage.php');
 
 $fid = mysqli_real_escape_string($conn, $_GET['id']);
+
+if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulas WHERE fid = '$fid'")) == 0){
+	echo '<div class="alert alert-info alert-dismissible">Incomplete formula.</div>';
+	return;
+}
 ?>
 <style>
 #chartImpact {

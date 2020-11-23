@@ -13,18 +13,9 @@ if(!$_GET['formula']){
 }
 $formula = mysqli_real_escape_string($conn, $_GET['formula']);
 if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM formulas WHERE name = '$formula'")) == 0){
-	die('Formula not found');
+	echo '<div class="alert alert-info alert-dismissible">Incomplete formula.</div>';
+	return;
 }
-/*
-$formula_q = mysqli_query($conn, "SELECT ingredient FROM formulas WHERE name = '$formula'");
-
-
-while ($formula = mysqli_fetch_array($formula_q)) {
-	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT name,profile FROM ingredients WHERE name = '$formula[ingredient]'"));
-	$prf[] = $ing_q['profile'];
-}
-$pyr = array_count_values($prf); 
-*/
 ?>
 
   
