@@ -34,6 +34,29 @@ if($_GET['action'] == 'import' && $_GET['items']){
 		}
 	}
 	
+	    $jAPI = $pvOnlineAPI.'?username='.$pv_online['email'].'&password='.$pv_online['password'].'&do=allergens';
+        $jsonData = json_decode(file_get_contents($jAPI), true);
+
+        if($jsonData['status'] == 'Failed'){
+                echo  '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Invalid credentials or your PV Online account is inactive.</div>';
+                return;
+        }
+
+        $array_data = $jsonData['allergens'];
+        $i = 0;
+        foreach ($array_data as $id=>$row) {
+                $insertPairs = array();
+                foreach ($row as $key=>$val) {
+                        $insertPairs[addslashes($key)] = addslashes($val);
+                }
+                $insertKeys = '`' . implode('`,`', array_keys($insertPairs)) . '`';
+                $insertVals = '"' . implode('","', array_values($insertPairs)) . '"';
+                if(!mysqli_num_rows(mysqli_query($conn, "SELECT name FROM allergens WHERE name = '".$insertPairs['name']."' AND ing = '".$insertPairs['ing']."' "))){
+                        $jsql = "INSERT INTO allergens ({$insertKeys}) VALUES ({$insertVals});";
+                        $qIns.= mysqli_query($conn,$jsql);
+                        $i++;
+                }
+        }
 	
 	if($qIns){
 		echo  '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$i.' ingredients imported!</div>';
