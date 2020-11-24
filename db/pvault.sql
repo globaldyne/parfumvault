@@ -372,6 +372,9 @@ ALTER TABLE `users`
   ADD PRIMARY KEY (`id`);
 
 
+ALTER TABLE `allergens`
+  ADD PRIMARY KEY (`id`);
+
 ALTER TABLE `bottles`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
@@ -415,4 +418,7 @@ ALTER TABLE `settings`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `allergens`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;

@@ -1,6 +1,6 @@
 # CHANGELOG
 ### Version 2.1.1
-
+- FIX: A bug preventing allergens create
 
 ### Version 2.0.9
 - ADD: Purity percentage in cart

@@ -11,7 +11,6 @@ if($_GET['action'] == 'import' && $_GET['items']){
 	$items = trim($_GET['items']);
 	
 	$jAPI = $pvOnlineAPI.'?username='.$pv_online['email'].'&password='.$pv_online['password'].'&do='.$items;
-	
 	$jsonData = json_decode(file_get_contents($jAPI), true);
 	
 	if($jsonData['status'] == 'Failed'){
@@ -34,6 +33,8 @@ if($_GET['action'] == 'import' && $_GET['items']){
 			$i++;
 		}
 	}
+	
+	
 	if($qIns){
 		echo  '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$i.' ingredients imported!</div>';
 	}else{
