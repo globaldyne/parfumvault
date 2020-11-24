@@ -6,7 +6,7 @@ CREATE TABLE `allergens` (
   `ing` varchar(255) COLLATE utf8_bin NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
   `cas` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `percentage` varchar(255) COLLATE utf8_bin NOT NULL
+  `percentage` varchar(255) COLLATE utf8_bin  NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 DROP TABLE IF EXISTS `pv_maker_queue`;

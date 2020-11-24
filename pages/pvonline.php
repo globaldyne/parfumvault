@@ -47,7 +47,7 @@ if($_GET['action'] == 'import' && $_GET['items']){
         foreach ($array_data as $id=>$row) {
                 $insertPairs = array();
                 foreach ($row as $key=>$val) {
-                        $insertPairs[addslashes($key)] = addslashes($val);
+                   $insertPairs[addslashes($key)] = addslashes($val);
                 }
                 $insertKeys = '`' . implode('`,`', array_keys($insertPairs)) . '`';
                 $insertVals = '"' . implode('","', array_values($insertPairs)) . '"';
