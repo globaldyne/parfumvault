@@ -159,10 +159,9 @@ if(($_POST) && $_GET['update'] == 'printer'){
 	$pv_online_email = mysqli_real_escape_string($conn, $_POST['pv_online_email']);
 	$pv_online_pass = mysqli_real_escape_string($conn, $_POST['pv_online_pass']);
 	
- 	$jAPI = $pvOnlineAPI.'?username='.$pv_online_email.'&password='.$pv_online_pass.'&login=1';
-    $jsonData = json_decode(file_get_contents($jAPI), true);
+	$valAcc = pvOnlineValAcc($pvOnlineAPI, $pv_online_email, $pv_online_pass);
 
-    if($jsonData['status'] == 'Failed'){
+    if($valAcc == 'Failed'){
        $msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Invalid credentials or your PV Online account is inactive.</div>';
 	}else{
 		if(mysqli_query($conn, "INSERT pv_online (id,email,password) VALUES ('1','$pv_online_email', '$pv_online_pass') ON DUPLICATE KEY UPDATE id = '1', email = '$pv_online_email', password = '$pv_online_pass'")){
