@@ -1,7 +1,9 @@
 # CHANGELOG
 ### Version 2.1.1
+- ADD: Prevent credentials to be saved if are wrong/inactive for PV Online
 - FIX: A bug preventing allergens create
 - FIX: Allergen import from PV Online
+
 
 ### Version 2.0.9
 - ADD: Purity percentage in cart

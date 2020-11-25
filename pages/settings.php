@@ -158,13 +158,18 @@ if(($_POST) && $_GET['update'] == 'printer'){
 }elseif($_GET['update'] == 'pvonline' && $_POST['pv_online_email'] && $_POST['pv_online_pass']){
 	$pv_online_email = mysqli_real_escape_string($conn, $_POST['pv_online_email']);
 	$pv_online_pass = mysqli_real_escape_string($conn, $_POST['pv_online_pass']);
+	
+ 	$jAPI = $pvOnlineAPI.'?username='.$pv_online_email.'&password='.$pv_online_pass.'&login=1';
+    $jsonData = json_decode(file_get_contents($jAPI), true);
 
-//	if(mysqli_query($conn, "UPDATE pv_online SET email = '$pv_online_email', password = '$pv_online_pass'")){
-	if(mysqli_query($conn, "INSERT pv_online (id,email,password) VALUES ('1','$pv_online_email', '$pv_online_pass') ON DUPLICATE KEY UPDATE id = '1', email = '$pv_online_email', password = '$pv_online_pass'")){
-
-	$msg = '<div class="alert alert-success alert-dismissible">PV Online details updated!</div>';
+    if($jsonData['status'] == 'Failed'){
+       $msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Invalid credentials or your PV Online account is inactive.</div>';
 	}else{
-		$msg = '<div class="alert alert-danger alert-dismissible">Error updating PV Online info: ('.mysqli_error($conn).')</div>';
+		if(mysqli_query($conn, "INSERT pv_online (id,email,password) VALUES ('1','$pv_online_email', '$pv_online_pass') ON DUPLICATE KEY UPDATE id = '1', email = '$pv_online_email', password = '$pv_online_pass'")){
+			$msg = '<div class="alert alert-success alert-dismissible">PV Online details updated!</div>';
+		}else{
+			$msg = '<div class="alert alert-danger alert-dismissible">Error updating PV Online info: ('.mysqli_error($conn).')</div>';
+		}
 	}
 
 //DELETE ACTIONS
