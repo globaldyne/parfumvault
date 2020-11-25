@@ -373,7 +373,7 @@ reload_data();
                                 </tr>
                                 <tr>
                                 <td width="20%">Cat4 Limit %:</td>
-                                <td width="20%">
+                                <td>
                                 <?php
 								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn)){
 										echo $limit;
