@@ -213,7 +213,8 @@ CREATE TABLE `ingredients` (
   `manufacturer` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `impact_top` varchar(10) COLLATE utf8_bin DEFAULT NULL,
   `impact_heart` varchar(10) COLLATE utf8_bin DEFAULT NULL,
-  `impact_base` varchar(10) COLLATE utf8_bin DEFAULT NULL,  
+  `impact_base` varchar(10) COLLATE utf8_bin DEFAULT NULL,
+  `usage_type` varchar(255) COLLATE utf8_bin DEFAULT NULL,    
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 

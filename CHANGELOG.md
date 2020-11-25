@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 2.1.1
+- ADD: Usage level type
 - ADD: Prevent credentials to be saved if are wrong/inactive for PV Online
 - FIX: A bug preventing PubChem pic to show correctly
 - FIX: Purity not showing correctly in cart
