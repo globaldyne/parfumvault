@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 2.1.1
+- ADD: Privacy notice for the PV Online services
 - ADD: Usage level type
 - ADD: Prevent credentials to be saved if are wrong/inactive for PV Online
 - FIX: A bug preventing PubChem pic to show correctly
