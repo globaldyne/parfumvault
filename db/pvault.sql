@@ -6,7 +6,7 @@ CREATE TABLE `allergens` (
   `ing` varchar(255) COLLATE utf8_bin NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
   `cas` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `percentage` varchar(255) COLLATE utf8_bin NOT NULL
+  `percentage` varchar(255) COLLATE utf8_bin  NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 DROP TABLE IF EXISTS `pv_maker_queue`;
@@ -213,7 +213,8 @@ CREATE TABLE `ingredients` (
   `manufacturer` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `impact_top` varchar(10) COLLATE utf8_bin DEFAULT NULL,
   `impact_heart` varchar(10) COLLATE utf8_bin DEFAULT NULL,
-  `impact_base` varchar(10) COLLATE utf8_bin DEFAULT NULL,  
+  `impact_base` varchar(10) COLLATE utf8_bin DEFAULT NULL,
+  `usage_type` varchar(255) COLLATE utf8_bin DEFAULT NULL,    
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
@@ -372,6 +373,9 @@ ALTER TABLE `users`
   ADD PRIMARY KEY (`id`);
 
 
+ALTER TABLE `allergens`
+  ADD PRIMARY KEY (`id`);
+
 ALTER TABLE `bottles`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
@@ -415,4 +419,7 @@ ALTER TABLE `settings`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `allergens`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;

@@ -124,12 +124,15 @@ $ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC
       </div>
       <div class="modal-body">
        <div id="pvImportMsg"></div>
-  <form action="javascript:pv_online_import('ingredients')" method="get" name="form1" target="_self" id="form1">
+  <form action="javascript:pv_online_import('ingredients,allergens')" method="get" name="form1" target="_self" id="form1">
       <strong>WARNING:</strong><br />
       you are about to import data from PV Online, please bear in mind, PV Online is a community driven database therefore may contain unvalidated or incorrect data. <br />
       If your local database contains already an ingredient with the same name, the ingredient data will not be imported. <p></p>
       Ingredients online: <strong><?php echo pvOnlineStats($pvOnlineAPI, $pv_online['email'], $pv_online['password'], 'ingredients');?></strong>
 </div>
+	  <div class="modal-footer_2">
+	  <?php require('privacy_note.php');?>
+      </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
         <input type="submit" name="button" class="btn btn-primary" id="btnImport" value="Import">
@@ -163,6 +166,9 @@ $ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC
          <input name="excludeNotes" type="checkbox" id="excludeNotes" value="1" />
         Exclude notes
       </label>
+      </div>
+	  <div class="modal-footer_2">
+	  <?php require('privacy_note.php');?>
       </div>
 <div class="modal-footer">
   <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>

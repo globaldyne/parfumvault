@@ -58,6 +58,7 @@ if($_POST){
 	$impact_top = mysqli_real_escape_string($conn, $_POST["impact_top"]);
 	$impact_base = mysqli_real_escape_string($conn, $_POST["impact_base"]);
 	$impact_heart = mysqli_real_escape_string($conn, $_POST["impact_heart"]);
+	$usage_type = mysqli_real_escape_string($conn, $_POST["usage_type"]);
 
 	if($_POST["isAllergen"]) {
 		$allergen = '1';
@@ -95,7 +96,7 @@ if($_POST){
 	  }
    }
 
-	if(mysqli_query($conn, "UPDATE ingredients SET cas = '$cas', FEMA = '$fema', type = '$type', strength = '$strength', IFRA = '$IFRA', category='$category', supplier='$supplier', supplier_link='$supplier_link', profile='$profile', price='$price', tenacity='$tenacity', chemical_name='$chemical_name', flash_point='$flash_point', appearance='$appearance', notes='$notes', ml='$ml', odor='$odor', purity='$purity', allergen='$allergen', formula='$formula', flavor_use='$flavor_use', cat1 = '$cat1', cat2 = '$cat2', cat3 = '$cat3', cat4 = '$cat4', cat5A = '$cat5A', cat5B = '$cat5B', cat5C = '$cat5C', cat5D = '$cat5D', cat6 = '$cat6', cat7A = '$cat7A', cat5B = '$cat7B', cat8 = '$cat8', cat9 = '$cat9', cat10A = '$cat10A', cat10B = '$cat10B', cat11A = '$cat11A', cat11B = '$cat11B', cat12 = '$cat12', soluble = '$soluble', logp = '$logp', manufacturer = '$manufacturer', impact_top = '$impact_top', impact_heart = '$impact_heart', impact_base = '$impact_base' WHERE name='$ingID'")){
+	if(mysqli_query($conn, "UPDATE ingredients SET cas = '$cas', FEMA = '$fema', type = '$type', strength = '$strength', IFRA = '$IFRA', category='$category', supplier='$supplier', supplier_link='$supplier_link', profile='$profile', price='$price', tenacity='$tenacity', chemical_name='$chemical_name', flash_point='$flash_point', appearance='$appearance', notes='$notes', ml='$ml', odor='$odor', purity='$purity', allergen='$allergen', formula='$formula', flavor_use='$flavor_use', cat1 = '$cat1', cat2 = '$cat2', cat3 = '$cat3', cat4 = '$cat4', cat5A = '$cat5A', cat5B = '$cat5B', cat5C = '$cat5C', cat5D = '$cat5D', cat6 = '$cat6', cat7A = '$cat7A', cat5B = '$cat7B', cat8 = '$cat8', cat9 = '$cat9', cat10A = '$cat10A', cat10B = '$cat10B', cat11A = '$cat11A', cat11B = '$cat11B', cat12 = '$cat12', soluble = '$soluble', logp = '$logp', manufacturer = '$manufacturer', impact_top = '$impact_top', impact_heart = '$impact_heart', impact_base = '$impact_base', usage_type = '$usage_type' WHERE name='$ingID'")){
 		
 			$msg.='<div class="alert alert-success alert-dismissible">Ingredient <strong>'.$ing['name'].'</strong> updated!</div>';
 		}else{
@@ -372,20 +373,26 @@ reload_data();
                                 </tr>
                                 <tr>
                                 <td width="20%">Cat4 Limit %:</td>
-                                <td width="80%" colspan="3">
+                                <td>
                                 <?php
 								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn)){
 										echo $limit;
 									}else{
 								?>
-                                <input name="IFRA" type="text" class="form-control" id="IFRA" value="<?php echo $ing['IFRA']; ?>">
+                                <input name="IFRA" type="text" class="form-control" id="IFRA" value="<?php echo $ing['IFRA']; ?>"> 
+                                <td width="1%">&nbsp;</td>
+                                <td width="59%"><select name="usage_type" id="usage_type" class="form-control">
+                      <option value="none" selected="selected">None</option>
+					  <option value="1" <?php if($ing['usage_type']=="1") echo 'selected="selected"'; ?> >Recommendation</option>
+					  <option value="2" <?php if($ing['usage_type']=="2") echo 'selected="selected"'; ?> >Restriction</option>						
+                    </select></td>
                                 <?php } ?>
-                                </td>
-                              </tr>
-                                <tr>
-                                  <td><hr /></td>
-                                  <td colspan="3">&nbsp;</td>
+                                <td width="0%"></td>
+
                                 </tr>
+                                <tr>
+                                  <td colspan="4"><hr /></td>
+                                 </tr>
                                 <tr>
                                   <td>Cat1 Limit %:</td>
                                   <td colspan="3"><?php

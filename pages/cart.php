@@ -51,7 +51,7 @@ $.ajax({
                   <tbody id="todo_data">
                     <?php while ($r = mysqli_fetch_array($cart)) { ?>
                     <tr>
-                      <td align="center"><a href="<?php echo $r['supplier_link']; ?>" target="_blank"><?php echo $r['name']; ?></a> <?php if ($r['purity'] != '100.00'){ echo '@'.$r['purity'].'%';}?></td>
+                      <td align="center"><a href="<?php echo $r['supplier_link']; ?>" target="_blank"><?php echo $r['name']; ?></a> <?php if (($r['purity'] != '100.00') && (!is_null($r['purity']))){ echo '@'.$r['purity'].'%';}?></td>
                       <td align="center"><a href="#"><?php echo $r['quantity']; ?></a></td>
 					  <td align="center"><a href="javascript:removeFromCart('<?php echo $r['id'] ?>')" onclick="return confirm('Remove <?php echo $r['name']; ?> from cart?');" class="fas fa-trash"></a></td>
 					  </tr>

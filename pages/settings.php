@@ -158,13 +158,17 @@ if(($_POST) && $_GET['update'] == 'printer'){
 }elseif($_GET['update'] == 'pvonline' && $_POST['pv_online_email'] && $_POST['pv_online_pass']){
 	$pv_online_email = mysqli_real_escape_string($conn, $_POST['pv_online_email']);
 	$pv_online_pass = mysqli_real_escape_string($conn, $_POST['pv_online_pass']);
+	
+	$valAcc = pvOnlineValAcc($pvOnlineAPI, $pv_online_email, $pv_online_pass);
 
-//	if(mysqli_query($conn, "UPDATE pv_online SET email = '$pv_online_email', password = '$pv_online_pass'")){
-	if(mysqli_query($conn, "INSERT pv_online (id,email,password) VALUES ('1','$pv_online_email', '$pv_online_pass') ON DUPLICATE KEY UPDATE id = '1', email = '$pv_online_email', password = '$pv_online_pass'")){
-
-	$msg = '<div class="alert alert-success alert-dismissible">PV Online details updated!</div>';
+    if($valAcc == 'Failed'){
+       $msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Invalid credentials or your PV Online account is inactive.</div>';
 	}else{
-		$msg = '<div class="alert alert-danger alert-dismissible">Error updating PV Online info: ('.mysqli_error($conn).')</div>';
+		if(mysqli_query($conn, "INSERT pv_online (id,email,password) VALUES ('1','$pv_online_email', '$pv_online_pass') ON DUPLICATE KEY UPDATE id = '1', email = '$pv_online_email', password = '$pv_online_pass'")){
+			$msg = '<div class="alert alert-success alert-dismissible">PV Online details updated!</div>';
+		}else{
+			$msg = '<div class="alert alert-danger alert-dismissible">Error updating PV Online info: ('.mysqli_error($conn).')</div>';
+		}
 	}
 
 //DELETE ACTIONS
@@ -247,9 +251,9 @@ $(function() {
           <td colspan="4"><?php echo $msg; ?></td>
           </tr>
         <tr>
-          <td width="10%" height="29">Currency:</td>
+          <td width="9%" height="29">Currency:</td>
           <td colspan="2"><input name="currency" type="text" class="form-control" id="currency" value="<?php echo utf8_encode($settings['currency']);?>"/></td>
-          <td width="74%">&nbsp;</td>
+          <td width="73%">&nbsp;</td>
           </tr>
         <tr>
           <td height="28"><a href="#" rel="tipsy" title="If enabled, ingredients in formula view will be grouped by type. eg: Top,Heart,Base notes">Group Formula:</a></td>
@@ -262,10 +266,10 @@ $(function() {
           <td>&nbsp;</td>
         </tr>
         <tr>
-          <td height="32"><a href="#" rel="tipsy" title="Auto check for new PV version. If enabled, your ip, current PV version and browser details will be send to our servers but will not be stored.">Check for updates:</a></td>
-          <td colspan="2"><input name="chkVersion" type="checkbox" id="chkVersion" value="1" <?php if($settings['chkVersion'] == '1'){ ?> checked="checked" <?php } ?>/></td>
-          <td>&nbsp;</td>
-        </tr>
+          <td height="32"><a href="#" rel="tipsy" title="Auto check for new PV version. If enabled, your ip, current PV version and browser info will be send to our servers and or GitHub servers. Please make sure you have read our and GitHub's T&C and Privacy Policy before enable this.">Check for updates:</a></td>
+          <td colspan="3"><input name="chkVersion" type="checkbox" id="chkVersion" value="1" <?php if($settings['chkVersion'] == '1'){ ?> checked="checked" <?php } ?>/>
+            <?php require('privacy_note.php');?></td>
+          </tr>
         <tr>
           <td height="32"><a href="#" rel="tipsy" title="If enabled, formula will display the chemical names of ingredients, where available, instead of the commercial name">Chem. names</a></td>
           <td colspan="2"><input name="chem_vs_brand" type="checkbox" id="chem_vs_brand" value="1" <?php if($settings['chem_vs_brand'] == '1'){ ?> checked="checked" <?php } ?>/></td>
@@ -281,8 +285,8 @@ $(function() {
         </tr>
         <tr>
           <td>Top notes:</td>
-          <td width="9%"><input name="top_n" type="text" class="form-control" id="top_n" value="<?php echo $settings['top_n'];?>"/></td>
-          <td width="10%">%</td>
+          <td width="17%"><input name="top_n" type="text" class="form-control" id="top_n" value="<?php echo $settings['top_n'];?>"/></td>
+          <td width="1%">%</td>
           <td>&nbsp;</td>
         </tr>
         <tr>
@@ -752,6 +756,10 @@ $(function() {
           <tr>
             <td height="31"><a href="https://online.jbparfum.com/forgotpass.php" target="_blank">Forgot Password?</a></td>
             <td>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td colspan="2"><?php require('privacy_note.php');?></td>
             <td>&nbsp;</td>
           </tr>
           <tr>
