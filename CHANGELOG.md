@@ -1,4 +1,7 @@
 # CHANGELOG
+### Version 2.1.2
+- ADD: Making formula page aSync
+
 ### Version 2.1.1
 - ADD: Privacy notice for the PV Online services
 - ADD: Usage level type
