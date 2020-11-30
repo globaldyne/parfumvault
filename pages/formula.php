@@ -137,23 +137,19 @@ $(document).ready(function(){
 
 $('#csv').on('click',function(){
   $("#formula").tableHTMLExport({
-	type:'csv',
-	filename:'<?php echo $f_name; ?>.csv',
-	separator: ',',
-  	newline: '\r\n',
-  	trimContent: true,
-  	quoteFields: true,
-	
-	ignoreColumns: '.noexport',
-  	ignoreRows: '.noexport',
-	
-	htmlContent: false,
-  
-  	// debug
-  	consoleLog: true   
-});
- 
-
+		type:'csv',
+		filename:'<?php echo $f_name; ?>.csv',
+		separator: ',',
+		newline: '\r\n',
+		trimContent: true,
+		quoteFields: true,
+		
+		ignoreColumns: '.noexport',
+		ignoreRows: '.noexport',
+		htmlContent: false,
+		// debug
+		consoleLog: true   
+   });
 })
 
 function fetch_formula(){
@@ -164,34 +160,42 @@ $.ajax({
 		id: "<?php echo $fid; ?>"
 		},
 	dataType: 'html',
-    success: function (data) {
-	  $('#fetch_formula').html(data);
-    }
-});
+		success: function (data) {
+			$('#fetch_formula').html(data);
+		}
+	});
 }
+
 fetch_formula();
 
-$.ajax({ 
-    url: 'pages/viewPyramid.php', 
-	type: 'get',
-    data: {
-		formula: "<?php echo $f_name; ?>"
-		},
-	dataType: 'html',
-    success: function (data) {
-	  $('#fetch_pyramid').html(data);
-    }
-});
+function fetch_pyramid(){
+	$.ajax({ 
+		url: 'pages/viewPyramid.php', 
+		type: 'get',
+		data: {
+			formula: "<?php echo $f_name; ?>"
+			},
+		dataType: 'html',
+		success: function (data) {
+		  $('#fetch_pyramid').html(data);
+		}
+	});
+}
 
-$.ajax({ 
-    url: 'pages/impact.php', 
-	type: 'get',
-    data: {
-		id: "<?php echo $fid; ?>"
-		},
-	dataType: 'html',
-    success: function (data) {
-	  $('#fetch_impact').html(data);
-    }
-});
+fetch_pyramid();
+
+function fetch_impact(){
+	$.ajax({ 
+		url: 'pages/impact.php', 
+		type: 'get',
+		data: {
+			id: "<?php echo $fid; ?>"
+			},
+		dataType: 'html',
+		success: function (data) {
+		  $('#fetch_impact').html(data);
+		}
+	});
+}
+fetch_impact();
 </script>

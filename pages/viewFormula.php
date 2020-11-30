@@ -129,6 +129,8 @@ $.ajax({
     success: function (data) {
 	  	$('#msgInfo').html(data);
 		fetch_formula();
+		fetch_impact();
+		fetch_pyramid();
     }
   });
 
@@ -153,7 +155,8 @@ $.ajax({
 		}else{
 			$('#msgInfo').html(data);
 			fetch_formula();
-
+			fetch_impact();
+			fetch_pyramid();
 		}
     }
   });
