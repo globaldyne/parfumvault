@@ -12,6 +12,7 @@ require_once('../func/checkIng.php');
 require_once('../func/searchIFRA.php');
 require_once('../func/goShopping.php');
 require_once('../func/ml2L.php');
+require_once('../func/countElement.php');
 
 $fid = mysqli_real_escape_string($conn, $_GET['id']);
 $f_name = base64_decode($fid);
@@ -173,7 +174,6 @@ $.ajax({
 			$('#msgInfo').html(data); 
 		}else{
 			$('#msgInfo').html(data);
-			//location.reload();
 		}
     }
   });
@@ -197,7 +197,6 @@ function addTODO() {
 };
 
 //Change ingredient
-$(document).ready(function(){
 $('#ingredient').on('change', function(){
 
 $.ajax({ 
@@ -235,12 +234,9 @@ $('.replaceIngredient').editable({
 		}else{
 			$('#msgInfo').html(data);
 			fetch_formula();
-	//		location.reload();
 		}
 	}
     });
-});
-
 
  
 </script>
@@ -378,7 +374,11 @@ $(document).ready(function(){
   type: "POST",
   dataType: 'json',
       success: function(response, newValue) {
-        if(response.status == 'error') return response.msg; else location.reload();
+        if(response.status == 'error'){
+			return response.msg; 
+		}else{ 
+			fetch_formula();
+		}
     },
   validate: function(value){
    if($.trim(value) == ''){
@@ -398,7 +398,11 @@ $(document).ready(function(){
   type: "POST",
   dataType: 'json',
         success: function(response, newValue) {
-        if(response.status == 'error') return response.msg; else location.reload();
+        if(response.status == 'error'){
+			return response.msg; 
+		}else{
+			fetch_formula();
+		}
     },
   validate: function(value){
    if($.trim(value) == ''){

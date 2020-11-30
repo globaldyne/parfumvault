@@ -4,12 +4,7 @@ require('../inc/sec.php');
 require_once('../inc/config.php');
 require_once('../inc/opendb.php');
 require_once('../inc/settings.php');
-/*
-$req_dump = print_r($_REQUEST, TRUE);
-$fp = fopen('../logs/pvault.log', 'a');
-fwrite($fp, $req_dump);
-fclose($fp);
-*/
+
 //DIVIDE - MULTIPLY
 if($_GET['formula'] && $_GET['do']){
 	$formula = mysqli_real_escape_string($conn, $_GET['formula']);
@@ -103,18 +98,13 @@ if($_GET['formula'] && $_GET['do']){
 	$newName = $fname.' - (Copy)';
 	$newFid = base64_encode($newName);
 		if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulasMetaData WHERE fid = '$newFid'"))){
-			echo '<div class="alert alert-danger alert-dismissible">
-				<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-  				<strong>Error: </strong>'.$newName.' already exists, please remove or rename it first!</div>';
+			echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$newName.' already exists, please remove or rename it first!</div>';
 		}else{
 			$sql.=mysqli_query($conn, "INSERT INTO formulasMetaData (fid, name, notes, profile, image, sex) SELECT '$newFid', '$newName', notes, profile, image, sex FROM formulasMetaData WHERE fid = '$fid'");
 			$sql.=mysqli_query($conn, "INSERT INTO formulas (fid, name, ingredient, ingredient_id, concentration, dilutant, quantity) SELECT '$newFid', '$newName', ingredient, ingredient_id, concentration, dilutant, quantity FROM formulas WHERE fid = '$fid'");
 		}
 	if($sql){
-		echo '<div class="alert alert-success alert-dismissible">
-			<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-			'.$fname.' cloned as '.$newName.'!
-			</div>';
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$fname.' cloned as <a href="?do=Formula&name='.$newName.'" target="_blanc">'.$newName.'</a>!</div>';
 	}
 	
 	
