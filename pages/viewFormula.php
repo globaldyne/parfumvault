@@ -46,42 +46,7 @@ $top_calc = calcPerc($f_name, 'Top', $settings['top_n'], $conn);
 $heart_calc = calcPerc($f_name, 'Heart', $settings['heart_n'], $conn);
 $base_calc = calcPerc($f_name, 'Base', $settings['base_n'], $conn);
 ?>
-  <link href="../css/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-
-  <link href="../css/sb-admin-2.css" rel="stylesheet">
-  
-  <link href="../css/bootstrap-select.min.css" rel="stylesheet">
-  <link href="../css/bootstrap-editable.css" rel="stylesheet">
-
-  <script src="../js/jquery/jquery.min.js"></script>
-
-  <script src="../js/tableHTMLExport.js"></script>
-	
-  <script src="../js/jspdf.min.js"></script>
-  <script src="../js/jspdf.plugin.autotable.js"></script>
-    
-  <script src="../js/bootstrap.min.js"></script>
-  
-  <link rel="stylesheet" type="text/css" href="../css/datatables.min.css"/>
-  <script type="text/javascript" src="../js/datatables.min.js"></script>
-  
-  <script src="../js/magnific-popup.js"></script>
  
-  <link href="../css/bootstrap.min.css" rel="stylesheet">
-  
-  <script src="../js/bootstrap-select.js"></script>
-  <script src="../js/bootstrap-editable.js"></script>
-  
-  <script src='../js/tipsy.js'></script>
-  <script src="../js/jquery-ui.js"></script>
-  
-  <link href="../css/jquery-ui.css" rel="stylesheet">
-  <link href="../css/tipsy.css" rel="stylesheet" />
-  
-  <link href="../css/magnific-popup.css" rel="stylesheet" />
-
-  <link href="../css/vault.css" rel="stylesheet">
-  
 <script type='text/javascript'>
 $(document).ready(function() {
 	$('a[rel=tipsy]').tipsy();
@@ -108,7 +73,7 @@ $.ajax({
 		},
 	dataType: 'html',
     success: function (data) {
-	  $('#msg').html(data);
+	  $('#msgInfo').html(data);
     }
   });
 };
@@ -125,7 +90,7 @@ function manageQuantity(quantity) {
 		},
 	dataType: 'html',
     success: function (data) {
-	  	$('#msg').html(data);
+	  	$('#msgInfo').html(data);
 		fetch_formula();
     }
   });
@@ -145,7 +110,7 @@ $.ajax({
 		},
 	dataType: 'html',
     success: function (data) {
-	  	$('#msg').html(data);
+	  	$('#msgInfo').html(data);
 		fetch_formula();
     }
   });
@@ -167,9 +132,9 @@ $.ajax({
 	dataType: 'html',
     success: function (data) {
         if ( data.indexOf("Error") > -1 ) {
-			$('#msg').html(data); 
+			$('#msgInfo').html(data); 
 		}else{
-			$('#msg').html(data);
+			$('#msgInfo').html(data);
 			fetch_formula();
 
 		}
@@ -189,9 +154,9 @@ $.ajax({
 	dataType: 'html',
     success: function (data) {
         if ( data.indexOf("Error") > -1 ) {
-			$('#msg').html(data); 
+			$('#msgInfo').html(data); 
 		}else{
-			$('#msg').html(data);
+			$('#msgInfo').html(data);
 			//location.reload();
 		}
     }
@@ -210,7 +175,7 @@ function addTODO() {
 		},
 	dataType: 'html',
     success: function (data) {
-	  	$('#msg').html(data);
+	  	$('#msgInfo').html(data);
     }
   });
 };
@@ -250,9 +215,9 @@ $('.replaceIngredient').editable({
 	dataType: 'html',
     success: function (data) {
         if ( data.indexOf("Error") > -1 ) {
-			$('#msg').html(data); 
+			$('#msgInfo').html(data); 
 		}else{
-			$('#msg').html(data);
+			$('#msgInfo').html(data);
 			fetch_formula();
 	//		location.reload();
 		}

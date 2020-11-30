@@ -19,26 +19,7 @@ $base_calc = calcPerc($f_name, 'Base', $settings['base_n'], $conn);
 
 ?>
 <script>
-function printLabel() {
-	<?php if(empty($settings['label_printer_addr']) || empty($settings['label_printer_model'])){?>
-	$("#msg").html('<div class="alert alert-danger alert-dismissible">Please configure printer details in <a href="/?do=settings">settings<a> page</div>');
-	<?php }else{ ?>
-	$("#msg").html('<div class="alert alert-info alert-dismissible">Printing...</div>');
 
-$.ajax({ 
-    url: 'pages/manageFormula.php', 
-	type: 'get',
-    data: {
-		action: "printLabel",
-		name: "<?php echo $f_name; ?>"
-		},
-	dataType: 'html',
-    success: function (data) {
-	  $('#msg').html(data);
-    }
-  });
-	<?php } ?>
-};
 //MULTIPLY - DIVIDE
 function manageQuantity(quantity) {
 	$.ajax({ 
@@ -51,7 +32,7 @@ function manageQuantity(quantity) {
 	dataType: 'html',
     success: function (data) {
 		location.reload();
-	  	//$('#msg').html(data);
+	  	//$('#msgInfo').html(data);
     }
   });
 
@@ -71,7 +52,7 @@ $.ajax({
 	dataType: 'html',
     success: function (data) {
 		location.reload();
-	  	$('#msg').html(data);
+	  	$('#msgInfo').html(data);
     }
   });
 
@@ -92,9 +73,9 @@ $.ajax({
 	dataType: 'html',
     success: function (data) {
         if ( data.indexOf("Error") > -1 ) {
-			$('#msg').html(data); 
+			$('#msgInfo').html(data); 
 		}else{
-			$('#msg').html(data);
+			$('#msgInfo').html(data);
 			location.reload();
 		}
     }
@@ -113,9 +94,9 @@ $.ajax({
 	dataType: 'html',
     success: function (data) {
         if ( data.indexOf("Error") > -1 ) {
-			$('#msg').html(data); 
+			$('#msgInfo').html(data); 
 		}else{
-			$('#msg').html(data);
+			$('#msgInfo').html(data);
 			//location.reload();
 		}
     }
@@ -134,7 +115,7 @@ function addTODO() {
 		},
 	dataType: 'html',
     success: function (data) {
-	  	$('#msg').html(data);
+	  	$('#msgInfo').html(data);
     }
   });
 };
@@ -174,9 +155,9 @@ $('.replaceIngredient').editable({
 	dataType: 'html',
     success: function (data) {
         if ( data.indexOf("Error") > -1 ) {
-			$('#msg').html(data); 
+			$('#msgInfo').html(data); 
 		}else{
-			$('#msg').html(data);
+			$('#msgInfo').html(data);
 			location.reload();
 		}
 	}
@@ -242,7 +223,7 @@ $(document).ready(function() {
           <div class="tab-pane fade active in tab-content" id="main_formula">
 
             <div class="card-body">
-           <div id="msg"></div>
+           <div id="msgInfo"></div>
               <div>
                   <tr>
                     <th colspan="6">
@@ -255,13 +236,6 @@ $(document).ready(function() {
                                          <?php
 										 	$res_ing = mysqli_query($conn, "SELECT id, name, profile, chemical_name FROM ingredients ORDER BY name ASC");
 										 	while ($r_ing = mysqli_fetch_array($res_ing)){
-												/*
-												if($settings['chem_vs_brand'] == '1'){
-													if($r_ing['chemical_name']){
-														$r_ing['name'] = $r_ing['chemical_name'];
-													}
-												}
-												*/
 												echo '<option value="'.$r_ing['name'].'">'.$r_ing['name'].' ('.$r_ing['profile'].')</option>';
 											}
 										 ?>
