@@ -164,42 +164,6 @@ $('.replaceIngredient').editable({
     });
 });
 
-$(document).ready(function() {
-    var groupColumn = 0;
-    var table = $('#formula').DataTable({
-        "columnDefs": [
-            { "visible": false, "targets": groupColumn }
-        ],
-        "order": [[ groupColumn, 'desc' ]],
-        "displayLength": 50,
-        "drawCallback": function ( settings ) {
-            var api = this.api();
-            var rows = api.rows( {page:'current'} ).nodes();
-            var last=null;
- 
-            api.column(groupColumn, {page:'current'} ).data().each( function ( group, i ) {
-                if ( last !== group ) {
-                    $(rows).eq( i ).before(
-                        '<tr class="group noexport"><td colspan="9">'+group+' Notes</td></tr>'
-                    );
- 
-                    last = group;
-                }
-            } );
-        }
-    } );
- 
-    // Order by the grouping
-    $('#formula tbody').on( 'click', 'tr.group', function () {
-        var currentOrder = table.order()[0];
-        if ( currentOrder[0] === groupColumn && currentOrder[1] === 'asc' ) {
-            table.order( [ groupColumn, 'desc' ] ).draw();
-        }
-        else {
-            table.order( [ groupColumn, 'asc' ] ).draw();
-        }
-    } );
-} );
  
 </script>
 <div id="content-wrapper" class="d-flex flex-column">
