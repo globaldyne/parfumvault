@@ -14,7 +14,7 @@ if($_GET['do'] == 'db_update'){
 	$sql = __ROOT__.'/db/updates/update_'.$c_ver.'-'.$n_ver.'.sql';
 		
 	if(file_exists($sql) == FALSE){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Missing update file!</strong>Please make sure file '.$sql.' exists and in the right path.</div>';
+		echo '<div class="alert alert-danger"><strong>Missing update file!</strong> Please make sure file '.$sql.' exists and in the right path.</div>';
 		return;
 	}
 	
