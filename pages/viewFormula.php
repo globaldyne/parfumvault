@@ -29,6 +29,7 @@ require_once('../func/countPending.php');
 require_once('../func/countCart.php');
 
 $fid = mysqli_real_escape_string($conn, $_GET['id']);
+$f_name = base64_decode($fid);
 
 if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulas WHERE fid = '$fid'")) == 0){
 	echo '<div class="alert alert-info alert-dismissible">Incomplete formula.</div>';
@@ -38,8 +39,8 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulas WHERE fid = '$f
 $formula_q = mysqli_query($conn, "SELECT * FROM formulas WHERE fid = '$fid' ORDER BY ingredient ASC");
                     
 
-$mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE name = '$f_name'"));
-$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE name = '$f_name'"));
+$mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE fid = '$fid'"));
+$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE fid = '$fid'"));
 
 $top_calc = calcPerc($f_name, 'Top', $settings['top_n'], $conn);
 $heart_calc = calcPerc($f_name, 'Heart', $settings['heart_n'], $conn);
@@ -124,8 +125,8 @@ function manageQuantity(quantity) {
 		},
 	dataType: 'html',
     success: function (data) {
-		//location.reload();
-	  	//$('#msg').html(data);
+	  	$('#msg').html(data);
+		fetch_formula();
     }
   });
 
@@ -144,8 +145,8 @@ $.ajax({
 		},
 	dataType: 'html',
     success: function (data) {
-		location.reload();
 	  	$('#msg').html(data);
+		fetch_formula();
     }
   });
 
@@ -169,7 +170,8 @@ $.ajax({
 			$('#msg').html(data); 
 		}else{
 			$('#msg').html(data);
-			location.reload();
+			fetch_formula();
+
 		}
     }
   });
@@ -251,7 +253,8 @@ $('.replaceIngredient').editable({
 			$('#msg').html(data); 
 		}else{
 			$('#msg').html(data);
-			location.reload();
+			fetch_formula();
+	//		location.reload();
 		}
 	}
     });
