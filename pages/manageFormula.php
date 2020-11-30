@@ -87,22 +87,12 @@ if($_GET['formula'] && $_GET['do']){
 
 			
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT ingredient FROM formulas WHERE ingredient = '$ingredient' AND name = '$fname'"))){
-		echo '<div class="alert alert-danger alert-dismissible">
-		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-  		<strong>Error: </strong>'.$ingredient.' already exists in formula!
-		'.mysqli_error($conn).'
-		</div>';
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$ingredient.' already exists in formula!</div>';
 	}else{
 		if(mysqli_query($conn, "UPDATE formulas SET ingredient = '$ingredient' WHERE ingredient = '$oldIngredient' AND name = '$fname'")){
-			echo '<div class="alert alert-success alert-dismissible">
-					<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-					'.$oldIngredient.' replaced with '.ingredient.'!
-					</div>';
+			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$oldIngredient.' replaced with '.$ingredient.'!</div>';
 		}else{
-			echo '<div class="alert alert-danger alert-dismissible">
-					<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-					Error replacing '.$oldIngredient.mysqli_error($conn).'!
-					</div>';
+			echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error replacing '.$oldIngredient.'</div>';
 		}
 	}
 
