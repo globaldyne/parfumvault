@@ -11,9 +11,9 @@ require_once('../func/searchIFRA.php');
 
 if($_POST['name']){
 	
-	$name = mysqli_real_escape_string($conn, $_POST["name"]);
-	$cas = mysqli_real_escape_string($conn, $_POST["cas"]);
-	$fema = mysqli_real_escape_string($conn, $_POST["fema"]);
+	$name = trim(mysqli_real_escape_string($conn, $_POST["name"]));
+	$cas = trim(mysqli_real_escape_string($conn, $_POST["cas"]));
+	$fema = trim(mysqli_real_escape_string($conn, $_POST["fema"]));
 
 	$type = mysqli_real_escape_string($conn, $_POST["type"]);
 	$strength = mysqli_real_escape_string($conn, $_POST["strength"]);
@@ -30,7 +30,7 @@ if($_POST['name']){
 	$appearance = mysqli_real_escape_string($conn, $_POST["appearance"]);
 	$ml = mysqli_real_escape_string($conn, $_POST["ml"]);
 	$notes = mysqli_real_escape_string($conn, $_POST["notes"]);
-	$odor = mysqli_real_escape_string($conn, $_POST["odor"]);
+	$odor = trim(mysqli_real_escape_string($conn, $_POST["odor"]));
 	$purity = mysqli_real_escape_string($conn, $_POST["purity"]);
 
 	if($_POST["isAllergen"]) {

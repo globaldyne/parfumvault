@@ -13,8 +13,8 @@ $ingID = mysqli_real_escape_string($conn, $_GET["id"]);
 if($_POST){
 	$ing = mysqli_fetch_array( mysqli_query($conn, "SELECT * FROM ingredients WHERE name = '$ingID'"));
 
-	$cas = mysqli_real_escape_string($conn, $_POST["cas"]);
-	$fema = mysqli_real_escape_string($conn, $_POST["fema"]);
+	$cas = trim(mysqli_real_escape_string($conn, $_POST["cas"]));
+	$fema = trim(mysqli_real_escape_string($conn, $_POST["fema"]));
 
 	$type = mysqli_real_escape_string($conn, $_POST["type"]);
 	$strength = mysqli_real_escape_string($conn, $_POST["strength"]);
@@ -30,8 +30,8 @@ if($_POST){
 	$flash_point = mysqli_real_escape_string($conn, $_POST["flash_point"]);
 	$appearance = mysqli_real_escape_string($conn, $_POST["appearance"]);
 	$ml = mysqli_real_escape_string($conn, $_POST["ml"]);
-	$odor = mysqli_real_escape_string($conn, $_POST["odor"]);
-	$notes = mysqli_real_escape_string($conn, $_POST["notes"]);
+	$odor = ucfirst(trim(mysqli_real_escape_string($conn, $_POST["odor"])));
+	$notes = ucfirst(trim(mysqli_real_escape_string($conn, $_POST["notes"])));
 	$purity = mysqli_real_escape_string($conn, $_POST["purity"]);
 	$soluble = mysqli_real_escape_string($conn, $_POST["soluble"]);
 	$logp = mysqli_real_escape_string($conn, $_POST["logp"]);
