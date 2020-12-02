@@ -27,21 +27,8 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulas WHERE fid = '$fi
 
 <script src="../js/amcharts_3.21.15.free/amcharts/plugins/export/export.min.js"></script>
 <link rel="stylesheet" href="../js/amcharts_3.21.15.free/amcharts/plugins/export/export.css" type="text/css" media="all" /> 
-<script>
-function replaceBulk( str, findArray, replaceArray ){
-  var i, regex = [], map = {}; 
-  for( i=0; i<findArray.length; i++ ){ 
-    regex.push( findArray[i].replace(/([-[\]{}()*+?.\\^$|#,])/g,'\\$1') );
-    map[findArray[i]] = replaceArray[i]; 
-  }
-  regex = regex.join('|');
-  str = str.replace( new RegExp( regex, 'g' ), function(matched){
-    return map[matched];
-  });
-  return str;
-}
 
-//console.log( replaceBulk("10", ['10','50','100'],['low','medium','high']) );
+<script>
 
 var chart = AmCharts.makeChart( "chartImpact", {
   "type": "serial",
@@ -49,6 +36,8 @@ var chart = AmCharts.makeChart( "chartImpact", {
   "dataProvider": [ 
 <?php
 $ing = mysqli_query($conn, "SELECT ingredient AS name FROM formulas WHERE fid = '$fid' ORDER BY ingredient ASC");
+
+
 while($allIng =  mysqli_fetch_array($ing)){
 ?>
 {
