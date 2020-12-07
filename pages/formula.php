@@ -79,15 +79,13 @@ $base_calc = calcPerc($f_name, 'Base', $settings['base_n'], $conn);
                       </form>
                     </th>
                     </tr>
-                 <?php if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulas WHERE fid = '$fid'"))){?>
-                
+               
                 <div id="fetch_formula"><div class="loader"></div></div>
                 
                 <div>
                 <p></p>
                 <p>*Values in: <strong class="alert alert-danger">red</strong> exceeds usage level,   <strong class="alert alert-warning">yellow</strong> have no usage level set,   <strong class="alert alert-success">green</strong> are within usage level</p>
                 </div>
-                <?php } ?>
             </div>
           </div>
         </div>
@@ -111,8 +109,22 @@ $base_calc = calcPerc($f_name, 'Base', $settings['base_n'], $conn);
    </div>
   </div>
 <script type="text/javascript" language="javascript" >
-$(document).ready(function(){
- 
+//$(document).ready(function(){
+ //UPDATE PURITY
+$('#ingredient').on('change', function(){
+$.ajax({ 
+    url: 'pages/getIngInfo.php', 
+	type: 'get',
+    data: {
+		filter: "purity",
+		name: $(this).val()
+		},
+	dataType: 'html',
+    success: function (data) {
+	  $('#concentration').val(data);
+    }
+  });									   
+});
  //DILUTION
  $('#formula_data').editable({
 	container: 'body',
@@ -133,7 +145,33 @@ $(document).ready(function(){
     
     });
 
-});
+//});
+//Add ingredient
+function addING(ingName,ingID) {	  
+$.ajax({ 
+    url: 'pages/manageFormula.php', 
+	type: 'get',
+    data: {
+		action: "addIng",
+		fname: "<?php echo $f_name; ?>",
+		quantity: $("#quantity").val(),
+		concentration: $("#concentration").val(),
+		ingredient: $("#ingredient").val(),
+		dilutant: $("#dilutant").val()
+		},
+	dataType: 'html',
+    success: function (data) {
+        if ( data.indexOf("Error") > -1 ) {
+			$('#msgInfo').html(data); 
+		}else{
+			$('#msgInfo').html(data);
+			fetch_formula();
+			fetch_impact();
+			fetch_pyramid();
+		}
+    }
+  });
+};
 
 $('#csv').on('click',function(){
   $("#formula").tableHTMLExport({

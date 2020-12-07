@@ -18,7 +18,7 @@ $fid = mysqli_real_escape_string($conn, $_GET['id']);
 $f_name = base64_decode($fid);
 
 if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulas WHERE fid = '$fid'")) == 0){
-	echo '<div class="alert alert-info alert-dismissible">Incomplete formula.</div>';
+	echo '<div class="alert alert-info alert-dismissible">Incomplete formula. Please add ingredients.</div>';
 	return;
 }
 
@@ -135,33 +135,7 @@ $.ajax({
   });
 
 };
-//Add ingredient
-function addING(ingName,ingID) {	  
-$.ajax({ 
-    url: 'pages/manageFormula.php', 
-	type: 'get',
-    data: {
-		action: "addIng",
-		fname: "<?php echo $f_name; ?>",
-		quantity: $("#quantity").val(),
-		concentration: $("#concentration").val(),
-		ingredient: $("#ingredient").val(),
-		dilutant: $("#dilutant").val()
-		},
-	dataType: 'html',
-    success: function (data) {
-        if ( data.indexOf("Error") > -1 ) {
-			$('#msgInfo').html(data); 
-		}else{
-			$('#msgInfo').html(data);
-			fetch_formula();
-			fetch_impact();
-			fetch_pyramid();
-		}
-    }
-  });
 
-};
 //Clone
 function cloneMe() {	  
 $.ajax({ 
@@ -199,23 +173,9 @@ function addTODO() {
   });
 };
 
+
+
 //Change ingredient
-$('#ingredient').on('change', function(){
-
-$.ajax({ 
-    url: 'pages/getIngInfo.php', 
-	type: 'get',
-    data: {
-		filter: "purity",
-		name: $(this).val()
-		},
-	dataType: 'html',
-    success: function (data) {
-	  $('#concentration').val(data);
-    }
-  });									   
-})
-
 $('.replaceIngredient').editable({
 	//value: "",
 	type: 'get',
