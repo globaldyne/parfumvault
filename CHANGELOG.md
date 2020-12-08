@@ -2,6 +2,7 @@
 ### Version 2.1.2
 - ADD: Making formula page aSync
 - FIX: Formula not showning properly when new
+- FIX: Modal window close on bg click
 
 ### Version 2.1.1
 - ADD: Privacy notice for the PV Online services

@@ -5,6 +5,13 @@ require_once('../inc/config.php');
 require_once('../inc/opendb.php');
 require_once('../inc/settings.php');
 
+//AMOUNT TO MAKE
+if($_GET['fid'] && $_GET['jitter'] && $_GET['amount']){
+
+return;
+}
+
+
 //DIVIDE - MULTIPLY
 if($_GET['formula'] && $_GET['do']){
 	$formula = mysqli_real_escape_string($conn, $_GET['formula']);

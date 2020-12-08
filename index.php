@@ -84,8 +84,9 @@ $(document).ready(function() {
 	
 	$('.popup-link').magnificPopup({
 		type: 'iframe',
-  		showCloseBtn: 'true',
-  		closeOnBgClick: 'false',
+  		closeOnContentClick: false,
+		closeOnBgClick: false,
+  		showCloseBtn: true,
 	});
 	
     $('#tdData,#tdDataSup,#tdDataCat,#tdDataUsers,#tdDataCustomers').DataTable({

@@ -75,8 +75,13 @@ $(document).ready(function() {
 	
 	$('.popup-link').magnificPopup({
 		type: 'iframe',
-  		showCloseBtn: 'true',
-  		closeOnBgClick: 'false',
+		closeOnContentClick: false,
+		closeOnBgClick: false,
+  		showCloseBtn: true,
+	});
+	$(document).on('click', '.popup-modal-dismiss', function (e) {
+		e.preventDefault();
+		$.magnificPopup.close();
 	});
 
 });  
@@ -111,9 +116,26 @@ function manageQuantity(quantity) {
 		fetch_formula();
     }
   });
-
 };
 
+//AMOUNT TO MAKE
+function amountToMake() {
+	$.ajax({ 
+    url: 'pages/manageFormula.php', 
+	type: 'get',
+    data: {
+		fid: "<?php echo base64_encode($f_name); ?>",
+		jitter: $("#jitter").val(),
+		amount: $("#totalAmount").val(),
+		},
+	dataType: 'html',
+    success: function (data) {
+	  	//$('#msgInfo').html(data);
+	  	$('#amount_to_make').modal('toggle');
+		fetch_formula();
+    }
+  });
+};
 //Delete ingredient
 function deleteING(ingName,ingID) {	  
 $.ajax({ 
@@ -225,8 +247,9 @@ $('.replaceIngredient').editable({
                         <a class="dropdown-item" href="javascript:manageQuantity('multiply')">Multiply x2</a>
                         <a class="dropdown-item" href="javascript:manageQuantity('divide')">Divide x2</a>
                         <a class="dropdown-item" href="javascript:cloneMe()">Clone Formula</a>
+	                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#amount_to_make">Amount to make</a>
              			<div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="javascript:addTODO()">To Make</a>
+                        <a class="dropdown-item" href="javascript:addTODO()">Add to the make list</a>
                       </div>
                     </div>
                     </tr>
@@ -326,6 +349,33 @@ $('.replaceIngredient').editable({
                 </table>
                 
                 
+<!--PV ONLINE UPLOAD-->
+<div class="modal fade" id="amount_to_make" tabindex="-1" role="dialog" aria-labelledby="amount_to_make" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="amount_to_make">Total amount to make</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+       <div id="Msg"></div>
+  <form action="javascript:amountToMake()" method="get" name="form1" target="_self" id="form_amount_to_make">
+	   <label>Jitter: 
+	     <input name="jitter" type="text" id="jitter" value="0.985" />
+        </label><p></p>
+	   <label>Amount: 
+	     <input name="totalAmount" type="text" id="totalAmount" value="100" />
+        </label>
+	   <div class="modal-footer">
+	     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+  		 <input type="submit" name="button" class="btn btn-primary" id="btnUpdate" value="Update Formula">
+</div>
+     </form>
+    </div>
+  </div>
+</div>
 <script type="text/javascript" language="javascript" >
 $(document).ready(function(){
  
