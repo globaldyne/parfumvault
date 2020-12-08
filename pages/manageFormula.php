@@ -6,9 +6,24 @@ require_once('../inc/opendb.php');
 require_once('../inc/settings.php');
 
 //AMOUNT TO MAKE
-if($_GET['fid'] && $_GET['jitter'] && $_GET['amount']){
+if($_GET['fid'] && $_GET['SG'] && $_GET['amount']){
+	$fid = mysqli_real_escape_string($conn, $_GET['fid']);
+	$SG = mysqli_real_escape_string($conn, $_GET['SG']);
+	$amount = mysqli_real_escape_string($conn, $_GET['amount']);
 
-return;
+	$new_amount = $amount * $SG;
+	$mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE fid = '$fid'"));
+
+	$q = mysqli_query($conn, "SELECT quantity,ingredient FROM formulas WHERE fid = '$fid'");
+	while($cur =  mysqli_fetch_array($q)){
+		$nq = $cur['quantity']/$mg['total_mg']*$new_amount;		
+		if(empty($nq)){
+			print 'Something went wrong...';
+			return;
+		}
+		mysqli_query($conn,"UPDATE formulas SET quantity = '$nq' WHERE fid = '$fid' AND quantity = '".$cur['quantity']."' AND ingredient = '".$cur['ingredient']."'");
+	}
+	return;
 }
 
 

@@ -79,11 +79,6 @@ $(document).ready(function() {
 		closeOnBgClick: false,
   		showCloseBtn: true,
 	});
-	$(document).on('click', '.popup-modal-dismiss', function (e) {
-		e.preventDefault();
-		$.magnificPopup.close();
-	});
-
 });  
 
 function updateDB() {
@@ -123,19 +118,22 @@ function amountToMake() {
 	$.ajax({ 
     url: 'pages/manageFormula.php', 
 	type: 'get',
+	cache: false,
     data: {
 		fid: "<?php echo base64_encode($f_name); ?>",
-		jitter: $("#jitter").val(),
+		SG: $("#sg").val(),
 		amount: $("#totalAmount").val(),
 		},
 	dataType: 'html',
     success: function (data) {
-	  	//$('#msgInfo').html(data);
+	  	$('#Msg').html(data);
 	  	$('#amount_to_make').modal('toggle');
-		fetch_formula();
+		//fetch_formula();
+		location.reload();
     }
   });
 };
+
 //Delete ingredient
 function deleteING(ingName,ingID) {	  
 $.ajax({ 
@@ -155,7 +153,6 @@ $.ajax({
 		fetch_pyramid();
     }
   });
-
 };
 
 //Clone
@@ -349,7 +346,7 @@ $('.replaceIngredient').editable({
                 </table>
                 
                 
-<!--PV ONLINE UPLOAD-->
+<!--Amount To Make-->
 <div class="modal fade" id="amount_to_make" tabindex="-1" role="dialog" aria-labelledby="amount_to_make" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -362,8 +359,8 @@ $('.replaceIngredient').editable({
       <div class="modal-body">
        <div id="Msg"></div>
   <form action="javascript:amountToMake()" method="get" name="form1" target="_self" id="form_amount_to_make">
-	   <label>Jitter: 
-	     <input name="jitter" type="text" id="jitter" value="0.985" />
+	   <label>SG2: 
+	     <input name="sg" type="text" id="sg" value="0.985" />
         </label><p></p>
 	   <label>Amount: 
 	     <input name="totalAmount" type="text" id="totalAmount" value="100" />
@@ -371,11 +368,12 @@ $('.replaceIngredient').editable({
 	   <div class="modal-footer">
 	     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
   		 <input type="submit" name="button" class="btn btn-primary" id="btnUpdate" value="Update Formula">
-</div>
+	   </div>
      </form>
     </div>
   </div>
 </div>
+
 <script type="text/javascript" language="javascript" >
 $(document).ready(function(){
  
