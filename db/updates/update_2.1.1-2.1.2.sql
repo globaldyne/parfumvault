@@ -1,0 +1,2 @@
+ALTER TABLE `ingredients` ADD `solvent` VARCHAR(255) NULL DEFAULT NULL AFTER `ml`;
+ALTER TABLE `ingredients` CHANGE `ml` `ml` FLOAT(5) NULL DEFAULT NULL;

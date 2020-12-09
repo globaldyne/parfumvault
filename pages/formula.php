@@ -123,8 +123,23 @@ $.ajax({
     success: function (data) {
 	  $('#concentration').val(data);
     }
-  });									   
+  });
+
+$.ajax({ 
+    url: 'pages/getIngInfo.php', 
+	type: 'get',
+    data: {
+		filter: "solvent",
+		name: $(this).val()
+		},
+	dataType: 'html',
+    success: function (data) {
+	  $('#dilutant').val(data);
+    }
+  });
+
 });
+
  //DILUTION
  $('#formula_data').editable({
 	container: 'body',

@@ -2,6 +2,7 @@
 ### Version 2.1.2
 - ADD: Making formula page aSync
 - ADD: Custom amount of formula to make
+- ADD: Solvent in ingredient level
 - FIX: Formula not showning properly when new
 - FIX: Modal window close on bg click
 
