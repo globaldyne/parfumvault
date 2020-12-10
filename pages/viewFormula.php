@@ -115,23 +115,31 @@ function manageQuantity(quantity) {
 
 //AMOUNT TO MAKE
 function amountToMake() {
-	$.ajax({ 
-    url: 'pages/manageFormula.php', 
-	type: 'get',
-	cache: false,
-    data: {
-		fid: "<?php echo base64_encode($f_name); ?>",
-		SG: $("#sg").val(),
-		amount: $("#totalAmount").val(),
-		},
-	dataType: 'html',
-    success: function (data) {
-	  	$('#Msg').html(data);
-	  	$('#amount_to_make').modal('toggle');
-		//fetch_formula();
-		location.reload();
-    }
-  });
+	if($("#sg").val().trim() == '' ){
+        $('#sg').focus();
+	  	$('#amountToMakeMsg').html('<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> all fields required!</div>');
+	}else if($("#totalAmount").val().trim() == '' ){
+ 		$('#totalAmount').focus();
+	  	$('#amountToMakeMsg').html('<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> all fields required!</div>');		
+	}else{
+		$.ajax({ 
+		url: 'pages/manageFormula.php', 
+		type: 'get',
+		cache: false,
+		data: {
+			fid: "<?php echo base64_encode($f_name); ?>",
+			SG: $("#sg").val(),
+			amount: $("#totalAmount").val(),
+			},
+		dataType: 'html',
+		success: function (data) {
+			$('#amountToMakeMsg').html(data);
+			$('#amount_to_make').modal('toggle');
+			//fetch_formula();
+			location.reload();
+		}
+	  });
+	}
 };
 
 //Delete ingredient
@@ -203,7 +211,7 @@ $('.replaceIngredient').editable({
   	url: "pages/manageFormula.php?action=repIng&fname=<?php echo $f_name; ?>",
     source: [
 			 <?php
-				$res_ing = mysqli_query($conn, "SELECT id, name, chemical_name FROM ingredients ORDER BY name ASC");
+				$res_ing = mysqli_query($conn, "SELECT name FROM ingredients ORDER BY name ASC");
 				while ($r_ing = mysqli_fetch_array($res_ing)){
 				echo '{value: "'.$r_ing['name'].'", text: "'.$r_ing['name'].'"},';
 			}
@@ -357,7 +365,7 @@ $('.replaceIngredient').editable({
         </button>
       </div>
       <div class="modal-body">
-       <div id="Msg"></div>
+       <div id="amountToMakeMsg"></div>
   <form action="javascript:amountToMake()" method="get" name="form1" target="_self" id="form_amount_to_make">
 	   <label>SG2: 
 	     <input name="sg" type="text" id="sg" value="0.985" />
@@ -466,4 +474,4 @@ $('#csv').on('click',function(){
  
 
 })
-</script>                
+</script>
