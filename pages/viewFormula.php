@@ -366,14 +366,21 @@ $('.replaceIngredient').editable({
       </div>
       <div class="modal-body">
        <div id="amountToMakeMsg"></div>
-  <form action="javascript:amountToMake()" method="get" name="form1" target="_self" id="form_amount_to_make">
-	   <label>SG2: 
-	     <input name="sg" type="text" id="sg" value="0.985" />
-        ml</label><p></p>
-	   <label>Amount: 
-	     <input name="totalAmount" type="text" id="totalAmount" value="100" />
-        ml</label>
-	   <div class="modal-footer">
+  <form action="javascript:amountToMake()" method="get" name="form1" target="_self" id="form_amount_to_make"><p></p>
+        <table width="313" border="0">
+          <tr>
+	       <td width="66" height="31"><strong>SG<span class="sup">2</span> :</strong></td>
+	       <td width="237"><input name="sg" type="text" id="sg" value="0.985" />
+            <strong>ml</strong></td>
+          </tr>
+	     <tr>
+	       <td><strong>Amount:</strong></td>
+	       <td><input name="totalAmount" type="text" id="totalAmount" value="100" />
+            <strong>ml</strong></td>
+          </tr>
+        </table>
+	    <p>&nbsp;</p>
+	    <div class="modal-footer">
 	     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
   		 <input type="submit" name="button" class="btn btn-primary" id="btnUpdate" value="Update Formula">
 	   </div>
