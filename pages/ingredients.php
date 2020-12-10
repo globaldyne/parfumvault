@@ -36,6 +36,7 @@ $ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC
                           <div class="dropdown-menu dropdown-menu-right">
                             <a class="dropdown-item popup-link" href="pages/addIngredient.php">Add new ingredient</a>
                             <a class="dropdown-item" id="csv" href="#">Export to CSV</a>
+	                        <a class="dropdown-item popup-link" href="pages/csvImportIng.php">Import from CSV</a>
                             <?php if($pv_online['email'] && $pv_online['password']){?>
                             <div class="dropdown-divider"></div>
 	                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#pv_online_import">Import from PV Online</a>
@@ -111,6 +112,8 @@ $ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC
         </div>
       </div>
     </div>
+    
+  
 <?php if($pv_online['email'] && $pv_online['password']){?>
 <!--PV ONLINE IMPORT-->
 <div class="modal fade" id="pv_online_import" tabindex="-1" role="dialog" aria-labelledby="pv_online_import" aria-hidden="true">

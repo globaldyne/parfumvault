@@ -361,10 +361,10 @@ $('.replaceIngredient').editable({
   <form action="javascript:amountToMake()" method="get" name="form1" target="_self" id="form_amount_to_make">
 	   <label>SG2: 
 	     <input name="sg" type="text" id="sg" value="0.985" />
-        </label><p></p>
+        ml</label><p></p>
 	   <label>Amount: 
 	     <input name="totalAmount" type="text" id="totalAmount" value="100" />
-        </label>
+        ml</label>
 	   <div class="modal-footer">
 	     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
   		 <input type="submit" name="button" class="btn btn-primary" id="btnUpdate" value="Update Formula">

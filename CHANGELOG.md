@@ -3,6 +3,7 @@
 - ADD: Making formula page aSync
 - ADD: Custom amount of formula to make
 - ADD: Solvent in ingredient level
+- ADD: Ingredients CSV import support
 - FIX: Formula not showning properly when new
 - FIX: Modal window close on bg click
 
