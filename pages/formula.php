@@ -66,7 +66,6 @@ $base_calc = calcPerc($f_name, 'Base', $settings['base_n'], $conn);
                                          <?php
 										 	$res_dil = mysqli_query($conn, "SELECT id, name FROM ingredients WHERE type = 'Solvent' OR type = 'Carrier' ORDER BY name ASC");
 										 	while ($r_dil = mysqli_fetch_array($res_dil)){
-											
 												echo '<option value="'.$r_dil['name'].'">'.$r_dil['name'].'</option>';
 											}
 										 ?>

@@ -325,7 +325,7 @@ $('.replaceIngredient').editable({
 					  }else{
 						  $IFRA_WARN = 'class="alert-warning"'; //NO RECORD FOUND
 					  }
-					  echo'<td data-name="quantity" class="quantity" data-type="text" align="center" data-pk="'.$formula['ingredient'].'">'.$formula['quantity'].'</td>';
+					  echo'<td data-name="quantity" class="quantity" data-type="text" align="center" data-pk="'.$formula['ingredient'].'">'.number_format($formula['quantity'],$settings['qStep']).'</td>';
 					  echo'<td align="center" '.$IFRA_WARN.'>'.$conc_p.'%</td>';
 					  echo '<td align="center">'.utf8_encode($settings['currency']).calcCosts($ing_q['price'],$formula['quantity'], $formula['concentration'], $ing_q['ml']).'</td>';
 					  echo '<td>'.ucfirst($ing_q['odor']).'</td>';

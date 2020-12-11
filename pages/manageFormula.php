@@ -69,8 +69,8 @@ if($_GET['formula'] && $_GET['do']){
 }elseif($_GET['action'] == 'addIng' && $_GET['fname']){// && $_GET['quantity'] && $_GET['ingredient']){
 	$fname = mysqli_real_escape_string($conn, $_GET['fname']);
 	$ingredient = mysqli_real_escape_string($conn, $_GET['ingredient']);
-	$quantity = mysqli_real_escape_string($conn, $_GET['quantity']);
-	$concentration = mysqli_real_escape_string($conn, $_GET['concentration']);
+	$quantity = preg_replace("/[^0-9.]/", "", mysqli_real_escape_string($conn, $_GET['quantity']));
+	$concentration = preg_replace("/[^0-9.]/", "", mysqli_real_escape_string($conn, $_GET['concentration']));
 	$dilutant = mysqli_real_escape_string($conn, $_GET['dilutant']);
 
 	if (empty($quantity) || empty($concentration)){
@@ -78,21 +78,13 @@ if($_GET['formula'] && $_GET['do']){
 	}else
 		
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT ingredient FROM formulas WHERE ingredient = '$ingredient' AND name = '$fname'"))){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-  		<strong>Error: </strong>'.$ingredient.' already exists in formula!
-		'.mysqli_error($conn).'</div>';
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$ingredient.' already exists in formula!</div>';
 	}else{
 
 		if(mysqli_query($conn,"INSERT INTO formulas(fid,name,ingredient,ingredient_id,concentration,quantity,dilutant) VALUES('".base64_encode($fname)."','$fname','$ingredient','$ingredient_id','$concentration','$quantity','$dilutant')")){
-			echo '<div class="alert alert-success alert-dismissible">
-					<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-					'.$ingredient.' added to formula!
-					</div>';
+			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$ingredient.' added to formula!</div>';
 		}else{
-			echo '<div class="alert alert-danger alert-dismissible">
-					<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-					Error adding '.$ingredient.'!
-					</div>';
+			echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error adding '.$ingredient.'!</div>';
 		}
 	}
 	
