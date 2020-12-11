@@ -55,6 +55,8 @@ if(($_POST) && $_GET['update'] == 'printer'){
 	$pubChem = mysqli_real_escape_string($conn, $_POST['pubChem']);
 	$chkVersion = mysqli_real_escape_string($conn, $_POST['chkVersion']);
 	$pv_maker = mysqli_real_escape_string($conn, $_POST['pv_maker']);
+	$qStep = mysqli_real_escape_string($conn, $_POST['qStep']);
+
 
 	if(empty($chem_vs_brand)){
 		$chem_vs_brand = '0';
@@ -72,10 +74,10 @@ if(($_POST) && $_GET['update'] == 'printer'){
 		$pv_maker = '0';
 	}
 	
-	if(mysqli_query($conn, "UPDATE settings SET currency = '$currency', top_n = '$top_n', heart_n = '$heart_n', base_n = '$base_n', chem_vs_brand = '$chem_vs_brand', grp_formula = '$grp_formula', pubChem='$pubChem', chkVersion='$chkVersion', pv_maker='$pv_maker'")){
+	if(mysqli_query($conn, "UPDATE settings SET currency = '$currency', top_n = '$top_n', heart_n = '$heart_n', base_n = '$base_n', chem_vs_brand = '$chem_vs_brand', grp_formula = '$grp_formula', pubChem='$pubChem', chkVersion='$chkVersion', pv_maker='$pv_maker', qStep = '$qStep'")){
 		$msg = '<div class="alert alert-success alert-dismissible">Settings updated!</div>';
 	}else{
-		$msg = '<div class="alert alert-danger alert-dismissible">An error occured. ('.mysqli_error($conn).')</div>';	
+		$msg = '<div class="alert alert-danger alert-dismissible">An error occured.</div>';	
 	}
 	
 //PERFUME TYPES
@@ -270,6 +272,15 @@ $(function() {
           <td colspan="3"><input name="chkVersion" type="checkbox" id="chkVersion" value="1" <?php if($settings['chkVersion'] == '1'){ ?> checked="checked" <?php } ?>/>
             <?php require('privacy_note.php');?></td>
           </tr>
+        <tr>
+          <td height="32"><a href="#" rel="tipsy" title="Defines the decimal in formula quantity.">Quantity Decimal:</a></td>
+          <td colspan="2"><select name="qStep" id="qStep" class="form-control">
+			  <option value="1" <?php if($settings['qStep']=="1") echo 'selected="selected"'; ?> >0.0</option>
+			  <option value="2" <?php if($settings['qStep']=="2") echo 'selected="selected"'; ?> >0.00</option>
+			  <option value="3" <?php if($settings['qStep']=="3") echo 'selected="selected"'; ?> >0.000</option>
+            </select></td>
+          <td>&nbsp;</td>
+        </tr>
         <tr>
           <td height="32"><a href="#" rel="tipsy" title="If enabled, formula will display the chemical names of ingredients, where available, instead of the commercial name">Chem. names</a></td>
           <td colspan="2"><input name="chem_vs_brand" type="checkbox" id="chem_vs_brand" value="1" <?php if($settings['chem_vs_brand'] == '1'){ ?> checked="checked" <?php } ?>/></td>
