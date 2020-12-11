@@ -301,9 +301,8 @@ reload_data();
                               <tr>
                                 <td height="29">Purity %:</td>
                                 <td width="50%"><input name="purity" type="text" class="form-control" id="purity" value="<?php echo $ing['purity']; ?>" /></td>
-                                <?php if($ing['purity'] != 100){ ?>
                                 <td width="1%">&nbsp;</td>
-                                <td colspan="3"><select name="solvent" id="solvent" class="form-control selectpicker" data-live-search="true">
+                                <td colspan="3"><select name="solvent" id="solvent" class="form-control selectpicker" data-live-search="true" <?php if($ing['purity'] == 100){ ?>disabled<?php }?> >
                                   <option value="" selected disabled>Solvent</option>
                                   <option value="None">None</option>
 								  <?php
@@ -315,7 +314,6 @@ reload_data();
 								  ?>
                                 </select>
                                 </td>
-                                <?php } ?>
                                </tr>
                               <tr>
                                 <td height="29">Profile:</td>
