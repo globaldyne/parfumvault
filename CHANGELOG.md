@@ -5,6 +5,7 @@
 - ADD: Solvent in ingredient level
 - ADD: Ingredients CSV import support
 - ADD: Formula quantity decimal step
+- CHG: Move suppliers from settings page under inventory
 - FIX: Formula not showning properly when new
 - FIX: Modal window close on bg click
 

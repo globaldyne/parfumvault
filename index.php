@@ -151,7 +151,7 @@ $.ajax({
       
       <li class="nav-item">
       <?php 
-	  if($_GET['do'] == 'ingredients' || $_GET['do'] == 'bottles' || $_GET['do'] == 'lids' || $_GET['do'] == 'batches'){ 
+	  if($_GET['do'] == 'ingredients' || $_GET['do'] == 'bottles' || $_GET['do'] == 'lids' || $_GET['do'] == 'batches' || $_GET['do'] == 'suppliers'){ 
 	  	$expand = 'show'; 
 		$class = ''; 
 		$aria = 'true'; 
@@ -169,6 +169,7 @@ $.ajax({
           <div class="bg-white py-2 collapse-inner rounded">
             <a class="collapse-item <?php if($_GET['do'] == 'ingredients'){ echo 'active';}?>" href="?do=ingredients">Ingredients</a>
             <a class="collapse-item <?php if($_GET['do'] == 'batches'){ echo 'active';}?>" href="?do=batches">Batch history</a>
+            <a class="collapse-item <?php if($_GET['do'] == 'suppliers'){ echo 'active';}?>" href="?do=suppliers">Suppliers</a>
             <a class="collapse-item <?php if($_GET['do'] == 'bottles'){ echo 'active';}?>" href="?do=bottles">Bottles</a>
             <a class="collapse-item <?php if($_GET['do'] == 'lids'){ echo 'active';}?>" href="?do=lids">Bottle Lids</a>
           </div>
@@ -244,7 +245,9 @@ $.ajax({
 			require 'pages/todo.php';	
 		}elseif($_GET['do'] == 'cart'){
 			require 'pages/cart.php';	
-
+		}elseif($_GET['do'] == 'suppliers'){
+			require 'pages/suppliers.php';
+			
 		}elseif($_GET['do'] == 'pvmaker' && $settings['pv_maker'] == '1'){
 			require 'pages/pvmaker.php';	
 			

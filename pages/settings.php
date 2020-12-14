@@ -18,19 +18,7 @@ if(($_POST) && $_GET['update'] == 'printer'){
 
 
 	
-//ADD SUPPLIERS
-}elseif($_POST['supplier'] && $_GET['update'] == 'suppliers'){
-	$sup = mysqli_real_escape_string($conn, $_POST['supplier']);
-	$notes = mysqli_real_escape_string($conn, $_POST['sup_notes']);
-	
-	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingSuppliers WHERE name = '$sup'"))){
-		$msg='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$sup.' already exists!</div>';
-	}elseif(mysqli_query($conn, "INSERT INTO ingSuppliers (name,notes) VALUES ('$sup', '$notes')")){
-		
-		$msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Supplier added!</div>';
-	}else{
-		$msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error adding supplier</div>';
-	}
+
 //ADD CATEGORY
 }elseif($_POST['category'] && $_GET['update'] == 'categories'){
 	$cat = mysqli_real_escape_string($conn, $_POST['category']);
@@ -173,14 +161,7 @@ if(($_POST) && $_GET['update'] == 'printer'){
 		}
 	}
 
-//DELETE ACTIONS
-}elseif($_GET['action'] == 'delete' && $_GET['sup_id']){
-	$sup_id = mysqli_real_escape_string($conn, $_GET['sup_id']);
-	if(mysqli_query($conn, "DELETE FROM ingSuppliers WHERE id = '$sup_id'")){
-		$msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Supplier deleted!</div>';
-	}else{
-		$msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error deleting supplier.</div>';
-	}
+
 }elseif($_GET['action'] == 'delete' && $_GET['cat_id']){
 	$cat_id = mysqli_real_escape_string($conn, $_GET['cat_id']);
 	if(mysqli_query($conn, "DELETE FROM ingCategory WHERE id = '$cat_id'")){
@@ -209,7 +190,6 @@ if(($_POST) && $_GET['update'] == 'printer'){
 }												   
  
 $cat_q = mysqli_query($conn, "SELECT * FROM ingCategory ORDER BY name ASC");
-$sup_q = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
 $users_q = mysqli_query($conn, "SELECT * FROM users ORDER BY username ASC");
 $customers_q = mysqli_query($conn, "SELECT * FROM customers ORDER BY name ASC");
 $pv_online = mysqli_fetch_array(mysqli_query($conn, "SELECT email FROM pv_online"));
@@ -234,7 +214,6 @@ $(function() {
 <div id="settings">
      <ul>
          <li><a href="#general"><span>General</span></a></li>
-         <li><a href="#suppliers"><span>Suppliers</span></a></li>
          <li><a href="#categories"><span>Categories</span></a></li>
          <li><a href="#types">Perfume Types</a></li>
          <li><a href="#print"><span>Printing</span></a></li>
@@ -324,54 +303,7 @@ $(function() {
       </table>
      </form>
 	 </div>
-     <div id="suppliers">
-       <form id="form" name="form" method="post" action="?do=settings&update=suppliers#suppliers">
-      <table width="100%" border="0" class="table table-striped table-sm">
-              <tr>
-                <td colspan="7"><?php echo $msg; ?></td>
-              </tr>
-              <tr>
-                <td width="4%">Supplier:</td>
-                <td width="13%"><input type="text" name="supplier" id="supplier" class="form-control"/></td>
-                <td width="1%">&nbsp;</td>
-                <td width="5%">Description:</td>
-                <td width="13%"><input type="text" name="sup_notes" id="sup_notes" class="form-control"/></td>
-                <td width="2%">&nbsp;</td>
-                <td width="62%"><input type="submit" name="add_supp" id="add_supp" value="Add" class="btn btn-info"/></td>
-              </tr>
-              <tr>
-                <td colspan="7">
-              <div class="card-body">
-              <div>
-                <table class="table table-bordered" id="tdDataSup" width="100%" cellspacing="0">
-                  <thead>
-                    <tr class="noBorder">
-                    </tr>
-                    <tr>
-                      <th>Name</th>
-                      <th>Description</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody id="sup_data">
-                  <?php while ($sup = mysqli_fetch_array($sup_q)) {
-					  echo'
-                    <tr>
-                      <td data-name="name" class="name" data-type="text" align="center" data-pk="'.$sup['id'].'">'.$sup['name'].'</td>
-					  <td data-name="notes" class="notes" data-type="text" align="center" data-pk="'.$sup['id'].'">'.$sup['notes'].'</td>
-                      <td align="center"><a href="?do=settings&action=delete&sup_id='.$sup['id'].'#suppliers" onclick="return confirm(\'Delete supplier '.$sup['name'].'?\');" class="fas fa-trash"></a></td>
-					</tr>';
-				  		}
-                    ?>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-                </td>
-              </tr>
-            </table>
-          </form>
-     </div>
+     
      <div id="categories">
        <form id="form" name="form" method="post" action="?do=settings&update=categories#categories">
             <table width="100%" border="0" class="table table-striped table-sm">
@@ -821,7 +753,7 @@ $(function() {
 <script type="text/javascript" language="javascript" >
 $(document).ready(function(){
  
-  $('#cat_data').editable({
+$('#cat_data').editable({
   container: 'body',
   selector: 'td.name',
   url: "pages/update_data.php?settings=cat",
@@ -833,7 +765,7 @@ $(document).ready(function(){
     return 'This field is required';
    }
   }
- });
+});
  
    $('#cat_data').editable({
   container: 'body',
@@ -845,34 +777,9 @@ $(document).ready(function(){
   validate: function(value){
   }
  });
- 
- 
-   $('#sup_data').editable({
-  container: 'body',
-  selector: 'td.name',
-  url: "pages/update_data.php?settings=sup",
-  title: 'Supplier',
-  type: "POST",
-  dataType: 'json',
-  validate: function(value){
-   if($.trim(value) == ''){
-    return 'This field is required';
-   }
-  }
- });
- 
-   $('#sup_data').editable({
-  container: 'body',
-  selector: 'td.notes',
-  url: "pages/update_data.php?settings=sup",
-  title: 'Description',
-  type: "POST",
-  dataType: 'json',
-  validate: function(value){
-  }
- });
-  
 });
+
+
 
 function initPVM() {	  
 $.ajax({ 
