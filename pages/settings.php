@@ -88,9 +88,7 @@ if(($_POST) && $_GET['update'] == 'printer'){
 	$fullName = mysqli_real_escape_string($conn, $_POST['fullName']);
 	$email = mysqli_real_escape_string($conn, $_POST['email']);
 	if (strlen($password) < '5') {
-		$msg='<div class="alert alert-danger alert-dismissible">
-		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-  		<strong>Error: </strong>Password must be at least 5 chars long!</div>';
+		$msg='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>Password must be at least 5 chars long!</div>';
 	}elseif(mysqli_num_rows(mysqli_query($conn, "SELECT username FROM users WHERE username = '$username' OR email = '$email' "))){
 		$msg='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$username.' already exists!</div>';
 	}elseif(mysqli_query($conn, "INSERT INTO users (username,password,fullName,email) VALUES ('$username', PASSWORD('$password'), '$fullName', '$email')")){

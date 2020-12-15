@@ -8,6 +8,7 @@
 - CHG: Move suppliers from settings page under inventory
 - FIX: Formula not showning properly when new
 - FIX: Modal window close on bg click
+- FIX: Various minor fixes and improvements
 
 ### Version 2.1.1
 - ADD: Privacy notice for the PV Online services
