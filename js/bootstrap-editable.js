@@ -1878,8 +1878,10 @@ Makes editable any HTML element on the page. Applied as jQuery method.
             }
             
             //set new value
-            this.setValue(params.newValue, false, params.response);
-            
+            if(this.options.pvnoresp) {
+            	this.setValue(params.newValue, false, params.response);
+			}
+			
             /**        
             Fired when new value was submitted. You can use <code>$(this).data('editable')</code> to access to editable instance
             
@@ -2320,7 +2322,17 @@ Makes editable any HTML element on the page. Applied as jQuery method.
         @since 1.4.5        
         @default #FFFF80 
         **/
-        highlight: '#FFFF80'
+        highlight: '#FFFF80',
+		
+		/**
+        Disables data update in div (added in PV 2.1.2)
+        
+        @property pvnoresp
+        @type boolean
+        @since 1.4.5        
+        @default true 
+        **/
+		pvnoresp: true,
     };
     
 }(window.jQuery));

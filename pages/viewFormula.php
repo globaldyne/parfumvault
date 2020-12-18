@@ -81,20 +81,6 @@ $(document).ready(function() {
 	});
 });  
 
-function updateDB() {
-$.ajax({ 
-    url: 'pages/operations.php', 
-	type: 'GET',
-    data: {
-		do: "db_update"
-		},
-	dataType: 'html',
-    success: function (data) {
-	  $('#msgInfo').html(data);
-    }
-  });
-};
-
 
 //MULTIPLY - DIVIDE
 function manageQuantity(quantity) {
@@ -201,10 +187,10 @@ function addTODO() {
 };
 
 
-
 //Change ingredient
 $('.replaceIngredient').editable({
-	//value: "",
+	pvnoresp: false,
+	highlight: false,
 	type: 'get',
 	emptytext: "",
 	emptyclass: "",
@@ -213,7 +199,7 @@ $('.replaceIngredient').editable({
 			 <?php
 				$res_ing = mysqli_query($conn, "SELECT name FROM ingredients ORDER BY name ASC");
 				while ($r_ing = mysqli_fetch_array($res_ing)){
-				echo '{value: "'.$r_ing['name'].'", text: "'.$r_ing['name'].'"},';
+					echo '{value: "'.$r_ing['name'].'", text: "'.$r_ing['name'].'"},';
 			}
 			?>
           ],
@@ -226,7 +212,7 @@ $('.replaceIngredient').editable({
 			fetch_formula();
 		}
 	}
-    });
+});
 
  
 </script>
@@ -329,7 +315,7 @@ $('.replaceIngredient').editable({
 					  echo'<td align="center" '.$IFRA_WARN.'>'.$conc_p.'%</td>';
 					  echo '<td align="center">'.utf8_encode($settings['currency']).calcCosts($ing_q['price'],$formula['quantity'], $formula['concentration'], $ing_q['ml']).'</td>';
 					  echo '<td>'.ucfirst($ing_q['odor']).'</td>';
-					  echo '<td class="noexport" align="center"><a href="#" class="fas fa-exchange-alt replaceIngredient" rel="tipsy" title="Replace '.$formula['ingredient'].'" id="replaceIngredient" data-name="'.$formula['ingredient'].'" data-type="select" data-pk="'.$formula['ingredient'].'" data-title="Choose Ingredient"></a> &nbsp; <a href="'.goShopping($formula['ingredient'],$conn).'" target="_blank" class="fas fa-shopping-cart"></a> &nbsp; <a href="javascript:deleteING(\''.$formula['ingredient'].'\', \''.$formula['id'].'\')" onclick="return confirm(\'Remove '.$formula['ingredient'].' from formula?\');" class="fas fa-trash" rel="tipsy" title="Remove '.$formula['ingredient'].'"></a></td>
+					  echo '<td class="noexport" align="center"><a href="#" class="fas fa-exchange-alt replaceIngredient" rel="tipsy" title="Replace '.$formula['ingredient'].'" id="replaceIngredient" data-name="'.$formula['ingredient'].'" data-type="select" data-pk="'.$formula['ingredient'].'" data-title="Choose Ingredient to replace '.$formula['ingredient'].'"></a> &nbsp; <a href="'.goShopping($formula['ingredient'],$conn).'" target="_blank" class="fas fa-shopping-cart"></a> &nbsp; <a href="javascript:deleteING(\''.$formula['ingredient'].'\', \''.$formula['id'].'\')" onclick="return confirm(\'Remove '.$formula['ingredient'].' from formula?\');" class="fas fa-trash" rel="tipsy" title="Remove '.$formula['ingredient'].'"></a></td>
                     </tr>';
 					$tot[] = calcCosts($ing_q['price'],$formula['quantity'], $formula['concentration'], $ing_q['ml']);
 					$conc_tot[] = $conc_p;
@@ -390,9 +376,8 @@ $('.replaceIngredient').editable({
 </div>
 
 <script type="text/javascript" language="javascript" >
-$(document).ready(function(){
  
-  $('#formula_data').editable({
+$('#formula_data').editable({
   container: 'body',
   selector: 'td.quantity',
   url: "pages/update_data.php?formula=<?php echo $f_name; ?>",
@@ -414,9 +399,9 @@ $(document).ready(function(){
     return 'Numbers only!';
    }
   }
- });
- 
-  $('#formula_data').editable({
+});
+
+$('#formula_data').editable({
   container: 'body',
   selector: 'td.concentration',
   url: "pages/update_data.php?formula=<?php echo $f_name; ?>",
@@ -438,9 +423,9 @@ $(document).ready(function(){
     return 'Numbers only!';
    }
   }
- });
- //
- $('#formula_data').editable({
+});
+
+$('#formula_data').editable({
 	container: 'body',
 	selector: 'td.dilutant',
 	type: 'POST',
@@ -457,9 +442,8 @@ $(document).ready(function(){
           ],
 	dataType: 'json',
     
-    });
-
 });
+
 
 $('#csv').on('click',function(){
   $("#formula").tableHTMLExport({
@@ -477,8 +461,6 @@ $('#csv').on('click',function(){
   
   	// debug
   	consoleLog: true   
+  });
 });
- 
-
-})
 </script>

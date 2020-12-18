@@ -7,7 +7,7 @@
           <div class="card shadow mb-4">
             <div class="card-header py-3">
               <h2 class="m-0 font-weight-bold text-primary"><a href="?do=listFormulas">Formulas</a></h2>
-              <div id="msg2"></div>
+              <div id="inMsg"></div>
             </div>
 
             <table width="100%" border="0">
@@ -29,7 +29,6 @@
               </tr>
               <tr>
                 <td colspan="2">
-                                  
             <div class="card-body">
               <div class="table-responsive">
 <?php
@@ -88,10 +87,9 @@ $.ajax({
 	dataType: 'html',
     success: function (data) {
         if ( data.indexOf("Error") > -1 ) {
-			$('#msg').html(data); 
+			$('#inMsg').html(data); 
 		}else{
-			$('#msg').html(data);
-			location.reload();
+			$('#inMsg').html(data);
 		}
     }
   });
@@ -108,9 +106,9 @@ $.ajax({
 	dataType: 'html',
     success: function (data) {
         if ( data.indexOf("Error") > -1 ) {
-			$('#msg').html(data); 
+			$('#inMsg').html(data); 
 		}else{
-			$('#msg').html(data);
+			$('#inMsg').html(data);
 			location.reload();
 		}
     }
@@ -128,8 +126,7 @@ function addTODO(fid) {
 		},
 	dataType: 'html',
     success: function (data) {
-		//location.reload();
-	  	$('#msg2').html(data);
+	  	$('#inMsg').html(data);
     }
   });
 };

@@ -42,25 +42,20 @@ require('./inc/settings.php');
   <meta name="author" content="JBPARFUM">
   <title><?php echo $product;?> - Dashboard</title>
   
-  <link href="css/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-
+  <link href="css/fontawesome-free/css/all.min.css" rel="stylesheet">
   <link href="css/sb-admin-2.css" rel="stylesheet">
-  
   <link href="css/bootstrap-select.min.css" rel="stylesheet">
   <link href="css/bootstrap-editable.css" rel="stylesheet">
 
   <script src="js/jquery/jquery.min.js"></script>
-
   <script src="js/tableHTMLExport.js"></script>
-	
   <script src="js/jspdf.min.js"></script>
   <script src="js/jspdf.plugin.autotable.js"></script>
-    
   <script src="js/bootstrap.min.js"></script>
   
-  <link rel="stylesheet" type="text/css" href="css/datatables.min.css"/>
-  <script type="text/javascript" src="js/datatables.min.js"></script>
+  <link href="css/datatables.min.css" rel="stylesheet" type="text/css" />
   
+  <script src="js/datatables.min.js"></script>
   <script src="js/magnific-popup.js"></script>
  
   <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -73,9 +68,7 @@ require('./inc/settings.php');
   
   <link href="css/jquery-ui.css" rel="stylesheet">
   <link href="css/tipsy.css" rel="stylesheet" />
-  
   <link href="css/magnific-popup.css" rel="stylesheet" />
-
   <link href="css/vault.css" rel="stylesheet">
   
 <script type='text/javascript'>
