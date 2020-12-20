@@ -1,5 +1,8 @@
 # CHANGELOG
 ### Version 2.1.2
+- FIX: Various minor fixes and improvements
+
+### Version 2.1.2
 - ADD: Making formula page aSync
 - ADD: Custom amount of formula to make
 - ADD: Solvent in ingredient level
