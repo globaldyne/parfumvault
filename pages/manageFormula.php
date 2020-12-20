@@ -46,6 +46,7 @@ if($_GET['formula'] && $_GET['do']){
 		
 		mysqli_query($conn,"UPDATE formulas SET quantity = '$nq' WHERE name = '$formula' AND quantity = '".$cur['quantity']."' AND ingredient = '".$cur['ingredient']."'");
 	}
+	return;
 
 //DELETE INGREDIENT
 }elseif($_GET['action'] == 'deleteIng' && $_GET['ingID'] && $_GET['ing']){
@@ -64,6 +65,7 @@ if($_GET['formula'] && $_GET['do']){
 				'.$ing.' cannot be removed from the formula!
 				</div>';
 	}
+	return;
 	
 //ADD INGREDIENT
 }elseif($_GET['action'] == 'addIng' && $_GET['fname']){// && $_GET['quantity'] && $_GET['ingredient']){
@@ -87,6 +89,7 @@ if($_GET['formula'] && $_GET['do']){
 			echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error adding '.$ingredient.'!</div>';
 		}
 	}
+	return;
 	
 //REPLACE INGREDIENT
 }elseif($_GET['action'] == 'repIng' && $_GET['fname']){
@@ -104,6 +107,7 @@ if($_GET['formula'] && $_GET['do']){
 			echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error replacing '.$oldIngredient.'</div>';
 		}
 	}
+	return;
 
 //CLONE FORMULA
 }elseif($_GET['action'] == 'clone' && $_GET['formula']){
@@ -120,6 +124,7 @@ if($_GET['formula'] && $_GET['do']){
 	if($sql){
 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$fname.' cloned as <a href="?do=Formula&name='.$newName.'" target="_blanc">'.$newName.'</a>!</div>';
 	}
+	return;
 	
 	
 //DELETE FORMULA
@@ -127,10 +132,11 @@ if($_GET['formula'] && $_GET['do']){
 	$fid = mysqli_real_escape_string($conn, $_GET['fid']);
 	if(mysqli_query($conn, "DELETE FROM formulas WHERE fid = '$fid'")){
 		mysqli_query($conn, "DELETE FROM formulasMetaData WHERE fid = '$fid'");
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Formula deleted!</div>';
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Formula '.base64_decode($fid).' deleted!</div>';
 	}else{
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error</strong> deleting '.$fid.' formula!</div>';
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error</strong> deleting '.base64_decode($fid).' formula!</div>';
 	}
+	return;
 
 //MAKE FORMULA
 }elseif($_GET['action'] == 'makeFormula' && $_GET['fid'] && $_GET['q'] && $_GET['qr'] && $_GET['ingId']){

@@ -139,8 +139,8 @@ $.ajax({
 
 });
 
- //DILUTION
- $('#formula_data').editable({
+//DILUTION
+$('#formula_data').editable({
 	container: 'body',
 	selector: 'td.dilutant',
 	type: 'POST',
@@ -157,7 +157,7 @@ $.ajax({
           ],
 	dataType: 'json',
     
-    });
+});
 
 //});
 //Add ingredient

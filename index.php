@@ -14,7 +14,7 @@ require_once('./func/checkIng.php');
 require_once('./func/checkAllergen.php');
 require_once('./func/getIngUsage.php');
 require_once('./func/checkVer.php');
-require_once('./func/formulaProfile.php');
+//require_once('./func/formulaProfile.php');
 require_once('./func/getIFRAtypes.php');
 require_once('./func/searchIFRA.php');
 require_once('./func/formatBytes.php');
@@ -72,6 +72,7 @@ require('./inc/settings.php');
   <link href="css/vault.css" rel="stylesheet">
   
 <script type='text/javascript'>
+
 $(document).ready(function() {
 	$('a[rel=tipsy]').tipsy();
 	
@@ -87,7 +88,7 @@ $(document).ready(function() {
 		"info":   true,
 		"lengthMenu": [[20, 35, 60, -1], [20, 35, 60, "All"]]
 	});
-});  
+});
 
 function updateDB() {
 $.ajax({ 
@@ -104,6 +105,17 @@ $.ajax({
 };
 
 
+function list_formulas(){
+$.ajax({ 
+    url: 'pages/listFormulas.php', 
+	dataType: 'html',
+		success: function (data) {
+			$('#list_formulas').html(data);
+		}
+	});
+}
+
+list_formulas();
 </script>
 </head>
 
@@ -219,7 +231,24 @@ $.ajax({
 		}elseif($_GET['do'] == 'IFRA'){
 			require 'pages/IFRA.php';
 		}elseif($_GET['do'] == 'listFormulas'){
-			require 'pages/listFormulas.php';
+			//require 'pages/listFormulas.php';
+		?>
+        <div id="content-wrapper" class="d-flex flex-column">
+			<?php require_once('pages/top.php'); ?>
+            
+        <div class="container-fluid">
+          <div>
+          <div class="card shadow mb-4">
+            <div class="card-header py-3">
+              <h2 class="m-0 font-weight-bold text-primary"><a href="?do=listFormulas">Formulas</a></h2>
+              <div id="inMsg"></div>
+            </div>
+            <div id="list_formulas"><div class="loader"></div></div>
+           </div>
+        </div>
+      </div>
+	</div>
+		<?php
 		}elseif($_GET['do'] == 'genFinishedProduct'){
 			require 'pages/genFinishedProduct.php';		
 		}elseif($_GET['do'] == 'bottles'){
