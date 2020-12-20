@@ -13,8 +13,8 @@ $ingID = mysqli_real_escape_string($conn, $_GET["id"]);
 if($_POST){
 	$ing = mysqli_fetch_array( mysqli_query($conn, "SELECT * FROM ingredients WHERE name = '$ingID'"));
 
-	$cas = mysqli_real_escape_string($conn, $_POST["cas"]);
-	$fema = mysqli_real_escape_string($conn, $_POST["fema"]);
+	$cas = trim(mysqli_real_escape_string($conn, $_POST["cas"]));
+	$fema = trim(mysqli_real_escape_string($conn, $_POST["fema"]));
 
 	$type = mysqli_real_escape_string($conn, $_POST["type"]);
 	$strength = mysqli_real_escape_string($conn, $_POST["strength"]);
@@ -30,8 +30,9 @@ if($_POST){
 	$flash_point = mysqli_real_escape_string($conn, $_POST["flash_point"]);
 	$appearance = mysqli_real_escape_string($conn, $_POST["appearance"]);
 	$ml = mysqli_real_escape_string($conn, $_POST["ml"]);
-	$odor = mysqli_real_escape_string($conn, $_POST["odor"]);
-	$notes = mysqli_real_escape_string($conn, $_POST["notes"]);
+	$solvent = mysqli_real_escape_string($conn, $_POST["solvent"]);
+	$odor = ucfirst(trim(mysqli_real_escape_string($conn, $_POST["odor"])));
+	$notes = ucfirst(trim(mysqli_real_escape_string($conn, $_POST["notes"])));
 	$purity = mysqli_real_escape_string($conn, $_POST["purity"]);
 	$soluble = mysqli_real_escape_string($conn, $_POST["soluble"]);
 	$logp = mysqli_real_escape_string($conn, $_POST["logp"]);
@@ -96,7 +97,7 @@ if($_POST){
 	  }
    }
 
-	if(mysqli_query($conn, "UPDATE ingredients SET cas = '$cas', FEMA = '$fema', type = '$type', strength = '$strength', IFRA = '$IFRA', category='$category', supplier='$supplier', supplier_link='$supplier_link', profile='$profile', price='$price', tenacity='$tenacity', chemical_name='$chemical_name', flash_point='$flash_point', appearance='$appearance', notes='$notes', ml='$ml', odor='$odor', purity='$purity', allergen='$allergen', formula='$formula', flavor_use='$flavor_use', cat1 = '$cat1', cat2 = '$cat2', cat3 = '$cat3', cat4 = '$cat4', cat5A = '$cat5A', cat5B = '$cat5B', cat5C = '$cat5C', cat5D = '$cat5D', cat6 = '$cat6', cat7A = '$cat7A', cat5B = '$cat7B', cat8 = '$cat8', cat9 = '$cat9', cat10A = '$cat10A', cat10B = '$cat10B', cat11A = '$cat11A', cat11B = '$cat11B', cat12 = '$cat12', soluble = '$soluble', logp = '$logp', manufacturer = '$manufacturer', impact_top = '$impact_top', impact_heart = '$impact_heart', impact_base = '$impact_base', usage_type = '$usage_type' WHERE name='$ingID'")){
+	if(mysqli_query($conn, "UPDATE ingredients SET cas = '$cas', FEMA = '$fema', type = '$type', strength = '$strength', IFRA = '$IFRA', category='$category', supplier='$supplier', supplier_link='$supplier_link', profile='$profile', price='$price', tenacity='$tenacity', chemical_name='$chemical_name', flash_point='$flash_point', appearance='$appearance', notes='$notes', ml='$ml', odor='$odor', purity='$purity', allergen='$allergen', formula='$formula', flavor_use='$flavor_use', cat1 = '$cat1', cat2 = '$cat2', cat3 = '$cat3', cat4 = '$cat4', cat5A = '$cat5A', cat5B = '$cat5B', cat5C = '$cat5C', cat5D = '$cat5D', cat6 = '$cat6', cat7A = '$cat7A', cat5B = '$cat7B', cat8 = '$cat8', cat9 = '$cat9', cat10A = '$cat10A', cat10B = '$cat10B', cat11A = '$cat11A', cat11B = '$cat11B', cat12 = '$cat12', soluble = '$soluble', logp = '$logp', manufacturer = '$manufacturer', impact_top = '$impact_top', impact_heart = '$impact_heart', impact_base = '$impact_base', usage_type = '$usage_type', solvent = '$solvent' WHERE name='$ingID'")){
 		
 			$msg.='<div class="alert alert-success alert-dismissible">Ingredient <strong>'.$ing['name'].'</strong> updated!</div>';
 		}else{
@@ -282,28 +283,41 @@ reload_data();
 							   <hr>
                 	         <table width="100%" border="0">
                               <tr>
-                                <td colspan="4"><?php echo $msg; ?></td>
+                                <td colspan="6"><?php echo $msg; ?></td>
                               </tr>
                               <tr>
                                 <td width="20%">CAS #:</td>
-                                <td colspan="3"><input name="cas" type="text" class="form-control" id="cas" value="<?php echo $ing['cas']; ?>"></td>
+                                <td colspan="5"><input name="cas" type="text" class="form-control" id="cas" value="<?php echo $ing['cas']; ?>"></td>
                               </tr>
 
                               <tr>
                                 <td height="31">FEMA #:</td>
-                                <td colspan="3"><input name="fema" type="text" class="form-control" id="fema" value="<?php echo $ing['FEMA']; ?>" /></td>
+                                <td colspan="5"><input name="fema" type="text" class="form-control" id="fema" value="<?php echo $ing['FEMA']; ?>" /></td>
                               </tr>
                               <tr>
                                 <td height="31"><a href="#" rel="tipsy" title="If enabled, ingredient name will be printed in the box label.">Is Allergen:</a></td>
-                                <td colspan="3"><input name="isAllergen" type="checkbox" id="isAllergen" value="1" <?php if($ing['allergen'] == '1'){; ?> checked="checked"  <?php } ?>/></td>
+                                <td colspan="5"><input name="isAllergen" type="checkbox" id="isAllergen" value="1" <?php if($ing['allergen'] == '1'){; ?> checked="checked"  <?php } ?>/></td>
                               </tr>
                               <tr>
-                                <td>Purity %:</td>
-                                <td colspan="3"><input name="purity" type="text" class="form-control" id="purity" value="<?php echo $ing['purity']; ?>" /></td>
-                              </tr>
+                                <td height="29">Purity %:</td>
+                                <td width="50%"><input name="purity" type="text" class="form-control" id="purity" value="<?php echo $ing['purity']; ?>" /></td>
+                                <td width="1%">&nbsp;</td>
+                                <td colspan="3"><select name="solvent" id="solvent" class="form-control selectpicker" data-live-search="true" <?php if($ing['purity'] == 100){ ?>disabled<?php }?> >
+                                  <option value="" selected disabled>Solvent</option>
+                                  <option value="None">None</option>
+								  <?php
+								   $res_dil = mysqli_query($conn, "SELECT id, name FROM ingredients WHERE type = 'Solvent' OR type = 'Carrier' ORDER BY name ASC");
+								   while ($r_dil = mysqli_fetch_array($res_dil)){
+									    $selected=($ing['solvent'] == $r_dil['name'])? "selected" : "";
+										echo '<option '.$selected.' value="'.$r_dil['name'].'">'.$r_dil['name'].'</option>';
+    							   }
+								  ?>
+                                </select>
+                                </td>
+                               </tr>
                               <tr>
-                                <td>Profile:</td>
-                                <td colspan="3">
+                                <td height="29">Profile:</td>
+                                <td colspan="5">
                                 <select name="profile" id="profile" class="form-control">
                                 <option value="" selected></option>
                                 <?php 	while ($row_ingProfiles = mysqli_fetch_array($res_ingProfiles)){ ?>
@@ -313,8 +327,8 @@ reload_data();
                                 </td>
                               </tr>
                               <tr>
-                                <td>Type:</td>
-                                <td colspan="3">
+                                <td height="29">Type:</td>
+                                <td colspan="5">
                                 <select name="type" id="type" class="form-control">
                                 <option value="" selected></option>
                                 <?php 	while ($row_ingTypes = mysqli_fetch_array($res_ingTypes)){ ?>
@@ -324,8 +338,8 @@ reload_data();
                                 </td>
                               </tr>
                               <tr>
-                                <td>Strength:</td>
-                                <td colspan="3">
+                                <td height="28">Strength:</td>
+                                <td colspan="5">
                                 <select name="strength" id="strength" class="form-control">
                                 <option value="" selected></option>
                                 <?php while ($row_ingStrength = mysqli_fetch_array($res_ingStrength)){ ?>
@@ -335,8 +349,8 @@ reload_data();
                                 </td>
                               </tr>
                               <tr>
-                                <td>Category:</td>
-                                <td colspan="3">
+                                <td height="31">Category:</td>
+                                <td colspan="5">
                                 <select name="category" id="category" class="form-control" data-live-search="true">
                                 <option value="" selected></option>
                                   <?php while ($row_ingCategory = mysqli_fetch_array($res_ingCategory)){ ?>
@@ -346,8 +360,8 @@ reload_data();
                                 </td>
                               </tr>
                               <tr>
-                                <td valign="top">Odor:</td>
-                                <td width="66%"><div id='TGSC'><input name="odor" id="odor" type="text" class="form-control" value="<?php echo $ing['odor']; ?>"/></div>
+                                <td height="31" valign="top">Odor:</td>
+                                <td colspan="3"><div id='TGSC'><input name="odor" id="odor" type="text" class="form-control" value="<?php echo $ing['odor']; ?>"/></div>
                                 </td>
                                 <?php if(file_exists('searchTGSC.php')){?>
                                 <td width="2%">&nbsp;</td>
@@ -356,7 +370,7 @@ reload_data();
                               </tr>
                               <tr>
                                 <td valign="top">Notes:</td>
-                                <td colspan="3"><textarea name="notes" id="notes" cols="45" rows="5" class="form-control"><?php echo $ing['notes']; ?></textarea></td>
+                                <td colspan="5"><textarea name="notes" id="notes" cols="45" rows="5" class="form-control"><?php echo $ing['notes']; ?></textarea></td>
                               </tr>
 
                             </table>

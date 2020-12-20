@@ -252,3 +252,9 @@ tr.strikeout td:before {
     border-bottom-right-radius: 0.3rem;
     border-bottom-left-radius: 0.3rem;
 }
+
+.sup { 
+	position: relative; 
+	top: -0.5em; 
+	font-size: 80%; 
+}

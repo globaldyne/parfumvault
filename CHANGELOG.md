@@ -1,4 +1,15 @@
 # CHANGELOG
+### Version 2.1.2
+- ADD: Making formula page aSync
+- ADD: Custom amount of formula to make
+- ADD: Solvent in ingredient level
+- ADD: Ingredients CSV import support
+- ADD: Formula quantity decimal step
+- CHG: Move suppliers from settings page under inventory
+- FIX: Formula not showning properly when new
+- FIX: Modal window close on bg click
+- FIX: Various minor fixes and improvements
+
 ### Version 2.1.1
 - ADD: Privacy notice for the PV Online services
 - ADD: Usage level type

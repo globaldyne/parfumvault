@@ -1,14 +1,15 @@
-<?php if (!defined('pvault_panel')){ die('Not Found');}?>
-<div id="content-wrapper" class="d-flex flex-column">
-<?php require_once('pages/top.php'); ?>
-        <div class="container-fluid">
-		<?php echo $msg; ?>
-          <div>
-          <div class="card shadow mb-4">
-            <div class="card-header py-3">
-              <h2 class="m-0 font-weight-bold text-primary"><a href="?do=listFormulas">Formulas</a></h2>
-              <div id="msg2"></div>
-            </div>
+<?php 
+
+require('../inc/sec.php');
+
+require_once('../inc/config.php');
+require_once('../inc/opendb.php');
+require_once('../inc/settings.php');
+
+require_once('../func/formulaProfile.php');
+
+?>
+
 
             <table width="100%" border="0">
               <tr>
@@ -29,7 +30,6 @@
               </tr>
               <tr>
                 <td colspan="2">
-                                  
             <div class="card-body">
               <div class="table-responsive">
 <?php
@@ -67,11 +67,24 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"))== 0){
               </tr>
             </table>
             <p>&nbsp;</p>
-          </div>
-        </div>
-      </div>
-    </div>
+
 <script type="text/javascript" language="javascript" >
+
+$('a[rel=tipsy]').tipsy();
+	
+$('.popup-link').magnificPopup({
+	type: 'iframe',
+	closeOnContentClick: false,
+	closeOnBgClick: false,
+	showCloseBtn: true,
+});
+	
+$('#tdData,#tdDataSup,#tdDataCat,#tdDataUsers,#tdDataCustomers').DataTable({
+    "paging":   true,
+	"info":   true,
+	"lengthMenu": [[20, 35, 60, -1], [20, 35, 60, "All"]]
+});
+
 $(function() {
   $("#listFormulas").tabs();
 });
@@ -88,10 +101,10 @@ $.ajax({
 	dataType: 'html',
     success: function (data) {
         if ( data.indexOf("Error") > -1 ) {
-			$('#msg').html(data); 
+			$('#inMsg').html(data); 
 		}else{
-			$('#msg').html(data);
-			location.reload();
+			$('#inMsg').html(data);
+			list_formulas();
 		}
     }
   });
@@ -108,10 +121,10 @@ $.ajax({
 	dataType: 'html',
     success: function (data) {
         if ( data.indexOf("Error") > -1 ) {
-			$('#msg').html(data); 
+			$('#inMsg').html(data); 
 		}else{
-			$('#msg').html(data);
-			location.reload();
+			$('#inMsg').html(data);
+			list_formulas();
 		}
     }
   });
@@ -128,8 +141,7 @@ function addTODO(fid) {
 		},
 	dataType: 'html',
     success: function (data) {
-		//location.reload();
-	  	$('#msg2').html(data);
+	  	$('#inMsg').html(data);
     }
   });
 };

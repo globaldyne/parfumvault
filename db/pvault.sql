@@ -62,7 +62,7 @@ CREATE TABLE `formulas` (
   `ingredient_id` varchar(11) COLLATE utf8_bin DEFAULT NULL,
   `concentration` decimal(5,2) DEFAULT 100.00,
   `dilutant` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `quantity` decimal(8,2) DEFAULT NULL
+  `quantity` decimal(8,3) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 DROP TABLE IF EXISTS `makeFormula`;
@@ -186,7 +186,8 @@ CREATE TABLE `ingredients` (
   `appearance` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `notes` text COLLATE utf8_bin DEFAULT NULL,
   `profile` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `ml` int(5) DEFAULT NULL,
+  `ml` FLOAT(5) DEFAULT NULL,
+  `solvent` VARCHAR(255) DEFAULT NULL, 
   `odor` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `allergen` int(11) DEFAULT NULL,
   `flavor_use` int(10) DEFAULT NULL,
@@ -297,7 +298,8 @@ CREATE TABLE `settings` (
   `pubChem` int(11) DEFAULT NULL,
   `chkVersion` int(11) DEFAULT NULL,
   `pv_maker` int(11) DEFAULT 0,
-  `pv_maker_host` varchar(255) COLLATE utf8_bin DEFAULT NULL
+  `pv_maker_host` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `qStep` INT(5) NOT NULL DEFAULT '2'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 INSERT INTO `settings` (`id`, `label_printer_addr`, `label_printer_model`, `label_printer_size`, `label_printer_font_size`, `currency`, `top_n`, `heart_n`, `base_n`, `EDP`, `EDT`, `EDC`, `Parfum`, `chem_vs_brand`, `grp_formula`, `brandName`, `brandAddress`, `brandEmail`, `brandPhone`, `brandLogo`) VALUES

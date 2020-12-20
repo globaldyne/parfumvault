@@ -12,9 +12,7 @@ if($_GET['name'] && $_GET['filter']){
 	$info = mysqli_fetch_array(mysqli_query($conn, "SELECT $filter FROM ingredients WHERE name = '$name'"));
 	
 	echo $info[$filter];
-
-}else{
-	
-	echo 'nothing here yet';
 }
+
+return;
 ?>

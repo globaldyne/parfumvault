@@ -82,7 +82,7 @@ $ifratypes = mysqli_query($conn, "SELECT DISTINCT type FROM IFRALibrary");
 while($types =  mysqli_fetch_array($ifratypes)){
 ?>    {
       "type": "<?php echo $types['type'];?>",
-      "value": "<?php getIFRAtypes($types['type'],$dbhost,$dbuser,$dbpass,$dbname);?>"
+      "value": "<?php getIFRAtypes($types['type'],$conn);?>"
     },
 <?php } ?>
   ],

@@ -14,7 +14,7 @@ require_once('./func/checkIng.php');
 require_once('./func/checkAllergen.php');
 require_once('./func/getIngUsage.php');
 require_once('./func/checkVer.php');
-require_once('./func/formulaProfile.php');
+//require_once('./func/formulaProfile.php');
 require_once('./func/getIFRAtypes.php');
 require_once('./func/searchIFRA.php');
 require_once('./func/formatBytes.php');
@@ -42,25 +42,20 @@ require('./inc/settings.php');
   <meta name="author" content="JBPARFUM">
   <title><?php echo $product;?> - Dashboard</title>
   
-  <link href="css/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-
+  <link href="css/fontawesome-free/css/all.min.css" rel="stylesheet">
   <link href="css/sb-admin-2.css" rel="stylesheet">
-  
   <link href="css/bootstrap-select.min.css" rel="stylesheet">
   <link href="css/bootstrap-editable.css" rel="stylesheet">
 
   <script src="js/jquery/jquery.min.js"></script>
-
   <script src="js/tableHTMLExport.js"></script>
-	
   <script src="js/jspdf.min.js"></script>
   <script src="js/jspdf.plugin.autotable.js"></script>
-    
   <script src="js/bootstrap.min.js"></script>
   
-  <link rel="stylesheet" type="text/css" href="css/datatables.min.css"/>
-  <script type="text/javascript" src="js/datatables.min.js"></script>
+  <link href="css/datatables.min.css" rel="stylesheet" type="text/css" />
   
+  <script src="js/datatables.min.js"></script>
   <script src="js/magnific-popup.js"></script>
  
   <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -73,19 +68,19 @@ require('./inc/settings.php');
   
   <link href="css/jquery-ui.css" rel="stylesheet">
   <link href="css/tipsy.css" rel="stylesheet" />
-  
   <link href="css/magnific-popup.css" rel="stylesheet" />
-
   <link href="css/vault.css" rel="stylesheet">
   
 <script type='text/javascript'>
+
 $(document).ready(function() {
 	$('a[rel=tipsy]').tipsy();
 	
 	$('.popup-link').magnificPopup({
 		type: 'iframe',
-  		showCloseBtn: 'true',
-  		closeOnBgClick: 'false',
+  		closeOnContentClick: false,
+		closeOnBgClick: false,
+  		showCloseBtn: true,
 	});
 	
     $('#tdData,#tdDataSup,#tdDataCat,#tdDataUsers,#tdDataCustomers').DataTable({
@@ -93,7 +88,7 @@ $(document).ready(function() {
 		"info":   true,
 		"lengthMenu": [[20, 35, 60, -1], [20, 35, 60, "All"]]
 	});
-});  
+});
 
 function updateDB() {
 $.ajax({ 
@@ -110,6 +105,17 @@ $.ajax({
 };
 
 
+function list_formulas(){
+$.ajax({ 
+    url: 'pages/listFormulas.php', 
+	dataType: 'html',
+		success: function (data) {
+			$('#list_formulas').html(data);
+		}
+	});
+}
+
+list_formulas();
 </script>
 </head>
 
@@ -150,7 +156,7 @@ $.ajax({
       
       <li class="nav-item">
       <?php 
-	  if($_GET['do'] == 'ingredients' || $_GET['do'] == 'bottles' || $_GET['do'] == 'lids' || $_GET['do'] == 'batches'){ 
+	  if($_GET['do'] == 'ingredients' || $_GET['do'] == 'bottles' || $_GET['do'] == 'lids' || $_GET['do'] == 'batches' || $_GET['do'] == 'suppliers'){ 
 	  	$expand = 'show'; 
 		$class = ''; 
 		$aria = 'true'; 
@@ -168,6 +174,7 @@ $.ajax({
           <div class="bg-white py-2 collapse-inner rounded">
             <a class="collapse-item <?php if($_GET['do'] == 'ingredients'){ echo 'active';}?>" href="?do=ingredients">Ingredients</a>
             <a class="collapse-item <?php if($_GET['do'] == 'batches'){ echo 'active';}?>" href="?do=batches">Batch history</a>
+            <a class="collapse-item <?php if($_GET['do'] == 'suppliers'){ echo 'active';}?>" href="?do=suppliers">Suppliers</a>
             <a class="collapse-item <?php if($_GET['do'] == 'bottles'){ echo 'active';}?>" href="?do=bottles">Bottles</a>
             <a class="collapse-item <?php if($_GET['do'] == 'lids'){ echo 'active';}?>" href="?do=lids">Bottle Lids</a>
           </div>
@@ -224,7 +231,24 @@ $.ajax({
 		}elseif($_GET['do'] == 'IFRA'){
 			require 'pages/IFRA.php';
 		}elseif($_GET['do'] == 'listFormulas'){
-			require 'pages/listFormulas.php';
+			//require 'pages/listFormulas.php';
+		?>
+        <div id="content-wrapper" class="d-flex flex-column">
+			<?php require_once('pages/top.php'); ?>
+            
+        <div class="container-fluid">
+          <div>
+          <div class="card shadow mb-4">
+            <div class="card-header py-3">
+              <h2 class="m-0 font-weight-bold text-primary"><a href="?do=listFormulas">Formulas</a></h2>
+              <div id="inMsg"></div>
+            </div>
+            <div id="list_formulas"><div class="loader"></div></div>
+           </div>
+        </div>
+      </div>
+	</div>
+		<?php
 		}elseif($_GET['do'] == 'genFinishedProduct'){
 			require 'pages/genFinishedProduct.php';		
 		}elseif($_GET['do'] == 'bottles'){
@@ -243,7 +267,9 @@ $.ajax({
 			require 'pages/todo.php';	
 		}elseif($_GET['do'] == 'cart'){
 			require 'pages/cart.php';	
-
+		}elseif($_GET['do'] == 'suppliers'){
+			require 'pages/suppliers.php';
+			
 		}elseif($_GET['do'] == 'pvmaker' && $settings['pv_maker'] == '1'){
 			require 'pages/pvmaker.php';	
 			

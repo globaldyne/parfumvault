@@ -52,16 +52,16 @@ if($_GET['do'] == 'backupDB'){
 		header("Location: maintenance.php?do=restoreDB&err=2");
 	}
 
-}elseif(isset($_POST['import_ifra'])){
-	$filename=$_FILES["file"]["tmp_name"];  
-    $file_ext=strtolower(end(explode('.',$_FILES['file']['name'])));
+}elseif(isset($_FILES['IFRAfile'])){
+	$filename = $_FILES["IFRAfile"]["tmp_name"];  
+    $file_ext = strtolower(end(explode('.',$_FILES['IFRAfile']['name'])));
 	$all_ext = "xls,xlsx";
     $ext = explode(",",$all_ext);
 
     if(in_array($file_ext,$ext)=== false){
 		 echo '<div class="alert alert-danger alert-dismissible"><strong>File upload error: </strong>Extension not allowed, please choose a '.$all_ext.' file.</div>';
 	}else{
-		if($_FILES["file"]["size"] > 0){
+		if($_FILES["IFRAfile"]["size"] > 0){
 		require_once('../func/SimpleXLSX.php');
 		mysqli_query($conn, "TRUNCATE IFRALibrary");
 	
@@ -152,7 +152,7 @@ if($_GET['do'] == 'backupDB'){
                               </tr>
                               <tr>
                                 <td colspan="2"><p class="alert-link">Notes:</p>
-                                <p class="bg-gray-100">File must be a valid sql backup<br/>
+                                <p class="bg-gray-100">Its <strong>important</strong> the backup you are restoring is the same version as your PV version<br/>
                                 After a succesfull backup you will be automatically logged out</p></td>
                               </tr>
                             </table>
@@ -191,7 +191,7 @@ if($_GET['do'] == 'backupDB'){
                               <tr>
                                 <td width="21%">Choose file:</td>
                                 <td width="79%"><span class="col-md-4">
-                                  <input type="file" name="file" id="file" class="input-large" />
+                                  <input type="file" name="IFRAfile" id="IFRAfile" class="input-large" />
                                 </span></td>
                               </tr>
                               <tr>
