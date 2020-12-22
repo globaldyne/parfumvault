@@ -14,7 +14,6 @@ require_once('./func/checkIng.php');
 require_once('./func/checkAllergen.php');
 require_once('./func/getIngUsage.php');
 require_once('./func/checkVer.php');
-//require_once('./func/formulaProfile.php');
 require_once('./func/getIFRAtypes.php');
 require_once('./func/searchIFRA.php');
 require_once('./func/formatBytes.php');
@@ -32,6 +31,10 @@ require_once('./func/pvOnline.php');
 
 require('./inc/settings.php');
 
+if($pv_meta['app_ver'] < trim(file_get_contents(__ROOT__.'/VERSION.md'))){
+	$upVerLoc = trim(file_get_contents(__ROOT__.'/VERSION.md'));
+	mysqli_query($conn, "UPDATE pv_meta SET app_ver = '$upVerLoc'");
+}
 ?>
 
 <head>
