@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 2.2
+- ADD: Release notes
 - FIX: Various minor fixes and improvements
 
 ### Version 2.1.2
