@@ -1,6 +1,7 @@
 # CHANGELOG
 ### Version 2.2
 - ADD: Release notes
+- CHG: Change limitation format in ingredients page
 - FIX: Various minor fixes and improvements
 
 ### Version 2.1.2

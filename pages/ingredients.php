@@ -53,7 +53,7 @@ $ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC
                       <th>Odor</th>
                       <th>Profile</th>
                       <th>Category</th>
-                      <th>IFRA (Cat4 %)</th>
+                      <th>Cat4 %</th>
                       <th>Supplier</th>
                       <th class="noexport">SDS</th>
                       <th class="noexport">TGSC</th>
@@ -76,9 +76,10 @@ $ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC
                       <td align="center">'.$ingredient['profile'].'</td>
 					  <td align="center">'.$ingredient['category'].'</td>';
   					  if($limit = searchIFRA($ingredient['cas'],$ingredient['name'],null,$conn)){
-						  echo '<td align="center">'.nl2br(str_replace(' - ', "\n",$limit)).'</td>';
+						  $limit = explode(' - ', $limit);
+						  echo '<td align="center"><a href="#" rel="tipsy" title="'.$limit['1'].'">'.$limit['0'].'<a></td>';
 					  }elseif($ingredient['IFRA']){
-						  echo '<td align="center">'.$ingredient['IFRA'].'%</td>';
+						  echo '<td align="center">'.$ingredient['IFRA'].'</td>';
 					  }else{
 						  echo '<td align="center">N/A</a>';
 					  }
