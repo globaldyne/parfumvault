@@ -381,7 +381,7 @@ function downloadBoxLabel() {
   </tr>
   <tr>
     <td>Category Class:</td>
-    <td><select name="defCatClass" id="defCatClass" class="form-control">
+    <td><select name="defCatClass" id="defCatClass" class="form-control selectpicker" data-live-search="true">
 			  <option value="cat1" <?php if($settings['defCatClass']=="cat1") echo 'selected="selected"'; ?> >Cat 1</option>
 			  <option value="cat2" <?php if($settings['defCatClass']=="cat2") echo 'selected="selected"'; ?> >Cat 2</option>
 			  <option value="cat3" <?php if($settings['defCatClass']=="cat3") echo 'selected="selected"'; ?> >Cat 3</option>

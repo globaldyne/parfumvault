@@ -13,6 +13,7 @@ if($_GET['action'] == "delete" && $_GET['id']){
 	}
 }
 $ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC");
+$defCatClass = $settings['defCatClass'];
 
 ?>
 <div id="content-wrapper" class="d-flex flex-column">
@@ -53,7 +54,7 @@ $ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC
                       <th>Odor</th>
                       <th>Profile</th>
                       <th>Category</th>
-                      <th>Cat4 %</th>
+                      <th><?php echo ucfirst($settings['defCatClass']);?> %</th>
                       <th>Supplier</th>
                       <th class="noexport">SDS</th>
                       <th class="noexport">TGSC</th>
@@ -78,8 +79,8 @@ $ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC
   					  if($limit = searchIFRA($ingredient['cas'],$ingredient['name'],null,$conn)){
 						  $limit = explode(' - ', $limit);
 						  echo '<td align="center"><a href="#" rel="tipsy" title="'.$limit['1'].'">'.$limit['0'].'<a></td>';
-					  }elseif($ingredient['cat4']){
-						  echo '<td align="center">'.$ingredient['cat4'].'</td>';
+					  }elseif($ingredient[$defCatClass]){
+						  echo '<td align="center">'.$ingredient[$defCatClass].'</td>';
 					  }else{
 						  echo '<td align="center">N/A</a>';
 					  }
