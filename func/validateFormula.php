@@ -1,10 +1,10 @@
 <?php 
 if (!defined('pvault_panel')){ die('Not Found');}
 
-function validateFormula($fid, $bottle, $new_conc, $mg, $conn ){
+function validateFormula($fid, $bottle, $new_conc, $mg, $defCatClass, $conn ){
 	$formula_q = mysqli_query($conn, "SELECT ingredient,quantity,concentration FROM formulas WHERE fid = '$fid'");
 	while ($formula = mysqli_fetch_array($formula_q)) {
-		$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT cas,cat4 FROM ingredients WHERE name = '".$formula['ingredient']."'"));
+		$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT cas, $defCatClass FROM ingredients WHERE name = '".$formula['ingredient']."'"));
 
 		$limitIFRA = searchIFRA($ing_q['cas'],$formula['ingredient'],null,$conn);
 		$limit = explode(' - ', $limitIFRA);
@@ -22,8 +22,8 @@ function validateFormula($fid, $bottle, $new_conc, $mg, $conn ){
 				$val[] = 0; //VALUE IS OK
 			}
 		}else
-		  if($ing_q['cat4'] != null){
-		  	if($ing_q['cat4'] < $conc_p){
+		  if($ing_q[$defCatClass] != null){
+		  	if($ing_q[$defCatClass] < $conc_p){
 				$val[] = 1; //VALUE IS TO HIGH AGAINST LOCAL DB
 		  	}else{
 				$val[] = 0; //VALUE IS OK

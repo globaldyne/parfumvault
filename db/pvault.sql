@@ -298,7 +298,8 @@ CREATE TABLE `settings` (
   `chkVersion` int(11) DEFAULT NULL,
   `pv_maker` int(11) DEFAULT 0,
   `pv_maker_host` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `qStep` INT(5) NOT NULL DEFAULT '2'
+  `qStep` INT(5) NOT NULL DEFAULT '2',
+  `defCatClass` VARCHAR(255) NOT NULL DEFAULT 'cat4' 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 INSERT INTO `settings` (`id`, `label_printer_addr`, `label_printer_model`, `label_printer_size`, `label_printer_font_size`, `currency`, `top_n`, `heart_n`, `base_n`, `EDP`, `EDT`, `EDC`, `Parfum`, `chem_vs_brand`, `grp_formula`, `brandName`, `brandAddress`, `brandEmail`, `brandPhone`, `brandLogo`) VALUES

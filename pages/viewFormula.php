@@ -23,7 +23,7 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulas WHERE fid = '$f
 }
 
 $formula_q = mysqli_query($conn, "SELECT * FROM formulas WHERE fid = '$fid' ORDER BY ingredient ASC");
-                    
+$defCatClass = $settings['defCatClass'];
 
 $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE fid = '$fid'"));
 $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE fid = '$fid'"));
@@ -259,7 +259,7 @@ $('.replaceIngredient').editable({
                   </thead>
                   <tbody id="formula_data">
                   <?php while ($formula = mysqli_fetch_array($formula_q)) {
-					 	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT cas, cat4, price, ml, profile, odor FROM ingredients WHERE BINARY name = '".$formula['ingredient']."'"));
+					 	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT cas, $defCatClass, price, ml, profile, odor FROM ingredients WHERE BINARY name = '".$formula['ingredient']."'"));
 
 						$limitIFRA = searchIFRA($ing_q['cas'],$formula['ingredient'],null,$conn);
 						$limit = explode(' - ', $limitIFRA);
@@ -287,7 +287,7 @@ $('.replaceIngredient').editable({
 								echo '<td class="noexport">'.$ing_q['profile'].'</td>';
 							}
 						}
-                      echo '<td align="center" class="'.$ing_q['profile'].'" id="ingredient"><a href="pages/editIngredient.php?id='.$formula['ingredient'].'" class="popup-link">'.$ingName.'</a> '.checkIng($formula['ingredient'],$conn).'</td>
+                      echo '<td align="center" class="'.$ing_q['profile'].'" id="ingredient"><a href="pages/editIngredient.php?id='.$formula['ingredient'].'" class="popup-link">'.$ingName.'</a> '.checkIng($formula['ingredient'],$settings['defCatClass'],$conn).'</td>
 					  <td align="center">'.$ing_q['cas'].'</td>
                       <td data-name="concentration" class="concentration" data-type="text" align="center" data-pk="'.$formula['ingredient'].'">'.$formula['concentration'].'</td>';
 					  if($formula['concentration'] == '100'){
@@ -302,8 +302,8 @@ $('.replaceIngredient').editable({
 							$IFRA_WARN = 'class="alert-success"'; //VALUE IS OK
 						}
 					  }else
-					  if($ing_q['cat4'] != null){
-					  	if($ing_q['cat4'] < $conc_p){
+					  if($ing_q[$defCatClass] != null){
+					  	if($ing_q[$defCatClass] < $conc_p){
 							$IFRA_WARN = 'class="alert-danger"'; //VALUE IS TO HIGH AGAINST LOCAL DB
 					  	}else{
 							$IFRA_WARN = 'class="alert-success"'; //VALUE IS OK

@@ -1,7 +1,8 @@
 # CHANGELOG
 ### Version 2.2
-- UPD: Remove IFRA from ingredients
 - ADD: Release notes
+- ADD: Option to choose category class
+- UPD: Remove IFRA from ingredients
 - CHG: Change limitation format in ingredients page
 - FIX: Various minor fixes and improvements
 
