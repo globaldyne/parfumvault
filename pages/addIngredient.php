@@ -18,7 +18,7 @@ if($_POST['name']){
 	$type = mysqli_real_escape_string($conn, $_POST["type"]);
 	$strength = mysqli_real_escape_string($conn, $_POST["strength"]);
 	$category = mysqli_real_escape_string($conn, $_POST["category"]);
-	$IFRA = mysqli_real_escape_string($conn, $_POST["IFRA"]);
+	$cat4 = mysqli_real_escape_string($conn, $_POST["cat4"]);
 	$supplier = mysqli_real_escape_string($conn, $_POST["supplier"]);
 	$supplier_link = mysqli_real_escape_string($conn, $_POST["supplier_link"]);
 	
@@ -70,7 +70,7 @@ if($_POST['name']){
 		</div>';
 	}else{
 		
-		if(mysqli_query($conn, "INSERT INTO ingredients (name, cas, FEMA, type, strength, SDS, IFRA, category, supplier, supplier_link, profile, price, tenacity, chemical_name, flash_point, appearance, notes, ml, odor, purity, allergen) VALUES ('$name', '$cas', '$fema', '$type', '$strength', '$SDSF', '$IFRA', '$category', '$supplier', '$supplier_link', '$profile', '$price', '$tenacity', '$chemical_name', '$flash_point', '$appearance', '$notes', '$ml', '$odor', '$purity', '$allergen')")){
+		if(mysqli_query($conn, "INSERT INTO ingredients (name, cas, FEMA, type, strength, SDS, cat4, category, supplier, supplier_link, profile, price, tenacity, chemical_name, flash_point, appearance, notes, ml, odor, purity, allergen) VALUES ('$name', '$cas', '$fema', '$type', '$strength', '$SDSF', '$cat4', '$category', '$supplier', '$supplier_link', '$profile', '$price', '$tenacity', '$chemical_name', '$flash_point', '$appearance', '$notes', '$ml', '$odor', '$purity', '$allergen')")){
 			$msg.='<div class="alert alert-success alert-dismissible">
 			<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
   			Ingredient <strong>'.$name.'</strong> added!
@@ -149,7 +149,7 @@ $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles ORDER BY
                               </tr>
                               <tr>
                                 <td>Cat4 Limit %:</td>
-                                <td colspan="2"><input name="IFRA" type="text" class="form-control ing_list" id="IFRA"></td>
+                                <td colspan="2"><input name="cat4" type="text" class="form-control ing_list" id="cat4"></td>
                               </tr>
                               <tr>
                                 <td>Purity %:</td>

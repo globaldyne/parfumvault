@@ -171,7 +171,6 @@ CREATE TABLE `ingredients` (
   `type` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `strength` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `category` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `IFRA` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `purity` varchar(11) COLLATE utf8_bin DEFAULT NULL,
   `cas` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `FEMA` varchar(255) COLLATE utf8_bin DEFAULT NULL,

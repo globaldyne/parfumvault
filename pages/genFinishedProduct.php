@@ -160,7 +160,7 @@ function downloadBoxLabel() {
                     </tr>
                   </thead>
                   <?php while ($formula = mysqli_fetch_array($formula_q)) {
-					    $ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT cas,IFRA,price,ml FROM ingredients WHERE name = '".$formula['ingredient']."'"));
+					    $ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT cas,cat4,price,ml FROM ingredients WHERE name = '".$formula['ingredient']."'"));
 
 						$limitIFRA = searchIFRA($ing_q['cas'],$formula['ingredient'],null,$conn);
 						$limit = explode(' - ', $limitIFRA);
@@ -186,8 +186,8 @@ function downloadBoxLabel() {
 							$IFRA_WARN = 'class="alert-success"'; //VALUE IS OK
 						}
 					  }else
-					  if($ing_q['IFRA'] != null){
-					  	if($ing_q['IFRA'] < $conc_p){
+					  if($ing_q['cat4'] != null){
+					  	if($ing_q['cat4'] < $conc_p){
 							$IFRA_WARN = 'class="alert-danger"'; //VALUE IS TO HIGH AGAINST LOCAL DB
 					  	}else{
 							$IFRA_WARN = 'class="alert-success"'; //VALUE IS OK

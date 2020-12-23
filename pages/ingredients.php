@@ -78,8 +78,8 @@ $ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC
   					  if($limit = searchIFRA($ingredient['cas'],$ingredient['name'],null,$conn)){
 						  $limit = explode(' - ', $limit);
 						  echo '<td align="center"><a href="#" rel="tipsy" title="'.$limit['1'].'">'.$limit['0'].'<a></td>';
-					  }elseif($ingredient['IFRA']){
-						  echo '<td align="center">'.$ingredient['IFRA'].'</td>';
+					  }elseif($ingredient['cat4']){
+						  echo '<td align="center">'.$ingredient['cat4'].'</td>';
 					  }else{
 						  echo '<td align="center">N/A</a>';
 					  }

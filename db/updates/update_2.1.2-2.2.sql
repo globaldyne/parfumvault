@@ -1,0 +1,1 @@
+ALTER TABLE `ingredients` DROP `IFRA`;
