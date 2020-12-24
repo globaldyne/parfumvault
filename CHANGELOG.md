@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 2.2
+- ADD: Prohibition and Specification in ingredients usage classification
 - ADD: Release notes
 - ADD: Option to choose category class
 - UPD: Remove IFRA from ingredients

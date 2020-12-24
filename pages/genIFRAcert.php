@@ -10,6 +10,7 @@ require_once('../func/validateFormula.php');
 
 $bottle = $_GET['bottle'];
 $type = $_GET['conc'];
+$defCatClass = $settings['defCatClass'];
 
 if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM IFRALibrary"))== 0){
 	$msg = 'You need to <a href="maintenance.php?do=IFRA">import</a> the IFRA xls first.';
@@ -27,7 +28,7 @@ $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg F
 
 $new_conc = $bottle/100*$type;
 
-if(validateFormula($fid, $bottle, $new_conc, $mg['total_mg'], $conn) == TRUE){
+if(validateFormula($fid, $bottle, $new_conc, $mg['total_mg'], $defCatClass, $conn) == TRUE){
 	die('Error: Your formula contains materials, exceeding and/or missing IFRA standards. Please alter your formula and try again.');
 }
 

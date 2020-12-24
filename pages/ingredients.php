@@ -76,7 +76,7 @@ $defCatClass = $settings['defCatClass'];
 					  <td align="center">'.$ingredient['odor'].'</td>
                       <td align="center">'.$ingredient['profile'].'</td>
 					  <td align="center">'.$ingredient['category'].'</td>';
-  					  if($limit = searchIFRA($ingredient['cas'],$ingredient['name'],null,$conn)){
+  					  if($limit = searchIFRA($ingredient['cas'],$ingredient['name'],null,$conn,$defCatClass)){
 						  $limit = explode(' - ', $limit);
 						  echo '<td align="center"><a href="#" rel="tipsy" title="'.$limit['1'].'">'.$limit['0'].'<a></td>';
 					  }elseif($ingredient[$defCatClass]){

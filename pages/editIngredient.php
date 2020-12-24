@@ -383,15 +383,33 @@ reload_data();
                                <table width="100%" border="0">
                                 <tr>
                                   <td height="32">Flavor use:</td>
-                                  <td colspan="3"><input name="flavor_use" type="checkbox" id="flavor_use" value="1" <?php if($ing['flavor_use'] == '1'){; ?> checked="checked"  <?php } ?>/></td>
+                                  <td width="78%" colspan="3"><input name="flavor_use" type="checkbox" id="flavor_use" value="1" <?php if($ing['flavor_use'] == '1'){; ?> checked="checked"  <?php } ?>/></td>
                                 </tr>
 
-                                <td width="0%"></td>
+                                <td width="22%"></td>
 
                                 </tr>
                                 <tr>
                                   <td colspan="4"><hr /></td>
                                  </tr>
+                                <tr>
+                                  <td>Usage classification:</td>
+                                  <td colspan="3">
+                                <?php if($rType = searchIFRA($ing['cas'],$ing['name'],'type',$conn, $defCatClass)){
+										  echo $rType;
+									  }else{
+								?>
+
+                    <select name="usage_type" id="usage_type" class="form-control">
+                      <option value="none" selected="selected">None</option>
+					  <option value="1" <?php if($ing['usage_type']=="1") echo 'selected="selected"'; ?> >Recommendation</option>
+					  <option value="2" <?php if($ing['usage_type']=="2") echo 'selected="selected"'; ?> >Restriction</option>
+					  <option value="2" <?php if($ing['usage_type']=="3") echo 'selected="selected"'; ?> >Specification</option>
+					  <option value="2" <?php if($ing['usage_type']=="4") echo 'selected="selected"'; ?> >Prohibition</option>
+                    </select>
+                    			<?php } ?>
+                    </td>
+                                </tr>
                                 <tr>
                                   <td>Cat1 %:</td>
                                   <td colspan="3"><?php
@@ -475,7 +493,7 @@ reload_data();
                                 <tr>
                                   <td>Cat6  %:</td>
                                   <td colspan="3"><?php
-								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn)){
+								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat6')){
 										echo $limit;
 									}else{
 								?>
@@ -630,8 +648,8 @@ reload_data();
                                 <td>Formula:</td>
                                 <td colspan="3">
 								<?php
-								 	if($limit = searchIFRA($ing['cas'],$ing['name'],'formula',$conn)){
-										echo $limit;
+								 	if($chFormula = searchIFRA($ing['cas'],$ing['name'],'formula',$conn,$defCatClass)){
+										echo $chFormula;
 									}else{
 								?>
                                 <input name="formula" type="text" class="form-control" id="formula" value="<?php echo $ing['formula']; ?>">
