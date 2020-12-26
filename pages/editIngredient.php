@@ -5,6 +5,7 @@ require_once('../inc/config.php');
 require_once('../inc/opendb.php');
 require_once('../inc/settings.php');
 require_once('../func/formatBytes.php');
+require_once('../func/validateInput.php');
 
 require_once('../func/searchIFRA.php');
 
@@ -24,37 +25,38 @@ if($_POST){
 	$supplier_link = mysqli_real_escape_string($conn, $_POST["supplier_link"]);
 	
 	$profile = mysqli_real_escape_string($conn, $_POST["profile"]);
-	$price = mysqli_real_escape_string($conn, $_POST["price"]);
+	$price = validateInput($_POST["price"]);
 	$tenacity = mysqli_real_escape_string($conn, $_POST["tenacity"]);
 	$chemical_name = mysqli_real_escape_string($conn, $_POST["chemical_name"]);
 	$flash_point = mysqli_real_escape_string($conn, $_POST["flash_point"]);
 	$appearance = mysqli_real_escape_string($conn, $_POST["appearance"]);
-	$ml = mysqli_real_escape_string($conn, $_POST["ml"]);
+	$ml = validateInput($_POST["ml"]);
 	$solvent = mysqli_real_escape_string($conn, $_POST["solvent"]);
 	$odor = ucfirst(trim(mysqli_real_escape_string($conn, $_POST["odor"])));
 	$notes = ucfirst(trim(mysqli_real_escape_string($conn, $_POST["notes"])));
-	$purity = mysqli_real_escape_string($conn, $_POST["purity"]);
+	$purity = validateInput($_POST["purity"]);
 	$soluble = mysqli_real_escape_string($conn, $_POST["soluble"]);
 	$logp = mysqli_real_escape_string($conn, $_POST["logp"]);
 
-	$cat1 = mysqli_real_escape_string($conn, $_POST["cat1"]);
-	$cat2 = mysqli_real_escape_string($conn, $_POST["cat2"]);
-	$cat3 = mysqli_real_escape_string($conn, $_POST["cat3"]);
-	$cat4 = mysqli_real_escape_string($conn, $_POST["cat4"]);
-	$cat5A = mysqli_real_escape_string($conn, $_POST["cat5A"]);
-	$cat5B = mysqli_real_escape_string($conn, $_POST["cat5B"]);
-	$cat5C = mysqli_real_escape_string($conn, $_POST["cat5C"]);
-	$cat5D = mysqli_real_escape_string($conn, $_POST["cat5D"]);
-	$cat6 = mysqli_real_escape_string($conn, $_POST["cat6"]);
-	$cat7A = mysqli_real_escape_string($conn, $_POST["cat7A"]);
-	$cat7B = mysqli_real_escape_string($conn, $_POST["cat7B"]);
-	$cat8 = mysqli_real_escape_string($conn, $_POST["cat8"]);
-	$cat9 = mysqli_real_escape_string($conn, $_POST["cat9"]);
-	$cat10A = mysqli_real_escape_string($conn, $_POST["cat10A"]);
-	$cat10B = mysqli_real_escape_string($conn, $_POST["cat10B"]);
-	$cat11A = mysqli_real_escape_string($conn, $_POST["cat11A"]);
-	$cat11B = mysqli_real_escape_string($conn, $_POST["cat11B"]);
-	$cat12 = mysqli_real_escape_string($conn, $_POST["cat12"]);
+	$cat1 = validateInput($_POST["cat1"]);
+	$cat2 = validateInput($_POST["cat2"]);
+	$cat3 = validateInput($_POST["cat3"]);
+	$cat4 = validateInput($_POST["cat4"]);
+	$cat5A = validateInput($_POST["cat5A"]);
+	$cat5B = validateInput($_POST["cat5B"]);
+	$cat5C = validateInput($_POST["cat5C"]);
+	$cat5D = validateInput($_POST["cat5D"]);
+	$cat6 = validateInput($_POST["cat6"]);
+	$cat7A = validateInput($_POST["cat7A"]);
+	$cat7B = validateInput($_POST["cat7B"]);
+	$cat8 = validateInput($_POST["cat8"]);
+	$cat9 = validateInput($_POST["cat9"]);
+	$cat10A = validateInput($_POST["cat10A"]);
+	$cat10B = validateInput($_POST["cat10B"]);
+	$cat11A = validateInput($_POST["cat11A"]);
+	$cat11B = validateInput($_POST["cat11B"]);
+	$cat12 = validateInput($_POST["cat12"]);
+	
 	$manufacturer = mysqli_real_escape_string($conn, $_POST["manufacturer"]);
 	$impact_top = mysqli_real_escape_string($conn, $_POST["impact_top"]);
 	$impact_base = mysqli_real_escape_string($conn, $_POST["impact_base"]);

@@ -4,6 +4,7 @@
 - ADD: Release notes
 - ADD: Option to choose category class
 - UPD: Remove IFRA from ingredients
+- UPD: Ingredients input validation
 - CHG: Change limitation format in ingredients page
 - FIX: Various minor fixes and improvements
 
