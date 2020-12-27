@@ -1,4 +1,13 @@
 # CHANGELOG
+### Version 2.2
+- ADD: Prohibition and Specification in ingredients usage classification
+- ADD: Release notes
+- ADD: Option to choose category class
+- UPD: Remove IFRA from ingredients
+- UPD: Ingredients input validation
+- CHG: Change limitation format in ingredients page
+- FIX: Various minor fixes and improvements
+
 ### Version 2.1.2
 - ADD: Making formula page aSync
 - ADD: Custom amount of formula to make

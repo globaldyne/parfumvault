@@ -14,6 +14,11 @@ if($_POST['formula']){
 	$lid_id = mysqli_real_escape_string($conn, $_POST['lid']);
 	$bottle_cost = mysqli_fetch_array(mysqli_query($conn, "SELECT  price,ml,name FROM bottles WHERE id = '$bottle'"));
 	$carrier_cost = mysqli_fetch_array(mysqli_query($conn, "SELECT  price,ml FROM ingredients WHERE id = '$carrier_id'"));
+	$defCatClass = mysqli_real_escape_string($conn, $_POST['defCatClass']);
+
+	if(empty($defCatClass)){
+		$defCatClass = $settings['defCatClass'];
+	}
 	
 	if($_POST['lid']){
 		$lid_cost = mysqli_fetch_array(mysqli_query($conn, "SELECT  price,style FROM lids WHERE id = '$lid_id'"));
@@ -21,12 +26,12 @@ if($_POST['formula']){
 		$lid_cost['price'] = 0;
 		$lid_cost['style'] = 'none';
 	}
-		   
+	
 	$bottle = $bottle_cost['ml'];
 	$new_conc = $bottle/100*$type;
 	$carrier = $bottle - $new_conc;
 	
-	if(validateFormula($meta['fid'], $bottle, $new_conc, $mg['total_mg'], $conn) == TRUE){
+	if(validateFormula($meta['fid'], $bottle, $new_conc, $mg['total_mg'], $defCatClass, $conn) == TRUE){
 		$msg =  '<div class="alert alert-danger alert-dismissible">Your formula contains materials, exceeding and/or missing IFRA standards. Please alter your formula.</div>';
 	}
 
@@ -120,9 +125,11 @@ function downloadBoxLabel() {
             <div class="card-header py-3"> 
 			<?php if($_GET['generate']){?>
              <h2 class="m-0 font-weight-bold text-primary"><a href="?do=genFinishedProduct"><?php echo $meta['product_name'];?></a></h2>
-             <h5 class="m-1 text-primary">Formula: <?php echo $meta['name'];?></h5>
-             <h5 class="m-1 text-primary"><?php echo "Bottle: ".$bottle."ml Concentration: ".$type."%";?></h5>
+             <h5 class="m-1 text-primary">Formula name: <strong><?php echo $meta['name'];?></strong></h5>
+             <h5 class="m-1 text-primary">Bottle: <strong><?php echo $bottle; ?>ml</strong></h5>
+			 <h5 class="m-1 text-primary">Concentration: <strong><?php echo $type; ?>%</h5>
              <h5 class="m-1 text-primary"><?php if($_POST['batchID'] == '1'){ echo 'Batch ID: <a href="'.$uploads_path.'batches/'.$batchID.'" target="_blank">'.$batchID.'</a>'; }else{ echo 'Batch ID: <a href="#">N/A</a>';}?></h5>
+             <h5 class="m-1 text-primary">Category Class: <strong><?php echo ucfirst($defCatClass);?></strong></h5>
         	<?php }else{ ?>
               <h2 class="m-0 font-weight-bold text-primary"><a href="?do=genFinishedProduct">Generate Finished Product</a></h2>
             <?php } ?>
@@ -160,9 +167,9 @@ function downloadBoxLabel() {
                     </tr>
                   </thead>
                   <?php while ($formula = mysqli_fetch_array($formula_q)) {
-					    $ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT cas,IFRA,price,ml FROM ingredients WHERE name = '".$formula['ingredient']."'"));
+					    $ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT cas,$defCatClass,price,ml FROM ingredients WHERE name = '".$formula['ingredient']."'"));
 
-						$limitIFRA = searchIFRA($ing_q['cas'],$formula['ingredient'],null,$conn);
+						$limitIFRA = searchIFRA($ing_q['cas'],$formula['ingredient'],null,$conn,$defCatClass);
 						$limit = explode(' - ', $limitIFRA);
 					    $limit = $limit['0'];
 					  
@@ -186,8 +193,8 @@ function downloadBoxLabel() {
 							$IFRA_WARN = 'class="alert-success"'; //VALUE IS OK
 						}
 					  }else
-					  if($ing_q['IFRA'] != null){
-					  	if($ing_q['IFRA'] < $conc_p){
+					  if($ing_q[$defCatClass] != null){
+					  	if($ing_q[$defCatClass] < $conc_p){
 							$IFRA_WARN = 'class="alert-danger"'; //VALUE IS TO HIGH AGAINST LOCAL DB
 					  	}else{
 							$IFRA_WARN = 'class="alert-success"'; //VALUE IS OK
@@ -370,6 +377,30 @@ function downloadBoxLabel() {
 	  ?>
      </select>
     </td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Category Class:</td>
+    <td><select name="defCatClass" id="defCatClass" class="form-control selectpicker" data-live-search="true">
+			  <option value="cat1" <?php if($settings['defCatClass']=="cat1") echo 'selected="selected"'; ?> >Cat 1</option>
+			  <option value="cat2" <?php if($settings['defCatClass']=="cat2") echo 'selected="selected"'; ?> >Cat 2</option>
+			  <option value="cat3" <?php if($settings['defCatClass']=="cat3") echo 'selected="selected"'; ?> >Cat 3</option>
+              <option value="cat4" <?php if($settings['defCatClass']=="cat4") echo 'selected="selected"'; ?> >Cat 4</option>
+			  <option value="cat5A" <?php if($settings['defCatClass']=="cat5A") echo 'selected="selected"'; ?> >Cat 5A</option>
+			  <option value="cat5B" <?php if($settings['defCatClass']=="cat5B") echo 'selected="selected"'; ?> >Cat 5B</option>
+			  <option value="cat5C" <?php if($settings['defCatClass']=="cat5C") echo 'selected="selected"'; ?> >Cat 5C</option>
+			  <option value="cat5D" <?php if($settings['defCatClass']=="cat5D") echo 'selected="selected"'; ?> >Cat 5D</option>
+			  <option value="cat6" <?php if($settings['defCatClass']=="cat6") echo 'selected="selected"'; ?> >Cat 6</option>
+			  <option value="cat7A" <?php if($settings['defCatClass']=="cat7A") echo 'selected="selected"'; ?> >Cat 7A</option>
+			  <option value="cat7B" <?php if($settings['defCatClass']=="cat7B") echo 'selected="selected"'; ?> >Cat 7B</option>
+			  <option value="cat8" <?php if($settings['defCatClass']=="cat8") echo 'selected="selected"'; ?> >Cat 8</option>
+			  <option value="cat9" <?php if($settings['defCatClass']=="cat9") echo 'selected="selected"'; ?> >Cat 9</option>
+			  <option value="cat10A" <?php if($settings['defCatClass']=="cat10A") echo 'selected="selected"'; ?> >Cat 10A</option>
+			  <option value="cat10B" <?php if($settings['defCatClass']=="cat10B") echo 'selected="selected"'; ?> >Cat 10B</option>
+			  <option value="cat11A" <?php if($settings['defCatClass']=="cat11A") echo 'selected="selected"'; ?> >Cat 11A</option>
+			  <option value="cat11B" <?php if($settings['defCatClass']=="cat11B") echo 'selected="selected"'; ?> >Cat 11B</option>
+			  <option value="cat12" <?php if($settings['defCatClass']=="cat12") echo 'selected="selected"'; ?> >Cat 12</option>
+            </select></td>
     <td>&nbsp;</td>
   </tr>
   <tr>

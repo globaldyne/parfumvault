@@ -2,6 +2,7 @@
 if (!defined('pvault_panel')){ die('Not Found');}
 
 $ifra_q = mysqli_query($conn, "SELECT * FROM IFRALibrary ORDER BY amendment DESC");
+$defCatClass = $settings['defCatClass'];
 
 ?>
 <div id="content-wrapper" class="d-flex flex-column">
@@ -38,7 +39,7 @@ $ifra_q = mysqli_query($conn, "SELECT * FROM IFRALibrary ORDER BY amendment DESC
                       <th>Synonyms</th>
                       <th>IFRA Type</th>
                       <th>Risk</th>
-                      <th>Cat4%</th>
+                      <th><?php echo ucfirst($defCatClass); ?>%</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -53,7 +54,7 @@ $ifra_q = mysqli_query($conn, "SELECT * FROM IFRALibrary ORDER BY amendment DESC
   					  <td align="center">'.$IFRA['synonyms'].'</td>
 					  <td align="center">'.$IFRA['type'].'</td>
 					  <td align="center">'.$IFRA['risk'].'</td>
-					  <td align="center">'.$IFRA['cat4'].'</td>';
+					  <td align="center">'.$IFRA[$defCatClass].'</td>';
 					echo '</tr>';
 				  }
                     ?>

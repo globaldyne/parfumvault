@@ -18,7 +18,7 @@ if($_POST['name']){
 	$type = mysqli_real_escape_string($conn, $_POST["type"]);
 	$strength = mysqli_real_escape_string($conn, $_POST["strength"]);
 	$category = mysqli_real_escape_string($conn, $_POST["category"]);
-	$IFRA = mysqli_real_escape_string($conn, $_POST["IFRA"]);
+	$cat = mysqli_real_escape_string($conn, $_POST["cat"]);
 	$supplier = mysqli_real_escape_string($conn, $_POST["supplier"]);
 	$supplier_link = mysqli_real_escape_string($conn, $_POST["supplier_link"]);
 	
@@ -64,25 +64,14 @@ if($_POST['name']){
    }
 
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '$name'"))){
-		$msg='<div class="alert alert-danger alert-dismissible">
-		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-  		<strong>Error: </strong>'.$name.' already exists!
-		</div>';
+		$msg='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$name.' already exists!</div>';
 	}else{
 		
-		if(mysqli_query($conn, "INSERT INTO ingredients (name, cas, FEMA, type, strength, SDS, IFRA, category, supplier, supplier_link, profile, price, tenacity, chemical_name, flash_point, appearance, notes, ml, odor, purity, allergen) VALUES ('$name', '$cas', '$fema', '$type', '$strength', '$SDSF', '$IFRA', '$category', '$supplier', '$supplier_link', '$profile', '$price', '$tenacity', '$chemical_name', '$flash_point', '$appearance', '$notes', '$ml', '$odor', '$purity', '$allergen')")){
-			$msg.='<div class="alert alert-success alert-dismissible">
-			<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-  			Ingredient <strong>'.$name.'</strong> added!
-			<div>'.$msgF.'</div>
+		if(mysqli_query($conn, "INSERT INTO ingredients (name, cas, FEMA, type, strength, SDS, ".$settings['defCatClass'].", category, supplier, supplier_link, profile, price, tenacity, chemical_name, flash_point, appearance, notes, ml, odor, purity, allergen) VALUES ('$name', '$cas', '$fema', '$type', '$strength', '$SDSF', '$cat', '$category', '$supplier', '$supplier_link', '$profile', '$price', '$tenacity', '$chemical_name', '$flash_point', '$appearance', '$notes', '$ml', '$odor', '$purity', '$allergen')")){
+			$msg.='<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Ingredient <strong>'.$name.'</strong> added!<div>'.$msgF.'</div>
 			</div>';
 		}else{
-			$msg.='<div class="alert alert-danger alert-dismissible">
-			<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-  			<strong>Error:</strong> Failed to add '.$name.'!
-			<div>'.$msgF.'</div>
-			</div>';
-			print mysqli_error($conn);
+			$msg.='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Failed to add '.$name.'!<div>'.$msgF.'</div></div>';
 		}
 	}
 }
@@ -148,8 +137,8 @@ $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles ORDER BY
                                 <td width="60%">&nbsp;</td>
                               </tr>
                               <tr>
-                                <td>Cat4 Limit %:</td>
-                                <td colspan="2"><input name="IFRA" type="text" class="form-control ing_list" id="IFRA"></td>
+                                <td><?php echo ucfirst($settings['defCatClass']);?> Limit %:</td>
+                                <td colspan="2"><input name="cat" type="text" class="form-control ing_list" id="cat"></td>
                               </tr>
                               <tr>
                                 <td>Purity %:</td>

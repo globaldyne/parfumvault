@@ -14,7 +14,6 @@ require_once('./func/checkIng.php');
 require_once('./func/checkAllergen.php');
 require_once('./func/getIngUsage.php');
 require_once('./func/checkVer.php');
-//require_once('./func/formulaProfile.php');
 require_once('./func/getIFRAtypes.php');
 require_once('./func/searchIFRA.php');
 require_once('./func/formatBytes.php');
@@ -32,6 +31,12 @@ require_once('./func/pvOnline.php');
 
 require('./inc/settings.php');
 
+if($pv_meta['app_ver'] < trim(file_get_contents(__ROOT__.'/VERSION.md'))){
+	$upVerLoc = trim(file_get_contents(__ROOT__.'/VERSION.md'));
+	if(mysqli_query($conn, "UPDATE pv_meta SET app_ver = '$upVerLoc'")){
+		$show_release_notes = true;
+	}
+}
 ?>
 
 <head>
@@ -75,7 +80,9 @@ require('./inc/settings.php');
 
 $(document).ready(function() {
 	$('a[rel=tipsy]').tipsy();
-	
+	<?php if($show_release_notes){?>
+	$('#release_notes').modal('show');
+	<?php } ?>
 	$('.popup-link').magnificPopup({
 		type: 'iframe',
   		closeOnContentClick: false,
@@ -278,5 +285,26 @@ list_formulas();
 		}
 	?>
 	<?php require_once("pages/footer.php"); ?>
+
+<!--RELEASE NOTES-->
+<div class="modal fade" id="release_notes" tabindex="-1" role="dialog" aria-labelledby="release_notes" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="release_notes">Release Notes</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+		Thanks for updating to version <strong><?php echo $ver;?></strong> 
+	    <p><pre><?php echo file_get_contents('releasenotes.md','r');?></pre></p>
+	    <div class="modal-footer">
+	     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+	   </div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

@@ -41,19 +41,19 @@ var chart = AmCharts.makeChart( "chartdiv", {
     "title": "Base notes",
     "value": <?php echo calcPerc($formula, 'Base', $settings['base_n'], $conn);?>,
 	"desc": "%",
-	"notes": "<?php getFormula($_GET['formula'],'Base',$dbhost,$dbuser,$dbpass,$dbname);?>"
+	"notes": "<?php getFormula($_GET['formula'],'Base',$conn);?>"
   }, 
   {
     "title": "Heart Notes",
     "value": <?php echo calcPerc($formula, 'Heart', $settings['heart_n'], $conn);?>,
 	"desc": "%",
-	"notes": "<?php getFormula($_GET['formula'],'Heart',$dbhost,$dbuser,$dbpass,$dbname);?>"
+	"notes": "<?php getFormula($_GET['formula'],'Heart',$conn);?>"
   }, 
   {
     "title": "Top Notes",
     "value": <?php echo calcPerc($formula, 'Top', $settings['top_n'], $conn);?>,
 	"desc": "%",
-	"notes": "<?php getFormula($_GET['formula'],'Top',$dbhost,$dbuser,$dbpass,$dbname);?>"
+	"notes": "<?php getFormula($_GET['formula'],'Top',$conn);?>"
   }
   ],
   "balloon": {

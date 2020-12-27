@@ -44,6 +44,7 @@ if(($_POST) && $_GET['update'] == 'printer'){
 	$chkVersion = mysqli_real_escape_string($conn, $_POST['chkVersion']);
 	$pv_maker = mysqli_real_escape_string($conn, $_POST['pv_maker']);
 	$qStep = mysqli_real_escape_string($conn, $_POST['qStep']);
+	$defCatClass = mysqli_real_escape_string($conn, $_POST['defCatClass']);
 
 
 	if(empty($chem_vs_brand)){
@@ -62,7 +63,7 @@ if(($_POST) && $_GET['update'] == 'printer'){
 		$pv_maker = '0';
 	}
 	
-	if(mysqli_query($conn, "UPDATE settings SET currency = '$currency', top_n = '$top_n', heart_n = '$heart_n', base_n = '$base_n', chem_vs_brand = '$chem_vs_brand', grp_formula = '$grp_formula', pubChem='$pubChem', chkVersion='$chkVersion', pv_maker='$pv_maker', qStep = '$qStep'")){
+	if(mysqli_query($conn, "UPDATE settings SET currency = '$currency', top_n = '$top_n', heart_n = '$heart_n', base_n = '$base_n', chem_vs_brand = '$chem_vs_brand', grp_formula = '$grp_formula', pubChem='$pubChem', chkVersion='$chkVersion', pv_maker='$pv_maker', qStep = '$qStep', defCatClass = '$defCatClass'")){
 		$msg = '<div class="alert alert-success alert-dismissible">Settings updated!</div>';
 	}else{
 		$msg = '<div class="alert alert-danger alert-dismissible">An error occured.</div>';	
@@ -255,6 +256,30 @@ $(function() {
 			  <option value="1" <?php if($settings['qStep']=="1") echo 'selected="selected"'; ?> >0.0</option>
 			  <option value="2" <?php if($settings['qStep']=="2") echo 'selected="selected"'; ?> >0.00</option>
 			  <option value="3" <?php if($settings['qStep']=="3") echo 'selected="selected"'; ?> >0.000</option>
+            </select></td>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td height="32"><a href="#" rel="tipsy" title="Select the default category class. This will be used to calculate limits in formulas">Default Category:</a></td>
+          <td colspan="2"><select name="defCatClass" id="defCatClass" class="form-control">
+			  <option value="cat1" <?php if($settings['defCatClass']=="cat1") echo 'selected="selected"'; ?> >Cat 1</option>
+			  <option value="cat2" <?php if($settings['defCatClass']=="cat2") echo 'selected="selected"'; ?> >Cat 2</option>
+			  <option value="cat3" <?php if($settings['defCatClass']=="cat3") echo 'selected="selected"'; ?> >Cat 3</option>
+              <option value="cat4" <?php if($settings['defCatClass']=="cat4") echo 'selected="selected"'; ?> >Cat 4</option>
+			  <option value="cat5A" <?php if($settings['defCatClass']=="cat5A") echo 'selected="selected"'; ?> >Cat 5A</option>
+			  <option value="cat5B" <?php if($settings['defCatClass']=="cat5B") echo 'selected="selected"'; ?> >Cat 5B</option>
+			  <option value="cat5C" <?php if($settings['defCatClass']=="cat5C") echo 'selected="selected"'; ?> >Cat 5C</option>
+			  <option value="cat5D" <?php if($settings['defCatClass']=="cat5D") echo 'selected="selected"'; ?> >Cat 5D</option>
+			  <option value="cat6" <?php if($settings['defCatClass']=="cat6") echo 'selected="selected"'; ?> >Cat 6</option>
+			  <option value="cat7A" <?php if($settings['defCatClass']=="cat7A") echo 'selected="selected"'; ?> >Cat 7A</option>
+			  <option value="cat7B" <?php if($settings['defCatClass']=="cat7B") echo 'selected="selected"'; ?> >Cat 7B</option>
+			  <option value="cat8" <?php if($settings['defCatClass']=="cat8") echo 'selected="selected"'; ?> >Cat 8</option>
+			  <option value="cat9" <?php if($settings['defCatClass']=="cat9") echo 'selected="selected"'; ?> >Cat 9</option>
+			  <option value="cat10A" <?php if($settings['defCatClass']=="cat10A") echo 'selected="selected"'; ?> >Cat 10A</option>
+			  <option value="cat10B" <?php if($settings['defCatClass']=="cat10B") echo 'selected="selected"'; ?> >Cat 10B</option>
+			  <option value="cat11A" <?php if($settings['defCatClass']=="cat11A") echo 'selected="selected"'; ?> >Cat 11A</option>
+			  <option value="cat11B" <?php if($settings['defCatClass']=="cat11B") echo 'selected="selected"'; ?> >Cat 11B</option>
+			  <option value="cat12" <?php if($settings['defCatClass']=="cat12") echo 'selected="selected"'; ?> >Cat 12</option>
             </select></td>
           <td>&nbsp;</td>
         </tr>
