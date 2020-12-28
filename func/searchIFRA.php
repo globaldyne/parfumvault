@@ -2,6 +2,10 @@
 if (!defined('pvault_panel')){ die('Not Found');}
 
 function searchIFRA($cas, $name, $get, $conn, $defCatClass ){
+	if(empty($name)){
+		return null;
+	}
+	
 	if($cas !== '0'){//IGNORE VALUE FOR CARRIERS
 		if($cas){
 			$q = "cas = '$cas'";

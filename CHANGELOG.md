@@ -1,6 +1,7 @@
 # CHANGELOG
 ### Version 2.3
 -ADD: Auto ingredient create when edit it
+-IMP: Add/Edit ingredient page is now merged
 
 ### Version 2.2
 - ADD: Prohibition and Specification in ingredients usage classification

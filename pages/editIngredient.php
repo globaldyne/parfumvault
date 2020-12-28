@@ -10,6 +10,14 @@ require_once('../func/validateInput.php');
 require_once('../func/searchIFRA.php');
 
 $ingID = mysqli_real_escape_string($conn, $_GET["id"]);
+if($ingID){
+	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT * FROM ingredients WHERE name = '$ingID'")))){
+		if(mysqli_query($conn, "INSERT INTO ingredients (name) VALUES ('$ingID')")){
+			$msg='<div class="alert alert-info alert-dismissible"><strong>Info:</strong> ingredient '.$ingID.' added</div>';
+		}
+	}
+}
+
 $defCatClass = $settings['defCatClass'];
 
 if($_POST){
@@ -27,6 +35,7 @@ if($_POST){
 	$profile = mysqli_real_escape_string($conn, $_POST["profile"]);
 	$price = validateInput($_POST["price"]);
 	$tenacity = mysqli_real_escape_string($conn, $_POST["tenacity"]);
+	$formula = mysqli_real_escape_string($conn, $_POST["formula"]);
 	$chemical_name = mysqli_real_escape_string($conn, $_POST["chemical_name"]);
 	$flash_point = mysqli_real_escape_string($conn, $_POST["flash_point"]);
 	$appearance = mysqli_real_escape_string($conn, $_POST["appearance"]);
@@ -73,6 +82,10 @@ if($_POST){
 	}else{
 		$flavor_use = '0';
 	}
+	if(empty($ml)){
+		$ml = '10';
+	}
+	
 	if(($_FILES['SDS']['name'])){
       $file_name = $_FILES['SDS']['name'];
       $file_size =$_FILES['SDS']['size'];
@@ -99,12 +112,27 @@ if($_POST){
 	  }
    }
 
-	if(mysqli_query($conn, "UPDATE ingredients SET cas = '$cas', FEMA = '$fema', type = '$type', strength = '$strength', category='$category', supplier='$supplier', supplier_link='$supplier_link', profile='$profile', price='$price', tenacity='$tenacity', chemical_name='$chemical_name', flash_point='$flash_point', appearance='$appearance', notes='$notes', ml='$ml', odor='$odor', purity='$purity', allergen='$allergen', formula='$formula', flavor_use='$flavor_use', cat1 = '$cat1', cat2 = '$cat2', cat3 = '$cat3', cat4 = '$cat4', cat5A = '$cat5A', cat5B = '$cat5B', cat5C = '$cat5C', cat5D = '$cat5D', cat6 = '$cat6', cat7A = '$cat7A', cat5B = '$cat7B', cat8 = '$cat8', cat9 = '$cat9', cat10A = '$cat10A', cat10B = '$cat10B', cat11A = '$cat11A', cat11B = '$cat11B', cat12 = '$cat12', soluble = '$soluble', logp = '$logp', manufacturer = '$manufacturer', impact_top = '$impact_top', impact_heart = '$impact_heart', impact_base = '$impact_base', usage_type = '$usage_type', solvent = '$solvent' WHERE name='$ingID'")){
-		
-			$msg.='<div class="alert alert-success alert-dismissible">Ingredient <strong>'.$ing['name'].'</strong> updated!</div>';
+	if(empty($_POST['name'])){
+		$query = "UPDATE ingredients SET cas = '$cas', FEMA = '$fema', type = '$type', strength = '$strength', category='$category', supplier='$supplier', supplier_link='$supplier_link', profile='$profile', price='$price', tenacity='$tenacity', chemical_name='$chemical_name', flash_point='$flash_point', appearance='$appearance', notes='$notes', ml='$ml', odor='$odor', purity='$purity', allergen='$allergen', formula='$formula', flavor_use='$flavor_use', cat1 = '$cat1', cat2 = '$cat2', cat3 = '$cat3', cat4 = '$cat4', cat5A = '$cat5A', cat5B = '$cat5B', cat5C = '$cat5C', cat5D = '$cat5D', cat6 = '$cat6', cat7A = '$cat7A', cat7B = '$cat7B', cat8 = '$cat8', cat9 = '$cat9', cat10A = '$cat10A', cat10B = '$cat10B', cat11A = '$cat11A', cat11B = '$cat11B', cat12 = '$cat12', soluble = '$soluble', logp = '$logp', manufacturer = '$manufacturer', impact_top = '$impact_top', impact_heart = '$impact_heart', impact_base = '$impact_base', usage_type = '$usage_type', solvent = '$solvent' WHERE name='$ingID'";
+		if(mysqli_query($conn, $query)){
+			$msg = '<div class="alert alert-success alert-dismissible">Ingredient <strong>'.$ing['name'].'</strong> updated!</div>';
 		}else{
-			$msg.='<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> Failed to update! '.mysqli_error($conn).'</div>';
+			$msg = '<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> Failed to update!</div>';
 		}
+	}else{
+		$name = mysqli_real_escape_string($conn, $_POST["name"]);
+		$ingID = $name;
+		$query = "INSERT INTO ingredients (name, cas, FEMA, type, strength, SDS, ".$settings['defCatClass'].", category, supplier, supplier_link, profile, price, tenacity, chemical_name, flash_point, appearance, notes, ml, odor, purity, allergen) VALUES ('$name', '$cas', '$fema', '$type', '$strength', '$SDSF', '$cat', '$category', '$supplier', '$supplier_link', '$profile', '$price', '$tenacity', '$chemical_name', '$flash_point', '$appearance', '$notes', '$ml', '$odor', '$purity', '$allergen')";
+		if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '$name'"))){
+			$msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$name.' already exists!</div>';
+		}else{
+			if(mysqli_query($conn, $query)){
+				$msg = '<div class="alert alert-success alert-dismissible">Ingredient <strong>'.$name.'</strong> added!</div>';
+			}else{
+				$msg = '<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> Failed to add!</div>';
+			}
+		}
+	}
 }
 
 $res_ingTypes = mysqli_query($conn, "SELECT id,name FROM ingTypes ORDER BY name ASC");
@@ -113,13 +141,6 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,name FROM ingCategory ORDER BY
 $res_ingSupplier = mysqli_query($conn, "SELECT id,name FROM ingSuppliers ORDER BY name ASC");
 $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles ORDER BY name ASC");
 
-$sql = mysqli_query($conn, "SELECT * FROM ingredients WHERE name = '$ingID'");
-
-if(empty(mysqli_num_rows($sql))){
-	if(mysqli_query($conn, "INSERT INTO ingredients (name) VALUES ('$ingID')")){
-		$msg='<div class="alert alert-info alert-dismissible"><strong>Info:</strong> ingredient '.$ingID.' added</div>';
-	}
-}
 $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE name = '$ingID'"));
 
 ?>
@@ -176,11 +197,11 @@ $(document).ready(function() {
 </style>
 
 <script>
-  
+/*
 $(document).ready(function() {
 	$('a[rel=tipsy]').tipsy();
 });  
-
+*/
 function search() {	  
 $("#odor").val('Loading...');
 $.ajax({ 
@@ -257,13 +278,16 @@ reload_data();
 <body>
 <div class="container">
 		<div class="list-group-item-info">
-        <h1 class="badge-primary"><?php echo $ing['name']; ?>
+        <h1 class="badge-primary"><?php if($ingID){ echo $ing['name'];?>
             <div class="btn-group">
               <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
               <div class="dropdown-menu">
                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#printLabel">Print Label</a>
               </div>
             </div>
+            <?php }else {?>
+            Add ingredient
+            <?php } ?>
         </h1>
 </div>
 <!-- Nav tabs -->
@@ -273,13 +297,14 @@ reload_data();
       <li><a href="#supply" role="tab" data-toggle="tab"><i class="fa fa-shopping-cart"></i> Supply</a></li>
       <li><a href="#tech_data" role="tab" data-toggle="tab"><i class="fa fa-cog"></i> Technical Data</a></li>
       <li><a href="#note_impact" role="tab" data-toggle="tab"><i class="fa fa-magic"></i> Note Impact</a></li>
+      <?php if($ingID){?>
       <li><a href="#tech_allergens" role="tab" data-toggle="tab"><i class="fa fa-allergies"></i> Allergens</a></li>
-        
+      <?php } ?>  
       <?php if($settings['pubChem'] == '1' && $ing['cas']){?>
       	<li><a href="#pubChem" role="tab" data-toggle="tab"><i class="fa fa-atom"></i> Pub Chem</a></li>
       <?php } ?>
     </ul>
-			<form action="editIngredient.php?id=<?php echo $ingID; ?>" method="post" enctype="multipart/form-data" name="edit_ing" target="_self" id="edit_ing">
+			<form action="<?php if($ingID){ echo '?id='.$ingID;}?>" method="post" enctype="multipart/form-data" name="edit_ing" target="_self" id="edit_ing">
            	  <div class="tab-content">
      				<div class="tab-pane fade active in" id="general">
                               <h3>General</h3>
@@ -288,6 +313,12 @@ reload_data();
                               <tr>
                                 <td colspan="6"><?php echo $msg; ?></td>
                               </tr>
+                              <?php if(empty($ingID)){?>
+                              <tr>
+                                <td>Name:</td>
+                                <td colspan="5"><input name="name" type="text" class="form-control" id="name" /></td>
+                              </tr>
+                              <?php } ?>
                               <tr>
                                 <td width="20%">CAS #:</td>
                                 <td colspan="5"><input name="cas" type="text" class="form-control" id="cas" value="<?php echo $ing['cas']; ?>"></td>
@@ -715,11 +746,11 @@ reload_data();
                   </tr>
                 </table>
 			  </div>
-                            
+              <?php if($ingID){?>
               <div class="tab-pane fade" id="tech_allergens">
                    <div id="fetch_allergen"><div class="loader"></div></div>
               </div>
-                            
+              <?php } ?>
               <?php if($settings['pubChem'] == '1' && $ing['cas']){?>
               <div class="tab-pane fade" id="pubChem">
 				   <h3>Pub Chem Data</h3>

@@ -35,7 +35,7 @@ $defCatClass = $settings['defCatClass'];
                         <div class="btn-group">
                           <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
                           <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item popup-link" href="pages/addIngredient.php">Add new ingredient</a>
+                            <a class="dropdown-item popup-link" href="pages/editIngredient.php">Add new ingredient</a>
                             <a class="dropdown-item" id="csv" href="#">Export to CSV</a>
 	                        <a class="dropdown-item popup-link" href="pages/csvImportIng.php">Import from CSV</a>
                             <?php if($pv_online['email'] && $pv_online['password']){?>
