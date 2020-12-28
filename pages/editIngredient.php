@@ -103,7 +103,7 @@ if($_POST){
 		
 			$msg.='<div class="alert alert-success alert-dismissible">Ingredient <strong>'.$ing['name'].'</strong> updated!</div>';
 		}else{
-			$msg.='<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> Failed to update!</div>';
+			$msg.='<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> Failed to update! '.mysqli_error($conn).'</div>';
 		}
 }
 
@@ -116,11 +116,12 @@ $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles ORDER BY
 $sql = mysqli_query($conn, "SELECT * FROM ingredients WHERE name = '$ingID'");
 
 if(empty(mysqli_num_rows($sql))){
-	$msg='<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> ingredient not found, please click <a href="?do=addIngredient">here</a> to add it first!</div>';
-	die($msg);
-}else{
-	$ing = mysqli_fetch_array($sql);
+	if(mysqli_query($conn, "INSERT INTO ingredients (name) VALUES ('$ingID')")){
+		$msg='<div class="alert alert-info alert-dismissible"><strong>Info:</strong> ingredient '.$ingID.' added</div>';
+	}
 }
+$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE name = '$ingID'"));
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">

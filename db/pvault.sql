@@ -185,7 +185,7 @@ CREATE TABLE `ingredients` (
   `appearance` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `notes` text COLLATE utf8_bin DEFAULT NULL,
   `profile` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `ml` FLOAT(5) DEFAULT NULL,
+  `ml` FLOAT(5) NULL DEFAULT '10',
   `solvent` VARCHAR(255) DEFAULT NULL, 
   `odor` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `allergen` int(11) DEFAULT NULL,

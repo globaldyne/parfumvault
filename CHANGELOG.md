@@ -1,4 +1,7 @@
 # CHANGELOG
+### Version 2.3
+-ADD: Auto ingredient create when edit it
+
 ### Version 2.2
 - ADD: Prohibition and Specification in ingredients usage classification
 - ADD: Release notes
