@@ -625,9 +625,7 @@ reload_data();
                                   <?php } ?></td>
                                 </tr>
 						      </table>
-
    						  </div>
-                            
                   <div class="tab-pane fade" id="supply">
 				    <h3>Supply</h3>
                     <hr>
@@ -707,9 +705,7 @@ reload_data();
                                 <td colspan="3"><input type="file" class="form-control" name="SDS" id="SDS"></td>
                               </tr>
                             </table>
-    
       						</div>
-              
               <div class="tab-pane fade" id="note_impact">
               <h3>Note Impact</h3>
               <hr>
