@@ -158,17 +158,7 @@ $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE n
 
 <link rel="stylesheet" type="text/css" href="../css/datatables.min.css"/>
 <script type="text/javascript" src="../js/datatables.min.js"></script>
-  
-<script type='text/javascript'>
-$(document).ready(function() {
-	
-    $('#tdData').DataTable({
-	    "paging":   true,
-		"info":   true,
-		"lengthMenu": [[5, 35, 60, -1], [20, 35, 60, "All"]]
-	});
-}); 
-</script>
+
 <style>
 .form-inline .form-control {
     display: inline-block;
@@ -190,18 +180,9 @@ $(document).ready(function() {
     max-width: 100%;
 	width: 950px;
 }
-#tdData td,
-  table.table th {
-  white-space: nowrap;
-}
 </style>
 
 <script>
-/*
-$(document).ready(function() {
-	$('a[rel=tipsy]').tipsy();
-});  
-*/
 function search() {	  
 $("#odor").val('Loading...');
 $.ajax({ 
@@ -229,7 +210,7 @@ $.ajax({
     success: function (data) {
 	  $('#pubChemData').html(data);
     }
-  });
+});
 
 <?php } ?>
 
@@ -323,7 +304,6 @@ reload_data();
                                 <td width="20%">CAS #:</td>
                                 <td colspan="5"><input name="cas" type="text" class="form-control" id="cas" value="<?php echo $ing['cas']; ?>"></td>
                               </tr>
-
                               <tr>
                                 <td height="31">FEMA #:</td>
                                 <td colspan="5"><input name="fema" type="text" class="form-control" id="fema" value="<?php echo $ing['FEMA']; ?>" /></td>
@@ -387,9 +367,9 @@ reload_data();
                                 <td colspan="5">
                                 <select name="category" id="category" class="form-control" data-live-search="true">
                                 <option value="" selected></option>
-                                  <?php while ($row_ingCategory = mysqli_fetch_array($res_ingCategory)){ ?>
+                                <?php while ($row_ingCategory = mysqli_fetch_array($res_ingCategory)){ ?>
 								<option value="<?php echo $row_ingCategory['name'];?>" <?php echo ($ing['category']==$row_ingCategory['name'])?"selected=\"selected\"":""; ?>><?php echo $row_ingCategory['name'];?></option>
-								  <?php } ?>
+								<?php } ?>
                                 </select>
                                 </td>
                               </tr>
@@ -406,11 +386,9 @@ reload_data();
                                 <td valign="top">Notes:</td>
                                 <td colspan="5"><textarea name="notes" id="notes" cols="45" rows="5" class="form-control"><?php echo $ing['notes']; ?></textarea></td>
                               </tr>
-
                             </table>
-                </div>
-                <!--general tab-->
-                    
+              				</div>
+             				<!--general tab-->
                             <div class="tab-pane fade" id="usage_limits">
        						   <h3>Usage &amp; Limits</h3>
                                  <hr>
@@ -419,30 +397,27 @@ reload_data();
                                   <td height="32">Flavor use:</td>
                                   <td width="78%" colspan="3"><input name="flavor_use" type="checkbox" id="flavor_use" value="1" <?php if($ing['flavor_use'] == '1'){; ?> checked="checked"  <?php } ?>/></td>
                                 </tr>
-
                                 <td width="22%"></td>
-
                                 </tr>
                                 <tr>
                                   <td colspan="4"><hr /></td>
                                  </tr>
                                 <tr>
                                   <td>Usage classification:</td>
-                                  <td colspan="3">
+                                <td colspan="3">
                                 <?php if($rType = searchIFRA($ing['cas'],$ing['name'],'type',$conn, $defCatClass)){
 										  echo $rType;
 									  }else{
 								?>
-
-                    <select name="usage_type" id="usage_type" class="form-control">
-                      <option value="none" selected="selected">None</option>
-					  <option value="1" <?php if($ing['usage_type']=="1") echo 'selected="selected"'; ?> >Recommendation</option>
-					  <option value="2" <?php if($ing['usage_type']=="2") echo 'selected="selected"'; ?> >Restriction</option>
-					  <option value="2" <?php if($ing['usage_type']=="3") echo 'selected="selected"'; ?> >Specification</option>
-					  <option value="2" <?php if($ing['usage_type']=="4") echo 'selected="selected"'; ?> >Prohibition</option>
-                    </select>
+                                <select name="usage_type" id="usage_type" class="form-control">
+                                  <option value="none" selected="selected">None</option>
+                                  <option value="1" <?php if($ing['usage_type']=="1") echo 'selected="selected"'; ?> >Recommendation</option>
+                                  <option value="2" <?php if($ing['usage_type']=="2") echo 'selected="selected"'; ?> >Restriction</option>
+                                  <option value="2" <?php if($ing['usage_type']=="3") echo 'selected="selected"'; ?> >Specification</option>
+                                  <option value="2" <?php if($ing['usage_type']=="4") echo 'selected="selected"'; ?> >Prohibition</option>
+                                </select>
                     			<?php } ?>
-                    </td>
+                    			</td>
                                 </tr>
                                 <tr>
                                   <td>Cat1 %:</td>
@@ -659,7 +634,6 @@ reload_data();
                               </tr>
                     </table>
                             </div>
-                            
                             <div class="tab-pane fade" id="tech_data">
           						 <h3>Techical Data</h3>
                                  <hr>
@@ -833,44 +807,46 @@ reload_data();
 </div>
 
 
-<script type="text/javascript" language="javascript" >
+<script type="text/javascript" language="javascript">
 
 function deleteAllergen(allgID) {	  
-$.ajax({ 
-    url: 'update_data.php', 
-	type: 'GET',
-    data: {
-		allergen: 'delete',
-		allgID: allgID,
-		ing: '<?=$ing['name'];?>'
-		},
-	dataType: 'html',
-    success: function (data) {
-	  	$('#msg').html(data);
-		reload_data();
-    }
-  });
+	$.ajax({ 
+		url: 'update_data.php', 
+		type: 'GET',
+		data: {
+			allergen: 'delete',
+			allgID: allgID,
+			ing: '<?=$ing['name'];?>'
+			},
+		dataType: 'html',
+		success: function (data) {
+			$('#msg').html(data);
+			reload_data();
+		}
+	  });
 };
 
 function addAllergen() {	  
-$.ajax({ 
-    url: 'update_data.php', 
-	type: 'GET',
-    data: {
-		allergen: 'add',
-		allgName: $("#allgName").val(),
-		allgPerc: $("#allgPerc").val(),
-		allgCAS: $("#allgCAS").val(),				
-		ing: '<?=$ing['name'];?>'
-		},
-	dataType: 'html',
-    success: function (data) {
-	  	$('#inf').html(data);
-     	$("#allgName").val('');
-     	$("#allgCAS").val('');
-     	$("#allgPerc").val('');
-		reload_data();
-    }
-  });
+	$.ajax({ 
+		url: 'update_data.php', 
+		type: 'GET',
+		data: {
+			allergen: 'add',
+			allgName: $("#allgName").val(),
+			allgPerc: $("#allgPerc").val(),
+			allgCAS: $("#allgCAS").val(),				
+			ing: '<?=$ing['name'];?>'
+			},
+		dataType: 'html',
+		success: function (data) {
+			$('#inf').html(data);
+			$("#allgName").val('');
+			$("#allgCAS").val('');
+			$("#allgPerc").val('');
+			reload_data();
+		}
+	  });
 };
+
+
 </script>

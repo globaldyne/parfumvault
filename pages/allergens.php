@@ -11,14 +11,7 @@ $qAlg = mysqli_query($conn, "SELECT * FROM allergens WHERE ing = '$ingID'");
 
 ?>
 <script type='text/javascript'>
-$(document).ready(function() {
-	
-    $('#tdAllergens').DataTable({
-	    "paging":   true,
-		"info":   true,
-		"lengthMenu": [[15, 35, 60, -1], [15, 35, 60, "All"]]
-	});
-}); 
+
 </script>
 				   <h3>Allergens</h3>
                                  <hr>
@@ -62,7 +55,12 @@ $(document).ready(function() {
             
 <script type="text/javascript" language="javascript" >
 $(document).ready(function(){
- 
+ $('#tdAllergens').DataTable({
+    "paging":   true,
+	"info":   true,
+	"lengthMenu": [[15, 35, 60, -1], [15, 35, 60, "All"]]
+ });
+
  $('#ing_allergen').editable({
 	  container: 'body',
 	  selector: 'td.name',
