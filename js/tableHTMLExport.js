@@ -39,7 +39,9 @@ THE SOFTWARE.*/
                 quoteFields: true,
                 filename: 'tableHTMLExport.csv',
                 utf8BOM: true,
-                orientation: 'p' //only when exported to *pdf* "portrait" or "landscape" (or shortcuts "p" or "l")
+                orientation: 'p',
+				maintitle: '',
+				subtitle: ''
             };
             var options = $.extend(defaults, options);
 
@@ -203,6 +205,8 @@ THE SOFTWARE.*/
 
                 var doc = new jsPDF(defaults.orientation, 'pt');
                 doc.autoTable(contentJsPdf);
+				doc.text(defaults.maintitle, 38, 20);
+				doc.text(defaults.subtitle, 38, 36);
                 doc.save(options.filename);
 
             }

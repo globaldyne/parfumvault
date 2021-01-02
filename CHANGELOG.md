@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 2.3
+-ADD: Option to generate related documents to sell a formula
 -ADD: Auto ingredient create when edit it
 -IMP: Add/Edit ingredient page is now merged
 -FIX: Minor improvements in allegens page

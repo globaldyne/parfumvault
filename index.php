@@ -149,18 +149,24 @@ list_formulas();
           <span>Dashboard</span></a>
       </li>
     
-        <li class="nav-item">
+      <li class="nav-item">
         <a class="nav-link" href="?do=listFormulas">
           <i class="fas fa-fw fa-flask"></i>
           <span>Formulas</span></a>
       </li>
 
-        <li class="nav-item">
+      <li class="nav-item">
         <a class="nav-link" href="?do=genFinishedProduct">
           <i class="fas fa-fw fa-spray-can"></i>
           <span>Generate Finished Product</span></a>
       </li>
       
+      <li class="nav-item">
+        <a class="nav-link" href="?do=sellFormula">
+          <i class="fas fa-fw fa-money-check"></i>
+          <span>Sell Formula</span></a>
+      </li>
+            
       <li class="nav-item">
       <?php 
 	  if($_GET['do'] == 'ingredients' || $_GET['do'] == 'bottles' || $_GET['do'] == 'lids' || $_GET['do'] == 'batches' || $_GET['do'] == 'suppliers'){ 
@@ -276,6 +282,8 @@ list_formulas();
 			require 'pages/cart.php';	
 		}elseif($_GET['do'] == 'suppliers'){
 			require 'pages/suppliers.php';
+		}elseif($_GET['do'] == 'sellFormula'){
+			require 'pages/sellFormula.php';
 			
 		}elseif($_GET['do'] == 'pvmaker' && $settings['pv_maker'] == '1'){
 			require 'pages/pvmaker.php';	
