@@ -478,16 +478,10 @@ $('#pdf').on('click',function(){
 	orientation: 'p',
 	trimContent: true,
     quoteFields: true,
-	
 	ignoreColumns: '.noexport',
   	ignoreRows: '.noexport',
 	htmlContent: true,
-
-	/*
-	 var doc = new jsPDF()
-  doc.autoTable({ html: '#formula' })
-  doc.save('table.pdf')
-  */
+	maintitle: '<?php echo $f_name; ?>'
 });
  
 })
