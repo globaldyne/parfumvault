@@ -101,15 +101,15 @@ if($_POST['formula']){
   <tr>
     <td>Customer:</td>
     <td>
-        <select name="customer" id="customer" class="form-control selectpicker" data-live-search="true">
-            <?php
+      <select name="customer" id="customer" class="form-control selectpicker" data-live-search="true">
+        <?php
 				$res = mysqli_query($conn, "SELECT id, name FROM customers ORDER BY name ASC");
 				while ($q = mysqli_fetch_array($res)){
 					echo '<option value="'.$q['id'].'">'.$q['name'].'</option>';
 			}
 			?>
-     </select>
-    </td>
+        </select>
+      </td>
     <td>&nbsp;</td>
   </tr>
   <tr>
