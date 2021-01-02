@@ -148,7 +148,7 @@ $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE n
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Edit ingredient</title>
+<title>Manage ingredient</title>
 <link href="../css/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
 <script src="../js/jquery/jquery.min.js"></script>
 <script src="../js/bootstrap.min.js"></script>
@@ -290,7 +290,7 @@ reload_data();
       	<li><a href="#pubChem" role="tab" data-toggle="tab"><i class="fa fa-atom"></i> Pub Chem</a></li>
       <?php } ?>
     </ul>
-			<form action="<?php if($ingID){ echo '?id='.$ingID;}?>" method="post" enctype="multipart/form-data" name="edit_ing" target="_self" id="edit_ing">
+			<form action="<?php if($ingID){ echo '?id='.$ingID;}?>" method="post" enctype="multipart/form-data" name="mgm_ing" target="_self" id="mgm_ing">
            	  <div class="tab-content">
      				<div class="tab-pane fade active in" id="general">
                               <h3>General</h3>

@@ -35,7 +35,7 @@ $defCatClass = $settings['defCatClass'];
                         <div class="btn-group">
                           <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
                           <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item popup-link" href="pages/editIngredient.php">Add new ingredient</a>
+                            <a class="dropdown-item popup-link" href="pages/mgmIngredient.php">Add new ingredient</a>
                             <a class="dropdown-item" id="csv" href="#">Export to CSV</a>
 	                        <a class="dropdown-item popup-link" href="pages/csvImportIng.php">Import from CSV</a>
                             <?php if($pv_online['email'] && $pv_online['password']){?>
@@ -66,7 +66,7 @@ $defCatClass = $settings['defCatClass'];
 				  while ($ingredient = mysqli_fetch_array($ingredient_q)) {
 					  echo'
                     <tr>
-                      <td align="center"><a href="pages/editIngredient.php?id='.$ingredient['name'].'" class="popup-link">'.$ingredient['name'].'</a>'.checkAllergen($ingredient['name'],$conn).'</td>';
+                      <td align="center"><a href="pages/mgmIngredient.php?id='.$ingredient['name'].'" class="popup-link">'.$ingredient['name'].'</a>'.checkAllergen($ingredient['name'],$conn).'</td>';
 					  if($ingredient['cas']){
 						  echo '<td align="center">'.$ingredient['cas'].'</td>';
 					  }else{
@@ -101,7 +101,7 @@ $defCatClass = $settings['defCatClass'];
 					  }else{
 						  echo '<td align="center" class="noexport"><a href="http://www.thegoodscentscompany.com/search3.php?qName='.$ingredient['name'].'" target="_blanc" class="fa fa-external-link-alt"></a></td>';
 					  }
-                      echo '<td class="noexport" align="center"><a href="pages/editIngredient.php?id='.$ingredient['name'].'" class="fas fa-edit popup-link"><a> <a href="?do=ingredients&action=delete&id='.$ingredient['id'].'&name='.$ingredient['name'].'" onclick="return confirm(\'Delete '.$ingredient['name'].'?\');" class="fas fa-trash"></a></td>';
+                      echo '<td class="noexport" align="center"><a href="pages/mgmIngredient.php?id='.$ingredient['name'].'" class="fas fa-edit popup-link"><a> <a href="?do=ingredients&action=delete&id='.$ingredient['id'].'&name='.$ingredient['name'].'" onclick="return confirm(\'Delete '.$ingredient['name'].'?\');" class="fas fa-trash"></a></td>';
 					  echo '</tr>';
 				  }
                     ?>
