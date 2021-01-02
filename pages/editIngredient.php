@@ -183,6 +183,11 @@ $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE n
 </style>
 
 <script>
+
+$(document).ready(function() {
+    $('a[rel=tipsy]').tipsy({gravity: 'w'});
+});
+
 function search() {	  
 $("#odor").val('Loading...');
 $.ajax({ 
@@ -332,7 +337,7 @@ reload_data();
                               <tr>
                                 <td height="29">Profile:</td>
                                 <td colspan="5">
-                                <select name="profile" id="profile" class="form-control">
+                                <select name="profile" id="profile" class="form-control selectpicker" data-live-search="true">
                                 <option value="" selected></option>
                                 <?php 	while ($row_ingProfiles = mysqli_fetch_array($res_ingProfiles)){ ?>
 								<option value="<?php echo $row_ingProfiles['name'];?>" <?php echo ($ing['profile']==$row_ingProfiles['name'])?"selected=\"selected\"":""; ?>><?php echo $row_ingProfiles['name'];?></option>
@@ -343,7 +348,7 @@ reload_data();
                               <tr>
                                 <td height="29">Type:</td>
                                 <td colspan="5">
-                                <select name="type" id="type" class="form-control">
+                                <select name="type" id="type" class="form-control selectpicker" data-live-search="true">
                                 <option value="" selected></option>
                                 <?php 	while ($row_ingTypes = mysqli_fetch_array($res_ingTypes)){ ?>
 								<option value="<?php echo $row_ingTypes['name'];?>" <?php echo ($ing['type']==$row_ingTypes['name'])?"selected=\"selected\"":""; ?>><?php echo $row_ingTypes['name'];?></option>
@@ -354,7 +359,7 @@ reload_data();
                               <tr>
                                 <td height="28">Strength:</td>
                                 <td colspan="5">
-                                <select name="strength" id="strength" class="form-control">
+                                <select name="strength" id="strength" class="form-control selectpicker" data-live-search="true">
                                 <option value="" selected></option>
                                 <?php while ($row_ingStrength = mysqli_fetch_array($res_ingStrength)){ ?>
 								<option value="<?php echo $row_ingStrength['name'];?>" <?php echo ($ing['strength']==$row_ingStrength['name'])?"selected=\"selected\"":""; ?>><?php echo $row_ingStrength['name'];?></option>
@@ -365,7 +370,7 @@ reload_data();
                               <tr>
                                 <td height="31">Category:</td>
                                 <td colspan="5">
-                                <select name="category" id="category" class="form-control" data-live-search="true">
+                                <select name="category" id="category" class="form-control selectpicker" data-live-search="true">
                                 <option value="" selected></option>
                                 <?php while ($row_ingCategory = mysqli_fetch_array($res_ingCategory)){ ?>
 								<option value="<?php echo $row_ingCategory['name'];?>" <?php echo ($ing['category']==$row_ingCategory['name'])?"selected=\"selected\"":""; ?>><?php echo $row_ingCategory['name'];?></option>
@@ -409,7 +414,7 @@ reload_data();
 										  echo $rType;
 									  }else{
 								?>
-                                <select name="usage_type" id="usage_type" class="form-control">
+                                <select name="usage_type" id="usage_type" class="form-control selectpicker" data-live-search="true">
                                   <option value="none" selected="selected">None</option>
                                   <option value="1" <?php if($ing['usage_type']=="1") echo 'selected="selected"'; ?> >Recommendation</option>
                                   <option value="2" <?php if($ing['usage_type']=="2") echo 'selected="selected"'; ?> >Restriction</option>
@@ -608,7 +613,7 @@ reload_data();
                               <tr>
                                 <td width="20%">Supplier:</td>
                                 <td width="80%" colspan="3">
-                                <select name="supplier" id="supplier" class="form-control">
+                                <select name="supplier" id="supplier" class="form-control selectpicker" data-live-search="true">
                                 <option value="" selected></option>
                                   <?php while ($row_ingSupplier = mysqli_fetch_array($res_ingSupplier)){ ?>
 								<option value="<?php echo $row_ingSupplier['name'];?>" <?php echo ($ing['supplier']==$row_ingSupplier['name'])?"selected=\"selected\"":""; ?>><?php echo $row_ingSupplier['name'];?></option>
@@ -847,6 +852,68 @@ function addAllergen() {
 		}
 	  });
 };
+/*
+function mgmIngredient() {	  
+	$.ajax({ 
+		url: 'update_data.php', 
+		type: 'POST',
+		data: {
+			manage: 'ingredient',
+			cas: $("#cas").val(),
+			fema: $("#fema").val(),
+			type: $("#type").val(),
+			strength: $("#strength").val(),
+			category: $("#category").val(),
+			supplier: $("#supplier").val(),
+			supplier_link: $("#supplier_link").val(),
+			profile: $("#profile").val(),
+			price: $("#price").val(),
+			tenacity: $("#tenacity").val(),
+			chemical_name: $("#chemical_name").val(),
+			flash_point: $("#flash_point").val(),
+			appearance: $("#appearance").val(),
+			ml: $("#ml").val(),
+			solvent: $("#solvent").val(),
+			notes: $("#notes").val(),
+			purity: $("#purity").val(),
+			soluble: $("#soluble").val(),
+			logp: $("#logp").val(),
+			type: $("#type").val(),
 
+			cat1: $("#cat1").val(),
+			cat2: $("#cat2").val(),
+			cat3: $("#cat3").val(),
+			cat4: $("#cat4").val(),
+			cat5A: $("#cat5A").val(),
+			cat5B: $("#cat5B").val(),
+			cat5C: $("#cat5C").val(),
+			cat5D: $("#cat5D").val(),
+			cat6: $("#cat6").val(),
+			cat7A: $("#cat7A").val(),
+			cat7B: $("#cat7B").val(),
+			cat8: $("#cat8").val(),
+			cat9: $("#cat9").val(),
+			cat10A: $("#cat10A").val(),
+			cat10B: $("#cat10B").val(),
+			cat11A: $("#cat11A").val(),
+			cat11B: $("#cat11B").val(),
+			cat12: $("#cat12").val(),
 
+			manufacturer: $("#manufacturer").val(),
+			impact_top: $("#impact_top").val(),
+			impact_base: $("#impact_base").val(),
+			impact_heart: $("#impact_heart").val(),
+			usage_type: $("#usage_type").val(),
+
+			<?php if($ing['name']){?>
+			ing: '<?=$ing['name'];?>'
+			<?php } ?>
+			},
+		dataType: 'html',
+		success: function (data) {
+			
+		}
+	  });
+};
+*/
 </script>
