@@ -16,7 +16,7 @@ if($_POST['formula']){
 		<div>
           <div class="card shadow mb-4">
             <div class="card-header py-3"> 
-			<?php if($_GET['generate']){?>
+            <?php if($_GET['generate'] && $_POST['formula']){?>
              <h2 class="m-0 font-weight-bold text-primary"><a href="?do=sellFormula"><?php echo $meta['product_name'];?></a></h2>
              <h5 class="m-1 text-primary">Formula name: <strong><?php echo $meta['name'];?></strong></h5>
              <h5 class="m-1 text-primary">Sell to: <strong><?php echo $customer['name'];?></strong></h5>
@@ -25,8 +25,7 @@ if($_POST['formula']){
             <?php } ?>
             </div>
             <div class="card-body">
-           <div id="inf"><?php if($msg){ echo $msg; }?></div>
-           <?php if($_GET['generate']){?>
+            <?php if($_GET['generate'] && $_POST['formula']){?>
               <div>
                 <table class="table table-bordered" id="formula" width="100%" cellspacing="0">
                   <thead>
@@ -83,8 +82,7 @@ if($_POST['formula']){
 					return;
 				}
 			?>
-           <form action="?do=sellFormula&generate=1" method="post" enctype="multipart/form-data" target="_self">
-           
+<form action="?do=sellFormula&generate=1" method="post" enctype="multipart/form-data" target="_self">           
 <table width="100%" border="0">
   <tr>
     <td width="9%">Formula:</td>
@@ -107,7 +105,7 @@ if($_POST['formula']){
             <?php
 				$res = mysqli_query($conn, "SELECT id, name FROM customers ORDER BY name ASC");
 				while ($q = mysqli_fetch_array($res)){
-				echo '<option value="'.$q['id'].'">'.$q['name'].'</option>';
+					echo '<option value="'.$q['id'].'">'.$q['name'].'</option>';
 			}
 			?>
      </select>
@@ -123,8 +121,8 @@ if($_POST['formula']){
     <td colspan="2">&nbsp;</td>
   </tr>
 </table>
-           </form>          
-            <?php } ?>
+</form>          
+           <?php } ?>
            </div>
         </div>
       </div>
@@ -140,14 +138,12 @@ $('#pdf').on('click',function(){
 	orientation: 'p',
 	trimContent: true,
     quoteFields: true,
-	
 	ignoreColumns: '.noexport',
   	ignoreRows: '.noexport',
 	htmlContent: true,
 	maintitle: '<?php echo $f_name; ?>',
 	subtitle: '<?php echo $customer['name'];?>'
-
-});
+  });
  
 })
 
