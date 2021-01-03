@@ -81,6 +81,10 @@ if($_POST['formula']){
 					echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> You need to <a href="?do=addFormula">create</a> at least one formula first.</div>';
 					return;
 				}
+				if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM customers")) == 0){
+					echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> You need to <a href="?do=settings#customers">create</a> at least one customer first.</div>';
+					return;
+				}				
 			?>
 <form action="?do=sellFormula&generate=1" method="post" enctype="multipart/form-data" target="_self">           
 <table width="100%" border="0">
