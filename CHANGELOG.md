@@ -4,6 +4,7 @@
 -ADD: Auto ingredient create when edit it
 -IMP: Add/Edit ingredient page is now merged
 -IMP: Improve PDF export functionality
+-FIX: Fix a validation issue in finished product page
 -FIX: Minor improvements in allegens page
 
 ### Version 2.2
