@@ -146,7 +146,8 @@ $('#pdf').on('click',function(){
   	ignoreRows: '.noexport',
 	htmlContent: true,
 	maintitle: '<?php echo $f_name; ?>',
-	subtitle: '<?php echo $customer['name'];?>'
+	subtitle: '<?php echo $customer['name'];?>',
+	product: '<?php echo trim($product).' '.trim($ver);?>'
   });
  
 })

@@ -481,7 +481,9 @@ $('#pdf').on('click',function(){
 	ignoreColumns: '.noexport',
   	ignoreRows: '.noexport',
 	htmlContent: true,
-	maintitle: '<?php echo $f_name; ?>'
+	maintitle: '<?php echo $f_name; ?>',
+	product: '<?php echo trim($product).' '.trim($ver);?>'
+
 });
  
 })

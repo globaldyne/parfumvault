@@ -41,7 +41,8 @@ THE SOFTWARE.*/
                 utf8BOM: true,
                 orientation: 'p',
 				maintitle: '',
-				subtitle: ''
+				subtitle: '',
+				product: 'Perfumer\'s Vault Pro'
             };
             var options = $.extend(defaults, options);
 
@@ -204,9 +205,25 @@ THE SOFTWARE.*/
                 }
 
                 var doc = new jsPDF(defaults.orientation, 'pt');
-                doc.autoTable(contentJsPdf);
-				doc.text(defaults.maintitle, 38, 20);
-				doc.text(defaults.subtitle, 38, 36);
+				
+				const addFooters = doc => {
+				  const pageCount = doc.internal.getNumberOfPages()
+					  for (var i = 1; i <= pageCount; i++) {
+						doc.setPage(i)
+						doc.text(defaults.maintitle, 38, 20)
+						doc.text(defaults.subtitle, 38, 36)
+					  }
+					  for (var i = 1; i <= pageCount; i++) {
+						doc.setPage(i)
+						doc.setFont('helvetica', 'italic')
+						doc.setFontSize(8)
+						doc.text('Page ' + String(i) + ' of ' + String(pageCount) + '\n' + options.product, doc.internal.pageSize.width / 2, 830, {
+						  align: 'center'
+						})
+					  }
+				}
+				doc.autoTable(contentJsPdf);
+				addFooters(doc);
                 doc.save(options.filename);
 
             }
