@@ -6,6 +6,7 @@
 -IMP: Improve PDF export functionality
 -FIX: Fix a validation issue in finished product page
 -FIX: Minor improvements in allegens page
+-FIX: Various minor bug fixes and code clean-up
 
 ### Version 2.2
 - ADD: Prohibition and Specification in ingredients usage classification

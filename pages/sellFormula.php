@@ -1,10 +1,11 @@
 <?php 
 if (!defined('pvault_panel')){ die('Not Found');}  
 if($_POST['formula']){
-	$f_name =  mysqli_real_escape_string($conn, $_POST['formula']);
-	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE name = '$f_name'"));
-	$formula_q = mysqli_query($conn, "SELECT * FROM formulas WHERE name = '$f_name' ORDER BY ingredient ASC");
-	$mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE name = '$f_name'"));
+	$fid =  mysqli_real_escape_string($conn, $_POST['formula']);
+	
+	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE fid = '$fid'"));
+	$formula_q = mysqli_query($conn, "SELECT * FROM formulas WHERE fid = '".$meta['fid']."' ORDER BY ingredient ASC");
+	$mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE fid = '".$meta['fid']."'"));
 	$defCatClass = $settings['defCatClass'];
 	$customer = mysqli_fetch_array(mysqli_query($conn,"SELECT name FROM customers WHERE id = '".mysqli_real_escape_string($conn, $_POST['customer'])."'"));
 }
@@ -62,18 +63,24 @@ if($_POST['formula']){
 					  <?php if($formula['concentration'] == '100'){ ?>
 					  <td align="center">None</td>
 					  <?php }else{ ?>
-						  <td align="center"><?php echo $formula['dilutant']; ?></td>
+					  <td align="center"><?php echo $formula['dilutant']; ?></td>
 					  <?php } ?>
 					  	<td align="center"><?php echo $conc_p;?>%</td>
                         <td align="center"><?php echo $ing_q['odor'];?></td>
 					  </tr>
 					  <?php }  ?>
                     </tr>
-                    </tfoot>                                    
+                  <tfoot>
+                    <tr>
+                      <th width="22%">Total: <?php echo countElement("formulas WHERE fid = '$fid'",$conn);?></th>
+                      <th></th>
+                      <th></th>
+                      <th></th>
+                      <th></th>
+                      <th></th>
+                    </tr>
+                  </tfoot> 
                 </table> 
-                <div>
-                  <p>&nbsp;</p>
-                </div>
             </div>
             <?php 
 			}else{ 
@@ -93,9 +100,9 @@ if($_POST['formula']){
     <td width="24%">
     <select name="formula" id="formula" class="form-control selectpicker" data-live-search="true">
      <?php
-		$sql = mysqli_query($conn, "SELECT fid,name,product_name FROM formulasMetaData WHERE product_name IS NOT NULL ORDER BY name ASC");
+		$sql = mysqli_query($conn, "SELECT fid,name,product_name FROM formulasMetaData ORDER BY name ASC");
 		while ($formula = mysqli_fetch_array($sql)){
-			echo '<option value="'.$formula['name'].'">'.$formula['name'].' ('.$formula['product_name'].')</option>';
+			echo '<option value="'.$formula['fid'].'">'.$formula['name'].' ('.$formula['product_name'].')</option>';
 		}
 	  ?>
      </select>
@@ -134,22 +141,21 @@ if($_POST['formula']){
   </div>
 <script type="text/javascript" language="javascript" >
 
-
 $('#pdf').on('click',function(){
   $("#formula").tableHTMLExport({
 	type:'pdf',
-	filename:'<?php echo $f_name; ?>.pdf',
+	filename:'<?php echo trim(base64_decode($fid)); ?>.pdf',
 	orientation: 'p',
 	trimContent: true,
     quoteFields: true,
 	ignoreColumns: '.noexport',
   	ignoreRows: '.noexport',
 	htmlContent: true,
-	maintitle: '<?php echo $f_name; ?>',
+	cover: '<?php echo base64_encode($meta['notes']);?>',
+	maintitle: '<?php echo trim(base64_decode($fid)); ?>',
 	subtitle: '<?php echo $customer['name'];?>',
 	product: '<?php echo trim($product).' '.trim($ver);?>'
   });
- 
 })
 
 </script>

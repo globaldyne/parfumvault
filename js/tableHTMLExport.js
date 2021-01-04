@@ -40,6 +40,7 @@ THE SOFTWARE.*/
                 filename: 'tableHTMLExport.csv',
                 utf8BOM: true,
                 orientation: 'p',
+				cover: '',
 				maintitle: '',
 				subtitle: '',
 				product: 'Perfumer\'s Vault Pro'
@@ -205,12 +206,20 @@ THE SOFTWARE.*/
                 }
 
                 var doc = new jsPDF(defaults.orientation, 'pt');
-				
+				if(defaults.cover){
+					doc.setFont('helvetica', 'regular')
+					doc.setFontSize(10)
+					doc.text(atob(defaults.cover), 40, 100)
+					doc.addPage()
+				}
 				const addFooters = doc => {
 				  const pageCount = doc.internal.getNumberOfPages()
 					  for (var i = 1; i <= pageCount; i++) {
 						doc.setPage(i)
+						doc.setFont('helvetica', 'bold')
+						doc.setFontSize(18)
 						doc.text(defaults.maintitle, 38, 20)
+						doc.setFontSize(10)
 						doc.text(defaults.subtitle, 38, 36)
 					  }
 					  for (var i = 1; i <= pageCount; i++) {

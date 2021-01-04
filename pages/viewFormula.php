@@ -326,7 +326,7 @@ $('.replaceIngredient').editable({
                   <tfoot>
                     <tr>
                       <?php if($settings['grp_formula'] == '1'){ echo '<th></th>'; }?>
-                      <th width="22%">Total: <?php echo countElement("formulas WHERE name = '$f_name'" ,$conn);?></th>
+                      <th width="22%">Total: <?php echo countElement("formulas WHERE fid = '$fid'",$conn);?></th>
                       <th></th>
                       <th></th>
                       <th></th>
@@ -453,14 +453,9 @@ $('#csv').on('click',function(){
   	newline: '\r\n',
   	trimContent: true,
   	quoteFields: true,
-	
 	ignoreColumns: '.noexport',
   	ignoreRows: '.noexport',
-	
-	htmlContent: false,
-  
-  	// debug
-  	consoleLog: true   
+	htmlContent: false
   });
 });
 </script>

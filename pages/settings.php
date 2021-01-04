@@ -123,7 +123,6 @@ if(($_POST) && $_GET['update'] == 'printer'){
 	$brandPhone = mysqli_real_escape_string($conn, $_POST['brandPhone']);
 
 	if(mysqli_query($conn, "UPDATE settings SET brandName = '$brandName', brandAddress = '$brandAddress', brandEmail = '$brandEmail', brandPhone = '$brandPhone'")){
-		
 		$msg = '<div class="alert alert-success alert-dismissible">Brand details updated!</div>';
 	}else{
 		$msg = '<div class="alert alert-danger alert-dismissible">Error updating brand info: ('.mysqli_error($conn).')</div>';
@@ -171,12 +170,15 @@ if(($_POST) && $_GET['update'] == 'printer'){
 
 }elseif($_GET['action'] == 'delete' && $_GET['user_id']){
 	$user_id = mysqli_real_escape_string($conn, $_GET['user_id']);
-	if(mysqli_query($conn, "DELETE FROM users WHERE id = '$user_id'")){
-		$msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>User deleted!</div>';
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM users")) <= 1){
+		$msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error, at least one user needs to exist.</div>';
 	}else{
-		$msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error deleting user.</div>';
+		if(mysqli_query($conn, "DELETE FROM users WHERE id = '$user_id'")){
+			$msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>User deleted!</div>';
+		}else{
+			$msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error deleting user.</div>';
+		}
 	}
-
 
 }elseif($_GET['action'] == 'delete' && $_GET['customer_id']){
 	$customer_id = mysqli_real_escape_string($conn, $_GET['customer_id']);
@@ -553,7 +555,7 @@ $(function() {
 					  <td align="center"><?php echo $users['username'];?></td>
 					  <td align="center"><?php echo $users['fullName'];?></td>
 					  <td align="center"><?php echo $users['email'];?></td>
-                      <td align="center"><a href="pages/editUser.php?id=<?php echo $users['id']; ?>" class="fas fa-edit popup-link"></a> <a href="?do=settings&action=delete&user_id=<?php echo $users['id'];?>#users" onclick="return confirm('Delete user <?php echo $users['fullName'];?>?')" class="fas fa-trash"></a></td>
+                      <td align="center"><a href="pages/editUser.php?id=<?php echo $users['id']; ?>" class="fas fa-edit popup-link"></a> <a href="?do=settings&action=delete&user_id=<?php echo $users['id'];?>#users" onclick="return confirm('Delete user <?php echo $users['username'];?>?')" class="fas fa-trash"></a></td>
 					</tr>
 				  		<?php } ?>
                     </tr>
