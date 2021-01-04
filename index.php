@@ -169,7 +169,7 @@ list_formulas();
             
       <li class="nav-item">
       <?php 
-	  if($_GET['do'] == 'ingredients' || $_GET['do'] == 'bottles' || $_GET['do'] == 'lids' || $_GET['do'] == 'batches' || $_GET['do'] == 'suppliers'){ 
+	  if($_GET['do'] == 'ingredients' || $_GET['do'] == 'bottles' || $_GET['do'] == 'lids' || $_GET['do'] == 'batches' || $_GET['do'] == 'suppliers' || $_GET['do'] == 'customers'){ 
 	  	$expand = 'show'; 
 		$class = ''; 
 		$aria = 'true'; 
@@ -188,6 +188,7 @@ list_formulas();
             <a class="collapse-item <?php if($_GET['do'] == 'ingredients'){ echo 'active';}?>" href="?do=ingredients">Ingredients</a>
             <a class="collapse-item <?php if($_GET['do'] == 'batches'){ echo 'active';}?>" href="?do=batches">Batch history</a>
             <a class="collapse-item <?php if($_GET['do'] == 'suppliers'){ echo 'active';}?>" href="?do=suppliers">Suppliers</a>
+            <a class="collapse-item <?php if($_GET['do'] == 'customers'){ echo 'active';}?>" href="?do=customers">Customers</a>
             <a class="collapse-item <?php if($_GET['do'] == 'bottles'){ echo 'active';}?>" href="?do=bottles">Bottles</a>
             <a class="collapse-item <?php if($_GET['do'] == 'lids'){ echo 'active';}?>" href="?do=lids">Bottle Lids</a>
           </div>
@@ -244,7 +245,6 @@ list_formulas();
 		}elseif($_GET['do'] == 'IFRA'){
 			require 'pages/IFRA.php';
 		}elseif($_GET['do'] == 'listFormulas'){
-			//require 'pages/listFormulas.php';
 		?>
         <div id="content-wrapper" class="d-flex flex-column">
 			<?php require_once('pages/top.php'); ?>
@@ -284,6 +284,8 @@ list_formulas();
 			require 'pages/suppliers.php';
 		}elseif($_GET['do'] == 'sellFormula'){
 			require 'pages/sellFormula.php';
+		}elseif($_GET['do'] == 'customers'){
+			require 'pages/customers.php';
 			
 		}elseif($_GET['do'] == 'pvmaker' && $settings['pv_maker'] == '1'){
 			require 'pages/pvmaker.php';	

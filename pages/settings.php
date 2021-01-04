@@ -99,21 +99,6 @@ if(($_POST) && $_GET['update'] == 'printer'){
 		$msg = '<div class="alert alert-danger alert-dismissible">Error adding user. ('.mysqli_error($conn).')</div>';
 	}
 	
-//CUSTOMERS
-}elseif($_GET['update'] == 'customers' && $_POST['cname']){
-	$cname = mysqli_real_escape_string($conn, $_POST['cname']);
-	$caddress = mysqli_real_escape_string($conn, $_POST['caddress']);
-	$cemail = mysqli_real_escape_string($conn, $_POST['cemail']);
-	$cweb = mysqli_real_escape_string($conn, $_POST['cweb']);
-	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM customers WHERE name = '$cname'"))){
-		$msg='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$cname.' already exists!</div>';
-	}elseif(mysqli_query($conn, "INSERT INTO customers (name,address,email,web) VALUES ('$cname', '$caddress', '$cemail', '$cweb')")){
-		$msg = '<div class="alert alert-success alert-dismissible">Customer '.$cname.' added!</div>';
-	}else{
-		$msg = '<div class="alert alert-danger alert-dismissible">Error adding customer. ('.mysqli_error($conn).')</div>';
-	}
-
-
 
 //BRAND
 }elseif($_GET['update'] == 'brand' && $_POST['brandName']){
@@ -180,19 +165,12 @@ if(($_POST) && $_GET['update'] == 'printer'){
 		}
 	}
 
-}elseif($_GET['action'] == 'delete' && $_GET['customer_id']){
-	$customer_id = mysqli_real_escape_string($conn, $_GET['customer_id']);
-	if(mysqli_query($conn, "DELETE FROM customers WHERE id = '$customer_id'")){
-		$msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Customer deleted!</div>';
-	}else{
-		$msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error deleting customer.</div>';
-	}
+
 
 }												   
  
 $cat_q = mysqli_query($conn, "SELECT * FROM ingCategory ORDER BY name ASC");
 $users_q = mysqli_query($conn, "SELECT * FROM users ORDER BY username ASC");
-$customers_q = mysqli_query($conn, "SELECT * FROM customers ORDER BY name ASC");
 $pv_online = mysqli_fetch_array(mysqli_query($conn, "SELECT email FROM pv_online"));
 
 require('./inc/settings.php');
@@ -219,7 +197,6 @@ $(function() {
          <li><a href="#types">Perfume Types</a></li>
          <li><a href="#print"><span>Printing</span></a></li>
          <li><a href="#users"><span>Users</span></a></li>
-         <li><a href="#customers"><span>Customers</span></a></li>
          <li><a href="#brand"><span>My Brand</span></a></li>
          <li><a href="#maintenance"><span>Maintenance</span></a></li>
          <!-- <li><a href="#pvmaker">PV Maker</a></li> -->
@@ -562,57 +539,7 @@ $(function() {
                   </tbody>
           </table>
         </form>
-     </div> 
-
-     <div id="customers">
-       <form action="?do=settings&update=customers#customers" method="post" enctype="multipart/form-data" name="form" id="form">
-       <table width="100%" border="0">
-  <tr>
-    <td width="16%"><input name="cname" placeholder="Name" type="text" class="form-control" id="cname" /></td>
-    <td width="1%">&nbsp;</td>
-    <td width="16%"><input name="caddress" placeholder="Address" type="text" class="form-control" id="caddress" /></td>
-    <td width="1%">&nbsp;</td>
-    <td width="16%"><input name="cemail" placeholder="Email" type="text" class="form-control" id="cemail" /></td>
-    <td width="1%">&nbsp;</td>
-    <td width="16%"><input name="cweb" placeholder="Web Site" type="text" class="form-control" id="cweb" /></td>
-    <td width="1%">&nbsp;</td>
-    <td width="16%"><input type="submit" name="add_customer" id="add_customer" value="Add Customer" class="btn btn-info" /></td>
-  </tr>
-  <tr>
-    <td colspan="9">&nbsp;</td>
-    </tr>
-  <tr>
-    <td colspan="9"><?php echo $msg; ?></td>
-    </tr>
-</table>
-              <table class="table table-bordered" id="tdDataCustomers" width="100%" cellspacing="0">
-                  <thead>
-                    <tr class="noBorder">
-                    </tr>
-                    <tr>
-                      <th>Name</th>
-                      <th>Address</th>
-                      <th>Email</th>
-                      <th>Web Site</th>
-                      <th>Actions</th>
-                    </tr>
-                </thead>
-                  <tbody id="customers">
-                  <?php while ($customers = mysqli_fetch_array($customers_q)) { ?>
-                    <tr>
-					  <td align="center"><?php echo $customers['name']; ?></td>
-					  <td align="center"><?php echo $customers['address']; ?></td>
-					  <td align="center"><?php echo $customers['email']; ?></td>
-					  <td align="center"><?php echo $customers['web']; ?></td>
-                      <td align="center"><a href="pages/editCustomer.php?id=<?php echo $customers['id'];?>" class="fas fa-edit popup-link"></a> <a href="?do=settings&action=delete&customer_id=<?php echo $customers['id'];?>#customers" onclick="return confirm('Delete user <?php echo $customers['name'];?>?')" class="fas fa-trash"></a></td>
-					</tr>
-				  	<?php } ?>
-                    </tr>
-                  </tbody>
-          </table>
-        </form>
-     </div> 
-     
+     </div>
      <div id="brand">
        <form action="?do=settings&update=brand#brand" method="post" enctype="multipart/form-data" name="form" id="form">
          <table width="100%" border="0">

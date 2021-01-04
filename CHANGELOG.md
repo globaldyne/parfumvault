@@ -4,6 +4,7 @@
 -ADD: Auto ingredient create when edit it
 -IMP: Add/Edit ingredient page is now merged
 -IMP: Improve PDF export functionality
+-CHG: Customers page moved under inventory section for better management
 -FIX: Fix a validation issue in finished product page
 -FIX: Minor improvements in allegens page
 -FIX: Various minor bug fixes and code clean-up
