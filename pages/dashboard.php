@@ -42,7 +42,8 @@
                 </div>
                 
              </div>
-             <div class="mt-3 col-md-12"></div>
+           
+           <div class="mt-3 col-md-12"></div>
 
             <div class="col-xl-3 col-md-6 mb-4">
               <div class="card border-left-primary shadow h-100 py-2">
@@ -50,7 +51,7 @@
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                       <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">All Formulas</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo countElement('formulas GROUP BY name' ,$conn); ?></div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo countElement("formulasMetaData",$conn); ?></div>
                     </div>
                     <div class="col-auto">
                       <i class="fas fa-flask fa-2x text-gray-300"></i>
@@ -66,7 +67,7 @@
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                       <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Suppliers</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo countElement("ingSuppliers" ,$conn); ?></div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo countElement("ingSuppliers",$conn); ?></div>
                     </div>
                     <div class="col-auto">
                       <i class="fas fa-store fa-2x text-gray-300"></i>
@@ -77,12 +78,12 @@
             </div>        
               
 			<div class="col-xl-3 col-md-6 mb-4">
-              <div class="card border-left-primary shadow h-100 py-2">
+              <div class="card border-left-success shadow h-100 py-2">
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">IFRA Entries</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo countElement("IFRALibrary" ,$conn); ?></div>
+                      <div class="text-xs font-weight-bold text-success text-uppercase mb-1">IFRA Entries</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo countElement("IFRALibrary",$conn); ?></div>
                     </div>
                     <div class="col-auto">
                       <i class="fas fa-university fa-2x text-gray-300"></i>
@@ -93,12 +94,12 @@
             </div> 
           
            <div class="col-xl-3 col-md-6 mb-4">
-              <div class="card border-left-success shadow h-100 py-2">
+              <div class="card border-left-info shadow h-100 py-2">
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-success text-uppercase mb-1">All Ingredients</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo countElement("ingredients" ,$conn); ?></div>
+                      <div class="text-xs font-weight-bold text-info text-uppercase mb-1">All Ingredients</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo countElement("ingredients",$conn); ?></div>
                     </div>
                     <div class="col-auto">
                       <i class="fas fa-vial fa-2x text-gray-300"></i>
@@ -109,12 +110,12 @@
             </div> 
   
             <div class="col-xl-3 col-md-6 mb-4">
-              <div class="card border-left-warning shadow h-100 py-2">
+              <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Categories</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo countElement("ingCategory" ,$conn); ?></div>
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Categories</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo countElement("ingCategory",$conn); ?></div>
                     </div>
                     <div class="col-auto">
                       <i class="fas fa-puzzle-piece fa-2x text-gray-300"></i>
@@ -125,12 +126,12 @@
             </div>
             
             <div class="col-xl-3 col-md-6 mb-4">
-              <div class="card border-left-primary shadow h-100 py-2">
+              <div class="card border-left-warning shadow h-100 py-2">
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Bottles</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo countElement("bottles" ,$conn); ?></div>
+                      <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Bottles</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo countElement("bottles",$conn); ?></div>
                     </div>
                     <div class="col-auto">
                       <i class="fas fa-spray-can fa-2x text-gray-300"></i>
@@ -146,7 +147,7 @@
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                       <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Bottle Lids</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo countElement("lids" ,$conn); ?></div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo countElement("lids",$conn); ?></div>
                     </div>
                     <div class="col-auto">
                       <i class="fas fa-prescription-bottle fa-2x text-gray-300"></i>
@@ -162,7 +163,7 @@
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                       <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Pending formulas to make</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo countElement("makeFormula WHERE toAdd = '1' GROUP BY name" ,$conn); ?></div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo countElement("makeFormula WHERE toAdd = '1' GROUP BY name",$conn); ?></div>
                     </div>
                     <div class="col-auto">
                       <i class="fas fa-flask fa-2x text-gray-300"></i>
