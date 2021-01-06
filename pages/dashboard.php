@@ -1,5 +1,17 @@
 <?php if (!defined('pvault_panel')){ die('Not Found');}?>
 <?php require_once(__ROOT__.'/func/countElement.php');?>
+<style>
+#chartIngUsage, #chartIFRA{
+  width		: 100%;
+  height	: 500px;
+  font-size	: 11px;
+}
+</style>
+<script src="js/amcharts_3.21.15.free/amcharts/amcharts.js"></script>
+<script src="js/amcharts_3.21.15.free/amcharts/serial.js"></script>
+<script src="js/amcharts_3.21.15.free/amcharts/pie.js"></script>
+
+<script src="js/amcharts_3.21.15.free/amcharts/themes/light.js"></script>
 <div id="content-wrapper" class="d-flex flex-column">
 <?php require_once('pages/top.php'); ?>
         <div class="container-fluid">
@@ -7,6 +19,7 @@
             <h1 class="m-0 mb-4 text-primary">Dashboard</h1>
           </div>
           <div class="row">
+          
             <div class="col-xl-3 col-md-6 mb-4">
               <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body">
@@ -22,6 +35,7 @@
                 </div>
               </div>
             </div>
+            
             <div class="col-xl-3 col-md-6 mb-4">
               <div class="card border-left-success shadow h-100 py-2">
                 <div class="card-body">
@@ -37,6 +51,7 @@
                 </div>
               </div>
             </div>
+            
             <div class="col-xl-3 col-md-6 mb-4">
               <div class="card border-left-info shadow h-100 py-2">
                 <div class="card-body">
