@@ -21,7 +21,7 @@
                     </div>
                     <div class="box-body">
                       <div class="pull-left">
-                        <canvas id="formulasPie" width="458" height="458" style="display: block; height: 229px; width: 229px;" class="chartjs-render-monitor"></canvas>
+                        <canvas id="formulasPie" width="458" height="458"></canvas>
                       </div>
                     </div>
                   </div>
@@ -34,7 +34,7 @@
                     </div>
                     <div class="box-body">
                       <div class="pull-left">
-                        <canvas id="ingredientsPie" width="458" height="458" class="chartjs-render-monitor" style="display: block; height: 229px; width: 229px;"></canvas>
+                        <canvas id="ingredientsPie" width="458" height="458"></canvas>
                       </div>
                     </div>
                   </div>
@@ -42,7 +42,7 @@
                 </div>
                 
              </div>
-           
+               
            <div class="mt-3 col-md-12"></div>
 
             <div class="col-xl-3 col-md-6 mb-4">
@@ -180,6 +180,8 @@
         </div>
       </div>
   </div>
+  
+
 <script>
 var formulas = document.getElementById('formulasPie');
 var ingredients = document.getElementById('ingredientsPie');
@@ -245,4 +247,5 @@ var ingredientsChart = new Chart(ingredients, {
 				responsive: true
 			}
 });
+
 </script>
