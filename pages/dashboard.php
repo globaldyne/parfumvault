@@ -192,7 +192,7 @@ var formulasChart = new Chart(formulas, {
         labels: ['Oriental', 'Woody', 'Floral', 'Fresh', 'Unisex', 'Men', 'Women', 'Other'],
         datasets: [{
             label: 'Formulas',
-            data: [<?php echo countElement("formulasMetaData WHERE profile = 'oriental'",$conn); ?>, <?php echo countElement("formulasMetaData WHERE profile = 'woody'",$conn); ?>, <?php echo countElement("formulasMetaData WHERE profile = 'floral'",$conn); ?>, <?php echo countElement("formulasMetaData WHERE profile = 'fresh'",$conn); ?>, <?php echo countElement("formulasMetaData WHERE profile = 'unisex'",$conn); ?>, <?php echo countElement("formulasMetaData WHERE profile = 'men'",$conn); ?>, <?php echo countElement("formulasMetaData WHERE profile = 'women'",$conn); ?>, <?php echo countElement("formulasMetaData WHERE profile = 'other'",$conn); ?>],
+            data: [<?php echo countElement("formulasMetaData WHERE profile = 'oriental'",$conn); ?>, <?php echo countElement("formulasMetaData WHERE profile = 'woody'",$conn); ?>, <?php echo countElement("formulasMetaData WHERE profile = 'floral'",$conn); ?>, <?php echo countElement("formulasMetaData WHERE profile = 'fresh'",$conn); ?>, <?php echo countElement("formulasMetaData WHERE sex = 'unisex'",$conn); ?>, <?php echo countElement("formulasMetaData WHERE sex = 'men'",$conn); ?>, <?php echo countElement("formulasMetaData WHERE sex = 'women'",$conn); ?>, <?php echo countElement("formulasMetaData WHERE profile = 'other'",$conn); ?>],
             backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
                 'rgba(54, 162, 235, 0.2)',
@@ -200,9 +200,8 @@ var formulasChart = new Chart(formulas, {
                 'rgba(75, 192, 192, 0.2)',
                 'rgba(153, 102, 255, 0.2)',
                 'rgba(255, 159, 64, 0.2)',
-				'rgba(250, 159, 64, 0.2)',
-                'rgba(155, 159, 64, 0.2)'
-
+				'rgba(190, 190, 64, 0.2)',
+                'rgba(105, 155, 64, 0.2)'
             ],
             borderColor: [
                 'rgba(255, 99, 132, 1)',
@@ -211,9 +210,8 @@ var formulasChart = new Chart(formulas, {
                 'rgba(75, 192, 192, 1)',
                 'rgba(153, 102, 255, 1)',
                 'rgba(255, 159, 64, 1)',
-				'rgba(250, 159, 64, 1)',
-                'rgba(155, 159, 64, 1)'
-
+				'rgba(190, 190, 64, 1)',
+                'rgba(105, 155, 64, 1)'
             ],
             borderWidth: 1
         }]
@@ -226,7 +224,7 @@ var formulasChart = new Chart(formulas, {
 var ingredientsChart = new Chart(ingredients, {
     type: 'pie',
     data: {
-        labels: ['Aroma Chemicals', 'Essential Oils', 'Unategorised'],
+        labels: ['Aroma Chemicals ', 'Essential Oils', 'Unategorised'],
         datasets: [{
             label: 'Ingredients',
             data: [<?php echo countElement("ingredients WHERE type = 'AC'",$conn); ?>, <?php echo countElement("ingredients WHERE type = 'EO'",$conn); ?>, <?php echo countElement("ingredients WHERE type IS NULL",$conn); ?>],
