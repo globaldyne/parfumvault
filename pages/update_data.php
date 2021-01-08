@@ -136,6 +136,45 @@ if($_POST['value'] && $_GET['formula'] && $_POST['pk'] && !$_GET['settings']){
 	return;
 	
 	
+//CUSTOMERS - ADD
+}elseif($_POST['customer'] == 'add'){
+	$name = mysqli_real_escape_string($conn, $_POST['name']);
+	if(empty($name)){
+		echo '<div class="alert alert-danger alert-dismissible">Customer name is required.</div>';
+		return;
+	}
+	$address = mysqli_real_escape_string($conn, $_POST['address']);
+	$email = mysqli_real_escape_string($conn, $_POST['email']);
+	$web = mysqli_real_escape_string($conn, $_POST['web']);
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM customers WHERE name = '$name'"))){
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$name.' already exists!</div>';
+	}elseif(mysqli_query($conn, "INSERT INTO customers (name,address,email,web) VALUES ('$name', '$address', '$email', '$web')")){
+		echo '<div class="alert alert-success alert-dismissible">Customer '.$name.' added!</div>';
+	}else{
+		echo '<div class="alert alert-danger alert-dismissible">Error adding customer.</div>';
+	}
+	return;
+	
+//CUSTOMERS - DELETE
+}elseif($_GET['customer'] == 'delete' && $_GET['customer_id']){
+	$customer_id = mysqli_real_escape_string($conn, $_GET['customer_id']);
+	if(mysqli_query($conn, "DELETE FROM customers WHERE id = '$customer_id'")){
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Customer deleted!</div>';
+	}else{
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error deleting customer.</div>';
+	}
+	return;
+	
+	
+//CUSTOMERS - UPDATE
+}elseif($_GET['customer'] == 'update'){
+	$value = mysqli_real_escape_string($conn, $_POST['value']);
+	$id = mysqli_real_escape_string($conn, $_POST['pk']);
+	$name = mysqli_real_escape_string($conn, $_POST['name']);
+
+	mysqli_query($conn, "UPDATE customers SET $name = '$value' WHERE id = '$id'");
+	return;
+	
 	
 }else{
 	header('Location: /');

@@ -258,3 +258,58 @@ tr.strikeout td:before {
 	top: -0.5em; 
 	font-size: 80%; 
 }
+
+.pull-left {
+    float: left !important;
+	width: 50%;
+}
+.pull-right {
+    float: right !important;
+	width: 50%;
+}
+
+.box-body {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+    padding: 10px 10px 10px 150px;
+	box-sizing: border-box;
+}
+
+
+.dash_charts {
+	position: relative;
+    margin-left: 605px;
+    padding-top: 300px;
+    padding-bottom: 300px;
+	display: contents;
+	box-sizing: border-box;
+	border: 1px solid #272c30;
+    border-top-color: rgb(39, 44, 48);
+    border-top-style: solid;
+    border-top-width: 1px;
+    border-right-color: rgb(39, 44, 48);
+    border-right-style: solid;
+    border-right-width: 1px;
+    border-bottom-color: rgb(39, 44, 48);
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-left-color: rgb(39, 44, 48);
+    border-left-style: solid;
+    border-left-width: 1px;
+    border-image-outset: 0;
+    border-image-repeat: stretch;
+    border-image-slice: 100%;
+    border-image-source: none;
+    border-image-width: 1;
+}
+
+.chartjs-render-monitor {
+    animation: chartjs-render-animation 1ms;
+}
+
+.charts_box {
+    width: 100%;
+    height: 500px;
+}

@@ -1,8 +1,7 @@
-This release includes:
+Whats New:
 ----------------------
-You can now select the default category instead of always set to Cat4
-Changed how the % limit is been shown in ingredients page
-Versioning format changed from x.x.x to x.x
-Added release notes
-IFRA certification improvements
-Various bug fixes
+You can easily generate related documents to sell a formula to a customer.
+If ingredient exists in formulas but not in your inventory, will now automatically be created when you try to edit it.
+Add/Edit ingredient page is now merged under one common page for better ingredient management.
+Customers page moved under the inventory section for better management
+Dashboard improved for better experience

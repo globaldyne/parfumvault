@@ -11,20 +11,13 @@ $qAlg = mysqli_query($conn, "SELECT * FROM allergens WHERE ing = '$ingID'");
 
 ?>
 <script type='text/javascript'>
-$(document).ready(function() {
-	
-    $('#tdData').DataTable({
-	    "paging":   true,
-		"info":   true,
-		"lengthMenu": [[5, 35, 60, -1], [20, 35, 60, "All"]]
-	});
-}); 
+
 </script>
 				   <h3>Allergens</h3>
                                  <hr>
                     <div class="card-body">
               <div>
-                <table class="table table-bordered" id="tdData" width="100%" cellspacing="0">
+                <table class="table table-bordered" id="tdAllergens" width="100%" cellspacing="0">
                   <thead>
                     <tr class="noBorder">
                       <th colspan="4">
@@ -62,29 +55,34 @@ $(document).ready(function() {
             
 <script type="text/javascript" language="javascript" >
 $(document).ready(function(){
- 
-  $('#ing_allergen').editable({
-  container: 'body',
-  selector: 'td.name',
-  type: 'POST',
-  url: "update_data.php?allergen=update&ing=<?=$ingID;?>",
-  title: 'Name',
+ $('#tdAllergens').DataTable({
+    "paging":   true,
+	"info":   true,
+	"lengthMenu": [[15, 35, 60, -1], [15, 35, 60, "All"]]
+ });
+
+ $('#ing_allergen').editable({
+	  container: 'body',
+	  selector: 'td.name',
+	  type: 'POST',
+	  url: "update_data.php?allergen=update&ing=<?=$ingID;?>",
+	  title: 'Name',
  });
   
-  $('#ing_allergen').editable({
-  container: 'body',
-  selector: 'td.percentage',
-  type: 'POST',
-  url: "update_data.php?allergen=update&ing=<?=$ingID;?>",
-  title: 'Percentage',
+ $('#ing_allergen').editable({
+	  container: 'body',
+	  selector: 'td.percentage',
+	  type: 'POST',
+	  url: "update_data.php?allergen=update&ing=<?=$ingID;?>",
+	  title: 'Percentage',
  });
   
-  $('#ing_allergen').editable({
-  container: 'body',
-  selector: 'td.cas',
-  type: 'POST',
-  url: "update_data.php?allergen=update&ing=<?=$ingID;?>",
-  title: 'CAS',
+ $('#ing_allergen').editable({
+	  container: 'body',
+	  selector: 'td.cas',
+	  type: 'POST',
+	  url: "update_data.php?allergen=update&ing=<?=$ingID;?>",
+	  title: 'CAS',
  });
 	
 });

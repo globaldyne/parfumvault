@@ -123,7 +123,7 @@ function downloadBoxLabel() {
 		<div>
           <div class="card shadow mb-4">
             <div class="card-header py-3"> 
-			<?php if($_GET['generate']){?>
+            <?php if($_GET['generate'] && $_POST['formula']){?>
              <h2 class="m-0 font-weight-bold text-primary"><a href="?do=genFinishedProduct"><?php echo $meta['product_name'];?></a></h2>
              <h5 class="m-1 text-primary">Formula name: <strong><?php echo $meta['name'];?></strong></h5>
              <h5 class="m-1 text-primary">Bottle: <strong><?php echo $bottle; ?>ml</strong></h5>
@@ -136,7 +136,7 @@ function downloadBoxLabel() {
             </div>
             <div class="card-body">
            <div id="inf"><?php if($msg){ echo $msg; }?></div>
-           <?php if($_GET['generate']){?>
+            <?php if($_GET['generate'] && $_POST['formula']){?>
               <div>
                 <table class="table table-bordered" id="formula" width="100%" cellspacing="0">
                   <thead>
@@ -478,16 +478,12 @@ $('#pdf').on('click',function(){
 	orientation: 'p',
 	trimContent: true,
     quoteFields: true,
-	
 	ignoreColumns: '.noexport',
   	ignoreRows: '.noexport',
 	htmlContent: true,
+	maintitle: '<?php echo $f_name; ?>',
+	product: '<?php echo trim($product).' '.trim($ver);?>'
 
-	/*
-	 var doc = new jsPDF()
-  doc.autoTable({ html: '#formula' })
-  doc.save('table.pdf')
-  */
 });
  
 })

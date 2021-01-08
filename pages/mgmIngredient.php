@@ -10,6 +10,14 @@ require_once('../func/validateInput.php');
 require_once('../func/searchIFRA.php');
 
 $ingID = mysqli_real_escape_string($conn, $_GET["id"]);
+if($ingID){
+	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT * FROM ingredients WHERE name = '$ingID'")))){
+		if(mysqli_query($conn, "INSERT INTO ingredients (name) VALUES ('$ingID')")){
+			$msg='<div class="alert alert-info alert-dismissible"><strong>Info:</strong> ingredient '.$ingID.' added</div>';
+		}
+	}
+}
+
 $defCatClass = $settings['defCatClass'];
 
 if($_POST){
@@ -27,6 +35,7 @@ if($_POST){
 	$profile = mysqli_real_escape_string($conn, $_POST["profile"]);
 	$price = validateInput($_POST["price"]);
 	$tenacity = mysqli_real_escape_string($conn, $_POST["tenacity"]);
+	$formula = mysqli_real_escape_string($conn, $_POST["formula"]);
 	$chemical_name = mysqli_real_escape_string($conn, $_POST["chemical_name"]);
 	$flash_point = mysqli_real_escape_string($conn, $_POST["flash_point"]);
 	$appearance = mysqli_real_escape_string($conn, $_POST["appearance"]);
@@ -73,6 +82,10 @@ if($_POST){
 	}else{
 		$flavor_use = '0';
 	}
+	if(empty($ml)){
+		$ml = '10';
+	}
+	
 	if(($_FILES['SDS']['name'])){
       $file_name = $_FILES['SDS']['name'];
       $file_size =$_FILES['SDS']['size'];
@@ -99,12 +112,27 @@ if($_POST){
 	  }
    }
 
-	if(mysqli_query($conn, "UPDATE ingredients SET cas = '$cas', FEMA = '$fema', type = '$type', strength = '$strength', category='$category', supplier='$supplier', supplier_link='$supplier_link', profile='$profile', price='$price', tenacity='$tenacity', chemical_name='$chemical_name', flash_point='$flash_point', appearance='$appearance', notes='$notes', ml='$ml', odor='$odor', purity='$purity', allergen='$allergen', formula='$formula', flavor_use='$flavor_use', cat1 = '$cat1', cat2 = '$cat2', cat3 = '$cat3', cat4 = '$cat4', cat5A = '$cat5A', cat5B = '$cat5B', cat5C = '$cat5C', cat5D = '$cat5D', cat6 = '$cat6', cat7A = '$cat7A', cat5B = '$cat7B', cat8 = '$cat8', cat9 = '$cat9', cat10A = '$cat10A', cat10B = '$cat10B', cat11A = '$cat11A', cat11B = '$cat11B', cat12 = '$cat12', soluble = '$soluble', logp = '$logp', manufacturer = '$manufacturer', impact_top = '$impact_top', impact_heart = '$impact_heart', impact_base = '$impact_base', usage_type = '$usage_type', solvent = '$solvent' WHERE name='$ingID'")){
-		
-			$msg.='<div class="alert alert-success alert-dismissible">Ingredient <strong>'.$ing['name'].'</strong> updated!</div>';
+	if(empty($_POST['name'])){
+		$query = "UPDATE ingredients SET cas = '$cas', FEMA = '$fema', type = '$type', strength = '$strength', category='$category', supplier='$supplier', supplier_link='$supplier_link', profile='$profile', price='$price', tenacity='$tenacity', chemical_name='$chemical_name', flash_point='$flash_point', appearance='$appearance', notes='$notes', ml='$ml', odor='$odor', purity='$purity', allergen='$allergen', formula='$formula', flavor_use='$flavor_use', cat1 = '$cat1', cat2 = '$cat2', cat3 = '$cat3', cat4 = '$cat4', cat5A = '$cat5A', cat5B = '$cat5B', cat5C = '$cat5C', cat5D = '$cat5D', cat6 = '$cat6', cat7A = '$cat7A', cat7B = '$cat7B', cat8 = '$cat8', cat9 = '$cat9', cat10A = '$cat10A', cat10B = '$cat10B', cat11A = '$cat11A', cat11B = '$cat11B', cat12 = '$cat12', soluble = '$soluble', logp = '$logp', manufacturer = '$manufacturer', impact_top = '$impact_top', impact_heart = '$impact_heart', impact_base = '$impact_base', usage_type = '$usage_type', solvent = '$solvent' WHERE name='$ingID'";
+		if(mysqli_query($conn, $query)){
+			$msg = '<div class="alert alert-success alert-dismissible">Ingredient <strong>'.$ing['name'].'</strong> updated!</div>';
 		}else{
-			$msg.='<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> Failed to update!</div>';
+			$msg = '<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> Failed to update!</div>';
 		}
+	}else{
+		$name = mysqli_real_escape_string($conn, $_POST["name"]);
+		$ingID = $name;
+		$query = "INSERT INTO ingredients (name, cas, FEMA, type, strength, SDS, ".$settings['defCatClass'].", category, supplier, supplier_link, profile, price, tenacity, chemical_name, flash_point, appearance, notes, ml, odor, purity, allergen) VALUES ('$name', '$cas', '$fema', '$type', '$strength', '$SDSF', '$cat', '$category', '$supplier', '$supplier_link', '$profile', '$price', '$tenacity', '$chemical_name', '$flash_point', '$appearance', '$notes', '$ml', '$odor', '$purity', '$allergen')";
+		if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '$name'"))){
+			$msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$name.' already exists!</div>';
+		}else{
+			if(mysqli_query($conn, $query)){
+				$msg = '<div class="alert alert-success alert-dismissible">Ingredient <strong>'.$name.'</strong> added!</div>';
+			}else{
+				$msg = '<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> Failed to add!</div>';
+			}
+		}
+	}
 }
 
 $res_ingTypes = mysqli_query($conn, "SELECT id,name FROM ingTypes ORDER BY name ASC");
@@ -113,20 +141,14 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,name FROM ingCategory ORDER BY
 $res_ingSupplier = mysqli_query($conn, "SELECT id,name FROM ingSuppliers ORDER BY name ASC");
 $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles ORDER BY name ASC");
 
-$sql = mysqli_query($conn, "SELECT * FROM ingredients WHERE name = '$ingID'");
+$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE name = '$ingID'"));
 
-if(empty(mysqli_num_rows($sql))){
-	$msg='<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> ingredient not found, please click <a href="?do=addIngredient">here</a> to add it first!</div>';
-	die($msg);
-}else{
-	$ing = mysqli_fetch_array($sql);
-}
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Edit ingredient</title>
+<title>Manage ingredient</title>
 <link href="../css/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
 <script src="../js/jquery/jquery.min.js"></script>
 <script src="../js/bootstrap.min.js"></script>
@@ -136,17 +158,7 @@ if(empty(mysqli_num_rows($sql))){
 
 <link rel="stylesheet" type="text/css" href="../css/datatables.min.css"/>
 <script type="text/javascript" src="../js/datatables.min.js"></script>
-  
-<script type='text/javascript'>
-$(document).ready(function() {
-	
-    $('#tdData').DataTable({
-	    "paging":   true,
-		"info":   true,
-		"lengthMenu": [[5, 35, 60, -1], [20, 35, 60, "All"]]
-	});
-}); 
-</script>
+
 <style>
 .form-inline .form-control {
     display: inline-block;
@@ -168,17 +180,13 @@ $(document).ready(function() {
     max-width: 100%;
 	width: 950px;
 }
-#tdData td,
-  table.table th {
-  white-space: nowrap;
-}
 </style>
 
 <script>
-  
+
 $(document).ready(function() {
-	$('a[rel=tipsy]').tipsy();
-});  
+    $('a[rel=tipsy]').tipsy({gravity: 'w'});
+});
 
 function search() {	  
 $("#odor").val('Loading...');
@@ -207,7 +215,7 @@ $.ajax({
     success: function (data) {
 	  $('#pubChemData').html(data);
     }
-  });
+});
 
 <?php } ?>
 
@@ -256,13 +264,16 @@ reload_data();
 <body>
 <div class="container">
 		<div class="list-group-item-info">
-        <h1 class="badge-primary"><?php echo $ing['name']; ?>
+        <h1 class="badge-primary"><?php if($ingID){ echo $ing['name'];?>
             <div class="btn-group">
               <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
               <div class="dropdown-menu">
                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#printLabel">Print Label</a>
               </div>
             </div>
+            <?php }else {?>
+            Add ingredient
+            <?php } ?>
         </h1>
 </div>
 <!-- Nav tabs -->
@@ -272,13 +283,14 @@ reload_data();
       <li><a href="#supply" role="tab" data-toggle="tab"><i class="fa fa-shopping-cart"></i> Supply</a></li>
       <li><a href="#tech_data" role="tab" data-toggle="tab"><i class="fa fa-cog"></i> Technical Data</a></li>
       <li><a href="#note_impact" role="tab" data-toggle="tab"><i class="fa fa-magic"></i> Note Impact</a></li>
+      <?php if($ingID){?>
       <li><a href="#tech_allergens" role="tab" data-toggle="tab"><i class="fa fa-allergies"></i> Allergens</a></li>
-        
+      <?php } ?>  
       <?php if($settings['pubChem'] == '1' && $ing['cas']){?>
       	<li><a href="#pubChem" role="tab" data-toggle="tab"><i class="fa fa-atom"></i> Pub Chem</a></li>
       <?php } ?>
     </ul>
-			<form action="editIngredient.php?id=<?php echo $ingID; ?>" method="post" enctype="multipart/form-data" name="edit_ing" target="_self" id="edit_ing">
+			<form action="<?php if($ingID){ echo '?id='.$ingID;}?>" method="post" enctype="multipart/form-data" name="mgm_ing" target="_self" id="mgm_ing">
            	  <div class="tab-content">
      				<div class="tab-pane fade active in" id="general">
                               <h3>General</h3>
@@ -287,11 +299,16 @@ reload_data();
                               <tr>
                                 <td colspan="6"><?php echo $msg; ?></td>
                               </tr>
+                              <?php if(empty($ingID)){?>
+                              <tr>
+                                <td>Name:</td>
+                                <td colspan="5"><input name="name" type="text" class="form-control" id="name" /></td>
+                              </tr>
+                              <?php } ?>
                               <tr>
                                 <td width="20%">CAS #:</td>
                                 <td colspan="5"><input name="cas" type="text" class="form-control" id="cas" value="<?php echo $ing['cas']; ?>"></td>
                               </tr>
-
                               <tr>
                                 <td height="31">FEMA #:</td>
                                 <td colspan="5"><input name="fema" type="text" class="form-control" id="fema" value="<?php echo $ing['FEMA']; ?>" /></td>
@@ -320,7 +337,7 @@ reload_data();
                               <tr>
                                 <td height="29">Profile:</td>
                                 <td colspan="5">
-                                <select name="profile" id="profile" class="form-control">
+                                <select name="profile" id="profile" class="form-control selectpicker" data-live-search="true">
                                 <option value="" selected></option>
                                 <?php 	while ($row_ingProfiles = mysqli_fetch_array($res_ingProfiles)){ ?>
 								<option value="<?php echo $row_ingProfiles['name'];?>" <?php echo ($ing['profile']==$row_ingProfiles['name'])?"selected=\"selected\"":""; ?>><?php echo $row_ingProfiles['name'];?></option>
@@ -331,7 +348,7 @@ reload_data();
                               <tr>
                                 <td height="29">Type:</td>
                                 <td colspan="5">
-                                <select name="type" id="type" class="form-control">
+                                <select name="type" id="type" class="form-control selectpicker" data-live-search="true">
                                 <option value="" selected></option>
                                 <?php 	while ($row_ingTypes = mysqli_fetch_array($res_ingTypes)){ ?>
 								<option value="<?php echo $row_ingTypes['name'];?>" <?php echo ($ing['type']==$row_ingTypes['name'])?"selected=\"selected\"":""; ?>><?php echo $row_ingTypes['name'];?></option>
@@ -342,7 +359,7 @@ reload_data();
                               <tr>
                                 <td height="28">Strength:</td>
                                 <td colspan="5">
-                                <select name="strength" id="strength" class="form-control">
+                                <select name="strength" id="strength" class="form-control selectpicker" data-live-search="true">
                                 <option value="" selected></option>
                                 <?php while ($row_ingStrength = mysqli_fetch_array($res_ingStrength)){ ?>
 								<option value="<?php echo $row_ingStrength['name'];?>" <?php echo ($ing['strength']==$row_ingStrength['name'])?"selected=\"selected\"":""; ?>><?php echo $row_ingStrength['name'];?></option>
@@ -353,11 +370,11 @@ reload_data();
                               <tr>
                                 <td height="31">Category:</td>
                                 <td colspan="5">
-                                <select name="category" id="category" class="form-control" data-live-search="true">
+                                <select name="category" id="category" class="form-control selectpicker" data-live-search="true">
                                 <option value="" selected></option>
-                                  <?php while ($row_ingCategory = mysqli_fetch_array($res_ingCategory)){ ?>
+                                <?php while ($row_ingCategory = mysqli_fetch_array($res_ingCategory)){ ?>
 								<option value="<?php echo $row_ingCategory['name'];?>" <?php echo ($ing['category']==$row_ingCategory['name'])?"selected=\"selected\"":""; ?>><?php echo $row_ingCategory['name'];?></option>
-								  <?php } ?>
+								<?php } ?>
                                 </select>
                                 </td>
                               </tr>
@@ -374,11 +391,9 @@ reload_data();
                                 <td valign="top">Notes:</td>
                                 <td colspan="5"><textarea name="notes" id="notes" cols="45" rows="5" class="form-control"><?php echo $ing['notes']; ?></textarea></td>
                               </tr>
-
                             </table>
-                </div>
-                <!--general tab-->
-                    
+              				</div>
+             				<!--general tab-->
                             <div class="tab-pane fade" id="usage_limits">
        						   <h3>Usage &amp; Limits</h3>
                                  <hr>
@@ -387,30 +402,27 @@ reload_data();
                                   <td height="32">Flavor use:</td>
                                   <td width="78%" colspan="3"><input name="flavor_use" type="checkbox" id="flavor_use" value="1" <?php if($ing['flavor_use'] == '1'){; ?> checked="checked"  <?php } ?>/></td>
                                 </tr>
-
                                 <td width="22%"></td>
-
                                 </tr>
                                 <tr>
                                   <td colspan="4"><hr /></td>
                                  </tr>
                                 <tr>
                                   <td>Usage classification:</td>
-                                  <td colspan="3">
+                                <td colspan="3">
                                 <?php if($rType = searchIFRA($ing['cas'],$ing['name'],'type',$conn, $defCatClass)){
 										  echo $rType;
 									  }else{
 								?>
-
-                    <select name="usage_type" id="usage_type" class="form-control">
-                      <option value="none" selected="selected">None</option>
-					  <option value="1" <?php if($ing['usage_type']=="1") echo 'selected="selected"'; ?> >Recommendation</option>
-					  <option value="2" <?php if($ing['usage_type']=="2") echo 'selected="selected"'; ?> >Restriction</option>
-					  <option value="2" <?php if($ing['usage_type']=="3") echo 'selected="selected"'; ?> >Specification</option>
-					  <option value="2" <?php if($ing['usage_type']=="4") echo 'selected="selected"'; ?> >Prohibition</option>
-                    </select>
+                                <select name="usage_type" id="usage_type" class="form-control selectpicker" data-live-search="true">
+                                  <option value="none" selected="selected">None</option>
+                                  <option value="1" <?php if($ing['usage_type']=="1") echo 'selected="selected"'; ?> >Recommendation</option>
+                                  <option value="2" <?php if($ing['usage_type']=="2") echo 'selected="selected"'; ?> >Restriction</option>
+                                  <option value="2" <?php if($ing['usage_type']=="3") echo 'selected="selected"'; ?> >Specification</option>
+                                  <option value="2" <?php if($ing['usage_type']=="4") echo 'selected="selected"'; ?> >Prohibition</option>
+                                </select>
                     			<?php } ?>
-                    </td>
+                    			</td>
                                 </tr>
                                 <tr>
                                   <td>Cat1 %:</td>
@@ -423,7 +435,7 @@ reload_data();
                                   <?php } ?></td>
                                 </tr>
                                 <tr>
-                                  <td>Cat2  %:</td>
+                                  <td>Cat2 %:</td>
                                   <td colspan="3"><?php
 								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat2')){
 										echo $limit;
@@ -433,7 +445,7 @@ reload_data();
                                   <?php } ?></td>
                                 </tr>
                                 <tr>
-                                  <td>Cat3  %:</td>
+                                  <td>Cat3 %:</td>
                                   <td colspan="3"><?php
 								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat3')){
 										echo $limit;
@@ -443,7 +455,7 @@ reload_data();
                                   <?php } ?></td>
                                 </tr>
                                 <tr>
-                                  <td>Cat4  %:</td>
+                                  <td>Cat4 %:</td>
                                   <td colspan="3"><?php
 								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat4')){
 										echo $limit;
@@ -453,7 +465,7 @@ reload_data();
                                   <?php } ?></td>
                                 </tr>
                                 <tr>
-                                  <td>Cat5A  %:</td>
+                                  <td>Cat5A %:</td>
                                   <td colspan="3"><?php
 								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat5A')){
 										echo $limit;
@@ -463,7 +475,7 @@ reload_data();
                                   <?php } ?></td>
                                 </tr>
                                 <tr>
-                                  <td>Cat5B  %:</td>
+                                  <td>Cat5B %:</td>
                                   <td colspan="3"><?php
 								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat5B')){
 										echo $limit;
@@ -473,7 +485,7 @@ reload_data();
                                   <?php } ?></td>
                                 </tr>
                                 <tr>
-                                  <td>Cat5C  %:</td>
+                                  <td>Cat5C %:</td>
                                   <td colspan="3"><?php
 								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat5C')){
 										echo $limit;
@@ -483,7 +495,7 @@ reload_data();
                                   <?php } ?></td>
                                 </tr>
                                 <tr>
-                                  <td>Cat5D  %:</td>
+                                  <td>Cat5D %:</td>
                                   <td colspan="3"><?php
 								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat5D')){
 										echo $limit;
@@ -493,7 +505,7 @@ reload_data();
                                   <?php } ?></td>
                                 </tr>
                                 <tr>
-                                  <td>Cat6  %:</td>
+                                  <td>Cat6 %:</td>
                                   <td colspan="3"><?php
 								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat6')){
 										echo $limit;
@@ -503,7 +515,7 @@ reload_data();
                                   <?php } ?></td>
                                 </tr>
                                 <tr>
-                                  <td>Cat7A  %:</td>
+                                  <td>Cat7A %:</td>
                                   <td colspan="3"><?php
 								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat7A')){
 										echo $limit;
@@ -513,7 +525,7 @@ reload_data();
                                   <?php } ?></td>
                                 </tr>
                                 <tr>
-                                  <td>Cat7B  %:</td>
+                                  <td>Cat7B %:</td>
                                   <td colspan="3"><?php
 								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat7B')){
 										echo $limit;
@@ -523,7 +535,7 @@ reload_data();
                                   <?php } ?></td>
                                 </tr>
                                 <tr>
-                                  <td>Cat8  %:</td>
+                                  <td>Cat8 %:</td>
                                   <td colspan="3"><?php
 								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat8')){
 										echo $limit;
@@ -533,7 +545,7 @@ reload_data();
                                   <?php } ?></td>
                                 </tr>
                                 <tr>
-                                  <td>Cat9  %:</td>
+                                  <td>Cat9 %:</td>
                                   <td colspan="3"><?php
 								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat9')){
 										echo $limit;
@@ -543,7 +555,7 @@ reload_data();
                                   <?php } ?></td>
                                 </tr>
                                 <tr>
-                                  <td>Cat10A  %:</td>
+                                  <td>Cat10A %:</td>
                                   <td colspan="3"><?php
 								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat10A')){
 										echo $limit;
@@ -553,7 +565,7 @@ reload_data();
                                   <?php } ?></td>
                                 </tr>
                                 <tr>
-                                  <td>Cat10B  %:</td>
+                                  <td>Cat10B %:</td>
                                   <td colspan="3"><?php
 								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat10B')){
 										echo $limit;
@@ -563,7 +575,7 @@ reload_data();
                                   <?php } ?></td>
                                 </tr>
                                 <tr>
-                                  <td>Cat11A  %:</td>
+                                  <td>Cat11A %:</td>
                                   <td colspan="3"><?php
 								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat11A')){
 										echo $limit;
@@ -573,7 +585,7 @@ reload_data();
                                   <?php } ?></td>
                                 </tr>
                                 <tr>
-                                  <td>Cat11B  %:</td>
+                                  <td>Cat11B %:</td>
                                   <td colspan="3"><?php
 								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat11B')){
 										echo $limit;
@@ -583,7 +595,7 @@ reload_data();
                                   <?php } ?></td>
                                 </tr>
                                 <tr>
-                                  <td>Cat12  %:</td>
+                                  <td>Cat12 %:</td>
                                   <td colspan="3"><?php
 								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat12')){
 										echo $limit;
@@ -593,9 +605,7 @@ reload_data();
                                   <?php } ?></td>
                                 </tr>
 						      </table>
-
    						  </div>
-                            
                   <div class="tab-pane fade" id="supply">
 				    <h3>Supply</h3>
                     <hr>
@@ -603,7 +613,7 @@ reload_data();
                               <tr>
                                 <td width="20%">Supplier:</td>
                                 <td width="80%" colspan="3">
-                                <select name="supplier" id="supplier" class="form-control">
+                                <select name="supplier" id="supplier" class="form-control selectpicker" data-live-search="true">
                                 <option value="" selected></option>
                                   <?php while ($row_ingSupplier = mysqli_fetch_array($res_ingSupplier)){ ?>
 								<option value="<?php echo $row_ingSupplier['name'];?>" <?php echo ($ing['supplier']==$row_ingSupplier['name'])?"selected=\"selected\"":""; ?>><?php echo $row_ingSupplier['name'];?></option>
@@ -629,7 +639,6 @@ reload_data();
                               </tr>
                     </table>
                             </div>
-                            
                             <div class="tab-pane fade" id="tech_data">
           						 <h3>Techical Data</h3>
                                  <hr>
@@ -675,9 +684,7 @@ reload_data();
                                 <td colspan="3"><input type="file" class="form-control" name="SDS" id="SDS"></td>
                               </tr>
                             </table>
-    
       						</div>
-              
               <div class="tab-pane fade" id="note_impact">
               <h3>Note Impact</h3>
               <hr>
@@ -714,11 +721,11 @@ reload_data();
                   </tr>
                 </table>
 			  </div>
-                            
+              <?php if($ingID){?>
               <div class="tab-pane fade" id="tech_allergens">
                    <div id="fetch_allergen"><div class="loader"></div></div>
               </div>
-                            
+              <?php } ?>
               <?php if($settings['pubChem'] == '1' && $ing['cas']){?>
               <div class="tab-pane fade" id="pubChem">
 				   <h3>Pub Chem Data</h3>
@@ -805,44 +812,108 @@ reload_data();
 </div>
 
 
-<script type="text/javascript" language="javascript" >
+<script type="text/javascript" language="javascript">
 
 function deleteAllergen(allgID) {	  
-$.ajax({ 
-    url: 'update_data.php', 
-	type: 'GET',
-    data: {
-		allergen: 'delete',
-		allgID: allgID,
-		ing: '<?=$ing['name'];?>'
-		},
-	dataType: 'html',
-    success: function (data) {
-	  	$('#msg').html(data);
-		reload_data();
-    }
-  });
+	$.ajax({ 
+		url: 'update_data.php', 
+		type: 'GET',
+		data: {
+			allergen: 'delete',
+			allgID: allgID,
+			ing: '<?=$ing['name'];?>'
+			},
+		dataType: 'html',
+		success: function (data) {
+			$('#msg').html(data);
+			reload_data();
+		}
+	  });
 };
 
 function addAllergen() {	  
-$.ajax({ 
-    url: 'update_data.php', 
-	type: 'GET',
-    data: {
-		allergen: 'add',
-		allgName: $("#allgName").val(),
-		allgPerc: $("#allgPerc").val(),
-		allgCAS: $("#allgCAS").val(),				
-		ing: '<?=$ing['name'];?>'
-		},
-	dataType: 'html',
-    success: function (data) {
-	  	$('#inf').html(data);
-     	$("#allgName").val('');
-     	$("#allgCAS").val('');
-     	$("#allgPerc").val('');
-		reload_data();
-    }
-  });
+	$.ajax({ 
+		url: 'update_data.php', 
+		type: 'GET',
+		data: {
+			allergen: 'add',
+			allgName: $("#allgName").val(),
+			allgPerc: $("#allgPerc").val(),
+			allgCAS: $("#allgCAS").val(),				
+			ing: '<?=$ing['name'];?>'
+			},
+		dataType: 'html',
+		success: function (data) {
+			$('#inf').html(data);
+			$("#allgName").val('');
+			$("#allgCAS").val('');
+			$("#allgPerc").val('');
+			reload_data();
+		}
+	  });
 };
+/*
+function mgmIngredient() {	  
+	$.ajax({ 
+		url: 'update_data.php', 
+		type: 'POST',
+		data: {
+			manage: 'ingredient',
+			cas: $("#cas").val(),
+			fema: $("#fema").val(),
+			type: $("#type").val(),
+			strength: $("#strength").val(),
+			category: $("#category").val(),
+			supplier: $("#supplier").val(),
+			supplier_link: $("#supplier_link").val(),
+			profile: $("#profile").val(),
+			price: $("#price").val(),
+			tenacity: $("#tenacity").val(),
+			chemical_name: $("#chemical_name").val(),
+			flash_point: $("#flash_point").val(),
+			appearance: $("#appearance").val(),
+			ml: $("#ml").val(),
+			solvent: $("#solvent").val(),
+			notes: $("#notes").val(),
+			purity: $("#purity").val(),
+			soluble: $("#soluble").val(),
+			logp: $("#logp").val(),
+			type: $("#type").val(),
+
+			cat1: $("#cat1").val(),
+			cat2: $("#cat2").val(),
+			cat3: $("#cat3").val(),
+			cat4: $("#cat4").val(),
+			cat5A: $("#cat5A").val(),
+			cat5B: $("#cat5B").val(),
+			cat5C: $("#cat5C").val(),
+			cat5D: $("#cat5D").val(),
+			cat6: $("#cat6").val(),
+			cat7A: $("#cat7A").val(),
+			cat7B: $("#cat7B").val(),
+			cat8: $("#cat8").val(),
+			cat9: $("#cat9").val(),
+			cat10A: $("#cat10A").val(),
+			cat10B: $("#cat10B").val(),
+			cat11A: $("#cat11A").val(),
+			cat11B: $("#cat11B").val(),
+			cat12: $("#cat12").val(),
+
+			manufacturer: $("#manufacturer").val(),
+			impact_top: $("#impact_top").val(),
+			impact_base: $("#impact_base").val(),
+			impact_heart: $("#impact_heart").val(),
+			usage_type: $("#usage_type").val(),
+
+			<?php if($ing['name']){?>
+			ing: '<?=$ing['name'];?>'
+			<?php } ?>
+			},
+		dataType: 'html',
+		success: function (data) {
+			
+		}
+	  });
+};
+*/
 </script>

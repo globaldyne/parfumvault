@@ -1,4 +1,15 @@
 # CHANGELOG
+### Version 2.3
+-ADD: Add a new dashboard
+-ADD: Option to generate related documents to sell a formula
+-ADD: Auto ingredient create when edit it
+-IMP: Add/Edit ingredient page is now merged
+-IMP: Improve PDF export functionality
+-CHG: Customers page moved under inventory section for better management
+-FIX: Fix a validation issue in finished product page
+-FIX: Minor improvements in allegens page
+-FIX: Various minor bug fixes and code clean-up
+
 ### Version 2.2
 - ADD: Prohibition and Specification in ingredients usage classification
 - ADD: Release notes
