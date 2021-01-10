@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 2.4
+
 ### Version 2.3
 - ADD: Add a new dashboard
 - ADD: Option to generate related documents to sell a formula
