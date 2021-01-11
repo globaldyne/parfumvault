@@ -306,7 +306,7 @@ reload_data();
                               </tr>
                               <?php } ?>
                               <tr>
-                                <td width="20%">CAS #:</td>
+                                <td width="20%"><a href="#" rel="tipsy" title="If you material contains multiple CAS, then use Mixture or Blend instead.">CAS #:</a></td>
                                 <td colspan="5"><input name="cas" type="text" class="form-control" id="cas" value="<?php echo $ing['cas']; ?>"></td>
                               </tr>
                               <tr>
@@ -319,7 +319,7 @@ reload_data();
                               </tr>
                               <tr>
                                 <td height="29">Purity %:</td>
-                                <td width="50%"><input name="purity" type="text" class="form-control" id="purity" value="<?php echo $ing['purity']; ?>" /></td>
+                                <td width="50%"><input name="purity" type="text" class="form-control" id="purity" value="<?php echo $ing['purity']?: '100'; ?>" /></td>
                                 <td width="1%">&nbsp;</td>
                                 <td colspan="3"><select name="solvent" id="solvent" class="form-control selectpicker" data-live-search="true" <?php if($ing['purity'] == 100){ ?>disabled<?php }?> >
                                   <option value="" selected disabled>Solvent</option>
