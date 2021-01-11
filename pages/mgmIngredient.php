@@ -314,7 +314,7 @@ reload_data();
                                 <td colspan="5"><input name="fema" type="text" class="form-control" id="fema" value="<?php echo $ing['FEMA']; ?>" /></td>
                               </tr>
                               <tr>
-                                <td height="31"><a href="#" rel="tipsy" title="If enabled, ingredient name will be printed in the box label.">Is Allergen:</a></td>
+                                <td height="31"><a href="#" rel="tipsy" title="If enabled, ingredient name will be printed in the box label.">To Declare:</a></td>
                                 <td colspan="5"><input name="isAllergen" type="checkbox" id="isAllergen" value="1" <?php if($ing['allergen'] == '1'){; ?> checked="checked"  <?php } ?>/></td>
                               </tr>
                               <tr>

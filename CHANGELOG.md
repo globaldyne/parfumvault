@@ -2,6 +2,7 @@
 ### Version 2.4
 - ADD: PubChem - exclude Mixtures and Blends
 - ADD: Default purity value '100' in ingredient management
+- CHG: Allergen has been renamed to 'Declare'
 - IMP: Increase the size of the pop-up window when showing ingredient data
 
 ### Version 2.3
