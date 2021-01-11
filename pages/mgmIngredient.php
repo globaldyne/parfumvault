@@ -306,7 +306,7 @@ reload_data();
                               </tr>
                               <?php } ?>
                               <tr>
-                                <td width="20%"><a href="#" rel="tipsy" title="If you material contains multiple CAS, then use Mixture or Blend instead.">CAS #:</a></td>
+                                <td width="20%"><a href="#" rel="tipsy" title="If your material contains multiple CAS, then use Mixture or Blend instead.">CAS #:</a></td>
                                 <td colspan="5"><input name="cas" type="text" class="form-control" id="cas" value="<?php echo $ing['cas']; ?>"></td>
                               </tr>
                               <tr>
