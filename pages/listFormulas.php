@@ -9,8 +9,6 @@ require_once('../inc/settings.php');
 require_once('../func/formulaProfile.php');
 
 ?>
-
-
             <table width="100%" border="0">
               <tr>
                 <td>&nbsp;</td>
@@ -21,7 +19,7 @@ require_once('../func/formulaProfile.php');
                   <div class="btn-group">
                     <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
                     <div class="dropdown-menu dropdown-menu-right">
-                      <a class="dropdown-item" href="?do=addFormula">Add new formula</a>
+	                  <a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula">Add new formula</a>
                       <a class="dropdown-item popup-link" id="csv" href="pages/csvImport.php">Import from a CSV</a>
                     </div>
                     </div>
@@ -67,6 +65,50 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"))== 0){
               </tr>
             </table>
             <p>&nbsp;</p>
+            
+<!--ADD FORMULA MODAL-->
+<div class="modal fade" id="add_formula" tabindex="-1" role="dialog" aria-labelledby="add_formula" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="add_formula">Add a new formula</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <div id="addFormulaMsg"></div>
+  	  <form action="javascript:add_formula()" id="form1">
+      <table width="100%" border="0">  
+          <tr>
+            <td>Name:</td>
+            <td><input name="name" id="name" type="text" class="form-control" /></td>
+          </tr>
+          <tr>
+            <td>Profile:</td>
+            <td>
+            <select name="profile" id="profile" class="form-control">
+                <option value="oriental">Oriental</option>
+                <option value="woody">Woody</option>
+                <option value="floral">Floral</option>
+                <option value="fresh">Fresh</option>
+                <option value="other">Other</option>
+            </select>
+            </td>
+          </tr>
+           <tr>
+           	<td valign="top">Notes:</td>
+            <td><textarea name="notes" id="notes" cols="45" rows="5" class="form-control"></textarea></td>
+           </tr>  
+      </table>  
+	  <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <input type="submit" name="button" class="btn btn-primary" id="btnAdd" value="Add">
+      </div>
+     </form>
+    </div>
+  </div>
+</div>
 
 <script type="text/javascript" language="javascript" >
 
@@ -145,4 +187,24 @@ function addTODO(fid) {
     }
   });
 };
+
+function add_formula() {
+	$.ajax({ 
+    url: 'pages/manageFormula.php', 
+	type: 'POST',
+    data: {
+		action: 'addFormula',
+		name: $("#name").val(),
+		profile: $("#profile").val(),
+		notes: $("#notes").val(),
+		},
+	dataType: 'html',
+    success: function (data) {
+	  	$('#addFormulaMsg').html(data);
+		//list_formulas();
+
+    }
+  });
+};
+
 </script>
