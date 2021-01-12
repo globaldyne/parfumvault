@@ -2,6 +2,7 @@
 ### Version 2.4
 - ADD: PubChem - exclude Mixtures and Blends
 - ADD: Default purity value '100' in ingredient management
+- ADD: Favicon added!
 - CHG: Add new formula page now opens as a modal window
 - CHG: Allergen has been renamed to 'Declare'
 - IMP: Increase the size of the pop-up window when showing ingredient data
