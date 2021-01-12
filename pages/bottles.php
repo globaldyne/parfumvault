@@ -7,10 +7,7 @@ if($_GET['action'] == 'delete' && $_GET['id']){
 	$bottle = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM bottles WHERE id = '$id'"));
 	
 	if(mysqli_query($conn, "DELETE FROM bottles WHERE id = '$id'")){
-		$msg = '<div class="alert alert-success alert-dismissible">
-		<a href="?do=bottles" class="close" data-dismiss="alert" aria-label="close">x</a>
-  		Bottle <strong>'.$bottle['name'].'</strong> removed!
-		</div>';
+		$msg = '<div class="alert alert-success alert-dismissible"><a href="?do=bottles" class="close" data-dismiss="alert" aria-label="close">x</a>Bottle <strong>'.$bottle['name'].'</strong> removed!</div>';
 	}
 	
 }
