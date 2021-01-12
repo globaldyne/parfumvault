@@ -21,7 +21,7 @@
                     </div>
                     <div class="box-body">
                       <div class="pull-left">
-                        <canvas id="formulasPie" width="458" height="458"></canvas>
+                        <canvas id="formulasPie" width="358" height="358"></canvas>
                       </div>
                     </div>
                   </div>
@@ -34,7 +34,7 @@
                     </div>
                     <div class="box-body">
                       <div class="pull-left">
-                        <canvas id="ingredientsPie" width="458" height="458"></canvas>
+                        <canvas id="ingredientsPie" width="358" height="358"></canvas>
                       </div>
                     </div>
                   </div>
@@ -217,7 +217,7 @@ var formulasChart = new Chart(formulas, {
         }]
     },
     options: {
-				responsive: true
+				responsive: false
 			}
 });
 
@@ -242,7 +242,7 @@ var ingredientsChart = new Chart(ingredients, {
         }]
     },
     options: {
-				responsive: true
+				responsive: false
 			}
 });
 

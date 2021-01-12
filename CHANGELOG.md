@@ -7,6 +7,7 @@
 - CHG: Allergen has been renamed to 'Declare'
 - IMP: Increase the size of the pop-up window when showing ingredient data
 - FIX: Minor Bug fixes and cosmetic changes
+- FIX: Dashboard pie graphs size
 
 ### Version 2.3
 - ADD: Add a new dashboard
