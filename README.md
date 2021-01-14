@@ -27,11 +27,23 @@ This is a FREE software provided as is without ANY warranty under MIT license.
 
 # Docker Image
 
-To run from docker:
+To run the latest docker image (scripted):
 
 	sh -c "$(curl -fsSL https://raw.githubusercontent.com/globaldyne/parfumvault/master/helpers/run_pvault.sh)"
 
+or manually:
+	
+	docker run --name PV2 \
+		-p 8080:80 \
+		-v PVDIR/config:/config \
+		-v PVDIR/db:/var/lib/mysql \
+		-v PVDIR/uploads:/var/www/html/uploads \
+		globaldyne/jbvault
+
 then point your browser to http://localhost:8080
 
+For more info, please refer to:
+	
+	https://www.jbparfum.com/knowledge-base/
 
 ![screen1](/screenshots/dashboard.png) 
