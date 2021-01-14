@@ -21,7 +21,7 @@ This is a FREE software provided as is without ANY warranty under MIT license.
 * CSV Import for formulas and ingredients
 * IFRA Library
 * Import IFRA xls
-* Auto search IFRA Library for you ingredients and retrieve limits
+* Validate ingredients in formula, against the IFRA library
 
 
 
