@@ -84,7 +84,7 @@ if($_GET['formula'] && $_GET['do']){
 	}else{
 
 		if(mysqli_query($conn,"INSERT INTO formulas(fid,name,ingredient,ingredient_id,concentration,quantity,dilutant) VALUES('".base64_encode($fname)."','$fname','$ingredient','$ingredient_id','$concentration','$quantity','$dilutant')")){
-			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$ingredient.' added to formula!</div>';
+			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$quantity.'ml</strong> of <strong>'.$ingredient.'</strong> added to the formula!</div>';
 		}else{
 			echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error adding '.$ingredient.'!</div>';
 		}
