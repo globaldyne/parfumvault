@@ -217,7 +217,7 @@ $('.replaceIngredient').editable({
  
 </script>
 
-<table class="table table-bordered" <?php if($settings['grp_formula'] == '1'){?>id="formula" <?php } ?>width="100%" cellspacing="0">
+<table class="table table-bordered table-responsive" <?php if($settings['grp_formula'] == '1'){?>id="formula" <?php } ?>width="100%" cellspacing="0">
                   <thead>
                     <tr class="noexport">
                     <?php if($settings['grp_formula'] == '1'){?>
@@ -247,13 +247,13 @@ $('.replaceIngredient').editable({
                     <tr>
                       <?php if($settings['grp_formula'] == '1'){ echo '<th class="noexport"></th>'; } ?>
                       <th width="22%">Ingredient</th>
-                      <th width="10%">CAS #</th>
-                      <th width="10%">Purity %</th>
-                      <th width="10%">Dilutant</th>
-                      <th width="10%">Quantity (ml)</th>
-                      <th width="10%">Concentration*</th>
-                      <th width="10%">Cost</th>
-                      <th width="10%">Properties</th>
+                      <th width="5%">CAS #</th>
+                      <th width="5%">Purity %</th>
+                      <th width="5%">Dilutant</th>
+                      <th width="5%">Quantity (ml)</th>
+                      <th width="5%">Concentration*</th>
+                      <th width="5%">Cost</th>
+                      <th width="5%">Properties</th>
                       <th class="noexport" width="15%">Actions</th>
                     </tr>
                   </thead>
