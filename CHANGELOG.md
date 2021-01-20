@@ -9,6 +9,7 @@
 - IMP: Increase the size of the pop-up window when showing ingredient data
 - FIX: Minor Bug fixes and cosmetic changes
 - FIX: Dashboard pie graphs size
+- FIX: Docker helper script
 
 ### Version 2.3
 - ADD: Add a new dashboard
