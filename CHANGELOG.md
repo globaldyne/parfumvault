@@ -5,6 +5,7 @@
 - ADD: Favicon added!
 - CHG: Add new formula page now opens as a modal window
 - CHG: Allergen has been renamed to 'Declare'
+- CHG: Remove ingredient profile for grouped view in formula
 - IMP: Increase the size of the pop-up window when showing ingredient data
 - FIX: Minor Bug fixes and cosmetic changes
 - FIX: Dashboard pie graphs size
