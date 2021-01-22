@@ -33,9 +33,17 @@ require('./inc/settings.php');
 
 if($pv_meta['app_ver'] < trim(file_get_contents(__ROOT__.'/VERSION.md'))){
 	$upVerLoc = trim(file_get_contents(__ROOT__.'/VERSION.md'));
-	if(mysqli_query($conn, "UPDATE pv_meta SET app_ver = '$upVerLoc'")){
-		$show_release_notes = true;
-	}
+	$db_ver   = trim(file_get_contents(__ROOT__.'/db/schema.ver'));
+  	if(file_exists(__ROOT__.'/db/updates/update_'.$pv_meta['app_ver'].'-'.$db_ver.'.sql') === TRUE){
+		if($pv_meta['app_ver'] < $db_ver){	
+			$db_up_msg = '<div class="alert alert-warning alert-dismissible"><strong>Your database schema needs to be updated ('.$db_ver.'). Please <a href="pages/maintenance.php?do=backupDB">backup</a> your database first and then click <a href="javascript:updateDB()">here to update the db schema.</a></strong></div>';
+			}
+		}else{
+			mysqli_query($conn, "UPDATE pv_meta SET schema_ver = '$upVerLoc'");
+		}
+		if(mysqli_query($conn, "UPDATE pv_meta SET app_ver = '$upVerLoc'")){
+			$show_release_notes = true;
+		}
 }
 ?>
 

@@ -10,6 +10,7 @@
 - FIX: Minor Bug fixes and cosmetic changes
 - FIX: Dashboard pie graphs size
 - FIX: Docker helper script
+- FIX: Self update procedure
 
 ### Version 2.3
 - ADD: Add a new dashboard

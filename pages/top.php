@@ -101,7 +101,7 @@
             </li>
           </ul>
 <?php if($settings['chkVersion'] == '1'){ ?>          
-<?php checkVer($ver, NULL);?>
-<div id="msg"><?php checkVer(NULL, $pv_meta['schema_ver']);?></div>
+<?php checkVer($ver);?>
+<div id="msg"><?php echo $db_up_msg;?></div>
 <?php } ?>
 </nav>
