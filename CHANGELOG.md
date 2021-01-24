@@ -1,5 +1,9 @@
 # CHANGELOG
+### Version 2.5
+- FIX: Docker helper tag (set to :latest)
+
 ### Version 2.4
+- ADD: PubChem - exclude Mixtures and Blends
 - ADD: PubChem - exclude Mixtures and Blends
 - ADD: Default purity value '100' in ingredient management
 - ADD: Favicon added!

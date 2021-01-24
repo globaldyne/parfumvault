@@ -2,7 +2,7 @@
 #
 #
 # Run Perfumer's Vault
-# Script Version: v1.1
+# Script Version: v1.2
 # Author: John Belekios <john@globaldyne.co.uk>
 #
 #
@@ -28,7 +28,7 @@ if [[ $? -eq 0 ]]; then
 		mkdir -p $PVDIR
 	fi
 	echo "Pull the image and start it...Please wait, this might take a while..."
-	$DOCKER_BIN run --name PV2 -p 8080:80 -v $PVDIR/config:/config -v $PVDIR/db:/var/lib/mysql -v $PVDIR/uploads:/var/www/html/uploads globaldyne/jbvault:$1
+	$DOCKER_BIN run --name PV2 -p 8080:80 -v $PVDIR/config:/config -v $PVDIR/db:/var/lib/mysql -v $PVDIR/uploads:/var/www/html/uploads globaldyne/jbvault:latest
 
 else
     clear
