@@ -39,20 +39,13 @@ if($_POST['name']){
    }
 
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM bottles WHERE name = '$name'"))){
-		$msg='<div class="alert alert-danger alert-dismissible">
-		<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-  		<strong>Error: </strong>'.$name.' already exists!
-		</div>';
+		$msg='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$name.' already exists!</div>';
 	}else{
 		
 		if(mysqli_query($conn, "INSERT INTO bottles (name, ml, price, height, width, diameter, supplier, supplier_link, notes, photo) VALUES ('$name', '$ml', '$price', '$height', '$width', '$diameter', '$supplier', '$supplier_link', '$notes', '$photo')") ){
-			$msg.='<div class="alert alert-success alert-dismissible">
-			<a href="?do=bottles" class="close" data-dismiss="alert" aria-label="close">x</a>
-  			<strong>'.$name.'</strong> added!</div>';
+			$msg.='<div class="alert alert-success alert-dismissible"><a href="?do=bottles" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$name.'</strong> added!</div>';
 		}else{
-			$msg.='<div class="alert alert-danger alert-dismissible">
-			<a href="?do=bottles" class="close" data-dismiss="alert" aria-label="close">x</a>
-  			<strong>Error:</strong> Failed to add '.$name.' - '.mysqli_error($conn).'</div>';
+			$msg.='<div class="alert alert-danger alert-dismissible"><a href="?do=bottles" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Failed to add '.$name.' - '.mysqli_error($conn).'</div>';
 		}
 	}
 }

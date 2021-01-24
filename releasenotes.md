@@ -1,7 +1,6 @@
 Whats New:
 ----------------------
-You can easily generate related documents to sell a formula to a customer.
-If ingredient exists in formulas but not in your inventory, will now automatically be created when you try to edit it.
-Add/Edit ingredient page is now merged under one common page for better ingredient management.
-Customers page moved under the inventory section for better management
-Dashboard improved for better experience
+- The new formula page, now opens as a modal window
+- Ingredient profile isn't displayed any longer in formula, if group enabled. 
+  This will provide a better and cleaner view.
+- Various bug fixes and improvements

@@ -18,7 +18,14 @@ $heart_calc = calcPerc($f_name, 'Heart', $settings['heart_n'], $conn);
 $base_calc = calcPerc($f_name, 'Base', $settings['base_n'], $conn);
 
 ?>
-
+<style>
+.mfp-iframe-holder .mfp-content {
+    line-height: 0;
+    width: 1000px;
+    max-width: 1000px; 
+	height: 700px;
+}
+</style>
 <div id="content-wrapper" class="d-flex flex-column">
 <?php require_once('pages/top.php'); ?>
         <div class="container-fluid">

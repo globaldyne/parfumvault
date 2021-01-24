@@ -9,6 +9,11 @@ require_once('../func/pvFileGet.php');
 $cas = trim($_GET['cas']);
 $type = 'PNG';
 
+if(preg_match('/(Mixture|Blend)/i', $cas) === 1){	
+	echo  '<div class="alert alert-info">Data not available for mixtures</div>';
+	return;
+}
+
 $api = 'https://pubchem.ncbi.nlm.nih.gov/rest/pug';
 $cids = explode("\n",trim(pv_file_get_contents($api.'/compound/name/'.$cas.'/cids/TXT')));
 

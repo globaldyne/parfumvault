@@ -16,6 +16,14 @@ $ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC
 $defCatClass = $settings['defCatClass'];
 
 ?>
+<style>
+.mfp-iframe-holder .mfp-content {
+    line-height: 0;
+    width: 1000px;
+    max-width: 1000px; 
+	height: 700px;
+}
+</style>
 <div id="content-wrapper" class="d-flex flex-column">
 <?php require_once('pages/top.php'); ?>
         <div class="container-fluid">
@@ -62,12 +70,11 @@ $defCatClass = $settings['defCatClass'];
                     </tr>
                   </thead>
                   <tbody>
-                  <?php					
-				  while ($ingredient = mysqli_fetch_array($ingredient_q)) {
-					  echo'
+                  <?php while ($ingredient = mysqli_fetch_array($ingredient_q)) { ?>
                     <tr>
-                      <td align="center"><a href="pages/mgmIngredient.php?id='.$ingredient['name'].'" class="popup-link">'.$ingredient['name'].'</a>'.checkAllergen($ingredient['name'],$conn).'</td>';
-					  if($ingredient['cas']){
+                      <td align="center"><a href="pages/mgmIngredient.php?id=<?php echo $ingredient['name'];?>" class="popup-link"><?php echo $ingredient['name'];?></a><?php echo checkAllergen($ingredient['name'],$conn);?></td>
+					  <?php
+                      if($ingredient['cas']){
 						  echo '<td align="center">'.$ingredient['cas'].'</td>';
 					  }else{
 						  echo '<td align="center">N/A</td>';

@@ -84,7 +84,7 @@ if($_GET['formula'] && $_GET['do']){
 	}else{
 
 		if(mysqli_query($conn,"INSERT INTO formulas(fid,name,ingredient,ingredient_id,concentration,quantity,dilutant) VALUES('".base64_encode($fname)."','$fname','$ingredient','$ingredient_id','$concentration','$quantity','$dilutant')")){
-			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$ingredient.' added to formula!</div>';
+			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$quantity.'ml</strong> of <strong>'.$ingredient.'</strong> added to the formula!</div>';
 		}else{
 			echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error adding '.$ingredient.'!</div>';
 		}
@@ -124,6 +124,31 @@ if($_GET['formula'] && $_GET['do']){
 	if($sql){
 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$fname.' cloned as <a href="?do=Formula&name='.$newName.'" target="_blanc">'.$newName.'</a>!</div>';
 	}
+	return;
+	
+//ADD NEW FORMULA
+}elseif($_POST['action'] == 'addFormula'){
+	if(empty($_POST['name'])){
+		echo '<div class="alert alert-danger alert-dismissible"><strong>Formula name is required.</strong></div>';
+		return;
+	}
+	$name = mysqli_real_escape_string($conn, $_POST['name']);
+	$notes = mysqli_real_escape_string($conn, $_POST['notes']);
+	$profile = mysqli_real_escape_string($conn, $_POST['profile']);
+	$fid = base64_encode($name);
+	
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulasMetaData WHERE fid = '$fid'"))){
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$name.' already exists! Click <a href="?do=Formula&name='.name.'">here</a> to view/edit!
+			</div>';
+		}else{
+			$q = mysqli_query($conn, "INSERT INTO formulasMetaData (fid, name, notes, profile, image) VALUES ('$fid', '$name', '$notes', '$profile', '$def_app_img')");
+				if($q){
+					echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong><a href="?do=Formula&name='.$name.'">'.$name.'</a></strong> added!</div>';
+				}else{
+					echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Something went wrong...</strong></div>';
+				}
+		}
+
 	return;
 	
 	
