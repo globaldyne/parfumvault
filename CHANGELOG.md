@@ -1,6 +1,8 @@
 # CHANGELOG
 ### Version 2.5
 - FIX: Docker helper tag (set to :latest)
+- FIX: Docker helper to remove PV2 container before start
+- FIX: Issue preventing to add new ingredients
 
 ### Version 2.4
 - ADD: PubChem - exclude Mixtures and Blends

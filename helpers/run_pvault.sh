@@ -27,6 +27,10 @@ if [[ $? -eq 0 ]]; then
 		echo "$PVDIR not exists, creating it..."
 		mkdir -p $PVDIR
 	fi
+	
+	echo "Trying to remove an already running container..."
+	$DOCKER_BIN rm PV2 --force
+	
 	echo "Pull the image and start it...Please wait, this might take a while..."
 	$DOCKER_BIN run --name PV2 -p 8080:80 -v $PVDIR/config:/config -v $PVDIR/db:/var/lib/mysql -v $PVDIR/uploads:/var/www/html/uploads globaldyne/jbvault:latest
 
