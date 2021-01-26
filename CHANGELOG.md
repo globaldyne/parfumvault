@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 2.6
+
 ### Version 2.5
 - FIX: Docker helper tag (set to :latest)
 - FIX: Docker helper to remove PV2 container before start
