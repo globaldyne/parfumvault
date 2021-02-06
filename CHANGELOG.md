@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 2.6
+- ADD: Option to select between 2d and 3d view in PubChem intergration
 
 ### Version 2.5
 - FIX: Docker helper tag (set to :latest)
