@@ -3,6 +3,7 @@
 - ADD: Option to select between 2d and 3d view in PubChem intergration
 - FIX: Issue preventing printing back box label
 - FIX: Docker helper minor update
+- FIX: A bug preventing showing fromula image in todo drop-down menu
 
 ### Version 2.5
 - FIX: Docker helper tag (set to :latest)
