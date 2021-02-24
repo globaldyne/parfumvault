@@ -21,7 +21,9 @@ if($ingID){
 $defCatClass = $settings['defCatClass'];
 
 if($_POST){
-	$ing = mysqli_fetch_array( mysqli_query($conn, "SELECT * FROM ingredients WHERE name = '$ingID'"));
+	$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE name = '$ingID'"));
+
+	$tradingName = trim(mysqli_real_escape_string($conn, $_POST["tradingName"]));
 
 	$cas = trim(mysqli_real_escape_string($conn, $_POST["cas"]));
 	$fema = trim(mysqli_real_escape_string($conn, $_POST["fema"]));
@@ -113,7 +115,7 @@ if($_POST){
    }
 
 	if(empty($_POST['name'])){
-		$query = "UPDATE ingredients SET cas = '$cas', FEMA = '$fema', type = '$type', strength = '$strength', category='$category', supplier='$supplier', supplier_link='$supplier_link', profile='$profile', price='$price', tenacity='$tenacity', chemical_name='$chemical_name', flash_point='$flash_point', appearance='$appearance', notes='$notes', ml='$ml', odor='$odor', purity='$purity', allergen='$allergen', formula='$formula', flavor_use='$flavor_use', cat1 = '$cat1', cat2 = '$cat2', cat3 = '$cat3', cat4 = '$cat4', cat5A = '$cat5A', cat5B = '$cat5B', cat5C = '$cat5C', cat5D = '$cat5D', cat6 = '$cat6', cat7A = '$cat7A', cat7B = '$cat7B', cat8 = '$cat8', cat9 = '$cat9', cat10A = '$cat10A', cat10B = '$cat10B', cat11A = '$cat11A', cat11B = '$cat11B', cat12 = '$cat12', soluble = '$soluble', logp = '$logp', manufacturer = '$manufacturer', impact_top = '$impact_top', impact_heart = '$impact_heart', impact_base = '$impact_base', usage_type = '$usage_type', solvent = '$solvent' WHERE name='$ingID'";
+		$query = "UPDATE ingredients SET cas = '$cas', FEMA = '$fema', type = '$type', strength = '$strength', category='$category', supplier='$supplier', supplier_link='$supplier_link', profile='$profile', price='$price', tenacity='$tenacity', chemical_name='$chemical_name', flash_point='$flash_point', appearance='$appearance', notes='$notes', ml='$ml', odor='$odor', purity='$purity', allergen='$allergen', formula='$formula', flavor_use='$flavor_use', cat1 = '$cat1', cat2 = '$cat2', cat3 = '$cat3', cat4 = '$cat4', cat5A = '$cat5A', cat5B = '$cat5B', cat5C = '$cat5C', cat5D = '$cat5D', cat6 = '$cat6', cat7A = '$cat7A', cat7B = '$cat7B', cat8 = '$cat8', cat9 = '$cat9', cat10A = '$cat10A', cat10B = '$cat10B', cat11A = '$cat11A', cat11B = '$cat11B', cat12 = '$cat12', soluble = '$soluble', logp = '$logp', manufacturer = '$manufacturer', impact_top = '$impact_top', impact_heart = '$impact_heart', impact_base = '$impact_base', usage_type = '$usage_type', solvent = '$solvent', tradingName = '$tradingName' WHERE name='$ingID'";
 		if(mysqli_query($conn, $query)){
 			$msg = '<div class="alert alert-success alert-dismissible">Ingredient <strong>'.$ing['name'].'</strong> updated!</div>';
 		}else{
@@ -122,7 +124,7 @@ if($_POST){
 	}else{
 		$name = mysqli_real_escape_string($conn, $_POST["name"]);
 		$ingID = $name;
-		$query = "INSERT INTO ingredients (name, cas, FEMA, type, strength, SDS, ".$settings['defCatClass'].", category, supplier, supplier_link, profile, price, tenacity, chemical_name, flash_point, appearance, notes, ml, odor, purity, allergen) VALUES ('$name', '$cas', '$fema', '$type', '$strength', '$SDSF', '$cat', '$category', '$supplier', '$supplier_link', '$profile', '$price', '$tenacity', '$chemical_name', '$flash_point', '$appearance', '$notes', '$ml', '$odor', '$purity', '$allergen')";
+		$query = "INSERT INTO ingredients (name, tradingName, cas, FEMA, type, strength, SDS, ".$settings['defCatClass'].", category, supplier, supplier_link, profile, price, tenacity, chemical_name, flash_point, appearance, notes, ml, odor, purity, allergen) VALUES ('$name', '$tradingName', '$cas', '$fema', '$type', '$strength', '$SDSF', '$cat', '$category', '$supplier', '$supplier_link', '$profile', '$price', '$tenacity', '$chemical_name', '$flash_point', '$appearance', '$notes', '$ml', '$odor', '$purity', '$allergen')";
 		if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '$name'"))){
 			$msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$name.' already exists!</div>';
 		}else{
@@ -301,10 +303,14 @@ reload_data();
                               </tr>
                               <?php if(empty($ingID)){?>
                               <tr>
-                                <td>Name:</td>
+                                <td>INCI name:</td>
                                 <td colspan="5"><input name="name" type="text" class="form-control" id="name" /></td>
                               </tr>
                               <?php } ?>
+                              <tr>
+                                <td>Trading name:</td>
+                                <td colspan="5"><input name="tradingName" type="text" class="form-control" id="tradingName" value="<?php echo $ing['tradingName']; ?>" /></td>
+                              </tr>
                               <tr>
                                 <td width="20%"><a href="#" rel="tipsy" title="If your material contains multiple CAS, then use Mixture or Blend instead.">CAS #:</a></td>
                                 <td colspan="5"><input name="cas" type="text" class="form-control" id="cas" value="<?php echo $ing['cas']; ?>"></td>
