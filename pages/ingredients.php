@@ -57,7 +57,7 @@ $defCatClass = $settings['defCatClass'];
                         </th>
                     </tr>
                     <tr>
-                      <th>Name</th>
+                      <th>INCI Name</th>
                       <th>CAS #</th>
                       <th>Odor</th>
                       <th>Profile</th>
