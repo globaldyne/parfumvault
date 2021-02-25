@@ -357,7 +357,7 @@ $('.replaceIngredient').editable({
   <form action="javascript:amountToMake()" method="get" name="form1" target="_self" id="form_amount_to_make"><p></p>
         <table width="313" border="0">
           <tr>
-	       <td width="66" height="31"><strong>SG<span class="sup">2</span> :</strong></td>
+	       <td width="66" height="31"><strong>SG<span class="sup">*</span> :</strong></td>
 	       <td width="237"><input name="sg" type="text" id="sg" value="0.985" />
             <strong>ml</strong></td>
           </tr>
@@ -368,6 +368,7 @@ $('.replaceIngredient').editable({
           </tr>
         </table>
 	    <p>&nbsp;</p>
+	    <p>*<a href="https://www.jbparfum.com/knowledge-base/3-specific-gravity-sg/" target="_blank">Specific Gravity of Ethanol</a></p>
 	    <div class="modal-footer">
 	     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
   		 <input type="submit" name="button" class="btn btn-primary" id="btnUpdate" value="Update Formula">
