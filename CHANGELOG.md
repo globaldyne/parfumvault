@@ -5,6 +5,7 @@
 - FIX: Issue preventing printing back box label
 - FIX: Docker helper minor update
 - FIX: A bug preventing showing fromula image in todo drop-down menu
+- UPD: Rename insights page to statistics
 
 ### Version 2.5
 - FIX: Docker helper tag (set to :latest)

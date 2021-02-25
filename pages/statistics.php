@@ -1,7 +1,7 @@
 <?php if (!defined('pvault_panel')){ die('Not Found');}?>
 <script>
 $(function() {
-  $("#insights").tabs();
+  $("#statistics").tabs();
 });
 </script>
 
@@ -90,9 +90,9 @@ while($types =  mysqli_fetch_array($ifratypes)){
 </script>
 <div class="container-fluid">
 
-<h2 class="m-0 mb-4 text-primary">Insights</h2>
+<h2 class="m-0 mb-4 text-primary">Statistics</h2>
 
-     <div id="insights">
+     <div id="statistics">
      <ul>
          <li><a href="#ingUsage"><span>Ingredients Usage</span></a></li>
          <li><a href="#IFRA"><span>IFRA</span></a></li>
@@ -100,7 +100,7 @@ while($types =  mysqli_fetch_array($ifratypes)){
      <div id="ingUsage">
 	 <?php 
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulas"))== 0){
-		echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> to generate insights, add at least one formula first.</div>';
+		echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> to generate statistics, add at least one formula first.</div>';
 	}else{
 	?>
 	<div id="chartIngUsage"></div>

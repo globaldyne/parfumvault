@@ -212,9 +212,9 @@ list_formulas();
         </li>
 
         <li class="nav-item">
-        <a class="nav-link" href="?do=insights">
+        <a class="nav-link" href="?do=statistics">
           <i class="fas fa-fw fa-chart-area"></i>
-          <span>Insights</span></a>
+          <span>Statistics</span></a>
         </li>
         <?php if($settings['pv_maker'] && $settings['pv_maker_host']){?>
         <li class="nav-item">
@@ -250,8 +250,8 @@ list_formulas();
 			require 'pages/ingredients.php';
 		}elseif($_GET['do'] == 'settings'){
 			require 'pages/settings.php';
-		}elseif($_GET['do'] == 'insights'){
-			require 'pages/insights.php';
+		}elseif($_GET['do'] == 'statistics'){
+			require 'pages/statistics.php';
 		}elseif($_GET['do'] == 'IFRA'){
 			require 'pages/IFRA.php';
 		}elseif($_GET['do'] == 'listFormulas'){
