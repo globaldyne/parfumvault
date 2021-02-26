@@ -168,6 +168,7 @@ DROP TABLE IF EXISTS `ingredients`;
 CREATE TABLE `ingredients` (
   `id` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
+  `INCI` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `type` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `strength` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `category` varchar(255) COLLATE utf8_bin DEFAULT NULL,

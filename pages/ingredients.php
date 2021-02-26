@@ -38,7 +38,7 @@ $defCatClass = $settings['defCatClass'];
                 <table class="table table-bordered" id="tdData" width="100%" cellspacing="0">
                   <thead>
                     <tr class="noBorder noexport">
-                      <th colspan="10">
+                      <th colspan="11">
                   		<div class="text-right">
                         <div class="btn-group">
                           <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
@@ -57,7 +57,8 @@ $defCatClass = $settings['defCatClass'];
                         </th>
                     </tr>
                     <tr>
-                      <th>INCI Name</th>
+                      <th>Trading Name</th>
+                      <th>INCI</th>
                       <th>CAS #</th>
                       <th>Odor</th>
                       <th>Profile</th>
@@ -73,6 +74,7 @@ $defCatClass = $settings['defCatClass'];
                   <?php while ($ingredient = mysqli_fetch_array($ingredient_q)) { ?>
                     <tr>
                       <td align="center"><a href="pages/mgmIngredient.php?id=<?php echo $ingredient['name'];?>" class="popup-link"><?php echo $ingredient['name'];?></a><?php echo checkAllergen($ingredient['name'],$conn);?></td>
+                      <td align="center"><?php echo $ingredient['INCI'];?></td>
 					  <?php
                       if($ingredient['cas']){
 						  echo '<td align="center">'.$ingredient['cas'].'</td>';
