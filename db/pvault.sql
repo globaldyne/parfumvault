@@ -168,6 +168,7 @@ DROP TABLE IF EXISTS `ingredients`;
 CREATE TABLE `ingredients` (
   `id` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
+  `INCI` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `type` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `strength` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `category` varchar(255) COLLATE utf8_bin DEFAULT NULL,
@@ -299,6 +300,7 @@ CREATE TABLE `settings` (
   `pv_maker` int(11) DEFAULT 0,
   `pv_maker_host` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `qStep` INT(5) NOT NULL DEFAULT '2',
+  `pubchem_view` VARCHAR(4) NOT NULL DEFAULT '2d', 
   `defCatClass` VARCHAR(255) NOT NULL DEFAULT 'cat4' 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 

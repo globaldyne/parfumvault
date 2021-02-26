@@ -17,6 +17,9 @@
 				$toadd_q = mysqli_query($conn, "SELECT name,fid FROM makeFormula WHERE toAdd = '1' GROUP BY name ORDER BY name ASC LIMIT 5");
 				while ($toadd_p = mysqli_fetch_array($toadd_q)){ 	
 					$todoImg = mysqli_fetch_array(mysqli_query($conn, "SELECT image FROM formulasMetaData WHERE fid = '".$toadd_p['fid']."'"));
+					if(empty($todoImg['image'])){
+						$todoImg['image'] = 'img/logo_400.png';
+					}
 				?>
                 <a class="dropdown-item d-flex align-items-center" href="pages/makeFormula.php?fid=<?php echo $toadd_p['fid'];?>" target="_blank"">
                   <div class="dropdown-list-image mr-3">

@@ -1,4 +1,15 @@
 # CHANGELOG
+### Version 2.6
+- ADD: Trading name in ingredients
+- ADD: Option to select between 2d and 3d view in PubChem intergration
+- ADD: SG help reference
+- ADD: Include trading name when search TGSC ingredients DB
+- FIX: Issue preventing printing back box label
+- FIX: Docker helper minor update
+- FIX: A bug preventing showing fromula image in todo drop-down menu
+- FIX: INCI name order
+- UPD: Rename insights page to statistics
+
 ### Version 2.5
 - FIX: Docker helper tag (set to :latest)
 - FIX: Docker helper to remove PV2 container before start

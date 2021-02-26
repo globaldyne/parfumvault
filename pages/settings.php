@@ -45,6 +45,7 @@ if(($_POST) && $_GET['update'] == 'printer'){
 	$pv_maker = mysqli_real_escape_string($conn, $_POST['pv_maker']);
 	$qStep = mysqli_real_escape_string($conn, $_POST['qStep']);
 	$defCatClass = mysqli_real_escape_string($conn, $_POST['defCatClass']);
+	$pubchem_view = mysqli_real_escape_string($conn, $_POST['pubchem_view']);
 
 
 	if(empty($chem_vs_brand)){
@@ -63,7 +64,7 @@ if(($_POST) && $_GET['update'] == 'printer'){
 		$pv_maker = '0';
 	}
 	
-	if(mysqli_query($conn, "UPDATE settings SET currency = '$currency', top_n = '$top_n', heart_n = '$heart_n', base_n = '$base_n', chem_vs_brand = '$chem_vs_brand', grp_formula = '$grp_formula', pubChem='$pubChem', chkVersion='$chkVersion', pv_maker='$pv_maker', qStep = '$qStep', defCatClass = '$defCatClass'")){
+	if(mysqli_query($conn, "UPDATE settings SET currency = '$currency', top_n = '$top_n', heart_n = '$heart_n', base_n = '$base_n', chem_vs_brand = '$chem_vs_brand', grp_formula = '$grp_formula', pubChem='$pubChem', chkVersion='$chkVersion', pv_maker='$pv_maker', qStep = '$qStep', defCatClass = '$defCatClass', pubchem_view = '$pubchem_view'")){
 		$msg = '<div class="alert alert-success alert-dismissible">Settings updated!</div>';
 	}else{
 		$msg = '<div class="alert alert-danger alert-dismissible">An error occured.</div>';	
@@ -220,8 +221,16 @@ $(function() {
           <td>&nbsp;</td>
         </tr>
         <tr>
-          <td height="32"><a href="#" rel="tipsy" title="If enabled, PV will query PubChem to fetch ingredient data. Please note, the CAS number of the ingredient will be send to the PubChem servers.">Use PubChem:</a></td>
+          <td height="32"><a href="#" rel="tipsy" title="If enabled, PV will query PubChem to fetch ingredient data. Please note, the CAS number of the ingredient will be send to the PubChem servers.">Enable PubChem:</a></td>
           <td colspan="2"><input name="pubChem" type="checkbox" id="pubChem" value="1" <?php if($settings['pubChem'] == '1'){ ?> checked="checked" <?php } ?>/></td>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td height="32"><a href="#" rel="tipsy" title="Select the image type for PubChem, 2D or 3D. Default: 2D">PubChem view:</a></td>
+          <td colspan="2"><select name="pubchem_view" id="pubchem_view" class="form-control">
+			  <option value="2d" <?php if($settings['pubchem_view']=="2d") echo 'selected="selected"'; ?> >2D</option>
+			  <option value="3d" <?php if($settings['pubchem_view']=="3d") echo 'selected="selected"'; ?> >3D</option>
+          </select></td>
           <td>&nbsp;</td>
         </tr>
         <tr>
@@ -263,7 +272,7 @@ $(function() {
           <td>&nbsp;</td>
         </tr>
         <tr>
-          <td height="32"><a href="#" rel="tipsy" title="If enabled, formula will display the chemical names of ingredients, where available, instead of the commercial name">Chem. names</a></td>
+          <td height="32"><a href="#" rel="tipsy" title="If enabled, formula will display the chemical names of ingredients, where available, instead of the commercial name">Chemical names</a>:</td>
           <td colspan="2"><input name="chem_vs_brand" type="checkbox" id="chem_vs_brand" value="1" <?php if($settings['chem_vs_brand'] == '1'){ ?> checked="checked" <?php } ?>/></td>
           <td>&nbsp;</td>
         </tr>

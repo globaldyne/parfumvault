@@ -4,6 +4,11 @@ if(!$_GET['cas']){
 	echo 'Error: Missing CAS number';
 	return;
 }
+require('../inc/sec.php');
+
+require_once('../inc/config.php');
+require_once('../inc/opendb.php');
+require_once('../inc/settings.php');
 require_once('../func/pvFileGet.php');
 
 $cas = trim($_GET['cas']);
@@ -17,7 +22,7 @@ if(preg_match('/(Mixture|Blend)/i', $cas) === 1){
 $api = 'https://pubchem.ncbi.nlm.nih.gov/rest/pug';
 $cids = explode("\n",trim(pv_file_get_contents($api.'/compound/name/'.$cas.'/cids/TXT')));
 
-$image = 'data:image/png;base64,'.base64_encode(pv_file_get_contents($api.'/compound/cid/'.$cids['0'].'/'.$type.'?record_type=2d&image_size=large'));
+$image = 'data:image/png;base64,'.base64_encode(pv_file_get_contents($api.'/compound/cid/'.$cids['0'].'/'.$type.'?record_type='.$settings['pubchem_view'].'&image_size=large'));
 $data = json_decode(trim(pv_file_get_contents($api.'/compound/name/'.$cas.'/JSON')),true);
 		
 if(empty($data)){
