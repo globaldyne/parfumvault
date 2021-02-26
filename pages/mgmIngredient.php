@@ -196,7 +196,7 @@ $.ajax({
     url: 'searchTGSC.php', 
 	type: 'get',
     data: {
-		name: "<?php if($ing['cas']){ echo $ing['cas']; }else{ echo $ing['name'];}?>"
+		name: "<?php if($ing['cas']){ echo $ing['cas']; }elseif($ing['tradingName']){ echo $ing['tradingName']; }else{ echo $ing['name'];}?>"
 		},
 	dataType: 'html',
     success: function (data) {
