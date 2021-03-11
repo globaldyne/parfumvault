@@ -99,7 +99,7 @@ if($_POST['value'] && $_GET['formula'] && $_POST['pk'] && !$_GET['settings']){
 }elseif($_GET['allergen'] == 'add'){
 	$allgName = mysqli_real_escape_string($conn, $_GET['allgName']);
 	$allgCAS = mysqli_real_escape_string($conn, $_GET['allgCAS']);	
-	$allgPerc = mysqli_real_escape_string($conn, $_GET['allgPerc']);
+	$allgPerc = rtrim(mysqli_real_escape_string($conn, $_GET['allgPerc']),'%');
 	$ing = mysqli_real_escape_string($conn, $_GET['ing']);
 	if(empty($allgName)){
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Name is required!</div>';
@@ -115,7 +115,7 @@ if($_POST['value'] && $_GET['formula'] && $_POST['pk'] && !$_GET['settings']){
 
 //UPDATE ALLERGEN
 }elseif($_GET['allergen'] == 'update'){
-	$value = mysqli_real_escape_string($conn, $_POST['value']);
+	$value = rtrim(mysqli_real_escape_string($conn, $_POST['value']),'%');
 	$id = mysqli_real_escape_string($conn, $_POST['pk']);
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 	$ing = mysqli_real_escape_string($conn, $_GET['ing']);
