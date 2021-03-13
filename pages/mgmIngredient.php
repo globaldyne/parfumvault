@@ -806,6 +806,11 @@ reload_data();
             Percentage %:
             <input class="form-control" name="allgPerc" type="text" id="allgPerc" />
             </p>
+            <div class="dropdown-divider"></div>
+      <label>
+         <input name="addToIng" type="checkbox" id="addToIng" value="1" />
+        Add to ingredients
+      </label>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -845,7 +850,8 @@ function addAllergen() {
 			allergen: 'add',
 			allgName: $("#allgName").val(),
 			allgPerc: $("#allgPerc").val(),
-			allgCAS: $("#allgCAS").val(),				
+			allgCAS: $("#allgCAS").val(),	
+			addToIng: $("#addToIng").is(':checked'),				
 			ing: '<?=$ing['name'];?>'
 			},
 		dataType: 'html',

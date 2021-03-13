@@ -101,6 +101,7 @@ if($_POST['value'] && $_GET['formula'] && $_POST['pk'] && !$_GET['settings']){
 	$allgCAS = mysqli_real_escape_string($conn, $_GET['allgCAS']);	
 	$allgPerc = rtrim(mysqli_real_escape_string($conn, $_GET['allgPerc']),'%');
 	$ing = mysqli_real_escape_string($conn, $_GET['ing']);
+
 	if(empty($allgName)){
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Name is required!</div>';
 		return;
@@ -111,6 +112,13 @@ if($_POST['value'] && $_GET['formula'] && $_POST['pk'] && !$_GET['settings']){
 		mysqli_query($conn, "INSERT INTO allergens (name,cas,percentage,ing) VALUES ('$allgName','$allgCAS','$allgPerc','$ing')");
 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$allgName.'</strong> added to the list!</div>';
 	}
+	
+	if($_GET['addToIng'] == 'true'){
+		if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$allgName'")))){
+			mysqli_query($conn, "INSERT INTO ingredients (name,cas) VALUES ('$allgName','$allgCAS')");
+		}
+	}
+
 	return;
 
 //UPDATE ALLERGEN
