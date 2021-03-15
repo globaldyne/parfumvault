@@ -11,7 +11,7 @@ require_once('../func/searchIFRA.php');
 
 $ingID = mysqli_real_escape_string($conn, $_GET["id"]);
 if($ingID){
-	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT * FROM ingredients WHERE name = '$ingID'")))){
+	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$ingID'")))){
 		if(mysqli_query($conn, "INSERT INTO ingredients (name) VALUES ('$ingID')")){
 			$msg='<div class="alert alert-info alert-dismissible"><strong>Info:</strong> ingredient '.$ingID.' added</div>';
 		}
@@ -88,6 +88,12 @@ if($_POST){
 		$ml = '10';
 	}
 	
+	if($_POST['noUsageLimit']){
+		$noUsageLimit = '1';
+	}else{
+		$noUsageLimit = '0';
+	}
+	
 	if(($_FILES['SDS']['name'])){
       $file_name = $_FILES['SDS']['name'];
       $file_size =$_FILES['SDS']['size'];
@@ -115,7 +121,7 @@ if($_POST){
    }
 
 	if(empty($_POST['name'])){
-		$query = "UPDATE ingredients SET cas = '$cas', FEMA = '$fema', type = '$type', strength = '$strength', category='$category', supplier='$supplier', supplier_link='$supplier_link', profile='$profile', price='$price', tenacity='$tenacity', chemical_name='$chemical_name', flash_point='$flash_point', appearance='$appearance', notes='$notes', ml='$ml', odor='$odor', purity='$purity', allergen='$allergen', formula='$formula', flavor_use='$flavor_use', cat1 = '$cat1', cat2 = '$cat2', cat3 = '$cat3', cat4 = '$cat4', cat5A = '$cat5A', cat5B = '$cat5B', cat5C = '$cat5C', cat5D = '$cat5D', cat6 = '$cat6', cat7A = '$cat7A', cat7B = '$cat7B', cat8 = '$cat8', cat9 = '$cat9', cat10A = '$cat10A', cat10B = '$cat10B', cat11A = '$cat11A', cat11B = '$cat11B', cat12 = '$cat12', soluble = '$soluble', logp = '$logp', manufacturer = '$manufacturer', impact_top = '$impact_top', impact_heart = '$impact_heart', impact_base = '$impact_base', usage_type = '$usage_type', solvent = '$solvent', INCI = '$INCI' WHERE name='$ingID'";
+		$query = "UPDATE ingredients SET cas = '$cas', FEMA = '$fema', type = '$type', strength = '$strength', category='$category', supplier='$supplier', supplier_link='$supplier_link', profile='$profile', price='$price', tenacity='$tenacity', chemical_name='$chemical_name', flash_point='$flash_point', appearance='$appearance', notes='$notes', ml='$ml', odor='$odor', purity='$purity', allergen='$allergen', formula='$formula', flavor_use='$flavor_use', cat1 = '$cat1', cat2 = '$cat2', cat3 = '$cat3', cat4 = '$cat4', cat5A = '$cat5A', cat5B = '$cat5B', cat5C = '$cat5C', cat5D = '$cat5D', cat6 = '$cat6', cat7A = '$cat7A', cat7B = '$cat7B', cat8 = '$cat8', cat9 = '$cat9', cat10A = '$cat10A', cat10B = '$cat10B', cat11A = '$cat11A', cat11B = '$cat11B', cat12 = '$cat12', soluble = '$soluble', logp = '$logp', manufacturer = '$manufacturer', impact_top = '$impact_top', impact_heart = '$impact_heart', impact_base = '$impact_base', usage_type = '$usage_type', solvent = '$solvent', INCI = '$INCI', noUsageLimit = '$noUsageLimit' WHERE name='$ingID'";
 		if(mysqli_query($conn, $query)){
 			$msg = '<div class="alert alert-success alert-dismissible">Ingredient <strong>'.$ing['name'].'</strong> updated!</div>';
 		}else{
@@ -124,7 +130,7 @@ if($_POST){
 	}else{
 		$name = mysqli_real_escape_string($conn, $_POST["name"]);
 		$ingID = $name;
-		$query = "INSERT INTO ingredients (name, INCI, cas, FEMA, type, strength, SDS, ".$settings['defCatClass'].", category, supplier, supplier_link, profile, price, tenacity, chemical_name, flash_point, appearance, notes, ml, odor, purity, allergen) VALUES ('$name', '$INCI', '$cas', '$fema', '$type', '$strength', '$SDSF', '$cat', '$category', '$supplier', '$supplier_link', '$profile', '$price', '$tenacity', '$chemical_name', '$flash_point', '$appearance', '$notes', '$ml', '$odor', '$purity', '$allergen')";
+		$query = "INSERT INTO ingredients (name, INCI, cas, FEMA, type, strength, SDS, ".$settings['defCatClass'].", category, supplier, supplier_link, profile, price, tenacity, chemical_name, flash_point, appearance, notes, ml, odor, purity, allergen, noUsageLimit) VALUES ('$name', '$INCI', '$cas', '$fema', '$type', '$strength', '$SDSF', '$cat', '$category', '$supplier', '$supplier_link', '$profile', '$price', '$tenacity', '$chemical_name', '$flash_point', '$appearance', '$notes', '$ml', '$odor', '$purity', '$allergen', '$noUsageLimit')";
 		if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '$name'"))){
 			$msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$name.' already exists!</div>';
 		}else{
@@ -142,6 +148,15 @@ $res_ingStrength = mysqli_query($conn, "SELECT id,name FROM ingStrength ORDER BY
 $res_ingCategory = mysqli_query($conn, "SELECT id,name FROM ingCategory ORDER BY name ASC");
 $res_ingSupplier = mysqli_query($conn, "SELECT id,name FROM ingSuppliers ORDER BY name ASC");
 $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles ORDER BY name ASC");
+$StandardIFRACategories = mysqli_query($conn, "SELECT name,description,type FROM IFRACategories WHERE type = '1' ORDER BY id ASC");
+$userCategories = mysqli_query($conn, "SELECT name,description,type FROM IFRACategories WHERE type = '2' ORDER BY id ASC");
+
+while($cats_res = mysqli_fetch_array($StandardIFRACategories)){
+    $cats[] = $cats_res;
+}
+while($user_cats_res = mysqli_fetch_array($userCategories)){
+    $user_cats[] = $user_cats_res;
+}
 
 $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE name = '$ingID'"));
 
@@ -187,7 +202,30 @@ $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE n
 <script>
 
 $(document).ready(function() {
-    $('a[rel=tipsy]').tipsy({gravity: 'w'});
+	$('a[rel=tipsy]').tipsy({gravity: 'w'});
+	
+	function unlimited_usage(status,maxulimit){
+		$('#usage_type').prop('disabled', status);
+		<?php foreach ($cats as $cat) {?>
+		$('#cat<?php echo $cat['name'];?>').prop('readonly', status).val(maxulimit);
+		<?php } ?>
+		<?php foreach ($user_cats as $cat) {?>
+		$('#cat<?php echo $cat['name'];?>').prop('readonly', status).val(maxulimit);
+		<?php } ?>
+	}
+
+	<?php if($ing['noUsageLimit']){ ?>
+		$('#noUsageLimit').prop('checked', true);
+		unlimited_usage(true,'100');
+	<?php } ?>
+    $('#noUsageLimit').click(function(){
+        if($(this).is(':checked')){
+			unlimited_usage(true,'100');
+        }else{
+			unlimited_usage(false,null);
+		}
+    });
+
 });
 
 function search() {	  
@@ -405,10 +443,15 @@ reload_data();
                                  <hr>
                                <table width="100%" border="0">
                                 <tr>
-                                  <td height="32">Flavor use:</td>
-                                  <td width="78%" colspan="3"><input name="flavor_use" type="checkbox" id="flavor_use" value="1" <?php if($ing['flavor_use'] == '1'){; ?> checked="checked"  <?php } ?>/></td>
+                                  <td height="32">No usage limit:</td>
+                                  <?php if($usageLimit = searchIFRA($ing['cas'],$ing['name'],null,$conn, $defCatClass)){ $chk = 'disabled'; }?>
+                                  <td colspan="3"><input name="noUsageLimit" type="checkbox" <?php echo $chk; ?> id="noUsageLimit" value="1" <?php if($ing['noUsageLimit'] == '1'){; ?> checked="checked"  <?php } ?>/></td>
                                 </tr>
-                                <td width="22%"></td>
+                                <tr>
+                                  <td height="32">Flavor use:</td>
+                                  <td width="81%" colspan="3"><input name="flavor_use" type="checkbox" id="flavor_use" value="1" <?php if($ing['flavor_use'] == '1'){; ?> checked="checked"  <?php } ?>/></td>
+                                </tr>
+                                <td width="19%"></td>
                                 </tr>
                                 <tr>
                                   <td colspan="4"><hr /></td>
@@ -420,7 +463,7 @@ reload_data();
 										  echo $rType;
 									  }else{
 								?>
-                                <select name="usage_type" id="usage_type" class="form-control selectpicker" data-live-search="true">
+                                <select name="usage_type" id="usage_type" class="form-control">
                                   <option value="none" selected="selected">None</option>
                                   <option value="1" <?php if($ing['usage_type']=="1") echo 'selected="selected"'; ?> >Recommendation</option>
                                   <option value="2" <?php if($ing['usage_type']=="2") echo 'selected="selected"'; ?> >Restriction</option>
@@ -430,186 +473,41 @@ reload_data();
                     			<?php } ?>
                     			</td>
                                 </tr>
+                                
+                                <?php foreach ($cats as $cat) {?>
+
                                 <tr>
-                                  <td>Cat1 %:</td>
+                                  <td><a href="#" rel="tipsy" title="<?php echo $cat['description'];?>">Cat<?php echo $cat['name'];?>%:</a></td>
                                   <td colspan="3"><?php
-								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat1')){
+								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat'.$cat['name'])){
 										echo $limit;
 									}else{
 								?>
-                                    <input name="cat1" type="text" class="form-control" id="cat1" value="<?php echo $ing['cat1']; ?>" />
-                                  <?php } ?></td>
+                                    <input name="cat<?php echo $cat['name'];?>" type="text" class="form-control" id="cat<?php echo $cat['name'];?>" value="<?php echo $ing['cat'.$cat['name']]; ?>" />
+                                  <?php } ?>
+                                  </td>
                                 </tr>
+                                <?php } ?>
+                                <?php if($user_cats){?>
                                 <tr>
-                                  <td>Cat2 %:</td>
+                                  <td colspan="4"><hr />
+                                  <strong>Custom Categories</strong></td>
+                                </tr>
+                                <?php }?>
+								<?php foreach ($user_cats as $cat) {?>
+
+                                <tr>
+                                  <td><a href="#" rel="tipsy" title="<?php echo $cat['description'];?>">Cat<?php echo $cat['name'];?>%:</a></td>
                                   <td colspan="3"><?php
-								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat2')){
+								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat'.$cat['name'])){
 										echo $limit;
 									}else{
 								?>
-                                    <input name="cat2" type="text" class="form-control" id="cat2" value="<?php echo $ing['cat2']; ?>" />
-                                  <?php } ?></td>
+                                    <input name="cat<?php echo $cat['name'];?>" type="text" class="form-control" id="cat<?php echo $cat['name'];?>" value="<?php echo $ing['cat'.$cat['name']]; ?>" />
+                                  <?php } ?>
+                                  </td>
                                 </tr>
-                                <tr>
-                                  <td>Cat3 %:</td>
-                                  <td colspan="3"><?php
-								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat3')){
-										echo $limit;
-									}else{
-								?>
-                                    <input name="cat3" type="text" class="form-control" id="cat3" value="<?php echo $ing['cat3']; ?>" />
-                                  <?php } ?></td>
-                                </tr>
-                                <tr>
-                                  <td>Cat4 %:</td>
-                                  <td colspan="3"><?php
-								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat4')){
-										echo $limit;
-									}else{
-								?>
-                                    <input name="cat4" type="text" class="form-control" id="cat4" value="<?php echo $ing['cat4']; ?>" />
-                                  <?php } ?></td>
-                                </tr>
-                                <tr>
-                                  <td>Cat5A %:</td>
-                                  <td colspan="3"><?php
-								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat5A')){
-										echo $limit;
-									}else{
-								?>
-                                    <input name="cat5A" type="text" class="form-control" id="cat5A" value="<?php echo $ing['cat5A']; ?>" />
-                                  <?php } ?></td>
-                                </tr>
-                                <tr>
-                                  <td>Cat5B %:</td>
-                                  <td colspan="3"><?php
-								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat5B')){
-										echo $limit;
-									}else{
-								?>
-                                    <input name="cat5B" type="text" class="form-control" id="cat5B" value="<?php echo $ing['cat5B']; ?>" />
-                                  <?php } ?></td>
-                                </tr>
-                                <tr>
-                                  <td>Cat5C %:</td>
-                                  <td colspan="3"><?php
-								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat5C')){
-										echo $limit;
-									}else{
-								?>
-                                    <input name="cat5C" type="text" class="form-control" id="cat5C" value="<?php echo $ing['cat5C']; ?>" />
-                                  <?php } ?></td>
-                                </tr>
-                                <tr>
-                                  <td>Cat5D %:</td>
-                                  <td colspan="3"><?php
-								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat5D')){
-										echo $limit;
-									}else{
-								?>
-                                    <input name="cat5D" type="text" class="form-control" id="cat5D" value="<?php echo $ing['cat5D']; ?>" />
-                                  <?php } ?></td>
-                                </tr>
-                                <tr>
-                                  <td>Cat6 %:</td>
-                                  <td colspan="3"><?php
-								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat6')){
-										echo $limit;
-									}else{
-								?>
-                                    <input name="cat6" type="text" class="form-control" id="cat6" value="<?php echo $ing['cat6']; ?>" />
-                                  <?php } ?></td>
-                                </tr>
-                                <tr>
-                                  <td>Cat7A %:</td>
-                                  <td colspan="3"><?php
-								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat7A')){
-										echo $limit;
-									}else{
-								?>
-                                    <input name="cat7A" type="text" class="form-control" id="cat7A" value="<?php echo $ing['cat7A']; ?>" />
-                                  <?php } ?></td>
-                                </tr>
-                                <tr>
-                                  <td>Cat7B %:</td>
-                                  <td colspan="3"><?php
-								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat7B')){
-										echo $limit;
-									}else{
-								?>
-                                    <input name="cat7B" type="text" class="form-control" id="cat7B" value="<?php echo $ing['cat7B']; ?>" />
-                                  <?php } ?></td>
-                                </tr>
-                                <tr>
-                                  <td>Cat8 %:</td>
-                                  <td colspan="3"><?php
-								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat8')){
-										echo $limit;
-									}else{
-								?>
-                                    <input name="cat8" type="text" class="form-control" id="cat8" value="<?php echo $ing['cat8']; ?>" />
-                                  <?php } ?></td>
-                                </tr>
-                                <tr>
-                                  <td>Cat9 %:</td>
-                                  <td colspan="3"><?php
-								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat9')){
-										echo $limit;
-									}else{
-								?>
-                                    <input name="cat9" type="text" class="form-control" id="cat9" value="<?php echo $ing['cat9']; ?>" />
-                                  <?php } ?></td>
-                                </tr>
-                                <tr>
-                                  <td>Cat10A %:</td>
-                                  <td colspan="3"><?php
-								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat10A')){
-										echo $limit;
-									}else{
-								?>
-                                    <input name="cat10A" type="text" class="form-control" id="cat10A" value="<?php echo $ing['cat10A']; ?>" />
-                                  <?php } ?></td>
-                                </tr>
-                                <tr>
-                                  <td>Cat10B %:</td>
-                                  <td colspan="3"><?php
-								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat10B')){
-										echo $limit;
-									}else{
-								?>
-                                    <input name="cat10B" type="text" class="form-control" id="cat10B" value="<?php echo $ing['cat10B']; ?>" />
-                                  <?php } ?></td>
-                                </tr>
-                                <tr>
-                                  <td>Cat11A %:</td>
-                                  <td colspan="3"><?php
-								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat11A')){
-										echo $limit;
-									}else{
-								?>
-                                    <input name="cat11A" type="text" class="form-control" id="cat11A" value="<?php echo $ing['cat11A']; ?>" />
-                                  <?php } ?></td>
-                                </tr>
-                                <tr>
-                                  <td>Cat11B %:</td>
-                                  <td colspan="3"><?php
-								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat11B')){
-										echo $limit;
-									}else{
-								?>
-                                    <input name="cat11B" type="text" class="form-control" id="cat11B" value="<?php echo $ing['cat11B']; ?>" />
-                                  <?php } ?></td>
-                                </tr>
-                                <tr>
-                                  <td>Cat12 %:</td>
-                                  <td colspan="3"><?php
-								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat12')){
-										echo $limit;
-									}else{
-								?>
-                                    <input name="cat12" type="text" class="form-control" id="cat12" value="<?php echo $ing['cat12']; ?>" />
-                                  <?php } ?></td>
-                                </tr>
+                                <?php } ?>
 						      </table>
    						  </div>
                   <div class="tab-pane fade" id="supply">

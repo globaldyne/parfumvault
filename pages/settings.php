@@ -114,18 +114,18 @@ if(($_POST) && $_GET['update'] == 'printer'){
 		$msg = '<div class="alert alert-danger alert-dismissible">Error updating brand info: ('.mysqli_error($conn).')</div>';
 	}
 	
-//PV MAKER
-}elseif($_GET['update'] == 'pvmaker'){
-	$pv_maker = mysqli_real_escape_string($conn, $_POST['pv_maker']);
-	$pv_maker_host = mysqli_real_escape_string($conn, $_POST['pv_maker_host']);
+//usage_categories
+}elseif($_GET['update'] == 'usage_categories'){
+	$catName = mysqli_real_escape_string($conn, $_POST['ucat']);
+	$description = mysqli_real_escape_string($conn, $_POST['description']);
 
-	if(empty($pv_maker)){
-		$pv_maker = '0';
-	}
-	if(mysqli_query($conn, "UPDATE settings SET pv_maker = '$pv_maker', pv_maker_host = '$pv_maker_host'")){
-		$msg = '<div class="alert alert-success alert-dismissible">PV Maker details updated!</div>';
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM IFRACategories WHERE name = '$catName'"))){
+		$msg='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$catName.' already exists!</div>';
+	}elseif(mysqli_query($conn, "INSERT INTO IFRACategories (name,description,type) VALUES ('$catName','$description','2')")){
+		
+		$msg = '<div class="alert alert-success alert-dismissible">Category added!</div>';
 	}else{
-		$msg = '<div class="alert alert-danger alert-dismissible">Error updating PV Maker info: ('.mysqli_error($conn).')</div>';
+		$msg = '<div class="alert alert-danger alert-dismissible">Error adding category.</div>';
 	}
 
 //PV ONLINE
@@ -166,14 +166,24 @@ if(($_POST) && $_GET['update'] == 'printer'){
 		}
 	}
 
-
+}elseif($_GET['action'] == 'delete' && $_GET['IFRAcat_id']){
+	$IFRAcat_id = mysqli_real_escape_string($conn, $_GET['IFRAcat_id']);
+	if(mysqli_query($conn, "DELETE FROM IFRACategories WHERE id = '$IFRAcat_id' AND type = '2'")){
+		$msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Category deleted!</div>';
+	}else{
+		$msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error deleting category.</div>';
+	}
 
 }												   
  
 $cat_q = mysqli_query($conn, "SELECT * FROM ingCategory ORDER BY name ASC");
 $users_q = mysqli_query($conn, "SELECT * FROM users ORDER BY username ASC");
 $pv_online = mysqli_fetch_array(mysqli_query($conn, "SELECT email FROM pv_online"));
+$cats_q = mysqli_query($conn, "SELECT id,name,description,type FROM IFRACategories ORDER BY id ASC");
 
+while($cats_res = mysqli_fetch_array($cats_q)){
+    $cats[] = $cats_res;
+}
 require('./inc/settings.php');
 
 ?>
@@ -194,13 +204,13 @@ $(function() {
 <div id="settings">
      <ul>
          <li><a href="#general"><span>General</span></a></li>
-         <li><a href="#categories"><span>Categories</span></a></li>
+         <li><a href="#categories"><span>Ingredient Categories</span></a></li>
+         <li><a href="#usage_categories">Usage Categories</a></li>
          <li><a href="#types">Perfume Types</a></li>
          <li><a href="#print"><span>Printing</span></a></li>
          <li><a href="#users"><span>Users</span></a></li>
          <li><a href="#brand"><span>My Brand</span></a></li>
          <li><a href="#maintenance"><span>Maintenance</span></a></li>
-         <!-- <li><a href="#pvmaker">PV Maker</a></li> -->
          <li><a href="#pvonline"><span>PV Online</span></a></li>
         <li><a href="pages/about.php"><span>About</span></a></li>
      </ul>
@@ -250,24 +260,9 @@ $(function() {
         <tr>
           <td height="32"><a href="#" rel="tipsy" title="Select the default category class. This will be used to calculate limits in formulas">Default Category:</a></td>
           <td colspan="2"><select name="defCatClass" id="defCatClass" class="form-control">
-			  <option value="cat1" <?php if($settings['defCatClass']=="cat1") echo 'selected="selected"'; ?> >Cat 1</option>
-			  <option value="cat2" <?php if($settings['defCatClass']=="cat2") echo 'selected="selected"'; ?> >Cat 2</option>
-			  <option value="cat3" <?php if($settings['defCatClass']=="cat3") echo 'selected="selected"'; ?> >Cat 3</option>
-              <option value="cat4" <?php if($settings['defCatClass']=="cat4") echo 'selected="selected"'; ?> >Cat 4</option>
-			  <option value="cat5A" <?php if($settings['defCatClass']=="cat5A") echo 'selected="selected"'; ?> >Cat 5A</option>
-			  <option value="cat5B" <?php if($settings['defCatClass']=="cat5B") echo 'selected="selected"'; ?> >Cat 5B</option>
-			  <option value="cat5C" <?php if($settings['defCatClass']=="cat5C") echo 'selected="selected"'; ?> >Cat 5C</option>
-			  <option value="cat5D" <?php if($settings['defCatClass']=="cat5D") echo 'selected="selected"'; ?> >Cat 5D</option>
-			  <option value="cat6" <?php if($settings['defCatClass']=="cat6") echo 'selected="selected"'; ?> >Cat 6</option>
-			  <option value="cat7A" <?php if($settings['defCatClass']=="cat7A") echo 'selected="selected"'; ?> >Cat 7A</option>
-			  <option value="cat7B" <?php if($settings['defCatClass']=="cat7B") echo 'selected="selected"'; ?> >Cat 7B</option>
-			  <option value="cat8" <?php if($settings['defCatClass']=="cat8") echo 'selected="selected"'; ?> >Cat 8</option>
-			  <option value="cat9" <?php if($settings['defCatClass']=="cat9") echo 'selected="selected"'; ?> >Cat 9</option>
-			  <option value="cat10A" <?php if($settings['defCatClass']=="cat10A") echo 'selected="selected"'; ?> >Cat 10A</option>
-			  <option value="cat10B" <?php if($settings['defCatClass']=="cat10B") echo 'selected="selected"'; ?> >Cat 10B</option>
-			  <option value="cat11A" <?php if($settings['defCatClass']=="cat11A") echo 'selected="selected"'; ?> >Cat 11A</option>
-			  <option value="cat11B" <?php if($settings['defCatClass']=="cat11B") echo 'selected="selected"'; ?> >Cat 11B</option>
-			  <option value="cat12" <?php if($settings['defCatClass']=="cat12") echo 'selected="selected"'; ?> >Cat 12</option>
+		<?php foreach ($cats as $IFRACategories) {?>
+				<option value="cat<?php echo $IFRACategories['name'];?>" <?php echo ($settings['defCatClass']=='cat'.$IFRACategories['name'])?"selected=\"selected\"":""; ?>><?php echo 'Cat '.$IFRACategories['name'];?></option>
+		  <?php	}	?>
             </select></td>
           <td>&nbsp;</td>
         </tr>
@@ -585,47 +580,54 @@ $(function() {
          </table>
        </form>
      </div>
-     <!--
-     <div id="pvmaker">
-        <form id="form2" name="form2" method="post" action="?do=settings&update=pvmaker#pvmaker">
+     
+     <div id="usage_categories">
+        <form id="form" name="form" method="post" action="?do=settings&update=usage_categories#usage_categories">
         <table width="100%" border="0">
-          <tr>
-            <td colspan="3"><div id="pvm_r"><?php echo $msg; ?></div></td>
-            </tr>
-          <tr>
-            <td width="9%" height="29"><a href="#" rel="tipsy" title="Enable's integration with the PV Maker device">Enable PV Maker</a></td>
-            <td width="9%"><input name="pv_maker" type="checkbox" id="pv_maker" value="1" <?php if($settings['pv_maker'] == '1'){ ?> checked="checked" <?php } ?>/></td>
-            <td width="82%">&nbsp;</td>
-          </tr>
-          <tr>
-            <td height="30"><a href="#" rel="tipsy" title="Please enter the IP shown in the device">Host:</a></td>
-            <td><input name="pv_maker_host" type="text" class="form-control" id="pv_maker_host" value="<?php echo $settings['pv_maker_host'];?>" /></td>
-            <td>&nbsp;</td>
-          </tr>
-          <tr>
-            <td height="24"><a  href="javascript:initPVM()" onclick="return confirm('Initialize PV Maker?')" rel="tipsy" title="Click here to auto configure the device">Initialize device</a></td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-          </tr>
-          <tr>
-            <td height="24"><a href="javascript:resetPVM()" onclick="return confirm('Restore PV Maker defaults?')" rel="tipsy" title="Click here to reset device settings to its defaults.">Restore defaults</a></td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-          </tr>
-          <tr>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-          </tr>
-          <tr>
-            <td><input type="submit" name="button4" id="button4" value="Submit" class="btn btn-info"/></td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-          </tr>
-		</table>
+              <tr>
+                <td width="16%"><input name="ucat" placeholder="Category id, eg '14'" type="text" class="form-control" id="ucat" /></td>
+                <td width="1%">&nbsp;</td>
+                <td width="16%"><input name="description" placeholder="Description" type="text" class="form-control" id="description" /></td>
+                <td width="1%">&nbsp;</td>
+                <td width="16%"><input type="submit" name="add_user" id="add_user" value="Add" class="btn btn-info" /></td>
+              </tr>
+              <tr>
+                <td colspan="9">&nbsp;</td>
+                </tr>
+              <tr>
+                <td colspan="9"><?php echo $msg; ?></td>
+                </tr>
+            </table>
+
+              <table class="table table-bordered" id="tdDataIFRACats" width="100%" cellspacing="0">
+                  <thead>
+                    <tr class="noBorder">
+                    </tr>
+                    <tr>
+                      <th>Category</th>
+                      <th>Description</th>
+                      <th>Actions</th>
+                    </tr>
+                </thead>
+                  <tbody id="ucategories">
+					<?php foreach ($cats as $IFRACategories) {?>
+                    <tr>
+					  <td align="center"><?php echo $IFRACategories['name'];?></td>
+                      <?php if($IFRACategories['type'] == '1'){?>
+					  <td align="center"><?php echo $IFRACategories['description'];?></td>
+                      <td align="center"><a href="#" onclick="return alert('Default categories cannot be removed.')" class="fas fa-trash"></a></td>
+                      <?php }else{ ?>
+					  <td width="60%" data-name="usage_desc" class="usage_desc" data-type="text" align="center" data-pk="<?php echo $IFRACategories['id'];?>"><?php echo $IFRACategories['description'];?></td>
+                      <td align="center"><a href="?do=settings&action=delete&IFRAcat_id=<?php echo $IFRACategories['id'];?>#usage_categories" onclick="return confirm('Delete category <?php echo $IFRACategories['name'];?>?')" class="fas fa-trash"></a></td>
+                      <?php } ?>
+					</tr>
+				  	<?php } ?>
+                    </tr>
+                  </tbody>
+          </table>
         </form>
      </div>
-     -->
+
      <div id="pvonline">
         <form id="form" name="form" method="post" action="?do=settings&update=pvonline#pvonline">
         <table width="100%" border="0">
@@ -728,35 +730,14 @@ $('#cat_data').editable({
   }
 });
 
-
-function initPVM() {	  
-$.ajax({ 
-    url: 'pages/pvm.php', 
-	type: 'GET',
-    data: {
-		setup: '1',
-		ip: '192.168.1.83'
-		},
-	dataType: 'html',
-    success: function (data) {
-		//location.reload();
-	  	$('#pvm_r').html(data);
-    }
-  });
-};
-
-function resetPVM() {	  
-$.ajax({ 
-    url: 'pages/pvm.php', 
-	type: 'GET',
-    data: {
-		setup: 'rfd'
-		},
-	dataType: 'html',
-    success: function (data) {
-		//location.reload();
-	  	$('#pvm_r').html(data);
-    }
-  });
-};
+$('#ucategories').editable({
+  container: 'body',
+  selector: 'td.usage_desc',
+  url: "pages/update_data.php?settings=ucategories",
+  title: 'Description',
+  type: "POST",
+  dataType: 'json',
+  validate: function(value){
+  }
+});
 </script>
