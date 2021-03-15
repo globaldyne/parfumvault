@@ -114,7 +114,7 @@ if(($_POST) && $_GET['update'] == 'printer'){
 		$msg = '<div class="alert alert-danger alert-dismissible">Error updating brand info: ('.mysqli_error($conn).')</div>';
 	}
 	
-//usage_categories
+//ADD Usage Categories
 }elseif($_GET['update'] == 'usage_categories'){
 	$catName = mysqli_real_escape_string($conn, $_POST['ucat']);
 	$description = mysqli_real_escape_string($conn, $_POST['description']);
@@ -122,7 +122,7 @@ if(($_POST) && $_GET['update'] == 'printer'){
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM IFRACategories WHERE name = '$catName'"))){
 		$msg='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$catName.' already exists!</div>';
 	}elseif(mysqli_query($conn, "INSERT INTO IFRACategories (name,description,type) VALUES ('$catName','$description','2')")){
-		
+		mysqli_query($conn,"ALTER TABLE ingredients ADD (cat".$catName." VARCHAR(100) COLLATE utf8_bin DEFAULT NULL)");
 		$msg = '<div class="alert alert-success alert-dismissible">Category added!</div>';
 	}else{
 		$msg = '<div class="alert alert-danger alert-dismissible">Error adding category.</div>';
@@ -169,6 +169,7 @@ if(($_POST) && $_GET['update'] == 'printer'){
 }elseif($_GET['action'] == 'delete' && $_GET['IFRAcat_id']){
 	$IFRAcat_id = mysqli_real_escape_string($conn, $_GET['IFRAcat_id']);
 	if(mysqli_query($conn, "DELETE FROM IFRACategories WHERE id = '$IFRAcat_id' AND type = '2'")){
+		//mysqli_query($conn,"ALTER TABLE ingredients DROP (cat".$catName.")");
 		$msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Category deleted!</div>';
 	}else{
 		$msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error deleting category.</div>';
