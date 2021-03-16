@@ -17,6 +17,11 @@ if($ingID){
 		}
 	}
 }
+$StandardIFRACategories = mysqli_query($conn, "SELECT name,description,type FROM IFRACategories WHERE type = '1' ORDER BY id ASC");
+
+while($cats_res = mysqli_fetch_array($StandardIFRACategories)){
+    $cats[] = $cats_res;
+}
 
 $defCatClass = $settings['defCatClass'];
 
@@ -49,6 +54,7 @@ if($_POST){
 	$soluble = mysqli_real_escape_string($conn, $_POST["soluble"]);
 	$logp = mysqli_real_escape_string($conn, $_POST["logp"]);
 
+	
 	$cat1 = validateInput($_POST["cat1"]);
 	$cat2 = validateInput($_POST["cat2"]);
 	$cat3 = validateInput($_POST["cat3"]);
@@ -148,15 +154,6 @@ $res_ingStrength = mysqli_query($conn, "SELECT id,name FROM ingStrength ORDER BY
 $res_ingCategory = mysqli_query($conn, "SELECT id,name FROM ingCategory ORDER BY name ASC");
 $res_ingSupplier = mysqli_query($conn, "SELECT id,name FROM ingSuppliers ORDER BY name ASC");
 $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles ORDER BY name ASC");
-$StandardIFRACategories = mysqli_query($conn, "SELECT name,description,type FROM IFRACategories WHERE type = '1' ORDER BY id ASC");
-$userCategories = mysqli_query($conn, "SELECT name,description,type FROM IFRACategories WHERE type = '2' ORDER BY id ASC");
-
-while($cats_res = mysqli_fetch_array($StandardIFRACategories)){
-    $cats[] = $cats_res;
-}
-while($user_cats_res = mysqli_fetch_array($userCategories)){
-    $user_cats[] = $user_cats_res;
-}
 
 $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE name = '$ingID'"));
 
@@ -475,27 +472,6 @@ reload_data();
                                 </tr>
                                 
                                 <?php foreach ($cats as $cat) {?>
-
-                                <tr>
-                                  <td><a href="#" rel="tipsy" title="<?php echo $cat['description'];?>">Cat<?php echo $cat['name'];?>%:</a></td>
-                                  <td colspan="3"><?php
-								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat'.$cat['name'])){
-										echo $limit;
-									}else{
-								?>
-                                    <input name="cat<?php echo $cat['name'];?>" type="text" class="form-control" id="cat<?php echo $cat['name'];?>" value="<?php echo $ing['cat'.$cat['name']]; ?>" />
-                                  <?php } ?>
-                                  </td>
-                                </tr>
-                                <?php } ?>
-                                <?php if($user_cats){?>
-                                <tr>
-                                  <td colspan="4"><hr />
-                                  <strong>Custom Categories</strong></td>
-                                </tr>
-                                <?php }?>
-								<?php foreach ($user_cats as $cat) {?>
-
                                 <tr>
                                   <td><a href="#" rel="tipsy" title="<?php echo $cat['description'];?>">Cat<?php echo $cat['name'];?>%:</a></td>
                                   <td colspan="3"><?php

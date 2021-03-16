@@ -3,7 +3,6 @@
 Making sure the percentage symbol is striped out from allergens quantity
 Create entry in ingredients from allergens
 Adding no usage limit in ingredients
-Add custom usage categories
 Remove pvmaker code
 
 ### Version 2.6

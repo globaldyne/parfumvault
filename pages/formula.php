@@ -67,7 +67,7 @@ $base_calc = calcPerc($f_name, 'Base', $settings['base_n'], $conn);
                                          </td>
                                          <td><input type="text" name="concentration" id="concentration" placeholder="Purity %" class="form-control" /></td>
                                       <td>
-                                         <select name="dilutant" id="dilutant" class="form-control selectpicker" data-live-search="true">
+                                         <select name="dilutant" id="dilutant" class="form-control">
                                          <option value="" selected disabled>Dilutant</option>
                                          <option value="none">None</option>
                                          <?php

@@ -52,12 +52,6 @@ if($_POST['value'] && $_GET['formula'] && $_POST['pk'] && !$_GET['settings']){
 	mysqli_query($conn, "UPDATE ingSuppliers SET $name = '$value' WHERE id = '$sup_id'");
 	return;
 
-}elseif($_GET['settings'] == 'ucategories'){
-	$value = mysqli_real_escape_string($conn, $_POST['value']);
-	$pk = mysqli_real_escape_string($conn, $_POST['pk']);
-
-	mysqli_query($conn, "UPDATE IFRACategories SET description = '$value' WHERE id = '$pk'");
-	return;
 	
 }elseif($_GET['supp'] == 'add'){
 	$description = mysqli_real_escape_string($conn, $_GET['description']);

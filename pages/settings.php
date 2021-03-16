@@ -114,19 +114,6 @@ if(($_POST) && $_GET['update'] == 'printer'){
 		$msg = '<div class="alert alert-danger alert-dismissible">Error updating brand info: ('.mysqli_error($conn).')</div>';
 	}
 	
-//ADD Usage Categories
-}elseif($_GET['update'] == 'usage_categories'){
-	$catName = mysqli_real_escape_string($conn, $_POST['ucat']);
-	$description = mysqli_real_escape_string($conn, $_POST['description']);
-
-	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM IFRACategories WHERE name = '$catName'"))){
-		$msg='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$catName.' already exists!</div>';
-	}elseif(mysqli_query($conn, "INSERT INTO IFRACategories (name,description,type) VALUES ('$catName','$description','2')")){
-		mysqli_query($conn,"ALTER TABLE ingredients ADD (cat".$catName." VARCHAR(100) COLLATE utf8_bin DEFAULT NULL)");
-		$msg = '<div class="alert alert-success alert-dismissible">Category added!</div>';
-	}else{
-		$msg = '<div class="alert alert-danger alert-dismissible">Error adding category.</div>';
-	}
 
 //PV ONLINE
 }elseif($_GET['update'] == 'pvonline' && $_POST['pv_online_email'] && $_POST['pv_online_pass']){
@@ -166,15 +153,6 @@ if(($_POST) && $_GET['update'] == 'printer'){
 		}
 	}
 
-}elseif($_GET['action'] == 'delete' && $_GET['IFRAcat_id']){
-	$IFRAcat_id = mysqli_real_escape_string($conn, $_GET['IFRAcat_id']);
-	if(mysqli_query($conn, "DELETE FROM IFRACategories WHERE id = '$IFRAcat_id' AND type = '2'")){
-		//mysqli_query($conn,"ALTER TABLE ingredients DROP (cat".$catName.")");
-		$msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Category deleted!</div>';
-	}else{
-		$msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error deleting category.</div>';
-	}
-
 }												   
  
 $cat_q = mysqli_query($conn, "SELECT * FROM ingCategory ORDER BY name ASC");
@@ -206,7 +184,6 @@ $(function() {
      <ul>
          <li><a href="#general"><span>General</span></a></li>
          <li><a href="#categories"><span>Ingredient Categories</span></a></li>
-         <li><a href="#usage_categories">Usage Categories</a></li>
          <li><a href="#types">Perfume Types</a></li>
          <li><a href="#print"><span>Printing</span></a></li>
          <li><a href="#users"><span>Users</span></a></li>
@@ -582,53 +559,6 @@ $(function() {
        </form>
      </div>
      
-     <div id="usage_categories">
-        <form id="form" name="form" method="post" action="?do=settings&update=usage_categories#usage_categories">
-        <table width="100%" border="0">
-              <tr>
-                <td width="16%"><input name="ucat" placeholder="Category id, eg '14'" type="text" class="form-control" id="ucat" /></td>
-                <td width="1%">&nbsp;</td>
-                <td width="16%"><input name="description" placeholder="Description" type="text" class="form-control" id="description" /></td>
-                <td width="1%">&nbsp;</td>
-                <td width="16%"><input type="submit" name="add_user" id="add_user" value="Add" class="btn btn-info" /></td>
-              </tr>
-              <tr>
-                <td colspan="9">&nbsp;</td>
-                </tr>
-              <tr>
-                <td colspan="9"><?php echo $msg; ?></td>
-                </tr>
-            </table>
-
-              <table class="table table-bordered" id="tdDataIFRACats" width="100%" cellspacing="0">
-                  <thead>
-                    <tr class="noBorder">
-                    </tr>
-                    <tr>
-                      <th>Category</th>
-                      <th>Description</th>
-                      <th>Actions</th>
-                    </tr>
-                </thead>
-                  <tbody id="ucategories">
-					<?php foreach ($cats as $IFRACategories) {?>
-                    <tr>
-					  <td align="center"><?php echo $IFRACategories['name'];?></td>
-                      <?php if($IFRACategories['type'] == '1'){?>
-					  <td align="center"><?php echo $IFRACategories['description'];?></td>
-                      <td align="center"><a href="#" onclick="return alert('Default categories cannot be removed.')" class="fas fa-trash"></a></td>
-                      <?php }else{ ?>
-					  <td width="60%" data-name="usage_desc" class="usage_desc" data-type="text" align="center" data-pk="<?php echo $IFRACategories['id'];?>"><?php echo $IFRACategories['description'];?></td>
-                      <td align="center"><a href="?do=settings&action=delete&IFRAcat_id=<?php echo $IFRACategories['id'];?>#usage_categories" onclick="return confirm('Delete category <?php echo $IFRACategories['name'];?>?')" class="fas fa-trash"></a></td>
-                      <?php } ?>
-					</tr>
-				  	<?php } ?>
-                    </tr>
-                  </tbody>
-          </table>
-        </form>
-     </div>
-
      <div id="pvonline">
         <form id="form" name="form" method="post" action="?do=settings&update=pvonline#pvonline">
         <table width="100%" border="0">
@@ -731,14 +661,4 @@ $('#cat_data').editable({
   }
 });
 
-$('#ucategories').editable({
-  container: 'body',
-  selector: 'td.usage_desc',
-  url: "pages/update_data.php?settings=ucategories",
-  title: 'Description',
-  type: "POST",
-  dataType: 'json',
-  validate: function(value){
-  }
-});
 </script>
