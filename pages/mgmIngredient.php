@@ -1,13 +1,13 @@
 <?php 
 require('../inc/sec.php');
 
-require_once('../inc/config.php');
-require_once('../inc/opendb.php');
-require_once('../inc/settings.php');
-require_once('../func/formatBytes.php');
-require_once('../func/validateInput.php');
+require_once(__ROOT__.'/inc/config.php');
+require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/inc/settings.php');
+require_once(__ROOT__.'/func/formatBytes.php');
+require_once(__ROOT__.'/func/validateInput.php');
 
-require_once('../func/searchIFRA.php');
+require_once(__ROOT__.'/func/searchIFRA.php');
 
 $ingID = mysqli_real_escape_string($conn, $_GET["id"]);
 if($ingID){

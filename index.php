@@ -4,32 +4,32 @@ if(file_exists('./inc/config.php') == FALSE){
 	session_destroy();
 	header('Location: login.php');
 }
-require_once('./inc/config.php');
-require_once('./inc/product.php');
-require_once('./inc/opendb.php');
-require_once('./func/calcCosts.php');
-require_once('./func/calcPerc.php');
-require_once('./func/checkDupes.php');
-require_once('./func/checkIng.php');
-require_once('./func/checkAllergen.php');
-require_once('./func/getIngUsage.php');
-require_once('./func/checkVer.php');
-require_once('./func/getIFRAtypes.php');
-require_once('./func/searchIFRA.php');
-require_once('./func/formatBytes.php');
-require_once('./func/countElement.php');
-require_once('./func/goShopping.php');
-require_once('./libs/fpdf.php');
-require_once('./func/genBatchID.php');
-require_once('./func/genBatchPDF.php');
-require_once('./func/ml2L.php');
-require_once('./func/validateFormula.php');
-require_once('./func/pvFileGet.php');
-require_once('./func/countPending.php');
-require_once('./func/countCart.php');
-require_once('./func/pvOnline.php');
+require_once(__ROOT__.'/inc/config.php');
+require_once(__ROOT__.'/inc/product.php');
+require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/func/calcCosts.php');
+require_once(__ROOT__.'/func/calcPerc.php');
+require_once(__ROOT__.'/func/checkDupes.php');
+require_once(__ROOT__.'/func/checkIng.php');
+require_once(__ROOT__.'/func/checkAllergen.php');
+require_once(__ROOT__.'/func/getIngUsage.php');
+require_once(__ROOT__.'/func/checkVer.php');
+require_once(__ROOT__.'/func/getIFRAtypes.php');
+require_once(__ROOT__.'/func/searchIFRA.php');
+require_once(__ROOT__.'/func/formatBytes.php');
+require_once(__ROOT__.'/func/countElement.php');
+require_once(__ROOT__.'/func/goShopping.php');
+require_once(__ROOT__.'/libs/fpdf.php');
+require_once(__ROOT__.'/func/genBatchID.php');
+require_once(__ROOT__.'/func/genBatchPDF.php');
+require_once(__ROOT__.'/func/ml2L.php');
+require_once(__ROOT__.'/func/validateFormula.php');
+require_once(__ROOT__.'/func/pvFileGet.php');
+require_once(__ROOT__.'/func/countPending.php');
+require_once(__ROOT__.'/func/countCart.php');
+require_once(__ROOT__.'/func/pvOnline.php');
 
-require('./inc/settings.php');
+require(__ROOT__.'/inc/settings.php');
 
 if($pv_meta['app_ver'] < trim(file_get_contents(__ROOT__.'/VERSION.md'))){
 	$upVerLoc = trim(file_get_contents(__ROOT__.'/VERSION.md'));

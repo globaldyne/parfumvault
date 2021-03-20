@@ -5,6 +5,7 @@ Create entry in ingredients from allergens
 Adding no usage limit in ingredients
 Remove pvmaker code
 Ingredients management improvements
+Root path update
 
 ### Version 2.6
 - ADD: Trading name in ingredients

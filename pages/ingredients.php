@@ -1,10 +1,5 @@
 <?php 
 if (!defined('pvault_panel')){ die('Not Found');}
-
-
-$ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC");
-$defCatClass = $settings['defCatClass'];
-
 ?>
 <style>
 .mfp-iframe-holder .mfp-content {
@@ -25,8 +20,7 @@ $defCatClass = $settings['defCatClass'];
             </div>
             <div class="card-body">
               <div class="table-responsive">
-
-                     <div id="list_ingredients"><div class="loader"></div></div>
+                 <div id="list_ingredients"><div class="loader"></div></div>
               </div>
             </div>
           </div>
