@@ -3,6 +3,8 @@ require('../inc/sec.php');
 
 require_once('../inc/config.php');
 require_once('../inc/opendb.php');
+require_once('../func/validateInput.php');
+require_once('../inc/settings.php');
 
 
 if($_POST['value'] && $_GET['formula'] && $_POST['pk'] && !$_GET['settings']){
@@ -143,7 +145,20 @@ if($_POST['value'] && $_GET['formula'] && $_POST['pk'] && !$_GET['settings']){
 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$ing.'</strong> removed!</div>';
 	}
 	return;
+
+//DELETE INGREDIENT	
+}elseif($_GET['ingredient'] == 'delete' && $_GET['ing_id']){
+
+	$id = mysqli_real_escape_string($conn, $_GET['ing_id']);
+	$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE id = '$id'"));
 	
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT ingredient FROM formulas WHERE ingredient = '".$ing['name']."'"))){
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$ing['name'].'</strong> is in use by at least one formula and cannot be removed!</div>';
+	}elseif(mysqli_query($conn, "DELETE FROM ingredients WHERE id = '$id'")){
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Ingredient <strong>'.$ing['name'].'</strong> removed from the database!</div>';
+	}
+
+	return;
 	
 //CUSTOMERS - ADD
 }elseif($_POST['customer'] == 'add'){
@@ -184,9 +199,108 @@ if($_POST['value'] && $_GET['formula'] && $_POST['pk'] && !$_GET['settings']){
 	mysqli_query($conn, "UPDATE customers SET $name = '$value' WHERE id = '$id'");
 	return;
 	
+}elseif($_POST['manage'] == 'ingredient'){
+	$ing = mysqli_real_escape_string($conn, $_POST['ing']);
+
+	$INCI = trim(mysqli_real_escape_string($conn, $_POST["INCI"]));
+	$cas = trim(mysqli_real_escape_string($conn, $_POST["cas"]));
+	$fema = trim(mysqli_real_escape_string($conn, $_POST["fema"]));
+	$type = mysqli_real_escape_string($conn, $_POST["type"]);
+	$strength = mysqli_real_escape_string($conn, $_POST["strength"]);
+	$category = mysqli_real_escape_string($conn, $_POST["category"]);
+	$supplier = mysqli_real_escape_string($conn, $_POST["supplier"]);
+	$supplier_link = mysqli_real_escape_string($conn, $_POST["supplier_link"]);
+	$profile = mysqli_real_escape_string($conn, $_POST["profile"]);
+	$price = validateInput($_POST["price"]);
+	$tenacity = mysqli_real_escape_string($conn, $_POST["tenacity"]);
+	$formula = mysqli_real_escape_string($conn, $_POST["formula"]);
+	$chemical_name = mysqli_real_escape_string($conn, $_POST["chemical_name"]);
+	$flash_point = mysqli_real_escape_string($conn, $_POST["flash_point"]);
+	$appearance = mysqli_real_escape_string($conn, $_POST["appearance"]);
+	$ml = validateInput($_POST["ml"]);
+	$solvent = mysqli_real_escape_string($conn, $_POST["solvent"]);
+	$odor = ucfirst(trim(mysqli_real_escape_string($conn, $_POST["odor"])));
+	$notes = ucfirst(trim(mysqli_real_escape_string($conn, $_POST["notes"])));
+	$purity = validateInput($_POST["purity"]);
+	$soluble = mysqli_real_escape_string($conn, $_POST["soluble"]);
+	$logp = mysqli_real_escape_string($conn, $_POST["logp"]);
+	
+	$cat1 = validateInput($_POST["cat1"]);
+	$cat2 = validateInput($_POST["cat2"]);
+	$cat3 = validateInput($_POST["cat3"]);
+	$cat4 = validateInput($_POST["cat4"]);
+	$cat5A = validateInput($_POST["cat5A"]);
+	$cat5B = validateInput($_POST["cat5B"]);
+	$cat5C = validateInput($_POST["cat5C"]);
+	$cat5D = validateInput($_POST["cat5D"]);
+	$cat6 = validateInput($_POST["cat6"]);
+	$cat7A = validateInput($_POST["cat7A"]);
+	$cat7B = validateInput($_POST["cat7B"]);
+	$cat8 = validateInput($_POST["cat8"]);
+	$cat9 = validateInput($_POST["cat9"]);
+	$cat10A = validateInput($_POST["cat10A"]);
+	$cat10B = validateInput($_POST["cat10B"]);
+	$cat11A = validateInput($_POST["cat11A"]);
+	$cat11B = validateInput($_POST["cat11B"]);
+	$cat12 = validateInput($_POST["cat12"]);
+	
+	$manufacturer = mysqli_real_escape_string($conn, $_POST["manufacturer"]);
+	$impact_top = mysqli_real_escape_string($conn, $_POST["impact_top"]);
+	$impact_base = mysqli_real_escape_string($conn, $_POST["impact_base"]);
+	$impact_heart = mysqli_real_escape_string($conn, $_POST["impact_heart"]);
+	$usage_type = mysqli_real_escape_string($conn, $_POST["usage_type"]);
+
+	if($_POST["isAllergen"] == 'true') {
+		$allergen = '1';
+	}else{
+		$allergen = '0';
+	}
+	if($_POST["flavor_use"] == 'true') {
+		$flavor_use = '1';
+	}else{
+		$flavor_use = '0';
+	}
+	if(empty($ml)){
+		$ml = '10';
+	}
+	
+	if($_POST['noUsageLimit'] == 'true'){
+		$noUsageLimit = '1';
+	}else{
+		$noUsageLimit = '0';
+	}
+
+	if(empty($_POST['name'])){
+		$query = "UPDATE ingredients SET cas = '$cas', FEMA = '$fema', type = '$type', strength = '$strength', category='$category', supplier='$supplier', supplier_link='$supplier_link', profile='$profile', price='$price', tenacity='$tenacity', chemical_name='$chemical_name', flash_point='$flash_point', appearance='$appearance', notes='$notes', ml='$ml', odor='$odor', purity='$purity', allergen='$allergen', formula='$formula', flavor_use='$flavor_use', cat1 = '$cat1', cat2 = '$cat2', cat3 = '$cat3', cat4 = '$cat4', cat5A = '$cat5A', cat5B = '$cat5B', cat5C = '$cat5C', cat5D = '$cat5D', cat6 = '$cat6', cat7A = '$cat7A', cat7B = '$cat7B', cat8 = '$cat8', cat9 = '$cat9', cat10A = '$cat10A', cat10B = '$cat10B', cat11A = '$cat11A', cat11B = '$cat11B', cat12 = '$cat12', soluble = '$soluble', logp = '$logp', manufacturer = '$manufacturer', impact_top = '$impact_top', impact_heart = '$impact_heart', impact_base = '$impact_base', usage_type = '$usage_type', solvent = '$solvent', INCI = '$INCI', noUsageLimit = '$noUsageLimit' WHERE name='$ing'";
+		if(mysqli_query($conn, $query)){
+			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Ingredient <strong>'.$ing.'</strong> updated!</div>';
+		}else{
+			echo '<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> Failed to update!</div>';
+		}
+	}else{
+		$name = mysqli_real_escape_string($conn, $_POST["name"]);
+
+		$query = "INSERT INTO ingredients (name, INCI, cas, FEMA, type, strength, SDS, ".$settings['defCatClass'].", category, supplier, supplier_link, profile, price, tenacity, chemical_name, flash_point, appearance, notes, ml, odor, purity, allergen, noUsageLimit) VALUES ('$name', '$INCI', '$cas', '$fema', '$type', '$strength', '$SDSF', '$cat', '$category', '$supplier', '$supplier_link', '$profile', '$price', '$tenacity', '$chemical_name', '$flash_point', '$appearance', '$notes', '$ml', '$odor', '$purity', '$allergen', '$noUsageLimit')";
+		
+		if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '$name'"))){
+			echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$name.' already exists!</div>';
+		}else{
+			if(mysqli_query($conn, $query)){
+				echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Ingredient <strong>'.$name.'</strong> added!</div>';
+			}else{
+				echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Failed to add!</div>';
+			}
+		}
+	}
+
+
+	return;
+
 	
 }else{
 	header('Location: /');
 	exit;
 }
+
+
 ?>

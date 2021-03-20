@@ -105,6 +105,10 @@ $(document).ready(function() {
 		"info":   true,
 		"lengthMenu": [[20, 35, 60, -1], [20, 35, 60, "All"]]
 	});
+	
+	list_formulas();
+	list_ingredients();
+
 });
 
 function updateDB() {
@@ -132,7 +136,18 @@ $.ajax({
 	});
 }
 
-list_formulas();
+
+
+function list_ingredients(){
+$.ajax({ 
+    url: 'pages/listIngredients.php', 
+	dataType: 'html',
+		success: function (data) {
+			$('#list_ingredients').html(data);
+		}
+	});
+}
+
 </script>
 </head>
 
@@ -268,9 +283,9 @@ list_formulas();
             </div>
             <div id="list_formulas"><div class="loader"></div></div>
            </div>
+          </div>
         </div>
-      </div>
-	</div>
+	   </div>
 		<?php
 		}elseif($_GET['do'] == 'genFinishedProduct'){
 			require 'pages/genFinishedProduct.php';		
@@ -297,14 +312,11 @@ list_formulas();
 		}elseif($_GET['do'] == 'customers'){
 			require 'pages/customers.php';
 			
-		}elseif($_GET['do'] == 'pvmaker' && $settings['pv_maker'] == '1'){
-			require 'pages/pvmaker.php';	
-			
 		}else{
 			require 'pages/dashboard.php';
 		}
 	?>
-	<?php require_once("pages/footer.php"); ?>
+<?php require_once("pages/footer.php"); ?>
 <?php if(isset($show_release_notes)){ ?>
 <!--RELEASE NOTES-->
 <div class="modal fade" id="release_notes" tabindex="-1" role="dialog" aria-labelledby="release_notes" aria-hidden="true">

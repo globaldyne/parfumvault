@@ -121,7 +121,7 @@ $('.popup-link').magnificPopup({
 	showCloseBtn: true,
 });
 	
-$('#tdData,#tdDataSup,#tdDataCat,#tdDataUsers,#tdDataCustomers').DataTable({
+$('#tdData').DataTable({
     "paging":   true,
 	"info":   true,
 	"lengthMenu": [[20, 35, 60, -1], [20, 35, 60, "All"]]
