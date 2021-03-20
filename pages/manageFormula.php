@@ -1,9 +1,9 @@
 <?php 
 require('../inc/sec.php');
 
-require_once('../inc/config.php');
-require_once('../inc/opendb.php');
-require_once('../inc/settings.php');
+require_once(__ROOT__.'/inc/config.php');
+require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/inc/settings.php');
 
 //AMOUNT TO MAKE
 if($_GET['fid'] && $_GET['SG'] && $_GET['amount']){

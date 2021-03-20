@@ -1,13 +1,13 @@
 <?php
 require('../inc/sec.php');
 
-require_once('../inc/config.php');
-require_once('../inc/product.php');
-require_once('../inc/opendb.php');
-require_once('../inc/settings.php');
+require_once(__ROOT__.'/inc/config.php');
+require_once(__ROOT__.'/inc/product.php');
+require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/inc/settings.php');
 
-require_once('../func/calcPerc.php');
-require_once('../func/getFormula.php');
+require_once(__ROOT__.'/func/calcPerc.php');
+require_once(__ROOT__.'/func/getFormula.php');
 if(!$_GET['formula']){
 	die('No valid formula provided');
 }

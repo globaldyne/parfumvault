@@ -26,7 +26,7 @@ $.ajax({
 
 </script>
 <div id="content-wrapper" class="d-flex flex-column">
-<?php require_once('pages/top.php'); ?>
+<?php require_once(__ROOT__.'/pages/top.php'); ?>
         <div class="container-fluid">
 		<?php echo $msg; ?>
           <div>

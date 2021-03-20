@@ -1,6 +1,6 @@
 <?php if (!defined('pvault_panel')){ die('Not Found');}  ?>
 <div class="container-fluid">
-<?php require_once('pages/top.php'); ?>
+<?php require_once(__ROOT__.'/pages/top.php'); ?>
 <?php 
 
 if($_POST['name']){

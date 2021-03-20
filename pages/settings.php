@@ -1,7 +1,7 @@
 <?php if (!defined('pvault_panel')){ die('Not Found');}?>
 <div id="content-wrapper" class="d-flex flex-column">
 <?php 
-require_once('pages/top.php'); 
+require_once(__ROOT__.'/pages/top.php'); 
 
 if(($_POST) && $_GET['update'] == 'printer'){
 	$label_printer_addr = mysqli_real_escape_string($conn, $_POST['label_printer_addr']);
@@ -14,7 +14,7 @@ if(($_POST) && $_GET['update'] == 'printer'){
 	}else{
 		$msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error updating settings!</div>';
 	}
-	require('./inc/settings.php');
+	require(__ROOT__.'/inc/settings.php');
 
 
 	
@@ -163,7 +163,7 @@ $cats_q = mysqli_query($conn, "SELECT id,name,description,type FROM IFRACategori
 while($cats_res = mysqli_fetch_array($cats_q)){
     $cats[] = $cats_res;
 }
-require('./inc/settings.php');
+require(__ROOT__.'/inc/settings.php');
 
 ?>
 <script>

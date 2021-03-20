@@ -27,7 +27,7 @@ $base_calc = calcPerc($f_name, 'Base', $settings['base_n'], $conn);
 }
 </style>
 <div id="content-wrapper" class="d-flex flex-column">
-<?php require_once('pages/top.php'); ?>
+<?php require_once(__ROOT__.'/pages/top.php'); ?>
         <div class="container-fluid">
 		<div>
           <div class="card shadow mb-4">

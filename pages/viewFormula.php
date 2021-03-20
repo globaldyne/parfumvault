@@ -2,17 +2,17 @@
 
 require('../inc/sec.php');
 
-require_once('../inc/config.php');
-require_once('../inc/opendb.php');
-require_once('../inc/settings.php');
+require_once(__ROOT__.'/inc/config.php');
+require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/inc/settings.php');
 
-require_once('../func/calcCosts.php');
-require_once('../func/calcPerc.php');
-require_once('../func/checkIng.php');
-require_once('../func/searchIFRA.php');
-require_once('../func/goShopping.php');
-require_once('../func/ml2L.php');
-require_once('../func/countElement.php');
+require_once(__ROOT__.'/func/calcCosts.php');
+require_once(__ROOT__.'/func/calcPerc.php');
+require_once(__ROOT__.'/func/checkIng.php');
+require_once(__ROOT__.'/func/searchIFRA.php');
+require_once(__ROOT__.'/func/goShopping.php');
+require_once(__ROOT__.'/func/ml2L.php');
+require_once(__ROOT__.'/func/countElement.php');
 
 $fid = mysqli_real_escape_string($conn, $_GET['id']);
 $f_name = base64_decode($fid);

@@ -1,9 +1,9 @@
 <?php
 require('../inc/sec.php');
 
-require '../inc/config.php';
-require '../inc/opendb.php';
-require '../inc/product.php';
+require_once(__ROOT__.'/inc/config.php');
+require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/inc/product.php');
 
 if(isset($_POST["import"])){
 	$i = 0;

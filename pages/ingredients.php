@@ -10,7 +10,7 @@ if (!defined('pvault_panel')){ die('Not Found');}
 }
 </style>
 <div id="content-wrapper" class="d-flex flex-column">
-<?php require_once('pages/top.php'); ?>
+<?php require_once(__ROOT__.'/pages/top.php'); ?>
         <div class="container-fluid">
 		<div id="innermsg"></div>
           <div>

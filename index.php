@@ -259,8 +259,6 @@ $.ajax({
     <?php
 		if($_GET['do'] == 'Formula'){
 			require 'pages/formula.php';
-		}elseif($_GET['do'] == 'addFormula'){
-			require 'pages/addFormula.php';
 		}elseif($_GET['do'] == 'ingredients'){
 			require 'pages/ingredients.php';
 		}elseif($_GET['do'] == 'settings'){

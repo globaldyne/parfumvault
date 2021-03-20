@@ -2,8 +2,8 @@
 
 require('../inc/sec.php');
 
-require_once('../inc/config.php');
-require_once('../inc/opendb.php');
+require_once(__ROOT__.'/inc/config.php');
+require_once(__ROOT__.'/inc/opendb.php');
 
 $ingID = mysqli_real_escape_string($conn, $_GET["id"]);
 

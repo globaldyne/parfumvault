@@ -1,10 +1,10 @@
 <?php 
 require('../inc/sec.php');
 
-require_once('../inc/config.php');
-require_once('../inc/opendb.php');
-require_once('../inc/settings.php');
-require_once('../inc/product.php');
+require_once(__ROOT__.'/inc/config.php');
+require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/inc/settings.php');
+require_once(__ROOT__.'/inc/product.php');
 
 
 if($_GET['action'] == 'import' && $_GET['items']){
