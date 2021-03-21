@@ -6,10 +6,7 @@ $id = mysqli_real_escape_string($conn, $_GET['id']);
 if($_GET['action'] == 'delete' && $_GET['id']){
 	
 	if(mysqli_query($conn, "DELETE FROM lids WHERE id = '$id'")){
-		$msg = '<div class="alert alert-success alert-dismissible">
-		<a href="?do=lids" class="close" data-dismiss="alert" aria-label="close">x</a>
-  		Bottle <strong>'.$lid['name'].'</strong> removed!
-		</div>';
+		$msg = '<div class="alert alert-success alert-dismissible"><a href="?do=lids" class="close" data-dismiss="alert" aria-label="close">x</a>Bottle <strong>'.$lid['name'].'</strong> removed!</div>';
 	}
 	
 }

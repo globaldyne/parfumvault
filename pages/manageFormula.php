@@ -47,9 +47,10 @@ if($_GET['formula'] && $_GET['do']){
 		mysqli_query($conn,"UPDATE formulas SET quantity = '$nq' WHERE name = '$formula' AND quantity = '".$cur['quantity']."' AND ingredient = '".$cur['ingredient']."'");
 	}
 	return;
+}
 
 //DELETE INGREDIENT
-}elseif($_GET['action'] == 'deleteIng' && $_GET['ingID'] && $_GET['ing']){
+if($_GET['action'] == 'deleteIng' && $_GET['ingID'] && $_GET['ing']){
 	$id = mysqli_real_escape_string($conn, $_GET['ingID']);
 	$ing = mysqli_real_escape_string($conn, $_GET['ing']);
 	$fname = mysqli_real_escape_string($conn, $_GET['fname']);
@@ -66,9 +67,10 @@ if($_GET['formula'] && $_GET['do']){
 				</div>';
 	}
 	return;
-	
+}
+
 //ADD INGREDIENT
-}elseif($_GET['action'] == 'addIng' && $_GET['fname']){// && $_GET['quantity'] && $_GET['ingredient']){
+if($_GET['action'] == 'addIng' && $_GET['fname']){// && $_GET['quantity'] && $_GET['ingredient']){
 	$fname = mysqli_real_escape_string($conn, $_GET['fname']);
 	$ingredient = mysqli_real_escape_string($conn, $_GET['ingredient']);
 	$quantity = preg_replace("/[^0-9.]/", "", mysqli_real_escape_string($conn, $_GET['quantity']));
@@ -90,9 +92,10 @@ if($_GET['formula'] && $_GET['do']){
 		}
 	}
 	return;
-	
+}
+
 //REPLACE INGREDIENT
-}elseif($_GET['action'] == 'repIng' && $_GET['fname']){
+if($_GET['action'] == 'repIng' && $_GET['fname']){
 	$fname = mysqli_real_escape_string($conn, $_GET['fname']);
 	$ingredient = mysqli_real_escape_string($conn, $_REQUEST['value']);
 	$oldIngredient = mysqli_real_escape_string($conn, $_REQUEST['pk']);
@@ -108,9 +111,10 @@ if($_GET['formula'] && $_GET['do']){
 		}
 	}
 	return;
+}
 
 //CLONE FORMULA
-}elseif($_GET['action'] == 'clone' && $_GET['formula']){
+if($_GET['action'] == 'clone' && $_GET['formula']){
 	$fname = mysqli_real_escape_string($conn, $_GET['formula']);
 	$fid = base64_encode($fname);
 	$newName = $fname.' - (Copy)';
@@ -125,9 +129,10 @@ if($_GET['formula'] && $_GET['do']){
 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$fname.' cloned as <a href="?do=Formula&name='.$newName.'" target="_blanc">'.$newName.'</a>!</div>';
 	}
 	return;
-	
+}
+
 //ADD NEW FORMULA
-}elseif($_POST['action'] == 'addFormula'){
+if($_POST['action'] == 'addFormula'){
 	if(empty($_POST['name'])){
 		echo '<div class="alert alert-danger alert-dismissible"><strong>Formula name is required.</strong></div>';
 		return;
@@ -150,10 +155,10 @@ if($_GET['formula'] && $_GET['do']){
 		}
 
 	return;
-	
+}
 	
 //DELETE FORMULA
-}elseif($_GET['action'] == 'delete' && $_GET['fid']){
+if($_GET['action'] == 'delete' && $_GET['fid']){
 	$fid = mysqli_real_escape_string($conn, $_GET['fid']);
 	if(mysqli_query($conn, "DELETE FROM formulas WHERE fid = '$fid'")){
 		mysqli_query($conn, "DELETE FROM formulasMetaData WHERE fid = '$fid'");
@@ -162,9 +167,10 @@ if($_GET['formula'] && $_GET['do']){
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error</strong> deleting '.base64_decode($fid).' formula!</div>';
 	}
 	return;
+}
 
 //MAKE FORMULA
-}elseif($_GET['action'] == 'makeFormula' && $_GET['fid'] && $_GET['q'] && $_GET['qr'] && $_GET['ingId']){
+if($_GET['action'] == 'makeFormula' && $_GET['fid'] && $_GET['q'] && $_GET['qr'] && $_GET['ingId']){
 	$fid = mysqli_real_escape_string($conn, $_GET['fid']);
 	$ingId = mysqli_real_escape_string($conn, $_GET['ingId']);
 	$qr = trim($_GET['qr']);
@@ -184,9 +190,10 @@ if($_GET['formula'] && $_GET['do']){
 		
 	}
 	return;
-	
+}
+
 //TODO ADD FORMULA
-}elseif($_GET['action'] == 'todo' && $_GET['fid'] && $_GET['add']){
+if($_GET['action'] == 'todo' && $_GET['fid'] && $_GET['add']){
 	$fid = mysqli_real_escape_string($conn, $_GET['fid']);
 	$name = base64_decode($fid);
 	
@@ -198,9 +205,10 @@ if($_GET['formula'] && $_GET['do']){
 		}
 	}
 	return;
-	
+}
+
 //TODO REMOVE FORMULA
-}elseif($_GET['action'] == 'todo' && $_GET['fid'] && $_GET['remove']){
+if($_GET['action'] == 'todo' && $_GET['fid'] && $_GET['remove']){
 	$fid = mysqli_real_escape_string($conn, $_GET['fid']);
 
 	$todo = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM makeFormula WHERE fid = '$fid'"));
@@ -209,9 +217,10 @@ if($_GET['formula'] && $_GET['do']){
 		$msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Formula <strong>'.$todo['name'].'</strong> removed!</div>';
 	}
 	return;
+}
 
 //CART MANAGE
-}elseif($_GET['action'] == 'addToCart' && $_GET['material'] && $_GET['quantity']){
+if($_GET['action'] == 'addToCart' && $_GET['material'] && $_GET['quantity']){
 	$material = mysqli_real_escape_string($conn, $_GET['material']);
 	$quantity = mysqli_real_escape_string($conn, $_GET['quantity']);
 	$purity = mysqli_real_escape_string($conn, $_GET['purity']);
@@ -237,21 +246,21 @@ if($_GET['formula'] && $_GET['do']){
 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$material.'</strong> added to cart!</div>';
 		return;
 	}
-	
-}elseif($_GET['action'] == 'removeFromCart' && $_GET['materialId']){
+}
+
+if($_GET['action'] == 'removeFromCart' && $_GET['materialId']){
 	$materialId = mysqli_real_escape_string($conn, $_GET['materialId']);
 
 	if(mysqli_query($conn, "DELETE FROM cart WHERE id = '$materialId'")){
 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Removed from cart!</div>';
 		return;
 	}
-
+}
 
 //PRINTING
-}elseif($_GET['action'] == 'printLabel' && $_GET['name']){
+if($_GET['action'] == 'printLabel' && $_GET['name']){
 	$name = $_GET['name'];
-	
-	
+		
 
 	if($settings['label_printer_size'] == '62' || $settings['label_printer_size'] == '62 --red'){
 		
@@ -299,9 +308,12 @@ if($_GET['formula'] && $_GET['do']){
 		//echo '<img src="'.$save.'"/>';
 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Print sent!</div>';
 	}
+	
+	return;
+}
 
 //PRINT BOX LABEL
-}elseif($_GET['action'] == 'printBoxLabel' && $_GET['name']){
+if($_GET['action'] == 'printBoxLabel' && $_GET['name']){
 	if(empty($_GET['copies']) || !is_numeric($_GET['copies'])){
 		$copies = '1';
 	}else{
@@ -372,10 +384,11 @@ if($_GET['formula'] && $_GET['do']){
 		}
 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Print sent!</div>';
 	}
-//}
+	return;
+}
 
 //DOWNLOAD BOX LABEL
-}elseif($_GET['action'] == 'downloadBoxLabel' && $_GET['name']){
+if($_GET['action'] == 'downloadBoxLabel' && $_GET['name']){
 		
 		$name = mysqli_real_escape_string($conn, $_GET['name']);
 		$q = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE name = '$name'"));
@@ -438,5 +451,7 @@ if($_GET['formula'] && $_GET['do']){
 		imagedestroy($lblF);
 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><a href="'.$save.'" target="_blank">Get Label here</a></div>';
 	}
+//}
+	return;
 }
 ?>
