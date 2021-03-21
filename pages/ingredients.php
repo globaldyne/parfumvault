@@ -20,7 +20,14 @@ if (!defined('pvault_panel')){ die('Not Found');}
             </div>
             <div class="card-body">
               <div class="table-responsive">
-                 <div id="list_ingredients"><div class="loader"></div></div>
+                 <div id="list_ingredients">
+                 	<div class="loader-center">
+                		<div class="loader"></div>
+                    	<div class="loader-text"></div>
+                     </div>
+                     </div>
+                </div>
+                 </div>
               </div>
             </div>
           </div>

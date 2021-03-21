@@ -109,45 +109,46 @@ $(document).ready(function() {
 	list_formulas();
 	list_ingredients();
 
+
+
+	function updateDB() {
+	$.ajax({ 
+		url: 'pages/operations.php', 
+		type: 'GET',
+		data: {
+			do: "db_update"
+			},
+		dataType: 'html',
+		success: function (data) {
+		  $('#msg').html(data);
+		}
+	  });
+	};
+	
+	
+	function list_formulas(){
+	$.ajax({ 
+		url: 'pages/listFormulas.php', 
+		dataType: 'html',
+			success: function (data) {
+				$('#list_formulas').html(data);
+			}
+		});
+	}
+	
+	
+	
+	function list_ingredients(){
+	$.ajax({ 
+		url: 'pages/listIngredients.php', 
+		dataType: 'html',
+			success: function (data) {
+				$('#list_ingredients').html(data);
+			}
+		});
+	}
+
 });
-
-function updateDB() {
-$.ajax({ 
-    url: 'pages/operations.php', 
-	type: 'GET',
-    data: {
-		do: "db_update"
-		},
-	dataType: 'html',
-    success: function (data) {
-	  $('#msg').html(data);
-    }
-  });
-};
-
-
-function list_formulas(){
-$.ajax({ 
-    url: 'pages/listFormulas.php', 
-	dataType: 'html',
-		success: function (data) {
-			$('#list_formulas').html(data);
-		}
-	});
-}
-
-
-
-function list_ingredients(){
-$.ajax({ 
-    url: 'pages/listIngredients.php', 
-	dataType: 'html',
-		success: function (data) {
-			$('#list_ingredients').html(data);
-		}
-	});
-}
-
 </script>
 </head>
 
@@ -231,13 +232,6 @@ $.ajax({
           <i class="fas fa-fw fa-chart-area"></i>
           <span>Statistics</span></a>
         </li>
-        <?php if($settings['pv_maker'] && $settings['pv_maker_host']){?>
-        <li class="nav-item">
-        <a class="nav-link" href="?do=pvmaker">
-          <i class="fas fa-fw fa-robot"></i>
-          <span>PV Maker</span></a>
-        </li>
-        <?php } ?>
       <hr class="sidebar-divider d-none d-md-block">
       
         <li class="nav-item">
@@ -279,7 +273,12 @@ $.ajax({
               <h2 class="m-0 font-weight-bold text-primary"><a href="?do=listFormulas">Formulas</a></h2>
               <div id="inMsg"></div>
             </div>
-            <div id="list_formulas"><div class="loader"></div></div>
+            <div id="list_formulas">
+            	<div class="loader-center">
+                	<div class="loader"></div>
+                    <div class="loader-text"></div>
+                </div>
+             </div>
            </div>
           </div>
         </div>
