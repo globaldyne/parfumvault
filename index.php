@@ -252,19 +252,19 @@ $(document).ready(function() {
     </ul>
     <?php
 		if($_GET['do'] == 'Formula'){
-			require 'pages/formula.php';
+			require_once(__ROOT__.'/pages/formula.php');
 		}elseif($_GET['do'] == 'ingredients'){
-			require 'pages/ingredients.php';
+			require_once(__ROOT__.'/pages/ingredients.php');
 		}elseif($_GET['do'] == 'settings'){
-			require 'pages/settings.php';
+			require_once(__ROOT__.'/pages/settings.php');
 		}elseif($_GET['do'] == 'statistics'){
-			require 'pages/statistics.php';
+			require_once(__ROOT__.'/pages/statistics.php');
 		}elseif($_GET['do'] == 'IFRA'){
-			require 'pages/IFRA.php';
+			require_once(__ROOT__.'/pages/IFRA.php');
 		}elseif($_GET['do'] == 'listFormulas'){
 		?>
         <div id="content-wrapper" class="d-flex flex-column">
-			<?php require_once('pages/top.php'); ?>
+			<?php require_once(__ROOT__.'/pages/top.php'); ?>
             
         <div class="container-fluid">
           <div>
@@ -285,35 +285,35 @@ $(document).ready(function() {
 	   </div>
 		<?php
 		}elseif($_GET['do'] == 'genFinishedProduct'){
-			require 'pages/genFinishedProduct.php';		
+			require_once(__ROOT__.'/pages/genFinishedProduct.php');		
 		}elseif($_GET['do'] == 'bottles'){
-			require 'pages/bottles.php';		
+			require_once(__ROOT__.'/pages/bottles.php');		
 		}elseif($_GET['do'] == 'addBottle'){
-			require 'pages/addBottle.php';		
+			require_once(__ROOT__.'/pages/addBottle.php');		
 		}elseif($_GET['do'] == 'lids'){
-			require 'pages/lids.php';				
+			require_once(__ROOT__.'/pages/lids.php');
 		}elseif($_GET['do'] == 'addLid'){
-			require 'pages/addLid.php';	
+			require_once(__ROOT__.'/pages/addLid.php');	
 		}elseif($_GET['do'] == 'batches'){
-			require 'pages/batches.php';				
+			require_once(__ROOT__.'/pages/batches.php');				
 		}elseif($_GET['do'] == 'tools'){
-			require 'pages/tools.php';	
+			require_once(__ROOT__.'/pages/tools.php');	
 		}elseif($_GET['do'] == 'todo'){
-			require 'pages/todo.php';	
+			require_once(__ROOT__.'/pages/todo.php');	
 		}elseif($_GET['do'] == 'cart'){
-			require 'pages/cart.php';	
+			require_once(__ROOT__.'/pages/cart.php');	
 		}elseif($_GET['do'] == 'suppliers'){
-			require 'pages/suppliers.php';
+			require_once(__ROOT__.'/pages/suppliers.php');
 		}elseif($_GET['do'] == 'sellFormula'){
-			require 'pages/sellFormula.php';
+			require_once(__ROOT__.'/pages/sellFormula.php');
 		}elseif($_GET['do'] == 'customers'){
-			require 'pages/customers.php';
+			require_once(__ROOT__.'/pages/customers.php');
 			
 		}else{
-			require 'pages/dashboard.php';
+			require_once(__ROOT__.'/pages/dashboard.php');
 		}
 	?>
-<?php require_once("pages/footer.php"); ?>
+<?php require_once(__ROOT__.'/pages/footer.php'); ?>
 <?php if(isset($show_release_notes)){ ?>
 <!--RELEASE NOTES-->
 <div class="modal fade" id="release_notes" tabindex="-1" role="dialog" aria-labelledby="release_notes" aria-hidden="true">
