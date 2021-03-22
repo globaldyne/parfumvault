@@ -85,9 +85,12 @@ $base_calc = calcPerc($f_name, 'Base', $settings['base_n'], $conn);
                       </form>
                     </th>
                     </tr>
-               
-                <div id="fetch_formula"><div class="loader"></div></div>
-                
+                <div id="fetch_formula">
+                	<div class="loader-center">
+                		<div class="loader"></div>
+                    	<div class="loader-text"></div>
+                	</div>
+                </div>
                 <div>
                 <p></p>
                 <p>*Values in: <strong class="alert alert-danger">red</strong> exceeds usage level,   <strong class="alert alert-warning">yellow</strong> have no usage level set,   <strong class="alert alert-success">green</strong> are within usage level</p>
