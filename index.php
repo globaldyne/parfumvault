@@ -109,9 +109,9 @@ $(document).ready(function() {
 	list_formulas();
 	list_ingredients();
 
+});
 
-
-	function updateDB() {
+function updateDB() {
 	$.ajax({ 
 		url: 'pages/operations.php', 
 		type: 'GET',
@@ -123,10 +123,9 @@ $(document).ready(function() {
 		  $('#msg').html(data);
 		}
 	  });
-	};
+};
 	
-	
-	function list_formulas(){
+function list_formulas(){
 	$.ajax({ 
 		url: 'pages/listFormulas.php', 
 		dataType: 'html',
@@ -134,11 +133,9 @@ $(document).ready(function() {
 				$('#list_formulas').html(data);
 			}
 		});
-	}
+};
 	
-	
-	
-	function list_ingredients(){
+function list_ingredients(){
 	$.ajax({ 
 		url: 'pages/listIngredients.php', 
 		dataType: 'html',
@@ -146,9 +143,7 @@ $(document).ready(function() {
 				$('#list_ingredients').html(data);
 			}
 		});
-	}
-
-});
+};
 </script>
 </head>
 
