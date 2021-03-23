@@ -120,7 +120,7 @@ if(($_POST) && $_GET['update'] == 'printer'){
 	$pv_online_email = mysqli_real_escape_string($conn, $_POST['pv_online_email']);
 	$pv_online_pass = mysqli_real_escape_string($conn, $_POST['pv_online_pass']);
 	
-	$valAcc = pvOnlineValAcc($pvOnlineAPI, $pv_online_email, $pv_online_pass);
+	$valAcc = pvOnlineValAcc($pvOnlineAPI, $pv_online_email, $pv_online_pass, $ver);
 
     if($valAcc == 'Failed'){
        $msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Invalid credentials or your PV Online account is inactive.</div>';

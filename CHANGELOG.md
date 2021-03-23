@@ -8,6 +8,7 @@ Ingredients management improvements
 SDS file upload improvements
 Root path update
 Add option to exclude private ingredient from uploading to PV Online
+Send local version to pv online API calls when enabled 
 
 ### Version 2.6
 - ADD: Trading name in ingredients
