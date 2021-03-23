@@ -319,8 +319,6 @@ tr.strikeout td:before {
   animation: load 2s linear infinite;
 }
 
-
-
 @keyframes load {
   0% {
     content: 'Loading';

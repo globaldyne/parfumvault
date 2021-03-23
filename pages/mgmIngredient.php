@@ -694,7 +694,10 @@ $(document).ready(function() {
 	
 	$("#sds_upload").click(function(){
         $("#ingMsg").html('<div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
-        var fd = new FormData();
+		$("#sds_upload").prop("disabled", true);
+        $("#sds_upload").prop('value', 'Please wait...');
+		
+		var fd = new FormData();
         var files = $('#SDS')[0].files;
         
         if(files.length > 0 ){
@@ -708,14 +711,20 @@ $(document).ready(function() {
               processData: false,
               success: function(response){
                  if(response != 0){
-                    $("#ingMsg").html(response); 
+                    $("#ingMsg").html(response);
+					$("#sds_upload").prop("disabled", false);
+        			$("#sds_upload").prop('value', 'Upload');
                  }else{
                     $("#ingMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> File upload failed!</div>');
+					$("#sds_upload").prop("disabled", false);
+        			$("#sds_upload").prop('value', 'Upload');
                  }
               },
            });
         }else{
 			$("#ingMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a file to upload!</div>');
+			$("#sds_upload").prop("disabled", false);
+   			$("#sds_upload").prop('value', 'Upload');
         }
     });
 	
