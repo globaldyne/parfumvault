@@ -269,9 +269,15 @@ if($_POST['value'] && $_GET['formula'] && $_POST['pk'] && !$_GET['settings']){
 	}else{
 		$noUsageLimit = '0';
 	}
-
+	
+	if($_POST['isPrivate'] == 'true'){
+		$isPrivate = '1';
+	}else{
+		$isPrivate = '0';
+	}
+	
 	if(empty($_POST['name'])){
-		$query = "UPDATE ingredients SET cas = '$cas', FEMA = '$fema', type = '$type', strength = '$strength', category='$category', supplier='$supplier', supplier_link='$supplier_link', profile='$profile', price='$price', tenacity='$tenacity', chemical_name='$chemical_name', flash_point='$flash_point', appearance='$appearance', notes='$notes', ml='$ml', odor='$odor', purity='$purity', allergen='$allergen', formula='$formula', flavor_use='$flavor_use', cat1 = '$cat1', cat2 = '$cat2', cat3 = '$cat3', cat4 = '$cat4', cat5A = '$cat5A', cat5B = '$cat5B', cat5C = '$cat5C', cat5D = '$cat5D', cat6 = '$cat6', cat7A = '$cat7A', cat7B = '$cat7B', cat8 = '$cat8', cat9 = '$cat9', cat10A = '$cat10A', cat10B = '$cat10B', cat11A = '$cat11A', cat11B = '$cat11B', cat12 = '$cat12', soluble = '$soluble', logp = '$logp', manufacturer = '$manufacturer', impact_top = '$impact_top', impact_heart = '$impact_heart', impact_base = '$impact_base', usage_type = '$usage_type', solvent = '$solvent', INCI = '$INCI', noUsageLimit = '$noUsageLimit' WHERE name='$ing'";
+		$query = "UPDATE ingredients SET cas = '$cas', FEMA = '$fema', type = '$type', strength = '$strength', category='$category', supplier='$supplier', supplier_link='$supplier_link', profile='$profile', price='$price', tenacity='$tenacity', chemical_name='$chemical_name', flash_point='$flash_point', appearance='$appearance', notes='$notes', ml='$ml', odor='$odor', purity='$purity', allergen='$allergen', formula='$formula', flavor_use='$flavor_use', cat1 = '$cat1', cat2 = '$cat2', cat3 = '$cat3', cat4 = '$cat4', cat5A = '$cat5A', cat5B = '$cat5B', cat5C = '$cat5C', cat5D = '$cat5D', cat6 = '$cat6', cat7A = '$cat7A', cat7B = '$cat7B', cat8 = '$cat8', cat9 = '$cat9', cat10A = '$cat10A', cat10B = '$cat10B', cat11A = '$cat11A', cat11B = '$cat11B', cat12 = '$cat12', soluble = '$soluble', logp = '$logp', manufacturer = '$manufacturer', impact_top = '$impact_top', impact_heart = '$impact_heart', impact_base = '$impact_base', usage_type = '$usage_type', solvent = '$solvent', INCI = '$INCI', noUsageLimit = '$noUsageLimit', isPrivate = '$isPrivate' WHERE name='$ing'";
 		if(mysqli_query($conn, $query)){
 			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Ingredient <strong>'.$ing.'</strong> updated!</div>';
 		}else{
@@ -280,7 +286,7 @@ if($_POST['value'] && $_GET['formula'] && $_POST['pk'] && !$_GET['settings']){
 	}else{
 		$name = mysqli_real_escape_string($conn, $_POST["name"]);
 
-		$query = "INSERT INTO ingredients (name, INCI, cas, FEMA, type, strength, SDS, ".$settings['defCatClass'].", category, supplier, supplier_link, profile, price, tenacity, chemical_name, flash_point, appearance, notes, ml, odor, purity, allergen, noUsageLimit) VALUES ('$name', '$INCI', '$cas', '$fema', '$type', '$strength', '$SDSF', '$cat', '$category', '$supplier', '$supplier_link', '$profile', '$price', '$tenacity', '$chemical_name', '$flash_point', '$appearance', '$notes', '$ml', '$odor', '$purity', '$allergen', '$noUsageLimit')";
+		$query = "INSERT INTO ingredients (name, INCI, cas, FEMA, type, strength, category, profile, notes, odor, purity, solvent, allergen) VALUES ('$name', '$INCI', '$cas', '$fema', '$type', '$strength', '$category', '$profile',  '$notes', '$odor', '$purity', '$solvent', '$allergen')";
 		
 		if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '$name'"))){
 			echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$name.' already exists!</div>';

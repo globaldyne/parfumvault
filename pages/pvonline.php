@@ -52,7 +52,7 @@ if($_GET['action'] == 'import' && $_GET['items']){
 
 if($_GET['action'] == 'upload' && $_GET['items'] == 'ingredients'){
 	//Do all the ingredients
-	$ingQ = mysqli_query($conn, "SELECT * FROM ingredients");
+	$ingQ = mysqli_query($conn, "SELECT * FROM ingredients WHERE isPrivate = '0'");
 	$i = 0;
 	while($ing = mysqli_fetch_assoc($ingQ)){
 		unset($ing['id'],$ing['created']);

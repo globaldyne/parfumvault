@@ -68,7 +68,7 @@ $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE n
 <style>
 .container {
     max-width: 100%;
-	width: 950px;
+	width: 1000px;
 }
 </style>
 
@@ -207,9 +207,10 @@ reload_data();
       <li><a href="#tech_data" role="tab" data-toggle="tab"><i class="fa fa-cog"></i> Technical Data</a></li>
       <li><a href="#note_impact" role="tab" data-toggle="tab"><i class="fa fa-magic"></i> Note Impact</a></li>
       <li><a href="#tech_allergens" role="tab" data-toggle="tab"><i class="fa fa-allergies"></i> Allergens</a></li>
-      <?php } ?>  
       <?php if($settings['pubChem'] == '1' && $ing['cas']){?>
       	<li><a href="#pubChem" role="tab" data-toggle="tab"><i class="fa fa-atom"></i> Pub Chem</a></li>
+      <?php } ?>  
+       <li><a href="#privacy" role="tab" data-toggle="tab"><i class="fa fa-user-secret"></i> Privacy</a></li>
       <?php } ?>
     </ul>
            	  <div class="tab-content">
@@ -496,7 +497,7 @@ reload_data();
               <div class="tab-pane fade" id="tech_allergens">
                    <div id="fetch_allergen"><div class="loader"></div></div>
               </div>
-              <?php } ?>
+             
               <?php if($settings['pubChem'] == '1' && $ing['cas']){?>
               <div class="tab-pane fade" id="pubChem">
 				   <h3>Pub Chem Data</h3>
@@ -504,7 +505,19 @@ reload_data();
                    <div id="pubChemData"> <div class="loader"></div> </div>
               </div>
               <?php } ?>
-                   <!-- </div> <!--tabs-->
+              <div class="tab-pane fade" id="privacy">
+       			  <h3>Privacy</h3>
+                  <hr>
+                  <table width="100%" border="0">
+                     <tr>
+                       <td width="9%" height="31"><a href="#" rel="tipsy" title="If enabled, ingredient will automatically excluded if you choose to upload your ingredients to PV Online.">Private:</a></td>
+                       <td width="91%" colspan="5"><input name="isPrivate" type="checkbox" id="isPrivate" value="1" <?php if($ing['isPrivate'] == '1'){; ?> checked="checked"  <?php } ?>/></td>
+                     </tr>
+                  </table>
+              </div>
+              <?php } ?>
+               <!--tabs-->
+                
                     <hr>
                     <p><input type="submit" name="save" id="save" class="btn btn-info" value="Save" /></p>
 </div>
@@ -676,7 +689,8 @@ $(document).ready(function() {
 				isAllergen: $("#isAllergen").is(':checked'),
 				flavor_use: $("#flavor_use").is(':checked'),
 				noUsageLimit: $("#noUsageLimit").is(':checked'),
-				
+				isPrivate: $("#isPrivate").is(':checked'),
+
 				<?php if($ing['name']){?>
 				ing: '<?=$ing['name'];?>'
 				<?php } ?>

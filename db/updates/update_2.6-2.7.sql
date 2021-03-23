@@ -26,3 +26,5 @@ INSERT INTO `IFRACategories` (`id`, `name`, `description`, `type`) VALUES
 (16, '11A', 'Products with intended skin contact but minimal transfer of fragrance to skin from inert substrate without UV exposure', 1),
 (17, '11B', 'Products with intended skin contact but minimal transfer of fragrance to skin from inert substrate with potential UV exposure', 1),
 (18, '12', 'Products not intended for direct skin contact, minimal or insignificant transfer to skin', 1);
+
+ALTER TABLE `ingredients` ADD `isPrivate` INT NULL DEFAULT '0' AFTER `noUsageLimit`; 
