@@ -193,6 +193,15 @@ if($_POST['action'] == 'delete' && $_POST['userId']){
 	return;
 }
 
+//DELETE LID
+if($_POST['action'] == 'delete' && $_POST['lidId']){
+	$id = mysqli_real_escape_string($conn, $_POST['lidId']);
+	
+	if(mysqli_query($conn, "DELETE FROM lids WHERE id = '$id'")){
+		echo '<div class="alert alert-success alert-dismissible"><a href="?do=lids" class="close" data-dismiss="alert" aria-label="close">x</a>Item removed!</div>';
+	}
+	return;	
+}
 
 
 ?>

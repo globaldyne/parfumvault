@@ -1,15 +1,6 @@
 <?php 
 if (!defined('pvault_panel')){ die('Not Found');}
 
-$id = mysqli_real_escape_string($conn, $_GET['id']);
-
-if($_GET['action'] == 'delete' && $_GET['id']){
-	
-	if(mysqli_query($conn, "DELETE FROM lids WHERE id = '$id'")){
-		$msg = '<div class="alert alert-success alert-dismissible"><a href="?do=lids" class="close" data-dismiss="alert" aria-label="close">x</a>Bottle <strong>'.$lid['name'].'</strong> removed!</div>';
-	}
-	
-}
 $q = mysqli_query($conn, "SELECT * FROM lids ORDER BY style ASC");
 $sup = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
 
@@ -42,7 +33,7 @@ $sup = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
                     <tr>
                       <th>Style</th>
                       <th>Colour</th>
-                      <th>Price <?php echo $settings['currency'];?></th>
+                      <th>Price (<?php echo $settings['currency'];?>)</th>
                       <th>Supplier</th>
                       <th>Photo</th>
                       <th>Supplier Link</th>
@@ -50,21 +41,17 @@ $sup = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
                     </tr>
                   </thead>
                   <tbody id="lid_data">
-                    <?php					
-				  while ($lid = mysqli_fetch_array($q)) {
-					  echo'
+                    <?php  while ($lid = mysqli_fetch_array($q)){ ?>
                     <tr>
-                      <td data-name="style" class="style" data-type="text" align="center" data-pk="'.$lid['id'].'">'.$lid['style'].'</td>
-					  <td data-name="colour" class="colour" data-type="text" align="center" data-pk="'.$lid['id'].'">'.$lid['colour'].'</td>
-					  <td data-name="price" class="price" data-type="text" align="center" data-pk="'.$lid['id'].'">'.$lid['price'].'</td>
-                      <td data-name="supplier" class="supplier" data-type="select" align="center" data-pk="'.$lid['id'].'">'.$lid['supplier'].'</td><td align="center">';
-					  if(empty($lid['photo'])){ echo 'N/A'; }else{
-                      echo '<a href="'.$lid['photo'].'" class="popup-link fas fa-image"></a>';}
-					  echo '</td><td align="center"><a href="'.$lid['supplier_link'].'" target="_blank" class="fas fa-external-link-alt"></a></td>
-					  <td class="noexport" align="center"><a href="pages/editLid.php?id='.$lid['id'].'" class="fas fa-edit popup-link"></a> <a href="?do=lids&action=delete&id='.$lid['id'].'" onclick="return confirm(\'Delete '.$lid['style'].'?\');" class="fas fa-trash"></a></td>
-					  </tr>';
-				  }
-                    ?>
+                      <td data-name="style" class="style" data-type="text" align="center" data-pk="<?php echo $lid['id'];?>"><?php echo $lid['style'];?></td>
+					  <td data-name="colour" class="colour" data-type="text" align="center" data-pk="<?php echo $lid['id'];?>"><?php echo $lid['colour'];?></td>
+					  <td data-name="price" class="price" data-type="text" align="center" data-pk="<?php echo $lid['id'];?>"><?php echo $lid['price'];?></td>
+                      <td data-name="supplier" class="supplier" data-type="select" align="center" data-pk="<?php echo $lid['id'];?>"><?php echo $lid['supplier'];?></td>
+                      <td align="center"><?php if(empty($lid['photo'])){ echo 'N/A'; }else{?><a href="<?php echo $lid['photo'];?>" class="popup-link fas fa-image"></a><?php } ?></td>
+                      <td align="center"><a href="<?php echo $lid['supplier_link'];?>" target="_blank" class="fas fa-external-link-alt"></a></td>
+					  <td class="noexport" align="center"><a href="pages/editLid.php?id=<?php echo $lid['id'];?>" class="fas fa-edit popup-link"></a> <a href="javascript:lidDel('<?php echo $lid['id'];?>')" onclick="return confirm('Delete <?php echo $lid['style'];?>?')" class="fas fa-trash"></a></td>
+					  </tr>
+                      <?php } ?>
                   </tbody>
                 </table>
               </div>
@@ -75,9 +62,22 @@ $sup = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
     </div>
     
 <script type="text/javascript" language="javascript" >
+function lidDel(lidId){
+	$.ajax({ 
+		url: 'pages/update_settings.php', 
+		type: 'POST',
+		data: {
+			action: 'delete',
+			lidId: lidId,
+		},
+		dataType: 'html',
+		success: function (data) {
+			 location.reload();
+		}
+	});
+};
 
- 
-  $('#lid_data').editable({
+$('#lid_data').editable({
   container: 'body',
   selector: 'td.style',
   url: "pages/update_data.php?lid=1",
@@ -92,9 +92,9 @@ $sup = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
     return 'This field is required';
    }
   }
- });
+});
 
-  $('#lid_data').editable({
+$('#lid_data').editable({
   container: 'body',
   selector: 'td.colour',
   url: "pages/update_data.php?lid=1",
@@ -109,9 +109,9 @@ $sup = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
     return 'This field is required';
    }
   }
- });
+});
 
-  $('#lid_data').editable({
+$('#lid_data').editable({
   container: 'body',
   selector: 'td.price',
   url: "pages/update_data.php?lid=1",
@@ -129,10 +129,10 @@ $sup = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
     return 'Numbers only!';
    }
   }
- });
+});
   
  
-  $('#lid_data').editable({
+$('#lid_data').editable({
 	container: 'body',
   	selector: 'td.supplier',
   	title: 'Supplier',
@@ -141,6 +141,6 @@ $sup = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
              {value: '<?php echo $supplier ['name'];?>', text: '<?php echo $supplier ['name'];?>'},
             <?php } ?>
           ]
-    });
+});
 
 </script>
