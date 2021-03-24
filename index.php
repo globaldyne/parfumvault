@@ -100,7 +100,7 @@ $(document).ready(function() {
   		showCloseBtn: true,
 	});
 	
-    $('#tdData,#tdDataSup,#tdDataCat,#tdDataUsers,#tdDataCustomers').DataTable({
+    $('#tdData,#tdDataSup,#tdDataCustomers').DataTable({
 	    "paging":   true,
 		"info":   true,
 		"lengthMenu": [[20, 35, 60, -1], [20, 35, 60, "All"]]
@@ -141,6 +141,26 @@ function list_ingredients(){
 		dataType: 'html',
 			success: function (data) {
 				$('#list_ingredients').html(data);
+			}
+		});
+};
+
+function list_users(){
+	$.ajax({ 
+		url: 'pages/listUsers.php', 
+		dataType: 'html',
+			success: function (data) {
+				$('#list_users').html(data);
+			}
+		});
+};
+
+function list_cat(){
+	$.ajax({ 
+		url: 'pages/listCat.php', 
+		dataType: 'html',
+			success: function (data) {
+				$('#list_cat').html(data);
 			}
 		});
 };

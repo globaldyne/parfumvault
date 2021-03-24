@@ -4,8 +4,6 @@
 require_once(__ROOT__.'/pages/top.php'); 
 						   
  
-$cat_q = mysqli_query($conn, "SELECT * FROM ingCategory ORDER BY name ASC");
-$users_q = mysqli_query($conn, "SELECT * FROM users ORDER BY username ASC");
 $pv_online = mysqli_fetch_array(mysqli_query($conn, "SELECT email FROM pv_online"));
 $cats_q = mysqli_query($conn, "SELECT id,name,description,type FROM IFRACategories ORDER BY id ASC");
 
@@ -23,7 +21,8 @@ $(function() {
   $("#fname").val('');
   $("#email").val('');
 });
-
+list_users();
+list_cat();
 
 </script>
 <div class="container-fluid">
@@ -136,49 +135,13 @@ $(function() {
 	 </div>
      
      <div id="categories">
-            <table width="100%" border="0" class="table table-striped table-sm">
-              <tr>
-                <td colspan="8"><div id="catMsg"></div></td>
-              </tr>
-              <tr>
-                <td width="4%"><p>Category:</p></td>
-                <td width="12%"><input type="text" name="category" id="category" class="form-control"/></td>
-                <td width="1%">&nbsp;</td>
-                <td width="6%">Description:</td>
-                <td width="13%"><input type="text" name="cat_notes" id="cat_notes" class="form-control"/></td>
-                <td width="2%">&nbsp;</td>
-                <td width="22%"><input type="submit" name="add-category" id="add-category" value="Add" class="btn btn-info" /></td>
-                <td width="40%">&nbsp;</td>
-              </tr>
-              <tr>
-                <td colspan="8">
-                <div class="card-body">
-              <div>
-                <table class="table table-bordered" id="tdDataCat" width="100%" cellspacing="0">
-                  <thead>
-                    <tr class="noBorder">
-                    </tr>
-                    <tr>
-                      <th>Name</th>
-                      <th>Description</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody id="cat_data">
-                  <?php while ($cat = mysqli_fetch_array($cat_q)) { ?>
-                    <tr>
-                      <td data-name="name" class="name" data-type="text" align="center" data-pk="<?php echo $cat['id'];?>"><?php echo $cat['name'];?></td>
-					  <td width="60%" data-name="notes" class="notes" data-type="text" align="center" data-pk="<?php echo $cat['id']; ?>"><?php echo wordwrap($cat['notes'], 150, "<br />\n");?></td>
-                      <td align="center"><a href="javascript:catDel('<?php echo $cat['id']; ?>')" onclick="return confirm('Delete category <?php echo $cat['name'];?>?')" class="fas fa-trash"></a></td>
-					</tr>
-				  	<?php } ?>
-                  </tbody>
-                </table>
-              </div>
+    	<div id="catMsg"></div>
+        <div id="list_cat">
+            <div class="loader-center">
+                <div class="loader"></div>
+                <div class="loader-text"></div>
             </div>
-                </td>
-              </tr>
-            </table>
+        </div>
      </div> 
      
     <div id="types">
@@ -314,51 +277,15 @@ $(function() {
         </table>
 </div>
 
-<div id="users">
-       <table width="100%" border="0">
-  <tr>
-    <td width="16%"><input name="username" placeholder="Username" type="text" class="form-control" id="username" /></td>
-    <td width="1%">&nbsp;</td>
-    <td width="16%"><input name="password" placeholder="Password" type="password" class="form-control" id="password" /></td>
-    <td width="1%">&nbsp;</td>
-    <td width="16%"><input name="fullName" placeholder="Full Name" type="text" class="form-control" id="fullName" /></td>
-    <td width="1%">&nbsp;</td>
-    <td width="16%"><input name="email" placeholder="Email" type="text" class="form-control" id="email" /></td>
-    <td width="1%">&nbsp;</td>
-    <td width="16%"><input type="submit" name="add-user" id="add-user" value="Add" class="btn btn-info" /></td>
-  </tr>
-  <tr>
-    <td colspan="9">&nbsp;</td>
-    </tr>
-  <tr>
-    <td colspan="9"><div id="usrMsg"></div></td>
-    </tr>
-</table>
-
-              <table class="table table-bordered" id="tdDataUsers" width="100%" cellspacing="0">
-                  <thead>
-                    <tr class="noBorder">
-                    </tr>
-                    <tr>
-                      <th>Username</th>
-                      <th>Full Name</th>
-                      <th>Email</th>
-                      <th>Actions</th>
-                    </tr>
-                </thead>
-                  <tbody id="users">
-                  <?php while ($users = mysqli_fetch_array($users_q)) { ?>
-                    <tr>
-					  <td align="center"><?php echo $users['username'];?></td>
-					  <td align="center"><?php echo $users['fullName'];?></td>
-					  <td align="center"><?php echo $users['email'];?></td>
-                      <td align="center"><a href="pages/editUser.php?id=<?php echo $users['id']; ?>" class="fas fa-edit popup-link"></a> <a href="javascript:usrDel('<?php echo $users['id'];?>')" onclick="return confirm('Delete user <?php echo $users['username'];?>?')" class="fas fa-trash"></a></td>
-					</tr>
-				  		<?php } ?>
-                    </tr>
-                  </tbody>
-          </table>
-     </div>
+    <div id="users">
+    	<div id="usrMsg"></div>
+        <div id="list_users">
+            <div class="loader-center">
+                <div class="loader"></div>
+                <div class="loader-text"></div>
+            </div>
+        </div>
+    </div>
      <div id="brand">
          <table width="100%" border="0">
            <tr>
@@ -585,44 +512,7 @@ $(document).ready(function() {
 		  });
   });
 	
-	$('#add-user').click(function() {
-							  
-		$.ajax({ 
-			url: 'pages/update_settings.php', 
-			type: 'POST',
-			data: {
-				manage: 'user',
-				
-				username: $("#username").val(),
-				password: $("#password").val(),
-				fullName: $("#fullName").val(),
-				email: $("#email").val(),
-				},
-			dataType: 'html',
-			success: function (data) {
-				$('#usrMsg').html(data);
-			}
-		  });
-  });	
 	
-	$('#add-category').click(function() {
-							  
-		$.ajax({ 
-			url: 'pages/update_settings.php', 
-			type: 'POST',
-			data: {
-				manage: 'category',
-				
-				category: $("#category").val(),
-				cat_notes: $("#cat_notes").val(),
-				
-				},
-			dataType: 'html',
-			success: function (data) {
-				$('#catMsg').html(data);
-			}
-		  });
-  });	
 
 	$("#brandLogo_upload").click(function(){
         $("#brandMsg").html('<div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
@@ -672,6 +562,7 @@ function catDel(catId){
 		dataType: 'html',
 		success: function (data) {
 			$('#catMsg').html(data);
+			list_cat();
 		}
 	});
 }
@@ -687,33 +578,9 @@ function usrDel(userId){
 		dataType: 'html',
 		success: function (data) {
 			$('#usrMsg').html(data);
+			list_users();
 		}
 	});
 }
-
-$('#cat_data').editable({
-  container: 'body',
-  selector: 'td.name',
-  url: "pages/update_data.php?settings=cat",
-  title: 'Category',
-  type: "POST",
-  dataType: 'json',
-  validate: function(value){
-   if($.trim(value) == ''){
-    return 'This field is required';
-   }
-  }
-});
- 
-$('#cat_data').editable({
-  container: 'body',
-  selector: 'td.notes',
-  url: "pages/update_data.php?settings=cat",
-  title: 'Description',
-  type: "POST",
-  dataType: 'json',
-  validate: function(value){
-  }
-});
 
 </script>
