@@ -9,16 +9,6 @@ CREATE TABLE `allergens` (
   `percentage` varchar(255) COLLATE utf8_bin  NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-DROP TABLE IF EXISTS `pv_maker_queue`;
-CREATE TABLE `pv_maker_queue` (
-  `id` int(11) NOT NULL,
-  `material` varchar(255) COLLATE utf8_bin NOT NULL,
-  `quantity_to_add` varchar(255) COLLATE utf8_bin NOT NULL,
-  `quantity_added` varchar(255) COLLATE utf8_bin NOT NULL,
-  `pending` int(11) NOT NULL,
-  `active` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
 
 DROP TABLE IF EXISTS `batchIDHistory`;
 CREATE TABLE `batchIDHistory` (
@@ -299,8 +289,6 @@ CREATE TABLE `settings` (
   `brandLogo` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `pubChem` int(11) DEFAULT NULL,
   `chkVersion` int(11) DEFAULT NULL,
-  `pv_maker` int(11) DEFAULT 0,
-  `pv_maker_host` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `qStep` INT(5) NOT NULL DEFAULT '2',
   `pubchem_view` VARCHAR(4) NOT NULL DEFAULT '2d', 
   `defCatClass` VARCHAR(255) NOT NULL DEFAULT 'cat4' 

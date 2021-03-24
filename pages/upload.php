@@ -41,4 +41,38 @@ if($_GET['type'] == 'SDS' && $_GET['ingredient_id']){
 	
 	return;	
 }
+
+
+if($_GET['type'] == 'brand'){
+		
+	if(isset($_FILES['brandLogo']['name'])){
+      $file_name = $_FILES['brandLogo']['name'];
+      $file_size = $_FILES['brandLogo']['size'];
+      $file_tmp = $_FILES['brandLogo']['tmp_name'];
+      $file_type = $_FILES['brandLogo']['type'];
+      $file_ext = strtolower(end(explode('.',$_FILES['brandLogo']['name'])));
+	  
+	  if (file_exists('../'.$uploads_path.'logo/') === FALSE) {
+    	mkdir('../'.$uploads_path.'logo/', 0740, true);
+	  }
+
+	  $ext = explode(', ', $allowed_ext);
+	  
+      if(in_array($file_ext,$ext)=== false){
+		 echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>File upload error: </strong>Extension not allowed, please choose a '.$allowed_ext.' file.</div>';
+      }elseif($file_size > $max_filesize){
+		 echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>File upload error: </strong>File size must not exceed '.formatBytes($max_filesize).'</div>';
+      }else{
+	  
+         if(move_uploaded_file($file_tmp,'../'.$uploads_path.'logo/'.base64_encode($file_name))){
+		 	$brandLogoF = $uploads_path.'logo/'.base64_encode($file_name);
+		 	if(mysqli_query($conn, "UPDATE settings SET brandLogo = '$brandLogoF'")){
+		 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Brand logo uploaded</strong></div>';
+			}
+		 }
+	  }
+   }
+	
+	return;	
+}
 ?>

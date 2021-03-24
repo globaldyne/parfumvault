@@ -36,7 +36,7 @@ if(validateFormula($fid, $bottle, $new_conc, $mg['total_mg'], $defCatClass, $con
 if (empty($settings['brandLogo'])){ 
 	$logo = "../img/logo.png";
 }else{
-	$logo = $settings['brandLogo'];
+	$logo = "../".$settings['brandLogo'];
 }
 if ( empty($settings['brandName']) || empty($settings['brandAddress']) || empty($settings['brandEmail']) || empty($settings['brandPhone']) ){
 	$msg = 'Missing brand info, please update your brand details in settings page first!';
