@@ -6,7 +6,7 @@ if (!defined('pvault_panel')){ die('Not Found');}
     line-height: 0;
     width: 1000px;
     max-width: 1000px; 
-	height: 750px;
+	height: 850px;
 }
 </style>
 <div id="content-wrapper" class="d-flex flex-column">
@@ -16,7 +16,7 @@ if (!defined('pvault_panel')){ die('Not Found');}
           <div>
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h2 class="m-0 font-weight-bold text-primary"><a href="?do=ingredients">Ingredients</a></h2>
+              <h2 class="m-0 font-weight-bold text-primary"><a href="javascript:list_ingredients()">Ingredients</a></h2>
             </div>
             <div class="card-body">
               <div class="table-responsive">
