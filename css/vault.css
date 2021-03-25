@@ -333,3 +333,7 @@ tr.strikeout td:before {
     content: 'Loading...';
   }
 }
+
+a:hover{
+    text-decoration: none;
+}
