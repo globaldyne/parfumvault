@@ -15,8 +15,9 @@ if($_POST['value'] && $_GET['formula'] && $_POST['pk'] && !$_GET['settings']){
 	
 	mysqli_query($conn, "UPDATE formulas SET $name = '$value' WHERE name = '$formula' AND ingredient = '$ingredient'");
 	return;
-	
-}elseif($_GET['formulaMeta']){
+}
+
+if($_GET['formulaMeta']){
 	$value = mysqli_real_escape_string($conn, $_POST['value']);
 	$formula = mysqli_real_escape_string($conn, $_GET['formulaMeta']);
 	$ingredient = mysqli_real_escape_string($conn, $_POST['pk']);
@@ -24,8 +25,9 @@ if($_POST['value'] && $_GET['formula'] && $_POST['pk'] && !$_GET['settings']){
 	
 	mysqli_query($conn, "UPDATE formulasMetaData SET $name = '$value' WHERE name = '$formula'");
 	return;
-	
-}elseif($_GET['rename']){
+}
+
+if($_GET['rename']){
 	$value = mysqli_real_escape_string($conn, $_POST['value']);
 	$formula = mysqli_real_escape_string($conn, $_GET['rename']);
 	$fid = base64_encode($value);
@@ -36,26 +38,28 @@ if($_POST['value'] && $_GET['formula'] && $_POST['pk'] && !$_GET['settings']){
 		mysqli_query($conn, "UPDATE formulasMetaData SET name = '$value', fid = '$fid' WHERE name = '$formula'");
 		mysqli_query($conn, "UPDATE formulas SET name = '$value', fid = '$fid' WHERE name = '$formula'");
 	}
-	return;
-	
-}elseif($_GET['settings'] == 'cat'){
+	return;	
+}
+
+if($_GET['settings'] == 'cat'){
 	$value = mysqli_real_escape_string($conn, $_POST['value']);
 	$cat_id = mysqli_real_escape_string($conn, $_POST['pk']);
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 
 	mysqli_query($conn, "UPDATE ingCategory SET $name = '$value' WHERE id = '$cat_id'");
 	return;
+}
 
-}elseif($_GET['settings'] == 'sup'){
+if($_GET['settings'] == 'sup'){
 	$value = mysqli_real_escape_string($conn, $_POST['value']);
 	$sup_id = mysqli_real_escape_string($conn, $_POST['pk']);
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 
 	mysqli_query($conn, "UPDATE ingSuppliers SET $name = '$value' WHERE id = '$sup_id'");
-	return;
+	return;	
+}
 
-	
-}elseif($_GET['supp'] == 'add'){
+if($_GET['supp'] == 'add'){
 	$description = mysqli_real_escape_string($conn, $_GET['description']);
 	$name = mysqli_real_escape_string($conn, $_GET['name']);
 	
@@ -72,8 +76,9 @@ if($_POST['value'] && $_GET['formula'] && $_POST['pk'] && !$_GET['settings']){
 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Supplier '.$name.' added!</div>';
 	}
 	return;
+}
 
-}elseif($_GET['supp'] == 'delete' && $_GET['ID']){
+if($_GET['supp'] == 'delete' && $_GET['ID']){
 	$ID = mysqli_real_escape_string($conn, $_GET['ID']);
 	$supplier = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingSuppliers WHERE id = '$ID'"));
 
@@ -81,25 +86,28 @@ if($_POST['value'] && $_GET['formula'] && $_POST['pk'] && !$_GET['settings']){
 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Supplier <strong>'.$supplier['name'].'</strong> removed!</div>';
 	}
 	return;
-	
-}elseif($_GET['bottle']){
+}
+
+if($_GET['bottle']){
 	$value = mysqli_real_escape_string($conn, $_POST['value']);
 	$bottle = mysqli_real_escape_string($conn, $_POST['pk']);
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 	
 	mysqli_query($conn, "UPDATE bottles SET $name = '$value' WHERE id = '$bottle'");
-	return;
-	
-}elseif($_GET['lid']){
+	return;	
+}
+
+if($_GET['lid']){
 	$value = mysqli_real_escape_string($conn, $_POST['value']);
 	$lid = mysqli_real_escape_string($conn, $_POST['pk']);
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 	
 	mysqli_query($conn, "UPDATE lids SET $name = '$value' WHERE id = '$lid'");
 	return;
-	
+}
+
 //ADD ALLERGEN
-}elseif($_GET['allergen'] == 'add'){
+if($_GET['allergen'] == 'add'){
 	$allgName = mysqli_real_escape_string($conn, $_GET['allgName']);
 	$allgCAS = mysqli_real_escape_string($conn, $_GET['allgCAS']);	
 	$allgPerc = rtrim(mysqli_real_escape_string($conn, $_GET['allgPerc']),'%');
@@ -123,9 +131,10 @@ if($_POST['value'] && $_GET['formula'] && $_POST['pk'] && !$_GET['settings']){
 	}
 
 	return;
+}
 
 //UPDATE ALLERGEN
-}elseif($_GET['allergen'] == 'update'){
+if($_GET['allergen'] == 'update'){
 	$value = rtrim(mysqli_real_escape_string($conn, $_POST['value']),'%');
 	$id = mysqli_real_escape_string($conn, $_POST['pk']);
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
@@ -133,9 +142,10 @@ if($_POST['value'] && $_GET['formula'] && $_POST['pk'] && !$_GET['settings']){
 
 	mysqli_query($conn, "UPDATE allergens SET $name = '$value' WHERE id = '$id' AND ing='$ing'");
 	return;
+}
 
 //DELETE ALLERGEN	
-}elseif($_GET['allergen'] == 'delete'){
+if($_GET['allergen'] == 'delete'){
 
 	$id = mysqli_real_escape_string($conn, $_GET['allgID']);
 	$ing = mysqli_real_escape_string($conn, $_GET['ing']);
@@ -145,9 +155,10 @@ if($_POST['value'] && $_GET['formula'] && $_POST['pk'] && !$_GET['settings']){
 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$ing.'</strong> removed!</div>';
 	}
 	return;
+}
 
 //DELETE INGREDIENT	
-}elseif($_GET['ingredient'] == 'delete' && $_GET['ing_id']){
+if($_GET['ingredient'] == 'delete' && $_GET['ing_id']){
 
 	$id = mysqli_real_escape_string($conn, $_GET['ing_id']);
 	$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE id = '$id'"));
@@ -159,9 +170,10 @@ if($_POST['value'] && $_GET['formula'] && $_POST['pk'] && !$_GET['settings']){
 	}
 
 	return;
-	
+}
+
 //CUSTOMERS - ADD
-}elseif($_POST['customer'] == 'add'){
+if($_POST['customer'] == 'add'){
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 	if(empty($name)){
 		echo '<div class="alert alert-danger alert-dismissible">Customer name is required.</div>';
@@ -178,9 +190,10 @@ if($_POST['value'] && $_GET['formula'] && $_POST['pk'] && !$_GET['settings']){
 		echo '<div class="alert alert-danger alert-dismissible">Error adding customer.</div>';
 	}
 	return;
-	
+}
+
 //CUSTOMERS - DELETE
-}elseif($_GET['customer'] == 'delete' && $_GET['customer_id']){
+if($_GET['customer'] == 'delete' && $_GET['customer_id']){
 	$customer_id = mysqli_real_escape_string($conn, $_GET['customer_id']);
 	if(mysqli_query($conn, "DELETE FROM customers WHERE id = '$customer_id'")){
 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Customer deleted!</div>';
@@ -188,18 +201,19 @@ if($_POST['value'] && $_GET['formula'] && $_POST['pk'] && !$_GET['settings']){
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error deleting customer.</div>';
 	}
 	return;
-	
+}
 	
 //CUSTOMERS - UPDATE
-}elseif($_GET['customer'] == 'update'){
+if($_GET['customer'] == 'update'){
 	$value = mysqli_real_escape_string($conn, $_POST['value']);
 	$id = mysqli_real_escape_string($conn, $_POST['pk']);
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 
 	mysqli_query($conn, "UPDATE customers SET $name = '$value' WHERE id = '$id'");
-	return;
-	
-}elseif($_POST['manage'] == 'ingredient'){
+	return;	
+}
+
+if($_POST['manage'] == 'ingredient'){
 	$ing = mysqli_real_escape_string($conn, $_POST['ing']);
 
 	$INCI = trim(mysqli_real_escape_string($conn, $_POST["INCI"]));
@@ -300,13 +314,11 @@ if($_POST['value'] && $_GET['formula'] && $_POST['pk'] && !$_GET['settings']){
 	}
 
 
-	return;
-
-	
-}else{
-	header('Location: /');
-	exit;
+	return;	
 }
 
+
+header('Location: /');
+exit;
 
 ?>

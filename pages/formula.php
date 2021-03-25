@@ -23,7 +23,7 @@ $base_calc = calcPerc($f_name, 'Base', $settings['base_n'], $conn);
     line-height: 0;
     width: 1000px;
     max-width: 1000px; 
-	height: 700px;
+	height: 750px;
 }
 </style>
 <div id="content-wrapper" class="d-flex flex-column">
