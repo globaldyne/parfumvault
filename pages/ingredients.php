@@ -6,7 +6,7 @@ if (!defined('pvault_panel')){ die('Not Found');}
     line-height: 0;
     width: 1000px;
     max-width: 1000px; 
-	height: 650px;
+	height: 750px;
 }
 </style>
 <div id="content-wrapper" class="d-flex flex-column">
