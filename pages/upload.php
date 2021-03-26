@@ -75,4 +75,31 @@ if($_GET['type'] == 'brand'){
 	
 	return;	
 }
+
+if($_GET['type'] == 'ingCSVImport'){
+	$defCatClass = $settings['defCatClass'];
+
+	if(isset($_FILES['ingCSV']['name'])){
+		$i = 0;
+		$filename=$_FILES['ingCSV']['tmp_name'];    
+		if($_FILES['ingCSV']['size'] > 0){
+			$file = fopen($filename, "r");
+			while (($data = fgetcsv($file, 10000, ",")) !== FALSE){
+				if(!mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '".trim(ucwords($data['0']))."'"))){
+					if(mysqli_query($conn, "INSERT INTO ingredients (name, cas, odor, profile, category, $defCatClass, supplier) VALUES ('".trim(ucwords($data['0']))."', '".trim($data['1'])."', '".trim($data['2'])."', '".trim($data['3'])."', '".trim($data['4'])."', '".preg_replace("/[^0-9.]/", "", $data['5'])."', '".trim($data['6'])."')")){
+						$i++;
+						echo '<div class="alert alert-success alert-dismissible">'.$i.' Ingredients imported</div>';
+					}else{
+						echo '<div class="alert alert-danger alert-dismissible">Failed to import the ingredients list.</div>';
+					}
+				}
+			}		
+		}
+		fclose($file);  
+	
+	}  
+
+	return;
+}
+
 ?>

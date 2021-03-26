@@ -24,7 +24,7 @@ $defCatClass = $settings['defCatClass'];
                           <div class="dropdown-menu dropdown-menu-right">
                             <a class="dropdown-item popup-link" href="pages/mgmIngredient.php">Add new ingredient</a>
                             <a class="dropdown-item" id="csv" href="#">Export to CSV</a>
-	                        <a class="dropdown-item popup-link" href="pages/csvImportIng.php">Import from CSV</a>
+	                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#csv_import">Import from CSV</a>
                             <?php if($pv_online['email'] && $pv_online['password']){?>
                             <div class="dropdown-divider"></div>
 	                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#pv_online_import">Import from PV Online</a>
@@ -127,5 +127,6 @@ $('#csv').on('click',function(){
   	// debug
   	consoleLog: false   
   });
-})
+});
+
 </script>

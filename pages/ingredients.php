@@ -35,7 +35,39 @@ if (!defined('pvault_panel')){ die('Not Found');}
       </div>
     </div>
     
-  
+
+<!--CSV IMPORT-->
+<div class="modal fade" id="csv_import" tabindex="-1" role="dialog" aria-labelledby="csv_import" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="csv_import">Import ingredients from CSV file</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+       <div id="CSVImportMsg"></div>
+       <table width="100%">
+       		<tr>
+    	   	<td width="92" valign="top">CSV File:</td>
+				<td width="1533" colspan="3">
+		<form method="post" action="javascript:importCSV()" enctype="multipart/form-data" id="csvform">
+                	<input type="file" id="ingCSV" name="ingCSV" />
+				</td>
+			</tr>
+		</table>
+         <strong>WARNING:</strong><br />
+      		Make sure your CSV file follows the guidelines as documented <a href="https://www.jbparfum.com/knowledge-base/3-ingredients-import-csv" target="_blank">here</a>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <input type="submit" name="button" class="btn btn-primary" id="btnImportCSV" value="Import">
+      </div>
+      </form>
+    </div>
+  </div>
+</div>  
 <?php if($pv_online['email'] && $pv_online['password']){?>
 <!--PV ONLINE IMPORT-->
 <div class="modal fade" id="pv_online_import" tabindex="-1" role="dialog" aria-labelledby="pv_online_import" aria-hidden="true">
@@ -161,5 +193,38 @@ function delete_ingredient(id){
 			list_ingredients();
 		}
 	  });
-}
+};
+
+function importCSV(){
+    $("#CSVImportMsg").html('<div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
+	$("#btnImport").prop("disabled", true);
+		
+	var fd = new FormData();
+    var files = $('#ingCSV')[0].files;
+        
+       if(files.length > 0 ){
+          fd.append('ingCSV',files[0]);
+
+        $.ajax({
+           url: 'pages/upload.php?type=ingCSVImport',
+           type: 'post',
+           data: fd,
+           contentType: false,
+           processData: false,
+           success: function(response){
+             if(response != 0){
+               $("#CSVImportMsg").html(response);
+				$("#btnImport").prop("disabled", false);
+              }else{
+                $("#CSVImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> File upload failed!</div>');
+				$("#btnImport").prop("disabled", false);
+              }
+            },
+         });
+  }else{
+	$("#CSVImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a file to upload!</div>');
+	$("#btnImport").prop("disabled", false);
+  }
+};
+
 </script>

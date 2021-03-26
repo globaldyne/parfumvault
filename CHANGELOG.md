@@ -12,6 +12,7 @@ Send local version to pv online API calls when enabled
 Settings page improvements
 Change layout in ingredient management
 Fix a bug preventing ingredients import from a csv file
+Ingedients CSV Import improvements
 
 ### Version 2.6
 - ADD: Trading name in ingredients
