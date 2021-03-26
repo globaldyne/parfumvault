@@ -10,6 +10,7 @@ Root path update
 Add option to exclude private ingredient from uploading to PV Online
 Send local version to pv online API calls when enabled 
 Settings page improvements
+Change layout in ingredient management
 
 ### Version 2.6
 - ADD: Trading name in ingredients

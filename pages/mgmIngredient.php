@@ -23,6 +23,11 @@ while($cats_res = mysqli_fetch_array($StandardIFRACategories)){
     $cats[] = $cats_res;
 }
 
+$rows = count($cats);
+$counter = 0;
+$cols = 3;
+$usageStyle = array('even_ing','odd_ing');
+
 $defCatClass = $settings['defCatClass'];
 
 $res_ingTypes = mysqli_query($conn, "SELECT id,name FROM ingTypes ORDER BY name ASC");
@@ -326,24 +331,21 @@ reload_data();
                                  <hr>
                                <table width="100%" border="0">
                                 <tr>
-                                  <td height="32">No usage limit:</td>
+                                  <td width="15%" height="32">No usage limit:</td>
                                   <?php if($usageLimit = searchIFRA($ing['cas'],$ing['name'],null,$conn, $defCatClass)){ $chk = 'disabled'; }?>
-                                  <td colspan="3"><input name="noUsageLimit" type="checkbox" <?php echo $chk; ?> id="noUsageLimit" value="1" <?php if($ing['noUsageLimit'] == '1'){; ?> checked="checked"  <?php } ?>/></td>
+                                  <td><input name="noUsageLimit" type="checkbox" <?php echo $chk; ?> id="noUsageLimit" value="1" <?php if($ing['noUsageLimit'] == '1'){; ?> checked="checked"  <?php } ?>/></td>
                                 </tr>
                                 <tr>
                                   <td height="32">Flavor use:</td>
-                                  <td width="81%" colspan="3"><input name="flavor_use" type="checkbox" id="flavor_use" value="1" <?php if($ing['flavor_use'] == '1'){; ?> checked="checked"  <?php } ?>/></td>
-                                </tr>
-                                <td width="19%"></td>
+                                  <td><input name="flavor_use" type="checkbox" id="flavor_use" value="1" <?php if($ing['flavor_use'] == '1'){; ?> checked="checked"  <?php } ?>/></td>
                                 </tr>
                                 <tr>
-                                  <td colspan="4"><hr /></td>
-                                 </tr>
-                                <tr>
-                                  <td>Usage classification:</td>
-                                <td colspan="3">
-                                <?php if($rType = searchIFRA($ing['cas'],$ing['name'],'type',$conn, $defCatClass)){
-										  echo $rType;
+                                  <td height="32">Usage classification:</td>
+                                  <td><?php if($rType = searchIFRA($ing['cas'],$ing['name'],'type',$conn, $defCatClass)){
+			  								 	if($reason = searchIFRA($ing['cas'],$ing['name'],null,$conn, $defCatClass)){
+													$reason = explode(' - ',$reason);
+												}
+										  echo $rType.' - '.$reason['1'];
 									  }else{
 								?>
                                 <select name="usage_type" id="usage_type" class="form-control">
@@ -355,21 +357,28 @@ reload_data();
                                 </select>
                     			<?php } ?>
                     			</td>
-                                </tr>
-                                
-                                <?php foreach ($cats as $cat) {?>
-                                <tr>
-                                  <td><a href="#" rel="tipsy" title="<?php echo $cat['description'];?>">Cat<?php echo $cat['name'];?>%:</a></td>
-                                  <td colspan="3"><?php
-								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat'.$cat['name'])){
-										echo $limit;
+                                 </tr>
+                                </table>
+                                <hr />
+                              <table width="100%" border="0">
+                               <?php for($i = 0; $i < $rows/$cols; $i++) { ?>
+                                <tr <?php if($rType){ ?>class="<?php echo $usageStyle[$i % 2]; ?>" <?php }?>>
+								<?php for($j=0; $j < $cols && $counter <= $rows; $j++, $counter++) {?>
+                                  <td align="center"><a href="#" rel="tipsy" title="<?php echo $cats[$counter]['description'];?>">Cat<?php echo $cats[$counter]['name'];?> %:</a></td>
+                                  <td><?php
+								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat'.$cats[$counter]['name'])){
+										$limit = explode(' - ',$limit);
+										echo $limit['0'];
 									}else{
+									?>
+                                    <input name="cat<?php echo $cats[$counter]['name'];?>" type="text" class="form-control" id="cat<?php echo $cats[$counter]['name'];?>" value="<?php echo $ing['cat'.$cats[$counter]['name']]; ?>" />
+                                </td>
+                                   <?php 
+								   } 
+								 } 
 								?>
-                                    <input name="cat<?php echo $cat['name'];?>" type="text" class="form-control" id="cat<?php echo $cat['name'];?>" value="<?php echo $ing['cat'.$cat['name']]; ?>" />
-                                  <?php } ?>
-                                  </td>
-                                </tr>
-                                <?php } ?>
+								</tr>
+								<?php } ?>
 						      </table>
    						  </div>
                   <div class="tab-pane fade" id="supply">

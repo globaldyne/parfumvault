@@ -337,3 +337,10 @@ tr.strikeout td:before {
 a:hover{
     text-decoration: none;
 }
+
+.even_ing {
+    background-color: #FFF !important;
+}
+.odd_ing {
+    background-color:  #EEE !important;
+}
