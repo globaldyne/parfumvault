@@ -4,6 +4,8 @@ require('../inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/product.php');
+require_once(__ROOT__.'/inc/settings.php');
+$defCatClass = $settings['defCatClass'];
 
 if(isset($_POST["import"])){
 	$i = 0;
@@ -12,7 +14,7 @@ if(isset($_POST["import"])){
 		$file = fopen($filename, "r");
 		while (($data = fgetcsv($file, 10000, ",")) !== FALSE){
 			if(!mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '".trim(ucwords($data['0']))."'"))){
-				if(mysqli_query($conn, "INSERT INTO ingredients (name, cas, odor, profile, category, IFRA, supplier) VALUES ('".trim(ucwords($data['0']))."', '".trim($data['1'])."', '".trim($data['2'])."', '".trim($data['3'])."', '".trim($data['4'])."', '".preg_replace("/[^0-9.]/", "", $data['5'])."', '".trim($data['6'])."')")){
+				if(mysqli_query($conn, "INSERT INTO ingredients (name, cas, odor, profile, category, $defCatClass, supplier) VALUES ('".trim(ucwords($data['0']))."', '".trim($data['1'])."', '".trim($data['2'])."', '".trim($data['3'])."', '".trim($data['4'])."', '".preg_replace("/[^0-9.]/", "", $data['5'])."', '".trim($data['6'])."')")){
 					$i++;
 					$msg='<div class="alert alert-success alert-dismissible">'.$i.' Ingredients imported</div>';
 				}else{
