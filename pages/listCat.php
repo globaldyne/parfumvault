@@ -9,9 +9,7 @@ $cat_q = mysqli_query($conn, "SELECT * FROM ingCategory ORDER BY name ASC");
 
 ?>
 <table width="100%" border="0" class="table table-striped table-sm">
-              <tr>
-                <td colspan="8"><div id="catMsg"></div></td>
-              </tr>
+              <div id="catMsg"></div>
               <tr>
                 <td width="4%"><p>Category:</p></td>
                 <td width="12%"><input type="text" name="category" id="category" class="form-control"/></td>
