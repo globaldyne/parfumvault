@@ -23,11 +23,11 @@ $base_calc = calcPerc($f_name, 'Base', $settings['base_n'], $conn);
     line-height: 0;
     width: 1000px;
     max-width: 1000px; 
-	height: 700px;
+	height: 850px;
 }
 </style>
 <div id="content-wrapper" class="d-flex flex-column">
-<?php require_once('pages/top.php'); ?>
+<?php require_once(__ROOT__.'/pages/top.php'); ?>
         <div class="container-fluid">
 		<div>
           <div class="card shadow mb-4">
@@ -67,7 +67,7 @@ $base_calc = calcPerc($f_name, 'Base', $settings['base_n'], $conn);
                                          </td>
                                          <td><input type="text" name="concentration" id="concentration" placeholder="Purity %" class="form-control" /></td>
                                       <td>
-                                         <select name="dilutant" id="dilutant" class="form-control selectpicker" data-live-search="true">
+                                         <select name="dilutant" id="dilutant" class="form-control">
                                          <option value="" selected disabled>Dilutant</option>
                                          <option value="none">None</option>
                                          <?php
@@ -85,9 +85,12 @@ $base_calc = calcPerc($f_name, 'Base', $settings['base_n'], $conn);
                       </form>
                     </th>
                     </tr>
-               
-                <div id="fetch_formula"><div class="loader"></div></div>
-                
+                <div id="fetch_formula">
+                	<div class="loader-center">
+                		<div class="loader"></div>
+                    	<div class="loader-text"></div>
+                	</div>
+                </div>
                 <div>
                 <p></p>
                 <p>*Values in: <strong class="alert alert-danger">red</strong> exceeds usage level,   <strong class="alert alert-warning">yellow</strong> have no usage level set,   <strong class="alert alert-success">green</strong> are within usage level</p>

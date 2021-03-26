@@ -2,11 +2,11 @@
 
 require('../inc/sec.php');
 
-require_once('../inc/config.php');
-require_once('../inc/opendb.php');
-require_once('../inc/settings.php');
+require_once(__ROOT__.'/inc/config.php');
+require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/inc/settings.php');
 
-require_once('../func/formulaProfile.php');
+require_once(__ROOT__.'/func/formulaProfile.php');
 
 ?>
             <table width="100%" border="0">
@@ -121,7 +121,7 @@ $('.popup-link').magnificPopup({
 	showCloseBtn: true,
 });
 	
-$('#tdData,#tdDataSup,#tdDataCat,#tdDataUsers,#tdDataCustomers').DataTable({
+$('#tdData').DataTable({
     "paging":   true,
 	"info":   true,
 	"lengthMenu": [[20, 35, 60, -1], [20, 35, 60, "All"]]

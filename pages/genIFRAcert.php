@@ -1,12 +1,12 @@
 <?php 
 require('../inc/sec.php');
 
-require_once('../inc/config.php');
-require_once('../inc/opendb.php');
-require_once('../inc/settings.php');
-require_once('../func/getIFRAMeta.php');
-require_once('../func/searchIFRA.php');
-require_once('../func/validateFormula.php');
+require_once(__ROOT__.'/inc/config.php');
+require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/inc/settings.php');
+require_once(__ROOT__.'/func/getIFRAMeta.php');
+require_once(__ROOT__.'/func/searchIFRA.php');
+require_once(__ROOT__.'/func/validateFormula.php');
 
 $bottle = $_GET['bottle'];
 $type = $_GET['conc'];
@@ -36,7 +36,7 @@ if(validateFormula($fid, $bottle, $new_conc, $mg['total_mg'], $defCatClass, $con
 if (empty($settings['brandLogo'])){ 
 	$logo = "../img/logo.png";
 }else{
-	$logo = $settings['brandLogo'];
+	$logo = "../".$settings['brandLogo'];
 }
 if ( empty($settings['brandName']) || empty($settings['brandAddress']) || empty($settings['brandEmail']) || empty($settings['brandPhone']) ){
 	$msg = 'Missing brand info, please update your brand details in settings page first!';

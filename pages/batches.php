@@ -4,7 +4,7 @@ if (!defined('pvault_panel')){ die('Not Found');}
 $q = mysqli_query($conn, "SELECT * FROM batchIDHistory");
 ?>
 <div id="content-wrapper" class="d-flex flex-column">
-<?php require_once('pages/top.php'); ?>
+<?php require_once(__ROOT__.'/pages/top.php'); ?>
         <div class="container-fluid">
           <div>
           <div class="card shadow mb-4">

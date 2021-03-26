@@ -16,6 +16,6 @@ if ($k[0]){
 	echo '<input name="odor" id="odor" type="text" class="form-control" value="'.$k['0'].'"/>';
 
 }else{
-	echo '<input name="odor" id="odor" type="text" class="form-control" placeholder="Not Found..."/>';
+	echo '<input name="odor" id="odor" type="text" class="form-control" placeholder="'.$_GET['name'].' not found..."/>';
 }
 ?>

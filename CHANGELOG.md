@@ -1,4 +1,19 @@
 # CHANGELOG
+### Version 2.7
+Making sure the percentage symbol is striped out from allergens quantity
+Create entry in ingredients from allergens
+Adding no usage limit in ingredients
+Remove pvmaker code
+Ingredients management improvements
+SDS file upload improvements
+Root path update
+Add option to exclude private ingredient from uploading to PV Online
+Send local version to pv online API calls when enabled 
+Settings page improvements
+Change layout in ingredient management
+Fix a bug preventing ingredients import from a csv file
+Ingedients CSV Import improvements
+
 ### Version 2.6
 - ADD: Trading name in ingredients
 - ADD: Option to select between 2d and 3d view in PubChem intergration

@@ -1,15 +1,15 @@
 <?php
 require('../inc/sec.php');
 
-require_once('../inc/config.php');
-require_once('../inc/opendb.php');
-require_once('../inc/settings.php');
-require_once('../inc/product.php');
+require_once(__ROOT__.'/inc/config.php');
+require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/inc/settings.php');
+require_once(__ROOT__.'/inc/product.php');
 
 if($_GET['do'] == 'db_update'){
 
 	$a_ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
-	$n_ver = trim(file_get_contents('../db/schema.ver'));
+	$n_ver = trim(file_get_contents(__ROOT__.'/db/schema.ver'));
 	$c_ver = $pv_meta['schema_ver'];
 	$sql = __ROOT__.'/db/updates/update_'.$c_ver.'-'.$n_ver.'.sql';
 		

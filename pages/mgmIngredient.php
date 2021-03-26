@@ -1,141 +1,34 @@
 <?php 
 require('../inc/sec.php');
 
-require_once('../inc/config.php');
-require_once('../inc/opendb.php');
-require_once('../inc/settings.php');
-require_once('../func/formatBytes.php');
-require_once('../func/validateInput.php');
+require_once(__ROOT__.'/inc/config.php');
+require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/inc/settings.php');
+require_once(__ROOT__.'/func/formatBytes.php');
+require_once(__ROOT__.'/func/validateInput.php');
 
-require_once('../func/searchIFRA.php');
+require_once(__ROOT__.'/func/searchIFRA.php');
 
 $ingID = mysqli_real_escape_string($conn, $_GET["id"]);
 if($ingID){
-	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT * FROM ingredients WHERE name = '$ingID'")))){
+	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$ingID'")))){
 		if(mysqli_query($conn, "INSERT INTO ingredients (name) VALUES ('$ingID')")){
 			$msg='<div class="alert alert-info alert-dismissible"><strong>Info:</strong> ingredient '.$ingID.' added</div>';
 		}
 	}
 }
+$StandardIFRACategories = mysqli_query($conn, "SELECT name,description,type FROM IFRACategories WHERE type = '1' ORDER BY id ASC");
+
+while($cats_res = mysqli_fetch_array($StandardIFRACategories)){
+    $cats[] = $cats_res;
+}
+
+$rows = count($cats);
+$counter = 0;
+$cols = 3;
+$usageStyle = array('even_ing','odd_ing');
 
 $defCatClass = $settings['defCatClass'];
-
-if($_POST){
-	$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE name = '$ingID'"));
-
-	$INCI = trim(mysqli_real_escape_string($conn, $_POST["INCI"]));
-
-	$cas = trim(mysqli_real_escape_string($conn, $_POST["cas"]));
-	$fema = trim(mysqli_real_escape_string($conn, $_POST["fema"]));
-
-	$type = mysqli_real_escape_string($conn, $_POST["type"]);
-	$strength = mysqli_real_escape_string($conn, $_POST["strength"]);
-	$category = mysqli_real_escape_string($conn, $_POST["category"]);
-	$supplier = mysqli_real_escape_string($conn, $_POST["supplier"]);
-	$supplier_link = mysqli_real_escape_string($conn, $_POST["supplier_link"]);
-	
-	$profile = mysqli_real_escape_string($conn, $_POST["profile"]);
-	$price = validateInput($_POST["price"]);
-	$tenacity = mysqli_real_escape_string($conn, $_POST["tenacity"]);
-	$formula = mysqli_real_escape_string($conn, $_POST["formula"]);
-	$chemical_name = mysqli_real_escape_string($conn, $_POST["chemical_name"]);
-	$flash_point = mysqli_real_escape_string($conn, $_POST["flash_point"]);
-	$appearance = mysqli_real_escape_string($conn, $_POST["appearance"]);
-	$ml = validateInput($_POST["ml"]);
-	$solvent = mysqli_real_escape_string($conn, $_POST["solvent"]);
-	$odor = ucfirst(trim(mysqli_real_escape_string($conn, $_POST["odor"])));
-	$notes = ucfirst(trim(mysqli_real_escape_string($conn, $_POST["notes"])));
-	$purity = validateInput($_POST["purity"]);
-	$soluble = mysqli_real_escape_string($conn, $_POST["soluble"]);
-	$logp = mysqli_real_escape_string($conn, $_POST["logp"]);
-
-	$cat1 = validateInput($_POST["cat1"]);
-	$cat2 = validateInput($_POST["cat2"]);
-	$cat3 = validateInput($_POST["cat3"]);
-	$cat4 = validateInput($_POST["cat4"]);
-	$cat5A = validateInput($_POST["cat5A"]);
-	$cat5B = validateInput($_POST["cat5B"]);
-	$cat5C = validateInput($_POST["cat5C"]);
-	$cat5D = validateInput($_POST["cat5D"]);
-	$cat6 = validateInput($_POST["cat6"]);
-	$cat7A = validateInput($_POST["cat7A"]);
-	$cat7B = validateInput($_POST["cat7B"]);
-	$cat8 = validateInput($_POST["cat8"]);
-	$cat9 = validateInput($_POST["cat9"]);
-	$cat10A = validateInput($_POST["cat10A"]);
-	$cat10B = validateInput($_POST["cat10B"]);
-	$cat11A = validateInput($_POST["cat11A"]);
-	$cat11B = validateInput($_POST["cat11B"]);
-	$cat12 = validateInput($_POST["cat12"]);
-	
-	$manufacturer = mysqli_real_escape_string($conn, $_POST["manufacturer"]);
-	$impact_top = mysqli_real_escape_string($conn, $_POST["impact_top"]);
-	$impact_base = mysqli_real_escape_string($conn, $_POST["impact_base"]);
-	$impact_heart = mysqli_real_escape_string($conn, $_POST["impact_heart"]);
-	$usage_type = mysqli_real_escape_string($conn, $_POST["usage_type"]);
-
-	if($_POST["isAllergen"]) {
-		$allergen = '1';
-	}else{
-		$allergen = '0';
-	}
-	if($_POST["flavor_use"]) {
-		$flavor_use = '1';
-	}else{
-		$flavor_use = '0';
-	}
-	if(empty($ml)){
-		$ml = '10';
-	}
-	
-	if(($_FILES['SDS']['name'])){
-      $file_name = $_FILES['SDS']['name'];
-      $file_size =$_FILES['SDS']['size'];
-      $file_tmp =$_FILES['SDS']['tmp_name'];
-      $file_type=$_FILES['SDS']['type'];
-      $file_ext=strtolower(end(explode('.',$_FILES['SDS']['name'])));
-	  
-	  if(empty($err)==true){
-		 if (file_exists('../'.$uploads_path.'SDS/') === FALSE) {
-    		 mkdir('../'.$uploads_path.'SDS/', 0740, true);
-	  	 }
-	  }
-	  
-	  $ext = explode(', ', $allowed_ext);
-      if(in_array($file_ext,$ext)=== false){
-		 $msg.='<div class="alert alert-danger alert-dismissible"><strong>File upload error: </strong>Extension not allowed, please choose a '.$allowed_ext.' file.</div>';
-      }elseif($file_size > $max_filesize){
-		 $msg.='<div class="alert alert-danger alert-dismissible"><strong>File upload error: </strong>File size must not exceed '.formatBytes($max_filesize).'</div>';
-      }else{
-	  
-         move_uploaded_file($file_tmp,'../'.$uploads_path.'SDS/'.base64_encode($file_name));
-		 $SDSF = $uploads_path.'SDS/'.base64_encode($file_name);
-		 mysqli_query($conn, "UPDATE ingredients SET SDS = '$SDSF' WHERE name='$ingID'");
-	  }
-   }
-
-	if(empty($_POST['name'])){
-		$query = "UPDATE ingredients SET cas = '$cas', FEMA = '$fema', type = '$type', strength = '$strength', category='$category', supplier='$supplier', supplier_link='$supplier_link', profile='$profile', price='$price', tenacity='$tenacity', chemical_name='$chemical_name', flash_point='$flash_point', appearance='$appearance', notes='$notes', ml='$ml', odor='$odor', purity='$purity', allergen='$allergen', formula='$formula', flavor_use='$flavor_use', cat1 = '$cat1', cat2 = '$cat2', cat3 = '$cat3', cat4 = '$cat4', cat5A = '$cat5A', cat5B = '$cat5B', cat5C = '$cat5C', cat5D = '$cat5D', cat6 = '$cat6', cat7A = '$cat7A', cat7B = '$cat7B', cat8 = '$cat8', cat9 = '$cat9', cat10A = '$cat10A', cat10B = '$cat10B', cat11A = '$cat11A', cat11B = '$cat11B', cat12 = '$cat12', soluble = '$soluble', logp = '$logp', manufacturer = '$manufacturer', impact_top = '$impact_top', impact_heart = '$impact_heart', impact_base = '$impact_base', usage_type = '$usage_type', solvent = '$solvent', INCI = '$INCI' WHERE name='$ingID'";
-		if(mysqli_query($conn, $query)){
-			$msg = '<div class="alert alert-success alert-dismissible">Ingredient <strong>'.$ing['name'].'</strong> updated!</div>';
-		}else{
-			$msg = '<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> Failed to update!</div>';
-		}
-	}else{
-		$name = mysqli_real_escape_string($conn, $_POST["name"]);
-		$ingID = $name;
-		$query = "INSERT INTO ingredients (name, INCI, cas, FEMA, type, strength, SDS, ".$settings['defCatClass'].", category, supplier, supplier_link, profile, price, tenacity, chemical_name, flash_point, appearance, notes, ml, odor, purity, allergen) VALUES ('$name', '$INCI', '$cas', '$fema', '$type', '$strength', '$SDSF', '$cat', '$category', '$supplier', '$supplier_link', '$profile', '$price', '$tenacity', '$chemical_name', '$flash_point', '$appearance', '$notes', '$ml', '$odor', '$purity', '$allergen')";
-		if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '$name'"))){
-			$msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$name.' already exists!</div>';
-		}else{
-			if(mysqli_query($conn, $query)){
-				$msg = '<div class="alert alert-success alert-dismissible">Ingredient <strong>'.$name.'</strong> added!</div>';
-			}else{
-				$msg = '<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> Failed to add!</div>';
-			}
-		}
-	}
-}
 
 $res_ingTypes = mysqli_query($conn, "SELECT id,name FROM ingTypes ORDER BY name ASC");
 $res_ingStrength = mysqli_query($conn, "SELECT id,name FROM ingStrength ORDER BY name ASC");
@@ -180,29 +73,58 @@ $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE n
 <style>
 .container {
     max-width: 100%;
-	width: 950px;
+	width: 1000px;
 }
 </style>
 
 <script>
 
 $(document).ready(function() {
-    $('a[rel=tipsy]').tipsy({gravity: 'w'});
+	$('a[rel=tipsy]').tipsy({gravity: 'w'});
+	
+	function unlimited_usage(status,maxulimit){
+		$('#usage_type').prop('disabled', status);
+		<?php foreach ($cats as $cat) {?>
+		$('#cat<?php echo $cat['name'];?>').prop('readonly', status).val(maxulimit);
+		<?php } ?>
+	}
+
+	<?php if($ing['noUsageLimit']){ ?>
+		$('#noUsageLimit').prop('checked', true);
+		unlimited_usage(true,'100');
+	<?php } ?>
+    $('#noUsageLimit').click(function(){
+        if($(this).is(':checked')){
+			unlimited_usage(true,'100');
+        }else{
+			unlimited_usage(false,null);
+		}
+    });
+
 });
 
 function search() {	  
-$("#odor").val('Loading...');
-$.ajax({ 
-    url: 'searchTGSC.php', 
-	type: 'get',
-    data: {
-		name: "<?php if($ing['cas']){ echo $ing['cas']; }else{ echo $ing['name'];}?>"
-		},
-	dataType: 'html',
-    success: function (data) {
-	  $('#TGSC').html(data);
-    }
-  });
+	$("#odor").val('Loading...');
+	
+	if ($('#cas').val()) {
+		var	ingName = $('#cas').val();
+	}else if($('#name').val()) {
+		var	ingName = $('#name').val();
+	}else{
+		var	ingName = "<?php echo $ing['name'];?>"
+	}
+	
+	$.ajax({ 
+		url: 'searchTGSC.php', 
+		type: 'get',
+		data: {
+			name: ingName
+			},
+		dataType: 'html',
+		success: function (data) {
+		  $('#TGSC').html(data);
+		}
+	  });
 };
 
 <?php if($ing['cas'] && $settings['pubChem'] == '1'){ ?>
@@ -251,7 +173,7 @@ $.ajax({
     url: 'allergens.php', 
 	type: 'get',
     data: {
-		id: "<?php echo $ingID ?>"
+		id: "<?php echo $ingID; ?>"
 		},
 	dataType: 'html',
     success: function (data) {
@@ -259,7 +181,9 @@ $.ajax({
     }
   });
 }
+<?php if($ingID){ ?>
 reload_data();
+<?php } ?>
 </script>
 </head>
 
@@ -278,28 +202,29 @@ reload_data();
             <?php } ?>
         </h1>
 </div>
+<div id="ingMsg"><?php echo $msg; ?></div>
 <!-- Nav tabs -->
     <ul class="nav nav-tabs" role="tablist">
       <li class="active"><a href="#general" role="tab" data-toggle="tab"><icon class="fa fa-table"></icon> General</a></li>
+      <?php if($ingID){?>
       <li><a href="#usage_limits" role="tab" data-toggle="tab"><i class="fa fa-bong"></i> Usage &amp; Limits</a></li>
       <li><a href="#supply" role="tab" data-toggle="tab"><i class="fa fa-shopping-cart"></i> Supply</a></li>
       <li><a href="#tech_data" role="tab" data-toggle="tab"><i class="fa fa-cog"></i> Technical Data</a></li>
       <li><a href="#note_impact" role="tab" data-toggle="tab"><i class="fa fa-magic"></i> Note Impact</a></li>
-      <?php if($ingID){?>
       <li><a href="#tech_allergens" role="tab" data-toggle="tab"><i class="fa fa-allergies"></i> Allergens</a></li>
-      <?php } ?>  
       <?php if($settings['pubChem'] == '1' && $ing['cas']){?>
       	<li><a href="#pubChem" role="tab" data-toggle="tab"><i class="fa fa-atom"></i> Pub Chem</a></li>
+      <?php } ?>  
+       <li><a href="#privacy" role="tab" data-toggle="tab"><i class="fa fa-user-secret"></i> Privacy</a></li>
       <?php } ?>
     </ul>
-			<form action="<?php if($ingID){ echo '?id='.$ingID;}?>" method="post" enctype="multipart/form-data" name="mgm_ing" target="_self" id="mgm_ing">
            	  <div class="tab-content">
      				<div class="tab-pane fade active in" id="general">
                               <h3>General</h3>
 							   <hr>
                 	         <table width="100%" border="0">
                               <tr>
-                                <td colspan="6"><?php echo $msg; ?></td>
+                                <td colspan="6"></td>
                               </tr>
                               <?php if(empty($ingID)){?>
                               <tr>
@@ -400,27 +325,30 @@ reload_data();
                             </table>
               				</div>
              				<!--general tab-->
+                            <?php if($ingID){?>
                             <div class="tab-pane fade" id="usage_limits">
        						   <h3>Usage &amp; Limits</h3>
                                  <hr>
                                <table width="100%" border="0">
                                 <tr>
+                                  <td width="15%" height="32">No usage limit:</td>
+                                  <?php if($usageLimit = searchIFRA($ing['cas'],$ing['name'],null,$conn, $defCatClass)){ $chk = 'disabled'; }?>
+                                  <td><input name="noUsageLimit" type="checkbox" <?php echo $chk; ?> id="noUsageLimit" value="1" <?php if($ing['noUsageLimit'] == '1'){; ?> checked="checked"  <?php } ?>/></td>
+                                </tr>
+                                <tr>
                                   <td height="32">Flavor use:</td>
-                                  <td width="78%" colspan="3"><input name="flavor_use" type="checkbox" id="flavor_use" value="1" <?php if($ing['flavor_use'] == '1'){; ?> checked="checked"  <?php } ?>/></td>
-                                </tr>
-                                <td width="22%"></td>
+                                  <td><input name="flavor_use" type="checkbox" id="flavor_use" value="1" <?php if($ing['flavor_use'] == '1'){; ?> checked="checked"  <?php } ?>/></td>
                                 </tr>
                                 <tr>
-                                  <td colspan="4"><hr /></td>
-                                 </tr>
-                                <tr>
-                                  <td>Usage classification:</td>
-                                <td colspan="3">
-                                <?php if($rType = searchIFRA($ing['cas'],$ing['name'],'type',$conn, $defCatClass)){
-										  echo $rType;
+                                  <td height="32">Usage classification:</td>
+                                  <td><?php if($rType = searchIFRA($ing['cas'],$ing['name'],'type',$conn, $defCatClass)){
+			  								 	if($reason = searchIFRA($ing['cas'],$ing['name'],null,$conn, $defCatClass)){
+													$reason = explode(' - ',$reason);
+												}
+										  echo $rType.' - '.$reason['1'];
 									  }else{
 								?>
-                                <select name="usage_type" id="usage_type" class="form-control selectpicker" data-live-search="true">
+                                <select name="usage_type" id="usage_type" class="form-control">
                                   <option value="none" selected="selected">None</option>
                                   <option value="1" <?php if($ing['usage_type']=="1") echo 'selected="selected"'; ?> >Recommendation</option>
                                   <option value="2" <?php if($ing['usage_type']=="2") echo 'selected="selected"'; ?> >Restriction</option>
@@ -429,187 +357,28 @@ reload_data();
                                 </select>
                     			<?php } ?>
                     			</td>
-                                </tr>
-                                <tr>
-                                  <td>Cat1 %:</td>
-                                  <td colspan="3"><?php
-								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat1')){
-										echo $limit;
+                                 </tr>
+                                </table>
+                                <hr />
+                              <table width="100%" border="0">
+                               <?php for($i = 0; $i < $rows/$cols; $i++) { ?>
+                                <tr <?php if($rType){ ?>class="<?php echo $usageStyle[$i % 2]; ?>" <?php }?>>
+								<?php for($j=0; $j < $cols && $counter <= $rows; $j++, $counter++) {?>
+                                  <td align="center"><a href="#" rel="tipsy" title="<?php echo $cats[$counter]['description'];?>">Cat<?php echo $cats[$counter]['name'];?> %:</a></td>
+                                  <td><?php
+								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat'.$cats[$counter]['name'])){
+										$limit = explode(' - ',$limit);
+										echo $limit['0'];
 									}else{
+									?>
+                                    <input name="cat<?php echo $cats[$counter]['name'];?>" type="text" class="form-control" id="cat<?php echo $cats[$counter]['name'];?>" value="<?php echo $ing['cat'.$cats[$counter]['name']]; ?>" />
+                                </td>
+                                   <?php 
+								   } 
+								 } 
 								?>
-                                    <input name="cat1" type="text" class="form-control" id="cat1" value="<?php echo $ing['cat1']; ?>" />
-                                  <?php } ?></td>
-                                </tr>
-                                <tr>
-                                  <td>Cat2 %:</td>
-                                  <td colspan="3"><?php
-								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat2')){
-										echo $limit;
-									}else{
-								?>
-                                    <input name="cat2" type="text" class="form-control" id="cat2" value="<?php echo $ing['cat2']; ?>" />
-                                  <?php } ?></td>
-                                </tr>
-                                <tr>
-                                  <td>Cat3 %:</td>
-                                  <td colspan="3"><?php
-								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat3')){
-										echo $limit;
-									}else{
-								?>
-                                    <input name="cat3" type="text" class="form-control" id="cat3" value="<?php echo $ing['cat3']; ?>" />
-                                  <?php } ?></td>
-                                </tr>
-                                <tr>
-                                  <td>Cat4 %:</td>
-                                  <td colspan="3"><?php
-								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat4')){
-										echo $limit;
-									}else{
-								?>
-                                    <input name="cat4" type="text" class="form-control" id="cat4" value="<?php echo $ing['cat4']; ?>" />
-                                  <?php } ?></td>
-                                </tr>
-                                <tr>
-                                  <td>Cat5A %:</td>
-                                  <td colspan="3"><?php
-								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat5A')){
-										echo $limit;
-									}else{
-								?>
-                                    <input name="cat5A" type="text" class="form-control" id="cat5A" value="<?php echo $ing['cat5A']; ?>" />
-                                  <?php } ?></td>
-                                </tr>
-                                <tr>
-                                  <td>Cat5B %:</td>
-                                  <td colspan="3"><?php
-								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat5B')){
-										echo $limit;
-									}else{
-								?>
-                                    <input name="cat5B" type="text" class="form-control" id="cat5B" value="<?php echo $ing['cat5B']; ?>" />
-                                  <?php } ?></td>
-                                </tr>
-                                <tr>
-                                  <td>Cat5C %:</td>
-                                  <td colspan="3"><?php
-								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat5C')){
-										echo $limit;
-									}else{
-								?>
-                                    <input name="cat5C" type="text" class="form-control" id="cat5C" value="<?php echo $ing['cat5C']; ?>" />
-                                  <?php } ?></td>
-                                </tr>
-                                <tr>
-                                  <td>Cat5D %:</td>
-                                  <td colspan="3"><?php
-								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat5D')){
-										echo $limit;
-									}else{
-								?>
-                                    <input name="cat5D" type="text" class="form-control" id="cat5D" value="<?php echo $ing['cat5D']; ?>" />
-                                  <?php } ?></td>
-                                </tr>
-                                <tr>
-                                  <td>Cat6 %:</td>
-                                  <td colspan="3"><?php
-								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat6')){
-										echo $limit;
-									}else{
-								?>
-                                    <input name="cat6" type="text" class="form-control" id="cat6" value="<?php echo $ing['cat6']; ?>" />
-                                  <?php } ?></td>
-                                </tr>
-                                <tr>
-                                  <td>Cat7A %:</td>
-                                  <td colspan="3"><?php
-								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat7A')){
-										echo $limit;
-									}else{
-								?>
-                                    <input name="cat7A" type="text" class="form-control" id="cat7A" value="<?php echo $ing['cat7A']; ?>" />
-                                  <?php } ?></td>
-                                </tr>
-                                <tr>
-                                  <td>Cat7B %:</td>
-                                  <td colspan="3"><?php
-								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat7B')){
-										echo $limit;
-									}else{
-								?>
-                                    <input name="cat7B" type="text" class="form-control" id="cat7B" value="<?php echo $ing['cat7B']; ?>" />
-                                  <?php } ?></td>
-                                </tr>
-                                <tr>
-                                  <td>Cat8 %:</td>
-                                  <td colspan="3"><?php
-								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat8')){
-										echo $limit;
-									}else{
-								?>
-                                    <input name="cat8" type="text" class="form-control" id="cat8" value="<?php echo $ing['cat8']; ?>" />
-                                  <?php } ?></td>
-                                </tr>
-                                <tr>
-                                  <td>Cat9 %:</td>
-                                  <td colspan="3"><?php
-								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat9')){
-										echo $limit;
-									}else{
-								?>
-                                    <input name="cat9" type="text" class="form-control" id="cat9" value="<?php echo $ing['cat9']; ?>" />
-                                  <?php } ?></td>
-                                </tr>
-                                <tr>
-                                  <td>Cat10A %:</td>
-                                  <td colspan="3"><?php
-								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat10A')){
-										echo $limit;
-									}else{
-								?>
-                                    <input name="cat10A" type="text" class="form-control" id="cat10A" value="<?php echo $ing['cat10A']; ?>" />
-                                  <?php } ?></td>
-                                </tr>
-                                <tr>
-                                  <td>Cat10B %:</td>
-                                  <td colspan="3"><?php
-								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat10B')){
-										echo $limit;
-									}else{
-								?>
-                                    <input name="cat10B" type="text" class="form-control" id="cat10B" value="<?php echo $ing['cat10B']; ?>" />
-                                  <?php } ?></td>
-                                </tr>
-                                <tr>
-                                  <td>Cat11A %:</td>
-                                  <td colspan="3"><?php
-								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat11A')){
-										echo $limit;
-									}else{
-								?>
-                                    <input name="cat11A" type="text" class="form-control" id="cat11A" value="<?php echo $ing['cat11A']; ?>" />
-                                  <?php } ?></td>
-                                </tr>
-                                <tr>
-                                  <td>Cat11B %:</td>
-                                  <td colspan="3"><?php
-								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat11B')){
-										echo $limit;
-									}else{
-								?>
-                                    <input name="cat11B" type="text" class="form-control" id="cat11B" value="<?php echo $ing['cat11B']; ?>" />
-                                  <?php } ?></td>
-                                </tr>
-                                <tr>
-                                  <td>Cat12 %:</td>
-                                  <td colspan="3"><?php
-								 	if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat12')){
-										echo $limit;
-									}else{
-								?>
-                                    <input name="cat12" type="text" class="form-control" id="cat12" value="<?php echo $ing['cat12']; ?>" />
-                                  <?php } ?></td>
-                                </tr>
+								</tr>
+								<?php } ?>
 						      </table>
    						  </div>
                   <div class="tab-pane fade" id="supply">
@@ -687,7 +456,14 @@ reload_data();
                               </tr>
                               <tr>
                                 <td>SDS:</td>
-                                <td colspan="3"><input type="file" class="form-control" name="SDS" id="SDS"></td>
+                                <td colspan="3">
+                                <form method="post" action="" enctype="multipart/form-data" id="myform">
+        							<div >
+                                        <input type="file" id="SDS" name="SDS" />
+                                        <input type="button" class="btn btn-info" value="Upload" id="sds_upload">
+                                  </div>
+							    </form>
+                                </td>
                               </tr>
                             </table>
       						</div>
@@ -727,11 +503,10 @@ reload_data();
                   </tr>
                 </table>
 			  </div>
-              <?php if($ingID){?>
               <div class="tab-pane fade" id="tech_allergens">
                    <div id="fetch_allergen"><div class="loader"></div></div>
               </div>
-              <?php } ?>
+             
               <?php if($settings['pubChem'] == '1' && $ing['cas']){?>
               <div class="tab-pane fade" id="pubChem">
 				   <h3>Pub Chem Data</h3>
@@ -739,10 +514,21 @@ reload_data();
                    <div id="pubChemData"> <div class="loader"></div> </div>
               </div>
               <?php } ?>
-                   <!-- </div> <!--tabs-->
+              <div class="tab-pane fade" id="privacy">
+       			  <h3>Privacy</h3>
+                  <hr>
+                  <table width="100%" border="0">
+                     <tr>
+                       <td width="9%" height="31"><a href="#" rel="tipsy" title="If enabled, ingredient will automatically excluded if you choose to upload your ingredients to PV Online.">Private:</a></td>
+                       <td width="91%" colspan="5"><input name="isPrivate" type="checkbox" id="isPrivate" value="1" <?php if($ing['isPrivate'] == '1'){; ?> checked="checked"  <?php } ?>/></td>
+                     </tr>
+                  </table>
+              </div>
+              <?php } ?>
+               <!--tabs-->
+                
                     <hr>
-                    <p><input type="submit" name="save" id="submit" class="btn btn-info" value="Save" /></p>
-			</form>
+                    <p><input type="submit" name="save" id="save" class="btn btn-info" value="Save" /></p>
 </div>
 </body>
 </html>
@@ -806,6 +592,11 @@ reload_data();
             Percentage %:
             <input class="form-control" name="allgPerc" type="text" id="allgPerc" />
             </p>
+            <div class="dropdown-divider"></div>
+      <label>
+         <input name="addToIng" type="checkbox" id="addToIng" value="1" />
+        Add to ingredients
+      </label>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -845,7 +636,8 @@ function addAllergen() {
 			allergen: 'add',
 			allgName: $("#allgName").val(),
 			allgPerc: $("#allgPerc").val(),
-			allgCAS: $("#allgCAS").val(),				
+			allgCAS: $("#allgCAS").val(),	
+			addToIng: $("#addToIng").is(':checked'),				
 			ing: '<?=$ing['name'];?>'
 			},
 		dataType: 'html',
@@ -858,68 +650,107 @@ function addAllergen() {
 		}
 	  });
 };
-/*
-function mgmIngredient() {	  
-	$.ajax({ 
-		url: 'update_data.php', 
-		type: 'POST',
-		data: {
-			manage: 'ingredient',
-			cas: $("#cas").val(),
-			fema: $("#fema").val(),
-			type: $("#type").val(),
-			strength: $("#strength").val(),
-			category: $("#category").val(),
-			supplier: $("#supplier").val(),
-			supplier_link: $("#supplier_link").val(),
-			profile: $("#profile").val(),
-			price: $("#price").val(),
-			tenacity: $("#tenacity").val(),
-			chemical_name: $("#chemical_name").val(),
-			flash_point: $("#flash_point").val(),
-			appearance: $("#appearance").val(),
-			ml: $("#ml").val(),
-			solvent: $("#solvent").val(),
-			notes: $("#notes").val(),
-			purity: $("#purity").val(),
-			soluble: $("#soluble").val(),
-			logp: $("#logp").val(),
-			type: $("#type").val(),
 
-			cat1: $("#cat1").val(),
-			cat2: $("#cat2").val(),
-			cat3: $("#cat3").val(),
-			cat4: $("#cat4").val(),
-			cat5A: $("#cat5A").val(),
-			cat5B: $("#cat5B").val(),
-			cat5C: $("#cat5C").val(),
-			cat5D: $("#cat5D").val(),
-			cat6: $("#cat6").val(),
-			cat7A: $("#cat7A").val(),
-			cat7B: $("#cat7B").val(),
-			cat8: $("#cat8").val(),
-			cat9: $("#cat9").val(),
-			cat10A: $("#cat10A").val(),
-			cat10B: $("#cat10B").val(),
-			cat11A: $("#cat11A").val(),
-			cat11B: $("#cat11B").val(),
-			cat12: $("#cat12").val(),
+$(document).ready(function() {
+	$('#save').click(function() {
+							  
+		$.ajax({ 
+			url: 'update_data.php', 
+			type: 'POST',
+			data: {
+				manage: 'ingredient',
+				
+				name: $("#name").val(),
+				INCI: $("#INCI").val(),
+				cas: $("#cas").val(),
+				fema: $("#fema").val(),
+				type: $("#type").val(),
+				strength: $("#strength").val(),
+				category: $("#category").val(),
+				supplier: $("#supplier").val(),
+				supplier_link: $("#supplier_link").val(),
+				profile: $("#profile").val(),
+				price: $("#price").val(),
+				tenacity: $("#tenacity").val(),
+				formula: $("#formula").val(),
+				chemical_name: $("#chemical_name").val(),
+				flash_point: $("#flash_point").val(),
+				appearance: $("#appearance").val(),
+				ml: $("#ml").val(),
+				solvent: $("#solvent").val(),
+				notes: $("#notes").val(),
+				odor: $("#odor").val(),
+				purity: $("#purity").val(),
+				soluble: $("#soluble").val(),
+				logp: $("#logp").val(),
+				type: $("#type").val(),
+	            
+				<?php foreach ($cats as $cat) {?>
+				cat<?php echo $cat['name'];?>: $("#cat<?php echo $cat['name'];?>").val(),
+				<?php } ?>
+				
+				manufacturer: $("#manufacturer").val(),
+				impact_top: $("#impact_top").val(),
+				impact_base: $("#impact_base").val(),
+				impact_heart: $("#impact_heart").val(),
+				usage_type: $("#usage_type").val(),
+				
+				isAllergen: $("#isAllergen").is(':checked'),
+				flavor_use: $("#flavor_use").is(':checked'),
+				noUsageLimit: $("#noUsageLimit").is(':checked'),
+				isPrivate: $("#isPrivate").is(':checked'),
 
-			manufacturer: $("#manufacturer").val(),
-			impact_top: $("#impact_top").val(),
-			impact_base: $("#impact_base").val(),
-			impact_heart: $("#impact_heart").val(),
-			usage_type: $("#usage_type").val(),
+				<?php if($ing['name']){?>
+				ing: '<?=$ing['name'];?>'
+				<?php } ?>
+				},
+			dataType: 'html',
+			success: function (data) {
+				$('#ingMsg').html(data);
+				 if ($('#name').val()) {
+					window.location = 'mgmIngredient.php?id=' + $('#name').val();
+				 }
+			}
+		  });
+  })
+	
+	
+	$("#sds_upload").click(function(){
+        $("#ingMsg").html('<div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
+		$("#sds_upload").prop("disabled", true);
+        $("#sds_upload").prop('value', 'Please wait...');
+		
+		var fd = new FormData();
+        var files = $('#SDS')[0].files;
+        
+        if(files.length > 0 ){
+           fd.append('SDS',files[0]);
 
-			<?php if($ing['name']){?>
-			ing: '<?=$ing['name'];?>'
-			<?php } ?>
-			},
-		dataType: 'html',
-		success: function (data) {
-			
-		}
-	  });
-};
-*/
+           $.ajax({
+              url: 'upload.php?type=SDS&ingredient_id=<?=$ing['name'];?>',
+              type: 'post',
+              data: fd,
+              contentType: false,
+              processData: false,
+              success: function(response){
+                 if(response != 0){
+                    $("#ingMsg").html(response);
+					$("#sds_upload").prop("disabled", false);
+        			$("#sds_upload").prop('value', 'Upload');
+                 }else{
+                    $("#ingMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> File upload failed!</div>');
+					$("#sds_upload").prop("disabled", false);
+        			$("#sds_upload").prop('value', 'Upload');
+                 }
+              },
+           });
+        }else{
+			$("#ingMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a file to upload!</div>');
+			$("#sds_upload").prop("disabled", false);
+   			$("#sds_upload").prop('value', 'Upload');
+        }
+    });
+	
+	
+});
 </script>

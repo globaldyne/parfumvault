@@ -1,9 +1,9 @@
 <?php
 require('../inc/sec.php');
 
-require '../inc/config.php';
-require '../inc/opendb.php';
-require '../inc/product.php';
+require (__ROOT__.'/inc/config.php');
+require (__ROOT__.'/inc/opendb.php');
+require (__ROOT__.'/inc/product.php');
 
 if(isset($_POST["import"]) && ($_POST['name'])){
 	$name = mysqli_real_escape_string($conn,$_POST['name']);

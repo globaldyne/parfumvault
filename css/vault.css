@@ -204,27 +204,6 @@ tr.strikeout td:before {
 	font-size: 20px;
 }
 
-.loader {
-  border: 16px solid #f3f3f3;
-  border-radius: 50%;
-  border-top: 16px solid #3498db;
-  width: 120px;
-  height: 120px;
-  -webkit-animation: spin 2s linear infinite; /* Safari */
-  animation: spin 2s linear infinite;
-}
-
-/* Safari */
-@-webkit-keyframes spin {
-  0% { -webkit-transform: rotate(0deg); }
-  100% { -webkit-transform: rotate(360deg); }
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
 #formula td,
   table.table th {
   white-space: nowrap;
@@ -312,4 +291,56 @@ tr.strikeout td:before {
 .charts_box {
     width: 100%;
     height: 500px;
+}
+
+
+.loader {
+  width: 250px;
+  height: 250px;
+  content:url(/img/Testtube.gif);
+}
+
+.loader-center {
+  padding: 10px;
+  position: absolute;
+  top: 100%;
+  left: 44%;
+  margin: 200px 0 0 -100px;
+}
+
+.loader-text {
+  color: #000;
+  font-family: arial, sans-serif;
+  text-align:center;
+}
+
+.loader-text:after {
+  content: 'Loading';
+  animation: load 2s linear infinite;
+}
+
+@keyframes load {
+  0% {
+    content: 'Loading';
+  }
+  33% {
+    content: 'Loading.';
+  }
+  67% {
+    content: 'Loading..';
+  }
+  100% {
+    content: 'Loading...';
+  }
+}
+
+a:hover{
+    text-decoration: none;
+}
+
+.even_ing {
+    background-color: #FFF !important;
+}
+.odd_ing {
+    background-color:  #EEE !important;
 }

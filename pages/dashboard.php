@@ -4,7 +4,7 @@
 <link href="css/Chart.css" rel="stylesheet">
 
 <div id="content-wrapper" class="d-flex flex-column">
-<?php require_once('pages/top.php'); ?>
+<?php require_once(__ROOT__.'/pages/top.php'); ?>
         <div class="container-fluid">
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="m-0 mb-4 text-primary">Dashboard</h1>

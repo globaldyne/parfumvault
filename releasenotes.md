@@ -1,5 +1,7 @@
 Whats New:
 ----------------------
-We added the option to select between 2D and 3D for PubChem image. Go to settings and select the desirable format!
-You can now add a trading name along with INCI name in ingredients.
-The insights page has been renamed to statistics.
+You can now add basic ingredient info when adding allergens
+Override usage limits in ingredients
+Ingredients management improvements
+We added option to exclude specific ingredients from uploading to PV Online 
+The ingredient management page has a new layout for Usage & Limits for better user experience

@@ -4,32 +4,32 @@ if(file_exists('./inc/config.php') == FALSE){
 	session_destroy();
 	header('Location: login.php');
 }
-require_once('./inc/config.php');
-require_once('./inc/product.php');
-require_once('./inc/opendb.php');
-require_once('./func/calcCosts.php');
-require_once('./func/calcPerc.php');
-require_once('./func/checkDupes.php');
-require_once('./func/checkIng.php');
-require_once('./func/checkAllergen.php');
-require_once('./func/getIngUsage.php');
-require_once('./func/checkVer.php');
-require_once('./func/getIFRAtypes.php');
-require_once('./func/searchIFRA.php');
-require_once('./func/formatBytes.php');
-require_once('./func/countElement.php');
-require_once('./func/goShopping.php');
-require_once('./libs/fpdf.php');
-require_once('./func/genBatchID.php');
-require_once('./func/genBatchPDF.php');
-require_once('./func/ml2L.php');
-require_once('./func/validateFormula.php');
-require_once('./func/pvFileGet.php');
-require_once('./func/countPending.php');
-require_once('./func/countCart.php');
-require_once('./func/pvOnline.php');
+require_once(__ROOT__.'/inc/config.php');
+require_once(__ROOT__.'/inc/product.php');
+require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/func/calcCosts.php');
+require_once(__ROOT__.'/func/calcPerc.php');
+require_once(__ROOT__.'/func/checkDupes.php');
+require_once(__ROOT__.'/func/checkIng.php');
+require_once(__ROOT__.'/func/checkAllergen.php');
+require_once(__ROOT__.'/func/getIngUsage.php');
+require_once(__ROOT__.'/func/checkVer.php');
+require_once(__ROOT__.'/func/getIFRAtypes.php');
+require_once(__ROOT__.'/func/searchIFRA.php');
+require_once(__ROOT__.'/func/formatBytes.php');
+require_once(__ROOT__.'/func/countElement.php');
+require_once(__ROOT__.'/func/goShopping.php');
+require_once(__ROOT__.'/libs/fpdf.php');
+require_once(__ROOT__.'/func/genBatchID.php');
+require_once(__ROOT__.'/func/genBatchPDF.php');
+require_once(__ROOT__.'/func/ml2L.php');
+require_once(__ROOT__.'/func/validateFormula.php');
+require_once(__ROOT__.'/func/pvFileGet.php');
+require_once(__ROOT__.'/func/countPending.php');
+require_once(__ROOT__.'/func/countCart.php');
+require_once(__ROOT__.'/func/pvOnline.php');
 
-require('./inc/settings.php');
+require(__ROOT__.'/inc/settings.php');
 
 if($pv_meta['app_ver'] < trim(file_get_contents(__ROOT__.'/VERSION.md'))){
 	$upVerLoc = trim(file_get_contents(__ROOT__.'/VERSION.md'));
@@ -100,39 +100,70 @@ $(document).ready(function() {
   		showCloseBtn: true,
 	});
 	
-    $('#tdData,#tdDataSup,#tdDataCat,#tdDataUsers,#tdDataCustomers').DataTable({
+    $('#tdData,#tdDataSup,#tdDataCustomers').DataTable({
 	    "paging":   true,
 		"info":   true,
 		"lengthMenu": [[20, 35, 60, -1], [20, 35, 60, "All"]]
 	});
+	
+	list_formulas();
+	list_ingredients();
+
 });
 
 function updateDB() {
-$.ajax({ 
-    url: 'pages/operations.php', 
-	type: 'GET',
-    data: {
-		do: "db_update"
-		},
-	dataType: 'html',
-    success: function (data) {
-	  $('#msg').html(data);
-    }
-  });
+	$.ajax({ 
+		url: 'pages/operations.php', 
+		type: 'GET',
+		data: {
+			do: "db_update"
+			},
+		dataType: 'html',
+		success: function (data) {
+		  $('#msg').html(data);
+		}
+	  });
+};
+	
+function list_formulas(){
+	$.ajax({ 
+		url: 'pages/listFormulas.php', 
+		dataType: 'html',
+			success: function (data) {
+				$('#list_formulas').html(data);
+			}
+		});
+};
+	
+function list_ingredients(){
+	$.ajax({ 
+		url: 'pages/listIngredients.php', 
+		dataType: 'html',
+			success: function (data) {
+				$('#list_ingredients').html(data);
+			}
+		});
 };
 
+function list_users(){
+	$.ajax({ 
+		url: 'pages/listUsers.php', 
+		dataType: 'html',
+			success: function (data) {
+				$('#list_users').html(data);
+			}
+		});
+};
 
-function list_formulas(){
-$.ajax({ 
-    url: 'pages/listFormulas.php', 
-	dataType: 'html',
-		success: function (data) {
-			$('#list_formulas').html(data);
-		}
-	});
-}
-
-list_formulas();
+function list_cat(){
+	$.ajax({ 
+		url: 'pages/listCat.php', 
+		dataType: 'html',
+			success: function (data) {
+				$('#list_cat').html(data);
+			}
+		});
+};
 </script>
 </head>
 
@@ -216,13 +247,6 @@ list_formulas();
           <i class="fas fa-fw fa-chart-area"></i>
           <span>Statistics</span></a>
         </li>
-        <?php if($settings['pv_maker'] && $settings['pv_maker_host']){?>
-        <li class="nav-item">
-        <a class="nav-link" href="?do=pvmaker">
-          <i class="fas fa-fw fa-robot"></i>
-          <span>PV Maker</span></a>
-        </li>
-        <?php } ?>
       <hr class="sidebar-divider d-none d-md-block">
       
         <li class="nav-item">
@@ -243,21 +267,19 @@ list_formulas();
     </ul>
     <?php
 		if($_GET['do'] == 'Formula'){
-			require 'pages/formula.php';
-		}elseif($_GET['do'] == 'addFormula'){
-			require 'pages/addFormula.php';
+			require_once(__ROOT__.'/pages/formula.php');
 		}elseif($_GET['do'] == 'ingredients'){
-			require 'pages/ingredients.php';
+			require_once(__ROOT__.'/pages/ingredients.php');
 		}elseif($_GET['do'] == 'settings'){
-			require 'pages/settings.php';
+			require_once(__ROOT__.'/pages/settings.php');
 		}elseif($_GET['do'] == 'statistics'){
-			require 'pages/statistics.php';
+			require_once(__ROOT__.'/pages/statistics.php');
 		}elseif($_GET['do'] == 'IFRA'){
-			require 'pages/IFRA.php';
+			require_once(__ROOT__.'/pages/IFRA.php');
 		}elseif($_GET['do'] == 'listFormulas'){
 		?>
         <div id="content-wrapper" class="d-flex flex-column">
-			<?php require_once('pages/top.php'); ?>
+			<?php require_once(__ROOT__.'/pages/top.php'); ?>
             
         <div class="container-fluid">
           <div>
@@ -266,45 +288,47 @@ list_formulas();
               <h2 class="m-0 font-weight-bold text-primary"><a href="?do=listFormulas">Formulas</a></h2>
               <div id="inMsg"></div>
             </div>
-            <div id="list_formulas"><div class="loader"></div></div>
+            <div id="list_formulas">
+            	<div class="loader-center">
+                	<div class="loader"></div>
+                    <div class="loader-text"></div>
+                </div>
+             </div>
            </div>
+          </div>
         </div>
-      </div>
-	</div>
+	   </div>
 		<?php
 		}elseif($_GET['do'] == 'genFinishedProduct'){
-			require 'pages/genFinishedProduct.php';		
+			require_once(__ROOT__.'/pages/genFinishedProduct.php');		
 		}elseif($_GET['do'] == 'bottles'){
-			require 'pages/bottles.php';		
+			require_once(__ROOT__.'/pages/bottles.php');		
 		}elseif($_GET['do'] == 'addBottle'){
-			require 'pages/addBottle.php';		
+			require_once(__ROOT__.'/pages/addBottle.php');		
 		}elseif($_GET['do'] == 'lids'){
-			require 'pages/lids.php';				
+			require_once(__ROOT__.'/pages/lids.php');
 		}elseif($_GET['do'] == 'addLid'){
-			require 'pages/addLid.php';	
+			require_once(__ROOT__.'/pages/addLid.php');	
 		}elseif($_GET['do'] == 'batches'){
-			require 'pages/batches.php';				
+			require_once(__ROOT__.'/pages/batches.php');				
 		}elseif($_GET['do'] == 'tools'){
-			require 'pages/tools.php';	
+			require_once(__ROOT__.'/pages/tools.php');	
 		}elseif($_GET['do'] == 'todo'){
-			require 'pages/todo.php';	
+			require_once(__ROOT__.'/pages/todo.php');	
 		}elseif($_GET['do'] == 'cart'){
-			require 'pages/cart.php';	
+			require_once(__ROOT__.'/pages/cart.php');	
 		}elseif($_GET['do'] == 'suppliers'){
-			require 'pages/suppliers.php';
+			require_once(__ROOT__.'/pages/suppliers.php');
 		}elseif($_GET['do'] == 'sellFormula'){
-			require 'pages/sellFormula.php';
+			require_once(__ROOT__.'/pages/sellFormula.php');
 		}elseif($_GET['do'] == 'customers'){
-			require 'pages/customers.php';
-			
-		}elseif($_GET['do'] == 'pvmaker' && $settings['pv_maker'] == '1'){
-			require 'pages/pvmaker.php';	
+			require_once(__ROOT__.'/pages/customers.php');
 			
 		}else{
-			require 'pages/dashboard.php';
+			require_once(__ROOT__.'/pages/dashboard.php');
 		}
 	?>
-	<?php require_once("pages/footer.php"); ?>
+<?php require_once(__ROOT__.'/pages/footer.php'); ?>
 <?php if(isset($show_release_notes)){ ?>
 <!--RELEASE NOTES-->
 <div class="modal fade" id="release_notes" tabindex="-1" role="dialog" aria-labelledby="release_notes" aria-hidden="true">

@@ -1,10 +1,10 @@
 <?php 
 require('../inc/sec.php');
 
-require_once('../inc/config.php');
-require_once('../inc/opendb.php');
-require_once('../inc/settings.php');
-require_once('../inc/product.php');
+require_once(__ROOT__.'/inc/config.php');
+require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/inc/settings.php');
+require_once(__ROOT__.'/inc/product.php');
 
 
 if($_GET['action'] == 'import' && $_GET['items']){
@@ -52,7 +52,7 @@ if($_GET['action'] == 'import' && $_GET['items']){
 
 if($_GET['action'] == 'upload' && $_GET['items'] == 'ingredients'){
 	//Do all the ingredients
-	$ingQ = mysqli_query($conn, "SELECT * FROM ingredients");
+	$ingQ = mysqli_query($conn, "SELECT * FROM ingredients WHERE isPrivate = '0'");
 	$i = 0;
 	while($ing = mysqli_fetch_assoc($ingQ)){
 		unset($ing['id'],$ing['created']);
