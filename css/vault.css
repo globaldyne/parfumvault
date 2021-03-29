@@ -344,3 +344,10 @@ a:hover{
 .odd_ing {
     background-color:  #EEE !important;
 }
+
+.modal-ifra {
+  width: 800px;
+  max-width: 800px;
+  margin: auto;
+}
+

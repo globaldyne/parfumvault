@@ -380,16 +380,8 @@ list_cat();
     </tr>
     <tr>
       <td><ul>
-        <li><a href="pages/maintenance.php?do=IFRA" class="popup-link">Import IFRA Library</a></li>
-      </ul></td>
-      <td><ul>
-        <li><a href="https://ifrafragrance.org/safe-use/standards-guidance" target="_blank">IFRA web site</a></li>
-      </ul></td>
-    </tr>
-    <tr>
-      <td><ul>
         <li><a href="pages/maintenance.php?do=backupDB">Backup DB</a></li>
-      </ul></td>
+        </ul></td>
       <td>&nbsp;</td>
     </tr>
     <tr>

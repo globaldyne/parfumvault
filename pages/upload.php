@@ -5,6 +5,8 @@ require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/func/validateInput.php');
 require_once(__ROOT__.'/inc/settings.php');
+require_once(__ROOT__.'/func/fixIFRACas.php');
+
 
 
 if($_GET['type'] == 'SDS' && $_GET['ingredient_id']){
@@ -138,6 +140,56 @@ if($_GET['type'] == 'frmCSVImport'){
 		}
 	 
 	 
+	return;
+}
+
+if($_GET['type'] == 'IFRA'){
+	if(isset($_FILES['ifraXLS'])){
+		$filename = $_FILES["ifraXLS"]["tmp_name"];  
+		$file_ext = strtolower(end(explode('.',$_FILES['ifraXLS']['name'])));
+		$all_ext = "xls,xlsx";
+		$ext = explode(",",$all_ext);
+	
+		if(in_array($file_ext,$ext)=== false){
+			echo '<div class="alert alert-danger alert-dismissible"><strong>File upload error: </strong>Extension not allowed, please choose a '.$all_ext.' file.</div>';
+			return;
+		}
+		
+		if($_FILES["ifraXLS"]["size"] > 0){
+			require_once(__ROOT__.'/func/SimpleXLSX.php');
+			mysqli_query($conn, "TRUNCATE IFRALibrary");
+		
+			$xlsx = SimpleXLSX::parse($filename);
+		
+			try {
+			   $link = new PDO( "mysql:host=$dbhost;dbname=$dbname", $dbuser, $dbpass);
+			   $link->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			}catch(PDOException $e){
+				echo $sql . "<br>" . $e->getMessage();
+			}
+		
+			$fields = 'ifra_key,image,amendment,prev_pub,last_pub,deadline_existing ,deadline_new,name,cas,cas_comment,synonyms,formula,flavor_use,prohibited_notes,restricted_photo_notes,restricted_notes,specified_notes,type,risk,contrib_others,contrib_others_notes,cat1,cat2,cat3,cat4,cat5A ,cat5B,cat5C,cat5D,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12';
+			$values = substr(str_repeat('?,', count(explode(',' , $fields))), 0 , strlen($x) - 1);
+			$stmt = $link->prepare( "INSERT INTO IFRALibrary ($fields) VALUES ($values)");
+			$cols = $xlsx->dimension()[0];//$dim[0];
+				foreach ( $xlsx->rows() as $k => $r ) {
+					for ( $i = 0; $i < $cols; $i ++ ) {
+						$l = $i+1;
+						$stmt->bindValue( $l, $r[ $i]);
+					}
+					try {
+						$stmt->execute();
+						$err = '0';
+					} catch (Exception $e) {
+						$err = '1';
+					}
+				}
+				if($_GET['updateCAS'] == '1'){
+					fixIFRACas($conn);
+				}
+				echo '<div class="alert alert-success alert-dismissible">Import success.</div>';
+		}
+	}
 	return;
 }
 ?>

@@ -1,7 +1,9 @@
 # CHANGELOG
 ### Version 2.8
 Formula CSV Import improvements
+IFRA Library import improvements
 Various bug fixes
+
 
 ### Version 2.7
 Making sure the percentage symbol is striped out from allergens quantity
