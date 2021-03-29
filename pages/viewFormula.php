@@ -199,7 +199,7 @@ $('.replaceIngredient').editable({
 			 <?php
 				$res_ing = mysqli_query($conn, "SELECT name FROM ingredients ORDER BY name ASC");
 				while ($r_ing = mysqli_fetch_array($res_ing)){
-					echo '{value: "'.$r_ing['name'].'", text: "'.$r_ing['name'].'"},';
+					echo '{value: "'.htmlspecialchars($r_ing['name']).'", text: "'.htmlspecialchars($r_ing['name']).'"},';
 			}
 			?>
           ],

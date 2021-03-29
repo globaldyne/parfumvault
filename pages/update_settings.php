@@ -151,7 +151,7 @@ if($_POST['manage'] == 'category'){
 	$notes = mysqli_real_escape_string($conn, $_POST['cat_notes']);
 	
 	if(empty($cat)){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Category namae is required.</div>';
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Category name is required.</div>';
 		return;
 	}
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingCategory WHERE name = '$cat'"))){
