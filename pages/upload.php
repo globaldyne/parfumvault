@@ -106,6 +106,12 @@ if($_GET['type'] == 'ingCSVImport'){
 
 if($_GET['type'] == 'frmCSVImport'){
 	$name = mysqli_real_escape_string($conn,trim($_GET['name']));
+	
+	if(empty($name)){
+		echo '<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> Name is required.</div>';
+		return;
+	}
+
 	$fid = base64_encode($name);
 
 	$profile = mysqli_real_escape_string($conn,$_GET['profile']);
