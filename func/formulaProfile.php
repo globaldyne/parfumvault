@@ -9,7 +9,7 @@ function formulaProfile($conn, $profile, $sex){
 		$formulas_n = mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE profile = '$profile' OR sex = '$sex' ORDER by name DESC");
 	}
 	?>
-<table width="100%" border="0" cellspacing="0" id="tdData" class="table table-striped table-bordered table-sm">
+<table width="100%" border="0" cellspacing="0" id="tdData<?=$profile?>" class="table table-striped table-bordered table-sm">
 	<thead>
        <tr>
          <th width="20%">Formula Name</th>

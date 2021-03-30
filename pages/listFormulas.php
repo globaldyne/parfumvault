@@ -180,7 +180,7 @@ $('.popup-link').magnificPopup({
 	showCloseBtn: true,
 });
 	
-$('#tdData').DataTable({
+$('#tdData,#tdDataoriental,#tdDatawoody,#tdDatafloral,#tdDatafresh,#tdDataunisex,#tdDatamen,#tdDatawomen').DataTable({
     "paging":   true,
 	"info":   true,
 	"lengthMenu": [[20, 35, 60, -1], [20, 35, 60, "All"]]

@@ -7,7 +7,10 @@ function calcPerc($formula, $profile, $percent, $conn){
 		$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT profile FROM ingredients WHERE name = '".$formula['ingredient']."'"));
 		$prf[] = $ing_q['profile'];
 	}
-	$number = array_count_values($prf); 
-    return ($number[$profile] / $percent) * 100;
+	if($prf){
+		$number = array_count_values($prf); 
+    	return ($number[$profile] / $percent) * 100;
+	}
+	return;
 }
 ?>

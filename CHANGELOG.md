@@ -4,7 +4,7 @@ Formula CSV Import improvements
 Added protection from accidental deletion in formulas
 IFRA Library import improvements
 Various bug fixes
-
+Fix data table in formulas listing
 
 ### Version 2.7
 Making sure the percentage symbol is striped out from allergens quantity
