@@ -77,7 +77,7 @@ if($_FILES["file"]["tmp_name"]){
     <td colspan="2"><h1 class="badge-primary"><?php echo $info['name'];?></h1></td>
   </tr>
   <tr>
-    <td colspan="2"><?php echo $msg; ?></td>
+    <td colspan="2"><div id="msg"><?php echo $msg; ?></div></td>
   </tr>
   <tr>
     <td width="20%">Formula Name:</td>
@@ -86,6 +86,10 @@ if($_FILES["file"]["tmp_name"]){
   <tr>
     <td>Product Name:</td>
     <td data-name="product_name" class="product_name" data-type="text" align="left" data-pk="product_name"><?php echo $info['product_name'];?></td>
+  </tr>
+  <tr>
+    <td>Protected:</td>
+    <td><input name="isProtected" type="checkbox" id="isProtected" value="1" <?php if($info['isProtected'] == '1'){; ?> checked="checked"  <?php } ?>/></td>
   </tr>
   <tr>
     <td>Profile:</td>
@@ -126,8 +130,8 @@ $(document).ready(function(){
   type: "POST",
   mode: 'inline',
   dataType: 'json',
-      success: function(response, newValue) {
-        if(response.status == 'error') return response.msg; 
+      success: function(response) {				
+	  	$('#msg').html(response);        
     },
 
  });
@@ -182,5 +186,21 @@ $(document).ready(function(){
              {value: 'women', text: 'Women'},
           ]
     });
-  })
+  });
+
+  $("#isProtected").change(function() {
+	  $.ajax({ 
+			url: 'update_data.php', 
+			type: 'GET',
+			data: {
+				protect: '<?=$info['fid']?>',
+				isProtected: $("#isProtected").is(':checked'),
+				},
+			dataType: 'html',
+			success: function (data) {
+				$('#msg').html(data);
+			}
+		  });
+  });
+
 </script>

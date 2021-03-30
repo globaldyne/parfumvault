@@ -285,7 +285,7 @@ function list_cat(){
           <div>
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h2 class="m-0 font-weight-bold text-primary"><a href="?do=listFormulas">Formulas</a></h2>
+              <h2 class="m-0 font-weight-bold text-primary"><a href="javascript:list_formulas()">Formulas</a></h2>
               <div id="inMsg"></div>
             </div>
             <div id="list_formulas">

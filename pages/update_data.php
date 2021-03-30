@@ -27,6 +27,22 @@ if($_GET['formulaMeta']){
 	return;
 }
 
+if($_GET['protect']){
+	$fid = mysqli_real_escape_string($conn, $_GET['protect']);
+	
+	if($_GET['isProtected'] == 'true'){
+		$isProtected = '1';
+	}else{
+		$isProtected = '0';
+	}
+	if(mysqli_query($conn, "UPDATE formulasMetaData SET isProtected = '$isProtected' WHERE fid = '$fid'")){
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Success!</div>';
+	}else{
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Something went wrong.</div>';
+	}
+	return;
+}
+
 if($_GET['rename']){
 	$value = mysqli_real_escape_string($conn, $_POST['value']);
 	$formula = mysqli_real_escape_string($conn, $_GET['rename']);

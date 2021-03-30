@@ -1,6 +1,7 @@
 # CHANGELOG
 ### Version 2.8
 Formula CSV Import improvements
+Added protection from accidental deletion in formulas
 IFRA Library import improvements
 Various bug fixes
 

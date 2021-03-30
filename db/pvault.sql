@@ -88,7 +88,8 @@ CREATE TABLE `formulasMetaData` (
   `sex` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `notes` text COLLATE utf8_bin DEFAULT NULL,
   `created` timestamp NOT NULL DEFAULT current_timestamp(),
-  `image` varchar(255) COLLATE utf8_bin NOT NULL
+  `image` varchar(255) COLLATE utf8_bin NOT NULL,
+  `isPrivate` INT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 DROP TABLE IF EXISTS `IFRALibrary`;
