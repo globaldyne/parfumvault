@@ -251,8 +251,8 @@ $('.replaceIngredient').editable({
                       <th width="5%">Purity %</th>
                       <th width="5%">Dilutant</th>
                       <th width="5%">Quantity (ml)</th>
-                      <th width="5%">Concentration*</th>
-                      <th width="5%">Cost</th>
+                      <th width="5%">Concentration %*</th>
+                      <th width="5%">Cost (<?php echo utf8_encode($settings['currency']);?>)</th>
                       <th width="5%">Properties</th>
                       <th class="noexport" width="15%">Actions</th>
                     </tr>
@@ -278,25 +278,27 @@ $('.replaceIngredient').editable({
 						}else{
 							$ingName = $formula['ingredient'];
 						}
-						
-						echo'<tr>';
-						if($settings['grp_formula'] == '1'){
+						?>
+						<tr>
+						<?php
+                        if($settings['grp_formula'] == '1'){
 							if(empty($ing_q['profile'])){
-								echo '<td class="noexport">Unknown</td>';
-							}else{
-								echo '<td class="noexport">'.$ing_q['profile'].'</td>';
-							}
+						?>
+								<td class="noexport">Unknown</td>
+						<?php	}else{ ?>
+								<td class="noexport"><?php echo $ing_q['profile'];?></td>
+						<?php	
+                            }
 						}
 						?>
                       <td align="center" class="<?php if($settings['grp_formula'] == '0'){echo $ing_q['profile'];}?>" id="ingredient"><a href="pages/mgmIngredient.php?id=<?php echo $formula['ingredient'];?>" class="popup-link"><?php echo $ingName;?></a> <?php echo checkIng($formula['ingredient'],$settings['defCatClass'],$conn);?></td>
                       <td align="center"><?php echo $ing_q['cas'];?></td>
                       <td data-name="concentration" class="concentration" data-type="text" align="center" data-pk="<?php echo $formula['ingredient'];?>"><?php echo $formula['concentration'];?></td>
-					  <?php
-                      if($formula['concentration'] == '100'){
-						  echo '<td align="center">None</td>';
-					  }else{
-						  echo '<td data-name="dilutant" class="dilutant" data-type="select" align="center" data-pk="'.$formula['ingredient'].'">'.$formula['dilutant'].'</td>';
-					  }
+					  <?php if($formula['concentration'] == '100'){ ?>
+					   <td align="center">None</td>
+					  <?php }else{ ?>
+					   <td data-name="dilutant" class="dilutant" data-type="select" align="center" data-pk="<?php echo $formula['ingredient']; ?>"><?php echo $formula['dilutant'];?></td>
+					  <?php }
 					  if($limit != null){
 						 if($limit < $conc_p){
 							$IFRA_WARN = 'class="alert-danger"';//VALUE IS TO HIGH AGAINST IFRA
@@ -313,21 +315,27 @@ $('.replaceIngredient').editable({
 					  }else{
 						  $IFRA_WARN = 'class="alert-warning"'; //NO RECORD FOUND
 					  }
-					  echo'<td data-name="quantity" class="quantity" data-type="text" align="center" data-pk="'.$formula['ingredient'].'">'.number_format($formula['quantity'],$settings['qStep']).'</td>';
-					  echo'<td align="center" '.$IFRA_WARN.'>'.$conc_p.'%</td>';
-					  echo '<td align="center">'.utf8_encode($settings['currency']).calcCosts($ing_q['price'],$formula['quantity'], $formula['concentration'], $ing_q['ml']).'</td>';
-					  echo '<td>'.ucfirst($ing_q['odor']).'</td>';
-					  echo '<td class="noexport" align="center"><a href="#" class="fas fa-exchange-alt replaceIngredient" rel="tipsy" title="Replace '.$formula['ingredient'].'" id="replaceIngredient" data-name="'.$formula['ingredient'].'" data-type="select" data-pk="'.$formula['ingredient'].'" data-title="Choose Ingredient to replace '.$formula['ingredient'].'"></a> &nbsp; <a href="'.goShopping($formula['ingredient'],$conn).'" target="_blank" class="fas fa-shopping-cart"></a> &nbsp; <a href="javascript:deleteING(\''.$formula['ingredient'].'\', \''.$formula['id'].'\')" onclick="return confirm(\'Remove '.$formula['ingredient'].' from formula?\');" class="fas fa-trash" rel="tipsy" title="Remove '.$formula['ingredient'].'"></a></td>
-                    </tr>';
+					  ?>
+					  <td data-name="quantity" class="quantity" data-type="text" align="center" data-pk="<?php echo $formula['ingredient'];?>"><?php echo number_format($formula['quantity'],$settings['qStep']);?></td>
+					  <td align="center" <?php echo $IFRA_WARN;?>><?php echo $conc_p;?></td>
+					  <td align="center"><?php echo calcCosts($ing_q['price'],$formula['quantity'], $formula['concentration'], $ing_q['ml']);?></td>
+					  <td><?php echo ucfirst($ing_q['odor']);?></td>
+					  <td class="noexport" align="center"><a href="#" class="fas fa-exchange-alt replaceIngredient" rel="tipsy" title="Replace <?php echo $formula['ingredient'];?>" id="replaceIngredient" data-name="<?php echo $formula['ingredient'];?>" data-type="select" data-pk="<?php echo $formula['ingredient'];?>" data-title="Choose Ingredient to replace <?php echo $formula['ingredient'];?>"></a> &nbsp; <a href="<?php echo goShopping($formula['ingredient'],$conn);?>" target="_blank" class="fas fa-shopping-cart"></a> &nbsp; <a href="javascript:deleteING('<?php echo $formula['ingredient'];?>', '<?php echo $formula['id'];?>')" onclick="return confirm('Remove <?php echo $formula['ingredient'];?> from formula?')" class="fas fa-trash" rel="tipsy" title="Remove <?php echo $formula['ingredient'];?>"></a>
+                      </td>
+				</tr>
+				<?php
 					$tot[] = calcCosts($ing_q['price'],$formula['quantity'], $formula['concentration'], $ing_q['ml']);
 					$conc_tot[] = $conc_p;
 				  }
-                  ?>
+	            ?>
                     </tr>
                   </tbody>
                   <tfoot>
                     <tr>
-                      <?php if($settings['grp_formula'] == '1'){ echo '<th></th>'; }?>
+                      <?php if($settings['grp_formula'] == '1'){ ?>
+                      <th>
+                      </th> 
+                      <?php }?>
                       <th width="22%">Total: <?php echo countElement("formulas WHERE fid = '$fid'",$conn);?></th>
                       <th></th>
                       <th></th>
