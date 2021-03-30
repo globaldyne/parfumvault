@@ -56,9 +56,12 @@ if($_FILES["file"]["tmp_name"]){
 
 <script src="../js/jquery/jquery.min.js"></script>
 <script src="../js/bootstrap.min.js"></script>
+<script src='../js/tipsy.js'></script>
+<script src="../js/jquery-ui.js"></script>
   
 <link href="../css/bootstrap.min.css" rel="stylesheet">
-  
+<link href="../css/tipsy.css" rel="stylesheet" />
+
 <script src="../js/bootstrap-select.js"></script>
 <script src="../js/bootstrap-editable.js"></script>
 
@@ -88,7 +91,7 @@ if($_FILES["file"]["tmp_name"]){
     <td data-name="product_name" class="product_name" data-type="text" align="left" data-pk="product_name"><?php echo $info['product_name'];?></td>
   </tr>
   <tr>
-    <td>Protected:</td>
+    <td><a href="#" rel="tipsy" title="When enabled, formula is protected against deletion.">Protected:</a></td>
     <td><input name="isProtected" type="checkbox" id="isProtected" value="1" <?php if($info['isProtected'] == '1'){; ?> checked="checked"  <?php } ?>/></td>
   </tr>
   <tr>
@@ -121,7 +124,8 @@ if($_FILES["file"]["tmp_name"]){
 
 <script type="text/javascript" language="javascript" >
 $(document).ready(function(){
- 
+ $('a[rel=tipsy]').tipsy({gravity: 'w'});
+
   $('#formula_metadata').editable({
   container: 'body',
   selector: 'td.name',
@@ -202,5 +206,4 @@ $(document).ready(function(){
 			}
 		  });
   });
-
 </script>
