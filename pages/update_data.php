@@ -217,8 +217,10 @@ if($_POST['manage'] == 'ingredient'){
 	$ing = mysqli_real_escape_string($conn, $_POST['ing']);
 
 	$INCI = trim(mysqli_real_escape_string($conn, $_POST["INCI"]));
-	$cas = trim(mysqli_real_escape_string($conn, $_POST["cas"]));
-	$fema = trim(mysqli_real_escape_string($conn, $_POST["fema"]));
+	
+	$cas = preg_replace('/\s+/', '', trim(mysqli_real_escape_string($conn, $_POST["cas"])));
+	$fema = preg_replace('/\s+/', '', trim(mysqli_real_escape_string($conn, $_POST["fema"])));
+																						
 	$type = mysqli_real_escape_string($conn, $_POST["type"]);
 	$strength = mysqli_real_escape_string($conn, $_POST["strength"]);
 	$category = mysqli_real_escape_string($conn, $_POST["category"]);

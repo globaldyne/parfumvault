@@ -9,3 +9,4 @@ inc/config.php
 *.swp
 t.php
 tests/
+searchTGSC.php
