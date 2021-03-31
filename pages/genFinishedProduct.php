@@ -75,7 +75,7 @@ $.ajax({
 	<?php } ?>
 };
 
-function printBoxLabel() {
+function BoxLabel(download) {
 	<?php if(empty($settings['label_printer_addr']) || empty($settings['label_printer_model']) || $settings['label_printer_size'] != '62'){?>
 	$("#inf").html('<div class="alert alert-danger alert-dismissible">Please configure printer details in <a href="?do=settings">settings<a> page. Note: For this label you need 62mm label</div>');
 	<?php }else{ ?>
@@ -89,32 +89,16 @@ $.ajax({
 		batchID: "<?php echo $batchID; ?>",
 		name: "<?php echo $f_name; ?>",
 		carrier: "<?php echo $carrier*100/$bottle;?>",
-		copies: $("#copiesToPrint").val()
+		copies: $("#copiesToPrint").val(),
+		download: download
 		},
 	dataType: 'html',
     success: function (data) {
-	  $('#printBoxLabel').modal('toggle');
+	  $('#BoxLabel').modal('toggle');
 	  $('#inf').html(data);
     }
   });
 	<?php } ?>
-};
-
-function downloadBoxLabel() {
-	$.ajax({ 
-    url: 'pages/manageFormula.php', 
-	type: 'get',
-    data: {
-		action: "downloadBoxLabel",
-		batchID: "<?php echo $batchID; ?>",
-		name: "<?php echo $f_name; ?>",
-		carrier: "<?php echo $carrier*100/$bottle;?>",
-		},
-	dataType: 'html',
-    success: function (data) {
-	  $('#inf').html(data);
-    }
-  });
 };
 </script>
 <div id="content-wrapper" class="d-flex flex-column">
@@ -150,7 +134,7 @@ function downloadBoxLabel() {
                         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#IFRA">IFRA Certificate</a>
                         <a class="dropdown-item" href="javascript:printLabel()" onclick="return confirm('Print label?')">Print Label</a>
                         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#printBoxLabel">Print Box Label</a>
-                        <a class="dropdown-item" href="javascript:downloadBoxLabel()">Download Box Label</a>
+                        <a class="dropdown-item" href="javascript:BoxLabel('1')">Download Box Label</a>
                       </div>
                     </div>
                     </div>
@@ -289,7 +273,7 @@ function downloadBoxLabel() {
       </div>
       <div class="modal-body">
         Copies to print:
-          <form action="javascript:printBoxLabel()" method="get" name="form1" target="_self" id="form1">
+          <form action="javascript:BoxLabel()" method="get" name="form1" target="_self" id="form1">
             <input name="copiesToPrint" type="text" id="copiesToPrint" value="1" />
       </div>
       <div class="modal-footer">
