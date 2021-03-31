@@ -79,8 +79,11 @@ function BoxLabel(download) {
 	<?php if(empty($settings['label_printer_addr']) || empty($settings['label_printer_model']) || $settings['label_printer_size'] != '62'){?>
 	$("#inf").html('<div class="alert alert-danger alert-dismissible">Please configure printer details in <a href="?do=settings">settings<a> page. Note: For this label you need 62mm label</div>');
 	<?php }else{ ?>
-	$("#inf").html('<div class="alert alert-info alert-dismissible">Printing...</div>');
-
+	if(download == null){
+		$("#inf").html('<div class="alert alert-info alert-dismissible">Printing...</div>');
+	}else{
+		$("#inf").html('<div class="alert alert-info alert-dismissible">Generating label...</div>');
+	}
 $.ajax({ 
     url: 'pages/manageFormula.php', 
 	type: 'get',
