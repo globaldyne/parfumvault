@@ -34,7 +34,7 @@ if($_FILES["file"]["tmp_name"]){
     	$dst = imagecreatetruecolor( $new_width, $new_height );
     	imagecopyresampled( $dst, $src, 0, 0, 0, 0, $new_width, $new_height, $width, $height );
     	imagedestroy( $src );
-    	imagepng( $dst, $targetfilename ); // adjust format as needed
+    	imagepng( $dst, $targetfilename );
 	 
 		//if($_FILES["file"]["size"] > 0){
 			move_uploaded_file($targetfilename,"../uploads/formulas/".base64_encode($targetfilename));

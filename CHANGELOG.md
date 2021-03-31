@@ -5,6 +5,7 @@ Added protection from accidental deletion in formulas
 IFRA Library import improvements
 Various bug fixes
 Fix data table in formulas listing
+Fix a bug preventing CAS number to be shown in batch PDF
 
 ### Version 2.7
 Making sure the percentage symbol is striped out from allergens quantity

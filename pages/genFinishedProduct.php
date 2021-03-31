@@ -46,7 +46,7 @@ if($_POST['formula']){
 		$batchFile = $uploads_path.'batches/'.$batchID;
 		
 		mysqli_query($conn, "INSERT INTO batchIDHistory (id,fid,pdf) VALUES ('$batchID','$fid','$batchFile')");
-		genBatchPDF($fid,$batchID,$bottle,$new_conc,$mg['total_mg'],$ver,$uploads_path,$conn);
+		genBatchPDF($fid,$batchID,$bottle,$new_conc,$mg['total_mg'],$ver,$uploads_path,$settings['defCatClass'],$conn);
 	}else{
 		$batchID = 'N/A';
 	}
