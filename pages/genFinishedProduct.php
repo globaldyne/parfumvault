@@ -333,7 +333,7 @@ $.ajax({
 					return;
 				}
 				
-				$cats_q = mysqli_query($conn, "SELECT id,name,description,type FROM IFRACategories ORDER BY id ASC");
+				$cats_q = mysqli_query($conn, "SELECT name FROM IFRACategories ORDER BY id ASC");
 
 				while($cats_res = mysqli_fetch_array($cats_q)){
 					$cats[] = $cats_res;
