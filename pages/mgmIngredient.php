@@ -405,7 +405,7 @@ reload_data();
                                 <td colspan="3"><input name="price" type="text" class="form-control" id="price" value="<?php echo $ing['price']; ?>"/></td>
                               </tr>
                               <tr>
-                                <td>Size (ml):</td>
+                                <td>Size (<?=$settings['mUnit']?>):</td>
                                 <td colspan="3"><input name="ml" type="text" class="form-control" id="ml" value="<?php echo $ing['ml']; ?>"/></td>
                               </tr>
                               <tr>

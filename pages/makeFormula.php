@@ -195,7 +195,7 @@ $(document).ready(function() {
                       <?php if($settings['grp_formula'] == '1'){ echo '<th></th>'; } ?>
                       <th width="22%">Ingredient</th>
                       <th width="10%">Purity %</th>
-                      <th width="10%">Quantity (ml)</th>
+                      <th width="10%">Quantity (<?=$settings['mUnit']?>)</th>
                       <th width="10%">Concentration*</th>
                       <th width="10%">Cost</th>
                       <th width="15%">Actions</th>
@@ -285,7 +285,7 @@ $(document).ready(function() {
                       <?php if($settings['grp_formula'] == '1'){ echo '<th></th>'; }?>
                       <th width="22%">Total: <?php echo countElement("makeFormula WHERE fid = '$fid'" ,$conn);?></th>
                       <th></th>
-                      <th width="15%" align="right"><p>Total: <?php echo ml2l($mg['total_mg'], 3); ?></p></th>
+                      <th width="15%" align="right"><p>Total: <?php echo ml2l($mg['total_mg'], 3, $settings['mUnit']); ?></p></th>
                       <th width="15%">Total: <?php echo array_sum($conc_tot);?>%</th>
                       <th width="15%" align="right">Cost: <?php echo utf8_encode($settings['currency']).number_format(array_sum($tot),2);?></a></th>
                       <th width="15%"></th>

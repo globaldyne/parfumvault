@@ -8,7 +8,7 @@ Fix data table in formulas listing
 Fix a bug preventing CAS number to be shown in batch PDF
 Label print improvements
 Multi-dimensional ingredient lookup in alleregens and re-calculate the usage percentages 
-
+Add measurement units
 
 ### Version 2.7
 Making sure the percentage symbol is striped out from allergens quantity

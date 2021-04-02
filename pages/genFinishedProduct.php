@@ -115,7 +115,7 @@ $.ajax({
             <?php if($_GET['generate'] && $_POST['formula']){?>
              <h2 class="m-0 font-weight-bold text-primary"><a href="?do=genFinishedProduct"><?php echo $meta['product_name'];?></a></h2>
              <h5 class="m-1 text-primary">Formula name: <strong><?php echo $meta['name'];?></strong></h5>
-             <h5 class="m-1 text-primary">Bottle: <strong><?php echo $bottle; ?>ml</strong></h5>
+             <h5 class="m-1 text-primary">Bottle: <strong><?php echo $bottle; ?><?=$settings['mUnit']?></strong></h5>
 			 <h5 class="m-1 text-primary">Concentration: <strong><?php echo $type; ?>%</h5>
              <h5 class="m-1 text-primary"><?php if($_POST['batchID'] == '1'){ echo 'Batch ID: <a href="'.$uploads_path.'batches/'.$batchID.'" target="_blank">'.$batchID.'</a>'; }else{ echo 'Batch ID: <a href="#">N/A</a>';}?></h5>
              <h5 class="m-1 text-primary">Category Class: <strong><?php echo ucfirst($defCatClass);?></strong></h5>
@@ -211,7 +211,7 @@ $.ajax({
                                             <td></td>
 
                       <td align="center" class="m-1 text-primary">Sub Total: </td>
-                      <td align="center" class="m-1 text-primary"><?php echo number_format(array_sum($new_tot), 3); ?>ml</td>
+                      <td align="center" class="m-1 text-primary"><?php echo number_format(array_sum($new_tot), 3); ?> <?=$settings['mUnit']?></td>
                       <td align="center" class="m-1 text-primary"><?php echo array_sum($conc_tot);?>%</td>
                       <td colspan="2" align="center" class="m-1 text-primary"><?php echo utf8_encode($settings['currency']).number_format(array_sum($tot),2);?></td>
                     </tr>
@@ -221,17 +221,16 @@ $.ajax({
                                             <td></td>
 
                       <td align="center" class="m-1 text-primary">Carrier/Solvent: </td>
-                      <td align="center" class="m-1 text-primary"><?php echo $carrier; ?>ml</td>
+                      <td align="center" class="m-1 text-primary"><?php echo $carrier; ?> <?=$settings['mUnit']?></td>
                       <td align="center" class="m-1 text-primary"><?php echo $carrier*100/$bottle;?>%</td>
                       <td colspan="2" align="center" class="m-1 text-primary"><?php $carrier_sub_cost = $carrier_cost['price'] / $carrier_cost['ml'] * $carrier; echo utf8_encode($settings['currency']).number_format($carrier_sub_cost, 2);?></td>
                     </tr>
                     <tr>
                       <td></td>
                       <td></td>
-                                            <td></td>
-
+                      <td></td>
                       <td align="center" class="m-0 text-primary">Bottle:</td>
-                      <td align="center" class="m-0 text-primary"><?php echo $bottle_cost['ml'];?>ml</td>
+                      <td align="center" class="m-0 text-primary"><?php echo $bottle_cost['ml'];?> <?=$settings['mUnit']?></td>
                       <td align="center" class="m-0 text-primary">-</td>
                       <td colspan="2" align="center" class="m-0 text-primary"><?php echo  utf8_encode($settings['currency']).$bottle_cost['price']; ?></td>
                     </tr>
@@ -258,7 +257,7 @@ $.ajax({
                       <td></td>
                       <td></td>
                       <td align="center" class="m-0 font-weight-bold text-primary">Total: </td>
-                      <td width="15%" align="center" class="m-0 font-weight-bold text-primary"><?php echo number_format(array_sum($new_tot)+ $carrier, 3); ?>ml</td>
+                      <td width="15%" align="center" class="m-0 font-weight-bold text-primary"><?php echo number_format(array_sum($new_tot)+ $carrier, 3); ?> <?=$settings['mUnit']?></td>
                       <td width="15%" align="center" class="m-0 font-weight-bold text-primary"><?php echo $carrier*100/$bottle + array_sum($conc_tot); ?>%</td>
                       <td colspan="2" align="center" class="m-0 font-weight-bold text-primary"><?php echo $settings['currency'].number_format(array_sum($tot)+$lid_cost['price']+$carrier_sub_cost+$bottle_cost['price'],2);?></td>
                     </tr>

@@ -291,7 +291,8 @@ CREATE TABLE `settings` (
   `pubChem` int(11) DEFAULT NULL,
   `chkVersion` int(11) DEFAULT NULL,
   `qStep` INT(5) NOT NULL DEFAULT '2',
-  `pubchem_view` VARCHAR(4) NOT NULL DEFAULT '2d', 
+  `pubchem_view` VARCHAR(4) NOT NULL DEFAULT '2d',
+  `mUnit` VARCHAR(10) NOT NULL DEFAULT 'ml',
   `multi_dim_perc` INT NOT NULL DEFAULT '0', 
   `defCatClass` VARCHAR(255) NOT NULL DEFAULT 'cat4' 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;

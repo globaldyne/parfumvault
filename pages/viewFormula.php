@@ -259,7 +259,7 @@ $('.replaceIngredient').editable({
                       <th width="5%">CAS #</th>
                       <th width="5%">Purity %</th>
                       <th width="5%">Dilutant</th>
-                      <th width="5%">Quantity (ml)</th>
+                      <th width="5%">Quantity (<?=$settings['mUnit']?>)</th>
                       <th width="5%">Concentration %*</th>
                       <th width="5%">Cost (<?php echo utf8_encode($settings['currency']);?>)</th>
                       <th width="5%">Properties</th>
@@ -353,7 +353,7 @@ $('.replaceIngredient').editable({
                       <th></th>
                       <th></th>
                       <th></th>
-                      <th width="15%" align="right"><p>Total: <?php echo ml2l($mg['total_mg'], 3); ?></p></th>
+                      <th width="15%" align="right"><p>Total: <?php echo ml2l($mg['total_mg'], 3, $settings['mUnit']); ?></p></th>
                       <th width="15%">Total: <?php echo array_sum($conc_tot);?>%</th>
                       <th width="15%" align="right">Cost: <?php echo utf8_encode($settings['currency']).number_format(array_sum($tot),3);?></a></th>
                       <th></th>

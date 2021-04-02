@@ -92,6 +92,15 @@ list_cat();
           <td>&nbsp;</td>
         </tr>
         <tr>
+          <td height="32"><a href="#">Measurement Unit:</a></td>
+          <td colspan="2"><select name="mUnit" id="mUnit" class="form-control">
+			  <option value="ml" <?php if($settings['mUnit']=="ml") echo 'selected="selected"'; ?> >Milliliter</option>
+			  <option value="L" <?php if($settings['mUnit']=="L") echo 'selected="selected"'; ?> >Liter</option>
+			  <option value="fl. oz." <?php if($settings['mUnit']=="fl. oz.") echo 'selected="selected"'; ?> >Fluid ounce (fl. oz.)</option>
+            </select></td>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
           <td height="32"><a href="#" rel="tipsy" title="If enabled, formula will display the chemical names of ingredients, where available, instead of the commercial name">Chemical names</a>:</td>
           <td colspan="2"><input name="chem_vs_brand" type="checkbox" id="chem_vs_brand" value="1" <?php if($settings['chem_vs_brand'] == '1'){ ?> checked="checked" <?php } ?>/></td>
           <td>&nbsp;</td>
@@ -422,6 +431,7 @@ $(document).ready(function() {
 				pubChem: $("#pubChem").is(':checked'),
 				chkVersion: $("#chkVersion").is(':checked'),
 				multi_dim_perc: $("#multi_dim_perc").is(':checked'),
+				mUnit: $("#mUnit").val(),
 
 			},
 			dataType: 'html',
