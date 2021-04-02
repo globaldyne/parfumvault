@@ -22,6 +22,9 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fi
 
 
 $formula_q = mysqli_query($conn, "SELECT * FROM makeFormula WHERE fid = '$fid' ORDER BY toAdd DESC");
+while ($formula = mysqli_fetch_array($formula_q)){
+	    $form[] = $formula;
+}
 $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE fid = '$fid'"));
 $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE fid = '$fid'"));
 
@@ -199,7 +202,7 @@ $(document).ready(function() {
                     </tr>
                   </thead>
                   <tbody id="formula_data">
-                  <?php while ($formula = mysqli_fetch_array($formula_q)) {
+                  <?php foreach ($form as $formula){
 					 	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT cas, $defCatClass, price, ml, profile FROM ingredients WHERE BINARY name = '".$formula['ingredient']."'"));
 
 						$limitIFRA = searchIFRA($ing_q['cas'],$formula['ingredient'],null,$conn,$defCatClass);
@@ -208,6 +211,10 @@ $(document).ready(function() {
 					  
 					  	$conc = number_format($formula['quantity']/$mg['total_mg'] * 100, 3);
 					  	$conc_p = number_format($formula['concentration'] / 100 * $conc, 3);
+						
+						if($settings['multi_dim_perc'] == '1'){
+							$conc_p   += multi_dim_perc($conn, $form)[$formula['ingredient']];
+						}
 						
 					 	if($settings['chem_vs_brand'] == '1'){
 							$chName = mysqli_fetch_array(mysqli_query($conn,"SELECT chemical_name FROM ingredients WHERE name = '".$formula['ingredient']."'"));

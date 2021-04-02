@@ -5,7 +5,9 @@ if($_POST['formula']){
 	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE name = '$f_name'"));
 
 	$formula_q = mysqli_query($conn, "SELECT * FROM formulas WHERE name = '$f_name' ORDER BY ingredient ASC");
-	
+	while ($formula = mysqli_fetch_array($formula_q)){
+	    $form[] = $formula;
+	}
 	$mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE name = '$f_name'"));
 	
 	$bottle = mysqli_real_escape_string($conn, $_POST['bottle']);
@@ -153,7 +155,7 @@ $.ajax({
                       <th colspan="2">Cost</th>
                     </tr>
                   </thead>
-                  <?php while ($formula = mysqli_fetch_array($formula_q)) {
+                  <?php foreach ($form as $formula){
 					    $ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT cas,$defCatClass,price,ml FROM ingredients WHERE name = '".$formula['ingredient']."'"));
 
 						$limitIFRA = searchIFRA($ing_q['cas'],$formula['ingredient'],null,$conn,$defCatClass);
@@ -164,6 +166,10 @@ $.ajax({
 					  	$conc = $new_quantity/$bottle * 100;						
 					  	$conc_p = number_format($formula['concentration'] / 100 * $conc, 3);
 					 	
+						if($settings['multi_dim_perc'] == '1'){
+							$conc_p   += multi_dim_perc($conn, $form)[$formula['ingredient']];
+						}
+						
 						echo'<tr>
                       <td align="center">'.$formula['ingredient'].'</td>
 					  <td align="center">'.$ing_q['cas'].'</td>
@@ -300,7 +306,7 @@ $.ajax({
       </div>
       <div class="modal-body">
         Select customer:
-          <form action="pages/genIFRAcert.php?fid=<?php echo $meta['fid'];?>&conc=<?php echo $type; ?>&bottle=<?php echo $bottle;?>" method="post" name="form1" target="_blank" id="form1">
+          <form action="pages/genIFRAcert.php?fid=<?php echo $meta['fid'];?>&conc=<?php echo $type; ?>&bottle=<?php echo $bottle;?>&defCatClass=<?=$defCatClass?>" method="post" name="form1" target="_blank" id="form1">
             <select class="form-control" name="customer" id="customer">
             <?php
 				$res = mysqli_query($conn, "SELECT id, name FROM customers ORDER BY name ASC");

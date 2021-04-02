@@ -14,6 +14,11 @@ require_once(__ROOT__.'/func/goShopping.php');
 require_once(__ROOT__.'/func/ml2L.php');
 require_once(__ROOT__.'/func/countElement.php');
 
+if(!$_GET['id']){
+	echo 'Formula id is missing.';
+	return;
+}
+	
 $fid = mysqli_real_escape_string($conn, $_GET['id']);
 $f_name = base64_decode($fid);
 
@@ -23,6 +28,10 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulas WHERE fid = '$f
 }
 
 $formula_q = mysqli_query($conn, "SELECT * FROM formulas WHERE fid = '$fid' ORDER BY ingredient ASC");
+while ($formula = mysqli_fetch_array($formula_q)){
+	    $form[] = $formula;
+}
+
 $defCatClass = $settings['defCatClass'];
 
 $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE fid = '$fid'"));
@@ -258,8 +267,8 @@ $('.replaceIngredient').editable({
                     </tr>
                   </thead>
                   <tbody id="formula_data">
-                  <?php while ($formula = mysqli_fetch_array($formula_q)) {
-					 	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT cas, $defCatClass, price, ml, profile, odor FROM ingredients WHERE BINARY name = '".$formula['ingredient']."'"));
+                  <?php	foreach ($form as $formula){
+						$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT cas, $defCatClass, price, ml, profile, odor FROM ingredients WHERE BINARY name = '".$formula['ingredient']."'"));
 
 						$limitIFRA = searchIFRA($ing_q['cas'],$formula['ingredient'],null,$conn,$defCatClass);
 						$limit = explode(' - ', $limitIFRA);
@@ -267,6 +276,10 @@ $('.replaceIngredient').editable({
 					  
 					  	$conc = number_format($formula['quantity']/$mg['total_mg'] * 100, 3);
 					  	$conc_p = number_format($formula['concentration'] / 100 * $conc, 3);
+						
+						if($settings['multi_dim_perc'] == '1'){
+							$conc_p   += multi_dim_perc($conn, $form)[$formula['ingredient']];
+						}
 						
 					 	if($settings['chem_vs_brand'] == '1'){
 							$chName = mysqli_fetch_array(mysqli_query($conn,"SELECT chemical_name FROM ingredients WHERE name = '".$formula['ingredient']."'"));
