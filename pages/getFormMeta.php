@@ -4,6 +4,7 @@ require('../inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
+require_once(__ROOT__.'/inc/product.php');
 
 if($_GET['id']){
 	$id = mysqli_real_escape_string($conn, $_GET['id']);
@@ -50,20 +51,42 @@ if($_FILES["file"]["tmp_name"]){
 	 }
 
 ?>
-<link href="../css/sb-admin-2.css" rel="stylesheet">
-<link href="../css/bootstrap-select.min.css" rel="stylesheet">
-<link href="../css/bootstrap-editable.css" rel="stylesheet">
+<!DOCTYPE html>
+<html lang="en">
 
-<script src="../js/jquery/jquery.min.js"></script>
-<script src="../js/bootstrap.min.js"></script>
-<script src='../js/tipsy.js'></script>
-<script src="../js/jquery-ui.js"></script>
-  
-<link href="../css/bootstrap.min.css" rel="stylesheet">
-<link href="../css/tipsy.css" rel="stylesheet" />
+<head>
 
-<script src="../js/bootstrap-select.js"></script>
-<script src="../js/bootstrap-editable.js"></script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <script type='text/javascript'>
+	if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))){
+			if(screen.height>=1080)
+				document.write('<meta name="viewport" content="width=device-width, initial-scale=2.0, minimum-scale=1.0, maximum-scale=3.0, target-densityDpi=device-dpi, user-scalable=yes">');
+			else	
+				document.write('<meta name="viewport" content="width=device-width, initial-scale=0.5, minimum-scale=0.5, maximum-scale=3.0, target-densityDpi=device-dpi, user-scalable=yes">');
+	}
+  </script>
+  <meta name="description" content="<?php echo $product.' - '.$ver;?>">
+  <meta name="author" content="JBPARFUM">
+  <title><?php echo $product;?></title>
+
+  <link href="../css/sb-admin-2.css" rel="stylesheet">
+  <link href="../css/bootstrap-select.min.css" rel="stylesheet">
+  <link href="../css/bootstrap-editable.css" rel="stylesheet">
+    
+  <script src="../js/jquery/jquery.min.js"></script>
+  <script src="../js/bootstrap.min.js"></script>
+  <script src='../js/tipsy.js'></script>
+  <script src="../js/jquery-ui.js"></script>
+      
+  <link href="../css/bootstrap.min.css" rel="stylesheet">
+  <link href="../css/tipsy.css" rel="stylesheet" />
+    
+  <script src="../js/bootstrap-select.js"></script>
+  <script src="../js/bootstrap-editable.js"></script>
+
+</head>
+
 
 
 <style>
@@ -74,6 +97,7 @@ if($_FILES["file"]["tmp_name"]){
 }
 
 </style>
+<body>
 
 <table class="table table-bordered" id="formula_metadata" cellspacing="0">
   <tr>
@@ -207,3 +231,5 @@ $(document).ready(function(){
 		  });
   });
 </script>
+ </body>
+</html>
