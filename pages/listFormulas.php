@@ -152,7 +152,7 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"))== 0){
                                 <td>&nbsp;</td>
                               </tr>
                               <tr>
-                                <td colspan="2"><p>CSV format: <strong>ingrdedient,concentration,dilutant,quantity</strong></p>
+                                <td colspan="2"><p>CSV format: <strong>ingredient,concentration,dilutant,quantity</strong></p>
                                 <p>Example: <em><strong>Ambroxan,10,TEC,0.15</strong></em></p></td>
                               </tr>
                               <tr>
