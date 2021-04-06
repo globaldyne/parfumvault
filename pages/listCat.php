@@ -29,17 +29,20 @@ $cat_q = mysqli_query($conn, "SELECT * FROM ingCategory ORDER BY name ASC");
                     <tr class="noBorder">
                     </tr>
                     <tr>
+                      <th>Image</th>
                       <th>Name</th>
                       <th>Description</th>
-                      <th>Actions</th>
+                      <th colspan="2">Actions</th>
                     </tr>
                   </thead>
                   <tbody id="cat_data">
                   <?php while ($cat = mysqli_fetch_array($cat_q)) { ?>
                     <tr>
-                      <td data-name="name" class="name" data-type="text" align="center" data-pk="<?php echo $cat['id'];?>"><?php echo $cat['name'];?></td>
-					  <td width="60%" data-name="notes" class="notes" data-type="text" align="center" data-pk="<?php echo $cat['id']; ?>"><?php echo wordwrap($cat['notes'], 150, "<br />\n");?></td>
-                      <td align="center"><a href="javascript:catDel('<?php echo $cat['id']; ?>')" onclick="return confirm('Delete category <?php echo $cat['name'];?>?')" class="fas fa-trash"></a></td>
+                      <td align="center" valign="middle"><img class="img_ing" src="<?php if($cat['image']){ echo 'uploads/categories/'.$cat['image']; }else{ echo 'img/logo_400.png'; }?>" /></td>
+                      <td align="center" valign="middle" class="name" data-name="name" data-type="text" data-pk="<?php echo $cat['id'];?>"><?php echo $cat['name'];?></td>
+					  <td width="60%" align="center" valign="middle" class="notes" data-name="notes" data-type="text" data-pk="<?php echo $cat['id']; ?>"><?php echo wordwrap($cat['notes'], 150, "<br />\n");?></td>
+                      <td align="center" valign="middle"><a href="pages/editCat.php?id=<?=$cat['id']?>" class="fas fa-edit popup-link"></a></td>
+                      <td align="center" valign="middle"><a href="javascript:catDel('<?php echo $cat['id']; ?>')" onclick="return confirm('Delete category <?php echo $cat['name'];?>?')" class="fas fa-trash"></a></td>
 					</tr>
 				  	<?php } ?>
                   </tbody>
@@ -98,6 +101,13 @@ $('#cat_data').editable({
   dataType: 'json',
   validate: function(value){
   }
+});
+
+$('.popup-link').magnificPopup({
+	type: 'iframe',
+	closeOnContentClick: false,
+	closeOnBgClick: false,
+  	showCloseBtn: true,
 });
 </script>
             
