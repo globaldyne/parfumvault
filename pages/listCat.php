@@ -8,6 +8,14 @@ require_once(__ROOT__.'/inc/opendb.php');
 $cat_q = mysqli_query($conn, "SELECT * FROM ingCategory ORDER BY name ASC");
 
 ?>
+<script>
+$('.popup-link').magnificPopup({
+	type: 'iframe',
+	closeOnContentClick: false,
+	closeOnBgClick: false,
+  	showCloseBtn: true,
+});
+</script>
 <table width="100%" border="0" class="table table-striped table-sm">
               <div id="catMsg"></div>
               <tr>
@@ -38,7 +46,7 @@ $cat_q = mysqli_query($conn, "SELECT * FROM ingCategory ORDER BY name ASC");
                   <tbody id="cat_data">
                   <?php while ($cat = mysqli_fetch_array($cat_q)) { ?>
                     <tr>
-                      <td align="center" valign="middle"><img class="img_ing" src="<?php if($cat['image']){ echo 'uploads/categories/'.$cat['image']; }else{ echo 'img/logo_400.png'; }?>" /></td>
+                      <td align="center" valign="middle"><img class="img_ing" src="<?php if($cat['image']){ echo 'uploads/categories/'.$cat['image']; }else{ echo 'img/molecule.png'; }?>" /></td>
                       <td align="center" valign="middle" class="name" data-name="name" data-type="text" data-pk="<?php echo $cat['id'];?>"><?php echo $cat['name'];?></td>
 					  <td width="60%" align="center" valign="middle" class="notes" data-name="notes" data-type="text" data-pk="<?php echo $cat['id']; ?>"><?php echo wordwrap($cat['notes'], 150, "<br />\n");?></td>
                       <td align="center" valign="middle"><a href="pages/editCat.php?id=<?=$cat['id']?>" class="fas fa-edit popup-link"></a></td>
@@ -103,11 +111,6 @@ $('#cat_data').editable({
   }
 });
 
-$('.popup-link').magnificPopup({
-	type: 'iframe',
-	closeOnContentClick: false,
-	closeOnBgClick: false,
-  	showCloseBtn: true,
-});
+
 </script>
             
