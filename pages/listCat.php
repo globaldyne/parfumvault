@@ -34,13 +34,11 @@ $('.popup-link').magnificPopup({
               <div>
                 <table class="table table-bordered" id="tdDataCat" width="100%" cellspacing="0">
                   <thead>
-                    <tr class="noBorder">
-                    </tr>
                     <tr>
                       <th>Image</th>
                       <th>Name</th>
                       <th>Description</th>
-                      <th colspan="2">Actions</th>
+                      <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody id="cat_data">
@@ -49,9 +47,8 @@ $('.popup-link').magnificPopup({
                       <td align="center" valign="middle"><img class="img_ing" src="<?php if($cat['image']){ echo 'uploads/categories/'.$cat['image']; }else{ echo 'img/molecule.png'; }?>" /></td>
                       <td align="center" valign="middle" class="name" data-name="name" data-type="text" data-pk="<?php echo $cat['id'];?>"><?php echo $cat['name'];?></td>
 					  <td width="60%" align="center" valign="middle" class="notes" data-name="notes" data-type="text" data-pk="<?php echo $cat['id']; ?>"><?php echo wordwrap($cat['notes'], 150, "<br />\n");?></td>
-                      <td align="center" valign="middle"><a href="pages/editCat.php?id=<?=$cat['id']?>" class="fas fa-edit popup-link"></a></td>
-                      <td align="center" valign="middle"><a href="javascript:catDel('<?php echo $cat['id']; ?>')" onclick="return confirm('Delete category <?php echo $cat['name'];?>?')" class="fas fa-trash"></a></td>
-					</tr>
+                      <td align="center" valign="middle"><a href="pages/editCat.php?id=<?=$cat['id']?>" class="fas fa-edit popup-link"></a> &nbsp; <a href="javascript:catDel('<?php echo $cat['id']; ?>')" onclick="return confirm('Delete category <?php echo $cat['name'];?>?')" class="fas fa-trash"></a></td>
+                    </tr>
 				  	<?php } ?>
                   </tbody>
                 </table>
