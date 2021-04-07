@@ -354,3 +354,16 @@ a:hover{
 .img_ing {
 	width:50px;
 }
+
+figure {
+    display: inline-block;
+    border: none;
+    margin: 20px; /* adjust as needed */
+}
+figure img {
+    vertical-align: top;
+}
+figure figcaption {
+    border: none;
+    text-align: center;
+}

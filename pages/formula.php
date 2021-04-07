@@ -41,6 +41,7 @@ $base_calc = calcPerc($f_name, 'Base', $settings['base_n'], $conn);
           <li class="active"><a href="#main_formula" role="tab" data-toggle="tab"><icon class="fa fa-bong"></icon> Formula</a></li>
     	  <li><a href="#impact" role="tab" data-toggle="tab"><i class="fa fa-magic"></i> Notes Impact</a></li>
           <li><a href="#pyramid" role="tab" data-toggle="tab"><i class="fa fa-table"></i> Olfactory Pyramid</a></li>
+          <li><a href="#summary" role="tab" data-toggle="tab"><i class="fa fa-cubes"></i> Notes Summary</a></li>
         </ul>
                      
         <div class="tab-content">
@@ -111,7 +112,13 @@ $base_calc = calcPerc($f_name, 'Base', $settings['base_n'], $conn);
 		        <div id="fetch_pyramid"><div class="loader"></div></div>
 			</div>            
           </div>
-          
+      
+          <div class="tab-pane fade" id="summary">
+            <div class="card-body">
+		        <div id="fetch_summary"><div class="loader"></div></div>
+			</div>            
+          </div>
+                    
         </div>
        </div>         
      </div><!--tabs-->
@@ -259,5 +266,23 @@ function fetch_impact(){
 		}
 	});
 }
+
 fetch_impact();
+
+function fetch_summary(){
+$.ajax({ 
+    url: 'pages/viewSummary.php', 
+	type: 'get',
+    data: {
+		id: "<?=$fid?>"
+		},
+	dataType: 'html',
+		success: function (data) {
+			$('#fetch_summary').html(data);
+		}
+	});
+}
+
+fetch_summary();
+
 </script>

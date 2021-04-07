@@ -10,6 +10,7 @@ Label print improvements
 Multi-dimensional ingredient lookup in alleregens and re-calculate the usage percentages 
 Add measurement units
 Add category image
+Notes summary in formula per ingrdient profile
 
 ### Version 2.7
 Making sure the percentage symbol is striped out from allergens quantity
