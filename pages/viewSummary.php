@@ -83,9 +83,9 @@ $base_cat = arrFilter(array_filter($base_cat));
 <?php } ?>
 <p>&nbsp;</p>
 <?php if($description['notes']){ ?>
-<table width="200" border="0">
+<table width="50%" border="0">
   <tr>
-    <td><strong>Description</strong></td>
+    <td width="831"><strong>Description</strong></td>
   </tr>
   <tr>
     <td><?=$description['notes']?></td>
