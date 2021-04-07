@@ -42,7 +42,7 @@ $base_cat = arrFilter(array_filter($base_cat));
 
 
 ?>
-
+<?php if($top_cat){ ?>
 <table border="0">
   <tr>
     <td height="30" colspan="2" align="left"><strong>Top Notes</strong></td>
@@ -51,8 +51,11 @@ $base_cat = arrFilter(array_filter($base_cat));
     <?php foreach ($top_cat as $x){ ?>
 		<td><figure><img width="50px" src=/uploads/categories/<?=$x['image']?> />
 		<figcaption><?=$x['name']?></figcaption></figure></td>
-	<?php }?>  </tr>
+	<?php }?>  
+    </tr>
 </table>
+<?php } ?>
+<?php if($heart_cat){ ?>
 <table border="0">
   <tr>
     <td height="30" align="left"><strong>Heart Notes</strong></td>
@@ -64,6 +67,8 @@ $base_cat = arrFilter(array_filter($base_cat));
 	<?php }?>
   </tr>
 </table>
+<?php } ?>
+<?php if($base_cat){ ?>
 <table border="0">
   <tr>
     <td height="30" colspan="2" align="left"><strong>Base Notes</strong></td>
@@ -75,7 +80,9 @@ $base_cat = arrFilter(array_filter($base_cat));
 	<?php }?>
   </tr>
 </table>
+<?php } ?>
 <p>&nbsp;</p>
+<?php if($description['notes']){ ?>
 <table width="200" border="0">
   <tr>
     <td><strong>Description</strong></td>
@@ -84,3 +91,4 @@ $base_cat = arrFilter(array_filter($base_cat));
     <td><?=$description['notes']?></td>
   </tr>
 </table>
+<?php } ?>
