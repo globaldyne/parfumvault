@@ -100,6 +100,6 @@ $base_cat = arrFilter(array_filter($base_cat));
 <p>&nbsp;</p>
 <p>To include this page in your web site, copy this line and paste it into your html code</p>
 <p><pre>
-&lt;iframe src=&quot;https://vault.jbparfum.com/pages/viewSummary.php?id=<?=$fid?>&quot; title=&quot;<?=base64_decode($fid)?>&quot;&gt;&lt;/iframe&gt;
+&lt;iframe src=&quot;<?=$_SERVER['REQUEST_SCHEME']?>://<?=$_SERVER['SERVER_NAME']?>/pages/viewSummary.php?id=<?=$fid?>&quot; title=&quot;<?=base64_decode($fid)?>&quot;&gt;&lt;/iframe&gt;
 </pre></p>
 <p>&nbsp;</p>
