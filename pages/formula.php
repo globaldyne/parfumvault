@@ -116,6 +116,8 @@ $base_calc = calcPerc($f_name, 'Base', $settings['base_n'], $conn);
           <div class="tab-pane fade" id="summary">
             <div class="card-body">
 		        <div id="fetch_summary"><div class="loader"></div></div>
+                <p>To include this page in your web site, copy this line and paste it into your html code</p>
+                <p><pre>&lt;iframe src=&quot;<?=$_SERVER['REQUEST_SCHEME']?>://<?=$_SERVER['SERVER_NAME']?>/pages/viewSummary.php?id=<?=$fid?>&quot; title=&quot;<?=base64_decode($fid)?>&quot;&gt;&lt;/iframe&gt;</pre></p>
 			</div>            
           </div>
                     

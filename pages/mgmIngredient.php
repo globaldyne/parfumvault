@@ -304,7 +304,7 @@ reload_data();
                                 <select name="category" id="category" class="form-control selectpicker" data-live-search="true">
                                 <option value="" selected></option>
                                 <?php while ($row_ingCategory = mysqli_fetch_array($res_ingCategory)){ ?>
-								<option value="<?php echo $row_ingCategory['name'];?>" <?php echo ($ing['category']==$row_ingCategory['name'])?"selected=\"selected\"":""; ?>><?php echo $row_ingCategory['name'];?></option>
+								<option value="<?php echo $row_ingCategory['id'];?>" <?php echo ($ing['category']==$row_ingCategory['id'])?"selected=\"selected\"":""; ?>><?php echo $row_ingCategory['name'];?></option>
 								<?php } ?>
                                 </select>
                                 </td>

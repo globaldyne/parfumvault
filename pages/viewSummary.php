@@ -1,10 +1,12 @@
 <?php
 
-require('../inc/sec.php');
+define('__ROOT__', dirname(dirname(__FILE__))); 
+define('pvault_panel', TRUE);
 
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/func/arrFilter.php');
+require_once(__ROOT__.'/func/getCatByID.php');
 
 
 if(!$_GET['id']){
@@ -32,9 +34,9 @@ foreach ($form as $formula){
 	$heart_ing = mysqli_fetch_array(mysqli_query($conn, "SELECT category FROM ingredients WHERE name = '".$formula['ingredient']."' AND profile = 'Heart' AND category IS NOT NULL"));
 	$base_ing = mysqli_fetch_array(mysqli_query($conn, "SELECT category FROM ingredients WHERE name = '".$formula['ingredient']."' AND profile = 'Base' AND category IS NOT NULL"));
 
-	$top_cat[] = mysqli_fetch_array(mysqli_query($conn, "SELECT image,name FROM ingCategory WHERE name = '".$top_ing['category']."' AND image IS NOT NULL"));
-	$heart_cat[] = mysqli_fetch_array(mysqli_query($conn, "SELECT image,name FROM ingCategory WHERE name = '".$heart_ing['category']."' AND image IS NOT NULL"));
-	$base_cat[] = mysqli_fetch_array(mysqli_query($conn, "SELECT  image,name FROM ingCategory WHERE name = '".$base_ing['category']."' AND image IS NOT NULL"));
+	$top_cat[] = mysqli_fetch_array(mysqli_query($conn, "SELECT image,name FROM ingCategory WHERE id = '".$top_ing['category']."' AND image IS NOT NULL"));
+	$heart_cat[] = mysqli_fetch_array(mysqli_query($conn, "SELECT image,name FROM ingCategory WHERE id = '".$heart_ing['category']."' AND image IS NOT NULL"));
+	$base_cat[] = mysqli_fetch_array(mysqli_query($conn, "SELECT  image,name FROM ingCategory WHERE id = '".$base_ing['category']."' AND image IS NOT NULL"));
 }
 $top_cat = arrFilter(array_filter($top_cat));
 $heart_cat = arrFilter(array_filter($heart_cat));
@@ -97,9 +99,4 @@ $base_cat = arrFilter(array_filter($base_cat));
   <?php } ?>
 </p>
 <p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>To include this page in your web site, copy this line and paste it into your html code</p>
-<p><pre>
-&lt;iframe src=&quot;<?=$_SERVER['REQUEST_SCHEME']?>://<?=$_SERVER['SERVER_NAME']?>/pages/viewSummary.php?id=<?=$fid?>&quot; title=&quot;<?=base64_decode($fid)?>&quot;&gt;&lt;/iframe&gt;
-</pre></p>
-<p>&nbsp;</p>
+
