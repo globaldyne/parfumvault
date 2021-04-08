@@ -53,7 +53,7 @@ $base_cat = arrFilter(array_filter($base_cat));
   </tr>
   <tr>
     <?php foreach ($top_cat as $x){ ?>
-		<td><figure><img width="50px" src=/uploads/categories/<?=$x['image']?> />
+		<td><figure><img class="img_ing" src=/uploads/categories/<?=$x['image']?> />
 		<figcaption><?=$x['name']?></figcaption></figure></td>
 	<?php }?>  
     </tr>
@@ -66,7 +66,7 @@ $base_cat = arrFilter(array_filter($base_cat));
   </tr>
   <tr>
     <?php foreach ($heart_cat as $x){ ?>
-		<td><figure><img width="50px" src=/uploads/categories/<?=$x['image']?> />
+		<td><figure><img class="img_ing" src=/uploads/categories/<?=$x['image']?> />
 		<figcaption><?=$x['name']?></figcaption></figure></td>
 	<?php }?>
   </tr>
@@ -79,7 +79,7 @@ $base_cat = arrFilter(array_filter($base_cat));
   </tr>
   <tr>
     <?php foreach ($base_cat as $x){ ?>
-		<td><figure><img width="50px" src=/uploads/categories/<?=$x['image']?> />
+		<td><figure><img class="img_ing" src=/uploads/categories/<?=$x['image']?> />
 		<figcaption><?=$x['name']?></figcaption></figure></td>
 	<?php }?>
   </tr>
