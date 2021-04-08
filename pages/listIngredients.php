@@ -64,7 +64,7 @@ $defCatClass = $settings['defCatClass'];
 					  
 					  <td align="center"><?=$ingredient['odor']?></td>
                       <td align="center"><?=$ingredient['profile']?></td>
-					  <td align="center"><?=getCatByID($ingredient['category'],$conn)?></td>
+					  <td align="center"><?=getCatByID($ingredient['category'],TRUE,$conn)?></td>
   					  <?php
                       if($limit = searchIFRA($ingredient['cas'],$ingredient['name'],null,$conn,$defCatClass)){
 						  $limit = explode(' - ', $limit);
