@@ -32,7 +32,7 @@ $defCatClass = $settings['defCatClass'];
 
 $res_ingTypes = mysqli_query($conn, "SELECT id,name FROM ingTypes ORDER BY name ASC");
 $res_ingStrength = mysqli_query($conn, "SELECT id,name FROM ingStrength ORDER BY name ASC");
-$res_ingCategory = mysqli_query($conn, "SELECT id,name FROM ingCategory ORDER BY name ASC");
+$res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCategory ORDER BY name ASC");
 $res_ingSupplier = mysqli_query($conn, "SELECT id,name FROM ingSuppliers ORDER BY name ASC");
 $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles ORDER BY name ASC");
 
@@ -74,6 +74,16 @@ $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE n
 .container {
     max-width: 100%;
 	width: 1000px;
+}
+.dropdown-menu > li > a {
+    font-weight: 700;
+    padding: 10px 20px;
+}
+
+.bootstrap-select.btn-group .dropdown-menu li small {
+    display: block;
+    padding: 6px 0 0 0;
+    font-weight: 100;
 }
 </style>
 
@@ -304,7 +314,7 @@ reload_data();
                                 <select name="category" id="category" class="form-control selectpicker" data-live-search="true">
                                 <option value="" selected></option>
                                 <?php while ($row_ingCategory = mysqli_fetch_array($res_ingCategory)){ ?>
-								<option value="<?php echo $row_ingCategory['id'];?>" <?php echo ($ing['category']==$row_ingCategory['id'])?"selected=\"selected\"":""; ?>><?php echo $row_ingCategory['name'];?></option>
+								<option data-content="<img class='img_ing_sel' src='<?php if($row_ingCategory['image']){ echo '/uploads/categories/'.$row_ingCategory['image']; }else{ echo '/img/molecule.png';}?>'><?php echo $row_ingCategory['name'];?>" value="<?php echo $row_ingCategory['id'];?>" <?php echo ($ing['category']==$row_ingCategory['id'])?"selected=\"selected\"":""; ?>><?php echo $row_ingCategory['name'];?></option>
 								<?php } ?>
                                 </select>
                                 </td>

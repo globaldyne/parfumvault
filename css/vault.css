@@ -355,6 +355,12 @@ a:hover{
     max-height: 40px;
 }
 
+.img_ing_sel {
+    max-height: 30px;
+	max-width: 30px;
+	padding: 0 10px 0 0;
+}
+
 figure {
     display: inline-block;
     border: none;
@@ -367,3 +373,4 @@ figure figcaption {
     border: none;
     text-align: center;
 }
+
