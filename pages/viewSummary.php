@@ -46,6 +46,7 @@ $base_cat = arrFilter(array_filter($base_cat));
 ?>
 <link href="/css/vault.css" rel="stylesheet">
 
+<div id="notes_summary_view">
 <?php if($top_cat){ ?>
 <table border="0">
   <tr>
@@ -95,8 +96,8 @@ $base_cat = arrFilter(array_filter($base_cat));
     <td><?=$description['notes']?></td>
   </tr>
 </table>
-<p>
   <?php } ?>
-</p>
+  </div>
+
 <p>&nbsp;</p>
 

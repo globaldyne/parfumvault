@@ -374,3 +374,10 @@ figure figcaption {
     text-align: center;
 }
 
+formula td, table.table th {
+	white-space: revert;
+}
+
+#notes_summary_view td {
+	display: inline-block;	
+}
