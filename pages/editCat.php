@@ -28,8 +28,9 @@ if(!empty($_FILES['photo']['name'])){
     }elseif($file_size > $max_filesize){
 		$msg = '<div class="alert alert-danger alert-dismissible"><strong>File upload error: </strong>File size must not exceed '.formatBytes($max_filesize).'</div>';
     }else{
-        move_uploaded_file($file_tmp,$path.base64_encode($file_name));
-		if(mysqli_query($conn, "UPDATE ingCategory SET image = '".base64_encode($file_name)."' WHERE id = '$id'")){
+    	$data = 'data:image/' . $file_ext . ';base64,' . base64_encode(file_get_contents($file_tmp));
+		//move_uploaded_file($file_tmp,$path.base64_encode($file_name));
+		if(mysqli_query($conn, "UPDATE ingCategory SET image = '".$data."' WHERE id = '$id'")or die(mysqli_error($conn))){
 			$msg = '<div class="alert alert-success alert-dismissible"><strong>File uploaded</div>';
 		}
     }

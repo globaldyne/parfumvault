@@ -381,3 +381,9 @@ formula td, table.table th {
 #notes_summary_view td {
 	display: inline-block;	
 }
+
+.col-md-6 {
+	width: 50%;
+	height: fit-content;
+}
+

@@ -314,7 +314,7 @@ reload_data();
                                 <select name="category" id="category" class="form-control selectpicker" data-live-search="true">
                                 <option value="" selected></option>
                                 <?php while ($row_ingCategory = mysqli_fetch_array($res_ingCategory)){ ?>
-								<option data-content="<img class='img_ing_sel' src='<?php if($row_ingCategory['image']){ echo '/uploads/categories/'.$row_ingCategory['image']; }else{ echo '/img/molecule.png';}?>'><?php echo $row_ingCategory['name'];?>" value="<?php echo $row_ingCategory['id'];?>" <?php echo ($ing['category']==$row_ingCategory['id'])?"selected=\"selected\"":""; ?>><?php echo $row_ingCategory['name'];?></option>
+								<option data-content="<img class='img_ing_sel' src='<?php if($row_ingCategory['image']){ echo $row_ingCategory['image']; }else{ echo '/img/molecule.png';}?>'><?php echo $row_ingCategory['name'];?>" value="<?php echo $row_ingCategory['id'];?>" <?php echo ($ing['category']==$row_ingCategory['id'])?"selected=\"selected\"":""; ?>><?php echo $row_ingCategory['name'];?></option>
 								<?php } ?>
                                 </select>
                                 </td>
