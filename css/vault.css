@@ -362,9 +362,9 @@ a:hover{
 }
 
 figure {
-    display: inline-block;
+    display: inline;
     border: none;
-    margin: 20px; /* adjust as needed */
+    margin: 25px;
 }
 figure img {
     vertical-align: top;

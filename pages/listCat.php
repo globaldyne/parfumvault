@@ -44,10 +44,10 @@ $('.popup-link').magnificPopup({
                   <tbody id="cat_data">
                   <?php while ($cat = mysqli_fetch_array($cat_q)) { ?>
                     <tr>
-                      <td align="center" valign="middle"><?php if($cat['image']){ echo '<img class="img_ing" src="'.$cat['image'].'"/>'; }else{ echo '<img class="img_ing" src="img/molecule.png"/>'; }?> </td>
+                      <td align="center" valign="middle"><a href="pages/editCat.php?id=<?=$cat['id']?>" class="popup-link"><?php if($cat['image']){ echo '<img class="img_ing" src="'.$cat['image'].'"/>'; }else{ echo '<img class="img_ing" src="img/molecule.png"/>'; }?> </a></td>
                       <td align="center" valign="middle" class="name" data-name="name" data-type="text" data-pk="<?php echo $cat['id'];?>"><?php echo $cat['name'];?></td>
 					  <td width="60%" align="center" valign="middle" class="notes" data-name="notes" data-type="text" data-pk="<?php echo $cat['id']; ?>"><?php echo wordwrap($cat['notes'], 150, "<br />\n");?></td>
-                      <td align="center" valign="middle"><a href="pages/editCat.php?id=<?=$cat['id']?>" class="fas fa-edit popup-link"></a> &nbsp; <a href="javascript:catDel('<?php echo $cat['id']; ?>')" onclick="return confirm('Delete category <?php echo $cat['name'];?>?')" class="fas fa-trash"></a></td>
+                      <td align="center" valign="middle"><a href="javascript:catDel('<?php echo $cat['id']; ?>')" onclick="return confirm('Delete category <?php echo $cat['name'];?>?')" class="fas fa-trash"></a></td>
                     </tr>
 				  	<?php } ?>
                   </tbody>
