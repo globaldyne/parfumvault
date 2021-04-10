@@ -321,16 +321,16 @@ tr.strikeout td:before {
 
 @keyframes load {
   0% {
-    content: 'Loading';
+    content: 'Blending';
   }
   33% {
-    content: 'Loading.';
+    content: 'Blending.';
   }
   67% {
-    content: 'Loading..';
+    content: 'Blending..';
   }
   100% {
-    content: 'Loading...';
+    content: 'Blending...';
   }
 }
 
