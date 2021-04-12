@@ -117,9 +117,9 @@ at a maximum concentration level of:</span></font></p>
 <p class="western" style="margin-right: -0.12in">&nbsp;</p>
 <table width="100%" border="1">
   <tr>
-    <th width="22%" bgcolor="#d9d9d9"><strong>Materials under the scope of IFRA Standards:</strong></th>
+    <th width="22%" bgcolor="#d9d9d9"><strong>Material(s) under the scope of IFRA Standards:</strong></th>
     <th width="12%" bgcolor="#d9d9d9"><strong>CAS number(s):</strong></th>
-    <th width="28%" bgcolor="#d9d9d9"><strong>Recommendation from IFRA Standard:</strong></th>
+    <th width="28%" bgcolor="#d9d9d9"><strong>Recommendation (%) from IFRA Standard:</strong></th>
     <th width="38%" bgcolor="#d9d9d9"><strong>Concentration (%) in  finished product:</strong></th>
   </tr>
     <?php 
@@ -129,11 +129,11 @@ at a maximum concentration level of:</span></font></p>
 		}
 		
 		foreach ($form as $formula){
-			$cas = mysqli_fetch_array(mysqli_query($conn, "SELECT cas FROM ingredients WHERE name = '".$formula['ingredient']."'"));
+			$cas = mysqli_fetch_array(mysqli_query($conn, "SELECT cas,$defCatClass FROM ingredients WHERE name = '".$formula['ingredient']."'"));
 			if ($cas['cas']){
 
 				$q2 = mysqli_query($conn, "SELECT DISTINCT name,$defCatClass,risk,type,cas FROM IFRALibrary WHERE name LIKE '".$formula['ingredient']."' OR cas = '".$cas['cas']."' GROUP BY name");
-	
+
 				while($ifra = mysqli_fetch_array($q2)){
 					$new_quantity = $formula['quantity']/$mg['total_mg']*$new_conc;
 					$conc = $new_quantity/$bottle * 100;						
@@ -148,9 +148,12 @@ at a maximum concentration level of:</span></font></p>
 						<td align="center"><?=$ifra['cas']?></td>
 						<td align="center"><?=$ifra['risk']?><br> 
 				<?php if($ifra[$defCatClass]){ ?>
-							MAX usage: <?=$ifra[$defCatClass]?>%</td>
+							MAX usage: <?=$ifra[$defCatClass]?>
+				<?php }else{ ?>
+                			MAX usage: <?=$cas[$defCatClass]?>
 				<?php } ?>
-						<td align="center"><?=$conc_p?>%</td> 
+                		</td>
+						<td align="center"><?=$conc_p?></td> 
 						</tr>
 				<?php	
                     }

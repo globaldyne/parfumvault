@@ -14,6 +14,7 @@ Notes summary in formula per ingrdient profile
 Category lookup by ID
 Add category image in ingredients list
 Add pubChem function
+IFRA certification improvements
 
 ### Version 2.7
 Making sure the percentage symbol is striped out from allergens quantity
