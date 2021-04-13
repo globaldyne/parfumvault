@@ -1,1 +1,1 @@
-*.* linguist-language=PHP
+*.js linguist-detectable=false
