@@ -16,6 +16,7 @@ Add category image in ingredients list
 Add pubChem function
 IFRA certification improvements
 Add Molecular Weight for ingredients
+Add Mass for ingredients
 
 ### Version 2.7
 Making sure the percentage symbol is striped out from allergens quantity
