@@ -209,7 +209,8 @@ CREATE TABLE `ingredients` (
   `impact_base` varchar(10) COLLATE utf8_bin DEFAULT NULL,
   `usage_type` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `noUsageLimit` INT NULL DEFAULT '0',  
-  `isPrivate` INT NULL DEFAULT '0',  
+  `isPrivate` INT NULL DEFAULT '0',
+  `molecularWeight` VARCHAR(255) NULL,
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 

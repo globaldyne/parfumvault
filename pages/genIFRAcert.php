@@ -122,6 +122,7 @@ at a maximum concentration level of:</span></font></p>
     <th width="28%" bgcolor="#d9d9d9"><strong>Recommendation (%) from IFRA Standard:</strong></th>
     <th width="38%" bgcolor="#d9d9d9"><strong>Concentration (%) in  finished product:</strong></th>
   </tr>
+  <pre>
     <?php 
 		$formula_q = mysqli_query($conn, "SELECT ingredient,quantity,concentration FROM formulas WHERE fid = '$fid'");
 		while ($formula = mysqli_fetch_array($formula_q)){
@@ -133,7 +134,7 @@ at a maximum concentration level of:</span></font></p>
 			if ($cas['cas']){
 
 				$q2 = mysqli_query($conn, "SELECT DISTINCT name,$defCatClass,risk,type,cas FROM IFRALibrary WHERE name LIKE '".$formula['ingredient']."' OR cas = '".$cas['cas']."' GROUP BY name");
-
+				
 				while($ifra = mysqli_fetch_array($q2)){
 					$new_quantity = $formula['quantity']/$mg['total_mg']*$new_conc;
 					$conc = $new_quantity/$bottle * 100;						

@@ -5,4 +5,5 @@ Swhitch between ml, liter or fl. oz.
 Added option to add image in ingredeient categories
 Notes summary in formula per ingrdient profile
 Category image is now shown next to each ingredient, if is set in categories page
+Added Molecular Weight for ingredients
 EXPERIMENTAL: Multi-dimensional ingredient lookup in alleregens and re-calculate the usage percentages 

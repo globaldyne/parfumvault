@@ -441,14 +441,14 @@ reload_data();
                                 <td colspan="3"><input name="chemical_name" type="text" class="form-control" id="chemical_name" value="<?php echo $ing['chemical_name']; ?>"/></td>
                               </tr>
                               <tr>
-                                <td>Formula:</td>
+                                <td>Molecular Formula:</td>
                                 <td colspan="3">
 								<?php
 								 	if($chFormula = searchIFRA($ing['cas'],$ing['name'],'formula',$conn,$defCatClass)){
 										echo $chFormula;
 									}else{
 								?>
-                                <input name="formula" type="text" class="form-control" id="formula" value="<?php echo $ing['formula']; ?>">
+                                <input name="formula" type="text" class="form-control" id="molecularFormula" value="<?php echo $ing['formula']; ?>">
                                 <?php } ?>
                                 </td>
                               </tr>
@@ -459,6 +459,10 @@ reload_data();
                               <tr>
                                 <td>Soluble in:</td>
                                 <td colspan="3"><input name="soluble" type="text" class="form-control" id="soluble" value="<?php echo $ing['soluble']; ?>"/></td>
+                              </tr>
+                              <tr>
+                                <td>Molecular Weight:</td>
+                                <td colspan="3"><input name="molecularWeight" type="text" class="form-control" id="molecularWeight" value="<?php echo $ing['molecularWeight']; ?>"/></td>
                               </tr>
                               <tr>
                                 <td>Appearance:</td>
@@ -694,6 +698,7 @@ $(document).ready(function() {
 				soluble: $("#soluble").val(),
 				logp: $("#logp").val(),
 				type: $("#type").val(),
+				molecularWeight: $("#molecularWeight").val(),
 	            
 				<?php foreach ($cats as $cat) {?>
 				cat<?php echo $cat['name'];?>: $("#cat<?php echo $cat['name'];?>").val(),
