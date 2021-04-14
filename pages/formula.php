@@ -7,16 +7,9 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fi
 	echo 'Formula doesn\'t exist';
 	exit;
 }
-$formula_q = mysqli_query($conn, "SELECT * FROM formulas WHERE name = '$f_name' ORDER BY ingredient ASC");
-                    
-
-$mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE name = '$f_name'"));
-$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE name = '$f_name'"));
-
-$top_calc = calcPerc($f_name, 'Top', $settings['top_n'], $conn);
-$heart_calc = calcPerc($f_name, 'Heart', $settings['heart_n'], $conn);
-$base_calc = calcPerc($f_name, 'Base', $settings['base_n'], $conn);
-
+if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulas WHERE fid = '$fid'"))){
+	$legend = 1;
+}
 ?>
 <style>
 .mfp-iframe-holder .mfp-content {
@@ -92,10 +85,12 @@ $base_calc = calcPerc($f_name, 'Base', $settings['base_n'], $conn);
                     	<div class="loader-text"></div>
                 	</div>
                 </div>
-                <div>
+                <?php if($legend){ ?>
+                <div id="legend">
                 <p></p>
                 <p>*Values in: <strong class="alert alert-danger">red</strong> exceeds usage level,   <strong class="alert alert-warning">yellow</strong> have no usage level set,   <strong class="alert alert-success">green</strong> are within usage level</p>
                 </div>
+                <?php } ?>
             </div>
           </div>
         </div>
@@ -116,8 +111,12 @@ $base_calc = calcPerc($f_name, 'Base', $settings['base_n'], $conn);
           <div class="tab-pane fade" id="summary">
             <div class="card-body">
 		        <div id="fetch_summary"><div class="loader"></div></div>
+                <?php if($legend){ ?>
+                <div id="share">
                 <p>To include this page in your web site, copy this line and paste it into your html code</p>
                 <p><pre>&lt;iframe src=&quot;<?=$_SERVER['REQUEST_SCHEME']?>://<?=$_SERVER['SERVER_NAME']?>/pages/viewSummary.php?id=<?=$fid?>&quot; title=&quot;<?=base64_decode($fid)?>&quot;&gt;&lt;/iframe&gt;</pre></p>
+                </div>
+                <?php } ?>
 			</div>            
           </div>
                     
