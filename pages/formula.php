@@ -10,6 +10,7 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fi
 if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulas WHERE fid = '$fid'"))){
 	$legend = 1;
 }
+$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,image FROM formulasMetaData WHERE fid = '$fid'"));
 ?>
 <style>
 .mfp-iframe-holder .mfp-content {
@@ -26,7 +27,7 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulas WHERE fid = '$f
           <div class="card shadow mb-4">
             <div class="card-header py-3"> 
 			  <?php if($meta['image']){?><div class="img-formula"><img class="img-perfume" src="<?php echo $meta['image']; ?>"/></div><?php } ?>
-              <h2 class="m-0 font-weight-bold text-primary"><a href="?do=Formula&name=<?php echo $f_name; ?>"><?php echo $f_name; ?></a></h2>
+              <h2 class="m-0 font-weight-bold text-primary"><a href="?do=Formula&name=<?=base64_decode($fid)?>"><?=base64_decode($fid)?></a></h2>
               <h5 class="m-1 text-primary"><a href="pages/getFormMeta.php?id=<?php echo $meta['id'];?>" class="popup-link">Details</a></h5>
             </div>
         <!-- Nav tabs -->
