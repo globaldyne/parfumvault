@@ -256,8 +256,8 @@ $('.replaceIngredient').editable({
                     <tr>
                       <?php if($settings['grp_formula'] == '1'){ echo '<th class="noexport"></th>'; } ?>
                       <th width="22%">Ingredient</th>
-                      <th width="5%">CAS #</th>
-                      <th width="5%">Purity %</th>
+                      <th width="5%">CAS#</th>
+                      <th width="5%">Purity%</th>
                       <th width="5%">Dilutant</th>
                       <th width="5%">Quantity (<?=$settings['mUnit']?>)</th>
                       <th width="5%">Concentration %*</th>
