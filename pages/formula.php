@@ -114,8 +114,9 @@ $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,image FROM formulasMet
 		        <div id="fetch_summary"><div class="loader"></div></div>
                 <?php if($legend){ ?>
                 <div id="share">
-                <p>To include this page in your web site, copy this line and paste it into your html code</p>
-                <p><pre>&lt;iframe src=&quot;<?=$_SERVER['REQUEST_SCHEME']?>://<?=$_SERVER['SERVER_NAME']?>/pages/viewSummary.php?id=<?=$fid?>&quot; title=&quot;<?=base64_decode($fid)?>&quot;&gt;&lt;/iframe&gt;</pre></p>
+               	  <p>To include this page in your web site, copy this line and paste it into your html code</p>
+               	  <p><pre>&lt;iframe src=&quot;<?=$_SERVER['REQUEST_SCHEME']?>://<?=$_SERVER['SERVER_NAME']?>/pages/viewSummary.php?id=<?=$fid?>&quot; title=&quot;<?=base64_decode($fid)?>&quot;&gt;&lt;/iframe&gt;</pre></p>
+                	<p>For documentation and parameterisation please refer to: <a href="https://www.jbparfum.com/knowledge-base/share-formula-notes/" target="_blank">https://www.jbparfum.com/knowledge-base/share-formula-notes/</a></p>
                 </div>
                 <?php } ?>
 			</div>            

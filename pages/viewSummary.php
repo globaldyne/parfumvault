@@ -45,7 +45,13 @@ $base_cat = arrFilter(array_filter($base_cat));
 
 ?>
 <link href="<?=$_SERVER['REQUEST_SCHEME']?>://<?=$_SERVER['SERVER_NAME']?>/css/vault.css" rel="stylesheet">
-
+<?php if($_GET['text_colour']){ ?>
+<style>
+html {
+	color: <?=$_GET['text_colour']?>;
+}
+</style>
+<?php } ?>
 <div id="notes_summary_view">
 <?php if($top_cat){ ?>
 <table border="0">
@@ -87,13 +93,10 @@ $base_cat = arrFilter(array_filter($base_cat));
 </table>
 <?php } ?>
 <p>&nbsp;</p>
-<?php if($description['notes']){ ?>
+<?php if($description['notes'] && $_GET['no_description'] != '1'){ ?>
 <table width="50%" border="0">
   <tr>
-    <td width="831"><strong>Description</strong></td>
-  </tr>
-  <tr>
-    <td><?=$description['notes']?></td>
+    <td width="831"><?=$description['notes']?></td>
   </tr>
 </table>
   <?php } ?>
