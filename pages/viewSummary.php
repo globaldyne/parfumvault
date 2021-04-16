@@ -44,7 +44,7 @@ $base_cat = arrFilter(array_filter($base_cat));
 
 
 ?>
-<link href="/css/vault.css" rel="stylesheet">
+<link href="<?=$_SERVER['REQUEST_SCHEME']?>://<?=$_SERVER['SERVER_NAME']?>/css/vault.css" rel="stylesheet">
 
 <div id="notes_summary_view">
 <?php if($top_cat){ ?>
