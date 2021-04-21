@@ -39,11 +39,11 @@ $defCatClass = $settings['defCatClass'];
                     <tr>
                       <th>Name</th>
                       <th>INCI</th>
-                      <th>CAS #</th>
+                      <th>CAS#</th>
                       <th>Odor</th>
                       <th>Profile</th>
                       <th>Category</th>
-                      <th><?php echo ucfirst($settings['defCatClass']);?> %</th>
+                      <th><?php echo ucfirst($settings['defCatClass']);?>%</th>
                       <th>Supplier</th>
                       <th class="noexport">SDS</th>
                       <th class="noexport">TGSC</th>
