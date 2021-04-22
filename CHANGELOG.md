@@ -18,6 +18,7 @@ IFRA certification improvements
 Add Molecular Weight for ingredients
 Add Mass for ingredients
 Remove legend/share if formula is empty
+Add update instructions link
 
 ### Version 2.7
 Making sure the percentage symbol is striped out from allergens quantity
