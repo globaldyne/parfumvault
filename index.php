@@ -330,6 +330,8 @@ function list_cat(){
 			require_once(__ROOT__.'/pages/sellFormula.php');
 		}elseif($_GET['do'] == 'customers'){
 			require_once(__ROOT__.'/pages/customers.php');
+		}elseif($_GET['do'] == 'UpgradeCore'){
+			require_once(__ROOT__.'/pages/UpgradeCore.php');
 			
 		}else{
 			require_once(__ROOT__.'/pages/dashboard.php');

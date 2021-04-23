@@ -19,6 +19,7 @@ Add Molecular Weight for ingredients
 Add Mass for ingredients
 Remove legend/share if formula is empty
 Add update instructions link
+Add auto-update function when non docker
 
 ### Version 2.7
 Making sure the percentage symbol is striped out from allergens quantity

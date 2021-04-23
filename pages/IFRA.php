@@ -72,7 +72,7 @@ $defCatClass = $settings['defCatClass'];
   <div class="modal-dialog modal-dialog-centered modal-ifra" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="ifra_import">Import ingredients from CSV file</h5>
+        <h5 class="modal-title" id="ifra_import">Import IFRA xls file</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
