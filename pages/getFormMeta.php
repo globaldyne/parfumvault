@@ -119,6 +119,13 @@ if($_FILES["file"]["tmp_name"]){
     <td><input name="isProtected" type="checkbox" id="isProtected" value="1" <?php if($info['isProtected'] == '1'){; ?> checked="checked"  <?php } ?>/></td>
   </tr>
   <tr>
+    <td>View:</td>
+    <td><select name="defView" id="defView" class="form-control">
+			  <option value="1" <?php if($info['defView']=="1") echo 'selected="selected"'; ?> >Ingredient Properties</option>
+			  <option value="2" <?php if($info['defView']=="2") echo 'selected="selected"'; ?> >Ingredient Notes</option>
+          </select></td>
+  </tr>
+  <tr>
     <td>Profile:</td>
     <td><a href="#" id="profile" data-type="select" data-pk="profile" data-title="<?php echo $info['profile'];?>"></a></td>
   </tr>
@@ -216,6 +223,8 @@ $(document).ready(function(){
     });
   });
 
+
+
   $("#isProtected").change(function() {
 	  $.ajax({ 
 			url: 'update_data.php', 
@@ -230,6 +239,21 @@ $(document).ready(function(){
 			}
 		  });
   });
+  
+$("#defView").change(function() {
+ $.ajax({ 
+	url: 'update_data.php', 
+	type: 'GET',
+	data: {
+		formula: '<?=$info['fid']?>',
+		defView: $("#defView").find(":selected").val(),
+		},
+	dataType: 'html',
+	success: function (data) {
+		$('#msg').html(data);
+	}
+  });
+});
 </script>
  </body>
 </html>

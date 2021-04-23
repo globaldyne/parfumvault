@@ -262,7 +262,11 @@ $('.replaceIngredient').editable({
                       <th width="5%">Quantity (<?=$settings['mUnit']?>)</th>
                       <th width="5%">Concentration %*</th>
                       <th width="5%">Cost (<?php echo utf8_encode($settings['currency']);?>)</th>
+                      <?php if($meta['defView'] == '1'){?>
                       <th width="5%">Properties</th>
+                      <?php }elseif($meta['defView'] == '2'){?>
+                      <th width="5%">Notes</th>
+                      <?php } ?>
                       <th class="noexport" width="15%">Actions</th>
                     </tr>
                   </thead>
@@ -332,8 +336,12 @@ $('.replaceIngredient').editable({
 					  <td data-name="quantity" class="quantity" data-type="text" align="center" data-pk="<?php echo $formula['ingredient'];?>"><?php echo number_format($formula['quantity'],$settings['qStep']);?></td>
 					  <td align="center" <?php echo $IFRA_WARN;?>><?php echo $conc_p;?></td>
 					  <td align="center"><?php echo calcCosts($ing_q['price'],$formula['quantity'], $formula['concentration'], $ing_q['ml']);?></td>
+                      <?php if($meta['defView'] == '1'){?>
 					  <td><?php echo ucfirst($ing_q['odor']);?></td>
-					  <td class="noexport" align="center"><a href="#" class="fas fa-exchange-alt replaceIngredient" rel="tipsy" title="Replace <?php echo $formula['ingredient'];?>" id="replaceIngredient" data-name="<?php echo $formula['ingredient'];?>" data-type="select" data-pk="<?php echo $formula['ingredient'];?>" data-title="Choose Ingredient to replace <?php echo $formula['ingredient'];?>"></a> &nbsp; <a href="<?php echo goShopping($formula['ingredient'],$conn);?>" target="_blank" class="fas fa-shopping-cart"></a> &nbsp; <a href="javascript:deleteING('<?php echo $formula['ingredient'];?>', '<?php echo $formula['id'];?>')" onclick="return confirm('Remove <?php echo $formula['ingredient'];?> from formula?')" class="fas fa-trash" rel="tipsy" title="Remove <?php echo $formula['ingredient'];?>"></a>
+					  <?php }elseif($meta['defView'] == '2'){?>
+					  <td data-name="notes" class="notes" data-type="text" align="center" data-pk="<?php echo $formula['ingredient'];?>"><?=$formula['notes']?></td>
+                      <?php } ?>
+                      <td class="noexport" align="center"><a href="#" class="fas fa-exchange-alt replaceIngredient" rel="tipsy" title="Replace <?php echo $formula['ingredient'];?>" id="replaceIngredient" data-name="<?php echo $formula['ingredient'];?>" data-type="select" data-pk="<?php echo $formula['ingredient'];?>" data-title="Choose Ingredient to replace <?php echo $formula['ingredient'];?>"></a> &nbsp; <a href="<?php echo goShopping($formula['ingredient'],$conn);?>" target="_blank" class="fas fa-shopping-cart"></a> &nbsp; <a href="javascript:deleteING('<?php echo $formula['ingredient'];?>', '<?php echo $formula['id'];?>')" onclick="return confirm('Remove <?php echo $formula['ingredient'];?> from formula?')" class="fas fa-trash" rel="tipsy" title="Remove <?php echo $formula['ingredient'];?>"></a>
                       </td>
 				</tr>
 				<?php
@@ -447,6 +455,22 @@ $('#formula_data').editable({
     return 'Numbers only!';
    }
   }
+});
+
+$('#formula_data').editable({
+  container: 'body',
+  selector: 'td.notes',
+  url: "pages/update_data.php?formula=<?php echo $f_name; ?>",
+  title: 'Notes',
+  type: "POST",
+  dataType: 'json',
+        success: function(response, newValue) {
+        if(response.status == 'error'){
+			return response.msg; 
+		}else{
+			fetch_formula();
+		}
+    },
 });
 
 $('#formula_data').editable({

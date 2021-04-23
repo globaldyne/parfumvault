@@ -43,6 +43,18 @@ if($_GET['protect']){
 	return;
 }
 
+if($_GET['formula'] &&  $_GET['defView']){
+	$fid = mysqli_real_escape_string($conn, $_GET['formula']);
+	$defView = mysqli_real_escape_string($conn, $_GET['defView']);
+	
+	if(mysqli_query($conn, "UPDATE formulasMetaData SET defView = '$defView' WHERE fid = '$fid'")){
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Default formula view changed!</div>';
+	}else{
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Something went wrong.</div>';
+	}
+	return;
+}
+
 if($_GET['rename']){
 	$value = mysqli_real_escape_string($conn, $_POST['value']);
 	$formula = mysqli_real_escape_string($conn, $_GET['rename']);
