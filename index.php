@@ -114,7 +114,7 @@ $(document).ready(function() {
 	});
 	
 	list_formulas();
-	list_ingredients();
+	//list_ingredients();
 
 });
 

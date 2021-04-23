@@ -137,7 +137,7 @@ if (!defined('pvault_panel')){ die('Not Found');}
 </div>
 <?php } ?>
 <script type="text/javascript" language="javascript" >
-
+list_ingredients();
 <?php if($pv_online['email'] && $pv_online['password']){?>
 
 function pv_online_import(items) {
