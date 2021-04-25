@@ -16,7 +16,7 @@ require_once('inc/config.php');
 require_once('inc/opendb.php');
 require_once('inc/product.php');
 if($_GET['register'] && $_POST['regUser'] && $_POST['regPass'] && $_POST['regFullName'] && $_POST['regEmail']){
-	$ruser = mysqli_real_escape_string($conn,$_POST['regUser']);
+	$ruser = mysqli_real_escape_string($conn,strtolower($_POST['regUser']));
 	$rpass = mysqli_real_escape_string($conn,$_POST['regPass']);
 	$rfname = mysqli_real_escape_string($conn,$_POST['regFullName']);
 	$remail = mysqli_real_escape_string($conn,$_POST['regEmail']);
@@ -32,7 +32,7 @@ if($_GET['register'] && $_POST['regUser'] && $_POST['regPass'] && $_POST['regFul
 	
 }
 if($_POST['username'] && $_POST['password']){
-	$_POST['username'] = mysqli_real_escape_string($conn,$_POST['username']);
+	$_POST['username'] = mysqli_real_escape_string($conn,strtolower($_POST['username']));
 	$_POST['password'] = mysqli_real_escape_string($conn,$_POST['password']);
 	
 	$row = mysqli_fetch_assoc(mysqli_query($conn,"SELECT id FROM users WHERE username='".$_POST['username']."' AND password=PASSWORD('".$_POST['password']."')"));
