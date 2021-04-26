@@ -22,6 +22,7 @@ Add update instructions link
 Add auto-update function when non docker
 Add option for notes per ingredient in formula
 Making username case insensitive
+Making ingredient name case insensitive
 
 ### Version 2.7
 Making sure the percentage symbol is striped out from allergens quantity

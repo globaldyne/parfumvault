@@ -5,3 +5,4 @@ ALTER TABLE `ingCategory` ADD `image` LONGTEXT NULL AFTER `notes`;
 ALTER TABLE `ingredients` ADD `molecularWeight` VARCHAR(255) NULL AFTER `isPrivate`;
 ALTER TABLE `formulas` ADD `notes` VARCHAR(255) NULL AFTER `quantity`; 
 ALTER TABLE `formulasMetaData` ADD `defView` INT NOT NULL DEFAULT '1' COMMENT '1 = Ingredient properties, 2 = Notes' AFTER `isProtected`; 
+ALTER TABLE `ingredients` CHANGE `name` `name` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
