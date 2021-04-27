@@ -158,9 +158,7 @@ $.ajax({
                   <?php foreach ($form as $formula){
 					    $ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT cas,$defCatClass,price,ml FROM ingredients WHERE name = '".$formula['ingredient']."'"));
 
-						$limitIFRA = searchIFRA($ing_q['cas'],$formula['ingredient'],null,$conn,$defCatClass);
-						$limit = explode(' - ', $limitIFRA);
-					    $limit = $limit['0'];
+						$limit = explode(' - ',searchIFRA($ing_q['cas'],$formula['ingredient'],null,$conn,$defCatClass));
 					  
 					    $new_quantity = $formula['quantity']/$mg['total_mg']*$new_conc;
 					  	$conc = $new_quantity/$bottle * 100;						
@@ -179,8 +177,8 @@ $.ajax({
 					  }else{
 						  echo '<td data-name="dilutant" class="dilutant" data-type="select" align="center" data-pk="'.$formula['ingredient'].'">'.$formula['dilutant'].'</td>';
 					  }
-					  if($limit != null){
-						 if($limit < $conc_p){
+					  if($limit['0'] != null){
+						 if($limit['0'] < $conc_p){
 							$IFRA_WARN = 'class="alert-danger"';//VALUE IS TO HIGH AGAINST IFRA
 					  	}else{
 							$IFRA_WARN = 'class="alert-success"'; //VALUE IS OK

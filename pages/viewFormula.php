@@ -274,10 +274,8 @@ $('.replaceIngredient').editable({
                   <?php	foreach ($form as $formula){
 						$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT cas, $defCatClass, price, ml, profile, odor FROM ingredients WHERE BINARY name = '".$formula['ingredient']."'"));
 
-						$limitIFRA = searchIFRA($ing_q['cas'],$formula['ingredient'],null,$conn,$defCatClass);
-						$limit = explode(' - ', $limitIFRA);
-					    $limit = $limit['0'];
-					  
+						$limit = explode(' - ',searchIFRA($ing_q['cas'],$formula['ingredient'],null,$conn,$defCatClass));
+						
 					  	$conc = number_format($formula['quantity']/$mg['total_mg'] * 100, 3);
 					  	$conc_p = number_format($formula['concentration'] / 100 * $conc, 3);
 						
@@ -316,8 +314,8 @@ $('.replaceIngredient').editable({
 					  <?php }else{ ?>
 					   <td data-name="dilutant" class="dilutant" data-type="select" align="center" data-pk="<?php echo $formula['ingredient']; ?>"><?php echo $formula['dilutant'];?></td>
 					  <?php }
-					  if($limit != null){
-						 if($limit < $conc_p){
+					  if($limit['0'] != null){
+						 if($limit['0'] < $conc_p){
 							$IFRA_WARN = 'class="alert-danger"';//VALUE IS TO HIGH AGAINST IFRA
 					  	}else{
 							$IFRA_WARN = 'class="alert-success"'; //VALUE IS OK

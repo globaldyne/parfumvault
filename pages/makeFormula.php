@@ -44,10 +44,7 @@ $defCatClass = $settings['defCatClass'];
 
   <script src="../js/jquery/jquery.min.js"></script>
   <script src="../js/bootstrap.min.js"></script>
-  
-  <link rel="stylesheet" type="text/css" href="../css/datatables.min.css"/>
-  <script type="text/javascript" src="../js/datatables.min.js"></script>
-  
+    
   <link href="../css/bootstrap.min.css" rel="stylesheet">
     
   <script src="../js/jquery-ui.js"></script>
@@ -123,44 +120,6 @@ $.ajax({
 	<?php } ?>
 };
 
-
-$(document).ready(function() {
-    var groupColumn = 0;
-    var table = $('#formula').DataTable({
-        "columnDefs": [
-            { "visible": false, "targets": groupColumn }
-        ],
-        "order": [[ groupColumn, 'desc' ]],
-		"paging":   false,
-		"info":   false,
-        "drawCallback": function ( settings ) {
-            var api = this.api();
-            var rows = api.rows( {page:'current'} ).nodes();
-            var last=null;
- 
-            api.column(groupColumn, {page:'current'} ).data().each( function ( group, i ) {
-                if ( last !== group ) {
-                    $(rows).eq( i ).before(
-                        '<tr class="group"><td colspan="7">'+group+' Notes</td></tr>'
-                    );
- 
-                    last = group;
-                }
-            } );
-        }
-    } );
- 
-    // Order by the grouping
-    $('#formula tbody').on( 'click', 'tr.group', function () {
-        var currentOrder = table.order()[0];
-        if ( currentOrder[0] === groupColumn && currentOrder[1] === 'asc' ) {
-            table.order( [ groupColumn, 'desc' ] ).draw();
-        }
-        else {
-            table.order( [ groupColumn, 'asc' ] ).draw();
-        }
-    } );
-} );
  
 </script>
 </head>
@@ -205,9 +164,7 @@ $(document).ready(function() {
                   <?php foreach ($form as $formula){
 					 	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT cas, $defCatClass, price, ml, profile FROM ingredients WHERE BINARY name = '".$formula['ingredient']."'"));
 
-						$limitIFRA = searchIFRA($ing_q['cas'],$formula['ingredient'],null,$conn,$defCatClass);
-						$limit = explode(' - ', $limitIFRA);
-					    $limit = $limit['0'];
+						$limit = explode(' - ',searchIFRA($ing_q['cas'],$formula['ingredient'],null,$conn,$defCatClass));
 					  
 					  	$conc = number_format($formula['quantity']/$mg['total_mg'] * 100, 3);
 					  	$conc_p = number_format($formula['concentration'] / 100 * $conc, 3);
@@ -241,11 +198,12 @@ $(document).ready(function() {
 								echo '<td>'.$ing_q['profile'].'</td>';
 							}
 						}
-                      echo '<td align="center" class="'.$ing_q['profile'].'">'.$ingName.'</a> '.checkIng($formula['ingredient'],$defCatClass,$conn).'</td>';
-                      echo '<td align="center">'.$formula['concentration'].'</td>';
-					  
-					  if($limit != null){
-						 if($limit < $conc_p){
+						?>
+                      <td align="center" class=" <?=$ing_q['profile']?> "><?=$ingName?></a> <?=checkIng($formula['ingredient'],$defCatClass,$conn)?></td>
+                      <td align="center"><?=$formula['concentration']?></td>
+					  <?php
+					  if($limit['0'] != null){
+						 if($limit['0'] < $conc_p){
 							$IFRA_WARN = 'class="alert-danger"';//VALUE IS TO HIGH AGAINST IFRA
 					  	}else{
 							$IFRA_WARN = 'class="alert-success"'; //VALUE IS OK
@@ -261,20 +219,22 @@ $(document).ready(function() {
 						  $IFRA_WARN = 'class="alert-warning"'; //NO RECORD FOUND
 					  }
 
-						  
-					  echo '<td align="center" >'.$formula['quantity'].'</td>';
-					  echo '<td align="center" '.$IFRA_WARN.'>'.$conc_p.'%</td>';
-					  echo '<td align="center">'.utf8_encode($settings['currency']).calcCosts($ing_q['price'],$formula['quantity'], $formula['concentration'], $ing_q['ml']).'</td>';
-					  echo '<td align="center">';
-	                  
+					?>
+					  <td align="center" ><?=$formula['quantity']?></td>
+					  <td align="center" <?=$IFRA_WARN?>><?=$conc_p?>%</td>
+					  <td align="center"><?=utf8_encode($settings['currency']).calcCosts($ing_q['price'],$formula['quantity'], $formula['concentration'], $ing_q['ml'])?></td>
+					  <td align="center">
+	                  <?php
 					  if($formula['toAdd'] == '1'){
 						  echo '<a href="#" data-toggle="modal" data-target="#added" data-quantity='.$formula['quantity'].' data-ingredient="'.$formula['ingredient'].'" data-ing-id="'.$formula['id'].'" data-qr="'.$formula['quantity'].'" class="fas fa-check" title="Added '.$formula['ingredient'].'"></a>';
 					  }
-					  
-					  echo '&nbsp; &nbsp;';
-					  echo '<a href="javascript:addToCart(\''.$formula['ingredient'].'\',\''.$formula['quantity'].'\',\''.$formula['concentration'].'\')" class="fas fa-shopping-cart"></a>'; 
-					  echo '</td></tr>';
-					  $tot[] = calcCosts($ing_q['price'],$formula['quantity'], $formula['concentration'], $ing_q['ml']);
+					  ?>
+					  &nbsp; &nbsp;
+					  <a href="javascript:addToCart('<?=$formula['ingredient']?>','<?=$formula['quantity']?>','<?=$formula['concentration']?>')" class="fas fa-shopping-cart"></a> 
+					  </td>
+                     </tr>
+					  <?php
+                      $tot[] = calcCosts($ing_q['price'],$formula['quantity'], $formula['concentration'], $ing_q['ml']);
 					  $conc_tot[] = $conc_p;
 				  }
                   ?>
