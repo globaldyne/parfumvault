@@ -25,7 +25,7 @@ $formula_q = mysqli_query($conn, "SELECT * FROM makeFormula WHERE fid = '$fid' O
 while ($formula = mysqli_fetch_array($formula_q)){
 	    $form[] = $formula;
 }
-$mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE fid = '$fid'"));
+$mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM makeFormula WHERE fid = '$fid'"));
 $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE fid = '$fid'"));
 
 $settings['grp_formula'] = '0';
