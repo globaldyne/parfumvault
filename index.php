@@ -50,7 +50,14 @@ if($pv_meta['app_ver'] < trim(file_get_contents(__ROOT__.'/VERSION.md'))){
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <script type='text/javascript'>
+	if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))){
+			if(screen.height>=1080)
+				document.write('<meta name="viewport" content="width=device-width, initial-scale=2.0, minimum-scale=1.0, maximum-scale=3.0, target-densityDpi=device-dpi, user-scalable=yes">');
+			else	
+				document.write('<meta name="viewport" content="width=device-width, initial-scale=0.5, minimum-scale=0.5, maximum-scale=3.0, target-densityDpi=device-dpi, user-scalable=yes">');
+	}
+  </script>
   <meta name="description" content="<?php echo $product.' - '.$ver;?>">
   <meta name="author" content="JBPARFUM">
   <title><?php echo $product;?> - Dashboard</title>
@@ -107,7 +114,7 @@ $(document).ready(function() {
 	});
 	
 	list_formulas();
-	list_ingredients();
+	//list_ingredients();
 
 });
 
@@ -285,7 +292,7 @@ function list_cat(){
           <div>
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h2 class="m-0 font-weight-bold text-primary"><a href="?do=listFormulas">Formulas</a></h2>
+              <h2 class="m-0 font-weight-bold text-primary"><a href="javascript:list_formulas()">Formulas</a></h2>
               <div id="inMsg"></div>
             </div>
             <div id="list_formulas">
@@ -323,6 +330,8 @@ function list_cat(){
 			require_once(__ROOT__.'/pages/sellFormula.php');
 		}elseif($_GET['do'] == 'customers'){
 			require_once(__ROOT__.'/pages/customers.php');
+		}elseif($_GET['do'] == 'UpgradeCore'){
+			require_once(__ROOT__.'/pages/UpgradeCore.php');
 			
 		}else{
 			require_once(__ROOT__.'/pages/dashboard.php');

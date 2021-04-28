@@ -104,7 +104,7 @@
             </li>
           </ul>
 <?php if($settings['chkVersion'] == '1'){ ?>          
-<?php checkVer($ver);?>
+<?=checkVer($ver);?>
 <div id="msg"><?php echo $db_up_msg;?></div>
 <?php } ?>
 </nav>

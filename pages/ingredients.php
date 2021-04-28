@@ -48,11 +48,11 @@ if (!defined('pvault_panel')){ die('Not Found');}
       </div>
       <div class="modal-body">
        <div id="CSVImportMsg"></div>
+		<form method="post" action="javascript:importCSV()" enctype="multipart/form-data" id="csvform">
        <table width="100%">
        		<tr>
     	   	<td width="92" valign="top">CSV File:</td>
 				<td width="1533" colspan="3">
-		<form method="post" action="javascript:importCSV()" enctype="multipart/form-data" id="csvform">
                 	<input type="file" id="ingCSV" name="ingCSV" />
 				</td>
 			</tr>
@@ -137,7 +137,7 @@ if (!defined('pvault_panel')){ die('Not Found');}
 </div>
 <?php } ?>
 <script type="text/javascript" language="javascript" >
-
+list_ingredients();
 <?php if($pv_online['email'] && $pv_online['password']){?>
 
 function pv_online_import(items) {

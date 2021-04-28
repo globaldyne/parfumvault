@@ -10,7 +10,13 @@
             <h1 class="m-0 mb-4 text-primary">Dashboard</h1>
           </div>
           <div class="row">
-          
+          <?php
+if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"))== 0){
+	echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> no ingredients yet, click <a href="?do=ingredients">here</a> to add.</div>';
+}elseif(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))== 0){
+	echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> no formulas added yet</div>';
+}else{
+	?>
               <div class="dash_charts">
               <div class="shadow-lg p-3 mb-5 bg-white rounded charts_box">
               
@@ -40,8 +46,9 @@
                   </div>
                 </div>
                 </div>
-                
-             </div>
+              </div>
+
+      <?php } ?>          
                
            <div class="mt-3 col-md-12"></div>
 

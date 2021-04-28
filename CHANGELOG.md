@@ -1,4 +1,29 @@
 # CHANGELOG
+### Version 2.8
+Formula CSV Import improvements
+Added protection from accidental deletion in formulas
+IFRA Library import improvements
+Various bug fixes
+Fix data table in formulas listing
+Fix a bug preventing CAS number to be shown in batch PDF
+Label print improvements
+Multi-dimensional ingredient lookup in alleregens and re-calculate the usage percentages 
+Add measurement units
+Add category image
+Notes summary in formula per ingrdient profile
+Category lookup by ID
+Add category image in ingredients list
+Add pubChem function
+IFRA certification improvements
+Add Molecular Weight for ingredients
+Add Mass for ingredients
+Remove legend/share if formula is empty
+Add update instructions link
+Add auto-update function when non docker
+Add option for notes per ingredient in formula
+Making username case insensitive
+Making ingredient name case insensitive
+
 ### Version 2.7
 Making sure the percentage symbol is striped out from allergens quantity
 Create entry in ingredients from allergens
