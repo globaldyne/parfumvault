@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 2.9
+
 ### Version 2.8
 Formula CSV Import improvements
 Added protection from accidental deletion in formulas
