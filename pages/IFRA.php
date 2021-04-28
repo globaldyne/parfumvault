@@ -24,7 +24,7 @@ $defCatClass = $settings['defCatClass'];
                         <div class="btn-group">
                           <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
                           <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item popup-link" id="ifraimport" href="pages/maintenance.php?do=IFRA">Import IFRA xls</a>
+	                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#ifra_import">Import IFRA xls</a>
                             <a class="dropdown-item" id="csv" href="#">Export to CSV</a>
                           </div>
                         </div>                      
@@ -67,8 +67,45 @@ $defCatClass = $settings['defCatClass'];
         </div>
       </div>
     </div>
-    
-<script type="text/javascript" language="javascript" >
+<!--IFRA IMPORT-->
+<div class="modal fade" id="ifra_import" tabindex="-1" role="dialog" aria-labelledby="ifra_import" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-ifra" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="ifra_import">Import IFRA xls file</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+       <div id="IFRAImportMsg"></div>
+		<form method="post" action="javascript:importIFRA()" enctype="multipart/form-data" id="ifra_import_form">
+       <table width="100%">
+       		<tr>
+    	   	<td width="122" valign="top">IFRA xls File:</td>
+				<td width="1519" colspan="3">
+                	<input type="file" id="ifraXLS" name="ifraXLS" />
+				</td>
+			</tr>
+       		<tr>
+       		  <td height="46">Modify file:</td>
+              <td><input name="updateCAS" type="checkbox" id="updateCAS" value="1" />
+                 <span class="font-italic">*this is required if you are importing the original IFRA file</span>
+              </td>
+   		  </tr>
+		</table>
+       <p class="alert-link"><strong>IMPORTANT:</strong></p>
+       <p class="alert-link"> This operation will wipe out any data already in your IFRA Library, so please make sure the file you uploading is in the right format and have taken a <a href="pages/maintenance.php?do=backupDB">backup</a> before.</p>
+       <p class="alert-link">The IFRA xls can be downloaded from its official <a href="https://ifrafragrance.org/safe-use/standards-guidance" target="_blank">web site</a></p>
+       </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <input type="submit" name="btnImport" class="btn btn-primary" id="btnImportCSV" value="Import">
+      </div>
+      </form>
+    </div>
+  </div>
+</div>  <script type="text/javascript" language="javascript" >
 
 $('#csv').on('click',function(){
   $("#tdData").tableHTMLExport({
@@ -86,6 +123,39 @@ $('#csv').on('click',function(){
   	consoleLog: false   
 });
  
-})
+});
+
+function importIFRA(){
+	$("#IFRAImportMsg").html('<div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
+	$("#btnImport").prop("disabled", true);
+		
+	var fd = new FormData();
+    var files = $('#ifraXLS')[0].files;
+    var modify = $('#updateCAS').val();
+
+       if(files.length > 0 ){
+        fd.append('ifraXLS',files[0]);
+        $.ajax({
+           url: 'pages/upload.php?type=IFRA&updateCAS=' + modify,
+           type: 'post',
+           data: fd,
+           contentType: false,
+           processData: false,
+		         cache: false,
+           success: function(response){
+             if(response != 0){
+               $("#IFRAImportMsg").html(response);
+				$("#btnImport").prop("disabled", false);
+              }else{
+                $("#IFRAImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> File upload failed!</div>');
+				$("#btnImport").prop("disabled", false);
+              }
+            },
+         });
+  }else{
+	$("#IFRAImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a file to upload!</div>');
+	$("#btnImport").prop("disabled", false);
+  }	
+}
 
 </script>

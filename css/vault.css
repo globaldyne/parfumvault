@@ -321,16 +321,16 @@ tr.strikeout td:before {
 
 @keyframes load {
   0% {
-    content: 'Loading';
+    content: 'Blending';
   }
   33% {
-    content: 'Loading.';
+    content: 'Blending.';
   }
   67% {
-    content: 'Loading..';
+    content: 'Blending..';
   }
   100% {
-    content: 'Loading...';
+    content: 'Blending...';
   }
 }
 
@@ -344,3 +344,46 @@ a:hover{
 .odd_ing {
     background-color:  #EEE !important;
 }
+
+.modal-ifra {
+  width: 800px;
+  max-width: 800px;
+  margin: auto;
+}
+
+.img_ing {
+    max-height: 40px;
+}
+
+.img_ing_sel {
+    max-height: 30px;
+	max-width: 30px;
+	padding: 0 10px 0 0;
+}
+
+figure {
+    display: inline;
+    border: none;
+    margin: 25px;
+}
+figure img {
+    vertical-align: top;
+}
+figure figcaption {
+    border: none;
+    text-align: center;
+}
+
+formula td, table.table th {
+	white-space: revert;
+}
+
+#notes_summary_view td {
+	display: inline-block;	
+}
+
+.col-md-6 {
+	width: 50%;
+	height: fit-content;
+}
+

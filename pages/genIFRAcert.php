@@ -7,6 +7,7 @@ require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/getIFRAMeta.php');
 require_once(__ROOT__.'/func/searchIFRA.php');
 require_once(__ROOT__.'/func/validateFormula.php');
+require_once(__ROOT__.'/func/calcPerc.php');
 
 $bottle = $_GET['bottle'];
 $type = $_GET['conc'];
@@ -17,6 +18,12 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM IFRALibrary"))== 0){
 	die($msg);
 }
 
+$defCatClass = mysqli_real_escape_string($conn, $_GET['defCatClass']);
+
+if(empty($defCatClass)){
+	$defCatClass = $settings['defCatClass'];
+}
+	
 $fid = mysqli_real_escape_string($conn, $_GET['fid']);
 
 
@@ -98,8 +105,8 @@ at a maximum concentration level of:</span></font></p>
     <th bgcolor="#d9d9d9"><strong>Level of use (%)*</strong></th>
   </tr>
   <tr>
-    <td align="center">Category 4</td>
-    <td align="center"><?php echo $type; ?>%</td>
+    <td align="center"><?=strtoupper($defCatClass)?></td>
+    <td align="center"><?=$type?>%</td>
   </tr>
 </table>
 <p class="western" style="margin-right: -0.12in"><font face="Arial, sans-serif"><I>*Actual use level or maximum use level</I></font> </p>
@@ -110,43 +117,48 @@ at a maximum concentration level of:</span></font></p>
 <p class="western" style="margin-right: -0.12in">&nbsp;</p>
 <table width="100%" border="1">
   <tr>
-    <th width="22%" bgcolor="#d9d9d9"><strong>Materials under the scope of IFRA Standards:</strong></th>
+    <th width="22%" bgcolor="#d9d9d9"><strong>Material(s) under the scope of IFRA Standards:</strong></th>
     <th width="12%" bgcolor="#d9d9d9"><strong>CAS number(s):</strong></th>
-    <th width="28%" bgcolor="#d9d9d9"><strong>Recommendation from IFRA Standard:</strong></th>
+    <th width="28%" bgcolor="#d9d9d9"><strong>Recommendation (%) from IFRA Standard:</strong></th>
     <th width="38%" bgcolor="#d9d9d9"><strong>Concentration (%) in  finished product:</strong></th>
   </tr>
+  <pre>
     <?php 
-	$fq = mysqli_query($conn, "SELECT ingredient,quantity,concentration FROM formulas WHERE fid = '$fid'");
+		$formula_q = mysqli_query($conn, "SELECT ingredient,quantity,concentration FROM formulas WHERE fid = '$fid'");
+		while ($formula = mysqli_fetch_array($formula_q)){
+				$form[] = $formula;
+		}
+		
+		foreach ($form as $formula){
+			$cas = mysqli_fetch_array(mysqli_query($conn, "SELECT cas,$defCatClass FROM ingredients WHERE name = '".$formula['ingredient']."'"));
+			if ($cas['cas']){
 
-	while($ing = mysqli_fetch_array($fq)){
-  		$cas = mysqli_fetch_array(mysqli_query($conn, "SELECT cas FROM ingredients WHERE name = '".$ing['ingredient']."'"));
-		if ($cas['cas']){
-			/*
-			if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM IFRALibrary WHERE name LIKE '".$ing['ingredient']."' OR instr(`cas`, '".$cas['cas']."') > 0" ))){
-				$msg = 'None found';
-			}
-			*/
-				echo '<pre>';
+				$q2 = mysqli_query($conn, "SELECT DISTINCT name,$defCatClass,risk,type,cas FROM IFRALibrary WHERE name LIKE '".$formula['ingredient']."' OR cas = '".$cas['cas']."' GROUP BY name");
 				
-				$q2 = mysqli_query($conn, "SELECT DISTINCT name,cat4,risk,type,cas FROM IFRALibrary WHERE name LIKE '".$ing['ingredient']."' OR cas = '".$cas['cas']."' GROUP BY name");
-
 				while($ifra = mysqli_fetch_array($q2)){
-			
-					$new_quantity = $ing['quantity']/$mg['total_mg']*$new_conc;
+					$new_quantity = $formula['quantity']/$mg['total_mg']*$new_conc;
 					$conc = $new_quantity/$bottle * 100;						
-					$conc_p = number_format($ing['concentration'] / 100 * $conc, 3);
+					$conc_p = number_format($formula['concentration'] / 100 * $conc, 3);
 					
-						echo '<tr>
-						<td align="center">'.$ifra['name'].'</td>
-						<td align="center">'.$ifra['cas'].'</td>
-						<td align="center">'.$ifra['risk']."<br>"; 
-						if($ifra['cat4']){
-							echo 'MAX usage: '.$ifra['cat4'].'%</td>';
-						}
-						echo '<td align="center">'.$conc_p.'%</td> 
-						</tr>';
+					if($settings['multi_dim_perc'] == '1'){
+						$conc_p   += multi_dim_perc($conn, $form)[$formula['ingredient']];
+					}
+				?>
+					<tr>
+						<td align="center"><?=$ifra['name']?></td>
+						<td align="center"><?=$ifra['cas']?></td>
+						<td align="center"><?=$ifra['risk']?><br> 
+				<?php if($ifra[$defCatClass]){ ?>
+							MAX usage: <?=$ifra[$defCatClass]?>
+				<?php }else{ ?>
+                			MAX usage: <?=$cas[$defCatClass]?>
+				<?php } ?>
+                		</td>
+						<td align="center"><?=$conc_p?></td> 
+						</tr>
+				<?php	
+                    }
 				}
-			}
 			
   } 
   ?>

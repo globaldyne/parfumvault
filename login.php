@@ -16,7 +16,7 @@ require_once('inc/config.php');
 require_once('inc/opendb.php');
 require_once('inc/product.php');
 if($_GET['register'] && $_POST['regUser'] && $_POST['regPass'] && $_POST['regFullName'] && $_POST['regEmail']){
-	$ruser = mysqli_real_escape_string($conn,$_POST['regUser']);
+	$ruser = mysqli_real_escape_string($conn,strtolower($_POST['regUser']));
 	$rpass = mysqli_real_escape_string($conn,$_POST['regPass']);
 	$rfname = mysqli_real_escape_string($conn,$_POST['regFullName']);
 	$remail = mysqli_real_escape_string($conn,$_POST['regEmail']);
@@ -32,10 +32,10 @@ if($_GET['register'] && $_POST['regUser'] && $_POST['regPass'] && $_POST['regFul
 	
 }
 if($_POST['username'] && $_POST['password']){
-	$_POST['username'] = mysqli_real_escape_string($conn,$_POST['username']);
+	$_POST['username'] = mysqli_real_escape_string($conn,strtolower($_POST['username']));
 	$_POST['password'] = mysqli_real_escape_string($conn,$_POST['password']);
 	
-	$row = mysqli_fetch_assoc(mysqli_query($conn,"SELECT id FROM users WHERE username='{$_POST['username']}' AND password=PASSWORD('".$_POST['password']."')"));
+	$row = mysqli_fetch_assoc(mysqli_query($conn,"SELECT id FROM users WHERE username='".$_POST['username']."' AND password=PASSWORD('".$_POST['password']."')"));
 
 	if($row['id']){	// If everything is OK login
 			$_SESSION['parfumvault'] = true;
@@ -56,7 +56,14 @@ if($_POST['username'] && $_POST['password']){
 
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <script type='text/javascript'>
+	if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))){
+			if(screen.height>=1080)
+				document.write('<meta name="viewport" content="width=device-width, initial-scale=2.0, minimum-scale=1.0, maximum-scale=3.0, target-densityDpi=device-dpi, user-scalable=yes">');
+			else	
+				document.write('<meta name="viewport" content="width=device-width, initial-scale=0.5, minimum-scale=0.5, maximum-scale=3.0, target-densityDpi=device-dpi, user-scalable=yes">');
+	}
+  </script>
   <meta name="description" content="<?php echo $product.' - '.$ver;?>">
   <meta name="author" content="JBPARFUM">
   <title><?php echo $product;?> - Login</title>

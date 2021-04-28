@@ -5,7 +5,9 @@ if($_POST['formula']){
 	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE name = '$f_name'"));
 
 	$formula_q = mysqli_query($conn, "SELECT * FROM formulas WHERE name = '$f_name' ORDER BY ingredient ASC");
-	
+	while ($formula = mysqli_fetch_array($formula_q)){
+	    $form[] = $formula;
+	}
 	$mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE name = '$f_name'"));
 	
 	$bottle = mysqli_real_escape_string($conn, $_POST['bottle']);
@@ -46,7 +48,7 @@ if($_POST['formula']){
 		$batchFile = $uploads_path.'batches/'.$batchID;
 		
 		mysqli_query($conn, "INSERT INTO batchIDHistory (id,fid,pdf) VALUES ('$batchID','$fid','$batchFile')");
-		genBatchPDF($fid,$batchID,$bottle,$new_conc,$mg['total_mg'],$ver,$uploads_path,$conn);
+		genBatchPDF($fid,$batchID,$bottle,$new_conc,$mg['total_mg'],$ver,$uploads_path,$settings['defCatClass'],$conn);
 	}else{
 		$batchID = 'N/A';
 	}
@@ -75,12 +77,15 @@ $.ajax({
 	<?php } ?>
 };
 
-function printBoxLabel() {
+function BoxLabel(download) {
 	<?php if(empty($settings['label_printer_addr']) || empty($settings['label_printer_model']) || $settings['label_printer_size'] != '62'){?>
 	$("#inf").html('<div class="alert alert-danger alert-dismissible">Please configure printer details in <a href="?do=settings">settings<a> page. Note: For this label you need 62mm label</div>');
 	<?php }else{ ?>
-	$("#inf").html('<div class="alert alert-info alert-dismissible">Printing...</div>');
-
+	if(download == null){
+		$("#inf").html('<div class="alert alert-info alert-dismissible">Printing...</div>');
+	}else{
+		$("#inf").html('<div class="alert alert-info alert-dismissible">Generating label...</div>');
+	}
 $.ajax({ 
     url: 'pages/manageFormula.php', 
 	type: 'get',
@@ -89,32 +94,16 @@ $.ajax({
 		batchID: "<?php echo $batchID; ?>",
 		name: "<?php echo $f_name; ?>",
 		carrier: "<?php echo $carrier*100/$bottle;?>",
-		copies: $("#copiesToPrint").val()
+		copies: $("#copiesToPrint").val(),
+		download: download
 		},
 	dataType: 'html',
     success: function (data) {
-	  $('#printBoxLabel').modal('toggle');
+	  $('#BoxLabel').modal('toggle');
 	  $('#inf').html(data);
     }
   });
 	<?php } ?>
-};
-
-function downloadBoxLabel() {
-	$.ajax({ 
-    url: 'pages/manageFormula.php', 
-	type: 'get',
-    data: {
-		action: "downloadBoxLabel",
-		batchID: "<?php echo $batchID; ?>",
-		name: "<?php echo $f_name; ?>",
-		carrier: "<?php echo $carrier*100/$bottle;?>",
-		},
-	dataType: 'html',
-    success: function (data) {
-	  $('#inf').html(data);
-    }
-  });
 };
 </script>
 <div id="content-wrapper" class="d-flex flex-column">
@@ -126,7 +115,7 @@ function downloadBoxLabel() {
             <?php if($_GET['generate'] && $_POST['formula']){?>
              <h2 class="m-0 font-weight-bold text-primary"><a href="?do=genFinishedProduct"><?php echo $meta['product_name'];?></a></h2>
              <h5 class="m-1 text-primary">Formula name: <strong><?php echo $meta['name'];?></strong></h5>
-             <h5 class="m-1 text-primary">Bottle: <strong><?php echo $bottle; ?>ml</strong></h5>
+             <h5 class="m-1 text-primary">Bottle: <strong><?php echo $bottle; ?><?=$settings['mUnit']?></strong></h5>
 			 <h5 class="m-1 text-primary">Concentration: <strong><?php echo $type; ?>%</h5>
              <h5 class="m-1 text-primary"><?php if($_POST['batchID'] == '1'){ echo 'Batch ID: <a href="'.$uploads_path.'batches/'.$batchID.'" target="_blank">'.$batchID.'</a>'; }else{ echo 'Batch ID: <a href="#">N/A</a>';}?></h5>
              <h5 class="m-1 text-primary">Category Class: <strong><?php echo ucfirst($defCatClass);?></strong></h5>
@@ -150,7 +139,7 @@ function downloadBoxLabel() {
                         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#IFRA">IFRA Certificate</a>
                         <a class="dropdown-item" href="javascript:printLabel()" onclick="return confirm('Print label?')">Print Label</a>
                         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#printBoxLabel">Print Box Label</a>
-                        <a class="dropdown-item" href="javascript:downloadBoxLabel()">Download Box Label</a>
+                        <a class="dropdown-item" href="javascript:BoxLabel('1')">Download Box Label</a>
                       </div>
                     </div>
                     </div>
@@ -166,17 +155,19 @@ function downloadBoxLabel() {
                       <th colspan="2">Cost</th>
                     </tr>
                   </thead>
-                  <?php while ($formula = mysqli_fetch_array($formula_q)) {
+                  <?php foreach ($form as $formula){
 					    $ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT cas,$defCatClass,price,ml FROM ingredients WHERE name = '".$formula['ingredient']."'"));
 
-						$limitIFRA = searchIFRA($ing_q['cas'],$formula['ingredient'],null,$conn,$defCatClass);
-						$limit = explode(' - ', $limitIFRA);
-					    $limit = $limit['0'];
+						$limit = explode(' - ',searchIFRA($ing_q['cas'],$formula['ingredient'],null,$conn,$defCatClass));
 					  
 					    $new_quantity = $formula['quantity']/$mg['total_mg']*$new_conc;
 					  	$conc = $new_quantity/$bottle * 100;						
 					  	$conc_p = number_format($formula['concentration'] / 100 * $conc, 3);
 					 	
+						if($settings['multi_dim_perc'] == '1'){
+							$conc_p   += multi_dim_perc($conn, $form)[$formula['ingredient']];
+						}
+						
 						echo'<tr>
                       <td align="center">'.$formula['ingredient'].'</td>
 					  <td align="center">'.$ing_q['cas'].'</td>
@@ -186,8 +177,8 @@ function downloadBoxLabel() {
 					  }else{
 						  echo '<td data-name="dilutant" class="dilutant" data-type="select" align="center" data-pk="'.$formula['ingredient'].'">'.$formula['dilutant'].'</td>';
 					  }
-					  if($limit != null){
-						 if($limit < $conc_p){
+					  if($limit['0'] != null){
+						 if($limit['0'] < $conc_p){
 							$IFRA_WARN = 'class="alert-danger"';//VALUE IS TO HIGH AGAINST IFRA
 					  	}else{
 							$IFRA_WARN = 'class="alert-success"'; //VALUE IS OK
@@ -218,7 +209,7 @@ function downloadBoxLabel() {
                                             <td></td>
 
                       <td align="center" class="m-1 text-primary">Sub Total: </td>
-                      <td align="center" class="m-1 text-primary"><?php echo number_format(array_sum($new_tot), 3); ?>ml</td>
+                      <td align="center" class="m-1 text-primary"><?php echo number_format(array_sum($new_tot), 3); ?> <?=$settings['mUnit']?></td>
                       <td align="center" class="m-1 text-primary"><?php echo array_sum($conc_tot);?>%</td>
                       <td colspan="2" align="center" class="m-1 text-primary"><?php echo utf8_encode($settings['currency']).number_format(array_sum($tot),2);?></td>
                     </tr>
@@ -228,17 +219,16 @@ function downloadBoxLabel() {
                                             <td></td>
 
                       <td align="center" class="m-1 text-primary">Carrier/Solvent: </td>
-                      <td align="center" class="m-1 text-primary"><?php echo $carrier; ?>ml</td>
+                      <td align="center" class="m-1 text-primary"><?php echo $carrier; ?> <?=$settings['mUnit']?></td>
                       <td align="center" class="m-1 text-primary"><?php echo $carrier*100/$bottle;?>%</td>
                       <td colspan="2" align="center" class="m-1 text-primary"><?php $carrier_sub_cost = $carrier_cost['price'] / $carrier_cost['ml'] * $carrier; echo utf8_encode($settings['currency']).number_format($carrier_sub_cost, 2);?></td>
                     </tr>
                     <tr>
                       <td></td>
                       <td></td>
-                                            <td></td>
-
+                      <td></td>
                       <td align="center" class="m-0 text-primary">Bottle:</td>
-                      <td align="center" class="m-0 text-primary"><?php echo $bottle_cost['ml'];?>ml</td>
+                      <td align="center" class="m-0 text-primary"><?php echo $bottle_cost['ml'];?> <?=$settings['mUnit']?></td>
                       <td align="center" class="m-0 text-primary">-</td>
                       <td colspan="2" align="center" class="m-0 text-primary"><?php echo  utf8_encode($settings['currency']).$bottle_cost['price']; ?></td>
                     </tr>
@@ -265,7 +255,7 @@ function downloadBoxLabel() {
                       <td></td>
                       <td></td>
                       <td align="center" class="m-0 font-weight-bold text-primary">Total: </td>
-                      <td width="15%" align="center" class="m-0 font-weight-bold text-primary"><?php echo number_format(array_sum($new_tot)+ $carrier, 3); ?>ml</td>
+                      <td width="15%" align="center" class="m-0 font-weight-bold text-primary"><?php echo number_format(array_sum($new_tot)+ $carrier, 3); ?> <?=$settings['mUnit']?></td>
                       <td width="15%" align="center" class="m-0 font-weight-bold text-primary"><?php echo $carrier*100/$bottle + array_sum($conc_tot); ?>%</td>
                       <td colspan="2" align="center" class="m-0 font-weight-bold text-primary"><?php echo $settings['currency'].number_format(array_sum($tot)+$lid_cost['price']+$carrier_sub_cost+$bottle_cost['price'],2);?></td>
                     </tr>
@@ -289,7 +279,7 @@ function downloadBoxLabel() {
       </div>
       <div class="modal-body">
         Copies to print:
-          <form action="javascript:printBoxLabel()" method="get" name="form1" target="_self" id="form1">
+          <form action="javascript:BoxLabel()" method="get" name="form1" target="_self" id="form1">
             <input name="copiesToPrint" type="text" id="copiesToPrint" value="1" />
       </div>
       <div class="modal-footer">
@@ -313,7 +303,7 @@ function downloadBoxLabel() {
       </div>
       <div class="modal-body">
         Select customer:
-          <form action="pages/genIFRAcert.php?fid=<?php echo $meta['fid'];?>&conc=<?php echo $type; ?>&bottle=<?php echo $bottle;?>" method="post" name="form1" target="_blank" id="form1">
+          <form action="pages/genIFRAcert.php?fid=<?php echo $meta['fid'];?>&conc=<?php echo $type; ?>&bottle=<?php echo $bottle;?>&defCatClass=<?=$defCatClass?>" method="post" name="form1" target="_blank" id="form1">
             <select class="form-control" name="customer" id="customer">
             <?php
 				$res = mysqli_query($conn, "SELECT id, name FROM customers ORDER BY name ASC");
@@ -344,6 +334,12 @@ function downloadBoxLabel() {
 				if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE type = 'Carrier' OR type = 'Solvent'"))== 0){
 					echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> You need to <a href="?do=ingredients">add</a> at least one solvent or carrier first.</div>';
 					return;
+				}
+				
+				$cats_q = mysqli_query($conn, "SELECT name FROM IFRACategories ORDER BY id ASC");
+
+				while($cats_res = mysqli_fetch_array($cats_q)){
+					$cats[] = $cats_res;
 				}
 			?>
            <form action="?do=genFinishedProduct&generate=1" method="post" enctype="multipart/form-data" target="_self">
@@ -382,24 +378,9 @@ function downloadBoxLabel() {
   <tr>
     <td>Category Class:</td>
     <td><select name="defCatClass" id="defCatClass" class="form-control selectpicker" data-live-search="true">
-			  <option value="cat1" <?php if($settings['defCatClass']=="cat1") echo 'selected="selected"'; ?> >Cat 1</option>
-			  <option value="cat2" <?php if($settings['defCatClass']=="cat2") echo 'selected="selected"'; ?> >Cat 2</option>
-			  <option value="cat3" <?php if($settings['defCatClass']=="cat3") echo 'selected="selected"'; ?> >Cat 3</option>
-              <option value="cat4" <?php if($settings['defCatClass']=="cat4") echo 'selected="selected"'; ?> >Cat 4</option>
-			  <option value="cat5A" <?php if($settings['defCatClass']=="cat5A") echo 'selected="selected"'; ?> >Cat 5A</option>
-			  <option value="cat5B" <?php if($settings['defCatClass']=="cat5B") echo 'selected="selected"'; ?> >Cat 5B</option>
-			  <option value="cat5C" <?php if($settings['defCatClass']=="cat5C") echo 'selected="selected"'; ?> >Cat 5C</option>
-			  <option value="cat5D" <?php if($settings['defCatClass']=="cat5D") echo 'selected="selected"'; ?> >Cat 5D</option>
-			  <option value="cat6" <?php if($settings['defCatClass']=="cat6") echo 'selected="selected"'; ?> >Cat 6</option>
-			  <option value="cat7A" <?php if($settings['defCatClass']=="cat7A") echo 'selected="selected"'; ?> >Cat 7A</option>
-			  <option value="cat7B" <?php if($settings['defCatClass']=="cat7B") echo 'selected="selected"'; ?> >Cat 7B</option>
-			  <option value="cat8" <?php if($settings['defCatClass']=="cat8") echo 'selected="selected"'; ?> >Cat 8</option>
-			  <option value="cat9" <?php if($settings['defCatClass']=="cat9") echo 'selected="selected"'; ?> >Cat 9</option>
-			  <option value="cat10A" <?php if($settings['defCatClass']=="cat10A") echo 'selected="selected"'; ?> >Cat 10A</option>
-			  <option value="cat10B" <?php if($settings['defCatClass']=="cat10B") echo 'selected="selected"'; ?> >Cat 10B</option>
-			  <option value="cat11A" <?php if($settings['defCatClass']=="cat11A") echo 'selected="selected"'; ?> >Cat 11A</option>
-			  <option value="cat11B" <?php if($settings['defCatClass']=="cat11B") echo 'selected="selected"'; ?> >Cat 11B</option>
-			  <option value="cat12" <?php if($settings['defCatClass']=="cat12") echo 'selected="selected"'; ?> >Cat 12</option>
+		<?php foreach ($cats as $IFRACategories) {?>
+				<option value="cat<?php echo $IFRACategories['name'];?>" <?php echo ($settings['defCatClass']=='cat'.$IFRACategories['name'])?"selected=\"selected\"":""; ?>><?php echo 'Cat '.$IFRACategories['name'];?></option>
+		  <?php	}	?>
             </select></td>
     <td>&nbsp;</td>
   </tr>

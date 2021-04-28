@@ -20,7 +20,7 @@ require_once(__ROOT__.'/func/formulaProfile.php');
                     <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
                     <div class="dropdown-menu dropdown-menu-right">
 	                  <a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula">Add new formula</a>
-                      <a class="dropdown-item popup-link" id="csv" href="pages/csvImport.php">Import from a CSV</a>
+                      <a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula_csv">Import from CSV</a>
                     </div>
                     </div>
                 </div></td>
@@ -34,8 +34,7 @@ require_once(__ROOT__.'/func/formulaProfile.php');
 if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"))== 0){
 	echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> no ingredients yet, click <a href="?do=ingredients">here</a> to add.</div>';
 }elseif(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))== 0){
-	echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> no formulas yet, click <a href="?do=addFormula">here</a> to add.</div>';
-
+	echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> no formulas yet, click <a href="#" data-toggle="modal" data-target="#add_formula">here</a> to add.</div>';
 }else{
 ?>
      <div id="listFormulas">
@@ -109,7 +108,66 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"))== 0){
     </div>
   </div>
 </div>
+</div>
 
+<!--IMPORT FORMULA CSV MODAL-->
+<div class="modal fade" id="add_formula_csv" tabindex="-1" role="dialog" aria-labelledby="add_formula_csv" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="add_formula_csv">Import formula from CSV</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <div id="CSVImportMsg"></div>
+	<form method="post" action="javascript:add_formula_csv()" enctype="multipart/form-data" id="csvform">
+               <table width="100%" border="0">
+                              <tr>
+                                <td>Name:</td>
+                                <td><input type="text" name="CSVname" id="CSVname" class="form-control"/></td>
+                              </tr>
+                              <tr>
+                                <td>Profile:</td>
+                                <td>
+                                <select name="CSVProfile" id="CSVProfile" class="form-control">
+                                        <option value="oriental">Oriental</option>
+                                        <option value="woody">Woody</option>
+                                        <option value="floral">Floral</option>
+                                        <option value="fresh">Fresh</option>
+                                        <option value="other">Other</option>
+                                 </select>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td width="21%">Choose file:</td>
+                                <td width="79%">
+                                  <input type="file" name="CSVFile" id="CSVFile" class="form-control" />
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                              </tr>
+                              <tr>
+                                <td colspan="2"><p>CSV format: <strong>ingredient,concentration,dilutant,quantity</strong></p>
+                                <p>Example: <em><strong>Ambroxan,10,TEC,0.15</strong></em></p></td>
+                              </tr>
+                              <tr>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                              </tr>
+                 </table>
+	  <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <input type="submit" name="btnImport" class="btn btn-primary" id="btnImport" value="Import">
+      </div>
+     </form>
+    </div>
+  </div>
+</div>
+</div>
 <script type="text/javascript" language="javascript" >
 
 $('a[rel=tipsy]').tipsy();
@@ -121,7 +179,7 @@ $('.popup-link').magnificPopup({
 	showCloseBtn: true,
 });
 	
-$('#tdData').DataTable({
+$('#tdData,#tdDataoriental,#tdDatawoody,#tdDatafloral,#tdDatafresh,#tdDataunisex,#tdDatamen,#tdDatawomen').DataTable({
     "paging":   true,
 	"info":   true,
 	"lengthMenu": [[20, 35, 60, -1], [20, 35, 60, "All"]]
@@ -201,10 +259,41 @@ function add_formula() {
 	dataType: 'html',
     success: function (data) {
 	  	$('#addFormulaMsg').html(data);
-		//list_formulas();
-
     }
   });
 };
 
+function add_formula_csv() {
+    $("#CSVImportMsg").html('<div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
+	$("#btnImport").prop("disabled", true);
+		
+	var fd = new FormData();
+    var files = $('#CSVFile')[0].files;
+    var name = $('#CSVname').val();
+    var profile = $('#CSVProfile').val();
+
+       if(files.length > 0 ){
+        fd.append('CSVFile',files[0]);
+        $.ajax({
+           url: 'pages/upload.php?type=frmCSVImport&name=' + name + '&profile=' + profile,
+           type: 'post',
+           data: fd,
+           contentType: false,
+           processData: false,
+		         cache: false,
+           success: function(response){
+             if(response != 0){
+               $("#CSVImportMsg").html(response);
+				$("#btnImport").prop("disabled", false);
+              }else{
+                $("#CSVImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> File upload failed!</div>');
+				$("#btnImport").prop("disabled", false);
+              }
+            },
+         });
+  }else{
+	$("#CSVImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a file to upload!</div>');
+	$("#btnImport").prop("disabled", false);
+  }
+};
 </script>

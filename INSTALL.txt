@@ -4,15 +4,18 @@ LINUX
 ****Assuming you already have a working php/mysql system configured.
 
 
-Copy/clone the repo under your web server's home dir (eg. /var/www/)
+Download or clone the repo under your web server's home dir (eg. /var/www/)
 *Highly recomended to create a vhost
 
-Create a new db eg. pvault and import the schema located under db/ folder
+Create a new db eg. pvault and a user with admin rights to it
 
-Edit inc/config.php and update it with your db details
-*Higly recomended to create a new user with permissions only to the pvault db.
+Open your web browser to you server's url and follow the instruction on the installation wizard.
+
+For more info please refer to:
+	
+	https://www.jbparfum.com/knowledge-base/
 
 
 To Enable label printing support, additional software is required:
 
-https://github.com/pklaus/brother_ql
+	https://github.com/pklaus/brother_ql

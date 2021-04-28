@@ -1,6 +1,6 @@
 <?php
 if (!defined('pvault_panel')){ die('Not Found');}
-function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $ver, $uploads_path, $conn){
+function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $ver, $uploads_path, $defCatClass, $conn){
 	class PDF extends FPDF {
 		function Header() {
 			global $fid;
@@ -163,7 +163,7 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $ver, $uploads_pat
 		$pdf->Ln();
 		$pdf->SetFont('Arial','',9);
 					  
-		$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT IFRA,price,ml,profile,cas FROM ingredients WHERE name = '".$formula['ingredient']."'"));
+		$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT $defCatClass,price,ml,profile,cas FROM ingredients WHERE name = '".$formula['ingredient']."'"));
 		$new_quantity = $formula['quantity']/$mg*$new_conc;
 		$conc = $new_quantity/$bottle * 100;
 		$conc_p = number_format($formula['concentration'] / 100 * $conc, 3);
@@ -199,7 +199,7 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $ver, $uploads_pat
 	$pdf->MultiCell(250,10,"Also contains \n");
 
 	foreach($hd_blends as $heading) {
-		$pdf->Cell(45,12,$heading,1,0,'C');
+		$pdf->Cell(68,12,$heading,1,0,'C');
 	}
 
 	$qAllIng = mysqli_query($conn, "SELECT ingredient,quantity,concentration FROM formulas WHERE fid = '$fid'");
@@ -210,11 +210,11 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $ver, $uploads_pat
 			$pdf->Ln();
 			$pdf->SetFont('Arial','',8);
 
-			$pdf->Cell(45,8,$bld['ing'],1,0,'C');
+			$pdf->Cell(68,8,$bld['ing'],1,0,'C');
 
-			$pdf->Cell(45,8,$bld['name'],1,0,'C');
-			$pdf->Cell(45,8,$bld['cas'],1,0,'C');
-			$pdf->Cell(45,8,$bld['percentage'],1,0,'C');
+			$pdf->Cell(68,8,$bld['name'],1,0,'C');
+			$pdf->Cell(68,8,$bld['cas'],1,0,'C');
+			$pdf->Cell(68,8,$bld['percentage'],1,0,'C');
 		}
 	}	
 	

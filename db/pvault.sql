@@ -52,7 +52,8 @@ CREATE TABLE `formulas` (
   `ingredient_id` varchar(11) COLLATE utf8_bin DEFAULT NULL,
   `concentration` decimal(5,2) DEFAULT 100.00,
   `dilutant` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `quantity` decimal(8,3) DEFAULT NULL
+  `quantity` decimal(8,3) DEFAULT NULL,
+  `notes` varchar(11) COLLATE utf8_bin DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 DROP TABLE IF EXISTS `makeFormula`;
@@ -88,7 +89,9 @@ CREATE TABLE `formulasMetaData` (
   `sex` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `notes` text COLLATE utf8_bin DEFAULT NULL,
   `created` timestamp NOT NULL DEFAULT current_timestamp(),
-  `image` varchar(255) COLLATE utf8_bin NOT NULL
+  `image` varchar(255) COLLATE utf8_bin NOT NULL,
+  `isProtected` INT NULL DEFAULT '0',
+  `defView` INT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 DROP TABLE IF EXISTS `IFRALibrary`;
@@ -139,7 +142,8 @@ DROP TABLE IF EXISTS `ingCategory`;
 CREATE TABLE `ingCategory` (
   `id` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
-  `notes` text COLLATE utf8_bin DEFAULT NULL
+  `notes` text COLLATE utf8_bin DEFAULT NULL,
+  `image` LONGTEXT COLLATE utf8_bin NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 DROP TABLE IF EXISTS `ingProfiles`;
@@ -157,7 +161,7 @@ INSERT INTO `ingProfiles` (`id`, `name`, `notes`) VALUES
 DROP TABLE IF EXISTS `ingredients`;
 CREATE TABLE `ingredients` (
   `id` int(11) NOT NULL,
-  `name` varchar(255) COLLATE utf8_bin NOT NULL,
+  `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
   `INCI` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `type` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `strength` varchar(255) COLLATE utf8_bin DEFAULT NULL,
@@ -207,7 +211,8 @@ CREATE TABLE `ingredients` (
   `impact_base` varchar(10) COLLATE utf8_bin DEFAULT NULL,
   `usage_type` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `noUsageLimit` INT NULL DEFAULT '0',  
-  `isPrivate` INT NULL DEFAULT '0',  
+  `isPrivate` INT NULL DEFAULT '0',
+  `molecularWeight` VARCHAR(255) NULL,
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
@@ -290,7 +295,9 @@ CREATE TABLE `settings` (
   `pubChem` int(11) DEFAULT NULL,
   `chkVersion` int(11) DEFAULT NULL,
   `qStep` INT(5) NOT NULL DEFAULT '2',
-  `pubchem_view` VARCHAR(4) NOT NULL DEFAULT '2d', 
+  `pubchem_view` VARCHAR(4) NOT NULL DEFAULT '2d',
+  `mUnit` VARCHAR(10) NOT NULL DEFAULT 'ml',
+  `multi_dim_perc` INT NOT NULL DEFAULT '0', 
   `defCatClass` VARCHAR(255) NOT NULL DEFAULT 'cat4' 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 

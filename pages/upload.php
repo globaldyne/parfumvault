@@ -5,6 +5,8 @@ require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/func/validateInput.php');
 require_once(__ROOT__.'/inc/settings.php');
+require_once(__ROOT__.'/func/fixIFRACas.php');
+
 
 
 if($_GET['type'] == 'SDS' && $_GET['ingredient_id']){
@@ -102,4 +104,98 @@ if($_GET['type'] == 'ingCSVImport'){
 	return;
 }
 
+if($_GET['type'] == 'frmCSVImport'){
+	$name = mysqli_real_escape_string($conn,trim($_GET['name']));
+	
+	if(empty($name)){
+		echo '<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> Name is required.</div>';
+		return;
+	}
+
+	$fid = base64_encode($name);
+
+	$profile = mysqli_real_escape_string($conn,$_GET['profile']);
+	
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$fid'"))){
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$name.' already exists! Click <a href="?do=Formula&name='.$name.'">here</a> to view/edit!</div>';
+	  	return;
+	 }
+
+		$filename=$_FILES["CSVFile"]["tmp_name"];    
+		if($_FILES["CSVFile"]["size"] > 0){
+			$file = fopen($filename, "r");
+			while (($data = fgetcsv($file, 10000, ",")) !== FALSE){
+				if(!mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '".trim(ucwords($data['0']))."'"))){
+					
+					mysqli_query($conn, "INSERT INTO ingredients (name, ml) VALUES ('".trim(ucwords($data['0']))."', '10')");
+				}
+				if(empty($data['1'])){
+					$data['1'] = '100';
+				}
+				$sql = "INSERT INTO formulas (fid,name,ingredient,concentration,dilutant,quantity) VALUES ('$fid', '$name','".trim(ucwords($data['0']))."','".$data['1']."','".$data['2']."','".$data['3']."')";
+				$res = mysqli_query($conn, $sql);
+			}
+			
+			if($res){
+				mysqli_query($conn, "INSERT INTO formulasMetaData (fid,name,notes,profile,image) VALUES ('$fid','$name','Imported via csv','$profile','$def_app_img')");
+				echo '<div class="alert alert-success alert-dismissible"><strong><a href="?do=Formula&name='.$name.'">'.$name.'</a></strong> added!</div>';
+			}else{
+				echo '<div class="alert alert-danger alert-dismissible"><strong>Error adding: </strong>'.$name.'</div>';
+			}
+			fclose($file);  
+		}
+	 
+	 
+	return;
+}
+
+if($_GET['type'] == 'IFRA'){
+	if(isset($_FILES['ifraXLS'])){
+		$filename = $_FILES["ifraXLS"]["tmp_name"];  
+		$file_ext = strtolower(end(explode('.',$_FILES['ifraXLS']['name'])));
+		$all_ext = "xls,xlsx";
+		$ext = explode(",",$all_ext);
+	
+		if(in_array($file_ext,$ext)=== false){
+			echo '<div class="alert alert-danger alert-dismissible"><strong>File upload error: </strong>Extension not allowed, please choose a '.$all_ext.' file.</div>';
+			return;
+		}
+		
+		if($_FILES["ifraXLS"]["size"] > 0){
+			require_once(__ROOT__.'/func/SimpleXLSX.php');
+			mysqli_query($conn, "TRUNCATE IFRALibrary");
+		
+			$xlsx = SimpleXLSX::parse($filename);
+		
+			try {
+			   $link = new PDO( "mysql:host=$dbhost;dbname=$dbname", $dbuser, $dbpass);
+			   $link->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			}catch(PDOException $e){
+				echo $sql . "<br>" . $e->getMessage();
+			}
+		
+			$fields = 'ifra_key,image,amendment,prev_pub,last_pub,deadline_existing ,deadline_new,name,cas,cas_comment,synonyms,formula,flavor_use,prohibited_notes,restricted_photo_notes,restricted_notes,specified_notes,type,risk,contrib_others,contrib_others_notes,cat1,cat2,cat3,cat4,cat5A ,cat5B,cat5C,cat5D,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12';
+			$values = substr(str_repeat('?,', count(explode(',' , $fields))), 0 , strlen($x) - 1);
+			$stmt = $link->prepare( "INSERT INTO IFRALibrary ($fields) VALUES ($values)");
+			$cols = $xlsx->dimension()[0];//$dim[0];
+				foreach ( $xlsx->rows() as $k => $r ) {
+					for ( $i = 0; $i < $cols; $i ++ ) {
+						$l = $i+1;
+						$stmt->bindValue( $l, $r[ $i]);
+					}
+					try {
+						$stmt->execute();
+						$err = '0';
+					} catch (Exception $e) {
+						$err = '1';
+					}
+				}
+				if($_GET['updateCAS'] == '1'){
+					fixIFRACas($conn);
+				}
+				echo '<div class="alert alert-success alert-dismissible">Import success.</div>';
+		}
+	}
+	return;
+}
 ?>

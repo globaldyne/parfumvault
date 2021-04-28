@@ -4,6 +4,7 @@ require('../inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
+require_once(__ROOT__.'/inc/product.php');
 
 if($_GET['id']){
 	$id = mysqli_real_escape_string($conn, $_GET['id']);
@@ -34,7 +35,7 @@ if($_FILES["file"]["tmp_name"]){
     	$dst = imagecreatetruecolor( $new_width, $new_height );
     	imagecopyresampled( $dst, $src, 0, 0, 0, 0, $new_width, $new_height, $width, $height );
     	imagedestroy( $src );
-    	imagepng( $dst, $targetfilename ); // adjust format as needed
+    	imagepng( $dst, $targetfilename );
 	 
 		//if($_FILES["file"]["size"] > 0){
 			move_uploaded_file($targetfilename,"../uploads/formulas/".base64_encode($targetfilename));
@@ -50,17 +51,42 @@ if($_FILES["file"]["tmp_name"]){
 	 }
 
 ?>
-<link href="../css/sb-admin-2.css" rel="stylesheet">
-<link href="../css/bootstrap-select.min.css" rel="stylesheet">
-<link href="../css/bootstrap-editable.css" rel="stylesheet">
+<!DOCTYPE html>
+<html lang="en">
 
-<script src="../js/jquery/jquery.min.js"></script>
-<script src="../js/bootstrap.min.js"></script>
-  
-<link href="../css/bootstrap.min.css" rel="stylesheet">
-  
-<script src="../js/bootstrap-select.js"></script>
-<script src="../js/bootstrap-editable.js"></script>
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <script type='text/javascript'>
+	if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))){
+			if(screen.height>=1080)
+				document.write('<meta name="viewport" content="width=device-width, initial-scale=2.0, minimum-scale=1.0, maximum-scale=3.0, target-densityDpi=device-dpi, user-scalable=yes">');
+			else	
+				document.write('<meta name="viewport" content="width=device-width, initial-scale=0.5, minimum-scale=0.5, maximum-scale=3.0, target-densityDpi=device-dpi, user-scalable=yes">');
+	}
+  </script>
+  <meta name="description" content="<?php echo $product.' - '.$ver;?>">
+  <meta name="author" content="JBPARFUM">
+  <title><?php echo $product;?></title>
+
+  <link href="../css/sb-admin-2.css" rel="stylesheet">
+  <link href="../css/bootstrap-select.min.css" rel="stylesheet">
+  <link href="../css/bootstrap-editable.css" rel="stylesheet">
+    
+  <script src="../js/jquery/jquery.min.js"></script>
+  <script src="../js/bootstrap.min.js"></script>
+  <script src='../js/tipsy.js'></script>
+  <script src="../js/jquery-ui.js"></script>
+      
+  <link href="../css/bootstrap.min.css" rel="stylesheet">
+  <link href="../css/tipsy.css" rel="stylesheet" />
+    
+  <script src="../js/bootstrap-select.js"></script>
+  <script src="../js/bootstrap-editable.js"></script>
+
+</head>
+
 
 
 <style>
@@ -71,13 +97,14 @@ if($_FILES["file"]["tmp_name"]){
 }
 
 </style>
+<body>
 
 <table class="table table-bordered" id="formula_metadata" cellspacing="0">
   <tr>
     <td colspan="2"><h1 class="badge-primary"><?php echo $info['name'];?></h1></td>
   </tr>
   <tr>
-    <td colspan="2"><?php echo $msg; ?></td>
+    <td colspan="2"><div id="msg"><?php echo $msg; ?></div></td>
   </tr>
   <tr>
     <td width="20%">Formula Name:</td>
@@ -86,6 +113,17 @@ if($_FILES["file"]["tmp_name"]){
   <tr>
     <td>Product Name:</td>
     <td data-name="product_name" class="product_name" data-type="text" align="left" data-pk="product_name"><?php echo $info['product_name'];?></td>
+  </tr>
+  <tr>
+    <td><a href="#" rel="tipsy" title="When enabled, formula is protected against deletion.">Protected:</a></td>
+    <td><input name="isProtected" type="checkbox" id="isProtected" value="1" <?php if($info['isProtected'] == '1'){; ?> checked="checked"  <?php } ?>/></td>
+  </tr>
+  <tr>
+    <td>View:</td>
+    <td><select name="defView" id="defView" class="form-control">
+			  <option value="1" <?php if($info['defView']=="1") echo 'selected="selected"'; ?> >Ingredient Properties</option>
+			  <option value="2" <?php if($info['defView']=="2") echo 'selected="selected"'; ?> >Ingredient Notes</option>
+          </select></td>
   </tr>
   <tr>
     <td>Profile:</td>
@@ -117,7 +155,8 @@ if($_FILES["file"]["tmp_name"]){
 
 <script type="text/javascript" language="javascript" >
 $(document).ready(function(){
- 
+ $('a[rel=tipsy]').tipsy({gravity: 'w'});
+
   $('#formula_metadata').editable({
   container: 'body',
   selector: 'td.name',
@@ -126,8 +165,8 @@ $(document).ready(function(){
   type: "POST",
   mode: 'inline',
   dataType: 'json',
-      success: function(response, newValue) {
-        if(response.status == 'error') return response.msg; 
+      success: function(response) {				
+	  	$('#msg').html(response);        
     },
 
  });
@@ -182,5 +221,39 @@ $(document).ready(function(){
              {value: 'women', text: 'Women'},
           ]
     });
-  })
+  });
+
+
+
+  $("#isProtected").change(function() {
+	  $.ajax({ 
+			url: 'update_data.php', 
+			type: 'GET',
+			data: {
+				protect: '<?=$info['fid']?>',
+				isProtected: $("#isProtected").is(':checked'),
+				},
+			dataType: 'html',
+			success: function (data) {
+				$('#msg').html(data);
+			}
+		  });
+  });
+  
+$("#defView").change(function() {
+ $.ajax({ 
+	url: 'update_data.php', 
+	type: 'GET',
+	data: {
+		formula: '<?=$info['fid']?>',
+		defView: $("#defView").find(":selected").val(),
+		},
+	dataType: 'html',
+	success: function (data) {
+		$('#msg').html(data);
+	}
+  });
+});
 </script>
+ </body>
+</html>

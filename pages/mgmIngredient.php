@@ -32,7 +32,7 @@ $defCatClass = $settings['defCatClass'];
 
 $res_ingTypes = mysqli_query($conn, "SELECT id,name FROM ingTypes ORDER BY name ASC");
 $res_ingStrength = mysqli_query($conn, "SELECT id,name FROM ingStrength ORDER BY name ASC");
-$res_ingCategory = mysqli_query($conn, "SELECT id,name FROM ingCategory ORDER BY name ASC");
+$res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCategory ORDER BY name ASC");
 $res_ingSupplier = mysqli_query($conn, "SELECT id,name FROM ingSuppliers ORDER BY name ASC");
 $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles ORDER BY name ASC");
 
@@ -74,6 +74,16 @@ $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE n
 .container {
     max-width: 100%;
 	width: 1000px;
+}
+.dropdown-menu > li > a {
+    font-weight: 700;
+    padding: 10px 20px;
+}
+
+.bootstrap-select.btn-group .dropdown-menu li small {
+    display: block;
+    padding: 6px 0 0 0;
+    font-weight: 100;
 }
 </style>
 
@@ -304,7 +314,7 @@ reload_data();
                                 <select name="category" id="category" class="form-control selectpicker" data-live-search="true">
                                 <option value="" selected></option>
                                 <?php while ($row_ingCategory = mysqli_fetch_array($res_ingCategory)){ ?>
-								<option value="<?php echo $row_ingCategory['name'];?>" <?php echo ($ing['category']==$row_ingCategory['name'])?"selected=\"selected\"":""; ?>><?php echo $row_ingCategory['name'];?></option>
+								<option data-content="<img class='img_ing_sel' src='<?php if($row_ingCategory['image']){ echo $row_ingCategory['image']; }else{ echo '/img/molecule.png';}?>'><?php echo $row_ingCategory['name'];?>" value="<?php echo $row_ingCategory['id'];?>" <?php echo ($ing['category']==$row_ingCategory['id'])?"selected=\"selected\"":""; ?>><?php echo $row_ingCategory['name'];?></option>
 								<?php } ?>
                                 </select>
                                 </td>
@@ -405,7 +415,7 @@ reload_data();
                                 <td colspan="3"><input name="price" type="text" class="form-control" id="price" value="<?php echo $ing['price']; ?>"/></td>
                               </tr>
                               <tr>
-                                <td>Size (ml):</td>
+                                <td>Size (<?=$settings['mUnit']?>):</td>
                                 <td colspan="3"><input name="ml" type="text" class="form-control" id="ml" value="<?php echo $ing['ml']; ?>"/></td>
                               </tr>
                               <tr>
@@ -431,14 +441,14 @@ reload_data();
                                 <td colspan="3"><input name="chemical_name" type="text" class="form-control" id="chemical_name" value="<?php echo $ing['chemical_name']; ?>"/></td>
                               </tr>
                               <tr>
-                                <td>Formula:</td>
+                                <td>Molecular Formula:</td>
                                 <td colspan="3">
 								<?php
 								 	if($chFormula = searchIFRA($ing['cas'],$ing['name'],'formula',$conn,$defCatClass)){
 										echo $chFormula;
 									}else{
 								?>
-                                <input name="formula" type="text" class="form-control" id="formula" value="<?php echo $ing['formula']; ?>">
+                                <input name="formula" type="text" class="form-control" id="molecularFormula" value="<?php echo $ing['formula']; ?>">
                                 <?php } ?>
                                 </td>
                               </tr>
@@ -449,6 +459,10 @@ reload_data();
                               <tr>
                                 <td>Soluble in:</td>
                                 <td colspan="3"><input name="soluble" type="text" class="form-control" id="soluble" value="<?php echo $ing['soluble']; ?>"/></td>
+                              </tr>
+                              <tr>
+                                <td>Molecular Weight:</td>
+                                <td colspan="3"><input name="molecularWeight" type="text" class="form-control" id="molecularWeight" value="<?php echo $ing['molecularWeight']; ?>"/></td>
                               </tr>
                               <tr>
                                 <td>Appearance:</td>
@@ -684,6 +698,7 @@ $(document).ready(function() {
 				soluble: $("#soluble").val(),
 				logp: $("#logp").val(),
 				type: $("#type").val(),
+				molecularWeight: $("#molecularWeight").val(),
 	            
 				<?php foreach ($cats as $cat) {?>
 				cat<?php echo $cat['name'];?>: $("#cat<?php echo $cat['name'];?>").val(),

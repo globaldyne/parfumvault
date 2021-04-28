@@ -46,9 +46,9 @@ list_cat();
           <td colspan="4"><div id="inMsg"></div></td>
           </tr>
         <tr>
-          <td width="9%" height="29">Currency:</td>
+          <td width="10%" height="29">Currency:</td>
           <td colspan="2"><input name="currency" type="text" class="form-control" id="currency" value="<?php echo utf8_encode($settings['currency']);?>"/></td>
-          <td width="73%">&nbsp;</td>
+          <td width="70%">&nbsp;</td>
           </tr>
         <tr>
           <td height="28"><a href="#" rel="tipsy" title="If enabled, ingredients in formula view will be grouped by type. eg: Top,Heart,Base notes">Group Formula:</a></td>
@@ -92,8 +92,22 @@ list_cat();
           <td>&nbsp;</td>
         </tr>
         <tr>
+          <td height="32"><a href="#">Measurement Unit:</a></td>
+          <td colspan="2"><select name="mUnit" id="mUnit" class="form-control">
+			  <option value="ml" <?php if($settings['mUnit']=="ml") echo 'selected="selected"'; ?> >Milliliter</option>
+			  <option value="L" <?php if($settings['mUnit']=="L") echo 'selected="selected"'; ?> >Liter</option>
+			  <option value="fl. oz." <?php if($settings['mUnit']=="fl. oz.") echo 'selected="selected"'; ?> >Fluid ounce (fl. oz.)</option>
+            </select></td>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
           <td height="32"><a href="#" rel="tipsy" title="If enabled, formula will display the chemical names of ingredients, where available, instead of the commercial name">Chemical names</a>:</td>
           <td colspan="2"><input name="chem_vs_brand" type="checkbox" id="chem_vs_brand" value="1" <?php if($settings['chem_vs_brand'] == '1'){ ?> checked="checked" <?php } ?>/></td>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td height="32"><a href="#" rel="tipsy" title="EXPERIMENTAL: If enabled, ingredient usage percentage will be calculated against ingredients allergens as well.">Multi-dimensional lookup:</a></td>
+          <td colspan="2"><input name="multi_dim_perc" type="checkbox" id="multi_dim_perc" value="1" <?php if($settings['multi_dim_perc'] == '1'){ ?> checked="checked" <?php } ?>/></td>
           <td>&nbsp;</td>
         </tr>
         <tr>
@@ -106,8 +120,8 @@ list_cat();
         </tr>
         <tr>
           <td>Top notes:</td>
-          <td width="17%"><input name="top_n" type="text" class="form-control" id="top_n" value="<?php echo $settings['top_n'];?>"/></td>
-          <td width="1%">%</td>
+          <td width="12%"><input name="top_n" type="text" class="form-control" id="top_n" value="<?php echo $settings['top_n'];?>"/></td>
+          <td width="8%">%</td>
           <td>&nbsp;</td>
         </tr>
         <tr>
@@ -380,16 +394,8 @@ list_cat();
     </tr>
     <tr>
       <td><ul>
-        <li><a href="pages/maintenance.php?do=IFRA" class="popup-link">Import IFRA Library</a></li>
-      </ul></td>
-      <td><ul>
-        <li><a href="https://ifrafragrance.org/safe-use/standards-guidance" target="_blank">IFRA web site</a></li>
-      </ul></td>
-    </tr>
-    <tr>
-      <td><ul>
         <li><a href="pages/maintenance.php?do=backupDB">Backup DB</a></li>
-      </ul></td>
+        </ul></td>
       <td>&nbsp;</td>
     </tr>
     <tr>
@@ -424,8 +430,10 @@ $(document).ready(function() {
 				chem_vs_brand: $("#chem_vs_brand").is(':checked'),
 				pubChem: $("#pubChem").is(':checked'),
 				chkVersion: $("#chkVersion").is(':checked'),
+				multi_dim_perc: $("#multi_dim_perc").is(':checked'),
+				mUnit: $("#mUnit").val(),
 
-				},
+			},
 			dataType: 'html',
 			success: function (data) {
 				$('#inMsg').html(data);

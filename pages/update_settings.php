@@ -16,6 +16,7 @@ if($_POST['manage'] == 'general'){
 	$qStep = mysqli_real_escape_string($conn, $_POST['qStep']);
 	$defCatClass = mysqli_real_escape_string($conn, $_POST['defCatClass']);
 	$pubchem_view = mysqli_real_escape_string($conn, $_POST['pubchem_view']);
+	$mUnit = mysqli_real_escape_string($conn, $_POST['mUnit']);
 
 	if($_POST["chem_vs_brand"] == 'true') {
 		$chem_vs_brand = '1';
@@ -40,8 +41,14 @@ if($_POST['manage'] == 'general'){
 	}else{
 		$chkVersion = '0';
 	}
-		
-	if(mysqli_query($conn, "UPDATE settings SET currency = '$currency', top_n = '$top_n', heart_n = '$heart_n', base_n = '$base_n', chem_vs_brand = '$chem_vs_brand', grp_formula = '$grp_formula', pubChem='$pubChem', chkVersion='$chkVersion', qStep = '$qStep', defCatClass = '$defCatClass', pubchem_view = '$pubchem_view'")){
+	
+	if($_POST["multi_dim_perc"] == 'true') {
+		$multi_dim_perc = '1';
+	}else{
+		$multi_dim_perc = '0';
+	}
+	
+	if(mysqli_query($conn, "UPDATE settings SET currency = '$currency', top_n = '$top_n', heart_n = '$heart_n', base_n = '$base_n', chem_vs_brand = '$chem_vs_brand', grp_formula = '$grp_formula', pubChem='$pubChem', chkVersion='$chkVersion', qStep = '$qStep', defCatClass = '$defCatClass', pubchem_view = '$pubchem_view', multi_dim_perc = '$multi_dim_perc', mUnit = '$mUnit'")){
 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Settings updated!</div>';	
 	}else{
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>An error occured.</div>';	
@@ -151,7 +158,7 @@ if($_POST['manage'] == 'category'){
 	$notes = mysqli_real_escape_string($conn, $_POST['cat_notes']);
 	
 	if(empty($cat)){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Category namae is required.</div>';
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Category name is required.</div>';
 		return;
 	}
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingCategory WHERE name = '$cat'"))){

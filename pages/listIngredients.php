@@ -10,6 +10,7 @@ require_once(__ROOT__.'/func/formulaProfile.php');
 
 require_once(__ROOT__.'/func/checkAllergen.php');
 require_once(__ROOT__.'/func/searchIFRA.php');
+require_once(__ROOT__.'/func/getCatByID.php');
 
 $ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC");
 $defCatClass = $settings['defCatClass'];
@@ -38,11 +39,11 @@ $defCatClass = $settings['defCatClass'];
                     <tr>
                       <th>Name</th>
                       <th>INCI</th>
-                      <th>CAS #</th>
+                      <th>CAS#</th>
                       <th>Odor</th>
                       <th>Profile</th>
                       <th>Category</th>
-                      <th><?php echo ucfirst($settings['defCatClass']);?> %</th>
+                      <th><?php echo ucfirst($settings['defCatClass']);?>%</th>
                       <th>Supplier</th>
                       <th class="noexport">SDS</th>
                       <th class="noexport">TGSC</th>
@@ -59,12 +60,13 @@ $defCatClass = $settings['defCatClass'];
 						  echo '<td align="center">'.$ingredient['cas'].'</td>';
 					  }else{
 						  echo '<td align="center">N/A</td>';
-					  }
-					  echo '
-					  <td align="center">'.$ingredient['odor'].'</td>
-                      <td align="center">'.$ingredient['profile'].'</td>
-					  <td align="center">'.$ingredient['category'].'</td>';
-  					  if($limit = searchIFRA($ingredient['cas'],$ingredient['name'],null,$conn,$defCatClass)){
+					  }?>
+					  
+					  <td align="center"><?=$ingredient['odor']?></td>
+                      <td align="center"><?=$ingredient['profile']?></td>
+					  <td align="center"><?=getCatByID($ingredient['category'],TRUE,$conn)?></td>
+  					  <?php
+                      if($limit = searchIFRA($ingredient['cas'],$ingredient['name'],null,$conn,$defCatClass)){
 						  $limit = explode(' - ', $limit);
 						  echo '<td align="center"><a href="#" rel="tipsy" title="'.$limit['1'].'">'.$limit['0'].'<a></td>';
 					  }elseif($ingredient[$defCatClass]){
