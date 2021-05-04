@@ -4,6 +4,7 @@ require('../inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
+require_once(__ROOT__.'/func/labelMap.php');
 
 //AMOUNT TO MAKE
 if($_GET['fid'] && $_GET['SG'] && $_GET['amount']){
@@ -280,13 +281,13 @@ if($_GET['action'] == 'printLabel' && $_GET['name']){
 				
 		$q = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE name = '$name'"));
 		$info = "Production: ".date("d/m/Y")."\nProfile: ".$q['profile']."\nSex: ".$q['sex']."\nB. NO: ".$bNo."\nDescription:\n\n".wordwrap($q['notes'],30);
-		$w = '720';
-		$h = '860';
-	}else{
-		$w = '720';
-		$h = '260';
 	}
-		
+	
+	$dim =  explode(',',labelMap($settings['label_printer_size']));
+	
+	$w = $dim['0'];
+	$h = $dim['1'];
+	
 	$lbl = imagecreatetruecolor($w, $h);
 
 	$white = imagecolorallocate($lbl, 255, 255, 255);
@@ -297,7 +298,7 @@ if($_GET['action'] == 'printLabel' && $_GET['name']){
 	$text = trim($name.$extras);
 	$font = __ROOT__.'/fonts/Arial.ttf';
 
-	imagettftext($lbl, $settings['label_printer_font_size'], 0, 0, 150, $black, $font, $text);
+	imagettftext($lbl, $settings['label_printer_font_size'], 0, 0, 50, $black, $font, $text);
 	$lblF = imagerotate($lbl, 90 ,0);
 	
 	if($settings['label_printer_size'] == '62' || $settings['label_printer_size'] == '62 --red'){
@@ -306,14 +307,15 @@ if($_GET['action'] == 'printLabel' && $_GET['name']){
 	$extras = '';
 	if($_GET['dilution'] && $_GET['dilutant']){
 		$extras = ' @'.$_GET['dilution'].'% in '.$_GET['dilutant'];
-		imagettftext($lblF, 40, 90, 200, 600, $black, $font, $extras);
+						//font size 15 rotate 0 center 360 top 50
+		imagettftext($lblF, $settings['label_printer_font_size']/2, 90, 80, 570, $black, $font, $extras);
 	}
 	$save = __ROOT__.'/tmp/labels/'.base64_encode($text.'png');
 
 	if(imagepng($lblF, $save)){
 		imagedestroy($lblF);
 		shell_exec('/usr/bin/brother_ql -m '.$settings['label_printer_model'].' -p tcp://'.$settings['label_printer_addr'].' print -l '.$settings['label_printer_size'].' '. $save);
-		//echo '<img src="'.$save.'"/>';
+		//echo '<img src="/tmp/labels/'.base64_encode($text.'png').'"/>';
 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Print sent!</div>';
 	}
 	
@@ -378,19 +380,20 @@ if($_GET['action'] == 'printBoxLabel' && $_GET['name']){
 	
 	$text = strtoupper($q['product_name']);
 	$font = __ROOT__.'/fonts/Arial.ttf';
-				//font size 15 rotate 0 center 360 top 50
-	imagettftext($lbl, 30, 0, 250, 50, $black, $font, $text);
-	imagettftext($lbl, 25, 0, 300, 100, $black, $font, 'INGREDIENTS');
+	//font size 15 rotate 0 center 360 top 50
+	//imagettftext($lbl, 30, 0, 250, 50, $black, $font, $text);
+	imagettftext($lbl, 25, 0, 300, 50, $black, $font, 'INGREDIENTS');
 	$lblF = imagerotate($lbl, 0 ,0);
 	
-	imagettftext($lblF, 20, 0, 50, 150, $black, $font, wordwrap ($allergenFinal, 60));
-	imagettftext($lblF, 20, 0, 150, 490, $black, $font, wordwrap ($info, 50));
+	imagettftext($lblF, 15, 0, 50, 100, $black, $font, wordwrap ($allergenFinal, 90));
+	imagettftext($lblF, 15, 0, 150, 490, $black, $font, wordwrap ($info, 50));
 
 	$save = __ROOT__.'/tmp/labels/'.base64_encode($text.'png');
 
 	if(imagepng($lblF, $save)){
 		imagedestroy($lblF);
 		if($_GET['download'] == '1'){
+			//echo '<img src="/tmp/labels/'.base64_encode($text.'png').'"/>';
 			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><a href="'.'/tmp/labels/'.base64_encode($text.'png').'" target="_blank">Get Label here</a></div>';
 			return;
 		}

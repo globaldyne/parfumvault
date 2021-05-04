@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 2.9
+Label printing improvements
 
 ### Version 2.8
 Formula CSV Import improvements
