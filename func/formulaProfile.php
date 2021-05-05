@@ -21,7 +21,7 @@ function formulaProfile($conn, $profile, $sex){
     <tbody>
 <?php while ($formula = mysqli_fetch_array($formulas_n)) { ?>
 		<tr>
-		<td align="center"><?php if($formula['isProtected']){?><a class="fas fa-lock"><?php } ?></a>&nbsp;<a href="?do=Formula&name=<?php echo $formula['name']; ?>"><?php echo $formula['name'];?></a></td>
+		<td align="center"><?php if($formula['isProtected']){?><a class="fas fa-lock"><?php } ?></a>&nbsp;<a href="?do=Formula&name=<?php echo $formula['fid']; ?>"><?php echo $formula['name'];?></a></td>
 		<?php $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE name = '".$formula['name']."'"));?>
 		<td align="center"><a href="pages/getFormMeta.php?id=<?php echo $meta['id']; ?>" class="fas fa-comment-dots popup-link"></a></td>
 		<td align="center"><?php echo $meta['created'];?></td>

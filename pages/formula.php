@@ -1,7 +1,8 @@
 <?php 
-if (!defined('pvault_panel')){ die('Not Found');}  
-$f_name =  mysqli_real_escape_string($conn, $_GET['name']);
-$fid = base64_encode($f_name);
+if (!defined('pvault_panel')){ die('Not Found');}
+$fid = mysqli_real_escape_string($conn, $_GET['name']);
+$f_name =  base64_decode($fid);
+//$fid = $_GET['name'];
 
 if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$fid'")) == FALSE){
 	echo 'Formula doesn\'t exist';
@@ -27,7 +28,7 @@ $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,image FROM formulasMet
           <div class="card shadow mb-4">
             <div class="card-header py-3"> 
 			  <?php if($meta['image']){?><div class="img-formula"><img class="img-perfume" src="<?php echo $meta['image']; ?>"/></div><?php } ?>
-              <h2 class="m-0 font-weight-bold text-primary"><a href="?do=Formula&name=<?=base64_decode($fid)?>"><?=base64_decode($fid)?></a></h2>
+              <h2 class="m-0 font-weight-bold text-primary"><a href="?do=Formula&name=<?=$fid?>"><?=$f_name?></a></h2>
               <h5 class="m-1 text-primary"><a href="pages/getFormMeta.php?id=<?php echo $meta['id'];?>" class="popup-link">Details</a></h5>
             </div>
         <!-- Nav tabs -->
@@ -115,7 +116,7 @@ $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,image FROM formulasMet
                 <?php if($legend){ ?>
                 <div id="share">
                	  <p>To include this page in your web site, copy this line and paste it into your html code</p>
-               	  <p><pre>&lt;iframe src=&quot;<?=$_SERVER['REQUEST_SCHEME']?>://<?=$_SERVER['SERVER_NAME']?>/pages/viewSummary.php?id=<?=$fid?>&quot; title=&quot;<?=base64_decode($fid)?>&quot;&gt;&lt;/iframe&gt;</pre></p>
+               	  <p><pre>&lt;iframe src=&quot;<?=$_SERVER['REQUEST_SCHEME']?>://<?=$_SERVER['SERVER_NAME']?>/pages/viewSummary.php?id=<?=$fid?>&quot; title=&quot;<?=$f_name?>&quot;&gt;&lt;/iframe&gt;</pre></p>
                 	<p>For documentation and parameterisation please refer to: <a href="https://www.jbparfum.com/knowledge-base/share-formula-notes/" target="_blank">https://www.jbparfum.com/knowledge-base/share-formula-notes/</a></p>
                 </div>
                 <?php } ?>
