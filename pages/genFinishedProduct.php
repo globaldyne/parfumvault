@@ -342,7 +342,7 @@ $.ajax({
 					$cats[] = $cats_res;
 				}
 			?>
-           <form action="?do=genFinishedProduct&generate=1" method="post" enctype="multipart/form-data" target="_self">
+           <form action="?do=genFinishedProduct&generate=1" method="post" enctype="multipart/form-data" target="_blank">
            
            <table width="100%" border="0">
   <tr>
