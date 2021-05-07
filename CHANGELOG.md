@@ -2,6 +2,7 @@
 ### Version 2.9
 Label printing improvements
 Passing name is now encoded in base64 when requesting it
+Add reach number
 
 ### Version 2.8
 Formula CSV Import improvements
