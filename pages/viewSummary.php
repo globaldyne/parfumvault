@@ -44,7 +44,39 @@ $base_cat = arrFilter(array_filter($base_cat));
 
 
 ?>
-<link href="<?=$_SERVER['REQUEST_SCHEME']?>://<?=$_SERVER['SERVER_NAME']?>/css/vault.css" rel="stylesheet">
+<style>
+.img_ing {
+    max-height: 40px;
+}
+
+.img_ing_sel {
+    max-height: 30px;
+	max-width: 30px;
+	padding: 0 10px 0 0;
+}
+
+figure {
+    display: inline;
+    border: none;
+    margin: 25px;
+}
+
+figure img {
+    vertical-align: top;
+}
+figure figcaption {
+    border: none;
+    text-align: center;
+}
+
+formula td, table.table th {
+	white-space: revert;
+}
+
+#notes_summary_view td {
+	display: inline-block;	
+}
+</style>
 <?php if($_GET['text_colour']){ ?>
 <style>
 html {

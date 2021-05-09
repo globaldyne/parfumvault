@@ -3,6 +3,8 @@
 Label printing improvements
 Passing name is now encoded in base64 when requesting it
 Add reach number
+Remove css dependencies from viewSummary.php
+
 
 ### Version 2.8
 Formula CSV Import improvements
