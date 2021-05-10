@@ -4,7 +4,7 @@ Label printing improvements
 Passing name is now encoded in base64 when requesting it
 Add reach number
 Remove css dependencies from viewSummary.php
-
+Add option to view back label of finished product as a text
 
 ### Version 2.8
 Formula CSV Import improvements
