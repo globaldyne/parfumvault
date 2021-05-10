@@ -370,7 +370,15 @@ if($_GET['action'] == 'printBoxLabel' && $_GET['name']){
 		$w = '720';
 		$h = '860';
 	}
-		
+	if($_GET['download'] == 'text'){
+		echo '<pre>';
+		echo 'INGREDIENTS'."\n\n";
+		echo wordwrap ($allergenFinal, 90)."\n\n";
+		echo wordwrap ($info, 50)."\n\n";
+		echo '</pre>';
+		return;
+	}
+
 	$lbl = imagecreatetruecolor($h, $w);
 
 	$white = imagecolorallocate($lbl, 255, 255, 255);
@@ -392,7 +400,7 @@ if($_GET['action'] == 'printBoxLabel' && $_GET['name']){
 
 	if(imagepng($lblF, $save)){
 		imagedestroy($lblF);
-		if($_GET['download'] == '1'){
+		if($_GET['download'] == 'image'){
 			//echo '<img src="/tmp/labels/'.base64_encode($text.'png').'"/>';
 			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><a href="'.'/tmp/labels/'.base64_encode($text.'png').'" target="_blank">Get Label here</a></div>';
 			return;
