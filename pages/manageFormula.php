@@ -365,7 +365,7 @@ if($_GET['action'] == 'printBoxLabel' && $_GET['name']){
 		}else{
 			$brand = 'PV Pro';
 		}
-		$allergenFinal = implode(", ",array_filter($allergen));
+		$allergenFinal = implode(", ",array_filter(array_unique($allergen)));
 		$info = "FOR EXTERNAL USE ONLY. \nKEEP AWAY FROM HEAT AND FLAME. \nKEEP OUT OF REACH OF CHILDREN. \nAVOID SPRAYING IN EYES. \n \nProduction: ".date("d/m/Y")." \nB. NO: ".$bNo." \n$brand";
 		$w = '720';
 		$h = '860';
@@ -385,7 +385,7 @@ if($_GET['action'] == 'printBoxLabel' && $_GET['name']){
 	imagettftext($lbl, 25, 0, 300, 50, $black, $font, 'INGREDIENTS');
 	$lblF = imagerotate($lbl, 0 ,0);
 	
-	imagettftext($lblF, 15, 0, 50, 100, $black, $font, wordwrap ($allergenFinal, 90));
+	imagettftext($lblF, 15, 0, 0, 100, $black, $font, wordwrap ($allergenFinal, 90));
 	imagettftext($lblF, 15, 0, 150, 490, $black, $font, wordwrap ($info, 50));
 
 	$save = __ROOT__.'/tmp/labels/'.base64_encode($text.'png');
