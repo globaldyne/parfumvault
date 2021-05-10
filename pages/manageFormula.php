@@ -149,7 +149,7 @@ if($_POST['action'] == 'addFormula'){
 		}else{
 			$q = mysqli_query($conn, "INSERT INTO formulasMetaData (fid, name, notes, profile, image) VALUES ('$fid', '$name', '$notes', '$profile', '$def_app_img')");
 				if($q){
-					echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong><a href="?do=Formula&name='.$name.'">'.$name.'</a></strong> added!</div>';
+					echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong><a href="?do=Formula&name='.base64_encode($name).'">'.$name.'</a></strong> added!</div>';
 				}else{
 					echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Something went wrong...</strong></div>';
 				}
