@@ -380,8 +380,8 @@ $('.replaceIngredient').editable({
         </button>
       </div>
       <div class="modal-body">
-       <div id="amountToMakeMsg"></div>
-  <form action="javascript:amountToMake()" method="get" name="form1" target="_self" id="form_amount_to_make"><p></p>
+      <div id="amountToMakeMsg"></div>
+  	  <form action="javascript:amountToMake()" method="get" name="form1" target="_self" id="form_amount_to_make"><p></p>
         <table width="313" border="0">
           <tr>
 	       <td width="66" height="31"><strong>SG<span class="sup">*</span> :</strong></td>
@@ -403,7 +403,10 @@ $('.replaceIngredient').editable({
      </form>
     </div>
   </div>
+ </div>
 </div>
+
+
 
 <script type="text/javascript" language="javascript" >
  

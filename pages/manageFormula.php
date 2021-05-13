@@ -5,6 +5,18 @@ require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/labelMap.php');
+require_once(__ROOT__.'/func/get_formula_notes.php');
+
+
+//MANAGE VIEW
+if($_GET['manage_view'] == '1'){
+	echo $ex = $_GET['ex_ing'];
+	
+	
+	
+	echo  '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>View updated!</div>';
+	return;
+}
 
 //AMOUNT TO MAKE
 if($_GET['fid'] && $_GET['SG'] && $_GET['amount']){
@@ -56,16 +68,9 @@ if($_GET['action'] == 'deleteIng' && $_GET['ingID'] && $_GET['ing']){
 	$ing = mysqli_real_escape_string($conn, $_GET['ing']);
 	$fname = mysqli_real_escape_string($conn, $_GET['fname']);
 	if(mysqli_query($conn, "DELETE FROM formulas WHERE id = '$id' AND name = '$fname'")){
-				
-		echo  '<div class="alert alert-success alert-dismissible">
-				<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-				'.$ing.' removed from the formula!
-				</div>';
+		echo  '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$ing.' removed from the formula!</div>';
 	}else{
-		echo  '<div class="alert alert-danger alert-dismissible">
-				<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-				'.$ing.' cannot be removed from the formula!
-				</div>';
+		echo  '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$ing.' cannot be removed from the formula!</div>';
 	}
 	return;
 }
