@@ -1,5 +1,7 @@
 <?php 
 if (!defined('pvault_panel')){ die('Not Found');}
+require_once(__ROOT__.'/func/arrFilter.php');
+require(__ROOT__.'/func/get_formula_notes.php');
 $fid = mysqli_real_escape_string($conn, $_GET['name']);
 $f_name =  base64_decode($fid);
 
@@ -13,6 +15,13 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulas WHERE fid = '$f
 }
 $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,image FROM formulasMetaData WHERE fid = '$fid'"));
 
+$top_cat = get_formula_notes($conn, $fid, 'top');
+$heart_cat = get_formula_notes($conn, $fid, 'heart');
+$base_cat = get_formula_notes($conn, $fid, 'base');
+
+$top_ex = get_formula_excludes($conn, $fid, 'top');
+$heart_ex = get_formula_excludes($conn, $fid, 'heart');
+$base_ex = get_formula_excludes($conn, $fid, 'base');
 ?>
 <style>
 .mfp-iframe-holder .mfp-content {
@@ -116,7 +125,7 @@ $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,image FROM formulasMet
 		        <div id="fetch_summary"><div class="loader"></div></div>
                 <?php if($legend){ ?>
                 <div id="share">
-               	  <p><a href="pages/confView.php?fid=<?=$fid?>" class="popup-link">Configure view</a></p>
+               	  <p><a href="#" data-toggle="modal" data-target="#conf_view">Configure view</a></p>
                	  <p>To include this page in your web site, copy this line and paste it into your html code:</p>
            	    <p><pre>&lt;iframe src=&quot;<?=$_SERVER['REQUEST_SCHEME']?>://<?=$_SERVER['SERVER_NAME']?>/pages/viewSummary.php?id=<?=$fid?>&quot; title=&quot;<?=$f_name?>&quot;&gt;&lt;/iframe&gt;</pre></p>
                 	<p>For documentation and parameterisation please refer to: <a href="https://www.jbparfum.com/knowledge-base/share-formula-notes/" target="_blank">https://www.jbparfum.com/knowledge-base/share-formula-notes/</a></p>
@@ -131,6 +140,92 @@ $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,image FROM formulasMet
    </div>
   </div>
   
+<!--Configure View-->
+<div class="modal fade" id="conf_view" tabindex="-1" role="dialog" aria-labelledby="conf_view" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="conf_view">Choose which notes will be displayed</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+   	    <div id="confViewMsg"></div>
+          <form action="javascript:update_view()" id="form1">
+            <table width="100%" border="0">
+              <tr>
+                <td colspan="2"><strong>Top notes</strong><hr /></td>
+              </tr>
+              <?php foreach ($top_cat as $x){
+						if (!is_numeric(array_search($x['name'],$top_ex ))){
+				?>
+              <tr>
+				<td width="20%" ex_top_ing_name="<?=$x['name']?>"><?=$x['name']?></td>
+                <td width="80%"><input name="ex_top_ing" class="ex_ing" type="checkbox" id="<?=$x['name']?>" value="<?=$x['name']?>" checked="checked" /></td>
+              </tr>
+              <?php }else{ ?>
+			  <tr>
+				<td width="20%" ex_top_ing_name="<?=$x['name']?>"><?=$x['name']?></td>
+                <td width="80%"><input name="ex_top_ing" class="ex_ing" type="checkbox" id="<?=$x['name']?>" value="<?=$x['name']?>" /></td>
+              </tr>
+			 <?php 
+			 	}
+			  }
+			  ?>
+              <tr>
+                <td colspan="2"><p>&nbsp;</p>
+                <strong>Heart notes</strong><hr /></td>
+              </tr>
+              <?php foreach ($heart_cat as $x){
+						if (!is_numeric(array_search($x['name'],$heart_ex ))){
+			   ?>
+              <tr>
+				<td><?=$x['name']?></td>
+                <td width="80%"><input name="ex_heart_ing" class="ex_ing" type="checkbox" id="ex_heart_ing" value="<?=$x['name']?>" checked="checked" /></td>
+              </tr>
+              <?php }else{ ?>
+              <tr>
+				<td><?=$x['name']?></td>
+                <td width="80%"><input name="ex_heart_ing" class="ex_ing" type="checkbox" id="ex_heart_ing" value="<?=$x['name']?>" /></td>
+              </tr>
+              <?php 
+			 	}
+			  }
+			  ?>
+              <tr>
+                <td colspan="2"><p>&nbsp;</p>
+                <strong>Base notes</strong><hr /></td>
+              </tr>
+              <?php foreach ($base_cat as $x){
+						if (!is_numeric(array_search($x['name'],$base_ex ))){
+			  ?>
+              <tr>
+				<td><?=$x['name']?></td>
+                <td width="80%"><input name="ex_base_ing" class="ex_ing" type="checkbox" id="<?=$x['name']?>" value="<?=$x['name']?>" checked="checked" /></td>
+              </tr>
+             <?php }else{ ?>
+              <tr>
+				<td><?=$x['name']?></td>
+                <td width="80%"><input name="ex_base_ing" class="ex_ing" type="checkbox" id="ex_base_ing" value="<?=$x['name']?>" /></td>
+              </tr>
+              <?php 
+			 	}
+			  }
+			  ?>
+              <tr>
+                <td colspan="2">&nbsp;</td>
+              </tr>
+            </table>
+    		<div class="modal-footer">
+     	  		<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+	 	  		<input type="submit" name="button" class="btn btn-primary" id="btnUpdate" value="Save">
+   		  	</div>
+          </form>
+   	  </div>
+  	</div>
+  </div>
+</div>
 
 <script type="text/javascript" language="javascript" >
 //$(document).ready(function(){
@@ -293,4 +388,24 @@ $.ajax({
 
 fetch_summary();
 
+function update_view(){
+	
+	$('.ex_ing').each(function(){
+		$.ajax({ 
+			url: 'pages/manageFormula.php', 
+			type: 'get',
+			data: {
+				fid: "<?=urlencode($fid)?>",
+				manage_view: '1',
+				ex_status: $("#" + $(this).val() + "").is(':checked'),
+				ex_ing: $(this).val()
+				},
+			dataType: 'html',
+				success: function (data) {
+					$('#confViewMsg').html(data);
+				}
+		});
+	});
+
+}
 </script>

@@ -10,11 +10,25 @@ require_once(__ROOT__.'/func/get_formula_notes.php');
 
 //MANAGE VIEW
 if($_GET['manage_view'] == '1'){
-	echo $ex = $_GET['ex_ing'];
+	$note = $_GET['ex_ing'];
 	
+	if($_GET['ex_status'] == 'true'){
+		$status = '0';
+	}elseif($_GET['ex_status'] == 'false'){
+		$status = '1';
+	}
+	$fid = urldecode($_GET['fid']);
 	
-	
-	echo  '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>View updated!</div>';
+	$cat = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM ingCategory WHERE name = '$note'"));
+	$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE category = '".$cat['id']."'"));
+
+
+	$q = mysqli_query($conn, "UPDATE formulas SET exclude_from_summary = '$status' WHERE fid = '$fid' AND ingredient = '".$ing['name']."'");
+	if($q){
+		echo  '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>View updated!</div>';
+	}else{
+		echo  '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Something went wrong'.mysqli_error($conn).'</div>';
+	}
 	return;
 }
 
