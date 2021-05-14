@@ -9,13 +9,14 @@ function get_formula_notes($conn, $fid, $cat) {
 	
 						
 	foreach ($form as $formula){
-		$top_ing = mysqli_fetch_array(mysqli_query($conn, "SELECT category FROM ingredients WHERE name = '".$formula['ingredient']."' AND profile = 'Top' AND category IS NOT NULL"));
-		$heart_ing = mysqli_fetch_array(mysqli_query($conn, "SELECT category FROM ingredients WHERE name = '".$formula['ingredient']."' AND profile = 'Heart' AND category IS NOT NULL"));
-		$base_ing = mysqli_fetch_array(mysqli_query($conn, "SELECT category FROM ingredients WHERE name = '".$formula['ingredient']."' AND profile = 'Base' AND category IS NOT NULL"));
+		$top_ing = mysqli_fetch_array(mysqli_query($conn, "SELECT name AS ing,category FROM ingredients WHERE name = '".$formula['ingredient']."' AND profile = 'Top' AND category IS NOT NULL"));
+		$heart_ing = mysqli_fetch_array(mysqli_query($conn, "SELECT name AS ing,category FROM ingredients WHERE name = '".$formula['ingredient']."' AND profile = 'Heart' AND category IS NOT NULL"));
+		$base_ing = mysqli_fetch_array(mysqli_query($conn, "SELECT name AS ing,category FROM ingredients WHERE name = '".$formula['ingredient']."' AND profile = 'Base' AND category IS NOT NULL"));
 	
 		$top_cat[] = mysqli_fetch_array(mysqli_query($conn, "SELECT image,name FROM ingCategory WHERE id = '".$top_ing['category']."' AND image IS NOT NULL"));
 		$heart_cat[] = mysqli_fetch_array(mysqli_query($conn, "SELECT image,name FROM ingCategory WHERE id = '".$heart_ing['category']."' AND image IS NOT NULL"));
 		$base_cat[] = mysqli_fetch_array(mysqli_query($conn, "SELECT  image,name FROM ingCategory WHERE id = '".$base_ing['category']."' AND image IS NOT NULL"));
+		
 	}
 	
 	if($cat == 'top'){

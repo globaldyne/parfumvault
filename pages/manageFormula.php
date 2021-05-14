@@ -22,6 +22,7 @@ if($_GET['manage_view'] == '1'){
 	$cat = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM ingCategory WHERE name = '$note'"));
 	$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE category = '".$cat['id']."'"));
 
+	echo '"UPDATE formulas SET exclude_from_summary = '.$status.' WHERE fid = '.$fid.' AND ingredient = '.$ing[name].'"';
 
 	$q = mysqli_query($conn, "UPDATE formulas SET exclude_from_summary = '$status' WHERE fid = '$fid' AND ingredient = '".$ing['name']."'");
 	if($q){

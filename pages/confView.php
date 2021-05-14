@@ -9,6 +9,21 @@ require_once(__ROOT__.'/func/arrFilter.php');
 require(__ROOT__.'/func/get_formula_notes.php');
 
 $fid = $_GET['fid'];
+$formula_q = mysqli_query($conn, "SELECT ingredient FROM formulas WHERE fid = '$fid'");
+	while ($formula = mysqli_fetch_array($formula_q)){
+		$form[] = $formula;
+	}
+	
+						
+	foreach ($form as $formula){
+		$top_ing = mysqli_fetch_array(mysqli_query($conn, "SELECT name AS ing,category FROM ingredients WHERE name = '".$formula['ingredient']."' AND profile = 'Top' AND category IS NOT NULL"));
+		$heart_ing = mysqli_fetch_array(mysqli_query($conn, "SELECT name AS ing,category FROM ingredients WHERE name = '".$formula['ingredient']."' AND profile = 'Heart' AND category IS NOT NULL"));
+		$base_ing = mysqli_fetch_array(mysqli_query($conn, "SELECT name AS ing,category FROM ingredients WHERE name = '".$formula['ingredient']."' AND profile = 'Base' AND category IS NOT NULL"));
+	
+		$top_cat[] = mysqli_fetch_array(mysqli_query($conn, "SELECT image,name FROM ingCategory WHERE id = '".$top_ing['category']."' AND image IS NOT NULL"));
+		$heart_cat[] = mysqli_fetch_array(mysqli_query($conn, "SELECT image,name FROM ingCategory WHERE id = '".$heart_ing['category']."' AND image IS NOT NULL"));
+		$base_cat[] = mysqli_fetch_array(mysqli_query($conn, "SELECT  image,name FROM ingCategory WHERE id = '".$base_ing['category']."' AND image IS NOT NULL"));
+	}
 $top_cat = get_formula_notes($conn, $fid, 'top');
 $heart_cat = get_formula_notes($conn, $fid, 'heart');
 $base_cat = get_formula_notes($conn, $fid, 'base');
@@ -17,6 +32,8 @@ $top_ex = get_formula_excludes($conn, $fid, 'top');
 $heart_ex = get_formula_excludes($conn, $fid, 'heart');
 $base_ex = get_formula_excludes($conn, $fid, 'base');
 
+print '<pre>';
+print_r($top_cat);
 ?>
 <script src="../js/jquery/jquery.min.js"></script>
 
