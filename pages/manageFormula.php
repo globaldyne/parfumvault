@@ -23,7 +23,7 @@ if($_GET['manage_view'] == '1'){
 	if($q){
 		echo  '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>View updated!</div>';
 	}else{
-		echo  '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Something went wrong'.mysqli_error($conn).'</div>';
+		echo  '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Something went wrong</div>';
 	}
 	return;
 }
