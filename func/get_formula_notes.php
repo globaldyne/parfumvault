@@ -2,7 +2,7 @@
 if (!defined('pvault_panel')){ die('Not Found');}
 
 function get_formula_notes($conn, $fid, $cat) {
-	$formula_q = mysqli_query($conn, "SELECT ingredient FROM formulas WHERE fid = '$fid'");
+	$formula_q = mysqli_query($conn, "SELECT ingredient FROM formulas WHERE fid = '$fid' ORDER BY exclude_from_summary");
 	while ($formula = mysqli_fetch_array($formula_q)){
 		$form[] = $formula;
 	}

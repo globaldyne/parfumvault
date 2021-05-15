@@ -203,7 +203,7 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
 			   ?>
               <tr>
 				<td><?=$x['name']?></td>
-                <td width="80%"><input name="ex_heart_ing" class="ex_ing" type="checkbox" id="<?=str_replace(' ', '_',$x['ing'])?>" value="<?=str_replace(' ', '_',$x['ing'])?>>" checked="checked" /></td>
+                <td width="80%"><input name="ex_heart_ing" class="ex_ing" type="checkbox" id="<?=str_replace(' ', '_',$x['ing'])?>" value="<?=str_replace(' ', '_',$x['ing'])?>" checked="checked" /></td>
               </tr>
               <?php }else{ ?>
               <tr>
@@ -424,6 +424,8 @@ function update_view(){
 			dataType: 'html',
 				success: function (data) {
 					$('#confViewMsg').html(data);
+					fetch_summary();
+
 				}
 		});
 	});
