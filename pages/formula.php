@@ -183,12 +183,12 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
 				?>
               <tr>
 				<td width="20%" ex_top_ing_name="<?=$x['name']?>"><?=$x['name']?></td>
-                <td width="80%"><input name="ex_top_ing" class="ex_ing" type="checkbox" id="<?=$x['ing']?>" value="<?=$x['ing']?>" checked="checked" /></td>
+                <td width="80%"><input name="ex_top_ing" class="ex_ing" type="checkbox" id="<?=str_replace(' ', '_',$x['ing'])?>" value="<?=str_replace(' ', '_',$x['ing'])?>" checked="checked" /></td>
               </tr>
               <?php }else{ ?>
 			  <tr>
 				<td width="20%" ex_top_ing_name="<?=$x['name']?>"><?=$x['name']?></td>
-                <td width="80%"><input name="ex_top_ing" class="ex_ing" type="checkbox" id="<?=$x['ing']?>" value="<?=$x['ing']?>" /></td>
+                <td width="80%"><input name="ex_top_ing" class="ex_ing" type="checkbox" id="<?=str_replace(' ', '_',$x['ing'])?>" value="<?=str_replace(' ', '_',$x['ing'])?>" /></td>
               </tr>
 			 <?php 
 			 	}
@@ -199,17 +199,16 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
                 <strong>Heart notes</strong><hr /></td>
               </tr>
               <?php foreach ($heart_cat as $x){
-				  
 						if (!is_numeric(array_search($x['name'],$heart_ex ))){
 			   ?>
               <tr>
 				<td><?=$x['name']?></td>
-                <td width="80%"><input name="ex_heart_ing" class="ex_ing" type="checkbox" id="<?=$x['ing']?>" value="<?=$x['ing']?>" checked="checked" /></td>
+                <td width="80%"><input name="ex_heart_ing" class="ex_ing" type="checkbox" id="<?=str_replace(' ', '_',$x['ing'])?>" value="<?=str_replace(' ', '_',$x['ing'])?>>" checked="checked" /></td>
               </tr>
               <?php }else{ ?>
               <tr>
 				<td><?=$x['name']?></td>
-                <td width="80%"><input name="ex_heart_ing" class="ex_ing" type="checkbox" id="<?=$x['ing']?>" value="<?=$x['ing']?>" /></td>
+                <td width="80%"><input name="ex_heart_ing" class="ex_ing" type="checkbox" id="<?=str_replace(' ', '_',$x['ing'])?>" value="<?=str_replace(' ', '_',$x['ing'])?>" /></td>
               </tr>
               <?php 
 			 	}
@@ -224,12 +223,12 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
 			  ?>
               <tr>
 				<td><?=$x['name']?></td>
-                <td width="80%"><input name="ex_base_ing" class="ex_ing" type="checkbox" id="<?=$x['ing']?>" value="<?=$x['ing']?>" checked="checked" /></td>
+                <td width="80%"><input name="ex_base_ing" class="ex_ing" type="checkbox" id="<?=str_replace(' ', '_',$x['ing'])?>" value="<?=str_replace(' ', '_',$x['ing'])?>" checked="checked" /></td>
               </tr>
              <?php }else{ ?>
               <tr>
 				<td><?=$x['name']?></td>
-                <td width="80%"><input name="ex_base_ing" class="ex_ing" type="checkbox" id="<?=$x['ing']?>" value="<?=$x['ing']?>" /></td>
+                <td width="80%"><input name="ex_base_ing" class="ex_ing" type="checkbox" id="<?=str_replace(' ', '_',$x['ing'])?>" value="<?=str_replace(' ', '_',$x['ing'])?>" /></td>
               </tr>
               <?php 
 			 	}
@@ -419,7 +418,7 @@ function update_view(){
 			data: {
 				fid: "<?=urlencode($fid)?>",
 				manage_view: '1',
-				ex_status: $("#" + $(this).val() + "").is(':checked'),
+				ex_status: $("#" + $(this).val()).is(':checked'),
 				ex_ing: $(this).val()
 				},
 			dataType: 'html',

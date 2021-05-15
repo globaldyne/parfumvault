@@ -19,9 +19,6 @@ if($_GET['manage_view'] == '1'){
 	}
 	$fid = urldecode($_GET['fid']);
 	
-	//$cat = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM ingCategory WHERE name = '$note'"));
-	//$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE category = '".$cat['id']."'"));
-
 	$q = mysqli_query($conn, "UPDATE formulas SET exclude_from_summary = '$status' WHERE fid = '$fid' AND ingredient = '$ing'");
 	if($q){
 		echo  '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>View updated!</div>';

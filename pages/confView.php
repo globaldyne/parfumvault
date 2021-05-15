@@ -37,8 +37,7 @@ $top_ex = get_formula_excludes($conn, $fid, 'top');
 $heart_ex = get_formula_excludes($conn, $fid, 'heart');
 $base_ex = get_formula_excludes($conn, $fid, 'base');
 
-print '<pre>';
-print_r($base_cat );
+
 ?>
 <script src="../js/jquery/jquery.min.js"></script>
 
