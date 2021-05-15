@@ -20,20 +20,25 @@ $formula_q = mysqli_query($conn, "SELECT ingredient FROM formulas WHERE fid = '$
 		$heart_ing = mysqli_fetch_array(mysqli_query($conn, "SELECT name AS ing,category FROM ingredients WHERE name = '".$formula['ingredient']."' AND profile = 'Heart' AND category IS NOT NULL"));
 		$base_ing = mysqli_fetch_array(mysqli_query($conn, "SELECT name AS ing,category FROM ingredients WHERE name = '".$formula['ingredient']."' AND profile = 'Base' AND category IS NOT NULL"));
 	
-		$top_cat[] = mysqli_fetch_array(mysqli_query($conn, "SELECT image,name FROM ingCategory WHERE id = '".$top_ing['category']."' AND image IS NOT NULL"));
-		$heart_cat[] = mysqli_fetch_array(mysqli_query($conn, "SELECT image,name FROM ingCategory WHERE id = '".$heart_ing['category']."' AND image IS NOT NULL"));
-		$base_cat[] = mysqli_fetch_array(mysqli_query($conn, "SELECT  image,name FROM ingCategory WHERE id = '".$base_ing['category']."' AND image IS NOT NULL"));
+		$top_cat = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingCategory WHERE id = '".$top_ing['category']."'"));
+		$heart_cat = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingCategory WHERE id = '".$heart_ing['category']."'"));
+		$base_cat = mysqli_fetch_array(mysqli_query($conn, "SELECT  name FROM ingCategory WHERE id = '".$base_ing['category']."'"));
+	
+		$top[] = array_merge($top_cat,$top_ing);
+		$heart[] = array_merge($heart_cat,$heart_ing);
+		$base[] = array_merge($base_cat,$base_ing);
+
 	}
-$top_cat = get_formula_notes($conn, $fid, 'top');
-$heart_cat = get_formula_notes($conn, $fid, 'heart');
-$base_cat = get_formula_notes($conn, $fid, 'base');
+$top_cat = array_filter($top);
+$heart_cat = array_filter($heart);
+$base_cat = array_filter($base);
 
 $top_ex = get_formula_excludes($conn, $fid, 'top');
 $heart_ex = get_formula_excludes($conn, $fid, 'heart');
 $base_ex = get_formula_excludes($conn, $fid, 'base');
 
 print '<pre>';
-print_r($top_cat);
+print_r($base_cat );
 ?>
 <script src="../js/jquery/jquery.min.js"></script>
 
@@ -58,12 +63,12 @@ print_r($top_cat);
 				?>
               <tr>
 				<td width="20%" ex_top_ing_name="<?=$x['name']?>"><?=$x['name']?></td>
-                <td width="80%"><input name="ex_top_ing" class="ex_ing" type="checkbox" id="<?=$x['name']?>" value="<?=$x['name']?>" checked="checked" /></td>
+                <td width="80%"><input name="ex_top_ing" class="ex_ing" type="checkbox" id="<?=$x['ing']?>" value="<?=$x['ing']?>" checked="checked" /></td>
               </tr>
               <?php }else{ ?>
 			  <tr>
 				<td width="20%" ex_top_ing_name="<?=$x['name']?>"><?=$x['name']?></td>
-                <td width="80%"><input name="ex_top_ing" class="ex_ing" type="checkbox" id="<?=$x['name']?>" value="<?=$x['name']?>" /></td>
+                <td width="80%"><input name="ex_top_ing" class="ex_ing" type="checkbox" id="<?=$x['ing']?>" value="<?=$x['ing']?>" /></td>
               </tr>
 			 <?php 
 			 	}
@@ -79,12 +84,12 @@ print_r($top_cat);
 			   ?>
               <tr>
 				<td><?=$x['name']?></td>
-                <td width="80%"><input name="ex_heart_ing" class="ex_ing" type="checkbox" id="<?=$x['name']?>" value="<?=$x['name']?>" checked="checked" /></td>
+                <td width="80%"><input name="ex_heart_ing" class="ex_ing" type="checkbox" id="<?=$x['ing']?>" value="<?=$x['ing']?>" checked="checked" /></td>
               </tr>
               <?php }else{ ?>
               <tr>
 				<td><?=$x['name']?></td>
-                <td width="80%"><input name="ex_heart_ing" class="ex_ing" type="checkbox" id="<?=$x['name']?>" value="<?=$x['name']?>" /></td>
+                <td width="80%"><input name="ex_heart_ing" class="ex_ing" type="checkbox" id="<?=$x['ing']?>" value="<?=$x['ing']?>" /></td>
               </tr>
               <?php 
 			 	}
@@ -99,12 +104,12 @@ print_r($top_cat);
 			  ?>
               <tr>
 				<td><?=$x['name']?></td>
-                <td width="80%"><input name="ex_base_ing" class="ex_ing" type="checkbox" id="<?=$x['name']?>" value="<?=$x['name']?>" checked="checked" /></td>
+                <td width="80%"><input name="ex_base_ing" class="ex_ing" type="checkbox" id="<?=($x['ing'])?>" value="<?=($x['ing'])?>" checked="checked" /></td>
               </tr>
              <?php }else{ ?>
               <tr>
 				<td><?=$x['name']?></td>
-                <td width="80%"><input name="ex_base_ing" class="ex_ing" type="checkbox" id="<?=$x['name']?>" value="<?=$x['name']?>" /></td>
+                <td width="80%"><input name="ex_base_ing" class="ex_ing" type="checkbox" id="<?=($x['ing'])?>" value="<?=($x['ing'])?>" /></td>
               </tr>
               <?php 
 			 	}

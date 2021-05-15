@@ -10,7 +10,7 @@ require_once(__ROOT__.'/func/get_formula_notes.php');
 
 //MANAGE VIEW
 if($_GET['manage_view'] == '1'){
-	$note = $_GET['ex_ing'];
+	$ing = mysqli_real_escape_string($conn,base64_decode($_GET['ex_ing']));
 	
 	if($_GET['ex_status'] == 'true'){
 		$status = '0';
@@ -19,12 +19,10 @@ if($_GET['manage_view'] == '1'){
 	}
 	$fid = urldecode($_GET['fid']);
 	
-	$cat = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM ingCategory WHERE name = '$note'"));
-	$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE category = '".$cat['id']."'"));
+	//$cat = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM ingCategory WHERE name = '$note'"));
+	//$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE category = '".$cat['id']."'"));
 
-	echo '"UPDATE formulas SET exclude_from_summary = '.$status.' WHERE fid = '.$fid.' AND ingredient = '.$ing[name].'"';
-
-	$q = mysqli_query($conn, "UPDATE formulas SET exclude_from_summary = '$status' WHERE fid = '$fid' AND ingredient = '".$ing['name']."'");
+	$q = mysqli_query($conn, "UPDATE formulas SET exclude_from_summary = '$status' WHERE fid = '$fid' AND ingredient = '$ing'");
 	if($q){
 		echo  '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>View updated!</div>';
 	}else{
