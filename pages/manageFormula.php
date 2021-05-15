@@ -10,7 +10,7 @@ require_once(__ROOT__.'/func/get_formula_notes.php');
 
 //MANAGE VIEW
 if($_GET['manage_view'] == '1'){
-	$ing = mysqli_real_escape_string($conn,base64_decode($_GET['ex_ing']));
+	$ing = mysqli_real_escape_string($conn,str_replace('_', ' ',$_GET['ex_ing']));
 	
 	if($_GET['ex_status'] == 'true'){
 		$status = '0';
