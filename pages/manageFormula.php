@@ -142,7 +142,7 @@ if($_GET['action'] == 'clone' && $_GET['formula']){
 			$sql.=mysqli_query($conn, "INSERT INTO formulas (fid, name, ingredient, ingredient_id, concentration, dilutant, quantity) SELECT '$newFid', '$newName', ingredient, ingredient_id, concentration, dilutant, quantity FROM formulas WHERE fid = '$fid'");
 		}
 	if($sql){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$fname.' cloned as <a href="?do=Formula&name='.$newName.'" target="_blanc">'.$newName.'</a>!</div>';
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$fname.' cloned as <a href="?do=Formula&name='.base64_encode($newName).'" target="_blanc">'.$newName.'</a>!</div>';
 	}
 	return;
 }
