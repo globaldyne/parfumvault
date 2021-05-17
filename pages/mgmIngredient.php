@@ -6,10 +6,11 @@ require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/formatBytes.php');
 require_once(__ROOT__.'/func/validateInput.php');
+require_once(__ROOT__.'/func/sanChar.php');
 
 require_once(__ROOT__.'/func/searchIFRA.php');
 
-$ingID = mysqli_real_escape_string($conn, $_GET["id"]);
+$ingID = sanChar(mysqli_real_escape_string($conn, $_GET["id"]));
 if($ingID){
 	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$ingID'")))){
 		if(mysqli_query($conn, "INSERT INTO ingredients (name) VALUES ('$ingID')")){

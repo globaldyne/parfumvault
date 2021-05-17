@@ -5,6 +5,7 @@ require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/func/validateInput.php');
 require_once(__ROOT__.'/inc/settings.php');
+require_once(__ROOT__.'/func/sanChar.php');
 
 
 if($_POST['value'] && $_GET['formula'] && $_POST['pk'] && !$_GET['settings']){
@@ -333,7 +334,7 @@ if($_POST['manage'] == 'ingredient'){
 			echo '<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> Failed to update!</div>';
 		}
 	}else{
-		$name = mysqli_real_escape_string($conn, $_POST["name"]);
+		$name = sanChar(mysqli_real_escape_string($conn, $_POST["name"]));
 
 		$query = "INSERT INTO ingredients (name, INCI, cas, reach, FEMA, type, strength, category, profile, notes, odor, purity, solvent, allergen) VALUES ('$name', '$INCI', '$cas', '$reach', '$fema', '$type', '$strength', '$category', '$profile',  '$notes', '$odor', '$purity', '$solvent', '$allergen')";
 		
