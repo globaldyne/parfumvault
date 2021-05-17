@@ -164,7 +164,7 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
 <!--Configure View-->
 
 <div class="modal fade" id="conf_view" tabindex="-1" role="dialog" aria-labelledby="conf_view" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
+  <div class="modal-dialog modal-conf-view" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="conf_view">Choose which notes will be displayed</h5>

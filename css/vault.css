@@ -395,3 +395,8 @@ formula td, table.table th {
 .conf_tbl td {
 	display: inline;
 }
+
+.modal-conf-view {
+  width: 600px !important;
+  max-width: 600px;
+}
