@@ -387,3 +387,11 @@ formula td, table.table th {
 	height: fit-content;
 }
 
+.conf_tbl {
+	float:left;
+	padding: 20px;
+}
+
+.conf_tbl td {
+	display: inline;
+}
