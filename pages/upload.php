@@ -117,7 +117,7 @@ if($_GET['type'] == 'frmCSVImport'){
 	$profile = mysqli_real_escape_string($conn,$_GET['profile']);
 	
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$fid'"))){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$name.' already exists! Click <a href="?do=Formula&name='.$name.'">here</a> to view/edit!</div>';
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$name.' already exists! Click <a href="?do=Formula&name='.base64_encode($name).'">here</a> to view/edit!</div>';
 	  	return;
 	 }
 
