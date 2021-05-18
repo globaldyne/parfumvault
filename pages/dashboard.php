@@ -169,7 +169,7 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"))== 0){
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Pending formulas to make</div>
+                      <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Formulas to make</div>
                       <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo countElement("makeFormula WHERE toAdd = '1' GROUP BY name",$conn); ?></div>
                     </div>
                     <div class="col-auto">
