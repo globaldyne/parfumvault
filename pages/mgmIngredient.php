@@ -10,7 +10,7 @@ require_once(__ROOT__.'/func/sanChar.php');
 
 require_once(__ROOT__.'/func/searchIFRA.php');
 
-$ingID = sanChar(mysqli_real_escape_string($conn, $_GET["id"]));
+$ingID = sanChar(mysqli_real_escape_string($conn, base64_decode($_GET["id"])));
 if($ingID){
 	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$ingID'")))){
 		if(mysqli_query($conn, "INSERT INTO ingredients (name) VALUES ('$ingID')")){
@@ -184,7 +184,7 @@ $.ajax({
     url: 'allergens.php', 
 	type: 'get',
     data: {
-		id: "<?php echo $ingID; ?>"
+		id: "<?=base64_encode($ingID)?>"
 		},
 	dataType: 'html',
     success: function (data) {

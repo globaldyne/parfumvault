@@ -306,7 +306,7 @@ $('.replaceIngredient').editable({
                             }
 						}
 						?>
-                      <td align="center" class="<?php if($settings['grp_formula'] == '0'){echo $ing_q['profile'];}?>" id="ingredient"><a href="pages/mgmIngredient.php?id=<?php echo $formula['ingredient'];?>" class="popup-link"><?php echo $ingName;?></a> <?php echo checkIng($formula['ingredient'],$settings['defCatClass'],$conn);?></td>
+                      <td align="center" class="<?php if($settings['grp_formula'] == '0'){echo $ing_q['profile'];}?>" id="ingredient"><a href="pages/mgmIngredient.php?id=<?=base64_encode($formula['ingredient'])?>" class="popup-link"><?php echo $ingName;?></a> <?php echo checkIng($formula['ingredient'],$settings['defCatClass'],$conn);?></td>
                       <td align="center"><?php echo $ing_q['cas'];?></td>
                       <td data-name="concentration" class="concentration" data-type="text" align="center" data-pk="<?php echo $formula['ingredient'];?>"><?php echo $formula['concentration'];?></td>
 					  <?php if($formula['concentration'] == '100'){ ?>
