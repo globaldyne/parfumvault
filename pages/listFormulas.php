@@ -141,10 +141,14 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"))== 0){
                                 </td>
                               </tr>
                               <tr>
-                                <td width="21%">Choose file:</td>
-                                <td width="79%">
+                                <td width="22%">Choose file:</td>
+                                <td width="78%">
                                   <input type="file" name="CSVFile" id="CSVFile" class="form-control" />
                                 </td>
+                              </tr>
+                              <tr>
+                                <td>Add missing ingredients:</td>
+                                <td><input name="addMissIng" type="checkbox" id="addMissIng" /></td>
                               </tr>
                               <tr>
                                 <td>&nbsp;</td>
@@ -271,11 +275,12 @@ function add_formula_csv() {
     var files = $('#CSVFile')[0].files;
     var name = $('#CSVname').val();
     var profile = $('#CSVProfile').val();
+	var addMissIng = $('#addMissIng').is(':checked');
 
        if(files.length > 0 ){
         fd.append('CSVFile',files[0]);
         $.ajax({
-           url: 'pages/upload.php?type=frmCSVImport&name=' + name + '&profile=' + profile,
+           url: 'pages/upload.php?type=frmCSVImport&name=' + name + '&profile=' + profile + '&addMissIng=' + addMissIng,
            type: 'post',
            data: fd,
            contentType: false,

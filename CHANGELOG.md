@@ -7,6 +7,7 @@ Remove css dependencies from viewSummary.php
 Add option to view back label of finished product as a text
 Select which ingredients will be shown in summary view
 Add product name in formulas listing
+Choose to add missing ingredients when importing from CSV
 
 ### Version 2.8
 Formula CSV Import improvements
