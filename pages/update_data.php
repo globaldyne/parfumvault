@@ -8,7 +8,7 @@ require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/sanChar.php');
 
 
-if($_POST['value'] && $_GET['formula'] && $_POST['pk'] && !$_GET['settings']){
+if($_POST['value'] && $_GET['formula'] && $_POST['pk']){
 	$value = mysqli_real_escape_string($conn, $_POST['value']);
 	$formula = mysqli_real_escape_string($conn, $_GET['formula']);
 	$ingredient = mysqli_real_escape_string($conn, $_POST['pk']);
