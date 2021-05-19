@@ -9,6 +9,7 @@ Select which ingredients will be shown in summary view
 Add product name in formulas listing
 Choose to add missing ingredients when importing from CSV
 Add ingredient id in formulas
+Include notes and default view when cloning a formula
 
 ### Version 2.8
 Formula CSV Import improvements
