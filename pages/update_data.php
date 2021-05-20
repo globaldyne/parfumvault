@@ -7,6 +7,56 @@ require_once(__ROOT__.'/func/validateInput.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/sanChar.php');
 
+//ADD ING SUPPLIER
+if($_POST['ingSupplier'] == 'add'){
+	if(empty($_POST['supplier_id']) || empty($_POST['supplier_link']) || empty($_POST['supplier_size']) || empty($_POST['supplier_price'])){
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Missing fields!</div>';
+		return;
+	}
+	
+	$ingID = mysqli_real_escape_string($conn, $_POST['ingID']);
+	$supplier_id = mysqli_real_escape_string($conn, $_POST['supplier_id']);
+	$supplier_link = mysqli_real_escape_string($conn, $_POST['supplier_link']);	
+	$supplier_size = mysqli_real_escape_string($conn, $_POST['supplier_size']);
+	$supplier_price = mysqli_real_escape_string($conn, $_POST['supplier_price']);
+	$supplier_manufacturer = mysqli_real_escape_string($conn, $_POST['supplier_manufacturer']);
+	$supplier_name = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingSuppliers WHERE id = '$supplier_id'"));
+
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT ingSupplierID FROM suppliers WHERE ingSupplierID = '$supplier_id' AND ingID = '$ingID'"))){
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$allgName.' already exists!</div>';
+	}else{
+		if(mysqli_query($conn, "INSERT INTO suppliers (ingSupplierID,ingID,supplierLink,price,size,manufacturer) VALUES ('$supplier_id','$ingID','$supplier_link','$supplier_price','$supplier_size','$supplier_manufacturer')")){
+			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$supplier_name['name'].'</strong> added to the list!</div>';
+		}else{
+			echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> '.mysqli_error($conn).'</div>';
+		}
+	}
+	return;
+}
+
+//UPDATE ING SUPPLIER
+if($_GET['ingSupplier'] == 'update'){
+	$value = mysqli_real_escape_string($conn, $_POST['value']);
+	$id = mysqli_real_escape_string($conn, $_POST['pk']);
+	$name = mysqli_real_escape_string($conn, $_POST['name']);
+	$ingID = mysqli_real_escape_string($conn, $_GET['ingID']);
+
+	mysqli_query($conn, "UPDATE suppliers SET $name = '$value' WHERE ingSupplierID = '$id' AND ingID='$ingID'");
+	return;
+}
+
+//DELETE ING SUPPLIER	
+if($_GET['ingSupplier'] == 'delete'){
+
+	$sID = mysqli_real_escape_string($conn, $_GET['sID']);
+	$ingID = mysqli_real_escape_string($conn, $_GET['ingID']);
+
+	$delQ = mysqli_query($conn, "DELETE FROM suppliers WHERE id = '$sID' AND ingID='$ingID'");	
+	if($delQ){
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Supplier removed!</div>';
+	}
+	return;
+}
 
 if($_POST['value'] && $_GET['formula'] && $_POST['pk']){
 	$value = mysqli_real_escape_string($conn, $_POST['value']);

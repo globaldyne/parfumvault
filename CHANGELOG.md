@@ -1,4 +1,7 @@
 # CHANGELOG
+### Version 3.0
+Add multiple suppliers per ingredient
+
 ### Version 2.9
 Label printing improvements
 Passing name is now encoded in base64 when requesting it

@@ -5,9 +5,8 @@ require('../inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
-
 require_once(__ROOT__.'/func/formulaProfile.php');
-
+require_once(__ROOT__.'/func/getIngSupplier.php');
 require_once(__ROOT__.'/func/checkAllergen.php');
 require_once(__ROOT__.'/func/searchIFRA.php');
 require_once(__ROOT__.'/func/getCatByID.php');
@@ -44,7 +43,7 @@ $defCatClass = $settings['defCatClass'];
                       <th>Profile</th>
                       <th>Category</th>
                       <th><?php echo ucfirst($settings['defCatClass']);?>%</th>
-                      <th>Supplier</th>
+                      <th>Supplier(s)</th>
                       <th class="noexport">SDS</th>
                       <th class="noexport">TGSC</th>
                       <th class="noexport">Actions</th>
@@ -53,15 +52,13 @@ $defCatClass = $settings['defCatClass'];
                   <tbody>
                   <?php while ($ingredient = mysqli_fetch_array($ingredient_q)) { ?>
                     <tr>
-                      <td align="center"><a href="pages/mgmIngredient.php?id=<?=base64_encode($ingredient['name'])?>" class="popup-link"><?php echo $ingredient['name'];?></a><?php echo checkAllergen($ingredient['name'],$conn);?></td>
-                      <td align="center"><?php echo $ingredient['INCI'];?></td>
-					  <?php
-                      if($ingredient['cas']){
-						  echo '<td align="center">'.$ingredient['cas'].'</td>';
-					  }else{
-						  echo '<td align="center">N/A</td>';
-					  }?>
-					  
+                      <td align="center"><a href="pages/mgmIngredient.php?id=<?=base64_encode($ingredient['name'])?>" class="popup-link"><?=$ingredient['name']?></a><?=checkAllergen($ingredient['name'],$conn)?></td>
+                      <td align="center"><?=$ingredient['INCI']?></td>
+					  <?php if($ingredient['cas']){ ?>
+                      <td align="center"><?=$ingredient['cas']?></td>
+                      <?php }else{ ?>
+					  <td align="center">N/A</td>
+					  <?php } ?>
 					  <td align="center"><?=$ingredient['odor']?></td>
                       <td align="center"><?=$ingredient['profile']?></td>
 					  <td align="center"><?=getCatByID($ingredient['category'],TRUE,$conn)?></td>
@@ -74,22 +71,31 @@ $defCatClass = $settings['defCatClass'];
 					  }else{
 						  echo '<td align="center">N/A</a>';
 					  }
-					  if ($ingredient['supplier'] && $ingredient['supplier_link']){
-						  echo '<td align="center"><a href="'.$ingredient['supplier_link'].'" target="_blanc">'.$ingredient['supplier'].'</a></td>';
-					  }elseif ($ingredient['supplier']){
-						  echo '<td align="center">'.$ingredient['supplier'].'</a></td>';
-					  }else{
-						  echo '<td align="center">N/A</td>';
-					  }	
+					?>
+					<?php if($a = getIngSupplier($ingredient['id'],$conn)){ ?>			
+                      <td align="center">
+                         <div class="btn-group">
+                           <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-store"></i></button>
+                             <div class="dropdown-menu dropdown-menu-right">
+                         <?php foreach ($a as $b){ ?>
+                             <a class="dropdown-item popup-link" href="<?=$b['supplierLink']?>"><?=$b['name']?></a> 
+                         <?php }	?>
+                             </div>
+                         </div>
+                        </td>
+                    <?php }else{ ?>
+                        <td align="center">N/A</a>
+                    <?php } ?>
+					<?php
 					  if ($ingredient['SDS']){
-						  echo '<td align="center" class="noexport"><a href="'.$ingredient['SDS'].'" target="_blanc" class="fa fa-save"></a></td>';
+						  echo '<td align="center" class="noexport"><a href="'.$ingredient['SDS'].'" target="_blank" class="fa fa-save"></a></td>';
 					  }else{
 						  echo '<td align="center" class="noexport">N/A</td>';
 					  }	
 					  if ($ingredient['cas']){
-						  echo '<td align="center" class="noexport"><a href="http://www.thegoodscentscompany.com/search3.php?qName='.$ingredient['cas'].'" target="_blanc" class="fa fa-external-link-alt"></a></td>';
+						  echo '<td align="center" class="noexport"><a href="http://www.thegoodscentscompany.com/search3.php?qName='.$ingredient['cas'].'" target="_blank" class="fa fa-external-link-alt"></a></td>';
 					  }else{
-						  echo '<td align="center" class="noexport"><a href="http://www.thegoodscentscompany.com/search3.php?qName='.$ingredient['name'].'" target="_blanc" class="fa fa-external-link-alt"></a></td>';
+						  echo '<td align="center" class="noexport"><a href="http://www.thegoodscentscompany.com/search3.php?qName='.$ingredient['name'].'" target="_blank" class="fa fa-external-link-alt"></a></td>';
 					  }
 					  ?>
                       <td class="noexport" align="center"><a href="pages/mgmIngredient.php?id=<?php echo $ingredient['name'];?>" class="fas fa-edit popup-link"><a> <a href="javascript:delete_ingredient('<?php echo $ingredient['id'];?>')" onclick="return confirm('Delete <?php echo $ingredient['name'];?> ?')" class="fas fa-trash"></a></td>

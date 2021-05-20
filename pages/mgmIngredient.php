@@ -34,8 +34,8 @@ $defCatClass = $settings['defCatClass'];
 $res_ingTypes = mysqli_query($conn, "SELECT id,name FROM ingTypes ORDER BY name ASC");
 $res_ingStrength = mysqli_query($conn, "SELECT id,name FROM ingStrength ORDER BY name ASC");
 $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCategory ORDER BY name ASC");
-$res_ingSupplier = mysqli_query($conn, "SELECT id,name FROM ingSuppliers ORDER BY name ASC");
 $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles ORDER BY name ASC");
+$res_ingSupplier = mysqli_query($conn, "SELECT id,name FROM ingSuppliers ORDER BY name ASC");
 
 $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE name = '$ingID'"));
 
@@ -180,17 +180,30 @@ $.ajax({
 
 
 function reload_data() {
-$.ajax({ 
-    url: 'allergens.php', 
-	type: 'get',
-    data: {
-		id: "<?=base64_encode($ingID)?>"
-		},
-	dataType: 'html',
-    success: function (data) {
-	  $('#fetch_allergen').html(data);
-    }
-  });
+	$.ajax({ 
+		url: 'allergens.php', 
+		type: 'get',
+		data: {
+			id: "<?=base64_encode($ingID)?>"
+			},
+		dataType: 'html',
+		success: function (data) {
+		  $('#fetch_allergen').html(data);
+		}
+	  });
+
+	$.ajax({ 
+		url: 'ingSuppliers.php', 
+		type: 'get',
+		data: {
+			id: "<?=$ing['id']?>"
+			},
+		dataType: 'html',
+		success: function (data) {
+		  $('#fetch_suppliers').html(data);
+		}
+	  });
+
 }
 <?php if($ingID){ ?>
 reload_data();
@@ -396,39 +409,11 @@ reload_data();
 								<?php } ?>
 						      </table>
    						  </div>
-                  <div class="tab-pane fade" id="supply">
-				    <h3>Supply</h3>
-                    <hr>
-                    <table width="100%" border="0">
-                              <tr>
-                                <td width="20%">Supplier:</td>
-                                <td width="80%" colspan="3">
-                                <select name="supplier" id="supplier" class="form-control selectpicker" data-live-search="true">
-                                <option value="" selected></option>
-                                  <?php while ($row_ingSupplier = mysqli_fetch_array($res_ingSupplier)){ ?>
-								<option value="<?php echo $row_ingSupplier['name'];?>" <?php echo ($ing['supplier']==$row_ingSupplier['name'])?"selected=\"selected\"":""; ?>><?php echo $row_ingSupplier['name'];?></option>
-								  <?php	}	?>
-                                </select>
-                                </td>
-                              </tr>
-                              <tr>
-                                <td>Supplier URL:</td>
-                                <td colspan="3"><input name="supplier_link" type="text" class="form-control" id="supplier_link" value="<?php echo $ing['supplier_link']; ?>"></td>
-                              </tr>
-                              <tr>
-								<td>Price (<?php echo $settings['currency']; ?>):</td>
-                                <td colspan="3"><input name="price" type="text" class="form-control" id="price" value="<?php echo $ing['price']; ?>"/></td>
-                              </tr>
-                              <tr>
-                                <td>Size (<?=$settings['mUnit']?>):</td>
-                                <td colspan="3"><input name="ml" type="text" class="form-control" id="ml" value="<?php echo $ing['ml']; ?>"/></td>
-                              </tr>
-                              <tr>
-                                <td>Manufacturer</td>
-                                <td colspan="3"><input name="manufacturer" type="text" class="form-control" id="manufacturer" value="<?php echo $ing['manufacturer']; ?>"/></td>
-                              </tr>
-                    </table>
-                            </div>
+                          
+                          <div class="tab-pane fade" id="supply">
+                               <div id="fetch_suppliers"><div class="loader"></div></div>
+                           </div>
+                   
                             <div class="tab-pane fade" id="tech_data">
           						 <h3>Techical Data</h3>
                                  <hr>
@@ -627,6 +612,54 @@ reload_data();
 </div>
 </div>
 
+<!-- ADD SUPPLIER-->
+<div class="modal fade" id="addSupplier" tabindex="-1" role="dialog" aria-labelledby="addSupplier" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addSupplier">Add supplier for <?php echo $ing['name']; ?></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <div id="supplier_inf"></div>
+          <form action="javascript:addSupplier()" method="get" name="form1" target="_self" id="form1">
+          <p>
+            Name: 
+            <select name="supplier_name" id="supplier_name" class="form-control selectpicker" data-live-search="true">
+            <?php while ($row_ingSupplier = mysqli_fetch_array($res_ingSupplier)){ ?>
+				<option value="<?=$row_ingSupplier['id']?>"><?=$row_ingSupplier['name'];?></option>
+			<?php	}	?>
+            </select>
+            </p>
+            <p>
+            URL: 
+            <input class="form-control" name="supplier_link" type="text" id="supplier_link" />
+            </p>
+            <p>            
+            Price (<?php echo $settings['currency']; ?>):
+            <input class="form-control" name="supplier_price" type="text" id="supplier_price" />
+            </p>
+            <p>
+            Size (<?=$settings['mUnit']?>):
+            <input class="form-control" name="supplier_size" type="text" id="supplier_size" value="10" />
+            </p>
+            <p>
+            Manufacturer:
+            <input class="form-control" name="supplier_manufacturer" type="text" id="supplier_manufacturer" />
+            </p>            
+            <div class="dropdown-divider"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <input type="submit" name="button" class="btn btn-primary" id="button" value="Add">
+      </div>
+     </form>
+    </div>
+  </div>
+</div>
+</div>
 
 <script type="text/javascript" language="javascript">
 
@@ -670,6 +703,48 @@ function addAllergen() {
 	  });
 };
 
+function addSupplier() {	  
+	$.ajax({ 
+		url: 'update_data.php', 
+		type: 'POST',
+		data: {
+			ingSupplier: 'add',
+			supplier_id: $("#supplier_name").val(),
+			supplier_link: $("#supplier_link").val(),
+			supplier_size: $("#supplier_size").val(),	
+			supplier_price: $("#supplier_price").val(),				
+			supplier_manufacturer: $("#supplier_manufacturer").val(),
+			ingID: '<?=$ing['id'];?>'
+			},
+		dataType: 'html',
+		success: function (data) {
+			$('#supplier_inf').html(data);
+			//$("#supplier_name").val('');
+			//$("#supplier_link").val('');
+			//$("#supplier_size").val('');
+			//$("#supplier_price").val('');
+			//$("#supplier_manufacturer").val('');
+			reload_data();
+		}
+	  });
+};
+
+function deleteSupplier(sID) {	  
+	$.ajax({ 
+		url: 'update_data.php', 
+		type: 'GET',
+		data: {
+			ingSupplier: 'delete',
+			sID: sID,
+			ingID: '<?=$ing['id'];?>'
+			},
+		dataType: 'html',
+		success: function (data) {
+			$('#msg').html(data);
+			reload_data();
+		}
+	  });
+};
 $(document).ready(function() {
 	$('#save').click(function() {
 							  

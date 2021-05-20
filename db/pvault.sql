@@ -351,6 +351,17 @@ INSERT INTO `IFRACategories` (`id`, `name`, `description`, `type`) VALUES
 (17, '11B', 'Products with intended skin contact but minimal transfer of fragrance to skin from inert substrate with potential UV exposure', 1),
 (18, '12', 'Products not intended for direct skin contact, minimal or insignificant transfer to skin', 1);
 
+CREATE TABLE `suppliers` (
+ `id` int(11) NOT NULL AUTO_INCREMENT,
+ `ingSupplierID` int(11) NOT NULL,
+ `ingID` int(11) NOT NULL,
+ `supplierLink` varchar(255) COLLATE utf8_bin NOT NULL,
+ `price` varchar(10) COLLATE utf8_bin NOT NULL,
+ `size` float DEFAULT 10,
+ `manufacturer` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+ PRIMARY KEY (`id`),
+ UNIQUE KEY `id` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
 
 ALTER TABLE `batchIDHistory`
   ADD PRIMARY KEY (`id`);
