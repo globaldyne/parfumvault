@@ -25,7 +25,14 @@ if($_POST['ingSupplier'] == 'add'){
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT ingSupplierID FROM suppliers WHERE ingSupplierID = '$supplier_id' AND ingID = '$ingID'"))){
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$allgName.' already exists!</div>';
 	}else{
-		if(mysqli_query($conn, "INSERT INTO suppliers (ingSupplierID,ingID,supplierLink,price,size,manufacturer) VALUES ('$supplier_id','$ingID','$supplier_link','$supplier_price','$supplier_size','$supplier_manufacturer')")){
+		
+		if(!mysqli_num_rows(mysqli_query($conn, "SELECT ingSupplierID FROM suppliers WHERE ingID = '$ingID'"))){
+		   $preferred = '1';
+		}else{
+			$preferred = '0';
+		}
+		
+		if(mysqli_query($conn, "INSERT INTO suppliers (ingSupplierID,ingID,supplierLink,price,size,manufacturer,preferred) VALUES ('$supplier_id','$ingID','$supplier_link','$supplier_price','$supplier_size','$supplier_manufacturer','$preferred')")){
 			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$supplier_name['name'].'</strong> added to the list!</div>';
 		}else{
 			echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> '.mysqli_error($conn).'</div>';
@@ -42,6 +49,17 @@ if($_GET['ingSupplier'] == 'update'){
 	$ingID = mysqli_real_escape_string($conn, $_GET['ingID']);
 
 	mysqli_query($conn, "UPDATE suppliers SET $name = '$value' WHERE ingSupplierID = '$id' AND ingID='$ingID'");
+	return;
+}
+
+//UPDATE PREFERRED SUPPLIER
+if($_GET['ingSupplier'] == 'preferred'){
+	$sID = mysqli_real_escape_string($conn, $_GET['sID']);
+	$ingID = mysqli_real_escape_string($conn, $_GET['ingID']);
+	$status = mysqli_real_escape_string($conn, $_GET['status']);
+	
+	mysqli_query($conn, "UPDATE suppliers SET preferred = '0' WHERE ingID='$ingID'");
+	mysqli_query($conn, "UPDATE suppliers SET preferred = '$status' WHERE ingSupplierID = '$sID' AND ingID='$ingID'");
 	return;
 }
 

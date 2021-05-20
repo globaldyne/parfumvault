@@ -44,22 +44,21 @@ $q = mysqli_query($conn, "SELECT * FROM suppliers WHERE ingID = '$ingID'");
                   <tbody id="ing_supplier">
                     <?php 
 						while ($supplier = mysqli_fetch_array($q)) { 
-						$sup = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingSuppliers WHERE id = '".$supplier['id']."'"));
+						$sup = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingSuppliers WHERE id = '".$supplier['ingSupplierID']."'"));
 					?>
                     <tr>
-                      <td data-name="supplier_name" class="supplier_name" data-type="text" align="center" data-pk="<?=$supplier['ingSupplierID']?>"><?=$sup['name']?></td>
-                      <td data-name="supplierLink" class="supplierLink" data-type="text" align="center" data-pk="<?=$supplier['ingSupplierID']?>"><a href="<?=$supplier['supplierLink']?>" target="_blank" class="fas fa-store"></a></td>
+                      <td data-name="ingSupplierID" class="ingSupplierID" data-type="select" align="center" data-pk="<?=$supplier['ingSupplierID']?>"><?=$sup['name']?></td>
+                      <td data-name="supplierLink" class="supplierLink" data-type="textarea" align="center" data-pk="<?=$supplier['ingSupplierID']?>"><a href="#"><?=$supplier['supplierLink']?></a></td>
 					  <td data-name="price" class="price" data-type="text" align="center" data-pk="<?=$supplier['ingSupplierID']?>"><?=$supplier['price']?></td>
 					  <td data-name="size" class="size" data-type="text" align="center" data-pk="<?=$supplier['ingSupplierID']?>"><?=$supplier['size']?></td>
 					  <td data-name="manufacturer" class="manufacturer" data-type="text" align="center" data-pk="<?=$supplier['ingSupplierID']?>"><?=$supplier['manufacturer']?></td>
-                      <td align="center"><a href="javascript:deleteSupplier('<?=$supplier['id']?>')" onclick="return confirm('Remove <?=$sup['name']?>?');" class="fas fa-trash"></a></td>
+                      <td align="center"><a <?php if($supplier['preferred']){ ?>href="#" class="fas fa-star"<?php }else{ ?>href="javascript:prefSID('<?=$supplier['ingSupplierID']?>','1')" class="far fa-star"<?php } ?> ></a> &nbsp;<a href="<?=$supplier['supplierLink']?>" target="_blank" class="fas fa-store"></a> &nbsp; <a href="javascript:deleteSupplier('<?=$supplier['id']?>')" onclick="return confirm('Remove <?=$sup['name']?>?');" class="fas fa-trash"></a></td>
 					</tr>
 				  	<?php } ?>
                   </tbody>
                 </table>
               </div>
             </div>
-            
             
 <script type="text/javascript" language="javascript" >
 $(document).ready(function(){
@@ -68,15 +67,29 @@ $(document).ready(function(){
 	"info":   true,
 	"lengthMenu": [[15, 35, 60, -1], [15, 35, 60, "All"]]
  });
-
+ 
  $('#ing_supplier').editable({
-	  container: 'body',
-	  selector: 'td.supplier_name',
-	  type: 'POST',
-	  url: "update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
-	  title: 'Name',
- });
-  
+	pvnoresp: false,
+	highlight: false,
+	container: 'body',
+	selector: 'td.ingSupplierID',
+	type: 'POST',
+	emptytext: "",
+	emptyclass: "",
+  	url: "update_data.php?ingSupplier=update&ingID=<?=$ingID?>",
+    source: [
+			 <?php
+				$res_ing = mysqli_query($conn, "SELECT id,name FROM ingSuppliers ORDER BY name ASC");
+				while ($r_ing = mysqli_fetch_array($res_ing)){
+					echo '{value: "'.htmlspecialchars($r_ing['id']).'", text: "'.htmlspecialchars($r_ing['name']).'"},';
+			}
+			?>
+          ],
+    success: function (data) {
+			reload_data();
+	}
+});
+
  $('#ing_supplier').editable({
 	  container: 'body',
 	  selector: 'td.supplierLink',
@@ -108,6 +121,6 @@ $(document).ready(function(){
 	url: "update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
 	title: 'Manufacturer',
  });
-	  
+
 });
 </script>

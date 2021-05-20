@@ -719,11 +719,11 @@ function addSupplier() {
 		dataType: 'html',
 		success: function (data) {
 			$('#supplier_inf').html(data);
-			//$("#supplier_name").val('');
-			//$("#supplier_link").val('');
-			//$("#supplier_size").val('');
-			//$("#supplier_price").val('');
-			//$("#supplier_manufacturer").val('');
+			$("#supplier_name").val('');
+			$("#supplier_link").val('');
+			$("#supplier_size").val('');
+			$("#supplier_price").val('');
+			$("#supplier_manufacturer").val('');
 			reload_data();
 		}
 	  });
@@ -736,6 +736,24 @@ function deleteSupplier(sID) {
 		data: {
 			ingSupplier: 'delete',
 			sID: sID,
+			ingID: '<?=$ing['id'];?>'
+			},
+		dataType: 'html',
+		success: function (data) {
+			$('#msg').html(data);
+			reload_data();
+		}
+	  });
+};
+
+function prefSID(sID, status) {	  
+	$.ajax({ 
+		url: 'update_data.php', 
+		type: 'GET',
+		data: {
+			ingSupplier: 'preferred',
+			sID: sID,
+			status: status,
 			ingID: '<?=$ing['id'];?>'
 			},
 		dataType: 'html',
