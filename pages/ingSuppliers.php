@@ -8,7 +8,7 @@ require_once(__ROOT__.'/inc/settings.php');
 
 $ingID = mysqli_real_escape_string($conn, $_GET["id"]);
 
-$q = mysqli_query($conn, "SELECT * FROM suppliers WHERE ingID = '$ingID'");
+$q = mysqli_query($conn, "SELECT * FROM suppliers WHERE ingID = '$ingID' ORDER BY preferred");
 
 ?>
 <script type='text/javascript'>
@@ -52,7 +52,7 @@ $q = mysqli_query($conn, "SELECT * FROM suppliers WHERE ingID = '$ingID'");
 					  <td data-name="price" class="price" data-type="text" align="center" data-pk="<?=$supplier['ingSupplierID']?>"><?=$supplier['price']?></td>
 					  <td data-name="size" class="size" data-type="text" align="center" data-pk="<?=$supplier['ingSupplierID']?>"><?=$supplier['size']?></td>
 					  <td data-name="manufacturer" class="manufacturer" data-type="text" align="center" data-pk="<?=$supplier['ingSupplierID']?>"><?=$supplier['manufacturer']?></td>
-                      <td align="center"><a <?php if($supplier['preferred']){ ?>href="#" class="fas fa-star"<?php }else{ ?>href="javascript:prefSID('<?=$supplier['ingSupplierID']?>','1')" class="far fa-star"<?php } ?> ></a> &nbsp;<a href="<?=$supplier['supplierLink']?>" target="_blank" class="fas fa-store"></a> &nbsp; <a href="javascript:deleteSupplier('<?=$supplier['id']?>')" onclick="return confirm('Remove <?=$sup['name']?>?');" class="fas fa-trash"></a></td>
+                      <td align="center"><a <?php if($supplier['preferred']){ ?>href="#" class="fas fa-star" <?php }else{ ?>href="javascript:prefSID('<?=$supplier['ingSupplierID']?>','1')" class="far fa-star" data-toggle="tooltip" data-placement="top" title="Set as preferred supplier."<?php } ?> ></a> &nbsp;<a href="<?=$supplier['supplierLink']?>" target="_blank" class="fas fa-store"></a> &nbsp; <a href="javascript:deleteSupplier('<?=$supplier['id']?>')" onclick="return confirm('Remove <?=$sup['name']?>?');" class="fas fa-trash"></a></td>
 					</tr>
 				  	<?php } ?>
                   </tbody>
@@ -121,6 +121,9 @@ $(document).ready(function(){
 	url: "update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
 	title: 'Manufacturer',
  });
-
+ 
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
 });
 </script>

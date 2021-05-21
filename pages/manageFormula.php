@@ -247,25 +247,26 @@ if($_GET['action'] == 'addToCart' && $_GET['material'] && $_GET['quantity']){
 	$material = mysqli_real_escape_string($conn, $_GET['material']);
 	$quantity = mysqli_real_escape_string($conn, $_GET['quantity']);
 	$purity = mysqli_real_escape_string($conn, $_GET['purity']);
+	$ingID = mysqli_real_escape_string($conn, $_GET['ingID']);
 
 		
-	$qS = mysqli_fetch_array(mysqli_query($conn, "SELECT supplier, supplier_link FROM ingredients WHERE name = '$material'"));
+	$qS = mysqli_fetch_array(mysqli_query($conn, "SELECT ingSupplierID, supplierLink FROM suppliers WHERE ingID = '$ingID'"));
 	
-	if(empty($qS['supplier_link'])){
+	if(empty($qS['supplierLink'])){
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$material.'</strong> cannot be added to cart as missing supplier info. Please update material supply details first.</div>';
 		return;
 	}
 	
 	if(mysqli_num_rows(mysqli_query($conn,"SELECT id FROM cart WHERE name = '$material'"))){
 		if(mysqli_query($conn, "UPDATE cart SET quantity = quantity + '$quantity' WHERE name = '$material'")){
-			echo '<div class="alert alert-info alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Additional <strong>'.$quantity.'</strong> added to '.$material.'</div>';
+			echo '<div class="alert alert-info alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Additional <strong>'.$quantity.$settings['mUnit'].'</strong> of '.$material.' added to cart.</div>';
 		}else{
  			echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error:<strong>'.mysqli_error($conn).'</strong></div>';
 		}
 		return;
 	}
 									
-	if(mysqli_query($conn, "INSERT INTO cart (name,quantity,purity,supplier,supplier_link) VALUES ('$material','$quantity','$purity','".$qS['supplier']."','".$qS['supplier_link']."')")){
+	if(mysqli_query($conn, "INSERT INTO cart (ingID,name,quantity,purity) VALUES ('$ingID','$material','$quantity','$purity')")){
 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$material.'</strong> added to cart!</div>';
 		return;
 	}

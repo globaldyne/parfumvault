@@ -28,6 +28,7 @@ require_once(__ROOT__.'/func/pvFileGet.php');
 require_once(__ROOT__.'/func/countPending.php');
 require_once(__ROOT__.'/func/countCart.php');
 require_once(__ROOT__.'/func/pvOnline.php');
+require_once(__ROOT__.'/func/getIngSupplier.php');
 
 require(__ROOT__.'/inc/settings.php');
 

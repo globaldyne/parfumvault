@@ -12,4 +12,17 @@ function getIngSupplier($ingID,$conn){
 	}
 	return $result;
 }
+
+
+function getPrefSupplier($ingID,$conn){
+	
+	$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT price,ingSupplierID,size,supplierLink FROM suppliers WHERE ingID = '$ingID' AND preferred = '1'"));
+	$sup = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingSuppliers WHERE id = '".$ing['ingSupplierID']."'"));
+		
+	$result = array_merge($ing, $sup);
+
+	return $result;
+
+}
+
 ?>

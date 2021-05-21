@@ -52,13 +52,14 @@
                 <?php if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM cart GROUP BY name"))){ ?>
 				<a href="?do=cart" class="dropdown-header"><h6>To be ordered</h6></a>
 				<?php
-					$qC = mysqli_query($conn, "SELECT name,supplier,supplier_link FROM cart ORDER BY name ASC LIMIT 5");
-					while ($pC = mysqli_fetch_array($qC)){ 	
+					$qC = mysqli_query($conn, "SELECT name,ingID FROM cart ORDER BY name ASC LIMIT 5");
+					while ($pC = mysqli_fetch_array($qC)){
+						$supDetails = getPrefSupplier($pC['ingID'],$conn);
 				?>
-                <a class="dropdown-item d-flex align-items-center" href="<?php echo $pC['supplier_link'];?>" target="_blank">
+                <a class="dropdown-item d-flex align-items-center" href="<?php echo $supDetails['supplierLink'];?>" target="_blank">
                   <div class="font-weight-bold">
                     <div class="text-truncate"><?php echo $pC['name'];?></div>
-                    <div class="small text-gray-500"><?php echo $pC['supplier'];?></div>
+                    <div class="small text-gray-500"><?php echo $supDetails['name'];?></div>
                   </div>
                 </a>
 				<?php } ?>

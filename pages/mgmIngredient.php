@@ -411,6 +411,7 @@ reload_data();
    						  </div>
                           
                           <div class="tab-pane fade" id="supply">
+                          	   <div id="msg_sup"></div>
                                <div id="fetch_suppliers"><div class="loader"></div></div>
                            </div>
                    
@@ -674,7 +675,7 @@ function deleteAllergen(allgID) {
 			},
 		dataType: 'html',
 		success: function (data) {
-			$('#msg').html(data);
+			//$('#msg').html(data);
 			reload_data();
 		}
 	  });
@@ -719,9 +720,9 @@ function addSupplier() {
 		dataType: 'html',
 		success: function (data) {
 			$('#supplier_inf').html(data);
-			$("#supplier_name").val('');
+			//$("#supplier_name").val('');
 			$("#supplier_link").val('');
-			$("#supplier_size").val('');
+			$("#supplier_size").val('10');
 			$("#supplier_price").val('');
 			$("#supplier_manufacturer").val('');
 			reload_data();
@@ -740,7 +741,7 @@ function deleteSupplier(sID) {
 			},
 		dataType: 'html',
 		success: function (data) {
-			$('#msg').html(data);
+			$('#msg_sup').html(data);
 			reload_data();
 		}
 	  });
@@ -758,7 +759,7 @@ function prefSID(sID, status) {
 			},
 		dataType: 'html',
 		success: function (data) {
-			$('#msg').html(data);
+			//$('#msg').html(data);
 			reload_data();
 		}
 	  });
@@ -780,16 +781,12 @@ $(document).ready(function() {
 				type: $("#type").val(),
 				strength: $("#strength").val(),
 				category: $("#category").val(),
-				supplier: $("#supplier").val(),
-				supplier_link: $("#supplier_link").val(),
 				profile: $("#profile").val(),
-				price: $("#price").val(),
 				tenacity: $("#tenacity").val(),
 				formula: $("#formula").val(),
 				chemical_name: $("#chemical_name").val(),
 				flash_point: $("#flash_point").val(),
 				appearance: $("#appearance").val(),
-				ml: $("#ml").val(),
 				solvent: $("#solvent").val(),
 				notes: $("#notes").val(),
 				odor: $("#odor").val(),

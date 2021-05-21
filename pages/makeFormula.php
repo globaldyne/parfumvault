@@ -13,6 +13,7 @@ require_once(__ROOT__.'/func/calcCosts.php');
 require_once(__ROOT__.'/func/goShopping.php');
 require_once(__ROOT__.'/func/countElement.php');
 require_once(__ROOT__.'/func/ml2L.php');
+require_once(__ROOT__.'/func/getIngSupplier.php');
 
 $fid = mysqli_real_escape_string($conn, $_GET['fid']);
 if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$fid'")) == FALSE){
@@ -79,7 +80,7 @@ function addedToFormula() {
   });
 };
 
-function addToCart(material, quantity, purity) {
+function addToCart(material, quantity, purity, ingID) {
 $.ajax({ 
     url: 'manageFormula.php', 
 	type: 'get',
@@ -87,7 +88,8 @@ $.ajax({
 		action: "addToCart",
 		material: material,
 		purity: purity,
-		quantity: quantity
+		quantity: quantity,
+		ingID: ingID
 		},
 	dataType: 'text',
     success: function (data) {
@@ -162,7 +164,7 @@ $.ajax({
                   </thead>
                   <tbody id="formula_data">
                   <?php foreach ($form as $formula){
-					 	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT cas, $defCatClass, price, ml, profile FROM ingredients WHERE BINARY name = '".$formula['ingredient']."'"));
+					 	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT id, cas, $defCatClass, profile FROM ingredients WHERE name = '".$formula['ingredient']."'"));
 
 						$limit = explode(' - ',searchIFRA($ing_q['cas'],$formula['ingredient'],null,$conn,$defCatClass));
 					  
@@ -222,7 +224,7 @@ $.ajax({
 					?>
 					  <td align="center" ><?=$formula['quantity']?></td>
 					  <td align="center" <?=$IFRA_WARN?>><?=$conc_p?>%</td>
-					  <td align="center"><?=utf8_encode($settings['currency']).calcCosts($ing_q['price'],$formula['quantity'], $formula['concentration'], $ing_q['ml'])?></td>
+					  <td align="center"><?=calcCosts(getPrefSupplier($ing_q['id'],$conn)['price'],$formula['quantity'], $formula['concentration'], getPrefSupplier($ing_q['id'],$conn)['size']);?></td>
 					  <td align="center">
 	                  <?php
 					  if($formula['toAdd'] == '1'){
@@ -230,11 +232,11 @@ $.ajax({
 					  }
 					  ?>
 					  &nbsp; &nbsp;
-					  <a href="javascript:addToCart('<?=$formula['ingredient']?>','<?=$formula['quantity']?>','<?=$formula['concentration']?>')" class="fas fa-shopping-cart"></a> 
+					  <a href="javascript:addToCart('<?=$formula['ingredient']?>','<?=$formula['quantity']?>','<?=$formula['concentration']?>','<?=$ing_q['id']?>')" class="fas fa-shopping-cart"></a> 
 					  </td>
                      </tr>
 					  <?php
-                      $tot[] = calcCosts($ing_q['price'],$formula['quantity'], $formula['concentration'], $ing_q['ml']);
+                      $tot[] = calcCosts(getPrefSupplier($ing_q['id'],$conn)['price'],$formula['quantity'], $formula['concentration'], getPrefSupplier($ing_q['id'],$conn)['size']);
 					  $conc_tot[] = $conc_p;
 				  }
                   ?>

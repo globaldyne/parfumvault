@@ -13,7 +13,10 @@ if($_POST['ingSupplier'] == 'add'){
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Missing fields!</div>';
 		return;
 	}
-	
+	if(!is_numeric($_POST['supplier_size']) || !is_numeric($_POST['supplier_price'])){
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Only numeric values allowed in size and price fields!</div>';
+		return;
+	}
 	$ingID = mysqli_real_escape_string($conn, $_POST['ingID']);
 	$supplier_id = mysqli_real_escape_string($conn, $_POST['supplier_id']);
 	$supplier_link = mysqli_real_escape_string($conn, $_POST['supplier_link']);	
@@ -68,11 +71,13 @@ if($_GET['ingSupplier'] == 'delete'){
 
 	$sID = mysqli_real_escape_string($conn, $_GET['sID']);
 	$ingID = mysqli_real_escape_string($conn, $_GET['ingID']);
-
-	$delQ = mysqli_query($conn, "DELETE FROM suppliers WHERE id = '$sID' AND ingID='$ingID'");	
-	if($delQ){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Supplier removed!</div>';
+	/*
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM suppliers WHERE id = '$sID' AND ingID = '$ingID' AND preferred = '1'"))){
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Preferred supplier cannot be removed. Set as preferred another one first!</div>';
+		return;
 	}
+	*/							
+	mysqli_query($conn, "DELETE FROM suppliers WHERE id = '$sID' AND ingID='$ingID'");
 	return;
 }
 
@@ -325,16 +330,12 @@ if($_POST['manage'] == 'ingredient'){
 	$type = mysqli_real_escape_string($conn, $_POST["type"]);
 	$strength = mysqli_real_escape_string($conn, $_POST["strength"]);
 	$category = mysqli_real_escape_string($conn, $_POST["category"]);
-	$supplier = mysqli_real_escape_string($conn, $_POST["supplier"]);
-	$supplier_link = mysqli_real_escape_string($conn, $_POST["supplier_link"]);
 	$profile = mysqli_real_escape_string($conn, $_POST["profile"]);
-	$price = validateInput($_POST["price"]);
 	$tenacity = mysqli_real_escape_string($conn, $_POST["tenacity"]);
 	$formula = mysqli_real_escape_string($conn, $_POST["formula"]);
 	$chemical_name = mysqli_real_escape_string($conn, $_POST["chemical_name"]);
 	$flash_point = mysqli_real_escape_string($conn, $_POST["flash_point"]);
 	$appearance = mysqli_real_escape_string($conn, $_POST["appearance"]);
-	$ml = validateInput($_POST["ml"]);
 	$solvent = mysqli_real_escape_string($conn, $_POST["solvent"]);
 	$odor = ucfirst(trim(mysqli_real_escape_string($conn, $_POST["odor"])));
 	$notes = ucfirst(trim(mysqli_real_escape_string($conn, $_POST["notes"])));
@@ -361,7 +362,6 @@ if($_POST['manage'] == 'ingredient'){
 	$cat11B = validateInput($_POST["cat11B"]);
 	$cat12 = validateInput($_POST["cat12"]);
 	
-	$manufacturer = mysqli_real_escape_string($conn, $_POST["manufacturer"]);
 	$impact_top = mysqli_real_escape_string($conn, $_POST["impact_top"]);
 	$impact_base = mysqli_real_escape_string($conn, $_POST["impact_base"]);
 	$impact_heart = mysqli_real_escape_string($conn, $_POST["impact_heart"]);
@@ -378,9 +378,6 @@ if($_POST['manage'] == 'ingredient'){
 	}else{
 		$flavor_use = '0';
 	}
-	if(empty($ml)){
-		$ml = '10';
-	}
 	
 	if($_POST['noUsageLimit'] == 'true'){
 		$noUsageLimit = '1';
@@ -395,11 +392,11 @@ if($_POST['manage'] == 'ingredient'){
 	}
 	
 	if(empty($_POST['name'])){
-		$query = "UPDATE ingredients SET cas = '$cas', reach = '$reach', FEMA = '$fema', type = '$type', strength = '$strength', category='$category', supplier='$supplier', supplier_link='$supplier_link', profile='$profile', price='$price', tenacity='$tenacity', chemical_name='$chemical_name', flash_point='$flash_point', appearance='$appearance', notes='$notes', ml='$ml', odor='$odor', purity='$purity', allergen='$allergen', formula='$formula', flavor_use='$flavor_use', cat1 = '$cat1', cat2 = '$cat2', cat3 = '$cat3', cat4 = '$cat4', cat5A = '$cat5A', cat5B = '$cat5B', cat5C = '$cat5C', cat5D = '$cat5D', cat6 = '$cat6', cat7A = '$cat7A', cat7B = '$cat7B', cat8 = '$cat8', cat9 = '$cat9', cat10A = '$cat10A', cat10B = '$cat10B', cat11A = '$cat11A', cat11B = '$cat11B', cat12 = '$cat12', soluble = '$soluble', logp = '$logp', manufacturer = '$manufacturer', impact_top = '$impact_top', impact_heart = '$impact_heart', impact_base = '$impact_base', usage_type = '$usage_type', solvent = '$solvent', INCI = '$INCI', noUsageLimit = '$noUsageLimit', isPrivate = '$isPrivate', molecularWeight = '$molecularWeight' WHERE name='$ing'";
+		$query = "UPDATE ingredients SET cas = '$cas', reach = '$reach', FEMA = '$fema', type = '$type', strength = '$strength', category='$category', profile='$profile', tenacity='$tenacity', chemical_name='$chemical_name', flash_point='$flash_point', appearance='$appearance', notes='$notes', odor='$odor', purity='$purity', allergen='$allergen', formula='$formula', flavor_use='$flavor_use', cat1 = '$cat1', cat2 = '$cat2', cat3 = '$cat3', cat4 = '$cat4', cat5A = '$cat5A', cat5B = '$cat5B', cat5C = '$cat5C', cat5D = '$cat5D', cat6 = '$cat6', cat7A = '$cat7A', cat7B = '$cat7B', cat8 = '$cat8', cat9 = '$cat9', cat10A = '$cat10A', cat10B = '$cat10B', cat11A = '$cat11A', cat11B = '$cat11B', cat12 = '$cat12', soluble = '$soluble', logp = '$logp', impact_top = '$impact_top', impact_heart = '$impact_heart', impact_base = '$impact_base', usage_type = '$usage_type', solvent = '$solvent', INCI = '$INCI', noUsageLimit = '$noUsageLimit', isPrivate = '$isPrivate', molecularWeight = '$molecularWeight' WHERE name='$ing'";
 		if(mysqli_query($conn, $query)){
 			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Ingredient <strong>'.$ing.'</strong> updated!</div>';
 		}else{
-			echo '<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> Failed to update!</div>';
+			echo '<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> '.mysqli_error($conn).'</div>';
 		}
 	}else{
 		$name = sanChar(mysqli_real_escape_string($conn, $_POST["name"]));

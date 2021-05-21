@@ -15,7 +15,9 @@ if($_POST['formula']){
 	$carrier_id = mysqli_real_escape_string($conn, $_POST['carrier']);
 	$lid_id = mysqli_real_escape_string($conn, $_POST['lid']);
 	$bottle_cost = mysqli_fetch_array(mysqli_query($conn, "SELECT  price,ml,name FROM bottles WHERE id = '$bottle'"));
-	$carrier_cost = mysqli_fetch_array(mysqli_query($conn, "SELECT  price,ml FROM ingredients WHERE id = '$carrier_id'"));
+	
+	$carrier_cost = mysqli_fetch_array(mysqli_query($conn, "SELECT  price,size FROM suppliers WHERE ingID = '$carrier_id'"));
+	
 	$defCatClass = mysqli_real_escape_string($conn, $_POST['defCatClass']);
 
 	if(empty($defCatClass)){
@@ -157,7 +159,7 @@ $.ajax({
                     </tr>
                   </thead>
                   <?php foreach ($form as $formula){
-					    $ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT cas,$defCatClass,price,ml FROM ingredients WHERE name = '".$formula['ingredient']."'"));
+					    $ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT id,cas,$defCatClass FROM ingredients WHERE name = '".$formula['ingredient']."'"));
 
 						$limit = explode(' - ',searchIFRA($ing_q['cas'],$formula['ingredient'],null,$conn,$defCatClass));
 					  
@@ -196,9 +198,11 @@ $.ajax({
 					  }
 					  echo'<td align="center">'.number_format($new_quantity, 3).'</td>';
 					  echo'<td align="center" '.$IFRA_WARN.'>'.$conc_p.'%</td>';
-					  echo '<td align="center">'.utf8_encode($settings['currency']).calcCosts($ing_q['price'],$new_quantity, $formula['concentration'], $ing_q['ml']).'</td>';
-					  echo '</tr>';
-					$tot[] = calcCosts($ing_q['price'],$new_quantity, $formula['concentration'], $ing_q['ml']);
+					  ?>
+					  <td align="center"><?=calcCosts(getPrefSupplier($ing_q['id'],$conn)['price'],$new_quantity, $formula['concentration'], getPrefSupplier($ing_q['id'],$conn)['size']);?></td>
+					</tr>
+					<?php
+                    $tot[] = calcCosts(getPrefSupplier($ing_q['id'],$conn)['price'],$new_quantity, $formula['concentration'], getPrefSupplier($ing_q['id'],$conn)['size']);
 					$conc_tot[] = $conc_p;
 					$new_tot[] = $new_quantity;
 				  }
@@ -222,7 +226,7 @@ $.ajax({
                       <td align="center" class="m-1 text-primary">Carrier/Solvent: </td>
                       <td align="center" class="m-1 text-primary"><?php echo $carrier; ?> <?=$settings['mUnit']?></td>
                       <td align="center" class="m-1 text-primary"><?php echo $carrier*100/$bottle;?>%</td>
-                      <td colspan="2" align="center" class="m-1 text-primary"><?php $carrier_sub_cost = $carrier_cost['price'] / $carrier_cost['ml'] * $carrier; echo utf8_encode($settings['currency']).number_format($carrier_sub_cost, 2);?></td>
+                      <td colspan="2" align="center" class="m-1 text-primary"><?php $carrier_sub_cost = $carrier_cost['price'] / $carrier_cost['size'] * $carrier; echo utf8_encode($settings['currency']).number_format($carrier_sub_cost, 2);?></td>
                     </tr>
                     <tr>
                       <td></td>

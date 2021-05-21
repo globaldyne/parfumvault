@@ -13,6 +13,7 @@ require_once(__ROOT__.'/func/searchIFRA.php');
 require_once(__ROOT__.'/func/goShopping.php');
 require_once(__ROOT__.'/func/ml2L.php');
 require_once(__ROOT__.'/func/countElement.php');
+require_once(__ROOT__.'/func/getIngSupplier.php');
 
 if(!$_GET['id']){
 	echo 'Formula id is missing.';
@@ -272,7 +273,7 @@ $('.replaceIngredient').editable({
                   </thead>
                   <tbody id="formula_data">
                   <?php	foreach ($form as $formula){
-						$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT cas, $defCatClass, price, ml, profile, odor FROM ingredients WHERE BINARY name = '".$formula['ingredient']."'"));
+						$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT id, cas, $defCatClass, profile, odor FROM ingredients WHERE BINARY name = '".$formula['ingredient']."'"));
 
 						$limit = explode(' - ',searchIFRA($ing_q['cas'],$formula['ingredient'],null,$conn,$defCatClass));
 						
@@ -333,17 +334,17 @@ $('.replaceIngredient').editable({
 					  ?>
 					  <td data-name="quantity" class="quantity" data-type="text" align="center" data-pk="<?php echo $formula['ingredient'];?>"><?php echo number_format($formula['quantity'],$settings['qStep']);?></td>
 					  <td align="center" <?php echo $IFRA_WARN;?>><?php echo $conc_p;?></td>
-					  <td align="center"><?php echo calcCosts($ing_q['price'],$formula['quantity'], $formula['concentration'], $ing_q['ml']);?></td>
+					  <td align="center"><a href="#" data-toggle="tooltip" data-placement="top" title="by <?=getPrefSupplier($ing_q['id'],$conn)['name']?>"><?=calcCosts(getPrefSupplier($ing_q['id'],$conn)['price'],$formula['quantity'], $formula['concentration'], getPrefSupplier($ing_q['id'],$conn)['size']);?></a></td>
                       <?php if($meta['defView'] == '1'){?>
 					  <td><?php echo ucfirst($ing_q['odor']);?></td>
 					  <?php }elseif($meta['defView'] == '2'){?>
 					  <td data-name="notes" class="notes" data-type="text" align="center" data-pk="<?php echo $formula['ingredient'];?>"><?=$formula['notes']?></td>
                       <?php } ?>
-                      <td class="noexport" align="center"><a href="#" class="fas fa-exchange-alt replaceIngredient" rel="tipsy" title="Replace <?php echo $formula['ingredient'];?>" id="replaceIngredient" data-name="<?php echo $formula['ingredient'];?>" data-type="select" data-pk="<?php echo $formula['ingredient'];?>" data-title="Choose Ingredient to replace <?php echo $formula['ingredient'];?>"></a> &nbsp; <a href="<?php echo goShopping($formula['ingredient'],$conn);?>" target="_blank" class="fas fa-shopping-cart"></a> &nbsp; <a href="javascript:deleteING('<?php echo $formula['ingredient'];?>', '<?php echo $formula['id'];?>')" onclick="return confirm('Remove <?php echo $formula['ingredient'];?> from formula?')" class="fas fa-trash" rel="tipsy" title="Remove <?php echo $formula['ingredient'];?>"></a>
+                      <td class="noexport" align="center"><a href="#" class="fas fa-exchange-alt replaceIngredient" rel="tipsy" title="Replace <?php echo $formula['ingredient'];?>" id="replaceIngredient" data-name="<?php echo $formula['ingredient'];?>" data-type="select" data-pk="<?php echo $formula['ingredient'];?>" data-title="Choose Ingredient to replace <?php echo $formula['ingredient'];?>"></a> &nbsp; <a href="<?=getPrefSupplier($ing_q['id'],$conn)['supplierLink']?>" target="_blank" class="fas fa-shopping-cart"></a> &nbsp; <a href="javascript:deleteING('<?=$formula['ingredient']?>', '<?=$formula['id']?>')" onclick="return confirm('Remove <?=$formula['ingredient']?> from formula?')" class="fas fa-trash" rel="tipsy" title="Remove <?=$formula['ingredient']?>"></a>
                       </td>
 				</tr>
 				<?php
-					$tot[] = calcCosts($ing_q['price'],$formula['quantity'], $formula['concentration'], $ing_q['ml']);
+					$tot[] = calcCosts(getPrefSupplier($ing_q['id'],$conn)['price'],$formula['quantity'], $formula['concentration'], getPrefSupplier($ing_q['id'],$conn)['size']);
 					$conc_tot[] = $conc_p;
 				  }
 	            ?>
@@ -507,4 +508,6 @@ $('#csv').on('click',function(){
 	htmlContent: false
   });
 });
+
+$('[data-toggle="tooltip"]').tooltip();
 </script>

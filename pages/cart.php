@@ -39,11 +39,12 @@ $.ajax({
                 <table class="table table-bordered" id="tdData" width="100%" cellspacing="0">
                   <thead>
                     <tr class="noBorder">
-                      <th colspan="4">
+                      <th colspan="5">
                       </th>
                     </tr>
                     <tr>
                       <th>Material</th>
+                      <th>Purity (%)</th>
                       <th>Quantity (ml)</th>
                       <th>Actions</th>
                     </tr>
@@ -51,7 +52,19 @@ $.ajax({
                   <tbody id="todo_data">
                     <?php while ($r = mysqli_fetch_array($cart)) { ?>
                     <tr>
-                      <td align="center"><a href="<?php echo $r['supplier_link']; ?>" target="_blank"><?php echo $r['name']; ?></a> <?php if (($r['purity'] != '100.00') && (!is_null($r['purity']))){ echo '@'.$r['purity'].'%';}?></td>
+                      <td align="center">
+                      	<div class="btn-group">
+                           <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?php echo $r['name']; ?></a>
+                             <div class="dropdown-menu dropdown-menu-right">
+                         <?php 
+						 $a = getIngSupplier($r['ingID'],$conn); 
+						 foreach ($a as $b){ ?>
+                             <a class="dropdown-item" target="_blank" href="<?=$b['supplierLink']?>"><?=$b['name']?></a> 
+                         <?php } ?>
+                             </div>
+                         </div>
+                      </td>
+                      <td align="center"><?=$r['purity'] ?? '100'?></td>
                       <td align="center"><a href="#"><?php echo $r['quantity']; ?></a></td>
 					  <td align="center"><a href="javascript:removeFromCart('<?php echo $r['id'] ?>')" onclick="return confirm('Remove <?php echo $r['name']; ?> from cart?');" class="fas fa-trash"></a></td>
 					  </tr>

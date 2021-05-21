@@ -52,7 +52,7 @@ if($_POST['formula']){
                     </tr>
                   </thead>
                   <?php while ($formula = mysqli_fetch_array($formula_q)) {
-					    $ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT cas,$defCatClass,ml,odor FROM ingredients WHERE name = '".$formula['ingredient']."'"));
+					    $ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT cas,$defCatClass,odor FROM ingredients WHERE name = '".$formula['ingredient']."'"));
 						$conc = number_format($formula['quantity']/$mg['total_mg'] * 100, 3);
 					  	$conc_p = number_format($formula['concentration'] / 100 * $conc, 3);
 				  ?>

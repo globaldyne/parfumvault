@@ -75,8 +75,7 @@ CREATE TABLE `cart` (
  `name` varchar(255) COLLATE utf8_bin NOT NULL,
  `quantity` varchar(255) COLLATE utf8_bin NOT NULL,
  `purity` varchar(255) COLLATE utf8_bin NOT NULL,
- `supplier` varchar(255) COLLATE utf8_bin NOT NULL,
- `supplier_link` varchar(255) COLLATE utf8_bin NOT NULL, 
+ `ingID` INT NOT NULL,
  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
@@ -355,13 +354,14 @@ CREATE TABLE `suppliers` (
  `id` int(11) NOT NULL AUTO_INCREMENT,
  `ingSupplierID` int(11) NOT NULL,
  `ingID` int(11) NOT NULL,
- `supplierLink` varchar(255) COLLATE utf8_bin NOT NULL,
- `price` varchar(10) COLLATE utf8_bin NOT NULL,
+ `supplierLink` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+ `price` varchar(10) COLLATE utf8_bin DEFAULT NULL,
  `size` float DEFAULT 10,
  `manufacturer` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+ `preferred` int(11) NOT NULL DEFAULT 0,
  PRIMARY KEY (`id`),
  UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 ALTER TABLE `batchIDHistory`
   ADD PRIMARY KEY (`id`);
