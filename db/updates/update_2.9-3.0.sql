@@ -11,8 +11,7 @@ CREATE TABLE `suppliers` (
  UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-INSERT INTO suppliers (`ingSupplierID`,`ingID`,`supplierLink`,`price`,`size`,`manufacturer`,`preferred`) SELECT DISTINCT B.id,  A.id, A.supplier_link, A.price, A.ml, A.manufacturer, '1' FROM  ingredients AS A, ingSuppliers AS B WHERE B.name = A.supplier ;
-
+INSERT INTO suppliers (`ingSupplierID`,`ingID`,`supplierLink`,`price`,`size`,`manufacturer`,`preferred`) SELECT DISTINCT B.id,  A.id, A.supplier_link, A.price, A.ml, A.manufacturer, '1' FROM  ingredients AS A, ingSuppliers AS B WHERE B.name = A.supplier;
 
 ALTER TABLE `ingredients` DROP `supplier`, DROP `supplier_link`, DROP `price`, DROP `ml`, DROP `manufacturer`;
 ALTER TABLE `cart` DROP `supplier`, DROP `supplier_link`; 
