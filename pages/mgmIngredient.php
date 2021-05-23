@@ -663,6 +663,26 @@ reload_data();
 </div>
 
 <script type="text/javascript" language="javascript">
+function getPrice(supplier, size, ingSupplierID) {
+	$('#msg_sup').html('<div class="alert alert-info alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Please wait...</strong></div>');
+	$('.price').html('<img src="/img/loading.gif"/>');
+	$.ajax({ 
+		url: 'update_data.php', 
+		type: 'POST',
+		data: {
+			ingSupplier: 'getPrice',
+			sLink: supplier,
+			size: size,
+			ingSupplierID: ingSupplierID,
+			ingID: '<?=$ing['id'];?>'
+			},
+		dataType: 'html',
+		success: function (data) {
+			$('#msg_sup').html(data);
+			reload_data();
+		}
+	  });
+};
 
 function deleteAllergen(allgID) {	  
 	$.ajax({ 

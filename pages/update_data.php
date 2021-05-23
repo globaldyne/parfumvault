@@ -6,7 +6,26 @@ require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/func/validateInput.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/sanChar.php');
+require_once(__ROOT__.'/func/priceScrape.php');
 
+//GET SUPPLIER PRICE
+if($_POST['ingSupplier'] == 'getPrice'){
+	$ingID = mysqli_real_escape_string($conn, $_POST['ingID']);
+	$ingSupplierID = mysqli_real_escape_string($conn, $_POST['ingSupplierID']);
+	$size = mysqli_real_escape_string($conn, $_POST['size']);
+	$supplier_link = urldecode($_POST['sLink']);
+	
+	$supp_data = mysqli_fetch_array(mysqli_query($conn, "SELECT price_tag_start,price_tag_end,add_costs FROM ingSuppliers WHERE id = '$ingSupplierID'"));
+	
+	if($newPrice = priceScrape($supplier_link,$size,$supp_data['price_tag_start'],$supp_data['price_tag_end'],$supp_data['add_costs'])){
+		if(mysqli_query($conn, "UPDATE suppliers SET price = '$newPrice' WHERE ingSupplierID = '$ingSupplierID' AND ingID='$ingID'")){
+			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Price updated</strong></div>';
+		}
+	}else{
+	 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error getting the price from the supplier</strong></div>';
+	}
+	return; //$price;
+}
 //ADD ING SUPPLIER
 if($_POST['ingSupplier'] == 'add'){
 	if(empty($_POST['supplier_id']) || empty($_POST['supplier_link']) || empty($_POST['supplier_size']) || empty($_POST['supplier_price'])){
@@ -156,7 +175,7 @@ if($_GET['settings'] == 'cat'){
 }
 
 if($_GET['settings'] == 'sup'){
-	$value = mysqli_real_escape_string($conn, $_POST['value']);
+	$value = htmlentities($_POST['value']);
 	$sup_id = mysqli_real_escape_string($conn, $_POST['pk']);
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 
@@ -164,10 +183,14 @@ if($_GET['settings'] == 'sup'){
 	return;	
 }
 
-if($_GET['supp'] == 'add'){
-	$description = mysqli_real_escape_string($conn, $_GET['description']);
-	$name = mysqli_real_escape_string($conn, $_GET['name']);
-	
+if($_POST['supp'] == 'add'){
+	$description = mysqli_real_escape_string($conn, $_POST['description']);
+	$name = mysqli_real_escape_string($conn, $_POST['name']);
+	$platform = mysqli_real_escape_string($conn, $_POST['platform']);
+	$price_tag_start = htmlentities($_POST['price_tag_start']);
+	$price_tag_end = htmlentities($_POST['price_tag_end']);
+	$add_costs = htmlentities($_POST['add_costs']);
+
 	if(empty($name)){
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong> Supplier name required</div>';
 		return;
@@ -177,7 +200,7 @@ if($_GET['supp'] == 'add'){
 		return;
 	}
 
-	if(mysqli_query($conn, "INSERT INTO ingSuppliers (name,notes) VALUES ('$name','$description')")){
+	if(mysqli_query($conn, "INSERT INTO ingSuppliers (name,platform,price_tag_start,price_tag_end,add_costs,notes) VALUES ('$name','$platform','$price_tag_start','$price_tag_end','$add_costs','$description')")){
 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Supplier '.$name.' added!</div>';
 	}
 	return;

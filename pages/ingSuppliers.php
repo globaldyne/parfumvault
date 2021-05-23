@@ -52,7 +52,7 @@ $q = mysqli_query($conn, "SELECT * FROM suppliers WHERE ingID = '$ingID' ORDER B
 					  <td data-name="price" class="price" data-type="text" align="center" data-pk="<?=$supplier['ingSupplierID']?>"><?=$supplier['price']?></td>
 					  <td data-name="size" class="size" data-type="text" align="center" data-pk="<?=$supplier['ingSupplierID']?>"><?=$supplier['size']?></td>
 					  <td data-name="manufacturer" class="manufacturer" data-type="text" align="center" data-pk="<?=$supplier['ingSupplierID']?>"><?=$supplier['manufacturer']?></td>
-                      <td align="center"><a <?php if($supplier['preferred']){ ?>href="#" class="fas fa-star" <?php }else{ ?>href="javascript:prefSID('<?=$supplier['ingSupplierID']?>','1')" class="far fa-star" data-toggle="tooltip" data-placement="top" title="Set as preferred supplier."<?php } ?> ></a> &nbsp;<a href="<?=$supplier['supplierLink']?>" target="_blank" class="fas fa-store"></a> &nbsp; <a href="javascript:deleteSupplier('<?=$supplier['id']?>')" onclick="return confirm('Remove <?=$sup['name']?>?');" class="fas fa-trash"></a></td>
+                      <td align="center"><a <?php if($supplier['preferred']){ ?>href="#" class="fas fa-star" <?php }else{ ?>href="javascript:prefSID('<?=$supplier['ingSupplierID']?>','1')" class="far fa-star" data-toggle="tooltip" data-placement="top" title="Set as preferred supplier."<?php } ?> ></a>&nbsp;<a href="javascript:getPrice('<?=urlencode($supplier['supplierLink'])?>','<?=$supplier['size']?>','<?=$supplier['ingSupplierID']?>')" data-toggle="tooltip" data-placement="top" title="Get the latest price from the supplier." class="fas fa-sync"></a>&nbsp;<a href="<?=$supplier['supplierLink']?>" target="_blank" class="fas fa-store" data-toggle="tooltip" data-placement="top" title="Open supplier's web page."></a>&nbsp;<a href="javascript:deleteSupplier('<?=$supplier['id']?>')" onclick="return confirm('Remove <?=$sup['name']?>?');" class="fas fa-trash" data-toggle="tooltip" data-placement="top" title="Remove supplier from the list."></a></td>
 					</tr>
 				  	<?php } ?>
                   </tbody>
@@ -62,13 +62,16 @@ $q = mysqli_query($conn, "SELECT * FROM suppliers WHERE ingID = '$ingID' ORDER B
             
 <script type="text/javascript" language="javascript" >
 $(document).ready(function(){
+ $('[data-toggle="tooltip"]').tooltip();
  $('#tdIngSup').DataTable({
     "paging":   true,
 	"info":   true,
 	"lengthMenu": [[15, 35, 60, -1], [15, 35, 60, "All"]]
  });
  
- $('#ing_supplier').editable({
+
+
+$('#ing_supplier').editable({
 	pvnoresp: false,
 	highlight: false,
 	container: 'body',
@@ -121,9 +124,7 @@ $(document).ready(function(){
 	url: "update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
 	title: 'Manufacturer',
  });
- 
-$(function () {
-  $('[data-toggle="tooltip"]').tooltip()
-})
+
+
 });
 </script>
