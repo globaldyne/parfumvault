@@ -236,6 +236,7 @@ CREATE TABLE `ingSuppliers` (
   `price_tag_start` text COLLATE utf8_bin DEFAULT NULL,
   `price_tag_end` text COLLATE utf8_bin DEFAULT NULL,
   `add_costs` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `price_per_size` INT NOT NULL DEFAULT '0', 
   `notes` text COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 

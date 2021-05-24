@@ -22,3 +22,4 @@ ALTER TABLE `ingSuppliers` ADD `platform` VARCHAR(255) NULL AFTER `name`;
 ALTER TABLE `ingSuppliers` ADD `price_tag_start` VARCHAR(255) NULL AFTER `platform`; 
 ALTER TABLE `ingSuppliers` ADD `price_tag_end` VARCHAR(255) NULL AFTER `price_tag_start`;
 ALTER TABLE `ingSuppliers` ADD `add_costs` VARCHAR(255) NULL AFTER `price_tag_end`;
+ALTER TABLE `ingSuppliers` ADD `price_per_size` INT NOT NULL DEFAULT '0' AFTER `add_costs`; 

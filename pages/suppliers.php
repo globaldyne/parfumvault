@@ -19,7 +19,7 @@ $q = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
                 <table class="table table-bordered" id="tdData" width="100%" cellspacing="0">
                   <thead>
                     <tr class="noBorder noexport">
-                      <th colspan="7">
+                      <th colspan="8">
                   <div class="text-right">
                         <div class="btn-group">
                           <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
@@ -37,6 +37,7 @@ $q = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
                       <th>Price start tag</th>
                       <th>Price end tag</th>
                       <th>Additional costs</th>
+                      <th>Price per</th>
                       <th>Description</th>
                       <th class="noexport">Actions</th>
                     </tr>
@@ -49,6 +50,7 @@ $q = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
                       <td data-name="price_tag_start" class="price_tag_start" data-type="textarea" align="center" data-pk="<?=$supplier['id']?>"><?=$supplier['price_tag_start']?></td>
                       <td data-name="price_tag_end" class="price_tag_end" data-type="textarea" align="center" data-pk="<?=$supplier['id']?>"><?=$supplier['price_tag_end']?></td>
                       <td data-name="add_costs" class="add_costs" data-type="text" align="center" data-pk="<?=$supplier['id']?>"><?=$supplier['add_costs']?></td>
+                      <td data-name="price_per_size" class="price_per_size" data-type="select" align="center" data-pk="<?=$supplier['id']?>"><?php if($supplier['price_per_size'] == '0'){ echo 'Product'; }else{ echo 'Volume'; }?></td>
 					  <td data-name="notes" class="notes" data-type="text" align="center" data-pk="<?=$supplier['id']?>"><?=$supplier['notes']?></td>
 					  <td class="noexport" align="center"><a href="javascript:deleteSupplier('<?=$supplier['id']?>')" onclick="return confirm('Delete <?=$supplier['name']?>?')" class="fas fa-trash"></a></td>
 					  </tr>
@@ -98,6 +100,13 @@ $q = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
             <p>
               <input class="form-control" type="text" name="add_costs" id="add_costs" />
             </p>
+            <p>Price to be calucalted per:</p>
+            <p>
+              <select class="form-control" name="select" id="price_per_size">
+                <option value="0">Product</option>
+                <option value="1">Volume</option>
+              </select>
+              </p>
             <p>
             Description: 
             <input class="form-control" name="description" type="text" id="description" />            
@@ -135,6 +144,17 @@ $('#supplier_data').editable({
 			 {value: "woocomerce", text: "Woocomerce"},
 			 {value: "shopify", text: "Shopify"},
 			 {value: "other", text: "Custom/Other"},
+          ],
+});
+
+$('#supplier_data').editable({
+	container: 'body',
+	selector: 'td.price_per_size',
+	type: 'POST',
+  	url: "pages/update_data.php?settings=sup",
+    source: [
+			 {value: "0", text: "Product"},
+			 {value: "1", text: "Volume"},
           ],
 });
 

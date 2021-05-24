@@ -665,7 +665,7 @@ reload_data();
 <script type="text/javascript" language="javascript">
 function getPrice(supplier, size, ingSupplierID) {
 	$('#msg_sup').html('<div class="alert alert-info alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Please wait...</strong></div>');
-	$('.price').html('<img src="/img/loading.gif"/>');
+	$('#' + ingSupplierID).html('<img src="/img/loading.gif"/>');
 	$.ajax({ 
 		url: 'update_data.php', 
 		type: 'POST',

@@ -1,6 +1,7 @@
 # CHANGELOG
 ### Version 3.0
 Add multiple suppliers per ingredient
+Price scrapper added - scrape price data from your suppliers web page
 
 ### Version 2.9
 Label printing improvements
