@@ -839,7 +839,7 @@ $(document).ready(function() {
 			success: function (data) {
 				$('#ingMsg').html(data);
 				 if ($('#name').val()) {
-					window.location = 'mgmIngredient.php?id=' + $('#name').val();
+					window.location = 'mgmIngredient.php?id=' + btoa($('#name').val());
 				 }
 			}
 		  });
