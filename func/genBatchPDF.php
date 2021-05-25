@@ -163,7 +163,7 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $ver, $uploads_pat
 		$pdf->Ln();
 		$pdf->SetFont('Arial','',9);
 					  
-		$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT $defCatClass,price,ml,profile,cas FROM ingredients WHERE name = '".$formula['ingredient']."'"));
+		$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT $defCatClass,profile,cas FROM ingredients WHERE name = '".$formula['ingredient']."'"));
 		$new_quantity = $formula['quantity']/$mg*$new_conc;
 		$conc = $new_quantity/$bottle * 100;
 		$conc_p = number_format($formula['concentration'] / 100 * $conc, 3);
