@@ -25,3 +25,4 @@ ALTER TABLE `ingSuppliers` ADD `add_costs` VARCHAR(255) NULL AFTER `price_tag_en
 ALTER TABLE `ingSuppliers` ADD `price_per_size` INT NOT NULL DEFAULT '0' AFTER `add_costs`; 
 ALTER TABLE `ingredients` ADD `physical_state` INT NULL DEFAULT '0' AFTER `molecularWeight`; 
 ALTER TABLE `ingSuppliers` ADD `min_ml` INT NULL AFTER `notes`, ADD `min_gr` INT NULL AFTER `min_ml`; 
+ALTER TABLE `ingCategory` CHANGE `image` `image` LONGBLOB NULL;

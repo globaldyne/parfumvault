@@ -4,6 +4,7 @@ Add multiple suppliers per ingredient
 Price scrapper added - scrape price data from your suppliers web page
 Added ingredient physical state (Solid/Liquid)
 Ingredients supplier can be chosen when generating a finished formula
+Change image storage type for ingredient categories to LONGBLOB
 
 ### Version 2.9
 Label printing improvements
