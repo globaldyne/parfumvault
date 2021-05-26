@@ -19,7 +19,7 @@ $q = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
                 <table class="table table-bordered" id="tdData" width="100%" cellspacing="0">
                   <thead>
                     <tr class="noBorder noexport">
-                      <th colspan="8">
+                      <th colspan="10">
                   <div class="text-right">
                         <div class="btn-group">
                           <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
@@ -38,6 +38,8 @@ $q = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
                       <th>Price end tag</th>
                       <th>Additional costs</th>
                       <th>Price per</th>
+                      <th>Min ml</th>
+                      <th>Min grams</th>
                       <th>Description</th>
                       <th class="noexport">Actions</th>
                     </tr>
@@ -51,6 +53,8 @@ $q = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
                       <td data-name="price_tag_end" class="price_tag_end" data-type="textarea" align="center" data-pk="<?=$supplier['id']?>"><?=$supplier['price_tag_end']?></td>
                       <td data-name="add_costs" class="add_costs" data-type="text" align="center" data-pk="<?=$supplier['id']?>"><?=$supplier['add_costs']?></td>
                       <td data-name="price_per_size" class="price_per_size" data-type="select" align="center" data-pk="<?=$supplier['id']?>"><?php if($supplier['price_per_size'] == '0'){ echo 'Product'; }else{ echo 'Volume'; }?></td>
+                      <td data-name="min_ml" class="min_ml" data-type="text" align="center" data-pk="<?=$supplier['id']?>"><?=$supplier['min_ml']?></td>
+					  <td data-name="min_gr" class="min_gr" data-type="text" align="center" data-pk="<?=$supplier['id']?>"><?=$supplier['min_gr']?></td>
 					  <td data-name="notes" class="notes" data-type="text" align="center" data-pk="<?=$supplier['id']?>"><?=$supplier['notes']?></td>
 					  <td class="noexport" align="center"><a href="javascript:deleteSupplier('<?=$supplier['id']?>')" onclick="return confirm('Delete <?=$supplier['name']?>?')" class="fas fa-trash"></a></td>
 					  </tr>
@@ -99,6 +103,14 @@ $q = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
             <p>Additional costs:</p>
             <p>
               <input class="form-control" type="text" name="add_costs" id="add_costs" />
+            </p>
+            <p>Minimum ml quantiy:</p>
+            <p>
+              <input class="form-control" type="text" name="min_ml" id="min_ml" />
+            </p>
+            <p>Minimum grams quantiy:</p>
+            <p>
+              <input class="form-control" type="text" name="min_gr" id="min_gr" />
             </p>
             <p>Price to be calucalted per:</p>
             <p>
@@ -156,6 +168,34 @@ $('#supplier_data').editable({
 			 {value: "0", text: "Product"},
 			 {value: "1", text: "Volume"},
           ],
+});
+
+$('#supplier_data').editable({
+  container: 'body',
+  selector: 'td.min_ml',
+  url: "pages/update_data.php?settings=sup",
+  title: 'Minimum ml',
+  type: "POST",
+  dataType: 'html',
+    validate: function(value){
+   if($.trim(value) == ''){
+    return 'This field is required';
+   }
+  }
+});
+
+$('#supplier_data').editable({
+  container: 'body',
+  selector: 'td.min_gr',
+  url: "pages/update_data.php?settings=sup",
+  title: 'Minimum grams',
+  type: "POST",
+  dataType: 'html',
+    validate: function(value){
+   if($.trim(value) == ''){
+    return 'This field is required';
+   }
+  }
 });
 
 $('#supplier_data').editable({
@@ -223,7 +263,9 @@ $.ajax({
 		price_tag_start: $("#price_tag_start").val(),
 		price_tag_end: $("#price_tag_end").val(),
 		add_costs: $("#add_costs").val(),
-		description: $("#description").val()
+		description: $("#description").val(),
+		min_ml: $("#min_ml").val(),
+		min_gr: $("#min_gr").val()
 		},
 	dataType: 'html',
     success: function (data) {
@@ -234,6 +276,9 @@ $.ajax({
      	$("#price_tag_start").val('');
      	$("#price_tag_end").val('');
      	$("#add_costs").val('');
+     	$("#min_ml").val('');
+     	$("#min_gr").val('');
+
     }
   });
 };

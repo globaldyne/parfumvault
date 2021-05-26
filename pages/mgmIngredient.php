@@ -35,7 +35,7 @@ $res_ingTypes = mysqli_query($conn, "SELECT id,name FROM ingTypes ORDER BY name 
 $res_ingStrength = mysqli_query($conn, "SELECT id,name FROM ingStrength ORDER BY name ASC");
 $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCategory ORDER BY name ASC");
 $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles ORDER BY name ASC");
-$res_ingSupplier = mysqli_query($conn, "SELECT id,name FROM ingSuppliers ORDER BY name ASC");
+$res_ingSupplier = mysqli_query($conn, "SELECT id,name,min_ml,min_gr FROM ingSuppliers ORDER BY name ASC");
 
 $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE name = '$ingID'"));
 
@@ -637,7 +637,7 @@ reload_data();
             Name: 
             <select name="supplier_name" id="supplier_name" class="form-control selectpicker" data-live-search="true">
             <?php while ($row_ingSupplier = mysqli_fetch_array($res_ingSupplier)){ ?>
-				<option value="<?=$row_ingSupplier['id']?>"><?=$row_ingSupplier['name'];?></option>
+				<option value="<?=$row_ingSupplier['id']?>" data-vol="<?php if($ing['physical_state'] == '1'){ echo $row_ingSupplier['min_ml']; }else{ echo $row_ingSupplier['min_gr'];} ?>" ><?=$row_ingSupplier['name'];?></option>
 			<?php	}	?>
             </select>
             </p>
@@ -650,7 +650,7 @@ reload_data();
             <input class="form-control" name="supplier_price" type="text" id="supplier_price" />
             </p>
             <p>
-            Size (<?=$settings['mUnit']?>):
+            Size (<?php if($ing['physical_state'] == '1'){ echo 'ml'; }elseif($ing['physical_state'] == '2'){ echo 'grams'; }else{ echo $settings['mUnit']; }?>):
             <input class="form-control" name="supplier_size" type="text" id="supplier_size" value="10" />
             </p>
             <p>
@@ -670,8 +670,14 @@ reload_data();
 </div>
 
 <script type="text/javascript" language="javascript">
+
+$("#supplier_name").change(function () {
+    vol = $(this).children(':selected').data('vol');
+    $("#supplier_size").focus().val(vol);    
+});
+
 function getPrice(supplier, size, ingSupplierID) {
-	$('#msg_sup').html('<div class="alert alert-info alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Please wait...</strong></div>');
+	$('#ingMsg').html('<div class="alert alert-info alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Please wait...</strong></div>');
 	$('#' + ingSupplierID).html('<img src="/img/loading.gif"/>');
 	$.ajax({ 
 		url: 'update_data.php', 

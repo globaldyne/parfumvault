@@ -28,11 +28,11 @@ if($_POST['ingSupplier'] == 'getPrice'){
 }
 //ADD ING SUPPLIER
 if($_POST['ingSupplier'] == 'add'){
-	if(empty($_POST['supplier_id']) || empty($_POST['supplier_link']) || empty($_POST['supplier_size']) || empty($_POST['supplier_price'])){
+	if(empty($_POST['supplier_id']) || empty($_POST['supplier_link']) || empty($_POST['supplier_size'])){
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Missing fields!</div>';
 		return;
 	}
-	if(!is_numeric($_POST['supplier_size']) || !is_numeric($_POST['supplier_price'])){
+	if(!is_numeric($_POST['supplier_size'])){
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Only numeric values allowed in size and price fields!</div>';
 		return;
 	}
@@ -189,8 +189,17 @@ if($_POST['supp'] == 'add'){
 	$platform = mysqli_real_escape_string($conn, $_POST['platform']);
 	$price_tag_start = htmlentities($_POST['price_tag_start']);
 	$price_tag_end = htmlentities($_POST['price_tag_end']);
-	$add_costs = htmlentities($_POST['add_costs']);
+	$add_costs = is_numeric($_POST['add_costs']);
+	$min_ml = mysqli_real_escape_string($conn, $_POST['min_ml']);
+	$min_gr = mysqli_real_escape_string($conn, $_POST['min_gr']);
 
+	if(empty($min_ml)){
+		$min_ml = 0;
+	}
+	if(empty($min_gr)){
+		$min_gr = 0;
+	}		 
+	
 	if(empty($name)){
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong> Supplier name required</div>';
 		return;
@@ -200,8 +209,10 @@ if($_POST['supp'] == 'add'){
 		return;
 	}
 
-	if(mysqli_query($conn, "INSERT INTO ingSuppliers (name,platform,price_tag_start,price_tag_end,add_costs,notes) VALUES ('$name','$platform','$price_tag_start','$price_tag_end','$add_costs','$description')")){
+	if(mysqli_query($conn, "INSERT INTO ingSuppliers (name,platform,price_tag_start,price_tag_end,add_costs,notes,min_ml,min_gr) VALUES ('$name','$platform','$price_tag_start','$price_tag_end','$add_costs','$description','$min_ml','$min_gr')")){
 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Supplier '.$name.' added!</div>';
+	}else{
+		echo mysqli_error($conn);
 	}
 	return;
 }
