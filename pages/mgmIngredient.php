@@ -420,6 +420,13 @@ reload_data();
                                  <hr>
                              <table width="100%" border="0">
                               <tr>
+                                <td>Physical State:</td>
+                                <td colspan="3"><select name="physical_state" id="physical_state" class="form-control">
+                                  <option value="1" <?php if($ing['physical_state']=="1") echo 'selected="selected"'; ?> >Liquid</option>
+                                  <option value="2" <?php if($ing['physical_state']=="2") echo 'selected="selected"'; ?> >Solid</option>
+                                </select></td>
+                              </tr>
+                              <tr>
                                 <td width="20%">Tenacity:</td>
                                 <td width="80%" colspan="3"><input name="tenacity" type="text" class="form-control" id="tenacity" value="<?php echo $ing['tenacity']; ?>"/></td>
                               </tr>
@@ -460,7 +467,7 @@ reload_data();
                                 <td colspan="3"><input name="appearance" type="text" class="form-control" id="appearance" value="<?php echo $ing['appearance']; ?>"/></td>
                               </tr>
                               <tr>
-                                <td>SDS:</td>
+                                <td><a href="<?php echo '/'.$ing['SDS'] ??  '#'; ?>" target="_blank">SDS</a>:</td>
                                 <td colspan="3">
                                 <form method="post" action="" enctype="multipart/form-data" id="myform">
         							<div >
@@ -664,7 +671,7 @@ reload_data();
 
 <script type="text/javascript" language="javascript">
 function getPrice(supplier, size, ingSupplierID) {
-	$('#ingMsg').html('<div class="alert alert-info alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Please wait...</strong></div>');
+	$('#msg_sup').html('<div class="alert alert-info alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Please wait...</strong></div>');
 	$('#' + ingSupplierID).html('<img src="/img/loading.gif"/>');
 	$.ajax({ 
 		url: 'update_data.php', 
@@ -815,7 +822,8 @@ $(document).ready(function() {
 				logp: $("#logp").val(),
 				type: $("#type").val(),
 				molecularWeight: $("#molecularWeight").val(),
-	            
+   				physical_state: $("#physical_state").val(),
+
 				<?php foreach ($cats as $cat) {?>
 				cat<?php echo $cat['name'];?>: $("#cat<?php echo $cat['name'];?>").val(),
 				<?php } ?>
