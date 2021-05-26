@@ -2,13 +2,13 @@
 if (!defined('pvault_panel')){ die('Not Found');}  
 if($_POST['formula']){
 	$f_name =  mysqli_real_escape_string($conn, $_POST['formula']);
-	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE name = '$f_name'"));
+	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE fid = '$f_name'"));
 
-	$formula_q = mysqli_query($conn, "SELECT * FROM formulas WHERE name = '$f_name' ORDER BY ingredient ASC");
+	$formula_q = mysqli_query($conn, "SELECT * FROM formulas WHERE fid = '$f_name' ORDER BY ingredient ASC");
 	while ($formula = mysqli_fetch_array($formula_q)){
 	    $form[] = $formula;
 	}
-	$mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE name = '$f_name'"));
+	$mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE fid = '$f_name'"));
 	
 	$bottle = mysqli_real_escape_string($conn, $_POST['bottle']);
 	$type = mysqli_real_escape_string($conn, $_POST['type']);
@@ -38,18 +38,19 @@ if($_POST['formula']){
 	if(validateFormula($meta['fid'], $bottle, $new_conc, $mg['total_mg'], $defCatClass, $conn) == TRUE){
 		$msg =  '<div class="alert alert-danger alert-dismissible">Your formula contains materials, exceeding and/or missing IFRA standards. Please alter your formula.</div>';
 	}
-
 	
+	if($_POST['ingSup']){
+		$sid = $_POST['ingSup'];
+	}
 	if($_POST['batchID'] == '1'){
 		if (!file_exists($uploads_path.'batches')) {
 			mkdir($uploads_path.'batches', 0740, true);
         }
 		define('FPDF_FONTPATH','./fonts');
 		$batchID = genBatchID();
-		$fid = base64_encode($f_name);
 		$batchFile = $uploads_path.'batches/'.$batchID;
 		
-		mysqli_query($conn, "INSERT INTO batchIDHistory (id,fid,pdf) VALUES ('$batchID','$fid','$batchFile')");
+		mysqli_query($conn, "INSERT INTO batchIDHistory (id,fid,pdf) VALUES ('$batchID','$f_name','$batchFile')");
 		genBatchPDF($fid,$batchID,$bottle,$new_conc,$mg['total_mg'],$ver,$uploads_path,$settings['defCatClass'],$conn);
 	}else{
 		$batchID = 'N/A';
@@ -121,6 +122,9 @@ $.ajax({
 			 <h5 class="m-1 text-primary">Concentration: <strong><?php echo $type; ?>%</h5>
              <h5 class="m-1 text-primary"><?php if($_POST['batchID'] == '1'){ echo 'Batch ID: <a href="'.$uploads_path.'batches/'.$batchID.'" target="_blank">'.$batchID.'</a>'; }else{ echo 'Batch ID: <a href="#">N/A</a>';}?></h5>
              <h5 class="m-1 text-primary">Category Class: <strong><?php echo ucfirst($defCatClass);?></strong></h5>
+             <?php if($sid){?>
+             <h5 class="m-1 text-primary">Supplier: <strong><?=getSupplierByID($sid,$conn)['name']?></strong></h5>
+             <?php } ?>
         	<?php }else{ ?>
               <h2 class="m-0 font-weight-bold text-primary"><a href="?do=genFinishedProduct">Generate Finished Product</a></h2>
             <?php } ?>
@@ -170,16 +174,17 @@ $.ajax({
 						if($settings['multi_dim_perc'] == '1'){
 							$conc_p   += multi_dim_perc($conn, $form)[$formula['ingredient']];
 						}
-						
-						echo'<tr>
-                      <td align="center">'.$formula['ingredient'].'</td>
-					  <td align="center">'.$ing_q['cas'].'</td>
-                      <td align="center">'.$formula['concentration'].'</td>';
-					  if($formula['concentration'] == '100'){
-						  echo '<td align="center">None</td>';
-					  }else{
-						  echo '<td data-name="dilutant" class="dilutant" data-type="select" align="center" data-pk="'.$formula['ingredient'].'">'.$formula['dilutant'].'</td>';
-					  }
+					?>
+					  <tr>
+                      <td align="center"><?=$formula['ingredient']?></td>
+					  <td align="center"><?=$ing_q['cas']?></td>
+                      <td align="center"><?=$formula['concentration']?></td>
+					<?php if($formula['concentration'] == '100'){ ?>
+                      <td align="center">None</td>
+					<?php }else{ ?>
+					   <td data-name="dilutant" class="dilutant" data-type="select" align="center" data-pk="<?=$formula['ingredient']?>"><?=$formula['dilutant']?></td>
+					 <?php
+                      }
 					  if($limit['0'] != null){
 						 if($limit['0'] < $conc_p){
 							$IFRA_WARN = 'class="alert-danger"';//VALUE IS TO HIGH AGAINST IFRA
@@ -196,23 +201,31 @@ $.ajax({
 					  }else{
 						  $IFRA_WARN = 'class="alert-warning"'; //NO RECORD FOUND
 					  }
-					  echo'<td align="center">'.number_format($new_quantity, 3).'</td>';
-					  echo'<td align="center" '.$IFRA_WARN.'>'.$conc_p.'%</td>';
 					  ?>
-					  <td align="center"><?=calcCosts(getPrefSupplier($ing_q['id'],$conn)['price'],$new_quantity, $formula['concentration'], getPrefSupplier($ing_q['id'],$conn)['size']);?></td>
-					</tr>
+					  <td align="center"><?=number_format($new_quantity, 3)?></td>
+					  <td align="center" <?=$IFRA_WARN?>><?=$conc_p?>%</td>
+                      <?php if($sid){ ?>
+					  	<td align="center"><?=calcCosts(getSingleSupplier($sid,$ing_q['id'],$conn)['price'],$new_quantity, $formula['concentration'], getPrefSupplier($ing_q['id'],$conn)['size']);?></td>
+					  <?php }else{ ?>
+					  	<td align="center"><?=calcCosts(getPrefSupplier($ing_q['id'],$conn)['price'],$new_quantity, $formula['concentration'], getPrefSupplier($ing_q['id'],$conn)['size']);?></td>
+                      <?php } ?>
+                    </tr>
 					<?php
-                    $tot[] = calcCosts(getPrefSupplier($ing_q['id'],$conn)['price'],$new_quantity, $formula['concentration'], getPrefSupplier($ing_q['id'],$conn)['size']);
-					$conc_tot[] = $conc_p;
-					$new_tot[] = $new_quantity;
-				  }
-                  ?>
+						if($sid){
+                    		$tot[] = calcCosts(getSingleSupplier($sid,$ing_q['id'],$conn)['price'],$new_quantity, $formula['concentration'], getPrefSupplier($ing_q['id'],$conn)['size']);
+						}else{
+						   	$tot[] = calcCosts(getPrefSupplier($ing_q['id'],$conn)['price'],$new_quantity, $formula['concentration'], getPrefSupplier($ing_q['id'],$conn)['size']);
+						}
+						
+						$conc_tot[] = $conc_p;
+						$new_tot[] = $new_quantity;
+				  	}
+                  	?>
                     </tr>
                     <tr>
                       <td></td>
                       <td></td>
-                                            <td></td>
-
+                      <td></td>
                       <td align="center" class="m-1 text-primary">Sub Total: </td>
                       <td align="center" class="m-1 text-primary"><?php echo number_format(array_sum($new_tot), 3); ?> <?=$settings['mUnit']?></td>
                       <td align="center" class="m-1 text-primary"><?php echo array_sum($conc_tot);?>%</td>
@@ -221,8 +234,7 @@ $.ajax({
                     <tr>
                       <td></td>
                       <td></td>
-                                            <td></td>
-
+                      <td></td>
                       <td align="center" class="m-1 text-primary">Carrier/Solvent: </td>
                       <td align="center" class="m-1 text-primary"><?php echo $carrier; ?> <?=$settings['mUnit']?></td>
                       <td align="center" class="m-1 text-primary"><?php echo $carrier*100/$bottle;?>%</td>
@@ -342,9 +354,12 @@ $.ajax({
 				}
 				
 				$cats_q = mysqli_query($conn, "SELECT name FROM IFRACategories ORDER BY id ASC");
-
 				while($cats_res = mysqli_fetch_array($cats_q)){
 					$cats[] = $cats_res;
+				}
+				$sup_q = mysqli_query($conn, "SELECT id,name FROM ingSuppliers ORDER BY id ASC");
+				while($r = mysqli_fetch_array($sup_q)){
+					$suppliers[] = $r;
 				}
 			?>
            <form action="?do=genFinishedProduct&generate=1" method="post" enctype="multipart/form-data" target="_blank">
@@ -357,7 +372,7 @@ $.ajax({
      <?php
 		$sql = mysqli_query($conn, "SELECT fid,name,product_name FROM formulasMetaData WHERE product_name IS NOT NULL ORDER BY name ASC");
 		while ($formula = mysqli_fetch_array($sql)){
-			echo '<option value="'.$formula['name'].'">'.$formula['name'].' ('.$formula['product_name'].')</option>';
+			echo '<option value="'.$formula['fid'].'">'.$formula['name'].' ('.$formula['product_name'].')</option>';
 		}
 	  ?>
      </select>
@@ -378,6 +393,16 @@ $.ajax({
 	  ?>
      </select>
     </td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Ingredients Supplier:</td>
+    <td><select name="ingSup" id="ingSup" class="form-control selectpicker" data-live-search="true">
+       <option value="0" selected="selected">Formula Defaults</option>
+      <?php foreach ($suppliers as $supplier) {?>
+      <option value="<?=$supplier['id'];?>"><?=$supplier['name'];?></option>
+      <?php	}	?>
+    </select></td>
     <td>&nbsp;</td>
   </tr>
   <tr>
@@ -460,14 +485,14 @@ $.ajax({
 $('#pdf').on('click',function(){
   $("#formula").tableHTMLExport({
 	type:'pdf',
-	filename:'<?php echo $f_name; ?>.pdf',
+	filename:'<?=base64_decode($f_name)?>.pdf',
 	orientation: 'p',
 	trimContent: true,
     quoteFields: true,
 	ignoreColumns: '.noexport',
   	ignoreRows: '.noexport',
 	htmlContent: true,
-	maintitle: '<?php echo $f_name; ?>',
+	maintitle: '<?=base64_decode($f_name)?>',
 	product: '<?php echo trim($product).' '.trim($ver);?>'
 
 });

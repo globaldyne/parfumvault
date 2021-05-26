@@ -22,7 +22,19 @@ function getPrefSupplier($ingID,$conn){
 	$result = array_merge($ing, $sup);
 
 	return $result;
-
 }
 
+function getSingleSupplier($sID,$ingID,$conn){
+	
+	$result = mysqli_fetch_array(mysqli_query($conn, "SELECT price FROM suppliers WHERE ingSupplierID = '$sID' AND ingID = '$ingID'"));
+		
+	return $result;
+}
+
+function getSupplierByID($sID,$conn){
+	
+	$result = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingSuppliers WHERE id = '$sID'"));
+		
+	return $result;
+}
 ?>

@@ -3,6 +3,7 @@
 Add multiple suppliers per ingredient
 Price scrapper added - scrape price data from your suppliers web page
 Added ingredient physical state (Solid/Liquid)
+Ingredients supplier can be chosen when generating a finished formula
 
 ### Version 2.9
 Label printing improvements

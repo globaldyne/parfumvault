@@ -296,7 +296,7 @@ if($_GET['action'] == 'printLabel' && $_GET['name']){
 			$bNO = 'N/A';
 		}
 				
-		$q = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE name = '$name'"));
+		$q = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE fid = '$name'"));
 		$info = "Production: ".date("d/m/Y")."\nProfile: ".$q['profile']."\nSex: ".$q['sex']."\nB. NO: ".$bNo."\nDescription:\n\n".wordwrap($q['notes'],30);
 	}
 	
@@ -312,7 +312,7 @@ if($_GET['action'] == 'printLabel' && $_GET['name']){
 	
 	imagefilledrectangle($lbl, 0, 0, $w, $h, $white);
 	
-	$text = trim($name.$extras);
+	$text = trim(base64_decode($name).$extras);
 	$font = __ROOT__.'/fonts/Arial.ttf';
 
 	imagettftext($lbl, $settings['label_printer_font_size'], 0, 0, 50, $black, $font, $text);
@@ -353,8 +353,8 @@ if($_GET['action'] == 'printBoxLabel' && $_GET['name']){
 	
 	if($settings['label_printer_size'] == '62' || $settings['label_printer_size'] == '62 --red'){
 		$name = mysqli_real_escape_string($conn, $_GET['name']);
-		$q = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE name = '$name'"));
-		$qIng = mysqli_query($conn, "SELECT ingredient FROM formulas WHERE name = '$name'");
+		$q = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE fid = '$name'"));
+		$qIng = mysqli_query($conn, "SELECT ingredient FROM formulas WHERE fid = '$name'");
 		
 		while($ing = mysqli_fetch_array($qIng)){
 				$chName = mysqli_fetch_array(mysqli_query($conn, "SELECT chemical_name FROM ingredients WHERE name = '".$ing['ingredient']."' AND allergen = '1'"));

@@ -24,7 +24,7 @@ if($_POST['ingSupplier'] == 'getPrice'){
 	}else{
 	 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error getting the price from the supplier</strong></div>';
 	}
-	return; //$price;
+	return;
 }
 //ADD ING SUPPLIER
 if($_POST['ingSupplier'] == 'add'){
