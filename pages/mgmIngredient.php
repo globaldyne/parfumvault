@@ -6,10 +6,11 @@ require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/formatBytes.php');
 require_once(__ROOT__.'/func/validateInput.php');
+require_once(__ROOT__.'/func/sanChar.php');
 
 require_once(__ROOT__.'/func/searchIFRA.php');
 
-$ingID = mysqli_real_escape_string($conn, $_GET["id"]);
+$ingID = sanChar(mysqli_real_escape_string($conn, base64_decode($_GET["id"])));
 if($ingID){
 	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$ingID'")))){
 		if(mysqli_query($conn, "INSERT INTO ingredients (name) VALUES ('$ingID')")){
@@ -183,7 +184,7 @@ $.ajax({
     url: 'allergens.php', 
 	type: 'get',
     data: {
-		id: "<?php echo $ingID; ?>"
+		id: "<?=base64_encode($ingID)?>"
 		},
 	dataType: 'html',
     success: function (data) {
@@ -249,6 +250,10 @@ reload_data();
                               <tr>
                                 <td width="20%"><a href="#" rel="tipsy" title="If your material contains multiple CAS, then use Mixture or Blend instead.">CAS #:</a></td>
                                 <td colspan="5"><input name="cas" type="text" class="form-control" id="cas" value="<?php echo $ing['cas']; ?>"></td>
+                              </tr>
+                              <tr>
+                                <td height="31">REACH #:</td>
+                                <td colspan="5"><input name="reach" type="text" class="form-control" id="reach" value="<?php echo $ing['reach']; ?>" /></td>
                               </tr>
                               <tr>
                                 <td height="31">FEMA #:</td>
@@ -677,6 +682,7 @@ $(document).ready(function() {
 				name: $("#name").val(),
 				INCI: $("#INCI").val(),
 				cas: $("#cas").val(),
+				reach: $("#reach").val(),
 				fema: $("#fema").val(),
 				type: $("#type").val(),
 				strength: $("#strength").val(),
@@ -723,7 +729,7 @@ $(document).ready(function() {
 			success: function (data) {
 				$('#ingMsg').html(data);
 				 if ($('#name').val()) {
-					window.location = 'mgmIngredient.php?id=' + $('#name').val();
+					window.location = 'mgmIngredient.php?id=' + btoa($('#name').val());
 				 }
 			}
 		  });

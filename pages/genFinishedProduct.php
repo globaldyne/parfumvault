@@ -139,7 +139,8 @@ $.ajax({
                         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#IFRA">IFRA Certificate</a>
                         <a class="dropdown-item" href="javascript:printLabel()" onclick="return confirm('Print label?')">Print Label</a>
                         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#printBoxLabel">Print Box Label</a>
-                        <a class="dropdown-item" href="javascript:BoxLabel('1')">Download Box Label</a>
+                        <a class="dropdown-item" href="javascript:BoxLabel('image')">View Box Label as image</a>
+                        <a class="dropdown-item" href="javascript:BoxLabel('text')">View Box Label as text</a>
                       </div>
                     </div>
                     </div>
@@ -342,7 +343,7 @@ $.ajax({
 					$cats[] = $cats_res;
 				}
 			?>
-           <form action="?do=genFinishedProduct&generate=1" method="post" enctype="multipart/form-data" target="_self">
+           <form action="?do=genFinishedProduct&generate=1" method="post" enctype="multipart/form-data" target="_blank">
            
            <table width="100%" border="0">
   <tr>

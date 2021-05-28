@@ -1,4 +1,16 @@
 # CHANGELOG
+### Version 2.9
+Label printing improvements
+Passing name is now encoded in base64 when requesting it
+Add reach number
+Remove css dependencies from viewSummary.php
+Add option to view back label of finished product as a text
+Select which ingredients will be shown in summary view
+Add product name in formulas listing
+Choose to add missing ingredients when importing from CSV
+Add ingredient id in formulas
+Include notes and default view when cloning a formula
+
 ### Version 2.8
 Formula CSV Import improvements
 Added protection from accidental deletion in formulas
