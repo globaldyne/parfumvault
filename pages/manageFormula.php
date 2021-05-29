@@ -4,6 +4,29 @@ require('../inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
+require_once(__ROOT__.'/func/labelMap.php');
+require_once(__ROOT__.'/func/get_formula_notes.php');
+
+
+//MANAGE VIEW
+if($_GET['manage_view'] == '1'){
+	$ing = mysqli_real_escape_string($conn,str_replace('_', ' ',$_GET['ex_ing']));
+	
+	if($_GET['ex_status'] == 'true'){
+		$status = '0';
+	}elseif($_GET['ex_status'] == 'false'){
+		$status = '1';
+	}
+	$fid = urldecode($_GET['fid']);
+	
+	$q = mysqli_query($conn, "UPDATE formulas SET exclude_from_summary = '$status' WHERE fid = '$fid' AND ingredient = '$ing'");
+	if($q){
+		echo  '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>View updated!</div>';
+	}else{
+		echo  '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Something went wrong</div>';
+	}
+	return;
+}
 
 //AMOUNT TO MAKE
 if($_GET['fid'] && $_GET['SG'] && $_GET['amount']){
@@ -55,28 +78,22 @@ if($_GET['action'] == 'deleteIng' && $_GET['ingID'] && $_GET['ing']){
 	$ing = mysqli_real_escape_string($conn, $_GET['ing']);
 	$fname = mysqli_real_escape_string($conn, $_GET['fname']);
 	if(mysqli_query($conn, "DELETE FROM formulas WHERE id = '$id' AND name = '$fname'")){
-				
-		echo  '<div class="alert alert-success alert-dismissible">
-				<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-				'.$ing.' removed from the formula!
-				</div>';
+		echo  '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$ing.' removed from the formula!</div>';
 	}else{
-		echo  '<div class="alert alert-danger alert-dismissible">
-				<a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-				'.$ing.' cannot be removed from the formula!
-				</div>';
+		echo  '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$ing.' cannot be removed from the formula!</div>';
 	}
 	return;
 }
 
 //ADD INGREDIENT
-if($_GET['action'] == 'addIng' && $_GET['fname']){// && $_GET['quantity'] && $_GET['ingredient']){
+if($_GET['action'] == 'addIng' && $_GET['fname']){
 	$fname = mysqli_real_escape_string($conn, $_GET['fname']);
 	$ingredient = mysqli_real_escape_string($conn, $_GET['ingredient']);
 	$quantity = preg_replace("/[^0-9.]/", "", mysqli_real_escape_string($conn, $_GET['quantity']));
 	$concentration = preg_replace("/[^0-9.]/", "", mysqli_real_escape_string($conn, $_GET['concentration']));
 	$dilutant = mysqli_real_escape_string($conn, $_GET['dilutant']);
 
+	$ingredient_id = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$ingredient'"));
 	if (empty($quantity) || empty($concentration)){
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>Missing fields</div>';
 	}else
@@ -85,7 +102,7 @@ if($_GET['action'] == 'addIng' && $_GET['fname']){// && $_GET['quantity'] && $_G
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$ingredient.' already exists in formula!</div>';
 	}else{
 
-		if(mysqli_query($conn,"INSERT INTO formulas(fid,name,ingredient,ingredient_id,concentration,quantity,dilutant) VALUES('".base64_encode($fname)."','$fname','$ingredient','$ingredient_id','$concentration','$quantity','$dilutant')")){
+		if(mysqli_query($conn,"INSERT INTO formulas(fid,name,ingredient,ingredient_id,concentration,quantity,dilutant) VALUES('".base64_encode($fname)."','$fname','$ingredient','".$ingredient_id['id']."','$concentration','$quantity','$dilutant')")){
 			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$quantity.'ml</strong> of <strong>'.$ingredient.'</strong> added to the formula!</div>';
 		}else{
 			echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error adding '.$ingredient.'!</div>';
@@ -99,12 +116,12 @@ if($_GET['action'] == 'repIng' && $_GET['fname']){
 	$fname = mysqli_real_escape_string($conn, $_GET['fname']);
 	$ingredient = mysqli_real_escape_string($conn, $_REQUEST['value']);
 	$oldIngredient = mysqli_real_escape_string($conn, $_REQUEST['pk']);
-
+	$ingredient_id = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$ingredient'"));
 			
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT ingredient FROM formulas WHERE ingredient = '$ingredient' AND name = '$fname'"))){
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$ingredient.' already exists in formula!</div>';
 	}else{
-		if(mysqli_query($conn, "UPDATE formulas SET ingredient = '$ingredient' WHERE ingredient = '$oldIngredient' AND name = '$fname'")){
+		if(mysqli_query($conn, "UPDATE formulas SET ingredient = '$ingredient', ingredient_id = '".$ingredient_id['id']."' WHERE ingredient = '$oldIngredient' AND name = '$fname'")){
 			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$oldIngredient.' replaced with '.$ingredient.'!</div>';
 		}else{
 			echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error replacing '.$oldIngredient.'</div>';
@@ -122,11 +139,11 @@ if($_GET['action'] == 'clone' && $_GET['formula']){
 		if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulasMetaData WHERE fid = '$newFid'"))){
 			echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$newName.' already exists, please remove or rename it first!</div>';
 		}else{
-			$sql.=mysqli_query($conn, "INSERT INTO formulasMetaData (fid, name, notes, profile, image, sex) SELECT '$newFid', '$newName', notes, profile, image, sex FROM formulasMetaData WHERE fid = '$fid'");
-			$sql.=mysqli_query($conn, "INSERT INTO formulas (fid, name, ingredient, ingredient_id, concentration, dilutant, quantity) SELECT '$newFid', '$newName', ingredient, ingredient_id, concentration, dilutant, quantity FROM formulas WHERE fid = '$fid'");
+			$sql.=mysqli_query($conn, "INSERT INTO formulasMetaData (fid, name, notes, profile, image, sex, defView) SELECT '$newFid', '$newName', notes, profile, image, sex, defView FROM formulasMetaData WHERE fid = '$fid'");
+			$sql.=mysqli_query($conn, "INSERT INTO formulas (fid, name, ingredient, ingredient_id, concentration, dilutant, quantity, notes) SELECT '$newFid', '$newName', ingredient, ingredient_id, concentration, dilutant, quantity, notes FROM formulas WHERE fid = '$fid'");
 		}
 	if($sql){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$fname.' cloned as <a href="?do=Formula&name='.$newName.'" target="_blanc">'.$newName.'</a>!</div>';
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$fname.' cloned as <a href="?do=Formula&name='.base64_encode($newName).'" target="_blanc">'.$newName.'</a>!</div>';
 	}
 	return;
 }
@@ -148,7 +165,7 @@ if($_POST['action'] == 'addFormula'){
 		}else{
 			$q = mysqli_query($conn, "INSERT INTO formulasMetaData (fid, name, notes, profile, image) VALUES ('$fid', '$name', '$notes', '$profile', '$def_app_img')");
 				if($q){
-					echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong><a href="?do=Formula&name='.$name.'">'.$name.'</a></strong> added!</div>';
+					echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong><a href="?do=Formula&name='.base64_encode($name).'">'.$name.'</a></strong> added!</div>';
 				}else{
 					echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Something went wrong...</strong></div>';
 				}
@@ -280,13 +297,13 @@ if($_GET['action'] == 'printLabel' && $_GET['name']){
 				
 		$q = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE name = '$name'"));
 		$info = "Production: ".date("d/m/Y")."\nProfile: ".$q['profile']."\nSex: ".$q['sex']."\nB. NO: ".$bNo."\nDescription:\n\n".wordwrap($q['notes'],30);
-		$w = '720';
-		$h = '860';
-	}else{
-		$w = '720';
-		$h = '260';
 	}
-		
+	
+	$dim =  explode(',',labelMap($settings['label_printer_size']));
+	
+	$w = $dim['0'];
+	$h = $dim['1'];
+	
 	$lbl = imagecreatetruecolor($w, $h);
 
 	$white = imagecolorallocate($lbl, 255, 255, 255);
@@ -297,7 +314,7 @@ if($_GET['action'] == 'printLabel' && $_GET['name']){
 	$text = trim($name.$extras);
 	$font = __ROOT__.'/fonts/Arial.ttf';
 
-	imagettftext($lbl, $settings['label_printer_font_size'], 0, 0, 150, $black, $font, $text);
+	imagettftext($lbl, $settings['label_printer_font_size'], 0, 0, 50, $black, $font, $text);
 	$lblF = imagerotate($lbl, 90 ,0);
 	
 	if($settings['label_printer_size'] == '62' || $settings['label_printer_size'] == '62 --red'){
@@ -306,14 +323,15 @@ if($_GET['action'] == 'printLabel' && $_GET['name']){
 	$extras = '';
 	if($_GET['dilution'] && $_GET['dilutant']){
 		$extras = ' @'.$_GET['dilution'].'% in '.$_GET['dilutant'];
-		imagettftext($lblF, 40, 90, 200, 600, $black, $font, $extras);
+						//font size 15 rotate 0 center 360 top 50
+		imagettftext($lblF, $settings['label_printer_font_size']/2, 90, 80, 570, $black, $font, $extras);
 	}
 	$save = __ROOT__.'/tmp/labels/'.base64_encode($text.'png');
 
 	if(imagepng($lblF, $save)){
 		imagedestroy($lblF);
 		shell_exec('/usr/bin/brother_ql -m '.$settings['label_printer_model'].' -p tcp://'.$settings['label_printer_addr'].' print -l '.$settings['label_printer_size'].' '. $save);
-		//echo '<img src="'.$save.'"/>';
+		//echo '<img src="/tmp/labels/'.base64_encode($text.'png').'"/>';
 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Print sent!</div>';
 	}
 	
@@ -363,12 +381,20 @@ if($_GET['action'] == 'printBoxLabel' && $_GET['name']){
 		}else{
 			$brand = 'PV Pro';
 		}
-		$allergenFinal = implode(", ",array_filter($allergen));
+		$allergenFinal = implode(", ",array_filter(array_unique($allergen)));
 		$info = "FOR EXTERNAL USE ONLY. \nKEEP AWAY FROM HEAT AND FLAME. \nKEEP OUT OF REACH OF CHILDREN. \nAVOID SPRAYING IN EYES. \n \nProduction: ".date("d/m/Y")." \nB. NO: ".$bNo." \n$brand";
 		$w = '720';
 		$h = '860';
 	}
-		
+	if($_GET['download'] == 'text'){
+		echo '<pre>';
+		echo 'INGREDIENTS'."\n\n";
+		echo wordwrap ($allergenFinal, 90)."\n\n";
+		echo wordwrap ($info, 50)."\n\n";
+		echo '</pre>';
+		return;
+	}
+
 	$lbl = imagecreatetruecolor($h, $w);
 
 	$white = imagecolorallocate($lbl, 255, 255, 255);
@@ -378,19 +404,20 @@ if($_GET['action'] == 'printBoxLabel' && $_GET['name']){
 	
 	$text = strtoupper($q['product_name']);
 	$font = __ROOT__.'/fonts/Arial.ttf';
-				//font size 15 rotate 0 center 360 top 50
-	imagettftext($lbl, 30, 0, 250, 50, $black, $font, $text);
-	imagettftext($lbl, 25, 0, 300, 100, $black, $font, 'INGREDIENTS');
+	//font size 15 rotate 0 center 360 top 50
+	//imagettftext($lbl, 30, 0, 250, 50, $black, $font, $text);
+	imagettftext($lbl, 25, 0, 300, 50, $black, $font, 'INGREDIENTS');
 	$lblF = imagerotate($lbl, 0 ,0);
 	
-	imagettftext($lblF, 20, 0, 50, 150, $black, $font, wordwrap ($allergenFinal, 60));
-	imagettftext($lblF, 20, 0, 150, 490, $black, $font, wordwrap ($info, 50));
+	imagettftext($lblF, 15, 0, 0, 100, $black, $font, wordwrap ($allergenFinal, 90));
+	imagettftext($lblF, 15, 0, 150, 490, $black, $font, wordwrap ($info, 50));
 
 	$save = __ROOT__.'/tmp/labels/'.base64_encode($text.'png');
 
 	if(imagepng($lblF, $save)){
 		imagedestroy($lblF);
-		if($_GET['download'] == '1'){
+		if($_GET['download'] == 'image'){
+			//echo '<img src="/tmp/labels/'.base64_encode($text.'png').'"/>';
 			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><a href="'.'/tmp/labels/'.base64_encode($text.'png').'" target="_blank">Get Label here</a></div>';
 			return;
 		}

@@ -341,7 +341,7 @@ function list_cat(){
 <?php if(isset($show_release_notes)){ ?>
 <!--RELEASE NOTES-->
 <div class="modal fade" id="release_notes" tabindex="-1" role="dialog" aria-labelledby="release_notes" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="release_notes">Release Notes</h5>

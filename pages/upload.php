@@ -117,7 +117,7 @@ if($_GET['type'] == 'frmCSVImport'){
 	$profile = mysqli_real_escape_string($conn,$_GET['profile']);
 	
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$fid'"))){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$name.' already exists! Click <a href="?do=Formula&name='.$name.'">here</a> to view/edit!</div>';
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$name.' already exists! Click <a href="?do=Formula&name='.$fid.'">here</a> to view/edit!</div>';
 	  	return;
 	 }
 
@@ -125,14 +125,15 @@ if($_GET['type'] == 'frmCSVImport'){
 		if($_FILES["CSVFile"]["size"] > 0){
 			$file = fopen($filename, "r");
 			while (($data = fgetcsv($file, 10000, ",")) !== FALSE){
-				if(!mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '".trim(ucwords($data['0']))."'"))){
-					
-					mysqli_query($conn, "INSERT INTO ingredients (name, ml) VALUES ('".trim(ucwords($data['0']))."', '10')");
+				if($_GET['addMissIng'] == 'true'){
+					if(!mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '".trim(ucwords(preg_replace('/[[:^print:]]/', '',$data['0'])))."'"))){
+						mysqli_query($conn, "INSERT INTO ingredients (name, ml) VALUES ('".trim(ucwords(preg_replace('/[[:^print:]]/', '',$data['0'])))."', '10')");
+					}
 				}
 				if(empty($data['1'])){
 					$data['1'] = '100';
 				}
-				$sql = "INSERT INTO formulas (fid,name,ingredient,concentration,dilutant,quantity) VALUES ('$fid', '$name','".trim(ucwords($data['0']))."','".$data['1']."','".$data['2']."','".$data['3']."')";
+				$sql = "INSERT INTO formulas (fid,name,ingredient,concentration,dilutant,quantity) VALUES ('$fid', '$name','".trim(ucwords(preg_replace('/[[:^print:]]/', '',$data['0'])))."','".$data['1']."','".$data['2']."','".$data['3']."')";
 				$res = mysqli_query($conn, $sql);
 			}
 			

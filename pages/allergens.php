@@ -5,7 +5,7 @@ require('../inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 
-$ingID = mysqli_real_escape_string($conn, $_GET["id"]);
+$ingID = mysqli_real_escape_string($conn, base64_decode($_GET["id"]));
 
 $qAlg = mysqli_query($conn, "SELECT * FROM allergens WHERE ing = '$ingID'");
 
