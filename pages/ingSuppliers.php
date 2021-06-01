@@ -115,6 +115,9 @@ $('#ing_supplier').editable({
   	type: 'POST',
 	url: "update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
 	title: 'Size',
+	success: function (data) {
+			reload_data();
+	}
  });
  
  $('#ing_supplier').editable({

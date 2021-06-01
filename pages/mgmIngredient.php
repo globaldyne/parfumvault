@@ -637,7 +637,7 @@ reload_data();
             Name: 
             <select name="supplier_name" id="supplier_name" class="form-control selectpicker" data-live-search="true">
             <?php while ($row_ingSupplier = mysqli_fetch_array($res_ingSupplier)){ ?>
-				<option value="<?=$row_ingSupplier['id']?>" data-vol="<?php if($ing['physical_state'] == '1'){ echo $row_ingSupplier['min_ml']; }else{ echo $row_ingSupplier['min_gr'];} ?>" ><?=$row_ingSupplier['name'];?></option>
+				<option value="<?=$row_ingSupplier['id']?>" data-vol="<?php if($ing['physical_state'] == '1'){ echo $row_ingSupplier['min_ml']; }elseif($ing['physical_state'] == '2'){ echo $row_ingSupplier['min_gr'];} ?>" ><?=$row_ingSupplier['name'];?></option>
 			<?php	}	?>
             </select>
             </p>
@@ -755,7 +755,7 @@ function addSupplier() {
 			$('#supplier_inf').html(data);
 			//$("#supplier_name").val('');
 			$("#supplier_link").val('');
-			$("#supplier_size").val('10');
+			$("#supplier_size").val('');
 			$("#supplier_price").val('');
 			$("#supplier_manufacturer").val('');
 			reload_data();
