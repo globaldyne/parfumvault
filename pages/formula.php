@@ -47,9 +47,9 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
 <style>
 .mfp-iframe-holder .mfp-content {
     line-height: 0;
-    width: 1000px;
-    max-width: 1000px; 
-	height: 850px;
+    width: 1100px;
+    max-width: 1100px; 
+	height: 1100px;
 }
 </style>
 <div id="content-wrapper" class="d-flex flex-column">

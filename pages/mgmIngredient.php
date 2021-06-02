@@ -91,9 +91,11 @@ $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE n
 <script>
 
 $(document).ready(function() {
-	$('a[rel=tipsy]').tipsy({gravity: 'w'});
-	
-	function unlimited_usage(status,maxulimit){
+$('a[rel=tipsy]').tipsy({gravity: 'w'});
+
+
+
+function unlimited_usage(status,maxulimit){
 		$('#usage_type').prop('disabled', status);
 		<?php foreach ($cats as $cat) {?>
 		$('#cat<?php echo $cat['name'];?>').prop('readonly', status).val(maxulimit);
@@ -113,6 +115,23 @@ $(document).ready(function() {
     });
 
 });
+
+function reload_overview() {
+	$('#ingOverview').html('<img src="/img/loading.gif"/>');
+
+	$.ajax({ 
+		url: 'ingOverview.php', 
+		type: 'GET',
+		data: {
+			id: "<?=$ing['id']?>"
+			},
+		dataType: 'html',
+		success: function (data) {
+		  $('#ingOverview').html(data);
+		}
+	});
+};
+reload_overview();
 
 function search() {	  
 	$("#odor").val('Loading...');
@@ -213,8 +232,8 @@ reload_data();
 
 <body>
 <div class="container">
-		<div class="list-group-item-info">
-        <h1 class="badge-primary"><?php if($ingID){ echo $ing['name'];?>
+        <div class="mgm-column mgm-visible-xl mgm-col-xl-5">
+        <h1 class="mgmIngHeader mgmIngHeader-with-separator"><?php if($ingID){ echo $ing['name'];?>
             <div class="btn-group">
               <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
               <div class="dropdown-menu">
@@ -225,8 +244,12 @@ reload_data();
             Add ingredient
             <?php } ?>
         </h1>
-</div>
-<div id="ingMsg"><?php echo $msg; ?></div>
+        <span class="mgmIngHeaderCAS"><?=$ing['cas']?></span>
+        </div>
+
+<div id="ingMsg"><?=$msg?></div>
+<div id="ingOverview"></div>
+<div class="mgmIngHeader-with-separator-full"></div>
 <!-- Nav tabs -->
     <ul class="nav nav-tabs" role="tablist">
       <li class="active"><a href="#general" role="tab" data-toggle="tab"><icon class="fa fa-table"></icon> General</a></li>
@@ -797,8 +820,8 @@ function prefSID(sID, status) {
 		}
 	  });
 };
-$(document).ready(function() {
-	$('#save').click(function() {
+
+$('#save').click(function() {
 							  
 		$.ajax({ 
 			url: 'update_data.php', 
@@ -852,15 +875,15 @@ $(document).ready(function() {
 			dataType: 'html',
 			success: function (data) {
 				$('#ingMsg').html(data);
+				reload_overview();
 				 if ($('#name').val()) {
 					window.location = 'mgmIngredient.php?id=' + btoa($('#name').val());
 				 }
 			}
-		  });
-  })
+});
 	
 	
-	$("#sds_upload").click(function(){
+$("#sds_upload").click(function(){
         $("#ingMsg").html('<div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
 		$("#sds_upload").prop("disabled", true);
         $("#sds_upload").prop('value', 'Please wait...');

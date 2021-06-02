@@ -4,9 +4,9 @@ if (!defined('pvault_panel')){ die('Not Found');}
 <style>
 .mfp-iframe-holder .mfp-content {
     line-height: 0;
-    width: 1000px;
-    max-width: 1000px; 
-	height: 750px;
+    width: 1100px;
+    max-width: 1100px; 
+	height: 1100px;
 }
 </style>
 <div id="content-wrapper" class="d-flex flex-column">
