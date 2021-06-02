@@ -876,9 +876,9 @@ $('#save').click(function() {
 			success: function (data) {
 				$('#ingMsg').html(data);
 				reload_overview();
-				 if ($('#name').val()) {
+				if ($('#name').val()) {
 					window.location = 'mgmIngredient.php?id=' + btoa($('#name').val());
-				 }
+				}
 			}
 });
 	
