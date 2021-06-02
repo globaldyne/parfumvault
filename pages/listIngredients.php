@@ -98,7 +98,7 @@ $defCatClass = $settings['defCatClass'];
 						  echo '<td align="center" class="noexport"><a href="http://www.thegoodscentscompany.com/search3.php?qName='.$ingredient['name'].'" target="_blank" class="fa fa-external-link-alt"></a></td>';
 					  }
 					  ?>
-                      <td class="noexport" align="center"><a href="pages/mgmIngredient.php?id=<?php echo $ingredient['name'];?>" class="fas fa-edit popup-link"><a> <a href="javascript:delete_ingredient('<?php echo $ingredient['id'];?>')" onclick="return confirm('Delete <?php echo $ingredient['name'];?> ?')" class="fas fa-trash"></a></td>
+                      <td class="noexport" align="center"><a href="pages/mgmIngredient.php?id=<?php echo base64_encode($ingredient['name']);?>" class="fas fa-edit popup-link"><a> <a href="javascript:delete_ingredient('<?php echo $ingredient['id'];?>')" onclick="return confirm('Delete <?php echo $ingredient['name'];?> ?')" class="fas fa-trash"></a></td>
 					  </tr>
 				  <?php } ?>
                     </tr>
