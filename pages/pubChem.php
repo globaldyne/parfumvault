@@ -55,7 +55,7 @@ $(document).ready(function(){
                   </tr>
                   <tr>
                     <td>Molecular Weight:</td>
-                    <td><strong><?php echo $data['PC_Compounds']['0']['props']['17']['value']['fval'];?></strong></td>
+                    <td><strong><?php echo $data['PC_Compounds']['0']['props']['17']['value']['sval'];?></strong></td>
                   </tr>
                   <tr>
                     <td>Canonical Smiles:</td>
@@ -63,7 +63,7 @@ $(document).ready(function(){
                   </tr>
                   <tr>
                     <td>Mass:</td>
-                    <td><strong><?php echo $data['PC_Compounds']['0']['props']['15']['value']['fval'];?></strong></td>
+                    <td><strong><?php echo $data['PC_Compounds']['0']['props']['15']['value']['sval'];?></strong></td>
                   </tr>
                   <tr>
                     <td>&nbsp;</td>
