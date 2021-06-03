@@ -6,6 +6,7 @@ Added ingredient physical state (Solid/Liquid)
 Ingredients supplier can be chosen when generating a finished formula
 Change image storage type for ingredient categories to LONGBLOB
 Improve ingredient mamage page by adding ingredient overview
+Logo update
 
 ### Version 2.9
 Label printing improvements
