@@ -820,68 +820,68 @@ function prefSID(sID, status) {
 		}
 	  });
 };
-
-$('#save').click(function() {
-							  
-		$.ajax({ 
-			url: 'update_data.php', 
-			type: 'POST',
-			data: {
-				manage: 'ingredient',
-				
-				name: $("#name").val(),
-				INCI: $("#INCI").val(),
-				cas: $("#cas").val(),
-				reach: $("#reach").val(),
-				fema: $("#fema").val(),
-				type: $("#type").val(),
-				strength: $("#strength").val(),
-				category: $("#category").val(),
-				profile: $("#profile").val(),
-				tenacity: $("#tenacity").val(),
-				formula: $("#formula").val(),
-				chemical_name: $("#chemical_name").val(),
-				flash_point: $("#flash_point").val(),
-				appearance: $("#appearance").val(),
-				solvent: $("#solvent").val(),
-				notes: $("#notes").val(),
-				odor: $("#odor").val(),
-				purity: $("#purity").val(),
-				soluble: $("#soluble").val(),
-				logp: $("#logp").val(),
-				type: $("#type").val(),
-				molecularWeight: $("#molecularWeight").val(),
-   				physical_state: $("#physical_state").val(),
-
-				<?php foreach ($cats as $cat) {?>
-				cat<?php echo $cat['name'];?>: $("#cat<?php echo $cat['name'];?>").val(),
-				<?php } ?>
-				
-				manufacturer: $("#manufacturer").val(),
-				impact_top: $("#impact_top").val(),
-				impact_base: $("#impact_base").val(),
-				impact_heart: $("#impact_heart").val(),
-				usage_type: $("#usage_type").val(),
-				
-				isAllergen: $("#isAllergen").is(':checked'),
-				flavor_use: $("#flavor_use").is(':checked'),
-				noUsageLimit: $("#noUsageLimit").is(':checked'),
-				isPrivate: $("#isPrivate").is(':checked'),
-
-				<?php if($ing['name']){?>
-				ing: '<?=$ing['name'];?>'
-				<?php } ?>
-				},
-			dataType: 'html',
-			success: function (data) {
-				$('#ingMsg').html(data);
-				reload_overview();
-				if ($('#name').val()) {
-					window.location = 'mgmIngredient.php?id=' + btoa($('#name').val());
-				}
-			}
-});
+$(document).ready(function() {
+	$('#save').click(function() {
+								  
+			$.ajax({ 
+				url: 'update_data.php', 
+				type: 'POST',
+				data: {
+					manage: 'ingredient',
+					
+					name: $("#name").val(),
+					INCI: $("#INCI").val(),
+					cas: $("#cas").val(),
+					reach: $("#reach").val(),
+					fema: $("#fema").val(),
+					type: $("#type").val(),
+					strength: $("#strength").val(),
+					category: $("#category").val(),
+					profile: $("#profile").val(),
+					tenacity: $("#tenacity").val(),
+					formula: $("#formula").val(),
+					chemical_name: $("#chemical_name").val(),
+					flash_point: $("#flash_point").val(),
+					appearance: $("#appearance").val(),
+					solvent: $("#solvent").val(),
+					notes: $("#notes").val(),
+					odor: $("#odor").val(),
+					purity: $("#purity").val(),
+					soluble: $("#soluble").val(),
+					logp: $("#logp").val(),
+					type: $("#type").val(),
+					molecularWeight: $("#molecularWeight").val(),
+					physical_state: $("#physical_state").val(),
 	
+					<?php foreach ($cats as $cat) {?>
+					cat<?php echo $cat['name'];?>: $("#cat<?php echo $cat['name'];?>").val(),
+					<?php } ?>
+					
+					manufacturer: $("#manufacturer").val(),
+					impact_top: $("#impact_top").val(),
+					impact_base: $("#impact_base").val(),
+					impact_heart: $("#impact_heart").val(),
+					usage_type: $("#usage_type").val(),
+					
+					isAllergen: $("#isAllergen").is(':checked'),
+					flavor_use: $("#flavor_use").is(':checked'),
+					noUsageLimit: $("#noUsageLimit").is(':checked'),
+					isPrivate: $("#isPrivate").is(':checked'),
+	
+					<?php if($ing['name']){?>
+					ing: '<?=$ing['name'];?>'
+					<?php } ?>
+					},
+				dataType: 'html',
+				success: function (data) {
+					$('#ingMsg').html(data);
+					reload_overview();
+					if ($('#name').val()) {
+						window.location = 'mgmIngredient.php?id=' + btoa($('#name').val());
+					}
+				}
+	});
+})
 	
 $("#sds_upload").click(function(){
         $("#ingMsg").html('<div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
