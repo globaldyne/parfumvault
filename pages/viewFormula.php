@@ -340,8 +340,12 @@ $('.replaceIngredient').editable({
 					  <?php }elseif($meta['defView'] == '2'){?>
 					  <td data-name="notes" class="notes" data-type="text" align="center" data-pk="<?php echo $formula['ingredient'];?>"><?=$formula['notes']?></td>
                       <?php } ?>
+                      <?php if($meta['isProtected'] == FALSE){?>
                       <td class="noexport" align="center"><a href="#" class="fas fa-exchange-alt replaceIngredient" rel="tipsy" title="Replace <?php echo $formula['ingredient'];?>" id="replaceIngredient" data-name="<?php echo $formula['ingredient'];?>" data-type="select" data-pk="<?php echo $formula['ingredient'];?>" data-title="Choose Ingredient to replace <?php echo $formula['ingredient'];?>"></a> &nbsp; <a href="<?=getPrefSupplier($ing_q['id'],$conn)['supplierLink']?>" target="_blank" class="fas fa-shopping-cart"></a> &nbsp; <a href="javascript:deleteING('<?=$formula['ingredient']?>', '<?=$formula['id']?>')" onclick="return confirm('Remove <?=$formula['ingredient']?> from formula?')" class="fas fa-trash" rel="tipsy" title="Remove <?=$formula['ingredient']?>"></a>
                       </td>
+                      <?php }else{ ?>
+                      <td class="noexport" align="center"><a href="<?=getPrefSupplier($ing_q['id'],$conn)['supplierLink']?>" target="_blank" class="fas fa-shopping-cart"></a></td>
+                      <?php } ?>
 				</tr>
 				<?php
 					$tot[] = calcCosts(getPrefSupplier($ing_q['id'],$conn)['price'],$formula['quantity'], $formula['concentration'], getPrefSupplier($ing_q['id'],$conn)['size']);
@@ -410,7 +414,7 @@ $('.replaceIngredient').editable({
 
 
 <script type="text/javascript" language="javascript" >
- 
+<?php if($meta['isProtected'] == FALSE){?>
 $('#formula_data').editable({
   container: 'body',
   selector: 'td.quantity',
@@ -494,7 +498,7 @@ $('#formula_data').editable({
     
 });
 
-
+<?php } ?>
 $('#csv').on('click',function(){
   $("#formula").tableHTMLExport({
 	type:'csv',

@@ -8,6 +8,7 @@ Change image storage type for ingredient categories to LONGBLOB
 Improve ingredient mamage page by adding ingredient overview
 Logo update
 Update  pubchem api
+Removed edit options when formula is protected
 
 ### Version 2.9
 Label printing improvements

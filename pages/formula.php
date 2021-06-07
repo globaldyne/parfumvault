@@ -13,7 +13,7 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fi
 if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulas WHERE fid = '$fid'"))){
 	$legend = 1;
 }
-$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,image FROM formulasMetaData WHERE fid = '$fid'"));
+$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,image,isProtected FROM formulasMetaData WHERE fid = '$fid'"));
 
 $formula_q = mysqli_query($conn, "SELECT ingredient FROM formulas WHERE fid = '$fid'");
 	while ($formula = mysqli_fetch_array($formula_q)){
@@ -59,7 +59,7 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
           <div class="card shadow mb-4">
             <div class="card-header py-3"> 
 			  <?php if($meta['image']){?><div class="img-formula"><img class="img-perfume" src="<?php echo $meta['image']; ?>"/></div><?php } ?>
-              <h2 class="m-0 font-weight-bold text-primary"><a href="?do=Formula&name=<?=$fid?>"><?=$f_name?></a></h2>
+              <h2 class="m-0 font-weight-bold text-primary"><a href="?do=Formula&name=<?=$fid?>"><?=$f_name?></a></h2><span><?php if($meta['isProtected'] == TRUE){ echo 'Read Only'; }?></span>
               <h5 class="m-1 text-primary"><a href="pages/getFormMeta.php?id=<?php echo $meta['id'];?>" class="popup-link">Details</a></h5>
             </div>
         <!-- Nav tabs -->
@@ -78,6 +78,7 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
               <div>
                   <tr>
                     <th colspan="6">
+                    <?php if($meta['isProtected'] == FALSE){?>
                       <form action="javascript:addING()" enctype="multipart/form-data" name="form1" id="form1">
                          <table width="100%" border="0" class="table">
                                     <tr>  
@@ -110,6 +111,7 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
                                     </tr>  
                         </table>  
                       </form>
+                      <?php } ?>
                     </th>
                     </tr>
                 <div id="fetch_formula">
