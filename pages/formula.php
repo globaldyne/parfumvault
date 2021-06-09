@@ -2,14 +2,15 @@
 if (!defined('pvault_panel')){ die('Not Found');}
 require_once(__ROOT__.'/func/arrFilter.php');
 require(__ROOT__.'/func/get_formula_notes.php');
-$fid = mysqli_real_escape_string($conn, $_GET['name']);
-$f_name =  base64_decode($fid);
+$id = mysqli_real_escape_string($conn, $_GET['id']);
 
-
-if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$fid'")) == FALSE){
+$mid = mysqli_fetch_array(mysqli_query($conn, "SELECT fid FROM formulasMetaData WHERE id = '$id'"));
+if(($fid = $mid['fid']) == FALSE){
 	echo 'Formula doesn\'t exist';
 	exit;
 }
+$f_name =  base64_decode($fid);
+
 if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulas WHERE fid = '$fid'"))){
 	$legend = 1;
 }
@@ -59,7 +60,7 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
           <div class="card shadow mb-4">
             <div class="card-header py-3"> 
 			  <?php if($meta['image']){?><div class="img-formula"><img class="img-perfume" src="<?php echo $meta['image']; ?>"/></div><?php } ?>
-              <h2 class="m-0 font-weight-bold text-primary"><a href="?do=Formula&name=<?=$fid?>"><?=$f_name?></a></h2><span><?php if($meta['isProtected'] == TRUE){ echo 'Read Only'; }?></span>
+              <h2 class="m-0 font-weight-bold text-primary"><a href="?do=Formula&id=<?=$id?>"><?=$f_name?></a></h2><span><?php if($meta['isProtected'] == TRUE){ echo 'Read Only'; }?></span>
               <h5 class="m-1 text-primary"><a href="pages/getFormMeta.php?id=<?php echo $meta['id'];?>" class="popup-link">Details</a></h5>
             </div>
         <!-- Nav tabs -->

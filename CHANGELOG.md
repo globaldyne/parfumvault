@@ -9,6 +9,7 @@ Improve ingredient mamage page by adding ingredient overview
 Logo update
 Update  pubchem api
 Removed edit options when formula is protected
+Bug fixes and Various improvements
 
 ### Version 2.9
 Label printing improvements
