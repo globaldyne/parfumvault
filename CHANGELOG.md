@@ -10,6 +10,7 @@ Logo update
 Update  pubchem api
 Removed edit options when formula is protected
 Bug fixes and Various improvements
+Added physical state icon in ingredient overview
 
 ### Version 2.9
 Label printing improvements

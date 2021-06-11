@@ -25,9 +25,11 @@ if($ingredient['profile'] == 'Top'){
 }
 
 if($ingredient['physical_state'] == '1'){ 
-		$physical_state = 'Liquid'; 
-	}else{ 
-		$physical_state = 'Solid'; 
+	$physical_state = '<img src="../img/liquid.png" class="img_ing"/>';
+}elseif($ingredient['physical_state'] == '2'){ 
+	$physical_state = '<img src="../img/solid.png" class="img_ing"/>';
+}else{ 
+	$physical_state = 'N/A'; 
 }
 ?>
 <html>
@@ -45,14 +47,12 @@ if($ingredient['physical_state'] == '1'){
   <tr>
     <td width="33%" align="center"><h3 class="mgm-cat-in">Olfactive family</h3></td>
     <td width="33%" align="center"><h3 class="mgm-cat-in"><?php echo $ingredient['profile'].' note'; ?></h3></td>
-    <td width="33%" align="center"><h3 class="mgm-cat-in">Odor prodile</h3></td>
+    <td width="33%" align="center"><h3 class="mgm-cat-in">Physical State</h3></td>
   </tr>
   <tr>
     <td align="center"><?=getCatByID($ingredient['category'],TRUE,$conn)?></td>
     <td align="center"><img src="<?=$profile_img?>" class="img_ing"/></td>
-    <td align="center"><div class="odor_profile_overview"><li><?=$physical_state?></li>
-    	 <li><?=$ingredient['odor']?></li>
-         </div></td>
+    <td align="center"><?=$physical_state?></td>
   </tr>
 </table>
 

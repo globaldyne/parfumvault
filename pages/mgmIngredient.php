@@ -361,6 +361,12 @@ reload_data();
                                 </td>
                               </tr>
                               <tr>
+                                <td>Physical State:</td>
+                                <td colspan="5"><select name="physical_state" id="physical_state" class="form-control selectpicker">
+                                  <option value="1" <?php if($ing['physical_state']=="1") echo 'selected="selected"'; ?> >Liquid</option>
+                                  <option value="2" <?php if($ing['physical_state']=="2") echo 'selected="selected"'; ?> >Solid</option>
+                                </select></td>
+                              </tr>                              <tr>
                                 <td height="31" valign="top">Odor:</td>
                                 <td colspan="3"><div id='TGSC'><input name="odor" id="odor" type="text" class="form-control" value="<?php echo $ing['odor']; ?>"/></div>
                                 </td>
@@ -442,13 +448,6 @@ reload_data();
           						 <h3>Techical Data</h3>
                                  <hr>
                              <table width="100%" border="0">
-                              <tr>
-                                <td>Physical State:</td>
-                                <td colspan="3"><select name="physical_state" id="physical_state" class="form-control">
-                                  <option value="1" <?php if($ing['physical_state']=="1") echo 'selected="selected"'; ?> >Liquid</option>
-                                  <option value="2" <?php if($ing['physical_state']=="2") echo 'selected="selected"'; ?> >Solid</option>
-                                </select></td>
-                              </tr>
                               <tr>
                                 <td width="20%">Tenacity:</td>
                                 <td width="80%" colspan="3"><input name="tenacity" type="text" class="form-control" id="tenacity" value="<?php echo $ing['tenacity']; ?>"/></td>
