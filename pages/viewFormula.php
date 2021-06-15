@@ -48,6 +48,7 @@ $(document).ready(function() {
 						   
 	var groupColumn = 0;
     var table = $('#formula').DataTable({
+		responsive: false,
         "columnDefs": [
             { "visible": false, "targets": groupColumn }
         ],
@@ -61,7 +62,7 @@ $(document).ready(function() {
             api.column(groupColumn, {page:'current'} ).data().each( function ( group, i ) {
                 if ( last !== group ) {
                     $(rows).eq( i ).before(
-                        '<tr class="group noexport"><td colspan="9">'+group+' Notes</td></tr>'
+                        '<tr class="group noexport"><td colspan="' + rows.columns()[0].length +'">' + group + ' Notes</td></tr>'
                     );
  
                     last = group;
@@ -69,7 +70,7 @@ $(document).ready(function() {
             } );
         }
     } );
- 
+
     // Order by the grouping
     $('#formula tbody').on( 'click', 'tr.group', function () {
         var currentOrder = table.order()[0];
@@ -227,7 +228,7 @@ $('.replaceIngredient').editable({
  
 </script>
 
-<table class="table table-bordered" <?php if($settings['grp_formula'] == '1'){?>id="formula" <?php } ?>width="100%" cellspacing="0">
+<table class="table table-striped table-bordered nowrap" <?php if($settings['grp_formula'] == '1'){?>id="formula" <?php } ?>width="100%" cellspacing="0">
                   <thead>
                     <tr class="noexport">
                     <?php if($settings['grp_formula'] == '1'){?>

@@ -88,7 +88,14 @@ if($pv_meta['app_ver'] < trim(file_get_contents(__ROOT__.'/VERSION.md'))){
   
   <script src='js/tipsy.js'></script>
   <script src="js/jquery-ui.js"></script>
-  
+
+  <script src="js/dataTables.responsive.min.js"></script>
+  <script src="js/responsive.bootstrap.min.js"></script>
+  <link href="css/responsive.bootstrap.min.css" rel="stylesheet">
+ <link href="https://cdn.datatables.net/rowgroup/1.0.2/css/rowGroup.dataTables.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.datatables.net/rowgroup/1.0.2/js/dataTables.rowGroup.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.2.2/js/buttons.html5.js"></script>
+
   <link href="css/jquery-ui.css" rel="stylesheet">
   <link href="css/tipsy.css" rel="stylesheet" />
   <link href="css/magnific-popup.css" rel="stylesheet" />

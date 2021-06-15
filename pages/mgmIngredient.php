@@ -44,7 +44,9 @@ $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE n
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Manage ingredient</title>
+<link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
+<title>Manage <?=$ing['name']?></title>
 <link href="../css/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
 <script src="../js/jquery/jquery.min.js"></script>
 <script src="../js/bootstrap.min.js"></script>
