@@ -21,9 +21,9 @@
 						$todoImg['image'] = 'img/logo_400.png';
 					}
 				?>
-                <a class="dropdown-item d-flex align-items-center" href="pages/makeFormula.php?fid=<?php echo $toadd_p['fid'];?>" target="_blank"">
+                <a class="dropdown-item d-flex align-items-center" href="pages/makeFormula.php?fid=<?php echo $toadd_p['fid'];?>" target="_blank">
                   <div class="dropdown-list-image mr-3">
-                    <img class="rounded-circle" src="<?php echo $todoImg['image']; ?>" alt="">
+                    <img class="rounded-circle" src="<?php echo $todoImg['image']; ?>">
                   </div>
                   <div class="font-weight-bold">
                     <div class="text-truncate"><?php echo $toadd_p['name'];?></div>

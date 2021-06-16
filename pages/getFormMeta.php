@@ -6,10 +6,18 @@ require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/inc/product.php');
 
-if($_GET['id']){
-	$id = mysqli_real_escape_string($conn, $_GET['id']);
-	$info = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE id = '$id'"));
+if(!$_GET['id']){
+	echo 'Formula not found';
+	return;
+}
 
+$id = mysqli_real_escape_string($conn, $_GET['id']);
+$info = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE id = '$id'"));
+
+if(empty($info['name'])){
+	echo 'Formula not found';
+	return;
+}
 if($_FILES["file"]["tmp_name"]){
 	$filename=$_FILES["file"]["tmp_name"];    
 
@@ -68,12 +76,13 @@ if($_FILES["file"]["tmp_name"]){
   </script>
   <meta name="description" content="<?php echo $product.' - '.$ver;?>">
   <meta name="author" content="JBPARFUM">
-  <title><?php echo $product;?></title>
-
+  <title><?php echo $info['name'];?></title>
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
   <link href="../css/sb-admin-2.css" rel="stylesheet">
   <link href="../css/bootstrap-select.min.css" rel="stylesheet">
   <link href="../css/bootstrap-editable.css" rel="stylesheet">
-    
+  <link href="../css/vault.css" rel="stylesheet">
   <script src="../js/jquery/jquery.min.js"></script>
   <script src="../js/bootstrap.min.js"></script>
   <script src='../js/tipsy.js'></script>
@@ -101,7 +110,7 @@ if($_FILES["file"]["tmp_name"]){
 
 <table class="table table-bordered" id="formula_metadata" cellspacing="0">
   <tr>
-    <td colspan="2"><h1 class="badge-primary"><?php echo $info['name'];?></h1></td>
+    <td colspan="2"><h1 class="mgmIngHeader mgmIngHeader-with-separator"><?=$info['name']?></h1><span class="mgmIngHeaderCAS"><?=$info['product_name']?></span></td>
   </tr>
   <tr>
     <td colspan="2"><div id="msg"><?php echo $msg; ?></div></td>
@@ -145,13 +154,6 @@ if($_FILES["file"]["tmp_name"]){
     <td data-name="notes" class="notes" data-type="textarea" align="left" data-pk="notes"><?php echo $info['notes'];?></td>
   </tr>
 </table>
-
-<?php
-}else{
-	
-	header('Location: /');
-}
-?>
 
 <script type="text/javascript" language="javascript" >
 $(document).ready(function(){

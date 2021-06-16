@@ -244,7 +244,7 @@ $('.replaceIngredient').editable({
                       <th>
                       <div class="btn-group">
                       <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
-                      <div class="dropdown-menu">
+                      <div class="dropdown-menu dropdown-menu-left">
                         <a class="dropdown-item" id="csv" href="#">Export to CSV</a>
                         <a class="dropdown-item" href="javascript:manageQuantity('multiply')">Multiply x2</a>
                         <a class="dropdown-item" href="javascript:manageQuantity('divide')">Divide x2</a>
@@ -252,6 +252,7 @@ $('.replaceIngredient').editable({
 	                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#amount_to_make">Amount to make</a>
              			<div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="javascript:addTODO()">Add to the make list</a>
+                        <a class="dropdown-item" href="javascript:addTOCart()">Add all to cart</a>
                       </div>
                     </div>
                     </tr>
