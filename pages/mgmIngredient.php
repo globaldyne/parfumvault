@@ -95,8 +95,6 @@ $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE n
 $(document).ready(function() {
 $('a[rel=tipsy]').tipsy({gravity: 'w'});
 
-
-
 function unlimited_usage(status,maxulimit){
 		$('#usage_type').prop('disabled', status);
 		<?php foreach ($cats as $cat) {?>
@@ -250,7 +248,7 @@ reload_data();
         </div>
 
 <div id="ingMsg"><?=$msg?></div>
-<div id="ingOverview"></div>
+<div id="ingOverview"><img src="/img/loading.gif"/></div>
 <div class="mgmIngHeader-with-separator-full"></div>
 <!-- Nav tabs -->
     <ul class="nav nav-tabs" role="tablist">

@@ -252,7 +252,7 @@ $('.replaceIngredient').editable({
 	                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#amount_to_make">Amount to make</a>
              			<div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="javascript:addTODO()">Add to the make list</a>
-                        <a class="dropdown-item" href="javascript:addTOCart()">Add all to cart</a>
+                        <!-- <a class="dropdown-item" href="javascript:addAllToCart()">Add all to cart</a> -->
                       </div>
                     </div>
                     </tr>
