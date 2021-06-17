@@ -6,6 +6,8 @@ require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/getCatByID.php');
+require_once(__ROOT__.'/func/profileImg.php');
+
 
 if(empty($_GET["id"])){
 	return;
@@ -16,13 +18,7 @@ $ingredient = mysqli_fetch_array(mysqli_query($conn, "SELECT category,profile,ty
 if(empty($ingredient['category'])){
 	return;
 }
-if($ingredient['profile'] == 'Top'){
-	$profile_img = '../img/Pyramid/Pyramid_Slice_Top.png';
-}elseif($ingredient['profile'] == 'Heart'){
-	$profile_img = '../img/Pyramid/Pyramid_Slice_Heart.png';
-}elseif($ingredient['profile'] == 'Base'){
-	$profile_img = '../img/Pyramid/Pyramid_Slice_Base.png';
-}
+
 
 if($ingredient['physical_state'] == '1'){ 
 	$physical_state = '<img src="../img/liquid.png" class="img_ing"/>';
@@ -51,7 +47,7 @@ if($ingredient['physical_state'] == '1'){
   </tr>
   <tr>
     <td align="center"><?=getCatByID($ingredient['category'],TRUE,$conn)?></td>
-    <td align="center"><img src="<?=$profile_img?>" class="img_ing"/></td>
+    <td align="center"><img src="<?=profileImg($ingredient['profile'])?>" class="img_ing"/></td>
     <td align="center"><?=$physical_state?></td>
   </tr>
 </table>

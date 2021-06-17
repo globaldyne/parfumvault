@@ -7,6 +7,7 @@ require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/formatBytes.php');
 require_once(__ROOT__.'/func/validateInput.php');
 require_once(__ROOT__.'/func/sanChar.php');
+require_once(__ROOT__.'/func/profileImg.php');
 
 require_once(__ROOT__.'/func/searchIFRA.php');
 
@@ -322,7 +323,7 @@ reload_data();
                                 <select name="profile" id="profile" class="form-control selectpicker" data-live-search="true">
                                 <option value="" selected></option>
                                 <?php 	while ($row_ingProfiles = mysqli_fetch_array($res_ingProfiles)){ ?>
-								<option value="<?php echo $row_ingProfiles['name'];?>" <?php echo ($ing['profile']==$row_ingProfiles['name'])?"selected=\"selected\"":""; ?>><?php echo $row_ingProfiles['name'];?></option>
+								<option data-content="<img class='img_ing_sel' src='<?=profileImg($row_ingProfiles['name'])?>'> <?php echo $row_ingProfiles['name'];?>" value="<?php echo $row_ingProfiles['name'];?>" <?php echo ($ing['profile']==$row_ingProfiles['name'])?"selected=\"selected\"":""; ?>></option>
 								<?php } ?>
                                 </select>
                                 </td>
@@ -355,7 +356,7 @@ reload_data();
                                 <select name="category" id="category" class="form-control selectpicker" data-live-search="true">
                                 <option value="" selected></option>
                                 <?php while ($row_ingCategory = mysqli_fetch_array($res_ingCategory)){ ?>
-								<option data-content="<img class='img_ing_sel' src='<?php if($row_ingCategory['image']){ echo $row_ingCategory['image']; }else{ echo '/img/molecule.png';}?>'><?php echo $row_ingCategory['name'];?>" value="<?php echo $row_ingCategory['id'];?>" <?php echo ($ing['category']==$row_ingCategory['id'])?"selected=\"selected\"":""; ?>><?php echo $row_ingCategory['name'];?></option>
+								<option data-content="<img class='img_ing_sel' src='<?php if($row_ingCategory['image']){ echo $row_ingCategory['image']; }else{ echo '/img/molecule.png';}?>'><?php echo $row_ingCategory['name'];?>" value="<?php echo $row_ingCategory['id'];?>" <?php echo ($ing['category']==$row_ingCategory['id'])?"selected=\"selected\"":""; ?>></option>
 								<?php } ?>
                                 </select>
                                 </td>
@@ -363,8 +364,8 @@ reload_data();
                               <tr>
                                 <td>Physical State:</td>
                                 <td colspan="5"><select name="physical_state" id="physical_state" class="form-control selectpicker">
-                                  <option value="1" <?php if($ing['physical_state']=="1") echo 'selected="selected"'; ?> >Liquid</option>
-                                  <option value="2" <?php if($ing['physical_state']=="2") echo 'selected="selected"'; ?> >Solid</option>
+                                  <option data-content="<img class='img_ing_sel' src='/img/liquid.png'> Liquid" value="1" <?php if($ing['physical_state']=="1") echo 'selected="selected"'; ?> ></option>
+                                  <option data-content="<img class='img_ing_sel' src='/img/solid.png'> Solid" value="2" <?php if($ing['physical_state']=="2") echo 'selected="selected"'; ?> ></option>
                                 </select></td>
                               </tr>                              <tr>
                                 <td height="31" valign="top">Odor:</td>
