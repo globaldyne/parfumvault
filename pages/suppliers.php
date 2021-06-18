@@ -104,11 +104,11 @@ $q = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
             <p>
               <input class="form-control" type="text" name="add_costs" id="add_costs" />
             </p>
-            <p>Minimum ml quantiy:</p>
+            <p>Minimum ml quantity:</p>
             <p>
               <input class="form-control" type="text" name="min_ml" id="min_ml" />
             </p>
-            <p>Minimum grams quantiy:</p>
+            <p>Minimum grams quantity:</p>
             <p>
               <input class="form-control" type="text" name="min_gr" id="min_gr" />
             </p>
