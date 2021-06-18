@@ -10,6 +10,7 @@ require_once(__ROOT__.'/func/getIngSupplier.php');
 require_once(__ROOT__.'/func/checkAllergen.php');
 require_once(__ROOT__.'/func/searchIFRA.php');
 require_once(__ROOT__.'/func/getCatByID.php');
+require_once(__ROOT__.'/func/profileImg.php');
 
 $ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC");
 $defCatClass = $settings['defCatClass'];
@@ -60,7 +61,7 @@ $defCatClass = $settings['defCatClass'];
 					  <td align="center">N/A</td>
 					  <?php } ?>
 					  <td align="center"><?=$ingredient['odor']?></td>
-                      <td align="center"><?=$ingredient['profile']?></td>
+                      <td align="center"><a href="#" rel="tipsy" title="<?=$ingredient['profile']?>"><img class="img_ing_prof" src="<?=profileImg($ingredient['profile'])?>" /></a></td>
 					  <td align="center"><?=getCatByID($ingredient['category'],TRUE,$conn)?></td>
   					  <?php
                       if($limit = searchIFRA($ingredient['cas'],$ingredient['name'],null,$conn,$defCatClass)){

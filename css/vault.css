@@ -478,3 +478,9 @@ formula td, table.table th {
 .odor_profile_overview ul {
   position: absolute;
 }
+
+.img_ing_prof {
+    max-height: 50px;
+    max-width: 50px;
+    padding: 10px 10px 10px 10px;
+}

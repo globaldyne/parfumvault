@@ -12,6 +12,7 @@ Removed edit options when formula is protected
 Bug fixes and Various improvements
 Added physical state icon in ingredient overview
 FIX an issue preventing uploading SDS when file too big
+Add profile image instead of name in ingredients list
 
 ### Version 2.9
 Label printing improvements
