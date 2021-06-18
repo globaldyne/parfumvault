@@ -18,7 +18,7 @@ $defCatClass = $settings['defCatClass'];
                 <table class="table table-bordered" id="tdDataIng" width="100%" cellspacing="0">
                   <thead>
                     <tr class="noBorder noexport">
-                      <th colspan="11">
+                      <th colspan="10">
                   		<div class="text-right">
                         <div class="btn-group">
                           <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
@@ -38,7 +38,6 @@ $defCatClass = $settings['defCatClass'];
                     </tr>
                     <tr>
                       <th>Name</th>
-                      <th>INCI</th>
                       <th>CAS#</th>
                       <th>Odor</th>
                       <th>Profile</th>
@@ -53,8 +52,7 @@ $defCatClass = $settings['defCatClass'];
                   <tbody>
                   <?php while ($ingredient = mysqli_fetch_array($ingredient_q)) { ?>
                     <tr>
-                      <td align="center"><a href="pages/mgmIngredient.php?id=<?=base64_encode($ingredient['name'])?>" class="popup-link"><?=$ingredient['name']?></a><?=checkAllergen($ingredient['name'],$conn)?></td>
-                      <td align="center"><?=$ingredient['INCI']?></td>
+                      <td align="center"><a href="pages/mgmIngredient.php?id=<?=base64_encode($ingredient['name'])?>" class="popup-link listIngName listIngName-with-separator"><?=$ingredient['name']?></a><?=checkAllergen($ingredient['name'],$conn)?><span class="listIngHeaderCAS"><?=$ingredient['INCI']?></span></td>
 					  <?php if($ingredient['cas']){ ?>
                       <td align="center"><?=$ingredient['cas']?></td>
                       <?php }else{ ?>

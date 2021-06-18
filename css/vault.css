@@ -484,3 +484,32 @@ formula td, table.table th {
     max-width: 50px;
     padding: 10px 10px 10px 10px;
 }
+
+.listIngName {
+    font-size: 1.1rem;
+    line-height: 2rem;
+    color: #004372;
+    background: white;
+	font-weight: bolder;
+}
+
+.listIngName-with-separator::after {
+    content: '';
+    display: block;
+    height: 0;
+    width: 8rem;
+    margin-top: 0.25rem;
+    border-bottom-width: 0.15rem;
+    border-bottom-style: solid;
+}
+
+.listIngHeaderCAS {
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    color: gray;
+    font-size: 1.2rem;
+    margin-top: 0.1rem;
+    display: block;
+    background: white;
+	font-weight: normal;
+}
