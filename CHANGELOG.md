@@ -14,6 +14,7 @@ Added physical state icon in ingredient overview
 FIX an issue preventing uploading SDS when file too big
 Add profile image instead of name in ingredients list
 Merge ingredient name and INCI
+Improve csv export in ingredients page
 
 ### Version 2.9
 Label printing improvements

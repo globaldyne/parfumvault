@@ -6,3 +6,4 @@ Added ingredient physical state (Solid/Liquid)
 Ingedients supplier can be specifically chosen when generating a finished formula and costs will be calculated accordingly
 Added summary overview in ingredient page
 Improved ingredients list view
+Improved ingredients CSV export

@@ -24,7 +24,7 @@ $defCatClass = $settings['defCatClass'];
                           <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
                           <div class="dropdown-menu dropdown-menu-right">
                             <a class="dropdown-item popup-link" href="pages/mgmIngredient.php">Add new ingredient</a>
-                            <a class="dropdown-item" id="csv" href="#">Export to CSV</a>
+                            <a class="dropdown-item" id="csv_export" href="/pages/export.php?format=csv&kind=ingredients">Export to CSV</a>
 	                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#csv_import">Import from CSV</a>
                             <?php if($pv_online['email'] && $pv_online['password']){?>
                             <div class="dropdown-divider"></div>
@@ -118,22 +118,6 @@ $('#tdDataIng').DataTable({
     "paging":   true,
 	"info":   true,
 	"lengthMenu": [[20, 35, 60, -1], [20, 35, 60, "All"]]
-});
-
-$('#csv').on('click',function(){
-  $("#tdDataIng").tableHTMLExport({
-	type:'csv',
-	filename:'ingredients.csv',
-	separator: ',',
-  	newline: '\r\n',
-  	trimContent: true,
-  	quoteFields: true,
-	ignoreColumns: '.noexport',
-  	ignoreRows: '.noexport',
-	htmlContent: false,
-  	// debug
-  	consoleLog: false   
-  });
 });
 
 </script>
