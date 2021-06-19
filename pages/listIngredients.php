@@ -104,6 +104,9 @@ $defCatClass = $settings['defCatClass'];
                   </tbody>
                 </table>
 <script type="text/javascript" language="javascript" >
+$(".alert-dismissible").fadeTo(2000, 500).slideUp(500, function(){
+    $(".alert-dismissible").slideUp(500);
+});
 
 $('a[rel=tipsy]').tipsy();
 	
