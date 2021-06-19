@@ -499,11 +499,11 @@ formula td, table.table th {
     height: 0;
     width: 8rem;
     margin-top: 0.25rem;
-    border-bottom-width: 0.15rem;
+    border-bottom-width: 0.1rem;
     border-bottom-style: solid;
 }
 
-.listIngHeaderCAS {
+.listIngHeaderSub {
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
     color: gray;

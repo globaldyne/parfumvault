@@ -52,7 +52,7 @@ $defCatClass = $settings['defCatClass'];
                   <tbody>
                   <?php while ($ingredient = mysqli_fetch_array($ingredient_q)) { ?>
                     <tr>
-                      <td align="center"><a href="pages/mgmIngredient.php?id=<?=base64_encode($ingredient['name'])?>" class="popup-link listIngName listIngName-with-separator"><?=$ingredient['name']?></a><?=checkAllergen($ingredient['name'],$conn)?><span class="listIngHeaderCAS"><?=$ingredient['INCI']?></span></td>
+                      <td align="center"><a href="pages/mgmIngredient.php?id=<?=base64_encode($ingredient['name'])?>" class="popup-link listIngName listIngName-with-separator"><?=$ingredient['name']?></a><?=checkAllergen($ingredient['name'],$conn)?><span class="listIngHeaderSub"><?=$ingredient['INCI']?></span></td>
 					  <?php if($ingredient['cas']){ ?>
                       <td align="center"><?=$ingredient['cas']?></td>
                       <?php }else{ ?>
