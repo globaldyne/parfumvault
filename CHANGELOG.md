@@ -15,6 +15,7 @@ FIX an issue preventing uploading SDS when file too big
 Add profile image instead of name in ingredients list
 Merge ingredient name and INCI
 Improve csv export in ingredients page
+Ingredient profile replaced by INCI when available otherwise CAS number is shown when adding ingredients in a formula
 
 ### Version 2.9
 Label printing improvements

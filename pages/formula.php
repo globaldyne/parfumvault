@@ -87,11 +87,17 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
                                          <select name="ingredient" id="ingredient" class="form-control selectpicker" data-live-search="true">
                                          <option value="" selected disabled>Ingredient</option>
                                          <?php
-										 	$res_ing = mysqli_query($conn, "SELECT id, name, profile, chemical_name FROM ingredients ORDER BY name ASC");
+										 	$res_ing = mysqli_query($conn, "SELECT id, name, profile, chemical_name, INCI, CAS FROM ingredients ORDER BY name ASC");
 										 	while ($r_ing = mysqli_fetch_array($res_ing)){
-												echo '<option value="'.$r_ing['name'].'">'.$r_ing['name'].' ('.$r_ing['profile'].')</option>';
+												if($r_ing['INCI']){
+										?>
+											<option value="<?=$r_ing['name']?>"><?=$r_ing['name']?> (<?=$r_ing['INCI']?>)</option>
+										<?php 	}else{ ?>
+											<option value="<?=$r_ing['name']?>"><?=$r_ing['name']?> (<?=$r_ing['CAS']?>)</option>
+										<?php
+												} 
 											}
-										 ?>
+										?>
                                          </select>                                         
                                          </td>
                                          <td><input type="text" name="concentration" id="concentration" placeholder="Purity %" class="form-control" /></td>
