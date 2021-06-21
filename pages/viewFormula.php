@@ -416,6 +416,9 @@ $('.replaceIngredient').editable({
 
 
 <script type="text/javascript" language="javascript" >
+$(".alert-dismissible").fadeTo(2000, 500).slideUp(500, function(){
+    $(".alert-dismissible").slideUp(500);
+});
 <?php if($meta['isProtected'] == FALSE){?>
 $('#formula_data').editable({
   container: 'body',
