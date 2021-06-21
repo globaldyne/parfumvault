@@ -47,7 +47,7 @@ if($_POST['formula']){
                       <th width="10%">CAS#</th>
                       <th width="10%">Purity</th>
                       <th width="10%">Dilutant</th>
-                      <th width="10%">Concentration</th>
+                      <th width="10%">Concentration (%)</th>
                       <th width="10%">Properties</th>
                     </tr>
                   </thead>
@@ -65,7 +65,7 @@ if($_POST['formula']){
 					  <?php }else{ ?>
 					  <td align="center"><?php echo $formula['dilutant']; ?></td>
 					  <?php } ?>
-					  	<td align="center"><?php echo $conc_p;?>%</td>
+					  	<td align="center"><?php echo $conc_p;?></td>
                         <td align="center"><?php echo $ing_q['odor'];?></td>
 					  </tr>
 					  <?php }  ?>
