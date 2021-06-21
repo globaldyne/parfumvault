@@ -8,3 +8,6 @@ Added summary overview in ingredient page
 Improved ingredients list view
 Improved ingredients CSV export
 Ingredient profile replaced by INCI when available otherwise CAS number is shown when adding ingredients in a formula
+Added option to choose formula purpose (category) upon creation
+Added option to override global category class per formula, depending the purpose
+

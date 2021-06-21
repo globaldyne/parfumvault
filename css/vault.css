@@ -513,3 +513,9 @@ formula td, table.table th {
     background: white;
 	font-weight: normal;
 }
+
+.ellipsis {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}

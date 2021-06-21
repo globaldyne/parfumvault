@@ -14,7 +14,9 @@ $f_name =  base64_decode($fid);
 if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulas WHERE fid = '$fid'"))){
 	$legend = 1;
 }
-$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,image,isProtected FROM formulasMetaData WHERE fid = '$fid'"));
+$cat_details = mysqli_fetch_array(mysqli_query($conn, "SELECT description FROM IFRACategories WHERE name = '4'"));
+
+$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,image,isProtected,catClass FROM formulasMetaData WHERE fid = '$fid'"));
 
 $formula_q = mysqli_query($conn, "SELECT ingredient FROM formulas WHERE fid = '$fid'");
 	while ($formula = mysqli_fetch_array($formula_q)){
@@ -60,7 +62,8 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
           <div class="card shadow mb-4">
             <div class="card-header py-3"> 
 			  <?php if($meta['image']){?><div class="img-formula"><img class="img-perfume" src="<?php echo $meta['image']; ?>"/></div><?php } ?>
-              <h2 class="m-0 font-weight-bold text-primary"><a href="?do=Formula&id=<?=$id?>"><?=$f_name?></a></h2><span><?php if($meta['isProtected'] == TRUE){ echo 'Read Only'; }?></span>
+              <h2 class="m-0 font-weight-bold text-primary"><a href="?do=Formula&id=<?=$id?>"><?=$f_name?></a><span class="m-1"><?php if($meta['isProtected']){?><a class="fas fa-lock"><?php } ?></a></span></h2>
+              <h5 class="m-1 text-primary"><span><a href="#" rel="tipsy" title="<?=$cat_details['description']?>"><?=ucfirst($meta['catClass'])?></a></span></h5>
               <h5 class="m-1 text-primary"><a href="pages/getFormMeta.php?id=<?php echo $meta['id'];?>" class="popup-link">Details</a></h5>
             </div>
         <!-- Nav tabs -->

@@ -91,7 +91,8 @@ CREATE TABLE `formulasMetaData` (
   `created` timestamp NOT NULL DEFAULT current_timestamp(),
   `image` varchar(255) COLLATE utf8_bin NOT NULL,
   `isProtected` INT NULL DEFAULT '0',
-  `defView` INT NULL DEFAULT '1'
+  `defView` INT NULL DEFAULT '1',
+  `catClass` VARCHAR(10) NULL 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 DROP TABLE IF EXISTS `IFRALibrary`;

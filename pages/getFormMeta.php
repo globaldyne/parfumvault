@@ -13,7 +13,10 @@ if(!$_GET['id']){
 
 $id = mysqli_real_escape_string($conn, $_GET['id']);
 $info = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE id = '$id'"));
-
+$cats_q = mysqli_query($conn, "SELECT id,name,description,type FROM IFRACategories ORDER BY id ASC");
+while($cats_res = mysqli_fetch_array($cats_q)){
+    $cats[] = $cats_res;
+}
 if(empty($info['name'])){
 	echo 'Formula not found';
 	return;
@@ -139,6 +142,14 @@ if($_FILES["file"]["tmp_name"]){
     <td><a href="#" id="profile" data-type="select" data-pk="profile" data-title="<?php echo $info['profile'];?>"></a></td>
   </tr>
   <tr>
+    <td>Purpose:</td>
+    <td><select name="catClass" id="catClass" class="form-control ellipsis">
+			<?php foreach ($cats as $IFRACategories) {?>
+				<option value="cat<?php echo $IFRACategories['name'];?>" <?php echo ($info['catClass']=='cat'.$IFRACategories['name'])?"selected=\"selected\"":""; ?>><?php echo 'Cat'.$IFRACategories['name'].' - '.$IFRACategories['description'];?></option>
+		 	<?php }	?>
+            </select></td>
+  </tr>
+  <tr>
     <td>Sex:</td>
     <td><a href="#" id="sex" data-type="select" data-pk="sex" data-title="<?php echo $info['sex'];?>"></a></td>
   </tr>
@@ -249,6 +260,21 @@ $("#defView").change(function() {
 	data: {
 		formula: '<?=$info['fid']?>',
 		defView: $("#defView").find(":selected").val(),
+		},
+	dataType: 'html',
+	success: function (data) {
+		$('#msg').html(data);
+	}
+  });
+});
+
+$("#catClass").change(function() {
+ $.ajax({ 
+	url: 'update_data.php', 
+	type: 'GET',
+	data: {
+		formula: '<?=$info['fid']?>',
+		catClass: $("#catClass").find(":selected").val(),
 		},
 	dataType: 'html',
 	success: function (data) {

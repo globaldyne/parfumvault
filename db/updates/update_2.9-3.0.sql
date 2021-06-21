@@ -26,3 +26,5 @@ ALTER TABLE `ingSuppliers` ADD `price_per_size` INT NOT NULL DEFAULT '0' AFTER `
 ALTER TABLE `ingredients` ADD `physical_state` INT NULL DEFAULT '0' AFTER `molecularWeight`; 
 ALTER TABLE `ingSuppliers` ADD `min_ml` INT NULL AFTER `notes`, ADD `min_gr` INT NULL AFTER `min_ml`; 
 ALTER TABLE `ingCategory` CHANGE `image` `image` LONGBLOB NULL;
+
+ALTER TABLE `formulasMetaData` ADD `catClass` VARCHAR(10) NULL AFTER `defView`;

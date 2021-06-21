@@ -148,6 +148,18 @@ if($_GET['formula'] &&  $_GET['defView']){
 	return;
 }
 
+if($_GET['formula'] &&  $_GET['catClass']){
+	$fid = mysqli_real_escape_string($conn, $_GET['formula']);
+	$catClass = mysqli_real_escape_string($conn, $_GET['catClass']);
+	
+	if(mysqli_query($conn, "UPDATE formulasMetaData SET catClass = '$catClass' WHERE fid = '$fid'")){
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Purpose changed!</div>';
+	}else{
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Something went wrong.</div>';
+	}
+	return;
+}
+
 if($_GET['rename']){
 	$value = mysqli_real_escape_string($conn, $_POST['value']);
 	$formula = mysqli_real_escape_string($conn, $_GET['rename']);

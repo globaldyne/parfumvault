@@ -33,10 +33,15 @@ while ($formula = mysqli_fetch_array($formula_q)){
 	    $form[] = $formula;
 }
 
-$defCatClass = $settings['defCatClass'];
 
 $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE fid = '$fid'"));
 $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE fid = '$fid'"));
+
+if($meta['catClass']){
+	$defCatClass = $meta['catClass'];
+}else{
+	$defCatClass = $settings['defCatClass'];
+}
 
 $top_calc = calcPerc($f_name, 'Top', $settings['top_n'], $conn);
 $heart_calc = calcPerc($f_name, 'Heart', $settings['heart_n'], $conn);
