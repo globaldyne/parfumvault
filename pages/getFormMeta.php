@@ -143,11 +143,13 @@ if($_FILES["file"]["tmp_name"]){
   </tr>
   <tr>
     <td>Purpose:</td>
-    <td><select name="catClass" id="catClass" class="form-control ellipsis">
-			<?php foreach ($cats as $IFRACategories) {?>
-				<option value="cat<?php echo $IFRACategories['name'];?>" <?php echo ($info['catClass']=='cat'.$IFRACategories['name'])?"selected=\"selected\"":""; ?>><?php echo 'Cat'.$IFRACategories['name'].' - '.$IFRACategories['description'];?></option>
-		 	<?php }	?>
-            </select></td>
+    <td>
+    <select name="catClass" id="catClass" class="form-control ellipsis">
+	<option></option>
+	<?php foreach ($cats as $IFRACategories) {?>
+	<option value="cat<?php echo $IFRACategories['name'];?>" <?php echo ($info['catClass']=='cat'.$IFRACategories['name'])?"selected=\"selected\"":""; ?>><?php echo 'Cat'.$IFRACategories['name'].' - '.$IFRACategories['description'];?></option>
+	<?php }	?>
+    </select></td>
   </tr>
   <tr>
     <td>Sex:</td>

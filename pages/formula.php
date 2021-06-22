@@ -376,7 +376,7 @@ $.ajax({
     url: 'pages/viewFormula.php', 
 	type: 'get',
     data: {
-		id: "<?php echo $fid; ?>"
+		id: "<?=$id?>"
 		},
 	dataType: 'html',
 		success: function (data) {
@@ -392,7 +392,7 @@ function fetch_pyramid(){
 		url: 'pages/viewPyramid.php', 
 		type: 'get',
 		data: {
-			formula: "<?php echo $f_name; ?>"
+			formula: "<?=$id?>"
 			},
 		dataType: 'html',
 		success: function (data) {

@@ -20,22 +20,22 @@ if(!$_GET['id']){
 	return;
 }
 	
-$fid = mysqli_real_escape_string($conn, $_GET['id']);
-$f_name = base64_decode($fid);
+$id = mysqli_real_escape_string($conn, $_GET['id']);
 
-if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulas WHERE fid = '$fid'")) == 0){
+if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulasMetaData WHERE id = '$id'")) == 0){
 	echo '<div class="alert alert-info alert-dismissible">Incomplete formula. Please add ingredients.</div>';
 	return;
 }
+$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE id = '$id'"));
+$f_name = base64_decode($meta['fid']);
 
-$formula_q = mysqli_query($conn, "SELECT * FROM formulas WHERE fid = '$fid' ORDER BY ingredient ASC");
+$formula_q = mysqli_query($conn, "SELECT * FROM formulas WHERE fid = '".$meta['fid']."' ORDER BY ingredient ASC");
 while ($formula = mysqli_fetch_array($formula_q)){
 	    $form[] = $formula;
 }
 
 
-$mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE fid = '$fid'"));
-$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE fid = '$fid'"));
+$mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE fid = '".$meta['fid']."'"));
 
 if($meta['catClass']){
 	$defCatClass = $meta['catClass'];
@@ -43,9 +43,9 @@ if($meta['catClass']){
 	$defCatClass = $settings['defCatClass'];
 }
 
-$top_calc = calcPerc($f_name, 'Top', $settings['top_n'], $conn);
-$heart_calc = calcPerc($f_name, 'Heart', $settings['heart_n'], $conn);
-$base_calc = calcPerc($f_name, 'Base', $settings['base_n'], $conn);
+$top_calc = calcPerc($id, 'Top', $settings['top_n'], $conn);
+$heart_calc = calcPerc($id, 'Heart', $settings['heart_n'], $conn);
+$base_calc = calcPerc($id, 'Base', $settings['base_n'], $conn);
 ?>
  
 <script type='text/javascript'>
@@ -367,7 +367,7 @@ $('.replaceIngredient').editable({
                       <th>
                       </th> 
                       <?php }?>
-                      <th width="22%">Total: <?php echo countElement("formulas WHERE fid = '$fid'",$conn);?></th>
+                      <th width="22%">Total: <?php echo countElement("formulas WHERE fid = '".$meta['fid']."'",$conn);?></th>
                       <th></th>
                       <th></th>
                       <th></th>
