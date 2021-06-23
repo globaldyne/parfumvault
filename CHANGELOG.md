@@ -18,6 +18,7 @@ Improve csv export in ingredients page
 Ingredient profile replaced by INCI when available otherwise CAS number is shown when adding ingredients in a formula
 Adding purpose/category per formula
 Quering using ID where possible instead of names
+Added CAS in ingredient label
 
 ### Version 2.9
 Label printing improvements

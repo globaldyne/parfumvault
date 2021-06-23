@@ -187,8 +187,9 @@ $.ajax({
 		action: "printLabel",
 		type: "ingredient",
 		dilution: $("#dilution").val(),
-		dilutant: $("#dilutant").val(),
-		name: "<?php echo $ing['name']; ?>"
+		cas: $("#cas").val(),
+		dilutant: btoa($("#dilutant").val()),
+		name: "<?php echo base64_encode($ing['name']); ?>"
 		},
 	dataType: 'html',
     success: function (data) {
@@ -580,6 +581,9 @@ reload_data();
       <div class="modal-body">
       <div id="msg"></div>
           <form action="javascript:printLabel()" method="get" name="form1" target="_self" id="form1">
+          	CAS#:
+            <input class="form-control" name="cas" type="text" id="cas" value="<?php echo $ing['cas']; ?>" />
+            <p>
             Dilution %: 
             <input class="form-control" name="dilution" type="text" id="dilution" value="<?php echo $ing['purity']; ?>" />
             <p>

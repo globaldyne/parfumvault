@@ -323,9 +323,11 @@ if($_GET['action'] == 'printLabel' && $_GET['name']){
 	}
 	$extras = '';
 	if($_GET['dilution'] && $_GET['dilutant']){
-		$extras = ' @'.$_GET['dilution'].'% in '.$_GET['dilutant'];
+		$extras = ' @'.$_GET['dilution'].'% in '.base64_decode($_GET['dilutant']);
 						//font size 15 rotate 0 center 360 top 50
-		imagettftext($lblF, $settings['label_printer_font_size']/2, 90, 80, 570, $black, $font, $extras);
+		imagettftext($lblF, $settings['label_printer_font_size']/3, 90, 120, 570, $black, $font, $extras);
+		$CAS = 'CAS: '.$_GET['cas'];
+		imagettftext($lblF, $settings['label_printer_font_size']/2, 90, 90, 565, $black, $font, $CAS);
 	}
 	$save = __ROOT__.'/tmp/labels/'.base64_encode($text.'png');
 
