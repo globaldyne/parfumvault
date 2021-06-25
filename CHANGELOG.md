@@ -19,6 +19,7 @@ Ingredient profile replaced by INCI when available otherwise CAS number is shown
 Adding purpose/category per formula
 Quering using ID where possible instead of names
 Added CAS in ingredient label
+Sell formula improvements
 
 ### Version 2.9
 Label printing improvements
