@@ -25,11 +25,7 @@ This is a FREE software provided as is without ANY warranty under MIT license.
 * Multiple suppliers per ingredient
 * Calculate costs against specific supplier
 * Fetch the price automatically (Depends on suppliers platform)
-
-For full features list please visit
-	
-	https://www.jbparfum.com/knowledge-base/
-
+* and much more...
 
 # Docker Image
 
