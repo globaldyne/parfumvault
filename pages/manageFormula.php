@@ -142,8 +142,8 @@ if($_GET['action'] == 'clone' && $_GET['formula']){
 			$sql.=mysqli_query($conn, "INSERT INTO formulasMetaData (fid, name, notes, profile, image, sex, defView) SELECT '$newFid', '$newName', notes, profile, image, sex, defView FROM formulasMetaData WHERE fid = '$fid'");
 			$sql.=mysqli_query($conn, "INSERT INTO formulas (fid, name, ingredient, ingredient_id, concentration, dilutant, quantity, notes) SELECT '$newFid', '$newName', ingredient, ingredient_id, concentration, dilutant, quantity, notes FROM formulas WHERE fid = '$fid'");
 		}
-	if($sql){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$fname.' cloned as <a href="?do=Formula&name='.base64_encode($newName).'" target="_blanc">'.$newName.'</a>!</div>';
+	if($nID = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$newFid'"))){
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$fname.' cloned as <a href="?do=Formula&id='.$nID['id'].'" target="_blank">'.$newName.'</a>!</div>';
 	}
 	return;
 }
@@ -157,19 +157,19 @@ if($_POST['action'] == 'addFormula'){
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 	$notes = mysqli_real_escape_string($conn, $_POST['notes']);
 	$profile = mysqli_real_escape_string($conn, $_POST['profile']);
+	$catClass = mysqli_real_escape_string($conn, $_POST['catClass']);
 	$fid = base64_encode($name);
 	
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulasMetaData WHERE fid = '$fid'"))){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$name.' already exists! Click <a href="?do=Formula&name='.name.'">here</a> to view/edit!
-			</div>';
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$name.' already exists!</div>';
+	}else{
+		$q = mysqli_query($conn, "INSERT INTO formulasMetaData (fid, name, notes, profile, image, catClass) VALUES ('$fid', '$name', '$notes', '$profile', '$def_app_img', '$catClass')");
+		if($nID = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$fid'"))){
+			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong><a href="?do=Formula&id='.$nID['id'].'">'.$name.'</a></strong> added!</div>';
 		}else{
-			$q = mysqli_query($conn, "INSERT INTO formulasMetaData (fid, name, notes, profile, image) VALUES ('$fid', '$name', '$notes', '$profile', '$def_app_img')");
-				if($q){
-					echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong><a href="?do=Formula&name='.base64_encode($name).'">'.$name.'</a></strong> added!</div>';
-				}else{
-					echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Something went wrong...</strong></div>';
-				}
+			echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Something went wrong...</strong></div>';
 		}
+	}
 
 	return;
 }
@@ -247,25 +247,26 @@ if($_GET['action'] == 'addToCart' && $_GET['material'] && $_GET['quantity']){
 	$material = mysqli_real_escape_string($conn, $_GET['material']);
 	$quantity = mysqli_real_escape_string($conn, $_GET['quantity']);
 	$purity = mysqli_real_escape_string($conn, $_GET['purity']);
+	$ingID = mysqli_real_escape_string($conn, $_GET['ingID']);
 
 		
-	$qS = mysqli_fetch_array(mysqli_query($conn, "SELECT supplier, supplier_link FROM ingredients WHERE name = '$material'"));
+	$qS = mysqli_fetch_array(mysqli_query($conn, "SELECT ingSupplierID, supplierLink FROM suppliers WHERE ingID = '$ingID'"));
 	
-	if(empty($qS['supplier_link'])){
+	if(empty($qS['supplierLink'])){
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$material.'</strong> cannot be added to cart as missing supplier info. Please update material supply details first.</div>';
 		return;
 	}
 	
 	if(mysqli_num_rows(mysqli_query($conn,"SELECT id FROM cart WHERE name = '$material'"))){
 		if(mysqli_query($conn, "UPDATE cart SET quantity = quantity + '$quantity' WHERE name = '$material'")){
-			echo '<div class="alert alert-info alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Additional <strong>'.$quantity.'</strong> added to '.$material.'</div>';
+			echo '<div class="alert alert-info alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Additional <strong>'.$quantity.$settings['mUnit'].'</strong> of '.$material.' added to cart.</div>';
 		}else{
  			echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error:<strong>'.mysqli_error($conn).'</strong></div>';
 		}
 		return;
 	}
 									
-	if(mysqli_query($conn, "INSERT INTO cart (name,quantity,purity,supplier,supplier_link) VALUES ('$material','$quantity','$purity','".$qS['supplier']."','".$qS['supplier_link']."')")){
+	if(mysqli_query($conn, "INSERT INTO cart (ingID,name,quantity,purity) VALUES ('$ingID','$material','$quantity','$purity')")){
 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$material.'</strong> added to cart!</div>';
 		return;
 	}
@@ -295,7 +296,7 @@ if($_GET['action'] == 'printLabel' && $_GET['name']){
 			$bNO = 'N/A';
 		}
 				
-		$q = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE name = '$name'"));
+		$q = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE fid = '$name'"));
 		$info = "Production: ".date("d/m/Y")."\nProfile: ".$q['profile']."\nSex: ".$q['sex']."\nB. NO: ".$bNo."\nDescription:\n\n".wordwrap($q['notes'],30);
 	}
 	
@@ -311,7 +312,7 @@ if($_GET['action'] == 'printLabel' && $_GET['name']){
 	
 	imagefilledrectangle($lbl, 0, 0, $w, $h, $white);
 	
-	$text = trim($name.$extras);
+	$text = trim(base64_decode($name).$extras);
 	$font = __ROOT__.'/fonts/Arial.ttf';
 
 	imagettftext($lbl, $settings['label_printer_font_size'], 0, 0, 50, $black, $font, $text);
@@ -322,10 +323,13 @@ if($_GET['action'] == 'printLabel' && $_GET['name']){
 	}
 	$extras = '';
 	if($_GET['dilution'] && $_GET['dilutant']){
-		$extras = ' @'.$_GET['dilution'].'% in '.$_GET['dilutant'];
+		$extras = ' @'.$_GET['dilution'].'% in '.base64_decode($_GET['dilutant']);
 						//font size 15 rotate 0 center 360 top 50
-		imagettftext($lblF, $settings['label_printer_font_size']/2, 90, 80, 570, $black, $font, $extras);
+		imagettftext($lblF, $settings['label_printer_font_size']/3, 90, 120, 570, $black, $font, $extras);
+		
 	}
+	$CAS = 'CAS: '.$_GET['cas'];
+	imagettftext($lblF, $settings['label_printer_font_size']/2, 90, 90, 565, $black, $font, $CAS);
 	$save = __ROOT__.'/tmp/labels/'.base64_encode($text.'png');
 
 	if(imagepng($lblF, $save)){
@@ -352,8 +356,8 @@ if($_GET['action'] == 'printBoxLabel' && $_GET['name']){
 	
 	if($settings['label_printer_size'] == '62' || $settings['label_printer_size'] == '62 --red'){
 		$name = mysqli_real_escape_string($conn, $_GET['name']);
-		$q = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE name = '$name'"));
-		$qIng = mysqli_query($conn, "SELECT ingredient FROM formulas WHERE name = '$name'");
+		$q = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE fid = '$name'"));
+		$qIng = mysqli_query($conn, "SELECT ingredient FROM formulas WHERE fid = '$name'");
 		
 		while($ing = mysqli_fetch_array($qIng)){
 				$chName = mysqli_fetch_array(mysqli_query($conn, "SELECT chemical_name FROM ingredients WHERE name = '".$ing['ingredient']."' AND allergen = '1'"));

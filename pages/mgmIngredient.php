@@ -7,6 +7,7 @@ require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/formatBytes.php');
 require_once(__ROOT__.'/func/validateInput.php');
 require_once(__ROOT__.'/func/sanChar.php');
+require_once(__ROOT__.'/func/profileImg.php');
 
 require_once(__ROOT__.'/func/searchIFRA.php');
 
@@ -34,8 +35,8 @@ $defCatClass = $settings['defCatClass'];
 $res_ingTypes = mysqli_query($conn, "SELECT id,name FROM ingTypes ORDER BY name ASC");
 $res_ingStrength = mysqli_query($conn, "SELECT id,name FROM ingStrength ORDER BY name ASC");
 $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCategory ORDER BY name ASC");
-$res_ingSupplier = mysqli_query($conn, "SELECT id,name FROM ingSuppliers ORDER BY name ASC");
 $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles ORDER BY name ASC");
+$res_ingSupplier = mysqli_query($conn, "SELECT id,name,min_ml,min_gr FROM ingSuppliers ORDER BY name ASC");
 
 $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE name = '$ingID'"));
 
@@ -44,7 +45,9 @@ $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE n
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Manage ingredient</title>
+<link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
+<title>Manage <?=$ing['name']?></title>
 <link href="../css/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
 <script src="../js/jquery/jquery.min.js"></script>
 <script src="../js/bootstrap.min.js"></script>
@@ -91,9 +94,9 @@ $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE n
 <script>
 
 $(document).ready(function() {
-	$('a[rel=tipsy]').tipsy({gravity: 'w'});
-	
-	function unlimited_usage(status,maxulimit){
+$('a[rel=tipsy]').tipsy({gravity: 'w'});
+
+function unlimited_usage(status,maxulimit){
 		$('#usage_type').prop('disabled', status);
 		<?php foreach ($cats as $cat) {?>
 		$('#cat<?php echo $cat['name'];?>').prop('readonly', status).val(maxulimit);
@@ -113,6 +116,23 @@ $(document).ready(function() {
     });
 
 });
+
+function reload_overview() {
+	$('#ingOverview').html('<img src="/img/loading.gif"/>');
+
+	$.ajax({ 
+		url: 'ingOverview.php', 
+		type: 'GET',
+		data: {
+			id: "<?=$ing['id']?>"
+			},
+		dataType: 'html',
+		success: function (data) {
+		  $('#ingOverview').html(data);
+		}
+	});
+};
+reload_overview();
 
 function search() {	  
 	$("#odor").val('Loading...');
@@ -167,8 +187,9 @@ $.ajax({
 		action: "printLabel",
 		type: "ingredient",
 		dilution: $("#dilution").val(),
-		dilutant: $("#dilutant").val(),
-		name: "<?php echo $ing['name']; ?>"
+		cas: $("#cas").val(),
+		dilutant: btoa($("#dilutant").val()),
+		name: "<?php echo base64_encode($ing['name']); ?>"
 		},
 	dataType: 'html',
     success: function (data) {
@@ -180,17 +201,30 @@ $.ajax({
 
 
 function reload_data() {
-$.ajax({ 
-    url: 'allergens.php', 
-	type: 'get',
-    data: {
-		id: "<?=base64_encode($ingID)?>"
-		},
-	dataType: 'html',
-    success: function (data) {
-	  $('#fetch_allergen').html(data);
-    }
-  });
+	$.ajax({ 
+		url: 'allergens.php', 
+		type: 'get',
+		data: {
+			id: "<?=base64_encode($ingID)?>"
+			},
+		dataType: 'html',
+		success: function (data) {
+		  $('#fetch_allergen').html(data);
+		}
+	  });
+
+	$.ajax({ 
+		url: 'ingSuppliers.php', 
+		type: 'get',
+		data: {
+			id: "<?=$ing['id']?>"
+			},
+		dataType: 'html',
+		success: function (data) {
+		  $('#fetch_suppliers').html(data);
+		}
+	  });
+
 }
 <?php if($ingID){ ?>
 reload_data();
@@ -200,8 +234,8 @@ reload_data();
 
 <body>
 <div class="container">
-		<div class="list-group-item-info">
-        <h1 class="badge-primary"><?php if($ingID){ echo $ing['name'];?>
+        <div class="mgm-column mgm-visible-xl mgm-col-xl-5">
+        <h1 class="mgmIngHeader mgmIngHeader-with-separator"><?php if($ingID){ echo $ing['name'];?>
             <div class="btn-group">
               <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
               <div class="dropdown-menu">
@@ -212,8 +246,12 @@ reload_data();
             Add ingredient
             <?php } ?>
         </h1>
-</div>
-<div id="ingMsg"><?php echo $msg; ?></div>
+        <span class="mgmIngHeaderCAS"><?=$ing['cas']?></span>
+        </div>
+
+<div id="ingMsg"><?=$msg?></div>
+<div id="ingOverview"><img src="/img/loading.gif"/></div>
+<div class="mgmIngHeader-with-separator-full"></div>
 <!-- Nav tabs -->
     <ul class="nav nav-tabs" role="tablist">
       <li class="active"><a href="#general" role="tab" data-toggle="tab"><icon class="fa fa-table"></icon> General</a></li>
@@ -286,7 +324,7 @@ reload_data();
                                 <select name="profile" id="profile" class="form-control selectpicker" data-live-search="true">
                                 <option value="" selected></option>
                                 <?php 	while ($row_ingProfiles = mysqli_fetch_array($res_ingProfiles)){ ?>
-								<option value="<?php echo $row_ingProfiles['name'];?>" <?php echo ($ing['profile']==$row_ingProfiles['name'])?"selected=\"selected\"":""; ?>><?php echo $row_ingProfiles['name'];?></option>
+								<option data-content="<img class='img_ing_sel' src='<?=profileImg($row_ingProfiles['name'])?>'> <?php echo $row_ingProfiles['name'];?>" value="<?php echo $row_ingProfiles['name'];?>" <?php echo ($ing['profile']==$row_ingProfiles['name'])?"selected=\"selected\"":""; ?>></option>
 								<?php } ?>
                                 </select>
                                 </td>
@@ -319,12 +357,18 @@ reload_data();
                                 <select name="category" id="category" class="form-control selectpicker" data-live-search="true">
                                 <option value="" selected></option>
                                 <?php while ($row_ingCategory = mysqli_fetch_array($res_ingCategory)){ ?>
-								<option data-content="<img class='img_ing_sel' src='<?php if($row_ingCategory['image']){ echo $row_ingCategory['image']; }else{ echo '/img/molecule.png';}?>'><?php echo $row_ingCategory['name'];?>" value="<?php echo $row_ingCategory['id'];?>" <?php echo ($ing['category']==$row_ingCategory['id'])?"selected=\"selected\"":""; ?>><?php echo $row_ingCategory['name'];?></option>
+								<option data-content="<img class='img_ing_sel' src='<?php if($row_ingCategory['image']){ echo $row_ingCategory['image']; }else{ echo '/img/molecule.png';}?>'><?php echo $row_ingCategory['name'];?>" value="<?php echo $row_ingCategory['id'];?>" <?php echo ($ing['category']==$row_ingCategory['id'])?"selected=\"selected\"":""; ?>></option>
 								<?php } ?>
                                 </select>
                                 </td>
                               </tr>
                               <tr>
+                                <td>Physical State:</td>
+                                <td colspan="5"><select name="physical_state" id="physical_state" class="form-control selectpicker">
+                                  <option data-content="<img class='img_ing_sel' src='/img/liquid.png'> Liquid" value="1" <?php if($ing['physical_state']=="1") echo 'selected="selected"'; ?> ></option>
+                                  <option data-content="<img class='img_ing_sel' src='/img/solid.png'> Solid" value="2" <?php if($ing['physical_state']=="2") echo 'selected="selected"'; ?> ></option>
+                                </select></td>
+                              </tr>                              <tr>
                                 <td height="31" valign="top">Odor:</td>
                                 <td colspan="3"><div id='TGSC'><input name="odor" id="odor" type="text" class="form-control" value="<?php echo $ing['odor']; ?>"/></div>
                                 </td>
@@ -396,39 +440,12 @@ reload_data();
 								<?php } ?>
 						      </table>
    						  </div>
-                  <div class="tab-pane fade" id="supply">
-				    <h3>Supply</h3>
-                    <hr>
-                    <table width="100%" border="0">
-                              <tr>
-                                <td width="20%">Supplier:</td>
-                                <td width="80%" colspan="3">
-                                <select name="supplier" id="supplier" class="form-control selectpicker" data-live-search="true">
-                                <option value="" selected></option>
-                                  <?php while ($row_ingSupplier = mysqli_fetch_array($res_ingSupplier)){ ?>
-								<option value="<?php echo $row_ingSupplier['name'];?>" <?php echo ($ing['supplier']==$row_ingSupplier['name'])?"selected=\"selected\"":""; ?>><?php echo $row_ingSupplier['name'];?></option>
-								  <?php	}	?>
-                                </select>
-                                </td>
-                              </tr>
-                              <tr>
-                                <td>Supplier URL:</td>
-                                <td colspan="3"><input name="supplier_link" type="text" class="form-control" id="supplier_link" value="<?php echo $ing['supplier_link']; ?>"></td>
-                              </tr>
-                              <tr>
-								<td>Price (<?php echo $settings['currency']; ?>):</td>
-                                <td colspan="3"><input name="price" type="text" class="form-control" id="price" value="<?php echo $ing['price']; ?>"/></td>
-                              </tr>
-                              <tr>
-                                <td>Size (<?=$settings['mUnit']?>):</td>
-                                <td colspan="3"><input name="ml" type="text" class="form-control" id="ml" value="<?php echo $ing['ml']; ?>"/></td>
-                              </tr>
-                              <tr>
-                                <td>Manufacturer</td>
-                                <td colspan="3"><input name="manufacturer" type="text" class="form-control" id="manufacturer" value="<?php echo $ing['manufacturer']; ?>"/></td>
-                              </tr>
-                    </table>
-                            </div>
+                          
+                          <div class="tab-pane fade" id="supply">
+                          	   <div id="msg_sup"></div>
+                               <div id="fetch_suppliers"><div class="loader"></div></div>
+                           </div>
+                   
                             <div class="tab-pane fade" id="tech_data">
           						 <h3>Techical Data</h3>
                                  <hr>
@@ -474,7 +491,7 @@ reload_data();
                                 <td colspan="3"><input name="appearance" type="text" class="form-control" id="appearance" value="<?php echo $ing['appearance']; ?>"/></td>
                               </tr>
                               <tr>
-                                <td>SDS:</td>
+                                <td><a href="<?php echo '/'.$ing['SDS'] ??  '#'; ?>" target="_blank">SDS</a>:</td>
                                 <td colspan="3">
                                 <form method="post" action="" enctype="multipart/form-data" id="myform">
         							<div >
@@ -564,6 +581,9 @@ reload_data();
       <div class="modal-body">
       <div id="msg"></div>
           <form action="javascript:printLabel()" method="get" name="form1" target="_self" id="form1">
+          	CAS#:
+            <input class="form-control" name="cas" type="text" id="cas" value="<?php echo $ing['cas']; ?>" />
+            <p>
             Dilution %: 
             <input class="form-control" name="dilution" type="text" id="dilution" value="<?php echo $ing['purity']; ?>" />
             <p>
@@ -627,8 +647,82 @@ reload_data();
 </div>
 </div>
 
+<!-- ADD SUPPLIER-->
+<div class="modal fade" id="addSupplier" tabindex="-1" role="dialog" aria-labelledby="addSupplier" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addSupplier">Add supplier for <?php echo $ing['name']; ?></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <div id="supplier_inf"></div>
+          <form action="javascript:addSupplier()" method="get" name="form1" target="_self" id="form1">
+          <p>
+            Name: 
+            <select name="supplier_name" id="supplier_name" class="form-control selectpicker" data-live-search="true">
+            <?php while ($row_ingSupplier = mysqli_fetch_array($res_ingSupplier)){ ?>
+				<option value="<?=$row_ingSupplier['id']?>" data-vol="<?php if($ing['physical_state'] == '1'){ echo $row_ingSupplier['min_ml']; }elseif($ing['physical_state'] == '2'){ echo $row_ingSupplier['min_gr'];} ?>" ><?=$row_ingSupplier['name'];?></option>
+			<?php	}	?>
+            </select>
+            </p>
+            <p>
+            URL: 
+            <input class="form-control" name="supplier_link" type="text" id="supplier_link" />
+            </p>
+            <p>            
+            Price (<?php echo $settings['currency']; ?>):
+            <input class="form-control" name="supplier_price" type="text" id="supplier_price" />
+            </p>
+            <p>
+            Size (<?php if($ing['physical_state'] == '1'){ echo 'ml'; }elseif($ing['physical_state'] == '2'){ echo 'grams'; }else{ echo $settings['mUnit']; }?>):
+            <input class="form-control" name="supplier_size" type="text" id="supplier_size" value="10" />
+            </p>
+            <p>
+            Manufacturer:
+            <input class="form-control" name="supplier_manufacturer" type="text" id="supplier_manufacturer" />
+            </p>            
+            <div class="dropdown-divider"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <input type="submit" name="button" class="btn btn-primary" id="button" value="Add">
+      </div>
+     </form>
+    </div>
+  </div>
+</div>
+</div>
 
 <script type="text/javascript" language="javascript">
+
+$("#supplier_name").change(function () {
+    vol = $(this).children(':selected').data('vol');
+    $("#supplier_size").focus().val(vol);    
+});
+
+function getPrice(supplier, size, ingSupplierID) {
+	$('#ingMsg').html('<div class="alert alert-info alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Please wait...</strong></div>');
+	$('#' + ingSupplierID).html('<img src="/img/loading.gif"/>');
+	$.ajax({ 
+		url: 'update_data.php', 
+		type: 'POST',
+		data: {
+			ingSupplier: 'getPrice',
+			sLink: supplier,
+			size: size,
+			ingSupplierID: ingSupplierID,
+			ingID: '<?=$ing['id'];?>'
+			},
+		dataType: 'html',
+		success: function (data) {
+			$('#ingMsg').html(data);
+			reload_data();
+		}
+	  });
+};
 
 function deleteAllergen(allgID) {	  
 	$.ajax({ 
@@ -641,7 +735,7 @@ function deleteAllergen(allgID) {
 			},
 		dataType: 'html',
 		success: function (data) {
-			$('#msg').html(data);
+			//$('#msg').html(data);
 			reload_data();
 		}
 	  });
@@ -670,73 +764,130 @@ function addAllergen() {
 	  });
 };
 
+function addSupplier() {	  
+	$.ajax({ 
+		url: 'update_data.php', 
+		type: 'POST',
+		data: {
+			ingSupplier: 'add',
+			supplier_id: $("#supplier_name").val(),
+			supplier_link: $("#supplier_link").val(),
+			supplier_size: $("#supplier_size").val(),	
+			supplier_price: $("#supplier_price").val(),				
+			supplier_manufacturer: $("#supplier_manufacturer").val(),
+			ingID: '<?=$ing['id'];?>'
+			},
+		dataType: 'html',
+		success: function (data) {
+			$('#supplier_inf').html(data);
+			//$("#supplier_name").val('');
+			$("#supplier_link").val('');
+			$("#supplier_size").val('');
+			$("#supplier_price").val('');
+			$("#supplier_manufacturer").val('');
+			reload_data();
+		}
+	  });
+};
+
+function deleteSupplier(sID) {	  
+	$.ajax({ 
+		url: 'update_data.php', 
+		type: 'GET',
+		data: {
+			ingSupplier: 'delete',
+			sID: sID,
+			ingID: '<?=$ing['id'];?>'
+			},
+		dataType: 'html',
+		success: function (data) {
+			$('#msg_sup').html(data);
+			reload_data();
+		}
+	  });
+};
+
+function prefSID(sID, status) {	  
+	$.ajax({ 
+		url: 'update_data.php', 
+		type: 'GET',
+		data: {
+			ingSupplier: 'preferred',
+			sID: sID,
+			status: status,
+			ingID: '<?=$ing['id'];?>'
+			},
+		dataType: 'html',
+		success: function (data) {
+			//$('#msg').html(data);
+			reload_data();
+		}
+	  });
+};
 $(document).ready(function() {
 	$('#save').click(function() {
-							  
-		$.ajax({ 
-			url: 'update_data.php', 
-			type: 'POST',
-			data: {
-				manage: 'ingredient',
-				
-				name: $("#name").val(),
-				INCI: $("#INCI").val(),
-				cas: $("#cas").val(),
-				reach: $("#reach").val(),
-				fema: $("#fema").val(),
-				type: $("#type").val(),
-				strength: $("#strength").val(),
-				category: $("#category").val(),
-				supplier: $("#supplier").val(),
-				supplier_link: $("#supplier_link").val(),
-				profile: $("#profile").val(),
-				price: $("#price").val(),
-				tenacity: $("#tenacity").val(),
-				formula: $("#formula").val(),
-				chemical_name: $("#chemical_name").val(),
-				flash_point: $("#flash_point").val(),
-				appearance: $("#appearance").val(),
-				ml: $("#ml").val(),
-				solvent: $("#solvent").val(),
-				notes: $("#notes").val(),
-				odor: $("#odor").val(),
-				purity: $("#purity").val(),
-				soluble: $("#soluble").val(),
-				logp: $("#logp").val(),
-				type: $("#type").val(),
-				molecularWeight: $("#molecularWeight").val(),
-	            
-				<?php foreach ($cats as $cat) {?>
-				cat<?php echo $cat['name'];?>: $("#cat<?php echo $cat['name'];?>").val(),
-				<?php } ?>
-				
-				manufacturer: $("#manufacturer").val(),
-				impact_top: $("#impact_top").val(),
-				impact_base: $("#impact_base").val(),
-				impact_heart: $("#impact_heart").val(),
-				usage_type: $("#usage_type").val(),
-				
-				isAllergen: $("#isAllergen").is(':checked'),
-				flavor_use: $("#flavor_use").is(':checked'),
-				noUsageLimit: $("#noUsageLimit").is(':checked'),
-				isPrivate: $("#isPrivate").is(':checked'),
-
-				<?php if($ing['name']){?>
-				ing: '<?=$ing['name'];?>'
-				<?php } ?>
-				},
-			dataType: 'html',
-			success: function (data) {
-				$('#ingMsg').html(data);
-				 if ($('#name').val()) {
-					window.location = 'mgmIngredient.php?id=' + btoa($('#name').val());
-				 }
-			}
-		  });
-  })
+								  
+			$.ajax({ 
+				url: 'update_data.php', 
+				type: 'POST',
+				data: {
+					manage: 'ingredient',
+					
+					name: $("#name").val(),
+					INCI: $("#INCI").val(),
+					cas: $("#cas").val(),
+					reach: $("#reach").val(),
+					fema: $("#fema").val(),
+					type: $("#type").val(),
+					strength: $("#strength").val(),
+					category: $("#category").val(),
+					profile: $("#profile").val(),
+					tenacity: $("#tenacity").val(),
+					formula: $("#formula").val(),
+					chemical_name: $("#chemical_name").val(),
+					flash_point: $("#flash_point").val(),
+					appearance: $("#appearance").val(),
+					solvent: $("#solvent").val(),
+					notes: $("#notes").val(),
+					odor: $("#odor").val(),
+					purity: $("#purity").val(),
+					soluble: $("#soluble").val(),
+					logp: $("#logp").val(),
+					type: $("#type").val(),
+					molecularWeight: $("#molecularWeight").val(),
+					physical_state: $("#physical_state").val(),
 	
+					<?php foreach ($cats as $cat) {?>
+					cat<?php echo $cat['name'];?>: $("#cat<?php echo $cat['name'];?>").val(),
+					<?php } ?>
+					
+					manufacturer: $("#manufacturer").val(),
+					impact_top: $("#impact_top").val(),
+					impact_base: $("#impact_base").val(),
+					impact_heart: $("#impact_heart").val(),
+					usage_type: $("#usage_type").val(),
+					
+					isAllergen: $("#isAllergen").is(':checked'),
+					flavor_use: $("#flavor_use").is(':checked'),
+					noUsageLimit: $("#noUsageLimit").is(':checked'),
+					isPrivate: $("#isPrivate").is(':checked'),
 	
-	$("#sds_upload").click(function(){
+					<?php if($ing['name']){?>
+					ing: '<?=$ing['name'];?>'
+					<?php } ?>
+					},
+				dataType: 'html',
+				success: function (data) {
+					$('#ingMsg').html(data);
+					reload_overview();
+					if ($('#name').val()) {
+						window.location = 'mgmIngredient.php?id=' + btoa($('#name').val());
+					}
+				}
+	});
+})
+	
+$("#sds_upload").click(function(){
         $("#ingMsg").html('<div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
 		$("#sds_upload").prop("disabled", true);
         $("#sds_upload").prop('value', 'Please wait...');
@@ -775,3 +926,4 @@ $(document).ready(function() {
 	
 });
 </script>
+

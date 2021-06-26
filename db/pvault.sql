@@ -75,8 +75,7 @@ CREATE TABLE `cart` (
  `name` varchar(255) COLLATE utf8_bin NOT NULL,
  `quantity` varchar(255) COLLATE utf8_bin NOT NULL,
  `purity` varchar(255) COLLATE utf8_bin NOT NULL,
- `supplier` varchar(255) COLLATE utf8_bin NOT NULL,
- `supplier_link` varchar(255) COLLATE utf8_bin NOT NULL, 
+ `ingID` INT NOT NULL,
  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
@@ -92,7 +91,8 @@ CREATE TABLE `formulasMetaData` (
   `created` timestamp NOT NULL DEFAULT current_timestamp(),
   `image` varchar(255) COLLATE utf8_bin NOT NULL,
   `isProtected` INT NULL DEFAULT '0',
-  `defView` INT NULL DEFAULT '1'
+  `defView` INT NULL DEFAULT '1',
+  `catClass` VARCHAR(10) NULL 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 DROP TABLE IF EXISTS `IFRALibrary`;
@@ -144,7 +144,7 @@ CREATE TABLE `ingCategory` (
   `id` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
   `notes` text COLLATE utf8_bin DEFAULT NULL,
-  `image` LONGTEXT COLLATE utf8_bin NULL
+  `image` LONGBLOB NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 DROP TABLE IF EXISTS `ingProfiles`;
@@ -215,6 +215,7 @@ CREATE TABLE `ingredients` (
   `noUsageLimit` INT NULL DEFAULT '0',  
   `isPrivate` INT NULL DEFAULT '0',
   `molecularWeight` VARCHAR(255) NULL,
+  `physical_state` INT NULL DEFAULT '0',
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
@@ -233,7 +234,14 @@ DROP TABLE IF EXISTS `ingSuppliers`;
 CREATE TABLE `ingSuppliers` (
   `id` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
-  `notes` text COLLATE utf8_bin NOT NULL
+  `platform` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `price_tag_start` text COLLATE utf8_bin DEFAULT NULL,
+  `price_tag_end` text COLLATE utf8_bin DEFAULT NULL,
+  `add_costs` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `price_per_size` INT NOT NULL DEFAULT '0', 
+  `notes` text COLLATE utf8_bin NOT NULL,
+  `min_ml` INT NOT NULL DEFAULT '0', 
+  `min_gr` INT NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 DROP TABLE IF EXISTS `ingTypes`;
@@ -351,6 +359,18 @@ INSERT INTO `IFRACategories` (`id`, `name`, `description`, `type`) VALUES
 (17, '11B', 'Products with intended skin contact but minimal transfer of fragrance to skin from inert substrate with potential UV exposure', 1),
 (18, '12', 'Products not intended for direct skin contact, minimal or insignificant transfer to skin', 1);
 
+CREATE TABLE `suppliers` (
+ `id` int(11) NOT NULL AUTO_INCREMENT,
+ `ingSupplierID` int(11) NOT NULL,
+ `ingID` int(11) NOT NULL,
+ `supplierLink` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+ `price` varchar(10) COLLATE utf8_bin DEFAULT NULL,
+ `size` float DEFAULT 10,
+ `manufacturer` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+ `preferred` int(11) NOT NULL DEFAULT 0,
+ PRIMARY KEY (`id`),
+ UNIQUE KEY `id` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 ALTER TABLE `batchIDHistory`
   ADD PRIMARY KEY (`id`);

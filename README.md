@@ -22,7 +22,13 @@ This is a FREE software provided as is without ANY warranty under MIT license.
 * IFRA Library
 * Import IFRA xls
 * Validate ingredients in formula, against the IFRA library
+* Multiple suppliers per ingredient
+* Calculate costs against specific supplier
+* Fetch the price automatically (Depends on suppliers platform)
 
+For full features list please visit
+	
+	https://www.jbparfum.com/knowledge-base/
 
 
 # Docker Image

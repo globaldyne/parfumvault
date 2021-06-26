@@ -47,12 +47,13 @@ if($_POST['formula']){
                       <th width="10%">CAS#</th>
                       <th width="10%">Purity</th>
                       <th width="10%">Dilutant</th>
-                      <th width="10%">Concentration</th>
+                      <th width="10%">Quantity (<?=$settings['mUnit']?>)</th>
+                      <th width="10%">Concentration (%)</th>
                       <th width="10%">Properties</th>
                     </tr>
                   </thead>
                   <?php while ($formula = mysqli_fetch_array($formula_q)) {
-					    $ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT cas,$defCatClass,ml,odor FROM ingredients WHERE name = '".$formula['ingredient']."'"));
+					    $ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT cas,$defCatClass,odor FROM ingredients WHERE name = '".$formula['ingredient']."'"));
 						$conc = number_format($formula['quantity']/$mg['total_mg'] * 100, 3);
 					  	$conc_p = number_format($formula['concentration'] / 100 * $conc, 3);
 				  ?>
@@ -65,7 +66,8 @@ if($_POST['formula']){
 					  <?php }else{ ?>
 					  <td align="center"><?php echo $formula['dilutant']; ?></td>
 					  <?php } ?>
-					  	<td align="center"><?php echo $conc_p;?>%</td>
+           			    <td align="center"><?php echo number_format($formula['quantity'],$settings['qStep']);?></td>
+					  	<td align="center"><?php echo $conc_p;?></td>
                         <td align="center"><?php echo $ing_q['odor'];?></td>
 					  </tr>
 					  <?php }  ?>
@@ -76,7 +78,7 @@ if($_POST['formula']){
                       <th></th>
                       <th></th>
                       <th></th>
-                      <th></th>
+                      <th width="15%" align="right"><p>Total: <?php echo ml2l($mg['total_mg'], 3, $settings['mUnit']); ?></p></th>
                       <th></th>
                     </tr>
                   </tfoot> 
@@ -151,7 +153,7 @@ $('#pdf').on('click',function(){
 	ignoreColumns: '.noexport',
   	ignoreRows: '.noexport',
 	htmlContent: true,
-	cover: '<?php echo base64_encode($meta['notes']);?>',
+	cover: '<?php echo base64_encode(wordwrap($meta['notes'],100));?>',
 	maintitle: '<?php echo trim(base64_decode($fid)); ?>',
 	subtitle: '<?php echo $customer['name'];?>',
 	product: '<?php echo trim($product).' '.trim($ver);?>'
