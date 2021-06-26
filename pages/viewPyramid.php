@@ -12,7 +12,7 @@ if(!$_GET['formula']){
 	die('No valid formula provided');
 }
 $formula = mysqli_real_escape_string($conn, $_GET['formula']);
-if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM formulas WHERE name = '$formula'")) == 0){
+if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE id = '$formula'")) == 0){
 	echo '<div class="alert alert-info alert-dismissible">Incomplete formula.</div>';
 	return;
 }
@@ -22,9 +22,9 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM formulas WHERE name = '
 <!-- Styles -->
 <style>
 #chartdiv {
-  width		: 100%;
-  height		: 500px;
-  font-size	: 11px;
+  width: 100%;
+  height: 800px;
+  font-size: 11px;
 }						
 </style>
 <script src="../js/amcharts_3.21.15.free/amcharts/amcharts.js"></script>

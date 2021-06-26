@@ -1,4 +1,26 @@
 # CHANGELOG
+### Version 3.0
+Add multiple suppliers per ingredient
+Price scrapper added - scrape price data from your suppliers web page
+Added ingredient physical state (Solid/Liquid)
+Ingredients supplier can be chosen when generating a finished formula
+Change image storage type for ingredient categories to LONGBLOB
+Improve ingredient mamage page by adding ingredient overview
+Logo update
+Update  pubchem api
+Removed edit options when formula is protected
+Bug fixes and Various improvements
+Added physical state icon in ingredient overview
+FIX an issue preventing uploading SDS when file too big
+Add profile image instead of name in ingredients list
+Merge ingredient name and INCI
+Improve csv export in ingredients page
+Ingredient profile replaced by INCI when available otherwise CAS number is shown when adding ingredients in a formula
+Adding purpose/category per formula
+Quering using ID where possible instead of names
+Added CAS in ingredient label
+Sell formula improvements
+
 ### Version 2.9
 Label printing improvements
 Passing name is now encoded in base64 when requesting it

@@ -2,18 +2,21 @@
 if (!defined('pvault_panel')){ die('Not Found');}
 require_once(__ROOT__.'/func/arrFilter.php');
 require(__ROOT__.'/func/get_formula_notes.php');
-$fid = mysqli_real_escape_string($conn, $_GET['name']);
-$f_name =  base64_decode($fid);
+$id = mysqli_real_escape_string($conn, $_GET['id']);
 
-
-if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$fid'")) == FALSE){
+$mid = mysqli_fetch_array(mysqli_query($conn, "SELECT fid FROM formulasMetaData WHERE id = '$id'"));
+if(($fid = $mid['fid']) == FALSE){
 	echo 'Formula doesn\'t exist';
 	exit;
 }
+$f_name =  base64_decode($fid);
+
 if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulas WHERE fid = '$fid'"))){
 	$legend = 1;
 }
-$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,image FROM formulasMetaData WHERE fid = '$fid'"));
+$cat_details = mysqli_fetch_array(mysqli_query($conn, "SELECT description FROM IFRACategories WHERE name = '4'"));
+
+$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,image,isProtected,catClass FROM formulasMetaData WHERE fid = '$fid'"));
 
 $formula_q = mysqli_query($conn, "SELECT ingredient FROM formulas WHERE fid = '$fid'");
 	while ($formula = mysqli_fetch_array($formula_q)){
@@ -47,9 +50,9 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
 <style>
 .mfp-iframe-holder .mfp-content {
     line-height: 0;
-    width: 1000px;
-    max-width: 1000px; 
-	height: 850px;
+    width: 1100px;
+    max-width: 1100px; 
+	height: 1100px;
 }
 </style>
 <div id="content-wrapper" class="d-flex flex-column">
@@ -59,7 +62,8 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
           <div class="card shadow mb-4">
             <div class="card-header py-3"> 
 			  <?php if($meta['image']){?><div class="img-formula"><img class="img-perfume" src="<?php echo $meta['image']; ?>"/></div><?php } ?>
-              <h2 class="m-0 font-weight-bold text-primary"><a href="?do=Formula&name=<?=$fid?>"><?=$f_name?></a></h2>
+              <h2 class="m-0 font-weight-bold text-primary"><a href="?do=Formula&id=<?=$id?>"><?=$f_name?></a><span class="m-1"><?php if($meta['isProtected']){?><a class="fas fa-lock"><?php } ?></a></span></h2>
+              <h5 class="m-1 text-primary"><span><a href="#" rel="tipsy" title="<?=$cat_details['description']?>"><?=ucfirst($meta['catClass'])?></a></span></h5>
               <h5 class="m-1 text-primary"><a href="pages/getFormMeta.php?id=<?php echo $meta['id'];?>" class="popup-link">Details</a></h5>
             </div>
         <!-- Nav tabs -->
@@ -78,6 +82,7 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
               <div>
                   <tr>
                     <th colspan="6">
+                    <?php if($meta['isProtected'] == FALSE){?>
                       <form action="javascript:addING()" enctype="multipart/form-data" name="form1" id="form1">
                          <table width="100%" border="0" class="table">
                                     <tr>  
@@ -85,11 +90,17 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
                                          <select name="ingredient" id="ingredient" class="form-control selectpicker" data-live-search="true">
                                          <option value="" selected disabled>Ingredient</option>
                                          <?php
-										 	$res_ing = mysqli_query($conn, "SELECT id, name, profile, chemical_name FROM ingredients ORDER BY name ASC");
+										 	$res_ing = mysqli_query($conn, "SELECT id, name, profile, chemical_name, INCI, CAS FROM ingredients ORDER BY name ASC");
 										 	while ($r_ing = mysqli_fetch_array($res_ing)){
-												echo '<option value="'.$r_ing['name'].'">'.$r_ing['name'].' ('.$r_ing['profile'].')</option>';
+												if($r_ing['INCI']){
+										?>
+											<option value="<?=$r_ing['name']?>"><?=$r_ing['name']?> (<?=$r_ing['INCI']?>)</option>
+										<?php 	}else{ ?>
+											<option value="<?=$r_ing['name']?>"><?=$r_ing['name']?> (<?=$r_ing['CAS']?>)</option>
+										<?php
+												} 
 											}
-										 ?>
+										?>
                                          </select>                                         
                                          </td>
                                          <td><input type="text" name="concentration" id="concentration" placeholder="Purity %" class="form-control" /></td>
@@ -110,6 +121,7 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
                                     </tr>  
                         </table>  
                       </form>
+                      <?php } ?>
                     </th>
                     </tr>
                 <div id="fetch_formula">
@@ -364,7 +376,7 @@ $.ajax({
     url: 'pages/viewFormula.php', 
 	type: 'get',
     data: {
-		id: "<?php echo $fid; ?>"
+		id: "<?=$id?>"
 		},
 	dataType: 'html',
 		success: function (data) {
@@ -380,7 +392,7 @@ function fetch_pyramid(){
 		url: 'pages/viewPyramid.php', 
 		type: 'get',
 		data: {
-			formula: "<?php echo $f_name; ?>"
+			formula: "<?=$id?>"
 			},
 		dataType: 'html',
 		success: function (data) {

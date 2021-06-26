@@ -28,6 +28,7 @@ require_once(__ROOT__.'/func/pvFileGet.php');
 require_once(__ROOT__.'/func/countPending.php');
 require_once(__ROOT__.'/func/countCart.php');
 require_once(__ROOT__.'/func/pvOnline.php');
+require_once(__ROOT__.'/func/getIngSupplier.php');
 
 require(__ROOT__.'/inc/settings.php');
 
@@ -87,7 +88,11 @@ if($pv_meta['app_ver'] < trim(file_get_contents(__ROOT__.'/VERSION.md'))){
   
   <script src='js/tipsy.js'></script>
   <script src="js/jquery-ui.js"></script>
-  
+
+  <script src="js/dataTables.responsive.min.js"></script>
+  <script src="js/responsive.bootstrap.min.js"></script>
+  <link href="css/responsive.bootstrap.min.css" rel="stylesheet">
+
   <link href="css/jquery-ui.css" rel="stylesheet">
   <link href="css/tipsy.css" rel="stylesheet" />
   <link href="css/magnific-popup.css" rel="stylesheet" />
@@ -143,6 +148,7 @@ function list_formulas(){
 };
 	
 function list_ingredients(){
+	//$('#list_ingredients').html('<img class="loader loader-center" src="/img/Testtube.gif"/>');
 	$.ajax({ 
 		url: 'pages/listIngredients.php', 
 		dataType: 'html',

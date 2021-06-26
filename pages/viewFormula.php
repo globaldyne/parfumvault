@@ -13,33 +13,39 @@ require_once(__ROOT__.'/func/searchIFRA.php');
 require_once(__ROOT__.'/func/goShopping.php');
 require_once(__ROOT__.'/func/ml2L.php');
 require_once(__ROOT__.'/func/countElement.php');
+require_once(__ROOT__.'/func/getIngSupplier.php');
 
 if(!$_GET['id']){
 	echo 'Formula id is missing.';
 	return;
 }
 	
-$fid = mysqli_real_escape_string($conn, $_GET['id']);
-$f_name = base64_decode($fid);
+$id = mysqli_real_escape_string($conn, $_GET['id']);
 
-if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulas WHERE fid = '$fid'")) == 0){
+if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulasMetaData WHERE id = '$id'")) == 0){
 	echo '<div class="alert alert-info alert-dismissible">Incomplete formula. Please add ingredients.</div>';
 	return;
 }
+$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE id = '$id'"));
+$f_name = base64_decode($meta['fid']);
 
-$formula_q = mysqli_query($conn, "SELECT * FROM formulas WHERE fid = '$fid' ORDER BY ingredient ASC");
+$formula_q = mysqli_query($conn, "SELECT * FROM formulas WHERE fid = '".$meta['fid']."' ORDER BY ingredient ASC");
 while ($formula = mysqli_fetch_array($formula_q)){
 	    $form[] = $formula;
 }
 
-$defCatClass = $settings['defCatClass'];
 
-$mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE fid = '$fid'"));
-$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE fid = '$fid'"));
+$mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE fid = '".$meta['fid']."'"));
 
-$top_calc = calcPerc($f_name, 'Top', $settings['top_n'], $conn);
-$heart_calc = calcPerc($f_name, 'Heart', $settings['heart_n'], $conn);
-$base_calc = calcPerc($f_name, 'Base', $settings['base_n'], $conn);
+if($meta['catClass']){
+	$defCatClass = $meta['catClass'];
+}else{
+	$defCatClass = $settings['defCatClass'];
+}
+
+$top_calc = calcPerc($id, 'Top', $settings['top_n'], $conn);
+$heart_calc = calcPerc($id, 'Heart', $settings['heart_n'], $conn);
+$base_calc = calcPerc($id, 'Base', $settings['base_n'], $conn);
 ?>
  
 <script type='text/javascript'>
@@ -47,6 +53,7 @@ $(document).ready(function() {
 						   
 	var groupColumn = 0;
     var table = $('#formula').DataTable({
+		responsive: false,
         "columnDefs": [
             { "visible": false, "targets": groupColumn }
         ],
@@ -60,7 +67,7 @@ $(document).ready(function() {
             api.column(groupColumn, {page:'current'} ).data().each( function ( group, i ) {
                 if ( last !== group ) {
                     $(rows).eq( i ).before(
-                        '<tr class="group noexport"><td colspan="9">'+group+' Notes</td></tr>'
+                        '<tr class="group noexport"><td colspan="' + rows.columns()[0].length +'">' + group + ' Notes</td></tr>'
                     );
  
                     last = group;
@@ -68,7 +75,7 @@ $(document).ready(function() {
             } );
         }
     } );
- 
+
     // Order by the grouping
     $('#formula tbody').on( 'click', 'tr.group', function () {
         var currentOrder = table.order()[0];
@@ -226,7 +233,7 @@ $('.replaceIngredient').editable({
  
 </script>
 
-<table class="table table-bordered" <?php if($settings['grp_formula'] == '1'){?>id="formula" <?php } ?>width="100%" cellspacing="0">
+<table class="table table-striped table-bordered nowrap" <?php if($settings['grp_formula'] == '1'){?>id="formula" <?php } ?>width="100%" cellspacing="0">
                   <thead>
                     <tr class="noexport">
                     <?php if($settings['grp_formula'] == '1'){?>
@@ -242,7 +249,7 @@ $('.replaceIngredient').editable({
                       <th>
                       <div class="btn-group">
                       <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
-                      <div class="dropdown-menu">
+                      <div class="dropdown-menu dropdown-menu-left">
                         <a class="dropdown-item" id="csv" href="#">Export to CSV</a>
                         <a class="dropdown-item" href="javascript:manageQuantity('multiply')">Multiply x2</a>
                         <a class="dropdown-item" href="javascript:manageQuantity('divide')">Divide x2</a>
@@ -250,6 +257,7 @@ $('.replaceIngredient').editable({
 	                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#amount_to_make">Amount to make</a>
              			<div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="javascript:addTODO()">Add to the make list</a>
+                        <!-- <a class="dropdown-item" href="javascript:addAllToCart()">Add all to cart</a> -->
                       </div>
                     </div>
                     </tr>
@@ -272,7 +280,7 @@ $('.replaceIngredient').editable({
                   </thead>
                   <tbody id="formula_data">
                   <?php	foreach ($form as $formula){
-						$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT cas, $defCatClass, price, ml, profile, odor FROM ingredients WHERE BINARY name = '".$formula['ingredient']."'"));
+						$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT id, cas, $defCatClass, profile, odor FROM ingredients WHERE BINARY name = '".$formula['ingredient']."'"));
 
 						$limit = explode(' - ',searchIFRA($ing_q['cas'],$formula['ingredient'],null,$conn,$defCatClass));
 						
@@ -333,17 +341,21 @@ $('.replaceIngredient').editable({
 					  ?>
 					  <td data-name="quantity" class="quantity" data-type="text" align="center" data-pk="<?php echo $formula['ingredient'];?>"><?php echo number_format($formula['quantity'],$settings['qStep']);?></td>
 					  <td align="center" <?php echo $IFRA_WARN;?>><?php echo $conc_p;?></td>
-					  <td align="center"><?php echo calcCosts($ing_q['price'],$formula['quantity'], $formula['concentration'], $ing_q['ml']);?></td>
+					  <td align="center"><a href="#" data-toggle="tooltip" data-placement="top" title="by <?=getPrefSupplier($ing_q['id'],$conn)['name']?>"><?=calcCosts(getPrefSupplier($ing_q['id'],$conn)['price'],$formula['quantity'], $formula['concentration'], getPrefSupplier($ing_q['id'],$conn)['size']);?></a></td>
                       <?php if($meta['defView'] == '1'){?>
 					  <td><?php echo ucfirst($ing_q['odor']);?></td>
 					  <?php }elseif($meta['defView'] == '2'){?>
 					  <td data-name="notes" class="notes" data-type="text" align="center" data-pk="<?php echo $formula['ingredient'];?>"><?=$formula['notes']?></td>
                       <?php } ?>
-                      <td class="noexport" align="center"><a href="#" class="fas fa-exchange-alt replaceIngredient" rel="tipsy" title="Replace <?php echo $formula['ingredient'];?>" id="replaceIngredient" data-name="<?php echo $formula['ingredient'];?>" data-type="select" data-pk="<?php echo $formula['ingredient'];?>" data-title="Choose Ingredient to replace <?php echo $formula['ingredient'];?>"></a> &nbsp; <a href="<?php echo goShopping($formula['ingredient'],$conn);?>" target="_blank" class="fas fa-shopping-cart"></a> &nbsp; <a href="javascript:deleteING('<?php echo $formula['ingredient'];?>', '<?php echo $formula['id'];?>')" onclick="return confirm('Remove <?php echo $formula['ingredient'];?> from formula?')" class="fas fa-trash" rel="tipsy" title="Remove <?php echo $formula['ingredient'];?>"></a>
+                      <?php if($meta['isProtected'] == FALSE){?>
+                      <td class="noexport" align="center"><a href="#" class="fas fa-exchange-alt replaceIngredient" rel="tipsy" title="Replace <?php echo $formula['ingredient'];?>" id="replaceIngredient" data-name="<?php echo $formula['ingredient'];?>" data-type="select" data-pk="<?php echo $formula['ingredient'];?>" data-title="Choose Ingredient to replace <?php echo $formula['ingredient'];?>"></a> &nbsp; <a href="<?=getPrefSupplier($ing_q['id'],$conn)['supplierLink']?>" target="_blank" class="fas fa-shopping-cart"></a> &nbsp; <a href="javascript:deleteING('<?=$formula['ingredient']?>', '<?=$formula['id']?>')" onclick="return confirm('Remove <?=$formula['ingredient']?> from formula?')" class="fas fa-trash" rel="tipsy" title="Remove <?=$formula['ingredient']?>"></a>
                       </td>
+                      <?php }else{ ?>
+                      <td class="noexport" align="center"><a href="<?=getPrefSupplier($ing_q['id'],$conn)['supplierLink']?>" target="_blank" class="fas fa-shopping-cart"></a></td>
+                      <?php } ?>
 				</tr>
 				<?php
-					$tot[] = calcCosts($ing_q['price'],$formula['quantity'], $formula['concentration'], $ing_q['ml']);
+					$tot[] = calcCosts(getPrefSupplier($ing_q['id'],$conn)['price'],$formula['quantity'], $formula['concentration'], getPrefSupplier($ing_q['id'],$conn)['size']);
 					$conc_tot[] = $conc_p;
 				  }
 	            ?>
@@ -355,7 +367,7 @@ $('.replaceIngredient').editable({
                       <th>
                       </th> 
                       <?php }?>
-                      <th width="22%">Total: <?php echo countElement("formulas WHERE fid = '$fid'",$conn);?></th>
+                      <th width="22%">Total: <?php echo countElement("formulas WHERE fid = '".$meta['fid']."'",$conn);?></th>
                       <th></th>
                       <th></th>
                       <th></th>
@@ -409,7 +421,10 @@ $('.replaceIngredient').editable({
 
 
 <script type="text/javascript" language="javascript" >
- 
+$(".alert-dismissible").fadeTo(2000, 500).slideUp(500, function(){
+    $(".alert-dismissible").slideUp(500);
+});
+<?php if($meta['isProtected'] == FALSE){?>
 $('#formula_data').editable({
   container: 'body',
   selector: 'td.quantity',
@@ -493,7 +508,7 @@ $('#formula_data').editable({
     
 });
 
-
+<?php } ?>
 $('#csv').on('click',function(){
   $("#formula").tableHTMLExport({
 	type:'csv',
@@ -507,4 +522,6 @@ $('#csv').on('click',function(){
 	htmlContent: false
   });
 });
+
+$('[data-toggle="tooltip"]').tooltip();
 </script>

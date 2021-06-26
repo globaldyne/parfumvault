@@ -7,7 +7,10 @@ require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 
 require_once(__ROOT__.'/func/formulaProfile.php');
-
+$cats_q = mysqli_query($conn, "SELECT id,name,description,type FROM IFRACategories ORDER BY id ASC");
+while($cats_res = mysqli_fetch_array($cats_q)){
+    $cats[] = $cats_res;
+}
 ?>
             <table width="100%" border="0">
               <tr>
@@ -67,7 +70,7 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"))== 0){
             
 <!--ADD FORMULA MODAL-->
 <div class="modal fade" id="add_formula" tabindex="-1" role="dialog" aria-labelledby="add_formula" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="add_formula">Add a new formula</h5>
@@ -80,8 +83,8 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"))== 0){
   	  <form action="javascript:add_formula()" id="form1">
       <table width="100%" border="0">  
           <tr>
-            <td>Name:</td>
-            <td><input name="name" id="name" type="text" class="form-control" /></td>
+            <td width="11%">Name:</td>
+            <td width="89%"><input name="name" id="name" type="text" class="form-control" /></td>
           </tr>
           <tr>
             <td>Profile:</td>
@@ -95,6 +98,14 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"))== 0){
             </select>
             </td>
           </tr>
+           <tr>
+             <td valign="top">Purpose: </td>
+             <td><select name="catClass" id="catClass" class="form-control ellipsis">
+			<?php foreach ($cats as $IFRACategories) {?>
+				<option value="cat<?php echo $IFRACategories['name'];?>" <?php echo ($settings['defCatClass']=='cat'.$IFRACategories['name'])?"selected=\"selected\"":""; ?>><?php echo $IFRACategories['description'];?></option>
+		 	<?php }	?>
+            </select></td>
+           </tr>
            <tr>
            	<td valign="top">Notes:</td>
             <td><textarea name="notes" id="notes" cols="45" rows="5" class="form-control"></textarea></td>
@@ -258,6 +269,7 @@ function add_formula() {
 		action: 'addFormula',
 		name: $("#name").val(),
 		profile: $("#profile").val(),
+		catClass: $("#catClass").val(),
 		notes: $("#notes").val(),
 		},
 	dataType: 'html',
