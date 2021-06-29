@@ -24,13 +24,14 @@ if($chk) {
 		
 		if(mysqli_query($conn,"INSERT INTO documents (ownerID,type,name,notes,docData) VALUES ('".$r['id']."','1','MSDS','Migrated from old DB','$docData')")){
 			mysqli_query($conn,"ALTER TABLE ingredients DROP SDS");
+			unlink(__ROOT__.'/'.$r['SDS']);			
 			echo 'Migrating '.$r['name']."\n";
 			
 		}else{
 			echo 'Document migration failed...';
 		}
-	
 	}
+	rmdir(__ROOT__.'/uploads/SDS');
 }else{
 	echo 'Scripts seems to have been already executed.';
 }
