@@ -171,7 +171,6 @@ CREATE TABLE `ingredients` (
   `cas` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `reach` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `FEMA` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `SDS` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `supplier` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `supplier_link` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `price` varchar(10) COLLATE utf8_bin DEFAULT NULL,
@@ -475,3 +474,14 @@ ALTER TABLE `users`
 
 ALTER TABLE `allergens`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+CREATE TABLE `documents` (
+ `id` int(11) NOT NULL AUTO_INCREMENT,
+ `ownerID` int(11) NOT NULL,
+ `type` int(11) NOT NULL,
+ `name` varchar(255) COLLATE utf8_bin NOT NULL,
+ `notes` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+ `docData` longblob NOT NULL,
+ PRIMARY KEY (`id`),
+ UNIQUE KEY `id` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;

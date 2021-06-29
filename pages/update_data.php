@@ -8,6 +8,28 @@ require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/sanChar.php');
 require_once(__ROOT__.'/func/priceScrape.php');
 
+//UPDATE ING DOCUMENT
+if($_GET['ingDoc'] == 'update'){
+	$value = mysqli_real_escape_string($conn, $_POST['value']);
+	$id = mysqli_real_escape_string($conn, $_POST['pk']);
+	$name = mysqli_real_escape_string($conn, $_POST['name']);
+	$ownerID = mysqli_real_escape_string($conn, $_GET['ingID']);
+
+	mysqli_query($conn, "UPDATE documents SET $name = '$value' WHERE ownerID = '$ownerID' AND id='$id'");
+	return;
+}
+
+
+//DELETE ING DOCUMENT	
+if($_GET['doc'] == 'delete'){
+
+	$id = mysqli_real_escape_string($conn, $_GET['id']);
+	$ownerID = mysqli_real_escape_string($conn, $_GET['ingID']);
+							
+	mysqli_query($conn, "DELETE FROM documents WHERE id = '$id' AND ownerID='$ownerID'");
+	return;
+}
+
 //GET SUPPLIER PRICE
 if($_POST['ingSupplier'] == 'getPrice'){
 	$ingID = mysqli_real_escape_string($conn, $_POST['ingID']);

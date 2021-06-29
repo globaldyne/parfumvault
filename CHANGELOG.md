@@ -1,4 +1,8 @@
 # CHANGELOG
+### Version 3.1
+Adding documents for ingredients
+Migration script added
+
 ### Version 3.0
 Add multiple suppliers per ingredient
 Price scrapper added - scrape price data from your suppliers web page
