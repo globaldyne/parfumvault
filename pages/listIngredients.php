@@ -11,6 +11,7 @@ require_once(__ROOT__.'/func/checkAllergen.php');
 require_once(__ROOT__.'/func/searchIFRA.php');
 require_once(__ROOT__.'/func/getCatByID.php');
 require_once(__ROOT__.'/func/profileImg.php');
+require_once(__ROOT__.'/func/getDocument.php');
 
 $ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC");
 $defCatClass = $settings['defCatClass'];
@@ -85,19 +86,27 @@ $defCatClass = $settings['defCatClass'];
                     <?php }else{ ?>
                         <td align="center">N/A</a>
                     <?php } ?>
-					<?php
-					  if ($ingredient['SDS']){
-						  echo '<td align="center" class="noexport"><a href="'.$ingredient['SDS'].'" target="_blank" class="fa fa-save"></a></td>';
-					  }else{
-						  echo '<td align="center" class="noexport">N/A</td>';
-					  }	
-					  if ($ingredient['cas']){
-						  echo '<td align="center" class="noexport"><a href="http://www.thegoodscentscompany.com/search3.php?qName='.$ingredient['cas'].'" target="_blank" class="fa fa-external-link-alt"></a></td>';
-					  }else{
-						  echo '<td align="center" class="noexport"><a href="http://www.thegoodscentscompany.com/search3.php?qName='.$ingredient['name'].'" target="_blank" class="fa fa-external-link-alt"></a></td>';
-					  }
-					  ?>
-                      <td class="noexport" align="center"><a href="pages/mgmIngredient.php?id=<?php echo base64_encode($ingredient['name']);?>" class="fas fa-edit popup-link"><a> <a href="javascript:delete_ingredient('<?php echo $ingredient['id'];?>')" onclick="return confirm('Delete <?php echo $ingredient['name'];?> ?')" class="fas fa-trash"></a></td>
+					<?php if ($a = getDocument($ingredient['id'],1,$conn)){ ?>
+                      <td align="center">
+						<div class="btn-group">
+                          <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-file-alt"></i></button>
+                            <div class="dropdown-menu dropdown-menu-right">
+                         <?php foreach ($a as $b){ ?>
+                             <a class="dropdown-item popup-link" href="<?=$b['docData']?>"><?=$b['name']?></a> 
+                         <?php }	?>
+                             </div>
+                         </div>
+                      </td>
+                         <?php }else{ ?>
+						  <td align="center" class="noexport">N/A</td>
+					  <?php } ?>
+					  
+					  <?php if ($ingredient['cas']){ ?>
+					  			<td align="center" class="noexport"><a href="http://www.thegoodscentscompany.com/search3.php?qName=<?=$ingredient['cas']?>" target="_blank" class="fa fa-external-link-alt"></a></td>
+					  <?php }else{ ?>
+						  		<td align="center" class="noexport"><a href="http://www.thegoodscentscompany.com/search3.php?qName=<?=$ingredient['name']?>" target="_blank" class="fa fa-external-link-alt"></a></td>
+					  <?php }  ?>
+                      <td class="noexport" align="center"><a href="pages/mgmIngredient.php?id=<?=base64_encode($ingredient['name'])?>" class="fas fa-edit popup-link"><a> <a href="javascript:delete_ingredient('<?=$ingredient['id']?>')" onclick="return confirm('Delete <?=$ingredient['name']?> ?')" class="fas fa-trash"></a></td>
 					  </tr>
 				  <?php } ?>
                     </tr>

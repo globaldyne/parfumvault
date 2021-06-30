@@ -410,12 +410,6 @@ list_cat();
       </ul></td>
       <td>&nbsp;</td>
     </tr>
-    <tr>
-      <td><ul>
-        <li><a href="javascript:migrateDocs();">Migrate docs</a></li>
-      </ul></td>
-      <td>&nbsp;</td>
-    </tr>
   </table>
   </div>
   </div>
