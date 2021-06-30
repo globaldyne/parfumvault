@@ -45,7 +45,7 @@ $defCatClass = $settings['defCatClass'];
                       <th>Category</th>
                       <th><?php echo ucfirst($settings['defCatClass']);?>%</th>
                       <th>Supplier(s)</th>
-                      <th class="noexport">SDS</th>
+                      <th class="noexport">Document(s)</th>
                       <th class="noexport">TGSC</th>
                       <th class="noexport">Actions</th>
                     </tr>
@@ -92,7 +92,7 @@ $defCatClass = $settings['defCatClass'];
                           <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-file-alt"></i></button>
                             <div class="dropdown-menu dropdown-menu-right">
                          <?php foreach ($a as $b){ ?>
-                             <a class="dropdown-item popup-link" href="<?=$b['docData']?>"><?=$b['name']?></a> 
+                             <a class="dropdown-item popup-link" href="pages/viewDoc.php?id=<?=$b['id']?>"><?=$b['name']?></a> 
                          <?php }	?>
                              </div>
                          </div>

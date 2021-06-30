@@ -45,7 +45,7 @@ $q = mysqli_query($conn, "SELECT * FROM documents WHERE ownerID = '$ingID' AND t
                     <?php while ($doc = mysqli_fetch_array($q)) { ?>
                     <tr>
                       <td data-name="name" class="name" data-type="text" align="center" data-pk="<?=$doc['id']?>"><?=$doc['name']?></td>
-                      <td align="center"><a href="<?=$doc['docData']?>" target="_blank" class="fa fa-file-alt"></a></td>
+                      <td align="center"><a href="viewDoc.php?id=<?=$doc['id']?>" target="_blank" class="fa fa-file-alt"></a></td>
 					  <td data-name="notes" class="notes" data-type="text" align="center" data-pk="<?=$doc['id']?>"><?=$doc['notes']?></td>
 					  <td align="center"><?=formatBytes(strlen($doc['docData']))?></td>
                       <td align="center"><a href="javascript:deleteDoc('<?=$doc['id']?>')" onclick="return confirm('Remove <?=$doc['name']?>?');" class="fas fa-trash" data-toggle="tooltip" data-placement="top" title="Remove <?=$doc['name']?> document"></a></td>
