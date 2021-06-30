@@ -251,6 +251,11 @@ reload_data();
               <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
               <div class="dropdown-menu">
                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#printLabel">Print Label</a>
+                <?php if ($ing['cas']){ ?>
+					  	<a class="dropdown-item" href="http://www.thegoodscentscompany.com/search3.php?qName=<?=$ing['cas']?>" target="_blank">View in TGSC</a>
+					  <?php }else{ ?>
+						 <a class="dropdown-item" href="http://www.thegoodscentscompany.com/search3.php?qName=<?=$ing['name']?>" target="_blank">View in TGSC</a>
+					  <?php }  ?>
               </div>
             </div>
             <?php }else {?>
