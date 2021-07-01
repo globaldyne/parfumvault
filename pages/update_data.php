@@ -124,7 +124,7 @@ if($_GET['ingSupplier'] == 'delete'){
 
 if($_POST['value'] && $_GET['formula'] && $_POST['pk']){
 	$value = mysqli_real_escape_string($conn, $_POST['value']);
-	$formula = mysqli_real_escape_string($conn, $_GET['formula']);
+	$formula = mysqli_real_escape_string($conn, base64_decode($_GET['formula']));
 	$ingredient = mysqli_real_escape_string($conn, $_POST['pk']);
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 	

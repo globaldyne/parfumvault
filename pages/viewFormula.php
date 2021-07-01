@@ -428,7 +428,7 @@ $(".alert-dismissible").fadeTo(2000, 500).slideUp(500, function(){
 $('#formula_data').editable({
   container: 'body',
   selector: 'td.quantity',
-  url: "pages/update_data.php?formula=<?php echo $f_name; ?>",
+  url: "pages/update_data.php?formula=<?=base64_encode($f_name)?>",
   title: 'ml',
   type: "POST",
   dataType: 'json',
@@ -452,7 +452,7 @@ $('#formula_data').editable({
 $('#formula_data').editable({
   container: 'body',
   selector: 'td.concentration',
-  url: "pages/update_data.php?formula=<?php echo $f_name; ?>",
+  url: "pages/update_data.php?formula=<?=base64_encode($f_name)?>",
   title: 'Purity %',
   type: "POST",
   dataType: 'json',
@@ -476,7 +476,7 @@ $('#formula_data').editable({
 $('#formula_data').editable({
   container: 'body',
   selector: 'td.notes',
-  url: "pages/update_data.php?formula=<?php echo $f_name; ?>",
+  url: "pages/update_data.php?formula=<?=base64_encode($f_name)?>",
   title: 'Notes',
   type: "POST",
   dataType: 'json',
@@ -495,7 +495,7 @@ $('#formula_data').editable({
 	type: 'POST',
 	emptytext: "",
 	emptyclass: "",
-  	url: "pages/update_data.php?formula=<?php echo $f_name; ?>",
+  	url: "pages/update_data.php?formula=<?=base64_encode($f_name)?>",
     source: [
 			 <?php
 				$res_ing = mysqli_query($conn, "SELECT id, name FROM ingredients WHERE type = 'Solvent' OR type = 'Carrier' ORDER BY name ASC");
