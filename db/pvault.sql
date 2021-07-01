@@ -89,7 +89,6 @@ CREATE TABLE `formulasMetaData` (
   `sex` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `notes` text COLLATE utf8_bin DEFAULT NULL,
   `created` timestamp NOT NULL DEFAULT current_timestamp(),
-  `image` varchar(255) COLLATE utf8_bin NOT NULL,
   `isProtected` INT NULL DEFAULT '0',
   `defView` INT NULL DEFAULT '1',
   `catClass` VARCHAR(10) NULL 

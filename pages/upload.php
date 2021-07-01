@@ -10,7 +10,7 @@ require_once(__ROOT__.'/func/formatBytes.php');
 
 
 
-if($_GET['type'] == '1' && $_GET['id']){
+if($_GET['type'] && $_GET['id']){
 	
 	$ownerID = mysqli_real_escape_string($conn, $_GET['id']);
 	$type = mysqli_real_escape_string($conn, $_GET['type']);
@@ -40,6 +40,9 @@ if($_GET['type'] == '1' && $_GET['id']){
 			 echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>File upload error: </strong>File size must not exceed '.formatBytes($max_filesize).'</div>';
       	}else{
 	         if(move_uploaded_file($file_tmp, $tmp_path.$file_name)){
+				if($type == '2'){
+					mysqli_query($conn, "DELETE FROM documents WHERE ownerID = '$ownerID' AND type = '2'");
+				}
 				$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents($tmp_path.$file_name));
 				if(mysqli_query($conn, "INSERT INTO documents (ownerID,type,name,notes,docData) VALUES ('$ownerID','$type','$name','$notes','$docData')")){
 					unlink($tmp_path.$file_name);
