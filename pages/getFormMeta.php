@@ -21,45 +21,6 @@ if(empty($info['name'])){
 	echo 'Formula not found';
 	return;
 }
-if($_FILES["file"]["tmp_name"]){
-	$filename=$_FILES["file"]["tmp_name"];    
-
-	if(empty($err)==true){
-		 if (!file_exists("../uploads/formulas")) {
-    		 mkdir("../uploads/formulas", 0740, true);
-	  	 }
-	  }
-	  
-	  $maxDim = 400;
-	  list($width, $height, $type, $attr) = getimagesize( $filename );
-	  if ($width > $maxDim || $height > $maxDim) {
-    	$targetfilename = $filename;
-    	$ratio = $width/$height;
-    	if( $ratio > 1) {
-        	$new_width = $maxDim;
-        	$new_height = $maxDim/$ratio;
-    	}else {
-        	$new_width = $maxDim*$ratio;
-        	$new_height = $maxDim;
-    	}
-    	$src = imagecreatefromstring( file_get_contents( $filename ) );
-    	$dst = imagecreatetruecolor( $new_width, $new_height );
-    	imagecopyresampled( $dst, $src, 0, 0, 0, 0, $new_width, $new_height, $width, $height );
-    	imagedestroy( $src );
-    	imagepng( $dst, $targetfilename );
-	 
-		//if($_FILES["file"]["size"] > 0){
-			move_uploaded_file($targetfilename,"../uploads/formulas/".base64_encode($targetfilename));
-			$image = "uploads/formulas/".base64_encode($targetfilename);
-			if(mysqli_query($conn, "UPDATE formulasMetaData SET image = '$image' WHERE id = '$id'")){
-				$msg = '<div class="alert alert-success alert-dismissible">Image uploaded!</div>';
-			}else{
-				$msg = '<div class="alert alert-danger alert-dismissible">Error uploading the image</div>';
-			}
-		imagedestroy( $dst );		
-			
-		}
-	 }
 
 ?>
 <!DOCTYPE html>
@@ -157,10 +118,10 @@ if($_FILES["file"]["tmp_name"]){
   </tr>
   <tr>
     <td>Picture:</td>
-    <td><form action="?id=<?php echo $id; ?>" method="post" enctype="multipart/form-data" name="form1" id="form1">
-      <input type="file" name="file" id="file" />
-      <input type="submit" name="button" id="button" value="Submit" />
-    </form></td>
+    <td>
+      <input type="file" name="doc_file" id="doc_file" />
+      <input type="submit" name="button" class="btn btn-primary" id="pic_upload" value="Upload">
+    </td>
   </tr>
   <tr>
     <td>Notes:</td>
@@ -284,6 +245,45 @@ $("#catClass").change(function() {
 	}
   });
 });
+
+$("#pic_upload").click(function(){
+	$("#msg").html('<div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
+	$("#pic_upload").prop("disabled", true);
+    $("#pic_upload").prop('value', 'Please wait...');
+		
+	var fd = new FormData();
+    var files = $('#doc_file')[0].files;
+    var doc_name = '<?=$info['name']?>';
+
+    if(files.length > 0 ){
+		fd.append('doc_file',files[0]);
+
+			$.ajax({
+              url: 'upload.php?type=2&doc_name=' + btoa(doc_name) + '&id=<?=$id?>',
+              type: 'POST',
+              data: fd,
+              contentType: false,
+              processData: false,
+			  		cache: false,
+              success: function(response){
+                 if(response != 0){
+                    $("#msg").html(response);
+					$("#pic_upload").prop("disabled", false);
+        			$("#pic_upload").prop('value', 'Upload');
+                 }else{
+                    $("#msg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> File upload failed!</div>');
+					$("#pic_upload").prop("disabled", false);
+        			$("#pic_upload").prop('value', 'Upload');
+                 }
+              },
+           });
+        }else{
+			$("#msg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a file to upload!</div>');
+			$("#pic_upload").prop("disabled", false);
+   			$("#pic_upload").prop('value', 'Upload');
+        }
+});	
+
 </script>
  </body>
 </html>
