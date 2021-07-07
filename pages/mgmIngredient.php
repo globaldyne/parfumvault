@@ -77,7 +77,7 @@ $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE n
 <style>
 .container {
     max-width: 100%;
-	width: 1000px;
+	width: 1100px;
 }
 .dropdown-menu > li > a {
     font-weight: 700;
@@ -224,7 +224,18 @@ function reload_data() {
 		  $('#fetch_suppliers').html(data);
 		}
 	  });
-
+	
+	$.ajax({ 
+		url: 'ingDocuments.php', 
+		type: 'get',
+		data: {
+			id: "<?=$ing['id']?>"
+			},
+		dataType: 'html',
+		success: function (data) {
+		  $('#fetch_documents').html(data);
+		}
+	  });
 }
 <?php if($ingID){ ?>
 reload_data();
@@ -240,6 +251,11 @@ reload_data();
               <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
               <div class="dropdown-menu">
                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#printLabel">Print Label</a>
+                <?php if ($ing['cas']){ ?>
+					  	<a class="dropdown-item" href="http://www.thegoodscentscompany.com/search3.php?qName=<?=$ing['cas']?>" target="_blank">View in TGSC</a>
+					  <?php }else{ ?>
+						 <a class="dropdown-item" href="http://www.thegoodscentscompany.com/search3.php?qName=<?=$ing['name']?>" target="_blank">View in TGSC</a>
+					  <?php }  ?>
               </div>
             </div>
             <?php }else {?>
@@ -259,6 +275,7 @@ reload_data();
       <li><a href="#usage_limits" role="tab" data-toggle="tab"><i class="fa fa-bong"></i> Usage &amp; Limits</a></li>
       <li><a href="#supply" role="tab" data-toggle="tab"><i class="fa fa-shopping-cart"></i> Supply</a></li>
       <li><a href="#tech_data" role="tab" data-toggle="tab"><i class="fa fa-cog"></i> Technical Data</a></li>
+      <li><a href="#documents" role="tab" data-toggle="tab"><i class="fa fa-file-alt"></i> Documents</a></li>
       <li><a href="#note_impact" role="tab" data-toggle="tab"><i class="fa fa-magic"></i> Note Impact</a></li>
       <li><a href="#tech_allergens" role="tab" data-toggle="tab"><i class="fa fa-allergies"></i> Allergens</a></li>
       <?php if($settings['pubChem'] == '1' && $ing['cas']){?>
@@ -268,7 +285,7 @@ reload_data();
       <?php } ?>
     </ul>
            	  <div class="tab-content">
-     				<div class="tab-pane fade active in" id="general">
+			<div class="tab-pane fade active in" id="general">
                               <h3>General</h3>
 							   <hr>
                 	         <table width="100%" border="0">
@@ -445,7 +462,12 @@ reload_data();
                           	   <div id="msg_sup"></div>
                                <div id="fetch_suppliers"><div class="loader"></div></div>
                            </div>
-                   
+                    	  
+                           <div class="tab-pane fade" id="documents">
+                          	   <div id="msg_docs"></div>
+                               <div id="fetch_documents"><div class="loader"></div></div>
+                           </div>
+                           
                             <div class="tab-pane fade" id="tech_data">
           						 <h3>Techical Data</h3>
                                  <hr>
@@ -489,17 +511,6 @@ reload_data();
                               <tr>
                                 <td>Appearance:</td>
                                 <td colspan="3"><input name="appearance" type="text" class="form-control" id="appearance" value="<?php echo $ing['appearance']; ?>"/></td>
-                              </tr>
-                              <tr>
-                                <td><a href="<?php echo '/'.$ing['SDS'] ??  '#'; ?>" target="_blank">SDS</a>:</td>
-                                <td colspan="3">
-                                <form method="post" action="" enctype="multipart/form-data" id="myform">
-        							<div >
-                                        <input type="file" id="SDS" name="SDS" />
-                                        <input type="button" class="btn btn-info" value="Upload" id="sds_upload">
-                                  </div>
-							    </form>
-                                </td>
                               </tr>
                             </table>
       						</div>
@@ -696,6 +707,43 @@ reload_data();
 </div>
 </div>
 
+<!-- ADD DOCUMENT-->
+<div class="modal fade" id="addDoc" tabindex="-1" role="dialog" aria-labelledby="addDoc" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addSupplier">Add document for <?php echo $ing['name']; ?></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <div id="doc_inf"></div>
+          <form action="javascript:addDoc()" name="docform" id="docform">
+            <p>
+            Document name: 
+            <input class="form-control" name="doc_name" type="text" id="doc_name" />
+            </p>
+            <p>            
+            Notes:
+            <input class="form-control" name="doc_notes" type="textarea" id="doc_notes" />
+            </p>
+            <p>
+            File:
+            <input type="file" name="doc_file" id="doc_file" class="form-control" />
+            </p>            
+            <div class="dropdown-divider"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <input type="submit" name="button" class="btn btn-primary" id="doc_upload" value="Upload">
+      </div>
+     </form>
+    </div>
+  </div>
+</div>
+</div>
+
 <script type="text/javascript" language="javascript">
 
 $("#supplier_name").change(function () {
@@ -807,6 +855,23 @@ function deleteSupplier(sID) {
 	  });
 };
 
+function deleteDoc(id) {	  
+	$.ajax({ 
+		url: 'update_data.php', 
+		type: 'GET',
+		data: {
+			doc: 'delete',
+			id: id,
+			ingID: '<?=$ing['id'];?>'
+			},
+		dataType: 'html',
+		success: function (data) {
+			$('#msg_doc').html(data);
+			reload_data();
+		}
+	  });
+};
+
 function prefSID(sID, status) {	  
 	$.ajax({ 
 		url: 'update_data.php', 
@@ -887,43 +952,44 @@ $(document).ready(function() {
 	});
 })
 	
-$("#sds_upload").click(function(){
-        $("#ingMsg").html('<div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
-		$("#sds_upload").prop("disabled", true);
-        $("#sds_upload").prop('value', 'Please wait...');
+$("#doc_upload").click(function(){
+	$("#doc_inf").html('<div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
+	$("#doc_upload").prop("disabled", true);
+    $("#doc_upload").prop('value', 'Please wait...');
 		
-		var fd = new FormData();
-        var files = $('#SDS')[0].files;
-        
-        if(files.length > 0 ){
-           fd.append('SDS',files[0]);
+	var fd = new FormData();
+    var files = $('#doc_file')[0].files;
+    var doc_name = $('#doc_name').val();
+    var doc_notes = $('#doc_notes').val();
 
-           $.ajax({
-              url: 'upload.php?type=SDS&ingredient_id=<?=$ing['name'];?>',
-              type: 'post',
+    if(files.length > 0 ){
+		fd.append('doc_file',files[0]);
+
+			$.ajax({
+              url: 'upload.php?type=1&doc_name=' + btoa(doc_name) + '&doc_notes=' + btoa(doc_notes) + '&id=<?=$ing['id'];?>',
+              type: 'POST',
               data: fd,
               contentType: false,
               processData: false,
+			  		cache: false,
               success: function(response){
                  if(response != 0){
-                    $("#ingMsg").html(response);
-					$("#sds_upload").prop("disabled", false);
-        			$("#sds_upload").prop('value', 'Upload');
+                    $("#doc_inf").html(response);
+					$("#doc_upload").prop("disabled", false);
+        			$("#doc_upload").prop('value', 'Upload');
+					reload_data();
                  }else{
-                    $("#ingMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> File upload failed!</div>');
-					$("#sds_upload").prop("disabled", false);
-        			$("#sds_upload").prop('value', 'Upload');
+                    $("#doc_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> File upload failed!</div>');
+					$("#doc_upload").prop("disabled", false);
+        			$("#doc_upload").prop('value', 'Upload');
                  }
               },
            });
         }else{
-			$("#ingMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a file to upload!</div>');
-			$("#sds_upload").prop("disabled", false);
-   			$("#sds_upload").prop('value', 'Upload');
+			$("#doc_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a file to upload!</div>');
+			$("#doc_upload").prop("disabled", false);
+   			$("#doc_upload").prop('value', 'Upload');
         }
-    });
-	
-	
+    });	
 });
 </script>
-

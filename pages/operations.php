@@ -32,6 +32,36 @@ if($_GET['do'] == 'db_update'){
 	if($q){
 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Your database has been updated!</strong></div>';
 	}
+	return;
+}
+
+
+if($_GET['do'] == 'backupDB'){
+	
+	$file = 'backup-'.date("d-m-Y").'.sql.gz';
+	$mime = "application/x-gzip";
+	
+	header( 'Content-Type: '.$mime );
+	header( 'Content-Disposition: attachment; filename="' .$file. '"' );
+	
+	$cmd = "mysqldump -u $dbuser --password=$dbpass $dbname | gzip --best";   
+	passthru($cmd);
+	
+	return;
+}
+
+if($_GET['do'] == 'backupFILES'){
+	
+	$file = 'backup-'.date("d-m-Y").'.files.gz';
+	$mime = "application/x-gzip";
+	
+	$cmd = "tar -czvf ".__ROOT__."/$tmp_path$file ".__ROOT__."/$uploads_path";   
+	shell_exec($cmd);
+	
+	header( 'Content-Type: '.$mime );
+	header( 'Location:/tmp/' .$file );
+
+	return;	
 }
 
 ?>
