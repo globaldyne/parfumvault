@@ -58,7 +58,7 @@ $(document).ready(function() {
             { "visible": false, "targets": groupColumn }
         ],
         "order": [[ groupColumn, 'desc' ]],
-        "displayLength": 50,
+        "displayLength": 100,
         "drawCallback": function ( settings ) {
             var api = this.api();
             var rows = api.rows( {page:'current'} ).nodes();
