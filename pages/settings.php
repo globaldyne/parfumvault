@@ -394,8 +394,14 @@ list_cat();
     </tr>
     <tr>
       <td><ul>
-        <li><a href="pages/maintenance.php?do=backupDB">Backup DB</a></li>
+        <li><a href="pages/operations.php?do=backupDB">Backup DB</a></li>
         </ul></td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td><ul>
+        <li><a href="pages/operations.php?do=backupFILES">Backup Files</a></li>
+      </ul></td>
       <td>&nbsp;</td>
     </tr>
     <tr>

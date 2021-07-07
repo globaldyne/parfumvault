@@ -10,35 +10,45 @@ require_once(__ROOT__.'/func/formatBytes.php');
 
 
 
-if($_GET['type'] == 'SDS' && $_GET['ingredient_id']){
+if($_GET['type'] && $_GET['id']){
 	
-	$ingID = mysqli_real_escape_string($conn, $_GET['ingredient_id']);
-	
-	if(isset($_FILES['SDS']['name'])){
-      $file_name = $_FILES['SDS']['name'];
-      $file_size = $_FILES['SDS']['size'];
-      $file_tmp = $_FILES['SDS']['tmp_name'];
-      $file_type = $_FILES['SDS']['type'];
-      $file_ext = strtolower(end(explode('.',$_FILES['SDS']['name'])));
-	  
-	  if (file_exists('../'.$uploads_path.'SDS/') === FALSE) {
-    	mkdir('../'.$uploads_path.'SDS/', 0740, true);
-	  }
+	$ownerID = mysqli_real_escape_string($conn, $_GET['id']);
+	$type = mysqli_real_escape_string($conn, $_GET['type']);
+	$name = base64_decode($_GET['doc_name']);
+	$notes = base64_decode($_GET['doc_notes']);
 
-	  $ext = explode(', ', $allowed_ext);
+	$field = 'doc_file';
+	
+	if(isset($_FILES[$field]['name'])){
+		$file_name = $_FILES[$field]['name'];
+     	$file_size = $_FILES[$field]['size'];
+     	$file_tmp = $_FILES[$field]['tmp_name'];
+     	$file_type = $_FILES[$field]['type'];
+     	$file_ext = strtolower(end(explode('.',$_FILES[$field]['name'])));
+	
+		$tmp_path = __ROOT__.'/tmp/';
+	
+		if (!file_exists($tmp_path)) {
+			mkdir($tmp_path, 0740, true);
+		}
+	
+	  	$ext = explode(', ', $allowed_ext);
 	  
-      if(in_array($file_ext,$ext)=== false){
-		 echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>File upload error: </strong>Extension not allowed, please choose a '.$allowed_ext.' file.</div>';
-      }elseif($file_size > $max_filesize){
-		 echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>File upload error: </strong>File size must not exceed '.formatBytes($max_filesize).'</div>';
-      }else{
-	  
-         if(move_uploaded_file($file_tmp,'../'.$uploads_path.'SDS/'.base64_encode($file_name))){
-		 	$SDSF = $uploads_path.'SDS/'.base64_encode($file_name);
-		 	if(mysqli_query($conn, "UPDATE ingredients SET SDS = '$SDSF' WHERE name='$ingID'")){
-		 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>SDS File uploaded</strong></div>';
-			}
-		 }
+      	if(in_array($file_ext,$ext)=== false){
+			 echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>File upload error: </strong>Extension not allowed, please choose a '.$allowed_ext.' file.</div>';
+      	}elseif($file_size > $max_filesize){
+			 echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>File upload error: </strong>File size must not exceed '.formatBytes($max_filesize).'</div>';
+      	}else{
+	         if(move_uploaded_file($file_tmp, $tmp_path.$file_name)){
+				if($type == '2'){
+					mysqli_query($conn, "DELETE FROM documents WHERE ownerID = '$ownerID' AND type = '2'");
+				}
+				$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents($tmp_path.$file_name));
+				if(mysqli_query($conn, "INSERT INTO documents (ownerID,type,name,notes,docData) VALUES ('$ownerID','$type','$name','$notes','$docData')")){
+					unlink($tmp_path.$file_name);
+					echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>File uploaded</strong></div>';
+				 }
+			 }
 	  }
    }
 	
