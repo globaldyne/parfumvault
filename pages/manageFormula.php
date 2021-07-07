@@ -163,7 +163,7 @@ if($_POST['action'] == 'addFormula'){
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulasMetaData WHERE fid = '$fid'"))){
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$name.' already exists!</div>';
 	}else{
-		$q = mysqli_query($conn, "INSERT INTO formulasMetaData (fid, name, notes, profile, image, catClass) VALUES ('$fid', '$name', '$notes', '$profile', '$def_app_img', '$catClass')");
+		$q = mysqli_query($conn, "INSERT INTO formulasMetaData (fid, name, notes, profile, catClass) VALUES ('$fid', '$name', '$notes', '$profile', '$catClass')");
 		if($nID = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$fid'"))){
 			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong><a href="?do=Formula&id='.$nID['id'].'">'.$name.'</a></strong> added!</div>';
 		}else{
