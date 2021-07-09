@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 3.2
+
 ### Version 3.1
 Adding documents for ingredients
 Migration script added
