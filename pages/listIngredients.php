@@ -13,8 +13,8 @@ require_once(__ROOT__.'/func/getCatByID.php');
 require_once(__ROOT__.'/func/profileImg.php');
 require_once(__ROOT__.'/func/getDocument.php');
 
-$ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC");
 $defCatClass = $settings['defCatClass'];
+$ingredient_q = mysqli_query($conn, "SELECT id,name,INCI,cas,profile,category,odor,$defCatClass FROM ingredients ORDER BY name ASC");
 ?>
                 <table class="table table-bordered" id="tdDataIng" width="100%" cellspacing="0">
                   <thead>
