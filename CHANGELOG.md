@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 3.2
+Fixed a bug preventing formula duplication
 
 ### Version 3.1
 Adding documents for ingredients
