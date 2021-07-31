@@ -23,9 +23,16 @@ if(isset($_GET['ing_limit'])){
 $pageLimit = isset($_SESSION['ing_limit']) ? $_SESSION['ing_limit'] : 20;
 $page = (isset($_GET['page']) && is_numeric($_GET['page']) ) ? $_GET['page'] : 1;
 $paginationStart = ($page - 1) * $pageLimit;
-$ingredient_q = mysqli_query($conn, "SELECT id,name,INCI,cas,profile,category,odor,$defCatClass FROM ingredients ORDER BY name ASC LIMIT $paginationStart, $pageLimit ");
 
-$allIng = mysqli_fetch_array(mysqli_query($conn, "SELECT count(id) AS id FROM ingredients"));
+$i = mysqli_real_escape_string($conn, $_GET['q']);
+
+if($i){
+	$filter = "WHERE name LIKE '%$i%' OR cas LIKE '%$i%' OR odor LIKE '%$i%'";
+}
+
+$ingredient_q = mysqli_query($conn, "SELECT id,name,INCI,cas,profile,category,odor,$defCatClass FROM ingredients $filter ORDER BY name ASC LIMIT $paginationStart, $pageLimit ");
+
+$allIng = mysqli_fetch_array(mysqli_query($conn, "SELECT count(id) AS id FROM ingredients $filter"));
 $pages = ceil($allIng['0'] / $pageLimit);
 
 $prev = $page - 1;
@@ -166,6 +173,22 @@ $('#ing_limit').change(function () {
 	list_ingredients(<?=$page?>,$("#ing_limit").val());
 })
 
+var delay = (function(){
+  var timer = 0;
+  return function(callback, ms){
+  clearTimeout (timer);
+  timer = setTimeout(callback, ms);
+ };
+})();
+
+$("#ing_search").keyup(function(){
+  var filter = $(this).val();			
+  delay(function(){
+		list_ingredients(<?=$page?>, <?=$pageLimit?>, filter);
+  }, 1000);
+});
+
+
 $('.popup-link').magnificPopup({
 	type: 'iframe',
 	closeOnContentClick: false,
@@ -176,7 +199,7 @@ $('.popup-link').magnificPopup({
 $('#tdDataIng').DataTable({
     "paging":   false,
 	"info":   false,
-	"lengthMenu": [[20, 35, 60, -1], [20, 35, 60, "All"]]
+	"searching": false
 });
 
 </script>

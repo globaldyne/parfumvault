@@ -147,7 +147,7 @@ function list_formulas(){
 		});
 };
 	
-function list_ingredients(page,limit){
+function list_ingredients(page,limit,filter){
 	//$('#list_ingredients').html('<img class="loader loader-center" src="/img/Testtube.gif"/>');
 	$.ajax({ 
 		url: 'pages/listIngredients.php',
@@ -155,6 +155,7 @@ function list_ingredients(page,limit){
 		data: {
 			"page": page,
 			"ing_limit": limit,
+			"q": filter
 			},
 		dataType: 'html',
 			success: function (data) {
