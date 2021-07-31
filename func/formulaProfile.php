@@ -29,7 +29,7 @@ function formulaProfile($conn, $profile, $sex){
 		<td align="center"><a href="pages/getFormMeta.php?id=<?php echo $meta['id']; ?>" class="popup-link"><?=$meta['product_name']?></a></td>
 		<td align="center"><?php echo ucfirst($meta['catClass']);?></td>
 		<td align="center"><?php echo $meta['created'];?></td>
-		<td align="center"><a href="pages/getFormMeta.php?id=<?php echo $meta['id']; ?>" class="fas fa-comment-dots popup-link"></a> &nbsp; <a href="javascript:addTODO('<?php echo $formula['fid']; ?>')" class="fas fa-list" rel="tipsy" title="Add <?php echo $formula['name']; ?> to the make list" ></a>  &nbsp; <a href="javascript:cloneMe('<?php echo $formula['name']; ?>')" class="fas fa-copy" rel="tipsy" title="Clone <?php echo $formula['name']; ?>"></a>  &nbsp; <a href="javascript:deleteMe('<?php echo $formula['fid']; ?>')" onclick="return confirm('Delete <?php echo $formula['name']; ?> Formula?')" class="fas fa-trash" rel="tipsy" title="Delete <?php echo $formula['name']; ?>"></a></td>
+		<td align="center"><a href="pages/getFormMeta.php?id=<?php echo $meta['id']; ?>" class="fas fa-comment-dots popup-link"></a> &nbsp; <a href="javascript:addTODO('<?php echo $formula['fid']; ?>')" class="fas fa-list" rel="tipsy" title="Add <?php echo $formula['name']; ?> to the make list" ></a>  &nbsp; <a href="javascript:cloneMe('<?php echo $formula['fid']; ?>')" class="fas fa-copy" rel="tipsy" title="Clone <?php echo $formula['name']; ?>"></a>  &nbsp; <a href="javascript:deleteMe('<?php echo $formula['fid']; ?>')" onclick="return confirm('Delete <?php echo $formula['name']; ?> Formula?')" class="fas fa-trash" rel="tipsy" title="Delete <?php echo $formula['name']; ?>"></a></td>
         </tr>
 	<?php } ?>
     </tbody>

@@ -13,15 +13,50 @@ require_once(__ROOT__.'/func/getCatByID.php');
 require_once(__ROOT__.'/func/profileImg.php');
 require_once(__ROOT__.'/func/getDocument.php');
 
-$ingredient_q = mysqli_query($conn, "SELECT * FROM ingredients ORDER BY name ASC");
 $defCatClass = $settings['defCatClass'];
+
+
+if(isset($_GET['ing_limit'])){
+	 $_SESSION['ing_limit'] = $_GET['ing_limit'];
+}
+
+$pageLimit = isset($_SESSION['ing_limit']) ? $_SESSION['ing_limit'] : 20;
+$page = (isset($_GET['page']) && is_numeric($_GET['page']) ) ? $_GET['page'] : 1;
+$paginationStart = ($page - 1) * $pageLimit;
+
+$i = mysqli_real_escape_string($conn, $_GET['q']);
+
+if($i){
+	$filter = "WHERE name LIKE '%$i%' OR cas LIKE '%$i%' OR odor LIKE '%$i%'";
+}
+
+$ingredient_q = mysqli_query($conn, "SELECT id,name,INCI,cas,profile,category,odor,$defCatClass FROM ingredients $filter ORDER BY name ASC LIMIT $paginationStart, $pageLimit ");
+
+$allIng = mysqli_fetch_array(mysqli_query($conn, "SELECT count(id) AS id FROM ingredients $filter"));
+$pages = ceil($allIng['0'] / $pageLimit);
+
+$prev = $page - 1;
+$next = $page + 1;
+
+
 ?>
-                <table class="table table-bordered" id="tdDataIng" width="100%" cellspacing="0">
-                  <thead>
-                    <tr class="noBorder noexport">
-                      <th colspan="10">
-                  		<div class="text-right">
-                        <div class="btn-group">
+<table class="table table-bordered" id="tdDataIng" width="100%" cellspacing="0">
+	<thead>
+     <tr class="noBorder noexport">
+      <th colspan="10">
+       <div class="col-sm-6 text-left">
+		<label>Show  
+        <select name="ing_limit" id="ing_limit" class="form-control input-sm">
+        <?php foreach([20,30,50,100] as $setLimit){ ?>
+           <option
+           <?php if($pageLimit == $setLimit) echo 'selected'; ?>
+            value="<?=$setLimit?>"><?=$setLimit?></option>
+         <?php } ?>
+         </select>
+		entries</label>
+        </div>
+            <div class="col-sm-6 text-right">
+                 <div class="btn-group">
                           <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
                           <div class="dropdown-menu dropdown-menu-right">
                             <a class="dropdown-item popup-link" href="pages/mgmIngredient.php">Add new ingredient</a>
@@ -112,6 +147,21 @@ $defCatClass = $settings['defCatClass'];
                     </tr>
                   </tbody>
                 </table>
+        <nav>
+            <ul class="pagination justify-content-center">
+                <li class="page-item <?php if($page <= 1){ echo 'disabled'; } ?>">
+                    <a class="page-link" href="<?php if($page <= 1){ echo '#'; } else { echo "javascript:list_ingredients($prev,$pageLimit)"; } ?>">Previous</a>
+                </li>
+                <?php for($i = 1; $i <= $pages; $i++ ){ ?>
+                <li class="page-item <?php if($page == $i) {echo 'active'; } ?>">
+                    <a class="page-link" href="<?php echo "javascript:list_ingredients($i,$pageLimit)";?>"> <?=$i?> </a>
+                </li>
+                <?php } ?>
+                <li class="page-item <?php if($page >= $pages) { echo 'disabled'; } ?>">
+                    <a class="page-link" href="<?php if($page >= $pages){ echo '#'; } else {echo "javascript:list_ingredients($next,$pageLimit)"; } ?>">Next</a>
+                </li>
+            </ul>
+        </nav>
 <script type="text/javascript" language="javascript" >
 $(".alert-dismissible").fadeTo(2000, 500).slideUp(500, function(){
     $(".alert-dismissible").slideUp(500);
@@ -119,6 +169,26 @@ $(".alert-dismissible").fadeTo(2000, 500).slideUp(500, function(){
 
 $('a[rel=tipsy]').tipsy();
 	
+$('#ing_limit').change(function () {
+	list_ingredients(<?=$page?>,$("#ing_limit").val());
+})
+
+var delay = (function(){
+  var timer = 0;
+  return function(callback, ms){
+  clearTimeout (timer);
+  timer = setTimeout(callback, ms);
+ };
+})();
+
+$("#ing_search").keyup(function(){
+  var filter = $(this).val();			
+  delay(function(){
+		list_ingredients(<?=$page?>, <?=$pageLimit?>, filter);
+  }, 1000);
+});
+
+
 $('.popup-link').magnificPopup({
 	type: 'iframe',
 	closeOnContentClick: false,
@@ -127,9 +197,9 @@ $('.popup-link').magnificPopup({
 });
 	
 $('#tdDataIng').DataTable({
-    "paging":   true,
-	"info":   true,
-	"lengthMenu": [[20, 35, 60, -1], [20, 35, 60, "All"]]
+    "paging":   false,
+	"info":   false,
+	"searching": false
 });
 
 </script>

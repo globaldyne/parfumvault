@@ -18,6 +18,9 @@ if (!defined('pvault_panel')){ die('Not Found');}
             <div class="card-header py-3">
               <h2 class="m-0 font-weight-bold text-primary"><a href="javascript:list_ingredients()">Ingredients</a></h2>
             </div>
+            <div class="col-sm-12 p-3 text-right">
+			   <label><input type="text" id="ing_search" class="form-control input-sm" placeholder="Search..." name="ing_search"></label>
+            </div>
             <div class="card-body">
               <div class="table-responsive">
                  <div id="list_ingredients">
@@ -138,6 +141,8 @@ if (!defined('pvault_panel')){ die('Not Found');}
 <?php } ?>
 <script type="text/javascript" language="javascript" >
 list_ingredients();
+
+
 <?php if($pv_online['email'] && $pv_online['password']){?>
 
 function pv_online_import(items) {
