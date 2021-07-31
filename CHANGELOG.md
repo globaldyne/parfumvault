@@ -1,4 +1,9 @@
 # CHANGELOG
+### Version 3.2
+Fixed a bug preventing formula duplication
+Ingredients listing pagination
+Custom search in ingredients
+
 ### Version 3.1
 Adding documents for ingredients
 Migration script added

@@ -172,7 +172,7 @@ $.ajax({
 	type: 'get',
     data: {
 		action: "clone",
-		formula: "<?php echo $f_name; ?>",
+		formula: "<?=$meta['fid']?>",
 		},
 	dataType: 'html',
     success: function (data) {
