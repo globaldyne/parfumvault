@@ -147,10 +147,15 @@ function list_formulas(){
 		});
 };
 	
-function list_ingredients(){
+function list_ingredients(page,limit){
 	//$('#list_ingredients').html('<img class="loader loader-center" src="/img/Testtube.gif"/>');
 	$.ajax({ 
-		url: 'pages/listIngredients.php', 
+		url: 'pages/listIngredients.php',
+		type: 'GET',
+		data: {
+			"page": page,
+			"ing_limit": limit,
+			},
 		dataType: 'html',
 			success: function (data) {
 				$('#list_ingredients').html(data);
