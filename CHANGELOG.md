@@ -1,4 +1,7 @@
 # CHANGELOG
+### Version 3.3
+Show CAS and INCI when listing ingredients in formula page
+
 ### Version 3.2
 Fixed a bug preventing formula duplication
 Ingredients listing pagination
