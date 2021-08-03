@@ -425,7 +425,6 @@ reload_data();
 									  }else{
 								?>
                                 <select name="usage_type" id="usage_type" class="form-control">
-                                  <option value="none" selected="selected">None</option>
                                   <option value="1" <?php if($ing['usage_type']=="1") echo 'selected="selected"'; ?> >Recommendation</option>
                                   <option value="2" <?php if($ing['usage_type']=="2") echo 'selected="selected"'; ?> >Restriction</option>
                                   <option value="2" <?php if($ing['usage_type']=="3") echo 'selected="selected"'; ?> >Specification</option>
