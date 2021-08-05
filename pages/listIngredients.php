@@ -184,7 +184,7 @@ var delay = (function(){
 $("#ing_search").keyup(function(){
   var filter = $(this).val();			
   delay(function(){
-		list_ingredients(<?=$page?>, <?=$pageLimit?>, filter);
+		list_ingredients('1', <?=$pageLimit?>, filter);
   }, 1000);
 });
 
