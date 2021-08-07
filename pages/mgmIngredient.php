@@ -158,21 +158,7 @@ function search() {
 	  });
 };
 
-<?php if($ing['cas'] && $settings['pubChem'] == '1'){ ?>
 
-$.ajax({ 
-    url: 'pubChem.php', 
-	type: 'get',
-    data: {
-		cas: "<?php echo $ing['cas']; ?>"
-		},
-	dataType: 'html',
-    success: function (data) {
-	  $('#pubChemData').html(data);
-    }
-});
-
-<?php } ?>
 
 function printLabel() {
 	<?php if(empty($settings['label_printer_addr']) || empty($settings['label_printer_model'])){?>
@@ -236,6 +222,22 @@ function reload_data() {
 		  $('#fetch_documents').html(data);
 		},
 	  });
+	
+	<?php if(isset($ing['cas']) && $settings['pubChem'] == '1'){ ?>
+
+	$.ajax({ 
+		url: 'pubChem.php', 
+		type: 'get',
+		data: {
+			cas: "<?php echo $ing['cas']; ?>"
+			},
+		dataType: 'html',
+		success: function (data) {
+		  $('#pubChemData').html(data);
+		}
+	});
+	
+	<?php } ?>
 };
 
 <?php if($ingID){ ?>
