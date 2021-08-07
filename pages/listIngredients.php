@@ -43,7 +43,7 @@ $next = $page + 1;
 <table class="table table-bordered" id="tdDataIng" width="100%" cellspacing="0">
 	<thead>
      <tr class="noBorder noexport">
-      <th colspan="10">
+      <th colspan="9">
        <div class="col-sm-6 text-left">
 		<label>Show  
         <select name="ing_limit" id="ing_limit" class="form-control input-sm">
@@ -81,7 +81,6 @@ $next = $page + 1;
                       <th><?php echo ucfirst($settings['defCatClass']);?>%</th>
                       <th>Supplier(s)</th>
                       <th class="noexport">Document(s)</th>
-                      <th class="noexport">TGSC</th>
                       <th class="noexport">Actions</th>
                     </tr>
                   </thead>
@@ -135,12 +134,6 @@ $next = $page + 1;
                          <?php }else{ ?>
 						  <td align="center" class="noexport">N/A</td>
 					  <?php } ?>
-					  
-					  <?php if ($ingredient['cas']){ ?>
-					  			<td align="center" class="noexport"><a href="http://www.thegoodscentscompany.com/search3.php?qName=<?=$ingredient['cas']?>" target="_blank" class="fa fa-external-link-alt"></a></td>
-					  <?php }else{ ?>
-						  		<td align="center" class="noexport"><a href="http://www.thegoodscentscompany.com/search3.php?qName=<?=$ingredient['name']?>" target="_blank" class="fa fa-external-link-alt"></a></td>
-					  <?php }  ?>
                       <td class="noexport" align="center"><a href="pages/mgmIngredient.php?id=<?=base64_encode($ingredient['name'])?>" class="fas fa-edit popup-link"><a> <a href="javascript:delete_ingredient('<?=$ingredient['id']?>')" onclick="return confirm('Delete <?=$ingredient['name']?> ?')" class="fas fa-trash"></a></td>
 					  </tr>
 				  <?php } ?>
