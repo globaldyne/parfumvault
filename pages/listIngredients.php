@@ -27,7 +27,7 @@ $paginationStart = ($page - 1) * $pageLimit;
 $i = mysqli_real_escape_string($conn, $_GET['q']);
 
 if($i){
-	$filter = "WHERE name LIKE '%$i%' OR cas LIKE '%$i%' OR odor LIKE '%$i%'";
+	$filter = "WHERE name LIKE '%$i%' OR cas LIKE '%$i%' OR odor LIKE '%$i%' OR INCI LIKE '%$i%'";
 }
 
 $ingredient_q = mysqli_query($conn, "SELECT id,name,INCI,cas,profile,category,odor,$defCatClass FROM ingredients $filter ORDER BY name ASC LIMIT $paginationStart, $pageLimit ");
