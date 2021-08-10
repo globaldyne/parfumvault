@@ -23,14 +23,39 @@ if(isset($_GET['ing_limit'])){
 $pageLimit = isset($_SESSION['ing_limit']) ? $_SESSION['ing_limit'] : 20;
 $page = (isset($_GET['page']) && is_numeric($_GET['page']) ) ? $_GET['page'] : 1;
 $paginationStart = ($page - 1) * $pageLimit;
+$extra = "ORDER BY name ASC LIMIT $paginationStart, $pageLimit";
 
 $i = mysqli_real_escape_string($conn, $_GET['q']);
+if($_GET['adv']){
+	if($name = mysqli_real_escape_string($conn, $_GET['name'])){
+		$name = "name LIKE '%$name%'";
+	}
+	
+	if($cas = mysqli_real_escape_string($conn, $_GET['cas'])){
+		$cas = "AND cas LIKE '%$cas%'";
+	}
+	
+	if($odor = mysqli_real_escape_string($conn, $_GET['odor'])){
+		$odor = "AND odor LIKE '%$odor%'";
+	}
+	
+	if($profile = mysqli_real_escape_string($conn, $_GET['profile'])){
+		$profile = "AND profile = '$profile'";
+	}
+	
+	if($category = mysqli_real_escape_string($conn, $_GET['cat'])){
+		$category = "AND category = '$category'";	
+	}
 
-if($i){
-	$filter = "WHERE name LIKE '%$i%' OR cas LIKE '%$i%' OR odor LIKE '%$i%' OR INCI LIKE '%$i%'";
+	$filter = "WHERE $name $cas $odor $profile $category";
+	$extra = "ORDER BY name";
 }
 
-$ingredient_q = mysqli_query($conn, "SELECT id,name,INCI,cas,profile,category,odor,$defCatClass FROM ingredients $filter ORDER BY name ASC LIMIT $paginationStart, $pageLimit ");
+if($i){
+	$filter = "WHERE name LIKE '%$i%' OR cas LIKE '%$i%' OR odor LIKE '%$i%'";
+}
+
+$ingredient_q = mysqli_query($conn, "SELECT id,name,INCI,cas,profile,category,odor,$defCatClass FROM ingredients $filter $extra");
 
 $allIng = mysqli_fetch_array(mysqli_query($conn, "SELECT count(id) AS id FROM ingredients $filter"));
 $pages = ceil($allIng['0'] / $pageLimit);
