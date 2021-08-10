@@ -136,7 +136,7 @@ $(document).ready(function(){
   $('#formula_metadata').editable({
   container: 'body',
   selector: 'td.name',
-  url: "update_data.php?rename=<?php echo $info['name']; ?>",
+  url: "update_data.php?rename=<?=$info['fid']?>",
   title: 'Name',
   type: "POST",
   mode: 'inline',
@@ -150,7 +150,7 @@ $(document).ready(function(){
   $('#formula_metadata').editable({
   container: 'body',
   selector: 'td.notes',
-  url: "update_data.php?formulaMeta=<?php echo $info['name']; ?>",
+  url: "update_data.php?formulaMeta=<?=$info['fid']?>",
   title: 'Notes',
   type: "POST",
   mode: 'inline',
@@ -164,7 +164,7 @@ $(document).ready(function(){
  $('#formula_metadata').editable({
   container: 'body',
   selector: 'td.product_name',
-  url: "update_data.php?formulaMeta=<?php echo $info['name']; ?>",
+  url: "update_data.php?formulaMeta=<?=$info['fid']?>",
   title: 'Product Name',
   type: "POST",
   mode: 'inline',
@@ -178,7 +178,7 @@ $(document).ready(function(){
   $('#profile').editable({
 	value: "<?php echo $info['profile'];?>",
   	title: 'Profile',
-  	url: "update_data.php?formulaMeta=<?php echo $info['name']; ?>",
+  	url: "update_data.php?formulaMeta=<?=$info['fid']?>",
     source: [
              {value: 'oriental', text: 'Oriental'},
              {value: 'woody', text: 'Woody'},
@@ -190,7 +190,7 @@ $(document).ready(function(){
   
     $('#sex').editable({
 	value: "<?php echo $info['sex'];?>",
-  	url: "update_data.php?formulaMeta=<?php echo $info['name']; ?>",
+  	url: "update_data.php?formulaMeta=<?=$info['fid']?>",
     source: [
              {value: 'unisex', text: 'Unisex'},
              {value: 'men', text: 'Men'},
