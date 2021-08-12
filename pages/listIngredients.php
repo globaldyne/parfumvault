@@ -28,8 +28,12 @@ $extra = "ORDER BY name ASC LIMIT $paginationStart, $pageLimit";
 $i = mysqli_real_escape_string($conn, $_GET['q']);
 if($_GET['adv']){
 	if($name = mysqli_real_escape_string($conn, $_GET['name'])){
-		$name = "name LIKE '%$name%'";
+		$n = $name;
+	}else{
+		$n = '%';
 	}
+	
+	$name = "name LIKE '%$n%'";
 	
 	if($cas = mysqli_real_escape_string($conn, $_GET['cas'])){
 		$cas = "AND cas LIKE '%$cas%'";
@@ -62,7 +66,6 @@ $pages = ceil($allIng['0'] / $pageLimit);
 
 $prev = $page - 1;
 $next = $page + 1;
-
 
 ?>
 <table class="table table-bordered" id="tdDataIng" width="100%" cellspacing="0">

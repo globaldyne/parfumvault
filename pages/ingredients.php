@@ -63,15 +63,15 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
        <table width="100%">
        		<tr>
        		  <td valign="top">Name:</td>
-       		  <td colspan="3"><input name="ing_name" type="text" class="form-control input-sm" id="ing_name" value="%" /></td>
+       		  <td colspan="3"><input name="ing_name" type="text" class="form-control input-sm" id="ing_name" placeholder="Any" /></td>
    		  </tr>
        		<tr>
        		  <td valign="top">CAS:</td>
-       		  <td colspan="3"><input type="text" id="ing_cas" class="form-control input-sm" name="ing_cas" /></td>
+       		  <td colspan="3"><input type="text" id="ing_cas" class="form-control input-sm" name="ing_cas" placeholder="Any" /></td>
    		  </tr>
        		<tr>
        		  <td valign="top">Odor:</td>
-       		  <td colspan="3"><input type="text" id="ing_odor" class="form-control input-sm" name="ing_odor" /></td>
+       		  <td colspan="3"><input type="text" id="ing_odor" class="form-control input-sm" name="ing_odor" placeholder="Any" /></td>
    		  </tr>
        		<tr>
        		  <td valign="top">Profile:</td>
