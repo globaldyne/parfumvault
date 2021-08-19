@@ -148,7 +148,7 @@ function list_formulas(){
 };
 	
 function list_ingredients(page,limit,filter){
-	//$('#list_ingredients').html('<img class="loader loader-center" src="/img/Testtube.gif"/>');
+	$('#list_ingredients').html('<img class="loader loader-center" src="/img/Testtube.gif"/>');
 	$.ajax({ 
 		url: 'pages/listIngredients.php',
 		type: 'GET',

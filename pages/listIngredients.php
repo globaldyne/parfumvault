@@ -56,7 +56,7 @@ if($_GET['adv']){
 }
 
 if($i){
-	$filter = "WHERE name LIKE '%$i%' OR cas LIKE '%$i%' OR odor LIKE '%$i%'";
+	$filter = "WHERE name LIKE '%$i%' OR cas LIKE '%$i%' OR odor LIKE '%$i%' OR INCI LIKE '%$i%'";
 }
 
 $ingredient_q = mysqli_query($conn, "SELECT id,name,INCI,cas,profile,category,odor,$defCatClass FROM ingredients $filter $extra");
