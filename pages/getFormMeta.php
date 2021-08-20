@@ -81,11 +81,11 @@ if(empty($info['name'])){
   </tr>
   <tr>
     <td width="20%">Formula Name:</td>
-    <td data-name="name" class="name" data-type="text" align="left" data-pk="name" width="80%"><?php echo $info['name'];?></td>
+    <td data-name="name" class="name" data-type="text" align="left" data-pk="<?php echo $info['id'];?>" width="80%"><?php echo $info['name'];?></td>
   </tr>
   <tr>
     <td>Product Name:</td>
-    <td data-name="product_name" class="product_name" data-type="text" align="left" data-pk="product_name"><?php echo $info['product_name'];?></td>
+    <td data-name="product_name" class="product_name" data-type="text" align="left" data-pk="<?php echo $info['id'];?>"><?php echo $info['product_name'];?></td>
   </tr>
   <tr>
     <td><a href="#" rel="tipsy" title="When enabled, formula is protected against deletion.">Protected:</a></td>
@@ -161,7 +161,7 @@ $(document).ready(function(){
 
  });
   
- $('#formula_metadata').editable({
+$('#formula_metadata').editable({
   container: 'body',
   selector: 'td.product_name',
   url: "update_data.php?formulaMeta=<?=$info['fid']?>",

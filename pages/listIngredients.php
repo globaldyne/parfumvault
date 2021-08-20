@@ -220,7 +220,10 @@ $('.popup-link').magnificPopup({
 $('#tdDataIng').DataTable({
     "paging":   false,
 	"info":   false,
-	"searching": false
+	"searching": false,
+	"language": {
+        "zeroRecords" : 'Nothing found, try <a href="#" data-toggle="modal" data-target="#adv_search">advanced</a> search instead?',
+    },
 });
 
 </script>
