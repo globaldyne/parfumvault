@@ -202,12 +202,24 @@ var delay = (function(){
  };
 })();
 
-$("#ing_search").keyup(function(){
-  var filter = $(this).val();			
-  delay(function(){
-		list_ingredients('1', <?=$pageLimit?>, filter);
-  }, 1000);
-});
+var filter = $("#ing_search").val();
+var provider = $('.btn-search').attr('id');
+
+$("#ing_search").keyup(pvSearch);
+					   
+function pvSearch(){
+	var filter = $("#ing_search").val();
+	var provider = $('.btn-search').attr('id');
+	if(provider == 'local'){
+	  delay(function(){
+			list_ingredients('1', <?=$pageLimit?>, filter);
+	  }, 1000);
+  	}else{
+	  	delay(function(){
+		  list_ingredients();
+		}, 1000);
+	}
+};
 
 
 $('.popup-link').magnificPopup({
@@ -216,14 +228,24 @@ $('.popup-link').magnificPopup({
 	closeOnBgClick: false,
 	showCloseBtn: true,
 });
-	
+
+if(provider == 'local'){
+ var pr = null;
+}else{
+ var pr = "modules/suppliers/" + provider + ".php?q=" + encodeURIComponent(filter);
+}
+
 $('#tdDataIng').DataTable({
+	"ajax": pr,
+	"processing": true,
     "paging":   false,
 	"info":   false,
 	"searching": false,
 	"language": {
         "zeroRecords" : 'Nothing found, try <a href="#" data-toggle="modal" data-target="#adv_search">advanced</a> search instead?',
+		"processing": '<div class="spinner-grow"></div> Please Wait...'
     },
+	
 });
 
 </script>

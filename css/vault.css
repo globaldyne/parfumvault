@@ -519,3 +519,11 @@ formula td, table.table th {
     white-space: nowrap;
     text-overflow: ellipsis;
 }
+
+.caret {
+	border-top: 4px;
+}
+
+.btn-search {
+	color: #FFF !important;
+}

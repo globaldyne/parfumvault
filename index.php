@@ -29,6 +29,7 @@ require_once(__ROOT__.'/func/countPending.php');
 require_once(__ROOT__.'/func/countCart.php');
 require_once(__ROOT__.'/func/pvOnline.php');
 require_once(__ROOT__.'/func/getIngSupplier.php');
+require_once(__ROOT__.'/func/loadModules.php');
 
 require(__ROOT__.'/inc/settings.php');
 

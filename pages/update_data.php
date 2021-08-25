@@ -489,6 +489,23 @@ if($_POST['manage'] == 'ingredient'){
 	return;	
 }
 
+if($_GET['import'] == 'ingredient'){
+		
+		$name = sanChar(mysqli_real_escape_string($conn, base64_decode($_GET["name"])));
+		$query = "INSERT INTO ingredients (name, INCI, cas, notes, odor) VALUES ('$name', '$INCI', '$cas', 'Auto Imported', '$odor')";
+		
+		if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '$name'"))){
+			echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$name.' already exists!</div>';
+		}else{
+			if(mysqli_query($conn, $query)){
+				echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Ingredient <strong>'.$name.'</strong> added!</div>';
+			}else{
+				echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Failed to add '.mysqli_error($conn).'</div>';
+			}
+		}
+	
+	return;
+}
 
 header('Location: /');
 exit;

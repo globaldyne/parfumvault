@@ -26,8 +26,33 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
             </div>
             <div class="col-sm-12 p-3 text-right">
 			     <label>
-			       <input type="text" id="ing_search" class="form-control input-sm" placeholder="Search..." name="ing_search">
-                   <span><a ref="#" data-toggle="modal" data-target="#adv_search">Advanced Search</a></span>
+                <div>
+                        <div class="input-group">	
+                          <input type="text" id="ing_search" class="form-control input-sm" placeholder="Search..." name="ing_search">
+						    <div class="input-group-btn">
+                                <button id="local" class="btn btn-search btn-primary">
+                                    <span class="fas fa-database"></span>
+                                    <span class="label-icon"><a class="btn-search" href="javascript:pvSearch()">Local DB</a></span>
+                                </button>
+                                <label class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                                    <span class="caret"></span>
+                                </label>
+                                <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                    <?php foreach (loadModules('suppliers') as $search){ ?>
+                                    <li>
+                                        <a href="javascript:pvSearch()" class="supplier" id="<?=$search['fileName']?>">
+                                            <span class="<?=$search['icon']?>"></span>
+                                            <span class="label-icon"><?=$search['name']?></span>
+                                        </a>
+                                    </li>
+                                    <?php } ?>
+                                </ul>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <hr />
+                   <span><a href="#" data-toggle="modal" data-target="#adv_search">Advanced Search</a></span>
 		         </label>
             </div>
             <div class="card-body">
@@ -214,6 +239,16 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
 <script type="text/javascript" language="javascript" >
 list_ingredients();
 
+$(function () {
+    $(".input-group-btn .dropdown-menu li a").click(function () {
+        var selText = $(this).html();
+		var provider = $(this).attr('id');
+		  
+        $(this).parents(".input-group-btn").find(".btn-search").html(selText);
+		$(this).parents(".input-group-btn").find(".btn-search").attr('id',provider);
+    });
+});
+
 function adv_search() {
     var name = $('#ing_name').val();
     var cas = $('#ing_cas').val();
@@ -328,5 +363,19 @@ function importCSV(){
   }
 };
 
+function importING(name) {	  
+	$.ajax({ 
+		url: 'pages/update_data.php', 
+		type: 'GET',
+		data: {
+			'import': 'ingredient',
+			'name': name,
+			},
+		dataType: 'html',
+		success: function (data) {
+			$('#innermsg').html(data);
+		}
+	  });
+};
 
 </script>
