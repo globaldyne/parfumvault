@@ -7,6 +7,7 @@ Custom usage limits will not prevent IFRA certificate to be generated
 TGSC integrations removed
 Adding advanced search in ingredients
 Adding search engine modules, so you can directly search a supplier for a material and import it in the local DB
+Added link to the app store for PV Light app
 
 ### Version 3.2
 Fixed a bug preventing formula duplication
