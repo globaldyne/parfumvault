@@ -12,7 +12,6 @@ This is a FREE software provided as is without ANY warranty under MIT license.
 * Generate finished product and its limits
 * Generate paperwork for finished products 
 * Option to export a formula data to sell/share it 
-* Auto generate TGSC links based to the ingredient name or CAS number
 * Pyramid olfactory view
 * Cost calculation
 * IFRA limits calculation

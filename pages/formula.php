@@ -95,7 +95,7 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
 										 	while ($r_ing = mysqli_fetch_array($res_ing)){
 												if($r_ing['INCI']){
 										?>
-											<option value="<?=$r_ing['name']?>"><?=$r_ing['name']?> (<?=$r_ing['INCI']?>)</option>
+											<option value="<?=$r_ing['name']?>"><?=$r_ing['name']?> (<?=$r_ing['INCI']?>) (<?=$r_ing['CAS']?>)</option>
 										<?php 	}else{ ?>
 											<option value="<?=$r_ing['name']?>"><?=$r_ing['name']?> (<?=$r_ing['CAS']?>)</option>
 										<?php
@@ -134,7 +134,7 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
                 <?php if($legend){ ?>
                 <div id="legend">
                 <p></p>
-                <p>*Values in: <strong class="alert alert-danger">red</strong> exceeds usage level,   <strong class="alert alert-warning">yellow</strong> have no usage level set,   <strong class="alert alert-success">green</strong> are within usage level</p>
+                <p>*Values in: <strong class="alert alert-danger">red</strong> exceeds usage level,   <strong class="alert alert-warning">yellow</strong> have no usage level set,   <strong class="alert alert-success">green</strong> are within usage level, <strong class="alert alert-info">blue</strong> are exceeding recommended usage level</p>
                 </div>
                 <?php } ?>
             </div>

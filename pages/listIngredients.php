@@ -23,14 +23,43 @@ if(isset($_GET['ing_limit'])){
 $pageLimit = isset($_SESSION['ing_limit']) ? $_SESSION['ing_limit'] : 20;
 $page = (isset($_GET['page']) && is_numeric($_GET['page']) ) ? $_GET['page'] : 1;
 $paginationStart = ($page - 1) * $pageLimit;
+$extra = "ORDER BY name ASC LIMIT $paginationStart, $pageLimit";
 
 $i = mysqli_real_escape_string($conn, $_GET['q']);
+if($_GET['adv']){
+	if($name = mysqli_real_escape_string($conn, $_GET['name'])){
+		$n = $name;
+	}else{
+		$n = '%';
+	}
+	
+	$name = "name LIKE '%$n%'";
+	
+	if($cas = mysqli_real_escape_string($conn, $_GET['cas'])){
+		$cas = "AND cas LIKE '%$cas%'";
+	}
+	
+	if($odor = mysqli_real_escape_string($conn, $_GET['odor'])){
+		$odor = "AND odor LIKE '%$odor%'";
+	}
+	
+	if($profile = mysqli_real_escape_string($conn, $_GET['profile'])){
+		$profile = "AND profile = '$profile'";
+	}
+	
+	if($category = mysqli_real_escape_string($conn, $_GET['cat'])){
+		$category = "AND category = '$category'";	
+	}
 
-if($i){
-	$filter = "WHERE name LIKE '%$i%' OR cas LIKE '%$i%' OR odor LIKE '%$i%'";
+	$filter = "WHERE $name $cas $odor $profile $category";
+	$extra = "ORDER BY name";
 }
 
-$ingredient_q = mysqli_query($conn, "SELECT id,name,INCI,cas,profile,category,odor,$defCatClass FROM ingredients $filter ORDER BY name ASC LIMIT $paginationStart, $pageLimit ");
+if($i){
+	$filter = "WHERE name LIKE '%$i%' OR cas LIKE '%$i%' OR odor LIKE '%$i%' OR INCI LIKE '%$i%'";
+}
+
+$ingredient_q = mysqli_query($conn, "SELECT id,name,INCI,cas,profile,category,odor,$defCatClass FROM ingredients $filter $extra");
 
 $allIng = mysqli_fetch_array(mysqli_query($conn, "SELECT count(id) AS id FROM ingredients $filter"));
 $pages = ceil($allIng['0'] / $pageLimit);
@@ -38,12 +67,11 @@ $pages = ceil($allIng['0'] / $pageLimit);
 $prev = $page - 1;
 $next = $page + 1;
 
-
 ?>
 <table class="table table-bordered" id="tdDataIng" width="100%" cellspacing="0">
 	<thead>
      <tr class="noBorder noexport">
-      <th colspan="10">
+      <th colspan="9">
        <div class="col-sm-6 text-left">
 		<label>Show  
         <select name="ing_limit" id="ing_limit" class="form-control input-sm">
@@ -81,7 +109,6 @@ $next = $page + 1;
                       <th><?php echo ucfirst($settings['defCatClass']);?>%</th>
                       <th>Supplier(s)</th>
                       <th class="noexport">Document(s)</th>
-                      <th class="noexport">TGSC</th>
                       <th class="noexport">Actions</th>
                     </tr>
                   </thead>
@@ -135,12 +162,6 @@ $next = $page + 1;
                          <?php }else{ ?>
 						  <td align="center" class="noexport">N/A</td>
 					  <?php } ?>
-					  
-					  <?php if ($ingredient['cas']){ ?>
-					  			<td align="center" class="noexport"><a href="http://www.thegoodscentscompany.com/search3.php?qName=<?=$ingredient['cas']?>" target="_blank" class="fa fa-external-link-alt"></a></td>
-					  <?php }else{ ?>
-						  		<td align="center" class="noexport"><a href="http://www.thegoodscentscompany.com/search3.php?qName=<?=$ingredient['name']?>" target="_blank" class="fa fa-external-link-alt"></a></td>
-					  <?php }  ?>
                       <td class="noexport" align="center"><a href="pages/mgmIngredient.php?id=<?=base64_encode($ingredient['name'])?>" class="fas fa-edit popup-link"><a> <a href="javascript:delete_ingredient('<?=$ingredient['id']?>')" onclick="return confirm('Delete <?=$ingredient['name']?> ?')" class="fas fa-trash"></a></td>
 					  </tr>
 				  <?php } ?>
@@ -181,12 +202,24 @@ var delay = (function(){
  };
 })();
 
-$("#ing_search").keyup(function(){
-  var filter = $(this).val();			
-  delay(function(){
-		list_ingredients(<?=$page?>, <?=$pageLimit?>, filter);
-  }, 1000);
-});
+var filter = $("#ing_search").val();
+var provider = $('.btn-search').attr('id');
+
+$("#ing_search").keyup(pvSearch);
+					   
+function pvSearch(){
+	var filter = $("#ing_search").val();
+	var provider = $('.btn-search').attr('id');
+	if(provider == 'local'){
+	  delay(function(){
+			list_ingredients('1', <?=$pageLimit?>, filter);
+	  }, 1000);
+  	}else{
+	  	delay(function(){
+		  list_ingredients();
+		}, 1000);
+	}
+};
 
 
 $('.popup-link').magnificPopup({
@@ -195,11 +228,24 @@ $('.popup-link').magnificPopup({
 	closeOnBgClick: false,
 	showCloseBtn: true,
 });
-	
+
+if(provider == 'local'){
+ var pr = null;
+}else{
+ var pr = "modules/suppliers/" + provider + ".php?q=" + encodeURIComponent(filter);
+}
+
 $('#tdDataIng').DataTable({
+	"ajax": pr,
+	"processing": true,
     "paging":   false,
 	"info":   false,
-	"searching": false
+	"searching": false,
+	"language": {
+        "zeroRecords" : 'Nothing found, try <a href="#" data-toggle="modal" data-target="#adv_search">advanced</a> search instead?',
+		"processing": '<div class="spinner-grow"></div> Please Wait...'
+    },
+	
 });
 
 </script>
