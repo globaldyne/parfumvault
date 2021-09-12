@@ -29,6 +29,7 @@ require_once(__ROOT__.'/func/countPending.php');
 require_once(__ROOT__.'/func/countCart.php');
 require_once(__ROOT__.'/func/pvOnline.php');
 require_once(__ROOT__.'/func/getIngSupplier.php');
+require_once(__ROOT__.'/func/loadModules.php');
 
 require(__ROOT__.'/inc/settings.php');
 
@@ -148,7 +149,7 @@ function list_formulas(){
 };
 	
 function list_ingredients(page,limit,filter){
-	//$('#list_ingredients').html('<img class="loader loader-center" src="/img/Testtube.gif"/>');
+	$('#list_ingredients').html('<img class="loader loader-center" src="/img/Testtube.gif"/>');
 	$.ajax({ 
 		url: 'pages/listIngredients.php',
 		type: 'GET',

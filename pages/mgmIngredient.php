@@ -158,21 +158,7 @@ function search() {
 	  });
 };
 
-<?php if($ing['cas'] && $settings['pubChem'] == '1'){ ?>
 
-$.ajax({ 
-    url: 'pubChem.php', 
-	type: 'get',
-    data: {
-		cas: "<?php echo $ing['cas']; ?>"
-		},
-	dataType: 'html',
-    success: function (data) {
-	  $('#pubChemData').html(data);
-    }
-});
-
-<?php } ?>
 
 function printLabel() {
 	<?php if(empty($settings['label_printer_addr']) || empty($settings['label_printer_model'])){?>
@@ -210,7 +196,7 @@ function reload_data() {
 		dataType: 'html',
 		success: function (data) {
 		  $('#fetch_allergen').html(data);
-		}
+		},
 	  });
 
 	$.ajax({ 
@@ -222,7 +208,7 @@ function reload_data() {
 		dataType: 'html',
 		success: function (data) {
 		  $('#fetch_suppliers').html(data);
-		}
+		},
 	  });
 	
 	$.ajax({ 
@@ -234,11 +220,32 @@ function reload_data() {
 		dataType: 'html',
 		success: function (data) {
 		  $('#fetch_documents').html(data);
-		}
+		},
 	  });
-}
+	
+	<?php if(isset($ing['cas']) && $settings['pubChem'] == '1'){ ?>
+
+	$.ajax({ 
+		url: 'pubChem.php', 
+		type: 'get',
+		data: {
+			cas: "<?php echo $ing['cas']; ?>"
+			},
+		dataType: 'html',
+		success: function (data) {
+		  $('#pubChemData').html(data);
+		}
+	});
+	
+	<?php } ?>
+};
+
 <?php if($ingID){ ?>
-reload_data();
+$(document).ready(function() {
+
+	reload_data();
+});
+
 <?php } ?>
 </script>
 </head>
@@ -251,11 +258,6 @@ reload_data();
               <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
               <div class="dropdown-menu">
                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#printLabel">Print Label</a>
-                <?php if ($ing['cas']){ ?>
-					  	<a class="dropdown-item" href="http://www.thegoodscentscompany.com/search3.php?qName=<?=$ing['cas']?>" target="_blank">View in TGSC</a>
-					  <?php }else{ ?>
-						 <a class="dropdown-item" href="http://www.thegoodscentscompany.com/search3.php?qName=<?=$ing['name']?>" target="_blank">View in TGSC</a>
-					  <?php }  ?>
               </div>
             </div>
             <?php }else {?>
@@ -425,7 +427,6 @@ reload_data();
 									  }else{
 								?>
                                 <select name="usage_type" id="usage_type" class="form-control">
-                                  <option value="none" selected="selected">None</option>
                                   <option value="1" <?php if($ing['usage_type']=="1") echo 'selected="selected"'; ?> >Recommendation</option>
                                   <option value="2" <?php if($ing['usage_type']=="2") echo 'selected="selected"'; ?> >Restriction</option>
                                   <option value="2" <?php if($ing['usage_type']=="3") echo 'selected="selected"'; ?> >Specification</option>
@@ -576,9 +577,7 @@ reload_data();
                 
                     <hr>
                     <p><input type="submit" name="save" id="save" class="btn btn-info" value="Save" /></p>
-</div>
-</body>
-</html>
+
 <!-- Modal Print-->
 <div class="modal fade" id="printLabel" tabindex="-1" role="dialog" aria-labelledby="printLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -591,9 +590,9 @@ reload_data();
       </div>
       <div class="modal-body">
       <div id="msg"></div>
-          <form action="javascript:printLabel()" method="get" name="form1" target="_self" id="form1">
+          <form action="javascript:printLabel()" method="get" name="form1" target="_self" >
           	CAS#:
-            <input class="form-control" name="cas" type="text" id="cas" value="<?php echo $ing['cas']; ?>" />
+            <input class="form-control" name="cas" type="text" value="<?php echo $ing['cas']; ?>" />
             <p>
             Dilution %: 
             <input class="form-control" name="dilution" type="text" id="dilution" value="<?php echo $ing['purity']; ?>" />
@@ -612,7 +611,7 @@ reload_data();
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <input type="submit" name="button" class="btn btn-primary" id="button" value="Print">
+        <input type="submit" name="button" class="btn btn-primary"  value="Print">
       </div>
      </form>
     </div>
@@ -632,7 +631,7 @@ reload_data();
       </div>
       <div class="modal-body">
       <div id="inf"></div>
-          <form action="javascript:addAllergen()" method="get" name="form1" target="_self" id="form1">
+          <form action="javascript:addAllergen()" method="get" name="form1" target="_self" >
             Name: 
             <input class="form-control" name="allgName" type="text" id="allgName" />
             <p>
@@ -650,7 +649,7 @@ reload_data();
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <input type="submit" name="button" class="btn btn-primary" id="button" value="Add">
+        <input type="submit" name="button" class="btn btn-primary"  value="Add">
       </div>
      </form>
     </div>
@@ -670,7 +669,7 @@ reload_data();
       </div>
       <div class="modal-body">
       <div id="supplier_inf"></div>
-          <form action="javascript:addSupplier()" method="get" name="form1" target="_self" id="form1">
+          <form action="javascript:addSupplier()" method="get" name="form1" target="_self" >
           <p>
             Name: 
             <select name="supplier_name" id="supplier_name" class="form-control selectpicker" data-live-search="true">
@@ -699,7 +698,7 @@ reload_data();
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <input type="submit" name="button" class="btn btn-primary" id="button" value="Add">
+        <input type="submit" name="button" class="btn btn-primary"  value="Add">
       </div>
      </form>
     </div>
@@ -993,3 +992,6 @@ $("#doc_upload").click(function(){
     });	
 });
 </script>
+</div>
+</body>
+</html>

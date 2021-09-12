@@ -1,0 +1,25 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Untitled Document</title>
+</head>
+
+<body>
+<p><strong>Modules</strong></p>
+<p>You can search directly to your supplier for ingredients by intergrating its API here.</p>
+<p>For example, given your supplier provides a valid API to return its products, you can write simple modules to import the data directly to your local PV database.</p>
+<p><strong>Structure</strong></p>
+<ul>
+  <li>supplier1.json</li>
+  <li>supplier1.php</li>
+</ul>
+<p>JSON file contains the supplier data needed to register with PV</p>
+<p>eg:</p>
+<pre>{&quot;id&quot;:&quot;supplier_id&quot;,&quot;name&quot;:&quot;My custom Supplier&quot;,&quot;slug&quot;:&quot;mycustomsupplier&quot;,&quot;version&quot;:&quot;1.0&quot;,&quot;fileName&quot;:&quot;supplier1.php&quot;,&quot;icon&quot;:&quot;fas fa-database&quot;}</pre>
+<p>PHP file should contain the code that query's the supplier's API and return the results in JSON format</p>
+<p>eg:</p>
+<pre>
+ {&quot;draw&quot;:1,&quot;recordsTotal&quot;:1,&quot;recordsFiltered&quot;:1,&quot;data&quot;:[[&quot;&lt;a href=\&quot;https:\/\/shop.perfumersapprentice.com\/p-8935-ambermax-givaudan-50-tpm.aspx\&quot; target=\&quot;_blank\&quot;&gt;ambermax (Givaudan) - 50% TPM &lt;\/a&gt;&quot;,&quot;a&quot;,&quot;&quot;,&quot;N\/A&quot;,&quot;N\/A&quot;,&quot;&quot;,&quot;Perfumers Apprentice&quot;,&quot;&lt;a href=\&quot;https:\/\/shop.perfumersapprentice.com\/msds\/8935.pdf\&quot;target=\&quot;_blank\&quot; class=\&quot;fa fa-file-alt\&quot;&gt;&lt;\/a&gt;&quot;,&quot;&lt;a href=\&quot;javascript:importING('YW1iZXJtYXjDgsKuIChHaXZhdWRhbikgLSA1MCUgVFBNIA==')\&quot;&gt;Import&lt;\/a&gt;&quot;]]}</pre>
+</body>
+</html>
