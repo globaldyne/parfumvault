@@ -24,7 +24,7 @@ function validateFormula($fid, $bottle, $new_conc, $mg, $defCatClass, $conn ){
 		}else
 		  if($ing_q[$defCatClass] != null){
 		  	if($ing_q[$defCatClass] < $conc_p){
-				$val[] = 1; //VALUE IS TO HIGH AGAINST LOCAL DB
+				$val[] = 0; //VALUE IS TO HIGH AGAINST LOCAL DB BUT WILL BE IGNORED
 		  	}else{
 				$val[] = 0; //VALUE IS OK
 			}

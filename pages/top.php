@@ -97,6 +97,11 @@
                   PV Online
                 </a>              
                 <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="https://apps.apple.com/us/app/id1525381567" target="_blank">
+                  <i class="fab fa-apple fa-sm fa-fw mr-2 text-gray-400"></i>
+                  App Store
+                </a>              
+                <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="logout.php">
                   <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                   Logout

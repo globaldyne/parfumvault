@@ -194,7 +194,7 @@ $.ajax({
 					  }else
 					  if($ing_q[$defCatClass] != null){
 					  	if($ing_q[$defCatClass] < $conc_p){
-							$IFRA_WARN = 'class="alert-danger"'; //VALUE IS TO HIGH AGAINST LOCAL DB
+							$IFRA_WARN = 'class="alert-info"'; //VALUE IS TO HIGH AGAINST LOCAL DB
 					  	}else{
 							$IFRA_WARN = 'class="alert-success"'; //VALUE IS OK
 						}
@@ -280,7 +280,7 @@ $.ajax({
                 </table> 
                 <div>
                 <p></p>
-                <p>*Values in: <strong class="alert alert-danger">red</strong> exceeds usage level, <strong class="alert alert-warning">yellow</strong> have no usage level set, <strong class="alert alert-success">green</strong> are within usage level</p>
+                <p>*Values in: <strong class="alert alert-danger">red</strong> exceeds usage level,   <strong class="alert alert-warning">yellow</strong> have no usage level set,   <strong class="alert alert-success">green</strong> are within usage level, <strong class="alert alert-info">blue</strong> are exceeding recommended usage level</p>
                 </div>
             </div>
             

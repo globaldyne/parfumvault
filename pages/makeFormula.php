@@ -213,7 +213,7 @@ $.ajax({
 					  }else
 					  if($ing_q[$defCatClass] != null){
 					  	if($ing_q[$defCatClass] < $conc_p){
-							$IFRA_WARN = 'class="alert-danger"'; //VALUE IS TO HIGH AGAINST LOCAL DB
+							$IFRA_WARN = 'class="alert-info"'; //VALUE IS TO HIGH AGAINST LOCAL DB
 					  	}else{
 							$IFRA_WARN = 'class="alert-success"'; //VALUE IS OK
 						}
