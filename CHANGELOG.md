@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 3.4
+
 ### Version 3.3
 Show CAS and INCI when listing ingredients in formula page
 All custom usage limits set to "Recommendation" by default
