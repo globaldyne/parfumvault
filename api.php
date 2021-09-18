@@ -49,7 +49,7 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 			$rows[$_REQUEST['do']][] = $r;
 		}
 		header('Content-Type: application/json; charset=utf-8');
-      	echo json_encode($rows, JSON_PRETTY_PRINT);
+      	echo json_encode($rows, JSON_HEX_APOS|JSON_HEX_QUOT);
       	return;
 	}
 	
