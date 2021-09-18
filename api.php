@@ -89,19 +89,44 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 		while($r = mysqli_fetch_assoc($sql)) {
 			$cName = mysqli_fetch_array(mysqli_query($conn,"SELECT name AS cName FROM ingCategory WHERE id = ".$r['category'].""));
 			array_push($r, $cName['cName']);
-			$r['cName'] = $r['0'];
+			if(empty($r['0'])){
+			
+				$r['cName'] = '0';
+			}else{
+
+				$r['cName'] = $r['0'];
+			}		
 			$rx = array_filter($r, fn($value) => !is_null($value) && $value !== '');
 			foreach ($rx as $key => $value) {
     			if (is_null($value) || empty($value)) {
         	 		$rx[$key] = "N/A";
    				}
 				
-				if (!is_numeric($r['cat4'])) {
+				if (!is_numeric($r['cat4'] || is_null($r['cat4']) || empty($r['cat4'] ))) {
         	 		$rx['cat4'] = "100";
    				}
-				if (!is_numeric($r['physical_state'])) {
+				if (!is_numeric($r['physical_state'] || is_null($r['physical_state']) || empty($r['physical_state']))) {
         	 		$rx['physical_state'] = "1";
    				}
+				
+				if (!is_numeric($r['category'] || is_null($r['category']) || empty($r['category']))) {
+                                $rx['category'] = "1";
+                                }
+
+                                if (is_null($r['cas']) || empty($r['cas'])) {
+                                $rx['cas'] = "N/A";
+                                }
+				if (is_null($r['odor']) || empty($r['odor'])) {
+                                $rx['odor'] = "N/A";
+                                }
+				if (is_null($r['profile']) || empty($r['profile'])) {
+                                $rx['profile'] = "N/A";
+                                }
+				
+				if (is_null($r['type']) || empty($r['type'])) {
+                                $rx['type'] = "AC";
+                                }
+				
 				
 			}
 			$rows[$_REQUEST['do']][] = array_filter($rx);
