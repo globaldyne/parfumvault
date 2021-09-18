@@ -53,9 +53,15 @@ if($_REQUEST['key'] && $_REQUEST['do']){
       	return;
 	}
 	
-	if($_REQUEST['do'] == 'formula' && $_REQUEST['fid']){
-		$fid = mysqli_real_escape_string($conn, $_REQUEST['fid']);
-		$sql = mysqli_query($conn, "SELECT name, ingredient, concentration, dilutant, quantity FROM formulas WHERE fid = '$fid'");
+	if($_REQUEST['do'] == 'formula'){
+		if($fid = mysqli_real_escape_string($conn, $_REQUEST['fid'])){
+
+			$sql = mysqli_query($conn, "SELECT name, ingredient, concentration, dilutant, quantity FROM formulas WHERE fid = '$fid'");
+
+		}else{
+		
+			$sql = mysqli_query($conn, "SELECT name, ingredient, concentration, dilutant, quantity FROM formulas");
+		}
 		$rows = array();
 		while($r = mysqli_fetch_assoc($sql)) {
 			foreach ($r as $key => $value) {
