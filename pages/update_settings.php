@@ -56,6 +56,25 @@ if($_POST['manage'] == 'general'){
 	return;
 }
 
+if($_POST['manage'] == 'api'){
+	
+	$api = $_POST['api'];
+	$api_key = mysqli_real_escape_string($conn, $_POST['api_key']);
+	
+	if($_POST["api"] == 'true') {
+		$api = '1';
+	}else{
+		$api = '0';
+	}
+	
+	if(mysqli_query($conn, "UPDATE settings SET api = '$api', api_key='$api_key'")){
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>API settings updated!</div>';	
+	}else{
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>An error occured.</div>';	
+	}
+	return;
+}
+
 //PERFUME TYPES
 if($_POST['manage'] == 'perfume_types'){
 	$edp = utf8_encode(htmlentities($_POST['edp']));

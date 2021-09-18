@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 3.4
+REST API added
 
 ### Version 3.3
 Show CAS and INCI when listing ingredients in formula page

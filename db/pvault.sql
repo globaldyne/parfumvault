@@ -306,7 +306,9 @@ CREATE TABLE `settings` (
   `pubchem_view` VARCHAR(4) NOT NULL DEFAULT '2d',
   `mUnit` VARCHAR(10) NOT NULL DEFAULT 'ml',
   `multi_dim_perc` INT NOT NULL DEFAULT '0', 
-  `defCatClass` VARCHAR(255) NOT NULL DEFAULT 'cat4' 
+  `defCatClass` VARCHAR(255) NOT NULL DEFAULT 'cat4',
+  `api` INT NOT NULL DEFAULT '0',
+  `api_key` VARCHAR(255) NULL 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 INSERT INTO `settings` (`id`, `label_printer_addr`, `label_printer_model`, `label_printer_size`, `label_printer_font_size`, `currency`, `top_n`, `heart_n`, `base_n`, `EDP`, `EDT`, `EDC`, `Parfum`, `chem_vs_brand`, `grp_formula`, `brandName`, `brandAddress`, `brandEmail`, `brandPhone`, `brandLogo`) VALUES

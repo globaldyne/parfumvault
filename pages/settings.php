@@ -38,6 +38,7 @@ list_cat();
          <li><a href="#brand"><span>My Brand</span></a></li>
          <li><a href="#maintenance"><span>Maintenance</span></a></li>
          <li><a href="#pvonline"><span>PV Online</span></a></li>
+         <li><a href="#api">API</a></li>
         <li><a href="pages/about.php"><span>About</span></a></li>
      </ul>
      <div id="general">
@@ -345,6 +346,35 @@ list_cat();
          </table>
      </div>
      
+     <div id="api">
+	API can be used to access PV Pro from other apps like PV Light APP
+	   <table width="100%" border="0">
+		<tr>
+	      <td colspan="3"><div id="pvAPIMsg"></div></td>
+	      </tr>
+	    <tr>
+	      <td width="9%" height="28">Enable API</td>
+	      <td width="9%" valign="middle"><input name="pv_api" type="checkbox" id="pv_api" value="1" <?php if($settings['api'] == '1'){ ?> checked="checked" <?php } ?>/></td>
+	      <td width="82%">&nbsp;</td>
+	      </tr>
+	    <tr>
+	      <td>API Key</td>
+	      <td valign="middle"><input name="pv_api_key" type="text" class="form-control" id="pv_api_key" value="<?=$settings['api_key']?>" /></td>
+	      <td>&nbsp;</td>
+	      </tr>
+	    <tr>
+	      <td>&nbsp;</td>
+	      <td valign="middle">&nbsp;</td>
+	      <td>&nbsp;</td>
+	      </tr>
+	    <tr>
+	      <td><input type="submit" name="save-api" id="save-api" value="Submit" class="btn btn-info"/></td>
+	      <td valign="middle">&nbsp;</td>
+	      <td>&nbsp;</td>
+	      </tr>
+	    </table> 
+     </div>
+    
      <div id="pvonline">
         <table width="100%" border="0">
           <tr>
@@ -438,6 +468,8 @@ $(document).ready(function() {
 				chkVersion: $("#chkVersion").is(':checked'),
 				multi_dim_perc: $("#multi_dim_perc").is(':checked'),
 				mUnit: $("#mUnit").val(),
+				api: $("#pv_api").val(),
+				api_key: $("#pv_api_key").val(),
 
 			},
 			dataType: 'html',
@@ -447,7 +479,25 @@ $(document).ready(function() {
 		  });
  	});
 	
-	$('#save-perf-types').click(function() {
+$('#save-api').click(function() {
+
+	$.ajax({ 
+		url: 'pages/update_settings.php', 
+		type: 'POST',
+		data: {
+			manage: 'api',
+				
+			api: $("#pv_api").is(':checked'),
+			api_key: $("#pv_api_key").val(),
+			},
+			dataType: 'html',
+			success: function (data) {
+				$('#pvAPIMsg').html(data);
+			}
+		 });
+});
+
+$('#save-perf-types').click(function() {
 							  
 		$.ajax({ 
 			url: 'pages/update_settings.php', 
