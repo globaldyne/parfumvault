@@ -49,19 +49,13 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 			$rows[$_REQUEST['do']][] = $r;
 		}
 		header('Content-Type: application/json; charset=utf-8');
-      	echo json_encode($rows, JSON_HEX_APOS|JSON_HEX_QUOT);
+      	echo json_encode($rows, JSON_PRETTY_PRINT);
       	return;
 	}
 	
-	if($_REQUEST['do'] == 'formula'){
-		if($fid = mysqli_real_escape_string($conn, $_REQUEST['fid'])){
-
-			$sql = mysqli_query($conn, "SELECT name, ingredient, concentration, dilutant, quantity FROM formulas WHERE fid = '$fid'");
-
-		}else{
-		
-			$sql = mysqli_query($conn, "SELECT name, ingredient, concentration, dilutant, quantity FROM formulas");
-		}
+	if($_REQUEST['do'] == 'formula' && $_REQUEST['fid']){
+		$fid = mysqli_real_escape_string($conn, $_REQUEST['fid']);
+		$sql = mysqli_query($conn, "SELECT name, ingredient, concentration, dilutant, quantity FROM formulas WHERE fid = '$fid'");
 		$rows = array();
 		while($r = mysqli_fetch_assoc($sql)) {
 			foreach ($r as $key => $value) {
@@ -87,46 +81,18 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 		
 		$rows = array();    
 		while($r = mysqli_fetch_assoc($sql)) {
-			$cName = mysqli_fetch_array(mysqli_query($conn,"SELECT name AS cName FROM ingCategory WHERE id = ".$r['category'].""));
-			array_push($r, $cName['cName']);
-			if(empty($r['0'])){
-			
-				$r['cName'] = '0';
-			}else{
-
-				$r['cName'] = $r['0'];
-			}		
 			$rx = array_filter($r, fn($value) => !is_null($value) && $value !== '');
 			foreach ($rx as $key => $value) {
     			if (is_null($value) || empty($value)) {
         	 		$rx[$key] = "N/A";
    				}
 				
-				if (!is_numeric($r['cat4'] || is_null($r['cat4']) || empty($r['cat4'] ))) {
+				if (!is_numeric($r['cat4'])) {
         	 		$rx['cat4'] = "100";
    				}
-				if (!is_numeric($r['physical_state'] || is_null($r['physical_state']) || empty($r['physical_state']))) {
+				if (!is_numeric($r['physical_state'])) {
         	 		$rx['physical_state'] = "1";
    				}
-				
-				if (!is_numeric($r['category'] || is_null($r['category']) || empty($r['category']))) {
-                                $rx['category'] = "1";
-                                }
-
-                                if (is_null($r['cas']) || empty($r['cas'])) {
-                                $rx['cas'] = "N/A";
-                                }
-				if (is_null($r['odor']) || empty($r['odor'])) {
-                                $rx['odor'] = "N/A";
-                                }
-				if (is_null($r['profile']) || empty($r['profile'])) {
-                                $rx['profile'] = "N/A";
-                                }
-				
-				if (is_null($r['type']) || empty($r['type'])) {
-                                $rx['type'] = "AC";
-                                }
-				
 				
 			}
 			$rows[$_REQUEST['do']][] = array_filter($rx);
@@ -135,6 +101,29 @@ if($_REQUEST['key'] && $_REQUEST['do']){
       echo json_encode($rows, JSON_PRETTY_PRINT);
       return;
 	}
+	
+	if($_REQUEST['do'] == 'categories'){
+		$sql = mysqli_query($conn, "SELECT id, name, notes, image FROM ingCategory");
+		
+		$rows = array();    
+		while($r = mysqli_fetch_assoc($sql)) {
+			$rx = array_filter($r, fn($value) => !is_null($value) && $value !== '');
+			foreach ($rx as $key => $value) {
+				if (empty($r['notes'])) {
+        	 		$rx['notes'] = "N/A";
+   				}
+				if (empty($r['image'])) {
+        	 		$rx['image'] = base64_encode(file_get_contents("img/molecule.png"));
+   				}
+			}
+			
+			$rows[$_REQUEST['do']][] = array_filter($rx);
+        }
+      header('Content-Type: application/json; charset=utf-8');
+      echo json_encode($rows, JSON_PRETTY_PRINT);
+      return;
+	}
+	
 }
 
 
