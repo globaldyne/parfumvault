@@ -1,6 +1,8 @@
 # CHANGELOG
 ### Version 3.4
 REST API added
+DB schema ingredients category chnage from char to int
+Category migration script added in helpers
 
 ### Version 3.3
 Show CAS and INCI when listing ingredients in formula page
