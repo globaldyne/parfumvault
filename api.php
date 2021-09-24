@@ -58,26 +58,21 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 	
 	if($_REQUEST['do'] == 'formula'){
 		if($fid = mysqli_real_escape_string($conn, $_REQUEST['fid'])){
-
 			$sql = mysqli_query($conn, "SELECT name, ingredient, concentration, dilutant, quantity FROM formulas WHERE fid = '$fid'");
-
 		}else{
-		
 			$sql = mysqli_query($conn, "SELECT name, ingredient, concentration, dilutant, quantity FROM formulas");
 		}
 		$rows = array();
 		while($r = mysqli_fetch_assoc($sql)) {
-			foreach ($r as $key => $value) {
-    			if (is_null($value) || empty($value)) {
-        	 		$r[$key] = "N/A";
-   				}
-				if (!is_numeric($r['concentration'])) {
-        	 		$r['concentration'] = "100";
-   				}
-				if (!is_numeric($r['quantity'])) {
-        	 		$r['quantity'] = "0.00";
-   				}
-			}
+			
+			$r['dilutant'] = $r['dilutant'] ? $r['dilutant']: 'None';
+
+			if (!is_numeric($r['concentration'])) {
+        		$r['concentration'] = "100";
+   			}
+			if (!is_numeric($r['quantity'])) {
+        		$r['quantity'] = "0.00";
+   			}
 			$rows[$_REQUEST['do']][] = $r;
 		}
 		header('Content-Type: application/json; charset=utf-8');
