@@ -96,6 +96,7 @@ list_cat();
           <td height="32"><a href="#">Measurement Unit:</a></td>
           <td colspan="2"><select name="mUnit" id="mUnit" class="form-control">
 			  <option value="ml" <?php if($settings['mUnit']=="ml") echo 'selected="selected"'; ?> >Milliliter</option>
+			  <option value="g" <?php if($settings['mUnit']=="g") echo 'selected="selected"'; ?> >Grams</option>
 			  <option value="L" <?php if($settings['mUnit']=="L") echo 'selected="selected"'; ?> >Liter</option>
 			  <option value="fl. oz." <?php if($settings['mUnit']=="fl. oz.") echo 'selected="selected"'; ?> >Fluid ounce (fl. oz.)</option>
             </select></td>
