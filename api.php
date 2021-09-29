@@ -4,8 +4,6 @@ define('__ROOT__', dirname(dirname(__FILE__)));
 
 require_once('inc/config.php');
 require_once('inc/opendb.php');
-//require_once('inc/product.php');
-//require_once('func/searchIFRA.php');
 
 $defCatClass = $settings['defCatClass'];
 
@@ -128,31 +126,47 @@ if($_REQUEST['key'] && $_REQUEST['do']){
       return;
 	}
 
-if($_REQUEST['do'] == 'categories'){
-                $sql = mysqli_query($conn, "SELECT id, name, notes, image FROM ingCategory");
-                $rows = array();
-                while($r = mysqli_fetch_assoc($sql)) {
-                   if (empty($r['notes'])) {
-                       $r['notes'] = "N/A";
-                    }
-                          if (empty($r['image'])) {
-                           	$r['image'] = base64_encode(file_get_contents("img/molecule.png"));
-                          }else{
-							$img = explode('data:image/png;base64,',$r['image']);
-							$r['image'] = $img['1'];
-						  }
-
-              $rows[$_REQUEST['do']][] = array_filter($r);
-        }
-      header('Content-Type: application/json; charset=utf-8');
-      echo json_encode($rows, JSON_NUMERIC_CHECK, JSON_PRETTY_PRINT);
-      return;
-        }
+	if($_REQUEST['do'] == 'categories'){
+       $sql = mysqli_query($conn, "SELECT id, name, notes, image FROM ingCategory");
+       $rows = array();
+       	while($r = mysqli_fetch_assoc($sql)) {
+          if (empty($r['notes'])) {
+             $r['notes'] = "N/A";
+          }
+          if (empty($r['image'])) {
+           	$r['image'] = base64_encode(file_get_contents("img/molecule.png"));
+          }else{
+			$img = explode('data:image/png;base64,',$r['image']);
+			$r['image'] = $img['1'];
+		  }
+        	$rows[$_REQUEST['do']][] = array_filter($r);
+     	}
+       header('Content-Type: application/json; charset=utf-8');
+       echo json_encode($rows, JSON_NUMERIC_CHECK, JSON_PRETTY_PRINT);
+       return;
+    }
+	
+	
+	if($_REQUEST['do'] == 'suppliers'){
+       $sql = mysqli_query($conn, "SELECT ingSupplierID, ingID, supplierLink, price, size, manufacturer, preferred FROM suppliers");
+       $rows = array();
+       	while($r = mysqli_fetch_assoc($sql)) {
+          if (empty($r['manufacturer'])) {
+             $r['manufacturer'] = "N/A";
+          }
+          if (empty($r['supplierLink'])) {
+             $r['supplierLink'] = "N/A";
+          }
+          $rows[$_REQUEST['do']][] = $r;
+     	}
+       header('Content-Type: application/json; charset=utf-8');
+       echo json_encode($rows, JSON_NUMERIC_CHECK, JSON_PRETTY_PRINT);
+       return;
+    }
+	
 }
 
 
-
- 
 
 function apiCheckAuth($key, $conn){
    if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM settings WHERE api = '1' AND api_key='$key'"))){

@@ -31,7 +31,4 @@ while($cat = mysqli_fetch_array($get_cat)){
 }
 
 
-
-echo "DB updated\n"
-
 ?>
