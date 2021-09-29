@@ -111,7 +111,7 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 			$rx['name'] = (string)$rx['name'];
 			$rx['cas'] = (string)$rx['cas'];
 			$rx['odor'] = (string)$rx['odor'];
-			$rx['profile'] = (string)$rx['profile']." Note";
+			$rx['profile'] = (string)$rx['profile'];
 			$rx['physical_state'] = (int)$rx['physical_state'];
 			$rx['cat4'] = (double)$rx['cat4'];
 			$rx['category'] = (int)$rx['category'];

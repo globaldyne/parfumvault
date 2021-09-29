@@ -135,10 +135,10 @@ if($_POST['value'] && $_GET['formula'] && $_POST['pk']){
 if($_GET['formulaMeta']){
 	$value = mysqli_real_escape_string($conn, $_POST['value']);
 	$formula = mysqli_real_escape_string($conn, base64_decode($_GET['formulaMeta']));
-	$ingredient = mysqli_real_escape_string($conn, $_POST['pk']);
+	$id = mysqli_real_escape_string($conn, $_POST['pk']);
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 	
-	mysqli_query($conn, "UPDATE formulasMetaData SET $name = '$value' WHERE name = '$formula'");
+	mysqli_query($conn, "UPDATE formulasMetaData SET $name = '$value' WHERE id = '$id'");
 	return;
 }
 
