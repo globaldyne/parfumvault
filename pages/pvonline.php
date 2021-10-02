@@ -75,7 +75,7 @@ if($_GET['action'] == 'upload' && $_GET['items'] == 'ingredients'){
 		
 		$url = http_build_query($alg);
 		$jAPI = $pvOnlineAPI.'?username='.$pv_online['email'].'&password='.$pv_online['password'].'&do=add&kind=allergen&'.$url;
-		$up_req.= file_get_contents($jAPI,true);
+		$up_req.= file_get_contents(str_replace("&amp;", "&",$jAPI),true);
 	}
 	
 	//Upload all the categories
@@ -86,7 +86,7 @@ if($_GET['action'] == 'upload' && $_GET['items'] == 'ingredients'){
 		
 		$url = http_build_query($c);
 		$jAPI = $pvOnlineAPI.'?username='.$pv_online['email'].'&password='.$pv_online['password'].'&do=add&kind=category&'.$url;
-		$up_req.= file_get_contents($jAPI,true);
+		$up_req.= file_get_contents(str_replace("&amp;", "&",$jAPI),true);
 	}
 	if($up_req){
 		echo  '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$i.' ingredients uploaded!</div>';
