@@ -79,14 +79,13 @@ if($_GET['action'] == 'upload' && $_GET['items'] == 'ingredients'){
 	}
 	
 	//Upload all the categories
-	$alC = mysqli_query($conn, "SELECT id,name,notes FROM ingCategory");
+	$alC = mysqli_query($conn, "SELECT id,name,notes,colorKey FROM ingCategory");
 	while($c = mysqli_fetch_assoc($alC)){
-		//unset($alg['id']);
 		$ar = array_filter($c);
 		
-		$url = http_build_query($c);
+		$url = http_build_query($ar);
 		$jAPI = $pvOnlineAPI.'?username='.$pv_online['email'].'&password='.$pv_online['password'].'&do=add&kind=category&'.$url;
-		$up_req.= file_get_contents(str_replace("&amp;", "&",$jAPI),true);
+		$up_req.= file_get_contents(str_replace('&amp;', '&',$jAPI),true);
 	}
 	if($up_req){
 		echo  '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$i.' ingredients uploaded!</div>';

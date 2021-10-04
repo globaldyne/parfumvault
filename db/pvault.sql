@@ -143,7 +143,8 @@ CREATE TABLE `ingCategory` (
   `id` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
   `notes` text COLLATE utf8_bin DEFAULT NULL,
-  `image` LONGBLOB NULL
+  `image` LONGBLOB NULL,
+  `colorKey` VARCHAR(255) NULL 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 DROP TABLE IF EXISTS `ingProfiles`;

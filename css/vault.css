@@ -527,3 +527,12 @@ formula td, table.table th {
 .btn-search {
 	color: #FFF !important;
 }
+
+.colorKey {
+    display: block;
+    float: none;
+    width: 34px;
+    height: 34px;
+    margin-right: 16px;
+    border-radius: 100%;
+}
