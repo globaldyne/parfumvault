@@ -7,6 +7,7 @@ DB and main app update process seperated
 Grams added as a measurement unit
 Extend PV Online api to upload categories as a part of ingredient data
 Added category color key
+Improve PV Online upload function
 
 ### Version 3.3
 Show CAS and INCI when listing ingredients in formula page

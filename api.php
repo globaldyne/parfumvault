@@ -127,7 +127,7 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 	}
 
 	if($_REQUEST['do'] == 'categories'){
-       $sql = mysqli_query($conn, "SELECT id, name, notes, image FROM ingCategory");
+       $sql = mysqli_query($conn, "SELECT id, name, notes, image, colorKey FROM ingCategory");
        $rows = array();
        	while($r = mysqli_fetch_assoc($sql)) {
           if (empty($r['notes'])) {
@@ -139,7 +139,10 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 			$img = explode('data:image/png;base64,',$r['image']);
 			$r['image'] = $img['1'];
 		  }
-        	$rows[$_REQUEST['do']][] = array_filter($r);
+		  if (empty($r['colorKey'])) {
+            $r['colorKey'] = "255, 255, 255";
+          }
+          $rows[$_REQUEST['do']][] = array_filter($r);
      	}
        header('Content-Type: application/json; charset=utf-8');
        echo json_encode($rows, JSON_NUMERIC_CHECK, JSON_PRETTY_PRINT);
