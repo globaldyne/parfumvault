@@ -109,11 +109,9 @@ $('#cat_data').editable({
   title: 'Description',
   type: "POST",
   dataType: 'json',
-  validate: function(value){
-  }
 });
 
-//Change ingredient
+//Change colorKey
 $('.colorKey').editable({
 	pvnoresp: false,
 	highlight: false,

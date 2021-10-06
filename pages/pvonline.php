@@ -66,8 +66,8 @@ if($_GET['action'] == 'upload' && $_GET['items'] == 'ingredients'){
 		$data["do"] = "add";
 		$data["kind"] = "ingredient";
 	
-		$i++;
 		$up_req.= pvUploadData($pvOnlineAPI, $data);
+		$i++;
 	}
 	
 	//Upload all the allergens
@@ -86,7 +86,7 @@ if($_GET['action'] == 'upload' && $_GET['items'] == 'ingredients'){
 	}
 	
 	//Upload all the categories
-	$alC = mysqli_query($conn, "SELECT id,name,notes AS description,colorKey FROM ingCategory");
+	$alC = mysqli_query($conn, "SELECT id, name, notes, image, colorKey FROM ingCategory");
 	$c = 0;
 	while($cat = mysqli_fetch_assoc($alC)){
 		$data = array_filter($cat);
