@@ -122,20 +122,20 @@ $next = $page + 1;
 					  <td align="center">N/A</td>
 					  <?php } ?>
 					  <td align="center"><?=$ingredient['odor']?></td>
-                      <td align="center"><a href="#" rel="tipsy" title="<?=$ingredient['profile']?>"><img class="img_ing_prof" src="<?=profileImg($ingredient['profile'])?>" /></a></td>
+                      <td align="center"><a href="#" rel="tipsy" title="<?=$ingredient['profile']?>"><img src="<?=profileImg($ingredient['profile'])?>" border="0" class="img_ing_prof" /></a></td>
 					  <td align="center"><?=getCatByID($ingredient['category'],TRUE,$conn)?></td>
   					  <?php
                       if($limit = searchIFRA($ingredient['cas'],$ingredient['name'],null,$conn,$defCatClass)){
 						  $limit = explode(' - ', $limit);
-						  echo '<td align="center"><a href="#" rel="tipsy" title="'.$limit['1'].'">'.$limit['0'].'<a></td>';
-					  }elseif($ingredient[$defCatClass]){
-						  echo '<td align="center">'.$ingredient[$defCatClass].'</td>';
-					  }else{
-						  echo '<td align="center">N/A</a>';
-					  }
-					?>
+					 ?>
+					 <td align="center"><a href="#" rel="tipsy" title="<?=$limit['1']?>"><?=$limit['0']?></a></td>
+					<?php }elseif($ingredient[$defCatClass]){ ?>
+						  <td align="center"><?=$ingredient[$defCatClass]?></td>
+					<?php }else{ ?>
+						  <td align="center">N/A</td>
+					<?php } ?>
 					<?php if($a = getIngSupplier($ingredient['id'],$conn)){ ?>			
-                      <td align="center">
+                     <td align="center">
                          <div class="btn-group">
                            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-store"></i></button>
                              <div class="dropdown-menu dropdown-menu-right">
@@ -146,7 +146,7 @@ $next = $page + 1;
                          </div>
                         </td>
                     <?php }else{ ?>
-                        <td align="center">N/A</a>
+                        <td align="center">N/A</td>
                     <?php } ?>
 					<?php if ($a = getDocument($ingredient['id'],1,$conn)){ ?>
                       <td align="center">

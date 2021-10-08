@@ -251,7 +251,7 @@ $(document).ready(function() {
 </head>
 
 <body>
-<div class="container">
+<div class="container mgm-ing-theme">
         <div class="mgm-column mgm-visible-xl mgm-col-xl-5">
         <h1 class="mgmIngHeader mgmIngHeader-with-separator"><?php if($ingID){ echo $ing['name'];?>
             <div class="btn-group">

@@ -536,3 +536,50 @@ formula td, table.table th {
     margin-right: 16px;
     border-radius: 100%;
 }
+
+
+.sub-2-container {
+    display: flex;
+}
+
+.sub-2-header {
+    border-top-width: 0.125rem;
+    border-top-style: solid;
+    border-top-color: #e7e7e7;
+	border-bottom-width: 0.125rem;
+    border-bottom-style: solid;
+    border-bottom-color: #e7e7e7;
+    padding-top: 0.812rem;
+    padding-bottom: 0.812rem;
+}
+
+
+.sub-2-fema {
+    font-size: 1rem;
+    letter-spacing: 0.03125rem;
+    color: #bcc98c;
+    margin-right: 0.625rem;
+    margin-left: 0.625rem;
+}
+
+.sub-2-inci {
+    font-family: 'Gothic A1', sans-serif;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    font-size: 0.85rem;
+    color: #444444;
+    font-weight: 300;
+}
+
+.mgm-ing-theme {
+    background-color: white;
+}
+
+.ing_ico_list {
+    border-radius: 50%;
+    overflow: hidden;
+    position: relative;
+    margin: 0 auto 10px;
+    background-size: cover;
+    background-position: 50%;
+}

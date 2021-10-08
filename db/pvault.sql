@@ -255,7 +255,8 @@ INSERT INTO `ingTypes` (`id`, `name`) VALUES
 (3, 'Other/Uknown'),
 (4, 'Custom Blend'),
 (5, 'Carrier'),
-(6, 'Solvent');
+(6, 'Solvent'),
+(7, 'Base');
 
 DROP TABLE IF EXISTS `lids`;
 CREATE TABLE `lids` (

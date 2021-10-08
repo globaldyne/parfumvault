@@ -14,7 +14,7 @@ if(empty($_GET["id"])){
 }
 $ingID = mysqli_real_escape_string($conn, $_GET["id"]);
 
-$ingredient = mysqli_fetch_array(mysqli_query($conn, "SELECT category,profile,type,odor,physical_state FROM ingredients WHERE id = '$ingID'"));
+$ingredient = mysqli_fetch_array(mysqli_query($conn, "SELECT category,profile,type,odor,physical_state,FEMA,INCI FROM ingredients WHERE id = '$ingID'"));
 if(empty($ingredient['category'])){
 	return;
 }
@@ -38,7 +38,16 @@ if($ingredient['physical_state'] == '1'){
 }
 </style>
 </head>
-
+<div class="sub-2-container sub-2-header">
+	<div class="sub-2-container">
+        <span class="coh-inline-element sub-2-inci">INCI</span> 
+        <span class="coh-inline-element sub-2-fema"><?=$ingredient['INCI']?:"Not Available"?></span>  
+    </div>
+    <div class="sub-2-container">
+        <span class="sub-2-inci">FEMA#</span>
+        <span class="sub-2-fema"><?=$ingredient['FEMA']?:"Not Available"?></span>
+    </div>
+</div>
 <table width="100%" border="0">
   <tr>
     <td width="33%" align="center"><h3 class="mgm-cat-in">Olfactive family</h3></td>

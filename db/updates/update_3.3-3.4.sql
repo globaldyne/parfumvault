@@ -24,3 +24,4 @@ ALTER TABLE `ingredients` CHANGE `cat1` `cat1` DOUBLE NOT NULL DEFAULT '100', CH
 
 UPDATE ingredients SET physical_state = '1' WHERE physical_state = '0';
 ALTER TABLE `ingCategory` ADD `colorKey` VARCHAR(255) NULL AFTER `image`; 
+INSERT INTO `ingTypes` (`id`, `name`) VALUES (NULL, 'Base');

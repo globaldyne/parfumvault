@@ -5,3 +5,4 @@ Self update process improvements
 Various bug fixes and improvements
 Grams added as a measurement unit
 Introducing category color key
+Ingredient management page improvements
