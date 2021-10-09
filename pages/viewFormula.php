@@ -343,7 +343,7 @@ $('.replaceIngredient').editable({
 					  <td align="center" <?php echo $IFRA_WARN;?>><?php echo $conc_p;?></td>
 					  <td align="center"><a href="#" data-toggle="tooltip" data-placement="top" title="by <?=getPrefSupplier($ing_q['id'],$conn)['name']?>"><?=calcCosts(getPrefSupplier($ing_q['id'],$conn)['price'],$formula['quantity'], $formula['concentration'], getPrefSupplier($ing_q['id'],$conn)['size']);?></a></td>
                       <?php if($meta['defView'] == '1'){?>
-					  <td><?php echo ucfirst($ing_q['odor']);?></td>
+					  <td><?php echo ucfirst(wordwrap($ing_q['odor'], 50, "<br />\n"));?></td>
 					  <?php }elseif($meta['defView'] == '2'){?>
 					  <td data-name="notes" class="notes" data-type="text" align="center" data-pk="<?php echo $formula['ingredient'];?>"><?=$formula['notes']?></td>
                       <?php } ?>

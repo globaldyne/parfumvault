@@ -79,7 +79,7 @@ if(file_exists(__ROOT__.'/db/updates/update_'.$pv_meta['schema_ver'].'-'.$db_ver
   <script src="js/jspdf.plugin.autotable.js"></script>
   <script src="js/bootstrap.min.js"></script>
   
-  <link href="css/datatables.min.css" rel="stylesheet" type="text/css" />
+  <link href="css/datatables.min.css" rel="stylesheet">
   
   <script src="js/datatables.min.js"></script>
   <script src="js/magnific-popup.js"></script>
@@ -154,6 +154,7 @@ function list_ingredients(page,limit,filter){
 	$('#list_ingredients').html('<img class="loader loader-center" src="/img/Testtube.gif"/>');
 	$.ajax({ 
 		url: 'pages/listIngredients.php',
+	//	url: 'tests/a.php',
 		type: 'GET',
 		data: {
 			"page": page,
