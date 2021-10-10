@@ -60,7 +60,10 @@ if($_POST['manage'] == 'api'){
 	
 	$api = $_POST['api'];
 	$api_key = mysqli_real_escape_string($conn, $_POST['api_key']);
-	
+	if(strlen($api_key) < 8){
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>API key must be at least 8 characters long.</div>';	
+		return;
+	}
 	if($_POST["api"] == 'true') {
 		$api = '1';
 	}else{
