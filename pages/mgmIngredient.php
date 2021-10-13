@@ -371,7 +371,7 @@ $(document).ready(function() {
                                 </td>
                               </tr>
                               <tr>
-                                <td height="31">Category:</td>
+                                <td height="31">Olfactive family:</td>
                                 <td colspan="5">
                                 <select name="category" id="category" class="form-control selectpicker" data-live-search="true">
                                 <option value="" selected></option>

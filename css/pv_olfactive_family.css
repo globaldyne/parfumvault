@@ -1,0 +1,185 @@
+.pv-olfactive_family {
+	font-size: 0.75rem;
+	line-height: 0.75rem;
+	position: relative;
+	height: 1.5625rem;
+	width: 1.5625rem;
+	-webkit-border-radius: 3.125rem;
+	border-radius: 3.125rem;
+	border-style: solid;
+	border-width: 0.125rem;
+	float: right;
+	display: block;
+	margin-top: -0.3125rem;
+	margin-right: 0.625rem;
+}
+
+.pv-style-gourmand { 
+	color: #dbb877;
+}
+.pv-style-oud { 
+	color: #ad1a1a; 
+}
+
+.pv-style-green {
+	color: #6d873b; 
+}
+
+.pv-style-citrus {
+	color: #ded41f;
+}
+
+.pv-style-cologne { 
+	color: #c7baab;
+}
+
+.pv-style-balsamic {
+	color: #cea97a;
+}
+
+.pv-style-spices {
+	color: #e41b18;
+}
+
+.pv-style-musky {
+	color: #c7baab;
+}
+
+.pv-style-caramelic {
+	color: #d93e15;
+}
+
+.pv-style-sweet { 
+	color: #888888;
+}
+
+.pv-style-coffee { 
+	color: #1f090a;
+}
+
+.pv-style-chypre {
+	color: #c7baab;
+}
+
+.pv-style-sulfury {
+	color: #f6df3b;
+}
+
+.pv-style-oriental {
+	color: #c7baab;
+}
+
+.pv-style-seafood {
+	color: #1b185d;
+}
+
+.pv-style-fougere { 
+	color: #c7baab; 
+}
+	
+.pv-style-fruity {
+	color: #f08408;
+}
+
+.pv-style-tea {
+	color: #bdd684;
+}
+
+.pv-style-alcoholic-notes {
+	color: #b23410;
+}
+	
+.pv-style-woody {
+	color: #5c3c09;
+}
+
+.pv-style-aromatic {
+	color: #b4d695;
+}
+
+.pv-style-taste-modifier {
+	color: #888888;
+}
+
+.pv-style-cheesy {
+	color: #f2c13f;
+}
+
+.pv-style-earthy---mossy {
+	color: #164a09;
+}
+
+.pv-style-earthy-mossy {
+	color: #164a09;
+}
+.pv-style-mint-and-herbs {
+	color: #45ac34;
+}
+
+.pv-style-coconut {
+	color: #593a1e;
+}
+
+.pv-style-floral {
+	color: #d490d4;
+}
+
+.pv-style-spicy { 
+	color: #d14623; 
+}
+
+.pv-style-flowery-notes {
+	color: #2882b9;
+}
+
+.pv-style-ambery {
+	color: #e0a279; 
+}
+
+.pv-style-watery { 
+	color: #46808f;
+}
+
+.pv-style-berries {
+	color: #682480;
+}
+
+.pv-style-animalic { 
+	color: #594b45;
+}
+
+.pv-style-creamy { 
+	color: #e4bd6d; 
+}
+
+.pv-style-aldehydic { 
+	color: #7eaebf; 
+}
+
+.pv-style-fatty { 
+	color: #e5cf1c; 
+}
+
+.pv-style-coniferous {
+	color: #c7baab; 
+}
+
+.pv-style-cocoa {
+	color: #49291c;
+}
+
+.pv-style-vanilla {
+	color: #d9b775;
+}
+
+.pv-style-leathery { 
+	color: #755c52;
+}
+
+.pv-style-other { 
+	color: #aebd14; 
+}
+
+.pv-style-blackcurrent { 
+	color: #f08408; 
+}

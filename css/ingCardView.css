@@ -1,8 +1,26 @@
-
-.wrapper {
-  margin: 10vh;
+.ing-desc {
+	margin-top: .75rem;
+	margin-bottom: .75rem;
+	overflow: auto;
+	max-height: 190px;
+	white-space: normal;
+	text-overflow: ellipsis;
 }
-
+.ing-limit {
+	display: inline-flex;
+}
+.rounded-circle-family {
+	border-radius: 50% !important;
+	max-width:40px
+}
+.physical_state_bg {
+	background-color: fff;
+	height: 40px;
+}
+.family_bg{
+	background-color: fff;
+	height: 40px;
+}
 .card {
   border: none;
   transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
@@ -69,13 +87,26 @@
   cursor: pointer;
   transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
 }
-.card:hover .card-body {
-  margin-top: 30px;
-  transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
-}
+
 .card .card-img-overlay {
   transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
   background: #234f6d;
   background: linear-gradient(0deg, rgba(35, 79, 109, 0.3785889356) 0%, #455f71 100%);
 }
-  
+ 
+.meta-link {
+	display: inline-flex;
+	margin: 0.4rem;
+}
+
+.fas.fa-trash {
+	color: white;
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}
+.sh-bk {
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}
+.nav-paging {
+	padding: 10px 10px 10px 10px;
+	margin: 10px;
+}

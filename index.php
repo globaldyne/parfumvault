@@ -63,7 +63,7 @@ if(file_exists(__ROOT__.'/db/updates/update_'.$pv_meta['schema_ver'].'-'.$db_ver
 	}
   </script>
   <meta name="description" content="<?php echo $product.' - '.$ver;?>">
-  <meta name="author" content="JBPARFUM">
+  <meta name="author" content="Perfumers Vault by JB">
   <title><?php echo $product;?> - Dashboard</title>
   <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16x16.png">
@@ -154,7 +154,6 @@ function list_ingredients(page,limit,filter){
 	$('#list_ingredients').html('<img class="loader loader-center" src="/img/Testtube.gif"/>');
 	$.ajax({ 
 		url: 'pages/listIngredients.php',
-	//	url: 'tests/a.php',
 		type: 'GET',
 		data: {
 			"page": page,

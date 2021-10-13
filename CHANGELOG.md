@@ -10,6 +10,7 @@ Added category color key
 Improve PV Online upload function
 Ingredient management page improvements
 Set minimum 8 chars length for API key
+Overeall code improvements especially for ingredients and categories pages
 
 ### Version 3.3
 Show CAS and INCI when listing ingredients in formula page

@@ -63,6 +63,14 @@ $('.popup-link').magnificPopup({
               </tr>
             </table>
 <script type="text/javascript" language="javascript" >
+$(document).ready(function() {
+	$('#tdDataCat').DataTable({
+		"paging":   true,
+		"info":   true,
+		"lengthMenu": [[20, 35, 60, -1], [20, 35, 60, "All"]]
+	});
+});
+
 $('#add-category').click(function() {
 	$.ajax({ 
 		url: 'pages/update_settings.php', 
@@ -82,11 +90,7 @@ $('#add-category').click(function() {
 		  });
 });
 
-$('#tdDataCat').DataTable({
-    "paging":   true,
-	"info":   true,
-	"lengthMenu": [[20, 35, 60, -1], [20, 35, 60, "All"]]
-});
+
 
 $('#cat_data').editable({
   container: 'body',

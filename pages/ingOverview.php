@@ -7,6 +7,7 @@ require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/getCatByID.php');
 require_once(__ROOT__.'/func/profileImg.php');
+require_once(__ROOT__.'/func/getIngState.php');
 
 
 if(empty($_GET["id"])){
@@ -14,19 +15,11 @@ if(empty($_GET["id"])){
 }
 $ingID = mysqli_real_escape_string($conn, $_GET["id"]);
 
-$ingredient = mysqli_fetch_array(mysqli_query($conn, "SELECT category,profile,type,odor,physical_state,FEMA,INCI FROM ingredients WHERE id = '$ingID'"));
+$ingredient = mysqli_fetch_array(mysqli_query($conn, "SELECT category,profile,type,odor,physical_state,FEMA,INCI,reach FROM ingredients WHERE id = '$ingID'"));
 if(empty($ingredient['category'])){
 	return;
 }
 
-
-if($ingredient['physical_state'] == '1'){ 
-	$physical_state = '<img src="../img/liquid.png" class="img_ing"/>';
-}elseif($ingredient['physical_state'] == '2'){ 
-	$physical_state = '<img src="../img/solid.png" class="img_ing"/>';
-}else{ 
-	$physical_state = 'N/A'; 
-}
 ?>
 <html>
 <head>
@@ -47,6 +40,10 @@ if($ingredient['physical_state'] == '1'){
         <span class="sub-2-inci">FEMA#</span>
         <span class="sub-2-fema"><?=$ingredient['FEMA']?:"Not Available"?></span>
     </div>
+    <div class="sub-2-container">
+        <span class="sub-2-inci">REACH#</span>
+        <span class="sub-2-fema"><?=$ingredient['reach']?:"Not Available"?></span>
+    </div>
 </div>
 <table width="100%" border="0">
   <tr>
@@ -57,7 +54,7 @@ if($ingredient['physical_state'] == '1'){
   <tr>
     <td align="center"><?=getCatByID($ingredient['category'],TRUE,$conn)?></td>
     <td align="center"><img src="<?=profileImg($ingredient['profile'])?>" class="img_ing"/></td>
-    <td align="center"><?=$physical_state?></td>
+    <td align="center"><?=getIngState($ingredient['physical_state'],'img_ing')?></td>
   </tr>
 </table>
 
