@@ -77,9 +77,7 @@
 .card .card-footer .media img {
   border: solid 3px rgba(234, 95, 0, 0.3);
 }
-.card .card-meta {
-  color: orange;
-}
+
 .card .card-body {
   transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
 }
@@ -104,7 +102,7 @@
 	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
 }
 .sh-bk {
-	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	/* text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black; */
 }
 .nav-paging {
 	padding: 10px 10px 10px 10px;
