@@ -135,10 +135,10 @@ if($_POST['value'] && $_GET['formula'] && $_POST['pk']){
 if($_GET['formulaMeta']){
 	$value = mysqli_real_escape_string($conn, $_POST['value']);
 	$formula = mysqli_real_escape_string($conn, base64_decode($_GET['formulaMeta']));
-	$ingredient = mysqli_real_escape_string($conn, $_POST['pk']);
+	$id = mysqli_real_escape_string($conn, $_POST['pk']);
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 	
-	mysqli_query($conn, "UPDATE formulasMetaData SET $name = '$value' WHERE name = '$formula'");
+	mysqli_query($conn, "UPDATE formulasMetaData SET $name = '$value' WHERE id = '$id'");
 	return;
 }
 
@@ -398,7 +398,7 @@ if($_POST['manage'] == 'ingredient'){
 																						
 	$type = mysqli_real_escape_string($conn, $_POST["type"]);
 	$strength = mysqli_real_escape_string($conn, $_POST["strength"]);
-	$category = mysqli_real_escape_string($conn, $_POST["category"]);
+	$category = mysqli_real_escape_string($conn, $_POST["category"] ? $_POST['category']: '1');
 	$profile = mysqli_real_escape_string($conn, $_POST["profile"]);
 	$tenacity = mysqli_real_escape_string($conn, $_POST["tenacity"]);
 	$formula = mysqli_real_escape_string($conn, $_POST["formula"]);
@@ -412,24 +412,24 @@ if($_POST['manage'] == 'ingredient'){
 	$soluble = mysqli_real_escape_string($conn, $_POST["soluble"]);
 	$logp = mysqli_real_escape_string($conn, $_POST["logp"]);
 	
-	$cat1 = validateInput($_POST["cat1"]);
-	$cat2 = validateInput($_POST["cat2"]);
-	$cat3 = validateInput($_POST["cat3"]);
-	$cat4 = validateInput($_POST["cat4"]);
-	$cat5A = validateInput($_POST["cat5A"]);
-	$cat5B = validateInput($_POST["cat5B"]);
-	$cat5C = validateInput($_POST["cat5C"]);
-	$cat5D = validateInput($_POST["cat5D"]);
-	$cat6 = validateInput($_POST["cat6"]);
-	$cat7A = validateInput($_POST["cat7A"]);
-	$cat7B = validateInput($_POST["cat7B"]);
-	$cat8 = validateInput($_POST["cat8"]);
-	$cat9 = validateInput($_POST["cat9"]);
-	$cat10A = validateInput($_POST["cat10A"]);
-	$cat10B = validateInput($_POST["cat10B"]);
-	$cat11A = validateInput($_POST["cat11A"]);
-	$cat11B = validateInput($_POST["cat11B"]);
-	$cat12 = validateInput($_POST["cat12"]);
+	$cat1 = validateInput($_POST["cat1"]? $_POST['cat1']: '100');
+	$cat2 = validateInput($_POST["cat2"] ? $_POST['cat2']: '100');
+	$cat3 = validateInput($_POST["cat3"] ? $_POST['cat3']: '100');
+	$cat4 = validateInput($_POST["cat4"] ? $_POST['cat4']: '100');
+	$cat5A = validateInput($_POST["cat5A"] ? $_POST['cat5A']: '100');
+	$cat5B = validateInput($_POST["cat5B"] ? $_POST['cat5B']: '100');
+	$cat5C = validateInput($_POST["cat5C"] ? $_POST['cat5C']: '100');
+	$cat5D = validateInput($_POST["cat5D"] ? $_POST['cat5D']: '100');
+	$cat6 = validateInput($_POST["cat6"] ? $_POST['cat6']: '100');
+	$cat7A = validateInput($_POST["cat7A"] ? $_POST['cat7A']: '100');
+	$cat7B = validateInput($_POST["cat7B"] ? $_POST['cat7B']: '100');
+	$cat8 = validateInput($_POST["cat8"] ? $_POST['cat8']: '100');
+	$cat9 = validateInput($_POST["cat9"] ? $_POST['cat9']: '100');
+	$cat10A = validateInput($_POST["cat10A"] ? $_POST['cat10A']: '100');
+	$cat10B = validateInput($_POST["cat10B"] ? $_POST['cat10B']: '100');
+	$cat11A = validateInput($_POST["cat11A"] ? $_POST['cat11A']: '100');
+	$cat11B = validateInput($_POST["cat11B"] ? $_POST['cat11B']: '100');
+	$cat12 = validateInput($_POST["cat12"] ? $_POST['cat12']: '100');
 	
 	$impact_top = mysqli_real_escape_string($conn, $_POST["impact_top"]);
 	$impact_base = mysqli_real_escape_string($conn, $_POST["impact_base"]);

@@ -1,4 +1,18 @@
 # CHANGELOG
+### Version 3.4
+REST API added
+DB schema ingredients category chnage from char to int
+Category migration script added in helpers
+DB and main app update process seperated
+Grams added as a measurement unit
+Extend PV Online api to upload categories as a part of ingredient data
+Added category color key
+Improve PV Online upload function
+Ingredient management page improvements
+Set minimum 8 chars length for API key
+Overall code improvements especially for ingredients and categories pages
+Added card view in ingredients
+
 ### Version 3.3
 Show CAS and INCI when listing ingredients in formula page
 All custom usage limits set to "Recommendation" by default
