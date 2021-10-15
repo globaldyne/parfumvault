@@ -152,8 +152,12 @@ function list_formulas(){
 	
 function list_ingredients(page,limit,filter){
 	$('#list_ingredients').html('<img class="loader loader-center" src="/img/Testtube.gif"/>');
-	$.ajax({ 
-		url: 'pages/listIngredients.php',
+	$.ajax({
+		<?php if($settings['defIngView'] == '1'){ ?>
+			url: 'pages/listIngredients.php',
+		<?php }elseif($settings['defIngView'] == '2'){ ?>
+			url: 'pages/listIngredientsCards.php',
+		<?php } ?>
 		type: 'GET',
 		data: {
 			"page": page,

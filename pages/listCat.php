@@ -124,42 +124,12 @@ $('.colorKey').editable({
 	emptyclass: "",
   	url: "pages/update_data.php?settings=cat",
     source: [
-			 {value: '0, 255, 255', text: 'Aqua'},
-             {value: '240, 255, 255', text: 'Azure'},
-             {value: '245, 245, 220', text: 'Beige'},
-             {value: '165, 42, 42', text: 'Brown'},
-			 {value: '0, 0, 0', text: 'Black'},
-			 {value: '0, 0, 255', text: 'Blue'},
-             {value: '0, 255, 255', text: 'Cyan'},
-			 {value: '0, 0, 139', text: 'Dark Blue'},
-             {value: '0, 139, 139', text: 'Dark Cyan'},
-			 {value: '0, 100, 0', text: 'Dark Green'},
-             {value: '169, 169, 169', text: 'Dark Grey'},
-             {value: '189, 183, 107', text: 'Dark Khaki'},
-             {value: '255, 140, 0', text: 'Dark Orange'},
-             {value: '153, 50, 204', text: 'Dark Orchid'},
-             {value: '233, 150, 122', text: 'Dark Salmon'},
-             {value: '255, 0, 255', text: 'Fuchsia'},
-             {value: '255, 215, 0', text: 'Gold'},
-             {value: '0, 128, 0', text: 'Green'},
-             {value: '240, 230, 140', text: 'Khaki'},
-             {value: '173, 216, 230', text: 'Light Blue'},
-             {value: '224, 255, 255', text: 'Light Cyan'},
-             {value: '211, 211, 211', text: 'Light Grey'},
-             {value: '144, 238, 144', text: 'Light Green'},
-             {value: '255, 182, 193', text: 'Light Pink'},
-             {value: '255, 255, 224', text: 'Light Yellow'},
-             {value: '0, 255, 0', text: 'Lime'},
-             {value: '255, 0, 255', text: 'Magenta'},
-             {value: '0, 0, 128', text: 'Navy'},
-             {value: '128, 0, 128', text: 'Purple'},
-             {value: '128, 128, 0', text: 'Olive'},
-             {value: '255, 165, 0', text: 'Orange'},
-			 {value: '255, 0, 0', text: 'Red'},
-             {value: '255, 192, 203', text: 'Pink'},
-             {value: '192, 192, 192', text: 'Silver'},
-			 {value: '255, 255, 0', text: 'Yellow'},
-			 {value: '255, 255, 255', text: 'White'},
+			 <?php
+				$getCK = mysqli_query($conn, "SELECT name,rgb FROM colorKey ORDER BY name ASC");
+				while ($r = mysqli_fetch_array($getCK)){
+				echo '{value: "'.$r['rgb'].'", text: "'.$r['name'].'", ck: "color: rgb('.$r['rgb'].')"},';
+			}
+			?>
           ],
 	dataType: 'html',
 	success: function () {

@@ -20,13 +20,8 @@ function getCatByID($id, $image = FALSE, $conn){
 }
 
 
-function getCatByIDRaw($id, $image = FALSE, $conn){
-	$cat = mysqli_fetch_array(mysqli_query($conn, "SELECT name,image FROM ingCategory WHERE id = '$id'"));
-	if($image == TRUE && $cat['image']){
-		return $cat['image'];
-	}else{
-		return $cat['name'];
-	}
+function getCatByIDRaw($id, $filter = '*', $conn){
+	return mysqli_fetch_array(mysqli_query($conn, "SELECT $filter FROM ingCategory WHERE id = '$id'"));
 }
 
 

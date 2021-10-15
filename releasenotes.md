@@ -6,3 +6,5 @@ Various bug fixes and improvements
 Grams added as a measurement unit
 Introducing category color key
 Ingredient management page improvements
+Added card view in ingredients
+Overall UI and functional improvements
