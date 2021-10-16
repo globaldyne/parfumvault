@@ -100,7 +100,7 @@ if(empty($info['name'])){
   </tr>
   <tr>
     <td>Profile:</td>
-    <td><a href="#" id="profile" data-type="select" data-pk="profile" data-title="<?php echo $info['profile'];?>"></a></td>
+    <td><a href="#" id="profile" data-type="select" data-pk="<?php echo $info['id'];?>" data-title="<?php echo $info['profile'];?>"></a></td>
   </tr>
   <tr>
     <td>Purpose:</td>
@@ -114,7 +114,7 @@ if(empty($info['name'])){
   </tr>
   <tr>
     <td>Sex:</td>
-    <td><a href="#" id="sex" data-type="select" data-pk="sex" data-title="<?php echo $info['sex'];?>"></a></td>
+    <td><a href="#" id="sex" data-type="select" data-pk="<?php echo $info['id'];?>" data-title="<?php echo $info['sex'];?>"></a></td>
   </tr>
   <tr>
     <td>Picture:</td>
@@ -125,7 +125,7 @@ if(empty($info['name'])){
   </tr>
   <tr>
     <td>Notes:</td>
-    <td data-name="notes" class="notes" data-type="textarea" align="left" data-pk="notes"><?php echo $info['notes'];?></td>
+    <td data-name="notes" class="notes" data-type="textarea" align="left" data-pk="<?php echo $info['id'];?>"><?php echo $info['notes'];?></td>
   </tr>
 </table>
 

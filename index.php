@@ -35,17 +35,19 @@ require(__ROOT__.'/inc/settings.php');
 
 if($pv_meta['app_ver'] < trim(file_get_contents(__ROOT__.'/VERSION.md'))){
 	$upVerLoc = trim(file_get_contents(__ROOT__.'/VERSION.md'));
-	$db_ver   = trim(file_get_contents(__ROOT__.'/db/schema.ver'));
-  	if(file_exists(__ROOT__.'/db/updates/update_'.$pv_meta['app_ver'].'-'.$db_ver.'.sql') === TRUE){
-		if($pv_meta['app_ver'] < $db_ver){	
-			$db_up_msg = '<div class="alert alert-warning alert-dismissible"><strong>Your database schema needs to be updated ('.$db_ver.'). Please <a href="pages/maintenance.php?do=backupDB">backup</a> your database first and then click <a href="javascript:updateDB()">here to update the db schema.</a></strong></div>';
-			}
-		}else{
-			mysqli_query($conn, "UPDATE pv_meta SET schema_ver = '$upVerLoc'");
-		}
-		if(mysqli_query($conn, "UPDATE pv_meta SET app_ver = '$upVerLoc'")){
-			$show_release_notes = true;
-		}
+	if(mysqli_query($conn, "UPDATE pv_meta SET app_ver = '$upVerLoc'")){
+		$show_release_notes = true;
+	}
+}
+
+
+$db_ver   = trim(file_get_contents(__ROOT__.'/db/schema.ver'));
+if(file_exists(__ROOT__.'/db/updates/update_'.$pv_meta['schema_ver'].'-'.$db_ver.'.sql') === TRUE){
+	if($pv_meta['schema_ver'] < $db_ver){	
+		$db_up_msg = '<div class="alert alert-warning alert-dismissible"><strong>Your database schema needs to be updated ('.$db_ver.'). Please <a href="pages/maintenance.php?do=backupDB">backup</a> your database first and then click <a href="javascript:updateDB()">here to update the db schema.</a></strong></div>';
+	}
+}else{
+	mysqli_query($conn, "UPDATE pv_meta SET schema_ver = '$db_ver'");
 }
 ?>
 
@@ -61,7 +63,7 @@ if($pv_meta['app_ver'] < trim(file_get_contents(__ROOT__.'/VERSION.md'))){
 	}
   </script>
   <meta name="description" content="<?php echo $product.' - '.$ver;?>">
-  <meta name="author" content="JBPARFUM">
+  <meta name="author" content="Perfumers Vault by JB">
   <title><?php echo $product;?> - Dashboard</title>
   <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16x16.png">
@@ -77,7 +79,7 @@ if($pv_meta['app_ver'] < trim(file_get_contents(__ROOT__.'/VERSION.md'))){
   <script src="js/jspdf.plugin.autotable.js"></script>
   <script src="js/bootstrap.min.js"></script>
   
-  <link href="css/datatables.min.css" rel="stylesheet" type="text/css" />
+  <link href="css/datatables.min.css" rel="stylesheet">
   
   <script src="js/datatables.min.js"></script>
   <script src="js/magnific-popup.js"></script>
@@ -93,7 +95,7 @@ if($pv_meta['app_ver'] < trim(file_get_contents(__ROOT__.'/VERSION.md'))){
   <script src="js/dataTables.responsive.min.js"></script>
   <script src="js/responsive.bootstrap.min.js"></script>
   <link href="css/responsive.bootstrap.min.css" rel="stylesheet">
-
+	
   <link href="css/jquery-ui.css" rel="stylesheet">
   <link href="css/tipsy.css" rel="stylesheet" />
   <link href="css/magnific-popup.css" rel="stylesheet" />
@@ -150,8 +152,12 @@ function list_formulas(){
 	
 function list_ingredients(page,limit,filter){
 	$('#list_ingredients').html('<img class="loader loader-center" src="/img/Testtube.gif"/>');
-	$.ajax({ 
-		url: 'pages/listIngredients.php',
+	$.ajax({
+		<?php if($settings['defIngView'] == '1'){ ?>
+			url: 'pages/listIngredients.php',
+		<?php }elseif($settings['defIngView'] == '2'){ ?>
+			url: 'pages/listIngredientsCards.php',
+		<?php } ?>
 		type: 'GET',
 		data: {
 			"page": page,

@@ -14,4 +14,13 @@ function pvOnlineValAcc($api, $apiUser, $apiPass, $ver){
 	return $jData['status'];
 }
 
+function pvUploadData($pvOnlineAPI, $data){
+	$ch = curl_init($pvOnlineAPI);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+	
+	$response = curl_exec($ch);
+	curl_close($ch);
+	return $response;
+}
 ?>

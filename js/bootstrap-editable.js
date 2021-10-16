@@ -3204,6 +3204,10 @@ $(function(){
                             $el.append(fillItems($('<optgroup>', attr), data[i].children)); 
                         } else {
                             attr.value = data[i].value;
+							//ColorKey
+							if(data[i].ck) {
+								attr.style = data[i].ck;
+							}
                             if(data[i].disabled) {
                                 attr.disabled = true;
                             }

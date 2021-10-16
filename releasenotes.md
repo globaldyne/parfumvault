@@ -1,8 +1,10 @@
 Whats New:
 ----------------------
-All custom usage limits set to "Recommendation" by default
-Custom usage limits will return info from now on instead of warning
-Custom usage limits will not prevent IFRA certificate to be generated
-TGSC integrations removed
-Advanced search in ingredients allows you to search by name, cas, profile, category or odor
-We added search engine modules, meaning you can create a custom module to match your supplier and directly import the material to the local DB
+Introducing REST API so you can access your formulas and ingredients from a thrid party service/app
+Self update process improvements
+Various bug fixes and improvements
+Grams added as a measurement unit
+Introducing category color key
+Ingredient management page improvements
+Added card view in ingredients
+Overall UI and functional improvements

@@ -1,3 +1,5 @@
+<link href="css/ingCardView.css" rel="stylesheet">
+
 <?php 
 
 require('../inc/sec.php');
@@ -12,6 +14,7 @@ require_once(__ROOT__.'/func/searchIFRA.php');
 require_once(__ROOT__.'/func/getCatByID.php');
 require_once(__ROOT__.'/func/profileImg.php');
 require_once(__ROOT__.'/func/getDocument.php');
+require_once(__ROOT__.'/func/getIngState.php');
 
 $defCatClass = $settings['defCatClass'];
 
@@ -59,7 +62,7 @@ if($i){
 	$filter = "WHERE name LIKE '%$i%' OR cas LIKE '%$i%' OR odor LIKE '%$i%' OR INCI LIKE '%$i%'";
 }
 
-$ingredient_q = mysqli_query($conn, "SELECT id,name,INCI,cas,profile,category,odor,$defCatClass FROM ingredients $filter $extra");
+$ingredient_q = mysqli_query($conn, "SELECT id,name,INCI,cas,profile,category,odor,$defCatClass,notes,physical_state,type FROM ingredients $filter $extra");
 
 $allIng = mysqli_fetch_array(mysqli_query($conn, "SELECT count(id) AS id FROM ingredients $filter"));
 $pages = ceil($allIng['0'] / $pageLimit);
@@ -68,13 +71,13 @@ $prev = $page - 1;
 $next = $page + 1;
 
 ?>
-<table class="table table-bordered" id="tdDataIng" width="100%" cellspacing="0">
+<table class="table table-bordered" id="tdDataCard" width="100%" cellspacing="0">
 	<thead>
-     <tr class="noBorder noexport">
-      <th colspan="9">
+     <tr class="noBorder">
+      <th colspan="1">
        <div class="col-sm-6 text-left">
-		<label>Show  
-        <select name="ing_limit" id="ing_limit" class="form-control input-sm">
+		<label class="ing-limit">Show  
+        <select name="ing_limit" id="ing_limit" class="form-control input-sm mr-2 ml-2">
         <?php foreach([20,30,50,100] as $setLimit){ ?>
            <option
            <?php if($pageLimit == $setLimit) echo 'selected'; ?>
@@ -85,7 +88,7 @@ $next = $page + 1;
             <div class="ing-view">
                 <a href="javascript:setView('1')" class="fas fa-list"></a>
                 <a href="javascript:setView('2')" class="fas fa-border-all"></a>
-            </div>        
+            </div>
         </div>
             <div class="col-sm-6 text-right">
                  <div class="btn-group">
@@ -104,74 +107,41 @@ $next = $page + 1;
                         </div>
                         </th>
                     </tr>
-                    <tr>
-                      <th>Name</th>
-                      <th>CAS#</th>
-                      <th>Odor</th>
-                      <th>Profile</th>
-                      <th>Category</th>
-                      <th><?php echo ucfirst($settings['defCatClass']);?>%</th>
-                      <th>Supplier(s)</th>
-                      <th class="noexport">Document(s)</th>
-                      <th class="noexport">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  <?php while ($ingredient = mysqli_fetch_array($ingredient_q)) { ?>
-                    <tr>
-                      <td align="center"><a href="pages/mgmIngredient.php?id=<?=base64_encode($ingredient['name'])?>" class="popup-link listIngName listIngName-with-separator"><?=$ingredient['name']?></a><?=checkAllergen($ingredient['name'],$conn)?><span class="listIngHeaderSub"><?=$ingredient['INCI']?></span></td>
-					  <?php if($ingredient['cas']){ ?>
-                      <td align="center"><?=$ingredient['cas']?></td>
-                      <?php }else{ ?>
-					  <td align="center">N/A</td>
-					  <?php } ?>
-					  <td align="center"><?=$ingredient['odor']?></td>
-                      <td align="center"><a href="#" rel="tipsy" title="<?=$ingredient['profile']?>"><img src="<?=profileImg($ingredient['profile'])?>" border="0" class="img_ing_prof" /></a></td>
-					  <td align="center"><?=getCatByID($ingredient['category'],TRUE,$conn)?></td>
-  					  <?php
-                      if($limit = searchIFRA($ingredient['cas'],$ingredient['name'],null,$conn,$defCatClass)){
-						  $limit = explode(' - ', $limit);
-					 ?>
-					 <td align="center"><a href="#" rel="tipsy" title="<?=$limit['1']?>"><?=$limit['0']?></a></td>
-					<?php }elseif($ingredient[$defCatClass]){ ?>
-						  <td align="center"><?=$ingredient[$defCatClass]?></td>
-					<?php }else{ ?>
-						  <td align="center">N/A</td>
-					<?php } ?>
-					<?php if($a = getIngSupplier($ingredient['id'],$conn)){ ?>			
-                     <td align="center">
-                         <div class="btn-group">
-                           <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-store"></i></button>
-                             <div class="dropdown-menu dropdown-menu-right">
-                         <?php foreach ($a as $b){ ?>
-                             <a class="dropdown-item popup-link" href="<?=$b['supplierLink']?>"><?=$b['name']?></a> 
-                         <?php }	?>
-                             </div>
-                         </div>
-                        </td>
-                    <?php }else{ ?>
-                        <td align="center">N/A</td>
-                    <?php } ?>
-					<?php if ($a = getDocument($ingredient['id'],1,$conn)){ ?>
-                      <td align="center">
-						<div class="btn-group">
-                          <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-file-alt"></i></button>
-                            <div class="dropdown-menu dropdown-menu-right">
-                         <?php foreach ($a as $b){ ?>
-                             <a class="dropdown-item popup-link" href="pages/viewDoc.php?id=<?=$b['id']?>"><?=$b['name']?></a> 
-                         <?php }	?>
-                             </div>
-                         </div>
-                      </td>
-                         <?php }else{ ?>
-						  <td align="center" class="noexport">N/A</td>
-					  <?php } ?>
-                      <td class="noexport" align="center"><a href="pages/mgmIngredient.php?id=<?=base64_encode($ingredient['name'])?>" class="fas fa-edit popup-link"><a> <a href="javascript:delete_ingredient('<?=$ingredient['id']?>')" onclick="return confirm('Delete <?=$ingredient['name']?> ?')" class="fas fa-trash"></a></td>
-					  </tr>
-				  <?php } ?>
-                    </tr>
-                  </tbody>
-                </table>
+  </thead>
+  </table>
+  <?php 
+  		while ($ingredient = mysqli_fetch_array($ingredient_q)) { 
+			$rgb = getCatByIDRaw($ingredient['category'], 'colorKey', $conn)['0'] ;	
+	?>
+   <div class="col-md-3">
+ 	<div class="card text-white card-has-bg click-col" style="background-image:url('<?=getCatByIDRaw($ingredient['category'],'image',$conn)['0']?>');"> 
+      <div class="card-img-overlay d-flex flex-column">
+        <div class="card-body">
+          <small class="card-meta mb-2"><?=$ingredient['cas'] ?: "CAS not available"?></small>
+           <div class="meta-link">
+	     	<a href="javascript:delete_ingredient('<?=$ingredient['id']?>')" onclick="return confirm('Delete <?=$ingredient['name']?> ?')" class="fas fa-trash"></a>
+      </div>
+          <h4 class="card-title mt-0 "><a class="text-white popup-link" href="pages/mgmIngredient.php?id=<?=base64_encode($ingredient['name'])?>"><?=$ingredient['name']?></a></h4>
+          <small class="mb-2"><?=$ingredient['INCI']?></small>
+          <div class="ing-desc"><small class="mb-2"><?=$ingredient['notes']?></small></div>
+
+         </div>
+         <div class="card-footer">
+          <div class="media">
+    	   	<?=getIngType($ingredient['type'], 'mr-3 rounded-circle-family physical_state_bg','style="border: solid 3px rgba('.$rgb.');"')?>
+  			<?=getIngState($ingredient['physical_state'],'mr-3 rounded-circle-family physical_state_bg', 'style="border: solid 3px rgba('.$rgb.');"')?>
+  			<img class="mr-3 rounded-circle-family family_bg" style="border: solid 3px rgba(<?=$rgb?>);" src="<?=profileImg($ingredient['profile'])?>">
+  <div class="media-body">
+    <h6 class="my-0 text-white d-block"><?=searchIFRA($ingredient['cas'],$ingredient['name'],null,$conn,$defCatClass)?:ucfirst($defCatClass).': '.$ingredient[$defCatClass].'%'?></h6>
+     <div class="sh-bk"><small><?=getCatByIDRaw($ingredient['category'], 'name', $conn)['0']?></small></div>
+  </div>
+</div>
+          </div>
+        </div>
+      </div>
+  </div>
+  <?php } ?>
+<div class="nav-paging">
         <nav>
             <ul class="pagination justify-content-center">
                 <li class="page-item <?php if($page <= 1){ echo 'disabled'; } ?>">
@@ -187,6 +157,8 @@ $next = $page + 1;
                 </li>
             </ul>
         </nav>
+   </div>
+
 <script type="text/javascript" language="javascript" >
 $(".alert-dismissible").fadeTo(2000, 500).slideUp(500, function(){
     $(".alert-dismissible").slideUp(500);

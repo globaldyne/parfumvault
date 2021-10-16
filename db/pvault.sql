@@ -143,7 +143,8 @@ CREATE TABLE `ingCategory` (
   `id` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
   `notes` text COLLATE utf8_bin DEFAULT NULL,
-  `image` LONGBLOB NULL
+  `image` LONGBLOB NULL,
+  `colorKey` VARCHAR(255) NULL 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 DROP TABLE IF EXISTS `ingProfiles`;
@@ -165,7 +166,7 @@ CREATE TABLE `ingredients` (
   `INCI` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `type` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `strength` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `category` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `category` int(10) NOT NULL DEFAULT '1',
   `purity` varchar(11) COLLATE utf8_bin DEFAULT NULL,
   `cas` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `reach` varchar(255) COLLATE utf8_bin DEFAULT NULL,
@@ -187,24 +188,24 @@ CREATE TABLE `ingredients` (
   `flavor_use` int(10) DEFAULT NULL,
   `soluble` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `logp` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `cat1` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `cat2` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `cat3` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `cat4` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `cat5A` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `cat5B` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `cat5C` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `cat5D` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `cat6` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `cat7A` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `cat7B` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `cat8` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `cat9` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `cat10A` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `cat10B` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `cat11A` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `cat11B` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `cat12` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `cat1` double NOT NULL DEFAULT 100,
+  `cat2` double NOT NULL DEFAULT 100,
+  `cat3` double NOT NULL DEFAULT 100,
+  `cat4` double NOT NULL DEFAULT 100,
+  `cat5A` double NOT NULL DEFAULT 100,
+  `cat5B` double NOT NULL DEFAULT 100,
+  `cat5C` double NOT NULL DEFAULT 100,
+  `cat5D` double NOT NULL DEFAULT 100,
+  `cat6` double NOT NULL DEFAULT 100,
+  `cat7A` double NOT NULL DEFAULT 100,
+  `cat7B` double NOT NULL DEFAULT 100,
+  `cat8` double NOT NULL DEFAULT 100,
+  `cat9` double NOT NULL DEFAULT 100,
+  `cat10A` double NOT NULL DEFAULT 100,
+  `cat10B` double NOT NULL DEFAULT 100,
+  `cat11A` double NOT NULL DEFAULT 100,
+  `cat11B` double NOT NULL DEFAULT 100,
+  `cat12` double NOT NULL DEFAULT 100,
   `manufacturer` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `impact_top` varchar(10) COLLATE utf8_bin DEFAULT NULL,
   `impact_heart` varchar(10) COLLATE utf8_bin DEFAULT NULL,
@@ -213,7 +214,7 @@ CREATE TABLE `ingredients` (
   `noUsageLimit` INT NULL DEFAULT '0',  
   `isPrivate` INT NULL DEFAULT '0',
   `molecularWeight` VARCHAR(255) NULL,
-  `physical_state` INT NULL DEFAULT '0',
+  `physical_state` INT NULL DEFAULT '1',
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
@@ -254,7 +255,8 @@ INSERT INTO `ingTypes` (`id`, `name`) VALUES
 (3, 'Other/Uknown'),
 (4, 'Custom Blend'),
 (5, 'Carrier'),
-(6, 'Solvent');
+(6, 'Solvent'),
+(7, 'Base');
 
 DROP TABLE IF EXISTS `lids`;
 CREATE TABLE `lids` (
@@ -306,7 +308,10 @@ CREATE TABLE `settings` (
   `pubchem_view` VARCHAR(4) NOT NULL DEFAULT '2d',
   `mUnit` VARCHAR(10) NOT NULL DEFAULT 'ml',
   `multi_dim_perc` INT NOT NULL DEFAULT '0', 
-  `defCatClass` VARCHAR(255) NOT NULL DEFAULT 'cat4' 
+  `defCatClass` VARCHAR(255) NOT NULL DEFAULT 'cat4',
+  `defIngView` INT NOT NULL DEFAULT '1', 
+  `api` INT NOT NULL DEFAULT '0',
+  `api_key` VARCHAR(255) NULL 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 INSERT INTO `settings` (`id`, `label_printer_addr`, `label_printer_model`, `label_printer_size`, `label_printer_font_size`, `currency`, `top_n`, `heart_n`, `base_n`, `EDP`, `EDT`, `EDC`, `Parfum`, `chem_vs_brand`, `grp_formula`, `brandName`, `brandAddress`, `brandEmail`, `brandPhone`, `brandLogo`) VALUES
@@ -336,6 +341,14 @@ CREATE TABLE `IFRACategories` (
  `type` int(11) NOT NULL COMMENT '1=Standard, 2=Custom',
  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+
+CREATE TABLE IF NOT EXISTS `colorKey` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) COLLATE utf8_bin NOT NULL,
+  `rgb` varchar(255) COLLATE utf8_bin NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
 
 INSERT INTO `IFRACategories` (`id`, `name`, `description`, `type`) VALUES
 (1, '1', 'Toys, Lip products of all types (solid and liquid lipsticks, balms, clear or colored, etc).', 1),
@@ -484,3 +497,64 @@ CREATE TABLE `documents` (
  PRIMARY KEY (`id`),
  UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+INSERT INTO `colorKey` (`id`, `name`, `rgb`) VALUES
+(1, 'Cyan', '0, 255, 255, 0.8'),
+(2, 'Azure', '240, 255, 255, 0.8'),
+(3, 'Beige', '245, 245, 220, 0.8'),
+(4, 'Brown', '165, 42, 42, 0.8'),
+(5, 'Black', '0, 0, 0, 0.8'),
+(6, 'Blue', '0, 0, 255, 0.8'),
+(7, 'Dark Blue', '0, 0, 139, 0.8'),
+(8, 'Dark Cyan', '0, 139, 139, 0.8'),
+(9, 'Dark Green', '0, 100, 0, 0.8'),
+(10, 'Dark Grey', '169, 169, 169, 0.8'),
+(11, 'Dark Khaki', '189, 183, 107, 0.8'),
+(12, 'Dark Orange', '255, 140, 0, 0.8'),
+(13, 'Dark Orchid', '153, 50, 204, 0.8'),
+(14, 'Dark Salmon', '233, 150, 122, 0.8'),
+(15, 'Magenta', '255, 0, 255, 0.8'),
+(16, 'Gold', '255, 215, 0, 0.8'),
+(17, 'Green', '109, 135, 59, 0.8'),
+(18, 'Khaki', '240, 230, 140, 0.8'),
+(19, 'Light Blue', '173, 216, 230, 0.8'),
+(20, 'Light Cyan', '224, 255, 255, 0.8'),
+(21, 'Light Grey', '211, 211, 211, 0.8'),
+(22, 'Light Green', '144, 238, 144, 0.8'),
+(23, 'Light Pink', '255, 182, 193, 0.8'),
+(24, 'Light Yellow', '255, 255, 224, 0.8'),
+(25, 'Lime', '0, 255, 0, 0.8'),
+(26, 'Navy', '0, 0, 128, 0.8'),
+(27, 'Purple', '128, 0, 128, 0.8'),
+(28, 'Olive', '128, 128, 0, 0.8'),
+(29, 'Orange', '255, 165, 0, 0.8'),
+(30, 'Red', '255, 0, 0, 0.8'),
+(31, 'Pink', '255, 192, 203, 0.8'),
+(32, 'Silver', '192, 192, 192, 0.8'),
+(33, 'Yellow', '255, 255, 0, 0.8'),
+(34, 'White', '255, 255, 255, 0.8'),
+(35, 'Gourmand', '219, 184, 119, 0.8'),
+(36, 'Oud', '173, 26, 26, 0.8'),
+(37, 'Citrus', '222, 212, 31, 0.8'),
+(38, 'Balsamic', '206, 169, 122, 0.8'),
+(39, 'Spices', '228, 27, 24, 0.8'),
+(40, 'Chypre', '199, 186, 171, 0.8'),
+(41, 'Caramel', '217, 62, 21, 0.8'),
+(42, 'Coffee', '31, 9, 10, 0.8'),
+(43, 'Vanilla', '217, 183, 117, 0.8'),
+(44, 'Leathery', '117, 92, 82, 0.8'),
+(45, 'Flowery Notes', '40, 130, 185, 0.8'),
+(46, 'Ambery', '224, 162, 121, 0.8'),
+(47, 'Animalic', '89, 75, 69, 0.8'),
+(48, 'Mint', '69, 172, 52, 0.8'),
+(49, 'Mossy', '22, 74, 9, 0.8'),
+(50, 'Aromatic', '180, 214, 149, 0.8'),
+(51, 'Aldehydic', '126, 174, 191, 0.8'),
+(52, 'Woody', '92, 60, 9, 0.8'),
+(53, 'Alcohol', '178, 52, 16, 0.8'),
+(54, 'Tea', '189, 214, 132, 0.8'),
+(55, 'Fruity', '240, 132, 8, 0.8'),
+(56, 'Sweet', '136, 136, 136, 0.8');
+
+ALTER TABLE `colorKey`
+  ADD PRIMARY KEY (`id`);
