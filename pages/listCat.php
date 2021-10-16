@@ -15,6 +15,7 @@ $('.popup-link').magnificPopup({
 	closeOnBgClick: false,
   	showCloseBtn: true,
 });
+
 </script>
 <table width="100%" border="0" class="table table-striped table-sm">
               <div id="catMsg"></div>
@@ -36,6 +37,7 @@ $('.popup-link').magnificPopup({
                   <thead>
                     <tr>
                       <th>Image</th>
+                      <th>Colour Key</th>
                       <th>Name</th>
                       <th>Description</th>
                       <th>Actions</th>
@@ -45,9 +47,12 @@ $('.popup-link').magnificPopup({
                   <?php while ($cat = mysqli_fetch_array($cat_q)) { ?>
                     <tr>
                       <td align="center" valign="middle"><a href="pages/editCat.php?id=<?=$cat['id']?>" class="popup-link"><?php if($cat['image']){ echo '<img class="img_ing" src="'.$cat['image'].'"/>'; }else{ echo '<img class="img_ing" src="img/molecule.png"/>'; }?> </a></td>
-                      <td align="center" valign="middle" class="name" data-name="name" data-type="text" data-pk="<?php echo $cat['id'];?>"><?php echo $cat['name'];?></td>
-					  <td width="60%" align="center" valign="middle" class="notes" data-name="notes" data-type="text" data-pk="<?php echo $cat['id']; ?>"><?php echo wordwrap($cat['notes'], 150, "<br />\n");?></td>
-                      <td align="center" valign="middle"><a href="javascript:catDel('<?php echo $cat['id']; ?>')" onclick="return confirm('Delete category <?php echo $cat['name'];?>?')" class="fas fa-trash"></a></td>
+                      
+                      <td align="center" valign="middle"><a href="#" class="colorKey" style="background-color: rgb(<?=$cat['colorKey']?>)" id="colorKey" data-name="colorKey" data-type="select" data-pk="<?=$cat['id']?>" data-title="Choose Colour Key for <?=$cat['name']?>"></a></td>
+                      
+                      <td align="center" valign="middle" class="name" data-name="name" data-type="text" data-pk="<?=$cat['id']?>"><?=$cat['name']?></td>
+					  <td width="60%" align="center" valign="middle" class="notes" data-name="notes" data-type="text" data-pk="<?=$cat['id']?>"><?php echo wordwrap($cat['notes'], 150, "<br />\n");?></td>
+                      <td align="center" valign="middle"><a href="javascript:catDel('<?=$cat['id']?>')" onclick="return confirm('Delete category <?=$cat['name']?>?')" class="fas fa-trash"></a></td>
                     </tr>
 				  	<?php } ?>
                   </tbody>
@@ -58,6 +63,14 @@ $('.popup-link').magnificPopup({
               </tr>
             </table>
 <script type="text/javascript" language="javascript" >
+$(document).ready(function() {
+	$('#tdDataCat').DataTable({
+		"paging":   true,
+		"info":   true,
+		"lengthMenu": [[20, 35, 60, -1], [20, 35, 60, "All"]]
+	});
+});
+
 $('#add-category').click(function() {
 	$.ajax({ 
 		url: 'pages/update_settings.php', 
@@ -77,11 +90,7 @@ $('#add-category').click(function() {
 		  });
 });
 
-$('#tdDataCat').DataTable({
-    "paging":   true,
-	"info":   true,
-	"lengthMenu": [[20, 35, 60, -1], [20, 35, 60, "All"]]
-});
+
 
 $('#cat_data').editable({
   container: 'body',
@@ -104,10 +113,29 @@ $('#cat_data').editable({
   title: 'Description',
   type: "POST",
   dataType: 'json',
-  validate: function(value){
-  }
 });
 
+//Change colorKey
+$('.colorKey').editable({
+	pvnoresp: false,
+	highlight: false,
+	type: "POST",
+	emptytext: "",
+	emptyclass: "",
+  	url: "pages/update_data.php?settings=cat",
+    source: [
+			 <?php
+				$getCK = mysqli_query($conn, "SELECT name,rgb FROM colorKey ORDER BY name ASC");
+				while ($r = mysqli_fetch_array($getCK)){
+				echo '{value: "'.$r['rgb'].'", text: "'.$r['name'].'", ck: "color: rgb('.$r['rgb'].')"},';
+			}
+			?>
+          ],
+	dataType: 'html',
+	success: function () {
+		list_cat();
+	}
+});
 
 </script>
             

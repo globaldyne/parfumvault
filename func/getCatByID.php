@@ -11,12 +11,18 @@ function getCatByID($id, $image = FALSE, $conn){
 	}
 	
 	if($image == TRUE && $cat['image']){
-		$result = '<a href="#" rel="tipsy" title="'.$title.'"><img class="img_ing" src="'.$cat['image'].'" /></a>';
+		$result = '<a href="#" rel="tipsy" title="'.$title.'"><img class="img_ing ing_ico_list" src="'.$cat['image'].'" /></a>';
 	}else{
 		$result =  '<a href="#" rel="tipsy" title="'.$title.'">'.$cat['name'].'</a>';
 	}
 
 	return $result;
 }
+
+
+function getCatByIDRaw($id, $filter = '*', $conn){
+	return mysqli_fetch_array(mysqli_query($conn, "SELECT $filter FROM ingCategory WHERE id = '$id'"));
+}
+
 
 ?>

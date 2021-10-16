@@ -12,12 +12,18 @@ if($_GET['do'] == 'db_update'){
 	$n_ver = trim(file_get_contents(__ROOT__.'/db/schema.ver'));
 	$c_ver = $pv_meta['schema_ver'];
 	$sql = __ROOT__.'/db/updates/update_'.$c_ver.'-'.$n_ver.'.sql';
-		
+	$script = __ROOT__.'/db/scripts/update_'.$c_ver.'-'.$n_ver.'.php';
+	
 	if(file_exists($sql) == FALSE){
 		echo '<div class="alert alert-danger"><strong>Missing update file!</strong> Please make sure file '.$sql.' exists and in the right path.</div>';
 		return;
 	}
 	
+	if(file_exists($script) == TRUE){
+		require_once($script);
+	}
+
+
 	$cmd = "mysql -u$dbuser -p$dbpass $dbname < $sql"; 
 	//echo $cmd;
 	passthru($cmd,$e);
