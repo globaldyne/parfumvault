@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 3.5
+Formula can now be grouped by category
 
 ### Version 3.4
 REST API added

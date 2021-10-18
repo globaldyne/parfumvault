@@ -14,6 +14,7 @@ require_once(__ROOT__.'/func/goShopping.php');
 require_once(__ROOT__.'/func/ml2L.php');
 require_once(__ROOT__.'/func/countElement.php');
 require_once(__ROOT__.'/func/getIngSupplier.php');
+require_once(__ROOT__.'/func/getCatByID.php');
 
 if(!$_GET['id']){
 	echo 'Formula id is missing.';
@@ -67,7 +68,7 @@ $(document).ready(function() {
             api.column(groupColumn, {page:'current'} ).data().each( function ( group, i ) {
                 if ( last !== group ) {
                     $(rows).eq( i ).before(
-                        '<tr class="group noexport"><td colspan="' + rows.columns()[0].length +'">' + group + ' Notes</td></tr>'
+                        '<tr class="group noexport"><td colspan="' + rows.columns()[0].length +'">' + group + '</td></tr>'
                     );
  
                     last = group;
@@ -233,10 +234,10 @@ $('.replaceIngredient').editable({
  
 </script>
 
-<table class="table table-striped table-bordered nowrap" <?php if($settings['grp_formula'] == '1'){?>id="formula" <?php } ?>width="100%" cellspacing="0">
+<table class="table table-striped table-bordered nowrap" <?php if($settings['grp_formula'] == '1' || $settings['grp_formula'] == '2'){?>id="formula" <?php } ?>width="100%" cellspacing="0">
                   <thead>
                     <tr class="noexport">
-                    <?php if($settings['grp_formula'] == '1'){?>
+                    <?php if($settings['grp_formula'] == '1' || $settings['grp_formula'] == '2'){?>
                       <th colspan="9">
                     <?php }else{ ?>
                       <th colspan="8">
@@ -262,7 +263,7 @@ $('.replaceIngredient').editable({
                     </div>
                     </tr>
                     <tr>
-                      <?php if($settings['grp_formula'] == '1'){ echo '<th class="noexport"></th>'; } ?>
+                      <?php if($settings['grp_formula'] == '1' || $settings['grp_formula'] == '2'){ echo '<th class="noexport"></th>'; } ?>
                       <th width="22%">Ingredient</th>
                       <th width="5%">CAS#</th>
                       <th width="5%">Purity%</th>
@@ -280,7 +281,7 @@ $('.replaceIngredient').editable({
                   </thead>
                   <tbody id="formula_data">
                   <?php	foreach ($form as $formula){
-						$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT id, cas, $defCatClass, profile, odor FROM ingredients WHERE BINARY name = '".$formula['ingredient']."'"));
+						$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT id, cas, $defCatClass, profile, odor, category FROM ingredients WHERE BINARY name = '".$formula['ingredient']."'"));
 
 						$limit = explode(' - ',searchIFRA($ing_q['cas'],$formula['ingredient'],null,$conn,$defCatClass));
 						
@@ -303,17 +304,12 @@ $('.replaceIngredient').editable({
 						}
 						?>
 						<tr>
-						<?php
-                        if($settings['grp_formula'] == '1'){
-							if(empty($ing_q['profile'])){
-						?>
-								<td class="noexport">Unknown</td>
-						<?php	}else{ ?>
-								<td class="noexport"><?php echo $ing_q['profile'];?></td>
-						<?php	
-                            }
-						}
-						?>
+						<?php if($settings['grp_formula'] == '1'){ ?>
+						<td class="noexport"><?php echo $ing_q['profile']?:'Unknown';?> Notes</td>
+						<?php }	?>
+                        <?php if($settings['grp_formula'] == '2'){ ?>
+						<td class="noexport"><?php echo getCatByIDRaw($ing_q['category'], 'name,colorKey', $conn)['name']?:'Unknown Notes';?></td>
+						<?php }	?>
                       <td align="center" class="<?php if($settings['grp_formula'] == '0'){echo $ing_q['profile'];}?>" id="ingredient"><a href="pages/mgmIngredient.php?id=<?=base64_encode($formula['ingredient'])?>" class="popup-link"><?php echo $ingName;?></a> <?php echo checkIng($formula['ingredient'],$settings['defCatClass'],$conn);?></td>
                       <td align="center"><?php echo $ing_q['cas'];?></td>
                       <td data-name="concentration" class="concentration" data-type="text" align="center" data-pk="<?php echo $formula['ingredient'];?>"><?php echo $formula['concentration'];?></td>
@@ -363,7 +359,7 @@ $('.replaceIngredient').editable({
                   </tbody>
                   <tfoot>
                     <tr>
-                      <?php if($settings['grp_formula'] == '1'){ ?>
+                      <?php if($settings['grp_formula'] == '1' || $settings['grp_formula'] == '2'){ ?>
                       <th>
                       </th> 
                       <?php }?>
