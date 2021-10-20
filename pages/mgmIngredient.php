@@ -258,6 +258,7 @@ $(document).ready(function() {
               <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
               <div class="dropdown-menu">
                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#printLabel">Print Label</a>
+                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#cloneIng">Clone ingredient</a>
               </div>
             </div>
             <?php }else {?>
@@ -743,12 +744,54 @@ $(document).ready(function() {
 </div>
 </div>
 
+<!-- Modal Clone-->
+<div class="modal fade" id="cloneIng" tabindex="-1" role="dialog" aria-labelledby="cloneIng" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="cloneIng">Clone ingredient <?php echo $ing['name']; ?></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <div id="clone_msg"></div>
+       <form action="javascript:cloneIng()" method="get" name="form1" target="_self" >
+          	Name
+            <input class="form-control" name="cloneIngName" id="cloneIngName" type="text" value="" />            
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <input type="submit" name="button" class="btn btn-primary"  value="Clone">
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+</div>
 <script type="text/javascript" language="javascript">
 
 $("#supplier_name").change(function () {
     vol = $(this).children(':selected').data('vol');
     $("#supplier_size").focus().val(vol);    
 });
+//Clone
+function cloneIng() {	  
+	$.ajax({ 
+		url: 'update_data.php', 
+		type: 'GET',
+		data: {
+			action: 'clone',
+			new_ing_name: $("#cloneIngName").val(),
+			old_ing_name: '<?=$ing['name'];?>',
+			ing_id: '<?=$ing['id'];?>'
+			},
+		dataType: 'html',
+		success: function (data) {
+			$('#clone_msg').html(data);
+		}
+	  });
+};
 
 function getPrice(supplier, size, ingSupplierID) {
 	$('#ingMsg').html('<div class="alert alert-info alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Please wait...</strong></div>');
@@ -991,6 +1034,8 @@ $("#doc_upload").click(function(){
         }
     });	
 });
+
+
 </script>
 </div>
 </body>
