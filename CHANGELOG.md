@@ -2,6 +2,8 @@
 ### Version 3.5
 Formula can now be grouped by category
 Added ingredient clone option
+Added GHS for ingredients
+Fix a bug preventing iOS app to sync properly
 
 ### Version 3.4
 REST API added

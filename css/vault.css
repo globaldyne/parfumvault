@@ -583,7 +583,7 @@ formula td, table.table th {
     font-weight: 300;
 }
 
-.mgm-ing-theme {
+.mgm-ing-bk {
     background-color: white;
 }
 
@@ -601,4 +601,12 @@ formula td, table.table th {
 }
 .ing-view a:hover{
 	text-decoration: none;
+}
+.mgm-ing-theme {
+	background-color: fff;
+	/*
+	background-image: linear-gradient(to bottom, transparent, white 75%), url("/img/molecule.png");
+	background-repeat: no-repeat;
+	padding: 50px 0px 0px 50px;
+	*/
 }

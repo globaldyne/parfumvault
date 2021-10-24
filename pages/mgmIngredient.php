@@ -20,7 +20,6 @@ if($ingID){
 	}
 }
 $StandardIFRACategories = mysqli_query($conn, "SELECT name,description,type FROM IFRACategories WHERE type = '1' ORDER BY id ASC");
-
 while($cats_res = mysqli_fetch_array($StandardIFRACategories)){
     $cats[] = $cats_res;
 }
@@ -39,7 +38,10 @@ $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles ORDER BY
 $res_ingSupplier = mysqli_query($conn, "SELECT id,name,min_ml,min_gr FROM ingSuppliers ORDER BY name ASC");
 
 $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE name = '$ingID'"));
-
+$ingSafetyInfo = mysqli_query($conn, "SELECT GHS FROM ingSafetyInfo WHERE ingID = '".$ing['id']."'");
+while($safety_res = mysqli_fetch_array($ingSafetyInfo)){
+    $safety[] = $safety_res;
+}
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -77,7 +79,8 @@ $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE n
 <style>
 .container {
     max-width: 100%;
-	width: 1100px;
+	width: 1400px;
+	height: 1300px;
 }
 .dropdown-menu > li > a {
     font-weight: 700;
@@ -251,7 +254,8 @@ $(document).ready(function() {
 </head>
 
 <body>
-<div class="container mgm-ing-theme">
+<div class="mgm-ing-theme">
+	<div class="container mgm-ing-bk">
         <div class="mgm-column mgm-visible-xl mgm-col-xl-5">
         <h1 class="mgmIngHeader mgmIngHeader-with-separator"><?php if($ingID){ echo $ing['name'];?>
             <div class="btn-group">
@@ -281,6 +285,7 @@ $(document).ready(function() {
       <li><a href="#documents" role="tab" data-toggle="tab"><i class="fa fa-file-alt"></i> Documents</a></li>
       <li><a href="#note_impact" role="tab" data-toggle="tab"><i class="fa fa-magic"></i> Note Impact</a></li>
       <li><a href="#tech_allergens" role="tab" data-toggle="tab"><i class="fa fa-allergies"></i> Allergens</a></li>
+      <li><a href="#safety_info" role="tab" data-toggle="tab"><i class="fa fa-biohazard"></i> Safety</a></li>
       <?php if($settings['pubChem'] == '1' && $ing['cas']){?>
       	<li><a href="#pubChem" role="tab" data-toggle="tab"><i class="fa fa-atom"></i> Pub Chem</a></li>
       <?php } ?>  
@@ -516,6 +521,31 @@ $(document).ready(function() {
                               </tr>
                             </table>
       						</div>
+                            
+              <div class="tab-pane fade" id="safety_info">
+              <h3>Safety Information</h3>
+              <hr />
+               	<table width="100%" border="0">
+                	<tr>
+                  	<td width="20%">Pictograms:</td>
+                    <td width="80%" colspan="3">
+                    <select name="pictogram" id="pictogram" class="form-control selectpicker" data-live-search="true">
+                    <option value="" disabled>Choose Pictogram</option>
+                    <option data-content="<img class='img_ing_sel' src='/img/Pictograms/GHS01.png'>Explosive" value="1" <?php if($safety[0]['GHS']=="1") echo 'selected="selected"'; ?>></option>
+                    <option data-content="<img class='img_ing_sel' src='/img/Pictograms/GHS02.png'>Flammable" value="2" <?php if($safety[0]['GHS']=="2") echo 'selected="selected"'; ?>></option>
+                    <option data-content="<img class='img_ing_sel' src='/img/Pictograms/GHS03.png'>Oxidising" value="3" <?php if($safety[0]['GHS']=="3") echo 'selected="selected"'; ?>></option>
+                    <option data-content="<img class='img_ing_sel' src='/img/Pictograms/GHS04.png'>Gas under pressure" value="4" <?php if($safety[0]['GHS']=="4") echo 'selected="selected"'; ?>></option>
+                    <option data-content="<img class='img_ing_sel' src='/img/Pictograms/GHS05.png'>Corrosive" value="5" <?php if($safety[0]['GHS']=="5") echo 'selected="selected"'; ?>></option>
+                    <option data-content="<img class='img_ing_sel' src='/img/Pictograms/GHS06.png'>Acute toxicity" value="6" <?php if($safety[0]['GHS']=="6") echo 'selected="selected"'; ?>></option>
+                    <option data-content="<img class='img_ing_sel' src='/img/Pictograms/GHS07.png'>Health hazard/Hazardous to the ozone layer" value="7" <?php if($safety[0]['GHS']=="7") echo 'selected="selected"'; ?>></option>
+                    <option data-content="<img class='img_ing_sel' src='/img/Pictograms/GHS08.png'>Serious health hazard" value="8" <?php if($safety[0]['GHS']=="8") echo 'selected="selected"'; ?>></option>
+                    <option data-content="<img class='img_ing_sel' src='/img/Pictograms/GHS09.png'>Hazardous to the environment" value="9" <?php if($safety[0]['GHS']=="9") echo 'selected="selected"'; ?>></option>
+                    </select>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+              
               <div class="tab-pane fade" id="note_impact">
               <h3>Note Impact</h3>
               <hr>
@@ -939,7 +969,7 @@ $(document).ready(function() {
 				type: 'POST',
 				data: {
 					manage: 'ingredient',
-					
+					ingID: '<?=$ing['id'];?>',
 					name: $("#name").val(),
 					INCI: $("#INCI").val(),
 					cas: $("#cas").val(),
@@ -979,6 +1009,8 @@ $(document).ready(function() {
 					noUsageLimit: $("#noUsageLimit").is(':checked'),
 					isPrivate: $("#isPrivate").is(':checked'),
 	
+					pictogram: $("#pictogram").val(),
+
 					<?php if($ing['name']){?>
 					ing: '<?=$ing['name'];?>'
 					<?php } ?>
@@ -1037,6 +1069,7 @@ $("#doc_upload").click(function(){
 
 
 </script>
+</div>
 </div>
 </body>
 </html>
