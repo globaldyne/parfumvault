@@ -42,6 +42,11 @@ $ingSafetyInfo = mysqli_query($conn, "SELECT GHS FROM ingSafetyInfo WHERE ingID 
 while($safety_res = mysqli_fetch_array($ingSafetyInfo)){
     $safety[] = $safety_res;
 }
+$pictograms = mysqli_query($conn, "SELECT name,code FROM pictograms");
+while($pictograms_res = mysqli_fetch_array($pictograms)){
+    $pictogram[] = $pictograms_res;
+}
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -530,16 +535,10 @@ $(document).ready(function() {
                   	<td width="20%">Pictograms:</td>
                     <td width="80%" colspan="3">
                     <select name="pictogram" id="pictogram" class="form-control selectpicker" data-live-search="true">
-                    <option value="" disabled>Choose Pictogram</option>
-                    <option data-content="<img class='img_ing_sel' src='/img/Pictograms/GHS01.png'>Explosive" value="1" <?php if($safety[0]['GHS']=="1") echo 'selected="selected"'; ?>></option>
-                    <option data-content="<img class='img_ing_sel' src='/img/Pictograms/GHS02.png'>Flammable" value="2" <?php if($safety[0]['GHS']=="2") echo 'selected="selected"'; ?>></option>
-                    <option data-content="<img class='img_ing_sel' src='/img/Pictograms/GHS03.png'>Oxidising" value="3" <?php if($safety[0]['GHS']=="3") echo 'selected="selected"'; ?>></option>
-                    <option data-content="<img class='img_ing_sel' src='/img/Pictograms/GHS04.png'>Gas under pressure" value="4" <?php if($safety[0]['GHS']=="4") echo 'selected="selected"'; ?>></option>
-                    <option data-content="<img class='img_ing_sel' src='/img/Pictograms/GHS05.png'>Corrosive" value="5" <?php if($safety[0]['GHS']=="5") echo 'selected="selected"'; ?>></option>
-                    <option data-content="<img class='img_ing_sel' src='/img/Pictograms/GHS06.png'>Acute toxicity" value="6" <?php if($safety[0]['GHS']=="6") echo 'selected="selected"'; ?>></option>
-                    <option data-content="<img class='img_ing_sel' src='/img/Pictograms/GHS07.png'>Health hazard/Hazardous to the ozone layer" value="7" <?php if($safety[0]['GHS']=="7") echo 'selected="selected"'; ?>></option>
-                    <option data-content="<img class='img_ing_sel' src='/img/Pictograms/GHS08.png'>Serious health hazard" value="8" <?php if($safety[0]['GHS']=="8") echo 'selected="selected"'; ?>></option>
-                    <option data-content="<img class='img_ing_sel' src='/img/Pictograms/GHS09.png'>Hazardous to the environment" value="9" <?php if($safety[0]['GHS']=="9") echo 'selected="selected"'; ?>></option>
+                    <option value="" disabled selected="selected">Choose Pictogram</option>
+                    <?php foreach($pictograms as $pictogram){?>
+                    <option data-content="<img class='img_ing_sel' src='/img/Pictograms/GHS0<?=$pictogram['code'];?>.png'><?=$pictogram['name'];?>" value="<?=$pictogram['code'];?>" <?php if($safety[0]['GHS']==$pictogram['code']) echo 'selected="selected"'; ?>></option>
+                    <?php } ?>
                     </select>
                     </td>
                   </tr>
