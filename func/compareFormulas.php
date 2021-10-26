@@ -28,7 +28,10 @@ function compareFormula(array $formula_a, array $formula_b, array $keysToCompare
 
    array_walk($diff_a, $deserialize);
    array_walk($diff_b, $deserialize);
+   
+   if(!empty($diff_a)){
+   	return array($formula_b_name => $diff_a, $formula_a_name => $diff_b);
+   }
 
-   return array($formula_b_name => $diff_a, $formula_a_name => $diff_b);
 }
 ?>

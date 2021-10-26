@@ -37,6 +37,9 @@ if($_POST['formula_a'] && $_POST['formula_b']){
             <div class="card-body">
             <?php if($_GET['compare'] && $_POST['formula_a'] && $_POST['formula_b']){?>
               <div>
+              <?php if(empty($r[$meta_a['name']])){ ?>
+              <div class="alert alert-info alert-dismissible">No differences between formulas found</div>
+              <?php }else{ ?>
                 <table class="table table-bordered compare" id="formula_a" width="100%" cellspacing="0">
                   <thead>
                     <tr>
@@ -51,7 +54,7 @@ if($_POST['formula_a'] && $_POST['formula_b']){
                   <?php foreach($r[$meta_a['name']] as $formula){ ?>
 					  <tr>
                       <td align="center"><?=$formula['ingredient']?></td>
-					  <td align="center"><?=$formula['conentration']?:'100'?></td>
+					  <td align="center"><?=$formula['concentration']?:'100'?></td>
                       <td align="center"><?=$formula['quantity']?></td>                     
                     </tr>
                     <?php }?>                   
@@ -75,6 +78,7 @@ if($_POST['formula_a'] && $_POST['formula_b']){
                     </tr>
                     <?php }?>                   
                 </table> 
+                <?php } ?>
                 <div>
                 </div>
             </div>
