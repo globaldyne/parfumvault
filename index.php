@@ -234,7 +234,7 @@ function list_cat(){
         </a>
         <div id="collapseFormulas" class="collapse <?php echo $expand_f;?>" aria-labelledby="headingFormulas" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item <?php if($_GET['do'] == 'listFormulas'){ echo 'active';}?>" href="?do=listFormulas">Formulas</a>
+            <a class="collapse-item <?php if($_GET['do'] == 'listFormulas' | $_GET['do'] == 'Formula'){ echo 'active';}?>" href="?do=listFormulas">Formulas</a>
             <a class="collapse-item <?php if($_GET['do'] == 'compareFormulas'){ echo 'active';}?>" href="?do=compareFormulas">Compare Formulas</a>
             <a class="collapse-item <?php if($_GET['do'] == 'genFinishedProduct'){ echo 'active';}?>" href="?do=genFinishedProduct"> Finished Product</a>
             <a class="collapse-item <?php if($_GET['do'] == 'sellFormula'){ echo 'active';}?>" href="?do=sellFormula">Sell Formula</a>
