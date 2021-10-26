@@ -147,11 +147,13 @@ if($_GET['protect']){
 	
 	if($_GET['isProtected'] == 'true'){
 		$isProtected = '1';
+		$l = 'locked';
 	}else{
 		$isProtected = '0';
+		$l = 'unlocked';
 	}
 	if(mysqli_query($conn, "UPDATE formulasMetaData SET isProtected = '$isProtected' WHERE fid = '$fid'")){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Success!</div>';
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Formula '.$l.'!</div>';
 	}else{
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Something went wrong.</div>';
 	}
