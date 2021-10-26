@@ -351,6 +351,8 @@ function list_cat(){
 			require_once(__ROOT__.'/pages/customers.php');
 		}elseif($_GET['do'] == 'UpgradeCore'){
 			require_once(__ROOT__.'/pages/UpgradeCore.php');
+		}elseif($_GET['do'] == 'compareFormulas'){
+			require_once(__ROOT__.'/pages/compareFormulas.php');
 			
 		}else{
 			require_once(__ROOT__.'/pages/dashboard.php');

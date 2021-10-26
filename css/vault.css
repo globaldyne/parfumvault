@@ -610,3 +610,12 @@ formula td, table.table th {
 	padding: 50px 0px 0px 50px;
 	*/
 }
+.compare {
+	display: inline-table;
+	border: none;
+	width:auto;
+	max-width:50%;
+}
+.compare_formula_name {
+	border: none !important;
+}
