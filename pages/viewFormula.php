@@ -251,7 +251,9 @@ $('.replaceIngredient').editable({
                       <div class="btn-group">
                       <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
                       <div class="dropdown-menu dropdown-menu-left">
-                        <a class="dropdown-item" id="csv" href="#">Export to CSV</a>
+                        <a class="dropdown-item" href="javascript:export_as('csv')">Export to CSV</a>
+                        <a class="dropdown-item" href="javascript:export_as('pdf')">Export to PDF</a>
+             			<div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="javascript:manageQuantity('multiply')">Multiply x2</a>
                         <a class="dropdown-item" href="javascript:manageQuantity('divide')">Divide x2</a>
                         <a class="dropdown-item" href="javascript:cloneMe()">Clone Formula</a>
@@ -505,9 +507,9 @@ $('#formula_data').editable({
 });
 
 <?php } ?>
-$('#csv').on('click',function(){
+function export_as(type) {
   $("#formula").tableHTMLExport({
-	type:'csv',
+	type: type,
 	filename:'<?php echo $f_name; ?>.csv',
 	separator: ',',
   	newline: '\r\n',
@@ -515,9 +517,10 @@ $('#csv').on('click',function(){
   	quoteFields: true,
 	ignoreColumns: '.noexport',
   	ignoreRows: '.noexport',
-	htmlContent: false
+	htmlContent: false,
+	maintitle: '<?=$f_name?>',
   });
-});
+};
 
 $('[data-toggle="tooltip"]').tooltip();
 </script>
