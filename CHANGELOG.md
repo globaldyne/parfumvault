@@ -5,6 +5,7 @@ Added ingredient clone option
 Added GHS for ingredients
 Fix a bug preventing iOS app to sync properly
 Add formula comparison
+Group formulation menu links
 
 ### Version 3.4
 REST API added
