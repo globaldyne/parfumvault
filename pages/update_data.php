@@ -143,11 +143,13 @@ if($_GET['formulaMeta']){
 }
 
 if($_GET['protect']){
+	require_once(__ROOT__.'/func/createFormulaRevision.php');
 	$fid = mysqli_real_escape_string($conn, $_GET['protect']);
 	
 	if($_GET['isProtected'] == 'true'){
 		$isProtected = '1';
 		$l = 'locked';
+		createFormulaRevision($fid,$conn);
 	}else{
 		$isProtected = '0';
 		$l = 'unlocked';

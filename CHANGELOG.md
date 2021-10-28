@@ -7,6 +7,7 @@ Fix a bug preventing iOS app to sync properly
 Add formula comparison
 Group formulation menu links
 Add - Export as PDF in formulas
+Add - Formula revision system
 
 ### Version 3.4
 REST API added

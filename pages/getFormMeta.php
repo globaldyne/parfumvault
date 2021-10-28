@@ -43,20 +43,21 @@ if(empty($info['name'])){
   <title><?php echo $info['name'];?></title>
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
-  <link href="../css/sb-admin-2.css" rel="stylesheet">
-  <link href="../css/bootstrap-select.min.css" rel="stylesheet">
-  <link href="../css/bootstrap-editable.css" rel="stylesheet">
-  <link href="../css/vault.css" rel="stylesheet">
-  <script src="../js/jquery/jquery.min.js"></script>
-  <script src="../js/bootstrap.min.js"></script>
-  <script src='../js/tipsy.js'></script>
-  <script src="../js/jquery-ui.js"></script>
+  <link href="/css/sb-admin-2.css" rel="stylesheet">
+  <link href="/css/bootstrap-select.min.css" rel="stylesheet">
+  <link href="/css/bootstrap-editable.css" rel="stylesheet">
+  <link href="/css/vault.css" rel="stylesheet">
+  <script src="/js/jquery/jquery.min.js"></script>
+  <script src="/js/bootstrap.min.js"></script>
+  <script src='/js/tipsy.js'></script>
+  <script src="/js/jquery-ui.js"></script>
       
-  <link href="../css/bootstrap.min.css" rel="stylesheet">
-  <link href="../css/tipsy.css" rel="stylesheet" />
-    
-  <script src="../js/bootstrap-select.js"></script>
-  <script src="../js/bootstrap-editable.js"></script>
+  <link href="/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/css/tipsy.css" rel="stylesheet" />
+  <link href="/css/fontawesome-free/css/all.min.css" rel="stylesheet">
+
+  <script src="/js/bootstrap-select.js"></script>
+  <script src="/js/bootstrap-editable.js"></script>
 
 </head>
 
@@ -88,7 +89,7 @@ if(empty($info['name'])){
     <td data-name="product_name" class="product_name" data-type="text" align="left" data-pk="<?php echo $info['id'];?>"><?php echo $info['product_name'];?></td>
   </tr>
   <tr>
-    <td><a href="#" rel="tipsy" title="When enabled, formula is protected against deletion.">Protected:</a></td>
+    <td><a href="#" rel="tipsy" title="When enabled, formula is protected against deletion. By enabling this, a formula revision will be automatically created.">Protected:</a></td>
     <td><input name="isProtected" type="checkbox" id="isProtected" value="1" <?php if($info['isProtected'] == '1'){; ?> checked="checked"  <?php } ?>/></td>
   </tr>
   <tr>
@@ -128,12 +129,15 @@ if(empty($info['name'])){
     <td data-name="notes" class="notes" data-type="textarea" align="left" data-pk="<?php echo $info['id'];?>"><?php echo $info['notes'];?></td>
   </tr>
 </table>
+<div id="list_revisions"></div>
 
 <script type="text/javascript" language="javascript" >
 $(document).ready(function(){
  $('a[rel=tipsy]').tipsy({gravity: 'w'});
 
-  $('#formula_metadata').editable({
+ list_revisions();
+
+ $('#formula_metadata').editable({
   container: 'body',
   selector: 'td.name',
   url: "update_data.php?rename=<?=$info['fid']?>",
@@ -212,6 +216,7 @@ $('#formula_metadata').editable({
 			dataType: 'html',
 			success: function (data) {
 				$('#msg').html(data);
+				list_revisions();
 			}
 		  });
   });
@@ -284,6 +289,37 @@ $("#pic_upload").click(function(){
         }
 });	
 
+function restoreRevision(revision) {
+	$('#msg').html('<div class="alert alert-info">Please wait...</div>');
+	$.ajax({ 
+		url: 'manageFormula.php', 
+		type: 'get',
+		data: {
+			restore: "rev",
+			fid: '<?=$info['fid']?>',
+			revision: revision
+			},
+		dataType: 'html',
+		success: function (data) {
+		  	$('#msg').html(data);
+			list_revisions();
+		}
+	  });
+};
+function list_revisions(){
+  $('#list_revisions').html('<img class="loader loader-center" src="/img/Testtube.gif"/>');
+	$.ajax({
+		url: 'listRevisions.php',
+		type: 'GET',
+		data: {
+			"fid": '<?=$info['fid']?>',
+			},
+		dataType: 'html',
+			success: function (data) {
+				$('#list_revisions').html(data);
+			}
+	});
+};
 </script>
- </body>
+</body>
 </html>

@@ -7,6 +7,20 @@ require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/labelMap.php');
 require_once(__ROOT__.'/func/get_formula_notes.php');
 
+//RESTORE REVISION
+if($_GET['restore'] == 'rev' && $_GET['revision'] && $_GET['fid']){
+	$fid = mysqli_real_escape_string($conn,$_GET['fid']);
+	$revision = $_GET['revision'];
+	
+	mysqli_query($conn,"DELETE FROM formulas WHERE fid = '$fid'");
+	if(mysqli_query($conn, "INSERT INTO formulas (fid, name, ingredient, ingredient_id, concentration, dilutant, quantity, notes) SELECT fid, name, ingredient, ingredient_id, concentration, dilutant, quantity, notes FROM formulasRevisions WHERE fid = '$fid' AND revision = '$revision'")){
+		mysqli_query($conn, "UPDATE formulasMetaData SET revision = '$revision' WHERE fid = '$fid'");
+		echo  '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Formula revision restored!</div>';
+	}else{
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Unable to restore revision! '.mysqli_error($conn).'</div>';
+	}
+	return;
+}
 
 //MANAGE VIEW
 if($_GET['manage_view'] == '1'){
@@ -184,6 +198,7 @@ if($_GET['action'] == 'delete' && $_GET['fid']){
 	
 	if(mysqli_query($conn, "DELETE FROM formulas WHERE fid = '$fid'")){
 		mysqli_query($conn, "DELETE FROM formulasMetaData WHERE fid = '$fid'");
+		mysqli_query($conn,"DELETE FROM formulasRevisions WHERE fid = '$fid'");
 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Formula '.base64_decode($fid).' deleted!</div>';
 	}else{
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error</strong> deleting '.base64_decode($fid).' formula!</div>';
