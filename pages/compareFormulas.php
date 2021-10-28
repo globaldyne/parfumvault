@@ -55,8 +55,7 @@ if($_POST['formula_a'] && $_POST['formula_b']){
 					  <tr>
                       <td align="center"><?=$formula['ingredient']?></td>
 					  <td align="center"><?=$formula['concentration']?:'100'?></td>
-                      <td align="center"><?=$formula['quantity']?></td>                     
-                    </tr>
+                      <td align="center"><?=number_format($formula['quantity'],$settings['qStep'])?></td>                    </tr>
                     <?php }?>                   
                 </table> 
                   <table class="table table-bordered compare" id="formula_b" width="100%" cellspacing="0">
@@ -73,8 +72,8 @@ if($_POST['formula_a'] && $_POST['formula_b']){
                   <?php foreach($r[$meta_b['name']] as $formula){ ?>
 					  <tr>
                       <td align="center"><?=$formula['ingredient']?></td>
-					  <td align="center"><?=$formula['conentration']?:'100'?></td>
-                      <td align="center"><?=$formula['quantity']?></td>                     
+					  <td align="center"><?=$formula['concentration']?:'100'?></td>
+                      <td align="center"><?=number_format($formula['quantity'],$settings['qStep'])?></td>                     
                     </tr>
                     <?php }?>                   
                 </table> 
