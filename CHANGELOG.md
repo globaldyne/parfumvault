@@ -8,6 +8,7 @@ Add formula comparison
 Group formulation menu links
 Add - Export as PDF in formulas
 Add - Formula revision system
+Add - Accord creation from formulas notes
 
 ### Version 3.4
 REST API added

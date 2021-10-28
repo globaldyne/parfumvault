@@ -7,3 +7,4 @@ We added the option to compare between formulas
 All formulation links are now now grouped under "Formula Management" menu
 Formulas can be exported as PDF now
 Added formulas revision support
+Now you can create an accord formula from your main formula from is Top, Heart or Base notes

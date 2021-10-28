@@ -145,6 +145,30 @@ function amountToMake() {
 	}
 };
 
+
+//Create Accord
+function createAccord() {
+	if($("#accordName").val().trim() == '' ){
+        $('#accordName').focus();
+	  	$('#accordMsg').html('<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> Accord name required!</div>');	
+	}else{
+		$.ajax({ 
+		url: 'pages/manageFormula.php', 
+		type: 'POST',
+		cache: false,
+		data: {
+			fid: "<?php echo base64_encode($f_name); ?>",
+			accordName: $("#accordName").val(),
+			accordProfile: $("#accordProfile").val(),
+			},
+		dataType: 'html',
+		success: function (data) {
+			$('#accordMsg').html(data);
+			//$('#createAccord').modal('toggle');
+		}
+	  });
+	}
+};
 //Delete ingredient
 function deleteING(ingName,ingID) {	  
 $.ajax({ 
@@ -258,6 +282,9 @@ $('.replaceIngredient').editable({
                         <a class="dropdown-item" href="javascript:manageQuantity('divide')">Divide x2</a>
                         <a class="dropdown-item" href="javascript:cloneMe()">Clone Formula</a>
 	                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#amount_to_make">Amount to make</a>
+               			<div class="dropdown-divider"></div>
+	                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#create_accord">Create Accord</a>
+
              			<div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="javascript:addTODO()">Add to the make list</a>
                         <!-- <a class="dropdown-item" href="javascript:addAllToCart()">Add all to cart</a> -->
@@ -416,7 +443,45 @@ $('.replaceIngredient').editable({
  </div>
 </div>
 
-
+<!--Create accord-->
+<div class="modal fade" id="create_accord" tabindex="-1" role="dialog" aria-labelledby="create_accord" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="create_accord">Create accord</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <div id="accordMsg"></div>
+  	  <form action="javascript:createAccord()" method="get" name="form1" target="_self" id="form_create_accord"><p></p>
+        <table width="313" border="0">
+          <tr>
+	       <td width="106" height="31"><strong>Accord from:</strong></td>
+	       <td width="197"><label>
+	         <select name="accordProfile" id="accordProfile" class="form-control">
+	           <option value="Top">Top notes</option>
+	           <option value="Heart">Heart Notes</option>
+	           <option value="Base">Base Notes</option>
+	           </select>
+	         </label></td>
+          </tr>
+	     <tr>
+	       <td><strong>Name:</strong></td>
+	       <td><input name="accordName" type="text" class="form-control" id="accordName" value="<?=$f_name?> accord" /></td>
+          </tr>
+        </table>
+	    <p>&nbsp;</p>
+	    <div class="modal-footer">
+	     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+  		 <input type="submit" name="button" class="btn btn-primary" id="btnUpdate" value="Create">
+	   </div>
+     </form>
+    </div>
+  </div>
+ </div>
+</div>
 
 <script type="text/javascript" language="javascript" >
 $(".alert-dismissible").fadeTo(2000, 500).slideUp(500, function(){

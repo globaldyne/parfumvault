@@ -31,4 +31,4 @@ CREATE TABLE `formulasRevisions` (
  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-ALTER TABLE `formulasMetaData` ADD `revision` INT NOT NULL AFTER `catClass`; 
+ALTER TABLE `formulasMetaData` ADD `revision` INT NOT NULL DEFAULT '0' AFTER `catClass`; 
