@@ -10,8 +10,9 @@ if($_REQUEST['formula_a'] && $_REQUEST['formula_b']){
 	if($_REQUEST['compare'] == '1'){
 		$meta_b = mysqli_fetch_array(mysqli_query($conn, "SELECT name,fid FROM formulasMetaData WHERE id = '$id_b'"));
 	}
-	if($_REQUEST['compare'] == '2'){
-		$meta_b['name'] = base64_decode($id_b);
+	if($_REQUEST['compare'] == '2'){		
+		$revision = $_REQUEST['revision'];
+		$meta_b['name'] = base64_decode($id_b).' - Revision: '.$_REQUEST['revision'];
 	}
 	
 	$q_a = mysqli_query($conn, "SELECT ingredient,concentration,quantity FROM formulas WHERE fid = '".$meta_a['fid']."' ORDER BY ingredient ASC");
@@ -19,7 +20,6 @@ if($_REQUEST['formula_a'] && $_REQUEST['formula_b']){
 		$q_b = mysqli_query($conn, "SELECT ingredient,concentration,quantity FROM formulas WHERE fid = '".$meta_b['fid']."' ORDER BY ingredient ASC");
 	}
 	if($_REQUEST['compare'] == '2'){
-		$revision = $_REQUEST['revision'];
 		$q_b = mysqli_query($conn, "SELECT ingredient,concentration,quantity FROM formulasRevisions WHERE revision = '$revision' AND fid = '$id_b' ORDER BY ingredient ASC");
 	}
 
@@ -40,7 +40,7 @@ if($_REQUEST['formula_a'] && $_REQUEST['formula_b']){
             <div class="card-header py-3"> 
             <?php if($_GET['compare'] && $_REQUEST['formula_a'] && $_REQUEST['formula_b']){?>
              <h5 class="m-1 text-primary">Formula A: <strong><?=$meta_a['name']?></strong></h5>
-             <h5 class="m-1 text-primary">Formula B: <strong><?=$meta_b['name']?></strong></h5>
+             <h5 class="m-1 text-primary">Formula B: <strong><?php echo $meta_b['name'];?></strong></h5>
         	<?php }else{ ?>
               <h2 class="m-0 font-weight-bold text-primary"><a href="?do=compareFormulas">Compare formulas</a></h2>
             <?php } ?>
