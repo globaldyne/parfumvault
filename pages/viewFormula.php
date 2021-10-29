@@ -365,7 +365,7 @@ $('.replaceIngredient').editable({
 					  }
 					  ?>
 					  <td data-name="quantity" class="quantity" data-type="text" align="center" data-pk="<?php echo $formula['ingredient'];?>"><?php echo number_format($formula['quantity'],$settings['qStep']);?></td>
-					  <td align="center" <?php echo $IFRA_WARN;?>><?php echo $conc_p;?></td>
+					  <td align="center" <?php echo $IFRA_WARN;?>><?php echo $conc_p;?><?php if($limit['0']){?> <div style="display: inline;"><a href="#" rel="tipsy" title="Max usage: <?=$limit['0']?>%" class="fas fa-info-circle"></a><?php }?></div></td>
 					  <td align="center"><a href="#" data-toggle="tooltip" data-placement="top" title="by <?=getPrefSupplier($ing_q['id'],$conn)['name']?>"><?=calcCosts(getPrefSupplier($ing_q['id'],$conn)['price'],$formula['quantity'], $formula['concentration'], getPrefSupplier($ing_q['id'],$conn)['size']);?></a></td>
                       <?php if($meta['defView'] == '1'){?>
 					  <td><?php echo ucfirst(wordwrap($ing_q['odor'], 50, "<br />\n"));?></td>
