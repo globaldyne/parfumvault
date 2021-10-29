@@ -14,8 +14,8 @@ if(!mysqli_num_rows(mysqli_query($conn,"SELECT revisionDate FROM formulasRevisio
 	echo '<div class="alert alert-info"><strong>No revisions available yet.</strong></div>';
 	return;
 }
-$current_rev = mysqli_fetch_array(mysqli_query($conn, "SELECT revision FROM formulasMetaData WHERE fid = '".$_GET['fid']."'"));
-$rev_q = mysqli_query($conn,"SELECT revision,revisionDate FROM formulasRevisions WHERE fid = '".$_GET['fid']."' GROUP BY revision");
+$current_rev = mysqli_fetch_array(mysqli_query($conn, "SELECT id,revision FROM formulasMetaData WHERE fid = '".$_GET['fid']."'"));
+$rev_q = mysqli_query($conn,"SELECT fid,revision,revisionDate FROM formulasRevisions WHERE fid = '".$_GET['fid']."' GROUP BY revision");
 
 
 ?>
@@ -29,12 +29,12 @@ $rev_q = mysqli_query($conn,"SELECT revision,revisionDate FROM formulasRevisions
     <th width="33%" scope="col" align="center">Revision taken</th>
     <th width="33%" scope="col" align="center">Actions</th>
   </tr>
-  </thead>
+  
   <?php while ($rev = mysqli_fetch_array($rev_q)){ ?>
   <tr>
     <td align="center"><?=$rev['revision']?></td>
     <td align="center"><?=$rev['revisionDate']?></td>
-    <td align="center"><?php if($rev['revision'] == $current_rev['revision']){ ?><strong>Current revision</strong><?php }else{ ?><a href="javascript:restoreRevision('<?=$rev['revision']?>')" class="fas fa-history" onclick="return confirm('Restore revision takken on <?=$rev['revisionDate']?> ?\nPlease note, this will overwrite the current formula.')"></a><?php } ?></td>
+    <td align="center"><?php if($rev['revision'] == $current_rev['revision']){ ?><strong>Current revision</strong><?php }else{ ?><a href="/?do=compareFormulas&compare=2&revision=<?=$rev['revision']?>&formula_a=<?=$current_rev['id']?>&formula_b=<?=$rev['fid']?>" target="_blank" class="fas fa-greater-than-equal" title="Compare with the current revision" rel="tipsy"></a>  <a href="javascript:restoreRevision('<?=$rev['revision']?>')" class="fas fa-history" onclick="return confirm('Restore revision takken on <?=$rev['revisionDate']?> ?\nPlease note, this will overwrite the current formula.')"></a><?php } ?></td>
   </tr>
   <?php } ?>
 </table>

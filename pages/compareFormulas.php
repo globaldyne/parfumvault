@@ -1,17 +1,28 @@
 <?php 
 if (!defined('pvault_panel')){ die('Not Found');}
 
-if($_POST['formula_a'] && $_POST['formula_b']){
+if($_REQUEST['formula_a'] && $_REQUEST['formula_b']){
 	require(__ROOT__.'/func/compareFormulas.php');
-	$id_a = $_POST['formula_a'];
-	$id_b = $_POST['formula_b'];
+	$id_a = $_REQUEST['formula_a'];
+	$id_b = $_REQUEST['formula_b'];
 
 	$meta_a = mysqli_fetch_array(mysqli_query($conn, "SELECT name,fid FROM formulasMetaData WHERE id = '$id_a'"));
-	$meta_b = mysqli_fetch_array(mysqli_query($conn, "SELECT name,fid FROM formulasMetaData WHERE id = '$id_b'"));
-
-	$q_a = mysqli_query($conn, "SELECT ingredient,concentration,quantity FROM formulas WHERE fid = '".$meta_a['fid']."' ORDER BY ingredient ASC");
-	$q_b = mysqli_query($conn, "SELECT ingredient,concentration,quantity FROM formulas WHERE fid = '".$meta_b['fid']."' ORDER BY ingredient ASC");
+	if($_REQUEST['compare'] == '1'){
+		$meta_b = mysqli_fetch_array(mysqli_query($conn, "SELECT name,fid FROM formulasMetaData WHERE id = '$id_b'"));
+	}
+	if($_REQUEST['compare'] == '2'){
+		$meta_b['name'] = base64_decode($id_b);
+	}
 	
+	$q_a = mysqli_query($conn, "SELECT ingredient,concentration,quantity FROM formulas WHERE fid = '".$meta_a['fid']."' ORDER BY ingredient ASC");
+	if($_REQUEST['compare'] == '1'){
+		$q_b = mysqli_query($conn, "SELECT ingredient,concentration,quantity FROM formulas WHERE fid = '".$meta_b['fid']."' ORDER BY ingredient ASC");
+	}
+	if($_REQUEST['compare'] == '2'){
+		$revision = $_REQUEST['revision'];
+		$q_b = mysqli_query($conn, "SELECT ingredient,concentration,quantity FROM formulasRevisions WHERE revision = '$revision' AND fid = '$id_b' ORDER BY ingredient ASC");
+	}
+
 	while ($formula = mysqli_fetch_array($q_a)){
 	    $formula_a[] = $formula;
 	}
@@ -27,7 +38,7 @@ if($_POST['formula_a'] && $_POST['formula_b']){
 		<div>
           <div class="card shadow mb-4">
             <div class="card-header py-3"> 
-            <?php if($_GET['compare'] && $_POST['formula_a'] && $_POST['formula_b']){?>
+            <?php if($_GET['compare'] && $_REQUEST['formula_a'] && $_REQUEST['formula_b']){?>
              <h5 class="m-1 text-primary">Formula A: <strong><?=$meta_a['name']?></strong></h5>
              <h5 class="m-1 text-primary">Formula B: <strong><?=$meta_b['name']?></strong></h5>
         	<?php }else{ ?>
@@ -35,7 +46,7 @@ if($_POST['formula_a'] && $_POST['formula_b']){
             <?php } ?>
             </div>
             <div class="card-body">
-            <?php if($_GET['compare'] && $_POST['formula_a'] && $_POST['formula_b']){?>
+            <?php if($_GET['compare'] && $_REQUEST['formula_a'] && $_REQUEST['formula_b']){?>
               <div>
               <?php if(empty($r[$meta_a['name']])){ ?>
               <div class="alert alert-info alert-dismissible">No differences between formulas found</div>
