@@ -306,6 +306,24 @@ function restoreRevision(revision) {
 		}
 	  });
 };
+
+function deleteRevision(revision) {
+	$.ajax({ 
+		url: 'manageFormula.php', 
+		type: 'get',
+		data: {
+			delete: "rev",
+			fid: '<?=$info['fid']?>',
+			revision: revision
+			},
+		dataType: 'html',
+		success: function (data) {
+		  	$('#msg').html(data);
+			list_revisions();
+		}
+	  });	
+};
+
 function list_revisions(){
   $('#list_revisions').html('<img class="loader loader-center" src="/img/Testtube.gif"/>');
 	$.ajax({

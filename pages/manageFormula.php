@@ -47,6 +47,19 @@ if($_GET['restore'] == 'rev' && $_GET['revision'] && $_GET['fid']){
 	return;
 }
 
+//DELETE REVISION
+if($_GET['delete'] == 'rev' && $_GET['revision'] && $_GET['fid']){
+	$fid = mysqli_real_escape_string($conn,$_GET['fid']);
+	$revision = $_GET['revision'];
+	
+	if(mysqli_query($conn,"DELETE FROM formulasRevisions WHERE fid = '$fid' AND revision = '$revision'")){
+		echo  '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Formula revision deleted!</div>';
+	}else{
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Unable to delete revision! '.mysqli_error($conn).'</div>';
+	}
+	return;
+}
+
 //MANAGE VIEW
 if($_GET['manage_view'] == '1'){
 	$ing = mysqli_real_escape_string($conn,str_replace('_', ' ',$_GET['ex_ing']));

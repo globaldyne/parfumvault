@@ -19,6 +19,7 @@ $rev_q = mysqli_query($conn,"SELECT fid,revision,revisionDate FROM formulasRevis
 
 
 ?>
+<div class="listRevisions">
 <table class="table table-bordered" width="100%" cellspacing="0">
 	<thead>
      <tr class="noBorder">
@@ -34,7 +35,7 @@ $rev_q = mysqli_query($conn,"SELECT fid,revision,revisionDate FROM formulasRevis
   <tr>
     <td align="center"><?=$rev['revision']?></td>
     <td align="center"><?=$rev['revisionDate']?></td>
-    <td align="center"><?php if($rev['revision'] == $current_rev['revision']){ ?><strong>Current revision</strong><?php }else{ ?><a href="/?do=compareFormulas&compare=2&revision=<?=$rev['revision']?>&formula_a=<?=$current_rev['id']?>&formula_b=<?=$rev['fid']?>" target="_blank" class="fas fa-greater-than-equal" title="Compare with the current revision" rel="tipsy"></a>  <a href="javascript:restoreRevision('<?=$rev['revision']?>')" class="fas fa-history" onclick="return confirm('Restore revision takken on <?=$rev['revisionDate']?> ?\nPlease note, this will overwrite the current formula.')"></a><?php } ?></td>
+    <td align="center"><?php if($rev['revision'] == $current_rev['revision']){ ?><strong>Current revision</strong><?php }else{ ?><a href="/?do=compareFormulas&compare=2&revision=<?=$rev['revision']?>&formula_a=<?=$current_rev['id']?>&formula_b=<?=$rev['fid']?>" target="_blank" class="fas fa-greater-than-equal" title="Compare with the current revision" rel="tipsy"></a>  <a href="javascript:restoreRevision('<?=$rev['revision']?>')" class="fas fa-history" onclick="return confirm('Restore revision taken on <?=$rev['revisionDate']?> ?\nPlease note, this will overwrite the current formula.')"></a> <a href="javascript:deleteRevision('<?=$rev['revision']?>')" class="fas fa-trash" onclick="return confirm('Delete revision taken on <?=$rev['revisionDate']?>?')"></a><?php } ?></td>
   </tr>
   <?php } ?>
 </table>
