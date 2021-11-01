@@ -619,3 +619,12 @@ formula td, table.table th {
 .compare_formula_name {
 	border: none !important;
 }
+
+.where_used {
+	margin-top: .4rem;
+	margin-bottom: .4rem;
+	overflow: auto;
+	max-height: 300px;
+	white-space: normal;
+	text-overflow: ellipsis
+}

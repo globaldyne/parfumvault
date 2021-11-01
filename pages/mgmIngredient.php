@@ -47,10 +47,7 @@ while($pictograms_res = mysqli_fetch_array($pictograms)){
     $pictogram[] = $pictograms_res;
 }
 
-$ingUsage = mysqli_query($conn,"SELECT name,fid FROM formulas WHERE ingredient = '".$ing['name']."'");
-while($used_res = mysqli_fetch_array($ingUsage)){
-	$used[] = $used_res;
-}
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -199,6 +196,18 @@ $.ajax({
 
 
 function reload_data() {
+	$.ajax({ 
+		url: 'whereUsed.php', 
+		type: 'get',
+		data: {
+			id: "<?=base64_encode($ingID)?>"
+			},
+		dataType: 'html',
+		success: function (data) {
+		  $('#fetch_whereUsed').html(data);
+		},
+	  });
+	
 	$.ajax({ 
 		url: 'allergens.php', 
 		type: 'get',
@@ -588,20 +597,7 @@ $(document).ready(function() {
 			  </div>
               
               <div class="tab-pane fade" id="whereUsed">
-              <h3><?=$ing['name']?> is used in <?=count($used)?> formulas</h3>
-              <hr>
-              <table width="100%" border="0">
-              <?php 
-			       foreach ($used as $used){
-					$gFMD = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '".$used['fid']."'"));
-			   ?>
-                  <tr>
-                    <td width="19%">
-                   <a href="/?do=Formula&id=<?=$gFMD['id']?>" target="_blank"><?=$used['name']?></a>
-                    </td>
-                  </tr>
-                  <?php } ?>
-                </table>
+                   <div id="fetch_whereUsed"><div class="loader"></div></div>
 			  </div>
               
               <div class="tab-pane fade" id="tech_allergens">
