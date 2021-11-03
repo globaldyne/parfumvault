@@ -92,7 +92,8 @@ CREATE TABLE `formulasMetaData` (
   `isProtected` INT NULL DEFAULT '0',
   `defView` INT NULL DEFAULT '1',
   `catClass` VARCHAR(10) NULL,
-  `revision` INT NOT NULL DEFAULT '0' 
+  `revision` INT NOT NULL DEFAULT '0',
+  `finalType` INT NOT NULL DEFAULT '100' 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 DROP TABLE IF EXISTS `IFRALibrary`;

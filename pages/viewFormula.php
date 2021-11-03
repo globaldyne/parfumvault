@@ -15,6 +15,7 @@ require_once(__ROOT__.'/func/ml2L.php');
 require_once(__ROOT__.'/func/countElement.php');
 require_once(__ROOT__.'/func/getIngSupplier.php');
 require_once(__ROOT__.'/func/getCatByID.php');
+require_once(__ROOT__.'/func/checkUsage.php');
 
 if(!$_GET['id']){
 	echo 'Formula id is missing.';
@@ -262,9 +263,9 @@ $('.replaceIngredient').editable({
                   <thead>
                     <tr class="noexport">
                     <?php if($settings['grp_formula'] == '1' || $settings['grp_formula'] == '2'){?>
-                      <th colspan="9">
+                      <th colspan="10">
                     <?php }else{ ?>
-                      <th colspan="8">
+                      <th colspan="9">
                     <?php } ?>                      
                       <div class="progress">
   <div class="progress-bar" role="progressbar" style="width: <?php echo $base_calc; ?>%" aria-valuenow="<?php echo $base_calc;?>" aria-valuemin="0" aria-valuemax="<?php echo $settings['base_n'];?>"><span><?php echo $base_calc;?>% Base Notes</span></div>
@@ -299,6 +300,7 @@ $('.replaceIngredient').editable({
                       <th width="5%">Dilutant</th>
                       <th width="5%">Quantity (<?=$settings['mUnit']?>)</th>
                       <th width="5%">Concentration %*</th>
+                      <th width="5%">Final Concentration %</th>
                       <th width="5%">Cost (<?php echo utf8_encode($settings['currency']);?>)</th>
                       <?php if($meta['defView'] == '1'){?>
                       <th width="5%">Properties</th>
@@ -313,9 +315,11 @@ $('.replaceIngredient').editable({
 						$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT id, cas, $defCatClass, profile, odor, category FROM ingredients WHERE BINARY name = '".$formula['ingredient']."'"));
 
 						$limit = explode(' - ',searchIFRA($ing_q['cas'],$formula['ingredient'],null,$conn,$defCatClass));
-						
+				
 					  	$conc = number_format($formula['quantity']/$mg['total_mg'] * 100, 3);
 					  	$conc_p = number_format($formula['concentration'] / 100 * $conc, 3);
+						
+					  	$conc_final = number_format($formula['concentration'] / 100 * $formula['quantity']/$mg['total_mg'] * $meta['finalType'], 3);
 						
 						if($settings['multi_dim_perc'] == '1'){
 							$conc_p   += multi_dim_perc($conn, $form)[$formula['ingredient']];
@@ -346,26 +350,11 @@ $('.replaceIngredient').editable({
 					   <td align="center">None</td>
 					  <?php }else{ ?>
 					   <td data-name="dilutant" class="dilutant" data-type="select" align="center" data-pk="<?php echo $formula['ingredient']; ?>"><?php echo $formula['dilutant'];?></td>
-					  <?php }
-					  if($limit['0'] != null){
-						 if($limit['0'] < $conc_p){
-							$IFRA_WARN = 'class="alert-danger"';//VALUE IS TO HIGH AGAINST IFRA
-					  	}else{
-							$IFRA_WARN = 'class="alert-success"'; //VALUE IS OK
-						}
-					  }else
-					  if($ing_q[$defCatClass] != null){
-					  	if($ing_q[$defCatClass] < $conc_p){
-							$IFRA_WARN = 'class="alert-info"'; //VALUE IS TO HIGH AGAINST LOCAL DB
-					  	}else{
-							$IFRA_WARN = 'class="alert-success"'; //VALUE IS OK
-						}
-					  }else{
-						  $IFRA_WARN = 'class="alert-warning"'; //NO RECORD FOUND
-					  }
-					  ?>
+					  <?php }  ?>
 					  <td data-name="quantity" class="quantity" data-type="text" align="center" data-pk="<?php echo $formula['ingredient'];?>"><?php echo number_format($formula['quantity'],$settings['qStep']);?></td>
-					  <td align="center" <?php echo $IFRA_WARN;?>><?php echo $conc_p;?><?php if($limit['0']){?> <div style="display: inline;"><a href="#" rel="tipsy" title="Max usage: <?=$limit['0']?>%" class="fas fa-info-circle"></a><?php }?></div></td>
+					  <td align="center" <?=checkUsage($limit['0'],$conc_p,$ing_q[$defCatClass])?>><?php echo $conc_p;?><?php if($limit['0']){?> <div style="display: inline;"><a href="#" rel="tipsy" title="Max usage: <?=$limit['0']?>%" class="fas fa-info-circle"></a><?php }?></div></td>
+                      <td align="center" <?=checkUsage($limit['0'],$conc_final,$ing_q[$defCatClass])?>><?=$conc_final?></td>
+                      
 					  <td align="center"><a href="#" data-toggle="tooltip" data-placement="top" title="by <?=getPrefSupplier($ing_q['id'],$conn)['name']?>"><?=calcCosts(getPrefSupplier($ing_q['id'],$conn)['price'],$formula['quantity'], $formula['concentration'], getPrefSupplier($ing_q['id'],$conn)['size']);?></a></td>
                       <?php if($meta['defView'] == '1'){?>
 					  <td><?php echo ucfirst(wordwrap($ing_q['odor'], 50, "<br />\n"));?></td>
@@ -389,8 +378,7 @@ $('.replaceIngredient').editable({
                   <tfoot>
                     <tr>
                       <?php if($settings['grp_formula'] == '1' || $settings['grp_formula'] == '2'){ ?>
-                      <th>
-                      </th> 
+                      <th></th> 
                       <?php }?>
                       <th width="22%">Total: <?php echo countElement("formulas WHERE fid = '".$meta['fid']."'",$conn);?></th>
                       <th></th>
@@ -398,6 +386,7 @@ $('.replaceIngredient').editable({
                       <th></th>
                       <th width="15%" align="right"><p>Total: <?php echo ml2l($mg['total_mg'], 3, $settings['mUnit']); ?></p></th>
                       <th width="15%">Total: <?php echo array_sum($conc_tot);?>%</th>
+                      <th></th>
                       <th width="15%" align="right">Cost: <?php echo utf8_encode($settings['currency']).number_format(array_sum($tot),3);?></a></th>
                       <th></th>
                       <th class="noexport" width="15%"></th>

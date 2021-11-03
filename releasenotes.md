@@ -9,3 +9,4 @@ Formulas can be exported as PDF now
 Added formulas revision support
 Now you can create an accord formula from your main formula from is Top, Heart or Base notes
 See in which formulas each ingredient is used
+See the final concentration in formula without generating a finished product

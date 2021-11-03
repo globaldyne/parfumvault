@@ -186,6 +186,18 @@ if($_GET['formula'] &&  $_GET['catClass']){
 	return;
 }
 
+if($_GET['formula'] &&  $_GET['finalType']){
+	$fid = mysqli_real_escape_string($conn, $_GET['formula']);
+	$finalType = mysqli_real_escape_string($conn, $_GET['finalType']);
+	
+	if(mysqli_query($conn, "UPDATE formulasMetaData SET finalType = '$finalType' WHERE fid = '$fid'")){
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Finished product type changed!</div>';
+	}else{
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Something went wrong.</div>';
+	}
+	return;
+}
+
 if($_GET['rename']){
 	$value = mysqli_real_escape_string($conn, $_POST['value']);
 	$formula = mysqli_real_escape_string($conn, base64_decode($_GET['rename']));

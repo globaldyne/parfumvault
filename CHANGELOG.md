@@ -10,6 +10,7 @@ Add - Export as PDF in formulas
 Add - Formula revision system
 Add - Accord creation from formulas notes
 Add - Where ingredient used
+Add - final concentration in formula
 
 ### Version 3.4
 REST API added

@@ -114,6 +114,18 @@ if(empty($info['name'])){
     </select></td>
   </tr>
   <tr>
+    <td>Final type:</td>
+    <td>
+    <select name="finalType" id="finalType" class="form-control ellipsis">  
+            <option value="100">Concentrated (100%)</option>
+	 		<option value="<?=$settings['Parfum']?>" <?php if($settings['Parfum'] == $meta['finalType']){ echo 'selected';}?>>Parfum (<?=$settings['Parfum']?>%)</option>
+			<option value="<?=$settings['EDP']?>" <?php if($settings['Parfum'] == $meta['finalType']){ echo 'selected';}?>>EDP (<?=$settings['EDP']?>%)</option>
+	 		<option value="<?=$settings['EDT']?>" <?php if($settings['Parfum'] == $meta['finalType']){ echo 'selected';}?>>EDT (<?=$settings['EDT']?>%)</option>
+	 		<option value="<?=$settings['EDC']?>" <?php if($settings['Parfum'] == $meta['finalType']){ echo 'selected';}?>>EDC (<?=$settings['EDC']?>%)</option>		
+    </select>
+    </td>
+  </tr>
+  <tr>
     <td>Sex:</td>
     <td><a href="#" id="sex" data-type="select" data-pk="<?php echo $info['id'];?>" data-title="<?php echo $info['sex'];?>"></a></td>
   </tr>
@@ -243,6 +255,21 @@ $("#catClass").change(function() {
 	data: {
 		formula: '<?=$info['fid']?>',
 		catClass: $("#catClass").find(":selected").val(),
+		},
+	dataType: 'html',
+	success: function (data) {
+		$('#msg').html(data);
+	}
+  });
+});
+
+$("#finalType").change(function() {
+ $.ajax({ 
+	url: 'update_data.php', 
+	type: 'GET',
+	data: {
+		formula: '<?=$info['fid']?>',
+		finalType: $("#finalType").find(":selected").val(),
 		},
 	dataType: 'html',
 	success: function (data) {
