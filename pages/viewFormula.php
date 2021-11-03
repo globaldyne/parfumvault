@@ -258,7 +258,7 @@ $('.replaceIngredient').editable({
 
  
 </script>
-
+<div class="viewFormula">
 <table class="table table-striped table-bordered nowrap" <?php if($settings['grp_formula'] == '1' || $settings['grp_formula'] == '2'){?>id="formula" <?php } ?>width="100%" cellspacing="0">
                   <thead>
                     <tr class="noexport">
@@ -300,7 +300,7 @@ $('.replaceIngredient').editable({
                       <th width="5%">Dilutant</th>
                       <th width="5%">Quantity (<?=$settings['mUnit']?>)</th>
                       <th width="5%">Concentration %*</th>
-                      <th width="5%">Final Concentration %</th>
+                      <th width="5%">Final Concentration <?=$meta['finalType']?>%</th>
                       <th width="5%">Cost (<?php echo utf8_encode($settings['currency']);?>)</th>
                       <?php if($meta['defView'] == '1'){?>
                       <th width="5%">Properties</th>
@@ -394,7 +394,7 @@ $('.replaceIngredient').editable({
                   </tfoot>                                    
                 </table>
                 
-                
+                </div>
 <!--Amount To Make-->
 <div class="modal fade" id="amount_to_make" tabindex="-1" role="dialog" aria-labelledby="amount_to_make" aria-hidden="true">
   <div class="modal-dialog" role="document">

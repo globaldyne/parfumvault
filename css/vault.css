@@ -628,3 +628,11 @@ formula td, table.table th {
 	white-space: normal;
 	text-overflow: ellipsis
 }
+
+#list_revisions {
+	margin: 20px 20px 20px 20px;
+}
+
+.viewFormula {
+    overflow: auto;
+}
