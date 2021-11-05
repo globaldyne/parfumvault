@@ -52,7 +52,7 @@ CREATE TABLE `formulas` (
   `ingredient_id` varchar(11) COLLATE utf8_bin DEFAULT NULL,
   `concentration` decimal(5,2) DEFAULT 100.00,
   `dilutant` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `quantity` decimal(8,3) DEFAULT NULL,
+  `quantity` decimal(8,4) DEFAULT NULL,
   `exclude_from_summary` INT NOT NULL DEFAULT '0', 
   `notes` varchar(11) COLLATE utf8_bin DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;

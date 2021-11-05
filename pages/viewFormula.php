@@ -316,10 +316,10 @@ $('.replaceIngredient').editable({
 
 						$limit = explode(' - ',searchIFRA($ing_q['cas'],$formula['ingredient'],null,$conn,$defCatClass));
 				
-					  	$conc = number_format($formula['quantity']/$mg['total_mg'] * 100, 3);
-					  	$conc_p = number_format($formula['concentration'] / 100 * $conc, 3);
+					  	$conc = number_format($formula['quantity']/$mg['total_mg'] * 100, $settings['qStep']);
+					  	$conc_p = number_format($formula['concentration'] / 100 * $conc, $settings['qStep']);
 						
-					  	$conc_final = number_format($formula['concentration'] / 100 * $formula['quantity']/$mg['total_mg'] * $meta['finalType'], 3);
+					  	$conc_final = number_format($formula['concentration'] / 100 * $formula['quantity']/$mg['total_mg'] * $meta['finalType'], $settings['qStep']);
 						
 						if($settings['multi_dim_perc'] == '1'){
 							$conc_p   += multi_dim_perc($conn, $form, $ing_q['cas'])[$formula['ingredient']];
@@ -384,10 +384,10 @@ $('.replaceIngredient').editable({
                       <th></th>
                       <th></th>
                       <th></th>
-                      <th width="15%" align="right"><p>Total: <?php echo ml2l($mg['total_mg'], 3, $settings['mUnit']); ?></p></th>
+                      <th width="15%" align="right"><p>Total: <?php echo ml2l($mg['total_mg'], $settings['qStep'], $settings['mUnit']); ?></p></th>
                       <th width="15%">Total: <?php echo array_sum($conc_tot);?>%</th>
                       <th></th>
-                      <th width="15%" align="right">Cost: <?php echo utf8_encode($settings['currency']).number_format(array_sum($tot),3);?></a></th>
+                      <th width="15%" align="right">Cost: <?php echo utf8_encode($settings['currency']).number_format(array_sum($tot), $settings['qStep']);?></a></th>
                       <th></th>
                       <th class="noexport" width="15%"></th>
                     </tr>

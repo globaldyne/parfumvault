@@ -12,6 +12,7 @@ Add - Accord creation from formulas notes
 Add - Where ingredient used
 Add - final concentration in formula
 Improvements in multi dimension limit lookup
+Increase precision in formulas
 
 ### Version 3.4
 REST API added
