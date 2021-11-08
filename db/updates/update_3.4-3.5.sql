@@ -36,3 +36,4 @@ ALTER TABLE `formulasMetaData` ADD `finalType` INT NOT NULL DEFAULT '100' AFTER 
 UPDATE allergens SET percentage = CONVERT( if( percentage REGEXP '^[0-9]+$', percentage, '0' ), DECIMAL(8, 4) );
 ALTER TABLE `allergens` CHANGE `percentage` `percentage` DECIMAL(8,4) NOT NULL;
 ALTER TABLE `formulas` CHANGE `quantity` `quantity` DECIMAL(8,4) NULL DEFAULT NULL;
+ALTER TABLE `formulasRevisions` CHANGE `quantity` `quantity` DECIMAL(8,4) NULL DEFAULT NULL;

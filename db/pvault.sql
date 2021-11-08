@@ -586,7 +586,7 @@ CREATE TABLE `formulasRevisions` (
  `ingredient_id` varchar(11) COLLATE utf8_bin DEFAULT NULL,
  `concentration` decimal(5,2) DEFAULT 100.00,
  `dilutant` varchar(255) COLLATE utf8_bin DEFAULT NULL,
- `quantity` decimal(8,3) DEFAULT NULL,
+ `quantity` decimal(8,4) DEFAULT NULL,
  `notes` varchar(255) COLLATE utf8_bin DEFAULT NULL,
  `exclude_from_summary` int(11) NOT NULL DEFAULT 0,
  `revision` int(11) NOT NULL,
