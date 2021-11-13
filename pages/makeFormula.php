@@ -172,7 +172,7 @@ $.ajax({
 					  	$conc_p = number_format($formula['concentration'] / 100 * $conc, 3);
 						
 						if($settings['multi_dim_perc'] == '1'){
-							$conc_p   += multi_dim_perc($conn, $form)[$formula['ingredient']];
+							$conc_p   += multi_dim_perc($conn, $form, $ing_q['cas'])[$formula['ingredient']];
 						}
 						
 					 	if($settings['chem_vs_brand'] == '1'){

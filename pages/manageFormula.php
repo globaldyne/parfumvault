@@ -7,6 +7,58 @@ require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/labelMap.php');
 require_once(__ROOT__.'/func/get_formula_notes.php');
 
+//CREATE ACCORD
+if($_POST['accordName'] && $_POST['accordProfile'] && $_POST['fid']){
+	$fid = mysqli_real_escape_string($conn,$_POST['fid']);
+	$accordProfile = mysqli_real_escape_string($conn,$_POST['accordProfile']);
+	$accordName = mysqli_real_escape_string($conn,$_POST['accordName']);
+	$nfid = base64_encode($accordName);
+	
+	if(mysqli_num_rows(mysqli_query($conn,"SELECT id FROM formulasMetaData WHERE fid = '$nfid'"))){
+		echo  '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>A formula with name '.$accordName.' already exists, please choose a different name!</div>';
+		return;
+	}
+									
+	$get_formula = mysqli_query($conn,"SELECT ingredient FROM formulas WHERE fid = '$fid'");
+	while($formula = mysqli_fetch_array($get_formula)){
+        if($i = mysqli_fetch_array(mysqli_query($conn,"SELECT name,profile FROM ingredients WHERE profile = '$accordProfile' AND name ='".$formula['ingredient']."'"))){
+        	mysqli_query($conn, "INSERT INTO formulas (fid, name, ingredient, ingredient_id, concentration, dilutant, quantity, notes) SELECT '$nfid', '$accordName', ingredient, ingredient_id, concentration, dilutant, quantity, notes FROM formulas WHERE fid = '$fid' AND ingredient = '".$i['name']."'");
+		}
+	}
+	if(mysqli_query($conn,"INSERT INTO formulasMetaData (fid,name) VALUES ('$nfid','$accordName')")){
+		$acc = mysqli_fetch_array(mysqli_query($conn,"SELECT id FROM formulasMetaData WHERE fid = '$nfid'"));
+		echo  '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Accord <a href="?do=Formula&id='.$acc['id'].'" target="_blank">'.$accordName.'</a> created!</div>';
+	}
+	return;
+}
+
+//RESTORE REVISION
+if($_GET['restore'] == 'rev' && $_GET['revision'] && $_GET['fid']){
+	$fid = mysqli_real_escape_string($conn,$_GET['fid']);
+	$revision = $_GET['revision'];
+	
+	mysqli_query($conn,"DELETE FROM formulas WHERE fid = '$fid'");
+	if(mysqli_query($conn, "INSERT INTO formulas (fid, name, ingredient, ingredient_id, concentration, dilutant, quantity, notes) SELECT fid, name, ingredient, ingredient_id, concentration, dilutant, quantity, notes FROM formulasRevisions WHERE fid = '$fid' AND revision = '$revision'")){
+		mysqli_query($conn, "UPDATE formulasMetaData SET revision = '$revision' WHERE fid = '$fid'");
+		echo  '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Formula revision restored!</div>';
+	}else{
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Unable to restore revision! '.mysqli_error($conn).'</div>';
+	}
+	return;
+}
+
+//DELETE REVISION
+if($_GET['delete'] == 'rev' && $_GET['revision'] && $_GET['fid']){
+	$fid = mysqli_real_escape_string($conn,$_GET['fid']);
+	$revision = $_GET['revision'];
+	
+	if(mysqli_query($conn,"DELETE FROM formulasRevisions WHERE fid = '$fid' AND revision = '$revision'")){
+		echo  '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Formula revision deleted!</div>';
+	}else{
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Unable to delete revision! '.mysqli_error($conn).'</div>';
+	}
+	return;
+}
 
 //MANAGE VIEW
 if($_GET['manage_view'] == '1'){
@@ -184,6 +236,7 @@ if($_GET['action'] == 'delete' && $_GET['fid']){
 	
 	if(mysqli_query($conn, "DELETE FROM formulas WHERE fid = '$fid'")){
 		mysqli_query($conn, "DELETE FROM formulasMetaData WHERE fid = '$fid'");
+		mysqli_query($conn,"DELETE FROM formulasRevisions WHERE fid = '$fid'");
 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Formula '.base64_decode($fid).' deleted!</div>';
 	}else{
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error</strong> deleting '.base64_decode($fid).' formula!</div>';

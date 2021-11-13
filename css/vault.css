@@ -583,7 +583,7 @@ formula td, table.table th {
     font-weight: 300;
 }
 
-.mgm-ing-theme {
+.mgm-ing-bk {
     background-color: white;
 }
 
@@ -601,4 +601,38 @@ formula td, table.table th {
 }
 .ing-view a:hover{
 	text-decoration: none;
+}
+.mgm-ing-theme {
+	background-color: fff;
+	/*
+	background-image: linear-gradient(to bottom, transparent, white 75%), url("/img/molecule.png");
+	background-repeat: no-repeat;
+	padding: 50px 0px 0px 50px;
+	*/
+}
+.compare {
+	display: inline-table;
+	border: none;
+	width:auto;
+	max-width:50%;
+}
+.compare_formula_name {
+	border: none !important;
+}
+
+.where_used {
+	margin-top: .4rem;
+	margin-bottom: .4rem;
+	overflow: auto;
+	max-height: 300px;
+	white-space: normal;
+	text-overflow: ellipsis
+}
+
+#list_revisions {
+	margin: 20px 20px 20px 20px;
+}
+
+.viewFormula {
+    overflow: auto;
 }

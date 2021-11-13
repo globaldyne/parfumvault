@@ -1,4 +1,19 @@
 # CHANGELOG
+### Version 3.5
+Formula can now be grouped by category
+Added ingredient clone option
+Added GHS for ingredients
+Fix a bug preventing iOS app to sync properly
+Add formula comparison
+Group formulation menu links
+Add - Export as PDF in formulas
+Add - Formula revision system
+Add - Accord creation from formulas notes
+Add - Where ingredient used
+Add - final concentration in formula
+Improvements in multi dimension limit lookup
+Increase precision in formulas
+
 ### Version 3.4
 REST API added
 DB schema ingredients category chnage from char to int

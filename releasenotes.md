@@ -1,10 +1,13 @@
 Whats New:
 ----------------------
-Introducing REST API so you can access your formulas and ingredients from a thrid party service/app
-Self update process improvements
-Various bug fixes and improvements
-Grams added as a measurement unit
-Introducing category color key
-Ingredient management page improvements
-Added card view in ingredients
-Overall UI and functional improvements
+Formula can now be grouped by category
+Added ingredient clone option
+Added GHS in ingredients
+We added the option to compare between formulas
+All formulation links are now now grouped under "Formula Management" menu
+Formulas can be exported as PDF now
+Added formulas revision support
+Now you can create an accord formula from your main formula from is Top, Heart or Base notes
+See in which formulas each ingredient is used
+See the final concentration in formula without generating a finished product
+Improvements in multi dimension limit lookup

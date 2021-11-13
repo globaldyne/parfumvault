@@ -14,6 +14,8 @@ require_once(__ROOT__.'/func/goShopping.php');
 require_once(__ROOT__.'/func/ml2L.php');
 require_once(__ROOT__.'/func/countElement.php');
 require_once(__ROOT__.'/func/getIngSupplier.php');
+require_once(__ROOT__.'/func/getCatByID.php');
+require_once(__ROOT__.'/func/checkUsage.php');
 
 if(!$_GET['id']){
 	echo 'Formula id is missing.';
@@ -67,7 +69,7 @@ $(document).ready(function() {
             api.column(groupColumn, {page:'current'} ).data().each( function ( group, i ) {
                 if ( last !== group ) {
                     $(rows).eq( i ).before(
-                        '<tr class="group noexport"><td colspan="' + rows.columns()[0].length +'">' + group + ' Notes</td></tr>'
+                        '<tr class="group noexport"><td colspan="' + rows.columns()[0].length +'">' + group + '</td></tr>'
                     );
  
                     last = group;
@@ -144,6 +146,30 @@ function amountToMake() {
 	}
 };
 
+
+//Create Accord
+function createAccord() {
+	if($("#accordName").val().trim() == '' ){
+        $('#accordName').focus();
+	  	$('#accordMsg').html('<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> Accord name required!</div>');	
+	}else{
+		$.ajax({ 
+		url: 'pages/manageFormula.php', 
+		type: 'POST',
+		cache: false,
+		data: {
+			fid: "<?php echo base64_encode($f_name); ?>",
+			accordName: $("#accordName").val(),
+			accordProfile: $("#accordProfile").val(),
+			},
+		dataType: 'html',
+		success: function (data) {
+			$('#accordMsg').html(data);
+			//$('#createAccord').modal('toggle');
+		}
+	  });
+	}
+};
 //Delete ingredient
 function deleteING(ingName,ingID) {	  
 $.ajax({ 
@@ -232,14 +258,14 @@ $('.replaceIngredient').editable({
 
  
 </script>
-
-<table class="table table-striped table-bordered nowrap" <?php if($settings['grp_formula'] == '1'){?>id="formula" <?php } ?>width="100%" cellspacing="0">
+<div class="viewFormula">
+<table class="table table-striped table-bordered nowrap" <?php if($settings['grp_formula'] == '1' || $settings['grp_formula'] == '2'){?>id="formula" <?php } ?>width="100%" cellspacing="0">
                   <thead>
                     <tr class="noexport">
-                    <?php if($settings['grp_formula'] == '1'){?>
-                      <th colspan="9">
+                    <?php if($settings['grp_formula'] == '1' || $settings['grp_formula'] == '2'){?>
+                      <th colspan="10">
                     <?php }else{ ?>
-                      <th colspan="8">
+                      <th colspan="9">
                     <?php } ?>                      
                       <div class="progress">
   <div class="progress-bar" role="progressbar" style="width: <?php echo $base_calc; ?>%" aria-valuenow="<?php echo $base_calc;?>" aria-valuemin="0" aria-valuemax="<?php echo $settings['base_n'];?>"><span><?php echo $base_calc;?>% Base Notes</span></div>
@@ -250,11 +276,16 @@ $('.replaceIngredient').editable({
                       <div class="btn-group">
                       <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
                       <div class="dropdown-menu dropdown-menu-left">
-                        <a class="dropdown-item" id="csv" href="#">Export to CSV</a>
+                        <a class="dropdown-item" href="javascript:export_as('csv')">Export to CSV</a>
+                        <a class="dropdown-item" href="javascript:export_as('pdf')">Export to PDF</a>
+             			<div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="javascript:manageQuantity('multiply')">Multiply x2</a>
                         <a class="dropdown-item" href="javascript:manageQuantity('divide')">Divide x2</a>
                         <a class="dropdown-item" href="javascript:cloneMe()">Clone Formula</a>
 	                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#amount_to_make">Amount to make</a>
+               			<div class="dropdown-divider"></div>
+	                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#create_accord">Create Accord</a>
+
              			<div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="javascript:addTODO()">Add to the make list</a>
                         <!-- <a class="dropdown-item" href="javascript:addAllToCart()">Add all to cart</a> -->
@@ -262,13 +293,14 @@ $('.replaceIngredient').editable({
                     </div>
                     </tr>
                     <tr>
-                      <?php if($settings['grp_formula'] == '1'){ echo '<th class="noexport"></th>'; } ?>
+                      <?php if($settings['grp_formula'] == '1' || $settings['grp_formula'] == '2'){ echo '<th class="noexport"></th>'; } ?>
                       <th width="22%">Ingredient</th>
                       <th width="5%">CAS#</th>
                       <th width="5%">Purity%</th>
                       <th width="5%">Dilutant</th>
                       <th width="5%">Quantity (<?=$settings['mUnit']?>)</th>
                       <th width="5%">Concentration %*</th>
+                      <th width="5%">Final Concentration <?=$meta['finalType']?>%</th>
                       <th width="5%">Cost (<?php echo utf8_encode($settings['currency']);?>)</th>
                       <?php if($meta['defView'] == '1'){?>
                       <th width="5%">Properties</th>
@@ -280,15 +312,17 @@ $('.replaceIngredient').editable({
                   </thead>
                   <tbody id="formula_data">
                   <?php	foreach ($form as $formula){
-						$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT id, cas, $defCatClass, profile, odor FROM ingredients WHERE BINARY name = '".$formula['ingredient']."'"));
+						$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT id, cas, $defCatClass, profile, odor, category FROM ingredients WHERE BINARY name = '".$formula['ingredient']."'"));
 
 						$limit = explode(' - ',searchIFRA($ing_q['cas'],$formula['ingredient'],null,$conn,$defCatClass));
+				
+					  	$conc = number_format($formula['quantity']/$mg['total_mg'] * 100, $settings['qStep']);
+					  	$conc_p = number_format($formula['concentration'] / 100 * $conc, $settings['qStep']);
 						
-					  	$conc = number_format($formula['quantity']/$mg['total_mg'] * 100, 3);
-					  	$conc_p = number_format($formula['concentration'] / 100 * $conc, 3);
+					  	$conc_final = number_format($formula['concentration'] / 100 * $formula['quantity']/$mg['total_mg'] * $meta['finalType'], $settings['qStep']);
 						
 						if($settings['multi_dim_perc'] == '1'){
-							$conc_p   += multi_dim_perc($conn, $form)[$formula['ingredient']];
+							$conc_p   += multi_dim_perc($conn, $form, $ing_q['cas'])[$formula['ingredient']];
 						}
 						
 					 	if($settings['chem_vs_brand'] == '1'){
@@ -303,17 +337,12 @@ $('.replaceIngredient').editable({
 						}
 						?>
 						<tr>
-						<?php
-                        if($settings['grp_formula'] == '1'){
-							if(empty($ing_q['profile'])){
-						?>
-								<td class="noexport">Unknown</td>
-						<?php	}else{ ?>
-								<td class="noexport"><?php echo $ing_q['profile'];?></td>
-						<?php	
-                            }
-						}
-						?>
+						<?php if($settings['grp_formula'] == '1'){ ?>
+						<td class="noexport"><?php echo $ing_q['profile']?:'Unknown';?> Notes</td>
+						<?php }	?>
+                        <?php if($settings['grp_formula'] == '2'){ ?>
+						<td class="noexport"><?php echo getCatByIDRaw($ing_q['category'], 'name,colorKey', $conn)['name']?:'Unknown Notes';?></td>
+						<?php }	?>
                       <td align="center" class="<?php if($settings['grp_formula'] == '0'){echo $ing_q['profile'];}?>" id="ingredient"><a href="pages/mgmIngredient.php?id=<?=base64_encode($formula['ingredient'])?>" class="popup-link"><?php echo $ingName;?></a> <?php echo checkIng($formula['ingredient'],$settings['defCatClass'],$conn);?></td>
                       <td align="center"><?php echo $ing_q['cas'];?></td>
                       <td data-name="concentration" class="concentration" data-type="text" align="center" data-pk="<?php echo $formula['ingredient'];?>"><?php echo $formula['concentration'];?></td>
@@ -321,26 +350,11 @@ $('.replaceIngredient').editable({
 					   <td align="center">None</td>
 					  <?php }else{ ?>
 					   <td data-name="dilutant" class="dilutant" data-type="select" align="center" data-pk="<?php echo $formula['ingredient']; ?>"><?php echo $formula['dilutant'];?></td>
-					  <?php }
-					  if($limit['0'] != null){
-						 if($limit['0'] < $conc_p){
-							$IFRA_WARN = 'class="alert-danger"';//VALUE IS TO HIGH AGAINST IFRA
-					  	}else{
-							$IFRA_WARN = 'class="alert-success"'; //VALUE IS OK
-						}
-					  }else
-					  if($ing_q[$defCatClass] != null){
-					  	if($ing_q[$defCatClass] < $conc_p){
-							$IFRA_WARN = 'class="alert-info"'; //VALUE IS TO HIGH AGAINST LOCAL DB
-					  	}else{
-							$IFRA_WARN = 'class="alert-success"'; //VALUE IS OK
-						}
-					  }else{
-						  $IFRA_WARN = 'class="alert-warning"'; //NO RECORD FOUND
-					  }
-					  ?>
+					  <?php }  ?>
 					  <td data-name="quantity" class="quantity" data-type="text" align="center" data-pk="<?php echo $formula['ingredient'];?>"><?php echo number_format($formula['quantity'],$settings['qStep']);?></td>
-					  <td align="center" <?php echo $IFRA_WARN;?>><?php echo $conc_p;?></td>
+					  <td align="center" <?=checkUsage($limit['0'],$conc_p,$ing_q[$defCatClass])?>><?php echo $conc_p;?><?php if($limit['0']){?> <div style="display: inline;"><a href="#" rel="tipsy" title="Max usage: <?=$limit['0']?>%" class="fas fa-info-circle"></a><?php }?></div></td>
+                      <td align="center" <?=checkUsage($limit['0'],$conc_final,$ing_q[$defCatClass])?>><?=$conc_final?></td>
+                      
 					  <td align="center"><a href="#" data-toggle="tooltip" data-placement="top" title="by <?=getPrefSupplier($ing_q['id'],$conn)['name']?>"><?=calcCosts(getPrefSupplier($ing_q['id'],$conn)['price'],$formula['quantity'], $formula['concentration'], getPrefSupplier($ing_q['id'],$conn)['size']);?></a></td>
                       <?php if($meta['defView'] == '1'){?>
 					  <td><?php echo ucfirst(wordwrap($ing_q['odor'], 50, "<br />\n"));?></td>
@@ -363,24 +377,24 @@ $('.replaceIngredient').editable({
                   </tbody>
                   <tfoot>
                     <tr>
-                      <?php if($settings['grp_formula'] == '1'){ ?>
-                      <th>
-                      </th> 
+                      <?php if($settings['grp_formula'] == '1' || $settings['grp_formula'] == '2'){ ?>
+                      <th></th> 
                       <?php }?>
                       <th width="22%">Total: <?php echo countElement("formulas WHERE fid = '".$meta['fid']."'",$conn);?></th>
                       <th></th>
                       <th></th>
                       <th></th>
-                      <th width="15%" align="right"><p>Total: <?php echo ml2l($mg['total_mg'], 3, $settings['mUnit']); ?></p></th>
+                      <th width="15%" align="right"><p>Total: <?php echo ml2l($mg['total_mg'], $settings['qStep'], $settings['mUnit']); ?></p></th>
                       <th width="15%">Total: <?php echo array_sum($conc_tot);?>%</th>
-                      <th width="15%" align="right">Cost: <?php echo utf8_encode($settings['currency']).number_format(array_sum($tot),3);?></a></th>
+                      <th></th>
+                      <th width="15%" align="right">Cost: <?php echo utf8_encode($settings['currency']).number_format(array_sum($tot), $settings['qStep']);?></a></th>
                       <th></th>
                       <th class="noexport" width="15%"></th>
                     </tr>
                   </tfoot>                                    
                 </table>
                 
-                
+                </div>
 <!--Amount To Make-->
 <div class="modal fade" id="amount_to_make" tabindex="-1" role="dialog" aria-labelledby="amount_to_make" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -418,11 +432,49 @@ $('.replaceIngredient').editable({
  </div>
 </div>
 
-
+<!--Create accord-->
+<div class="modal fade" id="create_accord" tabindex="-1" role="dialog" aria-labelledby="create_accord" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="create_accord">Create accord</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <div id="accordMsg"></div>
+  	  <form action="javascript:createAccord()" method="get" name="form1" target="_self" id="form_create_accord"><p></p>
+        <table width="313" border="0">
+          <tr>
+	       <td width="106" height="31"><strong>Accord from:</strong></td>
+	       <td width="197"><label>
+	         <select name="accordProfile" id="accordProfile" class="form-control">
+	           <option value="Top">Top notes</option>
+	           <option value="Heart">Heart Notes</option>
+	           <option value="Base">Base Notes</option>
+	           </select>
+	         </label></td>
+          </tr>
+	     <tr>
+	       <td><strong>Name:</strong></td>
+	       <td><input name="accordName" type="text" class="form-control" id="accordName" value="<?=$f_name?> accord" /></td>
+          </tr>
+        </table>
+	    <p>&nbsp;</p>
+	    <div class="modal-footer">
+	     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+  		 <input type="submit" name="button" class="btn btn-primary" id="btnUpdate" value="Create">
+	   </div>
+     </form>
+    </div>
+  </div>
+ </div>
+</div>
 
 <script type="text/javascript" language="javascript" >
 $(".alert-dismissible").fadeTo(2000, 500).slideUp(500, function(){
-    $(".alert-dismissible").slideUp(500);
+    $(".alert-dismissible").alert('close');
 });
 <?php if($meta['isProtected'] == FALSE){?>
 $('#formula_data').editable({
@@ -509,9 +561,9 @@ $('#formula_data').editable({
 });
 
 <?php } ?>
-$('#csv').on('click',function(){
+function export_as(type) {
   $("#formula").tableHTMLExport({
-	type:'csv',
+	type: type,
 	filename:'<?php echo $f_name; ?>.csv',
 	separator: ',',
   	newline: '\r\n',
@@ -519,9 +571,10 @@ $('#csv').on('click',function(){
   	quoteFields: true,
 	ignoreColumns: '.noexport',
   	ignoreRows: '.noexport',
-	htmlContent: false
+	htmlContent: false,
+	maintitle: '<?=$f_name?>',
   });
-});
+};
 
 $('[data-toggle="tooltip"]').tooltip();
 </script>

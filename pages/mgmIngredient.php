@@ -20,7 +20,6 @@ if($ingID){
 	}
 }
 $StandardIFRACategories = mysqli_query($conn, "SELECT name,description,type FROM IFRACategories WHERE type = '1' ORDER BY id ASC");
-
 while($cats_res = mysqli_fetch_array($StandardIFRACategories)){
     $cats[] = $cats_res;
 }
@@ -39,6 +38,15 @@ $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles ORDER BY
 $res_ingSupplier = mysqli_query($conn, "SELECT id,name,min_ml,min_gr FROM ingSuppliers ORDER BY name ASC");
 
 $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE name = '$ingID'"));
+$ingSafetyInfo = mysqli_query($conn, "SELECT GHS FROM ingSafetyInfo WHERE ingID = '".$ing['id']."'");
+while($safety_res = mysqli_fetch_array($ingSafetyInfo)){
+    $safety[] = $safety_res;
+}
+$pictograms = mysqli_query($conn, "SELECT name,code FROM pictograms");
+while($pictograms_res = mysqli_fetch_array($pictograms)){
+    $pictogram[] = $pictograms_res;
+}
+
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -77,7 +85,8 @@ $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE n
 <style>
 .container {
     max-width: 100%;
-	width: 1100px;
+	width: 1400px;
+	height: 1300px;
 }
 .dropdown-menu > li > a {
     font-weight: 700;
@@ -188,6 +197,18 @@ $.ajax({
 
 function reload_data() {
 	$.ajax({ 
+		url: 'whereUsed.php', 
+		type: 'get',
+		data: {
+			id: "<?=base64_encode($ingID)?>"
+			},
+		dataType: 'html',
+		success: function (data) {
+		  $('#fetch_whereUsed').html(data);
+		},
+	  });
+	
+	$.ajax({ 
 		url: 'allergens.php', 
 		type: 'get',
 		data: {
@@ -251,13 +272,15 @@ $(document).ready(function() {
 </head>
 
 <body>
-<div class="container mgm-ing-theme">
+<div class="mgm-ing-theme">
+	<div class="container mgm-ing-bk">
         <div class="mgm-column mgm-visible-xl mgm-col-xl-5">
         <h1 class="mgmIngHeader mgmIngHeader-with-separator"><?php if($ingID){ echo $ing['name'];?>
             <div class="btn-group">
               <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
               <div class="dropdown-menu">
                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#printLabel">Print Label</a>
+                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#cloneIng">Clone ingredient</a>
               </div>
             </div>
             <?php }else {?>
@@ -280,11 +303,13 @@ $(document).ready(function() {
       <li><a href="#documents" role="tab" data-toggle="tab"><i class="fa fa-file-alt"></i> Documents</a></li>
       <li><a href="#note_impact" role="tab" data-toggle="tab"><i class="fa fa-magic"></i> Note Impact</a></li>
       <li><a href="#tech_allergens" role="tab" data-toggle="tab"><i class="fa fa-allergies"></i> Allergens</a></li>
+      <li><a href="#safety_info" role="tab" data-toggle="tab"><i class="fa fa-biohazard"></i> Safety</a></li>
       <?php if($settings['pubChem'] == '1' && $ing['cas']){?>
       	<li><a href="#pubChem" role="tab" data-toggle="tab"><i class="fa fa-atom"></i> Pub Chem</a></li>
       <?php } ?>  
        <li><a href="#privacy" role="tab" data-toggle="tab"><i class="fa fa-user-secret"></i> Privacy</a></li>
       <?php } ?>
+       <li><a href="#whereUsed" role="tab" data-toggle="tab"><i class="fa fa-random"></i> Where used?</a></li>
     </ul>
            	  <div class="tab-content">
 			<div class="tab-pane fade active in" id="general">
@@ -515,6 +540,25 @@ $(document).ready(function() {
                               </tr>
                             </table>
       						</div>
+                            
+              <div class="tab-pane fade" id="safety_info">
+              <h3>Safety Information</h3>
+              <hr />
+               	<table width="100%" border="0">
+                	<tr>
+                  	<td width="20%">Pictograms:</td>
+                    <td width="80%" colspan="3">
+                    <select name="pictogram" id="pictogram" class="form-control selectpicker" data-live-search="true">
+                    <option value="" disabled selected="selected">Choose Pictogram</option>
+                    <?php foreach($pictograms as $pictogram){?>
+                    <option data-content="<img class='img_ing_sel' src='/img/Pictograms/GHS0<?=$pictogram['code'];?>.png'><?=$pictogram['name'];?>" value="<?=$pictogram['code'];?>" <?php if($safety[0]['GHS']==$pictogram['code']) echo 'selected="selected"'; ?>></option>
+                    <?php } ?>
+                    </select>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+              
               <div class="tab-pane fade" id="note_impact">
               <h3>Note Impact</h3>
               <hr>
@@ -551,6 +595,11 @@ $(document).ready(function() {
                   </tr>
                 </table>
 			  </div>
+              
+              <div class="tab-pane fade" id="whereUsed">
+                   <div id="fetch_whereUsed"><div class="loader"></div></div>
+			  </div>
+              
               <div class="tab-pane fade" id="tech_allergens">
                    <div id="fetch_allergen"><div class="loader"></div></div>
               </div>
@@ -743,12 +792,54 @@ $(document).ready(function() {
 </div>
 </div>
 
+<!-- Modal Clone-->
+<div class="modal fade" id="cloneIng" tabindex="-1" role="dialog" aria-labelledby="cloneIng" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="cloneIng">Clone ingredient <?php echo $ing['name']; ?></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <div id="clone_msg"></div>
+       <form action="javascript:cloneIng()" method="get" name="form1" target="_self" >
+          	Name
+            <input class="form-control" name="cloneIngName" id="cloneIngName" type="text" value="" />            
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <input type="submit" name="button" class="btn btn-primary"  value="Clone">
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+</div>
 <script type="text/javascript" language="javascript">
 
 $("#supplier_name").change(function () {
     vol = $(this).children(':selected').data('vol');
     $("#supplier_size").focus().val(vol);    
 });
+//Clone
+function cloneIng() {	  
+	$.ajax({ 
+		url: 'update_data.php', 
+		type: 'GET',
+		data: {
+			action: 'clone',
+			new_ing_name: $("#cloneIngName").val(),
+			old_ing_name: '<?=$ing['name'];?>',
+			ing_id: '<?=$ing['id'];?>'
+			},
+		dataType: 'html',
+		success: function (data) {
+			$('#clone_msg').html(data);
+		}
+	  });
+};
 
 function getPrice(supplier, size, ingSupplierID) {
 	$('#ingMsg').html('<div class="alert alert-info alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Please wait...</strong></div>');
@@ -896,7 +987,7 @@ $(document).ready(function() {
 				type: 'POST',
 				data: {
 					manage: 'ingredient',
-					
+					ingID: '<?=$ing['id'];?>',
 					name: $("#name").val(),
 					INCI: $("#INCI").val(),
 					cas: $("#cas").val(),
@@ -936,6 +1027,8 @@ $(document).ready(function() {
 					noUsageLimit: $("#noUsageLimit").is(':checked'),
 					isPrivate: $("#isPrivate").is(':checked'),
 	
+					pictogram: $("#pictogram").val(),
+
 					<?php if($ing['name']){?>
 					ing: '<?=$ing['name'];?>'
 					<?php } ?>
@@ -991,7 +1084,10 @@ $("#doc_upload").click(function(){
         }
     });	
 });
+
+
 </script>
+</div>
 </div>
 </body>
 </html>

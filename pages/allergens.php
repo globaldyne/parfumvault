@@ -10,9 +10,7 @@ $ingID = mysqli_real_escape_string($conn, base64_decode($_GET["id"]));
 $qAlg = mysqli_query($conn, "SELECT * FROM allergens WHERE ing = '$ingID'");
 
 ?>
-<script type='text/javascript'>
 
-</script>
 				   <h3>Allergens</h3>
                                  <hr>
                     <div class="card-body">

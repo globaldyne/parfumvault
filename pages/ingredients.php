@@ -10,9 +10,9 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
 <style>
 .mfp-iframe-holder .mfp-content {
     line-height: 0;
-    width: 1100px;
-    max-width: 1100px; 
-	height: 1100px;
+    width: 1450px;
+    max-width: 1450px; 
+	height: 1300px;
 }
 </style>
 <div id="content-wrapper" class="d-flex flex-column">
