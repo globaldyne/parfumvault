@@ -15,6 +15,7 @@ if($_POST['manage'] == 'general'){
 	$base_n = mysqli_real_escape_string($conn, $_POST['base_n']);
 	$qStep = mysqli_real_escape_string($conn, $_POST['qStep']);
 	$defCatClass = mysqli_real_escape_string($conn, $_POST['defCatClass']);
+	$grp_formula = mysqli_real_escape_string($conn, $_POST['grp_formula']);
 	$pubchem_view = mysqli_real_escape_string($conn, $_POST['pubchem_view']);
 	$mUnit = mysqli_real_escape_string($conn, $_POST['mUnit']);
 
@@ -22,12 +23,6 @@ if($_POST['manage'] == 'general'){
 		$chem_vs_brand = '1';
 	}else{
 		$chem_vs_brand = '0';
-	}
-	
-	if($_POST["grp_formula"] == 'true') {
-		$grp_formula = '1';
-	}else{
-		$grp_formula = '0';
 	}
 	
 	if($_POST["pubChem"] == 'true') {
