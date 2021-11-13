@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 3.6
+
 ### Version 3.5
 Formula can now be grouped by category
 Added ingredient clone option
