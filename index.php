@@ -215,23 +215,31 @@ function list_cat(){
           <i class="fas fa-fw fa-tachometer-alt"></i>
           <span>Dashboard</span></a>
       </li>
-    
+       
       <li class="nav-item">
-        <a class="nav-link" href="?do=listFormulas">
+      <?php 
+	  if($_GET['do'] == 'listFormulas' || $_GET['do'] == 'genFinishedProduct' || $_GET['do'] == 'compareFormulas' || $_GET['do'] == 'Formula'  || $_GET['do'] == 'sellFormula'){ 
+	  	$expand_f = 'show'; 
+		$class_f = ''; 
+		$aria_f = 'true'; 
+	  }else{ 
+	  	$exapnd_f = ''; 
+		$class_f = 'collapsed'; 
+		$aria_f = 'false'; 
+	  }
+	  ?> 
+        <a class="nav-link <?php echo $class_f; ?>" href="#" data-toggle="collapse" data-target="#collapseFormulas" aria-expanded="<?php echo $aria_f; ?>" aria-controls="collapseFormulas">
           <i class="fas fa-fw fa-flask"></i>
-          <span>Formulas</span></a>
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-link" href="?do=genFinishedProduct">
-          <i class="fas fa-fw fa-spray-can"></i>
-          <span>Generate Finished Product</span></a>
-      </li>
-      
-      <li class="nav-item">
-        <a class="nav-link" href="?do=sellFormula">
-          <i class="fas fa-fw fa-money-check"></i>
-          <span>Sell Formula</span></a>
+          <span>Formula Management</span>
+        </a>
+        <div id="collapseFormulas" class="collapse <?php echo $expand_f;?>" aria-labelledby="headingFormulas" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <a class="collapse-item <?php if($_GET['do'] == 'listFormulas' | $_GET['do'] == 'Formula'){ echo 'active';}?>" href="?do=listFormulas">Formulas</a>
+            <a class="collapse-item <?php if($_GET['do'] == 'compareFormulas'){ echo 'active';}?>" href="?do=compareFormulas">Compare Formulas</a>
+            <a class="collapse-item <?php if($_GET['do'] == 'genFinishedProduct'){ echo 'active';}?>" href="?do=genFinishedProduct"> Finished Product</a>
+            <a class="collapse-item <?php if($_GET['do'] == 'sellFormula'){ echo 'active';}?>" href="?do=sellFormula">Sell Formula</a>
+          </div>
+        </div>
       </li>
             
       <li class="nav-item">
@@ -351,6 +359,8 @@ function list_cat(){
 			require_once(__ROOT__.'/pages/customers.php');
 		}elseif($_GET['do'] == 'UpgradeCore'){
 			require_once(__ROOT__.'/pages/UpgradeCore.php');
+		}elseif($_GET['do'] == 'compareFormulas'){
+			require_once(__ROOT__.'/pages/compareFormulas.php');
 			
 		}else{
 			require_once(__ROOT__.'/pages/dashboard.php');

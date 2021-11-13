@@ -53,7 +53,11 @@ list_cat();
           </tr>
         <tr>
           <td height="28"><a href="#" rel="tipsy" title="If enabled, ingredients in formula view will be grouped by type. eg: Top,Heart,Base notes">Group Formula:</a></td>
-          <td colspan="2"><input name="grp_formula" type="checkbox" id="grp_formula" value="1" <?php if($settings['grp_formula'] == '1'){ ?> checked="checked" <?php } ?>/></td>
+          <td colspan="2"><select name="grp_formula" id="grp_formula" class="form-control">
+			  <option value="0" <?php if($settings['grp_formula']=="0") echo 'selected="selected"'; ?> >Plain</option>
+			  <option value="1" <?php if($settings['grp_formula']=="1") echo 'selected="selected"'; ?> >By notes</option>
+			  <option value="2" <?php if($settings['grp_formula']=="2") echo 'selected="selected"'; ?> >By category</option>
+            </select></td>
           <td>&nbsp;</td>
         </tr>
         <tr>
@@ -80,6 +84,7 @@ list_cat();
 			  <option value="1" <?php if($settings['qStep']=="1") echo 'selected="selected"'; ?> >0.0</option>
 			  <option value="2" <?php if($settings['qStep']=="2") echo 'selected="selected"'; ?> >0.00</option>
 			  <option value="3" <?php if($settings['qStep']=="3") echo 'selected="selected"'; ?> >0.000</option>
+			  <option value="4" <?php if($settings['qStep']=="4") echo 'selected="selected"'; ?> >0.0000</option>
             </select></td>
           <td>&nbsp;</td>
         </tr>
@@ -463,7 +468,7 @@ $(document).ready(function() {
 				qStep: $("#qStep").val(),
 				defCatClass: $("#defCatClass").val(),
 				pubchem_view: $("#pubchem_view").val(),
-				grp_formula: $("#grp_formula").is(':checked'),
+				grp_formula: $("#grp_formula").val(),
 				chem_vs_brand: $("#chem_vs_brand").is(':checked'),
 				pubChem: $("#pubChem").is(':checked'),
 				chkVersion: $("#chkVersion").is(':checked'),

@@ -40,17 +40,20 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 	if($_REQUEST['do'] == 'formulas'){
 
 		$sql = mysqli_query($conn, "SELECT name, notes, fid FROM formulasMetaData");
-		$rows = array();
 		while($r = mysqli_fetch_assoc($sql)) {
-			foreach ($r as $key => $value) {
-    			if (is_null($value) || empty($value)) {
-        	 		$r[$key] = "N/A";
-   				}
-			}
-			$rows[$_REQUEST['do']][] = $r;
+    		if (is_null($r['name']) || empty($r['name'])) {
+        		$r['name'] = "N/A";
+   			}
+			if (is_null($r['notes']) || empty($r['notes'])) {
+        		$r['notes'] = "N/A";
+   			}
+			$r['name'] = (string)$r['name'];
+			$r['notes'] = (string)$r['notes'];
+
+			$rows[$_REQUEST['do']][] = array_filter($r);
 		}
 		header('Content-Type: application/json; charset=utf-8');
-      	echo json_encode($rows, JSON_NUMERIC_CHECK, JSON_HEX_APOS|JSON_HEX_QUOT);
+      	echo json_encode($rows, JSON_HEX_APOS|JSON_HEX_QUOT);
       	return;
 	}
 	
@@ -71,10 +74,16 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 			if (!is_numeric($r['quantity'])) {
         		$r['quantity'] = "0.00";
    			}
+			$r['name'] = (string)$r['name'];
+			$r['ingredient'] = (string)$r['ingredient'];
+			$r['dilutant'] = (string)$r['dilutant'];
+			$r['concentration'] = (int)$r['concentration'];
+			$r['quantity'] = (int)$r['quantity'];
+
 			$rows[$_REQUEST['do']][] = $r;
 		}
 		header('Content-Type: application/json; charset=utf-8');
-      	echo json_encode($rows, JSON_NUMERIC_CHECK, JSON_PRETTY_PRINT);
+      	echo json_encode($rows,  JSON_PRETTY_PRINT);
       	return;
 	}
 	
@@ -137,15 +146,16 @@ if($_REQUEST['key'] && $_REQUEST['do']){
            	$r['image'] = base64_encode(file_get_contents("img/molecule.png"));
           }else{
 			$img = explode('data:image/png;base64,',$r['image']);
-			$r['image'] = $img['1'];
+			$r['image'] = $img['1']?:base64_encode(file_get_contents("img/molecule.png"));
 		  }
 		  if (empty($r['colorKey'])) {
             $r['colorKey'] = "255, 255, 255";
           }
+		  $r['id'] = (int)$r['id'];
           $rows[$_REQUEST['do']][] = array_filter($r);
      	}
        header('Content-Type: application/json; charset=utf-8');
-       echo json_encode($rows, JSON_NUMERIC_CHECK, JSON_PRETTY_PRINT);
+       echo json_encode($rows, JSON_PRETTY_PRINT);
        return;
     }
 	

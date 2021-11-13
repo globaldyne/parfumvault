@@ -143,15 +143,19 @@ if($_GET['formulaMeta']){
 }
 
 if($_GET['protect']){
+	require_once(__ROOT__.'/func/createFormulaRevision.php');
 	$fid = mysqli_real_escape_string($conn, $_GET['protect']);
 	
 	if($_GET['isProtected'] == 'true'){
 		$isProtected = '1';
+		$l = 'locked';
+		createFormulaRevision($fid,$conn);
 	}else{
 		$isProtected = '0';
+		$l = 'unlocked';
 	}
 	if(mysqli_query($conn, "UPDATE formulasMetaData SET isProtected = '$isProtected' WHERE fid = '$fid'")){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Success!</div>';
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Formula '.$l.'!</div>';
 	}else{
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Something went wrong.</div>';
 	}
@@ -176,6 +180,18 @@ if($_GET['formula'] &&  $_GET['catClass']){
 	
 	if(mysqli_query($conn, "UPDATE formulasMetaData SET catClass = '$catClass' WHERE fid = '$fid'")){
 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Purpose changed!</div>';
+	}else{
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Something went wrong.</div>';
+	}
+	return;
+}
+
+if($_GET['formula'] &&  $_GET['finalType']){
+	$fid = mysqli_real_escape_string($conn, $_GET['formula']);
+	$finalType = mysqli_real_escape_string($conn, $_GET['finalType']);
+	
+	if(mysqli_query($conn, "UPDATE formulasMetaData SET finalType = '$finalType' WHERE fid = '$fid'")){
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Finished product type changed!</div>';
 	}else{
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Something went wrong.</div>';
 	}
@@ -289,6 +305,14 @@ if($_GET['allergen'] == 'add'){
 
 	if(empty($allgName)){
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Name is required!</div>';
+		return;
+	}
+	if(empty($allgCAS)){
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> CAS number is required!</div>';
+		return;
+	}
+	if(empty($allgPerc)){
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Percentage is required!</div>';
 		return;
 	}
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM allergens WHERE name = '$allgName' AND ing = '$ing'"))){
@@ -464,6 +488,10 @@ if($_POST['manage'] == 'ingredient'){
 	
 	if(empty($_POST['name'])){
 		$query = "UPDATE ingredients SET cas = '$cas', reach = '$reach', FEMA = '$fema', type = '$type', strength = '$strength', category='$category', profile='$profile', tenacity='$tenacity', chemical_name='$chemical_name', flash_point='$flash_point', appearance='$appearance', notes='$notes', odor='$odor', purity='$purity', allergen='$allergen', formula='$formula', flavor_use='$flavor_use', cat1 = '$cat1', cat2 = '$cat2', cat3 = '$cat3', cat4 = '$cat4', cat5A = '$cat5A', cat5B = '$cat5B', cat5C = '$cat5C', cat5D = '$cat5D', cat6 = '$cat6', cat7A = '$cat7A', cat7B = '$cat7B', cat8 = '$cat8', cat9 = '$cat9', cat10A = '$cat10A', cat10B = '$cat10B', cat11A = '$cat11A', cat11B = '$cat11B', cat12 = '$cat12', soluble = '$soluble', logp = '$logp', impact_top = '$impact_top', impact_heart = '$impact_heart', impact_base = '$impact_base', usage_type = '$usage_type', solvent = '$solvent', INCI = '$INCI', noUsageLimit = '$noUsageLimit', isPrivate = '$isPrivate', molecularWeight = '$molecularWeight', physical_state = '$physical_state' WHERE name='$ing'";
+		if($_POST["pictogram"]){
+			require_once(__ROOT__.'/func/updateGHS.php');
+			updateGHS($_POST['ingID'],$_POST['pictogram'],$conn);
+		}
 		if(mysqli_query($conn, $query)){
 			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Ingredient <strong>'.$ing.'</strong> updated!</div>';
 		}else{
@@ -507,6 +535,29 @@ if($_GET['import'] == 'ingredient'){
 	return;
 }
 
+//CLONE INGREDIENT
+if($_GET['action'] == 'clone' && $_GET['old_ing_name'] && $_GET['ing_id']){
+	$ing_id = mysqli_real_escape_string($conn, $_GET['ing_id']);
+
+	$old_ing_name = mysqli_real_escape_string($conn, $_GET['old_ing_name']);
+	$new_ing_name = mysqli_real_escape_string($conn, $_GET['new_ing_name']);
+	if(empty($new_ing_name)){
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>Please enter a name!</div>';
+		return;
+	}
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '$new_ing_name'"))){
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$new_ing_name.' already exists!</div>';
+	}else{
+		$sql.=mysqli_query($conn, "INSERT INTO allergens (ing,name,cas,percentage) SELECT '$new_ing_name',name,cas,percentage FROM allergens WHERE ing = '$old_ing_name'");
+
+		$sql.=mysqli_query($conn, "INSERT INTO ingredients (name,INCI,type,strength,category,purity,cas,FEMA,reach,tenacity,chemical_name,formula,flash_point,appearance,notes,profile,solvent,odor,allergen,flavor_use,soluble,logp,cat1,cat2,cat3,cat4,cat5A,cat5B,cat5C,cat5D,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12,impact_top,impact_heart,impact_base,created,usage_type,noUsageLimit,isPrivate,molecularWeight,physical_state) SELECT '$new_ing_name',INCI,type,strength,category,purity,cas,FEMA,reach,tenacity,chemical_name,formula,flash_point,appearance,notes,profile,solvent,odor,allergen,flavor_use,soluble,logp,cat1,cat2,cat3,cat4,cat5A,cat5B,cat5C,cat5D,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12,impact_top,impact_heart,impact_base,created,usage_type,noUsageLimit,isPrivate,molecularWeight,physical_state FROM ingredients WHERE id = '$ing_id'");
+		}
+	if($nID = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '$new_ing_name'"))){
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$old_ing_name.' cloned as <a href="/pages/mgmIngredient.php?id='.base64_encode($nID['name']).'" >'.$new_ing_name.'</a>!</div>';
+	}
+	
+	return;
+}
 header('Location: /');
 exit;
 

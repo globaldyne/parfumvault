@@ -32,10 +32,10 @@ function multi_dim_search($array, $key, $value){
     return $results;
 }
 
-function multi_dim_perc($conn, $form) {
+function multi_dim_perc($conn, $form, $cas) {
 	foreach ($form as $formula){
 		
-		$allIngQuery = mysqli_query($conn, "SELECT name,percentage FROM allergens WHERE ing = '".$formula['ingredient']."'");
+		$allIngQuery = mysqli_query($conn, "SELECT name,percentage,cas FROM allergens WHERE ing = '".$formula['ingredient']."'");
 		
 		while($allgIng_res = mysqli_fetch_array($allIngQuery)){
 			$allgIng[] = $allgIng_res;
@@ -45,8 +45,9 @@ function multi_dim_perc($conn, $form) {
 			$arrayLength = count($aa);
 			$i = 0;
 			while ($i < $arrayLength){
-				
-				$c = multi_dim_search($aa, 'name', $formula['ingredient'])[$i];
+				if(empty($c = multi_dim_search($aa, 'cas', $cas)[$i])){
+					$c = multi_dim_search($aa, 'name', $formula['ingredient'])[$i];
+				}
 				$conc[$formula['ingredient']] += number_format($formula['quantity'] / 100 * $c['percentage'], 3);
 				
 				$i++;

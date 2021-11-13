@@ -6,7 +6,7 @@ CREATE TABLE `allergens` (
   `ing` varchar(255) COLLATE utf8_bin NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
   `cas` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `percentage` varchar(255) COLLATE utf8_bin  NULL
+  `percentage` DECIMAL(8,4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 
@@ -52,7 +52,7 @@ CREATE TABLE `formulas` (
   `ingredient_id` varchar(11) COLLATE utf8_bin DEFAULT NULL,
   `concentration` decimal(5,2) DEFAULT 100.00,
   `dilutant` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `quantity` decimal(8,3) DEFAULT NULL,
+  `quantity` decimal(8,4) DEFAULT NULL,
   `exclude_from_summary` INT NOT NULL DEFAULT '0', 
   `notes` varchar(11) COLLATE utf8_bin DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
@@ -91,7 +91,9 @@ CREATE TABLE `formulasMetaData` (
   `created` timestamp NOT NULL DEFAULT current_timestamp(),
   `isProtected` INT NULL DEFAULT '0',
   `defView` INT NULL DEFAULT '1',
-  `catClass` VARCHAR(10) NULL 
+  `catClass` VARCHAR(10) NULL,
+  `revision` INT NOT NULL DEFAULT '0',
+  `finalType` INT NOT NULL DEFAULT '100' 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 DROP TABLE IF EXISTS `IFRALibrary`;
@@ -558,3 +560,37 @@ INSERT INTO `colorKey` (`id`, `name`, `rgb`) VALUES
 
 ALTER TABLE `colorKey`
   ADD PRIMARY KEY (`id`);
+  
+CREATE TABLE `ingSafetyInfo` (
+ `id` int(11) NOT NULL AUTO_INCREMENT,
+ `ingID` int(11) NOT NULL,
+ `GHS` int(11) NOT NULL,
+ PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+ALTER TABLE `ingSafetyInfo` ADD UNIQUE(`id`); 
+
+CREATE TABLE `pictograms` (
+ `id` int(11) NOT NULL AUTO_INCREMENT,
+ `name` varchar(255) COLLATE utf8_bin NOT NULL,
+ `code` int(11) NOT NULL,
+ PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+INSERT INTO `pictograms` (`id`, `name`, `code`) VALUES (NULL, 'Explosive', '1'), (NULL, 'Flammable', '2'), (NULL, 'Oxidising', '3'), (NULL, 'Gas under pressure', '4'), (NULL, 'Corrosive', '5'), (NULL, 'Acute toxicity', '6'), (NULL, 'Health hazard/Hazardous to the ozone layer', '7'), (NULL, 'Serious health hazard', '8'), (NULL, 'Hazardous to the environment', '9'); 
+
+CREATE TABLE `formulasRevisions` (
+ `id` int(11) NOT NULL AUTO_INCREMENT,
+ `fid` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+ `name` varchar(255) COLLATE utf8_bin NOT NULL,
+ `ingredient` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+ `ingredient_id` varchar(11) COLLATE utf8_bin DEFAULT NULL,
+ `concentration` decimal(5,2) DEFAULT 100.00,
+ `dilutant` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+ `quantity` decimal(8,4) DEFAULT NULL,
+ `notes` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+ `exclude_from_summary` int(11) NOT NULL DEFAULT 0,
+ `revision` int(11) NOT NULL,
+ `revisionDate` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+ PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
