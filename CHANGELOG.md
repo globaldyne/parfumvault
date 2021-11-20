@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 3.6
+Prevent background formula changes when protected mode is enabled
 
 ### Version 3.5
 Formula can now be grouped by category
