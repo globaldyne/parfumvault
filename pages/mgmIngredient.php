@@ -307,9 +307,9 @@ $(document).ready(function() {
       <?php if($settings['pubChem'] == '1' && $ing['cas']){?>
       	<li><a href="#pubChem" role="tab" data-toggle="tab"><i class="fa fa-atom"></i> Pub Chem</a></li>
       <?php } ?>  
-       <li><a href="#privacy" role="tab" data-toggle="tab"><i class="fa fa-user-secret"></i> Privacy</a></li>
-      <?php } ?>
+       <li><a href="#privacy" role="tab" data-toggle="tab"><i class="fa fa-user-secret"></i> Privacy</a></li>   
        <li><a href="#whereUsed" role="tab" data-toggle="tab"><i class="fa fa-random"></i> Where used?</a></li>
+   	  <?php } ?>
     </ul>
            	  <div class="tab-content">
 			<div class="tab-pane fade active in" id="general">

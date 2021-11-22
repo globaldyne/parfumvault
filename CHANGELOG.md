@@ -1,6 +1,7 @@
 # CHANGELOG
 ### Version 3.6
 Prevent background formula changes when protected mode is enabled
+Fixed Where Used being displayed when adding new ingredient
 
 ### Version 3.5
 Formula can now be grouped by category
