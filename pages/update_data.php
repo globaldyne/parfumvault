@@ -368,6 +368,7 @@ if($_GET['ingredient'] == 'delete' && $_GET['ing_id']){
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT ingredient FROM formulas WHERE ingredient = '".$ing['name']."'"))){
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$ing['name'].'</strong> is in use by at least one formula and cannot be removed!</div>';
 	}elseif(mysqli_query($conn, "DELETE FROM ingredients WHERE id = '$id'")){
+		mysqli_query($conn,"DELETE FROM allergens WHERE ing = '".$ing['name']."'");
 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Ingredient <strong>'.$ing['name'].'</strong> removed from the database!</div>';
 	}
 

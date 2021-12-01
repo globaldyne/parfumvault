@@ -194,6 +194,33 @@ if($_GET['action'] == 'repIng' && $_GET['fname']){
 	return;
 }
 
+//Convert to ingredient
+if($_POST['action'] == 'conv2ing' && $_POST['ingName'] && $_POST['formula']){
+	$name = mysqli_real_escape_string($conn, $_POST['ingName']);
+	$fid = mysqli_real_escape_string($conn, $_POST['formula']);
+	$fmame = base64_decode($fid);
+	
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '$name'"))){
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$name.' already exists</div>';
+		return;
+	}
+
+	$formula_q = mysqli_query($conn, "SELECT ingredient,quantity,concentration FROM formulas WHERE fid = '$fid'");
+	while ($formula = mysqli_fetch_array($formula_q)){
+		$ing_data = mysqli_fetch_array(mysqli_query($conn,"SELECT cas FROM ingredients WHERE name = '".$formula['ingredient']."'"));
+		$conc = number_format($formula['quantity']/100 * 100, 3);
+		$conc_p = number_format($formula['concentration'] / 100 * $conc, 3);
+						
+		mysqli_query($conn, "INSERT INTO allergens (ing, name, cas, percentage) VALUES ('$name','".$formula['ingredient']."','".$ing_data['cas']."','".$conc_p."')");
+	}
+			
+	if(mysqli_query($conn, "INSERT INTO ingredients (name, type, cas, notes) VALUES ('$name','Base','Mixture','Converted from formula $fname')")){
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.base64_decode($fid).' converted to ingredient <a href="/pages/mgmIngredient.php?id='.base64_encode($name).'" class="popup-link" target="_blank">'.$name.'</a>!</div>';
+	}
+	return;
+
+}
+
 //CLONE FORMULA
 if($_GET['action'] == 'clone' && $_GET['formula']){
 	$fid = mysqli_real_escape_string($conn, $_GET['formula']);
