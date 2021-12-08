@@ -529,9 +529,11 @@ $('.replaceIngredient').editable({
 
 
 <script type="text/javascript" language="javascript" >
+/*
 $(".alert-dismissible").fadeTo(2000, 500).slideUp(500, function(){
     $(".alert-dismissible").alert('close');
 });
+*/
 <?php if($meta['isProtected'] == FALSE){?>
 $('#formula_data').editable({
   container: 'body',
