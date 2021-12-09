@@ -11,11 +11,11 @@ $qAlg = mysqli_query($conn, "SELECT * FROM allergens WHERE ing = '$ingID'");
 
 ?>
 
-				   <h3>Allergens</h3>
+				   <h3>Composition</h3>
                                  <hr>
                     <div class="card-body">
               <div>
-                <table class="table table-bordered" id="tdAllergens" width="100%" cellspacing="0">
+                <table class="table table-bordered" id="tdCompositions" width="100%" cellspacing="0">
                   <thead>
                     <tr class="noBorder">
                       <th colspan="4">
@@ -23,7 +23,7 @@ $qAlg = mysqli_query($conn, "SELECT * FROM allergens WHERE ing = '$ingID'");
                         <div class="btn-group">
                           <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
                           <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addAllergen">Add new</a>
+                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addComposition">Add new</a>
                           </div>
                         </div>                    
                         </div>
@@ -36,13 +36,13 @@ $qAlg = mysqli_query($conn, "SELECT * FROM allergens WHERE ing = '$ingID'");
                       <th>Actions</th>
                     </tr>
                   </thead>
-                  <tbody id="ing_allergen">
+                  <tbody id="ing_composition">
                     <?php while ($allergen = mysqli_fetch_array($qAlg)) { ?>
                     <tr>
                       <td data-name="name" class="name" data-type="text" align="center" data-pk="<?=$allergen['id']?>"><?=$allergen['name']?></td>
                       <td data-name="cas" class="cas" data-type="text" align="center" data-pk="<?=$allergen['id']?>"><?=$allergen['cas']?></td>
 					  <td data-name="percentage" class="percentage" data-type="text" align="center" data-pk="<?=$allergen['id']?>"><?=$allergen['percentage']?></td>
-                      <td align="center"><a href="javascript:deleteAllergen('<?=$allergen['id']?>')" onclick="return confirm('Remove <?=$allergen['name']?>?');" class="fas fa-trash"></a></td>
+                      <td align="center"><a href="javascript:deleteComposition('<?=$allergen['id']?>')" onclick="return confirm('Remove <?=$allergen['name']?>?');" class="fas fa-trash"></a></td>
 					</tr>
 				  	<?php } ?>
                   </tbody>
@@ -53,33 +53,33 @@ $qAlg = mysqli_query($conn, "SELECT * FROM allergens WHERE ing = '$ingID'");
             
 <script type="text/javascript" language="javascript" >
 $(document).ready(function(){
- $('#tdAllergens').DataTable({
+ $('#tdCompositions').DataTable({
     "paging":   true,
 	"info":   true,
 	"lengthMenu": [[15, 35, 60, -1], [15, 35, 60, "All"]]
  });
 
- $('#ing_allergen').editable({
+ $('#ing_composition').editable({
 	  container: 'body',
 	  selector: 'td.name',
 	  type: 'POST',
-	  url: "update_data.php?allergen=update&ing=<?=$ingID;?>",
+	  url: "update_data.php?composition=update&ing=<?=$ingID;?>",
 	  title: 'Name',
  });
   
- $('#ing_allergen').editable({
+ $('#ing_composition').editable({
 	  container: 'body',
 	  selector: 'td.percentage',
 	  type: 'POST',
-	  url: "update_data.php?allergen=update&ing=<?=$ingID;?>",
+	  url: "update_data.php?composition=update&ing=<?=$ingID;?>",
 	  title: 'Percentage',
  });
   
- $('#ing_allergen').editable({
+ $('#ing_composition').editable({
 	  container: 'body',
 	  selector: 'td.cas',
 	  type: 'POST',
-	  url: "update_data.php?allergen=update&ing=<?=$ingID;?>",
+	  url: "update_data.php?composition=update&ing=<?=$ingID;?>",
 	  title: 'CAS',
  });
 	

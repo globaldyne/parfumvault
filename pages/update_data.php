@@ -300,8 +300,8 @@ if($_GET['lid']){
 	return;
 }
 
-//ADD ALLERGEN
-if($_GET['allergen'] == 'add'){
+//ADD composition
+if($_GET['composition'] == 'add'){
 	$allgName = mysqli_real_escape_string($conn, $_GET['allgName']);
 	$allgCAS = mysqli_real_escape_string($conn, $_GET['allgCAS']);	
 	$allgPerc = rtrim(mysqli_real_escape_string($conn, $_GET['allgPerc']),'%');
@@ -335,8 +335,8 @@ if($_GET['allergen'] == 'add'){
 	return;
 }
 
-//UPDATE ALLERGEN
-if($_GET['allergen'] == 'update'){
+//UPDATE composition
+if($_GET['composition'] == 'update'){
 	$value = rtrim(mysqli_real_escape_string($conn, $_POST['value']),'%');
 	$id = mysqli_real_escape_string($conn, $_POST['pk']);
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
@@ -346,8 +346,8 @@ if($_GET['allergen'] == 'update'){
 	return;
 }
 
-//DELETE ALLERGEN	
-if($_GET['allergen'] == 'delete'){
+//DELETE composition	
+if($_GET['composition'] == 'delete'){
 
 	$id = mysqli_real_escape_string($conn, $_GET['allgID']);
 	$ing = mysqli_real_escape_string($conn, $_GET['ing']);
