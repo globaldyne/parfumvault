@@ -101,7 +101,7 @@ if(empty($info['name'])){
   </tr>
   <tr>
     <td>Profile:</td>
-    <td><a href="#" id="profile" data-type="select" data-pk="<?php echo $info['id'];?>" data-title="<?php echo $info['profile'];?>"></a></td>
+    <td><a href="#" id="profile" data-type="select" data-pk="<?php echo $info['id'];?>" data-title="Select profile"></a></td>
   </tr>
   <tr>
     <td>Purpose:</td>
@@ -127,7 +127,7 @@ if(empty($info['name'])){
   </tr>
   <tr>
     <td>Sex:</td>
-    <td><a href="#" id="sex" data-type="select" data-pk="<?php echo $info['id'];?>" data-title="<?php echo $info['sex'];?>"></a></td>
+    <td><a href="#" id="sex" data-type="select" data-pk="<?php echo $info['id'];?>" data-title="Select sex"></a></td>
   </tr>
   <tr>
     <td>Picture:</td>
