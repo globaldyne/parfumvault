@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 3.7
+Delete history log when formula is deleted
 
 ### Version 3.6
 Prevent background formula changes when protected mode is enabled
