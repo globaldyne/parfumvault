@@ -6,6 +6,8 @@ This is a FREE software provided as is without ANY warranty under MIT license.
 
 # Features 
 * Formulae management
+* Formulae comparison
+* Formulae revisions
 * Ingredient management
 * Suppliers list
 * Customers support
