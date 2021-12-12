@@ -209,14 +209,14 @@ function reload_data() {
 	  });
 	
 	$.ajax({ 
-		url: 'allergens.php', 
+		url: 'compos.php', 
 		type: 'get',
 		data: {
 			id: "<?=base64_encode($ingID)?>"
 			},
 		dataType: 'html',
 		success: function (data) {
-		  $('#fetch_allergen').html(data);
+		  $('#fetch_composition').html(data);
 		},
 	  });
 
@@ -302,14 +302,14 @@ $(document).ready(function() {
       <li><a href="#tech_data" role="tab" data-toggle="tab"><i class="fa fa-cog"></i> Technical Data</a></li>
       <li><a href="#documents" role="tab" data-toggle="tab"><i class="fa fa-file-alt"></i> Documents</a></li>
       <li><a href="#note_impact" role="tab" data-toggle="tab"><i class="fa fa-magic"></i> Note Impact</a></li>
-      <li><a href="#tech_allergens" role="tab" data-toggle="tab"><i class="fa fa-allergies"></i> Allergens</a></li>
+      <li><a href="#tech_composition" role="tab" data-toggle="tab"><i class="fa fa-th-list"></i> Composition</a></li>
       <li><a href="#safety_info" role="tab" data-toggle="tab"><i class="fa fa-biohazard"></i> Safety</a></li>
       <?php if($settings['pubChem'] == '1' && $ing['cas']){?>
       	<li><a href="#pubChem" role="tab" data-toggle="tab"><i class="fa fa-atom"></i> Pub Chem</a></li>
       <?php } ?>  
-       <li><a href="#privacy" role="tab" data-toggle="tab"><i class="fa fa-user-secret"></i> Privacy</a></li>
-      <?php } ?>
+       <li><a href="#privacy" role="tab" data-toggle="tab"><i class="fa fa-user-secret"></i> Privacy</a></li>   
        <li><a href="#whereUsed" role="tab" data-toggle="tab"><i class="fa fa-random"></i> Where used?</a></li>
+   	  <?php } ?>
     </ul>
            	  <div class="tab-content">
 			<div class="tab-pane fade active in" id="general">
@@ -600,8 +600,8 @@ $(document).ready(function() {
                    <div id="fetch_whereUsed"><div class="loader"></div></div>
 			  </div>
               
-              <div class="tab-pane fade" id="tech_allergens">
-                   <div id="fetch_allergen"><div class="loader"></div></div>
+              <div class="tab-pane fade" id="tech_composition">
+                   <div id="fetch_composition"><div class="loader"></div></div>
               </div>
              
               <?php if($settings['pubChem'] == '1' && $ing['cas']){?>
@@ -668,19 +668,19 @@ $(document).ready(function() {
 </div>
 </div>
 
-<!-- ADD ALLERGEN-->
-<div class="modal fade" id="addAllergen" tabindex="-1" role="dialog" aria-labelledby="addAllergen" aria-hidden="true">
+<!-- ADD COMPOSITION-->
+<div class="modal fade" id="addComposition" tabindex="-1" role="dialog" aria-labelledby="addComposition" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="addAllergen">Add allergen for <?php echo $ing['name']; ?></h5>
+        <h5 class="modal-title" id="addComposition">Add composition for <?php echo $ing['name']; ?></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
       <div id="inf"></div>
-          <form action="javascript:addAllergen()" method="get" name="form1" target="_self" >
+          <form action="javascript:addComposition()" method="get" name="form1" target="_self" >
             Name: 
             <input class="form-control" name="allgName" type="text" id="allgName" />
             <p>
@@ -862,12 +862,12 @@ function getPrice(supplier, size, ingSupplierID) {
 	  });
 };
 
-function deleteAllergen(allgID) {	  
+function deleteComposition(allgID) {	  
 	$.ajax({ 
 		url: 'update_data.php', 
 		type: 'GET',
 		data: {
-			allergen: 'delete',
+			composition: 'delete',
 			allgID: allgID,
 			ing: '<?=$ing['name'];?>'
 			},
@@ -879,12 +879,12 @@ function deleteAllergen(allgID) {
 	  });
 };
 
-function addAllergen() {	  
+function addComposition() {	  
 	$.ajax({ 
 		url: 'update_data.php', 
 		type: 'GET',
 		data: {
-			allergen: 'add',
+			composition: 'add',
 			allgName: $("#allgName").val(),
 			allgPerc: $("#allgPerc").val(),
 			allgCAS: $("#allgCAS").val(),	

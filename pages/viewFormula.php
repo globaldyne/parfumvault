@@ -191,6 +191,30 @@ $.ajax({
   });
 };
 
+//Convert to ingredient
+function conv2ing() {	  
+if($("#ingName").val().trim() == '' ){
+        $('#ingName').focus();
+	  	$('#cnvMsg').html('<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> Ingredient name required!</div>');	
+	}else{
+		$.ajax({ 
+		url: 'pages/manageFormula.php', 
+		type: 'POST',
+		cache: false,
+		data: {
+			formula: "<?=base64_encode($f_name)?>",
+			ingName: $("#ingName").val(),
+			action: 'conv2ing',
+			},
+		dataType: 'html',
+		success: function (data) {
+			$('#cnvMsg').html(data);
+			//$('#conv_ingredient').modal('toggle');
+		}
+	  });
+	}
+};
+
 //Clone
 function cloneMe() {	  
 $.ajax({ 
@@ -285,10 +309,13 @@ $('.replaceIngredient').editable({
 	                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#amount_to_make">Amount to make</a>
                			<div class="dropdown-divider"></div>
 	                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#create_accord">Create Accord</a>
+	                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#conv_ingredient">Convert to ingredient</a>
 
              			<div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="javascript:addTODO()">Add to the make list</a>
                         <!-- <a class="dropdown-item" href="javascript:addAllToCart()">Add all to cart</a> -->
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="pages/viewHistory.php?id=<?=$meta['id']?>" target="_blank">View history</a>
                       </div>
                     </div>
                     </tr>
@@ -472,10 +499,43 @@ $('.replaceIngredient').editable({
  </div>
 </div>
 
+<!--Convert to ingredient-->
+<div class="modal fade" id="conv_ingredient" tabindex="-1" role="dialog" aria-labelledby="conv_ingredient" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="conv_ingredient">Convert formula to ingredient</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <div id="cnvMsg"></div>
+  	  <form action="javascript:conv2ing()" method="get" name="form1" target="_self" id="form_conv_ingredient"><p></p>
+        <table width="313" border="0">
+	     <tr>
+	       <td><strong>Name:</strong></td>
+	       <td><input name="ingName" type="text" class="form-control" id="ingName" value="<?=$f_name?>" /></td>
+          </tr>
+        </table>
+	    <p>&nbsp;</p>
+	    <div class="modal-footer">
+	     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+  		 <input type="submit" name="button" class="btn btn-primary" id="btnUpdate" value="Convert">
+	   </div>
+     </form>
+    </div>
+  </div>
+ </div>
+</div>
+
+
 <script type="text/javascript" language="javascript" >
+/*
 $(".alert-dismissible").fadeTo(2000, 500).slideUp(500, function(){
     $(".alert-dismissible").alert('close');
 });
+*/
 <?php if($meta['isProtected'] == FALSE){?>
 $('#formula_data').editable({
   container: 'body',

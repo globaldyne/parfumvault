@@ -128,7 +128,14 @@ if($_POST['value'] && $_GET['formula'] && $_POST['pk']){
 	$ingredient = mysqli_real_escape_string($conn, $_POST['pk']);
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 	
-	mysqli_query($conn, "UPDATE formulas SET $name = '$value' WHERE name = '$formula' AND ingredient = '$ingredient'");
+	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,isProtected FROM formulasMetaData WHERE fid = '".$_GET['formula']."'"));
+	if($meta['isProtected'] == FALSE){
+					
+		mysqli_query($conn, "UPDATE formulas SET $name = '$value' WHERE name = '$formula' AND ingredient = '$ingredient'");
+		$lg = "CHANGE: $ingredient Set $name to $value";
+		mysqli_query($conn, "INSERT INTO formula_history (fid,change_made,user) VALUES ('".$meta['id']."','$lg','".$user['fullName']."')");
+echo mysqli_error($conn);
+	}
 	return;
 }
 
@@ -296,8 +303,8 @@ if($_GET['lid']){
 	return;
 }
 
-//ADD ALLERGEN
-if($_GET['allergen'] == 'add'){
+//ADD composition
+if($_GET['composition'] == 'add'){
 	$allgName = mysqli_real_escape_string($conn, $_GET['allgName']);
 	$allgCAS = mysqli_real_escape_string($conn, $_GET['allgCAS']);	
 	$allgPerc = rtrim(mysqli_real_escape_string($conn, $_GET['allgPerc']),'%');
@@ -331,8 +338,8 @@ if($_GET['allergen'] == 'add'){
 	return;
 }
 
-//UPDATE ALLERGEN
-if($_GET['allergen'] == 'update'){
+//UPDATE composition
+if($_GET['composition'] == 'update'){
 	$value = rtrim(mysqli_real_escape_string($conn, $_POST['value']),'%');
 	$id = mysqli_real_escape_string($conn, $_POST['pk']);
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
@@ -342,8 +349,8 @@ if($_GET['allergen'] == 'update'){
 	return;
 }
 
-//DELETE ALLERGEN	
-if($_GET['allergen'] == 'delete'){
+//DELETE composition	
+if($_GET['composition'] == 'delete'){
 
 	$id = mysqli_real_escape_string($conn, $_GET['allgID']);
 	$ing = mysqli_real_escape_string($conn, $_GET['ing']);
@@ -364,6 +371,7 @@ if($_GET['ingredient'] == 'delete' && $_GET['ing_id']){
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT ingredient FROM formulas WHERE ingredient = '".$ing['name']."'"))){
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$ing['name'].'</strong> is in use by at least one formula and cannot be removed!</div>';
 	}elseif(mysqli_query($conn, "DELETE FROM ingredients WHERE id = '$id'")){
+		mysqli_query($conn,"DELETE FROM allergens WHERE ing = '".$ing['name']."'");
 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Ingredient <strong>'.$ing['name'].'</strong> removed from the database!</div>';
 	}
 

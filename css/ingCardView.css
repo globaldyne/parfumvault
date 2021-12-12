@@ -5,6 +5,7 @@
 	max-height: 190px;
 	white-space: normal;
 	text-overflow: ellipsis;
+	scrollbar-width: thin;
 }
 .ing-limit {
 	display: inline-flex;
