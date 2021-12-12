@@ -314,6 +314,8 @@ $('.replaceIngredient').editable({
              			<div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="javascript:addTODO()">Add to the make list</a>
                         <!-- <a class="dropdown-item" href="javascript:addAllToCart()">Add all to cart</a> -->
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="pages/viewHistory.php?id=<?=$meta['id']?>" target="_blank">View history</a>
                       </div>
                     </div>
                     </tr>

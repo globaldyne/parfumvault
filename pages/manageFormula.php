@@ -130,11 +130,13 @@ if($_GET['action'] == 'deleteIng' && $_GET['ingID'] && $_GET['ing']){
 	$ing = mysqli_real_escape_string($conn, $_GET['ing']);
 	$fname = mysqli_real_escape_string($conn, $_GET['fname']);
 	
-	$isProtected = mysqli_fetch_array(mysqli_query($conn, "SELECT isProtected FROM formulasMetaData WHERE fid = '".base64_encode($_GET['fname'])."'"));
-	if($isProtected['isProtected'] == FALSE){
+	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,isProtected FROM formulasMetaData WHERE fid = '".base64_encode($_GET['fname'])."'"));
+	if($meta['isProtected'] == FALSE){
 		
 		if(mysqli_query($conn, "DELETE FROM formulas WHERE id = '$id' AND name = '$fname'")){
 			echo  '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$ing.' removed from the formula!</div>';
+			$lg = "REMOVED: $ing removed";
+			mysqli_query($conn, "INSERT INTO formula_history (fid,change_made,user) VALUES ('".$meta['id']."','$lg','".$user['fullName']."')");
 		}else{
 			echo  '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$ing.' cannot be removed from the formula!</div>';
 		}
@@ -150,8 +152,8 @@ if($_GET['action'] == 'addIng' && $_GET['fname']){
 	$concentration = preg_replace("/[^0-9.]/", "", mysqli_real_escape_string($conn, $_GET['concentration']));
 	$dilutant = mysqli_real_escape_string($conn, $_GET['dilutant']);
 	$ingredient_id = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$ingredient'"));
-	$isProtected = mysqli_fetch_array(mysqli_query($conn, "SELECT isProtected FROM formulasMetaData WHERE fid = '".base64_encode($_GET['fname'])."'"));
-	if($isProtected['isProtected'] == FALSE){
+	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,isProtected FROM formulasMetaData WHERE fid = '".base64_encode($_GET['fname'])."'"));
+	if($meta['isProtected'] == FALSE){
 		
 		if (empty($quantity) || empty($concentration)){
 			echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>Missing fields</div>';
@@ -163,6 +165,8 @@ if($_GET['action'] == 'addIng' && $_GET['fname']){
 	
 			if(mysqli_query($conn,"INSERT INTO formulas(fid,name,ingredient,ingredient_id,concentration,quantity,dilutant) VALUES('".base64_encode($fname)."','$fname','$ingredient','".$ingredient_id['id']."','$concentration','$quantity','$dilutant')")){
 				echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$quantity.'ml</strong> of <strong>'.$ingredient.'</strong> added to the formula!</div>';
+			$lg = "ADDED: $ingredient $quantity @$concentration% $dilutant";
+			mysqli_query($conn, "INSERT INTO formula_history (fid,change_made,user) VALUES ('".$meta['id']."','$lg','".$user['fullName']."')");
 			}else{
 				echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error adding '.$ingredient.'!</div>';
 			}
