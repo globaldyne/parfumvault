@@ -95,7 +95,7 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
 										 	while ($r_ing = mysqli_fetch_array($res_ing)){
 												if($r_ing['INCI']){
 										?>
-											<option value="<?=$r_ing['name']?>"><?=$r_ing['name']?> (<?=$r_ing['INCI']?>) (<?=$r_ing['CAS']?>)</option>
+											<option data-subtext="<?=$r_ing['INCI']?>" value="<?=$r_ing['name']?>"><?=$r_ing['name']?> (<?=$r_ing['CAS']?>)</option>
 										<?php 	}else{ ?>
 											<option value="<?=$r_ing['name']?>"><?=$r_ing['name']?> (<?=$r_ing['CAS']?>)</option>
 										<?php
