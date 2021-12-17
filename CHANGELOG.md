@@ -1,6 +1,9 @@
 # CHANGELOG
 ### Version 3.7
 Delete history log when formula is deleted
+Added final type when adding a new formula
+Added purpoce category when adding a new formula
+Fix a bug preventing showing the corrct final type in formula details
 
 ### Version 3.6
 Prevent background formula changes when protected mode is enabled
