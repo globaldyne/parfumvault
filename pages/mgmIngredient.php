@@ -686,6 +686,9 @@ $(document).ready(function() {
             <p>
             CAS: 
             <input class="form-control" name="allgCAS" type="text" id="allgCAS" />
+            <p>
+            EINECS: 
+            <input class="form-control" name="allgEC" type="text" id="allgEC" />
             <p>            
             Percentage %:
             <input class="form-control" name="allgPerc" type="text" id="allgPerc" />
@@ -887,7 +890,8 @@ function addComposition() {
 			composition: 'add',
 			allgName: $("#allgName").val(),
 			allgPerc: $("#allgPerc").val(),
-			allgCAS: $("#allgCAS").val(),	
+			allgCAS: $("#allgCAS").val(),
+			allgEC: $("#allgEC").val(),	
 			addToIng: $("#addToIng").is(':checked'),				
 			ing: '<?=$ing['name'];?>'
 			},
@@ -896,6 +900,7 @@ function addComposition() {
 			$('#inf').html(data);
 			$("#allgName").val('');
 			$("#allgCAS").val('');
+			$("#allgEC").val('');
 			$("#allgPerc").val('');
 			reload_data();
 		}

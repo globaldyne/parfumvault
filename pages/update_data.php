@@ -306,7 +306,8 @@ if($_GET['lid']){
 //ADD composition
 if($_GET['composition'] == 'add'){
 	$allgName = mysqli_real_escape_string($conn, $_GET['allgName']);
-	$allgCAS = mysqli_real_escape_string($conn, $_GET['allgCAS']);	
+	$allgCAS = mysqli_real_escape_string($conn, $_GET['allgCAS']);
+	$allgEC = mysqli_real_escape_string($conn, $_GET['allgEC']);	
 	$allgPerc = rtrim(mysqli_real_escape_string($conn, $_GET['allgPerc']),'%');
 	$ing = mysqli_real_escape_string($conn, $_GET['ing']);
 
@@ -325,7 +326,7 @@ if($_GET['composition'] == 'add'){
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM allergens WHERE name = '$allgName' AND ing = '$ing'"))){
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$allgName.' already exists!</div>';
 	}else{
-		mysqli_query($conn, "INSERT INTO allergens (name,cas,percentage,ing) VALUES ('$allgName','$allgCAS','$allgPerc','$ing')");
+		mysqli_query($conn, "INSERT INTO allergens (name,cas,ec,percentage,ing) VALUES ('$allgName','$allgCAS','$allgEC','$allgPerc','$ing')");
 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$allgName.'</strong> added to the list!</div>';
 	}
 	
