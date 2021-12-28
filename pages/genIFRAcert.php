@@ -35,7 +35,7 @@ $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg F
 
 $new_conc = $bottle/100*$type;
 
-if(validateFormula($fid, $bottle, $new_conc, $mg['total_mg'], $defCatClass, $conn) == TRUE){
+if(validateFormula($fid, $bottle, $new_conc, $mg['total_mg'], $defCatClass, $settings['qStep'], $conn) == TRUE){
 	die('Error: Your formula contains materials, exceeding and/or missing IFRA standards. Please alter your formula and try again.');
 }
 
@@ -138,10 +138,10 @@ at a maximum concentration level of:</span></font></p>
 				while($ifra = mysqli_fetch_array($q2)){
 					$new_quantity = $formula['quantity']/$mg['total_mg']*$new_conc;
 					$conc = $new_quantity/$bottle * 100;						
-					$conc_p = number_format($formula['concentration'] / 100 * $conc, 3);
+					$conc_p = number_format($formula['concentration'] / 100 * $conc, $settings['qStep']);
 					
 					if($settings['multi_dim_perc'] == '1'){
-						$conc_p   += multi_dim_perc($conn, $form, $cas['cas'])[$cas['cas']];
+						$conc_p   += multi_dim_perc($conn, $form, $cas['cas'], $settings['qStep'])[$cas['cas']];
 					}
 				?>
 					<tr>

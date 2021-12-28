@@ -168,11 +168,11 @@ $.ajax({
 
 						$limit = explode(' - ',searchIFRA($ing_q['cas'],$formula['ingredient'],null,$conn,$defCatClass));
 					  
-					  	$conc = number_format($formula['quantity']/$mg['total_mg'] * 100, 3);
-					  	$conc_p = number_format($formula['concentration'] / 100 * $conc, 3);
+					  	$conc = number_format($formula['quantity']/$mg['total_mg'] * 100, $settings['qStep']);
+					  	$conc_p = number_format($formula['concentration'] / 100 * $conc, $settings['qStep']);
 						
 						if($settings['multi_dim_perc'] == '1'){
-							$conc_p   += multi_dim_perc($conn, $form, $ing_q['cas'])[$ing_q['cas']];
+							$conc_p   += multi_dim_perc($conn, $form, $ing_q['cas'], $settings['qStep'])[$ing_q['cas']];
 						}
 						
 					 	if($settings['chem_vs_brand'] == '1'){

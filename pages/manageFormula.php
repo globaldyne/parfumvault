@@ -212,8 +212,8 @@ if($_POST['action'] == 'conv2ing' && $_POST['ingName'] && $_POST['formula']){
 	$formula_q = mysqli_query($conn, "SELECT ingredient,quantity,concentration FROM formulas WHERE fid = '$fid'");
 	while ($formula = mysqli_fetch_array($formula_q)){
 		$ing_data = mysqli_fetch_array(mysqli_query($conn,"SELECT cas FROM ingredients WHERE name = '".$formula['ingredient']."'"));
-		$conc = number_format($formula['quantity']/100 * 100, 3);
-		$conc_p = number_format($formula['concentration'] / 100 * $conc, 3);
+		$conc = number_format($formula['quantity']/100 * 100, $settings['qStep']);
+		$conc_p = number_format($formula['concentration'] / 100 * $conc, $settings['qStep']);
 						
 		mysqli_query($conn, "INSERT INTO allergens (ing, name, cas, percentage) VALUES ('$name','".$formula['ingredient']."','".$ing_data['cas']."','".$conc_p."')");
 	}

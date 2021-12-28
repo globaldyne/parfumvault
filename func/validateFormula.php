@@ -1,7 +1,7 @@
 <?php 
 if (!defined('pvault_panel')){ die('Not Found');}
 
-function validateFormula($fid, $bottle, $new_conc, $mg, $defCatClass, $conn ){
+function validateFormula($fid, $bottle, $new_conc, $mg, $defCatClass, $qStep, $conn ){
 	$formula_q = mysqli_query($conn, "SELECT ingredient,quantity,concentration FROM formulas WHERE fid = '$fid'");
 	while ($formula = mysqli_fetch_array($formula_q)) {
 		$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT cas, $defCatClass FROM ingredients WHERE name = '".$formula['ingredient']."'"));
@@ -12,7 +12,7 @@ function validateFormula($fid, $bottle, $new_conc, $mg, $defCatClass, $conn ){
 					  
 		$new_quantity = $formula['quantity']/$mg*$new_conc;
 		$conc = $new_quantity/$bottle * 100;						
-		$conc_p = number_format($formula['concentration'] / 100 * $conc, 3);
+		$conc_p = number_format($formula['concentration'] / 100 * $conc, $qStep);
 					 	
 
 		if($limit != null){

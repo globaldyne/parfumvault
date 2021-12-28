@@ -35,7 +35,7 @@ if($_POST['formula']){
 	$new_conc = $bottle/100*$type;
 	$carrier = $bottle - $new_conc;
 	
-	if(validateFormula($meta['fid'], $bottle, $new_conc, $mg['total_mg'], $defCatClass, $conn) == TRUE){
+	if(validateFormula($meta['fid'], $bottle, $new_conc, $mg['total_mg'], $defCatClass, $settings['qStep'], $conn) == TRUE){
 		$msg =  '<div class="alert alert-danger alert-dismissible">Your formula contains materials, exceeding and/or missing IFRA standards. Please alter your formula.</div>';
 	}
 	
@@ -51,7 +51,7 @@ if($_POST['formula']){
 		$batchFile = $uploads_path.'batches/'.$batchID;
 		
 		mysqli_query($conn, "INSERT INTO batchIDHistory (id,fid,pdf) VALUES ('$batchID','$f_name','$batchFile')");
-		genBatchPDF($f_name,$batchID,$bottle,$new_conc,$mg['total_mg'],$ver,$uploads_path,$settings['defCatClass'],$conn);
+		genBatchPDF($f_name,$batchID,$bottle,$new_conc,$mg['total_mg'],$ver,$uploads_path,$settings['defCatClass'],$settings['qStep'],$conn);
 	}else{
 		$batchID = 'N/A';
 	}
@@ -169,10 +169,10 @@ $.ajax({
 					  
 					    $new_quantity = $formula['quantity']/$mg['total_mg']*$new_conc;
 					  	$conc = $new_quantity/$bottle * 100;						
-					  	$conc_p = number_format($formula['concentration'] / 100 * $conc, 3);
+					  	$conc_p = number_format($formula['concentration'] / 100 * $conc, $settings['qStep']);
 					 	
 						if($settings['multi_dim_perc'] == '1'){
-							$conc_p   += multi_dim_perc($conn, $form, $ing_q['cas'])[$ing_q['cas']];
+							$conc_p   += multi_dim_perc($conn, $form, $ing_q['cas'], $settings['qStep'])[$ing_q['cas']];
 						}
 					?>
 					  <tr>
@@ -202,7 +202,7 @@ $.ajax({
 						  $IFRA_WARN = 'class="alert-warning"'; //NO RECORD FOUND
 					  }
 					  ?>
-					  <td align="center"><?=number_format($new_quantity, 3)?></td>
+					  <td align="center"><?=number_format($new_quantity, $settings['qStep'])?></td>
 					  <td align="center" <?=$IFRA_WARN?>><?=$conc_p?>%</td>
                       <?php if($sid){ ?>
 					  	<td align="center"><?=calcCosts(getSingleSupplier($sid,$ing_q['id'],$conn)['price'],$new_quantity, $formula['concentration'], getPrefSupplier($ing_q['id'],$conn)['size']);?></td>
@@ -227,7 +227,7 @@ $.ajax({
                       <td></td>
                       <td></td>
                       <td align="center" class="m-1 text-primary">Sub Total: </td>
-                      <td align="center" class="m-1 text-primary"><?php echo number_format(array_sum($new_tot), 3); ?> <?=$settings['mUnit']?></td>
+                      <td align="center" class="m-1 text-primary"><?php echo number_format(array_sum($new_tot), $settings['qStep']); ?> <?=$settings['mUnit']?></td>
                       <td align="center" class="m-1 text-primary"><?php echo array_sum($conc_tot);?>%</td>
                       <td colspan="2" align="center" class="m-1 text-primary"><?php echo utf8_encode($settings['currency']).number_format(array_sum($tot),2);?></td>
                     </tr>
@@ -272,7 +272,7 @@ $.ajax({
                       <td></td>
                       <td></td>
                       <td align="center" class="m-0 font-weight-bold text-primary">Total: </td>
-                      <td width="15%" align="center" class="m-0 font-weight-bold text-primary"><?php echo number_format(array_sum($new_tot)+ $carrier, 3); ?> <?=$settings['mUnit']?></td>
+                      <td width="15%" align="center" class="m-0 font-weight-bold text-primary"><?php echo number_format(array_sum($new_tot)+ $carrier, $settings['qStep']); ?> <?=$settings['mUnit']?></td>
                       <td width="15%" align="center" class="m-0 font-weight-bold text-primary"><?php echo $carrier*100/$bottle + array_sum($conc_tot); ?>%</td>
                       <td colspan="2" align="center" class="m-0 font-weight-bold text-primary"><?php echo $settings['currency'].number_format(array_sum($tot)+$lid_cost['price']+$carrier_sub_cost+$bottle_cost['price'],2);?></td>
                     </tr>
