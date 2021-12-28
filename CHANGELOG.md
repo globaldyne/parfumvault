@@ -5,6 +5,7 @@ Added final type when adding a new formula
 Added purpoce category when adding a new formula
 Fix a bug preventing showing the corrct final type in formula details
 Added EINECS (EC) for ingredient compositions
+Remove ingredient name from multi dimension lookup, validate only by CAS number
 
 ### Version 3.6
 Prevent background formula changes when protected mode is enabled

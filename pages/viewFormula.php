@@ -349,7 +349,8 @@ $('.replaceIngredient').editable({
 					  	$conc_final = number_format($formula['concentration'] / 100 * $formula['quantity']/$mg['total_mg'] * $meta['finalType'], $settings['qStep']);
 						
 						if($settings['multi_dim_perc'] == '1'){
-							$conc_p   += multi_dim_perc($conn, $form, $ing_q['cas'])[$formula['ingredient']];
+							$conc_p   += multi_dim_perc($conn, $form, $ing_q['cas'])[$ing_q['cas']];
+							$conc_final += multi_dim_perc($conn, $form, $ing_q['cas'])[$ing_q['cas']];
 						}
 						
 					 	if($settings['chem_vs_brand'] == '1'){

@@ -141,7 +141,7 @@ at a maximum concentration level of:</span></font></p>
 					$conc_p = number_format($formula['concentration'] / 100 * $conc, 3);
 					
 					if($settings['multi_dim_perc'] == '1'){
-						$conc_p   += multi_dim_perc($conn, $form, $cas['cas'])[$formula['ingredient']];
+						$conc_p   += multi_dim_perc($conn, $form, $cas['cas'])[$cas['cas']];
 					}
 				?>
 					<tr>
