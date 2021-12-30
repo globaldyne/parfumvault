@@ -32,7 +32,7 @@ function multi_dim_search($array, $key, $value){
     return $results;
 }
 
-function multi_dim_perc($conn, $form, $cas) {
+function multi_dim_perc($conn, $form, $cas, $qStep) {
 	foreach ($form as $formula){
 		
 		$allIngQuery = mysqli_query($conn, "SELECT name,percentage,cas FROM allergens WHERE ing = '".$formula['ingredient']."'");
@@ -45,11 +45,13 @@ function multi_dim_perc($conn, $form, $cas) {
 			$arrayLength = count($aa);
 			$i = 0;
 			while ($i < $arrayLength){
-				if(empty($c = multi_dim_search($aa, 'cas', $cas)[$i])){
-					$c = multi_dim_search($aa, 'name', $formula['ingredient'])[$i];
-				}
-				$conc[$formula['ingredient']] += number_format($formula['quantity'] / 100 * $c['percentage'], 3);
-				
+				//if(empty($c = multi_dim_search($aa, 'cas', $cas)[$i])){
+				//	$c = multi_dim_search($aa, 'name', $formula['ingredient'])[$i];
+				//}
+				//$conc[$formula['ingredient']] += number_format($formula['quantity'] / 100 * $c['percentage'], 3);
+				$c = multi_dim_search($aa, 'cas', $cas)[$i];
+				$conc[$cas] += number_format($formula['quantity'] / 100 * $c['percentage'], $qStep);
+
 				$i++;
 			}
 		}

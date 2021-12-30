@@ -1,6 +1,6 @@
 <?php
 if (!defined('pvault_panel')){ die('Not Found');}
-function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $ver, $uploads_path, $defCatClass, $conn){
+function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $ver, $uploads_path, $defCatClass, $qStep, $conn){
 	class PDF extends FPDF {
 		function Header() {
 			global $fid;
@@ -166,7 +166,7 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $ver, $uploads_pat
 		$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT $defCatClass,profile,cas FROM ingredients WHERE name = '".$formula['ingredient']."'"));
 		$new_quantity = $formula['quantity']/$mg*$new_conc;
 		$conc = $new_quantity/$bottle * 100;
-		$conc_p = number_format($formula['concentration'] / 100 * $conc, 3);
+		$conc_p = number_format($formula['concentration'] / 100 * $conc, $qStep);
 		
 		$pdf->Cell(45,8,$formula['ingredient'],1,0,'C');
 		$pdf->Cell(45,8,$ing_q['cas'],1,0,'C');
@@ -176,7 +176,7 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $ver, $uploads_pat
 		}else{
 			$pdf->Cell(45,8,'None',1,0,'C');			
 		}
-		$pdf->Cell(45,8,number_format($new_quantity, 3),1,0,'C');
+		$pdf->Cell(45,8,number_format($new_quantity, $qStep),1,0,'C');
 		$pdf->Cell(45,8,$conc_p,1,0,'C');
 	}
                
