@@ -18,7 +18,7 @@ $qAlg = mysqli_query($conn, "SELECT * FROM allergens WHERE ing = '$ingID'");
                 <table class="table table-bordered" id="tdCompositions" width="100%" cellspacing="0">
                   <thead>
                     <tr class="noBorder">
-                      <th colspan="4">
+                      <th colspan="5">
                   <div class="text-right">
                         <div class="btn-group">
                           <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
@@ -32,6 +32,7 @@ $qAlg = mysqli_query($conn, "SELECT * FROM allergens WHERE ing = '$ingID'");
                     <tr>
                       <th>Name</th>
                       <th>CAS</th>
+                      <th>EINECS</th>
                       <th>Percentage %</th>
                       <th>Actions</th>
                     </tr>
@@ -41,6 +42,7 @@ $qAlg = mysqli_query($conn, "SELECT * FROM allergens WHERE ing = '$ingID'");
                     <tr>
                       <td data-name="name" class="name" data-type="text" align="center" data-pk="<?=$allergen['id']?>"><?=$allergen['name']?></td>
                       <td data-name="cas" class="cas" data-type="text" align="center" data-pk="<?=$allergen['id']?>"><?=$allergen['cas']?></td>
+                      <td data-name="ec" class="ec" data-type="text" align="center" data-pk="<?=$allergen['id']?>"><?=$allergen['ec']?></td>
 					  <td data-name="percentage" class="percentage" data-type="text" align="center" data-pk="<?=$allergen['id']?>"><?=$allergen['percentage']?></td>
                       <td align="center"><a href="javascript:deleteComposition('<?=$allergen['id']?>')" onclick="return confirm('Remove <?=$allergen['name']?>?');" class="fas fa-trash"></a></td>
 					</tr>
@@ -82,6 +84,14 @@ $(document).ready(function(){
 	  url: "update_data.php?composition=update&ing=<?=$ingID;?>",
 	  title: 'CAS',
  });
-	
+
+ $('#ing_composition').editable({
+	  container: 'body',
+	  selector: 'td.ec',
+	  type: 'POST',
+	  url: "update_data.php?composition=update&ing=<?=$ingID;?>",
+	  title: 'EINECS',
+ });
+ 
 });
 </script>
