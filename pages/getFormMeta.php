@@ -118,10 +118,10 @@ if(empty($info['name'])){
     <td>
     <select name="finalType" id="finalType" class="form-control ellipsis">  
             <option value="100">Concentrated (100%)</option>
-	 		<option value="<?=$settings['Parfum']?>" <?php if($settings['Parfum'] == $meta['finalType']){ echo 'selected';}?>>Parfum (<?=$settings['Parfum']?>%)</option>
-			<option value="<?=$settings['EDP']?>" <?php if($settings['Parfum'] == $meta['finalType']){ echo 'selected';}?>>EDP (<?=$settings['EDP']?>%)</option>
-	 		<option value="<?=$settings['EDT']?>" <?php if($settings['Parfum'] == $meta['finalType']){ echo 'selected';}?>>EDT (<?=$settings['EDT']?>%)</option>
-	 		<option value="<?=$settings['EDC']?>" <?php if($settings['Parfum'] == $meta['finalType']){ echo 'selected';}?>>EDC (<?=$settings['EDC']?>%)</option>		
+	 		<option value="<?=$settings['Parfum']?>" <?php if($settings['Parfum'] == $info['finalType']){ echo 'selected';}?>>Parfum (<?=$settings['Parfum']?>%)</option>
+			<option value="<?=$settings['EDP']?>" <?php if($settings['EDP'] == $info['finalType']){ echo 'selected';}?>>EDP (<?=$settings['EDP']?>%)</option>
+	 		<option value="<?=$settings['EDT']?>" <?php if($settings['EDT'] == $info['finalType']){ echo 'selected';}?>>EDT (<?=$settings['EDT']?>%)</option>
+	 		<option value="<?=$settings['EDC']?>" <?php if($settings['EDC'] == $info['finalType']){ echo 'selected';}?>>EDC (<?=$settings['EDC']?>%)</option>		
     </select>
     </td>
   </tr>

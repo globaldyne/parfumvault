@@ -1,5 +1,5 @@
 Whats New:
 ----------------------
-You can now easily convert a formula to ingredient
-Allergens tab in ingredients has now be renamed to composition
-keep historical changes on formulas
+EINECS added for ingredients compositions
+Multidimesion look-up now validates only against CAS and not ingredient name
+Enable formula lock/unlock by clicking in lock pad

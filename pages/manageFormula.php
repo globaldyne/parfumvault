@@ -212,8 +212,8 @@ if($_POST['action'] == 'conv2ing' && $_POST['ingName'] && $_POST['formula']){
 	$formula_q = mysqli_query($conn, "SELECT ingredient,quantity,concentration FROM formulas WHERE fid = '$fid'");
 	while ($formula = mysqli_fetch_array($formula_q)){
 		$ing_data = mysqli_fetch_array(mysqli_query($conn,"SELECT cas FROM ingredients WHERE name = '".$formula['ingredient']."'"));
-		$conc = number_format($formula['quantity']/100 * 100, 3);
-		$conc_p = number_format($formula['concentration'] / 100 * $conc, 3);
+		$conc = number_format($formula['quantity']/100 * 100, $settings['qStep']);
+		$conc_p = number_format($formula['concentration'] / 100 * $conc, $settings['qStep']);
 						
 		mysqli_query($conn, "INSERT INTO allergens (ing, name, cas, percentage) VALUES ('$name','".$formula['ingredient']."','".$ing_data['cas']."','".$conc_p."')");
 	}
@@ -252,12 +252,13 @@ if($_POST['action'] == 'addFormula'){
 	$notes = mysqli_real_escape_string($conn, $_POST['notes']);
 	$profile = mysqli_real_escape_string($conn, $_POST['profile']);
 	$catClass = mysqli_real_escape_string($conn, $_POST['catClass']);
+	$finalType = mysqli_real_escape_string($conn, $_POST['finalType']);
 	$fid = base64_encode($name);
 	
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulasMetaData WHERE fid = '$fid'"))){
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$name.' already exists!</div>';
 	}else{
-		$q = mysqli_query($conn, "INSERT INTO formulasMetaData (fid, name, notes, profile, catClass) VALUES ('$fid', '$name', '$notes', '$profile', '$catClass')");
+		$q = mysqli_query($conn, "INSERT INTO formulasMetaData (fid, name, notes, profile, catClass, finalType) VALUES ('$fid', '$name', '$notes', '$profile', '$catClass', '$finalType')");
 		if($nID = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$fid'"))){
 			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong><a href="?do=Formula&id='.$nID['id'].'">'.$name.'</a></strong> added!</div>';
 		}else{
@@ -276,10 +277,12 @@ if($_GET['action'] == 'delete' && $_GET['fid']){
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> formula '.base64_decode($fid).' is protected.</div>';
 		return;
 	}
-	
+		$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$fid'"));
+
 	if(mysqli_query($conn, "DELETE FROM formulas WHERE fid = '$fid'")){
 		mysqli_query($conn, "DELETE FROM formulasMetaData WHERE fid = '$fid'");
-		mysqli_query($conn,"DELETE FROM formulasRevisions WHERE fid = '$fid'");
+		mysqli_query($conn, "DELETE FROM formulasRevisions WHERE fid = '$fid'");
+		mysqli_query($conn, "DELETE FROM formula_history WHERE fid = '".$meta['id']."'");
 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Formula '.base64_decode($fid).' deleted!</div>';
 	}else{
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error</strong> deleting '.base64_decode($fid).' formula!</div>';

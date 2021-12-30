@@ -99,14 +99,26 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"))== 0){
             </td>
           </tr>
            <tr>
-             <td valign="top">Purpose: </td>
+             <td>Purpose: </td>
              <td><select name="catClass" id="catClass" class="form-control ellipsis">
 			<?php foreach ($cats as $IFRACategories) {?>
-				<option value="cat<?php echo $IFRACategories['name'];?>" <?php echo ($settings['defCatClass']=='cat'.$IFRACategories['name'])?"selected=\"selected\"":""; ?>><?php echo $IFRACategories['description'];?></option>
+				<option value="cat<?php echo $IFRACategories['name'];?>" <?php echo ($settings['defCatClass']=='cat'.$IFRACategories['name'])?"selected=\"selected\"":""; ?>><?php echo 'Cat'.$IFRACategories['name'].' - '.$IFRACategories['description'];?></option>
 		 	<?php }	?>
             </select></td>
            </tr>
-           <tr>
+            <tr>
+                <td>Final type:</td>
+                <td>
+                <select name="finalType" id="finalType" class="form-control ellipsis">  
+                        <option value="100">Concentrated (100%)</option>
+                        <option value="<?=$settings['Parfum']?>" <?php if($settings['Parfum'] == $meta['finalType']){ echo 'selected';}?>>Parfum (<?=$settings['Parfum']?>%)</option>
+                        <option value="<?=$settings['EDP']?>" <?php if($settings['Parfum'] == $meta['finalType']){ echo 'selected';}?>>EDP (<?=$settings['EDP']?>%)</option>
+                        <option value="<?=$settings['EDT']?>" <?php if($settings['Parfum'] == $meta['finalType']){ echo 'selected';}?>>EDT (<?=$settings['EDT']?>%)</option>
+                        <option value="<?=$settings['EDC']?>" <?php if($settings['Parfum'] == $meta['finalType']){ echo 'selected';}?>>EDC (<?=$settings['EDC']?>%)</option>		
+                </select>
+                </td>
+              </tr>     
+        <tr>
            	<td valign="top">Notes:</td>
             <td><textarea name="notes" id="notes" cols="45" rows="5" class="form-control"></textarea></td>
            </tr>  
@@ -270,6 +282,7 @@ function add_formula() {
 		name: $("#name").val(),
 		profile: $("#profile").val(),
 		catClass: $("#catClass").val(),
+		finalType: $("#finalType").val(),
 		notes: $("#notes").val(),
 		},
 	dataType: 'html',
