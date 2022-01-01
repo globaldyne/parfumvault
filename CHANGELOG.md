@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 3.8
+
 ### Version 3.7
 Delete history log when formula is deleted
 Added final type when adding a new formula
