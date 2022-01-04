@@ -636,3 +636,7 @@ formula td, table.table th {
 .viewFormula {
     overflow: auto;
 }
+
+.rmIng {
+	cursor: pointer;
+}
