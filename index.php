@@ -1,4 +1,6 @@
 <?php
+$DEBUG = true;
+$starttime = microtime(true);
 require('./inc/sec.php');
 if(file_exists('./inc/config.php') == FALSE){
 	session_destroy();
@@ -94,6 +96,8 @@ if(file_exists(__ROOT__.'/db/updates/update_'.$pv_meta['schema_ver'].'-'.$db_ver
 
   <script src="js/dataTables.responsive.min.js"></script>
   <script src="js/responsive.bootstrap.min.js"></script>
+  <script src="js/bootbox.min.js"></script>
+
   <link href="css/responsive.bootstrap.min.css" rel="stylesheet">
 	
   <link href="css/jquery-ui.css" rel="stylesheet">
@@ -390,3 +394,4 @@ function list_cat(){
 <?php } ?>
 </body>
 </html>
+<?php if($DEBUG == TRUE){printf("Page loaded in %f seconds", microtime(true) - $starttime );}?>

@@ -637,6 +637,18 @@ formula td, table.table th {
     overflow: auto;
 }
 
-.rmIng {
+.pv_point_gen {
 	cursor: pointer;
+}
+
+.pv_bar_top_notes {
+    background-color: #36b9cc !important;
+}
+
+.pv_bar_heart_notes {
+    background-color: #1cc88a !important;
+}
+
+.pv_bar_base_notes {
+    background-color: #337ab7 !important;
 }

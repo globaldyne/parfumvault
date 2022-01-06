@@ -9,7 +9,7 @@ require_once(__ROOT__.'/inc/settings.php');
 
 require_once(__ROOT__.'/func/calcCosts.php');
 require_once(__ROOT__.'/func/calcPerc.php');
-//require_once(__ROOT__.'/func/checkIng.php');
+require_once(__ROOT__.'/func/checkIng.php');
 require_once(__ROOT__.'/func/searchIFRA.php');
 //require_once(__ROOT__.'/func/goShopping.php');
 require_once(__ROOT__.'/func/ml2L.php');
@@ -27,7 +27,7 @@ if(!$_GET['id']){
 
 $id = mysqli_real_escape_string($conn, $_GET['id']);
 
-$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT name,fid,catClass,finalType,defView FROM formulasMetaData WHERE id = '$id'"));
+$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT name,fid,catClass,finalType,defView,isProtected FROM formulasMetaData WHERE id = '$id'"));
 
 if(!$meta['fid']){		
 	$response['Error'] = (string)'Requested id is not valid.';    
@@ -36,6 +36,21 @@ if(!$meta['fid']){
 	return;
 }
 
+if(isset($_GET['stats_only'])){
+	
+	$s['top'] = (float)calcPerc($id, 'Top', $settings['top_n'], $conn);
+	$s['top_max'] = (float)$settings['top_n'];
+	$s['heart'] = (float)calcPerc($id, 'Heart', $settings['heart_n'], $conn);
+	$s['heart_max'] = (float)$settings['heart_n'];
+	$s['base'] = (float)calcPerc($id, 'Base', $settings['base_n'], $conn);
+	$s['base_max'] = (float)$settings['base_n'];
+
+	$response['stats'] = $s;
+
+	header('Content-Type: application/json; charset=utf-8');
+	echo json_encode($response);
+	return;
+}
 $defCatClass = $meta['catClass'] ?: $settings['defCatClass'];
 
 $formula_q = mysqli_query($conn, "SELECT id,ingredient,concentration,quantity,dilutant,notes FROM formulas WHERE fid = '".$meta['fid']."' ORDER BY ingredient ASC");
@@ -63,7 +78,6 @@ foreach ($form as $formula){
 		$ingName = $chName['chemical_name'];
 	}
 		              
-    //getCatByIDRaw($ing_q['category'], 'name,colorKey', $conn)['name']?:'Unknown Notes';
 	$r['enc_id'] = (string)base64_encode($ing_q['name']);
 	$r['id'] = (int)$ing_q['id'];
    	$r['ingredient'] = (string)$ingName ?: $formula['ingredient'];
@@ -98,9 +112,9 @@ foreach ($form as $formula){
 	
 	$r['desc'] = (string)$desc ?: '-';
 	$r['pref_supplier'] = (string)getPrefSupplier($ing_q['id'],$conn)['name'] ?: 'N/A';
+	$r['pref_supplier_link'] = (string)getPrefSupplier($ing_q['id'],$conn)['supplierLink'] ?: 'N/A';
 	$r['fid'] = (string)$meta['name'];
-
-
+	$r['chk_ingredient'] = (string)checkIng($formula['ingredient'],$defCatClass,$conn) ?: null;
 	
 	$response['data'][] = $r;
 	$conc_f[] = $conc;
@@ -117,6 +131,9 @@ $m['concentration'] = number_format((float)array_sum($conc_f), $settings['qStep'
 $m['final_conc'] = (int)$meta['finalType'];
 $m['formula_name'] = (string)$meta['name'];
 $m['formula_fid'] = (string)$meta['fid'];
+$m['protected'] = (bool)$meta['isProtected'];
+
+
 
 $response['meta'] = $m;
 
