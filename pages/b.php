@@ -22,11 +22,10 @@ $f_name = base64_decode($meta['fid']);
 
 
 ?>
+
+
 <link href="../css/fontawesome-free/css/all.min.css" rel="stylesheet">
-
-
 <script src="../js/jquery/jquery.min.js"></script>
-
 <link rel="stylesheet" href="../css/bootstrap.min.css">
 <script src="../js/bootstrap.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/r/dt/dt-1.10.22/datatables.min.css"/>
@@ -38,167 +37,14 @@ $f_name = base64_decode($meta['fid']);
 <script type="text/javascript" src="../js/bootbox.min.js"></script>
 <script src="../js/bootstrap-editable.js"></script>
 
+
 <script>
 
 $(document).ready(function() {
-  $('#formula').editable({
-	  container: 'body',
-	  selector: 'a.concentration',
-	  url: "/pages/update_data.php?formula=<?=$meta['fid']?>",
-	  title: 'Purity %',
-	  type: "POST",
-	  dataType: 'json',
-			success: function(response, newValue) {
-			if(response.status == 'error'){
-				return response.msg; 
-			}else{
-				re();
-			}
-		},
-	  validate: function(value){
-	   if($.trim(value) == ''){
-		return 'This field is required';
-	   }
-	   if($.isNumeric(value) == '' ){
-		return 'Numbers only!';
-	   }
-	  }
-	});
-	
-	$('#formula').editable({
-		container: 'body',
-		selector: 'a.solvent',
-		type: 'POST',
-		emptytext: "",
-		emptyclass: "",
-		url: "/pages/update_data.php?formula=<?=$meta['fid']?>",
-		source: [
-				 <?php
-					$res_ing = mysqli_query($conn, "SELECT id, name FROM ingredients WHERE type = 'Solvent' OR type = 'Carrier' ORDER BY name ASC");
-					while ($r_ing = mysqli_fetch_array($res_ing)){
-					echo '{value: "'.$r_ing['name'].'", text: "'.$r_ing['name'].'"},';
-				}
-				?>
-			  ],
-		dataType: 'json',
-		success: function(response, newValue) {
-			if(response.status == 'error'){
-				return response.msg; 
-			}else{
-				re();
-			}
-		}
-    
-	});
-	
-	$('#formula').editable({
-	  container: 'body',
-	  selector: 'a.quantity',
-	  url: "/pages/update_data.php?formula=<?=$meta['fid']?>",
-	  title: 'ml',
-	  type: "POST",
-	  dataType: 'json',
-		  success: function(response, newValue) {
-			if(response.status == 'error'){
-				return response.msg; 
-			}else{ 
-				re();
-			}
-		},
-	  validate: function(value){
-	   if($.trim(value) == ''){
-		return 'This field is required';
-	   }
-	   if($.isNumeric(value) == '' ){
-		return 'Numbers only!';
-	   }
-	  }
-    });
-	
-	var groupColumn = 0;
-	function ingName(data, type, row, meta){
-		$('.popup-link').magnificPopup({
-			type: 'iframe',
-			closeOnContentClick: false,
-			closeOnBgClick: false,
-			showCloseBtn: true,
-		});
-		if(row.chk_ingredient){
-			var chkIng = row.chk_ingredient;
-		}else{
-			var chkIng = '';
-		}
-		if(type === 'display'){
-			data = '<a class="popup-link" href="/pages/mgmIngredient.php?id=' + row.enc_id + '">' + data + '</a> '+ chkIng;
-		}
 
-  	  return data;
-  }
-
-	function ingConc(data, type, row, meta){
-	  if(type === 'display'){
-		  data = '<a href="#" data-name="concentration" class="concentration" data-type="text" data-pk="' + row.ingredient + '">' + data + '</a>';
-	  }
-
-  	  return data;
-  	}
   
-  function ingSolvent(data, type, row, meta){
-	  if(type === 'display'){
-		  if(row.purity !== 100){
-		  	data = '<a href="#" data-name="dilutant" class="solvent" data-type="select" data-pk="' + row.ingredient + '">' + data + '</a>';
-	  	}else{
-			data = 'None';
-		}
-	  }
-  	  return data;
-  }
-  
-  function ingQuantity(data, type, row, meta){
-	if(type === 'display'){
-		data = '<a href="#" data-name="quantity" class="quantity" data-type="text" data-pk="' + row.ingredient + '">' + data + '</a>';
-	}
-    return data;
-  }
-
-  function ingActions(data, type, row, meta){
-	//Change ingredient
-	$('#formula').editable({
-		selector: 'a.replaceIngredient',
-		pvnoresp: false,
-		highlight: false,
-		type: 'get',
-		emptytext: "",
-		emptyclass: "",
-		url: "/pages/manageFormula.php?action=repIng&fname=<?=$meta['name']?>",
-		source: [
-				 <?php
-					$res_ing = mysqli_query($conn, "SELECT name FROM ingredients ORDER BY name ASC");
-					while ($r_ing = mysqli_fetch_array($res_ing)){
-						echo '{value: "'.htmlspecialchars($r_ing['name']).'", text: "'.htmlspecialchars($r_ing['name']).'"},';
-				}
-				?>
-			  ],
-		dataType: 'html',
-		success: function (data) {
-			if ( data.indexOf("Error") > -1 ) {
-				$('#msgInfo').html(data); 
-			}else{
-				$('#msgInfo').html(data);
-				re();
-			}
-		}
-	});
-
-	if(type === 'display'){
-		data = '<a href="'+ row.pref_supplier_link +'" target="_blank" class="fas fa-shopping-cart"></a>';
-		<?php if($meta['isProtected'] == FALSE){?>
-		data += '&nbsp; <a href="#" class="fas fa-exchange-alt replaceIngredient" rel="tipsy" title="Replace '+ row.ingredient +'"  data-name="'+ row.ingredient +'" data-type="select" data-pk="'+ row.ingredient +'" data-title="Choose Ingredient to replace '+ row.ingredient +'"></a> &nbsp; <a href="#" class="fas fa-trash" id="rmIng" data-name="'+ row.ingredient +'" data-id='+ row.formula_ingredient_id +'></a>';
-		<?php } ?>
-	}
-    return data;
-  }
-  var table = $('#formula').DataTable( {
+  var groupColumn = 0;
+  var formula_table = $('#formula').DataTable( {
 		"columnDefs": [
             { visible: false, targets: groupColumn },
 			{ className: 'text-center', targets: '_all' },
@@ -239,11 +85,12 @@ $(document).ready(function() {
       },
 	  
         "order": [[ groupColumn, 'desc' ]],
+		"lengthMenu": [[20, 50, 100, -1], [20, 50, 100, "All"]],
         "pageLength": 100,
 		"displayLength": 100,
 		"createdRow": function( row, data, dataIndex){
 			if( data['usage_regulator'] == "IFRA" && parseFloat(data['usage_limit']) < parseFloat(data['concentration'])){
-				$(row).find('td:eq(5)').addClass('alert-danger').append(' <a href="#" rel="tipsy" title="Max usage: ' + data['usage_limit'] +'%" class="fas fa-info-circle"></a></div>');
+				$(row).find('td:eq(5)').addClass('alert-danger').append(' <a href="#" rel="tip" title="Max usage: ' + data['usage_limit'] +'%" class="fas fa-info-circle"></a></div>');
 			}else if( data['usage_regulator'] == "PV" && parseFloat(data['usage_limit']) < parseFloat(data['concentration'])){
 				$(row).find('td:eq(5)').addClass('alert-info');
             }else{
@@ -346,7 +193,7 @@ function update_bar(){
 };
 
 function re() {
-    $('#formula').DataTable().ajax.reload();
+    $('#formula').DataTable().ajax.reload(null, true);
 	update_bar();
 };
 
@@ -355,41 +202,39 @@ function re() {
 
 <table class="table table-striped table-bordered nowrap" width="100%" cellspacing="0">
 	<thead>
-    	 <tr class="noexport">
-            <th colspan="10">
-<div class="progress">  
-      <div id="base_bar" class="progress-bar pv_bar_base_notes" role="progressbar" aria-valuemin="0"><span><div class="base-label"></div></span></div>
-      <div id="heart_bar" class="progress-bar pv_bar_heart_notes" role="progressbar" aria-valuemin="0"><span><div class="heart-label"></div></span></div>
-      <div id="top_bar" class="progress-bar pv_bar_top_notes" role="progressbar" aria-valuemin="0"><span><div class="top-label"></div></span></div>
-</div>
-</th>
-<th>
-                      <div class="btn-group">
-                      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
-                      <div class="dropdown-menu dropdown-menu-left">
-                        <a class="dropdown-item" href="javascript:export_as('csv')">Export to CSV</a>
-                        <a class="dropdown-item" href="javascript:export_as('pdf')">Export to PDF</a>
-             			<div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="javascript:manageQuantity('multiply')">Multiply x2</a>
-                        <a class="dropdown-item" href="javascript:manageQuantity('divide')">Divide x2</a>
-                        <a class="dropdown-item" href="javascript:cloneMe()">Clone Formula</a>
-	                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#amount_to_make">Amount to make</a>
-               			<div class="dropdown-divider"></div>
-	                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#create_accord">Create Accord</a>
-	                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#conv_ingredient">Convert to ingredient</a>
-
-             			<div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="javascript:addTODO()">Add to the make list</a>
-                        <!-- <a class="dropdown-item" href="javascript:addAllToCart()">Add all to cart</a> -->
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="pages/viewHistory.php?id=<?=$meta['id']?>" target="_blank">View history</a>
-                      </div>
-                    </div>
-                    </th>
+   	 <tr class="noexport">
+       <th colspan="10">
+        <div class="progress">  
+              <div id="base_bar" class="progress-bar pv_bar_base_notes" role="progressbar" aria-valuemin="0"><span><div class="base-label"></div></span></div>
+              <div id="heart_bar" class="progress-bar pv_bar_heart_notes" role="progressbar" aria-valuemin="0"><span><div class="heart-label"></div></span></div>
+              <div id="top_bar" class="progress-bar pv_bar_top_notes" role="progressbar" aria-valuemin="0"><span><div class="top-label"></div></span></div>
+        </div>
+	</th>
+	<th>
+        <div class="btn-group">
+            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
+            <div class="dropdown-menu dropdown-menu-left">
+               <a class="dropdown-item" href="javascript:export_as('csv')">Export to CSV</a>
+               <a class="dropdown-item" href="javascript:export_as('pdf')">Export to PDF</a>
+               <div class="dropdown-divider"></div>
+               <a class="dropdown-item" href="javascript:manageQuantity('multiply')">Multiply x2</a>
+               <a class="dropdown-item" href="javascript:manageQuantity('divide')">Divide x2</a>
+               <a class="dropdown-item" href="javascript:cloneMe()">Clone Formula</a>
+               <a class="dropdown-item" href="#" data-toggle="modal" data-target="#amount_to_make">Amount to make</a>
+               <div class="dropdown-divider"></div>
+               <a class="dropdown-item" href="#" data-toggle="modal" data-target="#create_accord">Create Accord</a>
+               <a class="dropdown-item" href="#" data-toggle="modal" data-target="#conv_ingredient">Convert to ingredient</a>
+               <div class="dropdown-divider"></div>
+               <a class="dropdown-item" href="javascript:addTODO()">Add to the make list</a>
+               <div class="dropdown-divider"></div>
+               <a class="dropdown-item" href="pages/viewHistory.php?id=<?=$meta['id']?>" target="_blank">View history</a>
+            </div>
+        </div>
+	</th>
 </tr>
 </table>
 <div id="msgInfo"></div>
-<a href="javascript:re()">RELOAD</a>
+<a href="javascript:re()" rel="tip" data-placement="auto" title="Reload data">RELOAD</a>
 <table id="formula" class="table table-striped table-bordered nowrap viewFormula" style="width:100%">
         <thead>
             <tr>
@@ -423,3 +268,216 @@ function re() {
         </tfoot>
 
 </table>
+<!--Create accord-->
+<div class="modal fade" id="create_accord" tabindex="-1" role="dialog" aria-labelledby="create_accord" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="create_accord">Create accord</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <div id="accordMsg"></div>
+  	  <form action="javascript:createAccord()" method="get" name="form1" target="_self" id="form_create_accord"><p></p>
+        <table width="313" border="0">
+          <tr>
+	       <td width="106" height="31"><strong>Accord from:</strong></td>
+	       <td width="197"><label>
+	         <select name="accordProfile" id="accordProfile" class="form-control">
+	           <option value="Top">Top notes</option>
+	           <option value="Heart">Heart Notes</option>
+	           <option value="Base">Base Notes</option>
+	           </select>
+	         </label></td>
+          </tr>
+	     <tr>
+	       <td><strong>Name:</strong></td>
+	       <td><input name="accordName" type="text" class="form-control" id="accordName" value="<?=$f_name?> accord" /></td>
+          </tr>
+        </table>
+	    <p>&nbsp;</p>
+	    <div class="modal-footer">
+	     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+  		 <input type="submit" name="button" class="btn btn-primary" id="btnUpdate" value="Create">
+	   </div>
+     </form>
+    </div>
+  </div>
+ </div>
+</div>
+<script>
+$( document ).ajaxComplete(function() {
+	$('[rel=tip]').tooltip({
+        "html": true,
+        "delay": {"show": 100, "hide": 0},
+     });
+	$('.popup-link').magnificPopup({
+		type: 'iframe',
+		closeOnContentClick: false,
+		closeOnBgClick: false,
+		showCloseBtn: true,
+	});
+
+});
+  
+$('#formula').editable({
+	  container: 'body',
+	  selector: 'a.concentration',
+	  url: "/pages/update_data.php?formula=<?=$meta['fid']?>",
+	  title: 'Purity %',
+	  type: "POST",
+	  dataType: 'json',
+			success: function(response, newValue) {
+			if(response.status == 'error'){
+				return response.msg; 
+			}else{
+				re();
+			}
+		},
+	  validate: function(value){
+	   if($.trim(value) == ''){
+		return 'This field is required';
+	   }
+	   if($.isNumeric(value) == '' ){
+		return 'Numbers only!';
+	   }
+	  }
+	});
+	
+	$('#formula').editable({
+		container: 'body',
+		selector: 'a.solvent',
+		type: 'POST',
+		emptytext: "",
+		emptyclass: "",
+		url: "/pages/update_data.php?formula=<?=$meta['fid']?>",
+		source: [
+				 <?php
+					$res_ing = mysqli_query($conn, "SELECT id, name FROM ingredients WHERE type = 'Solvent' OR type = 'Carrier' ORDER BY name ASC");
+					while ($r_ing = mysqli_fetch_array($res_ing)){
+					echo '{value: "'.$r_ing['name'].'", text: "'.$r_ing['name'].'"},';
+				}
+				?>
+			  ],
+		dataType: 'json',
+		success: function(response, newValue) {
+			if(response.status == 'error'){
+				return response.msg; 
+			}else{
+				re();
+			}
+		}
+    
+	});
+	
+	$('#formula').editable({
+	  container: 'body',
+	  selector: 'a.quantity',
+	  url: "/pages/update_data.php?formula=<?=$meta['fid']?>",
+	  title: 'ml',
+	  type: "POST",
+	  dataType: 'json',
+		  success: function(response, newValue) {
+			if(response.status == 'error'){
+				return response.msg; 
+			}else{ 
+				re();
+			}
+		},
+	  validate: function(value){
+	   if($.trim(value) == ''){
+		return 'This field is required';
+	   }
+	   if($.isNumeric(value) == '' ){
+		return 'Numbers only!';
+	   }
+	  }
+    });
+	
+	function ingName(data, type, row, meta){
+		
+		if(row.chk_ingredient){
+			var chkIng = '<a href="#" class="fas fa-exclamation" rel="tip" title="'+row.chk_ingredient+'"></a>';
+		}else{
+			var chkIng = '';
+		}
+		if(type === 'display'){
+			data = '<a class="popup-link" href="/pages/mgmIngredient.php?id=' + row.enc_id + '">' + data + '</a> '+ chkIng;
+		}
+
+  	  return data;
+  }
+
+	function ingConc(data, type, row, meta){
+	  if(type === 'display'){
+		  <?php if($meta['isProtected'] == FALSE){?>
+		  data = '<a href="#" data-name="concentration" class="concentration" data-type="text" data-pk="' + row.ingredient + '">' + data + '</a>';
+		  <?php } ?>
+	  }
+
+  	  return data;
+  	}
+  
+  function ingSolvent(data, type, row, meta){
+	  if(type === 'display'){
+		<?php if($meta['isProtected'] == FALSE){?>
+		  if(row.purity !== 100){
+		  	data = '<a href="#" data-name="dilutant" class="solvent" data-type="select" data-pk="' + row.ingredient + '">' + data + '</a>';
+	  	}else{
+			data = 'None';
+		}
+		<?php } ?>
+	  }
+  	  return data;
+  }
+  
+  function ingQuantity(data, type, row, meta){
+	if(type === 'display'){
+		<?php if($meta['isProtected'] == FALSE){?>
+		data = '<a href="#" data-name="quantity" class="quantity" data-type="text" data-pk="' + row.ingredient + '">' + data + '</a>';
+		<?php } ?>
+	}
+    return data;
+  }
+
+  function ingActions(data, type, row, meta){
+	//Change ingredient
+	$('#formula').editable({
+		selector: 'a.replaceIngredient',
+		pvnoresp: false,
+		highlight: false,
+		type: 'get',
+		emptytext: "",
+		emptyclass: "",
+		url: "/pages/manageFormula.php?action=repIng&fname=<?=$meta['name']?>",
+		source: [
+				 <?php
+					$res_ing = mysqli_query($conn, "SELECT name FROM ingredients ORDER BY name ASC");
+					while ($r_ing = mysqli_fetch_array($res_ing)){
+						echo '{value: "'.htmlspecialchars($r_ing['name']).'", text: "'.htmlspecialchars($r_ing['name']).'"},';
+				}
+				?>
+			  ],
+		dataType: 'html',
+		success: function (data) {
+			if ( data.indexOf("Error") > -1 ) {
+				$('#msgInfo').html(data); 
+			}else{
+				$('#msgInfo').html(data);
+				re();
+			}
+		}
+	});
+
+	if(type === 'display'){
+		data = '<a href="'+ row.pref_supplier_link +'" target="_blank" rel="tip" title="Open '+ row.pref_supplier +' page" class="fas fa-shopping-cart"></a>';
+		<?php if($meta['isProtected'] == FALSE){?>
+		data += '&nbsp; <a href="#" class="fas fa-exchange-alt replaceIngredient" rel="tip" title="Replace '+ row.ingredient +'"  data-name="'+ row.ingredient +'" data-type="select" data-pk="'+ row.ingredient +'" data-title="Choose Ingredient to replace '+ row.ingredient +'"></a> &nbsp; <a href="#" rel="tip" title="Remove '+ row.ingredient +'" class="fas fa-trash" id="rmIng" data-name="'+ row.ingredient +'" data-id='+ row.formula_ingredient_id +'></a>';
+		<?php } ?>
+	}
+    return data;
+  }
+  
+</script>

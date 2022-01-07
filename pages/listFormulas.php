@@ -197,7 +197,7 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"))== 0){
 </div>
 <script type="text/javascript" language="javascript" >
 
-$('a[rel=tipsy]').tipsy();
+$('[rel=tipsy]').tooltip();
 	
 $('.popup-link').magnificPopup({
 	type: 'iframe',

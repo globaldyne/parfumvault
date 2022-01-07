@@ -89,7 +89,7 @@ $(document).ready(function() {
         }
     } );
 	
-	$('a[rel=tipsy]').tipsy();
+	$('[rel=tipsy]').tooltip();
 	
 	$('.popup-link').magnificPopup({
 		type: 'iframe',

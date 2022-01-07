@@ -192,7 +192,6 @@ $(".alert-dismissible").fadeTo(2000, 500).slideUp(500, function(){
     $(".alert-dismissible").alert('close');
 });
 
-$('a[rel=tipsy]').tipsy();
 	
 $('#ing_limit').change(function () {
 	list_ingredients(<?=$page?>,$("#ing_limit").val());

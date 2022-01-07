@@ -60,7 +60,6 @@ while($pictograms_res = mysqli_fetch_array($pictograms)){
 <script src="../js/jquery/jquery.min.js"></script>
 <script src="../js/bootstrap.min.js"></script>
 <script src="../js/bootstrap-select.js"></script>
-<script src="../js/tipsy.js"></script>
 <script src="../js/bootstrap-editable.js"></script>
 
 <link rel="stylesheet" type="text/css" href="../css/datatables.min.css"/>
@@ -78,7 +77,6 @@ while($pictograms_res = mysqli_fetch_array($pictograms)){
 <link href="../css/bootstrap-select.min.css" rel="stylesheet">
 <link href="../css/bootstrap.min.css" rel="stylesheet">
 <link href="../css/vault.css" rel="stylesheet">
-<link href="../css/tipsy.css" rel="stylesheet">
 <link href="../css/bootstrap-editable.css" rel="stylesheet">
 
 
@@ -103,7 +101,7 @@ while($pictograms_res = mysqli_fetch_array($pictograms)){
 <script>
 
 $(document).ready(function() {
-$('a[rel=tipsy]').tipsy({gravity: 'w'});
+$('[rel=tipsy]').tooltip({placement: 'auto'});
 
 function unlimited_usage(status,maxulimit){
 		$('#usage_type').prop('disabled', status);
