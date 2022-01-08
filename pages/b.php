@@ -68,7 +68,7 @@ $(document).ready(function() {
 				   { data : 'final_concentration', title: 'Final Concentration %'},
 				   { data : 'cost', title: 'Cost'},
 				   { data : 'desc', title: 'Properties'},
-   				   { data : null, title: 'Actions', class: 'noexport', render: ingActions},		   
+   				   { data : null, title: 'Actions', className: 'text-center noexport', render: ingActions},		   
 				   
 				  ],
 
@@ -121,6 +121,17 @@ $(document).ready(function() {
 	   }
 });
 
+// Order by the grouping
+$('#formula tbody').on( 'click', 'tr.group', function () {
+    var currentOrder = table.order()[0];
+    if ( currentOrder[0] === groupColumn && currentOrder[1] === 'asc' ) {
+         table.order( [ groupColumn, 'desc' ] ).draw();
+    }else {
+         table.order( [ groupColumn, 'asc' ] ).draw();
+    }
+});
+	
+	
 $('#formula').on('click', '[id*=rmIng]', function () {
 	var ing = {};
 	ing.ID = $(this).attr('data-id');
@@ -473,8 +484,13 @@ $('#formula').editable({
 		}else{
 			var chkIng = '';
 		}
+		if(row.profile_plain){
+			var profile_class = '<a href="#" class="'+row.profile_plain+'"></a>';
+		}else{
+			var profile_class ='';
+		}
 		if(type === 'display'){
-			data = '<a class="popup-link" href="/pages/mgmIngredient.php?id=' + row.enc_id + '">' + data + '</a> '+ chkIng;
+			data = '<a class="popup-link" href="/pages/mgmIngredient.php?id=' + row.enc_id + '">' + data + '</a> '+ chkIng + profile_class;
 		}
 
   	  return data;

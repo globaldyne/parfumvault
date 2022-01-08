@@ -15,7 +15,7 @@ require_once(__ROOT__.'/func/searchIFRA.php');
 require_once(__ROOT__.'/func/ml2L.php');
 require_once(__ROOT__.'/func/countElement.php');
 require_once(__ROOT__.'/func/getIngSupplier.php');
-//require_once(__ROOT__.'/func/getCatByID.php');
+require_once(__ROOT__.'/func/getCatByID.php');
 //require_once(__ROOT__.'/func/checkUsage.php');
 
 if(!$_GET['id']){		
@@ -83,7 +83,15 @@ foreach ($form as $formula){
    	$r['ingredient'] = (string)$ingName ?: $formula['ingredient'];
    	$r['formula_ingredient_id'] = (int)$formula['id'];
 	$r['cas'] = (string)$ing_q['cas'];
-	$r['profile'] = (string)$ing_q['profile'] ?: 'Unknown';
+	if($settings['grp_formula'] == '1'){
+		$r['profile'] = (string)$ing_q['profile'] ?: 'Unknown';
+	}elseif($settings['grp_formula'] == '2'){
+		$r['profile'] = (string)getCatByIDRaw($ing_q['category'], 'name,colorKey', $conn)['name']?:'Unknown Notes';
+	}elseif($settings['grp_formula'] == '0'){
+		$r['profile'] = null;
+		$r['profile_plain'] = (string)$ing_q['profile'].'_notes'?: 'Unknown';
+	}
+	
 	$r['purity'] = (int)$formula['concentration'] ?: 100;
 	$r['dilutant'] = (string)$formula['dilutant'] ?: 'None';
 	
