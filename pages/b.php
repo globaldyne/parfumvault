@@ -22,7 +22,7 @@ $f_name = base64_decode($meta['fid']);
 
 
 ?>
-
+<?php if(isset($_GET['standalone'])){ ?>
 
 <link href="../css/fontawesome-free/css/all.min.css" rel="stylesheet">
 <script src="../js/jquery/jquery.min.js"></script>
@@ -36,7 +36,7 @@ $f_name = base64_decode($meta['fid']);
 <link href="../css/bootstrap-editable.css" rel="stylesheet">
 <script type="text/javascript" src="../js/bootbox.min.js"></script>
 <script src="../js/bootstrap-editable.js"></script>
-
+<?php } ?>
 
 <script>
 
@@ -68,7 +68,7 @@ $(document).ready(function() {
 				   { data : 'final_concentration', title: 'Final Concentration %'},
 				   { data : 'cost', title: 'Cost'},
 				   { data : 'desc', title: 'Properties'},
-   				   { data : null, title: 'Actions', render: ingActions},		   
+   				   { data : null, title: 'Actions', class: 'noexport', render: ingActions},		   
 				   
 				  ],
 
@@ -147,7 +147,7 @@ $('#formula').on('click', '[id*=rmIng]', function () {
 					dataType: 'html',
 					success: function (data) {
 						$('#msgInfo').html(data);
-						re();
+						reload_data();
 					}
 				  });
                  return true;
@@ -192,7 +192,7 @@ function update_bar(){
 	}); 
 };
 
-function re() {
+function reload_data() {
     $('#formula').DataTable().ajax.reload(null, true);
 	update_bar();
 };
@@ -234,7 +234,7 @@ function re() {
 </tr>
 </table>
 <div id="msgInfo"></div>
-<a href="javascript:re()" rel="tip" data-placement="auto" title="Reload data">RELOAD</a>
+<a href="javascript:reload_data()" rel="tip" data-placement="auto" title="Reload data">RELOAD</a>
 <table id="formula" class="table table-striped table-bordered nowrap viewFormula" style="width:100%">
         <thead>
             <tr>
@@ -268,6 +268,44 @@ function re() {
         </tfoot>
 
 </table>
+
+<!--Amount To Make-->
+<div class="modal fade" id="amount_to_make" tabindex="-1" role="dialog" aria-labelledby="amount_to_make" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="amount_to_make">Total amount to make</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <div id="amountToMakeMsg"></div>
+  	  <form action="javascript:amountToMake()" method="get" name="form1" target="_self" id="form_amount_to_make"><p></p>
+        <table width="313" border="0">
+          <tr>
+	       <td width="66" height="31"><strong>SG<span class="sup">*</span> :</strong></td>
+	       <td width="237"><input name="sg" type="text" id="sg" value="0.985" />
+            <strong>ml</strong></td>
+          </tr>
+	     <tr>
+	       <td><strong>Amount:</strong></td>
+	       <td><input name="totalAmount" type="text" id="totalAmount" value="100" />
+            <strong>ml</strong></td>
+          </tr>
+        </table>
+	    <p>&nbsp;</p>
+	    <p>*<a href="https://www.jbparfum.com/knowledge-base/3-specific-gravity-sg/" target="_blank">Specific Gravity of Ethanol</a></p>
+	    <div class="modal-footer">
+	     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+  		 <input type="submit" name="button" class="btn btn-primary" id="btnUpdate" value="Update Formula">
+	   </div>
+     </form>
+    </div>
+  </div>
+ </div>
+</div>
+
 <!--Create accord-->
 <div class="modal fade" id="create_accord" tabindex="-1" role="dialog" aria-labelledby="create_accord" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -307,6 +345,38 @@ function re() {
   </div>
  </div>
 </div>
+
+<!--Convert to ingredient-->
+<div class="modal fade" id="conv_ingredient" tabindex="-1" role="dialog" aria-labelledby="conv_ingredient" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="conv_ingredient">Convert formula to ingredient</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <div id="cnvMsg"></div>
+  	  <form action="javascript:conv2ing()" method="get" name="form1" target="_self" id="form_conv_ingredient"><p></p>
+        <table width="313" border="0">
+	     <tr>
+	       <td><strong>Name:</strong></td>
+	       <td><input name="ingName" type="text" class="form-control" id="ingName" value="<?=$f_name?>" /></td>
+          </tr>
+        </table>
+	    <p>&nbsp;</p>
+	    <div class="modal-footer">
+	     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+  		 <input type="submit" name="button" class="btn btn-primary" id="btnUpdate" value="Convert">
+	   </div>
+     </form>
+    </div>
+  </div>
+ </div>
+</div>
+
+
 <script>
 $( document ).ajaxComplete(function() {
 	$('[rel=tip]').tooltip({
@@ -333,7 +403,7 @@ $('#formula').editable({
 			if(response.status == 'error'){
 				return response.msg; 
 			}else{
-				re();
+				reload_data();
 			}
 		},
 	  validate: function(value){
@@ -366,7 +436,7 @@ $('#formula').editable({
 			if(response.status == 'error'){
 				return response.msg; 
 			}else{
-				re();
+				reload_data();
 			}
 		}
     
@@ -383,7 +453,7 @@ $('#formula').editable({
 			if(response.status == 'error'){
 				return response.msg; 
 			}else{ 
-				re();
+				reload_data();
 			}
 		},
 	  validate: function(value){
@@ -466,7 +536,7 @@ $('#formula').editable({
 				$('#msgInfo').html(data); 
 			}else{
 				$('#msgInfo').html(data);
-				re();
+				reload_data();
 			}
 		}
 	});
@@ -479,5 +549,151 @@ $('#formula').editable({
 	}
     return data;
   }
-  
+
+//MULTIPLY - DIVIDE
+function manageQuantity(quantity) {
+	$.ajax({ 
+    url: 'pages/manageFormula.php', 
+	type: 'get',
+    data: {
+		do: quantity,
+		formula: "<?php echo $f_name; ?>",
+		},
+	dataType: 'html',
+    success: function (data) {
+	  	$('#msgInfo').html(data);
+		reload_data();
+    }
+  });
+};
+
+//AMOUNT TO MAKE
+function amountToMake() {
+	if($("#sg").val().trim() == '' ){
+        $('#sg').focus();
+	  	$('#amountToMakeMsg').html('<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> all fields required!</div>');
+	}else if($("#totalAmount").val().trim() == '' ){
+ 		$('#totalAmount').focus();
+	  	$('#amountToMakeMsg').html('<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> all fields required!</div>');		
+	}else{
+		$.ajax({ 
+		url: 'pages/manageFormula.php', 
+		type: 'get',
+		cache: false,
+		data: {
+			fid: "<?php echo base64_encode($f_name); ?>",
+			SG: $("#sg").val(),
+			amount: $("#totalAmount").val(),
+			},
+		dataType: 'html',
+		success: function (data) {
+			$('#amountToMakeMsg').html(data);
+			$('#amount_to_make').modal('toggle');
+			reload_data();
+		}
+	  });
+	}
+};
+
+
+//Create Accord
+function createAccord() {
+	if($("#accordName").val().trim() == '' ){
+        $('#accordName').focus();
+	  	$('#accordMsg').html('<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> Accord name required!</div>');	
+	}else{
+		$.ajax({ 
+		url: 'pages/manageFormula.php', 
+		type: 'POST',
+		cache: false,
+		data: {
+			fid: "<?php echo base64_encode($f_name); ?>",
+			accordName: $("#accordName").val(),
+			accordProfile: $("#accordProfile").val(),
+			},
+		dataType: 'html',
+		success: function (data) {
+			$('#accordMsg').html(data);
+			//$('#createAccord').modal('toggle');
+		}
+	  });
+	}
+};
+
+//Convert to ingredient
+function conv2ing() {	  
+if($("#ingName").val().trim() == '' ){
+        $('#ingName').focus();
+	  	$('#cnvMsg').html('<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> Ingredient name required!</div>');	
+	}else{
+		$.ajax({ 
+		url: 'pages/manageFormula.php', 
+		type: 'POST',
+		cache: false,
+		data: {
+			formula: "<?=base64_encode($f_name)?>",
+			ingName: $("#ingName").val(),
+			action: 'conv2ing',
+			},
+		dataType: 'html',
+		success: function (data) {
+			$('#cnvMsg').html(data);
+			//$('#conv_ingredient').modal('toggle');
+		}
+	  });
+	}
+};
+
+//Clone
+function cloneMe() {	  
+$.ajax({ 
+    url: 'pages/manageFormula.php', 
+	type: 'get',
+    data: {
+		action: "clone",
+		formula: "<?=$meta['fid']?>",
+		},
+	dataType: 'html',
+    success: function (data) {
+        if ( data.indexOf("Error") > -1 ) {
+			$('#msgInfo').html(data); 
+		}else{
+			$('#msgInfo').html(data);
+		}
+    }
+  });
+};
+
+//Add in TODO
+function addTODO() {
+	$.ajax({ 
+    url: 'pages/manageFormula.php', 
+	type: 'get',
+    data: {
+		action: 'todo',
+		fid: "<?php echo base64_encode($f_name); ?>",
+		add: true,
+		},
+	dataType: 'html',
+    success: function (data) {
+	  	$('#msgInfo').html(data);
+    }
+  });
+};
+
+
+function export_as(type) {
+  $("#formula").tableHTMLExport({
+	type: type,
+	filename:'<?php echo $f_name; ?>.csv',
+	separator: ',',
+  	newline: '\r\n',
+  	trimContent: true,
+  	quoteFields: true,
+	ignoreColumns: '.noexport',
+  	ignoreRows: '.noexport',
+	htmlContent: false,
+	maintitle: '<?=$f_name?>',
+  });
+};
 </script>

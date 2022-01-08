@@ -390,7 +390,7 @@ $('#csv').on('click',function(){
 
 function fetch_formula(){
 $.ajax({ 
-    url: 'pages/viewFormula.php', 
+    url: 'pages/b.php', 
 	type: 'GET',
     data: {
 		id: "<?=$id?>"

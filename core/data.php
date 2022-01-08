@@ -97,7 +97,7 @@ foreach ($form as $formula){
 		$r['usage_restriction'] = (string)$u['1'] ?: 'N/A';
 		$r['usage_regulator'] = (string)"IFRA";
 	}else{
-		$r['usage_limit'] = (int)number_format($ing_q["$defCatClass"], $settings['qStep']) ?: 100;
+		$r['usage_limit'] = number_format((float)$ing_q["$defCatClass"], $settings['qStep']) ?: 100;
 		$r['usage_restriction'] = (string)'REC';
 		$r['usage_regulator'] = (string)"PV";
 	}
