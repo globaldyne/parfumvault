@@ -17,7 +17,7 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulasMetaData WHERE i
 	echo '<div class="alert alert-info alert-dismissible">Incomplete formula. Please add ingredients.</div>';
 	return;
 }
-$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,fid,name,isProtected FROM formulasMetaData WHERE id = '$id'"));
+$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,fid,name,isProtected,finalType FROM formulasMetaData WHERE id = '$id'"));
 $f_name = base64_decode($meta['fid']);
 
 
@@ -28,8 +28,8 @@ $f_name = base64_decode($meta['fid']);
 <script src="../js/jquery/jquery.min.js"></script>
 <link rel="stylesheet" href="../css/bootstrap.min.css">
 <script src="../js/bootstrap.min.js"></script>
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/r/dt/dt-1.10.22/datatables.min.css"/>
-<script type="text/javascript" src="https://cdn.datatables.net/r/dt/dt-1.10.22/datatables.min.js"></script>
+<link rel="stylesheet" type="text/css" href="../css/datatables.min.css"/>
+<script type="text/javascript" src="../js/datatables.min.js"></script>
 <link rel="stylesheet" href="../css/vault.css">
 <script src="../js/magnific-popup.js"></script>
 <link href="../css/magnific-popup.css" rel="stylesheet" />
@@ -52,7 +52,10 @@ $(document).ready(function() {
 		"processing": true,
         "language": {
 			loadingRecords: '&nbsp;',
-			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>'
+			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
+			emptyTable: "Incomplete formula. Please add ingredients.",
+			        search: "_INPUT_",
+			searchPlaceholder: "Search in formula",
 			},
     	ajax: {
     		url: '/core/data.php?id=<?=$id?>'
@@ -65,9 +68,9 @@ $(document).ready(function() {
 				   { data : 'dilutant', title: 'Dilutant', render: ingSolvent},
 				   { data : 'quantity', title: 'Quantity', render: ingQuantity},
 				   { data : 'concentration', title: 'Concentration %'},
-				   { data : 'final_concentration', title: 'Final Concentration %'},
+				   { data : 'final_concentration', title: 'Final Concentration <?=$meta['finalType']?>%'},
 				   { data : 'cost', title: 'Cost'},
-				   { data : 'desc', title: 'Properties'},
+				   { data : 'desc', title: 'Properties', render: ingNotes},
    				   { data : null, title: 'Actions', className: 'text-center noexport', render: ingActions},		   
 				   
 				  ],
@@ -78,7 +81,7 @@ $(document).ready(function() {
 		  if(response){
 			 var $td = $(tfoot).find('th');
 			 $td.eq(0).html("Total Ingredients: " + response.meta['total_ingredients'] );
-			 $td.eq(4).html("Total: " + response.meta['total_quantity'] + response.meta['quantity_unit'] );
+			 $td.eq(4).html("Total: " + response.meta['total_quantity']);// + response.meta['quantity_unit'] );
 			 $td.eq(5).html("Total: " + response.meta['concentration'] + "%" );
 			 $td.eq(7).html("Total: " + response.meta['currency'] + response.meta['total_cost'] );
 		 }
@@ -158,7 +161,7 @@ $('#formula').on('click', '[id*=rmIng]', function () {
 					dataType: 'html',
 					success: function (data) {
 						$('#msgInfo').html(data);
-						reload_data();
+						reload_formula_data();
 					}
 				  });
                  return true;
@@ -203,7 +206,7 @@ function update_bar(){
 	}); 
 };
 
-function reload_data() {
+function reload_formula_data() {
     $('#formula').DataTable().ajax.reload(null, true);
 	update_bar();
 };
@@ -245,7 +248,7 @@ function reload_data() {
 </tr>
 </table>
 <div id="msgInfo"></div>
-<a href="javascript:reload_data()" rel="tip" data-placement="auto" title="Reload data">RELOAD</a>
+<a href="javascript:reload_formula_data()" rel="tip" data-placement="auto" title="Reload data">RELOAD</a>
 <table id="formula" class="table table-striped table-bordered nowrap viewFormula" style="width:100%">
         <thead>
             <tr>
@@ -414,7 +417,7 @@ $('#formula').editable({
 			if(response.status == 'error'){
 				return response.msg; 
 			}else{
-				reload_data();
+				reload_formula_data();
 			}
 		},
 	  validate: function(value){
@@ -434,6 +437,7 @@ $('#formula').editable({
 		emptytext: "",
 		emptyclass: "",
 		url: "/pages/update_data.php?formula=<?=$meta['fid']?>",
+		title: 'Choose solvent',
 		source: [
 				 <?php
 					$res_ing = mysqli_query($conn, "SELECT id, name FROM ingredients WHERE type = 'Solvent' OR type = 'Carrier' ORDER BY name ASC");
@@ -447,7 +451,7 @@ $('#formula').editable({
 			if(response.status == 'error'){
 				return response.msg; 
 			}else{
-				reload_data();
+				reload_formula_data();
 			}
 		}
     
@@ -457,14 +461,14 @@ $('#formula').editable({
 	  container: 'body',
 	  selector: 'a.quantity',
 	  url: "/pages/update_data.php?formula=<?=$meta['fid']?>",
-	  title: 'ml',
+	  title: 'Quantity in <?=$settings['mUnit']?>',
 	  type: "POST",
 	  dataType: 'json',
 		  success: function(response, newValue) {
 			if(response.status == 'error'){
 				return response.msg; 
 			}else{ 
-				reload_data();
+				reload_formula_data();
 			}
 		},
 	  validate: function(value){
@@ -476,7 +480,23 @@ $('#formula').editable({
 	   }
 	  }
     });
-	
+		
+	$('#formula').editable({
+	  container: 'body',
+	  selector: 'a.notes',
+	  url: "/pages/update_data.php?formula=<?=base64_encode($f_name)?>",
+	  title: 'Notes',
+	  type: "POST",
+	  dataType: 'json',
+			success: function(response, newValue) {
+			if(response.status == 'error'){
+				return response.msg; 
+			}else{
+				reload_formula_data();
+			}
+		},
+	});
+
 	function ingName(data, type, row, meta){
 		
 		if(row.chk_ingredient){
@@ -528,6 +548,14 @@ $('#formula').editable({
     return data;
   }
 
+  function ingNotes(data, type, row, meta){
+	 if(type === 'display'){
+	  <?php if($meta['isProtected'] == FALSE){?>
+	  data = '<a href="#" data-name="notes" class="notes" data-type="textarea" data-pk="' + row.ingredient + '">' + data + '</a>';
+	  <?php } ?>
+	 }
+   return data;
+  }
   function ingActions(data, type, row, meta){
 	//Change ingredient
 	$('#formula').editable({
@@ -552,7 +580,7 @@ $('#formula').editable({
 				$('#msgInfo').html(data); 
 			}else{
 				$('#msgInfo').html(data);
-				reload_data();
+				reload_formula_data();
 			}
 		}
 	});
@@ -578,7 +606,7 @@ function manageQuantity(quantity) {
 	dataType: 'html',
     success: function (data) {
 	  	$('#msgInfo').html(data);
-		reload_data();
+		reload_formula_data();
     }
   });
 };
@@ -605,7 +633,7 @@ function amountToMake() {
 		success: function (data) {
 			$('#amountToMakeMsg').html(data);
 			$('#amount_to_make').modal('toggle');
-			reload_data();
+			reload_formula_data();
 		}
 	  });
 	}

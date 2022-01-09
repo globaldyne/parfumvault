@@ -347,7 +347,7 @@ $.ajax({
 			$('#msgInfo').html(data); 
 		}else{
 			$('#msgInfo').html(data);
-			fetch_formula();
+			reload_formula_data();
 			fetch_impact();
 			fetch_pyramid();
 		}

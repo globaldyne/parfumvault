@@ -125,18 +125,24 @@ foreach ($form as $formula){
 	$r['chk_ingredient'] = (string)checkIng($formula['ingredient'],$defCatClass,$conn) ?: null;
 	
 	$response['data'][] = $r;
+	
 	$conc_f[] = $conc;
 	$total_cost[] = calcCosts(getPrefSupplier($ing_q['id'],$conn)['price'],$formula['quantity'], $formula['concentration'], getPrefSupplier($ing_q['id'],$conn)['size']);
 
 }
+
+if(empty($r)){
+	$response['data'] = [];
+}
+
 $m['total_ingredients'] = (int)countElement("formulas WHERE fid = '".$meta['fid']."'",$conn);	
-$m['total_quantity'] =  (float)ml2l($mg['total_mg'], $settings['qStep'], $settings['mUnit']);
+$m['total_quantity'] =  ml2l($mg['total_mg'], $settings['qStep'], $settings['mUnit']);
 $m['quantity_unit'] = (string)$settings['mUnit'];
 $m['cat_class'] = (string)$defCatClass;
 $m['currency'] = (string)$settings['currency'];
 $m['total_cost'] = number_format((float)array_sum($total_cost), $settings['qStep']);
 $m['concentration'] = number_format((float)array_sum($conc_f), $settings['qStep']);
-$m['final_conc'] = (int)$meta['finalType'];
+$m['product_concentration'] = (int)$meta['finalType'];
 $m['formula_name'] = (string)$meta['name'];
 $m['formula_fid'] = (string)$meta['fid'];
 $m['protected'] = (bool)$meta['isProtected'];
