@@ -1,8 +1,5 @@
 <?php
-//ini_set('precision', 17);
 require('../inc/sec.php');
-//define('pvault_panel', TRUE);
-//define('__ROOT__', dirname(dirname(__FILE__))); 
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
@@ -11,12 +8,10 @@ require_once(__ROOT__.'/func/calcCosts.php');
 require_once(__ROOT__.'/func/calcPerc.php');
 require_once(__ROOT__.'/func/checkIng.php');
 require_once(__ROOT__.'/func/searchIFRA.php');
-//require_once(__ROOT__.'/func/goShopping.php');
 require_once(__ROOT__.'/func/ml2L.php');
 require_once(__ROOT__.'/func/countElement.php');
 require_once(__ROOT__.'/func/getIngSupplier.php');
 require_once(__ROOT__.'/func/getCatByID.php');
-//require_once(__ROOT__.'/func/checkUsage.php');
 
 if(!$_GET['id']){		
 	$response['Error'] = (string)'Formula id is missing.';    
