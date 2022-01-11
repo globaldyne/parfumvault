@@ -39,8 +39,6 @@ $f_name = base64_decode($meta['fid']);
 <script>
 
 $(document).ready(function() {
-
-  
   var groupColumn = 0;
   var formula_table = $('#formula').DataTable( {
 		"columnDefs": [
@@ -53,16 +51,7 @@ $(document).ready(function() {
 			loadingRecords: '&nbsp;',
 			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
 			emptyTable: "Incomplete formula. Please add ingredients.",
-			search: "Search in formula:",
-			
-    copy: 'Copy',
-    copySuccess: {
-        1: "Copied one row to clipboard",
-        _: "Copied %d rows to clipboard"
-    },
-    copyTitle: 'Copy to clipboard',
-    copyKeys: 'Press <i>ctrl</i> or <i>\u2318</i> + <i>C</i> to copy the table data<br>to your system clipboard.<br><br>To cancel, click this message or press escape.'
-,
+			search: "Search in formula:"
 			},
     	ajax: {
     		url: '/core/full_formula_data.php?id=<?=$id?>'
@@ -70,13 +59,13 @@ $(document).ready(function() {
 		 columns: [
 				   { data : 'profile', title: 'Profile' },
 				   { data : 'ingredient', title: 'Ingredient', render: ingName},
-    			   { data : 'cas', title: 'CAS'},
-				   { data : 'purity', title: 'Purity', render: ingConc},
+    			   { data : 'cas', title: 'CAS#'},
+				   { data : 'purity', title: 'Purity %', render: ingConc},
 				   { data : 'dilutant', title: 'Dilutant', render: ingSolvent},
-				   { data : 'quantity', title: 'Quantity', render: ingQuantity},
+				   { data : 'quantity', title: 'Quantity (<?=$settings['mUnit']?>)', render: ingQuantity},
 				   { data : 'concentration', title: 'Concentration %'},
 				   { data : 'final_concentration', title: 'Final Concentration <?=$meta['finalType']?>%'},
-				   { data : 'cost', title: 'Cost'},
+				   { data : 'cost', title: 'Cost (<?=$settings['currency']?>)'},
 				   { data : 'desc', title: 'Properties', render: ingNotes},
    				   { data : null, title: 'Actions', className: 'text-center noexport', render: ingActions},		   
 				   
@@ -255,14 +244,13 @@ function reload_formula_data() {
 </tr>
 </table>
 <div id="msgInfo"></div>
-<a href="javascript:reload_formula_data()" rel="tip" data-placement="auto" title="Reload data">RELOAD</a>
 <table id="formula" class="table table-striped table-bordered nowrap viewFormula" style="width:100%">
         <thead>
             <tr>
                 <th>Profile</th>
                 <th>Ingredient</th>
                 <th>CAS</th>
-                <th>Purity</th>
+                <th>Purity %</th>
                 <th>Dilutant</th>
                 <th>Quantity</th>
                 <th>Concentration %*</th>
@@ -287,7 +275,6 @@ function reload_formula_data() {
             <th></th>
             </tr>
         </tfoot>
-
 </table>
 
 <!--Amount To Make-->
@@ -410,7 +397,6 @@ $( document ).ajaxComplete(function() {
 		closeOnBgClick: false,
 		showCloseBtn: true,
 	});
-
 });
   
 $('#formula').editable({

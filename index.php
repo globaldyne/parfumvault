@@ -1,5 +1,5 @@
 <?php
-$DEBUG = true;
+$DEBUG = false;
 $starttime = microtime(true);
 require('./inc/sec.php');
 if(file_exists('./inc/config.php') == FALSE){

@@ -2,7 +2,9 @@
 ### Version 3.8
 tipsy.js dependency removed
 Major update in formula view to fully populate DataTables
+Major update in formula list to fully populate DataTables
 PDF export improvements
+Various bug fixes and improvements
 
 ### Version 3.7
 Delete history log when formula is deleted

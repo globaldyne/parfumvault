@@ -407,9 +407,10 @@ fetch_formula();
 function fetch_pyramid(){
 	$.ajax({ 
 		url: 'pages/viewPyramid.php', 
-		type: 'get',
+		type: 'GET',
 		data: {
-			formula: "<?=$id?>"
+			formula: "<?=$id?>",
+			fid: "<?=$fid?>"
 			},
 		dataType: 'html',
 		success: function (data) {
@@ -423,7 +424,7 @@ fetch_pyramid();
 function fetch_impact(){
 	$.ajax({ 
 		url: 'pages/impact.php', 
-		type: 'get',
+		type: 'GET',
 		data: {
 			id: "<?php echo $fid; ?>"
 			},
@@ -439,7 +440,7 @@ fetch_impact();
 function fetch_summary(){
 $.ajax({ 
     url: 'pages/viewSummary.php', 
-	type: 'get',
+	type: 'GET',
     data: {
 		id: "<?=$fid?>"
 		},
