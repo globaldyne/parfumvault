@@ -330,11 +330,9 @@ function reload_formulas_data() {
             <td>Profile:</td>
             <td>
             <select name="profile" id="profile" class="form-control">
-                <option value="oriental">Oriental</option>
-                <option value="woody">Woody</option>
-                <option value="floral">Floral</option>
-                <option value="fresh">Fresh</option>
-                <option value="other">Other</option>
+            <?php foreach ($fcat as $cat) { if($cat['type'] == 'profile'){?>		
+                <option value="<?=$cat['cname']?>"><?=$cat['name']?></option>
+            <?php } }?>
             </select>
             </td>
           </tr>
@@ -395,11 +393,9 @@ function reload_formulas_data() {
                                 <td>Profile:</td>
                                 <td>
                                 <select name="CSVProfile" id="CSVProfile" class="form-control">
-                                        <option value="oriental">Oriental</option>
-                                        <option value="woody">Woody</option>
-                                        <option value="floral">Floral</option>
-                                        <option value="fresh">Fresh</option>
-                                        <option value="other">Other</option>
+                                 <?php foreach ($fcat as $cat) { if($cat['type'] == 'profile'){?>		
+                                    <option value="<?=$cat['cname']?>"><?=$cat['name']?></option>
+            					 <?php } }?>
                                  </select>
                                 </td>
                               </tr>

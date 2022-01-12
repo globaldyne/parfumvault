@@ -13,15 +13,19 @@ if(!$_GET['id']){
 
 $id = mysqli_real_escape_string($conn, $_GET['id']);
 $info = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE id = '$id'"));
-$cats_q = mysqli_query($conn, "SELECT id,name,description,type FROM IFRACategories ORDER BY id ASC");
-while($cats_res = mysqli_fetch_array($cats_q)){
-    $cats[] = $cats_res;
-}
+
 if(empty($info['name'])){
 	echo 'Formula not found';
 	return;
 }
-
+$cats_q = mysqli_query($conn, "SELECT id,name,description,type FROM IFRACategories ORDER BY id ASC");
+while($cats_res = mysqli_fetch_array($cats_q)){
+    $cats[] = $cats_res;
+}
+$getFCats = mysqli_query($conn, "SELECT name,cname,type FROM formulaCategories");
+while($fcats = mysqli_fetch_array($getFCats)){
+	$fcat[] =$fcats;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -194,22 +198,20 @@ $('#formula_metadata').editable({
   	title: 'Profile',
   	url: "update_data.php?formulaMeta=<?=$info['fid']?>",
     source: [
-             {value: 'oriental', text: 'Oriental'},
-             {value: 'woody', text: 'Woody'},
-             {value: 'floral', text: 'Floral'},
-             {value: 'fresh', text: 'Fresh'},
-             {value: 'other', text: 'Other'},
-          ]
+			<?php foreach ($fcat as $cat) { if($cat['type'] == 'profile'){?>		
+             {value: '<?=$cat['cname']?>', text: '<?=$cat['name']?>'},
+            <?php } }?>
+            ]
     });
   
     $('#sex').editable({
 	value: "<?php echo $info['sex'];?>",
   	url: "update_data.php?formulaMeta=<?=$info['fid']?>",
     source: [
-             {value: 'unisex', text: 'Unisex'},
-             {value: 'men', text: 'Men'},
-             {value: 'women', text: 'Women'},
-          ]
+             <?php foreach ($fcat as $cat) { if($cat['type'] == 'sex'){?>		
+             {value: '<?=$cat['cname']?>', text: '<?=$cat['name']?>'},
+            <?php } }?>
+           ]
     });
   });
 

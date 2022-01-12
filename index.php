@@ -107,7 +107,7 @@ if(file_exists(__ROOT__.'/db/updates/update_'.$pv_meta['schema_ver'].'-'.$db_ver
 <script type='text/javascript'>
 
 $(document).ready(function() {
-	$('[rel=tipsy]').tooltip();
+	$('[rel=tip]').tooltip();
 	<?php if($show_release_notes){?>
 	$('#release_notes').modal('show');
 	<?php } ?>
