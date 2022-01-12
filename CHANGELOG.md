@@ -1,11 +1,14 @@
 # CHANGELOG
 ### Version 3.8
-tipsy.js dependency removed
-Major update in formula view to fully populate DataTables
-Major update in formula list to fully populate DataTables
-PDF export improvements
-PV Online can now be disabled/enabled when configured
-Various bug fixes and improvements
+
+- tipsy.js dependency removed
+- Major update in formula view to fully populate DataTables
+- Major update in formula list to fully populate DataTables
+- Major update in ingredients category list to fully populate DataTables
+- Add support for custom categories in formulas
+- PDF export improvements
+- PV Online can now be disabled/enabled when configured
+- Various bug fixes and improvements
 
 ### Version 3.7
 Delete history log when formula is deleted

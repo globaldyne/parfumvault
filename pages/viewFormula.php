@@ -54,7 +54,7 @@ $(document).ready(function() {
 			search: "Search in formula:"
 			},
     	ajax: {
-    		url: '/core/full_formula_data.php?id=<?=$id?>'
+    		url: 'core/full_formula_data.php?id=<?=$id?>'
  		 },
 		 columns: [
 				   { data : 'profile', title: 'Profile' },

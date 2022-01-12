@@ -1,3 +1,17 @@
+<?php if(isset($_GET['standalone'])){ ?>
+<link href="../css/fontawesome-free/css/all.min.css" rel="stylesheet">
+<script src="../js/jquery/jquery.min.js"></script>
+<link rel="stylesheet" href="../css/bootstrap.min.css">
+<script src="../js/bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="../css/datatables.min.css"/>
+<script type="text/javascript" src="../js/datatables.min.js"></script>
+<link rel="stylesheet" href="../css/vault.css">
+<script src="../js/magnific-popup.js"></script>
+<link href="../css/magnific-popup.css" rel="stylesheet" />
+<link href="../css/bootstrap-editable.css" rel="stylesheet">
+<script type="text/javascript" src="../js/bootbox.min.js"></script>
+<script src="../js/bootstrap-editable.js"></script>
+<?php } ?>
 <?php 
 
 require('../inc/sec.php');
@@ -8,28 +22,29 @@ require_once(__ROOT__.'/inc/opendb.php');
 ?>
 
 <table width="100%" border="0" class="table table-striped table-sm">
-              <div id="catMsg"></div>
+              <div id="fcatMsg"></div>
               <tr>
                 <td width="4%"><p>Category:</p></td>
-                <td width="12%"><input type="text" name="category" id="category" class="form-control"/></td>
+                <td width="12%"><input type="text" name="fcatName" id="fcatName" class="form-control"/></td>
                 <td width="1%">&nbsp;</td>
-                <td width="6%">Description:</td>
-                <td width="13%"><input type="text" name="cat_notes" id="cat_notes" class="form-control"/></td>
+                <td width="6%">Type:</td>
+                <td width="13%"><select name="cat_type" id="cat_type" class="form-control">
+                  <option value="profile">Profile</option>
+                  <option value="sex">Sex</option>
+                </select></td>
                 <td width="2%">&nbsp;</td>
-                <td width="22%"><input type="submit" name="add-category" id="add-category" value="Add" class="btn btn-info" /></td>
+                <td width="22%"><input type="submit" name="add-fcat" id="add-fcat" value="Add" class="btn btn-info" /></td>
                 <td width="40%">&nbsp;</td>
               </tr>
               <tr>
                 <td colspan="8">
                 <div class="card-body">
               <div>
-				<table id="tdDataCat" class="table table-striped table-bordered nowrap viewFormula" style="width:100%">
+				<table id="frmDataCat" class="table table-striped table-bordered nowrap viewFormula" style="width:100%">
                   <thead>
                     <tr>
-                      <th>Image</th>
-                      <th>Colour Key</th>
                       <th>Name</th>
-                      <th>Description</th>
+                      <th>Type</th>
                       <th>Actions</th>
                     </tr>
                   </thead>
@@ -41,7 +56,7 @@ require_once(__ROOT__.'/inc/opendb.php');
             </table>
 <script type="text/javascript" language="javascript" >
 $(document).ready(function() {
-		var tdDataCat = $('#tdDataCat').DataTable( {
+		var frmDataCat = $('#frmDataCat').DataTable( {
 		columnDefs: [
 			{ className: 'text-center', targets: '_all' },
         ],
@@ -50,74 +65,62 @@ $(document).ready(function() {
         language: {
 			loadingRecords: '&nbsp;',
 			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
-			emptyTable: "No groups yet.",
-			search: "Search:"
+			emptyTable: 'No groups yet.',
+			search: 'Search:'
 			},
-    	ajax: {	url: 'core/list_ingCat_data.php' },
-		 columns: [
-				   { data : 'image', title: 'Image', render: cImage },
-    			   { data : 'colorKey', title: 'Colour Key', render: cKey},
-				   { data : 'name', title: 'Name', render: cName},
-				   { data : 'notes', title: 'Description', render: cNotes},
-   				   { data : null, title: 'Actions', render: cActions},		   
-				  ],
-        order: [[ 2, 'asc' ]],
+    	ajax: {	url: 'core/list_frmCat_data.php' },
+		columns: [
+				  { data : 'name', title: 'Name', render: cName },
+    			  { data : 'type', title: 'Type', render: cType},
+   				  { data : null, title: 'Actions', render: cActions},		   
+				 ],
+        order: [[ 1, 'asc' ]],
 		lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
         pageLength: 20,
 		displayLength: 20,		
 	});
 });
 
-function cImage(data, type, row){
-	if(row.image){
-		var cimg = '<img src="' + row.image + '" class="img_ing">';
-	}else{
-		var cimg = '<img src="img/molecule.png" class="img_ing">';
-	}
-	return '<a href="pages/editCat.php?id='+row.id+'" class="popup-link">' + cimg + '</a>';    
-}
-function cKey(data, type, row){
-	return '<a href="#" class="colorKey" style="background-color: rgb('+row.colorKey+')" id="colorKey" data-name="colorKey" data-type="select" data-pk="'+row.id+'" data-title="Choose Colour Key for '+row.name+'"></a>';    
-}
+
 
 function cName(data, type, row){
 	return '<a class="name pv_point_gen" data-name="name" data-type="text" data-pk="'+row.id+'">'+row.name+'</a>';    
 }
 
-function cNotes(data, type, row){
-	return '<a class="notes pv_point_gen" data-name="notes" data-type="textarea" data-pk="'+row.id+'">'+row.notes+'</a>';    
+function cType(data, type, row){
+	return '<a class="type pv_point_gen" data-name="type" data-type="select" data-pk="'+row.id+'">'+row.type+'</a>';    
 }
 
 function cActions(data, type, row){
 	return '<a href="#" id="catDel" class="fas fa-trash" data-id="'+row.id+'" data-name="'+row.name+'"></a>';    
 }
 
-$('#add-category').click(function() {
+$('#add-fcat').click(function() {
 $.ajax({ 
 	url: 'pages/update_settings.php', 
 		type: 'POST',
 		data: {
-			manage: 'category',
+			manage: 'add_frmcategory',
 			
-			category: $("#category").val(),
-			cat_notes: $("#cat_notes").val(),
+			category: $("#fcatName").val(),
+			cat_type: $("#cat_type").val(),
 			
 			},
 		dataType: 'html',
 		success: function (data) {
-			$('#catMsg').html(data);
-			reload_cat_data();
+			$('#fcatMsg').html(data);
+			reload_fcat_data();
 		}
 	});
 });
 
 
 
-$('#tdDataCat').editable({
+$('#frmDataCat').editable({
   container: 'body',
   selector: 'a.name',
-  url: "pages/update_data.php?settings=cat",
-  title: 'Category',
+  url: "pages/update_data.php?settings=fcat",
+  title: 'Category name',
   type: "POST",
   dataType: 'json',
   validate: function(value){
@@ -127,40 +130,32 @@ $('#tdDataCat').editable({
   }
 });
  
-$('#tdDataCat').editable({
-  container: 'body',
-  selector: 'a.notes',
-  url: "pages/update_data.php?settings=cat",
-  title: 'Description',
-  type: "POST",
-  dataType: 'json',
-});
 
-//Change colorKey
-$('#tdDataCat').editable({
+//Change type
+$('#frmDataCat').editable({
 	pvnoresp: false,
 	highlight: false,
-	selector: 'a.colorKey',
+	selector: 'a.type',
 	type: "POST",
 	emptytext: "",
 	emptyclass: "",
-  	url: "pages/update_data.php?settings=cat",
+  	url: "pages/update_data.php?settings=fcat",
     source: [
 			 <?php
-				$getCK = mysqli_query($conn, "SELECT name,rgb FROM colorKey ORDER BY name ASC");
+				$getCK = mysqli_query($conn, "SELECT type FROM formulaCategories GROUP BY type");
 				while ($r = mysqli_fetch_array($getCK)){
-				echo '{value: "'.$r['rgb'].'", text: "'.$r['name'].'", ck: "color: rgb('.$r['rgb'].')"},';
-			}
-			?>
+			 ?>
+				{value: "<?=$r['type']?>", text: "<?=$r['type']?>"},
+			<?php } ?>
           ],
 	dataType: 'html',
 	success: function () {
-		reload_cat_data();
+		reload_fcat_data();
 	}
 });
 
 	
-$('#tdDataCat').on('click', '[id*=catDel]', function () {
+$('#frmDataCat').on('click', '[id*=catDel]', function () {
 	var cat = {};
 	cat.ID = $(this).attr('data-id');
 	cat.Name = $(this).attr('data-name');
@@ -178,13 +173,13 @@ $('#tdDataCat').on('click', '[id*=catDel]', function () {
 					url: 'pages/update_settings.php', 
 					type: 'POST',
 					data: {
-						action: "delete",
+						action: "del_frmcategory",
 						catId: cat.ID,
 						},
 					dataType: 'html',
 					success: function (data) {
-						$('#catMsg').html(data);
-						reload_cat_data();
+						$('#fcatMsg').html(data);
+						reload_fcat_data();
 					}
 				  });
                  return true;
@@ -201,16 +196,9 @@ $('#tdDataCat').on('click', '[id*=catDel]', function () {
    });
 });
 
-function reload_cat_data() {
-    $('#tdDataCat').DataTable().ajax.reload(null, true);
+function reload_fcat_data() {
+    $('#frmDataCat').DataTable().ajax.reload(null, true);
 };
 
-$( document ).ajaxComplete(function() {
-	$('.popup-link').magnificPopup({
-		type: 'iframe',
-		closeOnContentClick: false,
-		closeOnBgClick: false,
-		showCloseBtn: true,
-	});
-});
+
 </script>

@@ -184,15 +184,8 @@ function list_users(){
 		});
 };
 
-function list_cat(){
-	$.ajax({ 
-		url: 'pages/listCat.php', 
-		dataType: 'html',
-			success: function (data) {
-				$('#list_cat').html(data);
-			}
-		});
-};
+
+
 </script>
 </head>
 

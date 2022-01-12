@@ -541,7 +541,7 @@ formula td, table.table th {
 }
 
 .colorKey {
-    display: block;
+    display: inline-block;
     float: none;
     width: 34px;
     height: 34px;
