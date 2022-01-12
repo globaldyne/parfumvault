@@ -1,17 +1,3 @@
-<?php if(isset($_GET['standalone'])){ ?>
-<link href="../css/fontawesome-free/css/all.min.css" rel="stylesheet">
-<script src="../js/jquery/jquery.min.js"></script>
-<link rel="stylesheet" href="../css/bootstrap.min.css">
-<script src="../js/bootstrap.min.js"></script>
-<link rel="stylesheet" type="text/css" href="../css/datatables.min.css"/>
-<script type="text/javascript" src="../js/datatables.min.js"></script>
-<link rel="stylesheet" href="../css/vault.css">
-<script src="../js/magnific-popup.js"></script>
-<link href="../css/magnific-popup.css" rel="stylesheet" />
-<link href="../css/bootstrap-editable.css" rel="stylesheet">
-<script type="text/javascript" src="../js/bootbox.min.js"></script>
-<script src="../js/bootstrap-editable.js"></script>
-<?php } ?>
 <?php 
 
 require('../inc/sec.php');
@@ -135,6 +121,7 @@ $('#frmDataCat').editable({
 $('#frmDataCat').editable({
 	pvnoresp: false,
 	highlight: false,
+	title: 'Category type',
 	selector: 'a.type',
 	type: "POST",
 	emptytext: "",
