@@ -1,6 +1,5 @@
 # CHANGELOG
 ### Version 3.8
-
 - tipsy.js dependency removed
 - Major update in formula view to fully populate DataTables
 - Major update in formula list to fully populate DataTables
@@ -12,144 +11,144 @@
 - Various bug fixes and improvements
 
 ### Version 3.7
-Delete history log when formula is deleted
-Added final type when adding a new formula
-Added purpoce category when adding a new formula
-Fix a bug preventing showing the corrct final type in formula details
-Added EINECS (EC) for ingredient compositions
-Remove ingredient name from multi dimension lookup, validate only by CAS number
-Enable formula lock/unlock by clicking in lock pad
+- Delete history log when formula is deleted
+- Added final type when adding a new formula
+- Added purpoce category when adding a new formula
+- Fix a bug preventing showing the corrct final type in formula details
+- Added EINECS (EC) for ingredient compositions
+- Remove ingredient name from multi dimension lookup, validate only by CAS number
+- Enable formula lock/unlock by clicking in lock pad
 
 ### Version 3.6
-Prevent background formula changes when protected mode is enabled
-Fixed Where Used being displayed when adding new ingredient
-Added a function to convert a formula to ingredient
-Fix an issue preventing users to login when in sub domain
-Allergens tab in ingredients has now be renamed to composition (UI Only)
-Keep history for formula changes
+- Prevent background formula changes when protected mode is enabled
+- Fixed Where Used being displayed when adding new ingredient
+- Added a function to convert a formula to ingredient
+- Fix an issue preventing users to login when in sub domain
+- Allergens tab in ingredients has now be renamed to composition (UI Only)
+- Keep history for formula changes
 
 ### Version 3.5
-Formula can now be grouped by category
-Added ingredient clone option
-Added GHS for ingredients
-Fix a bug preventing iOS app to sync properly
-Add formula comparison
-Group formulation menu links
-Add - Export as PDF in formulas
-Add - Formula revision system
-Add - Accord creation from formulas notes
-Add - Where ingredient used
-Add - final concentration in formula
-Improvements in multi dimension limit lookup
-Increase precision in formulas
+- Formula can now be grouped by category
+- Added ingredient clone option
+- Added GHS for ingredients
+- Fix a bug preventing iOS app to sync properly
+- Add formula comparison
+- Group formulation menu links
+- Add Export as PDF in formulas
+- Add Formula revision system
+- Add Accord creation from formulas notes
+- Add Where ingredient used
+- Add final concentration in formula
+- Improvements in multi dimension limit lookup
+- Increase precision in formulas
 
 ### Version 3.4
-REST API added
-DB schema ingredients category chnage from char to int
-Category migration script added in helpers
-DB and main app update process seperated
-Grams added as a measurement unit
-Extend PV Online api to upload categories as a part of ingredient data
-Added category color key
-Improve PV Online upload function
-Ingredient management page improvements
-Set minimum 8 chars length for API key
-Overall code improvements especially for ingredients and categories pages
-Added card view in ingredients
+- REST API added
+- DB schema ingredients category chnage from char to int
+- Category migration script added in helpers
+- DB and main app update process seperated
+- Grams added as a measurement unit
+- Extend PV Online api to upload categories as a part of ingredient data
+- Added category color key
+- Improve PV Online upload function
+- Ingredient management page improvements
+- Set minimum 8 chars length for API key
+- Overall code improvements especially for ingredients and categories pages
+- Added card view in ingredients
 
 ### Version 3.3
-Show CAS and INCI when listing ingredients in formula page
-All custom usage limits set to "Recommendation" by default
-Custom usage limits will return info from now on instead of warning
-Custom usage limits will not prevent IFRA certificate to be generated
-TGSC integrations removed
-Adding advanced search in ingredients
-Adding search engine modules, so you can directly search a supplier for a material and import it in the local DB
-Added link to the app store for PV Light app
+- Show CAS and INCI when listing ingredients in formula page
+- All custom usage limits set to "Recommendation" by default
+- Custom usage limits will return info from now on instead of warning
+- Custom usage limits will not prevent IFRA certificate to be generated
+- TGSC integrations removed
+- Adding advanced search in ingredients
+- Adding search engine modules, so you can directly search a supplier for a material and import it in the local DB
+- Added link to the app store for PV Light app
 
 ### Version 3.2
-Fixed a bug preventing formula duplication
-Ingredients listing pagination
-Custom search in ingredients
+- Fixed a bug preventing formula duplication
+- Ingredients listing pagination
+- Custom search in ingredients
 
 ### Version 3.1
-Adding documents for ingredients
-Migration script added
-Formula picture is now stored in DB
+- Adding documents for ingredients
+- Migration script added
+- Formula picture is now stored in DB
 
 ### Version 3.0
-Add multiple suppliers per ingredient
-Price scrapper added - scrape price data from your suppliers web page
-Added ingredient physical state (Solid/Liquid)
-Ingredients supplier can be chosen when generating a finished formula
-Change image storage type for ingredient categories to LONGBLOB
-Improve ingredient mamage page by adding ingredient overview
-Logo update
-Update  pubchem api
-Removed edit options when formula is protected
-Bug fixes and Various improvements
-Added physical state icon in ingredient overview
-FIX an issue preventing uploading SDS when file too big
-Add profile image instead of name in ingredients list
-Merge ingredient name and INCI
-Improve csv export in ingredients page
-Ingredient profile replaced by INCI when available otherwise CAS number is shown when adding ingredients in a formula
-Adding purpose/category per formula
-Quering using ID where possible instead of names
-Added CAS in ingredient label
-Sell formula improvements
+- Add multiple suppliers per ingredient
+- Price scrapper added - scrape price data from your suppliers web page
+- Added ingredient physical state (Solid/Liquid)
+- Ingredients supplier can be chosen when generating a finished formula
+- Change image storage type for ingredient categories to LONGBLOB
+- Improve ingredient mamage page by adding ingredient overview
+- Logo update
+- Update  pubchem api
+- Removed edit options when formula is protected
+- Bug fixes and Various improvements
+- Added physical state icon in ingredient overview
+- FIX an issue preventing uploading SDS when file too big
+- Add profile image instead of name in ingredients list
+- Merge ingredient name and INCI
+- Improve csv export in ingredients page
+- Ingredient profile replaced by INCI when available otherwise CAS number is shown when adding ingredients in a formula
+- Adding purpose/category per formula
+- Quering using ID where possible instead of names
+- Added CAS in ingredient label
+- Sell formula improvements
 
 ### Version 2.9
-Label printing improvements
-Passing name is now encoded in base64 when requesting it
-Add reach number
-Remove css dependencies from viewSummary.php
-Add option to view back label of finished product as a text
-Select which ingredients will be shown in summary view
-Add product name in formulas listing
-Choose to add missing ingredients when importing from CSV
-Add ingredient id in formulas
-Include notes and default view when cloning a formula
+- Label printing improvements
+- Passing name is now encoded in base64 when requesting it
+- Add reach number
+- Remove css dependencies from viewSummary.php
+- Add option to view back label of finished product as a text
+- Select which ingredients will be shown in summary view
+- Add product name in formulas listing
+- Choose to add missing ingredients when importing from CSV
+- Add ingredient id in formulas
+- Include notes and default view when cloning a formula
 
 ### Version 2.8
-Formula CSV Import improvements
-Added protection from accidental deletion in formulas
-IFRA Library import improvements
-Various bug fixes
-Fix data table in formulas listing
-Fix a bug preventing CAS number to be shown in batch PDF
-Label print improvements
-Multi-dimensional ingredient lookup in alleregens and re-calculate the usage percentages 
-Add measurement units
-Add category image
-Notes summary in formula per ingrdient profile
-Category lookup by ID
-Add category image in ingredients list
-Add pubChem function
-IFRA certification improvements
-Add Molecular Weight for ingredients
-Add Mass for ingredients
-Remove legend/share if formula is empty
-Add update instructions link
-Add auto-update function when non docker
-Add option for notes per ingredient in formula
-Making username case insensitive
-Making ingredient name case insensitive
+- Formula CSV Import improvements
+- Added protection from accidental deletion in formulas
+- IFRA Library import improvements
+- Various bug fixes
+- Fix data table in formulas listing
+- Fix a bug preventing CAS number to be shown in batch PDF
+- Label print improvements
+- Multi-dimensional ingredient lookup in alleregens and re-calculate the usage percentages 
+- Add measurement units
+- Add category image
+- Notes summary in formula per ingrdient profile
+- Category lookup by ID
+- Add category image in ingredients list
+- Add pubChem function
+- IFRA certification improvements
+- Add Molecular Weight for ingredients
+- Add Mass for ingredients
+- Remove legend/share if formula is empty
+- Add update instructions link
+- Add auto-update function when non docker
+- Add option for notes per ingredient in formula
+- Making username case insensitive
+- Making ingredient name case insensitive
 
 ### Version 2.7
-Making sure the percentage symbol is striped out from allergens quantity
-Create entry in ingredients from allergens
-Adding no usage limit in ingredients
-Remove pvmaker code
-Ingredients management improvements
-SDS file upload improvements
-Root path update
-Add option to exclude private ingredient from uploading to PV Online
-Send local version to pv online API calls when enabled 
-Settings page improvements
-Change layout in ingredient management
-Fix a bug preventing ingredients import from a csv file
-Ingedients CSV Import improvements
+- Making sure the percentage symbol is striped out from allergens quantity
+- Create entry in ingredients from allergens
+- Adding no usage limit in ingredients
+- Remove pvmaker code
+- Ingredients management improvements
+- SDS file upload improvements
+- Root path update
+- Add option to exclude private ingredient from uploading to PV Online
+- Send local version to pv online API calls when enabled 
+- Settings page improvements
+- Change layout in ingredient management
+- Fix a bug preventing ingredients import from a csv file
+- Ingedients CSV Import improvements
 
 ### Version 2.6
 - ADD: Trading name in ingredients
