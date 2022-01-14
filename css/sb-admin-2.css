@@ -5566,7 +5566,7 @@ a.close.disabled {
 .modal-backdrop.show {
   opacity: 0.5;
 }
-
+/*
 .modal-header {
   display: flex;
   align-items: flex-start;
@@ -5592,7 +5592,7 @@ a.close.disabled {
   flex: 1 1 auto;
   padding: 1rem;
 }
-
+*/
 .modal-footer {
   display: flex;
   align-items: center;

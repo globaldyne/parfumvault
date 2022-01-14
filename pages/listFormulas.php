@@ -6,7 +6,10 @@ require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 
-require_once(__ROOT__.'/func/formulaProfile.php');
+$getFCats = mysqli_query($conn, "SELECT name,cname,type FROM formulaCategories");
+while($fcats = mysqli_fetch_array($getFCats)){
+	$fcat[] =$fcats;
+}
 $cats_q = mysqli_query($conn, "SELECT id,name,description,type FROM IFRACategories ORDER BY id ASC");
 while($cats_res = mysqli_fetch_array($cats_q)){
     $cats[] = $cats_res;
@@ -34,39 +37,276 @@ while($cats_res = mysqli_fetch_array($cats_q)){
             <div class="card-body">
               <div class="table-responsive">
 <?php
-if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"))== 0){
+if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients")))){
 	echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> no ingredients yet, click <a href="?do=ingredients">here</a> to add.</div>';
-}elseif(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))== 0){
+}elseif(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData")))){
 	echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> no formulas yet, click <a href="#" data-toggle="modal" data-target="#add_formula">here</a> to add.</div>';
 }else{
 ?>
-     <div id="listFormulas">
-     <ul>
-         <li><a href="#all"><span>All</span></a></li>
-         <li><a href="#oriental"><span>Oriental</span></a></li>
-         <li><a href="#woody"><span>Woody</span></a></li>
-         <li><a href="#floral"><span>Floral</span></a></li>
-         <li><a href="#fresh"><span>Fresh</span></a></li>
-         <li><a href="#unisex"><span>Unisex</span></a></li>
-         <li><a href="#men"><span>Men</span></a></li>
-         <li><a href="#women"><span>Women</span></a></li>
-     </ul>
-     <div id="all"><?php formulaProfile($conn,null,null); ?></div>
-     <div id="oriental"><?php formulaProfile($conn,'oriental',null); ?></div>
-     <div id="woody"><?php formulaProfile($conn,'woody',null); ?></div>
-     <div id="floral"><?php formulaProfile($conn,'floral',null); ?></div>
-     <div id="fresh"><?php formulaProfile($conn,'fresh',null); ?></div>
-     <div id="unisex"><?php formulaProfile($conn,null,'unisex'); ?></div>
-     <div id="men"><?php formulaProfile($conn,null,'men'); ?></div>
-     <div id="women"><?php formulaProfile($conn,null,'women'); ?></div>
-<?php } ?>
-                
-              </div>
+<div id="listFormulas">
+  <ul>
+     <li class="tabs">
+     	<a href="#tab-all">All formulas</a>
+     </li>
+     <?php foreach ($fcat as $cat) { ?>
+     <li class="tabs" data-source="core/list_formula_data.php?filter=1&<?=$cat['type']?>=<?=$cat['cname']?>" data-table="<?=$cat['cname']?>-table">
+     	<a href="#tab-<?=$cat['cname']?>"><?=$cat['name']?></a>
+     <?php } ?>       
+   </ul>
+        <div class="tab-content">
+            <div class="tab-pane" id="tab-all">
+                <table id="all-table" class="table table-striped table-bordered" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Formula Name</th>
+                            <th>Product Name</th>
+                            <th>Ingredients</th>
+                            <th>Class</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                </table>
             </div>
-                </td>
-              </tr>
-            </table>
-            <p>&nbsp;</p>
+            <?php foreach ($fcat as $cat) {?>
+            <div class="tab-pane" id="tab-<?=$cat['cname']?>">
+                <table id="<?=$cat['cname']?>-table" class="table table-striped table-bordered" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Formula Name</th>
+                            <th>Product Name</th>
+                            <th>Ingredients</th>
+                            <th>Class</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        <?php } ?>
+        </div>
+</div>
+
+<?php } ?>
+<script type="text/javascript" language="javascript" >
+$( document ).ajaxComplete(function() {
+	$('[rel=tip]').tooltip({
+        "html": true,
+        "delay": {"show": 100, "hide": 0},
+     });
+	$('.popup-link').magnificPopup({
+		type: 'iframe',
+		closeOnContentClick: false,
+		closeOnBgClick: false,
+		showCloseBtn: true,
+	});
+});
+$(".tabs").click(function() {
+     var src = $(this).data("source");
+     var tableId = $(this).data("table");
+     initTable(tableId, src);
+});
+function initTable(tableId, src) {
+    var table = $("#" + tableId).DataTable({
+           ajax: {url: src},
+			columns: [
+			   { data : 'name', title: 'Formula Name', render: fName },
+			   { data : 'product_name', title: 'Product Name', render: pName},
+    		   { data : 'ingredients', title: 'Ingredients'},
+			   { data : 'catClass', title: 'Class'},
+			   { data : 'created', title: 'Created'},
+			   { data : null, title: 'Actions', render: fActions},				   
+			  ],
+			 language: {
+				loadingRecords: '&nbsp;',
+				processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Blending...</span>',
+				emptyTable: "No formulas added yet.",
+				search: "Search for formula:"
+			},
+           order: [0,'asc'],
+           columnDefs: [
+				{ orderable: true, targets: [0] },
+				{ className: 'text-center', targets: '_all' },				  
+				],
+	    destroy: true,
+        bFilter: true,
+        paging:  true,
+		info:   true,
+		lengthMenu: [[20, 35, 60, -1], [20, 35, 60, "All"]]
+     });
+}
+initTable("all-table", "core/list_formula_data.php");
+
+$("#listFormulas").tabs();
+
+
+function fName(data, type, row, meta){
+	if(type === 'display'){
+		if(row.isProtected == 1){
+			var pad = 'class="fas fa-lock" rel="tip" title="Formula is protected"';
+		}else{
+			var pad = 'class="fas fa-unlock"  rel="tip" title="Formula is not protected"';
+		}
+		data = '<div '+ pad +'</div><a href="?do=Formula&id=' + row.id + '" > ' + data + '</a>';
+	}
+  return data;
+}
+function pName(data, type, row, meta){
+	if(type === 'display'){
+		data = '<a class="popup-link" href="pages/getFormMeta.php?id=' + row.id + '">' + data + '</a>';
+	}
+  return data;
+}
+function fActions(data, type, row, meta){
+	if(type === 'display'){
+		data = '<a href="pages/getFormMeta.php?id=' + row.id + '" rel="tip" title="Show details of '+ row.name +'" class="fas fa-comment-dots popup-link"></a> &nbsp; <a href="#" id="addTODO" class="fas fa-list" rel="tip" title="Add '+ row.name +' to the make list" data-id='+ row.fid +'></a> &nbsp; <a href="#" id="cloneMe" class="fas fa-copy" rel="tip" title="Clone '+ row.name +'" data-id='+ row.fid +'></a> &nbsp; <a href="#" id="deleteMe" class="fas fa-trash" rel="tip" title="Delete '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"></a>';
+	}
+    return data;
+}
+
+//Clone
+$('table.table').on('click', '[id*=cloneMe]', function () {
+	var formula = {};
+	formula.ID = $(this).attr('data-id');
+	$.ajax({ 
+		url: 'pages/manageFormula.php', 
+		type: 'GET',
+		data: {
+			action: "clone",
+			formula: formula.ID,
+			},
+		dataType: 'html',
+		success: function (data) {
+			if ( data.indexOf("Error") > -1 ) {
+				$('#inMsg').html(data); 
+			}else{
+				$('#inMsg').html(data);
+				reload_formulas_data();
+			}
+		}
+	  });
+});
+
+$('table.table').on('click', '[id*=deleteMe]', function () {
+	var formula = {};
+	formula.ID = $(this).attr('data-id');
+	formula.Name = $(this).attr('data-name');
+    
+	bootbox.dialog({
+       title: "Confirm formula deletion",
+       message : 'Permantly delete <strong>'+ $(this).attr('data-name') +'</strong> formula?',
+       buttons :{
+           main: {
+               label : "Delete",
+               className : "btn-danger",
+               callback: function (){
+	    			
+				$.ajax({ 
+					url: 'pages/manageFormula.php', 
+					type: 'GET',
+					data: {
+						action: "delete",
+						fid: formula.ID,
+						},
+					dataType: 'html',
+					success: function (data) {
+						$('#inMsg').html(data);
+						reload_formulas_data();
+					}
+				  });
+                 return true;
+               }
+           },
+           cancel: {
+               label : "Cancel",
+               className : "btn-default",
+               callback : function() {
+                   return true;
+               }
+           }   
+       },onEscape: function () {return true;}
+   });
+});
+
+$('table.table').on('click', '[id*=addTODO]', function () {
+	var formula = {};
+	formula.ID = $(this).attr('data-id');
+	$.ajax({ 
+    url: 'pages/manageFormula.php', 
+	type: 'GET',
+    data: {
+		action: 'todo',
+		fid: formula.ID,
+		add: true,
+		},
+	dataType: 'html',
+    success: function (data) {
+	  	$('#inMsg').html(data);
+    }
+  });
+});
+
+function add_formula() {
+	$.ajax({ 
+    url: 'pages/manageFormula.php', 
+	type: 'POST',
+    data: {
+		action: 'addFormula',
+		name: $("#name").val(),
+		profile: $("#profile").val(),
+		catClass: $("#catClass").val(),
+		finalType: $("#finalType").val(),
+		notes: $("#notes").val(),
+		},
+	dataType: 'html',
+    success: function (data) {
+	  	$('#addFormulaMsg').html(data);
+    }
+  });
+};
+
+function add_formula_csv() {
+    $("#CSVImportMsg").html('<div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
+	$("#btnImport").prop("disabled", true);
+		
+	var fd = new FormData();
+    var files = $('#CSVFile')[0].files;
+    var name = $('#CSVname').val();
+    var profile = $('#CSVProfile').val();
+	var addMissIng = $('#addMissIng').is(':checked');
+
+       if(files.length > 0 ){
+        fd.append('CSVFile',files[0]);
+        $.ajax({
+           url: 'pages/upload.php?type=frmCSVImport&name=' + name + '&profile=' + profile + '&addMissIng=' + addMissIng,
+           type: 'post',
+           data: fd,
+           contentType: false,
+           processData: false,
+		         cache: false,
+           success: function(response){
+             if(response != 0){
+               $("#CSVImportMsg").html(response);
+				$("#btnImport").prop("disabled", false);
+              }else{
+                $("#CSVImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> File upload failed!</div>');
+				$("#btnImport").prop("disabled", false);
+              }
+            },
+         });
+  }else{
+	$("#CSVImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a file to upload!</div>');
+	$("#btnImport").prop("disabled", false);
+  }
+};
+
+function reload_formulas_data() {
+	
+    $('#all-table').DataTable().ajax.reload(null, true);
+	
+};
+
+</script>
             
 <!--ADD FORMULA MODAL-->
 <div class="modal fade" id="add_formula" tabindex="-1" role="dialog" aria-labelledby="add_formula" aria-hidden="true">
@@ -90,11 +330,9 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"))== 0){
             <td>Profile:</td>
             <td>
             <select name="profile" id="profile" class="form-control">
-                <option value="oriental">Oriental</option>
-                <option value="woody">Woody</option>
-                <option value="floral">Floral</option>
-                <option value="fresh">Fresh</option>
-                <option value="other">Other</option>
+            <?php foreach ($fcat as $cat) { if($cat['type'] == 'profile'){?>		
+                <option value="<?=$cat['cname']?>"><?=$cat['name']?></option>
+            <?php } }?>
             </select>
             </td>
           </tr>
@@ -155,11 +393,9 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"))== 0){
                                 <td>Profile:</td>
                                 <td>
                                 <select name="CSVProfile" id="CSVProfile" class="form-control">
-                                        <option value="oriental">Oriental</option>
-                                        <option value="woody">Woody</option>
-                                        <option value="floral">Floral</option>
-                                        <option value="fresh">Fresh</option>
-                                        <option value="other">Other</option>
+                                 <?php foreach ($fcat as $cat) { if($cat['type'] == 'profile'){?>		
+                                    <option value="<?=$cat['cname']?>"><?=$cat['name']?></option>
+            					 <?php } }?>
                                  </select>
                                 </td>
                               </tr>
@@ -195,135 +431,3 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"))== 0){
   </div>
 </div>
 </div>
-<script type="text/javascript" language="javascript" >
-
-$('a[rel=tipsy]').tipsy();
-	
-$('.popup-link').magnificPopup({
-	type: 'iframe',
-	closeOnContentClick: false,
-	closeOnBgClick: false,
-	showCloseBtn: true,
-});
-	
-$('#tdData,#tdDataoriental,#tdDatawoody,#tdDatafloral,#tdDatafresh,#tdDataunisex,#tdDatamen,#tdDatawomen').DataTable({
-    "paging":   true,
-	"info":   true,
-	"lengthMenu": [[20, 35, 60, -1], [20, 35, 60, "All"]]
-});
-
-$(function() {
-  $("#listFormulas").tabs();
-});
-
-//Clone
-function cloneMe(cloneFormulaName) {	  
-$.ajax({ 
-    url: 'pages/manageFormula.php', 
-	type: 'get',
-    data: {
-		action: "clone",
-		formula: cloneFormulaName,
-		},
-	dataType: 'html',
-    success: function (data) {
-        if ( data.indexOf("Error") > -1 ) {
-			$('#inMsg').html(data); 
-		}else{
-			$('#inMsg').html(data);
-			list_formulas();
-		}
-    }
-  });
-};
-
-function deleteMe(deleteFormulaID) {	  
-$.ajax({ 
-    url: 'pages/manageFormula.php', 
-	type: 'get',
-    data: {
-		action: "delete",
-		fid: deleteFormulaID,
-		},
-	dataType: 'html',
-    success: function (data) {
-        if ( data.indexOf("Error") > -1 ) {
-			$('#inMsg').html(data); 
-		}else{
-			$('#inMsg').html(data);
-			list_formulas();
-		}
-    }
-  });
-};
-
-function addTODO(fid) {
-	$.ajax({ 
-    url: 'pages/manageFormula.php', 
-	type: 'get',
-    data: {
-		action: 'todo',
-		fid: fid,
-		add: true,
-		},
-	dataType: 'html',
-    success: function (data) {
-	  	$('#inMsg').html(data);
-    }
-  });
-};
-
-function add_formula() {
-	$.ajax({ 
-    url: 'pages/manageFormula.php', 
-	type: 'POST',
-    data: {
-		action: 'addFormula',
-		name: $("#name").val(),
-		profile: $("#profile").val(),
-		catClass: $("#catClass").val(),
-		finalType: $("#finalType").val(),
-		notes: $("#notes").val(),
-		},
-	dataType: 'html',
-    success: function (data) {
-	  	$('#addFormulaMsg').html(data);
-    }
-  });
-};
-
-function add_formula_csv() {
-    $("#CSVImportMsg").html('<div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
-	$("#btnImport").prop("disabled", true);
-		
-	var fd = new FormData();
-    var files = $('#CSVFile')[0].files;
-    var name = $('#CSVname').val();
-    var profile = $('#CSVProfile').val();
-	var addMissIng = $('#addMissIng').is(':checked');
-
-       if(files.length > 0 ){
-        fd.append('CSVFile',files[0]);
-        $.ajax({
-           url: 'pages/upload.php?type=frmCSVImport&name=' + name + '&profile=' + profile + '&addMissIng=' + addMissIng,
-           type: 'post',
-           data: fd,
-           contentType: false,
-           processData: false,
-		         cache: false,
-           success: function(response){
-             if(response != 0){
-               $("#CSVImportMsg").html(response);
-				$("#btnImport").prop("disabled", false);
-              }else{
-                $("#CSVImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> File upload failed!</div>');
-				$("#btnImport").prop("disabled", false);
-              }
-            },
-         });
-  }else{
-	$("#CSVImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a file to upload!</div>');
-	$("#btnImport").prop("disabled", false);
-  }
-};
-</script>

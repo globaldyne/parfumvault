@@ -12,7 +12,8 @@ if(!$_GET['formula']){
 	die('No valid formula provided');
 }
 $formula = mysqli_real_escape_string($conn, $_GET['formula']);
-if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE id = '$formula'")) == 0){
+$fid = mysqli_real_escape_string($conn, $_GET['fid']);
+if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulas WHERE fid = '$fid'")))){
 	echo '<div class="alert alert-info alert-dismissible">Incomplete formula.</div>';
 	return;
 }

@@ -7,6 +7,27 @@ require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/labelMap.php');
 require_once(__ROOT__.'/func/get_formula_notes.php');
 
+//IS MADE
+if($_POST['isMade'] && $_POST['fid']){
+	$fid = mysqli_real_escape_string($conn,$_POST['fid']);
+	
+	$quant = mysqli_query($conn, "SELECT ingredient,quantity FROM formulas WHERE fid = '$fid'");
+	while($get_quant = mysqli_fetch_array($quant)){
+		$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '".$get_quant['ingredient']."'"));
+		$q = "UPDATE suppliers SET stock = GREATEST(0, stock - '".$get_quant['quantity']."') WHERE ingID = '".$ing['id']."' AND stock = GREATEST(stock, '".$get_quant['quantity']."')";
+		$upd = mysqli_query($conn, $q);	
+	}
+	if($upd){
+		echo  '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Inventory updated!</div>';
+	}else{
+		echo  '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.mysqli_error($conn).'</div>';
+
+	}
+		
+	return;
+}
+
+
 //CREATE ACCORD
 if($_POST['accordName'] && $_POST['accordProfile'] && $_POST['fid']){
 	$fid = mysqli_real_escape_string($conn,$_POST['fid']);

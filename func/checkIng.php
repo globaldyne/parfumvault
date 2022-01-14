@@ -11,17 +11,17 @@ function checkIng($ingredient, $defCatClass, $conn){
 			$chkPrice = mysqli_fetch_array(mysqli_query($conn, "SELECT price FROM suppliers WHERE ingID = '".$qValues['id']."'"));
 			
 			if(empty($chkIFRA[$defCatClass]) && empty($qValues[$defCatClass])){
-				return '<a href="#" class="fas fa-exclamation" rel="tipsy" title="Missing usage data"></a>';
+				return 'Missing usage data';
 			}
 			if(empty($chkPrice['price'])){
-				return '<a href="#" class="fas fa-exclamation" rel="tipsy" title="Missing price data"></a>';
+				return 'Missing pricing data';
 			}
 			if(!($qValues['profile'])){
-				return '<a href="#" class="fas fa-exclamation" rel="tipsy" title="Missing profile data"></a>';
+				return 'Missing profile data';
 			}
 		}
 	}else{
-		return '<a href="#" class="fas fa-exclamation" rel="tipsy" title="Ingredient is missing from the database"></a>';
+		return 'Ingredient is missing from the database';
 	}
 }
 ?>

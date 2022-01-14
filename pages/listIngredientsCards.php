@@ -7,7 +7,6 @@ require('../inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
-require_once(__ROOT__.'/func/formulaProfile.php');
 require_once(__ROOT__.'/func/getIngSupplier.php');
 require_once(__ROOT__.'/func/checkAllergen.php');
 require_once(__ROOT__.'/func/searchIFRA.php');
@@ -97,7 +96,7 @@ $next = $page + 1;
                             <a class="dropdown-item popup-link" href="pages/mgmIngredient.php">Add new ingredient</a>
                             <a class="dropdown-item" id="csv_export" href="/pages/export.php?format=csv&kind=ingredients">Export to CSV</a>
 	                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#csv_import">Import from CSV</a>
-                            <?php if($pv_online['email'] && $pv_online['password']){?>
+                            <?php if($pv_online['email'] && $pv_online['password'] && $pv_online['enabled'] == '1'){?>
                             <div class="dropdown-divider"></div>
 	                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#pv_online_import">Import from PV Online</a>
 	                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#pv_online_upload">Upload to PV Online</a>
@@ -165,7 +164,6 @@ $(".alert-dismissible").fadeTo(2000, 500).slideUp(500, function(){
     $(".alert-dismissible").alert('close');
 });
 
-$('a[rel=tipsy]').tipsy();
 	
 $('#ing_limit').change(function () {
 	list_ingredients(<?=$page?>,$("#ing_limit").val());
