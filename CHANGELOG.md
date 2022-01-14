@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 3.9
+
 ### Version 3.8
 - tipsy.js dependency removed
 - Major update in formula view to fully populate DataTables
