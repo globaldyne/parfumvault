@@ -743,7 +743,20 @@ $(document).ready(function() {
             <p>
             Manufacturer:
             <input class="form-control" name="supplier_manufacturer" type="text" id="supplier_manufacturer" />
-            </p>            
+            </p>
+            <p>
+            Batch:
+            <input class="form-control" name="supplier_batch" type="text" id="supplier_batch" />
+            </p>
+			<p>
+            Manufactured:
+            <input class="form-control" name="manufactured" type="date" id="manufactured" />
+            </p>
+			<p>
+            In stock:
+            <input class="form-control" name="stock" type="text" id="stock" />
+            </p>
+            
             <div class="dropdown-divider"></div>
       </div>
       <div class="modal-footer">
@@ -916,12 +929,16 @@ function addSupplier() {
 			supplier_size: $("#supplier_size").val(),	
 			supplier_price: $("#supplier_price").val(),				
 			supplier_manufacturer: $("#supplier_manufacturer").val(),
+			supplier_batch: $("#supplier_batch").val(),
+			manufactured: $("#manufactured").val(),
+			stock: $("#stock").val(),
+
 			ingID: '<?=$ing['id'];?>'
 			},
 		dataType: 'html',
 		success: function (data) {
 			$('#supplier_inf').html(data);
-			//$("#supplier_name").val('');
+			$("#supplier_batch").val('');
 			$("#supplier_link").val('');
 			$("#supplier_size").val('');
 			$("#supplier_price").val('');

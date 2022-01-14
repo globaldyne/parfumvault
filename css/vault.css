@@ -652,3 +652,15 @@ formula td, table.table th {
 .pv_bar_base_notes {
     background-color: #337ab7 !important;
 }
+
+.inv-ok {
+	color:green;
+}
+
+.inv-no-info {
+	color: #8a6d3b;
+}
+
+.inv-out {
+	color: red;
+}

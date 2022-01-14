@@ -41,13 +41,13 @@ $f_name = base64_decode($meta['fid']);
 $(document).ready(function() {
   var groupColumn = 0;
   var formula_table = $('#formula').DataTable( {
-		"columnDefs": [
+		columnDefs: [
             { visible: false, targets: groupColumn },
 			{ className: 'text-center', targets: '_all' },
         ],
 		dom: 'lfrtip',
-		"processing": true,
-        "language": {
+		processing: true,
+        language: {
 			loadingRecords: '&nbsp;',
 			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
 			emptyTable: "Incomplete formula. Please add ingredients.",
@@ -57,16 +57,17 @@ $(document).ready(function() {
     		url: 'core/full_formula_data.php?id=<?=$id?>'
  		 },
 		 columns: [
-				   { data : 'profile', title: 'Profile' },
-				   { data : 'ingredient', title: 'Ingredient', render: ingName},
-    			   { data : 'cas', title: 'CAS#'},
+				   { data : 'ingredient.profile', title: 'Profile' },
+				   { data : 'ingredient.name', title: 'Ingredient', render: ingName},
+    			   { data : 'ingredient.cas', title: 'CAS#'},
 				   { data : 'purity', title: 'Purity %', render: ingConc},
 				   { data : 'dilutant', title: 'Dilutant', render: ingSolvent},
 				   { data : 'quantity', title: 'Quantity (<?=$settings['mUnit']?>)', render: ingQuantity},
 				   { data : 'concentration', title: 'Concentration %'},
 				   { data : 'final_concentration', title: 'Final Concentration <?=$meta['finalType']?>%'},
 				   { data : 'cost', title: 'Cost (<?=$settings['currency']?>)'},
-				   { data : 'desc', title: 'Properties', render: ingNotes},
+				   { data : 'ingredient.inventory.stock', title: 'Inentory', render: ingInv },
+				   { data : 'ingredient.desc', title: 'Properties', render: ingNotes},
    				   { data : null, title: 'Actions', className: 'text-center noexport', render: ingActions},		   
 				   
 				  ],
@@ -83,11 +84,11 @@ $(document).ready(function() {
 		 }
       },
 	  
-        "order": [[ groupColumn, 'desc' ]],
-		"lengthMenu": [[20, 50, 100, -1], [20, 50, 100, "All"]],
-        "pageLength": 100,
-		"displayLength": 100,
-		"createdRow": function( row, data, dataIndex){
+        order: [[ groupColumn, 'desc' ]],
+		lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
+        pageLength: 100,
+		displayLength: 100,
+		createdRow: function( row, data, dataIndex){
 			if( data['usage_regulator'] == "IFRA" && parseFloat(data['usage_limit']) < parseFloat(data['concentration'])){
 				$(row).find('td:eq(5)').addClass('alert-danger').append(' <a href="#" rel="tip" title="Max usage: ' + data['usage_limit'] +'%" class="fas fa-info-circle"></a></div>');
 			}else if( data['usage_regulator'] == "PV" && parseFloat(data['usage_limit']) < parseFloat(data['concentration'])){
@@ -173,10 +174,50 @@ $('#formula').on('click', '[id*=rmIng]', function () {
        },onEscape: function () {return true;}
    });
 });
+
 	
+		 
 	update_bar();
 	
 });//doc ready
+function isMade() {
+			 
+	bootbox.dialog({
+       title: "Confirm formula is made",
+       message : 'Confirm formula is made?<br /> If confirmed, ingredients amount will be deducted from the inventory accordingly.',
+       buttons :{
+           main: {
+               label : "Confirm",
+               className : "btn-primary",
+               callback: function (){
+	    			
+				$.ajax({ 
+					url: 'pages/manageFormula.php', 
+					type: 'POST',
+					data: {
+						isMade: "1",
+						fid: "<?=$meta['fid']?>",
+						},
+					dataType: 'html',
+					success: function (data) {
+						$('#msgInfo').html(data);
+						reload_formula_data();
+					}
+				  });
+                 return true;
+               }
+           },
+           cancel: {
+               label : "Cancel",
+               className : "btn-default",
+               callback : function() {
+                   return true;
+               }
+           }   
+       },onEscape: function () {return true;}
+   });
+			 
+}
 
 function update_bar(){
      $.getJSON("/core/full_formula_data.php?id=<?=$id?>&stats_only=1", function (json) {
@@ -236,6 +277,7 @@ function reload_formula_data() {
                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#conv_ingredient">Convert to ingredient</a>
                <div class="dropdown-divider"></div>
                <a class="dropdown-item" href="javascript:addTODO()">Add to the make list</a>
+               <a class="dropdown-item" href="javascript:isMade()">Mark formula as made</a>
                <div class="dropdown-divider"></div>
                <a class="dropdown-item" href="pages/viewHistory.php?id=<?=$meta['id']?>" target="_blank">View history</a>
             </div>
@@ -256,6 +298,7 @@ function reload_formula_data() {
                 <th>Concentration %*</th>
                 <th>Final Concentration %</th>
                 <th>Cost</th>
+                <th>Inventory</th>
                 <th>Properties</th>
                 <th>Actions</th>
             </tr>
@@ -497,13 +540,13 @@ $('#formula').editable({
 		}else{
 			var chkIng = '';
 		}
-		if(row.profile_plain){
-			var profile_class = '<a href="#" class="'+row.profile_plain+'"></a>';
+		if(row.ingredient.profile_plain){
+			var profile_class = '<a href="#" class="'+row.ingredient.profile_plain+'"></a>';
 		}else{
 			var profile_class ='';
 		}
 		if(type === 'display'){
-			data = '<a class="popup-link" href="pages/mgmIngredient.php?id=' + row.enc_id + '">' + data + '</a> '+ chkIng + profile_class;
+			data = '<a class="popup-link" href="pages/mgmIngredient.php?id=' + row.ingredient.enc_id + '">' + data + '</a> '+ chkIng + profile_class;
 		}
 
   	  return data;
@@ -512,7 +555,7 @@ $('#formula').editable({
 	function ingConc(data, type, row, meta){
 	  if(type === 'display'){
 		  <?php if($meta['isProtected'] == FALSE){?>
-		  data = '<a href="#" data-name="concentration" class="concentration" data-type="text" data-pk="' + row.ingredient + '">' + data + '</a>';
+		  data = '<a href="#" data-name="concentration" class="concentration" data-type="text" data-pk="' + row.ingredient.name + '">' + data + '</a>';
 		  <?php } ?>
 	  }
 
@@ -523,7 +566,7 @@ $('#formula').editable({
 	  if(type === 'display'){
 		<?php if($meta['isProtected'] == FALSE){?>
 		  if(row.purity !== 100){
-		  	data = '<a href="#" data-name="dilutant" class="solvent" data-type="select" data-pk="' + row.ingredient + '">' + data + '</a>';
+		  	data = '<a href="#" data-name="dilutant" class="solvent" data-type="select" data-pk="' + row.ingredient.name + '">' + data + '</a>';
 	  	}else{
 			data = 'None';
 		}
@@ -535,7 +578,7 @@ $('#formula').editable({
   function ingQuantity(data, type, row, meta){
 	if(type === 'display'){
 		<?php if($meta['isProtected'] == FALSE){?>
-		data = '<a href="#" data-name="quantity" class="quantity" data-type="text" data-pk="' + row.ingredient + '">' + data + '</a>';
+		data = '<a href="#" data-name="quantity" class="quantity" data-type="text" data-pk="' + row.ingredient.name + '">' + data + '</a>';
 		<?php } ?>
 	}
     return data;
@@ -545,11 +588,28 @@ $('#formula').editable({
 	 if(type === 'display'){
 	  <?php if($meta['defView'] == '1'){ $show = 'properties'; }elseif($meta['defView'] == '2'){ $show = 'notes';}?>
 	  <?php if($meta['isProtected'] == FALSE){?>
-	  data = '<a href="#" data-name="<?=$show?>" class="<?=$show?>" data-type="textarea" data-pk="' + row.ingredient + '">' + data + '</a>';
+	  data = '<a href="#" data-name="<?=$show?>" class="<?=$show?>" data-type="textarea" data-pk="' + row.ingredient.name + '">' + data + '</a>';
 	  <?php } ?>
 	 }
    return data;
   }
+  
+  
+	function ingInv(data, type, row, meta){
+		//console.log(row.);
+		if(row.ingredient.inventory.stock >= row.quantity){
+			var inv = '<i class="fa fa-check inv-ok" rel="tip" title="Available in stock: '+row.ingredient.inventory.stock+row.ingredient.inventory.mUnit+'"></i>';
+		}else if(row.ingredient.inventory.stock <= row.quantity){
+			var inv = '<i class="fa fa-times inv-out" rel="tip" data-html="true" title="Not enough in stock<br/> Available: '+row.ingredient.inventory.stock + row.ingredient.inventory.mUnit +'"></i>';
+		}
+	
+		if(type === 'display'){
+			data = inv;
+		}
+
+  	  return data;
+  }
+  
   function ingActions(data, type, row, meta){
 	//Change ingredient
 	$('#formula').editable({
@@ -580,9 +640,9 @@ $('#formula').editable({
 	});
 
 	if(type === 'display'){
-		data = '<a href="'+ row.pref_supplier_link +'" target="_blank" rel="tip" title="Open '+ row.pref_supplier +' page" class="fas fa-shopping-cart"></a>';
+		data = '<a href="'+ row.ingredient.pref_supplier_link +'" target="_blank" rel="tip" title="Open '+ row.ingredient.pref_supplier +' page" class="fas fa-shopping-cart"></a>';
 		<?php if($meta['isProtected'] == FALSE){?>
-		data += '&nbsp; <a href="#" class="fas fa-exchange-alt replaceIngredient" rel="tip" title="Replace '+ row.ingredient +'"  data-name="'+ row.ingredient +'" data-type="select" data-pk="'+ row.ingredient +'" data-title="Choose Ingredient to replace '+ row.ingredient +'"></a> &nbsp; <a href="#" rel="tip" title="Remove '+ row.ingredient +'" class="fas fa-trash" id="rmIng" data-name="'+ row.ingredient +'" data-id='+ row.formula_ingredient_id +'></a>';
+		data += '&nbsp; <a href="#" class="fas fa-exchange-alt replaceIngredient" rel="tip" title="Replace '+ row.ingredient.name +'"  data-name="'+ row.ingredient.name +'" data-type="select" data-pk="'+ row.ingredient.name +'" data-title="Choose Ingredient to replace '+ row.ingredient.name +'"></a> &nbsp; <a href="#" rel="tip" title="Remove '+ row.ingredient.name +'" class="fas fa-trash" id="rmIng" data-name="'+ row.ingredient.name +'" data-id='+ row.formula_ingredient_id +'></a>';
 		<?php } ?>
 	}
     return data;

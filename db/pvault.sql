@@ -383,6 +383,10 @@ CREATE TABLE `suppliers` (
  `size` float DEFAULT 10,
  `manufacturer` varchar(255) COLLATE utf8_bin DEFAULT NULL,
  `preferred` int(11) NOT NULL DEFAULT 0,
+ `batch` VARCHAR(255) NULL,
+ `manufactured` DATE NULL,
+ `mUnit` VARCHAR(255) NULL, 
+ `stock` INT NOT NULL,
  PRIMARY KEY (`id`),
  UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;

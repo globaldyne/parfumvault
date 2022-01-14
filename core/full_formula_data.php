@@ -59,7 +59,9 @@ foreach ($form as $formula){
 
 foreach ($form as $formula){
 	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT id, name, cas, $defCatClass, profile, odor, category FROM ingredients WHERE name = '".$formula['ingredient']."'"));
-	  	
+	 
+	$inventory = mysqli_fetch_array(mysqli_query($conn, "SELECT stock,mUnit,batch,manufactured FROM suppliers WHERE ingID = '".$ing_q['id']."' AND preferred = '1'"));
+	
 	$conc = $formula['concentration'] / 100 * $formula['quantity']/$mg['total_mg'] * 100;
   	$conc_final = $formula['concentration'] / 100 * $formula['quantity']/$mg['total_mg'] * $meta['finalType'];
 	
@@ -72,19 +74,18 @@ foreach ($form as $formula){
 		$chName = mysqli_fetch_array(mysqli_query($conn,"SELECT chemical_name FROM ingredients WHERE name = '".$formula['ingredient']."'"));
 		$ingName = $chName['chemical_name'];
 	}
-		              
-	$r['enc_id'] = (string)base64_encode($ing_q['name']);
-	$r['id'] = (int)$ing_q['id'];
-   	$r['ingredient'] = (string)$ingName ?: $formula['ingredient'];
-   	$r['formula_ingredient_id'] = (int)$formula['id'];
-	$r['cas'] = (string)$ing_q['cas'];
+	$r['formula_ingredient_id'] = (int)$formula['id'];       
+	$r['fid'] = (string)$meta['name'];
+	
+	
+	
 	if($settings['grp_formula'] == '1'){
-		$r['profile'] = (string)$ing_q['profile'] ?: 'Unknown';
+		$r['ingredient']['profile'] = (string)$ing_q['profile'] ?: 'Unknown';
 	}elseif($settings['grp_formula'] == '2'){
-		$r['profile'] = (string)getCatByIDRaw($ing_q['category'], 'name,colorKey', $conn)['name']?:'Unknown Notes';
+		$r['ingredient']['profile'] = (string)getCatByIDRaw($ing_q['category'], 'name,colorKey', $conn)['name']?:'Unknown Notes';
 	}elseif($settings['grp_formula'] == '0'){
-		$r['profile'] = null;
-		$r['profile_plain'] = (string)$ing_q['profile'].'_notes'?: 'Unknown';
+		$r['ingredient']['profile'] = null;
+		$r['ingredient']['profile_plain'] = (string)$ing_q['profile'].'_notes'?: 'Unknown';
 	}
 	
 	$r['purity'] = (int)$formula['concentration'] ?: 100;
@@ -113,12 +114,22 @@ foreach ($form as $formula){
 		$desc = $formula['notes'];
 	}
 	
-	$r['desc'] = (string)$desc ?: '-';
-	$r['pref_supplier'] = (string)getPrefSupplier($ing_q['id'],$conn)['name'] ?: 'N/A';
-	$r['pref_supplier_link'] = (string)getPrefSupplier($ing_q['id'],$conn)['supplierLink'] ?: 'N/A';
-	$r['fid'] = (string)$meta['name'];
+	$r['ingredient']['enc_id'] = (string)base64_encode($ing_q['name']);
+	$r['ingredient']['id'] = (int)$ing_q['id'];
+   	$r['ingredient']['name'] = (string)$ingName ?: $formula['ingredient'];
+	$r['ingredient']['cas'] = (string)$ing_q['cas'];
+
+	$r['ingredient']['desc'] = (string)$desc ?: '-';
+	$r['ingredient']['pref_supplier'] = (string)getPrefSupplier($ing_q['id'],$conn)['name'] ?: 'N/A';
+	$r['ingredient']['pref_supplier_link'] = (string)getPrefSupplier($ing_q['id'],$conn)['supplierLink'] ?: 'N/A';
+	
 	$r['chk_ingredient'] = (string)checkIng($formula['ingredient'],$defCatClass,$conn) ?: null;
 	
+	$r['ingredient']['inventory']['stock'] = (int)$inventory['stock'] ?: 0;
+	$r['ingredient']['inventory']['mUnit'] = (string)$inventory['mUnit'] ?: $settings['mUnit'];
+	$r['ingredient']['inventory']['batch'] = (string)$inventory['batch'] ?: 'N/A';
+	$r['ingredient']['inventory']['manufactured'] = (string)$inventory['manufactured'] ?: 'N/A';
+
 	$response['data'][] = $r;
 	
 	$conc_f[] = $conc;
