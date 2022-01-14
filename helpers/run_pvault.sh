@@ -2,13 +2,13 @@
 #
 #
 # Run Perfumer's Vault
-# Script Version: v1.3
+# Script Version: v1.4
 # Author: John Belekios <john@globaldyne.co.uk>
 #
 #
 PVDIR=$HOME/Documents/pvault_pro.nosync
 LEGACYDIR=$HOME/Documents/pvault_pro
-DOCKER_BIN=/usr/local/bin/docker
+DOCKER_BIN=$(which docker)
 
 echo 'Checking for legacy data...'
 if [ -d $LEGACYDIR ]; then
@@ -18,7 +18,7 @@ fi
 
 
 echo "Checking if Docker is up and runnning..."
-$DOCKER_BIN info --format "{{.OperatingSystem}}" | grep -q "Docker" 
+$DOCKER_BIN info --format "{{.OperatingSystem}}" | grep -q "Docker\|Linux" 
 
 if [[ $? -eq 0 ]]; then
 	#Check if required local path exists and create if not
@@ -37,6 +37,6 @@ if [[ $? -eq 0 ]]; then
 else
     clear
     echo "Docker not detected. Please make sure you have Docker installed and is up and running."
-    echo "You can download Docker from: https://docs.docker.com/docker-for-mac/install/"
+    echo "You can download Docker from: https://docs.docker.com/"
 fi
 

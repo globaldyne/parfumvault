@@ -1,4 +1,6 @@
 <?php
+$DEBUG = false;
+$starttime = microtime(true);
 require('./inc/sec.php');
 if(file_exists('./inc/config.php') == FALSE){
 	session_destroy();
@@ -77,7 +79,6 @@ if(file_exists(__ROOT__.'/db/updates/update_'.$pv_meta['schema_ver'].'-'.$db_ver
   <script src="js/tableHTMLExport.js"></script>
   <script src="js/jspdf.min.js"></script>
   <script src="js/jspdf.plugin.autotable.js"></script>
-  <script src="js/bootstrap.min.js"></script>
   
   <link href="css/datatables.min.css" rel="stylesheet">
   
@@ -86,25 +87,27 @@ if(file_exists(__ROOT__.'/db/updates/update_'.$pv_meta['schema_ver'].'-'.$db_ver
  
   <link href="css/bootstrap.min.css" rel="stylesheet">
   
+ 
+  
+  <script src="js/jquery-ui.js"></script>
+  <script src="js/bootstrap.min.js"></script>
   <script src="js/bootstrap-select.js"></script>
   <script src="js/bootstrap-editable.js"></script>
   
-  <script src='js/tipsy.js'></script>
-  <script src="js/jquery-ui.js"></script>
-
   <script src="js/dataTables.responsive.min.js"></script>
   <script src="js/responsive.bootstrap.min.js"></script>
+  <script src="js/bootbox.min.js"></script>
+
   <link href="css/responsive.bootstrap.min.css" rel="stylesheet">
 	
   <link href="css/jquery-ui.css" rel="stylesheet">
-  <link href="css/tipsy.css" rel="stylesheet" />
   <link href="css/magnific-popup.css" rel="stylesheet" />
   <link href="css/vault.css" rel="stylesheet">
   
 <script type='text/javascript'>
 
 $(document).ready(function() {
-	$('a[rel=tipsy]').tipsy();
+	$('[rel=tip]').tooltip();
 	<?php if($show_release_notes){?>
 	$('#release_notes').modal('show');
 	<?php } ?>
@@ -181,15 +184,8 @@ function list_users(){
 		});
 };
 
-function list_cat(){
-	$.ajax({ 
-		url: 'pages/listCat.php', 
-		dataType: 'html',
-			success: function (data) {
-				$('#list_cat').html(data);
-			}
-		});
-};
+
+
 </script>
 </head>
 
@@ -390,3 +386,4 @@ function list_cat(){
 <?php } ?>
 </body>
 </html>
+<?php if($DEBUG == TRUE){printf("Page loaded in %f seconds", microtime(true) - $starttime );}?>

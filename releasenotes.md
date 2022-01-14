@@ -1,5 +1,6 @@
 Whats New:
 ----------------------
-EINECS added for ingredients compositions
-Multidimesion look-up now validates only against CAS and not ingredient name
-Enable formula lock/unlock by clicking in lock pad
+Stock management for ingredients
+Formula tables has been rewritten to improve user experience
+Access to PV Online can now be enabled/disabled after is configured
+Various improvements and bug fixes
