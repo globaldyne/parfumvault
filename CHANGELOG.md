@@ -9,6 +9,7 @@
 - PV Online can now be disabled/enabled when configured
 - Fix a bug preventing DB upgrade when online update is disabled
 - Various bug fixes and improvements
+- Extend run_pvault.sh to work in Linux enviroments
 
 ### Version 3.7
 - Delete history log when formula is deleted
