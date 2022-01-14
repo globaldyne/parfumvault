@@ -13,15 +13,19 @@ if(!$_GET['id']){
 
 $id = mysqli_real_escape_string($conn, $_GET['id']);
 $info = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE id = '$id'"));
-$cats_q = mysqli_query($conn, "SELECT id,name,description,type FROM IFRACategories ORDER BY id ASC");
-while($cats_res = mysqli_fetch_array($cats_q)){
-    $cats[] = $cats_res;
-}
+
 if(empty($info['name'])){
 	echo 'Formula not found';
 	return;
 }
-
+$cats_q = mysqli_query($conn, "SELECT id,name,description,type FROM IFRACategories ORDER BY id ASC");
+while($cats_res = mysqli_fetch_array($cats_q)){
+    $cats[] = $cats_res;
+}
+$getFCats = mysqli_query($conn, "SELECT name,cname,type FROM formulaCategories");
+while($fcats = mysqli_fetch_array($getFCats)){
+	$fcat[] =$fcats;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -48,16 +52,14 @@ if(empty($info['name'])){
   <link href="/css/bootstrap-editable.css" rel="stylesheet">
   <link href="/css/vault.css" rel="stylesheet">
   <script src="/js/jquery/jquery.min.js"></script>
-  <script src="/js/bootstrap.min.js"></script>
-  <script src='/js/tipsy.js'></script>
   <script src="/js/jquery-ui.js"></script>
       
   <link href="/css/bootstrap.min.css" rel="stylesheet">
-  <link href="/css/tipsy.css" rel="stylesheet" />
   <link href="/css/fontawesome-free/css/all.min.css" rel="stylesheet">
 
+  <script src="/js/bootstrap.min.js"></script>
+  <script src="/js/bootstrap-editable.js"></script>  
   <script src="/js/bootstrap-select.js"></script>
-  <script src="/js/bootstrap-editable.js"></script>
 
 </head>
 
@@ -89,7 +91,7 @@ if(empty($info['name'])){
     <td data-name="product_name" class="product_name" data-type="text" align="left" data-pk="<?php echo $info['id'];?>"><?php echo $info['product_name'];?></td>
   </tr>
   <tr>
-    <td><a href="#" rel="tipsy" title="When enabled, formula is protected against deletion. By enabling this, a formula revision will be automatically created.">Protected:</a></td>
+    <td><a href="#" rel="tip" title="When enabled, formula is protected against deletion. By enabling this, a formula revision will be automatically created.">Protected:</a></td>
     <td><input name="isProtected" type="checkbox" id="isProtected" value="1" <?php if($info['isProtected'] == '1'){; ?> checked="checked"  <?php } ?>/></td>
   </tr>
   <tr>
@@ -145,7 +147,7 @@ if(empty($info['name'])){
 
 <script type="text/javascript" language="javascript" >
 $(document).ready(function(){
- $('a[rel=tipsy]').tipsy({gravity: 'w'});
+$('[rel=tip]').tooltip({placement: 'auto'});
 
  list_revisions();
 
@@ -196,22 +198,20 @@ $('#formula_metadata').editable({
   	title: 'Profile',
   	url: "update_data.php?formulaMeta=<?=$info['fid']?>",
     source: [
-             {value: 'oriental', text: 'Oriental'},
-             {value: 'woody', text: 'Woody'},
-             {value: 'floral', text: 'Floral'},
-             {value: 'fresh', text: 'Fresh'},
-             {value: 'other', text: 'Other'},
-          ]
+			<?php foreach ($fcat as $cat) { if($cat['type'] == 'profile'){?>		
+             {value: '<?=$cat['cname']?>', text: '<?=$cat['name']?>'},
+            <?php } }?>
+            ]
     });
   
     $('#sex').editable({
 	value: "<?php echo $info['sex'];?>",
   	url: "update_data.php?formulaMeta=<?=$info['fid']?>",
     source: [
-             {value: 'unisex', text: 'Unisex'},
-             {value: 'men', text: 'Men'},
-             {value: 'women', text: 'Women'},
-          ]
+             <?php foreach ($fcat as $cat) { if($cat['type'] == 'sex'){?>		
+             {value: '<?=$cat['cname']?>', text: '<?=$cat['name']?>'},
+            <?php } }?>
+           ]
     });
   });
 

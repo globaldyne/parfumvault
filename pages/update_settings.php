@@ -106,10 +106,15 @@ if($_POST['manage'] == 'print'){
 if($_POST['manage'] == 'pvonline'){
 	$pv_online_email = mysqli_real_escape_string($conn, $_POST['pv_online_email']);
 	$pv_online_pass = mysqli_real_escape_string($conn, $_POST['pv_online_pass']);
-	
+
 	if(empty($pv_online_email) || empty($pv_online_pass)){
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Missing fields.</div>';
 		return;
+	}
+	if($_POST['pv_online_state'] == 'true') {
+		$pv_online_state = '1';
+	}else{
+		$pv_online_state = '0';
 	}
 	$valAcc = pvOnlineValAcc($pvOnlineAPI, $pv_online_email, $pv_online_pass, $ver);
 
@@ -117,7 +122,7 @@ if($_POST['manage'] == 'pvonline'){
        	echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Invalid credentials or your PV Online account is inactive.</div>';
 		return;
 	}
-	if(mysqli_query($conn, "INSERT pv_online (id,email,password) VALUES ('1','$pv_online_email', '$pv_online_pass') ON DUPLICATE KEY UPDATE id = '1', email = '$pv_online_email', password = '$pv_online_pass'")){
+	if(mysqli_query($conn, "INSERT pv_online (id,email,password,enabled) VALUES ('1','$pv_online_email', '$pv_online_pass','$pv_online_state') ON DUPLICATE KEY UPDATE id = '1', email = '$pv_online_email', password = '$pv_online_pass', enabled = '$pv_online_state'")){
 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>PV Online details updated!</div>';
 	}else{
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error updating PV Online info.</div>';
@@ -194,6 +199,38 @@ if($_POST['manage'] == 'category'){
 if($_POST['action'] == 'delete' && $_POST['catId']){
 	$catId = mysqli_real_escape_string($conn, $_POST['catId']);
 	if(mysqli_query($conn, "DELETE FROM ingCategory WHERE id = '$catId'")){
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Category deleted!</div>';
+	}else{
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error deleting category.</div>';
+	}
+	return;
+}
+
+//ADD FORMULA CATEGORY
+if($_POST['manage'] == 'add_frmcategory'){
+	$cat = mysqli_real_escape_string($conn, $_POST['category']);
+	$type = mysqli_real_escape_string($conn, $_POST['cat_type']);
+	
+	if(empty($cat)){
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Category name is required.</div>';
+		return;
+	}
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM formulaCategories WHERE name = '$cat'"))){
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$cat.' already exists!</div>';
+		return;
+	}
+	if(mysqli_query($conn, "INSERT INTO formulaCategories (name,cname,type) VALUES ('$cat', '".strtolower(str_replace(' ', '',$cat))."', '$type')")){
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Category added!</div>';
+	}else{
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error adding category</div>';
+	}
+	return;
+}					
+
+//DELETE FORMULA CATEGORY
+if($_POST['action'] == 'del_frmcategory' && $_POST['catId']){
+	$catId = mysqli_real_escape_string($conn, $_POST['catId']);
+	if(mysqli_query($conn, "DELETE FROM formulaCategories WHERE id = '$catId'")){
 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Category deleted!</div>';
 	}else{
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error deleting category.</div>';

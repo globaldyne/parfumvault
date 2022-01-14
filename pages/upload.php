@@ -127,8 +127,8 @@ if($_GET['type'] == 'frmCSVImport'){
 
 	$profile = mysqli_real_escape_string($conn,$_GET['profile']);
 	
-	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$fid'"))){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$name.' already exists! Click <a href="?do=Formula&name='.$fid.'">here</a> to view/edit!</div>';
+	if($chk = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$fid'"))){
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$name.' already exists! Click <a href="?do=Formula&id='.$chk['id'].'"  target="_blank">here</a> to view/edit!</div>';
 	  	return;
 	 }
 
@@ -149,8 +149,12 @@ if($_GET['type'] == 'frmCSVImport'){
 			}
 			
 			if($res){
-				mysqli_query($conn, "INSERT INTO formulasMetaData (fid,name,notes,profile,image) VALUES ('$fid','$name','Imported via csv','$profile','$def_app_img')");
-				echo '<div class="alert alert-success alert-dismissible"><strong><a href="?do=Formula&name='.$name.'">'.$name.'</a></strong> added!</div>';
+				if(mysqli_query($conn, "INSERT INTO formulasMetaData (fid,name,notes,profile) VALUES ('$fid','$name','Imported via csv','$profile')")){
+					$iID = mysqli_insert_id($conn);
+				echo '<div class="alert alert-success alert-dismissible"><strong><a href="?do=Formula&id='.$iID.'" target="_blank">'.$name.'</a></strong> added!</div>';
+				}else{
+					echo '<div class="alert alert-danger alert-dismissible"><strong>Error in: </strong>'.mysqli_error($conn).'</div>';
+				}
 			}else{
 				echo '<div class="alert alert-danger alert-dismissible"><strong>Error adding: </strong>'.$name.'</div>';
 			}

@@ -168,7 +168,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
     </div>
   </div>
 </div>  
-<?php if($pv_online['email'] && $pv_online['password']){?>
+<?php if($pv_online['email'] && $pv_online['password'] && $pv_online['enabled'] == '1'){?>
 <!--PV ONLINE IMPORT-->
 <div class="modal fade" id="pv_online_import" tabindex="-1" role="dialog" aria-labelledby="pv_online_import" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -274,7 +274,7 @@ function adv_search() {
 	});
 };
 
-<?php if($pv_online['email'] && $pv_online['password']){?>
+<?php if($pv_online['email'] && $pv_online['password'] && $pv_online['enabled'] == '1'){?>
 
 function pv_online_import(items) {
 	$('#btnImport').attr('disabled', true);

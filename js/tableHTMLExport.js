@@ -43,7 +43,10 @@ THE SOFTWARE.*/
 				cover: '',
 				maintitle: '',
 				subtitle: '',
-				product: 'Perfumer\'s Vault Pro'
+				product: 'Perfumer\'s Vault Pro',
+				coverFontSize: 10,
+				titleFontSize: 18,
+			    fontSize: 10,
             };
             var options = $.extend(defaults, options);
 
@@ -206,9 +209,10 @@ THE SOFTWARE.*/
                 }
 
                 var doc = new jsPDF(defaults.orientation, 'pt');
+				doc.setFontSize(options.fontSize);
 				if(defaults.cover){
 					doc.setFont('helvetica', 'regular')
-					doc.setFontSize(10)
+					doc.setFontSize(options.coverFontSize)
 					doc.text(atob(defaults.cover), 40, 100)
 					doc.addPage()
 				}
@@ -217,7 +221,7 @@ THE SOFTWARE.*/
 					  for (var i = 1; i <= pageCount; i++) {
 						doc.setPage(i)
 						doc.setFont('helvetica', 'bold')
-						doc.setFontSize(18)
+						doc.setFontSize(options.titleFontSize)
 						doc.text(defaults.maintitle, 38, 20)
 						doc.setFontSize(10)
 						doc.text(defaults.subtitle, 38, 36)

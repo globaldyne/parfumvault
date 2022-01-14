@@ -4,7 +4,7 @@
 require_once(__ROOT__.'/pages/top.php'); 
 						   
  
-$pv_online = mysqli_fetch_array(mysqli_query($conn, "SELECT email FROM pv_online"));
+$pv_online = mysqli_fetch_array(mysqli_query($conn, "SELECT email,enabled FROM pv_online"));
 $cats_q = mysqli_query($conn, "SELECT id,name,description,type FROM IFRACategories ORDER BY id ASC");
 
 while($cats_res = mysqli_fetch_array($cats_q)){
@@ -22,7 +22,7 @@ $(function() {
   $("#email").val('');
 });
 list_users();
-list_cat();
+
 
 </script>
 <div class="container-fluid">
@@ -32,6 +32,7 @@ list_cat();
      <ul>
          <li><a href="#general"><span>General</span></a></li>
          <li><a href="#categories"><span>Ingredient Categories</span></a></li>
+         <li><a href="#frmCat">Formula Categories</a></li>
          <li><a href="#types">Perfume Types</a></li>
          <li><a href="#print"><span>Printing</span></a></li>
          <li><a href="#users"><span>Users</span></a></li>
@@ -52,7 +53,7 @@ list_cat();
           <td width="70%">&nbsp;</td>
           </tr>
         <tr>
-          <td height="28"><a href="#" rel="tipsy" title="If enabled, ingredients in formula view will be grouped by type. eg: Top,Heart,Base notes">Group Formula:</a></td>
+          <td height="28"><a href="#" rel="tip" title="If enabled, ingredients in formula view will be grouped by type. eg: Top,Heart,Base notes">Group Formula:</a></td>
           <td colspan="2"><select name="grp_formula" id="grp_formula" class="form-control">
 			  <option value="0" <?php if($settings['grp_formula']=="0") echo 'selected="selected"'; ?> >Plain</option>
 			  <option value="1" <?php if($settings['grp_formula']=="1") echo 'selected="selected"'; ?> >By notes</option>
@@ -61,12 +62,12 @@ list_cat();
           <td>&nbsp;</td>
         </tr>
         <tr>
-          <td height="32"><a href="#" rel="tipsy" title="If enabled, PV will query PubChem to fetch ingredient data. Please note, the CAS number of the ingredient will be send to the PubChem servers.">Enable PubChem:</a></td>
+          <td height="32"><a href="#" rel="tip" title="If enabled, PV will query PubChem to fetch ingredient data. Please note, the CAS number of the ingredient will be send to the PubChem servers.">Enable PubChem:</a></td>
           <td colspan="2"><input name="pubChem" type="checkbox" id="pubChem" value="1" <?php if($settings['pubChem'] == '1'){ ?> checked="checked" <?php } ?>/></td>
           <td>&nbsp;</td>
         </tr>
         <tr>
-          <td height="32"><a href="#" rel="tipsy" title="Select the image type for PubChem, 2D or 3D. Default: 2D">PubChem view:</a></td>
+          <td height="32"><a href="#" rel="tip" title="Select the image type for PubChem, 2D or 3D. Default: 2D">PubChem view:</a></td>
           <td colspan="2"><select name="pubchem_view" id="pubchem_view" class="form-control">
 			  <option value="2d" <?php if($settings['pubchem_view']=="2d") echo 'selected="selected"'; ?> >2D</option>
 			  <option value="3d" <?php if($settings['pubchem_view']=="3d") echo 'selected="selected"'; ?> >3D</option>
@@ -74,12 +75,12 @@ list_cat();
           <td>&nbsp;</td>
         </tr>
         <tr>
-          <td height="32"><a href="#" rel="tipsy" title="Auto check for new PV version. If enabled, your ip, current PV version and browser info will be send to our servers and or GitHub servers. Please make sure you have read our and GitHub's T&C and Privacy Policy before enable this.">Check for updates:</a></td>
+          <td height="32"><a href="#" rel="tip" title="Auto check for new PV version. If enabled, your ip, current PV version and browser info will be send to our servers and or GitHub servers. Please make sure you have read our and GitHub's T&C and Privacy Policy before enable this.">Check for updates:</a></td>
           <td colspan="3"><input name="chkVersion" type="checkbox" id="chkVersion" value="1" <?php if($settings['chkVersion'] == '1'){ ?> checked="checked" <?php } ?>/>
             <?php require('privacy_note.php');?></td>
           </tr>
         <tr>
-          <td height="32"><a href="#" rel="tipsy" title="Defines the decimal in formula quantity.">Quantity Decimal:</a></td>
+          <td height="32"><a href="#" rel="tip" title="Defines the decimal in formula quantity.">Quantity Decimal:</a></td>
           <td colspan="2"><select name="qStep" id="qStep" class="form-control">
 			  <option value="1" <?php if($settings['qStep']=="1") echo 'selected="selected"'; ?> >0.0</option>
 			  <option value="2" <?php if($settings['qStep']=="2") echo 'selected="selected"'; ?> >0.00</option>
@@ -89,7 +90,7 @@ list_cat();
           <td>&nbsp;</td>
         </tr>
         <tr>
-          <td height="32"><a href="#" rel="tipsy" title="Select the default category class. This will be used to calculate limits in formulas">Default Category:</a></td>
+          <td height="32"><a href="#" rel="tip" title="Select the default category class. This will be used to calculate limits in formulas">Default Category:</a></td>
           <td colspan="2"><select name="defCatClass" id="defCatClass" class="form-control">
 		<?php foreach ($cats as $IFRACategories) {?>
 				<option value="cat<?php echo $IFRACategories['name'];?>" <?php echo ($settings['defCatClass']=='cat'.$IFRACategories['name'])?"selected=\"selected\"":""; ?>><?php echo 'Cat '.$IFRACategories['name'].' - '.$IFRACategories['description'];?></option>
@@ -108,12 +109,12 @@ list_cat();
           <td>&nbsp;</td>
         </tr>
         <tr>
-          <td height="32"><a href="#" rel="tipsy" title="If enabled, formula will display the chemical names of ingredients, where available, instead of the commercial name">Chemical names</a>:</td>
+          <td height="32"><a href="#" rel="tip" title="If enabled, formula will display the chemical names of ingredients, where available, instead of the commercial name">Chemical names</a>:</td>
           <td colspan="2"><input name="chem_vs_brand" type="checkbox" id="chem_vs_brand" value="1" <?php if($settings['chem_vs_brand'] == '1'){ ?> checked="checked" <?php } ?>/></td>
           <td>&nbsp;</td>
         </tr>
         <tr>
-          <td height="32"><a href="#" rel="tipsy" title="If enabled, ingredient usage percentage will be calculated against ingredients allergens as well.">Multi-dimensional lookup:</a></td>
+          <td height="32"><a href="#" rel="tip" title="If enabled, ingredient usage percentage will be calculated against ingredients allergens as well.">Multi-dimensional lookup:</a></td>
           <td colspan="2"><input name="multi_dim_perc" type="checkbox" id="multi_dim_perc" value="1" <?php if($settings['multi_dim_perc'] == '1'){ ?> checked="checked" <?php } ?>/></td>
           <td>&nbsp;</td>
         </tr>
@@ -164,7 +165,15 @@ list_cat();
             </div>
         </div>
      </div> 
-     
+     <div id="frmCat">
+    	<div id="fcatMsg"></div>
+        <div id="list_fcat">
+            <div class="loader-center">
+                <div class="loader"></div>
+                <div class="loader-text"></div>
+            </div>
+        </div>
+     </div> 
     <div id="types">
      <table width="100%" border="0">
         <tr>
@@ -226,7 +235,7 @@ list_cat();
             <td width="6%">Printer:</td>
             <td width="15%"><input name="label_printer_addr" type="text" class="form-control" id="label_printer_addr" value="<?php echo $settings['label_printer_addr']; ?>" /></td>
             <td width="1%"></td>
-            <td width="78%"><a href="#" class="fas fa-question-circle" rel="tipsy" title="Your printer IP/Hostname. eg: 192.168.1.1"></a></td>
+            <td width="78%"><a href="#" class="fas fa-question-circle" rel="tip" title="Your printer IP/Hostname. eg: 192.168.1.1"></a></td>
           </tr>
           <tr>
             <td>Model:</td>
@@ -249,7 +258,7 @@ list_cat();
             </select>
             </td>
             <td></td>
-            <td><a href="#" class="fas fa-question-circle" rel="tipsy" title="Your Brother printer model"></a></td>
+            <td><a href="#" class="fas fa-question-circle" rel="tip" title="Your Brother printer model"></a></td>
           </tr>
           <tr>
             <td>Label Size:</td>
@@ -279,13 +288,13 @@ list_cat();
             </select>
             </td>
             <td></td>
-            <td><a href="#" class="fas fa-question-circle" rel="tipsy" title="Choose your tape size"></a>&nbsp;</td>
+            <td><a href="#" class="fas fa-question-circle" rel="tip" title="Choose your tape size"></a>&nbsp;</td>
           </tr>
           <tr>
             <td>Font Size:</td>
             <td><input name="label_printer_font_size" type="text" id="label_printer_font_size" value="<?php echo $settings['label_printer_font_size']; ?>" class="form-control"/></td>
             <td>&nbsp;</td>
-            <td><a href="#" class="fas fa-question-circle" rel="tipsy" title="Label font size"></a></td>
+            <td><a href="#" class="fas fa-question-circle" rel="tip" title="Label font size"></a></td>
           </tr>
           <tr>
             <td>&nbsp;</td>
@@ -387,13 +396,23 @@ list_cat();
             <td colspan="3"><div id="pvOnMsg"></div></td>
           </tr>
           <tr>
-            <td width="9%" height="30"><a href="#" rel="tipsy" title="Please enter your PV Online email">Email:</a></td>
+            <td width="9%" height="30"><a href="#" rel="tip" data-placement="right" title="Please enter your PV Online email">Email:</a></td>
             <td width="9%"><input name="pv_online_email" type="text" class="form-control" id="pv_online_email" value="<?php echo $pv_online['email'];?>" /></td>
             <td width="82%">&nbsp;</td>
           </tr>
           <tr>
-            <td height="24"><a href="#" rel="tipsy" title="Your PV Online password.">Password:</a></td>
+            <td height="24"><a href="#" rel="tip" data-placement="right" title="Your PV Online password.">Password:</a></td>
             <td><input name="pv_online_pass" type="password" class="form-control" id="pv_online_pass" /></td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td height="29"><a href="#" rel="tip" data-placement="right" title="Enable or disable PV Online access.">Enabled:</a></td>
+            <td><input name="pv_online_state" type="checkbox" id="pv_online_state" value="1" <?php if($pv_online['enabled'] == '1'){ ?> <?php } ?>/></td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td height="29">&nbsp;</td>
+            <td>&nbsp;</td>
             <td>&nbsp;</td>
           </tr>
           <tr>
@@ -453,6 +472,8 @@ list_cat();
 </div>
 <script type="text/javascript" language="javascript" >
 $(document).ready(function() {
+	list_cat();
+	list_fcat();
 	$('#save-general').click(function() {
 							  
 		$.ajax({ 
@@ -553,6 +574,7 @@ $('#save-perf-types').click(function() {
 				
 				pv_online_email: $("#pv_online_email").val(),
 				pv_online_pass: $("#pv_online_pass").val(),
+				pv_online_state: $("#pv_online_state").is(':checked'),
 				
 				},
 			dataType: 'html',
@@ -621,21 +643,7 @@ $('#save-perf-types').click(function() {
     });	
 })
 
-function catDel(catId){
-	$.ajax({ 
-		url: 'pages/update_settings.php', 
-		type: 'POST',
-		data: {
-			action: 'delete',
-			catId: catId,
-		},
-		dataType: 'html',
-		success: function (data) {
-			$('#catMsg').html(data);
-			list_cat();
-		}
-	});
-}
+
 
 function usrDel(userId){
 	$.ajax({ 
@@ -653,4 +661,23 @@ function usrDel(userId){
 	});
 }
 
+function list_cat(){
+$.ajax({ 
+	url: 'pages/listCat.php', 
+	dataType: 'html',
+		success: function (data) {
+			$('#list_cat').html(data);
+		}
+	});
+};
+
+function list_fcat(){
+$.ajax({ 
+	url: 'pages/listFrmCat.php', 
+	dataType: 'html',
+		success: function (data) {
+			$('#list_fcat').html(data);
+		}
+	});
+};
 </script>

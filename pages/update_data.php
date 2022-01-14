@@ -65,6 +65,9 @@ if($_POST['ingSupplier'] == 'add'){
 	$supplier_price = mysqli_real_escape_string($conn, $_POST['supplier_price']);
 	$supplier_manufacturer = mysqli_real_escape_string($conn, $_POST['supplier_manufacturer']);
 	$supplier_name = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingSuppliers WHERE id = '$supplier_id'"));
+	$supplier_batch = mysqli_real_escape_string($conn, $_POST['supplier_batch']);
+	$manufactured = mysqli_real_escape_string($conn, $_POST['manufactured']);
+	$stock = mysqli_real_escape_string($conn, $_POST['stock']);
 
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT ingSupplierID FROM suppliers WHERE ingSupplierID = '$supplier_id' AND ingID = '$ingID'"))){
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$allgName.' already exists!</div>';
@@ -76,7 +79,7 @@ if($_POST['ingSupplier'] == 'add'){
 			$preferred = '0';
 		}
 		
-		if(mysqli_query($conn, "INSERT INTO suppliers (ingSupplierID,ingID,supplierLink,price,size,manufacturer,preferred) VALUES ('$supplier_id','$ingID','$supplier_link','$supplier_price','$supplier_size','$supplier_manufacturer','$preferred')")){
+		if(mysqli_query($conn, "INSERT INTO suppliers (ingSupplierID,ingID,supplierLink,price,size,manufacturer,preferred,batch,manufactured,stock) VALUES ('$supplier_id','$ingID','$supplier_link','$supplier_price','$supplier_size','$supplier_manufacturer','$preferred','$supplier_batch','$manufactured','$stock')")){
 			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$supplier_name['name'].'</strong> added to the list!</div>';
 		}else{
 			echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> '.mysqli_error($conn).'</div>';
@@ -229,6 +232,15 @@ if($_GET['settings'] == 'cat'){
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 
 	mysqli_query($conn, "UPDATE ingCategory SET $name = '$value' WHERE id = '$cat_id'");
+	return;
+}
+
+if($_GET['settings'] == 'fcat'){
+	$value = mysqli_real_escape_string($conn, $_POST['value']);
+	$cat_id = mysqli_real_escape_string($conn, $_POST['pk']);
+	$name = mysqli_real_escape_string($conn, $_POST['name']);
+
+	mysqli_query($conn, "UPDATE formulaCategories SET $name = '$value' WHERE id = '$cat_id'");
 	return;
 }
 

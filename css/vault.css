@@ -127,7 +127,7 @@ a { text-decoration: none; }
   width: 6rem;
 }
 
-.Base a:after {
+.Base_notes {
     background-image: url('../img/Base.png');
     background-size: 10px 10px;
     background-repeat:no-repeat;
@@ -137,7 +137,7 @@ a { text-decoration: none; }
     content:"";
 }
 
-.Heart a:after {
+.Heart_notes {
     background-image: url('../img/Heart.png');
     background-size: 10px 10px;
     background-repeat:no-repeat;
@@ -147,7 +147,7 @@ a { text-decoration: none; }
     content:"";
 }
 
-.Top a:after {
+.Top_notes {
     background-image: url('../img/Top.png');
     background-size: 10px 10px;
     background-repeat:no-repeat;
@@ -541,7 +541,7 @@ formula td, table.table th {
 }
 
 .colorKey {
-    display: block;
+    display: inline-block;
     float: none;
     width: 34px;
     height: 34px;
@@ -635,4 +635,32 @@ formula td, table.table th {
 
 .viewFormula {
     overflow: auto;
+}
+
+.pv_point_gen {
+	cursor: pointer;
+}
+
+.pv_bar_top_notes {
+    background-color: #36b9cc !important;
+}
+
+.pv_bar_heart_notes {
+    background-color: #1cc88a !important;
+}
+
+.pv_bar_base_notes {
+    background-color: #337ab7 !important;
+}
+
+.inv-ok {
+	color:green;
+}
+
+.inv-no-info {
+	color: #8a6d3b;
+}
+
+.inv-out {
+	color: red;
 }
