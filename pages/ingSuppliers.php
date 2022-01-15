@@ -9,7 +9,7 @@ require_once(__ROOT__.'/inc/settings.php');
 $ingID = mysqli_real_escape_string($conn, $_GET["id"]);
 
 $q = mysqli_query($conn, "SELECT * FROM suppliers WHERE ingID = '$ingID' ORDER BY preferred");
-
+$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT physical_state FROM ingredients WHERE id ='$ingID'"));
 ?>
 <script type='text/javascript'>
 
@@ -36,7 +36,7 @@ $q = mysqli_query($conn, "SELECT * FROM suppliers WHERE ingID = '$ingID' ORDER B
                       <th>Name</th>
                       <th>eShop</th>
                       <th>Price (<?=$settings['currency']?>)</th>
-                      <th>Size (<?=$settings['mUnit']?>)</th>
+                      <th>Size (<?php if($ing['physical_state'] == '1'){ echo 'ml'; }elseif($ing['physical_state'] == '2'){ echo 'grams'; }else{ echo $settings['mUnit']; }?>)</th>
                       <th>Manufacturer</th>
                       <th>Batch</th>
                       <th>Manufactured</th>

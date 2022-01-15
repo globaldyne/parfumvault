@@ -19,22 +19,8 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulasMetaData WHERE i
 $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,fid,name,isProtected,finalType,defView FROM formulasMetaData WHERE id = '$id'"));
 $f_name = base64_decode($meta['fid']);
 
-
 ?>
-<?php if(isset($_GET['standalone'])){ ?>
-<link href="../css/fontawesome-free/css/all.min.css" rel="stylesheet">
-<script src="../js/jquery/jquery.min.js"></script>
-<link rel="stylesheet" href="../css/bootstrap.min.css">
-<script src="../js/bootstrap.min.js"></script>
-<link rel="stylesheet" type="text/css" href="../css/datatables.min.css"/>
-<script type="text/javascript" src="../js/datatables.min.js"></script>
-<link rel="stylesheet" href="../css/vault.css">
-<script src="../js/magnific-popup.js"></script>
-<link href="../css/magnific-popup.css" rel="stylesheet" />
-<link href="../css/bootstrap-editable.css" rel="stylesheet">
-<script type="text/javascript" src="../js/bootbox.min.js"></script>
-<script src="../js/bootstrap-editable.js"></script>
-<?php } ?>
+
 
 <script>
 
@@ -597,10 +583,15 @@ $('#formula').editable({
   
 	function ingInv(data, type, row, meta){
 		//console.log(row.);
+		if (row.ingredient.physical_state == 1){
+			var mUnit = 'ml';
+		}else if (row.ingredient.physical_state == 2){
+			var mUnit = 'gr';
+		}
 		if(row.ingredient.inventory.stock >= row.quantity){
-			var inv = '<i class="fa fa-check inv-ok" rel="tip" title="Available in stock: '+row.ingredient.inventory.stock+row.ingredient.inventory.mUnit+'"></i>';
+			var inv = '<i class="fa fa-check inv-ok" rel="tip" title="Available in stock: '+row.ingredient.inventory.stock+mUnit+'"></i>';
 		}else if(row.ingredient.inventory.stock <= row.quantity){
-			var inv = '<i class="fa fa-times inv-out" rel="tip" data-html="true" title="Not enough in stock<br/> Available: '+row.ingredient.inventory.stock + row.ingredient.inventory.mUnit +'"></i>';
+			var inv = '<i class="fa fa-times inv-out" rel="tip" data-html="true" title="Not enough in stock<br/> Available: '+row.ingredient.inventory.stock + mUnit +'"></i>';
 		}
 	
 		if(type === 'display'){
