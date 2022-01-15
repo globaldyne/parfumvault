@@ -11,18 +11,6 @@ while($cats_res = mysqli_fetch_array($cats_q)){
     $cats[] = $cats_res;
 }
 
-if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients")))){
-	$response['Error'] = (string)'<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> no ingredients yet, click <a href="?do=ingredients">here</a> to add.</div>';    
-	header('Content-Type: application/json; charset=utf-8');
-	echo json_encode($response);
-	return;
-}
-if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData")))){
-	$response['Error'] = (string)'<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> no formulas yet, click <a href="#" data-toggle="modal" data-target="#add_formula">here</a> to add.</div>';    
-	header('Content-Type: application/json; charset=utf-8');
-	echo json_encode($response);
-	return;
-}
 
 if($_GET['filter'] && $_GET['profile'] || $_GET['sex']){
 	$f = "WHERE profile = '".$_GET['profile']."' OR sex = '".$_GET['sex']."'";

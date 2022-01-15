@@ -3,13 +3,6 @@ require('../inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 
-if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM suppliers")))){
-	$response['Error'] = (string)'<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> no inventory has been created yet</div>';    
-	header('Content-Type: application/json; charset=utf-8');
-	echo json_encode($response);
-	return;
-}
-
 $q = mysqli_query($conn, "SELECT * FROM suppliers");
 while($res = mysqli_fetch_array($q)){
     $sup[] = $res;

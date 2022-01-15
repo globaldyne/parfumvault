@@ -14,7 +14,7 @@ require_once(__ROOT__.'/func/getIngSupplier.php');
 require_once(__ROOT__.'/func/getCatByID.php');
 
 if(!$_GET['id']){		
-	$response['Error'] = (string)'Formula id is missing.';    
+	$response['data'] = [];    
 	header('Content-Type: application/json; charset=utf-8');
 	echo json_encode($response);
 	return;
