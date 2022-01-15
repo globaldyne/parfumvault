@@ -52,7 +52,7 @@ $(document).ready(function() {
 				   { data : 'concentration', title: 'Concentration %'},
 				   { data : 'final_concentration', title: 'Final Concentration <?=$meta['finalType']?>%'},
 				   { data : 'cost', title: 'Cost (<?=$settings['currency']?>)'},
-				   { data : 'ingredient.inventory.stock', title: 'Inentory', render: ingInv },
+				   { data : 'ingredient.inventory.stock', title: 'Inentory', className: 'text-center noexport', render: ingInv },
 				   { data : 'ingredient.desc', title: 'Properties', render: ingNotes},
    				   { data : null, title: 'Actions', className: 'text-center noexport', render: ingActions},		   
 				   
@@ -169,8 +169,8 @@ $('#formula').on('click', '[id*=rmIng]', function () {
 function isMade() {
 			 
 	bootbox.dialog({
-       title: "Confirm formula is made",
-       message : 'Confirm formula is made?<br /> If confirmed, ingredients amount will be deducted from the inventory accordingly.',
+       title: "Confirm formula is made?",
+       message : 'If confirmed, ingredients amount will be deducted from the inventory accordingly, where enough in stock.',
        buttons :{
            main: {
                label : "Confirm",

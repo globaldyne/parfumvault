@@ -1,5 +1,7 @@
 # CHANGELOG
 ### Version 3.9
+- Fix a bug showing empty inventory column when exporting a formula
+- Improve formula is made feature
 
 ### Version 3.8
 - tipsy.js dependency removed

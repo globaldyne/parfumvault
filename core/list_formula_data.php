@@ -15,7 +15,7 @@ while($cats_res = mysqli_fetch_array($cats_q)){
 if($_GET['filter'] && $_GET['profile'] || $_GET['sex']){
 	$f = "WHERE profile = '".$_GET['profile']."' OR sex = '".$_GET['sex']."'";
 }
-$formulas = mysqli_query($conn, "SELECT id,fid,name,product_name,isProtected,profile,sex,created,catClass FROM formulasMetaData $f");
+$formulas = mysqli_query($conn, "SELECT id,fid,name,product_name,isProtected,profile,sex,created,catClass,isMade,madeOn FROM formulasMetaData $f");
 
 while ($allFormulas = mysqli_fetch_array($formulas)){
 	    $formula[] = $allFormulas;
@@ -31,6 +31,8 @@ foreach ($formula as $formula) {
 	$r['created'] = (string)$formula['created'];
 	$r['catClass'] = (string)$formula['catClass']?:'N/A';
 	$r['ingredients'] = (int)countElement("formulas WHERE fid = '".$formula['fid']."'",$conn)?:'0';
+	$r['isMade'] = (int)$formula['isMade']?:0;
+	$r['madeOn'] = (string)$formula['madeOn']?:'N/A';
 
 	$response['data'][] = $r;
 	

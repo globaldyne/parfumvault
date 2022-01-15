@@ -1,0 +1,1 @@
+ALTER TABLE `formulasMetaData` ADD `isMade` INT NOT NULL DEFAULT '0' AFTER `finalType`, ADD `madeOn` DATETIME NULL DEFAULT NULL AFTER `isMade`;
