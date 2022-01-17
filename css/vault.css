@@ -664,3 +664,8 @@ formula td, table.table th {
 .inv-out {
 	color: red;
 }
+
+table.fixedHeader-floating {
+	background-color: lightgray;
+	color: #666;  
+}

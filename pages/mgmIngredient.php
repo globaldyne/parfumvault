@@ -754,7 +754,7 @@ $(document).ready(function() {
             </p>
 			<p>
             In stock:
-            <input class="form-control" name="stock" type="text" id="stock" />
+            <input name="stock" type="text" class="form-control" id="stock" value="0" />
             </p>
             
             <div class="dropdown-divider"></div>

@@ -107,6 +107,8 @@ $(document).ready(function() {
 	   }
 });
 
+new $.fn.dataTable.FixedHeader(formula);
+
 // Order by the grouping
 $('#formula tbody').on( 'click', 'tr.group', function () {
     var currentOrder = table.order()[0];

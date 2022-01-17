@@ -97,9 +97,11 @@ if(file_exists(__ROOT__.'/db/updates/update_'.$pv_meta['schema_ver'].'-'.$db_ver
   <script src="js/dataTables.responsive.min.js"></script>
   <script src="js/responsive.bootstrap.min.js"></script>
   <script src="js/bootbox.min.js"></script>
-
+  <script src="js/dataTables.fixedHeader.min.js"></script>
+  
+  <link href="css/fixedHeader.dataTables.min.css" rel="stylesheet">
   <link href="css/responsive.bootstrap.min.css" rel="stylesheet">
-	
+
   <link href="css/jquery-ui.css" rel="stylesheet">
   <link href="css/magnific-popup.css" rel="stylesheet" />
   <link href="css/vault.css" rel="stylesheet">
