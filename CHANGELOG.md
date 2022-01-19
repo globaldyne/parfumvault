@@ -3,6 +3,8 @@
 - Fix a bug showing empty inventory column when exporting a formula
 - Improve formula is made feature
 - Add fixed header in formula view
+- Dashboard pie now includes any extra formula categories
+- Dashboard pie colors can be customised by formula category color
 
 ### Version 3.8
 - tipsy.js dependency removed

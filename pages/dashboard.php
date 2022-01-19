@@ -190,44 +190,58 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"))== 0){
   
 
 <script>
+function getRandomColor() {
+    var letters = '0123456789ABCDEF'.split('');
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+function getRandomColorEachEmployee(count) {
+    var data =[];
+    for (var i = 0; i < count; i++) {
+        data.push(getRandomColor());
+    }
+    return data;
+}
 var formulas = document.getElementById('formulasPie');
 var ingredients = document.getElementById('ingredientsPie');
+ $.ajax({
+    url: "core/stats_data.php",
+    method: "GET",
+    dataType : 'JSON',
+    success: function(stats) {
+    
+		var formula_label = stats.data.map(function(e) {
+			return e.name;
+		});
+		var formula_data = stats.data.map(function(e) {
+			return e.count;
+		});
+		var formula_bkColor = stats.data.map(function(e) {
+			return e.colorKey;
+		});
+		var formula_brdColor = stats.data.map(function(e) {
+			return e.borderColor;
+		});		
 
-var formulasChart = new Chart(formulas, {
-    type: 'pie',
-    data: {
-        labels: ['Oriental', 'Woody', 'Floral', 'Fresh', 'Unisex', 'Men', 'Women', 'Other'],
-        datasets: [{
-            label: 'Formulas',
-            data: [<?php echo countElement("formulasMetaData WHERE profile = 'oriental'",$conn); ?>, <?php echo countElement("formulasMetaData WHERE profile = 'woody'",$conn); ?>, <?php echo countElement("formulasMetaData WHERE profile = 'floral'",$conn); ?>, <?php echo countElement("formulasMetaData WHERE profile = 'fresh'",$conn); ?>, <?php echo countElement("formulasMetaData WHERE sex = 'unisex'",$conn); ?>, <?php echo countElement("formulasMetaData WHERE sex = 'men'",$conn); ?>, <?php echo countElement("formulasMetaData WHERE sex = 'women'",$conn); ?>, <?php echo countElement("formulasMetaData WHERE profile = 'other'",$conn); ?>],
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(255, 159, 64, 0.2)',
-				'rgba(190, 190, 64, 0.2)',
-                'rgba(105, 155, 64, 0.2)'
-            ],
-            borderColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)',
-                'rgba(255, 159, 64, 1)',
-				'rgba(190, 190, 64, 1)',
-                'rgba(105, 155, 64, 1)'
-            ],
-            borderWidth: 1
-        }]
-    },
-    options: {
-				responsive: false
-			}
+		var formulasChart = new Chart(formulas, {
+			type: 'pie',
+			data: {
+				labels: formula_label,
+				datasets: [{
+					label: 'Formulas',
+					data: formula_data,
+					backgroundColor: formula_bkColor,
+					borderColor: formula_brdColor,
+					borderWidth: 1
+				}]
+			},
+			options: { responsive: true }
+		});
+	}
 });
-
 var ingredientsChart = new Chart(ingredients, {
     type: 'pie',
     data: {

@@ -31,6 +31,7 @@ require_once(__ROOT__.'/inc/opendb.php');
                     <tr>
                       <th>Name</th>
                       <th>Type</th>
+                      <th>Colour</th>
                       <th>Actions</th>
                     </tr>
                   </thead>
@@ -58,6 +59,7 @@ $(document).ready(function() {
 		columns: [
 				  { data : 'name', title: 'Name', render: cName },
     			  { data : 'type', title: 'Type', render: cType},
+    			  { data : 'colorKey', title: 'Colour Key', render: cKey},
    				  { data : null, title: 'Actions', render: cActions},		   
 				 ],
         order: [[ 1, 'asc' ]],
@@ -79,6 +81,10 @@ function cType(data, type, row){
 
 function cActions(data, type, row){
 	return '<a href="#" id="catDel" class="fas fa-trash" data-id="'+row.id+'" data-name="'+row.name+'"></a>';    
+}
+
+function cKey(data, type, row){
+	return '<a href="#" class="colorKey" style="background-color: '+row.colorKey+'" id="colorKey" data-name="colorKey" data-type="select" data-pk="'+row.id+'" data-title="Choose Colour Key for '+row.name+'"></a>';    
 }
 
 $('#add-fcat').click(function() {
@@ -141,6 +147,28 @@ $('#frmDataCat').editable({
 	}
 });
 
+//Change colorKey
+$('#frmDataCat').editable({
+	pvnoresp: false,
+	highlight: false,
+	selector: 'a.colorKey',
+	type: "POST",
+	emptytext: "",
+	emptyclass: "",
+  	url: "pages/update_data.php?settings=fcat",
+    source: [
+			 <?php
+				$getCK = mysqli_query($conn, "SELECT name,rgb FROM colorKey ORDER BY name ASC");
+				while ($r = mysqli_fetch_array($getCK)){
+				echo '{value: "'.$r['rgb'].'", text: "'.$r['name'].'", ck: "color: rgb('.$r['rgb'].')"},';
+			}
+			?>
+          ],
+	dataType: 'html',
+	success: function () {
+		reload_fcat_data();
+	}
+});
 	
 $('#frmDataCat').on('click', '[id*=catDel]', function () {
 	var cat = {};

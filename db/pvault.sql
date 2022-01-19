@@ -616,6 +616,7 @@ CREATE TABLE `formulaCategories` (
  `name` varchar(255) COLLATE utf8_bin NOT NULL,
  `cname` varchar(255) COLLATE utf8_bin NOT NULL,
  `type` varchar(255) COLLATE utf8_bin NOT NULL,
+ `colorKey` VARCHAR(255) NULL DEFAULT NULL,
  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
