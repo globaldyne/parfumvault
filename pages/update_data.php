@@ -66,8 +66,8 @@ if($_POST['ingSupplier'] == 'add'){
 	$supplier_manufacturer = mysqli_real_escape_string($conn, $_POST['supplier_manufacturer']);
 	$supplier_name = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingSuppliers WHERE id = '$supplier_id'"));
 	$supplier_batch = mysqli_real_escape_string($conn, $_POST['supplier_batch']);
-	$manufactured = mysqli_real_escape_string($conn, $_POST['manufactured']);
-	$stock = mysqli_real_escape_string($conn, $_POST['stock']);
+	$manufactured = mysqli_real_escape_string($conn, $_POST['manufactured'] ?: date('Y-m-d'));
+	$stock = mysqli_real_escape_string($conn, $_POST['stock'] ?: 0);
 
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT ingSupplierID FROM suppliers WHERE ingSupplierID = '$supplier_id' AND ingID = '$ingID'"))){
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$allgName.' already exists!</div>';

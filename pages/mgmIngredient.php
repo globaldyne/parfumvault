@@ -729,7 +729,7 @@ $(document).ready(function() {
             </select>
             </p>
             <p>
-            URL: 
+            URL*: 
             <input class="form-control" name="supplier_link" type="text" id="supplier_link" />
             </p>
             <p>            
@@ -737,7 +737,7 @@ $(document).ready(function() {
             <input class="form-control" name="supplier_price" type="text" id="supplier_price" />
             </p>
             <p>
-            Size (<?php if($ing['physical_state'] == '1'){ echo 'ml'; }elseif($ing['physical_state'] == '2'){ echo 'grams'; }else{ echo $settings['mUnit']; }?>):
+            Size (<?php if($ing['physical_state'] == '1'){ echo 'ml'; }elseif($ing['physical_state'] == '2'){ echo 'grams'; }else{ echo $settings['mUnit']; }?>)*:
             <input class="form-control" name="supplier_size" type="text" id="supplier_size" value="10" />
             </p>
             <p>
