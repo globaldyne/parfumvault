@@ -11,11 +11,8 @@ $ingID = mysqli_real_escape_string($conn, $_GET["id"]);
 $q = mysqli_query($conn, "SELECT * FROM suppliers WHERE ingID = '$ingID' ORDER BY preferred");
 $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT physical_state FROM ingredients WHERE id ='$ingID'"));
 ?>
-<script type='text/javascript'>
-
-</script>
-			<h3>Suppliers</h3>
-            <hr>
+<h3>Suppliers</h3>
+          <hr>
              <div class="card-body">
               <div>
                 <table class="table table-bordered" id="tdIngSup" width="100%" cellspacing="0">

@@ -192,21 +192,6 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"))== 0){
   
 
 <script>
-function getRandomColor() {
-    var letters = '0123456789ABCDEF'.split('');
-    var color = '#';
-    for (var i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-}
-function getRandomColorEachEmployee(count) {
-    var data =[];
-    for (var i = 0; i < count; i++) {
-        data.push(getRandomColor());
-    }
-    return data;
-}
 var formulas = document.getElementById('formulasPie');
 var ingredients = document.getElementById('ingredientsPie');
  $.ajax({
