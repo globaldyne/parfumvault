@@ -1,6 +1,6 @@
 <?php if (!defined('pvault_panel')){ die('Not Found');}?>
 <?php require_once(__ROOT__.'/func/countElement.php');?>
-<script src="js/Chart.js"></script>
+<script src="js/Chart.min.js"></script>
 <link href="css/Chart.css" rel="stylesheet">
 
 <div id="content-wrapper" class="d-flex flex-column">
@@ -28,6 +28,8 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"))== 0){
                     <div class="box-body">
                       <div class="pull-left">
                         <canvas id="formulasPie" width="358" height="358"></canvas>
+                            <div class="cell" id="top10Legend"></div>
+
                       </div>
                     </div>
                   </div>
@@ -238,7 +240,15 @@ var ingredients = document.getElementById('ingredientsPie');
 					borderWidth: 1
 				}]
 			},
-			options: { responsive: true }
+			options: { 
+				responsive: true,
+				plugins: {
+      				legend: {
+        					display: true,
+        					position: 'right',
+      						},
+    					} 
+					}
 		});
 	}
 });
@@ -250,9 +260,9 @@ var ingredientsChart = new Chart(ingredients, {
             label: 'Ingredients',
             data: [<?php echo countElement("ingredients WHERE type = 'AC'",$conn); ?>, <?php echo countElement("ingredients WHERE type = 'EO'",$conn); ?>, <?php echo countElement("ingredients WHERE type IS NULL",$conn); ?>],
             backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)'
+                'rgba(255, 99, 132, 0.8)',
+                'rgba(54, 162, 235, 0.8)',
+                'rgba(255, 206, 86, 0.8)'
             ],
             borderColor: [
                 'rgba(255, 99, 132, 1)',
@@ -262,9 +272,15 @@ var ingredientsChart = new Chart(ingredients, {
             borderWidth: 1
         }]
     },
-    options: {
-				responsive: false
-			}
+    options: { 
+			responsive: true,
+			plugins: {
+      				legend: {
+        					display: true,
+        					position: 'right',
+      						},
+    					} 
+			 }
 });
 
 </script>

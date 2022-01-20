@@ -13,8 +13,7 @@ foreach ($cats as $category) {
 	$r['name'] = (string)$category['name'];
 	$r['cname'] = (string)$category['cname'];
 	$r['type'] = (string)$category['type'];
-	$r['colorKey'] = (string)'rgba('.$category['colorKey'].')';// ?: 'rgba(255, 99, 132, 0.2)';
-
+	$r['colorKey'] = (string)'rgba('.$category['colorKey'].')';
 	$response['data'][] = $r;
 }
 

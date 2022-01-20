@@ -15,7 +15,7 @@ foreach ($cats as $category) {
 	$r['cname'] = (string)$category['cname'];
 	$r['type'] = (string)$category['type'];
 	$r['count'] = (int)countElement("formulasMetaData WHERE profile = '".$category['cname']."'",$conn)?:0;
-	$r['colorKey'] = (string)'rgba('.$category['colorKey'].')';// ?: 'rgba(255, 99, 132, 0.2)';
+	$r['colorKey'] = (string)'rgba('.$category['colorKey'].')';
 	$r['borderColor'] = (string)'rgba(255, 99, 132, 1)';
 							
 	$response['data'][] = $r;

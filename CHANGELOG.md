@@ -5,6 +5,8 @@
 - Add fixed header in formula view
 - Dashboard pie now includes any extra formula categories
 - Dashboard pie colors can be customised by formula category color
+- Update Chart.js to its latest version
+- Change legend position and color mapping for pie charts
 
 ### Version 3.8
 - tipsy.js dependency removed

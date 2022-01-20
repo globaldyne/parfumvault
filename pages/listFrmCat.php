@@ -59,7 +59,7 @@ $(document).ready(function() {
 		columns: [
 				  { data : 'name', title: 'Name', render: cName },
     			  { data : 'type', title: 'Type', render: cType},
-    			  { data : 'colorKey', title: 'Colour Key', render: cKey},
+    			  { data : 'colorKey', title: 'Colour Key', render: fKey},
    				  { data : null, title: 'Actions', render: cActions},		   
 				 ],
         order: [[ 1, 'asc' ]],
@@ -83,7 +83,7 @@ function cActions(data, type, row){
 	return '<a href="#" id="catDel" class="fas fa-trash" data-id="'+row.id+'" data-name="'+row.name+'"></a>';    
 }
 
-function cKey(data, type, row){
+function fKey(data, type, row){
 	return '<a href="#" class="colorKey" style="background-color: '+row.colorKey+'" id="colorKey" data-name="colorKey" data-type="select" data-pk="'+row.id+'" data-title="Choose Colour Key for '+row.name+'"></a>';    
 }
 
