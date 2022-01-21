@@ -386,7 +386,7 @@ CREATE TABLE `suppliers` (
  `manufacturer` varchar(255) COLLATE utf8_bin DEFAULT NULL,
  `preferred` int(11) NOT NULL DEFAULT 0,
  `batch` VARCHAR(255) NULL,
- `manufactured` DATE NULL,
+ `purchased` DATE NULL,
  `mUnit` VARCHAR(255) NULL, 
  `stock` INT NOT NULL,
  PRIMARY KEY (`id`),

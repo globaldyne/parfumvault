@@ -749,8 +749,8 @@ $(document).ready(function() {
             <input class="form-control" name="supplier_batch" type="text" id="supplier_batch" />
             </p>
 			<p>
-            Manufactured:
-            <input class="form-control" name="manufactured" type="date" id="manufactured" />
+            Purchased:
+            <input class="form-control" name="purchased" type="date" id="purchased" />
             </p>
 			<p>
             In stock:
@@ -930,7 +930,7 @@ function addSupplier() {
 			supplier_price: $("#supplier_price").val(),				
 			supplier_manufacturer: $("#supplier_manufacturer").val(),
 			supplier_batch: $("#supplier_batch").val(),
-			manufactured: $("#manufactured").val(),
+			purchased: $("#purchased").val(),
 			stock: $("#stock").val(),
 
 			ingID: '<?=$ing['id'];?>'

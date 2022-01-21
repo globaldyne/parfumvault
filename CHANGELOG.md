@@ -7,6 +7,10 @@
 - Dashboard pie colors can be customised by formula category color
 - Update Chart.js to its latest version
 - Change legend position and color mapping for pie charts
+- Rename Manufactured field in suppliers to Purchased
+- Fix date picker missing left/right arrows
+- Update jQuery version to 3.6.0
+- Fix a bug preventing proper value update in ingredient suppliers
 
 ### Version 3.8
 - tipsy.js dependency removed

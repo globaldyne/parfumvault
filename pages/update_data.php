@@ -66,7 +66,7 @@ if($_POST['ingSupplier'] == 'add'){
 	$supplier_manufacturer = mysqli_real_escape_string($conn, $_POST['supplier_manufacturer']);
 	$supplier_name = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingSuppliers WHERE id = '$supplier_id'"));
 	$supplier_batch = mysqli_real_escape_string($conn, $_POST['supplier_batch']);
-	$manufactured = mysqli_real_escape_string($conn, $_POST['manufactured'] ?: date('Y-m-d'));
+	$purchased = mysqli_real_escape_string($conn, $_POST['purchased'] ?: date('Y-m-d'));
 	$stock = mysqli_real_escape_string($conn, $_POST['stock'] ?: 0);
 
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT ingSupplierID FROM suppliers WHERE ingSupplierID = '$supplier_id' AND ingID = '$ingID'"))){
@@ -79,7 +79,7 @@ if($_POST['ingSupplier'] == 'add'){
 			$preferred = '0';
 		}
 		
-		if(mysqli_query($conn, "INSERT INTO suppliers (ingSupplierID,ingID,supplierLink,price,size,manufacturer,preferred,batch,manufactured,stock) VALUES ('$supplier_id','$ingID','$supplier_link','$supplier_price','$supplier_size','$supplier_manufacturer','$preferred','$supplier_batch','$manufactured','$stock')")){
+		if(mysqli_query($conn, "INSERT INTO suppliers (ingSupplierID,ingID,supplierLink,price,size,manufacturer,preferred,batch,purchased,stock) VALUES ('$supplier_id','$ingID','$supplier_link','$supplier_price','$supplier_size','$supplier_manufacturer','$preferred','$supplier_batch','$purchased','$stock')")){
 			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$supplier_name['name'].'</strong> added to the list!</div>';
 		}else{
 			echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> '.mysqli_error($conn).'</div>';
@@ -95,7 +95,7 @@ if($_GET['ingSupplier'] == 'update'){
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 	$ingID = mysqli_real_escape_string($conn, $_GET['ingID']);
 
-	mysqli_query($conn, "UPDATE suppliers SET $name = '$value' WHERE ingSupplierID = '$id' AND ingID='$ingID'");
+	mysqli_query($conn, "UPDATE suppliers SET $name = '$value' WHERE id = '$id' AND ingID='$ingID'");
 	return;
 }
 

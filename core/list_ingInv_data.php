@@ -17,7 +17,7 @@ foreach ($sup as $suppliers) {
 	$r['size'] = (float)$suppliers['size'];
 	$r['manufacturer'] = (string)$suppliers['manufacturer'];
 	$r['preferred'] = (int)$suppliers['preferred'];
-	$r['manufactured'] = (string)$suppliers['manufactured'];
+	$r['purchased'] = (string)$suppliers['purchased'];
 	$r['mUnit'] = (string)$suppliers['mUnit'];
 	$r['stock'] = (int)$suppliers['stock'];
 

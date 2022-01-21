@@ -36,7 +36,7 @@ $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT physical_state FROM ingred
                       <th>Size (<?php if($ing['physical_state'] == '1'){ echo 'ml'; }elseif($ing['physical_state'] == '2'){ echo 'grams'; }else{ echo $settings['mUnit']; }?>)</th>
                       <th>Manufacturer</th>
                       <th>Batch</th>
-                      <th>Manufactured</th>
+                      <th>Purchased</th>
                       <th>In Stock</th>
                       <th>Actions</th>
                     </tr>
@@ -47,14 +47,14 @@ $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT physical_state FROM ingred
 						$sup = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingSuppliers WHERE id = '".$supplier['ingSupplierID']."'"));
 					?>
                     <tr>
-                      <td data-name="ingSupplierID" class="ingSupplierID" data-type="select" align="center" data-pk="<?=$supplier['ingSupplierID']?>"><?=$sup['name']?></td>
-                      <td data-name="supplierLink" class="supplierLink" data-type="textarea" align="center" data-pk="<?=$supplier['ingSupplierID']?>"><a href="#"><?=$supplier['supplierLink']?></a></td>
-					  <td data-name="price" class="price" data-type="text" align="center" data-pk="<?=$supplier['ingSupplierID']?>" id="<?=$supplier['ingSupplierID']?>"><?=$supplier['price']?></td>
-					  <td data-name="size" class="size" data-type="text" align="center" data-pk="<?=$supplier['ingSupplierID']?>"><?=$supplier['size']?></td>
-					  <td data-name="manufacturer" class="manufacturer" data-type="text" align="center" data-pk="<?=$supplier['ingSupplierID']?>"><?=$supplier['manufacturer']?></td>
-                      <td data-name="batch" class="batch" data-type="text" align="center" data-pk="<?=$supplier['ingSupplierID']?>"><?=$supplier['batch']?></td>
-                      <td data-name="manufactured" class="manufactured" data-type="text" align="center" data-pk="<?=$supplier['ingSupplierID']?>"><?=$supplier['manufactured']?></td>
-                      <td data-name="stock" class="stock" data-type="text" align="center" data-pk="<?=$supplier['ingSupplierID']?>"><?=$supplier['stock']?></td>
+                      <td data-name="ingSupplierID" class="ingSupplierID" data-type="select" align="center" data-pk="<?=$supplier['id']?>"><?=$sup['name']?></td>
+                      <td data-name="supplierLink" class="supplierLink" data-type="textarea" align="center" data-pk="<?=$supplier['id']?>"><a href="#"><?=$supplier['supplierLink']?></a></td>
+					  <td data-name="price" class="price" data-type="text" align="center" data-pk="<?=$supplier['id']?>" id="<?=$supplier['id']?>"><?=$supplier['price']?></td>
+					  <td data-name="size" class="size" data-type="text" align="center" data-pk="<?=$supplier['id']?>"><?=$supplier['size']?></td>
+					  <td data-name="manufacturer" class="manufacturer" data-type="text" align="center" data-pk="<?=$supplier['id']?>"><?=$supplier['manufacturer']?></td>
+                      <td data-name="batch" class="batch" data-type="text" align="center" data-pk="<?=$supplier['id']?>"><?=$supplier['batch']?></td>
+                      <td data-name="purchased" class="purchased" align="center" data-pk="<?=$supplier['ingSupplierID']?>"><?=$supplier['purchased']?></td>
+                      <td data-name="stock" class="stock" data-type="text" align="center" data-pk="<?=$supplier['id']?>"><?=$supplier['stock']?></td>
                       <td align="center"><a <?php if($supplier['preferred']){ ?>href="#" class="fas fa-star" <?php }else{ ?>href="javascript:prefSID('<?=$supplier['ingSupplierID']?>','1')" class="far fa-star" data-toggle="tooltip" data-placement="top" title="Set as preferred supplier."<?php } ?> ></a>&nbsp;<a href="javascript:getPrice('<?=urlencode($supplier['supplierLink'])?>','<?=$supplier['size']?>','<?=$supplier['ingSupplierID']?>')" data-toggle="tooltip" data-placement="top" title="Get the latest price from the supplier." class="fas fa-sync"></a>&nbsp;<a href="<?=$supplier['supplierLink']?>" target="_blank" class="fas fa-store" data-toggle="tooltip" data-placement="top" title="Open supplier's web page."></a>&nbsp;<a href="javascript:deleteSupplier('<?=$supplier['id']?>')" onclick="return confirm('Remove <?=$sup['name']?>?');" class="fas fa-trash" data-toggle="tooltip" data-placement="top" title="Remove supplier from the list."></a></td>
 					</tr>
 				  	<?php } ?>
@@ -71,7 +71,7 @@ $(document).ready(function(){
 	"info":   true,
 	"lengthMenu": [[15, 35, 60, -1], [15, 35, 60, "All"]]
  });
- 
+ Object.getPrototypeOf($('#purchased')).size = function() { return this.length; }; // Workaround for https://github.com/Eonasdan/bootstrap-datetimepicker/issues/1714
 
 
 $('#ing_supplier').editable({
@@ -96,23 +96,23 @@ $('#ing_supplier').editable({
 	}
 });
 
- $('#ing_supplier').editable({
+$('#ing_supplier').editable({
 	  container: 'body',
 	  selector: 'td.supplierLink',
 	  type: 'POST',
 	  url: "update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
 	  title: 'Store link',
- });
+});
   
- $('#ing_supplier').editable({
+$('#ing_supplier').editable({
 	  container: 'body',
 	  selector: 'td.price',
 	  type: 'POST',
 	  url: "update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
 	  title: 'Price',
- });
+});
 	
- $('#ing_supplier').editable({
+$('#ing_supplier').editable({
   	container: 'body',
   	selector: 'td.size',
   	type: 'POST',
@@ -121,37 +121,53 @@ $('#ing_supplier').editable({
 	success: function (data) {
 			reload_data();
 	}
- });
+});
  
- $('#ing_supplier').editable({
+$('#ing_supplier').editable({
 	container: 'body',
 	selector: 'td.manufacturer',
 	type: 'POST',
 	url: "update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
 	title: 'Manufacturer',
- });
+	success: function (data) {
+			reload_data();
+	}
+});
 
- $('#ing_supplier').editable({
+$('#ing_supplier').editable({
 	container: 'body',
 	selector: 'td.batch',
 	type: 'POST',
 	url: "update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
 	title: 'Batch',
- });
-  $('#ing_supplier').editable({
+	success: function (data) {
+			reload_data();
+	}
+});
+
+$('#ing_supplier').editable({
 	container: 'body',
-	selector: 'td.manufactured',
+	selector: 'td.purchased',
 	type: 'POST',
 	url: "update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
-	title: 'Manufactured',
- });
-   $('#ing_supplier').editable({
+	title: 'Purchase date',
+	type: 'date',
+	success: function (data) {
+			reload_data();
+	}
+});
+  
+$('#ing_supplier').editable({
 	container: 'body',
 	selector: 'td.stock',
 	type: 'POST',
 	url: "update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
 	title: 'In Stock',
- });
+	success: function (data) {
+			reload_data();
+	}
+});
+
 
 });
 </script>
