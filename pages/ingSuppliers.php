@@ -33,7 +33,7 @@ if($ing['physical_state'] == 1){
 
 
 </div>
-<table id="tdIngSup" class="table table-striped table-bordered">
+<table id="tdIngSup" class="table table-striped table-bordered" style="width:100%">
   <thead>
       <tr>
           <th>Name</th>

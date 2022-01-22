@@ -835,22 +835,7 @@ function addComposition() {
 };
 
 
-function deleteDoc(id) {	  
-	$.ajax({ 
-		url: 'update_data.php', 
-		type: 'GET',
-		data: {
-			doc: 'delete',
-			id: id,
-			ingID: '<?=$ing['id'];?>'
-			},
-		dataType: 'html',
-		success: function (data) {
-			$('#msg_doc').html(data);
-			reload_data();
-		}
-	  });
-};
+
 
 
 $(document).ready(function() {
@@ -917,46 +902,7 @@ $(document).ready(function() {
 				}
 	});
 })
-	
-$("#doc_upload").click(function(){
-	$("#doc_inf").html('<div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
-	$("#doc_upload").prop("disabled", true);
-    $("#doc_upload").prop('value', 'Please wait...');
-		
-	var fd = new FormData();
-    var files = $('#doc_file')[0].files;
-    var doc_name = $('#doc_name').val();
-    var doc_notes = $('#doc_notes').val();
 
-    if(files.length > 0 ){
-		fd.append('doc_file',files[0]);
-
-			$.ajax({
-              url: 'upload.php?type=1&doc_name=' + btoa(doc_name) + '&doc_notes=' + btoa(doc_notes) + '&id=<?=$ing['id'];?>',
-              type: 'POST',
-              data: fd,
-              contentType: false,
-              processData: false,
-			  		cache: false,
-              success: function(response){
-                 if(response != 0){
-                    $("#doc_inf").html(response);
-					$("#doc_upload").prop("disabled", false);
-        			$("#doc_upload").prop('value', 'Upload');
-					reload_data();
-                 }else{
-                    $("#doc_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> File upload failed!</div>');
-					$("#doc_upload").prop("disabled", false);
-        			$("#doc_upload").prop('value', 'Upload');
-                 }
-              },
-           });
-        }else{
-			$("#doc_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a file to upload!</div>');
-			$("#doc_upload").prop("disabled", false);
-   			$("#doc_upload").prop('value', 'Upload');
-        }
-    });	
 });
 
 
