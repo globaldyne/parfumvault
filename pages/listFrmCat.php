@@ -26,7 +26,7 @@ require_once(__ROOT__.'/inc/opendb.php');
                 <td colspan="8">
                 <div class="card-body">
               <div>
-				<table id="frmDataCat" class="table table-striped table-bordered nowrap viewFormula" style="width:100%">
+				<table id="frmDataCat" class="table table-striped table-bordered nowrap" style="width:100%">
                   <thead>
                     <tr>
                       <th>Name</th>

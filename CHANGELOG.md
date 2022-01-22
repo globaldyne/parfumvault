@@ -11,6 +11,7 @@
 - Fix date picker missing left/right arrows
 - Update jQuery version to 3.6.0
 - Fix a bug preventing proper value update in ingredient suppliers
+- Rewrite of suppliers page in ingredient level
 
 ### Version 3.8
 - tipsy.js dependency removed

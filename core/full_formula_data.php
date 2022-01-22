@@ -60,7 +60,7 @@ foreach ($form as $formula){
 foreach ($form as $formula){
 	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT id, name, cas, $defCatClass, profile, odor, category, physical_state FROM ingredients WHERE name = '".$formula['ingredient']."'"));
 	 
-	$inventory = mysqli_fetch_array(mysqli_query($conn, "SELECT stock,mUnit,batch,manufactured FROM suppliers WHERE ingID = '".$ing_q['id']."' AND preferred = '1'"));
+	$inventory = mysqli_fetch_array(mysqli_query($conn, "SELECT stock,mUnit,batch,purchased FROM suppliers WHERE ingID = '".$ing_q['id']."' AND preferred = '1'"));
 	
 	$conc = $formula['concentration'] / 100 * $formula['quantity']/$mg['total_mg'] * 100;
   	$conc_final = $formula['concentration'] / 100 * $formula['quantity']/$mg['total_mg'] * $meta['finalType'];

@@ -64,6 +64,7 @@ while($pictograms_res = mysqli_fetch_array($pictograms)){
 
 <link rel="stylesheet" type="text/css" href="../css/datatables.min.css"/>
 <script type="text/javascript" src="../js/datatables.min.js"></script>
+  <script src="../js/bootbox.min.js"></script>
 
 <style>
 .form-inline .form-control {
@@ -774,7 +775,7 @@ $(document).ready(function() {
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="addSupplier">Add document for <?php echo $ing['name']; ?></h5>
+        <h5 class="modal-title" id="addDocument">Add document for <?php echo $ing['name']; ?></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -855,26 +856,7 @@ function cloneIng() {
 	  });
 };
 
-function getPrice(supplier, size, ingSupplierID) {
-	$('#ingMsg').html('<div class="alert alert-info alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Please wait...</strong></div>');
-	$('#' + ingSupplierID).html('<img src="/img/loading.gif"/>');
-	$.ajax({ 
-		url: 'update_data.php', 
-		type: 'POST',
-		data: {
-			ingSupplier: 'getPrice',
-			sLink: supplier,
-			size: size,
-			ingSupplierID: ingSupplierID,
-			ingID: '<?=$ing['id'];?>'
-			},
-		dataType: 'html',
-		success: function (data) {
-			$('#ingMsg').html(data);
-			reload_data();
-		}
-	  });
-};
+
 
 function deleteComposition(allgID) {	  
 	$.ajax({ 
@@ -943,27 +925,11 @@ function addSupplier() {
 			$("#supplier_size").val('');
 			$("#supplier_price").val('');
 			$("#supplier_manufacturer").val('');
-			reload_data();
+			reload_sup_data();
 		}
 	  });
 };
 
-function deleteSupplier(sID) {	  
-	$.ajax({ 
-		url: 'update_data.php', 
-		type: 'GET',
-		data: {
-			ingSupplier: 'delete',
-			sID: sID,
-			ingID: '<?=$ing['id'];?>'
-			},
-		dataType: 'html',
-		success: function (data) {
-			$('#msg_sup').html(data);
-			reload_data();
-		}
-	  });
-};
 
 function deleteDoc(id) {	  
 	$.ajax({ 
@@ -982,23 +948,7 @@ function deleteDoc(id) {
 	  });
 };
 
-function prefSID(sID, status) {	  
-	$.ajax({ 
-		url: 'update_data.php', 
-		type: 'GET',
-		data: {
-			ingSupplier: 'preferred',
-			sID: sID,
-			status: status,
-			ingID: '<?=$ing['id'];?>'
-			},
-		dataType: 'html',
-		success: function (data) {
-			//$('#msg').html(data);
-			reload_data();
-		}
-	  });
-};
+
 $(document).ready(function() {
 	$('#save').click(function() {
 								  
