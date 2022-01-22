@@ -9,25 +9,15 @@ require_once(__ROOT__.'/inc/settings.php');
 $ingID = mysqli_real_escape_string($conn, $_GET["id"]);
 
 $q = mysqli_query($conn, "SELECT * FROM suppliers WHERE ingID = '$ingID' ORDER BY preferred");
-$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT physical_state FROM ingredients WHERE id ='$ingID'"));
+$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT name,physical_state FROM ingredients WHERE id ='$ingID'"));
+$res_ingSupplier = mysqli_query($conn, "SELECT id,name,min_ml,min_gr FROM ingSuppliers ORDER BY name ASC");
 
-if($_GET['s'] == '1'){
-
+if($ing['physical_state'] == 1){
+	$mUnit = 'ml';
+}elseif($ing['physical_state'] == 2){
+	$mUnit = 'grams';
+}
 ?>
-<link href="../css/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-
-<link href="../css/datatables.min.css" rel="stylesheet">
-    <script src="../js/jquery/jquery.min.js"></script>
-  <script src="../js/bootstrap.min.js"></script>
-  <script src="../js/bootbox.min.js"></script>
-
-<script src="../js/datatables.min.js"></script>
-  <link href="../css/bootstrap-editable.css" rel="stylesheet">
-  <script src="../js/bootstrap-editable.js"></script>
-
-  <link href="../css/bootstrap.min.css" rel="stylesheet">
-
-<?php } ?>
 
 <h3>Suppliers</h3>
 <hr>
@@ -43,7 +33,7 @@ if($_GET['s'] == '1'){
 
 
 </div>
-<table id="tdIngSup" class="table table-striped table-bordered nowrap" style="width:100%">
+<table id="tdIngSup" class="table table-striped table-bordered">
   <thead>
       <tr>
           <th>Name</th>
@@ -60,6 +50,12 @@ if($_GET['s'] == '1'){
 </table>
 <script type="text/javascript" language="javascript" >
 $(document).ready(function() {
+	$("#supplier_name").change(function () {
+    	vol = $(this).children(':selected').data('vol');
+    	$("#supplier_size").focus().val(vol);    
+	});
+	$('.selectpicker').selectpicker();
+	
 	$('[data-toggle="tooltip"]').tooltip();
 	var tdIngSup = $('#tdIngSup').DataTable( {
 	columnDefs: [
@@ -77,8 +73,8 @@ $(document).ready(function() {
 	columns: [
 			  { data : 'supplierName', title: 'Name', render: sName },
 			  { data : 'supplierLink', title: 'eShop', render: sLink},
-			  { data : 'price', title: 'Price', render: sPrice},
-			  { data : 'size', title: 'Size', render: sSize},
+			  { data : 'price', title: 'Price(<?=$settings['currency']?>)', render: sPrice},
+			  { data : 'size', title: 'Size(<?=$mUnit?>)', render: sSize},
 			  { data : 'manufacturer', title: 'Manufacturer', render: sManufacturer},
 			  { data : 'batch', title: 'Batch', render: sBatch},
 			  { data : 'purchased', title: 'Purchased', render: sPurchased},
@@ -129,7 +125,7 @@ function sActions(data, type, row){
 	}else{
 		var pref = '<a href="#" id="prefSID" data-status="1" data-id="'+row.ingSupplierID+'" class="far fa-star" data-toggle="tooltip" data-placement="top" title="Set as preferred supplier."></a>&nbsp;';
 	}
-	return pref + '<a href="#" id="getPrice" data-name="'+row.supplierName+'" data-id="'+row.ingSupplierID+'" data-link="'+row.supplierLink+'" data-size="'+row.size+'" data-toggle="tooltip" data-placement="top" title="Get the latest price from the supplier." class="fas fa-sync"></a>&nbsp;<a href="'+row.supplierLink+'" target="_blank" class="fas fa-store" data-toggle="tooltip" data-placement="top" title="Open supplier\'s web page."></a>&nbsp;<a href="#" id="sDel" class="fas fa-trash" data-id="'+row.id+'" data-name="'+row.supplierName+'"></a>';    
+	return pref + '<a href="#" id="getPrice" data-name="'+row.supplierName+'" data-id="'+encodeURIComponent(row.ingSupplierID)+'" data-link="'+row.supplierLink+'" data-size="'+row.size+'" data-toggle="tooltip" data-placement="top" title="Get the latest price from the supplier." class="fas fa-sync"></a>&nbsp;<a href="'+row.supplierLink+'" target="_blank" class="fas fa-store" data-toggle="tooltip" data-placement="top" title="Open supplier\'s web page."></a>&nbsp;<a href="#" id="sDel" class="fas fa-trash" data-id="'+row.id+'" data-name="'+row.supplierName+'"></a>';    
 }
 
 $('#tdIngSup').editable({
@@ -230,7 +226,7 @@ $('#tdIngSup').on('click', '[id*=prefSID]', function () {
 	var s = {};
 	s.ID = $(this).attr('data-id');
    	s.Status = $(this).attr('data-status');
-console.log(s);
+
 	$.ajax({ 
 		url: 'update_data.php', 
 		type: 'GET',
@@ -319,7 +315,97 @@ $('#tdIngSup').on('click', '[id*=sDel]', function () {
    });
 });
 
+$('#addSupplier').on('click', '[id*=sAdd]', function () {
+	$.ajax({ 
+		url: 'update_data.php', 
+		type: 'POST',
+		data: {
+			ingSupplier: 'add',
+			supplier_id: $("#supplier_name").val(),
+			supplier_link: $("#supplier_link").val(),
+			supplier_size: $("#supplier_size").val(),	
+			supplier_price: $("#supplier_price").val(),				
+			supplier_manufacturer: $("#supplier_manufacturer").val(),
+			supplier_batch: $("#supplier_batch").val(),
+			purchased: $("#purchased").val(),
+			stock: $("#stock").val(),
+
+			ingID: '<?=$ingID;?>'
+			},
+		dataType: 'html',
+		success: function (data) {
+			$('#supplier_inf').html(data);
+			$("#supplier_batch").val('');
+			$("#supplier_link").val('');
+			$("#supplier_size").val('');
+			$("#supplier_price").val('');
+			$("#supplier_manufacturer").val('');
+			reload_sup_data();
+		}
+	  });
+});
+
 function reload_sup_data() {
     $('#tdIngSup').DataTable().ajax.reload(null, true);
 };
 </script>
+
+<!-- ADD SUPPLIER-->
+<div class="modal fade" id="addSupplier" tabindex="-1" role="dialog" aria-labelledby="addSupplier" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addSupplier">Add supplier for <?php echo $ing['name']; ?></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <div id="supplier_inf"></div>
+          <p>
+            Name: 
+            <select name="supplier_name" id="supplier_name" class="form-control selectpicker" data-live-search="true">
+            <?php while ($row_ingSupplier = mysqli_fetch_array($res_ingSupplier)){ ?>
+				<option value="<?=$row_ingSupplier['id']?>" data-vol="<?php if($ing['physical_state'] == '1'){ echo $row_ingSupplier['min_ml']; }elseif($ing['physical_state'] == '2'){ echo $row_ingSupplier['min_gr'];} ?>" ><?=$row_ingSupplier['name'];?></option>
+			<?php	}	?>
+            </select>
+            </p>
+            <p>
+            URL*: 
+            <input class="form-control" name="supplier_link" type="text" id="supplier_link" />
+            </p>
+            <p>            
+            Price (<?php echo $settings['currency']; ?>):
+            <input class="form-control" name="supplier_price" type="text" id="supplier_price" />
+            </p>
+            <p>
+            Size (<?php if($ing['physical_state'] == '1'){ echo 'ml'; }elseif($ing['physical_state'] == '2'){ echo 'grams'; }else{ echo $settings['mUnit']; }?>)*:
+            <input class="form-control" name="supplier_size" type="text" id="supplier_size" value="10" />
+            </p>
+            <p>
+            Manufacturer:
+            <input class="form-control" name="supplier_manufacturer" type="text" id="supplier_manufacturer" />
+            </p>
+            <p>
+            Batch:
+            <input class="form-control" name="supplier_batch" type="text" id="supplier_batch" />
+            </p>
+			<p>
+            Purchased:
+            <input class="form-control" name="purchased" type="date" id="purchased" />
+            </p>
+			<p>
+            In stock:
+            <input name="stock" type="text" class="form-control" id="stock" value="0" />
+            </p>
+            
+            <div class="dropdown-divider"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <input type="submit" name="button" class="btn btn-primary" id="sAdd" value="Add">
+      </div>
+    </div>
+  </div>
+</div>
+</div>

@@ -35,7 +35,6 @@ $res_ingTypes = mysqli_query($conn, "SELECT id,name FROM ingTypes ORDER BY name 
 $res_ingStrength = mysqli_query($conn, "SELECT id,name FROM ingStrength ORDER BY name ASC");
 $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCategory ORDER BY name ASC");
 $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles ORDER BY name ASC");
-$res_ingSupplier = mysqli_query($conn, "SELECT id,name,min_ml,min_gr FROM ingSuppliers ORDER BY name ASC");
 
 $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE name = '$ingID'"));
 $ingSafetyInfo = mysqli_query($conn, "SELECT GHS FROM ingSafetyInfo WHERE ingID = '".$ing['id']."'");
@@ -58,13 +57,14 @@ while($pictograms_res = mysqli_fetch_array($pictograms)){
 <title>Manage <?=$ing['name']?></title>
 <link href="../css/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
 <script src="../js/jquery/jquery.min.js"></script>
+
 <script src="../js/bootstrap.min.js"></script>
 <script src="../js/bootstrap-select.js"></script>
 <script src="../js/bootstrap-editable.js"></script>
 
 <link rel="stylesheet" type="text/css" href="../css/datatables.min.css"/>
 <script type="text/javascript" src="../js/datatables.min.js"></script>
-  <script src="../js/bootbox.min.js"></script>
+<script src="../js/bootbox.min.js"></script>
 
 <style>
 .form-inline .form-control {
@@ -708,67 +708,6 @@ $(document).ready(function() {
 </div>
 </div>
 
-<!-- ADD SUPPLIER-->
-<div class="modal fade" id="addSupplier" tabindex="-1" role="dialog" aria-labelledby="addSupplier" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="addSupplier">Add supplier for <?php echo $ing['name']; ?></h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-      <div id="supplier_inf"></div>
-          <form action="javascript:addSupplier()" method="get" name="form1" target="_self" >
-          <p>
-            Name: 
-            <select name="supplier_name" id="supplier_name" class="form-control selectpicker" data-live-search="true">
-            <?php while ($row_ingSupplier = mysqli_fetch_array($res_ingSupplier)){ ?>
-				<option value="<?=$row_ingSupplier['id']?>" data-vol="<?php if($ing['physical_state'] == '1'){ echo $row_ingSupplier['min_ml']; }elseif($ing['physical_state'] == '2'){ echo $row_ingSupplier['min_gr'];} ?>" ><?=$row_ingSupplier['name'];?></option>
-			<?php	}	?>
-            </select>
-            </p>
-            <p>
-            URL*: 
-            <input class="form-control" name="supplier_link" type="text" id="supplier_link" />
-            </p>
-            <p>            
-            Price (<?php echo $settings['currency']; ?>):
-            <input class="form-control" name="supplier_price" type="text" id="supplier_price" />
-            </p>
-            <p>
-            Size (<?php if($ing['physical_state'] == '1'){ echo 'ml'; }elseif($ing['physical_state'] == '2'){ echo 'grams'; }else{ echo $settings['mUnit']; }?>)*:
-            <input class="form-control" name="supplier_size" type="text" id="supplier_size" value="10" />
-            </p>
-            <p>
-            Manufacturer:
-            <input class="form-control" name="supplier_manufacturer" type="text" id="supplier_manufacturer" />
-            </p>
-            <p>
-            Batch:
-            <input class="form-control" name="supplier_batch" type="text" id="supplier_batch" />
-            </p>
-			<p>
-            Purchased:
-            <input class="form-control" name="purchased" type="date" id="purchased" />
-            </p>
-			<p>
-            In stock:
-            <input name="stock" type="text" class="form-control" id="stock" value="0" />
-            </p>
-            
-            <div class="dropdown-divider"></div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <input type="submit" name="button" class="btn btn-primary"  value="Add">
-      </div>
-     </form>
-    </div>
-  </div>
-</div>
-</div>
 
 <!-- ADD DOCUMENT-->
 <div class="modal fade" id="addDoc" tabindex="-1" role="dialog" aria-labelledby="addDoc" aria-hidden="true">
@@ -834,10 +773,6 @@ $(document).ready(function() {
 </div>
 <script type="text/javascript" language="javascript">
 
-$("#supplier_name").change(function () {
-    vol = $(this).children(':selected').data('vol');
-    $("#supplier_size").focus().val(vol);    
-});
 //Clone
 function cloneIng() {	  
 	$.ajax({ 
@@ -855,7 +790,6 @@ function cloneIng() {
 		}
 	  });
 };
-
 
 
 function deleteComposition(allgID) {	  
@@ -896,36 +830,6 @@ function addComposition() {
 			$("#allgEC").val('');
 			$("#allgPerc").val('');
 			reload_data();
-		}
-	  });
-};
-
-function addSupplier() {	  
-	$.ajax({ 
-		url: 'update_data.php', 
-		type: 'POST',
-		data: {
-			ingSupplier: 'add',
-			supplier_id: $("#supplier_name").val(),
-			supplier_link: $("#supplier_link").val(),
-			supplier_size: $("#supplier_size").val(),	
-			supplier_price: $("#supplier_price").val(),				
-			supplier_manufacturer: $("#supplier_manufacturer").val(),
-			supplier_batch: $("#supplier_batch").val(),
-			purchased: $("#purchased").val(),
-			stock: $("#stock").val(),
-
-			ingID: '<?=$ing['id'];?>'
-			},
-		dataType: 'html',
-		success: function (data) {
-			$('#supplier_inf').html(data);
-			$("#supplier_batch").val('');
-			$("#supplier_link").val('');
-			$("#supplier_size").val('');
-			$("#supplier_price").val('');
-			$("#supplier_manufacturer").val('');
-			reload_sup_data();
 		}
 	  });
 };

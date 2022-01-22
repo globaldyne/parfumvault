@@ -22,7 +22,7 @@ foreach ($sup as $suppliers) {
 	$r['manufacturer'] = (string)$suppliers['manufacturer']?:'N/A';
 	$r['batch'] = (string)$suppliers['batch']?:'N/A';
 	$r['preferred'] = (int)$suppliers['preferred'];
-	$r['purchased'] = (string)$suppliers['purchased'];
+	$r['purchased'] = (string)$suppliers['purchased']?:'N/A';
 	$r['mUnit'] = (string)$suppliers['mUnit'];
 	$r['stock'] = (int)$suppliers['stock']?:0;
 
