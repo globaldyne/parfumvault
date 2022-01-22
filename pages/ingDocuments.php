@@ -4,29 +4,9 @@ require('../inc/sec.php');
 
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
-//require_once(__ROOT__.'/inc/settings.php');
 
 $ingID = mysqli_real_escape_string($conn, $_GET["id"]);
-
-if($_GET['s'] == '1'){
-
 ?>
-<link href="../css/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-
-<link href="../css/datatables.min.css" rel="stylesheet">
-  <script src="../js/jquery/jquery.min.js"></script>
-  <script src="../js/bootstrap.min.js"></script>
-  <script src="../js/bootbox.min.js"></script>
-	<script src="../js/bootstrap-select.js"></script>
-
-<script src="../js/datatables.min.js"></script>
-  <link href="../css/bootstrap-editable.css" rel="stylesheet">
-  <script src="../js/bootstrap-editable.js"></script>
-
-  <link href="../css/bootstrap.min.css" rel="stylesheet">
-<link href="../css/bootstrap-select.min.css" rel="stylesheet">
-
-<?php } ?>
 
 <h3>Documents</h3>
 <hr>
