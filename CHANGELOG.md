@@ -13,6 +13,7 @@
 - Fix a bug preventing proper value update in ingredient suppliers
 - Rewrite of suppliers page in ingredient level
 - Rewrite of documents page in ingredient level
+- Rewrite of compositions page in ingredient level
 - Add copy to clipboard function for CAS in formula view
 
 ### Version 3.8

@@ -211,7 +211,8 @@ function reload_data() {
 		url: 'compos.php', 
 		type: 'get',
 		data: {
-			id: "<?=base64_encode($ingID)?>"
+			name: "<?=base64_encode($ingID)?>",
+			id: "<?=$ing['id']?>"
 			},
 		dataType: 'html',
 		success: function (data) {
@@ -667,46 +668,7 @@ $(document).ready(function() {
 </div>
 </div>
 
-<!-- ADD COMPOSITION-->
-<div class="modal fade" id="addComposition" tabindex="-1" role="dialog" aria-labelledby="addComposition" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="addComposition">Add composition for <?php echo $ing['name']; ?></h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-      <div id="inf"></div>
-          <form action="javascript:addComposition()" method="get" name="form1" target="_self" >
-            Name: 
-            <input class="form-control" name="allgName" type="text" id="allgName" />
-            <p>
-            CAS: 
-            <input class="form-control" name="allgCAS" type="text" id="allgCAS" />
-            <p>
-            EINECS: 
-            <input class="form-control" name="allgEC" type="text" id="allgEC" />
-            <p>            
-            Percentage %:
-            <input class="form-control" name="allgPerc" type="text" id="allgPerc" />
-            </p>
-            <div class="dropdown-divider"></div>
-      <label>
-         <input name="addToIng" type="checkbox" id="addToIng" value="1" />
-        Add to ingredients
-      </label>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <input type="submit" name="button" class="btn btn-primary"  value="Add">
-      </div>
-     </form>
-    </div>
-  </div>
-</div>
-</div>
+
 
 
 <!-- ADD DOCUMENT-->
@@ -790,50 +752,6 @@ function cloneIng() {
 		}
 	  });
 };
-
-
-function deleteComposition(allgID) {	  
-	$.ajax({ 
-		url: 'update_data.php', 
-		type: 'GET',
-		data: {
-			composition: 'delete',
-			allgID: allgID,
-			ing: '<?=$ing['name'];?>'
-			},
-		dataType: 'html',
-		success: function (data) {
-			//$('#msg').html(data);
-			reload_data();
-		}
-	  });
-};
-
-function addComposition() {	  
-	$.ajax({ 
-		url: 'update_data.php', 
-		type: 'GET',
-		data: {
-			composition: 'add',
-			allgName: $("#allgName").val(),
-			allgPerc: $("#allgPerc").val(),
-			allgCAS: $("#allgCAS").val(),
-			allgEC: $("#allgEC").val(),	
-			addToIng: $("#addToIng").is(':checked'),				
-			ing: '<?=$ing['name'];?>'
-			},
-		dataType: 'html',
-		success: function (data) {
-			$('#inf').html(data);
-			$("#allgName").val('');
-			$("#allgCAS").val('');
-			$("#allgEC").val('');
-			$("#allgPerc").val('');
-			reload_data();
-		}
-	  });
-};
-
 
 
 

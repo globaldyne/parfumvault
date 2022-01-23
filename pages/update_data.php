@@ -321,7 +321,7 @@ if($_GET['composition'] == 'add'){
 	$allgCAS = mysqli_real_escape_string($conn, $_GET['allgCAS']);
 	$allgEC = mysqli_real_escape_string($conn, $_GET['allgEC']);	
 	$allgPerc = rtrim(mysqli_real_escape_string($conn, $_GET['allgPerc']),'%');
-	$ing = mysqli_real_escape_string($conn, $_GET['ing']);
+	$ing = base64_decode($_GET['ing']);
 
 	if(empty($allgName)){
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Name is required!</div>';
@@ -356,7 +356,7 @@ if($_GET['composition'] == 'update'){
 	$value = rtrim(mysqli_real_escape_string($conn, $_POST['value']),'%');
 	$id = mysqli_real_escape_string($conn, $_POST['pk']);
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
-	$ing = mysqli_real_escape_string($conn, $_GET['ing']);
+	$ing = base64_decode($_GET['ing']);
 
 	mysqli_query($conn, "UPDATE allergens SET $name = '$value' WHERE id = '$id' AND ing='$ing'");
 	return;
@@ -366,7 +366,7 @@ if($_GET['composition'] == 'update'){
 if($_GET['composition'] == 'delete'){
 
 	$id = mysqli_real_escape_string($conn, $_GET['allgID']);
-	$ing = mysqli_real_escape_string($conn, $_GET['ing']);
+	$ing = base64_decode($_GET['ing']);
 
 	$delQ = mysqli_query($conn, "DELETE FROM allergens WHERE id = '$id' AND ing='$ing'");	
 	if($delQ){
