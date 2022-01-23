@@ -45,7 +45,7 @@ $(document).ready(function() {
 		 columns: [
 				   { data : 'ingredient.profile', title: 'Profile' },
 				   { data : 'ingredient.name', title: 'Ingredient', render: ingName},
-    			   { data : 'ingredient.cas', title: 'CAS#'},
+    			   { data : 'ingredient.cas', title: 'CAS#', render: ingCAS},
 				   { data : 'purity', title: 'Purity %', render: ingConc},
 				   { data : 'dilutant', title: 'Dilutant', render: ingSolvent},
 				   { data : 'quantity', title: 'Quantity (<?=$settings['mUnit']?>)', render: ingQuantity},
@@ -540,7 +540,14 @@ $('#formula').editable({
   	  return data;
   }
 
-	function ingConc(data, type, row, meta){
+function ingCAS(data, type, row, meta){
+	if(type === 'display'){
+		data = '<a href="#" class="pv_point_gen" rel="tip" title="Click to copy" id="cCAS" data-name="'+row.ingredient.cas+'">'+row.ingredient.cas+'</a>';
+	}
+  	 return data;
+}
+  
+  function ingConc(data, type, row, meta){
 	  if(type === 'display'){
 		  <?php if($meta['isProtected'] == FALSE){?>
 		  data = '<a href="#" data-name="concentration" class="concentration" data-type="text" data-pk="' + row.ingredient.name + '">' + data + '</a>';
@@ -583,63 +590,62 @@ $('#formula').editable({
   }
   
   
-	function ingInv(data, type, row, meta){
-		//console.log(row.);
-		if (row.ingredient.physical_state == 1){
-			var mUnit = 'ml';
-		}else if (row.ingredient.physical_state == 2){
-			var mUnit = 'gr';
-		}
-		if(row.ingredient.inventory.stock >= row.quantity){
-			var inv = '<i class="fa fa-check inv-ok" rel="tip" title="Available in stock: '+row.ingredient.inventory.stock+mUnit+'"></i>';
-		}else if(row.ingredient.inventory.stock <= row.quantity){
-			var inv = '<i class="fa fa-times inv-out" rel="tip" data-html="true" title="Not enough in stock<br/> Available: '+row.ingredient.inventory.stock + mUnit +'"></i>';
-		}
-	
-		if(type === 'display'){
-			data = inv;
-		}
-
-  	  return data;
-  }
-  
-  function ingActions(data, type, row, meta){
-	//Change ingredient
-	$('#formula').editable({
-		selector: 'a.replaceIngredient',
-		pvnoresp: false,
-		highlight: false,
-		type: 'get',
-		emptytext: "",
-		emptyclass: "",
-		url: "pages/manageFormula.php?action=repIng&fname=<?=$meta['name']?>",
-		source: [
-				 <?php
-					$res_ing = mysqli_query($conn, "SELECT name FROM ingredients ORDER BY name ASC");
-					while ($r_ing = mysqli_fetch_array($res_ing)){
-						echo '{value: "'.htmlspecialchars($r_ing['name']).'", text: "'.htmlspecialchars($r_ing['name']).'"},';
-				}
-				?>
-			  ],
-		dataType: 'html',
-		success: function (data) {
-			if ( data.indexOf("Error") > -1 ) {
-				$('#msgInfo').html(data); 
-			}else{
-				$('#msgInfo').html(data);
-				reload_formula_data();
-			}
-		}
-	});
+function ingInv(data, type, row, meta){
+	if (row.ingredient.physical_state == 1){
+		var mUnit = 'ml';
+	}else if (row.ingredient.physical_state == 2){
+		var mUnit = 'gr';
+	}
+	if(row.ingredient.inventory.stock >= row.quantity){
+		var inv = '<i class="fa fa-check inv-ok" rel="tip" title="Available in stock: '+row.ingredient.inventory.stock+mUnit+'"></i>';
+	}else if(row.ingredient.inventory.stock <= row.quantity){
+		var inv = '<i class="fa fa-times inv-out" rel="tip" data-html="true" title="Not enough in stock<br/> Available: '+row.ingredient.inventory.stock + mUnit +'"></i>';
+	}
 
 	if(type === 'display'){
-		data = '<a href="'+ row.ingredient.pref_supplier_link +'" target="_blank" rel="tip" title="Open '+ row.ingredient.pref_supplier +' page" class="fas fa-shopping-cart"></a>';
-		<?php if($meta['isProtected'] == FALSE){?>
-		data += '&nbsp; <a href="#" class="fas fa-exchange-alt replaceIngredient" rel="tip" title="Replace '+ row.ingredient.name +'"  data-name="'+ row.ingredient.name +'" data-type="select" data-pk="'+ row.ingredient.name +'" data-title="Choose Ingredient to replace '+ row.ingredient.name +'"></a> &nbsp; <a href="#" rel="tip" title="Remove '+ row.ingredient.name +'" class="fas fa-trash" id="rmIng" data-name="'+ row.ingredient.name +'" data-id='+ row.formula_ingredient_id +'></a>';
-		<?php } ?>
+		data = inv;
 	}
-    return data;
-  }
+
+  return data;
+}
+  
+function ingActions(data, type, row, meta){
+//Change ingredient
+$('#formula').editable({
+	selector: 'a.replaceIngredient',
+	pvnoresp: false,
+	highlight: false,
+	type: 'get',
+	emptytext: "",
+	emptyclass: "",
+	url: "pages/manageFormula.php?action=repIng&fname=<?=$meta['name']?>",
+	source: [
+			 <?php
+			$res_ing = mysqli_query($conn, "SELECT name FROM ingredients ORDER BY name ASC");
+			while ($r_ing = mysqli_fetch_array($res_ing)){
+				echo '{value: "'.htmlspecialchars($r_ing['name']).'", text: "'.htmlspecialchars($r_ing['name']).'"},';
+			}
+			?>
+		  ],
+		dataType: 'html',
+		success: function (data) {
+	if ( data.indexOf("Error") > -1 ) {
+			$('#msgInfo').html(data); 
+		}else{
+			$('#msgInfo').html(data);
+			reload_formula_data();
+		}
+	}
+});
+
+if(type === 'display'){
+	data = '<a href="'+ row.ingredient.pref_supplier_link +'" target="_blank" rel="tip" title="Open '+ row.ingredient.pref_supplier +' page" class="fas fa-shopping-cart"></a>';
+	<?php if($meta['isProtected'] == FALSE){?>
+	data += '&nbsp; <a href="#" class="fas fa-exchange-alt replaceIngredient" rel="tip" title="Replace '+ row.ingredient.name +'"  data-name="'+ row.ingredient.name +'" data-type="select" data-pk="'+ row.ingredient.name +'" data-title="Choose Ingredient to replace '+ row.ingredient.name +'"></a> &nbsp; <a href="#" rel="tip" title="Remove '+ row.ingredient.name +'" class="fas fa-trash" id="rmIng" data-name="'+ row.ingredient.name +'" data-id='+ row.formula_ingredient_id +'></a>';
+	<?php } ?>
+}
+   return data;
+}
 
 //MULTIPLY - DIVIDE
 function manageQuantity(quantity) {
@@ -772,6 +778,17 @@ function addTODO() {
   });
 };
 
+
+$('#formula').on('click', '[id*=cCAS]', function () {
+	var copy = {};
+	copy.Name = $(this).attr('data-name');
+	const el = document.createElement('textarea');
+    el.value = copy.Name;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+});
 
 function export_as(type) {
   $("#formula").tableHTMLExport({

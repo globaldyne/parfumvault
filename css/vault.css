@@ -638,6 +638,7 @@ formula td, table.table th {
 
 .pv_point_gen {
 	cursor: pointer;
+	color: currentColor;
 }
 
 .pv_bar_top_notes {
