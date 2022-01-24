@@ -76,7 +76,7 @@ $(document).ready(function() {
 		displayLength: 100,
 		createdRow: function( row, data, dataIndex){
 			if( data['usage_regulator'] == "IFRA" && parseFloat(data['usage_limit']) < parseFloat(data['concentration'])){
-				$(row).find('td:eq(5)').addClass('alert-danger').append(' <a href="#" rel="tip" title="Max usage: ' + data['usage_limit'] +'%" class="fas fa-info-circle"></a></div>');
+				$(row).find('td:eq(5)').addClass('alert-danger').append(' <i rel="tip" title="Max usage: ' + data['usage_limit'] +'%" class="pv_point_gen fas fa-info-circle"></i></div>');
 			}else if( data['usage_regulator'] == "PV" && parseFloat(data['usage_limit']) < parseFloat(data['concentration'])){
 				$(row).find('td:eq(5)').addClass('alert-info');
             }else{
@@ -131,7 +131,7 @@ $('#formula').on('click', '[id*=rmIng]', function () {
        buttons :{
            main: {
                label : "Remove",
-               className : "btn-primary",
+               className : "btn-danger",
                callback: function (){
 	    			
 				$.ajax({ 
@@ -507,7 +507,7 @@ $('#formula').editable({
 		
 	$('#formula').editable({
 	  container: 'body',
-	  selector: 'a.notes',
+	  selector: 'i.notes',
 	  url: "pages/update_data.php?formula=<?=base64_encode($f_name)?>",
 	  title: 'Notes',
 	  type: "POST",
@@ -524,7 +524,7 @@ $('#formula').editable({
 	function ingName(data, type, row, meta){
 		
 		if(row.chk_ingredient){
-			var chkIng = '<a href="#" class="fas fa-exclamation" rel="tip" title="'+row.chk_ingredient+'"></a>';
+			var chkIng = '<i class="fas fa-exclamation" rel="tip" title="'+row.chk_ingredient+'"></i>';
 		}else{
 			var chkIng = '';
 		}
@@ -542,7 +542,7 @@ $('#formula').editable({
 
 function ingCAS(data, type, row, meta){
 	if(type === 'display'){
-		data = '<a href="#" class="pv_point_gen" rel="tip" title="Click to copy" id="cCAS" data-name="'+row.ingredient.cas+'">'+row.ingredient.cas+'</a>';
+		data = '<i class="pv_point_gen" rel="tip" title="Click to copy" id="cCAS" data-name="'+row.ingredient.cas+'">'+row.ingredient.cas+'</i>';
 	}
   	 return data;
 }
@@ -583,7 +583,7 @@ function ingCAS(data, type, row, meta){
 	 if(type === 'display'){
 	  <?php if($meta['defView'] == '1'){ $show = 'properties'; }elseif($meta['defView'] == '2'){ $show = 'notes';}?>
 	  <?php if($meta['isProtected'] == FALSE){?>
-	  data = '<a href="#" data-name="<?=$show?>" class="<?=$show?>" data-type="textarea" data-pk="' + row.ingredient.name + '">' + data + '</a>';
+	  data = '<i data-name="<?=$show?>" class="pv_point_gen <?=$show?>" data-type="textarea" data-pk="' + row.ingredient.name + '">' + data + '</i>';
 	  <?php } ?>
 	 }
    return data;
@@ -641,7 +641,7 @@ $('#formula').editable({
 if(type === 'display'){
 	data = '<a href="'+ row.ingredient.pref_supplier_link +'" target="_blank" rel="tip" title="Open '+ row.ingredient.pref_supplier +' page" class="fas fa-shopping-cart"></a>';
 	<?php if($meta['isProtected'] == FALSE){?>
-	data += '&nbsp; <a href="#" class="fas fa-exchange-alt replaceIngredient" rel="tip" title="Replace '+ row.ingredient.name +'"  data-name="'+ row.ingredient.name +'" data-type="select" data-pk="'+ row.ingredient.name +'" data-title="Choose Ingredient to replace '+ row.ingredient.name +'"></a> &nbsp; <a href="#" rel="tip" title="Remove '+ row.ingredient.name +'" class="fas fa-trash" id="rmIng" data-name="'+ row.ingredient.name +'" data-id='+ row.formula_ingredient_id +'></a>';
+	data += '&nbsp; <a href="#" class="fas fa-exchange-alt replaceIngredient" rel="tip" title="Replace '+ row.ingredient.name +'"  data-name="'+ row.ingredient.name +'" data-type="select" data-pk="'+ row.ingredient.name +'" data-title="Choose Ingredient to replace '+ row.ingredient.name +'"></a> &nbsp; <i rel="tip" title="Remove '+ row.ingredient.name +'" class="pv_point_gen fas fa-trash" style="color: #c9302c;" id="rmIng" data-name="'+ row.ingredient.name +'" data-id='+ row.formula_ingredient_id +'></i>';
 	<?php } ?>
 }
    return data;

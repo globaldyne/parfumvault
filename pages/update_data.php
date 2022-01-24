@@ -432,89 +432,30 @@ if($_GET['customer'] == 'update'){
 	return;	
 }
 
-if($_POST['manage'] == 'ingredient'){
+if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'general'){
 	$ing = mysqli_real_escape_string($conn, $_POST['ing']);
 
 	$INCI = trim(mysqli_real_escape_string($conn, $_POST["INCI"]));
-	
 	$cas = preg_replace('/\s+/', '', trim(mysqli_real_escape_string($conn, $_POST["cas"])));
 	$reach = preg_replace('/\s+/', '', trim(mysqli_real_escape_string($conn, $_POST["reach"])));
 	$fema = preg_replace('/\s+/', '', trim(mysqli_real_escape_string($conn, $_POST["fema"])));
-																						
-	$type = mysqli_real_escape_string($conn, $_POST["type"]);
+	if($_POST["isAllergen"] == 'true') { $allergen = '1'; }else{ $allergen = '0'; }
+	$purity = validateInput($_POST["purity"]);
+	$profile = mysqli_real_escape_string($conn, $_POST["profile"]);
+	$type = mysqli_real_escape_string($conn, $_POST["type"]);	
 	$strength = mysqli_real_escape_string($conn, $_POST["strength"]);
 	$category = mysqli_real_escape_string($conn, $_POST["category"] ? $_POST['category']: '1');
-	$profile = mysqli_real_escape_string($conn, $_POST["profile"]);
-	$tenacity = mysqli_real_escape_string($conn, $_POST["tenacity"]);
-	$formula = mysqli_real_escape_string($conn, $_POST["formula"]);
-	$chemical_name = mysqli_real_escape_string($conn, $_POST["chemical_name"]);
-	$flash_point = mysqli_real_escape_string($conn, $_POST["flash_point"]);
-	$appearance = mysqli_real_escape_string($conn, $_POST["appearance"]);
-	$solvent = mysqli_real_escape_string($conn, $_POST["solvent"]);
+	$physical_state = mysqli_real_escape_string($conn, $_POST["physical_state"]);
 	$odor = ucfirst(trim(mysqli_real_escape_string($conn, $_POST["odor"])));
 	$notes = ucfirst(trim(mysqli_real_escape_string($conn, $_POST["notes"])));
-	$purity = validateInput($_POST["purity"]);
-	$soluble = mysqli_real_escape_string($conn, $_POST["soluble"]);
-	$logp = mysqli_real_escape_string($conn, $_POST["logp"]);
 	
-	$cat1 = validateInput($_POST["cat1"]? $_POST['cat1']: '100');
-	$cat2 = validateInput($_POST["cat2"] ? $_POST['cat2']: '100');
-	$cat3 = validateInput($_POST["cat3"] ? $_POST['cat3']: '100');
-	$cat4 = validateInput($_POST["cat4"] ? $_POST['cat4']: '100');
-	$cat5A = validateInput($_POST["cat5A"] ? $_POST['cat5A']: '100');
-	$cat5B = validateInput($_POST["cat5B"] ? $_POST['cat5B']: '100');
-	$cat5C = validateInput($_POST["cat5C"] ? $_POST['cat5C']: '100');
-	$cat5D = validateInput($_POST["cat5D"] ? $_POST['cat5D']: '100');
-	$cat6 = validateInput($_POST["cat6"] ? $_POST['cat6']: '100');
-	$cat7A = validateInput($_POST["cat7A"] ? $_POST['cat7A']: '100');
-	$cat7B = validateInput($_POST["cat7B"] ? $_POST['cat7B']: '100');
-	$cat8 = validateInput($_POST["cat8"] ? $_POST['cat8']: '100');
-	$cat9 = validateInput($_POST["cat9"] ? $_POST['cat9']: '100');
-	$cat10A = validateInput($_POST["cat10A"] ? $_POST['cat10A']: '100');
-	$cat10B = validateInput($_POST["cat10B"] ? $_POST['cat10B']: '100');
-	$cat11A = validateInput($_POST["cat11A"] ? $_POST['cat11A']: '100');
-	$cat11B = validateInput($_POST["cat11B"] ? $_POST['cat11B']: '100');
-	$cat12 = validateInput($_POST["cat12"] ? $_POST['cat12']: '100');
+//	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '".$_POST['name']."'"))){
+		if(empty($_POST['name'])){
 	
-	$impact_top = mysqli_real_escape_string($conn, $_POST["impact_top"]);
-	$impact_base = mysqli_real_escape_string($conn, $_POST["impact_base"]);
-	$impact_heart = mysqli_real_escape_string($conn, $_POST["impact_heart"]);
-	$usage_type = mysqli_real_escape_string($conn, $_POST["usage_type"]);
-	$molecularWeight = mysqli_real_escape_string($conn, $_POST["molecularWeight"]);
-	$physical_state = mysqli_real_escape_string($conn, $_POST["physical_state"]);
-
-
-	if($_POST["isAllergen"] == 'true') {
-		$allergen = '1';
-	}else{
-		$allergen = '0';
-	}
-	if($_POST["flavor_use"] == 'true') {
-		$flavor_use = '1';
-	}else{
-		$flavor_use = '0';
-	}
-	
-	if($_POST['noUsageLimit'] == 'true'){
-		$noUsageLimit = '1';
-	}else{
-		$noUsageLimit = '0';
-	}
-	
-	if($_POST['isPrivate'] == 'true'){
-		$isPrivate = '1';
-	}else{
-		$isPrivate = '0';
-	}
-	
-	if(empty($_POST['name'])){
-		$query = "UPDATE ingredients SET cas = '$cas', reach = '$reach', FEMA = '$fema', type = '$type', strength = '$strength', category='$category', profile='$profile', tenacity='$tenacity', chemical_name='$chemical_name', flash_point='$flash_point', appearance='$appearance', notes='$notes', odor='$odor', purity='$purity', allergen='$allergen', formula='$formula', flavor_use='$flavor_use', cat1 = '$cat1', cat2 = '$cat2', cat3 = '$cat3', cat4 = '$cat4', cat5A = '$cat5A', cat5B = '$cat5B', cat5C = '$cat5C', cat5D = '$cat5D', cat6 = '$cat6', cat7A = '$cat7A', cat7B = '$cat7B', cat8 = '$cat8', cat9 = '$cat9', cat10A = '$cat10A', cat10B = '$cat10B', cat11A = '$cat11A', cat11B = '$cat11B', cat12 = '$cat12', soluble = '$soluble', logp = '$logp', impact_top = '$impact_top', impact_heart = '$impact_heart', impact_base = '$impact_base', usage_type = '$usage_type', solvent = '$solvent', INCI = '$INCI', noUsageLimit = '$noUsageLimit', isPrivate = '$isPrivate', molecularWeight = '$molecularWeight', physical_state = '$physical_state' WHERE name='$ing'";
-		if($_POST["pictogram"]){
-			require_once(__ROOT__.'/func/updateGHS.php');
-			updateGHS($_POST['ingID'],$_POST['pictogram'],$conn);
-		}
+		$query = "UPDATE ingredients SET INCI = '$INCI',cas = '$cas',reach = '$reach',FEMA = '$fema',allergen='$allergen',purity='$purity',profile='$profile',type = '$type',strength = '$strength', category='$category',physical_state = '$physical_state',odor = '$odor',notes = '$notes' WHERE name='$ing'";
+		
 		if(mysqli_query($conn, $query)){
-			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Ingredient <strong>'.$ing.'</strong> updated!</div>';
+			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>General details has been updated!</div>';
 		}else{
 			echo '<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> '.mysqli_error($conn).'</div>';
 		}
@@ -534,12 +475,104 @@ if($_POST['manage'] == 'ingredient'){
 		}
 	}
 
-
 	return;	
 }
 
+
+if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'usage_limits'){
+	$ingID = (int)$_POST['ingID'];
+	if($_POST['flavor_use'] == 'true') { $flavor_use = '1'; }else{ $flavor_use = '0'; }
+	if($_POST['noUsageLimit'] == 'true'){ $noUsageLimit = '1'; }else{ $noUsageLimit = '0'; }
+	$usage_type = mysqli_real_escape_string($conn, $_POST['usage_type']);
+	$cat1 = validateInput($_POST['cat1'] ?: '100');
+	$cat2 = validateInput($_POST['cat2'] ?: '100');
+	$cat3 = validateInput($_POST['cat3'] ?: '100');
+	$cat4 = validateInput($_POST['cat4'] ?: '100');
+	$cat5A = validateInput($_POST['cat5A'] ?: '100');
+	$cat5B = validateInput($_POST['cat5B'] ?: '100');
+	$cat5C = validateInput($_POST['cat5C'] ?: '100');
+	$cat5D = validateInput($_POST['cat5D'] ?: '100');
+	$cat6 = validateInput($_POST['cat6'] ?: '100');
+	$cat7A = validateInput($_POST['cat7A'] ?: '100');
+	$cat7B = validateInput($_POST['cat7B'] ?: '100');
+	$cat8 = validateInput($_POST['cat8'] ?: '100');
+	$cat9 = validateInput($_POST['cat9'] ?: '100');
+	$cat10A = validateInput($_POST['cat10A'] ?: '100');
+	$cat10B = validateInput($_POST['cat10B'] ?: '100');
+	$cat11A = validateInput($_POST['cat11A'] ?: '100');
+	$cat11B = validateInput($_POST['cat11B'] ?: '100');
+	$cat12 = validateInput($_POST['cat12'] ?: '100');
+	
+	$query = "UPDATE ingredients SET noUsageLimit = '$noUsageLimit',flavor_use='$flavor_use',usage_type = '$usage_type', cat1 = '$cat1', cat2 = '$cat2', cat3 = '$cat3', cat4 = '$cat4', cat5A = '$cat5A', cat5B = '$cat5B', cat5C = '$cat5C', cat5D = '$cat5D', cat6 = '$cat6', cat7A = '$cat7A', cat7B = '$cat7B', cat8 = '$cat8', cat9 = '$cat9', cat10A = '$cat10A', cat10B = '$cat10B', cat11A = '$cat11A', cat11B = '$cat11B', cat12 = '$cat12' WHERE id='$ingID'";
+	if(mysqli_query($conn, $query)){
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Usage limits has been updated!</div>';
+	}else{
+		echo '<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> '.mysqli_error($conn).'</div>';
+	}
+	return;
+}
+
+if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'tech_data'){
+	$ingID = (int)$_POST['ingID'];
+	$tenacity = mysqli_real_escape_string($conn, $_POST["tenacity"]);
+	$flash_point = mysqli_real_escape_string($conn, $_POST["flash_point"]);
+	$chemical_name = mysqli_real_escape_string($conn, $_POST["chemical_name"]);
+	$formula = mysqli_real_escape_string($conn, $_POST["formula"]);
+	$logp = mysqli_real_escape_string($conn, $_POST["logp"]);
+	$soluble = mysqli_real_escape_string($conn, $_POST["soluble"]);
+	$molecularWeight = mysqli_real_escape_string($conn, $_POST["molecularWeight"]);
+	$appearance = mysqli_real_escape_string($conn, $_POST["appearance"]);
+
+	
+	$query = "UPDATE ingredients SET tenacity='$tenacity',flash_point='$flash_point',chemical_name='$chemical_name',formula='$formula',logp = '$logp',soluble = '$soluble',molecularWeight = '$molecularWeight',appearance='$appearance' WHERE id='$ingID'";
+	if(mysqli_query($conn, $query)){
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Technical data has been updated!</div>';
+	}else{
+		echo '<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> '.mysqli_error($conn).'</div>';
+	}
+	return;
+}
+
+if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'note_impact'){
+	$ingID = (int)$_POST['ingID'];
+	$impact_top = mysqli_real_escape_string($conn, $_POST["impact_top"]);
+	$impact_base = mysqli_real_escape_string($conn, $_POST["impact_base"]);
+	$impact_heart = mysqli_real_escape_string($conn, $_POST["impact_heart"]);
+
+	$query = "UPDATE ingredients SET impact_top = '$impact_top',impact_heart = '$impact_heart',impact_base = '$impact_base' WHERE id='$ingID'";
+	if(mysqli_query($conn, $query)){
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Note impact has been updated!</div>';
+	}else{
+		echo '<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> '.mysqli_error($conn).'</div>';
+	}
+	return;
+}
+
+if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'privacy'){
+	$ingID = (int)$_POST['ingID'];
+	if($_POST['isPrivate'] == 'true'){ $isPrivate = '1'; }else{ $isPrivate = '0'; }
+	
+	$query = "UPDATE ingredients SET isPrivate = '$isPrivate' WHERE id='$ingID'";
+	if(mysqli_query($conn, $query)){
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Privacy has been updated!</div>';
+	}else{
+		echo '<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> '.mysqli_error($conn).'</div>';
+	}
+	return;
+}
+
+if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'safety_info'){
+	$ingID = (int)$_POST['ingID'];
+	require_once(__ROOT__.'/func/updateGHS.php');
+	if(updateGHS($ingID,$_POST['pictogram'],$conn)){
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Safety data has been updated!</div>';
+	}else{
+		echo '<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> '.mysqli_error($conn).'</div>';
+	}
+	return;
+}
+
 if($_GET['import'] == 'ingredient'){
-		
 		$name = sanChar(mysqli_real_escape_string($conn, base64_decode($_GET["name"])));
 		$query = "INSERT INTO ingredients (name, INCI, cas, notes, odor) VALUES ('$name', '$INCI', '$cas', 'Auto Imported', '$odor')";
 		
@@ -551,8 +584,7 @@ if($_GET['import'] == 'ingredient'){
 			}else{
 				echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Failed to add '.mysqli_error($conn).'</div>';
 			}
-		}
-	
+		}	
 	return;
 }
 

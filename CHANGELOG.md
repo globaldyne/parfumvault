@@ -14,6 +14,9 @@
 - Rewrite of suppliers page in ingredient level
 - Rewrite of documents page in ingredient level
 - Rewrite of compositions page in ingredient level
+- Rewrite of ingredient management page
+- Cosmetic changes in view formula 
+- Add ingredients json
 - Add copy to clipboard function for CAS in formula view
 
 ### Version 3.8

@@ -53,7 +53,7 @@ $(document).ready(function() {
 		},
 	ajax: {	url: '/core/list_ing_compos_data.php?id=<?=$ingName?>' },
 	columns: [
-			  { data : 'name', title: 'Document', render: cmpName },
+			  { data : 'name', title: 'Name', render: cmpName },
 			  { data : 'cas', title: 'CAS', render: cmpCAS},
 			  { data : 'ec', title: 'EINECS', render: cmpEC},
 			  { data : 'percentage', title: 'Percentage', render: cmpPerc},
