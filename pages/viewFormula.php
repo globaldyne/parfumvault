@@ -1,9 +1,9 @@
 <?php 
 require('../inc/sec.php');
 
-require_once('../inc/config.php');
-require_once('..//inc/opendb.php');
-require_once('../inc/settings.php');
+require_once(__ROOT__.'/inc/config.php');
+require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/inc/settings.php');
 
 if(!$_GET['id']){
 	echo 'Formula id is missing.';
@@ -127,7 +127,7 @@ $('#formula').on('click', '[id*=rmIng]', function () {
     
 	bootbox.dialog({
        title: "Confirm ingredient removal",
-       message : 'Remove <strong>'+ $(this).attr('data-name') +'</strong> from formula?',
+       message : 'Remove <strong>'+ ing.Name +'</strong> from formula?',
        buttons :{
            main: {
                label : "Remove",
@@ -163,8 +163,32 @@ $('#formula').on('click', '[id*=rmIng]', function () {
    });
 });
 
-	
-		 
+$('#formula').on('click', '[id*=exIng]', function () {
+	var ing = {};
+	ing.ID = $(this).attr('data-id');
+	ing.Name = $(this).attr('data-name');
+	ing.Status = $(this).attr('data-status');
+			
+		$.ajax({ 
+			url: 'pages/manageFormula.php', 
+			type: 'GET',
+			data: {
+				action: "excIng",
+				fid: "<?=$meta['fid']?>",
+				ingID: ing.ID,
+				ingName: ing.Name,
+				status: ing.Status
+				},
+			dataType: 'html',
+			success: function (data) {
+				$('#msgInfo').html(data);
+				reload_formula_data();
+			}
+		  });
+				
+});
+
+
 	update_bar();
 	
 });//doc ready
@@ -218,8 +242,6 @@ function update_bar(){
 		
         var base = Math.round(json.stats.base);
         var base_max = Math.round(json.stats.base_max);
-
-		//console.log(top_max);
 
 		$('#top_bar').attr('aria-valuenow', top).css('width', top+'%').attr('aria-valuemax', top_max);
 		$('#heart_bar').attr('aria-valuenow', heart).css('width', heart+'%').attr('aria-valuemax', heart_max);
@@ -302,6 +324,7 @@ function reload_formula_data() {
             <th>Total conc %</th>
             <th></th>
             <th>Cost: </th>
+            <th></th>
             <th></th>
             <th></th>
             </tr>
@@ -522,7 +545,9 @@ $('#formula').editable({
 	});
 
 	function ingName(data, type, row, meta){
-		
+		if(row.exclude_from_calculation == 1){
+			var ex = 'pv_ing_exc';
+		}
 		if(row.chk_ingredient){
 			var chkIng = '<i class="fas fa-exclamation" rel="tip" title="'+row.chk_ingredient+'"></i>';
 		}else{
@@ -534,7 +559,7 @@ $('#formula').editable({
 			var profile_class ='';
 		}
 		if(type === 'display'){
-			data = '<a class="popup-link" href="pages/mgmIngredient.php?id=' + row.ingredient.enc_id + '">' + data + '</a> '+ chkIng + profile_class;
+			data = '<a class="popup-link '+ex+'" href="pages/mgmIngredient.php?id=' + row.ingredient.enc_id + '">' + data + '</a> '+ chkIng + profile_class;
 		}
 
   	  return data;
@@ -641,7 +666,12 @@ $('#formula').editable({
 if(type === 'display'){
 	data = '<a href="'+ row.ingredient.pref_supplier_link +'" target="_blank" rel="tip" title="Open '+ row.ingredient.pref_supplier +' page" class="fas fa-shopping-cart"></a>';
 	<?php if($meta['isProtected'] == FALSE){?>
-	data += '&nbsp; <a href="#" class="fas fa-exchange-alt replaceIngredient" rel="tip" title="Replace '+ row.ingredient.name +'"  data-name="'+ row.ingredient.name +'" data-type="select" data-pk="'+ row.ingredient.name +'" data-title="Choose Ingredient to replace '+ row.ingredient.name +'"></a> &nbsp; <i rel="tip" title="Remove '+ row.ingredient.name +'" class="pv_point_gen fas fa-trash" style="color: #c9302c;" id="rmIng" data-name="'+ row.ingredient.name +'" data-id='+ row.formula_ingredient_id +'></i>';
+	if(row.exclude_from_calculation == 0){
+	 	var ex = '&nbsp; <i class="pv_point_gen fas fa-eye-slash" style="color: #337ab7;" rel="tip" id="exIng" title="Exclude '+ row.ingredient.name +'" data-name="'+ row.ingredient.name +'" data-status="1" data-id="'+ row.formula_ingredient_id +'"></i>';
+	}else if(row.exclude_from_calculation == 1){
+	 	var ex = '&nbsp; <i class="pv_point_gen fas fa-eye" style="color: #337ab7;" rel="tip" id="exIng" title="Include '+ row.ingredient.name +'" data-name="'+ row.ingredient.name +'" data-status="0" data-id="'+ row.formula_ingredient_id +'"></i>';
+	}
+	data += ex + '&nbsp; <a href="#" class="fas fa-exchange-alt replaceIngredient" rel="tip" title="Replace '+ row.ingredient.name +'"  data-name="'+ row.ingredient.name +'" data-type="select" data-pk="'+ row.ingredient.name +'" data-title="Choose Ingredient to replace '+ row.ingredient.name +'"></a> &nbsp; <i rel="tip" title="Remove '+ row.ingredient.name +'" class="pv_point_gen fas fa-trash" style="color: #c9302c;" id="rmIng" data-name="'+ row.ingredient.name +'" data-id='+ row.formula_ingredient_id +'></i>';
 	<?php } ?>
 }
    return data;

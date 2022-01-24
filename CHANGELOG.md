@@ -17,6 +17,7 @@
 - Rewrite of ingredient management page
 - Cosmetic changes in view formula 
 - Add ingredients json
+- Exclude/include ingredient from formula
 - Add copy to clipboard function for CAS in formula view
 
 ### Version 3.8

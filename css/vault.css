@@ -670,3 +670,8 @@ table.fixedHeader-floating {
 	background-color: lightgray;
 	color: #666;  
 }
+
+.pv_ing_exc {
+	text-decoration: line-through;
+	font-style: italic;
+}

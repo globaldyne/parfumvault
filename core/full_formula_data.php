@@ -48,7 +48,7 @@ if(isset($_GET['stats_only'])){
 }
 $defCatClass = $meta['catClass'] ?: $settings['defCatClass'];
 
-$formula_q = mysqli_query($conn, "SELECT id,ingredient,concentration,quantity,dilutant,notes FROM formulas WHERE fid = '".$meta['fid']."' ORDER BY ingredient ASC");
+$formula_q = mysqli_query($conn, "SELECT id,ingredient,concentration,quantity,dilutant,notes,exclude_from_calculation FROM formulas WHERE fid = '".$meta['fid']."' ORDER BY ingredient ASC");
 while ($formula = mysqli_fetch_array($formula_q)){
 	    $form[] = $formula;
 }
@@ -90,10 +90,20 @@ foreach ($form as $formula){
 	
 	$r['purity'] = (int)$formula['concentration'] ?: 100;
 	$r['dilutant'] = (string)$formula['dilutant'] ?: 'None';
+	if($formula['exclude_from_calculation'] == 1){
+			
+		$r['quantity'] = 0;
+		$r['concentration'] = 0;
+		$r['final_concentration'] = 0;
+		$r['cost'] = 0;
+	}else{
+		$r['quantity'] = number_format((float)$formula['quantity'], $settings['qStep']) ?: 0.000;
+    	$r['concentration'] = number_format($conc, $settings['qStep']) ?: 0.000;
+    	$r['final_concentration'] = number_format((float)$conc_final, $settings['qStep']) ?: 0.000;
+		$r['cost'] = (float)calcCosts(getPrefSupplier($ing_q['id'],$conn)['price'],$formula['quantity'], $formula['concentration'], getPrefSupplier($ing_q['id'],$conn)['size']) ?: 0.000;
+
+	}
 	
-	$r['quantity'] = number_format((float)$formula['quantity'], $settings['qStep']) ?: 0.000;
-    $r['concentration'] = number_format($conc, $settings['qStep']) ?: 0.000;
-    $r['final_concentration'] = number_format((float)$conc_final, $settings['qStep']) ?: 0.000;
 	$u = explode(' - ',searchIFRA($ing_q['cas'],$formula['ingredient'],null,$conn,$defCatClass));
 	
 	if(($u['0'])){
@@ -106,7 +116,6 @@ foreach ($form as $formula){
 		$r['usage_regulator'] = (string)"PV";
 	}
 	
-	$r['cost'] = (float)calcCosts(getPrefSupplier($ing_q['id'],$conn)['price'],$formula['quantity'], $formula['concentration'], getPrefSupplier($ing_q['id'],$conn)['size']) ?: 0.000;
 	
 	if($meta['defView'] == '1'){
 		$desc = $ing_q['odor'];
@@ -124,12 +133,15 @@ foreach ($form as $formula){
 	$r['ingredient']['pref_supplier'] = (string)getPrefSupplier($ing_q['id'],$conn)['name'] ?: 'N/A';
 	$r['ingredient']['pref_supplier_link'] = (string)getPrefSupplier($ing_q['id'],$conn)['supplierLink'] ?: 'N/A';
 	
-	$r['chk_ingredient'] = (string)checkIng($formula['ingredient'],$defCatClass,$conn) ?: null;
+	
 	
 	$r['ingredient']['inventory']['stock'] = (int)$inventory['stock'] ?: 0;
 	$r['ingredient']['inventory']['mUnit'] = (string)$inventory['mUnit'] ?: $settings['mUnit'];
 	$r['ingredient']['inventory']['batch'] = (string)$inventory['batch'] ?: 'N/A';
 	$r['ingredient']['inventory']['manufactured'] = (string)$inventory['manufactured'] ?: 'N/A';
+	
+	$r['chk_ingredient'] = (string)checkIng($formula['ingredient'],$defCatClass,$conn) ?: null;
+	$r['exclude_from_calculation'] = (int)$formula['exclude_from_calculation'] ?: 0;
 
 	$response['data'][] = $r;
 	
