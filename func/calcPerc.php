@@ -31,35 +31,28 @@ function multi_dim_search($array, $key, $value){
 
     return $results;
 }
-function multi_dim_perc($conn, $form,  $qStep) {
+function multi_dim_perc($conn, $form, $ingCas, $qStep) {
 	foreach ($form as $formula){
 		
-		$allIngQuery = mysqli_query($conn, "SELECT name,percentage,cas FROM allergens WHERE ing = '".$formula['ingredient']."'");
+		$compos = mysqli_query($conn, "SELECT name,percentage,cas FROM allergens WHERE ing = '".$formula['ingredient']."'");
 		
-		while($allgIng_res = mysqli_fetch_array($allIngQuery)){
-			$allgIng[] = $allgIng_res;
+		while($compo = mysqli_fetch_array($compos)){
+			$cmp[] = $compo;
 		}
 		
-		foreach ($allgIng as $aa){
-			$arrayLength = count($aa);
+		foreach ($cmp as $a){
+			$arrayLength = count($a);
 			$i = 0;
 			while ($i < $arrayLength){
-				//if(empty($c = multi_dim_search($aa, 'cas', $aa['cas'])[$i])){
-					$c = multi_dim_search($aa, 'name', $formula['ingredient'])[$i];
-				//}
-				$conc[$formula['ingredient']] += number_format($formula['quantity'] / 100 * $c['percentage'], $qStep);
-				/*
-					$conc= $formula['concentration'] / 100 * $formula['quantity']/$mg['total_mg'] * 100;
-				*/
-				//$c = multi_dim_search($aa, 'cas', $cas)[$i];
-				//$conc[$formula['ingredient']] += number_format($formula['quantity'] / 100 * $c['percentage'], 3);
-				//$conc[$cas] += number_format($c['percentage'] / 100 * $formula['quantity'] , $qStep);
-
+				$c = multi_dim_search($a, 'cas', $a['cas'])[$i];
+				//print_r($c);
+				$conc[$a['cas']] += number_format($formula['quantity'] / 100 * $c['percentage'], $qStep);
+				
 				$i++;
 			}
 		}
 	}
-	//print_r($conc);
-	return array_unique(array_merge(array_filter($conc)));
+	
+	return $conc;
 }
 ?>
