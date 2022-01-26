@@ -19,6 +19,7 @@
 - Add ingredients json
 - Exclude/include ingredient from formula
 - Add copy to clipboard function for CAS in formula view
+- Make formula view responsive
 
 ### Version 3.8
 - tipsy.js dependency removed

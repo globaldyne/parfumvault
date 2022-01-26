@@ -95,7 +95,8 @@ $(document).ready(function() {
             var api = this.api();
             var rows = api.rows( {page:'current'} ).nodes();
             var last = null;
- 
+         	$("#formula").wrap( "<div class='table-responsive'></div>" );
+
             api.column(groupColumn, {page:'current'} ).data().each( function ( group, i ) {
                 if ( last !== group ) {
                     $(rows).eq( i ).before(
