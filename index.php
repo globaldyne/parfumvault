@@ -1,6 +1,4 @@
 <?php
-$DEBUG = true;
-$starttime = microtime(true);
 require('./inc/sec.php');
 if(file_exists('./inc/config.php') == FALSE){
 	session_destroy();
@@ -32,7 +30,6 @@ require_once(__ROOT__.'/func/countCart.php');
 require_once(__ROOT__.'/func/pvOnline.php');
 require_once(__ROOT__.'/func/getIngSupplier.php');
 require_once(__ROOT__.'/func/loadModules.php');
-
 require(__ROOT__.'/inc/settings.php');
 
 if($pv_meta['app_ver'] < trim(file_get_contents(__ROOT__.'/VERSION.md'))){
@@ -41,7 +38,6 @@ if($pv_meta['app_ver'] < trim(file_get_contents(__ROOT__.'/VERSION.md'))){
 		$show_release_notes = true;
 	}
 }
-
 
 $db_ver   = trim(file_get_contents(__ROOT__.'/db/schema.ver'));
 if(file_exists(__ROOT__.'/db/updates/update_'.$pv_meta['schema_ver'].'-'.$db_ver.'.sql') === TRUE){
@@ -52,7 +48,6 @@ if(file_exists(__ROOT__.'/db/updates/update_'.$pv_meta['schema_ver'].'-'.$db_ver
 	mysqli_query($conn, "UPDATE pv_meta SET schema_ver = '$db_ver'");
 }
 ?>
-
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -388,4 +383,3 @@ function list_users(){
 <?php } ?>
 </body>
 </html>
-<?php if($DEBUG == TRUE){printf("Page loaded in %f seconds", microtime(true) - $starttime );}?>

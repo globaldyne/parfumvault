@@ -1,4 +1,6 @@
 <?php
+$starttime = microtime(true);
+
 require('../inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
@@ -169,6 +171,9 @@ $m['protected'] = (bool)$meta['isProtected'];
 
 
 $response['meta'] = $m;
+
+$s['load_time'] = microtime(true) - $starttime;
+$response['sys'] = $s;
 
 header('Content-Type: application/json; charset=utf-8');
 echo json_encode($response);

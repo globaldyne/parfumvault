@@ -1,6 +1,6 @@
-<?php if (!defined('pvault_panel')){ die('Not Found');}?>
+<?php 
+if (!defined('pvault_panel')){ die('Not Found');}
 
-<?php
 function getIngSupplier($ingID,$conn){
 	
 	$q = mysqli_query($conn, "SELECT ingSupplierID FROM suppliers WHERE ingID = '$ingID'");
