@@ -31,6 +31,7 @@ function multi_dim_search($array, $key, $value){
 
     return $results;
 }
+
 function multi_dim_perc($conn, $form, $ingCas, $qStep) {
 	foreach ($form as $formula){
 		
@@ -45,9 +46,8 @@ function multi_dim_perc($conn, $form, $ingCas, $qStep) {
 			$i = 0;
 			while ($i < $arrayLength){
 				$c = multi_dim_search($a, 'cas', $a['cas'])[$i];
-				//print_r($c);
-				$conc[$a['cas']] += number_format($formula['quantity'] / 100 * $c['percentage'], $qStep);
-				
+				$conc[$a['cas']] += number_format($c['percentage']/100 * $formula['quantity'] * $formula['concentration'] / 100, $qStep);
+
 				$i++;
 			}
 		}
@@ -55,4 +55,5 @@ function multi_dim_perc($conn, $form, $ingCas, $qStep) {
 	
 	return $conc;
 }
+
 ?>

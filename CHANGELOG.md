@@ -20,6 +20,7 @@
 - Exclude/include ingredient from formula
 - Add copy to clipboard function for CAS in formula view
 - Make formula view responsive
+- Multi dimension ingredient look up performance improvement
 
 ### Version 3.8
 - tipsy.js dependency removed

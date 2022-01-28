@@ -60,6 +60,7 @@ foreach ($form as $formula){
 }
 
 foreach ($form as $formula){
+	
 	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT id, name, cas, $defCatClass, profile, odor, category, physical_state FROM ingredients WHERE name = '".$formula['ingredient']."'"));
 	 
 	$inventory = mysqli_fetch_array(mysqli_query($conn, "SELECT stock,mUnit,batch,purchased FROM suppliers WHERE ingID = '".$ing_q['id']."' AND preferred = '1'"));
@@ -68,8 +69,25 @@ foreach ($form as $formula){
   	$conc_final = $formula['concentration'] / 100 * $formula['quantity']/$mg['total_mg'] * $meta['finalType'];
 	
 	if($settings['multi_dim_perc'] == '1'){
-		$conc   += multi_dim_perc($conn, $form, $ing_q['cas'], $settings['qStep'])[$ing_q['cas']];
-		$conc_final += multi_dim_perc($conn, $form, $ing_q['cas'], $settings['qStep'])[$ing_q['cas']];
+		$compos = mysqli_query($conn, "SELECT name,percentage,cas FROM allergens WHERE ing = '".$formula['ingredient']."'");
+		
+		while($compo = mysqli_fetch_array($compos)){
+			$cmp[] = $compo;
+		}
+		
+		foreach ($cmp as $a){
+			$arrayLength = count($a);
+			$i = 0;
+			while ($i < $arrayLength){
+				$c = multi_dim_search($a, 'cas', $ing_q['cas'])[$i];
+				$conc_a[$a['cas']] += $c['percentage']/100 * $formula['quantity'] * $formula['concentration'] / 100;
+				$conc_b[$a['cas']] += $c['percentage']/100 * $formula['quantity'] * $formula['concentration'] / $mg['total_mg']* $meta['finalType']/100 ;
+				$i++;
+			}
+		}
+		$conc+=$conc_a[$a['cas']];
+		$conc_final+=$conc_b[$a['cas']];
+
 	}
 						
  	if($settings['chem_vs_brand'] == '1'){
@@ -140,7 +158,7 @@ foreach ($form as $formula){
 	$r['ingredient']['inventory']['stock'] = (int)$inventory['stock'] ?: 0;
 	$r['ingredient']['inventory']['mUnit'] = (string)$inventory['mUnit'] ?: $settings['mUnit'];
 	$r['ingredient']['inventory']['batch'] = (string)$inventory['batch'] ?: 'N/A';
-	$r['ingredient']['inventory']['manufactured'] = (string)$inventory['manufactured'] ?: 'N/A';
+	$r['ingredient']['inventory']['purchased'] = (string)$inventory['purchased'] ?: 'N/A';
 	
 	$r['chk_ingredient'] = (string)checkIng($formula['ingredient'],$defCatClass,$conn) ?: null;
 	$r['exclude_from_calculation'] = (int)$formula['exclude_from_calculation'] ?: 0;
