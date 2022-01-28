@@ -64,8 +64,7 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
             <div class="card-header py-3"> 
 			  <?php if($img['docData']){?><div class="img-formula"><img class="img-perfume" src="<?=$img['docData']?>"/></div><?php } ?>
               <h2 class="m-0 font-weight-bold text-primary"><a href="javascript:reload_formula_data()"><?=$f_name?></a><span class="m-1"><?php if($meta['isProtected']){?><a class="fas fa-lock" href="javascript:isProtected('false')"><?php }else{ ?><a class="fas fa-unlock" href="javascript:isProtected('true')"> <?php } ?></a></span></h2>
-              <h5 class="m-1 text-primary"><span><a href="#" rel="tipsy" data-placement="right" title="<?=$cat_details['description']?>"><?=ucfirst($meta['catClass'])?></a></span></h5>
-              <h5 class="m-1 text-primary"><a href="pages/getFormMeta.php?id=<?php echo $meta['id'];?>" class="popup-link">Details</a></h5>
+              <h5 class="m-1 text-primary"><span><a href="#" rel="tip" data-placement="right" title="<?=$cat_details['description']?>"><?=ucfirst($meta['catClass'])?></a></span></h5>
             </div>
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" role="tablist">

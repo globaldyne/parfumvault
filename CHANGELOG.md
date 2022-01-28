@@ -21,6 +21,7 @@
 - Add copy to clipboard function for CAS in formula view
 - Make formula view responsive
 - Multi dimension ingredient look up performance improvement
+- Details link moved under menu in formula view
 
 ### Version 3.8
 - tipsy.js dependency removed

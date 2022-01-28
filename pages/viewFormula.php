@@ -276,6 +276,8 @@ function reload_formula_data() {
         <div class="btn-group">
             <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
             <div class="dropdown-menu dropdown-menu-left">
+	           <a class="dropdown-item popup-link" href="pages/getFormMeta.php?id=<?=$meta['id']?>">Details</a>
+               <div class="dropdown-divider"></div>
                <a class="dropdown-item" href="javascript:export_as('csv')">Export to CSV</a>
                <a class="dropdown-item" href="javascript:export_as('pdf')">Export to PDF</a>
                <div class="dropdown-divider"></div>
