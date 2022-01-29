@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 4.0
+
 ### Version 3.9
 - Fix a bug showing empty inventory column when exporting a formula
 - Improve formula is made feature
