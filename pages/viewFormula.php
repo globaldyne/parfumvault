@@ -84,7 +84,7 @@ $(document).ready(function() {
 			}
 			
 			if( data['usage_regulator'] == "IFRA" && parseFloat(data['usage_limit']) < parseFloat(data['final_concentration'])){
-				$(row).find('td:eq(6)').addClass('alert-danger');
+				$(row).find('td:eq(6)').addClass('alert-danger').append(' <i rel="tip" title="Max usage: ' + data['usage_limit'] +'%" class="pv_point_gen fas fa-info-circle"></i></div>');
 			}else if( data['usage_regulator'] == "PV" && parseFloat(data['usage_limit']) < parseFloat(data['final_concentration'])){
 				$(row).find('td:eq(6)').addClass('alert-info');
 			}else{
