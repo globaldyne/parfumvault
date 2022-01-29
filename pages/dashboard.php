@@ -1,6 +1,6 @@
 <?php if (!defined('pvault_panel')){ die('Not Found');}?>
 <?php require_once(__ROOT__.'/func/countElement.php');?>
-<script src="js/Chart.js"></script>
+<script src="js/Chart.min.js"></script>
 <link href="css/Chart.css" rel="stylesheet">
 
 <div id="content-wrapper" class="d-flex flex-column">
@@ -28,6 +28,8 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"))== 0){
                     <div class="box-body">
                       <div class="pull-left">
                         <canvas id="formulasPie" width="358" height="358"></canvas>
+                            <div class="cell" id="top10Legend"></div>
+
                       </div>
                     </div>
                   </div>
@@ -192,42 +194,49 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"))== 0){
 <script>
 var formulas = document.getElementById('formulasPie');
 var ingredients = document.getElementById('ingredientsPie');
+ $.ajax({
+    url: "core/stats_data.php",
+    method: "GET",
+    dataType : 'JSON',
+    success: function(stats) {
+    
+		var formula_label = stats.data.map(function(e) {
+			return e.name;
+		});
+		var formula_data = stats.data.map(function(e) {
+			return e.count;
+		});
+		var formula_bkColor = stats.data.map(function(e) {
+			return e.colorKey;
+		});
+		var formula_brdColor = stats.data.map(function(e) {
+			return e.borderColor;
+		});		
 
-var formulasChart = new Chart(formulas, {
-    type: 'pie',
-    data: {
-        labels: ['Oriental', 'Woody', 'Floral', 'Fresh', 'Unisex', 'Men', 'Women', 'Other'],
-        datasets: [{
-            label: 'Formulas',
-            data: [<?php echo countElement("formulasMetaData WHERE profile = 'oriental'",$conn); ?>, <?php echo countElement("formulasMetaData WHERE profile = 'woody'",$conn); ?>, <?php echo countElement("formulasMetaData WHERE profile = 'floral'",$conn); ?>, <?php echo countElement("formulasMetaData WHERE profile = 'fresh'",$conn); ?>, <?php echo countElement("formulasMetaData WHERE sex = 'unisex'",$conn); ?>, <?php echo countElement("formulasMetaData WHERE sex = 'men'",$conn); ?>, <?php echo countElement("formulasMetaData WHERE sex = 'women'",$conn); ?>, <?php echo countElement("formulasMetaData WHERE profile = 'other'",$conn); ?>],
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(255, 159, 64, 0.2)',
-				'rgba(190, 190, 64, 0.2)',
-                'rgba(105, 155, 64, 0.2)'
-            ],
-            borderColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)',
-                'rgba(255, 159, 64, 1)',
-				'rgba(190, 190, 64, 1)',
-                'rgba(105, 155, 64, 1)'
-            ],
-            borderWidth: 1
-        }]
-    },
-    options: {
-				responsive: false
-			}
+		var formulasChart = new Chart(formulas, {
+			type: 'pie',
+			data: {
+				labels: formula_label,
+				datasets: [{
+					label: 'Formulas',
+					data: formula_data,
+					backgroundColor: formula_bkColor,
+					borderColor: formula_brdColor,
+					borderWidth: 1
+				}]
+			},
+			options: { 
+				responsive: true,
+				plugins: {
+      				legend: {
+        					display: true,
+        					position: 'right',
+      						},
+    					} 
+					}
+		});
+	}
 });
-
 var ingredientsChart = new Chart(ingredients, {
     type: 'pie',
     data: {
@@ -236,9 +245,9 @@ var ingredientsChart = new Chart(ingredients, {
             label: 'Ingredients',
             data: [<?php echo countElement("ingredients WHERE type = 'AC'",$conn); ?>, <?php echo countElement("ingredients WHERE type = 'EO'",$conn); ?>, <?php echo countElement("ingredients WHERE type IS NULL",$conn); ?>],
             backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)'
+                'rgba(255, 99, 132, 0.8)',
+                'rgba(54, 162, 235, 0.8)',
+                'rgba(255, 206, 86, 0.8)'
             ],
             borderColor: [
                 'rgba(255, 99, 132, 1)',
@@ -248,9 +257,15 @@ var ingredientsChart = new Chart(ingredients, {
             borderWidth: 1
         }]
     },
-    options: {
-				responsive: false
-			}
+    options: { 
+			responsive: true,
+			plugins: {
+      				legend: {
+        					display: true,
+        					position: 'right',
+      						},
+    					} 
+			 }
 });
 
 </script>

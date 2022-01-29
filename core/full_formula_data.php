@@ -1,4 +1,6 @@
 <?php
+$starttime = microtime(true);
+
 require('../inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
@@ -14,7 +16,7 @@ require_once(__ROOT__.'/func/getIngSupplier.php');
 require_once(__ROOT__.'/func/getCatByID.php');
 
 if(!$_GET['id']){		
-	$response['Error'] = (string)'Formula id is missing.';    
+	$response['data'] = [];    
 	header('Content-Type: application/json; charset=utf-8');
 	echo json_encode($response);
 	return;
@@ -48,7 +50,7 @@ if(isset($_GET['stats_only'])){
 }
 $defCatClass = $meta['catClass'] ?: $settings['defCatClass'];
 
-$formula_q = mysqli_query($conn, "SELECT id,ingredient,concentration,quantity,dilutant,notes FROM formulas WHERE fid = '".$meta['fid']."' ORDER BY ingredient ASC");
+$formula_q = mysqli_query($conn, "SELECT id,ingredient,concentration,quantity,dilutant,notes,exclude_from_calculation FROM formulas WHERE fid = '".$meta['fid']."' ORDER BY ingredient ASC");
 while ($formula = mysqli_fetch_array($formula_q)){
 	    $form[] = $formula;
 }
@@ -58,16 +60,34 @@ foreach ($form as $formula){
 }
 
 foreach ($form as $formula){
-	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT id, name, cas, $defCatClass, profile, odor, category FROM ingredients WHERE name = '".$formula['ingredient']."'"));
+	
+	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT id, name, cas, $defCatClass, profile, odor, category, physical_state FROM ingredients WHERE name = '".$formula['ingredient']."'"));
 	 
-	$inventory = mysqli_fetch_array(mysqli_query($conn, "SELECT stock,mUnit,batch,manufactured FROM suppliers WHERE ingID = '".$ing_q['id']."' AND preferred = '1'"));
+	$inventory = mysqli_fetch_array(mysqli_query($conn, "SELECT stock,mUnit,batch,purchased FROM suppliers WHERE ingID = '".$ing_q['id']."' AND preferred = '1'"));
 	
 	$conc = $formula['concentration'] / 100 * $formula['quantity']/$mg['total_mg'] * 100;
   	$conc_final = $formula['concentration'] / 100 * $formula['quantity']/$mg['total_mg'] * $meta['finalType'];
 	
 	if($settings['multi_dim_perc'] == '1'){
-		$conc   += multi_dim_perc($conn, $form, $ing_q['cas'], $settings['qStep'])[$ing_q['cas']];
-		$conc_final += multi_dim_perc($conn, $form, $ing_q['cas'], $settings['qStep'])[$ing_q['cas']];
+		$compos = mysqli_query($conn, "SELECT name,percentage,cas FROM allergens WHERE ing = '".$formula['ingredient']."'");
+		
+		while($compo = mysqli_fetch_array($compos)){
+			$cmp[] = $compo;
+		}
+		
+		foreach ($cmp as $a){
+			$arrayLength = count($a);
+			$i = 0;
+			while ($i < $arrayLength){
+				$c = multi_dim_search($a, 'cas', $ing_q['cas'])[$i];
+				$conc_a[$a['cas']] += $c['percentage']/100 * $formula['quantity'] * $formula['concentration'] / 100;
+				$conc_b[$a['cas']] += $c['percentage']/100 * $formula['quantity'] * $formula['concentration'] / $mg['total_mg']* $meta['finalType']/100 ;
+				$i++;
+			}
+		}
+		$conc+=$conc_a[$a['cas']];
+		$conc_final+=$conc_b[$a['cas']];
+
 	}
 						
  	if($settings['chem_vs_brand'] == '1'){
@@ -90,10 +110,20 @@ foreach ($form as $formula){
 	
 	$r['purity'] = (int)$formula['concentration'] ?: 100;
 	$r['dilutant'] = (string)$formula['dilutant'] ?: 'None';
+	if($formula['exclude_from_calculation'] == 1){
+			
+		$r['quantity'] = 0;
+		$r['concentration'] = 0;
+		$r['final_concentration'] = 0;
+		$r['cost'] = 0;
+	}else{
+		$r['quantity'] = number_format((float)$formula['quantity'], $settings['qStep']) ?: 0.000;
+    	$r['concentration'] = number_format($conc, $settings['qStep']) ?: 0.000;
+    	$r['final_concentration'] = number_format((float)$conc_final, $settings['qStep']) ?: 0.000;
+		$r['cost'] = (float)calcCosts(getPrefSupplier($ing_q['id'],$conn)['price'],$formula['quantity'], $formula['concentration'], getPrefSupplier($ing_q['id'],$conn)['size']) ?: 0.000;
+
+	}
 	
-	$r['quantity'] = number_format((float)$formula['quantity'], $settings['qStep']) ?: 0.000;
-    $r['concentration'] = number_format($conc, $settings['qStep']) ?: 0.000;
-    $r['final_concentration'] = number_format((float)$conc_final, $settings['qStep']) ?: 0.000;
 	$u = explode(' - ',searchIFRA($ing_q['cas'],$formula['ingredient'],null,$conn,$defCatClass));
 	
 	if(($u['0'])){
@@ -106,7 +136,6 @@ foreach ($form as $formula){
 		$r['usage_regulator'] = (string)"PV";
 	}
 	
-	$r['cost'] = (float)calcCosts(getPrefSupplier($ing_q['id'],$conn)['price'],$formula['quantity'], $formula['concentration'], getPrefSupplier($ing_q['id'],$conn)['size']) ?: 0.000;
 	
 	if($meta['defView'] == '1'){
 		$desc = $ing_q['odor'];
@@ -118,17 +147,21 @@ foreach ($form as $formula){
 	$r['ingredient']['id'] = (int)$ing_q['id'];
    	$r['ingredient']['name'] = (string)$ingName ?: $formula['ingredient'];
 	$r['ingredient']['cas'] = (string)$ing_q['cas'];
+	$r['ingredient']['physical_state'] = (int)$ing_q['physical_state'];
 
 	$r['ingredient']['desc'] = (string)$desc ?: '-';
 	$r['ingredient']['pref_supplier'] = (string)getPrefSupplier($ing_q['id'],$conn)['name'] ?: 'N/A';
 	$r['ingredient']['pref_supplier_link'] = (string)getPrefSupplier($ing_q['id'],$conn)['supplierLink'] ?: 'N/A';
 	
-	$r['chk_ingredient'] = (string)checkIng($formula['ingredient'],$defCatClass,$conn) ?: null;
+	
 	
 	$r['ingredient']['inventory']['stock'] = (int)$inventory['stock'] ?: 0;
 	$r['ingredient']['inventory']['mUnit'] = (string)$inventory['mUnit'] ?: $settings['mUnit'];
 	$r['ingredient']['inventory']['batch'] = (string)$inventory['batch'] ?: 'N/A';
-	$r['ingredient']['inventory']['manufactured'] = (string)$inventory['manufactured'] ?: 'N/A';
+	$r['ingredient']['inventory']['purchased'] = (string)$inventory['purchased'] ?: 'N/A';
+	
+	$r['chk_ingredient'] = (string)checkIng($formula['ingredient'],$defCatClass,$conn) ?: null;
+	$r['exclude_from_calculation'] = (int)$formula['exclude_from_calculation'] ?: 0;
 
 	$response['data'][] = $r;
 	
@@ -156,6 +189,9 @@ $m['protected'] = (bool)$meta['isProtected'];
 
 
 $response['meta'] = $m;
+
+$s['load_time'] = microtime(true) - $starttime;
+$response['sys'] = $s;
 
 header('Content-Type: application/json; charset=utf-8');
 echo json_encode($response);

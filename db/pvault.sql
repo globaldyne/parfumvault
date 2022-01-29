@@ -55,6 +55,7 @@ CREATE TABLE `formulas` (
   `dilutant` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `quantity` decimal(8,4) DEFAULT NULL,
   `exclude_from_summary` INT NOT NULL DEFAULT '0', 
+  `exclude_from_calculation` INT NOT NULL DEFAULT '0', 
   `notes` varchar(11) COLLATE utf8_bin DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
@@ -94,7 +95,9 @@ CREATE TABLE `formulasMetaData` (
   `defView` INT NULL DEFAULT '1',
   `catClass` VARCHAR(10) NULL,
   `revision` INT NOT NULL DEFAULT '0',
-  `finalType` INT NOT NULL DEFAULT '100' 
+  `finalType` INT NOT NULL DEFAULT '100',
+  `isMade` INT NOT NULL DEFAULT '0',
+  `madeOn` DATETIME NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 DROP TABLE IF EXISTS `IFRALibrary`;
@@ -384,7 +387,7 @@ CREATE TABLE `suppliers` (
  `manufacturer` varchar(255) COLLATE utf8_bin DEFAULT NULL,
  `preferred` int(11) NOT NULL DEFAULT 0,
  `batch` VARCHAR(255) NULL,
- `manufactured` DATE NULL,
+ `purchased` DATE NULL,
  `mUnit` VARCHAR(255) NULL, 
  `stock` INT NOT NULL,
  PRIMARY KEY (`id`),
@@ -614,6 +617,7 @@ CREATE TABLE `formulaCategories` (
  `name` varchar(255) COLLATE utf8_bin NOT NULL,
  `cname` varchar(255) COLLATE utf8_bin NOT NULL,
  `type` varchar(255) COLLATE utf8_bin NOT NULL,
+ `colorKey` VARCHAR(255) NULL DEFAULT NULL,
  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 

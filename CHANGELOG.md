@@ -1,4 +1,30 @@
 # CHANGELOG
+### Version 3.9
+- Fix a bug showing empty inventory column when exporting a formula
+- Improve formula is made feature
+- Add fixed header in formula view
+- Dashboard pie now includes any extra formula categories
+- Dashboard pie colors can be customised by formula category color
+- Update Chart.js to its latest version
+- Change legend position and color mapping for pie charts
+- Rename Manufactured field in suppliers to Purchased
+- Fix date picker missing left/right arrows
+- Update jQuery version to 3.6.0
+- Fix a bug preventing proper value update in ingredient suppliers
+- Rewrite of suppliers page in ingredient level
+- Rewrite of documents page in ingredient level
+- Rewrite of compositions page in ingredient level
+- Rewrite of ingredient management page
+- Cosmetic changes in view formula 
+- Add ingredients json
+- Exclude/include ingredient from formula
+- Add copy to clipboard function for CAS in formula view
+- Make formula view responsive
+- Multi dimension ingredient look up performance improvement
+- Details link moved under menu in formula view
+- Improve add lid page
+- Improve bottle page
+
 ### Version 3.8
 - tipsy.js dependency removed
 - Major update in formula view to fully populate DataTables
