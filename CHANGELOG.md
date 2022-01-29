@@ -1,6 +1,7 @@
 # CHANGELOG
 ### Version 4.0
 - Add Max Usage info in final product as well
+- Add Reccomended Usage info in final product as well
 
 ### Version 3.9
 - Fix a bug showing empty inventory column when exporting a formula
