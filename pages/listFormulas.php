@@ -63,6 +63,7 @@ if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients")))){
                             <th>Ingredients</th>
                             <th>Class</th>
                             <th>Created</th>
+                            <th>Made</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -78,6 +79,7 @@ if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients")))){
                             <th>Ingredients</th>
                             <th>Class</th>
                             <th>Created</th>
+                            <th>Made</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -114,6 +116,7 @@ function initTable(tableId, src) {
 			   { data : 'product_name', title: 'Product Name', render: pName},
     		   { data : 'ingredients', title: 'Ingredients'},
 			   { data : 'catClass', title: 'Class'},
+			   { data : 'isMade', title: 'Made', render: fMade},
 			   { data : 'created', title: 'Created'},
 			   { data : null, title: 'Actions', render: fActions},				   
 			  ],
@@ -157,6 +160,18 @@ function pName(data, type, row, meta){
 	}
   return data;
 }
+
+function fMade(data, type, row, meta){
+	if(type === 'display'){
+		if(row.isMade == 1){
+			var data = '<i class="fas fa-check-circle" rel="tip" title="Formula last made on ' + row.madeOn + '"></i>';
+		}else{
+			var data = '<i class="fas fa-hourglass-start" rel="tip" title="Formula is not made yet"></i>';
+		}
+	}
+  return data;
+}
+
 function fActions(data, type, row, meta){
 	if(type === 'display'){
 		data = '<a href="pages/getFormMeta.php?id=' + row.id + '" rel="tip" title="Show details of '+ row.name +'" class="fas fa-comment-dots popup-link"></a> &nbsp; <a href="#" id="addTODO" class="fas fa-list" rel="tip" title="Add '+ row.name +' to the make list" data-id='+ row.fid +'></a> &nbsp; <a href="#" id="cloneMe" class="fas fa-copy" rel="tip" title="Clone '+ row.name +'" data-id='+ row.fid +'></a> &nbsp; <a href="#" id="deleteMe" class="fas fa-trash" rel="tip" title="Delete '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"></a>';

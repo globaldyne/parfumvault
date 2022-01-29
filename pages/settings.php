@@ -114,7 +114,7 @@ list_users();
           <td>&nbsp;</td>
         </tr>
         <tr>
-          <td height="32"><a href="#" rel="tip" title="If enabled, ingredient usage percentage will be calculated against ingredients allergens as well.">Multi-dimensional lookup:</a></td>
+          <td height="32"><a href="#" rel="tip" title="If enabled, ingredient usage percentage will be calculated against ingredients compositions as well.">Multi-dimensional lookup:</a></td>
           <td colspan="2"><input name="multi_dim_perc" type="checkbox" id="multi_dim_perc" value="1" <?php if($settings['multi_dim_perc'] == '1'){ ?> checked="checked" <?php } ?>/></td>
           <td>&nbsp;</td>
         </tr>

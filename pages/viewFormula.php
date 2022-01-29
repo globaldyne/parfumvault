@@ -1,9 +1,9 @@
 <?php 
 require('../inc/sec.php');
 
-require_once('../inc/config.php');
-require_once('..//inc/opendb.php');
-require_once('../inc/settings.php');
+require_once(__ROOT__.'/inc/config.php');
+require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/inc/settings.php');
 
 if(!$_GET['id']){
 	echo 'Formula id is missing.';
@@ -19,22 +19,8 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulasMetaData WHERE i
 $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,fid,name,isProtected,finalType,defView FROM formulasMetaData WHERE id = '$id'"));
 $f_name = base64_decode($meta['fid']);
 
-
 ?>
-<?php if(isset($_GET['standalone'])){ ?>
-<link href="../css/fontawesome-free/css/all.min.css" rel="stylesheet">
-<script src="../js/jquery/jquery.min.js"></script>
-<link rel="stylesheet" href="../css/bootstrap.min.css">
-<script src="../js/bootstrap.min.js"></script>
-<link rel="stylesheet" type="text/css" href="../css/datatables.min.css"/>
-<script type="text/javascript" src="../js/datatables.min.js"></script>
-<link rel="stylesheet" href="../css/vault.css">
-<script src="../js/magnific-popup.js"></script>
-<link href="../css/magnific-popup.css" rel="stylesheet" />
-<link href="../css/bootstrap-editable.css" rel="stylesheet">
-<script type="text/javascript" src="../js/bootbox.min.js"></script>
-<script src="../js/bootstrap-editable.js"></script>
-<?php } ?>
+
 
 <script>
 
@@ -59,14 +45,14 @@ $(document).ready(function() {
 		 columns: [
 				   { data : 'ingredient.profile', title: 'Profile' },
 				   { data : 'ingredient.name', title: 'Ingredient', render: ingName},
-    			   { data : 'ingredient.cas', title: 'CAS#'},
+    			   { data : 'ingredient.cas', title: 'CAS#', render: ingCAS},
 				   { data : 'purity', title: 'Purity %', render: ingConc},
 				   { data : 'dilutant', title: 'Dilutant', render: ingSolvent},
 				   { data : 'quantity', title: 'Quantity (<?=$settings['mUnit']?>)', render: ingQuantity},
 				   { data : 'concentration', title: 'Concentration %'},
 				   { data : 'final_concentration', title: 'Final Concentration <?=$meta['finalType']?>%'},
 				   { data : 'cost', title: 'Cost (<?=$settings['currency']?>)'},
-				   { data : 'ingredient.inventory.stock', title: 'Inentory', render: ingInv },
+				   { data : 'ingredient.inventory.stock', title: 'Inentory', className: 'text-center noexport', render: ingInv },
 				   { data : 'ingredient.desc', title: 'Properties', render: ingNotes},
    				   { data : null, title: 'Actions', className: 'text-center noexport', render: ingActions},		   
 				   
@@ -90,7 +76,7 @@ $(document).ready(function() {
 		displayLength: 100,
 		createdRow: function( row, data, dataIndex){
 			if( data['usage_regulator'] == "IFRA" && parseFloat(data['usage_limit']) < parseFloat(data['concentration'])){
-				$(row).find('td:eq(5)').addClass('alert-danger').append(' <a href="#" rel="tip" title="Max usage: ' + data['usage_limit'] +'%" class="fas fa-info-circle"></a></div>');
+				$(row).find('td:eq(5)').addClass('alert-danger').append(' <i rel="tip" title="Max usage: ' + data['usage_limit'] +'%" class="pv_point_gen fas fa-info-circle"></i></div>');
 			}else if( data['usage_regulator'] == "PV" && parseFloat(data['usage_limit']) < parseFloat(data['concentration'])){
 				$(row).find('td:eq(5)').addClass('alert-info');
             }else{
@@ -109,7 +95,8 @@ $(document).ready(function() {
             var api = this.api();
             var rows = api.rows( {page:'current'} ).nodes();
             var last = null;
- 
+         	$("#formula").wrap( "<div class='table-responsive'></div>" );
+
             api.column(groupColumn, {page:'current'} ).data().each( function ( group, i ) {
                 if ( last !== group ) {
                     $(rows).eq( i ).before(
@@ -120,6 +107,8 @@ $(document).ready(function() {
             } );
 	   }
 });
+
+new $.fn.dataTable.FixedHeader(formula);
 
 // Order by the grouping
 $('#formula tbody').on( 'click', 'tr.group', function () {
@@ -139,11 +128,11 @@ $('#formula').on('click', '[id*=rmIng]', function () {
     
 	bootbox.dialog({
        title: "Confirm ingredient removal",
-       message : 'Remove <strong>'+ $(this).attr('data-name') +'</strong> from formula?',
+       message : 'Remove <strong>'+ ing.Name +'</strong> from formula?',
        buttons :{
            main: {
                label : "Remove",
-               className : "btn-primary",
+               className : "btn-danger",
                callback: function (){
 	    			
 				$.ajax({ 
@@ -175,16 +164,40 @@ $('#formula').on('click', '[id*=rmIng]', function () {
    });
 });
 
-	
-		 
+$('#formula').on('click', '[id*=exIng]', function () {
+	var ing = {};
+	ing.ID = $(this).attr('data-id');
+	ing.Name = $(this).attr('data-name');
+	ing.Status = $(this).attr('data-status');
+			
+		$.ajax({ 
+			url: 'pages/manageFormula.php', 
+			type: 'GET',
+			data: {
+				action: "excIng",
+				fid: "<?=$meta['fid']?>",
+				ingID: ing.ID,
+				ingName: ing.Name,
+				status: ing.Status
+				},
+			dataType: 'html',
+			success: function (data) {
+				$('#msgInfo').html(data);
+				reload_formula_data();
+			}
+		  });
+				
+});
+
+
 	update_bar();
 	
 });//doc ready
 function isMade() {
 			 
 	bootbox.dialog({
-       title: "Confirm formula is made",
-       message : 'Confirm formula is made?<br /> If confirmed, ingredients amount will be deducted from the inventory accordingly.',
+       title: "Confirm formula is made?",
+       message : 'If confirmed, ingredients amount will be deducted from the inventory accordingly, where enough in stock.',
        buttons :{
            main: {
                label : "Confirm",
@@ -231,8 +244,6 @@ function update_bar(){
         var base = Math.round(json.stats.base);
         var base_max = Math.round(json.stats.base_max);
 
-		//console.log(top_max);
-
 		$('#top_bar').attr('aria-valuenow', top).css('width', top+'%').attr('aria-valuemax', top_max);
 		$('#heart_bar').attr('aria-valuenow', heart).css('width', heart+'%').attr('aria-valuemax', heart_max);
 		$('#base_bar').attr('aria-valuenow', base).css('width', base+'%').attr('aria-valuemax', base_max);;
@@ -265,6 +276,8 @@ function reload_formula_data() {
         <div class="btn-group">
             <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
             <div class="dropdown-menu dropdown-menu-left">
+	           <a class="dropdown-item popup-link" href="pages/getFormMeta.php?id=<?=$meta['id']?>">Details</a>
+               <div class="dropdown-divider"></div>
                <a class="dropdown-item" href="javascript:export_as('csv')">Export to CSV</a>
                <a class="dropdown-item" href="javascript:export_as('pdf')">Export to PDF</a>
                <div class="dropdown-divider"></div>
@@ -314,6 +327,7 @@ function reload_formula_data() {
             <th>Total conc %</th>
             <th></th>
             <th>Cost: </th>
+            <th></th>
             <th></th>
             <th></th>
             </tr>
@@ -519,7 +533,7 @@ $('#formula').editable({
 		
 	$('#formula').editable({
 	  container: 'body',
-	  selector: 'a.notes',
+	  selector: 'i.notes',
 	  url: "pages/update_data.php?formula=<?=base64_encode($f_name)?>",
 	  title: 'Notes',
 	  type: "POST",
@@ -534,9 +548,11 @@ $('#formula').editable({
 	});
 
 	function ingName(data, type, row, meta){
-		
+		if(row.exclude_from_calculation == 1){
+			var ex = 'pv_ing_exc';
+		}
 		if(row.chk_ingredient){
-			var chkIng = '<a href="#" class="fas fa-exclamation" rel="tip" title="'+row.chk_ingredient+'"></a>';
+			var chkIng = '<i class="fas fa-exclamation" rel="tip" title="'+row.chk_ingredient+'"></i>';
 		}else{
 			var chkIng = '';
 		}
@@ -546,13 +562,20 @@ $('#formula').editable({
 			var profile_class ='';
 		}
 		if(type === 'display'){
-			data = '<a class="popup-link" href="pages/mgmIngredient.php?id=' + row.ingredient.enc_id + '">' + data + '</a> '+ chkIng + profile_class;
+			data = '<a class="popup-link '+ex+'" href="pages/mgmIngredient.php?id=' + row.ingredient.enc_id + '">' + data + '</a> '+ chkIng + profile_class;
 		}
 
   	  return data;
   }
 
-	function ingConc(data, type, row, meta){
+function ingCAS(data, type, row, meta){
+	if(type === 'display'){
+		data = '<i class="pv_point_gen" rel="tip" title="Click to copy" id="cCAS" data-name="'+row.ingredient.cas+'">'+row.ingredient.cas+'</i>';
+	}
+  	 return data;
+}
+  
+  function ingConc(data, type, row, meta){
 	  if(type === 'display'){
 		  <?php if($meta['isProtected'] == FALSE){?>
 		  data = '<a href="#" data-name="concentration" class="concentration" data-type="text" data-pk="' + row.ingredient.name + '">' + data + '</a>';
@@ -588,65 +611,74 @@ $('#formula').editable({
 	 if(type === 'display'){
 	  <?php if($meta['defView'] == '1'){ $show = 'properties'; }elseif($meta['defView'] == '2'){ $show = 'notes';}?>
 	  <?php if($meta['isProtected'] == FALSE){?>
-	  data = '<a href="#" data-name="<?=$show?>" class="<?=$show?>" data-type="textarea" data-pk="' + row.ingredient.name + '">' + data + '</a>';
+	  data = '<i data-name="<?=$show?>" class="pv_point_gen <?=$show?>" data-type="textarea" data-pk="' + row.ingredient.name + '">' + data + '</i>';
 	  <?php } ?>
 	 }
    return data;
   }
   
   
-	function ingInv(data, type, row, meta){
-		//console.log(row.);
-		if(row.ingredient.inventory.stock >= row.quantity){
-			var inv = '<i class="fa fa-check inv-ok" rel="tip" title="Available in stock: '+row.ingredient.inventory.stock+row.ingredient.inventory.mUnit+'"></i>';
-		}else if(row.ingredient.inventory.stock <= row.quantity){
-			var inv = '<i class="fa fa-times inv-out" rel="tip" data-html="true" title="Not enough in stock<br/> Available: '+row.ingredient.inventory.stock + row.ingredient.inventory.mUnit +'"></i>';
-		}
-	
-		if(type === 'display'){
-			data = inv;
-		}
-
-  	  return data;
-  }
-  
-  function ingActions(data, type, row, meta){
-	//Change ingredient
-	$('#formula').editable({
-		selector: 'a.replaceIngredient',
-		pvnoresp: false,
-		highlight: false,
-		type: 'get',
-		emptytext: "",
-		emptyclass: "",
-		url: "pages/manageFormula.php?action=repIng&fname=<?=$meta['name']?>",
-		source: [
-				 <?php
-					$res_ing = mysqli_query($conn, "SELECT name FROM ingredients ORDER BY name ASC");
-					while ($r_ing = mysqli_fetch_array($res_ing)){
-						echo '{value: "'.htmlspecialchars($r_ing['name']).'", text: "'.htmlspecialchars($r_ing['name']).'"},';
-				}
-				?>
-			  ],
-		dataType: 'html',
-		success: function (data) {
-			if ( data.indexOf("Error") > -1 ) {
-				$('#msgInfo').html(data); 
-			}else{
-				$('#msgInfo').html(data);
-				reload_formula_data();
-			}
-		}
-	});
+function ingInv(data, type, row, meta){
+	if (row.ingredient.physical_state == 1){
+		var mUnit = 'ml';
+	}else if (row.ingredient.physical_state == 2){
+		var mUnit = 'gr';
+	}
+	if(row.ingredient.inventory.stock >= row.quantity){
+		var inv = '<i class="fa fa-check inv-ok" rel="tip" title="Available in stock: '+row.ingredient.inventory.stock+mUnit+'"></i>';
+	}else if(row.ingredient.inventory.stock <= row.quantity){
+		var inv = '<i class="fa fa-times inv-out" rel="tip" data-html="true" title="Not enough in stock<br/> Available: '+row.ingredient.inventory.stock + mUnit +'"></i>';
+	}
 
 	if(type === 'display'){
-		data = '<a href="'+ row.ingredient.pref_supplier_link +'" target="_blank" rel="tip" title="Open '+ row.ingredient.pref_supplier +' page" class="fas fa-shopping-cart"></a>';
-		<?php if($meta['isProtected'] == FALSE){?>
-		data += '&nbsp; <a href="#" class="fas fa-exchange-alt replaceIngredient" rel="tip" title="Replace '+ row.ingredient.name +'"  data-name="'+ row.ingredient.name +'" data-type="select" data-pk="'+ row.ingredient.name +'" data-title="Choose Ingredient to replace '+ row.ingredient.name +'"></a> &nbsp; <a href="#" rel="tip" title="Remove '+ row.ingredient.name +'" class="fas fa-trash" id="rmIng" data-name="'+ row.ingredient.name +'" data-id='+ row.formula_ingredient_id +'></a>';
-		<?php } ?>
+		data = inv;
 	}
-    return data;
-  }
+
+  return data;
+}
+  
+function ingActions(data, type, row, meta){
+//Change ingredient
+$('#formula').editable({
+	selector: 'a.replaceIngredient',
+	pvnoresp: false,
+	highlight: false,
+	type: 'get',
+	emptytext: "",
+	emptyclass: "",
+	url: "pages/manageFormula.php?action=repIng&fname=<?=$meta['name']?>",
+	source: [
+			 <?php
+			$res_ing = mysqli_query($conn, "SELECT name FROM ingredients ORDER BY name ASC");
+			while ($r_ing = mysqli_fetch_array($res_ing)){
+				echo '{value: "'.htmlspecialchars($r_ing['name']).'", text: "'.htmlspecialchars($r_ing['name']).'"},';
+			}
+			?>
+		  ],
+		dataType: 'html',
+		success: function (data) {
+	if ( data.indexOf("Error") > -1 ) {
+			$('#msgInfo').html(data); 
+		}else{
+			$('#msgInfo').html(data);
+			reload_formula_data();
+		}
+	}
+});
+
+if(type === 'display'){
+	data = '<a href="'+ row.ingredient.pref_supplier_link +'" target="_blank" rel="tip" title="Open '+ row.ingredient.pref_supplier +' page" class="fas fa-shopping-cart"></a>';
+	<?php if($meta['isProtected'] == FALSE){?>
+	if(row.exclude_from_calculation == 0){
+	 	var ex = '&nbsp; <i class="pv_point_gen fas fa-eye-slash" style="color: #337ab7;" rel="tip" id="exIng" title="Exclude '+ row.ingredient.name +'" data-name="'+ row.ingredient.name +'" data-status="1" data-id="'+ row.formula_ingredient_id +'"></i>';
+	}else if(row.exclude_from_calculation == 1){
+	 	var ex = '&nbsp; <i class="pv_point_gen fas fa-eye" style="color: #337ab7;" rel="tip" id="exIng" title="Include '+ row.ingredient.name +'" data-name="'+ row.ingredient.name +'" data-status="0" data-id="'+ row.formula_ingredient_id +'"></i>';
+	}
+	data += ex + '&nbsp; <a href="#" class="fas fa-exchange-alt replaceIngredient" rel="tip" title="Replace '+ row.ingredient.name +'"  data-name="'+ row.ingredient.name +'" data-type="select" data-pk="'+ row.ingredient.name +'" data-title="Choose Ingredient to replace '+ row.ingredient.name +'"></a> &nbsp; <i rel="tip" title="Remove '+ row.ingredient.name +'" class="pv_point_gen fas fa-trash" style="color: #c9302c;" id="rmIng" data-name="'+ row.ingredient.name +'" data-id='+ row.formula_ingredient_id +'></i>';
+	<?php } ?>
+}
+   return data;
+}
 
 //MULTIPLY - DIVIDE
 function manageQuantity(quantity) {
@@ -779,6 +811,17 @@ function addTODO() {
   });
 };
 
+
+$('#formula').on('click', '[id*=cCAS]', function () {
+	var copy = {};
+	copy.Name = $(this).attr('data-name');
+	const el = document.createElement('textarea');
+    el.value = copy.Name;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+});
 
 function export_as(type) {
   $("#formula").tableHTMLExport({

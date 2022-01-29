@@ -2,7 +2,10 @@
 if (!defined('pvault_panel')){ die('Not Found');}
 
 $q = mysqli_query($conn, "SELECT * FROM lids ORDER BY style ASC");
-$sup = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
+$sup = mysqli_query($conn, "SELECT id,name FROM ingSuppliers ORDER BY name ASC");
+while ($suppliers = mysqli_fetch_array($sup)){
+	    $supplier[] = $suppliers;
+}
 
 ?>
 <div id="content-wrapper" class="d-flex flex-column">
@@ -24,7 +27,7 @@ $sup = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
                         <div class="btn-group">
                           <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
                           <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="?do=addLid">Add new</a>
+            				<a class="dropdown-item" href="#" data-toggle="modal" data-target="#addLid">Add new</a>
                           </div>
                         </div>                    
                         </div>
@@ -60,8 +63,59 @@ $sup = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
         </div>
       </div>
     </div>
-    
-<script type="text/javascript" language="javascript" >
+<!-- ADD LID MODAL-->
+<div class="modal fade" id="addLid" tabindex="-1" role="dialog" aria-labelledby="addLid" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add Lid</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <div id="lid_inf"></div>
+        <p>
+        Style: 
+          <input class="form-control" name="style" type="text" id="style" />
+        </p>
+        <p>            
+        Colour:
+          <input class="form-control" name="color" type="text" id="color" />
+        </p>
+        <p>
+        Price:
+          <input class="form-control" name="price" type="text" id="price" />
+        </p>
+        <p>
+        Supplier:
+          <select name="supplier" id="supplier" class="form-control">
+            <option value="" selected></option>
+            <?php
+            foreach($supplier as $sup) {
+                echo '<option value="'.$sup['name'].'">'.$sup['name'].'</option>';
+            }
+            ?>
+          </select>
+        </p>
+        <p>
+        Supplier URL:
+          <input class="form-control" name="supplier_link" type="text" id="supplier_link" />
+        </p>
+        <p>
+        Image:
+        <input type="file" name="pic" id="pic" class="form-control" />
+    	</p>            
+        <div class="dropdown-divider"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <input type="submit" name="button" class="btn btn-primary" id="lid_add" value="Add">
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
 function lidDel(lidId){
 	$.ajax({ 
 		url: 'pages/update_settings.php', 
@@ -137,10 +191,55 @@ $('#lid_data').editable({
   	selector: 'td.supplier',
   	title: 'Supplier',
   	url: "pages/update_data.php?lid=1",
-    source: [<?php while($supplier = mysqli_fetch_array($sup)){?>
-             {value: '<?php echo $supplier ['name'];?>', text: '<?php echo $supplier ['name'];?>'},
+    source: [<?php foreach($supplier as $sup){?>
+             {value: '<?php echo $sup['name'];?>', text: '<?php echo $sup['name'];?>'},
             <?php } ?>
           ]
+});
+
+$('#addLid').on('click', '[id*=lid_add]', function () {
+
+	$("#lid_inf").html('<div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
+	$("#lid_add").prop("disabled", true);
+    $("#lid_add").prop('value', 'Please wait...');
+		
+	var fd = new FormData();
+    var files = $('#pic')[0].files;
+    var style = $('#style').val();
+    var color = $('#color').val();
+    var price = $('#price').val();
+    var supplier = $('#supplier').val();
+    var supplier_link = $('#supplier_link').val();
+
+    if(files.length > 0 ){
+		fd.append('pic_file',files[0]);
+
+			$.ajax({
+              url: 'pages/upload.php?type=lid&style=' + btoa(style) + '&color=' + btoa(color) + '&price=' + btoa(price) + '&supplier=' + btoa(supplier) + '&supplier_link=' + btoa(supplier_link),
+              type: 'POST',
+              data: fd,
+              contentType: false,
+              processData: false,
+			  		cache: false,
+              success: function(response){
+                 if(response != 0){
+                    $("#lid_inf").html(response);
+					$("#lid_add").prop("disabled", false);
+        			$("#lid_add").prop("value", "Add");
+					//reload_data();
+                 }else{
+                    $("#lid_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> File upload failed!</div>');
+					$("#lid_add").prop("disabled", false);
+        			$("#lid_add").prop("value", 'Add');
+                 }
+              },
+           });
+        }else{
+			$("#lid_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a image to upload!</div>');
+			$("#lid_add").prop("disabled", false);
+   			$("#lid_add").prop("value", "Add");
+        }
+		
 });
 
 </script>

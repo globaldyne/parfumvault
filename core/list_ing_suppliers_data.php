@@ -2,31 +2,29 @@
 require('../inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
+$id = mysqli_real_escape_string($conn, $_GET['id']);
 
-if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM suppliers")))){
-	$response['Error'] = (string)'<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> no inventory has been created yet</div>';    
-	header('Content-Type: application/json; charset=utf-8');
-	echo json_encode($response);
-	return;
-}
-
-$q = mysqli_query($conn, "SELECT * FROM suppliers");
+$q = mysqli_query($conn, "SELECT * FROM suppliers WHERE ingID='$id'");
 while($res = mysqli_fetch_array($q)){
     $sup[] = $res;
 }
 
 foreach ($sup as $suppliers) { 
+	$supplier = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingSuppliers WHERE id = '".$suppliers['ingSupplierID']."'"));
+
 	$r['id'] = (int)$suppliers['id'];
 	$r['ingSupplierID'] = (int)$suppliers['ingSupplierID'];
 	$r['ingID'] = (int)$suppliers['ingID'];
-	$r['supplierLink'] = (string)$suppliers['supplierLink'];
+	$r['supplierName'] = (string)$supplier['name'];
+	$r['supplierLink'] = (string)$suppliers['supplierLink']?:'N/A';
 	$r['price'] = (float)$suppliers['price'];
 	$r['size'] = (float)$suppliers['size'];
-	$r['manufacturer'] = (string)$suppliers['manufacturer'];
+	$r['manufacturer'] = (string)$suppliers['manufacturer']?:'N/A';
+	$r['batch'] = (string)$suppliers['batch']?:'N/A';
 	$r['preferred'] = (int)$suppliers['preferred'];
-	$r['manufactured'] = (string)$suppliers['manufactured'];
+	$r['purchased'] = (string)$suppliers['purchased']?:'N/A';
 	$r['mUnit'] = (string)$suppliers['mUnit'];
-	$r['stock'] = (int)$suppliers['stock'];
+	$r['stock'] = (int)$suppliers['stock']?:0;
 
 	$response['data'][] = $r;
 }

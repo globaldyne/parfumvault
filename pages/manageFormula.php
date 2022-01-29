@@ -7,6 +7,33 @@ require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/labelMap.php');
 require_once(__ROOT__.'/func/get_formula_notes.php');
 
+
+
+//EXCLUDE/INCLUDE INGREDIENT
+if($_GET['action'] == 'excIng' && $_GET['ingID']){
+	$id = mysqli_real_escape_string($conn, $_GET['ingID']);
+	$fid = mysqli_real_escape_string($conn, $_GET['fid']);
+	$ing = mysqli_real_escape_string($conn, $_GET['ingName']);
+
+	$status = (int)$_GET['status'];
+	if($status == 1){
+		$st = 'excluded';
+	}else{
+		$st = 'included';
+	}
+	
+	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,isProtected FROM formulasMetaData WHERE fid = '$fid'"));
+	if($meta['isProtected'] == FALSE){
+		
+		if(mysqli_query($conn, "UPDATE formulas SET exclude_from_calculation = '$status' WHERE id  = '$id'")){
+			echo  '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$ing.' is now '. $st .'!</div>';
+		}else{
+			echo  '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$ing.' cannot be '.$st.' from the formula!</div>';
+		}
+	}
+	return;
+}
+
 //IS MADE
 if($_POST['isMade'] && $_POST['fid']){
 	$fid = mysqli_real_escape_string($conn,$_POST['fid']);
@@ -16,8 +43,10 @@ if($_POST['isMade'] && $_POST['fid']){
 		$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '".$get_quant['ingredient']."'"));
 		$q = "UPDATE suppliers SET stock = GREATEST(0, stock - '".$get_quant['quantity']."') WHERE ingID = '".$ing['id']."' AND stock = GREATEST(stock, '".$get_quant['quantity']."')";
 		$upd = mysqli_query($conn, $q);	
+		
 	}
 	if($upd){
+		mysqli_query($conn,"UPDATE formulasMetaData SET isMade = '1', madeOn = NOW() WHERE fid = '$fid'");
 		echo  '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Inventory updated!</div>';
 	}else{
 		echo  '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.mysqli_error($conn).'</div>';
