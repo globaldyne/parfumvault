@@ -22,6 +22,7 @@
 - Make formula view responsive
 - Multi dimension ingredient look up performance improvement
 - Details link moved under menu in formula view
+- Improve add lid page
 
 ### Version 3.8
 - tipsy.js dependency removed

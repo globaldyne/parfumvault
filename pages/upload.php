@@ -9,6 +9,46 @@ require_once(__ROOT__.'/func/fixIFRACas.php');
 require_once(__ROOT__.'/func/formatBytes.php');
 
 
+if($_GET['type'] == 'lid' && $_GET['style']){
+	
+	$style = base64_decode($_GET['style']);
+	$color = base64_decode($_GET['color']);
+	$price = base64_decode($_GET['price']);
+	$supplier = base64_decode($_GET['supplier']);
+	$supplier_link = base64_decode($_GET['supplier_link']);
+
+
+	if(isset($_FILES['pic_file']['name'])){
+      $file_name = $_FILES['pic_file']['name'];
+      $file_size = $_FILES['pic_file']['size'];
+      $file_tmp = $_FILES['pic_file']['tmp_name'];
+      $file_type = $_FILES['pic_file']['type'];
+      $file_ext = strtolower(end(explode('.',$_FILES['pic_file']['name'])));
+	  
+	  if (file_exists('../'.$uploads_path.'lids/') === FALSE) {
+    	mkdir('../'.$uploads_path.'lids/', 0740, true);
+	  }
+
+	  $ext = explode(', ', $allowed_ext);
+	  
+      if(in_array($file_ext,$ext)=== false){
+		 echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>File upload error: </strong>Extension not allowed, please choose a '.$allowed_ext.' file.</div>';
+      }elseif($file_size > $max_filesize){
+		 echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>File upload error: </strong>File size must not exceed '.formatBytes($max_filesize).'</div>';
+      }else{
+	  
+         if(move_uploaded_file($file_tmp,'../'.$uploads_path.'lids/'.base64_encode($file_name))){
+		 	$photo = $uploads_path.'lids/'.base64_encode($file_name);
+			if(mysqli_query($conn, "INSERT INTO lids (style, colour, price, supplier, supplier_link, photo) VALUES ('$style', '$color', '$price', '$supplier', '$supplier_link', '$photo')")){
+		 		echo '<div class="alert alert-success alert-dismissible"><a href="?do=lids" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$style.'</strong> added!</div>';
+			}else{
+				echo '<div class="alert alert-danger alert-dismissible"><a href="?do=lids" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Failed to add '.$style.' - '.mysqli_error($conn).'</div>';
+			}
+		 }
+	  }
+   }
+	return;
+}
 
 if($_GET['type'] && $_GET['id']){
 	
