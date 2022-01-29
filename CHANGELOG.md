@@ -2,6 +2,7 @@
 ### Version 4.0
 - Add Max Usage info in final product as well
 - Add Reccomended Usage info in final product as well
+- Fix ingredient classication not updating to probition or to specification
 
 ### Version 3.9
 - Fix a bug showing empty inventory column when exporting a formula
