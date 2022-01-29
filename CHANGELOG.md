@@ -2,6 +2,7 @@
 ### Version 4.0
 - Add Max Usage info in final product as well
 - Add Reccomended Usage info in final product as well
+- Add ingredient prohibition warning in formula
 - Fix ingredient classication not updating to probition or to specification
 
 ### Version 3.9

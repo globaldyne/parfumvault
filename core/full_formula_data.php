@@ -61,7 +61,7 @@ foreach ($form as $formula){
 
 foreach ($form as $formula){
 	
-	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT id, name, cas, $defCatClass, profile, odor, category, physical_state FROM ingredients WHERE name = '".$formula['ingredient']."'"));
+	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT id, name, cas, $defCatClass, profile, odor, category, physical_state,usage_type AS classification FROM ingredients WHERE name = '".$formula['ingredient']."'"));
 	 
 	$inventory = mysqli_fetch_array(mysqli_query($conn, "SELECT stock,mUnit,batch,purchased FROM suppliers WHERE ingID = '".$ing_q['id']."' AND preferred = '1'"));
 	
@@ -148,6 +148,7 @@ foreach ($form as $formula){
    	$r['ingredient']['name'] = (string)$ingName ?: $formula['ingredient'];
 	$r['ingredient']['cas'] = (string)$ing_q['cas'];
 	$r['ingredient']['physical_state'] = (int)$ing_q['physical_state'];
+	$r['ingredient']['classification'] = (int)$ing_q['classification'] ?: 1;
 
 	$r['ingredient']['desc'] = (string)$desc ?: '-';
 	$r['ingredient']['pref_supplier'] = (string)getPrefSupplier($ing_q['id'],$conn)['name'] ?: 'N/A';
