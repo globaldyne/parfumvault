@@ -37,7 +37,8 @@ $(document).ready(function() {
 			loadingRecords: '&nbsp;',
 			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
 			emptyTable: "Incomplete formula. Please add ingredients.",
-			search: "Search in formula:"
+			search: "Search in formula:",
+			searchPlaceholder: "CAS, Ingredient, etc.."
 			},
     	ajax: {
     		url: 'core/full_formula_data.php?id=<?=$id?>'
