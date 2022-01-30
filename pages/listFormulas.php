@@ -174,7 +174,7 @@ function fMade(data, type, row, meta){
 
 function fActions(data, type, row, meta){
 	if(type === 'display'){
-		data = '<a href="pages/getFormMeta.php?id=' + row.id + '" rel="tip" title="Show details of '+ row.name +'" class="fas fa-comment-dots popup-link"></a> &nbsp; <a href="#" id="addTODO" class="fas fa-list" rel="tip" title="Add '+ row.name +' to the make list" data-id='+ row.fid +'></a> &nbsp; <a href="#" id="cloneMe" class="fas fa-copy" rel="tip" title="Clone '+ row.name +'" data-id='+ row.fid +'></a> &nbsp; <a href="#" id="deleteMe" class="fas fa-trash" rel="tip" title="Delete '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"></a>';
+		data = '<a href="pages/getFormMeta.php?id=' + row.id + '" rel="tip" title="Show details of '+ row.name +'" class="fas fa-comment-dots popup-link"></a> &nbsp; <a href="#" id="addTODO" class="fas fa-list" rel="tip" title="Add '+ row.name +' to the make list" data-id='+ row.fid +'></a> &nbsp; <a href="#" id="cloneMe" class="fas fa-copy" rel="tip" title="Clone '+ row.name +'" data-id='+ row.fid +'></a> &nbsp; <i id="deleteMe" class="pv_point_gen fas fa-trash"  style="color: #c9302c;" rel="tip" title="Delete '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"></i>';
 	}
     return data;
 }
