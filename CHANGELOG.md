@@ -5,6 +5,7 @@
 - Add ingredient prohibition warning in formula
 - Fix ingredient classication not updating to probition or to specification
 - Make sure totals update when an ingredient is excluded from the formula
+- Fix a bug causing inventory fail when dealing with liters
 
 ### Version 3.9
 - Fix a bug showing empty inventory column when exporting a formula

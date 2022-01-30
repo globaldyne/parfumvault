@@ -53,7 +53,7 @@ $(document).ready(function() {
 				   { data : 'concentration', title: 'Concentration %'},
 				   { data : 'final_concentration', title: 'Final Concentration <?=$meta['finalType']?>%'},
 				   { data : 'cost', title: 'Cost (<?=$settings['currency']?>)'},
-				   { data : 'ingredient.inventory.stock', title: 'Inentory', className: 'text-center noexport', render: ingInv },
+				   { data : 'ingredient.inventory.stock', title: 'Inventory', className: 'text-center noexport', render: ingInv },
 				   { data : 'ingredient.desc', title: 'Properties', render: ingNotes},
    				   { data : null, title: 'Actions', className: 'text-center noexport', render: ingActions},		   
 				   

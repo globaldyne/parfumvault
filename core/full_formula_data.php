@@ -116,10 +116,10 @@ foreach ($form as $formula){
 		$r['final_concentration'] = 0;
 		$r['cost'] = 0;
 	}else{
-		$r['quantity'] = number_format((float)$formula['quantity'], $settings['qStep']) ?: 0.000;
+		$r['quantity'] = number_format((float)$formula['quantity'], $settings['qStep'],'.', '') ?: 0;
     	$r['concentration'] = number_format($conc, $settings['qStep']) ?: 0.000;
-    	$r['final_concentration'] = number_format((float)$conc_final, $settings['qStep']) ?: 0.000;
-		$r['cost'] = (float)calcCosts(getPrefSupplier($ing_q['id'],$conn)['price'],$formula['quantity'], $formula['concentration'], getPrefSupplier($ing_q['id'],$conn)['size']) ?: 0.000;
+    	$r['final_concentration'] = number_format((float)$conc_final, $settings['qStep']) ?: 0;
+		$r['cost'] = (float)calcCosts(getPrefSupplier($ing_q['id'],$conn)['price'],$formula['quantity'], $formula['concentration'], getPrefSupplier($ing_q['id'],$conn)['size']) ?: 0;
 
 	}
 	
