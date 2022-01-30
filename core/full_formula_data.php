@@ -53,7 +53,9 @@ $defCatClass = $meta['catClass'] ?: $settings['defCatClass'];
 $formula_q = mysqli_query($conn, "SELECT id,ingredient,concentration,quantity,dilutant,notes,exclude_from_calculation FROM formulas WHERE fid = '".$meta['fid']."' ORDER BY ingredient ASC");
 while ($formula = mysqli_fetch_array($formula_q)){
 	    $form[] = $formula;
-		$mg['total_mg'] += $formula['quantity'];
+		if ( $formula['exclude_from_calculation'] != 1 ){
+			$mg['total_mg'] += $formula['quantity'];
+		}
 }
 
 foreach ($form as $formula){
