@@ -679,3 +679,8 @@ table.fixedHeader-floating {
 .table-bordered {
     border: 1px solid #ddd !important;
 }
+
+.pv_menu_formulas {
+	padding: 10px 10px 10px 10px;
+	margin: 10px 10px 10px 10px;
+}
