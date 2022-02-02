@@ -363,7 +363,8 @@ a:hover{
 }
 
 .img_ing {
-    max-height: 40px;
+    max-height: 50px;
+	padding: 10px 0px 0px 10px;
 }
 
 .img_ing_sel {
@@ -504,9 +505,9 @@ formula td, table.table th {
 	font-weight: bolder;
 }
 
-.listIngName-with-separator::after {
+.listIngName-with-separator {
     content: '';
-    display: block;
+    display: inline;
     height: 0;
     width: 8rem;
     margin-top: 0.25rem;
@@ -683,4 +684,19 @@ table.fixedHeader-floating {
 .pv_menu_formulas {
 	padding: 10px 10px 10px 10px;
 	margin: 10px 10px 10px 10px;
+}
+
+.ing_alg {
+	display: block;	
+	color: #b7b41a;
+}
+
+.pv_gen_li {
+	color: #23527c;
+}
+
+.advanced_search_box {
+	text-align: right;
+	display: block;
+	font-weight: bold;
 }

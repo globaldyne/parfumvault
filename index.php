@@ -11,7 +11,6 @@ require_once(__ROOT__.'/func/calcCosts.php');
 require_once(__ROOT__.'/func/calcPerc.php');
 require_once(__ROOT__.'/func/checkDupes.php');
 require_once(__ROOT__.'/func/checkIng.php');
-require_once(__ROOT__.'/func/checkAllergen.php');
 require_once(__ROOT__.'/func/getIngUsage.php');
 require_once(__ROOT__.'/func/checkVer.php');
 require_once(__ROOT__.'/func/getIFRAtypes.php');

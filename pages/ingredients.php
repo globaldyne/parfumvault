@@ -24,37 +24,6 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
             <div class="card-header py-3">
               <h2 class="m-0 font-weight-bold text-primary"><a href="javascript:list_ingredients()">Ingredients</a></h2>
             </div>
-            <div class="col-sm-12 p-3 text-right">
-			     <label>
-                <div>
-                        <div class="input-group">	
-                          <input type="text" id="ing_search" class="form-control input-sm" placeholder="Search..." name="ing_search">
-						    <div class="input-group-btn">
-                                <button id="local" class="btn btn-search btn-primary">
-                                    <span class="fas fa-database"></span>
-                                    <span class="label-icon"><a class="btn-search" href="javascript:pvSearch()">Local DB</a></span>
-                                </button>
-                                <label class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                                    <span class="caret"></span>
-                                </label>
-                                <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                                    <?php foreach (loadModules('suppliers') as $search){ ?>
-                                    <li>
-                                        <a href="javascript:pvSearch()" class="supplier" id="<?=$search['fileName']?>">
-                                            <span class="<?=$search['icon']?>"></span>
-                                            <span class="label-icon"><?=$search['name']?></span>
-                                        </a>
-                                    </li>
-                                    <?php } ?>
-                                </ul>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <hr />
-                   <span><a href="#" data-toggle="modal" data-target="#adv_search">Advanced Search</a></span>
-		         </label>
-            </div>
             <div class="card-body">
               <div class="table-responsive">
                  <div id="list_ingredients">
@@ -71,7 +40,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
         </div>
       </div>
     </div>
-    
+
 <!--ADV SEARCH-->
 <div class="modal fade" id="adv_search" tabindex="-1" role="dialog" aria-labelledby="adv_search" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
@@ -281,7 +250,7 @@ function pv_online_import(items) {
 	$('#pvImportMsg').html('<div class="alert alert-info">Please wait...</div>');
 	$.ajax({ 
 		url: 'pages/pvonline.php', 
-		type: 'get',
+		type: 'GET',
 		data: {
 			action: "import",
 			items: items
@@ -299,7 +268,7 @@ function pv_online_upload(items) {
 	$('#pvUploadMsg').html('<div class="alert alert-info">Please wait...</div>');
 	$.ajax({
 		url: 'pages/pvonline.php', 
-		type: 'get',
+		type: 'GET',
 		data: {
 			action: "upload",
 			items: items,
@@ -318,7 +287,7 @@ function delete_ingredient(id){
 	
 	$.ajax({
 		url: 'pages/update_data.php', 
-		type: 'get',
+		type: 'GET',
 		data: {
 			ingredient: "delete",
 			ing_id: id,
@@ -343,7 +312,7 @@ function importCSV(){
 
         $.ajax({
            url: 'pages/upload.php?type=ingCSVImport',
-           type: 'post',
+           type: 'POST',
            data: fd,
            contentType: false,
            processData: false,
@@ -381,7 +350,7 @@ function importING(name) {
 function setView(view) {
 	$.ajax({ 
     url: 'pages/update_settings.php', 
-	type: 'get',
+	type: 'GET',
     data: {
 		ingView: view,
 		},
@@ -391,6 +360,5 @@ function setView(view) {
     }
   });
 };
-
 
 </script>
