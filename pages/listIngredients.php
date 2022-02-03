@@ -5,6 +5,7 @@ require('../inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
+require_once(__ROOT__.'/func/loadModules.php');
 
 $defCatClass = $settings['defCatClass'];
 
@@ -36,7 +37,34 @@ $defCatClass = $settings['defCatClass'];
   </th>
 </tr>
 </table>
-                
+
+<div id="pv_search">
+	<div class="text-right">
+        <div class="pv_input_grp">   
+          <input type="text" id="ing_search" class="form-control input-sm pv_input_sm" placeholder="Name, CAS, odor.." name="ing_search">
+            <div class="input-group-btn">
+                <button class="btn btn-search btn-primary" id="pv_search_btn" data-provider="local">
+                    <span class="fas fa-database"></span>
+                    <span class="label-icon"><a href="#" class="btn-search">Local DB</a></span>
+                </button>
+                <label class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                    <span class="caret"></span>
+                </label>
+                <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                    <?php foreach (loadModules('suppliers') as $search){ ?>
+                    <li>
+                        <a href="#" class="supplier" id="provider" data-provider="<?=$search['fileName']?>">
+                            <span class="<?=$search['icon']?>"></span>
+                            <span class="label-icon"><?=$search['name']?></span>
+                        </a>
+                    </li>
+                    <?php } ?>
+                </ul>
+            </div>
+    	</div>
+	</div>
+</div>
+
 <table id="tdDataIng" class="table table-striped table-bordered" style="width:100%">
   <thead>
       <tr>
@@ -54,25 +82,35 @@ $defCatClass = $settings['defCatClass'];
 </table>
 
 <script type="text/javascript">
+
 $(document).ready(function() {
-	
+	var pr;
+	 $("#pv_search_btn").click(function() {
+        //$('#pv_search_btn').attr('data-provider')
+		pr = $(this).attr("data-provider");
+		
+    });
+	console.log(pr);
+
 	$('[data-toggle="tooltip"]').tooltip();
 	
 	var tdDataIng = $('#tdDataIng').DataTable( {
 	columnDefs: [
 		{ className: 'text-center', targets: '_all' },
 	],
-	dom: 'lfr<"#advanced_search">tip',
+	dom: 'lr<"#advanced_search">tip',
 	initComplete: function(settings, json) {
-        $("#advanced_search").html('<span><hr /><a href="#" class="advanced_search_box" data-toggle="modal" data-target="#adv_search">Advanced Search</a></span>')
+        $("#advanced_search").html('<span><hr /><a href="#" class="advanced_search_box" data-toggle="modal" data-target="#adv_search">Advanced Search</a></span>');
+		$("#tdDataIng_filter").detach().appendTo('#pv_search');
     },
 	processing: true,
 	serverSide: true,
+	searching: true,
 	language: {
 		loadingRecords: '&nbsp;',
 		processing: '<div class="spinner-grow"></div> Please Wait...',
 		zeroRecords: 'Nothing found, try <a href="#" data-toggle="modal" data-target="#adv_search">advanced</a> search instead?',
-		search: 'Search:',
+		search: 'Quick Search:',
 		searchPlaceholder: 'Name, CAS, odor..',
 		},
 	ajax: {	
@@ -85,6 +123,7 @@ $(document).ready(function() {
 			cas: '<?=$_GET['cas']?:null?>',
 			odor: '<?=$_GET['odor']?:null?>',
 			cat: '<?=$_GET['cat']?:null?>',
+			provider: 'prov'+pr,
 			},
 		dataType: 'json',
 		},
@@ -94,7 +133,7 @@ $(document).ready(function() {
 			  { data : 'odor', title: 'Description'},
 			  { data : 'profile', title: 'Profile', render: iProfile },
 			  { data : 'category', title: 'Category', render: iCategory },
-			  { data : 'usage.limit', title: '<?=ucfirst($defCatClass)?>', render: iLimit},
+			  { data : 'usage.limit', title: '<?=ucfirst($defCatClass)?>(%)', render: iLimit},
 			  { data : 'id', title: 'Supplier(s)', render: iSuppliers},
 			  { data : 'id', title: 'Document(s)', render: iDocs},
 
@@ -106,7 +145,20 @@ $(document).ready(function() {
 	displayLength: 10,		
 	});
 	    
+	$('#ing_search').keyup(function() {
+        tdDataIng.search($(this).val()).draw();
+    });
 	
+	$('#pv_search').on('click', '[id*=pv_search_btn]', function () {
+		var ingSearch = {};
+		ingSearch.txt = $('#ing_search').val();
+		ingSearch.provider = $('#pv_search_btn').attr('data-provider');
+		console.log('Text: '+ingSearch.txt);
+		console.log('Provider: '+ingSearch.provider);
+		tdDataIng.search(ingSearch.txt).draw();
+		//tdDataIng.data(ingSearch.provider).data();
+		pr = ingSearch.provider;
+	});
 });
 					   
 function iName(data, type, row){
@@ -249,6 +301,14 @@ $('#tdDataIng').on('click', '[id*=rmIng]', function () {
 function reload_ingredients_data() {
     $('#tdDataIng').DataTable().ajax.reload(null, true);
 }
+
+$(".input-group-btn .dropdown-menu li a").click(function () {
+	var selText = $(this).html();
+	var provider = $(this).attr('data-provider');
+	  
+	$(this).parents(".input-group-btn").find(".btn-search").html(selText);
+	$(this).parents(".input-group-btn").find(".btn-search").attr('data-provider',provider);
+});
 
 $(document).ajaxComplete(function() {
 	$('[rel=tip]').tooltip({

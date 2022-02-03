@@ -700,3 +700,14 @@ table.fixedHeader-floating {
 	display: block;
 	font-weight: bold;
 }
+
+.pv_input_grp {
+	position: relative;
+	display: inline-table;
+	border-collapse: separate;
+	width: 20% !important;	
+}
+
+.pv_input_sm {
+	height: 34px !important;
+}

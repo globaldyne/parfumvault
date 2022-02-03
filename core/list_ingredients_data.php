@@ -1,5 +1,4 @@
 <?php
-
 require('../inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
@@ -9,6 +8,11 @@ require_once(__ROOT__.'/func/getIngSupplier.php');
 require_once(__ROOT__.'/func/searchIFRA.php');
 require_once(__ROOT__.'/func/getCatByID.php');
 require_once(__ROOT__.'/func/getDocument.php');
+
+$req_dump = print_r($_REQUEST, TRUE);
+$fp = fopen(__ROOT__.'/logs/list_ingredients_data.log', 'a');
+fwrite($fp, $req_dump);
+fclose($fp);
 
 $defCatClass = $settings['defCatClass'];
 
@@ -83,6 +87,7 @@ foreach ($ingredients as $ingredient) {
 	
 	if($a = getIngSupplier($ingredient['id'],$conn)){ 
 		$j = 0;
+		unset($r['supplier']);
 		foreach ($a as $b){
 			$r['supplier'][$j]['name'] = (string)$b['name'];
 			$r['supplier'][$j]['link'] = (string)$b['supplierLink'];
@@ -94,18 +99,20 @@ foreach ($ingredients as $ingredient) {
 	
 	if($d = getDocument($ingredient['id'],1,$conn)){
 		$i=0;
+		unset($r['document']);
 		foreach($d as $x ){
 			$r['document'][$i]['name'] = (string)$x['name'];
 			$r['document'][$i]['id'] = (int)$x['id'];
 			$i++;
 		}
 	}else{
-		$r['document'] = null;
+		unset($r['document']);// = null;
 	}
 
 	$rx[]=$r;
 }
 
+$total = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM ingredients"));
 $filtered = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM ingredients ".$filter));
 
 $response = array(
