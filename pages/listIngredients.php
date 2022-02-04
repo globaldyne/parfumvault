@@ -84,14 +84,6 @@ $defCatClass = $settings['defCatClass'];
 <script type="text/javascript">
 
 $(document).ready(function() {
-	var pr;
-	 $("#pv_search_btn").click(function() {
-        //$('#pv_search_btn').attr('data-provider')
-		pr = $(this).attr("data-provider");
-		
-    });
-	console.log(pr);
-
 	$('[data-toggle="tooltip"]').tooltip();
 	
 	var tdDataIng = $('#tdDataIng').DataTable( {
@@ -116,15 +108,15 @@ $(document).ready(function() {
 	ajax: {	
 		url: '/core/list_ingredients_data.php',
 		type: 'POST',
-		data: {
-			adv: <?=$_GET['adv']?:0?>,
-			profile: '<?=$_GET['profile']?:null?>',
-			name: '<?=$_GET['name']?:null?>',
-			cas: '<?=$_GET['cas']?:null?>',
-			odor: '<?=$_GET['odor']?:null?>',
-			cat: '<?=$_GET['cat']?:null?>',
-			provider: 'prov'+pr,
-			},
+		data: function(d) {
+            d.provider = $('#pv_search_btn').attr('data-provider')
+			d.adv = '<?=$_GET['adv']?:0?>'
+			d.profile = '<?=$_GET['profile']?:null?>'
+			d.name = '<?=$_GET['name']?:null?>'
+			d.cas = '<?=$_GET['cas']?:null?>'
+			d.odor = '<?=$_GET['odor']?:null?>'
+			d.cat = '<?=$_GET['cat']?:null?>'
+        },
 		dataType: 'json',
 		},
 	columns: [
@@ -152,12 +144,7 @@ $(document).ready(function() {
 	$('#pv_search').on('click', '[id*=pv_search_btn]', function () {
 		var ingSearch = {};
 		ingSearch.txt = $('#ing_search').val();
-		ingSearch.provider = $('#pv_search_btn').attr('data-provider');
-		console.log('Text: '+ingSearch.txt);
-		console.log('Provider: '+ingSearch.provider);
 		tdDataIng.search(ingSearch.txt).draw();
-		//tdDataIng.data(ingSearch.provider).data();
-		pr = ingSearch.provider;
 	});
 });
 					   
