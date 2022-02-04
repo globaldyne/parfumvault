@@ -290,6 +290,7 @@ tr.strikeout td:before {
 
 .charts_box {
     width: 100%;
+	display: flex;
 }
 
 
