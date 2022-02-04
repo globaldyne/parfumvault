@@ -102,7 +102,7 @@ while($customers = mysqli_fetch_array($cust)){
   <tr>
     <td>Customer:</td>
     <td><select name="customer" id="customer" class="form-control ellipsis">
-      <option></option>
+      <option value="0">Internal use</option>
       <?php foreach ($customer as $c) {?>
       <option value="<?=$c['id'];?>" <?php echo ($info['customer_id']==$c['id'])?"selected=\"selected\"":""; ?>><?php echo $c['name'];?></option>
       <?php }	?>
