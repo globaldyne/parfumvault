@@ -54,7 +54,7 @@ if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients")))){
     <a href="#tab-<?=$cat['cname']?>"><?=$cat['name']?></a>
  <?php } ?>       
 </ul>
-<div class="tab-content">
+<div class="tab-content table-responsive">
     <div class="tab-pane" id="tab-all">
         <table id="all-table" class="table table-striped table-bordered" width="100%" cellspacing="0">
             <thead>
