@@ -126,8 +126,8 @@ $(document).ready(function() {
 			  { data : 'profile', title: 'Profile', render: iProfile },
 			  { data : 'category', title: 'Category', render: iCategory },
 			  { data : 'usage.limit', title: '<?=ucfirst($defCatClass)?>(%)', render: iLimit},
-			  { data : 'id', title: 'Supplier(s)', render: iSuppliers},
-			  { data : 'id', title: 'Document(s)', render: iDocs},
+			  { data : null, title: 'Supplier(s)', render: iSuppliers},
+			  { data : null, title: 'Document(s)', render: iDocs},
 
 			  { data : null, title: 'Actions', render: actions},		   
 			 ],
