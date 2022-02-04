@@ -69,30 +69,30 @@ if(empty($info['name'])){
 </table>
 <?php 
 	} 
-
-	//return;
 ?>
 
 <h3>Historical changes for <?=$info['name']?></h3>
 <hr>
 <div class="card-body">
   <div>
-   <table class="table table-bordered" id="tdHistory" width="100%" cellspacing="0">
-                  <thead>
-                      <th>Changes</th>
-                    </tr>
-                    </tr>
-                  </thead>
-                  <tbody id="history">
-					<?php foreach($history as $history){?>
-                    <tr>
-    					<td><?=$history['change_made']?> on <?=$history['date_time']?> by <?=$history['user']?></td>
-					</tr>
-				  	<?php } ?>
-                  </tbody>
-                </table>
-              </div>
-            </div>
+    <table class="table table-bordered" id="tdHistory" width="100%" cellspacing="0">
+      <thead>
+        <th scope="col">Changes</th>
+        <th scope="col">Date</th>
+        <th scope="col">User</th>
+      </thead>
+      <tbody id="history">
+        <?php foreach($history as $history){?>
+        <tr>
+            <td><?=$history['change_made']?></td>
+            <td><?=$history['date_time']?></td>
+            <td><?=$history['user']?></td>
+        </tr>
+        <?php } ?>
+      </tbody>
+    </table>
+  </div>
+</div>
 </body>
 </html>
 <script type="text/javascript" language="javascript" >
@@ -101,7 +101,8 @@ $(document).ready(function(){
  $('#tdHistory').DataTable({
     "paging":   true,
 	"info":   true,
-	"lengthMenu": [[15, 35, 60, -1], [15, 35, 60, "All"]]
+	"lengthMenu": [[15, 35, 60, -1], [15, 35, 60, "All"]],	
+	order: [[ 1, 'desc' ]]
  });
 
 });
