@@ -26,6 +26,11 @@ $getFCats = mysqli_query($conn, "SELECT name,cname,type FROM formulaCategories")
 while($fcats = mysqli_fetch_array($getFCats)){
 	$fcat[] =$fcats;
 }
+$cust = mysqli_query($conn, "SELECT id,name FROM customers ORDER BY id ASC");
+while($customers = mysqli_fetch_array($cust)){
+    $customer[] = $customers;
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -95,6 +100,15 @@ while($fcats = mysqli_fetch_array($getFCats)){
     <td><input name="isProtected" type="checkbox" id="isProtected" value="1" <?php if($info['isProtected'] == '1'){; ?> checked="checked"  <?php } ?>/></td>
   </tr>
   <tr>
+    <td>Customer:</td>
+    <td><select name="customer" id="customer" class="form-control ellipsis">
+      <option></option>
+      <?php foreach ($customer as $c) {?>
+      <option value="<?=$c['id'];?>" <?php echo ($info['customer_id']==$c['id'])?"selected=\"selected\"":""; ?>><?php echo $c['name'];?></option>
+      <?php }	?>
+    </select></td>
+  </tr>
+  <tr>
     <td>View:</td>
     <td><select name="defView" id="defView" class="form-control">
 			  <option value="1" <?php if($info['defView']=="1") echo 'selected="selected"'; ?> >Ingredient Properties</option>
@@ -151,7 +165,7 @@ $('[rel=tip]').tooltip({placement: 'auto'});
 
  list_revisions();
 
- $('#formula_metadata').editable({
+$('#formula_metadata').editable({
   container: 'body',
   selector: 'td.name',
   url: "update_data.php?rename=<?=$info['fid']?>",
@@ -163,9 +177,9 @@ $('[rel=tip]').tooltip({placement: 'auto'});
 	  	$('#msg').html(response);        
     },
 
- });
+});
   
-  $('#formula_metadata').editable({
+$('#formula_metadata').editable({
   container: 'body',
   selector: 'td.notes',
   url: "update_data.php?formulaMeta=<?=$info['fid']?>",
@@ -177,7 +191,7 @@ $('[rel=tip]').tooltip({placement: 'auto'});
         if(response.status == 'error') return response.msg; 
     },
 
- });
+});
   
 $('#formula_metadata').editable({
   container: 'body',
@@ -191,47 +205,47 @@ $('#formula_metadata').editable({
         if(response.status == 'error') return response.msg; 
     },
 
- });
- 
-  $('#profile').editable({
-	value: "<?php echo $info['profile'];?>",
-  	title: 'Profile',
-  	url: "update_data.php?formulaMeta=<?=$info['fid']?>",
-    source: [
-			<?php foreach ($fcat as $cat) { if($cat['type'] == 'profile'){?>		
-             {value: '<?=$cat['cname']?>', text: '<?=$cat['name']?>'},
-            <?php } }?>
-            ]
-    });
-  
-    $('#sex').editable({
-	value: "<?php echo $info['sex'];?>",
-  	url: "update_data.php?formulaMeta=<?=$info['fid']?>",
-    source: [
-             <?php foreach ($fcat as $cat) { if($cat['type'] == 'sex'){?>		
-             {value: '<?=$cat['cname']?>', text: '<?=$cat['name']?>'},
-            <?php } }?>
-           ]
-    });
-  });
+});
+
+$('#profile').editable({
+value: "<?php echo $info['profile'];?>",
+title: 'Profile',
+url: "update_data.php?formulaMeta=<?=$info['fid']?>",
+source: [
+		<?php foreach ($fcat as $cat) { if($cat['type'] == 'profile'){?>		
+		 {value: '<?=$cat['cname']?>', text: '<?=$cat['name']?>'},
+		<?php } }?>
+		]
+});
+
+$('#sex').editable({
+value: "<?php echo $info['sex'];?>",
+url: "update_data.php?formulaMeta=<?=$info['fid']?>",
+source: [
+		 <?php foreach ($fcat as $cat) { if($cat['type'] == 'sex'){?>		
+		 {value: '<?=$cat['cname']?>', text: '<?=$cat['name']?>'},
+		<?php } }?>
+	   ]
+});
+});
 
 
 
-  $("#isProtected").change(function() {
-	  $.ajax({ 
-			url: 'update_data.php', 
-			type: 'GET',
-			data: {
-				protect: '<?=$info['fid']?>',
-				isProtected: $("#isProtected").is(':checked'),
-				},
-			dataType: 'html',
-			success: function (data) {
-				$('#msg').html(data);
-				list_revisions();
-			}
-		  });
-  });
+$("#isProtected").change(function() {
+  $.ajax({ 
+		url: 'update_data.php', 
+		type: 'GET',
+		data: {
+			protect: '<?=$info['fid']?>',
+			isProtected: $("#isProtected").is(':checked'),
+			},
+		dataType: 'html',
+		success: function (data) {
+			$('#msg').html(data);
+			list_revisions();
+		}
+	  });
+});
   
 $("#defView").change(function() {
  $.ajax({ 
@@ -270,6 +284,21 @@ $("#finalType").change(function() {
 	data: {
 		formula: '<?=$info['fid']?>',
 		finalType: $("#finalType").find(":selected").val(),
+		},
+	dataType: 'html',
+	success: function (data) {
+		$('#msg').html(data);
+	}
+  });
+});
+
+$("#customer").change(function() {
+ $.ajax({ 
+	url: 'update_data.php', 
+	type: 'GET',
+	data: {
+		formula: '<?=$info['fid']?>',
+		customer_id: $("#customer").find(":selected").val(),
 		},
 	dataType: 'html',
 	success: function (data) {

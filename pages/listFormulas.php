@@ -14,7 +14,11 @@ $cats_q = mysqli_query($conn, "SELECT id,name,description,type FROM IFRACategori
 while($cats_res = mysqli_fetch_array($cats_q)){
     $cats[] = $cats_res;
 }
-?>
+$cust = mysqli_query($conn, "SELECT id,name FROM customers ORDER BY id ASC");
+while($customers = mysqli_fetch_array($cust)){
+    $customer[] = $customers;
+}
+?> 
 <div class="card-header py-3">
   <h2 class="m-0 font-weight-bold text-primary"><a href="javascript:list_formulas()">Formulas</a></h2>
   <div id="inMsg"></div>
@@ -268,6 +272,7 @@ $('#add_formula').on('click', '[id*=btnAdd]', function () {
 		catClass: $("#catClass").val(),
 		finalType: $("#finalType").val(),
 		notes: $("#notes").val(),
+		customer: $("#customer").val(),
 		},
 	dataType: 'html',
     success: function (data) {
@@ -364,6 +369,15 @@ function reload_formulas_data() {
                 </select>
                 </td>
           </tr>     
+          <tr>
+            <td valign="top">Customer:</td>
+              <td><select name="customer" id="customer" class="form-control ellipsis">
+                <option value="0">Internal use</option>
+                <?php foreach ($customer as $c) {?>
+                <option value="<?=$c['id'];?>"><?=$c['name']?></option>
+                <?php }	?>
+              </select></td>
+          </tr>
           <tr>
             <td valign="top">Notes:</td>
             <td><textarea name="notes" id="notes" cols="45" rows="5" class="form-control"></textarea></td>
