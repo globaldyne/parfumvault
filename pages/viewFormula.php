@@ -120,11 +120,11 @@ new $.fn.dataTable.FixedHeader(formula);
 
 // Order by the grouping
 $('#formula tbody').on( 'click', 'tr.group', function () {
-    var currentOrder = table.order()[0];
+    var currentOrder = formula_table.order()[0];
     if ( currentOrder[0] === groupColumn && currentOrder[1] === 'asc' ) {
-         table.order( [ groupColumn, 'desc' ] ).draw();
+         formula_table.order( [ groupColumn, 'desc' ] ).draw();
     }else {
-         table.order( [ groupColumn, 'asc' ] ).draw();
+         formula_table.order( [ groupColumn, 'asc' ] ).draw();
     }
 });
 	
