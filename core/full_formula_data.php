@@ -107,7 +107,7 @@ foreach ($form as $formula){
 		$r['ingredient']['profile_plain'] = (string)$ing_q['profile'].'_notes'?: 'Unknown';
 	}
 	
-	$r['purity'] = (int)$formula['concentration'] ?: 100;
+	$r['purity'] = (float)$formula['concentration'] ?: 100;
 	$r['dilutant'] = (string)$formula['dilutant'] ?: 'None';
 	if($formula['exclude_from_calculation'] == 1){
 			
