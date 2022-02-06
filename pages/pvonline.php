@@ -12,7 +12,7 @@ if($_GET['action'] == 'import' && $_GET['items']){
         $items = explode(',',trim($_GET['items']));
         $i = 0;
         foreach ($items as &$item) {
-                $jAPI = $pvOnlineAPI.'?username='.$pv_online['email'].'&password='.$pv_online['password'].'&do='.$item;
+                $jAPI = $pvOnlineAPI.'?do='.$item;
                 $jsonData = json_decode(file_get_contents($jAPI), true);
 
                 if($jsonData['status'] == 'Failed'){

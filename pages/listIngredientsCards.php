@@ -96,9 +96,9 @@ $next = $page + 1;
             <a class="dropdown-item" id="csv_export" href="/pages/export.php?format=csv&kind=ingredients">Export to CSV</a>
             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#csv_import">Import from CSV</a>
             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#adv_search">Advanced Search</a></span>
-            <?php if($pv_online['email'] && $pv_online['password'] && $pv_online['enabled'] == '1'){?>
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#pv_online_import">Import from PV Online</a>
+            <?php if($pv_online['email'] && $pv_online['password'] && $pv_online['enabled'] == '1'){?>
             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#pv_online_upload">Upload to PV Online</a>
             <?php } ?>
           </div>

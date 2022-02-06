@@ -137,7 +137,6 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
     </div>
   </div>
 </div>  
-<?php if($pv_online['email'] && $pv_online['password'] && $pv_online['enabled'] == '1'){?>
 <!--PV ONLINE IMPORT-->
 <div class="modal fade" id="pv_online_import" tabindex="-1" role="dialog" aria-labelledby="pv_online_import" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -167,7 +166,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
     </div>
   </div>
 </div>
-
+<?php if($pv_online['email'] && $pv_online['password'] && $pv_online['enabled'] == '1'){?>
 <!--PV ONLINE UPLOAD-->
 <div class="modal fade" id="pv_online_upload" tabindex="-1" role="dialog" aria-labelledby="pv_online_upload" aria-hidden="true">
   <div class="modal-dialog" role="document">

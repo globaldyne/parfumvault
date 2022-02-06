@@ -9,6 +9,7 @@
 - Major logic update in ingredients page
 - History page improvements
 - Assign a formula to a customer
+- Remove auth to get ingredient data from PV Online
 
 ### Version 3.9
 - Fix a bug showing empty inventory column when exporting a formula
