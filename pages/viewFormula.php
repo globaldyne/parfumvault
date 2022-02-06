@@ -99,7 +99,7 @@ $(document).ready(function() {
 			
 			
        },
-	   "drawCallback": function ( settings ) {
+	   drawCallback: function ( settings ) {
             var api = this.api();
             var rows = api.rows( {page:'current'} ).nodes();
             var last = null;
@@ -112,7 +112,8 @@ $(document).ready(function() {
                     );
                     last = group;
                 }
-            } );
+            });
+			extrasShow();
 	   }
 });
 
@@ -451,7 +452,7 @@ function reload_formula_data() {
 
 
 <script>
-$( document ).ajaxComplete(function() {
+function extrasShow() {
 	$('[rel=tip]').tooltip({
         "html": true,
         "delay": {"show": 100, "hide": 0},
@@ -462,7 +463,7 @@ $( document ).ajaxComplete(function() {
 		closeOnBgClick: false,
 		showCloseBtn: true,
 	});
-});
+};
   
 $('#formula').editable({
 	  container: 'body',

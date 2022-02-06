@@ -84,7 +84,6 @@ $defCatClass = $settings['defCatClass'];
 <script type="text/javascript">
 
 $(document).ready(function() {
-	$('[data-toggle="tooltip"]').tooltip();
 	
 	var tdDataIng = $('#tdDataIng').DataTable( {
 	columnDefs: [
@@ -132,9 +131,12 @@ $(document).ready(function() {
 			  { data : null, title: 'Actions', render: actions},		   
 			 ],
 	order: [[ 0, 'asc' ]],
-	lengthMenu: [[10, 50, 100, 200, 400], [10, 50, 100, 200, 400]],
-	pageLength: 10,
-	displayLength: 10,		
+	lengthMenu: [[20, 50, 100, 200, 400], [20, 50, 100, 200, 400]],
+	pageLength: 20,
+	displayLength: 20,
+	drawCallback: function( settings ) {
+			extrasShow();
+    	},
 	});
 	    
 	$('#ing_search').keyup(function() {
@@ -297,7 +299,7 @@ $(".input-group-btn .dropdown-menu li a").click(function () {
 	$(this).parents(".input-group-btn").find(".btn-search").attr('data-provider',provider);
 });
 
-$(document).ajaxComplete(function() {
+function extrasShow() {
 	$('[rel=tip]').tooltip({
         "html": true,
         "delay": {"show": 100, "hide": 0},
@@ -308,6 +310,6 @@ $(document).ajaxComplete(function() {
 		closeOnBgClick: false,
 		showCloseBtn: true,
 	});
-});
+};
 
 </script>

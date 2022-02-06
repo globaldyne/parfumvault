@@ -92,18 +92,19 @@ if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients")))){
 
 <?php } ?>
 <script type="text/javascript" language="javascript" >
-$( document ).ajaxComplete(function() {
+function extrasShow() {
 	$('[rel=tip]').tooltip({
-        "html": true,
-        "delay": {"show": 100, "hide": 0},
-     });
+		"html": true,
+		"delay": {"show": 100, "hide": 0},
+	});
 	$('.popup-link').magnificPopup({
 		type: 'iframe',
 		closeOnContentClick: false,
 		closeOnBgClick: false,
 		showCloseBtn: true,
 	});
-});
+};
+
 $(".tabs").click(function() {
      var src = $(this).data("source");
      var tableId = $(this).data("table");
@@ -136,9 +137,13 @@ function initTable(tableId, src) {
         bFilter: true,
         paging:  true,
 		info:   true,
-		lengthMenu: [[20, 35, 60, -1], [20, 35, 60, "All"]]
-     });
+		lengthMenu: [[20, 35, 60, -1], [20, 35, 60, "All"]],
+		drawCallback: function( settings ) {
+			extrasShow();
+     	},
+	});
 }
+
 initTable("all-table", "core/list_formula_data.php");
 
 $("#listFormulas").tabs();
