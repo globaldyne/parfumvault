@@ -87,7 +87,7 @@ $(document).ready(function() {
 	
 	var tdDataIng = $('#tdDataIng').DataTable( {
 	columnDefs: [
-		{ className: 'text-center', targets: '_all' },
+		{ className: 'pv_vertical_middle text-center', targets: '_all' },
 	],
 	dom: 'lr<"#advanced_search">tip',
 	initComplete: function(settings, json) {

@@ -712,3 +712,7 @@ table.fixedHeader-floating {
 .pv_input_sm {
 	height: 34px !important;
 }
+
+.pv_vertical_middle {
+	vertical-align: middle !important;
+}
