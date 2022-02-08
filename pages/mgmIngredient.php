@@ -284,6 +284,10 @@ function reload_data() {
 					<td colspan="5"><input name="cas" type="text" class="form-control" id="cas" value="<?php echo $ing['cas']; ?>"></td>
 				</tr>
 				<tr>
+				  <td height="31">EINECS:</td>
+				  <td colspan="5"><input name="einecs" type="text" class="form-control" id="einecs" value="<?php echo $ing['einecs']; ?>" /></td>
+			  </tr>
+				<tr>
 					<td height="31">REACH #:</td>
 					<td colspan="5"><input name="reach" type="text" class="form-control" id="reach" value="<?php echo $ing['reach']; ?>" /></td>
 				</tr>
@@ -732,6 +736,7 @@ $(document).ready(function() {
 				name: $("#name").val(),
 				INCI: $("#INCI").val(),
 				cas: $("#cas").val(),
+				einecs: $("#einecs").val(),
 				reach: $("#reach").val(),
 				fema: $("#fema").val(),
 				isAllergen: $("#isAllergen").is(':checked'),

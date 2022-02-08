@@ -36,7 +36,10 @@ if(empty($ingredient['category'])){
         <span class="coh-inline-element sub-2-inci">INCI</span> 
         <span class="coh-inline-element sub-2-fema"><?=$ingredient['INCI']?:"Not Available"?></span>  
     </div>
-    <div class="sub-2-container">
+	<div class="sub-2-container">
+        <span class="coh-inline-element sub-2-einecs">EINECS</span> 
+        <span class="coh-inline-element sub-2-fema"><?=$ingredient['einecs']?:"Not Available"?></span>  
+    </div>    <div class="sub-2-container">
         <span class="sub-2-inci">FEMA#</span>
         <span class="sub-2-fema"><?=$ingredient['FEMA']?:"Not Available"?></span>
     </div>

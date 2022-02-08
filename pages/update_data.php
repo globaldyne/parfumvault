@@ -449,6 +449,7 @@ if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'general'){
 
 	$INCI = trim(mysqli_real_escape_string($conn, $_POST["INCI"]));
 	$cas = preg_replace('/\s+/', '', trim(mysqli_real_escape_string($conn, $_POST["cas"])));
+	$einecs = preg_replace('/\s+/', '', trim(mysqli_real_escape_string($conn, $_POST["einecs"])));
 	$reach = preg_replace('/\s+/', '', trim(mysqli_real_escape_string($conn, $_POST["reach"])));
 	$fema = preg_replace('/\s+/', '', trim(mysqli_real_escape_string($conn, $_POST["fema"])));
 	if($_POST["isAllergen"] == 'true') { $allergen = '1'; }else{ $allergen = '0'; }
@@ -464,7 +465,7 @@ if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'general'){
 //	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '".$_POST['name']."'"))){
 		if(empty($_POST['name'])){
 	
-		$query = "UPDATE ingredients SET INCI = '$INCI',cas = '$cas',reach = '$reach',FEMA = '$fema',allergen='$allergen',purity='$purity',profile='$profile',type = '$type',strength = '$strength', category='$category',physical_state = '$physical_state',odor = '$odor',notes = '$notes' WHERE name='$ing'";
+		$query = "UPDATE ingredients SET INCI = '$INCI',cas = '$cas', einecs = '$einecs', reach = '$reach',FEMA = '$fema',allergen='$allergen',purity='$purity',profile='$profile',type = '$type',strength = '$strength', category='$category',physical_state = '$physical_state',odor = '$odor',notes = '$notes' WHERE name='$ing'";
 		
 		if(mysqli_query($conn, $query)){
 			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>General details has been updated!</div>';

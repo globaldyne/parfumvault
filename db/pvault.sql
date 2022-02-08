@@ -176,6 +176,7 @@ CREATE TABLE `ingredients` (
   `category` int(10) NOT NULL DEFAULT '1',
   `purity` varchar(11) COLLATE utf8_bin DEFAULT NULL,
   `cas` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `einecs` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `reach` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `FEMA` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `supplier` varchar(255) COLLATE utf8_bin DEFAULT NULL,

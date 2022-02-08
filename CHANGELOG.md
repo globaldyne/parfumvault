@@ -11,6 +11,7 @@
 - Assign a formula to a customer
 - Remove auth to get ingredient data from PV Online
 - Fix pop-up and tooltip effect when navigating accross pages
+- EINECS support added
 
 ### Version 3.9
 - Fix a bug showing empty inventory column when exporting a formula

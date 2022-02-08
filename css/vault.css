@@ -584,6 +584,15 @@ formula td, table.table th {
     font-weight: 300;
 }
 
+.sub-2-einecs {
+    font-family: 'Gothic A1', sans-serif;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    font-size: 0.85rem;
+    color: #444444;
+    font-weight: 300;
+}
+
 .mgm-ing-bk {
     background-color: white;
 }
