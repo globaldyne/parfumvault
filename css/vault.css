@@ -725,3 +725,10 @@ table.fixedHeader-floating {
 .pv_vertical_middle {
 	vertical-align: middle !important;
 }
+
+.subHeaderCAS {
+	font-size: 1.2rem;
+	display: inline;
+	font-weight: bold;
+	color: #77716f !important
+}

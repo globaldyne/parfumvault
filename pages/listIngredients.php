@@ -69,7 +69,7 @@ $defCatClass = $settings['defCatClass'];
   <thead>
       <tr>
           <th>Name</th>
-          <th>CAS#</th>
+          <th>INCI</th>
           <th>Description</th>
           <th>Profile</th>
           <th>Category</th>
@@ -120,7 +120,7 @@ $(document).ready(function() {
 		},
 	columns: [
 			  { data : 'name', title: 'Name', render: iName },
-			  { data : 'cas', title: 'CAS#', render: iCAS },
+			  { data : 'INCI', title: 'INCI' },
 			  { data : 'odor', title: 'Description'},
 			  { data : 'profile', title: 'Profile', render: iProfile },
 			  { data : 'category', title: 'Category', render: iCategory },
@@ -155,13 +155,10 @@ function iName(data, type, row){
 	if(row.allergen == 1){
 		var alg = '<span class="ing_alg"> <i rel="tip" title="Allergen" class="fas fa-exclamation-triangle"></i></span>';
 	}
-	return '<a class="popup-link listIngName listIngName-with-separator" href="pages/mgmIngredient.php?id=' + btoa(row.name) + '">' + data + '</a>'+alg+'<span class="listIngHeaderSub">'+row.INCI+'</span>';
+	return '<a class="popup-link listIngName listIngName-with-separator" href="pages/mgmIngredient.php?id=' + btoa(row.name) + '">' + data + '</a>'+alg+'<span class="listIngHeaderSub">CAS: <i class="pv_point_gen subHeaderCAS" rel="tip" title="Click to copy cas" id="cCAS" data-name="'+row.cas+'">'+row.cas+'</i> | EINECS: <i class="pv_point_gen subHeaderCAS">'+row.einecs+'</i></span>';
 
 }
 
-function iCAS(data, type, row){
-	return '<i class="pv_point_gen" rel="tip" title="Click to copy" id="cCAS" data-name="'+row.cas+'">'+row.cas+'</i>';
-}
 
 function iProfile(data, type, row){
 	if(row.profile){

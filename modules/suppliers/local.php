@@ -15,7 +15,7 @@ $row = $_POST['start']?:0;
 $limit = $_POST['length']?:10;
 
 if($_POST['adv']){
-	if($name = mysqli_real_escape_string($conn, $_POST['name'])){
+	if($name = trim(mysqli_real_escape_string($conn, $_POST['name']))){
 		$n = $name;
 	}else{
 		$n = '%';
@@ -23,11 +23,11 @@ if($_POST['adv']){
 	
 	$name = "name LIKE '%$n%'";
 	
-	if($cas = mysqli_real_escape_string($conn, $_POST['cas'])){
+	if($cas = trim(mysqli_real_escape_string($conn, $_POST['cas']))){
 		$cas = "AND cas LIKE '%$cas%'";
 	}
 	
-	if($odor = mysqli_real_escape_string($conn, $_POST['odor'])){
+	if($odor = trim(mysqli_real_escape_string($conn, $_POST['odor']))){
 		$odor = "AND odor LIKE '%$odor%'";
 	}
 	
@@ -43,13 +43,13 @@ if($_POST['adv']){
 	$extra = "ORDER BY name";
 }
 
-$s = $_POST['search']['value'];
+$s = trim($_POST['search']['value']);
 
 if($s != ''){
    $filter = "WHERE 1 AND (name LIKE '%".$s."%' OR cas LIKE '%".$s."%' OR odor LIKE '%".$s."%' )";
 }
 
-$q = mysqli_query($conn, "SELECT id,name,INCI,cas,profile,category,odor,$defCatClass,allergen,usage_type FROM ingredients $filter $extra LIMIT $row, $limit");
+$q = mysqli_query($conn, "SELECT id,name,INCI,cas,einecs,profile,category,odor,$defCatClass,allergen,usage_type FROM ingredients $filter $extra LIMIT $row, $limit");
 while($res = mysqli_fetch_array($q)){
     $ingredients[] = $res;
 }
@@ -62,6 +62,7 @@ foreach ($ingredients as $ingredient) {
 	$r['name'] = (string)$ingredient['name'];
 	$r['INCI'] = (string)$ingredient['INCI']?: 'N/A';
 	$r['cas'] = (string)$ingredient['cas']?: 'N/A';
+	$r['einecs'] = (string)$ingredient['einecs']?: 'N/A';
 	$r['profile'] = (string)$ingredient['profile']?: null;
 	$r['odor'] = (string)$ingredient['odor']?: 'N/A';
 	

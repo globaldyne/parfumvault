@@ -12,6 +12,9 @@
 - Remove auth to get ingredient data from PV Online
 - Fix pop-up and tooltip effect when navigating accross pages
 - EINECS support added
+- Layout change in ingredients view to include EINECS
+- Fix molecular weight update in ingredients to be updated from pubchem
+- Fix search in ingredients not showing results if contains white spaces
 
 ### Version 3.9
 - Fix a bug showing empty inventory column when exporting a formula
