@@ -8,6 +8,82 @@ require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/sanChar.php');
 require_once(__ROOT__.'/func/priceScrape.php');
 
+//IMPORT SYNONYMS FROM PubChem
+if($_GET['synonym'] == 'import' && $_GET['method'] == 'pubchem'){
+	$ing = base64_decode($_GET['ing']);
+	$cas = $_GET['cas'];
+
+	$u = 'https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/'.$cas.'/synonyms/JSON';
+	$json = file_get_contents($u);
+	$json = json_decode($json);
+	$data = $json->InformationList->Information[0]->Synonym;
+	$source = 'PubChem';
+	if(empty($data)){
+		echo '<div class="alert alert-info alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>No data found!</div>';
+		return;
+	}
+	$i=0;
+	foreach($data as $d){
+		if(!mysqli_num_rows(mysqli_query($conn, "SELECT synonym FROM synonyms WHERE synonym = '$d' AND ing = '$ing'"))){
+			$r = mysqli_query($conn, "INSERT INTO synonyms (synonym,source,ing) VALUES ('$d','$source','$ing')");		
+		 	$i++;
+		}
+	}
+	if($r){
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$i.' </strong>synonym(s) imported!</div>';
+	}else{
+		echo '<div class="alert alert-info alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Data already in sync!</div>';
+	}
+	
+	return;
+}
+
+//ADD SYNONYM
+if($_GET['synonym'] == 'add'){
+	$synonym = mysqli_real_escape_string($conn, $_GET['sName']);
+	$source = mysqli_real_escape_string($conn, $_GET['source']);
+	
+	$ing = base64_decode($_GET['ing']);
+
+	if(empty($synonym)){
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Synonym is required!</div>';
+		return;
+	}
+	
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT synonym FROM synonyms WHERE synonym = '$synonym' AND ing = '$ing'"))){
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$synonym.' already exists!</div>';
+		return;
+	}
+	
+	if(mysqli_query($conn, "INSERT INTO synonyms (synonym,source,ing) VALUES ('$synonym','$source','$ing')")){
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$synonym.'</strong> added to the list!</div>';
+	}else{
+		echo mysqli_error($conn);
+	}
+	
+	return;
+}
+
+
+//UPDATE SYNONYM
+if($_GET['synonym'] == 'update'){
+	$value = trim(mysqli_real_escape_string($conn, $_POST['value']));
+	$id = mysqli_real_escape_string($conn, $_POST['pk']);
+	$name = mysqli_real_escape_string($conn, $_POST['name']);
+	$ing = base64_decode($_GET['ing']);
+
+	mysqli_query($conn, "UPDATE synonyms SET $name = '$value' WHERE id = '$id' AND ing='$ing'");
+	return;
+}
+
+
+//DELETE ING SYNONYM	
+if($_GET['synonym'] == 'delete'){
+	$id = mysqli_real_escape_string($conn, $_GET['id']);
+	mysqli_query($conn, "DELETE FROM synonyms WHERE id = '$id'");
+	return;
+}
+
 //UPDATE ING DOCUMENT
 if($_GET['ingDoc'] == 'update'){
 	$value = mysqli_real_escape_string($conn, $_POST['value']);

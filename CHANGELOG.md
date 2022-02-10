@@ -15,6 +15,10 @@
 - Layout change in ingredients view to include EINECS
 - Fix molecular weight update in ingredients to be updated from pubchem
 - Fix search in ingredients not showing results if contains white spaces
+- Import ingredient compositions via CSV
+- Fix ingredient csv bug preventing importing ingredients
+- Added synonyms list for ingredients
+- Import synonyms automatically from pubChem
 
 ### Version 3.9
 - Fix a bug showing empty inventory column when exporting a formula

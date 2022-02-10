@@ -72,7 +72,6 @@ while($pictograms_res = mysqli_fetch_array($pictograms)){
 			width: 500px;
 			vertical-align: middle;
 		}
-
 	</style>
 	<link href="../css/sb-admin-2.css" rel="stylesheet">
 	<link href="../css/bootstrap-select.min.css" rel="stylesheet">
@@ -84,7 +83,7 @@ while($pictograms_res = mysqli_fetch_array($pictograms)){
 	<style>
 		.container {
 			max-width: 100%;
-			width: 1400px;
+			width: 1800px;
 			height: 1300px;
 		}
 		.dropdown-menu > li > a {
@@ -194,6 +193,19 @@ function reload_data() {
 		},
 	});
 	
+	$.ajax({ 
+		url: 'synonyms.php', 
+		type: 'GET',
+		data: {
+			name: "<?=base64_encode($ingID)?>",
+			cas: "<?=$ing['cas']?:base64_encode($ingID)?>"
+		},
+		dataType: 'html',
+		success: function (data) {
+			$('#fetch_synonyms').html(data);
+		},
+	});
+		
 	<?php if(isset($ing['cas']) && $settings['pubChem'] == '1'){ ?>
 
 		$.ajax({ 
@@ -251,6 +263,7 @@ function reload_data() {
 			<li><a href="#supply" role="tab" data-toggle="tab"><i class="fa fa-shopping-cart"></i> Supply</a></li>
 			<li><a href="#tech_data" role="tab" data-toggle="tab"><i class="fa fa-cog"></i> Technical Data</a></li>
 			<li><a href="#documents" role="tab" data-toggle="tab"><i class="fa fa-file-alt"></i> Documents</a></li>
+			<li><a href="#synonyms" role="tab" data-toggle="tab"><i class="fa fa-bookmark"></i> Synonyms</a></li>
 			<li><a href="#note_impact" role="tab" data-toggle="tab"><i class="fa fa-magic"></i> Note Impact</a></li>
 			<li><a href="#tech_composition" role="tab" data-toggle="tab"><i class="fa fa-th-list"></i> Composition</a></li>
 			<li><a href="#safety_info" role="tab" data-toggle="tab"><i class="fa fa-biohazard"></i> Safety</a></li>
@@ -451,6 +464,11 @@ function reload_data() {
 <div class="tab-pane fade" id="documents">
 	<div id="msg_docs"></div>
 	<div id="fetch_documents"><div class="loader"></div></div>
+</div>
+
+<div class="tab-pane fade" id="synonyms">
+	<div id="msg_syn"></div>
+	<div id="fetch_synonyms"><div class="loader"></div></div>
 </div>
 
 <div class="tab-pane fade" id="tech_data">
