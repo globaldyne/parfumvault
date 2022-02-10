@@ -15,7 +15,7 @@ if(empty($_GET["id"])){
 }
 $ingID = mysqli_real_escape_string($conn, $_GET["id"]);
 
-$ingredient = mysqli_fetch_array(mysqli_query($conn, "SELECT category,profile,type,odor,physical_state,FEMA,INCI,reach FROM ingredients WHERE id = '$ingID'"));
+$ingredient = mysqli_fetch_array(mysqli_query($conn, "SELECT einecs,category,profile,type,odor,physical_state,FEMA,INCI,reach FROM ingredients WHERE id = '$ingID'"));
 if(empty($ingredient['category'])){
 	return;
 }

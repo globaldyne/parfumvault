@@ -11,7 +11,7 @@ require_once(__ROOT__.'/func/priceScrape.php');
 //IMPORT SYNONYMS FROM PubChem
 if($_GET['synonym'] == 'import' && $_GET['method'] == 'pubchem'){
 	$ing = base64_decode($_GET['ing']);
-	$cas = $_GET['cas'];
+	$cas = trim($_GET['cas']);
 
 	$u = 'https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/'.$cas.'/synonyms/JSON';
 	$json = file_get_contents($u);
@@ -24,6 +24,11 @@ if($_GET['synonym'] == 'import' && $_GET['method'] == 'pubchem'){
 	}
 	$i=0;
 	foreach($data as $d){
+		$einecs = explode('EINECS ',$d);
+		if($einecs['1']){
+			mysqli_query($conn, "UPDATE ingredients SET einecs = '".$einecs['1']."' WHERE cas = '$cas'");
+		}
+		
 		if(!mysqli_num_rows(mysqli_query($conn, "SELECT synonym FROM synonyms WHERE synonym = '$d' AND ing = '$ing'"))){
 			$r = mysqli_query($conn, "INSERT INTO synonyms (synonym,source,ing) VALUES ('$d','$source','$ing')");		
 		 	$i++;
