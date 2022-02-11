@@ -39,17 +39,28 @@ if($_POST['adv']){
 		$category = "AND category = '$category'";	
 	}
 
-	$filter = "WHERE $name $cas $odor $profile $category";
+		
+	if($synonym = mysqli_real_escape_string($conn, $_POST['synonym'])){
+		$t = "synonyms,";
+		$syn = "synonym LIKE '%$synonym%' AND ing = name GROUP BY name";
+	}
+	
+
+	if($synonym){
+		$filter = "WHERE $syn $cas $odor $profile $category";
+	}else{
+		$filter = "WHERE $name $cas $odor $profile $category";
+	}
 	$extra = "ORDER BY name";
 }
 
 $s = trim($_POST['search']['value']);
 
 if($s != ''){
-   $filter = "WHERE 1 AND (name LIKE '%".$s."%' OR cas LIKE '%".$s."%' OR odor LIKE '%".$s."%' )";
+   $filter = "WHERE 1 AND (name LIKE '%".$s."%' OR cas LIKE '%".$s."%' OR odor LIKE '%".$s."%' OR INCI LIKE '%".$s."%')";
 }
 
-$q = mysqli_query($conn, "SELECT id,name,INCI,cas,einecs,profile,category,odor,$defCatClass,allergen,usage_type FROM ingredients $filter $extra LIMIT $row, $limit");
+$q = mysqli_query($conn, "SELECT ingredients.id,name,INCI,cas,einecs,profile,category,odor,$defCatClass,allergen,usage_type FROM $t  ingredients $filter $extra LIMIT $row, $limit");
 while($res = mysqli_fetch_array($q)){
     $ingredients[] = $res;
 }
@@ -60,7 +71,7 @@ foreach ($ingredients as $ingredient) {
 	
 	$r['id'] = (int)$ingredient['id'];
 	$r['name'] = (string)$ingredient['name'];
-	$r['INCI'] = (string)$ingredient['INCI']?: 'N/A';
+	$r['IUPAC'] = (string)$ingredient['INCI']?: 'N/A';
 	$r['cas'] = (string)$ingredient['cas']?: 'N/A';
 	$r['einecs'] = (string)$ingredient['einecs']?: 'N/A';
 	$r['profile'] = (string)$ingredient['profile']?: null;

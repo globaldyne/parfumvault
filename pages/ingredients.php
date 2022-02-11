@@ -64,6 +64,10 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
        		  <td colspan="3"><input type="text" id="ing_cas" class="form-control input-sm" name="ing_cas" placeholder="Any" /></td>
    		  </tr>
        		<tr>
+       		  <td valign="top">Synonym:</td>
+       		  <td colspan="3"><input type="text" id="ing_synonym" class="form-control input-sm" name="ing_synonym" placeholder="Any" /></td>
+   		  </tr>
+       		<tr>
        		  <td valign="top">Odor:</td>
        		  <td colspan="3"><input type="text" id="ing_odor" class="form-control input-sm" name="ing_odor" placeholder="Any" /></td>
    		  </tr>
@@ -223,6 +227,7 @@ function adv_search() {
     var odor = $('#ing_odor').val();
     var profile = $('#ing_profile').val();
     var cat = $('#ing_category').val();
+    var synonym = $('#ing_synonym').val();
 
 	$.ajax({ 
 		url: 'pages/listIngredients.php',
@@ -233,7 +238,8 @@ function adv_search() {
 			"cas": cas,
 			"odor": odor,
 			"profile": profile,
-			"cat": cat
+			"cat": cat,
+			"synonym": synonym
 		},
 		dataType: 'html',
 			success: function (data) {

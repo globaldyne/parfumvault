@@ -289,7 +289,7 @@ function reload_data() {
 					</tr>
 				<?php } ?>
 				<tr>
-					<td>INCI:</td>
+					<td>IUPAC:</td>
 					<td colspan="5"><input name="INCI" type="text" class="form-control" id="INCI" value="<?php echo $ing['INCI']; ?>" /></td>
 				</tr>
 				<tr>
@@ -490,13 +490,7 @@ function reload_data() {
 		<tr>
 			<td>Molecular Formula:</td>
 			<td colspan="3">
-				<?php
-				if($chFormula = searchIFRA($ing['cas'],$ing['name'],'formula',$conn,$defCatClass)){
-					echo $chFormula;
-				}else{
-					?>
-					<input name="formula" type="text" class="form-control" id="molecularFormula" value="<?php echo $ing['formula']; ?>">
-				<?php } ?>
+            <input name="formula" type="text" class="form-control" id="molecularFormula" value="<?php echo $ing['formula']; ?>">
 			</td>
 		</tr>
 		<tr>

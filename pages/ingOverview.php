@@ -21,25 +21,23 @@ if(empty($ingredient['category'])){
 }
 
 ?>
-<html>
-<head>
-<link href="../css/vault.css" rel="stylesheet">
+
 <style>
 
 .img_ing {
     max-height: 100px;
 }
 </style>
-</head>
 <div class="sub-2-container sub-2-header">
 	<div class="sub-2-container">
-        <span class="coh-inline-element sub-2-inci">INCI</span> 
+        <span class="coh-inline-element sub-2-inci">IUPAC</span> 
         <span class="coh-inline-element sub-2-fema"><?=$ingredient['INCI']?:"Not Available"?></span>  
     </div>
 	<div class="sub-2-container">
         <span class="coh-inline-element sub-2-einecs">EINECS</span> 
         <span class="coh-inline-element sub-2-fema"><?=$ingredient['einecs']?:"Not Available"?></span>  
-    </div>    <div class="sub-2-container">
+    </div>    
+    <div class="sub-2-container">
         <span class="sub-2-inci">FEMA#</span>
         <span class="sub-2-fema"><?=$ingredient['FEMA']?:"Not Available"?></span>
     </div>
@@ -61,4 +59,3 @@ if(empty($ingredient['category'])){
   </tr>
 </table>
 
-</html>

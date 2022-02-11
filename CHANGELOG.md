@@ -19,6 +19,10 @@
 - Fix ingredient csv bug preventing importing ingredients
 - Added synonyms list for ingredients
 - Import synonyms automatically from pubChem
+- Update FEMA when importing data from pubChem
+- Update local data from pubChem
+- Rename INCI to IUPAC
+- Molecular formula check against IFRA is now removed
 
 ### Version 3.9
 - Fix a bug showing empty inventory column when exporting a formula

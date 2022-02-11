@@ -69,7 +69,7 @@ $defCatClass = $settings['defCatClass'];
   <thead>
       <tr>
           <th>Name</th>
-          <th>INCI</th>
+          <th>IUPAC</th>
           <th>Description</th>
           <th>Profile</th>
           <th>Category</th>
@@ -102,7 +102,7 @@ $(document).ready(function() {
 		processing: '<div class="spinner-grow"></div> Please Wait...',
 		zeroRecords: 'Nothing found, try <a href="#" data-toggle="modal" data-target="#adv_search">advanced</a> search instead?',
 		search: 'Quick Search:',
-		searchPlaceholder: 'Name, CAS, odor..',
+		searchPlaceholder: 'Name, CAS, IUPAC, odor..',
 		},
 	ajax: {	
 		url: '/core/list_ingredients_data.php',
@@ -115,12 +115,13 @@ $(document).ready(function() {
 			d.cas = '<?=$_GET['cas']?:null?>'
 			d.odor = '<?=$_GET['odor']?:null?>'
 			d.cat = '<?=$_GET['cat']?:null?>'
+			d.synonym = '<?=$_GET['synonym']?:null?>'
         },
 		dataType: 'json',
 		},
 	columns: [
 			  { data : 'name', title: 'Name', render: iName },
-			  { data : 'INCI', title: 'INCI' },
+			  { data : 'IUPAC', title: 'IUPAC' },
 			  { data : 'odor', title: 'Description'},
 			  { data : 'profile', title: 'Profile', render: iProfile },
 			  { data : 'category', title: 'Category', render: iCategory },

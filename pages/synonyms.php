@@ -40,7 +40,7 @@ $ingName = mysqli_real_escape_string($conn, $_GET["name"]);
 
 <script type="text/javascript" language="javascript" >
 $(document).ready(function() {
-	
+
 $('[data-toggle="tooltip"]').tooltip();
 var tdSynonyms = $('#tdSynonyms').DataTable( {
 	columnDefs: [
@@ -156,6 +156,8 @@ $('#import').on('click', '[id*=importPubChem]', function () {
 			$('#pvImportMsg').html(data);
 			$('#importPubChem').attr('disabled', false);
 			reload_syn_data();
+			reload_overview();
+
 		}
 	});		
              

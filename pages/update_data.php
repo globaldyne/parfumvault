@@ -8,12 +8,44 @@ require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/sanChar.php');
 require_once(__ROOT__.'/func/priceScrape.php');
 
+
+
+//IMPORT SYNONYMS FROM PubChem
+if($_POST['pubChemData'] == 'update' && $_POST['cas']){
+	$cas = trim($_POST['cas']);
+	$molecularWeight = $_POST['molecularWeight'];
+	$logP = trim($_POST['logP']);
+	$molecularFormula = $_POST['molecularFormula'];
+	$InChI = $_POST['InChI'];
+	$CanonicalSMILES = $_POST['CanonicalSMILES'];
+	$ExactMass = trim($_POST['ExactMass']);
+	
+	if($molecularWeight){
+		$q = mysqli_query($conn, "UPDATE ingredients SET molecularWeight = '$molecularWeight' WHERE cas='$cas'");
+	}
+	if($logP){
+		$q.= mysqli_query($conn, "UPDATE ingredients SET logp = '$logP' WHERE cas='$cas'");
+	}
+	if($molecularFormula){
+		$q.= mysqli_query($conn, "UPDATE ingredients SET formula = '$molecularFormula' WHERE cas='$cas'");
+	}
+	if($InChI){
+		$q.= mysqli_query($conn, "UPDATE ingredients SET INCI = '$InChI' WHERE cas='$cas'");
+	}
+	if($q){
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Data updated!</div>';
+	}else{
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Unable to update data!</div>';
+	}
+	return;
+}
+
 //IMPORT SYNONYMS FROM PubChem
 if($_GET['synonym'] == 'import' && $_GET['method'] == 'pubchem'){
 	$ing = base64_decode($_GET['ing']);
 	$cas = trim($_GET['cas']);
 
-	$u = 'https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/'.$cas.'/synonyms/JSON';
+	$u = $pubChemApi.'/pug/compound/name/'.$cas.'/synonyms/JSON';
 	$json = file_get_contents($u);
 	$json = json_decode($json);
 	$data = $json->InformationList->Information[0]->Synonym;
@@ -28,7 +60,10 @@ if($_GET['synonym'] == 'import' && $_GET['method'] == 'pubchem'){
 		if($einecs['1']){
 			mysqli_query($conn, "UPDATE ingredients SET einecs = '".$einecs['1']."' WHERE cas = '$cas'");
 		}
-		
+		$fema = explode('FEMA ',$d);
+		if($fema['1']){
+			mysqli_query($conn, "UPDATE ingredients SET FEMA = '".preg_replace("/[^0-9]/", "", $fema['1'])."' WHERE cas = '$cas'");
+		}
 		if(!mysqli_num_rows(mysqli_query($conn, "SELECT synonym FROM synonyms WHERE synonym = '$d' AND ing = '$ing'"))){
 			$r = mysqli_query($conn, "INSERT INTO synonyms (synonym,source,ing) VALUES ('$d','$source','$ing')");		
 		 	$i++;
