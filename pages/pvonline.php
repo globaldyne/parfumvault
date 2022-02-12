@@ -78,7 +78,14 @@ if($_GET['action'] == 'upload' && $_GET['items'] == 'ingredients'){
 		$cData['data'][] = array_filter($cat);
 		$c++;
 	}
-	
+		
+	//Upload all the synonyms
+	$syn = mysqli_query($conn, "SELECT ing, cid, synonym, source FROM synonyms");
+	$s = 0;
+	while($synonym = mysqli_fetch_assoc($syn)){
+		$sData['data'][] = array_filter($synonym);
+		$s++;
+	}
 	
 	$params = "?username=".$pv_online['email']."&password=".$pv_online['password']."&do=add&kind=ingredient";
 	$up_req = pvUploadData($pvOnlineAPI.$params, json_encode($ingData));
@@ -89,8 +96,11 @@ if($_GET['action'] == 'upload' && $_GET['items'] == 'ingredients'){
 	$params = "?username=".$pv_online['email']."&password=".$pv_online['password']."&do=add&kind=category";
 	$up_req.= pvUploadData($pvOnlineAPI.$params, json_encode($cData));
 	
+	$params = "?username=".$pv_online['email']."&password=".$pv_online['password']."&do=add&kind=synonym";
+	$up_req.= pvUploadData($pvOnlineAPI.$params, json_encode($sData));
+	
 	if($up_req){
-		echo  '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$i.'</strong> ingredients, <strong>'.$a.'</strong> allergens and <strong>'.$c.'</strong> categories uploaded!</div>';
+		echo  '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$i.'</strong> ingredients, <strong>'.$a.'</strong> compositions, <strong>'.$s.'</strong> synonyms and <strong>'.$c.'</strong> categories uploaded!</div>';
 	}
 
 	return;
