@@ -157,7 +157,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
       <strong>WARNING:</strong><br />
       you are about to import data from PV Online, please bear in mind, PV Online is a community driven database therefore may contain unvalidated or incorrect data. <br />
       If your local database contains already an ingredient with the same name, the ingredient data will not be imported. <p></p>
-      Ingredients online: <strong><?php echo pvOnlineStats($pvOnlineAPI, $pv_online['email'], $pv_online['password'], 'ingredients');?></strong>
+      Ingredients online: <strong><?php echo pvOnlineStats($pvOnlineAPI, 'ingredients');?></strong>
 </div>
 	  <div class="modal-footer_2">
 	  <?php require('privacy_note.php');?>
@@ -248,7 +248,6 @@ function adv_search() {
 	});
 };
 
-<?php if($pv_online['email'] && $pv_online['password'] && $pv_online['enabled'] == '1'){?>
 
 function pv_online_import(items) {
 	$('#btnImport').attr('disabled', true);
@@ -267,6 +266,8 @@ function pv_online_import(items) {
 		}
 	  });
 };
+
+<?php if($pv_online['email'] && $pv_online['password'] && $pv_online['enabled'] == '1'){?>
 
 function pv_online_upload(items) {
 	$('#btnUpload').attr('disabled', true);
