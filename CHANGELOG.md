@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 4.1
+
 ### Version 4.0
 - Add Max Usage info in final product as well
 - Add Reccomended Usage info in final product as well
