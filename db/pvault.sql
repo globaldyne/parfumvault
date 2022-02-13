@@ -84,8 +84,8 @@ CREATE TABLE `cart` (
 DROP TABLE IF EXISTS `formulasMetaData`;
 CREATE TABLE `formulasMetaData` (
   `id` int(11) NOT NULL,
-  `name` varchar(255) COLLATE utf8_bin NOT NULL,
-  `product_name` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  `product_name` varchar(255) DEFAULT NULL,
   `fid` varchar(255) COLLATE utf8_bin NOT NULL,
   `profile` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `sex` varchar(255) COLLATE utf8_bin DEFAULT NULL,
@@ -99,7 +99,7 @@ CREATE TABLE `formulasMetaData` (
   `isMade` INT NOT NULL DEFAULT '0',
   `madeOn` DATETIME NULL DEFAULT NULL,
   `customer_id` INT NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 DROP TABLE IF EXISTS `IFRALibrary`;
 CREATE TABLE `IFRALibrary` (

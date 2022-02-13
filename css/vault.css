@@ -732,3 +732,7 @@ table.fixedHeader-floating {
 	font-weight: bold;
 	color: #77716f !important
 }
+
+.pv_exclusions {
+	display: grid;
+}

@@ -112,7 +112,11 @@ $(".tabs").click(function() {
 });
 function initTable(tableId, src) {
     var table = $("#" + tableId).DataTable({
-           ajax: {url: src},
+           ajax: {
+			   url: src,
+		   	   type: 'POST',
+			   dataType: 'json',
+			   },
 			columns: [
 			   { data : 'name', title: 'Formula Name', render: fName },
 			   { data : 'product_name', title: 'Product Name', render: pName},
@@ -122,10 +126,14 @@ function initTable(tableId, src) {
 			   { data : 'created', title: 'Created'},
 			   { data : null, title: 'Actions', render: fActions},				   
 			  ],
+			 processing: true,
+	         serverSide: true,
+			 searching: true,
 			 language: {
 				loadingRecords: '&nbsp;',
 				processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Blending...</span>',
 				emptyTable: "No formulas added yet.",
+				searchPlaceholder: 'Name, or product name..',
 				search: "Search for formula:"
 			},
            order: [0,'asc'],

@@ -190,7 +190,15 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
       Ingredients in your database: <strong><?php echo countElement("ingredients",$conn);?></strong>
 </div>
       <div class="dropdown-divider"></div>
-      <div class="modal-body">
+      <div class="modal-body pv_exclusions">
+       <label>
+         <input name="excludeCompositions" type="checkbox" id="excludeCompositions" value="1" />
+        Exclude compositions
+      </label>
+      <label>
+      <input name="excludeSynonyms" type="checkbox" id="excludeSynonyms" value="1" />
+        Exclude synonyms
+      </label>
       <label>
          <input name="excludeNotes" type="checkbox" id="excludeNotes" value="1" />
         Exclude notes
@@ -252,7 +260,7 @@ function adv_search() {
 function pv_online_import(items) {
 	$('#btnImport').attr('disabled', true);
 	$('#pvImportMsg').html('<div class="alert alert-info">Please wait...</div>');
-	$.ajax({ 
+	$.ajax({
 		url: 'pages/pvonline.php', 
 		type: 'GET',
 		data: {
@@ -278,7 +286,9 @@ function pv_online_upload(items) {
 		data: {
 			action: "upload",
 			items: items,
-			excludeNotes: $("#excludeNotes").is(':checked')
+			excludeNotes: $("#excludeNotes").is(':checked'),
+			excludeSynonyms: $("#excludeSynonyms").is(':checked'),
+			excludeComposition: $("#excludeComposition").is(':checked')
 			},
 		dataType: 'html',
 		success: function (data) {
