@@ -90,10 +90,10 @@ if($_GET['action'] == 'upload' && $_GET['items'] == 'ingredients'){
 	$params = "?username=".$pv_online['email']."&password=".$pv_online['password']."&do=add&kind=ingredient";
 	$up_req = pvUploadData($pvOnlineAPI.$params, json_encode($ingData));
 	
-	if($_GET['excludeComposition'] == 'false'){
+	if($_GET['excludeCompositions'] == 'false'){
 		$params = "?username=".$pv_online['email']."&password=".$pv_online['password']."&do=add&kind=compos";
 		$up_req.= pvUploadData($pvOnlineAPI.$params, json_encode($algData));
-		$msg.= '<strong>'.$a.'</strong> compositions, ';
+		$msg.= ', <strong>'.$a.'</strong> compositions';
 	}
 	
 	$params = "?username=".$pv_online['email']."&password=".$pv_online['password']."&do=add&kind=category";
@@ -102,11 +102,11 @@ if($_GET['action'] == 'upload' && $_GET['items'] == 'ingredients'){
 	if($_GET['excludeSynonyms'] == 'false'){
 		$params = "?username=".$pv_online['email']."&password=".$pv_online['password']."&do=add&kind=synonym";
 		$up_req.= pvUploadData($pvOnlineAPI.$params, json_encode($sData));
-		$msg.= '<strong>'.$s.'</strong> synonyms';
+		$msg.= ', <strong>'.$s.'</strong> synonyms';
 	}
 	
 	if($up_req){
-		echo  '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$i.'</strong> ingredients, '.$msg.' and <strong>'.$c.'</strong> categories uploaded!</div>';
+		echo  '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$i.'</strong> ingredients'.$msg.' and <strong>'.$c.'</strong> categories uploaded!</div>';
 	}
 
 	return;
