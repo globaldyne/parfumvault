@@ -288,7 +288,7 @@ function pv_online_upload(items) {
 			items: items,
 			excludeNotes: $("#excludeNotes").is(':checked'),
 			excludeSynonyms: $("#excludeSynonyms").is(':checked'),
-			excludeComposition: $("#excludeComposition").is(':checked')
+			excludeCompositions: $("#excludeCompositions").is(':checked')
 			},
 		dataType: 'html',
 		success: function (data) {
