@@ -232,14 +232,15 @@ if($_GET['action'] == 'repIng' && $_GET['fname']){
 	$oldIngredient = mysqli_real_escape_string($conn, $_REQUEST['pk']);
 	$ingredient_id = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$ingredient'"));
 	
-	$isProtected = mysqli_fetch_array(mysqli_query($conn, "SELECT isProtected FROM formulasMetaData WHERE fid = '".base64_encode($_GET['fname'])."'"));
-	if($isProtected['isProtected'] == FALSE){
-		
+	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,isProtected FROM formulasMetaData WHERE fid = '".base64_encode($_GET['fname'])."'"));
+	if($meta['isProtected'] == FALSE){
 		if(mysqli_num_rows(mysqli_query($conn, "SELECT ingredient FROM formulas WHERE ingredient = '$ingredient' AND name = '$fname'"))){
 			echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$ingredient.' already exists in formula!</div>';
 		}else{
 			if(mysqli_query($conn, "UPDATE formulas SET ingredient = '$ingredient', ingredient_id = '".$ingredient_id['id']."' WHERE ingredient = '$oldIngredient' AND name = '$fname'")){
 				echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$oldIngredient.' replaced with '.$ingredient.'!</div>';
+				$lg = "REPLACED: $oldIngredient WITH $ingredient";
+				mysqli_query($conn, "INSERT INTO formula_history (fid,change_made,user) VALUES ('".$meta['id']."','$lg','".$user['fullName']."')");
 			}else{
 				echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error replacing '.$oldIngredient.'</div>';
 			}
@@ -303,12 +304,14 @@ if($_POST['action'] == 'addFormula'){
 	$profile = mysqli_real_escape_string($conn, $_POST['profile']);
 	$catClass = mysqli_real_escape_string($conn, $_POST['catClass']);
 	$finalType = mysqli_real_escape_string($conn, $_POST['finalType']);
+	$customer_id = $_POST['customer']?:0;
+
 	$fid = base64_encode($name);
 	
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulasMetaData WHERE fid = '$fid'"))){
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$name.' already exists!</div>';
 	}else{
-		$q = mysqli_query($conn, "INSERT INTO formulasMetaData (fid, name, notes, profile, catClass, finalType) VALUES ('$fid', '$name', '$notes', '$profile', '$catClass', '$finalType')");
+		$q = mysqli_query($conn, "INSERT INTO formulasMetaData (fid, name, notes, profile, catClass, finalType, customer_id) VALUES ('$fid', '$name', '$notes', '$profile', '$catClass', '$finalType', '$customer_id')");
 		if($nID = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$fid'"))){
 			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong><a href="?do=Formula&id='.$nID['id'].'">'.$name.'</a></strong> added!</div>';
 		}else{

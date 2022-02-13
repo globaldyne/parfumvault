@@ -8,7 +8,6 @@ require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/getIngSupplier.php');
-require_once(__ROOT__.'/func/checkAllergen.php');
 require_once(__ROOT__.'/func/searchIFRA.php');
 require_once(__ROOT__.'/func/getCatByID.php');
 require_once(__ROOT__.'/func/profileImg.php');
@@ -89,23 +88,24 @@ $next = $page + 1;
                 <a href="javascript:setView('2')" class="fas fa-border-all"></a>
             </div>
         </div>
-            <div class="col-sm-6 text-right">
-                 <div class="btn-group">
-                          <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
-                          <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item popup-link" href="pages/mgmIngredient.php">Add new ingredient</a>
-                            <a class="dropdown-item" id="csv_export" href="/pages/export.php?format=csv&kind=ingredients">Export to CSV</a>
-	                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#csv_import">Import from CSV</a>
-                            <?php if($pv_online['email'] && $pv_online['password'] && $pv_online['enabled'] == '1'){?>
-                            <div class="dropdown-divider"></div>
-	                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#pv_online_import">Import from PV Online</a>
-	                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#pv_online_upload">Upload to PV Online</a>
-                            <?php } ?>
-                          </div>
-                        </div>                    
-                        </div>
-                        </th>
-                    </tr>
+    <div class="col-sm-6 text-right">
+    	<div class="btn-group">
+          <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
+          <div class="dropdown-menu dropdown-menu-right">
+            <a class="dropdown-item popup-link" href="pages/mgmIngredient.php">Add new ingredient</a>
+            <a class="dropdown-item" id="csv_export" href="/pages/export.php?format=csv&kind=ingredients">Export to CSV</a>
+            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#csv_import">Import from CSV</a>
+            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#adv_search">Advanced Search</a></span>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#pv_online_import">Import from PV Online</a>
+            <?php if($pv_online['email'] && $pv_online['password'] && $pv_online['enabled'] == '1'){?>
+            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#pv_online_upload">Upload to PV Online</a>
+            <?php } ?>
+          </div>
+    	</div>                    
+    </div>
+    </th>
+</tr>
   </thead>
   </table>
   <?php 

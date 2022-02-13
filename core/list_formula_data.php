@@ -6,6 +6,9 @@ require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/countElement.php');
 
 
+$row = $_POST['start']?:0;
+$limit = $_POST['length']?:10;
+
 $cats_q = mysqli_query($conn, "SELECT id,name,description,type FROM IFRACategories ORDER BY id ASC");
 while($cats_res = mysqli_fetch_array($cats_q)){
     $cats[] = $cats_res;
@@ -15,7 +18,13 @@ while($cats_res = mysqli_fetch_array($cats_q)){
 if($_GET['filter'] && $_GET['profile'] || $_GET['sex']){
 	$f = "WHERE profile = '".$_GET['profile']."' OR sex = '".$_GET['sex']."'";
 }
-$formulas = mysqli_query($conn, "SELECT id,fid,name,product_name,isProtected,profile,sex,created,catClass,isMade,madeOn FROM formulasMetaData $f");
+$s = trim($_POST['search']['value']);
+
+if($s != ''){
+   $f = "WHERE 1 AND (name LIKE '%".$s."%' OR product_name LIKE '%".$s."%')";
+}
+
+$formulas = mysqli_query($conn, "SELECT id,fid,name,product_name,isProtected,profile,sex,created,catClass,isMade,madeOn FROM formulasMetaData $f LIMIT $row, $limit");
 
 while ($allFormulas = mysqli_fetch_array($formulas)){
 	    $formula[] = $allFormulas;
@@ -34,14 +43,23 @@ foreach ($formula as $formula) {
 	$r['isMade'] = (int)$formula['isMade']?:0;
 	$r['madeOn'] = (string)$formula['madeOn']?:'N/A';
 
-	$response['data'][] = $r;
+	$rx[]=$r;
 	
 }
+
+$total = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM formulasMetaData"));
+$filtered = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM formulasMetaData ".$f));
+
+$response = array(
+  "draw" => (int)$_POST['draw'],
+  "recordsTotal" => (int)$total['entries'],
+  "recordsFiltered" => (int)$filtered['entries'],
+  "data" => $rx
+);
 
 if(empty($r)){
 	$response['data'] = [];
 }
-
 
 header('Content-Type: application/json; charset=utf-8');
 echo json_encode($response);

@@ -177,6 +177,31 @@ if($_GET['type'] == 'brand'){
 	return;	
 }
 
+if($_GET['type'] == 'cmpCSVImport'){
+	$ing = base64_decode($_GET['ingID']);
+	
+	if(isset($_FILES['CSVFile']['name'])){
+		$i = 0;
+		$filename=$_FILES['CSVFile']['tmp_name'];    
+		if($_FILES['CSVFile']['size'] > 0){
+			$file = fopen($filename, "r");
+			while (($data = fgetcsv($file, 10000, ",")) !== FALSE){
+				if(!mysqli_num_rows(mysqli_query($conn, "SELECT name FROM allergens WHERE ing = '$ing' AND name = '".trim(ucwords($data['0']))."'"))){
+					$r = mysqli_query($conn, "INSERT INTO allergens (ing, name, cas, ec, percentage) VALUES ('$ing','".trim(ucwords($data['0']))."', '".trim($data['1'])."', '".trim($data['2'])."', '".rtrim($data['3'],'%')."')");
+						$i++;
+				}
+			}
+			if($r){
+				echo '<div class="alert alert-success alert-dismissible">'.$i.' Items imported</div>';
+			}else{
+				echo '<div class="alert alert-danger alert-dismissible">Failed to import the CSV file. Please check syntax is correct.</div>';
+			}
+		}
+		fclose($file);  
+	}  
+	return;
+}
+
 if($_GET['type'] == 'ingCSVImport'){
 	$defCatClass = $settings['defCatClass'];
 
@@ -187,19 +212,19 @@ if($_GET['type'] == 'ingCSVImport'){
 			$file = fopen($filename, "r");
 			while (($data = fgetcsv($file, 10000, ",")) !== FALSE){
 				if(!mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '".trim(ucwords($data['0']))."'"))){
-					if(mysqli_query($conn, "INSERT INTO ingredients (name, cas, odor, profile, category, $defCatClass, supplier) VALUES ('".trim(ucwords($data['0']))."', '".trim($data['1'])."', '".trim($data['2'])."', '".trim($data['3'])."', '".trim($data['4'])."', '".preg_replace("/[^0-9.]/", "", $data['5'])."', '".trim($data['6'])."')")){
+					$r = mysqli_query($conn, "INSERT INTO ingredients (name, cas, odor, profile, $defCatClass) VALUES ('".trim(ucwords($data['0']))."', '".trim($data['1'])."', '".trim($data['2'])."', '".trim($data['3'])."', '".preg_replace("/[^0-9.]/", "", $data['4'])."')");
 						$i++;
-						echo '<div class="alert alert-success alert-dismissible">'.$i.' Ingredients imported</div>';
-					}else{
-						echo '<div class="alert alert-danger alert-dismissible">Failed to import the ingredients list.</div>';
-					}
 				}
-			}		
+			}
+			if($r){
+				echo '<div class="alert alert-success alert-dismissible">'.$i.' Ingredients imported</div>';
+			}else{
+				echo '<div class="alert alert-danger alert-dismissible">Failed to import the ingredients list.'.mysqli_error($conn).'</div>';
+			}
 		}
 		fclose($file);  
 	
 	}  
-
 	return;
 }
 

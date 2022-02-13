@@ -19,60 +19,82 @@ if(preg_match('/(Mixture|Blend)/i', $cas) === 1){
 	return;
 }
 
-$api = 'https://pubchem.ncbi.nlm.nih.gov/rest/pug';
-$cids = explode("\n",trim(pv_file_get_contents($api.'/compound/name/'.$cas.'/cids/TXT')));
+$cids = explode("\n",trim(pv_file_get_contents($pubChemApi.'/pug/compound/name/'.$cas.'/cids/TXT')));
+$properties = 'MolecularFormula,MolecularWeight,XLogP,IUPACName,CanonicalSMILES,ExactMass';
 
-$image = 'data:image/png;base64,'.base64_encode(pv_file_get_contents($api.'/compound/cid/'.$cids['0'].'/'.$type.'?record_type='.$settings['pubchem_view'].'&image_size=large'));
-$data = json_decode(trim(pv_file_get_contents($api.'/compound/name/'.$cas.'/JSON')),true);
+$image = 'data:image/png;base64,'.base64_encode(pv_file_get_contents($pubChemApi.'/pug/compound/cid/'.$cids['0'].'/'.$type.'?record_type='.$settings['pubchem_view'].'&image_size=large'));
+$data = json_decode(trim(pv_file_get_contents($pubChemApi.'/pug/compound/name/'.$cas.'/property/'.$properties.'/JSON')),true);
 
-if($molecularWeight = $data['PC_Compounds']['0']['props']['17']['value']['fval']){
-	mysqli_query($conn, "UPDATE ingredients SET molecularWeight = '$molecularWeight' WHERE cas='$cas'");
-}
-if($logP = $data['PC_Compounds']['0']['props']['14']['value']['fval']){
-	mysqli_query($conn, "UPDATE ingredients SET logp = '$logP' WHERE cas='$cas'");
-}
-if($molecularFormula = $data['PC_Compounds']['0']['props']['18']['value']['sval']){
-	mysqli_query($conn, "UPDATE ingredients SET formula = '$molecularFormula' WHERE cas='$cas'");
-}
+$molecularWeight = $data['PropertyTable']['Properties']['0']['MolecularWeight'];
+$logP = $data['PropertyTable']['Properties']['0']['XLogP'];
+$molecularFormula = $data['PropertyTable']['Properties']['0']['MolecularFormula'];
+$InChI = $data['PropertyTable']['Properties']['0']['IUPACName'];
+$CanonicalSMILES = $data['PropertyTable']['Properties']['0']['CanonicalSMILES'];
+$ExactMass = $data['PropertyTable']['Properties']['0']['ExactMass'];
+
 if(empty($data)){
 	echo  '<div class="alert alert-info">Data not available</div>';
 	return;
 }
-
 ?>
 <script>
-$(document).ready(function(){    
-     $("#molecularWeight").val('<?=$molecularWeight?>');
-     $("#logP").val('<?=$logP?>');
-     $("#molecularFormula").val('<?=$molecularFormula?>');
+$(document).ready(function(){
+  
+$('#pubChemDataJ').on('click', '[id*=btnUpdatePub]', function () {
+	$.ajax({ 
+		url: 'update_data.php', 
+		type: 'POST',
+		data: {
+			pubChemData: 'update',
+			molecularWeight: '<?=$molecularWeight?>',
+			logP: '<?=$logP?>',
+			molecularFormula: '<?=$molecularFormula?>',
+			InChI: '<?=$InChI?>',
+			CanonicalSMILES: '<?=$CanonicalSMILES?>',
+			ExactMass: '<?=$ExactMass?>',
+			cas: '<?=$cas?>',
+			},
+		dataType: 'html',
+		success: function (data) {
+			$('#ingMsg').html(data);
+			$("#INCI").val('<?=$InChI?>');
+			reload_overview();
+		}
+	  });             
+});
+     
 });
 </script>
-<table width="100%" border="0">
-                  <tr>
-                    <td width="20%" rowspan="7" valign="top"><img src="<?php echo $image;?>"/></td>
-                    <td width="34%">Molecular Formula:</td>
-                    <td width="46%"><strong><?php echo $data['PC_Compounds']['0']['props']['16']['value']['sval'];?></strong></td>
-                  </tr>
-                  <tr>
-                    <td>Molecular Weight:</td>
-                    <td><strong><?php echo $data['PC_Compounds']['0']['props']['17']['value']['sval'];?></strong></td>
-                  </tr>
-                  <tr>
-                    <td>Canonical Smiles:</td>
-                    <td><strong><?php echo $data['PC_Compounds']['0']['props']['18']['value']['sval'];?></strong></td>
-                  </tr>
-                  <tr>
-                    <td>Mass:</td>
-                    <td><strong><?php echo $data['PC_Compounds']['0']['props']['15']['value']['sval'];?></strong></td>
-                  </tr>
-                  <tr>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <td colspan="2">&nbsp;</td>
-                  </tr>
-                  <tr>
-                   <td colspan="2">&nbsp;</td>
-            </tr>
+<table width="100%" border="0" id="pubChemDataJ">
+  <tr>
+    <td width="20%" rowspan="7" valign="top"><img src="<?php echo $image;?>"/></td>
+    <td width="34%">Molecular Formula:</td>
+    <td width="46%"><strong><?php echo $molecularFormula;?></strong></td>
+  </tr>
+  <tr>
+    <td>Molecular Weight:</td>
+    <td><strong><?php echo $molecularWeight;?></strong></td>
+  </tr>
+  <tr>
+    <td>Canonical Smiles:</td>
+    <td><strong><?php echo $CanonicalSMILES;?></strong></td>
+  </tr>
+  <tr>
+    <td>Mass:</td>
+    <td><strong><?php echo $ExactMass;?></strong></td>
+  </tr>
+  <tr>
+    <td>XLogP:</td>
+    <td><strong><?php echo $logP;?></strong></td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td colspan="2"><input type="submit" class="btn btn-info" name="btnUpdatePub" id="btnUpdatePub" value="Update data" /></td>
+  </tr>
+  <tr>
+   <td colspan="2">&nbsp;</td>
+</tr>
 </table>

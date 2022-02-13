@@ -290,6 +290,7 @@ tr.strikeout td:before {
 
 .charts_box {
     width: 100%;
+	display: flex;
 }
 
 
@@ -363,7 +364,8 @@ a:hover{
 }
 
 .img_ing {
-    max-height: 40px;
+    max-height: 50px;
+	padding: 10px 0px 0px 10px;
 }
 
 .img_ing_sel {
@@ -504,9 +506,9 @@ formula td, table.table th {
 	font-weight: bolder;
 }
 
-.listIngName-with-separator::after {
+.listIngName-with-separator {
     content: '';
-    display: block;
+    display: inline;
     height: 0;
     width: 8rem;
     margin-top: 0.25rem;
@@ -574,6 +576,15 @@ formula td, table.table th {
 }
 
 .sub-2-inci {
+    font-family: 'Gothic A1', sans-serif;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    font-size: 0.85rem;
+    color: #444444;
+    font-weight: 300;
+}
+
+.sub-2-einecs {
     font-family: 'Gothic A1', sans-serif;
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
@@ -678,4 +689,50 @@ table.fixedHeader-floating {
 
 .table-bordered {
     border: 1px solid #ddd !important;
+}
+
+.pv_menu_formulas {
+	padding: 10px 10px 10px 10px;
+	margin: 10px 10px 10px 10px;
+}
+
+.ing_alg {
+	display: block;	
+	color: #b7b41a;
+}
+
+.pv_gen_li {
+	color: #23527c;
+}
+
+.advanced_search_box {
+	text-align: right;
+	display: block;
+	font-weight: bold;
+}
+
+.pv_input_grp {
+	position: relative;
+	display: inline-table;
+	border-collapse: separate;
+	width: 20% !important;	
+}
+
+.pv_input_sm {
+	height: 34px !important;
+}
+
+.pv_vertical_middle {
+	vertical-align: middle !important;
+}
+
+.subHeaderCAS {
+	font-size: 1.2rem;
+	display: inline;
+	font-weight: bold;
+	color: #77716f !important
+}
+
+.pv_exclusions {
+	display: grid;
 }

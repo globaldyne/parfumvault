@@ -37,7 +37,8 @@ $(document).ready(function() {
 			loadingRecords: '&nbsp;',
 			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
 			emptyTable: "Incomplete formula. Please add ingredients.",
-			search: "Search in formula:"
+			search: "Search in formula:",
+			searchPlaceholder: "CAS, Ingredient, etc.."
 			},
     	ajax: {
     		url: 'core/full_formula_data.php?id=<?=$id?>'
@@ -52,7 +53,7 @@ $(document).ready(function() {
 				   { data : 'concentration', title: 'Concentration %'},
 				   { data : 'final_concentration', title: 'Final Concentration <?=$meta['finalType']?>%'},
 				   { data : 'cost', title: 'Cost (<?=$settings['currency']?>)'},
-				   { data : 'ingredient.inventory.stock', title: 'Inentory', className: 'text-center noexport', render: ingInv },
+				   { data : 'ingredient.inventory.stock', title: 'Inventory', className: 'text-center noexport', render: ingInv },
 				   { data : 'ingredient.desc', title: 'Properties', render: ingNotes},
    				   { data : null, title: 'Actions', className: 'text-center noexport', render: ingActions},		   
 				   
@@ -76,22 +77,29 @@ $(document).ready(function() {
 		displayLength: 100,
 		createdRow: function( row, data, dataIndex){
 			if( data['usage_regulator'] == "IFRA" && parseFloat(data['usage_limit']) < parseFloat(data['concentration'])){
-				$(row).find('td:eq(5)').addClass('alert-danger').append(' <i rel="tip" title="Max usage: ' + data['usage_limit'] +'%" class="pv_point_gen fas fa-info-circle"></i></div>');
+				$(row).find('td:eq(5)').addClass('alert-danger').append(' <i rel="tip" title="Max usage: ' + data['usage_limit'] +'% IFRA Regulated" class="pv_point_gen fas fa-info-circle"></i></div>');
 			}else if( data['usage_regulator'] == "PV" && parseFloat(data['usage_limit']) < parseFloat(data['concentration'])){
-				$(row).find('td:eq(5)').addClass('alert-info');
+				$(row).find('td:eq(5)').addClass('alert-info').append(' <i rel="tip" title="Reccomended usage: ' + data['usage_limit'] +'%" class="pv_point_gen fas fa-info-circle"></i></div>');
             }else{
 				$(row).find('td:eq(5)').addClass('alert-success');
 			}
 			
+			if(data.ingredient.classification == 4){
+				$(row).find('td:eq(0),td:eq(1),td:eq(5),td:eq(6)').addClass('alert-danger').append(' <i rel="tip" title="This material is prohibited" class="pv_point_gen fas fa-ban"></i></div>');
+            }
+			
 			if( data['usage_regulator'] == "IFRA" && parseFloat(data['usage_limit']) < parseFloat(data['final_concentration'])){
-				$(row).find('td:eq(6)').addClass('alert-danger');
+				$(row).find('td:eq(6)').addClass('alert-danger').append(' <i rel="tip" title="Max usage: ' + data['usage_limit'] +'% IFRA Regulated" class="pv_point_gen fas fa-info-circle"></i></div>');
 			}else if( data['usage_regulator'] == "PV" && parseFloat(data['usage_limit']) < parseFloat(data['final_concentration'])){
-				$(row).find('td:eq(6)').addClass('alert-info');
+				$(row).find('td:eq(6)').addClass('alert-info').append(' <i rel="tip" title="Reccomended usage: ' + data['usage_limit'] +'%" class="pv_point_gen fas fa-info-circle"></i></div>');
+				
 			}else{
 				$(row).find('td:eq(6)').addClass('alert-success');
 			}
+			
+			
        },
-	   "drawCallback": function ( settings ) {
+	   drawCallback: function ( settings ) {
             var api = this.api();
             var rows = api.rows( {page:'current'} ).nodes();
             var last = null;
@@ -104,7 +112,8 @@ $(document).ready(function() {
                     );
                     last = group;
                 }
-            } );
+            });
+			extrasShow();
 	   }
 });
 
@@ -112,11 +121,11 @@ new $.fn.dataTable.FixedHeader(formula);
 
 // Order by the grouping
 $('#formula tbody').on( 'click', 'tr.group', function () {
-    var currentOrder = table.order()[0];
+    var currentOrder = formula_table.order()[0];
     if ( currentOrder[0] === groupColumn && currentOrder[1] === 'asc' ) {
-         table.order( [ groupColumn, 'desc' ] ).draw();
+         formula_table.order( [ groupColumn, 'desc' ] ).draw();
     }else {
-         table.order( [ groupColumn, 'asc' ] ).draw();
+         formula_table.order( [ groupColumn, 'asc' ] ).draw();
     }
 });
 	
@@ -443,7 +452,7 @@ function reload_formula_data() {
 
 
 <script>
-$( document ).ajaxComplete(function() {
+function extrasShow() {
 	$('[rel=tip]').tooltip({
         "html": true,
         "delay": {"show": 100, "hide": 0},
@@ -454,7 +463,7 @@ $( document ).ajaxComplete(function() {
 		closeOnBgClick: false,
 		showCloseBtn: true,
 	});
-});
+};
   
 $('#formula').editable({
 	  container: 'body',
@@ -640,10 +649,10 @@ function ingInv(data, type, row, meta){
 function ingActions(data, type, row, meta){
 //Change ingredient
 $('#formula').editable({
-	selector: 'a.replaceIngredient',
+	selector: 'i.replaceIngredient',
 	pvnoresp: false,
 	highlight: false,
-	type: 'get',
+	type: 'GET',
 	emptytext: "",
 	emptyclass: "",
 	url: "pages/manageFormula.php?action=repIng&fname=<?=$meta['name']?>",
@@ -674,7 +683,7 @@ if(type === 'display'){
 	}else if(row.exclude_from_calculation == 1){
 	 	var ex = '&nbsp; <i class="pv_point_gen fas fa-eye" style="color: #337ab7;" rel="tip" id="exIng" title="Include '+ row.ingredient.name +'" data-name="'+ row.ingredient.name +'" data-status="0" data-id="'+ row.formula_ingredient_id +'"></i>';
 	}
-	data += ex + '&nbsp; <a href="#" class="fas fa-exchange-alt replaceIngredient" rel="tip" title="Replace '+ row.ingredient.name +'"  data-name="'+ row.ingredient.name +'" data-type="select" data-pk="'+ row.ingredient.name +'" data-title="Choose Ingredient to replace '+ row.ingredient.name +'"></a> &nbsp; <i rel="tip" title="Remove '+ row.ingredient.name +'" class="pv_point_gen fas fa-trash" style="color: #c9302c;" id="rmIng" data-name="'+ row.ingredient.name +'" data-id='+ row.formula_ingredient_id +'></i>';
+	data += ex + '&nbsp; <i class="pv_point_gen fas fa-exchange-alt replaceIngredient" style="color: #337ab7;" rel="tip" title="Replace '+ row.ingredient.name +'"  data-name="'+ row.ingredient.name +'" data-type="select" data-pk="'+ row.ingredient.name +'" data-title="Choose Ingredient to replace '+ row.ingredient.name +'"></i> &nbsp; <i rel="tip" title="Remove '+ row.ingredient.name +'" class="pv_point_gen fas fa-trash" style="color: #c9302c;" id="rmIng" data-name="'+ row.ingredient.name +'" data-id='+ row.formula_ingredient_id +'></i>';
 	<?php } ?>
 }
    return data;
@@ -684,7 +693,7 @@ if(type === 'display'){
 function manageQuantity(quantity) {
 	$.ajax({ 
     url: 'pages/manageFormula.php', 
-	type: 'get',
+	type: 'GET',
     data: {
 		do: quantity,
 		formula: "<?php echo $f_name; ?>",
@@ -708,7 +717,7 @@ function amountToMake() {
 	}else{
 		$.ajax({ 
 		url: 'pages/manageFormula.php', 
-		type: 'get',
+		type: 'GET',
 		cache: false,
 		data: {
 			fid: "<?php echo base64_encode($f_name); ?>",
@@ -778,7 +787,7 @@ if($("#ingName").val().trim() == '' ){
 function cloneMe() {	  
 $.ajax({ 
     url: 'pages/manageFormula.php', 
-	type: 'get',
+	type: 'GET',
     data: {
 		action: "clone",
 		formula: "<?=$meta['fid']?>",
@@ -798,7 +807,7 @@ $.ajax({
 function addTODO() {
 	$.ajax({ 
     url: 'pages/manageFormula.php', 
-	type: 'get',
+	type: 'GET',
     data: {
 		action: 'todo',
 		fid: "<?php echo base64_encode($f_name); ?>",
