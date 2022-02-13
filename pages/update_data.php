@@ -49,6 +49,7 @@ if($_GET['synonym'] == 'import' && $_GET['method'] == 'pubchem'){
 	$json = file_get_contents($u);
 	$json = json_decode($json);
 	$data = $json->InformationList->Information[0]->Synonym;
+	$cid = $json->InformationList->Information[0]->CID;
 	$source = 'PubChem';
 	if(empty($data)){
 		echo '<div class="alert alert-info alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>No data found!</div>';
@@ -65,7 +66,7 @@ if($_GET['synonym'] == 'import' && $_GET['method'] == 'pubchem'){
 			mysqli_query($conn, "UPDATE ingredients SET FEMA = '".preg_replace("/[^0-9]/", "", $fema['1'])."' WHERE cas = '$cas'");
 		}
 		if(!mysqli_num_rows(mysqli_query($conn, "SELECT synonym FROM synonyms WHERE synonym = '$d' AND ing = '$ing'"))){
-			$r = mysqli_query($conn, "INSERT INTO synonyms (synonym,source,ing) VALUES ('$d','$source','$ing')");		
+			$r = mysqli_query($conn, "INSERT INTO synonyms (ing,cid,synonym,source) VALUES ('$ing','$cid','$d','$source')");		
 		 	$i++;
 		}
 	}
