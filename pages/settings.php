@@ -407,7 +407,7 @@ list_users();
           </tr>
           <tr>
             <td height="29"><a href="#" rel="tip" data-placement="right" title="Enable or disable PV Online access.">Enabled:</a></td>
-            <td><input name="pv_online_state" type="checkbox" id="pv_online_state" value="1" <?php if($pv_online['enabled'] == '1'){ ?> <?php } ?>/></td>
+            <td><input name="pv_online_state" type="checkbox" id="pv_online_state" value="1" <?php if($pv_online['enabled'] == '1'){ ?> checked <?php } ?>/></td>
             <td>&nbsp;</td>
           </tr>
           <tr>

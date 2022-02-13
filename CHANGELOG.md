@@ -1,4 +1,29 @@
 # CHANGELOG
+### Version 4.0
+- Add Max Usage info in final product as well
+- Add Reccomended Usage info in final product as well
+- Add ingredient prohibition warning in formula
+- Fix ingredient classication not updating to probition or to specification
+- Make sure totals update when an ingredient is excluded from the formula
+- Fix a bug causing inventory fail when dealing with liters
+- Major logic update in ingredients page
+- History page improvements
+- Assign a formula to a customer
+- Remove auth to get ingredient data from PV Online
+- Fix pop-up and tooltip effect when navigating accross pages
+- EINECS support added
+- Layout change in ingredients view to include EINECS
+- Fix molecular weight update in ingredients to be updated from pubchem
+- Fix search in ingredients not showing results if contains white spaces
+- Import ingredient compositions via CSV
+- Fix ingredient csv bug preventing importing ingredients
+- Added synonyms list for ingredients
+- Import synonyms automatically from pubChem
+- Update FEMA when importing data from pubChem
+- Update local data from pubChem
+- Rename INCI to IUPAC
+- Molecular formula check against IFRA is now removed
+
 ### Version 3.9
 - Fix a bug showing empty inventory column when exporting a formula
 - Improve formula is made feature

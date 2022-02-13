@@ -77,8 +77,8 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 			$r['name'] = (string)$r['name'];
 			$r['ingredient'] = (string)$r['ingredient'];
 			$r['dilutant'] = (string)$r['dilutant'];
-			$r['concentration'] = (int)$r['concentration'];
-			$r['quantity'] = (int)$r['quantity'];
+			$r['concentration'] = (float)$r['concentration']?:100;
+			$r['quantity'] = (float)$r['quantity']?:0;
 
 			$rows[$_REQUEST['do']][] = $r;
 		}

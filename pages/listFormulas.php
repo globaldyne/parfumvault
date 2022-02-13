@@ -14,28 +14,29 @@ $cats_q = mysqli_query($conn, "SELECT id,name,description,type FROM IFRACategori
 while($cats_res = mysqli_fetch_array($cats_q)){
     $cats[] = $cats_res;
 }
-?>
-            <table width="100%" border="0">
-              <tr>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-              </tr>
-              <tr>
-                <td width="98%"><div class="text-right">
-                  <div class="btn-group">
-                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
-                    <div class="dropdown-menu dropdown-menu-right">
-	                  <a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula">Add new formula</a>
-                      <a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula_csv">Import from CSV</a>
-                    </div>
-                    </div>
-                </div></td>
-                <td width="2%">&nbsp;</td>
-              </tr>
-              <tr>
-                <td colspan="2">
-            <div class="card-body">
-              <div class="table-responsive">
+$cust = mysqli_query($conn, "SELECT id,name FROM customers ORDER BY id ASC");
+while($customers = mysqli_fetch_array($cust)){
+    $customer[] = $customers;
+}
+?> 
+<div class="card-header py-3">
+  <h2 class="m-0 font-weight-bold text-primary"><a href="javascript:list_formulas()">Formulas</a></h2>
+  <div id="inMsg"></div>
+</div>
+            
+<div class="pv_menu_formulas">
+    <div class="text-right">
+        <div class="btn-group">
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
+            <div class="dropdown-menu dropdown-menu-right">
+              <a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula">Add new formula</a>
+              <a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula_csv">Import from CSV</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <?php
 if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients")))){
 	echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> no ingredients yet, click <a href="?do=ingredients">here</a> to add.</div>';
@@ -44,65 +45,66 @@ if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients")))){
 }else{
 ?>
 <div id="listFormulas">
-  <ul>
-     <li class="tabs">
-     	<a href="#tab-all">All formulas</a>
-     </li>
-     <?php foreach ($fcat as $cat) { ?>
-     <li class="tabs" data-source="core/list_formula_data.php?filter=1&<?=$cat['type']?>=<?=$cat['cname']?>" data-table="<?=$cat['cname']?>-table">
-     	<a href="#tab-<?=$cat['cname']?>"><?=$cat['name']?></a>
-     <?php } ?>       
-   </ul>
-        <div class="tab-content">
-            <div class="tab-pane" id="tab-all">
-                <table id="all-table" class="table table-striped table-bordered" width="100%" cellspacing="0">
-                    <thead>
-                        <tr>
-                            <th>Formula Name</th>
-                            <th>Product Name</th>
-                            <th>Ingredients</th>
-                            <th>Class</th>
-                            <th>Created</th>
-                            <th>Made</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                </table>
-            </div>
-            <?php foreach ($fcat as $cat) {?>
-            <div class="tab-pane" id="tab-<?=$cat['cname']?>">
-                <table id="<?=$cat['cname']?>-table" class="table table-striped table-bordered" width="100%" cellspacing="0">
-                    <thead>
-                        <tr>
-                            <th>Formula Name</th>
-                            <th>Product Name</th>
-                            <th>Ingredients</th>
-                            <th>Class</th>
-                            <th>Created</th>
-                            <th>Made</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                </table>
-            </div>
-        <?php } ?>
-        </div>
+<ul>
+ <li class="tabs">
+    <a href="#tab-all">All formulas</a>
+ </li>
+ <?php foreach ($fcat as $cat) { ?>
+ <li class="tabs" data-source="core/list_formula_data.php?filter=1&<?=$cat['type']?>=<?=$cat['cname']?>" data-table="<?=$cat['cname']?>-table">
+    <a href="#tab-<?=$cat['cname']?>"><?=$cat['name']?></a>
+ <?php } ?>       
+</ul>
+<div class="tab-content table-responsive">
+    <div class="tab-pane" id="tab-all">
+        <table id="all-table" class="table table-striped table-bordered" width="100%" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Formula Name</th>
+                    <th>Product Name</th>
+                    <th>Ingredients</th>
+                    <th>Class</th>
+                    <th>Created</th>
+                    <th>Made</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <?php foreach ($fcat as $cat) {?>
+    <div class="tab-pane" id="tab-<?=$cat['cname']?>">
+        <table id="<?=$cat['cname']?>-table" class="table table-striped table-bordered" width="100%" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Formula Name</th>
+                    <th>Product Name</th>
+                    <th>Ingredients</th>
+                    <th>Class</th>
+                    <th>Created</th>
+                    <th>Made</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <?php } ?>
+  </div>
 </div>
 
 <?php } ?>
 <script type="text/javascript" language="javascript" >
-$( document ).ajaxComplete(function() {
+function extrasShow() {
 	$('[rel=tip]').tooltip({
-        "html": true,
-        "delay": {"show": 100, "hide": 0},
-     });
+		"html": true,
+		"delay": {"show": 100, "hide": 0},
+	});
 	$('.popup-link').magnificPopup({
 		type: 'iframe',
 		closeOnContentClick: false,
 		closeOnBgClick: false,
 		showCloseBtn: true,
 	});
-});
+};
+
 $(".tabs").click(function() {
      var src = $(this).data("source");
      var tableId = $(this).data("table");
@@ -110,7 +112,11 @@ $(".tabs").click(function() {
 });
 function initTable(tableId, src) {
     var table = $("#" + tableId).DataTable({
-           ajax: {url: src},
+           ajax: {
+			   url: src,
+		   	   type: 'POST',
+			   dataType: 'json',
+			   },
 			columns: [
 			   { data : 'name', title: 'Formula Name', render: fName },
 			   { data : 'product_name', title: 'Product Name', render: pName},
@@ -120,10 +126,14 @@ function initTable(tableId, src) {
 			   { data : 'created', title: 'Created'},
 			   { data : null, title: 'Actions', render: fActions},				   
 			  ],
+			 processing: true,
+	         serverSide: true,
+			 searching: true,
 			 language: {
 				loadingRecords: '&nbsp;',
 				processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Blending...</span>',
 				emptyTable: "No formulas added yet.",
+				searchPlaceholder: 'Name, or product name..',
 				search: "Search for formula:"
 			},
            order: [0,'asc'],
@@ -135,13 +145,16 @@ function initTable(tableId, src) {
         bFilter: true,
         paging:  true,
 		info:   true,
-		lengthMenu: [[20, 35, 60, -1], [20, 35, 60, "All"]]
-     });
+		lengthMenu: [[20, 35, 60, -1], [20, 35, 60, "All"]],
+		drawCallback: function( settings ) {
+			extrasShow();
+     	},
+	});
 }
+
 initTable("all-table", "core/list_formula_data.php");
 
 $("#listFormulas").tabs();
-
 
 function fName(data, type, row, meta){
 	if(type === 'display'){
@@ -174,7 +187,7 @@ function fMade(data, type, row, meta){
 
 function fActions(data, type, row, meta){
 	if(type === 'display'){
-		data = '<a href="pages/getFormMeta.php?id=' + row.id + '" rel="tip" title="Show details of '+ row.name +'" class="fas fa-comment-dots popup-link"></a> &nbsp; <a href="#" id="addTODO" class="fas fa-list" rel="tip" title="Add '+ row.name +' to the make list" data-id='+ row.fid +'></a> &nbsp; <a href="#" id="cloneMe" class="fas fa-copy" rel="tip" title="Clone '+ row.name +'" data-id='+ row.fid +'></a> &nbsp; <a href="#" id="deleteMe" class="fas fa-trash" rel="tip" title="Delete '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"></a>';
+		data = '<a href="pages/getFormMeta.php?id=' + row.id + '" rel="tip" title="Show details of '+ row.name +'" class="fas fa-comment-dots popup-link"></a> &nbsp; <a href="#" id="addTODO" class="fas fa-list" rel="tip" title="Add '+ row.name +' to the make list" data-id='+ row.fid +'></a> &nbsp; <a href="#" id="cloneMe" class="fas fa-copy" rel="tip" title="Clone '+ row.name +'" data-id='+ row.fid +'></a> &nbsp; <i id="deleteMe" class="pv_point_gen fas fa-trash"  style="color: #c9302c;" rel="tip" title="Delete '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"></i>';
 	}
     return data;
 }
@@ -261,7 +274,7 @@ $('table.table').on('click', '[id*=addTODO]', function () {
   });
 });
 
-function add_formula() {
+$('#add_formula').on('click', '[id*=btnAdd]', function () {
 	$.ajax({ 
     url: 'pages/manageFormula.php', 
 	type: 'POST',
@@ -272,15 +285,16 @@ function add_formula() {
 		catClass: $("#catClass").val(),
 		finalType: $("#finalType").val(),
 		notes: $("#notes").val(),
+		customer: $("#customer").val(),
 		},
 	dataType: 'html',
     success: function (data) {
 	  	$('#addFormulaMsg').html(data);
     }
   });
-};
+});
 
-function add_formula_csv() {
+$('#add_formula_csv').on('click', '[id*=btnImport]', function () {
     $("#CSVImportMsg").html('<div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
 	$("#btnImport").prop("disabled", true);
 		
@@ -290,35 +304,33 @@ function add_formula_csv() {
     var profile = $('#CSVProfile').val();
 	var addMissIng = $('#addMissIng').is(':checked');
 
-       if(files.length > 0 ){
-        fd.append('CSVFile',files[0]);
-        $.ajax({
-           url: 'pages/upload.php?type=frmCSVImport&name=' + name + '&profile=' + profile + '&addMissIng=' + addMissIng,
-           type: 'post',
-           data: fd,
-           contentType: false,
-           processData: false,
-		         cache: false,
-           success: function(response){
-             if(response != 0){
-               $("#CSVImportMsg").html(response);
-				$("#btnImport").prop("disabled", false);
-              }else{
-                $("#CSVImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> File upload failed!</div>');
-				$("#btnImport").prop("disabled", false);
-              }
-            },
-         });
-  }else{
-	$("#CSVImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a file to upload!</div>');
-	$("#btnImport").prop("disabled", false);
-  }
-};
+	if(files.length > 0 ){
+	fd.append('CSVFile',files[0]);
+	$.ajax({
+	   url: 'pages/upload.php?type=frmCSVImport&name=' + name + '&profile=' + profile + '&addMissIng=' + addMissIng,
+	   type: 'post',
+	   data: fd,
+	   contentType: false,
+	   processData: false,
+			 cache: false,
+	   success: function(response){
+		 if(response != 0){
+		   $("#CSVImportMsg").html(response);
+			$("#btnImport").prop("disabled", false);
+		  }else{
+			$("#CSVImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> File upload failed!</div>');
+			$("#btnImport").prop("disabled", false);
+		  }
+		},
+	 });
+	}else{
+		$("#CSVImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a file to upload!</div>');
+		$("#btnImport").prop("disabled", false);
+	}
+});
 
 function reload_formulas_data() {
-	
     $('#all-table').DataTable().ajax.reload(null, true);
-	
 };
 
 </script>
@@ -328,15 +340,14 @@ function reload_formulas_data() {
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="add_formula">Add a new formula</h5>
+        <h5 class="modal-title">Add a new formula</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
       <div id="addFormulaMsg"></div>
-  	  <form action="javascript:add_formula()" id="form1">
-      <table width="100%" border="0">  
+        <table width="100%" border="0">  
           <tr>
             <td width="11%">Name:</td>
             <td width="89%"><input name="name" id="name" type="text" class="form-control" /></td>
@@ -354,33 +365,41 @@ function reload_formulas_data() {
            <tr>
              <td>Purpose: </td>
              <td><select name="catClass" id="catClass" class="form-control ellipsis">
-			<?php foreach ($cats as $IFRACategories) {?>
-				<option value="cat<?php echo $IFRACategories['name'];?>" <?php echo ($settings['defCatClass']=='cat'.$IFRACategories['name'])?"selected=\"selected\"":""; ?>><?php echo 'Cat'.$IFRACategories['name'].' - '.$IFRACategories['description'];?></option>
-		 	<?php }	?>
+            <?php foreach ($cats as $IFRACategories) {?>
+                <option value="cat<?php echo $IFRACategories['name'];?>" <?php echo ($settings['defCatClass']=='cat'.$IFRACategories['name'])?"selected=\"selected\"":""; ?>><?php echo 'Cat'.$IFRACategories['name'].' - '.$IFRACategories['description'];?></option>
+            <?php }	?>
             </select></td>
            </tr>
             <tr>
                 <td>Final type:</td>
                 <td>
                 <select name="finalType" id="finalType" class="form-control ellipsis">  
-                        <option value="100">Concentrated (100%)</option>
-                        <option value="<?=$settings['Parfum']?>" <?php if($settings['Parfum'] == $meta['finalType']){ echo 'selected';}?>>Parfum (<?=$settings['Parfum']?>%)</option>
-                        <option value="<?=$settings['EDP']?>" <?php if($settings['Parfum'] == $meta['finalType']){ echo 'selected';}?>>EDP (<?=$settings['EDP']?>%)</option>
-                        <option value="<?=$settings['EDT']?>" <?php if($settings['Parfum'] == $meta['finalType']){ echo 'selected';}?>>EDT (<?=$settings['EDT']?>%)</option>
-                        <option value="<?=$settings['EDC']?>" <?php if($settings['Parfum'] == $meta['finalType']){ echo 'selected';}?>>EDC (<?=$settings['EDC']?>%)</option>		
+                    <option value="100">Concentrated (100%)</option>
+                    <option value="<?=$settings['Parfum']?>" <?php if($settings['Parfum'] == $meta['finalType']){ echo 'selected';}?>>Parfum (<?=$settings['Parfum']?>%)</option>
+                    <option value="<?=$settings['EDP']?>" <?php if($settings['Parfum'] == $meta['finalType']){ echo 'selected';}?>>EDP (<?=$settings['EDP']?>%)</option>
+                    <option value="<?=$settings['EDT']?>" <?php if($settings['Parfum'] == $meta['finalType']){ echo 'selected';}?>>EDT (<?=$settings['EDT']?>%)</option>
+                    <option value="<?=$settings['EDC']?>" <?php if($settings['Parfum'] == $meta['finalType']){ echo 'selected';}?>>EDC (<?=$settings['EDC']?>%)</option>		
                 </select>
                 </td>
-              </tr>     
-        <tr>
-           	<td valign="top">Notes:</td>
+          </tr>     
+          <tr>
+            <td valign="top">Customer:</td>
+              <td><select name="customer" id="customer" class="form-control ellipsis">
+                <option value="0">Internal use</option>
+                <?php foreach ($customer as $c) {?>
+                <option value="<?=$c['id'];?>"><?=$c['name']?></option>
+                <?php }	?>
+              </select></td>
+          </tr>
+          <tr>
+            <td valign="top">Notes:</td>
             <td><textarea name="notes" id="notes" cols="45" rows="5" class="form-control"></textarea></td>
-           </tr>  
-      </table>  
+          </tr>  
+        </table>  
 	  <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
         <input type="submit" name="button" class="btn btn-primary" id="btnAdd" value="Add">
       </div>
-     </form>
     </div>
   </div>
 </div>
@@ -391,57 +410,55 @@ function reload_formulas_data() {
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="add_formula_csv">Import formula from CSV</h5>
+        <h5 class="modal-title">Import formula from CSV</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
       <div id="CSVImportMsg"></div>
-	<form method="post" action="javascript:add_formula_csv()" enctype="multipart/form-data" id="csvform">
-               <table width="100%" border="0">
-                              <tr>
-                                <td>Name:</td>
-                                <td><input type="text" name="CSVname" id="CSVname" class="form-control"/></td>
-                              </tr>
-                              <tr>
-                                <td>Profile:</td>
-                                <td>
-                                <select name="CSVProfile" id="CSVProfile" class="form-control">
-                                 <?php foreach ($fcat as $cat) { if($cat['type'] == 'profile'){?>		
-                                    <option value="<?=$cat['cname']?>"><?=$cat['name']?></option>
-            					 <?php } }?>
-                                 </select>
-                                </td>
-                              </tr>
-                              <tr>
-                                <td width="22%">Choose file:</td>
-                                <td width="78%">
-                                  <input type="file" name="CSVFile" id="CSVFile" class="form-control" />
-                                </td>
-                              </tr>
-                              <tr>
-                                <td>Add missing ingredients:</td>
-                                <td><input name="addMissIng" type="checkbox" id="addMissIng" /></td>
-                              </tr>
-                              <tr>
-                                <td>&nbsp;</td>
-                                <td>&nbsp;</td>
-                              </tr>
-                              <tr>
-                                <td colspan="2"><p>CSV format: <strong>ingredient,concentration,dilutant,quantity</strong></p>
-                                <p>Example: <em><strong>Ambroxan,10,TEC,0.15</strong></em></p></td>
-                              </tr>
-                              <tr>
-                                <td>&nbsp;</td>
-                                <td>&nbsp;</td>
-                              </tr>
-                 </table>
+        <table width="100%" border="0">
+          <tr>
+            <td>Name:</td>
+            <td><input type="text" name="CSVname" id="CSVname" class="form-control"/></td>
+          </tr>
+          <tr>
+            <td>Profile:</td>
+            <td>
+            <select name="CSVProfile" id="CSVProfile" class="form-control">
+             <?php foreach ($fcat as $cat) { if($cat['type'] == 'profile'){?>		
+                <option value="<?=$cat['cname']?>"><?=$cat['name']?></option>
+             <?php } }?>
+             </select>
+            </td>
+          </tr>
+          <tr>
+            <td width="22%">Choose file:</td>
+            <td width="78%">
+              <input type="file" name="CSVFile" id="CSVFile" class="form-control" />
+            </td>
+          </tr>
+          <tr>
+            <td>Add missing ingredients:</td>
+            <td><input name="addMissIng" type="checkbox" id="addMissIng" /></td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td colspan="2"><p>CSV format: <strong>ingredient,concentration,dilutant,quantity</strong></p>
+            <p>Example: <em><strong>Ambroxan,10,TEC,0.15</strong></em></p></td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+        </table>
 	  <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
         <input type="submit" name="btnImport" class="btn btn-primary" id="btnImport" value="Import">
       </div>
-     </form>
     </div>
   </div>
 </div>

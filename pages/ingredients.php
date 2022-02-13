@@ -24,37 +24,6 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
             <div class="card-header py-3">
               <h2 class="m-0 font-weight-bold text-primary"><a href="javascript:list_ingredients()">Ingredients</a></h2>
             </div>
-            <div class="col-sm-12 p-3 text-right">
-			     <label>
-                <div>
-                        <div class="input-group">	
-                          <input type="text" id="ing_search" class="form-control input-sm" placeholder="Search..." name="ing_search">
-						    <div class="input-group-btn">
-                                <button id="local" class="btn btn-search btn-primary">
-                                    <span class="fas fa-database"></span>
-                                    <span class="label-icon"><a class="btn-search" href="javascript:pvSearch()">Local DB</a></span>
-                                </button>
-                                <label class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                                    <span class="caret"></span>
-                                </label>
-                                <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                                    <?php foreach (loadModules('suppliers') as $search){ ?>
-                                    <li>
-                                        <a href="javascript:pvSearch()" class="supplier" id="<?=$search['fileName']?>">
-                                            <span class="<?=$search['icon']?>"></span>
-                                            <span class="label-icon"><?=$search['name']?></span>
-                                        </a>
-                                    </li>
-                                    <?php } ?>
-                                </ul>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <hr />
-                   <span><a href="#" data-toggle="modal" data-target="#adv_search">Advanced Search</a></span>
-		         </label>
-            </div>
             <div class="card-body">
               <div class="table-responsive">
                  <div id="list_ingredients">
@@ -71,7 +40,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
         </div>
       </div>
     </div>
-    
+
 <!--ADV SEARCH-->
 <div class="modal fade" id="adv_search" tabindex="-1" role="dialog" aria-labelledby="adv_search" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
@@ -93,6 +62,10 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
        		<tr>
        		  <td valign="top">CAS:</td>
        		  <td colspan="3"><input type="text" id="ing_cas" class="form-control input-sm" name="ing_cas" placeholder="Any" /></td>
+   		  </tr>
+       		<tr>
+       		  <td valign="top">Synonym:</td>
+       		  <td colspan="3"><input type="text" id="ing_synonym" class="form-control input-sm" name="ing_synonym" placeholder="Any" /></td>
    		  </tr>
        		<tr>
        		  <td valign="top">Odor:</td>
@@ -168,7 +141,6 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
     </div>
   </div>
 </div>  
-<?php if($pv_online['email'] && $pv_online['password'] && $pv_online['enabled'] == '1'){?>
 <!--PV ONLINE IMPORT-->
 <div class="modal fade" id="pv_online_import" tabindex="-1" role="dialog" aria-labelledby="pv_online_import" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -185,7 +157,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
       <strong>WARNING:</strong><br />
       you are about to import data from PV Online, please bear in mind, PV Online is a community driven database therefore may contain unvalidated or incorrect data. <br />
       If your local database contains already an ingredient with the same name, the ingredient data will not be imported. <p></p>
-      Ingredients online: <strong><?php echo pvOnlineStats($pvOnlineAPI, $pv_online['email'], $pv_online['password'], 'ingredients');?></strong>
+      Ingredients online: <strong><?php echo pvOnlineStats($pvOnlineAPI, 'ingredients');?></strong>
 </div>
 	  <div class="modal-footer_2">
 	  <?php require('privacy_note.php');?>
@@ -198,7 +170,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
     </div>
   </div>
 </div>
-
+<?php if($pv_online['email'] && $pv_online['password'] && $pv_online['enabled'] == '1'){?>
 <!--PV ONLINE UPLOAD-->
 <div class="modal fade" id="pv_online_upload" tabindex="-1" role="dialog" aria-labelledby="pv_online_upload" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -218,7 +190,15 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
       Ingredients in your database: <strong><?php echo countElement("ingredients",$conn);?></strong>
 </div>
       <div class="dropdown-divider"></div>
-      <div class="modal-body">
+      <div class="modal-body pv_exclusions">
+       <label>
+         <input name="excludeCompositions" type="checkbox" id="excludeCompositions" value="1" />
+        Exclude compositions
+      </label>
+      <label>
+      <input name="excludeSynonyms" type="checkbox" id="excludeSynonyms" value="1" />
+        Exclude synonyms
+      </label>
       <label>
          <input name="excludeNotes" type="checkbox" id="excludeNotes" value="1" />
         Exclude notes
@@ -255,6 +235,7 @@ function adv_search() {
     var odor = $('#ing_odor').val();
     var profile = $('#ing_profile').val();
     var cat = $('#ing_category').val();
+    var synonym = $('#ing_synonym').val();
 
 	$.ajax({ 
 		url: 'pages/listIngredients.php',
@@ -265,7 +246,8 @@ function adv_search() {
 			"cas": cas,
 			"odor": odor,
 			"profile": profile,
-			"cat": cat
+			"cat": cat,
+			"synonym": synonym
 		},
 		dataType: 'html',
 			success: function (data) {
@@ -274,14 +256,13 @@ function adv_search() {
 	});
 };
 
-<?php if($pv_online['email'] && $pv_online['password'] && $pv_online['enabled'] == '1'){?>
 
 function pv_online_import(items) {
 	$('#btnImport').attr('disabled', true);
 	$('#pvImportMsg').html('<div class="alert alert-info">Please wait...</div>');
-	$.ajax({ 
+	$.ajax({
 		url: 'pages/pvonline.php', 
-		type: 'get',
+		type: 'GET',
 		data: {
 			action: "import",
 			items: items
@@ -294,16 +275,20 @@ function pv_online_import(items) {
 	  });
 };
 
+<?php if($pv_online['email'] && $pv_online['password'] && $pv_online['enabled'] == '1'){?>
+
 function pv_online_upload(items) {
 	$('#btnUpload').attr('disabled', true);
 	$('#pvUploadMsg').html('<div class="alert alert-info">Please wait...</div>');
 	$.ajax({
 		url: 'pages/pvonline.php', 
-		type: 'get',
+		type: 'GET',
 		data: {
 			action: "upload",
 			items: items,
-			excludeNotes: $("#excludeNotes").is(':checked')
+			excludeNotes: $("#excludeNotes").is(':checked'),
+			excludeSynonyms: $("#excludeSynonyms").is(':checked'),
+			excludeCompositions: $("#excludeCompositions").is(':checked')
 			},
 		dataType: 'html',
 		success: function (data) {
@@ -318,7 +303,7 @@ function delete_ingredient(id){
 	
 	$.ajax({
 		url: 'pages/update_data.php', 
-		type: 'get',
+		type: 'GET',
 		data: {
 			ingredient: "delete",
 			ing_id: id,
@@ -343,7 +328,7 @@ function importCSV(){
 
         $.ajax({
            url: 'pages/upload.php?type=ingCSVImport',
-           type: 'post',
+           type: 'POST',
            data: fd,
            contentType: false,
            processData: false,
@@ -381,7 +366,7 @@ function importING(name) {
 function setView(view) {
 	$.ajax({ 
     url: 'pages/update_settings.php', 
-	type: 'get',
+	type: 'GET',
     data: {
 		ingView: view,
 		},
@@ -391,6 +376,5 @@ function setView(view) {
     }
   });
 };
-
 
 </script>

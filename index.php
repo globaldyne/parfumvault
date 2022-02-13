@@ -11,7 +11,6 @@ require_once(__ROOT__.'/func/calcCosts.php');
 require_once(__ROOT__.'/func/calcPerc.php');
 require_once(__ROOT__.'/func/checkDupes.php');
 require_once(__ROOT__.'/func/checkIng.php');
-require_once(__ROOT__.'/func/checkAllergen.php');
 require_once(__ROOT__.'/func/getIngUsage.php');
 require_once(__ROOT__.'/func/checkVer.php');
 require_once(__ROOT__.'/func/getIFRAtypes.php');
@@ -29,7 +28,6 @@ require_once(__ROOT__.'/func/countPending.php');
 require_once(__ROOT__.'/func/countCart.php');
 require_once(__ROOT__.'/func/pvOnline.php');
 require_once(__ROOT__.'/func/getIngSupplier.php');
-require_once(__ROOT__.'/func/loadModules.php');
 require(__ROOT__.'/inc/settings.php');
 
 if($pv_meta['app_ver'] < trim(file_get_contents(__ROOT__.'/VERSION.md'))){
@@ -127,27 +125,27 @@ $(document).ready(function() {
 });
 
 function updateDB() {
-	$.ajax({ 
-		url: 'pages/operations.php', 
-		type: 'GET',
-		data: {
-			do: "db_update"
-			},
-		dataType: 'html',
-		success: function (data) {
-		  $('#msg').html(data);
-		}
-	  });
+$.ajax({ 
+	url: 'pages/operations.php', 
+	type: 'GET',
+	data: {
+		do: "db_update"
+		},
+	dataType: 'html',
+	success: function (data) {
+	  $('#msg').html(data);
+	}
+  });
 };
 	
 function list_formulas(){
 	$.ajax({ 
 		url: 'pages/listFormulas.php', 
 		dataType: 'html',
-			success: function (data) {
-				$('#list_formulas').html(data);
-			}
-		});
+		success: function (data) {
+			$('#list_formulas').html(data);
+		}
+	});
 };
 	
 function list_ingredients(page,limit,filter){
@@ -311,10 +309,7 @@ function list_users(){
         <div class="container-fluid">
           <div>
           <div class="card shadow mb-4">
-            <div class="card-header py-3">
-              <h2 class="m-0 font-weight-bold text-primary"><a href="javascript:list_formulas()">Formulas</a></h2>
-              <div id="inMsg"></div>
-            </div>
+           
             <div id="list_formulas">
             	<div class="loader-center">
                 	<div class="loader"></div>

@@ -72,7 +72,6 @@ while($pictograms_res = mysqli_fetch_array($pictograms)){
 			width: 500px;
 			vertical-align: middle;
 		}
-
 	</style>
 	<link href="../css/sb-admin-2.css" rel="stylesheet">
 	<link href="../css/bootstrap-select.min.css" rel="stylesheet">
@@ -84,7 +83,7 @@ while($pictograms_res = mysqli_fetch_array($pictograms)){
 	<style>
 		.container {
 			max-width: 100%;
-			width: 1400px;
+			width: 1800px;
 			height: 1300px;
 		}
 		.dropdown-menu > li > a {
@@ -194,6 +193,19 @@ function reload_data() {
 		},
 	});
 	
+	$.ajax({ 
+		url: 'synonyms.php', 
+		type: 'GET',
+		data: {
+			name: "<?=base64_encode($ingID)?>",
+			cas: "<?=$ing['cas']?:base64_encode($ingID)?>"
+		},
+		dataType: 'html',
+		success: function (data) {
+			$('#fetch_synonyms').html(data);
+		},
+	});
+		
 	<?php if(isset($ing['cas']) && $settings['pubChem'] == '1'){ ?>
 
 		$.ajax({ 
@@ -251,6 +263,7 @@ function reload_data() {
 			<li><a href="#supply" role="tab" data-toggle="tab"><i class="fa fa-shopping-cart"></i> Supply</a></li>
 			<li><a href="#tech_data" role="tab" data-toggle="tab"><i class="fa fa-cog"></i> Technical Data</a></li>
 			<li><a href="#documents" role="tab" data-toggle="tab"><i class="fa fa-file-alt"></i> Documents</a></li>
+			<li><a href="#synonyms" role="tab" data-toggle="tab"><i class="fa fa-bookmark"></i> Synonyms</a></li>
 			<li><a href="#note_impact" role="tab" data-toggle="tab"><i class="fa fa-magic"></i> Note Impact</a></li>
 			<li><a href="#tech_composition" role="tab" data-toggle="tab"><i class="fa fa-th-list"></i> Composition</a></li>
 			<li><a href="#safety_info" role="tab" data-toggle="tab"><i class="fa fa-biohazard"></i> Safety</a></li>
@@ -276,13 +289,17 @@ function reload_data() {
 					</tr>
 				<?php } ?>
 				<tr>
-					<td>INCI:</td>
+					<td>IUPAC:</td>
 					<td colspan="5"><input name="INCI" type="text" class="form-control" id="INCI" value="<?php echo $ing['INCI']; ?>" /></td>
 				</tr>
 				<tr>
 					<td width="20%"><a href="#" rel="tipsy" title="If your material contains multiple CAS, then use Mixture or Blend instead.">CAS #:</a></td>
 					<td colspan="5"><input name="cas" type="text" class="form-control" id="cas" value="<?php echo $ing['cas']; ?>"></td>
 				</tr>
+				<tr>
+				  <td height="31">EINECS:</td>
+				  <td colspan="5"><input name="einecs" type="text" class="form-control" id="einecs" value="<?php echo $ing['einecs']; ?>" /></td>
+			  </tr>
 				<tr>
 					<td height="31">REACH #:</td>
 					<td colspan="5"><input name="reach" type="text" class="form-control" id="reach" value="<?php echo $ing['reach']; ?>" /></td>
@@ -407,8 +424,8 @@ function reload_data() {
 						<select name="usage_type" id="usage_type" class="form-control">
 							<option value="1" <?php if($ing['usage_type']=="1") echo 'selected="selected"'; ?> >Recommendation</option>
 							<option value="2" <?php if($ing['usage_type']=="2") echo 'selected="selected"'; ?> >Restriction</option>
-							<option value="2" <?php if($ing['usage_type']=="3") echo 'selected="selected"'; ?> >Specification</option>
-							<option value="2" <?php if($ing['usage_type']=="4") echo 'selected="selected"'; ?> >Prohibition</option>
+							<option value="3" <?php if($ing['usage_type']=="3") echo 'selected="selected"'; ?> >Specification</option>
+							<option value="4" <?php if($ing['usage_type']=="4") echo 'selected="selected"'; ?> >Prohibition</option>
 						</select>
 					<?php } ?>
 				</td>
@@ -449,6 +466,11 @@ function reload_data() {
 	<div id="fetch_documents"><div class="loader"></div></div>
 </div>
 
+<div class="tab-pane fade" id="synonyms">
+	<div id="msg_syn"></div>
+	<div id="fetch_synonyms"><div class="loader"></div></div>
+</div>
+
 <div class="tab-pane fade" id="tech_data">
 	<h3>Techical Data</h3>
 	<hr>
@@ -468,13 +490,7 @@ function reload_data() {
 		<tr>
 			<td>Molecular Formula:</td>
 			<td colspan="3">
-				<?php
-				if($chFormula = searchIFRA($ing['cas'],$ing['name'],'formula',$conn,$defCatClass)){
-					echo $chFormula;
-				}else{
-					?>
-					<input name="formula" type="text" class="form-control" id="molecularFormula" value="<?php echo $ing['formula']; ?>">
-				<?php } ?>
+            <input name="formula" type="text" class="form-control" id="molecularFormula" value="<?php echo $ing['formula']; ?>">
 			</td>
 		</tr>
 		<tr>
@@ -732,6 +748,7 @@ $(document).ready(function() {
 				name: $("#name").val(),
 				INCI: $("#INCI").val(),
 				cas: $("#cas").val(),
+				einecs: $("#einecs").val(),
 				reach: $("#reach").val(),
 				fema: $("#fema").val(),
 				isAllergen: $("#isAllergen").is(':checked'),

@@ -8,6 +8,123 @@ require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/sanChar.php');
 require_once(__ROOT__.'/func/priceScrape.php');
 
+
+
+//IMPORT SYNONYMS FROM PubChem
+if($_POST['pubChemData'] == 'update' && $_POST['cas']){
+	$cas = trim($_POST['cas']);
+	$molecularWeight = $_POST['molecularWeight'];
+	$logP = trim($_POST['logP']);
+	$molecularFormula = $_POST['molecularFormula'];
+	$InChI = $_POST['InChI'];
+	$CanonicalSMILES = $_POST['CanonicalSMILES'];
+	$ExactMass = trim($_POST['ExactMass']);
+	
+	if($molecularWeight){
+		$q = mysqli_query($conn, "UPDATE ingredients SET molecularWeight = '$molecularWeight' WHERE cas='$cas'");
+	}
+	if($logP){
+		$q.= mysqli_query($conn, "UPDATE ingredients SET logp = '$logP' WHERE cas='$cas'");
+	}
+	if($molecularFormula){
+		$q.= mysqli_query($conn, "UPDATE ingredients SET formula = '$molecularFormula' WHERE cas='$cas'");
+	}
+	if($InChI){
+		$q.= mysqli_query($conn, "UPDATE ingredients SET INCI = '$InChI' WHERE cas='$cas'");
+	}
+	if($q){
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Data updated!</div>';
+	}else{
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Unable to update data!</div>';
+	}
+	return;
+}
+
+//IMPORT SYNONYMS FROM PubChem
+if($_GET['synonym'] == 'import' && $_GET['method'] == 'pubchem'){
+	$ing = base64_decode($_GET['ing']);
+	$cas = trim($_GET['cas']);
+
+	$u = $pubChemApi.'/pug/compound/name/'.$cas.'/synonyms/JSON';
+	$json = file_get_contents($u);
+	$json = json_decode($json);
+	$data = $json->InformationList->Information[0]->Synonym;
+	$cid = $json->InformationList->Information[0]->CID;
+	$source = 'PubChem';
+	if(empty($data)){
+		echo '<div class="alert alert-info alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>No data found!</div>';
+		return;
+	}
+	$i=0;
+	foreach($data as $d){
+		$einecs = explode('EINECS ',$d);
+		if($einecs['1']){
+			mysqli_query($conn, "UPDATE ingredients SET einecs = '".$einecs['1']."' WHERE cas = '$cas'");
+		}
+		$fema = explode('FEMA ',$d);
+		if($fema['1']){
+			mysqli_query($conn, "UPDATE ingredients SET FEMA = '".preg_replace("/[^0-9]/", "", $fema['1'])."' WHERE cas = '$cas'");
+		}
+		if(!mysqli_num_rows(mysqli_query($conn, "SELECT synonym FROM synonyms WHERE synonym = '$d' AND ing = '$ing'"))){
+			$r = mysqli_query($conn, "INSERT INTO synonyms (ing,cid,synonym,source) VALUES ('$ing','$cid','$d','$source')");		
+		 	$i++;
+		}
+	}
+	if($r){
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$i.' </strong>synonym(s) imported!</div>';
+	}else{
+		echo '<div class="alert alert-info alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Data already in sync!</div>';
+	}
+	
+	return;
+}
+
+//ADD SYNONYM
+if($_GET['synonym'] == 'add'){
+	$synonym = mysqli_real_escape_string($conn, $_GET['sName']);
+	$source = mysqli_real_escape_string($conn, $_GET['source']);
+	
+	$ing = base64_decode($_GET['ing']);
+
+	if(empty($synonym)){
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Synonym is required!</div>';
+		return;
+	}
+	
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT synonym FROM synonyms WHERE synonym = '$synonym' AND ing = '$ing'"))){
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$synonym.' already exists!</div>';
+		return;
+	}
+	
+	if(mysqli_query($conn, "INSERT INTO synonyms (synonym,source,ing) VALUES ('$synonym','$source','$ing')")){
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$synonym.'</strong> added to the list!</div>';
+	}else{
+		echo mysqli_error($conn);
+	}
+	
+	return;
+}
+
+
+//UPDATE SYNONYM
+if($_GET['synonym'] == 'update'){
+	$value = trim(mysqli_real_escape_string($conn, $_POST['value']));
+	$id = mysqli_real_escape_string($conn, $_POST['pk']);
+	$name = mysqli_real_escape_string($conn, $_POST['name']);
+	$ing = base64_decode($_GET['ing']);
+
+	mysqli_query($conn, "UPDATE synonyms SET $name = '$value' WHERE id = '$id' AND ing='$ing'");
+	return;
+}
+
+
+//DELETE ING SYNONYM	
+if($_GET['synonym'] == 'delete'){
+	$id = mysqli_real_escape_string($conn, $_GET['id']);
+	mysqli_query($conn, "DELETE FROM synonyms WHERE id = '$id'");
+	return;
+}
+
 //UPDATE ING DOCUMENT
 if($_GET['ingDoc'] == 'update'){
 	$value = mysqli_real_escape_string($conn, $_POST['value']);
@@ -202,6 +319,18 @@ if($_GET['formula'] &&  $_GET['finalType']){
 	
 	if(mysqli_query($conn, "UPDATE formulasMetaData SET finalType = '$finalType' WHERE fid = '$fid'")){
 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Finished product type changed!</div>';
+	}else{
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Something went wrong.</div>';
+	}
+	return;
+}
+
+if($_GET['formula'] &&  $_GET['customer_id']){
+	$fid = mysqli_real_escape_string($conn, $_GET['formula']);
+	$customer_id = mysqli_real_escape_string($conn, $_GET['customer_id']);
+	
+	if(mysqli_query($conn, "UPDATE formulasMetaData SET customer_id = '$customer_id' WHERE fid = '$fid'")){
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Customer updated!</div>';
 	}else{
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Something went wrong.</div>';
 	}
@@ -437,6 +566,7 @@ if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'general'){
 
 	$INCI = trim(mysqli_real_escape_string($conn, $_POST["INCI"]));
 	$cas = preg_replace('/\s+/', '', trim(mysqli_real_escape_string($conn, $_POST["cas"])));
+	$einecs = preg_replace('/\s+/', '', trim(mysqli_real_escape_string($conn, $_POST["einecs"])));
 	$reach = preg_replace('/\s+/', '', trim(mysqli_real_escape_string($conn, $_POST["reach"])));
 	$fema = preg_replace('/\s+/', '', trim(mysqli_real_escape_string($conn, $_POST["fema"])));
 	if($_POST["isAllergen"] == 'true') { $allergen = '1'; }else{ $allergen = '0'; }
@@ -452,7 +582,7 @@ if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'general'){
 //	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '".$_POST['name']."'"))){
 		if(empty($_POST['name'])){
 	
-		$query = "UPDATE ingredients SET INCI = '$INCI',cas = '$cas',reach = '$reach',FEMA = '$fema',allergen='$allergen',purity='$purity',profile='$profile',type = '$type',strength = '$strength', category='$category',physical_state = '$physical_state',odor = '$odor',notes = '$notes' WHERE name='$ing'";
+		$query = "UPDATE ingredients SET INCI = '$INCI',cas = '$cas', einecs = '$einecs', reach = '$reach',FEMA = '$fema',allergen='$allergen',purity='$purity',profile='$profile',type = '$type',strength = '$strength', category='$category',physical_state = '$physical_state',odor = '$odor',notes = '$notes' WHERE name='$ing'";
 		
 		if(mysqli_query($conn, $query)){
 			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>General details has been updated!</div>';

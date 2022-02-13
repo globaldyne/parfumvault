@@ -84,8 +84,8 @@ CREATE TABLE `cart` (
 DROP TABLE IF EXISTS `formulasMetaData`;
 CREATE TABLE `formulasMetaData` (
   `id` int(11) NOT NULL,
-  `name` varchar(255) COLLATE utf8_bin NOT NULL,
-  `product_name` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  `product_name` varchar(255) DEFAULT NULL,
   `fid` varchar(255) COLLATE utf8_bin NOT NULL,
   `profile` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `sex` varchar(255) COLLATE utf8_bin DEFAULT NULL,
@@ -97,8 +97,9 @@ CREATE TABLE `formulasMetaData` (
   `revision` INT NOT NULL DEFAULT '0',
   `finalType` INT NOT NULL DEFAULT '100',
   `isMade` INT NOT NULL DEFAULT '0',
-  `madeOn` DATETIME NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+  `madeOn` DATETIME NULL DEFAULT NULL,
+  `customer_id` INT NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 DROP TABLE IF EXISTS `IFRALibrary`;
 CREATE TABLE `IFRALibrary` (
@@ -175,6 +176,7 @@ CREATE TABLE `ingredients` (
   `category` int(10) NOT NULL DEFAULT '1',
   `purity` varchar(11) COLLATE utf8_bin DEFAULT NULL,
   `cas` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `einecs` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `reach` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `FEMA` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `supplier` varchar(255) COLLATE utf8_bin DEFAULT NULL,
@@ -622,3 +624,7 @@ CREATE TABLE `formulaCategories` (
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 INSERT INTO `formulaCategories` (`id`, `name`, `cname`, `type`) VALUES (NULL, 'Oriental', 'oriental', 'profile'), (NULL, 'Woody', 'woody', 'profile'), (NULL, 'Floral', 'floral', 'profile'), (NULL, 'Fresh', 'fresh', 'profile'), (NULL, 'Unisex', 'unisex', 'sex'), (NULL, 'Men', 'men', 'sex'), (NULL, 'Women', 'women', 'sex');
+
+CREATE TABLE `pvault`.`synonyms` ( `id` INT NOT NULL , `ing` VARCHAR(255) NOT NULL, `cid` INT(10) NULL DEFAULT NULL , `synonym` VARCHAR(255) NOT NULL , `source` VARCHAR(255) NULL DEFAULT NULL ) ENGINE = InnoDB;
+
+ALTER TABLE `synonyms` CHANGE `id` `id` INT(11) NOT NULL AUTO_INCREMENT, add PRIMARY KEY (`id`);

@@ -6,4 +6,6 @@ $user = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM users WHERE id = '
 $pv_meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM pv_meta")); 
 $pv_online = mysqli_fetch_array(mysqli_query($conn, "SELECT email,password,enabled FROM pv_online"));
 
+$pubChemApi = 'https://pubchem.ncbi.nlm.nih.gov/rest';
+
 ?>

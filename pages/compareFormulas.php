@@ -97,7 +97,7 @@ if($_REQUEST['formula_a'] && $_REQUEST['formula_b']){
             <?php 
 			}else{ 
 				if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))== 0){
-					echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> You need to <a href="?do=addFormula">create</a> at least one formula first.</div>';
+					echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> You need to <a href="?do=listFormulas">create</a> at least one formula first.</div>';
 					return;
 				}
 				

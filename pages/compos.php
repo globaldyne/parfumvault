@@ -13,17 +13,17 @@ $ingName = mysqli_real_escape_string($conn, $_GET["name"]);
 <h3>Composition</h3>
 <hr>
 <div class="card-body">
-  <div class="text-right">
-    <div class="btn-group">
-    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
-        <div class="dropdown-menu dropdown-menu-right">
-            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addComposition">Add new</a>
-        </div>
-    </div>                    
-  </div>
-
-
+ 	<div class="text-right">
+  		<div class="btn-group">
+   			<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
+    		<div class="dropdown-menu dropdown-menu-right">
+        		<a class="dropdown-item" href="#" data-toggle="modal" data-target="#addComposition">Add new</a>
+        		<a class="dropdown-item" href="#" data-toggle="modal" data-target="#addCSV">Upload CSV</a>
+    		</div>
+  		</div>                    
+	</div>
 </div>
+
 <table id="tdCompositions" class="table table-striped table-bordered" style="width:100%">
   <thead>
       <tr>
@@ -35,11 +35,13 @@ $ingName = mysqli_real_escape_string($conn, $_GET["name"]);
       </tr>
    </thead>
 </table>
+
+
 <script type="text/javascript" language="javascript" >
 $(document).ready(function() {
 	
-	$('[data-toggle="tooltip"]').tooltip();
-	var tdCompositions = $('#tdCompositions').DataTable( {
+$('[data-toggle="tooltip"]').tooltip();
+var tdCompositions = $('#tdCompositions').DataTable( {
 	columnDefs: [
 		{ className: 'text-center', targets: '_all' },
 	],
@@ -187,6 +189,39 @@ $('#addComposition').on('click', '[id*=cmpAdd]', function () {
 	  });
 });
 
+$('#addCSV').on('click', '[id*=cmpCSV]', function () {
+    $("#CSVImportMsg").html('<div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
+	$("#cmpCSV").prop("disabled", true);
+		
+	var fd = new FormData();
+    var files = $('#CSVFile')[0].files;
+
+	if(files.length > 0 ){
+	fd.append('CSVFile',files[0]);
+	$.ajax({
+	   url: 'upload.php?type=cmpCSVImport&ingID=<?=$ingName?>',
+	   type: 'POST',
+	   data: fd,
+	   contentType: false,
+	   processData: false,
+			 cache: false,
+	   success: function(response){
+		 if(response != 0){
+			$("#CSVImportMsg").html(response);
+			$("#cmpCSV").prop("disabled", false);
+			reload_cmp_data();
+		  }else{
+			$("#CSVImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> File upload failed!</div>');
+			$("#cmpCSV").prop("disabled", false);
+		  }
+		},
+	 });
+	}else{
+		$("#CSVImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a file to upload!</div>');
+		$("#cmpCSV").prop("disabled", false);
+	}
+});
+
 function reload_cmp_data() {
     $('#tdCompositions').DataTable().ajax.reload(null, true);
 };
@@ -224,6 +259,45 @@ function reload_cmp_data() {
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
         <input type="submit" name="button" class="btn btn-primary" id="cmpAdd" value="Add">
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!--ADD FROM CSV MODAL-->
+<div class="modal fade" id="addCSV" tabindex="-1" role="dialog" aria-labelledby="addCSV" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Import CSV</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <div id="CSVImportMsg"></div>
+        <table width="100%" border="0">
+          <tr>
+            <td width="22%">Choose file:</td>
+            <td width="78%">
+              <input type="file" name="CSVFile" id="CSVFile" class="form-control" />
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2"><hr />
+              <p>CSV format: <strong>ingredient,CAS,EINECS,percentage</strong></p>
+            <p>Example: <em><strong>Citral,5392-40-5,226-394-6,0.15</strong></em></p>
+            <p>Duplicates will be ignored.</p></td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+        </table>
+	  <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <input type="submit" name="cmpCSV" class="btn btn-primary" id="cmpCSV" value="Import">
       </div>
     </div>
   </div>
