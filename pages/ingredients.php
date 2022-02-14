@@ -200,6 +200,10 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
         Exclude synonyms
       </label>
       <label>
+      <input name="excludeSuppliers" type="checkbox" id="excludeSuppliers" value="1" />
+        Exclude suppliers
+      </label>
+      <label>
          <input name="excludeNotes" type="checkbox" id="excludeNotes" value="1" />
         Exclude notes
       </label>
@@ -288,7 +292,9 @@ function pv_online_upload(items) {
 			items: items,
 			excludeNotes: $("#excludeNotes").is(':checked'),
 			excludeSynonyms: $("#excludeSynonyms").is(':checked'),
-			excludeCompositions: $("#excludeCompositions").is(':checked')
+			excludeCompositions: $("#excludeCompositions").is(':checked'),
+			excludeSuppliers: $("#excludeSuppliers").is(':checked')
+
 			},
 		dataType: 'html',
 		success: function (data) {

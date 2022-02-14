@@ -584,47 +584,47 @@ function ingCAS(data, type, row, meta){
   	 return data;
 }
   
-  function ingConc(data, type, row, meta){
-	  if(type === 'display'){
-		  <?php if($meta['isProtected'] == FALSE){?>
-		  data = '<a href="#" data-name="concentration" class="concentration" data-type="text" data-pk="' + row.ingredient.name + '">' + data + '</a>';
-		  <?php } ?>
-	  }
-
-  	  return data;
-  	}
-  
-  function ingSolvent(data, type, row, meta){
-	  if(type === 'display'){
-		<?php if($meta['isProtected'] == FALSE){?>
-		  if(row.purity !== 100){
-		  	data = '<a href="#" data-name="dilutant" class="solvent" data-type="select" data-pk="' + row.ingredient.name + '">' + data + '</a>';
-	  	}else{
-			data = 'None';
-		}
-		<?php } ?>
-	  }
-  	  return data;
+function ingConc(data, type, row, meta){
+  if(type === 'display'){
+	  <?php if($meta['isProtected'] == FALSE){?>
+	  data = '<a href="#" data-name="concentration" class="concentration" data-type="text" data-pk="' + row.ingredient.name + '">' + data + '</a>';
+	  <?php } ?>
   }
+
+  return data;
+}
+
+function ingSolvent(data, type, row, meta){
+  if(type === 'display'){
+	<?php if($meta['isProtected'] == FALSE){?>
+	  if(row.purity !== 100){
+		data = '<a href="#" data-name="dilutant" class="solvent" data-type="select" data-pk="' + row.ingredient.name + '">' + data + '</a>';
+	}else{
+		data = 'None';
+	}
+	<?php } ?>
+  }
+  return data;
+}
   
-  function ingQuantity(data, type, row, meta){
+function ingQuantity(data, type, row, meta){
 	if(type === 'display'){
 		<?php if($meta['isProtected'] == FALSE){?>
 		data = '<a href="#" data-name="quantity" class="quantity" data-type="text" data-pk="' + row.ingredient.name + '">' + data + '</a>';
 		<?php } ?>
 	}
-    return data;
-  }
+	return data;
+}
 
-  function ingNotes(data, type, row, meta){
+function ingNotes(data, type, row, meta){
 	 if(type === 'display'){
 	  <?php if($meta['defView'] == '1'){ $show = 'properties'; }elseif($meta['defView'] == '2'){ $show = 'notes';}?>
 	  <?php if($meta['isProtected'] == FALSE){?>
 	  data = '<i data-name="<?=$show?>" class="pv_point_gen <?=$show?>" data-type="textarea" data-pk="' + row.ingredient.name + '">' + data + '</i>';
 	  <?php } ?>
 	 }
-   return data;
-  }
+	return data;
+}
   
   
 function ingInv(data, type, row, meta){

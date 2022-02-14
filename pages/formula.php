@@ -11,34 +11,39 @@ if(($fid = $mid['fid']) == FALSE){
 }
 $f_name =  base64_decode($fid);
 
-if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulas WHERE fid = '$fid'"))){
-	$legend = 1;
-}
 $cat_details = mysqli_fetch_array(mysqli_query($conn, "SELECT description FROM IFRACategories WHERE name = '4'"));
 
 $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,isProtected,catClass FROM formulasMetaData WHERE fid = '$fid'"));
 $img = mysqli_fetch_array(mysqli_query($conn, "SELECT docData FROM documents WHERE ownerID = '$id' AND type = '2'"));
 
 $formula_q = mysqli_query($conn, "SELECT ingredient FROM formulas WHERE fid = '$fid'");
-	while ($formula = mysqli_fetch_array($formula_q)){
-		$form[] = $formula;
-	}
-	
-						
-	foreach ($form as $formula){
-		$top_ing = mysqli_fetch_array(mysqli_query($conn, "SELECT name AS ing,category FROM ingredients WHERE name = '".$formula['ingredient']."' AND profile = 'Top' AND category IS NOT NULL"));
-		$heart_ing = mysqli_fetch_array(mysqli_query($conn, "SELECT name AS ing,category FROM ingredients WHERE name = '".$formula['ingredient']."' AND profile = 'Heart' AND category IS NOT NULL"));
-		$base_ing = mysqli_fetch_array(mysqli_query($conn, "SELECT name AS ing,category FROM ingredients WHERE name = '".$formula['ingredient']."' AND profile = 'Base' AND category IS NOT NULL"));
-	
-		$top_cat = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingCategory WHERE id = '".$top_ing['category']."' AND image IS NOT NULL"));
-		$heart_cat = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingCategory WHERE id = '".$heart_ing['category']."' AND image IS NOT NULL"));
-		$base_cat = mysqli_fetch_array(mysqli_query($conn, "SELECT  name FROM ingCategory WHERE id = '".$base_ing['category']."' AND image IS NOT NULL"));
-	
-		$top[] = array_merge($top_cat,$top_ing);
-		$heart[] = array_merge($heart_cat,$heart_ing);
-		$base[] = array_merge($base_cat,$base_ing);
+while ($formula = mysqli_fetch_array($formula_q)){
+	$form[] = $formula;
+}
 
-	}
+$ingredients = mysqli_query($conn, "SELECT id, name, chemical_name, INCI, CAS FROM ingredients ORDER BY name ASC");
+while ($ingredient = mysqli_fetch_array($ingredients)){
+	$ing[] = $ingredient;
+}
+
+if($form[0]['ingredient']){
+	$legend = 1;
+}
+				
+foreach ($form as $formula){
+	$top_ing = mysqli_fetch_array(mysqli_query($conn, "SELECT name AS ing,category FROM ingredients WHERE name = '".$formula['ingredient']."' AND profile = 'Top' AND category IS NOT NULL"));
+	$heart_ing = mysqli_fetch_array(mysqli_query($conn, "SELECT name AS ing,category FROM ingredients WHERE name = '".$formula['ingredient']."' AND profile = 'Heart' AND category IS NOT NULL"));
+	$base_ing = mysqli_fetch_array(mysqli_query($conn, "SELECT name AS ing,category FROM ingredients WHERE name = '".$formula['ingredient']."' AND profile = 'Base' AND category IS NOT NULL"));
+
+	$top_cat = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingCategory WHERE id = '".$top_ing['category']."' AND image IS NOT NULL"));
+	$heart_cat = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingCategory WHERE id = '".$heart_ing['category']."' AND image IS NOT NULL"));
+	$base_cat = mysqli_fetch_array(mysqli_query($conn, "SELECT  name FROM ingCategory WHERE id = '".$base_ing['category']."' AND image IS NOT NULL"));
+
+	$top[] = array_merge($top_cat,$top_ing);
+	$heart[] = array_merge($heart_cat,$heart_ing);
+	$base[] = array_merge($base_cat,$base_ing);
+
+}
 $top_cat = array_filter($top);
 $heart_cat = array_filter($heart);
 $base_cat = array_filter($base);
@@ -77,7 +82,7 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
         <div class="tab-content">
           <div class="tab-pane fade active in tab-content" id="main_formula">
 
-            <div class="card-body">
+          <div class="card-body">
            <div id="msgInfo"></div>
               <div>
                   <tr>
@@ -85,40 +90,31 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
                     <?php if($meta['isProtected'] == FALSE){?>
                       <form action="javascript:addING()" enctype="multipart/form-data" name="form1" id="form1">
                          <table width="100%" border="0" class="table">
-                                    <tr>  
-                                         <td>
-                                         <select name="ingredient" id="ingredient" class="form-control selectpicker" data-live-search="true">
-                                         <option value="" selected disabled>Ingredient</option>
-                                         <?php
-										 	$res_ing = mysqli_query($conn, "SELECT id, name, profile, chemical_name, INCI, CAS FROM ingredients ORDER BY name ASC");
-										 	while ($r_ing = mysqli_fetch_array($res_ing)){
-												if($r_ing['INCI']){
-										?>
-											<option data-subtext="<?=$r_ing['INCI']?>" value="<?=$r_ing['name']?>"><?=$r_ing['name']?> (<?=$r_ing['CAS']?>)</option>
-										<?php 	}else{ ?>
-											<option value="<?=$r_ing['name']?>"><?=$r_ing['name']?> (<?=$r_ing['CAS']?>)</option>
-										<?php
-												} 
-											}
-										?>
-                                         </select>                                         
-                                         </td>
-                                         <td><input type="text" name="concentration" id="concentration" placeholder="Purity %" class="form-control" /></td>
-                                      <td>
-                                         <select name="dilutant" id="dilutant" class="form-control">
-                                         <option value="" selected disabled>Dilutant</option>
-                                         <option value="none">None</option>
-                                         <?php
-										 	$res_dil = mysqli_query($conn, "SELECT id, name FROM ingredients WHERE type = 'Solvent' OR type = 'Carrier' ORDER BY name ASC");
-										 	while ($r_dil = mysqli_fetch_array($res_dil)){
-												echo '<option value="'.$r_dil['name'].'">'.$r_dil['name'].'</option>';
-											}
-										 ?>
-                                         </select>
-                                      </td>
-                                         <td><input type="text" name="quantity" id="quantity" placeholder="Quantity" class="form-control" /></td>  
-                                         <td><input type="submit" name="add" id="add" class="btn btn-info" value="Add" /> </td>  
-                                    </tr>  
+                            <tr>  
+                             <td>
+                             <select name="ingredient" id="ingredient" class="form-control selectpicker" data-live-search="true">
+                             	<option value="" selected disabled>Ingredient</option>
+                             <?php  foreach ($ing as $ingredients){ ?>
+                                <option data-subtext="<?=$ingredients['INCI']?:$ingredients['name']?>" value="<?=$ingredients['name']?>"><?=$ingredients['name']?> (<?=$ingredients['CAS']?>)</option>
+                             <?php } ?>
+                             </select>                                         
+                             </td>
+                             <td><input type="text" name="concentration" id="concentration" placeholder="Purity %" class="form-control" /></td>
+                              <td>
+                                 <select name="dilutant" id="dilutant" class="form-control">
+                                 <option value="" selected disabled>Dilutant</option>
+                                 <option value="none">None</option>
+                                 <?php
+                                    $res_dil = mysqli_query($conn, "SELECT id, name FROM ingredients WHERE type = 'Solvent' OR type = 'Carrier' ORDER BY name ASC");
+                                    while ($r_dil = mysqli_fetch_array($res_dil)){
+                                        echo '<option value="'.$r_dil['name'].'">'.$r_dil['name'].'</option>';
+                                    }
+                                 ?>
+                                 </select>
+                              </td>
+                              <td><input type="text" name="quantity" id="quantity" placeholder="Quantity" class="form-control" /></td>  
+                              <td><input type="submit" name="add" id="add" class="btn btn-info" value="Add" /> </td>  
+                            </tr>  
                         </table>  
                       </form>
                       <?php } ?>
