@@ -1,5 +1,7 @@
 # CHANGELOG
 ### Version 4.1
+- PV Online upload function now includes suppliers
+- Add technical data to ingredients core API
 
 ### Version 4.0
 - Add Max Usage info in final product as well

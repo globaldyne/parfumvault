@@ -96,7 +96,7 @@ if($_GET['action'] == 'upload' && $_GET['items'] == 'ingredients'){
 		$sp++;
 	}
 	
-	$supMap = mysqli_query($conn, "SELECT name FROM ingSuppliers");
+	$supMap = mysqli_query($conn, "SELECT id AS rID,name FROM ingSuppliers");
 	$sm = 0;
 	while($supplierMap = mysqli_fetch_assoc($supMap)){
 		$smData['data'][] = array_filter($supplierMap);

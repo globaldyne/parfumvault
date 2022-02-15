@@ -60,7 +60,7 @@ if($s != ''){
    $filter = "WHERE 1 AND (name LIKE '%".$s."%' OR cas LIKE '%".$s."%' OR odor LIKE '%".$s."%' OR INCI LIKE '%".$s."%')";
 }
 
-$q = mysqli_query($conn, "SELECT ingredients.id,name,INCI,cas,einecs,profile,category,odor,$defCatClass,allergen,usage_type FROM $t  ingredients $filter $extra LIMIT $row, $limit");
+$q = mysqli_query($conn, "SELECT ingredients.id,name,INCI,cas,einecs,profile,category,odor,$defCatClass,allergen,usage_type,logp,formula,flash_point,molecularWeight FROM $t  ingredients $filter $extra LIMIT $row, $limit");
 while($res = mysqli_fetch_array($q)){
     $ingredients[] = $res;
 }
@@ -76,8 +76,13 @@ foreach ($ingredients as $ingredient) {
 	$r['einecs'] = (string)$ingredient['einecs']?: 'N/A';
 	$r['profile'] = (string)$ingredient['profile']?: null;
 	$r['odor'] = (string)$ingredient['odor']?: 'N/A';
-	
 	$r['allergen'] = (int)$ingredient['allergen']?: 0;
+	
+	$r['techData']['LogP'] = (float)$ingredient['logp']?: 0;
+	$r['techData']['formula'] = (string)$ingredient['formula']?: 'N/A';
+	$r['techData']['flash_point'] = (string)$ingredient['flash_point']?: 'N/A';
+	$r['techData']['molecula_weight'] = (float)$ingredient['molecularWeight']?: 0;
+
 	
 	$r['category']['id'] = (int)$ingredient['category']?: 1;
 	$r['category']['name'] = (string)$cat['name']?: 'N/A';
