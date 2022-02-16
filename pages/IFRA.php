@@ -5,6 +5,9 @@ $ifra_q = mysqli_query($conn, "SELECT * FROM IFRALibrary ORDER BY amendment DESC
 $defCatClass = $settings['defCatClass'];
 
 ?>
+<script src="js/mark/jquery.mark.min.js"></script>
+<script src="js/mark/datatables.mark.js"></script>
+
 <div id="content-wrapper" class="d-flex flex-column">
 <?php require_once(__ROOT__.'/pages/top.php'); ?>
         <div class="container-fluid">
@@ -16,50 +19,28 @@ $defCatClass = $settings['defCatClass'];
             </div>
             <div class="card-body">
               <div class="table-responsive">
-                <table class="table table-bordered" id="tdData" width="100%" cellspacing="0">
+               
+                  <div class="text-right">
+                    <div class="btn-group">
+                      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
+                      <div class="dropdown-menu dropdown-menu-right">
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#ifra_import">Import IFRA xls</a>
+                        <a class="dropdown-item" id="csv" href="#">Export to CSV</a>
+                      </div>
+                    </div>                      
+                  </div>
+                <table id="tdDataIFRA" class="table table-striped table-bordered" style="width:100%">
                   <thead>
-                    <tr class="noBorder noexport">
-                      <th colspan="8">
-                       <div class="text-right">
-                        <div class="btn-group">
-                          <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
-                          <div class="dropdown-menu dropdown-menu-right">
-	                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#ifra_import">Import IFRA xls</a>
-                            <a class="dropdown-item" id="csv" href="#">Export to CSV</a>
-                          </div>
-                        </div>                      
-                        </div>
-                        </th>
-                    </tr>
-                    <tr>
-                      <th>Name</th>
-                      <th>CAS #</th>
-                      <th>Amendment</th>
-                      <th>Last publication</th>
-                      <th>Synonyms</th>
-                      <th>IFRA Type</th>
-                      <th>Risk</th>
-                      <th><?php echo ucfirst($defCatClass); ?>%</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  <?php					
-				  while ($IFRA = mysqli_fetch_array($ifra_q)) {
-					  echo'
-                    <tr>
-                      <td align="center"><a href="#">'.$IFRA['name'].'</a></td>
-					  <td align="center">'.$IFRA['cas'].'</td>
-					  <td align="center">'.$IFRA['amendment'].'</td>
-					  <td align="center">'.$IFRA['last_pub'].'</td>
-  					  <td align="center">'.$IFRA['synonyms'].'</td>
-					  <td align="center">'.$IFRA['type'].'</td>
-					  <td align="center">'.$IFRA['risk'].'</td>
-					  <td align="center">'.$IFRA[$defCatClass].'</td>';
-					echo '</tr>';
-				  }
-                    ?>
-                    </tr>
-                  </tbody>
+                      <tr>
+                         <th>Name</th>
+                         <th>CAS #</th>
+                         <th>Amendment</th>
+                         <th>Last publication</th>
+                         <th>IFRA Type</th>
+                         <th>Risk</th>
+                         <th><?php echo ucfirst($defCatClass); ?>%</th>
+                      </tr>
+                   </thead>
                 </table>
               </div>
             </div>
@@ -95,7 +76,7 @@ $defCatClass = $settings['defCatClass'];
    		  </tr>
 		</table>
        <p class="alert-link"><strong>IMPORTANT:</strong></p>
-       <p class="alert-link"> This operation will wipe out any data already in your IFRA Library, so please make sure the file you uploading is in the right format and have taken a <a href="pages/maintenance.php?do=backupDB">backup</a> before.</p>
+       <p class="alert-link"> This operation will wipe out any data already in your IFRA Library, so please make sure the file you uploading is in the right format and have taken a <a href="pages/operations.php?do=backupDB">backup</a> before.</p>
        <p class="alert-link">The IFRA xls can be downloaded from its official <a href="https://ifrafragrance.org/safe-use/standards-guidance" target="_blank">web site</a></p>
        </div>
       <div class="modal-footer">
@@ -105,24 +86,104 @@ $defCatClass = $settings['defCatClass'];
       </form>
     </div>
   </div>
-</div>  <script type="text/javascript" language="javascript" >
+</div>  
+<script type="text/javascript">
+$(document).ready(function() {
+	
+	var tdDataIFRA = $('#tdDataIFRA').DataTable( {
+	columnDefs: [
+		{ className: 'pv_vertical_middle text-center', targets: '_all' },
+	],
+	dom: 'lrftip',
+	processing: true,
+	serverSide: true,
+	searching: true,
+	        mark: true,
+	language: {
+		loadingRecords: '&nbsp;',
+		processing: '<div class="spinner-grow"></div> Please Wait...',
+		zeroRecords: 'Nothing found',
+		search: 'Quick Search:',
+		searchPlaceholder: 'Name, CAS, synonyms..',
+		},
+	ajax: {	
+		url: '/core/list_IFRA_data.php',
+		type: 'POST',
+		dataType: 'json',
+		},
+	   
+	   columns: [ 
+            { data : 'name', title: 'Name', render: name },
+			{ data : 'cas', title: 'CAS' },
+			{ data : 'amendment', title: 'Amendment' },
+			{ data : 'last_pub', title: 'Last publication' },
+			{ data : 'type', title: 'IFRA Type' },
+			{ data : 'risk', title: 'Risk' },
+			{ data : 'defCat.limit', title: '<?=ucfirst($defCatClass)?>(%)' },
+			],
+	order: [[ 1, 'asc' ]],
+	lengthMenu: [[20, 50, 100, 200, 400], [20, 50, 100, 200, 400]],
+	pageLength: 20,
+	displayLength: 20,
+	});
+	
+	var detailRows = [];
+ 
+    $('#tdDataIFRA tbody').on( 'click', 'tr td:first-child', function () {
+        var tr = $(this).parents('tr');
+        var row = tdDataIFRA.row( tr );
+        var idx = $.inArray( tr.attr('id'), detailRows );
+ 
+        if ( row.child.isShown() ) {
+            tr.removeClass( 'details' );
+            row.child.hide();
+            detailRows.splice( idx, 1 );
+        } else {
+            tr.addClass( 'details' );
+            row.child( format( row.data() ) ).show();
+            if ( idx === -1 ) {
+                detailRows.push( tr.attr('id') );
+            }
+        }
+    });
+ 
+    tdDataIFRA.on( 'draw', function () {
+        $.each( detailRows, function ( i, id ) {
+            $('#'+id+' td:first-child').trigger( 'click' );
+        } );
+    } );
+});
+
+function format ( d ) {
+    details =  '<strong>Synonyms:</strong><br>'+d.synonyms+
+	'<br><strong>CAS Comment:</strong><br>'+d.cas_comment;
+	
+	return details;
+}
+
+function name(data, type, row){
+	return '<a href="#">'+row.name+'</a>';
+}
+
+function reload_ifra_data() {
+    $('#tdDataIFRA').DataTable().ajax.reload(null, true);
+}
 
 $('#csv').on('click',function(){
-  $("#tdData").tableHTMLExport({
-	type:'csv',
-	filename:'ifra.csv',
-	separator: ',',
-  	newline: '\r\n',
-  	trimContent: true,
-  	quoteFields: true,
-	
-	ignoreColumns: '.noexport',
-  	ignoreRows: '.noexport',
-	
-	htmlContent: false,  
-  	consoleLog: false   
-});
- 
+	$("#tdDataIFRA").tableHTMLExport({
+		type:'csv',
+		filename:'ifra.csv',
+		separator: ',',
+		newline: '\r\n',
+		trimContent: true,
+		quoteFields: true,
+		
+		ignoreColumns: '.noexport',
+		ignoreRows: '.noexport',
+		
+		htmlContent: false,  
+		consoleLog: false   
+	}); 
 });
 
 function importIFRA(){

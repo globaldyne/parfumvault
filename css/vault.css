@@ -736,3 +736,15 @@ table.fixedHeader-floating {
 .pv_exclusions {
 	display: grid;
 }
+
+td.details-control {
+    background: url('../img/details_open.png') no-repeat center center;
+    cursor: pointer;
+}
+tr.details td.details-control {
+    background: url('../img/details_close.png') no-repeat center center;
+}
+mark{
+	background:orange;
+	color:black;
+}

@@ -2,6 +2,9 @@
 ### Version 4.1
 - PV Online upload function now includes suppliers
 - Add technical data to ingredients core API
+- Rewrite IFRA page to populate datatables
+- Add mark.js to highlight search results in IFRA page
+- Fix broken link when trying to backup DB from IFRA page
 
 ### Version 4.0
 - Add Max Usage info in final product as well
