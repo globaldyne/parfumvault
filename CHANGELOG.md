@@ -5,6 +5,8 @@
 - Rewrite IFRA page to populate datatables
 - Add mark.js to highlight search results in IFRA page
 - Fix broken link when trying to backup DB from IFRA page
+- Add image support from pubChem for IFRA Library
+- Extend search in formula description for formulas
 
 ### Version 4.0
 - Add Max Usage info in final product as well

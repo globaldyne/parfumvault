@@ -105,7 +105,7 @@ DROP TABLE IF EXISTS `IFRALibrary`;
 CREATE TABLE `IFRALibrary` (
   `id` int(11) NOT NULL,
   `ifra_key` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image` longblob DEFAULT NULL,
   `amendment` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `prev_pub` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `last_pub` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,

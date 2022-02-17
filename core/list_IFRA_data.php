@@ -8,11 +8,12 @@ $row = $_POST['start']?:0;
 $limit = $_POST['length']?:10;
 
 $defCatClass = $settings['defCatClass'];
+$defImage = base64_encode(file_get_contents(__ROOT__.'/img/pv_molecule.png'));
 
 $s = trim($_POST['search']['value']);
 
 if($s != ''){
-   $f = "WHERE 1 AND (name LIKE '%".$s."%' OR cas LIKE '%".$s."%' OR synonyms LIKE '%".$s."%')";
+   $f = "WHERE 1 AND (name LIKE '%".$s."%' OR cas LIKE '%".$s."%' OR synonyms LIKE '%".$s."%' OR risk LIKE '%".$s."%')";
 }
 
 $q = mysqli_query($conn, "SELECT * FROM IFRALibrary $f LIMIT $row, $limit");
@@ -64,6 +65,9 @@ foreach ($ifra as $IFRA) {
 
 	$r['defCat']['class'] = (string)$defCatClass?:'N/A';
 	$r['defCat']['limit'] = (float)$IFRA[$defCatClass]?:'0';
+ 	$r['image'] = (string)$IFRA['image']?:$defImage;
+	
+
 
 	$rx[]=$r;
 }

@@ -21,7 +21,7 @@ if($_GET['filter'] && $_GET['profile'] || $_GET['sex']){
 $s = trim($_POST['search']['value']);
 
 if($s != ''){
-   $f = "WHERE 1 AND (name LIKE '%".$s."%' OR product_name LIKE '%".$s."%')";
+   $f = "WHERE 1 AND (name LIKE '%".$s."%' OR product_name LIKE '%".$s."%' OR notes LIKE '%".$s."%')";
 }
 
 $formulas = mysqli_query($conn, "SELECT id,fid,name,product_name,isProtected,profile,sex,created,catClass,isMade,madeOn FROM formulasMetaData $f LIMIT $row, $limit");

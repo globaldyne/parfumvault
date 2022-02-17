@@ -25,6 +25,10 @@ $defCatClass = $settings['defCatClass'];
                       <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
                       <div class="dropdown-menu dropdown-menu-right">
                         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#ifra_import">Import IFRA xls</a>
+                        <?php if($settings['pubChem'] == '1'){?>
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#pubChem_import">Import images</a>
+                        <?php } ?>
+
                         <a class="dropdown-item" id="csv" href="#">Export to CSV</a>
                       </div>
                     </div>                      
@@ -32,28 +36,29 @@ $defCatClass = $settings['defCatClass'];
                 <table id="tdDataIFRA" class="table table-striped table-bordered" style="width:100%">
                   <thead>
                       <tr>
-                         <th>Name</th>
-                         <th>CAS #</th>
-                         <th>Amendment</th>
-                         <th>Last publication</th>
-                         <th>IFRA Type</th>
-                         <th>Cat1%</th>
-                         <th>Cat2%</th>
-                         <th>Cat3%</th>
-                         <th>Cat4%</th>
-                         <th>Cat5A%</th>
-                         <th>Cat5B%</th>
-                         <th>Cat5C%</th>
-                         <th>Cat5D%</th>
-                         <th>Cat6%</th>
-                         <th>Cat7A%</th>
-                         <th>Cat7B%</th>
-                         <th>Cat8%</th>
-                         <th>Cat9%</th>
-                         <th>Cat10A%</th>
-                         <th>Cat11A%</th>
-                         <th>Cat11B%</th>
-                         <th>Cat12%</th>
+                      	<th>Structure</th>
+                        <th>Name</th>
+                        <th>CAS #</th>
+                        <th>Amendment</th>
+                        <th>Last publication</th>
+                        <th>IFRA Type</th>
+                        <th>Cat1%</th>
+                        <th>Cat2%</th>
+                        <th>Cat3%</th>
+                        <th>Cat4%</th>
+                        <th>Cat5A%</th>
+                        <th>Cat5B%</th>
+                        <th>Cat5C%</th>
+                        <th>Cat5D%</th>
+                        <th>Cat6%</th>
+                        <th>Cat7A%</th>
+                        <th>Cat7B%</th>
+                        <th>Cat8%</th>
+                        <th>Cat9%</th>
+                        <th>Cat10A%</th>
+                        <th>Cat11A%</th>
+                        <th>Cat11B%</th>
+                        <th>Cat12%</th>
                       </tr>
                    </thead>
                 </table>
@@ -76,7 +81,7 @@ $defCatClass = $settings['defCatClass'];
       <div class="modal-body">
        <div id="IFRAImportMsg"></div>
 		<form method="post" action="javascript:importIFRA()" enctype="multipart/form-data" id="ifra_import_form">
-       <table width="100%">
+       	<table width="100%">
        		<tr>
     	   	<td width="122" valign="top">IFRA xls File:</td>
 				<td width="1519" colspan="3">
@@ -101,7 +106,32 @@ $defCatClass = $settings['defCatClass'];
       </form>
     </div>
   </div>
-</div>  
+</div>
+
+<!--PUBCHEM IMPORT-->
+<div class="modal fade" id="pubChem_import" tabindex="-1" role="dialog" aria-labelledby="pubChem_import" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-pubChem" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Import images from PubChem</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+       <div id="pbmportMsg"></div>
+       <p class="alert-link"><strong>Confirm import</strong></p>
+       <p class="alert-link"> Are you sure you want to import data from pubChem? This operation will overwrite any existing image data in your IFRA database.</p>
+       <p>By using this service, you agree with <a href="https://pubchemdocs.ncbi.nlm.nih.gov/about" target="_blank">PubChem's</a> terms</p>
+       </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <input type="submit" name="btnImport" class="btn btn-primary" id="Importpb" value="Import">
+      </div>
+    </div>
+  </div>
+</div>
+
 <script type="text/javascript">
 $(document).ready(function() {
 	
@@ -113,7 +143,7 @@ $(document).ready(function() {
 	processing: true,
 	serverSide: true,
 	searching: true,
-	        mark: true,
+	mark: true,
 	language: {
 		loadingRecords: '&nbsp;',
 		processing: '<div class="spinner-grow"></div> Please Wait...',
@@ -126,8 +156,8 @@ $(document).ready(function() {
 		type: 'POST',
 		dataType: 'json',
 		},
-	   
-	   columns: [ 
+	   columns: [
+			{ data : 'image', title: 'Structure', render: image },
             { data : 'name', title: 'Name', render: name },
 			{ data : 'cas', title: 'CAS' },
 			{ data : 'amendment', title: 'Amendment' },
@@ -159,7 +189,7 @@ $(document).ready(function() {
 	
 	var detailRows = [];
  
-    $('#tdDataIFRA tbody').on( 'click', 'tr td:first-child', function () {
+    $('#tdDataIFRA tbody').on( 'click', 'tr td:first-child + td', function () {
         var tr = $(this).parents('tr');
         var row = tdDataIFRA.row( tr );
         var idx = $.inArray( tr.attr('id'), detailRows );
@@ -179,21 +209,27 @@ $(document).ready(function() {
  
     tdDataIFRA.on( 'draw', function () {
         $.each( detailRows, function ( i, id ) {
-            $('#'+id+' td:first-child').trigger( 'click' );
+            $('#'+id+' td:first-child + td').trigger( 'click' );
         } );
     } );
 });
 
 function format ( d ) {
-    details =  '<strong>Synonyms:</strong><br>'+d.synonyms+
-	'<br><strong>CAS Comment:</strong><br>'+d.cas_comment+
-	'<br><strong>Risk:</strong><br>'+d.risk;
+    details = '<strong>Synonyms:</strong><br><span class="ifra_details">'+d.synonyms+
+	'</span><br><strong>CAS Comment:</strong><br><span class="ifra_details">'+d.cas_comment+
+	'</span><br><strong>Risk:</strong><br><span class="ifra_details">'+d.risk+
+	'</span><br><strong>Specified Notes:</strong><br><span class="ifra_details">'+d.specified_notes+
+	'</span><br><strong>Flavor Use:</strong><br><span class="ifra_details">'+d.flavor_use;
 
 	return details;
 }
 
 function name(data, type, row){
-	return '<a href="#">'+row.name+'</a>';
+	return '<i class="pv_point_gen pv_gen_li">'+row.name+'</i>';
+}
+
+function image(data, type, row){
+	return '<img src="data:image/png;base64, '+row.image+'" class="img_ifra noexport"/>';
 }
 
 function reload_ifra_data() {
@@ -248,6 +284,23 @@ function importIFRA(){
 	$("#IFRAImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a file to upload!</div>');
 	$("#btnImport").prop("disabled", false);
   }	
-}
+};
 
+$('#pubChem_import').on('click', '[id*=Importpb]', function () { 
+	$("#pbmportMsg").html('<div class="alert alert-info alert-dismissible">Please wait, this may take a while...</div>');
+	$("#Importpb").prop("disabled", true);
+	$.ajax({
+		url: 'pages/update_data.php', 
+		type: 'GET',
+		data: {
+			IFRA_PB: "import",
+			},
+		dataType: 'html',
+		success: function (data) {
+			$('#pbmportMsg').html(data);
+			$("#Importpb").prop("disabled", false);
+			reload_ifra_data();
+		}
+	});
+});
 </script>

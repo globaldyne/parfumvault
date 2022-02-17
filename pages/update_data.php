@@ -8,7 +8,23 @@ require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/sanChar.php');
 require_once(__ROOT__.'/func/priceScrape.php');
 
-
+//IMPORT IMAGES FROM PUBCHEM
+if($_GET['IFRA_PB'] == 'import'){
+	require_once(__ROOT__.'/func/pvFileGet.php');
+	$i = 0;
+	$qCas = mysqli_query($conn,"SELECT cas FROM IFRALibrary");
+	while($cas = mysqli_fetch_array($qCas)){
+		
+		$image = base64_encode(pv_file_get_contents($pubChemApi.'/pug/compound/name/'.$cas['cas'].'/PNG?record_type=2d&image_size=small'));
+		
+		$imp = mysqli_query($conn,"UPDATE IFRALibrary SET image = '$image' WHERE cas = '".$cas['cas']."'");
+		$i++;	
+	}
+	if($imp){
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$i.' images updates!</div>';
+	}
+	return;
+}
 
 //IMPORT SYNONYMS FROM PubChem
 if($_POST['pubChemData'] == 'update' && $_POST['cas']){

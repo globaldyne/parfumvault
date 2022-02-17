@@ -748,3 +748,12 @@ mark{
 	background:orange;
 	color:black;
 }
+
+.img_ifra {
+    max-height: 120px;
+    max-width: 120px;
+}
+
+.ifra_details {
+	padding-left: 10px;	
+}
