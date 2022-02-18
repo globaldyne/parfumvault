@@ -29,7 +29,9 @@ if($_REQUEST['formula_a'] && $_REQUEST['formula_b']){
 	while ($formula = mysqli_fetch_array($q_b)){
 	    $formula_b[] = $formula;
 	}
-	$r = compareFormula($formula_a, $formula_b, array('ingredient','concentration','quantity'),$meta_a['name'], $meta_b['name']);
+	if($formula_a && $formula_b){
+		$r = compareFormula($formula_a, $formula_b, array('ingredient','concentration','quantity'),$meta_a['name'], $meta_b['name']);
+	}
 }
 ?>
 <div id="content-wrapper" class="d-flex flex-column">
