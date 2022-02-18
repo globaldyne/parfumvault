@@ -7,6 +7,7 @@
 - Fix broken link when trying to backup DB from IFRA page
 - Add image support from pubChem for IFRA Library
 - Extend search in formula description for formulas
+- Fix sorting in ingredients page
 
 ### Version 4.0
 - Add Max Usage info in final product as well

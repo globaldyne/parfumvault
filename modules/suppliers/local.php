@@ -13,6 +13,8 @@ $defCatClass = $settings['defCatClass'];
 
 $row = $_POST['start']?:0;
 $limit = $_POST['length']?:10;
+$order_by  = $_POST['order_by']?:'name';
+$order  = $_POST['order_as']?:'ASC';
 
 if($_POST['adv']){
 	if($name = trim(mysqli_real_escape_string($conn, $_POST['name']))){
@@ -50,9 +52,10 @@ if($_POST['adv']){
 		$filter = "WHERE $syn $cas $odor $profile $category";
 	}else{
 		$filter = "WHERE $name $cas $odor $profile $category";
-	}
-	$extra = "ORDER BY name";
+	}	
 }
+
+$extra = "ORDER BY ".$order_by." ".$order;
 
 $s = trim($_POST['search']['value']);
 
@@ -60,7 +63,7 @@ if($s != ''){
    $filter = "WHERE 1 AND (name LIKE '%".$s."%' OR cas LIKE '%".$s."%' OR odor LIKE '%".$s."%' OR INCI LIKE '%".$s."%')";
 }
 
-$q = mysqli_query($conn, "SELECT ingredients.id,name,INCI,cas,einecs,profile,category,odor,$defCatClass,allergen,usage_type,logp,formula,flash_point,molecularWeight FROM $t  ingredients $filter $extra LIMIT $row, $limit");
+$q = mysqli_query($conn, "SELECT ingredients.id,name,INCI,cas,einecs,profile,category,odor,$defCatClass,allergen,usage_type,logp,formula,flash_point,molecularWeight FROM $t ingredients $filter $extra LIMIT $row, $limit");
 while($res = mysqli_fetch_array($q)){
     $ingredients[] = $res;
 }
