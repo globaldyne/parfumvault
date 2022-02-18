@@ -757,3 +757,12 @@ mark{
 .ifra_details {
 	padding-left: 10px;	
 }
+
+table.dataTable {
+    font-size: 13px !important;
+}
+
+body {
+	font-size: 13px !important;
+}
+
