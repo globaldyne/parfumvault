@@ -8,6 +8,7 @@
 - Add image support from pubChem for IFRA Library
 - Extend search in formula description for formulas
 - Fix sorting in ingredients page
+- Fix sorting in formulas page
 
 ### Version 4.0
 - Add Max Usage info in final product as well
