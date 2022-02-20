@@ -21,7 +21,6 @@ $f_name = base64_decode($meta['fid']);
 
 ?>
 
-
 <script>
 
 $(document).ready(function() {
@@ -128,8 +127,8 @@ $('#formula tbody').on( 'click', 'tr.group', function () {
          formula_table.order( [ groupColumn, 'asc' ] ).draw();
     }
 });
-	
-	
+
+
 $('#formula').on('click', '[id*=rmIng]', function () {
 	var ing = {};
 	ing.ID = $(this).attr('data-id');
@@ -282,7 +281,7 @@ function reload_formula_data() {
         </div>
 	</th>
 	<th>
-        <div class="btn-group">
+        <div class="btn-group" id="menu">
             <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
             <div class="dropdown-menu dropdown-menu-left">
 	           <a class="dropdown-item popup-link" href="pages/getFormMeta.php?id=<?=$meta['id']?>">Details</a>
@@ -466,116 +465,116 @@ function extrasShow() {
 };
   
 $('#formula').editable({
-	  container: 'body',
-	  selector: 'a.concentration',
-	  url: "pages/update_data.php?formula=<?=$meta['fid']?>",
-	  title: 'Purity %',
-	  type: "POST",
-	  dataType: 'json',
-			success: function(response, newValue) {
-			if(response.status == 'error'){
-				return response.msg; 
-			}else{
-				reload_formula_data();
-			}
-		},
-	  validate: function(value){
-	   if($.trim(value) == ''){
-		return 'This field is required';
-	   }
-	   if($.isNumeric(value) == '' ){
-		return 'Numbers only!';
-	   }
-	  }
-	});
-	
-	$('#formula').editable({
-		container: 'body',
-		selector: 'a.solvent',
-		type: 'POST',
-		emptytext: "",
-		emptyclass: "",
-		url: "pages/update_data.php?formula=<?=$meta['fid']?>",
-		title: 'Choose solvent',
-		source: [
-				 <?php
-					$res_ing = mysqli_query($conn, "SELECT id, name FROM ingredients WHERE type = 'Solvent' OR type = 'Carrier' ORDER BY name ASC");
-					while ($r_ing = mysqli_fetch_array($res_ing)){
-					echo '{value: "'.$r_ing['name'].'", text: "'.$r_ing['name'].'"},';
-				}
-				?>
-			  ],
-		dataType: 'json',
+  container: 'body',
+  selector: 'a.concentration',
+  url: "pages/update_data.php?formula=<?=$meta['fid']?>",
+  title: 'Purity %',
+  type: "POST",
+  dataType: 'json',
 		success: function(response, newValue) {
-			if(response.status == 'error'){
-				return response.msg; 
-			}else{
-				reload_formula_data();
-			}
-		}
-    
-	});
-	
-	$('#formula').editable({
-	  container: 'body',
-	  selector: 'a.quantity',
-	  url: "pages/update_data.php?formula=<?=$meta['fid']?>",
-	  title: 'Quantity in <?=$settings['mUnit']?>',
-	  type: "POST",
-	  dataType: 'json',
-		  success: function(response, newValue) {
-			if(response.status == 'error'){
-				return response.msg; 
-			}else{ 
-				reload_formula_data();
-			}
-		},
-	  validate: function(value){
-	   if($.trim(value) == ''){
-		return 'This field is required';
-	   }
-	   if($.isNumeric(value) == '' ){
-		return 'Numbers only!';
-	   }
-	  }
-    });
-		
-	$('#formula').editable({
-	  container: 'body',
-	  selector: 'i.notes',
-	  url: "pages/update_data.php?formula=<?=base64_encode($f_name)?>",
-	  title: 'Notes',
-	  type: "POST",
-	  dataType: 'json',
-			success: function(response, newValue) {
-			if(response.status == 'error'){
-				return response.msg; 
-			}else{
-				reload_formula_data();
-			}
-		},
-	});
-
-	function ingName(data, type, row, meta){
-		if(row.exclude_from_calculation == 1){
-			var ex = 'pv_ing_exc';
-		}
-		if(row.chk_ingredient){
-			var chkIng = '<i class="fas fa-exclamation" rel="tip" title="'+row.chk_ingredient+'"></i>';
+		if(response.status == 'error'){
+			return response.msg; 
 		}else{
-			var chkIng = '';
+			reload_formula_data();
 		}
-		if(row.ingredient.profile_plain){
-			var profile_class = '<a href="#" class="'+row.ingredient.profile_plain+'"></a>';
-		}else{
-			var profile_class ='';
-		}
-		if(type === 'display'){
-			data = '<a class="popup-link '+ex+'" href="pages/mgmIngredient.php?id=' + row.ingredient.enc_id + '">' + data + '</a> '+ chkIng + profile_class;
-		}
-
-  	  return data;
+	},
+  validate: function(value){
+   if($.trim(value) == ''){
+	return 'This field is required';
+   }
+   if($.isNumeric(value) == '' ){
+	return 'Numbers only!';
+   }
   }
+});
+	
+$('#formula').editable({
+	container: 'body',
+	selector: 'a.solvent',
+	type: 'POST',
+	emptytext: "",
+	emptyclass: "",
+	url: "pages/update_data.php?formula=<?=$meta['fid']?>",
+	title: 'Choose solvent',
+	source: [
+			 <?php
+				$res_ing = mysqli_query($conn, "SELECT id, name FROM ingredients WHERE type = 'Solvent' OR type = 'Carrier' ORDER BY name ASC");
+				while ($r_ing = mysqli_fetch_array($res_ing)){
+				echo '{value: "'.$r_ing['name'].'", text: "'.$r_ing['name'].'"},';
+			}
+			?>
+		  ],
+	dataType: 'json',
+	success: function(response, newValue) {
+		if(response.status == 'error'){
+			return response.msg; 
+		}else{
+			reload_formula_data();
+		}
+	}
+
+});
+
+$('#formula').editable({
+  container: 'body',
+  selector: 'a.quantity',
+  url: "pages/update_data.php?formula=<?=$meta['fid']?>",
+  title: 'Quantity in <?=$settings['mUnit']?>',
+  type: "POST",
+  dataType: 'json',
+	  success: function(response, newValue) {
+		if(response.status == 'error'){
+			return response.msg; 
+		}else{ 
+			reload_formula_data();
+		}
+	},
+  validate: function(value){
+   if($.trim(value) == ''){
+	return 'This field is required';
+   }
+   if($.isNumeric(value) == '' ){
+	return 'Numbers only!';
+   }
+  }
+});
+		
+$('#formula').editable({
+  container: 'body',
+  selector: 'i.notes',
+  url: "pages/update_data.php?formula=<?=base64_encode($f_name)?>",
+  title: 'Notes',
+  type: "POST",
+  dataType: 'json',
+		success: function(response, newValue) {
+		if(response.status == 'error'){
+			return response.msg; 
+		}else{
+			reload_formula_data();
+		}
+	},
+});
+
+function ingName(data, type, row, meta){
+	if(row.exclude_from_calculation == 1){
+		var ex = 'pv_ing_exc';
+	}
+	if(row.chk_ingredient){
+		var chkIng = '<i class="fas fa-exclamation" rel="tip" title="'+row.chk_ingredient+'"></i>';
+	}else{
+		var chkIng = '';
+	}
+	if(row.ingredient.profile_plain){
+		var profile_class = '<a href="#" class="'+row.ingredient.profile_plain+'"></a>';
+	}else{
+		var profile_class ='';
+	}
+	if(type === 'display'){
+		data = '<a class="popup-link '+ex+'" href="pages/mgmIngredient.php?id=' + row.ingredient.enc_id + '">' + data + '</a> '+ chkIng + profile_class;
+	}
+
+  return data;
+}
 
 function ingCAS(data, type, row, meta){
 	if(type === 'display'){
