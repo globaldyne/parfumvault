@@ -9,6 +9,7 @@
 - Extend search in formula description for formulas
 - Fix sorting in ingredients page
 - Fix sorting in formulas page
+- Back label print improvements
 
 ### Version 4.0
 - Add Max Usage info in final product as well

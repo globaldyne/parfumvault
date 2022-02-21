@@ -507,22 +507,12 @@ if($_GET['action'] == 'printBoxLabel' && $_GET['name']){
 	
 	if($settings['label_printer_size'] == '62' || $settings['label_printer_size'] == '62 --red'){
 		$name = mysqli_real_escape_string($conn, $_GET['name']);
-		$q = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE fid = '$name'"));
+		$q = mysqli_fetch_array(mysqli_query($conn, "SELECT product_name FROM formulasMetaData WHERE fid = '$name'"));
 		$qIng = mysqli_query($conn, "SELECT ingredient FROM formulas WHERE fid = '$name'");
 		
 		while($ing = mysqli_fetch_array($qIng)){
-				$chName = mysqli_fetch_array(mysqli_query($conn, "SELECT chemical_name FROM ingredients WHERE name = '".$ing['ingredient']."' AND allergen = '1'"));
-				if($chName['chemical_name']){
-					$getAllergen['name'] = $chName['chemical_name'];
-				}else{
-					$getIngAlergen = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '".$ing['ingredient']."' AND allergen = '1'"));
-					$qAll = mysqli_query($conn, "SELECT name FROM allergens WHERE ing = '".$ing['ingredient']."'");
-					while($getAllergen = mysqli_fetch_array($qAll)){
-						$allergen[] = $getAllergen['name'];
-					}
-				}
-			$allergen[] = $getIngAlergen['name'];
-			$allergen[] = $getAllergen['name'];
+			$chName = mysqli_fetch_array(mysqli_query($conn, "SELECT chemical_name,name FROM ingredients WHERE name = '".$ing['ingredient']."' AND allergen = '1'"));
+			$allergen[] = $chName['chemical_name']?:$chName['name'];
 		}
 		$allergen[] = 'Denatureted Ethyl Alcohol '.$_GET['carrier'].'% Vol, Fragrance, DPG, Distilled Water';
 
@@ -560,12 +550,11 @@ if($_GET['action'] == 'printBoxLabel' && $_GET['name']){
 	$text = strtoupper($q['product_name']);
 	$font = __ROOT__.'/fonts/Arial.ttf';
 	//font size 15 rotate 0 center 360 top 50
-	//imagettftext($lbl, 30, 0, 250, 50, $black, $font, $text);
 	imagettftext($lbl, 25, 0, 300, 50, $black, $font, 'INGREDIENTS');
 	$lblF = imagerotate($lbl, 0 ,0);
 	
-	imagettftext($lblF, 15, 0, 0, 100, $black, $font, wordwrap ($allergenFinal, 90));
-	imagettftext($lblF, 15, 0, 150, 490, $black, $font, wordwrap ($info, 50));
+	imagettftext($lblF, 17, 0, 0, 100, $black, $font, wordwrap ($allergenFinal, 90));
+	imagettftext($lblF, 20, 0, 150, 490, $black, $font, wordwrap ($info, 50));
 
 	$save = __ROOT__.'/tmp/labels/'.base64_encode($text.'png');
 
