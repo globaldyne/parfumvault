@@ -63,7 +63,7 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
 </style>
 <div id="content-wrapper" class="d-flex flex-column">
 <?php require_once(__ROOT__.'/pages/top.php'); ?>
-        <div class="container-fluid">
+	<div class="container-fluid">
 		<div>
           <div class="card shadow mb-4">
             <div class="card-header py-3"> 
@@ -84,42 +84,40 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
 
           <div class="card-body">
            <div id="msgInfo"></div>
-              <div>
-                  <tr>
-                    <th colspan="6">
-                    <?php if($meta['isProtected'] == FALSE){?>
-                      <form action="javascript:addING()" enctype="multipart/form-data" name="form1" id="form1">
-                         <table width="100%" border="0" class="table">
-                            <tr>  
-                             <td>
-                             <select name="ingredient" id="ingredient" class="form-control selectpicker" data-live-search="true">
-                             	<option value="" selected disabled>Ingredient</option>
-                             <?php  foreach ($ing as $ingredients){ ?>
-                                <option data-subtext="<?=$ingredients['INCI']?:$ingredients['name']?>" value="<?=$ingredients['name']?>"><?=$ingredients['name']?> (<?=$ingredients['CAS']?>)</option>
-                             <?php } ?>
-                             </select>                                         
-                             </td>
-                             <td><input type="text" name="concentration" id="concentration" placeholder="Purity %" class="form-control" /></td>
-                              <td>
-                                 <select name="dilutant" id="dilutant" class="form-control">
-                                 <option value="" selected disabled>Dilutant</option>
-                                 <option value="none">None</option>
-                                 <?php
-                                    $res_dil = mysqli_query($conn, "SELECT id, name FROM ingredients WHERE type = 'Solvent' OR type = 'Carrier' ORDER BY name ASC");
-                                    while ($r_dil = mysqli_fetch_array($res_dil)){
-                                        echo '<option value="'.$r_dil['name'].'">'.$r_dil['name'].'</option>';
-                                    }
-                                 ?>
-                                 </select>
-                              </td>
-                              <td><input type="text" name="quantity" id="quantity" placeholder="Quantity" class="form-control" /></td>  
-                              <td><input type="submit" name="add" id="add" class="btn btn-info" value="Add" /> </td>  
-                            </tr>  
-                        </table>  
-                      </form>
-                      <?php } ?>
-                    </th>
-                    </tr>
+              <div id="add_ing">
+              <tr>
+                <th colspan="6">
+                <?php if($meta['isProtected'] == FALSE){?>
+                     <table width="100%" border="0" class="table">
+                        <tr>  
+                         <td>
+                         <select name="ingredient" id="ingredient" class="form-control selectpicker" data-live-search="true">
+                            <option value="" selected disabled>Ingredient</option>
+                         <?php  foreach ($ing as $ingredients){ ?>
+                            <option data-subtext="<?=$ingredients['INCI']?:$ingredients['name']?>" value="<?=$ingredients['name']?>"><?=$ingredients['name']?> (<?=$ingredients['CAS']?>)</option>
+                         <?php } ?>
+                         </select>                                         
+                         </td>
+                         <td><input type="text" name="concentration" id="concentration" placeholder="Purity %" class="form-control" /></td>
+                          <td>
+                             <select name="dilutant" id="dilutant" class="form-control">
+                             <option value="" selected disabled>Dilutant</option>
+                             <option value="none">None</option>
+                             <?php
+                                $res_dil = mysqli_query($conn, "SELECT id, name FROM ingredients WHERE type = 'Solvent' OR type = 'Carrier' ORDER BY name ASC");
+                                while ($r_dil = mysqli_fetch_array($res_dil)){
+                                    echo '<option value="'.$r_dil['name'].'">'.$r_dil['name'].'</option>';
+                                }
+                             ?>
+                             </select>
+                          </td>
+                          <td><input type="text" name="quantity" id="quantity" placeholder="Quantity" class="form-control" /></td>  
+                          <td><input type="submit" name="add" id="add-btn" class="btn btn-info" value="Add" /> </td>  
+                        </tr>  
+                    </table>  
+                  <?php } ?>
+                </th>
+                </tr>
                 <div id="fetch_formula">
                 	<div class="loader-center">
                 		<div class="loader"></div>
@@ -132,42 +130,42 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
                 <p>*Values in: <strong class="alert alert-danger">red</strong> exceeds usage level,   <strong class="alert alert-warning">yellow</strong> have no usage level set,   <strong class="alert alert-success">green</strong> are within usage level, <strong class="alert alert-info">blue</strong> are exceeding recommended usage level</p>
                 </div>
                 <?php } ?>
-            </div>
-          </div>
-        </div>
-      <!--Formula-->
-      
-          <div class="tab-pane fade" id="impact">
-            <div class="card-body">
-		        <div id="fetch_impact"><div class="loader"></div></div>
-			</div>            
-          </div>
-      
-          <div class="tab-pane fade" id="pyramid">
-            <div class="card-body">
-		        <div id="fetch_pyramid"><div class="loader"></div></div>
-			</div>            
-          </div>
-      
-          <div class="tab-pane fade" id="summary">
-            <div class="card-body">
-		        <div id="fetch_summary"><div class="loader"></div></div>
-                <?php if($legend){ ?>
-                <div id="share">
-               	  <p><a href="#" data-toggle="modal" data-target="#conf_view">Configure view</a></p>
-               	  <p>To include this page in your web site, copy this line and paste it into your html code:</p>
-           	    <p><pre>&lt;iframe src=&quot;<?=$_SERVER['REQUEST_SCHEME']?>://<?=$_SERVER['SERVER_NAME']?>/pages/viewSummary.php?id=<?=$fid?>&quot; title=&quot;<?=$f_name?>&quot;&gt;&lt;/iframe&gt;</pre></p>
-                	<p>For documentation and parameterisation please refer to: <a href="https://www.jbparfum.com/knowledge-base/share-formula-notes/" target="_blank">https://www.jbparfum.com/knowledge-base/share-formula-notes/</a></p>
-                </div>
-                <?php } ?>
-			</div>            
-          </div>
-                    
-        </div>
-       </div>         
-     </div><!--tabs-->
-   </div>
+     </div>
   </div>
+</div>
+<!--Formula-->
+  
+<div class="tab-pane fade" id="impact">
+    <div class="card-body">
+        <div id="fetch_impact"><div class="loader"></div></div>
+    </div>            
+</div>
+
+<div class="tab-pane fade" id="pyramid">
+    <div class="card-body">
+        <div id="fetch_pyramid"><div class="loader"></div></div>
+    </div>            
+</div>
+
+<div class="tab-pane fade" id="summary">
+    <div class="card-body">
+        <div id="fetch_summary"><div class="loader"></div></div>
+        <?php if($legend){ ?>
+        <div id="share">
+          <p><a href="#" data-toggle="modal" data-target="#conf_view">Configure view</a></p>
+          <p>To include this page in your web site, copy this line and paste it into your html code:</p>
+        <p><pre>&lt;iframe src=&quot;<?=$_SERVER['REQUEST_SCHEME']?>://<?=$_SERVER['SERVER_NAME']?>/pages/viewSummary.php?id=<?=$fid?>&quot; title=&quot;<?=$f_name?>&quot;&gt;&lt;/iframe&gt;</pre></p>
+            <p>For documentation and parameterisation please refer to: <a href="https://www.jbparfum.com/knowledge-base/share-formula-notes/" target="_blank">https://www.jbparfum.com/knowledge-base/share-formula-notes/</a></p>
+        </div>
+        <?php } ?>
+    </div>            
+</div>
+                    
+      </div>
+     </div>         
+   </div><!--tabs-->
+ </div>
+</div>
   
 <!--Configure View-->
 
@@ -258,10 +256,10 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
               <tr>
                 <td>            
   					<div class="modal-footer">
-     	  				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+     	  				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 	 	  				<input type="submit" name="button" class="btn btn-primary" id="btnUpdate" value="Save">
    		  			</div>
-           			</td>
+           		 </td>
     			</tr>
 			</table>
           </form>
@@ -322,33 +320,34 @@ $('#formula_data').editable({
     
 });
 
-//});
 //Add ingredient
-function addING(ingName,ingID) {	  
-$.ajax({ 
-    url: 'pages/manageFormula.php', 
-	type: 'get',
-    data: {
-		action: "addIng",
-		fname: "<?php echo $f_name; ?>",
-		quantity: $("#quantity").val(),
-		concentration: $("#concentration").val(),
-		ingredient: $("#ingredient").val(),
-		dilutant: $("#dilutant").val()
-		},
-	dataType: 'html',
-    success: function (data) {
-        if ( data.indexOf("Error") > -1 ) {
-			$('#msgInfo').html(data); 
-		}else{
-			$('#msgInfo').html(data);
-			reload_formula_data();
-			fetch_impact();
-			fetch_pyramid();
+$('#add_ing').on('click', '[id*=add-btn]', function () {
+	
+	$.ajax({ 
+		url: 'pages/manageFormula.php', 
+		type: 'get',
+		data: {
+			action: "addIng",
+			fname: "<?php echo $f_name; ?>",
+			quantity: $("#quantity").val(),
+			concentration: $("#concentration").val(),
+			ingredient: $("#ingredient").val(),
+			dilutant: $("#dilutant").val()
+			},
+		dataType: 'html',
+		success: function (data) {
+			if ( data.indexOf("Error") > -1 ) {
+				$('#msgInfo').html(data); 
+			}else{
+				$('#msgInfo').html(data);
+				reload_formula_data();
+				fetch_impact();
+				fetch_pyramid();
+			}
 		}
-    }
-  });
-};
+	  });
+				
+});
 
 function isProtected(status) {
   $.ajax({ 
@@ -365,23 +364,6 @@ function isProtected(status) {
 		}
 	  });
 };
-  
-$('#csv').on('click',function(){
-  $("#formula").tableHTMLExport({
-		type:'csv',
-		filename:'<?php echo $f_name; ?>.csv',
-		separator: ',',
-		newline: '\r\n',
-		trimContent: true,
-		quoteFields: true,
-		
-		ignoreColumns: '.noexport',
-		ignoreRows: '.noexport',
-		htmlContent: false,
-		// debug
-		consoleLog: true   
-   });
-})
 
 function fetch_formula(){
 $.ajax({ 
