@@ -621,13 +621,19 @@ formula td, table.table th {
 	*/
 }
 .compare {
-	display: inline-table;
+	display: flex;
 	border: none;
-	width:auto;
-	max-width:50%;
+	width: auto;
+	max-width: 100%;
+	margin: 20px 0px 0px 0px;
 }
 .compare_formula_name {
 	border: none !important;
+}
+
+.cmp_a {
+    margin: 10px 20px 0px 20px;
+    width: 100%;
 }
 
 .where_used {
@@ -766,3 +772,7 @@ body {
 	font-size: 13px !important;
 }
 
+.pv_formula_diff {
+	color: #858796;
+	background-color: #f6c23e75 !important;	
+}

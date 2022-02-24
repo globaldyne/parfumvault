@@ -10,6 +10,7 @@
 - Fix sorting in ingredients page
 - Fix sorting in formulas page
 - Back label print improvements
+- Formula comparison rewrite
 
 ### Version 4.0
 - Add Max Usage info in final product as well
