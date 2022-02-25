@@ -347,14 +347,13 @@ function reload_formula_data() {
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="amount_to_make">Total amount to make</h5>
+        <h5 class="modal-title">Total amount to make</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
       <div id="amountToMakeMsg"></div>
-  	  <form action="javascript:amountToMake()" method="get" name="form1" target="_self" id="form_amount_to_make"><p></p>
         <table width="313" border="0">
           <tr>
 	       <td width="66" height="31"><strong>SG<span class="sup">*</span> :</strong></td>
@@ -371,9 +370,8 @@ function reload_formula_data() {
 	    <p>*<a href="https://www.jbparfum.com/knowledge-base/3-specific-gravity-sg/" target="_blank">Specific Gravity of Ethanol</a></p>
 	    <div class="modal-footer">
 	     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-  		 <input type="submit" name="button" class="btn btn-primary" id="btnUpdate" value="Update Formula">
+  		 <input type="submit" name="button" class="btn btn-primary" id="amountToMake" value="Update Formula">
 	   </div>
-     </form>
     </div>
   </div>
  </div>
@@ -384,14 +382,13 @@ function reload_formula_data() {
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="create_accord">Create accord</h5>
+        <h5 class="modal-title">Create accord</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
       <div id="accordMsg"></div>
-  	  <form action="javascript:createAccord()" method="get" name="form1" target="_self" id="form_create_accord"><p></p>
         <table width="313" border="0">
           <tr>
 	       <td width="106" height="31"><strong>Accord from:</strong></td>
@@ -411,9 +408,8 @@ function reload_formula_data() {
 	    <p>&nbsp;</p>
 	    <div class="modal-footer">
 	     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-  		 <input type="submit" name="button" class="btn btn-primary" id="btnUpdate" value="Create">
+  		 <input type="submit" name="button" class="btn btn-primary" id="createAccord" value="Create">
 	   </div>
-     </form>
     </div>
   </div>
  </div>
@@ -424,14 +420,13 @@ function reload_formula_data() {
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="conv_ingredient">Convert formula to ingredient</h5>
+        <h5 class="modal-title">Convert formula to ingredient</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
       <div id="cnvMsg"></div>
-  	  <form action="javascript:conv2ing()" method="get" name="form1" target="_self" id="form_conv_ingredient"><p></p>
         <table width="313" border="0">
 	     <tr>
 	       <td><strong>Name:</strong></td>
@@ -441,9 +436,8 @@ function reload_formula_data() {
 	    <p>&nbsp;</p>
 	    <div class="modal-footer">
 	     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-  		 <input type="submit" name="button" class="btn btn-primary" id="btnUpdate" value="Convert">
+  		 <input type="submit" name="button" class="btn btn-primary" id="conv2ing" value="Convert">
 	   </div>
-     </form>
     </div>
   </div>
  </div>
@@ -706,7 +700,7 @@ function manageQuantity(quantity) {
 };
 
 //AMOUNT TO MAKE
-function amountToMake() {
+$('#amount_to_make').on('click', '[id*=amountToMake]', function () {
 	if($("#sg").val().trim() == '' ){
         $('#sg').focus();
 	  	$('#amountToMakeMsg').html('<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> all fields required!</div>');
@@ -731,11 +725,11 @@ function amountToMake() {
 		}
 	  });
 	}
-};
+});
 
 
-//Create Accord
-function createAccord() {
+//Create Accord 
+$('#create_accord').on('click', '[id*=createAccord]', function () {
 	if($("#accordName").val().trim() == '' ){
         $('#accordName').focus();
 	  	$('#accordMsg').html('<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> Accord name required!</div>');	
@@ -756,11 +750,11 @@ function createAccord() {
 		}
 	  });
 	}
-};
+});
 
 //Convert to ingredient
-function conv2ing() {	  
-if($("#ingName").val().trim() == '' ){
+$('#conv_ingredient').on('click', '[id*=conv2ing]', function () {
+	if($("#ingName").val().trim() == '' ){
         $('#ingName').focus();
 	  	$('#cnvMsg').html('<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> Ingredient name required!</div>');	
 	}else{
@@ -780,7 +774,7 @@ if($("#ingName").val().trim() == '' ){
 		}
 	  });
 	}
-};
+});
 
 //Clone
 function cloneMe() {	  

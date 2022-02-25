@@ -11,6 +11,7 @@
 - Fix sorting in formulas page
 - Back label print improvements
 - Formula comparison rewrite
+- Categories page improvements
 
 ### Version 4.0
 - Add Max Usage info in final product as well

@@ -55,7 +55,7 @@ $(document).ready(function() {
 			emptyTable: 'No groups yet.',
 			search: 'Search:'
 			},
-    	ajax: {	url: 'core/list_frmCat_data.php' },
+    	ajax: {	url: '/core/list_frmCat_data.php' },
 		columns: [
 				  { data : 'name', title: 'Name', render: cName },
     			  { data : 'type', title: 'Type', render: cType},
@@ -80,7 +80,7 @@ function cType(data, type, row){
 }
 
 function cActions(data, type, row){
-	return '<a href="#" id="catDel" class="fas fa-trash" data-id="'+row.id+'" data-name="'+row.name+'"></a>';    
+	return '<i id="catDel" class="pv_point_gen fas fa-trash" style="color: #c9302c;" data-id="'+row.id+'" data-name="'+row.name+'"></i>';    
 }
 
 function fKey(data, type, row){
