@@ -16,7 +16,7 @@ if($_GET['action'] == 'import' && $_GET['items']){
         $jsonData = json_decode(file_get_contents($jAPI), true);
 
         if($jsonData['status'] == 'Failed'){
-        	echo  '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Invalid credentials or your PV Online account is inactive.</div>';
+        	echo  '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error connecting or retrieving data from PV Online.</div>';
             return;
          }
 
