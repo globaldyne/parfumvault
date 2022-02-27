@@ -8,6 +8,10 @@ require_once(__ROOT__.'/func/countElement.php');
 
 $row = $_POST['start']?:0;
 $limit = $_POST['length']?:10;
+$order_by  = $_POST['order_by']?:'name';
+$order  = $_POST['order_as']?:'ASC';
+
+$extra = "ORDER BY ".$order_by." ".$order;
 
 $cats_q = mysqli_query($conn, "SELECT id,name,description,type FROM IFRACategories ORDER BY id ASC");
 while($cats_res = mysqli_fetch_array($cats_q)){
@@ -21,10 +25,10 @@ if($_GET['filter'] && $_GET['profile'] || $_GET['sex']){
 $s = trim($_POST['search']['value']);
 
 if($s != ''){
-   $f = "WHERE 1 AND (name LIKE '%".$s."%' OR product_name LIKE '%".$s."%')";
+   $f = "WHERE 1 AND (name LIKE '%".$s."%' OR product_name LIKE '%".$s."%' OR notes LIKE '%".$s."%')";
 }
 
-$formulas = mysqli_query($conn, "SELECT id,fid,name,product_name,isProtected,profile,sex,created,catClass,isMade,madeOn FROM formulasMetaData $f LIMIT $row, $limit");
+$formulas = mysqli_query($conn, "SELECT id,fid,name,product_name,isProtected,profile,sex,created,catClass,isMade,madeOn FROM formulasMetaData $f $extra LIMIT $row, $limit");
 
 while ($allFormulas = mysqli_fetch_array($formulas)){
 	    $formula[] = $allFormulas;

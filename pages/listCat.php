@@ -53,22 +53,25 @@ $(document).ready(function() {
 			emptyTable: "No groups yet.",
 			search: "Search:"
 			},
-    	ajax: {	url: 'core/list_ingCat_data.php' },
+    	ajax: {	url: '/core/list_ingCat_data.php' },
 		 columns: [
-				   { data : 'image', title: 'Image', render: cImage },
-    			   { data : 'colorKey', title: 'Colour Key', render: cKey},
-				   { data : 'name', title: 'Name', render: cName},
-				   { data : 'notes', title: 'Description', render: cNotes},
-   				   { data : null, title: 'Actions', render: cActions},		   
+				   { data : 'image', title: 'Image', render: ciImage },
+    			   { data : 'colorKey', title: 'Colour Key', render: ciKey},
+				   { data : 'name', title: 'Name', render: ciName},
+				   { data : 'notes', title: 'Description', render: ciNotes},
+   				   { data : null, title: 'Actions', render: ciActions},		   
 				  ],
         order: [[ 2, 'asc' ]],
 		lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
         pageLength: 20,
-		displayLength: 20,		
+		displayLength: 20,
+			drawCallback: function( settings ) {
+			extrasShow();
+    	},
 	});
 });
 
-function cImage(data, type, row){
+function ciImage(data, type, row){
 	if(row.image){
 		var cimg = '<img src="' + row.image + '" class="img_ing">';
 	}else{
@@ -76,20 +79,20 @@ function cImage(data, type, row){
 	}
 	return '<a href="pages/editCat.php?id='+row.id+'" class="popup-link">' + cimg + '</a>';    
 }
-function cKey(data, type, row){
+function ciKey(data, type, row){
 	return '<a href="#" class="colorKey" style="background-color: rgb('+row.colorKey+')" id="colorKey" data-name="colorKey" data-type="select" data-pk="'+row.id+'" data-title="Choose Colour Key for '+row.name+'"></a>';    
 }
 
-function cName(data, type, row){
+function ciName(data, type, row){
 	return '<a class="name pv_point_gen" data-name="name" data-type="text" data-pk="'+row.id+'">'+row.name+'</a>';    
 }
 
-function cNotes(data, type, row){
+function ciNotes(data, type, row){
 	return '<a class="notes pv_point_gen" data-name="notes" data-type="textarea" data-pk="'+row.id+'">'+row.notes+'</a>';    
 }
 
-function cActions(data, type, row){
-	return '<a href="#" id="catDel" class="fas fa-trash" data-id="'+row.id+'" data-name="'+row.name+'"></a>';    
+function ciActions(data, type, row){
+	return '<i id="catDel" class="pv_point_gen fas fa-trash" style="color: #c9302c;" data-id="'+row.id+'" data-name="'+row.name+'"></i>';    
 }
 
 $('#add-category').click(function() {
@@ -205,12 +208,17 @@ function reload_cat_data() {
     $('#tdDataCat').DataTable().ajax.reload(null, true);
 };
 
-$( document ).ajaxComplete(function() {
+function extrasShow() {
+	$('[rel=tip]').tooltip({
+        "html": true,
+        "delay": {"show": 100, "hide": 0},
+     });
 	$('.popup-link').magnificPopup({
 		type: 'iframe',
 		closeOnContentClick: false,
 		closeOnBgClick: false,
 		showCloseBtn: true,
 	});
-});
+};
+
 </script>

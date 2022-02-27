@@ -1,4 +1,18 @@
 # CHANGELOG
+### Version 4.1
+- PV Online upload function now includes suppliers
+- Add technical data to ingredients core API
+- Rewrite IFRA page to populate datatables
+- Add mark.js to highlight search results in IFRA page
+- Fix broken link when trying to backup DB from IFRA page
+- Add image support from pubChem for IFRA Library
+- Extend search in formula description for formulas
+- Fix sorting in ingredients page
+- Fix sorting in formulas page
+- Back label print improvements
+- Formula comparison rewrite
+- Categories page improvements
+
 ### Version 4.0
 - Add Max Usage info in final product as well
 - Add Reccomended Usage info in final product as well

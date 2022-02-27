@@ -21,7 +21,6 @@ $f_name = base64_decode($meta['fid']);
 
 ?>
 
-
 <script>
 
 $(document).ready(function() {
@@ -128,8 +127,8 @@ $('#formula tbody').on( 'click', 'tr.group', function () {
          formula_table.order( [ groupColumn, 'asc' ] ).draw();
     }
 });
-	
-	
+
+
 $('#formula').on('click', '[id*=rmIng]', function () {
 	var ing = {};
 	ing.ID = $(this).attr('data-id');
@@ -282,7 +281,7 @@ function reload_formula_data() {
         </div>
 	</th>
 	<th>
-        <div class="btn-group">
+        <div class="btn-group" id="menu">
             <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
             <div class="dropdown-menu dropdown-menu-left">
 	           <a class="dropdown-item popup-link" href="pages/getFormMeta.php?id=<?=$meta['id']?>">Details</a>
@@ -348,14 +347,13 @@ function reload_formula_data() {
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="amount_to_make">Total amount to make</h5>
+        <h5 class="modal-title">Total amount to make</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
       <div id="amountToMakeMsg"></div>
-  	  <form action="javascript:amountToMake()" method="get" name="form1" target="_self" id="form_amount_to_make"><p></p>
         <table width="313" border="0">
           <tr>
 	       <td width="66" height="31"><strong>SG<span class="sup">*</span> :</strong></td>
@@ -372,9 +370,8 @@ function reload_formula_data() {
 	    <p>*<a href="https://www.jbparfum.com/knowledge-base/3-specific-gravity-sg/" target="_blank">Specific Gravity of Ethanol</a></p>
 	    <div class="modal-footer">
 	     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-  		 <input type="submit" name="button" class="btn btn-primary" id="btnUpdate" value="Update Formula">
+  		 <input type="submit" name="button" class="btn btn-primary" id="amountToMake" value="Update Formula">
 	   </div>
-     </form>
     </div>
   </div>
  </div>
@@ -385,14 +382,13 @@ function reload_formula_data() {
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="create_accord">Create accord</h5>
+        <h5 class="modal-title">Create accord</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
       <div id="accordMsg"></div>
-  	  <form action="javascript:createAccord()" method="get" name="form1" target="_self" id="form_create_accord"><p></p>
         <table width="313" border="0">
           <tr>
 	       <td width="106" height="31"><strong>Accord from:</strong></td>
@@ -412,9 +408,8 @@ function reload_formula_data() {
 	    <p>&nbsp;</p>
 	    <div class="modal-footer">
 	     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-  		 <input type="submit" name="button" class="btn btn-primary" id="btnUpdate" value="Create">
+  		 <input type="submit" name="button" class="btn btn-primary" id="createAccord" value="Create">
 	   </div>
-     </form>
     </div>
   </div>
  </div>
@@ -425,14 +420,13 @@ function reload_formula_data() {
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="conv_ingredient">Convert formula to ingredient</h5>
+        <h5 class="modal-title">Convert formula to ingredient</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
       <div id="cnvMsg"></div>
-  	  <form action="javascript:conv2ing()" method="get" name="form1" target="_self" id="form_conv_ingredient"><p></p>
         <table width="313" border="0">
 	     <tr>
 	       <td><strong>Name:</strong></td>
@@ -442,9 +436,8 @@ function reload_formula_data() {
 	    <p>&nbsp;</p>
 	    <div class="modal-footer">
 	     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-  		 <input type="submit" name="button" class="btn btn-primary" id="btnUpdate" value="Convert">
+  		 <input type="submit" name="button" class="btn btn-primary" id="conv2ing" value="Convert">
 	   </div>
-     </form>
     </div>
   </div>
  </div>
@@ -466,116 +459,116 @@ function extrasShow() {
 };
   
 $('#formula').editable({
-	  container: 'body',
-	  selector: 'a.concentration',
-	  url: "pages/update_data.php?formula=<?=$meta['fid']?>",
-	  title: 'Purity %',
-	  type: "POST",
-	  dataType: 'json',
-			success: function(response, newValue) {
-			if(response.status == 'error'){
-				return response.msg; 
-			}else{
-				reload_formula_data();
-			}
-		},
-	  validate: function(value){
-	   if($.trim(value) == ''){
-		return 'This field is required';
-	   }
-	   if($.isNumeric(value) == '' ){
-		return 'Numbers only!';
-	   }
-	  }
-	});
-	
-	$('#formula').editable({
-		container: 'body',
-		selector: 'a.solvent',
-		type: 'POST',
-		emptytext: "",
-		emptyclass: "",
-		url: "pages/update_data.php?formula=<?=$meta['fid']?>",
-		title: 'Choose solvent',
-		source: [
-				 <?php
-					$res_ing = mysqli_query($conn, "SELECT id, name FROM ingredients WHERE type = 'Solvent' OR type = 'Carrier' ORDER BY name ASC");
-					while ($r_ing = mysqli_fetch_array($res_ing)){
-					echo '{value: "'.$r_ing['name'].'", text: "'.$r_ing['name'].'"},';
-				}
-				?>
-			  ],
-		dataType: 'json',
+  container: 'body',
+  selector: 'a.concentration',
+  url: "pages/update_data.php?formula=<?=$meta['fid']?>",
+  title: 'Purity %',
+  type: "POST",
+  dataType: 'json',
 		success: function(response, newValue) {
-			if(response.status == 'error'){
-				return response.msg; 
-			}else{
-				reload_formula_data();
-			}
-		}
-    
-	});
-	
-	$('#formula').editable({
-	  container: 'body',
-	  selector: 'a.quantity',
-	  url: "pages/update_data.php?formula=<?=$meta['fid']?>",
-	  title: 'Quantity in <?=$settings['mUnit']?>',
-	  type: "POST",
-	  dataType: 'json',
-		  success: function(response, newValue) {
-			if(response.status == 'error'){
-				return response.msg; 
-			}else{ 
-				reload_formula_data();
-			}
-		},
-	  validate: function(value){
-	   if($.trim(value) == ''){
-		return 'This field is required';
-	   }
-	   if($.isNumeric(value) == '' ){
-		return 'Numbers only!';
-	   }
-	  }
-    });
-		
-	$('#formula').editable({
-	  container: 'body',
-	  selector: 'i.notes',
-	  url: "pages/update_data.php?formula=<?=base64_encode($f_name)?>",
-	  title: 'Notes',
-	  type: "POST",
-	  dataType: 'json',
-			success: function(response, newValue) {
-			if(response.status == 'error'){
-				return response.msg; 
-			}else{
-				reload_formula_data();
-			}
-		},
-	});
-
-	function ingName(data, type, row, meta){
-		if(row.exclude_from_calculation == 1){
-			var ex = 'pv_ing_exc';
-		}
-		if(row.chk_ingredient){
-			var chkIng = '<i class="fas fa-exclamation" rel="tip" title="'+row.chk_ingredient+'"></i>';
+		if(response.status == 'error'){
+			return response.msg; 
 		}else{
-			var chkIng = '';
+			reload_formula_data();
 		}
-		if(row.ingredient.profile_plain){
-			var profile_class = '<a href="#" class="'+row.ingredient.profile_plain+'"></a>';
-		}else{
-			var profile_class ='';
-		}
-		if(type === 'display'){
-			data = '<a class="popup-link '+ex+'" href="pages/mgmIngredient.php?id=' + row.ingredient.enc_id + '">' + data + '</a> '+ chkIng + profile_class;
-		}
-
-  	  return data;
+	},
+  validate: function(value){
+   if($.trim(value) == ''){
+	return 'This field is required';
+   }
+   if($.isNumeric(value) == '' ){
+	return 'Numbers only!';
+   }
   }
+});
+	
+$('#formula').editable({
+	container: 'body',
+	selector: 'a.solvent',
+	type: 'POST',
+	emptytext: "",
+	emptyclass: "",
+	url: "pages/update_data.php?formula=<?=$meta['fid']?>",
+	title: 'Choose solvent',
+	source: [
+			 <?php
+				$res_ing = mysqli_query($conn, "SELECT id, name FROM ingredients WHERE type = 'Solvent' OR type = 'Carrier' ORDER BY name ASC");
+				while ($r_ing = mysqli_fetch_array($res_ing)){
+				echo '{value: "'.$r_ing['name'].'", text: "'.$r_ing['name'].'"},';
+			}
+			?>
+		  ],
+	dataType: 'json',
+	success: function(response, newValue) {
+		if(response.status == 'error'){
+			return response.msg; 
+		}else{
+			reload_formula_data();
+		}
+	}
+
+});
+
+$('#formula').editable({
+  container: 'body',
+  selector: 'a.quantity',
+  url: "pages/update_data.php?formula=<?=$meta['fid']?>",
+  title: 'Quantity in <?=$settings['mUnit']?>',
+  type: "POST",
+  dataType: 'json',
+	  success: function(response, newValue) {
+		if(response.status == 'error'){
+			return response.msg; 
+		}else{ 
+			reload_formula_data();
+		}
+	},
+  validate: function(value){
+   if($.trim(value) == ''){
+	return 'This field is required';
+   }
+   if($.isNumeric(value) == '' ){
+	return 'Numbers only!';
+   }
+  }
+});
+		
+$('#formula').editable({
+  container: 'body',
+  selector: 'i.notes',
+  url: "pages/update_data.php?formula=<?=base64_encode($f_name)?>",
+  title: 'Notes',
+  type: "POST",
+  dataType: 'json',
+		success: function(response, newValue) {
+		if(response.status == 'error'){
+			return response.msg; 
+		}else{
+			reload_formula_data();
+		}
+	},
+});
+
+function ingName(data, type, row, meta){
+	if(row.exclude_from_calculation == 1){
+		var ex = 'pv_ing_exc';
+	}
+	if(row.chk_ingredient){
+		var chkIng = '<i class="fas fa-exclamation" rel="tip" title="'+row.chk_ingredient+'"></i>';
+	}else{
+		var chkIng = '';
+	}
+	if(row.ingredient.profile_plain){
+		var profile_class = '<a href="#" class="'+row.ingredient.profile_plain+'"></a>';
+	}else{
+		var profile_class ='';
+	}
+	if(type === 'display'){
+		data = '<a class="popup-link '+ex+'" href="pages/mgmIngredient.php?id=' + row.ingredient.enc_id + '">' + data + '</a> '+ chkIng + profile_class;
+	}
+
+  return data;
+}
 
 function ingCAS(data, type, row, meta){
 	if(type === 'display'){
@@ -584,47 +577,47 @@ function ingCAS(data, type, row, meta){
   	 return data;
 }
   
-  function ingConc(data, type, row, meta){
-	  if(type === 'display'){
-		  <?php if($meta['isProtected'] == FALSE){?>
-		  data = '<a href="#" data-name="concentration" class="concentration" data-type="text" data-pk="' + row.ingredient.name + '">' + data + '</a>';
-		  <?php } ?>
-	  }
-
-  	  return data;
-  	}
-  
-  function ingSolvent(data, type, row, meta){
-	  if(type === 'display'){
-		<?php if($meta['isProtected'] == FALSE){?>
-		  if(row.purity !== 100){
-		  	data = '<a href="#" data-name="dilutant" class="solvent" data-type="select" data-pk="' + row.ingredient.name + '">' + data + '</a>';
-	  	}else{
-			data = 'None';
-		}
-		<?php } ?>
-	  }
-  	  return data;
+function ingConc(data, type, row, meta){
+  if(type === 'display'){
+	  <?php if($meta['isProtected'] == FALSE){?>
+	  data = '<a href="#" data-name="concentration" class="concentration" data-type="text" data-pk="' + row.ingredient.name + '">' + data + '</a>';
+	  <?php } ?>
   }
+
+  return data;
+}
+
+function ingSolvent(data, type, row, meta){
+  if(type === 'display'){
+	<?php if($meta['isProtected'] == FALSE){?>
+	  if(row.purity !== 100){
+		data = '<a href="#" data-name="dilutant" class="solvent" data-type="select" data-pk="' + row.ingredient.name + '">' + data + '</a>';
+	}else{
+		data = 'None';
+	}
+	<?php } ?>
+  }
+  return data;
+}
   
-  function ingQuantity(data, type, row, meta){
+function ingQuantity(data, type, row, meta){
 	if(type === 'display'){
 		<?php if($meta['isProtected'] == FALSE){?>
 		data = '<a href="#" data-name="quantity" class="quantity" data-type="text" data-pk="' + row.ingredient.name + '">' + data + '</a>';
 		<?php } ?>
 	}
-    return data;
-  }
+	return data;
+}
 
-  function ingNotes(data, type, row, meta){
+function ingNotes(data, type, row, meta){
 	 if(type === 'display'){
 	  <?php if($meta['defView'] == '1'){ $show = 'properties'; }elseif($meta['defView'] == '2'){ $show = 'notes';}?>
 	  <?php if($meta['isProtected'] == FALSE){?>
 	  data = '<i data-name="<?=$show?>" class="pv_point_gen <?=$show?>" data-type="textarea" data-pk="' + row.ingredient.name + '">' + data + '</i>';
 	  <?php } ?>
 	 }
-   return data;
-  }
+	return data;
+}
   
   
 function ingInv(data, type, row, meta){
@@ -707,7 +700,7 @@ function manageQuantity(quantity) {
 };
 
 //AMOUNT TO MAKE
-function amountToMake() {
+$('#amount_to_make').on('click', '[id*=amountToMake]', function () {
 	if($("#sg").val().trim() == '' ){
         $('#sg').focus();
 	  	$('#amountToMakeMsg').html('<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> all fields required!</div>');
@@ -732,11 +725,11 @@ function amountToMake() {
 		}
 	  });
 	}
-};
+});
 
 
-//Create Accord
-function createAccord() {
+//Create Accord 
+$('#create_accord').on('click', '[id*=createAccord]', function () {
 	if($("#accordName").val().trim() == '' ){
         $('#accordName').focus();
 	  	$('#accordMsg').html('<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> Accord name required!</div>');	
@@ -757,11 +750,11 @@ function createAccord() {
 		}
 	  });
 	}
-};
+});
 
 //Convert to ingredient
-function conv2ing() {	  
-if($("#ingName").val().trim() == '' ){
+$('#conv_ingredient').on('click', '[id*=conv2ing]', function () {
+	if($("#ingName").val().trim() == '' ){
         $('#ingName').focus();
 	  	$('#cnvMsg').html('<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> Ingredient name required!</div>');	
 	}else{
@@ -781,7 +774,7 @@ if($("#ingName").val().trim() == '' ){
 		}
 	  });
 	}
-};
+});
 
 //Clone
 function cloneMe() {	  

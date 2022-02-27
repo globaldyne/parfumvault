@@ -16,7 +16,7 @@ if($_GET['action'] == 'import' && $_GET['items']){
         $jsonData = json_decode(file_get_contents($jAPI), true);
 
         if($jsonData['status'] == 'Failed'){
-        	echo  '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Invalid credentials or your PV Online account is inactive.</div>';
+        	echo  '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error connecting or retrieving data from PV Online.</div>';
             return;
          }
 
@@ -54,6 +54,7 @@ if($_GET['action'] == 'upload' && $_GET['items'] == 'ingredients'){
 	$ingQ = mysqli_query($conn, "SELECT * FROM ingredients WHERE isPrivate = '0'");
 	$i = 0;
 	while($ing = mysqli_fetch_assoc($ingQ)){
+		$ing['rID'] = $ing['id'];
 		unset($ing['id'],$ing['created']);
 		if($_GET['excludeNotes'] == 'true'){
 			unset($ing['notes']);			
@@ -87,6 +88,21 @@ if($_GET['action'] == 'upload' && $_GET['items'] == 'ingredients'){
 		$s++;
 	}
 	
+	//Upload all the suppliers
+	$sup = mysqli_query($conn, "SELECT ingSupplierID, ingID, supplierLink FROM suppliers");
+	$sp = 0;
+	while($supplier = mysqli_fetch_assoc($sup)){
+		$spData['data'][] = array_filter($supplier);
+		$sp++;
+	}
+	
+	$supMap = mysqli_query($conn, "SELECT id AS rID,name FROM ingSuppliers");
+	$sm = 0;
+	while($supplierMap = mysqli_fetch_assoc($supMap)){
+		$smData['data'][] = array_filter($supplierMap);
+		$sm++;
+	}
+	
 	$params = "?username=".$pv_online['email']."&password=".$pv_online['password']."&do=add&kind=ingredient";
 	$up_req = pvUploadData($pvOnlineAPI.$params, json_encode($ingData));
 	
@@ -103,6 +119,14 @@ if($_GET['action'] == 'upload' && $_GET['items'] == 'ingredients'){
 		$params = "?username=".$pv_online['email']."&password=".$pv_online['password']."&do=add&kind=synonym";
 		$up_req.= pvUploadData($pvOnlineAPI.$params, json_encode($sData));
 		$msg.= ', <strong>'.$s.'</strong> synonyms';
+	}
+	
+	if($_GET['excludeSuppliers'] == 'false'){
+		$params = "?username=".$pv_online['email']."&password=".$pv_online['password']."&do=add&kind=suppliers";
+		$up_req.= pvUploadData($pvOnlineAPI.$params, json_encode($spData));
+		$params = "?username=".$pv_online['email']."&password=".$pv_online['password']."&do=add&kind=ingSuppliers";
+		$up_req.= pvUploadData($pvOnlineAPI.$params, json_encode($smData));
+		$msg.= ', <strong>'.$sp.'</strong> suppliers';
 	}
 	
 	if($up_req){
