@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 4.2
+
 ### Version 4.1
 - PV Online upload function now includes suppliers
 - Add technical data to ingredients core API
