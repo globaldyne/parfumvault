@@ -88,6 +88,7 @@ $(document).ready(function() {
 	var tdDataIng = $('#tdDataIng').DataTable( {
 	columnDefs: [
 		{ className: 'pv_vertical_middle text-center', targets: '_all' },
+		{ orderable: false, targets: [1,3,5,8]}
 	],
 	dom: 'lr<"#advanced_search">tip',
 	initComplete: function(settings, json) {
@@ -116,6 +117,10 @@ $(document).ready(function() {
 			d.odor = '<?=$_GET['odor']?:null?>'
 			d.cat = '<?=$_GET['cat']?:null?>'
 			d.synonym = '<?=$_GET['synonym']?:null?>'
+			if (d.order.length>0){
+                d.order_by = d.columns[d.order[0].column].data
+                d.order_as = d.order[0].dir
+            }
         },
 		dataType: 'json',
 		},

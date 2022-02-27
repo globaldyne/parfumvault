@@ -116,6 +116,12 @@ function initTable(tableId, src) {
 			   url: src,
 		   	   type: 'POST',
 			   dataType: 'json',
+			   data: function(d) {
+					if (d.order.length>0){
+						d.order_by = d.columns[d.order[0].column].data
+						d.order_as = d.order[0].dir
+					}
+        		},
 			   },
 			columns: [
 			   { data : 'name', title: 'Formula Name', render: fName },
@@ -138,7 +144,7 @@ function initTable(tableId, src) {
 			},
            order: [0,'asc'],
            columnDefs: [
-				{ orderable: true, targets: [0] },
+				{ orderable: false, targets: [2, 6] },
 				{ className: 'text-center', targets: '_all' },				  
 				],
 	    destroy: true,

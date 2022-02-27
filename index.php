@@ -80,8 +80,6 @@ if(file_exists(__ROOT__.'/db/updates/update_'.$pv_meta['schema_ver'].'-'.$db_ver
  
   <link href="css/bootstrap.min.css" rel="stylesheet">
   
- 
-  
   <script src="js/jquery-ui.js"></script>
   <script src="js/bootstrap.min.js"></script>
   <script src="js/bootstrap-select.js"></script>

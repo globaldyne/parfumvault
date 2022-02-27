@@ -3,93 +3,93 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 DROP TABLE IF EXISTS `allergens`;
 CREATE TABLE `allergens` (
   `id` int(11) NOT NULL,
-  `ing` varchar(255) COLLATE utf8_bin NOT NULL,
-  `name` varchar(255) COLLATE utf8_bin NOT NULL,
-  `cas` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `ec` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `ing` varchar(255) COLLATE utf8_general_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
+  `cas` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `ec` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `percentage` DECIMAL(8,4) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 
 DROP TABLE IF EXISTS `batchIDHistory`;
 CREATE TABLE `batchIDHistory` (
-  `id` varchar(50) COLLATE utf8_bin NOT NULL,
-  `fid` varchar(255) COLLATE utf8_bin NOT NULL,
-  `pdf` varchar(255) COLLATE utf8_bin NOT NULL,
+  `id` varchar(50) COLLATE utf8_general_ci NOT NULL,
+  `fid` varchar(255) COLLATE utf8_general_ci NOT NULL,
+  `pdf` varchar(255) COLLATE utf8_general_ci NOT NULL,
   `created` timestamp NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 DROP TABLE IF EXISTS `bottles`;
 CREATE TABLE `bottles` (
   `id` int(11) NOT NULL,
-  `name` varchar(255) COLLATE utf8_bin NOT NULL,
-  `ml` varchar(255) COLLATE utf8_bin NOT NULL,
-  `price` varchar(255) COLLATE utf8_bin NOT NULL,
-  `height` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `width` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `diameter` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `supplier` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `supplier_link` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `notes` text COLLATE utf8_bin DEFAULT NULL,
-  `photo` varchar(255) COLLATE utf8_bin DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+  `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
+  `ml` varchar(255) COLLATE utf8_general_ci NOT NULL,
+  `price` varchar(255) COLLATE utf8_general_ci NOT NULL,
+  `height` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `width` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `diameter` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `supplier` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `supplier_link` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `notes` text COLLATE utf8_general_ci DEFAULT NULL,
+  `photo` varchar(255) COLLATE utf8_general_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 DROP TABLE IF EXISTS `customers`;
 CREATE TABLE `customers` (
   `id` int(11) NOT NULL,
-  `name` varchar(255) COLLATE utf8_bin NOT NULL,
-  `address` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `email` varchar(225) COLLATE utf8_bin DEFAULT NULL,
-  `phone` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `web` varchar(255) COLLATE utf8_bin DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+  `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
+  `address` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `email` varchar(225) COLLATE utf8_general_ci DEFAULT NULL,
+  `phone` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `web` varchar(255) COLLATE utf8_general_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 DROP TABLE IF EXISTS `formulas`;
 CREATE TABLE `formulas` (
   `id` int(11) NOT NULL,
-  `fid` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `name` varchar(255) COLLATE utf8_bin NOT NULL,
-  `ingredient` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `ingredient_id` varchar(11) COLLATE utf8_bin DEFAULT NULL,
+  `fid` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
+  `ingredient` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `ingredient_id` varchar(11) COLLATE utf8_general_ci DEFAULT NULL,
   `concentration` decimal(5,2) DEFAULT 100.00,
-  `dilutant` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `dilutant` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `quantity` decimal(8,4) DEFAULT NULL,
   `exclude_from_summary` INT NOT NULL DEFAULT '0', 
   `exclude_from_calculation` INT NOT NULL DEFAULT '0', 
-  `notes` varchar(11) COLLATE utf8_bin DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+  `notes` varchar(11) COLLATE utf8_general_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 DROP TABLE IF EXISTS `makeFormula`;
 CREATE TABLE `makeFormula` (
  `id` int(11) NOT NULL AUTO_INCREMENT,
- `fid` varchar(255) COLLATE utf8_bin DEFAULT NULL,
- `name` varchar(255) COLLATE utf8_bin NOT NULL,
- `ingredient` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+ `fid` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+ `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
+ `ingredient` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
  `concentration` decimal(5,2) DEFAULT 100.00,
- `dilutant` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+ `dilutant` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
  `quantity` decimal(8,2) DEFAULT NULL,
  `toAdd` int(11) NOT NULL,
  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE `cart` (
  `id` int(11) NOT NULL AUTO_INCREMENT,
- `name` varchar(255) COLLATE utf8_bin NOT NULL,
- `quantity` varchar(255) COLLATE utf8_bin NOT NULL,
- `purity` varchar(255) COLLATE utf8_bin NOT NULL,
+ `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
+ `quantity` varchar(255) COLLATE utf8_general_ci NOT NULL,
+ `purity` varchar(255) COLLATE utf8_general_ci NOT NULL,
  `ingID` INT NOT NULL,
  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 DROP TABLE IF EXISTS `formulasMetaData`;
 CREATE TABLE `formulasMetaData` (
   `id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
   `product_name` varchar(255) DEFAULT NULL,
-  `fid` varchar(255) COLLATE utf8_bin NOT NULL,
-  `profile` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `sex` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `notes` text COLLATE utf8_bin DEFAULT NULL,
+  `fid` varchar(255) COLLATE utf8_general_ci NOT NULL,
+  `profile` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `sex` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `notes` text COLLATE utf8_general_ci DEFAULT NULL,
   `created` timestamp NOT NULL DEFAULT current_timestamp(),
   `isProtected` INT NULL DEFAULT '0',
   `defView` INT NULL DEFAULT '1',
@@ -105,7 +105,7 @@ DROP TABLE IF EXISTS `IFRALibrary`;
 CREATE TABLE `IFRALibrary` (
   `id` int(11) NOT NULL,
   `ifra_key` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image` longblob DEFAULT NULL,
   `amendment` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `prev_pub` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `last_pub` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -148,18 +148,18 @@ CREATE TABLE `IFRALibrary` (
 DROP TABLE IF EXISTS `ingCategory`;
 CREATE TABLE `ingCategory` (
   `id` int(11) NOT NULL,
-  `name` varchar(255) COLLATE utf8_bin NOT NULL,
-  `notes` text COLLATE utf8_bin DEFAULT NULL,
+  `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
+  `notes` text COLLATE utf8_general_ci DEFAULT NULL,
   `image` LONGBLOB NULL,
   `colorKey` VARCHAR(255) NULL 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 DROP TABLE IF EXISTS `ingProfiles`;
 CREATE TABLE `ingProfiles` (
   `id` int(11) NOT NULL,
-  `name` varchar(255) COLLATE utf8_bin NOT NULL,
-  `notes` text COLLATE utf8_bin DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+  `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
+  `notes` text COLLATE utf8_general_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 INSERT INTO `ingProfiles` (`id`, `name`, `notes`) VALUES
 (1, 'Top', 'Top Note'),
@@ -170,32 +170,32 @@ DROP TABLE IF EXISTS `ingredients`;
 CREATE TABLE `ingredients` (
   `id` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
-  `INCI` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `type` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `strength` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `INCI` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `type` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `strength` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `category` int(10) NOT NULL DEFAULT '1',
-  `purity` varchar(11) COLLATE utf8_bin DEFAULT NULL,
-  `cas` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `einecs` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `reach` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `FEMA` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `supplier` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `supplier_link` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `price` varchar(10) COLLATE utf8_bin DEFAULT NULL,
-  `tenacity` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `chemical_name` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `formula` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `flash_point` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `appearance` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `notes` text COLLATE utf8_bin DEFAULT NULL,
-  `profile` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `purity` varchar(11) COLLATE utf8_general_ci DEFAULT NULL,
+  `cas` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `einecs` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `reach` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `FEMA` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `supplier` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `supplier_link` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `price` varchar(10) COLLATE utf8_general_ci DEFAULT NULL,
+  `tenacity` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `chemical_name` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `formula` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `flash_point` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `appearance` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `notes` text COLLATE utf8_general_ci DEFAULT NULL,
+  `profile` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `ml` FLOAT(5) NULL DEFAULT '10',
   `solvent` VARCHAR(255) DEFAULT NULL, 
-  `odor` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `odor` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `allergen` int(11) DEFAULT NULL,
   `flavor_use` int(10) DEFAULT NULL,
-  `soluble` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `logp` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `soluble` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `logp` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `cat1` double NOT NULL DEFAULT 100,
   `cat2` double NOT NULL DEFAULT 100,
   `cat3` double NOT NULL DEFAULT 100,
@@ -214,23 +214,23 @@ CREATE TABLE `ingredients` (
   `cat11A` double NOT NULL DEFAULT 100,
   `cat11B` double NOT NULL DEFAULT 100,
   `cat12` double NOT NULL DEFAULT 100,
-  `manufacturer` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `impact_top` varchar(10) COLLATE utf8_bin DEFAULT NULL,
-  `impact_heart` varchar(10) COLLATE utf8_bin DEFAULT NULL,
-  `impact_base` varchar(10) COLLATE utf8_bin DEFAULT NULL,
-  `usage_type` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `manufacturer` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `impact_top` varchar(10) COLLATE utf8_general_ci DEFAULT NULL,
+  `impact_heart` varchar(10) COLLATE utf8_general_ci DEFAULT NULL,
+  `impact_base` varchar(10) COLLATE utf8_general_ci DEFAULT NULL,
+  `usage_type` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `noUsageLimit` INT NULL DEFAULT '0',  
   `isPrivate` INT NULL DEFAULT '0',
   `molecularWeight` VARCHAR(255) NULL,
   `physical_state` INT NULL DEFAULT '1',
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 DROP TABLE IF EXISTS `ingStrength`;
 CREATE TABLE `ingStrength` (
   `id` int(11) NOT NULL,
-  `name` varchar(255) COLLATE utf8_bin NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+  `name` varchar(255) COLLATE utf8_general_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 INSERT INTO `ingStrength` (`id`, `name`) VALUES
 (1, 'Medium'),
@@ -240,22 +240,22 @@ INSERT INTO `ingStrength` (`id`, `name`) VALUES
 DROP TABLE IF EXISTS `ingSuppliers`;
 CREATE TABLE `ingSuppliers` (
   `id` int(11) NOT NULL,
-  `name` varchar(255) COLLATE utf8_bin NOT NULL,
-  `platform` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `price_tag_start` text COLLATE utf8_bin DEFAULT NULL,
-  `price_tag_end` text COLLATE utf8_bin DEFAULT NULL,
-  `add_costs` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
+  `platform` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `price_tag_start` text COLLATE utf8_general_ci DEFAULT NULL,
+  `price_tag_end` text COLLATE utf8_general_ci DEFAULT NULL,
+  `add_costs` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `price_per_size` INT NOT NULL DEFAULT '0', 
-  `notes` text COLLATE utf8_bin NOT NULL,
+  `notes` text COLLATE utf8_general_ci NOT NULL,
   `min_ml` INT NOT NULL DEFAULT '0', 
   `min_gr` INT NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 DROP TABLE IF EXISTS `ingTypes`;
 CREATE TABLE `ingTypes` (
   `id` int(11) NOT NULL,
-  `name` varchar(255) COLLATE utf8_bin NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+  `name` varchar(255) COLLATE utf8_general_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 INSERT INTO `ingTypes` (`id`, `name`) VALUES
 (1, 'AC'),
@@ -269,21 +269,21 @@ INSERT INTO `ingTypes` (`id`, `name`) VALUES
 DROP TABLE IF EXISTS `lids`;
 CREATE TABLE `lids` (
   `id` int(11) NOT NULL,
-  `style` varchar(255) COLLATE utf8_bin NOT NULL,
-  `colour` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `price` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `supplier` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `supplier_link` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `photo` varchar(255) COLLATE utf8_bin DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+  `style` varchar(255) COLLATE utf8_general_ci NOT NULL,
+  `colour` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `price` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `supplier` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `supplier_link` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `photo` varchar(255) COLLATE utf8_general_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 DROP TABLE IF EXISTS `pv_meta`;
 CREATE TABLE `pv_meta` (
   `id` int(11) NOT NULL,
-  `schema_ver` varchar(255) COLLATE utf8_bin NOT NULL,
-  `app_ver` varchar(255) COLLATE utf8_bin NOT NULL,
+  `schema_ver` varchar(255) COLLATE utf8_general_ci NOT NULL,
+  `app_ver` varchar(255) COLLATE utf8_general_ci NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 INSERT INTO `pv_meta` (`id`, `schema_ver`, `app_ver`, `updated_at`) VALUES
 (1, '2.0.6', '2.0.6', '2020-07-30 07:53:35');
@@ -291,25 +291,25 @@ INSERT INTO `pv_meta` (`id`, `schema_ver`, `app_ver`, `updated_at`) VALUES
 DROP TABLE IF EXISTS `settings`;
 CREATE TABLE `settings` (
   `id` int(11) NOT NULL,
-  `label_printer_addr` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `label_printer_model` varchar(225) COLLATE utf8_bin DEFAULT NULL,
-  `label_printer_size` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `label_printer_addr` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `label_printer_model` varchar(225) COLLATE utf8_general_ci DEFAULT NULL,
+  `label_printer_size` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `label_printer_font_size` int(11) DEFAULT 80,
-  `currency` varchar(40) COLLATE utf8_bin DEFAULT NULL,
-  `top_n` varchar(10) COLLATE utf8_bin NOT NULL,
-  `heart_n` varchar(10) COLLATE utf8_bin NOT NULL,
-  `base_n` varchar(10) COLLATE utf8_bin NOT NULL,
-  `EDP` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `EDT` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `EDC` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `Parfum` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `currency` varchar(40) COLLATE utf8_general_ci DEFAULT NULL,
+  `top_n` varchar(10) COLLATE utf8_general_ci NOT NULL,
+  `heart_n` varchar(10) COLLATE utf8_general_ci NOT NULL,
+  `base_n` varchar(10) COLLATE utf8_general_ci NOT NULL,
+  `EDP` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `EDT` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `EDC` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `Parfum` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `chem_vs_brand` int(11) NOT NULL,
   `grp_formula` int(11) DEFAULT NULL,
-  `brandName` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `brandAddress` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `brandEmail` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `brandPhone` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `brandLogo` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `brandName` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `brandAddress` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `brandEmail` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `brandPhone` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `brandLogo` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `pubChem` int(11) DEFAULT NULL,
   `chkVersion` int(11) DEFAULT NULL,
   `qStep` INT(5) NOT NULL DEFAULT '2',
@@ -320,7 +320,7 @@ CREATE TABLE `settings` (
   `defIngView` INT NOT NULL DEFAULT '1', 
   `api` INT NOT NULL DEFAULT '0',
   `api_key` VARCHAR(255) NULL 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 INSERT INTO `settings` (`id`, `label_printer_addr`, `label_printer_model`, `label_printer_size`, `label_printer_font_size`, `currency`, `top_n`, `heart_n`, `base_n`, `EDP`, `EDT`, `EDC`, `Parfum`, `chem_vs_brand`, `grp_formula`, `brandName`, `brandAddress`, `brandEmail`, `brandPhone`, `brandLogo`) VALUES
 (1, '1.2.3.4', 'QL-810W', '12', 70, '&pound;', '25', '50', '25', '20', '15', '4', '30', 0, 1, 'My Brand Name', 'My Address', 'info@mybrand.com', '123456', NULL);
@@ -328,35 +328,35 @@ INSERT INTO `settings` (`id`, `label_printer_addr`, `label_printer_model`, `labe
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
-  `username` varchar(255) COLLATE utf8_bin NOT NULL,
-  `password` varchar(255) COLLATE utf8_bin NOT NULL,
-  `fullName` varchar(255) COLLATE utf8_bin NOT NULL,
-  `email` varchar(255) COLLATE utf8_bin NOT NULL,
-  `avatar` varchar(255) COLLATE utf8_bin DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin ROW_FORMAT=COMPACT;
+  `username` varchar(255) COLLATE utf8_general_ci NOT NULL,
+  `password` varchar(255) COLLATE utf8_general_ci NOT NULL,
+  `fullName` varchar(255) COLLATE utf8_general_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8_general_ci NOT NULL,
+  `avatar` varchar(255) COLLATE utf8_general_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci ROW_FORMAT=COMPACT;
 
 CREATE TABLE `pv_online` (
  `id` int(11) NOT NULL AUTO_INCREMENT,
- `email` varchar(255) COLLATE utf8_bin NOT NULL,
- `password` varchar(255) COLLATE utf8_bin NOT NULL,
+ `email` varchar(255) COLLATE utf8_general_ci NOT NULL,
+ `password` varchar(255) COLLATE utf8_general_ci NOT NULL,
  `enabled` INT NOT NULL DEFAULT '0', 
  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE `IFRACategories` (
  `id` int(11) NOT NULL AUTO_INCREMENT,
- `name` varchar(255) COLLATE utf8_bin NOT NULL,
- `description` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+ `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
+ `description` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
  `type` int(11) NOT NULL COMMENT '1=Standard, 2=Custom',
  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 
 CREATE TABLE IF NOT EXISTS `colorKey` (
   `id` int(11) NOT NULL,
-  `name` varchar(255) COLLATE utf8_bin NOT NULL,
-  `rgb` varchar(255) COLLATE utf8_bin NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+  `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
+  `rgb` varchar(255) COLLATE utf8_general_ci NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 
 INSERT INTO `IFRACategories` (`id`, `name`, `description`, `type`) VALUES
@@ -383,10 +383,10 @@ CREATE TABLE `suppliers` (
  `id` int(11) NOT NULL AUTO_INCREMENT,
  `ingSupplierID` int(11) NOT NULL,
  `ingID` int(11) NOT NULL,
- `supplierLink` varchar(255) COLLATE utf8_bin DEFAULT NULL,
- `price` varchar(10) COLLATE utf8_bin DEFAULT NULL,
+ `supplierLink` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+ `price` varchar(10) COLLATE utf8_general_ci DEFAULT NULL,
  `size` float DEFAULT 10,
- `manufacturer` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+ `manufacturer` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
  `preferred` int(11) NOT NULL DEFAULT 0,
  `batch` VARCHAR(255) NULL,
  `purchased` DATE NULL,
@@ -394,7 +394,7 @@ CREATE TABLE `suppliers` (
  `stock` INT NOT NULL,
  PRIMARY KEY (`id`),
  UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 ALTER TABLE `batchIDHistory`
   ADD PRIMARY KEY (`id`);
@@ -504,12 +504,12 @@ CREATE TABLE `documents` (
  `id` int(11) NOT NULL AUTO_INCREMENT,
  `ownerID` int(11) NOT NULL,
  `type` int(11) NOT NULL,
- `name` varchar(255) COLLATE utf8_bin NOT NULL,
- `notes` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+ `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
+ `notes` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
  `docData` longblob NOT NULL,
  PRIMARY KEY (`id`),
  UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 INSERT INTO `colorKey` (`id`, `name`, `rgb`) VALUES
 (1, 'Cyan', '0, 255, 255, 0.8'),
@@ -577,54 +577,54 @@ CREATE TABLE `ingSafetyInfo` (
  `ingID` int(11) NOT NULL,
  `GHS` int(11) NOT NULL,
  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 ALTER TABLE `ingSafetyInfo` ADD UNIQUE(`id`); 
 
 CREATE TABLE `pictograms` (
  `id` int(11) NOT NULL AUTO_INCREMENT,
- `name` varchar(255) COLLATE utf8_bin NOT NULL,
+ `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
  `code` int(11) NOT NULL,
  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 INSERT INTO `pictograms` (`id`, `name`, `code`) VALUES (NULL, 'Explosive', '1'), (NULL, 'Flammable', '2'), (NULL, 'Oxidising', '3'), (NULL, 'Gas under pressure', '4'), (NULL, 'Corrosive', '5'), (NULL, 'Acute toxicity', '6'), (NULL, 'Health hazard/Hazardous to the ozone layer', '7'), (NULL, 'Serious health hazard', '8'), (NULL, 'Hazardous to the environment', '9'); 
 
 CREATE TABLE `formulasRevisions` (
  `id` int(11) NOT NULL AUTO_INCREMENT,
- `fid` varchar(255) COLLATE utf8_bin DEFAULT NULL,
- `name` varchar(255) COLLATE utf8_bin NOT NULL,
- `ingredient` varchar(255) COLLATE utf8_bin DEFAULT NULL,
- `ingredient_id` varchar(11) COLLATE utf8_bin DEFAULT NULL,
+ `fid` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+ `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
+ `ingredient` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+ `ingredient_id` varchar(11) COLLATE utf8_general_ci DEFAULT NULL,
  `concentration` decimal(5,2) DEFAULT 100.00,
- `dilutant` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+ `dilutant` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
  `quantity` decimal(8,4) DEFAULT NULL,
- `notes` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+ `notes` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
  `exclude_from_summary` int(11) NOT NULL DEFAULT 0,
  `revision` int(11) NOT NULL,
  `revisionDate` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE `formula_history` (
  `id` int(11) NOT NULL AUTO_INCREMENT,
  `fid` int(11) NOT NULL,
- `change_made` text COLLATE utf8_bin NOT NULL,
+ `change_made` text COLLATE utf8_general_ci NOT NULL,
  `date_time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
- `user` varchar(255) COLLATE utf8_bin NOT NULL,
+ `user` varchar(255) COLLATE utf8_general_ci NOT NULL,
  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE `formulaCategories` (
  `id` int(11) NOT NULL AUTO_INCREMENT,
- `name` varchar(255) COLLATE utf8_bin NOT NULL,
- `cname` varchar(255) COLLATE utf8_bin NOT NULL,
- `type` varchar(255) COLLATE utf8_bin NOT NULL,
+ `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
+ `cname` varchar(255) COLLATE utf8_general_ci NOT NULL,
+ `type` varchar(255) COLLATE utf8_general_ci NOT NULL,
  `colorKey` VARCHAR(255) NULL DEFAULT NULL,
  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 INSERT INTO `formulaCategories` (`id`, `name`, `cname`, `type`) VALUES (NULL, 'Oriental', 'oriental', 'profile'), (NULL, 'Woody', 'woody', 'profile'), (NULL, 'Floral', 'floral', 'profile'), (NULL, 'Fresh', 'fresh', 'profile'), (NULL, 'Unisex', 'unisex', 'sex'), (NULL, 'Men', 'men', 'sex'), (NULL, 'Women', 'women', 'sex');
 
-CREATE TABLE `pvault`.`synonyms` ( `id` INT NOT NULL , `ing` VARCHAR(255) NOT NULL, `cid` INT(10) NULL DEFAULT NULL , `synonym` VARCHAR(255) NOT NULL , `source` VARCHAR(255) NULL DEFAULT NULL ) ENGINE = InnoDB;
+CREATE TABLE `synonyms` ( `id` INT NOT NULL , `ing` VARCHAR(255) NOT NULL, `cid` INT(10) NULL DEFAULT NULL , `synonym` VARCHAR(255) NOT NULL , `source` VARCHAR(255) NULL DEFAULT NULL ) ENGINE = InnoDB;
 
 ALTER TABLE `synonyms` CHANGE `id` `id` INT(11) NOT NULL AUTO_INCREMENT, add PRIMARY KEY (`id`);
