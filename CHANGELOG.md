@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 4.2
+- Fix revision generate function
 
 ### Version 4.1
 - PV Online upload function now includes suppliers
