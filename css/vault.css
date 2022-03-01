@@ -621,7 +621,7 @@ formula td, table.table th {
 	*/
 }
 .compare {
-	display: flex;
+	display: inline;
 	border: none;
 	width: auto;
 	max-width: 100%;

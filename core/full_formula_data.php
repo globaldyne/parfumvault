@@ -131,8 +131,8 @@ foreach ($form as $formula){
 		$r['usage_regulator'] = (string)"IFRA";
 	}else{
 		$r['usage_limit'] = number_format((float)$ing_q["$defCatClass"], $settings['qStep']) ?: 100;
-		$r['usage_restriction'] = (string)'REC';
-		$r['usage_regulator'] = (string)"PV";
+		$r['usage_restriction'] = (int)$ing_q['classification'];
+		$r['usage_regulator'] = (string)'PV';
 	}
 	
 	
