@@ -28,6 +28,10 @@ if($_POST['adv']){
 	if($cas = trim(mysqli_real_escape_string($conn, $_POST['cas']))){
 		$cas = "AND cas LIKE '%$cas%'";
 	}
+		
+	if($einecs = trim(mysqli_real_escape_string($conn, $_POST['einecs']))){
+		$einecs = "AND einecs LIKE '%$einecs%'";
+	}
 	
 	if($odor = trim(mysqli_real_escape_string($conn, $_POST['odor']))){
 		$odor = "AND odor LIKE '%$odor%'";
@@ -49,9 +53,9 @@ if($_POST['adv']){
 	
 
 	if($synonym){
-		$filter = "WHERE $syn $cas $odor $profile $category";
+		$filter = "WHERE $syn $cas $einecs $odor $profile $category";
 	}else{
-		$filter = "WHERE $name $cas $odor $profile $category";
+		$filter = "WHERE $name $cas $einecs $odor $profile $category";
 	}	
 }
 
@@ -60,7 +64,7 @@ $extra = "ORDER BY ".$order_by." ".$order;
 $s = trim($_POST['search']['value']);
 
 if($s != ''){
-   $filter = "WHERE 1 AND (name LIKE '%".$s."%' OR cas LIKE '%".$s."%' OR odor LIKE '%".$s."%' OR INCI LIKE '%".$s."%')";
+   $filter = "WHERE 1 AND (name LIKE '%".$s."%' OR cas LIKE '%".$s."%' OR einecs LIKE '%".$s."%' OR odor LIKE '%".$s."%' OR INCI LIKE '%".$s."%')";
 }
 
 $q = mysqli_query($conn, "SELECT ingredients.id,name,INCI,cas,einecs,profile,category,odor,$defCatClass,allergen,usage_type,logp,formula,flash_point,molecularWeight FROM $t ingredients $filter $extra LIMIT $row, $limit");
