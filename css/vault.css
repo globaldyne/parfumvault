@@ -605,13 +605,16 @@ formula td, table.table th {
     background-size: cover;
     background-position: 50%;
 }
+
 .ing-view {
-	display: inline-table;
+	display: inline-block;
 	margin: 0px 10px 0px 10px;
 }
+
 .ing-view a:hover{
 	text-decoration: none;
 }
+
 .mgm-ing-theme {
 	background-color: fff;
 	/*
