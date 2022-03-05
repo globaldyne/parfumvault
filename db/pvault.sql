@@ -163,8 +163,9 @@ CREATE TABLE `ingProfiles` (
 
 INSERT INTO `ingProfiles` (`id`, `name`, `notes`) VALUES
 (1, 'Top', 'Top Note'),
-(2, 'Base', 'Base Note'),
-(4, 'Heart', 'Heart Note');
+(2, 'Heart', 'Heart Note'),
+(3, 'Base', 'Base Note'),
+(4, 'Solvent', 'Solvents and Carriers');
 
 DROP TABLE IF EXISTS `ingredients`;
 CREATE TABLE `ingredients` (

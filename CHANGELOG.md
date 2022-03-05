@@ -4,6 +4,7 @@
 - Fix revision comparison
 - Add search support for EINECS
 - Show if an ingredient is used in compositions
+- Add solvents and carriers as a separate category
 
 ### Version 4.1
 - PV Online upload function now includes suppliers
