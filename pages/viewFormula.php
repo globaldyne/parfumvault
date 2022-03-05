@@ -32,15 +32,16 @@ $(document).ready(function() {
         ],
 		dom: 'lfrtip',
 		processing: true,
+			  mark: true,
         language: {
 			loadingRecords: '&nbsp;',
-			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
+			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Blending...</span>',
 			emptyTable: "Incomplete formula. Please add ingredients.",
 			search: "Search in formula:",
 			searchPlaceholder: "CAS, Ingredient, etc.."
 			},
     	ajax: {
-    		url: 'core/full_formula_data.php?id=<?=$id?>'
+    		url: '/core/full_formula_data.php?id=<?=$id?>'
  		 },
 		 columns: [
 				   { data : 'ingredient.profile', title: 'Profile' },
@@ -259,6 +260,8 @@ function isMade() {
 
 function update_bar(){
      $.getJSON("/core/full_formula_data.php?id=<?=$id?>&stats_only=1", function (json) {
+		
+		$('#formula_name').html(json.stats.formula_name);
 		
         var top = Math.round(json.stats.top);
 		var top_max = Math.round(json.stats.top_max);
@@ -858,3 +861,5 @@ function export_as(type) {
   });
 };
 </script>
+<script src="js/mark/jquery.mark.min.js"></script>
+<script src="js/mark/datatables.mark.js"></script>

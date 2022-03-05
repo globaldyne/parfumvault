@@ -35,6 +35,7 @@ if(!$meta['fid']){
 
 if(isset($_GET['stats_only'])){
 	
+	$s['formula_name'] = (string)$meta['name'];
 	$s['top'] = (float)calcPerc($id, 'Top', $settings['top_n'], $conn);
 	$s['top_max'] = (float)$settings['top_n'];
 	$s['heart'] = (float)calcPerc($id, 'Heart', $settings['heart_n'], $conn);

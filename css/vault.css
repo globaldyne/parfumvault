@@ -779,3 +779,7 @@ body {
 	color: #858796;
 	background-color: #f6c23e75 !important;	
 }
+
+#formula_name {
+    display: inline;
+}
