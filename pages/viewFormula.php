@@ -50,7 +50,7 @@ $(document).ready(function() {
 				   { data : 'purity', title: 'Purity %', render: ingConc},
 				   { data : 'dilutant', title: 'Dilutant', render: ingSolvent},
 				   { data : 'quantity', title: 'Quantity (<?=$settings['mUnit']?>)', render: ingQuantity},
-				   { data : 'concentration', title: 'Concentration %'},
+				   { data : 'concentration', title: 'Concentration 100%'},
 				   { data : 'final_concentration', title: 'Final Concentration <?=$meta['finalType']?>%'},
 				   { data : 'cost', title: 'Cost (<?=$settings['currency']?>)'},
 				   { data : 'ingredient.inventory.stock', title: 'Inventory', className: 'text-center noexport', render: ingInv },
@@ -68,6 +68,7 @@ $(document).ready(function() {
 			 $td.eq(4).html("Total: " + response.meta['total_quantity']);// + response.meta['quantity_unit'] );
 			 $td.eq(5).html("Total: " + response.meta['concentration'] + "%" );
 			 $td.eq(7).html("Total: " + response.meta['currency'] + response.meta['total_cost'] );
+			 $(formula_table.columns(7).header()).html("Final Concentration: " + response.meta['product_concentration'] + "%");
 		 }
       },
 	  
@@ -100,7 +101,6 @@ $(document).ready(function() {
 			if( data['usage_regulator'] == "IFRA" && parseFloat(data['usage_limit']) < parseFloat(data['final_concentration'])){
 				$(row).find('td:eq(6)').addClass('alert-danger').append(' <i rel="tip" title="Max usage: ' + data['usage_limit'] +'% IFRA Regulated" class="pv_point_gen fas fa-info-circle"></i></div>');
 			}else if( data['usage_regulator'] == "PV" && parseFloat(data['usage_limit']) < parseFloat(data['final_concentration'])){
-				//$(row).find('td:eq(6)').addClass('alert-info').append(' <i rel="tip" title="Recommended usage: ' + data['usage_limit'] +'%" class="pv_point_gen fas fa-info-circle"></i></div>');
 				if(data['usage_restriction'] == 1){
 					$(row).find('td:eq(6)').addClass('alert-info').append(' <i rel="tip" title="Recommended usage: ' + data['usage_limit'] +'%" class="pv_point_gen fas fa-info-circle"></i></div>');
 				}
@@ -113,7 +113,6 @@ $(document).ready(function() {
 			}else{
 				$(row).find('td:eq(6)').addClass('alert-success');
 			}
-			
 			
        },
 	   drawCallback: function ( settings ) {

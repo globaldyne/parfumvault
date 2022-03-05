@@ -7,6 +7,7 @@
 - Add solvents and carriers as a separate category
 - Fix a bug preventing changing concentration in formula if you have updated the name as well
 - Added highlight when you search in formula
+- Auto update final product concentration if changed whithin the formula
 
 ### Version 4.1
 - PV Online upload function now includes suppliers
