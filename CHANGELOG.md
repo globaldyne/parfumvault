@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 4.3
+
 ### Version 4.2
 - Fix revision generate function
 - Fix revision comparison
