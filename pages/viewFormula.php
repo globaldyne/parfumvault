@@ -22,6 +22,10 @@ $f_name = base64_decode($meta['fid']);
 ?>
 
 <script>
+var isProtected;
+<?php if($meta['isProtected'] == FALSE){?>
+	var isProtected = false;
+<?php } ?>
 
 $(document).ready(function() {
   var groupColumn = 0;
@@ -607,14 +611,10 @@ function ingConc(data, type, row, meta){
 }
 
 function ingSolvent(data, type, row, meta){
-  if(type === 'display'){
-	<?php if($meta['isProtected'] == FALSE){?>
-	  if(row.purity !== 100){
-		data = '<a href="#" data-name="dilutant" class="solvent" data-type="select" data-pk="' + row.ingredient.name + '">' + data + '</a>';
-	}else{
-		data = 'None';
-	}
-	<?php } ?>
+  if(row.purity !== 100 && isProtected == false ){
+	data = '<a href="#" data-name="dilutant" class="solvent" data-type="select" data-pk="' + row.ingredient.name + '">' + data + '</a>';
+  }else{
+	data = 'None';
   }
   return data;
 }
