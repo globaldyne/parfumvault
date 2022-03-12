@@ -127,7 +127,7 @@ foreach ($form as $formula){
 	$u = explode(' - ',searchIFRA($ing_q['cas'],$formula['ingredient'],null,$conn,$defCatClass));
 	
 	if(($u['0'])){
-		$r['usage_limit'] = number_format((float)$u['0'], $settings['qStep']);
+		$r['usage_limit'] = number_format((float)$u['0']?:100, $settings['qStep']);
 		$r['usage_restriction'] = (string)$u['1'] ?: 'N/A';
 		$r['usage_regulator'] = (string)"IFRA";
 	}else{
