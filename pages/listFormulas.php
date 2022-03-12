@@ -151,7 +151,7 @@ function initTable(tableId, src) {
         bFilter: true,
         paging:  true,
 		info:   true,
-		lengthMenu: [[20, 35, 60, -1], [20, 35, 60, "All"]],
+		lengthMenu: [[20, 40, 60, 100], [20, 40, 60, 100]],
 		drawCallback: function( settings ) {
 			extrasShow();
      	},

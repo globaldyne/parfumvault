@@ -9,7 +9,8 @@ require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/calcPerc.php');
 require_once(__ROOT__.'/func/getFormula.php');
 if(!$_GET['formula']){
-	die('No valid formula provided');
+	echo 'No valid formula provided';
+	return;
 }
 $formula = mysqli_real_escape_string($conn, $_GET['formula']);
 $fid = mysqli_real_escape_string($conn, $_GET['fid']);
@@ -24,7 +25,7 @@ if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulas WHERE fid 
 <style>
 #chartdiv {
   width: 100%;
-  height: 800px;
+  height: 1000px;
   font-size: 11px;
 }						
 </style>
@@ -74,11 +75,9 @@ var chart = AmCharts.makeChart( "chartdiv", {
   }
 } );
 </script>
-</head>
-<body id="page-top">
 
-  <div id="wrapper">
+<div id="wrapper">
 	<div id="content-wrapper">
 		<div id="chartdiv"></div>
 	</div>
-  </div>
+</div>

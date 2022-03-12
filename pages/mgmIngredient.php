@@ -34,7 +34,7 @@ $defCatClass = $settings['defCatClass'];
 $res_ingTypes = mysqli_query($conn, "SELECT id,name FROM ingTypes ORDER BY name ASC");
 $res_ingStrength = mysqli_query($conn, "SELECT id,name FROM ingStrength ORDER BY name ASC");
 $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCategory ORDER BY name ASC");
-$res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles ORDER BY name ASC");
+$res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles ORDER BY id ASC");
 
 $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE name = '$ingID'"));
 $ingSafetyInfo = mysqli_query($conn, "SELECT GHS FROM ingSafetyInfo WHERE ingID = '".$ing['id']."'");
@@ -334,7 +334,7 @@ function reload_data() {
 				<td colspan="5">
 					<select name="profile" id="profile" class="form-control selectpicker" data-live-search="true">
 						<option value="" selected></option>
-						<?php 	while ($row_ingProfiles = mysqli_fetch_array($res_ingProfiles)){ ?>
+						<?php while ($row_ingProfiles = mysqli_fetch_array($res_ingProfiles)){ ?>
 							<option data-content="<img class='img_ing_sel' src='<?=profileImg($row_ingProfiles['name'])?>'> <?php echo $row_ingProfiles['name'];?>" value="<?php echo $row_ingProfiles['name'];?>" <?php echo ($ing['profile']==$row_ingProfiles['name'])?"selected=\"selected\"":""; ?>></option>
 						<?php } ?>
 					</select>

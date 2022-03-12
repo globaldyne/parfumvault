@@ -282,7 +282,7 @@ $("#finalType").change(function() {
 	url: 'update_data.php', 
 	type: 'GET',
 	data: {
-		formula: '<?=$info['fid']?>',
+		formula: '<?=$info['id']?>',
 		finalType: $("#finalType").find(":selected").val(),
 		},
 	dataType: 'html',

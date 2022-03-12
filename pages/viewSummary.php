@@ -140,8 +140,8 @@ html {
     <td width="831"><?=$description['notes']?></td>
   </tr>
 </table>
-  <?php } ?>
-  </div>
+<?php } ?>
+</div>
 
 <p>&nbsp;</p>
 
