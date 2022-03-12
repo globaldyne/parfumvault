@@ -35,6 +35,7 @@ if(!$meta['fid']){
 
 if(isset($_GET['stats_only'])){
 	
+	$s['formula_name'] = (string)$meta['name'];
 	$s['top'] = (float)calcPerc($id, 'Top', $settings['top_n'], $conn);
 	$s['top_max'] = (float)$settings['top_n'];
 	$s['heart'] = (float)calcPerc($id, 'Heart', $settings['heart_n'], $conn);
@@ -126,13 +127,13 @@ foreach ($form as $formula){
 	$u = explode(' - ',searchIFRA($ing_q['cas'],$formula['ingredient'],null,$conn,$defCatClass));
 	
 	if(($u['0'])){
-		$r['usage_limit'] = number_format((float)$u['0'], $settings['qStep']);
+		$r['usage_limit'] = number_format((float)$u['0']?:100, $settings['qStep']);
 		$r['usage_restriction'] = (string)$u['1'] ?: 'N/A';
 		$r['usage_regulator'] = (string)"IFRA";
 	}else{
 		$r['usage_limit'] = number_format((float)$ing_q["$defCatClass"], $settings['qStep']) ?: 100;
-		$r['usage_restriction'] = (string)'REC';
-		$r['usage_regulator'] = (string)"PV";
+		$r['usage_restriction'] = (int)$ing_q['classification'];
+		$r['usage_regulator'] = (string)'PV';
 	}
 	
 	

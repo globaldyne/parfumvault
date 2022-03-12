@@ -1,4 +1,14 @@
 # CHANGELOG
+### Version 4.2
+- Fix revision generate function
+- Fix revision comparison
+- Add search support for EINECS
+- Show if an ingredient is used in compositions
+- Add solvents and carriers as a separate category
+- Fix a bug preventing changing concentration in formula if you have updated the name as well
+- Added highlight when you search in formula
+- Auto update final product concentration if changed whithin the formula
+
 ### Version 4.1
 - PV Online upload function now includes suppliers
 - Add technical data to ingredients core API

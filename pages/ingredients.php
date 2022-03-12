@@ -64,6 +64,10 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
        		  <td colspan="3"><input type="text" id="ing_cas" class="form-control input-sm" name="ing_cas" placeholder="Any" /></td>
    		  </tr>
        		<tr>
+       		  <td valign="top">EINECS:</td>
+       		  <td colspan="3"><input type="text" id="ing_einecs" class="form-control input-sm" name="ing_einecs" placeholder="Any" /></td>
+   		  </tr>
+       		<tr>
        		  <td valign="top">Synonym:</td>
        		  <td colspan="3"><input type="text" id="ing_synonym" class="form-control input-sm" name="ing_synonym" placeholder="Any" /></td>
    		  </tr>
@@ -101,7 +105,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
 		</table>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <input type="submit" name="button" class="btn btn-primary" id="btnAdvSearch" value="Search">
       </div>
       </form>
@@ -236,6 +240,7 @@ $(function () {
 function adv_search() {
     var name = $('#ing_name').val();
     var cas = $('#ing_cas').val();
+    var einecs = $('#ing_einecs').val();
     var odor = $('#ing_odor').val();
     var profile = $('#ing_profile').val();
     var cat = $('#ing_category').val();
@@ -248,6 +253,7 @@ function adv_search() {
 			"adv": 1,
 			"name": name,
 			"cas": cas,
+			"einecs": einecs,
 			"odor": odor,
 			"profile": profile,
 			"cat": cat,

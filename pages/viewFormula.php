@@ -22,6 +22,10 @@ $f_name = base64_decode($meta['fid']);
 ?>
 
 <script>
+var isProtected;
+<?php if($meta['isProtected'] == FALSE){?>
+	var isProtected = false;
+<?php } ?>
 
 $(document).ready(function() {
   var groupColumn = 0;
@@ -32,15 +36,16 @@ $(document).ready(function() {
         ],
 		dom: 'lfrtip',
 		processing: true,
+			  mark: true,
         language: {
 			loadingRecords: '&nbsp;',
-			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
+			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Blending...</span>',
 			emptyTable: "Incomplete formula. Please add ingredients.",
 			search: "Search in formula:",
 			searchPlaceholder: "CAS, Ingredient, etc.."
 			},
     	ajax: {
-    		url: 'core/full_formula_data.php?id=<?=$id?>'
+    		url: '/core/full_formula_data.php?id=<?=$id?>'
  		 },
 		 columns: [
 				   { data : 'ingredient.profile', title: 'Profile' },
@@ -49,7 +54,7 @@ $(document).ready(function() {
 				   { data : 'purity', title: 'Purity %', render: ingConc},
 				   { data : 'dilutant', title: 'Dilutant', render: ingSolvent},
 				   { data : 'quantity', title: 'Quantity (<?=$settings['mUnit']?>)', render: ingQuantity},
-				   { data : 'concentration', title: 'Concentration %'},
+				   { data : 'concentration', title: 'Concentration 100%'},
 				   { data : 'final_concentration', title: 'Final Concentration <?=$meta['finalType']?>%'},
 				   { data : 'cost', title: 'Cost (<?=$settings['currency']?>)'},
 				   { data : 'ingredient.inventory.stock', title: 'Inventory', className: 'text-center noexport', render: ingInv },
@@ -67,6 +72,7 @@ $(document).ready(function() {
 			 $td.eq(4).html("Total: " + response.meta['total_quantity']);// + response.meta['quantity_unit'] );
 			 $td.eq(5).html("Total: " + response.meta['concentration'] + "%" );
 			 $td.eq(7).html("Total: " + response.meta['currency'] + response.meta['total_cost'] );
+			 $(formula_table.columns(7).header()).html("Final Concentration: " + response.meta['product_concentration'] + "%");
 		 }
       },
 	  
@@ -78,7 +84,16 @@ $(document).ready(function() {
 			if( data['usage_regulator'] == "IFRA" && parseFloat(data['usage_limit']) < parseFloat(data['concentration'])){
 				$(row).find('td:eq(5)').addClass('alert-danger').append(' <i rel="tip" title="Max usage: ' + data['usage_limit'] +'% IFRA Regulated" class="pv_point_gen fas fa-info-circle"></i></div>');
 			}else if( data['usage_regulator'] == "PV" && parseFloat(data['usage_limit']) < parseFloat(data['concentration'])){
-				$(row).find('td:eq(5)').addClass('alert-info').append(' <i rel="tip" title="Reccomended usage: ' + data['usage_limit'] +'%" class="pv_point_gen fas fa-info-circle"></i></div>');
+				if(data['usage_restriction'] == 1){
+					$(row).find('td:eq(5)').addClass('alert-info').append(' <i rel="tip" title="Recommended usage: ' + data['usage_limit'] +'%" class="pv_point_gen fas fa-info-circle"></i></div>');
+				}
+				if(data['usage_restriction'] == 2){
+					$(row).find('td:eq(5)').addClass('alert-danger').append(' <i rel="tip" title="Restricted usage: ' + data['usage_limit'] +'%" class="pv_point_gen fas fa-info-circle"></i></div>');
+				}
+				if(data['usage_restriction'] == 3){
+					$(row).find('td:eq(5)').addClass('alert-warning').append(' <i rel="tip" title="Specification: ' + data['usage_limit'] +'%" class="pv_point_gen fas fa-info-circle"></i></div>');
+				}
+
             }else{
 				$(row).find('td:eq(5)').addClass('alert-success');
 			}
@@ -90,12 +105,18 @@ $(document).ready(function() {
 			if( data['usage_regulator'] == "IFRA" && parseFloat(data['usage_limit']) < parseFloat(data['final_concentration'])){
 				$(row).find('td:eq(6)').addClass('alert-danger').append(' <i rel="tip" title="Max usage: ' + data['usage_limit'] +'% IFRA Regulated" class="pv_point_gen fas fa-info-circle"></i></div>');
 			}else if( data['usage_regulator'] == "PV" && parseFloat(data['usage_limit']) < parseFloat(data['final_concentration'])){
-				$(row).find('td:eq(6)').addClass('alert-info').append(' <i rel="tip" title="Reccomended usage: ' + data['usage_limit'] +'%" class="pv_point_gen fas fa-info-circle"></i></div>');
-				
+				if(data['usage_restriction'] == 1){
+					$(row).find('td:eq(6)').addClass('alert-info').append(' <i rel="tip" title="Recommended usage: ' + data['usage_limit'] +'%" class="pv_point_gen fas fa-info-circle"></i></div>');
+				}
+				if(data['usage_restriction'] == 2){
+					$(row).find('td:eq(6)').addClass('alert-danger').append(' <i rel="tip" title="Restricted usage: ' + data['usage_limit'] +'%" class="pv_point_gen fas fa-info-circle"></i></div>');
+				}
+				if(data['usage_restriction'] == 3){
+					$(row).find('td:eq(6)').addClass('alert-warning').append(' <i rel="tip" title="Specification: ' + data['usage_limit'] +'%" class="pv_point_gen fas fa-info-circle"></i></div>');
+				}
 			}else{
 				$(row).find('td:eq(6)').addClass('alert-success');
 			}
-			
 			
        },
 	   drawCallback: function ( settings ) {
@@ -242,6 +263,8 @@ function isMade() {
 
 function update_bar(){
      $.getJSON("/core/full_formula_data.php?id=<?=$id?>&stats_only=1", function (json) {
+		
+		$('#formula_name').html(json.stats.formula_name);
 		
         var top = Math.round(json.stats.top);
 		var top_max = Math.round(json.stats.top_max);
@@ -588,14 +611,10 @@ function ingConc(data, type, row, meta){
 }
 
 function ingSolvent(data, type, row, meta){
-  if(type === 'display'){
-	<?php if($meta['isProtected'] == FALSE){?>
-	  if(row.purity !== 100){
-		data = '<a href="#" data-name="dilutant" class="solvent" data-type="select" data-pk="' + row.ingredient.name + '">' + data + '</a>';
-	}else{
-		data = 'None';
-	}
-	<?php } ?>
+  if(row.purity !== 100 && isProtected == false ){
+	data = '<a href="#" data-name="dilutant" class="solvent" data-type="select" data-pk="' + row.ingredient.name + '">' + data + '</a>';
+  }else{
+	data = 'None';
   }
   return data;
 }
@@ -841,3 +860,5 @@ function export_as(type) {
   });
 };
 </script>
+<script src="js/mark/jquery.mark.min.js"></script>
+<script src="js/mark/datatables.mark.js"></script>

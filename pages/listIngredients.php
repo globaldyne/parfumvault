@@ -103,7 +103,7 @@ $(document).ready(function() {
 		processing: '<div class="spinner-grow"></div> Please Wait...',
 		zeroRecords: 'Nothing found, try <a href="#" data-toggle="modal" data-target="#adv_search">advanced</a> search instead?',
 		search: 'Quick Search:',
-		searchPlaceholder: 'Name, CAS, IUPAC, odor..',
+		searchPlaceholder: 'Name, CAS, EINECS, IUPAC, odor..',
 		},
 	ajax: {	
 		url: '/core/list_ingredients_data.php',
@@ -114,6 +114,7 @@ $(document).ready(function() {
 			d.profile = '<?=$_GET['profile']?:null?>'
 			d.name = '<?=$_GET['name']?:null?>'
 			d.cas = '<?=$_GET['cas']?:null?>'
+			d.einecs = '<?=$_GET['einecs']?:null?>'
 			d.odor = '<?=$_GET['odor']?:null?>'
 			d.cat = '<?=$_GET['cat']?:null?>'
 			d.synonym = '<?=$_GET['synonym']?:null?>'
