@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 4.3
+- Get ingredients list in formula from a json file
 
 ### Version 4.2
 - Fix revision generate function

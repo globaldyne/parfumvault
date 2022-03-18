@@ -91,12 +91,7 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
                      <table width="100%" border="0" class="table">
                         <tr>  
                          <td>
-                         <select name="ingredient" id="ingredient" class="form-control selectpicker" data-live-search="true">
-                            <option value="" selected disabled>Ingredient</option>
-                         <?php  foreach ($ing as $ingredients){ ?>
-                            <option data-subtext="<?=$ingredients['INCI']?:$ingredients['name']?>" value="<?=$ingredients['name']?>"><?=$ingredients['name']?> (<?=$ingredients['CAS']?>)</option>
-                         <?php } ?>
-                         </select>                                         
+                         <select name="ingredient" id="ingredient" class="form-control" data-live-search="true"></select>
                          </td>
                          <td><input type="text" name="concentration" id="concentration" placeholder="Purity %" class="form-control" /></td>
                           <td>
@@ -270,7 +265,25 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
 
 <script type="text/javascript" language="javascript" >
 //$(document).ready(function(){
- //UPDATE PURITY
+							 
+let ingredientsLit = $('#ingredient');
+ingredientsLit.empty();
+ingredientsLit.append('<option selected="true" disabled>Choose ingredient</option>');
+ingredientsLit.prop('selectedIndex', 0);
+
+$.ajax({
+    url:'/core/list_ingredients_simple.php',
+    type:'GET',
+    datatype:'json',
+    success:function(data) {
+        $.each(data.data, function(key, ing) {
+   			 ingredientsLit.append($('<option data-subtext="'+ing.IUPAC+'"></option>').val(ing.name).html(ing.name + ' ('+ing.cas+')'));
+  		})
+ 		ingredientsLit.selectpicker('refresh');
+    }
+});
+
+//UPDATE PURITY
 $('#ingredient').on('change', function(){
 $.ajax({ 
     url: 'pages/getIngInfo.php', 
