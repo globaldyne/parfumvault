@@ -314,7 +314,6 @@ function reload_formula_data() {
                <div class="dropdown-divider"></div>
                <a class="dropdown-item" href="javascript:manageQuantity('multiply')">Multiply x2</a>
                <a class="dropdown-item" href="javascript:manageQuantity('divide')">Divide x2</a>
-               <a class="dropdown-item" href="javascript:cloneMe()">Clone Formula</a>
                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#amount_to_make">Amount to make</a>
                <div class="dropdown-divider"></div>
                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#create_accord">Create Accord</a>
@@ -324,6 +323,8 @@ function reload_formula_data() {
                <a class="dropdown-item" href="javascript:isMade()">Mark formula as made</a>
                <div class="dropdown-divider"></div>
                <a class="dropdown-item" href="pages/viewHistory.php?id=<?=$meta['id']?>" target="_blank">View history</a>
+               <div class="dropdown-divider"></div>
+               <a class="dropdown-item" href="javascript:cloneMe()">Clone Formula</a>
             </div>
         </div>
 	</th>
