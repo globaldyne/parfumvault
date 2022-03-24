@@ -783,3 +783,14 @@ body {
 #formula_name {
     display: inline;
 }
+
+.left {
+    text-align: left;
+}
+
+#formula_desc {
+    font-size: small;
+    font-weight: normal;
+	text-align: right;
+	padding: 0px 10px 10px 10px;
+}

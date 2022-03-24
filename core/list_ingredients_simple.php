@@ -6,7 +6,7 @@ require_once(__ROOT__.'/inc/settings.php');
 
 
 
-$q = mysqli_query($conn, "SELECT id,name,INCI,cas FROM ingredients ORDER BY name ASC");
+$q = mysqli_query($conn, "SELECT id,name,INCI,cas,type FROM ingredients ORDER BY name ASC");
 while($res = mysqli_fetch_array($q)){
     $ingredients[] = $res;
 }
@@ -18,6 +18,7 @@ foreach ($ingredients as $ingredient) {
 	$r['name'] = (string)$ingredient['name'];
 	$r['IUPAC'] = (string)$ingredient['INCI']?: 'N/A';
 	$r['cas'] = (string)$ingredient['cas']?: 'N/A';
+	$r['type'] = (string)$ingredient['type'] ?: 'Unknown';
 
 
 	$rx[]=$r;

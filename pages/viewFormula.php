@@ -265,6 +265,8 @@ function update_bar(){
      $.getJSON("/core/full_formula_data.php?id=<?=$id?>&stats_only=1", function (json) {
 		
 		$('#formula_name').html(json.stats.formula_name);
+		$('#formula_desc').html(json.stats.formula_description);
+
 		
         var top = Math.round(json.stats.top);
 		var top_max = Math.round(json.stats.top_max);
@@ -602,10 +604,12 @@ function ingCAS(data, type, row, meta){
 }
   
 function ingConc(data, type, row, meta){
-  if(type === 'display'){
-	  <?php if($meta['isProtected'] == FALSE){?>
-	  data = '<a href="#" data-name="concentration" class="concentration" data-type="text" data-pk="' + row.ingredient.name + '">' + data + '</a>';
-	  <?php } ?>
+  if( isProtected == false ){
+	  if( row.ingredient.profile == "Solvent"){
+		  data = 100;
+	  }else{
+	  	data = '<a href="#" data-name="concentration" class="concentration" data-type="text" data-pk="' + row.ingredient.name + '">' + data + '</a>';
+	  }
   }
 
   return data;
@@ -613,8 +617,12 @@ function ingConc(data, type, row, meta){
 
 function ingSolvent(data, type, row, meta){
   if(row.purity !== 100 && isProtected == false ){
-	data = '<a href="#" data-name="dilutant" class="solvent" data-type="select" data-pk="' + row.ingredient.name + '">' + data + '</a>';
-  }else{
+	if( row.ingredient.profile == "Solvent"){
+		data = 'None';
+	}else{
+		data = '<a href="#" data-name="dilutant" class="solvent" data-type="select" data-pk="' + row.ingredient.name + '">' + data + '</a>';
+	}
+ }else{
 	data = 'None';
   }
   return data;

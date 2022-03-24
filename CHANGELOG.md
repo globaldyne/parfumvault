@@ -1,6 +1,9 @@
 # CHANGELOG
 ### Version 4.3
 - Get ingredients list in formula from a json file
+- Disable solvent option for solvents
+- Add formula description in formula view
+- Fall back to a default image in formula view if not yet uploaded by the user
 
 ### Version 4.2
 - Fix revision generate function

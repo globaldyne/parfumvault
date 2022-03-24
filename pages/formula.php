@@ -67,9 +67,16 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
 		<div>
           <div class="card shadow mb-4">
             <div class="card-header py-3"> 
-			  <?php if($img['docData']){?><div class="img-formula"><img class="img-perfume" src="<?=$img['docData']?>"/></div><?php } ?>
-              <h2 class="m-0 font-weight-bold text-primary"><a href="javascript:reload_formula_data()"><div id="formula_name"><?=$f_name?></div></a><span class="m-1"><?php if($meta['isProtected']){?><a class="fas fa-lock" href="javascript:setProtected('false')"><?php }else{ ?><a class="fas fa-unlock" href="javascript:setProtected('true')"> <?php } ?></a></span></h2>
-              <h5 class="m-1 text-primary"><span><a href="#" rel="tip" data-placement="right" title="<?=$cat_details['description']?>"><?=ucfirst($meta['catClass'])?></a></span></h5>
+            
+			  <table width="100%" border="0">
+			    <tr>
+			      <th width="75%" class="left" scope="col"><h2 class="m-0 font-weight-bold text-primary"><a href="javascript:reload_formula_data()"><div id="formula_name"><?=$f_name?></div></a><span class="m-1"><?php if($meta['isProtected']){?><a class="fas fa-lock" href="javascript:setProtected('false')"><?php }else{ ?><a class="fas fa-unlock" href="javascript:setProtected('true')"> <?php } ?></a></span></h2>
+              <h5 class="m-1 text-primary"><span><a href="#" rel="tip" data-placement="right" title="<?=$cat_details['description']?>"><?=ucfirst($meta['catClass'])?></a></span></h5>&nbsp;</th>
+			      <th width="21%" scope="col"><div id="formula_desc"><img src="/img/loading.gif"/></div></th>
+			      <th width="4%" scope="col"><div class="img-formula"><img class="img-perfume" src="<?=$img['docData']?:'/img/logo.png';?>"/></div></th>
+		        </tr>
+		      </table>
+          
             </div>
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" role="tablist">
@@ -277,7 +284,7 @@ $.ajax({
     datatype:'json',
     success:function(data) {
         $.each(data.data, function(key, ing) {
-   			 ingredientsLit.append($('<option data-subtext="'+ing.IUPAC+'"></option>').val(ing.name).html(ing.name + ' ('+ing.cas+')'));
+   			 ingredientsLit.append($('<option ing-type="'+ing.type+'" data-subtext="'+ing.IUPAC+'"></option>').val(ing.name).html(ing.name + ' ('+ing.cas+')'));
   		})
  		ingredientsLit.selectpicker('refresh');
     }
@@ -285,31 +292,44 @@ $.ajax({
 
 //UPDATE PURITY
 $('#ingredient').on('change', function(){
-$.ajax({ 
-    url: 'pages/getIngInfo.php', 
-	type: 'get',
-    data: {
-		filter: "purity",
-		name: $(this).val()
-		},
-	dataType: 'html',
-    success: function (data) {
-	  $('#concentration').val(data);
-    }
-  });
+	var ingType = $("#ingredient").find('option:selected').attr('ing-type');
 
-$.ajax({ 
-    url: 'pages/getIngInfo.php', 
-	type: 'get',
-    data: {
-		filter: "solvent",
-		name: $(this).val()
-		},
-	dataType: 'html',
-    success: function (data) {
-	  $('#dilutant').val(data);
-    }
-  });
+	$.ajax({ 
+		url: 'pages/getIngInfo.php', 
+		type: 'GET',
+		data: {
+			filter: "purity",
+			name: $(this).val()
+			},
+		dataType: 'html',
+		success: function (data) {
+		  if(ingType == 'Solvent'){
+			$("#concentration").attr("disabled", "disabled"); 
+			$("#dilutant").attr("disabled", "disabled");
+			$('#concentration').val(100);
+            $('#dilutant').val('None');
+		  }else{
+            $("#concentration").removeAttr("disabled"); 
+			$("#dilutant").removeAttr("disabled"); 
+
+			$('#concentration').val(data);
+			
+		  }
+		}
+	  });
+	
+	$.ajax({ 
+		url: 'pages/getIngInfo.php', 
+		type: 'GET',
+		data: {
+			filter: "solvent",
+			name: $(this).val()
+			},
+		dataType: 'html',
+		success: function (data) {
+		  $('#dilutant').val(data);
+		}
+	});
 
 });
 
