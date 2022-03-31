@@ -128,33 +128,47 @@ a { text-decoration: none; }
 }
 
 .Base_notes {
-    background-image: url('../img/Base.png');
-    background-size: 10px 10px;
+    background-image: url('/img/Pyramid/Pyramid_Slice_Base.png');
+    background-size: 30px 30px;
     background-repeat:no-repeat;
     display: inline-block;
-    width: 10px; 
-    height: 20px;
+    height: 30px;
     content:"";
+	padding: 5px 0px 0px 35px;
+	font-weight: bold;
 }
 
 .Heart_notes {
-    background-image: url('../img/Heart.png');
-    background-size: 10px 10px;
+    background-image: url('/img/Pyramid/Pyramid_Slice_Heart.png');
+    background-size: 30px 30px;
     background-repeat:no-repeat;
     display: inline-block;
-    width: 10px; 
-    height: 20px;
+    height: 30px;
     content:"";
+	padding: 5px 0px 0px 35px;
+	font-weight: bold;
 }
 
 .Top_notes {
-    background-image: url('../img/Top.png');
-    background-size: 10px 10px;
+    background-image: url('/img/Pyramid/Pyramid_Slice_Top.png');
+    background-size: 30px 30px;
     background-repeat:no-repeat;
     display: inline-block;
-    width: 10px; 
-    height: 20px;
+    height: 30px;
     content:"";
+	padding: 5px 0px 0px 35px;
+	font-weight: bold;
+}
+
+.Solvent_notes {
+    background-image: url('/img/molecule.png');
+    background-size: 30px 30px;
+    background-repeat:no-repeat;
+    display: inline-block;
+    height: 30px;
+    content:"";
+	padding: 5px 0px 0px 35px;
+	font-weight: bold;
 }
 
 .img-formula {
