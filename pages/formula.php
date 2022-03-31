@@ -403,7 +403,8 @@ $.ajax({
     url: 'pages/viewFormula.php', 
 	type: 'GET',
     data: {
-		id: "<?=$id?>"
+		id: "<?=$id?>",
+		"search": "<?=$_GET['search']?>"
 		},
 	dataType: 'html',
 		success: function (data) {

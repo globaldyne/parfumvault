@@ -37,6 +37,9 @@ $(document).ready(function() {
             { visible: false, targets: groupColumn },
 			{ className: 'text-center', targets: '_all' },
         ],
+		search: {
+    		search: "<?=$_GET['search']?>"
+  		},
 		dom: 'lfrtip',
 		processing: true,
 			  mark: true,
