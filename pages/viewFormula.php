@@ -21,6 +21,9 @@ $f_name = base64_decode($meta['fid']);
 
 ?>
 
+<link href="/css/select2.css" rel="stylesheet">
+<script src="/js/select2.js"></script>   
+
 <script>
 var isProtected;
 <?php if($meta['isProtected'] == FALSE){?>
@@ -34,6 +37,9 @@ $(document).ready(function() {
             { visible: false, targets: groupColumn },
 			{ className: 'text-center', targets: '_all' },
         ],
+		search: {
+    		search: "<?=$_GET['search']?>"
+  		},
 		dom: 'lfrtip',
 		processing: true,
 			  mark: true,
@@ -128,7 +134,7 @@ $(document).ready(function() {
             api.column(groupColumn, {page:'current'} ).data().each( function ( group, i ) {
                 if ( last !== group ) {
                     $(rows).eq( i ).before(
-                        '<tr class="group noexport"><td colspan="' + rows.columns()[0].length +'">' + group + ' Notes</td></tr>'
+                        '<tr class="group noexport"><td colspan="' + rows.columns()[0].length +'"><div class="' + group + '_notes">' + group + ' Notes</div></td></tr>'
                     );
                     last = group;
                 }
@@ -265,6 +271,8 @@ function update_bar(){
      $.getJSON("/core/full_formula_data.php?id=<?=$id?>&stats_only=1", function (json) {
 		
 		$('#formula_name').html(json.stats.formula_name);
+		$('#formula_desc').html(json.stats.formula_description);
+
 		
         var top = Math.round(json.stats.top);
 		var top_max = Math.round(json.stats.top_max);
@@ -314,7 +322,6 @@ function reload_formula_data() {
                <div class="dropdown-divider"></div>
                <a class="dropdown-item" href="javascript:manageQuantity('multiply')">Multiply x2</a>
                <a class="dropdown-item" href="javascript:manageQuantity('divide')">Divide x2</a>
-               <a class="dropdown-item" href="javascript:cloneMe()">Clone Formula</a>
                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#amount_to_make">Amount to make</a>
                <div class="dropdown-divider"></div>
                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#create_accord">Create Accord</a>
@@ -324,6 +331,8 @@ function reload_formula_data() {
                <a class="dropdown-item" href="javascript:isMade()">Mark formula as made</a>
                <div class="dropdown-divider"></div>
                <a class="dropdown-item" href="pages/viewHistory.php?id=<?=$meta['id']?>" target="_blank">View history</a>
+               <div class="dropdown-divider"></div>
+               <a class="dropdown-item" href="javascript:cloneMe()">Clone Formula</a>
             </div>
         </div>
 	</th>
@@ -601,10 +610,12 @@ function ingCAS(data, type, row, meta){
 }
   
 function ingConc(data, type, row, meta){
-  if(type === 'display'){
-	  <?php if($meta['isProtected'] == FALSE){?>
-	  data = '<a href="#" data-name="concentration" class="concentration" data-type="text" data-pk="' + row.ingredient.name + '">' + data + '</a>';
-	  <?php } ?>
+  if( isProtected == false ){
+	  if( row.ingredient.profile == "Solvent"){
+		  data = 100;
+	  }else{
+	  	data = '<a href="#" data-name="concentration" class="concentration" data-type="text" data-pk="' + row.ingredient.name + '">' + data + '</a>';
+	  }
   }
 
   return data;
@@ -612,8 +623,12 @@ function ingConc(data, type, row, meta){
 
 function ingSolvent(data, type, row, meta){
   if(row.purity !== 100 && isProtected == false ){
-	data = '<a href="#" data-name="dilutant" class="solvent" data-type="select" data-pk="' + row.ingredient.name + '">' + data + '</a>';
-  }else{
+	if( row.ingredient.profile == "Solvent"){
+		data = 'None';
+	}else{
+		data = '<a href="#" data-name="dilutant" class="solvent" data-type="select" data-pk="' + row.ingredient.name + '">' + data + '</a>';
+	}
+ }else{
 	data = 'None';
   }
   return data;
@@ -661,6 +676,12 @@ function ingInv(data, type, row, meta){
 function ingActions(data, type, row, meta){
 //Change ingredient
 $('#formula').editable({
+	select2: {
+    	width: 250,
+        placeholder: 'Choose ingredient',
+        allowClear: true
+    },
+	placement: 'left',
 	selector: 'i.replaceIngredient',
 	pvnoresp: false,
 	highlight: false,
@@ -678,13 +699,18 @@ $('#formula').editable({
 		  ],
 		dataType: 'html',
 		success: function (data) {
-	if ( data.indexOf("Error") > -1 ) {
-			$('#msgInfo').html(data); 
-		}else{
-			$('#msgInfo').html(data);
-			reload_formula_data();
+			if ( data.indexOf("Error") > -1 ) {
+				$('#msgInfo').html(data); 
+			}else{
+				$('#msgInfo').html(data);
+				reload_formula_data();
+			}
+		},
+		validate: function(value){
+   			if($.trim(value) == ''){
+				return 'Ingredient is required';
+   			}
 		}
-	}
 });
 
 if(type === 'display'){
@@ -695,7 +721,7 @@ if(type === 'display'){
 	}else if(row.exclude_from_calculation == 1){
 	 	var ex = '&nbsp; <i class="pv_point_gen fas fa-eye" style="color: #337ab7;" rel="tip" id="exIng" title="Include '+ row.ingredient.name +'" data-name="'+ row.ingredient.name +'" data-status="0" data-id="'+ row.formula_ingredient_id +'"></i>';
 	}
-	data += ex + '&nbsp; <i class="pv_point_gen fas fa-exchange-alt replaceIngredient" style="color: #337ab7;" rel="tip" title="Replace '+ row.ingredient.name +'"  data-name="'+ row.ingredient.name +'" data-type="select" data-pk="'+ row.ingredient.name +'" data-title="Choose Ingredient to replace '+ row.ingredient.name +'"></i> &nbsp; <i rel="tip" title="Remove '+ row.ingredient.name +'" class="pv_point_gen fas fa-trash" style="color: #c9302c;" id="rmIng" data-name="'+ row.ingredient.name +'" data-id='+ row.formula_ingredient_id +'></i>';
+	data += ex + '&nbsp; <i class="pv_point_gen fas fa-exchange-alt replaceIngredient" style="color: #337ab7;" rel="tip" title="Replace '+ row.ingredient.name +'"  data-name="'+ row.ingredient.name +'" data-type="select2" data-pk="'+ row.ingredient.name +'" data-title="Choose Ingredient to replace '+ row.ingredient.name +'"></i> &nbsp; <i rel="tip" title="Remove '+ row.ingredient.name +'" class="pv_point_gen fas fa-trash" style="color: #c9302c;" id="rmIng" data-name="'+ row.ingredient.name +'" data-id='+ row.formula_ingredient_id +'></i>';
 	<?php } ?>
 }
    return data;

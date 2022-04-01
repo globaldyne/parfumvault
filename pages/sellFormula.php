@@ -45,7 +45,7 @@ if($_POST['formula']){
                     <tr>
                       <th width="22%">Ingredient</th>
                       <th width="10%">CAS#</th>
-                      <th width="10%">Purity</th>
+                      <th width="10%">Purity (%)</th>
                       <th width="10%">Dilutant</th>
                       <th width="10%">Quantity (<?=$settings['mUnit']?>)</th>
                       <th width="10%">Concentration (%)</th>

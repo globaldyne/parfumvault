@@ -24,7 +24,7 @@ if(!$_GET['id']){
 
 $id = mysqli_real_escape_string($conn, $_GET['id']);
 
-$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT name,fid,catClass,finalType,defView,isProtected FROM formulasMetaData WHERE id = '$id'"));
+$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT name,fid,catClass,finalType,defView,isProtected,notes FROM formulasMetaData WHERE id = '$id'"));
 
 if(!$meta['fid']){		
 	$response['Error'] = (string)'Requested id is not valid.';    
@@ -36,6 +36,7 @@ if(!$meta['fid']){
 if(isset($_GET['stats_only'])){
 	
 	$s['formula_name'] = (string)$meta['name'];
+	$s['formula_description'] = (string)$meta['notes'];
 	$s['top'] = (float)calcPerc($id, 'Top', $settings['top_n'], $conn);
 	$s['top_max'] = (float)$settings['top_n'];
 	$s['heart'] = (float)calcPerc($id, 'Heart', $settings['heart_n'], $conn);
@@ -61,7 +62,7 @@ while ($formula = mysqli_fetch_array($formula_q)){
 
 foreach ($form as $formula){
 	
-	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT id, name, cas, $defCatClass, profile, odor, category, physical_state,usage_type AS classification FROM ingredients WHERE name = '".$formula['ingredient']."'"));
+	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT id, name, cas, $defCatClass, profile, odor, category, physical_state,usage_type AS classification, type FROM ingredients WHERE name = '".$formula['ingredient']."'"));
 	 
 	$inventory = mysqli_fetch_array(mysqli_query($conn, "SELECT stock,mUnit,batch,purchased FROM suppliers WHERE ingID = '".$ing_q['id']."' AND preferred = '1'"));
 	
@@ -149,6 +150,7 @@ foreach ($form as $formula){
 	$r['ingredient']['cas'] = (string)$ing_q['cas'];
 	$r['ingredient']['physical_state'] = (int)$ing_q['physical_state'];
 	$r['ingredient']['classification'] = (int)$ing_q['classification'] ?: 1;
+	$r['ingredient']['type'] = (string)$ing_q['type'] ?: 'Unknown';
 
 	$r['ingredient']['desc'] = (string)$desc ?: '-';
 	$r['ingredient']['pref_supplier'] = (string)getPrefSupplier($ing_q['id'],$conn)['name'] ?: 'N/A';
@@ -185,6 +187,7 @@ $m['concentration'] = number_format((float)array_sum($conc_f), $settings['qStep'
 $m['product_concentration'] = (int)$meta['finalType'];
 $m['formula_name'] = (string)$meta['name'];
 $m['formula_fid'] = (string)$meta['fid'];
+$m['formula_description'] = (string)$meta['notes'];
 $m['protected'] = (bool)$meta['isProtected'];
 
 
