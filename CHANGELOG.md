@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 4.4
+
 ### Version 4.3
 - Get ingredients list in formula from a json file
 - Disable solvent option for solvents
