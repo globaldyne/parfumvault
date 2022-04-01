@@ -33,10 +33,10 @@ if(count($used) == 0 && count($usedCmp) == 0){
         ?>
           <tr>
             <td width="19%">
-           <a href="/?do=Formula&id=<?=$gFMD['id']?>" target="_blank"><?=$used['name']?></a>
+           <a href="/?do=Formula&id=<?=$gFMD['id']?>&search=<?=$ingID?>" target="_blank"><?=$used['name']?></a>
             </td>
             <td width="19%">
-           <a href="/?do=Formula&id=<?=$gFMD['id']?>" target="_blank"><?=$gFMD['product_name']?:'N/A'?></a>
+           <a href="/?do=Formula&id=<?=$gFMD['id']?>&search=<?=$ingID?>" target="_blank"><?=$gFMD['product_name']?:'N/A'?></a>
             </td>
           </tr>
           <?php } ?>

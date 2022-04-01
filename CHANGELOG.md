@@ -1,4 +1,12 @@
 # CHANGELOG
+### Version 4.3
+- Get ingredients list in formula from a json file
+- Disable solvent option for solvents
+- Add formula description in formula view
+- Fall back to a default image in formula view if not yet uploaded by the user
+- Add select2 library for better experience when replacing ingredient in formula
+- Add the relative icon next to group in formula view
+
 ### Version 4.2
 - Fix revision generate function
 - Fix revision comparison
