@@ -61,6 +61,7 @@ if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients")))){
                 <tr>
                     <th>Formula Name</th>
                     <th>Product Name</th>
+                    <th>Status</th>
                     <th>Ingredients</th>
                     <th>Class</th>
                     <th>Created</th>
@@ -77,6 +78,7 @@ if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients")))){
                 <tr>
                     <th>Formula Name</th>
                     <th>Product Name</th>
+                    <th>Status</th>
                     <th>Ingredients</th>
                     <th>Class</th>
                     <th>Created</th>
@@ -126,6 +128,7 @@ function initTable(tableId, src) {
 			columns: [
 			   { data : 'name', title: 'Formula Name', render: fName },
 			   { data : 'product_name', title: 'Product Name', render: pName},
+			   { data : 'status', title: 'Status', render: fStatus},
     		   { data : 'ingredients', title: 'Ingredients'},
 			   { data : 'catClass', title: 'Class'},
 			   { data : 'isMade', title: 'Made', render: fMade},
@@ -187,6 +190,22 @@ function fMade(data, type, row, meta){
 		}else{
 			var data = '<i class="fas fa-hourglass-start" rel="tip" title="Formula is not made yet"></i>';
 		}
+	}
+  return data;
+}
+
+function fStatus(data, type, row, meta){
+	if(row.status == 0){
+		var data = '<span class="label label-info">Under Development</span>';
+	}
+	if(row.status == 1){
+		var data = '<span class="label label-success">In Production</span>';
+	}
+	if(row.status == 2){
+		var data = '<span class="label label-warning">To be reformulated</span>';
+	}
+	if(row.status == 3){
+		var data = '<span class="label label-danger">Failure</span>';
 	}
   return data;
 }
