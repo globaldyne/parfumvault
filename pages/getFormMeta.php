@@ -145,11 +145,12 @@ while($customers = mysqli_fetch_array($cust)){
     <td>Status:</td>
     <td>
     <select name="status" id="status" class="form-control ellipsis">  
-        <option value="0" <?php if($info['status'] == "0"){ echo 'selected';}?>>Under Developent</option>
-        <option value="1" <?php if($info['status'] == "1"){ echo 'selected';}?>>Under Evaluation</option>
-        <option value="2" <?php if($info['status'] == "2"){ echo 'selected';}?>>In Production</option>
-        <option value="3" <?php if($info['status'] == "3"){ echo 'selected';}?>>To be reformulated</option>
-        <option value="4" <?php if($info['status'] == "4"){ echo 'selected';}?>>Failure</option>
+        <option value="0" <?php if($info['status'] == "0"){ echo 'selected';}?>>Schedulled</option>
+        <option value="1" <?php if($info['status'] == "1"){ echo 'selected';}?>>Under Developent</option>
+        <option value="2" <?php if($info['status'] == "2"){ echo 'selected';}?>>Under Evaluation</option>
+        <option value="3" <?php if($info['status'] == "3"){ echo 'selected';}?>>In Production</option>
+        <option value="4" <?php if($info['status'] == "4"){ echo 'selected';}?>>To be reformulated</option>
+        <option value="5" <?php if($info['status'] == "5"){ echo 'selected';}?>>Failure</option>
     </select>    
     </td>
   </tr>

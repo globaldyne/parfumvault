@@ -196,18 +196,21 @@ function fMade(data, type, row, meta){
 
 function fStatus(data, type, row, meta){
 	if(row.status == 0){
-		var data = '<span class="label label-info">Under Development</span>';
+		var data = '<span class="label label-default">Schedulled</span>';
 	}
 	if(row.status == 1){
-		var data = '<span class="label label-primary">Under Evaluation</span>';
+		var data = '<span class="label label-primary">Under Development</span>';
 	}
 	if(row.status == 2){
-		var data = '<span class="label label-success">In Production</span>';
+		var data = '<span class="label label-info">Under Evaluation</span>';
 	}
 	if(row.status == 3){
-		var data = '<span class="label label-warning">To be reformulated</span>';
+		var data = '<span class="label label-success">In Production</span>';
 	}
 	if(row.status == 4){
+		var data = '<span class="label label-warning">To be reformulated</span>';
+	}
+	if(row.status == 5){
 		var data = '<span class="label label-danger">Failure</span>';
 	}
 	
