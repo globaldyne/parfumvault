@@ -199,15 +199,19 @@ function fStatus(data, type, row, meta){
 		var data = '<span class="label label-info">Under Development</span>';
 	}
 	if(row.status == 1){
-		var data = '<span class="label label-success">In Production</span>';
+		var data = '<span class="label label-primary">Under Evaluation</span>';
 	}
 	if(row.status == 2){
-		var data = '<span class="label label-warning">To be reformulated</span>';
+		var data = '<span class="label label-success">In Production</span>';
 	}
 	if(row.status == 3){
+		var data = '<span class="label label-warning">To be reformulated</span>';
+	}
+	if(row.status == 4){
 		var data = '<span class="label label-danger">Failure</span>';
 	}
-  return data;
+	
+	return data;
 }
 
 function fActions(data, type, row, meta){
