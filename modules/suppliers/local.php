@@ -49,10 +49,6 @@ if($_POST['adv']){
 	if($synonym = mysqli_real_escape_string($conn, $_POST['synonym'])){
 		$t = "synonyms,";
 		$syn = "synonym LIKE '%$synonym%' AND ing = name GROUP BY name";
-	}
-	
-
-	if($synonym){
 		$filter = "WHERE $syn $cas $einecs $odor $profile $category";
 	}else{
 		$filter = "WHERE $name $cas $einecs $odor $profile $category";
@@ -64,6 +60,7 @@ $extra = "ORDER BY ".$order_by." ".$order;
 $s = trim($_POST['search']['value']);
 
 if($s != ''){
+   $t = '';
    $filter = "WHERE 1 AND (name LIKE '%".$s."%' OR cas LIKE '%".$s."%' OR einecs LIKE '%".$s."%' OR odor LIKE '%".$s."%' OR INCI LIKE '%".$s."%')";
 }
 
