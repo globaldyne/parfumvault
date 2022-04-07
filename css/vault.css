@@ -807,4 +807,6 @@ body {
     font-weight: normal;
 	text-align: right;
 	padding: 0px 10px 10px 10px;
+	height: 100px;
+	overflow: auto;
 }
