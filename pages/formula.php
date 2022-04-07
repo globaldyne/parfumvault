@@ -272,7 +272,10 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
 
 <script type="text/javascript" language="javascript" >
 //$(document).ready(function(){
-							 
+$("#concentration").attr("disabled", "disabled"); 
+$("#dilutant").attr("disabled", "disabled");
+$('#quantity').attr("disabled", "disabled");
+
 let ingredientsLit = $('#ingredient');
 ingredientsLit.empty();
 ingredientsLit.append('<option selected="true" disabled>Choose ingredient</option>');
@@ -311,10 +314,9 @@ $('#ingredient').on('change', function(){
 		  }else{
             $("#concentration").removeAttr("disabled"); 
 			$("#dilutant").removeAttr("disabled"); 
-
 			$('#concentration').val(data);
-			
 		  }
+		 $("#quantity").removeAttr("disabled"); 
 		}
 	  });
 	

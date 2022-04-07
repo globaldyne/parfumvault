@@ -1,6 +1,7 @@
 # CHANGELOG
 ### Version 4.4
 - Add formula status (development, failed, production, reformulation)
+- Improve ingredient adding in formula
 
 ### Version 4.3
 - Get ingredients list in formula from a json file
