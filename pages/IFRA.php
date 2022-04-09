@@ -272,8 +272,9 @@ function importIFRA(){
 		         cache: false,
            success: function(response){
              if(response != 0){
-               $("#IFRAImportMsg").html(response);
-				$("#btnImport").prop("disabled", false);
+				 $("#IFRAImportMsg").html(response);
+				 $("#btnImport").prop("disabled", false);
+				 reload_ifra_data();
               }else{
                 $("#IFRAImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> File upload failed!</div>');
 				$("#btnImport").prop("disabled", false);
