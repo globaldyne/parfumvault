@@ -201,7 +201,7 @@ function iLimit(data, type, row){
 
 function iSuppliers(data, type, row){
 	if(row.supplier){
-	data ='<div class="btn-group"><button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-store"></i></button><div class="dropdown-menu dropdown-menu-right">';
+	data ='<div class="btn-group"><button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-store"></i> <span class="badge badge-light">'+row.supplier.length+'</span></button><div class="dropdown-menu dropdown-menu-right">';
 	for (var key in row.supplier) {
 		if (row.supplier.hasOwnProperty(key)) {
 			data+='<a class="dropdown-item popup-link" href="'+row.supplier[key].link+'">'+row.supplier[key].name+'</a>';
@@ -215,19 +215,18 @@ function iSuppliers(data, type, row){
 }
 
 function iDocs(data, type, row){
-	if(row.document){
-	data ='<div class="btn-group"><button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-file-alt"></i></button><div class="dropdown-menu dropdown-menu-right">';
-	for (var key in row.document) {
-		//console.log(row.document[key].name);
-		if (row.document.hasOwnProperty(key)) {
-			data+='<a class="dropdown-item popup-link" href="pages/viewDoc.php?id='+row.document[key].id+'">'+row.document[key].name+'</a>';
-		}
-	}                
-	data+='</div></div></td>';
+	if(row.document){	
+		data ='<div class="btn-group"><button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-file-alt"></i> <span class="badge badge-light">'+row.document.length+'</span></button><div class="dropdown-menu dropdown-menu-right">';
+		for (var key in row.document) {
+			if (row.document.hasOwnProperty(key)) {
+				data+='<a class="dropdown-item popup-link" href="pages/viewDoc.php?id='+row.document[key].id+'">'+row.document[key].name+'</a>';
+			}
+		}                
+		data+='</div></div></td>';
 	
-	}else{
-		data = 'N/A';
-	}
+		}else{
+			data = 'N/A';
+		}
 	
 	return data;
 }

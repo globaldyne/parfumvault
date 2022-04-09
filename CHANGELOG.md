@@ -2,6 +2,7 @@
 ### Version 4.4
 - Add formula status (development, failed, production, reformulation)
 - Improve ingredient adding in formula
+- Added a count the total number of suppliers and documents next to each ingredient
 
 ### Version 4.3
 - Get ingredients list in formula from a json file
