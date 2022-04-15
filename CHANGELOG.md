@@ -1,4 +1,11 @@
 # CHANGELOG
+### Version 4.4
+- Add formula status (development, failed, production, reformulation)
+- Improve ingredient adding in formula
+- Added a count the total number of suppliers and documents next to each ingredient
+- Add formula name in formula page title
+- Fix a bug preventing showing the solvent when formula is locked
+
 ### Version 4.3
 - Get ingredients list in formula from a json file
 - Disable solvent option for solvents

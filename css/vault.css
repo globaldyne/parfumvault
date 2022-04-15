@@ -160,7 +160,7 @@ a { text-decoration: none; }
 	font-weight: bold;
 }
 
-.Solvent_notes {
+.Solvent_notes, .Unknown_notes {
     background-image: url('/img/molecule.png');
     background-size: 30px 30px;
     background-repeat:no-repeat;
@@ -807,4 +807,6 @@ body {
     font-weight: normal;
 	text-align: right;
 	padding: 0px 10px 10px 10px;
+	height: 100px;
+	overflow: auto;
 }
