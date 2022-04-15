@@ -622,15 +622,17 @@ function ingConc(data, type, row, meta){
 }
 
 function ingSolvent(data, type, row, meta){
-  if(row.purity !== 100 && isProtected == false ){
-	if( row.ingredient.profile == "Solvent"){
+	if( isProtected == false ){
+	  if(row.purity !== 100){
+		if(row.ingredient.profile == "Solvent"){
+			data = 'None';
+		}else{
+			data = '<a href="#" data-name="dilutant" class="solvent" data-type="select" data-pk="' + row.ingredient.name + '">' + data + '</a>';
+		}
+	 }else{
 		data = 'None';
-	}else{
-		data = '<a href="#" data-name="dilutant" class="solvent" data-type="select" data-pk="' + row.ingredient.name + '">' + data + '</a>';
+	  }
 	}
- }else{
-	data = 'None';
-  }
   return data;
 }
   
