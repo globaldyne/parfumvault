@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 4.5
+
 ### Version 4.4
 - Add formula status (development, failed, production, reformulation)
 - Improve ingredient adding in formula
