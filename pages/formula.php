@@ -13,7 +13,7 @@ $f_name =  base64_decode($fid);
 
 $cat_details = mysqli_fetch_array(mysqli_query($conn, "SELECT description FROM IFRACategories WHERE name = '4'"));
 
-$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,isProtected,catClass FROM formulasMetaData WHERE fid = '$fid'"));
+$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,name,isProtected,catClass FROM formulasMetaData WHERE fid = '$fid'"));
 $img = mysqli_fetch_array(mysqli_query($conn, "SELECT docData FROM documents WHERE ownerID = '$id' AND type = '2'"));
 
 $formula_q = mysqli_query($conn, "SELECT ingredient FROM formulas WHERE fid = '$fid'");
@@ -272,7 +272,12 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
 
 <script type="text/javascript" language="javascript" >
 //$(document).ready(function(){
-							 
+document.title = "<?=$meta['name'].' - '.$product?>";
+
+$("#concentration").attr("disabled", "disabled"); 
+$("#dilutant").attr("disabled", "disabled");
+$('#quantity').attr("disabled", "disabled");
+
 let ingredientsLit = $('#ingredient');
 ingredientsLit.empty();
 ingredientsLit.append('<option selected="true" disabled>Choose ingredient</option>');
@@ -311,10 +316,9 @@ $('#ingredient').on('change', function(){
 		  }else{
             $("#concentration").removeAttr("disabled"); 
 			$("#dilutant").removeAttr("disabled"); 
-
 			$('#concentration').val(data);
-			
 		  }
+		 $("#quantity").removeAttr("disabled"); 
 		}
 	  });
 	

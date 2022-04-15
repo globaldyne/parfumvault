@@ -202,7 +202,7 @@ if($_GET['action'] == 'addIng' && $_GET['fname']){
 	$concentration = preg_replace("/[^0-9.]/", "", mysqli_real_escape_string($conn, $_GET['concentration']));
 	$dilutant = mysqli_real_escape_string($conn, $_GET['dilutant']);
 	$ingredient_id = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$ingredient'"));
-	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,isProtected FROM formulasMetaData WHERE fid = '".base64_encode($_GET['fname'])."'"));
+	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,isProtected,fid FROM formulasMetaData WHERE fid = '".base64_encode($_GET['fname'])."'"));
 	if($meta['isProtected'] == FALSE){
 		
 		if (empty($quantity) || empty($concentration)){
@@ -217,6 +217,8 @@ if($_GET['action'] == 'addIng' && $_GET['fname']){
 				echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$quantity.'ml</strong> of <strong>'.$ingredient.'</strong> added to the formula!</div>';
 			$lg = "ADDED: $ingredient $quantity @$concentration% $dilutant";
 			mysqli_query($conn, "INSERT INTO formula_history (fid,change_made,user) VALUES ('".$meta['id']."','$lg','".$user['fullName']."')");
+			mysqli_query($conn, "UPDATE formulasMetaData SET status = '1' WHERE fid = '".$meta['fid']."' AND status = '0' AND isProtected = '0'");
+
 			}else{
 				echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error adding '.$ingredient.'!</div>';
 			}

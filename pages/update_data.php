@@ -341,6 +341,18 @@ if($_GET['formula'] &&  $_GET['finalType']){
 	return;
 }
 
+if($_GET['formula'] &&  $_GET['updateStatus']){
+	$fid = mysqli_real_escape_string($conn, $_GET['formula']);
+	$formulaStatus = mysqli_real_escape_string($conn, $_GET['formulaStatus']);
+	
+	if(mysqli_query($conn, "UPDATE formulasMetaData SET status = '$formulaStatus' WHERE id = '$fid'")){
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Status updated!</div>';
+	}else{
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Something went wrong.</div>';
+	}
+	return;
+}
+
 if($_GET['formula'] &&  $_GET['customer_id']){
 	$fid = mysqli_real_escape_string($conn, $_GET['formula']);
 	$customer_id = mysqli_real_escape_string($conn, $_GET['customer_id']);
