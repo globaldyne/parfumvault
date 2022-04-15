@@ -109,6 +109,6 @@
               </div>
             </li>
           </ul>
-<?php if($settings['chkVersion'] == '1'){ checkVer($ver); } ?>
+<?php if($settings['chkVersion'] == '1'){ echo checkVer($ver); } ?>
 <div id="msg"><?php echo $db_up_msg;?></div>
 </nav>
