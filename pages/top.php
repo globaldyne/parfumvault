@@ -83,6 +83,11 @@
                   <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
                   Settings
                 </a>
+                <a class="dropdown-item popup-link" href="pages/tools.php">
+                  <i class="fas fa-tools fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Calculation Tools
+                </a>
+                <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="https://www.jbparfum.com/knowledge-base" target="_blank">
                   <i class="fas fa-book fa-sm fa-fw mr-2 text-gray-400"></i>
                   Documentation

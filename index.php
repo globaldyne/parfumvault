@@ -271,15 +271,6 @@ function list_users(){
           <span>Statistics</span></a>
         </li>
       <hr class="sidebar-divider d-none d-md-block">
-      
-        <li class="nav-item">
-        <a class="nav-link" href="?do=tools">
-          <i class="fas fa-fw fa-tools"></i>
-          <span>Calculation Tools</span></a>
-       </li>
-
-      <hr class="sidebar-divider d-none d-md-block">
-            
         <li class="nav-item">
         <a class="nav-link" href="?do=settings">
           <i class="fas fa-fw fa-cog"></i>
@@ -303,7 +294,6 @@ function list_users(){
 		?>
         <div id="content-wrapper" class="d-flex flex-column">
 			<?php require_once(__ROOT__.'/pages/top.php'); ?>
-            
         <div class="container-fluid">
           <div>
           <div class="card shadow mb-4">
@@ -330,9 +320,7 @@ function list_users(){
 		}elseif($_GET['do'] == 'addLid'){
 			require_once(__ROOT__.'/pages/addLid.php');	
 		}elseif($_GET['do'] == 'batches'){
-			require_once(__ROOT__.'/pages/batches.php');				
-		}elseif($_GET['do'] == 'tools'){
-			require_once(__ROOT__.'/pages/tools.php');	
+			require_once(__ROOT__.'/pages/batches.php');
 		}elseif($_GET['do'] == 'todo'){
 			require_once(__ROOT__.'/pages/todo.php');	
 		}elseif($_GET['do'] == 'cart'){

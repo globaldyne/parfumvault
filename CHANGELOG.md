@@ -1,6 +1,7 @@
 # CHANGELOG
 ### Version 4.5
 - Fix core upgrade 
+- Calculation tools moved under top right menu
 
 ### Version 4.4
 - Add formula status (development, failed, production, reformulation)
