@@ -632,6 +632,10 @@ function ingSolvent(data, type, row, meta){
 	 }else{
 		data = 'None';
 	  }
+	}else{
+		if(row.purity === 100){
+			data = 'None';
+		}
 	}
   return data;
 }
