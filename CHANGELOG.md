@@ -2,6 +2,7 @@
 ### Version 4.5
 - Fix core upgrade 
 - Calculation tools moved under top right menu
+- Add user password reset info
 
 ### Version 4.4
 - Add formula status (development, failed, production, reformulation)
