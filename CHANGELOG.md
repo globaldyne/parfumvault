@@ -3,6 +3,7 @@
 - Fix core upgrade 
 - Calculation tools moved under top right menu
 - Add user password reset info
+- Adding ingredient in formula is done based to formula ID (WIP)
 
 ### Version 4.4
 - Add formula status (development, failed, production, reformulation)

@@ -362,10 +362,10 @@ $('#add_ing').on('click', '[id*=add-btn]', function () {
 	
 	$.ajax({ 
 		url: 'pages/manageFormula.php', 
-		type: 'get',
+		type: 'POST',
 		data: {
 			action: "addIng",
-			fname: "<?php echo $f_name; ?>",
+			fid: "<?=$fid?>",
 			quantity: $("#quantity").val(),
 			concentration: $("#concentration").val(),
 			ingredient: $("#ingredient").val(),
