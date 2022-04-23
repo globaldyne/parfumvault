@@ -60,6 +60,7 @@ if(file_exists(__ROOT__.'/db/updates/update_'.$pv_meta['schema_ver'].'-'.$db_ver
   <meta name="description" content="<?php echo $product.' - '.$ver;?>">
   <meta name="author" content="Perfumers Vault by JB">
   <title><?php echo $product;?> - Dashboard</title>
+  
   <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16x16.png">
 
@@ -67,35 +68,30 @@ if(file_exists(__ROOT__.'/db/updates/update_'.$pv_meta['schema_ver'].'-'.$db_ver
   <link href="css/sb-admin-2.css" rel="stylesheet">
   <link href="css/bootstrap-select.min.css" rel="stylesheet">
   <link href="css/bootstrap-editable.css" rel="stylesheet">
-
+  <link href="css/datatables.min.css" rel="stylesheet">
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/fixedHeader.dataTables.min.css" rel="stylesheet">
+  <link href="css/responsive.bootstrap.min.css" rel="stylesheet">
+  <link href="css/jquery-ui.css" rel="stylesheet">
+  <link href="css/magnific-popup.css" rel="stylesheet" />
+  
+  <link href="css/vault.css" rel="stylesheet">
+  
   <script src="js/jquery/jquery.min.js"></script>
   <script src="js/tableHTMLExport.js"></script>
   <script src="js/jspdf.min.js"></script>
   <script src="js/jspdf.plugin.autotable.js"></script>
-  
-  <link href="css/datatables.min.css" rel="stylesheet">
-  
-  <script src="js/datatables.min.js"></script>
+  <script src="js/datatables.min.js"></script> 
   <script src="js/magnific-popup.js"></script>
- 
-  <link href="css/bootstrap.min.css" rel="stylesheet">
-  
   <script src="js/jquery-ui.js"></script>
   <script src="js/bootstrap.min.js"></script>
   <script src="js/bootstrap-select.js"></script>
   <script src="js/bootstrap-editable.js"></script>
-  
   <script src="js/dataTables.responsive.min.js"></script>
   <script src="js/responsive.bootstrap.min.js"></script>
   <script src="js/bootbox.min.js"></script>
   <script src="js/dataTables.fixedHeader.min.js"></script>
   
-  <link href="css/fixedHeader.dataTables.min.css" rel="stylesheet">
-  <link href="css/responsive.bootstrap.min.css" rel="stylesheet">
-
-  <link href="css/jquery-ui.css" rel="stylesheet">
-  <link href="css/magnific-popup.css" rel="stylesheet" />
-  <link href="css/vault.css" rel="stylesheet">
   
 <script type='text/javascript'>
 
