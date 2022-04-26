@@ -59,10 +59,12 @@ if($_POST['isMade'] && $_POST['fid']){
 
 //CREATE ACCORD
 if($_POST['accordName'] && $_POST['accordProfile'] && $_POST['fid']){
+	require_once(__ROOT__.'/func/genFID.php');
+
 	$fid = mysqli_real_escape_string($conn,$_POST['fid']);
 	$accordProfile = mysqli_real_escape_string($conn,$_POST['accordProfile']);
 	$accordName = mysqli_real_escape_string($conn,$_POST['accordName']);
-	$nfid = base64_encode($accordName);
+	$nfid = random_str(40, '1234567890abcdefghijklmnopqrstuvwxyz');
 	
 	if(mysqli_num_rows(mysqli_query($conn,"SELECT id FROM formulasMetaData WHERE fid = '$nfid'"))){
 		echo  '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>A formula with name '.$accordName.' already exists, please choose a different name!</div>';
@@ -153,23 +155,18 @@ if($_GET['fid'] && $_GET['SG'] && $_GET['amount']){
 
 
 //DIVIDE - MULTIPLY
-if($_GET['formula'] && $_GET['do']){
-	$formula = mysqli_real_escape_string($conn, $_GET['formula']);
+if($_GET['formula'] && $_GET['do'] == 'scale'){
+	$fid = mysqli_real_escape_string($conn, $_GET['formula']);
 	
-	$q = mysqli_query($conn, "SELECT quantity,ingredient FROM formulas WHERE name = '$formula'");
+	$q = mysqli_query($conn, "SELECT quantity,ingredient FROM formulas WHERE fid = '$fid'");
 	while($cur =  mysqli_fetch_array($q)){
-		if($_GET['do'] == 'multiply'){
+		if($_GET['scale'] == 'multiply'){
 			$nq = $cur['quantity']*2;
-		}elseif($_GET['do'] == 'divide'){
+		}elseif($_GET['scale'] == 'divide'){
 			$nq = $cur['quantity']/2;
 		}
 		
-		if(empty($nq)){
-			print 'error';
-			return;
-		}
-		
-		mysqli_query($conn,"UPDATE formulas SET quantity = '$nq' WHERE name = '$formula' AND quantity = '".$cur['quantity']."' AND ingredient = '".$cur['ingredient']."'");
+		mysqli_query($conn,"UPDATE formulas SET quantity = '$nq' WHERE fid = '$fid' AND quantity = '".$cur['quantity']."' AND ingredient = '".$cur['ingredient']."'");
 	}
 	return;
 }
@@ -178,12 +175,12 @@ if($_GET['formula'] && $_GET['do']){
 if($_GET['action'] == 'deleteIng' && $_GET['ingID'] && $_GET['ing']){
 	$id = mysqli_real_escape_string($conn, $_GET['ingID']);
 	$ing = mysqli_real_escape_string($conn, $_GET['ing']);
-	$fname = mysqli_real_escape_string($conn, $_GET['fname']);
+	$fid = mysqli_real_escape_string($conn, $_GET['fid']);
 	
-	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,isProtected FROM formulasMetaData WHERE fid = '".base64_encode($_GET['fname'])."'"));
+	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,isProtected FROM formulasMetaData WHERE fid = '$fid'"));
+
 	if($meta['isProtected'] == FALSE){
-		
-		if(mysqli_query($conn, "DELETE FROM formulas WHERE id = '$id' AND name = '$fname'")){
+		if(mysqli_query($conn, "DELETE FROM formulas WHERE id = '$id' AND fid = '$fid'")){
 			echo  '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$ing.' removed from the formula!</div>';
 			$lg = "REMOVED: $ing removed";
 			mysqli_query($conn, "INSERT INTO formula_history (fid,change_made,user) VALUES ('".$meta['id']."','$lg','".$user['fullName']."')");
@@ -229,18 +226,18 @@ if($_POST['action'] == 'addIng' && $_POST['fid']){
 }
 
 //REPLACE INGREDIENT
-if($_GET['action'] == 'repIng' && $_GET['fname']){
-	$fname = mysqli_real_escape_string($conn, $_GET['fname']);
-	$ingredient = mysqli_real_escape_string($conn, $_REQUEST['value']);
-	$oldIngredient = mysqli_real_escape_string($conn, $_REQUEST['pk']);
+if($_GET['action'] == 'repIng' && $_GET['fid']){
+	$fid = mysqli_real_escape_string($conn, $_GET['fid']);
+	$ingredient = mysqli_real_escape_string($conn, $_POST['value']);
+	$oldIngredient = mysqli_real_escape_string($conn, $_POST['pk']);
 	$ingredient_id = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$ingredient'"));
 	
-	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,isProtected FROM formulasMetaData WHERE fid = '".base64_encode($_GET['fname'])."'"));
+	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,isProtected FROM formulasMetaData WHERE fid = '$fid'"));
 	if($meta['isProtected'] == FALSE){
-		if(mysqli_num_rows(mysqli_query($conn, "SELECT ingredient FROM formulas WHERE ingredient = '$ingredient' AND name = '$fname'"))){
+		if(mysqli_num_rows(mysqli_query($conn, "SELECT ingredient FROM formulas WHERE ingredient = '$ingredient' AND fid = '$fid'"))){
 			echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$ingredient.' already exists in formula!</div>';
 		}else{
-			if(mysqli_query($conn, "UPDATE formulas SET ingredient = '$ingredient', ingredient_id = '".$ingredient_id['id']."' WHERE ingredient = '$oldIngredient' AND name = '$fname'")){
+			if(mysqli_query($conn, "UPDATE formulas SET ingredient = '$ingredient', ingredient_id = '".$ingredient_id['id']."' WHERE ingredient = '$oldIngredient' AND fid = '$fid'")){
 				echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$oldIngredient.' replaced with '.$ingredient.'!</div>';
 				$lg = "REPLACED: $oldIngredient WITH $ingredient";
 				mysqli_query($conn, "INSERT INTO formula_history (fid,change_made,user) VALUES ('".$meta['id']."','$lg','".$user['fullName']."')");
@@ -253,10 +250,10 @@ if($_GET['action'] == 'repIng' && $_GET['fname']){
 }
 
 //Convert to ingredient
-if($_POST['action'] == 'conv2ing' && $_POST['ingName'] && $_POST['formula']){
+if($_POST['action'] == 'conv2ing' && $_POST['ingName'] && $_POST['fid']){
 	$name = mysqli_real_escape_string($conn, $_POST['ingName']);
-	$fid = mysqli_real_escape_string($conn, $_POST['formula']);
-	$fmame = base64_decode($fid);
+	$fid = mysqli_real_escape_string($conn, $_POST['fid']);
+	$fmame = mysqli_real_escape_string($conn, $_POST['fname']);
 	
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '$name'"))){
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$name.' already exists</div>';
@@ -273,25 +270,30 @@ if($_POST['action'] == 'conv2ing' && $_POST['ingName'] && $_POST['formula']){
 	}
 			
 	if(mysqli_query($conn, "INSERT INTO ingredients (name, type, cas, notes) VALUES ('$name','Base','Mixture','Converted from formula $fname')")){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.base64_decode($fid).' converted to ingredient <a href="/pages/mgmIngredient.php?id='.base64_encode($name).'" class="popup-link" target="_blank">'.$name.'</a>!</div>';
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$fname.' converted to ingredient <a href="/pages/mgmIngredient.php?id='.base64_encode($name).'" class="popup-link" target="_blank">'.$name.'</a>!</div>';
 	}
 	return;
 
 }
 
 //CLONE FORMULA
-if($_GET['action'] == 'clone' && $_GET['formula']){
-	$fid = mysqli_real_escape_string($conn, $_GET['formula']);
-	$newName = base64_decode($fid).' - (Copy)';
-	$newFid = base64_encode($newName);
-		if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulasMetaData WHERE fid = '$newFid'"))){
-			echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$newName.' already exists, please remove or rename it first!</div>';
-		}else{
-			$sql.=mysqli_query($conn, "INSERT INTO formulasMetaData (fid, name, notes, profile, sex, defView, product_name, catClass) SELECT '$newFid', '$newName', notes, profile, sex, defView, '$newName', catClass FROM formulasMetaData WHERE fid = '$fid'");
-			$sql.=mysqli_query($conn, "INSERT INTO formulas (fid, name, ingredient, ingredient_id, concentration, dilutant, quantity, notes) SELECT '$newFid', '$newName', ingredient, ingredient_id, concentration, dilutant, quantity, notes FROM formulas WHERE fid = '$fid'");
-		}
+if($_GET['action'] == 'clone' && $_GET['fid']){
+	require_once(__ROOT__.'/func/genFID.php');
+
+	$fid = mysqli_real_escape_string($conn, $_GET['fid']);
+	$fname = mysqli_real_escape_string($conn, $_GET['fname']);
+
+	$newName = $fname.' - (Copy)';
+	$newFid = random_str(40, '1234567890abcdefghijklmnopqrstuvwxyz');
+	
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulasMetaData WHERE fid = '$newFid'"))){
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$newName.' already exists, please remove or rename it first!</div>';
+	}else{
+		$sql.=mysqli_query($conn, "INSERT INTO formulasMetaData (fid, name, notes, profile, sex, defView, product_name, catClass) SELECT '$newFid', '$newName', notes, profile, sex, defView, '$newName', catClass FROM formulasMetaData WHERE fid = '$fid'");
+		$sql.=mysqli_query($conn, "INSERT INTO formulas (fid, name, ingredient, ingredient_id, concentration, dilutant, quantity, notes) SELECT '$newFid', '$newName', ingredient, ingredient_id, concentration, dilutant, quantity, notes FROM formulas WHERE fid = '$fid'");
+	}
 	if($nID = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$newFid'"))){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.base64_decode($fid).' cloned as <a href="?do=Formula&id='.$nID['id'].'" target="_blank">'.$newName.'</a>!</div>';
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$fname.' cloned as <a href="?do=Formula&id='.$nID['id'].'" target="_blank">'.$newName.'</a>!</div>';
 	}
 	return;
 }
@@ -302,14 +304,15 @@ if($_POST['action'] == 'addFormula'){
 		echo '<div class="alert alert-danger alert-dismissible"><strong>Formula name is required.</strong></div>';
 		return;
 	}
+	require_once(__ROOT__.'/func/genFID.php');
+	
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 	$notes = mysqli_real_escape_string($conn, $_POST['notes']);
 	$profile = mysqli_real_escape_string($conn, $_POST['profile']);
 	$catClass = mysqli_real_escape_string($conn, $_POST['catClass']);
 	$finalType = mysqli_real_escape_string($conn, $_POST['finalType']);
 	$customer_id = $_POST['customer']?:0;
-
-	$fid = base64_encode($name);
+	$fid = random_str(40, '1234567890abcdefghijklmnopqrstuvwxyz');
 	
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulasMetaData WHERE fid = '$fid'"))){
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$name.' already exists!</div>';
@@ -328,20 +331,22 @@ if($_POST['action'] == 'addFormula'){
 //DELETE FORMULA
 if($_GET['action'] == 'delete' && $_GET['fid']){
 	$fid = mysqli_real_escape_string($conn, $_GET['fid']);
-	
+	$fname = mysqli_real_escape_string($conn, $_GET['fname']);
+
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$fid' AND isProtected = '1'"))){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> formula '.base64_decode($fid).' is protected.</div>';
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> formula '.$fname.' is protected.</div>';
 		return;
 	}
-		$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$fid'"));
+		
+	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$fid'"));
 
 	if(mysqli_query($conn, "DELETE FROM formulas WHERE fid = '$fid'")){
 		mysqli_query($conn, "DELETE FROM formulasMetaData WHERE fid = '$fid'");
 		mysqli_query($conn, "DELETE FROM formulasRevisions WHERE fid = '$fid'");
 		mysqli_query($conn, "DELETE FROM formula_history WHERE fid = '".$meta['id']."'");
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Formula '.base64_decode($fid).' deleted!</div>';
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Formula '.$fname.' deleted!</div>';
 	}else{
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error</strong> deleting '.base64_decode($fid).' formula!</div>';
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error</strong> deleting '.$fname.' formula!</div>';
 	}
 	return;
 }
@@ -372,13 +377,13 @@ if($_GET['action'] == 'makeFormula' && $_GET['fid'] && $_GET['q'] && $_GET['qr']
 //TODO ADD FORMULA
 if($_GET['action'] == 'todo' && $_GET['fid'] && $_GET['add']){
 	$fid = mysqli_real_escape_string($conn, $_GET['fid']);
-	$name = base64_decode($fid);
+	$fname = mysqli_real_escape_string($conn, $_GET['fname']);
 	
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = '$fid'"))){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Formula <strong>'.$name.'</strong> already exists!</div>';
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Formula <strong>'.$fname.'</strong> already exists!</div>';
 	}else{							
 		if(mysqli_query($conn, "INSERT INTO makeFormula (fid, name, ingredient, concentration, dilutant, quantity, toAdd) SELECT fid, name, ingredient, concentration, dilutant, quantity, '1' FROM formulas WHERE fid = '$fid'")){
-			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Formula <a href="?do=todo">'.$name.'</a> added in To Make list!</div>';
+			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Formula <a href="?do=todo">'.$fname.'</a> added in To Make list!</div>';
 		}
 	}
 	return;

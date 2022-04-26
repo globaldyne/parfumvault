@@ -410,8 +410,9 @@ ALTER TABLE `customers`
 ALTER TABLE `formulas`
   ADD PRIMARY KEY (`id`);
 
-ALTER TABLE `formulasMetaData`
-  ADD PRIMARY KEY (`id`);
+ALTER TABLE `formulasMetaData` ADD PRIMARY KEY (`id`);
+ALTER TABLE `formulasMetaData` ADD UNIQUE(`id`);
+ALTER TABLE `formulasMetaData` ADD UNIQUE(`fid`);
 
 ALTER TABLE `IFRALibrary`
   ADD PRIMARY KEY (`id`),
