@@ -1,4 +1,7 @@
 # CHANGELOG
+### Version 4.6
+- Fix formula clone action
+
 ### Version 4.5
 - Fix core upgrade 
 - Calculation tools moved under top right menu
