@@ -4,12 +4,14 @@ require_once(__ROOT__.'/func/arrFilter.php');
 require(__ROOT__.'/func/get_formula_notes.php');
 $id = mysqli_real_escape_string($conn, $_GET['id']);
 
-$mid = mysqli_fetch_array(mysqli_query($conn, "SELECT fid FROM formulasMetaData WHERE id = '$id'"));
-if(($fid = $mid['fid']) == FALSE){
+$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT fid,name FROM formulasMetaData WHERE id = '$id'"));
+if($meta['fid'] == FALSE){
 	echo 'Formula doesn\'t exist';
 	exit;
 }
-$f_name =  base64_decode($fid);
+
+$f_name = $meta['name'];
+$fid = $meta['fid'];
 
 $cat_details = mysqli_fetch_array(mysqli_query($conn, "SELECT description FROM IFRACategories WHERE name = '4'"));
 
@@ -37,7 +39,7 @@ foreach ($form as $formula){
 
 	$top_cat = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingCategory WHERE id = '".$top_ing['category']."' AND image IS NOT NULL"));
 	$heart_cat = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingCategory WHERE id = '".$heart_ing['category']."' AND image IS NOT NULL"));
-	$base_cat = mysqli_fetch_array(mysqli_query($conn, "SELECT  name FROM ingCategory WHERE id = '".$base_ing['category']."' AND image IS NOT NULL"));
+	$base_cat = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingCategory WHERE id = '".$base_ing['category']."' AND image IS NOT NULL"));
 
 	$top[] = array_merge($top_cat,$top_ing);
 	$heart[] = array_merge($heart_cat,$heart_ing);
@@ -336,7 +338,7 @@ $('#ingredient').on('change', function(){
 	});
 
 });
-
+/*
 //DILUTION
 $('#formula_data').editable({
 	container: 'body',
@@ -344,28 +346,28 @@ $('#formula_data').editable({
 	type: 'POST',
 	emptytext: "",
 	emptyclass: "",
-  	url: "pages/update_data.php?formula=<?php echo $f_name; ?>",
+  	url: "pages/update_data.php?formula=<?php //echo $f_name; ?>",
     source: [
 			 <?php
-				$res_ing = mysqli_query($conn, "SELECT id, name FROM ingredients WHERE type = 'Solvent' OR type = 'Carrier' ORDER BY name ASC");
-				while ($r_ing = mysqli_fetch_array($res_ing)){
-				echo '{value: "'.$r_ing['name'].'", text: "'.$r_ing['name'].'"},';
-			}
+				//$res_ing = mysqli_query($conn, "SELECT id, name FROM ingredients WHERE type = 'Solvent' OR type = 'Carrier' ORDER BY name ASC");
+				//while ($r_ing = mysqli_fetch_array($res_ing)){
+				//echo '{value: "'.$r_ing['name'].'", text: "'.$r_ing['name'].'"},';
+			//}
 			?>
           ],
 	dataType: 'json',
     
 });
-
+*/
 //Add ingredient
 $('#add_ing').on('click', '[id*=add-btn]', function () {
 	
 	$.ajax({ 
 		url: 'pages/manageFormula.php', 
-		type: 'get',
+		type: 'POST',
 		data: {
 			action: "addIng",
-			fname: "<?php echo $f_name; ?>",
+			fid: "<?=$fid?>",
 			quantity: $("#quantity").val(),
 			concentration: $("#concentration").val(),
 			ingredient: $("#ingredient").val(),

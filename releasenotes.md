@@ -1,5 +1,5 @@
 Whats New:
 ----------------------
-Added formula status
-Added a count the total number of suppliers and documents next to each ingredient
-Fix a bug preventing showing the solvent when formula is locked
+Fix Core upgrade issue when running in a non docker enviroment
+Calculation tools moved under top right menu
+Password reset process added

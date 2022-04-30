@@ -260,14 +260,14 @@ if($_GET['ingSupplier'] == 'delete'){
 
 if($_POST['value'] && $_GET['formula'] && $_POST['pk']){
 	$value = mysqli_real_escape_string($conn, $_POST['value']);
-	$formula = mysqli_real_escape_string($conn, base64_decode($_GET['formula']));
+	$formula = mysqli_real_escape_string($conn, $_GET['formula']);
 	$ingredient = mysqli_real_escape_string($conn, $_POST['pk']);
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 	
 	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,isProtected FROM formulasMetaData WHERE fid = '".$_GET['formula']."'"));
 	if($meta['isProtected'] == FALSE){
 					
-		mysqli_query($conn, "UPDATE formulas SET $name = '$value' WHERE name = '$formula' AND ingredient = '$ingredient'");
+		mysqli_query($conn, "UPDATE formulas SET $name = '$value' WHERE fid = '$formula' AND ingredient = '$ingredient'");
 		$lg = "CHANGE: $ingredient Set $name to $value";
 		mysqli_query($conn, "INSERT INTO formula_history (fid,change_made,user) VALUES ('".$meta['id']."','$lg','".$user['fullName']."')");
 echo mysqli_error($conn);
@@ -365,17 +365,16 @@ if($_GET['formula'] &&  $_GET['customer_id']){
 	return;
 }
 
-if($_GET['rename']){
+if($_GET['action'] == 'rename' && $_GET['fid']){
 	$value = mysqli_real_escape_string($conn, $_POST['value']);
-	$formula = mysqli_real_escape_string($conn, base64_decode($_GET['rename']));
-	$fid = base64_encode($value);
+	$fid = mysqli_real_escape_string($conn, $_GET['fid']);
 	$id = $_POST['pk'];
 	
-	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM formulasMetaData WHERE fid = '$fid'"))){
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM formulasMetaData WHERE name = '$value'"))){
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Name already exists</a>';
 	}else{
-		mysqli_query($conn, "UPDATE formulasMetaData SET name = '$value', fid = '$fid' WHERE id = '$id'");
-		if(mysqli_query($conn, "UPDATE formulas SET name = '$value', fid = '$fid' WHERE name = '$formula'")){
+		mysqli_query($conn, "UPDATE formulasMetaData SET name = '$value' WHERE id = '$id'");
+		if(mysqli_query($conn, "UPDATE formulas SET name = '$value' WHERE fid = '$fid'")){
 			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Formula renamed.</a>';
 		}
 	

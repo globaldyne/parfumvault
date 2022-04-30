@@ -60,6 +60,7 @@ if(file_exists(__ROOT__.'/db/updates/update_'.$pv_meta['schema_ver'].'-'.$db_ver
   <meta name="description" content="<?php echo $product.' - '.$ver;?>">
   <meta name="author" content="Perfumers Vault by JB">
   <title><?php echo $product;?> - Dashboard</title>
+  
   <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16x16.png">
 
@@ -67,35 +68,30 @@ if(file_exists(__ROOT__.'/db/updates/update_'.$pv_meta['schema_ver'].'-'.$db_ver
   <link href="css/sb-admin-2.css" rel="stylesheet">
   <link href="css/bootstrap-select.min.css" rel="stylesheet">
   <link href="css/bootstrap-editable.css" rel="stylesheet">
-
+  <link href="css/datatables.min.css" rel="stylesheet">
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/fixedHeader.dataTables.min.css" rel="stylesheet">
+  <link href="css/responsive.bootstrap.min.css" rel="stylesheet">
+  <link href="css/jquery-ui.css" rel="stylesheet">
+  <link href="css/magnific-popup.css" rel="stylesheet" />
+  
+  <link href="css/vault.css" rel="stylesheet">
+  
   <script src="js/jquery/jquery.min.js"></script>
   <script src="js/tableHTMLExport.js"></script>
   <script src="js/jspdf.min.js"></script>
   <script src="js/jspdf.plugin.autotable.js"></script>
-  
-  <link href="css/datatables.min.css" rel="stylesheet">
-  
-  <script src="js/datatables.min.js"></script>
+  <script src="js/datatables.min.js"></script> 
   <script src="js/magnific-popup.js"></script>
- 
-  <link href="css/bootstrap.min.css" rel="stylesheet">
-  
   <script src="js/jquery-ui.js"></script>
   <script src="js/bootstrap.min.js"></script>
   <script src="js/bootstrap-select.js"></script>
   <script src="js/bootstrap-editable.js"></script>
-  
   <script src="js/dataTables.responsive.min.js"></script>
   <script src="js/responsive.bootstrap.min.js"></script>
   <script src="js/bootbox.min.js"></script>
   <script src="js/dataTables.fixedHeader.min.js"></script>
   
-  <link href="css/fixedHeader.dataTables.min.css" rel="stylesheet">
-  <link href="css/responsive.bootstrap.min.css" rel="stylesheet">
-
-  <link href="css/jquery-ui.css" rel="stylesheet">
-  <link href="css/magnific-popup.css" rel="stylesheet" />
-  <link href="css/vault.css" rel="stylesheet">
   
 <script type='text/javascript'>
 
@@ -271,15 +267,6 @@ function list_users(){
           <span>Statistics</span></a>
         </li>
       <hr class="sidebar-divider d-none d-md-block">
-      
-        <li class="nav-item">
-        <a class="nav-link" href="?do=tools">
-          <i class="fas fa-fw fa-tools"></i>
-          <span>Calculation Tools</span></a>
-       </li>
-
-      <hr class="sidebar-divider d-none d-md-block">
-            
         <li class="nav-item">
         <a class="nav-link" href="?do=settings">
           <i class="fas fa-fw fa-cog"></i>
@@ -303,7 +290,6 @@ function list_users(){
 		?>
         <div id="content-wrapper" class="d-flex flex-column">
 			<?php require_once(__ROOT__.'/pages/top.php'); ?>
-            
         <div class="container-fluid">
           <div>
           <div class="card shadow mb-4">
@@ -330,9 +316,7 @@ function list_users(){
 		}elseif($_GET['do'] == 'addLid'){
 			require_once(__ROOT__.'/pages/addLid.php');	
 		}elseif($_GET['do'] == 'batches'){
-			require_once(__ROOT__.'/pages/batches.php');				
-		}elseif($_GET['do'] == 'tools'){
-			require_once(__ROOT__.'/pages/tools.php');	
+			require_once(__ROOT__.'/pages/batches.php');
 		}elseif($_GET['do'] == 'todo'){
 			require_once(__ROOT__.'/pages/todo.php');	
 		}elseif($_GET['do'] == 'cart'){

@@ -181,7 +181,7 @@ $('[rel=tip]').tooltip({placement: 'auto'});
 $('#formula_metadata').editable({
   container: 'body',
   selector: 'td.name',
-  url: "update_data.php?rename=<?=$info['fid']?>",
+  url: "update_data.php?action=rename&fid=<?=$info['fid']?>",
   title: 'Name',
   type: "POST",
   mode: 'inline',
