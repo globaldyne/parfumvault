@@ -17,8 +17,8 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulasMetaData WHERE i
 	return;
 }
 $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,fid,name,isProtected,finalType,defView FROM formulasMetaData WHERE id = '$id'"));
-$f_name = base64_decode($meta['fid']);
-
+$f_name = $meta['name'];
+$fid = $meta['fid'];
 ?>
 
 <link href="/css/select2.css" rel="stylesheet">
@@ -175,7 +175,7 @@ $('#formula').on('click', '[id*=rmIng]', function () {
 					type: 'GET',
 					data: {
 						action: "deleteIng",
-						fname: "<?=$meta['name']?>",
+						fid: "<?=$meta['fid']?>",
 						ingID: ing.ID,
 						ing: ing.Name
 						},
@@ -568,7 +568,7 @@ $('#formula').editable({
 $('#formula').editable({
   container: 'body',
   selector: 'i.notes',
-  url: "pages/update_data.php?formula=<?=base64_encode($f_name)?>",
+  url: "pages/update_data.php?formula=<?=$fid?>",
   title: 'Notes',
   type: "POST",
   dataType: 'json',
@@ -632,6 +632,10 @@ function ingSolvent(data, type, row, meta){
 	 }else{
 		data = 'None';
 	  }
+	}else{
+		if(row.purity === 100){
+			data = 'None';
+		}
 	}
   return data;
 }
@@ -687,10 +691,9 @@ $('#formula').editable({
 	selector: 'i.replaceIngredient',
 	pvnoresp: false,
 	highlight: false,
-	type: 'GET',
 	emptytext: "",
 	emptyclass: "",
-	url: "pages/manageFormula.php?action=repIng&fname=<?=$meta['name']?>",
+	url: "pages/manageFormula.php?action=repIng&fid=<?=$meta['fid']?>",
 	source: [
 			 <?php
 			$res_ing = mysqli_query($conn, "SELECT name FROM ingredients ORDER BY name ASC");
@@ -735,8 +738,9 @@ function manageQuantity(quantity) {
     url: 'pages/manageFormula.php', 
 	type: 'GET',
     data: {
-		do: quantity,
-		formula: "<?php echo $f_name; ?>",
+		do: 'scale',
+		scale: quantity,
+		formula: "<?php echo $fid; ?>",
 		},
 	dataType: 'html',
     success: function (data) {
@@ -760,7 +764,7 @@ $('#amount_to_make').on('click', '[id*=amountToMake]', function () {
 		type: 'GET',
 		cache: false,
 		data: {
-			fid: "<?php echo base64_encode($f_name); ?>",
+			fid: "<?php echo $fid; ?>",
 			SG: $("#sg").val(),
 			amount: $("#totalAmount").val(),
 			},
@@ -786,7 +790,7 @@ $('#create_accord').on('click', '[id*=createAccord]', function () {
 		type: 'POST',
 		cache: false,
 		data: {
-			fid: "<?php echo base64_encode($f_name); ?>",
+			fid: "<?php echo $fid; ?>",
 			accordName: $("#accordName").val(),
 			accordProfile: $("#accordProfile").val(),
 			},
@@ -810,7 +814,8 @@ $('#conv_ingredient').on('click', '[id*=conv2ing]', function () {
 		type: 'POST',
 		cache: false,
 		data: {
-			formula: "<?=base64_encode($f_name)?>",
+			fid: "<?=$fid?>",
+			fname: "<?=$f_name?>",
 			ingName: $("#ingName").val(),
 			action: 'conv2ing',
 			},
@@ -830,7 +835,8 @@ $.ajax({
 	type: 'GET',
     data: {
 		action: "clone",
-		formula: "<?=$meta['fid']?>",
+		fname: "<?=$f_name?>",
+		fid: "<?=$meta['fid']?>",
 		},
 	dataType: 'html',
     success: function (data) {
@@ -850,7 +856,8 @@ function addTODO() {
 	type: 'GET',
     data: {
 		action: 'todo',
-		fid: "<?php echo base64_encode($f_name); ?>",
+		fname: "<?=$f_name?>",
+		fid: "<?=$meta['fid']?>",
 		add: true,
 		},
 	dataType: 'html',

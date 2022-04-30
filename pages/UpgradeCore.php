@@ -9,7 +9,9 @@ if(trim(file_get_contents(__ROOT__.'/VERSION.md')) > $data){
 	$r = '<div class="alert alert-info">PV is already in its latest version.</div>';
 
 }else{
-	
+	if (file_exists(__ROOT__.'/tmp/') === FALSE) {
+    	mkdir(__ROOT__.'/tmp/', 0740, true);
+	}
 	$gitHubRep = 'https://github.com/globaldyne/parfumvault/archive/refs/tags/v'.$data.'.zip';
 	$tmpData = __ROOT__.'/tmp/'.$data.'.zip';
 	

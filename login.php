@@ -67,8 +67,12 @@ if($_POST['username'] && $_POST['password']){
   <meta name="description" content="<?php echo $product.' - '.$ver;?>">
   <meta name="author" content="JBPARFUM">
   <title><?php echo $product;?> - Login</title>
-
+  
+  <script src="js/jquery/jquery.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+ 
   <link href="css/sb-admin-2.css" rel="stylesheet">
+  <link href="css/bootstrap.min.css" rel="stylesheet">
   <link href="css/vault.css" rel="stylesheet">
 
 </head>
@@ -131,7 +135,11 @@ if($_POST['username'] && $_POST['password']){
                   <?php } ?>
 		 		  <hr>
                   <div class="text-center">
-				  <label class="badge">Version: <?php echo $ver; ?> | <?php echo $product; ?></label>
+                    <a class="small" href="#" data-toggle="modal" data-target="#forgot_pass">Forgot Password?</a>
+                  </div>
+                  <hr>
+                  <div class="copyright text-center my-auto">
+				  <label class="small">Version: <?php echo $ver; ?> | <?php echo $product; ?></label>
                   </div>
                 </div>
               </div>
@@ -143,4 +151,33 @@ if($_POST['username'] && $_POST['password']){
   </div>
  </body>
 </html>
+
+<!--FORGOT PASS INFO-->
+<div class="modal fade" id="forgot_pass" tabindex="-1" role="dialog" aria-labelledby="forgot_pass" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Forgot Password</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+		
+         After installing <strong><?=$product?></strong> for the first time, you asked to set a password. This password cannot be retrieved later on as its stored in the database in encrypted format.
+      	<?php if(file_exists('/config/.DOCKER') == TRUE){ ?>
+         To set a new password, you need to execute the command bellow: 
+      <p></p>
+      <pre>reset_pass.sh</pre>
+      <?php }else{ ?>
+      		To set a new password, you need manually access your database and set a new password there or remove the user. This will force the system to ask you to create a new user.
+      <?php } ?>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <?php } ?>

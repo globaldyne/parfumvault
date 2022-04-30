@@ -219,7 +219,7 @@ function fStatus(data, type, row, meta){
 
 function fActions(data, type, row, meta){
 	if(type === 'display'){
-		data = '<a href="pages/getFormMeta.php?id=' + row.id + '" rel="tip" title="Show details of '+ row.name +'" class="fas fa-comment-dots popup-link"></a> &nbsp; <a href="#" id="addTODO" class="fas fa-list" rel="tip" title="Add '+ row.name +' to the make list" data-id='+ row.fid +'></a> &nbsp; <a href="#" id="cloneMe" class="fas fa-copy" rel="tip" title="Clone '+ row.name +'" data-id='+ row.fid +'></a> &nbsp; <i id="deleteMe" class="pv_point_gen fas fa-trash"  style="color: #c9302c;" rel="tip" title="Delete '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"></i>';
+		data = '<a href="pages/getFormMeta.php?id=' + row.id + '" rel="tip" title="Show details of '+ row.name +'" class="fas fa-comment-dots popup-link"></a> &nbsp; <a href="#" id="addTODO" class="fas fa-list" rel="tip" title="Add '+ row.name +' to the make list" data-id='+ row.fid +' data-name="'+ row.name +'"></a> &nbsp; <a href="#" id="cloneMe" class="fas fa-copy" rel="tip" title="Clone '+ row.name +'" data-id='+ row.fid +'></a> &nbsp; <i id="deleteMe" class="pv_point_gen fas fa-trash"  style="color: #c9302c;" rel="tip" title="Delete '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"></i>';
 	}
     return data;
 }
@@ -267,6 +267,7 @@ $('table.table').on('click', '[id*=deleteMe]', function () {
 					data: {
 						action: "delete",
 						fid: formula.ID,
+						fname: formula.Name,
 						},
 					dataType: 'html',
 					success: function (data) {
@@ -291,12 +292,14 @@ $('table.table').on('click', '[id*=deleteMe]', function () {
 $('table.table').on('click', '[id*=addTODO]', function () {
 	var formula = {};
 	formula.ID = $(this).attr('data-id');
+	formula.Name = $(this).attr('data-name');
 	$.ajax({ 
     url: 'pages/manageFormula.php', 
 	type: 'GET',
     data: {
 		action: 'todo',
 		fid: formula.ID,
+		fname: formula.Name,
 		add: true,
 		},
 	dataType: 'html',

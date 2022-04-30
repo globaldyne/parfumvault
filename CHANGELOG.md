@@ -1,4 +1,11 @@
 # CHANGELOG
+### Version 4.5
+- Fix core upgrade 
+- Calculation tools moved under top right menu
+- Add user password reset info
+- Adding ingredient in formula is done based to formula ID
+- Formula managment is now now based in fid, remove name lookup
+
 ### Version 4.4
 - Add formula status (development, failed, production, reformulation)
 - Improve ingredient adding in formula
