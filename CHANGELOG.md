@@ -1,6 +1,7 @@
 # CHANGELOG
 ### Version 4.6
 - Fix formula clone action
+- Fix formulas list sort by status and date
 
 ### Version 4.5
 - Fix core upgrade 

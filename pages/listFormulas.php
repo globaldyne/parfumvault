@@ -147,7 +147,7 @@ function initTable(tableId, src) {
 			},
            order: [0,'asc'],
            columnDefs: [
-				{ orderable: false, targets: [2, 6] },
+				{ orderable: false, targets: [3, 7] },
 				{ className: 'text-center', targets: '_all' },				  
 				],
 	    destroy: true,
