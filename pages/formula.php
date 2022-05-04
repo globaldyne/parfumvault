@@ -311,16 +311,17 @@ $('#ingredient').on('change', function(){
 		dataType: 'html',
 		success: function (data) {
 		  if(ingType == 'Solvent'){
-			$("#concentration").attr("disabled", "disabled"); 
-			$("#dilutant").attr("disabled", "disabled");
+			$("#concentration").prop("disabled", true); 
+			$("#dilutant").prop("disabled", true);
 			$('#concentration').val(100);
             $('#dilutant').val('None');
 		  }else{
-            $("#concentration").removeAttr("disabled"); 
-			$("#dilutant").removeAttr("disabled"); 
+            $("#concentration").prop("disabled", false);
+			$("#dilutant").prop("disabled", false); 
 			$('#concentration').val(data);
 		  }
-		 $("#quantity").removeAttr("disabled"); 
+		 $("#quantity").prop("disabled", false);
+         $("#quantity").val();
 		}
 	  });
 	
@@ -338,27 +339,7 @@ $('#ingredient').on('change', function(){
 	});
 
 });
-/*
-//DILUTION
-$('#formula_data').editable({
-	container: 'body',
-	selector: 'td.dilutant',
-	type: 'POST',
-	emptytext: "",
-	emptyclass: "",
-  	url: "pages/update_data.php?formula=<?php //echo $f_name; ?>",
-    source: [
-			 <?php
-				//$res_ing = mysqli_query($conn, "SELECT id, name FROM ingredients WHERE type = 'Solvent' OR type = 'Carrier' ORDER BY name ASC");
-				//while ($r_ing = mysqli_fetch_array($res_ing)){
-				//echo '{value: "'.$r_ing['name'].'", text: "'.$r_ing['name'].'"},';
-			//}
-			?>
-          ],
-	dataType: 'json',
-    
-});
-*/
+
 //Add ingredient
 $('#add_ing').on('click', '[id*=add-btn]', function () {
 	
