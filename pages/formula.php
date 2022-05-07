@@ -276,9 +276,9 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
 //$(document).ready(function(){
 document.title = "<?=$meta['name'].' - '.$product?>";
 
-$("#concentration").attr("disabled", "disabled"); 
-$("#dilutant").attr("disabled", "disabled");
-$('#quantity').attr("disabled", "disabled");
+$("#concentration").prop("disabled", true); 
+$("#dilutant").prop("disabled", true);
+$('#quantity').prop("disabled", true);
 
 let ingredientsLit = $('#ingredient');
 ingredientsLit.empty();
@@ -291,7 +291,7 @@ $.ajax({
     datatype:'json',
     success:function(data) {
         $.each(data.data, function(key, ing) {
-   			 ingredientsLit.append($('<option ing-type="'+ing.type+'" data-subtext="'+ing.IUPAC+'"></option>').val(ing.name).html(ing.name + ' ('+ing.cas+')'));
+   			 ingredientsLit.append($('<option ing-id="'+ing.id+'" ing-type="'+ing.type+'" data-subtext="'+ing.IUPAC+'"></option>').val(ing.name).html(ing.name + ' ('+ing.cas+')'));
   		})
  		ingredientsLit.selectpicker('refresh');
     }
@@ -300,13 +300,14 @@ $.ajax({
 //UPDATE PURITY
 $('#ingredient').on('change', function(){
 	var ingType = $("#ingredient").find('option:selected').attr('ing-type');
+	var ingID = $("#ingredient").find('option:selected').attr('ing-id');
 
 	$.ajax({ 
 		url: 'pages/getIngInfo.php', 
 		type: 'GET',
 		data: {
 			filter: "purity",
-			name: $(this).val()
+			id: ingID
 			},
 		dataType: 'html',
 		success: function (data) {
@@ -330,7 +331,7 @@ $('#ingredient').on('change', function(){
 		type: 'GET',
 		data: {
 			filter: "solvent",
-			name: $(this).val()
+			id: ingID
 			},
 		dataType: 'html',
 		success: function (data) {
