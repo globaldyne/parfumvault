@@ -891,7 +891,7 @@ function export_as(type) {
   	ignoreRows: '.noexport',
 	htmlContent: false,
 	orientation: 'l',
-	maintitle: '<?=$f_name?>',
+	maintitle: '<?php echo $f_name; ?>',
   });
 };
 </script>
