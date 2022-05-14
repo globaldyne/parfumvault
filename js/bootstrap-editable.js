@@ -3660,7 +3660,8 @@ You need initially put both `data-value` and element's text youself:
     <a href="#" data-type="select2" data-value="1">Text1</a>
     
     
-@class select2
+@class 
+
 @extends abstractinput
 @since 1.4.1
 @final
@@ -3955,7 +3956,7 @@ $(function(){
         @property tpl 
         @default <input type="hidden">
         **/
-        tpl:'<input type="hidden">',
+        tpl:'<select></select>',
         /**
         Configuration of select2. [Full list of options](http://ivaynberg.github.com/select2).
 

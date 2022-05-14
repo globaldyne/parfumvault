@@ -684,7 +684,30 @@ $('#formula').editable({
 	select2: {
     	width: 250,
         placeholder: 'Choose ingredient',
-        allowClear: true
+        allowClear: true,
+		ajax: {
+			url: '/core/list_ingredients_simple.php',
+			dataType: 'json',
+			type: "GET",
+			delay: 300,
+			data: function (data) {
+				return {
+					search: data.term
+				};
+			},
+			processResults: function(data) {
+				return {
+					results: $.map(data.data, function(obj) {
+						obj.id = obj.name; //TODO: TO BE CHANGED TO ID WHEN THE BACKEND IS READY
+						obj.text = obj.name;
+	
+						return obj;
+					})
+				};
+			},
+			cache: true,
+			
+    	}
     },
 	placement: 'left',
 	selector: 'i.replaceIngredient',
@@ -693,28 +716,19 @@ $('#formula').editable({
 	emptytext: "",
 	emptyclass: "",
 	url: "pages/manageFormula.php?action=repIng&fid=<?=$meta['fid']?>",
-	source: [
-			<?php
-			$res_ing = mysqli_query($conn, "SELECT name FROM ingredients ORDER BY name ASC");
-			while ($r_ing = mysqli_fetch_array($res_ing)){
-				echo '{value: "'.htmlspecialchars($r_ing['name']).'", text: "'.htmlspecialchars($r_ing['name']).'"},';
-			}
-			?>
-		  ],
-		dataType: 'html',
-		success: function (data) {
-			if ( data.indexOf("Error") > -1 ) {
-				$('#msgInfo').html(data); 
-			}else{
-				$('#msgInfo').html(data);
-				reload_formula_data();
-			}
-		},
-		validate: function(value){
-   			if($.trim(value) == ''){
-				return 'Ingredient is required';
-   			}
-		}
+	success: function (data) {
+	if ( data.indexOf("Error") > -1 ) {
+		$('#msgInfo').html(data); 
+	}else{
+		$('#msgInfo').html(data);
+			reload_formula_data();
+	}
+	},
+	validate: function(value){
+   		if($.trim(value) == ''){
+			return 'Ingredient is required';
+   		}
+	}
 });
 
 if(type === 'display'){
