@@ -2,6 +2,8 @@
 ### Version 4.6
 - Fix formula clone action
 - Fix formulas list sort by status and date
+- A major rewrite in formula view to utilize select2 (WIP)
+- Various improvements
 
 ### Version 4.5
 - Fix core upgrade 

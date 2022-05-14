@@ -810,3 +810,29 @@ body {
 	height: 100px;
 	overflow: auto;
 }
+
+.add-new-ing-sel {
+	color: #337ab7;
+	display: inline-table;
+	padding: 14px;
+	height: 22px;
+}
+
+.select_igredient_title {
+	font-size: medium;
+	font-weight: bold;
+}
+
+.select_result_igredient {
+  padding: 10px 10px 10px 10px;
+}
+
+.select_add_new_ingredient {
+  font-size: medium;
+  border-bottom-style: groove;
+  color: aliceblue;
+}
+
+.buffer {
+  margin-bottom: 22px;
+}

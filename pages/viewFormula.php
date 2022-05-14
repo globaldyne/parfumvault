@@ -21,8 +21,7 @@ $f_name = $meta['name'];
 $fid = $meta['fid'];
 ?>
 
-<link href="/css/select2.css" rel="stylesheet">
-<script src="/js/select2.js"></script>   
+  
 
 <script>
 var isProtected;

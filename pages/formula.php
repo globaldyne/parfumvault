@@ -55,6 +55,10 @@ $top_ex = get_formula_excludes($conn, $fid, 'top');
 $heart_ex = get_formula_excludes($conn, $fid, 'heart');
 $base_ex = get_formula_excludes($conn, $fid, 'base');
 ?>
+
+<link href="/css/select2.css" rel="stylesheet">
+<script src="/js/select2.js"></script> 
+
 <style>
 .mfp-iframe-holder .mfp-content {
     line-height: 0;
@@ -94,34 +98,37 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
           <div class="card-body">
            <div id="msgInfo"></div>
               <div id="add_ing">
-              <tr>
-                <th colspan="6">
                 <?php if($meta['isProtected'] == FALSE){?>
-                     <table width="100%" border="0" class="table">
-                        <tr>  
-                         <td>
-                         <select name="ingredient" id="ingredient" class="form-control" data-live-search="true"></select>
-                         </td>
-                         <td><input type="text" name="concentration" id="concentration" placeholder="Purity %" class="form-control" /></td>
-                          <td>
-                             <select name="dilutant" id="dilutant" class="form-control">
-                             <option value="" selected disabled>Dilutant</option>
-                             <option value="none">None</option>
-                             <?php
-                                $res_dil = mysqli_query($conn, "SELECT id, name FROM ingredients WHERE type = 'Solvent' OR type = 'Carrier' ORDER BY name ASC");
-                                while ($r_dil = mysqli_fetch_array($res_dil)){
-                                    echo '<option value="'.$r_dil['name'].'">'.$r_dil['name'].'</option>';
-                                }
-                             ?>
-                             </select>
-                          </td>
-                          <td><input type="text" name="quantity" id="quantity" placeholder="Quantity" class="form-control" /></td>  
-                          <td><input type="submit" name="add" id="add-btn" class="btn btn-info" value="Add" /> </td>  
-                        </tr>  
-                    </table>  
-                  <?php } ?>
-                </th>
-                </tr>
+                
+                <div class="form-group">
+                   	<div class="col-md-4 buffer">
+					   <select name="ingredient" id="ingredient" class="form-control" data-live-search="true"></select>
+                    </div>
+                    <div class="col-md-2 buffer">
+<input type="text" name="concentration" id="concentration" placeholder="Purity %" class="form-control" /></td>
+                    </div>
+                    <div class="col-md-2 buffer">
+                    	<select name="dilutant" id="dilutant" class="form-control">
+                        	<option value="" selected disabled>Dilutant</option>
+                        	<option value="none">None</option>
+                        	<?php
+                        	$res_dil = mysqli_query($conn, "SELECT id, name FROM ingredients WHERE type = 'Solvent' OR type = 'Carrier' ORDER BY name ASC");
+                        	while ($r_dil = mysqli_fetch_array($res_dil)){
+                        		echo '<option value="'.$r_dil['name'].'">'.$r_dil['name'].'</option>';
+                         	}
+                         	?>
+                       	</select>
+                    </div>
+                    <div class="col-md-2 buffer">
+                    	<input type="text" name="quantity" id="quantity" placeholder="Quantity" class="form-control" />				
+                    </div>
+                    <div class="col-md-2 buffer">
+                    	<input type="submit" name="add" id="add-btn" class="btn btn-info" value="Add" /> </td>  
+                    </div>  
+                </div>
+                    
+              <?php } ?>
+                
                 <div id="fetch_formula">
                 	<div class="loader-center">
                 		<div class="loader"></div>
