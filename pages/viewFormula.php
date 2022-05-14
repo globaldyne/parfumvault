@@ -694,7 +694,7 @@ $('#formula').editable({
 	emptyclass: "",
 	url: "pages/manageFormula.php?action=repIng&fid=<?=$meta['fid']?>",
 	source: [
-			 <?php
+			<?php
 			$res_ing = mysqli_query($conn, "SELECT name FROM ingredients ORDER BY name ASC");
 			while ($r_ing = mysqli_fetch_array($res_ing)){
 				echo '{value: "'.htmlspecialchars($r_ing['name']).'", text: "'.htmlspecialchars($r_ing['name']).'"},';
