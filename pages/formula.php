@@ -101,7 +101,7 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
 	      <div id="add_ing">
            	<div class="form-group">
           	 	<div class="col-md-4 buffer">
-				   <select name="ingredient" id="ingredient" class="form-control" data-live-search="true"></select>
+				   <select name="ingredient" id="ingredient" class="form-control"></select>
                 </div>
                 <div class="col-md-2 buffer">
 <input type="text" name="concentration" id="concentration" placeholder="Purity %" class="form-control" />

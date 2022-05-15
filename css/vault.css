@@ -836,3 +836,8 @@ body {
 .buffer {
   margin-bottom: 22px;
 }
+
+.select2-container--default .select2-results > .select2-results__options {
+  max-height: 500px !important;
+  overflow-y: auto;
+}

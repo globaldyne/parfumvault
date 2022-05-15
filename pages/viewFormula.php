@@ -476,6 +476,7 @@ function reload_formula_data() {
 
 
 <script>
+
 function extrasShow() {
 	$('[rel=tip]').tooltip({
         "html": true,
@@ -698,10 +699,10 @@ $('#formula').editable({
 			processResults: function(data) {
 				return {
 					results: $.map(data.data, function(obj) {
-						obj.id = obj.name; //TODO: TO BE CHANGED TO ID WHEN THE BACKEND IS READY
-						obj.text = obj.name;
-	
-						return obj;
+					  return {
+						id: obj.name, //TODO: TO BE CHANGED TO ID WHEN THE BACKEND IS READY
+						text: obj.name
+					  }
 					})
 				};
 			},
