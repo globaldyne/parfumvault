@@ -18,6 +18,7 @@ $(document).ready(function(){
 	};
 
 	$("#ingredient").select2({
+		//dropdownParent: '.popover:last',
 		placeholder: 'Search for ingredient',
 		templateResult: formatIngredients,
 		templateSelection: formatIngredientsSelection,

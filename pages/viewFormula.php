@@ -683,9 +683,12 @@ function ingActions(data, type, row, meta){
 //Change ingredient
 $('#formula').editable({
 	select2: {
-    	width: 250,
+    	width: '250px',
         placeholder: 'Choose ingredient',
         allowClear: true,
+		dropdownParent: '.popover:last',
+    	dropdownAutoWidth: true,
+    	//theme: 'bootstrap',
 		ajax: {
 			url: '/core/list_ingredients_simple.php',
 			dataType: 'json',
