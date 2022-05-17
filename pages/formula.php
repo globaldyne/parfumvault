@@ -104,7 +104,7 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
 				   <input name="ingredient" id="ingredient" class="pv-form-control"></input>
                 </div>
                 <div class="col-md-2 buffer">
-<input type="text" name="concentration" id="concentration" placeholder="Purity %" class="form-control" />
+					<input type="text" name="concentration" id="concentration" placeholder="Purity %" class="form-control" />
                 </div>
                 <div class="col-md-2 buffer">
                 	<select name="dilutant" id="dilutant" class="form-control">

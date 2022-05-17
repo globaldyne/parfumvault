@@ -125,8 +125,7 @@ $(document).ready(function(){
 				$("#dilutant").val('None');
 			  }else{
 				$("#concentration").prop("disabled", false);
-				$("#dilutant").prop("disabled", false); 
-				$("#concentration").val(data);
+				$("#concentration").val(data).trigger("input");;
 			  }
 			 $("#quantity").prop("disabled", false);
 			 $("#quantity").val();
@@ -146,6 +145,14 @@ $(document).ready(function(){
 			}
 		});
 	
+	});
+	$('#concentration').bind('input', function() {
+		var purity = $(this).val();
+		if(purity == 100){
+			$("#dilutant").prop("disabled", true); 
+		}else{
+			$("#dilutant").prop("disabled", false);
+		}
 	});
 
 })
