@@ -1,5 +1,6 @@
 /*
 PV Ingredient Select
+Requires Select2 v4 lib
 */
 
 $(document).ready(function(){
@@ -18,7 +19,6 @@ $(document).ready(function(){
 	};
 
 	$("#ingredient").select2({
-		//dropdownParent: '.popover:last',
 		placeholder: 'Search for ingredient',
 		templateResult: formatIngredients,
 		templateSelection: formatIngredientsSelection,
@@ -37,7 +37,7 @@ $(document).ready(function(){
 					results: $.map(data.data, function(obj) {
 						return {
 							ingId: obj.id,
-							id: obj.name, //TODO: TO BE CHANGED TO ID WHEN THE BACKEND IS READY
+							id: obj.id,
 							name: obj.name,
 							IUPAC: obj.IUPAC,
 							cas: obj.cas,
@@ -47,7 +47,7 @@ $(document).ready(function(){
 					})
 				};
 			},
-			//cache: true
+			cache: true
 		}
 	  
 	}).on('select2:open', () => {

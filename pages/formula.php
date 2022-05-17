@@ -101,7 +101,7 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
 	      <div id="add_ing">
            	<div class="form-group">
           	 	<div class="col-md-4 buffer">
-				   <select name="ingredient" id="ingredient" class="form-control"></select>
+				   <input name="ingredient" id="ingredient" class="pv-form-control"></input>
                 </div>
                 <div class="col-md-2 buffer">
 <input type="text" name="concentration" id="concentration" placeholder="Purity %" class="form-control" />
@@ -278,7 +278,7 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
   </div>
 </div>
 
-<script src="/js/select-ingredient.js"></script>
+<script src="/js/select2-v3-ingredient.js"></script>
 <script>
 document.title = "<?=$meta['name'].' - '.$product?>";
 

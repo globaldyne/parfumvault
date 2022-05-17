@@ -837,7 +837,22 @@ body {
   margin-bottom: 22px;
 }
 
-.select2-container--default .select2-results > .select2-results__options {
-  max-height: 300px !important;
-  overflow-y: auto;
+.select2-container .select2-choice {
+  height: 34px !important;
+  padding: 4px 0 0 8px !important;
+}
+
+.pv-form-control {
+	width: 100% !important;
+	height: 34px !important;
+}
+
+.select2-drop-auto-width {
+  border-top: 1px solid #aaa;
+  width: auto;
+}
+
+.select2-results {
+	margin: 14px 4px 4px 0px;
+    max-height: 400px !important;
 }

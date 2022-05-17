@@ -35,6 +35,7 @@ $(document).ready(function() {
 		columnDefs: [
             { visible: false, targets: groupColumn },
 			{ className: 'text-center', targets: '_all' },
+			{ orderable: false, targets: [10, 11] },
         ],
 		search: {
     		search: "<?=$_GET['search']?>"
@@ -678,7 +679,7 @@ function ingInv(data, type, row, meta){
 
   return data;
 }
-  
+
 function ingActions(data, type, row, meta){
 //Change ingredient
 $('#formula').editable({
@@ -686,17 +687,16 @@ $('#formula').editable({
     	width: '250px',
         placeholder: 'Choose ingredient',
         allowClear: true,
-		dropdownParent: '.popover:last',
     	dropdownAutoWidth: true,
-    	//theme: 'bootstrap',
 		ajax: {
 			url: '/core/list_ingredients_simple.php',
 			dataType: 'json',
-			type: "GET",
-			delay: 300,
+			type: 'GET',
+			delay: 100,
+			quietMillis: 250,
 			data: function (data) {
 				return {
-					search: data.term
+					search: data
 				};
 			},
 			processResults: function(data) {
@@ -704,7 +704,7 @@ $('#formula').editable({
 					results: $.map(data.data, function(obj) {
 					  return {
 						id: obj.name, //TODO: TO BE CHANGED TO ID WHEN THE BACKEND IS READY
-						text: obj.name
+						text: obj.name || 'No ingredient found...',
 					  }
 					})
 				};
@@ -713,20 +713,21 @@ $('#formula').editable({
 			
     	}
     },
+	tpl:'<input type="hidden">',
 	placement: 'left',
 	selector: 'i.replaceIngredient',
 	pvnoresp: false,
 	highlight: false,
-	emptytext: "",
-	emptyclass: "",
+	emptytext: null,
+	emptyclass: null,
 	url: "pages/manageFormula.php?action=repIng&fid=<?=$meta['fid']?>",
 	success: function (data) {
-	if ( data.indexOf("Error") > -1 ) {
-		$('#msgInfo').html(data); 
-	}else{
-		$('#msgInfo').html(data);
+		if ( data.indexOf("Error") > -1 ) {
+			$('#msgInfo').html(data); 
+		}else{
+			$('#msgInfo').html(data);
 			reload_formula_data();
-	}
+		}
 	},
 	validate: function(value){
    		if($.trim(value) == ''){

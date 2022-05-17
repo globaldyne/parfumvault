@@ -194,11 +194,11 @@ if($_GET['action'] == 'deleteIng' && $_GET['ingID'] && $_GET['ing']){
 //ADD INGREDIENT
 if($_POST['action'] == 'addIng' && $_POST['fid']){
 	$fid = mysqli_real_escape_string($conn, $_POST['fid']);
-	$ingredient = mysqli_real_escape_string($conn, $_POST['ingredient']);
+	$ingredient_id = mysqli_real_escape_string($conn, $_POST['ingredient']);
 	$quantity = preg_replace("/[^0-9.]/", "", mysqli_real_escape_string($conn, $_POST['quantity']));
 	$concentration = preg_replace("/[^0-9.]/", "", mysqli_real_escape_string($conn, $_POST['concentration']));
 	$dilutant = mysqli_real_escape_string($conn, $_POST['dilutant']);
-	$ingredient_id = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$ingredient'"));
+	$ingredient = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE id = '$ingredient_id'"));
 	
 	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,isProtected,name FROM formulasMetaData WHERE fid = '$fid'"));
 	if($meta['isProtected'] == FALSE){
@@ -208,14 +208,14 @@ if($_POST['action'] == 'addIng' && $_POST['fid']){
 			return;
 		}
 			
-		if(mysqli_num_rows(mysqli_query($conn, "SELECT ingredient FROM formulas WHERE ingredient = '$ingredient' AND fid = '$fid'"))){
-			echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$ingredient.' already exists in formula!</div>';
+		if(mysqli_num_rows(mysqli_query($conn, "SELECT ingredient_id FROM formulas WHERE ingredient_id = '$ingredient_id' AND fid = '$fid'"))){
+			echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$ingredient['name'].' already exists in formula!</div>';
 			return;
 		}
 	
-		if(mysqli_query($conn,"INSERT INTO formulas(fid,name,ingredient,ingredient_id,concentration,quantity,dilutant) VALUES('$fid','".$meta['name']."','$ingredient','".$ingredient_id['id']."','$concentration','$quantity','$dilutant')")){
-			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$quantity.$settings['mUnit'].'</strong> of <strong>'.$ingredient.'</strong> added to the formula!</div>';
-			$lg = "ADDED: $ingredient $quantity @$concentration% $dilutant";
+		if(mysqli_query($conn,"INSERT INTO formulas(fid,name,ingredient,ingredient_id,concentration,quantity,dilutant) VALUES('$fid','".$meta['name']."','".$ingredient['name']."','".$ingredient_id."','$concentration','$quantity','$dilutant')")){
+			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$quantity.$settings['mUnit'].'</strong> of <strong>'.$ingredient['name'].'</strong> added to the formula!</div>';
+			$lg = "ADDED: ".$ingredient['name']." $quantity".$settings['mUnit']." @$concentration% $dilutant";
 			mysqli_query($conn, "INSERT INTO formula_history (fid,change_made,user) VALUES ('".$meta['id']."','$lg','".$user['fullName']."')");
 			mysqli_query($conn, "UPDATE formulasMetaData SET status = '1' WHERE fid = '".$meta['fid']."' AND status = '0' AND isProtected = '0'");
 			return;
