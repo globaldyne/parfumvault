@@ -153,6 +153,7 @@ $(document).ready(function(){
 		}else{
 			$("#dilutant").prop("disabled", false);
 		}
+		$('.selectpicker').selectpicker('refresh');
 	});
 
 })

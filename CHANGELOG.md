@@ -7,6 +7,7 @@
 - Removed sorting action from properties and actions columns in formula
 - Make sure the dilutant field isn't enabled when purity is at 100%
 - Auto enable/disable solvent in ingredient management when updating the purity
+- Live search added in dilutant in formula view
 
 ### Version 4.5
 - Fix core upgrade 

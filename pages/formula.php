@@ -107,7 +107,7 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
 					<input type="text" name="concentration" id="concentration" placeholder="Purity %" class="form-control" />
                 </div>
                 <div class="col-md-2 buffer">
-                	<select name="dilutant" id="dilutant" class="form-control">
+                	<select name="dilutant" id="dilutant" class="form-control selectpicker" data-live-search="true">
                     	<option value="" selected disabled>Dilutant</option>
                         <option value="none">None</option>
                         <?php
