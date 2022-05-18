@@ -856,3 +856,8 @@ body {
 	margin: 14px 4px 4px 0px;
     max-height: 400px !important;
 }
+
+.bootstrap-select.disabled, .bootstrap-select > .disabled {
+  cursor: not-allowed;
+  background-color: #eee;
+}
