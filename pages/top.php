@@ -92,7 +92,7 @@
                   <i class="fas fa-book fa-sm fa-fw mr-2 text-gray-400"></i>
                   Documentation
                 </a>
-                <a class="dropdown-item" href="https://www.jbparfum.com/feature-request/" target="_blank">
+                <a class="dropdown-item" href="https://github.com/globaldyne/parfumvault/issues" target="_blank">
                   <i class="fas fa-lightbulb fa-sm fa-fw mr-2 text-gray-400"></i>
                   Request a feature / Bug report
                 </a>

@@ -90,7 +90,7 @@ $defCatClass = $settings['defCatClass'];
 			</tr>
        		<tr>
        		  <td height="46">Modify file:</td>
-              <td><input name="updateCAS" type="checkbox" id="updateCAS" value="1" />
+              <td><input name="updateCAS" type="checkbox" id="updateCAS" value="1" checked="checked" />
                  <span class="font-italic">*this is required if you are importing the original IFRA file</span>
               </td>
    		  </tr>
@@ -288,7 +288,7 @@ function importIFRA(){
 };
 
 $('#pubChem_import').on('click', '[id*=Importpb]', function () { 
-	$("#pbmportMsg").html('<div class="alert alert-info alert-dismissible">Please wait, this may take a while...</div>');
+	$("#pbmportMsg").html('<div class="alert alert-info alert-dismissible">Please wait, this may take a few minutes, depending your IFRA library size and your internet connection...</div>');
 	$("#Importpb").prop("disabled", true);
 	$.ajax({
 		url: 'pages/update_data.php', 

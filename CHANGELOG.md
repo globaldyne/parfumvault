@@ -8,6 +8,8 @@
 - Make sure the dilutant field isn't enabled when purity is at 100%
 - Auto enable/disable solvent in ingredient management when updating the purity
 - Live search added in dilutant in formula view
+- Add delay between requests to PubChem when importing ingredient images to the IFRA library
+- Bug reporting or feature request is now pointing to the Github repo
 
 ### Version 4.5
 - Fix core upgrade 
