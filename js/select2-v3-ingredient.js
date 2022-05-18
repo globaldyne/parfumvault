@@ -19,10 +19,9 @@ $(document).ready(function(){
 	};
 
 	$("#ingredient").select2({
-		//width: '500px',
     	dropdownAutoWidth: true,
 		theme: 'bootstrap',
-
+        allowClear: true,
 		placeholder: 'Choose ingredient',
 		formatResult: formatIngredients,
 		formatSelection: formatIngredientsSelection,
