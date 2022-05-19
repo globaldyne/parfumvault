@@ -257,7 +257,7 @@ function reload_cmp_data() {
       </label>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <input type="submit" name="button" class="btn btn-primary" id="cmpAdd" value="Add">
       </div>
     </div>
@@ -296,7 +296,7 @@ function reload_cmp_data() {
           </tr>
         </table>
 	  <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <input type="submit" name="cmpCSV" class="btn btn-primary" id="cmpCSV" value="Import">
       </div>
     </div>
