@@ -10,6 +10,7 @@
 - Live search added in dilutant in formula view
 - Add delay between requests to PubChem when importing ingredient images to the IFRA library
 - Bug reporting or feature request is now pointing to the Github repo
+- Improve version update process when updating from older versions
 
 ### Version 4.5
 - Fix core upgrade 

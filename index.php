@@ -38,13 +38,10 @@ if($pv_meta['app_ver'] < trim(file_get_contents(__ROOT__.'/VERSION.md'))){
 }
 
 $db_ver   = trim(file_get_contents(__ROOT__.'/db/schema.ver'));
-if(file_exists(__ROOT__.'/db/updates/update_'.$pv_meta['schema_ver'].'-'.$db_ver.'.sql') === TRUE){
-	if($pv_meta['schema_ver'] < $db_ver){	
-		$db_up_msg = '<div class="alert alert-warning alert-dismissible"><strong>Your database schema needs to be updated ('.$db_ver.'). Please <a href="pages/maintenance.php?do=backupDB">backup</a> your database first and then click <a href="javascript:updateDB()">here to update the db schema.</a></strong></div>';
-	}
-}else{
-	mysqli_query($conn, "UPDATE pv_meta SET schema_ver = '$db_ver'");
+if($pv_meta['schema_ver'] < $db_ver){	
+	$db_up_msg = '<div class="alert alert-warning alert-dismissible"><strong>Your database schema needs to be updated ('.$db_ver.'). Please <a href="pages/maintenance.php?do=backupDB">backup</a> your database first and then click <a href="javascript:updateDB()">here to update the db schema.</a></strong></div>';
 }
+
 ?>
 <head>
   <meta charset="utf-8">
@@ -119,17 +116,19 @@ $(document).ready(function() {
 });
 
 function updateDB() {
-$.ajax({ 
-	url: 'pages/operations.php', 
-	type: 'GET',
-	data: {
-		do: "db_update"
-		},
-	dataType: 'html',
-	success: function (data) {
-	  $('#msg').html(data);
-	}
-  });
+	$('#msg').html('<div class="alert alert-info alert-dismissible"><img src="/img/loading.gif"/><strong> DB update in progress. Please wait, this may take a while...</strong></div>');
+
+	$.ajax({ 
+		url: 'pages/operations.php', 
+		type: 'GET',
+		data: {
+			do: "db_update"
+			},
+		dataType: 'html',
+		success: function (data) {
+	  		$('#msg').html(data);
+		}
+  	});
 };
 	
 function list_formulas(){

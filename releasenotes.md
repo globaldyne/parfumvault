@@ -6,3 +6,4 @@ Whats New:
 - Removed sorting action from properties and actions columns in formula
 - Various improvements under the hood
 - Bug reporting or feature request is now pointing to the Github repo
+- Improved version update process when updating from older versions
