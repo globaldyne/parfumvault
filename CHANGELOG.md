@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 4.7
+
 ### Version 4.6
 - Fix formula clone action
 - Fix formulas list sort by status and date
