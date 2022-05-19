@@ -345,7 +345,7 @@ $.ajax({
 					return;
 				}
 				if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM bottles"))== 0){
-					echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> You need to <a href="?do=addBottle">add</a> at least one bottle in your inventory first.</div>';
+					echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> You need to <a href="?do=bottles">add</a> at least one bottle in your inventory first.</div>';
 					return;
 				}
 				if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE type = 'Carrier' OR type = 'Solvent'"))== 0){

@@ -14,11 +14,12 @@ if($_GET['IFRA_PB'] == 'import'){
 	$i = 0;
 	$qCas = mysqli_query($conn,"SELECT cas FROM IFRALibrary");
 	while($cas = mysqli_fetch_array($qCas)){
-		
 		$image = base64_encode(pv_file_get_contents($pubChemApi.'/pug/compound/name/'.$cas['cas'].'/PNG?record_type=2d&image_size=small'));
 		
 		$imp = mysqli_query($conn,"UPDATE IFRALibrary SET image = '$image' WHERE cas = '".$cas['cas']."'");
-		$i++;	
+		$i++;
+		
+		usleep(.1 * 1000000);
 	}
 	if($imp){
 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$i.' images updates!</div>';

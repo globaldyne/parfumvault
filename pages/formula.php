@@ -55,6 +55,10 @@ $top_ex = get_formula_excludes($conn, $fid, 'top');
 $heart_ex = get_formula_excludes($conn, $fid, 'heart');
 $base_ex = get_formula_excludes($conn, $fid, 'base');
 ?>
+
+<link href="/css/select2.css" rel="stylesheet">
+<script src="/js/select2.js"></script> 
+
 <style>
 .mfp-iframe-holder .mfp-content {
     line-height: 0;
@@ -92,53 +96,55 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
           <div class="tab-pane fade active in tab-content" id="main_formula">
 
           <div class="card-body">
-           <div id="msgInfo"></div>
-              <div id="add_ing">
-              <tr>
-                <th colspan="6">
-                <?php if($meta['isProtected'] == FALSE){?>
-                     <table width="100%" border="0" class="table">
-                        <tr>  
-                         <td>
-                         <select name="ingredient" id="ingredient" class="form-control" data-live-search="true"></select>
-                         </td>
-                         <td><input type="text" name="concentration" id="concentration" placeholder="Purity %" class="form-control" /></td>
-                          <td>
-                             <select name="dilutant" id="dilutant" class="form-control">
-                             <option value="" selected disabled>Dilutant</option>
-                             <option value="none">None</option>
-                             <?php
-                                $res_dil = mysqli_query($conn, "SELECT id, name FROM ingredients WHERE type = 'Solvent' OR type = 'Carrier' ORDER BY name ASC");
-                                while ($r_dil = mysqli_fetch_array($res_dil)){
-                                    echo '<option value="'.$r_dil['name'].'">'.$r_dil['name'].'</option>';
-                                }
-                             ?>
-                             </select>
-                          </td>
-                          <td><input type="text" name="quantity" id="quantity" placeholder="Quantity" class="form-control" /></td>  
-                          <td><input type="submit" name="add" id="add-btn" class="btn btn-info" value="Add" /> </td>  
-                        </tr>  
-                    </table>  
-                  <?php } ?>
-                </th>
-                </tr>
-                <div id="fetch_formula">
-                	<div class="loader-center">
-                		<div class="loader"></div>
-                    	<div class="loader-text"></div>
-                	</div>
+          <div id="msgInfo"></div>
+          <?php if($meta['isProtected'] == FALSE){?>
+	      <div id="add_ing">
+           	<div class="form-group">
+          	 	<div class="col-md-4 buffer">
+				   <input name="ingredient" id="ingredient" class="pv-form-control"></input>
                 </div>
-                <?php if($legend){ ?>
-                <div id="legend">
-                <p></p>
-                <p>*Values in: <strong class="alert alert-danger">red</strong> exceeds usage level,   <strong class="alert alert-warning">yellow</strong> have no usage level set,   <strong class="alert alert-success">green</strong> are within usage level, <strong class="alert alert-info">blue</strong> are exceeding recommended usage level</p>
+                <div class="col-md-2 buffer">
+					<input type="text" name="concentration" id="concentration" placeholder="Purity %" class="form-control" />
                 </div>
-                <?php } ?>
-     </div>
+                <div class="col-md-2 buffer">
+                	<select name="dilutant" id="dilutant" class="form-control selectpicker" data-live-search="true">
+                    	<option value="" selected disabled>Dilutant</option>
+                        <option value="none">None</option>
+                        <?php
+                        $res_dil = mysqli_query($conn, "SELECT id, name FROM ingredients WHERE type = 'Solvent' OR type = 'Carrier' ORDER BY name ASC");
+                        while ($r_dil = mysqli_fetch_array($res_dil)){
+                        	echo '<option value="'.$r_dil['name'].'">'.$r_dil['name'].'</option>';
+                        }
+                        ?>
+                    </select>
+                </div>
+                <div class="col-md-2 buffer">
+                	<input type="text" name="quantity" id="quantity" placeholder="Quantity" class="form-control" />				
+                </div>
+                <div class="col-md-2 buffer">
+                	<input type="submit" name="add" id="add-btn" class="btn btn-info" value="Add" /> </td>  
+                </div>  
+            </div>
+          </div>
+
+          <?php } ?>
+
+          <div id="fetch_formula">
+          	<div class="loader-center">
+            	<div class="loader"></div>
+               	<div class="loader-text"></div>
+            </div>
+          </div>
+          <?php if($legend){ ?>
+          <div id="legend">
+          	<p></p>
+            <p>*Values in: <strong class="alert alert-danger">red</strong> exceeds usage level,   <strong class="alert alert-warning">yellow</strong> have no usage level set,   <strong class="alert alert-success">green</strong> are within usage level, <strong class="alert alert-info">blue</strong> are exceeding recommended usage level</p>
+            </div>
+          <?php } ?>
   </div>
 </div>
 <!--Formula-->
-  
+
 <div class="tab-pane fade" id="impact">
     <div class="card-body">
         <div id="fetch_impact"><div class="loader"></div></div>
@@ -272,93 +278,15 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
   </div>
 </div>
 
-<script type="text/javascript" language="javascript" >
-//$(document).ready(function(){
+<script src="/js/select2-v3-ingredient.js"></script>
+<script>
 document.title = "<?=$meta['name'].' - '.$product?>";
 
-$("#concentration").attr("disabled", "disabled"); 
-$("#dilutant").attr("disabled", "disabled");
-$('#quantity').attr("disabled", "disabled");
+$("#concentration").prop("disabled", true); 
+$("#dilutant").prop("disabled", true);
+$('#quantity').prop("disabled", true);
 
-let ingredientsLit = $('#ingredient');
-ingredientsLit.empty();
-ingredientsLit.append('<option selected="true" disabled>Choose ingredient</option>');
-ingredientsLit.prop('selectedIndex', 0);
 
-$.ajax({
-    url:'/core/list_ingredients_simple.php',
-    type:'GET',
-    datatype:'json',
-    success:function(data) {
-        $.each(data.data, function(key, ing) {
-   			 ingredientsLit.append($('<option ing-type="'+ing.type+'" data-subtext="'+ing.IUPAC+'"></option>').val(ing.name).html(ing.name + ' ('+ing.cas+')'));
-  		})
- 		ingredientsLit.selectpicker('refresh');
-    }
-});
-
-//UPDATE PURITY
-$('#ingredient').on('change', function(){
-	var ingType = $("#ingredient").find('option:selected').attr('ing-type');
-
-	$.ajax({ 
-		url: 'pages/getIngInfo.php', 
-		type: 'GET',
-		data: {
-			filter: "purity",
-			name: $(this).val()
-			},
-		dataType: 'html',
-		success: function (data) {
-		  if(ingType == 'Solvent'){
-			$("#concentration").attr("disabled", "disabled"); 
-			$("#dilutant").attr("disabled", "disabled");
-			$('#concentration').val(100);
-            $('#dilutant').val('None');
-		  }else{
-            $("#concentration").removeAttr("disabled"); 
-			$("#dilutant").removeAttr("disabled"); 
-			$('#concentration').val(data);
-		  }
-		 $("#quantity").removeAttr("disabled"); 
-		}
-	  });
-	
-	$.ajax({ 
-		url: 'pages/getIngInfo.php', 
-		type: 'GET',
-		data: {
-			filter: "solvent",
-			name: $(this).val()
-			},
-		dataType: 'html',
-		success: function (data) {
-		  $('#dilutant').val(data);
-		}
-	});
-
-});
-/*
-//DILUTION
-$('#formula_data').editable({
-	container: 'body',
-	selector: 'td.dilutant',
-	type: 'POST',
-	emptytext: "",
-	emptyclass: "",
-  	url: "pages/update_data.php?formula=<?php //echo $f_name; ?>",
-    source: [
-			 <?php
-				//$res_ing = mysqli_query($conn, "SELECT id, name FROM ingredients WHERE type = 'Solvent' OR type = 'Carrier' ORDER BY name ASC");
-				//while ($r_ing = mysqli_fetch_array($res_ing)){
-				//echo '{value: "'.$r_ing['name'].'", text: "'.$r_ing['name'].'"},';
-			//}
-			?>
-          ],
-	dataType: 'json',
-    
-});
-*/
 //Add ingredient
 $('#add_ing').on('click', '[id*=add-btn]', function () {
 	

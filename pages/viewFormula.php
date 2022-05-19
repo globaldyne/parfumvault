@@ -21,8 +21,7 @@ $f_name = $meta['name'];
 $fid = $meta['fid'];
 ?>
 
-<link href="/css/select2.css" rel="stylesheet">
-<script src="/js/select2.js"></script>   
+  
 
 <script>
 var isProtected;
@@ -36,6 +35,7 @@ $(document).ready(function() {
 		columnDefs: [
             { visible: false, targets: groupColumn },
 			{ className: 'text-center', targets: '_all' },
+			{ orderable: false, targets: [10, 11] },
         ],
 		search: {
     		search: "<?=$_GET['search']?>"
@@ -477,6 +477,7 @@ function reload_formula_data() {
 
 
 <script>
+
 function extrasShow() {
 	$('[rel=tip]').tooltip({
         "html": true,
@@ -678,44 +679,61 @@ function ingInv(data, type, row, meta){
 
   return data;
 }
-  
+
 function ingActions(data, type, row, meta){
 //Change ingredient
 $('#formula').editable({
 	select2: {
-    	width: 250,
+    	width: '250px',
         placeholder: 'Choose ingredient',
-        allowClear: true
+        allowClear: true,
+    	dropdownAutoWidth: true,
+		ajax: {
+			url: '/core/list_ingredients_simple.php',
+			dataType: 'json',
+			type: 'GET',
+			delay: 100,
+			quietMillis: 250,
+			data: function (data) {
+				return {
+					search: data
+				};
+			},
+			processResults: function(data) {
+				return {
+					results: $.map(data.data, function(obj) {
+					  return {
+						id: obj.name, //TODO: TO BE CHANGED TO ID WHEN THE BACKEND IS READY
+						text: obj.name || 'No ingredient found...',
+					  }
+					})
+				};
+			},
+			cache: true,
+			
+    	}
     },
+	tpl:'<input type="hidden">',
 	placement: 'left',
 	selector: 'i.replaceIngredient',
 	pvnoresp: false,
 	highlight: false,
-	emptytext: "",
-	emptyclass: "",
+	emptytext: null,
+	emptyclass: null,
 	url: "pages/manageFormula.php?action=repIng&fid=<?=$meta['fid']?>",
-	source: [
-			 <?php
-			$res_ing = mysqli_query($conn, "SELECT name FROM ingredients ORDER BY name ASC");
-			while ($r_ing = mysqli_fetch_array($res_ing)){
-				echo '{value: "'.htmlspecialchars($r_ing['name']).'", text: "'.htmlspecialchars($r_ing['name']).'"},';
-			}
-			?>
-		  ],
-		dataType: 'html',
-		success: function (data) {
-			if ( data.indexOf("Error") > -1 ) {
-				$('#msgInfo').html(data); 
-			}else{
-				$('#msgInfo').html(data);
-				reload_formula_data();
-			}
-		},
-		validate: function(value){
-   			if($.trim(value) == ''){
-				return 'Ingredient is required';
-   			}
+	success: function (data) {
+		if ( data.indexOf("Error") > -1 ) {
+			$('#msgInfo').html(data); 
+		}else{
+			$('#msgInfo').html(data);
+			reload_formula_data();
 		}
+	},
+	validate: function(value){
+   		if($.trim(value) == ''){
+			return 'Ingredient is required';
+   		}
+	}
 });
 
 if(type === 'display'){
@@ -891,7 +909,7 @@ function export_as(type) {
   	ignoreRows: '.noexport',
 	htmlContent: false,
 	orientation: 'l',
-	maintitle: '<?=$f_name?>',
+	maintitle: '<?php echo $f_name; ?>',
   });
 };
 </script>

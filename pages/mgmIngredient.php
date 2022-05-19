@@ -878,6 +878,17 @@ $(document).ready(function() {
 		});
 	});
 
+	$('#purity').bind('input', function() {
+		var purity = $(this).val();
+		if(purity == 100){
+			$("#solvent").prop("disabled", true); 
+			$("#solvent").val(''); 
+		}else{
+			$("#solvent").prop("disabled", false);
+		}
+		$('.selectpicker').selectpicker('refresh');
+	});
+	
 });//end doc
 
 </script>

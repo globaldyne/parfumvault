@@ -973,7 +973,7 @@ Applied as jQuery method.
                     //for some reason FF 20 generates extra event (click) in select2 widget with e.target = document
                     //we need to filter it via construction below. See https://github.com/vitalets/x-editable/issues/199
                     //Possibly related to http://stackoverflow.com/questions/10119793/why-does-firefox-react-differently-from-webkit-and-ie-to-click-event-on-selec
-                    if($target.is(document)) {
+                     if($target.is(document) || $target.is(document.body)) {
                         return;
                     }
                     
@@ -3660,7 +3660,8 @@ You need initially put both `data-value` and element's text youself:
     <a href="#" data-type="select2" data-value="1">Text1</a>
     
     
-@class select2
+@class 
+
 @extends abstractinput
 @since 1.4.1
 @final
@@ -3955,7 +3956,7 @@ $(function(){
         @property tpl 
         @default <input type="hidden">
         **/
-        tpl:'<input type="hidden">',
+        tpl:'<select></select>',
         /**
         Configuration of select2. [Full list of options](http://ivaynberg.github.com/select2).
 

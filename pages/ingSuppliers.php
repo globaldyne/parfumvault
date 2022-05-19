@@ -402,7 +402,7 @@ function reload_sup_data() {
             <div class="dropdown-divider"></div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <input type="submit" name="button" class="btn btn-primary" id="sAdd" value="Add">
       </div>
     </div>

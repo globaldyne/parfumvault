@@ -1,4 +1,17 @@
 # CHANGELOG
+### Version 4.6
+- Fix formula clone action
+- Fix formulas list sort by status and date
+- A major rewrite in formula view to utilize select2 (WIP)
+- Various improvements
+- Removed sorting action from properties and actions columns in formula
+- Make sure the dilutant field isn't enabled when purity is at 100%
+- Auto enable/disable solvent in ingredient management when updating the purity
+- Live search added in dilutant in formula view
+- Add delay between requests to PubChem when importing ingredient images to the IFRA library
+- Bug reporting or feature request is now pointing to the Github repo
+- Improve version update process when updating from older versions
+
 ### Version 4.5
 - Fix core upgrade 
 - Calculation tools moved under top right menu

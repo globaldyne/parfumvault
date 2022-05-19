@@ -80,7 +80,7 @@ foreach ($form as $formula){
 			$arrayLength = count($a);
 			$i = 0;
 			while ($i < $arrayLength){
-				$c = multi_dim_search($a, 'cas', $ing_q['cas'])[$i];
+				$c = multi_dim_search($a, 'cas', $ing_q['cas']?:'N/A')[$i];
 				$conc_a[$a['cas']] += $c['percentage']/100 * $formula['quantity'] * $formula['concentration'] / 100;
 				$conc_b[$a['cas']] += $c['percentage']/100 * $formula['quantity'] * $formula['concentration'] / $mg['total_mg']* $meta['finalType']/100 ;
 				$i++;
@@ -147,7 +147,7 @@ foreach ($form as $formula){
 	$r['ingredient']['enc_id'] = (string)base64_encode($ing_q['name']);
 	$r['ingredient']['id'] = (int)$ing_q['id'];
    	$r['ingredient']['name'] = (string)$ingName ?: $formula['ingredient'];
-	$r['ingredient']['cas'] = (string)$ing_q['cas'];
+	$r['ingredient']['cas'] = (string)$ing_q['cas'] ?: 'N/A';
 	$r['ingredient']['physical_state'] = (int)$ing_q['physical_state'];
 	$r['ingredient']['classification'] = (int)$ing_q['classification'] ?: 1;
 	$r['ingredient']['type'] = (string)$ing_q['type'] ?: 'Unknown';

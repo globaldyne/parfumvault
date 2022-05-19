@@ -11,30 +11,39 @@ if($_GET['do'] == 'db_update'){
 	$a_ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
 	$n_ver = trim(file_get_contents(__ROOT__.'/db/schema.ver'));
 	$c_ver = $pv_meta['schema_ver'];
-	$sql = __ROOT__.'/db/updates/update_'.$c_ver.'-'.$n_ver.'.sql';
 	$script = __ROOT__.'/db/scripts/update_'.$c_ver.'-'.$n_ver.'.php';
-	
-	if(file_exists($sql) == FALSE){
-		echo '<div class="alert alert-danger"><strong>Missing update file!</strong> Please make sure file '.$sql.' exists and in the right path.</div>';
-		return;
-	}
-	
+
 	if(file_exists($script) == TRUE){
 		require_once($script);
 	}
-
-
-	$cmd = "mysql -u$dbuser -p$dbpass $dbname < $sql"; 
-	//echo $cmd;
-	passthru($cmd,$e);
-
-	if($e){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Failed to update the database,</strong>corrupted or wrong update file.</div>';
+  	if($pv_meta['schema_ver'] == $n_ver){
+		echo '<div class="alert alert-info alert-dismissible"><strong>No update is needed.</strong></div>';
 		return;
+    }
+	do{	
+        $c_ver = mysqli_fetch_array(mysqli_query($conn, "SELECT schema_ver FROM pv_meta"));
+		foreach (range($c_ver['schema_ver']+0.1, $n_ver,  0.1) as $i) {
+			$u_ver = number_format($i,1);
+	
+			$sql = __ROOT__.'/db/updates/update_'.$c_ver['schema_ver'].'-'.$u_ver.'.sql';
+	
+			if(file_exists($sql) == TRUE){
+				$q = mysqli_query($conn, "UPDATE pv_meta SET schema_ver = '$u_ver', app_ver = '$a_ver'");
+	
+				$cmd = "mysql -u$dbuser -p$dbpass $dbname < $sql";
+				passthru($cmd,$e);
+				$q = mysqli_query($conn, "UPDATE pv_meta SET schema_ver = '$u_ver', app_ver = '$a_ver'");
+			}
+		}
+	
+	} while($c_ver['schema_ver'] < $n_ver);
+	
+	if($e){
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Failed to update the database,</strong> corrupted or wrong update file.</div>';
+		//return; 
+		//Notify the user but continue
 	}
-	
-	$q = mysqli_query($conn, "UPDATE pv_meta SET schema_ver = '$n_ver', app_ver = '$a_ver'");
-	
+
 	if($q){
 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Your database has been updated!</strong></div>';
 	}

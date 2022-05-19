@@ -138,7 +138,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
       		Make sure your CSV file follows the guidelines as documented <a href="https://www.jbparfum.com/knowledge-base/3-ingredients-import-csv" target="_blank">here</a>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <input type="submit" name="button" class="btn btn-primary" id="btnImportCSV" value="Import">
       </div>
       </form>
@@ -167,7 +167,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
 	  <?php require('privacy_note.php');?>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <input type="submit" name="button" class="btn btn-primary" id="btnImport" value="Import">
       </div>
      </form>
@@ -216,7 +216,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
 	  <?php require('privacy_note.php');?>
       </div>
 <div class="modal-footer">
-  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
   <input type="submit" name="button" class="btn btn-primary" id="btnUpload" value="Upload">
 </div>
      </form>
@@ -269,7 +269,7 @@ function adv_search() {
 
 function pv_online_import(items) {
 	$('#btnImport').attr('disabled', true);
-	$('#pvImportMsg').html('<div class="alert alert-info">Please wait...</div>');
+	$('#pvImportMsg').html('<div class="alert alert-info"><img src="/img/loading.gif"/> Please wait, this may take a while...</div>');
 	$.ajax({
 		url: 'pages/pvonline.php', 
 		type: 'GET',
@@ -289,7 +289,7 @@ function pv_online_import(items) {
 
 function pv_online_upload(items) {
 	$('#btnUpload').attr('disabled', true);
-	$('#pvUploadMsg').html('<div class="alert alert-info">Please wait...</div>');
+	$('#pvUploadMsg').html('<div class="alert alert-info"><img src="/img/loading.gif"/> Please wait, this may take a while...</div>');
 	$.ajax({
 		url: 'pages/pvonline.php', 
 		type: 'GET',

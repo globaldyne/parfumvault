@@ -209,7 +209,7 @@ function reload_syn_data() {
             <div class="dropdown-divider"></div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <input type="submit" name="button" class="btn btn-primary" id="synAdd" value="Add">
       </div>
     </div>
@@ -236,7 +236,7 @@ function reload_syn_data() {
 	  	For more info regarding PubChem Rest API please refer to its documentation <a href="https://pubchemdocs.ncbi.nlm.nih.gov/about" target="_blank">here.</a> 
       </div>
       <div class="modal-footer" id="import">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <input type="submit" name="button" class="btn btn-primary" id="importPubChem" value="Import">
       </div>
      </form>

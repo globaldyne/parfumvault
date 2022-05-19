@@ -1338,6 +1338,7 @@ the specific language governing permissions and limitations under the Apache Lic
         // abstract
         enableInterface: function() {
             var enabled = this._enabled && !this._readonly,
+
                 disabled = !enabled;
 
             if (enabled === this.enabledInterface) return false;
