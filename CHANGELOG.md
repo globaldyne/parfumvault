@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 4.7
+Added 2 character limit when searching for ingredient in formula
 
 ### Version 4.6
 - Fix formula clone action
