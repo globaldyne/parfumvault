@@ -19,6 +19,7 @@ $(document).ready(function(){
 	};
 
 	$("#ingredient").select2({
+		minimumInputLength: 2,
     	dropdownAutoWidth: true,
 		theme: 'bootstrap',
         allowClear: true,

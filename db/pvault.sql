@@ -288,7 +288,7 @@ CREATE TABLE `pv_meta` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 INSERT INTO `pv_meta` (`id`, `schema_ver`, `app_ver`) VALUES
-(1, '4.6', '4.6');
+(1, '4.7', '4.7');
 
 DROP TABLE IF EXISTS `settings`;
 CREATE TABLE `settings` (
