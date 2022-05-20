@@ -20,24 +20,20 @@ if($_GET['do'] == 'db_update'){
 		echo '<div class="alert alert-info alert-dismissible"><strong>No update is needed.</strong></div>';
 		return;
     }
-	do{	
-        $c_ver = mysqli_fetch_array(mysqli_query($conn, "SELECT schema_ver FROM pv_meta"));
-		foreach (range($c_ver['schema_ver']+0.1, $n_ver,  0.1) as $i) {
-			$u_ver = number_format($i,1);
+
+	foreach (range($c_ver['schema_ver']+0.1, $n_ver,  0.1) as $i) {
+		$c_ver = mysqli_fetch_array(mysqli_query($conn, "SELECT schema_ver FROM pv_meta"));
+		$u_ver = number_format($i,1);
+		$sql = __ROOT__.'/db/updates/update_'.$c_ver['schema_ver'].'-'.$u_ver.'.sql';
 	
-			$sql = __ROOT__.'/db/updates/update_'.$c_ver['schema_ver'].'-'.$u_ver.'.sql';
-	
-			if(file_exists($sql) == TRUE){
-				$q = mysqli_query($conn, "UPDATE pv_meta SET schema_ver = '$u_ver', app_ver = '$a_ver'");
-	
-				$cmd = "mysql -u$dbuser -p$dbpass $dbname < $sql";
-				passthru($cmd,$e);
-				$q = mysqli_query($conn, "UPDATE pv_meta SET schema_ver = '$u_ver', app_ver = '$a_ver'");
-			}
+		if(file_exists($sql) == TRUE){	
+			$cmd = "mysql -u$dbuser -p$dbpass $dbname < $sql";
+			passthru($cmd,$e);
 		}
-	
-	} while($c_ver['schema_ver'] < $n_ver);
-	
+		
+		$q = mysqli_query($conn, "UPDATE pv_meta SET schema_ver = '$u_ver'");
+	}
+		
 	if($e){
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Failed to update the database,</strong> corrupted or wrong update file.</div>';
 		//return; 
