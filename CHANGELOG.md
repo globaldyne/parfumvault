@@ -1,7 +1,9 @@
 # CHANGELOG
+### Version 4.8
+
 ### Version 4.7
-Added 2 character limit when searching for ingredient in formula
-FIX DB update procedure between versions 
+- Added 2 character limit when searching for ingredient in formula
+- FIX DB update procedure between versions 
 
 ### Version 4.6
 - Fix formula clone action
