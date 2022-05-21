@@ -24,6 +24,11 @@ if($_GET['register'] && $_POST['regUser'] && $_POST['regPass'] && $_POST['regFul
 		$msg ='<div class="alert alert-danger alert-dismissible"><strong>Error: </strong>Password must be at least 5 characters long!</div>';
 	}else{
 		if(mysqli_query($conn,"INSERT INTO users (username,password,fullName,email) VALUES ('$ruser', PASSWORD('$rpass'),'$rfname','$remail')")){
+			
+			$app_ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
+			$db_ver  = trim(file_get_contents(__ROOT__.'/db/schema.ver'));
+			mysqli_query($conn,"INSERT INTO pv_meta (schema_ver,app_ver) VALUES ('$db_ver','$app_ver')");
+	
 			header('Location: login.php');
 		}else{
 			$msg = '<div class="alert alert-danger alert-dismissible">Failed to register the user</div>';
