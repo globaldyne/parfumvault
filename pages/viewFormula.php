@@ -320,6 +320,10 @@ function reload_formula_data() {
                <a class="dropdown-item" href="javascript:export_as('csv')">Export to CSV</a>
                <a class="dropdown-item" href="javascript:export_as('pdf')">Export to PDF</a>
                <div class="dropdown-divider"></div>
+               <!--TECH PREVIEW
+               <a class="dropdown-item" href="#" data-toggle="modal" data-target="#share_to_friend">Share with a friend</a>
+               <div class="dropdown-divider"></div>
+               -->
                <a class="dropdown-item" href="javascript:manageQuantity('multiply')">Multiply x2</a>
                <a class="dropdown-item" href="javascript:manageQuantity('divide')">Divide x2</a>
                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#amount_to_make">Amount to make</a>
@@ -373,6 +377,37 @@ function reload_formula_data() {
             </tr>
         </tfoot>
 </table>
+
+<!--Share with a friend-->
+<div class="modal fade" id="share_to_friend" tabindex="-1" role="dialog" aria-labelledby="share_to_friend" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Share with a friend</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <div id="shareMsg"></div>
+        <table width="100%" border="0">
+          <tr>
+	       <td height="31" colspan="2"><strong>Select a friend</strong><strong> from PV Online to share the formula with.</strong></td>
+          </tr>
+	     <tr>
+	       <td width="125"><strong>PV User:</strong></td>
+	       <td width="895"><input name="pvUsers" id="pvUsers" class="pv-form-control"></td>
+          </tr>
+        </table>
+	    <p>You friend must have an account in PV Online</p>
+	    <div class="modal-footer">
+	      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+	      <input type="submit" name="button" class="btn btn-primary" id="amountToMake" value="Share">
+        </div>
+    </div>
+  </div>
+ </div>
+</div>
 
 <!--Amount To Make-->
 <div class="modal fade" id="amount_to_make" tabindex="-1" role="dialog" aria-labelledby="amount_to_make" aria-hidden="true">
@@ -685,9 +720,10 @@ function ingActions(data, type, row, meta){
 $('#formula').editable({
 	select2: {
     	width: '250px',
-        placeholder: 'Choose ingredient',
+        placeholder: 'Search for ingredient (name, cas)',
         allowClear: true,
     	dropdownAutoWidth: true,
+		minimumInputLength: 2,
 		ajax: {
 			url: '/core/list_ingredients_simple.php',
 			dataType: 'json',
@@ -885,7 +921,6 @@ function addTODO() {
   });
 };
 
-
 $('#formula').on('click', '[id*=cCAS]', function () {
 	var copy = {};
 	copy.Name = $(this).attr('data-name');
@@ -896,6 +931,69 @@ $('#formula').on('click', '[id*=cCAS]', function () {
     document.execCommand('copy');
     document.body.removeChild(el);
 });
+
+$("#pvUsers").select2({
+	placeholder: "Search for users",
+    width: '250px',
+    placeholder: 'Search for pv users',
+	formatResult: formatPVUsers, 
+    formatSelection: formatPVUsersSelection, 
+    allowClear: true,
+    dropdownAutoWidth: true,
+	tags: true,
+	minimumInputLength: 2,
+	ajax: {
+		url: 'https://online.jbparfum.com/api2.php',
+		dataType: 'json',
+		type: 'POST',
+		delay: 100,
+		quietMillis: 250,
+   		data: function (term) {
+            return {
+				username: '<?=$pv_online['email']?>',
+				password: '<?=$pv_online['password']?>',
+				do: 'getUsers',
+            	search: term,
+			};
+		},
+		processResults: function(data) {
+			return {
+				results: $.map(data.users, function(obj) {
+					return {
+						id: obj.id,
+						firstName: obj.firstName,
+						lastName: obj.lastName,
+						userBio: obj.userBio,
+						avatar: obj.avatar
+					}
+				})
+			};
+		},	
+    }
+});
+
+function formatPVUsers (ingredientData) {
+  if (ingredientData.loading) {
+    return ingredientData.firstName;
+  }
+  
+  if (!ingredientData.firstName){
+	return 'User not found...';
+  }
+  
+  var $container = $(
+    "<div class='select_result_igredient clearfix'><strong>" +ingredientData.firstName + " "+ ingredientData.lastName +
+      "</strong><div class='select_result_igredient_meta'>" +
+        "<div class='select_result_igredient_description'>" +ingredientData.userBio+ "</div>" +
+    "</div>"
+  );
+
+  return $container;
+}
+
+function formatPVUsersSelection (ingredientData) {
+  return ingredientData.firstName;
+}
 
 function export_as(type) {
   $("#formula").tableHTMLExport({

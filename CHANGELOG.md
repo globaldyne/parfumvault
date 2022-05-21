@@ -1,6 +1,8 @@
 # CHANGELOG
 ### Version 4.8
 - Rewrite installation wizard
+- Add 2 characters minimu when searching ingredient replacement
+- TECH Preview: PV Online share With a friend
 
 ### Version 4.7
 - Added 2 character limit when searching for ingredient in formula
