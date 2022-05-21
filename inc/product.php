@@ -1,6 +1,8 @@
 <?php
 //DO NOT EDIT
-define('__ROOT__', dirname(dirname(__FILE__))); 
+if (defined('__ROOT__') == FALSE) {
+	define('__ROOT__', dirname(dirname(__FILE__)));
+}
 
 $def_app_img = 'img/logo_400.png';
 $product = 'JBs Perfumers Vault Pro';

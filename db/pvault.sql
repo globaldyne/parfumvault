@@ -287,9 +287,6 @@ CREATE TABLE `pv_meta` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
-INSERT INTO `pv_meta` (`id`, `schema_ver`, `app_ver`) VALUES
-(1, '4.8', '4.8');
-
 DROP TABLE IF EXISTS `settings`;
 CREATE TABLE `settings` (
   `id` int(11) NOT NULL,
