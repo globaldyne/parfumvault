@@ -13,7 +13,44 @@ if($_POST['action'] == 'share' && $_POST['fid']){
         echo  '<div class="alert alert-danger alert-dismissible">Please select user(s) first.</div>';
 		return;
 	}
+	$fid = $_POST['fid'];
 	
+	$qMeta = mysqli_fetch_array(mysqli_query($conn, "SELECT name, product_name, profile, sex, defView, catClass, finalType, status FROM formulasMetaData WHERE fid = '$fid'"));
+	
+	$q = mysqli_query($conn, "SELECT name, ingredient, concentration, dilutant, quantity, notes FROM formulas WHERE fid = '$fid'");
+	
+	while($formula = mysqli_fetch_assoc($q)){
+		$r[] = $formula;
+	}
+
+	$fData = array(
+		"meta" => array(
+		"fid" => $_POST['fid'],
+		"users" => $_POST['users'],
+		"notes" => $_POST['comments'],
+		"name" => (string)$qMeta['name'],
+		"product_name" => (string)$qMeta['product_name'],
+		"profile" => (string)$qMeta['profile'],
+		"sex" => (string)$qMeta['sex'],
+		"defView" => (int)$qMeta['defView'],
+		"catClass" => (string)$qMeta['catClass'],
+		"finalType" => (int)$qMeta['finalType'],
+		"status" => (int)$qMeta['status']),
+		"data" => $r
+	);
+	$params = "?username=".$pv_online['email']."&password=".$pv_online['password']."&do=share&kind=formula";
+	$req = pvUploadData('https://online.jbparfum.com/api2.php'.$params, json_encode($fData));
+	//pvUploadData($pvOnlineAPI.$params, json_encode($fData));	
+	
+	$json = json_decode($req, true);
+	if($json['success']){
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Success: '.$json['success'].'</strong></div>';
+		return;
+	}
+	if($json['error']){
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: '.$json['error'].'</strong></div>';
+		return;
+	}
 	return;
 }
 

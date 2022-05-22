@@ -411,7 +411,7 @@ function reload_formula_data() {
 	    <p>&nbsp;</p>
 	    <p><a href="#">Invite someone to PV Online</a></p>
 	    <div class="modal-footer">
-	      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+	      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 	      <input type="submit" name="button" class="btn btn-primary" id="sharePVOnline" value="Share">
         </div>
     </div>
@@ -946,7 +946,7 @@ $('#formula').on('click', '[id*=cCAS]', function () {
 $("#pvUsers").select2({
 	placeholder: "Search for users",
     width: '250px',
-    placeholder: 'Search for pv users',
+    placeholder: 'Search for PV Online users',
 	formatResult: formatPVUsers, 
     formatSelection: formatPVUsersSelection, 
     allowClear: true,
@@ -981,11 +981,6 @@ $("#pvUsers").select2({
 			};
 		},	
     }
-//}).on('select2-selected', function (data) {
-//   var id = data.choice.id;
-
- //  $(this).attr('ing-id', id);
- //  console.log(data);
 });
 
 function formatPVUsers (ingredientData) {
