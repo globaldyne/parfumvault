@@ -321,8 +321,10 @@ function reload_formula_data() {
                <a class="dropdown-item" href="javascript:export_as('pdf')">Export to PDF</a>
                <div class="dropdown-divider"></div>
                <!--TECH PREVIEW
-               <a class="dropdown-item" href="#" data-toggle="modal" data-target="#share_to_friend">Share with a friend</a>
+               <?php if($pv_online['email'] && $pv_online['password'] && $pv_online['enabled'] == '1'){?>
+               <a class="dropdown-item" href="#" data-toggle="modal" data-target="#share_to_user">Share with a friend</a>
                <div class="dropdown-divider"></div>
+               <?php } ?>
                -->
                <a class="dropdown-item" href="javascript:manageQuantity('multiply')">Multiply x2</a>
                <a class="dropdown-item" href="javascript:manageQuantity('divide')">Divide x2</a>
@@ -377,13 +379,13 @@ function reload_formula_data() {
             </tr>
         </tfoot>
 </table>
-
-<!--Share with a friend-->
-<div class="modal fade" id="share_to_friend" tabindex="-1" role="dialog" aria-labelledby="share_to_friend" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+<?php if($pv_online['email'] && $pv_online['password'] && $pv_online['enabled'] == '1'){?>
+<!--Share with a user-->
+<div class="modal fade" id="share_to_user" tabindex="-1" role="dialog" aria-labelledby="share_to_user" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Share with a friend</h5>
+        <h5 class="modal-title">Share with a PV Online user</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -392,23 +394,30 @@ function reload_formula_data() {
       <div id="shareMsg"></div>
         <table width="100%" border="0">
           <tr>
-	       <td height="31" colspan="2"><strong>Select a friend</strong><strong> from PV Online to share the formula with.</strong></td>
+	       <td height="31" colspan="2"><p><strong>Select PV Online user to share the formula with.</p>
+            <p>The formula will be sent to PV Online servers and will be automatically deleted when the user you sharing the formula with, accepts or declines to download the formula.</p>
+            <p>If you are sharing the formula with multiple users, the formula will be deleted from PV Online servers when all the users accepts or declines to download it.</p></td>
           </tr>
 	     <tr>
-	       <td width="125"><strong>PV User:</strong></td>
+	       <td width="125">Share with:</td>
 	       <td width="895"><input name="pvUsers" id="pvUsers" class="pv-form-control"></td>
           </tr>
+	     <tr>
+	       <td valign="top">Comments:</td>
+	       <td><textarea name="pvShareComment" id="pvShareComment" cols="45" rows="5" class="form-control"></textarea></td>
+          </tr>
         </table>
-	    <p>You friend must have an account in PV Online</p>
+	    <p>&nbsp;</p>
+	    <p><a href="#">Invite someone to PV Online</a></p>
 	    <div class="modal-footer">
 	      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-	      <input type="submit" name="button" class="btn btn-primary" id="amountToMake" value="Share">
+	      <input type="submit" name="button" class="btn btn-primary" id="sharePVOnline" value="Share">
         </div>
     </div>
   </div>
  </div>
 </div>
-
+<?php } ?>
 <!--Amount To Make-->
 <div class="modal fade" id="amount_to_make" tabindex="-1" role="dialog" aria-labelledby="amount_to_make" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -992,7 +1001,7 @@ function formatPVUsers (ingredientData) {
 }
 
 function formatPVUsersSelection (ingredientData) {
-  return ingredientData.firstName;
+  return ingredientData.firstName + " " + ingredientData.lastName;
 }
 
 function export_as(type) {
