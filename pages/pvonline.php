@@ -8,6 +8,15 @@ require_once(__ROOT__.'/inc/product.php');
 require_once(__ROOT__.'/func/pvOnline.php');
 
 
+if($_POST['action'] == 'share' && $_POST['fid']){
+	if(!$_POST['users']){
+        echo  '<div class="alert alert-danger alert-dismissible">Please select user(s) first.</div>';
+		return;
+	}
+	
+	return;
+}
+
 if($_GET['action'] == 'import' && $_GET['items']){
 	$items = explode(',',trim($_GET['items']));
     $i = 0;
@@ -49,14 +58,14 @@ if($_GET['action'] == 'import' && $_GET['items']){
     return;
 }
 
-if($_GET['action'] == 'upload' && $_GET['items'] == 'ingredients'){
+if($_POST['action'] == 'upload' && $_POST['items'] == 'ingredients'){
 	//Upload all the ingredients
 	$ingQ = mysqli_query($conn, "SELECT * FROM ingredients WHERE isPrivate = '0'");
 	$i = 0;
 	while($ing = mysqli_fetch_assoc($ingQ)){
 		$ing['rID'] = $ing['id'];
 		unset($ing['id'],$ing['created']);
-		if($_GET['excludeNotes'] == 'true'){
+		if($_POST['excludeNotes'] == 'true'){
 			unset($ing['notes']);			
 		}
 		$ingData['data'][] = array_filter($ing);
@@ -106,7 +115,7 @@ if($_GET['action'] == 'upload' && $_GET['items'] == 'ingredients'){
 	$params = "?username=".$pv_online['email']."&password=".$pv_online['password']."&do=add&kind=ingredient";
 	$up_req = pvUploadData($pvOnlineAPI.$params, json_encode($ingData));
 	
-	if($_GET['excludeCompositions'] == 'false'){
+	if($_POST['excludeCompositions'] == 'false'){
 		$params = "?username=".$pv_online['email']."&password=".$pv_online['password']."&do=add&kind=compos";
 		$up_req.= pvUploadData($pvOnlineAPI.$params, json_encode($algData));
 		$msg.= ', <strong>'.$a.'</strong> compositions';
@@ -115,13 +124,13 @@ if($_GET['action'] == 'upload' && $_GET['items'] == 'ingredients'){
 	$params = "?username=".$pv_online['email']."&password=".$pv_online['password']."&do=add&kind=category";
 	$up_req.= pvUploadData($pvOnlineAPI.$params, json_encode($cData));
 	
-	if($_GET['excludeSynonyms'] == 'false'){
+	if($_POST['excludeSynonyms'] == 'false'){
 		$params = "?username=".$pv_online['email']."&password=".$pv_online['password']."&do=add&kind=synonym";
 		$up_req.= pvUploadData($pvOnlineAPI.$params, json_encode($sData));
 		$msg.= ', <strong>'.$s.'</strong> synonyms';
 	}
 	
-	if($_GET['excludeSuppliers'] == 'false'){
+	if($_POST['excludeSuppliers'] == 'false'){
 		$params = "?username=".$pv_online['email']."&password=".$pv_online['password']."&do=add&kind=suppliers";
 		$up_req.= pvUploadData($pvOnlineAPI.$params, json_encode($spData));
 		$params = "?username=".$pv_online['email']."&password=".$pv_online['password']."&do=add&kind=ingSuppliers";

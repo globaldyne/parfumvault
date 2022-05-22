@@ -16,7 +16,7 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulasMetaData WHERE i
 	echo '<div class="alert alert-info alert-dismissible">Incomplete formula. Please add ingredients.</div>';
 	return;
 }
-$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,fid,name,isProtected,finalType,defView FROM formulasMetaData WHERE id = '$id'"));
+$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,fid,name,isProtected,finalType,defView,notes FROM formulasMetaData WHERE id = '$id'"));
 $f_name = $meta['name'];
 $fid = $meta['fid'];
 ?>
@@ -320,7 +320,7 @@ function reload_formula_data() {
                <a class="dropdown-item" href="javascript:export_as('csv')">Export to CSV</a>
                <a class="dropdown-item" href="javascript:export_as('pdf')">Export to PDF</a>
                <div class="dropdown-divider"></div>
-               <!--TECH PREVIEW
+               <--TECH PREVIEW
                <?php if($pv_online['email'] && $pv_online['password'] && $pv_online['enabled'] == '1'){?>
                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#share_to_user">Share with a friend</a>
                <div class="dropdown-divider"></div>
@@ -379,6 +379,7 @@ function reload_formula_data() {
             </tr>
         </tfoot>
 </table>
+
 <?php if($pv_online['email'] && $pv_online['password'] && $pv_online['enabled'] == '1'){?>
 <!--Share with a user-->
 <div class="modal fade" id="share_to_user" tabindex="-1" role="dialog" aria-labelledby="share_to_user" aria-hidden="true">
@@ -394,7 +395,7 @@ function reload_formula_data() {
       <div id="shareMsg"></div>
         <table width="100%" border="0">
           <tr>
-	       <td height="31" colspan="2"><p><strong>Select PV Online user to share the formula with.</p>
+	       <td height="31" colspan="2"><p>Select PV Online user to share the formula with.</p>
             <p>The formula will be sent to PV Online servers and will be automatically deleted when the user you sharing the formula with, accepts or declines to download the formula.</p>
             <p>If you are sharing the formula with multiple users, the formula will be deleted from PV Online servers when all the users accepts or declines to download it.</p></td>
           </tr>
@@ -404,7 +405,7 @@ function reload_formula_data() {
           </tr>
 	     <tr>
 	       <td valign="top">Comments:</td>
-	       <td><textarea name="pvShareComment" id="pvShareComment" cols="45" rows="5" class="form-control"></textarea></td>
+	       <td><textarea name="pvShareComment" id="pvShareComment" cols="45" rows="5" placeholder="Short description of your formula or any other comments" class="form-control"><?=$meta['notes']?></textarea></td>
           </tr>
         </table>
 	    <p>&nbsp;</p>
@@ -418,6 +419,7 @@ function reload_formula_data() {
  </div>
 </div>
 <?php } ?>
+
 <!--Amount To Make-->
 <div class="modal fade" id="amount_to_make" tabindex="-1" role="dialog" aria-labelledby="amount_to_make" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -955,7 +957,7 @@ $("#pvUsers").select2({
 		url: 'https://online.jbparfum.com/api2.php',
 		dataType: 'json',
 		type: 'POST',
-		delay: 100,
+		delay: 300,
 		quietMillis: 250,
    		data: function (term) {
             return {
@@ -979,6 +981,11 @@ $("#pvUsers").select2({
 			};
 		},	
     }
+//}).on('select2-selected', function (data) {
+//   var id = data.choice.id;
+
+ //  $(this).attr('ing-id', id);
+ //  console.log(data);
 });
 
 function formatPVUsers (ingredientData) {
@@ -1003,7 +1010,31 @@ function formatPVUsers (ingredientData) {
 function formatPVUsersSelection (ingredientData) {
   return ingredientData.firstName + " " + ingredientData.lastName;
 }
+<?php if($pv_online['email'] && $pv_online['password'] && $pv_online['enabled'] == '1'){?>
 
+$('#share_to_user').on('click', '[id*=sharePVOnline]', function () {
+	$('#sharePVOnline').attr('disabled', true);
+	$('#shareMsg').html('<div class="alert alert-info"><img src="/img/loading.gif"/> Please wait, this may take a while...</div>');
+
+	$.ajax({
+		url: 'pages/pvonline.php', 
+		type: 'POST',
+		data: {
+			action: 'share',
+			fid: '<?=$fid?>',
+			users: $("#pvUsers").val(),
+			comments: $("#pvShareComment").val(),
+			},
+		dataType: 'html',
+		success: function (data) {
+			$('#sharePVOnline').attr('disabled', false);
+		  	$('#shareMsg').html(data);
+		}
+	  });
+	
+});
+
+<?php } ?>
 function export_as(type) {
   $("#formula").tableHTMLExport({
 	type: type,

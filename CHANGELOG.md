@@ -2,6 +2,7 @@
 ### Version 4.8
 - Rewrite installation wizard
 - Add 2 characters minimu when searching ingredient replacement
+- PV Upload is now using $_POST instead of $_GET
 - TECH Preview: PV Online share With a friend
 
 ### Version 4.7

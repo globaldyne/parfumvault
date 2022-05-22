@@ -187,7 +187,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
       </div>
       <div class="modal-body">
        <div id="pvUploadMsg"></div>
-  <form action="javascript:pv_online_upload('ingredients')" method="get" name="form1" target="_self" id="form_pv_online_upload">
+
       <strong>WARNING:</strong><br />
       you are about to upload data to PV Online, please bear in mind, PV Online is a community driven database therefore your data will be available to others. Please make sure you not uploading any sensitive information. <br />
       If PV Online database contains already an ingredient with the same name, the ingredient data will not be uploaded. <p></p>
@@ -215,11 +215,11 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
 	  <div class="modal-footer_2">
 	  <?php require('privacy_note.php');?>
       </div>
-<div class="modal-footer">
-  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-  <input type="submit" name="button" class="btn btn-primary" id="btnUpload" value="Upload">
-</div>
-     </form>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <input type="submit" name="button" class="btn btn-primary" id="btnUpload" value="Upload">
+        </div>
+
     </div>
   </div>
 </div>
@@ -287,15 +287,15 @@ function pv_online_import(items) {
 
 <?php if($pv_online['email'] && $pv_online['password'] && $pv_online['enabled'] == '1'){?>
 
-function pv_online_upload(items) {
+$('#pv_online_upload').on('click', '[id*=btnUpload]', function () {
 	$('#btnUpload').attr('disabled', true);
 	$('#pvUploadMsg').html('<div class="alert alert-info"><img src="/img/loading.gif"/> Please wait, this may take a while...</div>');
 	$.ajax({
 		url: 'pages/pvonline.php', 
-		type: 'GET',
+		type: 'POST',
 		data: {
-			action: "upload",
-			items: items,
+			action: 'upload',
+			items: 'ingredients',
 			excludeNotes: $("#excludeNotes").is(':checked'),
 			excludeSynonyms: $("#excludeSynonyms").is(':checked'),
 			excludeCompositions: $("#excludeCompositions").is(':checked'),
@@ -308,7 +308,7 @@ function pv_online_upload(items) {
 		  	$('#pvUploadMsg').html(data);
 		}
 	  });
-};
+});
 <?php } ?>
 
 function delete_ingredient(id){
