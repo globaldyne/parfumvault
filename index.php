@@ -202,7 +202,7 @@ function list_users(){
        
       <li class="nav-item">
       <?php 
-	  if($_GET['do'] == 'listFormulas' || $_GET['do'] == 'genFinishedProduct' || $_GET['do'] == 'compareFormulas' || $_GET['do'] == 'Formula'  || $_GET['do'] == 'sellFormula'){ 
+	  if($_GET['do'] == 'listFormulas' || $_GET['do'] == 'genFinishedProduct' || $_GET['do'] == 'compareFormulas' || $_GET['do'] == 'Formula'  || $_GET['do'] == 'sellFormula' || $_GET['do'] == 'todo'){ 
 	  	$expand_f = 'show'; 
 		$class_f = ''; 
 		$aria_f = 'true'; 
@@ -222,6 +222,7 @@ function list_users(){
             <a class="collapse-item <?php if($_GET['do'] == 'compareFormulas'){ echo 'active';}?>" href="?do=compareFormulas">Compare Formulas</a>
             <a class="collapse-item <?php if($_GET['do'] == 'genFinishedProduct'){ echo 'active';}?>" href="?do=genFinishedProduct"> Finished Product</a>
             <a class="collapse-item <?php if($_GET['do'] == 'sellFormula'){ echo 'active';}?>" href="?do=sellFormula">Sell Formula</a>
+            <a class="collapse-item <?php if($_GET['do'] == 'todo'){ echo 'active';}?>" href="?do=todo">Pending Formulas</a>
           </div>
         </div>
       </li>

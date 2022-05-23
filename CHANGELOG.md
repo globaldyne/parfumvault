@@ -3,6 +3,8 @@
 - Rewrite installation wizard
 - Add 2 characters minimu when searching ingredient replacement
 - PV Upload is now using $_POST instead of $_GET
+- Pending formulas moved to Formula Management
+- New notification system implemented
 - TECH Preview: PV Online share With a friend
 
 ### Version 4.7

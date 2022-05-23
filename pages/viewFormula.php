@@ -954,7 +954,7 @@ $("#pvUsers").select2({
 	tags: true,
 	minimumInputLength: 2,
 	ajax: {
-		url: 'https://online.jbparfum.com/api2.php',
+		url: '<?=$pvOnlineAPI?>',
 		dataType: 'json',
 		type: 'POST',
 		delay: 300,

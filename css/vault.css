@@ -861,3 +861,25 @@ body {
   cursor: not-allowed;
   background-color: #eee;
 }
+
+.shared-formula-accept {
+  float: right;
+  border: none;
+  background: none;
+  text-transform: uppercase;
+  font-size: 22px;
+  font-weight: 700;
+  color: #1cc88a;
+}
+
+
+.shared-formula-reject {
+  float: right;
+  border: none;
+  background: none;
+  text-transform: uppercase;
+  font-size: 22px;
+  font-weight: 700;
+  color: #e74a3b;
+}
+

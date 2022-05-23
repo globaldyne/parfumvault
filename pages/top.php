@@ -1,4 +1,56 @@
 <?php if (!defined('pvault_panel')){ die('Not Found');}?>
+<script>
+(function chk_shared() {
+  $('#list-shared-formulas').empty();
+
+  $.ajax({
+    url: '<?=$pvOnlineAPI?>',
+	dataType: 'json',
+	data: {
+		username: '<?=$pv_online['email']?>',
+		password: '<?=$pv_online['password']?>',
+		do: 'getShared'
+	},
+	type: 'POST',
+    success: function(data) {
+		if(data.formulasTotal > 0){
+			$('.badge-counter-shared-formulas').html(data.formulasTotal);
+			for (var i=0;i<data.formulasTotal;++i){
+				$('#list-shared-formulas').append('<div class="font-weight-bold">'+
+					'<li>'+
+						'<button class="shared-formula-accept" title="Accept formula">'+
+              				'<span><i class="fas fa-check-circle"></i></span>'+
+            			'</button>'+
+					'</li>'+
+					'<li>'+
+						'<button class="shared-formula-reject" title="Reject formula">'+
+              				'<span><i class="fas fa-trash"></i></span>'+
+            			'</button>'+
+						'</li>'+
+                    '<div class="text-truncate shared-formula-name"><li><a href="">'+data.formulas[i].name+'</a></div>'+
+                    '<div class="small text-gray-500 shared-formula-notes">'+data.formulas[i].notes+'</li></div>'+
+					
+                  '</div>').fadeIn('slow');
+        	}
+			$('#list-shared-formulas-footer').html('<a class="dropdown-item text-center small text-gray-500" href="#">View all</a>');
+
+		}else{
+			$('.badge-counter-shared-formulas').empty();
+			$('#list-shared-formulas-footer').html('<a class="dropdown-item text-center small text-gray-500" href="#">No formulas</a>');
+		};
+					
+		
+		
+    },
+    complete: function() {
+      setTimeout(chk_shared, 500000);
+    }
+  });
+  
+  
+})();
+</script>
+
 <div id="content">
         <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
           <ul class="navbar-nav vault-top ml-auto">
@@ -7,36 +59,13 @@
               <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-bell fa-fw"></i>
                 <!-- Counter - Notifications -->
-                <span class="badge badge-danger badge-counter"><?php echo countPending(NULL, NULL, $conn);?></span>
+                <span class="badge badge-danger badge-counter badge-counter-shared-formulas"></span>
               </a>
               <!-- Dropdown - Notifications -->
               <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="messagesDropdown">
-                <?php if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE toAdd = '1' GROUP BY name"))){ ?>
-				<a href="?do=todo" class="dropdown-header"><h6>Pending formulas to make</h6></a>
-				<?php 
-				$toadd_q = mysqli_query($conn, "SELECT name,fid FROM makeFormula WHERE toAdd = '1' GROUP BY name ORDER BY name ASC LIMIT 5");
-				while ($toadd_p = mysqli_fetch_array($toadd_q)){ 	
-					$todoImg = mysqli_fetch_array(mysqli_query($conn, "SELECT image FROM formulasMetaData WHERE fid = '".$toadd_p['fid']."'"));
-					if(empty($todoImg['image'])){
-						$todoImg['image'] = 'img/logo_400.png';
-					}
-				?>
-                <a class="dropdown-item d-flex align-items-center" href="pages/makeFormula.php?fid=<?php echo $toadd_p['fid'];?>" target="_blank">
-                  <div class="dropdown-list-image mr-3">
-                    <img class="rounded-circle" src="<?php echo $todoImg['image']; ?>">
-                  </div>
-                  <div class="font-weight-bold">
-                    <div class="text-truncate"><?php echo $toadd_p['name'];?></div>
-                    <div class="small text-gray-500">Ingredients left: <?php echo countPending(1, $toadd_p['fid'], $conn);?></div>
-                  </div>
-                </a>
-				<?php } ?>
-                <a class="dropdown-item text-center small text-gray-500" href="?do=todo">See all...</a>
-	
-				<?php }else{ ?>
-                <a class="dropdown-item text-center small text-gray-500" href="?do=todo">No formulas to make</a>
-				<?php } ?>	
-				 
+				<a href="#" class="dropdown-header"><h6>PV Online formulas</h6></a>
+                <div id="list-shared-formulas" class="dropdown-item text-gray-500"></div>
+				<div id="list-shared-formulas-footer"></div>				 
               </div>
             </li>
 

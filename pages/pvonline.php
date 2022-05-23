@@ -39,8 +39,8 @@ if($_POST['action'] == 'share' && $_POST['fid']){
 		"data" => $r
 	);
 	$params = "?username=".$pv_online['email']."&password=".$pv_online['password']."&do=share&kind=formula";
-	$req = pvUploadData('https://online.jbparfum.com/api2.php'.$params, json_encode($fData));
-	//pvUploadData($pvOnlineAPI.$params, json_encode($fData));	
+	// pvUploadData('https://online.jbparfum.com/api2.php'.$params, json_encode($fData));
+	$req = pvUploadData($pvOnlineAPI.$params, json_encode($fData));	
 	
 	$json = json_decode($req, true);
 	if($json['success']){
