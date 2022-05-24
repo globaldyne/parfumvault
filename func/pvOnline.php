@@ -3,9 +3,9 @@
 if (!defined('pvault_panel')){ die('Not Found');}
 
 function pvOnlineStats($api, $s){
-	$jAPI = $api.'?do=count';
+	$jAPI = $api.'?do=getStats';
 	if($jData = json_decode(file_get_contents($jAPI),true)){
-		return $jData['count'][0][$s];
+		return $jData[$s];
 	}else{
 		return 'Connection failed';
 	}

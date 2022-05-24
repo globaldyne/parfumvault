@@ -5,6 +5,8 @@
 - PV Upload is now using $_POST instead of $_GET
 - Pending formulas moved to Formula Management
 - New notification system implemented
+- Update to comply with new PV Online api 
+- Show ingredients, synonyms and compositions count when you importing from PV Online
 - TECH Preview: PV Online share With a friend
 
 ### Version 4.7
