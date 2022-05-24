@@ -7,7 +7,7 @@ require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/inc/product.php');
 require_once(__ROOT__.'/func/pvOnline.php');
 
-
+//SHARE FORMULA TO PV ONLINE
 if($_POST['action'] == 'share' && $_POST['fid']){
 	if(!$_POST['users']){
         echo  '<div class="alert alert-danger alert-dismissible">Please select user(s) first.</div>';
@@ -39,21 +39,73 @@ if($_POST['action'] == 'share' && $_POST['fid']){
 		"data" => $r
 	);
 	$params = "?username=".$pv_online['email']."&password=".$pv_online['password']."&do=share&kind=formula";
-	// pvUploadData('https://online.jbparfum.com/api2.php'.$params, json_encode($fData));
 	$req = pvUploadData($pvOnlineAPI.$params, json_encode($fData));	
 	
 	$json = json_decode($req, true);
 	if($json['success']){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Success: '.$json['success'].'</strong></div>';
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$json['success'].'</strong></div>';
 		return;
 	}
 	if($json['error']){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: '.$json['error'].'</strong></div>';
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$json['error'].'</strong></div>';
 		return;
 	}
 	return;
 }
 
+//IMPORT SHARED FORMULAS ON PV ONLINE
+if($_POST['action'] == 'importShareFormula' && $_POST['fid']){
+	require_once(__ROOT__.'/func/genFID.php');
+
+	$params = "?username=".$pv_online['email']."&password=".$pv_online['password']."&do=getShared&fid=".$_POST['fid'];
+    $jsonData = json_decode(file_get_contents($pvOnlineAPI.$params), true);
+	
+	$jsonData['meta']['name'] = $_POST['localName'];
+    
+	if($jsonData['error']){
+       
+	   $response['error'] = $json['error'];
+	   echo json_encode($response);
+	   return;
+    }
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM formulasMetaData WHERE name = '".$jsonData['meta']['name']."'"))){
+	  $response['error'] = 'Formula name '.$jsonData['meta']['name'].' already exists, please choose a different name.';
+	  echo json_encode($response);
+	  return;
+	}
+
+	$newFid = random_str(40, '1234567890abcdefghijklmnopqrstuvwxyz');
+	$q = "INSERT INTO formulasMetaData (name,product_name,fid,profile,sex,notes,defView,catClass,finalType,status) VALUES ('".$jsonData['meta']['name']."','".$jsonData['meta']['product_name']."','".$newFid."','".$jsonData['meta']['profile']."','".$jsonData['meta']['sex']."','".$jsonData['meta']['notes']."','".$jsonData['meta']['defView']."','".$jsonData['meta']['catClass']."','".$jsonData['meta']['finalType']."','".$jsonData['meta']['status']."')";
+	
+	$qIns = mysqli_query($conn,$q);
+
+   $array_data = $jsonData['formula'];
+   foreach ($array_data as $id=>$row) {
+	  $insertPairs = array();
+      	foreach ($row as $key=>$val) {
+      		$insertPairs[addslashes($key)] = addslashes($val);
+      	}
+      $insertVals = '"'.$newFid.'",'.'"'.$jsonData['meta']['name'].'",'.'"' . implode('","', array_values($insertPairs)) . '"';
+   
+      if(!mysqli_num_rows(mysqli_query($conn, $query))){
+       	$jsql = "INSERT INTO formulas (`fid`,`name`,`ingredient`,`concentration`,`dilutant`,`quantity`,`notes`) VALUES ({$insertVals});";
+         $qIns.= mysqli_query($conn,$jsql);
+      }
+	}
+	
+    if($qIns){
+		$params = "?username=".$pv_online['email']."&password=".$pv_online['password']."&do=remShared&fid=".$_POST['fid']."&download=1";
+    	$jsonData = json_decode(file_get_contents($pvOnlineAPI.$params), true);
+		$response['success'] = $jsonData['meta']['name'].' formula imported!';
+    }else{
+		$response['error'] = 'Unable to import the formula '.mysqli_error($conn);
+    }
+	echo json_encode($response);
+    return;
+
+}
+
+//IMPORT INGREDIENTS FROM PV ONLINE
 if($_GET['action'] == 'import' && $_GET['items']){
 	$items = explode(',',trim($_GET['items']));
     $i = 0;

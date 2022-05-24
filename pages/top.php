@@ -18,18 +18,15 @@
 			for (var i=0;i<data.formulasTotal;++i){
 				$('#list-shared-formulas').append('<div class="font-weight-bold">'+
 					'<li>'+
-						'<button class="shared-formula-accept" title="Accept formula">'+
-              				'<span><i class="fas fa-check-circle"></i></span>'+
+						'<button class="shared-formula-accept" data-notes="'+data.formulas[i].notes+'" data-author="'+data.formulas[i].author+'" data-name="'+data.formulas[i].name+'" data-id="'+data.formulas[i].fid+'" id="acceptShared" title="Import formula">'+
+              				'<span>Import</span>'+
             			'</button>'+
 					'</li>'+
 					'<li>'+
-						'<button class="shared-formula-reject" title="Reject formula">'+
-              				'<span><i class="fas fa-trash"></i></span>'+
-            			'</button>'+
-						'</li>'+
-                    '<div class="text-truncate shared-formula-name"><li><a href="">'+data.formulas[i].name+'</a></div>'+
+                    '<div class="text-truncate shared-formula-name"><li><a href="#">'+data.formulas[i].name+'</a></div>'+
                     '<div class="small text-gray-500 shared-formula-notes">'+data.formulas[i].notes+'</li></div>'+
-					
+					'<div class="small text-gray-500 shared-formula-author">Author: '+data.formulas[i].author+'</li></div>'+
+
                   '</div>').fadeIn('slow');
         	}
 			$('#list-shared-formulas-footer').html('<a class="dropdown-item text-center small text-gray-500" href="#">View all</a>');
@@ -40,15 +37,16 @@
 		};
 					
 		
-		
     },
     complete: function() {
-      setTimeout(chk_shared, 500000);
+      setTimeout(chk_shared, 50000);
     }
   });
   
   
 })();
+
+
 </script>
 
 <div id="content">
@@ -146,3 +144,62 @@
 <?php if($settings['chkVersion'] == '1'){ echo checkVer($ver); } ?>
 <div id="msg"><?php echo $db_up_msg;?></div>
 </nav>
+
+<script>
+$('#list-shared-formulas').on('click', '[id*=acceptShared]', function () {
+	
+	var sharedFormula = {};
+	sharedFormula.ID = $(this).attr('data-id');
+	sharedFormula.Name = $(this).attr('data-name');
+   	sharedFormula.Author = $(this).attr('data-author');
+   	sharedFormula.Notes = $(this).attr('data-notes');
+
+	bootbox.dialog({
+       title: 'Import formula from PV Online',
+       message : '<div id="pvShImpMsg"></div>' + 
+	   			 '<p>'+sharedFormula.Author+' shared its formula <strong>'+sharedFormula.Name+'</strong>, with you.</p>'+
+				 '<p>Import formula as: <input id="newSharedFname" value="'+sharedFormula.Name+'" type="text" /></p>'+
+				 '<p><strong>Formula description:</strong></p>' + 
+				 '<p>'+sharedFormula.Notes+'</p>',
+       buttons :{
+           main: {
+               label : 'Import',
+               className : 'btn-success',
+               callback: function (){
+	    			
+				$.ajax({
+					url: 'pages/pvonline.php', 
+					type: 'POST',
+					data: {
+						action: 'importShareFormula',
+						fid: sharedFormula.ID,
+						localName: $("#newSharedFname").val(),
+						},
+					dataType: 'json',
+					success: function (data) {
+						if(data.error){
+							var rmsg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
+						}else if(data.success){
+							var rmsg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
+						}
+						$('#pvShImpMsg').html(rmsg);
+						
+					}
+				});
+				
+                 return false;
+               }
+           },
+           cancel: {
+               label : "Cancel",
+               className : "btn-default",
+               callback : function() {
+                   return true;
+               }
+           }   
+       },onEscape: function () {return true;}
+   });
+});
+
+
+</script>

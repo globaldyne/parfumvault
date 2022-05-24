@@ -157,7 +157,6 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
       </div>
       <div class="modal-body">
        <div id="pvImportMsg"></div>
-  <form action="javascript:pv_online_import('ingredients,allergens')" method="get" name="form1" target="_self" id="form1">
       <strong>WARNING:</strong><br />
       you are about to import data from PV Online, please bear in mind, PV Online is a community driven database therefore may contain unvalidated or incorrect data. <br />
       If your local database contains already an ingredient with the same name, the ingredient data will not be imported. <p></p>
@@ -170,7 +169,6 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <input type="submit" name="button" class="btn btn-primary" id="btnImport" value="Import">
       </div>
-     </form>
     </div>
   </div>
 </div>
@@ -267,15 +265,15 @@ function adv_search() {
 };
 
 
-function pv_online_import(items) {
+$('#pv_online_import').on('click', '[id*=btnImport]', function () {
 	$('#btnImport').attr('disabled', true);
 	$('#pvImportMsg').html('<div class="alert alert-info"><img src="/img/loading.gif"/> Please wait, this may take a while...</div>');
 	$.ajax({
 		url: 'pages/pvonline.php', 
 		type: 'GET',
 		data: {
-			action: "import",
-			items: items
+			action: 'import',
+			items: 'ingredients,allergens'
 			},
 		dataType: 'html',
 		success: function (data) {
@@ -283,7 +281,7 @@ function pv_online_import(items) {
 		  	$('#pvImportMsg').html(data);
 		}
 	  });
-};
+});
 
 <?php if($pv_online['email'] && $pv_online['password'] && $pv_online['enabled'] == '1'){?>
 

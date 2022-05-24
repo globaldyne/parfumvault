@@ -322,7 +322,7 @@ function reload_formula_data() {
                <div class="dropdown-divider"></div>
                <--TECH PREVIEW
                <?php if($pv_online['email'] && $pv_online['password'] && $pv_online['enabled'] == '1'){?>
-               <a class="dropdown-item" href="#" data-toggle="modal" data-target="#share_to_user">Share with a friend</a>
+               <a class="dropdown-item" href="#" data-toggle="modal" data-target="#share_to_user">Share with someone</a>
                <div class="dropdown-divider"></div>
                <?php } ?>
                -->
@@ -396,8 +396,8 @@ function reload_formula_data() {
         <table width="100%" border="0">
           <tr>
 	       <td height="31" colspan="2"><p>Select PV Online user to share the formula with.</p>
-            <p>The formula will be sent to PV Online servers and will be automatically deleted when the user you sharing the formula with, accepts or declines to download the formula.</p>
-            <p>If you are sharing the formula with multiple users, the formula will be deleted from PV Online servers when all the users accepts or declines to download it.</p></td>
+            <p>The formula will be sent to PV Online servers and will be automatically deleted when all the users you sharing the formula with, downloads the formula.</p>
+            <p>&nbsp;</p></td>
           </tr>
 	     <tr>
 	       <td width="125">Share with:</td>
