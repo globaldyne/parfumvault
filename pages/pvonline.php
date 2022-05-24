@@ -22,12 +22,15 @@ if($_POST['action'] == 'share' && $_POST['fid']){
 	while($formula = mysqli_fetch_assoc($q)){
 		$r[] = $formula;
 	}
-
+	
+	$credits = ' <p></p> This formula authored by '.$user['fullName'];
+	$comments = $_POST['comments'].$credits;
+	
 	$fData = array(
 		"meta" => array(
 		"fid" => $_POST['fid'],
 		"users" => $_POST['users'],
-		"notes" => $_POST['comments'],
+		"notes" => $comments,
 		"name" => (string)$qMeta['name'],
 		"product_name" => (string)$qMeta['product_name'],
 		"profile" => (string)$qMeta['profile'],
@@ -77,7 +80,7 @@ if($_POST['action'] == 'importShareFormula' && $_POST['fid']){
 	$newFid = random_str(40, '1234567890abcdefghijklmnopqrstuvwxyz');
 	$q = "INSERT INTO formulasMetaData (name,product_name,fid,profile,sex,notes,defView,catClass,finalType,status) VALUES ('".$jsonData['meta']['name']."','".$jsonData['meta']['product_name']."','".$newFid."','".$jsonData['meta']['profile']."','".$jsonData['meta']['sex']."','".$jsonData['meta']['notes']."','".$jsonData['meta']['defView']."','".$jsonData['meta']['catClass']."','".$jsonData['meta']['finalType']."','".$jsonData['meta']['status']."')";
 	
-	$qIns = mysqli_query($conn,$q);
+   $qIns = mysqli_query($conn,$q);
 
    $array_data = $jsonData['formula'];
    foreach ($array_data as $id=>$row) {
@@ -96,7 +99,7 @@ if($_POST['action'] == 'importShareFormula' && $_POST['fid']){
     if($qIns){
 		$params = "?username=".$pv_online['email']."&password=".$pv_online['password']."&do=remShared&fid=".$_POST['fid']."&download=1";
     	$jsonData = json_decode(file_get_contents($pvOnlineAPI.$params), true);
-		$response['success'] = $jsonData['meta']['name'].' formula imported!';
+		$response['success'] = $_POST['localName'].' formula imported!';
     }else{
 		$response['error'] = 'Unable to import the formula '.mysqli_error($conn);
     }

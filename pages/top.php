@@ -181,6 +181,8 @@ $('#list-shared-formulas').on('click', '[id*=acceptShared]', function () {
 							var rmsg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
 						}else if(data.success){
 							var rmsg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
+							$('.btn-success').hide();
+							$('.btn-default').html('Close');
 						}
 						$('#pvShImpMsg').html(rmsg);
 						
@@ -192,7 +194,7 @@ $('#list-shared-formulas').on('click', '[id*=acceptShared]', function () {
            },
            cancel: {
                label : "Cancel",
-               className : "btn-default",
+               className : 'btn-default',
                callback : function() {
                    return true;
                }

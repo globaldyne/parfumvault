@@ -320,12 +320,11 @@ function reload_formula_data() {
                <a class="dropdown-item" href="javascript:export_as('csv')">Export to CSV</a>
                <a class="dropdown-item" href="javascript:export_as('pdf')">Export to PDF</a>
                <div class="dropdown-divider"></div>
-               <--TECH PREVIEW
+                <li class="dropdown-header">TECH PREVIEW</li> 
                <?php if($pv_online['email'] && $pv_online['password'] && $pv_online['enabled'] == '1'){?>
                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#share_to_user">Share with someone</a>
                <div class="dropdown-divider"></div>
                <?php } ?>
-               -->
                <a class="dropdown-item" href="javascript:manageQuantity('multiply')">Multiply x2</a>
                <a class="dropdown-item" href="javascript:manageQuantity('divide')">Divide x2</a>
                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#amount_to_make">Amount to make</a>
@@ -392,6 +391,7 @@ function reload_formula_data() {
         </button>
       </div>
       <div class="modal-body">
+      <div id="techpreview"><div class="alert alert-warning alert-dismissible"><strong>THIS IS A TECH PREVIEW FEATURE. USE ONLY FOR TESTING.</strong></div></div>
       <div id="shareMsg"></div>
         <table width="100%" border="0">
           <tr>
