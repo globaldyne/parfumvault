@@ -1,53 +1,4 @@
 <?php if (!defined('pvault_panel')){ die('Not Found');}?>
-<script>
-(function chk_shared() {
-  $('#list-shared-formulas').empty();
-
-  $.ajax({
-    url: '<?=$pvOnlineAPI?>',
-	dataType: 'json',
-	data: {
-		username: '<?=$pv_online['email']?>',
-		password: '<?=$pv_online['password']?>',
-		do: 'getShared'
-	},
-	type: 'POST',
-    success: function(data) {
-		if(data.formulasTotal > 0){
-			$('.badge-counter-shared-formulas').html(data.formulasTotal);
-			for (var i=0;i<data.formulasTotal;++i){
-				$('#list-shared-formulas').append('<div class="font-weight-bold">'+
-					'<li>'+
-						'<button class="shared-formula-accept" data-notes="'+data.formulas[i].notes+'" data-author="'+data.formulas[i].author+'" data-name="'+data.formulas[i].name+'" data-id="'+data.formulas[i].fid+'" id="acceptShared" title="Import formula">'+
-              				'<span>Import</span>'+
-            			'</button>'+
-					'</li>'+
-					'<li>'+
-                    '<div class="text-truncate shared-formula-name"><li><a href="#">'+data.formulas[i].name+'</a></div>'+
-                    '<div class="small text-gray-500 shared-formula-notes">'+data.formulas[i].notes+'</li></div>'+
-					'<div class="small text-gray-500 shared-formula-author">Author: '+data.formulas[i].author+'</li></div>'+
-
-                  '</div>').fadeIn('slow');
-        	}
-			$('#list-shared-formulas-footer').html('<a class="dropdown-item text-center small text-gray-500" href="#">View all</a>');
-
-		}else{
-			$('.badge-counter-shared-formulas').empty();
-			$('#list-shared-formulas-footer').html('<a class="dropdown-item text-center small text-gray-500" href="#">No formulas</a>');
-		};
-					
-		
-    },
-    complete: function() {
-      setTimeout(chk_shared, 50000);
-    }
-  });
-  
-  
-})();
-
-
-</script>
 
 <div id="content">
         <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
@@ -61,7 +12,7 @@
               </a>
               <!-- Dropdown - Notifications -->
               <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="messagesDropdown">
-				<a href="#" class="dropdown-header"><h6>PV Online formulas</h6></a>
+				<a href="#" class="dropdown-header"><h6>PV Online</h6></a>
                 <div id="list-shared-formulas" class="dropdown-item text-gray-500"></div>
 				<div id="list-shared-formulas-footer"></div>				 
               </div>
@@ -146,6 +97,53 @@
 </nav>
 
 <script>
+<?php if($pv_online['email'] && $pv_online['password'] && $pv_online['enabled'] == '1'){?>
+
+chk_shared();
+var myVar = setInterval(chk_shared, 50000);
+function chk_shared() {
+  $('#list-shared-formulas').empty();
+
+  $.ajax({
+    url: '<?=$pvOnlineAPI?>',
+	dataType: 'json',
+	data: {
+		username: "<?=$pv_online['email']?>",
+		password: "<?=$pv_online['password']?>",
+		do: 'getShared'
+	},
+	type: 'POST',
+    success: function(data) {
+		if(data.formulasTotal > 0){
+			$('.badge-counter-shared-formulas').html(data.formulasTotal);
+			for (var i=0;i<data.formulasTotal;++i){
+				$('#list-shared-formulas').append('<div class="font-weight-bold">'+
+					'<li>'+
+						'<button class="shared-formula-accept" data-notes="'+data.formulas[i].notes+'" data-author="'+data.formulas[i].author+'" data-name="'+data.formulas[i].name+'" data-id="'+data.formulas[i].fid+'" id="acceptShared" title="Import formula">'+
+              				'<span>Import</span>'+
+            			'</button>'+
+					'</li>'+
+					'<div class="dropdown-divider"></div>'+
+					'<li>'+
+                    '<div class="text-truncate shared-formula-name"><li><a href="#">'+data.formulas[i].name+'</a></div>'+
+                    '<div class="small text-gray-500 shared-formula-notes">'+data.formulas[i].notes+'</li></div>'+
+					'<div class="small text-gray-500 shared-formula-author">Author: '+data.formulas[i].author+'</li></div>'+
+
+                  '</div>').fadeIn('slow');
+        	}
+			$('#list-shared-formulas-footer').html('<a class="dropdown-item text-center small text-gray-500" href="#">View all</a>');
+
+		}else{
+			$('.badge-counter-shared-formulas').empty();
+			$('#list-shared-formulas-footer').html('<a class="dropdown-item text-center small text-gray-500" href="#">No formulas</a>');
+		};
+					
+		
+    }
+   
+  });
+}
+  
 $('#list-shared-formulas').on('click', '[id*=acceptShared]', function () {
 	
 	var sharedFormula = {};
@@ -180,6 +178,7 @@ $('#list-shared-formulas').on('click', '[id*=acceptShared]', function () {
 						if(data.error){
 							var rmsg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
 						}else if(data.success){
+							chk_shared();
 							var rmsg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
 							$('.btn-success').hide();
 							$('.btn-default').html('Close');
@@ -196,6 +195,7 @@ $('#list-shared-formulas').on('click', '[id*=acceptShared]', function () {
                label : "Cancel",
                className : 'btn-default',
                callback : function() {
+				   chk_shared();
                    return true;
                }
            }   
@@ -204,4 +204,12 @@ $('#list-shared-formulas').on('click', '[id*=acceptShared]', function () {
 });
 
 
+<?php }else{ ?>
+
+$('#list-shared-formulas').html('<div class="font-weight-bold">'+
+		'<div class="alert alert-warning">PV Online account isn\'t configured yet. Please go to <a href="?do=settings#pvonline">settings</a> to configure it.</div>'+
+    '</div>');
+
+
+<?php } ?>
 </script>

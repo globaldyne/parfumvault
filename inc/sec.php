@@ -9,5 +9,6 @@ if(!isset($_SESSION['parfumvault'])){
 	header('Location: '.$login);
 	exit;
 }
+$pvOnlineAPI = 'https://online.jbparfum.com/api2.php';
 
 ?>

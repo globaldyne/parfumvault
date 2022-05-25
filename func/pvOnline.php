@@ -14,7 +14,8 @@ function pvOnlineStats($api, $s){
 function pvOnlineValAcc($api, $apiUser, $apiPass, $ver){
 	$jAPI = $api.'?username='.$apiUser.'&password='.$apiPass.'&login=1&ver='.$ver;
 	$jData = json_decode(file_get_contents($jAPI),true);
-	return $jData['status'];
+
+	return $jData['auth'];
 }
 
 function pvUploadData($pvOnlineAPI, $data){
