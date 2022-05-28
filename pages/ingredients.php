@@ -299,9 +299,13 @@ $('#pv_online_import').on('click', '[id*=btnImport]', function () {
 });
 
 <?php if($pv_online['email'] && $pv_online['password'] && $pv_online['enabled'] == '1'){?>
+$(".pv_exclusions input[type=checkbox]:checked").on('change', function () {
+	$('#btnUpload').show();
+	$('#btnUpload').prop('disabled', false);
+});
 
 $('#pv_online_upload').on('click', '[id*=btnUpload]', function () {
-	$('#btnUpload').attr('disabled', true);
+	$('#btnUpload').prop('disabled', true);
 	$('#pvUploadMsg').html('<div class="alert alert-info"><img src="/img/loading.gif"/> Please wait, this may take a while...</div>');
 	$.ajax({
 		url: 'pages/pvonline.php', 
