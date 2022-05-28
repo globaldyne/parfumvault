@@ -9,6 +9,7 @@
 - Show ingredients, synonyms and compositions count when you importing from PV Online
 - Improve PV Online import and upload functions
 - Improve formula creation functions
+- Allow to enable/disable PV Online without providing credentials (WIP)
 - TECH Preview: PV Online share With a friend
 
 ### Version 4.7

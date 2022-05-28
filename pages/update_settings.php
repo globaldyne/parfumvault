@@ -106,28 +106,37 @@ if($_POST['manage'] == 'print'){
 if($_POST['manage'] == 'pvonline'){
 	$pv_online_email = mysqli_real_escape_string($conn, $_POST['pv_online_email']);
 	$pv_online_pass = mysqli_real_escape_string($conn, $_POST['pv_online_pass']);
-
-	if(empty($pv_online_email) || empty($pv_online_pass)){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Missing fields.</div>';
-		return;
-	}
+	
 	if($_POST['pv_online_state'] == 'true') {
-		$pv_online_state = '1';
+		$pv_online_state = '1';	
 	}else{
 		$pv_online_state = '0';
 	}
+	
+	mysqli_query($conn, "UPDATE pv_online SET enabled = '$pv_online_state'");
+	
+	if(empty($pv_online_email) || empty($pv_online_pass)){
+		$response['error'] = 'Missing fields.';
+		echo json_encode($response);
+		return;
+	}
+	
+	
 	$valAcc = pvOnlineValAcc($pvOnlineAPI, $pv_online_email, $pv_online_pass, $ver);
 
 	if($valAcc['code'] !== '001'){
-       	echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error: '.$valAcc['msg'].'</div>';
+		$response['error'] = $valAcc['msg'];
+		echo json_encode($response);
 		return;
 	}
-	if(mysqli_query($conn, "INSERT pv_online (id,email,password,enabled) VALUES ('1','$pv_online_email', '$pv_online_pass','$pv_online_state') ON DUPLICATE KEY UPDATE id = '1', email = '$pv_online_email', password = '$pv_online_pass', enabled = '$pv_online_state'")){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>PV Online details updated!</div>';
+	
+	if(mysqli_query($conn, "INSERT pv_online (id,email,password) VALUES ('1','$pv_online_email','$pv_online_pass') ON DUPLICATE KEY UPDATE id = '1', email = '$pv_online_email', password = '$pv_online_pass'")){
+		$response['success'] = 'PV Online details updated!';
 	}else{
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error updating PV Online info.</div>';
+		$response['error'] = 'Error updating PV Online info '.mysqli_error($conn);
 	}
 
+	echo json_encode($response);
 	return;
 }
 

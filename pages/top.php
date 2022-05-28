@@ -114,9 +114,9 @@ function chk_shared() {
 	},
 	type: 'POST',
     success: function(data) {
-		if(data.formulasLimit > 0){
+		if(data.formulasTotal > 0){
 			$('.badge-counter-shared-formulas').html(data.formulasTotal);
-			for (var i=0;i<data.formulasLimit;++i){
+			for (var i=0;i<data.formulasTotal;++i){
 				$('#list-shared-formulas').append('<div class="font-weight-bold">'+
 					'<li>'+
 						'<button class="shared-formula-accept" data-notes="'+data.formulas[i].notes+'" data-author="'+data.formulas[i].author+'" data-name="'+data.formulas[i].name+'" data-id="'+data.formulas[i].fid+'" id="acceptShared" title="Import formula">'+
@@ -131,7 +131,7 @@ function chk_shared() {
 
                   '</div>').fadeIn('slow');
         	}
-			$('#list-shared-formulas-footer').html('<a class="dropdown-item text-center small text-gray-500" href="#">Showing '+data.formulasLimit+' out of '+data.formulasTotal+'</a>');
+			$('#list-shared-formulas-footer').html('<a class="dropdown-item text-center small text-gray-500" href="#">Showing '+data.formulasTotal+' out of '+data.formulasLimit+'</a>');
 
 		}else{
 			$('.badge-counter-shared-formulas').empty();
@@ -184,7 +184,7 @@ $('#list-shared-formulas').on('click', '[id*=acceptShared]', function () {
 							$('.btn-default').html('Close');
 						}
 						$('#pvShImpMsg').html(rmsg);
-						
+						list_formulas();
 					}
 				});
 				

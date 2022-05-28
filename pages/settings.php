@@ -406,6 +406,16 @@ list_users();
             <td>&nbsp;</td>
           </tr>
           <tr>
+            <td height="29"><a href="#" rel="tip" data-placement="right" title="To enable or disable formula sharing service, please login to PVOnline and navigate to the profile section.">Formula sharing:</a></td>
+            <td><div id="sharing_status">Unable to fecth data</div></td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td height="29">&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
             <td height="29"><a href="#" rel="tip" data-placement="right" title="Enable or disable PV Online access.">Enabled:</a></td>
             <td><input name="pv_online_state" type="checkbox" id="pv_online_state" value="1" <?php if($pv_online['enabled'] == '1'){ ?> checked <?php } ?>/></td>
             <td>&nbsp;</td>
@@ -474,6 +484,8 @@ list_users();
 $(document).ready(function() {
 	list_cat();
 	list_fcat();
+	getPVProfile();
+	
 	$('#save-general').click(function() {
 							  
 		$.ajax({ 
@@ -577,9 +589,14 @@ $('#save-perf-types').click(function() {
 				pv_online_state: $("#pv_online_state").is(':checked'),
 				
 				},
-			dataType: 'html',
+			dataType: 'json',
 			success: function (data) {
-				$('#pvOnMsg').html(data);
+				if(data.error){
+					var rmsg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
+				}else if (data.success){
+					var rmsg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
+				}
+				$('#pvOnMsg').html(rmsg);
 			}
 		  });
   });
@@ -678,6 +695,30 @@ $.ajax({
 		success: function (data) {
 			$('#list_fcat').html(data);
 		}
+	});
+};
+
+function getPVProfile(){
+$.ajax({ 
+ 	url: '<?=$pvOnlineAPI?>',
+	dataType: 'json',
+	data: {
+		username: "<?=$pv_online['email']?>",
+		password: "<?=$pv_online['password']?>",
+		do: 'getProfile'
+	},
+	type: 'POST',
+	success: function (data) {
+		if(data.userProfile.formulaSharing == 0){
+			$('#sharing_status').html('<span class="label label-info">Disabled</span>');
+		}else if (data.userProfile.formulaSharing == 1){
+			$('#sharing_status').html('<span class="label label-success">Enabled</span>');
+		}
+	},
+	error: function () {
+			$('#sharing_status').html('<span class="label label-danger">Unable to fecth data</span>');
+		}
+		
 	});
 };
 </script>
