@@ -10,6 +10,7 @@
 - Improve PV Online import and upload functions
 - Improve formula creation functions
 - Allow to enable/disable PV Online without providing credentials (WIP)
+- Hide forgot password when registering a user
 - TECH Preview: PV Online share With a friend
 
 ### Version 4.7

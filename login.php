@@ -118,30 +118,30 @@ if($_POST['username'] && $_POST['password']){
                     </button>
                   </form>
                   <?php }else{ ?>
-              <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
-              <div class="col-lg-6">
-                <div class="p-5">
-                  <div class="text-center">
-                    <h1 class="h4 text-gray-900 mb-4">Welcome back!</h1>
-                  </div>
-                  <?php echo $msg; ?>
-                    <form method="post" enctype="multipart/form-data" class="user" id="login">
-                    <div class="form-group">
-                      <input type="text" class="form-control form-control-user" name="username"  placeholder="Username...">
-                    </div>
-                    <div class="form-group">
-                      <input type="password" class="form-control form-control-user" name="password" placeholder="Password...">
-                    </div>
-                    <div class="form-group"></div>
-                    <button class="btn btn-primary btn-user btn-block">
-                      Login
-                    </button>
-                  </form>
-                  <?php } ?>
-		 		  <hr>
-                  <div class="text-center">
-                    <a class="small" href="#" data-toggle="modal" data-target="#forgot_pass">Forgot Password?</a>
-                  </div>
+                  <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
+                  <div class="col-lg-6">
+                    <div class="p-5">
+                      <div class="text-center">
+                        <h1 class="h4 text-gray-900 mb-4">Welcome back!</h1>
+                      </div>
+                      <?php echo $msg; ?>
+                        <form method="post" enctype="multipart/form-data" class="user" id="login">
+                        <div class="form-group">
+                          <input type="text" class="form-control form-control-user" name="username"  placeholder="Username...">
+                        </div>
+                        <div class="form-group">
+                          <input type="password" class="form-control form-control-user" name="password" placeholder="Password...">
+                        </div>
+                        <div class="form-group"></div>
+                        <button class="btn btn-primary btn-user btn-block">
+                          Login
+                        </button>
+                      </form>
+                      <hr>
+                      <div class="text-center">
+                        <a class="small" href="#" data-toggle="modal" data-target="#forgot_pass">Forgot Password?</a>
+                      </div>
+                  <?php } ?>		 		 
                   <hr>
                   <div class="copyright text-center my-auto">
 				  <label class="small">Version: <?php echo $ver; ?> | <?php echo $product; ?></label>
