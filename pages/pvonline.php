@@ -10,7 +10,8 @@ require_once(__ROOT__.'/func/pvOnline.php');
 //SHARE FORMULA TO PV ONLINE
 if($_POST['action'] == 'share' && $_POST['fid']){
 	if(!$_POST['users']){
-        echo  '<div class="alert alert-danger alert-dismissible">Please select user(s) first.</div>';
+		$response['error'] = 'Please select user(s) first.';
+		echo json_encode($response);
 		return;
 	}
 	$fid = $_POST['fid'];
@@ -45,14 +46,16 @@ if($_POST['action'] == 'share' && $_POST['fid']){
 	$req = pvUploadData($pvOnlineAPI.$params, json_encode($fData));	
 	
 	$json = json_decode($req, true);
+
 	if($json['success']){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$json['success'].'</strong></div>';
-		return;
+		$response['success'] = $json['success'];
 	}
+	
 	if($json['error']){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$json['error'].'</strong></div>';
-		return;
+		$response['error'] = $json['error'];
 	}
+	
+	echo json_encode($response);
 	return;
 }
 
@@ -109,15 +112,16 @@ if($_POST['action'] == 'importShareFormula' && $_POST['fid']){
 }
 
 //IMPORT INGREDIENTS FROM PV ONLINE
-if($_GET['action'] == 'import' && $_GET['items']){
-	$items = explode(',',trim($_GET['items']));
+if($_POST['action'] == 'import' && $_POST['items']){
+	$items = explode(',',trim($_POST['items']));
     $i = 0;
     foreach ($items as &$item) {
 		$jAPI = $pvOnlineAPI.'?do='.$item;
         $jsonData = json_decode(file_get_contents($jAPI), true);
 
-        if($jsonData['status'] == 'Failed'){
-        	echo  '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error connecting or retrieving data from PV Online.</div>';
+        if($jsonData['error']){
+			$response['error'] = 'Error connecting or retrieving data from PV Online '.$jsonData['error'];
+			echo json_encode($response);
             return;
          }
 
@@ -142,11 +146,14 @@ if($_GET['action'] == 'import' && $_GET['items']){
             }
 		}
 	}
-    if($qIns){
-    	echo  '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$i.' ingredients and compositions imported!</div>';
-    }else{
-		echo  '<div class="alert alert-info alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Database already in sync! '.mysqli_error($conn).'</div>';
-    }
+
+	if($qIns){
+		$response['success'] = $i.' ingredients and compositions imported!';
+	}else{
+		$response['warning'] = 'Database already in sync!';
+	}
+	
+	echo json_encode($response);
     return;
 }
 
@@ -231,9 +238,12 @@ if($_POST['action'] == 'upload' && $_POST['items'] == 'ingredients'){
 	}
 	
 	if($up_req){
-		echo  '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$i.'</strong> ingredients'.$msg.' and <strong>'.$c.'</strong> categories uploaded!</div>';
+		$response['success'] = $i.' '.$msg.' and '.$c.' categories uploaded!';
+	}else{
+		$response['error'] = 'Unable to upload data!';
 	}
-
+	
+	echo json_encode($response);
 	return;
 }
 

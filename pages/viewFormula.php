@@ -411,7 +411,7 @@ function reload_formula_data() {
 	    <p>&nbsp;</p>
 	    <p><a href="#">Invite someone to PV Online</a></p>
 	    <div class="modal-footer">
-	      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+	      <button type="button" class="btn btn-secondary" id="sharePVOnlineClose" data-dismiss="modal">Close</button>
 	      <input type="submit" name="button" class="btn btn-primary" id="sharePVOnline" value="Share">
         </div>
     </div>
@@ -1020,10 +1020,18 @@ $('#share_to_user').on('click', '[id*=sharePVOnline]', function () {
 			users: $("#pvUsers").val(),
 			comments: $("#pvShareComment").val(),
 			},
-		dataType: 'html',
+		dataType: 'json',
 		success: function (data) {
-			$('#sharePVOnline').attr('disabled', false);
-		  	$('#shareMsg').html(data);
+				if(data.error){
+					$('#sharePVOnline').attr('disabled', false);
+					var rmsg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
+
+				}else if(data.success){
+					$('#sharePVOnline').hide();
+					var rmsg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
+				}
+			
+		  	$('#shareMsg').html(rmsg);
 		}
 	  });
 	

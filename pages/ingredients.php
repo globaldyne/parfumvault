@@ -150,7 +150,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="pv_online_import">Import ingredients from PV Online</h5>
+        <h5 class="modal-title">Import ingredients from PV Online</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -273,15 +273,27 @@ $('#pv_online_import').on('click', '[id*=btnImport]', function () {
 	$('#pvImportMsg').html('<div class="alert alert-info"><img src="/img/loading.gif"/> Please wait, this may take a while...</div>');
 	$.ajax({
 		url: 'pages/pvonline.php', 
-		type: 'GET',
+		type: 'POST',
 		data: {
 			action: 'import',
 			items: 'ingredients,allergens'
 			},
-		dataType: 'html',
+		dataType: 'json',
 		success: function (data) {
-			$('#btnImport').attr('disabled', false);
-		  	$('#pvImportMsg').html(data);
+			if(data.error){
+				var rmsg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
+				$('#btnImport').attr('disabled', false);
+			}else if(data.warning){
+				var rmsg = '<div class="alert alert-warning alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.warning+'</div>';
+				$('#btnImport').hide();
+			}else if(data.success){
+				var rmsg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
+				$('#btnImport').hide();
+				list_ingredients();
+			}
+			
+			
+		  	$('#pvImportMsg').html(rmsg);
 		}
 	  });
 });
@@ -303,10 +315,15 @@ $('#pv_online_upload').on('click', '[id*=btnUpload]', function () {
 			excludeSuppliers: $("#excludeSuppliers").is(':checked')
 
 			},
-		dataType: 'html',
+		dataType: 'json',
 		success: function (data) {
-			$('#btnUpload').attr('disabled', false);
-		  	$('#pvUploadMsg').html(data);
+			if(data.error){
+				var rmsg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
+			}else if(data.success){
+				var rmsg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
+				$('#btnUpload').hide();
+			}
+		  	$('#pvUploadMsg').html(rmsg);
 		}
 	  });
 });

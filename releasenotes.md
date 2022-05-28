@@ -5,3 +5,5 @@ Whats New:
 - New notification system implemented
 - Update to comply with new PV Online api
 - Show ingredients, synonyms and compositions count when you importing from PV Online
+- Improve PV Online import and upload functions
+- Improve formula creation functions

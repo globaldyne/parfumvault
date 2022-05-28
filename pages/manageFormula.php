@@ -301,7 +301,8 @@ if($_GET['action'] == 'clone' && $_GET['fid']){
 //ADD NEW FORMULA
 if($_POST['action'] == 'addFormula'){
 	if(empty($_POST['name'])){
-		echo '<div class="alert alert-danger alert-dismissible"><strong>Formula name is required.</strong></div>';
+		$response['error'] = 'Formula name is required.';
+		echo json_encode($response);
 		return;
 	}
 	require_once(__ROOT__.'/func/genFID.php');
@@ -315,16 +316,22 @@ if($_POST['action'] == 'addFormula'){
 	$fid = random_str(40, '1234567890abcdefghijklmnopqrstuvwxyz');
 	
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM formulasMetaData WHERE name = '$name'"))){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$name.' already exists!</div>';
+		$response['error'] = $name.' already exists!';
 	}else{
-		$q = mysqli_query($conn, "INSERT INTO formulasMetaData (fid, name, notes, profile, catClass, finalType, customer_id) VALUES ('$fid', '$name', '$notes', '$profile', '$catClass', '$finalType', '$customer_id')");
-		if($nID = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$fid'"))){
-			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong><a href="?do=Formula&id='.$nID['id'].'">'.$name.'</a></strong> added!</div>';
+		if(mysqli_query($conn, "INSERT INTO formulasMetaData (fid, name, notes, profile, catClass, finalType, customer_id) VALUES ('$fid', '$name', '$notes', '$profile', '$catClass', '$finalType', '$customer_id')")){
+			$last_id = mysqli_insert_id($conn);
+			$response = array(
+				"success" => array(
+				"id" => (int)$last_id,
+				"msg" => "$name added!",
+				)
+			);
 		}else{
-			echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Something went wrong...</strong></div>';
+			$response['error'] = 'Something went wrong...'.mysqli_error($conn);
 		}
 	}
 
+	echo json_encode($response);
 	return;
 }
 	

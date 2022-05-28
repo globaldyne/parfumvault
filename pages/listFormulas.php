@@ -325,9 +325,16 @@ $('#add_formula').on('click', '[id*=btnAdd]', function () {
 		notes: $("#notes").val(),
 		customer: $("#customer").val(),
 		},
-	dataType: 'html',
+	dataType: 'json',
     success: function (data) {
-	  	$('#addFormulaMsg').html(data);
+		if(data.error){
+			var rmsg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
+		}else if(data.success){
+			var rmsg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><a href="?do=Formula&id='+data.success.id+'">'+data.success.msg+'</a></div>';
+			reload_formulas_data();
+		}
+	  	$('#addFormulaMsg').html(rmsg);
+		
     }
   });
 });
@@ -435,7 +442,7 @@ function reload_formulas_data() {
           </tr>  
         </table>  
 	  <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <input type="submit" name="button" class="btn btn-primary" id="btnAdd" value="Add">
       </div>
     </div>
