@@ -11,6 +11,8 @@
 - Improve formula creation functions
 - Allow to enable/disable PV Online without providing credentials (WIP)
 - Hide forgot password when registering a user
+- Username is now removed, use your email address to login instead
+- User list page removed, we only allow a single user
 - TECH Preview: PV Online share With a friend
 
 ### Version 4.7

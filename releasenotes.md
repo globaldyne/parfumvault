@@ -7,3 +7,5 @@ Whats New:
 - Show ingredients, synonyms and compositions count when you importing from PV Online
 - Improve PV Online import and upload functions
 - Improve formula creation functions
+- Username is now removed, use your email address to login instead
+- User list page removed, we only allow a single user

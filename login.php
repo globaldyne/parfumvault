@@ -15,15 +15,14 @@ if(isset($_SESSION['parfumvault'])){
 require_once('inc/config.php');
 require_once('inc/opendb.php');
 require_once('inc/product.php');
-if($_GET['register'] && $_POST['regUser'] && $_POST['regPass'] && $_POST['regFullName'] && $_POST['regEmail']){
-	$ruser = mysqli_real_escape_string($conn,strtolower($_POST['regUser']));
+if($_GET['register'] && $_POST['regPass'] && $_POST['regFullName'] && $_POST['regEmail']){
 	$rpass = mysqli_real_escape_string($conn,$_POST['regPass']);
 	$rfname = mysqli_real_escape_string($conn,$_POST['regFullName']);
 	$remail = mysqli_real_escape_string($conn,$_POST['regEmail']);
 	if(strlen($_POST['regPass']) < '5'){
 		$msg ='<div class="alert alert-danger alert-dismissible"><strong>Error: </strong>Password must be at least 5 characters long!</div>';
 	}else{
-		if(mysqli_query($conn,"INSERT INTO users (username,password,fullName,email) VALUES ('$ruser', PASSWORD('$rpass'),'$rfname','$remail')")){
+		if(mysqli_query($conn,"INSERT INTO users (email,password,fullName) VALUES ('$remail', PASSWORD('$rpass'),'$rfname')")){
 			
 			$app_ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
 			$db_ver  = trim(file_get_contents(__ROOT__.'/db/schema.ver'));
@@ -36,11 +35,11 @@ if($_GET['register'] && $_POST['regUser'] && $_POST['regPass'] && $_POST['regFul
 	}
 	
 }
-if($_POST['username'] && $_POST['password']){
-	$_POST['username'] = mysqli_real_escape_string($conn,strtolower($_POST['username']));
+if($_POST['email'] && $_POST['password']){
+	$_POST['email'] = mysqli_real_escape_string($conn,strtolower($_POST['email']));
 	$_POST['password'] = mysqli_real_escape_string($conn,$_POST['password']);
 	
-	$row = mysqli_fetch_assoc(mysqli_query($conn,"SELECT id FROM users WHERE username='".$_POST['username']."' AND password=PASSWORD('".$_POST['password']."')"));
+	$row = mysqli_fetch_assoc(mysqli_query($conn,"SELECT id FROM users WHERE email='".$_POST['email']."' AND password=PASSWORD('".$_POST['password']."')"));
 
 	if($row['id']){	// If everything is OK login
 			$_SESSION['parfumvault'] = true;
@@ -107,9 +106,6 @@ if($_POST['username'] && $_POST['password']){
                       <input type="text" class="form-control form-control-user" name="regEmail"  value="<?php echo $_POST['regEmail'];?>" placeholder="Your email...">
                     </div>  
                     <div class="form-group">
-                      <input type="text" class="form-control form-control-user" name="regUser"  value="<?php echo $_POST['regUser'];?>" placeholder="Username...">
-                    </div>
-                    <div class="form-group">
                       <input type="text" class="form-control form-control-user" name="regPass" placeholder="Password...">
                     </div>
                     <div class="form-group"></div>
@@ -127,7 +123,7 @@ if($_POST['username'] && $_POST['password']){
                       <?php echo $msg; ?>
                         <form method="post" enctype="multipart/form-data" class="user" id="login">
                         <div class="form-group">
-                          <input type="text" class="form-control form-control-user" name="username"  placeholder="Username...">
+                          <input type="text" class="form-control form-control-user" name="email"  placeholder="Email...">
                         </div>
                         <div class="form-group">
                           <input type="password" class="form-control form-control-user" name="password" placeholder="Password...">

@@ -327,10 +327,9 @@ INSERT INTO `settings` (`id`, `label_printer_addr`, `label_printer_model`, `labe
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
-  `username` varchar(255) COLLATE utf8_general_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8_general_ci NOT NULL,
   `password` varchar(255) COLLATE utf8_general_ci NOT NULL,
   `fullName` varchar(255) COLLATE utf8_general_ci NOT NULL,
-  `email` varchar(255) COLLATE utf8_general_ci NOT NULL,
   `avatar` varchar(255) COLLATE utf8_general_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci ROW_FORMAT=COMPACT;
 

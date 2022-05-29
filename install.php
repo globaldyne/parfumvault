@@ -12,10 +12,10 @@ require_once('inc/product.php');
   <meta name="author" content="JBPARFUM">
   <title><?php echo $product;?> - First time setup!</title>
 
-  <link href="css/sb-admin-2.css" rel="stylesheet">
-  <link href="css/vault.css" rel="stylesheet">
-  <script src="js/jquery/jquery.min.js"></script>
-  <script src="js/bootstrap.min.js"></script>
+  <link href="/css/sb-admin-2.css" rel="stylesheet">
+  <link href="/css/vault.css" rel="stylesheet">
+  <script src="/js/jquery/jquery.min.js"></script>
+  <script src="/js/bootstrap.min.js"></script>
 </head>
 
 <body class="bg-gradient-primary">
@@ -58,9 +58,6 @@ require_once('inc/product.php');
                     </div>      
                     <div class="form-group">
                       <input type="text" class="form-control form-control-user" id="email" placeholder="Your email...">
-                    </div>  
-                    <div class="form-group">
-                      <input type="text" class="form-control form-control-user" id="username" placeholder="Username...">
                     </div>
                     <div class="form-group">
                       <input type="text" class="form-control form-control-user" id="password" placeholder="Password...">
@@ -103,7 +100,6 @@ $(document).ready(function() {
 				dbname: $("#dbname").val(),
 				fullName: $("#fullName").val(),
 				email: $("#email").val(),
-				username: $("#username").val(),
 				password: $("#password").val(),
 
 			},

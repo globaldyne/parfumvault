@@ -16,12 +16,7 @@ require(__ROOT__.'/inc/settings.php');
 <script>
 $(function() {
   $("#settings").tabs();
-  $("#username").val('');
-  $("#password").val('');
-  $("#fname").val('');
-  $("#email").val('');
 });
-list_users();
 
 
 </script>
@@ -35,7 +30,6 @@ list_users();
          <li><a href="#frmCat">Formula Categories</a></li>
          <li><a href="#types">Perfume Types</a></li>
          <li><a href="#print"><span>Printing</span></a></li>
-         <li><a href="#users"><span>Users</span></a></li>
          <li><a href="#brand"><span>My Brand</span></a></li>
          <li><a href="#maintenance"><span>Maintenance</span></a></li>
          <li><a href="#pvonline"><span>PV Online</span></a></li>
@@ -307,15 +301,6 @@ list_users();
         </table>
 </div>
 
-    <div id="users">
-    	<div id="usrMsg"></div>
-        <div id="list_users">
-            <div class="loader-center">
-                <div class="loader"></div>
-                <div class="loader-text"></div>
-            </div>
-        </div>
-    </div>
      <div id="brand">
          <table width="100%" border="0">
            <tr>
@@ -661,22 +646,6 @@ $('#save-perf-types').click(function() {
 })
 
 
-
-function usrDel(userId){
-	$.ajax({ 
-		url: 'pages/update_settings.php', 
-		type: 'POST',
-		data: {
-			action: 'delete',
-			userId: userId,
-		},
-		dataType: 'html',
-		success: function (data) {
-			$('#usrMsg').html(data);
-			list_users();
-		}
-	});
-}
 
 function list_cat(){
 $.ajax({ 

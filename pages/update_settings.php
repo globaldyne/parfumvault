@@ -155,34 +155,6 @@ if($_POST['manage'] == 'brand'){
 	return;
 }
 
-//ADD USERS
-if($_POST['manage'] == 'user'){
-	$username = mysqli_real_escape_string($conn, $_POST['username']);
-	$password = mysqli_real_escape_string($conn, $_POST['password']);
-	$fullName = mysqli_real_escape_string($conn, $_POST['fullName']);
-	$email = mysqli_real_escape_string($conn, $_POST['email']);
-	
-	if(empty($username) || empty($fullName) || empty($email)){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Missing fields.</div>';
-		return;
-	}
-	if (strlen($password) < '5') {
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>Password must be at least 5 chars long!</div>';
-		return;
-	}
-	if(mysqli_num_rows(mysqli_query($conn, "SELECT username FROM users WHERE username = '$username' OR email = '$email' "))){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$username.' already exists or email is re-used!</div>';
-		return;
-	}
-	
-	if(mysqli_query($conn, "INSERT INTO users (username,password,fullName,email) VALUES ('$username', PASSWORD('$password'), '$fullName', '$email')")){
-		echo '<div class="alert alert-success alert-dismissible">User added!</div>';
-	}else{
-		echo '<div class="alert alert-danger alert-dismissible">Error adding user.</div>';
-	}
-	return;	
-}
-
 //ADD CATEGORY
 if($_POST['manage'] == 'category'){
 	$cat = mysqli_real_escape_string($conn, $_POST['category']);
