@@ -13,7 +13,7 @@ if($_POST['action']=='install'){
 		return;
 	}
 	
-	if(!$_POST['dbhost'] || !$_POST['dbuser'] || !$_POST['dbpass'] || !$_POST['dbname'] || !$_POST['username'] || !$_POST['fullName'] || !$_POST['email']){
+	if(!$_POST['dbhost'] || !$_POST['dbuser'] || !$_POST['dbpass'] || !$_POST['dbname'] || !$_POST['fullName'] || !$_POST['email']){
 		echo '<div class="alert alert-danger alert-dismissible"><strong>Error: </strong>All fields are required.</div>';
 		return;
 	}

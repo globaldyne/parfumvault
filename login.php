@@ -46,7 +46,7 @@ if($_POST['email'] && $_POST['password']){
 			$_SESSION['userID'] = $row['id'];
 			header('Location: index.php');
 	}else{
-		$msg = '<div class="alert alert-danger alert-dismissible">Username or password error</div>';
+		$msg = '<div class="alert alert-danger alert-dismissible">Email or password error</div>';
 	}
 }
 

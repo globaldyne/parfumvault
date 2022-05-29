@@ -392,7 +392,7 @@ $(function() {
           </tr>
           <tr>
             <td height="29"><a href="#" rel="tip" data-placement="right" title="To enable or disable formula sharing service, please login to PVOnline and navigate to the profile section.">Formula sharing:</a></td>
-            <td><div id="sharing_status">Unable to fecth data</div></td>
+            <td><div id="sharing_status">Service not configured/enabled</div></td>
             <td>&nbsp;</td>
           </tr>
           <tr>
@@ -469,8 +469,9 @@ $(function() {
 $(document).ready(function() {
 	list_cat();
 	list_fcat();
-	getPVProfile();
-	
+	<?php if($pv_online['email'] && $pv_online['password'] && $pv_online['enabled'] == '1'){?>
+		getPVProfile();
+	<?php } ?>
 	$('#save-general').click(function() {
 							  
 		$.ajax({ 
