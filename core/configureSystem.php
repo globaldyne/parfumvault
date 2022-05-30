@@ -25,9 +25,10 @@ if($_POST['action'] == 'register'){
 	$password = mysqli_real_escape_string($conn,$_POST['password']);
 	$fullName = mysqli_real_escape_string($conn,$_POST['fullName']);
 	$email = mysqli_real_escape_string($conn,$_POST['email']);
-	
+	$app_ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
+
 	if($_POST['createPVOnline'] == 'true'){
-		$data = [ 'do' => 'regUser','email' => strtolower($_POST['email']), 'fullName' => $_POST['fullName'], 'userPass' => base64_encode($_POST['password']) ];
+		$data = [ 'do' => 'regUser','email' => strtolower($_POST['email']), 'fullName' => $_POST['fullName'], 'userPass' => base64_encode($_POST['password']), 'ver'=> $app_ver];
 		$r = json_decode(pvPost('https://online.jbparfum.com/api2.php', $data));
 		if($r->error){			
 			$response['error'] = 'Error creating a PV Online account '.$r->error;
@@ -48,7 +49,7 @@ if($_POST['action'] == 'register'){
 	}
 	
 	if(mysqli_query($conn,"INSERT INTO users (email,password,fullName) VALUES ('$email', PASSWORD('$password'),'$fullName')")){
-		$app_ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
+		//$app_ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
 		$db_ver  = trim(file_get_contents(__ROOT__.'/db/schema.ver'));
 		mysqli_query($conn,"INSERT INTO pv_meta (schema_ver,app_ver) VALUES ('$db_ver','$app_ver')");
 		
