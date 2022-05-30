@@ -13,6 +13,8 @@
 - Hide forgot password when registering a user
 - Username is now removed, use your email address to login instead
 - User list page removed, we only allow a single user
+- Allow a user to register a PV Online account during a first time installation wizard
+- Improve PV Online API2 compatibility
 - TECH Preview: PV Online share With a friend
 
 ### Version 4.7

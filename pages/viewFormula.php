@@ -972,8 +972,8 @@ $("#pvUsers").select2({
 				results: $.map(data.users, function(obj) {
 					return {
 						id: obj.id,
-						firstName: obj.firstName,
-						lastName: obj.lastName,
+						firstName: obj.name,
+						//lastName: obj.lastName,
 						userBio: obj.userBio,
 						avatar: obj.avatar
 					}
@@ -993,7 +993,7 @@ function formatPVUsers (ingredientData) {
   }
   
   var $container = $(
-    "<div class='select_result_igredient clearfix'><strong>" +ingredientData.firstName + " "+ ingredientData.lastName +
+    "<div class='select_result_igredient clearfix'><strong>" +ingredientData.firstName+
       "</strong><div class='select_result_igredient_meta'>" +
         "<div class='select_result_igredient_description'>" +ingredientData.userBio+ "</div>" +
     "</div>"
@@ -1003,7 +1003,7 @@ function formatPVUsers (ingredientData) {
 }
 
 function formatPVUsersSelection (ingredientData) {
-  return ingredientData.firstName + " " + ingredientData.lastName;
+  return ingredientData.firstName;
 }
 <?php if($pv_online['email'] && $pv_online['password'] && $pv_online['enabled'] == '1'){?>
 

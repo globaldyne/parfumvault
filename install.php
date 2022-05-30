@@ -62,6 +62,10 @@ require_once('inc/product.php');
                     <div class="form-group">
                       <input type="text" class="form-control form-control-user" id="password" placeholder="Password...">
                     </div>
+					<div class="form-group">
+                      <input name="createPVOnline" type="checkbox" class="form-control-user" id="createPVOnline" value="true" checked>
+                      <label>Create a PV Online account</label>
+                    </div>
                     <div class="form-group"></div>
                     <hr>
 					<button name="save" id="saveInstallData" class="btn btn-primary btn-user btn-block">
@@ -101,7 +105,7 @@ $(document).ready(function() {
 				fullName: $("#fullName").val(),
 				email: $("#email").val(),
 				password: $("#password").val(),
-
+				createPVOnline: $("#createPVOnline").is(":checked"),
 			},
 			dataType: 'html',
 			success: function (data) {

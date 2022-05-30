@@ -1,6 +1,14 @@
 <?php
 define('__ROOT__', dirname(dirname(__FILE__)));
 
+function pvPost($url, $data){
+    $curl = curl_init($url);
+    curl_setopt($curl, CURLOPT_POST, true);
+    curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+    return $response = curl_exec($curl);
+}
+
 if($_POST['action']=='install'){
 	
 	if(file_exists(__ROOT__.'/inc/config.php') == TRUE){
@@ -23,11 +31,25 @@ if($_POST['action']=='install'){
 		return;
 	}
 	
+		
 	if(!$link = mysqli_connect($_POST['dbhost'], $_POST['dbuser'], $_POST['dbpass'], $_POST['dbname'])){
 		echo '<div class="alert alert-danger alert-dismissible">Error connecting to the database, make sure the details provided are correct, the database exists and the user has full permissions on it.</div>';
 		return;
 	}
+	
 
+	if($_POST['createPVOnline'] == 'true'){
+		$data = [ 'do' => 'regUser','email' => strtolower($_POST['email']), 'fullName' => $_POST['fullName'], 'userPass' => base64_encode($_POST['password']) ];
+		$r = json_decode(pvPost('https://online.jbparfum.com/api2.php', $data));
+		if($r->error){
+			
+			echo '<div class="alert alert-danger alert-dismissible">Error creating a PV Online account '.$r->error.'</div>';
+		}
+		if($r->success){
+			$pvOnMsg = '<div class="alert alert-success alert-dismissible">PV Online account created</div>';
+		}
+		return;
+	}
 	
 	$cmd = 'mysql -u'.$_POST['dbuser'].' -p'.$_POST['dbpass'].' -h'.$_POST['dbhost'].' '.$_POST['dbname'].' < ../db/pvault.sql'; 
 	passthru($cmd,$e);
@@ -50,7 +72,7 @@ $max_filesize = "4194304"; //in bytes
 ?>
 ';
 	}else{
-		echo '<div class="alert alert-danger alert-dismissible">Error: '.mysqli_error($link).'</div>';
+		echo '<div class="alert alert-danger alert-dismissible">DB Creation error. Make sure the database exists in your mysql server and its empty.</div>';
 		return;
 	}
 	
@@ -70,7 +92,7 @@ $max_filesize = "4194304"; //in bytes
 	$db_ver  = trim(file_get_contents(__ROOT__.'/db/schema.ver'));
 	mysqli_query($link,"INSERT INTO pv_meta (schema_ver,app_ver) VALUES ('$db_ver','$app_ver')");
 		
-	echo '<div class="alert alert-success alert-dismissible">Success: System configured!</div>';
+	echo '<div class="alert alert-success alert-dismissible">System configured, '.$pvOnMsg.'</div>';
 	return;
 }
 ?>

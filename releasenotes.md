@@ -9,3 +9,4 @@ Whats New:
 - Improve formula creation functions
 - Username is now removed, use your email address to login instead
 - User list page removed, we only allow a single user
+- Allow a user to register a PV Online account during a first time installation wizard
