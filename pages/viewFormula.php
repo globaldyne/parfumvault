@@ -411,7 +411,7 @@ function reload_formula_data() {
 	    <p>&nbsp;</p>
 	    <p><a href="#">Invite someone to PV Online</a></p>
 	    <div class="modal-footer">
-	      <button type="button" class="btn btn-secondary" id="sharePVOnlineClose" data-dismiss="modal">Close</button>
+	      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 	      <input type="submit" name="button" class="btn btn-primary" id="sharePVOnline" value="Share">
         </div>
     </div>
