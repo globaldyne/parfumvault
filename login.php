@@ -15,26 +15,8 @@ if(isset($_SESSION['parfumvault'])){
 require_once('inc/config.php');
 require_once('inc/opendb.php');
 require_once('inc/product.php');
-if($_GET['register'] && $_POST['regPass'] && $_POST['regFullName'] && $_POST['regEmail']){
-	$rpass = mysqli_real_escape_string($conn,$_POST['regPass']);
-	$rfname = mysqli_real_escape_string($conn,$_POST['regFullName']);
-	$remail = mysqli_real_escape_string($conn,$_POST['regEmail']);
-	if(strlen($_POST['regPass']) < '5'){
-		$msg ='<div class="alert alert-danger alert-dismissible"><strong>Error: </strong>Password must be at least 5 characters long!</div>';
-	}else{
-		if(mysqli_query($conn,"INSERT INTO users (email,password,fullName) VALUES ('$remail', PASSWORD('$rpass'),'$rfname')")){
-			
-			$app_ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
-			$db_ver  = trim(file_get_contents(__ROOT__.'/db/schema.ver'));
-			mysqli_query($conn,"INSERT INTO pv_meta (schema_ver,app_ver) VALUES ('$db_ver','$app_ver')");
-	
-			header('Location: login.php');
-		}else{
-			$msg = '<div class="alert alert-danger alert-dismissible">Failed to register the user</div>';
-		}
-	}
-	
-}
+
+
 if($_POST['email'] && $_POST['password']){
 	$_POST['email'] = mysqli_real_escape_string($conn,strtolower($_POST['email']));
 	$_POST['password'] = mysqli_real_escape_string($conn,$_POST['password']);
@@ -96,23 +78,27 @@ if($_POST['email'] && $_POST['password']){
                   <div class="text-center">
                     <h1 class="h4 text-gray-900 mb-4">Please register a user!</h1>
                   </div>
-                  <?php echo $msg; ?>
-                   <form action="?register=1" method="post" enctype="multipart/form-data" target="_self" class="user" id="register">
+                  <div id="msg"></div>
+                   <div class="user" id="reg_form">
                     <hr>
                     <div class="form-group">
-                      <input type="text" class="form-control form-control-user" name="regFullName"  value="<?php echo $_POST['regFullName'];?>" placeholder="Your full name...">
+                      <input type="text" class="form-control form-control-user" id="fullName" placeholder="Your full name...">
                     </div>      
                     <div class="form-group">
-                      <input type="text" class="form-control form-control-user" name="regEmail"  value="<?php echo $_POST['regEmail'];?>" placeholder="Your email...">
+                      <input type="text" class="form-control form-control-user" id="email" placeholder="Your email...">
                     </div>  
                     <div class="form-group">
-                      <input type="text" class="form-control form-control-user" name="regPass" placeholder="Password...">
+                      <input type="text" class="form-control form-control-user" id="password" placeholder="Password...">
+                    </div>
+                    <div class="form-group">
+                      <input name="createPVOnline" type="checkbox" class="form-control-user" id="createPVOnline" value="true" checked>
+                      <label>Create a PV Online account</label>
                     </div>
                     <div class="form-group"></div>
-                    <button class="btn btn-primary btn-user btn-block">
+                    <button class="btn btn-primary btn-user btn-block" id="registerSubmit">
                       Register
                     </button>
-                  </form>
+                  </div>
                   <?php }else{ ?>
                   <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
                   <div class="col-lg-6">
@@ -182,3 +168,41 @@ if($_POST['email'] && $_POST['password']){
 </div>
 
 <?php } ?>
+
+<script>
+$(document).ready(function() {
+
+	$('#reg_form').on('click', '[id*=registerSubmit]', function () {
+		$('#registerSubmit').prop('disabled', true);
+		$('#msg').html('<div class="alert alert-info"><img src="/img/loading.gif"/> Please wait, configuring the system...<p><strong>Please do not close, refresh or navigate away from this page. You will be automatically redirected upon a succesfull installation.</strong></p></div>');
+		$("#reg_form").hide();
+		
+		$.ajax({ 
+			url: '/core/configureSystem.php', 
+			type: 'POST',
+			data: {
+				action: 'register',
+				fullName: $("#fullName").val(),
+				email: $("#email").val(),
+				password: $("#password").val(),
+				createPVOnline: $("#createPVOnline").is(":checked"),
+			},
+			dataType: 'json',
+			success: function (data) {
+				if (data.success){ 
+				    window.location='/'
+				}
+				if(data.error){
+					var msg = '<div class="alert alert-danger">'+data.error+'</div>';
+				}
+				
+				$("#reg_form").show();
+				$('#registerSubmit').prop('disabled', false);
+				$('#msg').html(msg);
+			}
+		});
+	});
+    
+});//end doc
+
+</script>

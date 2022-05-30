@@ -9,6 +9,59 @@ function pvPost($url, $data){
     return $response = curl_exec($curl);
 }
 
+if($_POST['action'] == 'register'){
+	define('__ROOT__', dirname(dirname(__FILE__))); 
+	define('pvault_panel', TRUE);
+
+	require_once(__ROOT__.'/inc/config.php');
+	require_once(__ROOT__.'/inc/opendb.php');
+	
+	if(!$_POST['password'] || !$_POST['fullName'] || !$_POST['email']){
+		$response['error'] = "All fields required";
+		echo json_encode($response);
+		return;
+	}
+	
+	$password = mysqli_real_escape_string($conn,$_POST['password']);
+	$fullName = mysqli_real_escape_string($conn,$_POST['fullName']);
+	$email = mysqli_real_escape_string($conn,$_POST['email']);
+	
+	if($_POST['createPVOnline'] == 'true'){
+		$data = [ 'do' => 'regUser','email' => strtolower($_POST['email']), 'fullName' => $_POST['fullName'], 'userPass' => base64_encode($_POST['password']) ];
+		$r = json_decode(pvPost('https://online.jbparfum.com/api2.php', $data));
+		if($r->error){			
+			$response['error'] = 'Error creating a PV Online account '.$r->error;
+			echo json_encode($response);
+			return;
+		}
+		
+		if($r->success){
+			mysqli_query($conn,"DELETE FROM pv_online");
+			mysqli_query($conn,"INSERT INTO pv_online (email,password,enabled) VALUES ('$email','$password','1')");
+		}
+	}
+	
+	if(strlen($_POST['password']) < '5'){
+		$response['error'] = "Password must be at least 5 characters long!";
+		echo json_encode($response);
+		return;
+	}
+	
+	if(mysqli_query($conn,"INSERT INTO users (email,password,fullName) VALUES ('$email', PASSWORD('$password'),'$fullName')")){
+		$app_ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
+		$db_ver  = trim(file_get_contents(__ROOT__.'/db/schema.ver'));
+		mysqli_query($conn,"INSERT INTO pv_meta (schema_ver,app_ver) VALUES ('$db_ver','$app_ver')");
+		
+		$response['success'] = "User created";
+		echo json_encode($response);
+	}else{
+		$response['error'] = 'Failed to register local user '.mysqli_error($conn);
+		echo json_encode($response);
+	}
+	
+	return;
+}
+
 if($_POST['action']=='install'){
 	
 	if(file_exists(__ROOT__.'/inc/config.php') == TRUE){
