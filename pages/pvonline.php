@@ -18,6 +18,13 @@ if($_POST['action'] == 'share' && $_POST['fid']){
 	
 	$qMeta = mysqli_fetch_array(mysqli_query($conn, "SELECT name, product_name, profile, sex, defView, catClass, finalType, status FROM formulasMetaData WHERE fid = '$fid'"));
 	
+	if(mysqli_num_rows(mysqli_query($conn,"SElECT ingredient FROM formulas WHERE fid = '$fid'")) == FALSE) {
+		$response['error'] = 'Formula cannot be shared as its currently empty';
+		echo json_encode($response);
+		return;
+	}
+
+									
 	$q = mysqli_query($conn, "SELECT name, ingredient, concentration, dilutant, quantity, notes FROM formulas WHERE fid = '$fid'");
 	
 	while($formula = mysqli_fetch_assoc($q)){
