@@ -320,8 +320,8 @@ function reload_formula_data() {
                <a class="dropdown-item" href="javascript:export_as('csv')">Export to CSV</a>
                <a class="dropdown-item" href="javascript:export_as('pdf')">Export to PDF</a>
                <div class="dropdown-divider"></div>
-                <li class="dropdown-header">TECH PREVIEW</li> 
                <?php if($pv_online['email'] && $pv_online['password'] && $pv_online['enabled'] == '1'){?>
+               <li class="dropdown-header">TECH PREVIEW</li> 
                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#share_to_user">Share with someone</a>
                <div class="dropdown-divider"></div>
                <?php } ?>

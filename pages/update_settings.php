@@ -107,13 +107,36 @@ if($_POST['manage'] == 'pvonline'){
 	$pv_online_email = mysqli_real_escape_string($conn, $_POST['pv_online_email']);
 	$pv_online_pass = mysqli_real_escape_string($conn, $_POST['pv_online_pass']);
 	
-	if($_POST['pv_online_state'] == 'true') {
-		$pv_online_state = '1';	
-	}else{
-		$pv_online_state = '0';
+	if($_POST['state_update']) {
+		
+		$pv_online_state = (int)$_POST['pv_online_state'];	
+	
+		if(mysqli_query($conn, "UPDATE pv_online SET enabled = '$pv_online_state'")){
+			if($pv_online_state == '1'){
+				$response['success'] = 'active';
+			}elseif($pv_online_state == '0'){
+				$response['success'] = 'in-active';
+			}
+			echo json_encode($response);
+		}
+		return;
 	}
 	
-	mysqli_query($conn, "UPDATE pv_online SET enabled = '$pv_online_state'");
+	if($_POST['share_update']) {
+		$pv_online_share = (int)$_POST['pv_online_share'];
+		
+		$params = "?username=".$pv_online['email']."&password=".$pv_online['password']."&do=formulaSharingState&state=$pv_online_share";
+        $req = json_decode(pvUploadData($pvOnlineAPI.$params, null));
+
+		if($req){
+			$response['success'] = $req->success;
+		}else{
+			$response['error'] = 'Unable to update '.$req->error;
+		}
+		
+		echo json_encode($response);
+		return;	
+	}
 	
 	if(empty($pv_online_email) || empty($pv_online_pass)){
 		$response['error'] = 'Missing fields.';
@@ -130,7 +153,7 @@ if($_POST['manage'] == 'pvonline'){
 		return;
 	}
 	
-	if(mysqli_query($conn, "INSERT pv_online (id,email,password) VALUES ('1','$pv_online_email','$pv_online_pass') ON DUPLICATE KEY UPDATE id = '1', email = '$pv_online_email', password = '$pv_online_pass'")){
+	if(mysqli_query($conn, "INSERT pv_online (id,email,password,enabled) VALUES ('1','$pv_online_email','$pv_online_pass','1') ON DUPLICATE KEY UPDATE id = '1', email = '$pv_online_email', password = '$pv_online_pass',  enabled = '1'")){
 		$response['success'] = 'PV Online details updated!';
 	}else{
 		$response['error'] = 'Error updating PV Online info '.mysqli_error($conn);
