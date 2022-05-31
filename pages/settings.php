@@ -381,22 +381,13 @@ $(function() {
             <td colspan="3"><div id="pvOnMsg"></div></td>
           </tr>
           <tr>
-            <td width="9%" height="30"><a href="#" rel="tip" data-placement="right" title="Please enter your PV Online email">Email:</a></td>
-            <td width="9%"><input name="pv_online_email" type="text" class="form-control" id="pv_online_email" value="<?php echo $pv_online['email']?:$user['email'];?>" /></td>
-            <td width="82%">&nbsp;</td>
-          </tr>
-          <tr>
-            <td height="24"><a href="#" rel="tip" data-placement="right" title="Your PV Online password.">Password:</a></td>
-            <td><input name="pv_online_pass" type="password" class="form-control" id="pv_online_pass" /></td>
-            <td>&nbsp;</td>
-          </tr>
-          <tr>
             <td height="29">&nbsp;</td>
             <td>&nbsp;</td>
-            <td>&nbsp;</td>
+            <td width="82%">&nbsp;</td>
           </tr>
           
-		  <?php if($pv_online['email'] && $pv_online['password']){?>
+		  <?php //if($pv_online['email'] && $pv_online['password']){?>
+          <?php //if(pvOnlineValAcc($api, $user['email'], $apiPass, $ver)){ ?>
           <tr>
             <td height="29"><a href="#" rel="tip" data-placement="right" title="Enable or disable PV Online access.">Enable Service:</a></td>
             <td><input name="pv_online_state" type="checkbox" id="pv_online_state" value="1" <?php if($pv_online['enabled'] == '1'){ ?> checked <?php } ?>/></td>
@@ -407,20 +398,11 @@ $(function() {
             <td><div id="sharing_status_state"><input name="sharing_status" type="checkbox" id="sharing_status" value="1"/></div></td>
             <td>&nbsp;</td>
           </tr>
-          <?php } ?>
+          
+          <?php //} ?>
           
           <tr>
             <td height="29">&nbsp;</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-          </tr>
-          <tr>
-            <td height="29"><a href="https://online.jbparfum.com/register.php" target="_blank">Create an account</a></td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-          </tr>
-          <tr>
-            <td height="31"><a href="https://online.jbparfum.com/forgotpass.php" target="_blank">Forgot Password?</a></td>
             <td>&nbsp;</td>
             <td>&nbsp;</td>
           </tr>
@@ -433,11 +415,7 @@ $(function() {
             <td>&nbsp;</td>
             <td>&nbsp;</td>
           </tr>
-          <tr>
-            <td><input type="submit" name="save-pv-on" id="save-pv-on" value="Submit" class="btn btn-info"/></td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-          </tr>
+          
 		</table>
      </div>
 <div id="maintenance">

@@ -21,7 +21,7 @@ if($_POST['email'] && $_POST['password']){
 	$_POST['email'] = mysqli_real_escape_string($conn,strtolower($_POST['email']));
 	$_POST['password'] = mysqli_real_escape_string($conn,$_POST['password']);
 	
-	$row = mysqli_fetch_assoc(mysqli_query($conn,"SELECT id FROM users WHERE email='".$_POST['email']."' AND password=PASSWORD('".$_POST['password']."')"));
+	$row = mysqli_fetch_assoc(mysqli_query($conn,"SELECT id FROM users WHERE email='".$_POST['email']."' AND password='".$_POST['password']."'"));
 
 	if($row['id']){	// If everything is OK login
 			$_SESSION['parfumvault'] = true;
