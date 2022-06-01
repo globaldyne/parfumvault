@@ -386,8 +386,9 @@ $(function() {
             <td width="82%">&nbsp;</td>
           </tr>
           
-		  <?php //if($pv_online['email'] && $pv_online['password']){?>
-          <?php //if(pvOnlineValAcc($api, $user['email'], $apiPass, $ver)){ ?>
+          <?php
+		  $auth = pvOnlineValAcc($pvOnlineAPI, $user['email'], $user['password'], $ver);
+		  if($auth['code'] == '001'){?>
           <tr>
             <td height="29"><a href="#" rel="tip" data-placement="right" title="Enable or disable PV Online access.">Enable Service:</a></td>
             <td><input name="pv_online_state" type="checkbox" id="pv_online_state" value="1" <?php if($pv_online['enabled'] == '1'){ ?> checked <?php } ?>/></td>
@@ -398,8 +399,32 @@ $(function() {
             <td><div id="sharing_status_state"><input name="sharing_status" type="checkbox" id="sharing_status" value="1"/></div></td>
             <td>&nbsp;</td>
           </tr>
-          
-          <?php //} ?>
+          <?php }elseif($auth['code'] == '002'){?>
+          <tr>
+            <td colspan="3">
+                <div class="alert alert-danger">
+    				<h4 class="alert-heading"><i class="fa fa-exclamation-circle"></i> Oops! <?=$auth['msg']?>.</h4>
+    				<p>Please make sure your local installation password and PV Online account password match.</p>
+    				<hr>
+    				<p class="mb-0">You can <a href="https://online.jbparfum.com/forgotpass.php" target="_blank">reset</a> your PV Online password</p>
+				</div>
+            </td>
+          </tr>
+          <?php }elseif($auth['code'] == '003'){?>
+          <tr>
+            <td colspan="3">
+            <div id="pv_account_error">
+            	<div class="alert alert-warning">
+    				<h4 class="alert-heading"><i class="fa fa-exclamation-circle"></i> Oops!  <?=$auth['msg']?>.</h4>
+    				<p>Looks like you haven't created a PV Online account yet.</p>
+                    <p>To be able to use PV Online services, you need to register an account.</p>
+    				<hr>
+    				<p class="mb-0 pv_point_gen" id="autoCreateAcc"><strong>Click here to create an account and configure you local installation</strong></p>
+				</div>
+            </div>
+			</td>
+          </tr>
+          <?php } ?>
           
           <tr>
             <td height="29">&nbsp;</td>
@@ -628,6 +653,35 @@ $('#save-perf-types').click(function() {
 		  });
 	});
 	
+	$('#pv_account_error').on('click', '[id*=autoCreateAcc]', function () {
+		$('#pv_account_error').html('<div class="alert alert-info"><img src="/img/loading.gif"/> Please wait, configuring the system...<p><strong>Please do not close, refresh or navigate away from this page. You will be automatically redirected upon a succesfull installation.</strong></p></div>');															
+		
+		$.ajax({ 
+			url: '/core/configureSystem.php', 
+			type: 'POST',
+			data: {
+				action: 'create_pv_account',
+				fullName: "<?=$user['fullName']?>",
+				email: "<?=$user['email']?>",
+				password: "<?=$user['password']?>",
+			},
+			dataType: 'json',
+			success: function (data) {
+				if (data.success){
+					$('#pv_account_error').html('<div class="alert alert-success">'+data.success+'</div>');
+				    //getPVProfile();
+				}else{
+					$('#pv_account_error').html('<div class="alert alert-danger">'+data.error+'</div>');
+				}
+			},
+			error: function () {
+				$('#pv_account_error').html('<div class="alert alert-danger">Unable to connect, please try again later</div>');
+			}
+		});
+
+	});
+
+
 	$('#save-brand').click(function() {
 		$.ajax({ 
 			url: 'pages/update_settings.php', 
@@ -719,7 +773,9 @@ function getPVProfile(){
 		},
 		type: 'POST',
 		success: function (data) {
-			if(data.userProfile.formulaSharing == 0){
+			if(data.error){
+				$('#msg').html('<div class="alert alert-danger">PV Online '+data.error+' You can <a href="javascript:disablePV()">disable</a> PV integration or <a href="https://online.jbparfum.com/forgotpass.php" target="_blank">reset</a> your PV Online password</p>');
+			}else if(data.userProfile.formulaSharing == 0){
 				$("#sharing_status").prop('checked', false);
 			}else if (data.userProfile.formulaSharing == 1){
 				$("#sharing_status").prop('checked', true);
@@ -731,4 +787,29 @@ function getPVProfile(){
 			
 		});
 };
+
+function disablePV(){
+	$.ajax({ 
+		url: 'pages/update_settings.php',
+		dataType: 'json',
+		data: {
+			pv_online_state: '0',
+			state_update: '1',
+			manage: 'pvonline'
+		},
+		type: 'POST',
+		success: function (data) {
+			if(data.error){
+				$('#msg').html('<div class="alert alert-danger">PV Online state update '+data.error+'</div>');	
+			}else if(data.success){
+				$('#msg').html('<div class="alert alert-success">PV Online state update '+data.success+'</div>');	
+			}
+		},
+		error: function () {
+				$('#msg').html('<span class="label label-danger">Unable to update settings</span>');
+			}
+			
+		});
+};
+
 </script>

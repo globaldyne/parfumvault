@@ -8,6 +8,44 @@ function pvPost($url, $data){
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
     return $response = curl_exec($curl);
 }
+$pvOnlineAPI = 'https://online.jbparfum.com/api2.php';
+
+if($_POST['action'] == 'create_pv_account'){
+	define('__ROOT__', dirname(dirname(__FILE__))); 
+	define('pvault_panel', TRUE);
+
+	require_once(__ROOT__.'/inc/config.php');
+	require_once(__ROOT__.'/inc/opendb.php');
+	
+	if(!$_POST['password'] || !$_POST['fullName'] || !$_POST['email']){
+		$response['error'] = "Missing required data";
+		echo json_encode($response);
+		return;
+	}
+	
+	$password = mysqli_real_escape_string($conn,$_POST['password']);
+	$fullName = mysqli_real_escape_string($conn,$_POST['fullName']);
+	$email = mysqli_real_escape_string($conn,$_POST['email']);
+	$app_ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
+
+	$data = [ 'do' => 'regUser','email' => strtolower($_POST['email']), 'fullName' => $_POST['fullName'], 'userPass' => base64_encode($_POST['password']), 'ver'=> $app_ver];
+	$r = json_decode(pvPost($pvOnlineAPI, $data));
+	if($r->error){			
+		$response['error'] = $r->error;
+		echo json_encode($response);
+		return;
+	}
+		
+	if($r->success){
+		mysqli_query($conn,"DELETE FROM pv_online");
+		mysqli_query($conn,"INSERT INTO pv_online (enabled) VALUES ('1')");
+		$response['success'] = $r->success;
+		echo json_encode($response);
+		return;
+	}
+
+	return;
+}
 
 if($_POST['action'] == 'register'){
 	define('__ROOT__', dirname(dirname(__FILE__))); 
@@ -38,7 +76,7 @@ if($_POST['action'] == 'register'){
 		
 		if($r->success){
 			mysqli_query($conn,"DELETE FROM pv_online");
-			mysqli_query($conn,"INSERT INTO pv_online (email,password,enabled) VALUES ('$email','$password','1')");
+			mysqli_query($conn,"INSERT INTO pv_online (enabled) VALUES ('1')");
 		}
 	}
 	

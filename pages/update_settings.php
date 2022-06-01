@@ -104,9 +104,7 @@ if($_POST['manage'] == 'print'){
 
 //PV ONLINE
 if($_POST['manage'] == 'pvonline'){
-	$pv_online_email = mysqli_real_escape_string($conn, $_POST['pv_online_email']);
-	$pv_online_pass = mysqli_real_escape_string($conn, $_POST['pv_online_pass']);
-	
+
 	if($_POST['state_update']) {
 		
 		$pv_online_state = (int)$_POST['pv_online_state'];	
@@ -116,6 +114,8 @@ if($_POST['manage'] == 'pvonline'){
 				$response['success'] = 'active';
 			}elseif($pv_online_state == '0'){
 				$response['success'] = 'in-active';
+			}else{
+				$response['error'] = mysqli_error();
 			}
 			echo json_encode($response);
 		}
@@ -137,27 +137,7 @@ if($_POST['manage'] == 'pvonline'){
 		echo json_encode($response);
 		return;	
 	}
-	
-	if(empty($pv_online_email) || empty($pv_online_pass)){
-		$response['error'] = 'Missing fields.';
-		echo json_encode($response);
-		return;
-	}
-	
-	
-	$valAcc = pvOnlineValAcc($pvOnlineAPI, $pv_online_email, $pv_online_pass, $ver);
 
-	if($valAcc['code'] !== '001'){
-		$response['error'] = $valAcc['msg'];
-		echo json_encode($response);
-		return;
-	}
-	
-	if(mysqli_query($conn, "INSERT pv_online (id,email,password,enabled) VALUES ('1','$pv_online_email','$pv_online_pass','1') ON DUPLICATE KEY UPDATE id = '1', email = '$pv_online_email', password = '$pv_online_pass',  enabled = '1'")){
-		$response['success'] = 'PV Online details updated!';
-	}else{
-		$response['error'] = 'Error updating PV Online info '.mysqli_error($conn);
-	}
 
 	echo json_encode($response);
 	return;
