@@ -281,7 +281,6 @@ CREATE TABLE `lids` (
 
 DROP TABLE IF EXISTS `pv_meta`;
 CREATE TABLE `pv_meta` (
-  `id` int(11) NOT NULL,
   `schema_ver` varchar(255) COLLATE utf8_general_ci NOT NULL,
   `app_ver` varchar(255) COLLATE utf8_general_ci NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp()
@@ -437,10 +436,6 @@ ALTER TABLE `ingTypes`
 ALTER TABLE `lids`
   ADD PRIMARY KEY (`id`);
 
-ALTER TABLE `pv_meta`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `id` (`id`);
-
 ALTER TABLE `settings`
   ADD PRIMARY KEY (`id`);
 
@@ -485,9 +480,6 @@ ALTER TABLE `ingTypes`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `lids`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
-ALTER TABLE `pv_meta`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `settings`

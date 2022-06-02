@@ -19,7 +19,7 @@ require_once(__ROOT__.'/inc/product.php');
 require_once(__ROOT__.'/db/prepare/prepare.php');
 
 $installed_ver = mysqli_fetch_array(mysqli_query($conn,"SELECT app_ver FROM pv_meta"));
-
+$ver = 4.9;
 if($_POST['email'] && $_POST['password']){
 	$_POST['email'] = mysqli_real_escape_string($conn,strtolower($_POST['email']));
 	$_POST['password'] = mysqli_real_escape_string($conn,$_POST['password']);
@@ -204,6 +204,7 @@ $(document).ready(function() {
 			type: 'POST',
 			data: {
 				action: 'upgrade',
+				version: <?=$ver?>,
 			},
 			dataType: 'json',
 			success: function (data) {

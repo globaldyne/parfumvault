@@ -23,14 +23,17 @@ function prepare($from, $to){
 
 if($_POST['action'] == 'upgrade'){
 		define('pvault_panel', TRUE);
-
+		
 		require_once(dirname(dirname(dirname(__FILE__))).'/inc/config.php');
 		require_once(dirname(dirname(dirname(__FILE__))).'/inc/opendb.php');
+		
+		$version = $_POST['version'];
 		
 		$q = mysqli_query($conn, "ALTER TABLE users DROP username");
 		$q.= mysqli_query($conn, "TRUNCATE users");
 		$q.= mysqli_query($conn, "ALTER TABLE pv_online DROP id, DROP email, DROP password");
 		$q.= mysqli_query($conn, "ALTER TABLE pv_meta DROP id");
+		$q.= mysqli_query($conn, "UPDATE pv_meta SET schema_ver = '$version', app_ver = '$version' ");
 
 		if($q){
 			$response['success'] = "Upgrade complete";
