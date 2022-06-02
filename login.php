@@ -74,7 +74,7 @@ if($_POST['email'] && $_POST['password']){
           <div class="card-body p-0">
             <!-- Nested Row within Card Body -->
             <div class="row">
-             <?php if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM users")) == 0){?>
+             <?php if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM users")) == 0){ $first_time = 1; ?>
               <div class="col-lg-6 d-none d-lg-block bg-register-image"></div>
               <div class="col-lg-6">
                 <div class="p-5">
@@ -192,7 +192,7 @@ if($_POST['email'] && $_POST['password']){
 
 <script>
 $(document).ready(function() {
-<?php if($installed_ver['app_ver'] < $ver){ ?> 
+<?php if($installed_ver['app_ver'] < $ver && !$first_time){ ?> 
     $('#pre_warn').modal('show');
 	$("#pre_warn").on('hide.bs.modal', function () {  
   		return false

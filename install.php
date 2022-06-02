@@ -1,6 +1,7 @@
 <?php 
 if (!defined('pvault_panel')){ die('Not Found');}
 require_once('inc/product.php');
+$first_time = 1;
 ?>
 <!DOCTYPE html>
 <html lang="en">
