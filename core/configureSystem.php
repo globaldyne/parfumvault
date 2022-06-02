@@ -182,7 +182,7 @@ $max_filesize = "4194304"; //in bytes
 	$app_ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
 	$db_ver  = trim(file_get_contents(__ROOT__.'/db/schema.ver'));
 	mysqli_query($link,"INSERT INTO pv_meta (schema_ver,app_ver) VALUES ('$db_ver','$app_ver')");
-	mysqli_query($conn,"INSERT INTO pv_online (enabled) VALUES ('0')");
+	mysqli_query($link,"INSERT INTO pv_online (enabled) VALUES ('0')");
 	
 	echo '<div class="alert alert-success alert-dismissible">System configured, '.$pvOnMsg.'</div>';
 	return;
