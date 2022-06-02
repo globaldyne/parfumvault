@@ -89,7 +89,7 @@ if($_POST['action'] == 'register'){
 	if(mysqli_query($conn,"INSERT INTO users (email,password,fullName) VALUES ('$email', '$password','$fullName')")){
 		$db_ver  = trim(file_get_contents(__ROOT__.'/db/schema.ver'));
 		mysqli_query($conn,"INSERT INTO pv_meta (schema_ver,app_ver) VALUES ('$db_ver','$app_ver')");
-		
+		mysqli_query($conn,"INSERT INTO pv_online (enabled) VALUES ('0')");
 		$response['success'] = "User created";
 		echo json_encode($response);
 	}else{
