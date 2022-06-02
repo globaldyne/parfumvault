@@ -1,5 +1,6 @@
 <?php
 define('pvault_panel', TRUE);
+define('__ROOT__', dirname(__FILE__)); 
 
 if(file_exists('./inc/config.php') == FALSE){
 
@@ -12,10 +13,12 @@ if(isset($_SESSION['parfumvault'])){
 	header('Location: index.php');
 }
 
-require_once('inc/config.php');
-require_once('inc/opendb.php');
-require_once('inc/product.php');
+require_once(__ROOT__.'/inc/config.php');
+require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/inc/product.php');
+require_once(__ROOT__.'/db/prepare/prepare.php');
 
+$installed_ver = mysqli_fetch_array(mysqli_query($conn,"SELECT app_ver FROM pv_meta"));
 
 if($_POST['email'] && $_POST['password']){
 	$_POST['email'] = mysqli_real_escape_string($conn,strtolower($_POST['email']));
@@ -139,6 +142,24 @@ if($_POST['email'] && $_POST['password']){
  </body>
 </html>
 
+<!--PRE UPGRADE NEEDED-->
+<div class="modal fade" id="pre_warn" tabindex="-1" role="dialog" aria-labelledby="pre_warn" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">WARNING</h5>
+      </div>
+      <div id="upgrademsg"></div>
+      <div class="modal-body">
+		<?php echo prepare($installed_ver['app_ver'], $ver); ?>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="confUpgrade" data-dismiss="modal">Upgrade</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!--FORGOT PASS INFO-->
 <div class="modal fade" id="forgot_pass" tabindex="-1" role="dialog" aria-labelledby="forgot_pass" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -171,7 +192,34 @@ if($_POST['email'] && $_POST['password']){
 
 <script>
 $(document).ready(function() {
-
+<?php if($installed_ver['app_ver'] < $ver){ ?> 
+    $('#pre_warn').modal('show');
+	$("#pre_warn").on('hide.bs.modal', function () {  
+  		return false
+	});
+	$('#pre_warn').on('click', '[id*=confUpgrade]', function () {
+		
+		$.ajax({ 
+			url: '/db/prepare/prepare.php', 
+			type: 'POST',
+			data: {
+				action: 'upgrade',
+			},
+			dataType: 'json',
+			success: function (data) {
+				if (data.success){ 
+				    window.location='/'
+				}
+				if(data.error){
+					var msg = '<div class="alert alert-danger">'+data.error+'</div>';
+				}
+				
+				$('#upgrademsg').html(msg);
+			}
+		});
+																 
+	});
+<?php } ?>
 	$('#reg_form').on('click', '[id*=registerSubmit]', function () {
 		$('#registerSubmit').prop('disabled', true);
 		$('#msg').html('<div class="alert alert-info"><img src="/img/loading.gif"/> Please wait, configuring the system...<p><strong>Please do not close, refresh or navigate away from this page. You will be automatically redirected upon a succesfull installation.</strong></p></div>');
