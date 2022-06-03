@@ -1,19 +1,14 @@
 <?php
 define('__ROOT__', dirname(dirname(__FILE__)));
+define('pvault_panel', TRUE);
+require_once(__ROOT__.'/func/pvOnline.php');
 
-function pvPost($url, $data){
-    $curl = curl_init($url);
-    curl_setopt($curl, CURLOPT_POST, true);
-    curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-    return $response = curl_exec($curl);
-}
+
 $pvOnlineAPI = 'https://online.jbparfum.com/api2.php';
 
 if($_POST['action'] == 'create_pv_account'){
-	define('__ROOT__', dirname(dirname(__FILE__))); 
-	define('pvault_panel', TRUE);
-
+	//define('__ROOT__', dirname(dirname(__FILE__))); 
+	
 	require_once(__ROOT__.'/inc/config.php');
 	require_once(__ROOT__.'/inc/opendb.php');
 	
@@ -30,8 +25,8 @@ if($_POST['action'] == 'create_pv_account'){
 
 	$data = [ 'do' => 'regUser','email' => strtolower($_POST['email']), 'fullName' => $_POST['fullName'], 'userPass' => base64_encode($_POST['password']), 'ver'=> $app_ver];
 	$r = json_decode(pvPost($pvOnlineAPI, $data));
-	if($r->error){			
-		$response['error'] = $r->error;
+	if($r->error->code != '004'){
+		$response['error'] = $r->error->msg;
 		echo json_encode($response);
 		return;
 	}
@@ -67,11 +62,14 @@ if($_POST['action'] == 'register'){
 
 	if($_POST['createPVOnline'] == 'true'){
 		$data = [ 'do' => 'regUser','email' => strtolower($_POST['email']), 'fullName' => $_POST['fullName'], 'userPass' => base64_encode($_POST['password']), 'ver'=> $app_ver];
-		$r = json_decode(pvPost('https://online.jbparfum.com/api2.php', $data));
-		if($r->error){			
-			$response['error'] = 'Error creating a PV Online account '.$r->error;
-			echo json_encode($response);
-			return;
+		$r = json_decode(pvPost($pvOnlineAPI, $data));
+		if($r->error->code == '004'){
+			$auth = pvOnlineValAcc($pvOnlineAPI, $_POST['email'], $_POST['password'], $ver);
+			if($auth['code'] != '001'){
+				$response['error'] = 'Error creating a PV Online account. '.$r->error->msg.'<p>Please make sure you enter the correct password.</p>';
+				echo json_encode($response);
+				return;
+			}
 		}
 		
 		if($r->success){
@@ -108,38 +106,49 @@ if($_POST['action']=='install'){
 	}
 
 	if(strlen($_POST['password']) < '5'){
-		echo '<div class="alert alert-danger alert-dismissible"><strong>Error: </strong>Password must be at least 5 characters long!</div>';
+		$response['error'] = 'Password must be at least 5 characters long';
+		echo json_encode($response);
 		return;
 	}
 	
 	if(!$_POST['dbhost'] || !$_POST['dbuser'] || !$_POST['dbpass'] || !$_POST['dbname'] || !$_POST['fullName'] || !$_POST['email']){
-		echo '<div class="alert alert-danger alert-dismissible"><strong>Error: </strong>All fields are required.</div>';
+		$response['error'] = 'All fields are required';
+		echo json_encode($response);
 		return;
 	}
 	
 	if ( ! is_writable(dirname(__FILE__))) {
-		echo '<div class="alert alert-danger alert-dismissible"><strong>Error: </strong>Home directory isn\'t writable.<p>Please refer to our <a href="https://www.jbparfum.com/knowledge-base/" target="_blank">KB</a> for help.</p></div>';
+		$response['error'] = 'Home directory isn\'t writable.<p>Please refer to our <a href="https://www.jbparfum.com/knowledge-base/" target="_blank">KB</a> for help.</p>';
+		echo json_encode($response);
 		return;
 	}
 	
 		
 	if(!$link = mysqli_connect($_POST['dbhost'], $_POST['dbuser'], $_POST['dbpass'], $_POST['dbname'])){
-		echo '<div class="alert alert-danger alert-dismissible">Error connecting to the database, make sure the details provided are correct, the database exists and the user has full permissions on it.</div>';
+		$response['error'] = 'Error connecting to the database, make sure the details provided are correct, the database exists and the user has full permissions on it';
+		echo json_encode($response);
 		return;
 	}
 	
 
 	if($_POST['createPVOnline'] == 'true'){
 		$data = [ 'do' => 'regUser','email' => strtolower($_POST['email']), 'fullName' => $_POST['fullName'], 'userPass' => base64_encode($_POST['password']) ];
-		$r = json_decode(pvPost('https://online.jbparfum.com/api2.php', $data));
-		if($r->error){
-			
-			echo '<div class="alert alert-danger alert-dismissible">Error creating a PV Online account '.$r->error.'</div>';
+		$r = json_decode(pvPost($pvOnlineAPI, $data));
+	
+		if($r->error->code == '004'){
+			$auth = pvOnlineValAcc($pvOnlineAPI, $_POST['email'], $_POST['password'], $ver);
+			if($auth['code'] != '001'){
+				$response['error'] = 'Error creating a PV Online account. '.$r->error->msg.'<p>Please make sure you enter the correct password.</p>';
+				echo json_encode($response);
+				return;
+			}
 		}
+		/*
 		if($r->success){
 			$pvOnMsg = '<div class="alert alert-success alert-dismissible">PV Online account created</div>';
 		}
 		return;
+		*/
 	}
 	
 	$cmd = 'mysql -u'.$_POST['dbuser'].' -p'.$_POST['dbpass'].' -h'.$_POST['dbhost'].' '.$_POST['dbname'].' < ../db/pvault.sql'; 
@@ -163,7 +172,8 @@ $max_filesize = "4194304"; //in bytes
 ?>
 ';
 	}else{
-		echo '<div class="alert alert-danger alert-dismissible">DB Creation error. Make sure the database exists in your mysql server and its empty.</div>';
+		$response['error'] = 'DB Schema Creation error. Make sure the database exists in your mysql server and its empty.';
+		echo json_encode($response);
 		return;
 	}
 	
@@ -175,7 +185,8 @@ $max_filesize = "4194304"; //in bytes
 	}
 
 	if(file_put_contents($cfg, $conf) == FALSE){
-		echo '<div class="alert alert-danger alert-dismissible">Error: failed to create config file <strong>'.$cfg.'</strong><p> Make sure your web server has write permissions to the install directory.</p></div>';
+		$response['error'] = 'Failed to create config file <strong>'.$cfg.'</strong><p> Make sure your web server has write permissions to the install directory.';
+		echo json_encode($response);
 		return;
 	}
 	
@@ -184,7 +195,8 @@ $max_filesize = "4194304"; //in bytes
 	mysqli_query($link,"INSERT INTO pv_meta (schema_ver,app_ver) VALUES ('$db_ver','$app_ver')");
 	mysqli_query($link,"INSERT INTO pv_online (enabled) VALUES ('0')");
 	
-	echo '<div class="alert alert-success alert-dismissible">System configured, '.$pvOnMsg.'</div>';
+	$response['success'] = 'System configured';
+	echo json_encode($response);
 	return;
 }
 ?>

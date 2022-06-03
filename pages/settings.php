@@ -424,8 +424,21 @@ $(function() {
             </div>
 			</td>
           </tr>
+          <?php }else{ ?>
+           <tr>
+            <td colspan="3">
+            <div id="pv_account_error">
+            	<div class="alert alert-danger">
+    				<h4 class="alert-heading"><i class="fa fa-exclamation-circle"></i> Oops! Server Error.</h4>
+    				<p>We are unable to connect to PV Online upstream</p>
+                    <p>Server may experiencing high load or connectivity issues.</p>
+                    <p>While the server is down any PV Online intergration will not work or return errors.</p>
+    				<hr>
+				</div>
+            </div>
+			</td>
+          </tr>
           <?php } ?>
-          
           <tr>
             <td height="29">&nbsp;</td>
             <td>&nbsp;</td>

@@ -108,14 +108,17 @@ $(document).ready(function() {
 				password: $("#password").val(),
 				createPVOnline: $("#createPVOnline").is(":checked"),
 			},
-			dataType: 'html',
+			dataType: 'json',
 			success: function (data) {
-				if (data.includes("Success")){ 
+				if (data.success){ 
 				    window.location='/'
 				}
-				$("#install_form").show();
-				$('#saveInstallData').prop('disabled', false);
-				$('#msg').html(data);
+				if(data.error){
+					var msg = '<div class="alert alert-danger">'+data.error+'</div>';
+					$("#install_form").show();
+					$('#saveInstallData').prop('disabled', false);
+				}
+				$('#msg').html(msg);
 			}
 		});
 	});
