@@ -11,3 +11,4 @@ Whats New:
 - User list page removed, we only allow a single user
 - Allow a user to register a PV Online account during a first time installation wizard
 - Add PV Online connectivity status (Online/Offline)
+- User profile page has been re-written and improved

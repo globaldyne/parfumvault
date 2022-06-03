@@ -8,6 +8,77 @@ require_once(__ROOT__.'/func/validateInput.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/pvOnline.php');
 
+if($_GET['update_user_avatar']){
+	$allowed_ext = "png, jpg, jpeg, gif, bmp";
+
+	$filename = $_FILES["avatar"]["tmp_name"];  
+    $file_ext = strtolower(end(explode('.',$_FILES['avatar']['name'])));
+	$file_tmp = $_FILES['avatar']['tmp_name'];
+    $ext = explode(', ',strtolower($allowed_ext));
+	
+	
+	if(!$filename){
+		$response["error"] = 'Please choose a file to upload';
+		echo json_encode($response);
+		return;
+	}	
+	
+	if (!file_exists(__ROOT__."/uploads/logo/")) {
+		mkdir(__ROOT__."/uploads/logo/", 0740, true);
+	}
+		
+	if(in_array($file_ext,$ext)===false){
+		$response["error"] = '<strong>File upload error: </strong>Extension not allowed, please choose a '.$allowed_ext.' file';
+		echo json_encode($response);
+		return;
+	}
+		
+	if($_FILES["avatar"]["size"] > 0){
+		move_uploaded_file($file_tmp,__ROOT__."/uploads/logo/".base64_encode($filename));
+		$avatar = "/uploads/logo/".base64_encode($filename);
+		if(mysqli_query($conn, "UPDATE users SET avatar = '$avatar'")){
+			$response["success"] = array( "msg" => "User avatar updated!", "avatar" => $avatar);
+			echo json_encode($response);
+			return;
+		}
+	}
+
+	return;
+}
+
+if($_POST['update_user_profile']){
+	
+	if(!$_POST['user_fname'] || !$_POST['user_email'] || !$_POST['user_pass']){
+		$response["error"] = "All fields are required";
+		echo json_encode($response);
+		return;
+	}
+	
+	$fullName = mysqli_real_escape_string($conn, $_POST['user_fname']);
+	$email = mysqli_real_escape_string($conn, $_POST['user_email']);
+	
+	if($password = mysqli_real_escape_string($conn, $_POST['user_pass'])){
+		if(strlen($password) < '5'){
+			$response["error"] = "Password must be at least 5 chars long";
+			echo json_encode($response);
+			return;
+		}else{
+			$p = ",password='$password'";
+		}
+	}
+	
+	if(mysqli_query($conn, "UPDATE users SET fullName = '$fullName', email = '$email' $p")){
+		$response["success"] = "User details updated!";
+		echo json_encode($response);
+	}else{
+		$response["error"] = 'Failed to update user details! '.mysqli_error($conn);
+		echo json_encode($response);
+	}
+	
+
+	return;
+}
+
 if($_POST['manage'] == 'general'){
 	$currency = utf8_encode(htmlentities($_POST['currency']));
 	$top_n = mysqli_real_escape_string($conn, $_POST['top_n']);

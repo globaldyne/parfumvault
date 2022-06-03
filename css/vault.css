@@ -907,3 +907,8 @@ body {
   position: absolute;
 }
 
+.img-profile {
+  max-width: 200px;
+  border-radius: 5% !important;
+}
+
