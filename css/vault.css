@@ -870,4 +870,40 @@ body {
   color: #1cc88a;
 }
 
+.icon-container {
+  position: relative;
+}
+
+.status-disabled {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: grey;
+  border: 2px solid white;
+  bottom: 0;
+  right: 0;
+  position: absolute;
+}
+
+.status-online {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #1cc88a;
+  border: 2px solid white;
+  bottom: 0;
+  right: 0;
+  position: absolute;
+}
+
+.status-offline {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #e74a3b;
+  border: 2px solid white;
+  bottom: 0;
+  right: 0;
+  position: absolute;
+}
 

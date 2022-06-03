@@ -53,7 +53,10 @@
             <li class="nav-item dropdown no-arrow">
               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?php echo $user['fullName'];?></span>
-                <img class="img-profile rounded-circle" src="<?php if($user['avatar']){ echo $user['avatar']; }else{ echo 'img/logo_def.png'; } ?>">
+               <div class="icon-container">
+                <img class="img-profile rounded-circle" src="<?=$user['avatar']?: '/img/logo_def.png'; ?>">
+				<div class="status-circle"></div>
+				</div>
               </a>
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
               
@@ -118,6 +121,9 @@ function chk_shared() {
 		do: 'getShared'
 	},
 	type: 'POST',
+	error: function(){
+			$('.status-circle').addClass('status-offline');
+		},
     success: function(data) {
 		if(data.formulasTotal > 0){
 			$('.badge-counter-shared-formulas').html(data.formulasTotal);
@@ -141,10 +147,13 @@ function chk_shared() {
 		}else{
 			$('.badge-counter-shared-formulas').empty();
 			$('#list-shared-formulas-footer').html('<a class="dropdown-item text-center small text-gray-500" href="#">No formulas</a>');
+			
+			
 		};
-					
 		
-    }
+		$('.status-circle').addClass('status-online');
+    },
+	
    
   });
 }

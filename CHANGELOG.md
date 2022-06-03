@@ -15,6 +15,7 @@
 - User list page removed, we only allow a single user
 - Allow a user to register a PV Online account during a first time installation wizard
 - Improve PV Online API2 compatibility
+- Add PV Online connectivity status (Online/Offline)
 - TECH Preview: PV Online share With a friend
 
 ### Version 4.7
