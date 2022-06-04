@@ -912,3 +912,7 @@ body {
   border-radius: 5% !important;
 }
 
+#footer_release {
+  display: inline;
+}
+

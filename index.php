@@ -111,7 +111,6 @@ $(document).ready(function() {
 	});
 	
 	list_formulas();
-	//list_ingredients();
 
 });
 
@@ -337,7 +336,7 @@ function list_users(){
 		}
 	?>
 <?php require_once(__ROOT__.'/pages/footer.php'); ?>
-<?php if(isset($show_release_notes)){ ?>
+<?php //if(isset($show_release_notes)){ ?>
 <!--RELEASE NOTES-->
 <div class="modal fade" id="release_notes" tabindex="-1" role="dialog" aria-labelledby="release_notes" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
@@ -357,6 +356,6 @@ function list_users(){
     </div>
   </div>
 </div>
-<?php } ?>
+<?php //} ?>
 </body>
 </html>
