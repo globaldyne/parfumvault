@@ -53,7 +53,7 @@ $user = mysqli_fetch_array(mysqli_query($conn, "SELECT email,fullName,avatar FRO
   </table>
 
 <script>
-$('#profile_pic').html('<img class="img-profile" src="<?=$user['avatar']?: '/img/logo_def.png'; ?>">');
+$('#profile_pic').html('<img class="img-profile-avatar" src="<?=$user['avatar']?: '/img/logo_def.png'; ?>">');
 
 $('#save-profile').click(function() {
 	$.ajax({ 
@@ -95,7 +95,7 @@ $('#upload-avatar').click(function() {
 		success: function (data) {
 			if(data.success){
 				var msg = '<div class="alert alert-success">'+data.success.msg+'</div>';
-				$('#profile_pic').html('<img class="img-profile" src="'+data.success.avatar+'">');
+				$('#profile_pic').html('<img class="img-profile-avatar" src="'+data.success.avatar+'">');
 
 			}else if( data.error){
 				var msg = '<div class="alert alert-danger">'+data.error+'</div>';
