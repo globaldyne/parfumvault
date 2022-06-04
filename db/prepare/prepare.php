@@ -33,6 +33,7 @@ if($_POST['action'] == 'upgrade'){
 		$q.= mysqli_query($conn, "TRUNCATE users");
 		$q.= mysqli_query($conn, "ALTER TABLE pv_online DROP id, DROP email, DROP password");
 		$q.= mysqli_query($conn, "ALTER TABLE pv_meta DROP id");
+		$q.= mysqli_query($conn, "ALTER TABLE suppliers CHANGE stock stock INT(11) NOT NULL DEFAULT '0'");
 		$q.= mysqli_query($conn, "UPDATE pv_meta SET schema_ver = '$version', app_ver = '$version' ");
 
 		if($q){

@@ -12,3 +12,4 @@ Whats New:
 - Allow a user to register a PV Online account during a first time installation wizard
 - Add PV Online connectivity status (Online/Offline)
 - User profile page has been re-written and improved
+- Add supplier data when importing from PV Online

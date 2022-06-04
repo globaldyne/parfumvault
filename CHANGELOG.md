@@ -18,6 +18,7 @@
 - Add PV Online connectivity status (Online/Offline)
 - User profile page re-write
 - Include price and size when uploading suppliers to PV Online
+- Add supplier data when importing from PV Online
 - TECH Preview: PV Online share With a friend
 
 ### Version 4.7

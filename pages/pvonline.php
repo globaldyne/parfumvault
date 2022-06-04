@@ -142,6 +142,13 @@ if($_POST['action'] == 'import' && $_POST['items']){
             $insertVals = '"' . implode('","', array_values($insertPairs)) . '"';
             if($item == 'allergens'){
 		        $query = "SELECT name FROM $item WHERE name = '".$insertPairs['name']."' AND ing = '".$insertPairs['ing']."'";
+			}elseif($item == 'suppliers'){
+		        $query = "SELECT ingSupplierID FROM $item WHERE ingSupplierID = '".$insertPairs['ingSupplierID']."' AND ingID = '".$insertPairs['ingID']."'";
+				
+			}elseif($item == 'suppliersMeta'){
+				$item = 'ingSuppliers'; //TODO: TO BE RENAMED
+		        $query = "SELECT id FROM $item WHERE id = '".$insertPairs['id']."' AND name = '".$insertPairs['name']."'";
+				
             }else{
         	    $query = "SELECT name FROM $item WHERE name = '".$insertPairs['name']."'";
             }
@@ -155,7 +162,7 @@ if($_POST['action'] == 'import' && $_POST['items']){
 	}
 
 	if($qIns){
-		$response['success'] = $i.' ingredients and compositions imported!';
+		$response['success'] = $i.' items imported!';
 	}else{
 		$response['warning'] = 'Database already in sync!';
 	}
