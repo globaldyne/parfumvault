@@ -17,6 +17,7 @@
 - Improve PV Online API2 compatibility
 - Add PV Online connectivity status (Online/Offline)
 - User profile page re-write
+- Include price and size when uploading suppliers to PV Online
 - TECH Preview: PV Online share With a friend
 
 ### Version 4.7
