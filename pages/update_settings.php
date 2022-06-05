@@ -7,6 +7,7 @@ require_once(__ROOT__.'/inc/product.php');
 require_once(__ROOT__.'/func/validateInput.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/pvOnline.php');
+require_once(__ROOT__.'/func/create_thumb.php');
 
 if($_GET['update_user_avatar']){
 	$allowed_ext = "png, jpg, jpeg, gif, bmp";
@@ -36,6 +37,9 @@ if($_GET['update_user_avatar']){
 	if($_FILES["avatar"]["size"] > 0){
 		move_uploaded_file($file_tmp,__ROOT__."/uploads/logo/".base64_encode($filename));
 		$avatar = "/uploads/logo/".base64_encode($filename);
+		
+		create_thumb(__ROOT__.$avatar,250,250); 
+
 		if(mysqli_query($conn, "UPDATE users SET avatar = '$avatar'")){
 			$response["success"] = array( "msg" => "User avatar updated!", "avatar" => $avatar);
 			echo json_encode($response);
@@ -59,7 +63,7 @@ if($_POST['update_user_profile']){
 	
 	if($password = mysqli_real_escape_string($conn, $_POST['user_pass'])){
 		if(strlen($password) < '5'){
-			$response["error"] = "Password must be at least 5 chars long";
+			$response["error"] = "Password must be at least 5 characters long";
 			echo json_encode($response);
 			return;
 		}else{

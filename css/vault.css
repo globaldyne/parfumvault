@@ -916,3 +916,6 @@ body {
   display: inline;
 }
 
+.personal-info {
+  max-width: 65%;
+}

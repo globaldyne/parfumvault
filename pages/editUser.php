@@ -1,5 +1,7 @@
 <?php
-require('../inc/sec.php');
+define('__ROOT__', dirname(dirname(__FILE__))); 
+
+require(__ROOT__.'/inc/sec.php');
 
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
@@ -15,43 +17,61 @@ $user = mysqli_fetch_array(mysqli_query($conn, "SELECT email,fullName,avatar FRO
 <link href="/css/vault.css" rel="stylesheet">
 
 <style>
-.form-inline .form-control {
-    display: inline-block;
-    width: 500px;
-    vertical-align: middle;
+
+.container {
+  max-width: 100%;
+  width: 100%;
+
 }
 </style>
-<table width="100%" border="0" cellspacing="0" class="table table-bordered">
-    <tr>
-      <td colspan="4" class="badge-primary">Edit user profile</td>
-    </tr>
-    <tr>
-      <td colspan="4"><div id="msg"></div></td>
-    </tr>
-    <tr>
-      <td width="11%">Full Name:</td>
-      <td colspan="2"><input name="fullName" type="text" id="fullName" value="<?php echo $user['fullName']; ?>"></td>
-      <td width="62%" rowspan="4"><div id="profile_pic"></div></td>
-    </tr>
-    <tr>
-      <td>Email:</td>
-      <td colspan="2"><input name="email" type="text" id="email" value="<?php echo $user['email']; ?>"></td>
-    </tr>
-    <tr>
-      <td>Password:</td>
-      <td colspan="2"><input name="password" type="password" id="password"> 
-        Min 5 chars</td>
-    </tr>
-    <tr>
-      <td>Avatar:</td>
-      <td width="21%"><input type="file" name="avatar" id="avatar" /></td>
-      <td width="6%"><input name="upload-avatar" type="submit" class="btn-dark" id="upload-avatar" value="Upload" /></td>
-    </tr>
-    <tr>
-      <td colspan="4"><input name="save-profile" type="submit" class="btn-dark" id="save-profile" value="Update"></td>
-    </tr>
-  </table>
+<div class="container">
+    <h1 class="text-primary">Edit Profile</h1>
+      <hr>
+	<div class="row">
+      <div class="col-md-4">
+        <div class="text-center">
+          <div id="profile_pic"><div class="loader"></div></div>
+          <h6>Upload a different photo...</h6>
+          <input type="file" name="avatar" id="avatar" class="form-control">
+        </div>
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+			<div class="text-right">
+        		<input name="upload-avatar" type="submit" class="btn-dark" id="upload-avatar" value="Upload" />
+        	</div>
+        </div>
+      </div>
+      <div class="col-md-8 personal-info">
+        <div id="msg"></div>
+          <div class="form-group">
+            <label class="col-md-3 control-label">Full name:</label>
+            <div class="col-md-8">
+              <input name="fullName" type="text" id="fullName" class="form-control" value="<?php echo $user['fullName']; ?>">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-3 control-label">Email:</label>
+            <div class="col-md-8">
+              <input name="email" type="text" id="email" class="form-control" value="<?php echo $user['email']; ?>">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-3 control-label">Password:</label>
+            <div class="col-md-8">
+              <input name="password" type="password" id="password" class="form-control" value="">
+            </div>
+          </div>
+          <div class="row gutters">
+			<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+				<div class="text-right">
+					<button type="button" id="save-profile" name="save-profile" class="btn btn-primary">Update</button>
+				</div>
+			</div>
+          </div>
 
+      </div>
+  </div>
+</div>
+<hr>
 <script>
 $('#profile_pic').html('<img class="img-profile-avatar" src="<?=$user['avatar']?: '/img/logo_def.png'; ?>">');
 
