@@ -20,6 +20,7 @@
 - Include price and size when uploading suppliers to PV Online
 - Add supplier data when importing from PV Online
 - Add a link to release notes in footer version
+- Extend ingredient search in INCI
 - TECH Preview: PV Online share With a friend
 
 ### Version 4.7
