@@ -290,6 +290,8 @@ $('#btnImportIFRA').click(function() {
 $('#Importpb').click(function() {	
 	$("#pbmportMsg").html('<div class="alert alert-info"><img src="/img/loading.gif"/>Please wait, this may take a few minutes, depending your IFRA library size and your internet connection...</div>');
 	$("#Importpb").prop("disabled", true);
+	$("#ImportpbC").hide();
+
 	$.ajax({
 		url: 'pages/update_data.php', 
 		type: 'GET',
@@ -301,12 +303,14 @@ $('#Importpb').click(function() {
 			if(data.success){				
 				$('#pbmportMsg').html('<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>');
 				$("#Importpb").hide();
-				$('#Importpb').html('Close');
+				$("#ImportpbC").show();
+				$('#ImportpbC').html('Close');
 				reload_ifra_data();
 			}else{
 				$('#pbmportMsg').html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>');
 				$("#Importpb").show();
 				$("#Importpb").prop("disabled", false);
+				$("#ImportpC").show();
 			}
 		}
 	});
