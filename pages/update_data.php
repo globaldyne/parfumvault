@@ -22,8 +22,11 @@ if($_GET['IFRA_PB'] == 'import'){
 		usleep(.1 * 1000000);
 	}
 	if($imp){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$i.' images updates!</div>';
+		$response["success"] = $i.' images updated!';
+	}else{
+		$response["error"] = 'Something went wrong '.mysqli_error($conn);
 	}
+	echo json_encode($response);
 	return;
 }
 
