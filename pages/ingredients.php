@@ -276,7 +276,7 @@ $('#pv_online_import').on('click', '[id*=btnImport]', function () {
 		type: 'POST',
 		data: {
 			action: 'import',
-			items: 'ingredients,allergens,suppliers,suppliersMeta'
+			items: 'ingredients,allergens,suppliers,suppliersMeta,synonyms'
 			},
 		dataType: 'json',
 		success: function (data) {

@@ -21,6 +21,9 @@
 - Add supplier data when importing from PV Online
 - Add a link to release notes in footer version
 - Extend ingredient search in INCI
+- Added Odor Impact for ingredients
+- Ingredients page tech data restructure
+- Extend ingredients import to include synonyms and full supplier data
 - TECH Preview: PV Online share With a friend
 
 ### Version 4.7

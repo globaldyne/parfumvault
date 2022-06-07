@@ -189,6 +189,7 @@ CREATE TABLE `ingredients` (
   `formula` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `flash_point` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `appearance` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `rdi` INT NOT NULL DEFAULT '0',
   `notes` text COLLATE utf8_general_ci DEFAULT NULL,
   `profile` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `ml` FLOAT(5) NULL DEFAULT '10',

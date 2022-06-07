@@ -684,14 +684,16 @@ if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'tech_data'){
 	$soluble = mysqli_real_escape_string($conn, $_POST["soluble"]);
 	$molecularWeight = mysqli_real_escape_string($conn, $_POST["molecularWeight"]);
 	$appearance = mysqli_real_escape_string($conn, $_POST["appearance"]);
+	$rdi = (int)$_POST["rdi"]?:0;
 
 	
-	$query = "UPDATE ingredients SET tenacity='$tenacity',flash_point='$flash_point',chemical_name='$chemical_name',formula='$formula',logp = '$logp',soluble = '$soluble',molecularWeight = '$molecularWeight',appearance='$appearance' WHERE id='$ingID'";
+	$query = "UPDATE ingredients SET tenacity='$tenacity',flash_point='$flash_point',chemical_name='$chemical_name',formula='$formula',logp = '$logp',soluble = '$soluble',molecularWeight = '$molecularWeight',appearance='$appearance',rdi='$rdi' WHERE id='$ingID'";
 	if(mysqli_query($conn, $query)){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Technical data has been updated!</div>';
+		$response["success"] = 'Technical data has been updated!';
 	}else{
-		echo '<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> '.mysqli_error($conn).'</div>';
-	}
+		$response["error"] = 'Something went wrong '.mysqli_error($conn);
+	}	
+	echo json_encode($response);
 	return;
 }
 

@@ -148,7 +148,11 @@ if($_POST['action'] == 'import' && $_POST['items']){
 			}elseif($item == 'suppliersMeta'){
 				$item = 'ingSuppliers'; //TODO: TO BE RENAMED
 		        $query = "SELECT id FROM $item WHERE id = '".$insertPairs['id']."' AND name = '".$insertPairs['name']."'";
-				
+			
+			}elseif($item == 'synonyms'){
+		        $query = "SELECT id FROM $item WHERE id = '".$insertPairs['id']."' AND ing = '".$insertPairs['ing']."'";
+
+
             }else{
         	    $query = "SELECT name FROM $item WHERE name = '".$insertPairs['name']."'";
             }
