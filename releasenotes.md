@@ -16,3 +16,4 @@ Whats New:
 - Extend ingredient search in INCI
 - Added Odor Impact for ingredients
 - Extend ingredients import to include synonyms and full supplier data
+- Added user profile update in PV Online settings

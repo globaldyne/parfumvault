@@ -24,6 +24,7 @@
 - Added Odor Impact for ingredients
 - Ingredients page tech data restructure
 - Extend ingredients import to include synonyms and full supplier data
+- Add user profile update in PV Online settings 
 - TECH Preview: PV Online share With a friend
 
 ### Version 4.7

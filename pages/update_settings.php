@@ -9,6 +9,33 @@ require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/pvOnline.php');
 require_once(__ROOT__.'/func/create_thumb.php');
 
+if($_POST['update_pvonline_profile']){
+	
+	if(!$_POST['nickname'] || !$_POST['intro']){
+		$response["error"] = "All fields are required";
+		echo json_encode($response);
+		return;
+	}
+	
+	$intro = base64_encode(mysqli_real_escape_string($conn, $_POST['intro']));
+	
+	$data = [ 'username' => strtolower($pv_online['email']), 'password' => $pv_online['password'],'do' => 'updateProfile','nickname' => base64_encode($_POST['nickname']), 'intro' => $intro];
+
+    $req = json_decode(pvPost($pvOnlineAPI, $data));
+
+	if($req->success){
+		$response['success'] = $req->success;
+	}else{
+		$response['error'] = $req->error;
+	}
+	
+	echo json_encode($response);
+	
+	
+
+	return;
+}
+
 if($_GET['update_user_avatar']){
 	$allowed_ext = "png, jpg, jpeg, gif, bmp";
 
