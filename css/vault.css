@@ -912,6 +912,12 @@ body {
   border-radius: 5% !important;
 }
 
+.img-profile-avatar-thumb {
+  max-width: 50px;
+  padding: 0px 5px 0px 0px;
+  border-radius: 10% !important;
+}
+
 #footer_release {
   display: inline;
 }
@@ -919,3 +925,4 @@ body {
 .personal-info {
   max-width: 65%;
 }
+

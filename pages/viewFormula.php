@@ -1,5 +1,7 @@
 <?php 
-require('../inc/sec.php');
+define('__ROOT__', dirname(dirname(__FILE__))); 
+
+require(__ROOT__.'/inc/sec.php');
 
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
@@ -950,7 +952,7 @@ $("#pvUsers").select2({
 	formatResult: formatPVUsers, 
     formatSelection: formatPVUsersSelection, 
     allowClear: true,
-    dropdownAutoWidth: true,
+    dropdownAutoWidth: false,
 	tags: true,
 	minimumInputLength: 2,
 	ajax: {
@@ -959,6 +961,7 @@ $("#pvUsers").select2({
 		type: 'POST',
 		delay: 300,
 		quietMillis: 250,
+		cache: false,
    		data: function (term) {
             return {
 				username: '<?=$pv_online['email']?>',
@@ -972,8 +975,8 @@ $("#pvUsers").select2({
 				results: $.map(data.users, function(obj) {
 					return {
 						id: obj.id,
-						firstName: obj.name,
-						//lastName: obj.lastName,
+						name: obj.nickname,
+						avatar: obj.avatar,
 						userBio: obj.userBio,
 						avatar: obj.avatar
 					}
@@ -983,27 +986,27 @@ $("#pvUsers").select2({
     }
 });
 
-function formatPVUsers (ingredientData) {
-  if (ingredientData.loading) {
-    return ingredientData.firstName;
+function formatPVUsers (userData) {
+  if (userData.loading) {
+    return userData.name;
   }
   
-  if (!ingredientData.firstName){
+  if (!userData.name){
 	return 'User not found...';
   }
   
   var $container = $(
-    "<div class='select_result_igredient clearfix'><strong>" +ingredientData.firstName+
+    "<div class='select_result_igredient clearfix'><img src='data:image/png;base64,"+userData.avatar+"' class='img-profile-avatar-thumb '/><strong>" +userData.name+
       "</strong><div class='select_result_igredient_meta'>" +
-        "<div class='select_result_igredient_description'>" +ingredientData.userBio+ "</div>" +
+        "<div class='select_result_igredient_description'>" +userData.userBio+ "</div>" +
     "</div>"
   );
 
   return $container;
 }
 
-function formatPVUsersSelection (ingredientData) {
-  return ingredientData.firstName;
+function formatPVUsersSelection (userData) {
+  return userData.name;
 }
 <?php if($pv_online['email'] && $pv_online['password'] && $pv_online['enabled'] == '1'){?>
 

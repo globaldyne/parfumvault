@@ -329,8 +329,7 @@ CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `email` varchar(255) COLLATE utf8_general_ci NOT NULL,
   `password` varchar(255) COLLATE utf8_general_ci NOT NULL,
-  `fullName` varchar(255) COLLATE utf8_general_ci NOT NULL,
-  `avatar` varchar(255) COLLATE utf8_general_ci DEFAULT NULL
+  `fullName` varchar(255) COLLATE utf8_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci ROW_FORMAT=COMPACT;
 
 CREATE TABLE `pv_online` (

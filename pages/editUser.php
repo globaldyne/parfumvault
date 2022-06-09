@@ -7,7 +7,8 @@ require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 
 
-$user = mysqli_fetch_array(mysqli_query($conn, "SELECT email,fullName,avatar FROM users")); 
+$user = mysqli_fetch_array(mysqli_query($conn, "SELECT email,fullName FROM users")); 
+$doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM documents WHERE ownerID = '".$_SESSION['userID']."' AND name = 'avatar' AND type = '3'"));
 
 ?>
 <script src="/js/jquery/jquery.min.js"></script>
@@ -73,7 +74,7 @@ $user = mysqli_fetch_array(mysqli_query($conn, "SELECT email,fullName,avatar FRO
 </div>
 <hr>
 <script>
-$('#profile_pic').html('<img class="img-profile-avatar" src="<?=$user['avatar']?: '/img/logo_def.png'; ?>">');
+$('#profile_pic').html('<img class="img-profile-avatar" src="<?=$doc['avatar']?: '/img/logo_def.png'; ?>">');
 
 $('#save-profile').click(function() {
 	$.ajax({ 

@@ -17,9 +17,11 @@ if($_POST['update_pvonline_profile']){
 		return;
 	}
 	
+	$doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM documents WHERE ownerID = '".$_SESSION['userID']."' AND name = 'avatar' AND type = '3'"));
+
 	$intro = base64_encode(mysqli_real_escape_string($conn, $_POST['intro']));
 	
-	$data = [ 'username' => strtolower($pv_online['email']), 'password' => $pv_online['password'],'do' => 'updateProfile','nickname' => base64_encode($_POST['nickname']), 'intro' => $intro];
+	$data = [ 'username' => strtolower($pv_online['email']), 'password' => $pv_online['password'],'do' => 'updateProfile','nickname' => base64_encode($_POST['nickname']), 'intro' => $intro, 'avatar' => $doc['avatar'] ];
 
     $req = json_decode(pvPost($pvOnlineAPI, $data));
 
@@ -43,7 +45,7 @@ if($_GET['update_user_avatar']){
     $file_ext = strtolower(end(explode('.',$_FILES['avatar']['name'])));
 	$file_tmp = $_FILES['avatar']['tmp_name'];
     $ext = explode(', ',strtolower($allowed_ext));
-	
+
 	
 	if(!$filename){
 		$response["error"] = 'Please choose a file to upload';
@@ -63,12 +65,14 @@ if($_GET['update_user_avatar']){
 		
 	if($_FILES["avatar"]["size"] > 0){
 		move_uploaded_file($file_tmp,__ROOT__."/uploads/logo/".base64_encode($filename));
-		$avatar = "/uploads/logo/".base64_encode($filename);
-		
+		$avatar = "/uploads/logo/".base64_encode($filename);		
 		create_thumb(__ROOT__.$avatar,250,250); 
-
-		if(mysqli_query($conn, "UPDATE users SET avatar = '$avatar'")){
-			$response["success"] = array( "msg" => "User avatar updated!", "avatar" => $avatar);
+		$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents(__ROOT__.$avatar));
+		
+		mysqli_query($conn, "DELETE FROM documents WHERE ownerID = '".$user['id']."' AND type = '3' AND name = 'avatar'");
+		if(mysqli_query($conn, "INSERT INTO documents (ownerID,type,name,notes,docData) VALUES ('".$user['id']."','3','avatar','Main Profile Avatar','$docData')")){	
+			unlink(__ROOT__.$avatar);
+			$response["success"] = array( "msg" => "User avatar updated!", "avatar" => $docData);
 			echo json_encode($response);
 			return;
 		}

@@ -1,4 +1,8 @@
-<?php if (!defined('pvault_panel')){ die('Not Found');}?>
+<?php
+if (!defined('pvault_panel')){ die('Not Found');}
+$doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM documents WHERE ownerID = '".$_SESSION['userID']."' AND name = 'avatar' AND type = '3'"));
+
+?>
 
 <div id="content">
         <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
@@ -54,7 +58,7 @@
               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?php echo $user['fullName'];?></span>
                <div class="icon-container">
-                <img class="img-profile rounded-circle" src="<?=$user['avatar']?: '/img/logo_def.png'; ?>">
+                <img class="img-profile rounded-circle" src="<?=$doc['avatar']?: '/img/logo_def.png'; ?>">
 				<div class="status-circle"></div>
 				</div>
               </a>

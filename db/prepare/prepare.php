@@ -29,7 +29,7 @@ if($_POST['action'] == 'upgrade'){
 		
 		$version = $_POST['version'];
 		
-		$q = mysqli_query($conn, "ALTER TABLE users DROP username");
+		$q = mysqli_query($conn, "ALTER TABLE users DROP username, DROP avatar");
 		$q.= mysqli_query($conn, "TRUNCATE users");
 		$q.= mysqli_query($conn, "ALTER TABLE pv_online DROP id, DROP email, DROP password");
 		$q.= mysqli_query($conn, "ALTER TABLE pv_meta DROP id");
