@@ -996,7 +996,7 @@ function formatPVUsers (userData) {
   }
   
   var $container = $(
-    "<div class='select_result_igredient clearfix'><img src='data:image/png;base64,"+userData.avatar+"' class='img-profile-avatar-thumb '/><strong>" +userData.name+
+    "<div class='select_result_igredient clearfix'><div class='col-sm-1 profile-avatar-thumb'><img src='data:image/png;base64,"+userData.avatar+"' class='img-profile-avatar-thumb'/></div><strong>" +userData.name+
       "</strong><div class='select_result_igredient_meta'>" +
         "<div class='select_result_igredient_description'>" +userData.userBio+ "</div>" +
     "</div>"

@@ -918,6 +918,10 @@ body {
   border-radius: 10% !important;
 }
 
+.profile-avatar-thumb {
+	padding-left: 0px !important;	
+}
+
 #footer_release {
   display: inline;
 }
