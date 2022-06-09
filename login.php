@@ -94,8 +94,8 @@ if($_POST['email'] && $_POST['password']){
                       <input type="text" class="form-control form-control-user" id="password" placeholder="Password...">
                     </div>
                     <div class="form-group">
-                      <input name="createPVOnline" type="checkbox" class="form-control-user" id="createPVOnline" value="true">
-                      <label>Create a PV Online account</label>
+                      <input name="createPVOnline" type="checkbox" class="form-control-user" id="createPVOnline" value="true" checked>
+                      <label data-toggle="tooltip" data-placement="top" title="Connect my existing account to PVOnline or automatically create a new one.">Connect PV Online account</label>
                     </div>
                     <div class="form-group"></div>
                     <button class="btn btn-primary btn-user btn-block" id="registerSubmit">
@@ -192,6 +192,10 @@ if($_POST['email'] && $_POST['password']){
 
 <script>
 $(document).ready(function() {
+	$(function () {
+		$('[data-toggle="tooltip"]').tooltip()
+	});
+
 <?php if($installed_ver['app_ver'] < $ver && !$first_time){ ?> 
     $('#pre_warn').modal('show');
 	$("#pre_warn").on('hide.bs.modal', function () {  
