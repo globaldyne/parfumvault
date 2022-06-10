@@ -584,4 +584,29 @@ function list_fcat(){
 	});
 };
 
+//DISABLE PVONLINE
+function disablePV(){
+	$.ajax({ 
+		url: '/pages/update_settings.php',
+		dataType: 'json',
+		data: {
+			pv_online_state: '0',
+			state_update: '1',
+			manage: 'pvonline'
+		},
+		type: 'POST',
+		success: function (data) {
+			if(data.error){
+				$('#pvOnMsg').html('<div class="alert alert-danger">PV Online state update '+data.error+'</div>');	
+			}else if(data.success){
+				$('#pvOnMsg').html('<div class="alert alert-success">PV Online state update '+data.success+'</div>');	
+			}
+		},
+		error: function () {
+				$('#pvOnMsg').html('<span class="label label-danger">Unable to update settings</span>');
+		}
+					
+	});
+};
+
 </script>

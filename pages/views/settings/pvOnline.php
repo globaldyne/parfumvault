@@ -83,8 +83,15 @@ $auth = pvOnlineValAcc($pvOnlineAPI, $user['email'], $user['password'], $ver);
 $(document).ready(function() {
 	if($("#pv_online_state").is(':checked')){
 		$("#sharing_status").prop('disabled', false);
+		$("#intro").prop('disabled', false);
+		$("#nickname").prop('disabled', false);
+		$("#update-profile").prop('disabled', false);
+
 	}else{
 		$("#sharing_status").prop('disabled', true);
+		$("#intro").prop('disabled', true);
+		$("#nickname").prop('disabled', true);
+		$("#update-profile").prop('disabled', true);
 	}
 	
 	$(function () {
@@ -119,9 +126,15 @@ $('#pv_online_state').on('change', function() {
 				var rmsg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>PV Online service is now <strong>'+data.success+'</strong></div>';
 				if (data.success == 'active'){
 					$("#sharing_status").prop('disabled', false);
+					$("#intro").prop('disabled', false);
+					$("#nickname").prop('disabled', false);
+					$("#update-profile").prop('disabled', false);
 					getPVProfile();
 				}else if (data.success == 'in-active'){
 					$("#sharing_status").prop('disabled', true);
+					$("#intro").prop('disabled', true);
+					$("#nickname").prop('disabled', true);
+					$("#update-profile").prop('disabled', true);
 				}
 			}
 			$('#pvOnMsg').html(rmsg);
@@ -213,31 +226,6 @@ function getPVProfile(){
 			
 		});
 };
-//DISABLE PVONLINE
-function disablePV(){
-	$.ajax({ 
-		url: '/pages/update_settings.php',
-		dataType: 'json',
-		data: {
-			pv_online_state: '0',
-			state_update: '1',
-			manage: 'pvonline'
-		},
-		type: 'POST',
-		success: function (data) {
-			if(data.error){
-				$('#pvOnMsg').html('<div class="alert alert-danger">PV Online state update '+data.error+'</div>');	
-			}else if(data.success){
-				$('#pvOnMsg').html('<div class="alert alert-success">PV Online state update '+data.success+'</div>');	
-			}
-		},
-		error: function () {
-				$('#pvOnMsg').html('<span class="label label-danger">Unable to update settings</span>');
-			}
-			
-		});
-	};
-});
 
 //UPDATE PVONLINE PROFILE
 $('#update-profile').click(function() {
@@ -246,8 +234,9 @@ $('#update-profile').click(function() {
 		type: 'POST',
 		data: {
 			update_pvonline_profile: 1,
-			nickname: $("#nickname").val(),			
-			intro: $("#intro").val()
+			nickname: $("#nickname").val(),		
+			intro: $("#intro").val(),
+			name: "<?=$user['fullName']?>"
 			},
 		dataType: 'json',
 		error: function() {
@@ -262,4 +251,6 @@ $('#update-profile').click(function() {
 		}
 	  });
 });
+
+}); //end doc
 </script>

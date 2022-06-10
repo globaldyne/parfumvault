@@ -9,7 +9,7 @@ require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/pvOnline.php');
 require_once(__ROOT__.'/func/create_thumb.php');
 
-if($_POST['update_pvonline_profile']){
+if($_POST['update_pvonline_profile'] && $pv_online['enabled'] == '1'){
 	
 	if(!$_POST['nickname'] || !$_POST['intro']){
 		$response["error"] = "All fields are required";
@@ -20,8 +20,9 @@ if($_POST['update_pvonline_profile']){
 	$doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM documents WHERE ownerID = '".$_SESSION['userID']."' AND name = 'avatar' AND type = '3'"));
 
 	$intro = base64_encode(mysqli_real_escape_string($conn, $_POST['intro']));
-	
-	$data = [ 'username' => strtolower($pv_online['email']), 'password' => $pv_online['password'],'do' => 'updateProfile','nickname' => base64_encode($_POST['nickname']), 'intro' => $intro, 'avatar' => $doc['avatar'] ];
+	$name = base64_encode(mysqli_real_escape_string($conn, $_POST['name']));
+
+	$data = [ 'username' => strtolower($pv_online['email']), 'password' => $pv_online['password'],'do' => 'updateProfile','nickname' => base64_encode($_POST['nickname']), 'intro' => $intro, 'avatar' => $doc['avatar'], 'name' => $name ];
 
     $req = json_decode(pvPost($pvOnlineAPI, $data));
 
