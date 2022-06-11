@@ -322,7 +322,7 @@ function reload_formula_data() {
                <a class="dropdown-item" href="javascript:export_as('csv')">Export to CSV</a>
                <a class="dropdown-item" href="javascript:export_as('pdf')">Export to PDF</a>
                <div class="dropdown-divider"></div>
-               <?php if($pv_online['email'] && $pv_online['password'] && $pv_online['enabled'] == '1'){?>
+               <?php if($pv_online['enabled'] == '1'){?>
                <li class="dropdown-header">TECH PREVIEW</li> 
                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#share_to_user">Share with someone</a>
                <div class="dropdown-divider"></div>
@@ -381,7 +381,7 @@ function reload_formula_data() {
         </tfoot>
 </table>
 
-<?php if($pv_online['email'] && $pv_online['password'] && $pv_online['enabled'] == '1'){?>
+<?php if($pv_online['enabled'] == '1'){?>
 <!--Share with a user-->
 <div class="modal fade" id="share_to_user" tabindex="-1" role="dialog" aria-labelledby="share_to_user" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
@@ -1011,7 +1011,7 @@ function formatPVUsers (userData) {
 function formatPVUsersSelection (userData) {
   return userData.name;
 }
-<?php if($pv_online['email'] && $pv_online['password'] && $pv_online['enabled'] == '1'){?>
+<?php if($pv_online['enabled'] == '1'){?>
 
 $('#share_to_user').on('click', '[id*=sharePVOnline]', function () {
 	$('#sharePVOnline').attr('disabled', true);
