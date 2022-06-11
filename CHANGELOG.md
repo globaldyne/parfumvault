@@ -27,6 +27,7 @@
 - Add user profile update in PV Online settings 
 - Store user avatar as document in the database instead of file
 - Further PVOnline intergration improvements
+- Create ingredient placeholder if in formula but missing from the database
 - TECH Preview: PV Online share With a friend
 
 ### Version 4.7

@@ -17,3 +17,4 @@ Whats New:
 - Added Odor Impact for ingredients
 - Extend ingredients import to include synonyms and full supplier data
 - Added user profile update in PV Online settings
+- Create ingredient placeholder if in formula but missing from the database

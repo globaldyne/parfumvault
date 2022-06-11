@@ -644,8 +644,11 @@ function ingName(data, type, row, meta){
 	}else{
 		var profile_class ='';
 	}
-	if(type === 'display'){
+	if(row.ingredient.enc_id){
 		data = '<a class="popup-link '+ex+'" href="pages/mgmIngredient.php?id=' + row.ingredient.enc_id + '">' + data + '</a> '+ chkIng + profile_class;
+	}else{
+		data = '<a class="popup-link '+ex+'" href="pages/mgmIngredient.php?id=' + btoa(data) + '">' + data + '</a> '+ chkIng + profile_class;
+
 	}
 
   return data;
