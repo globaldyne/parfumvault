@@ -98,7 +98,7 @@ $(document).ready(function() {
   		$('[data-toggle="tooltip"]').tooltip()
 	});
 	
-<?php if($pv_online['email'] && $pv_online['password'] && $pv_online['enabled'] == '1'){?>
+<?php if($pv_online['enabled'] == '1'){?>
 	getPVProfile();
 <?php } ?>
 
