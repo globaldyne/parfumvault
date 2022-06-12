@@ -73,10 +73,11 @@ $doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM docu
                   <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
                   Settings
                 </a>
-                <a class="dropdown-item popup-link" href="pages/tools.php">
+                <a class="dropdown-item" href="pages/tools.php" data-toggle="modal" data-target="#calcTools">
                   <i class="fas fa-tools fa-sm fa-fw mr-2 text-gray-400"></i>
                   Calculation Tools
                 </a>
+                
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="https://www.jbparfum.com/knowledge-base" target="_blank">
                   <i class="fas fa-book fa-sm fa-fw mr-2 text-gray-400"></i>
@@ -231,3 +232,17 @@ $('#list-shared-formulas').html('<div class="font-weight-bold">'+
 
 <?php } ?>
 </script>
+<!-- calcTools Modal -->
+<div class="modal fade" id="calcTools" tabindex="-1" role="dialog" aria-labelledby="calcToolsLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                 <h4 class="modal-title">Modal title</h4>
+
+            </div>
+            <div class="modal-body"><div class="tools"></div></div>
+        </div>
+    </div>
+</div>
+<!-- /calcTools Modal -->

@@ -28,6 +28,7 @@
 - Store user avatar as document in the database instead of file
 - Further PVOnline intergration improvements
 - Create ingredient placeholder if in formula but missing from the database
+- Calculation tools moved to a modal window
 - TECH Preview: PV Online share With a friend
 
 ### Version 4.7
