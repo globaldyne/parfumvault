@@ -42,7 +42,7 @@ $doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM docu
         </div>
       </div>
       <div class="col-md-8 personal-info">
-        <div id="msg"></div>
+        <div id="msgU"></div>
           <div class="form-group">
             <label class="col-md-3 control-label">Full name:</label>
             <div class="col-md-8">
@@ -93,7 +93,7 @@ $('#save-profile').click(function() {
 			}else if( data.error){
 				var msg = '<div class="alert alert-danger">'+data.error+'</div>';
 			}
-			$('#msg').html(msg);
+			$('#msgU').html(msg);
 		}
 	  });
 });
@@ -121,7 +121,7 @@ $('#upload-avatar').click(function() {
 			}else if( data.error){
 				var msg = '<div class="alert alert-danger">'+data.error+'</div>';
 			}
-			$('#msg').html(msg);
+			$('#msgU').html(msg);
 		}
 	  });
 });

@@ -29,6 +29,7 @@
 - Further PVOnline intergration improvements
 - Create ingredient placeholder if in formula but missing from the database
 - Calculation tools moved to a modal window
+- Add email notification option when new ingredients published in PV Online
 - TECH Preview: PV Online share With a friend
 
 ### Version 4.7

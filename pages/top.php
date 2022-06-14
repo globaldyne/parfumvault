@@ -110,7 +110,7 @@ $doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM docu
 </nav>
 
 <script>
-<?php if($pv_online['email'] && $pv_online['password'] && $pv_online['enabled'] == '1'){?>
+<?php if($pv_online['enabled'] == '1'){?>
 
 chk_shared();
 var myVar = setInterval(chk_shared, 50000);

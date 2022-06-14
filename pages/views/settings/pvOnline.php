@@ -24,31 +24,37 @@ $auth = pvOnlineValAcc($pvOnlineAPI, $user['email'], $user['password'], $ver);
         <input name="pv_online_state" type="checkbox" id="pv_online_state" value="1" <?php if($pv_online['enabled'] == '1'){ ?> checked <?php } ?>/>
       </div>
      </div>
-     <div class="row">
-      <label class="col-sm-1 col-form-label pv_point_gen" data-toggle="tooltip" data-placement="right" title="To enable or disable formula sharing service, please login to PVOnline and navigate to the profile section.">Enable Formula sharing:</label>
-      <div class="col-sm-2">
-        <input name="sharing_status" type="checkbox" id="sharing_status" value="1"/>
+     <div id="pv_profile">
+         <div class="row">
+          <label class="col-sm-1 col-form-label pv_point_gen" data-toggle="tooltip" data-placement="right" title="To enable or disable formula sharing service, please login to PVOnline and navigate to the profile section.">Enable Formula sharing:</label>
+          <div class="col-sm-2">
+            <input name="sharing_status" type="checkbox" id="sharing_status" value="1"/>
+          </div>
+        </div>
+        <div class="row">
+          <label class="col-sm-1 col-form-label pv_point_gen" data-toggle="tooltip" data-placement="right" title="If enabled, will get a new email when new ingredients are published to PV Online.">Notify me for new ingredients:</label>
+          <div class="col-sm-2">
+            <input name="new_ing_status" type="checkbox" id="new_ing_status" value="1"/>
+          </div>
+        </div>
+       <hr>
+        
+      <div class="row">
+        <label class="col-sm-1 col-form-label pv_point_gen" data-toggle="tooltip" data-placement="top" title="Choose a nick name to represent yourself in PV Online, this can be your full name or anything else.">Nickname:</label>
+        <div class="col-sm-2">
+          <input name="nickname" type="text" class="form-control" id="nickname" value="" placeholder="John Smith">
+        </div>
       </div>
-    </div>
-   
-   <hr>
-    
-  <div class="row">
-    <label class="col-sm-1 col-form-label pv_point_gen" data-toggle="tooltip" data-placement="top" title="Choose a nick name to represent yourself in PV Online, this can be your full name or anything else.">Nickname:</label>
-    <div class="col-sm-2">
-      <input name="nickname" type="text" class="form-control" id="nickname" value="" placeholder="John Smith">
-    </div>
+      
+      <div class="form-group row">
+        <label class="col-sm-1 col-form-label pv_point_gen" data-toggle="tooltip" data-placement="top" title="A short description to introduce yourself to others in PV Online">Short introduction:</label>
+        <div class="col-sm-2">
+            <textarea class="form-control" id="intro" rows="3" placeholder="Hey fellow perfurmers..."></textarea>
+        </div>
+      </div>
+      
+      <button type="submit" class="btn btn-primary" id="update-profile">Update</button>
   </div>
-  
-  <div class="form-group row">
-    <label class="col-sm-1 col-form-label pv_point_gen" data-toggle="tooltip" data-placement="top" title="A short description to introduce yourself to others in PV Online">Short introduction:</label>
-    <div class="col-sm-2">
-        <textarea class="form-control" id="intro" rows="3" placeholder="Hey fellow perfurmers..."></textarea>
-    </div>
-  </div>
-  
-  <button type="submit" class="btn btn-primary" id="update-profile">Update</button>
-  
 <?php }elseif($auth['code'] == '002'){ ?>
 
 	<div class="alert alert-danger">
@@ -86,12 +92,14 @@ $(document).ready(function() {
 		$("#intro").prop('disabled', false);
 		$("#nickname").prop('disabled', false);
 		$("#update-profile").prop('disabled', false);
+		$("#new_ing_status").prop('disabled', false);
 
 	}else{
 		$("#sharing_status").prop('disabled', true);
 		$("#intro").prop('disabled', true);
 		$("#nickname").prop('disabled', true);
 		$("#update-profile").prop('disabled', true);
+		$("#new_ing_status").prop('disabled', true);
 	}
 	
 	$(function () {
@@ -129,12 +137,14 @@ $('#pv_online_state').on('change', function() {
 					$("#intro").prop('disabled', false);
 					$("#nickname").prop('disabled', false);
 					$("#update-profile").prop('disabled', false);
+					$("#new_ing_status").prop('disabled', false);
 					getPVProfile();
 				}else if (data.success == 'in-active'){
 					$("#sharing_status").prop('disabled', true);
 					$("#intro").prop('disabled', true);
 					$("#nickname").prop('disabled', true);
 					$("#update-profile").prop('disabled', true);
+					$("#new_ing_status").prop('disabled', true);
 				}
 			}
 			$('#pvOnMsg').html(rmsg);
@@ -143,6 +153,34 @@ $('#pv_online_state').on('change', function() {
 });
 	
 //ENABLE OR DISABLE FORMULA SHARING
+$('#new_ing_status').on('change', function() {
+	if($("#new_ing_status").is(':checked')){
+		var val = 1;
+	}else{
+		var val = 0;
+	}
+	$.ajax({ 
+		url: '/pages/update_settings.php', 
+		type: 'POST',
+		data: {
+			manage: 'pvonline',
+			email_alerts: '1',
+			new_ing_status: val,
+			},
+		dataType: 'json',
+		success: function (data) {
+			if(data.error){
+				var rmsg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
+			}else if (data.success){
+				var rmsg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>New ingredient emails are <strong>'+data.success+'</strong></div>';
+			}
+			$('#pvOnMsg').html(rmsg);
+		}
+	});
+});
+
+	
+//ENABLE OR DISABLE NEW INGREDIENT NOTIFY
 $('#sharing_status').on('change', function() {
 	if($("#sharing_status").is(':checked')){
 		var val = 1;
@@ -168,7 +206,7 @@ $('#sharing_status').on('change', function() {
 		}
 	});
 });
-	
+
 $('#pv_account_error').on('click', '[id*=autoCreateAcc]', function () {
 	$('#pv_account_error').html('<div class="alert alert-info"><img src="/img/loading.gif"/> Please wait, configuring the system...<p><strong>Please do not close, refresh or navigate away from this page. You will be automatically redirected upon a succesfull installation.</strong></p></div>');															
 		
@@ -214,14 +252,26 @@ function getPVProfile(){
 			}
 			if(data.error){
 				$('#msg').html('<div class="alert alert-danger">PV Online '+data.error+' You can <a href="javascript:disablePV()">disable</a> PV integration or <a href="https://online.jbparfum.com/forgotpass.php" target="_blank">reset</a> your PV Online password</p>');
-			}else if(data.userProfile.formulaSharing == 0){
-				$("#sharing_status").prop('checked', false);
-			}else if (data.userProfile.formulaSharing == 1){
-				$("#sharing_status").prop('checked', true);
+			}else {
+				if(data.userProfile.formulaSharing == 0){
+					$("#sharing_status").prop('checked', false);
+				}
+				
+				if(data.userProfile.newIngNotify == 0){
+					$("#new_ing_status").prop('checked', false);
+				}
+				
+				if (data.userProfile.formulaSharing == 1){
+					$("#sharing_status").prop('checked', true);
+				}
+				
+				if(data.userProfile.newIngNotify == 1){
+					$("#new_ing_status").prop('checked', true);
+				}
 			}
 		},
 		error: function () {
-				$('#sharing_status_state').html('<span class="label label-danger">Unable to fecth data</span>');
+				$('#pv_profile').html('<div class="alert alert-danger">Unable to connect, please try again later</div>');
 			}
 			
 		});
