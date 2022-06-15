@@ -55,48 +55,23 @@ while($pictograms_res = mysqli_fetch_array($pictograms)){
 	<link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
 	<link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
 	<title>Manage <?=$ing['name']?></title>
-	<link href="../css/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-	<script src="../js/jquery/jquery.min.js"></script>
+	<link href="/css/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+	
+	<script src="/js/jquery/jquery.min.js"></script>
+	<script src="/js/bootstrap.min.js"></script>
+	<script src="/js/bootstrap-select.js"></script>
+	<script src="/js/bootstrap-editable.js"></script>
+	<script src="/js/datatables.min.js"></script>
+	<script src="/js/bootbox.min.js"></script>
 
-	<script src="../js/bootstrap.min.js"></script>
-	<script src="../js/bootstrap-select.js"></script>
-	<script src="../js/bootstrap-editable.js"></script>
+	<link href="/css/datatables.min.css"/>
+	<link href="/css/sb-admin-2.css" rel="stylesheet">
+	<link href="/css/bootstrap-select.min.css" rel="stylesheet">
+	<link href="/css/bootstrap.min.css" rel="stylesheet">
+	<link href="/css/vault.css" rel="stylesheet">
+	<link href="/css/bootstrap-editable.css" rel="stylesheet">
+	<link href="/css/mgmIngredient.css" rel="stylesheet">
 
-	<link rel="stylesheet" type="text/css" href="../css/datatables.min.css"/>
-	<script type="text/javascript" src="../js/datatables.min.js"></script>
-	<script src="../js/bootbox.min.js"></script>
-
-	<style>
-		.form-inline .form-control {
-			display: inline-block;
-			width: 500px;
-			vertical-align: middle;
-		}
-	</style>
-	<link href="../css/sb-admin-2.css" rel="stylesheet">
-	<link href="../css/bootstrap-select.min.css" rel="stylesheet">
-	<link href="../css/bootstrap.min.css" rel="stylesheet">
-	<link href="../css/vault.css" rel="stylesheet">
-	<link href="../css/bootstrap-editable.css" rel="stylesheet">
-
-
-	<style>
-		.container {
-			max-width: 100%;
-			width: 1800px;
-			height: 1300px;
-		}
-		.dropdown-menu > li > a {
-			font-weight: 700;
-			padding: 10px 20px;
-		}
-
-		.bootstrap-select.btn-group .dropdown-menu li small {
-			display: block;
-			padding: 6px 0 0 0;
-			font-weight: 100;
-		}
-	</style>
 
 <script>
 
@@ -583,7 +558,7 @@ function reload_data() {
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title" id="printLabel">Print Label for <?php echo $ing['name']; ?></h5>
+				<h5 class="modal-title">Print Label for <?php echo $ing['name']; ?></h5>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
@@ -623,7 +598,7 @@ function reload_data() {
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title" id="cloneIng">Clone ingredient <?php echo $ing['name']; ?></h5>
+				<h5 class="modal-title">Clone ingredient <?php echo $ing['name']; ?></h5>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
@@ -639,7 +614,6 @@ function reload_data() {
 			</div>
 		</div>
 	</div>
-
 </div>
 <script type="text/javascript" language="javascript">
 

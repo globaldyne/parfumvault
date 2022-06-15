@@ -1,0 +1,22 @@
+.form-inline .form-control {
+	display: inline-block;
+	width: 500px;
+	vertical-align: middle;
+}
+		
+.container {
+	max-width: 100%;
+	width: 1800px;
+	height: 1300px;
+}
+
+.dropdown-menu > li > a {
+	font-weight: 700;
+	padding: 10px 20px;
+}
+
+.bootstrap-select.btn-group .dropdown-menu li small {
+	display: block;
+	padding: 6px 0 0 0;
+	font-weight: 100;
+}
