@@ -46,7 +46,6 @@ while($pictograms_res = mysqli_fetch_array($pictograms)){
 	$pictogram[] = $pictograms_res;
 }
 
-
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -55,8 +54,9 @@ while($pictograms_res = mysqli_fetch_array($pictograms)){
 	<link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
 	<link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
 	<title>Manage <?=$ing['name']?></title>
+    
 	<link href="/css/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-	
+    
 	<script src="/js/jquery/jquery.min.js"></script>
 	<script src="/js/bootstrap.min.js"></script>
 	<script src="/js/bootstrap-select.js"></script>
@@ -64,15 +64,14 @@ while($pictograms_res = mysqli_fetch_array($pictograms)){
 	<script src="/js/datatables.min.js"></script>
 	<script src="/js/bootbox.min.js"></script>
 
-	<link href="/css/datatables.min.css"/>
+    <link href="/css/datatables.min.css" rel="stylesheet"/>
 	<link href="/css/sb-admin-2.css" rel="stylesheet">
 	<link href="/css/bootstrap-select.min.css" rel="stylesheet">
 	<link href="/css/bootstrap.min.css" rel="stylesheet">
 	<link href="/css/vault.css" rel="stylesheet">
 	<link href="/css/bootstrap-editable.css" rel="stylesheet">
 	<link href="/css/mgmIngredient.css" rel="stylesheet">
-
-
+	
 <script>
 
 function reload_overview() {

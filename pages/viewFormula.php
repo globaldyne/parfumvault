@@ -48,7 +48,7 @@ $(document).ready(function() {
         language: {
 			loadingRecords: '&nbsp;',
 			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Blending...</span>',
-			emptyTable: "Incomplete formula. Please add ingredients.",
+			emptyTable: '<div class="alert alert-warning"><strong>Empty formula. Please add ingredients.</strong></div>',
 			search: "Search in formula:",
 			searchPlaceholder: "CAS, Ingredient, etc.."
 			},
@@ -173,19 +173,24 @@ $('#formula').on('click', '[id*=rmIng]', function () {
                callback: function (){
 	    			
 				$.ajax({ 
-					url: 'pages/manageFormula.php', 
-					type: 'GET',
+					url: '/pages/manageFormula.php', 
+					type: 'POST',
 					data: {
 						action: "deleteIng",
 						fid: "<?=$meta['fid']?>",
 						ingID: ing.ID,
 						ing: ing.Name
 						},
-					dataType: 'html',
+					dataType: 'json',
 					success: function (data) {
-						$('#msgInfo').html(data);
+						if(data.success){
+							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+						}else{
+							var msg ='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+						}
+						$('#msgInfo').html(msg);
 						reload_formula_data();
-					}
+					}						
 				  });
                  return true;
                }
@@ -208,8 +213,8 @@ $('#formula').on('click', '[id*=exIng]', function () {
 	ing.Status = $(this).attr('data-status');
 			
 		$.ajax({ 
-			url: 'pages/manageFormula.php', 
-			type: 'GET',
+			url: '/pages/manageFormula.php', 
+			type: 'POST',
 			data: {
 				action: "excIng",
 				fid: "<?=$meta['fid']?>",
@@ -217,9 +222,14 @@ $('#formula').on('click', '[id*=exIng]', function () {
 				ingName: ing.Name,
 				status: ing.Status
 				},
-			dataType: 'html',
+			dataType: 'json',
 			success: function (data) {
-				$('#msgInfo').html(data);
+				if(data.success) {
+					var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+				}else{
+					var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';	
+				}
+				$('#msgInfo').html(msg);
 				reload_formula_data();
 			}
 		  });
@@ -248,9 +258,14 @@ function isMade() {
 						isMade: "1",
 						fid: "<?=$meta['fid']?>",
 						},
-					dataType: 'html',
+					dataType: 'json',
 					success: function (data) {
-						$('#msgInfo').html(data);
+						if(data.success) {
+							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+						}else{
+							var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';	
+						}
+						$('#msgInfo').html(msg);
 						reload_formula_data();
 					}
 				  });
@@ -805,8 +820,8 @@ if(type === 'display'){
 //MULTIPLY - DIVIDE
 function manageQuantity(quantity) {
 	$.ajax({ 
-    url: 'pages/manageFormula.php', 
-	type: 'GET',
+    url: '/pages/manageFormula.php', 
+	type: 'POST',
     data: {
 		do: 'scale',
 		scale: quantity,
@@ -830,8 +845,8 @@ $('#amount_to_make').on('click', '[id*=amountToMake]', function () {
 	  	$('#amountToMakeMsg').html('<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> all fields required!</div>');		
 	}else{
 		$.ajax({ 
-		url: 'pages/manageFormula.php', 
-		type: 'GET',
+		url: '/pages/manageFormula.php', 
+		type: 'POST',
 		cache: false,
 		data: {
 			fid: "<?php echo $fid; ?>",

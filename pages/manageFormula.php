@@ -10,12 +10,12 @@ require_once(__ROOT__.'/func/get_formula_notes.php');
 
 
 //EXCLUDE/INCLUDE INGREDIENT
-if($_GET['action'] == 'excIng' && $_GET['ingID']){
-	$id = mysqli_real_escape_string($conn, $_GET['ingID']);
-	$fid = mysqli_real_escape_string($conn, $_GET['fid']);
-	$ing = mysqli_real_escape_string($conn, $_GET['ingName']);
+if($_POST['action'] == 'excIng' && $_POST['ingID']){
+	$id = mysqli_real_escape_string($conn, $_POST['ingID']);
+	$fid = mysqli_real_escape_string($conn, $_POST['fid']);
+	$ing = mysqli_real_escape_string($conn, $_POST['ingName']);
 
-	$status = (int)$_GET['status'];
+	$status = (int)$_POST['status'];
 	if($status == 1){
 		$st = 'excluded';
 	}else{
@@ -24,13 +24,14 @@ if($_GET['action'] == 'excIng' && $_GET['ingID']){
 	
 	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,isProtected FROM formulasMetaData WHERE fid = '$fid'"));
 	if($meta['isProtected'] == FALSE){
-		
 		if(mysqli_query($conn, "UPDATE formulas SET exclude_from_calculation = '$status' WHERE id  = '$id'")){
-			echo  '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$ing.' is now '. $st .'!</div>';
+			$response['success'] = $ing.' is now '. $st;
 		}else{
-			echo  '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$ing.' cannot be '.$st.' from the formula!</div>';
+			$response['error'] = $ing.' cannot be '.$st.' from the formula!';
 		}
 	}
+	
+	echo json_encode($response);
 	return;
 }
 
@@ -47,12 +48,12 @@ if($_POST['isMade'] && $_POST['fid']){
 	}
 	if($upd){
 		mysqli_query($conn,"UPDATE formulasMetaData SET isMade = '1', madeOn = NOW() WHERE fid = '$fid'");
-		echo  '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Inventory updated!</div>';
+		$response['success'] = 'Inventory updated';
 	}else{
-		echo  '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.mysqli_error($conn).'</div>';
-
+		$response['error'] = mysqli_error($conn);
 	}
-		
+	
+	echo json_encode($response);
 	return;
 }
 
@@ -133,10 +134,10 @@ if($_GET['manage_view'] == '1'){
 }
 
 //AMOUNT TO MAKE
-if($_GET['fid'] && $_GET['SG'] && $_GET['amount']){
-	$fid = mysqli_real_escape_string($conn, $_GET['fid']);
-	$SG = mysqli_real_escape_string($conn, $_GET['SG']);
-	$amount = mysqli_real_escape_string($conn, $_GET['amount']);
+if($_POST['fid'] && $_POST['SG'] && $_POST['amount']){
+	$fid = mysqli_real_escape_string($conn, $_POST['fid']);
+	$SG = mysqli_real_escape_string($conn, $_POST['SG']);
+	$amount = mysqli_real_escape_string($conn, $_POST['amount']);
 
 	$new_amount = $amount * $SG;
 	$mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE fid = '$fid'"));
@@ -155,39 +156,41 @@ if($_GET['fid'] && $_GET['SG'] && $_GET['amount']){
 
 
 //DIVIDE - MULTIPLY
-if($_GET['formula'] && $_GET['do'] == 'scale'){
-	$fid = mysqli_real_escape_string($conn, $_GET['formula']);
+if($_POST['formula'] && $_POST['do'] == 'scale'){
+	$fid = mysqli_real_escape_string($conn, $_POST['formula']);
 	
 	$q = mysqli_query($conn, "SELECT quantity,ingredient FROM formulas WHERE fid = '$fid'");
 	while($cur =  mysqli_fetch_array($q)){
-		if($_GET['scale'] == 'multiply'){
+		if($_POST['scale'] == 'multiply'){
 			$nq = $cur['quantity']*2;
-		}elseif($_GET['scale'] == 'divide'){
+		}elseif($_POST['scale'] == 'divide'){
 			$nq = $cur['quantity']/2;
 		}
 		
 		mysqli_query($conn,"UPDATE formulas SET quantity = '$nq' WHERE fid = '$fid' AND quantity = '".$cur['quantity']."' AND ingredient = '".$cur['ingredient']."'");
-	}
+	}	
+	
 	return;
 }
 
 //DELETE INGREDIENT
-if($_GET['action'] == 'deleteIng' && $_GET['ingID'] && $_GET['ing']){
-	$id = mysqli_real_escape_string($conn, $_GET['ingID']);
-	$ing = mysqli_real_escape_string($conn, $_GET['ing']);
-	$fid = mysqli_real_escape_string($conn, $_GET['fid']);
+if($_POST['action'] == 'deleteIng' && $_POST['ingID'] && $_POST['ing']){
+	$id = mysqli_real_escape_string($conn, $_POST['ingID']);
+	$ing = mysqli_real_escape_string($conn, $_POST['ing']);
+	$fid = mysqli_real_escape_string($conn, $_POST['fid']);
 	
 	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,isProtected FROM formulasMetaData WHERE fid = '$fid'"));
 
 	if($meta['isProtected'] == FALSE){
 		if(mysqli_query($conn, "DELETE FROM formulas WHERE id = '$id' AND fid = '$fid'")){
-			echo  '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$ing.' removed from the formula!</div>';
+			$response['success'] = $ing.' removed from the formula';
 			$lg = "REMOVED: $ing removed";
 			mysqli_query($conn, "INSERT INTO formula_history (fid,change_made,user) VALUES ('".$meta['id']."','$lg','".$user['fullName']."')");
 		}else{
-			echo  '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$ing.' cannot be removed from the formula!</div>';
+			$response['error'] = $ing.' cannot be removed from the formula';
 		}
 	}
+	echo json_encode($response);
 	return;
 }
 
