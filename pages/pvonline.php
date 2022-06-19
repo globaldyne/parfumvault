@@ -7,6 +7,31 @@ require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/inc/product.php');
 require_once(__ROOT__.'/func/pvOnline.php');
 
+//INVITE TO PV ONLINE
+if($_POST['action'] == 'invToPv'){
+	//if(empty($_POST['invEmail']) || empty($_POST['invName'])){
+	//	$response['error'] = 'Email and name cannot be empty';
+	//	echo json_encode($response);
+	//	return;
+	//}
+	$invEmail = base64_encode(mysqli_real_escape_string($conn, $_POST['invEmail']));
+	$invName = base64_encode(mysqli_real_escape_string($conn, $_POST['invName']));
+
+	$data = [ 'username' => strtolower($pv_online['email']), 'password' => $pv_online['password'],'do' => 'invToPv','invEmail' => base64_encode($_POST['invEmail']), 'invName' => $invName ];
+
+    $req = json_decode(pvPost($pvOnlineAPI, $data));
+
+	if($req->success){
+		$response['success'] = $req->success;
+	}else{
+		$response['error'] = $req->error;
+	}
+	
+	echo json_encode($response);
+	return;
+	
+}
+
 //SHARE FORMULA TO PV ONLINE
 if($_POST['action'] == 'share' && $_POST['fid']){
 	if(!$_POST['users']){

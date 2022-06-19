@@ -426,7 +426,7 @@ function reload_formula_data() {
           </tr>
         </table>
 	    <p>&nbsp;</p>
-	    <p><a href="#">Invite someone to PV Online</a></p>
+	    <p><a href="#" data-toggle="modal" data-target="#invite_to_pv">Invite someone to PV Online</a></p>
 	    <div class="modal-footer">
 	      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 	      <input type="submit" name="button" class="btn btn-primary" id="sharePVOnline" value="Share">
@@ -435,8 +435,44 @@ function reload_formula_data() {
   </div>
  </div>
 </div>
-<?php } ?>
 
+
+<!--INVITE TO PV ONLINE-->
+<div class="modal fade" id="invite_to_pv" tabindex="-1" role="dialog" aria-labelledby="invite_to_pv" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Invite someone to PV Online</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <div id="invMsg"></div>
+        <table width="100%" border="0">
+          <tr>
+	       <td width="66" height="31"><strong>Email<span class="sup"></span> :</strong></td>
+	       <td width="237"><input name="invEmail" type="text" id="invEmail" /></td>
+          </tr>
+	     <tr>
+	       <td><strong>Name:</strong></td>
+	       <td><input name="invName" type="text" id="invName" /></td>
+          </tr>
+        </table>
+        <hr />
+	    <p><strong>Please Note:</strong></p>
+	    <p>If the person your are trying to invite is already registered, the invitation will not be send.</p>
+       	<p>You can only send one invitation per email/person.</p>
+	    <div class="modal-footer">
+	     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+  		 <input type="submit" name="button" class="btn btn-primary" id="invToPV" value="Send Invitation">
+	   </div>
+    </div>
+  </div>
+ </div>
+</div>
+
+<?php } ?>
 <!--Amount To Make-->
 <div class="modal fade" id="amount_to_make" tabindex="-1" role="dialog" aria-labelledby="amount_to_make" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -1056,6 +1092,29 @@ $('#share_to_user').on('click', '[id*=sharePVOnline]', function () {
 		}
 	  });
 	
+});
+
+$('#invToPV').click(function() {
+	$.ajax({
+		url: 'pages/pvonline.php', 
+		type: 'POST',
+		data: {
+			action: 'invToPv',
+			invEmail: $("#invEmail").val(),
+			invName: $("#invName").val(),
+			},
+		dataType: 'json',
+		success: function (data) {
+				if(data.error){
+					var rmsg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
+				}else if(data.success){
+					var rmsg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
+				}
+			
+		  	$('#invMsg').html(rmsg);
+		}
+	  });
+
 });
 
 <?php } ?>
