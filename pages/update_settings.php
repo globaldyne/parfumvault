@@ -372,15 +372,7 @@ if($_POST['action'] == 'delete' && $_POST['lidId']){
 	return;	
 }
 
-//DELETE BOTTLE
-if($_POST['action'] == 'delete' && $_POST['btlId']){
-	$id = mysqli_real_escape_string($conn, $_POST['btlId']);
-	
-	if(mysqli_query($conn, "DELETE FROM bottles WHERE id = '$id'")){
-		echo '<div class="alert alert-success alert-dismissible"><a href="?do=bottles" class="close" data-dismiss="alert" aria-label="close">x</a>Item removed!</div>';
-	}
-	return;	
-}
+
 
 //Update ingredients view
 if($_GET['ingView']){

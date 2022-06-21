@@ -19,3 +19,5 @@ Whats New:
 - Added user profile update in PV Online settings
 - Create ingredient placeholder if in formula but missing from the database
 - Get notified when new ingredients added in PV Online
+- Bottle inventory update
+- Update datatables to 1.12.1

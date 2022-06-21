@@ -67,7 +67,6 @@ if($pv_meta['schema_ver'] < $db_ver){
   <link href="css/bootstrap-editable.css" rel="stylesheet">
   <link href="css/datatables.min.css" rel="stylesheet">
   <link href="css/bootstrap.min.css" rel="stylesheet">
-  <link href="css/fixedHeader.dataTables.min.css" rel="stylesheet">
   <link href="css/responsive.bootstrap.min.css" rel="stylesheet">
   <link href="css/jquery-ui.css" rel="stylesheet">
   <link href="css/magnific-popup.css" rel="stylesheet" />
@@ -87,7 +86,6 @@ if($pv_meta['schema_ver'] < $db_ver){
   <script src="js/dataTables.responsive.min.js"></script>
   <script src="js/responsive.bootstrap.min.js"></script>
   <script src="js/bootbox.min.js"></script>
-  <script src="js/dataTables.fixedHeader.min.js"></script>
   
   
 <script type='text/javascript'>

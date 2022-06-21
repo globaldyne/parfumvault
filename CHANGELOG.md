@@ -30,6 +30,8 @@
 - Create ingredient placeholder if in formula but missing from the database
 - Calculation tools moved to a modal window
 - Add email notification option when new ingredients published in PV Online
+- Bottle inventory update
+- Update datatables to 1.12.1
 - TECH Preview: PV Online share With a friend
 
 ### Version 4.7

@@ -1,24 +1,27 @@
 <?php
-require('../inc/sec.php');
+define('__ROOT__', dirname(dirname(__FILE__))); 
 
+require(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/func/validateInput.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/fixIFRACas.php');
 require_once(__ROOT__.'/func/formatBytes.php');
+require_once(__ROOT__.'/func/create_thumb.php');
 
 if($_GET['type'] == 'bottle' && $_GET['name']){
 	$name = base64_decode($_GET['name']);
-	$ml = $_GET['size'];
-	$price = $_GET['price'];
-	$height = $_GET['height'];
-	$width = $_GET['width'];
-	$diameter = $_GET['diameter'];
+	$ml = $_GET['size']?:0;
+	$price = $_GET['price']?:0;
+	$height = $_GET['height']?:0;
+	$width = $_GET['width']?:0;
+	$diameter = $_GET['diameter']?:0;
 	$supplier = base64_decode($_GET['supplier']);
 	$supplier_link = base64_decode($_GET['supplier_link']);
 	$notes = base64_decode($_GET['notes']);
-	
+	$pieces = $_GET['pieces']?:0;
+
 	if(isset($_FILES['pic_file']['name'])){
       $file_name = $_FILES['pic_file']['name'];
       $file_size = $_FILES['pic_file']['size'];
@@ -26,34 +29,45 @@ if($_GET['type'] == 'bottle' && $_GET['name']){
       $file_type = $_FILES['pic_file']['type'];
       $file_ext = strtolower(end(explode('.',$_FILES['pic_file']['name'])));
 	  
-	  if (file_exists('../'.$uploads_path.'bottles/') === FALSE) {
-    	mkdir('../'.$uploads_path.'bottles/', 0740, true);
-	  }
+		if (!file_exists(__ROOT__."/uploads/tmp/")) {
+			mkdir(__ROOT__."/uploads/tmp/", 0740, true);
+		}
 
-	  $ext = explode(', ', $allowed_ext);
+		$allowed_ext = "png, jpg, jpeg, gif, bmp";
+	  	$ext = explode(', ', $allowed_ext);
 	  
-      if(in_array($file_ext,$ext)=== false){
-		 echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>File upload error: </strong>Extension not allowed, please choose a '.$allowed_ext.' file.</div>';
-      	return;
-	  }
-	  if($file_size > $max_filesize){
-		 echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>File upload error: </strong>File size must not exceed '.formatBytes($max_filesize).'</div>';
-		 return;
-      }
-	 if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM bottles WHERE name = '$name'"))){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$name.' already exists!</div>';
-	  	return;
-	  }
-      if(move_uploaded_file($file_tmp,'../'.$uploads_path.'bottles/'.base64_encode($file_name))){
-		$photo = $uploads_path.'bottles/'.base64_encode($file_name);
+      	if(in_array($file_ext,$ext)===false){
+			$response["error"] = '<strong>File upload error: </strong>Extension not allowed, please choose a '.$allowed_ext.' file';
+			echo json_encode($response);
+			return;
+		}
+	  	if($file_size > $max_filesize){
+			 $response["error"] = 'File size must not exceed '.formatBytes($max_filesize);
+			 echo json_encode($response);
+			 return;
+     	 }
+		 if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM bottles WHERE name = '$name'"))){
+			$response["error"] = $name.' already exists!';
+			echo json_encode($response);
+			return;
+		  }
+		  
+      if(move_uploaded_file($file_tmp,__ROOT__."/uploads/tmp/".base64_encode($file_name))){
+			$photo = "/uploads/tmp/".base64_encode($file_name);
+			create_thumb(__ROOT__.$photo,250,250); 
+			$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents(__ROOT__.$photo));
 		
-			if(mysqli_query($conn, "INSERT INTO bottles (name, ml, price, height, width, diameter, supplier, supplier_link, notes, photo) VALUES ('$name', '$ml', '$price', '$height', '$width', '$diameter', '$supplier', '$supplier_link', '$notes', '$photo')") ){
-				echo '<div class="alert alert-success alert-dismissible"><a href="?do=bottles" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$name.'</strong> added!</div>';
+			if(mysqli_query($conn, "INSERT INTO bottles (name, ml, price, height, width, diameter, supplier, supplier_link, notes, pieces) VALUES ('$name', '$ml', '$price', '$height', '$width', '$diameter', '$supplier', '$supplier_link', '$notes', '$pieces')") ){
+				$bottle_id = mysqli_insert_id($conn);
+				mysqli_query($conn, "INSERT INTO documents (ownerID,name,type,notes,docData) VALUES ('".$bottle_id."','$name','4','-','$docData')");
+				unlink(__ROOT__.$photo);
+				$response["success"] = $name.' added!';
 			}else{
-				echo '<div class="alert alert-danger alert-dismissible"><a href="?do=bottles" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Failed to add '.$name.' - '.mysqli_error($conn).'</div>';
+				$response["error"] =  'Failed to add '.$name.' - '.mysqli_error($conn);
 			}
 		}
 	  }
+	echo json_encode($response);  
 	return;
 }
 

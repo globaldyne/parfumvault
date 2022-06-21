@@ -1,5 +1,7 @@
 <?php
-require('../inc/sec.php');
+define('__ROOT__', dirname(dirname(__FILE__))); 
+
+require(__ROOT__.'/inc/sec.php');
 
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
@@ -7,6 +9,107 @@ require_once(__ROOT__.'/func/validateInput.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/sanChar.php');
 require_once(__ROOT__.'/func/priceScrape.php');
+require_once(__ROOT__.'/func/create_thumb.php');
+
+//UPDATE BOTTLE PIC
+if($_GET['update_bottle_pic']){
+	$allowed_ext = "png, jpg, jpeg, gif, bmp";
+
+	$filename = $_FILES["bottle_pic"]["tmp_name"];  
+    $file_ext = strtolower(end(explode('.',$_FILES['bottle_pic']['name'])));
+	$file_tmp = $_FILES['bottle_pic']['tmp_name'];
+    $ext = explode(', ',strtolower($allowed_ext));
+
+	
+	if(!$filename){
+		//$response["error"] = 'Please choose a file to upload';
+		//echo json_encode($response);
+		return;
+	}	
+	
+	if (!file_exists(__ROOT__."/uploads/tmp/")) {
+		mkdir(__ROOT__."/uploads/tmp/", 0740, true);
+	}
+		
+	if(in_array($file_ext,$ext)===false){
+		$response["error"] = '<strong>File upload error: </strong>Extension not allowed, please choose a '.$allowed_ext.' file';
+		echo json_encode($response);
+		return;
+	}
+	$bottle = $_GET['bottle_id'];
+	if($_FILES["bottle_pic"]["size"] > 0){
+		move_uploaded_file($file_tmp,__ROOT__."/uploads/tmp/".base64_encode($filename));
+		$bottle_pic = "/uploads/tmp/".base64_encode($filename);		
+		create_thumb(__ROOT__.$bottle_pic,250,250); 
+		$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents(__ROOT__.$bottle_pic));
+		
+		mysqli_query($conn, "DELETE FROM documents WHERE ownerID = '".$bottle."' AND type = '4'");
+		if(mysqli_query($conn, "INSERT INTO documents (ownerID,name,type,notes,docData) VALUES ('".$bottle."','-','4','-','$docData')")){	
+			unlink(__ROOT__.$bottle_pic);
+			$response["success"] = array( "msg" => "Pic updated!", "bottle_pic" => $docData);
+			echo json_encode($response);
+			return;
+		}
+		$response["error"] = mysqli_error($conn);
+		echo json_encode($response);
+		return;
+	}
+
+	return;
+}
+
+//UPDATE BOTTLE DATA
+if($_POST['update_bottle_data']){
+	
+	if(!$_POST['name']){
+		$response["error"] = "Name is required";
+		echo json_encode($response);
+		return;
+	}
+	$id = $_POST['bottle_id'];
+	$name = $_POST['name'];
+	$ml = $_POST['size'];
+	$price = $_POST['price'];
+	$height = $_POST['height'];
+	$width = $_POST['width'];
+	$diameter = $_POST['diameter'];
+	$supplier = $_POST['supplier'];
+	$supplier_link = $_POST['supplier_link'];
+	$notes = $_POST['notes'];
+	$pieces = $_POST['pieces']?:0;
+
+	$doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS photo FROM documents WHERE ownerID = '".$bottle['id']."' AND type = '4'"));
+	
+	$q = mysqli_query($conn,"UPDATE bottles SET name= '$name', ml = '$ml', price = '$price', height = '$height', width = '$width', diameter = '$diameter', supplier = '$supplier', supplier_link = '$supplier_link', notes = '$notes', pieces = '$pieces' WHERE id = '$id'");
+	
+
+	if($q){
+		$response['success'] = "Bottle updated";
+	}else{
+		$response['error'] = "Error updating bottle data ".mysqli_error($conn);
+	}
+	
+	echo json_encode($response);
+	
+	
+
+	return;
+}
+
+//DELETE BOTTLE
+if($_POST['action'] == 'delete' && $_POST['btlId'] && $_POST['type'] == 'bottle'){
+	$id = mysqli_real_escape_string($conn, $_POST['btlId']);
+	
+	if(mysqli_query($conn, "DELETE FROM bottles WHERE id = '$id'")){
+		mysqli_query($conn, "DELETE FROM documents WHERE ownerID = '$id'");
+		$response["success"] = 'Bottle deleted';
+	}else{
+		$response["error"] = 'Something went wrong '.mysqli_error($conn);
+	}
+	
+	echo json_encode($response);
+	return;	
+}
 
 //IMPORT IMAGES FROM PUBCHEM
 if($_GET['IFRA_PB'] == 'import'){
