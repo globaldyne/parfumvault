@@ -20,4 +20,5 @@ Whats New:
 - Create ingredient placeholder if in formula but missing from the database
 - Get notified when new ingredients added in PV Online
 - Bottle & Lids inventory update
+- Customer section update
 - Update datatables to 1.12.1

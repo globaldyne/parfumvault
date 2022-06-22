@@ -8,7 +8,7 @@ require_once(__ROOT__.'/inc/opendb.php');
 
 
 $lid = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM lids WHERE id = '".$_GET['id']."'")); 
-$doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS photo FROM documents WHERE ownerID = '".$lid['id']."' AND type = '4'"));
+$doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS photo FROM documents WHERE ownerID = '".$lid['id']."' AND type = '5'"));
 $sup = mysqli_query($conn, "SELECT id,name FROM ingSuppliers ORDER BY name ASC");
 while ($suppliers = mysqli_fetch_array($sup)){
 	    $supplier[] = $suppliers;

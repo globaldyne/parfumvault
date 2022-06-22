@@ -100,7 +100,7 @@ $(document).ready(function() {
   		showCloseBtn: true,
 	});
 	
-    $('#tdData,#tdDataSup,#tdDataCustomers').DataTable({
+    $('#tdData').DataTable({
 	    "paging":   true,
 		"info":   true,
 		"lengthMenu": [[20, 35, 60, -1], [20, 35, 60, "All"]]

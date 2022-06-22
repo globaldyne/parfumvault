@@ -747,26 +747,42 @@ if($_POST['customer'] == 'add'){
 }
 
 //CUSTOMERS - DELETE
-if($_GET['customer'] == 'delete' && $_GET['customer_id']){
-	$customer_id = mysqli_real_escape_string($conn, $_GET['customer_id']);
+if($_POST['action'] == 'delete' && $_POST['type'] == 'customer' && $_POST['customer_id']){
+	$customer_id = mysqli_real_escape_string($conn, $_POST['customer_id']);
 	if(mysqli_query($conn, "DELETE FROM customers WHERE id = '$customer_id'")){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Customer deleted!</div>';
+		$response["success"] = 'Customer deleted!';
 	}else{
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error deleting customer.</div>';
+		$response["error"] = 'Error deleting customer '.mysqli_error($conn);
 	}
+	
+	echo json_encode($response);
 	return;
 }
 	
 //CUSTOMERS - UPDATE
-if($_GET['customer'] == 'update'){
-	$value = mysqli_real_escape_string($conn, $_POST['value']);
-	$id = mysqli_real_escape_string($conn, $_POST['pk']);
+if($_POST['update_customer_data'] && $_POST['customer_id']){
+	$id = $_POST['customer_id'];
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
+	if(empty($name)){
+		$response["error"] = 'Name cannot be empty ';
+		echo json_encode($response);
+		return;
+	}
+	$address = mysqli_real_escape_string($conn, $_POST['address'])?:'N/A';
+	$email = mysqli_real_escape_string($conn, $_POST['email'])?:'N/A';
+	$web = mysqli_real_escape_string($conn, $_POST['web'])?:'N/A';
+	$phone = mysqli_real_escape_string($conn, $_POST['phone'])?:'N/A';
 
-	mysqli_query($conn, "UPDATE customers SET $name = '$value' WHERE id = '$id'");
+	if(mysqli_query($conn, "UPDATE customers SET name = '$name', address = '$address', email = '$email', web = '$web', phone = '$phone' WHERE id = '$id'")){
+		$response["success"] = 'Customer details updated!';
+	}else{
+		$response["error"] = 'Error updating customer '.mysqli_error($conn);
+	}
+	echo json_encode($response);
 	return;	
 }
 
+//MGM INGREDIENT
 if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'general'){
 	$ing = mysqli_real_escape_string($conn, $_POST['ing']);
 

@@ -32,6 +32,7 @@
 - Add email notification option when new ingredients published in PV Online
 - Bottle inventory update
 - Lids inventory update
+- Customers update
 - Update datatables to 1.12.1
 - TECH Preview: PV Online share With a friend
 

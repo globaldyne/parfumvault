@@ -1,31 +1,24 @@
-<?php 
-if (!defined('pvault_panel')){ die('Not Found');}
-
-$q = mysqli_query($conn, "SELECT * FROM customers ORDER BY name ASC");
-
-?>
 <div id="content-wrapper" class="d-flex flex-column">
 <?php require_once(__ROOT__.'/pages/top.php'); ?>
         <div class="container-fluid">
-<?php echo $msg; ?>
           <div>
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h2 class="m-0 font-weight-bold text-primary"><a href="?do=customers">Customers</a></h2>
+              <h2 class="m-0 font-weight-bold text-primary"><a href="javascript:reload_data()">Customers</a></h2>
             </div>
-            <div id="errMsg"></div>
             <div class="card-body">
               <div class="table-responsive">
-                <table class="table table-bordered" id="tdData" width="100%" cellspacing="0">
+              <div id="innermsg"></div>
+                <table class="table table-bordered" id="tdDataCustomers" width="100%" cellspacing="0">
                   <thead>
-                    <tr class="noBorder noexport">
-                      <th colspan="5">
+                    <tr class="noBorder">
+                      <th colspan="12">
                   <div class="text-right">
                         <div class="btn-group">
                           <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
                           <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addCustomer">Add new</a>
-                            <a class="dropdown-item" id="csv" href="#">Export to CSV</a>
+            				<a class="dropdown-item" href="#" data-toggle="modal" data-target="#addCustomer">Add new</a>
+                            <a class="dropdown-item" id="exportCSV" href="#">Export to CSV</a>
                           </div>
                         </div>                    
                         </div>
@@ -36,20 +29,9 @@ $q = mysqli_query($conn, "SELECT * FROM customers ORDER BY name ASC");
                       <th>Address</th>
                       <th>Email</th>
                       <th>Web Site</th>
-                      <th class="noexport">Actions</th>
+                      <th>Actions</th>
                     </tr>
                   </thead>
-                  <tbody id="customer_data">
-                    <?php while ($customer = mysqli_fetch_array($q)) {?>
-                    <tr>
-                      <td data-name="name" class="name" data-type="text" align="center" data-pk="<?php echo $customer['id']; ?>"><?php echo $customer['name']; ?></td>
-					  <td align="center" class="address" data-name="address" data-type="text" data-pk="<?php echo $customer['id']; ?>"><?php echo $customer['address']; ?></td>
-					  <td align="center" class="email" data-name="email" data-type="text" data-pk="<?php echo $customer['id']; ?>"><?php echo $customer['email']; ?></td>
-					  <td align="center" class="web" data-name="web" data-type="text" data-pk="<?php echo $customer['id']; ?>"><?php echo $customer['web']; ?></td>
-					  <td class="noexport" align="center"><a href="javascript:deleteCustomer('<?php echo $customer['id']; ?>')" onclick="return confirm('Delete <?php echo $customer['name']; ?>?')" class="fas fa-trash"></a></td>
-					  </tr>
-				  <?php } ?>
-                  </tbody>
                 </table>
               </div>
             </div>
@@ -63,14 +45,13 @@ $q = mysqli_query($conn, "SELECT * FROM customers ORDER BY name ASC");
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="addCustomer">Add customer</h5>
+        <h5 class="modal-title">Add customer</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
       <div id="inf"></div>
-          <form action="javascript:addCustomer()" method="get" name="form1" target="_self" id="form1">
             Name: 
             <input class="form-control" name="name" type="text" id="name" />
             <p>
@@ -87,112 +68,166 @@ $q = mysqli_query($conn, "SELECT * FROM customers ORDER BY name ASC");
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
         <input type="submit" name="button" class="btn btn-primary" id="button" value="Add">
       </div>
-     </form>
     </div>
   </div>
 </div>
 </div>
-<script type="text/javascript" language="javascript" >
+<script>
+$(document).ready(function() {
 
-$('#customer_data').editable({
-  container: 'body',
-  selector: 'td.name',
-  url: "pages/update_data.php?customer=update",
-  title: 'Customer',
-  type: "POST",
-  dataType: 'json',
-  validate: function(value){
-   if($.trim(value) == ''){
-    return 'This field is required';
-   }
-  }
-});
- 
-$('#customer_data').editable({
-  container: 'body',
-  selector: 'td.address',
-  url: "pages/update_data.php?customer=update",
-  title: 'Address',
-  type: "POST",
-  dataType: 'json',
-  validate: function(value){
-  }
-});
-
-$('#customer_data').editable({
-  container: 'body',
-  selector: 'td.email',
-  url: "pages/update_data.php?customer=update",
-  title: 'Email Address',
-  type: "POST",
-  dataType: 'json',
-  validate: function(value){
-  }
-});
-
-$('#customer_data').editable({
-  container: 'body',
-  selector: 'td.web',
-  url: "pages/update_data.php?customer=update",
-  title: 'Web address',
-  type: "POST",
-  dataType: 'json',
-  validate: function(value){
-  }
-});
-
-function deleteCustomer(ID) {	  
-	$.ajax({ 
-		url: 'pages/update_data.php', 
-		type: 'GET',
-		data: {
-			customer: 'delete',
-			customer_id: ID,
-			},
-		dataType: 'html',
-		success: function (data) {
-			$('#errMsg').html(data);
-			location.reload();
-		}
-	  });
-};
-
-function addCustomer() {	  
-	$.ajax({ 
-		url: 'pages/update_data.php', 
+	var tdDataCustomers = $('#tdDataCustomers').DataTable( {
+	columnDefs: [
+		{ className: 'pv_vertical_middle text-center', targets: '_all' },
+	],
+	dom: 'lrftip',
+	buttons: [{
+				extend: 'csvHtml5',
+				title: "Customers",
+				exportOptions: {
+     				columns: [0, 1, 2, 3]
+  				},
+			  }],
+	processing: true,
+	serverSide: true,
+	searching: true,
+	mark: true,
+	language: {
+		loadingRecords: '&nbsp;',
+		processing: '<div class="spinner-grow"></div> Please Wait...',
+		zeroRecords: 'Nothing found',
+		search: 'Quick Search:',
+		searchPlaceholder: 'Name..',
+		},
+	ajax: {	
+		url: '/core/list_customer_data.php',
 		type: 'POST',
-		data: {
-			customer: 'add',
-			name: $("#name").val(),
-			address: $("#address").val(),
-			web: $("#web").val(),
-			email: $("#email").val()
-			},
-		dataType: 'html',
-		success: function (data) {
-			$('#inf').html(data);
-			$("#name").val('');
-			$("#address").val('');
-			$("#web").val('');
-			$("#email").val('');
-		}
-	  });
-};
-//Export
-$('#csv').on('click',function(){
-  $("#tdData").tableHTMLExport({
-	type:'csv',
-	filename:'customers.csv',
-	separator: ',',
-  	newline: '\r\n',
-  	trimContent: true,
-  	quoteFields: true,
-	ignoreColumns: '.noexport',
-  	ignoreRows: '.noexport',	
-	htmlContent: false,
-  	// debug
-  	consoleLog: false   
+		dataType: 'json',
+		},
+	   columns: [
+            { data : 'name', title: 'Name' },
+			{ data : 'address', title: 'Address' },
+			{ data : 'email', title: 'Email' },
+			{ data : 'web', title: 'Web Site' },
+			{ data : null, title: 'Actions', render: actions },
+
+			],
+	order: [[ 0, 'asc' ]],
+	lengthMenu: [[20, 50, 100, 200, 400], [20, 50, 100, 200, 400]],
+	pageLength: 20,
+	displayLength: 20,
+	drawCallback: function( settings ) {
+		extrasShow();
+    	}
 	});
-})
+	
+}); //END DOC
+
+function actions(data, type, row){
+	return '<a href="'+ row.web +'" target="_blank" rel="tip" title="Open '+ row.name +' page" class="fas fa-shopping-cart"></a> <a href="pages/editCustomer.php?id='+row.id+'" rel="tip" title="Edit '+ row.name +'" class="fas fa-edit popup-link"><a> <i rel="tip" title="Delete '+ row.name +'" class="pv_point_gen fas fa-trash" style="color: #c9302c;" id="btlDel" data-name="'+ row.name +'" data-id='+ row.id +'></i>';    
+}
+
+function reload_data() {
+    $('#tdDataCustomers').DataTable().ajax.reload(null, true);
+}
+
+$('#tdDataCustomers').on('click', '[id*=btlDel]', function () {
+	var c = {};
+	c.ID = $(this).attr('data-id');
+	c.Name = $(this).attr('data-name');
+    
+	bootbox.dialog({
+       title: "Confirm deletion",
+       message : 'Permanently delete <strong>'+ c.Name +'</strong> and its data?',
+       buttons :{
+           main: {
+               label : "Delete",
+               className : "btn-danger",
+               callback: function (){
+	    			
+				$.ajax({
+					url: '/pages/update_data.php', 
+					type: 'POST',
+					data: {
+						action: "delete",
+						type: "customer",
+						customer_id: c.ID,
+						},
+					dataType: 'json',
+					success: function (data) {
+						if(data.success){
+							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
+							reload_data();
+						}else if(data.error){
+							var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
+						}
+						$('#innermsg').html(msg);
+					}
+				});
+				
+                 return true;
+               }
+           },
+           cancel: {
+               label : "Cancel",
+               className : "btn-default",
+               callback : function() {
+                   return true;
+               }
+           }   
+       },onEscape: function () {return true;}
+   });
+});
+  
+
+$('#customer_add').on('click', function () {
+
+	$("#customer_inf").html('<div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
+	$("#customer_add").prop("disabled", true);
+    $("#customer_add").prop('value', 'Please wait...');
+		
+    var name = $('#name').val();
+    var address = $('#address').val();
+    var email = $('#email').val();
+    var website = $('#website').val();
+
+	$.ajax({
+        url: '/pages/upload.php',
+        type: 'POST',
+        data: fd,
+		dataType: 'json',
+        success: function(response){
+			if(response.success){
+               $("#customer_inf").html('<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+response.success+'</div>');
+				$("#customer_add").prop("disabled", false);
+        		$("#customer_add").prop("value", "Add");
+					reload_data();
+            }else{
+                $("#customer_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+response.error+'</div>');
+				$("#customer_add").prop("disabled", false);
+        		$("#customer_add").prop("value", 'Add');
+            }
+          },
+       });
+	
+});
+
+function extrasShow() {
+	$('[rel=tip]').tooltip({
+        "html": true,
+        "delay": {"show": 100, "hide": 0},
+     });
+	$('.popup-link').magnificPopup({
+		type: 'iframe',
+		closeOnContentClick: false,
+		closeOnBgClick: false,
+		showCloseBtn: true,
+	});
+};
+
+
+$('#exportCSV').click(() => {
+    $('#tdDataCustomers').DataTable().button(0).trigger();
+});
+
 
 </script>
