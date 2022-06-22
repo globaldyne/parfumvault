@@ -75,9 +75,11 @@ if($_GET['type'] == 'lid' && $_GET['style']){
 	
 	$style = base64_decode($_GET['style']);
 	$color = base64_decode($_GET['color']);
-	$price = base64_decode($_GET['price']);
+	$price = $_GET['price']?:0;
 	$supplier = base64_decode($_GET['supplier']);
 	$supplier_link = base64_decode($_GET['supplier_link']);
+	$pieces = $_GET['pieces']?:0;
+	$colour = $_GET['colour'];
 
 
 	if(isset($_FILES['pic_file']['name'])){
@@ -87,28 +89,44 @@ if($_GET['type'] == 'lid' && $_GET['style']){
       $file_type = $_FILES['pic_file']['type'];
       $file_ext = strtolower(end(explode('.',$_FILES['pic_file']['name'])));
 	  
-	  if (file_exists('../'.$uploads_path.'lids/') === FALSE) {
-    	mkdir('../'.$uploads_path.'lids/', 0740, true);
-	  }
+	  	if (!file_exists(__ROOT__."/uploads/tmp/")) {
+			mkdir(__ROOT__."/uploads/tmp/", 0740, true);
+		}
 
-	  $ext = explode(', ', $allowed_ext);
+		$allowed_ext = "png, jpg, jpeg, gif, bmp";
+	  	$ext = explode(', ', $allowed_ext);
 	  
-      if(in_array($file_ext,$ext)=== false){
-		 echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>File upload error: </strong>Extension not allowed, please choose a '.$allowed_ext.' file.</div>';
-      }elseif($file_size > $max_filesize){
-		 echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>File upload error: </strong>File size must not exceed '.formatBytes($max_filesize).'</div>';
-      }else{
-	  
-         if(move_uploaded_file($file_tmp,'../'.$uploads_path.'lids/'.base64_encode($file_name))){
-		 	$photo = $uploads_path.'lids/'.base64_encode($file_name);
-			if(mysqli_query($conn, "INSERT INTO lids (style, colour, price, supplier, supplier_link, photo) VALUES ('$style', '$color', '$price', '$supplier', '$supplier_link', '$photo')")){
-		 		echo '<div class="alert alert-success alert-dismissible"><a href="?do=lids" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$style.'</strong> added!</div>';
+      	if(in_array($file_ext,$ext)===false){
+			$response["error"] = '<strong>File upload error: </strong>Extension not allowed, please choose a '.$allowed_ext.' file';
+			echo json_encode($response);
+			return;
+		}
+	  	if($file_size > $max_filesize){
+			 $response["error"] = 'File size must not exceed '.formatBytes($max_filesize);
+			 echo json_encode($response);
+			 return;
+     	}
+	   	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM lids WHERE style = '$style'"))){
+			$response["error"] = $style.' already exists!';
+			echo json_encode($response);
+			return;
+		}
+		if(move_uploaded_file($file_tmp,__ROOT__."/uploads/tmp/".base64_encode($file_name))){
+			$photo = "/uploads/tmp/".base64_encode($file_name);
+			create_thumb(__ROOT__.$photo,250,250); 
+			$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents(__ROOT__.$photo));
+		
+			if(mysqli_query($conn, "INSERT INTO lids (style, colour, price, supplier, supplier_link, pieces) VALUES ('$style', '$colour', '$price', '$supplier', '$supplier_link', '$pieces')") ){
+				$lid_id = mysqli_insert_id($conn);
+				mysqli_query($conn, "INSERT INTO documents (ownerID,name,type,notes,docData) VALUES ('".$lid_id."','$style','5','-','$docData')");
+				unlink(__ROOT__.$photo);
+				$response["success"] = $style.' added!';
 			}else{
-				echo '<div class="alert alert-danger alert-dismissible"><a href="?do=lids" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Failed to add '.$style.' - '.mysqli_error($conn).'</div>';
+				$response["error"] =  'Failed to add '.$style.' - '.mysqli_error($conn);
 			}
-		 }
+		}
 	  }
-   }
+	echo json_encode($response);  
 	return;
 }
 

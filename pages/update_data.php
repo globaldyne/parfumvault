@@ -11,6 +11,50 @@ require_once(__ROOT__.'/func/sanChar.php');
 require_once(__ROOT__.'/func/priceScrape.php');
 require_once(__ROOT__.'/func/create_thumb.php');
 
+//UPDATE LID PIC
+if($_GET['update_lid_pic']){
+	$allowed_ext = "png, jpg, jpeg, gif, bmp";
+
+	$filename = $_FILES["lid_pic"]["tmp_name"];  
+    $file_ext = strtolower(end(explode('.',$_FILES['lid_pic']['name'])));
+	$file_tmp = $_FILES['lid_pic']['tmp_name'];
+    $ext = explode(', ',strtolower($allowed_ext));
+
+	if(!$filename){
+		return;
+	}	
+	
+	if (!file_exists(__ROOT__."/uploads/tmp/")) {
+		mkdir(__ROOT__."/uploads/tmp/", 0740, true);
+	}
+		
+	if(in_array($file_ext,$ext)===false){
+		$response["error"] = 'Extension not allowed, please choose a '.$allowed_ext.' file';
+		echo json_encode($response);
+		return;
+	}
+	$lid = $_GET['lid_id'];
+	if($_FILES["lid_pic"]["size"] > 0){
+		move_uploaded_file($file_tmp,__ROOT__."/uploads/tmp/".base64_encode($filename));
+		$pic = "/uploads/tmp/".base64_encode($filename);		
+		create_thumb(__ROOT__.$pic,250,250); 
+		$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents(__ROOT__.$pic));
+		
+		mysqli_query($conn, "DELETE FROM documents WHERE ownerID = '".$lid."' AND type = '5'");
+		if(mysqli_query($conn, "INSERT INTO documents (ownerID,name,type,notes,docData) VALUES ('".$lid."','-','5','-','$docData')")){	
+			unlink(__ROOT__.$pic);
+			$response["success"] = array( "msg" => "Pic updated!", "lid_pic" => $docData);
+			echo json_encode($response);
+			return;
+		}
+		$response["error"] = mysqli_error($conn);
+		echo json_encode($response);
+		return;
+	}
+
+	return;
+}
+
 //UPDATE BOTTLE PIC
 if($_GET['update_bottle_pic']){
 	$allowed_ext = "png, jpg, jpeg, gif, bmp";
@@ -77,8 +121,6 @@ if($_POST['update_bottle_data']){
 	$supplier_link = $_POST['supplier_link'];
 	$notes = $_POST['notes'];
 	$pieces = $_POST['pieces']?:0;
-
-	$doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS photo FROM documents WHERE ownerID = '".$bottle['id']."' AND type = '4'"));
 	
 	$q = mysqli_query($conn,"UPDATE bottles SET name= '$name', ml = '$ml', price = '$price', height = '$height', width = '$width', diameter = '$diameter', supplier = '$supplier', supplier_link = '$supplier_link', notes = '$notes', pieces = '$pieces' WHERE id = '$id'");
 	
@@ -96,13 +138,59 @@ if($_POST['update_bottle_data']){
 	return;
 }
 
+//UPDATE LID DATA
+if($_POST['update_lid_data']){
+	
+	if(!$_POST['style']){
+		$response["error"] = "Style is required";
+		echo json_encode($response);
+		return;
+	}
+	$id = $_POST['lid_id'];
+	$style = $_POST['style'];
+	$colour = $_POST['colour'];
+	$price = $_POST['price'];
+	$supplier = $_POST['supplier'];
+	$supplier_link = $_POST['supplier_link'];
+	$pieces = $_POST['pieces']?:0;
+	
+	$q = mysqli_query($conn,"UPDATE lids SET style= '$style', colour = '$colour', price = '$price', supplier = '$supplier', supplier_link = '$supplier_link', pieces = '$pieces' WHERE id = '$id'");
+	
+
+	if($q){
+		$response['success'] = "Lid updated";
+	}else{
+		$response['error'] = "Error updating lid data ".mysqli_error($conn);
+	}
+	
+	echo json_encode($response);
+	
+	
+
+	return;
+}
 //DELETE BOTTLE
 if($_POST['action'] == 'delete' && $_POST['btlId'] && $_POST['type'] == 'bottle'){
 	$id = mysqli_real_escape_string($conn, $_POST['btlId']);
 	
 	if(mysqli_query($conn, "DELETE FROM bottles WHERE id = '$id'")){
-		mysqli_query($conn, "DELETE FROM documents WHERE ownerID = '$id'");
+		mysqli_query($conn, "DELETE FROM documents WHERE ownerID = '$id' AND type = '4'");
 		$response["success"] = 'Bottle deleted';
+	}else{
+		$response["error"] = 'Something went wrong '.mysqli_error($conn);
+	}
+	
+	echo json_encode($response);
+	return;	
+}
+
+//DELETE LID
+if($_POST['action'] == 'delete' && $_POST['lidId'] && $_POST['type'] == 'lid'){
+	$id = mysqli_real_escape_string($conn, $_POST['lidId']);
+	
+	if(mysqli_query($conn, "DELETE FROM lids WHERE id = '$id'")){
+		mysqli_query($conn, "DELETE FROM documents WHERE ownerID = '$id' AND type = '5'");
+		$response["success"] = 'Lid deleted';
 	}else{
 		$response["error"] = 'Something went wrong '.mysqli_error($conn);
 	}
@@ -561,23 +649,6 @@ if($_GET['supp'] == 'delete' && $_GET['ID']){
 	return;
 }
 
-if($_GET['bottle']){
-	$value = mysqli_real_escape_string($conn, $_POST['value']);
-	$bottle = mysqli_real_escape_string($conn, $_POST['pk']);
-	$name = mysqli_real_escape_string($conn, $_POST['name']);
-	
-	mysqli_query($conn, "UPDATE bottles SET $name = '$value' WHERE id = '$bottle'");
-	return;	
-}
-
-if($_GET['lid']){
-	$value = mysqli_real_escape_string($conn, $_POST['value']);
-	$lid = mysqli_real_escape_string($conn, $_POST['pk']);
-	$name = mysqli_real_escape_string($conn, $_POST['name']);
-	
-	mysqli_query($conn, "UPDATE lids SET $name = '$value' WHERE id = '$lid'");
-	return;
-}
 
 //ADD composition
 if($_GET['composition'] == 'add'){

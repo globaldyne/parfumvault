@@ -277,7 +277,7 @@ CREATE TABLE `lids` (
   `price` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `supplier` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `supplier_link` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `photo` varchar(255) COLLATE utf8_general_ci DEFAULT NULL
+  `pieces` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 DROP TABLE IF EXISTS `pv_meta`;
