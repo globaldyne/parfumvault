@@ -37,10 +37,10 @@ if($_POST['action'] == 'upgrade'){
 		$q.= mysqli_query($conn, "ALTER TABLE ingredients ADD rdi INT NOT NULL DEFAULT '0' AFTER appearance"); 
 		$q.= mysqli_query($conn, "ALTER TABLE `bottles` DROP `photo`"); 
 		$q.= mysqli_query($conn, "ALTER TABLE `bottles` ADD `pieces` INT NOT NULL DEFAULT '0' AFTER `notes`"); 
-
 		$q.= mysqli_query($conn, "ALTER TABLE `lids` DROP `photo`"); 
 		$q.= mysqli_query($conn, "ALTER TABLE `lids` ADD `pieces` INT NOT NULL DEFAULT '0' AFTER `supplier_link`"); 
 
+		$q.= mysqli_query($conn, "ALTER TABLE `batchIDHistory` ADD `product_name` VARCHAR(255) NOT NULL AFTER `fid`"); 
 
 		$q.= mysqli_query($conn, "UPDATE pv_meta SET schema_ver = '$version', app_ver = '$version' ");
 

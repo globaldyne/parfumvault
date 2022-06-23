@@ -126,6 +126,7 @@ $(document).ready(function() {
 	var tdDataBottles = $('#tdDataBottles').DataTable( {
 	columnDefs: [
 		{ className: 'pv_vertical_middle text-center', targets: '_all' },
+		{ orderable: false, targets: [5] },
 	],
 	dom: 'lrftip',
 	buttons: [{
@@ -141,7 +142,7 @@ $(document).ready(function() {
 	mark: true,
 	language: {
 		loadingRecords: '&nbsp;',
-		processing: '<div class="spinner-grow"></div> Please Wait...',
+		processing: 'Please Wait...',
 		zeroRecords: 'Nothing found',
 		search: 'Quick Search:',
 		searchPlaceholder: 'Name..',
@@ -150,15 +151,20 @@ $(document).ready(function() {
 		url: '/core/list_bottle_data.php',
 		type: 'POST',
 		dataType: 'json',
+		data: function(d) {
+				if (d.order.length>0){
+					d.order_by = d.columns[d.order[0].column].data
+					d.order_as = d.order[0].dir
+				}
+			},
 		},
 	   columns: [
             { data : 'name', title: 'Name', render: name },
-			{ data : 'size', title: 'Size (ml)' },
+			{ data : 'ml', title: 'Size (ml)' },
 			{ data : 'price', title: 'Price (<?php echo $settings['currency'];?>)' },
 			{ data : 'supplier', title: 'Supplier' },
 			{ data : 'pieces', title: 'Pieces in stock' },
-			{ data : null, title: 'Actions', render: actions },
-
+			{ data : null, title: 'Actions', render: actions }
 			],
 	order: [[ 0, 'asc' ]],
 	lengthMenu: [[20, 50, 100, 200, 400], [20, 50, 100, 200, 400]],

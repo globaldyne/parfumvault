@@ -33,6 +33,7 @@
 - Bottle inventory update
 - Lids inventory update
 - Customers update
+- Batches page rewrite
 - Update datatables to 1.12.1
 - TECH Preview: PV Online share With a friend
 

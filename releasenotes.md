@@ -22,3 +22,4 @@ Whats New:
 - Bottle & Lids inventory update
 - Customer section update
 - Update datatables to 1.12.1
+- Batches page rewrite

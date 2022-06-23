@@ -110,6 +110,7 @@ $(document).ready(function() {
 	var tdDataLids = $('#tdDataLids').DataTable( {
 	columnDefs: [
 		{ className: 'pv_vertical_middle text-center', targets: '_all' },
+		{ orderable: false, targets: [5] },
 	],
 	dom: 'lrftip',
 	buttons: [{
@@ -125,7 +126,7 @@ $(document).ready(function() {
 	mark: true,
 	language: {
 		loadingRecords: '&nbsp;',
-		processing: '<div class="spinner-grow"></div> Please Wait...',
+		processing: 'Please Wait...',
 		zeroRecords: 'Nothing found',
 		search: 'Quick Search:',
 		searchPlaceholder: 'Name..',
@@ -134,6 +135,12 @@ $(document).ready(function() {
 		url: '/core/list_lid_data.php',
 		type: 'POST',
 		dataType: 'json',
+				data: function(d) {
+				if (d.order.length>0){
+					d.order_by = d.columns[d.order[0].column].data
+					d.order_as = d.order[0].dir
+				}
+			},
 		},
 	   columns: [
             { data : 'style', title: 'Style', render: style },

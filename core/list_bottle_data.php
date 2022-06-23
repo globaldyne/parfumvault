@@ -9,6 +9,10 @@ require_once(__ROOT__.'/inc/settings.php');
 $row = $_POST['start']?:0;
 $limit = $_POST['length']?:10;
 
+$order_by  = $_POST['order_by']?:'name';
+$order  = $_POST['order_as']?:'ASC';
+$extra = "ORDER BY ".$order_by." ".$order;
+
 $defCatClass = $settings['defCatClass'];
 $defImage = base64_encode(file_get_contents(__ROOT__.'/img/pv_molecule.png'));
 
@@ -18,7 +22,7 @@ if($s != ''){
    $f = "WHERE 1 AND (name LIKE '%".$s."%')";
 }
 
-$q = mysqli_query($conn, "SELECT * FROM bottles $f LIMIT $row, $limit");
+$q = mysqli_query($conn, "SELECT * FROM bottles $f $extra LIMIT $row, $limit");
 while($res = mysqli_fetch_array($q)){
     $rs[] = $res;
 }
@@ -27,7 +31,7 @@ foreach ($rs as $rq) {
 	$r['id'] = (int)$rq['id'];
 	$r['name'] = (string)$rq['name']?:'N/A';
 	$r['price'] = (double)$rq['price']?:'N/A';
-	$r['size'] = (double)$rq['ml']?:0;
+	$r['ml'] = (double)$rq['ml']?:0;
 	$r['height'] = (double)$rq['height']?:0;
 	$r['width'] = (double)$rq['width']?:0;
 	$r['diameter'] = (double)$rq['diameter']?:0;
