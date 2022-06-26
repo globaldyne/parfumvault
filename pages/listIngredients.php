@@ -101,7 +101,7 @@ $(document).ready(function() {
 	language: {
 		loadingRecords: '&nbsp;',
 		processing: '<div class="spinner-grow"></div> Please Wait...',
-		zeroRecords: 'Nothing found, try <a href="#" data-toggle="modal" data-target="#adv_search">advanced</a> search instead?',
+		zeroRecords: '<div class="alert alert-warning"><strong>Nothing found, try <a href="#" data-toggle="modal" data-target="#adv_search">advanced</a> search instead?</strong></div>',
 		search: 'Quick Search:',
 		searchPlaceholder: 'Name, CAS, EINECS, IUPAC, odor..',
 		},
