@@ -930,3 +930,8 @@ body {
   max-width: 65%;
 }
 
+.red {
+  color: var(--red);
+  background-color: #FFF;
+}
+

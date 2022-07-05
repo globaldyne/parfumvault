@@ -55,6 +55,10 @@ $auth = pvOnlineValAcc($pvOnlineAPI, $user['email'], $user['password'], $ver);
       
       <button type="submit" class="btn btn-primary" id="update-profile">Update</button>
   </div>
+     <hr>
+       <div class="row">
+          <span><label class="badge_int red"><i id="rmAcc" class="pv_point_gen">Delete my PVOnline account</i></label></span>       
+       </div>
 <?php }elseif($auth['code'] == '002'){ ?>
 
 	<div class="alert alert-danger">
@@ -108,6 +112,48 @@ $(document).ready(function() {
 	
 <?php if($pv_online['enabled'] == '1'){?>
 	getPVProfile();
+	$('#rmAcc').click(function() {
+		
+		bootbox.dialog({
+		   title: "Confirm acccount deletion",
+		   message : '<strong>Permanently delete my account from PV Online?</strong>'+
+		   			'<p class="alert-danger">Please note: This action <strong>cannot be reverted.</strong></p>',
+		   buttons :{
+			   main: {
+				   label : "DELETE",
+				   className : "btn-danger",
+				   callback: function (){
+						
+					$.ajax({ 
+						url: '/pages/update_settings.php', 
+						type: 'POST',
+						data: {
+							manage: 'pvonline',
+							rmACC: 1
+							},
+						dataType: 'json',
+						success: function (data) {
+							if(data.success){
+								var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+							}else{
+								var msg ='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+							}
+							$('#pvOnMsg').html(msg);
+						}						
+					  });
+					 return true;
+				   }
+			   },
+			   cancel: {
+				   label : "Cancel",
+				   className : "btn-default",
+				   callback : function() {
+					   return true;
+				   }
+			   }   
+		   },onEscape: function () {return true;}
+	   });
+	});
 <?php } ?>
 
 //ENABLE OR DISABLE PV ONLINE

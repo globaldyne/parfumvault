@@ -262,7 +262,13 @@ if($_POST['manage'] == 'pvonline'){
 		return;	
 	}
 
+	if($_POST['rmACC']) {		
+		$params = "?username=".$pv_online['email']."&password=".$pv_online['password']."&do=deleteProfile";
+        $response = json_decode(pvUploadData($pvOnlineAPI.$params, null));
 
+		echo json_encode($response);
+		return;	
+	}
 	echo json_encode($response);
 	return;
 }
