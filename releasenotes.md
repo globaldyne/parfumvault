@@ -23,3 +23,4 @@ Whats New:
 - Customer section update
 - Update datatables to 1.12.1
 - Batches page rewrite
+- Fix measurement unit always shown ml in amount to make window

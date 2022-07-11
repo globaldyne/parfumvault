@@ -35,6 +35,7 @@
 - Customers update
 - Batches page rewrite
 - Update datatables to 1.12.1
+- Fix measurement unit always shown ml in amount to make window
 - TECH Preview: PV Online share With a friend
 
 ### Version 4.7

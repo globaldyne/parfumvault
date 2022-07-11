@@ -489,12 +489,12 @@ function reload_formula_data() {
           <tr>
 	       <td width="66" height="31"><strong>SG<span class="sup">*</span> :</strong></td>
 	       <td width="237"><input name="sg" type="text" id="sg" value="0.985" />
-            <strong>ml</strong></td>
+            <strong><?=$settings['mUnit']?></strong></td>
           </tr>
 	     <tr>
 	       <td><strong>Amount:</strong></td>
 	       <td><input name="totalAmount" type="text" id="totalAmount" value="100" />
-            <strong>ml</strong></td>
+            <strong><?=$settings['mUnit']?></strong></td>
           </tr>
         </table>
 	    <p>&nbsp;</p>
