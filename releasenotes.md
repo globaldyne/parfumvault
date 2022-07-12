@@ -24,3 +24,4 @@ Whats New:
 - Update datatables to 1.12.1
 - Batches page rewrite
 - Fix measurement unit always shown ml in amount to make window
+- Ingredients card view is been removed in favour of datatables

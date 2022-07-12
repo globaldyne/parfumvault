@@ -14,14 +14,11 @@ $defCatClass = $settings['defCatClass'];
     <tr class="noBorder noexport">
     <th colspan="9">
      <div class="col-sm-6 text-left">
-        <div class="ing-view">
-            <a href="javascript:setView('1')" class="fas fa-list"></a>
-            <a href="javascript:setView('2')" class="fas fa-border-all"></a>
-        </div>        
+              
      </div>
-    <div class="col-sm-6 text-right">
-     <div class="btn-group">
-      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
+     <div class="col-sm-6 text-right">
+      <div class="btn-group">
+       <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
       <div class="dropdown-menu dropdown-menu-right">
         <a class="dropdown-item popup-link" href="pages/mgmIngredient.php">Add new ingredient</a>
         <a class="dropdown-item" id="csv_export" href="/pages/export.php?format=csv&kind=ingredients">Export to CSV</a>

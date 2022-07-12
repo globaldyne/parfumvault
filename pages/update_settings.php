@@ -379,11 +379,4 @@ if($_POST['action'] == 'delete' && $_POST['lidId']){
 }
 
 
-
-//Update ingredients view
-if($_GET['ingView']){
-	$v = $_GET['ingView'];
-	mysqli_query($conn, "UPDATE settings SET defIngView = '$v'");
-	return;	
-}
 ?>

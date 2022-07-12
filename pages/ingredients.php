@@ -397,18 +397,6 @@ function importING(name) {
 	  });
 };
 
-function setView(view) {
-	$.ajax({ 
-    url: 'pages/update_settings.php', 
-	type: 'GET',
-    data: {
-		ingView: view,
-		},
-	dataType: 'html',
-    success: function (data) {
-		location.reload();
-    }
-  });
-};
+
 
 </script>

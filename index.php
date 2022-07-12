@@ -139,11 +139,7 @@ function list_formulas(){
 function list_ingredients(page,limit,filter){
 	$('#list_ingredients').html('<img class="loader loader-center" src="/img/Testtube.gif"/>');
 	$.ajax({
-		<?php if($settings['defIngView'] == '1'){ ?>
-			url: 'pages/listIngredients.php',
-		<?php }elseif($settings['defIngView'] == '2'){ ?>
-			url: 'pages/listIngredientsCards.php',
-		<?php } ?>
+		url: 'pages/listIngredients.php',
 		type: 'GET',
 		data: {
 			"page": page,
