@@ -536,7 +536,8 @@ function reload_formula_data() {
 	       <td><input name="accordName" type="text" class="form-control" id="accordName" value="<?=$f_name?> accord" /></td>
           </tr>
         </table>
-	    <p>&nbsp;</p>
+	     <hr />
+	    <p>Will create a new formula from the notes you choose. <br/>The current formula will stay intact.</p>
 	    <div class="modal-footer">
 	     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
   		 <input type="submit" name="button" class="btn btn-primary" id="createAccord" value="Create">
@@ -940,10 +941,14 @@ $('#conv_ingredient').on('click', '[id*=conv2ing]', function () {
 			ingName: $("#ingName").val(),
 			action: 'conv2ing',
 			},
-		dataType: 'html',
+		dataType: 'json',
 		success: function (data) {
-			$('#cnvMsg').html(data);
-			//$('#conv_ingredient').modal('toggle');
+			if(data.success){
+				var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
+			}else if(data.error){
+				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
+			}
+			$('#cnvMsg').html(msg);
 		}
 	  });
 	}

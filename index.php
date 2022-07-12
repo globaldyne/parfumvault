@@ -142,9 +142,7 @@ function list_ingredients(page,limit,filter){
 		url: 'pages/listIngredients.php',
 		type: 'GET',
 		data: {
-			"page": page,
-			"ing_limit": limit,
-			"q": filter
+			"search": "<?=$_GET['search']?>"
 			},
 		dataType: 'html',
 			success: function (data) {

@@ -38,7 +38,7 @@ $defCatClass = $settings['defCatClass'];
 <div id="pv_search">
 	<div class="text-right">
         <div class="pv_input_grp">   
-          <input type="text" id="ing_search" class="form-control input-sm pv_input_sm" placeholder="Name, CAS, odor.." name="ing_search">
+          <input name="ing_search" type="text" class="form-control input-sm pv_input_sm" id="ing_search" value="<?=$_GET['search']?>" placeholder="Name, CAS, odor..">
             <div class="input-group-btn">
                 <button class="btn btn-search btn-primary" id="pv_search_btn" data-provider="local">
                     <span class="fas fa-database"></span>
@@ -46,7 +46,7 @@ $defCatClass = $settings['defCatClass'];
                 </button>
                 <label class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                     <span class="caret"></span>
-                </label>
+              </label>
                 <ul class="dropdown-menu dropdown-menu-right" role="menu">
                     <?php foreach (loadModules('suppliers') as $search){ ?>
                     <li>
@@ -57,8 +57,8 @@ $defCatClass = $settings['defCatClass'];
                     </li>
                     <?php } ?>
                 </ul>
-            </div>
-    	</div>
+          </div>
+   	  </div>
 	</div>
 </div>
 
@@ -87,6 +87,9 @@ $(document).ready(function() {
 		{ className: 'pv_vertical_middle text-center', targets: '_all' },
 		{ orderable: false, targets: [1,3,5,8]}
 	],
+	search: {
+    	search: "<?=$_GET['search']?>"
+  	},
 	dom: 'lr<"#advanced_search">tip',
 	initComplete: function(settings, json) {
         $("#advanced_search").html('<span><hr /><a href="#" class="advanced_search_box" data-toggle="modal" data-target="#adv_search">Advanced Search</a></span>');
