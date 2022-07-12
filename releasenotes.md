@@ -25,3 +25,4 @@ Whats New:
 - Batches page rewrite
 - Fix measurement unit always shown ml in amount to make window
 - Ingredients card view is been removed in favour of datatables
+- Add option to print the formula without csv export

@@ -43,6 +43,13 @@ $(document).ready(function() {
     		search: "<?=$_GET['search']?>"
   		},
 		dom: 'lfrtip',
+			buttons: [{
+				extend: 'print',
+				title: "<?=$meta['name']?>",
+				exportOptions: {
+     				columns: [1, 2, 3, 4, 5, 6, 7, 8, 10]
+  				},
+			  }],
 		processing: true,
 			  mark: true,
         language: {
@@ -315,7 +322,9 @@ function reload_formula_data() {
 	update_bar();
 };
 
-
+$('#print').click(() => {
+    $('#formula').DataTable().button(0).trigger();
+});
 </script>
 
 <table class="table table-striped table-bordered nowrap" width="100%" cellspacing="0">
@@ -336,6 +345,7 @@ function reload_formula_data() {
                <div class="dropdown-divider"></div>
                <a class="dropdown-item" href="javascript:export_as('csv')">Export to CSV</a>
                <a class="dropdown-item" href="javascript:export_as('pdf')">Export to PDF</a>
+               <a class="dropdown-item" href="#" id="print">Print Formula</a>
                <div class="dropdown-divider"></div>
                <?php if($pv_online['enabled'] == '1'){?>
                <li class="dropdown-header">TECH PREVIEW</li> 
