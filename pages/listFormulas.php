@@ -353,14 +353,14 @@ $('#add_formula_csv').on('click', '[id*=btnImport]', function () {
 	fd.append('CSVFile',files[0]);
 	$.ajax({
 	   url: 'pages/upload.php?type=frmCSVImport&name=' + name + '&profile=' + profile + '&addMissIng=' + addMissIng,
-	   type: 'post',
+	   type: 'POST',
 	   data: fd,
 	   contentType: false,
 	   processData: false,
 			 cache: false,
 	   success: function(response){
 		 if(response != 0){
-		   $("#CSVImportMsg").html(response);
+		    $("#step_upload").html(response);
 			$("#btnImport").prop("disabled", false);
 		  }else{
 			$("#CSVImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> File upload failed!</div>');
@@ -452,7 +452,7 @@ function reload_formulas_data() {
 
 <!--IMPORT FORMULA CSV MODAL-->
 <div class="modal fade" id="add_formula_csv" tabindex="-1" role="dialog" aria-labelledby="add_formula_csv" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog pv-modal-xxl" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Import formula from CSV</h5>
@@ -460,51 +460,50 @@ function reload_formulas_data() {
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
+      <div id="step_upload" class="modal-body">
       <div id="CSVImportMsg"></div>
-        <table width="100%" border="0">
-          <tr>
-            <td>Name:</td>
-            <td><input type="text" name="CSVname" id="CSVname" class="form-control"/></td>
-          </tr>
-          <tr>
-            <td>Profile:</td>
-            <td>
-            <select name="CSVProfile" id="CSVProfile" class="form-control">
+        <div class="form-group">
+            <label class="col-md-3 control-label">Formula name:</label>
+            <div class="col-md-8">
+              <input type="text" name="CSVname" id="CSVname" class="form-control"/>
+            </div>
+		</div>  
+        <div class="form-group">
+            <label class="col-md-3 control-label">Profile:</label>
+            <div class="col-md-8">
+             <select name="CSVProfile" id="CSVProfile" class="form-control">
              <?php foreach ($fcat as $cat) { if($cat['type'] == 'profile'){?>		
                 <option value="<?=$cat['cname']?>"><?=$cat['name']?></option>
              <?php } }?>
              </select>
-            </td>
-          </tr>
-          <tr>
-            <td width="22%">Choose file:</td>
-            <td width="78%">
+            </div>
+		</div>
+        <div class="form-group">
+            <label class="col-md-3 control-label">CSV file:</label>
+            <div class="col-md-8">
               <input type="file" name="CSVFile" id="CSVFile" class="form-control" />
-            </td>
-          </tr>
-          <tr>
-            <td>Add missing ingredients:</td>
-            <td><input name="addMissIng" type="checkbox" id="addMissIng" /></td>
-          </tr>
-          <tr>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-          </tr>
-          <tr>
-            <td colspan="2"><p>CSV format: <strong>ingredient,concentration,dilutant,quantity</strong></p>
-            <p>Example: <em><strong>Ambroxan,10,TEC,0.15</strong></em></p></td>
-          </tr>
-          <tr>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-          </tr>
-        </table>
+            </div>
+		</div>
+        <div class="form-group">
+            <label class="col-md-3 control-label" rel="tip" title="If enabled, will create an ingredient entry if it doesn't exist in your database">Add missing ingredients:</label>
+            <div class="col-md-8">
+              <input name="addMissIng" type="checkbox" id="addMissIng" />
+            </div>
+		</div> 
+        <div class="col-md-12">
+           <hr />
+           <p>CSV format: <strong>ingredient,concentration,dilutant,quantity</strong></p>
+           <p>Example: <em><strong>Ambroxan,10,TEC,0.15</strong></em></p>
+        </div>
+        
+      </div>
+      
 	  <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
         <input type="submit" name="btnImport" class="btn btn-primary" id="btnImport" value="Import">
       </div>
-    </div>
+   
   </div>
+  
 </div>
 </div>

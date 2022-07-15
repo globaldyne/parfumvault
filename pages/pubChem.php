@@ -45,18 +45,18 @@ $('#pubChemDataJ').on('click', '[id*=btnUpdatePub]', function () {
 		type: 'POST',
 		data: {
 			pubChemData: 'update',
-			molecularWeight: '<?=$molecularWeight?>',
-			logP: '<?=$logP?>',
-			molecularFormula: '<?=$molecularFormula?>',
-			InChI: '<?=$InChI?>',
-			CanonicalSMILES: '<?=$CanonicalSMILES?>',
-			ExactMass: '<?=$ExactMass?>',
-			cas: '<?=$cas?>',
+			molecularWeight: "<?=$molecularWeight?>",
+			logP: "<?=$logP?>",
+			molecularFormula: "<?=$molecularFormula?>",
+			InChI: "<?=$InChI?>",
+			CanonicalSMILES: "<?=$CanonicalSMILES?>",
+			ExactMass: "<?=$ExactMass?>",
+			cas: "<?=$cas?>",
 			},
 		dataType: 'html',
 		success: function (data) {
 			$('#ingMsg').html(data);
-			$("#INCI").val('<?=$InChI?>');
+			$("#INCI").val("<?=$InChI?>");
 			reload_overview();
 		}
 	  });             

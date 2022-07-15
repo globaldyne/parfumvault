@@ -935,3 +935,7 @@ body {
   background-color: #FFF;
 }
 
+.pv-modal-xxl {
+	max-width: 1500px !important;
+	width: 1500px !important;
+}
