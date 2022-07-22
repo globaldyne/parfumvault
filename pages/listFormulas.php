@@ -1,7 +1,8 @@
 <?php 
 
-require('../inc/sec.php');
+define('__ROOT__', dirname(dirname(__FILE__))); 
 
+require(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
@@ -339,41 +340,128 @@ $('#add_formula').on('click', '[id*=btnAdd]', function () {
   });
 });
 
-$('#add_formula_csv').on('click', '[id*=btnImport]', function () {
-    $("#CSVImportMsg").html('<div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
-	$("#btnImport").prop("disabled", true);
-		
+$("#btnImport").prop("disabled", true);
+$("#btnImport").hide();
+	
+$("input[type=file]").on('change',function(){	
 	var fd = new FormData();
     var files = $('#CSVFile')[0].files;
-    var name = $('#CSVname').val();
-    var profile = $('#CSVProfile').val();
-	var addMissIng = $('#addMissIng').is(':checked');
+	var formula_name = $('#CSVname').val();
+	
+console.log(column_data.length);
 
+	if ( formula_name == '') {
+		var filename = $('input[type=file]').val().replace(/C:\\fakepath\\/i, '').replace(/.csv/i, '');
+		$('#CSVname').val(filename);
+	}
+	
 	if(files.length > 0 ){
-	fd.append('CSVFile',files[0]);
-	$.ajax({
-	   url: 'pages/upload.php?type=frmCSVImport&name=' + name + '&profile=' + profile + '&addMissIng=' + addMissIng,
-	   type: 'POST',
-	   data: fd,
-	   contentType: false,
-	   processData: false,
-			 cache: false,
-	   success: function(response){
-		 if(response != 0){
-		    $("#step_upload").html(response);
-			$("#btnImport").prop("disabled", false);
-		  }else{
-			$("#CSVImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> File upload failed!</div>');
-			$("#btnImport").prop("disabled", false);
-		  }
+		fd.append('CSVFile',files[0]);
+		$.ajax({
+		   url: '/pages/upload.php?type=frmCSVImport&step=upload',
+		   type: 'POST',
+		   data: fd,
+		   contentType: false,
+		   processData: false,
+				 cache: false,
+		   success: function(response){
+			 if(response != 0){
+				$("#CSVImportMsg").html('');
+				$("#step_upload").html(response);
+				$("#btnImport").show();
+			  }else{
+				$("#CSVImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> File upload failed!</div>');
+			  }
 		},
 	 });
 	}else{
-		$("#CSVImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a file to upload!</div>');
-		$("#btnImport").prop("disabled", false);
+		$("#CSVImportMsg").html('<div class="alert alert-danger">Please select a file to upload!</div>');
 	}
 });
 
+
+var total_selection = 0;
+var ingredient = 0;
+var concentration = 0;
+var dilutant = 0;
+var quantity = 0;
+
+var column_data = [];
+
+$(document).on('change', '.set_column_data', function(){
+    var column_name = $(this).val();
+    var column_number = $(this).data('column_number');
+    if(column_name in column_data) {
+	  $('#CSVImportMsg').html('<div class="alert alert-danger"><strong>'+column_name+'</strong> is already assigned.</div>');
+      $(this).val('');
+      return false;
+    }else{
+		$('#CSVImportMsg').html('');
+	}
+
+    if(column_name != '') {
+      column_data[column_name] = column_number;
+    } else {
+      const entries = Object.entries(column_data);
+
+      for(const [key, value] of entries) {
+        if(value == column_number) {
+          delete column_data[key];
+        }
+      }
+    }
+
+    total_selection = Object.keys(column_data).length;
+
+    if(total_selection == 4) {
+		$('#btnImport').prop("disabled", false);
+        ingredient = column_data.ingredient;
+		concentration = column_data.concentration;
+		dilutant = column_data.dilutant;
+		quantity = column_data.quantity;
+    } else {
+		$('#btnImport').prop("disabled", true);
+    }
+
+  });
+
+$(document).on('click', '#btnImport', function(event){
+
+    event.preventDefault();
+   	var formula_name = $('#CSVname').val();
+    var formula_profile = $('#CSVProfile').val();
+	
+    $.ajax({
+      url: "/pages/upload.php?type=frmCSVImport&step=import",
+      method: "POST",
+      data:{		  
+	  	  formula_name: formula_name,
+		  formula_profile: formula_profile,
+		  ingredient: ingredient, 
+		  concentration: concentration, 
+		  dilutant: dilutant, 
+		  quantity: quantity
+		  },
+      beforeSend:function(){
+        $('#btnImport').prop("disabled", true);
+      },
+      success:function(data) {
+		  if (data.indexOf('Error:') > -1) {
+			  $('#btnImport').prop("disabled", false);
+			  $('#CSVImportMsg').html(data);
+		  }else{
+			$('#btnImport').prop("disabled", false);
+			$('#btnImport').hide();
+			$('#btnCloseCsv').prop('value', 'Close');
+			$('#process_area').css('display', 'none');
+			$('#CSVImportMsg').html(data);
+			reload_formulas_data();
+		  }
+      }
+    })
+
+  });
+  
 function reload_formulas_data() {
     $('#all-table').DataTable().ajax.reload(null, true);
 };
@@ -460,8 +548,10 @@ function reload_formulas_data() {
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div id="step_upload" class="modal-body">
+      <div class="modal-body">
       <div id="CSVImportMsg"></div>
+      <div id=process_area>
+      
         <div class="form-group">
             <label class="col-md-3 control-label">Formula name:</label>
             <div class="col-md-8">
@@ -484,22 +574,19 @@ function reload_formulas_data() {
               <input type="file" name="CSVFile" id="CSVFile" class="form-control" />
             </div>
 		</div>
-        <div class="form-group">
-            <label class="col-md-3 control-label" rel="tip" title="If enabled, will create an ingredient entry if it doesn't exist in your database">Add missing ingredients:</label>
-            <div class="col-md-8">
-              <input name="addMissIng" type="checkbox" id="addMissIng" />
-            </div>
-		</div> 
+        <div id="step_upload" class="modal-body"></div>
         <div class="col-md-12">
            <hr />
            <p>CSV format: <strong>ingredient,concentration,dilutant,quantity</strong></p>
            <p>Example: <em><strong>Ambroxan,10,TEC,0.15</strong></em></p>
         </div>
         
+        </div>
+        
       </div>
       
 	  <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <input type="button" class="btn btn-secondary" data-dismiss="modal" id="btnCloseCsv" value="Cancel">
         <input type="submit" name="btnImport" class="btn btn-primary" id="btnImport" value="Import">
       </div>
    

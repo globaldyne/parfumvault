@@ -261,52 +261,85 @@ if($_GET['type'] == 'ingCSVImport'){
 }
 
 if($_GET['type'] == 'frmCSVImport'){
-	$name = mysqli_real_escape_string($conn,trim($_GET['name']));
-	
-	if(empty($name)){
-		echo '<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> Name is required.</div>';
-		return;
-	}
-
-	$fid = base64_encode($name);
-
-	$profile = mysqli_real_escape_string($conn,$_GET['profile']);
-	
-	if($chk = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$fid'"))){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$name.' already exists! Click <a href="?do=Formula&id='.$chk['id'].'"  target="_blank">here</a> to view/edit!</div>';
-	  	return;
-	 }
-
-		$filename=$_FILES["CSVFile"]["tmp_name"];    
-		if($_FILES["CSVFile"]["size"] > 0){
-			$file = fopen($filename, "r");
-			while (($data = fgetcsv($file, 10000, ",")) !== FALSE){
-				if($_GET['addMissIng'] == 'true'){
-					if(!mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '".trim(ucwords(preg_replace('/[[:^print:]]/', '',$data['0'])))."'"))){
-						mysqli_query($conn, "INSERT INTO ingredients (name, ml) VALUES ('".trim(ucwords(preg_replace('/[[:^print:]]/', '',$data['0'])))."', '10')");
-					}
-				}
-				if(empty($data['1'])){
-					$data['1'] = '100';
-				}
-				$sql = "INSERT INTO formulas (fid,name,ingredient,concentration,dilutant,quantity) VALUES ('$fid', '$name','".trim(ucwords(preg_replace('/[[:^print:]]/', '',$data['0'])))."','".$data['1']."','".$data['2']."','".$data['3']."')";
-				$res = mysqli_query($conn, $sql);
-			}
-			
-			if($res){
-				if(mysqli_query($conn, "INSERT INTO formulasMetaData (fid,name,notes,profile) VALUES ('$fid','$name','Imported via csv','$profile')")){
-					$iID = mysqli_insert_id($conn);
-				echo '<div class="alert alert-success alert-dismissible"><strong><a href="?do=Formula&id='.$iID.'" target="_blank">'.$name.'</a></strong> added!</div>';
-				}else{
-					echo '<div class="alert alert-danger alert-dismissible"><strong>Error in: </strong>'.mysqli_error($conn).'</div>';
-				}
-			}else{
-				echo '<div class="alert alert-danger alert-dismissible"><strong>Error adding: </strong>'.$name.'</div>';
-			}
-			fclose($file);  
+	session_start();
+	if($_GET['step'] == 'upload'){
+		$file_array = explode(".", $_FILES['CSVFile']['name']);
+		$extension = end($file_array);
+		if($extension != 'csv') {
+			echo '<div class="alert alert-danger">Error: Invalid csv file.</div>';
+			return; 
 		}
-	 
-	 
+		$csv_file_data = fopen($_FILES['CSVFile']['tmp_name'], 'r');
+
+		$file_header = fgetcsv($csv_file_data, 1000, ",");
+		echo '<table class="jj table table-bordered"><thead><tr class="csv_upload_header">';
+		for($count = 0; $count < count($file_header); $count++) {
+			echo   '<th>
+					<select name="set_column_data" class="form-control set_column_data" data-column_number="'.$count.'">
+					 <option value="">Assign to</option>
+					 <option value="">None</option>
+					 <option value="ingredient">Ingredient</option>
+					 <option value="concentration">Concentration</option>
+					 <option value="dilutant">Dilutant</option>
+					 <option value="quantity">Quantity</option>
+					</select>
+			   </th>';
+		   } 
+		echo '</tr></thead><tbody>';
+		$i = 0;
+		while(($row = fgetcsv($csv_file_data, 1000, ",")) !== FALSE)  {
+			echo '<tr id="'.$i.'">';
+			for($count = 0; $count < count($row); $count++) {
+				if($row[$count]){
+					echo '<td>'.$row[$count].'</td>';
+				}else{
+					echo '<td>-</td>';
+				}
+			}
+			echo '</tr>';
+			$temp_data[] = $row;
+			$i++;
+		}
+	
+			$_SESSION['csv_file_data'] = $temp_data;
+			echo '</tbody></table>';
+	}
+	
+	if( $_GET['step'] == 'import'){
+
+		$name = mysqli_real_escape_string($conn,trim($_POST['formula_name']));
+		$profile = $_POST['formula_profile'];
+		
+		if(empty($name)){
+			echo '<div class="alert alert-danger">Error: Name field cannot be empty</div>';
+			return;
+		}
+		require_once(__ROOT__.'/func/genFID.php');
+		$fid = random_str(40, '1234567890abcdefghijklmnopqrstuvwxyz');
+
+		if($chk = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE name = '$name'"))){
+			echo '<div class="alert alert-danger">Error: '.$name.' already exists! Click <a href="?do=Formula&id='.$chk['id'].'"  target="_blank">here</a> to view/edit!</div>';
+			return;
+		 }
+	
+		$csv_file_data = $_SESSION['csv_file_data'];
+				
+		foreach($csv_file_data as $row) {
+			$data[] = '("'.$fid.'","'.$name.'","'.$row[$_POST["ingredient"]].'", "'.preg_replace("/[^0-9.]/", "", $row[$_POST["concentration"]]?:'100').'", "'.preg_replace("/[0-9.]/", "",$row[$_POST["dilutant"]]?:'None').'", "'.preg_replace("/[^0-9.]/", "", $row[$_POST["quantity"]]).'")';
+		}
+		$query = "INSERT INTO formulas (fid,name,ingredient, concentration, dilutant, quantity) VALUES ".implode(",", $data)."";
+		$res =  mysqli_query($conn,$query);
+			
+		if($res){
+			if(mysqli_query($conn, "INSERT INTO formulasMetaData (fid,name,notes,profile) VALUES ('$fid','$name','Imported via csv','$profile')")){
+				echo '<div class="alert alert-success alert-dismissible"><strong><a href="?do=Formula&id='.mysqli_insert_id($conn).'" target="_blank">Formula '.$name.'</a></strong> has been imported!</div>';
+			}
+		}else{
+			echo '<div class="alert alert-danger">Error: Incorrect CSV data '.$query.'</div>';
+		}
+		
+	}
+	
 	return;
 }
 

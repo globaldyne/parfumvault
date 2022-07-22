@@ -38,6 +38,7 @@
 - Fix measurement unit always shown ml in amount to make window
 - DEPRECATED: Ingredients card view
 - Add option to print the formula without csv export
+- CSV Formula import improvements
 - TECH Preview: PV Online share With a friend
 
 ### Version 4.7

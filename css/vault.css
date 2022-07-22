@@ -939,3 +939,25 @@ body {
 	max-width: 1500px !important;
 	width: 1500px !important;
 }
+
+.jj.table.table-bordered {
+	table-layout: fixed;
+	width: 100%;
+}
+
+#step_upload {
+	max-height: 500px;
+	width: 100%;
+	display: inline-block;
+    overflow-y: scroll;
+	overflow-x: auto;
+}
+
+.csv_upload_header{
+	background: #ddd;
+  	position: sticky;
+  	top: 0;
+ 	box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+	opacity: 1;
+    z-index: 99999;
+}
