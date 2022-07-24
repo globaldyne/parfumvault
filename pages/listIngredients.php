@@ -1,7 +1,8 @@
 <?php 
 
-require('../inc/sec.php');
+define('__ROOT__', dirname(dirname(__FILE__))); 
 
+require(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
@@ -100,7 +101,7 @@ $(document).ready(function() {
 	searching: true,
 	language: {
 		loadingRecords: '&nbsp;',
-		processing: '<div class="spinner-grow"></div> Please Wait...',
+		processing: 'Blending...',
 		zeroRecords: '<div class="alert alert-warning"><strong>Nothing found, try <a href="#" data-toggle="modal" data-target="#adv_search">advanced</a> search instead?</strong></div>',
 		search: 'Quick Search:',
 		searchPlaceholder: 'Name, CAS, EINECS, IUPAC, odor..',

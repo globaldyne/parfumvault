@@ -348,8 +348,6 @@ $("input[type=file]").on('change',function(){
     var files = $('#CSVFile')[0].files;
 	var formula_name = $('#CSVname').val();
 	
-console.log(column_data.length);
-
 	if ( formula_name == '') {
 		var filename = $('input[type=file]').val().replace(/C:\\fakepath\\/i, '').replace(/.csv/i, '');
 		$('#CSVname').val(filename);

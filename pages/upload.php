@@ -236,27 +236,77 @@ if($_GET['type'] == 'cmpCSVImport'){
 
 if($_GET['type'] == 'ingCSVImport'){
 	$defCatClass = $settings['defCatClass'];
+	session_start();
+	if($_GET['step'] == 'upload'){
+	
+		$file_array = explode(".", $_FILES['CSVFile']['name']);
+		$extension = end($file_array);
+		if($extension != 'csv') {
+			echo '<div class="alert alert-danger">Error: Invalid csv file.</div>';
+			return; 
+		}
+		$csv_file_data = fopen($_FILES['CSVFile']['tmp_name'], 'r');
 
-	if(isset($_FILES['ingCSV']['name'])){
+		$file_header = fgetcsv($csv_file_data, 10000, ",");
+		echo '<table class="jj table table-bordered"><thead><tr class="csv_upload_header">';
+		for($count = 0; $count < count($file_header); $count++) {
+			echo   '<th>
+					<select name="set_column_data" class="form-control set_column_data" data-column_number="'.$count.'">
+					 <option value="">Assign to</option>
+					 <option value="">None</option>
+					 <option value="ingredient_name">Name</option>
+					 <option value="cas">CAS</option>
+					 <option value="iupac">IUPAC</option>
+					 <option value="fema">FEMA</option>
+					 <option value="type">Type</option>
+					 <option value="description">Description</option>
+					</select>
+			   </th>';
+		   } 
+		echo '</tr></thead><tbody>';
 		$i = 0;
-		$filename=$_FILES['ingCSV']['tmp_name'];    
-		if($_FILES['ingCSV']['size'] > 0){
-			$file = fopen($filename, "r");
-			while (($data = fgetcsv($file, 10000, ",")) !== FALSE){
-				if(!mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '".trim(ucwords($data['0']))."'"))){
-					$r = mysqli_query($conn, "INSERT INTO ingredients (name, cas, odor, profile, $defCatClass) VALUES ('".trim(ucwords($data['0']))."', '".trim($data['1'])."', '".trim($data['2'])."', '".trim($data['3'])."', '".preg_replace("/[^0-9.]/", "", $data['4'])."')");
-						$i++;
+		while(($row = fgetcsv($csv_file_data, 10000, ",")) !== FALSE)  {
+			echo '<tr id="'.$i.'">';
+			for($count = 0; $count < count($row); $count++) {
+				if($row[$count]){
+					echo '<td>'.$row[$count].'</td>';
+				}else{
+					echo '<td>-</td>';
 				}
 			}
-			if($r){
-				echo '<div class="alert alert-success alert-dismissible">'.$i.' Ingredients imported</div>';
-			}else{
-				echo '<div class="alert alert-danger alert-dismissible">Failed to import the ingredients list.'.mysqli_error($conn).'</div>';
-			}
+			echo '</tr>';
+			$temp_data[] = $row;
+			$i++;
 		}
-		fclose($file);  
+	
+			$_SESSION['csv_file_data'] = $temp_data;
+			echo '</tbody></table>';
 	
 	}  
+	if( $_GET['step'] == 'import'){
+
+		$i = 0;
+		$csv_file_data = $_SESSION['csv_file_data'];			
+		foreach($csv_file_data as $row) {
+			if(!mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '".trim(ucwords($row[$_POST["ingredient_name"]]))."'"))){
+				$data[] = '("'.$row[$_POST["ingredient_name"]].'","'.$row[$_POST["cas"]].'","'.$row[$_POST["fema"]].'","'.$row[$_POST["description"]].'", "'.$row[$_POST["iupac"]].'", "'.$row[$_POST["type"]].'" )';
+				$i++;
+			}
+
+		}
+		if($data){
+			$query = "INSERT INTO ingredients (name, cas, FEMA, odor, INCI, type) VALUES ".implode(",", $data)."";
+			$res =  mysqli_query($conn,$query);
+			if($res){
+				echo '<div class="alert alert-success alert-dismissible">'.$i.' Ingredients imported</div>';;
+			}else{
+				echo '<div class="alert alert-danger">Error: Incorrect CSV data '.$query.'</div>';
+			}
+		}else{
+			echo '<div class="alert alert-info">Nothing to import, data already exists</div>';
+		}
+	}
+	
 	return;
 }
 

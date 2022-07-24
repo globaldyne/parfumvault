@@ -26,4 +26,4 @@ Whats New:
 - Fix measurement unit always shown ml in amount to make window
 - Ingredients card view is been removed in favour of datatables
 - Add option to print the formula without csv export
-- You can now match csv fields when you importing a formula from a csv file
+- You can now match csv fields when you importing a formula or ingredients from a csv file
