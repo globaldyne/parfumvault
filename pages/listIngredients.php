@@ -264,16 +264,22 @@ $('#tdDataIng').on('click', '[id*=rmIng]', function () {
                callback: function (){
 	    			
 				$.ajax({
-					url: 'pages/update_data.php', 
-					type: 'GET',
+					url: '/pages/update_data.php', 
+					type: 'POST',
 					data: {
 						ingredient: "delete",
 						ing_id: ing.ID,
 						},
-					dataType: 'html',
+					dataType: 'json',
 					success: function (data) {
-						$('#innermsg').html(data);
-						reload_ingredients_data();
+						if(data.success) {
+							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+								reload_ingredients_data();
+							} else {
+								var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				
+							}
+							$('#innermsg').html(msg);
 					}
 				});
 				

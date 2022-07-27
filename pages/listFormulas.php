@@ -232,21 +232,22 @@ $('table.table').on('click', '[id*=cloneMe]', function () {
 	formula.Name = $(this).attr('data-name');
 	
 	$.ajax({ 
-		url: 'pages/manageFormula.php', 
-		type: 'GET',
+		url: '/pages/manageFormula.php', 
+		type: 'POST',
 		data: {
 			action: "clone",
 			fid: formula.ID,
 			fname: formula.Name,
 			},
-		dataType: 'html',
+		dataType: 'json',
 		success: function (data) {
-			if ( data.indexOf("Error") > -1 ) {
-				$('#inMsg').html(data); 
-			}else{
-				$('#inMsg').html(data);
+			if (data.success) {
+				var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 				reload_formulas_data();
+			}else{
+				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 			}
+			$('#inMsg').html(msg);
 		}
 	  });
 });
@@ -267,16 +268,23 @@ $('table.table').on('click', '[id*=deleteMe]', function () {
 	    			
 				$.ajax({ 
 					url: 'pages/manageFormula.php', 
-					type: 'GET',
+					type: 'POST',
 					data: {
 						action: "delete",
 						fid: formula.ID,
 						fname: formula.Name,
 						},
-					dataType: 'html',
+					dataType: 'json',
 					success: function (data) {
-						$('#inMsg').html(data);
-						reload_formulas_data();
+						//$('#inMsg').html(data);
+						//reload_formulas_data();
+						if (data.success) {
+							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+							reload_formulas_data();
+						}else{
+							var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+						}
+						$('#inMsg').html(msg);
 					}
 				  });
                  return true;

@@ -1,21 +1,4 @@
 
-function delete_ingredient(id){
-	
-	$.ajax({
-		url: '/pages/update_data.php', 
-		type: 'GET',
-		data: {
-			ingredient: "delete",
-			ing_id: id,
-			},
-		dataType: 'html',
-		success: function (data) {
-		  	$('#innermsg').html(data);
-			list_ingredients();
-		}
-	  });
-};
-
 $("#btnImportCSV").prop("disabled", true);
 $("input[type=file]").on('change',function(){	
     $("#CSVImportMsg").html('<div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');

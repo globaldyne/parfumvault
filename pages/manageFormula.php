@@ -1,6 +1,7 @@
 <?php 
-require('../inc/sec.php');
+define('__ROOT__', dirname(dirname(__FILE__))); 
 
+require(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
@@ -207,20 +208,23 @@ if($_POST['action'] == 'addIng' && $_POST['fid']){
 	if($meta['isProtected'] == FALSE){
 		
 		if (empty($quantity) || empty($concentration)){
-			echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>Missing fields</div>';
+			$response['error'] = 'Missing required fields';
+			echo json_encode($response);
 			return;
 		}
 			
 		if(mysqli_num_rows(mysqli_query($conn, "SELECT ingredient_id FROM formulas WHERE ingredient_id = '$ingredient_id' AND fid = '$fid'"))){
-			echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$ingredient['name'].' already exists in formula!</div>';
+			$response['error'] = $ingredient['name'].' already exists in formula!';
+			echo json_encode($response);
 			return;
 		}
 	
 		if(mysqli_query($conn,"INSERT INTO formulas(fid,name,ingredient,ingredient_id,concentration,quantity,dilutant) VALUES('$fid','".$meta['name']."','".$ingredient['name']."','".$ingredient_id."','$concentration','$quantity','$dilutant')")){
-			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$quantity.$settings['mUnit'].'</strong> of <strong>'.$ingredient['name'].'</strong> added to the formula!</div>';
+			$response['success'] = '<strong>'.$quantity.$settings['mUnit'].'</strong> of <strong>'.$ingredient['name'].'</strong> added to the formula!';
 			$lg = "ADDED: ".$ingredient['name']." $quantity".$settings['mUnit']." @$concentration% $dilutant";
 			mysqli_query($conn, "INSERT INTO formula_history (fid,change_made,user) VALUES ('".$meta['id']."','$lg','".$user['fullName']."')");
 			mysqli_query($conn, "UPDATE formulasMetaData SET status = '1' WHERE fid = '".$meta['fid']."' AND status = '0' AND isProtected = '0'");
+			echo json_encode($response);
 			return;
 		}
 		
@@ -282,24 +286,25 @@ if($_POST['action'] == 'conv2ing' && $_POST['ingName'] && $_POST['fid']){
 }
 
 //CLONE FORMULA
-if($_GET['action'] == 'clone' && $_GET['fid']){
+if($_POST['action'] == 'clone' && $_POST['fid']){
 	require_once(__ROOT__.'/func/genFID.php');
 
-	$fid = mysqli_real_escape_string($conn, $_GET['fid']);
-	$fname = mysqli_real_escape_string($conn, $_GET['fname']);
+	$fid = mysqli_real_escape_string($conn, $_POST['fid']);
+	$fname = mysqli_real_escape_string($conn, $_POST['fname']);
 
 	$newName = $fname.' - (Copy)';
 	$newFid = random_str(40, '1234567890abcdefghijklmnopqrstuvwxyz');
 	
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulasMetaData WHERE fid = '$newFid'"))){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$newName.' already exists, please remove or rename it first!</div>';
+		$response['success'] = $newName.' already exists, please remove or rename it first!</div>';
 	}else{
 		$sql.=mysqli_query($conn, "INSERT INTO formulasMetaData (fid, name, notes, profile, sex, defView, product_name, catClass) SELECT '$newFid', '$newName', notes, profile, sex, defView, '$newName', catClass FROM formulasMetaData WHERE fid = '$fid'");
 		$sql.=mysqli_query($conn, "INSERT INTO formulas (fid, name, ingredient, ingredient_id, concentration, dilutant, quantity, notes) SELECT '$newFid', '$newName', ingredient, ingredient_id, concentration, dilutant, quantity, notes FROM formulas WHERE fid = '$fid'");
 	}
 	if($nID = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$newFid'"))){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$fname.' cloned as <a href="?do=Formula&id='.$nID['id'].'" target="_blank">'.$newName.'</a>!</div>';
+		$response['success'] = $fname.' cloned as <a href="?do=Formula&id='.$nID['id'].'" target="_blank">'.$newName.'</a>!</div>';
 	}
+	echo json_encode($response);
 	return;
 }
 
@@ -341,12 +346,13 @@ if($_POST['action'] == 'addFormula'){
 }
 	
 //DELETE FORMULA
-if($_GET['action'] == 'delete' && $_GET['fid']){
-	$fid = mysqli_real_escape_string($conn, $_GET['fid']);
-	$fname = mysqli_real_escape_string($conn, $_GET['fname']);
+if($_POST['action'] == 'delete' && $_POST['fid']){
+	$fid = mysqli_real_escape_string($conn, $_POST['fid']);
+	$fname = mysqli_real_escape_string($conn, $_POST['fname']);
 
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$fid' AND isProtected = '1'"))){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> formula '.$fname.' is protected.</div>';
+		$response['error'] = 'Error deleting formula '.$fname.' is protected.</div>';
+		echo json_encode($response);
 		return;
 	}
 		
@@ -356,10 +362,11 @@ if($_GET['action'] == 'delete' && $_GET['fid']){
 		mysqli_query($conn, "DELETE FROM formulasMetaData WHERE fid = '$fid'");
 		mysqli_query($conn, "DELETE FROM formulasRevisions WHERE fid = '$fid'");
 		mysqli_query($conn, "DELETE FROM formula_history WHERE fid = '".$meta['id']."'");
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Formula '.$fname.' deleted!</div>';
+		$response['success'] = 'Formula '.$fname.' deleted!</div>';
 	}else{
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error</strong> deleting '.$fname.' formula!</div>';
+		$response['error'] = 'Error deleting '.$fname.' formula!</div>';
 	}
+	echo json_encode($response);
 	return;
 }
 

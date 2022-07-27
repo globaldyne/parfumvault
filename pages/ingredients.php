@@ -31,9 +31,9 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
                 		<div class="loader"></div>
                     	<div class="loader-text"></div>
                      </div>
-                     </div>
-                </div>
+                    </div>
                  </div>
+                </div>
               </div>
             </div>
           </div>
