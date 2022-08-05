@@ -1,6 +1,7 @@
 <?php 
-require('../inc/sec.php');
+define('__ROOT__', dirname(dirname(__FILE__))); 
 
+require(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
@@ -235,7 +236,7 @@ function reload_data() {
 				Add ingredient
 			<?php } ?>
 		</h1>
-		<span class="mgmIngHeaderCAS"><?=$ing['cas']?></span>
+		<span class="mgmIngHeaderCAS" id="mgmIngHeaderCAS"><?=$ing['cas']?></span>
 	</div>
 
 	<div id="ingMsg"><?=$msg?></div>
@@ -713,6 +714,9 @@ $(document).ready(function() {
 			},
 			dataType: 'html',
 			success: function (data) {
+				$('#mgmIngHeaderCAS').html($("#cas").val());
+				$('#IUPAC').html($("#INCI").val());
+
 				$('#ingMsg').html(data);
 				reload_overview();
 				if ($('#name').val()) {
