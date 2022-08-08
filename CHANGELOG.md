@@ -40,6 +40,7 @@
 - Add option to print the formula without csv export
 - CSV Formula import improvements
 - CSV Ingredients import improvements
+- DB backup/restore improvements
 - TECH Preview: PV Online share With a friend
 
 ### Version 4.7

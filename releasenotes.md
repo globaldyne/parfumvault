@@ -27,3 +27,4 @@ Whats New:
 - Ingredients card view is been removed in favour of datatables
 - Add option to print the formula without csv export
 - You can now match csv fields when you importing a formula or ingredients from a csv file
+- DB backup/restore improvements

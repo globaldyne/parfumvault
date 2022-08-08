@@ -1,6 +1,7 @@
 <?php
-require('../inc/sec.php');
+define('__ROOT__', dirname(dirname(__FILE__))); 
 
+require(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
@@ -49,13 +50,13 @@ if($_GET['do'] == 'db_update'){
 
 if($_GET['do'] == 'backupDB'){
 	
-	$file = 'backup-'.date("d-m-Y").'.sql.gz';
+	$file = 'backup_'.$ver.'_'.date("d-m-Y").'.sql.gz';
 	$mime = "application/x-gzip";
 	
 	header( 'Content-Type: '.$mime );
 	header( 'Content-Disposition: attachment; filename="' .$file. '"' );
 	
-	$cmd = "mysqldump -u $dbuser --password=$dbpass $dbname | gzip --best";   
+	$cmd = "mysqldump -u $dbuser --password=$dbpass $dbname | gzip --best";
 	passthru($cmd);
 	
 	return;
@@ -74,5 +75,40 @@ if($_GET['do'] == 'backupFILES'){
 
 	return;	
 }
+
+if($_GET['restore'] == 'db_bk'){
+
+	$target_path = __ROOT__.'/'.$tmp_path.basename($_FILES['backupFile']['name']); 
+
+	if(move_uploaded_file($_FILES['backupFile']['tmp_name'], $target_path)) {
+    	$gz_tmp = basename($_FILES['backupFile']['name']);
+		preg_match('/_(.*?)_/', $gz_tmp, $v);
+
+		if($ver !== $v['1']){
+			$result['error'] = "Backup file is taken from a different version ".$v['1'];
+			echo json_encode($result);
+			return;
+		}
+		
+		system("gunzip -c $target_path > ".__ROOT__.'/'.$tmp_path.'restore.sql');
+		$cmd = "mysql -u$dbuser -p$dbpass $dbname < ".__ROOT__.'/'.$tmp_path.'restore.sql'; 
+		passthru($cmd,$e);
+		unlink($target_path);
+		unlink(__ROOT__.'/'.$tmp_path.'restore.sql');
+		if(!$e){
+			$result['success'] = 'Database has been restored. Please refresh the page for the changes to take effect.';
+			unset($_SESSION['parfumvault']);
+			session_unset();
+		}else{
+			$result['error'] = "Something went wrong...";
+		}
+	} else {
+		$result['error'] = "There was an error uploading the file, please try again!";
+	}
+	
+	echo json_encode($result);
+	return;
+}
+
 
 ?>
