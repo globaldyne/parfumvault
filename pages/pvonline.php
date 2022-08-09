@@ -1,6 +1,7 @@
 <?php 
-require('../inc/sec.php');
+define('__ROOT__', dirname(dirname(__FILE__))); 
 
+require(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
@@ -281,7 +282,7 @@ if($_POST['action'] == 'upload' && $_POST['items'] == 'ingredients'){
 	}
 	
 	if($up_req){
-		$response['success'] = $i.' '.$msg.' and '.$c.' categories uploaded!';
+		$response['success'] = '<strong>'.$i.'</strong> ingredients'.$msg.' and <strong>'.$c.'</strong> categories uploaded!';
 	}else{
 		$response['error'] = 'Unable to upload data!';
 	}
