@@ -41,6 +41,7 @@
 - CSV Formula import improvements
 - CSV Ingredients import improvements
 - DB backup/restore improvements
+- Formulas comparison improvements
 - TECH Preview: PV Online share With a friend
 
 ### Version 4.7

@@ -28,3 +28,4 @@ Whats New:
 - Add option to print the formula without csv export
 - You can now match csv fields when you importing a formula or ingredients from a csv file
 - DB backup/restore improvements
+- Formulas comparison improvements

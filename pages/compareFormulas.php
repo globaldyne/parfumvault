@@ -1,18 +1,16 @@
 <?php 
 if (!defined('pvault_panel')){ die('Not Found');}
 
-if($_REQUEST['formula_a'] && $_REQUEST['formula_b']){
+if($_GET['formula_a'] && $_GET['formula_b']){
 	require(__ROOT__.'/func/compareFormulas.php');
-	$id_a = $_REQUEST['formula_a'];
-	$id_b = $_REQUEST['formula_b'];
+	$id_a = $_GET['formula_a'];
+	$id_b = $_GET['formula_b'];
 
 	$meta_a = mysqli_fetch_array(mysqli_query($conn, "SELECT name,fid FROM formulasMetaData WHERE id = '$id_a'"));
-	if($_REQUEST['compare'] == '1'){
-		$meta_b = mysqli_fetch_array(mysqli_query($conn, "SELECT name,fid FROM formulasMetaData WHERE id = '$id_b'"));
-	}
+
 	if($_REQUEST['compare'] == '2'){		
-		$revision = $_REQUEST['revision'];
-		$meta_b['name'] = base64_decode($id_b).' - Revision: '.$_REQUEST['revision'];
+		$revision = $_GET['revision'];
+		$meta_b['name'] = base64_decode($id_b).' - Revision: '.$_GET['revision'];
 	}
 	
 	$q_a = mysqli_query($conn, "SELECT ingredient,concentration,quantity FROM formulas WHERE fid = '".$meta_a['fid']."' ORDER BY ingredient ASC");
@@ -33,7 +31,7 @@ if($_REQUEST['formula_a'] && $_REQUEST['formula_b']){
 }
 ?>
 <div id="content-wrapper" class="d-flex flex-column">
-<?php require_once('pages/top.php'); ?>
+<?php require_once(__ROOT__.'/pages/top.php'); ?>
         <div class="container-fluid">
 		<div>
           <div class="card shadow mb-4">
@@ -106,9 +104,7 @@ if($_REQUEST['formula_a'] && $_REQUEST['formula_b']){
 					return;
 				}
 			?>
-           <form action="?do=compareFormulas&compare=1" method="post" enctype="multipart/form-data" target="_blank">
-           
-           <table width="100%" border="0">
+<table width="100%" border="0">
   <tr>
     <td width="9%">Formula A:</td>
     <td width="24%">
@@ -142,11 +138,28 @@ if($_REQUEST['formula_a'] && $_REQUEST['formula_b']){
     <td colspan="2">&nbsp;</td>
   </tr>
   <tr>
-    <td><input type="submit" name="button" class="btn btn-info" id="button" value="Compare"></td>
+    <td><input type="submit" name="button" class="btn btn-info" id="btnCMP" value="Compare"></td>
     <td colspan="2">&nbsp;</td>
   </tr>
 </table>
-           </form>          
+
+<div id="cmp_results"></div>
+<script>
+$('#btnCMP').click(function() {
+	$.ajax({ 
+		url: '/pages/cmp_formulas_data.php', 
+		type: 'POST',
+		data: {
+			id_a: $("#formula_a").val(),			
+			id_b: $("#formula_b").val(),
+			},
+		dataType: 'html',
+		success: function (data) {
+			$('#cmp_results').html(data);
+		}
+	  });
+});
+</script>
             <?php } ?>
            </div>
         </div>
