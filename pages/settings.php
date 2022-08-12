@@ -440,7 +440,7 @@ $(function() {
               <ul>
                 <li><div id="raw" data-size="<?=getMaximumFileUploadSizeRaw()?>">Maximum file size: <strong><?=getMaximumFileUploadSize()?></strong></div></li>
                 <li>Backup file must match your current PV version<strong> (<?=$ver?>)</strong>, if not downgrade or upgrade accordingly before restoring a backup</li>
-                <li>You current database will be wiped-out so if it contains any data you wanna keep, please take a backup first</li>
+                <li>You current database will be wiped-out so if it contains any data you wanna keep, please take a <a href="/pages/operations.php?do=backupDB">backup</a> first</li>
               </ul>
     <p>&nbsp;</p>
             </div>
