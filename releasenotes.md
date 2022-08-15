@@ -29,3 +29,4 @@ Whats New:
 - You can now match csv fields when you importing a formula or ingredients from a csv file
 - DB backup/restore improvements
 - Formulas comparison improvements
+- Update jquery UI to version 1.13.2

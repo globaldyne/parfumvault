@@ -42,6 +42,7 @@
 - CSV Ingredients import improvements
 - DB backup/restore improvements
 - Formulas comparison improvements
+- Update jquery UI to version 1.13.2
 - TECH Preview: PV Online share With a friend
 
 ### Version 4.7
