@@ -1,24 +1,27 @@
 <?php
-require('../inc/sec.php');
+define('__ROOT__', dirname(dirname(__FILE__))); 
 
+require(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/func/validateInput.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/fixIFRACas.php');
 require_once(__ROOT__.'/func/formatBytes.php');
+require_once(__ROOT__.'/func/create_thumb.php');
 
 if($_GET['type'] == 'bottle' && $_GET['name']){
 	$name = base64_decode($_GET['name']);
-	$ml = $_GET['size'];
-	$price = $_GET['price'];
-	$height = $_GET['height'];
-	$width = $_GET['width'];
-	$diameter = $_GET['diameter'];
+	$ml = $_GET['size']?:0;
+	$price = $_GET['price']?:0;
+	$height = $_GET['height']?:0;
+	$width = $_GET['width']?:0;
+	$diameter = $_GET['diameter']?:0;
 	$supplier = base64_decode($_GET['supplier']);
 	$supplier_link = base64_decode($_GET['supplier_link']);
 	$notes = base64_decode($_GET['notes']);
-	
+	$pieces = $_GET['pieces']?:0;
+
 	if(isset($_FILES['pic_file']['name'])){
       $file_name = $_FILES['pic_file']['name'];
       $file_size = $_FILES['pic_file']['size'];
@@ -26,34 +29,45 @@ if($_GET['type'] == 'bottle' && $_GET['name']){
       $file_type = $_FILES['pic_file']['type'];
       $file_ext = strtolower(end(explode('.',$_FILES['pic_file']['name'])));
 	  
-	  if (file_exists('../'.$uploads_path.'bottles/') === FALSE) {
-    	mkdir('../'.$uploads_path.'bottles/', 0740, true);
-	  }
+		if (!file_exists(__ROOT__."/uploads/tmp/")) {
+			mkdir(__ROOT__."/uploads/tmp/", 0740, true);
+		}
 
-	  $ext = explode(', ', $allowed_ext);
+		$allowed_ext = "png, jpg, jpeg, gif, bmp";
+	  	$ext = explode(', ', $allowed_ext);
 	  
-      if(in_array($file_ext,$ext)=== false){
-		 echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>File upload error: </strong>Extension not allowed, please choose a '.$allowed_ext.' file.</div>';
-      	return;
-	  }
-	  if($file_size > $max_filesize){
-		 echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>File upload error: </strong>File size must not exceed '.formatBytes($max_filesize).'</div>';
-		 return;
-      }
-	 if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM bottles WHERE name = '$name'"))){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$name.' already exists!</div>';
-	  	return;
-	  }
-      if(move_uploaded_file($file_tmp,'../'.$uploads_path.'bottles/'.base64_encode($file_name))){
-		$photo = $uploads_path.'bottles/'.base64_encode($file_name);
+      	if(in_array($file_ext,$ext)===false){
+			$response["error"] = '<strong>File upload error: </strong>Extension not allowed, please choose a '.$allowed_ext.' file';
+			echo json_encode($response);
+			return;
+		}
+	  	if($file_size > $max_filesize){
+			 $response["error"] = 'File size must not exceed '.formatBytes($max_filesize);
+			 echo json_encode($response);
+			 return;
+     	 }
+		 if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM bottles WHERE name = '$name'"))){
+			$response["error"] = $name.' already exists!';
+			echo json_encode($response);
+			return;
+		  }
+		  
+      if(move_uploaded_file($file_tmp,__ROOT__."/uploads/tmp/".base64_encode($file_name))){
+			$photo = "/uploads/tmp/".base64_encode($file_name);
+			create_thumb(__ROOT__.$photo,250,250); 
+			$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents(__ROOT__.$photo));
 		
-			if(mysqli_query($conn, "INSERT INTO bottles (name, ml, price, height, width, diameter, supplier, supplier_link, notes, photo) VALUES ('$name', '$ml', '$price', '$height', '$width', '$diameter', '$supplier', '$supplier_link', '$notes', '$photo')") ){
-				echo '<div class="alert alert-success alert-dismissible"><a href="?do=bottles" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$name.'</strong> added!</div>';
+			if(mysqli_query($conn, "INSERT INTO bottles (name, ml, price, height, width, diameter, supplier, supplier_link, notes, pieces) VALUES ('$name', '$ml', '$price', '$height', '$width', '$diameter', '$supplier', '$supplier_link', '$notes', '$pieces')") ){
+				$bottle_id = mysqli_insert_id($conn);
+				mysqli_query($conn, "INSERT INTO documents (ownerID,name,type,notes,docData) VALUES ('".$bottle_id."','$name','4','-','$docData')");
+				unlink(__ROOT__.$photo);
+				$response["success"] = $name.' added!';
 			}else{
-				echo '<div class="alert alert-danger alert-dismissible"><a href="?do=bottles" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Failed to add '.$name.' - '.mysqli_error($conn).'</div>';
+				$response["error"] =  'Failed to add '.$name.' - '.mysqli_error($conn);
 			}
 		}
 	  }
+	echo json_encode($response);  
 	return;
 }
 
@@ -61,9 +75,11 @@ if($_GET['type'] == 'lid' && $_GET['style']){
 	
 	$style = base64_decode($_GET['style']);
 	$color = base64_decode($_GET['color']);
-	$price = base64_decode($_GET['price']);
+	$price = $_GET['price']?:0;
 	$supplier = base64_decode($_GET['supplier']);
 	$supplier_link = base64_decode($_GET['supplier_link']);
+	$pieces = $_GET['pieces']?:0;
+	$colour = $_GET['colour'];
 
 
 	if(isset($_FILES['pic_file']['name'])){
@@ -73,28 +89,44 @@ if($_GET['type'] == 'lid' && $_GET['style']){
       $file_type = $_FILES['pic_file']['type'];
       $file_ext = strtolower(end(explode('.',$_FILES['pic_file']['name'])));
 	  
-	  if (file_exists('../'.$uploads_path.'lids/') === FALSE) {
-    	mkdir('../'.$uploads_path.'lids/', 0740, true);
-	  }
+	  	if (!file_exists(__ROOT__."/uploads/tmp/")) {
+			mkdir(__ROOT__."/uploads/tmp/", 0740, true);
+		}
 
-	  $ext = explode(', ', $allowed_ext);
+		$allowed_ext = "png, jpg, jpeg, gif, bmp";
+	  	$ext = explode(', ', $allowed_ext);
 	  
-      if(in_array($file_ext,$ext)=== false){
-		 echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>File upload error: </strong>Extension not allowed, please choose a '.$allowed_ext.' file.</div>';
-      }elseif($file_size > $max_filesize){
-		 echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>File upload error: </strong>File size must not exceed '.formatBytes($max_filesize).'</div>';
-      }else{
-	  
-         if(move_uploaded_file($file_tmp,'../'.$uploads_path.'lids/'.base64_encode($file_name))){
-		 	$photo = $uploads_path.'lids/'.base64_encode($file_name);
-			if(mysqli_query($conn, "INSERT INTO lids (style, colour, price, supplier, supplier_link, photo) VALUES ('$style', '$color', '$price', '$supplier', '$supplier_link', '$photo')")){
-		 		echo '<div class="alert alert-success alert-dismissible"><a href="?do=lids" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$style.'</strong> added!</div>';
+      	if(in_array($file_ext,$ext)===false){
+			$response["error"] = '<strong>File upload error: </strong>Extension not allowed, please choose a '.$allowed_ext.' file';
+			echo json_encode($response);
+			return;
+		}
+	  	if($file_size > $max_filesize){
+			 $response["error"] = 'File size must not exceed '.formatBytes($max_filesize);
+			 echo json_encode($response);
+			 return;
+     	}
+	   	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM lids WHERE style = '$style'"))){
+			$response["error"] = $style.' already exists!';
+			echo json_encode($response);
+			return;
+		}
+		if(move_uploaded_file($file_tmp,__ROOT__."/uploads/tmp/".base64_encode($file_name))){
+			$photo = "/uploads/tmp/".base64_encode($file_name);
+			create_thumb(__ROOT__.$photo,250,250); 
+			$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents(__ROOT__.$photo));
+		
+			if(mysqli_query($conn, "INSERT INTO lids (style, colour, price, supplier, supplier_link, pieces) VALUES ('$style', '$colour', '$price', '$supplier', '$supplier_link', '$pieces')") ){
+				$lid_id = mysqli_insert_id($conn);
+				mysqli_query($conn, "INSERT INTO documents (ownerID,name,type,notes,docData) VALUES ('".$lid_id."','$style','5','-','$docData')");
+				unlink(__ROOT__.$photo);
+				$response["success"] = $style.' added!';
 			}else{
-				echo '<div class="alert alert-danger alert-dismissible"><a href="?do=lids" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Failed to add '.$style.' - '.mysqli_error($conn).'</div>';
+				$response["error"] =  'Failed to add '.$style.' - '.mysqli_error($conn);
 			}
-		 }
+		}
 	  }
-   }
+	echo json_encode($response);  
 	return;
 }
 
@@ -204,77 +236,160 @@ if($_GET['type'] == 'cmpCSVImport'){
 
 if($_GET['type'] == 'ingCSVImport'){
 	$defCatClass = $settings['defCatClass'];
+	session_start();
+	if($_GET['step'] == 'upload'){
+	
+		$file_array = explode(".", $_FILES['CSVFile']['name']);
+		$extension = end($file_array);
+		if($extension != 'csv') {
+			echo '<div class="alert alert-danger">Error: Invalid csv file.</div>';
+			return; 
+		}
+		$csv_file_data = fopen($_FILES['CSVFile']['tmp_name'], 'r');
 
-	if(isset($_FILES['ingCSV']['name'])){
+		$file_header = fgetcsv($csv_file_data, 10000, ",");
+		echo '<table class="jj table table-bordered"><thead><tr class="csv_upload_header">';
+		for($count = 0; $count < count($file_header); $count++) {
+			echo   '<th>
+					<select name="set_column_data" class="form-control set_column_data" data-column_number="'.$count.'">
+					 <option value="">Assign to</option>
+					 <option value="">None</option>
+					 <option value="ingredient_name">Name</option>
+					 <option value="cas">CAS</option>
+					 <option value="iupac">IUPAC</option>
+					 <option value="fema">FEMA</option>
+					 <option value="type">Type</option>
+					 <option value="description">Description</option>
+					</select>
+			   </th>';
+		   } 
+		echo '</tr></thead><tbody>';
 		$i = 0;
-		$filename=$_FILES['ingCSV']['tmp_name'];    
-		if($_FILES['ingCSV']['size'] > 0){
-			$file = fopen($filename, "r");
-			while (($data = fgetcsv($file, 10000, ",")) !== FALSE){
-				if(!mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '".trim(ucwords($data['0']))."'"))){
-					$r = mysqli_query($conn, "INSERT INTO ingredients (name, cas, odor, profile, $defCatClass) VALUES ('".trim(ucwords($data['0']))."', '".trim($data['1'])."', '".trim($data['2'])."', '".trim($data['3'])."', '".preg_replace("/[^0-9.]/", "", $data['4'])."')");
-						$i++;
+		while(($row = fgetcsv($csv_file_data, 10000, ",")) !== FALSE)  {
+			echo '<tr id="'.$i.'">';
+			for($count = 0; $count < count($row); $count++) {
+				if($row[$count]){
+					echo '<td>'.$row[$count].'</td>';
+				}else{
+					echo '<td>-</td>';
 				}
 			}
-			if($r){
-				echo '<div class="alert alert-success alert-dismissible">'.$i.' Ingredients imported</div>';
-			}else{
-				echo '<div class="alert alert-danger alert-dismissible">Failed to import the ingredients list.'.mysqli_error($conn).'</div>';
-			}
+			echo '</tr>';
+			$temp_data[] = $row;
+			$i++;
 		}
-		fclose($file);  
+	
+			$_SESSION['csv_file_data'] = $temp_data;
+			echo '</tbody></table>';
 	
 	}  
+	if( $_GET['step'] == 'import'){
+
+		$i = 0;
+		$csv_file_data = $_SESSION['csv_file_data'];			
+		foreach($csv_file_data as $row) {
+			if(!mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '".trim(ucwords($row[$_POST["ingredient_name"]]))."'"))){
+				$data[] = '("'.$row[$_POST["ingredient_name"]].'","'.$row[$_POST["cas"]].'","'.$row[$_POST["fema"]].'","'.$row[$_POST["description"]].'", "'.$row[$_POST["iupac"]].'", "'.$row[$_POST["type"]].'" )';
+				$i++;
+			}
+
+		}
+		if($data){
+			$query = "INSERT INTO ingredients (name, cas, FEMA, odor, INCI, type) VALUES ".implode(",", $data)."";
+			$res =  mysqli_query($conn,$query);
+			if($res){
+				echo '<div class="alert alert-success alert-dismissible">'.$i.' Ingredients imported</div>';;
+			}else{
+				echo '<div class="alert alert-danger">Error: Incorrect CSV data '.$query.'</div>';
+			}
+		}else{
+			echo '<div class="alert alert-info">Nothing to import, data already exists</div>';
+		}
+	}
+	
 	return;
 }
 
 if($_GET['type'] == 'frmCSVImport'){
-	$name = mysqli_real_escape_string($conn,trim($_GET['name']));
-	
-	if(empty($name)){
-		echo '<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> Name is required.</div>';
-		return;
-	}
-
-	$fid = base64_encode($name);
-
-	$profile = mysqli_real_escape_string($conn,$_GET['profile']);
-	
-	if($chk = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$fid'"))){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$name.' already exists! Click <a href="?do=Formula&id='.$chk['id'].'"  target="_blank">here</a> to view/edit!</div>';
-	  	return;
-	 }
-
-		$filename=$_FILES["CSVFile"]["tmp_name"];    
-		if($_FILES["CSVFile"]["size"] > 0){
-			$file = fopen($filename, "r");
-			while (($data = fgetcsv($file, 10000, ",")) !== FALSE){
-				if($_GET['addMissIng'] == 'true'){
-					if(!mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '".trim(ucwords(preg_replace('/[[:^print:]]/', '',$data['0'])))."'"))){
-						mysqli_query($conn, "INSERT INTO ingredients (name, ml) VALUES ('".trim(ucwords(preg_replace('/[[:^print:]]/', '',$data['0'])))."', '10')");
-					}
-				}
-				if(empty($data['1'])){
-					$data['1'] = '100';
-				}
-				$sql = "INSERT INTO formulas (fid,name,ingredient,concentration,dilutant,quantity) VALUES ('$fid', '$name','".trim(ucwords(preg_replace('/[[:^print:]]/', '',$data['0'])))."','".$data['1']."','".$data['2']."','".$data['3']."')";
-				$res = mysqli_query($conn, $sql);
-			}
-			
-			if($res){
-				if(mysqli_query($conn, "INSERT INTO formulasMetaData (fid,name,notes,profile) VALUES ('$fid','$name','Imported via csv','$profile')")){
-					$iID = mysqli_insert_id($conn);
-				echo '<div class="alert alert-success alert-dismissible"><strong><a href="?do=Formula&id='.$iID.'" target="_blank">'.$name.'</a></strong> added!</div>';
-				}else{
-					echo '<div class="alert alert-danger alert-dismissible"><strong>Error in: </strong>'.mysqli_error($conn).'</div>';
-				}
-			}else{
-				echo '<div class="alert alert-danger alert-dismissible"><strong>Error adding: </strong>'.$name.'</div>';
-			}
-			fclose($file);  
+	session_start();
+	if($_GET['step'] == 'upload'){
+		$file_array = explode(".", $_FILES['CSVFile']['name']);
+		$extension = end($file_array);
+		if($extension != 'csv') {
+			echo '<div class="alert alert-danger">Error: Invalid csv file.</div>';
+			return; 
 		}
-	 
-	 
+		$csv_file_data = fopen($_FILES['CSVFile']['tmp_name'], 'r');
+
+		$file_header = fgetcsv($csv_file_data, 1000, ",");
+		echo '<table class="jj table table-bordered"><thead><tr class="csv_upload_header">';
+		for($count = 0; $count < count($file_header); $count++) {
+			echo   '<th>
+					<select name="set_column_data" class="form-control set_column_data" data-column_number="'.$count.'">
+					 <option value="">Assign to</option>
+					 <option value="">None</option>
+					 <option value="ingredient">Ingredient</option>
+					 <option value="concentration">Concentration</option>
+					 <option value="dilutant">Dilutant</option>
+					 <option value="quantity">Quantity</option>
+					</select>
+			   </th>';
+		   } 
+		echo '</tr></thead><tbody>';
+		$i = 0;
+		while(($row = fgetcsv($csv_file_data, 1000, ",")) !== FALSE)  {
+			echo '<tr id="'.$i.'">';
+			for($count = 0; $count < count($row); $count++) {
+				if($row[$count]){
+					echo '<td>'.$row[$count].'</td>';
+				}else{
+					echo '<td>-</td>';
+				}
+			}
+			echo '</tr>';
+			$temp_data[] = $row;
+			$i++;
+		}
+	
+			$_SESSION['csv_file_data'] = $temp_data;
+			echo '</tbody></table>';
+	}
+	
+	if( $_GET['step'] == 'import'){
+
+		$name = mysqli_real_escape_string($conn,trim($_POST['formula_name']));
+		$profile = $_POST['formula_profile'];
+		
+		if(empty($name)){
+			echo '<div class="alert alert-danger">Error: Name field cannot be empty</div>';
+			return;
+		}
+		require_once(__ROOT__.'/func/genFID.php');
+		$fid = random_str(40, '1234567890abcdefghijklmnopqrstuvwxyz');
+
+		if($chk = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE name = '$name'"))){
+			echo '<div class="alert alert-danger">Error: '.$name.' already exists! Click <a href="?do=Formula&id='.$chk['id'].'"  target="_blank">here</a> to view/edit!</div>';
+			return;
+		 }
+	
+		$csv_file_data = $_SESSION['csv_file_data'];
+				
+		foreach($csv_file_data as $row) {
+			$data[] = '("'.$fid.'","'.$name.'","'.$row[$_POST["ingredient"]].'", "'.preg_replace("/[^0-9.]/", "", $row[$_POST["concentration"]]?:'100').'", "'.preg_replace("/[0-9.]/", "",$row[$_POST["dilutant"]]?:'None').'", "'.preg_replace("/[^0-9.]/", "", $row[$_POST["quantity"]]).'")';
+		}
+		$query = "INSERT INTO formulas (fid,name,ingredient, concentration, dilutant, quantity) VALUES ".implode(",", $data)."";
+		$res =  mysqli_query($conn,$query);
+			
+		if($res){
+			if(mysqli_query($conn, "INSERT INTO formulasMetaData (fid,name,notes,profile) VALUES ('$fid','$name','Imported via csv','$profile')")){
+				echo '<div class="alert alert-success alert-dismissible"><strong><a href="?do=Formula&id='.mysqli_insert_id($conn).'" target="_blank">Formula '.$name.'</a></strong> has been imported!</div>';
+			}
+		}else{
+			echo '<div class="alert alert-danger">Error: Incorrect CSV data '.$query.'</div>';
+		}
+		
+	}
+	
 	return;
 }
 

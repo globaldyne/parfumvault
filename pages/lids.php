@@ -1,33 +1,30 @@
-<?php 
-if (!defined('pvault_panel')){ die('Not Found');}
-
-$q = mysqli_query($conn, "SELECT * FROM lids ORDER BY style ASC");
+<div id="content-wrapper" class="d-flex flex-column">
+<?php require_once(__ROOT__.'/pages/top.php'); ?>
+        <div class="container-fluid">
+<?php
 $sup = mysqli_query($conn, "SELECT id,name FROM ingSuppliers ORDER BY name ASC");
 while ($suppliers = mysqli_fetch_array($sup)){
 	    $supplier[] = $suppliers;
 }
-
 ?>
-<div id="content-wrapper" class="d-flex flex-column">
-<?php require_once(__ROOT__.'/pages/top.php'); ?>
-        <div class="container-fluid">
-<?php echo $msg; ?>
           <div>
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h2 class="m-0 font-weight-bold text-primary"><a href="?do=lids">Bottle Lids</a></h2>
+              <h2 class="m-0 font-weight-bold text-primary"><a href="javascript:reload_data()">Lids</a></h2>
             </div>
             <div class="card-body">
               <div class="table-responsive">
-                <table class="table table-bordered" id="tdData" width="100%" cellspacing="0">
+              <div id="innermsg"></div>
+                <table class="table table-bordered" id="tdDataLids" width="100%" cellspacing="0">
                   <thead>
-                    <tr class="noBorder noexport">
-                      <th colspan="8">
+                    <tr class="noBorder">
+                      <th colspan="12">
                   <div class="text-right">
                         <div class="btn-group">
                           <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
                           <div class="dropdown-menu dropdown-menu-right">
             				<a class="dropdown-item" href="#" data-toggle="modal" data-target="#addLid">Add new</a>
+                            <a class="dropdown-item" id="exportCSV" href="#">Export to CSV</a>
                           </div>
                         </div>                    
                         </div>
@@ -36,26 +33,12 @@ while ($suppliers = mysqli_fetch_array($sup)){
                     <tr>
                       <th>Style</th>
                       <th>Colour</th>
-                      <th>Price (<?php echo $settings['currency'];?>)</th>
+                      <th>Price</th>
                       <th>Supplier</th>
-                      <th>Photo</th>
-                      <th>Supplier Link</th>
-                      <th class="noexport">Actions</th>
+                      <th>Pieces</th>
+                      <th>Actions</th>
                     </tr>
                   </thead>
-                  <tbody id="lid_data">
-                    <?php  while ($lid = mysqli_fetch_array($q)){ ?>
-                    <tr>
-                      <td data-name="style" class="style" data-type="text" align="center" data-pk="<?php echo $lid['id'];?>"><?php echo $lid['style'];?></td>
-					  <td data-name="colour" class="colour" data-type="text" align="center" data-pk="<?php echo $lid['id'];?>"><?php echo $lid['colour'];?></td>
-					  <td data-name="price" class="price" data-type="text" align="center" data-pk="<?php echo $lid['id'];?>"><?php echo $lid['price'];?></td>
-                      <td data-name="supplier" class="supplier" data-type="select" align="center" data-pk="<?php echo $lid['id'];?>"><?php echo $lid['supplier'];?></td>
-                      <td align="center"><?php if(empty($lid['photo'])){ echo 'N/A'; }else{?><a href="<?php echo $lid['photo'];?>" class="popup-link fas fa-image"></a><?php } ?></td>
-                      <td align="center"><a href="<?php echo $lid['supplier_link'];?>" target="_blank" class="fas fa-external-link-alt"></a></td>
-					  <td class="noexport" align="center"><a href="pages/editLid.php?id=<?php echo $lid['id'];?>" class="fas fa-edit popup-link"></a> <a href="javascript:lidDel('<?php echo $lid['id'];?>')" onclick="return confirm('Delete <?php echo $lid['style'];?>?')" class="fas fa-trash"></a></td>
-					  </tr>
-                      <?php } ?>
-                  </tbody>
                 </table>
               </div>
             </div>
@@ -63,6 +46,7 @@ while ($suppliers = mysqli_fetch_array($sup)){
         </div>
       </div>
     </div>
+    
 <!-- ADD LID MODAL-->
 <div class="modal fade" id="addLid" tabindex="-1" role="dialog" aria-labelledby="addLid" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -81,11 +65,15 @@ while ($suppliers = mysqli_fetch_array($sup)){
         </p>
         <p>            
         Colour:
-          <input class="form-control" name="color" type="text" id="color" />
+          <input class="form-control" name="colour" type="text" id="colour" />
         </p>
         <p>
         Price:
           <input class="form-control" name="price" type="text" id="price" />
+        </p>
+        <p>
+        Pieces in stock:
+          <input class="form-control" name="pieces" type="text" id="pieces" />
         </p>
         <p>
         Supplier:
@@ -115,89 +103,158 @@ while ($suppliers = mysqli_fetch_array($sup)){
     </div>
   </div>
 </div>
-<script type="text/javascript">
-function lidDel(lidId){
-	$.ajax({ 
-		url: 'pages/update_settings.php', 
-		type: 'POST',
-		data: {
-			action: 'delete',
-			lidId: lidId,
+
+<script> 
+$(document).ready(function() {
+
+	var tdDataLids = $('#tdDataLids').DataTable( {
+	columnDefs: [
+		{ className: 'pv_vertical_middle text-center', targets: '_all' },
+		{ orderable: false, targets: [5] },
+	],
+	dom: 'lrftip',
+	buttons: [{
+				extend: 'csvHtml5',
+				title: "Lid Inventory",
+				exportOptions: {
+     				columns: [0, 1, 2, 3, 4]
+  				},
+			  }],
+	processing: true,
+	serverSide: true,
+	searching: true,
+	mark: true,
+	language: {
+		loadingRecords: '&nbsp;',
+		processing: 'Please Wait...',
+		zeroRecords: 'Nothing found',
+		search: 'Quick Search:',
+		searchPlaceholder: 'Name..',
 		},
-		dataType: 'html',
-		success: function (data) {
-			 location.reload();
-		}
+	ajax: {	
+		url: '/core/list_lid_data.php',
+		type: 'POST',
+		dataType: 'json',
+				data: function(d) {
+				if (d.order.length>0){
+					d.order_by = d.columns[d.order[0].column].data
+					d.order_as = d.order[0].dir
+				}
+			},
+		},
+	   columns: [
+            { data : 'style', title: 'Style', render: style },
+			{ data : 'colour', title: 'Colour' },
+			{ data : 'price', title: 'Price (<?php echo $settings['currency'];?>)' },
+			{ data : 'supplier', title: 'Supplier' },
+			{ data : 'pieces', title: 'Pieces in stock' },
+			{ data : null, title: 'Actions', render: actions },
+
+			],
+	order: [[ 0, 'asc' ]],
+	lengthMenu: [[20, 50, 100, 200, 400], [20, 50, 100, 200, 400]],
+	pageLength: 20,
+	displayLength: 20,
+	drawCallback: function( settings ) {
+		extrasShow();
+    	}
 	});
-};
+	
+	var detailRows = [];
+ 
+    $('#tdDataLids tbody').on( 'click', 'tr td:first-child', function () {
+        var tr = $(this).parents('tr');
+        var row = tdDataLids.row( tr );
+        var idx = $.inArray( tr.attr('id'), detailRows );
+ 
+        if ( row.child.isShown() ) {
+            tr.removeClass( 'details' );
+            row.child.hide();
+            detailRows.splice( idx, 1 );
+        } else {
+            tr.addClass( 'details' );
+            row.child( format( row.data() ) ).show();
+            if ( idx === -1 ) {
+                detailRows.push( tr.attr('id') );
+            }
+        }
+    });
+ 
+    tdDataLids.on( 'draw', function () {
+        $.each( detailRows, function ( i, id ) {
+            $('#'+id+' td:first-child + td').trigger( 'click' );
+        });
+    });
+}); //END DOC
 
-$('#lid_data').editable({
-  container: 'body',
-  selector: 'td.style',
-  url: "pages/update_data.php?lid=1",
-  title: 'Style',
-  type: "POST",
-  dataType: 'json',
-      success: function(response, newValue) {
-        if(response.status == 'error') return response.msg; else location.reload();
-    },
-  validate: function(value){
-   if($.trim(value) == ''){
-    return 'This field is required';
-   }
-  }
-});
 
-$('#lid_data').editable({
-  container: 'body',
-  selector: 'td.colour',
-  url: "pages/update_data.php?lid=1",
-  title: 'Colour',
-  type: "POST",
-  dataType: 'json',
-      success: function(response, newValue) {
-        if(response.status == 'error') return response.msg; else location.reload();
-    },
-  validate: function(value){
-   if($.trim(value) == ''){
-    return 'This field is required';
-   }
-  }
-});
+function format ( d ) {
+    details = '<img src="'+d.photo+'" class="img_ifra"/>';
+	return details;
+}
 
-$('#lid_data').editable({
-  container: 'body',
-  selector: 'td.price',
-  url: "pages/update_data.php?lid=1",
-  title: 'Price',
-  type: "POST",
-  dataType: 'json',
-      success: function(response, newValue) {
-        if(response.status == 'error') return response.msg; else location.reload();
-    },
-  validate: function(value){
-   if($.trim(value) == ''){
-    return 'This field is required';
-   }
-   if($.isNumeric(value) == '' ){
-    return 'Numbers only!';
-   }
-  }
+function style(data, type, row){
+	return '<i class="pv_point_gen pv_gen_li">'+row.style+'</i>';
+}
+
+function actions(data, type, row){
+	return '<a href="'+ row.supplier_link +'" target="_blank" rel="tip" title="Open '+ row.supplier +' page" class="fas fa-shopping-cart"></a> <a href="pages/editLid.php?id='+row.id+'" rel="tip" title="Edit '+ row.style +'" class="fas fa-edit popup-link"><a> <i rel="tip" title="Delete '+ row.style +'" class="pv_point_gen fas fa-trash" style="color: #c9302c;" id="ldlDel" data-name="'+ row.style +'" data-id='+ row.id +'></i>';    
+}
+
+function reload_data() {
+    $('#tdDataLids').DataTable().ajax.reload(null, true);
+}
+
+$('#tdDataLids').on('click', '[id*=ldlDel]', function () {
+	var ldl = {};
+	ldl.ID = $(this).attr('data-id');
+	ldl.Name = $(this).attr('data-name');
+    
+	bootbox.dialog({
+       title: "Confirm deletion",
+       message : 'Permanently delete <strong>'+ ldl.Name +'</strong> and its data?',
+       buttons :{
+           main: {
+               label : "Delete",
+               className : "btn-danger",
+               callback: function (){
+	    			
+				$.ajax({
+					url: '/pages/update_data.php', 
+					type: 'POST',
+					data: {
+						action: "delete",
+						type: "lid",
+						lidId: ldl.ID,
+						},
+					dataType: 'json',
+					success: function (data) {
+						if(data.success){
+							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
+							reload_data();
+						}else if(data.error){
+							var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
+						}
+						$('#innermsg').html(msg);
+					}
+				});
+				
+                 return true;
+               }
+           },
+           cancel: {
+               label : "Cancel",
+               className : "btn-default",
+               callback : function() {
+                   return true;
+               }
+           }   
+       },onEscape: function () {return true;}
+   });
 });
   
- 
-$('#lid_data').editable({
-	container: 'body',
-  	selector: 'td.supplier',
-  	title: 'Supplier',
-  	url: "pages/update_data.php?lid=1",
-    source: [<?php foreach($supplier as $sup){?>
-             {value: '<?php echo $sup['name'];?>', text: '<?php echo $sup['name'];?>'},
-            <?php } ?>
-          ]
-});
 
-$('#addLid').on('click', '[id*=lid_add]', function () {
+$('#lid_add').on('click', function () {
 
 	$("#lid_inf").html('<div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
 	$("#lid_add").prop("disabled", true);
@@ -206,29 +263,31 @@ $('#addLid').on('click', '[id*=lid_add]', function () {
 	var fd = new FormData();
     var files = $('#pic')[0].files;
     var style = $('#style').val();
-    var color = $('#color').val();
     var price = $('#price').val();
     var supplier = $('#supplier').val();
     var supplier_link = $('#supplier_link').val();
+    var pieces = $('#pieces').val();
+    var colour = $('#colour').val();
 
     if(files.length > 0 ){
 		fd.append('pic_file',files[0]);
 
 			$.ajax({
-              url: 'pages/upload.php?type=lid&style=' + btoa(style) + '&color=' + btoa(color) + '&price=' + btoa(price) + '&supplier=' + btoa(supplier) + '&supplier_link=' + btoa(supplier_link),
+              url: '/pages/upload.php?type=lid&style=' + btoa(style) + '&price=' + price + '&supplier=' + btoa(supplier) + '&supplier_link=' + btoa(supplier_link) + '&pieces=' + pieces + '&colour=' + colour,
               type: 'POST',
               data: fd,
               contentType: false,
               processData: false,
 			  		cache: false,
+			  dataType: 'json',
               success: function(response){
-                 if(response != 0){
-                    $("#lid_inf").html(response);
+                 if(response.success){
+                    $("#lid_inf").html('<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+response.success+'</div>');
 					$("#lid_add").prop("disabled", false);
         			$("#lid_add").prop("value", "Add");
-					//reload_data();
+					reload_data();
                  }else{
-                    $("#lid_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> File upload failed!</div>');
+                    $("#lid_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+response.error+'</div>');
 					$("#lid_add").prop("disabled", false);
         			$("#lid_add").prop("value", 'Add');
                  }
@@ -242,4 +301,21 @@ $('#addLid').on('click', '[id*=lid_add]', function () {
 		
 });
 
+function extrasShow() {
+	$('[rel=tip]').tooltip({
+        "html": true,
+        "delay": {"show": 100, "hide": 0},
+     });
+	$('.popup-link').magnificPopup({
+		type: 'iframe',
+		closeOnContentClick: false,
+		closeOnBgClick: false,
+		showCloseBtn: true,
+	});
+};
+
+
+$('#exportCSV').click(() => {
+    $('#tdDataLids').DataTable().button(0).trigger();
+});
 </script>

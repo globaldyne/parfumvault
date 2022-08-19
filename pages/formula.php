@@ -291,7 +291,7 @@ $('#quantity').prop("disabled", true);
 $('#add_ing').on('click', '[id*=add-btn]', function () {
 	
 	$.ajax({ 
-		url: 'pages/manageFormula.php', 
+		url: '/pages/manageFormula.php', 
 		type: 'POST',
 		data: {
 			action: "addIng",
@@ -301,17 +301,19 @@ $('#add_ing').on('click', '[id*=add-btn]', function () {
 			ingredient: $("#ingredient").val(),
 			dilutant: $("#dilutant").val()
 			},
-		dataType: 'html',
+		dataType: 'json',
 		success: function (data) {
-			if ( data.indexOf("Error") > -1 ) {
-				$('#msgInfo').html(data); 
-			}else{
-				$('#msgInfo').html(data);
+			if ( data.success ) {
+				var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 				reload_formula_data();
 				fetch_impact();
 				fetch_pyramid();
+			} else {
+				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + data.error + '</strong></div>';
 			}
+			$('#msgInfo').html(msg);
 		}
+		
 	  });
 				
 });

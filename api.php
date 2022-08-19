@@ -88,8 +88,7 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 	}
 	
 	if($_REQUEST['do'] == 'ingredients'){
-		$sql = mysqli_query($conn, "SELECT id, name, cas, odor, profile, physical_state, cat4, category, type FROM ingredients");
-		$rows = array();    
+		$sql = mysqli_query($conn, "SELECT id, name, cas, odor, profile, physical_state, cat4, category, type, INCI, purity FROM ingredients");
 		while($rx = mysqli_fetch_assoc($sql)) { 
 			if($ifra = mysqli_fetch_array(mysqli_query($conn, "SELECT cat4, type FROM IFRALibrary WHERE cas = '".$rx['cas']."'"))){
         		$rx['cat4'] = preg_replace("/[^0-9.]/", "", $ifra['cat4']);
@@ -115,7 +114,6 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 			 if (is_null($rx['type']) || empty($rx['type'])) {
                 $rx['type'] = "AC";
              }
-				
 			$rx['id'] = (int)$rx['id'];
 			$rx['name'] = (string)$rx['name'];
 			$rx['cas'] = (string)$rx['cas'];
@@ -126,13 +124,19 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 			$rx['category'] = (int)$rx['category'];
 			$rx['type'] = (string)$rx['type'];
 			$rx['class'] = (string)$rx['class'];
+			$rx['purity'] = (string)$rx['purity']?:'100';
+			$rx['INCI'] = (string)$rx['INCI']?:'N/A';
+			
+			$r[] = $rx;
+	}
 
-				
-			$rows[$_REQUEST['do']][] = array_filter($rx);
-        }
-      header('Content-Type: application/json; charset=utf-8');
-      echo json_encode($rows,  JSON_PRETTY_PRINT);
-      return;
+
+	$response = array(
+	  	"ingredients" => $r
+	);
+	header('Content-Type: application/json; charset=utf-8');
+    echo json_encode($response,  JSON_PRETTY_PRINT);
+    return;
 	}
 
 	if($_REQUEST['do'] == 'categories'){

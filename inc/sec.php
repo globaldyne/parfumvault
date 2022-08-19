@@ -1,6 +1,9 @@
 <?php
 define('pvault_panel', TRUE);
-define('__ROOT__', dirname(dirname(__FILE__))); 
+
+if(defined('__ROOT__') == FALSE){
+	define('__ROOT__', dirname(dirname(__FILE__))); 
+}
 
 session_start();
 if(!isset($_SESSION['parfumvault'])){
@@ -9,5 +12,6 @@ if(!isset($_SESSION['parfumvault'])){
 	header('Location: '.$login);
 	exit;
 }
+$pvOnlineAPI = 'https://online.jbparfum.com/api2.php';
 
 ?>

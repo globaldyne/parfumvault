@@ -7,6 +7,114 @@ require_once(__ROOT__.'/inc/product.php');
 require_once(__ROOT__.'/func/validateInput.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/pvOnline.php');
+require_once(__ROOT__.'/func/create_thumb.php');
+
+
+if($_POST['update_pvonline_profile'] && $pv_online['enabled'] == '1'){
+	
+	if(!$_POST['nickname'] || !$_POST['intro']){
+		$response["error"] = "All fields are required";
+		echo json_encode($response);
+		return;
+	}
+	
+	$doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM documents WHERE ownerID = '".$_SESSION['userID']."' AND name = 'avatar' AND type = '3'"));
+
+	$intro = base64_encode(mysqli_real_escape_string($conn, $_POST['intro']));
+	$name = base64_encode(mysqli_real_escape_string($conn, $_POST['name']));
+
+	$data = [ 'username' => strtolower($pv_online['email']), 'password' => $pv_online['password'],'do' => 'updateProfile','nickname' => base64_encode($_POST['nickname']), 'intro' => $intro, 'avatar' => $doc['avatar'], 'name' => $name ];
+
+    $req = json_decode(pvPost($pvOnlineAPI, $data));
+
+	if($req->success){
+		$response['success'] = $req->success;
+	}else{
+		$response['error'] = $req->error;
+	}
+	
+	echo json_encode($response);
+	
+	
+
+	return;
+}
+
+if($_GET['update_user_avatar']){
+	$allowed_ext = "png, jpg, jpeg, gif, bmp";
+
+	$filename = $_FILES["avatar"]["tmp_name"];  
+    $file_ext = strtolower(end(explode('.',$_FILES['avatar']['name'])));
+	$file_tmp = $_FILES['avatar']['tmp_name'];
+    $ext = explode(', ',strtolower($allowed_ext));
+
+	
+	if(!$filename){
+		$response["error"] = 'Please choose a file to upload';
+		echo json_encode($response);
+		return;
+	}	
+	
+	if (!file_exists(__ROOT__."/uploads/logo/")) {
+		mkdir(__ROOT__."/uploads/logo/", 0740, true);
+	}
+		
+	if(in_array($file_ext,$ext)===false){
+		$response["error"] = '<strong>File upload error: </strong>Extension not allowed, please choose a '.$allowed_ext.' file';
+		echo json_encode($response);
+		return;
+	}
+		
+	if($_FILES["avatar"]["size"] > 0){
+		move_uploaded_file($file_tmp,__ROOT__."/uploads/logo/".base64_encode($filename));
+		$avatar = "/uploads/logo/".base64_encode($filename);		
+		create_thumb(__ROOT__.$avatar,250,250); 
+		$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents(__ROOT__.$avatar));
+		
+		mysqli_query($conn, "DELETE FROM documents WHERE ownerID = '".$user['id']."' AND type = '3' AND name = 'avatar'");
+		if(mysqli_query($conn, "INSERT INTO documents (ownerID,type,name,notes,docData) VALUES ('".$user['id']."','3','avatar','Main Profile Avatar','$docData')")){	
+			unlink(__ROOT__.$avatar);
+			$response["success"] = array( "msg" => "User avatar updated!", "avatar" => $docData);
+			echo json_encode($response);
+			return;
+		}
+	}
+
+	return;
+}
+
+if($_POST['update_user_profile']){
+	
+	if(!$_POST['user_fname'] || !$_POST['user_email'] || !$_POST['user_pass']){
+		$response["error"] = "All fields are required";
+		echo json_encode($response);
+		return;
+	}
+	
+	$fullName = mysqli_real_escape_string($conn, $_POST['user_fname']);
+	$email = mysqli_real_escape_string($conn, $_POST['user_email']);
+	
+	if($password = mysqli_real_escape_string($conn, $_POST['user_pass'])){
+		if(strlen($password) < '5'){
+			$response["error"] = "Password must be at least 5 characters long";
+			echo json_encode($response);
+			return;
+		}else{
+			$p = ",password='$password'";
+		}
+	}
+	
+	if(mysqli_query($conn, "UPDATE users SET fullName = '$fullName', email = '$email' $p")){
+		$response["success"] = "User details updated!";
+		echo json_encode($response);
+	}else{
+		$response["error"] = 'Failed to update user details! '.mysqli_error($conn);
+		echo json_encode($response);
+	}
+	
+
+	return;
+}
 
 if($_POST['manage'] == 'general'){
 	$currency = utf8_encode(htmlentities($_POST['currency']));
@@ -104,30 +212,64 @@ if($_POST['manage'] == 'print'){
 
 //PV ONLINE
 if($_POST['manage'] == 'pvonline'){
-	$pv_online_email = mysqli_real_escape_string($conn, $_POST['pv_online_email']);
-	$pv_online_pass = mysqli_real_escape_string($conn, $_POST['pv_online_pass']);
 
-	if(empty($pv_online_email) || empty($pv_online_pass)){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Missing fields.</div>';
+	if($_POST['email_alerts']) {
+		$state = (int)$_POST['new_ing_status'];
+		
+		$params = "?username=".$pv_online['email']."&password=".$pv_online['password']."&do=newIngNotify&state=$state";
+        $req = json_decode(pvUploadData($pvOnlineAPI.$params, null));
+
+		if($req){
+			$response['success'] = $req->success;
+		}else{
+			$response['error'] = 'Unable to update '.$req->error;
+		}
+		
+		echo json_encode($response);
+		return;	
+	}
+	
+	if($_POST['state_update']) {
+		
+		$pv_online_state = (int)$_POST['pv_online_state'];	
+	
+		if(mysqli_query($conn, "UPDATE pv_online SET enabled = '$pv_online_state'")){
+			if($pv_online_state == '1'){
+				$response['success'] = 'active';
+			}elseif($pv_online_state == '0'){
+				$response['success'] = 'in-active';
+			}else{
+				$response['error'] = mysqli_error();
+			}
+			echo json_encode($response);
+		}
 		return;
 	}
-	if($_POST['pv_online_state'] == 'true') {
-		$pv_online_state = '1';
-	}else{
-		$pv_online_state = '0';
-	}
-	$valAcc = pvOnlineValAcc($pvOnlineAPI, $pv_online_email, $pv_online_pass, $ver);
+	
+	if($_POST['share_update']) {
+		$pv_online_share = (int)$_POST['pv_online_share'];
+		
+		$params = "?username=".$pv_online['email']."&password=".$pv_online['password']."&do=formulaSharingState&state=$pv_online_share";
+        $req = json_decode(pvUploadData($pvOnlineAPI.$params, null));
 
-    if($valAcc == 'Failed'){
-       	echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Invalid credentials or your PV Online account is inactive.</div>';
-		return;
-	}
-	if(mysqli_query($conn, "INSERT pv_online (id,email,password,enabled) VALUES ('1','$pv_online_email', '$pv_online_pass','$pv_online_state') ON DUPLICATE KEY UPDATE id = '1', email = '$pv_online_email', password = '$pv_online_pass', enabled = '$pv_online_state'")){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>PV Online details updated!</div>';
-	}else{
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error updating PV Online info.</div>';
+		if($req){
+			$response['success'] = $req->success;
+		}else{
+			$response['error'] = 'Unable to update '.$req->error;
+		}
+		
+		echo json_encode($response);
+		return;	
 	}
 
+	if($_POST['rmACC']) {		
+		$params = "?username=".$pv_online['email']."&password=".$pv_online['password']."&do=deleteProfile";
+        $response = json_decode(pvUploadData($pvOnlineAPI.$params, null));
+
+		echo json_encode($response);
+		return;	
+	}
+	echo json_encode($response);
 	return;
 }
 
@@ -144,34 +286,6 @@ if($_POST['manage'] == 'brand'){
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error updating brand info.</div>';
 	}
 	return;
-}
-
-//ADD USERS
-if($_POST['manage'] == 'user'){
-	$username = mysqli_real_escape_string($conn, $_POST['username']);
-	$password = mysqli_real_escape_string($conn, $_POST['password']);
-	$fullName = mysqli_real_escape_string($conn, $_POST['fullName']);
-	$email = mysqli_real_escape_string($conn, $_POST['email']);
-	
-	if(empty($username) || empty($fullName) || empty($email)){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Missing fields.</div>';
-		return;
-	}
-	if (strlen($password) < '5') {
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>Password must be at least 5 chars long!</div>';
-		return;
-	}
-	if(mysqli_num_rows(mysqli_query($conn, "SELECT username FROM users WHERE username = '$username' OR email = '$email' "))){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$username.' already exists or email is re-used!</div>';
-		return;
-	}
-	
-	if(mysqli_query($conn, "INSERT INTO users (username,password,fullName,email) VALUES ('$username', PASSWORD('$password'), '$fullName', '$email')")){
-		echo '<div class="alert alert-success alert-dismissible">User added!</div>';
-	}else{
-		echo '<div class="alert alert-danger alert-dismissible">Error adding user.</div>';
-	}
-	return;	
 }
 
 //ADD CATEGORY
@@ -264,20 +378,5 @@ if($_POST['action'] == 'delete' && $_POST['lidId']){
 	return;	
 }
 
-//DELETE BOTTLE
-if($_POST['action'] == 'delete' && $_POST['btlId']){
-	$id = mysqli_real_escape_string($conn, $_POST['btlId']);
-	
-	if(mysqli_query($conn, "DELETE FROM bottles WHERE id = '$id'")){
-		echo '<div class="alert alert-success alert-dismissible"><a href="?do=bottles" class="close" data-dismiss="alert" aria-label="close">x</a>Item removed!</div>';
-	}
-	return;	
-}
 
-//Update ingredients view
-if($_GET['ingView']){
-	$v = $_GET['ingView'];
-	mysqli_query($conn, "UPDATE settings SET defIngView = '$v'");
-	return;	
-}
 ?>

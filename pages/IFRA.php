@@ -80,7 +80,6 @@ $defCatClass = $settings['defCatClass'];
       </div>
       <div class="modal-body">
        <div id="IFRAImportMsg"></div>
-		<form method="post" action="javascript:importIFRA()" enctype="multipart/form-data" id="ifra_import_form">
        	<table width="100%">
        		<tr>
     	   	<td width="122" valign="top">IFRA xls File:</td>
@@ -100,10 +99,9 @@ $defCatClass = $settings['defCatClass'];
        <p class="alert-link">The IFRA xls can be downloaded from its official <a href="https://ifrafragrance.org/safe-use/standards-guidance" target="_blank">web site</a></p>
        </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <input type="submit" name="btnImport" class="btn btn-primary" id="btnImportCSV" value="Import">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btnIFRAC">Cancel</button>
+        <input type="submit" name="btnImportIFRA" class="btn btn-primary" id="btnImportIFRA" value="Import">
       </div>
-      </form>
     </div>
   </div>
 </div>
@@ -125,7 +123,7 @@ $defCatClass = $settings['defCatClass'];
        <p>By using this service, you agree with <a href="https://pubchemdocs.ncbi.nlm.nih.gov/about" target="_blank">PubChem's</a> terms</p>
        </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="ImportpbC">Cancel</button>
         <input type="submit" name="btnImport" class="btn btn-primary" id="Importpb" value="Import">
       </div>
     </div>
@@ -253,10 +251,11 @@ $('#csv').on('click',function(){
 	}); 
 });
 
-function importIFRA(){
-	$("#IFRAImportMsg").html('<div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
-	$("#btnImport").prop("disabled", true);
-		
+$('#btnImportIFRA').click(function() {	
+	$("#IFRAImportMsg").html('<div class="alert alert-info"><img src="/img/loading.gif"/>Please wait, file upload in progress....</div>');
+	$("#btnImportIFRA").prop("disabled", true);
+	
+	
 	var fd = new FormData();
     var files = $('#ifraXLS')[0].files;
     var modify = $('#updateCAS').val();
@@ -273,34 +272,46 @@ function importIFRA(){
            success: function(response){
              if(response != 0){
 				 $("#IFRAImportMsg").html(response);
-				 $("#btnImport").prop("disabled", false);
+				 $("#btnImportIFRA").hide();
+				 $("#btnIFRAC").html('Close');
 				 reload_ifra_data();
               }else{
                 $("#IFRAImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> File upload failed!</div>');
-				$("#btnImport").prop("disabled", false);
+				$("#btnImportIFRA").prop("disabled", false);
               }
             },
          });
   }else{
 	$("#IFRAImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a file to upload!</div>');
-	$("#btnImport").prop("disabled", false);
+	$("#btnImportIFRA").prop("disabled", false);
   }	
-};
+});
 
-$('#pubChem_import').on('click', '[id*=Importpb]', function () { 
-	$("#pbmportMsg").html('<div class="alert alert-info alert-dismissible">Please wait, this may take a few minutes, depending your IFRA library size and your internet connection...</div>');
+$('#Importpb').click(function() {	
+	$("#pbmportMsg").html('<div class="alert alert-info"><img src="/img/loading.gif"/>Please wait, this may take a few minutes, depending your IFRA library size and your internet connection...</div>');
 	$("#Importpb").prop("disabled", true);
+	$("#ImportpbC").hide();
+
 	$.ajax({
 		url: 'pages/update_data.php', 
 		type: 'GET',
 		data: {
 			IFRA_PB: "import",
 			},
-		dataType: 'html',
+		dataType: 'json',
 		success: function (data) {
-			$('#pbmportMsg').html(data);
-			$("#Importpb").prop("disabled", false);
-			reload_ifra_data();
+			if(data.success){				
+				$('#pbmportMsg').html('<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>');
+				$("#Importpb").hide();
+				$("#ImportpbC").show();
+				$('#ImportpbC').html('Close');
+				reload_ifra_data();
+			}else{
+				$('#pbmportMsg').html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>');
+				$("#Importpb").show();
+				$("#Importpb").prop("disabled", false);
+				$("#ImportpC").show();
+			}
 		}
 	});
 });

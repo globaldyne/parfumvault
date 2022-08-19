@@ -31,9 +31,9 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
                 		<div class="loader"></div>
                     	<div class="loader-text"></div>
                      </div>
-                     </div>
-                </div>
+                    </div>
                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -115,53 +115,58 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
 
 <!--CSV IMPORT-->
 <div class="modal fade" id="csv_import" tabindex="-1" role="dialog" aria-labelledby="csv_import" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog pv-modal-xxl" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="csv_import">Import ingredients from CSV file</h5>
+        <h5 class="modal-title">Import ingredients from CSV file</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
        <div id="CSVImportMsg"></div>
-		<form method="post" action="javascript:importCSV()" enctype="multipart/form-data" id="csvform">
-       <table width="100%">
-       		<tr>
-    	   	<td width="92" valign="top">CSV File:</td>
-				<td width="1533" colspan="3">
-                	<input type="file" id="ingCSV" name="ingCSV" />
-				</td>
-			</tr>
-		</table>
-         <strong>WARNING:</strong><br />
-      		Make sure your CSV file follows the guidelines as documented <a href="https://www.jbparfum.com/knowledge-base/3-ingredients-import-csv" target="_blank">here</a>
+        <div id=process_area>
+
+           <table width="100%">
+                <tr>
+                <td width="92" valign="top">CSV File:</td>
+                    <td width="1533" colspan="3">
+                        <input type="file" id="CSVFile" name="CSVFile" />
+                    </td>
+                </tr>
+            </table>
+        
+        </div>
+        <div id="step_upload" class="modal-body"></div>
+        <div class="alert alert-info">Select and match the fields in you CSV file, if a column isn't applicable, set it to <strong>None</strong>. Any existing data in your database will not be replaced and or updated if exists in CSV.</div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <input type="submit" name="button" class="btn btn-primary" id="btnImportCSV" value="Import">
+        <input type="button" class="btn btn-secondary" data-dismiss="modal" id="btnCloseCsv" value="Cancel">
+        <input type="submit" class="btn btn-primary" id="btnImportCSV" value="Import">
       </div>
-      </form>
     </div>
   </div>
 </div>  
+
 <!--PV ONLINE IMPORT-->
 <div class="modal fade" id="pv_online_import" tabindex="-1" role="dialog" aria-labelledby="pv_online_import" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="pv_online_import">Import ingredients from PV Online</h5>
+        <h5 class="modal-title">Import ingredients from PV Online</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
        <div id="pvImportMsg"></div>
-  <form action="javascript:pv_online_import('ingredients,allergens')" method="get" name="form1" target="_self" id="form1">
       <strong>WARNING:</strong><br />
       you are about to import data from PV Online, please bear in mind, PV Online is a community driven database therefore may contain unvalidated or incorrect data. <br />
       If your local database contains already an ingredient with the same name, the ingredient data will not be imported. <p></p>
-      Ingredients online: <strong><?php echo pvOnlineStats($pvOnlineAPI, 'ingredients');?></strong>
+      <p>Ingredients online: <strong><?php echo pvOnlineStats($pvOnlineAPI, 'ingredientsTotal');?></strong></p>
+      <p>Synonyms online: <strong><?php echo pvOnlineStats($pvOnlineAPI, 'synonymsTotal');?></strong></p>
+      <p>Compositions online: <strong><?php echo pvOnlineStats($pvOnlineAPI, 'composTotal');?></strong></p>
+
 </div>
 	  <div class="modal-footer_2">
 	  <?php require('privacy_note.php');?>
@@ -170,7 +175,6 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <input type="submit" name="button" class="btn btn-primary" id="btnImport" value="Import">
       </div>
-     </form>
     </div>
   </div>
 </div>
@@ -187,7 +191,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
       </div>
       <div class="modal-body">
        <div id="pvUploadMsg"></div>
-  <form action="javascript:pv_online_upload('ingredients')" method="get" name="form1" target="_self" id="form_pv_online_upload">
+
       <strong>WARNING:</strong><br />
       you are about to upload data to PV Online, please bear in mind, PV Online is a community driven database therefore your data will be available to others. Please make sure you not uploading any sensitive information. <br />
       If PV Online database contains already an ingredient with the same name, the ingredient data will not be uploaded. <p></p>
@@ -215,11 +219,11 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
 	  <div class="modal-footer_2">
 	  <?php require('privacy_note.php');?>
       </div>
-<div class="modal-footer">
-  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-  <input type="submit" name="button" class="btn btn-primary" id="btnUpload" value="Upload">
-</div>
-     </form>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <input type="submit" name="button" class="btn btn-primary" id="btnUpload" value="Upload">
+        </div>
+
     </div>
   </div>
 </div>
@@ -267,126 +271,70 @@ function adv_search() {
 };
 
 
-function pv_online_import(items) {
+$('#pv_online_import').on('click', '[id*=btnImport]', function () {
 	$('#btnImport').attr('disabled', true);
 	$('#pvImportMsg').html('<div class="alert alert-info"><img src="/img/loading.gif"/> Please wait, this may take a while...</div>');
 	$.ajax({
 		url: 'pages/pvonline.php', 
-		type: 'GET',
+		type: 'POST',
 		data: {
-			action: "import",
-			items: items
+			action: 'import',
+			items: 'ingredients,allergens,suppliers,suppliersMeta,synonyms'
 			},
-		dataType: 'html',
+		dataType: 'json',
 		success: function (data) {
-			$('#btnImport').attr('disabled', false);
-		  	$('#pvImportMsg').html(data);
+			if(data.error){
+				var rmsg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
+				$('#btnImport').attr('disabled', false);
+			}else if(data.warning){
+				var rmsg = '<div class="alert alert-warning alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.warning+'</div>';
+				$('#btnImport').hide();
+			}else if(data.success){
+				var rmsg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
+				$('#btnImport').hide();
+				list_ingredients();
+			}
+			
+			
+		  	$('#pvImportMsg').html(rmsg);
 		}
 	  });
-};
+});
 
 <?php if($pv_online['email'] && $pv_online['password'] && $pv_online['enabled'] == '1'){?>
+$(".pv_exclusions input[type=checkbox]:checked").on('change', function () {
+	$('#btnUpload').show();
+	$('#btnUpload').prop('disabled', false);
+});
 
-function pv_online_upload(items) {
-	$('#btnUpload').attr('disabled', true);
+$('#pv_online_upload').on('click', '[id*=btnUpload]', function () {
+	$('#btnUpload').prop('disabled', true);
 	$('#pvUploadMsg').html('<div class="alert alert-info"><img src="/img/loading.gif"/> Please wait, this may take a while...</div>');
 	$.ajax({
 		url: 'pages/pvonline.php', 
-		type: 'GET',
+		type: 'POST',
 		data: {
-			action: "upload",
-			items: items,
+			action: 'upload',
+			items: 'ingredients',
 			excludeNotes: $("#excludeNotes").is(':checked'),
 			excludeSynonyms: $("#excludeSynonyms").is(':checked'),
 			excludeCompositions: $("#excludeCompositions").is(':checked'),
 			excludeSuppliers: $("#excludeSuppliers").is(':checked')
 
 			},
-		dataType: 'html',
+		dataType: 'json',
 		success: function (data) {
-			$('#btnUpload').attr('disabled', false);
-		  	$('#pvUploadMsg').html(data);
+			if(data.error){
+				var rmsg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
+			}else if(data.success){
+				var rmsg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
+				$('#btnUpload').hide();
+			}
+		  	$('#pvUploadMsg').html(rmsg);
 		}
 	  });
-};
+});
 <?php } ?>
-
-function delete_ingredient(id){
-	
-	$.ajax({
-		url: 'pages/update_data.php', 
-		type: 'GET',
-		data: {
-			ingredient: "delete",
-			ing_id: id,
-			},
-		dataType: 'html',
-		success: function (data) {
-		  	$('#innermsg').html(data);
-			list_ingredients();
-		}
-	  });
-};
-
-function importCSV(){
-    $("#CSVImportMsg").html('<div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
-	$("#btnImport").prop("disabled", true);
-		
-	var fd = new FormData();
-    var files = $('#ingCSV')[0].files;
-        
-       if(files.length > 0 ){
-          fd.append('ingCSV',files[0]);
-
-        $.ajax({
-           url: 'pages/upload.php?type=ingCSVImport',
-           type: 'POST',
-           data: fd,
-           contentType: false,
-           processData: false,
-           success: function(response){
-             if(response != 0){
-               $("#CSVImportMsg").html(response);
-				$("#btnImport").prop("disabled", false);
-              }else{
-                $("#CSVImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> File upload failed!</div>');
-				$("#btnImport").prop("disabled", false);
-              }
-            },
-         });
-  }else{
-	$("#CSVImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a file to upload!</div>');
-	$("#btnImport").prop("disabled", false);
-  }
-};
-
-function importING(name) {	  
-	$.ajax({ 
-		url: 'pages/update_data.php', 
-		type: 'GET',
-		data: {
-			'import': 'ingredient',
-			'name': name,
-			},
-		dataType: 'html',
-		success: function (data) {
-			$('#innermsg').html(data);
-		}
-	  });
-};
-
-function setView(view) {
-	$.ajax({ 
-    url: 'pages/update_settings.php', 
-	type: 'GET',
-    data: {
-		ingView: view,
-		},
-	dataType: 'html',
-    success: function (data) {
-		location.reload();
-    }
-  });
-};
-
 </script>
+
+<script src="/js/ingredients.js"></script>

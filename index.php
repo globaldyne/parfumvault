@@ -46,14 +46,6 @@ if($pv_meta['schema_ver'] < $db_ver){
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <script type='text/javascript'>
-	if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))){
-			if(screen.height>=1080)
-				document.write('<meta name="viewport" content="width=device-width, initial-scale=2.0, minimum-scale=1.0, maximum-scale=3.0, target-densityDpi=device-dpi, user-scalable=yes">');
-			else	
-				document.write('<meta name="viewport" content="width=device-width, initial-scale=0.5, minimum-scale=0.5, maximum-scale=3.0, target-densityDpi=device-dpi, user-scalable=yes">');
-	}
-  </script>
   <meta name="description" content="<?php echo $product.' - '.$ver;?>">
   <meta name="author" content="Perfumers Vault by JB">
   <title><?php echo $product;?> - Dashboard</title>
@@ -67,8 +59,6 @@ if($pv_meta['schema_ver'] < $db_ver){
   <link href="css/bootstrap-editable.css" rel="stylesheet">
   <link href="css/datatables.min.css" rel="stylesheet">
   <link href="css/bootstrap.min.css" rel="stylesheet">
-  <link href="css/fixedHeader.dataTables.min.css" rel="stylesheet">
-  <link href="css/responsive.bootstrap.min.css" rel="stylesheet">
   <link href="css/jquery-ui.css" rel="stylesheet">
   <link href="css/magnific-popup.css" rel="stylesheet" />
   
@@ -85,9 +75,7 @@ if($pv_meta['schema_ver'] < $db_ver){
   <script src="js/bootstrap-select.js"></script>
   <script src="js/bootstrap-editable.js"></script>
   <script src="js/dataTables.responsive.min.js"></script>
-  <script src="js/responsive.bootstrap.min.js"></script>
   <script src="js/bootbox.min.js"></script>
-  <script src="js/dataTables.fixedHeader.min.js"></script>
   
   
 <script type='text/javascript'>
@@ -104,14 +92,13 @@ $(document).ready(function() {
   		showCloseBtn: true,
 	});
 	
-    $('#tdData,#tdDataSup,#tdDataCustomers').DataTable({
+    $('#tdData').DataTable({
 	    "paging":   true,
 		"info":   true,
 		"lengthMenu": [[20, 35, 60, -1], [20, 35, 60, "All"]]
 	});
 	
 	list_formulas();
-	//list_ingredients();
 
 });
 
@@ -144,16 +131,10 @@ function list_formulas(){
 function list_ingredients(page,limit,filter){
 	$('#list_ingredients').html('<img class="loader loader-center" src="/img/Testtube.gif"/>');
 	$.ajax({
-		<?php if($settings['defIngView'] == '1'){ ?>
-			url: 'pages/listIngredients.php',
-		<?php }elseif($settings['defIngView'] == '2'){ ?>
-			url: 'pages/listIngredientsCards.php',
-		<?php } ?>
+		url: 'pages/listIngredients.php',
 		type: 'GET',
 		data: {
-			"page": page,
-			"ing_limit": limit,
-			"q": filter
+			"search": "<?=$_GET['search']?>"
 			},
 		dataType: 'html',
 			success: function (data) {
@@ -202,7 +183,7 @@ function list_users(){
        
       <li class="nav-item">
       <?php 
-	  if($_GET['do'] == 'listFormulas' || $_GET['do'] == 'genFinishedProduct' || $_GET['do'] == 'compareFormulas' || $_GET['do'] == 'Formula'  || $_GET['do'] == 'sellFormula'){ 
+	  if($_GET['do'] == 'listFormulas' || $_GET['do'] == 'genFinishedProduct' || $_GET['do'] == 'compareFormulas' || $_GET['do'] == 'Formula'  || $_GET['do'] == 'sellFormula' || $_GET['do'] == 'todo'){ 
 	  	$expand_f = 'show'; 
 		$class_f = ''; 
 		$aria_f = 'true'; 
@@ -222,6 +203,7 @@ function list_users(){
             <a class="collapse-item <?php if($_GET['do'] == 'compareFormulas'){ echo 'active';}?>" href="?do=compareFormulas">Compare Formulas</a>
             <a class="collapse-item <?php if($_GET['do'] == 'genFinishedProduct'){ echo 'active';}?>" href="?do=genFinishedProduct"> Finished Product</a>
             <a class="collapse-item <?php if($_GET['do'] == 'sellFormula'){ echo 'active';}?>" href="?do=sellFormula">Sell Formula</a>
+            <a class="collapse-item <?php if($_GET['do'] == 'todo'){ echo 'active';}?>" href="?do=todo">Pending Formulas</a>
           </div>
         </div>
       </li>
@@ -336,7 +318,7 @@ function list_users(){
 		}
 	?>
 <?php require_once(__ROOT__.'/pages/footer.php'); ?>
-<?php if(isset($show_release_notes)){ ?>
+<?php //if(isset($show_release_notes)){ ?>
 <!--RELEASE NOTES-->
 <div class="modal fade" id="release_notes" tabindex="-1" role="dialog" aria-labelledby="release_notes" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
@@ -356,6 +338,6 @@ function list_users(){
     </div>
   </div>
 </div>
-<?php } ?>
+<?php //} ?>
 </body>
 </html>

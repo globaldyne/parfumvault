@@ -4,24 +4,19 @@
 require_once(__ROOT__.'/pages/top.php'); 
 						   
  
-$pv_online = mysqli_fetch_array(mysqli_query($conn, "SELECT email,enabled FROM pv_online"));
 $cats_q = mysqli_query($conn, "SELECT id,name,description,type FROM IFRACategories ORDER BY id ASC");
 
 while($cats_res = mysqli_fetch_array($cats_q)){
     $cats[] = $cats_res;
 }
 require(__ROOT__.'/inc/settings.php');
+require(__ROOT__.'/func/php-settings.php');
 
 ?>
 <script>
 $(function() {
   $("#settings").tabs();
-  $("#username").val('');
-  $("#password").val('');
-  $("#fname").val('');
-  $("#email").val('');
 });
-list_users();
 
 
 </script>
@@ -35,7 +30,6 @@ list_users();
          <li><a href="#frmCat">Formula Categories</a></li>
          <li><a href="#types">Perfume Types</a></li>
          <li><a href="#print"><span>Printing</span></a></li>
-         <li><a href="#users"><span>Users</span></a></li>
          <li><a href="#brand"><span>My Brand</span></a></li>
          <li><a href="#maintenance"><span>Maintenance</span></a></li>
          <li><a href="#pvonline"><span>PV Online</span></a></li>
@@ -307,15 +301,6 @@ list_users();
         </table>
 </div>
 
-    <div id="users">
-    	<div id="usrMsg"></div>
-        <div id="list_users">
-            <div class="loader-center">
-                <div class="loader"></div>
-                <div class="loader-text"></div>
-            </div>
-        </div>
-    </div>
      <div id="brand">
          <table width="100%" border="0">
            <tr>
@@ -391,56 +376,12 @@ list_users();
      </div>
     
      <div id="pvonline">
-        <table width="100%" border="0">
-          <tr>
-            <td colspan="3"><div id="pvOnMsg"></div></td>
-          </tr>
-          <tr>
-            <td width="9%" height="30"><a href="#" rel="tip" data-placement="right" title="Please enter your PV Online email">Email:</a></td>
-            <td width="9%"><input name="pv_online_email" type="text" class="form-control" id="pv_online_email" value="<?php echo $pv_online['email'];?>" /></td>
-            <td width="82%">&nbsp;</td>
-          </tr>
-          <tr>
-            <td height="24"><a href="#" rel="tip" data-placement="right" title="Your PV Online password.">Password:</a></td>
-            <td><input name="pv_online_pass" type="password" class="form-control" id="pv_online_pass" /></td>
-            <td>&nbsp;</td>
-          </tr>
-          <tr>
-            <td height="29"><a href="#" rel="tip" data-placement="right" title="Enable or disable PV Online access.">Enabled:</a></td>
-            <td><input name="pv_online_state" type="checkbox" id="pv_online_state" value="1" <?php if($pv_online['enabled'] == '1'){ ?> checked <?php } ?>/></td>
-            <td>&nbsp;</td>
-          </tr>
-          <tr>
-            <td height="29">&nbsp;</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-          </tr>
-          <tr>
-            <td height="29"><a href="https://online.jbparfum.com/register.php" target="_blank">Create an account</a></td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-          </tr>
-          <tr>
-            <td height="31"><a href="https://online.jbparfum.com/forgotpass.php" target="_blank">Forgot Password?</a></td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-          </tr>
-          <tr>
-            <td colspan="2"><?php require(__ROOT__.'/pages/privacy_note.php');?></td>
-            <td>&nbsp;</td>
-          </tr>
-          <tr>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-          </tr>
-          <tr>
-            <td><input type="submit" name="save-pv-on" id="save-pv-on" value="Submit" class="btn btn-info"/></td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-          </tr>
-		</table>
+        <div class="loader-center">
+            <div class="loader"></div>
+            <div class="loader-text"></div>
+        </div>
      </div>
+     
 <div id="maintenance">
   <table width="100%" border="0">
     <tr>
@@ -461,7 +402,7 @@ list_users();
     </tr>
     <tr>
       <td><ul>
-        <li><a href="pages/maintenance.php?do=restoreDB" class="popup-link">Restore DB</a></li>
+        <li> <a href="#" data-toggle="modal" data-backdrop="static" data-keyboard="false" data-target="#restore_db">Restore DB</a></li>
       </ul></td>
       <td>&nbsp;</td>
     </tr>
@@ -470,214 +411,250 @@ list_users();
   </div>
  </div>
 </div>
+
+<div class="modal fade" id="restore_db" tabindex="-1" role="dialog" aria-labelledby="restore_db" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Restore database from a backup file</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <div id="DBRestMsg"></div>
+      <div class="progress">  
+         <div id="uploadProgressBar" class="progress-bar" role="progressbar" aria-valuemin="0"></div>
+      </div>
+      <div id="backupArea">
+      
+          <div class="form-group">
+              <label class="col-md-3 control-label">Backup file:</label>
+              <div class="col-md-8">
+                 <input type="file" name="backupFile" id="backupFile" class="form-control" />
+              </div>
+          </div>
+          <div class="col-md-12">
+             <hr />
+             <p><strong>IMPORTANT:</strong></p>
+              <ul>
+                <li><div id="raw" data-size="<?=getMaximumFileUploadSizeRaw()?>">Maximum file size: <strong><?=getMaximumFileUploadSize()?></strong></div></li>
+                <li>Backup file must match your current PV version<strong> (<?=$ver?>)</strong>, if not downgrade or upgrade accordingly before restoring a backup</li>
+                <li>You current database will be wiped-out so if it contains any data you wanna keep, please take a <a href="/pages/operations.php?do=backupDB">backup</a> first</li>
+              </ul>
+    <p>&nbsp;</p>
+            </div>
+          </div>
+      
+      </div>
+	  <div class="modal-footer">
+        <input type="button" class="btn btn-secondary" data-dismiss="modal" id="btnCloseBK" value="Cancel">
+        <input type="submit" name="btnRestore" class="btn btn-primary" id="btnRestore" value="Restore">
+      </div>
+   
+  </div>
+  
+</div>
+</div>
+
 <script type="text/javascript" language="javascript" >
 $(document).ready(function() {
-	list_cat();
-	list_fcat();
-	$('#save-general').click(function() {
-							  
-		$.ajax({ 
-			url: 'pages/update_settings.php', 
-			type: 'POST',
-			data: {
-				manage: 'general',
-				
-				currency: $("#currency").val(),
-				top_n: $("#top_n").val(),
-				heart_n: $("#heart_n").val(),
-				base_n: $("#base_n").val(),
-				qStep: $("#qStep").val(),
-				defCatClass: $("#defCatClass").val(),
-				pubchem_view: $("#pubchem_view").val(),
-				grp_formula: $("#grp_formula").val(),
-				chem_vs_brand: $("#chem_vs_brand").is(':checked'),
-				pubChem: $("#pubChem").is(':checked'),
-				chkVersion: $("#chkVersion").is(':checked'),
-				multi_dim_perc: $("#multi_dim_perc").is(':checked'),
-				mUnit: $("#mUnit").val(),
-				api: $("#pv_api").val(),
-				api_key: $("#pv_api_key").val(),
 
-			},
-			dataType: 'html',
-			success: function (data) {
-				$('#inMsg').html(data);
-			}
-		  });
- 	});
+list_cat();
+list_fcat();
+get_pvonline();
+
+$('#save-general').click(function() {
+	$.ajax({ 
+		url: 'pages/update_settings.php', 
+		type: 'POST',
+		data: {
+			manage: 'general',
+			currency: $("#currency").val(),
+			top_n: $("#top_n").val(),
+			heart_n: $("#heart_n").val(),
+			base_n: $("#base_n").val(),
+			qStep: $("#qStep").val(),
+			defCatClass: $("#defCatClass").val(),
+			pubchem_view: $("#pubchem_view").val(),
+			grp_formula: $("#grp_formula").val(),
+			chem_vs_brand: $("#chem_vs_brand").is(':checked'),
+			pubChem: $("#pubChem").is(':checked'),
+			chkVersion: $("#chkVersion").is(':checked'),
+			multi_dim_perc: $("#multi_dim_perc").is(':checked'),
+			mUnit: $("#mUnit").val(),
+			api: $("#pv_api").val(),
+			api_key: $("#pv_api_key").val(),
+	},
+	dataType: 'html',
+	success: function (data) {
+		$('#inMsg').html(data);
+	}
+  });
+});
 	
 $('#save-api').click(function() {
-
 	$.ajax({ 
 		url: 'pages/update_settings.php', 
 		type: 'POST',
 		data: {
-			manage: 'api',
-				
+			manage: 'api',		
 			api: $("#pv_api").is(':checked'),
 			api_key: $("#pv_api_key").val(),
-			},
-			dataType: 'html',
-			success: function (data) {
-				$('#pvAPIMsg').html(data);
-			}
-		 });
-});
-
-$('#save-perf-types').click(function() {
-							  
-		$.ajax({ 
-			url: 'pages/update_settings.php', 
-			type: 'POST',
-			data: {
-				manage: 'perfume_types',
-				
-				edp: $("#edp").val(),
-				edc: $("#edc").val(),
-				edt: $("#edt").val(),
-				parfum: $("#parfum").val()
-				},
-			dataType: 'html',
-			success: function (data) {
-				$('#ptypes').html(data);
-			}
-		  });
-  });
-	
-	$('#save-print').click(function() {
-							  
-		$.ajax({ 
-			url: 'pages/update_settings.php', 
-			type: 'POST',
-			data: {
-				manage: 'print',
-				
-				label_printer_addr: $("#label_printer_addr").val(),
-				label_printer_model: $("#label_printer_model").val(),
-				label_printer_size: $("#label_printer_size").val(),
-				label_printer_font_size: $("#label_printer_font_size").val()
-				},
-			dataType: 'html',
-			success: function (data) {
-				$('#printMsg').html(data);
-			}
-		  });
-  });
-	
-	$('#save-pv-on').click(function() {
-							  
-		$.ajax({ 
-			url: 'pages/update_settings.php', 
-			type: 'POST',
-			data: {
-				manage: 'pvonline',
-				
-				pv_online_email: $("#pv_online_email").val(),
-				pv_online_pass: $("#pv_online_pass").val(),
-				pv_online_state: $("#pv_online_state").is(':checked'),
-				
-				},
-			dataType: 'html',
-			success: function (data) {
-				$('#pvOnMsg').html(data);
-			}
-		  });
-  });
-	
-	$('#save-brand').click(function() {
-							  
-		$.ajax({ 
-			url: 'pages/update_settings.php', 
-			type: 'POST',
-			data: {
-				manage: 'brand',
-				
-				brandName: $("#brandName").val(),
-				brandAddress: $("#brandAddress").val(),
-				brandEmail: $("#brandEmail").val(),
-				brandPhone: $("#brandPhone").val(),
-				},
-			dataType: 'html',
-			success: function (data) {
-				$('#brandMsg').html(data);
-			}
-		  });
-  });
-	
-	
-
-	$("#brandLogo_upload").click(function(){
-        $("#brandMsg").html('<div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
-		$("#brandLogo_upload").prop("disabled", true);
-        $("#brandLogo_upload").prop('value', 'Please wait...');
-		
-		var fd = new FormData();
-        var files = $('#brandLogo')[0].files;
-        
-        if(files.length > 0 ){
-           fd.append('brandLogo',files[0]);
-
-           $.ajax({
-              url: 'pages/upload.php?type=brand',
-              type: 'post',
-              data: fd,
-              contentType: false,
-              processData: false,
-              success: function(response){
-                 if(response != 0){
-                    $("#brandMsg").html(response);
-					$("#brandLogo_upload").prop("disabled", false);
-        			$("#brandLogo_upload").prop('value', 'Upload');
-                 }else{
-                    $("#brandMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> File upload failed!</div>');
-					$("#brandLogo_upload").prop("disabled", false);
-        			$("#brandLogo_upload").prop('value', 'Upload');
-                 }
-              },
-           });
-        }else{
-			$("#brandMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a file to upload!</div>');
-			$("#brandLogo_upload").prop("disabled", false);
-   			$("#brandLogo_upload").prop('value', 'Upload');
-        }
-    });	
-})
-
-
-
-function usrDel(userId){
-	$.ajax({ 
-		url: 'pages/update_settings.php', 
-		type: 'POST',
-		data: {
-			action: 'delete',
-			userId: userId,
 		},
 		dataType: 'html',
 		success: function (data) {
-			$('#usrMsg').html(data);
-			list_users();
+			$('#pvAPIMsg').html(data);
 		}
 	});
-}
+});
+
+$('#save-perf-types').click(function() {
+	$.ajax({ 
+		url: 'pages/update_settings.php', 
+		type: 'POST',
+		data: {
+			manage: 'perfume_types',
+			edp: $("#edp").val(),
+			edc: $("#edc").val(),
+			edt: $("#edt").val(),
+			parfum: $("#parfum").val()
+		},
+		dataType: 'html',
+		success: function (data) {
+			$('#ptypes').html(data);
+		}
+	});
+});
+	
+$('#save-print').click(function() {
+	$.ajax({ 
+		url: 'pages/update_settings.php', 
+		type: 'POST',
+		data: {
+			manage: 'print',
+			label_printer_addr: $("#label_printer_addr").val(),
+			label_printer_model: $("#label_printer_model").val(),
+			label_printer_size: $("#label_printer_size").val(),
+			label_printer_font_size: $("#label_printer_font_size").val()
+			},
+		dataType: 'html',
+		success: function (data) {
+			$('#printMsg').html(data);
+		}
+	});
+});
+
+
+$('#save-brand').click(function() {
+	$.ajax({ 
+		url: 'pages/update_settings.php', 
+		type: 'POST',
+		data: {
+			manage: 'brand',
+			
+			brandName: $("#brandName").val(),
+			brandAddress: $("#brandAddress").val(),
+			brandEmail: $("#brandEmail").val(),
+			brandPhone: $("#brandPhone").val(),
+			},
+		dataType: 'html',
+		success: function (data) {
+			$('#brandMsg').html(data);
+		}
+	});
+});
+
+$("#brandLogo_upload").click(function(){
+	$("#brandMsg").html('<div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
+	$("#brandLogo_upload").prop("disabled", true);
+    $("#brandLogo_upload").prop('value', 'Please wait...');
+		
+	var fd = new FormData();
+    var files = $('#brandLogo')[0].files;
+        
+    if(files.length > 0 ){
+    	fd.append('brandLogo',files[0]);
+        $.ajax({
+		  url: 'pages/upload.php?type=brand',
+		  type: 'post',
+		  data: fd,
+		  contentType: false,
+		  processData: false,
+		  success: function(response){
+			 if(response != 0){
+				$("#brandMsg").html(response);
+				$("#brandLogo_upload").prop("disabled", false);
+				$("#brandLogo_upload").prop('value', 'Upload');
+			 }else{
+				$("#brandMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> File upload failed!</div>');
+				$("#brandLogo_upload").prop("disabled", false);
+				$("#brandLogo_upload").prop('value', 'Upload');
+			 }
+		  },
+	   });
+    }else{
+		$("#brandMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a file to upload!</div>');
+		$("#brandLogo_upload").prop("disabled", false);
+		$("#brandLogo_upload").prop('value', 'Upload');
+		}
+	});	
+});
 
 function list_cat(){
-$.ajax({ 
-	url: 'pages/listCat.php', 
-	dataType: 'html',
+	$.ajax({ 
+		url: 'pages/listCat.php', 
+		dataType: 'html',
 		success: function (data) {
 			$('#list_cat').html(data);
 		}
 	});
 };
 
+function get_pvonline(){
+	$.ajax({ 
+		url: 'pages/views/settings/pvOnline.php', 
+		dataType: 'html',
+		success: function (data) {
+			$('#pvonline').html(data);
+		}
+	});
+};
+
 function list_fcat(){
-$.ajax({ 
-	url: 'pages/listFrmCat.php', 
-	dataType: 'html',
+	$.ajax({ 
+		url: 'pages/listFrmCat.php', 
+		dataType: 'html',
 		success: function (data) {
 			$('#list_fcat').html(data);
 		}
 	});
 };
+
+//DISABLE PVONLINE
+function disablePV(){
+	$.ajax({ 
+		url: '/pages/update_settings.php',
+		dataType: 'json',
+		data: {
+			pv_online_state: '0',
+			state_update: '1',
+			manage: 'pvonline'
+		},
+		type: 'POST',
+		success: function (data) {
+			if(data.error){
+				$('#pvOnMsg').html('<div class="alert alert-danger">PV Online state update '+data.error+'</div>');	
+			}else if(data.success){
+				$('#pvOnMsg').html('<div class="alert alert-success">PV Online state update '+data.success+'</div>');	
+			}
+		},
+		error: function () {
+				$('#pvOnMsg').html('<span class="label label-danger">Unable to update settings</span>');
+		}
+					
+	});
+};
+
 </script>
+<script src="/js/settings.backup.js"></script>

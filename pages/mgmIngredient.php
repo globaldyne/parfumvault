@@ -1,6 +1,7 @@
 <?php 
-require('../inc/sec.php');
+define('__ROOT__', dirname(dirname(__FILE__))); 
 
+require(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
@@ -46,58 +47,30 @@ while($pictograms_res = mysqli_fetch_array($pictograms)){
 	$pictogram[] = $pictograms_res;
 }
 
-
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
 	<link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
 	<title>Manage <?=$ing['name']?></title>
-	<link href="../css/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-	<script src="../js/jquery/jquery.min.js"></script>
+    
+	<link href="/css/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    
+	<script src="/js/jquery/jquery.min.js"></script>
+	<script src="/js/bootstrap.min.js"></script>
+	<script src="/js/bootstrap-select.js"></script>
+	<script src="/js/bootstrap-editable.js"></script>
+	<script src="/js/datatables.min.js"></script>
+	<script src="/js/bootbox.min.js"></script>
 
-	<script src="../js/bootstrap.min.js"></script>
-	<script src="../js/bootstrap-select.js"></script>
-	<script src="../js/bootstrap-editable.js"></script>
-
-	<link rel="stylesheet" type="text/css" href="../css/datatables.min.css"/>
-	<script type="text/javascript" src="../js/datatables.min.js"></script>
-	<script src="../js/bootbox.min.js"></script>
-
-	<style>
-		.form-inline .form-control {
-			display: inline-block;
-			width: 500px;
-			vertical-align: middle;
-		}
-	</style>
-	<link href="../css/sb-admin-2.css" rel="stylesheet">
-	<link href="../css/bootstrap-select.min.css" rel="stylesheet">
-	<link href="../css/bootstrap.min.css" rel="stylesheet">
-	<link href="../css/vault.css" rel="stylesheet">
-	<link href="../css/bootstrap-editable.css" rel="stylesheet">
-
-
-	<style>
-		.container {
-			max-width: 100%;
-			width: 1800px;
-			height: 1300px;
-		}
-		.dropdown-menu > li > a {
-			font-weight: 700;
-			padding: 10px 20px;
-		}
-
-		.bootstrap-select.btn-group .dropdown-menu li small {
-			display: block;
-			padding: 6px 0 0 0;
-			font-weight: 100;
-		}
-	</style>
-
+    <link href="/css/datatables.min.css" rel="stylesheet"/>
+	<link href="/css/sb-admin-2.css" rel="stylesheet">
+	<link href="/css/bootstrap-select.min.css" rel="stylesheet">
+	<link href="/css/bootstrap.min.css" rel="stylesheet">
+	<link href="/css/vault.css" rel="stylesheet">
+	<link href="/css/bootstrap-editable.css" rel="stylesheet">
+	<link href="/css/mgmIngredient.css" rel="stylesheet">
+	
 <script>
 
 function reload_overview() {
@@ -168,7 +141,19 @@ function reload_data() {
 			$('#fetch_composition').html(data);
 		},
 	});
-
+	
+	$.ajax({ 
+		url: 'views/ingredients/techData.php', 
+		type: 'POST',
+		data: {
+			ingID: "<?=$ing['id']?>",
+		},
+		dataType: 'html',
+		success: function (data) {
+			$('#fetch_tech_data').html(data);
+		},
+	});
+	
 	$.ajax({ 
 		url: 'ingSuppliers.php', 
 		type: 'GET',
@@ -249,7 +234,7 @@ function reload_data() {
 				Add ingredient
 			<?php } ?>
 		</h1>
-		<span class="mgmIngHeaderCAS"><?=$ing['cas']?></span>
+		<span class="mgmIngHeaderCAS" id="mgmIngHeaderCAS"><?=$ing['cas']?></span>
 	</div>
 
 	<div id="ingMsg"><?=$msg?></div>
@@ -472,46 +457,7 @@ function reload_data() {
 </div>
 
 <div class="tab-pane fade" id="tech_data">
-	<h3>Techical Data</h3>
-	<hr>
-	<table width="100%" border="0">
-		<tr>
-			<td width="20%">Tenacity:</td>
-			<td width="80%" colspan="3"><input name="tenacity" type="text" class="form-control" id="tenacity" value="<?php echo $ing['tenacity']; ?>"/></td>
-		</tr>
-		<tr>
-			<td>Flash Point:</td>
-			<td colspan="3"><input name="flash_point" type="text" class="form-control" id="flash_point" value="<?php echo $ing['flash_point']; ?>"/></td>
-		</tr>
-		<tr>
-			<td>Chemical Name:</td>
-			<td colspan="3"><input name="chemical_name" type="text" class="form-control" id="chemical_name" value="<?php echo $ing['chemical_name']; ?>"/></td>
-		</tr>
-		<tr>
-			<td>Molecular Formula:</td>
-			<td colspan="3">
-            <input name="formula" type="text" class="form-control" id="molecularFormula" value="<?php echo $ing['formula']; ?>">
-			</td>
-		</tr>
-		<tr>
-			<td>Log/P:</td>
-			<td colspan="3"><input name="logp" type="text" class="form-control" id="logp" value="<?php echo $ing['logp']; ?>"/></td>
-		</tr>
-		<tr>
-			<td>Soluble in:</td>
-			<td colspan="3"><input name="soluble" type="text" class="form-control" id="soluble" value="<?php echo $ing['soluble']; ?>"/></td>
-		</tr>
-		<tr>
-			<td>Molecular Weight:</td>
-			<td colspan="3"><input name="molecularWeight" type="text" class="form-control" id="molecularWeight" value="<?php echo $ing['molecularWeight']; ?>"/></td>
-		</tr>
-		<tr>
-			<td>Appearance:</td>
-			<td colspan="3"><input name="appearance" type="text" class="form-control" id="appearance" value="<?php echo $ing['appearance']; ?>"/></td>
-		</tr>
-	</table>
-	<hr />
-	<p><input type="submit" name="save" class="btn btn-info" id="saveTechData" value="Save" /></p>
+	<div id="fetch_tech_data"><div class="loader"></div></div>
 </div>
 
 <div class="tab-pane fade" id="safety_info">
@@ -610,7 +556,7 @@ function reload_data() {
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title" id="printLabel">Print Label for <?php echo $ing['name']; ?></h5>
+				<h5 class="modal-title">Print Label for <?php echo $ing['name']; ?></h5>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
@@ -650,7 +596,7 @@ function reload_data() {
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title" id="cloneIng">Clone ingredient <?php echo $ing['name']; ?></h5>
+				<h5 class="modal-title">Clone ingredient <?php echo $ing['name']; ?></h5>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
@@ -666,7 +612,6 @@ function reload_data() {
 			</div>
 		</div>
 	</div>
-
 </div>
 <script type="text/javascript" language="javascript">
 
@@ -767,6 +712,9 @@ $(document).ready(function() {
 			},
 			dataType: 'html',
 			success: function (data) {
+				$('#mgmIngHeaderCAS').html($("#cas").val());
+				$('#IUPAC').html($("#INCI").val());
+
 				$('#ingMsg').html(data);
 				reload_overview();
 				if ($('#name').val()) {
@@ -795,31 +743,6 @@ $(document).ready(function() {
 			success: function (data) {
 				$('#ingMsg').html(data);
 				reload_overview();
-			}
-		});
-	});
-
-
-	$('#tech_data').on('click', '[id*=saveTechData]', function () {
-		$.ajax({ 
-			url: 'update_data.php', 
-			type: 'POST',
-			data: {
-				manage: 'ingredient',
-				tab: 'tech_data',
-				ingID: '<?=$ing['id'];?>',
-				tenacity: $("#tenacity").val(),
-				flash_point: $("#flash_point").val(),
-				chemical_name: $("#chemical_name").val(),
-				formula: $("#formula").val(),
-				logp: $("#logp").val(),
-				soluble: $("#soluble").val(),
-				molecularWeight: $("#molecularWeight").val(),
-				appearance: $("#appearance").val(),
-			},
-			dataType: 'html',
-			success: function (data) {
-				$('#ingMsg').html(data);
 			}
 		});
 	});
@@ -895,4 +818,3 @@ $(document).ready(function() {
 </div>
 </div>
 </body>
-</html>

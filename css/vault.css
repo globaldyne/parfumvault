@@ -638,7 +638,7 @@ formula td, table.table th {
 	*/
 }
 .compare {
-	display: inline;
+	display: flex;
 	border: none;
 	width: auto;
 	max-width: 100%;
@@ -860,4 +860,104 @@ body {
 .bootstrap-select.disabled, .bootstrap-select > .disabled {
   cursor: not-allowed;
   background-color: #eee;
+}
+
+.shared-formula-accept {
+  float: right;
+  border: none;
+  background: none;
+  text-transform: uppercase;
+  color: #1cc88a;
+}
+
+.icon-container {
+  position: relative;
+}
+
+.status-disabled {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: grey;
+  border: 2px solid white;
+  bottom: 0;
+  right: 0;
+  position: absolute;
+}
+
+.status-online {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #1cc88a;
+  border: 2px solid white;
+  bottom: 0;
+  right: 0;
+  position: absolute;
+}
+
+.status-offline {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #e74a3b;
+  border: 2px solid white;
+  bottom: 0;
+  right: 0;
+  position: absolute;
+}
+
+.img-profile-avatar {
+  max-width: 200px;
+  border-radius: 5% !important;
+}
+
+.img-profile-avatar-thumb {
+  max-width: 50px;
+  padding: 0px 5px 0px 0px;
+  border-radius: 10% !important;
+}
+
+.profile-avatar-thumb {
+	padding-left: 0px !important;	
+}
+
+#footer_release {
+  display: inline;
+}
+
+.personal-info {
+  max-width: 65%;
+}
+
+.red {
+  color: var(--red);
+  background-color: #FFF;
+}
+
+.pv-modal-xxl {
+	max-width: 1500px !important;
+	width: 1500px !important;
+}
+
+.jj.table.table-bordered {
+	table-layout: fixed;
+	width: 100%;
+}
+
+#step_upload {
+	max-height: 500px;
+	width: 100%;
+	display: inline-block;
+    overflow-y: scroll;
+	overflow-x: auto;
+}
+
+.csv_upload_header{
+	background: #ddd;
+  	position: sticky;
+  	top: 0;
+ 	box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+	opacity: 1;
+    z-index: 99999;
 }
