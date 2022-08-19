@@ -1,4 +1,9 @@
-<?php if (!defined('pvault_panel')){ die('Not Found');}?>
+<?php
+if (!defined('pvault_panel')){ die('Not Found');}
+$doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM documents WHERE ownerID = '".$_SESSION['userID']."' AND name = 'avatar' AND type = '3'"));
+
+?>
+
 <div id="content">
         <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
           <ul class="navbar-nav vault-top ml-auto">
@@ -7,36 +12,13 @@
               <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-bell fa-fw"></i>
                 <!-- Counter - Notifications -->
-                <span class="badge badge-danger badge-counter"><?php echo countPending(NULL, NULL, $conn);?></span>
+                <span class="badge badge-danger badge-counter badge-counter-shared-formulas"></span>
               </a>
               <!-- Dropdown - Notifications -->
               <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="messagesDropdown">
-                <?php if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE toAdd = '1' GROUP BY name"))){ ?>
-				<a href="?do=todo" class="dropdown-header"><h6>Pending formulas to make</h6></a>
-				<?php 
-				$toadd_q = mysqli_query($conn, "SELECT name,fid FROM makeFormula WHERE toAdd = '1' GROUP BY name ORDER BY name ASC LIMIT 5");
-				while ($toadd_p = mysqli_fetch_array($toadd_q)){ 	
-					$todoImg = mysqli_fetch_array(mysqli_query($conn, "SELECT image FROM formulasMetaData WHERE fid = '".$toadd_p['fid']."'"));
-					if(empty($todoImg['image'])){
-						$todoImg['image'] = 'img/logo_400.png';
-					}
-				?>
-                <a class="dropdown-item d-flex align-items-center" href="pages/makeFormula.php?fid=<?php echo $toadd_p['fid'];?>" target="_blank">
-                  <div class="dropdown-list-image mr-3">
-                    <img class="rounded-circle" src="<?php echo $todoImg['image']; ?>">
-                  </div>
-                  <div class="font-weight-bold">
-                    <div class="text-truncate"><?php echo $toadd_p['name'];?></div>
-                    <div class="small text-gray-500">Ingredients left: <?php echo countPending(1, $toadd_p['fid'], $conn);?></div>
-                  </div>
-                </a>
-				<?php } ?>
-                <a class="dropdown-item text-center small text-gray-500" href="?do=todo">See all...</a>
-	
-				<?php }else{ ?>
-                <a class="dropdown-item text-center small text-gray-500" href="?do=todo">No formulas to make</a>
-				<?php } ?>	
-				 
+				<a href="#" class="dropdown-header"><h6>PV Online</h6></a>
+                <div id="list-shared-formulas" class="dropdown-item text-gray-500"></div>
+				<div id="list-shared-formulas-footer"></div>				 
               </div>
             </li>
 
@@ -75,18 +57,27 @@
             <li class="nav-item dropdown no-arrow">
               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?php echo $user['fullName'];?></span>
-                <img class="img-profile rounded-circle" src="<?php if($user['avatar']){ echo $user['avatar']; }else{ echo 'img/logo_def.png'; } ?>">
+               <div class="icon-container">
+                <img class="img-profile rounded-circle" src="<?=$doc['avatar']?: '/img/logo_def.png'; ?>">
+				<div class="status-circle"></div>
+				</div>
               </a>
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-
+              
+				<a class="dropdown-item popup-link" href="pages/editUser.php">
+                  <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Edit my details
+                </a>
+                
                 <a class="dropdown-item" href="?do=settings">
                   <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
                   Settings
                 </a>
-                <a class="dropdown-item popup-link" href="pages/tools.php">
+                <a class="dropdown-item" href="pages/tools.php" data-toggle="modal" data-target="#calcTools">
                   <i class="fas fa-tools fa-sm fa-fw mr-2 text-gray-400"></i>
                   Calculation Tools
                 </a>
+                
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="https://www.jbparfum.com/knowledge-base" target="_blank">
                   <i class="fas fa-book fa-sm fa-fw mr-2 text-gray-400"></i>
@@ -117,3 +108,141 @@
 <?php if($settings['chkVersion'] == '1'){ echo checkVer($ver); } ?>
 <div id="msg"><?php echo $db_up_msg;?></div>
 </nav>
+
+<script>
+<?php if($pv_online['enabled'] == '1'){?>
+
+chk_shared();
+var myVar = setInterval(chk_shared, 50000);
+function chk_shared() {
+  $('#list-shared-formulas').empty();
+
+  $.ajax({
+    url: '<?=$pvOnlineAPI?>',
+	dataType: 'json',
+	data: {
+		username: "<?=$pv_online['email']?>",
+		password: "<?=$pv_online['password']?>",
+		do: 'getShared'
+	},
+	type: 'POST',
+	error: function(){
+			$('.status-circle').addClass('status-offline');
+		},
+    success: function(data) {
+		if(data.formulasTotal > 0){
+			$('.badge-counter-shared-formulas').html(data.formulasTotal);
+			for (var i=0;i<data.formulasTotal;++i){
+				$('#list-shared-formulas').append('<div class="font-weight-bold">'+
+					'<li>'+
+						'<button class="shared-formula-accept" data-notes="'+data.formulas[i].notes+'" data-author="'+data.formulas[i].author+'" data-name="'+data.formulas[i].name+'" data-id="'+data.formulas[i].fid+'" id="acceptShared" title="Import formula">'+
+              				'<span>Import</span>'+
+            			'</button>'+
+					'</li>'+
+					'<div class="dropdown-divider"></div>'+
+					'<li>'+
+                    '<div class="text-truncate shared-formula-name"><li><a href="#">'+data.formulas[i].name+'</a></div>'+
+                    '<div class="small text-gray-500 shared-formula-notes">'+data.formulas[i].notes+'</li></div>'+
+					'<div class="small text-gray-500 shared-formula-author">Author: '+data.formulas[i].author+'</li></div>'+
+
+                  '</div>').fadeIn('slow');
+        	}
+			$('#list-shared-formulas-footer').html('<a class="dropdown-item text-center small text-gray-500" href="#">Showing '+data.formulasTotal+' out of '+data.formulasLimit+'</a>');
+
+		}else{
+			$('.badge-counter-shared-formulas').empty();
+			$('#list-shared-formulas-footer').html('<a class="dropdown-item text-center small text-gray-500" href="#">No formulas</a>');
+			
+			
+		};
+		
+		$('.status-circle').addClass('status-online');
+    },
+	
+   
+  });
+}
+  
+$('#list-shared-formulas').on('click', '[id*=acceptShared]', function () {
+	
+	var sharedFormula = {};
+	sharedFormula.ID = $(this).attr('data-id');
+	sharedFormula.Name = $(this).attr('data-name');
+   	sharedFormula.Author = $(this).attr('data-author');
+   	sharedFormula.Notes = $(this).attr('data-notes');
+
+	bootbox.dialog({
+       title: 'Import formula from PV Online',
+       message : '<div id="pvShImpMsg"></div>' + 
+	   			 '<p>'+sharedFormula.Author+' shared its formula <strong>'+sharedFormula.Name+'</strong>, with you.</p>'+
+				 '<p>Import formula as: <input id="newSharedFname" value="'+sharedFormula.Name+'" type="text" /></p>'+
+				 '<p><strong>Formula description:</strong></p>' + 
+				 '<p>'+sharedFormula.Notes+'</p>',
+       buttons :{
+           main: {
+               label : 'Import',
+               className : 'btn-success',
+               callback: function (){
+	    			
+				$.ajax({
+					url: 'pages/pvonline.php', 
+					type: 'POST',
+					data: {
+						action: 'importShareFormula',
+						fid: sharedFormula.ID,
+						localName: $("#newSharedFname").val(),
+						},
+					dataType: 'json',
+					success: function (data) {
+						if(data.error){
+							var rmsg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
+						}else if(data.success){
+							chk_shared();
+							var rmsg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
+							$('.btn-success').hide();
+							$('.btn-default').html('Close');
+						}
+						$('#pvShImpMsg').html(rmsg);
+						list_formulas();
+					}
+				});
+				
+                 return false;
+               }
+           },
+           cancel: {
+               label : "Cancel",
+               className : 'btn-default',
+               callback : function() {
+				   chk_shared();
+                   return true;
+               }
+           }   
+       },onEscape: function () {return true;}
+   });
+});
+
+
+<?php }else{ ?>
+
+$('#list-shared-formulas').html('<div class="font-weight-bold">'+
+		'<div class="alert alert-warning">PV Online account isn\'t configured yet. Please go to <a href="?do=settings#pvonline">settings</a> to configure it.</div>'+
+    '</div>');
+
+
+<?php } ?>
+</script>
+<!-- calcTools Modal -->
+<div class="modal fade" id="calcTools" tabindex="-1" role="dialog" aria-labelledby="calcToolsLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                 <h4 class="modal-title">Modal title</h4>
+
+            </div>
+            <div class="modal-body"><div class="tools"></div></div>
+        </div>
+    </div>
+</div>
+<!-- /calcTools Modal -->

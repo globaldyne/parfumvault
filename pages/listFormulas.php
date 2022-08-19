@@ -1,7 +1,8 @@
 <?php 
 
-require('../inc/sec.php');
+define('__ROOT__', dirname(dirname(__FILE__))); 
 
+require(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
@@ -231,21 +232,22 @@ $('table.table').on('click', '[id*=cloneMe]', function () {
 	formula.Name = $(this).attr('data-name');
 	
 	$.ajax({ 
-		url: 'pages/manageFormula.php', 
-		type: 'GET',
+		url: '/pages/manageFormula.php', 
+		type: 'POST',
 		data: {
 			action: "clone",
 			fid: formula.ID,
 			fname: formula.Name,
 			},
-		dataType: 'html',
+		dataType: 'json',
 		success: function (data) {
-			if ( data.indexOf("Error") > -1 ) {
-				$('#inMsg').html(data); 
-			}else{
-				$('#inMsg').html(data);
+			if (data.success) {
+				var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 				reload_formulas_data();
+			}else{
+				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 			}
+			$('#inMsg').html(msg);
 		}
 	  });
 });
@@ -266,16 +268,23 @@ $('table.table').on('click', '[id*=deleteMe]', function () {
 	    			
 				$.ajax({ 
 					url: 'pages/manageFormula.php', 
-					type: 'GET',
+					type: 'POST',
 					data: {
 						action: "delete",
 						fid: formula.ID,
 						fname: formula.Name,
 						},
-					dataType: 'html',
+					dataType: 'json',
 					success: function (data) {
-						$('#inMsg').html(data);
-						reload_formulas_data();
+						//$('#inMsg').html(data);
+						//reload_formulas_data();
+						if (data.success) {
+							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+							reload_formulas_data();
+						}else{
+							var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+						}
+						$('#inMsg').html(msg);
 					}
 				  });
                  return true;
@@ -325,48 +334,140 @@ $('#add_formula').on('click', '[id*=btnAdd]', function () {
 		notes: $("#notes").val(),
 		customer: $("#customer").val(),
 		},
-	dataType: 'html',
+	dataType: 'json',
     success: function (data) {
-	  	$('#addFormulaMsg').html(data);
+		if(data.error){
+			var rmsg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
+		}else if(data.success){
+			var rmsg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><a href="?do=Formula&id='+data.success.id+'">'+data.success.msg+'</a></div>';
+			reload_formulas_data();
+		}
+	  	$('#addFormulaMsg').html(rmsg);
+		
     }
   });
 });
 
-$('#add_formula_csv').on('click', '[id*=btnImport]', function () {
-    $("#CSVImportMsg").html('<div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
-	$("#btnImport").prop("disabled", true);
-		
+$("#btnImport").prop("disabled", true);
+$("#btnImport").hide();
+	
+$("input[type=file]").on('change',function(){	
 	var fd = new FormData();
     var files = $('#CSVFile')[0].files;
-    var name = $('#CSVname').val();
-    var profile = $('#CSVProfile').val();
-	var addMissIng = $('#addMissIng').is(':checked');
-
+	var formula_name = $('#CSVname').val();
+	
+	if ( formula_name == '') {
+		var filename = $('input[type=file]').val().replace(/C:\\fakepath\\/i, '').replace(/.csv/i, '');
+		$('#CSVname').val(filename);
+	}
+	
 	if(files.length > 0 ){
-	fd.append('CSVFile',files[0]);
-	$.ajax({
-	   url: 'pages/upload.php?type=frmCSVImport&name=' + name + '&profile=' + profile + '&addMissIng=' + addMissIng,
-	   type: 'post',
-	   data: fd,
-	   contentType: false,
-	   processData: false,
-			 cache: false,
-	   success: function(response){
-		 if(response != 0){
-		   $("#CSVImportMsg").html(response);
-			$("#btnImport").prop("disabled", false);
-		  }else{
-			$("#CSVImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> File upload failed!</div>');
-			$("#btnImport").prop("disabled", false);
-		  }
+		fd.append('CSVFile',files[0]);
+		$.ajax({
+		   url: '/pages/upload.php?type=frmCSVImport&step=upload',
+		   type: 'POST',
+		   data: fd,
+		   contentType: false,
+		   processData: false,
+				 cache: false,
+		   success: function(response){
+			 if(response != 0){
+				$("#CSVImportMsg").html('');
+				$("#step_upload").html(response);
+				$("#btnImport").show();
+			  }else{
+				$("#CSVImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> File upload failed!</div>');
+			  }
 		},
 	 });
 	}else{
-		$("#CSVImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a file to upload!</div>');
-		$("#btnImport").prop("disabled", false);
+		$("#CSVImportMsg").html('<div class="alert alert-danger">Please select a file to upload!</div>');
 	}
 });
 
+
+var total_selection = 0;
+var ingredient = 0;
+var concentration = 0;
+var dilutant = 0;
+var quantity = 0;
+
+var column_data = [];
+
+$(document).on('change', '.set_column_data', function(){
+    var column_name = $(this).val();
+    var column_number = $(this).data('column_number');
+    if(column_name in column_data) {
+	  $('#CSVImportMsg').html('<div class="alert alert-danger"><strong>'+column_name+'</strong> is already assigned.</div>');
+      $(this).val('');
+      return false;
+    }else{
+		$('#CSVImportMsg').html('');
+	}
+
+    if(column_name != '') {
+      column_data[column_name] = column_number;
+    } else {
+      const entries = Object.entries(column_data);
+
+      for(const [key, value] of entries) {
+        if(value == column_number) {
+          delete column_data[key];
+        }
+      }
+    }
+
+    total_selection = Object.keys(column_data).length;
+
+    if(total_selection == 4) {
+		$('#btnImport').prop("disabled", false);
+        ingredient = column_data.ingredient;
+		concentration = column_data.concentration;
+		dilutant = column_data.dilutant;
+		quantity = column_data.quantity;
+    } else {
+		$('#btnImport').prop("disabled", true);
+    }
+
+  });
+
+$(document).on('click', '#btnImport', function(event){
+
+    event.preventDefault();
+   	var formula_name = $('#CSVname').val();
+    var formula_profile = $('#CSVProfile').val();
+	
+    $.ajax({
+      url: "/pages/upload.php?type=frmCSVImport&step=import",
+      method: "POST",
+      data:{		  
+	  	  formula_name: formula_name,
+		  formula_profile: formula_profile,
+		  ingredient: ingredient, 
+		  concentration: concentration, 
+		  dilutant: dilutant, 
+		  quantity: quantity
+		  },
+      beforeSend:function(){
+        $('#btnImport').prop("disabled", true);
+      },
+      success:function(data) {
+		  if (data.indexOf('Error:') > -1) {
+			  $('#btnImport').prop("disabled", false);
+			  $('#CSVImportMsg').html(data);
+		  }else{
+			$('#btnImport').prop("disabled", false);
+			$('#btnImport').hide();
+			$('#btnCloseCsv').prop('value', 'Close');
+			$('#process_area').css('display', 'none');
+			$('#CSVImportMsg').html(data);
+			reload_formulas_data();
+		  }
+      }
+    })
+
+  });
+  
 function reload_formulas_data() {
     $('#all-table').DataTable().ajax.reload(null, true);
 };
@@ -435,7 +536,7 @@ function reload_formulas_data() {
           </tr>  
         </table>  
 	  <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <input type="submit" name="button" class="btn btn-primary" id="btnAdd" value="Add">
       </div>
     </div>
@@ -445,7 +546,7 @@ function reload_formulas_data() {
 
 <!--IMPORT FORMULA CSV MODAL-->
 <div class="modal fade" id="add_formula_csv" tabindex="-1" role="dialog" aria-labelledby="add_formula_csv" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog pv-modal-xxl" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Import formula from CSV</h5>
@@ -455,49 +556,47 @@ function reload_formulas_data() {
       </div>
       <div class="modal-body">
       <div id="CSVImportMsg"></div>
-        <table width="100%" border="0">
-          <tr>
-            <td>Name:</td>
-            <td><input type="text" name="CSVname" id="CSVname" class="form-control"/></td>
-          </tr>
-          <tr>
-            <td>Profile:</td>
-            <td>
-            <select name="CSVProfile" id="CSVProfile" class="form-control">
+      <div id=process_area>
+      
+        <div class="form-group">
+            <label class="col-md-3 control-label">Formula name:</label>
+            <div class="col-md-8">
+              <input type="text" name="CSVname" id="CSVname" class="form-control"/>
+            </div>
+		</div>  
+        <div class="form-group">
+            <label class="col-md-3 control-label">Profile:</label>
+            <div class="col-md-8">
+             <select name="CSVProfile" id="CSVProfile" class="form-control">
              <?php foreach ($fcat as $cat) { if($cat['type'] == 'profile'){?>		
                 <option value="<?=$cat['cname']?>"><?=$cat['name']?></option>
              <?php } }?>
              </select>
-            </td>
-          </tr>
-          <tr>
-            <td width="22%">Choose file:</td>
-            <td width="78%">
+            </div>
+		</div>
+        <div class="form-group">
+            <label class="col-md-3 control-label">CSV file:</label>
+            <div class="col-md-8">
               <input type="file" name="CSVFile" id="CSVFile" class="form-control" />
-            </td>
-          </tr>
-          <tr>
-            <td>Add missing ingredients:</td>
-            <td><input name="addMissIng" type="checkbox" id="addMissIng" /></td>
-          </tr>
-          <tr>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-          </tr>
-          <tr>
-            <td colspan="2"><p>CSV format: <strong>ingredient,concentration,dilutant,quantity</strong></p>
-            <p>Example: <em><strong>Ambroxan,10,TEC,0.15</strong></em></p></td>
-          </tr>
-          <tr>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-          </tr>
-        </table>
+            </div>
+		</div>
+        <div id="step_upload" class="modal-body"></div>
+        <div class="col-md-12">
+           <hr />
+           <p>CSV format: <strong>ingredient,concentration,dilutant,quantity</strong></p>
+           <p>Example: <em><strong>Ambroxan,10,TEC,0.15</strong></em></p>
+        </div>
+        
+        </div>
+        
+      </div>
+      
 	  <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <input type="button" class="btn btn-secondary" data-dismiss="modal" id="btnCloseCsv" value="Cancel">
         <input type="submit" name="btnImport" class="btn btn-primary" id="btnImport" value="Import">
       </div>
-    </div>
+   
   </div>
+  
 </div>
 </div>

@@ -1,12 +1,15 @@
 <?php
-require('../inc/sec.php');
+
+define('__ROOT__', dirname(dirname(__FILE__))); 
+
+require(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 
-if($s = $_GET['search']){
+if($s = trim($_GET['search'])){
 	
-	$query = "WHERE name LIKE '%$s%' OR cas LIKE '%$s%'";
+	$query = "WHERE name LIKE '%$s%' OR cas LIKE '%$s%' OR INCI LIKE '%$s%'";
 }
 
 $q = mysqli_query($conn, "SELECT id,name,INCI,cas,type,odor FROM ingredients $query ORDER BY name ASC");

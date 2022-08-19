@@ -1,7 +1,8 @@
 <?php 
 
-require('../inc/sec.php');
+define('__ROOT__', dirname(dirname(__FILE__))); 
 
+require(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
@@ -14,14 +15,11 @@ $defCatClass = $settings['defCatClass'];
     <tr class="noBorder noexport">
     <th colspan="9">
      <div class="col-sm-6 text-left">
-        <div class="ing-view">
-            <a href="javascript:setView('1')" class="fas fa-list"></a>
-            <a href="javascript:setView('2')" class="fas fa-border-all"></a>
-        </div>        
+              
      </div>
-    <div class="col-sm-6 text-right">
-     <div class="btn-group">
-      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
+     <div class="col-sm-6 text-right">
+      <div class="btn-group">
+       <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
       <div class="dropdown-menu dropdown-menu-right">
         <a class="dropdown-item popup-link" href="pages/mgmIngredient.php">Add new ingredient</a>
         <a class="dropdown-item" id="csv_export" href="/pages/export.php?format=csv&kind=ingredients">Export to CSV</a>
@@ -41,7 +39,7 @@ $defCatClass = $settings['defCatClass'];
 <div id="pv_search">
 	<div class="text-right">
         <div class="pv_input_grp">   
-          <input type="text" id="ing_search" class="form-control input-sm pv_input_sm" placeholder="Name, CAS, odor.." name="ing_search">
+          <input name="ing_search" type="text" class="form-control input-sm pv_input_sm" id="ing_search" value="<?=$_GET['search']?>" placeholder="Name, CAS, odor..">
             <div class="input-group-btn">
                 <button class="btn btn-search btn-primary" id="pv_search_btn" data-provider="local">
                     <span class="fas fa-database"></span>
@@ -49,7 +47,7 @@ $defCatClass = $settings['defCatClass'];
                 </button>
                 <label class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                     <span class="caret"></span>
-                </label>
+              </label>
                 <ul class="dropdown-menu dropdown-menu-right" role="menu">
                     <?php foreach (loadModules('suppliers') as $search){ ?>
                     <li>
@@ -60,8 +58,8 @@ $defCatClass = $settings['defCatClass'];
                     </li>
                     <?php } ?>
                 </ul>
-            </div>
-    	</div>
+          </div>
+   	  </div>
 	</div>
 </div>
 
@@ -90,6 +88,9 @@ $(document).ready(function() {
 		{ className: 'pv_vertical_middle text-center', targets: '_all' },
 		{ orderable: false, targets: [1,3,5,8]}
 	],
+	search: {
+    	search: "<?=$_GET['search']?>"
+  	},
 	dom: 'lr<"#advanced_search">tip',
 	initComplete: function(settings, json) {
         $("#advanced_search").html('<span><hr /><a href="#" class="advanced_search_box" data-toggle="modal" data-target="#adv_search">Advanced Search</a></span>');
@@ -100,8 +101,8 @@ $(document).ready(function() {
 	searching: true,
 	language: {
 		loadingRecords: '&nbsp;',
-		processing: '<div class="spinner-grow"></div> Please Wait...',
-		zeroRecords: 'Nothing found, try <a href="#" data-toggle="modal" data-target="#adv_search">advanced</a> search instead?',
+		processing: 'Blending...',
+		zeroRecords: '<div class="alert alert-warning"><strong>Nothing found, try <a href="#" data-toggle="modal" data-target="#adv_search">advanced</a> search instead?</strong></div>',
 		search: 'Quick Search:',
 		searchPlaceholder: 'Name, CAS, EINECS, IUPAC, odor..',
 		},
@@ -263,16 +264,22 @@ $('#tdDataIng').on('click', '[id*=rmIng]', function () {
                callback: function (){
 	    			
 				$.ajax({
-					url: 'pages/update_data.php', 
-					type: 'GET',
+					url: '/pages/update_data.php', 
+					type: 'POST',
 					data: {
 						ingredient: "delete",
 						ing_id: ing.ID,
 						},
-					dataType: 'html',
+					dataType: 'json',
 					success: function (data) {
-						$('#innermsg').html(data);
-						reload_ingredients_data();
+						if(data.success) {
+							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+								reload_ingredients_data();
+							} else {
+								var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				
+							}
+							$('#innermsg').html(msg);
 					}
 				});
 				

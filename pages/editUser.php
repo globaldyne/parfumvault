@@ -1,102 +1,128 @@
 <?php
-require('../inc/sec.php');
+define('__ROOT__', dirname(dirname(__FILE__))); 
+
+require(__ROOT__.'/inc/sec.php');
 
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
-if($_GET['id']){
-	$id = mysqli_real_escape_string($conn, $_GET['id']);
-	
-	if($_POST['fullName'] && $_POST['email']){
-		$fullName = mysqli_real_escape_string($conn, $_POST['fullName']);
-		$email = mysqli_real_escape_string($conn, $_POST['email']);
-		
-		$filename = $_FILES["avatar"]["tmp_name"];  
-    	$file_ext = strtolower(end(explode('.',$_FILES['avatar']['name'])));
-		$file_tmp = $_FILES['avatar']['tmp_name'];
-    	$ext = explode(', ',strtolower($allowed_ext));
-		
-		if($filename){
-			if (!file_exists("../uploads/logo/")) {
-				mkdir("../uploads/logo/", 0740, true);
-	  	 	}
-			if(in_array($file_ext,$ext)===false){
-				echo '<div class="alert alert-danger alert-dismissible"><strong>File upload error: </strong>Extension not allowed, please choose a '.$allowed_ext.' file.</div>';
-			}else{
-				if($_FILES["avatar"]["size"] > 0){
-					move_uploaded_file($file_tmp,"../uploads/logo/".base64_encode($filename));
-					$avatar = "uploads/logo/".base64_encode($filename);
-					if(mysqli_query($conn, "UPDATE users SET avatar = '$avatar' WHERE id = '$id'")){
-						$msg = '<div class="alert alert-success alert-dismissible">User avatar updated!</div>';
-					}
-				}
-			}
-				
-		}
-		
-		if(mysqli_num_rows(mysqli_query($conn, "SELECT email FROM users WHERE email = '$email' AND NOT id = '$id'"))){
-			$msg.= '<div class="alert alert-danger alert-dismissible">Email is already in use.</div>';
-		}else{
-			if($password = mysqli_real_escape_string($conn, $_POST['password'])){
-				if(strlen($password) < '5'){
-					$msg.='<div class="alert alert-danger alert-dismissible"><strong>Error: </strong>Password must be at least 5 chars long!</div>';
-				}else{
-					$p = ",password=PASSWORD('$password')";
-				}
-			}
-			if(mysqli_query($conn, "UPDATE users SET fullName = '$fullName', email = '$email' $p WHERE id='$id'")){
-				$msg.= '<div class="alert alert-success alert-dismissible">User updated!</div>';
-			}else{
-				$msg.= '<div class="alert alert-danger alert-dismissible">Failed to update user details! ('.mysqli_error($conn).')</div>';
-			}
-		}
-	}
-$user = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM users WHERE id = '$id'")); 
-}
-?>
-<link href="../css/sb-admin-2.css" rel="stylesheet">
-<link href="../css/bootstrap.min.css" rel="stylesheet">
-<script src="../js/jquery/jquery.min.js"></script>
 
-<script>
-$(function() {
-  $("#password").val(null);
-});
-</script>
+
+$user = mysqli_fetch_array(mysqli_query($conn, "SELECT email,fullName FROM users")); 
+$doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM documents WHERE ownerID = '".$_SESSION['userID']."' AND name = 'avatar' AND type = '3'"));
+
+?>
+<script src="/js/jquery/jquery.min.js"></script>
+
+<link href="/css/sb-admin-2.css" rel="stylesheet">
+<link href="/css/bootstrap.min.css" rel="stylesheet">
+<link href="/css/vault.css" rel="stylesheet">
+
 <style>
-.form-inline .form-control {
-    display: inline-block;
-    width: 500px;
-    vertical-align: middle;
+
+.container {
+  max-width: 100%;
+  width: 100%;
+
 }
 </style>
-<form action="?id=<?php echo $id; ?>" method="post" enctype="multipart/form-data" name="form1">
-<table class="table table-bordered" cellspacing="0">
-    <tr>
-      <td colspan="2" class="badge-primary">Edit <?php echo $user['username']; ?></td>
-    </tr>
-    <tr>
-      <td colspan="2"><?php echo $msg; ?></td>
-    </tr>
-    <tr>
-      <td width="12%">Full Name:</td>
-      <td width="88%"><input name="fullName" type="text" id="fullName" value="<?php echo $user['fullName']; ?>"></td>
-    </tr>
-    <tr>
-      <td>Email:</td>
-      <td><input name="email" type="text" id="email" value="<?php echo $user['email']; ?>"></td>
-    </tr>
-    <tr>
-      <td>Password:</td>
-      <td><input name="password" type="password" id="password"> 
-        Min 5 chars</td>
-    </tr>
-    <tr>
-      <td>Avatar:</td>
-      <td><input type="file" name="avatar" id="avatar" /></td>
-    </tr>
-    <tr>
-      <td colspan="2"><input name="update" type="submit" class="btn-dark" id="update" value="Submit"></td>
-    </tr>
-  </table>
+<div class="container">
+    <h1 class="text-primary">Edit Profile</h1>
+      <hr>
+	<div class="row">
+      <div class="col-md-4">
+        <div class="text-center">
+          <div id="profile_pic"><div class="loader"></div></div>
+          <h6>Upload a different photo...</h6>
+          <input type="file" name="avatar" id="avatar" class="form-control">
+        </div>
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+			<div class="text-right">
+        		<input name="upload-avatar" type="submit" class="btn-dark" id="upload-avatar" value="Upload" />
+        	</div>
+        </div>
+      </div>
+      <div class="col-md-8 personal-info">
+        <div id="msgU"></div>
+          <div class="form-group">
+            <label class="col-md-3 control-label">Full name:</label>
+            <div class="col-md-8">
+              <input name="fullName" type="text" id="fullName" class="form-control" value="<?php echo $user['fullName']; ?>">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-3 control-label">Email:</label>
+            <div class="col-md-8">
+              <input name="email" type="text" id="email" class="form-control" value="<?php echo $user['email']; ?>">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-3 control-label">Password:</label>
+            <div class="col-md-8">
+              <input name="password" type="password" id="password" class="form-control" value="">
+            </div>
+          </div>
+          <div class="row gutters">
+			<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+				<div class="text-right">
+					<button type="button" id="save-profile" name="save-profile" class="btn btn-primary">Update</button>
+				</div>
+			</div>
+          </div>
 
-</form>
+      </div>
+  </div>
+</div>
+<hr>
+<script>
+$('#profile_pic').html('<img class="img-profile-avatar" src="<?=$doc['avatar']?: '/img/logo_def.png'; ?>">');
+
+$('#save-profile').click(function() {
+	$.ajax({ 
+		url: '/pages/update_settings.php', 
+		type: 'POST',
+		data: {
+			update_user_profile: 1,
+			user_fname: $("#fullName").val(),			
+			user_email: $("#email").val(),
+			user_pass: $("#password").val()
+			},
+		dataType: 'json',
+		success: function (data) {
+			if(data.success){
+				var msg = '<div class="alert alert-success">'+data.success+'</div>';
+			}else if( data.error){
+				var msg = '<div class="alert alert-danger">'+data.error+'</div>';
+			}
+			$('#msgU').html(msg);
+		}
+	  });
+});
+
+$('#upload-avatar').click(function() {
+	var fd = new FormData();
+    var files = $('#avatar')[0].files;
+
+    if(files.length > 0 ){
+		fd.append('avatar',files[0]);
+	}
+	$.ajax({ 
+		url: '/pages/update_settings.php?update_user_avatar=1', 
+		type: 'POST',
+		data: fd,
+		contentType: false,
+      	processData: false,
+		cache: false,
+		dataType: 'json',
+		success: function (data) {
+			if(data.success){
+				var msg = '<div class="alert alert-success">'+data.success.msg+'</div>';
+				$('#profile_pic').html('<img class="img-profile-avatar" src="'+data.success.avatar+'">');
+
+			}else if( data.error){
+				var msg = '<div class="alert alert-danger">'+data.error+'</div>';
+			}
+			$('#msgU').html(msg);
+		}
+	  });
+});
+</script>

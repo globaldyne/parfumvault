@@ -1,7 +1,8 @@
 <?php
 
-require('../inc/sec.php');
+define('__ROOT__', dirname(dirname(__FILE__))); 
 
+require(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
@@ -31,7 +32,7 @@ if(empty($ingredient['category'])){
 <div class="sub-2-container sub-2-header">
 	<div class="sub-2-container">
         <span class="coh-inline-element sub-2-inci">IUPAC</span> 
-        <span class="coh-inline-element sub-2-fema"><?=$ingredient['INCI']?:"Not Available"?></span>  
+        <span class="coh-inline-element sub-2-fema"><div id="IUPAC"><?=$ingredient['INCI']?:"Not Available"?></div></span>  
     </div>
 	<div class="sub-2-container">
         <span class="coh-inline-element sub-2-einecs">EINECS</span> 

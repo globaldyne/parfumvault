@@ -1,11 +1,12 @@
 <?php 
-require('../inc/sec.php');
+define('__ROOT__', dirname(dirname(__FILE__))); 
 
+require(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 
-$id_a = mysqli_real_escape_string($conn, $_GET['id_a']);
-$id_b = mysqli_real_escape_string($conn, $_GET['id_b']);
+$id_a = mysqli_real_escape_string($conn, $_POST['id_a']);
+$id_b = mysqli_real_escape_string($conn, $_POST['id_b']);
 
 
 ?>

@@ -1,5 +1,7 @@
 <?php
-require('../inc/sec.php');
+define('__ROOT__', dirname(dirname(__FILE__))); 
+
+require(__ROOT__.'/inc/sec.php');
 
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
@@ -7,14 +9,204 @@ require_once(__ROOT__.'/func/validateInput.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/sanChar.php');
 require_once(__ROOT__.'/func/priceScrape.php');
+require_once(__ROOT__.'/func/create_thumb.php');
+
+//UPDATE LID PIC
+if($_GET['update_lid_pic']){
+	$allowed_ext = "png, jpg, jpeg, gif, bmp";
+
+	$filename = $_FILES["lid_pic"]["tmp_name"];  
+    $file_ext = strtolower(end(explode('.',$_FILES['lid_pic']['name'])));
+	$file_tmp = $_FILES['lid_pic']['tmp_name'];
+    $ext = explode(', ',strtolower($allowed_ext));
+
+	if(!$filename){
+		return;
+	}	
+	
+	if (!file_exists(__ROOT__."/uploads/tmp/")) {
+		mkdir(__ROOT__."/uploads/tmp/", 0740, true);
+	}
+		
+	if(in_array($file_ext,$ext)===false){
+		$response["error"] = 'Extension not allowed, please choose a '.$allowed_ext.' file';
+		echo json_encode($response);
+		return;
+	}
+	$lid = $_GET['lid_id'];
+	if($_FILES["lid_pic"]["size"] > 0){
+		move_uploaded_file($file_tmp,__ROOT__."/uploads/tmp/".base64_encode($filename));
+		$pic = "/uploads/tmp/".base64_encode($filename);		
+		create_thumb(__ROOT__.$pic,250,250); 
+		$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents(__ROOT__.$pic));
+		
+		mysqli_query($conn, "DELETE FROM documents WHERE ownerID = '".$lid."' AND type = '5'");
+		if(mysqli_query($conn, "INSERT INTO documents (ownerID,name,type,notes,docData) VALUES ('".$lid."','-','5','-','$docData')")){	
+			unlink(__ROOT__.$pic);
+			$response["success"] = array( "msg" => "Pic updated!", "lid_pic" => $docData);
+			echo json_encode($response);
+			return;
+		}
+		$response["error"] = mysqli_error($conn);
+		echo json_encode($response);
+		return;
+	}
+
+	return;
+}
+
+//UPDATE BOTTLE PIC
+if($_GET['update_bottle_pic']){
+	$allowed_ext = "png, jpg, jpeg, gif, bmp";
+
+	$filename = $_FILES["bottle_pic"]["tmp_name"];  
+    $file_ext = strtolower(end(explode('.',$_FILES['bottle_pic']['name'])));
+	$file_tmp = $_FILES['bottle_pic']['tmp_name'];
+    $ext = explode(', ',strtolower($allowed_ext));
+
+	
+	if(!$filename){
+		//$response["error"] = 'Please choose a file to upload';
+		//echo json_encode($response);
+		return;
+	}	
+	
+	if (!file_exists(__ROOT__."/uploads/tmp/")) {
+		mkdir(__ROOT__."/uploads/tmp/", 0740, true);
+	}
+		
+	if(in_array($file_ext,$ext)===false){
+		$response["error"] = '<strong>File upload error: </strong>Extension not allowed, please choose a '.$allowed_ext.' file';
+		echo json_encode($response);
+		return;
+	}
+	$bottle = $_GET['bottle_id'];
+	if($_FILES["bottle_pic"]["size"] > 0){
+		move_uploaded_file($file_tmp,__ROOT__."/uploads/tmp/".base64_encode($filename));
+		$bottle_pic = "/uploads/tmp/".base64_encode($filename);		
+		create_thumb(__ROOT__.$bottle_pic,250,250); 
+		$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents(__ROOT__.$bottle_pic));
+		
+		mysqli_query($conn, "DELETE FROM documents WHERE ownerID = '".$bottle."' AND type = '4'");
+		if(mysqli_query($conn, "INSERT INTO documents (ownerID,name,type,notes,docData) VALUES ('".$bottle."','-','4','-','$docData')")){	
+			unlink(__ROOT__.$bottle_pic);
+			$response["success"] = array( "msg" => "Pic updated!", "bottle_pic" => $docData);
+			echo json_encode($response);
+			return;
+		}
+		$response["error"] = mysqli_error($conn);
+		echo json_encode($response);
+		return;
+	}
+
+	return;
+}
+
+//UPDATE BOTTLE DATA
+if($_POST['update_bottle_data']){
+	
+	if(!$_POST['name']){
+		$response["error"] = "Name is required";
+		echo json_encode($response);
+		return;
+	}
+	$id = $_POST['bottle_id'];
+	$name = $_POST['name'];
+	$ml = $_POST['size'];
+	$price = $_POST['price'];
+	$height = $_POST['height'];
+	$width = $_POST['width'];
+	$diameter = $_POST['diameter'];
+	$supplier = $_POST['supplier'];
+	$supplier_link = $_POST['supplier_link'];
+	$notes = $_POST['notes'];
+	$pieces = $_POST['pieces']?:0;
+	
+	$q = mysqli_query($conn,"UPDATE bottles SET name= '$name', ml = '$ml', price = '$price', height = '$height', width = '$width', diameter = '$diameter', supplier = '$supplier', supplier_link = '$supplier_link', notes = '$notes', pieces = '$pieces' WHERE id = '$id'");
+	
+
+	if($q){
+		$response['success'] = "Bottle updated";
+	}else{
+		$response['error'] = "Error updating bottle data ".mysqli_error($conn);
+	}
+	
+	echo json_encode($response);
+	
+	
+
+	return;
+}
+
+//UPDATE LID DATA
+if($_POST['update_lid_data']){
+	
+	if(!$_POST['style']){
+		$response["error"] = "Style is required";
+		echo json_encode($response);
+		return;
+	}
+	$id = $_POST['lid_id'];
+	$style = $_POST['style'];
+	$colour = $_POST['colour'];
+	$price = $_POST['price'];
+	$supplier = $_POST['supplier'];
+	$supplier_link = $_POST['supplier_link'];
+	$pieces = $_POST['pieces']?:0;
+	
+	$q = mysqli_query($conn,"UPDATE lids SET style= '$style', colour = '$colour', price = '$price', supplier = '$supplier', supplier_link = '$supplier_link', pieces = '$pieces' WHERE id = '$id'");
+	
+
+	if($q){
+		$response['success'] = "Lid updated";
+	}else{
+		$response['error'] = "Error updating lid data ".mysqli_error($conn);
+	}
+	
+	echo json_encode($response);
+	
+	
+
+	return;
+}
+//DELETE BOTTLE
+if($_POST['action'] == 'delete' && $_POST['btlId'] && $_POST['type'] == 'bottle'){
+	$id = mysqli_real_escape_string($conn, $_POST['btlId']);
+	
+	if(mysqli_query($conn, "DELETE FROM bottles WHERE id = '$id'")){
+		mysqli_query($conn, "DELETE FROM documents WHERE ownerID = '$id' AND type = '4'");
+		$response["success"] = 'Bottle deleted';
+	}else{
+		$response["error"] = 'Something went wrong '.mysqli_error($conn);
+	}
+	
+	echo json_encode($response);
+	return;	
+}
+
+//DELETE LID
+if($_POST['action'] == 'delete' && $_POST['lidId'] && $_POST['type'] == 'lid'){
+	$id = mysqli_real_escape_string($conn, $_POST['lidId']);
+	
+	if(mysqli_query($conn, "DELETE FROM lids WHERE id = '$id'")){
+		mysqli_query($conn, "DELETE FROM documents WHERE ownerID = '$id' AND type = '5'");
+		$response["success"] = 'Lid deleted';
+	}else{
+		$response["error"] = 'Something went wrong '.mysqli_error($conn);
+	}
+	
+	echo json_encode($response);
+	return;	
+}
 
 //IMPORT IMAGES FROM PUBCHEM
 if($_GET['IFRA_PB'] == 'import'){
 	require_once(__ROOT__.'/func/pvFileGet.php');
 	$i = 0;
 	$qCas = mysqli_query($conn,"SELECT cas FROM IFRALibrary");
+	$view =  $settings['pubchem_view'];
 	while($cas = mysqli_fetch_array($qCas)){
-		$image = base64_encode(pv_file_get_contents($pubChemApi.'/pug/compound/name/'.$cas['cas'].'/PNG?record_type=2d&image_size=small'));
+		$image = base64_encode(pv_file_get_contents($pubChemApi.'/pug/compound/name/'.$cas['cas'].'/PNG?record_type='.$view.'&image_size=small'));
 		
 		$imp = mysqli_query($conn,"UPDATE IFRALibrary SET image = '$image' WHERE cas = '".$cas['cas']."'");
 		$i++;
@@ -22,8 +214,11 @@ if($_GET['IFRA_PB'] == 'import'){
 		usleep(.1 * 1000000);
 	}
 	if($imp){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$i.' images updates!</div>';
+		$response["success"] = $i.' images updated!';
+	}else{
+		$response["error"] = 'Something went wrong '.mysqli_error($conn);
 	}
+	echo json_encode($response);
 	return;
 }
 
@@ -454,23 +649,6 @@ if($_GET['supp'] == 'delete' && $_GET['ID']){
 	return;
 }
 
-if($_GET['bottle']){
-	$value = mysqli_real_escape_string($conn, $_POST['value']);
-	$bottle = mysqli_real_escape_string($conn, $_POST['pk']);
-	$name = mysqli_real_escape_string($conn, $_POST['name']);
-	
-	mysqli_query($conn, "UPDATE bottles SET $name = '$value' WHERE id = '$bottle'");
-	return;	
-}
-
-if($_GET['lid']){
-	$value = mysqli_real_escape_string($conn, $_POST['value']);
-	$lid = mysqli_real_escape_string($conn, $_POST['pk']);
-	$name = mysqli_real_escape_string($conn, $_POST['name']);
-	
-	mysqli_query($conn, "UPDATE lids SET $name = '$value' WHERE id = '$lid'");
-	return;
-}
 
 //ADD composition
 if($_GET['composition'] == 'add'){
@@ -533,19 +711,21 @@ if($_GET['composition'] == 'delete'){
 }
 
 //DELETE INGREDIENT	
-if($_GET['ingredient'] == 'delete' && $_GET['ing_id']){
+if($_POST['ingredient'] == 'delete' && $_POST['ing_id']){
 
-	$id = mysqli_real_escape_string($conn, $_GET['ing_id']);
+	$id = mysqli_real_escape_string($conn, $_POST['ing_id']);
 	$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE id = '$id'"));
 	
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT ingredient FROM formulas WHERE ingredient = '".$ing['name']."'"))){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$ing['name'].'</strong> is in use by at least one formula and cannot be removed!</div>';
+		$response["error"] = '<strong>'.$ing['name'].'</strong> is in use by at least one formula and cannot be removed!</div>';
 	}elseif(mysqli_query($conn, "DELETE FROM ingredients WHERE id = '$id'")){
 		mysqli_query($conn,"DELETE FROM allergens WHERE ing = '".$ing['name']."'");
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Ingredient <strong>'.$ing['name'].'</strong> removed from the database!</div>';
+		$response["success"] = 'Ingredient <strong>'.$ing['name'].'</strong> removed from the database!';
 	}
-
+	
+	echo json_encode($response);
 	return;
+
 }
 
 //CUSTOMERS - ADD
@@ -569,26 +749,42 @@ if($_POST['customer'] == 'add'){
 }
 
 //CUSTOMERS - DELETE
-if($_GET['customer'] == 'delete' && $_GET['customer_id']){
-	$customer_id = mysqli_real_escape_string($conn, $_GET['customer_id']);
+if($_POST['action'] == 'delete' && $_POST['type'] == 'customer' && $_POST['customer_id']){
+	$customer_id = mysqli_real_escape_string($conn, $_POST['customer_id']);
 	if(mysqli_query($conn, "DELETE FROM customers WHERE id = '$customer_id'")){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Customer deleted!</div>';
+		$response["success"] = 'Customer deleted!';
 	}else{
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error deleting customer.</div>';
+		$response["error"] = 'Error deleting customer '.mysqli_error($conn);
 	}
+	
+	echo json_encode($response);
 	return;
 }
 	
 //CUSTOMERS - UPDATE
-if($_GET['customer'] == 'update'){
-	$value = mysqli_real_escape_string($conn, $_POST['value']);
-	$id = mysqli_real_escape_string($conn, $_POST['pk']);
+if($_POST['update_customer_data'] && $_POST['customer_id']){
+	$id = $_POST['customer_id'];
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
+	if(empty($name)){
+		$response["error"] = 'Name cannot be empty ';
+		echo json_encode($response);
+		return;
+	}
+	$address = mysqli_real_escape_string($conn, $_POST['address'])?:'N/A';
+	$email = mysqli_real_escape_string($conn, $_POST['email'])?:'N/A';
+	$web = mysqli_real_escape_string($conn, $_POST['web'])?:'N/A';
+	$phone = mysqli_real_escape_string($conn, $_POST['phone'])?:'N/A';
 
-	mysqli_query($conn, "UPDATE customers SET $name = '$value' WHERE id = '$id'");
+	if(mysqli_query($conn, "UPDATE customers SET name = '$name', address = '$address', email = '$email', web = '$web', phone = '$phone' WHERE id = '$id'")){
+		$response["success"] = 'Customer details updated!';
+	}else{
+		$response["error"] = 'Error updating customer '.mysqli_error($conn);
+	}
+	echo json_encode($response);
 	return;	
 }
 
+//MGM INGREDIENT
 if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'general'){
 	$ing = mysqli_real_escape_string($conn, $_POST['ing']);
 
@@ -680,14 +876,16 @@ if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'tech_data'){
 	$soluble = mysqli_real_escape_string($conn, $_POST["soluble"]);
 	$molecularWeight = mysqli_real_escape_string($conn, $_POST["molecularWeight"]);
 	$appearance = mysqli_real_escape_string($conn, $_POST["appearance"]);
+	$rdi = (int)$_POST["rdi"]?:0;
 
 	
-	$query = "UPDATE ingredients SET tenacity='$tenacity',flash_point='$flash_point',chemical_name='$chemical_name',formula='$formula',logp = '$logp',soluble = '$soluble',molecularWeight = '$molecularWeight',appearance='$appearance' WHERE id='$ingID'";
+	$query = "UPDATE ingredients SET tenacity='$tenacity',flash_point='$flash_point',chemical_name='$chemical_name',formula='$formula',logp = '$logp',soluble = '$soluble',molecularWeight = '$molecularWeight',appearance='$appearance',rdi='$rdi' WHERE id='$ingID'";
 	if(mysqli_query($conn, $query)){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Technical data has been updated!</div>';
+		$response["success"] = 'Technical data has been updated!';
 	}else{
-		echo '<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> '.mysqli_error($conn).'</div>';
-	}
+		$response["error"] = 'Something went wrong '.mysqli_error($conn);
+	}	
+	echo json_encode($response);
 	return;
 }
 

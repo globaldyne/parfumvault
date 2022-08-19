@@ -1,4 +1,32 @@
 Whats New:
 ----------------------
-BUG FIX release to solve the db update issues between versions
-Added 2 character limit when searching for ingredient in formula
+- Improved installtion wizard 
+- Pending formulas moved to Formula Management
+- New notification system implemented
+- Update to comply with new PV Online api
+- Show ingredients, synonyms and compositions count when you importing from PV Online
+- Improve PV Online import and upload functions
+- Improve formula creation functions
+- Username is now removed, use your email address to login instead
+- User list page removed, we only allow a single user
+- Allow a user to register a PV Online account during a first time installation wizard
+- Add PV Online connectivity status (Online/Offline)
+- User profile page has been re-written and improved
+- Add supplier data when importing from PV Online
+- Extend ingredient search in INCI
+- Added Odor Impact for ingredients
+- Extend ingredients import to include synonyms and full supplier data
+- Added user profile update in PV Online settings
+- Create ingredient placeholder if in formula but missing from the database
+- Get notified when new ingredients added in PV Online
+- Bottle & Lids inventory update
+- Customer section update
+- Update datatables to 1.12.1
+- Batches page rewrite
+- Fix measurement unit always shown ml in amount to make window
+- Ingredients card view is been removed in favour of datatables
+- Add option to print the formula without csv export
+- You can now match csv fields when you importing a formula or ingredients from a csv file
+- DB backup/restore improvements
+- Formulas comparison improvements
+- Update jquery UI to version 1.13.2

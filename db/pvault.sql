@@ -15,6 +15,7 @@ DROP TABLE IF EXISTS `batchIDHistory`;
 CREATE TABLE `batchIDHistory` (
   `id` varchar(50) COLLATE utf8_general_ci NOT NULL,
   `fid` varchar(255) COLLATE utf8_general_ci NOT NULL,
+  `product_name` varchar(255) NOT NULL,
   `pdf` varchar(255) COLLATE utf8_general_ci NOT NULL,
   `created` timestamp NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -31,7 +32,7 @@ CREATE TABLE `bottles` (
   `supplier` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `supplier_link` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `notes` text COLLATE utf8_general_ci DEFAULT NULL,
-  `photo` varchar(255) COLLATE utf8_general_ci DEFAULT NULL
+  `pieces` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 DROP TABLE IF EXISTS `customers`;
@@ -189,6 +190,7 @@ CREATE TABLE `ingredients` (
   `formula` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `flash_point` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `appearance` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `rdi` INT NOT NULL DEFAULT '0',
   `notes` text COLLATE utf8_general_ci DEFAULT NULL,
   `profile` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `ml` FLOAT(5) NULL DEFAULT '10',
@@ -276,19 +278,15 @@ CREATE TABLE `lids` (
   `price` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `supplier` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `supplier_link` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `photo` varchar(255) COLLATE utf8_general_ci DEFAULT NULL
+  `pieces` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 DROP TABLE IF EXISTS `pv_meta`;
 CREATE TABLE `pv_meta` (
-  `id` int(11) NOT NULL,
   `schema_ver` varchar(255) COLLATE utf8_general_ci NOT NULL,
   `app_ver` varchar(255) COLLATE utf8_general_ci NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
-INSERT INTO `pv_meta` (`id`, `schema_ver`, `app_ver`) VALUES
-(1, '4.7', '4.7');
 
 DROP TABLE IF EXISTS `settings`;
 CREATE TABLE `settings` (
@@ -319,7 +317,6 @@ CREATE TABLE `settings` (
   `mUnit` VARCHAR(10) NOT NULL DEFAULT 'ml',
   `multi_dim_perc` INT NOT NULL DEFAULT '0', 
   `defCatClass` VARCHAR(255) NOT NULL DEFAULT 'cat4',
-  `defIngView` INT NOT NULL DEFAULT '1', 
   `api` INT NOT NULL DEFAULT '0',
   `api_key` VARCHAR(255) NULL 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -330,19 +327,13 @@ INSERT INTO `settings` (`id`, `label_printer_addr`, `label_printer_model`, `labe
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
-  `username` varchar(255) COLLATE utf8_general_ci NOT NULL,
-  `password` varchar(255) COLLATE utf8_general_ci NOT NULL,
-  `fullName` varchar(255) COLLATE utf8_general_ci NOT NULL,
   `email` varchar(255) COLLATE utf8_general_ci NOT NULL,
-  `avatar` varchar(255) COLLATE utf8_general_ci DEFAULT NULL
+  `password` varchar(255) COLLATE utf8_general_ci NOT NULL,
+  `fullName` varchar(255) COLLATE utf8_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci ROW_FORMAT=COMPACT;
 
 CREATE TABLE `pv_online` (
- `id` int(11) NOT NULL AUTO_INCREMENT,
- `email` varchar(255) COLLATE utf8_general_ci NOT NULL,
- `password` varchar(255) COLLATE utf8_general_ci NOT NULL,
- `enabled` INT NOT NULL DEFAULT '0', 
- PRIMARY KEY (`id`)
+ `enabled` INT NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE `IFRACategories` (
@@ -393,7 +384,7 @@ CREATE TABLE `suppliers` (
  `batch` VARCHAR(255) NULL,
  `purchased` DATE NULL,
  `mUnit` VARCHAR(255) NULL, 
- `stock` INT NOT NULL,
+ `stock` INT(11) NOT NULL DEFAULT 0,
  PRIMARY KEY (`id`),
  UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -441,10 +432,6 @@ ALTER TABLE `ingTypes`
 ALTER TABLE `lids`
   ADD PRIMARY KEY (`id`);
 
-ALTER TABLE `pv_meta`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `id` (`id`);
-
 ALTER TABLE `settings`
   ADD PRIMARY KEY (`id`);
 
@@ -489,9 +476,6 @@ ALTER TABLE `ingTypes`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `lids`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
-ALTER TABLE `pv_meta`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `settings`

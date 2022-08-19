@@ -1,5 +1,6 @@
 <?php
 define('pvault_panel', TRUE);
+define('__ROOT__', dirname(__FILE__)); 
 
 if(file_exists('./inc/config.php') == FALSE){
 
@@ -12,37 +13,25 @@ if(isset($_SESSION['parfumvault'])){
 	header('Location: index.php');
 }
 
-require_once('inc/config.php');
-require_once('inc/opendb.php');
-require_once('inc/product.php');
-if($_GET['register'] && $_POST['regUser'] && $_POST['regPass'] && $_POST['regFullName'] && $_POST['regEmail']){
-	$ruser = mysqli_real_escape_string($conn,strtolower($_POST['regUser']));
-	$rpass = mysqli_real_escape_string($conn,$_POST['regPass']);
-	$rfname = mysqli_real_escape_string($conn,$_POST['regFullName']);
-	$remail = mysqli_real_escape_string($conn,$_POST['regEmail']);
-	if(strlen($_POST['regPass']) < '5'){
-		$msg ='<div class="alert alert-danger alert-dismissible"><strong>Error: </strong>Password must be at least 5 characters long!</div>';
-	}else{
-		if(mysqli_query($conn,"INSERT INTO users (username,password,fullName,email) VALUES ('$ruser', PASSWORD('$rpass'),'$rfname','$remail')")){
-			header('Location: login.php');
-		}else{
-			$msg = '<div class="alert alert-danger alert-dismissible">Failed to register the user</div>';
-		}
-	}
-	
-}
-if($_POST['username'] && $_POST['password']){
-	$_POST['username'] = mysqli_real_escape_string($conn,strtolower($_POST['username']));
+require_once(__ROOT__.'/inc/config.php');
+require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/inc/product.php');
+require_once(__ROOT__.'/db/prepare/prepare.php');
+
+$installed_ver = mysqli_fetch_array(mysqli_query($conn,"SELECT app_ver FROM pv_meta"));
+
+if($_POST['email'] && $_POST['password']){
+	$_POST['email'] = mysqli_real_escape_string($conn,strtolower($_POST['email']));
 	$_POST['password'] = mysqli_real_escape_string($conn,$_POST['password']);
 	
-	$row = mysqli_fetch_assoc(mysqli_query($conn,"SELECT id FROM users WHERE username='".$_POST['username']."' AND password=PASSWORD('".$_POST['password']."')"));
+	$row = mysqli_fetch_assoc(mysqli_query($conn,"SELECT id FROM users WHERE email='".$_POST['email']."' AND password='".$_POST['password']."'"));
 
 	if($row['id']){	// If everything is OK login
 			$_SESSION['parfumvault'] = true;
 			$_SESSION['userID'] = $row['id'];
 			header('Location: index.php');
 	}else{
-		$msg = '<div class="alert alert-danger alert-dismissible">Username or password error</div>';
+		$msg = '<div class="alert alert-danger alert-dismissible">Email or password error</div>';
 	}
 }
 
@@ -85,58 +74,59 @@ if($_POST['username'] && $_POST['password']){
           <div class="card-body p-0">
             <!-- Nested Row within Card Body -->
             <div class="row">
-             <?php if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM users")) == 0){?>
+             <?php if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM users")) == 0){ $first_time = 1; ?>
               <div class="col-lg-6 d-none d-lg-block bg-register-image"></div>
               <div class="col-lg-6">
                 <div class="p-5">
                   <div class="text-center">
                     <h1 class="h4 text-gray-900 mb-4">Please register a user!</h1>
                   </div>
-                  <?php echo $msg; ?>
-                   <form action="?register=1" method="post" enctype="multipart/form-data" target="_self" class="user" id="register">
+                  <div id="msg"></div>
+                   <div class="user" id="reg_form">
                     <hr>
                     <div class="form-group">
-                      <input type="text" class="form-control form-control-user" name="regFullName"  value="<?php echo $_POST['regFullName'];?>" placeholder="Your full name...">
+                      <input type="text" class="form-control form-control-user" id="fullName" placeholder="Your full name...">
                     </div>      
                     <div class="form-group">
-                      <input type="text" class="form-control form-control-user" name="regEmail"  value="<?php echo $_POST['regEmail'];?>" placeholder="Your email...">
+                      <input type="text" class="form-control form-control-user" id="email" placeholder="Your email...">
                     </div>  
                     <div class="form-group">
-                      <input type="text" class="form-control form-control-user" name="regUser"  value="<?php echo $_POST['regUser'];?>" placeholder="Username...">
+                      <input type="text" class="form-control form-control-user" id="password" placeholder="Password...">
                     </div>
                     <div class="form-group">
-                      <input type="text" class="form-control form-control-user" name="regPass" placeholder="Password...">
+                      <input name="createPVOnline" type="checkbox" class="form-control-user" id="createPVOnline" value="true" checked>
+                      <label data-toggle="tooltip" data-placement="top" title="Connect my existing account to PVOnline or automatically create a new one.">Connect PV Online account</label>
                     </div>
                     <div class="form-group"></div>
-                    <button class="btn btn-primary btn-user btn-block">
+                    <button class="btn btn-primary btn-user btn-block" id="registerSubmit">
                       Register
                     </button>
-                  </form>
+                  </div>
                   <?php }else{ ?>
-              <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
-              <div class="col-lg-6">
-                <div class="p-5">
-                  <div class="text-center">
-                    <h1 class="h4 text-gray-900 mb-4">Welcome back!</h1>
-                  </div>
-                  <?php echo $msg; ?>
-                    <form method="post" enctype="multipart/form-data" class="user" id="login">
-                    <div class="form-group">
-                      <input type="text" class="form-control form-control-user" name="username"  placeholder="Username...">
-                    </div>
-                    <div class="form-group">
-                      <input type="password" class="form-control form-control-user" name="password" placeholder="Password...">
-                    </div>
-                    <div class="form-group"></div>
-                    <button class="btn btn-primary btn-user btn-block">
-                      Login
-                    </button>
-                  </form>
-                  <?php } ?>
-		 		  <hr>
-                  <div class="text-center">
-                    <a class="small" href="#" data-toggle="modal" data-target="#forgot_pass">Forgot Password?</a>
-                  </div>
+                  <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
+                  <div class="col-lg-6">
+                    <div class="p-5">
+                      <div class="text-center">
+                        <h1 class="h4 text-gray-900 mb-4">Welcome back!</h1>
+                      </div>
+                      <?php echo $msg; ?>
+                        <form method="post" enctype="multipart/form-data" class="user" id="login">
+                        <div class="form-group">
+                          <input type="text" class="form-control form-control-user" name="email"  placeholder="Email...">
+                        </div>
+                        <div class="form-group">
+                          <input type="password" class="form-control form-control-user" name="password" placeholder="Password...">
+                        </div>
+                        <div class="form-group"></div>
+                        <button class="btn btn-primary btn-user btn-block">
+                          Login
+                        </button>
+                      </form>
+                      <hr>
+                      <div class="text-center">
+                        <a class="small" href="#" data-toggle="modal" data-target="#forgot_pass">Forgot Password?</a>
+                      </div>
+                  <?php } ?>		 		 
                   <hr>
                   <div class="copyright text-center my-auto">
 				  <label class="small">Version: <?php echo $ver; ?> | <?php echo $product; ?></label>
@@ -151,6 +141,24 @@ if($_POST['username'] && $_POST['password']){
   </div>
  </body>
 </html>
+
+<!--PRE UPGRADE NEEDED-->
+<div class="modal fade" id="pre_warn" tabindex="-1" role="dialog" aria-labelledby="pre_warn" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">WARNING</h5>
+      </div>
+      <div id="upgrademsg"></div>
+      <div class="modal-body">
+		<?php echo prepare($installed_ver['app_ver'], $ver); ?>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="confUpgrade" data-dismiss="modal">Upgrade</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!--FORGOT PASS INFO-->
 <div class="modal fade" id="forgot_pass" tabindex="-1" role="dialog" aria-labelledby="forgot_pass" aria-hidden="true">
@@ -181,3 +189,73 @@ if($_POST['username'] && $_POST['password']){
 </div>
 
 <?php } ?>
+
+<script>
+$(document).ready(function() {
+	$(function () {
+		$('[data-toggle="tooltip"]').tooltip()
+	});
+
+<?php if($installed_ver['app_ver'] < $ver && !$first_time){ ?> 
+    $('#pre_warn').modal('show');
+	$("#pre_warn").on('hide.bs.modal', function () {  
+  		return false
+	});
+	$('#pre_warn').on('click', '[id*=confUpgrade]', function () {
+		
+		$.ajax({ 
+			url: '/db/prepare/prepare.php', 
+			type: 'POST',
+			data: {
+				action: 'upgrade',
+				version: <?=$ver?>,
+			},
+			dataType: 'json',
+			success: function (data) {
+				if (data.success){ 
+				    window.location='/'
+				}
+				if(data.error){
+					var msg = '<div class="alert alert-danger">'+data.error+'</div>';
+				}
+				
+				$('#upgrademsg').html(msg);
+			}
+		});
+																 
+	});
+<?php } ?>
+	$('#reg_form').on('click', '[id*=registerSubmit]', function () {
+		$('#registerSubmit').prop('disabled', true);
+		$('#msg').html('<div class="alert alert-info"><img src="/img/loading.gif"/> Please wait, configuring the system...<p><strong>Please do not close, refresh or navigate away from this page. You will be automatically redirected upon a succesfull installation.</strong></p></div>');
+		$("#reg_form").hide();
+		
+		$.ajax({ 
+			url: '/core/configureSystem.php', 
+			type: 'POST',
+			data: {
+				action: 'register',
+				fullName: $("#fullName").val(),
+				email: $("#email").val(),
+				password: $("#password").val(),
+				createPVOnline: $("#createPVOnline").is(":checked"),
+			},
+			dataType: 'json',
+			success: function (data) {
+				if (data.success){ 
+				    window.location='/'
+				}
+				if(data.error){
+					var msg = '<div class="alert alert-danger">'+data.error+'</div>';
+				}
+				
+				$("#reg_form").show();
+				$('#registerSubmit').prop('disabled', false);
+				$('#msg').html(msg);
+			}
+		});
+	});
+    
+});//end doc
+
+</script>

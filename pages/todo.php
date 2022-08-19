@@ -30,7 +30,7 @@ function removeTODO(fid) {
           <div>
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h2 class="m-0 font-weight-bold text-primary"><a href="?do=todo">Formulas to make</a></h2>
+              <h2 class="m-0 font-weight-bold text-primary"><a href="?do=todo">Pending Formulas</a></h2>
             </div>
             <div class="card-body">
               <div class="table-responsive">

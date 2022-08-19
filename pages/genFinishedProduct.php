@@ -49,8 +49,8 @@ if($_POST['formula']){
 		define('FPDF_FONTPATH','./fonts');
 		$batchID = genBatchID();
 		$batchFile = $uploads_path.'batches/'.$batchID;
-		
-		mysqli_query($conn, "INSERT INTO batchIDHistory (id,fid,pdf) VALUES ('$batchID','$f_name','$batchFile')");
+		$prodName = $meta['product_name'];
+		mysqli_query($conn, "INSERT INTO batchIDHistory (id,fid,pdf,product_name) VALUES ('$batchID','$f_name','$batchFile','".$meta['product_name']."')");
 		genBatchPDF($f_name,$batchID,$bottle,$new_conc,$mg['total_mg'],$ver,$uploads_path,$settings['defCatClass'],$settings['qStep'],$conn);
 	}else{
 		$batchID = 'N/A';

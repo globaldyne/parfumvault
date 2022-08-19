@@ -1,5 +1,7 @@
 <?php 
-require('../inc/sec.php');
+define('__ROOT__', dirname(dirname(__FILE__))); 
+
+require(__ROOT__.'/inc/sec.php');
 
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
@@ -16,7 +18,7 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulasMetaData WHERE i
 	echo '<div class="alert alert-info alert-dismissible">Incomplete formula. Please add ingredients.</div>';
 	return;
 }
-$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,fid,name,isProtected,finalType,defView FROM formulasMetaData WHERE id = '$id'"));
+$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,fid,name,isProtected,finalType,defView,notes FROM formulasMetaData WHERE id = '$id'"));
 $f_name = $meta['name'];
 $fid = $meta['fid'];
 ?>
@@ -41,12 +43,19 @@ $(document).ready(function() {
     		search: "<?=$_GET['search']?>"
   		},
 		dom: 'lfrtip',
+			buttons: [{
+				extend: 'print',
+				title: "<?=$meta['name']?>",
+				exportOptions: {
+     				columns: [1, 2, 3, 4, 5, 6, 7, 8, 10]
+  				},
+			  }],
 		processing: true,
 			  mark: true,
         language: {
 			loadingRecords: '&nbsp;',
 			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Blending...</span>',
-			emptyTable: "Incomplete formula. Please add ingredients.",
+			emptyTable: '<div class="alert alert-warning"><strong>Empty formula. Please add ingredients.</strong></div>',
 			search: "Search in formula:",
 			searchPlaceholder: "CAS, Ingredient, etc.."
 			},
@@ -171,19 +180,24 @@ $('#formula').on('click', '[id*=rmIng]', function () {
                callback: function (){
 	    			
 				$.ajax({ 
-					url: 'pages/manageFormula.php', 
-					type: 'GET',
+					url: '/pages/manageFormula.php', 
+					type: 'POST',
 					data: {
 						action: "deleteIng",
 						fid: "<?=$meta['fid']?>",
 						ingID: ing.ID,
 						ing: ing.Name
 						},
-					dataType: 'html',
+					dataType: 'json',
 					success: function (data) {
-						$('#msgInfo').html(data);
+						if(data.success){
+							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+						}else{
+							var msg ='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+						}
+						$('#msgInfo').html(msg);
 						reload_formula_data();
-					}
+					}						
 				  });
                  return true;
                }
@@ -206,8 +220,8 @@ $('#formula').on('click', '[id*=exIng]', function () {
 	ing.Status = $(this).attr('data-status');
 			
 		$.ajax({ 
-			url: 'pages/manageFormula.php', 
-			type: 'GET',
+			url: '/pages/manageFormula.php', 
+			type: 'POST',
 			data: {
 				action: "excIng",
 				fid: "<?=$meta['fid']?>",
@@ -215,9 +229,14 @@ $('#formula').on('click', '[id*=exIng]', function () {
 				ingName: ing.Name,
 				status: ing.Status
 				},
-			dataType: 'html',
+			dataType: 'json',
 			success: function (data) {
-				$('#msgInfo').html(data);
+				if(data.success) {
+					var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+				}else{
+					var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';	
+				}
+				$('#msgInfo').html(msg);
 				reload_formula_data();
 			}
 		  });
@@ -246,9 +265,14 @@ function isMade() {
 						isMade: "1",
 						fid: "<?=$meta['fid']?>",
 						},
-					dataType: 'html',
+					dataType: 'json',
 					success: function (data) {
-						$('#msgInfo').html(data);
+						if(data.success) {
+							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+						}else{
+							var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';	
+						}
+						$('#msgInfo').html(msg);
 						reload_formula_data();
 					}
 				  });
@@ -298,7 +322,9 @@ function reload_formula_data() {
 	update_bar();
 };
 
-
+$('#print').click(() => {
+    $('#formula').DataTable().button(0).trigger();
+});
 </script>
 
 <table class="table table-striped table-bordered nowrap" width="100%" cellspacing="0">
@@ -319,7 +345,13 @@ function reload_formula_data() {
                <div class="dropdown-divider"></div>
                <a class="dropdown-item" href="javascript:export_as('csv')">Export to CSV</a>
                <a class="dropdown-item" href="javascript:export_as('pdf')">Export to PDF</a>
+               <a class="dropdown-item" href="#" id="print">Print Formula</a>
                <div class="dropdown-divider"></div>
+               <?php if($pv_online['enabled'] == '1'){?>
+               <li class="dropdown-header">TECH PREVIEW</li> 
+               <a class="dropdown-item" href="#" data-toggle="modal" data-target="#share_to_user">Share with someone</a>
+               <div class="dropdown-divider"></div>
+               <?php } ?>
                <a class="dropdown-item" href="javascript:manageQuantity('multiply')">Multiply x2</a>
                <a class="dropdown-item" href="javascript:manageQuantity('divide')">Divide x2</a>
                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#amount_to_make">Amount to make</a>
@@ -374,6 +406,83 @@ function reload_formula_data() {
         </tfoot>
 </table>
 
+<?php if($pv_online['enabled'] == '1'){?>
+<!--Share with a user-->
+<div class="modal fade" id="share_to_user" tabindex="-1" role="dialog" aria-labelledby="share_to_user" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Share with a PV Online user</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <div id="techpreview"><div class="alert alert-warning alert-dismissible"><strong>THIS IS A TECH PREVIEW FEATURE. USE ONLY FOR TESTING.</strong></div></div>
+      <div id="shareMsg"></div>
+        <table width="100%" border="0">
+          <tr>
+	       <td height="31" colspan="2"><p>Select PV Online user to share the formula with.</p>
+            <p>The formula will be sent to PV Online servers and will be automatically deleted when all the users you sharing the formula with, downloads the formula.</p>
+            <p>&nbsp;</p></td>
+          </tr>
+	     <tr>
+	       <td width="125">Share with:</td>
+	       <td width="895"><input name="pvUsers" id="pvUsers" class="pv-form-control"></td>
+          </tr>
+	     <tr>
+	       <td valign="top">Comments:</td>
+	       <td><textarea name="pvShareComment" id="pvShareComment" cols="45" rows="5" placeholder="Short description of your formula or any other comments" class="form-control"><?=$meta['notes']?></textarea></td>
+          </tr>
+        </table>
+	    <p>&nbsp;</p>
+	    <p><a href="#" data-toggle="modal" data-target="#invite_to_pv">Invite someone to PV Online</a></p>
+	    <div class="modal-footer">
+	      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+	      <input type="submit" name="button" class="btn btn-primary" id="sharePVOnline" value="Share">
+        </div>
+    </div>
+  </div>
+ </div>
+</div>
+
+
+<!--INVITE TO PV ONLINE-->
+<div class="modal fade" id="invite_to_pv" tabindex="-1" role="dialog" aria-labelledby="invite_to_pv" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Invite someone to PV Online</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <div id="invMsg"></div>
+        <table width="100%" border="0">
+          <tr>
+	       <td width="66" height="31"><strong>Email<span class="sup"></span> :</strong></td>
+	       <td width="237"><input name="invEmail" type="text" id="invEmail" /></td>
+          </tr>
+	     <tr>
+	       <td><strong>Name:</strong></td>
+	       <td><input name="invName" type="text" id="invName" /></td>
+          </tr>
+        </table>
+        <hr />
+	    <p><strong>Please Note:</strong></p>
+	    <p>If the person your are trying to invite is already registered, the invitation will not be send.</p>
+       	<p>You can only send one invitation per email/person.</p>
+	    <div class="modal-footer">
+	     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+  		 <input type="submit" name="button" class="btn btn-primary" id="invToPV" value="Send Invitation">
+	   </div>
+    </div>
+  </div>
+ </div>
+</div>
+
+<?php } ?>
 <!--Amount To Make-->
 <div class="modal fade" id="amount_to_make" tabindex="-1" role="dialog" aria-labelledby="amount_to_make" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -390,12 +499,12 @@ function reload_formula_data() {
           <tr>
 	       <td width="66" height="31"><strong>SG<span class="sup">*</span> :</strong></td>
 	       <td width="237"><input name="sg" type="text" id="sg" value="0.985" />
-            <strong>ml</strong></td>
+            <strong><?=$settings['mUnit']?></strong></td>
           </tr>
 	     <tr>
 	       <td><strong>Amount:</strong></td>
 	       <td><input name="totalAmount" type="text" id="totalAmount" value="100" />
-            <strong>ml</strong></td>
+            <strong><?=$settings['mUnit']?></strong></td>
           </tr>
         </table>
 	    <p>&nbsp;</p>
@@ -437,7 +546,8 @@ function reload_formula_data() {
 	       <td><input name="accordName" type="text" class="form-control" id="accordName" value="<?=$f_name?> accord" /></td>
           </tr>
         </table>
-	    <p>&nbsp;</p>
+	     <hr />
+	    <p>Will create a new formula from the notes you choose. <br/>The current formula will stay intact.</p>
 	    <div class="modal-footer">
 	     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
   		 <input type="submit" name="button" class="btn btn-primary" id="createAccord" value="Create">
@@ -596,8 +706,11 @@ function ingName(data, type, row, meta){
 	}else{
 		var profile_class ='';
 	}
-	if(type === 'display'){
+	if(row.ingredient.enc_id){
 		data = '<a class="popup-link '+ex+'" href="pages/mgmIngredient.php?id=' + row.ingredient.enc_id + '">' + data + '</a> '+ chkIng + profile_class;
+	}else{
+		data = '<a class="popup-link '+ex+'" href="pages/mgmIngredient.php?id=' + btoa(data) + '">' + data + '</a> '+ chkIng + profile_class;
+
 	}
 
   return data;
@@ -685,9 +798,10 @@ function ingActions(data, type, row, meta){
 $('#formula').editable({
 	select2: {
     	width: '250px',
-        placeholder: 'Choose ingredient',
+        placeholder: 'Search for ingredient (name, cas)',
         allowClear: true,
     	dropdownAutoWidth: true,
+		minimumInputLength: 2,
 		ajax: {
 			url: '/core/list_ingredients_simple.php',
 			dataType: 'json',
@@ -753,8 +867,8 @@ if(type === 'display'){
 //MULTIPLY - DIVIDE
 function manageQuantity(quantity) {
 	$.ajax({ 
-    url: 'pages/manageFormula.php', 
-	type: 'GET',
+    url: '/pages/manageFormula.php', 
+	type: 'POST',
     data: {
 		do: 'scale',
 		scale: quantity,
@@ -778,8 +892,8 @@ $('#amount_to_make').on('click', '[id*=amountToMake]', function () {
 	  	$('#amountToMakeMsg').html('<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> all fields required!</div>');		
 	}else{
 		$.ajax({ 
-		url: 'pages/manageFormula.php', 
-		type: 'GET',
+		url: '/pages/manageFormula.php', 
+		type: 'POST',
 		cache: false,
 		data: {
 			fid: "<?php echo $fid; ?>",
@@ -837,10 +951,14 @@ $('#conv_ingredient').on('click', '[id*=conv2ing]', function () {
 			ingName: $("#ingName").val(),
 			action: 'conv2ing',
 			},
-		dataType: 'html',
+		dataType: 'json',
 		success: function (data) {
-			$('#cnvMsg').html(data);
-			//$('#conv_ingredient').modal('toggle');
+			if(data.success){
+				var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
+			}else if(data.error){
+				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
+			}
+			$('#cnvMsg').html(msg);
 		}
 	  });
 	}
@@ -885,7 +1003,6 @@ function addTODO() {
   });
 };
 
-
 $('#formula').on('click', '[id*=cCAS]', function () {
 	var copy = {};
 	copy.Name = $(this).attr('data-name');
@@ -897,6 +1014,125 @@ $('#formula').on('click', '[id*=cCAS]', function () {
     document.body.removeChild(el);
 });
 
+$("#pvUsers").select2({
+	placeholder: "Search for users",
+    width: '250px',
+    placeholder: 'Search for PV Online users',
+	formatResult: formatPVUsers, 
+    formatSelection: formatPVUsersSelection, 
+    allowClear: true,
+    dropdownAutoWidth: false,
+	tags: true,
+	minimumInputLength: 2,
+	ajax: {
+		url: '<?=$pvOnlineAPI?>',
+		dataType: 'json',
+		type: 'POST',
+		delay: 300,
+		quietMillis: 250,
+		cache: false,
+   		data: function (term) {
+            return {
+				username: '<?=$pv_online['email']?>',
+				password: '<?=$pv_online['password']?>',
+				do: 'getUsers',
+            	search: term,
+			};
+		},
+		processResults: function(data) {
+			return {
+				results: $.map(data.users, function(obj) {
+					return {
+						id: obj.id,
+						name: obj.nickname,
+						avatar: obj.avatar,
+						userBio: obj.userBio,
+						avatar: obj.avatar
+					}
+				})
+			};
+		},	
+    }
+});
+
+function formatPVUsers (userData) {
+  if (userData.loading) {
+    return userData.name;
+  }
+  
+  if (!userData.name){
+	return 'User not found...';
+  }
+  
+  var $container = $(
+    "<div class='select_result_igredient clearfix'><div class='col-sm-1 profile-avatar-thumb'><img src='data:image/png;base64,"+userData.avatar+"' class='img-profile-avatar-thumb'/></div><strong>" +userData.name+
+      "</strong><div class='select_result_igredient_meta'>" +
+        "<div class='select_result_igredient_description'>" +userData.userBio+ "</div>" +
+    "</div>"
+  );
+
+  return $container;
+}
+
+function formatPVUsersSelection (userData) {
+  return userData.name;
+}
+<?php if($pv_online['enabled'] == '1'){?>
+
+$('#share_to_user').on('click', '[id*=sharePVOnline]', function () {
+	$('#sharePVOnline').attr('disabled', true);
+	$('#shareMsg').html('<div class="alert alert-info"><img src="/img/loading.gif"/> Please wait, this may take a while...</div>');
+
+	$.ajax({
+		url: 'pages/pvonline.php', 
+		type: 'POST',
+		data: {
+			action: 'share',
+			fid: '<?=$fid?>',
+			users: $("#pvUsers").val(),
+			comments: $("#pvShareComment").val(),
+			},
+		dataType: 'json',
+		success: function (data) {
+				if(data.error){
+					$('#sharePVOnline').attr('disabled', false);
+					var rmsg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
+
+				}else if(data.success){
+					$('#sharePVOnline').hide();
+					var rmsg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
+				}
+			
+		  	$('#shareMsg').html(rmsg);
+		}
+	  });
+	
+});
+
+$('#invToPV').click(function() {
+	$.ajax({
+		url: 'pages/pvonline.php', 
+		type: 'POST',
+		data: {
+			action: 'invToPv',
+			invEmail: $("#invEmail").val(),
+			invName: $("#invName").val(),
+			},
+		dataType: 'json',
+		success: function (data) {
+				if(data.error){
+					var rmsg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
+				}else if(data.success){
+					var rmsg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
+				}
+			
+		  	$('#invMsg').html(rmsg);
+		}
+	  });
+
+});
+
+<?php } ?>
 function export_as(type) {
   $("#formula").tableHTMLExport({
 	type: type,

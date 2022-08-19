@@ -23,7 +23,7 @@ $(document).ready(function(){
     	dropdownAutoWidth: true,
 		theme: 'bootstrap',
         allowClear: true,
-		placeholder: 'Choose ingredient',
+		placeholder: 'Choose ingredient (name, cas)',
 		formatResult: formatIngredients,
 		formatSelection: formatIngredientsSelection,
 		ajax: {

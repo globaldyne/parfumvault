@@ -1,5 +1,7 @@
 <?php
-require('../inc/sec.php');
+define('__ROOT__', dirname(dirname(__FILE__))); 
+
+require(__ROOT__.'/inc/sec.php');
 
 $provider = $_POST['provider'];
 
