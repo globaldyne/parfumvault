@@ -720,7 +720,7 @@ table.fixedHeader-floating {
 }
 
 .ing_alg {
-	display: block;	
+	display: inline;	
 	color: #b7b41a;
 }
 
