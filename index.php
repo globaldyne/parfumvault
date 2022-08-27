@@ -79,7 +79,8 @@ if($pv_meta['schema_ver'] < $db_ver){
   <script src="js/dataTables.responsive.min.js"></script>
   <script src="js/bootbox.min.js"></script>
   
-  
+  <script src="js/sb-admin-2.js"></script>
+
 <script type='text/javascript'>
 
 $(document).ready(function() {
