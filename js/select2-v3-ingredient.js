@@ -20,9 +20,9 @@ $(document).ready(function(){
 
 	$("#ingredient").select2({
 		minimumInputLength: 2,
-    	dropdownAutoWidth: true,
+    		dropdownAutoWidth: true,
 		theme: 'bootstrap',
-        allowClear: true,
+        	allowClear: true,
 		placeholder: 'Choose ingredient (name, cas)',
 		formatResult: formatIngredients,
 		formatSelection: formatIngredientsSelection,
@@ -56,15 +56,15 @@ $(document).ready(function(){
 	  
 	}).on('select2-open', () => {
 		$(".select2-with-searchbox:not(:has(a))").prepend('<div id="add_new_ing_sel" class="select_add_new_ingredient"><a href="/pages/mgmIngredient.php" class="popup-link fa fa-plus text-primary add-new-ing-sel"> Create new ingredient</a></div>');
-		
-	$('.popover').hide();
-	
+		$('.popover').hide();
+		extrasShow();
+
 	}).on('select2-selected', function (data) {
   		var id = data.choice.id;
    		var type = data.choice.type
 	
-	   $(this).attr('ing-id', id);
-	   $(this).attr('ing-type', type);
+	  	$(this).attr('ing-id', id);
+	   	$(this).attr('ing-type', type);
 	});
 	
 	function formatIngredients (ingredientData) {
@@ -72,7 +72,7 @@ $(document).ready(function(){
 			return ingredientData.name;
 		}
 	 
-		extrasShow();
+		//extrasShow();
 	
 		if (!ingredientData.name){
 			return 'No ingredient found...';
