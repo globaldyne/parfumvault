@@ -968,20 +968,22 @@ $('#conv_ingredient').on('click', '[id*=conv2ing]', function () {
 function cloneMe() {	  
 $.ajax({ 
     url: 'pages/manageFormula.php', 
-	type: 'GET',
+	type: 'POST',
     data: {
 		action: "clone",
 		fname: "<?=$f_name?>",
 		fid: "<?=$meta['fid']?>",
 		},
-	dataType: 'html',
+	dataType: 'json',
     success: function (data) {
-        if ( data.indexOf("Error") > -1 ) {
-			$('#msgInfo').html(data); 
+		if (data.success) {
+			var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 		}else{
-			$('#msgInfo').html(data);
+			var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 		}
-    }
+		$('#msgInfo').html(msg);
+	}
+
   });
 };
 
