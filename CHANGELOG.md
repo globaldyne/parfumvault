@@ -2,6 +2,7 @@
 ### Version 4.9
 - Update bootstrap select to v1.13.18
 - FIX New ingredient popup not showing in some cases
+- FIX Unable to create a new customer
 
 ### Version 4.7
 - Added 2 character limit when searching for ingredient in formula
