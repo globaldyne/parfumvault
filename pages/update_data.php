@@ -460,11 +460,13 @@ if($_POST['value'] && $_GET['formula'] && $_POST['pk']){
 	$ingredient = mysqli_real_escape_string($conn, $_POST['pk']);
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 	
+	$ing_name =  mysqli_fetch_array(mysqli_query($conn, "SELECT ingredient FROM formulas WHERE id = '$ingredient' AND fid = '".$_GET['formula']."'"));
+	
 	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,isProtected FROM formulasMetaData WHERE fid = '".$_GET['formula']."'"));
 	if($meta['isProtected'] == FALSE){
 					
-		mysqli_query($conn, "UPDATE formulas SET $name = '$value' WHERE fid = '$formula' AND ingredient = '$ingredient'");
-		$lg = "CHANGE: $ingredient Set $name to $value";
+		mysqli_query($conn, "UPDATE formulas SET $name = '$value' WHERE fid = '$formula' AND id = '$ingredient'");
+		$lg = "CHANGE: ".$ing_name['ingredient']." Set $name to $value";
 		mysqli_query($conn, "INSERT INTO formula_history (fid,change_made,user) VALUES ('".$meta['id']."','$lg','".$user['fullName']."')");
 echo mysqli_error($conn);
 	}
