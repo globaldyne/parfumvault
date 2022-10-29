@@ -51,7 +51,7 @@
         </button>
       </div>
       <div class="modal-body">
-      <div id="inf"></div>
+      <div id="customer_inf"></div>
             Name: 
             <input class="form-control" name="name" type="text" id="name" />
             <p>
@@ -66,7 +66,7 @@
               
               <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <input type="submit" name="button" class="btn btn-primary" id="button" value="Add">
+        <input type="submit" name="button" class="btn btn-primary" id="customer_add" value="Add">
       </div>
     </div>
   </div>
@@ -187,31 +187,23 @@ $('#tdDataCustomers').on('click', '[id*=cDel]', function () {
   
 
 $('#customer_add').on('click', function () {
-
-	$("#customer_inf").html('<div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
-	$("#customer_add").prop("disabled", true);
-    $("#customer_add").prop('value', 'Please wait...');
-		
-    var name = $('#name').val();
-    var address = $('#address').val();
-    var email = $('#email').val();
-    var website = $('#website').val();
-
 	$.ajax({
-        url: '/pages/upload.php',
+        url: '/pages/update_data.php',
         type: 'POST',
-        data: fd,
 		dataType: 'json',
+		data: {
+			customer: 'add',
+			name: $("#name").val(),
+			address: $("#address").val(),
+			email: $("#email").val(),
+			web: $("#website").val(),
+		},
         success: function(response){
 			if(response.success){
                $("#customer_inf").html('<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+response.success+'</div>');
-				$("#customer_add").prop("disabled", false);
-        		$("#customer_add").prop("value", "Add");
-					reload_data();
+				reload_data();
             }else{
                 $("#customer_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+response.error+'</div>');
-				$("#customer_add").prop("disabled", false);
-        		$("#customer_add").prop("value", 'Add');
             }
           },
        });

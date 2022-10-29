@@ -43,6 +43,8 @@ if($pv_meta['schema_ver'] < $db_ver){
 }
 
 ?>
+<!doctype html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -77,7 +79,8 @@ if($pv_meta['schema_ver'] < $db_ver){
   <script src="js/dataTables.responsive.min.js"></script>
   <script src="js/bootbox.min.js"></script>
   
-  
+  <script src="js/sb-admin-2.js"></script>
+
 <script type='text/javascript'>
 
 $(document).ready(function() {
@@ -203,7 +206,7 @@ function list_users(){
             <a class="collapse-item <?php if($_GET['do'] == 'compareFormulas'){ echo 'active';}?>" href="?do=compareFormulas">Compare Formulas</a>
             <a class="collapse-item <?php if($_GET['do'] == 'genFinishedProduct'){ echo 'active';}?>" href="?do=genFinishedProduct"> Finished Product</a>
             <a class="collapse-item <?php if($_GET['do'] == 'sellFormula'){ echo 'active';}?>" href="?do=sellFormula">Sell Formula</a>
-            <a class="collapse-item <?php if($_GET['do'] == 'todo'){ echo 'active';}?>" href="?do=todo">Pending Formulas</a>
+            <a class="collapse-item <?php if($_GET['do'] == 'todo'){ echo 'active';}?>" href="?do=todo">Pending Formulas <span class="badge badge-danger badge-counter"><?php echo countPending(NULL, NULL, $conn);?></span></a>
           </div>
         </div>
       </li>

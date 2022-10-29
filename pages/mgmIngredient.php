@@ -48,6 +48,8 @@ while($pictograms_res = mysqli_fetch_array($pictograms)){
 }
 
 ?>
+<!doctype html>
+<html lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
@@ -818,3 +820,4 @@ $(document).ready(function() {
 </div>
 </div>
 </body>
+</html>

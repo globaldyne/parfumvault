@@ -99,9 +99,7 @@ foreach ($form as $formula){
 	}
 	$r['formula_ingredient_id'] = (int)$formula['id'];       
 	$r['fid'] = (string)$meta['name'];
-	
-	
-	
+		
 	if($settings['grp_formula'] == '1'){
 		$r['ingredient']['profile'] = (string)$ing_q['profile'] ?: 'Unknown';
 	}elseif($settings['grp_formula'] == '2'){
@@ -139,7 +137,6 @@ foreach ($form as $formula){
 		$r['usage_regulator'] = (string)'PV';
 	}
 	
-	
 	if($meta['defView'] == '1'){
 		$desc = $ing_q['odor'];
 	}elseif($meta['defView'] == '2'){
@@ -158,8 +155,6 @@ foreach ($form as $formula){
 	$r['ingredient']['pref_supplier'] = (string)getPrefSupplier($ing_q['id'],$conn)['name'] ?: 'N/A';
 	$r['ingredient']['pref_supplier_link'] = (string)getPrefSupplier($ing_q['id'],$conn)['supplierLink'] ?: 'N/A';
 	
-	
-	
 	$r['ingredient']['inventory']['stock'] = (int)$inventory['stock'] ?: 0;
 	$r['ingredient']['inventory']['mUnit'] = (string)$inventory['mUnit'] ?: $settings['mUnit'];
 	$r['ingredient']['inventory']['batch'] = (string)$inventory['batch'] ?: 'N/A';
@@ -167,7 +162,8 @@ foreach ($form as $formula){
 	
 	$r['chk_ingredient'] = (string)checkIng($formula['ingredient'],$defCatClass,$conn) ?: null;
 	$r['exclude_from_calculation'] = (int)$formula['exclude_from_calculation'] ?: 0;
-
+	
+	
 	$response['data'][] = $r;
 	
 	$conc_f[] = $conc;

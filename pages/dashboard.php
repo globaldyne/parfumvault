@@ -59,7 +59,7 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"))== 0){
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">All Formulas</div>
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1"><a href="/?do=listFormulas">All Formulas</a></div>
                       <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo countElement("formulasMetaData",$conn); ?></div>
                     </div>
                     <div class="col-auto">
@@ -75,7 +75,7 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"))== 0){
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Suppliers</div>
+                      <div class="text-xs font-weight-bold text-warning text-uppercase mb-1"><a href="/?do=suppliers">Suppliers</a></div>
                       <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo countElement("ingSuppliers",$conn); ?></div>
                     </div>
                     <div class="col-auto">
@@ -91,7 +91,7 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"))== 0){
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-success text-uppercase mb-1">IFRA Entries</div>
+                      <div class="text-xs font-weight-bold text-success text-uppercase mb-1"><a href="/?do=IFRA">IFRA Entries</a></div>
                       <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo countElement("IFRALibrary",$conn); ?></div>
                     </div>
                     <div class="col-auto">
@@ -107,7 +107,7 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"))== 0){
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-info text-uppercase mb-1">All Ingredients</div>
+                      <div class="text-xs font-weight-bold text-info text-uppercase mb-1"><a href="/?do=ingredients">All Ingredients</a></div>
                       <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo countElement("ingredients",$conn); ?></div>
                     </div>
                     <div class="col-auto">
@@ -123,7 +123,7 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"))== 0){
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Categories</div>
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1"><a href="/?do=settings#categories">Categories</a></div>
                       <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo countElement("ingCategory",$conn); ?></div>
                     </div>
                     <div class="col-auto">
@@ -139,7 +139,7 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"))== 0){
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Bottles</div>
+                      <div class="text-xs font-weight-bold text-warning text-uppercase mb-1"><a href="/?do=bottles">Bottles</a></div>
                       <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo countElement("bottles",$conn); ?></div>
                     </div>
                     <div class="col-auto">
@@ -155,7 +155,7 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"))== 0){
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Bottle Lids</div>
+                      <div class="text-xs font-weight-bold text-success text-uppercase mb-1"><a href="/?do=lids">Bottle Lids</a></div>
                       <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo countElement("lids",$conn); ?></div>
                     </div>
                     <div class="col-auto">
@@ -171,7 +171,7 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"))== 0){
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Formulas to make</div>
+                      <div class="text-xs font-weight-bold text-info text-uppercase mb-1"><a href="/?do=todo">Formulas to make</a></div>
                       <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo countElement("makeFormula WHERE toAdd = '1' GROUP BY name",$conn); ?></div>
                     </div>
                     <div class="col-auto">
@@ -190,7 +190,7 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"))== 0){
       </div>
   </div>
   
-
+<?php if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"))){ ?>
 <script>
 var formulas = document.getElementById('formulasPie');
 var ingredients = document.getElementById('ingredientsPie');
@@ -269,3 +269,4 @@ var ingredientsChart = new Chart(ingredients, {
 });
 
 </script>
+<?php } ?>
