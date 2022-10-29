@@ -460,11 +460,13 @@ if($_POST['value'] && $_GET['formula'] && $_POST['pk']){
 	$ingredient = mysqli_real_escape_string($conn, $_POST['pk']);
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 	
+	$ing_name =  mysqli_fetch_array(mysqli_query($conn, "SELECT ingredient FROM formulas WHERE id = '$ingredient' AND fid = '".$_GET['formula']."'"));
+	
 	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,isProtected FROM formulasMetaData WHERE fid = '".$_GET['formula']."'"));
 	if($meta['isProtected'] == FALSE){
 					
-		mysqli_query($conn, "UPDATE formulas SET $name = '$value' WHERE fid = '$formula' AND ingredient = '$ingredient'");
-		$lg = "CHANGE: $ingredient Set $name to $value";
+		mysqli_query($conn, "UPDATE formulas SET $name = '$value' WHERE fid = '$formula' AND id = '$ingredient'");
+		$lg = "CHANGE: ".$ing_name['ingredient']." Set $name to $value";
 		mysqli_query($conn, "INSERT INTO formula_history (fid,change_made,user) VALUES ('".$meta['id']."','$lg','".$user['fullName']."')");
 echo mysqli_error($conn);
 	}
@@ -732,19 +734,21 @@ if($_POST['ingredient'] == 'delete' && $_POST['ing_id']){
 if($_POST['customer'] == 'add'){
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 	if(empty($name)){
-		echo '<div class="alert alert-danger alert-dismissible">Customer name is required.</div>';
+		$response["error"] = 'Customer name is required.';
+		echo json_encode($response);
 		return;
 	}
 	$address = mysqli_real_escape_string($conn, $_POST['address']);
 	$email = mysqli_real_escape_string($conn, $_POST['email']);
 	$web = mysqli_real_escape_string($conn, $_POST['web']);
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM customers WHERE name = '$name'"))){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$name.' already exists!</div>';
+		$response["error"] = 'Error: '.$name.' already exists!';
 	}elseif(mysqli_query($conn, "INSERT INTO customers (name,address,email,web) VALUES ('$name', '$address', '$email', '$web')")){
-		echo '<div class="alert alert-success alert-dismissible">Customer '.$name.' added!</div>';
+		$response["success"] = 'Customer '.$name.' added!';
 	}else{
-		echo '<div class="alert alert-danger alert-dismissible">Error adding customer.</div>';
+		$response["error"] = 'Error adding customer.';
 	}
+	echo json_encode($response);
 	return;
 }
 

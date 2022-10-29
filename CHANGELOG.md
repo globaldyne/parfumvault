@@ -1,49 +1,9 @@
 # CHANGELOG
-### Version 4.8
-- Rewrite installation wizard
-- Add 2 characters minimu when searching ingredient replacement
-- PV Upload is now using $_POST instead of $_GET
-- Pending formulas moved to Formula Management
-- New notification system implemented
-- Update to comply with new PV Online api 
-- Show ingredients, synonyms and compositions count when you importing from PV Online
-- Improve PV Online import and upload functions
-- Improve formula creation functions
-- Allow to enable/disable PV Online without providing credentials (WIP)
-- Hide forgot password when registering a user
-- Username is now removed, use your email address to login instead
-- User list page removed, we only allow a single user
-- Allow a user to register a PV Online account during a first time installation wizard
-- Improve PV Online API2 compatibility
-- Add PV Online connectivity status (Online/Offline)
-- User profile page re-write
-- Include price and size when uploading suppliers to PV Online
-- Add supplier data when importing from PV Online
-- Add a link to release notes in footer version
-- Extend ingredient search in INCI
-- Added Odor Impact for ingredients
-- Ingredients page tech data restructure
-- Extend ingredients import to include synonyms and full supplier data
-- Add user profile update in PV Online settings 
-- Store user avatar as document in the database instead of file
-- Further PVOnline intergration improvements
-- Create ingredient placeholder if in formula but missing from the database
-- Calculation tools moved to a modal window
-- Add email notification option when new ingredients published in PV Online
-- Bottle inventory update
-- Lids inventory update
-- Customers update
-- Batches page rewrite
-- Update datatables to 1.12.1
-- Fix measurement unit always shown ml in amount to make window
-- DEPRECATED: Ingredients card view
-- Add option to print the formula without csv export
-- CSV Formula import improvements
-- CSV Ingredients import improvements
-- DB backup/restore improvements
-- Formulas comparison improvements
-- Update jquery UI to version 1.13.2
-- TECH Preview: PV Online share With a friend
+### Version 4.9
+- Update bootstrap select to v1.13.18
+- FIX New ingredient popup not showing in some cases
+- FIX Unable to create a new customer
+- FIX ingredient management in formula when chemical names option is selected
 
 ### Version 4.7
 - Added 2 character limit when searching for ingredient in formula
