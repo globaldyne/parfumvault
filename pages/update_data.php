@@ -863,10 +863,12 @@ if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'usage_limits'){
 	
 	$query = "UPDATE ingredients SET noUsageLimit = '$noUsageLimit',flavor_use='$flavor_use',usage_type = '$usage_type', cat1 = '$cat1', cat2 = '$cat2', cat3 = '$cat3', cat4 = '$cat4', cat5A = '$cat5A', cat5B = '$cat5B', cat5C = '$cat5C', cat5D = '$cat5D', cat6 = '$cat6', cat7A = '$cat7A', cat7B = '$cat7B', cat8 = '$cat8', cat9 = '$cat9', cat10A = '$cat10A', cat10B = '$cat10B', cat11A = '$cat11A', cat11B = '$cat11B', cat12 = '$cat12' WHERE id='$ingID'";
 	if(mysqli_query($conn, $query)){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Usage limits has been updated!</div>';
+		$response["success"] = 'Usage limits has been updated!';
 	}else{
-		echo '<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> '.mysqli_error($conn).'</div>';
-	}
+			
+		$response["error"] = 'Something went wrong '.mysqli_error($conn);
+	}	
+	echo json_encode($response);
 	return;
 }
 

@@ -741,9 +741,14 @@ $(document).ready(function() {
 					cat<?php echo $cat['name'];?>: $("#cat<?php echo $cat['name'];?>").val(),
 				<?php } ?>
 			},
-			dataType: 'html',
+			dataType: 'json',
 			success: function (data) {
-				$('#ingMsg').html(data);
+				if(data.success){
+					var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+				}else{
+					var msg ='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				}
+				$('#ingMsg').html(msg);
 				reload_overview();
 			}
 		});
