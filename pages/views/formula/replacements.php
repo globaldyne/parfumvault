@@ -17,7 +17,6 @@ $fid = mysqli_real_escape_string($conn, $_POST["fid"]);
 <table id="tdReplacements" class="table table-striped table-bordered" style="width:100%">
   <thead>
       <tr>
-
           <th>Ingredient</th>
           <th>Replacement</th>
       </tr>
@@ -38,20 +37,20 @@ var tdReplacements = $('#tdReplacements').DataTable( {
 	language: {
 		loadingRecords: '&nbsp;',
 		processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
-		emptyTable: 'No replacements added yet.',
+		emptyTable: 'No replacements found.',
 		search: 'Search:'
 		},
 	ajax: {	
 		url: '/core/list_ing_rep_data.php',
 		type: 'POST',
 		data: {
-				fid: 'tcd6fzdn42lmk6htijrl8vq9zvhru0fvik0l6el7',
+				fid: '<?=$fid?>',
 				view: 'formula',
 			},
 		},
 	columns: [
-			  { data : 'ing_name', title: 'Ingredient', name: 'main_ing'},
-			  { data : 'ing_rep_name', title: 'Replacement'}
+			  { data : 'ing_name', title: 'Ingredient', render: repName, name: 'main_ing' },
+			  { data : 'ing_rep_name', title: 'Replacement', render: repIng }
 			 ],
 	rowsGroup: [
       'main_ing:name'
@@ -64,11 +63,11 @@ var tdReplacements = $('#tdReplacements').DataTable( {
 });
 
 function repName(data, type, row){
-	return '<i class="repName pv_point_gen" data-name="ing_rep_name" data-type="text" data-pk="'+row.id+'">'+row.ing_rep_name+'</i>';    
+	return '<i class="ing_name pv_point_gen" data-name="ing_name" data-type="text" data-pk="'+row.id+'">'+row.ing_name+'</i>';    
 }
 
-function repCAS(data, type, row){
-	return '<i class="repCAS pv_point_gen" data-name="ing_rep_cas" data-type="text" data-pk="'+row.id+'">'+row.ing_rep_cas+'</i>';    
+function repIng(data, type, row){
+	return '<i class="ing_rep_name pv_point_gen" data-name="ing_rep_name" data-type="text" data-pk="'+row.id+'">'+row.ing_rep_name+'</i>';
 }
 
 
