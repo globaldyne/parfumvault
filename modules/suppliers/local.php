@@ -76,7 +76,7 @@ foreach ($ingredients as $ingredient) {
 	
 	
 	$r['id'] = (int)$ingredient['id'];
-	$r['name'] = (string)$ingredient['name'];
+	$r['name'] = (string)filter_var ( $ingredient['name'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 	$r['IUPAC'] = (string)$ingredient['INCI']?: 'N/A';
 	$r['cas'] = (string)$ingredient['cas']?: 'N/A';
 	$r['einecs'] = (string)$ingredient['einecs']?: 'N/A';

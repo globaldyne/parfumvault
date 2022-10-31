@@ -1,5 +1,7 @@
 # CHANGELOG
 ### Version 5.0
+- Introducing ingredients replacements
+- Various bug fixes
 
 ### Version 4.9
 - Update bootstrap select to v1.13.18

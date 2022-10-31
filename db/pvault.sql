@@ -334,7 +334,7 @@ CREATE TABLE `users` (
 
 CREATE TABLE `pv_online` (
  `enabled` INT NOT NULL DEFAULT '0'
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE `IFRACategories` (
  `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -349,7 +349,7 @@ CREATE TABLE IF NOT EXISTS `colorKey` (
   `id` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
   `rgb` varchar(255) COLLATE utf8_general_ci NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 
 INSERT INTO `IFRACategories` (`id`, `name`, `description`, `type`) VALUES
@@ -496,7 +496,7 @@ CREATE TABLE `documents` (
  `docData` longblob NOT NULL,
  PRIMARY KEY (`id`),
  UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 INSERT INTO `colorKey` (`id`, `name`, `rgb`) VALUES
 (1, 'Cyan', '0, 255, 255, 0.8'),
@@ -572,7 +572,7 @@ CREATE TABLE `pictograms` (
  `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
  `code` int(11) NOT NULL,
  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 INSERT INTO `pictograms` (`id`, `name`, `code`) VALUES (NULL, 'Explosive', '1'), (NULL, 'Flammable', '2'), (NULL, 'Oxidising', '3'), (NULL, 'Gas under pressure', '4'), (NULL, 'Corrosive', '5'), (NULL, 'Acute toxicity', '6'), (NULL, 'Health hazard/Hazardous to the ozone layer', '7'), (NULL, 'Serious health hazard', '8'), (NULL, 'Hazardous to the environment', '9'); 
 
@@ -590,7 +590,7 @@ CREATE TABLE `formulasRevisions` (
  `revision` int(11) NOT NULL,
  `revisionDate` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE `formula_history` (
  `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -608,10 +608,20 @@ CREATE TABLE `formulaCategories` (
  `type` varchar(255) COLLATE utf8_general_ci NOT NULL,
  `colorKey` VARCHAR(255) NULL DEFAULT NULL,
  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 INSERT INTO `formulaCategories` (`id`, `name`, `cname`, `type`) VALUES (NULL, 'Oriental', 'oriental', 'profile'), (NULL, 'Woody', 'woody', 'profile'), (NULL, 'Floral', 'floral', 'profile'), (NULL, 'Fresh', 'fresh', 'profile'), (NULL, 'Unisex', 'unisex', 'sex'), (NULL, 'Men', 'men', 'sex'), (NULL, 'Women', 'women', 'sex');
 
 CREATE TABLE `synonyms` ( `id` INT NOT NULL , `ing` VARCHAR(255) NOT NULL, `cid` INT(10) NULL DEFAULT NULL , `synonym` VARCHAR(255) NOT NULL , `source` VARCHAR(255) NULL DEFAULT NULL ) ENGINE = InnoDB;
 
 ALTER TABLE `synonyms` CHANGE `id` `id` INT(11) NOT NULL AUTO_INCREMENT, add PRIMARY KEY (`id`);
+
+CREATE TABLE `ingReplacements` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ing_name` varchar(255) NOT NULL,
+  `ing_cas` varchar(255) NOT NULL,
+  `ing_rep_name` varchar(255) NOT NULL,
+  `ing_rep_cas` varchar(255) NOT NULL,
+  `notes` text DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;

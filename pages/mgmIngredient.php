@@ -208,6 +208,19 @@ function reload_data() {
 		});
 		
 	<?php } ?>
+	
+	$.ajax({ 
+		url: 'views/ingredients/repData.php', 
+		type: 'POST',
+		data: {
+			id: "<?=base64_encode($ingID)?>",
+			cas: "<?=base64_encode($ing['cas'])?>"
+		},
+		dataType: 'html',
+		success: function (data) {
+			$('#fetch_replacements').html(data);
+		},
+	});
 };
 
 <?php if($ingID){ ?>
@@ -259,6 +272,7 @@ function reload_data() {
 			<?php } ?>  
 			<li><a href="#privacy" role="tab" data-toggle="tab"><i class="fa fa-user-secret"></i> Privacy</a></li>   
 			<li><a href="#whereUsed" role="tab" data-toggle="tab"><i class="fa fa-random"></i> Where used?</a></li>
+            <li><a href="#ingRep" role="tab" data-toggle="tab"><i class="fa fa-exchange-alt"></i> Replacements</a></li>
 		<?php } ?>
 	</ul>
 	<div class="tab-content">
@@ -430,7 +444,7 @@ function reload_data() {
 							echo $limit['0'];
 						}else{
 							?>
-							<input name="cat<?php echo $cats[$counter]['name'];?>" type="text" class="form-control" id="cat<?php echo $cats[$counter]['name'];?>" value="<?php echo $ing['cat'.$cats[$counter]['name']]; ?>" />
+							<input name="cat<?php echo $cats[$counter]['name'];?>" type="text" class="form-control" id="cat<?php echo $cats[$counter]['name'];?>" value="<?php echo number_format($ing['cat'.$cats[$counter]['name']],1); ?>" />
 						</td>
 						<?php 
 					} 
@@ -440,6 +454,8 @@ function reload_data() {
 		<?php } ?>
 	</table>
 	<hr />
+    <p> To set a category to zero, please type <strong>0.0</strong> instead of 0</p>
+    <hr />
 	<p><input type="submit" name="save" class="btn btn-info" id="saveUsage" value="Save" /></p>
 </div>
 
@@ -551,7 +567,9 @@ function reload_data() {
 <?php } ?>
 <!--tabs-->
 
-
+<div class="tab-pane fade" id="ingRep">
+	<div id="fetch_replacements"><div class="loader"></div></div>
+</div>
 
 <!-- Modal Print-->
 <div class="modal fade" id="printLabel" tabindex="-1" role="dialog" aria-labelledby="printLabel" aria-hidden="true">

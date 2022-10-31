@@ -62,8 +62,8 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
 <style>
 .mfp-iframe-holder .mfp-content {
     line-height: 0;
-    width: 1450px;
-    max-width: 1450px; 
+    width: 1500px;
+    max-width: 1500px; 
 	height: 1300px;
 }
 </style>
@@ -90,6 +90,7 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
     	  <li><a href="#impact" role="tab" data-toggle="tab"><i class="fa fa-magic"></i> Notes Impact</a></li>
           <li><a href="#pyramid" role="tab" data-toggle="tab"><i class="fa fa-table"></i> Olfactory Pyramid</a></li>
           <li><a href="#summary" role="tab" data-toggle="tab"><i class="fa fa-cubes"></i> Notes Summary</a></li>
+          <li><a href="#ingRep"  role="tab" data-toggle="tab"><i class="fa fa-exchange-alt"></i> Replacements</a></li>
         </ul>
                      
         <div class="tab-content">
@@ -145,31 +146,37 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
 </div>
 <!--Formula-->
 
-<div class="tab-pane fade" id="impact">
-    <div class="card-body">
-        <div id="fetch_impact"><div class="loader"></div></div>
-    </div>            
-</div>
-
-<div class="tab-pane fade" id="pyramid">
-    <div class="card-body">
-        <div id="fetch_pyramid"><div class="loader"></div></div>
-    </div>            
-</div>
-
-<div class="tab-pane fade" id="summary">
-    <div class="card-body">
-        <div id="fetch_summary"><div class="loader"></div></div>
-        <?php if($legend){ ?>
-        <div id="share">
-          <p><a href="#" data-toggle="modal" data-target="#conf_view">Configure view</a></p>
-          <p>To include this page in your web site, copy this line and paste it into your html code:</p>
-        <p><pre>&lt;iframe src=&quot;<?=$_SERVER['REQUEST_SCHEME']?>://<?=$_SERVER['SERVER_NAME']?>/pages/viewSummary.php?id=<?=$fid?>&quot; title=&quot;<?=$f_name?>&quot;&gt;&lt;/iframe&gt;</pre></p>
-            <p>For documentation and parameterisation please refer to: <a href="https://www.jbparfum.com/knowledge-base/share-formula-notes/" target="_blank">https://www.jbparfum.com/knowledge-base/share-formula-notes/</a></p>
+        <div class="tab-pane fade" id="impact">
+            <div class="card-body">
+                <div id="fetch_impact"><div class="loader"></div></div>
+            </div>            
         </div>
-        <?php } ?>
-    </div>            
-</div>
+        
+        <div class="tab-pane fade" id="pyramid">
+            <div class="card-body">
+                <div id="fetch_pyramid"><div class="loader"></div></div>
+            </div>            
+        </div>
+        
+        <div class="tab-pane fade" id="summary">
+            <div class="card-body">
+                <div id="fetch_summary"><div class="loader"></div></div>
+                <?php if($legend){ ?>
+                <div id="share">
+                  <p><a href="#" data-toggle="modal" data-target="#conf_view">Configure view</a></p>
+                  <p>To include this page in your web site, copy this line and paste it into your html code:</p>
+                <p><pre>&lt;iframe src=&quot;<?=$_SERVER['REQUEST_SCHEME']?>://<?=$_SERVER['SERVER_NAME']?>/pages/viewSummary.php?id=<?=$fid?>&quot; title=&quot;<?=$f_name?>&quot;&gt;&lt;/iframe&gt;</pre></p>
+                    <p>For documentation and parameterisation please refer to: <a href="https://www.jbparfum.com/knowledge-base/share-formula-notes/" target="_blank">https://www.jbparfum.com/knowledge-base/share-formula-notes/</a></p>
+                </div>
+                <?php } ?>
+            </div>            
+        </div>
+    
+        <div class="tab-pane fade" id="ingRep">
+            <div class="card-body">
+                <div id="fetch_replacements"><div class="loader"></div></div>
+            </div>            
+        </div>
                     
       </div>
      </div>         
@@ -422,4 +429,22 @@ function update_view(){
 	});
 
 }
+
+
+function fetch_replacements(){
+	$.ajax({ 
+		url: '/pages/views/formula/replacements.php', 
+		type: 'POST',
+		data: {
+			fid: "<?=$fid?>"
+			},
+		dataType: 'html',
+		success: function (data) {
+		  $('#fetch_replacements').html(data);
+		}
+	});
+}
+
+fetch_replacements();
+
 </script>

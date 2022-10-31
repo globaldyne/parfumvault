@@ -337,6 +337,69 @@ if($_GET['synonym'] == 'delete'){
 	return;
 }
 
+//ADD REPLACEMENT
+if($_POST['replacement'] == 'add'){
+	
+	$ing_name = base64_decode($_POST['ing_name']);
+	$ing_cas = base64_decode($_POST['ing_cas']);
+
+	if(empty($_POST['rName'])){
+		$response["error"] = 'Name is required';
+		echo json_encode($response);
+		return;
+	}
+	if(empty($_POST['rCAS'])){
+		$response["error"] = 'CAS is required';
+		echo json_encode($response);
+		return;
+	}
+
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT ing_rep_name FROM ingReplacements WHERE ing_name = '$ing_name' AND ing_rep_name = '".$_POST['rName']."'"))){
+		$response["error"] = $_POST['rName'].' already exists!';
+		echo json_encode($response);
+		return;
+	}
+	
+	if(mysqli_query($conn, "INSERT INTO ingReplacements (ing_name,ing_cas,ing_rep_name,ing_rep_cas,notes) VALUES ('$ing_name','$ing_cas','".$_POST['rName']."','".$_POST['rCAS']."','".$_POST['rNotes']."')")){
+		$response["success"] = $_POST['rName'].' added to the list!';
+	}else{
+		$response["error"] = 'Error: '.mysqli_error($conn);
+	}
+	echo json_encode($response);
+	return;
+}
+
+//UPDATE ING REPLACEMENT
+if($_GET['replacement'] == 'update'){
+	$value = trim(mysqli_real_escape_string($conn, $_POST['value']));
+	$id = mysqli_real_escape_string($conn, $_POST['pk']);
+	$name = mysqli_real_escape_string($conn, $_POST['name']);
+	$ing = base64_decode($_GET['ing']);
+
+	if(mysqli_query($conn, "UPDATE ingReplacements SET $name = '$value' WHERE id = '$id' AND ing_name='$ing'")){
+		$response["success"] = $ing.' replacement updated';
+	}else{
+		$response["error"] = 'Error: '.mysqli_error($conn);
+	}
+	
+	echo json_encode($response);
+	return;
+}
+
+
+//DELETE ING REPLACEMENT	
+if($_POST['replacement'] == 'delete'){
+	$id = mysqli_real_escape_string($conn, $_POST['id']);
+	if(mysqli_query($conn, "DELETE FROM ingReplacements WHERE id = '$id'")){
+		$response["success"] = $_POST['name'].' replacement removed';
+	}else{
+		$response["error"] = 'Error: '.mysqli_error($conn);
+	}
+	echo json_encode($response);
+	return;
+}
+
+
 //UPDATE ING DOCUMENT
 if($_GET['ingDoc'] == 'update'){
 	$value = mysqli_real_escape_string($conn, $_POST['value']);
