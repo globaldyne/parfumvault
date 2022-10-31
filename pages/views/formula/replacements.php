@@ -55,6 +55,9 @@ var tdReplacements = $('#tdReplacements').DataTable( {
 	rowsGroup: [
       'main_ing:name'
     ],
+	drawCallback: function ( settings ) {
+			extrasShow();
+	},
 	order: [[ 0, 'asc' ]],
 	lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
 	pageLength: 20,
@@ -67,7 +70,7 @@ function repName(data, type, row){
 }
 
 function repIng(data, type, row){
-	return '<i class="ing_rep_name pv_point_gen" data-name="ing_rep_name" data-type="text" data-pk="'+row.id+'">'+row.ing_rep_name+'</i>';
+	return '<a class="popup-link ing_rep_name pv_point_gen" href="/pages/mgmIngredient.php?id=' + btoa(row.ing_rep_name) + '">' + row.ing_rep_name + '</a>';
 }
 
 
