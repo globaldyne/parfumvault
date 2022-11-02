@@ -197,6 +197,9 @@ $('#formula').on('click', '[id*=rmIng]', function () {
 						}
 						$('#msgInfo').html(msg);
 						reload_formula_data();
+						fetch_impact();
+						fetch_pyramid();
+						fetch_replacements();
 					}						
 				  });
                  return true;
@@ -1047,7 +1050,6 @@ $("#pvUsers").select2({
 					return {
 						id: obj.id,
 						name: obj.nickname,
-						avatar: obj.avatar,
 						userBio: obj.userBio,
 						avatar: obj.avatar
 					}

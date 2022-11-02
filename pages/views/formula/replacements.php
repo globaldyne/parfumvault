@@ -9,7 +9,6 @@ require_once(__ROOT__.'/inc/opendb.php');
 $fid = mysqli_real_escape_string($conn, $_POST["fid"]);
 
 ?>
-<script src="/js/dataTables.rowsGroup.js"></script>
 
 <h3>Possible replacements</h3>
 <hr>
@@ -17,8 +16,8 @@ $fid = mysqli_real_escape_string($conn, $_POST["fid"]);
 <table id="tdReplacements" class="table table-striped table-bordered" style="width:100%">
   <thead>
       <tr>
-          <th>Ingredient</th>
-          <th>Replacement</th>
+          <th>Main Ingredient</th>
+          <th>Possible Replacement</th>
       </tr>
    </thead>
 </table>
@@ -49,8 +48,8 @@ var tdReplacements = $('#tdReplacements').DataTable( {
 			},
 		},
 	columns: [
-			  { data : 'ing_name', title: 'Ingredient', render: repName, name: 'main_ing' },
-			  { data : 'ing_rep_name', title: 'Replacement', render: repIng }
+			  { data : 'ing_name', title: 'Main Ingredient', render: repName, name: 'main_ing' },
+			  { data : 'ing_rep_name', title: 'Possible Replacement', render: repIng }
 			 ],
 	rowsGroup: [
       'main_ing:name'
@@ -70,7 +69,7 @@ function repName(data, type, row){
 }
 
 function repIng(data, type, row){
-	return '<a class="popup-link ing_rep_name pv_point_gen" href="/pages/mgmIngredient.php?id=' + btoa(row.ing_rep_name) + '">' + row.ing_rep_name + '</a>';
+	return '<a class="popup-link ing_rep_name pv_point_gen" href="/pages/mgmIngredient.php?id=' + btoa(row.ing_rep_name) + '">' + row.ing_rep_name + '</a> <i class="fas fa-info-circle pv_point_gen" title="'+row.notes+'"></i>';
 }
 
 

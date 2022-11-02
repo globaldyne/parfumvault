@@ -10,6 +10,8 @@ $ingName = mysqli_real_escape_string($conn, $_POST["id"]);
 $ingCAS = mysqli_real_escape_string($conn, $_POST["cas"]);
 
 ?>
+<link href="/css/select2.css" rel="stylesheet">
+<script src="/js/select2.js"></script> 
 
 <h3>Possible replacements</h3>
 <hr>
@@ -63,10 +65,10 @@ var tdReplacements = $('#tdReplacements').DataTable( {
 			},
 		},
 	columns: [
-			  { data : 'ing_rep_name', title: 'Name', render: repName },
-			  { data : 'ing_rep_cas', title: 'CAS', render: repCAS},
-			  { data : 'notes', title: 'Notes', render: repNotes},
-			  { data : null, title: 'Actions', render: repActions},		   
+			  { data : null, title: 'Name', render: repName },
+			  { data : 'ing_rep_cas', title: 'CAS' },
+			  { data : 'notes', title: 'Notes', render: repNotes },
+			  { data : null, title: 'Actions', render: repActions },		   
 			 ],
 	order: [[ 1, 'asc' ]],
 	lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
@@ -76,36 +78,67 @@ var tdReplacements = $('#tdReplacements').DataTable( {
 });
 
 function repName(data, type, row){
-	return '<i class="repName pv_point_gen" data-name="ing_rep_name" data-type="text" data-pk="'+row.id+'">'+row.ing_rep_name+'</i>';    
-}
-
-function repCAS(data, type, row){
-	return '<i class="repCAS pv_point_gen" data-name="ing_rep_cas" data-type="text" data-pk="'+row.id+'">'+row.ing_rep_cas+'</i>';    
+	
+	$('#tdReplacements').editable({
+		select2: {
+			width: '250px',
+			placeholder: 'Search for ingredient (name, cas)',
+			allowClear: true,
+			dropdownAutoWidth: true,
+			minimumInputLength: 2,
+			ajax: {
+				url: '/core/list_ingredients_simple.php',
+				dataType: 'json',
+				type: 'GET',
+				delay: 100,
+				quietMillis: 250,
+				data: function (data) {
+					return {
+						search: data
+					};
+				},
+				processResults: function(data) {
+					return {
+						results: $.map(data.data, function(obj) {
+						  return {
+							id: obj.name, //TODO: TO BE CHANGED TO ID WHEN THE BACKEND IS READY
+							text: obj.name || 'No ingredient found...',
+						  }
+						})
+					};
+				},
+				cache: true,
+				
+			}
+		},
+		tpl:'<input type="hidden">',
+		selector: 'i.replaceIngredient',
+		pvnoresp: false,
+		highlight: false,
+		emptytext: null,
+		emptyclass: null,
+		url: "update_data.php?replacement=update&ing=<?=$ingName;?>",
+		dataType: 'json',
+		success: function (data) {
+				reload_rep_data();
+		},
+		validate: function(value){
+			if($.trim(value) == ''){
+				return 'Ingredient is required';
+			}
+		}
+});
+	return '<i class="pv_point_gen replaceIngredient" style="color: #337ab7;" rel="tip" title="Replace '+ row.ing_rep_name +'"  data-name="ing_rep_name" data-type="select2" data-pk="'+ row.id +'" data-title="Choose Ingredient to replace '+ row.ing_rep_name +'">'+ row.ing_rep_name +'</i>'; 
 }
 
 function repNotes(data, type, row){
-	return '<i class="repNotes pv_point_gen" data-name="notes" data-type="text" data-pk="'+row.id+'">'+row.notes+'</i>';    
+	return '<i class="repNotes pv_point_gen" data-name="notes" data-type="textarea" data-pk="'+row.id+'">'+row.notes+'</i>';    
 }
 
 function repActions(data, type, row){
 	return '<a href="#" id="repDel" class="fas fa-trash" style="color: #c9302c;" data-id="'+row.id+'" data-name="'+row.ing_rep_name+'"></a>';    
 }
 
-$('#tdReplacements').editable({
-	container: 'body',
-    selector: 'i.repName',
-    type: 'POST',
-    url: "update_data.php?replacement=update&ing=<?=$ingName;?>",
-    title: 'Name'
-});
-
-$('#tdReplacements').editable({
-   container: 'body',
-   selector: 'i.repCAS',
-   type: 'POST',
-   url: "update_data.php?replacement=update&ing=<?=$ingName;?>",
-   title: 'CAS'
-});
 
 $('#tdReplacements').editable({
    container: 'body',
@@ -163,7 +196,42 @@ $('#tdReplacements').on('click', '[id*=repDel]', function () {
    });
 });
 
-
+var repCas;
+$("#repName").select2({
+	width: '250px',
+	placeholder: 'Search for ingredient (name, cas)',
+	allowClear: true,
+	dropdownAutoWidth: true,
+	minimumInputLength: 2,
+	ajax: {
+		url: '/core/list_ingredients_simple.php',
+		dataType: 'json',
+		type: 'GET',
+		delay: 100,
+		quietMillis: 250,
+		data: function (data) {
+			return {
+				search: data
+			};
+		},
+		processResults: function(data) {
+			return {
+				results: $.map(data.data, function(obj) {
+				  return {
+					id: obj.name, //TODO: TO BE CHANGED TO ID WHEN THE BACKEND IS READY
+					cas: obj.cas,
+					text: obj.name || 'No ingredient found...',
+				  }
+				})
+			};
+		},
+		cache: true,
+		
+	}
+	
+}).on('select2-selected', function (data) {
+  		 repCas = data.choice.cas;
+});
 
 $('#addReplacement').on('click', '[id*=repAdd]', function () {
 	$.ajax({ 
@@ -172,7 +240,7 @@ $('#addReplacement').on('click', '[id*=repAdd]', function () {
 		data: {
 			replacement: 'add',
 			rName: $("#repName").val(),
-			rCAS: $("#repCas").val(),
+			rCAS:  repCas,
 			rNotes: $("#repNotes").val(),
 			ing_name: '<?=$ingName?>',
 			ing_cas: '<?=$ingCAS?>',
@@ -197,6 +265,9 @@ $('#addReplacement').on('click', '[id*=repAdd]', function () {
 function reload_rep_data() {
     $('#tdReplacements').DataTable().ajax.reload(null, true);
 };
+
+
+
 </script>
 <!-- ADD ING REPLACEMENT -->
 <div class="modal fade" id="addReplacement" tabindex="-1" role="dialog" aria-labelledby="addReplacement" aria-hidden="true">
@@ -210,11 +281,9 @@ function reload_rep_data() {
       </div>
       <div class="modal-body">
       <div id="infRep"></div>
-            Name: 
-            <input class="form-control" name="repName" type="text" id="repName" />
-        <p>
-            CAS: 
-            <input class="form-control" name="repCas" type="text" id="repCas" />
+            Ingredient: 
+            <input name="repName" id="repName" type="text" class="pv-form-control">
+        	<p>
             </p>
             Notes: 
             <textarea name="repNotes" class="form-control" id="repNotes"></textarea>

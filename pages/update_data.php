@@ -348,6 +348,7 @@ if($_POST['replacement'] == 'add'){
 		echo json_encode($response);
 		return;
 	}
+	
 	if(empty($_POST['rCAS'])){
 		$response["error"] = 'CAS is required';
 		echo json_encode($response);

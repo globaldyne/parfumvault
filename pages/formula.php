@@ -58,6 +58,7 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
 
 <link href="/css/select2.css" rel="stylesheet">
 <script src="/js/select2.js"></script> 
+<script src="/js/dataTables.rowsGroup.js"></script>
 
 <style>
 .mfp-iframe-holder .mfp-content {
@@ -315,6 +316,7 @@ $('#add_ing').on('click', '[id*=add-btn]', function () {
 				reload_formula_data();
 				fetch_impact();
 				fetch_pyramid();
+				fetch_replacements();
 			} else {
 				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + data.error + '</strong></div>';
 			}
