@@ -444,7 +444,7 @@ function reload_data() {
 							echo $limit['0'];
 						}else{
 							?>
-							<input name="cat<?php echo $cats[$counter]['name'];?>" type="text" class="form-control" id="cat<?php echo $cats[$counter]['name'];?>" value="<?php echo number_format($ing['cat'.$cats[$counter]['name']],1); ?>" />
+							<input name="cat<?php echo $cats[$counter]['name'];?>" type="text" class="form-control" id="cat<?php echo $cats[$counter]['name'];?>" value="<?php echo number_format($ing['cat'.$cats[$counter]['name']],2); ?>" />
 						</td>
 						<?php 
 					} 
