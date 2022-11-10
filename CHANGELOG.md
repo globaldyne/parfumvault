@@ -2,6 +2,7 @@
 ### Version 5.0
 - Introducing ingredients replacements
 - Various bug fixes
+- Make footer sticky in formula view
 
 ### Version 4.9
 - Update bootstrap select to v1.13.18

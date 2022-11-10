@@ -77,7 +77,10 @@ $(document).ready(function() {
    				   { data : null, title: 'Actions', className: 'text-center noexport', render: ingActions},		   
 				   
 				  ],
-
+		fixedHeader: {
+			"header": true,
+            "footer": true
+        },
   		footerCallback : function( tfoot, data, start, end, display ) {    
       
 		  var response = this.api().ajax.json();
@@ -152,7 +155,13 @@ $(document).ready(function() {
 	   }
 });
 
-new $.fn.dataTable.FixedHeader(formula);
+$('#formula_tab').on( 'click', function () {
+	formula_table.fixedHeader.enable();
+});
+
+$('a[data-toggle="tab"]').on("shown.bs.tab", function (e) {
+	formula_table.fixedHeader.adjust();
+});
 
 // Order by the grouping
 $('#formula tbody').on( 'click', 'tr.group', function () {

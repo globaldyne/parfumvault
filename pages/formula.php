@@ -87,7 +87,7 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
             </div>
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" role="tablist">
-          <li class="active"><a href="#main_formula" role="tab" data-toggle="tab"><icon class="fa fa-bong"></icon> Formula</a></li>
+          <li class="active"><a href="#main_formula" id="formula_tab" role="tab" data-toggle="tab"><icon class="fa fa-bong"></icon> Formula</a></li>
     	  <li><a href="#impact" role="tab" data-toggle="tab"><i class="fa fa-magic"></i> Notes Impact</a></li>
           <li><a href="#pyramid" role="tab" data-toggle="tab"><i class="fa fa-table"></i> Olfactory Pyramid</a></li>
           <li><a href="#summary" role="tab" data-toggle="tab"><i class="fa fa-cubes"></i> Notes Summary</a></li>
