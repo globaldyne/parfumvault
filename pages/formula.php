@@ -88,10 +88,10 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" role="tablist">
           <li class="active"><a href="#main_formula" id="formula_tab" role="tab" data-toggle="tab"><icon class="fa fa-bong"></icon> Formula</a></li>
-    	  <li><a href="#impact" role="tab" data-toggle="tab"><i class="fa fa-magic"></i> Notes Impact</a></li>
-          <li><a href="#pyramid" role="tab" data-toggle="tab"><i class="fa fa-table"></i> Olfactory Pyramid</a></li>
-          <li><a href="#summary" role="tab" data-toggle="tab"><i class="fa fa-cubes"></i> Notes Summary</a></li>
-          <li><a href="#ingRep"  role="tab" data-toggle="tab"><i class="fa fa-exchange-alt"></i> Replacements</a></li>
+    	  <li><a href="#impact" id="impact_tab" role="tab" data-toggle="tab"><i class="fa fa-magic"></i> Notes Impact</a></li>
+          <li><a href="#pyramid" id="pyramid_tab" role="tab" data-toggle="tab"><i class="fa fa-table"></i> Olfactory Pyramid</a></li>
+          <li><a href="#summary" id="summary_tab" role="tab" data-toggle="tab"><i class="fa fa-cubes"></i> Notes Summary</a></li>
+          <li><a href="#ingRep" id="reps_tab" role="tab" data-toggle="tab"><i class="fa fa-exchange-alt"></i> Replacements</a></li>
         </ul>
                      
         <div class="tab-content">
@@ -314,9 +314,6 @@ $('#add_ing').on('click', '[id*=add-btn]', function () {
 			if ( data.success ) {
 				var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 				reload_formula_data();
-				fetch_impact();
-				fetch_pyramid();
-				fetch_replacements();
 			} else {
 				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + data.error + '</strong></div>';
 			}
@@ -375,7 +372,6 @@ function fetch_pyramid(){
 	});
 }
 
-fetch_pyramid();
 
 function fetch_impact(){
 	$.ajax({ 
@@ -391,7 +387,6 @@ function fetch_impact(){
 	});
 }
 
-fetch_impact();
 
 function fetch_summary(){
 $.ajax({ 
@@ -407,7 +402,6 @@ $.ajax({
 	});
 }
 
-fetch_summary();
 
 function update_view(){
 	
@@ -424,7 +418,6 @@ function update_view(){
 			dataType: 'html',
 				success: function (data) {
 					$('#confViewMsg').html(data);
-					fetch_summary();
 
 				}
 		});
@@ -447,6 +440,7 @@ function fetch_replacements(){
 	});
 }
 
-fetch_replacements();
+
 
 </script>
+<script src="js/formula.tabs.js"></script>

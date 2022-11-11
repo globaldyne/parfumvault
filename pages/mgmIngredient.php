@@ -54,8 +54,15 @@ while($pictograms_res = mysqli_fetch_array($pictograms)){
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
 	<link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
-	<title>Manage <?=$ing['name']?></title>
+    <?php if($ing['id']){ ?>
+
+		<title><?=$ing['name']?></title>
+
+	<?php }else{ ?>
     
+    	<title>Add ingredient</title>
+
+    <?php } ?>    
 	<link href="/css/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     
 	<script src="/js/jquery/jquery.min.js"></script>
@@ -74,7 +81,7 @@ while($pictograms_res = mysqli_fetch_array($pictograms)){
 	<link href="/css/mgmIngredient.css" rel="stylesheet">
 	
 <script>
-
+<?php if($ing['id']){ ?>
 function reload_overview() {
 	$('#ingOverview').html('<img src="/img/loading.gif"/>');
 
@@ -91,6 +98,7 @@ function reload_overview() {
 	});
 };
 reload_overview();
+<?php } ?>
 
 function search() {	  
 	$("#odor").val('Loading...');
@@ -118,7 +126,7 @@ function search() {
 
 
 
-function reload_data() {
+function fetch_whereUsed(){
 	$.ajax({ 
 		url: 'whereUsed.php', 
 		type: 'GET',
@@ -130,32 +138,10 @@ function reload_data() {
 			$('#fetch_whereUsed').html(data);
 		},
 	});
-	
-	$.ajax({ 
-		url: 'compos.php', 
-		type: 'GET',
-		data: {
-			name: "<?=base64_encode($ingID)?>",
-			id: "<?=$ing['id']?>"
-		},
-		dataType: 'html',
-		success: function (data) {
-			$('#fetch_composition').html(data);
-		},
-	});
-	
-	$.ajax({ 
-		url: 'views/ingredients/techData.php', 
-		type: 'POST',
-		data: {
-			ingID: "<?=$ing['id']?>",
-		},
-		dataType: 'html',
-		success: function (data) {
-			$('#fetch_tech_data').html(data);
-		},
-	});
-	
+}
+
+
+function fetch_sups(){
 	$.ajax({ 
 		url: 'ingSuppliers.php', 
 		type: 'GET',
@@ -167,7 +153,23 @@ function reload_data() {
 			$('#fetch_suppliers').html(data);
 		},
 	});
-	
+}
+
+function fetch_techs(){
+	$.ajax({ 
+		url: 'views/ingredients/techData.php', 
+		type: 'POST',
+		data: {
+			ingID: "<?=$ing['id']?>",
+		},
+		dataType: 'html',
+		success: function (data) {
+			$('#fetch_tech_data').html(data);
+		},
+	});
+}
+
+function fetch_docs(){
 	$.ajax({ 
 		url: 'ingDocuments.php', 
 		type: 'GET',
@@ -179,7 +181,9 @@ function reload_data() {
 			$('#fetch_documents').html(data);
 		},
 	});
-	
+}
+
+function fetch_syn(){
 	$.ajax({ 
 		url: 'synonyms.php', 
 		type: 'GET',
@@ -192,23 +196,42 @@ function reload_data() {
 			$('#fetch_synonyms').html(data);
 		},
 	});
-		
-	<?php if(isset($ing['cas']) && $settings['pubChem'] == '1'){ ?>
+}
 
-		$.ajax({ 
-			url: 'pubChem.php', 
-			type: 'GET',
-			data: {
-				cas: "<?php echo $ing['cas']; ?>"
-			},
-			dataType: 'html',
-			success: function (data) {
-				$('#pubChemData').html(data);
-			}
-		});
-		
-	<?php } ?>
-	
+function fetch_cmps(){
+	$.ajax({ 
+		url: 'compos.php', 
+		type: 'GET',
+		data: {
+			name: "<?=base64_encode($ingID)?>",
+			id: "<?=$ing['id']?>"
+		},
+		dataType: 'html',
+		success: function (data) {
+			$('#fetch_composition').html(data);
+		},
+	});
+}
+
+<?php if(isset($ing['cas']) && $settings['pubChem'] == '1'){ ?>
+
+function fetch_pubChem(){
+	$.ajax({ 
+		url: 'pubChem.php', 
+		type: 'GET',
+		data: {
+			cas: "<?php echo $ing['cas']; ?>"
+		},
+		dataType: 'html',
+		success: function (data) {
+			$('#pubChemData').html(data);
+		}
+	});
+}
+
+<?php } ?>
+
+function fetch_reps(){
 	$.ajax({ 
 		url: 'views/ingredients/repData.php', 
 		type: 'POST',
@@ -221,15 +244,8 @@ function reload_data() {
 			$('#fetch_replacements').html(data);
 		},
 	});
-};
+}
 
-<?php if($ingID){ ?>
-	$(document).ready(function() {
-
-		reload_data();
-	});
-
-<?php } ?>
 </script>
 </head>
 
@@ -253,26 +269,26 @@ function reload_data() {
 	</div>
 
 	<div id="ingMsg"><?=$msg?></div>
-	<div id="ingOverview"><img src="/img/loading.gif"/></div>
+	<div id="ingOverview"></div>
 	<div class="mgmIngHeader-with-separator-full"></div>
 	<!-- Nav tabs -->
 	<ul class="nav nav-tabs" role="tablist">
 		<li class="active"><a href="#general" role="tab" data-toggle="tab"><icon class="fa fa-table"></icon> General</a></li>
 		<?php if($ingID){?>
 			<li><a href="#usage_limits" role="tab" data-toggle="tab"><i class="fa fa-bong"></i> Usage &amp; Limits</a></li>
-			<li><a href="#supply" role="tab" data-toggle="tab"><i class="fa fa-shopping-cart"></i> Supply</a></li>
-			<li><a href="#tech_data" role="tab" data-toggle="tab"><i class="fa fa-cog"></i> Technical Data</a></li>
-			<li><a href="#documents" role="tab" data-toggle="tab"><i class="fa fa-file-alt"></i> Documents</a></li>
-			<li><a href="#synonyms" role="tab" data-toggle="tab"><i class="fa fa-bookmark"></i> Synonyms</a></li>
+			<li><a href="#supply" id="sups_tab" role="tab" data-toggle="tab"><i class="fa fa-shopping-cart"></i> Supply</a></li>
+			<li><a href="#tech_data" id="techs_tab" role="tab" data-toggle="tab"><i class="fa fa-cog"></i> Technical Data</a></li>
+			<li><a href="#documents" id="docs_tab" role="tab" data-toggle="tab"><i class="fa fa-file-alt"></i> Documents</a></li>
+			<li><a href="#synonyms" id="synonyms_tab" role="tab" data-toggle="tab"><i class="fa fa-bookmark"></i> Synonyms</a></li>
 			<li><a href="#note_impact" role="tab" data-toggle="tab"><i class="fa fa-magic"></i> Note Impact</a></li>
-			<li><a href="#tech_composition" role="tab" data-toggle="tab"><i class="fa fa-th-list"></i> Composition</a></li>
+			<li><a href="#tech_composition" id="cmps_tab" ole="tab" data-toggle="tab"><i class="fa fa-th-list"></i> Composition</a></li>
 			<li><a href="#safety_info" role="tab" data-toggle="tab"><i class="fa fa-biohazard"></i> Safety</a></li>
 			<?php if($settings['pubChem'] == '1' && $ing['cas']){?>
-				<li><a href="#pubChem" role="tab" data-toggle="tab"><i class="fa fa-atom"></i> Pub Chem</a></li>
+				<li><a href="#pubChem" id="pubChem_tab" role="tab" data-toggle="tab"><i class="fa fa-atom"></i> Pub Chem</a></li>
 			<?php } ?>  
 			<li><a href="#privacy" role="tab" data-toggle="tab"><i class="fa fa-user-secret"></i> Privacy</a></li>   
-			<li><a href="#whereUsed" role="tab" data-toggle="tab"><i class="fa fa-random"></i> Where used?</a></li>
-            <li><a href="#ingRep" role="tab" data-toggle="tab"><i class="fa fa-exchange-alt"></i> Replacements</a></li>
+			<li><a href="#whereUsed" id="whereUsed_tab" role="tab" data-toggle="tab"><i class="fa fa-random"></i> Where used?</a></li>
+            <li><a href="#ingRep" id="reps_tab" role="tab" data-toggle="tab"><i class="fa fa-exchange-alt"></i> Replacements</a></li>
 		<?php } ?>
 	</ul>
 	<div class="tab-content">
@@ -702,6 +718,12 @@ $(document).ready(function() {
 	});
 
 	$('#general').on('click', '[id*=saveGeneral]', function () {
+		<?php if(empty($ing['id'])){ ?>
+			if($.trim($("#name").val()) == ''){
+				$('#ingMsg').html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Name is required</div>');
+				return;
+   			}
+		<?php } ?>
 		$.ajax({ 
 			url: 'update_data.php', 
 			type: 'POST',
@@ -730,16 +752,19 @@ $(document).ready(function() {
 					ing: '<?=$ing['name'];?>'
 				<?php } ?>
 			},
-			dataType: 'html',
+			dataType: 'html',   			
 			success: function (data) {
 				$('#mgmIngHeaderCAS').html($("#cas").val());
 				$('#IUPAC').html($("#INCI").val());
 
 				$('#ingMsg').html(data);
-				reload_overview();
+				
 				if ($('#name').val()) {
 					window.location = 'mgmIngredient.php?id=' + btoa($('#name').val());
 				}
+			    <?php if($ing['id']){ ?>
+				reload_overview();
+				<?php } ?>
 			}
 		});
 	});
@@ -840,6 +865,8 @@ $(document).ready(function() {
 });//end doc
 
 </script>
+<script src="/js/ingredient.tabs.js"></script>
+
 </div>
 </div>
 </body>

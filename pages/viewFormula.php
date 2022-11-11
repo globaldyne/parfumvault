@@ -206,9 +206,6 @@ $('#formula').on('click', '[id*=rmIng]', function () {
 						}
 						$('#msgInfo').html(msg);
 						reload_formula_data();
-						fetch_impact();
-						fetch_pyramid();
-						fetch_replacements();
 					}						
 				  });
                  return true;
@@ -620,20 +617,20 @@ $('#formula').editable({
   title: 'Purity %',
   type: "POST",
   dataType: 'json',
-		success: function(response, newValue) {
-		if(response.status == 'error'){
-			return response.msg; 
-		}else{
-			reload_formula_data();
-		}
-	},
+  success: function(response, newValue) {
+	if(response.status == 'error'){
+		return response.msg; 
+	}else{
+		reload_formula_data();
+	}
+  },
   validate: function(value){
-   if($.trim(value) == ''){
-	return 'This field is required';
-   }
-   if($.isNumeric(value) == '' ){
-	return 'Numbers only!';
-   }
+  	if($.trim(value) == ''){
+		return 'This field is required';
+   	}
+	if($.isNumeric(value) == '' ){
+		return 'Numbers only!';
+   	}
   }
 });
 	
