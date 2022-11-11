@@ -10,7 +10,7 @@ require_once(__ROOT__.'/func/validateInput.php');
 require_once(__ROOT__.'/func/sanChar.php');
 require_once(__ROOT__.'/func/profileImg.php');
 
-require_once(__ROOT__.'/func/searchIFRA.php');
+//require_once(__ROOT__.'/func/searchIFRA.php');
 
 $ingID = sanChar(mysqli_real_escape_string($conn, base64_decode($_GET["id"])));
 if($ingID){
@@ -25,12 +25,12 @@ while($cats_res = mysqli_fetch_array($StandardIFRACategories)){
 	$cats[] = $cats_res;
 }
 
-$rows = count($cats);
-$counter = 0;
-$cols = 3;
-$usageStyle = array('even_ing','odd_ing');
+//$rows = count($cats);
+//$counter = 0;
+//$cols = 3;
+//$usageStyle = array('even_ing','odd_ing');
 
-$defCatClass = $settings['defCatClass'];
+//$defCatClass = $settings['defCatClass'];
 
 $res_ingTypes = mysqli_query($conn, "SELECT id,name FROM ingTypes ORDER BY name ASC");
 $res_ingStrength = mysqli_query($conn, "SELECT id,name FROM ingStrength ORDER BY name ASC");
@@ -140,6 +140,20 @@ function fetch_whereUsed(){
 	});
 }
 
+function fetch_usageData(){
+	$.ajax({ 
+		url: 'views/ingredients/usageData.php', 
+		type: 'POST',
+		data: {
+			ingID: "<?=$ing['id']?>"
+		},
+		dataType: 'html',
+		success: function (data) {
+			$('#fetch_usageData').html(data);
+		},
+	});
+}
+
 
 function fetch_sups(){
 	$.ajax({ 
@@ -198,6 +212,20 @@ function fetch_syn(){
 	});
 }
 
+function fetch_impact(){
+	$.ajax({ 
+		url: 'views/ingredients/impactData.php', 
+		type: 'POST',
+		data: {
+			ingID: "<?=$ing['id']?>"
+		},
+		dataType: 'html',
+		success: function (data) {
+			$('#fetch_impact').html(data);
+		},
+	});
+}
+
 function fetch_cmps(){
 	$.ajax({ 
 		url: 'compos.php', 
@@ -230,6 +258,20 @@ function fetch_pubChem(){
 }
 
 <?php } ?>
+
+function fetch_privacy(){
+	$.ajax({ 
+		url: 'views/ingredients/privacyData.php', 
+		type: 'POST',
+		data: {
+			ingID: "<?=$ing['id']?>"
+		},
+		dataType: 'html',
+		success: function (data) {
+			$('#fetch_privacy').html(data);
+		},
+	});
+}
 
 function fetch_reps(){
 	$.ajax({ 
@@ -275,18 +317,18 @@ function fetch_reps(){
 	<ul class="nav nav-tabs" role="tablist">
 		<li class="active"><a href="#general" role="tab" data-toggle="tab"><icon class="fa fa-table"></icon> General</a></li>
 		<?php if($ingID){?>
-			<li><a href="#usage_limits" role="tab" data-toggle="tab"><i class="fa fa-bong"></i> Usage &amp; Limits</a></li>
+			<li><a href="#usage_limits" id="usage_tab" role="tab" data-toggle="tab"><i class="fa fa-bong"></i> Usage &amp; Limits</a></li>
 			<li><a href="#supply" id="sups_tab" role="tab" data-toggle="tab"><i class="fa fa-shopping-cart"></i> Supply</a></li>
 			<li><a href="#tech_data" id="techs_tab" role="tab" data-toggle="tab"><i class="fa fa-cog"></i> Technical Data</a></li>
 			<li><a href="#documents" id="docs_tab" role="tab" data-toggle="tab"><i class="fa fa-file-alt"></i> Documents</a></li>
 			<li><a href="#synonyms" id="synonyms_tab" role="tab" data-toggle="tab"><i class="fa fa-bookmark"></i> Synonyms</a></li>
-			<li><a href="#note_impact" role="tab" data-toggle="tab"><i class="fa fa-magic"></i> Note Impact</a></li>
+			<li><a href="#note_impact" id="impact_tab" role="tab" data-toggle="tab"><i class="fa fa-magic"></i> Note Impact</a></li>
 			<li><a href="#tech_composition" id="cmps_tab" ole="tab" data-toggle="tab"><i class="fa fa-th-list"></i> Composition</a></li>
 			<li><a href="#safety_info" role="tab" data-toggle="tab"><i class="fa fa-biohazard"></i> Safety</a></li>
 			<?php if($settings['pubChem'] == '1' && $ing['cas']){?>
 				<li><a href="#pubChem" id="pubChem_tab" role="tab" data-toggle="tab"><i class="fa fa-atom"></i> Pub Chem</a></li>
 			<?php } ?>  
-			<li><a href="#privacy" role="tab" data-toggle="tab"><i class="fa fa-user-secret"></i> Privacy</a></li>   
+			<li><a href="#privacy" id="privacy_tab" role="tab" data-toggle="tab"><i class="fa fa-user-secret"></i> Privacy</a></li>   
 			<li><a href="#whereUsed" id="whereUsed_tab" role="tab" data-toggle="tab"><i class="fa fa-random"></i> Where used?</a></li>
             <li><a href="#ingRep" id="reps_tab" role="tab" data-toggle="tab"><i class="fa fa-exchange-alt"></i> Replacements</a></li>
 		<?php } ?>
@@ -416,83 +458,29 @@ function fetch_reps(){
 	</div>
 	<!--general tab-->
 	<?php if($ingID){?>
-		<div class="tab-pane fade" id="usage_limits">
-			<h3>Usage &amp; Limits</h3>
-			<hr>
-			<table width="100%" border="0">
-				<tr>
-					<td width="15%" height="32">No usage limit:</td>
-					<?php if($usageLimit = searchIFRA($ing['cas'],$ing['name'],null,$conn, $defCatClass)){ $chk = 'disabled'; }?>
-					<td><input name="noUsageLimit" type="checkbox" <?php echo $chk; ?> id="noUsageLimit" value="1" <?php if($ing['noUsageLimit'] == '1'){; ?> checked="checked"  <?php } ?>/></td>
-				</tr>
-				<tr>
-					<td height="32">Flavor use:</td>
-					<td><input name="flavor_use" type="checkbox" id="flavor_use" value="1" <?php if($ing['flavor_use'] == '1'){; ?> checked="checked"  <?php } ?>/></td>
-				</tr>
-				<tr>
-					<td height="32">Usage classification:</td>
-					<td><?php if($rType = searchIFRA($ing['cas'],$ing['name'],'type',$conn, $defCatClass)){
-						if($reason = searchIFRA($ing['cas'],$ing['name'],null,$conn, $defCatClass)){
-							$reason = explode(' - ',$reason);
-						}
-						echo $rType.' - '.$reason['1'];
-					}else{
-						?>
-						<select name="usage_type" id="usage_type" class="form-control">
-							<option value="1" <?php if($ing['usage_type']=="1") echo 'selected="selected"'; ?> >Recommendation</option>
-							<option value="2" <?php if($ing['usage_type']=="2") echo 'selected="selected"'; ?> >Restriction</option>
-							<option value="3" <?php if($ing['usage_type']=="3") echo 'selected="selected"'; ?> >Specification</option>
-							<option value="4" <?php if($ing['usage_type']=="4") echo 'selected="selected"'; ?> >Prohibition</option>
-						</select>
-					<?php } ?>
-				</td>
-			</tr>
-		</table>
-		<hr />
-		<table width="100%" border="0">
-			<?php for($i = 0; $i < $rows/$cols; $i++) { ?>
-				<tr <?php if($rType){ ?>class="<?php echo $usageStyle[$i % 2]; ?>" <?php }?>>
-					<?php for($j=0; $j < $cols && $counter <= $rows; $j++, $counter++) {?>
-						<td align="center"><a href="#" rel="tipsy" title="<?php echo $cats[$counter]['description'];?>">Cat<?php echo $cats[$counter]['name'];?> %:</a></td>
-						<td><?php
-						if($limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat'.$cats[$counter]['name'])){
-							$limit = explode(' - ',$limit);
-							echo $limit['0'];
-						}else{
-							?>
-							<input name="cat<?php echo $cats[$counter]['name'];?>" type="text" class="form-control" id="cat<?php echo $cats[$counter]['name'];?>" value="<?php echo number_format($ing['cat'.$cats[$counter]['name']],2); ?>" />
-						</td>
-						<?php 
-					} 
-				} 
-				?>
-			</tr>
-		<?php } ?>
-	</table>
-	<hr />
-    <p> To set a category to zero, please type <strong>0.0</strong> instead of 0</p>
-    <hr />
-	<p><input type="submit" name="save" class="btn btn-info" id="saveUsage" value="Save" /></p>
-</div>
-
-<div class="tab-pane fade" id="supply">
-	<div id="msg_sup"></div>
-	<div id="fetch_suppliers"><div class="loader"></div></div>
-</div>
-
-<div class="tab-pane fade" id="documents">
-	<div id="msg_docs"></div>
-	<div id="fetch_documents"><div class="loader"></div></div>
-</div>
-
-<div class="tab-pane fade" id="synonyms">
-	<div id="msg_syn"></div>
-	<div id="fetch_synonyms"><div class="loader"></div></div>
-</div>
-
-<div class="tab-pane fade" id="tech_data">
-	<div id="fetch_tech_data"><div class="loader"></div></div>
-</div>
+    <div class="tab-pane fade" id="usage_limits">
+        <div id="msg_usage"></div>
+        <div id="fetch_usageData"><div class="loader"></div></div>
+    </div>
+    
+    <div class="tab-pane fade" id="supply">
+        <div id="msg_sup"></div>
+        <div id="fetch_suppliers"><div class="loader"></div></div>
+    </div>
+    
+    <div class="tab-pane fade" id="documents">
+        <div id="msg_docs"></div>
+        <div id="fetch_documents"><div class="loader"></div></div>
+    </div>
+    
+    <div class="tab-pane fade" id="synonyms">
+        <div id="msg_syn"></div>
+        <div id="fetch_synonyms"><div class="loader"></div></div>
+    </div>
+    
+    <div class="tab-pane fade" id="tech_data">
+        <div id="fetch_tech_data"><div class="loader"></div></div>
+    </div>
 
 <div class="tab-pane fade" id="safety_info">
 	<h3>Safety Information</h3>
@@ -515,42 +503,7 @@ function fetch_reps(){
 </div>
 
 <div class="tab-pane fade" id="note_impact">
-	<h3>Note Impact</h3>
-	<hr>
-	<table width="100%" border="0">
-		<tr>
-			<td width="9%" height="40">Top:</td>
-			<td width="19%"><select name="impact_top" id="impact_top" class="form-control">
-				<option value="none" selected="selected">None</option>
-				<option value="100" <?php if($ing['impact_top']=="100") echo 'selected="selected"'; ?> >High</option>
-				<option value="50" <?php if($ing['impact_top']=="50") echo 'selected="selected"'; ?> >Medium</option>						
-				<option value="10" <?php if($ing['impact_top']=="10") echo 'selected="selected"'; ?> >Low</option>						
-			</select></td>
-			<td width="72%">&nbsp;</td>
-		</tr>
-		<tr>
-			<td height="40">Heart:</td>
-			<td><select name="impact_heart" id="impact_heart" class="form-control">
-				<option value="none" selected="selected">None</option>
-				<option value="100" <?php if($ing['impact_heart']=="100") echo 'selected="selected"'; ?> >High</option>
-				<option value="50" <?php if($ing['impact_heart']=="50") echo 'selected="selected"'; ?> >Medium</option>
-				<option value="10" <?php if($ing['impact_heart']=="10") echo 'selected="selected"'; ?> >Low</option>
-			</select></td>
-			<td>&nbsp;</td>
-		</tr>
-		<tr>
-			<td height="40">Base:</td>
-			<td><select name="impact_base" id="impact_base" class="form-control">
-				<option value="none" selected="selected">None</option>
-				<option value="100" <?php if($ing['impact_base']=="100") echo 'selected="selected"'; ?> >High</option>
-				<option value="50" <?php if($ing['impact_base']=="50") echo 'selected="selected"'; ?> >Medium</option>
-				<option value="10" <?php if($ing['impact_base']=="10") echo 'selected="selected"'; ?> >Low</option>
-			</select></td>
-			<td>&nbsp;</td>
-		</tr>
-	</table>
-	<hr />
-	<p><input type="submit" name="save" class="btn btn-info" id="saveNoteImpact" value="Save" /></p>
+	<div id="fetch_impact"><div class="loader"></div></div>
 </div>
 
 <div class="tab-pane fade" id="whereUsed">
@@ -568,18 +521,11 @@ function fetch_reps(){
 		<div id="pubChemData"> <div class="loader"></div> </div>
 	</div>
 <?php } ?>
+
 <div class="tab-pane fade" id="privacy">
-	<h3>Privacy</h3>
-	<hr>
-	<table width="100%" border="0">
-		<tr>
-			<td width="9%" height="31"><a href="#" rel="tipsy" title="If enabled, ingredient will automatically excluded if you choose to upload your ingredients to PV Online.">Private:</a></td>
-			<td width="91%" colspan="5"><input name="isPrivate" type="checkbox" id="isPrivate" value="1" <?php if($ing['isPrivate'] == '1'){; ?> checked="checked"  <?php } ?>/></td>
-		</tr>
-	</table>
-	<hr />
-	<p><input type="submit" name="save" class="btn btn-info" id="savePrivacy" value="Save" /></p>
+	<div id="fetch_privacy"><div class="loader"></div></div>
 </div>
+
 <?php } ?>
 <!--tabs-->
 
@@ -698,25 +644,6 @@ $('#printLabel').on('click', '[id*=print]', function () {
 $(document).ready(function() {
 	$('[rel=tipsy]').tooltip({placement: 'auto'});
 
-	function unlimited_usage(status,maxulimit){
-		$('#usage_type').prop('disabled', status);
-		<?php foreach ($cats as $cat) {?>
-			$('#cat<?php echo $cat['name'];?>').prop('readonly', status).val(maxulimit);
-		<?php } ?>
-	}
-
-	<?php if($ing['noUsageLimit']){ ?>
-		$('#noUsageLimit').prop('checked', true);
-		unlimited_usage(true,'100');
-	<?php } ?>
-	$('#noUsageLimit').click(function(){
-		if($(this).is(':checked')){
-			unlimited_usage(true,'100');
-		}else{
-			unlimited_usage(false,'100');
-		}
-	});
-
 	$('#general').on('click', '[id*=saveGeneral]', function () {
 		<?php if(empty($ing['id'])){ ?>
 			if($.trim($("#name").val()) == ''){
@@ -769,70 +696,12 @@ $(document).ready(function() {
 		});
 	});
 
-	$('#usage_limits').on('click', '[id*=saveUsage]', function () {
-		$.ajax({ 
-			url: 'update_data.php', 
-			type: 'POST',
-			data: {
-				manage: 'ingredient',
-				tab: 'usage_limits',
-				ingID: '<?=$ing['id'];?>',
-				usage_type: $("#usage_type").val(),
-				flavor_use: $("#flavor_use").is(':checked'),
-				noUsageLimit: $("#noUsageLimit").is(':checked'),
-				<?php foreach ($cats as $cat) {?>
-					cat<?php echo $cat['name'];?>: $("#cat<?php echo $cat['name'];?>").val(),
-				<?php } ?>
-			},
-			dataType: 'json',
-			success: function (data) {
-				if(data.success){
-					var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
-				}else{
-					var msg ='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
-				}
-				$('#ingMsg').html(msg);
-				reload_overview();
-			}
-		});
-	});
 
 
-	$('#note_impact').on('click', '[id*=saveNoteImpact]', function () {
-		$.ajax({ 
-			url: 'update_data.php', 
-			type: 'POST',
-			data: {
-				manage: 'ingredient',
-				tab: 'note_impact',
-				ingID: '<?=$ing['id'];?>',
-				impact_top: $("#impact_top").val(),
-				impact_base: $("#impact_base").val(),
-				impact_heart: $("#impact_heart").val(),
-			},
-			dataType: 'html',
-			success: function (data) {
-				$('#ingMsg').html(data);
-			}
-		});
-	});
 
-	$('#privacy').on('click', '[id*=savePrivacy]', function () {
-		$.ajax({ 
-			url: 'update_data.php', 
-			type: 'POST',
-			data: {
-				manage: 'ingredient',
-				tab: 'privacy',
-				ingID: '<?=$ing['id'];?>',
-				isPrivate: $("#isPrivate").is(':checked'),
-			},
-			dataType: 'html',
-			success: function (data) {
-				$('#ingMsg').html(data);
-			}
-		});
-	});
+
+
+
 
 	$('#safety_info').on('click', '[id*=saveSafetyData]', function () {
 		$.ajax({ 
