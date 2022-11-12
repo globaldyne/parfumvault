@@ -20,11 +20,12 @@ if($ingID){
 		}
 	}
 }
+/*
 $StandardIFRACategories = mysqli_query($conn, "SELECT name,description,type FROM IFRACategories WHERE type = '1' ORDER BY id ASC");
 while($cats_res = mysqli_fetch_array($StandardIFRACategories)){
 	$cats[] = $cats_res;
 }
-
+*/
 //$rows = count($cats);
 //$counter = 0;
 //$cols = 3;
@@ -38,6 +39,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
 $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles ORDER BY id ASC");
 
 $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE name = '$ingID'"));
+/*
 $ingSafetyInfo = mysqli_query($conn, "SELECT GHS FROM ingSafetyInfo WHERE ingID = '".$ing['id']."'");
 while($safety_res = mysqli_fetch_array($ingSafetyInfo)){
 	$safety[] = $safety_res;
@@ -46,7 +48,7 @@ $pictograms = mysqli_query($conn, "SELECT name,code FROM pictograms");
 while($pictograms_res = mysqli_fetch_array($pictograms)){
 	$pictogram[] = $pictograms_res;
 }
-
+*/
 ?>
 <!doctype html>
 <html lang="en">
@@ -241,6 +243,19 @@ function fetch_cmps(){
 	});
 }
 
+function fetch_safety(){
+	$.ajax({ 
+		url: 'views/ingredients/safetyData.php', 
+		type: 'POST',
+		data: {
+			ingID: "<?=$ing['id']?>"
+		},
+		dataType: 'html',
+		success: function (data) {
+			$('#fetch_safety').html(data);
+		},
+	});
+}
 <?php if(isset($ing['cas']) && $settings['pubChem'] == '1'){ ?>
 
 function fetch_pubChem(){
@@ -324,7 +339,7 @@ function fetch_reps(){
 			<li><a href="#synonyms" id="synonyms_tab" role="tab" data-toggle="tab"><i class="fa fa-bookmark"></i> Synonyms</a></li>
 			<li><a href="#note_impact" id="impact_tab" role="tab" data-toggle="tab"><i class="fa fa-magic"></i> Note Impact</a></li>
 			<li><a href="#tech_composition" id="cmps_tab" ole="tab" data-toggle="tab"><i class="fa fa-th-list"></i> Composition</a></li>
-			<li><a href="#safety_info" role="tab" data-toggle="tab"><i class="fa fa-biohazard"></i> Safety</a></li>
+			<li><a href="#safety_info" id="safety_tab" role="tab" data-toggle="tab"><i class="fa fa-biohazard"></i> Safety</a></li>
 			<?php if($settings['pubChem'] == '1' && $ing['cas']){?>
 				<li><a href="#pubChem" id="pubChem_tab" role="tab" data-toggle="tab"><i class="fa fa-atom"></i> Pub Chem</a></li>
 			<?php } ?>  
@@ -483,23 +498,7 @@ function fetch_reps(){
     </div>
 
 <div class="tab-pane fade" id="safety_info">
-	<h3>Safety Information</h3>
-	<hr />
-	<table width="100%" border="0">
-		<tr>
-			<td width="20%">Pictograms:</td>
-			<td width="80%" colspan="3">
-				<select name="pictogram" id="pictogram" class="form-control selectpicker" data-live-search="true">
-					<option value="" disabled selected="selected">Choose Pictogram</option>
-					<?php foreach($pictograms as $pictogram){?>
-						<option data-content="<img class='img_ing_sel' src='/img/Pictograms/GHS0<?=$pictogram['code'];?>.png'><?=$pictogram['name'];?>" value="<?=$pictogram['code'];?>" <?php if($safety[0]['GHS']==$pictogram['code']) echo 'selected="selected"'; ?>></option>
-					<?php } ?>
-				</select>
-			</td>
-		</tr>
-	</table>
-	<hr />
-	<p><input type="submit" name="save" class="btn btn-info" id="saveSafetyData" value="Save" /></p>
+	<div id="fetch_safety"><div class="loader"></div></div>
 </div>
 
 <div class="tab-pane fade" id="note_impact">
@@ -697,28 +696,6 @@ $(document).ready(function() {
 	});
 
 
-
-
-
-
-
-
-	$('#safety_info').on('click', '[id*=saveSafetyData]', function () {
-		$.ajax({ 
-			url: 'update_data.php', 
-			type: 'POST',
-			data: {
-				manage: 'ingredient',
-				tab: 'safety_info',
-				ingID: '<?=$ing['id'];?>',
-				pictogram: $("#pictogram").val(),
-			},
-			dataType: 'html',
-			success: function (data) {
-				$('#ingMsg').html(data);
-			}
-		});
-	});
 
 	$('#purity').bind('input', function() {
 		var purity = $(this).val();

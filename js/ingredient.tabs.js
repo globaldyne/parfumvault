@@ -30,7 +30,11 @@ $(document).ready(function() {
 	$('#cmps_tab').on( 'click', function () {
 		fetch_cmps();
 	});
-		
+	
+	$('#safety_tab').on( 'click', function () {
+		fetch_safety();
+	});
+	
 	$('#pubChem_tab').on( 'click', function () {
 		fetch_pubChem();
 	});
