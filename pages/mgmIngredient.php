@@ -10,7 +10,6 @@ require_once(__ROOT__.'/func/validateInput.php');
 require_once(__ROOT__.'/func/sanChar.php');
 require_once(__ROOT__.'/func/profileImg.php');
 
-//require_once(__ROOT__.'/func/searchIFRA.php');
 
 $ingID = sanChar(mysqli_real_escape_string($conn, base64_decode($_GET["id"])));
 if($ingID){
@@ -20,18 +19,6 @@ if($ingID){
 		}
 	}
 }
-/*
-$StandardIFRACategories = mysqli_query($conn, "SELECT name,description,type FROM IFRACategories WHERE type = '1' ORDER BY id ASC");
-while($cats_res = mysqli_fetch_array($StandardIFRACategories)){
-	$cats[] = $cats_res;
-}
-*/
-//$rows = count($cats);
-//$counter = 0;
-//$cols = 3;
-//$usageStyle = array('even_ing','odd_ing');
-
-//$defCatClass = $settings['defCatClass'];
 
 $res_ingTypes = mysqli_query($conn, "SELECT id,name FROM ingTypes ORDER BY name ASC");
 $res_ingStrength = mysqli_query($conn, "SELECT id,name FROM ingStrength ORDER BY name ASC");
@@ -39,16 +26,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
 $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles ORDER BY id ASC");
 
 $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE name = '$ingID'"));
-/*
-$ingSafetyInfo = mysqli_query($conn, "SELECT GHS FROM ingSafetyInfo WHERE ingID = '".$ing['id']."'");
-while($safety_res = mysqli_fetch_array($ingSafetyInfo)){
-	$safety[] = $safety_res;
-}
-$pictograms = mysqli_query($conn, "SELECT name,code FROM pictograms");
-while($pictograms_res = mysqli_fetch_array($pictograms)){
-	$pictogram[] = $pictograms_res;
-}
-*/
+
 ?>
 <!doctype html>
 <html lang="en">
