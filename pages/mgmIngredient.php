@@ -61,225 +61,14 @@ $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE n
 	<link href="/css/mgmIngredient.css" rel="stylesheet">
 	
 <script>
+var myIngName = "<?=$ing['name']?>";
 <?php if($ing['id']){ ?>
-function reload_overview() {
-	$('#ingOverview').html('<img src="/img/loading.gif"/>');
 
-	$.ajax({ 
-		url: 'ingOverview.php', 
-		type: 'GET',
-		data: {
-			id: "<?=$ing['id']?>"
-		},
-		dataType: 'html',
-		success: function (data) {
-			$('#ingOverview').html(data);
-		}
-	});
-};
-reload_overview();
+var myIngID = "<?=$ing['id']?>";
+var myCAS = "<?=$ing['cas']?>";
+var myPCH = "<?=$settings['pubChem']?>";
 <?php } ?>
 
-function search() {	  
-	$("#odor").val('Loading...');
-	
-	if ($('#cas').val()) {
-		var	ingName = $('#cas').val();
-	}else if($('#name').val()) {
-		var	ingName = $('#name').val();
-	}else{
-		var	ingName = "<?php echo $ing['name'];?>"
-	}
-	
-	$.ajax({ 
-		url: 'searchTGSC.php', 
-		type: 'get',
-		data: {
-			name: ingName
-		},
-		dataType: 'html',
-		success: function (data) {
-			$('#TGSC').html(data);
-		}
-	});
-};
-
-
-
-function fetch_whereUsed(){
-	$.ajax({ 
-		url: 'whereUsed.php', 
-		type: 'GET',
-		data: {
-			id: "<?=base64_encode($ingID)?>"
-		},
-		dataType: 'html',
-		success: function (data) {
-			$('#fetch_whereUsed').html(data);
-		},
-	});
-}
-
-function fetch_usageData(){
-	$.ajax({ 
-		url: 'views/ingredients/usageData.php', 
-		type: 'POST',
-		data: {
-			ingID: "<?=$ing['id']?>"
-		},
-		dataType: 'html',
-		success: function (data) {
-			$('#fetch_usageData').html(data);
-		},
-	});
-}
-
-
-function fetch_sups(){
-	$.ajax({ 
-		url: 'ingSuppliers.php', 
-		type: 'GET',
-		data: {
-			id: "<?=$ing['id']?>"
-		},
-		dataType: 'html',
-		success: function (data) {
-			$('#fetch_suppliers').html(data);
-		},
-	});
-}
-
-function fetch_techs(){
-	$.ajax({ 
-		url: 'views/ingredients/techData.php', 
-		type: 'POST',
-		data: {
-			ingID: "<?=$ing['id']?>",
-		},
-		dataType: 'html',
-		success: function (data) {
-			$('#fetch_tech_data').html(data);
-		},
-	});
-}
-
-function fetch_docs(){
-	$.ajax({ 
-		url: 'ingDocuments.php', 
-		type: 'GET',
-		data: {
-			id: "<?=$ing['id']?>"
-		},
-		dataType: 'html',
-		success: function (data) {
-			$('#fetch_documents').html(data);
-		},
-	});
-}
-
-function fetch_syn(){
-	$.ajax({ 
-		url: 'synonyms.php', 
-		type: 'GET',
-		data: {
-			name: "<?=base64_encode($ingID)?>",
-			cas: "<?=$ing['cas']?:base64_encode($ingID)?>"
-		},
-		dataType: 'html',
-		success: function (data) {
-			$('#fetch_synonyms').html(data);
-		},
-	});
-}
-
-function fetch_impact(){
-	$.ajax({ 
-		url: 'views/ingredients/impactData.php', 
-		type: 'POST',
-		data: {
-			ingID: "<?=$ing['id']?>"
-		},
-		dataType: 'html',
-		success: function (data) {
-			$('#fetch_impact').html(data);
-		},
-	});
-}
-
-function fetch_cmps(){
-	$.ajax({ 
-		url: 'compos.php', 
-		type: 'GET',
-		data: {
-			name: "<?=base64_encode($ingID)?>",
-			id: "<?=$ing['id']?>"
-		},
-		dataType: 'html',
-		success: function (data) {
-			$('#fetch_composition').html(data);
-		},
-	});
-}
-
-function fetch_safety(){
-	$.ajax({ 
-		url: 'views/ingredients/safetyData.php', 
-		type: 'POST',
-		data: {
-			ingID: "<?=$ing['id']?>"
-		},
-		dataType: 'html',
-		success: function (data) {
-			$('#fetch_safety').html(data);
-		},
-	});
-}
-<?php if(isset($ing['cas']) && $settings['pubChem'] == '1'){ ?>
-
-function fetch_pubChem(){
-	$.ajax({ 
-		url: 'pubChem.php', 
-		type: 'GET',
-		data: {
-			cas: "<?php echo $ing['cas']; ?>"
-		},
-		dataType: 'html',
-		success: function (data) {
-			$('#pubChemData').html(data);
-		}
-	});
-}
-
-<?php } ?>
-
-function fetch_privacy(){
-	$.ajax({ 
-		url: 'views/ingredients/privacyData.php', 
-		type: 'POST',
-		data: {
-			ingID: "<?=$ing['id']?>"
-		},
-		dataType: 'html',
-		success: function (data) {
-			$('#fetch_privacy').html(data);
-		},
-	});
-}
-
-function fetch_reps(){
-	$.ajax({ 
-		url: 'views/ingredients/repData.php', 
-		type: 'POST',
-		data: {
-			id: "<?=base64_encode($ingID)?>",
-			cas: "<?=base64_encode($ing['cas'])?>"
-		},
-		dataType: 'html',
-		success: function (data) {
-			$('#fetch_replacements').html(data);
-		},
-	});
-}
 
 </script>
 </head>
@@ -565,7 +354,7 @@ function fetch_reps(){
 				Name
 				<input class="form-control" name="cloneIngName" id="cloneIngName" type="text" value="" />            
 				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 					<input type="submit" name="button" class="btn btn-primary" id="cloneME" value="Clone">
 				</div>
 			</div>
@@ -574,23 +363,6 @@ function fetch_reps(){
 </div>
 <script type="text/javascript" language="javascript">
 
-//Clone
-$('#cloneIng').on('click', '[id*=cloneME]', function () {
-	$.ajax({ 
-		url: 'update_data.php', 
-		type: 'GET',
-		data: {
-			action: 'clone',
-			new_ing_name: $("#cloneIngName").val(),
-			old_ing_name: '<?=$ing['name'];?>',
-			ing_id: '<?=$ing['id'];?>'
-		},
-		dataType: 'html',
-		success: function (data) {
-			$('#clone_msg').html(data);
-		}
-	});
-});
 
 $('#printLabel').on('click', '[id*=print]', function () {
 	<?php if(empty($settings['label_printer_addr']) || empty($settings['label_printer_model'])){?>
@@ -600,14 +372,14 @@ $('#printLabel').on('click', '[id*=print]', function () {
 
 		$.ajax({ 
 			url: 'manageFormula.php', 
-			type: 'get',
+			type: 'GET',
 			data: {
 				action: "printLabel",
 				type: "ingredient",
 				dilution: $("#dilution").val(),
 				cas: $("#cas").val(),
 				dilutant: btoa($("#dilutant").val()),
-				name: "<?php echo base64_encode($ing['name']); ?>"
+				name: btoa(myIngName)
 			},
 			dataType: 'html',
 			success: function (data) {
@@ -634,7 +406,7 @@ $(document).ready(function() {
 			data: {
 				manage: 'ingredient',
 				tab: 'general',
-				ingID: '<?=$ing['id'];?>',
+				ingID: myIngID,
 				
 				name: $("#name").val(),
 				INCI: $("#INCI").val(),
@@ -689,6 +461,7 @@ $(document).ready(function() {
 });//end doc
 
 </script>
+<script src="/js/mgmIngredient.js"></script>
 <script src="/js/ingredient.tabs.js"></script>
 
 </div>
