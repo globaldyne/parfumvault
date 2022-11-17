@@ -26,6 +26,7 @@ $fid = $meta['fid'];
   
 
 <script>
+var myFID = "<?=$meta['fid']?>";
 var isProtected;
 <?php if($meta['isProtected'] == FALSE){?>
 	var isProtected = false;
@@ -843,7 +844,7 @@ $('#formula').editable({
 	highlight: false,
 	emptytext: null,
 	emptyclass: null,
-	url: "pages/manageFormula.php?action=repIng&fid=<?=$meta['fid']?>",
+	url: "pages/manageFormula.php?action=repIng&fid=" + myFID ,
 	success: function (data) {
 		if ( data.indexOf("Error") > -1 ) {
 			$('#msgInfo').html(data); 
