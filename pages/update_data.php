@@ -253,9 +253,9 @@ if($_POST['pubChemData'] == 'update' && $_POST['cas']){
 }
 
 //IMPORT SYNONYMS FROM PubChem
-if($_GET['synonym'] == 'import' && $_GET['method'] == 'pubchem'){
-	$ing = base64_decode($_GET['ing']);
-	$cas = trim($_GET['cas']);
+if($_POST['synonym'] == 'import' && $_POST['method'] == 'pubchem'){
+	$ing = base64_decode($_POST['ing']);
+	$cas = trim($_POST['cas']);
 
 	$u = $pubChemApi.'/pug/compound/name/'.$cas.'/synonyms/JSON';
 	$json = file_get_contents($u);

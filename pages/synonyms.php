@@ -146,7 +146,7 @@ $('#import').on('click', '[id*=importPubChem]', function () {
 	$('#pvImportMsg').html('<div class="alert alert-info">Please wait...</div>');			
 	$.ajax({ 
 		url: 'update_data.php', 
-		type: 'GET',
+		type: 'POST',
 		data: {
 			synonym: 'import',
 			method: 'pubchem',

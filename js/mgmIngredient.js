@@ -168,7 +168,7 @@ function fetch_syn(){
 		type: 'POST',
 		data: {
 			name:  btoa(myIngName),
-			cas: btoa(myCAS) || btoa(myIngID)
+			cas: myCAS || btoa(myIngID)
 		},
 		dataType: 'html',
 		success: function (data) {
