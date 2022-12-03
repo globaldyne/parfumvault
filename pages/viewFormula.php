@@ -90,7 +90,7 @@ $(document).ready(function() {
 			 $td.eq(0).html("Total Ingredients: " + response.meta['total_ingredients'] );
 			 $td.eq(4).html("Total: " + response.meta['total_quantity']);// + response.meta['quantity_unit'] );
 			 $td.eq(5).html("Total: " + response.meta['concentration'] + "%" );
-			 $td.eq(7).html("Total: " + response.meta['currency'] + response.meta['total_cost'] );
+			 $td.eq(7).html("Total: " + response.meta['currency'] + response.meta['total_cost'] + ' <i rel="tip" title="The total price for the 100% concentration." class="pv_point_gen fas fa-info-circle"></i>');
 			 $(formula_table.columns(7).header()).html("Final Concentration: " + response.meta['product_concentration'] + "%");
 		 }
       },
@@ -606,8 +606,11 @@ $('#print').click(() => {
 
 function extrasShow() {
 	$('[rel=tip]').tooltip({
-        "html": true,
-        "delay": {"show": 100, "hide": 0},
+         html: true,
+		 boundary: "window",
+		 overflow: "auto",
+		 container: "body",
+         delay: {"show": 100, "hide": 0},
      });
 	$('.popup-link').magnificPopup({
 		type: 'iframe',
