@@ -140,7 +140,7 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
           <?php if($legend){ ?>
           <div id="legend">
           	<p></p>
-            <p>*Values in: <strong class="alert alert-danger">red</strong> exceeds usage level,   <strong class="alert alert-warning">yellow</strong> have no usage level set,   <strong class="alert alert-success">green</strong> are within usage level, <strong class="alert alert-info">blue</strong> are exceeding recommended usage level</p>
+            <p>*Values in: <strong class="alert alert-danger">red</strong> exceeds usage level,   <strong class="alert alert-warning">yellow</strong> Specification,   <strong class="alert alert-success">green</strong> are within usage level, <strong class="alert alert-info">blue</strong> are exceeding recommended usage level</p>
             </div>
           <?php } ?>
   </div>

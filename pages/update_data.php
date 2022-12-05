@@ -905,6 +905,7 @@ if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'usage_limits'){
 	$ingID = (int)$_POST['ingID'];
 	if($_POST['flavor_use'] == 'true') { $flavor_use = '1'; }else{ $flavor_use = '0'; }
 	if($_POST['noUsageLimit'] == 'true'){ $noUsageLimit = '1'; }else{ $noUsageLimit = '0'; }
+	if($_POST['byPassIFRA'] == 'true'){ $byPassIFRA = '1'; }else{ $byPassIFRA = '0'; }
 	$usage_type = mysqli_real_escape_string($conn, $_POST['usage_type']);
 	$cat1 = validateInput($_POST['cat1'] ?: '100');
 	$cat2 = validateInput($_POST['cat2'] ?: '100');
@@ -925,7 +926,7 @@ if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'usage_limits'){
 	$cat11B = validateInput($_POST['cat11B'] ?: '100');
 	$cat12 = validateInput($_POST['cat12'] ?: '100');
 	
-	$query = "UPDATE ingredients SET noUsageLimit = '$noUsageLimit',flavor_use='$flavor_use',usage_type = '$usage_type', cat1 = '$cat1', cat2 = '$cat2', cat3 = '$cat3', cat4 = '$cat4', cat5A = '$cat5A', cat5B = '$cat5B', cat5C = '$cat5C', cat5D = '$cat5D', cat6 = '$cat6', cat7A = '$cat7A', cat7B = '$cat7B', cat8 = '$cat8', cat9 = '$cat9', cat10A = '$cat10A', cat10B = '$cat10B', cat11A = '$cat11A', cat11B = '$cat11B', cat12 = '$cat12' WHERE id='$ingID'";
+	$query = "UPDATE ingredients SET byPassIFRA = '$byPassIFRA', noUsageLimit = '$noUsageLimit',flavor_use='$flavor_use',usage_type = '$usage_type', cat1 = '$cat1', cat2 = '$cat2', cat3 = '$cat3', cat4 = '$cat4', cat5A = '$cat5A', cat5B = '$cat5B', cat5C = '$cat5C', cat5D = '$cat5D', cat6 = '$cat6', cat7A = '$cat7A', cat7B = '$cat7B', cat8 = '$cat8', cat9 = '$cat9', cat10A = '$cat10A', cat10B = '$cat10B', cat11A = '$cat11A', cat11B = '$cat11B', cat12 = '$cat12' WHERE id='$ingID'";
 	if(mysqli_query($conn, $query)){
 		$response["success"] = 'Usage limits has been updated!';
 	}else{

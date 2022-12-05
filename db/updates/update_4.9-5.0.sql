@@ -7,3 +7,5 @@ CREATE TABLE `ingReplacements` (
   `notes` text DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+ALTER TABLE `ingredients` ADD `byPassIFRA` INT NOT NULL DEFAULT '0' AFTER `noUsageLimit`;

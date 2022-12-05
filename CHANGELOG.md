@@ -4,6 +4,7 @@
 - Various bug fixes
 - Make footer sticky in formula view
 - Formula and ingredients tab js improvements
+- IFRA limitations can now be bypassed and use user specific values instead
 
 ### Version 4.9
 - Update bootstrap select to v1.13.18
