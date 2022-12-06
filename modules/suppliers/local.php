@@ -66,7 +66,7 @@ if($s != ''){
    $filter = "WHERE 1 AND (name LIKE '%".$s."%' OR cas LIKE '%".$s."%' OR einecs LIKE '%".$s."%' OR odor LIKE '%".$s."%' OR INCI LIKE '%".$s."%')";
 }
 
-$q = mysqli_query($conn, "SELECT ingredients.id,name,INCI,cas,einecs,profile,category,odor,$defCatClass,allergen,usage_type,logp,formula,flash_point,molecularWeight FROM $t ingredients $filter $extra LIMIT $row, $limit");
+$q = mysqli_query($conn, "SELECT ingredients.id,name,INCI,cas,einecs,profile,category,odor,$defCatClass,allergen,usage_type,logp,formula,flash_point,molecularWeight,byPassIFRA FROM $t ingredients $filter $extra LIMIT $row, $limit");
 while($res = mysqli_fetch_array($q)){
     $ingredients[] = $res;
 }
@@ -93,15 +93,16 @@ foreach ($ingredients as $ingredient) {
 	$r['category']['id'] = (int)$ingredient['category']?: 1;
 	$r['category']['name'] = (string)$cat['name']?: 'N/A';
 	$r['category']['image'] = (string)$cat['image']?: '/img/pv_molecule.png';
-	
-	if($limit = searchIFRA($ingredient['cas'],$ingredient['name'],null,$conn,$defCatClass)){
-		$limit = explode(' - ', $limit);
+
+	if(($limit = searchIFRA($ingredient['cas'],$ingredient['name'],null,$conn,$defCatClass)) && $ingredient['byPassIFRA'] == 0){
+		$limit = explode(' - ', $limit);		
 		$r['usage']['limit'] = (float)$limit['0'];
 		$r['usage']['reason'] = (string)$limit['1'];
 	}else{
-		$r['usage']['limit'] = (float)$ingredient[$defCatClass]?: 100;
+		$r['usage']['limit'] = number_format((float)$ingredient["$defCatClass"], $settings['qStep']) ?: 100;
 		$r['usage']['reason'] = (int)$ingredient['usage_type'];
 	}
+	$r['info']['byPassIFRA'] = (int)$ingredient['byPassIFRA'];
 	
 	if($a = getIngSupplier($ingredient['id'],$conn)){ 
 		$j = 0;
