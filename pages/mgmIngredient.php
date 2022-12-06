@@ -62,6 +62,7 @@ $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE n
 	
 <script>
 var myIngName = "<?=$ing['name']?>";
+var myIngID = '';
 <?php if($ing['id']){ ?>
 
 var myIngID = "<?=$ing['id']?>";
