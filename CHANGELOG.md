@@ -5,6 +5,7 @@
 - Make footer sticky in formula view
 - Formula and ingredients tab js improvements
 - IFRA limitations can now be bypassed and use user specific values instead
+- Add formula concentration level in the api
 
 ### Version 4.9
 - Update bootstrap select to v1.13.18
