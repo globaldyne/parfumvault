@@ -253,9 +253,9 @@ if($_POST['pubChemData'] == 'update' && $_POST['cas']){
 }
 
 //IMPORT SYNONYMS FROM PubChem
-if($_GET['synonym'] == 'import' && $_GET['method'] == 'pubchem'){
-	$ing = base64_decode($_GET['ing']);
-	$cas = trim($_GET['cas']);
+if($_POST['synonym'] == 'import' && $_POST['method'] == 'pubchem'){
+	$ing = base64_decode($_POST['ing']);
+	$cas = trim($_POST['cas']);
 
 	$u = $pubChemApi.'/pug/compound/name/'.$cas.'/synonyms/JSON';
 	$json = file_get_contents($u);
@@ -336,6 +336,70 @@ if($_GET['synonym'] == 'delete'){
 	mysqli_query($conn, "DELETE FROM synonyms WHERE id = '$id'");
 	return;
 }
+
+//ADD REPLACEMENT
+if($_POST['replacement'] == 'add'){
+	
+	$ing_name = base64_decode($_POST['ing_name']);
+	$ing_cas = base64_decode($_POST['ing_cas']);
+
+	if(empty($_POST['rName'])){
+		$response["error"] = 'Name is required';
+		echo json_encode($response);
+		return;
+	}
+	
+	if(empty($_POST['rCAS'])){
+		$response["error"] = 'CAS is required';
+		echo json_encode($response);
+		return;
+	}
+
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT ing_rep_name FROM ingReplacements WHERE ing_name = '$ing_name' AND ing_rep_name = '".$_POST['rName']."'"))){
+		$response["error"] = $_POST['rName'].' already exists!';
+		echo json_encode($response);
+		return;
+	}
+	
+	if(mysqli_query($conn, "INSERT INTO ingReplacements (ing_name,ing_cas,ing_rep_name,ing_rep_cas,notes) VALUES ('$ing_name','$ing_cas','".$_POST['rName']."','".$_POST['rCAS']."','".$_POST['rNotes']."')")){
+		$response["success"] = $_POST['rName'].' added to the list!';
+	}else{
+		$response["error"] = 'Error: '.mysqli_error($conn);
+	}
+	echo json_encode($response);
+	return;
+}
+
+//UPDATE ING REPLACEMENT
+if($_GET['replacement'] == 'update'){
+	$value = trim(mysqli_real_escape_string($conn, $_POST['value']));
+	$id = mysqli_real_escape_string($conn, $_POST['pk']);
+	$name = mysqli_real_escape_string($conn, $_POST['name']);
+	$ing = base64_decode($_GET['ing']);
+
+	if(mysqli_query($conn, "UPDATE ingReplacements SET $name = '$value' WHERE id = '$id' AND ing_name='$ing'")){
+		$response["success"] = $ing.' replacement updated';
+	}else{
+		$response["error"] = 'Error: '.mysqli_error($conn);
+	}
+	
+	echo json_encode($response);
+	return;
+}
+
+
+//DELETE ING REPLACEMENT	
+if($_POST['replacement'] == 'delete'){
+	$id = mysqli_real_escape_string($conn, $_POST['id']);
+	if(mysqli_query($conn, "DELETE FROM ingReplacements WHERE id = '$id'")){
+		$response["success"] = $_POST['name'].' replacement removed';
+	}else{
+		$response["error"] = 'Error: '.mysqli_error($conn);
+	}
+	echo json_encode($response);
+	return;
+}
+
 
 //UPDATE ING DOCUMENT
 if($_GET['ingDoc'] == 'update'){
@@ -841,6 +905,7 @@ if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'usage_limits'){
 	$ingID = (int)$_POST['ingID'];
 	if($_POST['flavor_use'] == 'true') { $flavor_use = '1'; }else{ $flavor_use = '0'; }
 	if($_POST['noUsageLimit'] == 'true'){ $noUsageLimit = '1'; }else{ $noUsageLimit = '0'; }
+	if($_POST['byPassIFRA'] == 'true'){ $byPassIFRA = '1'; }else{ $byPassIFRA = '0'; }
 	$usage_type = mysqli_real_escape_string($conn, $_POST['usage_type']);
 	$cat1 = validateInput($_POST['cat1'] ?: '100');
 	$cat2 = validateInput($_POST['cat2'] ?: '100');
@@ -861,12 +926,14 @@ if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'usage_limits'){
 	$cat11B = validateInput($_POST['cat11B'] ?: '100');
 	$cat12 = validateInput($_POST['cat12'] ?: '100');
 	
-	$query = "UPDATE ingredients SET noUsageLimit = '$noUsageLimit',flavor_use='$flavor_use',usage_type = '$usage_type', cat1 = '$cat1', cat2 = '$cat2', cat3 = '$cat3', cat4 = '$cat4', cat5A = '$cat5A', cat5B = '$cat5B', cat5C = '$cat5C', cat5D = '$cat5D', cat6 = '$cat6', cat7A = '$cat7A', cat7B = '$cat7B', cat8 = '$cat8', cat9 = '$cat9', cat10A = '$cat10A', cat10B = '$cat10B', cat11A = '$cat11A', cat11B = '$cat11B', cat12 = '$cat12' WHERE id='$ingID'";
+	$query = "UPDATE ingredients SET byPassIFRA = '$byPassIFRA', noUsageLimit = '$noUsageLimit',flavor_use='$flavor_use',usage_type = '$usage_type', cat1 = '$cat1', cat2 = '$cat2', cat3 = '$cat3', cat4 = '$cat4', cat5A = '$cat5A', cat5B = '$cat5B', cat5C = '$cat5C', cat5D = '$cat5D', cat6 = '$cat6', cat7A = '$cat7A', cat7B = '$cat7B', cat8 = '$cat8', cat9 = '$cat9', cat10A = '$cat10A', cat10B = '$cat10B', cat11A = '$cat11A', cat11B = '$cat11B', cat12 = '$cat12' WHERE id='$ingID'";
 	if(mysqli_query($conn, $query)){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Usage limits has been updated!</div>';
+		$response["success"] = 'Usage limits has been updated!';
 	}else{
-		echo '<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> '.mysqli_error($conn).'</div>';
-	}
+			
+		$response["error"] = 'Something went wrong '.mysqli_error($conn);
+	}	
+	echo json_encode($response);
 	return;
 }
 
@@ -949,28 +1016,36 @@ if($_GET['import'] == 'ingredient'){
 }
 
 //CLONE INGREDIENT
-if($_GET['action'] == 'clone' && $_GET['old_ing_name'] && $_GET['ing_id']){
-	$ing_id = mysqli_real_escape_string($conn, $_GET['ing_id']);
+if($_POST['action'] == 'clone' && $_POST['old_ing_name'] && $_POST['ing_id']){
+	$ing_id = mysqli_real_escape_string($conn, $_POST['ing_id']);
 
-	$old_ing_name = mysqli_real_escape_string($conn, $_GET['old_ing_name']);
-	$new_ing_name = mysqli_real_escape_string($conn, $_GET['new_ing_name']);
+	$old_ing_name = mysqli_real_escape_string($conn, $_POST['old_ing_name']);
+	$new_ing_name = mysqli_real_escape_string($conn, $_POST['new_ing_name']);
 	if(empty($new_ing_name)){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>Please enter a name!</div>';
+		$response['error'] = '<strong>Error: </strong>Please enter a name!';
+		echo json_encode($response);
 		return;
 	}
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '$new_ing_name'"))){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$new_ing_name.' already exists!</div>';
-	}else{
-		$sql.=mysqli_query($conn, "INSERT INTO allergens (ing,name,cas,percentage) SELECT '$new_ing_name',name,cas,percentage FROM allergens WHERE ing = '$old_ing_name'");
+		$response['error'] = '<strong>Error: </strong>'.$new_ing_name.' already exists!';
+		echo json_encode($response);
+		return;
+	}
+	
+	$sql.=mysqli_query($conn, "INSERT INTO allergens (ing,name,cas,percentage) SELECT '$new_ing_name',name,cas,percentage FROM allergens WHERE ing = '$old_ing_name'");
 
-		$sql.=mysqli_query($conn, "INSERT INTO ingredients (name,INCI,type,strength,category,purity,cas,FEMA,reach,tenacity,chemical_name,formula,flash_point,appearance,notes,profile,solvent,odor,allergen,flavor_use,soluble,logp,cat1,cat2,cat3,cat4,cat5A,cat5B,cat5C,cat5D,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12,impact_top,impact_heart,impact_base,created,usage_type,noUsageLimit,isPrivate,molecularWeight,physical_state) SELECT '$new_ing_name',INCI,type,strength,category,purity,cas,FEMA,reach,tenacity,chemical_name,formula,flash_point,appearance,notes,profile,solvent,odor,allergen,flavor_use,soluble,logp,cat1,cat2,cat3,cat4,cat5A,cat5B,cat5C,cat5D,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12,impact_top,impact_heart,impact_base,created,usage_type,noUsageLimit,isPrivate,molecularWeight,physical_state FROM ingredients WHERE id = '$ing_id'");
-		}
+	$sql.=mysqli_query($conn, "INSERT INTO ingredients (name,INCI,type,strength,category,purity,cas,FEMA,reach,tenacity,chemical_name,formula,flash_point,appearance,notes,profile,solvent,odor,allergen,flavor_use,soluble,logp,cat1,cat2,cat3,cat4,cat5A,cat5B,cat5C,cat5D,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12,impact_top,impact_heart,impact_base,created,usage_type,noUsageLimit,isPrivate,molecularWeight,physical_state) SELECT '$new_ing_name',INCI,type,strength,category,purity,cas,FEMA,reach,tenacity,chemical_name,formula,flash_point,appearance,notes,profile,solvent,odor,allergen,flavor_use,soluble,logp,cat1,cat2,cat3,cat4,cat5A,cat5B,cat5C,cat5D,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12,impact_top,impact_heart,impact_base,created,usage_type,noUsageLimit,isPrivate,molecularWeight,physical_state FROM ingredients WHERE id = '$ing_id'");
+
 	if($nID = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '$new_ing_name'"))){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$old_ing_name.' cloned as <a href="/pages/mgmIngredient.php?id='.base64_encode($nID['name']).'" >'.$new_ing_name.'</a>!</div>';
+		
+		$response['success'] = $old_ing_name.' cloned as <a href="/pages/mgmIngredient.php?id='.base64_encode($nID['name']).'" >'.$new_ing_name.'</a>!';
+		echo json_encode($response);
+		return;
 	}
 	
 	return;
 }
+
 header('Location: /');
 exit;
 
