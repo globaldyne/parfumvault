@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 5.1
+
 ### Version 5.0
 - Introducing ingredients replacements
 - Various bug fixes
