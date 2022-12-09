@@ -64,7 +64,7 @@ while ($formula = mysqli_fetch_array($formula_q)){
 
 foreach ($form as $formula){
 	
-	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT id, name, cas, $defCatClass, profile, odor, category, physical_state,usage_type AS classification, type FROM ingredients WHERE name = '".$formula['ingredient']."'"));
+	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT id, name, cas, $defCatClass, profile, odor, category, physical_state,usage_type AS classification, type, byPassIFRA FROM ingredients WHERE name = '".$formula['ingredient']."'"));
 	 
 	$inventory = mysqli_fetch_array(mysqli_query($conn, "SELECT stock,mUnit,batch,purchased FROM suppliers WHERE ingID = '".$ing_q['id']."' AND preferred = '1'"));
 	
@@ -124,10 +124,10 @@ foreach ($form as $formula){
 		$r['cost'] = (float)calcCosts(getPrefSupplier($ing_q['id'],$conn)['price'],$formula['quantity'], $formula['concentration'], getPrefSupplier($ing_q['id'],$conn)['size']) ?: 0;
 
 	}
-	
+
 	$u = explode(' - ',searchIFRA($ing_q['cas'],$formula['ingredient'],null,$conn,$defCatClass));
 	
-	if(($u['0'])){
+	if(($u['0'] && $ing_q['byPassIFRA'] == 0)){
 		$r['usage_limit'] = number_format((float)$u['0']?:100, $settings['qStep']);
 		$r['usage_restriction'] = (string)$u['1'] ?: 'N/A';
 		$r['usage_regulator'] = (string)"IFRA";

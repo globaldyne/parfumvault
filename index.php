@@ -1,5 +1,8 @@
 <?php
-require('./inc/sec.php');
+define('__ROOT__', dirname(__FILE__)); 
+
+require(__ROOT__.'/inc/sec.php');
+
 if(file_exists('./inc/config.php') == FALSE){
 	session_destroy();
 	header('Location: login.php');

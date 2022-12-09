@@ -26,6 +26,7 @@ $fid = $meta['fid'];
   
 
 <script>
+var myFID = "<?=$meta['fid']?>";
 var isProtected;
 <?php if($meta['isProtected'] == FALSE){?>
 	var isProtected = false;
@@ -77,7 +78,10 @@ $(document).ready(function() {
    				   { data : null, title: 'Actions', className: 'text-center noexport', render: ingActions},		   
 				   
 				  ],
-
+		fixedHeader: {
+			"header": true,
+            "footer": true
+        },
   		footerCallback : function( tfoot, data, start, end, display ) {    
       
 		  var response = this.api().ajax.json();
@@ -86,7 +90,7 @@ $(document).ready(function() {
 			 $td.eq(0).html("Total Ingredients: " + response.meta['total_ingredients'] );
 			 $td.eq(4).html("Total: " + response.meta['total_quantity']);// + response.meta['quantity_unit'] );
 			 $td.eq(5).html("Total: " + response.meta['concentration'] + "%" );
-			 $td.eq(7).html("Total: " + response.meta['currency'] + response.meta['total_cost'] );
+			 $td.eq(7).html("Total: " + response.meta['currency'] + response.meta['total_cost'] + ' <i rel="tip" title="The total price for the 100% concentration." class="pv_point_gen fas fa-info-circle"></i>');
 			 $(formula_table.columns(7).header()).html("Final Concentration: " + response.meta['product_concentration'] + "%");
 		 }
       },
@@ -152,7 +156,13 @@ $(document).ready(function() {
 	   }
 });
 
-new $.fn.dataTable.FixedHeader(formula);
+$('#formula_tab').on( 'click', function () {
+	formula_table.fixedHeader.enable();
+});
+
+$('a[data-toggle="tab"]').on("shown.bs.tab", function (e) {
+	formula_table.fixedHeader.adjust();
+});
 
 // Order by the grouping
 $('#formula tbody').on( 'click', 'tr.group', function () {
@@ -341,20 +351,17 @@ $('#print').click(() => {
         <div class="btn-group" id="menu">
             <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
             <div class="dropdown-menu dropdown-menu-left">
-	           <a class="dropdown-item popup-link" href="pages/getFormMeta.php?id=<?=$meta['id']?>">Details</a>
+	           <a class="dropdown-item popup-link" href="pages/getFormMeta.php?id=<?=$meta['id']?>">Settings</a>
                <div class="dropdown-divider"></div>
+               <li class="dropdown-header">Export</li> 
                <a class="dropdown-item" href="javascript:export_as('csv')">Export to CSV</a>
                <a class="dropdown-item" href="javascript:export_as('pdf')">Export to PDF</a>
                <a class="dropdown-item" href="#" id="print">Print Formula</a>
                <div class="dropdown-divider"></div>
-               <?php if($pv_online['enabled'] == '1'){?>
-               <li class="dropdown-header">TECH PREVIEW</li> 
-               <a class="dropdown-item" href="#" data-toggle="modal" data-target="#share_to_user">Share with someone</a>
-               <div class="dropdown-divider"></div>
-               <?php } ?>
+               <li class="dropdown-header">Scale Formula</li> 
                <a class="dropdown-item" href="javascript:manageQuantity('multiply')">Multiply x2</a>
                <a class="dropdown-item" href="javascript:manageQuantity('divide')">Divide x2</a>
-               <a class="dropdown-item" href="#" data-toggle="modal" data-target="#amount_to_make">Amount to make</a>
+               <a class="dropdown-item" href="#" data-toggle="modal" data-target="#amount_to_make">Advanced</a>
                <div class="dropdown-divider"></div>
                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#create_accord">Create Accord</a>
                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#conv_ingredient">Convert to ingredient</a>
@@ -365,6 +372,12 @@ $('#print').click(() => {
                <a class="dropdown-item" href="pages/viewHistory.php?id=<?=$meta['id']?>" target="_blank">View history</a>
                <div class="dropdown-divider"></div>
                <a class="dropdown-item" href="javascript:cloneMe()">Clone Formula</a>
+               <div class="dropdown-divider"></div>
+               <?php if($pv_online['enabled'] == '1'){?>
+               <li class="dropdown-header">PV Online</li> 
+               <a class="dropdown-item" href="#" data-toggle="modal" data-target="#share_to_user">Share with someone</a>
+               <div class="dropdown-divider"></div>
+               <?php } ?>
             </div>
         </div>
 	</th>
@@ -483,18 +496,20 @@ $('#print').click(() => {
 </div>
 
 <?php } ?>
-<!--Amount To Make-->
+<!--Scale Formula-->
 <div class="modal fade" id="amount_to_make" tabindex="-1" role="dialog" aria-labelledby="amount_to_make" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Total amount to make</h5>
+        <h5 class="modal-title">Scale formula</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
       <div id="amountToMakeMsg"></div>
+      <p>This will re-calculate the ingredients quantity as per the new total.</p>
+      <hr />
         <table width="313" border="0">
           <tr>
 	       <td width="66" height="31"><strong>SG<span class="sup">*</span> :</strong></td>
@@ -511,7 +526,7 @@ $('#print').click(() => {
 	    <p>*<a href="https://www.jbparfum.com/knowledge-base/3-specific-gravity-sg/" target="_blank">Specific Gravity of Ethanol</a></p>
 	    <div class="modal-footer">
 	     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-  		 <input type="submit" name="button" class="btn btn-primary" id="amountToMake" value="Update Formula">
+  		 <input type="submit" name="button" class="btn btn-primary" id="amountToMake" value="Scale Formula">
 	   </div>
     </div>
   </div>
@@ -546,8 +561,8 @@ $('#print').click(() => {
 	       <td><input name="accordName" type="text" class="form-control" id="accordName" value="<?=$f_name?> accord" /></td>
           </tr>
         </table>
-	     <hr />
-	    <p>Will create a new formula from the notes you choose. <br/>The current formula will stay intact.</p>
+	    <hr />
+	    <div class="alert alert-info">This will create a new formula from the notes you choose. <br/>The current formula will stay intact.</div>
 	    <div class="modal-footer">
 	     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
   		 <input type="submit" name="button" class="btn btn-primary" id="createAccord" value="Create">
@@ -575,7 +590,8 @@ $('#print').click(() => {
 	       <td><input name="ingName" type="text" class="form-control" id="ingName" value="<?=$f_name?>" /></td>
           </tr>
         </table>
-	    <p>&nbsp;</p>
+        <hr />
+        <div class="alert alert-info">The original formula will not be affected.</div>
 	    <div class="modal-footer">
 	     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
   		 <input type="submit" name="button" class="btn btn-primary" id="conv2ing" value="Convert">
@@ -590,8 +606,11 @@ $('#print').click(() => {
 
 function extrasShow() {
 	$('[rel=tip]').tooltip({
-        "html": true,
-        "delay": {"show": 100, "hide": 0},
+         html: true,
+		 boundary: "window",
+		 overflow: "auto",
+		 container: "body",
+         delay: {"show": 100, "hide": 0},
      });
 	$('.popup-link').magnificPopup({
 		type: 'iframe',
@@ -608,20 +627,20 @@ $('#formula').editable({
   title: 'Purity %',
   type: "POST",
   dataType: 'json',
-		success: function(response, newValue) {
-		if(response.status == 'error'){
-			return response.msg; 
-		}else{
-			reload_formula_data();
-		}
-	},
+  success: function(response, newValue) {
+	if(response.status == 'error'){
+		return response.msg; 
+	}else{
+		reload_formula_data();
+	}
+  },
   validate: function(value){
-   if($.trim(value) == ''){
-	return 'This field is required';
-   }
-   if($.isNumeric(value) == '' ){
-	return 'Numbers only!';
-   }
+  	if($.trim(value) == ''){
+		return 'This field is required';
+   	}
+	if($.isNumeric(value) == '' ){
+		return 'Numbers only!';
+   	}
   }
 });
 	
@@ -834,7 +853,7 @@ $('#formula').editable({
 	highlight: false,
 	emptytext: null,
 	emptyclass: null,
-	url: "pages/manageFormula.php?action=repIng&fid=<?=$meta['fid']?>",
+	url: "pages/manageFormula.php?action=repIng&fid=" + myFID ,
 	success: function (data) {
 		if ( data.indexOf("Error") > -1 ) {
 			$('#msgInfo').html(data); 
@@ -872,7 +891,7 @@ function manageQuantity(quantity) {
     data: {
 		do: 'scale',
 		scale: quantity,
-		formula: "<?php echo $fid; ?>",
+		formula: myFID,
 		},
 	dataType: 'html',
     success: function (data) {
@@ -896,7 +915,7 @@ $('#amount_to_make').on('click', '[id*=amountToMake]', function () {
 		type: 'POST',
 		cache: false,
 		data: {
-			fid: "<?php echo $fid; ?>",
+			fid: myFID,
 			SG: $("#sg").val(),
 			amount: $("#totalAmount").val(),
 			},
@@ -1047,7 +1066,6 @@ $("#pvUsers").select2({
 					return {
 						id: obj.id,
 						name: obj.nickname,
-						avatar: obj.avatar,
 						userBio: obj.userBio,
 						avatar: obj.avatar
 					}

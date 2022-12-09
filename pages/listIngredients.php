@@ -185,6 +185,11 @@ function iCategory(data, type, row){
 }
 
 function iLimit(data, type, row){
+	var byPassIFRA = '';
+	if(row.info.byPassIFRA == 1){
+		var byPassIFRA = '<span class="ing_alg"> <i rel="tip" title="IFRA record is bypassed" class="fas fa-exclamation-triangle"></i></span>';	
+	}
+	
 	if(row.usage.reason == 1){
 		var reason = 'Recommendation';
 	}else if(row.usage.reason == 2){
@@ -197,7 +202,7 @@ function iLimit(data, type, row){
 		var reason = row.usage.reason;
 	}
 	
-	return '<i class="pv_point_gen pv_gen_li" rel="tip" title="'+reason+'">'+row.usage.limit+'</i>';
+	return '<i class="pv_point_gen pv_gen_li" rel="tip" title="'+reason+'">'+row.usage.limit+'</i>'+byPassIFRA;
 }
 
 function iSuppliers(data, type, row){

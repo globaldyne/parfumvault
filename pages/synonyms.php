@@ -1,12 +1,14 @@
 <?php
 
-require('../inc/sec.php');
+define('__ROOT__', dirname(dirname(__FILE__))); 
 
+
+require(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 
-$CAS = mysqli_real_escape_string($conn, $_GET["cas"]);
-$ingName = mysqli_real_escape_string($conn, $_GET["name"]);
+$CAS = mysqli_real_escape_string($conn, $_POST["cas"]);
+$ingName = mysqli_real_escape_string($conn, $_POST["name"]);
 
 ?>
 
@@ -144,7 +146,7 @@ $('#import').on('click', '[id*=importPubChem]', function () {
 	$('#pvImportMsg').html('<div class="alert alert-info">Please wait...</div>');			
 	$.ajax({ 
 		url: 'update_data.php', 
-		type: 'GET',
+		type: 'POST',
 		data: {
 			synonym: 'import',
 			method: 'pubchem',

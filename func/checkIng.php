@@ -10,7 +10,7 @@ function checkIng($ingredient, $defCatClass, $conn){
 			$chkIFRA = mysqli_fetch_array(mysqli_query($conn, "SELECT name, $defCatClass FROM IFRALibrary WHERE  name = '".$qValues['name']."' OR synonyms LIKE '%".$qValues['name']."%' $casQ"));
 			$chkPrice = mysqli_fetch_array(mysqli_query($conn, "SELECT price FROM suppliers WHERE ingID = '".$qValues['id']."'"));
 			
-			if(empty($chkIFRA[$defCatClass]) && empty($qValues[$defCatClass])){
+			if(empty($chkIFRA[$defCatClass]) && !isset($qValues[$defCatClass])){
 				return 'Missing usage data';
 			}
 			if(empty($chkPrice['price'])){

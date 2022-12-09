@@ -163,7 +163,7 @@ $.ajax({
                     </tr>
                   </thead>
                   <?php foreach ($form as $formula){
-					    $ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT id,cas,$defCatClass FROM ingredients WHERE name = '".$formula['ingredient']."'"));
+					    $ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT id,cas,$defCatClass,byPassIFRA FROM ingredients WHERE name = '".$formula['ingredient']."'"));
 
 						$limit = explode(' - ',searchIFRA($ing_q['cas'],$formula['ingredient'],null,$conn,$defCatClass));
 					  
@@ -185,7 +185,7 @@ $.ajax({
 					   <td data-name="dilutant" class="dilutant" data-type="select" align="center" data-pk="<?=$formula['ingredient']?>"><?=$formula['dilutant']?></td>
 					 <?php
                       }
-					  if($limit['0'] != null){
+					  if($limit['0'] != null && $ing_q['byPassIFRA'] == 0){
 						 if($limit['0'] < $conc_p){
 							$IFRA_WARN = 'class="alert-danger"';//VALUE IS TO HIGH AGAINST IFRA
 					  	}else{

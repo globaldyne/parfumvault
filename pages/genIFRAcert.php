@@ -121,7 +121,8 @@ at a maximum concentration level of:</span></font></p>
     <th width="22%" bgcolor="#d9d9d9"><strong>Material(s) under the scope of IFRA Standards:</strong></th>
     <th width="12%" bgcolor="#d9d9d9"><strong>CAS number(s):</strong></th>
     <th width="28%" bgcolor="#d9d9d9"><strong>Recommendation (%) from IFRA Standard:</strong></th>
-    <th width="38%" bgcolor="#d9d9d9"><strong>Concentration (%) in  finished product:</strong></th>
+    <th width="19%" bgcolor="#d9d9d9"><strong>Concentration (%) in  finished product:</strong></th>
+    <th width="19%" bgcolor="#d9d9d9">Risk</th>
   </tr>
   <pre>
     <?php 
@@ -148,14 +149,9 @@ at a maximum concentration level of:</span></font></p>
 					<tr>
 						<td align="center"><?=$ifra['name']?></td>
 						<td align="center"><?=$ifra['cas']?></td>
-						<td align="center"><?=$ifra['risk']?><br> 
-				<?php if($ifra[$defCatClass]){ ?>
-							MAX usage: <?=$ifra[$defCatClass]?>
-				<?php }else{ ?>
-                			MAX usage: <?=$cas[$defCatClass]?>
-				<?php } ?>
-                		</td>
-						<td align="center"><?=$conc_p?></td> 
+						<td align="center"><?php echo $ifra[$defCatClass] ?: $cas[$defCatClass]?></td>
+						<td align="center"><?=$conc_p?></td>
+						<td align="center"><?=$ifra['risk']?></td> 
 						</tr>
 				<?php	
                     }

@@ -25,16 +25,16 @@ $(function() {
 <h2 class="m-0 mb-4 text-primary"><a href="?do=settings">Settings</a></h2>
 <div id="settings">
      <ul>
-         <li><a href="#general"><span>General</span></a></li>
-         <li><a href="#categories"><span>Ingredient Categories</span></a></li>
-         <li><a href="#frmCat">Formula Categories</a></li>
-         <li><a href="#types">Perfume Types</a></li>
-         <li><a href="#print"><span>Printing</span></a></li>
-         <li><a href="#brand"><span>My Brand</span></a></li>
-         <li><a href="#maintenance"><span>Maintenance</span></a></li>
-         <li><a href="#pvonline"><span>PV Online</span></a></li>
-         <li><a href="#api">API</a></li>
-        <li><a href="pages/about.php"><span>About</span></a></li>
+         <li><a href="#general" id="general_tab"><span>General</span></a></li>
+         <li><a href="#categories" id="cat_tab"><span>Ingredient Categories</span></a></li>
+         <li><a href="#frmCat" id="frmCat_tab">Formula Categories</a></li>
+         <li><a href="#types" id="types_tab">Perfume Types</a></li>
+         <li><a href="#print" id="print_tab"><span>Printing</span></a></li>
+         <li><a href="#brand" id="brand_tab"><span>My Brand</span></a></li>
+         <li><a href="#maintenance" id="maintenance_tab"><span>Maintenance</span></a></li>
+         <li><a href="#pvonline" id="pvOnline_tab"><span>PV Online</span></a></li>
+         <li><a href="#api" id="api_tab">API</a></li>
+        <li><a href="pages/about.php" id="about_tab"><span>About</span></a></li>
      </ul>
      <div id="general">
      <table width="100%" border="0">

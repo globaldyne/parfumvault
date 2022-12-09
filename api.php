@@ -1,14 +1,14 @@
 <?php
 define('pvault_panel', TRUE);
-define('__ROOT__', dirname(dirname(__FILE__)));
+define('__ROOT__', dirname(__FILE__));
 
-require_once('inc/config.php');
-require_once('inc/opendb.php');
+require_once(__ROOT__.'/inc/config.php');
+require_once(__ROOT__.'/inc/opendb.php');
 
 $defCatClass = $settings['defCatClass'];
 
 $req_dump = print_r($_REQUEST, TRUE);
-$fp = fopen('logs/api.log', 'a');
+$fp = fopen(__ROOT__.'/logs/api.log', 'a');
 fwrite($fp, $req_dump);
 fclose($fp);
 
@@ -39,7 +39,7 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 	
 	if($_REQUEST['do'] == 'formulas'){
 
-		$sql = mysqli_query($conn, "SELECT name, notes, fid FROM formulasMetaData");
+		$sql = mysqli_query($conn, "SELECT name, notes, finalType AS concentration, fid FROM formulasMetaData");
 		while($r = mysqli_fetch_assoc($sql)) {
     		if (is_null($r['name']) || empty($r['name'])) {
         		$r['name'] = "N/A";
@@ -49,6 +49,7 @@ if($_REQUEST['key'] && $_REQUEST['do']){
    			}
 			$r['name'] = (string)$r['name'];
 			$r['notes'] = (string)$r['notes'];
+			$r['concentration'] = (int)$r['concentration'];
 
 			$rows[$_REQUEST['do']][] = array_filter($r);
 		}
