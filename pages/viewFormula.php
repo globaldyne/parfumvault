@@ -87,7 +87,7 @@ $(document).ready(function() {
 		  var response = this.api().ajax.json();
 		  if(response){
 			 var $td = $(tfoot).find('th');
-			 $td.eq(0).html("Total Ingredients: " + response.meta['total_ingredients'] );
+			 $td.eq(0).html("Ingredients: " + response.meta['total_ingredients'] );
 			 $td.eq(4).html("Total: " + response.meta['total_quantity']);// + response.meta['quantity_unit'] );
 			 $td.eq(5).html("Total: " + response.meta['concentration'] + "%" );
 			 $td.eq(7).html("Total: " + response.meta['currency'] + response.meta['total_cost'] + ' <i rel="tip" title="The total price for the 100% concentration." class="pv_point_gen fas fa-info-circle"></i>');
