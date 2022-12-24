@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 5.1
+- New logo design
 
 ### Version 5.0
 - Introducing ingredients replacements

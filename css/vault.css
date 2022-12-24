@@ -961,3 +961,7 @@ body {
 	opacity: 1;
     z-index: 99999;
 }
+
+.pvLogo img{
+  max-width: 200px;
+}
