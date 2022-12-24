@@ -1,6 +1,7 @@
 # CHANGELOG
 ### Version 5.1
 - New logo design
+- API extend to include suppliers 
 
 ### Version 5.0
 - Introducing ingredients replacements

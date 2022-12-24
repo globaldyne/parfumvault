@@ -94,27 +94,31 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 			if($ifra = mysqli_fetch_array(mysqli_query($conn, "SELECT cat4, type FROM IFRALibrary WHERE cas = '".$rx['cas']."'"))){
         		$rx['cat4'] = preg_replace("/[^0-9.]/", "", $ifra['cat4']);
         		$rx['class'] = $ifra['type'];
-   			}
-					
-            if (!$rx['class']) {
-				$rx['class'] = 'Recommendation';
-			}
+   		   }
+		   $gSupQ = mysqli_fetch_array(mysqli_query($conn, "SELECT ingSupplierID, price, size FROM suppliers WHERE ingID = '".$rx['id']."' AND preferred = '1'"));
+		   $gSupN = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingSuppliers WHERE id = '".$gSupQ['ingSupplierID']."'"));
+		   $size = $gSupQ['size']?:10;
+		   $s = $gSupQ['price']/$size;
+		
+           if (!$rx['class']) {
+			   $rx['class'] = 'Recommendation';
+		   }
 			
-            if (is_null($rx['cas']) || empty($rx['cas'])) {
-                $rx['cas'] = "N/A";
-             }
+           if (is_null($rx['cas']) || empty($rx['cas'])) {
+              $rx['cas'] = "N/A";
+            }
 				
-			 if (is_null($rx['odor']) || empty($rx['odor'])) {
-                $rx['odor'] = "N/A";
-             }
+			if (is_null($rx['odor']) || empty($rx['odor'])) {
+              $rx['odor'] = "N/A";
+            }
 				
-			 if (is_null($rx['profile']) || empty($rx['profile'])) {
-                  $rx['profile'] = "N/A";
-             }
+			if (is_null($rx['profile']) || empty($rx['profile'])) {
+               $rx['profile'] = "N/A";
+            }
 				
-			 if (is_null($rx['type']) || empty($rx['type'])) {
-                $rx['type'] = "AC";
-             }
+			if (is_null($rx['type']) || empty($rx['type'])) {
+              $rx['type'] = "AC";
+            }
 			$rx['id'] = (int)$rx['id'];
 			$rx['name'] = (string)$rx['name'];
 			$rx['cas'] = (string)$rx['cas'];
@@ -125,9 +129,12 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 			$rx['category'] = (int)$rx['category'];
 			$rx['type'] = (string)$rx['type'];
 			$rx['class'] = (string)$rx['class'];
-			$rx['purity'] = (string)$rx['purity']?:'100';
+			$rx['purity'] = (double)$rx['purity']?: 100;
 			$rx['INCI'] = (string)$rx['INCI']?:'N/A';
 			
+			$rx['supplier'] = (string)$gSupN['name'] ?: (string)'N/A';
+			$rx['price'] = (double)$s ?: (double)'0';
+		
 			$r[] = $rx;
 	}
 
