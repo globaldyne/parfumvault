@@ -2,6 +2,7 @@
 ### Version 5.1
 - New logo design
 - API extend to include suppliers 
+- API extend to include categories
 
 ### Version 5.0
 - Introducing ingredients replacements

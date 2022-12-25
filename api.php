@@ -4,6 +4,7 @@ define('__ROOT__', dirname(__FILE__));
 
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/func/rgbToHex.php');
 
 $defCatClass = $settings['defCatClass'];
 
@@ -97,6 +98,9 @@ if($_REQUEST['key'] && $_REQUEST['do']){
    		   }
 		   $gSupQ = mysqli_fetch_array(mysqli_query($conn, "SELECT ingSupplierID, price, size FROM suppliers WHERE ingID = '".$rx['id']."' AND preferred = '1'"));
 		   $gSupN = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingSuppliers WHERE id = '".$gSupQ['ingSupplierID']."'"));
+	   		$gCatQ = mysqli_fetch_array(mysqli_query($conn, "SELECT name, notes, colorKey FROM ingCategory WHERE id = '".$rx['id']."'"));
+
+
 		   $size = $gSupQ['size']?:10;
 		   $s = $gSupQ['price']/$size;
 		
@@ -126,7 +130,12 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 			$rx['profile'] = (string)$rx['profile'];
 			$rx['physical_state'] = (int)$rx['physical_state'];
 			$rx['cat4'] = (double)$rx['cat4'];
-			$rx['category'] = (int)$rx['category'];
+			
+			$rx['category'] = (int)$rx['category'] ?: (int)'0';
+			$rx['category_name'] = (string)$gCatQ['name'] ?: (string)'N/A';
+			$rx['category_notes'] = (string)$gCatQ['notes'] ?: (string)'N/A';
+			$rx['category_identifier'] = (string)rgb_to_hex( 'rgba('.$gCatQ['colorKey']?:'239, 239, 250, 0.8'.')' );
+		
 			$rx['type'] = (string)$rx['type'];
 			$rx['class'] = (string)$rx['class'];
 			$rx['purity'] = (double)$rx['purity']?: 100;
