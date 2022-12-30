@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 5.2
+
 ### Version 5.1
 - New logo design
 - API extend to include suppliers 
