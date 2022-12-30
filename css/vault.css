@@ -85,20 +85,21 @@ a { text-decoration: none; }
 }
 
 .bg-login-image {
-  background: url("../img/logo.png");
+  background: url("../img/logo_400.png");
   background-position: center;
   background-size: cover;
 }
 
 .bg-install-image {
-  background: url("../img/logo.png");
+  background: url("../img/logo_400.png");
   background-position: center;
   background-size: cover;
   height: 430px;
   margin-top: 215px;
 }
+
 .bg-register-image {
-  background: url("../img/logo.png");
+  background: url("../img/logo_400.png");
   background-position: center;
   background-size: cover;
   height: 430px;
@@ -960,4 +961,8 @@ body {
  	box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
 	opacity: 1;
     z-index: 99999;
+}
+
+.pvLogo img{
+  max-width: 200px;
 }
