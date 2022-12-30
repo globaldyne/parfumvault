@@ -172,8 +172,7 @@ function list_users(){
         <div class="sidebar-brand-icon">            
         <p></p>
         <p></p>
-        <p></p>
-          <img src="img/logo.png" witdh="150px" height="120px">
+        <div class="pvLogo"><img src="img/logo.png"></div>
         </div>
       </a>        
       <p></p>

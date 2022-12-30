@@ -241,7 +241,7 @@ if($_POST['action'] == 'upload' && $_POST['items'] == 'ingredients'){
 	}
 	
 	//Upload all the suppliers
-	$sup = mysqli_query($conn, "SELECT ingSupplierID, ingID, supplierLink, price, size FROM suppliers");
+	$sup = mysqli_query($conn, "SELECT ingSupplierID, ingID, supplierLink, price, size, preferred FROM suppliers");
 	$sp = 0;
 	while($supplier = mysqli_fetch_assoc($sup)){
 		$spData['data'][] = array_filter($supplier);
