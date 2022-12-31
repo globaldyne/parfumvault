@@ -98,7 +98,7 @@ if($_REQUEST['key'] && $_REQUEST['do']){
    		   }
 		   $gSupQ = mysqli_fetch_array(mysqli_query($conn, "SELECT ingSupplierID, price, size FROM suppliers WHERE ingID = '".$rx['id']."' AND preferred = '1'"));
 		   $gSupN = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingSuppliers WHERE id = '".$gSupQ['ingSupplierID']."'"));
-	   		$gCatQ = mysqli_fetch_array(mysqli_query($conn, "SELECT name, notes, colorKey FROM ingCategory WHERE id = '".$rx['id']."'"));
+	   		$gCatQ = mysqli_fetch_array(mysqli_query($conn, "SELECT name, notes, colorKey FROM ingCategory WHERE id = '".$rx['category']."'"));
 
 
 		   $size = $gSupQ['size']?:10;
@@ -132,7 +132,7 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 			$rx['cat4'] = (double)$rx['cat4'];
 			
 			$rx['category'] = (int)$rx['category'] ?: (int)'0';
-			$rx['category_name'] = (string)$gCatQ['name'] ?: (string)'N/A';
+			$rx['category_name'] = (string)$gCatQ['name'] ?: (string)'Uncategorised';
 			$rx['category_notes'] = (string)$gCatQ['notes'] ?: (string)'N/A';
 			$rx['category_identifier'] = (string)rgb_to_hex( 'rgba('.$gCatQ['colorKey']?:'239, 239, 250, 0.8'.')' );
 		
