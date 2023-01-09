@@ -90,7 +90,7 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 	}
 	
 	if($_REQUEST['do'] == 'ingredients'){
-		$sql = mysqli_query($conn, "SELECT id, name, cas, odor, profile, physical_state, cat4, category, type, INCI, purity FROM ingredients");
+		$sql = mysqli_query($conn, "SELECT id, name, cas, odor, profile, physical_state, cat4, category, type, INCI, purity,allergen FROM ingredients");
 		while($rx = mysqli_fetch_assoc($sql)) { 
 			if($ifra = mysqli_fetch_array(mysqli_query($conn, "SELECT cat4, type FROM IFRALibrary WHERE cas = '".$rx['cas']."'"))){
         		$rx['cat4'] = preg_replace("/[^0-9.]/", "", $ifra['cat4']);
@@ -130,7 +130,7 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 			$rx['profile'] = (string)$rx['profile'];
 			$rx['physical_state'] = (int)$rx['physical_state'];
 			$rx['cat4'] = (double)$rx['cat4'];
-			
+			$rx['allergen'] = (int)$rx['allergen'] ?: (int)'0';
 			$rx['category'] = (int)$rx['category'] ?: (int)'0';
 			$rx['category_name'] = (string)$gCatQ['name'] ?: (string)'Uncategorised';
 			$rx['category_notes'] = (string)$gCatQ['notes'] ?: (string)'N/A';

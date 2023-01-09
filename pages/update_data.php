@@ -518,6 +518,8 @@ if($_GET['ingSupplier'] == 'delete'){
 	return;
 }
 
+
+
 if($_POST['value'] && $_GET['formula'] && $_POST['pk']){
 	$value = mysqli_real_escape_string($conn, $_POST['value']);
 	$formula = mysqli_real_escape_string($conn, $_GET['formula']);

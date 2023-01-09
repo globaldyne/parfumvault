@@ -1,5 +1,7 @@
 # CHANGELOG
 ### Version 5.2
+Extend API to include allergen status
+
 
 ### Version 5.1
 - New logo design
