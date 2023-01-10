@@ -4,7 +4,7 @@ define('pvault_panel', TRUE);
 require_once(__ROOT__.'/func/pvOnline.php');
 
 
-$pvOnlineAPI = 'https://online.jbparfum.com/api2.php';
+$pvOnlineAPI = 'https://online.jbparfum.com/api.php';
 
 if($_POST['action'] == 'create_pv_account'){
 	//define('__ROOT__', dirname(dirname(__FILE__))); 

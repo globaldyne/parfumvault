@@ -1,6 +1,7 @@
 <?php
-require('../inc/sec.php');
+define('__ROOT__', dirname(dirname(__FILE__))); 
 
+require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/product.php');
@@ -9,6 +10,25 @@ require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/pvOnline.php');
 require_once(__ROOT__.'/func/create_thumb.php');
 
+
+if($_POST['update_pvonline_api']){
+	
+	if(!$_POST['pv_api_url']){
+		$response["error"] = "All fields are required";
+		echo json_encode($response);
+		return;
+	}
+
+	if(mysqli_query($conn, "UPDATE settings SET pv_online_api_url = '".$_POST['pv_api_url']."'")){
+		$response["success"] = "PV Online API URL updated!";
+		echo json_encode($response);
+	}else{
+		$response["error"] = 'Failed to update PV Online API URL '.mysqli_error($conn);
+		echo json_encode($response);
+	}
+	
+	return;
+}
 
 if($_POST['update_pvonline_profile'] && $pv_online['enabled'] == '1'){
 	
@@ -34,8 +54,6 @@ if($_POST['update_pvonline_profile'] && $pv_online['enabled'] == '1'){
 	}
 	
 	echo json_encode($response);
-	
-	
 
 	return;
 }
