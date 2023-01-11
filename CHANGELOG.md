@@ -1,6 +1,7 @@
 # CHANGELOG
 ### Version 5.2
 Extend API to include allergen status
+Extend API to include solvents status
 
 
 ### Version 5.1
