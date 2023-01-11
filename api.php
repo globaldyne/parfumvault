@@ -143,7 +143,13 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 			
 			$rx['supplier'] = (string)$gSupN['name'] ?: (string)'N/A';
 			$rx['price'] = (double)$s ?: (double)'0';
-		
+			
+			if($rx['profile'] == "Solvent"){
+				$rx['isSolvent'] = 1;
+			}else{
+				$rx['isSolvent'] = 0;
+			}
+			
 			$r[] = $rx;
 	}
 
