@@ -84,6 +84,7 @@ var myPCH = "<?=$settings['pubChem']?>";
 					<div class="dropdown-menu">
 						<a class="dropdown-item" href="#" data-toggle="modal" data-target="#printLabel">Print Label</a>
 						<a class="dropdown-item" href="#" data-toggle="modal" data-target="#cloneIng">Clone ingredient</a>
+						<a class="dropdown-item" href="#" data-toggle="modal" data-target="#renameIng">Rename ingredient</a>
 					</div>
 				</div>
 			<?php }else {?>
@@ -362,9 +363,33 @@ var myPCH = "<?=$settings['pubChem']?>";
 		</div>
 	</div>
 </div>
+
+<!-- Modal Rename-->
+<div class="modal fade" id="renameIng" tabindex="-1" role="dialog" aria-labelledby="cloneIng" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Rename ingredient <?php echo $ing['name']; ?></h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+            	<div id="warn"><div class="alert alert-warning">If you rename the ingredient, will affect any formulas using it as well.</div></div>
+				<div id="rename_msg"></div>
+				Name
+				<input class="form-control" name="renameIngName" id="renameIngName" type="text" value="" />            
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<input type="submit" name="button" class="btn btn-primary" id="renameME" value="Rename">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
 <script type="text/javascript" language="javascript">
-
-
 $('#printLabel').on('click', '[id*=print]', function () {
 	<?php if(empty($settings['label_printer_addr']) || empty($settings['label_printer_model'])){?>
 		$("#msg").html('<div class="alert alert-danger alert-dismissible">Please configure printer details in <a href="?do=settings">settings<a> page</div>');
