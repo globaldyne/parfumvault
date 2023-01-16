@@ -375,7 +375,7 @@ var myPCH = "<?=$settings['pubChem']?>";
 				</button>
 			</div>
 			<div class="modal-body">
-            	<div id="warn"><div class="alert alert-warning">If you rename the ingredient, will affect any formulas using it as well.</div></div>
+            	<div id="warn"><div class="alert alert-warning"><strong>Warning:</strong> If you rename the ingredient, will affect any formulas that using it as well. Please refer to <strong>Where Used</strong> section to get a list of formulas if any.</div></div>
 				<div id="rename_msg"></div>
 				Name
 				<input class="form-control" name="renameIngName" id="renameIngName" type="text" value="" />            
