@@ -40,7 +40,7 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 	
 	if($_REQUEST['do'] == 'formulas'){
 
-		$sql = mysqli_query($conn, "SELECT name, notes, finalType AS concentration, fid FROM formulasMetaData");
+		$sql = mysqli_query($conn, "SELECT name, notes, finalType AS concentration, fid, status, created, isProtected FROM formulasMetaData");
 		while($r = mysqli_fetch_assoc($sql)) {
     		if (is_null($r['name']) || empty($r['name'])) {
         		$r['name'] = "N/A";
@@ -51,6 +51,9 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 			$r['name'] = (string)$r['name'];
 			$r['notes'] = (string)$r['notes'];
 			$r['concentration'] = (int)$r['concentration'];
+			$r['status'] = (int)$r['status'] ?: 0;
+			$r['created'] = (string)$r['created'];
+			$r['isProtected'] = (int)$r['isProtected'] ?: 0;
 
 			$rows[$_REQUEST['do']][] = array_filter($r);
 		}
