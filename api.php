@@ -48,11 +48,14 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 			if (is_null($r['notes']) || empty($r['notes'])) {
         		$r['notes'] = "N/A";
    			}
+
+			$C = date_format(date_create($r['created']),"d/m/Y H:i");
+
 			$r['name'] = (string)$r['name'];
 			$r['notes'] = (string)$r['notes'];
 			$r['concentration'] = (int)$r['concentration'];
 			$r['status'] = (int)$r['status'] ?: 0;
-			$r['created'] = (string)$r['created'];
+			$r['created'] = (string)$C;
 			$r['isProtected'] = (int)$r['isProtected'] ?: 0;
 
 			$rows[$_REQUEST['do']][] = array_filter($r);
