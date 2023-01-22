@@ -40,7 +40,7 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 	
 	if($_REQUEST['do'] == 'formulas'){
 
-		$sql = mysqli_query($conn, "SELECT name, notes, finalType AS concentration, fid FROM formulasMetaData");
+		$sql = mysqli_query($conn, "SELECT name, notes, finalType AS concentration, fid, status, created, isProtected FROM formulasMetaData");
 		while($r = mysqli_fetch_assoc($sql)) {
     		if (is_null($r['name']) || empty($r['name'])) {
         		$r['name'] = "N/A";
@@ -48,9 +48,15 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 			if (is_null($r['notes']) || empty($r['notes'])) {
         		$r['notes'] = "N/A";
    			}
+
+			$C = date_format(date_create($r['created']),"d/m/Y H:i");
+
 			$r['name'] = (string)$r['name'];
 			$r['notes'] = (string)$r['notes'];
 			$r['concentration'] = (int)$r['concentration'];
+			$r['status'] = (int)$r['status'] ?: 0;
+			$r['created'] = (string)$C;
+			$r['isProtected'] = (int)$r['isProtected'] ?: 0;
 
 			$rows[$_REQUEST['do']][] = array_filter($r);
 		}
@@ -90,7 +96,7 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 	}
 	
 	if($_REQUEST['do'] == 'ingredients'){
-		$sql = mysqli_query($conn, "SELECT id, name, cas, odor, profile, physical_state, cat4, category, type, INCI, purity FROM ingredients");
+		$sql = mysqli_query($conn, "SELECT id, name, cas, odor, profile, physical_state, cat4, category, type, INCI, purity,allergen FROM ingredients");
 		while($rx = mysqli_fetch_assoc($sql)) { 
 			if($ifra = mysqli_fetch_array(mysqli_query($conn, "SELECT cat4, type FROM IFRALibrary WHERE cas = '".$rx['cas']."'"))){
         		$rx['cat4'] = preg_replace("/[^0-9.]/", "", $ifra['cat4']);
@@ -98,7 +104,7 @@ if($_REQUEST['key'] && $_REQUEST['do']){
    		   }
 		   $gSupQ = mysqli_fetch_array(mysqli_query($conn, "SELECT ingSupplierID, price, size FROM suppliers WHERE ingID = '".$rx['id']."' AND preferred = '1'"));
 		   $gSupN = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingSuppliers WHERE id = '".$gSupQ['ingSupplierID']."'"));
-	   		$gCatQ = mysqli_fetch_array(mysqli_query($conn, "SELECT name, notes, colorKey FROM ingCategory WHERE id = '".$rx['id']."'"));
+	   		$gCatQ = mysqli_fetch_array(mysqli_query($conn, "SELECT name, notes, colorKey FROM ingCategory WHERE id = '".$rx['category']."'"));
 
 
 		   $size = $gSupQ['size']?:10;
@@ -130,9 +136,9 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 			$rx['profile'] = (string)$rx['profile'];
 			$rx['physical_state'] = (int)$rx['physical_state'];
 			$rx['cat4'] = (double)$rx['cat4'];
-			
+			$rx['allergen'] = (int)$rx['allergen'] ?: (int)'0';
 			$rx['category'] = (int)$rx['category'] ?: (int)'0';
-			$rx['category_name'] = (string)$gCatQ['name'] ?: (string)'N/A';
+			$rx['category_name'] = (string)$gCatQ['name'] ?: (string)'Uncategorised';
 			$rx['category_notes'] = (string)$gCatQ['notes'] ?: (string)'N/A';
 			$rx['category_identifier'] = (string)rgb_to_hex( 'rgba('.$gCatQ['colorKey']?:'239, 239, 250, 0.8'.')' );
 		
@@ -143,7 +149,13 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 			
 			$rx['supplier'] = (string)$gSupN['name'] ?: (string)'N/A';
 			$rx['price'] = (double)$s ?: (double)'0';
-		
+			
+			if($rx['profile'] == "Solvent"){
+				$rx['isSolvent'] = 1;
+			}else{
+				$rx['isSolvent'] = 0;
+			}
+			
 			$r[] = $rx;
 	}
 

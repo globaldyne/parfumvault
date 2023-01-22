@@ -1,3 +1,4 @@
 Whats New:
 ----------------------
-- New logo design
+API update to support allergens and solvents
+Ingredient rename added

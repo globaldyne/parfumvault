@@ -215,6 +215,31 @@ $('#cloneIng').on('click', '[id*=cloneME]', function () {
 	});
 });
 
+
+//Rename
+$('#renameIng').on('click', '[id*=renameME]', function () {
+	$.ajax({ 
+		url: 'update_data.php', 
+		type: 'POST',
+		data: {
+			action: 'rename',
+			new_ing_name: $("#renameIngName").val(),
+			old_ing_name: myIngName,
+			ing_id: myIngID
+		},
+		dataType: 'json',
+		success: function (data) {
+			if(data.success){
+				msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+			}else if(data.error){
+				msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+			}
+			$('#rename_msg').html(msg);
+		}
+	});
+});
+
+
 if (typeof myCAS !== 'undefined' && myPCH == '1') {
 	function fetch_pubChem(){
 		$.ajax({ 

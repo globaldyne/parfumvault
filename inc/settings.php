@@ -10,5 +10,5 @@ $pv_online['email'] = $user['email'];
 $pv_online['password'] = $user['password'];
 
 $pubChemApi = 'https://pubchem.ncbi.nlm.nih.gov/rest';
-
+$pvOnlineAPI = $settings['pv_online_api_url'];
 ?>

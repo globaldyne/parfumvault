@@ -318,6 +318,7 @@ CREATE TABLE `settings` (
   `mUnit` VARCHAR(10) NOT NULL DEFAULT 'ml',
   `multi_dim_perc` INT NOT NULL DEFAULT '0', 
   `defCatClass` VARCHAR(255) NOT NULL DEFAULT 'cat4',
+  `pv_online_api_url` varchar(255) COLLATE utf8_general_ci NOT NULL DEFAULT 'https://online.jbparfum.com/api.php',
   `api` INT NOT NULL DEFAULT '0',
   `api_key` VARCHAR(255) NULL 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
