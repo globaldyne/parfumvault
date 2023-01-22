@@ -1,4 +1,9 @@
 # CHANGELOG
+### Version 5.2
+- Extend API to include allergen status
+- Extend API to include solvents status
+- Ingredient rename added
+
 ### Version 5.1
 - New logo design
 - API extend to include suppliers 

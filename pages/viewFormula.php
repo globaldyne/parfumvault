@@ -70,7 +70,7 @@ $(document).ready(function() {
 				   { data : 'purity', title: 'Purity %', render: ingConc},
 				   { data : 'dilutant', title: 'Dilutant', render: ingSolvent},
 				   { data : 'quantity', title: 'Quantity (<?=$settings['mUnit']?>)', render: ingQuantity},
-				   { data : 'concentration', title: 'Concentration 100%'},
+				   { data : 'concentration', title: 'Concentration 100%', render: ingSetConc},
 				   { data : 'final_concentration', title: 'Final Concentration <?=$meta['finalType']?>%'},
 				   { data : 'cost', title: 'Cost (<?=$settings['currency']?>)'},
 				   { data : 'ingredient.inventory.stock', title: 'Inventory', className: 'text-center noexport', render: ingInv },
@@ -694,7 +694,8 @@ $('#formula').editable({
    }
   }
 });
-		
+
+
 $('#formula').editable({
   container: 'body',
   selector: 'i.notes',
@@ -779,6 +780,10 @@ function ingQuantity(data, type, row, meta){
 		data = '<a href="#" data-name="quantity" class="quantity" data-type="text" data-pk="' + row.formula_ingredient_id + '">' + data + '</a>';
 		<?php } ?>
 	}
+	return data;
+}
+
+function ingSetConc(data, type, row, meta){
 	return data;
 }
 

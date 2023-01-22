@@ -2,7 +2,7 @@
 define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__))))); 
 
 
-require(__ROOT__.'/inc/sec.php');
+require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/func/pvOnline.php');
@@ -17,7 +17,14 @@ $auth = pvOnlineValAcc($pvOnlineAPI, $user['email'], $user['password'], $ver);
 
 <?php if($auth['code'] == '001'){ ?>
 	<hr>
-
+        <div class="row">
+          <label class="col-sm-1 col-form-label pv_point_gen" data-toggle="tooltip" data-placement="right" title="Change the default PV Online API">API URL:</label>
+          <div class="col-sm-2">
+         	 <input name="pv_api_url" type="text" class="form-control" id="pv_api_url" value="<?=$pvOnlineAPI?>" placeholder="https://online.jbparfum.com/api.php">
+          </div>
+             <button type="submit" class="btn btn-primary" id="update-pv-api">Update</button>
+        </div>
+        <hr>
     <div class="row">
       <label class="col-sm-1 col-form-label pv_point_gen" data-toggle="tooltip" data-placement="right" title="Enable or disable PV Online access.">Enable Service:</label>
      <div class="col-sm-2">
@@ -26,7 +33,7 @@ $auth = pvOnlineValAcc($pvOnlineAPI, $user['email'], $user['password'], $ver);
      </div>
      <div id="pv_profile">
          <div class="row">
-          <label class="col-sm-1 col-form-label pv_point_gen" data-toggle="tooltip" data-placement="right" title="To enable or disable formula sharing service, please login to PVOnline and navigate to the profile section.">Enable Formula sharing:</label>
+          <label class="col-sm-1 col-form-label pv_point_gen" data-toggle="tooltip" data-placement="right" title="To enable or disable formula sharing service, please login to PV Online and navigate to the profile section.">Enable Formula sharing:</label>
           <div class="col-sm-2">
             <input name="sharing_status" type="checkbox" id="sharing_status" value="1"/>
           </div>
@@ -38,7 +45,6 @@ $auth = pvOnlineValAcc($pvOnlineAPI, $user['email'], $user['password'], $ver);
           </div>
         </div>
        <hr>
-        
       <div class="row">
         <label class="col-sm-1 col-form-label pv_point_gen" data-toggle="tooltip" data-placement="top" title="Choose a nick name to represent yourself in PV Online, this can be your full name or anything else.">Nickname:</label>
         <div class="col-sm-2">
@@ -57,7 +63,7 @@ $auth = pvOnlineValAcc($pvOnlineAPI, $user['email'], $user['password'], $ver);
   </div>
      <hr>
        <div class="row">
-          <span><label class="badge_int red"><i id="rmAcc" class="pv_point_gen">Delete my PVOnline account</i></label></span>       
+          <span><label class="badge_int red"><i id="rmAcc" class="pv_point_gen">Delete my PV Online account</i></label></span>       
        </div>
 <?php }elseif($auth['code'] == '002'){ ?>
 
@@ -323,7 +329,7 @@ function getPVProfile(){
 		});
 };
 
-//UPDATE PVONLINE PROFILE
+//UPDATE PV ONLINE PROFILE
 $('#update-profile').click(function() {
 	$.ajax({ 
 		url: '/pages/update_settings.php', 
@@ -338,6 +344,27 @@ $('#update-profile').click(function() {
 		error: function() {
 			$('#pvOnMsg').html('<div class="alert alert-danger">Connection error</div>');
 		},
+		success: function (data) {
+			if(data.success){
+				$('#pvOnMsg').html('<div class="alert alert-success">'+data.success+'</div>');
+			}else if( data.error){
+				$('#pvOnMsg').html('<div class="alert alert-danger">'+data.error+'</div>');
+			}
+		}
+	  });
+});
+
+
+//UPDATE PV ONLINE PROFILE
+$('#update-pv-api').click(function() {
+	$.ajax({ 
+		url: '/pages/update_settings.php', 
+		type: 'POST',
+		data: {
+			update_pvonline_api: 1,
+			pv_api_url: $("#pv_api_url").val(),		
+			},
+		dataType: 'json',
 		success: function (data) {
 			if(data.success){
 				$('#pvOnMsg').html('<div class="alert alert-success">'+data.success+'</div>');
