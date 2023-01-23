@@ -331,6 +331,7 @@ $("#customer").change(function() {
 	data: {
 		formula: '<?=$info['fid']?>',
 		customer_id: $("#customer").find(":selected").val(),
+		customer_set: 1
 		},
 	dataType: 'html',
 	success: function (data) {
