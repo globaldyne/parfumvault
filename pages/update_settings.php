@@ -19,6 +19,13 @@ if($_POST['update_pvonline_api']){
 		return;
 	}
 
+	$pingAPI = json_decode(file_get_contents($_POST['pv_api_url']."?ping=1"), true);
+   	if($pingAPI['pong']['code'] !== 1){
+		$response["error"] = 'Not a valid PV Online API URL ';
+		echo json_encode($response);
+		return;
+	}
+
 	if(mysqli_query($conn, "UPDATE settings SET pv_online_api_url = '".$_POST['pv_api_url']."'")){
 		$response["success"] = "PV Online API URL updated!";
 		echo json_encode($response);

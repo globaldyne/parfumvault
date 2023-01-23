@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 5.3
+- PVOnline connectivity improvements
 
 ### Version 5.2
 - Extend API to include allergen status
