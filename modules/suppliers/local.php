@@ -1,7 +1,7 @@
 <?php
 define('__ROOT__', dirname(dirname(__FILE__))); 
 
-require(__ROOT__.'/inc/sec.php');
+require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
@@ -66,7 +66,7 @@ if($s != ''){
    $filter = "WHERE 1 AND (name LIKE '%".$s."%' OR cas LIKE '%".$s."%' OR einecs LIKE '%".$s."%' OR odor LIKE '%".$s."%' OR INCI LIKE '%".$s."%')";
 }
 
-$q = mysqli_query($conn, "SELECT ingredients.id,name,INCI,cas,einecs,profile,category,odor,$defCatClass,allergen,usage_type,logp,formula,flash_point,molecularWeight,byPassIFRA FROM $t ingredients $filter $extra LIMIT $row, $limit");
+$q = mysqli_query($conn, "SELECT ingredients.id,name,INCI,cas,einecs,profile,category,odor,$defCatClass,allergen,usage_type,logp,formula,flash_point,molecularWeight,byPassIFRA,physical_state FROM $t ingredients $filter $extra LIMIT $row, $limit");
 while($res = mysqli_fetch_array($q)){
     $ingredients[] = $res;
 }
@@ -83,13 +83,12 @@ foreach ($ingredients as $ingredient) {
 	$r['profile'] = (string)$ingredient['profile']?: null;
 	$r['odor'] = (string)$ingredient['odor']?: 'N/A';
 	$r['allergen'] = (int)$ingredient['allergen']?: 0;
-	
+	$r['physical_state'] = (int)$ingredient['physical_state']?: 0;
 	$r['techData']['LogP'] = (float)$ingredient['logp']?: 0;
 	$r['techData']['formula'] = (string)$ingredient['formula']?: 'N/A';
 	$r['techData']['flash_point'] = (string)$ingredient['flash_point']?: 'N/A';
 	$r['techData']['molecula_weight'] = (float)$ingredient['molecularWeight']?: 0;
 
-	
 	$r['category']['id'] = (int)$ingredient['category']?: 1;
 	$r['category']['name'] = (string)$cat['name']?: 'N/A';
 	$r['category']['image'] = (string)$cat['image']?: '/img/pv_molecule.png';
@@ -104,7 +103,7 @@ foreach ($ingredients as $ingredient) {
 	}
 	$r['info']['byPassIFRA'] = (int)$ingredient['byPassIFRA'];
 	
-	if($a = getIngSupplier($ingredient['id'],$conn)){ 
+	if($a = getIngSupplier($ingredient['id'],0,$conn)){ 
 		$j = 0;
 		unset($r['supplier']);
 		foreach ($a as $b){
@@ -127,7 +126,8 @@ foreach ($ingredients as $ingredient) {
 	}else{
 		unset($r['document']);// = null;
 	}
-
+	$r['stock'] = (int)getIngSupplier($ingredient['id'],1,$conn)['stock'] ?: 0;
+	
 	$rx[]=$r;
 }
 
@@ -148,4 +148,5 @@ if(empty($r)){
 header('Content-Type: application/json; charset=utf-8');
 echo json_encode($response);
 return;
+
 ?>
