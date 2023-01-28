@@ -71,6 +71,7 @@ $defCatClass = $settings['defCatClass'];
           <th>Description</th>
           <th>Profile</th>
           <th>Category</th>
+          <th>Stock</th>
           <th><?=ucfirst($defCatClass)?></th>
           <th>Supplier(s)</th>
           <th>Document(s)</th>
@@ -86,7 +87,7 @@ $(document).ready(function() {
 	var tdDataIng = $('#tdDataIng').DataTable( {
 	columnDefs: [
 		{ className: 'pv_vertical_middle text-center', targets: '_all' },
-		{ orderable: false, targets: [1,3,5,8]}
+		{ orderable: false, targets: [1,3,5,6,8]}
 	],
 	search: {
     	search: "<?=$_GET['search']?>"
@@ -133,6 +134,7 @@ $(document).ready(function() {
 			  { data : 'profile', title: 'Profile', render: iProfile },
 			  { data : 'category', title: 'Category', render: iCategory },
 			  { data : 'usage.limit', title: '<?=ucfirst($defCatClass)?>(%)', render: iLimit},
+			  { data : 'stock', title: 'In Stock <i rel="tip" title="The total amount available in stock from all suppliers." class="fas fa-info-circle"></i></span>', render: iStock},
 			  { data : null, title: 'Supplier(s)', render: iSuppliers},
 			  { data : null, title: 'Document(s)', render: iDocs},
 
@@ -174,6 +176,15 @@ function iProfile(data, type, row){
 	}else{
 		return '<img src="/img/pv_molecule.png" class="img_ing_prof"/>';
 	}
+}
+
+function iStock(data, type, row){
+	if (row.physical_state == 1) {
+		var ingUnit = "ml";
+	}else if (row.physical_state == 2) {
+		var ingUnit = "gr";
+	}
+	return '<a class="popup-link" rel="tip" title="'+ingUnit+'" href="pages/ingSuppliers.php?id=' + row.id + '&standAlone=1">' + data + '</a>';
 }
 
 function iCategory(data, type, row){

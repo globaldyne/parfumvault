@@ -1,15 +1,18 @@
 <?php 
 if (!defined('pvault_panel')){ die('Not Found');}
 
-function getIngSupplier($ingID,$conn){
+function getIngSupplier($ingID,$getStock,$conn){
 	
+if($getStock == 1){
+	$result = mysqli_fetch_array(mysqli_query($conn, "SELECT SUM(stock) AS stock FROM suppliers WHERE ingID = '$ingID'"));	
+}else{
 	$q = mysqli_query($conn, "SELECT ingSupplierID,supplierLink FROM suppliers WHERE ingID = '$ingID'");
-
 	while($r = mysqli_fetch_array($q)){
 		$sup = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingSuppliers WHERE id = '".$r['ingSupplierID']."'"));
 
 		$result[] = array_merge($r, $sup);
 	}
+}
 	return $result;
 }
 
@@ -37,4 +40,5 @@ function getSupplierByID($sID,$conn){
 		
 	return $result;
 }
+
 ?>

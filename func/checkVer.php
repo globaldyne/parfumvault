@@ -9,7 +9,7 @@ function checkVer($app_ver) {
 		$gitHubRep = 'https://github.com/globaldyne/parfumvault/archive/refs/tags/v'.$data.'.zip';
 
 		if($app_ver < $data){
-			if(file_exists('.DOCKER') == TRUE){
+			if(file_exists('/config/.DOCKER') == TRUE){
 				$r = '<div class="alert alert-info alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>New <a href="'.$gitHubRep.'" target="_blank">version ('.$data.')</a> is availale!</strong> Please refer <a href="'.$docUrl.'" target="_blank">here</a> for update instructions.</div>';
 			}else{
 				$r = '<div class="alert alert-info alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>New <a href="'.$gitHubRep.'" target="_blank">version ('.$data.')</a> is availale!</strong> <a href="?do=UpgradeCore">Update Now</a></div>';
