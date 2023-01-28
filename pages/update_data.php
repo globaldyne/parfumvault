@@ -617,7 +617,7 @@ if($_GET['formula'] &&  $_GET['updateStatus']){
 	return;
 }
 
-if($_GET['formula'] &&  $_GET['customer_id']){
+if($_GET['formula'] &&  $_GET['customer_set'] && is_numeric($_GET['customer_id'])){
 	$fid = mysqli_real_escape_string($conn, $_GET['formula']);
 	$customer_id = mysqli_real_escape_string($conn, $_GET['customer_id']);
 	
