@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 5.4
+
 ### Version 5.3
 - PVOnline connectivity improvements
 - Fix a bug preventing set formulas to internal use customer
