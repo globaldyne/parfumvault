@@ -1,7 +1,8 @@
 <?php
 
-require('../inc/sec.php');
+define('__ROOT__', dirname(dirname(__FILE__))); 
 
+require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
@@ -18,6 +19,29 @@ if($ing['physical_state'] == 1){
 	$mUnit = 'grams';
 }
 ?>
+<?php if($_GET['standAlone'] == 1){ ?>
+	<link href="/css/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    
+	<script src="/js/jquery/jquery.min.js"></script>
+	<script src="/js/bootstrap.min.js"></script>
+	<script src="/js/bootstrap-select.js"></script>
+	<script src="/js/bootstrap-editable.js"></script>
+	<script src="/js/datatables.min.js"></script>
+	<script src="/js/bootbox.min.js"></script>
+
+    <link href="/css/datatables.min.css" rel="stylesheet"/>
+	<link href="/css/sb-admin-2.css" rel="stylesheet">
+	<link href="/css/bootstrap-select.min.css" rel="stylesheet">
+	<link href="/css/bootstrap.min.css" rel="stylesheet">
+	<link href="/css/vault.css" rel="stylesheet">
+	<link href="/css/bootstrap-editable.css" rel="stylesheet">
+	<link href="/css/mgmIngredient.css" rel="stylesheet">
+    
+    <style>
+		body { margin: 10; }
+	</style>
+    
+<?php } ?>
 
 <h3>Suppliers</h3>
 <hr>
