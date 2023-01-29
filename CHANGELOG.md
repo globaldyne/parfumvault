@@ -1,5 +1,7 @@
 # CHANGELOG
 ### Version 5.4
+- Fix login redirect issue caused some vanilla installations to fail
+- Fix auto configuration when run in containerized enviroment
 
 ### Version 5.3
 - PVOnline connectivity improvements
