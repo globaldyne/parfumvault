@@ -38,13 +38,22 @@ To run the latest docker image (scripted):
 
 	sh -c "$(curl -fsSL https://raw.githubusercontent.com/globaldyne/parfumvault/master/helpers/run_pvault.sh)"
 
-or manually:
+Alternatively, you can run it manually on MacOS:
 	
 	docker run --name PV2 \
 		-p 8080:80 \
 		-v PVDIR/config:/config \
 		-v PVDIR/db:/var/lib/mysql \
 		-v PVDIR/uploads:/var/www/html/uploads \
+		globaldyne/jbvault
+
+or on Linux:
+	
+	docker run --name PV2 \
+		-p 8080:80 \
+		-v /root/PVDIR/config:/config \
+		-v /root/PVDIR/db:/var/lib/mysql \
+		-v /root/PVDIR/uploads:/var/www/html/uploads \
 		globaldyne/jbvault
 
 then point your browser to http://localhost:8080
