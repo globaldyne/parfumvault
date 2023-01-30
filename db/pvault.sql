@@ -386,7 +386,7 @@ CREATE TABLE `suppliers` (
  `batch` VARCHAR(255) NULL,
  `purchased` DATE NULL,
  `mUnit` VARCHAR(255) NULL, 
- `stock` INT(11) NOT NULL DEFAULT 0,
+ `stock` float NOT NULL DEFAULT 0,
  PRIMARY KEY (`id`),
  UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;

@@ -1,0 +1,1 @@
+ALTER TABLE `suppliers` CHANGE `stock` `stock` FLOAT NOT NULL DEFAULT '0'; 

@@ -24,7 +24,7 @@ foreach ($sup as $suppliers) {
 	$r['preferred'] = (int)$suppliers['preferred'];
 	$r['purchased'] = (string)$suppliers['purchased']?:'N/A';
 	$r['mUnit'] = (string)$suppliers['mUnit'];
-	$r['stock'] = (int)$suppliers['stock']?:0;
+	$r['stock'] = (float)$suppliers['stock']?:0;
 
 	$response['data'][] = $r;
 }
