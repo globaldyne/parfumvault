@@ -28,7 +28,7 @@ $(function() {
          <li><a href="#general" id="general_tab"><span>General</span></a></li>
          <li><a href="#categories" id="cat_tab"><span>Ingredient Categories</span></a></li>
          <li><a href="#frmCat" id="frmCat_tab">Formula Categories</a></li>
-         <li><a href="#types" id="types_tab">Perfume Types</a></li>
+         <li><a href="#perfumeTypes" id="perfume_types_tab">Perfume Types</a></li>
          <li><a href="#print" id="print_tab"><span>Printing</span></a></li>
          <li><a href="#brand" id="brand_tab"><span>My Brand</span></a></li>
          <li><a href="#maintenance" id="maintenance_tab"><span>Maintenance</span></a></li>
@@ -159,6 +159,7 @@ $(function() {
             </div>
         </div>
      </div> 
+     
      <div id="frmCat">
     	<div id="fcatMsg"></div>
         <div id="list_fcat">
@@ -168,57 +169,16 @@ $(function() {
             </div>
         </div>
      </div> 
-    <div id="types">
-     <table width="100%" border="0">
-        <tr>
-          <td colspan="4"><div id="ptypes"></div></td>
-          </tr>
-        <tr>
-          <td colspan="3"><h4 class="m-0 mb-4 text-primary">&nbsp;</h4></td>
-          <td width="77%" rowspan="9"><div class="bg-ptypes-image"></div></td>
-        </tr>
-        <tr>
-          <td width="6%">EDP:</td>
-          <td width="10%"><input name="edp" type="text" class="form-control" id="edp" value="<?php echo $settings['EDP'];?>"/></td>
-          <td width="7%">%</td>
-          </tr>
-        <tr>
-          <td>EDT:</td>
-          <td><input name="edt" type="text" class="form-control" id="edt" value="<?php echo $settings['EDT'];?>"/></td>
-          <td>%</td>
-          </tr>
-        <tr>
-          <td>EDC:</td>
-          <td><input name="edc" type="text" class="form-control" id="edc" value="<?php echo $settings['EDC'];?>"/></td>
-          <td>%</td>
-          </tr>
-        <tr>
-          <td>Parfum:</td>
-          <td><input name="parfum" type="text" class="form-control" id="parfum" value="<?php echo $settings['Parfum'];?>"/></td>
-          <td>%</td>
-          </tr>
-        <tr>
-          <td>&nbsp;</td>
-          <td colspan="2">&nbsp;</td>
-        </tr>
-        <tr>
-          <td><input type="submit" name="save-perf-types" id="save-perf-types" value="Submit" class="btn btn-info"/></td>
-          <td colspan="2">&nbsp;</td>
-        </tr>
-        <tr>
-          <td>&nbsp;</td>
-          <td colspan="2">&nbsp;</td>
-        </tr>
-        <tr>
-          <td>&nbsp;</td>
-          <td colspan="2">&nbsp;</td>
-          </tr>
-        <tr>
-          <td>&nbsp;</td>
-          <td colspan="3">&nbsp;</td>
-          </tr>
-      </table>
-	 </div>
+     
+    <div id="perfumeTypes">
+   		<div id="ptMsg"></div>
+        <div id="list_ptypes">
+            <div class="loader-center">
+                <div class="loader"></div>
+                <div class="loader-text"></div>
+            </div>
+        </div>
+	</div>
       
     <div id="print">
         <table width="100%" border="0">
@@ -463,6 +423,7 @@ $(document).ready(function() {
 list_cat();
 list_fcat();
 get_pvonline();
+list_ptypes();
 
 $('#save-general').click(function() {
 	$.ajax({ 
@@ -627,6 +588,16 @@ function list_fcat(){
 		dataType: 'html',
 		success: function (data) {
 			$('#list_fcat').html(data);
+		}
+	});
+};
+
+function list_ptypes(){
+	$.ajax({ 
+		url: 'pages/views/settings/perfume_types.php', 
+		dataType: 'html',
+		success: function (data) {
+			$('#list_ptypes').html(data);
 		}
 	});
 };

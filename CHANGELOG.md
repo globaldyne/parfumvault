@@ -3,6 +3,8 @@
 - Fix login redirect issue caused some vanilla installations to fail
 - Fix auto configuration when run in containerized enviroment
 - Fix a bug preventing floating quantities in ingredients stock
+- Fix a bug preventing formula revision compare to display properly
+- Add custom perfume types
 
 ### Version 5.3
 - PVOnline connectivity improvements

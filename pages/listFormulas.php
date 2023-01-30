@@ -2,7 +2,7 @@
 
 define('__ROOT__', dirname(dirname(__FILE__))); 
 
-require(__ROOT__.'/inc/sec.php');
+require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
@@ -19,6 +19,11 @@ $cust = mysqli_query($conn, "SELECT id,name FROM customers ORDER BY id ASC");
 while($customers = mysqli_fetch_array($cust)){
     $customer[] = $customers;
 }
+$fTypes_q = mysqli_query($conn, "SELECT id,name,description,concentration FROM perfumeTypes ORDER BY id ASC");
+while($fTypes_res = mysqli_fetch_array($fTypes_q)){
+    $fTypes[] = $fTypes_res;
+}
+
 ?> 
 <div class="card-header py-3">
   <h2 class="m-0 font-weight-bold text-primary"><a href="javascript:list_formulas()">Formulas</a></h2>
@@ -514,10 +519,9 @@ function reload_formulas_data() {
                 <td>
                 <select name="finalType" id="finalType" class="form-control ellipsis">  
                     <option value="100">Concentrated (100%)</option>
-                    <option value="<?=$settings['Parfum']?>" <?php if($settings['Parfum'] == $meta['finalType']){ echo 'selected';}?>>Parfum (<?=$settings['Parfum']?>%)</option>
-                    <option value="<?=$settings['EDP']?>" <?php if($settings['Parfum'] == $meta['finalType']){ echo 'selected';}?>>EDP (<?=$settings['EDP']?>%)</option>
-                    <option value="<?=$settings['EDT']?>" <?php if($settings['Parfum'] == $meta['finalType']){ echo 'selected';}?>>EDT (<?=$settings['EDT']?>%)</option>
-                    <option value="<?=$settings['EDC']?>" <?php if($settings['Parfum'] == $meta['finalType']){ echo 'selected';}?>>EDC (<?=$settings['EDC']?>%)</option>		
+					<?php foreach ($fTypes as $fType) {?>
+                        <option value="<?php echo $fType['concentration'];?>" <?php echo ($info['finalType']==$fType['concentration'])?"selected=\"selected\"":""; ?>><?php echo $fType['name'].' ('.$fType['concentration'];?>%)</option>
+                    <?php }	?>			
                 </select>
                 </td>
           </tr>     

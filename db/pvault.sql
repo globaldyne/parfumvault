@@ -300,10 +300,6 @@ CREATE TABLE `settings` (
   `top_n` varchar(10) COLLATE utf8_general_ci NOT NULL,
   `heart_n` varchar(10) COLLATE utf8_general_ci NOT NULL,
   `base_n` varchar(10) COLLATE utf8_general_ci NOT NULL,
-  `EDP` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `EDT` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `EDC` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `Parfum` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `chem_vs_brand` int(11) NOT NULL,
   `grp_formula` int(11) DEFAULT NULL,
   `brandName` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
@@ -627,3 +623,13 @@ CREATE TABLE `ingReplacements` (
   `notes` text DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+CREATE TABLE `perfumeTypes` (
+ 	`id` INT NOT NULL AUTO_INCREMENT, 
+	`name` VARCHAR(255) NOT NULL, 
+	`concentration` INT NOT NULL, 
+	`description` VARCHAR(255) NOT NULL, 
+	PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+INSERT INTO `perfumeTypes` (`id`, `name`, `concentration`, `description`) VALUES (NULL, 'EDP', '20', 'Eau de Parfum - Contains between 15 - 20% of formula concentration'), (NULL, 'EDT', '15', 'Eau de Toilette - Contains between 5 - 15% of formula concentration'), (NULL, 'EDC', '4', 'Eau de Cologne - Contains between 2 - 4% of formula concentration'), (NULL, 'Perfume', '30', 'Perfume - Contains between 20 - 30% of formula concentration');

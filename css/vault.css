@@ -645,6 +645,15 @@ formula td, table.table th {
 	max-width: 100%;
 	margin: 20px 0px 0px 0px;
 }
+
+.compare_rev {
+	display: inline-table;
+	border: none;
+	width: auto;
+	max-width: 100%;
+	margin: 20px 0px 0px 0px;
+}
+
 .compare_formula_name {
 	border: none !important;
 }
