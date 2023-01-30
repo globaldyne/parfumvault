@@ -383,6 +383,7 @@ CREATE TABLE `suppliers` (
  `purchased` DATE NULL,
  `mUnit` VARCHAR(255) NULL, 
  `stock` float NOT NULL DEFAULT 0,
+ `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
  PRIMARY KEY (`id`),
  UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
