@@ -6,6 +6,7 @@
 - Fix a bug preventing formula revision compare to display properly
 - Add custom perfume types
 - Added last update date in ingredients suppliers
+- Added inventory worth
 
 
 ### Version 5.3
