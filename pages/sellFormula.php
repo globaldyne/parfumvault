@@ -91,7 +91,7 @@ if($_POST['formula']){
 					return;
 				}
 				if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM customers")) == 0){
-					echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> You need to <a href="?do=settings#customers">create</a> at least one customer first.</div>';
+					echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> You need to <a href="?do=customers">create</a> at least one customer first.</div>';
 					return;
 				}				
 			?>

@@ -3,6 +3,18 @@
 $(function() {
   $("#statistics").tabs();
 });
+function fetch_invWorth(){
+$.ajax({ 
+    url: '/pages/views/stats/inventoryWorth.php', 
+	type: 'GET',
+	dataType: 'html',
+		success: function (data) {
+			$('#invCosts').html(data);
+		}
+	});
+}
+
+fetch_invWorth();
 </script>
 
 <div id="content-wrapper" class="d-flex flex-column">
@@ -96,6 +108,7 @@ while($types =  mysqli_fetch_array($ifratypes)){
      <ul>
          <li><a href="#ingUsage"><span>Ingredients Usage</span></a></li>
          <li><a href="#IFRA"><span>IFRA</span></a></li>
+         <li><a href="#invCosts">Inventory worth</a></li>
      </ul>
      <div id="ingUsage">
 	 <?php 
@@ -109,14 +122,13 @@ while($types =  mysqli_fetch_array($ifratypes)){
      <div id="IFRA">
     <?php 
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM IFRALibrary"))== 0){
-		echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> You need to <a href="pages/maintenance.php?do=IFRA" class="popup-link">import</a> the IFRA xls first.</div>';
+		echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> You need to <a href="index.php?do=IFRA">import</a> the IFRA xls first.</div>';
 	}else{
 	?>
      <div id="chartIFRA"></div></div>
      <?php } ?>
+      <div id="invCosts"></div>
     </div>
-
-
 
 </div>
 </div>
