@@ -7,7 +7,7 @@
 - Add custom perfume types
 - Added last update date in ingredients suppliers
 - Added inventory worth
-
+- Cart page rewrite
 
 ### Version 5.3
 - PVOnline connectivity improvements

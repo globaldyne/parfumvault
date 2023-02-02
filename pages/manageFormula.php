@@ -450,12 +450,12 @@ if($_GET['action'] == 'addToCart' && $_GET['material'] && $_GET['quantity']){
 	}
 }
 
-if($_GET['action'] == 'removeFromCart' && $_GET['materialId']){
-	$materialId = mysqli_real_escape_string($conn, $_GET['materialId']);
+if($_POST['action'] == 'removeFromCart' && $_POST['materialId']){
+	$materialId = mysqli_real_escape_string($conn, $_POST['materialId']);
 
 	if(mysqli_query($conn, "DELETE FROM cart WHERE id = '$materialId'")){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Removed from cart!</div>';
-		return;
+		$response['success'] = 'Removed from cart!';
+		echo json_encode($response);
 	}
 }
 
