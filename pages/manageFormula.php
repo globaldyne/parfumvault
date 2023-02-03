@@ -409,13 +409,13 @@ if($_GET['action'] == 'todo' && $_GET['fid'] && $_GET['add']){
 }
 
 //TODO REMOVE FORMULA
-if($_GET['action'] == 'todo' && $_GET['fid'] && $_GET['remove']){
-	$fid = mysqli_real_escape_string($conn, $_GET['fid']);
+if($_POST['action'] == 'todo' && $_POST['fid'] && $_POST['remove']){
+	$fid = mysqli_real_escape_string($conn, $_POST['fid']);
+	$name = mysqli_real_escape_string($conn, $_POST['name']);
 
-	$todo = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM makeFormula WHERE fid = '$fid'"));
-	
 	if(mysqli_query($conn, "DELETE FROM makeFormula WHERE fid = '$fid'")){
-		$msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Formula <strong>'.$todo['name'].'</strong> removed!</div>';
+		$response['success'] = $name.' removed';
+		echo json_encode($response);
 	}
 	return;
 }
@@ -450,12 +450,12 @@ if($_GET['action'] == 'addToCart' && $_GET['material'] && $_GET['quantity']){
 	}
 }
 
-if($_GET['action'] == 'removeFromCart' && $_GET['materialId']){
-	$materialId = mysqli_real_escape_string($conn, $_GET['materialId']);
+if($_POST['action'] == 'removeFromCart' && $_POST['materialId']){
+	$materialId = mysqli_real_escape_string($conn, $_POST['materialId']);
 
 	if(mysqli_query($conn, "DELETE FROM cart WHERE id = '$materialId'")){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Removed from cart!</div>';
-		return;
+		$response['success'] = 'Removed from cart!';
+		echo json_encode($response);
 	}
 }
 

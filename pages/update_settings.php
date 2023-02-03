@@ -206,20 +206,6 @@ if($_POST['manage'] == 'api'){
 	return;
 }
 
-//PERFUME TYPES
-if($_POST['manage'] == 'perfume_types'){
-	$edp = utf8_encode(htmlentities($_POST['edp']));
-	$edc = mysqli_real_escape_string($conn, $_POST['edc']);
-	$edt = mysqli_real_escape_string($conn, $_POST['edt']);
-	$parfum = mysqli_real_escape_string($conn, $_POST['parfum']);
-	
-	if(mysqli_query($conn, "UPDATE settings SET EDP = '$edp', EDT = '$edt', EDC = '$edc', Parfum = '$parfum'")){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Settings updated!</div>';	
-	}else{
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>An error occured.</div>';	
-	}
-	return;
-}
 	
 if($_POST['manage'] == 'print'){
 	$label_printer_addr = mysqli_real_escape_string($conn, $_POST['label_printer_addr']);

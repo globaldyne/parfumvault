@@ -361,6 +361,10 @@ $.ajax({
 				while($r = mysqli_fetch_array($sup_q)){
 					$suppliers[] = $r;
 				}
+				$fTypes_q = mysqli_query($conn, "SELECT id,name,description,concentration FROM perfumeTypes ORDER BY id ASC");
+					while($fTypes_res = mysqli_fetch_array($fTypes_q)){
+   					$fTypes[] = $fTypes_res;
+				}
 			?>
            <form action="?do=genFinishedProduct&generate=1" method="post" enctype="multipart/form-data" target="_blank">
            
@@ -383,15 +387,11 @@ $.ajax({
     <td>Concentration:</td>
     <td>
         <select name="type" id="type" class="form-control selectpicker" data-live-search="true">
-     <?php
-	 		echo '<option value="'.$settings['Parfum'].'">Parfum ('.$settings['Parfum'].'%)</option>';
-			echo '<option value="'.$settings['EDP'].'">EDP ('.$settings['EDP'].'%)</option>';
-			echo '<option value="'.$settings['EDT'].'">EDT ('.$settings['EDT'].'%)</option>';
-			echo '<option value="'.$settings['EDC'].'">EDC ('.$settings['EDC'].'%)</option>';
-			echo '<option value="100">Concentrated (100%)</option>';
-
-	  ?>
-     </select>
+     		<option value="100">Concentrated (100%)</option>
+			<?php foreach ($fTypes as $fType) {?>
+              <option value="<?php echo $fType['concentration'];?>" <?php echo ($info['finalType']==$fType['concentration'])?"selected=\"selected\"":""; ?>><?php echo $fType['name'].' ('.$fType['concentration'];?>%)</option>
+            <?php }	?>	
+     	</select>
     </td>
     <td>&nbsp;</td>
   </tr>

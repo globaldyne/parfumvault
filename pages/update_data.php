@@ -1,7 +1,7 @@
 <?php
 define('__ROOT__', dirname(dirname(__FILE__))); 
 
-require(__ROOT__.'/inc/sec.php');
+require_once(__ROOT__.'/inc/sec.php');
 
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
@@ -10,6 +10,77 @@ require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/sanChar.php');
 require_once(__ROOT__.'/func/priceScrape.php');
 require_once(__ROOT__.'/func/create_thumb.php');
+
+//UPDATE PERFUME TYPES
+if($_GET['perfType'] == 'update'){
+	$value = trim(mysqli_real_escape_string($conn, $_POST['value']));
+	$id = mysqli_real_escape_string($conn, $_POST['pk']);
+	$name = mysqli_real_escape_string($conn, $_POST['name']);
+
+	if(mysqli_query($conn, "UPDATE perfumeTypes SET $name = '$value' WHERE id = '$id'")){
+		$response["success"] = 'Perfume type updated';
+	}else{
+		$response["error"] = 'Error: '.mysqli_error($conn);
+	}
+	
+	echo json_encode($response);
+	return;
+}
+
+//DELETE PERFUME TYPE
+if($_POST['perfType'] == 'delete' && $_POST['pID']){
+	$id = $_POST['pID'];
+	$name = $_POST['pName'];
+
+	if(mysqli_query($conn, "DELETE FROM perfumeTypes WHERE id = '$id'")){
+		$response["success"] = 'Pefume type '.$name.' deleted';
+	}else{
+		$response["error"] = 'Something went wrong '.mysqli_error($conn);
+	}
+	
+	echo json_encode($response);
+	return;	
+}
+
+//ADD PERFUME TYPE
+if($_POST['perfType'] == 'add'){
+	
+	if(empty($_POST['perfType_name'])){
+		$response["error"] = 'Name is required';
+		echo json_encode($response);
+		return;
+	}
+	
+	if(empty($_POST['perfType_conc'])){
+		$response["error"] = 'Concentration is required';
+		echo json_encode($response);
+		return;
+	}
+
+	if(!is_numeric($_POST['perfType_conc'])){
+		$response["error"] = 'Concentration must be integer.';
+		echo json_encode($response);
+		return;
+	}
+	
+	$name = $_POST['perfType_name'];
+	$conc = $_POST['perfType_conc'];
+	$desc = $_POST['perfType_desc'];
+
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM perfumeTypes WHERE name = '$name'"))){
+		$response["error"] = $name.' already exists!';
+		echo json_encode($response);
+		return;
+	}
+	
+	if(mysqli_query($conn, "INSERT INTO perfumeTypes (name,concentration,description) VALUES ('$name','$conc','$desc')")){
+		$response["success"] = $name.' created!';
+	}else{
+		$response["error"] = 'Error: '.mysqli_error($conn);
+	}
+	echo json_encode($response);
+	return;
+}
 
 //UPDATE LID PIC
 if($_GET['update_lid_pic']){
