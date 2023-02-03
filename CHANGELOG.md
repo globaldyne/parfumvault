@@ -8,6 +8,7 @@
 - Added last update date in ingredients suppliers
 - Added inventory worth
 - Cart page rewrite
+- Pending formulas page rewrite
 
 ### Version 5.3
 - PVOnline connectivity improvements

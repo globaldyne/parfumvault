@@ -12,7 +12,7 @@
         <table class="table table-bordered" id="tdDataCart" width="100%" cellspacing="0">
           <thead>
             <tr>
-              <th>Material</th>
+              <th>Ingredient</th>
               <th>Purity (%)</th>
               <th>Quantity (ml)</th>
               <th>Actions</th>
@@ -57,7 +57,7 @@ $(document).ready(function() {
 			},
 		},
 	   columns: [
-            { data : 'name', title: 'Material', render: name },
+            { data : 'name', title: 'Ingredient', render: name },
 			{ data : 'purity', title: 'Purity (%)' },
 			{ data : 'quantity', title: 'Quantity (ml)' },
 			{ data : null, title: 'Actions', render: actions },
@@ -101,7 +101,7 @@ $('#tdDataCart').on('click', '[id*=cart_remove]', function () {
 	ing.Name = $(this).attr('data-name');
     
 	bootbox.dialog({
-       title: "Confirm material removal",
+       title: "Confirm removal",
        message : 'Remove <strong>'+ ing.Name +'</strong> from shopping cart?',
        buttons :{
            main: {
