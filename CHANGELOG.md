@@ -1,16 +1,5 @@
 # CHANGELOG
 ### Version 5.4
-- Fix login redirect issue caused some vanilla installations to fail
-- Fix auto configuration when run in containerized enviroment
-- Fix a bug preventing floating quantities in ingredients stock
-- Fix a bug preventing formula revision compare to display properly
-- Add custom perfume types
-- Added last update date in ingredients suppliers
-- Added inventory worth
-- Cart page rewrite
-- Pending formulas page rewrite
-- Update ingredients list order enabled columns
-- Show ingredient stock/out of stock in search field when adding in formula
 
 ### Version 5.3
 - PVOnline connectivity improvements
