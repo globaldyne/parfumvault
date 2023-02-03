@@ -1,5 +1,7 @@
 <?php
-require('../inc/sec.php');
+define('__ROOT__', dirname(dirname(__FILE__))); 
+
+require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 $id = mysqli_real_escape_string($conn, $_GET['id']);
@@ -22,9 +24,10 @@ foreach ($sup as $suppliers) {
 	$r['manufacturer'] = (string)$suppliers['manufacturer']?:'N/A';
 	$r['batch'] = (string)$suppliers['batch']?:'N/A';
 	$r['preferred'] = (int)$suppliers['preferred'];
-	$r['purchased'] = (string)$suppliers['purchased']?:'N/A';
+	$r['purchased'] = (string)date_format(date_create($suppliers['purchased']),"d/m/Y")?:'N/A';
 	$r['mUnit'] = (string)$suppliers['mUnit'];
-	$r['stock'] = (int)$suppliers['stock']?:0;
+	$r['stock'] = (float)$suppliers['stock']?:0;
+	$r['updated'] = (string)date_format(date_create($suppliers['updated_at']),"d/m/Y H:i:s");
 
 	$response['data'][] = $r;
 }

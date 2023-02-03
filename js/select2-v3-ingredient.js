@@ -20,16 +20,16 @@ $(document).ready(function(){
 
 	$("#ingredient").select2({
 		minimumInputLength: 2,
-    		dropdownAutoWidth: true,
+    	dropdownAutoWidth: true,
 		theme: 'bootstrap',
-        	allowClear: true,
+        allowClear: true,
 		placeholder: 'Choose ingredient (name, cas)',
 		formatResult: formatIngredients,
 		formatSelection: formatIngredientsSelection,
 		ajax: {
 			url: '/core/list_ingredients_simple.php',
 			dataType: 'json',
-			type: 'GET',
+			type: 'POST',
 			quietMillis: 250,
 			delay: 300,
 			data: function (data) {
@@ -46,7 +46,9 @@ $(document).ready(function(){
 							IUPAC: obj.IUPAC,
 							cas: obj.cas,
 							type: obj.type,
-							description: obj.description
+							description: obj.description,
+							physical_state: obj.physical_state,
+							stock: obj.stock
 						}
 					})
 				};
@@ -62,7 +64,7 @@ $(document).ready(function(){
 	}).on('select2-selected', function (data) {
   		var id = data.choice.id;
    		var type = data.choice.type
-	
+		
 	  	$(this).attr('ing-id', id);
 	   	$(this).attr('ing-type', type);
 	});
@@ -77,11 +79,19 @@ $(document).ready(function(){
 		if (!ingredientData.name){
 			return 'No ingredient found...';
 		}
-	
+		
+		var measureIn;
+		if (ingredientData.physical_state == '1'){
+			measureIn = 'mL';
+		}else if (ingredientData.physical_state == '2'){
+			measureIn = 'grams';
+		}
+		
 		var $container = $(
 			"<div class='select_result_igredient clearfix'>" +
 			  "<div class='select_result_igredient_meta'>" +
 				"<div class='select_igredient_title'></div>" +
+				"<span id='stock' ></span></div>"+
 				"<div class='select_result_igredient_description'></div>" +
 				"<div class='select_result_igredient_info'>" +
 				  "<div class='select_result_igredient_cas'></div>" +
@@ -92,6 +102,13 @@ $(document).ready(function(){
 		  );
 		
 		  $container.find(".select_igredient_title").text(ingredientData.name);
+		  if(ingredientData.stock){
+		  	$container.find("#stock").text('In stock ('+ingredientData.stock + measureIn +')');
+			$container.find("#stock").attr("class", "stock badge badge-instock");
+		  }else{
+			$container.find("#stock").text('Not in stock ('+ingredientData.stock + measureIn +')');
+			$container.find("#stock").attr("class", "stock badge badge-nostock");
+		  }
 		  $container.find(".select_result_igredient_description").text(ingredientData.description);
 		  $container.find(".select_result_igredient_cas").append("CAS: " + ingredientData.cas);
 		  $container.find(".select_result_igredient_iupac").append("IUPAC: " + ingredientData.IUPAC);

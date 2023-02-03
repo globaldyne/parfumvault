@@ -87,7 +87,7 @@ $(document).ready(function() {
 	var tdDataIng = $('#tdDataIng').DataTable( {
 	columnDefs: [
 		{ className: 'pv_vertical_middle text-center', targets: '_all' },
-		{ orderable: false, targets: [1,3,5,6,8]}
+		{ orderable: false, targets: [1,5,6,7,8,9]}
 	],
 	search: {
     	search: "<?=$_GET['search']?>"

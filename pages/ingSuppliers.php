@@ -68,6 +68,7 @@ if($ing['physical_state'] == 1){
           <th>Batch</th>
           <th>Purchased</th>
           <th>In Stock</th>
+          <th>Last updated</th>
           <th>Actions</th>
       </tr>
    </thead>
@@ -103,6 +104,8 @@ $(document).ready(function() {
 			  { data : 'batch', title: 'Batch', render: sBatch},
 			  { data : 'purchased', title: 'Purchased', render: sPurchased},
 			  { data : 'stock', title: 'In Stock', render: sStock},
+			  { data : 'updated', title: 'Last update', render: sUpdated},
+
 			  { data : null, title: 'Actions', render: sActions},		   
 			 ],
 	order: [[ 1, 'asc' ]],
@@ -141,6 +144,10 @@ function sPurchased(data, type, row){
 
 function sStock(data, type, row){
 	return '<a href="#" class="stock pv_point_gen" data-name="stock" data-type="text" data-pk="'+row.id+'">'+row.stock+'</a>';    
+}
+
+function sUpdated(data, type, row){
+	return row.updated;    
 }
 
 function sActions(data, type, row){

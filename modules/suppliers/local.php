@@ -126,7 +126,7 @@ foreach ($ingredients as $ingredient) {
 	}else{
 		unset($r['document']);// = null;
 	}
-	$r['stock'] = (int)getIngSupplier($ingredient['id'],1,$conn)['stock'] ?: 0;
+	$r['stock'] = number_format((float)getIngSupplier($ingredient['id'],1,$conn)['stock'], $settings['qStep']) ?: 0;
 	
 	$rx[]=$r;
 }

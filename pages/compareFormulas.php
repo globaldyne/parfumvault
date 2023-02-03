@@ -49,7 +49,7 @@ if($_GET['formula_a'] && $_GET['formula_b']){
               <?php if(empty($r[$meta_a['name']])){ ?>
               <div class="alert alert-info alert-dismissible">No differences between formulas found</div>
               <?php }else{ ?>
-                <table class="table table-bordered compare" id="formula_a" width="100%" cellspacing="0">
+                <table class="table table-bordered compare_rev" id="formula_a" width="100%" cellspacing="0">
                   <thead>
                     <tr>
                       <th colspan="3" class="compare_formula_name"><?=$meta_a['name']?></th>
@@ -67,7 +67,7 @@ if($_GET['formula_a'] && $_GET['formula_b']){
                       <td align="center"><?=number_format($formula['quantity'],$settings['qStep'])?></td>                    </tr>
                     <?php }?>                   
                 </table> 
-                  <table class="table table-bordered compare" id="formula_b" width="100%" cellspacing="0">
+                  <table class="table table-bordered compare_rev" id="formula_b" width="100%" cellspacing="0">
                   <thead>
                  	<tr>
                       <th colspan="3" class="compare_formula_name"><?=$meta_b['name']?></th>
