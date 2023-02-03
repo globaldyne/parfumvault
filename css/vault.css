@@ -975,3 +975,18 @@ body {
 .pvLogo img{
   max-width: 200px;
 }
+
+.stock.badge {
+  display: inline;
+  float: right !important;
+}
+
+.badge-instock {
+  color: #fff !important;
+  background-color: #1cc88a !important;
+}
+
+.badge-nostock {
+  color: #fff !important;
+  background-color: #e74a3b !important;
+}

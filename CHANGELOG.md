@@ -10,6 +10,7 @@
 - Cart page rewrite
 - Pending formulas page rewrite
 - Update ingredients list order enabled columns
+- Show ingredient stock/out of stock in search field when adding in formula
 
 ### Version 5.3
 - PVOnline connectivity improvements
