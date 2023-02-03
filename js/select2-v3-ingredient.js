@@ -106,7 +106,7 @@ $(document).ready(function(){
 		  	$container.find("#stock").text('In stock ('+ingredientData.stock + measureIn +')');
 			$container.find("#stock").attr("class", "stock badge badge-instock");
 		  }else{
-			$container.find("#stock").text('In stock ('+ingredientData.stock + measureIn +')');
+			$container.find("#stock").text('Not in stock ('+ingredientData.stock + measureIn +')');
 			$container.find("#stock").attr("class", "stock badge badge-nostock");
 		  }
 		  $container.find(".select_result_igredient_description").text(ingredientData.description);
