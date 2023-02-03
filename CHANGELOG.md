@@ -9,6 +9,7 @@
 - Added inventory worth
 - Cart page rewrite
 - Pending formulas page rewrite
+- Update ingredients list order enabled columns
 
 ### Version 5.3
 - PVOnline connectivity improvements
