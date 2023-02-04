@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 5.6
+
 ### Version 5.5
 - Fix db schema
 - Fix search functionality in ingredients
