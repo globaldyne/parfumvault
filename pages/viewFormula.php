@@ -829,7 +829,7 @@ $('#formula').editable({
 		ajax: {
 			url: '/core/list_ingredients_simple.php',
 			dataType: 'json',
-			type: 'GET',
+			type: 'POST',
 			delay: 100,
 			quietMillis: 250,
 			data: function (data) {

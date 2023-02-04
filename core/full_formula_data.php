@@ -155,7 +155,7 @@ foreach ($form as $formula){
 	$r['ingredient']['pref_supplier'] = (string)getPrefSupplier($ing_q['id'],$conn)['name'] ?: 'N/A';
 	$r['ingredient']['pref_supplier_link'] = (string)getPrefSupplier($ing_q['id'],$conn)['supplierLink'] ?: 'N/A';
 	
-	$r['ingredient']['inventory']['stock'] = (int)$inventory['stock'] ?: 0;
+	$r['ingredient']['inventory']['stock'] = (float)$inventory['stock'] ?: 0;
 	$r['ingredient']['inventory']['mUnit'] = (string)$inventory['mUnit'] ?: $settings['mUnit'];
 	$r['ingredient']['inventory']['batch'] = (string)$inventory['batch'] ?: 'N/A';
 	$r['ingredient']['inventory']['purchased'] = (string)$inventory['purchased'] ?: 'N/A';

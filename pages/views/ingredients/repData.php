@@ -2,7 +2,7 @@
 
 define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__))))); 
 
-require(__ROOT__.'/inc/sec.php');
+require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 
@@ -89,7 +89,7 @@ function repName(data, type, row){
 			ajax: {
 				url: '/core/list_ingredients_simple.php',
 				dataType: 'json',
-				type: 'GET',
+				type: 'POST',
 				delay: 100,
 				quietMillis: 250,
 				data: function (data) {
@@ -206,7 +206,7 @@ $("#repName").select2({
 	ajax: {
 		url: '/core/list_ingredients_simple.php',
 		dataType: 'json',
-		type: 'GET',
+		type: 'POST',
 		delay: 100,
 		quietMillis: 250,
 		data: function (data) {
