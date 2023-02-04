@@ -1,4 +1,8 @@
 # CHANGELOG
+### Version 5.5
+- Fix db schema
+- Fix search functionality in ingredients
+
 ### Version 5.4
 - Fix login redirect issue caused some vanilla installations to fail
 - Fix auto configuration when run in containerized enviroment
