@@ -3,7 +3,7 @@ $starttime = microtime(true);
 
 define('__ROOT__', dirname(dirname(__FILE__))); 
 
-require(__ROOT__.'/inc/sec.php');
+require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
@@ -65,7 +65,14 @@ while ($formula = mysqli_fetch_array($formula_q)){
 foreach ($form as $formula){
 	
 	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT id, name, cas, $defCatClass, profile, odor, category, physical_state,usage_type AS classification, type, byPassIFRA FROM ingredients WHERE name = '".$formula['ingredient']."'"));
-	 
+	$reps = mysqli_query($conn,"SELECT ing_rep_name FROM ingReplacements WHERE ing_name = '".$formula['ingredient']."'");
+	if (mysqli_num_rows($reps)==0) { 
+		$reps = mysqli_query($conn,"SELECT ing_name FROM ingReplacements WHERE ing_rep_name = '".$formula['ingredient']."'");
+	}
+	while($replacements = mysqli_fetch_array($reps)){
+		$replacement[] = $replacements;
+	}
+	
 	$inventory = mysqli_fetch_array(mysqli_query($conn, "SELECT stock,mUnit,batch,purchased FROM suppliers WHERE ingID = '".$ing_q['id']."' AND preferred = '1'"));
 	
 	$conc = $formula['concentration'] / 100 * $formula['quantity']/$mg['total_mg'] * 100;
@@ -159,6 +166,13 @@ foreach ($form as $formula){
 	$r['ingredient']['inventory']['mUnit'] = (string)$inventory['mUnit'] ?: $settings['mUnit'];
 	$r['ingredient']['inventory']['batch'] = (string)$inventory['batch'] ?: 'N/A';
 	$r['ingredient']['inventory']['purchased'] = (string)$inventory['purchased'] ?: 'N/A';
+	
+	$totalReplacements = 0;
+	foreach ($replacement as $rp){
+		$totalReplacements++;
+		$r['ingredient'][]['replacement']['name'] = (string)$rp['ing_rep_name'] ?: (string)$rp['ing_name'] ?: 'N/A';
+	}
+	$r['ingredient']['replacement']['total'] = $totalReplacements ?: 0;
 	
 	$r['chk_ingredient'] = (string)checkIng($formula['ingredient'],$defCatClass,$conn) ?: null;
 	$r['exclude_from_calculation'] = (int)$formula['exclude_from_calculation'] ?: 0;
