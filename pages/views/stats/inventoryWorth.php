@@ -40,7 +40,7 @@ $(document).ready(function() {
 });
 
 function type(data, type, row){
-	return "Ingrdients";    
+	return "Ingredients";    
 }
 
 
