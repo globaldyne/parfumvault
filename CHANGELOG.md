@@ -1,7 +1,8 @@
 # CHANGELOG
 ### Version 5.6
 - Fix the database restore backup process via UI
-
+- Fix a bug preventing formula pdf export in Chrome
+ 
 ### Version 5.5
 - Fix db schema
 - Fix search functionality in ingredients
