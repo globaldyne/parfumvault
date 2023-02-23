@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 5.6
+- Fix the database restore backup process via UI
 
 ### Version 5.5
 - Fix db schema
