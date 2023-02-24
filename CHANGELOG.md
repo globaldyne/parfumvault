@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 5.7
+
 ### Version 5.6
 - HTML Templates added
 - Fix the database restore backup process via UI
