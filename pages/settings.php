@@ -74,7 +74,7 @@ $(function() {
         <tr>
           <td height="32"><a href="#" rel="tip" title="Auto check for new PV version. If enabled, your ip, current PV version and browser info will be send to our servers and or GitHub servers. Please make sure you have read our and GitHub's T&C and Privacy Policy before enable this.">Check for updates:</a></td>
           <td colspan="3"><input name="chkVersion" type="checkbox" id="chkVersion" value="1" <?php if($settings['chkVersion'] == '1'){ ?> checked="checked" <?php } ?>/>
-            <?php require('privacy_note.php');?></td>
+           </td>
           </tr>
         <tr>
           <td height="32"><a href="#" rel="tip" title="Defines the decimal in formula quantity.">Quantity Decimal:</a></td>
