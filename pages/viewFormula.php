@@ -1,7 +1,7 @@
 <?php 
 define('__ROOT__', dirname(dirname(__FILE__))); 
 
-require(__ROOT__.'/inc/sec.php');
+require_once(__ROOT__.'/inc/sec.php');
 
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
@@ -27,6 +27,7 @@ $fid = $meta['fid'];
 
 <script>
 var myFID = "<?=$meta['fid']?>";
+var myFNAME = "<?=$meta['name']?>";
 var isProtected;
 <?php if($meta['isProtected'] == FALSE){?>
 	var isProtected = false;
@@ -1161,7 +1162,7 @@ $('#invToPV').click(function() {
 function export_as(type) {
   $("#formula").tableHTMLExport({
 	type: type,
-	filename:'<?php echo $f_name; ?>.csv',
+	filename: myFNAME + "." + type,
 	separator: ',',
   	newline: '\r\n',
   	trimContent: true,
@@ -1170,7 +1171,7 @@ function export_as(type) {
   	ignoreRows: '.noexport',
 	htmlContent: false,
 	orientation: 'l',
-	maintitle: '<?php echo $f_name; ?>',
+	maintitle: myFNAME,
   });
 };
 </script>

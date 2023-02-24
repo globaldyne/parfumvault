@@ -137,10 +137,10 @@ $.ajax({
                   <thead>
                     <tr class="noexport">
                       <th colspan="8">
-                     <div class="text-left">
+                     <div class="text-right">
                       <div class="btn-group">
                       <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
-                      <div class="dropdown-menu">
+                      <div class="dropdown-menu dropdown-menu-right">
                         <a class="dropdown-item" id="pdf" href="#">Export to PDF</a>
                         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#IFRA">IFRA Certificate</a>
                         <a class="dropdown-item" href="javascript:printLabel()" onclick="return confirm('Print label?')">Print Label</a>
@@ -313,17 +313,27 @@ $.ajax({
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="IFRA">Generate IFRA Certification</h5>
+        <h5 class="modal-title">Generate IFRA Certification</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        Select customer:
-          <form action="pages/genIFRAcert.php?fid=<?php echo $meta['fid'];?>&conc=<?php echo $type; ?>&bottle=<?php echo $bottle;?>&defCatClass=<?=$defCatClass?>" method="post" name="form1" target="_blank" id="form1">
+          Select customer:
+          <form action="/pages/genIFRAcert.php?fid=<?php echo $meta['fid'];?>&conc=<?php echo $type; ?>&bottle=<?php echo $bottle;?>&defCatClass=<?=$defCatClass?>" method="POST" target="_blank">
             <select class="form-control" name="customer" id="customer">
             <?php
 				$res = mysqli_query($conn, "SELECT id, name FROM customers ORDER BY name ASC");
+				while ($q = mysqli_fetch_array($res)){
+				echo '<option value="'.$q['id'].'">'.$q['name'].'</option>';
+			}
+			?>
+            </select>
+        	<br/>
+            Select IFRA Certification template:
+            <select class="form-control" name="template" id="template">
+            <?php
+				$res = mysqli_query($conn, "SELECT id, name FROM templates ORDER BY name ASC");
 				while ($q = mysqli_fetch_array($res)){
 				echo '<option value="'.$q['id'].'">'.$q['name'].'</option>';
 			}

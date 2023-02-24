@@ -1,6 +1,7 @@
 <?php 
+define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__))))); 
 
-require_once('../inc/sec.php');
+require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 
@@ -9,7 +10,7 @@ require_once(__ROOT__.'/inc/settings.php');
 ?>
 <table width="100%" border="0">
   <tr>
-    <td><strong>JBs Perfumer's Vault</strong></td>
+    <td><strong>Perfumer's Vault Pro</strong></td>
     <td>&nbsp;</td>
   </tr>
   <tr>

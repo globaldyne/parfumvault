@@ -9,8 +9,8 @@ $cats_q = mysqli_query($conn, "SELECT id,name,description,type FROM IFRACategori
 while($cats_res = mysqli_fetch_array($cats_q)){
     $cats[] = $cats_res;
 }
-require(__ROOT__.'/inc/settings.php');
-require(__ROOT__.'/func/php-settings.php');
+require_once(__ROOT__.'/inc/settings.php');
+require_once(__ROOT__.'/func/php-settings.php');
 
 ?>
 <script>
@@ -25,18 +25,21 @@ $(function() {
 <h2 class="m-0 mb-4 text-primary"><a href="?do=settings">Settings</a></h2>
 <div id="settings">
      <ul>
-         <li><a href="#general" id="general_tab"><span>General</span></a></li>
-         <li><a href="#categories" id="cat_tab"><span>Ingredient Categories</span></a></li>
-         <li><a href="#frmCat" id="frmCat_tab">Formula Categories</a></li>
-         <li><a href="#perfumeTypes" id="perfume_types_tab">Perfume Types</a></li>
-         <li><a href="#print" id="print_tab"><span>Printing</span></a></li>
-         <li><a href="#brand" id="brand_tab"><span>My Brand</span></a></li>
-         <li><a href="#maintenance" id="maintenance_tab"><span>Maintenance</span></a></li>
-         <li><a href="#pvonline" id="pvOnline_tab"><span>PV Online</span></a></li>
-         <li><a href="#api" id="api_tab">API</a></li>
-        <li><a href="pages/about.php" id="about_tab"><span>About</span></a></li>
+         <li class="active"><a href="#general" id="general_tab" role="tab" data-toggle="tab">General</a></li>
+         <li><a href="#categories" id="cat_tab" role="tab" data-toggle="tab">Ingredient Categories</a></li>
+         <li><a href="#frmCat" id="frmCat_tab" role="tab" data-toggle="tab">Formula Categories</a></li>
+         <li><a href="#perfumeTypes" id="perfume_types_tab" role="tab" data-toggle="tab">Perfume Types</a></li>
+         <li><a href="#templates" id="templates_tab" role="tab" data-toggle="tab">HTML Templates</a></li>
+         <li><a href="#print" id="print_tab" role="tab" data-toggle="tab">Printing</span></a></li>
+         <li><a href="#brand" id="brand_tab" role="tab" data-toggle="tab">My Brand</span></a></li>
+         <li><a href="#maintenance" id="maintenance_tab">Maintenance</a></li>
+         <li><a href="#pvonline" id="pvOnline_tab" role="tab" data-toggle="tab">PV Online</a></li>
+         <li><a href="#api" id="api_tab" role="tab" data-toggle="tab">API</a></li>
+         <li><a href="#about" id="about_tab" role="tab" data-toggle="tab">About</a></li>
      </ul>
-     <div id="general">
+     
+     <div class="tab-content">
+     <div class="tab-pane fade active in tab-content" id="general">
      <table width="100%" border="0">
         <tr>
           <td colspan="4"><div id="inMsg"></div></td>
@@ -71,7 +74,7 @@ $(function() {
         <tr>
           <td height="32"><a href="#" rel="tip" title="Auto check for new PV version. If enabled, your ip, current PV version and browser info will be send to our servers and or GitHub servers. Please make sure you have read our and GitHub's T&C and Privacy Policy before enable this.">Check for updates:</a></td>
           <td colspan="3"><input name="chkVersion" type="checkbox" id="chkVersion" value="1" <?php if($settings['chkVersion'] == '1'){ ?> checked="checked" <?php } ?>/>
-            <?php require('privacy_note.php');?></td>
+           </td>
           </tr>
         <tr>
           <td height="32"><a href="#" rel="tip" title="Defines the decimal in formula quantity.">Quantity Decimal:</a></td>
@@ -180,6 +183,16 @@ $(function() {
         </div>
 	</div>
       
+    <div id="templates">
+   		<div id="tmplMsg"></div>
+        <div id="list_templates">
+            <div class="loader-center">
+                <div class="loader"></div>
+                <div class="loader-text"></div>
+            </div>
+        </div>
+	</div>
+    
     <div id="print">
         <table width="100%" border="0">
           <tr>
@@ -342,36 +355,24 @@ $(function() {
         </div>
      </div>
      
-<div id="maintenance">
-  <table width="100%" border="0">
-    <tr>
-      <td width="13%">&nbsp;</td>
-      <td width="87%">&nbsp;</td>
-    </tr>
-    <tr>
-      <td><ul>
-        <li><a href="pages/operations.php?do=backupDB">Backup DB</a></li>
-        </ul></td>
-      <td>&nbsp;</td>
-    </tr>
-    <tr>
-      <td><ul>
-        <li><a href="pages/operations.php?do=backupFILES">Backup Files</a></li>
-      </ul></td>
-      <td>&nbsp;</td>
-    </tr>
-    <tr>
-      <td><ul>
-        <li> <a href="#" data-toggle="modal" data-backdrop="static" data-keyboard="false" data-target="#restore_db">Restore DB</a></li>
-      </ul></td>
-      <td>&nbsp;</td>
-    </tr>
-  </table>
-  </div>
+	<div id="maintenance">
+        <div class="loader-center">
+            <div class="loader"></div>
+            <div class="loader-text"></div>
+        </div>
+  	</div>
+    
+    <div id="about">
+        <div class="loader-center">
+            <div class="loader"></div>
+            <div class="loader-text"></div>
+        </div>
+  	</div>
+    
   </div>
  </div>
 </div>
-
+</div>
 <div class="modal fade" id="restore_db" tabindex="-1" role="dialog" aria-labelledby="restore_db" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
@@ -419,11 +420,6 @@ $(function() {
 
 <script type="text/javascript" language="javascript" >
 $(document).ready(function() {
-
-list_cat();
-list_fcat();
-get_pvonline();
-list_ptypes();
 
 $('#save-general').click(function() {
 	$.ajax({ 
@@ -602,6 +598,36 @@ function list_ptypes(){
 	});
 };
 
+function list_templates(){
+	$.ajax({ 
+		url: 'pages/views/settings/templates.php', 
+		dataType: 'html',
+		success: function (data) {
+			$('#list_templates').html(data);
+		}
+	});
+};
+
+function get_maintenance(){
+	$.ajax({ 
+		url: 'pages/views/settings/maintenance.php', 
+		dataType: 'html',
+		success: function (data) {
+			$('#maintenance').html(data);
+		}
+	});
+};
+
+function get_about(){
+	$.ajax({ 
+		url: 'pages/views/settings/about.php', 
+		dataType: 'html',
+		success: function (data) {
+			$('#about').html(data);
+		}
+	});
+};
+
 //DISABLE PVONLINE
 function disablePV(){
 	$.ajax({ 
@@ -629,3 +655,4 @@ function disablePV(){
 
 </script>
 <script src="/js/settings.backup.js"></script>
+<script src="/js/settings.tabs.js"></script>
