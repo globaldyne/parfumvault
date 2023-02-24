@@ -1,44 +1,43 @@
 <?php
 
-define('__ROOT__', dirname(dirname(__FILE__))); 
+define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__))))); 
 
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 
-$ingID = mysqli_real_escape_string($conn, $_GET["id"]);
+$id = mysqli_real_escape_string($conn, $_POST["id"]);
+
 ?>
 
-<h3>Documents</h3>
+<h3>Attachments</h3>
 <hr>
 <div class="card-body">
-  <div class="text-right">
-    <div class="btn-group">
-    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
-        <div class="dropdown-menu dropdown-menu-right">
-            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addDoc">Add new</a>
-        </div>
-    </div>                    
-  </div>
-
-
+    <div class="text-right">
+      <div class="btn-group">
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
+            <div class="dropdown-menu dropdown-menu-right">
+                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addDoc">Add new</a>
+            </div>
+      </div>                    
+    </div>
 </div>
-<table id="tdIngDocs" class="table table-striped table-bordered" style="width:100%">
+<table id="tdAttachments" class="table table-striped table-bordered" style="width:100%">
   <thead>
       <tr>
-          <th>Document</th>
+          <th>Name</th>
           <th>File</th>
           <th>Notes</th>
-          <th>Size</th>
           <th>Actions</th>
       </tr>
    </thead>
 </table>
+
 <script type="text/javascript" language="javascript" >
 $(document).ready(function() {
-	
-	$('[data-toggle="tooltip"]').tooltip();
-	var tdIngDocs = $('#tdIngDocs').DataTable( {
+
+$('[data-toggle="tooltip"]').tooltip();
+var tdAttachments = $('#tdAttachments').DataTable( {
 	columnDefs: [
 		{ className: 'text-center', targets: '_all' },
 	],
@@ -47,75 +46,87 @@ $(document).ready(function() {
 	language: {
 		loadingRecords: '&nbsp;',
 		processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
-		emptyTable: 'No documents added yet.',
+		emptyTable: 'No attachments found.',
 		search: 'Search:'
 		},
-	ajax: {	url: '/core/list_ing_doc_data.php?id=<?=$ingID?>' },
+	ajax: {	
+		url: '/core/list_formula_attachments_data.php',
+		type: 'POST',
+		data: {
+				id: '<?=$id?>',
+			},
+		},
 	columns: [
-			  { data : 'name', title: 'Document', render: dName },
+			  { data : 'name', title: 'Name', render: name },
 			  { data : 'docData', title: 'File', render: docData},
-			  { data : 'notes', title: 'Notes', render: dNotes},
-			  { data : 'docSize', title: 'Size'},
-			  { data : null, title: 'Actions', render: dActions},		   
-			 ],
-	order: [[ 1, 'asc' ]],
+			  { data : 'notes', title: 'Notes', render: notes},
+			  { data : null, title: 'Actions', render: actions},		   
+			],
+	
+	drawCallback: function ( settings ) {
+			extrasShow();
+	},
+	order: [[ 0, 'asc' ]],
 	lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
 	pageLength: 20,
-	displayLength: 20,		
+	displayLength: 20
 	});
 });
-function dName(data, type, row){
+
+function name(data, type, row){
 	return '<a href="#" class="name pv_point_gen" data-name="name" data-type="text" data-pk="'+row.id+'">'+row.name+'</a>';    
 }
+
 function docData(data, type, row){
-	return '<a href="viewDoc.php?id='+row.id+'" target="_blank" class="fa fa-file-alt"></a>';    
+	return '<a href="/pages/viewDoc.php?id='+row.id+'" target="_blank" class="fa fa-file-alt"></a>';    
 }
-function dNotes(data, type, row){
+
+function notes(data, type, row){
 	return '<a href="#" class="notes pv_point_gen" data-name="notes" data-type="textarea" data-pk="'+row.id+'">'+row.notes+'</a>';    
 }
-function dActions(data, type, row){
-	
+
+function actions(data, type, row){
 	return '<a href="#" id="dDel" class="fas fa-trash" data-id="'+row.id+'" data-name="'+row.name+'"></a>';    
 }
 
-$('#tdIngDocs').editable({
+$('#tdAttachments').editable({
 	  container: 'body',
 	  selector: 'a.name',
 	  type: 'POST',
-	  url: "update_data.php?ingDoc=update&ingID=<?=$ingID;?>",
-	  title: 'Document name',
+	  url: "/pages/update_data.php?ingDoc=update&ingID=<?=$id;?>",
+	  title: 'Attachment name',
  });
   
- $('#tdIngDocs').editable({
+ $('#tdAttachments').editable({
 	  container: 'body',
 	  selector: 'a.notes',
 	  type: 'POST',
-	  url: "update_data.php?ingDoc=update&ingID=<?=$ingID;?>",
+	  url: "/pages/update_data.php?ingDoc=update&ingID=<?=$id;?>",
 	  title: 'Notes',
  });
 
 	
-$('#tdIngDocs').on('click', '[id*=dDel]', function () {
+$('#tdAttachments').on('click', '[id*=dDel]', function () {
 	var d = {};
 	d.ID = $(this).attr('data-id');
     d.Name = $(this).attr('data-name');
 
 	bootbox.dialog({
-       title: "Confirm document removal",
+       title: "Confirm attachment removal",
        message : 'Remove <strong>'+ d.Name +'</strong> from the list?',
        buttons :{
            main: {
                label : "Remove",
-               className : "btn-primary",
+               className : "btn-danger",
                callback: function (){
 	    			
 				$.ajax({ 
-					url: 'update_data.php', 
+					url: '/pages/update_data.php', 
 					type: 'GET',
 					data: {
 						doc: 'delete',
 						id: d.ID,
-						ingID: '<?=$ingID?>'
+						ingID: '<?=$id?>'
 						},
 					dataType: 'html',
 					success: function (data) {
@@ -153,7 +164,7 @@ $('#addDoc').on('click', '[id*=doc_upload]', function () {
 		fd.append('doc_file',files[0]);
 
 			$.ajax({
-              url: 'upload.php?type=1&doc_name=' + btoa(doc_name) + '&doc_notes=' + btoa(doc_notes) + '&id=<?=$ingID;?>',
+              url: '/pages/upload.php?type=5&doc_name=' + btoa(doc_name) + '&doc_notes=' + btoa(doc_notes) + '&id=<?=$id;?>',
               type: 'POST',
               data: fd,
               contentType: false,
@@ -181,7 +192,7 @@ $('#addDoc').on('click', '[id*=doc_upload]', function () {
 });
 
 function reload_doc_data() {
-    $('#tdIngDocs').DataTable().ajax.reload(null, true);
+    $('#tdAttachments').DataTable().ajax.reload(null, true);
 };
 </script>
 
@@ -191,7 +202,7 @@ function reload_doc_data() {
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="addDocument">Add document</h5>
+        <h5 class="modal-title" id="addAttachment">Add attachment</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -199,7 +210,7 @@ function reload_doc_data() {
       <div class="modal-body">
       <div id="doc_inf"></div>
             <p>
-            Document name: 
+            Attachment name: 
             <input class="form-control" name="doc_name" type="text" id="doc_name" />
             </p>
             <p>            

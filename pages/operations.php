@@ -34,13 +34,13 @@ if($_GET['do'] == 'db_update'){
 		
 		$q = mysqli_query($conn, "UPDATE pv_meta SET schema_ver = '$u_ver'");
 	}
-		
+	/*	
 	if($e){
 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Failed to update the database,</strong> corrupted or wrong update file.</div>';
 		//return; 
 		//Notify the user but continue
 	}
-
+*/
 	if($q){
 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Your database has been updated!</strong></div>';
 	}

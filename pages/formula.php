@@ -92,6 +92,8 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
           <li><a href="#pyramid" id="pyramid_tab" role="tab" data-toggle="tab"><i class="fa fa-table"></i> Olfactory Pyramid</a></li>
           <li><a href="#summary" id="summary_tab" role="tab" data-toggle="tab"><i class="fa fa-cubes"></i> Notes Summary</a></li>
           <li><a href="#ingRep" id="reps_tab" role="tab" data-toggle="tab"><i class="fa fa-exchange-alt"></i> Replacements</a></li>
+          <li><a href="#attachments" id="attachments_tab" role="tab" data-toggle="tab"><i class="fa fa-paperclip"></i> Attachments</a></li>
+          
         </ul>
                      
         <div class="tab-content">
@@ -178,7 +180,13 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
                 <div id="fetch_replacements"><div class="loader"></div></div>
             </div>            
         </div>
-                    
+        
+        <div class="tab-pane fade" id="attachments">
+            <div class="card-body">
+                <div id="fetch_attachments"><div class="loader"></div></div>
+            </div>            
+        </div>
+                        
       </div>
      </div>         
    </div><!--tabs-->
@@ -289,6 +297,7 @@ $base_ex = get_formula_excludes($conn, $fid, 'base');
 <script src="/js/select2-v3-ingredient.js"></script>
 <script>
 document.title = "<?=$meta['name'].' - '.$product?>";
+var myFID = "<?=$fid?>";
 
 $("#concentration").prop("disabled", true); 
 $("#dilutant").prop("disabled", true);
@@ -440,7 +449,19 @@ function fetch_replacements(){
 	});
 }
 
-
+function fetch_attachments(){
+	$.ajax({ 
+		url: '/pages/views/formula/attachments.php', 
+		type: 'POST',
+		data: {
+			id: "<?=$meta['id']?>"
+			},
+		dataType: 'html',
+		success: function (data) {
+		  $('#fetch_attachments').html(data);
+		}
+	});
+}
 
 </script>
-<script src="js/formula.tabs.js"></script>
+<script src="/js/formula.tabs.js"></script>
