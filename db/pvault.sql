@@ -1,6 +1,5 @@
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 
-DROP TABLE IF EXISTS `allergens`;
 CREATE TABLE `allergens` (
   `id` int(11) NOT NULL,
   `ing` varchar(255) COLLATE utf8_general_ci NOT NULL,
@@ -11,7 +10,6 @@ CREATE TABLE `allergens` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 
-DROP TABLE IF EXISTS `batchIDHistory`;
 CREATE TABLE `batchIDHistory` (
   `id` varchar(50) COLLATE utf8_general_ci NOT NULL,
   `fid` varchar(255) COLLATE utf8_general_ci NOT NULL,
@@ -20,7 +18,6 @@ CREATE TABLE `batchIDHistory` (
   `created` timestamp NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
-DROP TABLE IF EXISTS `bottles`;
 CREATE TABLE `bottles` (
   `id` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
@@ -35,7 +32,6 @@ CREATE TABLE `bottles` (
   `pieces` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
-DROP TABLE IF EXISTS `customers`;
 CREATE TABLE `customers` (
   `id` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
@@ -45,7 +41,6 @@ CREATE TABLE `customers` (
   `web` varchar(255) COLLATE utf8_general_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
-DROP TABLE IF EXISTS `formulas`;
 CREATE TABLE `formulas` (
   `id` int(11) NOT NULL,
   `fid` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
@@ -60,7 +55,6 @@ CREATE TABLE `formulas` (
   `notes` varchar(11) COLLATE utf8_general_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
-DROP TABLE IF EXISTS `makeFormula`;
 CREATE TABLE `makeFormula` (
  `id` int(11) NOT NULL AUTO_INCREMENT,
  `fid` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
@@ -82,7 +76,6 @@ CREATE TABLE `cart` (
  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
-DROP TABLE IF EXISTS `formulasMetaData`;
 CREATE TABLE `formulasMetaData` (
   `id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
@@ -103,7 +96,6 @@ CREATE TABLE `formulasMetaData` (
   `status` INT NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
-DROP TABLE IF EXISTS `IFRALibrary`;
 CREATE TABLE `IFRALibrary` (
   `id` int(11) NOT NULL,
   `ifra_key` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -147,7 +139,6 @@ CREATE TABLE `IFRALibrary` (
   `cat12` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-DROP TABLE IF EXISTS `ingCategory`;
 CREATE TABLE `ingCategory` (
   `id` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
@@ -156,7 +147,6 @@ CREATE TABLE `ingCategory` (
   `colorKey` VARCHAR(255) NULL 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
-DROP TABLE IF EXISTS `ingProfiles`;
 CREATE TABLE `ingProfiles` (
   `id` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
@@ -169,7 +159,6 @@ INSERT INTO `ingProfiles` (`id`, `name`, `notes`) VALUES
 (3, 'Base', 'Base Note'),
 (4, 'Solvent', 'Solvents and Carriers');
 
-DROP TABLE IF EXISTS `ingredients`;
 CREATE TABLE `ingredients` (
   `id` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
@@ -231,7 +220,6 @@ CREATE TABLE `ingredients` (
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
-DROP TABLE IF EXISTS `ingStrength`;
 CREATE TABLE `ingStrength` (
   `id` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_general_ci NOT NULL
@@ -242,7 +230,6 @@ INSERT INTO `ingStrength` (`id`, `name`) VALUES
 (2, 'Low'),
 (3, 'High');
 
-DROP TABLE IF EXISTS `ingSuppliers`;
 CREATE TABLE `ingSuppliers` (
   `id` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
@@ -256,7 +243,6 @@ CREATE TABLE `ingSuppliers` (
   `min_gr` INT NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
-DROP TABLE IF EXISTS `ingTypes`;
 CREATE TABLE `ingTypes` (
   `id` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_general_ci NOT NULL
@@ -271,7 +257,6 @@ INSERT INTO `ingTypes` (`id`, `name`) VALUES
 (6, 'Solvent'),
 (7, 'Base');
 
-DROP TABLE IF EXISTS `lids`;
 CREATE TABLE `lids` (
   `id` int(11) NOT NULL,
   `style` varchar(255) COLLATE utf8_general_ci NOT NULL,
@@ -282,14 +267,12 @@ CREATE TABLE `lids` (
   `pieces` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
-DROP TABLE IF EXISTS `pv_meta`;
 CREATE TABLE `pv_meta` (
   `schema_ver` varchar(255) COLLATE utf8_general_ci NOT NULL,
   `app_ver` varchar(255) COLLATE utf8_general_ci NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
-DROP TABLE IF EXISTS `settings`;
 CREATE TABLE `settings` (
   `id` int(11) NOT NULL,
   `label_printer_addr` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
@@ -322,7 +305,6 @@ CREATE TABLE `settings` (
 INSERT INTO `settings` (`id`, `label_printer_addr`, `label_printer_model`, `label_printer_size`, `label_printer_font_size`, `currency`, `top_n`, `heart_n`, `base_n`, `chem_vs_brand`, `grp_formula`, `brandName`, `brandAddress`, `brandEmail`, `brandPhone`, `brandLogo`) VALUES
 (1, '1.2.3.4', 'QL-810W', '12', 70, '&pound;', '25', '50', '25', 0, 1, 'My Brand Name', 'My Address', 'info@mybrand.com', '123456', NULL);
 
-DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `email` varchar(255) COLLATE utf8_general_ci NOT NULL,
@@ -634,3 +616,15 @@ CREATE TABLE `perfumeTypes` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 INSERT INTO `perfumeTypes` (`id`, `name`, `concentration`, `description`) VALUES (NULL, 'EDP', '20', 'Eau de Parfum - Contains between 15 - 20% of formula concentration'), (NULL, 'EDT', '15', 'Eau de Toilette - Contains between 5 - 15% of formula concentration'), (NULL, 'EDC', '4', 'Eau de Cologne - Contains between 2 - 4% of formula concentration'), (NULL, 'Perfume', '30', 'Perfume - Contains between 20 - 30% of formula concentration');
+
+CREATE TABLE `templates` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `content` text NOT NULL,
+  `created` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `description` varchar(255) NOT NULL,
+  UNIQUE KEY `id` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+INSERT INTO `templates` (`id`, `name`, `content`, `created`, `updated`, `description`) VALUES (NULL, 'IFRA Certification Template', '<!doctype html>\r\n<html lang=\"en\">\r\n<head>\r\n <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\r\n <link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"/img/favicon-32x32.png\">\r\n <link rel=\"icon\" type=\"image/png\" sizes=\"16x16\" href=\"/img/favicon-16x16.png\">\r\n <link href=\"/css/ifraCert.css\" rel=\"stylesheet\">\r\n</head>\r\n\r\n<body>\r\n <div>\r\n <p style=\"margin-bottom: 0.63in\"><img src=\"%LOGO%\" width=\"200px\" /></p>\r\n </div>\r\n <h1 class=\"western\"><font face=\"Arial, sans-serif\"><span style=\"font-style: normal\">CERTIFICATE OF CONFORMITY OF FRAGRANCE MIXTURES WITH IFRA STANDARDS</span></font><br>\r\n </h1>\r\n <p align=center style=\"widows: 0; orphans: 0\"><font face=\"Helvetica 65 Medium, Arial Narrow, sans-serif\"><font size=4><b><font face=\"Arial, sans-serif\"><font size=2 style=\"font-size: 11pt\"><u>This Certificate assesses the conformity of a fragrance mixture with IFRA Standards and provides restrictions for use as necessary. It is based only on those materials subject to IFRA Standards for the toxicity endpoint(s) described in each Standard. </u></font></font></b></font></font>\r\n </p>\r\n <p align=center style=\"widows: 0; orphans: 0\"><br>\r\n </p>\r\n <hr size=\"1\">\r\n </p>\r\n <p class=\"western\"><font face=\"Arial, sans-serif\"><u><b>CERTIFYING PARTY:</b></u></font></p>\r\n <p class=\"western\"><font face=\"Arial, sans-serif\">%BRAND_NAME%</font></p>\r\n <p class=\"western\"><font face=\"Arial, sans-serif\">%BRAND_ADDRESS%</font></p>\r\n <p class=\"western\"><font face=\"Arial, sans-serif\">%BRAND_EMAIL%</font></p>\r\n <p class=\"western\"><font face=\"Arial, sans-serif\">%BRAND_PHONE%</font></p>\r\n\r\n\r\n </p>\r\n <p class=\"western\"><font face=\"Arial, sans-serif\"><u><b>CERTIFICATE DELIVERED TO: </b></u></font>\r\n </p>\r\n <p class=\"western\"><font face=\"Arial, sans-serif\"><span ><b>Customer: </b></span></font></p>\r\n <p class=\"western\"><font face=\"Arial, sans-serif\">%CUSTOMER_NAME%</font></p>\r\n <p class=\"western\"><font face=\"Arial, sans-serif\">%CUSTOMER_ADDRESS%</font></p>\r\n <p class=\"western\"><font face=\"Arial, sans-serif\">%CUSTOMER_EMAIL%</font></p>\r\n <p class=\"western\"><font face=\"Arial, sans-serif\">%CUSTOMER_WEB%</font></p>\r\n\r\n\r\n <p class=\"western\"><br>\r\n </p>\r\n <p class=\"western\"><font face=\"Arial, sans-serif\"><u><b>SCOPE OF THE CERTIFICATE:</b></u></font></p>\r\n <p class=\"western\"><font face=\"Arial, sans-serif\"><span >Product: <B>%PRODUCT_NAME%</b></span></font></p>\r\n <p class=\"western\">Size:<strong> %PRODUCT_SIZE%ml</strong></p>\r\n <p class=\"western\">Concentration: <strong>%PRODUCT_CONCENTRATION%%</strong></p>\r\n <hr size=\"1\"><br>\r\n <font face=\"Arial, sans-serif\"><span ><U><B>COMPULSORY INFORMATION:</b></u></span></font>\r\n <p class=\"western\" style=\"margin-right: -0.12in\">\r\n <font face=\"Arial, sans-serif\"><span >We certify that the above mixture is in compliance with the Standards of the INTERNATIONAL FRAGRANCE ASSOCIATION (IFRA), up to and including the <strong>%IFRA_AMENDMENT%</strong> Amendment to the IFRA Standards (published </span><b>%IFRA_AMENDMENT_DATE%</span></b>),\r\n provided it is used in the following</span></font> <font face=\"Arial, sans-serif\"><span >category(ies)\r\n at a maximum concentration level of:</span></font></p>\r\n <p class=\"western\" style=\"margin-right: -0.12in\">&nbsp;</p>\r\n <table width=\"100%\" border=\"1\">\r\n <tr>\r\n <th bgcolor=\"#d9d9d9\"><strong>IFRA Category(ies)</strong></th>\r\n <th bgcolor=\"#d9d9d9\"><strong>Level of use (%)*</strong></th>\r\n </tr>\r\n <tr>\r\n <td align=\"center\">%PRODUCT_CAT_CLASS%</td>\r\n <td align=\"center\">%PRODUCT_TYPE%</td>\r\n </tr>\r\n </table>\r\n <p class=\"western\" style=\"margin-right: -0.12in\"><font face=\"Arial, sans-serif\"><I>*Actual use level or maximum use level</I></font> </p>\r\n <p class=\"western\" style=\"margin-right: -0.12in\">\r\n <font face=\"Arial, sans-serif\"><span >For other kinds of, application or use at higher concentration levels, a new evaluation may be needed; please contact </span></font><font face=\"Arial, sans-serif\"><b>%BRAND_NAME%</b></font><font face=\"Arial, sans-serif\"><span >.\r\n </span></font></p>\r\n <p class=\"western\" style=\"margin-right: -0.12in\"><font face=\"Arial, sans-serif\"><span >Information about presence and concentration of fragrance ingredients subject to IFRA Standards in the fragrance mixture </span></font><font face=\"Arial, sans-serif\"><B>%PRODUCT_NAME%</b></font><font face=\"Arial, sans-serif\"><span> is as follows:</span></font></p>\r\n <p class=\"western\" style=\"margin-right: -0.12in\">&nbsp;</p>\r\n <table width=\"100%\" border=\"1\">\r\n <tr>\r\n <th width=\"22%\" bgcolor=\"#d9d9d9\"><strong>Material(s) under the scope of IFRA Standards:</strong></th>\r\n <th width=\"12%\" bgcolor=\"#d9d9d9\"><strong>CAS number(s):</strong></th>\r\n <th width=\"28%\" bgcolor=\"#d9d9d9\"><strong>Recommendation (%) from IFRA Standard:</strong></th>\r\n <th width=\"19%\" bgcolor=\"#d9d9d9\"><strong>Concentration (%) in finished product:</strong></th>\r\n <th width=\"19%\" bgcolor=\"#d9d9d9\">Risk</th>\r\n </tr>\r\n %IFRA_MATERIALS_LIST%\r\n </table>\r\n <p>&nbsp;</p>\r\n <p><font face=\"Arial, sans-serif\"><span >Signature </span></font><font face=\"Arial, sans-serif\"><span><I>(If generated electronically, no signature)</i></span></font></p>\r\n <p><font face=\"Arial, sans-serif\"><span >Date: </span></font><strong>%CURRENT_DATE%</strong></p>\r\n </p>\r\n <div>\r\n <p style=\"margin-right: 0in; margin-top: 0.08in\">\r\n <font face=\"Segoe UI, sans-serif\"><font size=1 style=\"font-size: 8pt\"><span><u>Disclaimer</u>:\r\n </span></font></font></p>\r\n <p style=\"margin-right: 0in; margin-top: 0.08in\"><font face=\"Segoe UI, sans-serif\"><font size=1 style=\"font-size: 8pt\"><span>This Certificate provides restrictions for use of the specified product based only on those materials restricted by IFRA Standards for the toxicity endpoint(s) described in each Standard.</span></font></font></p>\r\n <p style=\"margin-right: 0in; margin-top: 0.08in\"><font face=\"Segoe UI, sans-serif\"><font size=1 style=\"font-size: 8pt\"><span>This Certificate does not provide certification of a comprehensive safety assessment of all product constituents.</span></font></font></p>\r\n <p style=\"margin-right: 0in; margin-top: 0.08in\"><font face=\"Segoe UI, sans-serif\"><font size=1 style=\"font-size: 8pt\"><span> This certificate is the responsibility of the fragrance supplier issuing it. It has not been prepared or endorsed by IFRA in anyway. </span></font></font>\r\n </p>\r\n </div>\r\n</body>\r\n</html>', current_timestamp(), current_timestamp(), 'The default IFRA certification template');
