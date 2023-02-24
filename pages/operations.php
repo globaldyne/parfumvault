@@ -1,7 +1,7 @@
 <?php
 define('__ROOT__', dirname(dirname(__FILE__))); 
 
-require(__ROOT__.'/inc/sec.php');
+require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
@@ -81,7 +81,10 @@ if($_GET['do'] == 'backupFILES'){
 }
 
 if($_GET['restore'] == 'db_bk'){
-
+	if (!file_exists(__ROOT__."/$tmp_path")) {
+		mkdir(__ROOT__."/$tmp_path", 0777, true);
+	}
+	
 	$target_path = __ROOT__.'/'.$tmp_path.basename($_FILES['backupFile']['name']); 
 
 	if(move_uploaded_file($_FILES['backupFile']['tmp_name'], $target_path)) {
@@ -107,7 +110,7 @@ if($_GET['restore'] == 'db_bk'){
 			$result['error'] = "Something went wrong...";
 		}
 	} else {
-		$result['error'] = "There was an error uploading the file, please try again!";
+		$result['error'] = "There was an error processing backup file $target_path, please try again!";
 	}
 	
 	echo json_encode($result);

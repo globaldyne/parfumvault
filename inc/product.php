@@ -5,7 +5,7 @@ if (defined('__ROOT__') == FALSE) {
 }
 
 $def_app_img = 'img/logo_400.png';
-$product = 'JBs Perfumers Vault Pro';
+$product = 'Perfumers Vault Pro';
 
 $ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
 

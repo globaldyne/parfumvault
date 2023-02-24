@@ -11,6 +11,80 @@ require_once(__ROOT__.'/func/sanChar.php');
 require_once(__ROOT__.'/func/priceScrape.php');
 require_once(__ROOT__.'/func/create_thumb.php');
 
+
+//UPDATE HTML TEMPLATE
+if($_REQUEST['tmpl'] == 'update'){
+	$value = $_POST['value'];
+	$id = mysqli_real_escape_string($conn, $_POST['pk']);
+	$name = mysqli_real_escape_string($conn, $_POST['name']);
+
+	if(mysqli_query($conn, "UPDATE templates SET $name = '$value' WHERE id = '$id'")){
+		$response["success"] = 'Template updated';
+	}else{
+		$response["error"] = 'Error: '.mysqli_error($conn);
+	}
+	
+	echo json_encode($response);
+	return;
+}
+
+//DELETE HTML TEMPLATE
+if($_POST['tmpl'] == 'delete' && $_POST['tmplID']){
+	$id = $_POST['tmplID'];
+	$name = $_POST['tmplName'];
+
+	if(mysqli_query($conn, "DELETE FROM templates WHERE id = '$id'")){
+		$response["success"] = 'Template '.$name.' deleted';
+	}else{
+		$response["error"] = 'Something went wrong '.mysqli_error($conn);
+	}
+	
+	echo json_encode($response);
+	return;	
+}
+
+//ADD NEW TEMPLATE
+if($_POST['tmpl'] == 'add'){
+	
+	if(empty($_POST['tmpl_name'])){
+		$response["error"] = 'Name is required';
+		echo json_encode($response);
+		return;
+	}
+	
+	if(empty($_POST['tmpl_content'])){
+		$response["error"] = 'HTML Content is required';
+		echo json_encode($response);
+		return;
+	}
+
+	if(empty($_POST['tmpl_desc'])){
+		$response["error"] = 'Description is required.';
+		echo json_encode($response);
+		return;
+	}
+	
+	$name = $_POST['tmpl_name'];
+	$html = $_POST['tmpl_content'];
+	$desc = $_POST['tmpl_desc'];
+
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM templates WHERE name = '$name'"))){
+		$response["error"] = $name.' already exists!';
+		echo json_encode($response);
+		return;
+	}
+	
+	if(mysqli_query($conn, "INSERT INTO templates (name,content,description) VALUES ('$name','$html','$desc')")){
+		$response["success"] = $name.' created!';
+	}else{
+		$response["error"] = 'Error: '.mysqli_error($conn);
+	}
+	echo json_encode($response);
+	return;
+}
+
+
+
 //UPDATE PERFUME TYPES
 if($_GET['perfType'] == 'update'){
 	$value = trim(mysqli_real_escape_string($conn, $_POST['value']));
