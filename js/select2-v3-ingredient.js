@@ -57,7 +57,7 @@ $(document).ready(function(){
 		}
 	  
 	}).on('select2-open', () => {
-		$(".select2-with-searchbox:not(:has(a))").prepend('<div id="add_new_ing_sel" class="select_add_new_ingredient"><a href="/pages/mgmIngredient.php" class="popup-link fa fa-plus text-primary add-new-ing-sel"> Create new ingredient</a></div>');
+		$(".select2-with-searchbox:not(:has(a))").prepend('<div id="add_new_ing_sel" class="select_add_new_ingredient"><a href="/pages/mgmIngredient.php" class="popup-link fa fa-plus text-primary add-new-ing-sel"> Create new ingredient</a><span><div id="select_search_deep" class="select_search_deep"><input name="isDeep" type="checkbox" id="isDeep" value="1" /> Deep Search</div></span></div>');
 		$('.popover').hide();
 		extrasShow();
 
