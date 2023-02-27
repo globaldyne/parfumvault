@@ -57,15 +57,18 @@ if($meta == 0){
  	  $f = "  AND (name LIKE '%".$s."%')";
 	}
 	$q = mysqli_query($conn, "SELECT fid, name, toDo AS toAdd FROM formulasMetaData WHERE toDo = '1' $f $extra LIMIT $row, $limit");
+	
+
 	while($res = mysqli_fetch_array($q)){
     	$rs[] = $res;
 	}
-
+	
 	foreach ($rs as $rq) { 
 		$r['id'] = (int)$rq['id'];
 		$r['fid'] = (string)$rq['fid'];
 		$r['name'] = (string)$rq['name'];
-		$r['toAdd'] = (int)$rq['toAdd'];
+		$q2 = mysqli_fetch_array(mysqli_query($conn, "SELECT toAdd FROM $t WHERE fid = '".$rq['fid']."'"));
+		$r['toAdd'] = (int)$q2['toAdd'];
 
 		$rx[]=$r;
 	}
