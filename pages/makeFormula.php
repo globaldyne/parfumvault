@@ -15,8 +15,7 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fi
 }
 $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM formulasMetaData WHERE fid = '$fid'"));
 
-?>
-<head>
+?><head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
@@ -42,6 +41,7 @@ $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM formulasMetaDat
 	}
 	</style>
 </head>
+
 
 <div id="content-wrapper" class="d-flex flex-column">
     <div class="container-fluid">
@@ -247,6 +247,8 @@ $.ajax({
 
  
 </script>
+<script src="/js/mark/jquery.mark.min.js"></script>
+<script src="/js/mark/datatables.mark.js"></script>
 
 <!-- Modal Confirm amount-->
 <div class="modal fade" id="confirm_add" tabindex="-1" role="dialog" aria-labelledby="confirm_add" aria-hidden="true">
