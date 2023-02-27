@@ -14,7 +14,7 @@ require_once(__ROOT__.'/func/create_thumb.php');
 
 //UPDATE HTML TEMPLATE
 if($_REQUEST['tmpl'] == 'update'){
-	$value = $_POST['value'];
+	$value = mysqli_real_escape_string($conn,$_POST['value']);
 	$id = mysqli_real_escape_string($conn, $_POST['pk']);
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 
@@ -64,9 +64,9 @@ if($_POST['tmpl'] == 'add'){
 		return;
 	}
 	
-	$name = $_POST['tmpl_name'];
-	$html = $_POST['tmpl_content'];
-	$desc = $_POST['tmpl_desc'];
+	$name = mysqli_real_escape_string($conn,$_POST['tmpl_name']);
+	$html = mysqli_real_escape_string($conn,$_POST['tmpl_content']);
+	$desc = mysqli_real_escape_string($conn,$_POST['tmpl_desc']);
 
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM templates WHERE name = '$name'"))){
 		$response["error"] = $name.' already exists!';
