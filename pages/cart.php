@@ -71,6 +71,10 @@ $(document).ready(function() {
 	
 }); //END DOC
 
+function reload_data() {
+    $('#tdDataCart').DataTable().ajax.reload(null, true);
+}
+
 function name(data, type, row){
 	if(row.supplier){
 		data ='<div class="btn-group"><a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'+row.name+'</a><div class="dropdown-menu dropdown-menu-right">';

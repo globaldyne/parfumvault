@@ -311,17 +311,22 @@ $('table.table').on('click', '[id*=addTODO]', function () {
 	formula.ID = $(this).attr('data-id');
 	formula.Name = $(this).attr('data-name');
 	$.ajax({ 
-    url: 'pages/manageFormula.php', 
-	type: 'GET',
+    url: '/pages/manageFormula.php', 
+	type: 'POST',
     data: {
 		action: 'todo',
 		fid: formula.ID,
 		fname: formula.Name,
 		add: true,
 		},
-	dataType: 'html',
+	dataType: 'json',
     success: function (data) {
-	  	$('#inMsg').html(data);
+	  	if (data.success) {
+	  		var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+		}else{
+			var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+		}
+		$('#inMsg').html(msg);
     }
   });
 });
