@@ -11,18 +11,19 @@ if($_GET['do'] == 'db_update'){
 
 	$a_ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
 	$n_ver = trim(file_get_contents(__ROOT__.'/db/schema.ver'));
-	$c_ver = $pv_meta['schema_ver'];
+	$c_ver = trim($pv_meta['schema_ver']);
 	$script = __ROOT__.'/db/scripts/update_'.$c_ver.'-'.$n_ver.'.php';
 
 	if(file_exists($script) == TRUE){
 		require_once($script);
 	}
   	if($pv_meta['schema_ver'] == $n_ver){
-		echo '<div class="alert alert-info alert-dismissible"><strong>No update is needed.</strong></div>';
+		$result['error'] = "No update is needed.";
+		echo json_encode($result);
 		return;
     }
 
-	foreach (range($c_ver['schema_ver']+0.1, $n_ver,  0.1) as $i) {
+	foreach (range($c_ver+0.1, $n_ver,  0.1) as $i) {
 		$c_ver = mysqli_fetch_array(mysqli_query($conn, "SELECT schema_ver FROM pv_meta"));
 		$u_ver = number_format($i,1);
 		$sql = __ROOT__.'/db/updates/update_'.$c_ver['schema_ver'].'-'.$u_ver.'.sql';
@@ -42,8 +43,9 @@ if($_GET['do'] == 'db_update'){
 	}
 */
 	if($q){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Your database has been updated!</strong></div>';
+		$result['success'] = "<strong>Your database has been updated!</strong>";
 	}
+	echo json_encode($result);
 	return;
 }
 

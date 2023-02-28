@@ -2,6 +2,7 @@
 ### Version 5.7
 - Added the option to attach documents in formulas
 - Formula making view improvements
+- DB auto update improvements
 
 ### Version 5.6
 - HTML Templates added

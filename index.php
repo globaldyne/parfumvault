@@ -110,14 +110,19 @@ function updateDB() {
 	$('#msg').html('<div class="alert alert-info alert-dismissible"><img src="/img/loading.gif"/><strong> DB update in progress. Please wait, this may take a while...</strong></div>');
 
 	$.ajax({ 
-		url: 'pages/operations.php', 
+		url: '/pages/operations.php', 
 		type: 'GET',
 		data: {
 			do: "db_update"
 			},
-		dataType: 'html',
+		dataType: 'json',
 		success: function (data) {
-	  		$('#msg').html(data);
+		if(data.success) {
+			var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+		} else {
+			var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+		}
+		$('#msg').html(msg);
 		}
   	});
 };
