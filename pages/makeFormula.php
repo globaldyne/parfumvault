@@ -48,7 +48,6 @@ $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM formulasMetaDat
       <div class="card shadow mb-4">
         <div class="card-header py-3">
           <h2 class="m-0 font-weight-bold text-primary"><a href="javascript:reload_data()"><?php echo $meta['name']; ?></a></h2>
-          <h2><a href="javascript:printLabel()" class="fas fa-print" title="Print label"></a></h2>
         </div>
         <div class="card-body">
           <div class="table-responsive">
@@ -219,30 +218,6 @@ $.ajax({
 		$('#msg').html(msg);
     }
   });
-};
-
-function printLabel() {
-	<?php if(empty($settings['label_printer_addr']) || empty($settings['label_printer_model'])){?>
-	$("#msg").html('<div class="alert alert-danger alert-dismissible">Please configure printer details in <a href="?do=settings">settings<a> page</div>');
-	<?php }else{ ?>
-	$("#msg").html('<div class="alert alert-info alert-dismissible">Printing...</div>');
-
-$.ajax({ 
-    url: 'manageFormula.php', 
-	type: 'GET',
-    data: {
-		action: "printLabel",
-		type: "ingredient",
-		dilution: $("#dilution").val(),
-		dilutant: $("#dilutant").val(),
-		name: "<?php echo $meta['name']; ?>"
-		},
-	dataType: 'html',
-    success: function (data) {
-	  $('#msg').html(data);
-    }
-  });
-	<?php } ?>
 };
 
  
