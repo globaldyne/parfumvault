@@ -94,7 +94,8 @@ CREATE TABLE `formulasMetaData` (
   `madeOn` DATETIME NULL DEFAULT NULL,
   `customer_id` INT NOT NULL DEFAULT '0',
   `status` INT NOT NULL DEFAULT '0',
-  `toDo` INT NOT NULL DEFAULT '0'
+  `toDo` INT NOT NULL DEFAULT '0',
+   `rating` INT NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE `IFRALibrary` (

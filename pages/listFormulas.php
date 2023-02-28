@@ -24,7 +24,11 @@ while($fTypes_res = mysqli_fetch_array($fTypes_q)){
     $fTypes[] = $fTypes_res;
 }
 
-?> 
+?>
+<script src="/js/raty/jquery.raty.js"></script>
+<script src="/js/rating.js"></script>
+<link href="/js/raty/jquery.raty.css" rel="stylesheet">
+  
 <div class="card-header py-3">
   <h2 class="m-0 font-weight-bold text-primary"><a href="javascript:list_formulas()">Formulas</a></h2>
   <div id="inMsg"></div>
@@ -72,6 +76,7 @@ if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients")))){
                     <th>Class</th>
                     <th>Created</th>
                     <th>Made</th>
+                    <th>Rating</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -89,6 +94,7 @@ if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients")))){
                     <th>Class</th>
                     <th>Created</th>
                     <th>Made</th>
+                    <th>Rating</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -138,6 +144,7 @@ function initTable(tableId, src) {
     		   { data : 'ingredients', title: 'Ingredients'},
 			   { data : 'catClass', title: 'Class'},
 			   { data : 'isMade', title: 'Made', render: fMade},
+   			   { data : 'rating', title: 'Rating', render: rating},
 			   { data : 'created', title: 'Created'},
 			   { data : null, title: 'Actions', render: fActions},				   
 			  ],
@@ -164,12 +171,20 @@ function initTable(tableId, src) {
 		drawCallback: function( settings ) {
 			extrasShow();
      	},
+		createdRow: function(row, data, dataIndex){
+            initRating(row);
+        },
 	});
 }
 
 initTable("all-table", "core/list_formula_data.php");
 
 $("#listFormulas").tabs();
+
+function rating(data, type, row, meta){
+  	data = '<span class="rating" data-id='+row.id+' data-score="'+row.rating+'"></span>';
+	return data;
+}
 
 function fName(data, type, row, meta){
 	if(type === 'display'){
