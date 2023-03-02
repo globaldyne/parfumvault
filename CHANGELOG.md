@@ -5,6 +5,7 @@
 - Formula making view improvements
 - DB auto update improvements
 - Generate ingredient SDS from the available information
+- FPDF Version update 1.85
 
 ### Version 5.6
 - HTML Templates added
