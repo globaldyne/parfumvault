@@ -1,7 +1,7 @@
 <?php 
 define('__ROOT__', dirname(dirname(__FILE__))); 
 
-require(__ROOT__.'/inc/sec.php');
+require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
@@ -85,6 +85,7 @@ var myPCH = "<?=$settings['pubChem']?>";
 						<a class="dropdown-item" href="#" data-toggle="modal" data-target="#printLabel">Print Label</a>
 						<a class="dropdown-item" href="#" data-toggle="modal" data-target="#cloneIng">Clone ingredient</a>
 						<a class="dropdown-item" href="#" data-toggle="modal" data-target="#renameIng">Rename ingredient</a>
+						<a class="dropdown-item" href="#" data-toggle="modal" data-target="#genSDS">Generate SDS</a>
 					</div>
 				</div>
 			<?php }else {?>
@@ -365,7 +366,7 @@ var myPCH = "<?=$settings['pubChem']?>";
 </div>
 
 <!-- Modal Rename-->
-<div class="modal fade" id="renameIng" tabindex="-1" role="dialog" aria-labelledby="cloneIng" aria-hidden="true">
+<div class="modal fade" id="renameIng" tabindex="-1" role="dialog" aria-labelledby="renameIng" aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -388,6 +389,38 @@ var myPCH = "<?=$settings['pubChem']?>";
 	</div>
 </div>
 
+<!-- Modal Gen SDS-->
+<div class="modal fade" id="genSDS" tabindex="-1" role="dialog" aria-labelledby="genSDS" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Generate SDS for <?php echo $ing['name']; ?></h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+                <div id="warn"><div class="alert alert-info">A template is required in order to generate an SDS document.
+                To create a new template, go to <a href="/?do=settings" target="_blank">settings</a> and create a new one under HTML Templates.
+                For the available parameters please refer to the documentation <a href="https://www.jbparfum.com/knowledge-base/html-templates/" target="_blank">here</a>.</div></div>
+				<div id="sds_res"></div>
+				Select SDS template:
+                <select class="form-control" name="template" id="template">
+                <?php
+                    $res = mysqli_query($conn, "SELECT id, name FROM templates ORDER BY name ASC");
+                    while ($q = mysqli_fetch_array($res)){
+                    echo '<option value="'.$q['id'].'">'.$q['name'].'</option>';
+                }
+                ?>
+                </select>         
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<input type="submit" name="button" class="btn btn-primary" id="generateSDS" value="Generate">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 
 <script type="text/javascript" language="javascript">
 $('#printLabel').on('click', '[id*=print]', function () {

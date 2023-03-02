@@ -477,6 +477,8 @@ CREATE TABLE `documents` (
  `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
  `notes` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
  `docData` longblob NOT NULL,
+ `created` datetime NOT NULL DEFAULT current_timestamp(),
+ `updated` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
  PRIMARY KEY (`id`),
  UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;

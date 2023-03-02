@@ -1,5 +1,7 @@
 <?php
-require('../inc/sec.php');
+define('__ROOT__', dirname(dirname(__FILE__))); 
+
+require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/func/formatBytes.php');
@@ -20,6 +22,8 @@ foreach ($docs as $doc) {
 	$r['notes'] = (string)$doc['notes']?:'N/A';
 	$r['docData'] = (string)$doc['docData'];
 	$r['docSize'] = (string)formatBytes(strlen($doc['docData']));
+	$r['created'] = (string)$doc['created'];
+	$r['updated'] = (string)$doc['updated'];
 
 	$response['data'][] = $r;
 }

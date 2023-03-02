@@ -4,6 +4,7 @@
 - Added the option to attach documents in formulas
 - Formula making view improvements
 - DB auto update improvements
+- Generate ingredient SDS from the available information
 
 ### Version 5.6
 - HTML Templates added
