@@ -487,12 +487,18 @@ $(document).ready(function() {
 					ing: '<?=$ing['name'];?>'
 				<?php } ?>
 			},
-			dataType: 'html',   			
+			dataType: 'json',   			
 			success: function (data) {
-				$('#mgmIngHeaderCAS').html($("#cas").val());
-				$('#IUPAC').html($("#INCI").val());
-
-				$('#ingMsg').html(data);
+				if(data.success){
+					$('#mgmIngHeaderCAS').html($("#cas").val());
+					$('#IUPAC').html($("#INCI").val());
+					
+					var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+				}else{
+					var msg ='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				}
+				
+				$('#ingMsg').html(msg);
 				
 				if ($('#name').val()) {
 					window.location = 'mgmIngredient.php?id=' + btoa($('#name').val());
