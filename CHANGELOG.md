@@ -6,6 +6,7 @@
 - DB auto update improvements
 - Generate ingredient SDS from the available information
 - FPDF Version update 1.85
+- Fix a bug preventing update default dilutant in ingredients 
 
 ### Version 5.6
 - HTML Templates added

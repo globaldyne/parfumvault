@@ -8,7 +8,7 @@ require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/labelMap.php');
 require_once(__ROOT__.'/func/get_formula_notes.php');
 
-if($_POST['update_rating'] == '1' && $_POST['fid'] && $_POST['score']){
+if($_POST['update_rating'] == '1' && $_POST['fid'] && is_numeric($_POST['score'])){
 	mysqli_query($conn,"UPDATE formulasMetaData SET rating = '".$_POST['score']."' WHERE id = '".$_POST['fid']."'");
 }
 
