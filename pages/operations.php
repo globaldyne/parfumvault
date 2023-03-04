@@ -23,7 +23,7 @@ if($_GET['do'] == 'db_update'){
 		return;
     }
 
-	foreach (range($c_ver+0.1, $n_ver,  0.1) as $i) {
+	foreach (range($c_ver, $n_ver,  0.1) as $i) {
 		$c_ver = mysqli_fetch_array(mysqli_query($conn, "SELECT schema_ver FROM pv_meta"));
 		$u_ver = number_format($i,1);
 		$sql = __ROOT__.'/db/updates/update_'.$c_ver['schema_ver'].'-'.$u_ver.'.sql';
