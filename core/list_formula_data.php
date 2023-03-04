@@ -1,5 +1,7 @@
 <?php
-require('../inc/sec.php');
+define('__ROOT__', dirname(dirname(__FILE__))); 
+
+require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
@@ -28,7 +30,7 @@ if($s != ''){
    $f = "WHERE 1 AND (name LIKE '%".$s."%' OR product_name LIKE '%".$s."%' OR notes LIKE '%".$s."%')";
 }
 
-$formulas = mysqli_query($conn, "SELECT id,fid,name,product_name,isProtected,profile,sex,created,catClass,isMade,madeOn,status FROM formulasMetaData $f $extra LIMIT $row, $limit");
+$formulas = mysqli_query($conn, "SELECT id,fid,name,product_name,isProtected,profile,sex,created,catClass,isMade,madeOn,status,rating FROM formulasMetaData $f $extra LIMIT $row, $limit");
 
 while ($allFormulas = mysqli_fetch_array($formulas)){
 	    $formula[] = $allFormulas;
@@ -47,6 +49,7 @@ foreach ($formula as $formula) {
 	$r['isMade'] = (int)$formula['isMade']?:0;
 	$r['madeOn'] = (string)$formula['madeOn']?:'N/A';
 	$r['status'] = (int)$formula['status']?:'0';
+	$r['rating'] = (int)$formula['rating']?:'0';
 
 	$rx[]=$r;
 	

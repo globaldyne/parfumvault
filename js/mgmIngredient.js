@@ -215,6 +215,31 @@ $('#cloneIng').on('click', '[id*=cloneME]', function () {
 	});
 });
 
+//Generate ing sds
+$('#genSDS').on('click', '[id*=generateSDS]', function () {
+	$("#sds_res").html('<div class="alert alert-info"><img src="/img/loading.gif"/> Please wait, we generating your SDS</div>');
+
+	$.ajax({ 
+		url: '/core/genDoc.php', 
+		type: 'POST',
+		data: {
+			action: 'generateSDS',
+			kind: 'ingredient',
+			name: myIngName,
+			id: myIngID,
+			tmpl: $("#template").val()
+		},
+		dataType: 'json',
+		success: function (data) {
+			if(data.success){
+				msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+			}else if(data.error){
+				msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+			}
+			$('#sds_res').html(msg);
+		}
+	});
+});
 
 //Rename
 $('#renameIng').on('click', '[id*=renameME]', function () {

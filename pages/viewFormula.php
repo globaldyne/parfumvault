@@ -1015,17 +1015,22 @@ $.ajax({
 //Add in TODO
 function addTODO() {
 	$.ajax({ 
-    url: 'pages/manageFormula.php', 
-	type: 'GET',
+    url: '/pages/manageFormula.php', 
+	type: 'POST',
     data: {
 		action: 'todo',
 		fname: "<?=$f_name?>",
 		fid: "<?=$meta['fid']?>",
 		add: true,
 		},
-	dataType: 'html',
+	dataType: 'json',
     success: function (data) {
-	  	$('#msgInfo').html(data);
+		if (data.success) {
+	  		var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+		}else{
+			var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+		}
+		$('#msgInfo').html(msg);
     }
   });
 };

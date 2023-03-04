@@ -93,7 +93,9 @@ CREATE TABLE `formulasMetaData` (
   `isMade` INT NOT NULL DEFAULT '0',
   `madeOn` DATETIME NULL DEFAULT NULL,
   `customer_id` INT NOT NULL DEFAULT '0',
-  `status` INT NOT NULL DEFAULT '0'
+  `status` INT NOT NULL DEFAULT '0',
+  `toDo` INT NOT NULL DEFAULT '0',
+   `rating` INT NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE `IFRALibrary` (
@@ -475,6 +477,8 @@ CREATE TABLE `documents` (
  `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
  `notes` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
  `docData` longblob NOT NULL,
+ `created` datetime NOT NULL DEFAULT current_timestamp(),
+ `updated` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
  PRIMARY KEY (`id`),
  UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;

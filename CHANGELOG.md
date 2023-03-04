@@ -1,4 +1,13 @@
 # CHANGELOG
+### Version 5.7
+- A rating option has been added so each formula can be rated
+- Added the option to attach documents in formulas
+- Formula making view improvements
+- DB auto update improvements
+- Generate ingredient SDS from the available information
+- FPDF Version update 1.85
+- Fix a bug preventing update default dilutant in ingredients 
+
 ### Version 5.6
 - HTML Templates added
 - Fix the database restore backup process via UI

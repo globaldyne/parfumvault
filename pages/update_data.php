@@ -14,7 +14,7 @@ require_once(__ROOT__.'/func/create_thumb.php');
 
 //UPDATE HTML TEMPLATE
 if($_REQUEST['tmpl'] == 'update'){
-	$value = $_POST['value'];
+	$value = mysqli_real_escape_string($conn,$_POST['value']);
 	$id = mysqli_real_escape_string($conn, $_POST['pk']);
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 
@@ -64,9 +64,9 @@ if($_POST['tmpl'] == 'add'){
 		return;
 	}
 	
-	$name = $_POST['tmpl_name'];
-	$html = $_POST['tmpl_content'];
-	$desc = $_POST['tmpl_desc'];
+	$name = mysqli_real_escape_string($conn,$_POST['tmpl_name']);
+	$html = mysqli_real_escape_string($conn,$_POST['tmpl_content']);
+	$desc = mysqli_real_escape_string($conn,$_POST['tmpl_desc']);
 
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM templates WHERE name = '$name'"))){
 		$response["error"] = $name.' already exists!';
@@ -1019,14 +1019,14 @@ if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'general'){
 	$notes = ucfirst(trim(mysqli_real_escape_string($conn, $_POST["notes"])));
 	
 //	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '".$_POST['name']."'"))){
-		if(empty($_POST['name'])){
+	if(empty($_POST['name'])){
 	
-		$query = "UPDATE ingredients SET INCI = '$INCI',cas = '$cas', einecs = '$einecs', reach = '$reach',FEMA = '$fema',allergen='$allergen',purity='$purity',profile='$profile',type = '$type',strength = '$strength', category='$category',physical_state = '$physical_state',odor = '$odor',notes = '$notes' WHERE name='$ing'";
+		$query = "UPDATE ingredients SET INCI = '$INCI',cas = '$cas',solvent='".$_POST["solvent"]."', einecs = '$einecs', reach = '$reach',FEMA = '$fema',allergen='$allergen',purity='$purity',profile='$profile',type = '$type',strength = '$strength', category='$category',physical_state = '$physical_state',odor = '$odor',notes = '$notes' WHERE name='$ing'";
 		
 		if(mysqli_query($conn, $query)){
-			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>General details has been updated!</div>';
+			$response["success"] = 'General details have been updated!';
 		}else{
-			echo '<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> '.mysqli_error($conn).'</div>';
+			$response["error"] = 'Unable to update database: '.mysqli_error($conn);
 		}
 	}else{
 		$name = sanChar(mysqli_real_escape_string($conn, $_POST["name"]));
@@ -1034,16 +1034,16 @@ if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'general'){
 		$query = "INSERT INTO ingredients (name, INCI, cas, reach, FEMA, type, strength, category, profile, notes, odor, purity, solvent, allergen, physical_state) VALUES ('$name', '$INCI', '$cas', '$reach', '$fema', '$type', '$strength', '$category', '$profile',  '$notes', '$odor', '$purity', '$solvent', '$allergen', '1')";
 		
 		if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '$name'"))){
-			echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$name.' already exists!</div>';
+			$response["error"] = $name.' already exists!';
 		}else{
 			if(mysqli_query($conn, $query)){
-				echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Ingredient <strong>'.$name.'</strong> added!</div>';
+				$response["success"] = 'Ingredient <strong>'.$name.'</strong> created';
 			}else{
-				echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Failed to add!</div>';
+				$response["error"] = '<strong>Error:</strong> Failed to create ingredient</div>';
 			}
 		}
 	}
-
+	echo json_encode($response);
 	return;	
 }
 
