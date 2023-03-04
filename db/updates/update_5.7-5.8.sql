@@ -1,0 +1,1 @@
+ALTER TABLE `makeFormula` CHANGE `quantity` `quantity` DECIMAL(8,4) NULL DEFAULT NULL;

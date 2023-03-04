@@ -41,7 +41,25 @@ $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM formulasMetaDat
   	<style>
   	table.dataTable {
   		font-size: x-large !important;
+		font-weight: bold;
 	}
+	@media print {
+		table, table tr, table td {
+			border-top: #000 solid 2px;
+			border-bottom: #000 solid 2px;
+			border-left: #000 solid 2px;
+			border-right: #000 solid 2px;
+			font-family: arial, sans-serif;
+			font-weight: bold;
+			width: 50%;
+			margin-left: 1px;
+			font-size: 15pt;
+			page-break-inside: auto;
+			page-break-inside: avoid; 
+        	page-break-after: auto;
+		}
+
+	} 
 	</style>
 </head>
 
@@ -61,13 +79,13 @@ $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM formulasMetaDat
             <div class="dropdown-menu dropdown-menu-left">
                <div class="dropdown-divider"></div>
                <li class="dropdown-header">Export</li> 
-               <a class="dropdown-item" href="javascript:export_as('csv')">Export to CSV</a>
-               <a class="dropdown-item" href="javascript:export_as('pdf')">Export to PDF</a>
+               <a class="dropdown-item" href="javascript:export_as('csv')">Export as CSV</a>
+               <a class="dropdown-item" href="javascript:export_as('pdf')">Export as PDF</a>
                <a class="dropdown-item" href="#" id="print">Print Formula</a>
                
             </div>
         </div>
-            <table class="table table-bordered" id="tdDataPending" width="100%" cellspacing="0">
+            <table class="table table-bordered table-print" id="tdDataPending" width="100%" cellspacing="0">
               <thead>
                 <tr>
                   <th>Ingredient</th>

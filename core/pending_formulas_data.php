@@ -44,7 +44,7 @@ if($meta == 0){
 
 		$r['concentration'] = (float)$rq['concentration'];
 		$r['dilutant'] = (string)$rq['dilutant'] ?: 'None';
-		$r['quantity'] = (float)$rq['quantity'];
+		$r['quantity'] = number_format((float)$rq['quantity'], $settings['qStep'],'.', '') ?: 0;
 		$r['toAdd'] = (int)$rq['toAdd'];
 		
 		$mg['total_mg'] += $rq['quantity'];
