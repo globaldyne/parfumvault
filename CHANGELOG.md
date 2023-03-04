@@ -1,5 +1,7 @@
 # CHANGELOG
 ### Version 5.8
+- Make formula page improvements
+
 
 ### Version 5.7
 - A rating option has been added so each formula can be rated

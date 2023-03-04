@@ -34,7 +34,10 @@ $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM formulasMetaDat
   <script src="/js/datatables.min.js"></script>
   <link href="/css/datatables.min.css" rel="stylesheet"/>
   <link href="/css/vault.css" rel="stylesheet">
-  
+  <script src="/js/tableHTMLExport.js"></script>
+  <script src="/js/jspdf.min.js"></script>
+  <script src="/js/jspdf.plugin.autotable.js"></script>
+
   	<style>
   	table.dataTable {
   		font-size: x-large !important;
@@ -52,6 +55,18 @@ $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM formulasMetaDat
         <div class="card-body">
           <div class="table-responsive">
           <div id="msg"></div>
+          
+          <div class="btn-group" id="menu">
+            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
+            <div class="dropdown-menu dropdown-menu-left">
+               <div class="dropdown-divider"></div>
+               <li class="dropdown-header">Export</li> 
+               <a class="dropdown-item" href="javascript:export_as('csv')">Export to CSV</a>
+               <a class="dropdown-item" href="javascript:export_as('pdf')">Export to PDF</a>
+               <a class="dropdown-item" href="#" id="print">Print Formula</a>
+               
+            </div>
+        </div>
             <table class="table table-bordered" id="tdDataPending" width="100%" cellspacing="0">
               <thead>
                 <tr>
@@ -79,7 +94,9 @@ $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM formulasMetaDat
 </div>
 
 <script>
+var myFNAME = "<?=$meta['name']?>";
 $(document).ready(function() {
+	
 
 	var tdDataPending = $('#tdDataPending').DataTable( {
 	columnDefs: [
@@ -87,6 +104,13 @@ $(document).ready(function() {
 		{ orderable: false, targets: [1,4] },
 	],
 	dom: 'lrft',
+	buttons: [{
+				extend: 'print',
+				title: myFNAME,
+				exportOptions: {
+     				columns: [0, 1, 2, 3]
+  				},
+			  }],
 	processing: true,
 	serverSide: true,
 	searching: true,
@@ -114,7 +138,7 @@ $(document).ready(function() {
 			{ data : 'cas', title: 'CAS' },
             { data : 'concentration', title: 'Purity %' },
             { data : 'quantity', title: 'Quantity (<?=$settings['mUnit']?>)' },
-			{ data : null, title: 'Actions', render: actions },
+			{ data : null, title: 'Actions', className: 'text-center noexport', render: actions },
 			],
 	   footerCallback : function( tfoot, data, start, end, display ) {    
 		  var response = this.api().ajax.json();
@@ -153,6 +177,10 @@ function actions(data, type, row){
 function reload_data() {
     $('#tdDataPending').DataTable().ajax.reload(null, true);
 }
+
+$('#print').click(() => {
+    $('#tdDataPending').DataTable().button(0).trigger();
+});
 
 $('#tdDataPending').on('click', '[data-target*=confirm_add]', function () {
 	$('#errMsg').html('');																
@@ -220,8 +248,24 @@ $.ajax({
   });
 };
 
+function export_as(type) {
+  $("#tdDataPending").tableHTMLExport({
+	type: type,
+	filename: myFNAME + "." + type,
+	separator: ',',
+  	newline: '\r\n',
+  	trimContent: true,
+  	quoteFields: true,
+	ignoreColumns: '.noexport',
+  	ignoreRows: '.noexport',
+	htmlContent: false,
+	orientation: 'l',
+	maintitle: myFNAME,
+  });
+};
  
 </script>
+
 <script src="/js/mark/jquery.mark.min.js"></script>
 <script src="/js/mark/datatables.mark.js"></script>
 
