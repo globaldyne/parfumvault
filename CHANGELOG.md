@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 5.8
+
 ### Version 5.7
 - A rating option has been added so each formula can be rated
 - Added the option to attach documents in formulas
