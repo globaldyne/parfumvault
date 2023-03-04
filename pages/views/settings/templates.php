@@ -229,7 +229,7 @@ function extrasShow() {
             </p>
             <p>
             HTML Content:
-            <input class="form-control" name="tmpl_content" type="textarea" id="tmpl_content" />
+            <textarea class="form-control" name="tmpl_content" id="tmpl_content" rows="4"></textarea>
             </p>
             <p>
             Short description:

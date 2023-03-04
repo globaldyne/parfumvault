@@ -843,6 +843,17 @@ body {
   color: aliceblue;
 }
 
+.select_search_deep {
+  font-size: medium;
+  color: black;
+  display: inline;
+  text-align: right;
+  align-self: start;
+  float: right;
+  margin: 10px;
+  display:none;
+}
+
 .buffer {
   margin-bottom: 22px;
 }

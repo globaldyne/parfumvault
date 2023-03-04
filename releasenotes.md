@@ -1,5 +1,6 @@
 Whats New:
 ----------------------
-- Introducing HTML Templates. Now you can use your own format to template IFRA certifications
-- Fix the database restore backup process via UI
-- Fix a bug preventing formula pdf export in Chrome
+- A rating option has been added so each formula can be rated
+- Added the option to attach documents in formulas
+- Formula making view improvements
+- Generate ingredient SDS from the available information

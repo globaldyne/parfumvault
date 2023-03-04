@@ -21,4 +21,8 @@ $(document).ready(function() {
 		fetch_replacements();
 	});
 	
-})
+	$('#attachments_tab').on( 'click', function () {
+		fetch_attachments();
+	});
+	
+});
