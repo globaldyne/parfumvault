@@ -2,6 +2,7 @@ function initRating(container){
     $('span.rating', container).raty({
         half: false,
 		number: 5,
+	    hints: ['Bad', 'Poor', 'Good', 'Gorgeous', 'WOW!!!'],
         starOff: '/js/raty/images/star-off.png',
         starOn: '/js/raty/images/star-on.png',
         readOnly: false,
