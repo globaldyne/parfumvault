@@ -32,6 +32,16 @@ if($meta == 0){
     	$rs[] = $res;
 	}
 
+	$q = mysqli_query($conn, "SELECT quantity FROM $t WHERE fid = '".$_GET['fid']."'");
+	while($res = mysqli_fetch_array($q)){
+    	$rsq[] = $res;
+	}
+	
+	$q = mysqli_query($conn, "SELECT quantity FROM $t WHERE fid = '".$_GET['fid']."' AND toAdd = '1'");
+	while($res = mysqli_fetch_array($q)){
+    	$rsL[] = $res;
+	}
+	
 	foreach ($rs as $rq) {
 		$gING = mysqli_fetch_array(mysqli_query($conn, "SELECT id,cas FROM ingredients WHERE name = '".$rq['ingredient']."'"));
 
@@ -47,11 +57,18 @@ if($meta == 0){
 		$r['quantity'] = number_format((float)$rq['quantity'], $settings['qStep'],'.', '') ?: 0;
 		$r['toAdd'] = (int)$rq['toAdd'];
 		
-		$mg['total_mg'] += $rq['quantity'];
+		
 		
 		$rx[]=$r;
 	}
-
+	foreach ($rsq as $rq) {
+		$mg['total_mg'] += $rq['quantity'];
+	}
+	
+	foreach ($rsL as $rq) {
+		$mg['total_mg_left'] += $rq['quantity'];
+	}
+	
 }else{
 	if($s != ''){
  	  $f = "  AND (name LIKE '%".$s."%')";
@@ -89,6 +106,7 @@ if(empty($r)){
 }
 $m['total_ingredients'] = (int)countElement("formulas WHERE fid = '".$_GET['fid']."'",$conn);	
 $m['total_quantity'] =  (float)ml2l($mg['total_mg'], $settings['qStep'], $settings['mUnit']);
+$m['total_quantity_left'] =  (float)ml2l($mg['total_mg_left'], $settings['qStep'], $settings['mUnit']);
 $m['quantity_unit'] = (string)$settings['mUnit'];
 
 $response['meta'] = $m;

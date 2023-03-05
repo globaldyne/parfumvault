@@ -42,6 +42,7 @@ $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM formulasMetaDat
   	table.dataTable {
   		font-size: x-large !important;
 		font-weight: bold;
+		color: #494b51;
 	}
 	@media print {
 		table, table tr, table td {
@@ -163,12 +164,12 @@ $(document).ready(function() {
 		  if(response){
 			 var $td = $(tfoot).find('th');
 			 $td.eq(0).html("Ingredients: " + response.meta['total_ingredients'] );
-			 $td.eq(3).html("Total: " + response.meta['total_quantity'] + response.meta['quantity_unit'] );
+			 $td.eq(3).html("Total left: " + response.meta['total_quantity_left'] + ' of ' + response.meta['total_quantity'] + response.meta['quantity_unit'] );
 		 }
       },
 	  fnRowCallback : function (row, data, display) {
 		  if (data.toAdd == 0) {
-			  $(row).addClass('strikeout');
+			  $(row).find('td:eq(0),td:eq(1),td:eq(2),td:eq(3)').addClass('strikeout');
 		  } 
 	  },
 	 order: [[ 0, 'asc' ]],
@@ -184,7 +185,7 @@ function actions(data, type, row){
 	if (row.toAdd == 1) {
 		data = '<a href="#" data-toggle="modal" data-target="#confirm_add" data-quantity="'+row.quantity+'" data-ingredient="'+row.ingredient+'" data-row-id="'+row.id+'" data-ing-id="'+row.ingID+'" data-qr="'+row.quantity+'" class="fas fa-check" title="Add '+row.ingredient+'"></a> ';
 	}else{
-		data = '';
+		data = '<a href="#" id="undo_add" data-row-id="'+row.id+'" data-ingredient="'+row.ingredient+'" class="fas fa-undo" title="Undo original quantity for '+row.ingredient+'"></a>';
 	}
 					  
 	data += ' <a href="javascript:addToCart(\''+row.ingredient+'\',\''+row.quantity+'\',\''+row.concentration+'\',\''+row.ingID+'\')" class="fas fa-shopping-cart"></a>'; 
@@ -282,6 +283,34 @@ function export_as(type) {
   });
 };
  
+$('#tdDataPending').on('click', '[id*=undo_add]', function () {
+	var d = {};
+	d.ID = $(this).attr('data-row-id');
+    d.ingName = $(this).attr('data-ingredient');
+	
+	$.ajax({ 
+		url: 'manageFormula.php', 
+		type: 'POST',
+		data: {
+			action: "makeFormula",
+			undo: 1,
+			ing: d.ingName,
+			ID: d.ID
+			},
+		dataType: 'json',
+		success: function (data) {
+			if(data.success) {
+				var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+				$('#msg').html(msg);
+				reload_data();
+			} else {
+				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				$('#errMsg').html(msg);
+			}
+			
+		}
+	  });
+});
 </script>
 
 <script src="/js/mark/jquery.mark.min.js"></script>

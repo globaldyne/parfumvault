@@ -372,6 +372,17 @@ if($_POST['action'] == 'delete' && $_POST['fid']){
 	return;
 }
 
+//UNDO ADD ING FROM MAKE FORMULA
+
+if($_POST['action'] == 'makeFormula' && $_POST['undo'] == '1'){
+
+	if(mysqli_query($conn, "UPDATE makeFormula SET toAdd = '1' WHERE id = '".$_POST['ID']."'")){ 
+		$response['success'] = $_POST['ing'].' re-added';
+		echo json_encode($response);
+	}
+	return;
+}
+
 //MAKE FORMULA
 if($_POST['action'] == 'makeFormula' && $_POST['fid'] && $_POST['q'] && $_POST['qr'] && $_POST['id']){
 	$fid = mysqli_real_escape_string($conn, $_POST['fid']);
@@ -385,12 +396,10 @@ if($_POST['action'] == 'makeFormula' && $_POST['fid'] && $_POST['q'] && $_POST['
 	}
 						 
 	$q = trim($_POST['q']);
-	
 
-	
 	if($qr == $q){
 		if(mysqli_query($conn, "UPDATE makeFormula SET toAdd = '0' WHERE fid = '$fid' AND id = '$id'")){
-			$response['success'] = 'Ingredient added!';
+			$response['success'] = $_POST['ing'].' added!';
 		}
 	}else{
 		$sub_tot = $qr - $q;
