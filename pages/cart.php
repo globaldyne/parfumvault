@@ -91,7 +91,7 @@ function name(data, type, row){
 }
 
 function actions(data, type, row){
-	return '<i rel="tip" title="Delete '+ row.name +'" class="pv_point_gen fas fa-trash" style="color: #c9302c;" id="cart_remove" data-name="'+ row.name +'" data-id='+ row.id +'></i>';    
+	return '<i rel="tip" title="Remove '+ row.name +'" class="pv_point_gen fas fa-trash" style="color: #c9302c;" id="cart_remove" data-name="'+ row.name +'" data-id='+ row.id +'></i>';    
 }
 
 function reload_cart_data() {
@@ -109,7 +109,7 @@ $('#tdDataCart').on('click', '[id*=cart_remove]', function () {
        message : 'Remove <strong>'+ ing.Name +'</strong> from shopping cart?',
        buttons :{
            main: {
-               label : "Delete",
+               label : "Remove",
                className : "btn-danger",
                callback: function (){
 			   $.ajax({
@@ -118,6 +118,7 @@ $('#tdDataCart').on('click', '[id*=cart_remove]', function () {
 					data: {
 						action: "removeFromCart",
 						materialId: ing.ID,
+						materialName: ing.Name
 						},
 					dataType: 'json',
 					success: function (data) {

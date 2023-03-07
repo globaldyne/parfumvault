@@ -406,11 +406,19 @@ if($_POST['action'] == 'makeFormula' && $_POST['fid'] && $_POST['q'] && $_POST['
 		if(mysqli_query($conn, "UPDATE makeFormula SET quantity='$sub_tot' WHERE fid = '$fid' AND id = '$id'")){
 			$response['success'] = 'Formula updated!';
 		}
-		if($_POST['updateStock'] == "true"){
-			mysqli_query($conn, "UPDATE suppliers SET stock = stock - $sub_tot WHERE ingID = '$ingID' AND preferred = '1'");
-		}
-		
 	}
+	
+	if($_POST['updateStock'] == "true"){
+		mysqli_query($conn, "UPDATE suppliers SET stock = stock - $q WHERE ingID = '$ingID' AND preferred = '1'");
+		$response['success'] .= "<br/><strong>Stock deducted by ".$q.$settings['mUnit']."</strong>";
+	}	
+	
+	
+	if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = '$fid' AND toAdd = '1'"))){
+		mysqli_query($conn,"UPDATE formulasMetaData SET isMade = '1', madeOn = NOW(), status = '2' WHERE fid = '$fid'");
+		$response['success'] = '<strong>Formula is complete</strong>';
+	}
+	
 	echo json_encode($response);
 	return;
 }
@@ -480,7 +488,7 @@ if($_POST['action'] == 'removeFromCart' && $_POST['materialId']){
 	$materialId = mysqli_real_escape_string($conn, $_POST['materialId']);
 
 	if(mysqli_query($conn, "DELETE FROM cart WHERE id = '$materialId'")){
-		$response['success'] = 'Removed from cart!';
+		$response['success'] = $_POST['materialName'].' removed from cart!';
 		echo json_encode($response);
 	}
 }

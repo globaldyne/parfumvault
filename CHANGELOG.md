@@ -1,7 +1,8 @@
 # CHANGELOG
 ### Version 5.8
 - Make formula page improvements
-
+- Fix incorrect stock update when making formula
+- Formula is now automatically marked as made and under evaluation status when making is complete
 
 ### Version 5.7
 - A rating option has been added so each formula can be rated

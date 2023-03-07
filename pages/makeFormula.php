@@ -37,12 +37,14 @@ $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM formulasMetaDat
   <script src="/js/tableHTMLExport.js"></script>
   <script src="/js/jspdf.min.js"></script>
   <script src="/js/jspdf.plugin.autotable.js"></script>
-
-  	<style>
+  <style>
   	table.dataTable {
   		font-size: x-large !important;
 		font-weight: bold;
 		color: #494b51;
+	}
+	.mr {
+  		margin-left: 50px;
 	}
 	@media print {
 		table, table tr, table td {
@@ -59,11 +61,13 @@ $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM formulasMetaDat
 			page-break-inside: avoid; 
         	page-break-after: auto;
 		}
-
-	} 
-	</style>
+	}
+	table.dataTable thead tr, tfoot tr {
+  		background-color: #337ab7c9;
+		color: white;
+	}
+  </style>
 </head>
-
 
 <div id="content-wrapper" class="d-flex flex-column">
     <div class="container-fluid">
@@ -86,7 +90,7 @@ $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM formulasMetaDat
                
             </div>
         </div>
-            <table class="table table-bordered table-print" id="tdDataPending" width="100%" cellspacing="0">
+            <table class="table table-bordered" id="tdDataPending" width="100%" cellspacing="0">
               <thead>
                 <tr>
                   <th>Ingredient</th>
@@ -183,12 +187,12 @@ $(document).ready(function() {
 
 function actions(data, type, row){
 	if (row.toAdd == 1) {
-		data = '<a href="#" data-toggle="modal" data-target="#confirm_add" data-quantity="'+row.quantity+'" data-ingredient="'+row.ingredient+'" data-row-id="'+row.id+'" data-ing-id="'+row.ingID+'" data-qr="'+row.quantity+'" class="fas fa-check" title="Add '+row.ingredient+'"></a> ';
+		data = '<a href="#" data-toggle="modal" data-target="#confirm_add" data-quantity="'+row.quantity+'" data-ingredient="'+row.ingredient+'" data-row-id="'+row.id+'" data-ing-id="'+row.ingID+'" data-qr="'+row.quantity+'" class="fas fa-check" title="Confirm add '+row.ingredient+'"></a>';
 	}else{
 		data = '<a href="#" id="undo_add" data-row-id="'+row.id+'" data-ingredient="'+row.ingredient+'" class="fas fa-undo" title="Undo original quantity for '+row.ingredient+'"></a>';
 	}
 					  
-	data += ' <a href="javascript:addToCart(\''+row.ingredient+'\',\''+row.quantity+'\',\''+row.concentration+'\',\''+row.ingID+'\')" class="fas fa-shopping-cart"></a>'; 
+	data += '<a href="#" data-ingredient="'+row.ingredient+'" data-quantity="'+row.quantity+'" data-concentration="'+row.concentration+'" data-ingID="'+row.ingID+'" id="addToCart" class="mr fas fa-shopping-cart"></a>'; 
 					 
 	return data;    
 }
@@ -222,7 +226,7 @@ function addedToFormula() {
 		qr: $("#qr").text(),
 		updateStock: $("#updateStock").is(':checked'),
 		ing: $("#ingAdded").text(),
-				id: $("#idRow").text(),
+		id: $("#idRow").text(),
 
 		ingId: $("#ingID").text(),
 		fid: "<?php echo $fid; ?>",
@@ -243,16 +247,17 @@ function addedToFormula() {
   });
 };
 
-function addToCart(material, quantity, purity, ingID) {
+
+$('#tdDataPending').on('click', '[id*=addToCart]', function () {
 $.ajax({ 
     url: 'manageFormula.php', 
 	type: 'POST',
     data: {
 		action: "addToCart",
-		material: material,
-		purity: purity,
-		quantity: quantity,
-		ingID: ingID
+		material: $(this).attr('data-ingredient'),
+		purity: $(this).attr('data-concentration'),
+		quantity: $(this).attr('data-quantity'),
+		ingID: $(this).attr('data-ingID')
 		},
 	dataType: 'json',
     success: function (data) {
@@ -265,7 +270,7 @@ $.ajax({
 		$('#msg').html(msg);
     }
   });
-};
+});
 
 function export_as(type) {
   $("#tdDataPending").tableHTMLExport({
