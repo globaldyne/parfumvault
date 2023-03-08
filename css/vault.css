@@ -1005,3 +1005,7 @@ body {
 .mr2 {
 	margin-right: 10px;	
 }
+
+#customer_name, #formula_name {
+  display: inline;
+}

@@ -372,11 +372,11 @@ if($_POST['action'] == 'delete' && $_POST['fid']){
 	return;
 }
 
-//UNDO ADD ING FROM MAKE FORMULA
+//UNDO REMOVE ING FROM MAKE FORMULA
 
 if($_POST['action'] == 'makeFormula' && $_POST['undo'] == '1'){
 
-	if(mysqli_query($conn, "UPDATE makeFormula SET toAdd = '1' WHERE id = '".$_POST['ID']."'")){ 
+	if(mysqli_query($conn, "UPDATE makeFormula SET toAdd = '1', overdose = '0', quantity = '".$_POST['originalQuantity']."' WHERE id = '".$_POST['ID']."'")){ 
 		$response['success'] = $_POST['ing'].' re-added';
 		echo json_encode($response);
 	}
@@ -413,11 +413,17 @@ if($_POST['action'] == 'makeFormula' && $_POST['fid'] && $_POST['q'] && $_POST['
 		$response['success'] .= "<br/><strong>Stock deducted by ".$q.$settings['mUnit']."</strong>";
 	}	
 	
+	if($qr < $q){
+		if(mysqli_query($conn, "UPDATE makeFormula SET overdose = '$q' WHERE fid = '$fid' AND id = '$id'")){
+			$response['success'] = $_POST['ing'].' is overdosed, <strong>'.$q.'<strong> added';
+		}
+	}
 	
 	if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = '$fid' AND toAdd = '1'"))){
 		mysqli_query($conn,"UPDATE formulasMetaData SET isMade = '1', madeOn = NOW(), status = '2' WHERE fid = '$fid'");
 		$response['success'] = '<strong>Formula is complete</strong>';
 	}
+	
 	
 	echo json_encode($response);
 	return;
@@ -434,7 +440,7 @@ if($_POST['action'] == 'todo' && $_POST['fid'] && $_POST['add']){
 		return;
 	}
 								
-	if(mysqli_query($conn, "INSERT INTO makeFormula (fid, name, ingredient, concentration, dilutant, quantity, toAdd) SELECT fid, name, ingredient, concentration, dilutant, quantity, '1' FROM formulas WHERE fid = '$fid'")){
+	if(mysqli_query($conn, "INSERT INTO makeFormula (fid, name, ingredient, concentration, dilutant, quantity, originalQuantity, toAdd) SELECT fid, name, ingredient, concentration, dilutant, quantity, quantity, '1' FROM formulas WHERE fid = '$fid'")){
 		mysqli_query($conn, "UPDATE formulasMetaData SET toDo = '1' WHERE fid = '$fid'");
 		$response['success'] = 'Formula <a href="?do=todo">'.$fname.'</a> added in To Make list!';		
 	}

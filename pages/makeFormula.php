@@ -43,7 +43,7 @@ $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM formulasMetaDat
 		font-weight: bold;
 		color: #494b51;
 	}
-	.mr {
+	.mrl {
   		margin-left: 50px;
 	}
 	@media print {
@@ -160,7 +160,7 @@ $(document).ready(function() {
             { data : 'ingredient', title: 'Ingredient' },
 			{ data : 'cas', title: 'CAS' },
             { data : 'concentration', title: 'Purity %' },
-            { data : 'quantity', title: 'Quantity (<?=$settings['mUnit']?>)' },
+            { data : 'quantity', title: 'Quantity (<?=$settings['mUnit']?>)', render: quantity },
 			{ data : null, title: 'Actions', className: 'text-center noexport', render: actions },
 			],
 	   footerCallback : function( tfoot, data, start, end, display ) {    
@@ -184,15 +184,29 @@ $(document).ready(function() {
 	
 });
 
-
-function actions(data, type, row){
-	if (row.toAdd == 1) {
-		data = '<a href="#" data-toggle="modal" data-target="#confirm_add" data-quantity="'+row.quantity+'" data-ingredient="'+row.ingredient+'" data-row-id="'+row.id+'" data-ing-id="'+row.ingID+'" data-qr="'+row.quantity+'" class="fas fa-check" title="Confirm add '+row.ingredient+'"></a>';
-	}else{
-		data = '<a href="#" id="undo_add" data-row-id="'+row.id+'" data-ingredient="'+row.ingredient+'" class="fas fa-undo" title="Undo original quantity for '+row.ingredient+'"></a>';
+function quantity(data, type, row){
+	
+	var overdose = '';
+	if(row.overdose != 0 ){
+		var overdose = '<span class="ing_alg"> <i rel="tip" title="Overdosed, added '+row.overdose+', instead" class="fas fa-exclamation-triangle"></i></span>';
 	}
+	
+	data = row.quantity + overdose;
+	return data;
+}
+function actions(data, type, row){
+	var data = '';
+	if (row.quantity != row.originalQuantity) {
+		data = '<a href="#" id="undo_add" data-row-id="'+row.id+'" data-ingredient="'+row.ingredient+'" data-originalQuantity="'+row.originalQuantity+'" class="fas fa-undo" title="Reset original quantity for '+row.ingredient+'"></a>';
+	}
+	
+	if (row.toAdd == 1) {
+		data += '<a href="#" data-toggle="modal" data-target="#confirm_add" data-quantity="'+row.quantity+'" data-ingredient="'+row.ingredient+'" data-row-id="'+row.id+'" data-ing-id="'+row.ingID+'" data-qr="'+row.quantity+'" class="fas fa-check mrl" title="Confirm add '+row.ingredient+'"></a>';
+	}
+	
+	
 					  
-	data += '<a href="#" data-ingredient="'+row.ingredient+'" data-quantity="'+row.quantity+'" data-concentration="'+row.concentration+'" data-ingID="'+row.ingID+'" id="addToCart" class="mr fas fa-shopping-cart"></a>'; 
+	data += '<a href="#" data-ingredient="'+row.ingredient+'" data-quantity="'+row.quantity+'" data-concentration="'+row.concentration+'" data-ingID="'+row.ingID+'" id="addToCart" class="mrl fas fa-shopping-cart"></a>'; 
 					 
 	return data;    
 }
@@ -238,7 +252,8 @@ function addedToFormula() {
 			$('#msg').html(msg);
 			$('#confirm_add').modal('toggle');
 			reload_data();
-		} else {
+		
+		} else if(data.error) {
 			var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 			$('#errMsg').html(msg);
 		}
@@ -292,7 +307,7 @@ $('#tdDataPending').on('click', '[id*=undo_add]', function () {
 	var d = {};
 	d.ID = $(this).attr('data-row-id');
     d.ingName = $(this).attr('data-ingredient');
-	
+	d.originalQuantity = $(this).attr('data-originalQuantity');
 	$.ajax({ 
 		url: 'manageFormula.php', 
 		type: 'POST',
@@ -300,6 +315,7 @@ $('#tdDataPending').on('click', '[id*=undo_add]', function () {
 			action: "makeFormula",
 			undo: 1,
 			ing: d.ingName,
+			originalQuantity: d.originalQuantity,
 			ID: d.ID
 			},
 		dataType: 'json',

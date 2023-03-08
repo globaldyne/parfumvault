@@ -55,6 +55,9 @@ if($meta == 0){
 		$r['concentration'] = (float)$rq['concentration'];
 		$r['dilutant'] = (string)$rq['dilutant'] ?: 'None';
 		$r['quantity'] = number_format((float)$rq['quantity'], $settings['qStep'],'.', '') ?: 0;
+		$r['originalQuantity'] = number_format((float)$rq['originalQuantity'], $settings['qStep'],'.', '') ?: 0;
+		$r['overdose'] = number_format((float)$rq['overdose'], $settings['qStep'],'.', '') ?: 0;
+
 		$r['toAdd'] = (int)$rq['toAdd'];
 		
 		

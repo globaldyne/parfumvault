@@ -63,6 +63,8 @@ CREATE TABLE `makeFormula` (
  `concentration` decimal(5,2) DEFAULT 100.00,
  `dilutant` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
  `quantity` decimal(8,4) DEFAULT NULL,
+ `overdose` double(8,4) NOT NULL DEFAULT 0.0000,
+ `originalQuantity` double(8,4) DEFAULT NULL,
  `toAdd` int(11) NOT NULL,
  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
