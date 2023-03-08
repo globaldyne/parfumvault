@@ -1001,3 +1001,7 @@ body {
   color: #fff !important;
   background-color: #e74a3b !important;
 }
+
+.mr2 {
+	margin-right: 10px;	
+}
