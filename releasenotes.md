@@ -5,3 +5,4 @@ Whats New:
 - Add option to reset ingredient quantity to its original value when making the formula
 - Detect and notify if an ingredient is overdosed when making a formula
 - Rewrite sell formula page
+- Added deep search when adding ingredient in formula - this will extend search in synonyms

@@ -851,7 +851,12 @@ body {
   align-self: start;
   float: right;
   margin: 10px;
-  display:none;
+}
+
+.select_deep_ingredient {
+  font-size: medium;
+  border-bottom-style: groove;
+  color: aliceblue;
 }
 
 .buffer {
@@ -876,6 +881,12 @@ body {
 .select2-results {
 	margin: 14px 4px 4px 0px;
     max-height: 400px !important;
+}
+
+.select2-totalRecords {
+	margin: 5px;
+   	border-top-style: groove;
+	border-width: thin;
 }
 
 .bootstrap-select.disabled, .bootstrap-select > .disabled {

@@ -6,6 +6,7 @@
 - Add option to reset ingredient quantity to its original value when making the formula
 - Detect and notify if an ingredient is overdosed when making a formula
 - Rewrite sell formula page
+- Added deep search when adding ingredient in formula - this will extend search in synonyms
 
 ### Version 5.7
 - A rating option has been added so each formula can be rated

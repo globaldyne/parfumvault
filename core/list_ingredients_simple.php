@@ -8,16 +8,28 @@ require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/getIngSupplier.php');
 
-if($s = trim($_POST['search'])){
-	
-	$query = "WHERE name LIKE '%$s%' OR cas LIKE '%$s%' OR INCI LIKE '%$s%'";
+if(!$_POST['search']){
+	$response['data'] = array("What you looking for here??");
+	echo json_encode($response);
+	return;
 }
 
-$q = mysqli_query($conn, "SELECT id,name,INCI,cas,type,odor,physical_state FROM ingredients $query ORDER BY name ASC");
+$s = trim($_POST['search']);
+
+if ($_POST['isDeepQ'] == "true"){
+	$t = "synonyms,ingredients";
+	$filter = "WHERE synonym LIKE '%$s%' AND ing = name GROUP BY name";
+
+}else{
+	$t = "ingredients";	
+	$filter = "WHERE name LIKE '%$s%' OR cas LIKE '%$s%' OR INCI LIKE '%$s%'";
+}
+
+$q = mysqli_query($conn, "SELECT ingredients.id,name,INCI,cas,type,odor,physical_state FROM $t $filter ORDER BY name ASC");
 while($res = mysqli_fetch_array($q)){
     $ingredients[] = $res;
 }
-
+$i = 0;
 foreach ($ingredients as $ingredient) { 
 
 	
@@ -31,9 +43,15 @@ foreach ($ingredients as $ingredient) {
 	$r['stock'] = (float)number_format(getIngSupplier($ingredient['id'],1,$conn)['stock'], $settings['qStep']) ?: 0;
 
 	$rx[]=$r;
+	$i++;
 }
 
 $response = array(
+  "data" => $rx
+);
+
+$response = array(
+  "recordsTotal" => (int)$i,
   "data" => $rx
 );
 
