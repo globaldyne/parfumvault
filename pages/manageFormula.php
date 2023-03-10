@@ -70,8 +70,9 @@ if($_POST['accordName'] && $_POST['accordProfile'] && $_POST['fid']){
 	$accordName = mysqli_real_escape_string($conn,$_POST['accordName']);
 	$nfid = random_str(40, '1234567890abcdefghijklmnopqrstuvwxyz');
 	
-	if(mysqli_num_rows(mysqli_query($conn,"SELECT id FROM formulasMetaData WHERE fid = '$nfid'"))){
-		echo  '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>A formula with name '.$accordName.' already exists, please choose a different name!</div>';
+	if(mysqli_num_rows(mysqli_query($conn,"SELECT name FROM formulasMetaData WHERE name = '$accordName'"))){
+		$response['error'] = 'A formula with name <strong>'.$accordName.'</strong> already exists, please choose a different name!';
+		echo json_encode($response);
 		return;
 	}
 									
@@ -82,9 +83,9 @@ if($_POST['accordName'] && $_POST['accordProfile'] && $_POST['fid']){
 		}
 	}
 	if(mysqli_query($conn,"INSERT INTO formulasMetaData (fid,name) VALUES ('$nfid','$accordName')")){
-		$acc = mysqli_fetch_array(mysqli_query($conn,"SELECT id FROM formulasMetaData WHERE fid = '$nfid'"));
-		echo  '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Accord <a href="?do=Formula&id='.$acc['id'].'" target="_blank">'.$accordName.'</a> created!</div>';
+		$response['success'] =  'Accord <a href="/?do=Formula&id='.mysqli_insert_id($conn).'" target="_blank">'.$accordName.'</a> created!';
 	}
+	echo json_encode($response);
 	return;
 }
 
@@ -149,7 +150,8 @@ if($_POST['fid'] && $_POST['SG'] && $_POST['amount']){
 	while($cur =  mysqli_fetch_array($q)){
 		$nq = $cur['quantity']/$mg['total_mg']*$new_amount;		
 		if(empty($nq)){
-			print 'Something went wrong...';
+			$response['error'] = 'Something went wrong...';
+			echo json_encode($response);
 			return;
 		}
 		mysqli_query($conn,"UPDATE formulas SET quantity = '$nq' WHERE fid = '$fid' AND quantity = '".$cur['quantity']."' AND ingredient = '".$cur['ingredient']."'");
@@ -244,17 +246,23 @@ if($_GET['action'] == 'repIng' && $_GET['fid']){
 	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,isProtected FROM formulasMetaData WHERE fid = '$fid'"));
 	if($meta['isProtected'] == FALSE){
 		if(mysqli_num_rows(mysqli_query($conn, "SELECT ingredient FROM formulas WHERE ingredient = '$ingredient' AND fid = '$fid'"))){
-			echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$ingredient.' already exists in formula!</div>';
+			$response['error'] = '<strong>Error: </strong>'.$ingredient.' already exists in formula!';
+			header('Content-Type: application/json');
+			echo json_encode($response);
+			return;
+		}
+		
+		if(mysqli_query($conn, "UPDATE formulas SET ingredient = '$ingredient', ingredient_id = '".$ingredient_id['id']."' WHERE ingredient = '$oldIngredient' AND fid = '$fid'")){
+			$response['success'] = $oldIngredient.' replaced by '.$ingredient;
+			$lg = "REPLACED: $oldIngredient WITH $ingredient";
+			mysqli_query($conn, "INSERT INTO formula_history (fid,change_made,user) VALUES ('".$meta['id']."','$lg','".$user['fullName']."')");
 		}else{
-			if(mysqli_query($conn, "UPDATE formulas SET ingredient = '$ingredient', ingredient_id = '".$ingredient_id['id']."' WHERE ingredient = '$oldIngredient' AND fid = '$fid'")){
-				echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$oldIngredient.' replaced with '.$ingredient.'!</div>';
-				$lg = "REPLACED: $oldIngredient WITH $ingredient";
-				mysqli_query($conn, "INSERT INTO formula_history (fid,change_made,user) VALUES ('".$meta['id']."','$lg','".$user['fullName']."')");
-			}else{
-				echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error replacing '.$oldIngredient.'</div>';
-			}
+			$response['error'] = 'Error replacing '.$oldIngredient;
 		}
 	}
+	
+	header('Content-Type: application/json');
+	echo json_encode($response);
 	return;
 }
 

@@ -513,7 +513,7 @@ $('#print').click(() => {
         <table width="313" border="0">
           <tr>
 	       <td width="66" height="31"><strong>SG<span class="sup">*</span> :</strong></td>
-	       <td width="237"><input name="sg" type="text" id="sg" value="0.985" />
+	       <td width="237"><input name="sg" type="text" id="sg" value="1.000" />
             <strong><?=$settings['mUnit']?></strong></td>
           </tr>
 	     <tr>
@@ -834,7 +834,8 @@ $('#formula').editable({
 			quietMillis: 250,
 			data: function (data) {
 				return {
-					search: data
+					search: data,
+					isDeepQ: "false"
 				};
 			},
 			processResults: function(data) {
@@ -858,14 +859,16 @@ $('#formula').editable({
 	highlight: false,
 	emptytext: null,
 	emptyclass: null,
-	url: "/pages/manageFormula.php?action=repIng&fid=" + myFID ,
+	url: "/pages/manageFormula.php?action=repIng&fid=" + myFID,
 	success: function (data) {
-		if ( data.indexOf("Error") > -1 ) {
-			$('#msgInfo').html(data); 
-		}else{
-			$('#msgInfo').html(data);
+		if(data.success){
+			var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
 			reload_formula_data();
+		}else if(data.error){
+			var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
 		}
+		$('#msgInfo').html(msg);
+			
 	},
 	validate: function(value){
    		if($.trim(value) == ''){
@@ -898,9 +901,7 @@ function manageQuantity(quantity) {
 		scale: quantity,
 		formula: myFID,
 		},
-	dataType: 'html',
     success: function (data) {
-	  	$('#msgInfo').html(data);
 		reload_formula_data();
     }
   });
@@ -924,7 +925,6 @@ $('#amount_to_make').on('click', '[id*=amountToMake]', function () {
 			SG: $("#sg").val(),
 			amount: $("#totalAmount").val(),
 			},
-		dataType: 'html',
 		success: function (data) {
 			$('#amountToMakeMsg').html(data);
 			$('#amount_to_make').modal('toggle');
@@ -946,14 +946,19 @@ $('#create_accord').on('click', '[id*=createAccord]', function () {
 		type: 'POST',
 		cache: false,
 		data: {
-			fid: "<?php echo $fid; ?>",
+			fid: myFID,
 			accordName: $("#accordName").val(),
 			accordProfile: $("#accordProfile").val(),
 			},
-		dataType: 'html',
+		dataType: 'json',
 		success: function (data) {
-			$('#accordMsg').html(data);
-			//$('#createAccord').modal('toggle');
+			if(data.success){
+			var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
+			reload_formula_data();
+		}else if(data.error){
+			var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
+		}
+		$('#accordMsg').html(msg);
 		}
 	  });
 	}
@@ -970,8 +975,8 @@ $('#conv_ingredient').on('click', '[id*=conv2ing]', function () {
 		type: 'POST',
 		cache: false,
 		data: {
-			fid: "<?=$fid?>",
-			fname: "<?=$f_name?>",
+			fid: myFID,
+			fname: myFNAME,
 			ingName: $("#ingName").val(),
 			action: 'conv2ing',
 			},
