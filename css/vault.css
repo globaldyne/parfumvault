@@ -85,13 +85,13 @@ a { text-decoration: none; }
 }
 
 .bg-login-image {
-  background: url("../img/logo_400.png");
+  background: url("/img/logo_400.png");
   background-position: center;
   background-size: cover;
 }
 
 .bg-install-image {
-  background: url("../img/logo_400.png");
+  background: url("/img/logo_400.png");
   background-position: center;
   background-size: cover;
   height: 430px;
@@ -99,14 +99,14 @@ a { text-decoration: none; }
 }
 
 .bg-register-image {
-  background: url("../img/logo_400.png");
+  background: url("/img/logo_400.png");
   background-position: center;
   background-size: cover;
   height: 430px;
 }
 
 .bg-ptypes-image {
-  background: url("../img/perfumes-types.png");
+  background: url("/img/perfumes-types.png");
   background-position: left;
   background-size: contain;
   background-repeat: no-repeat;
