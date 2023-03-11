@@ -53,34 +53,34 @@ if($pv_meta['schema_ver'] < $db_ver){
   <meta name="author" content="Perfumers Vault by JB">
   <title><?php echo $product;?> - Dashboard</title>
   
-  <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
 
-  <link href="css/fontawesome-free/css/all.min.css" rel="stylesheet">
-  <link href="css/sb-admin-2.css" rel="stylesheet">
-  <link href="css/bootstrap-select.min.css" rel="stylesheet">
-  <link href="css/bootstrap-editable.css" rel="stylesheet">
-  <link href="css/datatables.min.css" rel="stylesheet">
-  <link href="css/bootstrap.min.css" rel="stylesheet">
-  <link href="css/jquery-ui.css" rel="stylesheet">
-  <link href="css/magnific-popup.css" rel="stylesheet" />
+  <link href="/css/fontawesome-free/css/all.min.css" rel="stylesheet">
+  <link href="/css/sb-admin-2.css" rel="stylesheet">
+  <link href="/css/bootstrap-select.min.css" rel="stylesheet">
+  <link href="/css/bootstrap-editable.css" rel="stylesheet">
+  <link href="/css/datatables.min.css" rel="stylesheet">
+  <link href="/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/css/jquery-ui.css" rel="stylesheet">
+  <link href="/css/magnific-popup.css" rel="stylesheet" />
   
-  <link href="css/vault.css" rel="stylesheet">
+  <link href="/css/vault.css" rel="stylesheet">
   
-  <script src="js/jquery/jquery.min.js"></script>
-  <script src="js/tableHTMLExport.js"></script>
-  <script src="js/jspdf.min.js"></script>
-  <script src="js/jspdf.plugin.autotable.js"></script>
-  <script src="js/datatables.min.js"></script> 
-  <script src="js/magnific-popup.js"></script>
-  <script src="js/jquery-ui.js"></script>
-  <script src="js/bootstrap.min.js"></script>
-  <script src="js/bootstrap-select.js"></script>
-  <script src="js/bootstrap-editable.js"></script>
-  <script src="js/dataTables.responsive.min.js"></script>
-  <script src="js/bootbox.min.js"></script>
+  <script src="/js/jquery/jquery.min.js"></script>
+  <script src="/js/tableHTMLExport.js"></script>
+  <script src="/js/jspdf.min.js"></script>
+  <script src="/js/jspdf.plugin.autotable.js"></script>
+  <script src="/js/datatables.min.js"></script> 
+  <script src="/js/magnific-popup.js"></script>
+  <script src="/js/jquery-ui.js"></script>
+  <script src="/js/bootstrap.min.js"></script>
+  <script src="/js/bootstrap-select.js"></script>
+  <script src="/js/bootstrap-editable.js"></script>
+  <script src="/js/dataTables.responsive.min.js"></script>
+  <script src="/js/bootbox.min.js"></script>
   
-  <script src="js/sb-admin-2.js"></script>
+  <script src="/js/sb-admin-2.js"></script>
 
 <script type='text/javascript'>
 
@@ -129,7 +129,7 @@ function updateDB() {
 	
 function list_formulas(){
 	$.ajax({ 
-		url: 'pages/listFormulas.php', 
+		url: '/pages/listFormulas.php', 
 		dataType: 'html',
 		success: function (data) {
 			$('#list_formulas').html(data);
@@ -140,7 +140,7 @@ function list_formulas(){
 function list_ingredients(page,limit,filter){
 	$('#list_ingredients').html('<img class="loader loader-center" src="/img/Testtube.gif"/>');
 	$.ajax({
-		url: 'pages/listIngredients.php',
+		url: '/pages/listIngredients.php',
 		type: 'GET',
 		data: {
 			"search": "<?=$_GET['search']?>"
@@ -154,7 +154,7 @@ function list_ingredients(page,limit,filter){
 
 function list_users(){
 	$.ajax({ 
-		url: 'pages/listUsers.php', 
+		url: '/pages/listUsers.php', 
 		dataType: 'html',
 			success: function (data) {
 				$('#list_users').html(data);
@@ -208,10 +208,10 @@ function list_users(){
         <div id="collapseFormulas" class="collapse <?php echo $expand_f;?>" aria-labelledby="headingFormulas" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <a class="collapse-item <?php if($_GET['do'] == 'listFormulas' | $_GET['do'] == 'Formula'){ echo 'active';}?>" href="?do=listFormulas">Formulas</a>
-            <a class="collapse-item <?php if($_GET['do'] == 'compareFormulas'){ echo 'active';}?>" href="?do=compareFormulas">Compare Formulas</a>
-            <a class="collapse-item <?php if($_GET['do'] == 'genFinishedProduct'){ echo 'active';}?>" href="?do=genFinishedProduct"> Finished Product</a>
+            <a class="collapse-item <?php if($_GET['do'] == 'compareFormulas'){ echo 'active';}?>" href="/?do=compareFormulas">Compare Formulas</a>
+            <a class="collapse-item <?php if($_GET['do'] == 'genFinishedProduct'){ echo 'active';}?>" href="/?do=genFinishedProduct"> Finished Product</a>
             <a class="collapse-item <?php if($_GET['do'] == 'sellFormula'){ echo 'active';}?>" href="?do=sellFormula">Sell Formula</a>
-            <a class="collapse-item <?php if($_GET['do'] == 'todo'){ echo 'active';}?>" href="?do=todo">Pending Formulas <span class="badge badge-danger badge-counter"><?php echo countPending(NULL, NULL, $conn);?></span></a>
+            <a class="collapse-item <?php if($_GET['do'] == 'todo'){ echo 'active';}?>" href="/?do=todo">Pending Formulas <span class="badge badge-danger badge-counter"><?php echo countPending(NULL, NULL, $conn);?></span></a>
           </div>
         </div>
       </li>
@@ -234,12 +234,12 @@ function list_users(){
         </a>
         <div id="collapseInventoty" class="collapse <?php echo $expand;?>" aria-labelledby="headingInventory" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item <?php if($_GET['do'] == 'ingredients'){ echo 'active';}?>" href="?do=ingredients">Ingredients</a>
-            <a class="collapse-item <?php if($_GET['do'] == 'batches'){ echo 'active';}?>" href="?do=batches">Batch history</a>
-            <a class="collapse-item <?php if($_GET['do'] == 'suppliers'){ echo 'active';}?>" href="?do=suppliers">Suppliers</a>
-            <a class="collapse-item <?php if($_GET['do'] == 'customers'){ echo 'active';}?>" href="?do=customers">Customers</a>
-            <a class="collapse-item <?php if($_GET['do'] == 'bottles'){ echo 'active';}?>" href="?do=bottles">Bottles</a>
-            <a class="collapse-item <?php if($_GET['do'] == 'lids'){ echo 'active';}?>" href="?do=lids">Bottle Lids</a>
+            <a class="collapse-item <?php if($_GET['do'] == 'ingredients'){ echo 'active';}?>" href="/?do=ingredients">Ingredients</a>
+            <a class="collapse-item <?php if($_GET['do'] == 'batches'){ echo 'active';}?>" href="/?do=batches">Batch history</a>
+            <a class="collapse-item <?php if($_GET['do'] == 'suppliers'){ echo 'active';}?>" href="/?do=suppliers">Suppliers</a>
+            <a class="collapse-item <?php if($_GET['do'] == 'customers'){ echo 'active';}?>" href="/?do=customers">Customers</a>
+            <a class="collapse-item <?php if($_GET['do'] == 'bottles'){ echo 'active';}?>" href="/?do=bottles">Bottles</a>
+            <a class="collapse-item <?php if($_GET['do'] == 'lids'){ echo 'active';}?>" href="/?do=lids">Bottle Lids</a>
           </div>
         </div>
       </li>

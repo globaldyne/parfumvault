@@ -10,11 +10,8 @@ function getCatByID($id, $image = FALSE, $conn){
 		$title = $cat['name'];
 	}
 	
-	if($image == TRUE && $cat['image']){
-		$result = '<a href="#" rel="tipsy" title="'.$title.'"><img class="img_ing ing_ico_list" src="'.$cat['image'].'" /></a>';
-	}else{
-		$result =  '<a href="#" rel="tipsy" title="'.$title.'">'.$cat['name'].'</a>';
-	}
+	$image = $cat['image']?:'/img/uknown_generic.png';
+	$result = '<i rel="tip" title="'.$title.'"><img class="img_ing ing_ico_list" src="'.$image.'" /></i>';
 
 	return $result;
 }
