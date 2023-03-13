@@ -13,6 +13,8 @@
           <thead>
             <tr>
               <th>Formula Name</th>
+              <th>Ingredients Pending</th>
+              <th>Completed</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -56,6 +58,8 @@ $(document).ready(function() {
 		},
 	   columns: [
             { data : 'name', title: 'Formula Name', render: name },
+			{ data : 'total_ingredients_left', title: 'Ingredients remaining' },
+			{ data : 'madeOn', title: 'Porgress', render: progress },
 			{ data : null, title: 'Actions', render: actions },
 			],
 	order: [[ 0, 'asc' ]],
@@ -66,13 +70,20 @@ $(document).ready(function() {
 	
 }); //END DOC
 
-function name(data, type, row){
-	var css;
-	if (row.toAdd == '0') {
-		 css = 'fas fa-check';
-	}
+function progress(data, type, row){
+ 	const perc = Math.round(100 - (row.total_ingredients_left / row.total_ingredients) * 100);
+ 	const nowVal = row.total_ingredients_left;
+	const maxVal = row.total_ingredients;
 	
-	data = '<a href="/pages/makeFormula.php?fid='+ row.fid +'" target="_blank" class="'+ css +'">'+row.name+'</a>' ;
+	data = '<div class="progress">' + 
+			  '<div class="progress-bar" role="progressbar" style="width: '+perc+'%;" aria-valuenow="'+nowVal+'" aria-valuemin="0" aria-valuemax="100">'+perc+'% Complete</div>' +
+			'</div>';
+	return data;
+}
+
+function name(data, type, row){
+	
+	data = '<a href="/pages/makeFormula.php?fid='+ row.fid +'" target="_blank">'+row.name+'</a>' ;
 	
 	return data;
 }

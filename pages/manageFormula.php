@@ -380,12 +380,18 @@ if($_POST['action'] == 'delete' && $_POST['fid']){
 	return;
 }
 
-//UNDO REMOVE ING FROM MAKE FORMULA
-
+//RESET ING IN MAKE FORMULA
 if($_POST['action'] == 'makeFormula' && $_POST['undo'] == '1'){
+	$q = trim($_POST['originalQuantity']);
+	$ingID = mysqli_real_escape_string($conn, $_POST['ingID']);
 
-	if(mysqli_query($conn, "UPDATE makeFormula SET toAdd = '1', overdose = '0', quantity = '".$_POST['originalQuantity']."' WHERE id = '".$_POST['ID']."'")){ 
-		$response['success'] = $_POST['ing'].' re-added';
+	if(mysqli_query($conn, "UPDATE makeFormula SET toAdd = '1', overdose = '0', quantity = '".$_POST['originalQuantity']."' WHERE id = '".$_POST['ID']."'")){
+		$response['success'] = $_POST['ing'].'\'s quantity reset';
+		
+		if($_POST['resetStock'] == "true"){
+			mysqli_query($conn, "UPDATE suppliers SET stock = stock + $q WHERE ingID = '$ingID' AND preferred = '1'");
+			$response['success'] .= "<br/><strong>Stock increased by ".$q.$settings['mUnit']."</strong>";
+		}
 		echo json_encode($response);
 	}
 	return;
@@ -448,9 +454,9 @@ if($_POST['action'] == 'todo' && $_POST['fid'] && $_POST['add']){
 		return;
 	}
 								
-	if(mysqli_query($conn, "INSERT INTO makeFormula (fid, name, ingredient, concentration, dilutant, quantity, originalQuantity, toAdd) SELECT fid, name, ingredient, concentration, dilutant, quantity, quantity, '1' FROM formulas WHERE fid = '$fid'")){
+	if(mysqli_query($conn, "INSERT INTO makeFormula (fid, name, ingredient, concentration, dilutant, quantity, originalQuantity, toAdd) SELECT fid, name, ingredient, concentration, dilutant, quantity, quantity, '1' FROM formulas WHERE fid = '$fid' AND exclude_from_calculation = '0'")){
 		mysqli_query($conn, "UPDATE formulasMetaData SET toDo = '1' WHERE fid = '$fid'");
-		$response['success'] = 'Formula <a href="?do=todo">'.$fname.'</a> added in To Make list!';		
+		$response['success'] = 'Formula <a href="/?do=todo">'.$fname.'</a> added in To Make list!';		
 	}
 	echo json_encode($response);
 	return;

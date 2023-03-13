@@ -37,6 +37,8 @@ $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM formulasMetaDat
   <script src="/js/tableHTMLExport.js"></script>
   <script src="/js/jspdf.min.js"></script>
   <script src="/js/jspdf.plugin.autotable.js"></script>
+  <script src="/js/bootbox.min.js"></script>
+
   <style>
   	table.dataTable {
   		font-size: x-large !important;
@@ -167,7 +169,7 @@ $(document).ready(function() {
 		  var response = this.api().ajax.json();
 		  if(response){
 			 var $td = $(tfoot).find('th');
-			 $td.eq(0).html("Ingredients: " + response.meta['total_ingredients'] );
+			 $td.eq(0).html("Ingredients left: "+ response.meta['total_ingredients_left'] + ' of ' + response.meta['total_ingredients'] );
 			 $td.eq(3).html("Total left: " + response.meta['total_quantity_left'] + ' of ' + response.meta['total_quantity'] + response.meta['quantity_unit'] );
 		 }
       },
@@ -196,9 +198,9 @@ function quantity(data, type, row){
 }
 function actions(data, type, row){
 	var data = '';
-	if (row.quantity != row.originalQuantity) {
-		data = '<a href="#" id="undo_add" data-row-id="'+row.id+'" data-ingredient="'+row.ingredient+'" data-originalQuantity="'+row.originalQuantity+'" class="fas fa-undo" title="Reset original quantity for '+row.ingredient+'"></a>';
-	}
+	//if (row.quantity != row.originalQuantity) {
+		data = '<a href="#" id="undo_add" data-row-id="'+row.id+'" data-ingredient="'+row.ingredient+'" data-originalQuantity="'+row.originalQuantity+'" data-ingID = '+row.ingID+' class="fas fa-undo" title="Reset original quantity for '+row.ingredient+'"></a>';
+	//}
 	
 	if (row.toAdd == 1) {
 		data += '<a href="#" data-toggle="modal" data-target="#confirm_add" data-quantity="'+row.quantity+'" data-ingredient="'+row.ingredient+'" data-row-id="'+row.id+'" data-ing-id="'+row.ingID+'" data-qr="'+row.quantity+'" class="fas fa-check mrl" title="Confirm add '+row.ingredient+'"></a>';
@@ -307,30 +309,61 @@ $('#tdDataPending').on('click', '[id*=undo_add]', function () {
 	var d = {};
 	d.ID = $(this).attr('data-row-id');
     d.ingName = $(this).attr('data-ingredient');
+	d.ingID = $(this).attr('data-ingID');
 	d.originalQuantity = $(this).attr('data-originalQuantity');
-	$.ajax({ 
-		url: 'manageFormula.php', 
-		type: 'POST',
-		data: {
-			action: "makeFormula",
-			undo: 1,
-			ing: d.ingName,
-			originalQuantity: d.originalQuantity,
-			ID: d.ID
-			},
-		dataType: 'json',
-		success: function (data) {
-			if(data.success) {
-				var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
-				$('#msg').html(msg);
-				reload_data();
-			} else {
-				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
-				$('#errMsg').html(msg);
-			}
-			
-		}
-	  });
+	bootbox.dialog({
+       title: "Confirm reset quantity",
+       message : 'Reset <strong>'+ d.ingName +'\'s</strong> quantity to <strong>'+ d.originalQuantity +'</strong>?' +
+	   '<hr />' 
+	   +'<input name="resetStock" id="resetStock" type="checkbox" value="1" checked> Reset stock',
+	   
+       buttons :{
+           main: {
+           label : "Reset",
+           className : "btn-danger",
+         callback: function (){
+		 $.ajax({ 
+			url: 'manageFormula.php', 
+				type: 'POST',
+				data: {
+					action: "makeFormula",
+					undo: 1,
+					ing: d.ingName,
+					ingID: d.ingID,
+					originalQuantity: d.originalQuantity,
+					resetStock: $("#resetStock").is(':checked'),
+					ID: d.ID
+				},
+				dataType: 'json',
+				success: function (data) {
+					if(data.success) {
+						var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+						$('#msg').html(msg);
+						reload_data();
+					} else {
+						var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+						$('#errMsg').html(msg);
+					}		
+				}
+			});
+				
+                 return true;
+               }
+           },
+           cancel: {
+               label : "Cancel",
+               className : "btn-default",
+               callback : function() {
+                   return true;
+               }
+           }   
+       },onEscape: function () {return true;}
+   });
+	
+	
+	
+	
+	
 });
 </script>
 
