@@ -21,7 +21,7 @@ $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM formulasMetaDat
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="<?php echo trim($product).' - '.trim($ver);?>">
-  <meta name="author" content="JBPARFUM">
+  <meta name="author" content="<?php echo trim($product).' - '.trim($ver);?>">
   <title>Making of <?php echo $meta['name'];?></title>
   
   <link href="/css/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
