@@ -4,18 +4,26 @@ if (!defined('pvault_panel')){ die('Not Found');}
 
 function pvOnlineStats($api, $s){
 	$jAPI = $api.'?do=getStats';
-	if($jData = json_decode(file_get_contents($jAPI),true)){
-		return $jData[$s];
-	}else{
-		return 'Connection failed';
-	}
+	
+	$ch = curl_init($jAPI);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+
+	$response = json_decode(curl_exec($ch),true);
+	curl_close($ch);
+	return $response[$s];
+	
 }
 
 function pvOnlineValAcc($api, $apiUser, $apiPass, $ver){
 	$jAPI = $api.'?username='.$apiUser.'&password='.$apiPass.'&login=1&ver='.$ver;
-	$jData = json_decode(file_get_contents($jAPI),true);
+	$ch = curl_init($jAPI);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
 
-	return $jData['auth'];
+	$response = json_decode(curl_exec($ch),true);
+	curl_close($ch);
+	return $response['auth'];
 }
 
 function pvUploadData($pvOnlineAPI, $data){

@@ -143,7 +143,7 @@ $(document).ready(function() {
 	language: {
 		loadingRecords: '&nbsp;',
 		processing: 'Please Wait...',
-		zeroRecords: 'No pending formulas found',
+		zeroRecords: 'No pending ingredients found',
 		search: 'Quick Search:',
 		searchPlaceholder: 'Ingredient..',
 		},

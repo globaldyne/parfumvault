@@ -434,7 +434,10 @@ if($_POST['action'] == 'makeFormula' && $_POST['fid'] && $_POST['q'] && $_POST['
 	}
 	
 	if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = '$fid' AND toAdd = '1'"))){
-		mysqli_query($conn,"UPDATE formulasMetaData SET isMade = '1', madeOn = NOW(), status = '2' WHERE fid = '$fid'");
+		mysqli_query($conn,"UPDATE formulasMetaData SET isMade = '1', toDo = '0', madeOn = NOW(), status = '2' WHERE fid = '$fid'");
+		
+		mysqli_query($conn, "DELETE FROM makeFormula WHERE fid = '$fid'");
+		
 		$response['success'] = '<strong>Formula is complete</strong>';
 	}
 	
@@ -455,7 +458,7 @@ if($_POST['action'] == 'todo' && $_POST['fid'] && $_POST['add']){
 	}
 								
 	if(mysqli_query($conn, "INSERT INTO makeFormula (fid, name, ingredient, concentration, dilutant, quantity, originalQuantity, toAdd) SELECT fid, name, ingredient, concentration, dilutant, quantity, quantity, '1' FROM formulas WHERE fid = '$fid' AND exclude_from_calculation = '0'")){
-		mysqli_query($conn, "UPDATE formulasMetaData SET toDo = '1' WHERE fid = '$fid'");
+		mysqli_query($conn, "UPDATE formulasMetaData SET toDo = '1', status = '1', isMade = '0' WHERE fid = '$fid'");
 		$response['success'] = 'Formula <a href="/?do=todo">'.$fname.'</a> added in To Make list!';		
 	}
 	echo json_encode($response);
@@ -468,7 +471,7 @@ if($_POST['action'] == 'todo' && $_POST['fid'] && $_POST['remove']){
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 
 	if(mysqli_query($conn, "DELETE FROM makeFormula WHERE fid = '$fid'")){
-		mysqli_query($conn, "UPDATE formulasMetaData SET toDo = '0' WHERE fid = '$fid'");
+		mysqli_query($conn, "UPDATE formulasMetaData SET toDo = '0', status = '0', isMade = '0' WHERE fid = '$fid'");
 		$response['success'] = $name.' removed';
 		echo json_encode($response);
 	}

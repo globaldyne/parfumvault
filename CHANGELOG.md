@@ -7,6 +7,8 @@
 - Detect and notify if an ingredient is overdosed when making a formula
 - Rewrite sell formula page
 - Added deep search when adding ingredient in formula - this will extend search in synonyms
+- Fix PV Online intergration - Still in TECH PREVIEW state
+- Fix a bug preventing loding ingredients page in windows hosts
 
 ### Version 5.7
 - A rating option has been added so each formula can be rated
