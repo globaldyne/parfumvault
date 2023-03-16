@@ -10,26 +10,19 @@ if(file_exists('./inc/config.php') == FALSE){
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/product.php');
 require_once(__ROOT__.'/inc/opendb.php');
-require_once(__ROOT__.'/func/calcCosts.php');
-require_once(__ROOT__.'/func/calcPerc.php');
-require_once(__ROOT__.'/func/checkDupes.php');
+
 require_once(__ROOT__.'/func/checkIng.php');
 require_once(__ROOT__.'/func/checkVer.php');
 require_once(__ROOT__.'/func/searchIFRA.php');
 require_once(__ROOT__.'/func/formatBytes.php');
 require_once(__ROOT__.'/func/countElement.php');
-require_once(__ROOT__.'/func/goShopping.php');
-require_once(__ROOT__.'/libs/fpdf.php');
-require_once(__ROOT__.'/func/genBatchID.php');
-require_once(__ROOT__.'/func/genBatchPDF.php');
-require_once(__ROOT__.'/func/ml2L.php');
-require_once(__ROOT__.'/func/validateFormula.php');
+
 require_once(__ROOT__.'/func/pvFileGet.php');
 require_once(__ROOT__.'/func/countPending.php');
 require_once(__ROOT__.'/func/countCart.php');
 require_once(__ROOT__.'/func/pvOnline.php');
 require_once(__ROOT__.'/func/getIngSupplier.php');
-require(__ROOT__.'/inc/settings.php');
+require_once(__ROOT__.'/inc/settings.php');
 
 if($pv_meta['app_ver'] < trim(file_get_contents(__ROOT__.'/VERSION.md'))){
 	$upVerLoc = trim(file_get_contents(__ROOT__.'/VERSION.md'));
@@ -40,7 +33,7 @@ if($pv_meta['app_ver'] < trim(file_get_contents(__ROOT__.'/VERSION.md'))){
 
 $db_ver   = trim(file_get_contents(__ROOT__.'/db/schema.ver'));
 if($pv_meta['schema_ver'] < $db_ver){	
-	$db_up_msg = '<div class="alert alert-warning alert-dismissible"><strong>Your database schema needs to be updated ('.$db_ver.'). Please <a href="pages/maintenance.php?do=backupDB">backup</a> your database first and then click <a href="javascript:updateDB()">here to update the db schema.</a></strong></div>';
+	$db_up_msg = '<div class="alert alert-warning alert-dismissible"><strong>Your database schema needs to be updated ('.$db_ver.'). Please <a href="/pages/maintenance.php?do=backupDB">backup</a> your database first and then click <a href="javascript:updateDB()">here to update the db schema.</a></strong></div>';
 }
 
 ?>
@@ -50,7 +43,7 @@ if($pv_meta['schema_ver'] < $db_ver){
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="description" content="<?php echo $product.' - '.$ver;?>">
-  <meta name="author" content="Perfumers Vault by JB">
+  <meta name="author" content="<?php echo $product.' - '.$ver;?>">
   <title><?php echo $product;?> - Dashboard</title>
   
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
