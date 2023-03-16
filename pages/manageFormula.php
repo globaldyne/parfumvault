@@ -434,17 +434,32 @@ if($_POST['action'] == 'makeFormula' && $_POST['fid'] && $_POST['q'] && $_POST['
 	}
 	
 	if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = '$fid' AND toAdd = '1'"))){
-		mysqli_query($conn,"UPDATE formulasMetaData SET isMade = '1', toDo = '0', madeOn = NOW(), status = '2' WHERE fid = '$fid'");
-		
-		mysqli_query($conn, "DELETE FROM makeFormula WHERE fid = '$fid'");
-		
-		$response['success'] = '<strong>Formula is complete</strong>';
+		$response['success'] = '<strong>All materials added. You should mark formula as complete now!</strong>';
 	}
 	
 	
 	echo json_encode($response);
 	return;
 }
+//MARK COMPLETE
+if($_POST['action'] == 'todo' && $_POST['fid'] && $_POST['markComplete']){
+	$fid = mysqli_real_escape_string($conn, $_POST['fid']);
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = '$fid' AND toAdd = '1'"))){
+		$response['error'] = '<strong>Formula is pending materials to add, cannot be marked as complete.</strong>';
+		echo json_encode($response);
+		return;
+	}
+	if(mysqli_query($conn,"UPDATE formulasMetaData SET isMade = '1', toDo = '0', madeOn = NOW(), status = '2' WHERE fid = '$fid'")){
+		
+		mysqli_query($conn, "DELETE FROM makeFormula WHERE fid = '$fid'");
+		
+		$response['success'] = '<strong>Formula is complete</strong>';
+	}
+	
+	echo json_encode($response);
+	return;
+}
+
 
 //TODO ADD FORMULA
 if($_POST['action'] == 'todo' && $_POST['fid'] && $_POST['add']){

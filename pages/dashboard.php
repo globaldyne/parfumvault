@@ -1,7 +1,19 @@
-<?php if (!defined('pvault_panel')){ die('Not Found');}?>
-<?php require_once(__ROOT__.'/func/countElement.php');?>
-<script src="js/Chart.min.js"></script>
-<link href="css/Chart.css" rel="stylesheet">
+<?php 
+if (!defined('pvault_panel')){ die('Not Found');}
+
+require_once(__ROOT__.'/func/countElement.php');
+if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"))){
+	$ingredientsConf = TRUE;
+}else{
+	$ingredientsConf = FALSE;
+}
+if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))){
+	$formulasConf = TRUE;
+}else{
+	$formulasConf = FALSE;
+}
+?>
+
 
 <div id="content-wrapper" class="d-flex flex-column">
 <?php require_once(__ROOT__.'/pages/top.php'); ?>
@@ -10,13 +22,13 @@
             <h1 class="m-0 mb-4 text-primary">Dashboard</h1>
           </div>
           <div class="row">
-          <?php
-if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"))== 0){
-	echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> no ingredients yet, click <a href="?do=ingredients">here</a> to add.</div>';
-}elseif(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))== 0){
+        <?php
+if($ingredientsConf == FALSE){
+	echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> no ingredients yet, click <a href="/?do=ingredients">here</a> to add.</div>';
+}elseif($formulasConf == FALSE){
 	echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> no formulas added yet</div>';
 }else{
-	?>
+		?>
               <div class="dash_charts">
               <div class="shadow-lg p-3 mb-5 bg-white rounded charts_box">
               
@@ -190,12 +202,14 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"))== 0){
       </div>
   </div>
   
-<?php if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"))){ ?>
+<?php if($ingredientsConf == TRUE && $formulasConf == TRUE){ ?>
+<script src="/js/Chart.min.js"></script>
+<link href="/css/Chart.css" rel="stylesheet">
 <script>
 var formulas = document.getElementById('formulasPie');
 var ingredients = document.getElementById('ingredientsPie');
  $.ajax({
-    url: "core/stats_data.php",
+    url: "/core/stats_data.php",
     method: "GET",
     dataType : 'JSON',
     success: function(stats) {

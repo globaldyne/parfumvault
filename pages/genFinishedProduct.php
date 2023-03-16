@@ -1,5 +1,11 @@
 <?php 
-if (!defined('pvault_panel')){ die('Not Found');}  
+if (!defined('pvault_panel')){ die('Not Found');}
+require_once(__ROOT__.'/libs/fpdf.php');
+require_once(__ROOT__.'/func/genBatchID.php');
+require_once(__ROOT__.'/func/genBatchPDF.php');
+require_once(__ROOT__.'/func/validateFormula.php');
+require_once(__ROOT__.'/func/calcPerc.php');
+require_once(__ROOT__.'/func/calcCosts.php');
 if($_POST['formula']){
 	$f_name =  mysqli_real_escape_string($conn, $_POST['formula']);
 	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE fid = '$f_name'"));

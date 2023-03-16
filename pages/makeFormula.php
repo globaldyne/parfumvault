@@ -15,7 +15,12 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fi
 }
 $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM formulasMetaData WHERE fid = '$fid'"));
 
-?><head>
+if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = '$fid' AND toAdd = '1'"))){
+		$msg = '<div class="alert alert-warning"><a href="#" id="markComplete"><strong>All materials added. Mark formula as complete?</strong></a></div>';
+
+}
+?>
+<head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
@@ -75,15 +80,18 @@ $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM formulasMetaDat
     <div class="container-fluid">
       <div class="card shadow mb-4">
         <div class="card-header py-3">
-          <h2 class="m-0 font-weight-bold text-primary"><a href="javascript:reload_data()"><?php echo $meta['name']; ?></a></h2>
+          <h2 class="m-0 font-weight-bold text-primary"><a href="javascript:reload_data()" id="title"><?php echo $meta['name']; ?></a></h2>
         </div>
         <div class="card-body">
           <div class="table-responsive">
-          <div id="msg"></div>
+          <div id="msg"><?=$msg?></div>
           
           <div class="btn-group" id="menu">
             <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
             <div class="dropdown-menu dropdown-menu-left">
+               <div class="dropdown-divider"></div>
+               <a class="dropdown-item" href="#" id="markCompleteMenu">Mark formula as complete</a>
+
                <div class="dropdown-divider"></div>
                <li class="dropdown-header">Export</li> 
                <a class="dropdown-item" href="javascript:export_as('csv')">Export as CSV</a>
@@ -122,7 +130,6 @@ $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM formulasMetaDat
 var myFNAME = "<?=$meta['name']?>";
 $(document).ready(function() {
 	
-
 	var tdDataPending = $('#tdDataPending').DataTable( {
 	columnDefs: [
 		{ className: 'pv_vertical_middle text-center', targets: '_all' },
@@ -216,6 +223,11 @@ function actions(data, type, row){
 function reload_data() {
     $('#tdDataPending').DataTable().ajax.reload(null, true);
 }
+
+$('#title').click(function() {
+
+	$('#msg').html('');
+});
 
 $('#print').click(() => {
     $('#tdDataPending').DataTable().button(0).trigger();
@@ -316,7 +328,6 @@ $('#tdDataPending').on('click', '[id*=undo_add]', function () {
        message : 'Reset <strong>'+ d.ingName +'\'s</strong> quantity to <strong>'+ d.originalQuantity +'</strong>?' +
 	   '<hr />' 
 	   +'<input name="resetStock" id="resetStock" type="checkbox" value="1" checked> Reset stock',
-	   
        buttons :{
            main: {
            label : "Reset",
@@ -338,12 +349,11 @@ $('#tdDataPending').on('click', '[id*=undo_add]', function () {
 				success: function (data) {
 					if(data.success) {
 						var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
-						$('#msg').html(msg);
 						reload_data();
 					} else {
 						var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
-						$('#errMsg').html(msg);
-					}		
+					}
+					$('#msg').html(msg);
 				}
 			});
 				
@@ -360,10 +370,51 @@ $('#tdDataPending').on('click', '[id*=undo_add]', function () {
        },onEscape: function () {return true;}
    });
 	
+});
+
 	
+$('#markComplete, #markCompleteMenu').click(function() {
+	   bootbox.dialog({
+       title: "Confirm formula completion",
+       message : "Mark formula <strong> <?php echo $meta['name'];?></strong> as complete?",
+       buttons :{
+          main: {
+          label : "Mark as complete",
+          className : "btn-warning",
+         callback: function (){
+		 $.ajax({ 
+			url: 'manageFormula.php', 
+				type: 'POST',
+				data: {
+					action: "todo",
+					markComplete: 1,
+					fid: "<?php echo $fid; ?>"
+				},
+				dataType: 'json',
+				success: function (data) {
+					if(data.success) {
+						var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+						reload_data();
+					} else {
+						var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+					}	
+					$('#msg').html(msg);
+				}
+			});
+				
+                 return true;
+               }
+           },
+           cancel: {
+               label : "Cancel",
+               className : "btn-default",
+               callback : function() {
+                   return true;
+               }
+           }   
+       },onEscape: function () {return true;}
 	
-	
-	
+	});
 });
 </script>
 
