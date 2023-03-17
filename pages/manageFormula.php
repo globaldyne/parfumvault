@@ -472,8 +472,10 @@ if($_POST['action'] == 'todo' && $_POST['fid'] && $_POST['add']){
 		return;
 	}
 								
-	if(mysqli_query($conn, "INSERT INTO makeFormula (fid, name, ingredient, concentration, dilutant, quantity, originalQuantity, toAdd) SELECT fid, name, ingredient, concentration, dilutant, quantity, quantity, '1' FROM formulas WHERE fid = '$fid' AND exclude_from_calculation = '0'")){
-		mysqli_query($conn, "UPDATE formulasMetaData SET toDo = '1', status = '1', isMade = '0' WHERE fid = '$fid'");
+	if(mysqli_query($conn, "INSERT INTO makeFormula (fid, name, ingredient, ingredient_id, concentration, dilutant, quantity, originalQuantity, toAdd) SELECT fid, name, ingredient, ingredient_id, concentration, dilutant, quantity, quantity, '1' FROM formulas WHERE fid = '$fid' AND exclude_from_calculation = '0'")){
+
+
+		mysqli_query($conn, "UPDATE formulasMetaData SET toDo = '1', status = '1', isMade = '0', schedulledOn = NOW() WHERE fid = '$fid'");
 		$response['success'] = 'Formula <a href="/?do=todo">'.$fname.'</a> added in To Make list!';		
 	}
 	echo json_encode($response);

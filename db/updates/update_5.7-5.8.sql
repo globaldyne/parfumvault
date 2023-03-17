@@ -1,6 +1,9 @@
 ALTER TABLE `makeFormula` CHANGE `quantity` `quantity` DECIMAL(8,4) NULL DEFAULT NULL;
 ALTER TABLE `makeFormula` ADD `overdose` DOUBLE(8,4) NOT NULL DEFAULT '0' AFTER `quantity`;
 ALTER TABLE `makeFormula` ADD `originalQuantity` DECIMAL(8,4) NOT NULL AFTER `overdose`;
+ALTER TABLE `makeFormula` ADD `ingredient_id` INT NOT NULL AFTER `ingredient`;
+
+ALTER TABLE `formulasMetaData` ADD `schedulledOn` DATETIME NULL DEFAULT NULL AFTER `madeOn`; 
 
 ALTER TABLE `formulas` ADD `created` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `notes`, ADD `updated` DATETIME on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `created`; 
   
