@@ -113,7 +113,40 @@ $(document).ready(function() {
 	pageLength: 20,
 	displayLength: 20,		
 	});
-});
+	
+	
+	$('#addSupplier').on('click', '[id*=sAdd]', function () {
+	  $.ajax({ 
+		url: 'update_data.php', 
+		type: 'POST',
+		data: {
+			ingSupplier: 'add',
+			supplier_id: $("#supplier_name").val(),
+			supplier_link: $("#supplier_link").val(),
+			supplier_size: $("#supplier_size").val(),	
+			supplier_price: $("#supplier_price").val(),				
+			supplier_manufacturer: $("#supplier_manufacturer").val(),
+			supplier_batch: $("#supplier_batch").val(),
+			purchased: $("#purchased").val(),
+			stock: $("#stock").val(),
+
+			ingID: '<?=$ingID;?>'
+			},
+		dataType: 'html',
+		success: function (data) {
+			$('#supplier_inf').html(data);
+			$("#supplier_batch").val('');
+			$("#supplier_link").val('');
+			$("#supplier_size").val('');
+			$("#supplier_price").val('');
+			$("#supplier_manufacturer").val('');
+			reload_sup_data();
+		}
+	  });
+	});
+	
+	
+});//END DOC
  Object.getPrototypeOf($('#purchased')).size = function() { return this.length; }; // Workaround for https://github.com/Eonasdan/bootstrap-datetimepicker/issues/1714
 function sName(data, type, row){
 	return '<a href="#" class="ingSupplierID pv_point_gen" data-name="ingSupplierID" data-type="select" data-pk="'+row.id+'">'+row.supplierName+'</a>';    
@@ -315,7 +348,7 @@ $('#tdIngSup').on('click', '[id*=sDel]', function () {
        buttons :{
            main: {
                label : "Remove",
-               className : "btn-primary",
+               className : "btn-danger",
                callback: function (){
 	    			
 				$.ajax({ 
@@ -346,35 +379,7 @@ $('#tdIngSup').on('click', '[id*=sDel]', function () {
    });
 });
 
-$('#addSupplier').on('click', '[id*=sAdd]', function () {
-	$.ajax({ 
-		url: 'update_data.php', 
-		type: 'POST',
-		data: {
-			ingSupplier: 'add',
-			supplier_id: $("#supplier_name").val(),
-			supplier_link: $("#supplier_link").val(),
-			supplier_size: $("#supplier_size").val(),	
-			supplier_price: $("#supplier_price").val(),				
-			supplier_manufacturer: $("#supplier_manufacturer").val(),
-			supplier_batch: $("#supplier_batch").val(),
-			purchased: $("#purchased").val(),
-			stock: $("#stock").val(),
 
-			ingID: '<?=$ingID;?>'
-			},
-		dataType: 'html',
-		success: function (data) {
-			$('#supplier_inf').html(data);
-			$("#supplier_batch").val('');
-			$("#supplier_link").val('');
-			$("#supplier_size").val('');
-			$("#supplier_price").val('');
-			$("#supplier_manufacturer").val('');
-			reload_sup_data();
-		}
-	  });
-});
 
 function reload_sup_data() {
     $('#tdIngSup').DataTable().ajax.reload(null, true);

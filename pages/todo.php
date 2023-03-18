@@ -14,7 +14,8 @@
             <tr>
               <th>Formula Name</th>
               <th>Ingredients Pending</th>
-              <th>Completed</th>
+              <th>Progress</th>
+              <th>Schedulled</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -31,7 +32,7 @@ $(document).ready(function() {
 	var tdDataPending = $('#tdDataPending').DataTable( {
 	columnDefs: [
 		{ className: 'pv_vertical_middle text-center', targets: '_all' },
-		{ orderable: false, targets: [1] },
+		{ orderable: false, targets: [1,4] },
 	],
 	dom: 'lrftip',
 	processing: true,
@@ -58,8 +59,9 @@ $(document).ready(function() {
 		},
 	   columns: [
             { data : 'name', title: 'Formula Name', render: name },
-			{ data : 'total_ingredients_left', title: 'Ingredients remaining' },
+			{ data : null, title: 'Ingredients remaining', render: ingredients },
 			{ data : 'madeOn', title: 'Porgress', render: progress },
+			{ data : 'schedulledOn', title: 'Schedulled' },
 			{ data : null, title: 'Actions', render: actions },
 			],
 	order: [[ 0, 'asc' ]],
@@ -71,20 +73,28 @@ $(document).ready(function() {
 }); //END DOC
 
 function progress(data, type, row){
+	
  	const perc = Math.round(100 - (row.total_ingredients_left / row.total_ingredients) * 100);
  	const nowVal = row.total_ingredients_left;
 	const maxVal = row.total_ingredients;
 	
-	data = '<div class="progress">' + 
-			  '<div class="progress-bar" role="progressbar" style="width: '+perc+'%;" aria-valuenow="'+nowVal+'" aria-valuemin="0" aria-valuemax="100">'+perc+'% Complete</div>' +
+	if(perc != 0){
+		data = '<div class="progress">' + 
+			  '<div class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: '+perc+'%;" aria-valuenow="'+nowVal+'" aria-valuemin="0" aria-valuemax="100">'+perc+'% Complete</div>' +
 			'</div>';
+	}else{
+		data = '<i class="fas fa-hourglass-start" rel="tip" title="Not started yet"></i>';
+	}
 	return data;
 }
 
 function name(data, type, row){
-	
-	data = '<a href="/pages/makeFormula.php?fid='+ row.fid +'" target="_blank">'+row.name+'</a>' ;
-	
+	data = '<a href="/pages/makeFormula.php?fid='+ row.fid +'" target="_blank">'+row.name+'</a>' ;	
+	return data;
+}
+
+function ingredients(data, type, row){
+	data = row.total_ingredients_left + '/' + row.total_ingredients ;	
 	return data;
 }
 

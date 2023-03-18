@@ -43,13 +43,13 @@ if($meta == 0){
 	}
 	
 	foreach ($rs as $rq) {
-		$gING = mysqli_fetch_array(mysqli_query($conn, "SELECT id,cas FROM ingredients WHERE name = '".$rq['ingredient']."'"));
+		$gING = mysqli_fetch_array(mysqli_query($conn, "SELECT cas FROM ingredients WHERE name = '".$rq['ingredient']."'"));
 
 		$r['id'] = (int)$rq['id'];
 		$r['fid'] = (string)$rq['fid'];
 		$r['name'] = (string)$rq['name'];
 		$r['ingredient'] = (string)$rq['ingredient'];		
-		$r['ingID'] = (int)$gING['id'];
+		$r['ingID'] = (int)$rq['ingredient_id'];
 		$r['cas'] = (string)$gING['cas']?:'N/A';
 
 		$r['concentration'] = (float)$rq['concentration'];
@@ -82,7 +82,7 @@ if($meta == 0){
 	if($s != ''){
  	  $f = "  AND (name LIKE '%".$s."%')";
 	}
-	$q = mysqli_query($conn, "SELECT id, fid, name, madeOn, toDo AS toAdd FROM formulasMetaData WHERE toDo = '1' $f $extra LIMIT $row, $limit");
+	$q = mysqli_query($conn, "SELECT id, fid, name, madeOn, schedulledOn, toDo AS toAdd FROM formulasMetaData WHERE toDo = '1' $f $extra LIMIT $row, $limit");
 	
 
 	while($res = mysqli_fetch_array($q)){
@@ -97,6 +97,7 @@ if($meta == 0){
 		$r['total_ingredients'] = (int)countElement("$t WHERE fid = '".$rq['fid']."'",$conn);
 		$r['total_ingredients_left'] = (int)countElement("$t WHERE fid = '".$rq['fid']."' AND toAdd = '1'",$conn);	
 		$r['toAdd'] = (int)$q2['toAdd'];
+		$r['schedulledOn'] = (string)$rq['schedulledOn'];
 		$r['madeOn'] = (string)$rq['madeOn'] ?: 'In progress';
 
 		$rx[]=$r;
