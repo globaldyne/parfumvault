@@ -1,12 +1,14 @@
 <?php
 if (!defined('pvault_panel')){ die('Not Found');}
+define('__ROOT__', dirname(dirname(__FILE__))); 
+
 function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $ver, $uploads_path, $defCatClass, $qStep, $conn){
 	class PDF extends FPDF {
 		function Header() {
 			global $fid;
 			global $batchID;
 			global $prodName;
-			$this->Image('img/logo.png',10,-1,30);
+			$this->Image(__ROOT__.'/img/logo.png',10,-1,30);
 			//TITLE
 			$this->SetFont('Arial','B',13);
 			$this->Cell(60);

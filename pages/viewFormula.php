@@ -23,14 +23,13 @@ $f_name = $meta['name'];
 $fid = $meta['fid'];
 ?>
 
-  
-
 <script>
 var myFID = "<?=$meta['fid']?>";
 var myFNAME = "<?=$meta['name']?>";
+var myID = "<?=$meta['id']?>";
 var isProtected;
 <?php if($meta['isProtected'] == FALSE){?>
-	var isProtected = false;
+	 isProtected = false;
 <?php } ?>
 
 $(document).ready(function() {
@@ -270,7 +269,7 @@ function isMade() {
                callback: function (){
 	    			
 				$.ajax({ 
-					url: 'pages/manageFormula.php', 
+					url: '/pages/manageFormula.php', 
 					type: 'POST',
 					data: {
 						isMade: "1",
@@ -303,7 +302,7 @@ function isMade() {
 }
 
 function update_bar(){
-     $.getJSON("/core/full_formula_data.php?id=<?=$id?>&stats_only=1", function (json) {
+     $.getJSON("/core/full_formula_data.php?id="+myID+"&stats_only=1", function (json) {
 		
 		$('#formula_name').html(json.stats.formula_name);
 		$('#formula_desc').html(json.stats.formula_description);
@@ -352,7 +351,7 @@ $('#print').click(() => {
         <div class="btn-group" id="menu">
             <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
             <div class="dropdown-menu dropdown-menu-left">
-	           <a class="dropdown-item popup-link" href="pages/getFormMeta.php?id=<?=$meta['id']?>">Settings</a>
+	           <a class="dropdown-item popup-link" href="/pages/getFormMeta.php?id=<?=$meta['id']?>">Settings</a>
                <div class="dropdown-divider"></div>
                <li class="dropdown-header">Export</li> 
                <a class="dropdown-item" href="javascript:export_as('csv')">Export to CSV</a>
@@ -370,7 +369,7 @@ $('#print').click(() => {
                <a class="dropdown-item" href="javascript:addTODO()">Add to the make list</a>
                <a class="dropdown-item" href="javascript:isMade()">Mark formula as made</a>
                <div class="dropdown-divider"></div>
-               <a class="dropdown-item" href="pages/viewHistory.php?id=<?=$meta['id']?>" target="_blank">View history</a>
+               <a class="dropdown-item" href="/pages/viewHistory.php?id=<?=$meta['id']?>" target="_blank">View history</a>
                <div class="dropdown-divider"></div>
                <a class="dropdown-item" href="javascript:cloneMe()">Clone Formula</a>
                <div class="dropdown-divider"></div>
@@ -514,7 +513,7 @@ $('#print').click(() => {
         <table width="313" border="0">
           <tr>
 	       <td width="66" height="31"><strong>SG<span class="sup">*</span> :</strong></td>
-	       <td width="237"><input name="sg" type="text" id="sg" value="0.985" />
+	       <td width="237"><input name="sg" type="text" id="sg" value="1.000" />
             <strong><?=$settings['mUnit']?></strong></td>
           </tr>
 	     <tr>
@@ -624,7 +623,7 @@ function extrasShow() {
 $('#formula').editable({
   container: 'body',
   selector: 'a.concentration',
-  url: "pages/update_data.php?formula=<?=$meta['fid']?>",
+  url: "/pages/update_data.php?formula=<?=$meta['fid']?>",
   title: 'Purity %',
   type: "POST",
   dataType: 'json',
@@ -651,7 +650,7 @@ $('#formula').editable({
 	type: 'POST',
 	emptytext: "",
 	emptyclass: "",
-	url: "pages/update_data.php?formula=<?=$meta['fid']?>",
+	url: "/pages/update_data.php?formula=<?=$meta['fid']?>",
 	title: 'Choose solvent',
 	source: [
 			 <?php
@@ -675,7 +674,7 @@ $('#formula').editable({
 $('#formula').editable({
   container: 'body',
   selector: 'a.quantity',
-  url: "pages/update_data.php?formula=<?=$meta['fid']?>",
+  url: "/pages/update_data.php?formula=<?=$meta['fid']?>",
   title: 'Quantity in <?=$settings['mUnit']?>',
   type: "POST",
   dataType: 'json',
@@ -700,7 +699,7 @@ $('#formula').editable({
 $('#formula').editable({
   container: 'body',
   selector: 'i.notes',
-  url: "pages/update_data.php?formula=<?=$fid?>",
+  url: "/pages/update_data.php?formula=<?=$fid?>",
   title: 'Notes',
   type: "POST",
   dataType: 'json',
@@ -728,9 +727,9 @@ function ingName(data, type, row, meta){
 		var profile_class ='';
 	}
 	if(row.ingredient.enc_id){
-		data = '<a class="popup-link '+ex+'" href="pages/mgmIngredient.php?id=' + row.ingredient.enc_id + '">' + data + '</a> '+ chkIng + profile_class;
+		data = '<a class="popup-link '+ex+'" href="/pages/mgmIngredient.php?id=' + row.ingredient.enc_id + '">' + data + '</a> '+ chkIng + profile_class;
 	}else{
-		data = '<a class="popup-link '+ex+'" href="pages/mgmIngredient.php?id=' + btoa(data) + '">' + data + '</a> '+ chkIng + profile_class;
+		data = '<a class="popup-link '+ex+'" href="/pages/mgmIngredient.php?id=' + btoa(data) + '">' + data + '</a> '+ chkIng + profile_class;
 
 	}
 
@@ -835,7 +834,8 @@ $('#formula').editable({
 			quietMillis: 250,
 			data: function (data) {
 				return {
-					search: data
+					search: data,
+					isDeepQ: "false"
 				};
 			},
 			processResults: function(data) {
@@ -859,14 +859,16 @@ $('#formula').editable({
 	highlight: false,
 	emptytext: null,
 	emptyclass: null,
-	url: "pages/manageFormula.php?action=repIng&fid=" + myFID ,
+	url: "/pages/manageFormula.php?action=repIng&fid=" + myFID,
 	success: function (data) {
-		if ( data.indexOf("Error") > -1 ) {
-			$('#msgInfo').html(data); 
-		}else{
-			$('#msgInfo').html(data);
+		if(data.success){
+			var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
 			reload_formula_data();
+		}else if(data.error){
+			var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
 		}
+		$('#msgInfo').html(msg);
+			
 	},
 	validate: function(value){
    		if($.trim(value) == ''){
@@ -899,9 +901,7 @@ function manageQuantity(quantity) {
 		scale: quantity,
 		formula: myFID,
 		},
-	dataType: 'html',
     success: function (data) {
-	  	$('#msgInfo').html(data);
 		reload_formula_data();
     }
   });
@@ -925,7 +925,6 @@ $('#amount_to_make').on('click', '[id*=amountToMake]', function () {
 			SG: $("#sg").val(),
 			amount: $("#totalAmount").val(),
 			},
-		dataType: 'html',
 		success: function (data) {
 			$('#amountToMakeMsg').html(data);
 			$('#amount_to_make').modal('toggle');
@@ -943,18 +942,23 @@ $('#create_accord').on('click', '[id*=createAccord]', function () {
 	  	$('#accordMsg').html('<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> Accord name required!</div>');	
 	}else{
 		$.ajax({ 
-		url: 'pages/manageFormula.php', 
+		url: '/pages/manageFormula.php', 
 		type: 'POST',
 		cache: false,
 		data: {
-			fid: "<?php echo $fid; ?>",
+			fid: myFID,
 			accordName: $("#accordName").val(),
 			accordProfile: $("#accordProfile").val(),
 			},
-		dataType: 'html',
+		dataType: 'json',
 		success: function (data) {
-			$('#accordMsg').html(data);
-			//$('#createAccord').modal('toggle');
+			if(data.success){
+			var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
+			reload_formula_data();
+		}else if(data.error){
+			var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
+		}
+		$('#accordMsg').html(msg);
 		}
 	  });
 	}
@@ -967,12 +971,12 @@ $('#conv_ingredient').on('click', '[id*=conv2ing]', function () {
 	  	$('#cnvMsg').html('<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> Ingredient name required!</div>');	
 	}else{
 		$.ajax({ 
-		url: 'pages/manageFormula.php', 
+		url: '/pages/manageFormula.php', 
 		type: 'POST',
 		cache: false,
 		data: {
-			fid: "<?=$fid?>",
-			fname: "<?=$f_name?>",
+			fid: myFID,
+			fname: myFNAME,
 			ingName: $("#ingName").val(),
 			action: 'conv2ing',
 			},
@@ -992,7 +996,7 @@ $('#conv_ingredient').on('click', '[id*=conv2ing]', function () {
 //Clone
 function cloneMe() {	  
 $.ajax({ 
-    url: 'pages/manageFormula.php', 
+    url: '/pages/manageFormula.php', 
 	type: 'POST',
     data: {
 		action: "clone",
@@ -1115,7 +1119,7 @@ $('#share_to_user').on('click', '[id*=sharePVOnline]', function () {
 	$('#shareMsg').html('<div class="alert alert-info"><img src="/img/loading.gif"/> Please wait, this may take a while...</div>');
 
 	$.ajax({
-		url: 'pages/pvonline.php', 
+		url: '/pages/pvonline.php', 
 		type: 'POST',
 		data: {
 			action: 'share',
@@ -1142,7 +1146,7 @@ $('#share_to_user').on('click', '[id*=sharePVOnline]', function () {
 
 $('#invToPV').click(function() {
 	$.ajax({
-		url: 'pages/pvonline.php', 
+		url: '/pages/pvonline.php', 
 		type: 'POST',
 		data: {
 			action: 'invToPv',
@@ -1180,5 +1184,5 @@ function export_as(type) {
   });
 };
 </script>
-<script src="js/mark/jquery.mark.min.js"></script>
-<script src="js/mark/datatables.mark.js"></script>
+<script src="/js/mark/jquery.mark.min.js"></script>
+<script src="/js/mark/datatables.mark.js"></script>

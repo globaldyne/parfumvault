@@ -19,7 +19,7 @@ require_once(__ROOT__.'/func/getCatByID.php');
 
 if(!$_GET['id']){		
 	$response['data'] = [];    
-	header('Content-Type: application/json; charset=utf-8');
+	//header('Content-Type: application/json; charset=utf-8');
 	echo json_encode($response);
 	return;
 }
@@ -30,7 +30,7 @@ $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT name,fid,catClass,finalTy
 
 if(!$meta['fid']){		
 	$response['Error'] = (string)'Requested id is not valid.';    
-	header('Content-Type: application/json; charset=utf-8');
+	//header('Content-Type: application/json; charset=utf-8');
 	echo json_encode($response);
 	return;
 }
@@ -48,7 +48,7 @@ if(isset($_GET['stats_only'])){
 
 	$response['stats'] = $s;
 
-	header('Content-Type: application/json; charset=utf-8');
+	//header('Content-Type: application/json; charset=utf-8');
 	echo json_encode($response);
 	return;
 }
@@ -209,7 +209,7 @@ $response['meta'] = $m;
 $s['load_time'] = microtime(true) - $starttime;
 $response['sys'] = $s;
 
-header('Content-Type: application/json; charset=utf-8');
+//header('Content-Type: application/json; charset=utf-8');
 echo json_encode($response);
 return;
 ?>

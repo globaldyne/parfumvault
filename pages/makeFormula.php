@@ -15,13 +15,18 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fi
 }
 $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM formulasMetaData WHERE fid = '$fid'"));
 
-?><head>
+if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = '$fid' AND toAdd = '1'"))){
+		$msg = '<div class="alert alert-warning"><a href="#" id="markComplete"><strong>All materials added. Mark formula as complete?</strong></a></div>';
+
+}
+?>
+<head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="<?php echo trim($product).' - '.trim($ver);?>">
-  <meta name="author" content="JBPARFUM">
+  <meta name="author" content="<?php echo trim($product).' - '.trim($ver);?>">
   <title>Making of <?php echo $meta['name'];?></title>
   
   <link href="/css/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -34,24 +39,67 @@ $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM formulasMetaDat
   <script src="/js/datatables.min.js"></script>
   <link href="/css/datatables.min.css" rel="stylesheet"/>
   <link href="/css/vault.css" rel="stylesheet">
-  
-  	<style>
+  <script src="/js/tableHTMLExport.js"></script>
+  <script src="/js/jspdf.min.js"></script>
+  <script src="/js/jspdf.plugin.autotable.js"></script>
+  <script src="/js/bootbox.min.js"></script>
+
+  <style>
   	table.dataTable {
   		font-size: x-large !important;
+		font-weight: bold;
+		color: #494b51;
 	}
-	</style>
+	.mrl {
+  		margin-left: 50px;
+	}
+	@media print {
+		table, table tr, table td {
+			border-top: #000 solid 2px;
+			border-bottom: #000 solid 2px;
+			border-left: #000 solid 2px;
+			border-right: #000 solid 2px;
+			font-family: arial, sans-serif;
+			font-weight: bold;
+			width: 50%;
+			margin-left: 1px;
+			font-size: 15pt;
+			page-break-inside: auto;
+			page-break-inside: avoid; 
+        	page-break-after: auto;
+		}
+	}
+	table.dataTable thead tr, tfoot tr {
+  		background-color: #337ab7c9;
+		color: white;
+	}
+  </style>
 </head>
-
 
 <div id="content-wrapper" class="d-flex flex-column">
     <div class="container-fluid">
       <div class="card shadow mb-4">
         <div class="card-header py-3">
-          <h2 class="m-0 font-weight-bold text-primary"><a href="javascript:reload_data()"><?php echo $meta['name']; ?></a></h2>
+          <h2 class="m-0 font-weight-bold text-primary"><a href="javascript:reload_data()" id="title"><?php echo $meta['name']; ?></a></h2>
         </div>
         <div class="card-body">
           <div class="table-responsive">
-          <div id="msg"></div>
+          <div id="msg"><?=$msg?></div>
+          
+          <div class="btn-group" id="menu">
+            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
+            <div class="dropdown-menu dropdown-menu-left">
+               <div class="dropdown-divider"></div>
+               <a class="dropdown-item" href="#" id="markCompleteMenu">Mark formula as complete</a>
+
+               <div class="dropdown-divider"></div>
+               <li class="dropdown-header">Export</li> 
+               <a class="dropdown-item" href="javascript:export_as('csv')">Export as CSV</a>
+               <a class="dropdown-item" href="javascript:export_as('pdf')">Export as PDF</a>
+               <a class="dropdown-item" href="#" id="print">Print Formula</a>
+               
+            </div>
+        </div>
             <table class="table table-bordered" id="tdDataPending" width="100%" cellspacing="0">
               <thead>
                 <tr>
@@ -79,14 +127,22 @@ $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM formulasMetaDat
 </div>
 
 <script>
+var myFNAME = "<?=$meta['name']?>";
 $(document).ready(function() {
-
+	
 	var tdDataPending = $('#tdDataPending').DataTable( {
 	columnDefs: [
 		{ className: 'pv_vertical_middle text-center', targets: '_all' },
 		{ orderable: false, targets: [1,4] },
 	],
 	dom: 'lrft',
+	buttons: [{
+				extend: 'print',
+				title: myFNAME,
+				exportOptions: {
+     				columns: [0, 1, 2, 3]
+  				},
+			  }],
 	processing: true,
 	serverSide: true,
 	searching: true,
@@ -94,7 +150,7 @@ $(document).ready(function() {
 	language: {
 		loadingRecords: '&nbsp;',
 		processing: 'Please Wait...',
-		zeroRecords: 'No pending formulas found',
+		zeroRecords: 'No pending ingredients found',
 		search: 'Quick Search:',
 		searchPlaceholder: 'Ingredient..',
 		},
@@ -113,20 +169,20 @@ $(document).ready(function() {
             { data : 'ingredient', title: 'Ingredient' },
 			{ data : 'cas', title: 'CAS' },
             { data : 'concentration', title: 'Purity %' },
-            { data : 'quantity', title: 'Quantity (<?=$settings['mUnit']?>)' },
-			{ data : null, title: 'Actions', render: actions },
+            { data : 'quantity', title: 'Quantity (<?=$settings['mUnit']?>)', render: quantity },
+			{ data : null, title: 'Actions', className: 'text-center noexport', render: actions },
 			],
 	   footerCallback : function( tfoot, data, start, end, display ) {    
 		  var response = this.api().ajax.json();
 		  if(response){
 			 var $td = $(tfoot).find('th');
-			 $td.eq(0).html("Ingredients: " + response.meta['total_ingredients'] );
-			 $td.eq(3).html("Total: " + response.meta['total_quantity'] + response.meta['quantity_unit'] );
+			 $td.eq(0).html("Ingredients left: "+ response.meta['total_ingredients_left'] + ' of ' + response.meta['total_ingredients'] );
+			 $td.eq(3).html("Total left: " + response.meta['total_quantity_left'] + ' of ' + response.meta['total_quantity'] + response.meta['quantity_unit'] );
 		 }
       },
 	  fnRowCallback : function (row, data, display) {
 		  if (data.toAdd == 0) {
-			  $(row).addClass('strikeout');
+			  $(row).find('td:eq(0),td:eq(1),td:eq(2),td:eq(3)').addClass('strikeout');
 		  } 
 	  },
 	 order: [[ 0, 'asc' ]],
@@ -137,15 +193,29 @@ $(document).ready(function() {
 	
 });
 
-
-function actions(data, type, row){
-	if (row.toAdd == 1) {
-		data = '<a href="#" data-toggle="modal" data-target="#confirm_add" data-quantity="'+row.quantity+'" data-ingredient="'+row.ingredient+'" data-row-id="'+row.id+'" data-ing-id="'+row.ingID+'" data-qr="'+row.quantity+'" class="fas fa-check" title="Add '+row.ingredient+'"></a> ';
-	}else{
-		data = '';
+function quantity(data, type, row){
+	
+	var overdose = '';
+	if(row.overdose != 0 ){
+		var overdose = '<span class="ing_alg"> <i rel="tip" title="Overdosed, added '+row.overdose+', instead" class="fas fa-exclamation-triangle"></i></span>';
 	}
+	
+	data = row.quantity + overdose;
+	return data;
+}
+function actions(data, type, row){
+	var data = '';
+	//if (row.quantity != row.originalQuantity) {
+		data = '<a href="#" id="undo_add" data-row-id="'+row.id+'" data-ingredient="'+row.ingredient+'" data-originalQuantity="'+row.originalQuantity+'" data-ingID = '+row.ingID+' class="fas fa-undo" title="Reset original quantity for '+row.ingredient+'"></a>';
+	//}
+	
+	if (row.toAdd == 1) {
+		data += '<a href="#" data-toggle="modal" data-target="#confirm_add" data-quantity="'+row.quantity+'" data-ingredient="'+row.ingredient+'" data-row-id="'+row.id+'" data-ing-id="'+row.ingID+'" data-qr="'+row.quantity+'" class="fas fa-check mrl" title="Confirm add '+row.ingredient+'"></a>';
+	}
+	
+	
 					  
-	data += ' <a href="javascript:addToCart(\''+row.ingredient+'\',\''+row.quantity+'\',\''+row.concentration+'\',\''+row.ingID+'\')" class="fas fa-shopping-cart"></a>'; 
+	data += '<a href="#" data-ingredient="'+row.ingredient+'" data-quantity="'+row.quantity+'" data-concentration="'+row.concentration+'" data-ingID="'+row.ingID+'" id="addToCart" class="mrl fas fa-shopping-cart"></a>'; 
 					 
 	return data;    
 }
@@ -153,6 +223,15 @@ function actions(data, type, row){
 function reload_data() {
     $('#tdDataPending').DataTable().ajax.reload(null, true);
 }
+
+$('#title').click(function() {
+
+	$('#msg').html('');
+});
+
+$('#print').click(() => {
+    $('#tdDataPending').DataTable().button(0).trigger();
+});
 
 $('#tdDataPending').on('click', '[data-target*=confirm_add]', function () {
 	$('#errMsg').html('');																
@@ -175,7 +254,7 @@ function addedToFormula() {
 		qr: $("#qr").text(),
 		updateStock: $("#updateStock").is(':checked'),
 		ing: $("#ingAdded").text(),
-				id: $("#idRow").text(),
+		id: $("#idRow").text(),
 
 		ingId: $("#ingID").text(),
 		fid: "<?php echo $fid; ?>",
@@ -187,7 +266,8 @@ function addedToFormula() {
 			$('#msg').html(msg);
 			$('#confirm_add').modal('toggle');
 			reload_data();
-		} else {
+		
+		} else if(data.error) {
 			var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 			$('#errMsg').html(msg);
 		}
@@ -196,16 +276,17 @@ function addedToFormula() {
   });
 };
 
-function addToCart(material, quantity, purity, ingID) {
+
+$('#tdDataPending').on('click', '[id*=addToCart]', function () {
 $.ajax({ 
     url: 'manageFormula.php', 
 	type: 'POST',
     data: {
 		action: "addToCart",
-		material: material,
-		purity: purity,
-		quantity: quantity,
-		ingID: ingID
+		material: $(this).attr('data-ingredient'),
+		purity: $(this).attr('data-concentration'),
+		quantity: $(this).attr('data-quantity'),
+		ingID: $(this).attr('data-ingID')
 		},
 	dataType: 'json',
     success: function (data) {
@@ -218,10 +299,125 @@ $.ajax({
 		$('#msg').html(msg);
     }
   });
-};
+});
 
+function export_as(type) {
+  $("#tdDataPending").tableHTMLExport({
+	type: type,
+	filename: myFNAME + "." + type,
+	separator: ',',
+  	newline: '\r\n',
+  	trimContent: true,
+  	quoteFields: true,
+	ignoreColumns: '.noexport',
+  	ignoreRows: '.noexport',
+	htmlContent: false,
+	orientation: 'l',
+	maintitle: myFNAME,
+  });
+};
  
+$('#tdDataPending').on('click', '[id*=undo_add]', function () {
+	var d = {};
+	d.ID = $(this).attr('data-row-id');
+    d.ingName = $(this).attr('data-ingredient');
+	d.ingID = $(this).attr('data-ingID');
+	d.originalQuantity = $(this).attr('data-originalQuantity');
+	bootbox.dialog({
+       title: "Confirm reset quantity",
+       message : 'Reset <strong>'+ d.ingName +'\'s</strong> quantity to <strong>'+ d.originalQuantity +'</strong>?' +
+	   '<hr />' 
+	   +'<input name="resetStock" id="resetStock" type="checkbox" value="1" checked> Reset stock',
+       buttons :{
+           main: {
+           label : "Reset",
+           className : "btn-danger",
+         callback: function (){
+		 $.ajax({ 
+			url: 'manageFormula.php', 
+				type: 'POST',
+				data: {
+					action: "makeFormula",
+					undo: 1,
+					ing: d.ingName,
+					ingID: d.ingID,
+					originalQuantity: d.originalQuantity,
+					resetStock: $("#resetStock").is(':checked'),
+					ID: d.ID
+				},
+				dataType: 'json',
+				success: function (data) {
+					if(data.success) {
+						var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+						reload_data();
+					} else {
+						var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+					}
+					$('#msg').html(msg);
+				}
+			});
+				
+                 return true;
+               }
+           },
+           cancel: {
+               label : "Cancel",
+               className : "btn-default",
+               callback : function() {
+                   return true;
+               }
+           }   
+       },onEscape: function () {return true;}
+   });
+	
+});
+
+	
+$('#markComplete, #markCompleteMenu').click(function() {
+	   bootbox.dialog({
+       title: "Confirm formula completion",
+       message : "Mark formula <strong> <?php echo $meta['name'];?></strong> as complete?",
+       buttons :{
+          main: {
+          label : "Mark as complete",
+          className : "btn-warning",
+         callback: function (){
+		 $.ajax({ 
+			url: 'manageFormula.php', 
+				type: 'POST',
+				data: {
+					action: "todo",
+					markComplete: 1,
+					fid: "<?php echo $fid; ?>"
+				},
+				dataType: 'json',
+				success: function (data) {
+					if(data.success) {
+						var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+						reload_data();
+					} else {
+						var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+					}	
+					$('#msg').html(msg);
+				}
+			});
+				
+                 return true;
+               }
+           },
+           cancel: {
+               label : "Cancel",
+               className : "btn-default",
+               callback : function() {
+                   return true;
+               }
+           }   
+       },onEscape: function () {return true;}
+	
+	});
+});
 </script>
+
 <script src="/js/mark/jquery.mark.min.js"></script>
 <script src="/js/mark/datatables.mark.js"></script>
 
