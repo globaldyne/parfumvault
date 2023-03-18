@@ -13,8 +13,23 @@ if($_GET['id'] && $_GET['filter']){
 	$filter = mysqli_real_escape_string($conn, $_GET['filter']);
 	$info = mysqli_fetch_array(mysqli_query($conn, "SELECT $filter FROM ingredients WHERE id = '$id'"));
 	
-	echo $info[$filter];
+	switch ($filter) {
+	  case "solvent":
+		$response[$filter] = $info[$filter] ?: "None";
+		break;
+	  case "purity":
+		$response[$filter] = $info[$filter] ?: 100;
+		break;
+	  
+	  default:
+		echo $response[$filter] = "No data";
+	}
 }
+
+
+
+header('Content-Type: application/json; charset=utf-8');
+echo json_encode($response);
 
 return;
 ?>

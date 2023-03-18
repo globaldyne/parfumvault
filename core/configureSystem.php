@@ -25,7 +25,7 @@ if($_POST['action'] == 'create_pv_account'){
 
 	$data = [ 'do' => 'regUser','email' => strtolower($_POST['email']), 'fullName' => $_POST['fullName'], 'userPass' => base64_encode($_POST['password']), 'ver'=> $app_ver];
 	$r = json_decode(pvPost($pvOnlineAPI, $data));
-	if($r->error->code != '004'){
+	if($r->error){
 		$response['error'] = $r->error->msg;
 		echo json_encode($response);
 		return;
@@ -34,7 +34,7 @@ if($_POST['action'] == 'create_pv_account'){
 	if($r->success){
 		mysqli_query($conn,"DELETE FROM pv_online");
 		mysqli_query($conn,"INSERT INTO pv_online (enabled) VALUES ('1')");
-		$response['success'] = $r->success;
+		$response['success'] = $r->success->msg;
 		echo json_encode($response);
 		return;
 	}

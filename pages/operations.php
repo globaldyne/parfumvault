@@ -17,13 +17,13 @@ if($_GET['do'] == 'db_update'){
 	if(file_exists($script) == TRUE){
 		require_once($script);
 	}
-  	if($pv_meta['schema_ver'] == $n_ver){
+  	if($c_ver == $n_ver){
 		$result['error'] = "No update is needed.";
 		echo json_encode($result);
 		return;
     }
 
-	foreach (range($c_ver, $n_ver,  0.1) as $i) {
+	foreach ( array_map(fn($n) => $n/100, range($c_ver*100, $n_ver*100,  0.1*100)) as $i) {
 		$c_ver = mysqli_fetch_array(mysqli_query($conn, "SELECT schema_ver FROM pv_meta"));
 		$u_ver = number_format($i,1);
 		$sql = __ROOT__.'/db/updates/update_'.$c_ver['schema_ver'].'-'.$u_ver.'.sql';
@@ -35,17 +35,12 @@ if($_GET['do'] == 'db_update'){
 		
 		$q = mysqli_query($conn, "UPDATE pv_meta SET schema_ver = '$u_ver'");
 	}
-	/*	
-	if($e){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Failed to update the database,</strong> corrupted or wrong update file.</div>';
-		//return; 
-		//Notify the user but continue
-	}
-*/
+
 	if($q){
 		$result['success'] = "<strong>Your database has been updated!</strong>";
+		echo json_encode($result);
 	}
-	echo json_encode($result);
+	
 	return;
 }
 

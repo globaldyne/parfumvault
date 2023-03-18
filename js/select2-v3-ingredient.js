@@ -4,8 +4,21 @@ Requires Select2 v3 lib
 */
 
 $(document).ready(function(){
-
+	var isDeep = false;
+	
 	function extrasShow() {	
+	
+		$('[rel=tip]').tooltip();
+		$('.select2-with-searchbox').on('click', '[id*=select_search_deep]', function () {	 
+		  $('#isDeep').each(function () { this.checked = !this.checked; });
+		  // $('#s2id_autogen1_search').trigger("keydown");
+		   if ($('#isDeep').is(':checked')) {
+			   isDeep = $('#isDeep').is(':checked');
+		   } else {
+				isDeep = $('#isDeep').is(':checked');
+		   }
+		});
+		
 		$('.popup-link').magnificPopup({
 			type: 'iframe',
 			closeOnContentClick: false,
@@ -16,7 +29,10 @@ $(document).ready(function(){
 		$('#add_new_ing_sel a').click(function(){
 			$('#ingredient').select2("close");
 		});
+		
 	};
+
+
 
 	$("#ingredient").select2({
 		minimumInputLength: 2,
@@ -34,10 +50,16 @@ $(document).ready(function(){
 			delay: 300,
 			data: function (data) {
 				return {
-					search: data
+					search: data,
+					isDeepQ: isDeep
 				};
 			},
 			processResults: function(data) {
+				if(data.recordsTotal){
+					$(".select2-totalRecords").html('Ingredients found: <strong>' + data.recordsTotal + '</strong>');
+				}else{
+					$(".select2-totalRecords").html('');
+				}
 				return {
 					results: $.map(data.data, function(obj) {
 						return {
@@ -57,7 +79,14 @@ $(document).ready(function(){
 		}
 	  
 	}).on('select2-open', () => {
-		$(".select2-with-searchbox:not(:has(a))").prepend('<div id="add_new_ing_sel" class="select_add_new_ingredient"><a href="/pages/mgmIngredient.php" class="popup-link fa fa-plus text-primary add-new-ing-sel"> Create new ingredient</a><span><div id="select_search_deep" class="select_search_deep"><input name="isDeep" type="checkbox" id="isDeep" value="1" /> Deep Search</div></span></div>');
+		$(".select2-with-searchbox:not(:has(a))").prepend('<div id="add_new_ing_sel" class="select_add_new_ingredient"><a href="/pages/mgmIngredient.php" class="popup-link fa fa-plus text-primary add-new-ing-sel"> Create new ingredient</a></div>');
+		
+		$(".select2-with-searchbox:not(:has(i))").append('<div class="select2-totalRecords"></div><div class="select_deep_ingredient"><span><div id="select_search_deep" class="select_search_deep"><i class="pv_point_gen" rel="tip" data-placement="bottom" title="Extend search in synonyms"><input data-default="true" type="checkbox" id="isDeep"> Deep Search</i></div></span></div>');
+		
+		$('#isDeep').prop('checked', false);
+		isDeep = false;
+		$(".select2-totalRecords").html('');
+		
 		$('.popover').hide();
 		extrasShow();
 
@@ -68,6 +97,8 @@ $(document).ready(function(){
 	  	$(this).attr('ing-id', id);
 	   	$(this).attr('ing-type', type);
 	});
+	
+
 	
 	function formatIngredients (ingredientData) {
 		if (ingredientData.loading) {
@@ -133,7 +164,7 @@ $(document).ready(function(){
 				filter: "purity",
 				id: ingID
 				},
-			dataType: 'html',
+			dataType: 'json',
 			success: function (data) {
 			  if(ingType == 'Solvent'){
 				$("#concentration").prop("disabled", true); 
@@ -142,7 +173,7 @@ $(document).ready(function(){
 				$("#dilutant").val('None');
 			  }else{
 				$("#concentration").prop("disabled", false);
-				$("#concentration").val(data).trigger("input");;
+				$("#concentration").val(data.purity).trigger("input");;
 			  }
 			 $("#quantity").prop("disabled", false);
 			 $("#quantity").val();
@@ -156,13 +187,14 @@ $(document).ready(function(){
 				filter: "solvent",
 				id: ingID
 				},
-			dataType: 'html',
+			dataType: 'json',
 			success: function (data) {
-			  $('#dilutant').val(data);
+			  $('#dilutant').val(data.solvent);
 			}
 		});
 	
 	});
+	
 	$('#concentration').bind('input', function() {
 		var purity = $(this).val();
 		if(purity == 100){
@@ -173,4 +205,5 @@ $(document).ready(function(){
 		$('.selectpicker').selectpicker('refresh');
 	});
 
-})
+
+});

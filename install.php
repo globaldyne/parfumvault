@@ -1,18 +1,20 @@
 <?php 
 if (!defined('pvault_panel')){ die('Not Found');}
-require_once('inc/product.php');
+define('__ROOT__', dirname(__FILE__)); 
+
+require_once(__ROOT__.'/inc/product.php');
 $first_time = 1;
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="<?php echo $product.' - '.$ver;?>">
   <meta name="author" content="JBPARFUM">
   <title><?php echo $product;?> - First time setup!</title>
-
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
   <link href="/css/sb-admin-2.css" rel="stylesheet">
   <link href="/css/vault.css" rel="stylesheet">
   <script src="/js/jquery/jquery.min.js"></script>

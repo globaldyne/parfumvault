@@ -30,7 +30,7 @@ if($_POST['email'] && $_POST['password']){
 			$_SESSION['userID'] = $row['id'];
 			header('Location: index.php');
 	}else{
-		$msg = '<div class="alert alert-danger alert-dismissible">Email or password error</div>';
+		$msg = '<div class="alert alert-danger">Email or password error</div>';
 	}
 }
 
@@ -43,7 +43,6 @@ if($_POST['email'] && $_POST['password']){
 <head>
 
   <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <script type='text/javascript'>
 	if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))){
 			if(screen.height>=1080)
@@ -55,13 +54,14 @@ if($_POST['email'] && $_POST['password']){
   <meta name="description" content="<?php echo $product.' - '.$ver;?>">
   <meta name="author" content="JBPARFUM">
   <title><?php echo $product;?> - Login</title>
-  
-  <script src="js/jquery/jquery.min.js"></script>
-  <script src="js/bootstrap.min.js"></script>
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
+  <script src="/js/jquery/jquery.min.js"></script>
+  <script src="/js/bootstrap.min.js"></script>
  
-  <link href="css/sb-admin-2.css" rel="stylesheet">
-  <link href="css/bootstrap.min.css" rel="stylesheet">
-  <link href="css/vault.css" rel="stylesheet">
+  <link href="/css/sb-admin-2.css" rel="stylesheet">
+  <link href="/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/css/vault.css" rel="stylesheet">
 
 </head>
 

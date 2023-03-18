@@ -177,7 +177,7 @@ function initTable(tableId, src) {
 	});
 }
 
-initTable("all-table", "core/list_formula_data.php");
+initTable("all-table", "/core/list_formula_data.php");
 
 $("#listFormulas").tabs();
 
@@ -193,13 +193,13 @@ function fName(data, type, row, meta){
 		}else{
 			var pad = 'class="fas fa-unlock"  rel="tip" title="Formula is not protected"';
 		}
-		data = '<div '+ pad +'</div><a href="?do=Formula&id=' + row.id + '" > ' + data + '</a>';
+		data = '<div '+ pad +'</div><a href="/?do=Formula&id=' + row.id + '" > ' + data + '</a>';
 	}
   return data;
 }
 function pName(data, type, row, meta){
 	if(type === 'display'){
-		data = '<a class="popup-link" href="pages/getFormMeta.php?id=' + row.id + '">' + data + '</a>';
+		data = '<a class="popup-link" href="/pages/getFormMeta.php?id=' + row.id + '">' + data + '</a>';
 	}
   return data;
 }
@@ -240,7 +240,7 @@ function fStatus(data, type, row, meta){
 
 function fActions(data, type, row, meta){
 	if(type === 'display'){
-		data = '<a href="pages/getFormMeta.php?id=' + row.id + '" rel="tip" title="Show details of '+ row.name +'" class="fas fa-comment-dots popup-link"></a> &nbsp; <a href="#" id="addTODO" class="fas fa-list" rel="tip" title="Add '+ row.name +' to the make list" data-id='+ row.fid +' data-name="'+ row.name +'"></a> &nbsp; <a href="#" id="cloneMe" class="fas fa-copy" rel="tip" title="Clone '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"></a> &nbsp; <i id="deleteMe" class="pv_point_gen fas fa-trash"  style="color: #c9302c;" rel="tip" title="Delete '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"></i>';
+		data = '<a href="/pages/getFormMeta.php?id=' + row.id + '" rel="tip" title="Show details of '+ row.name +'" class="fas fa-cogs popup-link mr2"></a><a href="#" id="addTODO" class="fas fa-tasks mr2" rel="tip" title="Add '+ row.name +' to the make list" data-id='+ row.fid +' data-name="'+ row.name +'"></a><a href="#" id="cloneMe" class="fas fa-copy mr2" rel="tip" title="Clone '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"></a><i id="deleteMe" class="pv_point_gen fas fa-trash"  style="color: #c9302c;" rel="tip" title="Delete '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"></i>';
 	}
     return data;
 }
@@ -287,7 +287,7 @@ $('table.table').on('click', '[id*=deleteMe]', function () {
                callback: function (){
 	    			
 				$.ajax({ 
-					url: 'pages/manageFormula.php', 
+					url: '/pages/manageFormula.php', 
 					type: 'POST',
 					data: {
 						action: "delete",
@@ -338,6 +338,7 @@ $('table.table').on('click', '[id*=addTODO]', function () {
     success: function (data) {
 	  	if (data.success) {
 	  		var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+			reload_formulas_data();
 		}else{
 			var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 		}
@@ -348,7 +349,7 @@ $('table.table').on('click', '[id*=addTODO]', function () {
 
 $('#add_formula').on('click', '[id*=btnAdd]', function () {
 	$.ajax({ 
-    url: 'pages/manageFormula.php', 
+    url: '/pages/manageFormula.php', 
 	type: 'POST',
     data: {
 		action: 'addFormula',

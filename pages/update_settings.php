@@ -276,7 +276,7 @@ if($_POST['manage'] == 'pvonline'){
 	if($_POST['rmACC']) {		
 		$params = "?username=".$pv_online['email']."&password=".$pv_online['password']."&do=deleteProfile";
         $response = json_decode(pvUploadData($pvOnlineAPI.$params, null));
-
+		mysqli_query($conn, "UPDATE pv_online SET enabled = '0'");
 		echo json_encode($response);
 		return;	
 	}

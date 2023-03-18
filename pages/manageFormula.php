@@ -70,8 +70,9 @@ if($_POST['accordName'] && $_POST['accordProfile'] && $_POST['fid']){
 	$accordName = mysqli_real_escape_string($conn,$_POST['accordName']);
 	$nfid = random_str(40, '1234567890abcdefghijklmnopqrstuvwxyz');
 	
-	if(mysqli_num_rows(mysqli_query($conn,"SELECT id FROM formulasMetaData WHERE fid = '$nfid'"))){
-		echo  '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>A formula with name '.$accordName.' already exists, please choose a different name!</div>';
+	if(mysqli_num_rows(mysqli_query($conn,"SELECT name FROM formulasMetaData WHERE name = '$accordName'"))){
+		$response['error'] = 'A formula with name <strong>'.$accordName.'</strong> already exists, please choose a different name!';
+		echo json_encode($response);
 		return;
 	}
 									
@@ -82,9 +83,9 @@ if($_POST['accordName'] && $_POST['accordProfile'] && $_POST['fid']){
 		}
 	}
 	if(mysqli_query($conn,"INSERT INTO formulasMetaData (fid,name) VALUES ('$nfid','$accordName')")){
-		$acc = mysqli_fetch_array(mysqli_query($conn,"SELECT id FROM formulasMetaData WHERE fid = '$nfid'"));
-		echo  '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Accord <a href="?do=Formula&id='.$acc['id'].'" target="_blank">'.$accordName.'</a> created!</div>';
+		$response['success'] =  'Accord <a href="/?do=Formula&id='.mysqli_insert_id($conn).'" target="_blank">'.$accordName.'</a> created!';
 	}
+	echo json_encode($response);
 	return;
 }
 
@@ -149,7 +150,8 @@ if($_POST['fid'] && $_POST['SG'] && $_POST['amount']){
 	while($cur =  mysqli_fetch_array($q)){
 		$nq = $cur['quantity']/$mg['total_mg']*$new_amount;		
 		if(empty($nq)){
-			print 'Something went wrong...';
+			$response['error'] = 'Something went wrong...';
+			echo json_encode($response);
 			return;
 		}
 		mysqli_query($conn,"UPDATE formulas SET quantity = '$nq' WHERE fid = '$fid' AND quantity = '".$cur['quantity']."' AND ingredient = '".$cur['ingredient']."'");
@@ -244,17 +246,23 @@ if($_GET['action'] == 'repIng' && $_GET['fid']){
 	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,isProtected FROM formulasMetaData WHERE fid = '$fid'"));
 	if($meta['isProtected'] == FALSE){
 		if(mysqli_num_rows(mysqli_query($conn, "SELECT ingredient FROM formulas WHERE ingredient = '$ingredient' AND fid = '$fid'"))){
-			echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$ingredient.' already exists in formula!</div>';
+			$response['error'] = '<strong>Error: </strong>'.$ingredient.' already exists in formula!';
+			header('Content-Type: application/json');
+			echo json_encode($response);
+			return;
+		}
+		
+		if(mysqli_query($conn, "UPDATE formulas SET ingredient = '$ingredient', ingredient_id = '".$ingredient_id['id']."' WHERE ingredient = '$oldIngredient' AND fid = '$fid'")){
+			$response['success'] = $oldIngredient.' replaced by '.$ingredient;
+			$lg = "REPLACED: $oldIngredient WITH $ingredient";
+			mysqli_query($conn, "INSERT INTO formula_history (fid,change_made,user) VALUES ('".$meta['id']."','$lg','".$user['fullName']."')");
 		}else{
-			if(mysqli_query($conn, "UPDATE formulas SET ingredient = '$ingredient', ingredient_id = '".$ingredient_id['id']."' WHERE ingredient = '$oldIngredient' AND fid = '$fid'")){
-				echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'.$oldIngredient.' replaced with '.$ingredient.'!</div>';
-				$lg = "REPLACED: $oldIngredient WITH $ingredient";
-				mysqli_query($conn, "INSERT INTO formula_history (fid,change_made,user) VALUES ('".$meta['id']."','$lg','".$user['fullName']."')");
-			}else{
-				echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error replacing '.$oldIngredient.'</div>';
-			}
+			$response['error'] = 'Error replacing '.$oldIngredient;
 		}
 	}
+	
+	header('Content-Type: application/json');
+	echo json_encode($response);
 	return;
 }
 
@@ -372,6 +380,23 @@ if($_POST['action'] == 'delete' && $_POST['fid']){
 	return;
 }
 
+//RESET ING IN MAKE FORMULA
+if($_POST['action'] == 'makeFormula' && $_POST['undo'] == '1'){
+	$q = trim($_POST['originalQuantity']);
+	$ingID = mysqli_real_escape_string($conn, $_POST['ingID']);
+
+	if(mysqli_query($conn, "UPDATE makeFormula SET toAdd = '1', overdose = '0', quantity = '".$_POST['originalQuantity']."' WHERE id = '".$_POST['ID']."'")){
+		$response['success'] = $_POST['ing'].'\'s quantity reset';
+		
+		if($_POST['resetStock'] == "true"){
+			mysqli_query($conn, "UPDATE suppliers SET stock = stock + $q WHERE ingID = '$ingID' AND preferred = '1'");
+			$response['success'] .= "<br/><strong>Stock increased by ".$q.$settings['mUnit']."</strong>";
+		}
+		echo json_encode($response);
+	}
+	return;
+}
+
 //MAKE FORMULA
 if($_POST['action'] == 'makeFormula' && $_POST['fid'] && $_POST['q'] && $_POST['qr'] && $_POST['id']){
 	$fid = mysqli_real_escape_string($conn, $_POST['fid']);
@@ -385,26 +410,56 @@ if($_POST['action'] == 'makeFormula' && $_POST['fid'] && $_POST['q'] && $_POST['
 	}
 						 
 	$q = trim($_POST['q']);
-	
 
-	
 	if($qr == $q){
 		if(mysqli_query($conn, "UPDATE makeFormula SET toAdd = '0' WHERE fid = '$fid' AND id = '$id'")){
-			$response['success'] = 'Ingredient added!';
+			$response['success'] = $_POST['ing'].' added!';
 		}
 	}else{
 		$sub_tot = $qr - $q;
 		if(mysqli_query($conn, "UPDATE makeFormula SET quantity='$sub_tot' WHERE fid = '$fid' AND id = '$id'")){
 			$response['success'] = 'Formula updated!';
 		}
-		if($_POST['updateStock'] == "true"){
-			mysqli_query($conn, "UPDATE suppliers SET stock = stock - $sub_tot WHERE ingID = '$ingID' AND preferred = '1'");
-		}
-		
 	}
+	
+	if($_POST['updateStock'] == "true"){
+		mysqli_query($conn, "UPDATE suppliers SET stock = stock - $q WHERE ingID = '$ingID' AND preferred = '1'");
+		$response['success'] .= "<br/><strong>Stock deducted by ".$q.$settings['mUnit']."</strong>";
+	}	
+	
+	if($qr < $q){
+		if(mysqli_query($conn, "UPDATE makeFormula SET overdose = '$q' WHERE fid = '$fid' AND id = '$id'")){
+			$response['success'] = $_POST['ing'].' is overdosed, <strong>'.$q.'<strong> added';
+		}
+	}
+	
+	if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = '$fid' AND toAdd = '1'"))){
+		$response['success'] = '<strong>All materials added. You should mark formula as complete now!</strong>';
+	}
+	
+	
 	echo json_encode($response);
 	return;
 }
+//MARK COMPLETE
+if($_POST['action'] == 'todo' && $_POST['fid'] && $_POST['markComplete']){
+	$fid = mysqli_real_escape_string($conn, $_POST['fid']);
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = '$fid' AND toAdd = '1'"))){
+		$response['error'] = '<strong>Formula is pending materials to add, cannot be marked as complete.</strong>';
+		echo json_encode($response);
+		return;
+	}
+	if(mysqli_query($conn,"UPDATE formulasMetaData SET isMade = '1', toDo = '0', madeOn = NOW(), status = '2' WHERE fid = '$fid'")){
+		
+		mysqli_query($conn, "DELETE FROM makeFormula WHERE fid = '$fid'");
+		
+		$response['success'] = '<strong>Formula is complete</strong>';
+	}
+	
+	echo json_encode($response);
+	return;
+}
+
 
 //TODO ADD FORMULA
 if($_POST['action'] == 'todo' && $_POST['fid'] && $_POST['add']){
@@ -417,9 +472,9 @@ if($_POST['action'] == 'todo' && $_POST['fid'] && $_POST['add']){
 		return;
 	}
 								
-	if(mysqli_query($conn, "INSERT INTO makeFormula (fid, name, ingredient, concentration, dilutant, quantity, toAdd) SELECT fid, name, ingredient, concentration, dilutant, quantity, '1' FROM formulas WHERE fid = '$fid'")){
-		mysqli_query($conn, "UPDATE formulasMetaData SET toDo = '1' WHERE fid = '$fid'");
-		$response['success'] = 'Formula <a href="?do=todo">'.$fname.'</a> added in To Make list!';		
+	if(mysqli_query($conn, "INSERT INTO makeFormula (fid, name, ingredient, concentration, dilutant, quantity, originalQuantity, toAdd) SELECT fid, name, ingredient, concentration, dilutant, quantity, quantity, '1' FROM formulas WHERE fid = '$fid' AND exclude_from_calculation = '0'")){
+		mysqli_query($conn, "UPDATE formulasMetaData SET toDo = '1', status = '1', isMade = '0' WHERE fid = '$fid'");
+		$response['success'] = 'Formula <a href="/?do=todo">'.$fname.'</a> added in To Make list!';		
 	}
 	echo json_encode($response);
 	return;
@@ -431,7 +486,7 @@ if($_POST['action'] == 'todo' && $_POST['fid'] && $_POST['remove']){
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 
 	if(mysqli_query($conn, "DELETE FROM makeFormula WHERE fid = '$fid'")){
-		mysqli_query($conn, "UPDATE formulasMetaData SET toDo = '0' WHERE fid = '$fid'");
+		mysqli_query($conn, "UPDATE formulasMetaData SET toDo = '0', status = '0', isMade = '0' WHERE fid = '$fid'");
 		$response['success'] = $name.' removed';
 		echo json_encode($response);
 	}
@@ -471,7 +526,7 @@ if($_POST['action'] == 'removeFromCart' && $_POST['materialId']){
 	$materialId = mysqli_real_escape_string($conn, $_POST['materialId']);
 
 	if(mysqli_query($conn, "DELETE FROM cart WHERE id = '$materialId'")){
-		$response['success'] = 'Removed from cart!';
+		$response['success'] = $_POST['materialName'].' removed from cart!';
 		echo json_encode($response);
 	}
 }

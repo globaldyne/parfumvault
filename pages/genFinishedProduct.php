@@ -1,5 +1,11 @@
 <?php 
-if (!defined('pvault_panel')){ die('Not Found');}  
+if (!defined('pvault_panel')){ die('Not Found');}
+require_once(__ROOT__.'/libs/fpdf.php');
+require_once(__ROOT__.'/func/genBatchID.php');
+require_once(__ROOT__.'/func/genBatchPDF.php');
+require_once(__ROOT__.'/func/validateFormula.php');
+require_once(__ROOT__.'/func/calcPerc.php');
+require_once(__ROOT__.'/func/calcCosts.php');
 if($_POST['formula']){
 	$f_name =  mysqli_real_escape_string($conn, $_POST['formula']);
 	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE fid = '$f_name'"));
@@ -363,7 +369,7 @@ $.ajax({
 					return;
 				}
 				
-				$cats_q = mysqli_query($conn, "SELECT name FROM IFRACategories ORDER BY id ASC");
+				$cats_q = mysqli_query($conn, "SELECT name,description FROM IFRACategories ORDER BY id ASC");
 				while($cats_res = mysqli_fetch_array($cats_q)){
 					$cats[] = $cats_res;
 				}
@@ -419,7 +425,7 @@ $.ajax({
     <td>Category Class:</td>
     <td><select name="defCatClass" id="defCatClass" class="form-control selectpicker" data-live-search="true">
 		<?php foreach ($cats as $IFRACategories) {?>
-				<option value="cat<?php echo $IFRACategories['name'];?>" <?php echo ($settings['defCatClass']=='cat'.$IFRACategories['name'])?"selected=\"selected\"":""; ?>><?php echo 'Cat '.$IFRACategories['name'];?></option>
+				<option value="cat<?php echo $IFRACategories['name'];?>" <?php echo ($settings['defCatClass']=='cat'.$IFRACategories['name'])?"selected=\"selected\"":""; ?>><?php echo 'Cat '.$IFRACategories['name'].' - '.$IFRACategories['description'];?></option>
 		  <?php	}	?>
             </select></td>
     <td>&nbsp;</td>

@@ -85,13 +85,13 @@ a { text-decoration: none; }
 }
 
 .bg-login-image {
-  background: url("../img/logo_400.png");
+  background: url("/img/logo_400.png");
   background-position: center;
   background-size: cover;
 }
 
 .bg-install-image {
-  background: url("../img/logo_400.png");
+  background: url("/img/logo_400.png");
   background-position: center;
   background-size: cover;
   height: 430px;
@@ -99,14 +99,14 @@ a { text-decoration: none; }
 }
 
 .bg-register-image {
-  background: url("../img/logo_400.png");
+  background: url("/img/logo_400.png");
   background-position: center;
   background-size: cover;
   height: 430px;
 }
 
 .bg-ptypes-image {
-  background: url("../img/perfumes-types.png");
+  background: url("/img/perfumes-types.png");
   background-position: left;
   background-size: contain;
   background-repeat: no-repeat;
@@ -204,7 +204,7 @@ tr.group:hover {
 table { border-collapse: collapse; empty-cells: show; }
 
 td { position: relative; }
-
+/*
 tr.strikeout td:before {
   	content: " ";
   	position: absolute;
@@ -213,10 +213,10 @@ tr.strikeout td:before {
 	border-bottom: 1px solid #111;
 	width: 100%;
 }
-
+*/
 .strikeout {
 	font-style: italic;
-	font-size: 20px;
+	text-decoration: line-through solid red 3px;
 }
 
 #formula td,
@@ -851,7 +851,12 @@ body {
   align-self: start;
   float: right;
   margin: 10px;
-  display:none;
+}
+
+.select_deep_ingredient {
+  font-size: medium;
+  border-bottom-style: groove;
+  color: aliceblue;
 }
 
 .buffer {
@@ -876,6 +881,12 @@ body {
 .select2-results {
 	margin: 14px 4px 4px 0px;
     max-height: 400px !important;
+}
+
+.select2-totalRecords {
+	margin: 5px;
+   	border-top-style: groove;
+	border-width: thin;
 }
 
 .bootstrap-select.disabled, .bootstrap-select > .disabled {
@@ -1000,4 +1011,12 @@ body {
 .badge-nostock {
   color: #fff !important;
   background-color: #e74a3b !important;
+}
+
+.mr2 {
+	margin-right: 10px;	
+}
+
+#customer_name, #formula_name {
+  display: inline;
 }

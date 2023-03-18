@@ -32,6 +32,16 @@ if($meta == 0){
     	$rs[] = $res;
 	}
 
+	$q = mysqli_query($conn, "SELECT quantity FROM $t WHERE fid = '".$_GET['fid']."'");
+	while($res = mysqli_fetch_array($q)){
+    	$rsq[] = $res;
+	}
+	
+	$q = mysqli_query($conn, "SELECT quantity FROM $t WHERE fid = '".$_GET['fid']."' AND toAdd = '1'");
+	while($res = mysqli_fetch_array($q)){
+    	$rsL[] = $res;
+	}
+	
 	foreach ($rs as $rq) {
 		$gING = mysqli_fetch_array(mysqli_query($conn, "SELECT id,cas FROM ingredients WHERE name = '".$rq['ingredient']."'"));
 
@@ -44,19 +54,35 @@ if($meta == 0){
 
 		$r['concentration'] = (float)$rq['concentration'];
 		$r['dilutant'] = (string)$rq['dilutant'] ?: 'None';
-		$r['quantity'] = (float)$rq['quantity'];
+		$r['quantity'] = number_format((float)$rq['quantity'], $settings['qStep'],'.', '') ?: 0;
+		$r['originalQuantity'] = number_format((float)$rq['originalQuantity'], $settings['qStep'],'.', '') ?: 0;
+		$r['overdose'] = number_format((float)$rq['overdose'], $settings['qStep'],'.', '') ?: 0;
+
 		$r['toAdd'] = (int)$rq['toAdd'];
 		
-		$mg['total_mg'] += $rq['quantity'];
+		
 		
 		$rx[]=$r;
 	}
-
+	foreach ($rsq as $rq) {
+		$mg['total_mg'] += $rq['quantity'];
+	}
+	
+	foreach ($rsL as $rq) {
+		$mg['total_mg_left'] += $rq['quantity'];
+	}
+	
+	$m['total_ingredients'] = (int)countElement("$t WHERE fid = '".$_GET['fid']."'",$conn);
+	$m['total_ingredients_left'] = (int)countElement("$t WHERE fid = '".$_GET['fid']."' AND toAdd = '1'",$conn);	
+	$m['total_quantity'] =  (float)ml2l($mg['total_mg'], $settings['qStep'], $settings['mUnit']);
+	$m['total_quantity_left'] =  (float)ml2l($mg['total_mg_left'], $settings['qStep'], $settings['mUnit']);
+	$m['quantity_unit'] = (string)$settings['mUnit'];
+	
 }else{
 	if($s != ''){
  	  $f = "  AND (name LIKE '%".$s."%')";
 	}
-	$q = mysqli_query($conn, "SELECT fid, name, toDo AS toAdd FROM formulasMetaData WHERE toDo = '1' $f $extra LIMIT $row, $limit");
+	$q = mysqli_query($conn, "SELECT id, fid, name, madeOn, toDo AS toAdd FROM formulasMetaData WHERE toDo = '1' $f $extra LIMIT $row, $limit");
 	
 
 	while($res = mysqli_fetch_array($q)){
@@ -68,7 +94,10 @@ if($meta == 0){
 		$r['fid'] = (string)$rq['fid'];
 		$r['name'] = (string)$rq['name'];
 		$q2 = mysqli_fetch_array(mysqli_query($conn, "SELECT toAdd FROM $t WHERE fid = '".$rq['fid']."'"));
+		$r['total_ingredients'] = (int)countElement("$t WHERE fid = '".$rq['fid']."'",$conn);
+		$r['total_ingredients_left'] = (int)countElement("$t WHERE fid = '".$rq['fid']."' AND toAdd = '1'",$conn);	
 		$r['toAdd'] = (int)$q2['toAdd'];
+		$r['madeOn'] = (string)$rq['madeOn'] ?: 'In progress';
 
 		$rx[]=$r;
 	}
@@ -87,11 +116,14 @@ $response = array(
 if(empty($r)){
 	$response['data'] = [];
 }
-$m['total_ingredients'] = (int)countElement("formulas WHERE fid = '".$_GET['fid']."'",$conn);	
-$m['total_quantity'] =  (float)ml2l($mg['total_mg'], $settings['qStep'], $settings['mUnit']);
-$m['quantity_unit'] = (string)$settings['mUnit'];
 
-$response['meta'] = $m;
+
+if($m){
+	$response['meta'] = $m;
+}else{
+	$response['meta'] = [];
+}
+
 header('Content-Type: application/json; charset=utf-8');
 echo json_encode($response);
 return;
