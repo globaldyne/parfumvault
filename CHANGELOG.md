@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 5.9
+
 ### Version 5.8
 - Make formula page improvements
 - Fix incorrect stock update when making formula
