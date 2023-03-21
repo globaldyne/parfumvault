@@ -65,7 +65,7 @@ if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients")))){
     <a href="#tab-all">All formulas</a>
  </li>
  <?php foreach ($fcat as $cat) { ?>
- <li class="tabs" data-source="core/list_formula_data.php?filter=1&<?=$cat['type']?>=<?=$cat['cname']?>" data-table="<?=$cat['cname']?>-table">
+ <li class="tabs" data-source="/core/list_formula_data.php?filter=1&<?=$cat['type']?>=<?=$cat['cname']?>" data-table="<?=$cat['cname']?>-table">
     <a href="#tab-<?=$cat['cname']?>"><?=$cat['name']?></a>
  <?php } ?>       
 </ul>
@@ -514,7 +514,7 @@ $('#export_json').click(function() {
 	dataType: 'json',
     success: function (data) {
 		if(data.error){
-			var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
+			var msg = '<div class="alert>'+data.error+'</div>';
 		}else if(data.success){
 			var msg = '<div class="alert alert-success">'+data.success+'</div>';
 		}

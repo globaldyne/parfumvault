@@ -116,6 +116,12 @@ if($_GET['restore'] == 'db_bk'){
 
 if($_GET['action'] == 'exportFormulas'){
 	
+	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData")))){
+		$msg['error'] = 'No formulas found to export.';
+		echo json_encode($msg);
+		return;
+	}
+	
 	$qfmd = mysqli_query($conn, "SELECT * FROM formulasMetaData");
 	while($meta = mysqli_fetch_assoc($qfmd)){
 		
