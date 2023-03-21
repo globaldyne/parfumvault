@@ -54,8 +54,9 @@ while($fTypes_res = mysqli_fetch_array($fTypes_q)){
 
 <?php
 if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients")))){
-	echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> no ingredients yet, click <a href="?do=ingredients">here</a> to add.</div>';
-}elseif(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData")))){
+	echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> no ingredients yet, click <a href="/?do=ingredients">here</a> to add.</div>';
+}
+if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData")))){
 	echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> no formulas yet, click <a href="#" data-toggle="modal" data-target="#add_formula">here</a> to add.</div>';
 }else{
 ?>

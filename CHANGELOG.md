@@ -1,6 +1,7 @@
 # CHANGELOG
 ### Version 5.9
-Introducing formulas import/exort in JSON format
+- Introducing formulas import/exort in JSON format
+- Notify but don't prevent formula listing if no ingredients in database
 
 ### Version 5.8
 - Make formula page improvements
