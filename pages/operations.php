@@ -115,14 +115,16 @@ if($_GET['restore'] == 'db_bk'){
 }
 
 if($_GET['action'] == 'exportFormulas'){
-	
+	if($_GET['fid']){
+		$filter = " WHERE fid ='".$_GET['fid']."'";
+	}
 	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData")))){
 		$msg['error'] = 'No formulas found to export.';
 		echo json_encode($msg);
 		return;
 	}
 	
-	$qfmd = mysqli_query($conn, "SELECT * FROM formulasMetaData");
+	$qfmd = mysqli_query($conn, "SELECT * FROM formulasMetaData $filter");
 	while($meta = mysqli_fetch_assoc($qfmd)){
 		
 		$r['id'] = (int)$meta['id'];
@@ -149,7 +151,7 @@ if($_GET['action'] == 'exportFormulas'){
 		$fm[] = $r;
 	}
 	
-	$qfm = mysqli_query($conn, "SELECT * FROM formulas");
+	$qfm = mysqli_query($conn, "SELECT * FROM formulas $filter");
 	while($formula = mysqli_fetch_assoc($qfm)){
 		
 		
@@ -173,16 +175,20 @@ if($_GET['action'] == 'exportFormulas'){
 	$result['formulasMetaData'] = $fm;
 	$result['formulas'] = $fd;
 
-
-	header('Content-disposition: attachment; filename=pv_formulas.json');
-	header('Content-type: application/json');
+	if($_GET['fid']){
+		header('Content-disposition: attachment; filename='.$f['name'].'.json');
+		header('Content-type: application/json');
+		echo json_encode($result, JSON_PRETTY_PRINT);
+		return;
+	}
+	
 	$file = __ROOT__.'/tmp/pv_formulas.json';
 	unlink($file);
 	
 	$fp = fopen($file, 'w');
 	fwrite($fp, json_encode($result, JSON_PRETTY_PRINT));
 	fclose($fp);
-	
+
 	if(file_exists($file)){
 		$msg['success'] ='<a href="/tmp/pv_formulas.json" target="_blank">JSON File is ready, right click to save it to your computer.</a>';
 	}else{

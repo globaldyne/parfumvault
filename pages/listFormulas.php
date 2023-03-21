@@ -246,7 +246,7 @@ function fStatus(data, type, row, meta){
 
 function fActions(data, type, row, meta){
 	if(type === 'display'){
-		data = '<a href="/pages/getFormMeta.php?id=' + row.id + '" rel="tip" title="Show details of '+ row.name +'" class="fas fa-cogs popup-link mr2"></a><a href="#" id="addTODO" class="fas fa-tasks mr2" rel="tip" title="Add '+ row.name +' to the make list" data-id='+ row.fid +' data-name="'+ row.name +'"></a><a href="#" id="cloneMe" class="fas fa-copy mr2" rel="tip" title="Clone '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"></a><i id="deleteMe" class="pv_point_gen fas fa-trash"  style="color: #c9302c;" rel="tip" title="Delete '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"></i>';
+		data = '<a href="/pages/operations.php?action=exportFormulas&fid=' + row.fid + '" rel="tip" title="Export '+ row.name +' as JSON" class="fas fa-download mr2"></a><a href="/pages/getFormMeta.php?id=' + row.id + '" rel="tip" title="Show details of '+ row.name +'" class="fas fa-cogs popup-link mr2"></a><a href="#" id="addTODO" class="fas fa-tasks mr2" rel="tip" title="Add '+ row.name +' to the make list" data-id='+ row.fid +' data-name="'+ row.name +'"></a><a href="#" id="cloneMe" class="fas fa-copy mr2" rel="tip" title="Clone '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"></a><i id="deleteMe" class="pv_point_gen fas fa-trash"  style="color: #c9302c;" rel="tip" title="Delete '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"></i>';
 	}
     return data;
 }
