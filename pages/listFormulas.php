@@ -6,6 +6,7 @@ require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
+require_once(__ROOT__.'/func/php-settings.php');
 
 $getFCats = mysqli_query($conn, "SELECT name,cname,type FROM formulaCategories");
 while($fcats = mysqli_fetch_array($getFCats)){
@@ -41,6 +42,10 @@ while($fTypes_res = mysqli_fetch_array($fTypes_q)){
             <div class="dropdown-menu dropdown-menu-right">
               <a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula">Add new formula</a>
               <a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula_csv">Import from CSV</a>
+              <div class="dropdown-divider"></div>
+        	  <a class="dropdown-item" href="#" data-toggle="modal" data-target="#export_formulas_json">Export Formulas as JSON</a>
+        	  <a class="dropdown-item" href="#" data-toggle="modal" data-target="#import_formulas_json">Import Formulas from JSON</a>
+
             </div>
         </div>
     </div>
@@ -498,6 +503,26 @@ function reload_formulas_data() {
     $('#all-table').DataTable().ajax.reload(null, true);
 };
 
+$('#export_json').click(function() {
+	$('#JSONExportMsg').html('<div class="alert alert-info"><img src="/img/loading.gif"/>Please wait, export in progress....</div>');					 
+	$.ajax({ 
+    url: '/pages/operations.php', 
+	type: 'GET',
+    data: {
+		action: 'exportFormulas',
+		},
+	dataType: 'json',
+    success: function (data) {
+		if(data.error){
+			var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
+		}else if(data.success){
+			var msg = '<div class="alert alert-success">'+data.success+'</div>';
+		}
+	  	$('#JSONExportMsg').html(msg);
+    }
+  });
+});
+
 </script>
             
 <!--ADD FORMULA MODAL-->
@@ -625,3 +650,72 @@ function reload_formulas_data() {
   
 </div>
 </div>
+
+<!--EXPORT JSON MODAL-->
+<div class="modal fade" id="export_formulas_json" tabindex="-1" role="dialog" aria-labelledby="export_formulas_json" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Export formulas as a JSON file</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group" id="JSONExportMsg">
+            <p>This will generate a JSON file from your formulas. Once the file is generated you should download it to your computer.</p>
+		</div>
+      </div>
+	  <div class="modal-footer">
+        <input type="button" class="btn btn-secondary" data-dismiss="modal" id="btnCloseJSON" value="Cancel">
+        <input type="submit" name="btnExport" class="btn btn-primary" id="export_json" value="Export">
+      </div>   
+  </div>
+</div>
+</div>
+
+<!--IMPORT JSON MODAL-->
+<div class="modal fade" id="import_formulas_json" tabindex="-1" role="dialog" aria-labelledby="import_formulas_json" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Import formulas from a JSON file</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <div id="JSRestMsg"></div>
+      <div class="progress">  
+         <div id="uploadProgressBar" class="progress-bar" role="progressbar" aria-valuemin="0"></div>
+      </div>
+      <div id="backupArea">
+      
+          <div class="form-group">
+              <label class="col-md-3 control-label">JSON file:</label>
+              <div class="col-md-8">
+                 <input type="file" name="backupFile" id="backupFile" class="form-control" />
+              </div>
+          </div>
+          <div class="col-md-12">
+             <hr />
+             <p><strong>IMPORTANT:</strong></p>
+              <ul>
+                <li><div id="raw" data-size="<?=getMaximumFileUploadSizeRaw()?>">Maximum file size: <strong><?=getMaximumFileUploadSize()?></strong></div></li>
+                <li>Any formula with the same id will be replaced. Please make sure you have taken a backup before imporing a JSON file.</li>
+              </ul>
+    			<p>&nbsp;</p>
+            </div>
+          </div>
+      
+      </div>
+	  <div class="modal-footer">
+        <input type="button" class="btn btn-secondary" data-dismiss="modal" id="btnCloseBK" value="Cancel">
+        <input type="submit" name="btnRestore" class="btn btn-primary" id="btnRestoreFormulas" value="Import">
+      </div>
+   
+  </div>
+  
+</div>
+</div>
+<script src="/js/import.formulas.js"></script>

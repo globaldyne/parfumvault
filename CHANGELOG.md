@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 5.9
+Introducing formulas import/exort in JSON format
 
 ### Version 5.8
 - Make formula page improvements
