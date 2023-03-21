@@ -514,7 +514,7 @@ $('#export_json').click(function() {
 	dataType: 'json',
     success: function (data) {
 		if(data.error){
-			var msg = '<div class="alert>'+data.error+'</div>';
+			var msg = '<div class="alert alert-danger">'+data.error+'</div>';
 		}else if(data.success){
 			var msg = '<div class="alert alert-success">'+data.success+'</div>';
 		}
