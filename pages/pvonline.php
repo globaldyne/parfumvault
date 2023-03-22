@@ -147,8 +147,17 @@ if($_POST['action'] == 'importShareFormula' && $_POST['fid']){
 
 //IMPORT INGREDIENTS FROM PV ONLINE
 if($_POST['action'] == 'import' && $_POST['items']){
+	
 	$items = explode(',',trim($_POST['items']));
-    $i = 0;
+    
+	if($_POST['includeSynonyms'] == 'false'){
+		unset($items['4']);
+	}
+	if($_POST['includeCompositions'] == 'false'){
+		unset($items['1']);
+	}
+
+	$i = 0;
     foreach ($items as &$item) {
 		$jAPI = $pvOnlineAPI.'?do='.$item;
         $jsonData = json_decode(pv_file_get_contents($jAPI), true);

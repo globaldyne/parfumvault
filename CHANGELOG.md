@@ -2,6 +2,7 @@
 ### Version 5.9
 - Introducing formulas import/exort in JSON format
 - Notify but don't prevent formula listing if no ingredients in database
+- Added option to exclude/include synonyms and compositions when importing from PV Online
 
 ### Version 5.8
 - Make formula page improvements
