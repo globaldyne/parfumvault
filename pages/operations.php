@@ -123,6 +123,8 @@ if($_GET['action'] == 'exportFormulas'){
 		echo json_encode($msg);
 		return;
 	}
+	$formulas = 0;
+	$ingredients = 0;
 	
 	$qfmd = mysqli_query($conn, "SELECT * FROM formulasMetaData $filter");
 	while($meta = mysqli_fetch_assoc($qfmd)){
@@ -147,7 +149,8 @@ if($_GET['action'] == 'exportFormulas'){
 		$r['status'] = (int)$meta['status'];
 		$r['toDo'] = (int)$meta['toDo'];
 		$r['rating'] = (int)$meta['rating'];
-
+		
+		$formulas++;
 		$fm[] = $r;
 	}
 	
@@ -168,12 +171,21 @@ if($_GET['action'] == 'exportFormulas'){
 		$f['notes'] = (string)$formula['notes'] ?: 'None';
 		$f['created'] = (string)$formula['created'];
 		$f['updated'] = (string)$formula['updated'];
-
+		
+		$ingredients++;
 		$fd[] = $f;
 	}
 	
+	$vd['product'] = $product;
+	$vd['version'] = $ver;
+	$vd['formulas'] = $formulas;
+	$vd['ingredients'] = $ingredients;
+	$vd['timestamp'] = date('d/m/Y H:i:s');
+
+	
 	$result['formulasMetaData'] = $fm;
 	$result['formulas'] = $fd;
+	$result['pvMeta'] = $vd;
 
 	if($_GET['fid']){
 		header('Content-disposition: attachment; filename='.$f['name'].'.json');
