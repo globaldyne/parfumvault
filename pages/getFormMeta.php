@@ -151,7 +151,7 @@ while($fTypes_res = mysqli_fetch_array($fTypes_q)){
     <td>Status:</td>
     <td>
     <select name="status" id="status" class="form-control ellipsis">  
-        <option value="0" <?php if($info['status'] == "0"){ echo 'selected';}?>>Schedulled</option>
+        <option value="0" <?php if($info['status'] == "0"){ echo 'selected';}?>>Scheduled</option>
         <option value="1" <?php if($info['status'] == "1"){ echo 'selected';}?>>Under Developent</option>
         <option value="2" <?php if($info['status'] == "2"){ echo 'selected';}?>>Under Evaluation</option>
         <option value="3" <?php if($info['status'] == "3"){ echo 'selected';}?>>In Production</option>

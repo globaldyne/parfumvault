@@ -166,7 +166,7 @@ function initTable(tableId, src) {
 			},
            order: [0,'asc'],
            columnDefs: [
-				{ orderable: false, targets: [3, 7] },
+				{ orderable: false, targets: [3, 8] },
 				{ className: 'text-center', targets: '_all' },				  
 				],
 	    destroy: true,
@@ -223,7 +223,7 @@ function fMade(data, type, row, meta){
 
 function fStatus(data, type, row, meta){
 	if(row.status == 0){
-		var data = '<span class="label label-default">Schedulled</span>';
+		var data = '<span class="label label-default">Scheduled</span>';
 	}
 	if(row.status == 1){
 		var data = '<span class="label label-primary">Under Development</span>';
@@ -245,9 +245,17 @@ function fStatus(data, type, row, meta){
 }
 
 function fActions(data, type, row, meta){
-	if(type === 'display'){
-		data = '<a href="/pages/operations.php?action=exportFormulas&fid=' + row.fid + '" rel="tip" title="Export '+ row.name +' as JSON" class="fas fa-download mr2"></a><a href="/pages/getFormMeta.php?id=' + row.id + '" rel="tip" title="Show details of '+ row.name +'" class="fas fa-cogs popup-link mr2"></a><a href="#" id="addTODO" class="fas fa-tasks mr2" rel="tip" title="Add '+ row.name +' to the make list" data-id='+ row.fid +' data-name="'+ row.name +'"></a><a href="#" id="cloneMe" class="fas fa-copy mr2" rel="tip" title="Clone '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"></a><i id="deleteMe" class="pv_point_gen fas fa-trash"  style="color: #c9302c;" rel="tip" title="Delete '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"></i>';
-	}
+		data = '<div class="dropdown">' +
+        '<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow bg-dark" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+            '<ul class="dropdown-menu dropdown-menu-right">';
+		data += '<li><a class="dropdown-item" href="/pages/operations.php?action=exportFormulas&fid=' + row.fid + '" rel="tip" title="Export '+ row.name +' as JSON" ><i class="fas fa-download mr2"></i>Export as JSON</a></li>'+
+		'<li><a class="dropdown-item popup-link" href="/pages/getFormMeta.php?id=' + row.id + '" rel="tip" title="Show details of '+ row.name +'"><i class="fas fa-cogs mr2"></i>Details</a></li>'+
+		'<li><a class="dropdown-item" href="#" id="addTODO" rel="tip" title="Schedule '+ row.name +' to make" data-id='+ row.fid +' data-name="'+ row.name +'"><i class="fas fa-tasks mr2"></i>Schedule to make</a></li>'+
+		'<li><a class="dropdown-item" href="#" id="cloneMe" rel="tip" title="Clone '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"><i class="fas fa-copy mr2"></i>Clone formula</a></li>'+
+		'<div class="dropdown-divider"></div>'+
+		'<li><a class="dropdown-item" href="#" id="deleteMe" style="color: #c9302c;" rel="tip" title="Delete '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"><i class="fas fa-trash mr2"></i>Permanently delete formula</a></li>';
+		data += '</ul></div>';
+	
     return data;
 }
 
@@ -524,6 +532,10 @@ $('#export_json').click(function() {
   });
 });
 
+$('#close_export_json').click(function() {
+	$('#JSONExportMsg').html('');
+});
+
 </script>
             
 <!--ADD FORMULA MODAL-->
@@ -663,12 +675,13 @@ $('#export_json').click(function() {
         </button>
       </div>
       <div class="modal-body">
-        <div class="form-group" id="JSONExportMsg">
+        <div class="form-group">
             <p>This will generate a JSON file from your formulas. Once the file is generated you should download it to your computer.</p>
+            <div id="JSONExportMsg"></div>
 		</div>
       </div>
 	  <div class="modal-footer">
-        <input type="button" class="btn btn-secondary" data-dismiss="modal" id="btnCloseJSON" value="Cancel">
+        <input type="button" class="btn btn-secondary" data-dismiss="modal" id="close_export_json" value="Close">
         <input type="submit" name="btnExport" class="btn btn-primary" id="export_json" value="Export">
       </div>   
   </div>

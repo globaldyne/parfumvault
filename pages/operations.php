@@ -144,7 +144,7 @@ if($_GET['action'] == 'exportFormulas'){
 		$r['finalType'] = (int)$meta['finalType'];
 		$r['isMade'] = (int)$meta['isMade'];
 		$r['madeOn'] = (string)$meta['madeOn'] ?: "0000-00-00 00:00:00";
-		$r['schedulledOn'] = (string)$meta['schedulledOn'];
+		$r['scheduledOn'] = (string)$meta['scheduledOn'];
 		$r['customer_id'] = (int)$meta['customer_id'];
 		$r['status'] = (int)$meta['status'];
 		$r['toDo'] = (int)$meta['toDo'];
@@ -226,7 +226,7 @@ if($_GET['action'] == 'restoreFormulas'){
 			$product_name = mysqli_real_escape_string($conn, $meta['product_name']);
 			$notes = mysqli_real_escape_string($conn, $meta['notes']);
 			
-			$sql = "INSERT IGNORE INTO formulasMetaData(name,product_name,fid,profile,sex,notes,created,isProtected,defView,catClass,revision,finalType,isMade,madeOn,schedulledOn,customer_id,status,toDo,rating) VALUES('".$name."','".$product_name."','".$meta['fid']."','".$meta['profile']."','".$meta['sex']."','".$notes."','".$meta['created']."','".$meta['isProtected']."','".$meta['defView']."','".$meta['catClass']."','".$meta['revision']."','".$meta['finalType']."','".$meta['isMade']."','".$meta['madeOn']."','".$meta['schedulledOn']."','".$meta['customer_id']."','".$meta['status']."','".$meta['toDo']."','".$meta['rating']."')";
+			$sql = "INSERT IGNORE INTO formulasMetaData(name,product_name,fid,profile,sex,notes,created,isProtected,defView,catClass,revision,finalType,isMade,madeOn,scheduledOn,customer_id,status,toDo,rating) VALUES('".$name."','".$product_name."','".$meta['fid']."','".$meta['profile']."','".$meta['sex']."','".$notes."','".$meta['created']."','".$meta['isProtected']."','".$meta['defView']."','".$meta['catClass']."','".$meta['revision']."','".$meta['finalType']."','".$meta['isMade']."','".$meta['madeOn']."','".$meta['scheduledOn']."','".$meta['customer_id']."','".$meta['status']."','".$meta['toDo']."','".$meta['rating']."')";
 			
 			if(mysqli_query($conn,$sql)){
 				mysqli_query($conn,"DELETE FROM formulas WHERE fid = '".$meta['fid']."'");

@@ -97,7 +97,7 @@ CREATE TABLE `formulasMetaData` (
   `finalType` INT NOT NULL DEFAULT '100',
   `isMade` INT NOT NULL DEFAULT '0',
   `madeOn` DATETIME NULL DEFAULT NULL,
-  `schedulledOn` DATETIME NULL DEFAULT NULL,
+  `scheduledOn` DATETIME NULL DEFAULT NULL,
   `customer_id` INT NOT NULL DEFAULT '0',
   `status` INT NOT NULL DEFAULT '0',
   `toDo` INT NOT NULL DEFAULT '0',

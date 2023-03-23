@@ -19,8 +19,7 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
 		$msg = '<div class="alert alert-warning"><a href="#" id="markComplete"><strong>All materials added. Mark formula as complete?</strong></a></div>';
 
 }
-?>
-<head>
+?><head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
@@ -51,7 +50,7 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
 		color: #494b51;
 	}
 	.mrl {
-  		margin-left: 50px;
+  		margin-left: 40px;
 	}
 	@media print {
 		table, table tr, table td {
@@ -69,12 +68,10 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
         	page-break-after: auto;
 		}
 	}
-	table.dataTable thead tr, tfoot tr {
-  		background-color: #337ab7c9;
-		color: white;
-	}
+	
   </style>
 </head>
+
 
 <div id="content-wrapper" class="d-flex flex-column">
     <div class="container-fluid">
@@ -104,9 +101,9 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
               <thead>
                 <tr>
                   <th>Ingredient</th>
-                  <th>CAS</th>
                   <th>Purity</th>
                   <th>Quantity</th>
+                  <th>Availability</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -114,8 +111,8 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
                 <tr>
                 <th>Total ingredients:</th>
                 <th></th>
-                <th></th>
                 <th>Quantity:</th>
+                <th></th>
                 <th></th>
                 </tr>
             </tfoot>
@@ -133,7 +130,7 @@ $(document).ready(function() {
 	var tdDataPending = $('#tdDataPending').DataTable( {
 	columnDefs: [
 		{ className: 'pv_vertical_middle text-center', targets: '_all' },
-		{ orderable: false, targets: [1,4] },
+		{ orderable: false, targets: [3,4] },
 	],
 	dom: 'lrft',
 	buttons: [{
@@ -166,10 +163,10 @@ $(document).ready(function() {
 			},
 		},
 	   columns: [
-            { data : 'ingredient', title: 'Ingredient' },
-			{ data : 'cas', title: 'CAS' },
+            { data : 'ingredient', title: 'Ingredient', render: ingredient},
             { data : 'concentration', title: 'Purity %' },
             { data : 'quantity', title: 'Quantity (<?=$settings['mUnit']?>)', render: quantity },
+            { data : 'inventory.stock', title: 'Availability', render: stock },
 			{ data : null, title: 'Actions', className: 'text-center noexport', render: actions },
 			],
 	   footerCallback : function( tfoot, data, start, end, display ) {    
@@ -183,7 +180,8 @@ $(document).ready(function() {
 	  fnRowCallback : function (row, data, display) {
 		  if (data.toAdd == 0) {
 			  $(row).find('td:eq(0),td:eq(1),td:eq(2),td:eq(3)').addClass('strikeout');
-		  } 
+		  }
+		  $(row).addClass('pv-zoom');
 	  },
 	 order: [[ 0, 'asc' ]],
 	 lengthMenu: [[200, 500, 1000], [200, 500, 1000]],
@@ -191,7 +189,21 @@ $(document).ready(function() {
 	 displayLength: 200,
 	});
 	
+	$('#tdDataPending').on('mouseenter', '.pv-zoom', function() {
+		$(this).addClass('pv-transition')
+	});
+	
+	$('#tdDataPending').on('mouseleave', '.pv-zoom', function() {
+		$(this).removeClass('pv-transition')
+	});
+	
 });
+
+function ingredient(data, type, row){
+
+	data = '<i class="listIngNameCas-with-separator">' + row.ingredient + '</i><span class="listIngHeaderSub"> CAS: <i class="subHeaderCAS">'+row.cas+'</i></span>';
+	return data;
+}
 
 function quantity(data, type, row){
 	
@@ -204,28 +216,40 @@ function quantity(data, type, row){
 	return data;
 }
 function actions(data, type, row){
-	var data = '';
+	var data;
 	//if (row.quantity != row.originalQuantity) {
-		data = '<a href="#" id="undo_add" data-row-id="'+row.id+'" data-ingredient="'+row.ingredient+'" data-originalQuantity="'+row.originalQuantity+'" data-ingID = '+row.ingID+' class="fas fa-undo" title="Reset original quantity for '+row.ingredient+'"></a>';
+		data = '<i id="undo_add" data-row-id="'+row.id+'" data-ingredient="'+row.ingredient+'" data-originalQuantity="'+row.originalQuantity+'" data-ingID = '+row.ingID+' class="fas fa-undo pv_point_gen" title="Reset original quantity for '+row.ingredient+'"></i>';
 	//}
 	
 	if (row.toAdd == 1) {
-		data += '<a href="#" data-toggle="modal" data-target="#confirm_add" data-quantity="'+row.quantity+'" data-ingredient="'+row.ingredient+'" data-row-id="'+row.id+'" data-ing-id="'+row.ingID+'" data-qr="'+row.quantity+'" class="fas fa-check mrl" title="Confirm add '+row.ingredient+'"></a>';
+		data += '<i data-toggle="modal" data-target="#confirm_add" data-quantity="'+row.quantity+'" data-ingredient="'+row.ingredient+'" data-row-id="'+row.id+'" data-ing-id="'+row.ingID+'" data-qr="'+row.quantity+'" class="fas fa-check mrl pv_point_gen" title="Confirm add '+row.ingredient+'"></i>';
 	}
 	
-	
 					  
-	data += '<a href="#" data-ingredient="'+row.ingredient+'" data-quantity="'+row.quantity+'" data-concentration="'+row.concentration+'" data-ingID="'+row.ingID+'" id="addToCart" class="mrl fas fa-shopping-cart"></a>'; 
+	data += '<i data-ingredient="'+row.ingredient+'" data-quantity="'+row.quantity+'" data-concentration="'+row.concentration+'" data-ingID="'+row.ingID+'" id="addToCart" class="mrl fas fa-shopping-cart pv_point_gen"></i>'; 
 					 
 	return data;    
 }
+
+function stock(data, type, row){
+
+	var st;
+	
+	if (row.inventory.stock >= row.quantity){
+		st = '<i class = "stock2 badge badge-instock">Enough in stock: '+row.inventory.stock+''+row.inventory.mUnit+'</i>';
+	}else{
+		st = '<i class = "stock2 badge badge-nostock">Not enough in stock: '+row.inventory.stock+''+row.inventory.mUnit+'</i>';
+	}
+	
+	return st;
+}
+
 
 function reload_data() {
     $('#tdDataPending').DataTable().ajax.reload(null, true);
 }
 
 $('#title').click(function() {
-
 	$('#msg').html('');
 });
 

@@ -4,7 +4,7 @@
   <div>
   <div class="card shadow mb-4">
     <div class="card-header py-3">
-      <h2 class="m-0 font-weight-bold text-primary"><a href="javascript:reload_data()">Pending Formulas</a></h2>
+      <h2 class="m-0 font-weight-bold text-primary"><a href="javascript:reload_data()">Scheduled Formulas</a></h2>
     </div>
     <div class="card-body">
       <div class="table-responsive">
@@ -15,7 +15,7 @@
               <th>Formula Name</th>
               <th>Ingredients Pending</th>
               <th>Progress</th>
-              <th>Schedulled</th>
+              <th>Scheduled</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -61,7 +61,7 @@ $(document).ready(function() {
             { data : 'name', title: 'Formula Name', render: name },
 			{ data : null, title: 'Ingredients remaining', render: ingredients },
 			{ data : 'madeOn', title: 'Porgress', render: progress },
-			{ data : 'schedulledOn', title: 'Schedulled' },
+			{ data : 'scheduledOn', title: 'Scheduled' },
 			{ data : null, title: 'Actions', render: actions },
 			],
 	order: [[ 0, 'asc' ]],
