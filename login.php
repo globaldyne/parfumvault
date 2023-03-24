@@ -93,8 +93,8 @@ if($_POST['email'] && $_POST['password']){
                       <input type="text" class="form-control form-control-user" id="password" placeholder="Password...">
                     </div>
                     <div class="form-group">
-                      <input name="createPVOnline" type="checkbox" class="form-control-user" id="createPVOnline" value="true" checked>
-                      <label data-toggle="tooltip" data-placement="top" title="Connect my existing account to PVOnline or automatically create a new one.">Connect PV Online account</label>
+                      <input name="createPVOnline" type="checkbox" class="form-control-user" id="createPVOnline" value="true">
+                      <label data-toggle="tooltip" data-placement="top" title="Connect my existing account to PVOnline or automatically create a new one. You can also do this later in settings.">Connect or Register a PV Online account</label>
                     </div>
                     <div class="form-group"></div>
                     <button class="btn btn-primary btn-user btn-block" id="registerSubmit">
