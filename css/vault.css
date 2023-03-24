@@ -1038,8 +1038,8 @@ body {
   display: inline;
 }
 
-table.dataTable thead tr, tfoot tr {
-	background-color: #337ab7c9;
+table.dataTable thead tr {
+	background-color: #4f97d5c9;
 	color: white;
 }
 

@@ -9,7 +9,7 @@
     <div class="card-body">
       <div class="table-responsive">
       <div id="innermsg"></div>
-        <table class="table table-bordered" id="tdDataPending" width="100%" cellspacing="0">
+        <table class="table table-bordered" id="tdDataScheduled" width="100%" cellspacing="0">
           <thead>
             <tr>
               <th>Formula Name</th>
@@ -29,7 +29,7 @@
 <script>
 $(document).ready(function() {
 
-	var tdDataPending = $('#tdDataPending').DataTable( {
+	var tdDataScheduled = $('#tdDataScheduled').DataTable( {
 	columnDefs: [
 		{ className: 'pv_vertical_middle text-center', targets: '_all' },
 		{ orderable: false, targets: [1,4] },
@@ -103,11 +103,11 @@ function actions(data, type, row){
 }
 
 function reload_data() {
-    $('#tdDataPending').DataTable().ajax.reload(null, true);
+    $('#tdDataScheduled').DataTable().ajax.reload(null, true);
 }
 
 
-$('#tdDataPending').on('click', '[id*=pend_remove]', function () {
+$('#tdDataScheduled').on('click', '[id*=pend_remove]', function () {
 	var frm = {};
 	frm.ID = $(this).attr('data-id');
 	frm.Name = $(this).attr('data-name');

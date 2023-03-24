@@ -69,6 +69,10 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
 		}
 	}
 	
+	table.dataTable thead tr, tfoot tr {
+		background-color: #337ab7c9;
+		color: white;
+	}
   </style>
 </head>
 
