@@ -354,8 +354,9 @@ $('#print').click(() => {
 	           <a class="dropdown-item popup-link" href="/pages/getFormMeta.php?id=<?=$meta['id']?>">Settings</a>
                <div class="dropdown-divider"></div>
                <li class="dropdown-header">Export</li> 
-               <a class="dropdown-item" href="javascript:export_as('csv')">Export to CSV</a>
-               <a class="dropdown-item" href="javascript:export_as('pdf')">Export to PDF</a>
+               <a class="dropdown-item" href="javascript:export_as('csv')">Export as CSV</a>
+               <a class="dropdown-item" href="javascript:export_as('pdf')">Export as PDF</a>
+               <a class="dropdown-item" href="/pages/operations.php?action=exportFormulas&fid=<?=$meta['fid']?>">Export as JSON</a>               
                <a class="dropdown-item" href="#" id="print">Print Formula</a>
                <div class="dropdown-divider"></div>
                <li class="dropdown-header">Scale Formula</li> 
@@ -366,7 +367,7 @@ $('#print').click(() => {
                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#create_accord">Create Accord</a>
                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#conv_ingredient">Convert to ingredient</a>
                <div class="dropdown-divider"></div>
-               <a class="dropdown-item" href="javascript:addTODO()">Add to the make list</a>
+               <a class="dropdown-item" href="javascript:addTODO()">Schedule to make</a>
                <a class="dropdown-item" href="javascript:isMade()">Mark formula as made</a>
                <div class="dropdown-divider"></div>
                <a class="dropdown-item" href="/pages/viewHistory.php?id=<?=$meta['id']?>" target="_blank">View history</a>

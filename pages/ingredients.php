@@ -162,10 +162,14 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
        <div id="pvImportMsg"></div>
       <strong>WARNING:</strong><br />
       you are about to import data from PV Online, please bear in mind, PV Online is a community driven database therefore may contain unvalidated or incorrect data. <br />
-      If your local database contains already an ingredient with the same name, the ingredient data will not be imported. <p></p>
+      If your local database contains already an ingredient with the same name, the ingredient data will not be imported. 					
+      <p></p>
       <p>Ingredients online: <strong><?php echo pvOnlineStats($pvOnlineAPI, 'ingredientsTotal');?></strong></p>
-      <p>Synonyms online: <strong><?php echo pvOnlineStats($pvOnlineAPI, 'synonymsTotal');?></strong></p>
-      <p>Compositions online: <strong><?php echo pvOnlineStats($pvOnlineAPI, 'composTotal');?></strong></p>
+      <input name="includeSynonyms" type="checkbox" id="includeSynonyms" value="1" />
+      Synonyms online: <strong><?php echo pvOnlineStats($pvOnlineAPI, 'synonymsTotal');?></strong>
+      <p></p>
+      <input name="includeCompositions" type="checkbox" id="includeCompositions" value="1" />
+      Compositions online: <strong><?php echo pvOnlineStats($pvOnlineAPI, 'composTotal');?></strong>
 
 </div>
 	  <div class="modal-footer_2">
@@ -275,11 +279,13 @@ $('#pv_online_import').on('click', '[id*=btnImport]', function () {
 	$('#btnImport').attr('disabled', true);
 	$('#pvImportMsg').html('<div class="alert alert-info"><img src="/img/loading.gif"/> Please wait, this may take a while...</div>');
 	$.ajax({
-		url: 'pages/pvonline.php', 
+		url: '/pages/pvonline.php', 
 		type: 'POST',
 		data: {
 			action: 'import',
-			items: 'ingredients,allergens,suppliers,suppliersMeta,synonyms'
+			items: 'ingredients,allergens,suppliers,suppliersMeta,synonyms',
+			includeSynonyms: $("#includeSynonyms").is(':checked'),
+			includeCompositions: $("#includeCompositions").is(':checked'),
 			},
 		dataType: 'json',
 		success: function (data) {
@@ -311,7 +317,7 @@ $('#pv_online_upload').on('click', '[id*=btnUpload]', function () {
 	$('#btnUpload').prop('disabled', true);
 	$('#pvUploadMsg').html('<div class="alert alert-info"><img src="/img/loading.gif"/> Please wait, this may take a while...</div>');
 	$.ajax({
-		url: 'pages/pvonline.php', 
+		url: '/pages/pvonline.php', 
 		type: 'POST',
 		data: {
 			action: 'upload',

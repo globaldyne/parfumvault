@@ -43,7 +43,8 @@ if($meta == 0){
 	}
 	
 	foreach ($rs as $rq) {
-		$gING = mysqli_fetch_array(mysqli_query($conn, "SELECT cas FROM ingredients WHERE name = '".$rq['ingredient']."'"));
+		$gING = mysqli_fetch_array(mysqli_query($conn, "SELECT cas,odor FROM ingredients WHERE name = '".$rq['ingredient']."'"));
+		$inventory = mysqli_fetch_array(mysqli_query($conn, "SELECT stock,mUnit FROM suppliers WHERE ingID = '".$rq['ingredient_id']."' AND preferred = '1'"));
 
 		$r['id'] = (int)$rq['id'];
 		$r['fid'] = (string)$rq['fid'];
@@ -51,6 +52,7 @@ if($meta == 0){
 		$r['ingredient'] = (string)$rq['ingredient'];		
 		$r['ingID'] = (int)$rq['ingredient_id'];
 		$r['cas'] = (string)$gING['cas']?:'N/A';
+		$r['odor'] = (string)$gING['odor']?:'N/A';
 
 		$r['concentration'] = (float)$rq['concentration'];
 		$r['dilutant'] = (string)$rq['dilutant'] ?: 'None';
@@ -58,6 +60,9 @@ if($meta == 0){
 		$r['originalQuantity'] = number_format((float)$rq['originalQuantity'], $settings['qStep'],'.', '') ?: 0;
 		$r['overdose'] = number_format((float)$rq['overdose'], $settings['qStep'],'.', '') ?: 0;
 
+		$r['inventory']['stock'] = (float)$inventory['stock'] ?: 0;
+		$r['inventory']['mUnit'] = (string)$inventory['mUnit'] ?: $settings['mUnit'];
+	
 		$r['toAdd'] = (int)$rq['toAdd'];
 		
 		
@@ -82,7 +87,7 @@ if($meta == 0){
 	if($s != ''){
  	  $f = "  AND (name LIKE '%".$s."%')";
 	}
-	$q = mysqli_query($conn, "SELECT id, fid, name, madeOn, schedulledOn, toDo AS toAdd FROM formulasMetaData WHERE toDo = '1' $f $extra LIMIT $row, $limit");
+	$q = mysqli_query($conn, "SELECT id, fid, name, madeOn, scheduledOn, toDo AS toAdd FROM formulasMetaData WHERE toDo = '1' $f $extra LIMIT $row, $limit");
 	
 
 	while($res = mysqli_fetch_array($q)){
@@ -97,7 +102,7 @@ if($meta == 0){
 		$r['total_ingredients'] = (int)countElement("$t WHERE fid = '".$rq['fid']."'",$conn);
 		$r['total_ingredients_left'] = (int)countElement("$t WHERE fid = '".$rq['fid']."' AND toAdd = '1'",$conn);	
 		$r['toAdd'] = (int)$q2['toAdd'];
-		$r['schedulledOn'] = (string)$rq['schedulledOn'];
+		$r['scheduledOn'] = (string)$rq['scheduledOn'];
 		$r['madeOn'] = (string)$rq['madeOn'] ?: 'In progress';
 
 		$rx[]=$r;

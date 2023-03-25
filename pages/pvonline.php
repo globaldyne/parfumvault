@@ -1,12 +1,13 @@
 <?php 
 define('__ROOT__', dirname(dirname(__FILE__))); 
 
-require(__ROOT__.'/inc/sec.php');
+require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/inc/product.php');
 require_once(__ROOT__.'/func/pvOnline.php');
+require_once(__ROOT__.'/func/pvFileGet.php');
 
 //INVITE TO PV ONLINE
 if($_POST['action'] == 'invToPv'){
@@ -146,11 +147,20 @@ if($_POST['action'] == 'importShareFormula' && $_POST['fid']){
 
 //IMPORT INGREDIENTS FROM PV ONLINE
 if($_POST['action'] == 'import' && $_POST['items']){
+	
 	$items = explode(',',trim($_POST['items']));
-    $i = 0;
+    
+	if($_POST['includeSynonyms'] == 'false'){
+		unset($items['4']);
+	}
+	if($_POST['includeCompositions'] == 'false'){
+		unset($items['1']);
+	}
+
+	$i = 0;
     foreach ($items as &$item) {
 		$jAPI = $pvOnlineAPI.'?do='.$item;
-        $jsonData = json_decode(file_get_contents($jAPI), true);
+        $jsonData = json_decode(pv_file_get_contents($jAPI), true);
 
         if($jsonData['error']){
 			$response['error'] = 'Error connecting or retrieving data from PV Online '.$jsonData['error'];

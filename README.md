@@ -42,10 +42,10 @@ or manually:
 	
 	docker run --name PV2 \
 		-p 8080:80 \
-		-v PVDIR/config:/config \
-		-v PVDIR/db:/var/lib/mysql \
-		-v PVDIR/uploads:/var/www/html/uploads \
-		globaldyne/jbvault
+		-v PV2_VOL_CONF:/config \
+		-v PV2_VOL_DB:/var/lib/mysql \
+		-v PV2_VOL_UPLOADS:/var/www/html/uploads \
+		globaldyne/jbvault:latest
 
 then point your browser to http://localhost:8080
 

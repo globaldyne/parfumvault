@@ -6,6 +6,7 @@ require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
+require_once(__ROOT__.'/func/php-settings.php');
 
 $getFCats = mysqli_query($conn, "SELECT name,cname,type FROM formulaCategories");
 while($fcats = mysqli_fetch_array($getFCats)){
@@ -37,10 +38,14 @@ while($fTypes_res = mysqli_fetch_array($fTypes_q)){
 <div class="pv_menu_formulas">
     <div class="text-right">
         <div class="btn-group">
-        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> Menu</button>
             <div class="dropdown-menu dropdown-menu-right">
               <a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula">Add new formula</a>
               <a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula_csv">Import from CSV</a>
+              <div class="dropdown-divider"></div>
+        	  <a class="dropdown-item" href="#" data-toggle="modal" data-target="#export_formulas_json">Export Formulas as JSON</a>
+        	  <a class="dropdown-item" href="#" data-toggle="modal" data-target="#import_formulas_json">Import Formulas from JSON</a>
+
             </div>
         </div>
     </div>
@@ -49,8 +54,9 @@ while($fTypes_res = mysqli_fetch_array($fTypes_q)){
 
 <?php
 if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients")))){
-	echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> no ingredients yet, click <a href="?do=ingredients">here</a> to add.</div>';
-}elseif(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData")))){
+	echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> no ingredients yet, click <a href="/?do=ingredients">here</a> to add.</div>';
+}
+if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData")))){
 	echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> no formulas yet, click <a href="#" data-toggle="modal" data-target="#add_formula">here</a> to add.</div>';
 }else{
 ?>
@@ -60,7 +66,7 @@ if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients")))){
     <a href="#tab-all">All formulas</a>
  </li>
  <?php foreach ($fcat as $cat) { ?>
- <li class="tabs" data-source="core/list_formula_data.php?filter=1&<?=$cat['type']?>=<?=$cat['cname']?>" data-table="<?=$cat['cname']?>-table">
+ <li class="tabs" data-source="/core/list_formula_data.php?filter=1&<?=$cat['type']?>=<?=$cat['cname']?>" data-table="<?=$cat['cname']?>-table">
     <a href="#tab-<?=$cat['cname']?>"><?=$cat['name']?></a>
  <?php } ?>       
 </ul>
@@ -160,7 +166,7 @@ function initTable(tableId, src) {
 			},
            order: [0,'asc'],
            columnDefs: [
-				{ orderable: false, targets: [3, 7] },
+				{ orderable: false, targets: [3, 8] },
 				{ className: 'text-center', targets: '_all' },				  
 				],
 	    destroy: true,
@@ -217,7 +223,7 @@ function fMade(data, type, row, meta){
 
 function fStatus(data, type, row, meta){
 	if(row.status == 0){
-		var data = '<span class="label label-default">Schedulled</span>';
+		var data = '<span class="label label-default">Scheduled</span>';
 	}
 	if(row.status == 1){
 		var data = '<span class="label label-primary">Under Development</span>';
@@ -239,9 +245,17 @@ function fStatus(data, type, row, meta){
 }
 
 function fActions(data, type, row, meta){
-	if(type === 'display'){
-		data = '<a href="/pages/getFormMeta.php?id=' + row.id + '" rel="tip" title="Show details of '+ row.name +'" class="fas fa-cogs popup-link mr2"></a><a href="#" id="addTODO" class="fas fa-tasks mr2" rel="tip" title="Add '+ row.name +' to the make list" data-id='+ row.fid +' data-name="'+ row.name +'"></a><a href="#" id="cloneMe" class="fas fa-copy mr2" rel="tip" title="Clone '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"></a><i id="deleteMe" class="pv_point_gen fas fa-trash"  style="color: #c9302c;" rel="tip" title="Delete '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"></i>';
-	}
+		data = '<div class="dropdown">' +
+        '<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+            '<ul class="dropdown-menu dropdown-menu-right">';
+		data += '<li><a class="dropdown-item" href="/pages/operations.php?action=exportFormulas&fid=' + row.fid + '" rel="tip" title="Export '+ row.name +' as JSON" ><i class="fas fa-download mr2"></i>Export as JSON</a></li>'+
+		'<li><a class="dropdown-item popup-link" href="/pages/getFormMeta.php?id=' + row.id + '" rel="tip" title="Show details of '+ row.name +'"><i class="fas fa-cogs mr2"></i>Details</a></li>'+
+		'<li><a class="dropdown-item" href="#" id="addTODO" rel="tip" title="Schedule '+ row.name +' to make" data-id='+ row.fid +' data-name="'+ row.name +'"><i class="fas fa-tasks mr2"></i>Schedule to make</a></li>'+
+		'<li><a class="dropdown-item" href="#" id="cloneMe" rel="tip" title="Clone '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"><i class="fas fa-copy mr2"></i>Clone formula</a></li>'+
+		'<div class="dropdown-divider"></div>'+
+		'<li><a class="dropdown-item" href="#" id="deleteMe" style="color: #c9302c;" rel="tip" title="Delete '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"><i class="fas fa-trash mr2"></i>Permanently delete formula</a></li>';
+		data += '</ul></div>';
+	
     return data;
 }
 
@@ -498,6 +512,30 @@ function reload_formulas_data() {
     $('#all-table').DataTable().ajax.reload(null, true);
 };
 
+$('#export_json').click(function() {
+	$('#JSONExportMsg').html('<div class="alert alert-info"><img src="/img/loading.gif"/>Please wait, export in progress....</div>');					 
+	$.ajax({ 
+    url: '/pages/operations.php', 
+	type: 'GET',
+    data: {
+		action: 'exportFormulas',
+		},
+	dataType: 'json',
+    success: function (data) {
+		if(data.error){
+			var msg = '<div class="alert alert-danger">'+data.error+'</div>';
+		}else if(data.success){
+			var msg = '<div class="alert alert-success">'+data.success+'</div>';
+		}
+	  	$('#JSONExportMsg').html(msg);
+    }
+  });
+});
+
+$('#close_export_json').click(function() {
+	$('#JSONExportMsg').html('');
+});
+
 </script>
             
 <!--ADD FORMULA MODAL-->
@@ -625,3 +663,73 @@ function reload_formulas_data() {
   
 </div>
 </div>
+
+<!--EXPORT JSON MODAL-->
+<div class="modal fade" id="export_formulas_json" tabindex="-1" role="dialog" aria-labelledby="export_formulas_json" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Export formulas as a JSON file</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+            <p>This will generate a JSON file from your formulas. Once the file is generated you should download it to your computer.</p>
+            <div id="JSONExportMsg"></div>
+		</div>
+      </div>
+	  <div class="modal-footer">
+        <input type="button" class="btn btn-secondary" data-dismiss="modal" id="close_export_json" value="Close">
+        <input type="submit" name="btnExport" class="btn btn-primary" id="export_json" value="Export">
+      </div>   
+  </div>
+</div>
+</div>
+
+<!--IMPORT JSON MODAL-->
+<div class="modal fade" id="import_formulas_json" tabindex="-1" role="dialog" aria-labelledby="import_formulas_json" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Import formulas from a JSON file</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <div id="JSRestMsg"></div>
+      <div class="progress">  
+         <div id="uploadProgressBar" class="progress-bar" role="progressbar" aria-valuemin="0"></div>
+      </div>
+      <div id="backupArea">
+      
+          <div class="form-group">
+              <label class="col-md-3 control-label">JSON file:</label>
+              <div class="col-md-8">
+                 <input type="file" name="backupFile" id="backupFile" class="form-control" />
+              </div>
+          </div>
+          <div class="col-md-12">
+             <hr />
+             <p><strong>IMPORTANT:</strong></p>
+              <ul>
+                <li><div id="raw" data-size="<?=getMaximumFileUploadSizeRaw()?>">Maximum file size: <strong><?=getMaximumFileUploadSize()?></strong></div></li>
+                <li>Any formula with the same id will be replaced. Please make sure you have taken a backup before imporing a JSON file.</li>
+              </ul>
+    			<p>&nbsp;</p>
+            </div>
+          </div>
+      
+      </div>
+	  <div class="modal-footer">
+        <input type="button" class="btn btn-secondary" data-dismiss="modal" id="btnCloseBK" value="Cancel">
+        <input type="submit" name="btnRestore" class="btn btn-primary" id="btnRestoreFormulas" value="Import">
+      </div>
+   
+  </div>
+  
+</div>
+</div>
+<script src="/js/import.formulas.js"></script>

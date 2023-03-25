@@ -467,7 +467,7 @@ if($_POST['action'] == 'todo' && $_POST['fid'] && $_POST['add']){
 	$fname = mysqli_real_escape_string($conn, $_POST['fname']);
 	
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$fid' AND toDo = '1'"))){
-		$response['error'] = 'Formula '.$fname.' already added';
+		$response['error'] = 'Formula '.$fname.' already scheduled';
 		echo json_encode($response);
 		return;
 	}
@@ -475,9 +475,12 @@ if($_POST['action'] == 'todo' && $_POST['fid'] && $_POST['add']){
 	if(mysqli_query($conn, "INSERT INTO makeFormula (fid, name, ingredient, ingredient_id, concentration, dilutant, quantity, originalQuantity, toAdd) SELECT fid, name, ingredient, ingredient_id, concentration, dilutant, quantity, quantity, '1' FROM formulas WHERE fid = '$fid' AND exclude_from_calculation = '0'")){
 
 
-		mysqli_query($conn, "UPDATE formulasMetaData SET toDo = '1', status = '1', isMade = '0', schedulledOn = NOW() WHERE fid = '$fid'");
-		$response['success'] = 'Formula <a href="/?do=todo">'.$fname.'</a> added in To Make list!';		
+		mysqli_query($conn, "UPDATE formulasMetaData SET toDo = '1', status = '1', isMade = '0', scheduledOn = NOW() WHERE fid = '$fid'");
+		$response['success'] = 'Formula <a href="/?do=todo">'.$fname.'</a> scheduled to make!';		
+	}else{
+		$response['error'] = 'An error occured '.mysqli_error($conn);
 	}
+	
 	echo json_encode($response);
 	return;
 }

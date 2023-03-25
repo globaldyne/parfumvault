@@ -1,10 +1,6 @@
 Whats New:
 ----------------------
-- Make formula page improvements
-- Formula is now automatically marked as made and under evaluation status when making is complete
-- Add option to reset ingredient quantity to its original value when making the formula
-- Detect and notify if an ingredient is overdosed when making a formula
-- Rewrite sell formula page
-- Added deep search when adding ingredient in formula - this will extend search in synonyms
-- Fix PV Online intergration - Still in TECH PREVIEW state
-- Fix a bug preventing loding ingredients page in windows hosts
+- Introducing formulas import/exort in JSON format
+- Notify but don't prevent formula listing if no ingredients in database
+- Added option to exclude/include synonyms and compositions when importing from PV Online
+- Scheduled formulas view visual improvements
