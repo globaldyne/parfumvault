@@ -1058,3 +1058,14 @@ table#tdDataPending.dataTable thead:hover {
 .pv-transition {
 	transform: scale(1.05);
 }
+
+.schedule_details {
+	font-size: medium;
+	font-style: normal;
+}
+
+.schedule_details_sub {
+	padding-left: 10px;
+	font-size: medium;
+	font-style: normal;
+}

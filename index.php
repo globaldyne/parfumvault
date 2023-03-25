@@ -94,9 +94,9 @@ $(document).ready(function() {
 		"info":   true,
 		"lengthMenu": [[20, 35, 60, -1], [20, 35, 60, "All"]]
 	});
-	
+	<?php if($_GET['do'] == 'listFormulas'){?>
 	list_formulas();
-
+	<?php } ?>
 });
 
 function updateDB() {
@@ -144,17 +144,6 @@ function list_ingredients(page,limit,filter){
 			}
 		});
 };
-
-function list_users(){
-	$.ajax({ 
-		url: '/pages/listUsers.php', 
-		dataType: 'html',
-			success: function (data) {
-				$('#list_users').html(data);
-			}
-		});
-};
-
 
 
 </script>

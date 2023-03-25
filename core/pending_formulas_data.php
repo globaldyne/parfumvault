@@ -43,7 +43,7 @@ if($meta == 0){
 	}
 	
 	foreach ($rs as $rq) {
-		$gING = mysqli_fetch_array(mysqli_query($conn, "SELECT cas FROM ingredients WHERE name = '".$rq['ingredient']."'"));
+		$gING = mysqli_fetch_array(mysqli_query($conn, "SELECT cas,odor FROM ingredients WHERE name = '".$rq['ingredient']."'"));
 		$inventory = mysqli_fetch_array(mysqli_query($conn, "SELECT stock,mUnit FROM suppliers WHERE ingID = '".$rq['ingredient_id']."' AND preferred = '1'"));
 
 		$r['id'] = (int)$rq['id'];
@@ -52,6 +52,7 @@ if($meta == 0){
 		$r['ingredient'] = (string)$rq['ingredient'];		
 		$r['ingID'] = (int)$rq['ingredient_id'];
 		$r['cas'] = (string)$gING['cas']?:'N/A';
+		$r['odor'] = (string)$gING['odor']?:'N/A';
 
 		$r['concentration'] = (float)$rq['concentration'];
 		$r['dilutant'] = (string)$rq['dilutant'] ?: 'None';

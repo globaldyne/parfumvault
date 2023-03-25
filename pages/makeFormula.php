@@ -88,7 +88,7 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
           <div id="msg"><?=$msg?></div>
           
           <div class="btn-group" id="menu">
-            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
+            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> Menu</button>
             <div class="dropdown-menu dropdown-menu-left">
                <div class="dropdown-divider"></div>
                <a class="dropdown-item" href="#" id="markCompleteMenu">Mark formula as complete</a>
@@ -201,7 +201,39 @@ $(document).ready(function() {
 		$(this).removeClass('pv-transition')
 	});
 	
+	var detailRows = [];
+ 
+    $('#tdDataPending tbody').on( 'click', 'tr td:first-child + td', function () {
+        var tr = $(this).parents('tr');
+        var row = tdDataPending.row( tr );
+        var idx = $.inArray( tr.attr('id'), detailRows );
+ 
+        if ( row.child.isShown() ) {
+            tr.removeClass( 'details' );
+            row.child.hide();
+            detailRows.splice( idx, 1 );
+        } else {
+            tr.addClass( 'details' );
+            row.child( format( row.data() ) ).show();
+            if ( idx === -1 ) {
+                detailRows.push( tr.attr('id') );
+            }
+        }
+    });
+ 
+    tdDataPending.on( 'draw', function () {
+        $.each( detailRows, function ( i, id ) {
+            $('#'+id+' td:first-child + td').trigger( 'click' );
+        } );
+    } );
+	
 });
+
+function format ( d ) {
+    details = '<i class="schedule_details"><strong>Odor:</strong><br></i><span class="schedule_details_sub">'+d.odor+'</span><br>';
+	
+	return details;
+}
 
 function ingredient(data, type, row){
 
