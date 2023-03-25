@@ -94,9 +94,9 @@ $(document).ready(function() {
 		"info":   true,
 		"lengthMenu": [[20, 35, 60, -1], [20, 35, 60, "All"]]
 	});
-	
+	<?php if($_GET['do'] == 'listFormulas'){?>
 	list_formulas();
-
+	<?php } ?>
 });
 
 function updateDB() {
@@ -145,17 +145,6 @@ function list_ingredients(page,limit,filter){
 		});
 };
 
-function list_users(){
-	$.ajax({ 
-		url: '/pages/listUsers.php', 
-		dataType: 'html',
-			success: function (data) {
-				$('#list_users').html(data);
-			}
-		});
-};
-
-
 
 </script>
 </head>
@@ -168,7 +157,7 @@ function list_users(){
         <div class="sidebar-brand-icon">            
         <p></p>
         <p></p>
-        <div class="pvLogo"><img src="img/logo.png"></div>
+        <div class="pvLogo"><img src="/img/logo.png"></div>
         </div>
       </a>        
       <p></p>
@@ -204,7 +193,7 @@ function list_users(){
             <a class="collapse-item <?php if($_GET['do'] == 'compareFormulas'){ echo 'active';}?>" href="/?do=compareFormulas">Compare Formulas</a>
             <a class="collapse-item <?php if($_GET['do'] == 'genFinishedProduct'){ echo 'active';}?>" href="/?do=genFinishedProduct"> Finished Product</a>
             <a class="collapse-item <?php if($_GET['do'] == 'sellFormula'){ echo 'active';}?>" href="?do=sellFormula">Sell Formula</a>
-            <a class="collapse-item <?php if($_GET['do'] == 'todo'){ echo 'active';}?>" href="/?do=todo">Pending Formulas <span class="badge badge-danger badge-counter"><?php echo countPending(NULL, NULL, $conn);?></span></a>
+            <a class="collapse-item <?php if($_GET['do'] == 'todo'){ echo 'active';}?>" href="/?do=todo">Scheduled Formulas <span class="badge badge-danger badge-counter"><?php echo countPending(NULL, NULL, $conn);?></span></a>
           </div>
         </div>
       </li>

@@ -2,7 +2,7 @@
 
 define('__ROOT__', dirname(dirname(__FILE__))); 
 
-require(__ROOT__.'/inc/sec.php');
+require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
@@ -19,9 +19,9 @@ $defCatClass = $settings['defCatClass'];
      </div>
      <div class="col-sm-6 text-right">
       <div class="btn-group">
-       <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
+       <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> Menu</button>
       <div class="dropdown-menu dropdown-menu-right">
-        <a class="dropdown-item popup-link" href="pages/mgmIngredient.php">Add new ingredient</a>
+        <a class="dropdown-item popup-link" href="/pages/mgmIngredient.php">Add new ingredient</a>
         <a class="dropdown-item" id="csv_export" href="/pages/export.php?format=csv&kind=ingredients">Export to CSV</a>
         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#csv_import">Import from CSV</a>
         <div class="dropdown-divider"></div>
@@ -165,7 +165,7 @@ function iName(data, type, row){
 	if(row.allergen == 1){
 		var alg = '<span class="ing_alg"> <i rel="tip" title="Allergen" class="fas fa-exclamation-triangle"></i></span>';
 	}
-	return '<a class="popup-link listIngName listIngName-with-separator" href="pages/mgmIngredient.php?id=' + btoa(row.name) + '">' + data + '</a>'+alg+'<span class="listIngHeaderSub">CAS: <i class="pv_point_gen subHeaderCAS" rel="tip" title="Click to copy cas" id="cCAS" data-name="'+row.cas+'">'+row.cas+'</i> | EINECS: <i class="pv_point_gen subHeaderCAS">'+row.einecs+'</i></span>';
+	return '<a class="popup-link listIngName listIngName-with-separator" href="/pages/mgmIngredient.php?id=' + btoa(row.name) + '">' + data + '</a>'+alg+'<span class="listIngHeaderSub">CAS: <i class="pv_point_gen subHeaderCAS" rel="tip" title="Click to copy cas" id="cCAS" data-name="'+row.cas+'">'+row.cas+'</i> | EINECS: <i class="pv_point_gen subHeaderCAS">'+row.einecs+'</i></span>';
 
 }
 
@@ -184,7 +184,7 @@ function iStock(data, type, row){
 	}else if (row.physical_state == 2) {
 		var ingUnit = "gr";
 	}
-	return '<a class="popup-link" rel="tip" title="'+ingUnit+'" href="pages/ingSuppliers.php?id=' + row.id + '&standAlone=1">' + data + '</a>';
+	return '<a class="popup-link" rel="tip" title="'+ingUnit+'" href="/pages/ingSuppliers.php?id=' + row.id + '&standAlone=1">' + data + '</a>';
 }
 
 function iCategory(data, type, row){
@@ -236,7 +236,7 @@ function iDocs(data, type, row){
 		data ='<div class="btn-group"><button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-file-alt"></i> <span class="badge badge-light">'+row.document.length+'</span></button><div class="dropdown-menu dropdown-menu-right">';
 		for (var key in row.document) {
 			if (row.document.hasOwnProperty(key)) {
-				data+='<a class="dropdown-item popup-link" href="pages/viewDoc.php?id='+row.document[key].id+'">'+row.document[key].name+'</a>';
+				data+='<a class="dropdown-item popup-link" href="/pages/viewDoc.php?id='+row.document[key].id+'">'+row.document[key].name+'</a>';
 			}
 		}                
 		data+='</div></div></td>';
@@ -250,7 +250,14 @@ function iDocs(data, type, row){
 
 
 function actions(data, type, row){
-	return '<a href="pages/mgmIngredient.php?id='+btoa(row.name)+'" class="fas fa-edit popup-link"><a> <i rel="tip" title="Remove '+ row.name +'" class="pv_point_gen fas fa-trash" style="color: #c9302c;" id="rmIng" data-name="'+ row.name +'" data-id='+ row.id +'></i>';    
+	data = '<div class="dropdown">' +
+        '<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+            '<ul class="dropdown-menu dropdown-menu-right">';
+	data += '<li><a href="/pages/mgmIngredient.php?id='+btoa(row.name)+'" class="popup-link"><i class="fas fa-edit mr2"></i>Manage</a></li>'+
+	'<li><a rel="tip" title="Remove '+ row.name +'" class="pv_point_gen text-danger" id="rmIng" data-name="'+ row.name +'" data-id='+ row.id +'><i class="fas fa-trash mr2"></i>Delete</a></li>'; 
+	data += '</ul></div>';
+	
+	return data;
 }
 
 

@@ -114,5 +114,153 @@ if($_GET['restore'] == 'db_bk'){
 	return;
 }
 
+if($_GET['action'] == 'exportFormulas'){
+	if($_GET['fid']){
+		$filter = " WHERE fid ='".$_GET['fid']."'";
+	}
+	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData")))){
+		$msg['error'] = 'No formulas found to export.';
+		echo json_encode($msg);
+		return;
+	}
+	$formulas = 0;
+	$ingredients = 0;
+	
+	$qfmd = mysqli_query($conn, "SELECT * FROM formulasMetaData $filter");
+	while($meta = mysqli_fetch_assoc($qfmd)){
+		
+		$r['id'] = (int)$meta['id'];
+		$r['name'] = (string)$meta['name'];
+		$r['product_name'] = (string)$meta['product_name'];
+		$r['fid'] = (string)$meta['fid'];
+		$r['profile'] = (string)$meta['profile'];
+		$r['sex'] = (string)$meta['sex'];
+		$r['notes'] = (string)$meta['notes'];
+		$r['created'] = (string)$meta['created'];
+		$r['isProtected'] = (int)$meta['isProtected'];
+		$r['defView'] = (int)$meta['defView'];
+		$r['catClass'] = (string)$meta['catClass'];
+		$r['revision'] = (int)$meta['revision'];
+		$r['finalType'] = (int)$meta['finalType'];
+		$r['isMade'] = (int)$meta['isMade'];
+		$r['madeOn'] = (string)$meta['madeOn'] ?: "0000-00-00 00:00:00";
+		$r['scheduledOn'] = (string)$meta['scheduledOn'];
+		$r['customer_id'] = (int)$meta['customer_id'];
+		$r['status'] = (int)$meta['status'];
+		$r['toDo'] = (int)$meta['toDo'];
+		$r['rating'] = (int)$meta['rating'];
+		
+		$formulas++;
+		$fm[] = $r;
+	}
+	
+	$qfm = mysqli_query($conn, "SELECT * FROM formulas $filter");
+	while($formula = mysqli_fetch_assoc($qfm)){
+		
+		
+		$f['id'] = (int)$formula['id'];
+		$f['fid'] = (string)$formula['fid'];
+		$f['name'] = (string)$formula['name'];
+		$f['ingredient'] = (string)$formula['ingredient'];
+		$f['ingredient_id'] = (int)$formula['ingredient_id'] ?: 0;
+		$f['concentration'] = (float)$formula['concentration'];
+		$f['dilutant'] = (string)$formula['dilutant'] ?: 'None';
+		$f['quantity'] = (float)$formula['quantity'];
+		$f['exclude_from_summary'] = (int)$formula['exclude_from_summary'];
+		$f['exclude_from_calculation'] = (int)$formula['exclude_from_calculation'];
+		$f['notes'] = (string)$formula['notes'] ?: 'None';
+		$f['created'] = (string)$formula['created'];
+		$f['updated'] = (string)$formula['updated'];
+		
+		$ingredients++;
+		$fd[] = $f;
+	}
+	
+	$vd['product'] = $product;
+	$vd['version'] = $ver;
+	$vd['formulas'] = $formulas;
+	$vd['ingredients'] = $ingredients;
+	$vd['timestamp'] = date('d/m/Y H:i:s');
 
+	
+	$result['formulasMetaData'] = $fm;
+	$result['formulas'] = $fd;
+	$result['pvMeta'] = $vd;
+
+	if($_GET['fid']){
+		header('Content-disposition: attachment; filename='.$f['name'].'.json');
+		header('Content-type: application/json');
+		echo json_encode($result, JSON_PRETTY_PRINT);
+		return;
+	}
+	
+	$file = __ROOT__.'/tmp/pv_formulas.json';
+	unlink($file);
+	
+	$fp = fopen($file, 'w');
+	fwrite($fp, json_encode($result, JSON_PRETTY_PRINT));
+	fclose($fp);
+
+	if(file_exists($file)){
+		$msg['success'] ='<a href="/tmp/pv_formulas.json" target="_blank">JSON File is ready, right click to save it to your computer.</a>';
+	}else{
+		$msg['error'] = 'Error generating JSON file';
+	}
+	
+	echo json_encode($msg);
+	return;
+}
+
+if($_GET['action'] == 'restoreFormulas'){
+	if (!file_exists(__ROOT__."/$tmp_path")) {
+		mkdir(__ROOT__."/$tmp_path", 0777, true);
+	}
+	
+	$target_path = __ROOT__.'/'.$tmp_path.basename($_FILES['backupFile']['name']); 
+
+	if(move_uploaded_file($_FILES['backupFile']['tmp_name'], $target_path)) {
+    	$data = json_decode(file_get_contents($target_path), true);
+		
+		foreach ($data['formulasMetaData'] as $meta ){				
+			$name = mysqli_real_escape_string($conn, $meta['name']);
+			$product_name = mysqli_real_escape_string($conn, $meta['product_name']);
+			$notes = mysqli_real_escape_string($conn, $meta['notes']);
+			
+			$sql = "INSERT IGNORE INTO formulasMetaData(name,product_name,fid,profile,sex,notes,created,isProtected,defView,catClass,revision,finalType,isMade,madeOn,scheduledOn,customer_id,status,toDo,rating) VALUES('".$name."','".$product_name."','".$meta['fid']."','".$meta['profile']."','".$meta['sex']."','".$notes."','".$meta['created']."','".$meta['isProtected']."','".$meta['defView']."','".$meta['catClass']."','".$meta['revision']."','".$meta['finalType']."','".$meta['isMade']."','".$meta['madeOn']."','".$meta['scheduledOn']."','".$meta['customer_id']."','".$meta['status']."','".$meta['toDo']."','".$meta['rating']."')";
+			
+			if(mysqli_query($conn,$sql)){
+				mysqli_query($conn,"DELETE FROM formulas WHERE fid = '".$meta['fid']."'");
+			}else{
+				$result['error'] = "There was an error importing your JSON file ".mysqli_error($conn);
+				echo json_encode($result);
+				return;
+			}
+		}
+		
+		foreach ($data['formulas'] as $formula ){	
+	
+			$name = mysqli_real_escape_string($conn, $formula['name']);
+			$notes = mysqli_real_escape_string($conn, $formula['notes']);
+			$ingredient = mysqli_real_escape_string($conn, $formula['ingredient']);
+		
+			$sql = "INSERT INTO formulas(fid,name,ingredient,ingredient_id,concentration,dilutant,quantity,exclude_from_summary,exclude_from_calculation,notes,created,updated) VALUES('".$formula['fid']."','".$name."','".$ingredient."','".$formula['ingredient_id']."','".$formula['concentration']."','".$formula['dilutant']."','".$formula['quantity']."','".$formula['exclude_from_summary']."','".$formula['exclude_from_calculation']."','".$notes."','".$formula['created']."','".$formula['updated']."')";
+			
+			if(mysqli_query($conn,$sql)){
+				$result['success'] = "Import complete";
+				unlink(__ROOT__.'/'.$target_path);
+			}else{
+				$result['error'] = "There was an error importing your JSON file ".mysqli_error($conn);
+				
+			}
+		}
+		
+	} else {
+		$result['error'] = "There was an error processing backup file $target_path, please try again!";
+		echo json_encode($result);
+
+	}
+	echo json_encode($result);
+	return;
+
+}
 ?>

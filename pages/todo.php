@@ -4,18 +4,18 @@
   <div>
   <div class="card shadow mb-4">
     <div class="card-header py-3">
-      <h2 class="m-0 font-weight-bold text-primary"><a href="javascript:reload_data()">Pending Formulas</a></h2>
+      <h2 class="m-0 font-weight-bold text-primary"><a href="javascript:reload_data()">Scheduled Formulas</a></h2>
     </div>
     <div class="card-body">
       <div class="table-responsive">
       <div id="innermsg"></div>
-        <table class="table table-bordered" id="tdDataPending" width="100%" cellspacing="0">
+        <table class="table table-bordered" id="tdDataScheduled" width="100%" cellspacing="0">
           <thead>
             <tr>
               <th>Formula Name</th>
               <th>Ingredients Pending</th>
               <th>Progress</th>
-              <th>Schedulled</th>
+              <th>Scheduled</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -29,7 +29,7 @@
 <script>
 $(document).ready(function() {
 
-	var tdDataPending = $('#tdDataPending').DataTable( {
+	var tdDataScheduled = $('#tdDataScheduled').DataTable( {
 	columnDefs: [
 		{ className: 'pv_vertical_middle text-center', targets: '_all' },
 		{ orderable: false, targets: [1,4] },
@@ -61,7 +61,7 @@ $(document).ready(function() {
             { data : 'name', title: 'Formula Name', render: name },
 			{ data : null, title: 'Ingredients remaining', render: ingredients },
 			{ data : 'madeOn', title: 'Porgress', render: progress },
-			{ data : 'schedulledOn', title: 'Schedulled' },
+			{ data : 'scheduledOn', title: 'Scheduled' },
 			{ data : null, title: 'Actions', render: actions },
 			],
 	order: [[ 0, 'asc' ]],
@@ -103,11 +103,11 @@ function actions(data, type, row){
 }
 
 function reload_data() {
-    $('#tdDataPending').DataTable().ajax.reload(null, true);
+    $('#tdDataScheduled').DataTable().ajax.reload(null, true);
 }
 
 
-$('#tdDataPending').on('click', '[id*=pend_remove]', function () {
+$('#tdDataScheduled').on('click', '[id*=pend_remove]', function () {
 	var frm = {};
 	frm.ID = $(this).attr('data-id');
 	frm.Name = $(this).attr('data-name');

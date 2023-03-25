@@ -5,8 +5,8 @@ $ifra_q = mysqli_query($conn, "SELECT * FROM IFRALibrary ORDER BY amendment DESC
 $defCatClass = $settings['defCatClass'];
 
 ?>
-<script src="js/mark/jquery.mark.min.js"></script>
-<script src="js/mark/datatables.mark.js"></script>
+<script src="/js/mark/jquery.mark.min.js"></script>
+<script src="/js/mark/datatables.mark.js"></script>
 
 <div id="content-wrapper" class="d-flex flex-column">
 <?php require_once(__ROOT__.'/pages/top.php'); ?>
@@ -22,7 +22,7 @@ $defCatClass = $settings['defCatClass'];
                
                   <div class="text-right">
                     <div class="btn-group">
-                      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
+                      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> Menu</button>
                       <div class="dropdown-menu dropdown-menu-right">
                         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#ifra_import">Import IFRA xls</a>
                         <?php if($settings['pubChem'] == '1'){?>
@@ -263,7 +263,7 @@ $('#btnImportIFRA').click(function() {
        if(files.length > 0 ){
         fd.append('ifraXLS',files[0]);
         $.ajax({
-           url: 'pages/upload.php?type=IFRA&updateCAS=' + modify,
+           url: '/pages/upload.php?type=IFRA&updateCAS=' + modify,
            type: 'post',
            data: fd,
            contentType: false,
@@ -293,7 +293,7 @@ $('#Importpb').click(function() {
 	$("#ImportpbC").hide();
 
 	$.ajax({
-		url: 'pages/update_data.php', 
+		url: '/pages/update_data.php', 
 		type: 'GET',
 		data: {
 			IFRA_PB: "import",

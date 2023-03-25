@@ -542,6 +542,17 @@ formula td, table.table th {
 	font-weight: normal;
 }
 
+.listIngNameCas-with-separator {
+    content: '';
+    display: inline;
+    height: 0;
+    width: 8rem;
+    margin-top: 0.25rem;
+    border-bottom-width: 0.1rem;
+    border-bottom-style: solid;
+	font-style: normal;
+}
+
 .ellipsis {
     overflow: hidden;
     white-space: nowrap;
@@ -1013,10 +1024,48 @@ body {
   background-color: #e74a3b !important;
 }
 
+.stock2.badge {
+  display: inline-flex;
+  float: none !important;
+  font-style:normal;
+}
+
 .mr2 {
 	margin-right: 10px;	
 }
 
 #customer_name, #formula_name {
   display: inline;
+}
+
+table.dataTable thead tr {
+	background-color: #4f97d5c9;
+	color: white;
+}
+
+table#tdDataPending.dataTable tbody tr:hover {
+	background-color: #ae9292;
+}
+
+table#tdDataPending.dataTable tbody tr:hover  {
+  background-color: #ae9292;
+}
+
+table#tdDataPending.dataTable thead:hover {
+  background-color: #ae9292;
+}
+
+.pv-transition {
+	transform: scale(1.05);
+}
+
+.schedule_details {
+	font-size: medium;
+	font-style: normal;
+}
+
+.schedule_details_sub {
+	padding-left: 10px;
+	font-size: medium;
+	font-style: normal;
 }
