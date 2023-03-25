@@ -157,7 +157,7 @@ function list_ingredients(page,limit,filter){
         <div class="sidebar-brand-icon">            
         <p></p>
         <p></p>
-        <div class="pvLogo"><img src="img/logo.png"></div>
+        <div class="pvLogo"><img src="/img/logo.png"></div>
         </div>
       </a>        
       <p></p>

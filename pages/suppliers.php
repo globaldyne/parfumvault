@@ -6,31 +6,35 @@ $q = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
 ?>
 <div id="content-wrapper" class="d-flex flex-column">
 <?php require_once(__ROOT__.'/pages/top.php'); ?>
-        <div class="container-fluid">
-<?php echo $msg; ?>
+     <div class="container-fluid">
           <div>
           <div class="card shadow mb-4">
             <div class="card-header py-3">
               <h2 class="m-0 font-weight-bold text-primary"><a href="?do=suppliers">Suppliers</a></h2>
             </div>
             <div id="errMsg"></div>
+            <table class="table table-striped table-bordered" style="width:100%">
+                <tr class="noBorder noexport">
+                <th colspan="9">
+                 <div class="col-sm-6 text-left">
+                 </div>
+                 <div class="col-sm-6 text-right">
+                  <div class="btn-group">
+                      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> Menu</button>
+                      <div class="dropdown-menu dropdown-menu-right">
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addSupplier">Add new</a>
+                        <a class="dropdown-item" id="csv" href="#">Export to CSV</a>
+                      </div>
+                    </div>        
+                 </div>
+                
+              </th>
+            </tr>
+            </table>
             <div class="card-body">
               <div class="table-responsive">
                 <table class="table table-bordered" id="tdData" width="100%" cellspacing="0">
                   <thead>
-                    <tr class="noBorder noexport">
-                      <th colspan="10">
-                  <div class="text-right">
-                        <div class="btn-group">
-                          <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
-                          <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addSupplier">Add new</a>
-                            <a class="dropdown-item" id="csv" href="#">Export to CSV</a>
-                          </div>
-                        </div>                    
-                        </div>
-                        </th>
-                    </tr>
                     <tr>
                       <th>Name</th>
                       <th>Platform</th>
@@ -136,7 +140,7 @@ $q = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
 $('#supplier_data').editable({
   container: 'body',
   selector: 'td.name',
-  url: "pages/update_data.php?settings=sup",
+  url: "/pages/update_data.php?settings=sup",
   title: 'Supplier',
   type: "POST",
   dataType: 'html',
@@ -151,7 +155,7 @@ $('#supplier_data').editable({
 	container: 'body',
 	selector: 'td.platform',
 	type: 'POST',
-  	url: "pages/update_data.php?settings=sup",
+  	url: "/pages/update_data.php?settings=sup",
     source: [
 			 {value: "woocomerce", text: "Woocomerce"},
 			 {value: "shopify", text: "Shopify"},
@@ -163,7 +167,7 @@ $('#supplier_data').editable({
 	container: 'body',
 	selector: 'td.price_per_size',
 	type: 'POST',
-  	url: "pages/update_data.php?settings=sup",
+  	url: "/pages/update_data.php?settings=sup",
     source: [
 			 {value: "0", text: "Product"},
 			 {value: "1", text: "Volume"},
@@ -173,7 +177,7 @@ $('#supplier_data').editable({
 $('#supplier_data').editable({
   container: 'body',
   selector: 'td.min_ml',
-  url: "pages/update_data.php?settings=sup",
+  url: "/pages/update_data.php?settings=sup",
   title: 'Minimum ml',
   type: "POST",
   dataType: 'html',
@@ -187,7 +191,7 @@ $('#supplier_data').editable({
 $('#supplier_data').editable({
   container: 'body',
   selector: 'td.min_gr',
-  url: "pages/update_data.php?settings=sup",
+  url: "/pages/update_data.php?settings=sup",
   title: 'Minimum grams',
   type: "POST",
   dataType: 'html',
@@ -201,7 +205,7 @@ $('#supplier_data').editable({
 $('#supplier_data').editable({
   container: 'body',
   selector: 'td.price_tag_start',
-  url: "pages/update_data.php?settings=sup",
+  url: "/pages/update_data.php?settings=sup",
   title: 'Price tag start',
   type: "POST",
   dataType: 'html'
@@ -210,7 +214,7 @@ $('#supplier_data').editable({
 $('#supplier_data').editable({
   container: 'body',
   selector: 'td.price_tag_end',
-  url: "pages/update_data.php?settings=sup",
+  url: "/pages/update_data.php?settings=sup",
   title: 'Price tag end',
   type: "POST",
   dataType: 'html'
@@ -219,7 +223,7 @@ $('#supplier_data').editable({
 $('#supplier_data').editable({
   container: 'body',
   selector: 'td.add_costs',
-  url: "pages/update_data.php?settings=sup",
+  url: "/pages/update_data.php?settings=sup",
   title: 'Additional Costs',
   type: "POST",
   dataType: 'html'
@@ -228,7 +232,7 @@ $('#supplier_data').editable({
 $('#supplier_data').editable({
   container: 'body',
   selector: 'td.notes',
-  url: "pages/update_data.php?settings=sup",
+  url: "/pages/update_data.php?settings=sup",
   title: 'Description',
   type: "POST",
   dataType: 'html',
@@ -238,7 +242,7 @@ $('#supplier_data').editable({
 
 function deleteSupplier(ID) {	  
 $.ajax({ 
-    url: 'pages/update_data.php', 
+    url: '/pages/update_data.php', 
 	type: 'GET',
     data: {
 		supp: 'delete',
@@ -254,7 +258,7 @@ $.ajax({
 
 function addSupplier() {	  
 $.ajax({ 
-    url: 'pages/update_data.php', 
+    url: '/pages/update_data.php', 
 	type: 'POST',
     data: {
 		supp: 'add',

@@ -246,7 +246,7 @@ function fStatus(data, type, row, meta){
 
 function fActions(data, type, row, meta){
 		data = '<div class="dropdown">' +
-        '<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow bg-dark" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+        '<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
             '<ul class="dropdown-menu dropdown-menu-right">';
 		data += '<li><a class="dropdown-item" href="/pages/operations.php?action=exportFormulas&fid=' + row.fid + '" rel="tip" title="Export '+ row.name +' as JSON" ><i class="fas fa-download mr2"></i>Export as JSON</a></li>'+
 		'<li><a class="dropdown-item popup-link" href="/pages/getFormMeta.php?id=' + row.id + '" rel="tip" title="Show details of '+ row.name +'"><i class="fas fa-cogs mr2"></i>Details</a></li>'+
