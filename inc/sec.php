@@ -15,7 +15,10 @@ if ( (! empty($_SERVER['REQUEST_SCHEME']) && $_SERVER['REQUEST_SCHEME'] == 'http
 
 session_start();
 if(!isset($_SESSION['parfumvault'])){
-	$login = $server_request_scheme.'://'.$_SERVER['HTTP_HOST'].'/login.php';
+	if($_GET['do']){
+		$redirect = '?do='.$_GET['do'];
+	}
+	$login = $server_request_scheme.'://'.$_SERVER['HTTP_HOST'].'/login.php'.$redirect;
 	header('Location: '.$login);
 	exit;
 }

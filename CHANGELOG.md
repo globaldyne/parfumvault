@@ -1,8 +1,9 @@
 # CHANGELOG
 ### Version 6.0
+- Redirect to the previous page if session is expired
 
 ### Version 5.9
-- Introducing formulas import/exort in JSON format
+- Introducing formulas import/export in JSON format
 - Notify but don't prevent formula listing if no ingredients in database
 - Added option to exclude/include synonyms and compositions when importing from PV Online
 - Bash run script update to utilise docker volumes
