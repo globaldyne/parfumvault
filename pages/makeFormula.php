@@ -4,11 +4,8 @@ session_start();
 
 define('__ROOT__', dirname(dirname(__FILE__))); 
 
-//require_once(__ROOT__.'/inc/sec.php');
 if(!isset($_SESSION['parfumvault'])){
-	//if($_GET['do']){
-		$redirect = '?url=/pages/makeFormula.php?fid='.$_GET['fid'];
-	// }
+	$redirect = '?url=/pages/makeFormula.php?fid='.$_GET['fid'];
 	$login = '/login.php'.$redirect;
 	header('Location: '.$login);
 	exit;
