@@ -31,7 +31,7 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="<?php echo trim($product).' - '.trim($ver);?>">
   <meta name="author" content="<?php echo trim($product).' - '.trim($ver);?>">
   <title>Making of <?php echo $meta['name'];?></title>
@@ -85,8 +85,6 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
   </style>
 </head>
 
-
-
 <div id="content-wrapper" class="d-flex flex-column">
     <div class="container-fluid">
       <div class="card shadow mb-4">
@@ -95,22 +93,21 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
         </div>
         <div class="card-body">
           <div class="table-responsive">
+          <div id="errors"></div>
           <div id="msg"><?=$msg?></div>
-          
           <div class="btn-group" id="menu">
             <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> Menu</button>
             <div class="dropdown-menu dropdown-menu-left">
                <div class="dropdown-divider"></div>
                <a class="dropdown-item" href="#" id="markCompleteMenu">Mark formula as complete</a>
-
                <div class="dropdown-divider"></div>
                <li class="dropdown-header">Export</li> 
                <a class="dropdown-item" href="javascript:export_as('csv')">Export as CSV</a>
                <a class="dropdown-item" href="javascript:export_as('pdf')">Export as PDF</a>
                <a class="dropdown-item" href="#" id="print">Print Formula</a>
-               
             </div>
         </div>
+        <p></p>
             <table class="table table-bordered" id="tdDataPending" width="100%" cellspacing="0">
               <thead>
                 <tr>
@@ -247,7 +244,7 @@ function format ( d ) {
 
 function ingredient(data, type, row){
 
-	data = '<i class="listIngNameCas-with-separator">' + row.ingredient + '</i><span class="listIngHeaderSub"> CAS: <i class="subHeaderCAS">'+row.cas+'</i></span>';
+	data = '<a href="#infoModal" id="ingInfo" data-toggle="modal" data-id="'+row.ingID+'" data-name="'+row.ingredient+'" class="listIngNameCas-with-separator">' + row.ingredient + '</a><span class="listIngHeaderSub"> CAS: <i class="subHeaderCAS">'+row.cas+'</i></span>';
 	return data;
 }
 
@@ -294,6 +291,30 @@ function stock(data, type, row){
 function reload_data() {
     $('#tdDataPending').DataTable().ajax.reload(null, true);
 }
+
+$('#tdDataPending').on('click', '[id*=ingInfo]', function () {
+    var id = $(this).data('id');
+    var name = $(this).data('name');
+	
+	$('.modal-title').html(name);   
+    $('.modal-body').html('loading');
+	
+    $.ajax({
+       type: 'GET',
+       url: '/pages/views/ingredients/getIngInfo.php',
+       data:{
+		   ingID: id
+		},
+       success: function(data) {
+         $('.modal-body').html(data);
+       },
+       error:function(err){
+		data = '<div class="alert alert-danger">Unable to get ingredient info</div>';
+        $('.modal-body').html(data);
+       }
+    })
+ });
+
 
 $('#title').click(function() {
 	$('#msg').html('');
@@ -490,6 +511,23 @@ $('#markComplete, #markCompleteMenu').click(function() {
 
 <script src="/js/mark/jquery.mark.min.js"></script>
 <script src="/js/mark/datatables.mark.js"></script>
+
+<!-- Modal ING Info -->
+<div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="infoModalLabel"><div class="modal-title"></h4>
+            </div>
+            	<div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Modal Confirm amount-->
 <div class="modal fade" id="confirm_add" tabindex="-1" role="dialog" aria-labelledby="confirm_add" aria-hidden="true">

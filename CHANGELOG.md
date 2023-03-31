@@ -3,6 +3,7 @@
 - Redirect to the previous page if session is expired
 - Fixes errors with PHP8
 - Better stock management when making a formula
+- Add ingredient info in formula making  view
 
 ### Version 5.9
 - Introducing formulas import/export in JSON format
