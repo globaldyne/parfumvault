@@ -372,7 +372,7 @@ CREATE TABLE `suppliers` (
  `batch` VARCHAR(255) NULL,
  `purchased` DATE NULL,
  `mUnit` VARCHAR(255) NULL, 
- `stock` float NOT NULL DEFAULT 0,
+ `stock` decimal(10,3) NOT NULL,
  `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
  PRIMARY KEY (`id`),
  UNIQUE KEY `id` (`id`)

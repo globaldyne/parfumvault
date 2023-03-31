@@ -53,7 +53,7 @@ function get_formula_excludes($conn, $fid, $cat) {
 		}
 		
 	}
-	return array_filter($v);
+	return array_filter((array)$v);
 }
 
 ?>

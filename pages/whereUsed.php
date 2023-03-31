@@ -15,7 +15,7 @@ while($used_cmp = mysqli_fetch_array($ingUsageCmp)){
 	$usedCmp[] = $used_cmp;
 }
 
-if(count($used) == 0 && count($usedCmp) == 0){
+if(count((array)$used) == 0 && count((array)$usedCmp) == 0){
 	echo '<div class="alert alert-info"><strong>'.$ingID.' isn\'t currently used in any formulas or ingredient compositions.</strong></div>';
 	return;
 }

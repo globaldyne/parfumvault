@@ -588,7 +588,7 @@ $('#close_export_json').click(function() {
             <td valign="top">Customer:</td>
               <td><select name="customer" id="customer" class="form-control ellipsis">
                 <option value="0">Internal use</option>
-                <?php foreach ($customer as $c) {?>
+                <?php foreach ((array)$customer as $c) {?>
                 <option value="<?=$c['id'];?>"><?=$c['name']?></option>
                 <?php }	?>
               </select></td>

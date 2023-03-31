@@ -410,7 +410,17 @@ if($_POST['action'] == 'makeFormula' && $_POST['fid'] && $_POST['q'] && $_POST['
 	}
 						 
 	$q = trim($_POST['q']);
-
+	if($_POST['updateStock'] == "true"){
+		$getStock = mysqli_fetch_array(mysqli_query($conn, "SELECT stock,mUnit FROM suppliers WHERE ingID = '$ingID' AND preferred = '1'"));
+		if($getStock['stock'] < $q){
+			$response['error'] = 'Amount exceeds quantity available in stock ('.$getStock['stock'].$getStock['mUnit'].')';
+			echo json_encode($response);
+			return;
+		}
+		mysqli_query($conn, "UPDATE suppliers SET stock = stock - $q WHERE ingID = '$ingID' AND preferred = '1'");
+		$response['success'] .= "<br/><strong>Stock deducted by ".$q.$settings['mUnit']."</strong>";
+	}
+	
 	if($qr == $q){
 		if(mysqli_query($conn, "UPDATE makeFormula SET toAdd = '0' WHERE fid = '$fid' AND id = '$id'")){
 			$response['success'] = $_POST['ing'].' added!';
@@ -421,12 +431,7 @@ if($_POST['action'] == 'makeFormula' && $_POST['fid'] && $_POST['q'] && $_POST['
 			$response['success'] = 'Formula updated!';
 		}
 	}
-	
-	if($_POST['updateStock'] == "true"){
-		mysqli_query($conn, "UPDATE suppliers SET stock = stock - $q WHERE ingID = '$ingID' AND preferred = '1'");
-		$response['success'] .= "<br/><strong>Stock deducted by ".$q.$settings['mUnit']."</strong>";
-	}	
-	
+		
 	if($qr < $q){
 		if(mysqli_query($conn, "UPDATE makeFormula SET overdose = '$q' WHERE fid = '$fid' AND id = '$id'")){
 			$response['success'] = $_POST['ing'].' is overdosed, <strong>'.$q.'<strong> added';

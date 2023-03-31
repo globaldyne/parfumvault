@@ -1,6 +1,8 @@
 # CHANGELOG
 ### Version 6.0
 - Redirect to the previous page if session is expired
+- Fixes errors with PHP8
+- Better stock management when making a formula
 
 ### Version 5.9
 - Introducing formulas import/export in JSON format

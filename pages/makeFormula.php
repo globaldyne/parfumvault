@@ -27,8 +27,7 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
 		$msg = '<div class="alert alert-warning"><a href="#" id="markComplete"><strong>All materials added. Mark formula as complete?</strong></a></div>';
 
 }
-?>
-<head>
+?><head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
@@ -85,6 +84,7 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
 	}
   </style>
 </head>
+
 
 
 <div id="content-wrapper" class="d-flex flex-column">
@@ -281,7 +281,7 @@ function stock(data, type, row){
 
 	var st;
 	
-	if (row.inventory.stock >= row.quantity){
+	if (parseFloat(row.inventory.stock) >= parseFloat(row.quantity)){
 		st = '<i class = "stock2 badge badge-instock">Enough in stock: '+row.inventory.stock+''+row.inventory.mUnit+'</i>';
 	}else{
 		st = '<i class = "stock2 badge badge-nostock">Not enough in stock: '+row.inventory.stock+''+row.inventory.mUnit+'</i>';
