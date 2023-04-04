@@ -208,39 +208,10 @@ $(document).ready(function() {
 		$(this).removeClass('pv-transition')
 	});
 	
-	var detailRows = [];
- 
-    $('#tdDataPending tbody').on( 'click', 'tr td:first-child + td', function () {
-        var tr = $(this).parents('tr');
-        var row = tdDataPending.row( tr );
-        var idx = $.inArray( tr.attr('id'), detailRows );
- 
-        if ( row.child.isShown() ) {
-            tr.removeClass( 'details' );
-            row.child.hide();
-            detailRows.splice( idx, 1 );
-        } else {
-            tr.addClass( 'details' );
-            row.child( format( row.data() ) ).show();
-            if ( idx === -1 ) {
-                detailRows.push( tr.attr('id') );
-            }
-        }
-    });
- 
-    tdDataPending.on( 'draw', function () {
-        $.each( detailRows, function ( i, id ) {
-            $('#'+id+' td:first-child + td').trigger( 'click' );
-        } );
-    } );
+	
 	
 });
 
-function format ( d ) {
-    details = '<i class="schedule_details"><strong>Odor:</strong><br></i><span class="schedule_details_sub">'+d.odor+'</span><br>';
-	
-	return details;
-}
 
 function ingredient(data, type, row){
 
@@ -297,7 +268,7 @@ $('#tdDataPending').on('click', '[id*=ingInfo]', function () {
     var name = $(this).data('name');
 	
 	$('.modal-title').html(name);   
-    $('.modal-body').html('loading');
+    $('.modal-body-info').html('loading');
 	
     $.ajax({
        type: 'GET',
@@ -306,11 +277,11 @@ $('#tdDataPending').on('click', '[id*=ingInfo]', function () {
 		   ingID: id
 		},
        success: function(data) {
-         $('.modal-body').html(data);
+         $('.modal-body-info').html(data);
        },
        error:function(err){
 		data = '<div class="alert alert-danger">Unable to get ingredient info</div>';
-        $('.modal-body').html(data);
+        $('.modal-body-info').html(data);
        }
     })
  });
@@ -520,7 +491,7 @@ $('#markComplete, #markCompleteMenu').click(function() {
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
                 <h4 class="modal-title" id="infoModalLabel"><div class="modal-title"></h4>
             </div>
-            	<div class="modal-body">
+            	<div class="modal-body-info">
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>

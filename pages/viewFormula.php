@@ -367,7 +367,7 @@ $('#print').click(() => {
                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#create_accord">Create Accord</a>
                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#conv_ingredient">Convert to ingredient</a>
                <div class="dropdown-divider"></div>
-               <a class="dropdown-item" href="javascript:addTODO()">Schedule to make</a>
+               <a class="dropdown-item" href="#" data-toggle="modal" data-target="#schedule_to_make">Schedule to make</a>
                <a class="dropdown-item" href="javascript:isMade()">Mark formula as made</a>
                <div class="dropdown-divider"></div>
                <a class="dropdown-item" href="/pages/viewHistory.php?id=<?=$meta['id']?>" target="_blank">View history</a>
@@ -497,6 +497,29 @@ $('#print').click(() => {
 </div>
 
 <?php } ?>
+<!--Schedule Formula-->
+<div class="modal fade" id="schedule_to_make" tabindex="-1" role="dialog" aria-labelledby="schedule_to_make" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Schedule formula to make</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <div id="scheduleToMakeMsg"></div>
+      <p>This will add the current formulation to scheduled formulas. Any changes in this formula will not be replicated to the scheduled version. If you make changes here, you have to remove it and re-add it for making.</p>
+      <hr />
+	    <div class="modal-footer">
+	     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+  		 <input type="submit" name="button" class="btn btn-primary" id="addTODO" value="Schedule Formula">
+	   </div>
+    </div>
+  </div>
+ </div>
+</div>
+
 <!--Scale Formula-->
 <div class="modal fade" id="amount_to_make" tabindex="-1" role="dialog" aria-labelledby="amount_to_make" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -1017,8 +1040,8 @@ $.ajax({
   });
 };
 
-//Add in TODO
-function addTODO() {
+//Add in Schedule
+$('#schedule_to_make').on('click', '[id*=addTODO]', function () {
 	$.ajax({ 
     url: '/pages/manageFormula.php', 
 	type: 'POST',
@@ -1032,13 +1055,16 @@ function addTODO() {
     success: function (data) {
 		if (data.success) {
 	  		var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+			$('#schedule_to_make').modal('toggle');
+			$('#msgInfo').html(msg);
 		}else{
 			var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+			$('#scheduleToMakeMsg').html(msg);
 		}
-		$('#msgInfo').html(msg);
+		
     }
   });
-};
+});
 
 $('#formula').on('click', '[id*=cCAS]', function () {
 	var copy = {};

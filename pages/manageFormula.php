@@ -472,7 +472,7 @@ if($_POST['action'] == 'todo' && $_POST['fid'] && $_POST['add']){
 	$fname = mysqli_real_escape_string($conn, $_POST['fname']);
 	
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$fid' AND toDo = '1'"))){
-		$response['error'] = 'Formula '.$fname.' already scheduled';
+		$response['error'] = 'Formula '.$fname.' is already scheduled';
 		echo json_encode($response);
 		return;
 	}

@@ -4,6 +4,8 @@
 - Fixes errors with PHP8
 - Better stock management when making a formula
 - Add ingredient info in formula making  view
+- Add schedule confirmation and explanation message
+- Add ingredient info in formula making screen
 
 ### Version 5.9
 - Introducing formulas import/export in JSON format
