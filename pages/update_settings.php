@@ -305,17 +305,22 @@ if($_POST['manage'] == 'category'){
 	$notes = mysqli_real_escape_string($conn, $_POST['cat_notes']);
 	
 	if(empty($cat)){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Category name is required.</div>';
+		$response["error"] = 'Category name is required.';
+		echo json_encode($response);
 		return;
 	}
+	
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingCategory WHERE name = '$cat'"))){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$cat.' already exists!</div>';
+		$response["error"] = 'Category name '.$cat.' already exists!';
+		echo json_encode($response);
 		return;
 	}
 	if(mysqli_query($conn, "INSERT INTO ingCategory (name,notes) VALUES ('$cat', '$notes')")){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Category added!</div>';
+		$response["success"] = 'Category '.$cat.' added!';
+		echo json_encode($response);
 	}else{
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error adding category</div>';
+		$response["error"] = 'Something went wrong, '.mysqli_error($conn);
+		echo json_encode($response);
 	}
 	return;
 }					

@@ -560,7 +560,7 @@ $("#brandLogo_upload").click(function(){
 
 function list_cat(){
 	$.ajax({ 
-		url: '/pages/listCat.php', 
+		url: '/pages/views/settings/listCat.php', 
 		dataType: 'html',
 		success: function (data) {
 			$('#list_cat').html(data);

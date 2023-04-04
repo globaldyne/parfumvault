@@ -9,7 +9,7 @@ require_once(__ROOT__.'/inc/sec.php');
 <div class="card-body">
   <div class="text-right">
     <div class="btn-group">
-    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
+    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> Menu</button>
         <div class="dropdown-menu dropdown-menu-right">
             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addpType">Add new</a>
         </div>

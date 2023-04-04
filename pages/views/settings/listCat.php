@@ -1,45 +1,39 @@
 <?php 
 
-define('__ROOT__', dirname(dirname(__FILE__))); 
+define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__))))); 
 
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 
 ?>
-
-<table width="100%" border="0" class="table table-sm">
-              <div id="catMsg"></div>
-              <tr>
-                <td width="4%"><p>Category:</p></td>
-                <td width="12%"><input type="text" name="category" id="category" class="form-control"/></td>
-                <td width="1%">&nbsp;</td>
-                <td width="6%">Description:</td>
-                <td width="13%"><input type="text" name="cat_notes" id="cat_notes" class="form-control"/></td>
-                <td width="2%">&nbsp;</td>
-                <td width="22%"><input type="submit" name="add-category" id="add-category" value="Add" class="btn btn-info" /></td>
-                <td width="40%">&nbsp;</td>
-              </tr>
-              <tr>
-                <td colspan="8">
-                <div class="card-body">
-              <div>
-				<table id="tdDataCat" class="table table-striped table-bordered nowrap viewFormula" style="width:100%">
-                  <thead>
-                    <tr>
-                      <th>Image</th>
-                      <th>Colour Key</th>
-                      <th>Name</th>
-                      <th>Description</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                </table>
-              </div>
-            </div>
-                </td>
-              </tr>
-            </table>
+<h3>Ingredient Categories</h3>
+<hr>
+<div class="card-body">
+  <div class="text-right">
+    <div class="btn-group" id="menu">
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> Menu</button>
+        <div class="dropdown-menu dropdown-menu-right">
+          <a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_ingredient_cat">Add ingredient category</a>
+        </div>
+    </div>
+  </div>
+</div>
+<div class="card-body">
+   <div id="catMsg"></div>
+	<table id="tdDataCat" class="table table-striped table-bordered nowrap viewFormula" style="width:100%">
+      <thead>
+        <tr>
+          <th>Image</th>
+          <th>Colour Key</th>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+    </table>
+</div>
+                
 <script type="text/javascript" language="javascript" >
 $(document).ready(function() {
 		var tdDataCat = $('#tdDataCat').DataTable( {
@@ -51,7 +45,7 @@ $(document).ready(function() {
         language: {
 			loadingRecords: '&nbsp;',
 			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
-			emptyTable: "No groups yet.",
+			emptyTable: "No categories yet.",
 			search: "Search:"
 			},
     	ajax: {	url: '/core/list_ingCat_data.php' },
@@ -98,19 +92,27 @@ function ciActions(data, type, row){
 
 $('#add-category').click(function() {
 $.ajax({ 
-	url: 'pages/update_settings.php', 
+	url: '/pages/update_settings.php', 
 		type: 'POST',
 		data: {
 			manage: 'category',
-			
 			category: $("#category").val(),
 			cat_notes: $("#cat_notes").val(),
-			
 			},
-		dataType: 'html',
+		dataType: 'json',
 		success: function (data) {
-			$('#catMsg').html(data);
-			reload_cat_data();
+			
+			if(data.error){
+				var msg = '<div class="alert alert-danger">'+data.error+'</div>';
+				$('#catMsgIn').html(msg);
+			}else if(data.success){
+				var msg = '<div class="alert alert-success">'+data.success+'</div>';
+				$('#add_ingredient_cat').modal('toggle');
+				$('#catMsg').html(msg);
+				reload_cat_data();
+			}
+			
+			
 		}
 	});
 });
@@ -120,7 +122,7 @@ $.ajax({
 $('#tdDataCat').editable({
   container: 'body',
   selector: 'a.name',
-  url: "pages/update_data.php?settings=cat",
+  url: "/pages/update_data.php?settings=cat",
   title: 'Category',
   type: "POST",
   dataType: 'json',
@@ -134,7 +136,7 @@ $('#tdDataCat').editable({
 $('#tdDataCat').editable({
   container: 'body',
   selector: 'a.notes',
-  url: "pages/update_data.php?settings=cat",
+  url: "/pages/update_data.php?settings=cat",
   title: 'Description',
   type: "POST",
   dataType: 'json',
@@ -179,7 +181,7 @@ $('#tdDataCat').on('click', '[id*=catDel]', function () {
                callback: function (){
 	    			
 				$.ajax({ 
-					url: 'pages/update_settings.php', 
+					url: '/pages/update_settings.php', 
 					type: 'POST',
 					data: {
 						action: "delete",
@@ -223,3 +225,34 @@ function extrasShow() {
 };
 
 </script>
+<!--ADD CATEGORY MODAL-->
+<div class="modal fade" id="add_ingredient_cat" tabindex="-1" role="dialog" aria-labelledby="add_ingredient_cat" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add new category</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      
+      <div class="modal-body">
+      	<div id="catMsgIn"></div>
+        <div class="form-group">
+              <label class="col-md-3 control-label">Name:</label>
+              <div class="col-md-8">
+              	<input type="text" name="category" id="category" class="form-control"/>
+              </div>
+              <label class="col-md-3 control-label">Description:</label>
+             <div class="col-md-8">
+              <input type="text" name="cat_notes" id="cat_notes" class="form-control"/>
+    		</div>
+		</div>
+      </div>
+	  <div class="modal-footer">
+        <input type="button" class="btn btn-secondary" data-dismiss="modal" id="close_cat" value="Close">
+        <input type="submit" name="add-category" class="btn btn-primary" id="add-category" value="Create">
+      </div>   
+  </div>
+</div>
+</div>
