@@ -8,7 +8,7 @@ require_once(__ROOT__.'/inc/opendb.php');
 
 ?>
 
-<table width="100%" border="0" class="table table-striped table-sm">
+<table width="100%" border="0" class="table table-sm">
               <div id="catMsg"></div>
               <tr>
                 <td width="4%"><p>Category:</p></td>

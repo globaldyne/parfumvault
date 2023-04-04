@@ -337,17 +337,23 @@ if($_POST['manage'] == 'add_frmcategory'){
 	$type = mysqli_real_escape_string($conn, $_POST['cat_type']);
 	
 	if(empty($cat)){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Category name is required.</div>';
+		$response["error"] = 'Category name is required.';
+		echo json_encode($response);
 		return;
 	}
+	
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM formulaCategories WHERE name = '$cat'"))){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$cat.' already exists!</div>';
+		$response["error"] = 'Category name '.$cat.' already exists!';
+		echo json_encode($response);
 		return;
 	}
+	
 	if(mysqli_query($conn, "INSERT INTO formulaCategories (name,cname,type) VALUES ('$cat', '".strtolower(str_replace(' ', '',$cat))."', '$type')")){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Category added!</div>';
+		$response["success"] = 'Category '.$cat.' created!';
+		echo json_encode($response);
 	}else{
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error adding category</div>';
+		$response["error"] = 'Something went wrong, '.mysqli_error($conn);
+		echo json_encode($response);
 	}
 	return;
 }					
