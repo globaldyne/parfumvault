@@ -34,7 +34,7 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="<?php echo trim($product).' - '.trim($ver);?>">
   <meta name="author" content="<?php echo trim($product).' - '.trim($ver);?>">
-  <title>Making of <?php echo $meta['name'];?></title>
+  <title><?php echo $meta['name'];?></title>
   
   <link href="/css/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
   <link href="/css/sb-admin-2.css" rel="stylesheet">
@@ -84,6 +84,7 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
 	}
   </style>
 </head>
+
 
 <div id="content-wrapper" class="d-flex flex-column">
     <div class="container-fluid">
@@ -251,8 +252,12 @@ function stock(data, type, row){
 	
 	if (parseFloat(row.inventory.stock) >= parseFloat(row.quantity)){
 		st = '<i class = "stock2 badge badge-instock">Enough in stock: '+row.inventory.stock+''+row.inventory.mUnit+'</i>';
+	
+	}else if (parseFloat(row.inventory.stock) < parseFloat(row.quantity) && row.inventory.stock != 0){
+		st = '<i class = "stock2 badge badge-notenoughstock">Not Enough in stock: '+row.inventory.stock+''+row.inventory.mUnit+'</i>';
+	
 	}else{
-		st = '<i class = "stock2 badge badge-nostock">Not enough in stock: '+row.inventory.stock+''+row.inventory.mUnit+'</i>';
+		st = '<i class = "stock2 badge badge-nostock">Not in stock: '+row.inventory.stock+''+row.inventory.mUnit+'</i>';
 	}
 	
 	return st;

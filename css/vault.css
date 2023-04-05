@@ -1024,6 +1024,11 @@ body {
   background-color: #e74a3b !important;
 }
 
+.badge-notenoughstock {
+  color: #fff !important;
+  background-color: #dfa034 !important;
+}
+
 .stock2.badge {
   display: inline-flex;
   float: none !important;

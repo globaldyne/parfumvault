@@ -15,7 +15,7 @@ $genIng = mysqli_fetch_array(mysqli_query($conn, "SELECT name,cas,notes,odor FRO
 $getIFRA = mysqli_fetch_array(mysqli_query($conn, "SELECT image,amendment,cas_comment,formula,synonyms,cat4,risk FROM IFRALibrary WHERE cas = '".$genIng['cas']."'"));
 
 $reps = mysqli_query($conn,"SELECT ing_rep_name,notes FROM ingReplacements WHERE ing_name = '".$genIng['name']."'");
-	if (!mysqli_num_rows($q)) { 
+	if (!mysqli_num_rows($reps)) { 
 		$reps = mysqli_query($conn,"SELECT ing_name,notes FROM ingReplacements WHERE ing_rep_name = '".$genIng['name']."'");
 	}
 while($replacements = mysqli_fetch_array($reps)){
