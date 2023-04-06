@@ -179,11 +179,12 @@ function fetch_syn(){
 
 function fetch_reps(){
 	$.ajax({ 
-		url: 'views/ingredients/repData.php', 
+		url: '/pages/views/ingredients/repData.php', 
 		type: 'POST',
 		data: {
 			id: btoa(myIngName),
-			cas: btoa(myCAS)
+			cas: btoa(myCAS),
+			ingID: myIngID
 		},
 		dataType: 'html',
 		success: function (data) {
