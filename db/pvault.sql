@@ -609,8 +609,10 @@ ALTER TABLE `synonyms` CHANGE `id` `id` INT(11) NOT NULL AUTO_INCREMENT, add PRI
 
 CREATE TABLE `ingReplacements` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ing_id` INT NOT NULL,
   `ing_name` varchar(255) NOT NULL,
   `ing_cas` varchar(255) NOT NULL,
+  `ing_rep_id` INT NOT NULL,
   `ing_rep_name` varchar(255) NOT NULL,
   `ing_rep_cas` varchar(255) NOT NULL,
   `notes` text DEFAULT NULL,

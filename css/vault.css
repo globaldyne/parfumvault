@@ -1039,6 +1039,10 @@ body {
 	margin-right: 10px;	
 }
 
+.mr3 {
+	margin: 1px 10px 0px 10px;
+}
+
 #customer_name, #formula_name {
   display: inline;
 }

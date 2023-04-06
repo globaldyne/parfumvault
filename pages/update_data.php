@@ -506,7 +506,7 @@ if($_POST['replacement'] == 'add'){
 		return;
 	}
 	
-	if(mysqli_query($conn, "INSERT INTO ingReplacements (ing_name,ing_cas,ing_rep_name,ing_rep_cas,notes) VALUES ('$ing_name','$ing_cas','".$_POST['rName']."','".$_POST['rCAS']."','".$_POST['rNotes']."')")){
+	if(mysqli_query($conn, "INSERT INTO ingReplacements (ing_id,ing_name,ing_cas,ing_rep_id,ing_rep_name,ing_rep_cas,notes) VALUES ('".$_POST['ing_id']."','$ing_name','$ing_cas','".$_POST['rIngId']."','".$_POST['rName']."','".$_POST['rCAS']."','".$_POST['rNotes']."')")){
 		$response["success"] = $_POST['rName'].' added to the list!';
 	}else{
 		$response["error"] = 'Error: '.mysqli_error($conn);

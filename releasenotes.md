@@ -5,3 +5,4 @@ Whats New:
 - Add ingredient info in formula making screen
 - Add option to create a new formula category from the formulas list page
 - Add low stock in formula making screen
+- Add stock value in ingredient replacement suggestion

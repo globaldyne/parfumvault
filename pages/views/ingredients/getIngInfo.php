@@ -10,13 +10,14 @@ require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/func/searchIFRA.php');
 require_once(__ROOT__.'/inc/settings.php');
+require_once(__ROOT__.'/func/getIngStock.php');
 
 $genIng = mysqli_fetch_array(mysqli_query($conn, "SELECT name,cas,notes,odor FROM ingredients WHERE id  = '$id'"));
 $getIFRA = mysqli_fetch_array(mysqli_query($conn, "SELECT image,amendment,cas_comment,formula,synonyms,cat4,risk FROM IFRALibrary WHERE cas = '".$genIng['cas']."'"));
 
-$reps = mysqli_query($conn,"SELECT ing_rep_name,notes FROM ingReplacements WHERE ing_name = '".$genIng['name']."'");
+$reps = mysqli_query($conn,"SELECT ing_rep_name,ing_rep_id FROM ingReplacements WHERE ing_name = '".$genIng['name']."'");
 	if (!mysqli_num_rows($reps)) { 
-		$reps = mysqli_query($conn,"SELECT ing_name,notes FROM ingReplacements WHERE ing_rep_name = '".$genIng['name']."'");
+		$reps = mysqli_query($conn,"SELECT ing_name,ing_id FROM ingReplacements WHERE ing_rep_name = '".$genIng['name']."'");
 	}
 while($replacements = mysqli_fetch_array($reps)){
 		$replacement[] = $replacements;
@@ -36,7 +37,12 @@ while($replacements = mysqli_fetch_array($reps)){
         <strong>Possible replacements: </strong><?php 
 		if ($replacement){ 
 			foreach ($replacement as $r){ ?>
-        	<li><?php echo $r['ing_rep_name']?:$r['ing_name']; ?></li>
+        	<li>
+			<?php 
+				echo $r['ing_rep_name']?:$r['ing_name'];
+				echo getIngStock($r['ing_rep_id']?:$r['ing_id'],1,$conn);
+			?>
+            </li>
 			<?php }
 		}else{
 			echo 'None';
