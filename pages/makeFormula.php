@@ -1,7 +1,15 @@
 <?php
+define('pvault_panel', TRUE);
+session_start();
+
 define('__ROOT__', dirname(dirname(__FILE__))); 
 
-require_once(__ROOT__.'/inc/sec.php');
+if(!isset($_SESSION['parfumvault'])){
+	$redirect = '?url=/pages/makeFormula.php?fid='.$_GET['fid'];
+	$login = '/login.php'.$redirect;
+	header('Location: '.$login);
+	exit;
+}
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
@@ -26,7 +34,7 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="<?php echo trim($product).' - '.trim($ver);?>">
   <meta name="author" content="<?php echo trim($product).' - '.trim($ver);?>">
-  <title>Making of <?php echo $meta['name'];?></title>
+  <title><?php echo $meta['name'];?></title>
   
   <link href="/css/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
   <link href="/css/sb-admin-2.css" rel="stylesheet">
@@ -49,8 +57,9 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
 		font-weight: bold;
 		color: #494b51;
 	}
-	.mrl {
-  		margin-left: 40px;
+	.mr {
+		margin: 20px 20px 20px 20px;
+		display: inline;
 	}
 	@media print {
 		table, table tr, table td {
@@ -85,22 +94,21 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
         </div>
         <div class="card-body">
           <div class="table-responsive">
+          <div id="errors"></div>
           <div id="msg"><?=$msg?></div>
-          
           <div class="btn-group" id="menu">
             <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> Menu</button>
             <div class="dropdown-menu dropdown-menu-left">
                <div class="dropdown-divider"></div>
                <a class="dropdown-item" href="#" id="markCompleteMenu">Mark formula as complete</a>
-
                <div class="dropdown-divider"></div>
                <li class="dropdown-header">Export</li> 
                <a class="dropdown-item" href="javascript:export_as('csv')">Export as CSV</a>
                <a class="dropdown-item" href="javascript:export_as('pdf')">Export as PDF</a>
                <a class="dropdown-item" href="#" id="print">Print Formula</a>
-               
             </div>
         </div>
+        <p></p>
             <table class="table table-bordered" id="tdDataPending" width="100%" cellspacing="0">
               <thead>
                 <tr>
@@ -178,7 +186,7 @@ $(document).ready(function() {
 		  if(response){
 			 var $td = $(tfoot).find('th');
 			 $td.eq(0).html("Ingredients left: "+ response.meta['total_ingredients_left'] + ' of ' + response.meta['total_ingredients'] );
-			 $td.eq(3).html("Total left: " + response.meta['total_quantity_left'] + ' of ' + response.meta['total_quantity'] + response.meta['quantity_unit'] );
+			 $td.eq(2).html("Total left: " + response.meta['total_quantity_left'] + ' of ' + response.meta['total_quantity'] + response.meta['quantity_unit'] );
 		 }
       },
 	  fnRowCallback : function (row, data, display) {
@@ -201,43 +209,14 @@ $(document).ready(function() {
 		$(this).removeClass('pv-transition')
 	});
 	
-	var detailRows = [];
- 
-    $('#tdDataPending tbody').on( 'click', 'tr td:first-child + td', function () {
-        var tr = $(this).parents('tr');
-        var row = tdDataPending.row( tr );
-        var idx = $.inArray( tr.attr('id'), detailRows );
- 
-        if ( row.child.isShown() ) {
-            tr.removeClass( 'details' );
-            row.child.hide();
-            detailRows.splice( idx, 1 );
-        } else {
-            tr.addClass( 'details' );
-            row.child( format( row.data() ) ).show();
-            if ( idx === -1 ) {
-                detailRows.push( tr.attr('id') );
-            }
-        }
-    });
- 
-    tdDataPending.on( 'draw', function () {
-        $.each( detailRows, function ( i, id ) {
-            $('#'+id+' td:first-child + td').trigger( 'click' );
-        } );
-    } );
+	
 	
 });
 
-function format ( d ) {
-    details = '<i class="schedule_details"><strong>Odor:</strong><br></i><span class="schedule_details_sub">'+d.odor+'</span><br>';
-	
-	return details;
-}
 
 function ingredient(data, type, row){
 
-	data = '<i class="listIngNameCas-with-separator">' + row.ingredient + '</i><span class="listIngHeaderSub"> CAS: <i class="subHeaderCAS">'+row.cas+'</i></span>';
+	data = '<a href="#infoModal" id="ingInfo" data-toggle="modal" data-id="'+row.ingID+'" data-name="'+row.ingredient+'" class="listIngNameCas-with-separator">' + row.ingredient + '</a><span class="listIngHeaderSub"> CAS: <i class="subHeaderCAS">'+row.cas+'</i></span>';
 	return data;
 }
 
@@ -254,15 +233,15 @@ function quantity(data, type, row){
 function actions(data, type, row){
 	var data;
 	//if (row.quantity != row.originalQuantity) {
-		data = '<i id="undo_add" data-row-id="'+row.id+'" data-ingredient="'+row.ingredient+'" data-originalQuantity="'+row.originalQuantity+'" data-ingID = '+row.ingID+' class="fas fa-undo pv_point_gen" title="Reset original quantity for '+row.ingredient+'"></i>';
+		data = '<i id="undo_add" data-row-id="'+row.id+'" data-ingredient="'+row.ingredient+'" data-originalQuantity="'+row.originalQuantity+'" data-ingID = '+row.ingID+' class="mr fas fa-undo pv_point_gen" title="Reset original quantity for '+row.ingredient+'"></i>';
 	//}
 	
 	if (row.toAdd == 1) {
-		data += '<i data-toggle="modal" data-target="#confirm_add" data-quantity="'+row.quantity+'" data-ingredient="'+row.ingredient+'" data-row-id="'+row.id+'" data-ing-id="'+row.ingID+'" data-qr="'+row.quantity+'" class="fas fa-check mrl pv_point_gen" title="Confirm add '+row.ingredient+'"></i>';
+		data += '<i data-toggle="modal" data-target="#confirm_add" data-quantity="'+row.quantity+'" data-ingredient="'+row.ingredient+'" data-row-id="'+row.id+'" data-ing-id="'+row.ingID+'" data-qr="'+row.quantity+'" class="mr fas fa-check pv_point_gen" title="Confirm add '+row.ingredient+'"></i>';
 	}
 	
 					  
-	data += '<i data-ingredient="'+row.ingredient+'" data-quantity="'+row.quantity+'" data-concentration="'+row.concentration+'" data-ingID="'+row.ingID+'" id="addToCart" class="mrl fas fa-shopping-cart pv_point_gen"></i>'; 
+	data += '<i data-ingredient="'+row.ingredient+'" data-quantity="'+row.quantity+'" data-concentration="'+row.concentration+'" data-ingID="'+row.ingID+'" id="addToCart" class="mr fas fa-shopping-cart pv_point_gen"></i>'; 
 					 
 	return data;    
 }
@@ -271,10 +250,14 @@ function stock(data, type, row){
 
 	var st;
 	
-	if (row.inventory.stock >= row.quantity){
+	if (parseFloat(row.inventory.stock) >= parseFloat(row.quantity)){
 		st = '<i class = "stock2 badge badge-instock">Enough in stock: '+row.inventory.stock+''+row.inventory.mUnit+'</i>';
+	
+	}else if (parseFloat(row.inventory.stock) < parseFloat(row.quantity) && row.inventory.stock != 0){
+		st = '<i class = "stock2 badge badge-notenoughstock">Not Enough in stock: '+row.inventory.stock+''+row.inventory.mUnit+'</i>';
+	
 	}else{
-		st = '<i class = "stock2 badge badge-nostock">Not enough in stock: '+row.inventory.stock+''+row.inventory.mUnit+'</i>';
+		st = '<i class = "stock2 badge badge-nostock">Not in stock: '+row.inventory.stock+''+row.inventory.mUnit+'</i>';
 	}
 	
 	return st;
@@ -284,6 +267,30 @@ function stock(data, type, row){
 function reload_data() {
     $('#tdDataPending').DataTable().ajax.reload(null, true);
 }
+
+$('#tdDataPending').on('click', '[id*=ingInfo]', function () {
+    var id = $(this).data('id');
+    var name = $(this).data('name');
+	
+	$('.modal-title').html(name);   
+    $('.modal-body-info').html('loading');
+	
+    $.ajax({
+       type: 'GET',
+       url: '/pages/views/ingredients/getIngInfo.php',
+       data:{
+		   ingID: id
+		},
+       success: function(data) {
+         $('.modal-body-info').html(data);
+       },
+       error:function(err){
+		data = '<div class="alert alert-danger">Unable to get ingredient info</div>';
+        $('.modal-body-info').html(data);
+       }
+    })
+ });
+
 
 $('#title').click(function() {
 	$('#msg').html('');
@@ -480,6 +487,23 @@ $('#markComplete, #markCompleteMenu').click(function() {
 
 <script src="/js/mark/jquery.mark.min.js"></script>
 <script src="/js/mark/datatables.mark.js"></script>
+
+<!-- Modal ING Info -->
+<div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="infoModalLabel"><div class="modal-title"></h4>
+            </div>
+            	<div class="modal-body-info">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Modal Confirm amount-->
 <div class="modal fade" id="confirm_add" tabindex="-1" role="dialog" aria-labelledby="confirm_add" aria-hidden="true">

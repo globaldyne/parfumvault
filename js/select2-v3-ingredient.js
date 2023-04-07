@@ -133,7 +133,7 @@ $(document).ready(function(){
 		  );
 		
 		  $container.find(".select_igredient_title").text(ingredientData.name);
-		  if(ingredientData.stock){
+		  if(ingredientData.stock  > 0){
 		  	$container.find("#stock").text('In stock ('+ingredientData.stock + measureIn +')');
 			$container.find("#stock").attr("class", "stock badge badge-instock");
 		  }else{

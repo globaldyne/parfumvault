@@ -1,47 +1,38 @@
 <?php 
 
-define('__ROOT__', dirname(dirname(__FILE__))); 
+define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__))))); 
 
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 
 ?>
-
-<table width="100%" border="0" class="table table-striped table-sm">
-              <div id="fcatMsg"></div>
-              <tr>
-                <td width="4%"><p>Category:</p></td>
-                <td width="12%"><input type="text" name="fcatName" id="fcatName" class="form-control"/></td>
-                <td width="1%">&nbsp;</td>
-                <td width="6%">Type:</td>
-                <td width="13%"><select name="cat_type" id="cat_type" class="form-control">
-                  <option value="profile">Profile</option>
-                  <option value="sex">Sex</option>
-                </select></td>
-                <td width="2%">&nbsp;</td>
-                <td width="22%"><input type="submit" name="add-fcat" id="add-fcat" value="Add" class="btn btn-info" /></td>
-                <td width="40%">&nbsp;</td>
-              </tr>
-              <tr>
-                <td colspan="8">
-                <div class="card-body">
-              <div>
-				<table id="frmDataCat" class="table table-striped table-bordered nowrap" style="width:100%">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Type</th>
-                      <th>Colour</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                </table>
-              </div>
-            </div>
-                </td>
-              </tr>
-            </table>
+<h3>Formula categories</h3>
+<hr>
+<div class="card-body">
+  <div class="text-right">
+    <div class="btn-group" id="menu">
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> Menu</button>
+        <div class="dropdown-menu dropdown-menu-right">
+          <a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula_cat">Add formula category</a>
+        </div>
+    </div>
+	</div>
+</div>
+    <div class="card-body">
+    <div id="fcatMsg"></div>
+    <table id="frmDataCat" class="table table-bordered" style="width:100%">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Colour</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+    </table>
+</div>
+ 
 <script type="text/javascript" language="javascript" >
 $(document).ready(function() {
 		var frmDataCat = $('#frmDataCat').DataTable( {
@@ -90,19 +81,25 @@ function fKey(data, type, row){
 
 $('#add-fcat').click(function() {
 $.ajax({ 
-	url: 'pages/update_settings.php', 
+	url: '/pages/update_settings.php', 
 		type: 'POST',
 		data: {
 			manage: 'add_frmcategory',
-			
 			category: $("#fcatName").val(),
 			cat_type: $("#cat_type").val(),
-			
 			},
-		dataType: 'html',
+		dataType: 'json',
 		success: function (data) {
-			$('#fcatMsg').html(data);
-			reload_fcat_data();
+			if(data.error){
+				var msg = '<div class="alert alert-danger">'+data.error+'</div>';
+				$('#fcatMsgIn').html(msg);
+			}else if(data.success){
+				var msg = '<div class="alert alert-success">'+data.success+'</div>';
+				$('#add_formula_cat').modal('toggle');
+				$('#fcatMsg').html(msg);
+				reload_fcat_data();
+			}
+			
 		}
 	});
 });
@@ -112,7 +109,7 @@ $.ajax({
 $('#frmDataCat').editable({
   container: 'body',
   selector: 'a.name',
-  url: "pages/update_data.php?settings=fcat",
+  url: "/pages/update_data.php?settings=fcat",
   title: 'Category name',
   type: "POST",
   dataType: 'json',
@@ -133,7 +130,7 @@ $('#frmDataCat').editable({
 	type: "POST",
 	emptytext: "",
 	emptyclass: "",
-  	url: "pages/update_data.php?settings=fcat",
+  	url: "/pages/update_data.php?settings=fcat",
     source: [
 			 <?php
 				$getCK = mysqli_query($conn, "SELECT type FROM formulaCategories GROUP BY type");
@@ -156,7 +153,7 @@ $('#frmDataCat').editable({
 	type: "POST",
 	emptytext: "",
 	emptyclass: "",
-  	url: "pages/update_data.php?settings=fcat",
+  	url: "/pages/update_data.php?settings=fcat",
     source: [
 			 <?php
 				$getCK = mysqli_query($conn, "SELECT name,rgb FROM colorKey ORDER BY name ASC");
@@ -186,7 +183,7 @@ $('#frmDataCat').on('click', '[id*=catDel]', function () {
                callback: function (){
 	    			
 				$.ajax({ 
-					url: 'pages/update_settings.php', 
+					url: '/pages/update_settings.php', 
 					type: 'POST',
 					data: {
 						action: "del_frmcategory",
@@ -218,3 +215,37 @@ function reload_fcat_data() {
 
 
 </script>
+<!--ADD CATEGORY MODAL-->
+<div class="modal fade" id="add_formula_cat" tabindex="-1" role="dialog" aria-labelledby="add_formula_cat" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add new category</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      
+      <div class="modal-body">
+      	<div id="fcatMsgIn"></div>
+        <div class="form-group">
+              <label class="col-md-3 control-label">Name:</label>
+              <div class="col-md-8">
+              	<input name="fcatName" id="fcatName" type="text" class="form-control" />
+              </div>
+              <label class="col-md-3 control-label">Type:</label>
+             <div class="col-md-8">
+              <select name="cat_type" id="cat_type" class="form-control">
+      			<option value="profile">Profile</option>
+     			<option value="sex">Gender</option>
+    		  </select>
+    		</div>
+		</div>
+      </div>
+	  <div class="modal-footer">
+        <input type="button" class="btn btn-secondary" data-dismiss="modal" id="close_cat" value="Close">
+        <input type="submit" name="add-fcat" class="btn btn-primary" id="add-fcat" value="Create">
+      </div>   
+  </div>
+</div>
+</div>

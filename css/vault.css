@@ -1024,6 +1024,11 @@ body {
   background-color: #e74a3b !important;
 }
 
+.badge-notenoughstock {
+  color: #fff !important;
+  background-color: #dfa034 !important;
+}
+
 .stock2.badge {
   display: inline-flex;
   float: none !important;
@@ -1032,6 +1037,10 @@ body {
 
 .mr2 {
 	margin-right: 10px;	
+}
+
+.mr3 {
+	margin: 1px 10px 0px 10px;
 }
 
 #customer_name, #formula_name {

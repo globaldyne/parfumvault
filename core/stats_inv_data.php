@@ -15,7 +15,7 @@ foreach ($data as $d) {
 	$w[] = $d['price']*$d['stock']/$d['size'];
 }
 
-$r['ingredients']['total_worth'] = number_format(array_sum($w),2);
+$r['ingredients']['total_worth'] = number_format(array_sum((array)$w),2);
 $r['currency'] = (string)$settings['currency'];
 $response['data'][] = $r;
 

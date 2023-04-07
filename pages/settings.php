@@ -560,7 +560,7 @@ $("#brandLogo_upload").click(function(){
 
 function list_cat(){
 	$.ajax({ 
-		url: 'pages/listCat.php', 
+		url: '/pages/views/settings/listCat.php', 
 		dataType: 'html',
 		success: function (data) {
 			$('#list_cat').html(data);
@@ -570,7 +570,7 @@ function list_cat(){
 
 function get_pvonline(){
 	$.ajax({ 
-		url: 'pages/views/settings/pvOnline.php', 
+		url: '/pages/views/settings/pvOnline.php', 
 		dataType: 'html',
 		success: function (data) {
 			$('#pvonline').html(data);
@@ -580,7 +580,7 @@ function get_pvonline(){
 
 function list_fcat(){
 	$.ajax({ 
-		url: 'pages/listFrmCat.php', 
+		url: '/pages/views/settings/listFrmCat.php', 
 		dataType: 'html',
 		success: function (data) {
 			$('#list_fcat').html(data);
@@ -590,7 +590,7 @@ function list_fcat(){
 
 function list_ptypes(){
 	$.ajax({ 
-		url: 'pages/views/settings/perfume_types.php', 
+		url: '/pages/views/settings/perfume_types.php', 
 		dataType: 'html',
 		success: function (data) {
 			$('#list_ptypes').html(data);
@@ -600,7 +600,7 @@ function list_ptypes(){
 
 function list_templates(){
 	$.ajax({ 
-		url: 'pages/views/settings/templates.php', 
+		url: '/pages/views/settings/templates.php', 
 		dataType: 'html',
 		success: function (data) {
 			$('#list_templates').html(data);
