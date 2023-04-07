@@ -8,6 +8,7 @@ require_once(__ROOT__.'/inc/opendb.php');
 
 $ingName = mysqli_real_escape_string($conn, $_POST["id"]);
 $ingCAS = mysqli_real_escape_string($conn, $_POST["cas"]);
+$ingID = mysqli_real_escape_string($conn, $_POST["ingID"]);
 
 ?>
 <link href="/css/select2.css" rel="stylesheet">
@@ -102,6 +103,7 @@ function repName(data, type, row){
 						results: $.map(data.data, function(obj) {
 						  return {
 							id: obj.name, //TODO: TO BE CHANGED TO ID WHEN THE BACKEND IS READY
+							repID: obj.id,
 							text: obj.name || 'No ingredient found...',
 						  }
 						})
@@ -197,6 +199,7 @@ $('#tdReplacements').on('click', '[id*=repDel]', function () {
 });
 
 var repCas;
+var repID;
 $("#repName").select2({
 	width: '250px',
 	placeholder: 'Search for ingredient (name, cas)',
@@ -220,6 +223,8 @@ $("#repName").select2({
 				  return {
 					id: obj.name, //TODO: TO BE CHANGED TO ID WHEN THE BACKEND IS READY
 					cas: obj.cas,
+					ingId: obj.id,
+					description: obj.description,
 					text: obj.name || 'No ingredient found...',
 				  }
 				})
@@ -231,6 +236,8 @@ $("#repName").select2({
 	
 }).on('select2-selected', function (data) {
   		 repCas = data.choice.cas;
+		 repID = data.choice.ingId;
+		 $('#repNotes').html(data.choice.description);
 });
 
 $('#addReplacement').on('click', '[id*=repAdd]', function () {
@@ -242,8 +249,10 @@ $('#addReplacement').on('click', '[id*=repAdd]', function () {
 			rName: $("#repName").val(),
 			rCAS:  repCas,
 			rNotes: $("#repNotes").val(),
+			rIngId: repID,
 			ing_name: '<?=$ingName?>',
 			ing_cas: '<?=$ingCAS?>',
+			ing_id: '<?=$ingID?>',
 			},
 		dataType: 'json',
 		success: function (data) {

@@ -43,6 +43,8 @@ while($fTypes_res = mysqli_fetch_array($fTypes_q)){
               <a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula">Add new formula</a>
               <a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula_csv">Import from CSV</a>
               <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula_cat">Add formula category</a>
+              <div class="dropdown-divider"></div>
         	  <a class="dropdown-item" href="#" data-toggle="modal" data-target="#export_formulas_json">Export Formulas as JSON</a>
         	  <a class="dropdown-item" href="#" data-toggle="modal" data-target="#import_formulas_json">Import Formulas from JSON</a>
 
@@ -536,6 +538,28 @@ $('#close_export_json').click(function() {
 	$('#JSONExportMsg').html('');
 });
 
+$('#add_formula_cat').on('click', '[id*=add-fcat]', function () {
+
+	$.ajax({ 
+		url: '/pages/update_settings.php', 
+			type: 'POST',
+			data: {
+				manage: 'add_frmcategory',
+				category: $("#fcatName").val(),
+				cat_type: 'profile',
+			},
+		dataType: 'json',
+		success: function (data) {
+			if(data.error){
+				var msg = '<div class="alert alert-danger">'+data.error+'</div>';
+			}else if(data.success){
+				var msg = '<div class="alert alert-success">'+data.success+'</div>';
+			}
+			$('#fcatMsg').html(msg);
+		}
+	});
+});
+
 </script>
             
 <!--ADD FORMULA MODAL-->
@@ -588,7 +612,7 @@ $('#close_export_json').click(function() {
             <td valign="top">Customer:</td>
               <td><select name="customer" id="customer" class="form-control ellipsis">
                 <option value="0">Internal use</option>
-                <?php foreach ($customer as $c) {?>
+                <?php foreach ((array)$customer as $c) {?>
                 <option value="<?=$c['id'];?>"><?=$c['name']?></option>
                 <?php }	?>
               </select></td>
@@ -661,6 +685,34 @@ $('#close_export_json').click(function() {
    
   </div>
   
+</div>
+</div>
+
+<!--ADD CATEGORY MODAL-->
+<div class="modal fade" id="add_formula_cat" tabindex="-1" role="dialog" aria-labelledby="add_formula_cat" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add new category</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      
+      <div class="modal-body">
+      	<div id="fcatMsg"></div>
+        <div class="form-group">
+              <label class="col-md-3 control-label">Name:</label>
+              <div class="col-md-8">
+              	<input name="fcatName" id="fcatName" type="text" class="form-control" />
+              </div>
+		</div>
+      </div>
+	  <div class="modal-footer">
+        <input type="button" class="btn btn-secondary" data-dismiss="modal" id="close_cat" value="Close">
+        <input type="submit" name="add-fcat" class="btn btn-primary" id="add-fcat" value="Create">
+      </div>   
+  </div>
 </div>
 </div>
 

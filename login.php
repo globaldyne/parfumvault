@@ -28,7 +28,14 @@ if($_POST['email'] && $_POST['password']){
 	if($row['id']){	// If everything is OK login
 			$_SESSION['parfumvault'] = true;
 			$_SESSION['userID'] = $row['id'];
-			header('Location: index.php');
+			if($_GET['do']){
+				$redirect = '/index.php?do='.$_GET['do'];
+			}elseif($_GET['url']){
+				$redirect = $_GET['url'];
+			}else{
+				$redirect = '/index.php';
+			}
+			header('Location: '.$redirect);
 	}else{
 		$msg = '<div class="alert alert-danger">Email or password error</div>';
 	}

@@ -1,6 +1,8 @@
 Whats New:
 ----------------------
-- Introducing formulas import/exort in JSON format
-- Notify but don't prevent formula listing if no ingredients in database
-- Added option to exclude/include synonyms and compositions when importing from PV Online
-- Scheduled formulas view visual improvements
+- Better stock management when making a formula
+- Add schedule confirmation and explanation message
+- Add ingredient info in formula making screen
+- Add option to create a new formula category from the formulas list page
+- Add low stock in formula making screen
+- Add stock value in ingredient replacement suggestion
