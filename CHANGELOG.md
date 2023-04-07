@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 6.1
+- Stock management improvements
 
 ### Version 6.0
 - Redirect to the previous page if session is expired

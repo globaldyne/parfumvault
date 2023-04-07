@@ -589,13 +589,17 @@ if($_POST['ingSupplier'] == 'getPrice'){
 //ADD ING SUPPLIER
 if($_POST['ingSupplier'] == 'add'){
 	if(empty($_POST['supplier_id']) || empty($_POST['supplier_link']) || empty($_POST['supplier_size'])){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Missing fields!</div>';
+		$response["error"] = '<strong>Error:</strong> Missing fields!';
+		echo json_encode($response);
 		return;
 	}
-	if(!is_numeric($_POST['supplier_size'])){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Only numeric values allowed in size and price fields!</div>';
+	
+	if(!is_numeric($_POST['supplier_size']) || !is_numeric($_POST['stock'])){
+		$response["error"] = '<strong>Error:</strong> Only numeric values allowed in size, stock and price fields!';
+		echo json_encode($response);
 		return;
 	}
+	
 	$ingID = mysqli_real_escape_string($conn, $_POST['ingID']);
 	$supplier_id = mysqli_real_escape_string($conn, $_POST['supplier_id']);
 	$supplier_link = mysqli_real_escape_string($conn, $_POST['supplier_link']);	
@@ -606,23 +610,25 @@ if($_POST['ingSupplier'] == 'add'){
 	$supplier_batch = mysqli_real_escape_string($conn, $_POST['supplier_batch']);
 	$purchased = mysqli_real_escape_string($conn, $_POST['purchased'] ?: date('Y-m-d'));
 	$stock = mysqli_real_escape_string($conn, $_POST['stock'] ?: 0);
+	$mUnit = $_POST['mUnit'];
 
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT ingSupplierID FROM suppliers WHERE ingSupplierID = '$supplier_id' AND ingID = '$ingID'"))){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$supplier_name['name'].' already exists!</div>';
-	}else{
-		
-		if(!mysqli_num_rows(mysqli_query($conn, "SELECT ingSupplierID FROM suppliers WHERE ingID = '$ingID'"))){
-		   $preferred = '1';
-		}else{
-			$preferred = '0';
-		}
-		
-		if(mysqli_query($conn, "INSERT INTO suppliers (ingSupplierID,ingID,supplierLink,price,size,manufacturer,preferred,batch,purchased,stock) VALUES ('$supplier_id','$ingID','$supplier_link','$supplier_price','$supplier_size','$supplier_manufacturer','$preferred','$supplier_batch','$purchased','$stock')")){
-			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$supplier_name['name'].'</strong> added to the list!</div>';
-		}else{
-			echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> '.mysqli_error($conn).'</div>';
-		}
+		$response["error"] = '<strong>Error: </strong>'.$supplier_name['name'].' already exists!';
+		echo json_encode($response);
+		return;
 	}
+		
+	if(!mysqli_num_rows(mysqli_query($conn, "SELECT ingSupplierID FROM suppliers WHERE ingID = '$ingID'"))){
+	   $preferred = '1';
+	}else{
+		$preferred = '0';
+	}
+		
+	if(mysqli_query($conn, "INSERT INTO suppliers (ingSupplierID,ingID,supplierLink,price,size,manufacturer,preferred,batch,purchased,stock,mUnit) VALUES ('$supplier_id','$ingID','$supplier_link','$supplier_price','$supplier_size','$supplier_manufacturer','$preferred','$supplier_batch','$purchased','$stock','$mUnit')")){
+		$response["success"] = '<strong>'.$supplier_name['name'].'</strong> added.';
+		echo json_encode($response);
+	}
+	
 	return;
 }
 
