@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 6.1
+
 ### Version 6.0
 - Redirect to the previous page if session is expired
 - Fixes errors with PHP8
