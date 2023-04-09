@@ -870,35 +870,53 @@ if($_GET['supp'] == 'delete' && $_GET['ID']){
 
 
 //ADD composition
-if($_GET['composition'] == 'add'){
-	$allgName = mysqli_real_escape_string($conn, $_GET['allgName']);
-	$allgCAS = mysqli_real_escape_string($conn, $_GET['allgCAS']);
-	$allgEC = mysqli_real_escape_string($conn, $_GET['allgEC']);	
-	$allgPerc = rtrim(mysqli_real_escape_string($conn, $_GET['allgPerc']),'%');
-	$ing = base64_decode($_GET['ing']);
+if($_POST['composition'] == 'add'){
+	$allgName = mysqli_real_escape_string($conn, $_POST['allgName']);
+	$allgCAS = mysqli_real_escape_string($conn, $_POST['allgCAS']);
+	$allgEC = mysqli_real_escape_string($conn, $_POST['allgEC']);	
+	$allgPerc = rtrim(mysqli_real_escape_string($conn, $_POST['allgPerc']),'%');
+	$ing = base64_decode($_POST['ing']);
 
 	if(empty($allgName)){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Name is required!</div>';
+		$response["error"] = '<strong>Error:</strong> Name is required!';
+		echo json_encode($response);
 		return;
-	}
-	if(empty($allgCAS)){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> CAS number is required!</div>';
-		return;
-	}
-	if(empty($allgPerc)){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Percentage is required!</div>';
-		return;
-	}
-	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM allergens WHERE name = '$allgName' AND ing = '$ing'"))){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$allgName.' already exists!</div>';
-	}else{
-		mysqli_query($conn, "INSERT INTO allergens (name,cas,ec,percentage,ing) VALUES ('$allgName','$allgCAS','$allgEC','$allgPerc','$ing')");
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$allgName.'</strong> added to the list!</div>';
 	}
 	
-	if($_GET['addToIng'] == 'true'){
+	if(empty($allgCAS)){
+		$response["error"] = '<strong>Error:</strong> CAS number is required!';
+		echo json_encode($response);
+		return;
+	}
+	
+	if(empty($allgPerc)){
+		$response["error"] = '<strong>Error:</strong> Percentage is required!';
+		echo json_encode($response);
+		return;
+	}
+	
+	if(!is_numeric($allgPerc)){
+		$response["error"] = '<strong>Error:</strong> Percentage value needs to be numeric!';
+		echo json_encode($response);
+		return;
+	}
+	
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM allergens WHERE name = '$allgName' AND ing = '$ing'"))){
+		$response["error"] = '<strong>Error: </strong>'.$allgName.' already exists!';
+		echo json_encode($response);
+		return;
+	}
+	
+	if(mysqli_query($conn, "INSERT INTO allergens (name,cas,ec,percentage,ing) VALUES ('$allgName','$allgCAS','$allgEC','$allgPerc','$ing')")){
+		$response["success"] = '<strong>'.$allgName.'</strong> added to the list';
+		echo json_encode($response);
+	}
+	
+	if($_POST['addToIng'] == 'true'){
 		if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$allgName'")))){
 			mysqli_query($conn, "INSERT INTO ingredients (name,cas) VALUES ('$allgName','$allgCAS')");
+		$response["error"] = mysqli_error($conn);
+		echo json_encode($response);
 		}
 	}
 
@@ -917,15 +935,17 @@ if($_GET['composition'] == 'update'){
 }
 
 //DELETE composition	
-if($_GET['composition'] == 'delete'){
+if($_POST['composition'] == 'delete'){
 
-	$id = mysqli_real_escape_string($conn, $_GET['allgID']);
-	$ing = base64_decode($_GET['ing']);
+	$id = mysqli_real_escape_string($conn, $_POST['allgID']);
+	$ing = base64_decode($_POST['ing']);
 
 	$delQ = mysqli_query($conn, "DELETE FROM allergens WHERE id = '$id' AND ing='$ing'");	
 	if($delQ){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$ing.'</strong> removed!</div>';
+		$response["success"] = '<strong>'.$ing.'</strong> removed!';
+		echo json_encode($response);
 	}
+	
 	return;
 }
 

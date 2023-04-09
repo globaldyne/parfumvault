@@ -16,7 +16,7 @@ $ingName = mysqli_real_escape_string($conn, $_GET["name"]);
 <div class="card-body">
  	<div class="text-right">
   		<div class="btn-group">
-   			<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
+   			<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> Actions</button>
     		<div class="dropdown-menu dropdown-menu-right">
         		<a class="dropdown-item" href="#" data-toggle="modal" data-target="#addComposition">Add new</a>
         		<a class="dropdown-item" href="#" data-toggle="modal" data-target="#addCSV">Upload CSV</a>
@@ -86,7 +86,7 @@ function cmpPerc(data, type, row){
 }
 
 function cmpActions(data, type, row){
-	return '<a href="#" id="cmpDel" class="fas fa-trash" data-id="'+row.id+'" data-name="'+row.name+'"></a>';    
+	return '<a href="#" id="cmpDel" class="fas fa-trash alert-danger" data-id="'+row.id+'" data-name="'+row.name+'"></a>';    
 }
 
 $('#tdCompositions').editable({
@@ -133,18 +133,18 @@ $('#tdCompositions').on('click', '[id*=cmpDel]', function () {
        buttons :{
            main: {
                label : "Remove",
-               className : "btn-primary",
+               className : "btn-danger",
                callback: function (){
 	    			
 				$.ajax({ 
 					url: 'update_data.php', 
-					type: 'GET',
+					type: 'POST',
 					data: {
 						composition: 'delete',
 						allgID: cmp.ID,
 						ing: '<?=$ingName?>'
 						},
-					dataType: 'html',
+					dataType: 'json',
 					success: function (data) {
 						reload_cmp_data();
 					}
@@ -168,7 +168,7 @@ $('#tdCompositions').on('click', '[id*=cmpDel]', function () {
 $('#addComposition').on('click', '[id*=cmpAdd]', function () {
 	$.ajax({ 
 		url: 'update_data.php', 
-		type: 'GET',
+		type: 'POST',
 		data: {
 			composition: 'add',
 			allgName: $("#allgName").val(),
@@ -178,14 +178,21 @@ $('#addComposition').on('click', '[id*=cmpAdd]', function () {
 			addToIng: $("#addToIng").is(':checked'),				
 			ing: '<?=$ingName?>'
 			},
-		dataType: 'html',
+		dataType: 'json',
 		success: function (data) {
-			$('#inf').html(data);
-			$("#allgName").val('');
-			$("#allgCAS").val('');
-			$("#allgEC").val('');
-			$("#allgPerc").val('');
-			reload_cmp_data();
+			if (data.success) {
+	 	 		var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+				$("#allgName").val('');
+				$("#allgCAS").val('');
+				$("#allgEC").val('');
+				$("#allgPerc").val('');
+				reload_cmp_data();
+			}else{
+				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+			}
+		
+			$('#inf').html(msg);
+
 		}
 	  });
 });
