@@ -80,7 +80,7 @@ var myPCH = "<?=$settings['pubChem']?>";
 			<div class="mgm-column mgm-visible-xl mgm-col-xl-5">
 				<h1 class="mgmIngHeader mgmIngHeader-with-separator"><?php if($ingID){ echo $ing['name'];?>
 				<div class="btn-group">
-					<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
+					<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> Actions</button>
 					<div class="dropdown-menu">
 						<a class="dropdown-item" href="#" data-toggle="modal" data-target="#printLabel">Print Label</a>
 						<a class="dropdown-item" href="#" data-toggle="modal" data-target="#cloneIng">Clone ingredient</a>

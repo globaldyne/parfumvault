@@ -215,7 +215,7 @@ function pName(data, type, row, meta){
 function fMade(data, type, row, meta){
 	if(type === 'display'){
 		if(row.isMade == 1){
-			var data = '<i class="fas fa-check-circle" rel="tip" title="Formula last made on ' + row.madeOn + '"></i>';
+			var data = '<i class="fas fa-check-circle alert-success" rel="tip" title="Formula last made on ' + row.madeOn + '"></i>';
 		}else{
 			var data = '<i class="fas fa-hourglass-start" rel="tip" title="Formula is not made yet"></i>';
 		}

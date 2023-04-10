@@ -437,26 +437,27 @@ if($_POST['synonym'] == 'import' && $_POST['method'] == 'pubchem'){
 }
 
 //ADD SYNONYM
-if($_GET['synonym'] == 'add'){
-	$synonym = mysqli_real_escape_string($conn, $_GET['sName']);
-	$source = mysqli_real_escape_string($conn, $_GET['source']);
+if($_POST['synonym'] == 'add'){
+	$synonym = mysqli_real_escape_string($conn, $_POST['sName']);
+	$source = mysqli_real_escape_string($conn, $_POST['source']);
 	
-	$ing = base64_decode($_GET['ing']);
+	$ing = base64_decode($_POST['ing']);
 
 	if(empty($synonym)){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Synonym is required!</div>';
+		$response["error"] = '<strong>Error:</strong> Synonym is required!';
+		echo json_encode($response);
 		return;
 	}
 	
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT synonym FROM synonyms WHERE synonym = '$synonym' AND ing = '$ing'"))){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$synonym.' already exists!</div>';
+		$response["error"] = '<strong>Error: </strong>'.$synonym.' already exists!';
+		echo json_encode($response);
 		return;
 	}
 	
 	if(mysqli_query($conn, "INSERT INTO synonyms (synonym,source,ing) VALUES ('$synonym','$source','$ing')")){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$synonym.'</strong> added to the list!</div>';
-	}else{
-		echo mysqli_error($conn);
+		$response["success"] = '<strong>'.$synonym.'</strong> added to the list!';
+		echo json_encode($response);
 	}
 	
 	return;
