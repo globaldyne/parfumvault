@@ -1,7 +1,7 @@
 <?php
 define('__ROOT__', dirname(__FILE__)); 
 
-require(__ROOT__.'/inc/sec.php');
+require_once(__ROOT__.'/inc/sec.php');
 
 if(file_exists('./inc/config.php') == FALSE){
 	session_destroy();
@@ -29,11 +29,6 @@ if($pv_meta['app_ver'] < trim(file_get_contents(__ROOT__.'/VERSION.md'))){
 	if(mysqli_query($conn, "UPDATE pv_meta SET app_ver = '$upVerLoc'")){
 		$show_release_notes = true;
 	}
-}
-
-$db_ver   = trim(file_get_contents(__ROOT__.'/db/schema.ver'));
-if($pv_meta['schema_ver'] < $db_ver){	
-	$db_up_msg = '<div class="alert alert-warning alert-dismissible"><strong>Your database schema needs to be updated ('.$db_ver.'). Please <a href="/pages/maintenance.php?do=backupDB">backup</a> your database first and then click <a href="javascript:updateDB()">here to update the db schema.</a></strong></div>';
 }
 
 ?>
@@ -99,26 +94,7 @@ $(document).ready(function() {
 	<?php } ?>
 });
 
-function updateDB() {
-	$('#msg').html('<div class="alert alert-info alert-dismissible"><img src="/img/loading.gif"/><strong> DB update in progress. Please wait, this may take a while...</strong></div>');
 
-	$.ajax({ 
-		url: '/pages/operations.php', 
-		type: 'GET',
-		data: {
-			do: "db_update"
-			},
-		dataType: 'json',
-		success: function (data) {
-		if(data.success) {
-			var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
-		} else {
-			var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
-		}
-		$('#msg').html(msg);
-		}
-  	});
-};
 	
 function list_formulas(){
 	$.ajax({ 
@@ -144,7 +120,33 @@ function list_ingredients(page,limit,filter){
 			}
 		});
 };
-
+function updateDB() {
+	$('#dbUpdMsg').html('<div class="alert alert-info"><img src="/img/loading.gif"/><strong> DB schema upgrade in progress. Please wait, this may take a while...</strong></div>');
+	$('#dbUpBtn').hide();
+	$('#dbBkBtn').hide();
+	$('#dbUpOk').hide();
+	$.ajax({ 
+		url: '/pages/operations.php', 
+		type: 'GET',
+		data: {
+			do: "db_update"
+			},
+		dataType: 'json',
+		success: function (data) {
+		if(data.success) {
+			var msg = '<div class="alert alert-success">' + data.success + '</div>';
+			//$('#dbUpgradeDialog').modal(toggle);
+			$('#dbUpOk').show();
+		} else {
+			var msg = '<div class="alert alert-danger">' + data.error + '</div>';
+			$('#dbUpBtn').show();
+			$('#dbBkBtn').show();
+			$('#dbUpOk').hide();
+		}
+		$('#dbUpdMsg').html(msg);
+		}
+  	});
+};
 
 </script>
 </head>
