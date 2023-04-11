@@ -117,7 +117,6 @@ if($settings['chkVersion'] == '1'){ echo checkVer($ver); }
 
 <script>
 $(document).ready(function() {
-
 <?php if($show_db_upgrade){?>
 	$('#dbUpgradeDialog').modal('show');
 	$('#dbUpOk').hide();
@@ -290,8 +289,8 @@ $('#list-shared-formulas').html('<div class="font-weight-bold">'+
         <h5 class="modal-title">PVault core Upgrade</h5>
       </div>
       <div class="modal-body" id="sysUpdMsg">
-        <div class="alert alert-warning"><strong>Your PVault installation wiil be upgraded to version <?php echo $ver; ?></strong>
-        </div>
+        <div class="alert alert-warning"><strong>Your PVault installation wiil be upgraded to its latest version.</strong></div>
+        <p>Check the release notes <a href="https://raw.githubusercontent.com/globaldyne/parfumvault/master/releasenotes.md" target="_blank">here</a></p>
       </div>
       <div class="modal-footer">
         <a href="/?do=UpgradeCore" role="button" class="btn btn-warning" id="sysUpBtn">Upgrade PVault</a>

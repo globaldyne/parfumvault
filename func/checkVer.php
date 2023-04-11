@@ -14,7 +14,7 @@ function checkVer($app_ver) {
 			if(file_exists('/config/.DOCKER') == TRUE){
 				$r = '<div class="alert alert-info"><strong>New <a href="'.$gitHubRep.'" target="_blank">version ('.$data.')</a> is availale!</strong> Please refer <a href="'.$docUrl.'" target="_blank">here</a> for update instructions.</div>';
 			}else{
-				$r = '<div class="alert alert-info"><strong>New <a href="'.$gitHubRep.'" target="_blank">version ('.$data.')</a> is availale!</strong> <a href="#" data-toggle="modal" data-target="#sysUpgradeDialog">Details...</a></div>';
+				$r = '<div class="alert alert-info"><strong>New <a href="'.$gitHubRep.'" target="_blank">version ('.$data.')</a> is availale!</strong> <a href="#" data-toggle="modal" data-target="#sysUpgradeDialog" data-ver="'.$githubVer.'">Details...</a></div>';
 			}
 		}
 	}
