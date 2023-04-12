@@ -97,6 +97,17 @@ foreach ($form as $formula){
 			
           }
 	}
+	$qCMP = mysqli_query($conn, "SELECT allergens.ing, allergens.name, allergens.cas, allergens.percentage, IFRALibrary.risk, IFRALibrary.$defCatClass  FROM allergens, IFRALibrary WHERE allergens.ing = '".$formula['ingredient']."' AND toDeclare = '1' AND IFRALibrary.name = allergens.name GROUP BY name ");
+	while($cmp = mysqli_fetch_array($qCMP)){
+		$x .='<tr>
+				<td align="center">'.$cmp['name'].'</td>
+				<td align="center">'.$cmp['cas'].'</td>
+				<td align="center">'.$cmp[$defCatClass].'</td>
+				<td align="center"></td>
+				<td align="center">'.$cmp['risk'].'</td> 
+			</tr>';
+	}
+
 } 
 
 echo  str_replace( $search, $replace, preg_replace('#(%IFRA_MATERIALS_LIST%)#ms', $x, $tmpl['content']) );

@@ -877,7 +877,13 @@ if($_POST['composition'] == 'add'){
 	$allgEC = mysqli_real_escape_string($conn, $_POST['allgEC']);	
 	$allgPerc = rtrim(mysqli_real_escape_string($conn, $_POST['allgPerc']),'%');
 	$ing = base64_decode($_POST['ing']);
-
+	
+	if($_POST['addToDeclare'] == 'true'){
+		$declare = '1';
+	}else{
+		$declare = '0';
+	}
+	
 	if(empty($allgName)){
 		$response["error"] = '<strong>Error:</strong> Name is required!';
 		echo json_encode($response);
@@ -908,16 +914,17 @@ if($_POST['composition'] == 'add'){
 		return;
 	}
 	
-	if(mysqli_query($conn, "INSERT INTO allergens (name,cas,ec,percentage,ing) VALUES ('$allgName','$allgCAS','$allgEC','$allgPerc','$ing')")){
+	if(mysqli_query($conn, "INSERT INTO allergens (name,cas,ec,percentage,toDeclare,ing) VALUES ('$allgName','$allgCAS','$allgEC','$allgPerc','$declare','$ing')")){
 		$response["success"] = '<strong>'.$allgName.'</strong> added to the list';
+		echo json_encode($response);
+	}else{
+		$response["error"] = mysqli_error($conn);
 		echo json_encode($response);
 	}
 	
 	if($_POST['addToIng'] == 'true'){
 		if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$allgName'")))){
-			mysqli_query($conn, "INSERT INTO ingredients (name,cas) VALUES ('$allgName','$allgCAS')");
-		$response["error"] = mysqli_error($conn);
-		echo json_encode($response);
+			mysqli_query($conn, "INSERT INTO ingredients (name,cas) VALUES ('$allgName','$allgCAS')");		
 		}
 	}
 
