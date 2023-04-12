@@ -39,7 +39,7 @@ if ($res === TRUE) {
 	pvCopy(__ROOT__.'/tmp/CoreUpgrade/parfumvault-'.$data, __ROOT__.'/');
 			
 	$r = '<div class="alert alert-success"></div>';
-	$response["success"] = "Update complete. Its now safe to navigate away from this page.";
+	$response["success"] = "Update complete. Please refresh this page.";
 	echo json_encode($response);
 			
 }else {

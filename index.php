@@ -17,7 +17,7 @@ require_once(__ROOT__.'/func/searchIFRA.php');
 require_once(__ROOT__.'/func/formatBytes.php');
 require_once(__ROOT__.'/func/countElement.php');
 
-//require_once(__ROOT__.'/func/pvFileGet.php');
+require_once(__ROOT__.'/func/pvFileGet.php');
 require_once(__ROOT__.'/func/countPending.php');
 require_once(__ROOT__.'/func/countCart.php');
 require_once(__ROOT__.'/func/pvOnline.php');
@@ -160,7 +160,7 @@ function updateSYS() {
 		success: function (data) {
 		if(data.success) {
 			var msg = '<div class="alert alert-success">' + data.success + '</div>';
-			$('#sysUpOk').show();
+			//$('#sysUpOk').show();
 		} else {
 			var msg = '<div class="alert alert-danger">' + data.error + '</div>';
 			$('#sysUpBtn').show();
