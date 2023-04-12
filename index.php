@@ -120,6 +120,7 @@ function list_ingredients(page,limit,filter){
 			}
 		});
 };
+
 function updateDB() {
 	$('#dbUpdMsg').html('<div class="alert alert-info"><img src="/img/loading.gif"/><strong> DB schema upgrade in progress. Please wait, this may take a while...</strong></div>');
 	$('#dbUpBtn').hide();
@@ -148,6 +149,30 @@ function updateDB() {
   	});
 };
 
+function updateSYS() {
+	$('#sysUpdMsg').html('<div class="alert alert-info"><img src="/img/loading.gif"/><strong> Core system upgrade in progress. Please wait, DO NOT close, refresh or navigate away from this page. The process may take a while...</strong></div>');
+	$('#sysUpBtn').hide();
+	$('#sysUpOk').hide();
+	$.ajax({ 
+		url: '/index.php', 
+		type: 'GET',
+		data: {
+			do: "UpgradeCore"
+			},
+		dataType: 'json',
+		success: function (data) {
+		if(data.success) {
+			var msg = '<div class="alert alert-success">' + data.success + '</div>';
+			$('#sysUpOk').show();
+		} else {
+			var msg = '<div class="alert alert-danger">' + data.error + '</div>';
+			$('#sysUpBtn').show();
+			$('#sysUpOk').hide();
+		}
+		$('#sysUpdMsg').html(msg);
+		}
+  	});
+};
 </script>
 </head>
 

@@ -293,8 +293,8 @@ $('#list-shared-formulas').html('<div class="font-weight-bold">'+
         <p>Check the release notes <a href="https://raw.githubusercontent.com/globaldyne/parfumvault/master/releasenotes.md" target="_blank">here</a></p>
       </div>
       <div class="modal-footer">
-        <a href="/?do=UpgradeCore" role="button" class="btn btn-warning" id="sysUpBtn">Upgrade PVault</a>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <a href="javascript:updateSYS()" role="button" class="btn btn-warning" id="sysUpBtn">Upgrade PVault</a>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="sysUpOk">Close</button>
       </div>
     </div>
   </div>
