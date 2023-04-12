@@ -1,5 +1,9 @@
 <?php 
-if (!defined('pvault_panel')){ die('Not Found');}  
+//if (!defined('pvault_panel')){ die('Not Found');}  
+define('__ROOT__', dirname(dirname(__FILE__))); 
+require_once(__ROOT__.'/inc/sec.php');
+require_once(__ROOT__.'/func/pvFileGet.php');
+
 require_once(__ROOT__.'/func/pvCopy.php');		
 
 $githubVer = 'https://raw.githubusercontent.com/globaldyne/parfumvault/master/VERSION.md';

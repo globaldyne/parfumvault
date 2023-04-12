@@ -17,7 +17,7 @@ require_once(__ROOT__.'/func/searchIFRA.php');
 require_once(__ROOT__.'/func/formatBytes.php');
 require_once(__ROOT__.'/func/countElement.php');
 
-require_once(__ROOT__.'/func/pvFileGet.php');
+//require_once(__ROOT__.'/func/pvFileGet.php');
 require_once(__ROOT__.'/func/countPending.php');
 require_once(__ROOT__.'/func/countCart.php');
 require_once(__ROOT__.'/func/pvOnline.php');
@@ -154,11 +154,8 @@ function updateSYS() {
 	$('#sysUpBtn').hide();
 	$('#sysUpOk').hide();
 	$.ajax({ 
-		url: '/index.php', 
+		url: '/pages/UpgradeCore.php', 
 		type: 'GET',
-		data: {
-			do: "UpgradeCore"
-			},
 		dataType: 'json',
 		success: function (data) {
 		if(data.success) {
@@ -325,8 +322,6 @@ function updateSYS() {
 			require_once(__ROOT__.'/pages/sellFormula.php');
 		}elseif($_GET['do'] == 'customers'){
 			require_once(__ROOT__.'/pages/customers.php');
-		}elseif($_GET['do'] == 'UpgradeCore'){
-			require_once(__ROOT__.'/pages/UpgradeCore.php');
 		}elseif($_GET['do'] == 'compareFormulas'){
 			require_once(__ROOT__.'/pages/compareFormulas.php');
 			
