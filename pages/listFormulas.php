@@ -201,7 +201,7 @@ function fName(data, type, row, meta){
 		}else{
 			var pad = 'class="fas fa-unlock"  rel="tip" title="Formula is not protected"';
 		}
-		data = '<div '+ pad +'</div><a href="/?do=Formula&id=' + row.id + '" > ' + data + '</a>';
+		data = '<div '+ pad +'</div><a href="/?do=Formula&id=' + row.id + '" target="_blank"> ' + data + '</a>';
 	}
   return data;
 }
