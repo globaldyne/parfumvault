@@ -17,12 +17,13 @@ if($app_ver){
 	if($app_ver < $data){
 		if(file_exists('/config/.DOCKER') == TRUE){
 			$response["success"] = '<strong>New <a href="'.$gitHubRep.'" target="_blank">version ('.$data.')</a> is availale!</strong> Please refer <a href="'.$docUrl.'" target="_blank">here</a> for update instructions.';
+			echo json_encode($response);
 		}else{
 			$response["success"] = '<strong>New <a href="'.$gitHubRep.'" target="_blank">version ('.$data.')</a> is availale!</strong> <a href="#" data-toggle="modal" data-target="#sysUpgradeDialog" data-ver="'.$githubVer.'">Upgrade available.</a>';
+			echo json_encode($response);
 		}
 	}
 }
 	
-	echo json_encode($response);
 	return;
 ?>
