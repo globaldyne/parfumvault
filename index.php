@@ -12,12 +12,11 @@ require_once(__ROOT__.'/inc/product.php');
 require_once(__ROOT__.'/inc/opendb.php');
 
 require_once(__ROOT__.'/func/checkIng.php');
-require_once(__ROOT__.'/func/checkVer.php');
 require_once(__ROOT__.'/func/searchIFRA.php');
 require_once(__ROOT__.'/func/formatBytes.php');
 require_once(__ROOT__.'/func/countElement.php');
 
-require_once(__ROOT__.'/func/pvFileGet.php');
+//require_once(__ROOT__.'/func/pvFileGet.php');
 require_once(__ROOT__.'/func/countPending.php');
 require_once(__ROOT__.'/func/countCart.php');
 require_once(__ROOT__.'/func/pvOnline.php');
@@ -136,7 +135,6 @@ function updateDB() {
 		success: function (data) {
 		if(data.success) {
 			var msg = '<div class="alert alert-success">' + data.success + '</div>';
-			//$('#dbUpgradeDialog').modal(toggle);
 			$('#dbUpOk').show();
 		} else {
 			var msg = '<div class="alert alert-danger">' + data.error + '</div>';
@@ -160,7 +158,6 @@ function updateSYS() {
 		success: function (data) {
 		if(data.success) {
 			var msg = '<div class="alert alert-success">' + data.success + '</div>';
-			//$('#sysUpOk').show();
 		} else {
 			var msg = '<div class="alert alert-danger">' + data.error + '</div>';
 			$('#sysUpBtn').show();
@@ -170,6 +167,31 @@ function updateSYS() {
 		}
   	});
 };
+
+<?php if($settings['chkVersion'] == '1'){ ?>
+
+chkUpdate();
+function chkUpdate() {
+	$('#chkUpdMsg').html('<div class="alert alert-info"><img src="/img/loading.gif"/><strong>Checking for updates...</strong></div>');
+	$.ajax({ 
+		url: '/core/checkVer.php', 
+		type: 'GET',
+		data: {
+			app_ver: '<?=$ver?>',
+		},
+		dataType: 'json',
+		success: function (data) {
+		if(data.success) {
+			var msg = '<div class="alert alert-info">' + data.success + '</div>';
+		} else {
+			var msg = '<div class="alert alert-danger">' + data.error + '</div>';
+		}
+		$('#chkUpdMsg').html(msg);
+		}
+  	});
+};
+<?php } ?>
+
 </script>
 </head>
 
@@ -330,7 +352,7 @@ function updateSYS() {
 		}
 	?>
 <?php require_once(__ROOT__.'/pages/footer.php'); ?>
-<?php //if(isset($show_release_notes)){ ?>
+
 <!--RELEASE NOTES-->
 <div class="modal fade" id="release_notes" tabindex="-1" role="dialog" aria-labelledby="release_notes" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
@@ -350,6 +372,6 @@ function updateSYS() {
     </div>
   </div>
 </div>
-<?php //} ?>
+
 </body>
 </html>

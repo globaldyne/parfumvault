@@ -7,10 +7,8 @@ if($pv_meta['schema_ver'] < $db_ver){
 	$show_db_upgrade = true;
 }
 
-if($settings['chkVersion'] == '1'){ echo checkVer($ver); }
-
 ?>
-
+<div id="chkUpdMsg"></div>
 <div id="content">
         <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
           <ul class="navbar-nav vault-top ml-auto">
