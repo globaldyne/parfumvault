@@ -61,8 +61,9 @@ if($_POST['formula']){
 	}else{
 		$batchID = 'N/A';
 	}
-}
+	
 ?>
+    
 <script>
 function printLabel() {
 	<?php if(empty($settings['label_printer_addr']) || empty($settings['label_printer_model'])){?>
@@ -115,6 +116,8 @@ $.ajax({
 	<?php } ?>
 };
 </script>
+<?php } ?>
+
 <div id="content-wrapper" class="d-flex flex-column">
 <?php require_once('pages/top.php'); ?>
         <div class="container-fluid">

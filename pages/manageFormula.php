@@ -622,11 +622,11 @@ if($_GET['action'] == 'printBoxLabel' && $_GET['name']){
 		while($ing = mysqli_fetch_array($qIng)){
 			$chName = mysqli_fetch_array(mysqli_query($conn, "SELECT chemical_name,name FROM ingredients WHERE name = '".$ing['ingredient']."' AND allergen = '1'"));
 			
-			$qCMP = mysqli_query($conn, "SELECT name FROM allergens WHERE ing = '".$ing['ingredient']."' AND toDeclare = '1'");
-			while($cmp = mysqli_fetch_array($qCMP)){
-				$allergen[] = $cmp['name'];
+			if($qCMP = mysqli_query($conn, "SELECT name FROM allergens WHERE ing = '".$ing['ingredient']."' AND toDeclare = '1'")){
+				while($cmp = mysqli_fetch_array($qCMP)){
+					$allergen[] = $cmp['name'];
+				}
 			}
-			
 			$allergen[] = $chName['chemical_name']?:$chName['name'];
 		}
 		$allergen[] = 'Denatureted Ethyl Alcohol '.$_GET['carrier'].'% Vol, Fragrance, DPG, Distilled Water';
