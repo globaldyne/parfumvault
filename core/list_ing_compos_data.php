@@ -7,7 +7,7 @@ require_once(__ROOT__.'/inc/opendb.php');
 
 $ingID = base64_decode($_GET["id"]);
 
-$q = mysqli_query($conn, "SELECT id,ing,name,cas,ec,percentage FROM allergens WHERE ing = '$ingID'");
+$q = mysqli_query($conn, "SELECT id,ing,name,cas,ec,percentage,toDeclare FROM allergens WHERE ing = '$ingID'");
 while($res = mysqli_fetch_array($q)){
     $compos[] = $res;
 }
@@ -19,6 +19,7 @@ foreach ($compos as $compo) {
 	$r['cas'] = (string)$compo['cas']?: 'N/A';
 	$r['ec'] = (string)$compo['ec']?: 'N/A';
 	$r['percentage'] = (float)$compo['percentage']?: '0';	
+	$r['toDeclare'] = (int)$compo['toDeclare']?: '0';	
 
 	$response['data'][] = $r;
 }

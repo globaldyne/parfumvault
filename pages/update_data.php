@@ -437,26 +437,27 @@ if($_POST['synonym'] == 'import' && $_POST['method'] == 'pubchem'){
 }
 
 //ADD SYNONYM
-if($_GET['synonym'] == 'add'){
-	$synonym = mysqli_real_escape_string($conn, $_GET['sName']);
-	$source = mysqli_real_escape_string($conn, $_GET['source']);
+if($_POST['synonym'] == 'add'){
+	$synonym = mysqli_real_escape_string($conn, $_POST['sName']);
+	$source = mysqli_real_escape_string($conn, $_POST['source']);
 	
-	$ing = base64_decode($_GET['ing']);
+	$ing = base64_decode($_POST['ing']);
 
 	if(empty($synonym)){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Synonym is required!</div>';
+		$response["error"] = '<strong>Error:</strong> Synonym is required!';
+		echo json_encode($response);
 		return;
 	}
 	
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT synonym FROM synonyms WHERE synonym = '$synonym' AND ing = '$ing'"))){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$synonym.' already exists!</div>';
+		$response["error"] = '<strong>Error: </strong>'.$synonym.' already exists!';
+		echo json_encode($response);
 		return;
 	}
 	
 	if(mysqli_query($conn, "INSERT INTO synonyms (synonym,source,ing) VALUES ('$synonym','$source','$ing')")){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$synonym.'</strong> added to the list!</div>';
-	}else{
-		echo mysqli_error($conn);
+		$response["success"] = '<strong>'.$synonym.'</strong> added to the list!';
+		echo json_encode($response);
 	}
 	
 	return;
@@ -589,13 +590,17 @@ if($_POST['ingSupplier'] == 'getPrice'){
 //ADD ING SUPPLIER
 if($_POST['ingSupplier'] == 'add'){
 	if(empty($_POST['supplier_id']) || empty($_POST['supplier_link']) || empty($_POST['supplier_size'])){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Missing fields!</div>';
+		$response["error"] = '<strong>Error:</strong> Missing fields!';
+		echo json_encode($response);
 		return;
 	}
-	if(!is_numeric($_POST['supplier_size'])){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Only numeric values allowed in size and price fields!</div>';
+	
+	if(!is_numeric($_POST['supplier_size']) || !is_numeric($_POST['stock'])){
+		$response["error"] = '<strong>Error:</strong> Only numeric values allowed in size, stock and price fields!';
+		echo json_encode($response);
 		return;
 	}
+	
 	$ingID = mysqli_real_escape_string($conn, $_POST['ingID']);
 	$supplier_id = mysqli_real_escape_string($conn, $_POST['supplier_id']);
 	$supplier_link = mysqli_real_escape_string($conn, $_POST['supplier_link']);	
@@ -606,23 +611,25 @@ if($_POST['ingSupplier'] == 'add'){
 	$supplier_batch = mysqli_real_escape_string($conn, $_POST['supplier_batch']);
 	$purchased = mysqli_real_escape_string($conn, $_POST['purchased'] ?: date('Y-m-d'));
 	$stock = mysqli_real_escape_string($conn, $_POST['stock'] ?: 0);
+	$mUnit = $_POST['mUnit'];
 
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT ingSupplierID FROM suppliers WHERE ingSupplierID = '$supplier_id' AND ingID = '$ingID'"))){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$supplier_name['name'].' already exists!</div>';
-	}else{
-		
-		if(!mysqli_num_rows(mysqli_query($conn, "SELECT ingSupplierID FROM suppliers WHERE ingID = '$ingID'"))){
-		   $preferred = '1';
-		}else{
-			$preferred = '0';
-		}
-		
-		if(mysqli_query($conn, "INSERT INTO suppliers (ingSupplierID,ingID,supplierLink,price,size,manufacturer,preferred,batch,purchased,stock) VALUES ('$supplier_id','$ingID','$supplier_link','$supplier_price','$supplier_size','$supplier_manufacturer','$preferred','$supplier_batch','$purchased','$stock')")){
-			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$supplier_name['name'].'</strong> added to the list!</div>';
-		}else{
-			echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> '.mysqli_error($conn).'</div>';
-		}
+		$response["error"] = '<strong>Error: </strong>'.$supplier_name['name'].' already exists!';
+		echo json_encode($response);
+		return;
 	}
+		
+	if(!mysqli_num_rows(mysqli_query($conn, "SELECT ingSupplierID FROM suppliers WHERE ingID = '$ingID'"))){
+	   $preferred = '1';
+	}else{
+		$preferred = '0';
+	}
+		
+	if(mysqli_query($conn, "INSERT INTO suppliers (ingSupplierID,ingID,supplierLink,price,size,manufacturer,preferred,batch,purchased,stock,mUnit) VALUES ('$supplier_id','$ingID','$supplier_link','$supplier_price','$supplier_size','$supplier_manufacturer','$preferred','$supplier_batch','$purchased','$stock','$mUnit')")){
+		$response["success"] = '<strong>'.$supplier_name['name'].'</strong> added.';
+		echo json_encode($response);
+	}
+	
 	return;
 }
 
@@ -864,35 +871,60 @@ if($_GET['supp'] == 'delete' && $_GET['ID']){
 
 
 //ADD composition
-if($_GET['composition'] == 'add'){
-	$allgName = mysqli_real_escape_string($conn, $_GET['allgName']);
-	$allgCAS = mysqli_real_escape_string($conn, $_GET['allgCAS']);
-	$allgEC = mysqli_real_escape_string($conn, $_GET['allgEC']);	
-	$allgPerc = rtrim(mysqli_real_escape_string($conn, $_GET['allgPerc']),'%');
-	$ing = base64_decode($_GET['ing']);
-
-	if(empty($allgName)){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Name is required!</div>';
-		return;
-	}
-	if(empty($allgCAS)){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> CAS number is required!</div>';
-		return;
-	}
-	if(empty($allgPerc)){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Percentage is required!</div>';
-		return;
-	}
-	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM allergens WHERE name = '$allgName' AND ing = '$ing'"))){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$allgName.' already exists!</div>';
+if($_POST['composition'] == 'add'){
+	$allgName = mysqli_real_escape_string($conn, $_POST['allgName']);
+	$allgCAS = mysqli_real_escape_string($conn, $_POST['allgCAS']);
+	$allgEC = mysqli_real_escape_string($conn, $_POST['allgEC']);	
+	$allgPerc = rtrim(mysqli_real_escape_string($conn, $_POST['allgPerc']),'%');
+	$ing = base64_decode($_POST['ing']);
+	
+	if($_POST['addToDeclare'] == 'true'){
+		$declare = '1';
 	}else{
-		mysqli_query($conn, "INSERT INTO allergens (name,cas,ec,percentage,ing) VALUES ('$allgName','$allgCAS','$allgEC','$allgPerc','$ing')");
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$allgName.'</strong> added to the list!</div>';
+		$declare = '0';
 	}
 	
-	if($_GET['addToIng'] == 'true'){
+	if(empty($allgName)){
+		$response["error"] = '<strong>Error:</strong> Name is required!';
+		echo json_encode($response);
+		return;
+	}
+	
+	if(empty($allgCAS)){
+		$response["error"] = '<strong>Error:</strong> CAS number is required!';
+		echo json_encode($response);
+		return;
+	}
+	
+	if(empty($allgPerc)){
+		$response["error"] = '<strong>Error:</strong> Percentage is required!';
+		echo json_encode($response);
+		return;
+	}
+	
+	if(!is_numeric($allgPerc)){
+		$response["error"] = '<strong>Error:</strong> Percentage value needs to be numeric!';
+		echo json_encode($response);
+		return;
+	}
+	
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM allergens WHERE name = '$allgName' AND ing = '$ing'"))){
+		$response["error"] = '<strong>Error: </strong>'.$allgName.' already exists!';
+		echo json_encode($response);
+		return;
+	}
+	
+	if(mysqli_query($conn, "INSERT INTO allergens (name,cas,ec,percentage,toDeclare,ing) VALUES ('$allgName','$allgCAS','$allgEC','$allgPerc','$declare','$ing')")){
+		$response["success"] = '<strong>'.$allgName.'</strong> added to the list';
+		echo json_encode($response);
+	}else{
+		$response["error"] = mysqli_error($conn);
+		echo json_encode($response);
+	}
+	
+	if($_POST['addToIng'] == 'true'){
 		if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$allgName'")))){
-			mysqli_query($conn, "INSERT INTO ingredients (name,cas) VALUES ('$allgName','$allgCAS')");
+			mysqli_query($conn, "INSERT INTO ingredients (name,cas) VALUES ('$allgName','$allgCAS')");		
 		}
 	}
 
@@ -911,15 +943,17 @@ if($_GET['composition'] == 'update'){
 }
 
 //DELETE composition	
-if($_GET['composition'] == 'delete'){
+if($_POST['composition'] == 'delete'){
 
-	$id = mysqli_real_escape_string($conn, $_GET['allgID']);
-	$ing = base64_decode($_GET['ing']);
+	$id = mysqli_real_escape_string($conn, $_POST['allgID']);
+	$ing = base64_decode($_POST['ing']);
 
 	$delQ = mysqli_query($conn, "DELETE FROM allergens WHERE id = '$id' AND ing='$ing'");	
 	if($delQ){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$ing.'</strong> removed!</div>';
+		$response["success"] = '<strong>'.$ing.'</strong> removed!';
+		echo json_encode($response);
 	}
+	
 	return;
 }
 

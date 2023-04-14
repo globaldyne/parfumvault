@@ -97,7 +97,7 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
           <div id="errors"></div>
           <div id="msg"><?=$msg?></div>
           <div class="btn-group" id="menu">
-            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> Menu</button>
+            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> Actions</button>
             <div class="dropdown-menu dropdown-menu-left">
                <div class="dropdown-divider"></div>
                <a class="dropdown-item" href="#" id="markCompleteMenu">Mark formula as complete</a>
