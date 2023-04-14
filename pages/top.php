@@ -115,6 +115,14 @@ if($pv_meta['schema_ver'] < $db_ver){
 
 <script>
 $(document).ready(function() {
+
+$('#load-rel-notes').click(function() {
+	var relUrl = 'https://raw.githubusercontent.com/globaldyne/parfumvault/master/releasenotes.md';
+
+	$('#new-rel').load(relUrl);
+	console.log(relUrl);
+});
+
 <?php if($show_db_upgrade){?>
 	$('#dbUpgradeDialog').modal('show');
 	$('#dbUpOk').hide();
@@ -288,7 +296,7 @@ $('#list-shared-formulas').html('<div class="font-weight-bold">'+
       </div>
       <div class="modal-body" id="sysUpdMsg">
         <div class="alert alert-warning"><strong>Your PVault installation wiil be upgraded to its latest version.</strong></div>
-        <p>Check the release notes <a href="https://raw.githubusercontent.com/globaldyne/parfumvault/master/releasenotes.md" target="_blank">here</a></p>
+        <pre><div id="new-rel">Check the release notes <a href="#" id="load-rel-notes">here</a></div></pre>
       </div>
       <div class="modal-footer">
         <a href="javascript:updateSYS()" role="button" class="btn btn-warning" id="sysUpBtn">Upgrade PVault</a>
