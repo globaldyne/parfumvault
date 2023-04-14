@@ -14,7 +14,7 @@ $ingID = mysqli_real_escape_string($conn, $_GET["id"]);
 <div class="card-body">
   <div class="text-right">
     <div class="btn-group">
-    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
+    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> Actions</button>
         <div class="dropdown-menu dropdown-menu-right">
             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addDoc">Add new</a>
         </div>
@@ -65,22 +65,21 @@ $(document).ready(function() {
 	});
 });
 function dName(data, type, row){
-	return '<a href="#" class="name pv_point_gen" data-name="name" data-type="text" data-pk="'+row.id+'">'+row.name+'</a>';    
+	return '<i class="name pv_point_gen" data-name="name" data-type="text" data-pk="'+row.id+'">'+row.name+'</i>';    
 }
 function docData(data, type, row){
 	return '<a href="viewDoc.php?id='+row.id+'" target="_blank" class="fa fa-file-alt"></a>';    
 }
 function dNotes(data, type, row){
-	return '<a href="#" class="notes pv_point_gen" data-name="notes" data-type="textarea" data-pk="'+row.id+'">'+row.notes+'</a>';    
+	return '<i class="notes pv_point_gen" data-name="notes" data-type="textarea" data-pk="'+row.id+'">'+row.notes+'</i>';    
 }
 function dActions(data, type, row){
-	
 	return '<a href="#" id="dDel" class="fas fa-trash" data-id="'+row.id+'" data-name="'+row.name+'"></a>';    
 }
 
 $('#tdIngDocs').editable({
 	  container: 'body',
-	  selector: 'a.name',
+	  selector: 'i.name',
 	  type: 'POST',
 	  url: "update_data.php?ingDoc=update&ingID=<?=$ingID;?>",
 	  title: 'Document name',
@@ -88,7 +87,7 @@ $('#tdIngDocs').editable({
   
  $('#tdIngDocs').editable({
 	  container: 'body',
-	  selector: 'a.notes',
+	  selector: 'i.notes',
 	  type: 'POST',
 	  url: "update_data.php?ingDoc=update&ingID=<?=$ingID;?>",
 	  title: 'Notes',
@@ -106,7 +105,7 @@ $('#tdIngDocs').on('click', '[id*=dDel]', function () {
        buttons :{
            main: {
                label : "Remove",
-               className : "btn-primary",
+               className : "btn-danger",
                callback: function (){
 	    			
 				$.ajax({ 

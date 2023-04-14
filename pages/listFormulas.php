@@ -38,7 +38,7 @@ while($fTypes_res = mysqli_fetch_array($fTypes_q)){
 <div class="pv_menu_formulas">
     <div class="text-right">
         <div class="btn-group">
-        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> Menu</button>
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> Actions</button>
             <div class="dropdown-menu dropdown-menu-right">
               <a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula">Add new formula</a>
               <a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula_csv">Import from CSV</a>
@@ -201,7 +201,7 @@ function fName(data, type, row, meta){
 		}else{
 			var pad = 'class="fas fa-unlock"  rel="tip" title="Formula is not protected"';
 		}
-		data = '<div '+ pad +'</div><a href="/?do=Formula&id=' + row.id + '" > ' + data + '</a>';
+		data = '<div '+ pad +'</div><a href="/?do=Formula&id=' + row.id + '" target="_blank"> ' + data + '</a>';
 	}
   return data;
 }
@@ -215,7 +215,7 @@ function pName(data, type, row, meta){
 function fMade(data, type, row, meta){
 	if(type === 'display'){
 		if(row.isMade == 1){
-			var data = '<i class="fas fa-check-circle" rel="tip" title="Formula last made on ' + row.madeOn + '"></i>';
+			var data = '<i class="fas fa-check-circle alert-success" rel="tip" title="Formula last made on ' + row.madeOn + '"></i>';
 		}else{
 			var data = '<i class="fas fa-hourglass-start" rel="tip" title="Formula is not made yet"></i>';
 		}

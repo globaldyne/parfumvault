@@ -2,7 +2,7 @@
 
 define('__ROOT__', dirname(dirname(__FILE__))); 
 
-require(__ROOT__.'/inc/sec.php');
+require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 
@@ -16,7 +16,7 @@ $ingName = mysqli_real_escape_string($conn, $_GET["name"]);
 <div class="card-body">
  	<div class="text-right">
   		<div class="btn-group">
-   			<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
+   			<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> Actions</button>
     		<div class="dropdown-menu dropdown-menu-right">
         		<a class="dropdown-item" href="#" data-toggle="modal" data-target="#addComposition">Add new</a>
         		<a class="dropdown-item" href="#" data-toggle="modal" data-target="#addCSV">Upload CSV</a>
@@ -32,6 +32,7 @@ $ingName = mysqli_real_escape_string($conn, $_GET["name"]);
           <th>CAS</th>
           <th>EINECS</th>
           <th>Percentage</th>
+          <th>Declare</th>
           <th>Actions</th>
       </tr>
    </thead>
@@ -45,6 +46,7 @@ $('[data-toggle="tooltip"]').tooltip();
 var tdCompositions = $('#tdCompositions').DataTable( {
 	columnDefs: [
 		{ className: 'text-center', targets: '_all' },
+		{ orderable: false, targets: [4] },
 	],
 	dom: 'lfrtip',
 	processing: true,
@@ -60,6 +62,7 @@ var tdCompositions = $('#tdCompositions').DataTable( {
 			  { data : 'cas', title: 'CAS', render: cmpCAS},
 			  { data : 'ec', title: 'EINECS', render: cmpEC},
 			  { data : 'percentage', title: 'Percentage', render: cmpPerc},
+			  { data : 'toDeclare', title: 'Declare', render: cmpDeclare},
 			  { data : null, title: 'Actions', render: cmpActions},		   
 			 ],
 	order: [[ 1, 'asc' ]],
@@ -85,8 +88,17 @@ function cmpPerc(data, type, row){
 	return '<i class="percentage pv_point_gen" data-name="percentage" data-type="text" data-pk="'+row.id+'">'+row.percentage+'</i>';    
 }
 
+function cmpDeclare(data, type, row){
+	if(row.toDeclare == 0){
+		var declare = 'No';
+	}else if(row.toDeclare == 1){
+		var declare = 'Yes';
+	}
+	return '<i class="toDeclare pv_point_gen" data-name="toDeclare" data-type="select" data-pk="'+row.id+'">'+declare+'</i>';    
+}
+
 function cmpActions(data, type, row){
-	return '<a href="#" id="cmpDel" class="fas fa-trash" data-id="'+row.id+'" data-name="'+row.name+'"></a>';    
+	return '<a href="#" id="cmpDel" class="fas fa-trash alert-danger" data-id="'+row.id+'" data-name="'+row.name+'"></a>';
 }
 
 $('#tdCompositions').editable({
@@ -121,7 +133,26 @@ $('#tdCompositions').editable({
     title: 'Percentage'
 });
 
-	
+
+$('#tdCompositions').editable({
+	pvnoresp: false,
+	highlight: false,
+	emptytext: "",
+	emptyclass: "",
+  	container: 'body',
+  	selector: 'i.toDeclare',
+  	type: 'POST',
+	url: "update_data.php?composition=update&ing=<?=$ingName;?>",
+	title: 'To be declared',
+	source: [
+			 {value: '0', text: 'No'},
+			 {value: '1', text: 'Yes'},
+			 ],
+	success: function (data) {
+			reload_cmp_data();
+	}
+});
+
 $('#tdCompositions').on('click', '[id*=cmpDel]', function () {
 	var cmp = {};
 	cmp.ID = $(this).attr('data-id');
@@ -133,18 +164,18 @@ $('#tdCompositions').on('click', '[id*=cmpDel]', function () {
        buttons :{
            main: {
                label : "Remove",
-               className : "btn-primary",
+               className : "btn-danger",
                callback: function (){
 	    			
 				$.ajax({ 
 					url: 'update_data.php', 
-					type: 'GET',
+					type: 'POST',
 					data: {
 						composition: 'delete',
 						allgID: cmp.ID,
 						ing: '<?=$ingName?>'
 						},
-					dataType: 'html',
+					dataType: 'json',
 					success: function (data) {
 						reload_cmp_data();
 					}
@@ -168,24 +199,32 @@ $('#tdCompositions').on('click', '[id*=cmpDel]', function () {
 $('#addComposition').on('click', '[id*=cmpAdd]', function () {
 	$.ajax({ 
 		url: 'update_data.php', 
-		type: 'GET',
+		type: 'POST',
 		data: {
 			composition: 'add',
 			allgName: $("#allgName").val(),
 			allgPerc: $("#allgPerc").val(),
 			allgCAS: $("#allgCAS").val(),
 			allgEC: $("#allgEC").val(),	
-			addToIng: $("#addToIng").is(':checked'),				
+			addToIng: $("#addToIng").is(':checked'),
+			addToDeclare: $("#addToDeclare").is(':checked'),
 			ing: '<?=$ingName?>'
 			},
-		dataType: 'html',
+		dataType: 'json',
 		success: function (data) {
-			$('#inf').html(data);
-			$("#allgName").val('');
-			$("#allgCAS").val('');
-			$("#allgEC").val('');
-			$("#allgPerc").val('');
-			reload_cmp_data();
+			if (data.success) {
+	 	 		var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+				$("#allgName").val('');
+				$("#allgCAS").val('');
+				$("#allgEC").val('');
+				$("#allgPerc").val('');
+				reload_cmp_data();
+			}else{
+				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+			}
+		
+			$('#inf').html(msg);
+
 		}
 	  });
 });
@@ -252,10 +291,17 @@ function reload_cmp_data() {
             <input class="form-control" name="allgPerc" type="text" id="allgPerc" />
             </p>
             <div class="dropdown-divider"></div>
-      <label>
-         <input name="addToIng" type="checkbox" id="addToIng" value="1" />
-        Add to ingredients
-      </label>
+          <p>
+          <label>
+             <input name="addToDeclare" type="checkbox" id="addToDeclare" value="1" />
+            To declare in warnings
+          </label>
+          </p>
+          <p>
+          <label>
+             <input name="addToIng" type="checkbox" id="addToIng" value="1" />
+            Add to ingredients
+          </label>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

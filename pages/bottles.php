@@ -21,7 +21,7 @@ while ($suppliers = mysqli_fetch_array($sup)){
                     <div class="col-sm-6 text-left"></div>
                      <div class="col-sm-6 text-right">
                       <div class="btn-group">
-                          <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> Menu</button>
+                          <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> Actions</button>
                           <div class="dropdown-menu dropdown-menu-right">
             				<a class="dropdown-item" href="#" data-toggle="modal" data-target="#addBottle">Add new</a>
                             <a class="dropdown-item" id="exportCSV" href="#">Export to CSV</a>

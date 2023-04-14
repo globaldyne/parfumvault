@@ -3,7 +3,7 @@
 define('__ROOT__', dirname(dirname(__FILE__))); 
 
 
-require(__ROOT__.'/inc/sec.php');
+require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 
@@ -17,7 +17,7 @@ $ingName = mysqli_real_escape_string($conn, $_POST["name"]);
 <div class="card-body">
  	<div class="text-right">
   		<div class="btn-group">
-   			<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
+   			<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> Actions</button>
     		<div class="dropdown-menu dropdown-menu-right">
         		<a class="dropdown-item" href="#" data-toggle="modal" data-target="#addSynonym">Add new</a>
                 <?php if(preg_match('/(Mixture|Blend)/i', $CAS) === 0){	?>
@@ -110,7 +110,7 @@ $('#tdSynonyms').on('click', '[id*=synDel]', function () {
        buttons :{
            main: {
                label : "Remove",
-               className : "btn-primary",
+               className : "btn-danger",
                callback: function (){
 	    			
 				$.ajax({ 
@@ -168,19 +168,26 @@ $('#import').on('click', '[id*=importPubChem]', function () {
 $('#addSynonym').on('click', '[id*=synAdd]', function () {
 	$.ajax({ 
 		url: 'update_data.php', 
-		type: 'GET',
+		type: 'POST',
 		data: {
 			synonym: 'add',
 			sName: $("#synonym").val(),
 			source: $("#source").val(),
 			ing: '<?=$ingName?>'
 			},
-		dataType: 'html',
+		dataType: 'json',
 		success: function (data) {
-			$('#infSyn').html(data);
-			$("#synonym").val('');
-			$("#source").val('');
-			reload_syn_data();
+			if (data.success) {
+	 	 		var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+				$("#synonym").val('');
+				$("#source").val('');
+				reload_syn_data();
+			}else{
+				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+			}
+			
+			$('#infSyn').html(msg);
+			
 		}
 	  });
 });

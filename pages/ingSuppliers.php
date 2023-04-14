@@ -48,7 +48,7 @@ if($ing['physical_state'] == 1){
 <div class="card-body">
   <div class="text-right">
     <div class="btn-group">
-    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
+    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> Actions</button>
         <div class="dropdown-menu dropdown-menu-right">
             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addSupplier">Add new</a>
         </div>
@@ -64,6 +64,7 @@ if($ing['physical_state'] == 1){
           <th>eShop</th>
           <th>Price</th>
           <th>Size</th>
+          <th>Measurement Unit</th>
           <th>Manufacturer</th>
           <th>Batch</th>
           <th>Purchased</th>
@@ -85,6 +86,8 @@ $(document).ready(function() {
 	var tdIngSup = $('#tdIngSup').DataTable( {
 	columnDefs: [
 		{ className: 'text-center', targets: '_all' },
+		{ orderable: false, targets: [10] },
+
 	],
 	dom: 'lfrtip',
 	processing: true,
@@ -99,7 +102,8 @@ $(document).ready(function() {
 			  { data : 'supplierName', title: 'Name', render: sName },
 			  { data : 'supplierLink', title: 'eShop', render: sLink},
 			  { data : 'price', title: 'Price(<?=$settings['currency']?>)', render: sPrice},
-			  { data : 'size', title: 'Size(<?=$mUnit?>)', render: sSize},
+			  { data : 'size', title: 'Size', render: sSize},
+			  { data : 'mUnit', title: 'Measurement Unit', render: mUnit},
 			  { data : 'manufacturer', title: 'Manufacturer', render: sManufacturer},
 			  { data : 'batch', title: 'Batch', render: sBatch},
 			  { data : 'purchased', title: 'Purchased', render: sPurchased},
@@ -129,18 +133,25 @@ $(document).ready(function() {
 			supplier_batch: $("#supplier_batch").val(),
 			purchased: $("#purchased").val(),
 			stock: $("#stock").val(),
+			mUnit: $("#mUnit").val(),
 
 			ingID: '<?=$ingID;?>'
 			},
-		dataType: 'html',
+		dataType: 'json',
 		success: function (data) {
-			$('#supplier_inf').html(data);
-			$("#supplier_batch").val('');
-			$("#supplier_link").val('');
-			$("#supplier_size").val('');
-			$("#supplier_price").val('');
-			$("#supplier_manufacturer").val('');
-			reload_sup_data();
+			if(data.success){
+				var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+				$("#supplier_batch").val('');
+				$("#supplier_link").val('');
+				$("#supplier_size").val('');
+				$("#supplier_price").val('');
+				$("#supplier_manufacturer").val('');
+				$("#mUnit").val('');
+				reload_sup_data();
+			}else{
+				var msg ='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+			}
+			$('#supplier_inf').html(msg);
 		}
 	  });
 	});
@@ -149,34 +160,39 @@ $(document).ready(function() {
 });//END DOC
  Object.getPrototypeOf($('#purchased')).size = function() { return this.length; }; // Workaround for https://github.com/Eonasdan/bootstrap-datetimepicker/issues/1714
 function sName(data, type, row){
-	return '<a href="#" class="ingSupplierID pv_point_gen" data-name="ingSupplierID" data-type="select" data-pk="'+row.id+'">'+row.supplierName+'</a>';    
+	return '<i class="ingSupplierID pv_point_gen" data-name="ingSupplierID" data-type="select" data-pk="'+row.id+'">'+row.supplierName+'</i>';    
 }
+
 function sLink(data, type, row){
-	return '<a href="#" class="supplierLink pv_point_gen" data-name="supplierLink" data-type="textarea" data-pk="'+row.id+'">'+row.supplierLink+'</a>';    
+	return '<i class="supplierLink pv_point_gen" data-name="supplierLink" data-type="textarea" data-pk="'+row.id+'">'+row.supplierLink+'</i>';    
 }
 
 function sPrice(data, type, row){
-	return '<a href="#" id="'+row.ingSupplierID+'" class="price pv_point_gen" data-name="price" data-type="text" data-pk="'+row.id+'">'+row.price+'</a>';    
+	return '<i id="'+row.ingSupplierID+'" class="price pv_point_gen" data-name="price" data-type="text" data-pk="'+row.id+'">'+row.price+'</i>';    
 }
 
 function sSize(data, type, row){
-	return '<a href="#" class="size pv_point_gen" data-name="size" data-type="text" data-pk="'+row.id+'">'+row.size+'</a>';    
+	return '<i class="size pv_point_gen" data-name="size" data-type="text" data-pk="'+row.id+'">'+row.size+'</i>';    
+}
+
+function mUnit(data, type, row){
+	return '<i class="mUnit pv_point_gen" data-name="mUnit" data-type="select" data-pk="'+row.id+'">'+row.mUnit+'</i>';
 }
 
 function sManufacturer(data, type, row){
-	return '<a href="#" class="manufacturer pv_point_gen" data-name="manufacturer" data-type="text" data-pk="'+row.id+'">'+row.manufacturer+'</a>';    
+	return '<i class="manufacturer pv_point_gen" data-name="manufacturer" data-type="text" data-pk="'+row.id+'">'+row.manufacturer+'</i>';    
 }
 
 function sBatch(data, type, row){
-	return '<a href="#" class="batch pv_point_gen" data-name="batch" data-type="text" data-pk="'+row.id+'">'+row.batch+'</a>';    
+	return '<i class="batch pv_point_gen" data-name="batch" data-type="text" data-pk="'+row.id+'">'+row.batch+'</i>';    
 }
 
 function sPurchased(data, type, row){
-	return '<a href="#" class="purchased pv_point_gen" data-name="purchased" data-type="date" data-pk="'+row.id+'">'+row.purchased+'</a>';    
+	return '<i class="purchased pv_point_gen" data-name="purchased" data-type="date" data-pk="'+row.id+'">'+row.purchased+'</i>';    
 }
 
 function sStock(data, type, row){
-	return '<a href="#" class="stock pv_point_gen" data-name="stock" data-type="text" data-pk="'+row.id+'">'+row.stock+'</a>';    
+	return '<i class="stock pv_point_gen" data-name="stock" data-type="text" data-pk="'+row.id+'">'+row.stock+'</i>';    
 }
 
 function sUpdated(data, type, row){
@@ -185,18 +201,19 @@ function sUpdated(data, type, row){
 
 function sActions(data, type, row){
 	if(row.preferred == 1){
-		var pref = '<a href="#" class="fas fa-star"></a>&nbsp;';
+		var pref = '<i class="fas fa-star pv_point_gen pv_point_gen_color"></i>&nbsp;';
 	}else{
-		var pref = '<a href="#" id="prefSID" data-status="1" data-id="'+row.ingSupplierID+'" class="far fa-star" data-toggle="tooltip" data-placement="top" title="Set as preferred supplier."></a>&nbsp;';
+		var pref = '<i id="prefSID" data-status="1" data-id="'+row.ingSupplierID+'" class="far fa-star pv_point_gen" data-toggle="tooltip" data-placement="top" title="Set as preferred supplier."></i>&nbsp;';
 	}
-	return pref + '<a href="#" id="getPrice" data-name="'+row.supplierName+'" data-id="'+encodeURIComponent(row.ingSupplierID)+'" data-link="'+row.supplierLink+'" data-size="'+row.size+'" data-toggle="tooltip" data-placement="top" title="Get the latest price from the supplier." class="fas fa-sync"></a>&nbsp;<a href="'+row.supplierLink+'" target="_blank" class="fas fa-store" data-toggle="tooltip" data-placement="top" title="Open supplier\'s web page."></a>&nbsp;<a href="#" id="sDel" class="fas fa-trash" data-id="'+row.id+'" data-name="'+row.supplierName+'"></a>';    
+	return pref + '<i id="getPrice" data-name="'+row.supplierName+'" data-id="'+encodeURIComponent(row.ingSupplierID)+'" data-link="'+row.supplierLink+'" data-size="'+row.size+'" data-toggle="tooltip" data-placement="top" title="Get the latest price from the supplier." class="fas fa-sync pv_point_gen_color"></i>&nbsp;<a href="'+row.supplierLink+'" target="_blank" class="fas fa-store" data-toggle="tooltip" data-placement="top" title="Open supplier\'s web page."></a>&nbsp;<a href="#" id="sDel" class="fas fa-trash alert-danger" data-id="'+row.id+'" data-name="'+row.supplierName+'"></a>';    
 }
 
 $('#tdIngSup').editable({
 	pvnoresp: false,
 	highlight: false,
+	title: "Supplier's Name",
 	container: 'body',
-	selector: 'a.ingSupplierID',
+	selector: 'i.ingSupplierID',
 	type: 'POST',
 	emptytext: "",
 	emptyclass: "",
@@ -216,7 +233,7 @@ $('#tdIngSup').editable({
 
 $('#tdIngSup').editable({
 	  container: 'body',
-	  selector: 'a.supplierLink',
+	  selector: 'i.supplierLink',
 	  type: 'POST',
 	  url: "update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
 	  title: 'Store link',
@@ -224,7 +241,7 @@ $('#tdIngSup').editable({
   
 $('#tdIngSup').editable({
 	  container: 'body',
-	  selector: 'a.price',
+	  selector: 'i.price',
 	  type: 'POST',
 	  url: "update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
 	  title: 'Price',
@@ -232,7 +249,7 @@ $('#tdIngSup').editable({
 	
 $('#tdIngSup').editable({
   	container: 'body',
-  	selector: 'a.size',
+  	selector: 'i.size',
   	type: 'POST',
 	url: "update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
 	title: 'Size',
@@ -240,10 +257,31 @@ $('#tdIngSup').editable({
 			reload_sup_data();
 	}
 });
- 
+	
+$('#tdIngSup').editable({
+	pvnoresp: false,
+	highlight: false,
+	emptytext: "",
+	emptyclass: "",
+  	container: 'body',
+  	selector: 'i.mUnit',
+  	type: 'POST',
+	url: "update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
+	title: 'Measurement Unit',
+	source: [
+			 {value: 'ml', text: 'Milliliter'},
+			 {value: 'g', text: 'Grams'},
+			 {value: 'L', text: 'Liter'},
+			 {value: 'fl. oz.', text: 'Fluid ounce (fl. oz.)'}
+			 ],
+	success: function (data) {
+			reload_sup_data();
+	}
+});
+
 $('#tdIngSup').editable({
 	container: 'body',
-	selector: 'a.manufacturer',
+	selector: 'i.manufacturer',
 	type: 'POST',
 	url: "update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
 	title: 'Manufacturer',
@@ -254,7 +292,7 @@ $('#tdIngSup').editable({
 
 $('#tdIngSup').editable({
 	container: 'body',
-	selector: 'a.batch',
+	selector: 'i.batch',
 	type: 'POST',
 	url: "update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
 	title: 'Batch',
@@ -265,7 +303,7 @@ $('#tdIngSup').editable({
 
 $('#tdIngSup').editable({
 	container: 'body',
-	selector: 'a.purchased',
+	selector: 'i.purchased',
 	type: 'POST',
 	url: "update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
 	title: 'Purchase date',
@@ -277,7 +315,7 @@ $('#tdIngSup').editable({
   
 $('#tdIngSup').editable({
 	container: 'body',
-	selector: 'a.stock',
+	selector: 'i.stock',
 	type: 'POST',
 	url: "update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
 	title: 'In Stock',
@@ -434,7 +472,14 @@ function reload_sup_data() {
             In stock:
             <input name="stock" type="text" class="form-control" id="stock" value="0" />
             </p>
-            
+            Measurement Unit:
+            <select name="mUnit" id="mUnit" class="form-control">
+			  <option value="ml">Milliliter</option>
+			  <option value="g">Grams</option>
+			  <option value="L">Liter</option>
+			  <option value="fl. oz.">Fluid ounce (fl. oz.)</option>
+            </select>
+            </p>
             <div class="dropdown-divider"></div>
       </div>
       <div class="modal-footer">

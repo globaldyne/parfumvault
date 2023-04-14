@@ -618,13 +618,19 @@ if($_GET['action'] == 'printBoxLabel' && $_GET['name']){
 		$name = mysqli_real_escape_string($conn, $_GET['name']);
 		$q = mysqli_fetch_array(mysqli_query($conn, "SELECT product_name FROM formulasMetaData WHERE fid = '$name'"));
 		$qIng = mysqli_query($conn, "SELECT ingredient FROM formulas WHERE fid = '$name'");
-		
+
 		while($ing = mysqli_fetch_array($qIng)){
 			$chName = mysqli_fetch_array(mysqli_query($conn, "SELECT chemical_name,name FROM ingredients WHERE name = '".$ing['ingredient']."' AND allergen = '1'"));
+			
+			if($qCMP = mysqli_query($conn, "SELECT name FROM allergens WHERE ing = '".$ing['ingredient']."' AND toDeclare = '1'")){
+				while($cmp = mysqli_fetch_array($qCMP)){
+					$allergen[] = $cmp['name'];
+				}
+			}
 			$allergen[] = $chName['chemical_name']?:$chName['name'];
 		}
 		$allergen[] = 'Denatureted Ethyl Alcohol '.$_GET['carrier'].'% Vol, Fragrance, DPG, Distilled Water';
-
+		
 		if($_GET['batchID']){
 			$bNo = $_GET['batchID'];
 		}else{
@@ -640,6 +646,7 @@ if($_GET['action'] == 'printBoxLabel' && $_GET['name']){
 		$w = '720';
 		$h = '860';
 	}
+	
 	if($_GET['download'] == 'text'){
 		echo '<pre>';
 		echo 'INGREDIENTS'."\n\n";

@@ -61,8 +61,9 @@ if($_POST['formula']){
 	}else{
 		$batchID = 'N/A';
 	}
-}
+	
 ?>
+    
 <script>
 function printLabel() {
 	<?php if(empty($settings['label_printer_addr']) || empty($settings['label_printer_model'])){?>
@@ -115,6 +116,8 @@ $.ajax({
 	<?php } ?>
 };
 </script>
+<?php } ?>
+
 <div id="content-wrapper" class="d-flex flex-column">
 <?php require_once('pages/top.php'); ?>
         <div class="container-fluid">
@@ -145,7 +148,7 @@ $.ajax({
                       <th colspan="8">
                      <div class="text-right">
                       <div class="btn-group">
-                      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
+                      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> Actions</button>
                       <div class="dropdown-menu dropdown-menu-right">
                         <a class="dropdown-item" id="pdf" href="#">Export to PDF</a>
                         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#IFRA">IFRA Certificate</a>
@@ -235,7 +238,7 @@ $.ajax({
                       <td align="center" class="m-1 text-primary">Sub Total: </td>
                       <td align="center" class="m-1 text-primary"><?php echo number_format(array_sum($new_tot), $settings['qStep']); ?> <?=$settings['mUnit']?></td>
                       <td align="center" class="m-1 text-primary"><?php echo array_sum($conc_tot);?>%</td>
-                      <td colspan="2" align="center" class="m-1 text-primary"><?php echo utf8_encode($settings['currency']).number_format(array_sum($tot),2);?></td>
+                      <td colspan="2" align="center" class="m-1 text-primary"><?php echo utf8_encode($settings['currency']).number_format(array_sum($tot),$settings['qStep']);?></td>
                     </tr>
                     <tr>
                       <td></td>
@@ -244,7 +247,7 @@ $.ajax({
                       <td align="center" class="m-1 text-primary">Carrier/Solvent: </td>
                       <td align="center" class="m-1 text-primary"><?php echo $carrier; ?> <?=$settings['mUnit']?></td>
                       <td align="center" class="m-1 text-primary"><?php echo $carrier*100/$bottle;?>%</td>
-                      <td colspan="2" align="center" class="m-1 text-primary"><?php $carrier_sub_cost = $carrier_cost['price'] / $carrier_cost['size'] * $carrier; echo utf8_encode($settings['currency']).number_format($carrier_sub_cost, 2);?></td>
+                      <td colspan="2" align="center" class="m-1 text-primary"><?php $carrier_sub_cost = $carrier_cost['price'] / $carrier_cost['size'] * $carrier; echo utf8_encode($settings['currency']).number_format($carrier_sub_cost, $settings['qStep']);?></td>
                     </tr>
                     <tr>
                       <td></td>
@@ -280,7 +283,7 @@ $.ajax({
                       <td align="center" class="m-0 font-weight-bold text-primary">Total: </td>
                       <td width="15%" align="center" class="m-0 font-weight-bold text-primary"><?php echo number_format(array_sum($new_tot)+ $carrier, $settings['qStep']); ?> <?=$settings['mUnit']?></td>
                       <td width="15%" align="center" class="m-0 font-weight-bold text-primary"><?php echo $carrier*100/$bottle + array_sum($conc_tot); ?>%</td>
-                      <td colspan="2" align="center" class="m-0 font-weight-bold text-primary"><?php echo $settings['currency'].number_format(array_sum($tot)+$lid_cost['price']+$carrier_sub_cost+$bottle_cost['price'],2);?></td>
+                      <td colspan="2" align="center" class="m-0 font-weight-bold text-primary"><?php echo $settings['currency'].number_format(array_sum($tot)+$lid_cost['price']+$carrier_sub_cost+$bottle_cost['price'],$settings['qStep']);?></td>
                     </tr>
                   </tfoot>                                    
                 </table> 

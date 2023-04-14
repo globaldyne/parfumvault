@@ -2,8 +2,13 @@
 if (!defined('pvault_panel')){ die('Not Found');}
 $doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM documents WHERE ownerID = '".$_SESSION['userID']."' AND name = 'avatar' AND type = '3'"));
 
-?>
+$db_ver = trim(file_get_contents(__ROOT__.'/db/schema.ver'));
+if($pv_meta['schema_ver'] < $db_ver){
+	$show_db_upgrade = true;
+}
 
+?>
+<div id="chkUpdMsg"></div>
 <div id="content">
         <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
           <ul class="navbar-nav vault-top ml-auto">
@@ -105,13 +110,25 @@ $doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM docu
               </div>
             </li>
           </ul>
-<?php if($settings['chkVersion'] == '1'){ echo checkVer($ver); } ?>
-<div id="msg"><?php echo $db_up_msg;?></div>
+<div id="msg"></div>
 </nav>
 
 <script>
-<?php if($pv_online['enabled'] == '1'){?>
+$(document).ready(function() {
 
+$('#load-rel-notes').click(function() {
+	var relUrl = 'https://raw.githubusercontent.com/globaldyne/parfumvault/master/releasenotes.md';
+
+	$('#new-rel').load(relUrl);
+	console.log(relUrl);
+});
+
+<?php if($show_db_upgrade){?>
+	$('#dbUpgradeDialog').modal('show');
+	$('#dbUpOk').hide();
+<?php } ?>
+<?php if($pv_online['enabled'] == '1'){?>
+	
 chk_shared();
 var myVar = setInterval(chk_shared, 50000);
 function chk_shared() {
@@ -231,6 +248,8 @@ $('#list-shared-formulas').html('<div class="font-weight-bold">'+
 
 
 <?php } ?>
+
+});
 </script>
 <!-- calcTools Modal -->
 <div class="modal fade" id="calcTools" tabindex="-1" role="dialog" aria-labelledby="calcToolsLabel" aria-hidden="true">
@@ -246,3 +265,44 @@ $('#list-shared-formulas').html('<div class="font-weight-bold">'+
     </div>
 </div>
 <!-- /calcTools Modal -->
+
+<!-- DB UPGRADE MODAL -->
+<div class="modal fade" id="dbUpgradeDialog" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="dbUpgradeDialog" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Database Schema Upgrade</h5>
+      </div>
+      <div class="modal-body" id="dbUpdMsg">
+        <div class="alert alert-warning"><strong>Your database schema needs to be upgraded to version <?php echo $db_ver; ?>. Please backup your database first and then click the upgrade button.</strong>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <a href="/pages/operations.php?do=backupDB" role="button" class="btn btn-primary" id="dbBkBtn">Backup Database</a>
+        <a href="javascript:updateDB()" role="button" class="btn btn-warning" id="dbUpBtn">Upgrade Schema</a>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="dbUpOk">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /DB UPGRADE MODAL -->
+
+<!-- SYS UPGRADE MODAL -->
+<div class="modal fade" id="sysUpgradeDialog" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="sysUpgradeDialog" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">PVault core Upgrade</h5>
+      </div>
+      <div class="modal-body" id="sysUpdMsg">
+        <div class="alert alert-warning"><strong>Your PVault installation wiil be upgraded to its latest version.</strong></div>
+        <pre><div id="new-rel">Check the release notes <a href="#" id="load-rel-notes">here</a></div></pre>
+      </div>
+      <div class="modal-footer">
+        <a href="javascript:updateSYS()" role="button" class="btn btn-warning" id="sysUpBtn">Upgrade PVault</a>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="sysUpOk">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /SYS UPGRADE MODAL -->

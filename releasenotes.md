@@ -1,8 +1,5 @@
-Whats New:
+Whats New in v6.1:
 ----------------------
-- Better stock management when making a formula
-- Add schedule confirmation and explanation message
-- Add ingredient info in formula making screen
-- Add option to create a new formula category from the formulas list page
-- Add low stock in formula making screen
-- Add stock value in ingredient replacement suggestion
+- Stock management improvements
+- Improved database and system core upgrade process
+- Add allergen materials from compositions to IFRA certification and when printing a warning label

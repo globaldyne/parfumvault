@@ -1,7 +1,7 @@
 <?php
 define('__ROOT__', dirname(__FILE__)); 
 
-require(__ROOT__.'/inc/sec.php');
+require_once(__ROOT__.'/inc/sec.php');
 
 if(file_exists('./inc/config.php') == FALSE){
 	session_destroy();
@@ -12,12 +12,11 @@ require_once(__ROOT__.'/inc/product.php');
 require_once(__ROOT__.'/inc/opendb.php');
 
 require_once(__ROOT__.'/func/checkIng.php');
-require_once(__ROOT__.'/func/checkVer.php');
 require_once(__ROOT__.'/func/searchIFRA.php');
 require_once(__ROOT__.'/func/formatBytes.php');
 require_once(__ROOT__.'/func/countElement.php');
 
-require_once(__ROOT__.'/func/pvFileGet.php');
+//require_once(__ROOT__.'/func/pvFileGet.php');
 require_once(__ROOT__.'/func/countPending.php');
 require_once(__ROOT__.'/func/countCart.php');
 require_once(__ROOT__.'/func/pvOnline.php');
@@ -29,11 +28,6 @@ if($pv_meta['app_ver'] < trim(file_get_contents(__ROOT__.'/VERSION.md'))){
 	if(mysqli_query($conn, "UPDATE pv_meta SET app_ver = '$upVerLoc'")){
 		$show_release_notes = true;
 	}
-}
-
-$db_ver   = trim(file_get_contents(__ROOT__.'/db/schema.ver'));
-if($pv_meta['schema_ver'] < $db_ver){	
-	$db_up_msg = '<div class="alert alert-warning alert-dismissible"><strong>Your database schema needs to be updated ('.$db_ver.'). Please <a href="/pages/maintenance.php?do=backupDB">backup</a> your database first and then click <a href="javascript:updateDB()">here to update the db schema.</a></strong></div>';
 }
 
 ?>
@@ -99,26 +93,7 @@ $(document).ready(function() {
 	<?php } ?>
 });
 
-function updateDB() {
-	$('#msg').html('<div class="alert alert-info alert-dismissible"><img src="/img/loading.gif"/><strong> DB update in progress. Please wait, this may take a while...</strong></div>');
 
-	$.ajax({ 
-		url: '/pages/operations.php', 
-		type: 'GET',
-		data: {
-			do: "db_update"
-			},
-		dataType: 'json',
-		success: function (data) {
-		if(data.success) {
-			var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
-		} else {
-			var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
-		}
-		$('#msg').html(msg);
-		}
-  	});
-};
 	
 function list_formulas(){
 	$.ajax({ 
@@ -145,6 +120,77 @@ function list_ingredients(page,limit,filter){
 		});
 };
 
+function updateDB() {
+	$('#dbUpdMsg').html('<div class="alert alert-info"><img src="/img/loading.gif"/><strong> DB schema upgrade in progress. Please wait, this may take a while...</strong></div>');
+	$('#dbUpBtn').hide();
+	$('#dbBkBtn').hide();
+	$('#dbUpOk').hide();
+	$.ajax({ 
+		url: '/pages/operations.php', 
+		type: 'GET',
+		data: {
+			do: "db_update"
+			},
+		dataType: 'json',
+		success: function (data) {
+		if(data.success) {
+			var msg = '<div class="alert alert-success">' + data.success + '</div>';
+			$('#dbUpOk').show();
+		} else {
+			var msg = '<div class="alert alert-danger">' + data.error + '</div>';
+			$('#dbUpBtn').show();
+			$('#dbBkBtn').show();
+			$('#dbUpOk').hide();
+		}
+		$('#dbUpdMsg').html(msg);
+		}
+  	});
+};
+
+function updateSYS() {
+	$('#sysUpdMsg').html('<div class="alert alert-info"><img src="/img/loading.gif"/><strong> Core system upgrade in progress. Please wait, DO NOT close, refresh or navigate away from this page. The process may take a while...</strong></div>');
+	$('#sysUpBtn').hide();
+	$('#sysUpOk').hide();
+	$.ajax({ 
+		url: '/pages/UpgradeCore.php', 
+		type: 'GET',
+		dataType: 'json',
+		success: function (data) {
+		if(data.success) {
+			var msg = '<div class="alert alert-success">' + data.success + '</div>';
+		} else {
+			var msg = '<div class="alert alert-danger">' + data.error + '</div>';
+			$('#sysUpBtn').show();
+			$('#sysUpOk').hide();
+		}
+		$('#sysUpdMsg').html(msg);
+		}
+  	});
+};
+
+<?php if($settings['chkVersion'] == '1'){ ?>
+
+chkUpdate();
+function chkUpdate() {
+	$('#chkUpdMsg').html('<div class="alert alert-info"><img src="/img/loading.gif"/><strong>Checking for updates...</strong></div>');
+	$.ajax({ 
+		url: '/core/checkVer.php', 
+		type: 'GET',
+		data: {
+			app_ver: '<?=$ver?>',
+		},
+		dataType: 'json',
+		success: function (data) {
+		if(data.success) {
+			var msg = '<div class="alert alert-info">' + data.success + '</div>';
+		} else {
+			var msg = '<div class="alert alert-danger">' + data.error + '</div>';
+		}
+		$('#chkUpdMsg').html(msg);
+		}
+  	});
+};
+<?php } ?>
 
 </script>
 </head>
@@ -298,8 +344,6 @@ function list_ingredients(page,limit,filter){
 			require_once(__ROOT__.'/pages/sellFormula.php');
 		}elseif($_GET['do'] == 'customers'){
 			require_once(__ROOT__.'/pages/customers.php');
-		}elseif($_GET['do'] == 'UpgradeCore'){
-			require_once(__ROOT__.'/pages/UpgradeCore.php');
 		}elseif($_GET['do'] == 'compareFormulas'){
 			require_once(__ROOT__.'/pages/compareFormulas.php');
 			
@@ -308,7 +352,7 @@ function list_ingredients(page,limit,filter){
 		}
 	?>
 <?php require_once(__ROOT__.'/pages/footer.php'); ?>
-<?php //if(isset($show_release_notes)){ ?>
+
 <!--RELEASE NOTES-->
 <div class="modal fade" id="release_notes" tabindex="-1" role="dialog" aria-labelledby="release_notes" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
@@ -328,6 +372,6 @@ function list_ingredients(page,limit,filter){
     </div>
   </div>
 </div>
-<?php //} ?>
+
 </body>
 </html>
