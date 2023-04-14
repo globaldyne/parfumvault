@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 6.2
+
 ### Version 6.1
 - Stock management improvements
 - Improved database and system core upgrade process
