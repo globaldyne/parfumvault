@@ -13,11 +13,7 @@ $defCatClass = $settings['defCatClass'];
 ?>
 <table class="table table-striped table-bordered" style="width:100%">
     <tr class="noBorder noexport">
-    <th colspan="9">
-     <div class="col-sm-6 text-left">
-              
-     </div>
-     <div class="col-sm-6 text-right">
+     <div class="text-right">
       <div class="btn-group">
        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> Actions</button>
       <div class="dropdown-menu dropdown-menu-right">
@@ -32,7 +28,6 @@ $defCatClass = $settings['defCatClass'];
       </div>
      </div>                    
     </div>
-  </th>
 </tr>
 </table>
 
