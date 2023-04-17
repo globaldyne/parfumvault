@@ -53,7 +53,7 @@ if($_GET['do'] == 'backupDB'){
 	header( 'Content-Type: '.$mime );
 	header( 'Content-Disposition: attachment; filename="' .$file. '"' );
 	
-	$cmd = "mysqldump -u $dbuser --password=$dbpass $dbname | gzip --best";
+	$cmd = "mysqldump -u $dbuser --password=$dbpass -h $dbhost $dbname | gzip --best";
 	passthru($cmd);
 	
 	return;
