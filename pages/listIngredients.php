@@ -34,7 +34,7 @@ $defCatClass = $settings['defCatClass'];
 <div id="pv_search">
 	<div class="text-right">
         <div class="pv_input_grp">   
-          <input name="ing_search" type="text" class="form-control input-sm pv_input_sm" id="ing_search" value="<?=$_GET['search']?>" placeholder="Name, CAS, odor..">
+          <input name="ing_search" type="text" class="form-control input-sm pv_input_sm" id="ing_search" value="<?=$_GET['search']?>" placeholder="Ingredient name, CAS, odor..">
             <div class="input-group-btn">
                 <button class="btn btn-search btn-primary" id="pv_search_btn" data-provider="local">
                     <span class="fas fa-database"></span>

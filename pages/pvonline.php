@@ -225,7 +225,7 @@ if($_POST['action'] == 'upload' && $_POST['items'] == 'ingredients'){
 		$i++;
 	}
 	
-	//Upload all the allergens
+	//Upload all the compos
 	$algQ = mysqli_query($conn, "SELECT * FROM allergens");
 	$a = 0;
 	while($alg = mysqli_fetch_assoc($algQ)){

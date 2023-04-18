@@ -149,14 +149,11 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
 </div>  
 
 <!--PV ONLINE IMPORT-->
-<div class="modal fade" id="pv_online_import" tabindex="-1" role="dialog" aria-labelledby="pv_online_import" aria-hidden="true">
+<div class="modal fade" id="pv_online_import" tabindex="-1" role="dialog" aria-labelledby="pv_online_import" aria-hidden="true" data-backdrop="static">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Import ingredients from PV Online</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
       </div>
       <div class="modal-body">
        <div id="pvImportMsg"></div>
@@ -176,7 +173,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
 	  <?php require('privacy_note.php');?>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="importClose">Close</button>
         <input type="submit" name="button" class="btn btn-primary" id="btnImport" value="Import">
       </div>
     </div>
@@ -277,6 +274,7 @@ function adv_search() {
 
 $('#pv_online_import').on('click', '[id*=btnImport]', function () {
 	$('#btnImport').attr('disabled', true);
+	$('#importClose').attr('disabled', true);
 	$('#pvImportMsg').html('<div class="alert alert-info"><img src="/img/loading.gif"/> Please wait, this may take a while...</div>');
 	$.ajax({
 		url: '/pages/pvonline.php', 
@@ -301,7 +299,7 @@ $('#pv_online_import').on('click', '[id*=btnImport]', function () {
 				list_ingredients();
 			}
 			
-			
+			$('#importClose').attr('disabled', false);
 		  	$('#pvImportMsg').html(rmsg);
 		}
 	  });
