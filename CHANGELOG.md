@@ -5,6 +5,8 @@
 - Auto redirect back to the login page when session is expired
 - Make PV Online import dialog box persistent untile the import is complete
 - Set size for ingredients search box to auto to comply with screen size
+- Set tmp directory inside uploads path
+- Add a notification if unable to connect to PV Online
 
 ### Version 6.1
 - Stock management improvements

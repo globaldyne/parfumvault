@@ -764,7 +764,7 @@ table.fixedHeader-floating {
 
 .pv_input_sm {
 	height: 34px !important;
-	width: fit-content;
+	width: 250px;
 	display: inline;
 }
 

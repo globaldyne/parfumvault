@@ -166,7 +166,7 @@ $dbname = "'.$_POST['dbname'].'"; //MySQL DB name
 
 
 $uploads_path = "uploads/";
-$tmp_path = "tmp/";
+$tmp_path = $uploads_path."tmp/";
 $allowed_ext = "pdf, doc, docx, xls, csv, xlsx, png, jpg, jpeg, gif";
 $max_filesize = "4194304"; //in bytes
 ?>

@@ -216,6 +216,12 @@ if($_GET['action'] == 'restoreFormulas'){
 		mkdir(__ROOT__."/$tmp_path", 0777, true);
 	}
 	
+	if (!is_writable(__ROOT__."/$tmp_path")) {
+		$result['error'] = "Upload directory not writable. Make sure you have write permissions.";
+		echo json_encode($result);
+		return;
+	}
+	
 	$target_path = __ROOT__.'/'.$tmp_path.basename($_FILES['backupFile']['name']); 
 
 	if(move_uploaded_file($_FILES['backupFile']['tmp_name'], $target_path)) {
