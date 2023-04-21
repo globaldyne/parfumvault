@@ -162,7 +162,7 @@ if($_POST['email'] && $_POST['password']){
       <div class="modal-body">
 		
          After installing <strong><?=$product?></strong> for the first time, you asked to set a password. This password cannot be retrieved later on as its stored in the database in encrypted format.
-      	<?php if(file_exists('/config/.DOCKER') == TRUE){ ?>
+      	<?php if(file_exists('/config/.DOCKER') == TRUE || file_exists('/config/.CLOUD') == TRUE){ ?>
          To set a new password, you need to execute the command bellow: 
       <p></p>
       <pre>reset_pass.sh</pre>

@@ -180,8 +180,12 @@ $max_filesize = "4194304"; //in bytes
 	
 	if(file_exists('/config/.DOCKER') == TRUE){
 		$cfg = '/config/config.php';	
-		
 		symlink($cfg, __ROOT__.'/inc/config.php');
+		
+	}else if(file_exists('/config/.CLOUD') == TRUE){
+		$cfg = '/config/config.cloud.php';
+		symlink($cfg, __ROOT__.'/inc/config.php');
+		
 	}else{
 		$cfg = __ROOT__.'/inc/config.php';
 	}
