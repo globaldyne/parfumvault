@@ -7,6 +7,7 @@
 - Set size for ingredients search box to auto to comply with screen size
 - Set tmp directory inside uploads path
 - Add a notification if unable to connect to PV Online
+- Introducing formula tags, you can add multiple tags/labels per formula to match its description
 
 ### Version 6.1
 - Stock management improvements
