@@ -166,7 +166,7 @@ $dbname = "'.$_POST['dbname'].'"; //MySQL DB name
 
 
 $uploads_path = "uploads/";
-$tmp_path = "tmp/";
+$tmp_path = $uploads_path."tmp/";
 $allowed_ext = "pdf, doc, docx, xls, csv, xlsx, png, jpg, jpeg, gif";
 $max_filesize = "4194304"; //in bytes
 ?>
@@ -180,8 +180,12 @@ $max_filesize = "4194304"; //in bytes
 	
 	if(file_exists('/config/.DOCKER') == TRUE){
 		$cfg = '/config/config.php';	
-		
 		symlink($cfg, __ROOT__.'/inc/config.php');
+		
+	}else if(file_exists('/config/.CLOUD') == TRUE){
+		$cfg = '/config/config.cloud.php';
+		symlink($cfg, __ROOT__.'/inc/config.php');
+		
 	}else{
 		$cfg = __ROOT__.'/inc/config.php';
 	}

@@ -53,7 +53,7 @@ if($_GET['do'] == 'backupDB'){
 	header( 'Content-Type: '.$mime );
 	header( 'Content-Disposition: attachment; filename="' .$file. '"' );
 	
-	$cmd = "mysqldump -u $dbuser --password=$dbpass $dbname | gzip --best";
+	$cmd = "mysqldump -u $dbuser --password=$dbpass -h $dbhost $dbname | gzip --best";
 	passthru($cmd);
 	
 	return;
@@ -214,6 +214,12 @@ if($_GET['action'] == 'exportFormulas'){
 if($_GET['action'] == 'restoreFormulas'){
 	if (!file_exists(__ROOT__."/$tmp_path")) {
 		mkdir(__ROOT__."/$tmp_path", 0777, true);
+	}
+	
+	if (!is_writable(__ROOT__."/$tmp_path")) {
+		$result['error'] = "Upload directory not writable. Make sure you have write permissions.";
+		echo json_encode($result);
+		return;
 	}
 	
 	$target_path = __ROOT__.'/'.$tmp_path.basename($_FILES['backupFile']['name']); 

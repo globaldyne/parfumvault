@@ -1,4 +1,14 @@
 # CHANGELOG
+### Version 6.2
+- Fix a bug giving an javascript error when you creating a new empty formula
+- Fix a bug preventing DB backup when running in cloud or on prem
+- Auto redirect back to the login page when session is expired
+- Make PV Online import dialog box persistent untile the import is complete
+- Set size for ingredients search box to auto to comply with screen size
+- Set tmp directory inside uploads path
+- Add a notification if unable to connect to PV Online
+- Introducing formula tags, you can add multiple tags/labels per formula to match its description
+
 ### Version 6.1
 - Stock management improvements
 - Improved database and system core upgrade process

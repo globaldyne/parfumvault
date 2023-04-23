@@ -15,7 +15,7 @@ if($app_ver){
 	$gitHubRep = 'https://github.com/globaldyne/parfumvault/archive/refs/tags/v'.$data.'.zip';
 
 	if($app_ver < $data){
-		if(file_exists('/config/.DOCKER') == TRUE){
+		if(file_exists('/config/.DOCKER') == TRUE || file_exists('/config/.CLOUD') == TRUE){
 			$response["success"] = '<strong>New <a href="'.$gitHubRep.'" target="_blank">version ('.$data.')</a> is availale!</strong> Please refer <a href="'.$docUrl.'" target="_blank">here</a> for update instructions.';
 			echo json_encode($response);
 		}else{

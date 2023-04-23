@@ -13,11 +13,7 @@ $defCatClass = $settings['defCatClass'];
 ?>
 <table class="table table-striped table-bordered" style="width:100%">
     <tr class="noBorder noexport">
-    <th colspan="9">
-     <div class="col-sm-6 text-left">
-              
-     </div>
-     <div class="col-sm-6 text-right">
+     <div class="text-right">
       <div class="btn-group">
        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> Actions</button>
       <div class="dropdown-menu dropdown-menu-right">
@@ -32,14 +28,13 @@ $defCatClass = $settings['defCatClass'];
       </div>
      </div>                    
     </div>
-  </th>
 </tr>
 </table>
 
 <div id="pv_search">
 	<div class="text-right">
         <div class="pv_input_grp">   
-          <input name="ing_search" type="text" class="form-control input-sm pv_input_sm" id="ing_search" value="<?=$_GET['search']?>" placeholder="Name, CAS, odor..">
+          <input name="ing_search" type="text" class="form-control input-sm pv_input_sm" id="ing_search" value="<?=$_GET['search']?>" placeholder="Ingredient name, CAS, odor..">
             <div class="input-group-btn">
                 <button class="btn btn-search btn-primary" id="pv_search_btn" data-provider="local">
                     <span class="fas fa-database"></span>

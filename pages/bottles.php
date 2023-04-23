@@ -15,11 +15,9 @@ while ($suppliers = mysqli_fetch_array($sup)){
             <div class="card-body">
               <div class="table-responsive">
               <div id="innermsg"></div>
-               <table class="table table-striped table-bordered" style="width:100%">
+               <table class="table table-striped table-bordered">
                  <tr class="noBorder noexport">
-                  <th colspan="9">
-                    <div class="col-sm-6 text-left"></div>
-                     <div class="col-sm-6 text-right">
+                     <div class="text-right">
                       <div class="btn-group">
                           <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> Actions</button>
                           <div class="dropdown-menu dropdown-menu-right">
@@ -28,7 +26,6 @@ while ($suppliers = mysqli_fetch_array($sup)){
                           </div>
                         </div>        
                      </div>
-                  </th>
                  </tr>
                 </table>
                 <table class="table table-bordered" id="tdDataBottles" width="100%" cellspacing="0">
@@ -115,7 +112,7 @@ while ($suppliers = mysqli_fetch_array($sup)){
         <div class="dropdown-divider"></div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <input type="submit" name="button" class="btn btn-primary" id="bottle_add" value="Add">
       </div>
     </div>
