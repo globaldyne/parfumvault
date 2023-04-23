@@ -38,6 +38,16 @@ while($fTypes_res = mysqli_fetch_array($fTypes_q)){
     $fTypes[] = $fTypes_res;
 }
 
+// Generate array with tags data 
+$tagsData = array(); 
+$tagsQ = mysqli_query($conn,"SELECT tag_name FROM formulasTags WHERE formula_id = '$id'");
+while($qTags = mysqli_fetch_array($tagsQ)){
+	
+	$tags = $qTags['tag_name'];
+	array_push($tagsData, $tags); 
+}
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -63,6 +73,7 @@ while($fTypes_res = mysqli_fetch_array($fTypes_q)){
   <link href="/css/bootstrap-select.min.css" rel="stylesheet">
   <link href="/css/bootstrap-editable.css" rel="stylesheet">
   <link href="/css/vault.css" rel="stylesheet">
+  <link href="/css/bootstrap-tagsinput.css" rel="stylesheet" />
   <script src="/js/jquery/jquery.min.js"></script>
   <script src="/js/jquery-ui.js"></script>
       
@@ -72,12 +83,17 @@ while($fTypes_res = mysqli_fetch_array($fTypes_q)){
   <script src="/js/bootstrap.min.js"></script>
   <script src="/js/bootstrap-editable.js"></script>  
   <script src="/js/bootstrap-select.js"></script>
-
+  <script src="/js/bootstrap-tagsinput.js"></script>
 </head>
 
+<style type="text/css">
+.bootstrap-tagsinput .tag {
+  margin-right: 2px;
+  color: white !important;
+  background-color: #0d6efd;
+  padding: 0.2rem;
+}
 
-
-<style>
 .form-inline .form-control {
     display: inline-block;
     width: 500px;
@@ -125,6 +141,11 @@ while($fTypes_res = mysqli_fetch_array($fTypes_q)){
   <tr>
     <td>Profile:</td>
     <td><a href="#" id="profile" data-type="select" data-pk="<?php echo $info['id'];?>" data-title="Select profile"></a></td>
+  </tr>
+  <tr>
+  <tr>
+    <td>Tags:</td>
+    <td> <input type="text" class="form-control col-xs-3 control-label" id="tagsinput" data-role="tagsinput" /></td>
   </tr>
   <tr>
     <td>Purpose:</td>
@@ -180,9 +201,10 @@ while($fTypes_res = mysqli_fetch_array($fTypes_q)){
 
 <script type="text/javascript" language="javascript" >
 $(document).ready(function(){
+
 $('[rel=tip]').tooltip({placement: 'auto'});
 
- list_revisions();
+list_revisions();
 
 $('#formula_metadata').editable({
   container: 'body',
@@ -431,6 +453,54 @@ function list_revisions(){
 			}
 	});
 };
+
+
+
+$('#tagsinput').on('beforeItemAdd', function(event) {
+   var tag = event.item;   
+   $.ajax({ 
+		url: 'manageFormula.php', 
+		type: 'POST',
+		data: {
+			do: "tagadd",
+			fid: '<?=$info['id']?>',
+			tag: tag
+			},
+		dataType: 'json',
+		success: function (data) {
+		  	if(data.error){
+				$('#tagsinput').tagsinput('remove', tag, {preventPost: true});
+				$('#msg').html(data.error);
+			}
+		}
+	});
+});
+
+
+$('#tagsinput').val('<?=implode(",",$tagsData)?>');
+$('#tagsinput').tagsinput('refresh');
+
+
+$('#tagsinput').on('beforeItemRemove', function(event) {
+   var tag = event.item;   
+   $.ajax({ 
+		url: 'manageFormula.php', 
+		type: 'POST',
+		data: {
+			do: "tagremove",
+			fid: '<?=$info['id']?>',
+			tag: tag
+			},
+		dataType: 'json',
+		success: function (data) {
+		  	if(data.error){
+				$('#tagsinput').tagsinput('add', tag, {preventPost: true});
+				$('#msg').html(data.error);
+			}
+		}
+	});
+});
+
 </script>
 </body>
 </html>
