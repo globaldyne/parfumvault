@@ -8,6 +8,22 @@ require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/labelMap.php');
 require_once(__ROOT__.'/func/get_formula_notes.php');
 
+
+if($_POST['do'] == 'tagadd' && $_POST['fid'] && $_POST['tag']){
+	if(mysqli_num_rows(mysqli_query($conn,"SELECT id FROM formulasTags WHERE formula_id='".$_POST['fid']."' AND tag_name = '".$_POST['tag']."'"))){
+		//$response['error'] = 'Tag already exists';
+		//echo json_encode($response);
+		return;
+	}
+	mysqli_query($conn,"INSERT INTO formulasTags (formula_id,tag_name) VALUES('".$_POST['fid']."','".$_POST['tag']."')" );
+	return;
+}
+
+if($_POST['do'] == 'tagremove' && $_POST['fid'] && $_POST['tag']){
+	mysqli_query($conn,"DELETE FROM formulasTags WHERE formula_id='".$_POST['fid']."' AND tag_name = '".$_POST['tag']."'" );
+	return;
+}
+
 if($_POST['update_rating'] == '1' && $_POST['fid'] && is_numeric($_POST['score'])){
 	mysqli_query($conn,"UPDATE formulasMetaData SET rating = '".$_POST['score']."' WHERE id = '".$_POST['fid']."'");
 }

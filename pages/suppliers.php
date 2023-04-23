@@ -12,13 +12,12 @@ $q = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
             <div class="card-header py-3">
               <h2 class="m-0 font-weight-bold text-primary"><a href="?do=suppliers">Suppliers</a></h2>
             </div>
+             <div class="card-body">
+              <div class="table-responsive">
             <div id="errMsg"></div>
-            <table class="table table-striped table-bordered" style="width:100%">
+            <table class="table table-striped table-bordered">
                 <tr class="noBorder noexport">
-                <th colspan="9">
-                 <div class="col-sm-6 text-left">
-                 </div>
-                 <div class="col-sm-6 text-right">
+                 <div class="text-right">
                   <div class="btn-group">
                       <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> Actions</button>
                       <div class="dropdown-menu dropdown-menu-right">
@@ -27,8 +26,6 @@ $q = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
                       </div>
                     </div>        
                  </div>
-                
-              </th>
             </tr>
             </table>
             <div class="card-body">

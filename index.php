@@ -70,6 +70,15 @@ if($pv_meta['app_ver'] < trim(file_get_contents(__ROOT__.'/VERSION.md'))){
   <script src="/js/sb-admin-2.js"></script>
 
 <script type='text/javascript'>
+function session_checking() {
+    $.post("/core/ajax-session.php", function(data) {
+        if(data == "-1"){
+            //alert("Your session has been expired!");
+            location.reload();
+        }
+    });
+}
+var validateSession = setInterval(session_checking, 5000);
 
 $(document).ready(function() {
 	$('[rel=tip]').tooltip();

@@ -86,8 +86,15 @@ $auth = pvOnlineValAcc($pvOnlineAPI, $user['email'], $user['password'], $ver);
 		</div>
 	</div>
            
+<?php }else{ ?>
+	<div id="pv_account_error">
+    	<div class="alert alert-danger">
+    		<h4 class="alert-heading"><i class="fa fa-exclamation-circle mr2"></i>Connection error</h4>
+    		<p>Unable to connect to PV Online.</p>
+            <p>Please make sure your network isn't blocking PV Online and the service is available.</p>
+		</div>
+	</div>
 <?php } ?>
-
    <hr>
    <div class=" row">
       <?php require(__ROOT__.'/pages/privacy_note.php');?>       
