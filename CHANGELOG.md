@@ -2,6 +2,8 @@
 ### Version 6.3
 - Add phpMyAdmin for docker images
 - Add a message to notify user that SDS document generation its in preview state
+- Complete rewrite suppliers page
+- Add additional info fields for suppliers
 
 ### Version 6.2
 - Fix a bug giving an javascript error when you creating a new empty formula

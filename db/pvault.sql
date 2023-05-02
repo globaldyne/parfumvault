@@ -242,6 +242,12 @@ INSERT INTO `ingStrength` (`id`, `name`) VALUES
 CREATE TABLE `ingSuppliers` (
   `id` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
+  `address` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `po` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `country` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `telephone` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `url` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `email` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `platform` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `price_tag_start` text COLLATE utf8_general_ci DEFAULT NULL,
   `price_tag_end` text COLLATE utf8_general_ci DEFAULT NULL,
