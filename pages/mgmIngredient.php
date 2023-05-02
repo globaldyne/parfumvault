@@ -400,9 +400,12 @@ var myPCH = "<?=$settings['pubChem']?>";
 				</button>
 			</div>
 			<div class="modal-body">
-                <div id="warn"><div class="alert alert-info">A template is required in order to generate an SDS document.
+                <div id="warn">
+                <div class="alert alert-warning">Please note: This feature its under development and in preview state at the moment.</div>
+                	<div class="alert alert-info">A template is required in order to generate an SDS document.
                 To create a new template, go to <a href="/?do=settings" target="_blank">settings</a> and create a new one under HTML Templates.
-                For the available parameters please refer to the documentation <a href="https://www.jbparfum.com/knowledge-base/html-templates/" target="_blank">here</a>.</div></div>
+                For the available parameters please refer to the documentation <a href="https://www.jbparfum.com/knowledge-base/html-templates/" target="_blank">here</a>.</div>
+                </div>
 				<div id="sds_res"></div>
 				Select SDS template:
                 <select class="form-control" name="template" id="template">
@@ -414,7 +417,7 @@ var myPCH = "<?=$settings['pubChem']?>";
                 ?>
                 </select>         
 				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-secondary" id="dis-genSDS" data-dismiss="modal">Close</button>
 					<input type="submit" name="button" class="btn btn-primary" id="generateSDS" value="Generate">
 				</div>
 			</div>
