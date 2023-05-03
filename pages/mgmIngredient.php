@@ -134,7 +134,7 @@ var myPCH = "<?=$settings['pubChem']?>";
 				<?php } ?>
 				<tr>
 					<td>IUPAC:</td>
-					<td colspan="5"><input name="INCI" type="text" class="form-control" id="INCI" value="<?php echo $ing['INCI']; ?>" /></td>
+					<td colspan="5"><input name="INCI" type="text" class="form-control" id="INCI" value="<?php echo htmlspecialchars($ing['INCI']); ?>" /></td>
 				</tr>
 				<tr>
 					<td width="20%"><a href="#" rel="tipsy" title="If your material contains multiple CAS, then use Mixture or Blend instead.">CAS #:</a></td>
