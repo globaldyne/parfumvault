@@ -14,14 +14,17 @@ require_once(__ROOT__.'/libs/Html2Pdf.php');
 define('__PVLOGO__', __ROOT__.'/img/logo.png');
 define('__BRANDLOGO__', __ROOT__.'/'.$settings['brandLogo']);
 
-if ($_POST['action'] == 'generateSDS' && $_POST['kind'] == 'ingredient'){
+if ($_REQUEST['action'] == 'generateSDS' && $_REQUEST['kind'] == 'ingredient'){
 	
-	$ingName = mysqli_real_escape_string($conn, $_POST['name']);
-	$ingID = $_POST['id'];
-	$tmplID = $_POST['tmpl'];
+	$ingName = mysqli_real_escape_string($conn, $_REQUEST['name']);
+	$ingID = $_REQUEST['id'];
+	$tmplID = $_REQUEST['tmpl'];
+	$supplierID = $_REQUEST['ingSupplier'];
+	
 	
 	$tmpl = mysqli_fetch_array(mysqli_query($conn,"SELECT name,content FROM templates WHERE id = '$tmplID'"));
 	$ingData = mysqli_fetch_array(mysqli_query($conn,"SELECT cas,INCI,reach,einecs,chemical_name,formula,flash_point,appearance FROM ingredients WHERE id = '$ingID'"));
+	$supplier = mysqli_fetch_array(mysqli_query($conn,"SELECT name,address,po,country,telephone,url,email FROM ingSuppliers WHERE id = '$supplierID'"));
 
 	$search  = array(
 					 '%LOGO%',
@@ -39,6 +42,14 @@ if ($_POST['action'] == 'generateSDS' && $_POST['kind'] == 'ingredient'){
 					 '%FLASH_POINT%',
 					 '%APPEARANCE%',
 					 
+					 '%SUPPLIER_NAME%',
+					 '%SUPPLIER_ADDRESS%',
+					 '%SUPPLIER_PO%',
+					 '%SUPPLIER_COUNTRY%',
+					 '%SUPPLIER_PHONE%',					 
+					 '%SUPPLIER_URL%',
+					 '%SUPPLIER_EMAIL%',
+
 					 '%CURRENT_DATE%'
 					 );
 
@@ -57,6 +68,13 @@ if ($_POST['action'] == 'generateSDS' && $_POST['kind'] == 'ingredient'){
 					 $ingData['formula'],
 					 $ingData['flash_point'],
 					 $ingData['appearance'],
+					 $supplier['name'],
+					 $supplier['address'],
+					 $supplier['po'],
+					 $supplier['country'],
+					 $supplier['telephone'],
+					 $supplier['url'],
+					 $supplier['email'],
 
 					 date('d/M/Y')
 					 );
@@ -93,7 +111,7 @@ $content = mysqli_real_escape_string($conn,$pdf->Output("S"));
 mysqli_query($conn, "DELETE FROM documents WHERE ownerID = '$ingID' AND type = '0' AND notes = 'PV Generated'");
 
 if(mysqli_query($conn, "INSERT INTO documents(ownerID,type,name,docData,notes) values('$ingID','0','$ingName','$content','PV Generated')")){
-	$response["success"] = '<a href="/pages/viewDoc.php?id='.mysqli_insert_id($conn).'&type=internal" target="_blank">View file</a>';
+	$response["success"] = '<a href="/pages/viewDoc.php?id='.mysqli_insert_id($conn).'&type=internal" target="_blank">Download file</a>';
 }else{
 	$response["error"] = "Unable to generate PDF";
 }

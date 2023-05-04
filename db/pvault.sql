@@ -639,7 +639,7 @@ INSERT INTO `perfumeTypes` (`id`, `name`, `concentration`, `description`) VALUES
 CREATE TABLE `templates` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  `content` text NOT NULL,
+  `content` LONGTEXT NOT NULL,
   `created` datetime NOT NULL DEFAULT current_timestamp(),
   `updated` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `description` varchar(255) NOT NULL,

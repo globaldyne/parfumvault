@@ -395,9 +395,6 @@ var myPCH = "<?=$settings['pubChem']?>";
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title">Generate SDS for <?php echo $ing['name']; ?></h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
 			</div>
 			<div class="modal-body">
                 <div id="warn">
@@ -415,7 +412,17 @@ var myPCH = "<?=$settings['pubChem']?>";
                     echo '<option value="'.$q['id'].'">'.$q['name'].'</option>';
                 }
                 ?>
-                </select>         
+                </select>
+                
+               	Select Supplier:
+                <select class="form-control" name="ingSupplier" id="ingSupplier">
+                <?php
+                    $res = mysqli_query($conn, "SELECT id, name FROM ingSuppliers ORDER BY name ASC");
+                    while ($q = mysqli_fetch_array($res)){
+                    echo '<option value="'.$q['id'].'">'.$q['name'].'</option>';
+                }
+                ?>
+                </select>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" id="dis-genSDS" data-dismiss="modal">Close</button>
 					<input type="submit" name="button" class="btn btn-primary" id="generateSDS" value="Generate">
