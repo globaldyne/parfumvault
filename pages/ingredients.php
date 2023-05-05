@@ -252,7 +252,7 @@ function adv_search() {
     var synonym = $('#ing_synonym').val();
 
 	$.ajax({ 
-		url: 'pages/listIngredients.php',
+		url: '/pages/listIngredients.php',
 		type: 'GET',
 		data: {
 			"adv": 1,

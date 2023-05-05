@@ -44,15 +44,7 @@ if (!defined('pvault_panel')){ die('Not Found');}
                     </tr>
                   </thead>
                 </table>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
- 
-
-<script type="text/javascript" language="javascript" >
+            <script type="text/javascript" language="javascript" >
 $(document).ready(function() {
 	
 	$('[data-toggle="tooltip"]').tooltip();
@@ -403,7 +395,13 @@ function reload_data() {
 <div class="modal-dialog">
   <div class="modal-content">
     <div class="modal-header">
-      <h4 class="modal-title">Supplier Details</h4>
+        </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <h4 class="modal-title">Supplier Details</h4>
     </div>
     <div class="modal-body">
         <div id="editSup"></div>

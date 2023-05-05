@@ -153,6 +153,8 @@ $(document).ready(function() {
 		ingSearch.txt = $('#ing_search').val();
 		tdDataIng.search(ingSearch.txt).draw();
 	});
+	
+ 
 });
 					   
 function iName(data, type, row){
