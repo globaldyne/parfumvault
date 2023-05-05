@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 6.4
+- Fix supplier details edit modal
 
 ### Version 6.3
 - Add phpMyAdmin for docker images
