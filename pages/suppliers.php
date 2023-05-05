@@ -1,8 +1,6 @@
 <?php 
 if (!defined('pvault_panel')){ die('Not Found');}
 
-$q = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
-
 ?>
 <div id="content-wrapper" class="d-flex flex-column">
 <?php require_once(__ROOT__.'/pages/top.php'); ?>
@@ -14,14 +12,14 @@ $q = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
             </div>
              <div class="card-body">
               <div class="table-responsive">
-            <div id="errMsg"></div>
+            <div id="supmsg"></div>
             <table class="table table-striped table-bordered">
                 <tr class="noBorder noexport">
                  <div class="text-right">
                   <div class="btn-group">
                       <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> Actions</button>
                       <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addSupplier">Add new</a>
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-backdrop="static" data-target="#addSupplier">Add new</a>
                         <a class="dropdown-item" id="csv" href="#">Export to CSV</a>
                       </div>
                     </div>        
@@ -30,7 +28,7 @@ $q = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
             </table>
             <div class="card-body">
               <div class="table-responsive">
-                <table class="table table-bordered" id="tdData" width="100%" cellspacing="0">
+                <table class="table table-bordered" id="tdIngSupData" width="100%" cellspacing="0">
                   <thead>
                     <tr>
                       <th>Name</th>
@@ -45,102 +43,85 @@ $q = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
                       <th class="noexport">Actions</th>
                     </tr>
                   </thead>
-                  <tbody id="supplier_data">
-                    <?php while ($supplier = mysqli_fetch_array($q)) {?>
-                    <tr>
-                      <td data-name="name" class="name" data-type="text" align="center" data-pk="<?=$supplier['id']?>"><?=$supplier['name']?></td>
-                      <td data-name="platform" class="platform" data-type="select" align="center" data-pk="<?php echo $supplier['id']; ?>"><?=$supplier['platform']?></td>
-                      <td data-name="price_tag_start" class="price_tag_start" data-type="textarea" align="center" data-pk="<?=$supplier['id']?>"><?=$supplier['price_tag_start']?></td>
-                      <td data-name="price_tag_end" class="price_tag_end" data-type="textarea" align="center" data-pk="<?=$supplier['id']?>"><?=$supplier['price_tag_end']?></td>
-                      <td data-name="add_costs" class="add_costs" data-type="text" align="center" data-pk="<?=$supplier['id']?>"><?=$supplier['add_costs']?></td>
-                      <td data-name="price_per_size" class="price_per_size" data-type="select" align="center" data-pk="<?=$supplier['id']?>"><?php if($supplier['price_per_size'] == '0'){ echo 'Product'; }else{ echo 'Volume'; }?></td>
-                      <td data-name="min_ml" class="min_ml" data-type="text" align="center" data-pk="<?=$supplier['id']?>"><?=$supplier['min_ml']?></td>
-					  <td data-name="min_gr" class="min_gr" data-type="text" align="center" data-pk="<?=$supplier['id']?>"><?=$supplier['min_gr']?></td>
-					  <td data-name="notes" class="notes" data-type="text" align="center" data-pk="<?=$supplier['id']?>"><?=$supplier['notes']?></td>
-					  <td class="noexport" align="center"><a href="javascript:deleteSupplier('<?=$supplier['id']?>')" onclick="return confirm('Delete <?=$supplier['name']?>?')" class="fas fa-trash"></a></td>
-					  </tr>
-				  <?php } ?>
-                  </tbody>
                 </table>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
- 
-<!-- ADD NEW-->
-<div class="modal fade" id="addSupplier" tabindex="-1" role="dialog" aria-labelledby="addSupplier" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="addSupplier">Add supplier</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-      <div id="inf"></div>
-          <form action="javascript:addSupplier()" method="get" name="form1" target="_self" id="form1">
-            <p>Name:
-  <input class="form-control" name="name" type="text" id="name" />
-            </p>
-            Platform:
-            <p>
-              <select class="form-control" name="select" id="platform">
-                <option value="woocomerce">Woocomerce</option>
-                <option value="shopify">Shopify</option>
-                <option value="Other">Other/Custom</option>
-              </select>
-            </p>
-            <p>Price start tag:</p>
-            <p>
-              <input class="form-control" type="text" name="price_tag_start" id="price_tag_start" />
-            </p>
-            <p>Price end tag:</p>
-            <p>
-              <input class="form-control" type="text" name="price_tag_end" id="price_tag_end" />
-            </p>
-            <p>Additional costs:</p>
-            <p>
-              <input class="form-control" type="text" name="add_costs" id="add_costs" />
-            </p>
-            <p>Minimum ml quantity:</p>
-            <p>
-              <input class="form-control" type="text" name="min_ml" id="min_ml" />
-            </p>
-            <p>Minimum grams quantity:</p>
-            <p>
-              <input class="form-control" type="text" name="min_gr" id="min_gr" />
-            </p>
-            <p>Price to be calucalted per:</p>
-            <p>
-              <select class="form-control" name="select" id="price_per_size">
-                <option value="0">Product</option>
-                <option value="1">Volume</option>
-              </select>
-              </p>
-            <p>
-            Description: 
-            <input class="form-control" name="description" type="text" id="description" />            
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <input type="submit" name="button" class="btn btn-primary" id="button" value="Add">
-      </div>
-     </form>
-    </div>
-  </div>
-</div>
-</div>
-<script type="text/javascript" language="javascript" >
+            <script type="text/javascript" language="javascript" >
+$(document).ready(function() {
+	
+	$('[data-toggle="tooltip"]').tooltip();
+	var tdIngSupData = $('#tdIngSupData').DataTable( {
+		columnDefs: [
+			{ className: 'text-center', targets: '_all' },
+			{ orderable: false, targets: [2,3,9]}
+		],
+		dom: 'lfrtip',
+		processing: true,
+		language: {
+			loadingRecords: '&nbsp;',
+			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
+			emptyTable: 'No suppliers added yet.',
+			search: 'Search:'
+			},
+		ajax: {	url: '/core/list_suppliers_data.php' },
+		columns: [
+				  { data : 'name', title: 'Name', render: name },
+				  { data : 'platform', title: 'Platform', render: platform},
+				  { data : 'price_tag_start', title: 'Price start tag', render: price_tag_start},
+				  { data : 'price_tag_end', title: 'Price end tag', render: price_tag_end},
+				  { data : 'add_costs', title: 'Additional costs', render: add_costs},
+				  { data : 'price_per_size', title: 'Price per size', render: price_per_size},
+				  { data : 'min_ml', title: 'Min ml', render: min_ml},
+				  { data : 'min_gr', title: 'Min grams', render: min_gr},
+				  { data : 'description', title: 'Description', render: description},
+	
+				  { data : null, title: 'Actions', render: actions},		   
+				 ],
+		order: [[ 1, 'asc' ]],
+		lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
+		pageLength: 20,
+		displayLength: 20,
+		
+	});
 
-$('#supplier_data').editable({
+
+function name(data, type, row){
+	return '<i class="name pv_point_gen" data-name="name" data-type="text" data-pk="'+row.id+'">'+row.name+'</i>';    
+}
+
+function platform(data, type, row){
+	return '<i class="platform pv_point_gen" data-name="platform" data-type="select" data-pk="'+row.id+'">'+row.platform+'</i>';
+}
+
+function price_tag_start(data, type, row){
+	return '<i class="price_tag_start pv_point_gen" data-name="price_tag_start" data-type="textarea" data-pk="'+row.id+'">'+atob(row.price_tag_start)+'</i>';    
+}
+function price_tag_end(data, type, row){
+	return '<i class="price_tag_end pv_point_gen" data-name="price_tag_end" data-type="textarea" data-pk="'+row.id+'">'+atob(row.price_tag_end)+'</i>';    
+}
+function add_costs(data, type, row){
+	return '<i class="add_costs pv_point_gen" data-name="add_costs" data-type="text" data-pk="'+row.id+'">'+row.add_costs+'</i>';    
+}
+function price_per_size(data, type, row){
+	return '<i class="price_per_size pv_point_gen" data-name="price_per_size" data-type="select" data-pk="'+row.id+'">'+row.price_per_size+'</i>';    
+}
+function min_ml(data, type, row){
+	return '<i class="min_ml pv_point_gen" data-name="min_ml" data-type="text" data-pk="'+row.id+'">'+row.min_ml+'</i>';    
+}
+function min_gr(data, type, row){
+	return '<i class="min_gr pv_point_gen" data-name="min_gr" data-type="text" data-pk="'+row.id+'">'+row.min_gr+'</i>';
+}
+function description(data, type, row){
+	return '<i class="notes pv_point_gen" data-name="notes" data-type="textarea" data-pk="'+row.id+'">'+row.notes+'</i>';    
+}
+function actions(data, type, row){
+	return '<i class="pv_point_gen fas fa-edit mr2" rel="tip" title="Edit additional info" data-toggle="modal" id="edit_supplier" data-id="' + row.id + '" data-name="' + row.name + '" data-address="'+row.address+'" data-po="'+row.po+'" data-country="'+row.country+'" data-telephone="'+row.telephone+'" data-url="'+row.url+'" data-email="'+row.email+'"></i><i class="pv_point_gen fas fa-trash" style="color: #c9302c;" id="dDel" data-id="'+row.id+'" data-name="'+row.name+'"></a>';
+}
+
+$('#tdIngSupData').editable({
   container: 'body',
-  selector: 'td.name',
+  selector: 'i.name',
   url: "/pages/update_data.php?settings=sup",
   title: 'Supplier',
   type: "POST",
-  dataType: 'html',
   validate: function(value){
    if($.trim(value) == ''){
     return 'This field is required';
@@ -148,9 +129,9 @@ $('#supplier_data').editable({
   }
 });
 
-$('#supplier_data').editable({
+$('#tdIngSupData').editable({
 	container: 'body',
-	selector: 'td.platform',
+	selector: 'i.platform',
 	type: 'POST',
   	url: "/pages/update_data.php?settings=sup",
     source: [
@@ -160,9 +141,9 @@ $('#supplier_data').editable({
           ],
 });
 
-$('#supplier_data').editable({
+$('#tdIngSupData').editable({
 	container: 'body',
-	selector: 'td.price_per_size',
+	selector: 'i.price_per_size',
 	type: 'POST',
   	url: "/pages/update_data.php?settings=sup",
     source: [
@@ -171,121 +152,208 @@ $('#supplier_data').editable({
           ],
 });
 
-$('#supplier_data').editable({
+$('#tdIngSupData').editable({
   container: 'body',
-  selector: 'td.min_ml',
+  selector: 'i.min_ml',
   url: "/pages/update_data.php?settings=sup",
   title: 'Minimum ml',
   type: "POST",
-  dataType: 'html',
-    validate: function(value){
-   if($.trim(value) == ''){
-    return 'This field is required';
-   }
+  validate: function(value){
+	if($.trim(value) == ''){
+		return 'This field cannot be empty, set 0 for none';
+	}
+   	if($.isNumeric(value) == '' ){
+		return 'Numbers only!';
+	}
   }
 });
 
-$('#supplier_data').editable({
+$('#tdIngSupData').editable({
   container: 'body',
-  selector: 'td.min_gr',
+  selector: 'i.min_gr',
   url: "/pages/update_data.php?settings=sup",
   title: 'Minimum grams',
   type: "POST",
-  dataType: 'html',
-    validate: function(value){
-   if($.trim(value) == ''){
-    return 'This field is required';
-   }
+  validate: function(value){
+	if($.trim(value) == ''){
+		return 'This field cannot be empty, set 0 for none';
+	}
+	if($.isNumeric(value) == '' ){
+		return 'Numbers only!';
+	}
   }
 });
 
-$('#supplier_data').editable({
+$('#tdIngSupData').editable({
   container: 'body',
-  selector: 'td.price_tag_start',
+  selector: 'i.price_tag_start',
   url: "/pages/update_data.php?settings=sup",
   title: 'Price tag start',
-  type: "POST",
-  dataType: 'html'
+  type: "POST"
 });
 
-$('#supplier_data').editable({
+$('#tdIngSupData').editable({
   container: 'body',
-  selector: 'td.price_tag_end',
+  selector: 'i.price_tag_end',
   url: "/pages/update_data.php?settings=sup",
   title: 'Price tag end',
-  type: "POST",
-  dataType: 'html'
+  type: "POST"
 });
 
-$('#supplier_data').editable({
+$('#tdIngSupData').editable({
   container: 'body',
-  selector: 'td.add_costs',
+  selector: 'i.add_costs',
   url: "/pages/update_data.php?settings=sup",
   title: 'Additional Costs',
   type: "POST",
-  dataType: 'html'
-});
-
-$('#supplier_data').editable({
-  container: 'body',
-  selector: 'td.notes',
-  url: "/pages/update_data.php?settings=sup",
-  title: 'Description',
-  type: "POST",
-  dataType: 'html',
   validate: function(value){
+	  if($.trim(value) == ''){
+		return 'This field cannot be empty, set 0 for none';
+	  }
+	  if($.isNumeric(value) == '' ){
+		return 'Numbers only!';
+	  }
   }
 });
 
-function deleteSupplier(ID) {	  
-$.ajax({ 
-    url: '/pages/update_data.php', 
-	type: 'GET',
-    data: {
-		supp: 'delete',
-		ID: ID,
-		},
-	dataType: 'html',
-    success: function (data) {
-	  	$('#errMsg').html(data);
-		location.reload();
-    }
-  });
-};
+$('#tdIngSupData').editable({
+  container: 'body',
+  selector: 'i.notes',
+  url: "/pages/update_data.php?settings=sup",
+  title: 'Description',
+  type: "POST",
+});
 
-function addSupplier() {	  
-$.ajax({ 
-    url: '/pages/update_data.php', 
-	type: 'POST',
-    data: {
-		supp: 'add',
-		name: $("#name").val(),
-		platform: $("#platform").val(),
-		price_tag_start: $("#price_tag_start").val(),
-		price_tag_end: $("#price_tag_end").val(),
-		add_costs: $("#add_costs").val(),
-		description: $("#description").val(),
-		min_ml: $("#min_ml").val(),
-		min_gr: $("#min_gr").val()
-		},
-	dataType: 'html',
-    success: function (data) {
-	  	$('#inf').html(data);
-     	$("#name").val('');
-     	$("#description").val('');
-     	$("#platform").val('');
-     	$("#price_tag_start").val('');
-     	$("#price_tag_end").val('');
-     	$("#add_costs").val('');
-     	$("#min_ml").val('');
-     	$("#min_gr").val('');
+	
+$('#tdIngSupData').on('click', '[id*=dDel]', function () {
+	var d = {};
+	d.ID = $(this).attr('data-id');
+    d.Name = $(this).attr('data-name');
 
-    }
+	bootbox.dialog({
+       title: "Confirm deletion",
+       message : 'Delete supplier <strong>'+ d.Name +'</strong> ?',
+       buttons :{
+           main: {
+               label : "Delete",
+               className : "btn-danger",
+               callback: function (){
+	    			
+				$.ajax({ 
+					url: '/pages/update_data.php', 
+					type: 'GET',
+					data: {
+						supp: 'delete',
+						ID: d.ID,
+						},
+					dataType: 'json',
+					success: function (data) {
+						if(data.success){
+							msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+							reload_data();
+						}else if(data.error){
+							msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+						}
+						$('#supmsg').html(msg);
+					}
+				  });
+				
+                 return true;
+               }
+           },
+           cancel: {
+               label : "Cancel",
+               className : "btn-default",
+               callback : function() {
+                   return true;
+               }
+           }   
+       },onEscape: function () {return true;}
+   });
+});
+
+
+$('#btnAddSupplier').on('click', function () {
+	$.ajax({ 
+		url: '/pages/update_data.php', 
+		type: 'POST',
+		data: {
+			supp: 'add',
+			name: $("#name").val(),
+			address: $("#address").val(),
+			po: $("#po").val(),
+			country: $("#country").val(),
+			telephone: $("#telephone").val(),
+			url: $("#url").val(),
+			email: $("#email").val(),
+			platform: $("#platform").val(),
+			price_tag_start: $("#price_tag_start").val(),
+			price_tag_end: $("#price_tag_end").val(),
+			add_costs: $("#add_costs").val(),
+			description: $("#description").val(),
+			min_ml: $("#min_ml").val(),
+			min_gr: $("#min_gr").val()
+			},
+		dataType: 'json',
+		success: function (data) {
+			if(data.success){
+				$('#inf').html(data);
+				$("#name").val('');
+				$("#description").val('');
+				$("#platform").val('');
+				$("#price_tag_start").val('');
+				$("#price_tag_end").val('');
+				$("#add_costs").val('');
+				$("#min_ml").val('');
+				$("#min_gr").val('');
+				$("#address").val('');
+				$("#po").val('');
+				$("#country").val('');
+				$("#telephone").val('');
+				$("#url").val('');
+				$("#email").val('');
+				
+				msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+				reload_data();
+			}else if(data.error){
+				msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+			}
+				$('#inf').html(msg);
+			}
   });
-};
+});
+
+$('#btnEditSupplier').on('click', function () {
+	$.ajax({ 
+		url: '/pages/update_data.php', 
+		type: 'POST',
+		data: {
+			supp: 'edit',
+			id: $("#id").val(),
+			name: $("#name").val(),
+			address: $("#address").val(),
+			po: $("#po").val(),
+			country: $("#country").val(),
+			telephone: $("#telephone").val(),
+			url: $("#url").val(),
+			email: $("#email").val(),
+			},
+		dataType: 'json',
+		success: function (data) {
+			if(data.success){			
+				msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+				reload_data();
+			}else if(data.error){
+				msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+			}
+				$('#editSup').html(msg);
+			}
+  });
+});
+
 //Export
 $('#csv').on('click',function(){
-  $("#tdData").tableHTMLExport({
+  $("#tdIngSupData").tableHTMLExport({
 	type:'csv',
 	filename:'suppliers.csv',
 	separator: ',',
@@ -298,6 +366,138 @@ $('#csv').on('click',function(){
   	// debug
   	consoleLog: false   
 	});
-})
+});
 
+function reload_data() {
+    $('#tdIngSupData').DataTable().ajax.reload(null, true);
+};
+
+	$('#tdIngSupData').on('click', '[id*=edit_supplier]', function () {
+        
+        $(".modal-body div span").text("");
+        $(".modal-title").text($(this).data().name);
+        $("#address").val($(this).data().address);
+		$("#po").val($(this).data().po);
+		$("#country").val($(this).data().country);
+        $("#telephone").val($(this).data().telephone);
+        $("#url").val($(this).data().url);
+        $("#email").val($(this).data().email);
+        $("#id").val($(this).data().id);
+        $("#name").val($(this).data().name);
+
+        $("#details").modal("show");
+	});
+});
 </script>
+
+<!-- Edit additional info -->
+<div class="modal fade" id="details" role="dialog">
+<div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+        </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <h4 class="modal-title">Supplier Details</h4>
+    </div>
+    <div class="modal-body">
+        <div id="editSup"></div>
+        <div class="container-fluid">
+            <div class="row d-inline">
+               <input type="hidden" name="id" id="id" />
+               <input type="hidden" name="name" id="name" />
+                Address:
+                    <input class="form-control" name="address" type="text" id="address" />
+                Postal Code:
+                    <input class="form-control" name="po" type="text" id="po" />
+                Country:
+                    <input class="form-control" name="country" type="text" id="country" />
+                Telephone:
+                    <input class="form-control" name="telephone" type="text" id="telephone" />
+                Website:
+                    <input class="form-control" name="url" type="text" id="url" />
+                Email:
+                    <input class="form-control" name="email" type="text" id="email" />
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      <input type="submit" name="button" class="btn btn-primary" id="btnEditSupplier" value="Update">
+    </div>
+  </div>  
+</div>
+</div>
+
+
+<!-- ADD NEW-->
+<div class="modal fade" id="addSupplier" tabindex="-1" role="dialog" aria-labelledby="addSupplier" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addSupplier">Add supplier</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+          <div class="modal-body">
+          	<div id="inf"></div>
+            <div class="container-fluid">
+                <div class="col-md-6">
+                    <div class="row d-inline">
+                        Name:
+                            <input class="form-control" name="name" type="text" id="name" />
+                        Address:
+                            <input class="form-control" name="address" type="text" id="address" />
+                        Postal Code:
+                            <input class="form-control" name="po" type="text" id="po" />
+                        Country:
+                            <input class="form-control" name="country" type="text" id="country" />
+                        Telephone:
+                            <input class="form-control" name="telephone" type="text" id="telephone" />
+                        Website:
+                            <input class="form-control" name="website" type="text" id="website" />
+                        Email:
+                            <input class="form-control" name="email" type="text" id="email" />
+                        Platform:
+                          <select class="form-control" name="select" id="platform">
+                            <option value="woocomerce">Woocomerce</option>
+                            <option value="shopify">Shopify</option>
+                            <option value="Other">Other/Custom</option>
+                          </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="row d-inline">
+                        Price start tag:
+                          <input class="form-control" type="text" name="price_tag_start" id="price_tag_start" />
+                        Price end tag:
+                          <input class="form-control" type="text" name="price_tag_end" id="price_tag_end" />
+                        Additional costs:
+                          <input class="form-control" type="text" name="add_costs" id="add_costs" />
+                        Minimum ml quantity:
+                          <input class="form-control" type="text" name="min_ml" id="min_ml" />
+                        Minimum grams quantity:
+                          <input class="form-control" type="text" name="min_gr" id="min_gr" />
+                        Price to be calucalted per:
+                          <select class="form-control" name="select" id="price_per_size">
+                            <option value="0">Product</option>
+                            <option value="1">Volume</option>
+                          </select>
+                        Description: 
+                        <input class="form-control" name="description" type="text" id="description" />   
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <input type="submit" name="button" class="btn btn-primary" id="btnAddSupplier" value="Add">
+            </div>
+        
+    		</div>
+  		</div>
+	</div>
+</div>

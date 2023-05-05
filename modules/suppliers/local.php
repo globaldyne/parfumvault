@@ -77,7 +77,7 @@ foreach ($ingredients as $ingredient) {
 	
 	$r['id'] = (int)$ingredient['id'];
 	$r['name'] = (string)filter_var ( $ingredient['name'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-	$r['IUPAC'] = (string)$ingredient['INCI']?: 'N/A';
+	$r['IUPAC'] = (string)filter_var ($ingredient['INCI'], FILTER_SANITIZE_FULL_SPECIAL_CHARS)?: 'N/A';
 	$r['cas'] = (string)$ingredient['cas']?: 'N/A';
 	$r['einecs'] = (string)$ingredient['einecs']?: 'N/A';
 	$r['profile'] = (string)$ingredient['profile']?: null;
@@ -146,7 +146,7 @@ if(empty($r)){
 }
 
 header('Content-Type: application/json; charset=utf-8');
-echo json_encode($response);
+echo json_encode($response,JSON_UNESCAPED_UNICODE);
 return;
 
 ?>
