@@ -10,6 +10,7 @@
 - Ingredients CSV import/export extended to support allergen status and notes impact
 - Ingredients JSON import/export
 - Minor improvements in CSV import
+- Fix session checker error
 
 ### Version 6.2
 - Fix a bug giving an javascript error when you creating a new empty formula
