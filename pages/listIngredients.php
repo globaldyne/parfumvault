@@ -22,6 +22,8 @@ $defCatClass = $settings['defCatClass'];
         <a class="dropdown-item" id="csv_export" href="/pages/export.php?format=json&kind=ingredients">Export to JSON</a>
 
         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#csv_import">Import from CSV</a>
+        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#import_ingredients_json" data-backdrop="static">Import from JSON</a>
+
         <div class="dropdown-divider"></div>
         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#pv_online_import">Import from PV Online</a>
         <?php if($pv_online['email'] && $pv_online['password'] && $pv_online['enabled'] == '1'){?>
@@ -345,3 +347,4 @@ function extrasShow() {
 };
 
 </script>
+<script src="/js/import.ingredients.js"></script>

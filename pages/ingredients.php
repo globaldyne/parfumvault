@@ -2,6 +2,7 @@
 if (!defined('pvault_panel')){ die('Not Found');}
 				
 require_once(__ROOT__.'/func/profileImg.php');
+require_once(__ROOT__.'/func/php-settings.php');
 
 $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles ORDER BY name ASC");
 $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCategory ORDER BY name ASC");
@@ -112,6 +113,48 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
     </div>
   </div>
 </div>  
+
+
+
+<!--IMPORT JSON MODAL-->
+<div class="modal fade" id="import_ingredients_json" tabindex="-1" role="dialog" aria-labelledby="import_ingredients_json" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Import ingredients from a JSON file</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      	<div id="JSRestMsg"></div>
+      	<div class="progress">  
+       	  <div id="uploadProgressBar" class="progress-bar" role="progressbar" aria-valuemin="0"></div>
+      	</div>
+      	<div id="backupArea">
+          <div class="form-group">
+              <label class="col-md-3 control-label">JSON file:</label>
+              <div class="col-md-8">
+                 <input type="file" name="backupFile" id="backupFile" class="form-control" />
+              </div>
+          </div>
+          	<div class="col-md-12">
+            	 <hr />
+             	<p><strong>IMPORTANT:</strong></p>
+              	<ul>
+                	<li><div id="raw" data-size="<?=getMaximumFileUploadSizeRaw()?>">Maximum file size: <strong><?=getMaximumFileUploadSize()?></strong></div></li>
+                	<li>Any ingredient with the same id will be replaced. Please make sure you have taken a backup before imporing a JSON file.</li>
+              	</ul>
+            </div>
+          </div>
+      	</div>
+	  		<div class="modal-footer">
+        		<input type="button" class="btn btn-secondary" data-dismiss="modal" id="btnCloseBK" value="Cancel">
+        		<input type="submit" name="btnRestore" class="btn btn-primary" id="btnRestoreIngredients" value="Import">
+      		</div>
+  		</div>  
+	</div>
+</div>
 
 <!--CSV IMPORT-->
 <div class="modal fade" id="csv_import" tabindex="-1" role="dialog" aria-labelledby="csv_import" aria-hidden="true">

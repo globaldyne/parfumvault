@@ -269,4 +269,49 @@ if($_GET['action'] == 'restoreFormulas'){
 	return;
 
 }
+
+if($_GET['action'] == 'restoreIngredients'){
+	if (!file_exists(__ROOT__."/$tmp_path")) {
+		mkdir(__ROOT__."/$tmp_path", 0777, true);
+	}
+	
+	if (!is_writable(__ROOT__."/$tmp_path")) {
+		$result['error'] = "Upload directory not writable. Make sure you have write permissions.";
+		echo json_encode($result);
+		return;
+	}
+	
+	$target_path = __ROOT__.'/'.$tmp_path.basename($_FILES['backupFile']['name']); 
+
+	if(move_uploaded_file($_FILES['backupFile']['tmp_name'], $target_path)) {
+    	$data = json_decode(file_get_contents($target_path), true);
+		
+		foreach ($data['ingredients'] as $ingredient ){				
+			$name = mysqli_real_escape_string($conn, $ingredient['name']);
+			$INCI = mysqli_real_escape_string($conn, $ingredient['INCI']);
+			$notes = mysqli_real_escape_string($conn, $ingredient['notes']);
+
+			$sql = "INSERT IGNORE INTO ingredients(name,INCI,cas,FEMA,type,strength,category,purity,einecs,reach,tenacity,chemical_name,formula,flash_point,notes,flavor_use,soluble,logp,cat1,cat2,cat3,cat4,cat5A,cat5B,cat5C,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12,profile,physical_state,allergen,odor,impact_top,impact_heart,impact_base,created,usage_type,noUsageLimit,byPassIFRA,isPrivate,molecularWeight) VALUES('".$name."','".$INCI."','".$ingredient['cas']."','".$ingredient['FEMA']."','".$ingredient['type']."','".$ingredient['strength']."','".$ingredient['category']."','".$ingredient['purity']."','".$ingredient['einecs']."','".$ingredient['reach']."','".$ingredient['tenacity']."','".$ingredient['chemical_name']."','".$ingredient['formula']."','".$ingredient['flash_point']."','".$notes."','".$ingredient['flavor_use']."','".$ingredient['soluble']."','".$ingredient['logp']."','".$ingredient['cat1']."','".$ingredient['cat2']."','".$ingredient['cat3']."','".$ingredient['cat4']."','".$ingredient['cat5A']."','".$ingredient['cat5B']."','".$ingredient['cat5C']."','".$ingredient['cat6']."','".$ingredient['cat7A']."','".$ingredient['cat7B']."','".$ingredient['cat8']."','".$ingredient['cat9']."','".$ingredient['cat10A']."','".$ingredient['cat10B']."','".$ingredient['cat11A']."','".$ingredient['cat11B']."','".$ingredient['cat12']."','".$ingredient['profile']."','".$ingredient['physical_state']."','".$ingredient['allergen']."','".$ingredient['odor']."','".$ingredient['impact_top']."','".$ingredient['impact_heart']."','".$ingredient['impact_base']."','".$ingredient['created']."','".$ingredient['usage_type']."','".$ingredient['noUsageLimit']."','".$ingredient['byPassIFRA']."','".$ingredient['isPrivate']."','".$ingredient['molecularWeight']."')";
+			
+			if(mysqli_query($conn,$sql)){
+				$result['success'] = "Import complete";
+				unlink(__ROOT__.'/'.$target_path);
+			}else{
+				$result['error'] = "There was an error importing your JSON file ".mysqli_error($conn);
+				echo json_encode($result);
+				return;
+			}
+		}
+		
+		
+		
+	} else {
+		$result['error'] = "There was an error processing json file $target_path, please try again!";
+		echo json_encode($result);
+
+	}
+	echo json_encode($result);
+	return;
+
+}
 ?>

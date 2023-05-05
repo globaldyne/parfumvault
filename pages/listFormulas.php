@@ -46,7 +46,7 @@ while($fTypes_res = mysqli_fetch_array($fTypes_q)){
               <a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula_cat">Add formula category</a>
               <div class="dropdown-divider"></div>
         	  <a class="dropdown-item" href="#" data-toggle="modal" data-target="#export_formulas_json">Export Formulas as JSON</a>
-        	  <a class="dropdown-item" href="#" data-toggle="modal" data-target="#import_formulas_json">Import Formulas from JSON</a>
+        	  <a class="dropdown-item" href="#" data-toggle="modal" data-target="#import_formulas_json" data-backdrop="static">Import Formulas from JSON</a>
 
             </div>
         </div>
