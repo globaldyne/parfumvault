@@ -825,9 +825,38 @@ if($_GET['settings'] == 'sup'){
 	return;	
 }
 
+if($_POST['supp'] == 'edit'){
+	$id = $_POST['id'];
+
+	$name = mysqli_real_escape_string($conn, $_POST['name']);
+	$address = mysqli_real_escape_string($conn, $_POST['address']);
+	$po = mysqli_real_escape_string($conn, $_POST['po']);
+	$country = mysqli_real_escape_string($conn, $_POST['country']);
+	$telephone = mysqli_real_escape_string($conn, $_POST['telephone']);
+	$url = mysqli_real_escape_string($conn, $_POST['url']);
+	$email = mysqli_real_escape_string($conn, $_POST['email']);
+	
+	
+	if(mysqli_query($conn, "UPDATE ingSuppliers SET address = '$address', po='$po', country='$country', telephone='$telephone', url='$url', email='$email' WHERE id = '$id'")){
+		$response["success"] = 'Supplier '.$name.' updated!';
+		echo json_encode($response);
+	}else{
+		$response["error"] = 'Something went wrong: '.mysqli_error($conn);
+		echo json_encode($response);
+	}
+	return;
+}
+
+
 if($_POST['supp'] == 'add'){
 	$description = mysqli_real_escape_string($conn, $_POST['description']);
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
+	$address = mysqli_real_escape_string($conn, $_POST['address']);
+	$po = mysqli_real_escape_string($conn, $_POST['po']);
+	$country = mysqli_real_escape_string($conn, $_POST['country']);
+	$telephone = mysqli_real_escape_string($conn, $_POST['telephone']);
+	$url = mysqli_real_escape_string($conn, $_POST['url']);
+	$email = mysqli_real_escape_string($conn, $_POST['email']);
 	$platform = mysqli_real_escape_string($conn, $_POST['platform']);
 	$price_tag_start = htmlentities($_POST['price_tag_start']);
 	$price_tag_end = htmlentities($_POST['price_tag_end']);
@@ -843,18 +872,22 @@ if($_POST['supp'] == 'add'){
 	}		 
 	
 	if(empty($name)){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error: </strong> Supplier name required</div>';
+		$response["error"] = '<strong>Error: </strong> Supplier name required';
+		echo json_encode($response);
 		return;
 	}
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingSuppliers WHERE name = '$name'"))){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$name.'</strong> Supplier already exists!</div>';
+		$response["error"] = '<strong>'.$name.'</strong> Supplier already exists!';
+		echo json_encode($response);
 		return;
 	}
 
-	if(mysqli_query($conn, "INSERT INTO ingSuppliers (name,platform,price_tag_start,price_tag_end,add_costs,notes,min_ml,min_gr) VALUES ('$name','$platform','$price_tag_start','$price_tag_end','$add_costs','$description','$min_ml','$min_gr')")){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Supplier '.$name.' added!</div>';
+	if(mysqli_query($conn, "INSERT INTO ingSuppliers (name,address,po,country,telephone,url,email,platform,price_tag_start,price_tag_end,add_costs,notes,min_ml,min_gr) VALUES ('$name','address','po','country','telephone','url','email','$platform','$price_tag_start','$price_tag_end','$add_costs','$description','$min_ml','$min_gr')")){
+		$response["success"] = 'Supplier '.$name.' added!';
+		echo json_encode($response);
 	}else{
-		echo mysqli_error($conn);
+		$response["error"] = 'Something went wrong: '.mysqli_error($conn);
+		echo json_encode($response);
 	}
 	return;
 }
@@ -864,8 +897,11 @@ if($_GET['supp'] == 'delete' && $_GET['ID']){
 	$supplier = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingSuppliers WHERE id = '$ID'"));
 
 	if(mysqli_query($conn, "DELETE FROM ingSuppliers WHERE id = '$ID'")){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Supplier <strong>'.$supplier['name'].'</strong> removed!</div>';
+		$response["success"] = 'Supplier <strong>'.$supplier['name'].'</strong> deleted!';
+	}else{
+		$response["error"] = 'Something went wrong: '.mysqli_error($conn);
 	}
+	echo json_encode($response);
 	return;
 }
 

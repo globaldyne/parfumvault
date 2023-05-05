@@ -1,7 +1,7 @@
 <?php
 define('__ROOT__', dirname(dirname(__FILE__))); 
 
-require(__ROOT__.'/inc/sec.php');
+require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/func/validateInput.php');
@@ -255,17 +255,24 @@ if($_GET['type'] == 'ingCSVImport'){
 					 <option value="">Assign to</option>
 					 <option value="">None</option>
 					 <option value="ingredient_name">Name</option>
-					 <option value="cas">CAS</option>
 					 <option value="iupac">IUPAC</option>
+					 <option value="cas">CAS</option>
 					 <option value="fema">FEMA</option>
-					 <option value="type">Type</option>
-					 <option value="description">Description</option>
+					 <option value="type">Type (AC, EO)</option>
+					 <option value="strength">Strength (High, Medium, Low)</option>
+					 <option value="profile">Profile (Top, Heart, Base, Solvent)</option>
+					 <option value="physical_state">Physical state (Liquid = 1, Solid = 2)</option>
+					 <option value="allergen">Is allergen (Yes = 1, No = 0)</option>
+					 <option value="odor">Odor Description</option>
+					 <option value="impact_top">Impact top note (0 - 100)</option>
+					 <option value="impact_heart">Impact heart note (0 - 100)</option>
+					 <option value="impact_base">Impact base note (0 - 100)</option>
 					</select>
 			   </th>';
 		   } 
 		echo '</tr></thead><tbody>';
 		$i = 0;
-		while(($row = fgetcsv($csv_file_data, 10000, ",")) !== FALSE)  {
+		while(($row = fgetcsv($csv_file_data, 100000, ",")) !== FALSE)  {
 			echo '<tr id="'.$i.'">';
 			for($count = 0; $count < count($row); $count++) {
 				if($row[$count]){
@@ -289,13 +296,13 @@ if($_GET['type'] == 'ingCSVImport'){
 		$csv_file_data = $_SESSION['csv_file_data'];			
 		foreach($csv_file_data as $row) {
 			if(!mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '".trim(ucwords($row[$_POST["ingredient_name"]]))."'"))){
-				$data[] = '("'.$row[$_POST["ingredient_name"]].'","'.$row[$_POST["cas"]].'","'.$row[$_POST["fema"]].'","'.$row[$_POST["description"]].'", "'.$row[$_POST["iupac"]].'", "'.$row[$_POST["type"]].'" )';
+				$data[] = '("'.$row[$_POST["ingredient_name"]].'","'.$row[$_POST["iupac"]].'","'.$row[$_POST["cas"]].'","'.$row[$_POST["fema"]].'", "'.$row[$_POST["type"]].'", "'.$row[$_POST["strength"]].'", "'.$row[$_POST["profile"]].'", "'.$row[$_POST["physical_state"]].'", "'.$row[$_POST["allergen"]].'", "'.$row[$_POST["odor"]].'", "'.$row[$_POST["impact_top"]].'", "'.$row[$_POST["impact_heart"]].'", "'.$row[$_POST["impact_base"]].'" )';
 				$i++;
 			}
 
 		}
 		if($data){
-			$query = "INSERT INTO ingredients (name, cas, FEMA, odor, INCI, type) VALUES ".implode(",", $data)."";
+			$query = "INSERT INTO ingredients (name,INCI,cas,FEMA,type,strength, profile,physical_state,allergen,odor,impact_top,impact_heart,impact_base) VALUES ".implode(",", $data)."";
 			$res =  mysqli_query($conn,$query);
 			if($res){
 				echo '<div class="alert alert-success alert-dismissible">'.$i.' Ingredients imported</div>';;

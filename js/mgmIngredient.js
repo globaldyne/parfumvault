@@ -216,6 +216,11 @@ $('#cloneIng').on('click', '[id*=cloneME]', function () {
 	});
 });
 
+
+$('#genSDS').on('click', '[id*=dis-genSDS]', function () {
+	$("#sds_res").html('');
+});
+	
 //Generate ing sds
 $('#genSDS').on('click', '[id*=generateSDS]', function () {
 	$("#sds_res").html('<div class="alert alert-info"><img src="/img/loading.gif"/> Please wait, we generating your SDS</div>');
@@ -228,12 +233,13 @@ $('#genSDS').on('click', '[id*=generateSDS]', function () {
 			kind: 'ingredient',
 			name: myIngName,
 			id: myIngID,
-			tmpl: $("#template").val()
+			tmpl: $("#template").val(),
+			ingSupplier: $("#ingSupplier").val()
 		},
 		dataType: 'json',
 		success: function (data) {
 			if(data.success){
-				msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+				msg = '<div class="alert alert-success">' + data.success + '</div>';
 			}else if(data.error){
 				msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 			}

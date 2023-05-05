@@ -134,7 +134,7 @@ var myPCH = "<?=$settings['pubChem']?>";
 				<?php } ?>
 				<tr>
 					<td>IUPAC:</td>
-					<td colspan="5"><input name="INCI" type="text" class="form-control" id="INCI" value="<?php echo $ing['INCI']; ?>" /></td>
+					<td colspan="5"><input name="INCI" type="text" class="form-control" id="INCI" value="<?php echo htmlspecialchars($ing['INCI']); ?>" /></td>
 				</tr>
 				<tr>
 					<td width="20%"><a href="#" rel="tipsy" title="If your material contains multiple CAS, then use Mixture or Blend instead.">CAS #:</a></td>
@@ -395,14 +395,14 @@ var myPCH = "<?=$settings['pubChem']?>";
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title">Generate SDS for <?php echo $ing['name']; ?></h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
 			</div>
 			<div class="modal-body">
-                <div id="warn"><div class="alert alert-info">A template is required in order to generate an SDS document.
+                <div id="warn">
+                <div class="alert alert-warning">Please note: This feature its under development and in preview state at the moment.</div>
+                	<div class="alert alert-info">A template is required in order to generate an SDS document.
                 To create a new template, go to <a href="/?do=settings" target="_blank">settings</a> and create a new one under HTML Templates.
-                For the available parameters please refer to the documentation <a href="https://www.jbparfum.com/knowledge-base/html-templates/" target="_blank">here</a>.</div></div>
+                For the available parameters please refer to the documentation <a href="https://www.jbparfum.com/knowledge-base/html-templates/" target="_blank">here</a>.</div>
+                </div>
 				<div id="sds_res"></div>
 				Select SDS template:
                 <select class="form-control" name="template" id="template">
@@ -412,9 +412,19 @@ var myPCH = "<?=$settings['pubChem']?>";
                     echo '<option value="'.$q['id'].'">'.$q['name'].'</option>';
                 }
                 ?>
-                </select>         
+                </select>
+                
+               	Select Supplier:
+                <select class="form-control" name="ingSupplier" id="ingSupplier">
+                <?php
+                    $res = mysqli_query($conn, "SELECT id, name FROM ingSuppliers ORDER BY name ASC");
+                    while ($q = mysqli_fetch_array($res)){
+                    echo '<option value="'.$q['id'].'">'.$q['name'].'</option>';
+                }
+                ?>
+                </select>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-secondary" id="dis-genSDS" data-dismiss="modal">Close</button>
 					<input type="submit" name="button" class="btn btn-primary" id="generateSDS" value="Generate">
 				</div>
 			</div>

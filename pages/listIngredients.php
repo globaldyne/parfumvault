@@ -19,7 +19,11 @@ $defCatClass = $settings['defCatClass'];
       <div class="dropdown-menu dropdown-menu-right">
         <a class="dropdown-item popup-link" href="/pages/mgmIngredient.php">Add new ingredient</a>
         <a class="dropdown-item" id="csv_export" href="/pages/export.php?format=csv&kind=ingredients">Export to CSV</a>
+        <a class="dropdown-item" id="csv_export" href="/pages/export.php?format=json&kind=ingredients">Export to JSON</a>
+
         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#csv_import">Import from CSV</a>
+        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#import_ingredients_json" data-backdrop="static">Import from JSON</a>
+
         <div class="dropdown-divider"></div>
         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#pv_online_import">Import from PV Online</a>
         <?php if($pv_online['email'] && $pv_online['password'] && $pv_online['enabled'] == '1'){?>
@@ -153,6 +157,8 @@ $(document).ready(function() {
 		ingSearch.txt = $('#ing_search').val();
 		tdDataIng.search(ingSearch.txt).draw();
 	});
+	
+ 
 });
 					   
 function iName(data, type, row){
@@ -341,3 +347,4 @@ function extrasShow() {
 };
 
 </script>
+<script src="/js/import.ingredients.js"></script>

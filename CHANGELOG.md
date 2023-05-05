@@ -1,4 +1,17 @@
 # CHANGELOG
+### Version 6.3
+- Add phpMyAdmin for docker images
+- Add a message to notify user that SDS document generation its in preview state
+- Complete rewrite suppliers page
+- Add additional info fields for suppliers
+- Set database to connection to utf-8 by default
+- Filter IUPAC in ingredients for illegal chars
+- Improvements in SDS document generation
+- Ingredients CSV import/export extended to support allergen status and notes impact
+- Ingredients JSON import/export
+- Minor improvements in CSV import
+- Fix session checker error
+
 ### Version 6.2
 - Fix a bug giving an javascript error when you creating a new empty formula
 - Fix a bug preventing DB backup when running in cloud or on prem

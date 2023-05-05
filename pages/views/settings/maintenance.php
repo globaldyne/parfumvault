@@ -21,4 +21,12 @@
       </ul></td>
       <td>&nbsp;</td>
     </tr>
+    <?php if(file_exists('/config/.DOCKER') == TRUE){ ?>
+    <tr>
+      <td><ul>
+        <li><a href="/phpMyAdmin/" target="_blank">phpMyAdmin</a></li>
+      </ul></td>
+      <td>&nbsp;</td>
+  	</tr>
+  <?php } ?>
   </table>
