@@ -4,3 +4,4 @@ Whats New in v6.3
 - Complete rewrite suppliers page
 - Add additional info fields for suppliers
 - Improvements in SDS document generation - This feature its still in beta state
+- Ingredients CSV import/export extended to support allergen status and notes impact

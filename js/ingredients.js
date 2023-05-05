@@ -33,11 +33,21 @@ $("input[type=file]").on('change',function(){
 
 
 var total_selection = 0;
-var ingredient_name = 0;
-var cas = 0;
-var iupac = 0;
-var description = 0;
-var fema = 0;
+
+var ingredient_name = '';
+var iupac = '';
+var cas = '';
+var fema = '';
+var type = '';
+var strength = '';
+var profile = '';
+var physical_state = '';
+var allergen = 0;
+var odor = '';
+var impact_top = 0;
+var impact_heart = 0;
+var impact_base = 0;
+
 
 var column_data = [];
 
@@ -67,16 +77,23 @@ $(document).on('change', '.set_column_data', function(){
 
     total_selection = Object.keys(column_data).length;
 
-    if(total_selection == 6) {
+    if(total_selection == 13) {
 		$('#btnImportCSV').prop("disabled", false);
 		$('#btnImportCSV').show();
 
         ingredient_name = column_data.ingredient_name;
-		cas = column_data.cas;
 		iupac = column_data.iupac;
-		description = column_data.description;
+		cas = column_data.cas;
 		fema = column_data.fema;
 		type = column_data.type;
+		strength = column_data.strength;
+		profile = column_data.profile;
+		physical_state = column_data.physical_state;
+		allergen = column_data.allergen;
+		odor = column_data.odor;
+		impact_top = column_data.impact_top;
+		impact_heart = column_data.impact_heart;
+		impact_base = column_data.impact_base;
     } else {
 		$('#btnImportCSV').prop("disabled", true);
     }
@@ -91,12 +108,19 @@ $(document).on('click', '#btnImportCSV', function(event){
       url: "/pages/upload.php?type=ingCSVImport&step=import",
       method: "POST",
       data:{		  
-		  ingredient_name: ingredient_name, 
+		  ingredient_name: ingredient_name,
+		  iupac: iupac,  
 		  cas: cas, 
-		  iupac: iupac, 
-		  description: description,
 		  fema: fema,
-		  type: type
+		  type: type,
+		  strength: strength,  
+		  profile: profile,  
+		  physical_state: physical_state,
+		  allergen: allergen,
+		  odor: odor,  
+		  impact_top: impact_top, 
+		  impact_heart: impact_heart, 
+		  impact_base: impact_base
 		  },
       beforeSend:function(){
         $('#btnImportCSV').prop("disabled", true);
