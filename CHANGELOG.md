@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 6.4
+
 ### Version 6.3
 - Add phpMyAdmin for docker images
 - Add a message to notify user that SDS document generation its in preview state
