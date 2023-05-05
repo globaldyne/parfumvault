@@ -31,4 +31,20 @@ if($_GET['format'] == 'csv' && $_GET['kind'] == 'ingredients'){
 	return;	
 }
 
+if($_GET['format'] == 'json' && $_GET['kind'] == 'ingredients'){
+	$defCatClass = $settings['defCatClass'];
+	$r = mysqli_query($conn, "SELECT name,INCI,cas,FEMA,type,strength,profile,physical_state,allergen,odor,impact_top,impact_heart,impact_base FROM ingredients");
+	
+	$ing = array();
+	if (mysqli_num_rows($r) > 0) {
+		while ($row = mysqli_fetch_assoc($r)) {
+			$ing[] = $row;
+		}
+	}
+
+	header('Content-Type: text/json; charset=utf-8');
+	header('Content-Disposition: attachment; filename='.$_GET['kind'].'.json');
+	echo json_encode($ing, JSON_PRETTY_PRINT);
+	return;	
+}
 ?>

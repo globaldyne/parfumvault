@@ -8,6 +8,7 @@
 - Filter IUPAC in ingredients for illegal chars
 - Improvements in SDS document generation
 - Ingredients CSV import/export extended to support allergen status and notes impact
+- Ingredients JSON export
 - Minor improvements in CSV import
 
 ### Version 6.2
