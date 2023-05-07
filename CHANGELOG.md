@@ -1,6 +1,7 @@
 # CHANGELOG
 ### Version 6.4
 - Fix supplier details edit modal
+- Add available var list in SDS Html Editor
 
 ### Version 6.3
 - Add phpMyAdmin for docker images
