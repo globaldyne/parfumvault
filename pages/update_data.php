@@ -580,13 +580,16 @@ if($_POST['ingSupplier'] == 'getPrice'){
 	
 	if($newPrice = priceScrape($supplier_link,$size,$supp_data['price_tag_start'],$supp_data['price_tag_end'],$supp_data['add_costs'],$supp_data['price_per_size'])){
 		if(mysqli_query($conn, "UPDATE suppliers SET price = '$newPrice' WHERE ingSupplierID = '$ingSupplierID' AND ingID='$ingID'")){
-			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Price updated</strong></div>';
+			$response["success"] = '<strong>Price updated</strong>';
+			echo json_encode($response);
 		}
 	}else{
-	 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error getting the price from the supplier</strong></div>';
+	 	$response["error"] = '<strong>Error getting the price from the supplier. Previous value has been retained.</strong>';
+		echo json_encode($response);
 	}
 	return;
 }
+
 //ADD ING SUPPLIER
 if($_POST['ingSupplier'] == 'add'){
 	if(empty($_POST['supplier_id']) || empty($_POST['supplier_link']) || empty($_POST['supplier_size'])){

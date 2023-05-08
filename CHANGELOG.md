@@ -2,6 +2,7 @@
 ### Version 6.4
 - Fix supplier details edit modal
 - Add available var list in SDS Html Editor
+- Convert get supplier price function to return json instead of html
 
 ### Version 6.3
 - Add phpMyAdmin for docker images
