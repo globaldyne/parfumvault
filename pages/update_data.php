@@ -1201,10 +1201,11 @@ if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'privacy'){
 	
 	$query = "UPDATE ingredients SET isPrivate = '$isPrivate' WHERE id='$ingID'";
 	if(mysqli_query($conn, $query)){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Privacy has been updated!</div>';
+		$response["success"] = 'Privacy settings has been updated!';
 	}else{
-		echo '<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> '.mysqli_error($conn).'</div>';
+		$response["error"] = 'Something went wrong '.mysqli_error($conn);
 	}
+	echo json_encode($response);
 	return;
 }
 
