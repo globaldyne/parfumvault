@@ -250,13 +250,21 @@ function iDocs(data, type, row){
 }
 
 
-function actions(data, type, row){
-	data = '<div class="dropdown">' +
-        '<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
-            '<ul class="dropdown-menu dropdown-menu-right">';
-	data += '<li><a href="/pages/mgmIngredient.php?id='+btoa(row.name)+'" class="popup-link"><i class="fas fa-edit mr2"></i>Manage</a></li>'+
-	'<li><a rel="tip" title="Remove '+ row.name +'" class="pv_point_gen text-danger" id="rmIng" data-name="'+ row.name +'" data-id='+ row.id +'><i class="fas fa-trash mr2"></i>Delete</a></li>'; 
-	data += '</ul></div>';
+function actions(data, type, row, meta){
+	if(meta.settings.json.source == 'PVOnline'){
+		data = '<div class="dropdown">' +
+			'<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+				'<ul class="dropdown-menu dropdown-menu-right">' + 
+				'<li><a rel="tip" title="Import '+ row.name +'" class="pv_point_gen" id="impIng" data-name="'+ row.name +'" data-id='+ row.id +'><i class="fas fa-download mr2"></i>Import to local DB</a></li>'; 
+		data += '</ul></div>';		
+	}else{//Treat the rest as local
+		data = '<div class="dropdown">' +
+			'<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+				'<ul class="dropdown-menu dropdown-menu-right">';
+		data += '<li><a href="/pages/mgmIngredient.php?id='+btoa(row.name)+'" class="popup-link"><i class="fas fa-edit mr2"></i>Manage</a></li>'+
+		'<li><a rel="tip" title="Remove '+ row.name +'" class="pv_point_gen text-danger" id="rmIng" data-name="'+ row.name +'" data-id='+ row.id +'><i class="fas fa-trash mr2"></i>Delete</a></li>'; 
+		data += '</ul></div>';		
+	}
 	
 	return data;
 }
@@ -297,7 +305,7 @@ $('#tdDataIng').on('click', '[id*=rmIng]', function () {
 					dataType: 'json',
 					success: function (data) {
 						if(data.success) {
-							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+								var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 								reload_ingredients_data();
 							} else {
 								var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
@@ -331,6 +339,14 @@ $(".input-group-btn .dropdown-menu li a").click(function () {
 	  
 	$(this).parents(".input-group-btn").find(".btn-search").html(selText);
 	$(this).parents(".input-group-btn").find(".btn-search").attr('data-provider',provider);
+	
+	$('#pv_search_btn').click();
+	if($('#pv_search_btn').data().provider == 'local'){
+		$("#advanced_search").html('<span><hr /><a href="#" class="advanced_search_box" data-toggle="modal" data-target="#adv_search">Advanced Search</a></span>');
+	}else{
+		$("#advanced_search").html('');
+	}
+	
 });
 
 function extrasShow() {

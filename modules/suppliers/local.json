@@ -1,1 +1,8 @@
-{"id":"local","name":"Local DB","slug":"local","version":"1.0","fileName":"local","icon":"fas fa-database"}
+{
+	"id":"local",
+	"name":"Local DB",
+	"slug":"local",
+	"version":"1.0",
+	"fileName":"local",
+	"icon":"fas fa-database"
+}

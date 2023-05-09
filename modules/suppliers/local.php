@@ -135,6 +135,7 @@ $total = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM
 $filtered = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM ingredients ".$filter));
 
 $response = array(
+  "source" => 'local',
   "draw" => (int)$_POST['draw'],
   "recordsTotal" => (int)$total['entries'],
   "recordsFiltered" => (int)$filtered['entries'],
