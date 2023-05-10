@@ -7,22 +7,37 @@ require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/pvOnline.php');
 
+
+
+$row = $_POST['start']?:0;
+$limit = $_POST['length']?:10;
+$order_by  = $_POST['order_by']?:'name';
+$order  = $_POST['order_as']?:'ASC';
+
+
 $s = trim($_POST['search']['value']);
-$data = [ 'do' => 'ingredients', 's' => $s ];
+$data = [ 
+		 'do' => 'ingredients',
+		 'start' => $row,
+		 'length' => $limit,
+		 'order_by' => $order_by,
+		 'order_as' => $order,
+		 's' => $s 
+		 ];
 		
 $output = json_decode(pvPost($pvOnlineAPI, $data));
 
 $rx = array();
 foreach ($output->ingredients as $ingredient){
-  
- 	$r['name'] = (string)$ingredient->name;
+  	$r['id'] = (int)$ingredient->id;
+	$r['name'] = (string)filter_var ( $ingredient->name, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
    	$r['cas'] = (string)$ingredient->cas ?: 'N/A';
 	$r['odor'] = (string)$ingredient->odor ?: 'N/A';
  	$r['profile'] = (string)$ingredient->profile ?: 'N/A';
  	$r['physical_state'] = $ingredient->physical_state ?: 1;
  	$r['category'] = $ingredient->category ?: 0;
  	$r['type'] = (string)$ingredient->type ?: 'N/A';
- 	$r['IUPAC'] = (string)$ingredient->INCI ?: 'N/A' ;
+	$r['IUPAC'] = (string)filter_var ( $ingredient->INCI, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
  	$r['strength'] = (string)$ingredient->strength ?: 'N/A';
  	$r['purity'] = $ingredient->purity ?: 100;
  	$r['FEMA'] = (string)$ingredient->FEMA ?: 'N/A';
@@ -53,17 +68,18 @@ foreach ($output->ingredients as $ingredient){
 
   $rx[]=$r;
 }
+
 $response = array(
   "source" => 'PVOnline',
   "draw" => (int)$_POST['draw'],
   "recordsTotal" => (int)$output->ingredientsTotal,
-  "recordsFiltered" => (int)$output->ingredientsTotal,
+  "recordsFiltered" => (int)$output->ingredientsFiltered,
   "data" => $rx
 );
 
-//if(empty($r)){
-//	$response['data'] = [];
-//}
+if(empty($rx)){
+	$response['data'] = [];
+}
 
 header('Content-Type: application/json; charset=utf-8');
 echo json_encode($response,JSON_UNESCAPED_UNICODE);

@@ -10,6 +10,59 @@ require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/sanChar.php');
 require_once(__ROOT__.'/func/priceScrape.php');
 require_once(__ROOT__.'/func/create_thumb.php');
+require_once(__ROOT__.'/func/pvFileGet.php');
+
+//PVOnline Single Import						
+if($_POST['action'] == 'import' && $_POST['source'] == 'PVOnline' && $_POST['kind'] == 'ingredient' && $_POST['ing_id']){
+	$id = mysqli_real_escape_string($conn, $_POST['ing_id']);
+	
+	$jAPI = $pvOnlineAPI.'?do=ingredients&id='.$id;
+    $jsonData = json_decode(pv_file_get_contents($jAPI), true);
+
+    if($jsonData['error']){
+		$response['error'] = 'Error connecting or retrieving data from PV Online '.$jsonData['error'];
+		echo json_encode($response);
+        return;
+    }
+
+    $array_data = $jsonData['ingredients'];
+	
+    foreach ($array_data as $id=>$row) {
+      	$insertPairs = array();
+		
+         foreach ($row as $key=>$val){ 
+          	$insertPairs[addslashes($key)] = addslashes($val);
+         }
+		 unset($insertPairs['id']);
+		 unset($insertPairs['risk']);
+		 unset($insertPairs['supplier']);
+		 unset($insertPairs['supplier_link']);
+		 unset($insertPairs['price']);
+
+         $insertKeys = '`' . implode('`,`', array_keys($insertPairs)) . '`';
+         $insertVals = '"' . implode('","', array_values($insertPairs)) . '"';
+    
+       	 $query = "SELECT name FROM ingredients WHERE name = '".$insertPairs['name']."'";
+    
+         if(!mysqli_num_rows(mysqli_query($conn, $query))){
+           	$jsql = "INSERT INTO ingredients ({$insertKeys}) VALUES ({$insertVals});";
+            if( $qIns = mysqli_query($conn,$jsql)){
+				
+             	$response["success"] = 'Ingredient data imported';
+			}else{
+				$response["error"] = 'Error: '.mysqli_error($conn);
+			}
+		 }else{
+			 $response["error"] = 'Error: ingredient already exists';
+		 }
+	}
+	
+
+	
+	echo json_encode($response);
+	return;
+}
+
 
 
 //UPDATE HTML TEMPLATE

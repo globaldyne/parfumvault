@@ -5,6 +5,7 @@
 - Convert get supplier price function to return json instead of html
 - Improve privacy settings in ingredients - a message to let user know that if privacy is enabled, the ingredient data will not be available to other user in the local installation (This is a place holder for a future release)
 - Added PV Online in ingredient search provider
+- Added option to import single ingredient data from pvonline
 
 ### Version 6.3
 - Add phpMyAdmin for docker images
