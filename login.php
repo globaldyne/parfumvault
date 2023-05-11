@@ -163,11 +163,11 @@ if($_POST['email'] && $_POST['password']){
 		
          After installing <strong><?=$product?></strong> for the first time, you asked to set a password. This password cannot be retrieved later on as its stored in the database in encrypted format.
       	<?php if(file_exists('/config/.DOCKER') == TRUE || file_exists('/config/.CLOUD') == TRUE){ ?>
-         To set a new password, you need to execute the command bellow: 
+         To set a new password for a user, you need to execute the command bellow followed by the user's email you want its password reset: 
       <p></p>
-      <pre>reset_pass.sh</pre>
+      <pre>reset_pass.sh example@example.com</pre>
       <?php }else{ ?>
-      		To set a new password, you need manually access your database and set a new password there or remove the user. This will force the system to ask you to create a new user.
+      		To set a new password, you need manually to access your database and set a new password there for the user you want its password reset.
       <?php } ?>
       </div>
       <div class="modal-footer">

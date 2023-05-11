@@ -6,6 +6,7 @@
 - Improve privacy settings in ingredients - a message to let user know that if privacy is enabled, the ingredient data will not be available to other user in the local installation (This is a place holder for a future release)
 - Added PV Online in ingredient search provider
 - Added option to import single ingredient data from pvonline
+- Introducing tokens (pvToken) for users to login to pvOnline - This will be fully migrated in the upcoming releases
 
 ### Version 6.3
 - Add phpMyAdmin for docker images

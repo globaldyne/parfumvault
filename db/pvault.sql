@@ -324,8 +324,10 @@ CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `email` varchar(255) COLLATE utf8_general_ci NOT NULL,
   `password` varchar(255) COLLATE utf8_general_ci NOT NULL,
-  `fullName` varchar(255) COLLATE utf8_general_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci ROW_FORMAT=COMPACT;
+  `pvToken` VARCHAR(255) COLLATE utf8_general_ci NULL, 
+  `fullName` varchar(255) COLLATE utf8_general_ci NOT NULL,
+  `avatar` varchar(255) COLLATE utf8_general_ci NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE `pv_online` (
  `enabled` INT NOT NULL DEFAULT '0'
