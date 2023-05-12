@@ -1,4 +1,5 @@
 # CHANGELOG
+### Version 6.5
 ### Version 6.4
 - Fix supplier details edit modal
 - Add available var list in SDS Html Editor
