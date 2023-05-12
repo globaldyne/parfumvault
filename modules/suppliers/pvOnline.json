@@ -1,0 +1,8 @@
+{
+	"id":"pvOnline",
+	"name":"PV Online DB",
+	"slug":"pvOnline",
+	"version":"1.0",
+	"fileName":"pvOnline",
+	"icon":"fas fa-cloud"
+}

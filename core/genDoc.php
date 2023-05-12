@@ -28,6 +28,7 @@ if ($_REQUEST['action'] == 'generateSDS' && $_REQUEST['kind'] == 'ingredient'){
 
 	$search  = array(
 					 '%LOGO%',
+					 '%BRAND_LOGO%',
 					 '%BRAND_NAME%',
 					 '%BRAND_ADDRESS%',
 					 '%BRAND_EMAIL%',
@@ -55,6 +56,7 @@ if ($_REQUEST['action'] == 'generateSDS' && $_REQUEST['kind'] == 'ingredient'){
 
 	$replace = array(
 					 __PVLOGO__,
+					 __BRANDLOGO__,
 					 $settings['brandName'],
 					 $settings['brandAddress'], 
 					 $settings['brandEmail'], 

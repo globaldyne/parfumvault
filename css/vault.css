@@ -1083,4 +1083,6 @@ table#tdDataPending.dataTable thead:hover {
 
 .pv_point_gen_color {
 	color: #23527c;
+	cursor: pointer !important;
+	font-style: normal;
 }

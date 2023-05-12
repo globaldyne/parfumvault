@@ -45,6 +45,7 @@ if($ing['physical_state'] == 1){
 
 <h3>Suppliers</h3>
 <hr>
+<div id="supMsg"></div>
 <div class="card-body">
   <div class="text-right">
     <div class="btn-group">
@@ -354,7 +355,7 @@ $('#tdIngSup').on('click', '[id*=getPrice]', function () {
 	s.Link = $(this).attr('data-link');
    	s.Size = $(this).attr('data-size');
 
-	$('#ingMsg').html('<div class="alert alert-info alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Please wait...</strong></div>');
+	$('#supMsg').html('<div class="alert alert-info"><strong>Please wait, trying to fetch supplier data...</strong></div>');
 		$('#' + s.ID).html('<img src="/img/loading.gif"/>');
 		$.ajax({ 
 			url: 'update_data.php', 
@@ -366,9 +367,14 @@ $('#tdIngSup').on('click', '[id*=getPrice]', function () {
 				ingSupplierID: s.ID,
 				ingID: '<?=$ingID?>'
 				},
-			dataType: 'html',
+			dataType: 'json',
 			success: function (data) {
-				$('#ingMsg').html(data);
+				if (data.success) {
+		 	 		var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+				}else{
+					var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				}
+				$('#supMsg').html(msg);
 				reload_sup_data();
 			}
 		  });
