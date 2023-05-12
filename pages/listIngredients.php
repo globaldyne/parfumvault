@@ -161,13 +161,17 @@ $(document).ready(function() {
  
 });
 					   
-function iName(data, type, row){
+function iName(data, type, row, meta){
 	var alg = '';
 	if(row.allergen == 1){
 		var alg = '<span class="ing_alg"> <i rel="tip" title="Allergen" class="fas fa-exclamation-triangle"></i></span>';
 	}
-	return '<a class="popup-link listIngName listIngName-with-separator" href="/pages/mgmIngredient.php?id=' + btoa(row.name) + '">' + data + '</a>'+alg+'<span class="listIngHeaderSub">CAS: <i class="pv_point_gen subHeaderCAS" rel="tip" title="Click to copy cas" id="cCAS" data-name="'+row.cas+'">'+row.cas+'</i> | EINECS: <i class="pv_point_gen subHeaderCAS">'+row.einecs+'</i></span>';
-
+	if(meta.settings.json.source == 'local'){
+		
+		return '<a class="popup-link listIngName listIngName-with-separator" href="/pages/mgmIngredient.php?id=' + btoa(row.name) + '">' + data + '</a>'+alg+'<span class="listIngHeaderSub">CAS: <i class="pv_point_gen subHeaderCAS" rel="tip" title="Click to copy cas" id="cCAS" data-name="'+row.cas+'">'+row.cas+'</i> | EINECS: <i class="pv_point_gen subHeaderCAS">'+row.einecs+'</i></span>';
+	}else{
+		return '<a class="listIngName listIngName-with-separator" href="#">' + data + '</a>'+alg+'<span class="listIngHeaderSub">CAS: <i class="pv_point_gen subHeaderCAS" rel="tip" title="Click to copy cas" id="cCAS" data-name="'+row.cas+'">'+row.cas+'</i> | EINECS: <i class="pv_point_gen subHeaderCAS">'+row.einecs+'</i></span>';
+	}
 }
 
 
@@ -250,13 +254,21 @@ function iDocs(data, type, row){
 }
 
 
-function actions(data, type, row){
-	data = '<div class="dropdown">' +
-        '<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
-            '<ul class="dropdown-menu dropdown-menu-right">';
-	data += '<li><a href="/pages/mgmIngredient.php?id='+btoa(row.name)+'" class="popup-link"><i class="fas fa-edit mr2"></i>Manage</a></li>'+
-	'<li><a rel="tip" title="Remove '+ row.name +'" class="pv_point_gen text-danger" id="rmIng" data-name="'+ row.name +'" data-id='+ row.id +'><i class="fas fa-trash mr2"></i>Delete</a></li>'; 
-	data += '</ul></div>';
+function actions(data, type, row, meta){
+	if(meta.settings.json.source == 'PVOnline'){
+		data = '<div class="dropdown">' +
+			'<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+				'<ul class="dropdown-menu dropdown-menu-right">' + 
+				'<li><a rel="tip" title="Import '+ row.name +'" class="pv_point_gen" id="impIng" data-name="'+ row.name +'" data-id='+ row.id +'><i class="fas fa-download mr2"></i>Import to local DB</a></li>'; 
+		data += '</ul></div>';		
+	}else{//Treat the rest as local
+		data = '<div class="dropdown">' +
+			'<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+				'<ul class="dropdown-menu dropdown-menu-right">';
+		data += '<li><a href="/pages/mgmIngredient.php?id='+btoa(row.name)+'" class="popup-link"><i class="fas fa-edit mr2"></i>Manage</a></li>'+
+		'<li><a rel="tip" title="Remove '+ row.name +'" class="pv_point_gen text-danger" id="rmIng" data-name="'+ row.name +'" data-id='+ row.id +'><i class="fas fa-trash mr2"></i>Delete</a></li>'; 
+		data += '</ul></div>';		
+	}
 	
 	return data;
 }
@@ -272,6 +284,58 @@ $('#tdDataIng').on('click', '[id*=cCAS]', function () {
     document.execCommand('copy');
     document.body.removeChild(el);
 });
+
+
+
+$('#tdDataIng').on('click', '[id*=impIng]', function () {
+	var ing = {};
+	ing.ID = $(this).attr('data-id');
+	ing.Name = $(this).attr('data-name');
+    
+	bootbox.dialog({
+       title: "Confirm ingredient import",
+       message : 'Import <strong>'+ ing.Name +'</strong>\'s data from PVOnline? <hr/><div class="alert alert-warning"><strong>Please note: data maybe incorrect and/or incomplete, you should validate them after import.</strong></div>',
+       buttons :{
+           main: {
+               label : "Import",
+               className : "btn-warning",
+               callback: function (){
+	    			
+				$.ajax({
+					url: '/pages/update_data.php', 
+					type: 'POST',
+					data: {
+						action: "import",
+						source: "PVOnline",
+						kind: "ingredient",
+						ing_id: ing.ID,
+						},
+					dataType: 'json',
+					success: function (data) {
+						if(data.success) {
+							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+						} else {
+							var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				
+						}
+						$('#innermsg').html(msg);
+					}
+				});
+				
+                 return true;
+               }
+           },
+           cancel: {
+               label : "Cancel",
+               className : "btn-default",
+               callback : function() {
+                   return true;
+               }
+           }   
+       },onEscape: function () {return true;}
+   });
+});
+
 
 $('#tdDataIng').on('click', '[id*=rmIng]', function () {
 	var ing = {};
@@ -297,7 +361,7 @@ $('#tdDataIng').on('click', '[id*=rmIng]', function () {
 					dataType: 'json',
 					success: function (data) {
 						if(data.success) {
-							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+								var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 								reload_ingredients_data();
 							} else {
 								var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
@@ -331,6 +395,14 @@ $(".input-group-btn .dropdown-menu li a").click(function () {
 	  
 	$(this).parents(".input-group-btn").find(".btn-search").html(selText);
 	$(this).parents(".input-group-btn").find(".btn-search").attr('data-provider',provider);
+	
+	$('#pv_search_btn').click();
+	if($('#pv_search_btn').data().provider == 'local'){
+		$("#advanced_search").html('<span><hr /><a href="#" class="advanced_search_box" data-toggle="modal" data-target="#adv_search">Advanced Search</a></span>');
+	}else{
+		$("#advanced_search").html('');
+	}
+	
 });
 
 function extrasShow() {

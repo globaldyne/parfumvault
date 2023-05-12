@@ -1,8 +1,6 @@
-Whats New in v6.3
+Whats New in v6.4
 ----------------------
-- Add phpMyAdmin by default for docker installations, link can be found under the maintanance tab in settings
-- Complete rewrite suppliers page
-- Add additional info fields for suppliers
-- Improvements in SDS document generation - This feature its still in beta state
-- Ingredients CSV import/export extended to support allergen status and notes impact
-- Ingredients JSON import/export
+- Fix supplier's details update modal box
+- Add available var list in SDS Html Editor
+- Added PV Online in ingredient search provider
+- Added option to import single ingredient data from pvonline

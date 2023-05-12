@@ -391,17 +391,11 @@ function reload_data() {
 </script>
 
 <!-- Edit additional info -->
-<div class="modal fade" id="details" role="dialog">
-<div class="modal-dialog">
+<div class="modal fade" id="details" tabindex="-1" role="dialog" aria-labelledby="details" aria-hidden="true">
+<div class="modal-dialog modal-lg" role="document">
   <div class="modal-content">
     <div class="modal-header">
-        </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <h4 class="modal-title">Supplier Details</h4>
+	    <h5 class="modal-title">Supplier Details</h5>
     </div>
     <div class="modal-body">
         <div id="editSup"></div>

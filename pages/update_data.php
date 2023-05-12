@@ -10,6 +10,59 @@ require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/sanChar.php');
 require_once(__ROOT__.'/func/priceScrape.php');
 require_once(__ROOT__.'/func/create_thumb.php');
+require_once(__ROOT__.'/func/pvFileGet.php');
+
+//PVOnline Single Import						
+if($_POST['action'] == 'import' && $_POST['source'] == 'PVOnline' && $_POST['kind'] == 'ingredient' && $_POST['ing_id']){
+	$id = mysqli_real_escape_string($conn, $_POST['ing_id']);
+	
+	$jAPI = $pvOnlineAPI.'?do=ingredients&id='.$id;
+    $jsonData = json_decode(pv_file_get_contents($jAPI), true);
+
+    if($jsonData['error']){
+		$response['error'] = 'Error connecting or retrieving data from PV Online '.$jsonData['error'];
+		echo json_encode($response);
+        return;
+    }
+
+    $array_data = $jsonData['ingredients'];
+	
+    foreach ($array_data as $id=>$row) {
+      	$insertPairs = array();
+		
+         foreach ($row as $key=>$val){ 
+          	$insertPairs[addslashes($key)] = addslashes($val);
+         }
+		 unset($insertPairs['id']);
+		 unset($insertPairs['risk']);
+		 unset($insertPairs['supplier']);
+		 unset($insertPairs['supplier_link']);
+		 unset($insertPairs['price']);
+
+         $insertKeys = '`' . implode('`,`', array_keys($insertPairs)) . '`';
+         $insertVals = '"' . implode('","', array_values($insertPairs)) . '"';
+    
+       	 $query = "SELECT name FROM ingredients WHERE name = '".$insertPairs['name']."'";
+    
+         if(!mysqli_num_rows(mysqli_query($conn, $query))){
+           	$jsql = "INSERT INTO ingredients ({$insertKeys}) VALUES ({$insertVals});";
+            if( $qIns = mysqli_query($conn,$jsql)){
+				
+             	$response["success"] = 'Ingredient data imported';
+			}else{
+				$response["error"] = 'Error: '.mysqli_error($conn);
+			}
+		 }else{
+			 $response["error"] = 'Error: ingredient already exists';
+		 }
+	}
+	
+
+	
+	echo json_encode($response);
+	return;
+}
+
 
 
 //UPDATE HTML TEMPLATE
@@ -580,13 +633,16 @@ if($_POST['ingSupplier'] == 'getPrice'){
 	
 	if($newPrice = priceScrape($supplier_link,$size,$supp_data['price_tag_start'],$supp_data['price_tag_end'],$supp_data['add_costs'],$supp_data['price_per_size'])){
 		if(mysqli_query($conn, "UPDATE suppliers SET price = '$newPrice' WHERE ingSupplierID = '$ingSupplierID' AND ingID='$ingID'")){
-			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Price updated</strong></div>';
+			$response["success"] = '<strong>Price updated</strong>';
+			echo json_encode($response);
 		}
 	}else{
-	 		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error getting the price from the supplier</strong></div>';
+	 	$response["error"] = '<strong>Error getting the price from the supplier. Previous value has been retained.</strong>';
+		echo json_encode($response);
 	}
 	return;
 }
+
 //ADD ING SUPPLIER
 if($_POST['ingSupplier'] == 'add'){
 	if(empty($_POST['supplier_id']) || empty($_POST['supplier_link']) || empty($_POST['supplier_size'])){
@@ -1198,10 +1254,11 @@ if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'privacy'){
 	
 	$query = "UPDATE ingredients SET isPrivate = '$isPrivate' WHERE id='$ingID'";
 	if(mysqli_query($conn, $query)){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Privacy has been updated!</div>';
+		$response["success"] = 'Privacy settings has been updated!';
 	}else{
-		echo '<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> '.mysqli_error($conn).'</div>';
+		$response["error"] = 'Something went wrong '.mysqli_error($conn);
 	}
+	echo json_encode($response);
 	return;
 }
 
