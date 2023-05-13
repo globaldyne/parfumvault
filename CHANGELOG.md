@@ -1,5 +1,7 @@
 # CHANGELOG
 ### Version 6.5
+- Remove screenshots directory
+
 ### Version 6.4
 - Fix supplier details edit modal
 - Add available var list in SDS Html Editor
