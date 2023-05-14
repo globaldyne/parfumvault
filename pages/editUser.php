@@ -1,7 +1,7 @@
 <?php
 define('__ROOT__', dirname(dirname(__FILE__))); 
 
-require(__ROOT__.'/inc/sec.php');
+require_once(__ROOT__.'/inc/sec.php');
 
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
@@ -15,6 +15,7 @@ $doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM docu
 
 <link href="/css/sb-admin-2.css" rel="stylesheet">
 <link href="/css/bootstrap.min.css" rel="stylesheet">
+<link href="/css/fontawesome-free/css/all.min.css" rel="stylesheet">
 <link href="/css/vault.css" rel="stylesheet">
 
 <style>
@@ -24,6 +25,7 @@ $doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM docu
   width: 100%;
 
 }
+
 </style>
 <div class="container">
     <h1 class="text-primary">Edit Profile</h1>
@@ -57,8 +59,9 @@ $doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM docu
           </div>
           <div class="form-group">
             <label class="col-md-3 control-label">Password:</label>
-            <div class="col-md-8">
-              <input name="password" type="password" id="password" class="form-control" value="">
+            <div class="col-md-8 password-input-container">
+              <input name="password" type="password" id="password" class="form-control password-input" value="">
+              <i class="toggle-password fa fa-eye"></i>
             </div>
           </div>
           <div class="row gutters">
@@ -74,6 +77,19 @@ $doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM docu
 </div>
 <hr>
 <script>
+$(document).ready(function () {
+    $(".toggle-password").click(function () {
+        var passwordInput = $($(this).siblings(".password-input"));
+        var icon = $(this);
+        if (passwordInput.attr("type") == "password") {
+            passwordInput.attr("type", "text");
+            icon.removeClass("fa-eye").addClass("fa-eye-slash");
+        } else {
+            passwordInput.attr("type", "password");
+            icon.removeClass("fa-eye-slash").addClass("fa-eye");
+        }
+    });
+
 $('#profile_pic').html('<img class="img-profile-avatar" src="<?=$doc['avatar']?: '/img/logo_def.png'; ?>">');
 
 $('#save-profile').click(function() {
@@ -124,5 +140,6 @@ $('#upload-avatar').click(function() {
 			$('#msgU').html(msg);
 		}
 	  });
+});
 });
 </script>

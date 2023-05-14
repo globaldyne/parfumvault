@@ -1086,3 +1086,19 @@ table#tdDataPending.dataTable thead:hover {
 	cursor: pointer !important;
 	font-style: normal;
 }
+
+.password-input-container {
+    position: relative;
+}
+
+.password-input {
+    padding-right: 32px;
+}
+
+.toggle-password {
+    position: absolute;
+    top: 10px;
+    right: 24px;
+    cursor: pointer;
+    z-index: 9999;
+}

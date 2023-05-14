@@ -259,7 +259,7 @@ function actions(data, type, row, meta){
 		data = '<div class="dropdown">' +
 			'<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
 				'<ul class="dropdown-menu dropdown-menu-right">' + 
-				'<li><a rel="tip" title="Import '+ row.name +'" class="pv_point_gen" id="impIng" data-name="'+ row.name +'" data-id='+ row.id +'><i class="fas fa-download mr2"></i>Import to local DB</a></li>'; 
+				'<li><a rel="tip" title="Import '+ row.name +'" class="pv_point_gen text-dark" id="impIng" data-name="'+ row.name +'" data-id='+ row.id +'><i class="fas fa-download mr2"></i>Import to local DB</a></li>'; 
 		data += '</ul></div>';		
 	}else{//Treat the rest as local
 		data = '<div class="dropdown">' +
