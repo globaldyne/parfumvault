@@ -896,20 +896,24 @@ $('#formula').editable({
 	},
 	validate: function(value){
    		if($.trim(value) == ''){
-			return 'Ingredient is required';
+			return 'Please select ingredient';
    		}
 	}
 });
 
 if(type === 'display'){
-	data = '<a href="'+ row.ingredient.pref_supplier_link +'" target="_blank" rel="tip" title="Open '+ row.ingredient.pref_supplier +' page" class="fas fa-shopping-cart"></a>';
+	data = '<a href="'+ row.ingredient.pref_supplier_link +'" target="_blank" rel="tip" title="Open '+ row.ingredient.pref_supplier +' page" class="fas fa-shopping-cart mr2"></a>';
 	<?php if($meta['isProtected'] == FALSE){?>
 	if(row.exclude_from_calculation == 0){
-	 	var ex = '&nbsp; <i class="pv_point_gen fas fa-eye-slash" style="color: #337ab7;" rel="tip" id="exIng" title="Exclude '+ row.ingredient.name +'" data-name="'+ row.ingredient.name +'" data-status="1" data-id="'+ row.formula_ingredient_id +'"></i>';
+	 	var ex = '<i class="pv_point_gen fas fa-eye-slash mr2" style="color: #337ab7;" rel="tip" id="exIng" title="Exclude '+ row.ingredient.name +'" data-name="'+ row.ingredient.name +'" data-status="1" data-id="'+ row.formula_ingredient_id +'"></i>';
 	}else if(row.exclude_from_calculation == 1){
-	 	var ex = '&nbsp; <i class="pv_point_gen fas fa-eye" style="color: #337ab7;" rel="tip" id="exIng" title="Include '+ row.ingredient.name +'" data-name="'+ row.ingredient.name +'" data-status="0" data-id="'+ row.formula_ingredient_id +'"></i>';
+	 	var ex = '<i class="pv_point_gen fas fa-eye mr2" style="color: #337ab7;" rel="tip" id="exIng" title="Include '+ row.ingredient.name +'" data-name="'+ row.ingredient.name +'" data-status="0" data-id="'+ row.formula_ingredient_id +'"></i>';
 	}
-	data += ex + '&nbsp; <i class="pv_point_gen fas fa-exchange-alt replaceIngredient" style="color: #337ab7;" rel="tip" title="Replace '+ row.ingredient.name +'"  data-name="'+ row.ingredient.name +'" data-type="select2" data-pk="'+ row.ingredient.name +'" data-title="Choose Ingredient to replace '+ row.ingredient.name +'"></i> &nbsp; <i rel="tip" title="Remove '+ row.ingredient.name +'" class="pv_point_gen fas fa-trash" style="color: #c9302c;" id="rmIng" data-name="'+ row.ingredient.name +'" data-id='+ row.formula_ingredient_id +'></i>';
+	data += ex + '<i class="pv_point_gen fas fa-exchange-alt replaceIngredient mr2" style="color: #337ab7;" rel="tip" title="Replace '+ row.ingredient.name +'"  data-name="'+ row.ingredient.name +'" data-type="select2" data-pk="'+ row.ingredient.name +'" data-title="Choose Ingredient to replace '+ row.ingredient.name +'"></i>'
+	
+	+ '<i data-toggle="modal" data-target="#mrgIng" data-backdrop="static" rel="tip" title="Merge '+ row.ingredient.name +'" class="pv_point_gen fas fa-object-group alert-warning mr2 open-merge-dialog" data-name="'+ row.ingredient.name +'" data-id='+ row.formula_ingredient_id +'></i>'
+	
+	+ '<i rel="tip" title="Remove '+ row.ingredient.name +'" class="pv_point_gen fas fa-trash" style="color: #c9302c;" id="rmIng" data-name="'+ row.ingredient.name +'" data-id='+ row.formula_ingredient_id +'></i>';
 	<?php } ?>
 }
    return data;
@@ -1195,6 +1199,87 @@ $('#invToPV').click(function() {
 });
 
 <?php } ?>
+
+
+$('#mrgIng').on('click', '[id*=mergeConfirm]', function () {
+	$.ajax({ 
+		url: '/pages/update_data.php', 
+		type: 'POST',
+		data: {
+			merge: "true",
+			dest: $("#mrgIngName").val(),
+			ingSrcName: $("#ingSrcName").val(),
+			ingSrcID: $("#ingSrcID").val(),
+			fid: '<?=$fid?>',
+			},
+		dataType: 'json',
+		success: function (data) {
+			if(data.success){
+				var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+				$('#mrgIng').modal('hide'); 
+				reload_formula_data();
+				$('#msgInfo').html(msg);
+			}else{
+				var msg ='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				$('#msgMerge').html(msg);
+			}
+			
+		},
+	  });
+});
+
+$("#formula").on("click", ".open-merge-dialog", function () {
+	$('#msgInfo').html('');
+	$('#msgMerge').html('');
+	var ingSrcName = $(this).data('name');
+	var ingSrcID = $(this).data('id');
+	var mrgName;
+	var mrgID;
+	
+	$("#mrgIng #ingSrcID").val( ingSrcID );
+	$("#mrgIng #ingSrcName").val( ingSrcName );
+	$("#mrgIng #srcIng").html( ingSrcName );
+
+	
+	$("#mrgIngName").select2({
+		width: '250px',
+		placeholder: 'Search for ingredient (name)',
+		allowClear: true,
+		dropdownAutoWidth: true,
+		containerCssClass: "mrgIngName",
+		ajax: {
+			url: '/core/full_formula_data.php?id=<?=$id?>',
+			dataType: 'json',
+			type: 'POST',
+			delay: 100,
+			quietMillis: 250,
+			data: function (data) {
+				return {
+					search: data
+				};
+			},
+			processResults: function(data) {
+				return {
+					results: $.map(data.data, function(obj) {
+					  return {
+						id: obj.formula_ingredient_id,
+						ingId: obj.ingredient.ingredient_id,
+						text: obj.ingredient.name || 'No ingredient found...',
+					  }
+					})
+				};
+			},
+			cache: false,
+			
+		}
+		
+	}).on('select2-selected', function (data) {
+			 mrgName = data.choice.text;
+			 mrgID = data.choice.ingId;
+	});
+});
+        
+
 function export_as(type) {
   $("#formula").tableHTMLExport({
 	type: type,
@@ -1213,3 +1298,27 @@ function export_as(type) {
 </script>
 <script src="/js/mark/jquery.mark.min.js"></script>
 <script src="/js/mark/datatables.mark.js"></script>
+
+<div class="modal fade" id="mrgIng" tabindex="-1" role="dialog" aria-labelledby="mrgIng" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Merge ingredients</h5>
+      </div>
+      <div class="modal-body">
+      	<div id="msgMerge"></div>
+        <input type="hidden" name="ingSrcID" id="ingSrcID" />
+        <input type="hidden" name="ingSrcName" id="ingSrcName" />
+      	<div class="alert alert-info">You can merge <div id="srcIng"></div>'s quantity with another material in formula. Use this method if materials are similar. Please note, this action cannot be reverted, quanity will sum up to the target ingredient's quantity.</div>
+        Merge <div id="srcIng"></div> with: 
+        <input name="mrgIngName" id="mrgIngName" type="text" class="mrgIngName pv-form-control">
+        <p>
+        <div class="dropdown-divider"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <input type="submit" name="button" class="btn btn-primary" id="mergeConfirm" value="Merge ingredients">
+      </div>
+    </div>
+  </div>
+</div>

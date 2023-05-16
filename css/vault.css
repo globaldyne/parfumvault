@@ -1102,3 +1102,8 @@ table#tdDataPending.dataTable thead:hover {
     cursor: pointer;
     z-index: 9999;
 }
+
+#srcIng {
+  display: inline;
+  font-weight: bold;
+}

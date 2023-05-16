@@ -83,7 +83,7 @@ if($form[0]['ingredient']){
 	      <div id="add_ing">
            	<div class="form-group">
           	 	<div class="col-md-4 buffer">
-				   <input name="ingredient" id="ingredient" class="pv-form-control"></input>
+				   <input name="ingredient" id="ingredient" class="pv-form-control main-ingredient"></input>
                 </div>
                 <div class="col-md-2 buffer">
 					<input type="text" name="concentration" id="concentration" placeholder="Purity %" class="form-control" />

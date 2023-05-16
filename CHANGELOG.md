@@ -2,6 +2,7 @@
 ### Version 6.5
 - Remove screenshots directory
 - Add show/hide password in user profile
+- Implement ingredients merge in formulas
 
 ### Version 6.4
 - Fix supplier details edit modal

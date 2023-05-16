@@ -36,9 +36,9 @@ if($_POST['action'] == 'excIng' && $_POST['ingID']){
 
 	$status = (int)$_POST['status'];
 	if($status == 1){
-		$st = 'excluded';
+		$st = 'excluded from calclulations';
 	}else{
-		$st = 'included';
+		$st = 'included in calculations';
 	}
 	
 	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,isProtected FROM formulasMetaData WHERE fid = '$fid'"));

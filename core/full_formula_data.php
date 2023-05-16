@@ -30,11 +30,15 @@ $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT name,fid,catClass,finalTy
 
 if(!$meta['fid']){		
 	$response['Error'] = (string)'Requested id is not valid.';    
-	//header('Content-Type: application/json; charset=utf-8');
+	header('Content-Type: application/json; charset=utf-8');
 	echo json_encode($response);
 	return;
 }
 
+if($_POST['search']){
+	$q = "AND ingredient LIKE '%".$_POST['search']."%'";
+}
+	
 if(isset($_GET['stats_only'])){
 	
 	$s['formula_name'] = (string)$meta['name'];
@@ -54,7 +58,7 @@ if(isset($_GET['stats_only'])){
 }
 $defCatClass = $meta['catClass'] ?: $settings['defCatClass'];
 
-$formula_q = mysqli_query($conn, "SELECT id,ingredient,concentration,quantity,dilutant,notes,exclude_from_calculation FROM formulas WHERE fid = '".$meta['fid']."' ORDER BY ingredient ASC");
+$formula_q = mysqli_query($conn, "SELECT id,ingredient,concentration,quantity,dilutant,notes,exclude_from_calculation FROM formulas WHERE fid = '".$meta['fid']."' $q ORDER BY ingredient ASC");
 while ($formula = mysqli_fetch_array($formula_q)){
 	    $form[] = $formula;
 		if ( $formula['exclude_from_calculation'] != 1 ){
