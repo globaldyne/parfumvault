@@ -376,7 +376,7 @@ $('#print').click(() => {
                <div class="dropdown-divider"></div>
                <?php if($pv_online['enabled'] == '1'){?>
                <li class="dropdown-header">PV Online</li> 
-               <a class="dropdown-item" href="#" data-toggle="modal" data-target="#share_to_user">Share with someone</a>
+               <a class="dropdown-item" href="#" data-toggle="modal" data-target="#share_to_user" data-backdrop="static">Share with someone</a>
                <div class="dropdown-divider"></div>
                <?php } ?>
             </div>
@@ -450,7 +450,7 @@ $('#print').click(() => {
           </tr>
         </table>
 	    <p>&nbsp;</p>
-	    <p><a href="#" data-toggle="modal" data-target="#invite_to_pv">Invite someone to PV Online</a></p>
+	    <p><a href="#" data-toggle="modal" data-target="#invite_to_pv" data-backdrop="static">Invite someone to PV Online</a></p>
 	    <div class="modal-footer">
 	      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 	      <input type="submit" name="button" class="btn btn-primary" id="sharePVOnline" value="Share">

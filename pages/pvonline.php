@@ -95,6 +95,12 @@ if($_POST['action'] == 'share' && $_POST['fid']){
 
 //IMPORT SHARED FORMULAS ON PV ONLINE
 if($_POST['action'] == 'importShareFormula' && $_POST['fid']){
+	if(empty($_POST['localName'])){
+		$response['error'] = 'Formula name cannot be empty';
+		echo json_encode($response);
+	  	return;
+	}
+	
 	require_once(__ROOT__.'/func/genFID.php');
 
 	$params = "?username=".$pv_online['email']."&password=".$pv_online['password']."&do=getShared&fid=".$_POST['fid'];

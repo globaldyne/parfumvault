@@ -130,7 +130,7 @@ $('#load-rel-notes').click(function() {
 <?php if($pv_online['enabled'] == '1'){?>
 	
 chk_shared();
-var myVar = setInterval(chk_shared, 50000);
+var checkPVOnline = setInterval(chk_shared, 50000);
 function chk_shared() {
   $('#list-shared-formulas').empty();
 
@@ -153,7 +153,7 @@ function chk_shared() {
 				$('#list-shared-formulas').append('<div class="font-weight-bold">'+
 					'<li>'+
 						'<button class="shared-formula-accept" data-notes="'+data.formulas[i].notes+'" data-author="'+data.formulas[i].author+'" data-name="'+data.formulas[i].name+'" data-id="'+data.formulas[i].fid+'" id="acceptShared" title="Import formula">'+
-              				'<span>Import</span>'+
+              				'<span class="label label-success">Import</span>'+
             			'</button>'+
 					'</li>'+
 					'<div class="dropdown-divider"></div>'+
@@ -215,12 +215,11 @@ $('#list-shared-formulas').on('click', '[id*=acceptShared]', function () {
 							var rmsg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
 						}else if(data.success){
 							chk_shared();
-							var rmsg = '<div class="alert alert-success">'+data.success+'</div>';
-							$('.btn-success').hide();
-							$('.btn-default').html('Close');
+							bootbox.hideAll();
+							list_formulas();
 						}
 						$('#pvShImpMsg').html(rmsg);
-						list_formulas();
+						
 					}
 				});
 				
@@ -257,7 +256,7 @@ $('#list-shared-formulas').html('<div class="font-weight-bold">'+
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                 <h4 class="modal-title">Modal title</h4>
+                 <h4 class="modal-title"></h4>
 
             </div>
             <div class="modal-body"><div class="tools"></div></div>
