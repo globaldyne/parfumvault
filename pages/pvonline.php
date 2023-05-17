@@ -127,10 +127,10 @@ if($_POST['action'] == 'importShareFormula' && $_POST['fid']){
       	}
       $insertVals = '"'.$newFid.'",'.'"'.$jsonData['meta']['name'].'",'.'"' . implode('","', array_values($insertPairs)) . '"';
    
-      if(!mysqli_num_rows(mysqli_query($conn, $query))){
+     // if(!mysqli_num_rows(mysqli_query($conn, $query))){
        	$jsql = "INSERT INTO formulas (`fid`,`name`,`ingredient`,`concentration`,`dilutant`,`quantity`,`notes`) VALUES ({$insertVals});";
          $qIns.= mysqli_query($conn,$jsql);
-      }
+    //  }
 	}
 	
     if($qIns){
