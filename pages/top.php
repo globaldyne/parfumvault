@@ -78,7 +78,7 @@ if($pv_meta['schema_ver'] < $db_ver){
                   <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
                   Settings
                 </a>
-                <a class="dropdown-item" href="pages/tools.php" data-toggle="modal" data-target="#calcTools">
+                <a class="dropdown-item" href="/pages/tools.php" data-toggle="modal" data-target="#calcTools">
                   <i class="fas fa-tools fa-sm fa-fw mr-2 text-gray-400"></i>
                   Calculation Tools
                 </a>
@@ -202,7 +202,7 @@ $('#list-shared-formulas').on('click', '[id*=acceptShared]', function () {
                callback: function (){
 	    			
 				$.ajax({
-					url: 'pages/pvonline.php', 
+					url: '/pages/pvonline.php', 
 					type: 'POST',
 					data: {
 						action: 'importShareFormula',
@@ -215,7 +215,7 @@ $('#list-shared-formulas').on('click', '[id*=acceptShared]', function () {
 							var rmsg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
 						}else if(data.success){
 							chk_shared();
-							var rmsg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
+							var rmsg = '<div class="alert alert-success">'+data.success+'</div>';
 							$('.btn-success').hide();
 							$('.btn-default').html('Close');
 						}

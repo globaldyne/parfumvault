@@ -4,6 +4,7 @@
 - Add show/hide password in user profile
 - Implement ingredients merge in formulas
 - Re-write ingredient replacement dialog
+- Auto add a tag with PV Version when you create a new formula
 
 ### Version 6.4
 - Fix supplier details edit modal

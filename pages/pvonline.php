@@ -117,8 +117,11 @@ if($_POST['action'] == 'importShareFormula' && $_POST['fid']){
 	$newFid = random_str(40, '1234567890abcdefghijklmnopqrstuvwxyz');
 	$q = "INSERT INTO formulasMetaData (name,product_name,fid,profile,sex,notes,defView,catClass,finalType,status) VALUES ('".$jsonData['meta']['name']."','".$jsonData['meta']['product_name']."','".$newFid."','".$jsonData['meta']['profile']."','".$jsonData['meta']['sex']."','".$jsonData['meta']['notes']."','".$jsonData['meta']['defView']."','".$jsonData['meta']['catClass']."','".$jsonData['meta']['finalType']."','".$jsonData['meta']['status']."')";
 	
-   $qIns = mysqli_query($conn,$q);
-
+    $qIns = mysqli_query($conn,$q);
+	$last_id = mysqli_insert_id($conn);
+	$source = $jsonData['product']['source'];
+	mysqli_query($conn, "INSERT INTO formulasTags (formula_id, tag_name) VALUES ('$last_id','$source')");
+		
    $array_data = $jsonData['formula'];
    foreach ($array_data as $id=>$row) {
 	  $insertPairs = array();
@@ -127,10 +130,9 @@ if($_POST['action'] == 'importShareFormula' && $_POST['fid']){
       	}
       $insertVals = '"'.$newFid.'",'.'"'.$jsonData['meta']['name'].'",'.'"' . implode('","', array_values($insertPairs)) . '"';
    
-     // if(!mysqli_num_rows(mysqli_query($conn, $query))){
-       	$jsql = "INSERT INTO formulas (`fid`,`name`,`ingredient`,`concentration`,`dilutant`,`quantity`,`notes`) VALUES ({$insertVals});";
-         $qIns.= mysqli_query($conn,$jsql);
-    //  }
+      $jsql = "INSERT INTO formulas (`fid`,`name`,`ingredient`,`concentration`,`dilutant`,`quantity`,`notes`) VALUES ({$insertVals});";
+       $qIns.= mysqli_query($conn,$jsql);
+    
 	}
 	
     if($qIns){
