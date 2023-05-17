@@ -119,7 +119,7 @@ if($_POST['action'] == 'importShareFormula' && $_POST['fid']){
 	
     $qIns = mysqli_query($conn,$q);
 	$last_id = mysqli_insert_id($conn);
-	$source = $jsonData['product']['source'];
+	$source = $jsonData['meta']['source'];
 	mysqli_query($conn, "INSERT INTO formulasTags (formula_id, tag_name) VALUES ('$last_id','$source')");
 		
    $array_data = $jsonData['formula'];
