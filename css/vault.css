@@ -1103,7 +1103,7 @@ table#tdDataPending.dataTable thead:hover {
     z-index: 9999;
 }
 
-#srcIng {
+#srcIng, #ingRepName{
   display: inline;
   font-weight: bold;
 }

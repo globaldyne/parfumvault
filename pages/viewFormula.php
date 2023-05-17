@@ -842,64 +842,7 @@ function ingInv(data, type, row, meta){
 }
 
 function ingActions(data, type, row, meta){
-//Change ingredient
-$('#formula').editable({
-	select2: {
-    	width: '250px',
-        placeholder: 'Search for ingredient (name, cas)',
-        allowClear: true,
-    	dropdownAutoWidth: true,
-		minimumInputLength: 2,
-		ajax: {
-			url: '/core/list_ingredients_simple.php',
-			dataType: 'json',
-			type: 'POST',
-			delay: 100,
-			quietMillis: 250,
-			data: function (data) {
-				return {
-					search: data,
-					isDeepQ: "false"
-				};
-			},
-			processResults: function(data) {
-				return {
-					results: $.map(data.data, function(obj) {
-					  return {
-						id: obj.name, //TODO: TO BE CHANGED TO ID WHEN THE BACKEND IS READY
-						text: obj.name || 'No ingredient found...',
-					  }
-					})
-				};
-			},
-			cache: true,
-			
-    	}
-    },
-	tpl:'<input type="hidden">',
-	placement: 'left',
-	selector: 'i.replaceIngredient',
-	pvnoresp: false,
-	highlight: false,
-	emptytext: null,
-	emptyclass: null,
-	url: "/pages/manageFormula.php?action=repIng&fid=" + myFID,
-	success: function (data) {
-		if(data.success){
-			var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
-			reload_formula_data();
-		}else if(data.error){
-			var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
-		}
-		$('#msgInfo').html(msg);
-			
-	},
-	validate: function(value){
-   		if($.trim(value) == ''){
-			return 'Please select ingredient';
-   		}
-	}
-});
+
 
 if(type === 'display'){
 	data = '<a href="'+ row.ingredient.pref_supplier_link +'" target="_blank" rel="tip" title="Open '+ row.ingredient.pref_supplier +' page" class="fas fa-shopping-cart mr2"></a>';
@@ -909,11 +852,12 @@ if(type === 'display'){
 	}else if(row.exclude_from_calculation == 1){
 	 	var ex = '<i class="pv_point_gen fas fa-eye mr2" style="color: #337ab7;" rel="tip" id="exIng" title="Include '+ row.ingredient.name +'" data-name="'+ row.ingredient.name +'" data-status="0" data-id="'+ row.formula_ingredient_id +'"></i>';
 	}
-	data += ex + '<i class="pv_point_gen fas fa-exchange-alt replaceIngredient mr2" style="color: #337ab7;" rel="tip" title="Replace '+ row.ingredient.name +'"  data-name="'+ row.ingredient.name +'" data-type="select2" data-pk="'+ row.ingredient.name +'" data-title="Choose Ingredient to replace '+ row.ingredient.name +'"></i>'
 	
-	+ '<i data-toggle="modal" data-target="#mrgIng" data-backdrop="static" rel="tip" title="Merge '+ row.ingredient.name +'" class="pv_point_gen fas fa-object-group alert-warning mr2 open-merge-dialog" data-name="'+ row.ingredient.name +'" data-id='+ row.formula_ingredient_id +'></i>'
+	data += ex + '<i data-toggle="modal" data-target="#replaceIng" data-backdrop="static" class="pv_point_gen fas fa-exchange-alt open-replace-dialog mr2" style="color: #337ab7;" rel="tip" title="Replace '+ row.ingredient.name +'"  data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'"></i>'
 	
-	+ '<i rel="tip" title="Remove '+ row.ingredient.name +'" class="pv_point_gen fas fa-trash" style="color: #c9302c;" id="rmIng" data-name="'+ row.ingredient.name +'" data-id='+ row.formula_ingredient_id +'></i>';
+	+ '<i data-toggle="modal" data-target="#mrgIng" data-backdrop="static" rel="tip" title="Merge '+ row.ingredient.name +'" class="pv_point_gen fas fa-object-group alert-warning mr2 open-merge-dialog" data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'"></i>'
+	
+	+ '<i rel="tip" title="Remove '+ row.ingredient.name +'" class="pv_point_gen fas fa-trash" style="color: #c9302c;" id="rmIng" data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'"></i>';
 	<?php } ?>
 }
    return data;
@@ -1200,6 +1144,93 @@ $('#invToPV').click(function() {
 
 <?php } ?>
 
+$('#replaceIng').on('click', '[id*=replaceConfirm]', function () {
+	$.ajax({ 
+		url: "/pages/manageFormula.php" , 
+		type: 'POST',
+		data: {
+			action: "repIng",
+			dest: $("#repIngNameDest").val(),
+			ingSrcName: $("#ingRepName").val(),
+			ingSrcID: $("#ingRepID").val(),
+			fid: myFID,
+			},
+		dataType: 'json',
+		success: function (data) {
+			if(data.success){
+				var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+				$('#replaceIng').modal('hide'); 
+				reload_formula_data();
+				$('#msgInfo').html(msg);
+			}else{
+				var msg ='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				$('#msgRepl').html(msg);
+			}
+			
+		},
+	  });
+});
+
+$("#formula").on("click", ".open-replace-dialog", function () {
+	$('#msgInfo').html('');
+	$('#msgRepl').html('');
+	$("#replaceIng #ingInfo").html('');
+	$("#replaceIng #repIngNameDest").val( '' );
+
+	
+	var ingRepName = $(this).data('name');
+	var ingRepID = $(this).data('id');
+	var repName;
+	var repID;
+	
+	$("#replaceIng #ingRepID").val( ingRepID );
+	$("#replaceIng #ingRepName").val( ingRepName );
+	$("#replaceIng #ingRepName").html( ingRepName );
+
+	
+	$("#repIngNameDest").select2({
+		width: '250px',
+		placeholder: 'Search for ingredient (name, cas)',
+		allowClear: true,
+		dropdownAutoWidth: true,
+		containerCssClass: "repIngNameDest",
+		minimumInputLength: 2,
+		ajax: {
+			url: '/core/list_ingredients_simple.php',
+			dataType: 'json',
+			type: 'POST',
+			delay: 100,
+			quietMillis: 250,
+			data: function (data) {
+				return {
+					search: data,
+					isDeepQ: "false"
+				};
+			},
+			processResults: function(data) {
+				return {
+					results: $.map(data.data, function(obj) {
+					  return {
+						id: obj.name,
+						desc: obj.description,
+						cas: obj.cas,
+						text: obj.name || 'No ingredient found...',
+					  }
+					})
+				};
+			},
+			cache: true,
+			
+		}
+		
+	}).on('select2-selected', function (data) {
+			 repName = data.choice.text;
+			 repID = data.choice.text; //NEEDS ID?!
+			 $("#replaceIng #ingInfo").html('<strong>CAS:</strong> ' + data.choice.cas + '<p> <strong>Description: </strong>' + data.choice.desc +'</p>');
+	});
+});
+
+
 
 $('#mrgIng').on('click', '[id*=mergeConfirm]', function () {
 	$.ajax({ 
@@ -1231,6 +1262,8 @@ $('#mrgIng').on('click', '[id*=mergeConfirm]', function () {
 $("#formula").on("click", ".open-merge-dialog", function () {
 	$('#msgInfo').html('');
 	$('#msgMerge').html('');
+	$("#mrgIng #mrgIngName").val('');
+
 	var ingSrcName = $(this).data('name');
 	var ingSrcID = $(this).data('id');
 	var mrgName;
@@ -1318,6 +1351,31 @@ function export_as(type) {
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
         <input type="submit" name="button" class="btn btn-primary" id="mergeConfirm" value="Merge ingredients">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="replaceIng" tabindex="-1" role="dialog" aria-labelledby="replaceIng" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Replace <div id="ingRepName"></div></h5>
+      </div>
+      <div class="modal-body">
+      	<div id="msgRepl"></div>
+        <input type="hidden" name="ingRepID" id="ingRepID" />
+        <input type="hidden" name="ingRepName" id="ingRepName" />
+      	<div class="alert alert-info">Replace <div id="ingRepName"></div> with another ingredient, quantity and dilution values will not be affected.</div>
+        Replace <div id="ingRepName"></div> with: 
+        <input name="repIngNameDest" id="repIngNameDest" type="text" class="repIngNameDest pv-form-control">
+        <p>
+        <div class="dropdown-divider"></div>
+        <div id="ingInfo"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <input type="submit" name="button" class="btn btn-primary" id="replaceConfirm" value="Replace ingredient">
       </div>
     </div>
   </div>

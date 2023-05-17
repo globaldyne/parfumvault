@@ -3,6 +3,7 @@
 - Remove screenshots directory
 - Add show/hide password in user profile
 - Implement ingredients merge in formulas
+- Re-write ingredient replacement dialog
 
 ### Version 6.4
 - Fix supplier details edit modal

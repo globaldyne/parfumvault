@@ -253,22 +253,28 @@ if($_POST['action'] == 'addIng' && $_POST['fid']){
 }
 
 //REPLACE INGREDIENT
-if($_GET['action'] == 'repIng' && $_GET['fid']){
-	$fid = mysqli_real_escape_string($conn, $_GET['fid']);
-	$ingredient = mysqli_real_escape_string($conn, $_POST['value']);
-	$oldIngredient = mysqli_real_escape_string($conn, $_POST['pk']);
+if($_POST['action'] == 'repIng' && $_POST['fid']){
+	$fid = mysqli_real_escape_string($conn, $_POST['fid']);
+	
+	if(!$_POST['dest']){
+		$response['error'] = 'Please select ingredient';
+		echo json_encode($response);
+		return;
+	}
+	
+	$ingredient = mysqli_real_escape_string($conn, $_POST['dest']);
+	$oldIngredient = mysqli_real_escape_string($conn, $_POST['ingSrcName']);
 	$ingredient_id = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$ingredient'"));
 	
 	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,isProtected FROM formulasMetaData WHERE fid = '$fid'"));
 	if($meta['isProtected'] == FALSE){
 		if(mysqli_num_rows(mysqli_query($conn, "SELECT ingredient FROM formulas WHERE ingredient = '$ingredient' AND fid = '$fid'"))){
-			$response['error'] = '<strong>Error: </strong>'.$ingredient.' already exists in formula!';
-			header('Content-Type: application/json');
+			$response['error'] = $ingredient.' already exists in formula!';
 			echo json_encode($response);
 			return;
 		}
 		
-		if(mysqli_query($conn, "UPDATE formulas SET ingredient = '$ingredient', ingredient_id = '".$ingredient_id['id']."' WHERE ingredient = '$oldIngredient' AND fid = '$fid'")){
+		if(mysqli_query($conn, "UPDATE formulas SET ingredient = '$ingredient', ingredient_id = '".$ingredient_id['id']."' WHERE ingredient = '$oldIngredient' AND id = '".$_POST['ingSrcID']."' AND fid = '$fid'")){
 			$response['success'] = $oldIngredient.' replaced by '.$ingredient;
 			$lg = "REPLACED: $oldIngredient WITH $ingredient";
 			mysqli_query($conn, "INSERT INTO formula_history (fid,change_made,user) VALUES ('".$meta['id']."','$lg','".$user['fullName']."')");
