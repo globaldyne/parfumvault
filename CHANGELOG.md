@@ -5,6 +5,7 @@
 - Implement ingredients merge in formulas
 - Re-write ingredient replacement dialog
 - Auto add a tag with PV Version when you create a new formula
+- PV Online custom API use is now removed
 
 ### Version 6.4
 - Fix supplier details edit modal

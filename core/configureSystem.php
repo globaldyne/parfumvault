@@ -55,6 +55,12 @@ if($_POST['action'] == 'register'){
 		return;
 	}
 	
+	if(strlen($_POST['fullName']) < '5'){
+		$response['error'] = "Full name must be at least 5 characters long!";
+		echo json_encode($response);
+		return;
+	}
+	
 	$password = mysqli_real_escape_string($conn,$_POST['password']);
 	$fullName = mysqli_real_escape_string($conn,$_POST['fullName']);
 	$email = mysqli_real_escape_string($conn,$_POST['email']);
