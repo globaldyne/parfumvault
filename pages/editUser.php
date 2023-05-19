@@ -37,6 +37,8 @@ $doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM docu
           <h6>Upload a different photo...</h6>
           <input type="file" name="avatar" id="avatar" class="form-control">
         </div>
+        <div class="dropdown-divider"></div>
+        <div class="alert alert-info">If you enable PV Online profile, the same photo will be used as your avatar in PV Online as well.</div>
         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
 			<div class="text-right">
         		<input name="upload-avatar" type="submit" class="btn-dark" id="upload-avatar" value="Upload" />
