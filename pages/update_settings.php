@@ -25,7 +25,15 @@ if($_POST['update_pvonline_profile'] && $pv_online['enabled'] == '1'){
 	$intro = base64_encode(mysqli_real_escape_string($conn, $_POST['intro']));
 	$name = base64_encode(mysqli_real_escape_string($conn, $_POST['name']));
 
-	$data = [ 'username' => strtolower($pv_online['email']), 'password' => $pv_online['password'],'do' => 'updateProfile','nickname' => base64_encode($_POST['nickname']), 'intro' => $intro, 'avatar' => $doc['avatar'], 'name' => $name ];
+	$data = [ 
+			 'username' => strtolower($pv_online['email']), 
+			 'password' => $pv_online['password'],
+			 'do' => 'updateProfile',
+			 'nickname' => base64_encode($_POST['nickname']),
+			 'intro' => $intro,
+			 'avatar' => $doc['avatar'],
+			 'name' => $name 
+			 ];
 
     $req = json_decode(pvPost($pvOnlineAPI, $data));
 
