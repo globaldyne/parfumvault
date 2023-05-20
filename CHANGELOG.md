@@ -1,4 +1,5 @@
 # CHANGELOG
+### Version 6.6
 ### Version 6.5
 - Remove screenshots directory
 - Add show/hide password in user profile
