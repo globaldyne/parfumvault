@@ -1,5 +1,7 @@
 # CHANGELOG
 ### Version 6.6
+- Set default value for total cost and concentration to 0 when formula is empty
+
 ### Version 6.5
 - Remove screenshots directory
 - Add show/hide password in user profile
