@@ -78,7 +78,7 @@ if($pv_meta['schema_ver'] < $db_ver){
                   <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
                   Settings
                 </a>
-                <a class="dropdown-item" href="pages/tools.php" data-toggle="modal" data-target="#calcTools">
+                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#calcTools">
                   <i class="fas fa-tools fa-sm fa-fw mr-2 text-gray-400"></i>
                   Calculation Tools
                 </a>
@@ -130,7 +130,7 @@ $('#load-rel-notes').click(function() {
 <?php if($pv_online['enabled'] == '1'){?>
 	
 chk_shared();
-var myVar = setInterval(chk_shared, 50000);
+var checkPVOnline = setInterval(chk_shared, 50000);
 function chk_shared() {
   $('#list-shared-formulas').empty();
 
@@ -153,7 +153,7 @@ function chk_shared() {
 				$('#list-shared-formulas').append('<div class="font-weight-bold">'+
 					'<li>'+
 						'<button class="shared-formula-accept" data-notes="'+data.formulas[i].notes+'" data-author="'+data.formulas[i].author+'" data-name="'+data.formulas[i].name+'" data-id="'+data.formulas[i].fid+'" id="acceptShared" title="Import formula">'+
-              				'<span>Import</span>'+
+              				'<span class="label label-success">Import</span>'+
             			'</button>'+
 					'</li>'+
 					'<div class="dropdown-divider"></div>'+
@@ -202,7 +202,7 @@ $('#list-shared-formulas').on('click', '[id*=acceptShared]', function () {
                callback: function (){
 	    			
 				$.ajax({
-					url: 'pages/pvonline.php', 
+					url: '/pages/pvonline.php', 
 					type: 'POST',
 					data: {
 						action: 'importShareFormula',
@@ -215,12 +215,11 @@ $('#list-shared-formulas').on('click', '[id*=acceptShared]', function () {
 							var rmsg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
 						}else if(data.success){
 							chk_shared();
-							var rmsg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
-							$('.btn-success').hide();
-							$('.btn-default').html('Close');
+							bootbox.hideAll();
+							list_formulas();
 						}
 						$('#pvShImpMsg').html(rmsg);
-						list_formulas();
+						
 					}
 				});
 				
@@ -250,17 +249,32 @@ $('#list-shared-formulas').html('<div class="font-weight-bold">'+
 <?php } ?>
 
 });
+
+$(function() {
+	$.ajax({ 
+		url: '/pages/views/tools/calcTools.php', 
+		type: 'GET',
+		dataType: 'html',
+		success: function (data) {
+			$('.toolsHtml').html(data);
+		}
+	  });
+});
 </script>
 <!-- calcTools Modal -->
-<div class="modal fade" id="calcTools" tabindex="-1" role="dialog" aria-labelledby="calcToolsLabel" aria-hidden="true">
+<div class="modal fade" id="calcTools" tabindex="-1" role="dialog" aria-labelledby="calcTools" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                 <h4 class="modal-title">Modal title</h4>
-
+                 <h4 class="modal-title">Calculation Tools</h4>
             </div>
-            <div class="modal-body"><div class="tools"></div></div>
+            <div class="modal-body">
+            	<div class="toolsHtml"></div>
+            </div>
+           	<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			</div>
         </div>
     </div>
 </div>

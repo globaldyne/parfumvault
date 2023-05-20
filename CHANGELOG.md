@@ -1,4 +1,14 @@
 # CHANGELOG
+### Version 6.5
+- Remove screenshots directory
+- Add show/hide password in user profile
+- Implement ingredients merge in formulas
+- Re-write ingredient replacement dialog
+- Auto add a tag with PV Version when you create a new formula
+- PV Online custom API use is now removed
+- Remove unused avatar field form users
+- Calculation tools page fixes
+
 ### Version 6.4
 - Fix supplier details edit modal
 - Add available var list in SDS Html Editor

@@ -5,6 +5,7 @@ require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
+require_once(__ROOT__.'/inc/product.php');
 require_once(__ROOT__.'/func/labelMap.php');
 require_once(__ROOT__.'/func/get_formula_notes.php');
 
@@ -36,9 +37,9 @@ if($_POST['action'] == 'excIng' && $_POST['ingID']){
 
 	$status = (int)$_POST['status'];
 	if($status == 1){
-		$st = 'excluded';
+		$st = 'excluded from calclulations';
 	}else{
-		$st = 'included';
+		$st = 'included in calculations';
 	}
 	
 	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,isProtected FROM formulasMetaData WHERE fid = '$fid'"));
@@ -253,22 +254,28 @@ if($_POST['action'] == 'addIng' && $_POST['fid']){
 }
 
 //REPLACE INGREDIENT
-if($_GET['action'] == 'repIng' && $_GET['fid']){
-	$fid = mysqli_real_escape_string($conn, $_GET['fid']);
-	$ingredient = mysqli_real_escape_string($conn, $_POST['value']);
-	$oldIngredient = mysqli_real_escape_string($conn, $_POST['pk']);
+if($_POST['action'] == 'repIng' && $_POST['fid']){
+	$fid = mysqli_real_escape_string($conn, $_POST['fid']);
+	
+	if(!$_POST['dest']){
+		$response['error'] = 'Please select ingredient';
+		echo json_encode($response);
+		return;
+	}
+	
+	$ingredient = mysqli_real_escape_string($conn, $_POST['dest']);
+	$oldIngredient = mysqli_real_escape_string($conn, $_POST['ingSrcName']);
 	$ingredient_id = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$ingredient'"));
 	
 	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,isProtected FROM formulasMetaData WHERE fid = '$fid'"));
 	if($meta['isProtected'] == FALSE){
 		if(mysqli_num_rows(mysqli_query($conn, "SELECT ingredient FROM formulas WHERE ingredient = '$ingredient' AND fid = '$fid'"))){
-			$response['error'] = '<strong>Error: </strong>'.$ingredient.' already exists in formula!';
-			header('Content-Type: application/json');
+			$response['error'] = $ingredient.' already exists in formula!';
 			echo json_encode($response);
 			return;
 		}
 		
-		if(mysqli_query($conn, "UPDATE formulas SET ingredient = '$ingredient', ingredient_id = '".$ingredient_id['id']."' WHERE ingredient = '$oldIngredient' AND fid = '$fid'")){
+		if(mysqli_query($conn, "UPDATE formulas SET ingredient = '$ingredient', ingredient_id = '".$ingredient_id['id']."' WHERE ingredient = '$oldIngredient' AND id = '".$_POST['ingSrcID']."' AND fid = '$fid'")){
 			$response['success'] = $oldIngredient.' replaced by '.$ingredient;
 			$lg = "REPLACED: $oldIngredient WITH $ingredient";
 			mysqli_query($conn, "INSERT INTO formula_history (fid,change_made,user) VALUES ('".$meta['id']."','$lg','".$user['fullName']."')");
@@ -356,6 +363,8 @@ if($_POST['action'] == 'addFormula'){
 	}else{
 		if(mysqli_query($conn, "INSERT INTO formulasMetaData (fid, name, notes, profile, catClass, finalType, customer_id) VALUES ('$fid', '$name', '$notes', '$profile', '$catClass', '$finalType', '$customer_id')")){
 			$last_id = mysqli_insert_id($conn);
+			$fullver = $product.' '.$ver;
+			mysqli_query($conn, "INSERT INTO formulasTags (formula_id, tag_name) VALUES ('$last_id','$fullver')");
 			$response = array(
 				"success" => array(
 				"id" => (int)$last_id,
@@ -388,6 +397,7 @@ if($_POST['action'] == 'delete' && $_POST['fid']){
 		mysqli_query($conn, "DELETE FROM formulasMetaData WHERE fid = '$fid'");
 		mysqli_query($conn, "DELETE FROM formulasRevisions WHERE fid = '$fid'");
 		mysqli_query($conn, "DELETE FROM formula_history WHERE fid = '".$meta['id']."'");
+		mysqli_query($conn, "DELETE FROM formulasTags WHERE formula_id = '".$meta['id']."'");
 		$response['success'] = 'Formula '.$fname.' deleted!';
 	}else{
 		$response['error'] = 'Error deleting '.$fname.' formula!';
