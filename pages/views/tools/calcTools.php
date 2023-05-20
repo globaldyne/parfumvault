@@ -15,7 +15,7 @@
       </tr>
       <tr>
         <td><input name="pof" type="text" id="pof"> is what percent of 
-          <input name="quantity" type="text" id="quantity"></td>
+          <input name="cq" type="text" id="cq"></td>
         <td><strong><div id="res2"></div></strong></td>
         <td><button type="button" id="calc2" class="btn btn-primary">Calculate</button></td>
       </tr>
@@ -34,7 +34,7 @@ $('#calc1').click(function() {
 });
 
 $('#calc2').click(function() {
- 	var c = $('#pof').val()/$('#quantity').val()*100;
+ 	var c = $('#pof').val()/$('#cq').val()*100;
 	$("#res2").html(" = " + c);
 });
 </script>
