@@ -11,20 +11,13 @@ require_once(__ROOT__.'/inc/settings.php');
 $auth = pvOnlineValAcc($pvOnlineAPI, $user['email'], $user['password'], $ver);
 
 ?>
-<div id="pvOnMsg"></div>
 
+<h3>PV Online Profile</h3>
+<hr>
+<div id="pvOnMsg"></div>
 <div id="pv_online_conf" class="form-group">
 
 <?php if($auth['code'] == '001'){ ?>
-	<hr>
-        <div class="row">
-          <label class="col-sm-1 col-form-label pv_point_gen" data-toggle="tooltip" data-placement="right" title="Change the default PV Online API">API URL:</label>
-          <div class="col-sm-2">
-         	 <input name="pv_api_url" type="text" class="form-control" id="pv_api_url" value="<?=$pvOnlineAPI?>" placeholder="https://online.jbparfum.com/api.php">
-          </div>
-             <button type="submit" class="btn btn-primary" id="update-pv-api">Update</button>
-        </div>
-        <hr>
     <div class="row">
       <label class="col-sm-1 col-form-label pv_point_gen" data-toggle="tooltip" data-placement="right" title="Enable or disable PV Online access.">Enable Service:</label>
      <div class="col-sm-2">
@@ -362,25 +355,6 @@ $('#update-profile').click(function() {
 });
 
 
-//UPDATE PV ONLINE PROFILE
-$('#update-pv-api').click(function() {
-	$.ajax({ 
-		url: '/pages/update_settings.php', 
-		type: 'POST',
-		data: {
-			update_pvonline_api: 1,
-			pv_api_url: $("#pv_api_url").val(),		
-			},
-		dataType: 'json',
-		success: function (data) {
-			if(data.success){
-				$('#pvOnMsg').html('<div class="alert alert-success">'+data.success+'</div>');
-			}else if( data.error){
-				$('#pvOnMsg').html('<div class="alert alert-danger">'+data.error+'</div>');
-			}
-		}
-	  });
-});
 
 }); //end doc
 </script>

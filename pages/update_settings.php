@@ -11,31 +11,6 @@ require_once(__ROOT__.'/func/pvOnline.php');
 require_once(__ROOT__.'/func/create_thumb.php');
 
 
-if($_POST['update_pvonline_api']){
-	
-	if(!$_POST['pv_api_url']){
-		$response["error"] = "All fields are required";
-		echo json_encode($response);
-		return;
-	}
-
-	$pingAPI = json_decode(file_get_contents($_POST['pv_api_url']."?ping=1"), true);
-   	if($pingAPI['pong']['code'] !== 1){
-		$response["error"] = 'Not a valid PV Online API URL ';
-		echo json_encode($response);
-		return;
-	}
-
-	if(mysqli_query($conn, "UPDATE settings SET pv_online_api_url = '".$_POST['pv_api_url']."'")){
-		$response["success"] = "PV Online API URL updated!";
-		echo json_encode($response);
-	}else{
-		$response["error"] = 'Failed to update PV Online API URL '.mysqli_error($conn);
-		echo json_encode($response);
-	}
-	
-	return;
-}
 
 if($_POST['update_pvonline_profile'] && $pv_online['enabled'] == '1'){
 	
@@ -50,7 +25,15 @@ if($_POST['update_pvonline_profile'] && $pv_online['enabled'] == '1'){
 	$intro = base64_encode(mysqli_real_escape_string($conn, $_POST['intro']));
 	$name = base64_encode(mysqli_real_escape_string($conn, $_POST['name']));
 
-	$data = [ 'username' => strtolower($pv_online['email']), 'password' => $pv_online['password'],'do' => 'updateProfile','nickname' => base64_encode($_POST['nickname']), 'intro' => $intro, 'avatar' => $doc['avatar'], 'name' => $name ];
+	$data = [ 
+			 'username' => strtolower($pv_online['email']), 
+			 'password' => $pv_online['password'],
+			 'do' => 'updateProfile',
+			 'nickname' => base64_encode($_POST['nickname']),
+			 'intro' => $intro,
+			 'avatar' => $doc['avatar'],
+			 'name' => $name 
+			 ];
 
     $req = json_decode(pvPost($pvOnlineAPI, $data));
 
@@ -112,6 +95,12 @@ if($_POST['update_user_profile']){
 	
 	if(!$_POST['user_fname'] || !$_POST['user_email'] || !$_POST['user_pass']){
 		$response["error"] = "All fields are required";
+		echo json_encode($response);
+		return;
+	}
+	
+	if(strlen($_POST['user_fname']) < '5'){
+		$response['error'] = "Full name must be at least 5 characters long!";
 		echo json_encode($response);
 		return;
 	}

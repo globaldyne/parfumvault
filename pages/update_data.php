@@ -12,6 +12,36 @@ require_once(__ROOT__.'/func/priceScrape.php');
 require_once(__ROOT__.'/func/create_thumb.php');
 require_once(__ROOT__.'/func/pvFileGet.php');
 
+//Merge ingredients
+if($_POST['merge'] && $_POST['ingSrcID'] &&  $_POST['ingSrcName']  && $_POST['fid']){
+	if(!$_POST['dest']){
+		$response['error'] = 'Please select ingedient';
+		echo json_encode($response);
+    	return;
+	}
+	
+	$dest = mysqli_fetch_array(mysqli_query($conn,"SELECT ingredient FROM formulas WHERE id = '".$_POST['dest']."'"));
+	
+	if($dest['ingredient'] == $_POST['ingSrcName']){
+		$response['error'] = 'Source and destination ingredients cannot be the same';
+		echo json_encode($response);
+    	return;
+	}
+	
+	$mq = "UPDATE formulas SET quantity = quantity + (SELECT quantity FROM formulas WHERE id ='".$_POST['ingSrcID']."' AND fid = '".$_POST['fid']."') WHERE id = '".$_POST['dest']."' AND fid = '".$_POST['fid']."'";
+	
+	if(mysqli_query($conn,$mq)){
+		mysqli_query($conn,"DELETE FROM formulas WHERE id = '".$_POST['ingSrcID']."' AND fid = '".$_POST['fid']."'");
+		$response['success'] = $_POST['ingSrcName'].' merged with '.$dest['ingredient'];
+	}else{
+		$response['error'] = 'Something went wrong..'.mysqli_error($conn);
+	}
+	
+	echo json_encode($response);
+    return;
+
+}
+
 //PVOnline Single Import						
 if($_POST['action'] == 'import' && $_POST['source'] == 'PVOnline' && $_POST['kind'] == 'ingredient' && $_POST['ing_id']){
 	$id = mysqli_real_escape_string($conn, $_POST['ing_id']);

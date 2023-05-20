@@ -40,12 +40,12 @@ while($fTypes_res = mysqli_fetch_array($fTypes_q)){
         <div class="btn-group">
         <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> Actions</button>
             <div class="dropdown-menu dropdown-menu-right">
-              <a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula">Add new formula</a>
-              <a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula_csv">Import from CSV</a>
+              <a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula" data-backdrop="static">Add new formula</a>
+              <a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula_csv" data-backdrop="static">Import from CSV</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula_cat">Add formula category</a>
+              <a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula_cat" data-backdrop="static">Add formula category</a>
               <div class="dropdown-divider"></div>
-        	  <a class="dropdown-item" href="#" data-toggle="modal" data-target="#export_formulas_json">Export Formulas as JSON</a>
+        	  <a class="dropdown-item" href="#" data-toggle="modal" data-target="#export_formulas_json" data-backdrop="static">Export Formulas as JSON</a>
         	  <a class="dropdown-item" href="#" data-toggle="modal" data-target="#import_formulas_json" data-backdrop="static">Import Formulas from JSON</a>
 
             </div>

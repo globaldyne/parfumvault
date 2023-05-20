@@ -1,6 +1,6 @@
-Whats New in v6.4
+Whats New in v6.5
 ----------------------
-- Fix supplier's details update modal box
-- Add available var list in SDS Html Editor
-- Added PV Online in ingredient search provider
-- Added option to import single ingredient data from pvonline
+- You can now merge similar ingredients in formula view to one and sum up their quantities
+- Rewrite ingredient replacement dialog
+- We auto add a tag with PV Version when you create a new formula
+- Various minor improvements and fixes

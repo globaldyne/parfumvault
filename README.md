@@ -53,4 +53,3 @@ For more info, please refer to:
 	
 	https://www.jbparfum.com/knowledge-base/
 
-![screen1](/screenshots/dashboard.png) 
