@@ -377,6 +377,8 @@ $('#print').click(() => {
                <?php if($pv_online['enabled'] == '1'){?>
                <li class="dropdown-header">PV Online</li> 
                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#share_to_user" data-backdrop="static">Share with someone</a>
+               <a class="dropdown-item" href="#" data-toggle="modal" data-target="#share_to_marketplace" data-backdrop="static">Publish to Marketplace</a>
+
                <div class="dropdown-divider"></div>
                <?php } ?>
             </div>
@@ -421,6 +423,42 @@ $('#print').click(() => {
 </table>
 
 <?php if($pv_online['enabled'] == '1'){?>
+
+<!--Share to marketplace-->
+<div class="modal fade" id="share_to_marketplace" tabindex="-1" role="dialog" aria-labelledby="share_to_marketplace" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Publish your formula to Marketplace</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <div id="techpreview"><div class="alert alert-warning alert-dismissible"><strong>THIS IS A TECH PREVIEW FEATURE. USE ONLY FOR TESTING.</strong></div></div>
+      <div id="shareMsg"></div>
+        <table width="100%" border="0">
+          <tr>
+	       <td height="31" colspan="2"><p>You can publish your formula to the Marketplace so other users can download it.</p>
+            </td>
+          </tr>
+	    
+	     <tr>
+	       <td valign="top">Comments:</td>
+	       <td><textarea name="pvShareComment" id="pvShareComment" cols="45" rows="5" placeholder="Short description of your formula or any other comments" class="form-control"><?=$meta['notes']?></textarea></td>
+          </tr>
+          
+        </table>
+	    <div class="modal-footer">
+	      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+	      <input type="submit" name="button" class="btn btn-primary" id="shareToMarket" value="Publish formula">
+        </div>
+    </div>
+  </div>
+ </div>
+</div>
+
+
 <!--Share with a user-->
 <div class="modal fade" id="share_to_user" tabindex="-1" role="dialog" aria-labelledby="share_to_user" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">

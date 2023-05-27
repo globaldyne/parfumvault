@@ -107,7 +107,7 @@ $json_fids = json_encode($result_fids);
 ?>
 <script type="text/javascript" language="javascript" >
 
-var arrayFIDS = <?php echo $json_fids; ?>
+const arrayFIDS = <?php echo $json_fids; ?> || '0';
 
 
 $.fn.dataTable.ext.errMode = 'none';
@@ -153,7 +153,7 @@ var tableMarket = $("#all-table-market").DataTable({
 	   language: {
 		  loadingRecords: '&nbsp;',
 		  processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Blending...</span>',
-		  emptyTable: "No formulas found.",
+		  emptyTable: '<div class="alert alert-warning"><strong>No formulas found in Marketplace, please come back later.</strong></div>',
 		  searchPlaceholder: 'Formula name..',
 		  search: "Search for formula:"
         },
@@ -242,15 +242,14 @@ function name(data, type, row){
 }
 
 function status(data, type, row, meta){
-	console.log(arrayFIDS);
-	//if(arrayFIDS.contains(row.fid)){
-	if($.inArray(row.fid, arrayFIDS)){
-		data = '<span class="label pv-label label-md label-success">Downloaded</span>';
+	
+	if ( arrayFIDS.includes(row.fid)) {	
+		data = '<span class="label pv-label label-md label-success"><strong>Downloaded</strong></span>';
 	}else{
-		data = '<span class="label pv-label label-md label-warning">NEW!</span>';
+		data = '<span class="label pv-label label-md label-warning"><strong>NEW!!!</strong></span>';
 	}
+	
 	return data;
-
 }
 
 function actions(data, type, row, meta){

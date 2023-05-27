@@ -42,7 +42,7 @@ if($_POST['action'] == 'import' && $_POST['kind'] == 'formula'){
       	foreach ($row as $key=>$val) {
       		$insertPairs[addslashes($key)] = addslashes($val);
       	}
-      $insertVals = '"'.$newFid.'",'.'"'.$jsonData['meta']['name'].'",'.'"' . implode('","', array_values($insertPairs)) . '"';
+      $insertVals = '"'.$jsonData['meta']['fid'].'",'.'"'.$jsonData['meta']['name'].'",'.'"' . implode('","', array_values($insertPairs)) . '"';
    
       $jsql = "INSERT INTO formulas (`fid`,`name`,`ingredient`,`concentration`,`dilutant`,`quantity`,`notes`) VALUES ({$insertVals});";
        $qIns.= mysqli_query($conn,$jsql);
@@ -50,7 +50,7 @@ if($_POST['action'] == 'import' && $_POST['kind'] == 'formula'){
 	}
 	
     if($qIns){
-		$response['success'] = $_POST['localName'].' formula imported!';
+		$response['success'] = $jsonData['meta']['name'].' formula imported!';
     }else{
 		$response['error'] = 'Unable to import the formula '.mysqli_error($conn);
     }
