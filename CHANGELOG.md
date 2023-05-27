@@ -1,6 +1,9 @@
 # CHANGELOG
 ### Version 6.6
 - Set default value for total cost and concentration to 0 when formula is empty
+- Add PV Online MarketPlace - BETA
+- Purpose class removed from formulas view main table
+- Fix sorting in IFRA library
 
 ### Version 6.5
 - Remove screenshots directory

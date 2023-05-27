@@ -1,0 +1,1 @@
+ALTER TABLE `formulasMetaData` ADD `src` INT NOT NULL DEFAULT '0' COMMENT '0 = pvLocal, 1 = pvMarket' AFTER `rating`; 
