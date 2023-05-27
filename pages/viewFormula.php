@@ -430,30 +430,34 @@ $('#print').click(() => {
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Publish your formula to Marketplace</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
       </div>
       <div class="modal-body">
-      <div id="techpreview"><div class="alert alert-warning alert-dismissible"><strong>THIS IS A TECH PREVIEW FEATURE. USE ONLY FOR TESTING.</strong></div></div>
-      <div id="shareMsg"></div>
-        <table width="100%" border="0">
-          <tr>
-	       <td height="31" colspan="2"><p>You can publish your formula to the Marketplace so other users can download it.</p>
-            </td>
-          </tr>
-	    
-	     <tr>
-	       <td valign="top">Comments:</td>
-	       <td><textarea name="pvShareComment" id="pvShareComment" cols="45" rows="5" placeholder="Short description of your formula or any other comments" class="form-control"><?=$meta['notes']?></textarea></td>
-          </tr>
-          
-        </table>
-	    <div class="modal-footer">
-	      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-	      <input type="submit" name="button" class="btn btn-primary" id="shareToMarket" value="Publish formula">
-        </div>
-    </div>
+      <div id="shareMrktMsg"></div>
+      <div id="techpreview"><div class="alert alert-warning"><strong>THIS IS A TECH PREVIEW FEATURE. USE ONLY FOR TESTING.</strong></div></div>
+      <div class="dropdown-divider"></div>
+      <div><strong>Please confirm the options bellow:</strong></div>
+      <div class="dropdown-divider"></div>
+
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="checkbox" id="confirmPersonal">
+              <label class="form-check-label" for="confirmPersonal">I acknowledge that my name will be published to the Marketplace with the formula</label>
+            </div>
+            
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="checkbox" id="confirmDist">
+              <label class="form-check-label" for="confirmDist">I have the rights to distribute formula <?=$f_name?></label>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Comments:</label>
+                <textarea name="comments" id="comments" rows="3" class="form-control"></textarea>
+            </div>
+            <div class="dropdown-divider"></div>
+            <div class="modal-footer">
+             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+             <input type="submit" name="button" class="btn btn-primary" id="confirm-pub-formula" value="Publish formula">
+           </div>
+      	</div>
   </div>
  </div>
 </div>
@@ -465,12 +469,9 @@ $('#print').click(() => {
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Share with a PV Online user</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
       </div>
       <div class="modal-body">
-      <div id="techpreview"><div class="alert alert-warning alert-dismissible"><strong>THIS IS A TECH PREVIEW FEATURE. USE ONLY FOR TESTING.</strong></div></div>
+      <div id="techpreview"><div class="alert alert-warning"><strong>THIS IS A TECH PREVIEW FEATURE. USE ONLY FOR TESTING.</strong></div></div>
       <div id="shareMsg"></div>
         <table width="100%" border="0">
           <tr>
@@ -1175,6 +1176,30 @@ $('#invToPV').click(function() {
 				}
 			
 		  	$('#invMsg').html(rmsg);
+		}
+	  });
+
+});
+
+$('#confirm-pub-formula').click(function() {
+	$.ajax({
+		url: '/pages/pvonline.php', 
+		type: 'POST',
+		data: {
+			action: 'sharePVMarket',
+			fid: '<?=$fid?>',
+			confirmPersonal: $("#confirmPersonal").is(":checked"),
+			confirmDist: $("#confirmDist").is(":checked"),
+			},
+		dataType: 'json',
+		success: function (data) {
+				if(data.error){
+					var rmsg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
+				}else if(data.success){
+					var rmsg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
+				}
+			
+		  	$('#shareMrktMsg').html(rmsg);
 		}
 	  });
 

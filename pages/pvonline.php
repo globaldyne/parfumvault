@@ -9,6 +9,28 @@ require_once(__ROOT__.'/inc/product.php');
 require_once(__ROOT__.'/func/pvOnline.php');
 require_once(__ROOT__.'/func/pvFileGet.php');
 
+//PUBLISH TO MARKETPLACE
+
+if($_POST['action'] == 'sharePVMarket'){
+	
+	if($_POST['confirmPersonal'] == "false"){
+	  $response['error'] = 'Please confirm you acknowledge that your personal details will be shared with the formula';
+	  echo json_encode($response);
+	  return;
+	}
+	
+	if($_POST['confirmDist'] == "false"){
+	  $response['error'] = 'Please confirm you have the rifgts to distribute the formula';
+	  echo json_encode($response);
+	  return;
+	}
+	
+	$response['success'] = 'ok';
+	echo json_encode($response);
+	return;
+}
+
+
 //IMPORT MARKETPLACE FORMULA
 if($_POST['action'] == 'import' && $_POST['kind'] == 'formula'){
 	
