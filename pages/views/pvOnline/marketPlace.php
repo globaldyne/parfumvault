@@ -99,12 +99,11 @@
  </div>
 </div>
 <?php
-if($qPVfids = mysqli_query($conn,"SELECT fid FROM formulasMetaData WHERE src = '1'")){
-	while ($rPVFIDS = mysqli_fetch_array($qPVfids)){
-		$result_fids[] = $rPVFIDS['fid'];	
-	}
-	$json_fids = json_encode($result_fids);
+$qPVfids = mysqli_query($conn,"SELECT fid FROM formulasMetaData WHERE src = '1'");
+while ($rPVFIDS = mysqli_fetch_array($qPVfids)){
+	$result_fids[] = $rPVFIDS['fid'];	
 }
+$json_fids = json_encode($result_fids);
 ?>
 <script type="text/javascript" language="javascript" >
 
