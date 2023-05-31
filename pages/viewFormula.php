@@ -433,31 +433,43 @@ $('#print').click(() => {
       </div>
       <div class="modal-body">
       <div id="shareMrktMsg"></div>
-      <div id="techpreview"><div class="alert alert-warning"><strong>THIS IS A TECH PREVIEW FEATURE. USE ONLY FOR TESTING.</strong></div></div>
-      <div class="dropdown-divider"></div>
-      <div><strong>Please confirm the options bellow:</strong></div>
-      <div class="dropdown-divider"></div>
-
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="checkbox" id="confirmPersonal">
-              <label class="form-check-label" for="confirmPersonal">I acknowledge that my name will be published to the Marketplace with the formula</label>
+      <div id="modal-cont">
+          <div id="techpreview"><div class="alert alert-warning"><strong>THIS IS A TECH PREVIEW FEATURE. USE ONLY FOR TESTING.</strong></div></div>
+          <div class="dropdown-divider"></div>
+          <div><strong>Please confirm the options bellow:</strong></div>
+          <div class="dropdown-divider"></div>
+			    <div class="row">
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="checkbox" id="confirmPersonal">
+                      <label class="form-check-label" for="confirmPersonal">I acknowledge that my name will be published to the Marketplace with the formula</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="checkbox" id="confirmDist">
+                      <label class="form-check-label" for="confirmDist">I have the rights to distribute <?=$f_name?> formula</label>
+                    </div>
+                </div>
+	             <div class="row">
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="checkbox" id="confirmTerms">
+                      <label class="form-check-label" for="confirmTerms">I agree to the <a href="https://www.jbparfum.com/privacy-policy/" target="_blank">terms and services</a></label>
+                    </div>
+                </div>
+                
+                <div class="dropdown-divider"></div>
+                <div class="form-group">
+                    <label class="form-label">Comments:</label>
+                    <textarea name="comments" id="comments" rows="3" class="form-control"></textarea>
+                </div>
+                
+                <div class="dropdown-divider"></div>
+                <div class="modal-footer">
+                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                 <input type="submit" name="button" class="btn btn-primary" id="confirm-pub-formula" value="Publish formula">
+               </div>
             </div>
-            
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="checkbox" id="confirmDist">
-              <label class="form-check-label" for="confirmDist">I have the rights to distribute formula <?=$f_name?></label>
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">Comments:</label>
-                <textarea name="comments" id="comments" rows="3" class="form-control"></textarea>
-            </div>
-            <div class="dropdown-divider"></div>
-            <div class="modal-footer">
-             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-             <input type="submit" name="button" class="btn btn-primary" id="confirm-pub-formula" value="Publish formula">
-           </div>
-      	</div>
+      </div>
   </div>
  </div>
 </div>
@@ -1188,15 +1200,18 @@ $('#confirm-pub-formula').click(function() {
 		data: {
 			action: 'sharePVMarket',
 			fid: '<?=$fid?>',
+			comments: $("#comments").val(),
 			confirmPersonal: $("#confirmPersonal").is(":checked"),
 			confirmDist: $("#confirmDist").is(":checked"),
+			confirmTerms: $("#confirmTerms").is(":checked"),
 			},
 		dataType: 'json',
 		success: function (data) {
 				if(data.error){
 					var rmsg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
 				}else if(data.success){
-					var rmsg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
+					$("#modal-cont").hide();
+					var rmsg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="modal" aria-label="close">x</a>'+data.success+'</div>';
 				}
 			
 		  	$('#shareMrktMsg').html(rmsg);

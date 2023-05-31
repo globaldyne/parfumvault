@@ -15,7 +15,7 @@
                     	<th>Formula Name</th>
                         <th>Status</th>
                     	<th>Author</th>
-                    	<th>Cost</th>
+                    	<th>License</th>
                     	<th>Published</th>
                     	<th>Actions</th>
                 	</tr>
@@ -143,7 +143,7 @@ var tableMarket = $("#all-table-market").DataTable({
 	    	{ data : 'name', title: 'Formula Name', render: name},
 			{ data : null, title: 'Status', render: status},
 	    	{ data : 'author', title: 'Author'},
-	   		{ data : 'cost', title: 'Cost', render: cost},
+	   		{ data : 'cost', title: 'License', render: cost},
 	   		{ data : 'created_at', title: 'Published'},
 	   		{ data : null, title: 'Actions', render: actions},				   
 	  	],
@@ -211,9 +211,10 @@ tableMarket.on( 'draw', function () {
 
 function format ( d ) {		
 
-    details = '<strong>Description:</strong><br><span class="formula_details">'+d.notes+
-		'</span><br><strong>Published:</strong><br><span class="formula_details">'+d.created_at+
-		'</span><br><strong>Updated:</strong><br><span class="formula_details">'+d.updated_at+'</span>' + 
+    details = '<strong>Description:</strong><br><span class="formula_details">'+d.notes +
+		'</span><br><strong>Published:</strong><br><span class="formula_details">'+d.created_at +
+		'</span><br><strong>Updated:</strong><br><span class="formula_details">'+d.updated_at+'</span>' +
+		'</span><br><strong>Downloads:</strong><br><span class="formula_details">'+d.downloads+'</span>' +
 		'<br><strong>Labels:</strong><br>';
 
 	for (var key in d.labels) {

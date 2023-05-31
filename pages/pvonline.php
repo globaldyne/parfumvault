@@ -13,6 +13,12 @@ require_once(__ROOT__.'/func/pvFileGet.php');
 
 if($_POST['action'] == 'sharePVMarket'){
 	
+	if(empty($_POST['fid'])){
+	  $response['error'] = 'FID is missing';
+	  echo json_encode($response);
+	  return;
+	}
+	
 	if($_POST['confirmPersonal'] == "false"){
 	  $response['error'] = 'Please confirm you acknowledge that your personal details will be shared with the formula';
 	  echo json_encode($response);
@@ -20,12 +26,73 @@ if($_POST['action'] == 'sharePVMarket'){
 	}
 	
 	if($_POST['confirmDist'] == "false"){
-	  $response['error'] = 'Please confirm you have the rifgts to distribute the formula';
+	  $response['error'] = 'Please confirm you have the rights to distribute the formula';
 	  echo json_encode($response);
 	  return;
 	}
 	
-	$response['success'] = 'ok';
+	if($_POST['confirmTerms'] == "false"){
+	  $response['error'] = 'Please confirm you have read Terms and Conditions document';
+	  echo json_encode($response);
+	  return;
+	}
+	
+	$qMeta = mysqli_fetch_array(mysqli_query($conn, "SELECT id, name, product_name, profile, sex, defView, catClass, finalType, status FROM formulasMetaData WHERE fid = '".$_POST['fid']."'"));
+	
+	if(mysqli_num_rows(mysqli_query($conn,"SElECT ingredient FROM formulas WHERE fid = '".$_POST['fid']."'")) == FALSE) {
+		$response['error'] = 'Formula cannot be published as its currently empty';
+		echo json_encode($response);
+		return;
+	}
+
+									
+	$q = mysqli_query($conn, "SELECT name,ingredient,concentration,dilutant,quantity,notes FROM formulas WHERE fid = '".$_POST['fid']."'");
+	
+	while($formula = mysqli_fetch_array($q)){
+		$r[] = $formula;
+	}
+	
+	$qTags = mysqli_query($conn, "SELECT tag_name FROM formulasTags WHERE formula_id = '".$qMeta['id']."'");
+	
+	while($tags = mysqli_fetch_array($qTags)){
+		$t[] = $tags;
+	}
+	
+	$credits = ' This formula authored by '.$user['fullName'];
+	$comments = $_POST['comments'].$credits;
+	
+	$data = [
+		'src' => $product,
+		'version' => $ver,
+		'confirmPersonal' => $_POST['confirmPersonal'],
+		'confirmDist' => $_POST['confirmDist'],
+		'confirmTerms' => $_POST['confirmTerms'],
+		'meta' => [
+			'fid' => (string)$_POST['fid'],
+			'notes' => $comments,
+			'name' => (string)$qMeta['name'],
+			'product_name' => (string)$qMeta['product_name'],
+			'profile' => (string)$qMeta['profile'],
+			'sex' => (string)$qMeta['sex'],
+			'defView' => (int)$qMeta['defView'],
+			'catClass' => (string)$qMeta['catClass'],
+			'finalType' => (int)$qMeta['finalType'],
+			'status' => (int)$qMeta['status']
+		],
+		'tags' => $t,
+		'data' => $r
+	];
+	
+	
+	$params = "?username=".$pv_online['email']."&password=".$pv_online['password']."&do=MarketPlace&action=pub";
+	$req = json_decode(pvUploadData($pvOnlineAPI.$params, json_encode($data)));		
+
+	if($req->success){
+		$response['success'] = $req->success;
+	}else{
+		$response['error'] = $req->error;
+	}
+	
 	echo json_encode($response);
 	return;
 }
@@ -171,11 +238,11 @@ if($_POST['action'] == 'report' && $_POST['src'] == 'pvMarket'){
 			
 //INVITE TO PV ONLINE
 if($_POST['action'] == 'invToPv'){
-	//if(empty($_POST['invEmail']) || empty($_POST['invName'])){
-	//	$response['error'] = 'Email and name cannot be empty';
-	//	echo json_encode($response);
-	//	return;
-	//}
+	if(empty($_POST['invEmail']) || empty($_POST['invName'])){
+		$response['error'] = 'Email and name cannot be empty';
+		echo json_encode($response);
+		return;
+	}
 	$invEmail = base64_encode(mysqli_real_escape_string($conn, $_POST['invEmail']));
 	$invName = base64_encode(mysqli_real_escape_string($conn, $_POST['invName']));
 
@@ -259,7 +326,7 @@ if($_POST['action'] == 'share' && $_POST['fid']){
 	return;
 }
 
-//IMPORT SHARED FORMULAS ON PV ONLINE
+//IMPORT SHARED FORMULA FROM PV ONLINE
 if($_POST['action'] == 'importShareFormula' && $_POST['fid']){
 	if(empty($_POST['localName'])){
 		$response['error'] = 'Formula name cannot be empty';

@@ -212,7 +212,23 @@ if($_POST['manage'] == 'print'){
 
 //PV ONLINE
 if($_POST['manage'] == 'pvonline'){
+	
+	if($_POST['isContactable']) {
+		$state = (int)$_POST['state'];
+		
+		$params = "?username=".$pv_online['email']."&password=".$pv_online['password']."&do=isContactable&state=$state";
+        $req = json_decode(pvUploadData($pvOnlineAPI.$params, null));
 
+		if($req){
+			$response['success'] = $req->success;
+		}else{
+			$response['error'] = 'Unable to update '.$req->error;
+		}
+		
+		echo json_encode($response);
+		return;	
+	}
+	
 	if($_POST['email_alerts']) {
 		$state = (int)$_POST['new_ing_status'];
 		
