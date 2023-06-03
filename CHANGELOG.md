@@ -5,6 +5,7 @@
 - Purpose class removed from formulas view main table
 - Fix sorting in IFRA library
 - Update compatibility with PV Online API v2.3
+- Added Dockerfile and scripts
 
 ### Version 6.5
 - Remove screenshots directory
