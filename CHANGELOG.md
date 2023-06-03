@@ -4,6 +4,7 @@
 - Add PV Online MarketPlace - BETA
 - Purpose class removed from formulas view main table
 - Fix sorting in IFRA library
+- Update compatibility with PV Online API v2.3
 
 ### Version 6.5
 - Remove screenshots directory

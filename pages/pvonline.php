@@ -400,9 +400,9 @@ if($_POST['action'] == 'import' && $_POST['items']){
 
 	$i = 0;
     foreach ($items as &$item) {
-		$jAPI = $pvOnlineAPI.'?do='.$item;
+		$jAPI = $pvOnlineAPI.'?do='.$item.'&isAll=1';
         $jsonData = json_decode(pv_file_get_contents($jAPI), true);
-
+		
         if($jsonData['error']){
 			$response['error'] = 'Error connecting or retrieving data from PV Online '.$jsonData['error'];
 			echo json_encode($response);
