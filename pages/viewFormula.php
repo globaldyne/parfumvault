@@ -441,7 +441,13 @@ $('#print').click(() => {
 			    <div class="row">
                     <div class="form-check form-check-inline">
                       <input class="form-check-input" type="checkbox" id="confirmPersonal">
-                      <label class="form-check-label" for="confirmPersonal">I acknowledge that my name will be published to the Marketplace with the formula</label>
+                      <label class="form-check-label" for="confirmPersonal">I acknowledge that my name will be published to the Marketplace along with the full formula</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="checkbox" id="confirmPublic">
+                      <label class="form-check-label" for="confirmPublic">I acknowledge that my formula will publicly available</label>
                     </div>
                 </div>
                 <div class="row">
@@ -463,7 +469,6 @@ $('#print').click(() => {
                     <textarea name="comments" id="comments" rows="3" class="form-control"></textarea>
                 </div>
                 
-                <div class="dropdown-divider"></div>
                 <div class="modal-footer">
                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                  <input type="submit" name="button" class="btn btn-primary" id="confirm-pub-formula" value="Publish formula">
@@ -1204,6 +1209,7 @@ $('#confirm-pub-formula').click(function() {
 			confirmPersonal: $("#confirmPersonal").is(":checked"),
 			confirmDist: $("#confirmDist").is(":checked"),
 			confirmTerms: $("#confirmTerms").is(":checked"),
+			confirmPublic: $("#confirmPublic").is(":checked"),
 			},
 		dataType: 'json',
 		success: function (data) {

@@ -25,6 +25,12 @@ if($_POST['action'] == 'sharePVMarket'){
 	  return;
 	}
 	
+	if($_POST['confirmPublic'] == "false"){
+	  $response['error'] = 'Please confirm you acknowledge that your formula will be publicly available.';
+	  echo json_encode($response);
+	  return;
+	}
+	
 	if($_POST['confirmDist'] == "false"){
 	  $response['error'] = 'Please confirm you have the rights to distribute the formula';
 	  echo json_encode($response);
@@ -66,6 +72,7 @@ if($_POST['action'] == 'sharePVMarket'){
 		'version' => $ver,
 		'confirmPersonal' => $_POST['confirmPersonal'],
 		'confirmDist' => $_POST['confirmDist'],
+		'confirmPublic' => $_POST['confirmPublic'],
 		'confirmTerms' => $_POST['confirmTerms'],
 		'meta' => [
 			'fid' => (string)$_POST['fid'],

@@ -132,7 +132,7 @@ $(document).ready(function() {
 		bootbox.dialog({
 		   title: "Confirm acccount deletion",
 		   message : '<strong>Permanently delete my account from PV Online?</strong>'+
-		   			'<p class="alert-danger">Please note: This action <strong>cannot be reverted.</strong></p>',
+		   			'<p>You are about to delete your PVOnline account.</p><p>This will remove ANY data related to your account, including any formulas you might have shared with others and not yet downloaded or any formulas you might have published in PVMarket. Will also remove any ingredients you might have uploaded.</p><p class="alert-danger">Please note: <strong> This action cannot be reverted.</strong></p>',
 		   buttons :{
 			   main: {
 				   label : "DELETE",
