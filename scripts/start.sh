@@ -1,22 +1,7 @@
 #!/bin/bash
 
-MYSQL_DB="pvault"
-MYSQL_USER="pvault"
-MYSQL_PASS="pvault"
-DATADIR="/var/lib/mysql"
-
 if [ ! -d "/config" ]; then
 	mkdir -p /config
-fi
-
-if [ ! -d "$DATADIR/mysql" ]; then
-	echo "Initializing DB"
-	mysql_install_db --user=mysql --ldata=/var/lib/mysql > /tmp/my.log 2>&1
-	/usr/bin/mysqld_safe  --init-file=/tmp/mysql-first-time.sql & >> /tmp/my.log 2>&1
-	echo "Waiting for DB to start"
-	sleep 10
-	echo "Importing default schema"
-	mysql -u$MYSQL_USER -p$MYSQL_PASS $MYSQL_DB < /html/db/pvault.sql
 fi
 
 echo "Setting enviroment"
@@ -31,12 +16,8 @@ else
 fi
 
 echo "Setting permissions"
-chown -R mysql:mysql /var/lib/mysql
 chown -R apache:apache /html
 chown -R apache:apache /config
-
-echo "Starting DB"
-/usr/bin/mysqld_safe &
 
 echo "Starting web server"
 /usr/sbin/php-fpm

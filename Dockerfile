@@ -7,7 +7,11 @@
 FROM quay.io/centos/centos:stream9
 MAINTAINER JB <john@globaldyne.co.uk>
 
+LABEL co.uk.globaldyne.component="perfumers-vault-container"  description="Perfumers Vault container image"  summary="Perfumers Vault container image Version v6.0-okd"  version="v6.0-okd"  io.k8s.description="Init Container for JBs Perfumers Vault v6.0-okd"  io.k8s.display-name="Perfumers Vault v6.0-okd Init Container"  io.openshift.tags="pvault,jb,perfumer,vault,jbpvault,v6.0-okd"  name="globaldyne/pvault"  maintainer="John Belekios"
+
 ARG git_repo=master
+ARG uid=100001
+ArG gid=100001
 
 RUN dnf install -y epel-release
 RUN dnf -y update 
@@ -20,7 +24,6 @@ RUN dnf --setopt=tsflags=nodocs -y install \
 	php-mysqlnd \
 	php-gd \
 	php-zip \
-	mariadb-server \
 	php-mbstring \
 	git \
 	python3-pip \
@@ -51,6 +54,7 @@ RUN sed -i \
         -e 's~^IndexOptions \(.*\)$~#IndexOptions \1~g' \
         -e 's~^IndexIgnore \(.*\)$~#IndexIgnore \1~g' \
 	-e 's/\/var\/www\/html/\/html/g' \
+	-e 's/Listen 80/Listen 8080/g'\
         /etc/httpd/conf/httpd.conf
 
 RUN sed -i \
@@ -66,18 +70,16 @@ RUN sed -i \
 
 ENV LANG en_GB.UTF-8
 
-
 ADD . /html
 
 ADD /scripts/start.sh /start.sh
-ADD /scripts/pvdb.sh /usr/bin/pvdb.sh
 ADD /scripts/reset_pass.sh /usr/bin/reset_pass.sh
-ADD /scripts/mysql-first-time.sql /tmp/mysql-first-time.sql
 ADD /scripts/pv_httpd.conf /etc/httpd/conf.d/pv_httpd.conf
 
 
 WORKDIR "/html"
-EXPOSE 80
+USER ${uid}
+EXPOSE 8080
 VOLUME ["/var/lib/mysql", "/html/uploads", "/config"]
 CMD ["/bin/bash", "/start.sh"]
 
