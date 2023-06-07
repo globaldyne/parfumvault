@@ -8,6 +8,9 @@ require_once(__ROOT__.'/inc/settings.php');
 
 $row = $_POST['start']?:0;
 $limit = $_POST['length']?:10;
+$order_by  = $_POST['order_by']?:'name';
+$order  = $_POST['order_as']?:'ASC';
+$extra = "ORDER BY ".$order_by." ".$order;
 
 $defCatClass = $settings['defCatClass'];
 $defImage = base64_encode(file_get_contents(__ROOT__.'/img/pv_molecule.png'));
@@ -18,7 +21,7 @@ if($s != ''){
    $f = "WHERE 1 AND (name LIKE '%".$s."%' OR cas LIKE '%".$s."%' OR synonyms LIKE '%".$s."%' OR risk LIKE '%".$s."%')";
 }
 
-$q = mysqli_query($conn, "SELECT * FROM IFRALibrary $f LIMIT $row, $limit");
+$q = mysqli_query($conn, "SELECT * FROM IFRALibrary $f $extra LIMIT $row, $limit");
 while($res = mysqli_fetch_array($q)){
     $ifra[] = $res;
 }

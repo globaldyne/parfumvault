@@ -1107,3 +1107,8 @@ table#tdDataPending.dataTable thead:hover {
   display: inline;
   font-weight: bold;
 }
+
+.pv-label {
+  min-width: 100px !important;
+  display: inline-block !important
+}
