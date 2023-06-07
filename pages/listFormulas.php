@@ -81,7 +81,6 @@ if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))
                     <th>Product Name</th>
                     <th>Status</th>
                     <th>Ingredients</th>
-                    <th>Class</th>
                     <th>Created</th>
                     <th>Made</th>
                     <th>Rating</th>
@@ -99,7 +98,6 @@ if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))
                     <th>Product Name</th>
                     <th>Status</th>
                     <th>Ingredients</th>
-                    <th>Class</th>
                     <th>Created</th>
                     <th>Made</th>
                     <th>Rating</th>
@@ -150,7 +148,6 @@ function initTable(tableId, src) {
 			   { data : 'product_name', title: 'Product Name', render: pName},
 			   { data : 'status', title: 'Status', render: fStatus},
     		   { data : 'ingredients', title: 'Ingredients'},
-			   { data : 'catClass', title: 'Class'},
 			   { data : 'isMade', title: 'Made', render: fMade},
    			   { data : 'rating', title: 'Rating', render: rating},
 			   { data : 'created', title: 'Created'},
@@ -168,7 +165,7 @@ function initTable(tableId, src) {
 			},
            order: [0,'asc'],
            columnDefs: [
-				{ orderable: false, targets: [3, 8] },
+				{ orderable: false, targets: [2, 3, 7] },
 				{ className: 'text-center', targets: '_all' },				  
 				],
 	    destroy: true,
@@ -225,22 +222,22 @@ function fMade(data, type, row, meta){
 
 function fStatus(data, type, row, meta){
 	if(row.status == 0){
-		var data = '<span class="label label-default">Scheduled</span>';
+		var data = '<span class="pv-label label label-default">Scheduled</span>';
 	}
 	if(row.status == 1){
-		var data = '<span class="label label-primary">Under Development</span>';
+		var data = '<span class="pv-label label label-primary">Under Development</span>';
 	}
 	if(row.status == 2){
-		var data = '<span class="label label-info">Under Evaluation</span>';
+		var data = '<span class="pv-label label label-info">Under Evaluation</span>';
 	}
 	if(row.status == 3){
-		var data = '<span class="label label-success">In Production</span>';
+		var data = '<span class="pv-label label label-success">In Production</span>';
 	}
 	if(row.status == 4){
-		var data = '<span class="label label-warning">To be reformulated</span>';
+		var data = '<span class="pv-label label label-warning">To be reformulated</span>';
 	}
 	if(row.status == 5){
-		var data = '<span class="label label-danger">Failure</span>';
+		var data = '<span class="pv-label label label-danger">Failure</span>';
 	}
 	
 	return data;

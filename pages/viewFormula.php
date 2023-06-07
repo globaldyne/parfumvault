@@ -377,6 +377,8 @@ $('#print').click(() => {
                <?php if($pv_online['enabled'] == '1'){?>
                <li class="dropdown-header">PV Online</li> 
                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#share_to_user" data-backdrop="static">Share with someone</a>
+               <a class="dropdown-item" href="#" data-toggle="modal" data-target="#share_to_marketplace" data-backdrop="static">Publish to Marketplace</a>
+
                <div class="dropdown-divider"></div>
                <?php } ?>
             </div>
@@ -421,18 +423,72 @@ $('#print').click(() => {
 </table>
 
 <?php if($pv_online['enabled'] == '1'){?>
+
+<!--Share to marketplace-->
+<div class="modal fade" id="share_to_marketplace" tabindex="-1" role="dialog" aria-labelledby="share_to_marketplace" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Publish your formula to Marketplace</h5>
+      </div>
+      <div class="modal-body">
+      <div id="shareMrktMsg"></div>
+      <div id="modal-cont">
+          <div id="techpreview"><div class="alert alert-warning"><strong>THIS IS A TECH PREVIEW FEATURE. USE ONLY FOR TESTING.</strong></div></div>
+          <div class="dropdown-divider"></div>
+          <div><strong>Please confirm the options bellow:</strong></div>
+          <div class="dropdown-divider"></div>
+			    <div class="row">
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="checkbox" id="confirmPersonal">
+                      <label class="form-check-label" for="confirmPersonal">I acknowledge that my name will be published to the Marketplace along with the full formula</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="checkbox" id="confirmPublic">
+                      <label class="form-check-label" for="confirmPublic">I acknowledge that my formula will publicly available</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="checkbox" id="confirmDist">
+                      <label class="form-check-label" for="confirmDist">I have the rights to distribute <?=$f_name?> formula</label>
+                    </div>
+                </div>
+	             <div class="row">
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="checkbox" id="confirmTerms">
+                      <label class="form-check-label" for="confirmTerms">I agree to the <a href="https://www.jbparfum.com/privacy-policy/" target="_blank">terms and services</a></label>
+                    </div>
+                </div>
+                
+                <div class="dropdown-divider"></div>
+                <div class="form-group">
+                    <label class="form-label">Comments:</label>
+                    <textarea name="comments" id="comments" rows="3" class="form-control"></textarea>
+                </div>
+                
+                <div class="modal-footer">
+                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                 <input type="submit" name="button" class="btn btn-primary" id="confirm-pub-formula" value="Publish formula">
+               </div>
+            </div>
+      </div>
+  </div>
+ </div>
+</div>
+
+
 <!--Share with a user-->
 <div class="modal fade" id="share_to_user" tabindex="-1" role="dialog" aria-labelledby="share_to_user" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Share with a PV Online user</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
       </div>
       <div class="modal-body">
-      <div id="techpreview"><div class="alert alert-warning alert-dismissible"><strong>THIS IS A TECH PREVIEW FEATURE. USE ONLY FOR TESTING.</strong></div></div>
+      <div id="techpreview"><div class="alert alert-warning"><strong>THIS IS A TECH PREVIEW FEATURE. USE ONLY FOR TESTING.</strong></div></div>
       <div id="shareMsg"></div>
         <table width="100%" border="0">
           <tr>
@@ -1137,6 +1193,34 @@ $('#invToPV').click(function() {
 				}
 			
 		  	$('#invMsg').html(rmsg);
+		}
+	  });
+
+});
+
+$('#confirm-pub-formula').click(function() {
+	$.ajax({
+		url: '/pages/pvonline.php', 
+		type: 'POST',
+		data: {
+			action: 'sharePVMarket',
+			fid: '<?=$fid?>',
+			comments: $("#comments").val(),
+			confirmPersonal: $("#confirmPersonal").is(":checked"),
+			confirmDist: $("#confirmDist").is(":checked"),
+			confirmTerms: $("#confirmTerms").is(":checked"),
+			confirmPublic: $("#confirmPublic").is(":checked"),
+			},
+		dataType: 'json',
+		success: function (data) {
+				if(data.error){
+					var rmsg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
+				}else if(data.success){
+					$("#modal-cont").hide();
+					var rmsg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="modal" aria-label="close">x</a>'+data.success+'</div>';
+				}
+			
+		  	$('#shareMrktMsg').html(rmsg);
 		}
 	  });
 

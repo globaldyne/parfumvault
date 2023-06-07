@@ -11,7 +11,6 @@ $defCatClass = $settings['defCatClass'];
 <div id="content-wrapper" class="d-flex flex-column">
 <?php require_once(__ROOT__.'/pages/top.php'); ?>
         <div class="container-fluid">
-<?php echo $msg; ?>
           <div>
           <div class="card shadow mb-4">
             <div class="card-header py-3">
@@ -153,7 +152,13 @@ $(document).ready(function() {
 		url: '/core/list_IFRA_data.php',
 		type: 'POST',
 		dataType: 'json',
-		},
+		data: function(d) {
+			if (d.order.length>0){
+				d.order_by = d.columns[d.order[0].column].data
+				d.order_as = d.order[0].dir
+			}
+		 },
+	    },
 	   columns: [
 			{ data : 'image', title: 'Structure', render: image },
             { data : 'name', title: 'Name', render: name },

@@ -43,12 +43,12 @@ if(isset($_GET['stats_only'])){
 	
 	$s['formula_name'] = (string)$meta['name'];
 	$s['formula_description'] = (string)$meta['notes'];
-	$s['top'] = (float)calcPerc($id, 'Top', $settings['top_n'], $conn);
-	$s['top_max'] = (float)$settings['top_n'];
-	$s['heart'] = (float)calcPerc($id, 'Heart', $settings['heart_n'], $conn);
+	$s['top'] = (float)calcPerc($id, 'Top', $settings['top_n'], $conn)?: 0;
+	$s['top_max'] = (float)$settings['top_n']?: 0;
+	$s['heart'] = (float)calcPerc($id, 'Heart', $settings['heart_n'], $conn)?: 0;
 	$s['heart_max'] = (float)$settings['heart_n'];
-	$s['base'] = (float)calcPerc($id, 'Base', $settings['base_n'], $conn);
-	$s['base_max'] = (float)$settings['base_n'];
+	$s['base'] = (float)calcPerc($id, 'Base', $settings['base_n'], $conn)?: 0;
+	$s['base_max'] = (float)$settings['base_n'] ?: 0;
 
 	$response['stats'] = $s;
 
@@ -198,10 +198,10 @@ $m['total_quantity'] =  ml2l($mg['total_mg'], $settings['qStep'], $settings['mUn
 $m['quantity_unit'] = (string)$settings['mUnit'];
 $m['cat_class'] = (string)$defCatClass;
 $m['currency'] = (string)$settings['currency'];
-if($total_cost){
-	$m['total_cost'] = number_format((float)array_sum($total_cost), $settings['qStep']);
-	$m['concentration'] = number_format((float)array_sum($conc_f), $settings['qStep']);
-}
+//if($total_cost){
+	$m['total_cost'] = number_format((float)array_sum($total_cost)?: 0, $settings['qStep']);
+	$m['concentration'] = number_format((float)array_sum($conc_f)?: 0, $settings['qStep']);
+//}
 $m['product_concentration'] = (int)$meta['finalType'];
 $m['formula_name'] = (string)$meta['name'];
 $m['formula_fid'] = (string)$meta['fid'];

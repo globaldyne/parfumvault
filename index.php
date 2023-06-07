@@ -294,9 +294,9 @@ function chkUpdate() {
         </li>
       <hr class="sidebar-divider d-none d-md-block">
         <li class="nav-item">
-        <a class="nav-link" href="?do=settings">
-          <i class="fas fa-fw fa-cog"></i>
-          <span>Settings</span></a>
+        <a class="nav-link" href="/?do=marketplace">
+          <i class="fas fa-fw fa-store"></i>
+          <span>Marketplace</span></a>
        </li>
       
       <hr class="sidebar-divider d-none d-md-block">
@@ -308,6 +308,8 @@ function chkUpdate() {
 			require_once(__ROOT__.'/pages/ingredients.php');
 		}elseif($_GET['do'] == 'settings'){
 			require_once(__ROOT__.'/pages/settings.php');
+		}elseif($_GET['do'] == 'marketplace'){
+			require_once(__ROOT__.'/pages/views/pvOnline/marketPlace.php');
 		}elseif($_GET['do'] == 'statistics'){
 			require_once(__ROOT__.'/pages/statistics.php');
 		}elseif($_GET['do'] == 'IFRA'){

@@ -37,6 +37,12 @@ $auth = pvOnlineValAcc($pvOnlineAPI, $user['email'], $user['password'], $ver);
             <input name="new_ing_status" type="checkbox" id="new_ing_status" value="1"/>
           </div>
         </div>
+        <div class="row">
+          <label class="col-sm-1 col-form-label pv_point_gen" data-toggle="tooltip" data-placement="right" title="When enabled makes you contactable via PV Online by other users, this will allow users to get in touch if you choose to share a formula in the Marketplace">Make me contactable by other PV Online users:</label>
+          <div class="col-sm-2">
+            <input name="isContactable" type="checkbox" id="isContactable" value="1"/>
+          </div>
+        </div>
        <hr>
       <div class="row">
         <label class="col-sm-1 col-form-label pv_point_gen" data-toggle="tooltip" data-placement="top" title="Choose a nick name to represent yourself in PV Online, this can be your full name or anything else.">Nickname:</label>
@@ -103,13 +109,16 @@ $(document).ready(function() {
 		$("#nickname").prop('disabled', false);
 		$("#update-profile").prop('disabled', false);
 		$("#new_ing_status").prop('disabled', false);
-
+		$("#isContactable").prop('disabled', false);
+		
 	}else{
 		$("#sharing_status").prop('disabled', true);
 		$("#intro").prop('disabled', true);
 		$("#nickname").prop('disabled', true);
 		$("#update-profile").prop('disabled', true);
 		$("#new_ing_status").prop('disabled', true);
+		$("#isContactable").prop('disabled', true);
+
 	}
 	
 	$(function () {
@@ -123,7 +132,7 @@ $(document).ready(function() {
 		bootbox.dialog({
 		   title: "Confirm acccount deletion",
 		   message : '<strong>Permanently delete my account from PV Online?</strong>'+
-		   			'<p class="alert-danger">Please note: This action <strong>cannot be reverted.</strong></p>',
+		   			'<p>You are about to delete your PVOnline account.</p><p>This will remove ANY data related to your account, including any formulas you might have shared with others and not yet downloaded or any formulas you might have published in PVMarket. Will also remove any ingredients you might have uploaded.</p><p class="alert-danger">Please note: <strong> This action cannot be reverted.</strong></p>',
 		   buttons :{
 			   main: {
 				   label : "DELETE",
@@ -190,6 +199,8 @@ $('#pv_online_state').on('change', function() {
 					$("#nickname").prop('disabled', false);
 					$("#update-profile").prop('disabled', false);
 					$("#new_ing_status").prop('disabled', false);
+					$("#isContactable").prop('disabled', false);
+
 					getPVProfile();
 				}else if (data.success == 'in-active'){
 					$("#sharing_status").prop('disabled', true);
@@ -197,13 +208,42 @@ $('#pv_online_state').on('change', function() {
 					$("#nickname").prop('disabled', true);
 					$("#update-profile").prop('disabled', true);
 					$("#new_ing_status").prop('disabled', true);
+					$("#isContactable").prop('disabled', true);
+					
 				}
 			}
 			$('#pvOnMsg').html(rmsg);
 		}
 	});
 });
-	
+
+//ENABLE OR DISABLE CONTACTABLE
+$('#isContactable').on('change', function() {
+	if($("#isContactable").is(':checked')){
+		var val = 1;
+	}else{
+		var val = 0;
+	}
+	$.ajax({ 
+		url: '/pages/update_settings.php', 
+		type: 'POST',
+		data: {
+			manage: 'pvonline',
+			isContactable: '1',
+			state: val,
+			},
+		dataType: 'json',
+		success: function (data) {
+			if(data.error){
+				var rmsg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
+			}else if (data.success){
+				var rmsg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>User is now <strong>'+data.success+'</strong></div>';
+			}
+			$('#pvOnMsg').html(rmsg);
+		}
+	});
+});
+
 //ENABLE OR DISABLE FORMULA SHARING
 $('#new_ing_status').on('change', function() {
 	if($("#new_ing_status").is(':checked')){
@@ -313,12 +353,20 @@ function getPVProfile(){
 					$("#new_ing_status").prop('checked', false);
 				}
 				
+				if(data.userProfile.isContactable == 0){
+					$("#isContactable").prop('checked', false);
+				}
+				
 				if (data.userProfile.formulaSharing == 1){
 					$("#sharing_status").prop('checked', true);
 				}
 				
 				if(data.userProfile.newIngNotify == 1){
 					$("#new_ing_status").prop('checked', true);
+				}
+				
+				if(data.userProfile.isContactable == 1){
+					$("#isContactable").prop('checked', true);
 				}
 			}
 		},
