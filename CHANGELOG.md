@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 7.0
+- Remove functionality to upload to PV Online
 
 ### Version 6.5
 - Remove screenshots directory

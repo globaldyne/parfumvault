@@ -222,56 +222,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
     </div>
   </div>
 </div>
-<?php if($pv_online['email'] && $pv_online['password'] && $pv_online['enabled'] == '1'){?>
-<!--PV ONLINE UPLOAD-->
-<div class="modal fade" id="pv_online_upload" tabindex="-1" role="dialog" aria-labelledby="pv_online_upload" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="pv_online_upload">Upload my ingredients to PV Online</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-       <div id="pvUploadMsg"></div>
 
-      <strong>WARNING:</strong><br />
-      you are about to upload data to PV Online, please bear in mind, PV Online is a community driven database therefore your data will be available to others. Please make sure you not uploading any sensitive information. <br />
-      If PV Online database contains already an ingredient with the same name, the ingredient data will not be uploaded. <p></p>
-      Ingredients in your database: <strong><?php echo countElement("ingredients",$conn);?></strong>
-</div>
-      <div class="dropdown-divider"></div>
-      <div class="modal-body pv_exclusions">
-       <label>
-         <input name="excludeCompositions" type="checkbox" id="excludeCompositions" value="1" />
-        Exclude compositions
-      </label>
-      <label>
-      <input name="excludeSynonyms" type="checkbox" id="excludeSynonyms" value="1" />
-        Exclude synonyms
-      </label>
-      <label>
-      <input name="excludeSuppliers" type="checkbox" id="excludeSuppliers" value="1" />
-        Exclude suppliers
-      </label>
-      <label>
-         <input name="excludeNotes" type="checkbox" id="excludeNotes" value="1" />
-        Exclude notes
-      </label>
-      </div>
-	  <div class="modal-footer_2">
-	  <?php require('privacy_note.php');?>
-      </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <input type="submit" name="button" class="btn btn-primary" id="btnUpload" value="Upload">
-        </div>
-
-    </div>
-  </div>
-</div>
-<?php } ?>
 <script type="text/javascript" language="javascript" >
 list_ingredients();
 
@@ -348,40 +299,6 @@ $('#pv_online_import').on('click', '[id*=btnImport]', function () {
 	  });
 });
 
-<?php if($pv_online['email'] && $pv_online['password'] && $pv_online['enabled'] == '1'){?>
-$(".pv_exclusions input[type=checkbox]:checked").on('change', function () {
-	$('#btnUpload').show();
-	$('#btnUpload').prop('disabled', false);
-});
-
-$('#pv_online_upload').on('click', '[id*=btnUpload]', function () {
-	$('#btnUpload').prop('disabled', true);
-	$('#pvUploadMsg').html('<div class="alert alert-info"><img src="/img/loading.gif"/> Please wait, this may take a while...</div>');
-	$.ajax({
-		url: '/pages/pvonline.php', 
-		type: 'POST',
-		data: {
-			action: 'upload',
-			items: 'ingredients',
-			excludeNotes: $("#excludeNotes").is(':checked'),
-			excludeSynonyms: $("#excludeSynonyms").is(':checked'),
-			excludeCompositions: $("#excludeCompositions").is(':checked'),
-			excludeSuppliers: $("#excludeSuppliers").is(':checked')
-
-			},
-		dataType: 'json',
-		success: function (data) {
-			if(data.error){
-				var rmsg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
-			}else if(data.success){
-				var rmsg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
-				$('#btnUpload').hide();
-			}
-		  	$('#pvUploadMsg').html(rmsg);
-		}
-	  });
-});
-<?php } ?>
 </script>
 
 <script src="/js/ingredients.js"></script>

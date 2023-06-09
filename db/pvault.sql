@@ -329,9 +329,6 @@ CREATE TABLE `users` (
   `fullName` varchar(255) COLLATE utf8_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
-CREATE TABLE `pv_online` (
- `enabled` INT NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE `IFRACategories` (
  `id` int(11) NOT NULL AUTO_INCREMENT,

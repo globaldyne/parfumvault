@@ -1,0 +1,1 @@
+DROP TABLE `pv_online`;
