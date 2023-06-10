@@ -14,20 +14,6 @@ if($pv_meta['schema_ver'] < $db_ver){
           <ul class="navbar-nav vault-top ml-auto">
           <!-- Nav Item - Notifications -->
             <li class="nav-item dropdown no-arrow mx-1">
-              <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-bell fa-fw"></i>
-                <!-- Counter - Notifications -->
-                <span class="badge badge-danger badge-counter badge-counter-shared-formulas"></span>
-              </a>
-              <!-- Dropdown - Notifications -->
-              <!--
-              <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="messagesDropdown">
-				<a href="#" class="dropdown-header"><h6>PV Online</h6></a>
-                <div id="list-shared-formulas" class="dropdown-item text-gray-500"></div>
-				<div id="list-shared-formulas-footer"></div>				 
-              </div>
-            </li>
--->
              <!-- Cart -->
             <li class="nav-item dropdown no-arrow mx-1">
               <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
