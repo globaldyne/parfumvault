@@ -1,6 +1,8 @@
 # CHANGELOG
 ### Version 7.0
 - Remove functionality to upload to PV Online
+- Rewrite formula revision page
+- Move revision in formula tab section
 
 ### Version 6.5
 - Remove screenshots directory
