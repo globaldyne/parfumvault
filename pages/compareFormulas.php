@@ -2,15 +2,16 @@
 if (!defined('pvault_panel')){ die('Not Found');}
 
 if($_GET['formula_a'] && $_GET['formula_b']){
-	require(__ROOT__.'/func/compareFormulas.php');
+	require_once(__ROOT__.'/func/compareFormulas.php');
 	$id_a = $_GET['formula_a'];
 	$id_b = $_GET['formula_b'];
 
 	$meta_a = mysqli_fetch_array(mysqli_query($conn, "SELECT name,fid FROM formulasMetaData WHERE id = '$id_a'"));
+	$meta_b = mysqli_fetch_array(mysqli_query($conn, "SELECT name,fid FROM formulasMetaData WHERE fid = '$id_b'"));
 
 	if($_REQUEST['compare'] == '2'){		
 		$revision = $_GET['revision'];
-		$meta_b['name'] = base64_decode($id_b).' - Revision: '.$_GET['revision'];
+		//$meta_b['name'] = base64_decode($id_b).' - Revision: '.$_GET['revision'];
 	}
 	
 	$q_a = mysqli_query($conn, "SELECT ingredient,concentration,quantity FROM formulas WHERE fid = '".$meta_a['fid']."' ORDER BY ingredient ASC");
@@ -27,7 +28,9 @@ if($_GET['formula_a'] && $_GET['formula_b']){
 	while ($formula = mysqli_fetch_array($q_b)){
 	    $formula_b[] = $formula;
 	}
+	
 	$r = compareFormula($formula_a, $formula_b, array('ingredient','concentration','quantity'),$meta_a['name'], $meta_b['name']);
+	
 }
 ?>
 <div id="content-wrapper" class="d-flex flex-column">

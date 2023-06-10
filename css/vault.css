@@ -837,8 +837,9 @@ body {
 .add-new-ing-sel {
 	color: #337ab7;
 	display: inline-table;
-	padding: 14px;
+	padding: 14px 14px 14px 8px;
 	height: 22px;
+	font-weight: bold;
 }
 
 .select_igredient_title {
@@ -1040,6 +1041,11 @@ body {
 .mr2 {
 	margin-right: 10px;	
 }
+
+.ml2 {
+	margin-left: 10px;	
+}
+
 
 .mr3 {
 	margin: 1px 10px 0px 10px;
