@@ -11,7 +11,7 @@ if($_GET['formula_a'] && $_GET['formula_b']){
 
 	if($_REQUEST['compare'] == '2'){		
 		$revision = $_GET['revision'];
-		//$meta_b['name'] = base64_decode($id_b).' - Revision: '.$_GET['revision'];
+		$meta_b['name'] = $meta_b['name'].' - Revision: '.$_GET['revision'];
 	}
 	
 	$q_a = mysqli_query($conn, "SELECT ingredient,concentration,quantity FROM formulas WHERE fid = '".$meta_a['fid']."' ORDER BY ingredient ASC");
@@ -28,8 +28,14 @@ if($_GET['formula_a'] && $_GET['formula_b']){
 	while ($formula = mysqli_fetch_array($q_b)){
 	    $formula_b[] = $formula;
 	}
-	
 	$r = compareFormula($formula_a, $formula_b, array('ingredient','concentration','quantity'),$meta_a['name'], $meta_b['name']);
+//	echo '<pre>';
+//	print_r( $formula_a);
+//	echo '</pre>';
+//	echo '<pre>';
+//	print_r( $formula_b);
+//	print_r( $r);
+	
 	
 }
 ?>
