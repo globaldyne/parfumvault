@@ -227,10 +227,16 @@ function setProtected(status) {
 			protect: '<?=$fid?>',
 			isProtected: status,
 			},
-		dataType: 'html',
+		dataType: 'json',
 		success: function (data) {
-			$('#msgInfo').html(data);
-	        location.reload();
+			if ( data.success ) {
+				var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+				location.reload();
+				//reload_formula_data();
+			} else {
+				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + data.error + '</strong></div>';
+			}
+			$('#msgInfo').html(msg);
 		}
 	  });
 };
@@ -354,7 +360,8 @@ function fetch_revisions(){
 		url: '/pages/views/formula/revisions.php', 
 		type: 'GET',
 		data: {
-			fid: "<?=$fid?>"
+			fid: "<?=$fid?>",
+			id: "<?=$meta['id']?>"
 			},
 		dataType: 'html',
 		success: function (data) {

@@ -787,6 +787,20 @@ if($_GET['formulaMeta']){
 	return;
 }
 
+if($_GET['createRev'] == 'man'){
+	require_once(__ROOT__.'/func/createFormulaRevision.php');
+	$fid = $_GET['fid'];
+	
+	if($l = createFormulaRevision($fid,'Manually',$conn)){
+		$response["success"] = 'Revision created (If changes detected)';
+		echo json_encode($response);
+	}else{
+		$response["error"] = 'Unable to create revision, please make sure formula exists and contains at least one ingredient.';
+		echo json_encode($response);
+	}
+	return;
+}
+
 if($_GET['protect']){
 	require_once(__ROOT__.'/func/createFormulaRevision.php');
 	$fid = mysqli_real_escape_string($conn, $_GET['protect']);
@@ -794,15 +808,17 @@ if($_GET['protect']){
 	if($_GET['isProtected'] == 'true'){
 		$isProtected = '1';
 		$l = 'locked';
-		createFormulaRevision($fid,$conn);
+		createFormulaRevision($fid,'Automatic',$conn);
 	}else{
 		$isProtected = '0';
 		$l = 'unlocked';
 	}
 	if(mysqli_query($conn, "UPDATE formulasMetaData SET isProtected = '$isProtected' WHERE fid = '$fid'")){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Formula '.$l.'!</div>';
+		$response["success"] = 'Formula '.$l;
+		echo json_encode($response);
 	}else{
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Something went wrong.</div>';
+		$response["error"] = 'Something went wrong';
+		echo json_encode($response);
 	}
 	return;
 }

@@ -4,6 +4,9 @@
 - Rewrite formula revision page
 - Move revision in formula tab section
 - Update fontawesome lib to v6.4.0
+- Added an option to take a revision manually in formulas
+- Revision compare method re-written
+- Fix where used for ingredients for PHP8
 
 ### Version 6.5
 - Remove screenshots directory

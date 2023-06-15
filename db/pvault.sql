@@ -586,6 +586,7 @@ CREATE TABLE `formulasRevisions` (
  `exclude_from_summary` int(11) NOT NULL DEFAULT 0,
  `revision` int(11) NOT NULL,
  `revisionDate` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+ `revisionMethod` VARCHAR(255) DEFAULT NULL,
  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 

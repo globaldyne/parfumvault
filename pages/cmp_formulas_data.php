@@ -41,6 +41,11 @@ formula_a_table.on('draw', function () {
 	formula_a_length = formula_a_table.rows().count();
 });
 
+
+var url = '/core/full_formula_data.php?id=<?=$id_b?>';
+<?php if($_POST['revID']){ ?>
+	var url = '/core/full_revision_data.php?fid=<?=$_POST['fid']?>&revID=<?=$_POST['revID']?>';
+<?php } ?>
 var formula_b_table = $('#formula_b_table').DataTable({
 		dom: 'lfrtip',
         language: {
@@ -50,7 +55,7 @@ var formula_b_table = $('#formula_b_table').DataTable({
 			search: "Search in formula:",
 			},
     	ajax: {
-    		url: '/core/full_formula_data.php?id=<?=$id_b?>'
+    		url: url
  		 },
 		 columns: [
 				   { data : 'ingredient.name', title: 'Ingredient'},

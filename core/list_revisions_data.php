@@ -15,7 +15,7 @@ $extra = "ORDER BY ".$order_by." ".$order;
 $current_rev = mysqli_fetch_array(mysqli_query($conn, "SELECT id,revision FROM formulasMetaData WHERE fid = '".$_GET['fid']."'"));
 
 $f = "WHERE fid = '".$_GET['fid']."' GROUP BY revision";
-$q = mysqli_query($conn, "SELECT id,name,fid,revision,revisionDate FROM formulasRevisions $f $extra LIMIT $row, $limit");
+$q = mysqli_query($conn, "SELECT id,name,fid,revision,revisionDate,revisionMethod FROM formulasRevisions $f $extra LIMIT $row, $limit");
 while($res = mysqli_fetch_array($q)){
     $revs[] = $res;
 }
@@ -26,9 +26,9 @@ foreach ($revs as $rev) {
 	$r['name'] = (string)$rev['name'];
 	$r['revision'] = (int)$rev['revision'];
 	$r['revisionDate'] = (string)$rev['revisionDate'];
+	$r['revisionMethod'] = (string)$rev['revisionMethod'] ?: '-';
 	if($r['revision'] == $current_rev['revision']){
 		$r['isCurrent'] = (bool)true;
-		
 	}else{
 		$r['isCurrent'] = (bool)false;
 	}
