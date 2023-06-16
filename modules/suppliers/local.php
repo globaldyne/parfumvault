@@ -109,6 +109,7 @@ foreach ($ingredients as $ingredient) {
 		foreach ($a as $b){
 			$r['supplier'][$j]['name'] = (string)$b['name'];
 			$r['supplier'][$j]['link'] = (string)$b['supplierLink'];
+			$r['supplier'][$j]['status'] = (string)$b['status'];
 			$j++;
 		}
 	}else{

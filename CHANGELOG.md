@@ -7,6 +7,8 @@
 - Added an option to take a revision manually in formulas
 - Revision compare method re-written
 - Fix where used for ingredients for PHP8
+- Added ingredient availability status per supplier
+- Fix price scrape function failing sometimes in PHP8
 
 ### Version 6.5
 - Remove screenshots directory

@@ -379,6 +379,7 @@ CREATE TABLE `suppliers` (
  `purchased` DATE NULL,
  `mUnit` VARCHAR(255) NULL, 
  `stock` decimal(10,3) NOT NULL,
+ `status` INT NOT NULL DEFAULT '1' COMMENT '1 = Available\r\n2 = Limited Availability\r\n3 = Not available', 
  `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
  PRIMARY KEY (`id`),
  UNIQUE KEY `id` (`id`)

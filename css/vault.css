@@ -1118,3 +1118,25 @@ table#tdDataPending.dataTable thead:hover {
   min-width: 100px !important;
   display: inline-block !important
 }
+
+hr.hr-text {
+  position: relative;
+    border: none;
+    height: 1px;
+    background: #999;
+}
+
+hr.hr-text::before {
+    content: attr(data-content);
+    display: inline-block;
+    background: #fff;
+    font-weight: bold;
+    font-size: 0.85rem;
+    color: #999;
+    border-radius: 30rem;
+    padding: 0.2rem 2rem;
+    position: absolute;
+    top: 50%;
+    left: 1%;
+    transform: translate(-50%, -50%);
+}
