@@ -33,7 +33,6 @@ $(function() {
          <li><a href="#print" id="print_tab" role="tab" data-toggle="tab">Printing</span></a></li>
          <li><a href="#brand" id="brand_tab" role="tab" data-toggle="tab">My Brand</span></a></li>
          <li><a href="#maintenance" id="maintenance_tab">Maintenance</a></li>
-         <li><a href="#pvonline" id="pvOnline_tab" role="tab" data-toggle="tab">PV Online</a></li>
          <li><a href="#api" id="api_tab" role="tab" data-toggle="tab">API</a></li>
          <li><a href="#about" id="about_tab" role="tab" data-toggle="tab">About</a></li>
      </ul>
@@ -347,13 +346,7 @@ $(function() {
 	      </tr>
 	    </table> 
      </div>
-    
-     <div id="pvonline">
-        <div class="loader-center">
-            <div class="loader"></div>
-            <div class="loader-text"></div>
-        </div>
-     </div>
+   
      
 	<div id="maintenance">
         <div class="loader-center">
@@ -568,15 +561,6 @@ function list_cat(){
 	});
 };
 
-function get_pvonline(){
-	$.ajax({ 
-		url: '/pages/views/settings/pvOnline.php', 
-		dataType: 'html',
-		success: function (data) {
-			$('#pvonline').html(data);
-		}
-	});
-};
 
 function list_fcat(){
 	$.ajax({ 
@@ -628,30 +612,7 @@ function get_about(){
 	});
 };
 
-//DISABLE PVONLINE
-function disablePV(){
-	$.ajax({ 
-		url: '/pages/update_settings.php',
-		dataType: 'json',
-		data: {
-			pv_online_state: '0',
-			state_update: '1',
-			manage: 'pvonline'
-		},
-		type: 'POST',
-		success: function (data) {
-			if(data.error){
-				$('#pvOnMsg').html('<div class="alert alert-danger">PV Online state update '+data.error+'</div>');	
-			}else if(data.success){
-				$('#pvOnMsg').html('<div class="alert alert-success">PV Online state update '+data.success+'</div>');	
-			}
-		},
-		error: function () {
-				$('#pvOnMsg').html('<span class="label label-danger">Unable to update settings</span>');
-		}
-					
-	});
-};
+
 
 </script>
 <script src="/js/settings.backup.js"></script>

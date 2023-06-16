@@ -14,19 +14,6 @@ if($pv_meta['schema_ver'] < $db_ver){
           <ul class="navbar-nav vault-top ml-auto">
           <!-- Nav Item - Notifications -->
             <li class="nav-item dropdown no-arrow mx-1">
-              <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-bell fa-fw"></i>
-                <!-- Counter - Notifications -->
-                <span class="badge badge-danger badge-counter badge-counter-shared-formulas"></span>
-              </a>
-              <!-- Dropdown - Notifications -->
-              <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="messagesDropdown">
-				<a href="#" class="dropdown-header"><h6>PV Online</h6></a>
-                <div id="list-shared-formulas" class="dropdown-item text-gray-500"></div>
-				<div id="list-shared-formulas-footer"></div>				 
-              </div>
-            </li>
-
              <!-- Cart -->
             <li class="nav-item dropdown no-arrow mx-1">
               <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -91,12 +78,7 @@ if($pv_meta['schema_ver'] < $db_ver){
                 <a class="dropdown-item" href="https://github.com/globaldyne/parfumvault/issues" target="_blank">
                   <i class="fas fa-lightbulb fa-sm fa-fw mr-2 text-gray-400"></i>
                   Request a feature / Bug report
-                </a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="https://online.jbparfum.com/" target="_blank">
-                  <i class="fas fa-globe fa-sm fa-fw mr-2 text-gray-400"></i>
-                  PV Online
-                </a>              
+                </a>             
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="https://apps.apple.com/us/app/id1525381567" target="_blank">
                   <i class="fab fa-apple fa-sm fa-fw mr-2 text-gray-400"></i>
@@ -116,137 +98,17 @@ if($pv_meta['schema_ver'] < $db_ver){
 <script>
 $(document).ready(function() {
 
-$('#load-rel-notes').click(function() {
-	var relUrl = 'https://raw.githubusercontent.com/globaldyne/parfumvault/master/releasenotes.md';
-
-	$('#new-rel').load(relUrl);
-	console.log(relUrl);
-});
-
-<?php if($show_db_upgrade){?>
-	$('#dbUpgradeDialog').modal('show');
-	$('#dbUpOk').hide();
-<?php } ?>
-<?php if($pv_online['enabled'] == '1'){?>
+	$('#load-rel-notes').click(function() {
+		var relUrl = 'https://raw.githubusercontent.com/globaldyne/parfumvault/master/releasenotes.md';
 	
-chk_shared();
-var checkPVOnline = setInterval(chk_shared, 50000);
-function chk_shared() {
-  $('#list-shared-formulas').empty();
-
-  $.ajax({
-    url: '<?=$pvOnlineAPI?>',
-	dataType: 'json',
-	data: {
-		username: "<?=$pv_online['email']?>",
-		password: "<?=$pv_online['password']?>",
-		do: 'getShared'
-	},
-	type: 'POST',
-	error: function(){
-			$('.status-circle').addClass('status-offline');
-		},
-    success: function(data) {
-		if(data.formulasTotal > 0){
-			$('.badge-counter-shared-formulas').html(data.formulasTotal);
-			for (var i=0;i<data.formulasTotal;++i){
-				$('#list-shared-formulas').append('<div class="font-weight-bold">'+
-					'<li>'+
-						'<button class="shared-formula-accept" data-notes="'+data.formulas[i].notes+'" data-author="'+data.formulas[i].author+'" data-name="'+data.formulas[i].name+'" data-id="'+data.formulas[i].fid+'" id="acceptShared" title="Import formula">'+
-              				'<span class="label label-success">Import</span>'+
-            			'</button>'+
-					'</li>'+
-					'<div class="dropdown-divider"></div>'+
-					'<li>'+
-                    '<div class="text-truncate shared-formula-name"><li><a href="#">'+data.formulas[i].name+'</a></div>'+
-                    '<div class="small text-gray-500 shared-formula-notes">'+data.formulas[i].notes+'</li></div>'+
-					'<div class="small text-gray-500 shared-formula-author">Author: '+data.formulas[i].author+'</li></div>'+
-
-                  '</div>').fadeIn('slow');
-        	}
-			$('#list-shared-formulas-footer').html('<a class="dropdown-item text-center small text-gray-500" href="#">Showing '+data.formulasTotal+' out of '+data.formulasLimit+'</a>');
-
-		}else{
-			$('.badge-counter-shared-formulas').empty();
-			$('#list-shared-formulas-footer').html('<a class="dropdown-item text-center small text-gray-500" href="#">No formulas</a>');
-			
-			
-		};
-		
-		$('.status-circle').addClass('status-online');
-    },
+		$('#new-rel').load(relUrl);
+		console.log(relUrl);
+	});
 	
-   
-  });
-}
-  
-$('#list-shared-formulas').on('click', '[id*=acceptShared]', function () {
-	
-	var sharedFormula = {};
-	sharedFormula.ID = $(this).attr('data-id');
-	sharedFormula.Name = $(this).attr('data-name');
-   	sharedFormula.Author = $(this).attr('data-author');
-   	sharedFormula.Notes = $(this).attr('data-notes');
-
-	bootbox.dialog({
-       title: 'Import formula from PV Online',
-       message : '<div id="pvShImpMsg"></div>' + 
-	   			 '<p>'+sharedFormula.Author+' shared its formula <strong>'+sharedFormula.Name+'</strong>, with you.</p>'+
-				 '<p>Import formula as: <input id="newSharedFname" value="'+sharedFormula.Name+'" type="text" /></p>'+
-				 '<p><strong>Formula description:</strong></p>' + 
-				 '<p>'+sharedFormula.Notes+'</p>',
-       buttons :{
-           main: {
-               label : 'Import',
-               className : 'btn-success',
-               callback: function (){
-	    			
-				$.ajax({
-					url: '/pages/pvonline.php', 
-					type: 'POST',
-					data: {
-						action: 'importShareFormula',
-						fid: sharedFormula.ID,
-						localName: $("#newSharedFname").val(),
-						},
-					dataType: 'json',
-					success: function (data) {
-						if(data.error){
-							var rmsg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
-						}else if(data.success){
-							chk_shared();
-							bootbox.hideAll();
-							list_formulas();
-						}
-						$('#pvShImpMsg').html(rmsg);
-						
-					}
-				});
-				
-                 return false;
-               }
-           },
-           cancel: {
-               label : "Cancel",
-               className : 'btn-default',
-               callback : function() {
-				   chk_shared();
-                   return true;
-               }
-           }   
-       },onEscape: function () {return true;}
-   });
-});
-
-
-<?php }else{ ?>
-
-$('#list-shared-formulas').html('<div class="font-weight-bold">'+
-		'<div class="alert alert-warning">PV Online account isn\'t configured yet. Please go to <a href="?do=settings#pvonline">settings</a> to configure it.</div>'+
-    '</div>');
-
-
-<?php } ?>
+	<?php if($show_db_upgrade){?>
+		$('#dbUpgradeDialog').modal('show');
+		$('#dbUpOk').hide();
+	<?php } ?>
 
 });
 

@@ -198,10 +198,13 @@ $m['total_quantity'] =  ml2l($mg['total_mg'], $settings['qStep'], $settings['mUn
 $m['quantity_unit'] = (string)$settings['mUnit'];
 $m['cat_class'] = (string)$defCatClass;
 $m['currency'] = (string)$settings['currency'];
-//if($total_cost){
+if($total_cost){
 	$m['total_cost'] = number_format((float)array_sum($total_cost)?: 0, $settings['qStep']);
 	$m['concentration'] = number_format((float)array_sum($conc_f)?: 0, $settings['qStep']);
-//}
+}else{
+	$m['total_cost'] = 0;
+	$m['concentration'] = 0;
+}
 $m['product_concentration'] = (int)$meta['finalType'];
 $m['formula_name'] = (string)$meta['name'];
 $m['formula_fid'] = (string)$meta['fid'];

@@ -70,6 +70,7 @@ if($ing['physical_state'] == 1){
           <th>Batch</th>
           <th>Purchased</th>
           <th>In Stock</th>
+          <th>Status</th>
           <th>Last updated</th>
           <th>Actions</th>
       </tr>
@@ -109,6 +110,7 @@ $(document).ready(function() {
 			  { data : 'batch', title: 'Batch', render: sBatch},
 			  { data : 'purchased', title: 'Purchased', render: sPurchased},
 			  { data : 'stock', title: 'In Stock', render: sStock},
+			  { data : 'status', title: 'Status', render: status},
 			  { data : 'updated', title: 'Last update', render: sUpdated},
 
 			  { data : null, title: 'Actions', render: sActions},		   
@@ -135,6 +137,7 @@ $(document).ready(function() {
 			purchased: $("#purchased").val(),
 			stock: $("#stock").val(),
 			mUnit: $("#mUnit").val(),
+			status: $("#status").val(),
 
 			ingID: '<?=$ingID;?>'
 			},
@@ -196,6 +199,23 @@ function sStock(data, type, row){
 	return '<i class="stock pv_point_gen" data-name="stock" data-type="text" data-pk="'+row.id+'">'+row.stock+'</i>';    
 }
 
+function status(data, type, row){
+	if(row.status == 0){
+		var data = '<span class="pv-label label label-default">Unkwnown</span>';
+	}
+	if(row.status == 1){
+		var data = '<span class="pv-label label label-success">Available</span>';
+	}
+	if(row.status == 2){
+		var data = '<span class="pv-label label label-warning">Limited Availability</span>';
+	}
+	if(row.status == 3){
+		var data = '<span class="pv-label label label-danger">Discontinued</span>';
+	}
+	
+	return '<i class="status pv_point_gen" data-name="status" data-type="select" data-pk="'+row.id+'">'+data+'</i>';
+}
+
 function sUpdated(data, type, row){
 	return row.updated;    
 }
@@ -227,6 +247,27 @@ $('#tdIngSup').editable({
 			}
 			?>
           ],
+    success: function (data) {
+			reload_sup_data();
+	}
+});
+
+
+$('#tdIngSup').editable({
+	pvnoresp: false,
+	highlight: false,
+	title: "Availability status",
+	container: 'body',
+	selector: 'i.status',
+	type: 'POST',
+	emptytext: "",
+	emptyclass: "",
+  	url: "update_data.php?ingSupplier=update&ingID=<?=$ingID?>",
+    source: [
+			 {value: '1', text: 'Available'},
+             {value: '2', text: 'Limited availability'},
+			 {value: '3', text: 'Discontinued / Cannot sourced'},
+          	],
     success: function (data) {
 			reload_sup_data();
 	}
@@ -478,6 +519,14 @@ function reload_sup_data() {
             In stock:
             <input name="stock" type="text" class="form-control" id="stock" value="0" />
             </p>
+            <p>
+            Availability status:
+            <select name="status" id="status" class="form-control">
+			  <option value="1">Available</option>
+			  <option value="2">Limited availability</option>
+			  <option value="3">Discontinued / Cannot sourced</option>
+            </select>
+            </p>            
             Measurement Unit:
             <select name="mUnit" id="mUnit" class="form-control">
 			  <option value="ml">Milliliter</option>

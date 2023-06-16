@@ -1,46 +1,8 @@
 <?php
 define('__ROOT__', dirname(dirname(__FILE__)));
 define('pvault_panel', TRUE);
-require_once(__ROOT__.'/func/pvOnline.php');
+//require_once(__ROOT__.'/func/pvOnline.php');
 
-
-$pvOnlineAPI = 'https://online.jbparfum.com/api.php';
-
-if($_POST['action'] == 'create_pv_account'){
-	//define('__ROOT__', dirname(dirname(__FILE__))); 
-	
-	require_once(__ROOT__.'/inc/config.php');
-	require_once(__ROOT__.'/inc/opendb.php');
-	
-	if(!$_POST['password'] || !$_POST['fullName'] || !$_POST['email']){
-		$response['error'] = "Missing required data";
-		echo json_encode($response);
-		return;
-	}
-	
-	$password = mysqli_real_escape_string($conn,$_POST['password']);
-	$fullName = mysqli_real_escape_string($conn,$_POST['fullName']);
-	$email = mysqli_real_escape_string($conn,$_POST['email']);
-	$app_ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
-
-	$data = [ 'do' => 'regUser','email' => strtolower($_POST['email']), 'fullName' => $_POST['fullName'], 'userPass' => base64_encode($_POST['password']), 'ver'=> $app_ver];
-	$r = json_decode(pvPost($pvOnlineAPI, $data));
-	if($r->error){
-		$response['error'] = $r->error->msg;
-		echo json_encode($response);
-		return;
-	}
-		
-	if($r->success){
-		mysqli_query($conn,"DELETE FROM pv_online");
-		mysqli_query($conn,"INSERT INTO pv_online (enabled) VALUES ('1')");
-		$response['success'] = $r->success->msg;
-		echo json_encode($response);
-		return;
-	}
-
-	return;
-}
 
 if($_POST['action'] == 'register'){
 	define('__ROOT__', dirname(dirname(__FILE__))); 
@@ -66,24 +28,6 @@ if($_POST['action'] == 'register'){
 	$email = mysqli_real_escape_string($conn,$_POST['email']);
 	$app_ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
 
-	if($_POST['createPVOnline'] == 'true'){
-		$data = [ 'do' => 'regUser','email' => strtolower($_POST['email']), 'fullName' => $_POST['fullName'], 'userPass' => base64_encode($_POST['password']), 'ver'=> $app_ver];
-		$r = json_decode(pvPost($pvOnlineAPI, $data));
-		if($r->error->code == '004'){
-			$auth = pvOnlineValAcc($pvOnlineAPI, $_POST['email'], $_POST['password'], $ver);
-			if($auth['code'] != '001'){
-				$response['error'] = 'Error creating a PV Online account. '.$r->error->msg.'<p>Please make sure you enter the correct password.</p>';
-				echo json_encode($response);
-				return;
-			}
-		}
-		
-		if($r->success){
-			mysqli_query($conn,"DELETE FROM pv_online");
-			mysqli_query($conn,"INSERT INTO pv_online (enabled) VALUES ('1')");
-		}
-	}
-	
 	if(strlen($_POST['password']) < '5'){
 		$response['error'] = "Password must be at least 5 characters long!";
 		echo json_encode($response);
@@ -93,7 +37,6 @@ if($_POST['action'] == 'register'){
 	if(mysqli_query($conn,"INSERT INTO users (email,password,fullName) VALUES ('$email', '$password','$fullName')")){
 		$db_ver  = trim(file_get_contents(__ROOT__.'/db/schema.ver'));
 		mysqli_query($conn,"INSERT INTO pv_meta (schema_ver,app_ver) VALUES ('$db_ver','$app_ver')");
-		mysqli_query($conn,"INSERT INTO pv_online (enabled) VALUES ('0')");
 		$response['success'] = "User created";
 		echo json_encode($response);
 	}else{
@@ -136,26 +79,6 @@ if($_POST['action']=='install'){
 		return;
 	}
 	
-
-	if($_POST['createPVOnline'] == 'true'){
-		$data = [ 'do' => 'regUser','email' => strtolower($_POST['email']), 'fullName' => $_POST['fullName'], 'userPass' => base64_encode($_POST['password']) ];
-		$r = json_decode(pvPost($pvOnlineAPI, $data));
-	
-		if($r->error->code == '004'){
-			$auth = pvOnlineValAcc($pvOnlineAPI, $_POST['email'], $_POST['password'], $ver);
-			if($auth['code'] != '001'){
-				$response['error'] = 'Error creating a PV Online account. '.$r->error->msg.'<p>Please make sure you enter the correct password.</p>';
-				echo json_encode($response);
-				return;
-			}
-		}
-		/*
-		if($r->success){
-			$pvOnMsg = '<div class="alert alert-success alert-dismissible">PV Online account created</div>';
-		}
-		return;
-		*/
-	}
 	
 	$cmd = 'mysql -u'.$_POST['dbuser'].' -p'.$_POST['dbpass'].' -h'.$_POST['dbhost'].' '.$_POST['dbname'].' < ../db/pvault.sql'; 
 	passthru($cmd,$e);
@@ -205,7 +128,6 @@ $max_filesize = "4194304"; //in bytes
 	$app_ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
 	$db_ver  = trim(file_get_contents(__ROOT__.'/db/schema.ver'));
 	mysqli_query($link,"INSERT INTO pv_meta (schema_ver,app_ver) VALUES ('$db_ver','$app_ver')");
-	mysqli_query($link,"INSERT INTO pv_online (enabled) VALUES ('0')");
 	
 	$response['success'] = 'System configured';
 	echo json_encode($response);

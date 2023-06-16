@@ -26,9 +26,6 @@ $defCatClass = $settings['defCatClass'];
 
         <div class="dropdown-divider"></div>
         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#pv_online_import">Import from PV Online</a>
-        <?php if($pv_online['email'] && $pv_online['password'] && $pv_online['enabled'] == '1'){?>
-        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#pv_online_upload">Upload to PV Online</a>
-        <?php } ?>
       </div>
      </div>                    
     </div>

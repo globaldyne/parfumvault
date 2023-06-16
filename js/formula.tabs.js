@@ -25,4 +25,8 @@ $(document).ready(function() {
 		fetch_attachments();
 	});
 	
+	$('#revisions_tab').on( 'click', function () {
+		fetch_revisions();
+	});
+
 });

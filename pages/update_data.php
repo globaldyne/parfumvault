@@ -698,6 +698,7 @@ if($_POST['ingSupplier'] == 'add'){
 	$purchased = mysqli_real_escape_string($conn, $_POST['purchased'] ?: date('Y-m-d'));
 	$stock = mysqli_real_escape_string($conn, $_POST['stock'] ?: 0);
 	$mUnit = $_POST['mUnit'];
+	$status = $_POST['status'];
 
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT ingSupplierID FROM suppliers WHERE ingSupplierID = '$supplier_id' AND ingID = '$ingID'"))){
 		$response["error"] = '<strong>Error: </strong>'.$supplier_name['name'].' already exists!';
@@ -711,7 +712,7 @@ if($_POST['ingSupplier'] == 'add'){
 		$preferred = '0';
 	}
 		
-	if(mysqli_query($conn, "INSERT INTO suppliers (ingSupplierID,ingID,supplierLink,price,size,manufacturer,preferred,batch,purchased,stock,mUnit) VALUES ('$supplier_id','$ingID','$supplier_link','$supplier_price','$supplier_size','$supplier_manufacturer','$preferred','$supplier_batch','$purchased','$stock','$mUnit')")){
+	if(mysqli_query($conn, "INSERT INTO suppliers (ingSupplierID,ingID,supplierLink,price,size,manufacturer,preferred,batch,purchased,stock,mUnit,status) VALUES ('$supplier_id','$ingID','$supplier_link','$supplier_price','$supplier_size','$supplier_manufacturer','$preferred','$supplier_batch','$purchased','$stock','$mUnit','$status')")){
 		$response["success"] = '<strong>'.$supplier_name['name'].'</strong> added.';
 		echo json_encode($response);
 	}
@@ -787,6 +788,20 @@ if($_GET['formulaMeta']){
 	return;
 }
 
+if($_GET['createRev'] == 'man'){
+	require_once(__ROOT__.'/func/createFormulaRevision.php');
+	$fid = $_GET['fid'];
+	
+	if($l = createFormulaRevision($fid,'Manually',$conn)){
+		$response["success"] = 'Revision created (If changes detected)';
+		echo json_encode($response);
+	}else{
+		$response["error"] = 'Unable to create revision, please make sure formula exists and contains at least one ingredient.';
+		echo json_encode($response);
+	}
+	return;
+}
+
 if($_GET['protect']){
 	require_once(__ROOT__.'/func/createFormulaRevision.php');
 	$fid = mysqli_real_escape_string($conn, $_GET['protect']);
@@ -794,15 +809,17 @@ if($_GET['protect']){
 	if($_GET['isProtected'] == 'true'){
 		$isProtected = '1';
 		$l = 'locked';
-		createFormulaRevision($fid,$conn);
+		createFormulaRevision($fid,'Automatic',$conn);
 	}else{
 		$isProtected = '0';
 		$l = 'unlocked';
 	}
 	if(mysqli_query($conn, "UPDATE formulasMetaData SET isProtected = '$isProtected' WHERE fid = '$fid'")){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Formula '.$l.'!</div>';
+		$response["success"] = 'Formula '.$l;
+		echo json_encode($response);
 	}else{
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Something went wrong.</div>';
+		$response["error"] = 'Something went wrong';
+		echo json_encode($response);
 	}
 	return;
 }

@@ -329,9 +329,6 @@ CREATE TABLE `users` (
   `fullName` varchar(255) COLLATE utf8_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
-CREATE TABLE `pv_online` (
- `enabled` INT NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE `IFRACategories` (
  `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -382,6 +379,7 @@ CREATE TABLE `suppliers` (
  `purchased` DATE NULL,
  `mUnit` VARCHAR(255) NULL, 
  `stock` decimal(10,3) NOT NULL,
+ `status` INT NOT NULL DEFAULT '1' COMMENT '1 = Available\r\n2 = Limited Availability\r\n3 = Not available', 
  `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
  PRIMARY KEY (`id`),
  UNIQUE KEY `id` (`id`)
@@ -589,6 +587,7 @@ CREATE TABLE `formulasRevisions` (
  `exclude_from_summary` int(11) NOT NULL DEFAULT 0,
  `revision` int(11) NOT NULL,
  `revisionDate` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+ `revisionMethod` VARCHAR(255) DEFAULT NULL,
  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 

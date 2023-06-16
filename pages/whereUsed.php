@@ -44,7 +44,7 @@ if(count((array)$used) == 0 && count((array)$usedCmp) == 0){
     </table>
 </div>
 
-<h3><?=$ingID?> is used in <?=count($usedCmp)?> ingredient compositions</h3>
+<h3><?=$ingID?> is used in <?=count((array)$usedCmp)?> ingredient compositions</h3>
 <hr>
 <div class="where_used">
     <table width="100%" class="table table-bordered dataTable no-footer"> 
