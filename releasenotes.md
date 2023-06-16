@@ -5,3 +5,4 @@ Whats New in v7.0
 - Formula revision page has been rewriten and moved under formula section
 - Added an option to take a revision manually in formulas
 - Revision compare method re-written
+- Added ingredient availability status per supplier
