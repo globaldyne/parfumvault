@@ -1,7 +1,7 @@
 <?php
 define('__ROOT__', dirname(dirname(__FILE__))); 
 
-require(__ROOT__.'/inc/sec.php');
+require_once(__ROOT__.'/inc/sec.php');
 
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
@@ -197,14 +197,12 @@ while($qTags = mysqli_fetch_array($tagsQ)){
     <td data-name="notes" class="notes" data-type="textarea" align="left" data-pk="<?php echo $info['id'];?>"><?php echo $info['notes'];?></td>
   </tr>
 </table>
-<div id="list_revisions"></div>
 
 <script type="text/javascript" language="javascript" >
 $(document).ready(function(){
 
 $('[rel=tip]').tooltip({placement: 'auto'});
 
-list_revisions();
 
 $('#formula_metadata').editable({
   container: 'body',
@@ -283,7 +281,6 @@ $("#isProtected").change(function() {
 		dataType: 'html',
 		success: function (data) {
 			$('#msg').html(data);
-			list_revisions();
 		}
 	  });
 });
@@ -403,57 +400,6 @@ $("#pic_upload").click(function(){
    			$("#pic_upload").prop('value', 'Upload');
         }
 });	
-
-function restoreRevision(revision) {
-	$('#msg').html('<div class="alert alert-info">Please wait...</div>');
-	$.ajax({ 
-		url: 'manageFormula.php', 
-		type: 'get',
-		data: {
-			restore: "rev",
-			fid: '<?=$info['fid']?>',
-			revision: revision
-			},
-		dataType: 'html',
-		success: function (data) {
-		  	$('#msg').html(data);
-			list_revisions();
-		}
-	  });
-};
-
-function deleteRevision(revision) {
-	$.ajax({ 
-		url: 'manageFormula.php', 
-		type: 'get',
-		data: {
-			delete: "rev",
-			fid: '<?=$info['fid']?>',
-			revision: revision
-			},
-		dataType: 'html',
-		success: function (data) {
-		  	$('#msg').html(data);
-			list_revisions();
-		}
-	  });	
-};
-
-function list_revisions(){
-  $('#list_revisions').html('<img class="loader loader-center" src="/img/Testtube.gif"/>');
-	$.ajax({
-		url: 'listRevisions.php',
-		type: 'GET',
-		data: {
-			"fid": '<?=$info['fid']?>',
-			},
-		dataType: 'html',
-			success: function (data) {
-				$('#list_revisions').html(data);
-			}
-	});
-};
-
 
 
 $('#tagsinput').on('beforeItemAdd', function(event) {

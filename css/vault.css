@@ -837,8 +837,9 @@ body {
 .add-new-ing-sel {
 	color: #337ab7;
 	display: inline-table;
-	padding: 14px;
+	padding: 14px 14px 14px 8px;
 	height: 22px;
+	font-weight: bold;
 }
 
 .select_igredient_title {
@@ -1041,6 +1042,11 @@ body {
 	margin-right: 10px;	
 }
 
+.ml2 {
+	margin-left: 10px;	
+}
+
+
 .mr3 {
 	margin: 1px 10px 0px 10px;
 }
@@ -1111,4 +1117,26 @@ table#tdDataPending.dataTable thead:hover {
 .pv-label {
   min-width: 100px !important;
   display: inline-block !important
+}
+
+hr.hr-text {
+  position: relative;
+    border: none;
+    height: 1px;
+    background: #999;
+}
+
+hr.hr-text::before {
+    content: attr(data-content);
+    display: inline-block;
+    background: #fff;
+    font-weight: bold;
+    font-size: 0.85rem;
+    color: #999;
+    border-radius: 30rem;
+    padding: 0.2rem 2rem;
+    position: absolute;
+    top: 50%;
+    left: 1%;
+    transform: translate(-50%, -50%);
 }

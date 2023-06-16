@@ -65,13 +65,14 @@ if($form[0]['ingredient']){
             </div>
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" role="tablist">
-          <li class="active"><a href="#main_formula" id="formula_tab" role="tab" data-toggle="tab"><icon class="fa fa-bong"></icon> Formula</a></li>
-    	  <li><a href="#impact" id="impact_tab" role="tab" data-toggle="tab"><i class="fa fa-magic"></i> Notes Impact</a></li>
-          <li><a href="#pyramid" id="pyramid_tab" role="tab" data-toggle="tab"><i class="fa fa-table"></i> Olfactory Pyramid</a></li>
-          <li><a href="#summary" id="summary_tab" role="tab" data-toggle="tab"><i class="fa fa-cubes"></i> Notes Summary</a></li>
-          <li><a href="#ingRep" id="reps_tab" role="tab" data-toggle="tab"><i class="fa fa-exchange-alt"></i> Replacements</a></li>
-          <li><a href="#attachments" id="attachments_tab" role="tab" data-toggle="tab"><i class="fa fa-paperclip"></i> Attachments</a></li>
-          
+          <li class="active"><a href="#main_formula" id="formula_tab" role="tab" data-toggle="tab"><icon class="fa fa-bong mr2"></icon>Formula</a></li>
+    	  <li><a href="#impact" id="impact_tab" role="tab" data-toggle="tab"><i class="fa fa-magic mr2"></i>Notes Impact</a></li>
+          <li><a href="#pyramid" id="pyramid_tab" role="tab" data-toggle="tab"><i class="fa fa-table mr2"></i>Olfactory Pyramid</a></li>
+          <li><a href="#summary" id="summary_tab" role="tab" data-toggle="tab"><i class="fa fa-cubes mr2"></i>Notes Summary</a></li>
+          <li><a href="#ingRep" id="reps_tab" role="tab" data-toggle="tab"><i class="fa fa-exchange-alt mr2"></i>Replacements</a></li>
+          <li><a href="#attachments" id="attachments_tab" role="tab" data-toggle="tab"><i class="fa fa-paperclip mr2"></i> Attachments</a></li>
+          <li><a href="#revisions" id="revisions_tab" role="tab" data-toggle="tab"><i class="fa fa-timeline mr2"></i> Revisions</a></li>
+
         </ul>
                      
         <div class="tab-content">
@@ -164,7 +165,13 @@ if($form[0]['ingredient']){
                 <div id="fetch_attachments"><div class="loader"></div></div>
             </div>            
         </div>
-                        
+        
+        <div class="tab-pane fade" id="revisions">
+            <div class="card-body">
+                <div id="fetch_revisions"><div class="loader"></div></div>
+            </div>            
+        </div>
+        
       </div>
      </div>         
    </div><!--tabs-->
@@ -214,23 +221,29 @@ $('#add_ing').on('click', '[id*=add-btn]', function () {
 
 function setProtected(status) {
   $.ajax({ 
-		url: 'pages/update_data.php', 
+		url: '/pages/update_data.php', 
 		type: 'GET',
 		data: {
 			protect: '<?=$fid?>',
 			isProtected: status,
 			},
-		dataType: 'html',
+		dataType: 'json',
 		success: function (data) {
-			$('#msgInfo').html(data);
-	        location.reload();
+			if ( data.success ) {
+				var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+				location.reload();
+				//reload_formula_data();
+			} else {
+				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + data.error + '</strong></div>';
+			}
+			$('#msgInfo').html(msg);
 		}
 	  });
 };
 
 function fetch_formula(){
 $.ajax({ 
-    url: 'pages/viewFormula.php', 
+    url: '/pages/viewFormula.php', 
 	type: 'GET',
     data: {
 		id: "<?=$id?>",
@@ -247,7 +260,7 @@ fetch_formula();
 
 function fetch_pyramid(){
 	$.ajax({ 
-		url: 'pages/viewPyramid.php', 
+		url: '/pages/viewPyramid.php', 
 		type: 'GET',
 		data: {
 			formula: "<?=$id?>",
@@ -263,7 +276,7 @@ function fetch_pyramid(){
 
 function fetch_impact(){
 	$.ajax({ 
-		url: 'pages/impact.php', 
+		url: '/pages/impact.php', 
 		type: 'GET',
 		data: {
 			id: "<?php echo $fid; ?>"
@@ -278,7 +291,7 @@ function fetch_impact(){
 
 function fetch_summary(){
 $.ajax({ 
-    url: 'pages/viewSummary.php', 
+    url: '/pages/viewSummary.php', 
 	type: 'GET',
     data: {
 		id: "<?=$fid?>"
@@ -295,7 +308,7 @@ function update_view(){
 	
 	$('.ex_ing').each(function(){
 		$.ajax({ 
-			url: 'pages/manageFormula.php', 
+			url: '/pages/manageFormula.php', 
 			type: 'get',
 			data: {
 				fid: "<?=urlencode($fid)?>",
@@ -338,6 +351,21 @@ function fetch_attachments(){
 		dataType: 'html',
 		success: function (data) {
 		  $('#fetch_attachments').html(data);
+		}
+	});
+}
+
+function fetch_revisions(){
+	$.ajax({ 
+		url: '/pages/views/formula/revisions.php', 
+		type: 'GET',
+		data: {
+			fid: "<?=$fid?>",
+			id: "<?=$meta['id']?>"
+			},
+		dataType: 'html',
+		success: function (data) {
+		  $('#fetch_revisions').html(data);
 		}
 	});
 }

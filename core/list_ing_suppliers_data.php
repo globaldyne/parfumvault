@@ -27,6 +27,7 @@ foreach ($sup as $suppliers) {
 	$r['purchased'] = (string)date_format(date_create($suppliers['purchased']),"d/m/Y")?:'N/A';
 	$r['mUnit'] = (string)$suppliers['mUnit']?:'N/A';
 	$r['stock'] = (float)$suppliers['stock']?:0;
+	$r['status'] = (float)$suppliers['status']?:0;
 	$r['updated'] = (string)date_format(date_create($suppliers['updated_at']),"d/m/Y H:i:s");
 
 	$response['data'][] = $r;
