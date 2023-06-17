@@ -1,6 +1,7 @@
 # CHANGELOG
 ### Version 7.1
 - Improve formula lock process
+- Fix orderable columns in suppliers list
 
 ### Version 7.0
 - Remove functionality to upload to PV Online
