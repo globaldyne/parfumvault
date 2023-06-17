@@ -1140,3 +1140,7 @@ hr.hr-text::before {
     left: 1%;
     transform: translate(-50%, -50%);
 }
+
+#lock_status {
+	display: inline;
+}
