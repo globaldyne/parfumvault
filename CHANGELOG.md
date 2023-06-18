@@ -2,6 +2,7 @@
 ### Version 7.1
 - Improve formula lock process
 - Fix orderable columns in suppliers list
+- Fix Formula Make view search failing in PHP8
 
 ### Version 7.0
 - Remove functionality to upload to PV Online
