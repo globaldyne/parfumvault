@@ -161,7 +161,7 @@ $(document).ready(function() {
 function iName(data, type, row, meta){
 	var alg = '';
 	if(row.allergen == 1){
-		var alg = '<span class="ing_alg"> <i rel="tip" title="Allergen" class="fas fa-exclamation-triangle"></i></span>';
+		var alg = '<span class="ing_alg"><i rel="tip" title="Allergen" class="fas fa-exclamation-triangle"></i></span>';
 	}
 	if(meta.settings.json.source == 'local'){
 		
@@ -180,13 +180,17 @@ function iProfile(data, type, row){
 	}
 }
 
-function iStock(data, type, row){
+function iStock(data, type, row, meta){
 	if (row.physical_state == 1) {
 		var ingUnit = "ml";
 	}else if (row.physical_state == 2) {
 		var ingUnit = "gr";
 	}
-	return '<a class="popup-link" rel="tip" title="'+ingUnit+'" href="/pages/ingSuppliers.php?id=' + row.id + '&standAlone=1">' + data + '</a>';
+	if(meta.settings.json.source == 'local'){
+		return '<a class="popup-link" rel="tip" title="'+ingUnit+'" href="/pages/ingSuppliers.php?id=' + row.id + '&standAlone=1">' + data + '</a>';
+	}else{
+		return 'N/A';
+	}
 }
 
 function iCategory(data, type, row){

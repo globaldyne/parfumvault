@@ -743,6 +743,7 @@ table.fixedHeader-floating {
 .ing_alg {
 	display: inline;	
 	color: #b7b41a;
+    padding-left: 5px;
 }
 
 .pv_gen_li {
