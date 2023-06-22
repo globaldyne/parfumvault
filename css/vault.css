@@ -1145,3 +1145,7 @@ hr.hr-text::before {
 #lock_status {
 	display: inline;
 }
+
+.rating {
+  display: inline-flex;
+}
