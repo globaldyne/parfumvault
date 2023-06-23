@@ -1,7 +1,7 @@
 <?php 
 if (!defined('pvault_panel')){ die('Not Found');}
 require_once(__ROOT__.'/func/arrFilter.php');
-require(__ROOT__.'/func/get_formula_notes.php');
+//require(__ROOT__.'/func/get_formula_notes.php');
 $id = mysqli_real_escape_string($conn, $_GET['id']);
 
 $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT fid,name FROM formulasMetaData WHERE id = '$id'"));
@@ -146,9 +146,10 @@ if($form[0]['ingredient']){
                 <div id="fetch_summary"><div class="loader"></div></div>
                 <?php if($legend){ ?>
                 <div id="share">
-                  <p><a href="#" data-toggle="modal" data-target="#conf_view">Configure view</a></p>
+                  <p><a href="#" data-toggle="modal" data-backdrop="static" data-target="#conf_view">Configure view</a></p>
                   <p>To include this page in your web site, copy this line and paste it into your html code:</p>
-                <p><pre>&lt;iframe src=&quot;<?=$_SERVER['REQUEST_SCHEME']?>://<?=$_SERVER['SERVER_NAME']?>/pages/viewSummary.php?id=<?=$fid?>&quot; title=&quot;<?=$f_name?>&quot;&gt;&lt;/iframe&gt;</pre></p>
+                <p>
+                <pre>&lt;iframe src=&quot;<?=$_SERVER['REQUEST_SCHEME']?>://<?=$_SERVER['SERVER_NAME']?>/pages/viewSummary.php?id=<?=$fid?>&amp;embed=1&quot; title=&quot;<?=$f_name?>&quot;&gt;&lt;/iframe&gt;</pre></p>
                     <p>For documentation and parameterisation please refer to: <a href="https://www.jbparfum.com/knowledge-base/share-formula-notes/" target="_blank">https://www.jbparfum.com/knowledge-base/share-formula-notes/</a></p>
                 </div>
                 <?php } ?>
@@ -318,27 +319,6 @@ $.ajax({
 }
 
 
-function update_view(){
-	
-	$('.ex_ing').each(function(){
-		$.ajax({ 
-			url: '/pages/manageFormula.php', 
-			type: 'get',
-			data: {
-				fid: "<?=urlencode($fid)?>",
-				manage_view: '1',
-				ex_status: $("#" + $(this).val()).is(':checked'),
-				ex_ing: $(this).val()
-				},
-			dataType: 'html',
-				success: function (data) {
-					$('#confViewMsg').html(data);
-
-				}
-		});
-	});
-
-}
 
 
 function fetch_replacements(){

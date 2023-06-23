@@ -15,6 +15,4 @@ Whats New in v7.1
 --------------------------
 - Add current revision in main formulas list
 - Various bug fixes and improvements
-
-
-
+- Summary view page fixes

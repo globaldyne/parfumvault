@@ -4,6 +4,7 @@
 - Fix orderable columns in suppliers list
 - Fix Formula Make view search failing in PHP8
 - Add current revision in main formulas list
+- Summary view page fixes
 
 ### Version 7.0
 - Remove functionality to upload to PV Online
