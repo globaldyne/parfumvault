@@ -142,7 +142,7 @@ html {
 </table>
 <?php } ?>
 </div>
-
+<?php if(!$_GET['embed']){?>
 <p>&nbsp;</p>
 
 <!--Configure View-->
@@ -245,3 +245,36 @@ html {
   </div>
   </div>
 </div>
+
+<script>
+
+
+function update_view(){
+	
+	$('.ex_ing').each(function(){
+							   console.log( $(this).val());
+		$.ajax({ 
+			url: '/pages/manageFormula.php1', 
+			type: 'GET',
+			data: {
+				fid: '<?=$fid?>',
+				manage_view: '1',
+				ex_status: $("#" + $(this).val()).is(':checked'),
+				ex_ing: $(this).val()
+				},
+			dataType: 'json',
+				success: function (data) {
+					if ( data.success ) {
+						var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+					} else {
+						var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + data.error + '</strong></div>';
+					}
+					$('#confViewMsg').html(msg);
+				}
+		});
+	});
+
+}
+
+</script>
+<?php } ?>

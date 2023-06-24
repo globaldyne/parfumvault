@@ -81,6 +81,7 @@ if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))
                     <th>Product Name</th>
                     <th>Status</th>
                     <th>Ingredients</th>
+                    <th>Revision</th>
                     <th>Created</th>
                     <th>Made</th>
                     <th>Rating</th>
@@ -98,6 +99,7 @@ if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))
                     <th>Product Name</th>
                     <th>Status</th>
                     <th>Ingredients</th>
+                    <th>Revision</th>
                     <th>Created</th>
                     <th>Made</th>
                     <th>Rating</th>
@@ -148,6 +150,7 @@ function initTable(tableId, src) {
 			   { data : 'product_name', title: 'Product Name', render: pName},
 			   { data : 'status', title: 'Status', render: fStatus},
     		   { data : 'ingredients', title: 'Ingredients'},
+    		   { data : 'revision', title: 'Revision'},
 			   { data : 'isMade', title: 'Made', render: fMade},
    			   { data : 'rating', title: 'Rating', render: rating},
 			   { data : 'created', title: 'Created'},
@@ -165,7 +168,7 @@ function initTable(tableId, src) {
 			},
            order: [0,'asc'],
            columnDefs: [
-				{ orderable: false, targets: [2, 3, 7] },
+				{ orderable: false, targets: [2, 3, 8] },
 				{ className: 'text-center', targets: '_all' },				  
 				],
 	    destroy: true,

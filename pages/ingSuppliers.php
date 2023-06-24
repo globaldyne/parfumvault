@@ -88,7 +88,7 @@ $(document).ready(function() {
 	var tdIngSup = $('#tdIngSup').DataTable( {
 	columnDefs: [
 		{ className: 'text-center', targets: '_all' },
-		{ orderable: false, targets: [10] },
+		{ orderable: false, targets: [11] },
 
 	],
 	dom: 'lfrtip',
