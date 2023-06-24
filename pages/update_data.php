@@ -505,7 +505,8 @@ if($_POST['synonym'] == 'import' && $_POST['method'] == 'pubchem'){
 		if($fema['1']){
 			mysqli_query($conn, "UPDATE ingredients SET FEMA = '".preg_replace("/[^0-9]/", "", $fema['1'])."' WHERE cas = '$cas'");
 		}
-		if(!mysqli_num_rows(mysqli_query($conn, "SELECT synonym FROM synonyms WHERE synonym = '$d' AND ing = '$ing'"))){
+		$sql = mysqli_query($conn, "SELECT synonym FROM synonyms WHERE synonym = '$d' AND ing = '$ing'");
+		if(!$sql || !mysqli_num_rows($sql)){
 			$r = mysqli_query($conn, "INSERT INTO synonyms (ing,cid,synonym,source) VALUES ('$ing','$cid','$d','$source')");		
 		 	$i++;
 		}

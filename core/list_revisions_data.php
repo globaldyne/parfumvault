@@ -15,8 +15,11 @@ $extra = "ORDER BY ".$order_by." ".$order;
 $current_rev = mysqli_fetch_array(mysqli_query($conn, "SELECT id,revision FROM formulasMetaData WHERE fid = '".$_GET['fid']."'"));
 
 $f = "WHERE fid = '".$_GET['fid']."' GROUP BY revision";
-$q = mysqli_query($conn, "SELECT id,name,fid,revision,revisionDate,revisionMethod FROM formulasRevisions $f $extra LIMIT $row, $limit");
-while($res = mysqli_fetch_array($q)){
+$q = "SELECT id,name,fid,revision,revisionDate,revisionMethod FROM formulasRevisions $f $extra LIMIT $row, $limit";
+
+$sql = mysqli_query($conn, $q);
+
+while($res = mysqli_fetch_array($sql)){
     $revs[] = $res;
 }
 $i=0;
@@ -45,6 +48,7 @@ $response = array(
   "draw" => (int)$_POST['draw'],
   "recordsTotal" => (int)$i,
   "recordsFiltered" => (int)$i,
+  "debug" => $q,
   "data" => $rx
 );
 

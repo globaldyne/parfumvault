@@ -1,4 +1,11 @@
 # CHANGELOG
+### Version 7.1
+- Improve formula lock process
+- Fix orderable columns in suppliers list
+- Fix Formula Make view search failing in PHP8
+- Add current revision in main formulas list
+- Summary view page fixes
+
 ### Version 7.0
 - Remove functionality to upload to PV Online
 - Rewrite formula revision page
@@ -9,6 +16,14 @@
 - Fix where used for ingredients for PHP8
 - Added ingredient availability status per supplier
 - Fix price scrape function failing sometimes in PHP8
+
+### Version 6.6
+- Set default value for total cost and concentration to 0 when formula is empty
+- Add PV Online MarketPlace - BETA
+- Purpose class removed from formulas view main table
+- Fix sorting in IFRA library
+- Update compatibility with PV Online API v2.3
+- Added Dockerfile and scripts
 
 ### Version 6.5
 - Remove screenshots directory

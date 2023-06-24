@@ -1,8 +1,18 @@
-Whats New in v7.0
-----------------------
-- Remove functionality to upload to PV Online.
-  You can only use PV Online to download/import ingredient data or access Marketplace
-- Formula revision page has been rewriten and moved under formula section
-- Added an option to take a revision manually in formulas
-- Revision compare method re-written
-- Added ingredient availability status per supplier
+<strong>
+--------------------------
+IMPORTANT CHANGE COMING UP
+--------------------------
+Please note, if you using the docker PV version, on version 8.0, 
+we will be removing mariadb from the image and PV will not be provided as a bundle anymore.
+Please make sure you have migrated your database to an external mariadb/mysql instance,
+before you update to version 8.0
+Same process as cloud or non-docker installations should be followed.
+Also - *-cloud images will be dropped as the same image should be used for local docker or
+cloud installations like Openshift/EKS, etc
+--------------------------
+</strong>
+Whats New in v7.1
+--------------------------
+- Add current revision in main formulas list
+- Various bug fixes and improvements
+- Summary view page fixes

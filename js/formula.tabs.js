@@ -3,7 +3,10 @@ Main formula tabs
 */
 
 $(document).ready(function() {
-	
+						   
+	$('#formula_tab').on( 'click', function () {
+		fetch_formula();
+	});
 	
 	$('#impact_tab').on( 'click', function () {
 		fetch_impact();

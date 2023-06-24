@@ -1,7 +1,7 @@
 <?php 
 if (!defined('pvault_panel')){ die('Not Found');}
 require_once(__ROOT__.'/func/arrFilter.php');
-require(__ROOT__.'/func/get_formula_notes.php');
+//require(__ROOT__.'/func/get_formula_notes.php');
 $id = mysqli_real_escape_string($conn, $_GET['id']);
 
 $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT fid,name FROM formulasMetaData WHERE id = '$id'"));
@@ -32,6 +32,7 @@ if($form[0]['ingredient']){
 	$legend = 1;
 }
 
+
 ?>
 
 <link href="/css/select2.css" rel="stylesheet">
@@ -55,7 +56,7 @@ if($form[0]['ingredient']){
             
 			  <table width="100%" border="0">
 			    <tr>
-			      <th width="75%" class="left" scope="col"><h2 class="m-0 font-weight-bold text-primary"><a href="javascript:reload_formula_data()"><div id="formula_name"><?=$f_name?></div></a><span class="m-1"><?php if($meta['isProtected']){?><a class="fas fa-lock" href="javascript:setProtected('false')"><?php }else{ ?><a class="fas fa-unlock" href="javascript:setProtected('true')"> <?php } ?></a></span></h2>
+			      <th width="75%" class="left" scope="col"><h2 class="m-0 font-weight-bold text-primary"><a href="javascript:reload_formula_data()"><div id="formula_name"><?=$f_name?></div></a><span class="m-1"><div id="lock_status"><?php if($meta['isProtected']){?><a class="fas fa-lock" href="javascript:setProtected('false')"><?php }else{ ?><a class="fas fa-unlock" href="javascript:setProtected('true')"> <?php } ?></a></div></span></h2>
               <h5 class="m-1 text-primary"><span><a href="#" rel="tip" data-placement="right" title="<?=$cat_details['description']?>"><?=ucfirst($meta['catClass'])?></a></span></h5>&nbsp;</th>
 			      <th width="21%" scope="col"><div id="formula_desc"><img src="/img/loading.gif"/></div></th>
 			      <th width="4%" scope="col"><div class="img-formula"><img class="img-perfume" src="<?=$img['docData']?:'/img/ICO_TR.png';?>"/></div></th>
@@ -80,7 +81,7 @@ if($form[0]['ingredient']){
 
           <div class="card-body">
           <div id="msgInfo"></div>
-          <?php if($meta['isProtected'] == FALSE){?>
+          <?php //if($meta['isProtected'] == FALSE){?>
 	      <div id="add_ing">
            	<div class="form-group">
           	 	<div class="col-md-4 buffer">
@@ -110,7 +111,7 @@ if($form[0]['ingredient']){
             </div>
           </div>
 
-          <?php } ?>
+          <?php //} ?>
 
           <div id="fetch_formula">
           	<div class="loader-center">
@@ -145,9 +146,10 @@ if($form[0]['ingredient']){
                 <div id="fetch_summary"><div class="loader"></div></div>
                 <?php if($legend){ ?>
                 <div id="share">
-                  <p><a href="#" data-toggle="modal" data-target="#conf_view">Configure view</a></p>
+                  <p><a href="#" data-toggle="modal" data-backdrop="static" data-target="#conf_view">Configure view</a></p>
                   <p>To include this page in your web site, copy this line and paste it into your html code:</p>
-                <p><pre>&lt;iframe src=&quot;<?=$_SERVER['REQUEST_SCHEME']?>://<?=$_SERVER['SERVER_NAME']?>/pages/viewSummary.php?id=<?=$fid?>&quot; title=&quot;<?=$f_name?>&quot;&gt;&lt;/iframe&gt;</pre></p>
+                <p>
+                <pre>&lt;iframe src=&quot;<?=$_SERVER['REQUEST_SCHEME']?>://<?=$_SERVER['SERVER_NAME']?>/pages/viewSummary.php?id=<?=$fid?>&amp;embed=1&quot; title=&quot;<?=$f_name?>&quot;&gt;&lt;/iframe&gt;</pre></p>
                     <p>For documentation and parameterisation please refer to: <a href="https://www.jbparfum.com/knowledge-base/share-formula-notes/" target="_blank">https://www.jbparfum.com/knowledge-base/share-formula-notes/</a></p>
                 </div>
                 <?php } ?>
@@ -184,6 +186,13 @@ if($form[0]['ingredient']){
 <script>
 document.title = "<?=$meta['name'].' - '.$product?>";
 var myFID = "<?=$fid?>";
+var isProtected = "<?=$meta['isProtected']?>"
+
+$('#add_ing').hide();
+
+if(isProtected == '0'){
+	$('#add_ing').show();	
+}
 
 $("#concentration").prop("disabled", true); 
 $("#dilutant").prop("disabled", true);
@@ -231,8 +240,14 @@ function setProtected(status) {
 		success: function (data) {
 			if ( data.success ) {
 				var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
-				location.reload();
-				//reload_formula_data();
+				fetch_formula();
+				if( data.success == 'Formula locked'){
+					$('#lock_status').html('<a class="fas fa-lock" href="javascript:setProtected(\'false\')">');
+					$('#add_ing').hide();
+				}else{
+					$('#lock_status').html('<a class="fas fa-unlock" href="javascript:setProtected(\'true\')">');
+					$('#add_ing').show();
+				}
 			} else {
 				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + data.error + '</strong></div>';
 			}
@@ -304,27 +319,6 @@ $.ajax({
 }
 
 
-function update_view(){
-	
-	$('.ex_ing').each(function(){
-		$.ajax({ 
-			url: '/pages/manageFormula.php', 
-			type: 'get',
-			data: {
-				fid: "<?=urlencode($fid)?>",
-				manage_view: '1',
-				ex_status: $("#" + $(this).val()).is(':checked'),
-				ex_ing: $(this).val()
-				},
-			dataType: 'html',
-				success: function (data) {
-					$('#confViewMsg').html(data);
-
-				}
-		});
-	});
-
-}
 
 
 function fetch_replacements(){

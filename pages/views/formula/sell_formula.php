@@ -79,7 +79,7 @@ var formula_table = $('#formula').DataTable( {
 			   { data : 'purity', title: 'Purity %'},
 			   { data : 'dilutant', title: 'Dilutant'},
 			   { data : 'quantity', title: 'Quantity (<?=$settings['mUnit']?>)'},
-			   { data : 'concentration', title: 'Concentration'},
+			   { data : 'concentration', title: 'Concentration %'},
 			   { data : 'ingredient.desc', title: 'Properties'},
 			  ],
 	footerCallback : function( tfoot, data, start, end, display ) {    

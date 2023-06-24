@@ -83,6 +83,9 @@ if($meta == 0){
 	$m['total_quantity_left'] =  (float)ml2l($mg['total_mg_left'], $settings['qStep'], $settings['mUnit']);
 	$m['quantity_unit'] = (string)$settings['mUnit'];
 	
+	$total = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM makeFormula WHERE fid = '".$_GET['fid']."'"));
+	$filtered = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM makeFormula WHERE fid = '".$_GET['fid']."' ".$f));
+	
 }else{
 	if($s != ''){
  	  $f = "  AND (name LIKE '%".$s."%')";
@@ -107,10 +110,13 @@ if($meta == 0){
 
 		$rx[]=$r;
 	}
+	
+	$total = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM formulasMetaData WHERE toDo = '1'"));
+	$filtered = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM formulasMetaData WHERE todo = '1' ".$f));
+	
 }
 
-$total = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM formulasMetaData WHERE toDo = '1'"));
-$filtered = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM formulasMetaData WHERE todo = '1' ".$f));
+
 
 $response = array(
   "draw" => (int)$_POST['draw'],

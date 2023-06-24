@@ -145,14 +145,16 @@ if($_GET['manage_view'] == '1'){
 	}elseif($_GET['ex_status'] == 'false'){
 		$status = '1';
 	}
-	$fid = urldecode($_GET['fid']);
+	$fid = $_GET['fid'];
 	
 	$q = mysqli_query($conn, "UPDATE formulas SET exclude_from_summary = '$status' WHERE fid = '$fid' AND ingredient = '$ing'");
 	if($q){
-		echo  '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>View updated!</div>';
+		$response['success'] = 'View updated!';
 	}else{
-		echo  '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Something went wrong</div>';
+		$response['error'] = 'Something went wrong';
 	}
+	
+	echo json_encode($response);
 	return;
 }
 
