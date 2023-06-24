@@ -7,7 +7,7 @@
 FROM quay.io/centos/centos:stream9
 MAINTAINER JB <john@globaldyne.co.uk>
 
-LABEL co.uk.globaldyne.component="perfumers-vault-container"  description="Perfumers Vault container image"  summary="Perfumers Vault container image Version v6.0-okd"  version="v6.0-okd"  io.k8s.description="Init Container for JBs Perfumers Vault v6.0-okd"  io.k8s.display-name="Perfumers Vault v6.0-okd Init Container"  io.openshift.tags="pvault,jb,perfumer,vault,jbpvault,v6.0-okd"  name="globaldyne/pvault"  maintainer="John Belekios"
+LABEL co.uk.globaldyne.component="perfumers-vault-container"  description="Perfumers Vault container image"  summary="Perfumers Vault container image"  version="v7.1"  io.k8s.description="Container for Perfumers Vault"  io.k8s.display-name="Perfumers Vault"  io.openshift.tags="pvault,jb,perfumer,vault,jbpvault,v7.1"  name="globaldyne/pvault"  maintainer="John Belekios"
 
 ARG git_repo=master
 ARG uid=100001
@@ -80,6 +80,6 @@ ADD /scripts/pv_httpd.conf /etc/httpd/conf.d/pv_httpd.conf
 WORKDIR "/html"
 USER ${uid}
 EXPOSE 8080
-VOLUME ["/var/lib/mysql", "/html/uploads", "/config"]
+VOLUME ["/html/uploads", "/config"]
 CMD ["/bin/bash", "/start.sh"]
 
