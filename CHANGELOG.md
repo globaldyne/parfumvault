@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 7.2
+
 ### Version 7.1
 - Improve formula lock process
 - Fix orderable columns in suppliers list

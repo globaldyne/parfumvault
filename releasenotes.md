@@ -11,8 +11,5 @@ Also - *-cloud images will be dropped as the same image should be used for local
 cloud installations like Openshift/EKS, etc
 --------------------------
 </strong>
-Whats New in v7.1
+Whats New in v7.2
 --------------------------
-- Add current revision in main formulas list
-- Various bug fixes and improvements
-- Summary view page fixes
