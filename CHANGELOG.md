@@ -1,6 +1,7 @@
 # CHANGELOG
 ### Version 7.2
 - Fix a bug not showing formula name in notes when converting to ingredient
+- Ingredient suppliers pages improvements
 
 ### Version 7.1
 - Improve formula lock process
