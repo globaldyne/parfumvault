@@ -2,6 +2,7 @@
 ### Version 7.2
 - Fix a bug not showing formula name in notes when converting to ingredient
 - Ingredient suppliers pages improvements
+- Fix formula notes summary not display properly in PHP8
 
 ### Version 7.1
 - Improve formula lock process

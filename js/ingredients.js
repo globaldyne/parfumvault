@@ -10,7 +10,7 @@ $("input[type=file]").on('change',function(){
        fd.append('CSVFile',files[0]);
 
         $.ajax({
-           url: 'pages/upload.php?type=ingCSVImport&step=upload',
+           url: '/pages/upload.php?type=ingCSVImport&step=upload',
            type: 'POST',
            data: fd,
            contentType: false,
@@ -140,21 +140,4 @@ $(document).on('click', '#btnImportCSV', function(event){
       }
     })
 
-  });
-
-/*
-function importING(name) {	  
-	$.ajax({ 
-		url: 'pages/update_data.php', 
-		type: 'GET',
-		data: {
-			'import': 'ingredient',
-			'name': name,
-			},
-		dataType: 'html',
-		success: function (data) {
-			$('#innermsg').html(data);
-		}
-	  });
-};
-*/
+});
