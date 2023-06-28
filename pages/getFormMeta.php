@@ -114,9 +114,9 @@ if(empty($_GET['embed'])){
 <link href="/css/bootstrap-tagsinput.css" rel="stylesheet" />
 
 <div id="set_msg"></div>
-<table class="table table-bordered" id="formula_metadata" cellspacing="0">
+<table class="table table-bordered" id="formula_metadata">
   <tr>
-    <td width="20%">Formula Name:</td>
+    <td>Formula Name:</td>
     <td data-name="name" class="name" data-type="text" align="left" data-pk="<?php echo $info['id'];?>" width="80%"><?php echo $info['name'];?></td>
   </tr>
   <tr>
@@ -458,5 +458,4 @@ $('#tagsinput').on('beforeItemRemove', function(event) {
 });
 
 </script>
-</body>
 </html>
