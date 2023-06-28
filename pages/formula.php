@@ -72,7 +72,7 @@ if($form[0]['ingredient']){
           <li><a href="#ingRep" id="reps_tab" role="tab" data-toggle="tab"><i class="fa fa-exchange-alt mr2"></i>Replacements</a></li>
           <li><a href="#attachments" id="attachments_tab" role="tab" data-toggle="tab"><i class="fa fa-paperclip mr2"></i> Attachments</a></li>
           <li><a href="#revisions" id="revisions_tab" role="tab" data-toggle="tab"><i class="fa fa-timeline mr2"></i> Revisions</a></li>
-
+          <li><a href="#formula_settings" id="formula_settings_tab" role="tab" data-toggle="tab"><i class="fa fa-cog mr2"></i> Settings</a></li>
         </ul>
                      
         <div class="tab-content">
@@ -80,7 +80,6 @@ if($form[0]['ingredient']){
 
           <div class="card-body">
           <div id="msgInfo"></div>
-          <?php //if($meta['isProtected'] == FALSE){?>
 	      <div id="add_ing">
            	<div class="form-group">
           	 	<div class="col-md-4 buffer">
@@ -109,8 +108,6 @@ if($form[0]['ingredient']){
                 </div>  
             </div>
           </div>
-
-          <?php //} ?>
 
           <div id="fetch_formula">
           	<div class="loader-center">
@@ -173,6 +170,12 @@ if($form[0]['ingredient']){
             </div>            
         </div>
         
+        <div class="tab-pane fade" id="formula_settings">
+            <div class="card-body">
+                <div id="fetch_formula_settings"><div class="loader"></div></div>
+            </div>            
+        </div>
+                
       </div>
      </div>         
    </div><!--tabs-->
@@ -359,6 +362,21 @@ function fetch_revisions(){
 		dataType: 'html',
 		success: function (data) {
 		  $('#fetch_revisions').html(data);
+		}
+	});
+}
+
+function fetch_formula_settings(){
+	$.ajax({ 
+		url: '/pages/getFormMeta.php',
+		type: 'GET',
+		data: {
+			id: "<?=$meta['id']?>",
+			embed: true
+			},
+		dataType: 'html',
+		success: function (data) {
+		  $('#fetch_formula_settings').html(data);
 		}
 	});
 }

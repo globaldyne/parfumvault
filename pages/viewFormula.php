@@ -66,7 +66,7 @@ $(document).ready(function() {
 		 columns: [
 				   { data : 'ingredient.profile', title: 'Profile' },
 				   { data : 'ingredient.name', title: 'Ingredient', render: ingName},
-    			   { data : 'ingredient.cas', title: 'CAS#', render: ingCAS},
+    			   { data : 'ingredient.cas', title: 'CAS #', render: ingCAS},
 				   { data : 'purity', title: 'Purity %', render: ingConc},
 				   { data : 'dilutant', title: 'Dilutant', render: ingSolvent},
 				   { data : 'quantity', title: 'Quantity (<?=$settings['mUnit']?>)', render: ingQuantity},
@@ -91,7 +91,7 @@ $(document).ready(function() {
 			 $td.eq(4).html("Total: " + response.meta['total_quantity']);// + response.meta['quantity_unit'] );
 			 $td.eq(5).html("Total: " + response.meta['concentration'] + "%" );
 			 $td.eq(7).html("Total: " + response.meta['currency'] + response.meta['total_cost'] + ' <i rel="tip" title="The total price for the 100% concentration." class="pv_point_gen fas fa-info-circle"></i>');
-			 $(formula_table.columns(7).header()).html("Final Concentration: " + response.meta['product_concentration'] + "%");
+			 $(formula_table.columns(7).header()).html("Final Concentration " + response.meta['product_concentration'] + "%");
 		 }
       },
 	  
@@ -351,8 +351,6 @@ $('#print').click(() => {
         <div class="btn-group" id="menu">
             <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
             <div class="dropdown-menu dropdown-menu-left">
-	           <a class="dropdown-item popup-link" href="/pages/getFormMeta.php?id=<?=$meta['id']?>">Settings</a>
-               <div class="dropdown-divider"></div>
                <li class="dropdown-header">Export</li> 
                <a class="dropdown-item" href="javascript:export_as('csv')">Export as CSV</a>
                <a class="dropdown-item" href="javascript:export_as('pdf')">Export as PDF</a>

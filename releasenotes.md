@@ -13,3 +13,5 @@ cloud installations like Openshift/EKS, etc
 </strong>
 Whats New in v7.2
 --------------------------
+- Formula settings page moved to a tab instead of a dropdown menu
+- Variuous bug fixes and improvements, please refer to the CHANGELOG for details

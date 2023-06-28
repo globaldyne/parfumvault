@@ -31,5 +31,8 @@ $(document).ready(function() {
 	$('#revisions_tab').on( 'click', function () {
 		fetch_revisions();
 	});
-
+	
+	$('#formula_settings_tab').on( 'click', function () {
+		fetch_formula_settings();
+	});
 });
