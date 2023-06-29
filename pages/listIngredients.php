@@ -15,7 +15,7 @@ $defCatClass = $settings['defCatClass'];
     <tr class="noBorder noexport">
      <div class="text-right">
       <div class="btn-group">
-       <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> Actions</button>
+       <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
       <div class="dropdown-menu dropdown-menu-right">
         <a class="dropdown-item popup-link" href="/pages/mgmIngredient.php">Add new ingredient</a>
         <a class="dropdown-item" id="csv_export" href="/pages/export.php?format=csv&kind=ingredients">Export to CSV</a>
@@ -71,7 +71,7 @@ $defCatClass = $settings['defCatClass'];
           <th><?=ucfirst($defCatClass)?></th>
           <th>Supplier(s)</th>
           <th>Document(s)</th>
-          <th>Actions</th>
+          <th></th>
       </tr>
    </thead>
 </table>
@@ -134,7 +134,7 @@ $(document).ready(function() {
 			  { data : null, title: 'Supplier(s)', render: iSuppliers},
 			  { data : null, title: 'Document(s)', render: iDocs},
 
-			  { data : null, title: 'Actions', render: actions},		   
+			  { data : null, title: '', render: actions},		   
 			 ],
 	order: [[ 0, 'asc' ]],
 	lengthMenu: [[20, 50, 100, 200, 400], [20, 50, 100, 200, 400]],

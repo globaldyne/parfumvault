@@ -35,4 +35,9 @@ $(document).ready(function() {
 	$('#formula_settings_tab').on( 'click', function () {
 		fetch_formula_settings();
 	});
+	
+	$('#timeline_tab').on( 'click', function () {
+		fetch_timeline();
+	});
+
 });
