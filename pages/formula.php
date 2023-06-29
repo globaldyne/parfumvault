@@ -65,14 +65,16 @@ if($form[0]['ingredient']){
             </div>
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" role="tablist">
-          <li class="active"><a href="#main_formula" id="formula_tab" role="tab" data-toggle="tab"><icon class="fa fa-bong mr2"></icon>Formula</a></li>
+          <li class="active"><a href="#main_formula" id="formula_tab" role="tab" data-toggle="tab"><i class="fa fa-bong mr2"></i>Formula</a></li>
     	  <li><a href="#impact" id="impact_tab" role="tab" data-toggle="tab"><i class="fa fa-magic mr2"></i>Notes Impact</a></li>
           <li><a href="#pyramid" id="pyramid_tab" role="tab" data-toggle="tab"><i class="fa fa-table mr2"></i>Olfactory Pyramid</a></li>
           <li><a href="#summary" id="summary_tab" role="tab" data-toggle="tab"><i class="fa fa-cubes mr2"></i>Notes Summary</a></li>
           <li><a href="#ingRep" id="reps_tab" role="tab" data-toggle="tab"><i class="fa fa-exchange-alt mr2"></i>Replacements</a></li>
-          <li><a href="#attachments" id="attachments_tab" role="tab" data-toggle="tab"><i class="fa fa-paperclip mr2"></i> Attachments</a></li>
-          <li><a href="#revisions" id="revisions_tab" role="tab" data-toggle="tab"><i class="fa fa-timeline mr2"></i> Revisions</a></li>
-          <li><a href="#formula_settings" id="formula_settings_tab" role="tab" data-toggle="tab"><i class="fa fa-cog mr2"></i> Settings</a></li>
+          <li><a href="#attachments" id="attachments_tab" role="tab" data-toggle="tab"><i class="fa fa-paperclip mr2"></i>Attachments</a></li>
+          <li><a href="#revisions" id="revisions_tab" role="tab" data-toggle="tab"><i class="fa fa-clock-rotate-left mr2"></i>Revisions</a></li>
+          <li><a href="#timeline" id="timeline_tab" role="tab" data-toggle="tab"><i class="fa fa-timeline mr2"></i>History</a></li>
+
+          <li><a href="#formula_settings" id="formula_settings_tab" role="tab" data-toggle="tab"><i class="fa fa-cogs mr2"></i>Settings</a></li>
         </ul>
                      
         <div class="tab-content">
@@ -173,6 +175,12 @@ if($form[0]['ingredient']){
         <div class="tab-pane fade" id="formula_settings">
             <div class="card-body">
                 <div id="fetch_formula_settings"><div class="loader"></div></div>
+            </div>            
+        </div>
+        
+        <div class="tab-pane fade" id="timeline">
+            <div class="card-body">
+                <div id="fetch_timeline"><div class="loader"></div></div>
             </div>            
         </div>
                 
@@ -377,6 +385,20 @@ function fetch_formula_settings(){
 		dataType: 'html',
 		success: function (data) {
 		  $('#fetch_formula_settings').html(data);
+		}
+	});
+}
+
+function fetch_timeline(){
+	$.ajax({ 
+		url: '/pages/views/formula/timeline.php',
+		type: 'GET',
+		data: {
+			id: "<?=$meta['id']?>",
+			},
+		dataType: 'html',
+		success: function (data) {
+		  $('#fetch_timeline').html(data);
 		}
 	});
 }
