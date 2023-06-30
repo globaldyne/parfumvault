@@ -97,6 +97,21 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'ingredients'){
 		
 		$ingredients++;
 		$ing[] = $r;
+		
+	}
+	$q = mysqli_query($conn, "SELECT * FROM allergens");
+	while($res = mysqli_fetch_assoc($q)){
+
+		$c['id'] = (string)$res['id'];
+		$c['ing'] = (string)$res['ing'];
+		$c['name'] = (string)$res['name'];
+		$c['cas'] = (string)$res['cas'] ?: 'N/A';
+		$c['ec'] = (string)$res['ec'] ?: 'N/A';
+		$c['percentage'] = (double)$res['percentage'];
+		$c['toDeclare'] = (int)$res['toDeclare'];
+		$c['created'] = (string)$res['created'];
+
+		$cmp[] = $c;
 	}
 	
 	
@@ -108,6 +123,7 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'ingredients'){
 
 	
 	$result['ingredients'] = $ing;
+	$result['compositions'] = $cmp;
 	$result['pvMeta'] = $vd;
 
 	header('Content-disposition: attachment; filename=ingredients.json');

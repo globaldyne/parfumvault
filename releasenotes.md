@@ -14,3 +14,8 @@ cloud installations like Openshift/EKS, etc
 Whats New in v7.3
 --------------------------
 - Added single ingredient export (json format only)
+- Ingredient name should be unique and previously validated only in application level.
+  Since version 7.3, will be forced in database level as well. 
+  This  may cause importing (json or csv) to fail if contains duplicates. 
+  Any duplicates should be removed before import.
+- Ingredients export will include compostions as well (json only)

@@ -415,7 +415,8 @@ ALTER TABLE `ingProfiles`
 
 ALTER TABLE `ingredients`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `id` (`id`);
+  ADD UNIQUE KEY `id` (`id`),
+  ADD UNIQUE KEY `name` (`name`);
 
 ALTER TABLE `ingStrength`
   ADD PRIMARY KEY (`id`);
