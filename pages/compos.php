@@ -46,7 +46,7 @@ $('[data-toggle="tooltip"]').tooltip();
 var tdCompositions = $('#tdCompositions').DataTable( {
 	columnDefs: [
 		{ className: 'text-center', targets: '_all' },
-		{ orderable: false, targets: [4] },
+		{ orderable: false, targets: [5] },
 	],
 	dom: 'lfrtip',
 	processing: true,

@@ -7,17 +7,10 @@ require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 
-if(!$_GET['id']){
-	echo 'Formula id is missing.';
-	return;
-}
-	
+
 $id = mysqli_real_escape_string($conn, $_GET['id']);
 
-if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulasMetaData WHERE id = '$id'")) == 0){
-	echo '<div class="alert alert-info alert-dismissible">Incomplete formula. Please add ingredients.</div>';
-	return;
-}
+
 $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,fid,name,isProtected,finalType,defView,notes FROM formulasMetaData WHERE id = '$id'"));
 $f_name = $meta['name'];
 $fid = $meta['fid'];
@@ -66,7 +59,7 @@ $(document).ready(function() {
 		 columns: [
 				   { data : 'ingredient.profile', title: 'Profile' },
 				   { data : 'ingredient.name', title: 'Ingredient', render: ingName},
-    			   { data : 'ingredient.cas', title: 'CAS#', render: ingCAS},
+    			   { data : 'ingredient.cas', title: 'CAS #', render: ingCAS},
 				   { data : 'purity', title: 'Purity %', render: ingConc},
 				   { data : 'dilutant', title: 'Dilutant', render: ingSolvent},
 				   { data : 'quantity', title: 'Quantity (<?=$settings['mUnit']?>)', render: ingQuantity},
@@ -75,7 +68,7 @@ $(document).ready(function() {
 				   { data : 'cost', title: 'Cost (<?=$settings['currency']?>)'},
 				   { data : 'ingredient.inventory.stock', title: 'Inventory', className: 'text-center noexport', render: ingInv },
 				   { data : 'ingredient.desc', title: 'Properties', render: ingNotes},
-   				   { data : null, title: 'Actions', className: 'text-center noexport', render: ingActions},		   
+   				   { data : null, title: '', className: 'text-center noexport', render: ingActions},		   
 				   
 				  ],
 		fixedHeader: {
@@ -91,7 +84,7 @@ $(document).ready(function() {
 			 $td.eq(4).html("Total: " + response.meta['total_quantity']);// + response.meta['quantity_unit'] );
 			 $td.eq(5).html("Total: " + response.meta['concentration'] + "%" );
 			 $td.eq(7).html("Total: " + response.meta['currency'] + response.meta['total_cost'] + ' <i rel="tip" title="The total price for the 100% concentration." class="pv_point_gen fas fa-info-circle"></i>');
-			 $(formula_table.columns(7).header()).html("Final Concentration: " + response.meta['product_concentration'] + "%");
+			 $(formula_table.columns(7).header()).html("Final Concentration " + response.meta['product_concentration'] + "%");
 		 }
       },
 	  
@@ -257,8 +250,8 @@ $('#formula').on('click', '[id*=exIng]', function () {
 	update_bar();
 	
 });//doc ready
-function isMade() {
-			 
+
+$('#isMade').click(function() {
 	bootbox.dialog({
        title: "Confirm formula is made?",
        message : 'If confirmed, ingredients amount will be deducted from the inventory accordingly, where enough in stock.',
@@ -299,7 +292,7 @@ function isMade() {
        },onEscape: function () {return true;}
    });
 			 
-}
+});
 
 function update_bar(){
      $.getJSON("/core/full_formula_data.php?id="+myID+"&stats_only=1", function (json) {
@@ -307,23 +300,29 @@ function update_bar(){
 		$('#formula_name').html(json.stats.formula_name);
 		$('#formula_desc').html(json.stats.formula_description);
 
+		if(json.stats.top || json.stats.heart || json.stats.base){
+			$('#progress-area').show();
+			
+			var top = Math.round(json.stats.top);
+			var top_max = Math.round(json.stats.top_max);
+			
+			var heart = Math.round(json.stats.heart);
+			var heart_max = Math.round(json.stats.heart_max);
+			
+			var base = Math.round(json.stats.base);
+			var base_max = Math.round(json.stats.base_max);
+	
+			$('#top_bar').attr('aria-valuenow', top).css('width', top+'%').attr('aria-valuemax', top_max);
+			$('#heart_bar').attr('aria-valuenow', heart).css('width', heart+'%').attr('aria-valuemax', heart_max);
+			$('#base_bar').attr('aria-valuenow', base).css('width', base+'%').attr('aria-valuemax', base_max);;
+			
+			$('.top-label').html(top + "% Top Notes");
+			$('.heart-label').html(heart + "% Heart Notes");
+			$('.base-label').html(base + "% Base Notes");
+		}else{
+			$('#progress-area').hide();
+		}
 		
-        var top = Math.round(json.stats.top);
-		var top_max = Math.round(json.stats.top_max);
-		
-		var heart = Math.round(json.stats.heart);
-		var heart_max = Math.round(json.stats.heart_max);
-		
-        var base = Math.round(json.stats.base);
-        var base_max = Math.round(json.stats.base_max);
-
-		$('#top_bar').attr('aria-valuenow', top).css('width', top+'%').attr('aria-valuemax', top_max);
-		$('#heart_bar').attr('aria-valuenow', heart).css('width', heart+'%').attr('aria-valuemax', heart_max);
-		$('#base_bar').attr('aria-valuenow', base).css('width', base+'%').attr('aria-valuemax', base_max);;
-        
-		$('.top-label').html(top + "% Top Notes");
-        $('.heart-label').html(heart + "% Heart Notes");
-        $('.base-label').html(base + "% Base Notes");
 	}); 
 };
 
@@ -337,48 +336,41 @@ $('#print').click(() => {
 });
 </script>
 
-<table class="table table-striped table-bordered nowrap" width="100%" cellspacing="0">
-	<thead>
-   	 <tr class="noexport">
-       <th colspan="10">
-        <div class="progress">  
-              <div id="base_bar" class="progress-bar pv_bar_base_notes" role="progressbar" aria-valuemin="0"><span><div class="base-label"></div></span></div>
-              <div id="heart_bar" class="progress-bar pv_bar_heart_notes" role="progressbar" aria-valuemin="0"><span><div class="heart-label"></div></span></div>
-              <div id="top_bar" class="progress-bar pv_bar_top_notes" role="progressbar" aria-valuemin="0"><span><div class="top-label"></div></span></div>
+<div class="card-body">
+	<div class="col-sm-10" id="progress-area">
+      <div class="progress">  
+          <div id="base_bar" class="progress-bar pv_bar_base_notes" role="progressbar" aria-valuemin="0"><span><div class="base-label"></div></span></div>
+          <div id="heart_bar" class="progress-bar pv_bar_heart_notes" role="progressbar" aria-valuemin="0"><span><div class="heart-label"></div></span></div>
+          <div id="top_bar" class="progress-bar pv_bar_top_notes" role="progressbar" aria-valuemin="0"><span><div class="top-label"></div></span></div>
+      </div>
+    </div>
+    <div class="text-right">
+      <div class="btn-group" id="menu">
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
+        <div class="dropdown-menu dropdown-menu-right">
+           <li class="dropdown-header">Export</li> 
+           <a class="dropdown-item export_as" href="#" data-format="csv">Export as CSV</a>
+           <a class="dropdown-item export_as" href="#" data-format="pdf">Export as PDF</a>
+           <a class="dropdown-item" href="/pages/operations.php?action=exportFormulas&fid=<?=$meta['fid']?>">Export as JSON</a>               
+           <a class="dropdown-item" href="#" id="print">Print Formula</a>
+           <div class="dropdown-divider"></div>
+           <li class="dropdown-header">Scale Formula</li> 
+           <a class="dropdown-item manageQuantity" href="#" data-action="multiply">Multiply x2</a>
+           <a class="dropdown-item manageQuantity" href="#" data-action="divide">Divide x2</a>
+           <a class="dropdown-item" href="#" data-toggle="modal" data-target="#amount_to_make">Advanced</a>
+           <div class="dropdown-divider"></div>
+           <a class="dropdown-item" href="#" data-backdrop="static" data-toggle="modal" data-target="#create_accord">Create Accord</a>
+           <a class="dropdown-item" href="#" data-backdrop="static" data-toggle="modal" data-target="#conv_ingredient">Create ingredient</a>
+           <div class="dropdown-divider"></div>
+           <a class="dropdown-item" href="#" data-toggle="modal" data-target="#schedule_to_make">Schedule to make</a>
+           <a class="dropdown-item" href="#" id="isMade">Mark formula as made</a>
+           <div class="dropdown-divider"></div>
+           <a class="dropdown-item" href="#" id="cloneMe">Clone Formula</a>
+           <div class="dropdown-divider"></div>
         </div>
-	</th>
-	<th>
-        <div class="btn-group" id="menu">
-            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
-            <div class="dropdown-menu dropdown-menu-left">
-	           <a class="dropdown-item popup-link" href="/pages/getFormMeta.php?id=<?=$meta['id']?>">Settings</a>
-               <div class="dropdown-divider"></div>
-               <li class="dropdown-header">Export</li> 
-               <a class="dropdown-item" href="javascript:export_as('csv')">Export as CSV</a>
-               <a class="dropdown-item" href="javascript:export_as('pdf')">Export as PDF</a>
-               <a class="dropdown-item" href="/pages/operations.php?action=exportFormulas&fid=<?=$meta['fid']?>">Export as JSON</a>               
-               <a class="dropdown-item" href="#" id="print">Print Formula</a>
-               <div class="dropdown-divider"></div>
-               <li class="dropdown-header">Scale Formula</li> 
-               <a class="dropdown-item" href="javascript:manageQuantity('multiply')">Multiply x2</a>
-               <a class="dropdown-item" href="javascript:manageQuantity('divide')">Divide x2</a>
-               <a class="dropdown-item" href="#" data-toggle="modal" data-target="#amount_to_make">Advanced</a>
-               <div class="dropdown-divider"></div>
-               <a class="dropdown-item" href="#" data-toggle="modal" data-target="#create_accord">Create Accord</a>
-               <a class="dropdown-item" href="#" data-toggle="modal" data-target="#conv_ingredient">Convert to ingredient</a>
-               <div class="dropdown-divider"></div>
-               <a class="dropdown-item" href="#" data-toggle="modal" data-target="#schedule_to_make">Schedule to make</a>
-               <a class="dropdown-item" href="javascript:isMade()">Mark formula as made</a>
-               <div class="dropdown-divider"></div>
-               <a class="dropdown-item" href="/pages/viewHistory.php?id=<?=$meta['id']?>" target="_blank">View history</a>
-               <div class="dropdown-divider"></div>
-               <a class="dropdown-item" href="javascript:cloneMe()">Clone Formula</a>
-               <div class="dropdown-divider"></div>
-            </div>
-        </div>
-	</th>
-</tr>
-</table>
+        </div>            
+    </div>
+</div>
 <div id="msgInfo"></div>
 <table id="formula" class="table table-striped table-bordered nowrap viewFormula" style="width:100%">
         <thead>
@@ -394,7 +386,7 @@ $('#print').click(() => {
                 <th>Cost</th>
                 <th>Inventory</th>
                 <th>Properties</th>
-                <th>Actions</th>
+                <th></th>
             </tr>
         </thead>
         <tfoot>
@@ -481,9 +473,6 @@ $('#print').click(() => {
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Create accord</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
       </div>
       <div class="modal-body">
       <div id="accordMsg"></div>
@@ -519,10 +508,7 @@ $('#print').click(() => {
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Convert formula to ingredient</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <h5 class="modal-title">Create ingredient from formula</h5>
       </div>
       <div class="modal-body">
       <div id="cnvMsg"></div>
@@ -536,7 +522,7 @@ $('#print').click(() => {
         <div class="alert alert-info">The original formula will not be affected.</div>
 	    <div class="modal-footer">
 	     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-  		 <input type="submit" name="button" class="btn btn-primary" id="conv2ing" value="Convert">
+  		 <input type="submit" name="button" class="btn btn-primary" id="conv2ing" value="Create">
 	   </div>
     </div>
   </div>
@@ -761,41 +747,47 @@ function ingInv(data, type, row, meta){
 
 function ingActions(data, type, row, meta){
 
+	data = '<div class="dropdown">' +
+        '<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+            '<ul class="dropdown-menu dropdown-menu-right">';
 
-if(type === 'display'){
-	data = '<a href="'+ row.ingredient.pref_supplier_link +'" target="_blank" rel="tip" title="Open '+ row.ingredient.pref_supplier +' page" class="fas fa-shopping-cart mr2"></a>';
+	data += '<li><a class="dropdown-item link-dark" href="'+ row.ingredient.pref_supplier_link +'" target="_blank" rel="tip" title="Open '+ row.ingredient.pref_supplier +' page"><i class="fas fa-shopping-cart mr2"></i>Go to supplier</a></li>';
+	
 	<?php if($meta['isProtected'] == FALSE){?>
 	if(row.exclude_from_calculation == 0){
-	 	var ex = '<i class="pv_point_gen fas fa-eye-slash mr2" style="color: #337ab7;" rel="tip" id="exIng" title="Exclude '+ row.ingredient.name +'" data-name="'+ row.ingredient.name +'" data-status="1" data-id="'+ row.formula_ingredient_id +'"></i>';
+	 	var ex = '<li><i class="dropdown-item pv_point_gen link-dark" rel="tip" id="exIng" title="Exclude '+ row.ingredient.name +'" data-name="'+ row.ingredient.name +'" data-status="1" data-id="'+ row.formula_ingredient_id +'"><i class="pv_point_gen fas fa-eye-slash mr2"></i>Exlude</i></li>';
+		
 	}else if(row.exclude_from_calculation == 1){
-	 	var ex = '<i class="pv_point_gen fas fa-eye mr2" style="color: #337ab7;" rel="tip" id="exIng" title="Include '+ row.ingredient.name +'" data-name="'+ row.ingredient.name +'" data-status="0" data-id="'+ row.formula_ingredient_id +'"></i>';
+	 	var ex = '<li><i class="dropdown-item pv_point_gen link-dark" rel="tip" id="exIng" title="Include '+ row.ingredient.name +'" data-name="'+ row.ingredient.name +'" data-status="0" data-id="'+ row.formula_ingredient_id +'"><i class="pv_point_gen fas fa-eye mr2"></i>Include</i></li>';
 	}
 	
-	data += ex + '<i data-toggle="modal" data-target="#replaceIng" data-backdrop="static" class="pv_point_gen fas fa-exchange-alt open-replace-dialog mr2" style="color: #337ab7;" rel="tip" title="Replace '+ row.ingredient.name +'"  data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'"></i>'
+	data += ex + '<li><i data-toggle="modal" data-target="#replaceIng" data-backdrop="static" class="dropdown-item pv_point_gen open-replace-dialog text-info" rel="tip" title="Replace '+ row.ingredient.name +'"  data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'"><i class="pv_pont_gen fas fa-exchange-alt text-info mr2"></i>Replace ingredient</i></li>'
 	
-	+ '<i data-toggle="modal" data-target="#mrgIng" data-backdrop="static" rel="tip" title="Merge '+ row.ingredient.name +'" class="pv_point_gen fas fa-object-group alert-warning mr2 open-merge-dialog" data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'"></i>'
+	+ '<li><i data-toggle="modal" data-target="#mrgIng" data-backdrop="static" rel="tip" title="Merge '+ row.ingredient.name +'" class="dropdown-item pv_point_gen open-merge-dialog text-warning" data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'"><i class="pv_point_gen fas fa-object-group alert-warning mr2"></i>Merge ingredients</i></li>'
 	
-	+ '<i rel="tip" title="Remove '+ row.ingredient.name +'" class="pv_point_gen fas fa-trash" style="color: #c9302c;" id="rmIng" data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'"></i>';
+	+'<div class="dropdown-divider"></div>'
+	+ '<li><i rel="tip" title="Remove '+ row.ingredient.name +'" class="dropdown-item text-danger pv_point_gen" id="rmIng" data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'"><i class="pv_point_gen fas fa-trash mr2 text-danger"></i>Delete</i></li>';
 	<?php } ?>
-}
+	data += '</ul></div>';
+
    return data;
 }
 
 //MULTIPLY - DIVIDE
-function manageQuantity(quantity) {
+$('.manageQuantity').click(function() {
 	$.ajax({ 
     url: '/pages/manageFormula.php', 
 	type: 'POST',
     data: {
 		do: 'scale',
-		scale: quantity,
+		scale: $(this).attr('data-action'),
 		formula: myFID,
 		},
     success: function (data) {
 		reload_formula_data();
     }
   });
-};
+});
 
 //AMOUNT TO MAKE
 $('#amount_to_make').on('click', '[id*=amountToMake]', function () {
@@ -884,7 +876,7 @@ $('#conv_ingredient').on('click', '[id*=conv2ing]', function () {
 });
 
 //Clone
-function cloneMe() {	  
+$('#cloneMe').click(function() {
 $.ajax({ 
     url: '/pages/manageFormula.php', 
 	type: 'POST',
@@ -904,7 +896,7 @@ $.ajax({
 	}
 
   });
-};
+});
 
 //Add in Schedule
 $('#schedule_to_make').on('click', '[id*=addTODO]', function () {
@@ -1112,10 +1104,11 @@ $("#formula").on("click", ".open-merge-dialog", function () {
 });
         
 
-function export_as(type) {
+$('.export_as').click(function() {	
+  var format = $(this).attr('data-format');
   $("#formula").tableHTMLExport({
-	type: type,
-	filename: myFNAME + "." + type,
+	type: format,
+	filename: myFNAME + "." + format,
 	separator: ',',
   	newline: '\r\n',
   	trimContent: true,
@@ -1126,7 +1119,7 @@ function export_as(type) {
 	orientation: 'l',
 	maintitle: myFNAME,
   });
-};
+});
 </script>
 <script src="/js/mark/jquery.mark.min.js"></script>
 <script src="/js/mark/datatables.mark.js"></script>

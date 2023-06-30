@@ -297,7 +297,7 @@ if($_POST['action'] == 'repIng' && $_POST['fid']){
 if($_POST['action'] == 'conv2ing' && $_POST['ingName'] && $_POST['fid']){
 	$name = mysqli_real_escape_string($conn, $_POST['ingName']);
 	$fid = mysqli_real_escape_string($conn, $_POST['fid']);
-	$fmame = mysqli_real_escape_string($conn, $_POST['fname']);
+	$fname = mysqli_real_escape_string($conn, $_POST['fname']);
 	
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '$name'"))){
 		$response['error'] = '<a href="/?do=ingredients&search='.$name.'" target="_blank">'.$name.'</a> already exists';

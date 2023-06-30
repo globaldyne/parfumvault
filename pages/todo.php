@@ -39,6 +39,7 @@ $(document).ready(function() {
 	serverSide: true,
 	searching: true,
 	mark: true,
+	responsive: true,
 	language: {
 		loadingRecords: '&nbsp;',
 		processing: 'Please Wait...',
@@ -60,7 +61,7 @@ $(document).ready(function() {
 	   columns: [
             { data : 'name', title: 'Formula Name', render: name },
 			{ data : null, title: 'Ingredients remaining', render: ingredients },
-			{ data : 'madeOn', title: 'Porgress', render: progress },
+			{ data : 'madeOn', title: 'Progress', render: progress },
 			{ data : 'scheduledOn', title: 'Scheduled' },
 			{ data : null, title: 'Actions', render: actions },
 			],

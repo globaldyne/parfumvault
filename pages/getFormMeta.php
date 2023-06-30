@@ -47,7 +47,7 @@ while($qTags = mysqli_fetch_array($tagsQ)){
 	array_push($tagsData, $tags); 
 }
 
-
+if(empty($_GET['embed'])){
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -65,7 +65,6 @@ while($qTags = mysqli_fetch_array($tagsQ)){
 	}
   </script>
   <meta name="description" content="<?php echo $product.' - '.$ver;?>">
-  <meta name="author" content="JBPARFUM">
   <title><?php echo $info['name'];?></title>
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
@@ -73,7 +72,6 @@ while($qTags = mysqli_fetch_array($tagsQ)){
   <link href="/css/bootstrap-select.min.css" rel="stylesheet">
   <link href="/css/bootstrap-editable.css" rel="stylesheet">
   <link href="/css/vault.css" rel="stylesheet">
-  <link href="/css/bootstrap-tagsinput.css" rel="stylesheet" />
   <script src="/js/jquery/jquery.min.js"></script>
   <script src="/js/jquery-ui.js"></script>
       
@@ -83,7 +81,7 @@ while($qTags = mysqli_fetch_array($tagsQ)){
   <script src="/js/bootstrap.min.js"></script>
   <script src="/js/bootstrap-editable.js"></script>  
   <script src="/js/bootstrap-select.js"></script>
-  <script src="/js/bootstrap-tagsinput.js"></script>
+  
 </head>
 
 <style type="text/css">
@@ -101,17 +99,24 @@ while($qTags = mysqli_fetch_array($tagsQ)){
 }
 
 </style>
-<body>
 
-<table class="table table-bordered" id="formula_metadata" cellspacing="0">
+
+
+
+<table class="table table-bordered"  cellspacing="0">
   <tr>
     <td colspan="2"><h1 class="mgmIngHeader mgmIngHeader-with-separator"><?=$info['name']?></h1><span class="mgmIngHeaderCAS"><?=$info['product_name']?></span></td>
   </tr>
+</table>
+<?php } ?>
+
+<script src="/js/bootstrap-tagsinput.js"></script> 
+<link href="/css/bootstrap-tagsinput.css" rel="stylesheet" />
+
+<div id="set_msg"></div>
+<table class="table table-bordered" id="formula_metadata">
   <tr>
-    <td colspan="2"><div id="msg"><?php echo $msg; ?></div></td>
-  </tr>
-  <tr>
-    <td width="20%">Formula Name:</td>
+    <td>Formula Name:</td>
     <td data-name="name" class="name" data-type="text" align="left" data-pk="<?php echo $info['id'];?>" width="80%"><?php echo $info['name'];?></td>
   </tr>
   <tr>
@@ -207,13 +212,13 @@ $('[rel=tip]').tooltip({placement: 'auto'});
 $('#formula_metadata').editable({
   container: 'body',
   selector: 'td.name',
-  url: "update_data.php?action=rename&fid=<?=$info['fid']?>",
+  url: "/pages/update_data.php?action=rename&fid=<?=$info['fid']?>",
   title: 'Name',
   type: "POST",
   mode: 'inline',
   dataType: 'json',
       success: function(response) {				
-	  	$('#msg').html(response);        
+	  	$('#set_msg').html(response);        
     },
 
 });
@@ -221,7 +226,7 @@ $('#formula_metadata').editable({
 $('#formula_metadata').editable({
   container: 'body',
   selector: 'td.notes',
-  url: "update_data.php?formulaMeta=<?=$info['fid']?>",
+  url: "/pages/update_data.php?formulaMeta=<?=$info['fid']?>",
   title: 'Notes',
   type: "POST",
   mode: 'inline',
@@ -235,7 +240,7 @@ $('#formula_metadata').editable({
 $('#formula_metadata').editable({
   container: 'body',
   selector: 'td.product_name',
-  url: "update_data.php?formulaMeta=<?=$info['fid']?>",
+  url: "/pages/update_data.php?formulaMeta=<?=$info['fid']?>",
   title: 'Product Name',
   type: "POST",
   mode: 'inline',
@@ -249,7 +254,7 @@ $('#formula_metadata').editable({
 $('#profile').editable({
 value: "<?php echo $info['profile'];?>",
 title: 'Profile',
-url: "update_data.php?formulaMeta=<?=$info['fid']?>",
+url: "/pages/update_data.php?formulaMeta=<?=$info['fid']?>",
 source: [
 		<?php foreach ($fcat as $cat) { if($cat['type'] == 'profile'){?>		
 		 {value: '<?=$cat['cname']?>', text: '<?=$cat['name']?>'},
@@ -259,7 +264,7 @@ source: [
 
 $('#sex').editable({
 value: "<?php echo $info['sex'];?>",
-url: "update_data.php?formulaMeta=<?=$info['fid']?>",
+url: "/pages/update_data.php?formulaMeta=<?=$info['fid']?>",
 source: [
 		 <?php foreach ($fcat as $cat) { if($cat['type'] == 'sex'){?>		
 		 {value: '<?=$cat['cname']?>', text: '<?=$cat['name']?>'},
@@ -272,22 +277,27 @@ source: [
 
 $("#isProtected").change(function() {
   $.ajax({ 
-		url: 'update_data.php', 
+		url: '/pages/update_data.php', 
 		type: 'GET',
 		data: {
 			protect: '<?=$info['fid']?>',
 			isProtected: $("#isProtected").is(':checked'),
 			},
-		dataType: 'html',
+		dataType: 'json',
 		success: function (data) {
-			$('#msg').html(data);
+			if(data.success){
+				var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + data.success + '</strong></div>';
+			}else{
+				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + data.error + '</strong></div>';
+			}
+			$('#set_msg').html(msg);
 		}
 	  });
 });
   
 $("#defView").change(function() {
  $.ajax({ 
-	url: 'update_data.php', 
+	url: '/pages/update_data.php', 
 	type: 'GET',
 	data: {
 		formula: '<?=$info['fid']?>',
@@ -295,14 +305,14 @@ $("#defView").change(function() {
 		},
 	dataType: 'html',
 	success: function (data) {
-		$('#msg').html(data);
+		$('#set_msg').html(data);
 	}
   });
 });
 
 $("#catClass").change(function() {
  $.ajax({ 
-	url: 'update_data.php', 
+	url: '/pages/update_data.php', 
 	type: 'GET',
 	data: {
 		formula: '<?=$info['fid']?>',
@@ -310,14 +320,14 @@ $("#catClass").change(function() {
 		},
 	dataType: 'html',
 	success: function (data) {
-		$('#msg').html(data);
+		$('#set_msg').html(data);
 	}
   });
 });
 
 $("#finalType").change(function() {
  $.ajax({ 
-	url: 'update_data.php', 
+	url: '/pages/update_data.php', 
 	type: 'GET',
 	data: {
 		formula: '<?=$info['id']?>',
@@ -325,14 +335,14 @@ $("#finalType").change(function() {
 		},
 	dataType: 'html',
 	success: function (data) {
-		$('#msg').html(data);
+		$('#set_msg').html(data);
 	}
   });
 });
 
 $("#status").change(function() {
  $.ajax({ 
-	url: 'update_data.php', 
+	url: '/pages/update_data.php', 
 	type: 'GET',
 	data: {
 		formula: '<?=$info['id']?>',
@@ -341,7 +351,7 @@ $("#status").change(function() {
 		},
 	dataType: 'html',
 	success: function (data) {
-		$('#msg').html(data);
+		$('#set_msg').html(data);
 	}
   });
 });
@@ -349,7 +359,7 @@ $("#status").change(function() {
 
 $("#customer").change(function() {
  $.ajax({ 
-	url: 'update_data.php', 
+	url: '/pages/update_data.php', 
 	type: 'GET',
 	data: {
 		formula: '<?=$info['fid']?>',
@@ -358,13 +368,13 @@ $("#customer").change(function() {
 		},
 	dataType: 'html',
 	success: function (data) {
-		$('#msg').html(data);
+		$('#set_msg').html(data);
 	}
   });
 });
 
 $("#pic_upload").click(function(){
-	$("#msg").html('<div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
+	$("#set_msg").html('<div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
 	$("#pic_upload").prop("disabled", true);
     $("#pic_upload").prop('value', 'Please wait...');
 		
@@ -376,7 +386,7 @@ $("#pic_upload").click(function(){
 		fd.append('doc_file',files[0]);
 
 			$.ajax({
-              url: 'upload.php?type=2&doc_name=' + btoa(doc_name) + '&id=<?=$id?>',
+              url: '/pages/upload.php?type=2&doc_name=' + btoa(doc_name) + '&id=<?=$id?>',
               type: 'POST',
               data: fd,
               contentType: false,
@@ -384,18 +394,18 @@ $("#pic_upload").click(function(){
 			  		cache: false,
               success: function(response){
                  if(response != 0){
-                    $("#msg").html(response);
+                    $("#set_msg").html(response);
 					$("#pic_upload").prop("disabled", false);
         			$("#pic_upload").prop('value', 'Upload');
                  }else{
-                    $("#msg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> File upload failed!</div>');
+                    $("#set_msg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> File upload failed!</div>');
 					$("#pic_upload").prop("disabled", false);
         			$("#pic_upload").prop('value', 'Upload');
                  }
               },
            });
         }else{
-			$("#msg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a file to upload!</div>');
+			$("#set_msg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a file to upload!</div>');
 			$("#pic_upload").prop("disabled", false);
    			$("#pic_upload").prop('value', 'Upload');
         }
@@ -405,7 +415,7 @@ $("#pic_upload").click(function(){
 $('#tagsinput').on('beforeItemAdd', function(event) {
    var tag = event.item;   
    $.ajax({ 
-		url: 'manageFormula.php', 
+		url: '/pages/manageFormula.php', 
 		type: 'POST',
 		data: {
 			do: "tagadd",
@@ -416,7 +426,7 @@ $('#tagsinput').on('beforeItemAdd', function(event) {
 		success: function (data) {
 		  	if(data.error){
 				$('#tagsinput').tagsinput('remove', tag, {preventPost: true});
-				$('#msg').html(data.error);
+				$('#set_msg').html(data.error);
 			}
 		}
 	});
@@ -430,7 +440,7 @@ $('#tagsinput').tagsinput('refresh');
 $('#tagsinput').on('beforeItemRemove', function(event) {
    var tag = event.item;   
    $.ajax({ 
-		url: 'manageFormula.php', 
+		url: '/pages/manageFormula.php', 
 		type: 'POST',
 		data: {
 			do: "tagremove",
@@ -441,12 +451,11 @@ $('#tagsinput').on('beforeItemRemove', function(event) {
 		success: function (data) {
 		  	if(data.error){
 				$('#tagsinput').tagsinput('add', tag, {preventPost: true});
-				$('#msg').html(data.error);
+				$('#set_msg').html(data.error);
 			}
 		}
 	});
 });
 
 </script>
-</body>
 </html>
