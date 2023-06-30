@@ -1,4 +1,5 @@
 # CHANGELOG
+### Version 7.3
 ### Version 7.2
 - Fix a bug not showing formula name in notes when converting to ingredient
 - Fix formula notes summary not display properly in PHP8

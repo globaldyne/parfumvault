@@ -11,8 +11,5 @@ Also - *-cloud images will be dropped as the same image should be used for local
 cloud installations like Openshift/EKS, etc
 --------------------------
 </strong>
-Whats New in v7.2
+Whats New in v7.3
 --------------------------
-- Formula settings page moved to a tab instead of a dropdown menu
-- Formula historical changes page moved to a tab instead of a dropdown menu
-- Variuous bug fixes and improvements, please refer to the CHANGELOG for details
