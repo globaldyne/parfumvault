@@ -151,22 +151,20 @@ html {
   <div class="modal-dialog modal-conf-view" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="conf_view">Choose which notes will be displayed</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <h5 class="modal-title">Choose which notes will be displayed</h5>
       </div>
       <div class="modal-body">
    	    <div id="confViewMsg"></div>
-          <form action="javascript:update_view()" id="form1">   
+          <form action="javascript:update_view()">   
            <div class="conf_tbl">
             <table width="100%" border="0">
               <tr>
                 <td colspan="2"><strong>Top notes</strong><hr /></td>
               </tr>
               <?php foreach ($top_cat as $x){
-						if (!is_numeric(array_search($x['name'],$top_ex ))){
-				?>
+				  if (!is_numeric(array_search($x['name'],$top_ex ))){
+					//   echo '<pre>'; print_r($x); echo '</pre>';
+			  ?>
               <tr>
 				<td width="54%" height="29" ex_top_ing_name="<?=$x['name']?>"><?=$x['name']?></td>
                 <td width="46%"><input name="ex_top_ing" class="ex_ing" type="checkbox" id="<?=str_replace(' ', '_',$x['ing'])?>" value="<?=str_replace(' ', '_',$x['ing'])?>" checked="checked" /></td>
@@ -252,9 +250,8 @@ html {
 function update_view(){
 	
 	$('.ex_ing').each(function(){
-							   console.log( $(this).val());
 		$.ajax({ 
-			url: '/pages/manageFormula.php1', 
+			url: '/pages/manageFormula.php', 
 			type: 'GET',
 			data: {
 				fid: '<?=$fid?>',
@@ -266,6 +263,8 @@ function update_view(){
 				success: function (data) {
 					if ( data.success ) {
 						var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+						fetch_summary();
+						$('#conf_view').modal('hide');
 					} else {
 						var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + data.error + '</strong></div>';
 					}

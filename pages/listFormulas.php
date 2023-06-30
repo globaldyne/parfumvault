@@ -38,7 +38,7 @@ while($fTypes_res = mysqli_fetch_array($fTypes_q)){
 <div class="pv_menu_formulas">
     <div class="text-right">
         <div class="btn-group">
-        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> Actions</button>
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
             <div class="dropdown-menu dropdown-menu-right">
               <a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula" data-backdrop="static">Add new formula</a>
               <a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula_csv" data-backdrop="static">Import from CSV</a>
@@ -85,7 +85,7 @@ if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))
                     <th>Created</th>
                     <th>Made</th>
                     <th>Rating</th>
-                    <th>Actions</th>
+                    <th></th>
                 </tr>
             </thead>
         </table>
@@ -103,7 +103,7 @@ if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))
                     <th>Created</th>
                     <th>Made</th>
                     <th>Rating</th>
-                    <th>Actions</th>
+                    <th></th>
                 </tr>
             </thead>
         </table>
@@ -154,7 +154,7 @@ function initTable(tableId, src) {
 			   { data : 'isMade', title: 'Made', render: fMade},
    			   { data : 'rating', title: 'Rating', render: rating},
 			   { data : 'created', title: 'Created'},
-			   { data : null, title: 'Actions', render: fActions},				   
+			   { data : null, title: '', render: fActions},				   
 			  ],
 			 processing: true,
 	         serverSide: true,
@@ -251,7 +251,7 @@ function fActions(data, type, row, meta){
         '<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
             '<ul class="dropdown-menu dropdown-menu-right">';
 		data += '<li><a class="dropdown-item" href="/pages/operations.php?action=exportFormulas&fid=' + row.fid + '" rel="tip" title="Export '+ row.name +' as JSON" ><i class="fas fa-download mr2"></i>Export as JSON</a></li>'+
-		'<li><a class="dropdown-item popup-link" href="/pages/getFormMeta.php?id=' + row.id + '" rel="tip" title="Show details of '+ row.name +'"><i class="fas fa-cogs mr2"></i>Details</a></li>'+
+		'<li><a class="dropdown-item popup-link" href="/pages/getFormMeta.php?id=' + row.id + '" rel="tip" title="Show settings of '+ row.name +'"><i class="fas fa-cogs mr2"></i>Settings</a></li>'+
 		'<li><a class="dropdown-item" href="#" id="addTODO" rel="tip" title="Schedule '+ row.name +' to make" data-id='+ row.fid +' data-name="'+ row.name +'"><i class="fas fa-tasks mr2"></i>Schedule to make</a></li>'+
 		'<li><a class="dropdown-item" href="#" id="cloneMe" rel="tip" title="Clone '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"><i class="fas fa-copy mr2"></i>Clone formula</a></li>'+
 		'<div class="dropdown-divider"></div>'+

@@ -1,4 +1,24 @@
 # CHANGELOG
+### Version 7.2
+- Fix a bug not showing formula name in notes when converting to ingredient
+- Fix formula notes summary not display properly in PHP8
+- Fix order columm in ingredient composition
+- Ingredient suppliers pages improvements
+- Formula settings page moved to a tab instead of a dropdown menu
+- Formula historical changes page moved to a tab instead of a dropdown menu
+- Formula page: Convert ingredient renamed to create ingredient instead
+- Formula page: Create accord modal made static
+- Formula page: Create ingredient modal made static
+- Formula page: Note top bar resized and realted table removed
+- Formula page: Menu table replaced by div element
+- Formula page: Hide notes bar if formula is empty
+- Formula page: manageQuantity function update
+- Formula page: Removed all javascript calls from links
+- Formula page: ingredient actions menu grouped under a drop-down menu
+- Formula page: Code clean-up
+- Formulas and Ingredients page: Remove actions label from table column
+
+
 ### Version 7.1
 - Improve formula lock process
 - Fix orderable columns in suppliers list
