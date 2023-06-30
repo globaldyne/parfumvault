@@ -21,7 +21,7 @@ $defCatClass = $settings['defCatClass'];
         <a class="dropdown-item" id="csv_export" href="/pages/export.php?format=csv&kind=ingredients">Export to CSV</a>
         <a class="dropdown-item" id="csv_export" href="/pages/export.php?format=json&kind=ingredients">Export to JSON</a>
 
-        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#csv_import">Import from CSV</a>
+        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#csv_import" data-backdrop="static">Import from CSV</a>
         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#import_ingredients_json" data-backdrop="static">Import from JSON</a>
 
         <div class="dropdown-divider"></div>
@@ -266,8 +266,13 @@ function actions(data, type, row, meta){
 		data = '<div class="dropdown">' +
 			'<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
 				'<ul class="dropdown-menu dropdown-menu-right">';
-		data += '<li><a href="/pages/mgmIngredient.php?id='+btoa(row.name)+'" class="popup-link"><i class="fas fa-edit mr2"></i>Manage</a></li>'+
-		'<li><a rel="tip" title="Remove '+ row.name +'" class="pv_point_gen text-danger" id="rmIng" data-name="'+ row.name +'" data-id='+ row.id +'><i class="fas fa-trash mr2"></i>Delete</a></li>'; 
+		data += '<li><a href="/pages/mgmIngredient.php?id='+btoa(row.name)+'" class="popup-link"><i class="fas fa-edit mr2"></i>Manage</a></li>';
+		
+		data += '<li><a class="dropdown-item" href="/pages/export.php?format=json&kind=single-ingredient&id=' + row.id + '" rel="tip" title="Export '+ row.name +' as JSON" ><i class="fas fa-download mr2"></i>Export as JSON</a></li>';
+
+		data += '<div class="dropdown-divider"></div>';
+
+		data += '<li><a rel="tip" title="Remove '+ row.name +'" class="pv_point_gen text-danger" id="rmIng" data-name="'+ row.name +'" data-id='+ row.id +'><i class="fas fa-trash mr2"></i>Delete</a></li>'; 
 		data += '</ul></div>';		
 	}
 	

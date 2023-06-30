@@ -1,5 +1,8 @@
 # CHANGELOG
 ### Version 7.3
+- Fix no ingredient json export error
+- Added single ingredient export (json)
+
 ### Version 7.2
 - Fix a bug not showing formula name in notes when converting to ingredient
 - Fix formula notes summary not display properly in PHP8

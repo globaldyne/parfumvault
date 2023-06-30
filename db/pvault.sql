@@ -7,7 +7,8 @@ CREATE TABLE `allergens` (
   `cas` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `ec` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `percentage` DECIMAL(8,4) NOT NULL,
-  `toDeclare` INT NOT NULL DEFAULT '0'
+  `toDeclare` INT NOT NULL DEFAULT '0',
+  `created` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 

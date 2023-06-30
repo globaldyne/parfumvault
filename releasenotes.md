@@ -13,3 +13,4 @@ cloud installations like Openshift/EKS, etc
 </strong>
 Whats New in v7.3
 --------------------------
+- Added single ingredient export (json format only)

@@ -54,7 +54,7 @@ $("#backupFile").change(function(){
 	$('#btnRestoreIngredients').prop('value', 'Import');
 });
 
-//RESTORE DB
+//RESTORE Ingredients
 $('#btnRestoreIngredients').click(function() {
 	
 	event.preventDefault();
