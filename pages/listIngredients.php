@@ -19,7 +19,7 @@ $defCatClass = $settings['defCatClass'];
       <div class="dropdown-menu dropdown-menu-right">
         <a class="dropdown-item popup-link" href="/pages/mgmIngredient.php">Add new ingredient</a>
         <a class="dropdown-item" id="csv_export" href="/pages/export.php?format=csv&kind=ingredients">Export to CSV</a>
-        <a class="dropdown-item" id="csv_export" href="/pages/export.php?format=json&kind=ingredients">Export to JSON</a>
+        <a class="dropdown-item" id="json_export" href="/pages/export.php?format=json&kind=ingredients">Export to JSON</a>
         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#csv_import" data-backdrop="static">Import from CSV</a>
         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#import_ingredients_json" data-backdrop="static">Import from JSON</a>
 

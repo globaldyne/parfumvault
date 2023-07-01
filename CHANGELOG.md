@@ -4,6 +4,7 @@
 - Added single ingredient export (json only)
 - Ingredient name should be unique and previously validated only in application level, since version 7.3, will be forced in database level as well
 - Ingredients export will include compostions as well (json only)
+- Single ingredient actions menu ui improvement
 
 ### Version 7.2
 - Fix a bug not showing formula name in notes when converting to ingredient

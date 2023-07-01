@@ -19,3 +19,4 @@ Whats New in v7.3
   This  may cause importing (json or csv) to fail if contains duplicates. 
   Any duplicates should be removed before import.
 - Ingredients export will include compostions as well (json only)
+- Single ingredient actions menu ui improvement
