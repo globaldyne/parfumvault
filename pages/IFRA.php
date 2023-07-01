@@ -21,14 +21,14 @@ $defCatClass = $settings['defCatClass'];
                
                   <div class="text-right">
                     <div class="btn-group">
-                      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> Actions</button>
+                      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
                       <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#ifra_import">Import IFRA xls</a>
+                        <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#ifra_import"><i class="fa-solid fa-file-excel mr2"></i>Import IFRA xls</a>
                         <?php if($settings['pubChem'] == '1'){?>
-                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#pubChem_import">Import images</a>
+                        <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#pubChem_import"><i class="fa-solid fa-file-import mr2"></i>Import images</a></li>
                         <?php } ?>
 
-                        <a class="dropdown-item" id="csv" href="#">Export to CSV</a>
+                        <li><a class="dropdown-item" id="csv" href="#"><i class="fa-solid fa-file-export mr2"></i>Export to CSV</a></li>
                       </div>
                     </div>                      
                   </div>

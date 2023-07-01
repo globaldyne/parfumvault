@@ -19,10 +19,10 @@ while ($suppliers = mysqli_fetch_array($sup)){
                  <tr class="noBorder noexport">
                      <div class="text-right">
                       <div class="btn-group">
-                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> Actions</button>
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
                           <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addLid">Add new</a>
-                            <a class="dropdown-item" id="exportCSV" href="#">Export to CSV</a>
+                            <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#addLid"><i class="fa-solid fa-plus mr2"></i>Add new</a></li>
+                            <li><a class="dropdown-item" id="exportCSV" href="#"><i class="fa-solid fa-file-export mr2"></i>Export to CSV</a></li>
                           </div>
                         </div>        
                      </div>
