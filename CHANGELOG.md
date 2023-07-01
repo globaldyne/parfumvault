@@ -8,6 +8,7 @@
 - Various minor ui improvements
 - Docker compose added in preparation of db bundle removal on version 8.0
 - Dockerfile removed
+- Added search functionality in historical changes page
 
 ### Version 7.2
 - Fix a bug not showing formula name in notes when converting to ingredient

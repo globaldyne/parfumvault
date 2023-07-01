@@ -20,3 +20,4 @@ Whats New in v7.3
   Any duplicates should be removed before import.
 - Ingredients export will include compostions as well (json only)
 - Single ingredient actions menu ui improvement
+- Added search functionality in historical changes page
