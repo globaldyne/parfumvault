@@ -6,6 +6,8 @@
 - Ingredients export will include compostions as well (json only)
 - Single ingredient actions menu ui improvement
 - Various minor ui improvements
+- Docker compose added in preparation of db bundle removal on version 8.0
+- Dockerfile removed
 
 ### Version 7.2
 - Fix a bug not showing formula name in notes when converting to ingredient
