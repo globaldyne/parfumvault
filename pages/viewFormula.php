@@ -349,24 +349,23 @@ $('#print').click(() => {
         <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
         <div class="dropdown-menu dropdown-menu-right">
            <li class="dropdown-header">Export</li> 
-           <a class="dropdown-item export_as" href="#" data-format="csv">Export as CSV</a>
-           <a class="dropdown-item export_as" href="#" data-format="pdf">Export as PDF</a>
-           <a class="dropdown-item" href="/pages/operations.php?action=exportFormulas&fid=<?=$meta['fid']?>">Export as JSON</a>               
-           <a class="dropdown-item" href="#" id="print">Print Formula</a>
+           <li><a class="dropdown-item export_as" href="#" data-format="csv"><i class="fa-solid fa-file-csv mr2"></i>Export as CSV</a></li>
+           <li><a class="dropdown-item export_as" href="#" data-format="pdf"><i class="fa-solid fa-file-pdf mr2"></i>Export as PDF</a></li>
+           <li><a class="dropdown-item" href="/pages/operations.php?action=exportFormulas&fid=<?=$meta['fid']?>"><i class="fa-solid fa-file-code mr2"></i>Export as JSON</a></li>
+           <li><a class="dropdown-item" href="#" id="print"><i class="fa-solid fa-print mr2"></i>Print Formula</a></li>
            <div class="dropdown-divider"></div>
            <li class="dropdown-header">Scale Formula</li> 
-           <a class="dropdown-item manageQuantity" href="#" data-action="multiply">Multiply x2</a>
-           <a class="dropdown-item manageQuantity" href="#" data-action="divide">Divide x2</a>
-           <a class="dropdown-item" href="#" data-toggle="modal" data-target="#amount_to_make">Advanced</a>
+           <li><a class="dropdown-item manageQuantity" href="#" data-action="multiply"><i class="fa-solid fa-xmark mr2"></i>Multiply x2</a></li>
+           <li><a class="dropdown-item manageQuantity" href="#" data-action="divide"><i class="fa-solid fa-divide mr2"></i>Divide x2</a></li>
+           <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#amount_to_make"><i class="fa-solid fa-calculator mr2"></i>Advanced</a></li>
            <div class="dropdown-divider"></div>
-           <a class="dropdown-item" href="#" data-backdrop="static" data-toggle="modal" data-target="#create_accord">Create Accord</a>
-           <a class="dropdown-item" href="#" data-backdrop="static" data-toggle="modal" data-target="#conv_ingredient">Create ingredient</a>
+           <li><a class="dropdown-item" href="#" data-backdrop="static" data-toggle="modal" data-target="#create_accord"><i class="fa-solid fa-list-check mr2"></i>Create accord</a></li>
+           <li><a class="dropdown-item" href="#" data-backdrop="static" data-toggle="modal" data-target="#conv_ingredient"><i class="fa-solid fa-list-check mr2"></i>Create ingredient</a></li>
            <div class="dropdown-divider"></div>
-           <a class="dropdown-item" href="#" data-toggle="modal" data-target="#schedule_to_make">Schedule to make</a>
-           <a class="dropdown-item" href="#" id="isMade">Mark formula as made</a>
+           <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#schedule_to_make"><i class="fa-regular fa-calendar-plus mr2"></i>Schedule to make</a></li>
+           <li><a class="dropdown-item" href="#" id="isMade"><i class="fa-solid fa-check mr2"></i>Mark formula as made</a></li>
            <div class="dropdown-divider"></div>
-           <a class="dropdown-item" href="#" id="cloneMe">Clone Formula</a>
-           <div class="dropdown-divider"></div>
+           <li><a class="dropdown-item" href="#" id="cloneMe"><i class="fa-solid fa-copy mr2"></i>Clone Formula</a></li>
         </div>
         </div>            
     </div>

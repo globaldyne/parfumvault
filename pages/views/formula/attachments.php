@@ -15,9 +15,9 @@ $id = mysqli_real_escape_string($conn, $_POST["id"]);
 <div class="card-body">
     <div class="text-right">
       <div class="btn-group">
-        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
             <div class="dropdown-menu dropdown-menu-right">
-                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addDoc">Add new</a>
+                <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#addDoc"><i class="fa-solid fa-plus mr2"></i>Add new</a></li>
             </div>
       </div>                    
     </div>
@@ -40,6 +40,7 @@ $('[data-toggle="tooltip"]').tooltip();
 var tdAttachments = $('#tdAttachments').DataTable( {
 	columnDefs: [
 		{ className: 'text-center', targets: '_all' },
+		{ orderable: false, targets: [3] }
 	],
 	dom: 'lfrtip',
 	processing: true,
