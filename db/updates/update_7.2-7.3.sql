@@ -1,0 +1,2 @@
+ALTER TABLE `allergens` ADD `created` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `toDeclare`;
+ALTER TABLE `ingredients` ADD UNIQUE(`name`);

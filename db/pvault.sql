@@ -7,7 +7,8 @@ CREATE TABLE `allergens` (
   `cas` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `ec` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `percentage` DECIMAL(8,4) NOT NULL,
-  `toDeclare` INT NOT NULL DEFAULT '0'
+  `toDeclare` INT NOT NULL DEFAULT '0',
+  `created` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 
@@ -414,7 +415,8 @@ ALTER TABLE `ingProfiles`
 
 ALTER TABLE `ingredients`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `id` (`id`);
+  ADD UNIQUE KEY `id` (`id`),
+  ADD UNIQUE KEY `name` (`name`);
 
 ALTER TABLE `ingStrength`
   ADD PRIMARY KEY (`id`);

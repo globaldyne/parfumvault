@@ -11,8 +11,13 @@ Also - *-cloud images will be dropped as the same image should be used for local
 cloud installations like Openshift/EKS, etc
 --------------------------
 </strong>
-Whats New in v7.2
+Whats New in v7.3
 --------------------------
-- Formula settings page moved to a tab instead of a dropdown menu
-- Formula historical changes page moved to a tab instead of a dropdown menu
-- Variuous bug fixes and improvements, please refer to the CHANGELOG for details
+- Added single ingredient export (json format only)
+- Ingredient name should be unique and previously validated only in application level.
+  Since version 7.3, will be forced in database level as well. 
+  This  may cause importing (json or csv) to fail if contains duplicates. 
+  Any duplicates should be removed before import.
+- Ingredients export will include compostions as well (json only)
+- Single ingredient actions menu ui improvement
+- Added search functionality in historical changes page

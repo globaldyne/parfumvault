@@ -1,7 +1,3 @@
-<?php 
-if (!defined('pvault_panel')){ die('Not Found');}
-
-?>
 <div id="content-wrapper" class="d-flex flex-column">
 <?php require_once(__ROOT__.'/pages/top.php'); ?>
      <div class="container-fluid">
@@ -17,10 +13,10 @@ if (!defined('pvault_panel')){ die('Not Found');}
                 <tr class="noBorder noexport">
                  <div class="text-right">
                   <div class="btn-group">
-                      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> Actions</button>
+                      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
                       <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="#" data-toggle="modal" data-backdrop="static" data-target="#addSupplier">Add new</a>
-                        <a class="dropdown-item" id="csv" href="#">Export to CSV</a>
+                        <li><a class="dropdown-item" href="#" data-toggle="modal" data-backdrop="static" data-target="#addSupplier"><i class="fa-solid fa-plus mr2"></i>Add new</a></li>
+                        <li><a class="dropdown-item" id="csv" href="#"><i class="fa-solid fa-file-export mr2"></i>Export to CSV</a></li>
                       </div>
                     </div>        
                  </div>

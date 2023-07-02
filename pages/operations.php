@@ -286,6 +286,12 @@ if($_GET['action'] == 'restoreIngredients'){
 	if(move_uploaded_file($_FILES['backupFile']['tmp_name'], $target_path)) {
     	$data = json_decode(file_get_contents($target_path), true);
 		
+		foreach ($data['compositions'] as $cmp ){				
+			
+		 mysqli_query($conn, "INSERT IGNORE INTO `allergens` (`ing`,`name`,`cas`,`ec`,`percentage`,`toDeclare`,`created`) VALUES ('".$cmp['ing']."','".$cmp['name']."','".$cmp['cas']."','".$cmp['ec']."','".$cmp['percentage']."','".$cmp['toDeclare']."', current_timestamp())");
+			
+		}
+		
 		foreach ($data['ingredients'] as $ingredient ){				
 			$name = mysqli_real_escape_string($conn, $ingredient['name']);
 			$INCI = mysqli_real_escape_string($conn, $ingredient['INCI']);

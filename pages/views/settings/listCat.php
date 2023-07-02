@@ -12,9 +12,9 @@ require_once(__ROOT__.'/inc/opendb.php');
 <div class="card-body">
   <div class="text-right">
     <div class="btn-group" id="menu">
-        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> Actions</button>
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
         <div class="dropdown-menu dropdown-menu-right">
-          <a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_ingredient_cat">Add ingredient category</a>
+          <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_ingredient_cat"><i class="fa-solid fa-plus mr2"></i>Add ingredient category</a></li>
         </div>
     </div>
   </div>
@@ -39,6 +39,7 @@ $(document).ready(function() {
 		var tdDataCat = $('#tdDataCat').DataTable( {
 		columnDefs: [
 			{ className: 'text-center', targets: '_all' },
+			{ orderable: false, targets: [4] }
         ],
 		dom: 'lfrtip',
 		processing: true,
