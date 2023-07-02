@@ -97,15 +97,14 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
           <div id="errors"></div>
           <div id="msg"><?=$msg?></div>
           <div class="btn-group" id="menu">
-            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> Actions</button>
+            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
             <div class="dropdown-menu dropdown-menu-left">
+               <li><a class="dropdown-item" href="#" id="markCompleteMenu"><i class="fa-solid fa-check mr2"></i>Mark formula as complete</a></li>
                <div class="dropdown-divider"></div>
-               <a class="dropdown-item" href="#" id="markCompleteMenu">Mark formula as complete</a>
-               <div class="dropdown-divider"></div>
-               <li class="dropdown-header">Export</li> 
-               <a class="dropdown-item" href="javascript:export_as('csv')">Export as CSV</a>
-               <a class="dropdown-item" href="javascript:export_as('pdf')">Export as PDF</a>
-               <a class="dropdown-item" href="#" id="print">Print Formula</a>
+               <li class="dropdown-header">Export</li>
+               <li><a class="dropdown-item" href="javascript:export_as('csv')"><i class="fa-solid fa-file-csv mr2"></i>Export as CSV</a></li>
+               <li><a class="dropdown-item" href="javascript:export_as('pdf')"><i class="fa-solid fa-file-code mr2"></i>Export as PDF</a></li>
+               <li><a class="dropdown-item" href="#" id="print"><i class="fa-solid fa-print mr2"></i>Print Formula</a></li>
             </div>
         </div>
         <p></p>

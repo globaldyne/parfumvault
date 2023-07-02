@@ -17,7 +17,7 @@
                     	<th>Author</th>
                     	<th>License</th>
                     	<th>Published</th>
-                    	<th>Actions</th>
+                    	<th></th>
                 	</tr>
             	</thead>
         	</table>
@@ -145,7 +145,7 @@ var tableMarket = $("#all-table-market").DataTable({
 	    	{ data : 'author', title: 'Author'},
 	   		{ data : 'cost', title: 'License', render: cost},
 	   		{ data : 'created_at', title: 'Published'},
-	   		{ data : null, title: 'Actions', render: actions},				   
+	   		{ data : null, title: '', render: actions},				   
 	  	],
 	   processing: true,
 	   serverSide: true,
@@ -159,7 +159,7 @@ var tableMarket = $("#all-table-market").DataTable({
         },
        order: [0,'asc'],
    	   columnDefs: [
-			{ orderable: false, targets: [4] },
+			{ orderable: false, targets: [3,5] },
 			{ className: 'text-center', targets: '_all' },				  
 		],
 	destroy: true,

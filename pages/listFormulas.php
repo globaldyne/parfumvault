@@ -40,13 +40,13 @@ while($fTypes_res = mysqli_fetch_array($fTypes_q)){
         <div class="btn-group">
         <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
             <div class="dropdown-menu dropdown-menu-right">
-              <a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula" data-backdrop="static">Add new formula</a>
-              <a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula_csv" data-backdrop="static">Import from CSV</a>
+              <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula" data-backdrop="static"><i class="fa-solid fa-plus mr2"></i>Add new formula</a></li>
+              <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula_csv" data-backdrop="static"><i class="fa-solid fa-file-csv mr2"></i>Import from CSV</a></li>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula_cat" data-backdrop="static">Add formula category</a>
+              <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula_cat" data-backdrop="static"><i class="fa-solid fa-circle-plus mr2"></i>Add formula category</a></li>
               <div class="dropdown-divider"></div>
-        	  <a class="dropdown-item" href="#" data-toggle="modal" data-target="#export_formulas_json" data-backdrop="static">Export Formulas as JSON</a>
-        	  <a class="dropdown-item" href="#" data-toggle="modal" data-target="#import_formulas_json" data-backdrop="static">Import Formulas from JSON</a>
+        	  <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#export_formulas_json" data-backdrop="static"><i class="fa-solid fa-file-export mr2"></i>Export Formulas as JSON</a></li>
+        	  <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#import_formulas_json" data-backdrop="static"><i class="fa-solid fa-file-import mr2"></i>Import Formulas from JSON</a></li>
 
             </div>
         </div>

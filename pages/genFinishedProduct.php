@@ -72,8 +72,8 @@ function printLabel() {
 	$("#inf").html('<div class="alert alert-info alert-dismissible">Printing...</div>');
 
 $.ajax({ 
-    url: 'pages/manageFormula.php', 
-	type: 'get',
+    url: '/pages/manageFormula.php', 
+	type: 'GET',
     data: {
 		action: "printLabel",
 		batchID: "<?php echo $batchID; ?>",
@@ -97,8 +97,8 @@ function BoxLabel(download) {
 		$("#inf").html('<div class="alert alert-info alert-dismissible">Generating label...</div>');
 	}
 $.ajax({ 
-    url: 'pages/manageFormula.php', 
-	type: 'get',
+    url: '/pages/manageFormula.php', 
+	type: 'GET',
     data: {
 		action: "printBoxLabel",
 		batchID: "<?php echo $batchID; ?>",
@@ -125,7 +125,7 @@ $.ajax({
           <div class="card shadow mb-4">
             <div class="card-header py-3"> 
             <?php if($_GET['generate'] && $_POST['formula']){?>
-             <h2 class="m-0 font-weight-bold text-primary"><a href="?do=genFinishedProduct"><?php echo $meta['product_name'];?></a></h2>
+             <h2 class="m-0 font-weight-bold text-primary"><a href="/?do=genFinishedProduct"><?php echo $meta['product_name'];?></a></h2>
              <h5 class="m-1 text-primary">Formula name: <strong><?php echo $meta['name'];?></strong></h5>
              <h5 class="m-1 text-primary">Bottle: <strong><?php echo $bottle; ?><?=$settings['mUnit']?></strong></h5>
 			 <h5 class="m-1 text-primary">Concentration: <strong><?php echo $type; ?>%</h5>
@@ -148,14 +148,14 @@ $.ajax({
                       <th colspan="8">
                      <div class="text-right">
                       <div class="btn-group">
-                      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> Actions</button>
+                      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
                       <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" id="pdf" href="#">Export to PDF</a>
-                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#IFRA">IFRA Certificate</a>
-                        <a class="dropdown-item" href="javascript:printLabel()" onclick="return confirm('Print label?')">Print Label</a>
-                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#printBoxLabel">Print Box Label</a>
-                        <a class="dropdown-item" href="javascript:BoxLabel('image')">View Box Label as image</a>
-                        <a class="dropdown-item" href="javascript:BoxLabel('text')">View Box Label as text</a>
+                        <li><a class="dropdown-item" id="pdf" href="#"><i class="fa-solid fa-file-pdf mr2"></i>Export to PDF</a></li>
+                        <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#IFRA"><i class="fa-solid fa-certificate mr2"></i>IFRA Certificate</a></li>
+                        <li><a class="dropdown-item" href="javascript:printLabel()" onclick="return confirm('Print label?')"><i class="fa-solid fa-print mr2"></i>Print Label</a></li>
+                        <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#printBoxLabel"><i class="fa-solid fa-print mr2"></i>Print Box Label</a></li>
+                        <li><a class="dropdown-item" href="javascript:BoxLabel('image')"><i class="fa-solid fa-image mr2"></i>View Box Label as image</a></li>
+                        <li><a class="dropdown-item" href="javascript:BoxLabel('text')"><i class="fa-solid fa-font mr2"></i>View Box Label as text</a></li>
                       </div>
                     </div>
                     </div>

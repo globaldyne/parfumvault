@@ -21,7 +21,7 @@ $(document).ready(function(){
 	columnDefs: [
 		{ className: 'text-center', targets: '_all' },
 	],
-	dom: 'lrtip',
+	dom: 'lfrtip',
 	processing: true,
 	language: {
 		loadingRecords: '&nbsp;',

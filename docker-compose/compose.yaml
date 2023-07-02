@@ -1,0 +1,29 @@
+services:
+  db:
+    # We use a mariadb image which supports both amd64 & arm64 architecture
+    image: mariadb:latest
+    command: '--default-authentication-plugin=mysql_native_password'
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=pvault
+      - MYSQL_DATABASE=pvault
+      - MYSQL_USER=pvault
+      - MYSQL_PASSWORD=pvault
+    expose:
+      - 3306
+      - 33060
+  pvault:
+    # image: globaldyne/jbvault:latest
+    image: globaldyne/jbvault:v8.0
+    ports:
+      - 8080:8000
+    restart: always
+    environment:
+      - PV_DB_HOST=pvault
+      - PV_DB_USER=pvault
+      - PV_DB_PASSWORD=pvault
+      - PV_DB_NAME=pvault
+volumes:
+  db_data:

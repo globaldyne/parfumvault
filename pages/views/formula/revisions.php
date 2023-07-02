@@ -4,9 +4,9 @@
 <div class="card-body">
     <div class="text-right">
       <div class="btn-group">
-        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></button>
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
             <div class="dropdown-menu dropdown-menu-right">
-                <a class="dropdown-item" href="#" id="genRev">Create revision</a>
+                <li><a class="dropdown-item" href="#" id="genRev"><i class="fa-solid fa-plus mr2"></i>Create revision</a><li>
             </div>
       </div>                    
     </div>
@@ -32,6 +32,7 @@ $(document).ready(function() {
 	var tdRevisions = $('#tdRevisions').DataTable( {
 	columnDefs: [
 		{ className: 'text-center', targets: '_all' },
+		{ orderable: false, targets: [3] }
 	],
 	dom: 'lrtip',
 	processing: true,

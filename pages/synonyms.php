@@ -17,11 +17,11 @@ $ingName = mysqli_real_escape_string($conn, $_POST["name"]);
 <div class="card-body">
  	<div class="text-right">
   		<div class="btn-group">
-   			<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> Actions</button>
+   			<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
     		<div class="dropdown-menu dropdown-menu-right">
-        		<a class="dropdown-item" href="#" data-toggle="modal" data-target="#addSynonym">Add new</a>
+        		<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#addSynonym"><i class="fa-solid fa-plus mr2"></i>Add new</a></li>
                 <?php if(preg_match('/(Mixture|Blend)/i', $CAS) === 0){	?>
-                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#pubchem_import">Import from PubChem</a>
+                <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#pubchem_import"><i class="fa-solid fa-file-import mr2"></i>Import from PubChem</a></li>
 
                 <?php } ?>
     		</div>

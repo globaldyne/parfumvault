@@ -82,10 +82,11 @@ var myPCH = "<?=$settings['pubChem']?>";
 				<div class="btn-group">
 					<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> Actions</button>
 					<div class="dropdown-menu">
-						<a class="dropdown-item" href="#" data-toggle="modal" data-target="#printLabel">Print Label</a>
-						<a class="dropdown-item" href="#" data-toggle="modal" data-target="#cloneIng">Clone ingredient</a>
-						<a class="dropdown-item" href="#" data-toggle="modal" data-target="#renameIng">Rename ingredient</a>
-						<a class="dropdown-item" href="#" data-toggle="modal" data-target="#genSDS">Generate SDS</a>
+						<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#printLabel"><i class="fa-solid fa-print mr2"></i>Print Label</a></li>
+						<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#cloneIng"><i class="fa-solid fa-copy mr2"></i>Clone ingredient</a></li>
+						<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#renameIng"><i class="fa-regular fa-pen-to-square mr2"></i>Rename ingredient</a></li>
+                        <li><a class="dropdown-item" href="/pages/export.php?format=json&kind=single-ingredient&id=<?=$ing['id']?>"><i class="fas fa-download mr2"></i>Export as JSON</a></li>
+						<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#genSDS"><i class="fa-solid fa-file-prescription mr2"></i>Generate SDS</a></li>
 					</div>
 				</div>
 			<?php }else {?>
