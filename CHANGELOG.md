@@ -1,4 +1,5 @@
 # CHANGELOG
+### Version 7.4
 ### Version 7.3
 - Fix no ingredient json export error
 - Added single ingredient export (json only)
