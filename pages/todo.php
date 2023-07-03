@@ -90,7 +90,14 @@ function progress(data, type, row){
 }
 
 function name(data, type, row){
-	data = '<a href="/pages/makeFormula.php?fid='+ row.fid +'" target="_blank">'+row.name+'</a>' ;	
+	
+	data ='<div class="btn-group"><a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'+row.name+'</a><div class="dropdown-menu dropdown-menu-right">';
+	
+	data+='<li><a class="dropdown-item popup-link" href="/pages/makeFormula.php?fid='+ row.fid +'" target="_blank"><i class="fa-solid fa-flask-vial mr2"></i>Make formula</a></li>';
+
+	data+='<li><a class="dropdown-item popup-link" href="/?do=Formula&id='+row.id+'" target="_blank"><i class="fa-solid fa-flask mr2"></i>Go to formula</a></li>';
+		                
+	data+='</div></div>';
 	return data;
 }
 

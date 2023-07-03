@@ -49,4 +49,8 @@ $(document).ready(function() {
 		get_about();
 	});
 	
+	$('#api_tab').on( 'click', function () {
+		get_api();
+	});
+	
 });

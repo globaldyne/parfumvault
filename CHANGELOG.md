@@ -1,5 +1,11 @@
 # CHANGELOG
 ### Version 7.4
+- Formula making view confirmation dialogs are now static
+- Functionality to add comments/notes when adding ingredient in formula making view
+- API settings page separation
+- Fix a bug giving file not found error in some cases when trying to take files backup
+- Added a dropdown menu to view original formula from scheduled formulas
+ 
 ### Version 7.3
 - Fix no ingredient json export error
 - Added single ingredient export (json only)

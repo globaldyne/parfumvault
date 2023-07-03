@@ -13,3 +13,7 @@ cloud installations like Openshift/EKS, etc
 </strong>
 Whats New in v7.4
 --------------------------
+- Minor UI improvements in formula making view
+- Functionality to add comments/notes when adding ingredient in formula making view
+- Added a dropdown menu to view original formula from scheduled formulas
+

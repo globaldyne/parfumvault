@@ -319,32 +319,10 @@ $(function() {
      </div>
      
      <div id="api">
-	API can be used to access PV Pro from other apps like PV Light APP
-	   <table width="100%" border="0">
-		<tr>
-	      <td colspan="3"><div id="pvAPIMsg"></div></td>
-	      </tr>
-	    <tr>
-	      <td width="9%" height="28">Enable API</td>
-	      <td width="9%" valign="middle"><input name="pv_api" type="checkbox" id="pv_api" value="1" <?php if($settings['api'] == '1'){ ?> checked="checked" <?php } ?>/></td>
-	      <td width="82%">&nbsp;</td>
-	      </tr>
-	    <tr>
-	      <td>API Key</td>
-	      <td valign="middle"><input name="pv_api_key" type="text" class="form-control" id="pv_api_key" value="<?=$settings['api_key']?>" /></td>
-	      <td>&nbsp;</td>
-	      </tr>
-	    <tr>
-	      <td>&nbsp;</td>
-	      <td valign="middle">&nbsp;</td>
-	      <td>&nbsp;</td>
-	      </tr>
-	    <tr>
-	      <td><input type="submit" name="save-api" id="save-api" value="Submit" class="btn btn-info"/></td>
-	      <td valign="middle">&nbsp;</td>
-	      <td>&nbsp;</td>
-	      </tr>
-	    </table> 
+	   <div class="loader-center">
+       		<div class="loader"></div>
+            <div class="loader-text"></div>
+        </div>
      </div>
    
      
@@ -371,9 +349,6 @@ $(function() {
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Restore database from a backup file</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
       </div>
       <div class="modal-body">
       <div id="DBRestMsg"></div>
@@ -381,7 +356,6 @@ $(function() {
          <div id="uploadProgressBar" class="progress-bar" role="progressbar" aria-valuemin="0"></div>
       </div>
       <div id="backupArea">
-      
           <div class="form-group">
               <label class="col-md-3 control-label">Backup file:</label>
               <div class="col-md-8">
@@ -399,16 +373,13 @@ $(function() {
     <p>&nbsp;</p>
             </div>
           </div>
-      
       </div>
 	  <div class="modal-footer">
         <input type="button" class="btn btn-secondary" data-dismiss="modal" id="btnCloseBK" value="Cancel">
         <input type="submit" name="btnRestore" class="btn btn-primary" id="btnRestore" value="Restore">
       </div>
-   
   </div>
-  
-</div>
+ </div>
 </div>
 
 <script type="text/javascript" language="javascript" >
@@ -416,7 +387,7 @@ $(document).ready(function() {
 
 $('#save-general').click(function() {
 	$.ajax({ 
-		url: 'pages/update_settings.php', 
+		url: '/pages/update_settings.php', 
 		type: 'POST',
 		data: {
 			manage: 'general',
@@ -443,25 +414,10 @@ $('#save-general').click(function() {
   });
 });
 	
-$('#save-api').click(function() {
-	$.ajax({ 
-		url: 'pages/update_settings.php', 
-		type: 'POST',
-		data: {
-			manage: 'api',		
-			api: $("#pv_api").is(':checked'),
-			api_key: $("#pv_api_key").val(),
-		},
-		dataType: 'html',
-		success: function (data) {
-			$('#pvAPIMsg').html(data);
-		}
-	});
-});
 
 $('#save-perf-types').click(function() {
 	$.ajax({ 
-		url: 'pages/update_settings.php', 
+		url: '/pages/update_settings.php', 
 		type: 'POST',
 		data: {
 			manage: 'perfume_types',
@@ -479,7 +435,7 @@ $('#save-perf-types').click(function() {
 	
 $('#save-print').click(function() {
 	$.ajax({ 
-		url: 'pages/update_settings.php', 
+		url: '/pages/update_settings.php', 
 		type: 'POST',
 		data: {
 			manage: 'print',
@@ -498,7 +454,7 @@ $('#save-print').click(function() {
 
 $('#save-brand').click(function() {
 	$.ajax({ 
-		url: 'pages/update_settings.php', 
+		url: '/pages/update_settings.php', 
 		type: 'POST',
 		data: {
 			manage: 'brand',
@@ -526,7 +482,7 @@ $("#brandLogo_upload").click(function(){
     if(files.length > 0 ){
     	fd.append('brandLogo',files[0]);
         $.ajax({
-		  url: 'pages/upload.php?type=brand',
+		  url: '/pages/upload.php?type=brand',
 		  type: 'post',
 		  data: fd,
 		  contentType: false,
@@ -594,7 +550,7 @@ function list_templates(){
 
 function get_maintenance(){
 	$.ajax({ 
-		url: 'pages/views/settings/maintenance.php', 
+		url: '/pages/views/settings/maintenance.php', 
 		dataType: 'html',
 		success: function (data) {
 			$('#maintenance').html(data);
@@ -604,7 +560,7 @@ function get_maintenance(){
 
 function get_about(){
 	$.ajax({ 
-		url: 'pages/views/settings/about.php', 
+		url: '/pages/views/settings/about.php', 
 		dataType: 'html',
 		success: function (data) {
 			$('#about').html(data);
@@ -612,6 +568,15 @@ function get_about(){
 	});
 };
 
+function get_api(){
+	$.ajax({ 
+		url: '/pages/views/settings/api.php', 
+		dataType: 'html',
+		success: function (data) {
+			$('#api').html(data);
+		}
+	});
+};
 
 
 </script>

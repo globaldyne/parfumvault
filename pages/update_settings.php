@@ -11,43 +11,6 @@ require_once(__ROOT__.'/func/pvOnline.php');
 require_once(__ROOT__.'/func/create_thumb.php');
 
 
-
-if($_POST['update_pvonline_profile'] && $pv_online['enabled'] == '1'){
-	
-	if(!$_POST['nickname'] || !$_POST['intro']){
-		$response["error"] = "All fields are required";
-		echo json_encode($response);
-		return;
-	}
-	
-	$doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM documents WHERE ownerID = '".$_SESSION['userID']."' AND name = 'avatar' AND type = '3'"));
-
-	$intro = base64_encode(mysqli_real_escape_string($conn, $_POST['intro']));
-	$name = base64_encode(mysqli_real_escape_string($conn, $_POST['name']));
-
-	$data = [ 
-			 'username' => strtolower($pv_online['email']), 
-			 'password' => $pv_online['password'],
-			 'do' => 'updateProfile',
-			 'nickname' => base64_encode($_POST['nickname']),
-			 'intro' => $intro,
-			 'avatar' => $doc['avatar'],
-			 'name' => $name 
-			 ];
-
-    $req = json_decode(pvPost($pvOnlineAPI, $data));
-
-	if($req->success){
-		$response['success'] = $req->success;
-	}else{
-		$response['error'] = $req->error;
-	}
-	
-	echo json_encode($response);
-
-	return;
-}
-
 if($_GET['update_user_avatar']){
 	$allowed_ext = "png, jpg, jpeg, gif, bmp";
 
@@ -188,10 +151,11 @@ if($_POST['manage'] == 'api'){
 	}
 	
 	if(mysqli_query($conn, "UPDATE settings SET api = '$api', api_key='$api_key'")){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>API settings updated!</div>';	
+		$response['success'] = 'API settings updated!';	
 	}else{
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>An error occured.</div>';	
+		$response['success'] = 'An error occured '.mysqli_error($conn);	
 	}
+	echo json_encode($response);
 	return;
 }
 
