@@ -19,7 +19,7 @@ $defCatClass = $settings['defCatClass'];
       <div class="dropdown-menu dropdown-menu-right">
         <li><a class="dropdown-item popup-link" href="/pages/mgmIngredient.php"><i class="fa-solid fa-plus mr2"></i>Create new ingredient</a></li>
         <div class="dropdown-divider"></div
-        <li><a class="dropdown-item" id="csv_export" href="/pages/export.php?format=csv&kind=ingredients"><i class="fa-solid fa-file-csv mr2"></i>Export to CSV</a></li>
+        ><li><a class="dropdown-item" id="csv_export" href="/pages/export.php?format=csv&kind=ingredients"><i class="fa-solid fa-file-csv mr2"></i>Export to CSV</a></li>
         <li><a class="dropdown-item" id="json_export" href="/pages/export.php?format=json&kind=ingredients"><i class="fa-solid fa-file-code mr2"></i>Export to JSON</a></li>
         <div class="dropdown-divider"></div>
         <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#csv_import" data-backdrop="static"><i class="fa-solid fa-file-import mr2"></i>Import from CSV</a></li>
@@ -37,7 +37,7 @@ $defCatClass = $settings['defCatClass'];
           <input name="ing_search" type="text" class="form-control input-sm pv_input_sm" id="ing_search" value="<?=$_GET['search']?>" placeholder="Ingredient name, CAS, odor..">
             <div class="input-group-btn">
                 <button class="btn btn-search btn-primary" id="pv_search_btn" data-provider="local">
-                    <span class="fas fa-database"></span>
+                    <span class="fas fa-database mr2"></span>
                     <span class="label-icon"><a href="#" class="btn-search">Local DB</a></span>
                 </button>
                 <label class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
@@ -223,10 +223,10 @@ function iLimit(data, type, row){
 
 function iSuppliers(data, type, row){
 	if(row.supplier){
-	data ='<div class="btn-group"><button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-store"></i> <span class="badge badge-light">'+row.supplier.length+'</span></button><div class="dropdown-menu dropdown-menu-right">';
+	data ='<div class="btn-group"><button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-store mr2"></i><span class="badge badge-light">'+row.supplier.length+'</span></button><div class="dropdown-menu dropdown-menu-right">';
 	for (var key in row.supplier) {
 		if (row.supplier.hasOwnProperty(key)) {
-			data+='<a class="dropdown-item popup-link" href="'+row.supplier[key].link+'">'+row.supplier[key].name+'</a>';
+			data+='<li><a class="dropdown-item popup-link" href="'+row.supplier[key].link+'"><i class="fa fa-store mr2"></i>'+row.supplier[key].name+'</a></li>';
 		}
 	}                
 	data+='</div></div></td>';
@@ -238,10 +238,10 @@ function iSuppliers(data, type, row){
 
 function iDocs(data, type, row){
 	if(row.document){	
-		data ='<div class="btn-group"><button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-file-alt"></i> <span class="badge badge-light">'+row.document.length+'</span></button><div class="dropdown-menu dropdown-menu-right">';
+		data ='<div class="btn-group"><button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-file-alt mr2"></i><span class="badge badge-light">'+row.document.length+'</span></button><div class="dropdown-menu dropdown-menu-right">';
 		for (var key in row.document) {
 			if (row.document.hasOwnProperty(key)) {
-				data+='<a class="dropdown-item popup-link" href="/pages/viewDoc.php?id='+row.document[key].id+'">'+row.document[key].name+'</a>';
+				data+='<a class="dropdown-item popup-link" href="/pages/viewDoc.php?id='+row.document[key].id+'"><i class="fa fa-file-alt mr2"></i>'+row.document[key].name+'</a>';
 			}
 		}                
 		data+='</div></div></td>';
