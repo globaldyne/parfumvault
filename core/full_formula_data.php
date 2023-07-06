@@ -52,7 +52,7 @@ if(isset($_GET['stats_only'])){
 
 	$response['stats'] = $s;
 
-	//header('Content-Type: application/json; charset=utf-8');
+	header('Content-Type: application/json; charset=utf-8');
 	echo json_encode($response);
 	return;
 }
@@ -218,7 +218,7 @@ $response['meta'] = $m;
 $s['load_time'] = microtime(true) - $starttime;
 $response['sys'] = $s;
 
-//header('Content-Type: application/json; charset=utf-8');
+header('Content-Type: application/json; charset=utf-8');
 echo json_encode($response);
 return;
 ?>

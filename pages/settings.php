@@ -115,6 +115,14 @@ $(function() {
           <td>&nbsp;</td>
         </tr>
         <tr>
+          <td height="32"><a href="#" rel="tip" title="If enabled, formula quantity will be displayed in advanced mode when editing a formula">Formula editor</a></td>
+          <td colspan="2"><select name="editor" id="editor" class="form-control">
+			  <option value="1" <?php if($settings['editor']=="1") echo 'selected="selected"'; ?> >Inline</option>
+			  <option value="2" <?php if($settings['editor']=="2") echo 'selected="selected"'; ?> >Advanced</option>
+            </select></td>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
           <td colspan="4">&nbsp;</td>
           </tr>
         <tr>
@@ -404,6 +412,7 @@ $('#save-general').click(function() {
 			chkVersion: $("#chkVersion").is(':checked'),
 			multi_dim_perc: $("#multi_dim_perc").is(':checked'),
 			mUnit: $("#mUnit").val(),
+			editor: $("#editor").val(),
 			api: $("#pv_api").val(),
 			api_key: $("#pv_api_key").val(),
 	},
