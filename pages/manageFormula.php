@@ -440,6 +440,8 @@ if($_POST['action'] == 'makeFormula' && $_POST['fid'] && $_POST['q'] && $_POST['
 	}
 						 
 	$q = trim($_POST['q']);
+	$notes = mysqli_real_escape_string($conn, $_POST['notes']);
+	
 	if($_POST['updateStock'] == "true"){
 		$getStock = mysqli_fetch_array(mysqli_query($conn, "SELECT stock,mUnit FROM suppliers WHERE ingID = '$ingID' AND preferred = '1'"));
 		if($getStock['stock'] < $q){
@@ -461,7 +463,11 @@ if($_POST['action'] == 'makeFormula' && $_POST['fid'] && $_POST['q'] && $_POST['
 			$response['success'] = 'Formula updated!';
 		}
 	}
-		
+
+	if($notes){
+		mysqli_query($conn, "UPDATE formulasMetaData SET notes = CONCAT(notes, '$notes') WHERE fid = '$fid'");
+	}
+	
 	if($qr < $q){
 		if(mysqli_query($conn, "UPDATE makeFormula SET overdose = '$q' WHERE fid = '$fid' AND id = '$id'")){
 			$response['success'] = $_POST['ing'].' is overdosed, <strong>'.$q.'<strong> added';

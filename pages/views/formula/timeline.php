@@ -42,7 +42,7 @@ $(document).ready(function(){
 			  { data : 'user', title: 'User' },
 			],
 	
-	order: [[ 0, 'asc' ]],
+	order: [[ 1, 'desc' ]],
 	lengthMenu: [[15, 50, 100, -1], [15, 50, 100, "All"]],
 	pageLength: 15,
 	displayLength: 15

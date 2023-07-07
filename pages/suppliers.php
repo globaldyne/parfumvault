@@ -36,7 +36,7 @@
                       <th>Min ml</th>
                       <th>Min grams</th>
                       <th>Description</th>
-                      <th class="noexport">Actions</th>
+                      <th class="noexport"></th>
                     </tr>
                   </thead>
                 </table>
@@ -69,7 +69,7 @@ $(document).ready(function() {
 				  { data : 'min_gr', title: 'Min grams', render: min_gr},
 				  { data : 'description', title: 'Description', render: description},
 	
-				  { data : null, title: 'Actions', render: actions},		   
+				  { data : null, title: '', render: actions},		   
 				 ],
 		order: [[ 1, 'asc' ]],
 		lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
@@ -109,7 +109,15 @@ function description(data, type, row){
 	return '<i class="notes pv_point_gen" data-name="notes" data-type="textarea" data-pk="'+row.id+'">'+row.notes+'</i>';    
 }
 function actions(data, type, row){
-	return '<i class="pv_point_gen fas fa-edit mr2" rel="tip" title="Edit additional info" data-toggle="modal" id="edit_supplier" data-id="' + row.id + '" data-name="' + row.name + '" data-address="'+row.address+'" data-po="'+row.po+'" data-country="'+row.country+'" data-telephone="'+row.telephone+'" data-url="'+row.url+'" data-email="'+row.email+'"></i><i class="pv_point_gen fas fa-trash" style="color: #c9302c;" id="dDel" data-id="'+row.id+'" data-name="'+row.name+'"></a>';
+	data = '<div class="dropdown">' +
+			'<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+				'<ul class="dropdown-menu dropdown-menu-right">';
+	data += '<li><a class="pv_point_gen dropdown-item" data-toggle="modal" id="edit_supplier" data-id="' + row.id + '" data-name="' + row.name + '" data-address="'+row.address+'" data-po="'+row.po+'" data-country="'+row.country+'" data-telephone="'+row.telephone+'" data-url="'+row.url+'" data-email="'+row.email+'"><i class="fas fa-edit mr2"></i>Edit</a></li>';
+	data += '<div class="dropdown-divider"></div>';
+	data += '<li><a class="dropdown-item pv_point_gen text-danger" id="dDel" data-name="'+ row.name +'" data-id='+ row.id +'><i class="fas fa-trash mr2"></i>Delete</a></li>';
+	data += '</ul></div>';
+	
+	return data;
 }
 
 $('#tdIngSupData').editable({
