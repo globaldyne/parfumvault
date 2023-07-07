@@ -41,7 +41,7 @@
       	<div class="modal-body-main">
             <input type="hidden" name="fid" id="fid" />
             <input type="hidden" name="fname" id="fname" />
-            <div class="alert alert-warning">You can contact the author of the formula using the form bellow if you have quaries or recommendations regarding this formula.<p><strong>Please note, your full name and your email address will be shared with the author(s) of the formula in order so they can get in touch to discuss further. Also, a copy of your message will be shared with the admins to ensure there is no service abuse.</strong></p></div>
+            <div class="alert alert-warning">You can contact the author of the formula using the form bellow if you have queries or recommendations regarding this formula.<p><strong>Please note, your full name and your email address will be shared with the author(s) of the formula in order they can get in touch to discuss further. Also, a copy of your message will be shared with the admins to ensure there is no service abuse.</strong></p></div>
             <div class="form-group">
                 <label class="form-label">Full name:</label>
                 <input name="contactName" id="contactName" type="text" class="form-control">

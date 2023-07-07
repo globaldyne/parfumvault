@@ -7,6 +7,7 @@
 - Fix a bug making ingredient fail to load when sorting by category
 - Move session validation on its own js
 - Extend session validation if formula making view
+- Typo fix in marketplace author contact form
 
 ### Version 7.4
 - Formula making view confirmation dialogs are now static
