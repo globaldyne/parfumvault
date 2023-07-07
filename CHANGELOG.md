@@ -10,7 +10,8 @@
 - Change the way a quantity in formula is managed, modal added with option to re-calculate values if solvent is available
 - Change formula history order by most recent changes
 - Added advanced formula editor (quantity only)
-
+- Move general settings page to separate file
+- General settings update calls in json
  
 ### Version 7.3
 - Fix no ingredient json export error

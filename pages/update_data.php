@@ -783,25 +783,25 @@ if($_POST['updateQuantity'] && $_POST['ingQuantityID'] &&  $_POST['ingQuantityNa
 	}
 	
 	
-	
 	if($_POST['ingReCalc'] == 'true'){
 		$ingID = $_POST['ingID'];
-		
-		$q1 = mysqli_query($conn,"SELECT formulas.ingredient,formulas.ingredient_id,formulas.quantity,ingredients.profile FROM formulas,ingredients WHERE fid = '".$fid."' AND ingredients.id = formulas.ingredient_id AND ingredients.profile='solvent'");
-		while($r = mysqli_fetch_array($q1)){
-			
-			$slv[] = $r;
-			
+		if(!$_POST['formulaSolventID']){
+			$response["error"] = 'Please select solvent';
+			echo json_encode($response);
+			return;
 		}
+		$formulaSolventID = $_POST['formulaSolventID'];
 		
-		if(!$slv[0]['profile']){
-			$response["error"] = 'No solvent available';
+		if(mysqli_num_rows(mysqli_query($conn,"SELECT id FROM ingredients WHERE id = '".$ingID."' AND profile='solvent'"))){
+			$response["error"] = 'You cannot exchange a solvent with a solvent';
 			echo json_encode($response);
 			return;
 		}
 		
-		if($slv[0]['quantity'] < $_POST['ingQuantity']){
-			$response["error"] = 'Not enough solvent, available: '.$slv[0]['quantity'];
+		$slv = mysqli_fetch_array(mysqli_query($conn,"SELECT quantity FROM formulas WHERE ingredient_id = '".$formulaSolventID."' AND fid = '".$fid."'"));
+
+		if($slv['quantity'] < $_POST['ingQuantity']){
+			$response["error"] = 'Not enough solvent, available: '.number_format($slv['quantity'],$settings['qStep']).$settings['mUnit'];
 			echo json_encode($response);
 			return;
 		}
@@ -815,7 +815,7 @@ if($_POST['updateQuantity'] && $_POST['ingQuantityID'] &&  $_POST['ingQuantityNa
 		$diff = number_format(  $curV['quantity'] -  $value  , 4);
 		$v = formatVal($diff);
 		
-		$qs ="UPDATE formulas SET quantity = quantity $v WHERE fid = '$fid' AND ingredient_id = '".$slv[0]['ingredient_id']."'";
+		$qs ="UPDATE formulas SET quantity = quantity $v WHERE fid = '$fid' AND ingredient_id = '".$formulaSolventID."'";
 		if(!mysqli_query($conn, $qs)){
 			$response["error"] = 'Error updating solvent: '.mysqli_error($conn);
 			$response["query"] = $qs;
@@ -829,7 +829,6 @@ if($_POST['updateQuantity'] && $_POST['ingQuantityID'] &&  $_POST['ingQuantityNa
 	if($meta['isProtected'] == FALSE){
 		
 		if(mysqli_query($conn, "UPDATE formulas SET quantity = '$value' WHERE fid = '$fid' AND id = '$ingredient'")){
-			
 			
 			$lg = "CHANGE: ".$ing_name." Set $name to $value";
 			mysqli_query($conn, "INSERT INTO formula_history (fid,change_made,user) VALUES ('".$meta['id']."','$lg','".$user['fullName']."')");

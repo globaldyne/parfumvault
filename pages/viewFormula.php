@@ -1125,6 +1125,7 @@ $('#manage-quantity').on('click', '[id*=quantityConfirm]', function () {
 			ingID: $("#mainingid").val(),
 			curQuantity: $("#curQuantity").val(),
 			ingReCalc: $("#reCalc").prop('checked'),
+			formulaSolventID: $("#formulaSolvents").val(),
 			fid: '<?=$fid?>',
 			},
 		dataType: 'json',
@@ -1146,7 +1147,8 @@ $('#manage-quantity').on('click', '[id*=quantityConfirm]', function () {
 $("#formula").on("click", ".open-quantity-dialog", function () {
 	$('#msgQuantity').html('');
 	$('#manage-quantity #reCalc').prop( "checked", false );
-	$("#explain").hide();
+	$("#slvMeta").hide();
+	$("#formulaSolvents").val('');
 
 	var ingQuantity = $(this).data('value');
 	var ingQuantityID = $(this).data('ingid');
@@ -1161,6 +1163,35 @@ $("#formula").on("click", ".open-quantity-dialog", function () {
 	$("#manage-quantity #mainingid").val( mainingid );
 	$("#manage-quantity #curQuantity").val( curQuantity );
 
+	$("#formulaSolvents").select2({
+		width: '250px',
+		placeholder: 'Available solvents in formula',
+		allowClear: true,
+		dropdownAutoWidth: true,
+		containerCssClass: "formulaSolvents",
+		minimumResultsForSearch: Infinity,
+		ajax: {
+			url: '/core/full_formula_data.php?id='+myID+'&solvents_only=true',
+			dataType: 'json',
+			type: 'POST',
+			delay: 100,
+			quietMillis: 250,
+			processResults: function(data) {
+				return {
+					results: $.map(data.data, function(obj) {
+					  return {
+						id: obj.ingredient_id,
+						text: obj.ingredient || 'No solvent found in formula',
+					  }
+					})
+				};
+			},
+			cache: true,
+			
+		}
+		
+	});
+	
 });
 
 $('.export_as').click(function() {	
@@ -1180,12 +1211,13 @@ $('.export_as').click(function() {
   });
 });
 
-$("#explain").hide();
+$("#slvMeta").hide();
+
 $("#reCalc").click(function() {
     if($(this).is(":checked")) {
-        $("#explain").show();
+        $("#slvMeta").show();
     } else {
-        $("#explain").hide();
+        $("#slvMeta").hide();
     }
 });
 
@@ -1212,8 +1244,13 @@ $("#reCalc").click(function() {
         
         <div class="dropdown-divider"></div>
         <input type="checkbox" name="reCalc" id="reCalc" value="1" data-val="1" /> Adjust solvent
-        <div class="dropdown-divider"></div>
-        <div id="explain" class="alert alert-info">Auto adjust total quantity by increasing or decreasing quantity from a solvent if enough available.<br>For example, if you add 1 more ml to the current ingredient, the solvent's quantity will be deducted by 1ml retrospectively.<br><strong>IMPORTANT:</strong> The first available solvent will be used only!</div>
+        
+        <div id="slvMeta">
+        	<div class="dropdown-divider"></div>
+        	<input name="formulaSolvents" id="formulaSolvents" type="text" class="formulaSolvents pv-form-control">
+        	<div class="dropdown-divider"></div>
+        	<div id="explain" class="alert alert-info">Auto adjust total quantity by increasing or decreasing quantity from the selected solvent if enough available.<br>For example, if you add 1 more ml to the current ingredient, the selected solvent's quantity will be deducted by 1ml equally.</div>
+        </div>
 
       </div>
       <div class="modal-footer">

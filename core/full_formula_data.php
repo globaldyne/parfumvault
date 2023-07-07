@@ -19,7 +19,7 @@ require_once(__ROOT__.'/func/getCatByID.php');
 
 if(!$_GET['id']){		
 	$response['data'] = [];    
-	//header('Content-Type: application/json; charset=utf-8');
+	header('Content-Type: application/json; charset=utf-8');
 	echo json_encode($response);
 	return;
 }
@@ -30,6 +30,43 @@ $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT name,fid,catClass,finalTy
 
 if(!$meta['fid']){		
 	$response['Error'] = (string)'Requested id is not valid.';    
+	header('Content-Type: application/json; charset=utf-8');
+	echo json_encode($response);
+	return;
+}
+
+if($_GET['solvents_only'] === 'true'){
+	
+	$q = mysqli_query($conn,"SELECT formulas.ingredient,formulas.ingredient_id,formulas.quantity,ingredients.profile FROM formulas,ingredients WHERE fid = '".$meta['fid']."' AND ingredients.id = formulas.ingredient_id AND ingredients.profile='solvent'");
+	while($res = mysqli_fetch_array($q)){
+    	$solvents[] = $res;
+	}
+	$i = 0;
+	foreach ($solvents as $solvent) { 
+
+		$r['ingredient_id'] = (int)$solvent['ingredient_id'];
+		$r['ingredient'] = (string)$solvent['ingredient'];
+		$r['profile'] = (string)$solvent['profile']?: '-';
+		$r['quantity'] = (float)$solvent['quantity']?: '0';
+	
+		$rx[]=$r;
+		$i++;
+		
+	}
+	
+	$response = array(
+	  "data" => $rx
+	);
+	
+	$response = array(
+	  "recordsTotal" => (int)$i,
+	  "data" => $rx
+	);
+	
+	if(empty($rx)){
+		$response['data'] = array("No results");
+	}
+	
 	header('Content-Type: application/json; charset=utf-8');
 	echo json_encode($response);
 	return;
