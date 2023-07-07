@@ -14,7 +14,7 @@ require_once(__ROOT__.'/inc/opendb.php');
     <div class="btn-group" id="menu">
         <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
         <div class="dropdown-menu dropdown-menu-right">
-          <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula_cat"><i class="fa-solid fa-plus mr2"></i>Add formula category</a></li>
+          <li><a class="dropdown-item" href="#" data-toggle="modal" data-backdrop="static" data-target="#add_formula_cat"><i class="fa-solid fa-plus mr2"></i>Add formula category</a></li>
         </div>
     </div>
 	</div>
@@ -38,7 +38,7 @@ $(document).ready(function() {
 		var frmDataCat = $('#frmDataCat').DataTable( {
 		columnDefs: [
 			{ className: 'text-center', targets: '_all' },
-			{ orderable: false, targets: [3] }
+			{ orderable: false, targets: [2,3] }
         ],
 		dom: 'lfrtip',
 		processing: true,
@@ -222,9 +222,6 @@ function reload_fcat_data() {
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Add new category</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
       </div>
       
       <div class="modal-body">
