@@ -215,7 +215,7 @@ $(document).ready(function() {
 
 function ingredient(data, type, row){
 
-	data = '<a href="#infoModal" id="ingInfo" data-toggle="modal" data-id="'+row.ingID+'" data-name="'+row.ingredient+'" class="listIngNameCas-with-separator">' + row.ingredient + '</a><span class="listIngHeaderSub"> CAS: <i class="subHeaderCAS">'+row.cas+'</i></span>';
+	data = '<a href="#infoModal" id="ingInfo" data-backdrop="static" data-toggle="modal" data-id="'+row.ingID+'" data-name="'+row.ingredient+'" class="listIngNameCas-with-separator">' + row.ingredient + '</a><span class="listIngHeaderSub"> CAS: <i class="subHeaderCAS">'+row.cas+'</i></span>';
 	return data;
 }
 
@@ -236,7 +236,7 @@ function actions(data, type, row){
 	//}
 	
 	if (row.toAdd == 1) {
-		data += '<i data-toggle="modal" data-target="#confirm_add" data-quantity="'+row.quantity+'" data-ingredient="'+row.ingredient+'" data-row-id="'+row.id+'" data-ing-id="'+row.ingID+'" data-qr="'+row.quantity+'" class="mr fas fa-check pv_point_gen" title="Confirm add '+row.ingredient+'"></i>';
+		data += '<i data-toggle="modal" data-backdrop="static" data-target="#confirm_add" data-quantity="'+row.quantity+'" data-ingredient="'+row.ingredient+'" data-row-id="'+row.id+'" data-ing-id="'+row.ingID+'" data-qr="'+row.quantity+'" class="mr fas fa-check pv_point_gen" title="Confirm add '+row.ingredient+'"></i>';
 	}
 	
 					  
@@ -312,11 +312,12 @@ $('#tdDataPending').on('click', '[data-target*=confirm_add]', function () {
 //UPDATE AMOUNT
 function addedToFormula() {
 	$.ajax({ 
-    url: 'manageFormula.php', 
+    url: '/pages/manageFormula.php', 
 	type: 'POST',
     data: {
 		action: "makeFormula",
 		q: $("#amountAdded").val(),
+		notes: $("#notes").val(),
 		qr: $("#qr").text(),
 		updateStock: $("#updateStock").is(':checked'),
 		ing: $("#ingAdded").text(),
@@ -345,7 +346,7 @@ function addedToFormula() {
 
 $('#tdDataPending').on('click', '[id*=addToCart]', function () {
 $.ajax({ 
-    url: 'manageFormula.php', 
+    url: '/pages/manageFormula.php', 
 	type: 'POST',
     data: {
 		action: "addToCart",
@@ -400,7 +401,7 @@ $('#tdDataPending').on('click', '[id*=undo_add]', function () {
            className : "btn-danger",
          callback: function (){
 		 $.ajax({ 
-			url: 'manageFormula.php', 
+			url: '/pages/manageFormula.php', 
 				type: 'POST',
 				data: {
 					action: "makeFormula",
@@ -491,10 +492,6 @@ $('#markComplete, #markCompleteMenu').click(function() {
 <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                <h4 class="modal-title" id="infoModalLabel"><div class="modal-title"></h4>
-            </div>
             	<div class="modal-body-info">
             </div>
             <div class="modal-footer">
@@ -516,16 +513,35 @@ $('#markComplete, #markCompleteMenu').click(function() {
     </div>
     <div class="modal-body">
     <div id="errMsg"></div>
-        Amount added:
      	<form action="javascript:addedToFormula()" method="GET" target="_self">
-       		<input name="amountAdded" type="text" id="amountAdded" />
-            <hr />
-            <input name="updateStock" id="updateStock" type="checkbox" value="1" checked>
-            Update stock
-            <div class="modal-footer">
-       			<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-       			<input type="submit" name="button" class="btn btn-primary" id="button" value="Confirm">
-     		</div>
+        
+          <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="amountAdded"> Amount added</label>
+                <input name="amountAdded" type="text" id="amountAdded" />
+            </div>
+          </div>
+          
+          <div class="dropdown-divider"></div>
+          
+          <div class="form-row">
+            <div class="form-group col-md-6">
+            	<input name="updateStock" id="updateStock" type="checkbox" value="1" checked>
+            	<label class="form-check-label" for="updateStock">Update stock</label>
+            </div>
+          </div>
+          <div class="dropdown-divider"></div>
+          
+          <div class="form-group">
+		  	<label for="notes">Notes</label>
+    		<textarea class="form-control" id="notes" rows="3"></textarea>
+  		  </div>
+
+          <div class="modal-footer">
+       		<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+       		<input type="submit" name="button" class="btn btn-primary" id="button" value="Confirm">
+     	  </div>
+     
      	</form>
     </div>
   </div>

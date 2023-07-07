@@ -1252,3 +1252,9 @@ hr.hr-text::before {
 .link-dark:hover {
  color:#1a1e21
 }
+
+.card-reping {
+  color: #131313;
+  background-color: #f2f2f2;
+  border-color: #ebccd1;
+}

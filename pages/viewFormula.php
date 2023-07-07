@@ -20,12 +20,13 @@ $fid = $meta['fid'];
 var myFID = "<?=$meta['fid']?>";
 var myFNAME = "<?=$meta['name']?>";
 var myID = "<?=$meta['id']?>";
-var isProtected;
+var isProtected = true;
 <?php if($meta['isProtected'] == FALSE){?>
 	 isProtected = false;
 <?php } ?>
-
+var reCalc=0;
 $(document).ready(function() {
+						   
   var groupColumn = 0;
   var formula_table = $('#formula').DataTable( {
 		columnDefs: [
@@ -338,7 +339,7 @@ $('#print').click(() => {
 
 <div class="card-body">
 	<div class="col-sm-10" id="progress-area">
-      <div class="progress">  
+      <div class="progress">
           <div id="base_bar" class="progress-bar pv_bar_base_notes" role="progressbar" aria-valuemin="0"><span><div class="base-label"></div></span></div>
           <div id="heart_bar" class="progress-bar pv_bar_heart_notes" role="progressbar" aria-valuemin="0"><span><div class="heart-label"></div></span></div>
           <div id="top_bar" class="progress-bar pv_bar_top_notes" role="progressbar" aria-valuemin="0"><span><div class="top-label"></div></span></div>
@@ -570,7 +571,31 @@ $('#formula').editable({
    	}
   }
 });
-	
+<?php if($settings['editor'] == '1'){?>
+$('#formula').editable({
+  container: 'body',
+  selector: 'a.quantity',
+  url: "/pages/update_data.php?formula=<?=$meta['fid']?>",
+  title: 'Quantity in <?=$settings['mUnit']?>',
+  type: "POST",
+  dataType: 'json',
+	  success: function(response, newValue) {
+		if(response.status == 'error'){
+			return response.msg; 
+		}else{ 
+			reload_formula_data();
+		}
+	},
+  validate: function(value){
+   if($.trim(value) == ''){
+	return 'This field is required';
+   }
+   if($.isNumeric(value) == '' ){
+	return 'Numbers only!';
+   }
+  }
+});
+<?php } ?>
 $('#formula').editable({
 	container: 'body',
 	selector: 'a.solvent',
@@ -597,31 +622,6 @@ $('#formula').editable({
 	}
 
 });
-
-$('#formula').editable({
-  container: 'body',
-  selector: 'a.quantity',
-  url: "/pages/update_data.php?formula=<?=$meta['fid']?>",
-  title: 'Quantity in <?=$settings['mUnit']?>',
-  type: "POST",
-  dataType: 'json',
-	  success: function(response, newValue) {
-		if(response.status == 'error'){
-			return response.msg; 
-		}else{ 
-			reload_formula_data();
-		}
-	},
-  validate: function(value){
-   if($.trim(value) == ''){
-	return 'This field is required';
-   }
-   if($.isNumeric(value) == '' ){
-	return 'Numbers only!';
-   }
-  }
-});
-
 
 $('#formula').editable({
   container: 'body',
@@ -702,11 +702,14 @@ function ingSolvent(data, type, row, meta){
 }
   
 function ingQuantity(data, type, row, meta){
-	if(type === 'display'){
-		<?php if($meta['isProtected'] == FALSE){?>
-		data = '<a href="#" data-name="quantity" class="quantity" data-type="text" data-pk="' + row.formula_ingredient_id + '">' + data + '</a>';
+	if( isProtected == false ){
+		<?php if($settings['editor'] == '1'){?>
+			data = '<a href="#" data-name="quantity" class="quantity" data-type="text" data-pk="' + row.formula_ingredient_id + '">' + data + '</a>';
+		<?php }else{?>
+			data = '<a href="#" data-name="quantity" data-toggle="modal" data-target="#manage-quantity" data-backdrop="static" class="open-quantity-dialog" data-type="text" data-ingid="' + row.formula_ingredient_id + '" data-value="' + row.quantity + '" data-ing="' + row.ingredient.name + '" data-mainingid="'+row.ingredient.id+'">' + row.quantity + '</a>';
 		<?php } ?>
-	}
+	} 
+
 	return data;
 }
 
@@ -760,7 +763,7 @@ function ingActions(data, type, row, meta){
 	 	var ex = '<li><i class="dropdown-item pv_point_gen link-dark" rel="tip" id="exIng" title="Include '+ row.ingredient.name +'" data-name="'+ row.ingredient.name +'" data-status="0" data-id="'+ row.formula_ingredient_id +'"><i class="pv_point_gen fas fa-eye mr2"></i>Include</i></li>';
 	}
 	
-	data += ex + '<li><i data-toggle="modal" data-target="#replaceIng" data-backdrop="static" class="dropdown-item pv_point_gen open-replace-dialog text-info" rel="tip" title="Replace '+ row.ingredient.name +'"  data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'"><i class="pv_pont_gen fas fa-exchange-alt text-info mr2"></i>Replace ingredient</i></li>'
+	data += ex + '<li><i data-toggle="modal" data-target="#replaceIng" data-backdrop="static" class="dropdown-item pv_point_gen open-replace-dialog text-info" rel="tip" title="Replace '+ row.ingredient.name +'"  data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'" data-cas="'+row.ingredient.cas+'" data-desc="'+row.ingredient.desc+'"><i class="pv_pont_gen fas fa-exchange-alt text-info mr2"></i>Replace ingredient</i></li>'
 	
 	+ '<li><i data-toggle="modal" data-target="#mrgIng" data-backdrop="static" rel="tip" title="Merge '+ row.ingredient.name +'" class="dropdown-item pv_point_gen open-merge-dialog text-warning" data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'"><i class="pv_point_gen fas fa-object-group alert-warning mr2"></i>Merge ingredients</i></li>'
 	
@@ -964,18 +967,25 @@ $('#replaceIng').on('click', '[id*=replaceConfirm]', function () {
 $("#formula").on("click", ".open-replace-dialog", function () {
 	$('#msgInfo').html('');
 	$('#msgRepl').html('');
-	$("#replaceIng #ingInfo").html('');
+	$("#replaceIng #ingTargInfo").html('');
 	$("#replaceIng #repIngNameDest").val( '' );
+	$("#repGrid").hide();
 
 	
 	var ingRepName = $(this).data('name');
 	var ingRepID = $(this).data('id');
+	
+	var ingSrcCas = $(this).data('cas');
+	var ingSrcDesc = $(this).data('desc');
+
 	var repName;
 	var repID;
 	
 	$("#replaceIng #ingRepID").val( ingRepID );
 	$("#replaceIng #ingRepName").val( ingRepName );
 	$("#replaceIng #ingRepName").html( ingRepName );
+	
+	$("#replaceIng #ingSrcInfo").html('<strong>'+ingRepName+'</strong><p><strong>CAS: </strong>' + ingSrcCas + '</p><p> <strong>Description: </strong>' + ingSrcDesc +'</p>');
 
 	
 	$("#repIngNameDest").select2({
@@ -1016,7 +1026,8 @@ $("#formula").on("click", ".open-replace-dialog", function () {
 	}).on('select2-selected', function (data) {
 			 repName = data.choice.text;
 			 repID = data.choice.text; //NEEDS ID?!
-			 $("#replaceIng #ingInfo").html('<strong>CAS:</strong> ' + data.choice.cas + '<p> <strong>Description: </strong>' + data.choice.desc +'</p>');
+			 $("#repGrid").show();
+			 $("#replaceIng #ingTargInfo").html('<strong>'+data.choice.text+'</strong><p><strong>CAS:</strong> ' + data.choice.cas + '</p><p> <strong>Description: </strong>' + data.choice.desc +'</p>');
 	});
 });
 
@@ -1101,7 +1112,87 @@ $("#formula").on("click", ".open-merge-dialog", function () {
 			 mrgID = data.choice.ingId;
 	});
 });
-        
+
+$('#manage-quantity').on('click', '[id*=quantityConfirm]', function () {
+	$.ajax({ 
+		url: '/pages/update_data.php', 
+		type: 'POST',
+		data: {
+			updateQuantity: "true",
+			ingQuantity: $(".ingQuantity").val(),
+			ingQuantityName: $("#ingQuantityName").val(),
+			ingQuantityID: $("#ingQuantityID").val(),
+			ingID: $("#mainingid").val(),
+			curQuantity: $("#curQuantity").val(),
+			ingReCalc: $("#reCalc").prop('checked'),
+			formulaSolventID: $("#formulaSolvents").val(),
+			fid: '<?=$fid?>',
+			},
+		dataType: 'json',
+		success: function (data) {
+			if(data.success){
+				msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+				$('#manage-quantity').modal('hide'); 
+				reload_formula_data();
+				
+			}else{
+				msg ='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				$('#msgQuantity').html(msg);
+			}
+			
+		},
+	  });
+});
+
+$("#formula").on("click", ".open-quantity-dialog", function () {
+	$('#msgQuantity').html('');
+	$('#manage-quantity #reCalc').prop( "checked", false );
+	$("#slvMeta").hide();
+	$("#formulaSolvents").val('');
+
+	var ingQuantity = $(this).data('value');
+	var ingQuantityID = $(this).data('ingid');
+	var ingQuantityName = $(this).data('ing');
+	var mainingid = $(this).data('mainingid');
+	var curQuantity = $(this).data('value');
+
+	$("#manage-quantity #ingQuantity").val( ingQuantity );
+	$("#manage-quantity #ingQuantityID").val( ingQuantityID );
+	$("#manage-quantity #ingQuantityName").val( ingQuantityName );
+	$("#manage-quantity #ingQuantityName").html( ingQuantityName );
+	$("#manage-quantity #mainingid").val( mainingid );
+	$("#manage-quantity #curQuantity").val( curQuantity );
+
+	$("#formulaSolvents").select2({
+		width: '250px',
+		placeholder: 'Available solvents in formula',
+		allowClear: true,
+		dropdownAutoWidth: true,
+		containerCssClass: "formulaSolvents",
+		minimumResultsForSearch: Infinity,
+		ajax: {
+			url: '/core/full_formula_data.php?id='+myID+'&solvents_only=true',
+			dataType: 'json',
+			type: 'POST',
+			delay: 100,
+			quietMillis: 250,
+			processResults: function(data) {
+				return {
+					results: $.map(data.data, function(obj) {
+					  return {
+						id: obj.ingredient_id,
+						text: obj.ingredient || 'No solvent found in formula',
+					  }
+					})
+				};
+			},
+			cache: true,
+			
+		}
+		
+	});
+	
+});
 
 $('.export_as').click(function() {	
   var format = $(this).attr('data-format');
@@ -1119,9 +1210,56 @@ $('.export_as').click(function() {
 	maintitle: myFNAME,
   });
 });
+
+$("#slvMeta").hide();
+
+$("#reCalc").click(function() {
+    if($(this).is(":checked")) {
+        $("#slvMeta").show();
+    } else {
+        $("#slvMeta").hide();
+    }
+});
+
 </script>
 <script src="/js/mark/jquery.mark.min.js"></script>
 <script src="/js/mark/datatables.mark.js"></script>
+
+<div class="modal fade" id="manage-quantity" tabindex="-1" role="dialog" aria-labelledby="manage-quantity" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><div id="ingQuantityName"></div></h5>
+      </div>
+      <div class="modal-body">
+      	<div id="msgQuantity"></div>
+        <input type="hidden" name="ingQuantityID" id="ingQuantityID" />
+        <input type="hidden" name="ingQuantityName" id="ingQuantityName" />
+        <input type="hidden" name="ingQuantity" id="ingQuantity" />
+        <input type="hidden" name="mainingid" id="mainingid" />
+        <input type="hidden" name="curQuantity" id="curQuantity" />
+      	
+        Quantity in <?=$settings['mUnit']?> 
+        <input name="ingQuantity" type="text" class="ingQuantity form-control" id="ingQuantity">
+        
+        <div class="dropdown-divider"></div>
+        <input type="checkbox" name="reCalc" id="reCalc" value="1" data-val="1" /> Adjust solvent
+        
+        <div id="slvMeta">
+        	<div class="dropdown-divider"></div>
+        	<input name="formulaSolvents" id="formulaSolvents" type="text" class="formulaSolvents pv-form-control">
+        	<div class="dropdown-divider"></div>
+        	<div id="explain" class="alert alert-info">Auto adjust total quantity by increasing or decreasing quantity from the selected solvent if enough available.<br>For example, if you add 1 more ml to the current ingredient, the selected solvent's quantity will be deducted by 1ml equally.</div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <input type="submit" name="button" class="btn btn-primary" id="quantityConfirm" value="Update">
+      </div>
+    </div>
+  </div>
+</div>
 
 <div class="modal fade" id="mrgIng" tabindex="-1" role="dialog" aria-labelledby="mrgIng" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -1148,7 +1286,7 @@ $('.export_as').click(function() {
 </div>
 
 <div class="modal fade" id="replaceIng" tabindex="-1" role="dialog" aria-labelledby="replaceIng" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Replace <div id="ingRepName"></div></h5>
@@ -1162,7 +1300,21 @@ $('.export_as').click(function() {
         <input name="repIngNameDest" id="repIngNameDest" type="text" class="repIngNameDest pv-form-control">
         <p>
         <div class="dropdown-divider"></div>
-        <div id="ingInfo"></div>
+        
+        <div id="repGrid" class="card card-inverse card-reping">
+         <div class="row">
+            <div class="col-sm">
+              <div id="ingSrcInfo"></div>
+            </div>
+            <div class="col-2 row justify-content-center align-self-center">
+              <i class="fa-solid fa-right-long fa-2xl"></i>
+            </div>
+            <div class="col-sm">
+              <div id="ingTargInfo"></div>
+            </div>
+          </div>
+        </div>
+        
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>

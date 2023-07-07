@@ -64,11 +64,11 @@ if($_GET['do'] == 'backupFILES'){
 	$file = 'backup-'.date("d-m-Y").'.files.gz';
 	$mime = "application/x-gzip";
 	
-	if (!file_exists(__ROOT__."/$tmp_path")) {
-		mkdir(__ROOT__."/$tmp_path", 0777, true);
+	if (!file_exists(__ROOT__."/tmp")) {
+		mkdir(__ROOT__."/tmp", 0777, true);
 	}
 
-	$cmd = "tar -czvf ".__ROOT__."/$tmp_path$file ".__ROOT__."/$uploads_path";   
+	$cmd = "tar -czvf ".__ROOT__."/tmp/$file ".__ROOT__."/$uploads_path";   
 	shell_exec($cmd);
 	
 	header( 'Content-Type: '.$mime );

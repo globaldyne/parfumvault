@@ -316,7 +316,8 @@ CREATE TABLE `settings` (
   `defCatClass` VARCHAR(255) NOT NULL DEFAULT 'cat4',
   `pv_online_api_url` varchar(255) COLLATE utf8_general_ci NOT NULL DEFAULT 'https://online.jbparfum.com/api.php',
   `api` INT NOT NULL DEFAULT '0',
-  `api_key` VARCHAR(255) NULL 
+  `api_key` VARCHAR(255) NULL,
+  `editor` int(11) NOT NULL DEFAULT 1 COMMENT '1 = Inline, 2 = Advanced'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 INSERT INTO `settings` (`id`, `label_printer_addr`, `label_printer_model`, `label_printer_size`, `label_printer_font_size`, `currency`, `top_n`, `heart_n`, `base_n`, `chem_vs_brand`, `grp_formula`, `brandName`, `brandAddress`, `brandEmail`, `brandPhone`, `brandLogo`) VALUES

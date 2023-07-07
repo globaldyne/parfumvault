@@ -2,13 +2,8 @@
 <div id="content-wrapper" class="d-flex flex-column">
 <?php 
 require_once(__ROOT__.'/pages/top.php'); 
-						   
  
-$cats_q = mysqli_query($conn, "SELECT id,name,description,type FROM IFRACategories ORDER BY id ASC");
 
-while($cats_res = mysqli_fetch_array($cats_q)){
-    $cats[] = $cats_res;
-}
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/php-settings.php');
 
@@ -38,118 +33,15 @@ $(function() {
      </ul>
      
      <div class="tab-content">
+     
      <div class="tab-pane fade active in tab-content" id="general">
-     <table width="100%" border="0">
-        <tr>
-          <td colspan="4"><div id="inMsg"></div></td>
-          </tr>
-        <tr>
-          <td width="10%" height="29">Currency:</td>
-          <td colspan="2"><input name="currency" type="text" class="form-control" id="currency" value="<?php echo utf8_encode($settings['currency']);?>"/></td>
-          <td width="70%">&nbsp;</td>
-          </tr>
-        <tr>
-          <td height="28"><a href="#" rel="tip" title="If enabled, ingredients in formula view will be grouped by type. eg: Top,Heart,Base notes">Group Formula:</a></td>
-          <td colspan="2"><select name="grp_formula" id="grp_formula" class="form-control">
-			  <option value="0" <?php if($settings['grp_formula']=="0") echo 'selected="selected"'; ?> >Plain</option>
-			  <option value="1" <?php if($settings['grp_formula']=="1") echo 'selected="selected"'; ?> >By notes</option>
-			  <option value="2" <?php if($settings['grp_formula']=="2") echo 'selected="selected"'; ?> >By category</option>
-            </select></td>
-          <td>&nbsp;</td>
-        </tr>
-        <tr>
-          <td height="32"><a href="#" rel="tip" title="If enabled, PV will query PubChem to fetch ingredient data. Please note, the CAS number of the ingredient will be send to the PubChem servers.">Enable PubChem:</a></td>
-          <td colspan="2"><input name="pubChem" type="checkbox" id="pubChem" value="1" <?php if($settings['pubChem'] == '1'){ ?> checked="checked" <?php } ?>/></td>
-          <td>&nbsp;</td>
-        </tr>
-        <tr>
-          <td height="32"><a href="#" rel="tip" title="Select the image type for PubChem, 2D or 3D. Default: 2D">PubChem view:</a></td>
-          <td colspan="2"><select name="pubchem_view" id="pubchem_view" class="form-control">
-			  <option value="2d" <?php if($settings['pubchem_view']=="2d") echo 'selected="selected"'; ?> >2D</option>
-			  <option value="3d" <?php if($settings['pubchem_view']=="3d") echo 'selected="selected"'; ?> >3D</option>
-          </select></td>
-          <td>&nbsp;</td>
-        </tr>
-        <tr>
-          <td height="32"><a href="#" rel="tip" title="Auto check for new PV version. If enabled, your ip, current PV version and browser info will be send to our servers and or GitHub servers. Please make sure you have read our and GitHub's T&C and Privacy Policy before enable this.">Check for updates:</a></td>
-          <td colspan="3"><input name="chkVersion" type="checkbox" id="chkVersion" value="1" <?php if($settings['chkVersion'] == '1'){ ?> checked="checked" <?php } ?>/>
-           </td>
-          </tr>
-        <tr>
-          <td height="32"><a href="#" rel="tip" title="Defines the decimal in formula quantity.">Quantity Decimal:</a></td>
-          <td colspan="2"><select name="qStep" id="qStep" class="form-control">
-			  <option value="1" <?php if($settings['qStep']=="1") echo 'selected="selected"'; ?> >0.0</option>
-			  <option value="2" <?php if($settings['qStep']=="2") echo 'selected="selected"'; ?> >0.00</option>
-			  <option value="3" <?php if($settings['qStep']=="3") echo 'selected="selected"'; ?> >0.000</option>
-			  <option value="4" <?php if($settings['qStep']=="4") echo 'selected="selected"'; ?> >0.0000</option>
-            </select></td>
-          <td>&nbsp;</td>
-        </tr>
-        <tr>
-          <td height="32"><a href="#" rel="tip" title="Select the default category class. This will be used to calculate limits in formulas">Default Category:</a></td>
-          <td colspan="2"><select name="defCatClass" id="defCatClass" class="form-control">
-		<?php foreach ($cats as $IFRACategories) {?>
-				<option value="cat<?php echo $IFRACategories['name'];?>" <?php echo ($settings['defCatClass']=='cat'.$IFRACategories['name'])?"selected=\"selected\"":""; ?>><?php echo 'Cat '.$IFRACategories['name'].' - '.$IFRACategories['description'];?></option>
-		  <?php	}	?>
-            </select></td>
-          <td>&nbsp;</td>
-        </tr>
-        <tr>
-          <td height="32"><a href="#">Measurement Unit:</a></td>
-          <td colspan="2"><select name="mUnit" id="mUnit" class="form-control">
-			  <option value="ml" <?php if($settings['mUnit']=="ml") echo 'selected="selected"'; ?> >Milliliter</option>
-			  <option value="g" <?php if($settings['mUnit']=="g") echo 'selected="selected"'; ?> >Grams</option>
-			  <option value="L" <?php if($settings['mUnit']=="L") echo 'selected="selected"'; ?> >Liter</option>
-			  <option value="fl. oz." <?php if($settings['mUnit']=="fl. oz.") echo 'selected="selected"'; ?> >Fluid ounce (fl. oz.)</option>
-            </select></td>
-          <td>&nbsp;</td>
-        </tr>
-        <tr>
-          <td height="32"><a href="#" rel="tip" title="If enabled, formula will display the chemical names of ingredients, where available, instead of the commercial name">Chemical names</a>:</td>
-          <td colspan="2"><input name="chem_vs_brand" type="checkbox" id="chem_vs_brand" value="1" <?php if($settings['chem_vs_brand'] == '1'){ ?> checked="checked" <?php } ?>/></td>
-          <td>&nbsp;</td>
-        </tr>
-        <tr>
-          <td height="32"><a href="#" rel="tip" title="If enabled, ingredient usage percentage will be calculated against ingredients compositions as well.">Multi-dimensional lookup:</a></td>
-          <td colspan="2"><input name="multi_dim_perc" type="checkbox" id="multi_dim_perc" value="1" <?php if($settings['multi_dim_perc'] == '1'){ ?> checked="checked" <?php } ?>/></td>
-          <td>&nbsp;</td>
-        </tr>
-        <tr>
-          <td colspan="4">&nbsp;</td>
-          </tr>
-        <tr>
-          <td colspan="3"><h4 class="m-0 mb-4 text-primary">Pyramid View</h4>
-            <hr></td>
-          <td>&nbsp;</td>
-        </tr>
-        <tr>
-          <td>Top notes:</td>
-          <td width="12%"><input name="top_n" type="text" class="form-control" id="top_n" value="<?php echo $settings['top_n'];?>"/></td>
-          <td width="8%">%</td>
-          <td>&nbsp;</td>
-        </tr>
-        <tr>
-          <td>Heart notes:</td>
-          <td><input name="heart_n" type="text" class="form-control" id="heart_n" value="<?php echo $settings['heart_n'];?>"/></td>
-          <td>%</td>
-          <td>&nbsp;</td>
-        </tr>
-        <tr>
-          <td>Base notes:</td>
-          <td><input name="base_n" type="text" class="form-control" id="base_n" value="<?php echo $settings['base_n'];?>"/></td>
-          <td>%</td>
-          <td>&nbsp;</td>
-        </tr>
-        <tr>
-          <td>&nbsp;</td>
-          <td colspan="2">&nbsp;</td>
-          <td>&nbsp;</td>
-          </tr>
-        <tr>
-          <td><input type="submit" name="save-general" id="save-general" value="Submit" class="btn btn-info"/></td>
-          <td colspan="3">&nbsp;</td>
-          </tr>
-      </table>
+	    <div id="genMsg"></div>
+        <div id="get_general">
+            <div class="loader-center">
+                <div class="loader"></div>
+                <div class="loader-text"></div>
+            </div>
+        </div> 
 	 </div>
      
      <div id="categories">
@@ -319,32 +211,10 @@ $(function() {
      </div>
      
      <div id="api">
-	API can be used to access PV Pro from other apps like PV Light APP
-	   <table width="100%" border="0">
-		<tr>
-	      <td colspan="3"><div id="pvAPIMsg"></div></td>
-	      </tr>
-	    <tr>
-	      <td width="9%" height="28">Enable API</td>
-	      <td width="9%" valign="middle"><input name="pv_api" type="checkbox" id="pv_api" value="1" <?php if($settings['api'] == '1'){ ?> checked="checked" <?php } ?>/></td>
-	      <td width="82%">&nbsp;</td>
-	      </tr>
-	    <tr>
-	      <td>API Key</td>
-	      <td valign="middle"><input name="pv_api_key" type="text" class="form-control" id="pv_api_key" value="<?=$settings['api_key']?>" /></td>
-	      <td>&nbsp;</td>
-	      </tr>
-	    <tr>
-	      <td>&nbsp;</td>
-	      <td valign="middle">&nbsp;</td>
-	      <td>&nbsp;</td>
-	      </tr>
-	    <tr>
-	      <td><input type="submit" name="save-api" id="save-api" value="Submit" class="btn btn-info"/></td>
-	      <td valign="middle">&nbsp;</td>
-	      <td>&nbsp;</td>
-	      </tr>
-	    </table> 
+	   <div class="loader-center">
+       		<div class="loader"></div>
+            <div class="loader-text"></div>
+        </div>
      </div>
    
      
@@ -371,9 +241,6 @@ $(function() {
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Restore database from a backup file</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
       </div>
       <div class="modal-body">
       <div id="DBRestMsg"></div>
@@ -381,7 +248,6 @@ $(function() {
          <div id="uploadProgressBar" class="progress-bar" role="progressbar" aria-valuemin="0"></div>
       </div>
       <div id="backupArea">
-      
           <div class="form-group">
               <label class="col-md-3 control-label">Backup file:</label>
               <div class="col-md-8">
@@ -399,69 +265,21 @@ $(function() {
     <p>&nbsp;</p>
             </div>
           </div>
-      
       </div>
 	  <div class="modal-footer">
         <input type="button" class="btn btn-secondary" data-dismiss="modal" id="btnCloseBK" value="Cancel">
         <input type="submit" name="btnRestore" class="btn btn-primary" id="btnRestore" value="Restore">
       </div>
-   
   </div>
-  
-</div>
+ </div>
 </div>
 
 <script type="text/javascript" language="javascript" >
 $(document).ready(function() {
 
-$('#save-general').click(function() {
-	$.ajax({ 
-		url: 'pages/update_settings.php', 
-		type: 'POST',
-		data: {
-			manage: 'general',
-			currency: $("#currency").val(),
-			top_n: $("#top_n").val(),
-			heart_n: $("#heart_n").val(),
-			base_n: $("#base_n").val(),
-			qStep: $("#qStep").val(),
-			defCatClass: $("#defCatClass").val(),
-			pubchem_view: $("#pubchem_view").val(),
-			grp_formula: $("#grp_formula").val(),
-			chem_vs_brand: $("#chem_vs_brand").is(':checked'),
-			pubChem: $("#pubChem").is(':checked'),
-			chkVersion: $("#chkVersion").is(':checked'),
-			multi_dim_perc: $("#multi_dim_perc").is(':checked'),
-			mUnit: $("#mUnit").val(),
-			api: $("#pv_api").val(),
-			api_key: $("#pv_api_key").val(),
-	},
-	dataType: 'html',
-	success: function (data) {
-		$('#inMsg').html(data);
-	}
-  });
-});
-	
-$('#save-api').click(function() {
-	$.ajax({ 
-		url: 'pages/update_settings.php', 
-		type: 'POST',
-		data: {
-			manage: 'api',		
-			api: $("#pv_api").is(':checked'),
-			api_key: $("#pv_api_key").val(),
-		},
-		dataType: 'html',
-		success: function (data) {
-			$('#pvAPIMsg').html(data);
-		}
-	});
-});
-
 $('#save-perf-types').click(function() {
 	$.ajax({ 
-		url: 'pages/update_settings.php', 
+		url: '/pages/update_settings.php', 
 		type: 'POST',
 		data: {
 			manage: 'perfume_types',
@@ -479,7 +297,7 @@ $('#save-perf-types').click(function() {
 	
 $('#save-print').click(function() {
 	$.ajax({ 
-		url: 'pages/update_settings.php', 
+		url: '/pages/update_settings.php', 
 		type: 'POST',
 		data: {
 			manage: 'print',
@@ -498,7 +316,7 @@ $('#save-print').click(function() {
 
 $('#save-brand').click(function() {
 	$.ajax({ 
-		url: 'pages/update_settings.php', 
+		url: '/pages/update_settings.php', 
 		type: 'POST',
 		data: {
 			manage: 'brand',
@@ -526,7 +344,7 @@ $("#brandLogo_upload").click(function(){
     if(files.length > 0 ){
     	fd.append('brandLogo',files[0]);
         $.ajax({
-		  url: 'pages/upload.php?type=brand',
+		  url: '/pages/upload.php?type=brand',
 		  type: 'post',
 		  data: fd,
 		  contentType: false,
@@ -594,7 +412,7 @@ function list_templates(){
 
 function get_maintenance(){
 	$.ajax({ 
-		url: 'pages/views/settings/maintenance.php', 
+		url: '/pages/views/settings/maintenance.php', 
 		dataType: 'html',
 		success: function (data) {
 			$('#maintenance').html(data);
@@ -604,7 +422,7 @@ function get_maintenance(){
 
 function get_about(){
 	$.ajax({ 
-		url: 'pages/views/settings/about.php', 
+		url: '/pages/views/settings/about.php', 
 		dataType: 'html',
 		success: function (data) {
 			$('#about').html(data);
@@ -612,8 +430,25 @@ function get_about(){
 	});
 };
 
+function get_api(){
+	$.ajax({ 
+		url: '/pages/views/settings/api.php', 
+		dataType: 'html',
+		success: function (data) {
+			$('#api').html(data);
+		}
+	});
+};
 
-
+function get_general(){
+	$.ajax({ 
+		url: '/pages/views/settings/general.php', 
+		dataType: 'html',
+		success: function (data) {
+			$('#general').html(data);
+		}
+	});
+};
 </script>
 <script src="/js/settings.backup.js"></script>
 <script src="/js/settings.tabs.js"></script>

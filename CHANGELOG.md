@@ -1,4 +1,18 @@
 # CHANGELOG
+### Version 7.4
+- Formula making view confirmation dialogs are now static
+- Functionality to add comments/notes when adding ingredient in formula making view
+- API settings page separation
+- Fix a bug giving file not found error in some cases when trying to take files backup
+- Added a dropdown menu to view original formula from scheduled formulas
+- Added aditional info in the popup message when replacing an ingredient in formula
+- Fix formula not locking all fields when protected mode is enabled
+- Change the way a quantity in formula is managed, modal added with option to re-calculate values if solvent is available
+- Change formula history order by most recent changes
+- Added advanced formula editor (quantity only)
+- Move general settings page to separate file
+- General settings update calls in json
+ 
 ### Version 7.3
 - Fix no ingredient json export error
 - Added single ingredient export (json only)

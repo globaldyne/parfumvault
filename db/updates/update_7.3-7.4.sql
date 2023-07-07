@@ -1,0 +1,2 @@
+ALTER TABLE `ingredients` CHANGE `profile` `profile` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `settings` ADD `editor` INT NOT NULL DEFAULT '1' COMMENT '1 = Inline, 2 = Advanced' AFTER `api_key`;

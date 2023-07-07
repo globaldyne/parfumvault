@@ -82,8 +82,10 @@ Editableform is linked with one of input types, e.g. 'text', 'select' etc.
             this.initInput();
             
             //append input to form
-            this.$form.find('div.editable-input').append(this.input.$tpl);            
-            
+            this.$form.find('div.editable-input').append(this.input.$tpl);  
+			//append custom input (pv 7.4)
+            this.$form.find('div.editable-input-pv').append(this.input.$pvtpl);            
+
             //append form to container
             this.$div.append(this.$form);
             
@@ -320,6 +322,7 @@ Editableform is linked with one of input types, e.g. 'text', 'select' etc.
                 params = {
                     name: this.options.name || '',
                     value: submitValue,
+					//pvExtra: this.options.pvExtra || '',
                     pk: pk 
                 };
 
@@ -618,6 +621,7 @@ Editableform is linked with one of input types, e.g. 'text', 'select' etc.
     $.fn.editableform.template = '<form class="form-inline editableform">'+
     '<div class="control-group">' + 
     '<div><div class="editable-input"></div><div class="editable-buttons"></div></div>'+
+	'<div><div class="editable-input-pv"></div></div>'+
     '<div class="editable-error-block"></div>' + 
     '</div>' + 
     '</form>';
@@ -2367,7 +2371,8 @@ To create your own input you can inherit from this class.
        this method called before render to init $tpl that is inserted in DOM
        */
        prerender: function() {
-           this.$tpl = $(this.options.tpl); //whole tpl as jquery object    
+           this.$tpl = $(this.options.tpl); //whole tpl as jquery object  
+		   this.$pvtpl = $(this.options.pvtpl); //whole pvtpl as jquery object (PV 7.4)
            this.$input = this.$tpl;         //control itself, can be changed in render method
            this.$clear = null;              //clear button
            this.error = null;               //error message, if input cannot be rendered           
@@ -2526,6 +2531,16 @@ To create your own input you can inherit from this class.
         @default ''
         **/   
         tpl: '',
+		
+		 /**
+        Additional HTML template to support pv needs (Added on PV: v7.4).
+
+        @property pvtpl 
+        @type string
+        @default ''
+        **/
+		pvtpl: '',
+		
         /**
         CSS class automatically applied to input
         

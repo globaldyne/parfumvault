@@ -11,43 +11,6 @@ require_once(__ROOT__.'/func/pvOnline.php');
 require_once(__ROOT__.'/func/create_thumb.php');
 
 
-
-if($_POST['update_pvonline_profile'] && $pv_online['enabled'] == '1'){
-	
-	if(!$_POST['nickname'] || !$_POST['intro']){
-		$response["error"] = "All fields are required";
-		echo json_encode($response);
-		return;
-	}
-	
-	$doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM documents WHERE ownerID = '".$_SESSION['userID']."' AND name = 'avatar' AND type = '3'"));
-
-	$intro = base64_encode(mysqli_real_escape_string($conn, $_POST['intro']));
-	$name = base64_encode(mysqli_real_escape_string($conn, $_POST['name']));
-
-	$data = [ 
-			 'username' => strtolower($pv_online['email']), 
-			 'password' => $pv_online['password'],
-			 'do' => 'updateProfile',
-			 'nickname' => base64_encode($_POST['nickname']),
-			 'intro' => $intro,
-			 'avatar' => $doc['avatar'],
-			 'name' => $name 
-			 ];
-
-    $req = json_decode(pvPost($pvOnlineAPI, $data));
-
-	if($req->success){
-		$response['success'] = $req->success;
-	}else{
-		$response['error'] = $req->error;
-	}
-	
-	echo json_encode($response);
-
-	return;
-}
-
 if($_GET['update_user_avatar']){
 	$allowed_ext = "png, jpg, jpeg, gif, bmp";
 
@@ -140,6 +103,7 @@ if($_POST['manage'] == 'general'){
 	$grp_formula = mysqli_real_escape_string($conn, $_POST['grp_formula']);
 	$pubchem_view = mysqli_real_escape_string($conn, $_POST['pubchem_view']);
 	$mUnit = mysqli_real_escape_string($conn, $_POST['mUnit']);
+	$editor = mysqli_real_escape_string($conn, $_POST['editor']);
 
 	if($_POST["chem_vs_brand"] == 'true') {
 		$chem_vs_brand = '1';
@@ -165,11 +129,12 @@ if($_POST['manage'] == 'general'){
 		$multi_dim_perc = '0';
 	}
 	
-	if(mysqli_query($conn, "UPDATE settings SET currency = '$currency', top_n = '$top_n', heart_n = '$heart_n', base_n = '$base_n', chem_vs_brand = '$chem_vs_brand', grp_formula = '$grp_formula', pubChem='$pubChem', chkVersion='$chkVersion', qStep = '$qStep', defCatClass = '$defCatClass', pubchem_view = '$pubchem_view', multi_dim_perc = '$multi_dim_perc', mUnit = '$mUnit'")){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Settings updated!</div>';	
+	if(mysqli_query($conn, "UPDATE settings SET currency = '$currency', top_n = '$top_n', heart_n = '$heart_n', base_n = '$base_n', chem_vs_brand = '$chem_vs_brand', grp_formula = '$grp_formula', pubChem='$pubChem', chkVersion='$chkVersion', qStep = '$qStep', defCatClass = '$defCatClass', pubchem_view = '$pubchem_view', multi_dim_perc = '$multi_dim_perc', mUnit = '$mUnit', editor = '$editor'")){
+		$response["success"] = 'Settings updated!';
 	}else{
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>An error occured.</div>';	
+		$response["error"] = 'An error occured '.mysqli_error($conn);	
 	}
+	echo json_encode($response);
 	return;
 }
 
@@ -188,10 +153,11 @@ if($_POST['manage'] == 'api'){
 	}
 	
 	if(mysqli_query($conn, "UPDATE settings SET api = '$api', api_key='$api_key'")){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>API settings updated!</div>';	
+		$response['success'] = 'API settings updated!';	
 	}else{
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>An error occured.</div>';	
+		$response['success'] = 'An error occured '.mysqli_error($conn);	
 	}
+	echo json_encode($response);
 	return;
 }
 

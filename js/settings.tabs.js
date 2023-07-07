@@ -6,7 +6,7 @@ $(document).ready(function() {
 	
 	
 	$('#general_tab').on( 'click', function () {
-	
+		get_general();
 	});
 	
 	$('#cat_tab').on( 'click', function () {
@@ -49,4 +49,11 @@ $(document).ready(function() {
 		get_about();
 	});
 	
+	$('#api_tab').on( 'click', function () {
+		get_api();
+	});
+	
+	
+	
+	get_general();
 });

@@ -758,7 +758,91 @@ if($_GET['ingSupplier'] == 'delete'){
 	return;
 }
 
+//FORMULA QUANTITY MANAGEMENT
+if($_POST['updateQuantity'] && $_POST['ingQuantityID'] &&  $_POST['ingQuantityName']  && $_POST['fid']){
+	$fid = $_POST['fid'];
+	$value = $_POST['ingQuantity'];
+	$ingredient = $_POST['ingQuantityID'];
+	$ing_name = $_POST['ingQuantityName'];
+	
+	if(empty($_POST['ingQuantity'])){
+		$response["error"] = 'Quantity cannot be empty.';
+		echo json_encode($response);
+		return;
+	}
+	if(!is_numeric($_POST['ingQuantity'])){
+		$response["error"] = 'Quantity must be numeric only.';
+		echo json_encode($response);
+		return;
+	}
+	
+	if($_POST['curQuantity'] == $_POST['ingQuantity']){
+		$response["error"] = 'Quantity is already the same.';
+		echo json_encode($response);
+		return;
+	}
+	
+	
+	if($_POST['ingReCalc'] == 'true'){
+		$ingID = $_POST['ingID'];
+		if(!$_POST['formulaSolventID']){
+			$response["error"] = 'Please select solvent';
+			echo json_encode($response);
+			return;
+		}
+		$formulaSolventID = $_POST['formulaSolventID'];
+		
+		if(mysqli_num_rows(mysqli_query($conn,"SELECT id FROM ingredients WHERE id = '".$ingID."' AND profile='solvent'"))){
+			$response["error"] = 'You cannot exchange a solvent with a solvent';
+			echo json_encode($response);
+			return;
+		}
+		
+		$slv = mysqli_fetch_array(mysqli_query($conn,"SELECT quantity FROM formulas WHERE ingredient_id = '".$formulaSolventID."' AND fid = '".$fid."'"));
 
+		if($slv['quantity'] < $_POST['ingQuantity']){
+			$response["error"] = 'Not enough solvent, available: '.number_format($slv['quantity'],$settings['qStep']).$settings['mUnit'];
+			echo json_encode($response);
+			return;
+		}
+		
+		//UPDATE SOLVENT
+		function formatVal($num){
+    		return sprintf("%+d",$num);
+		}
+		
+		$curV = mysqli_fetch_array(mysqli_query($conn, "SELECT quantity FROM formulas WHERE fid = '$fid' AND id = '".$ingredient."'"));
+		$diff = number_format(  $curV['quantity'] -  $value  , 4);
+		$v = formatVal($diff);
+		
+		$qs ="UPDATE formulas SET quantity = quantity $v WHERE fid = '$fid' AND ingredient_id = '".$formulaSolventID."'";
+		if(!mysqli_query($conn, $qs)){
+			$response["error"] = 'Error updating solvent: '.mysqli_error($conn);
+			$response["query"] = $qs;
+			echo json_encode($response);
+			return;
+		}
+	}
+		
+	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,isProtected FROM formulasMetaData WHERE fid = '".$_POST['fid']."'"));
+	
+	if($meta['isProtected'] == FALSE){
+		
+		if(mysqli_query($conn, "UPDATE formulas SET quantity = '$value' WHERE fid = '$fid' AND id = '$ingredient'")){
+			
+			$lg = "CHANGE: ".$ing_name." Set $name to $value";
+			mysqli_query($conn, "INSERT INTO formula_history (fid,change_made,user) VALUES ('".$meta['id']."','$lg','".$user['fullName']."')");
+			$response["success"] = 'Quantity updated';
+			echo json_encode($response);
+		
+		}else{
+			$response["error"] = mysqli_error($conn);
+			echo json_encode($response);
+		}
+		
+	}
+	return;
+}
 
 if($_POST['value'] && $_GET['formula'] && $_POST['pk']){
 	$value = mysqli_real_escape_string($conn, $_POST['value']);
