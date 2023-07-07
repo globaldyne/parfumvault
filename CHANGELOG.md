@@ -8,7 +8,7 @@
 - Move session validation on its own js
 - Extend session validation if formula making view
 - Typo fix in marketplace author contact form
-
+- Added changelog link in the about page
 ### Version 7.4
 - Formula making view confirmation dialogs are now static
 - Functionality to add comments/notes when adding ingredient in formula making view
