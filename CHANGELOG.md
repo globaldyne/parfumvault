@@ -1,5 +1,7 @@
 # CHANGELOG
 ### Version 7.5
+- Making sure dilutant reset to its default if previously used
+
 ### Version 7.4
 - Formula making view confirmation dialogs are now static
 - Functionality to add comments/notes when adding ingredient in formula making view
