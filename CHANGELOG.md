@@ -9,6 +9,8 @@
 - Extend session validation if formula making view
 - Typo fix in marketplace author contact form
 - Added changelog link in the about page
+- Sorting by color key removed from ingredients category settings
+
 ### Version 7.4
 - Formula making view confirmation dialogs are now static
 - Functionality to add comments/notes when adding ingredient in formula making view

@@ -39,7 +39,7 @@ $(document).ready(function() {
 		var tdDataCat = $('#tdDataCat').DataTable( {
 		columnDefs: [
 			{ className: 'text-center', targets: '_all' },
-			{ orderable: false, targets: [4] }
+			{ orderable: false, targets: [1,4] }
         ],
 		dom: 'lfrtip',
 		processing: true,
