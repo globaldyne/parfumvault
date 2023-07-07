@@ -14,7 +14,7 @@ require_once(__ROOT__.'/inc/opendb.php');
     <div class="btn-group" id="menu">
         <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
         <div class="dropdown-menu dropdown-menu-right">
-          <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_ingredient_cat"><i class="fa-solid fa-plus mr2"></i>Add ingredient category</a></li>
+          <li><a class="dropdown-item" href="#" data-toggle="modal" data-backdrop="static" data-target="#add_ingredient_cat"><i class="fa-solid fa-plus mr2"></i>Add ingredient category</a></li>
         </div>
     </div>
   </div>
@@ -232,9 +232,6 @@ function extrasShow() {
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Add new category</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
       </div>
       
       <div class="modal-body">
