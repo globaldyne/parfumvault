@@ -358,7 +358,7 @@ $('#print').click(() => {
            <li class="dropdown-header">Scale Formula</li> 
            <li><a class="dropdown-item manageQuantity" href="#" data-action="multiply"><i class="fa-solid fa-xmark mr2"></i>Multiply x2</a></li>
            <li><a class="dropdown-item manageQuantity" href="#" data-action="divide"><i class="fa-solid fa-divide mr2"></i>Divide x2</a></li>
-           <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#amount_to_make"><i class="fa-solid fa-calculator mr2"></i>Advanced</a></li>
+           <li><a class="dropdown-item" href="#" data-backdrop="static" data-toggle="modal" data-target="#amount_to_make"><i class="fa-solid fa-calculator mr2"></i>Advanced</a></li>
            <div class="dropdown-divider"></div>
            <li><a class="dropdown-item" href="#" data-backdrop="static" data-toggle="modal" data-target="#create_accord"><i class="fa-solid fa-list-check mr2"></i>Create accord</a></li>
            <li><a class="dropdown-item" href="#" data-backdrop="static" data-toggle="modal" data-target="#conv_ingredient"><i class="fa-solid fa-list-check mr2"></i>Create ingredient</a></li>
@@ -436,9 +436,6 @@ $('#print').click(() => {
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Scale formula</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
       </div>
       <div class="modal-body">
       <div id="amountToMakeMsg"></div>
@@ -1306,7 +1303,7 @@ $("#reCalc").click(function() {
             <div class="col-sm">
               <div id="ingSrcInfo"></div>
             </div>
-            <div class="col-2 row justify-content-center align-self-center">
+            <div class="col-1 row justify-content-center align-self-center">
               <i class="fa-solid fa-right-long fa-2xl"></i>
             </div>
             <div class="col-sm">

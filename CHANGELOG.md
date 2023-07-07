@@ -1,6 +1,8 @@
 # CHANGELOG
 ### Version 7.5
 - Making sure dilutant reset to its default if previously used
+- Making scale formula modal static
+- Fix a bug making ingredient fail to load when sorting by category
 
 ### Version 7.4
 - Formula making view confirmation dialogs are now static

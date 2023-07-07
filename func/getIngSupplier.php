@@ -10,7 +10,7 @@ if($getStock == 1){
 	while($r = mysqli_fetch_array($q)){
 		$sup = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingSuppliers WHERE id = '".$r['ingSupplierID']."'"));
 
-		$result[] = array_merge($r, $sup);
+		$result[] = array_merge((array)$r, (array)$sup);
 	}
 }
 	return $result;

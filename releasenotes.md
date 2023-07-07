@@ -13,3 +13,4 @@ cloud installations like Openshift/EKS, etc
 </strong>
 Whats New in v7.5
 --------------------------
+- Various bug fixes and improvements
