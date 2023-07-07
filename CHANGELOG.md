@@ -1,4 +1,5 @@
 # CHANGELOG
+### Version 7.5
 ### Version 7.4
 - Formula making view confirmation dialogs are now static
 - Functionality to add comments/notes when adding ingredient in formula making view
