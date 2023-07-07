@@ -2,6 +2,8 @@
 ### Version 7.5
 - Making sure dilutant reset to its default if previously used
 - Making scale formula modal static
+- Making perfume type modal static
+- Change description text type to textarea in perfume types
 - Fix a bug making ingredient fail to load when sorting by category
 - Move session validation on its own js
 - Extend session validation if formula making view

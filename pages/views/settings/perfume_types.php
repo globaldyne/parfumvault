@@ -11,7 +11,7 @@ require_once(__ROOT__.'/inc/sec.php');
     <div class="btn-group">
     <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
         <div class="dropdown-menu dropdown-menu-right">
-            <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#addpType"><i class="fa-solid fa-plus mr2"></i>Add new</a></li>
+            <li><a class="dropdown-item" href="#" data-toggle="modal" data-backdrop="static" data-target="#addpType"><i class="fa-solid fa-plus mr2"></i>Add new</a></li>
         </div>
     </div>                    
   </div>
@@ -67,7 +67,7 @@ function concentration(data, type, row){
 }
 
 function description(data, type, row){
-	return '<a href="#" class="description pv_point_gen" data-name="description" data-type="text" data-pk="'+row.id+'">'+row.description+'</a>';    
+	return '<a href="#" class="description pv_point_gen" data-name="description" data-type="textarea" data-pk="'+row.id+'">'+row.description+'</a>';    
 }
 
 function actions(data, type, row){
@@ -201,9 +201,6 @@ function reload_data() {
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Add perfume type</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
       </div>
       <div class="modal-body">
       <div id="ptype_inf"></div>
