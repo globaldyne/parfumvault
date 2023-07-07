@@ -16,6 +16,7 @@
 - Making ingredients advanced search modal static
 - Making ingredient add supplier modal static
 - Making ingredient add document modal static
+- Making ingredient add synonyms modals static
 
 ### Version 7.4
 - Formula making view confirmation dialogs are now static
