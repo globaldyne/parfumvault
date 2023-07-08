@@ -77,23 +77,43 @@ $defCatClass = $settings['defCatClass'];
       </div>
       <div class="modal-body">
        <div id="IFRAImportMsg"></div>
-       	<table width="100%">
-       		<tr>
-    	   	<td width="122" valign="top">IFRA xls File:</td>
-				<td width="1519" colspan="3">
-                	<input type="file" id="ifraXLS" name="ifraXLS" />
-				</td>
-			</tr>
-       		<tr>
-       		  <td height="46">Modify file:</td>
-              <td><input name="updateCAS" type="checkbox" id="updateCAS" value="1" checked="checked" />
-                 <span class="font-italic">*this is required if you are importing the original IFRA file</span>
-              </td>
-   		  </tr>
-		</table>
-       <p class="alert-link"><strong>IMPORTANT:</strong></p>
-       <p class="alert-link"> This operation will wipe out any data already in your IFRA Library, so please make sure the file you uploading is in the right format and have taken a <a href="pages/operations.php?do=backupDB">backup</a> before.</p>
-       <p class="alert-link">The IFRA xls can be downloaded from its official <a href="https://ifrafragrance.org/safe-use/standards-guidance" target="_blank">web site</a></p>
+    		<div class="row">
+        		<div class="col-lg mx-auto">
+                    <div class="form-group">
+                        <div class="col-sm-10">
+                            <label class="control-label">IFRA xls File</label>
+                            <input type="file" id="ifraXLS" name="ifraXLS"  class="form-control" />
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="col-sm-10">
+                           <input name="overwrite" type="checkbox" id="overwrite"  /> 
+                           <label class="control-label" for="overwrite">Overwite current data</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-10">
+                           <input name="updateCAS" type="checkbox" id="updateCAS" checked="checked" /> 
+                           <label class="control-label" for="updateCAS">Modify original file</label> <i class="fa-solid fa-circle-info pv_point_gen" rel="tip" data-title="This is required if you are importing the original IFRA file. Currently only supported the 49th amendment xls format."></i>
+                        </div>
+                    </div>
+
+            	</div>
+            </div>
+            
+            <div id="overwrite-msg">
+                <div class="dropdown-divider"></div>
+            	<div class="col-sm col-sm-10 text-xs-center alert alert-warning">
+                	<p class="alert-link"><strong>IMPORTANT:</strong></p>
+                	<p class="alert-link">This operation will wipe out any data already in your IFRA Library, so please make sure the file you uploading is in the right format and have taken a <a href="/pages/operations.php?do=backupDB">backup</a> before.</p>
+                </div>
+           </div>
+           
+       </div>
+       <div class="dropdown-divider"></div>
+       <div class="col-sm col-sm-10 text-xs-center">
+       		<strong>The IFRA xls can be downloaded from its official <a href="https://ifrafragrance.org/safe-use/standards-guidance" target="_blank">web site</a></strong>
        </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btnIFRAC">Cancel</button>
@@ -254,30 +274,36 @@ $('#csv').on('click',function(){
 $('#btnImportIFRA').click(function() {	
 	$("#IFRAImportMsg").html('<div class="alert alert-info"><img src="/img/loading.gif" class="mr2"/>Please wait, file upload in progress....</div>');
 	$("#btnImportIFRA").prop("disabled", true);
-	
+	$("#btnIFRAC").prop("disabled", true);
+
 	
 	var fd = new FormData();
     var files = $('#ifraXLS')[0].files;
-    var modify = $('#updateCAS').val();
+    var modify = $('#updateCAS').prop("checked");
+    var overwrite = $('#overwrite').prop("checked");
 
        if(files.length > 0 ){
         fd.append('ifraXLS',files[0]);
         $.ajax({
-           url: '/pages/upload.php?type=IFRA&updateCAS=' + modify,
+           url: '/pages/upload.php?type=IFRA&updateCAS=' + modify + '&overwrite='+ overwrite,
            type: 'POST',
            data: fd,
            contentType: false,
            processData: false,
 		         cache: false,
+		   dataType: 'json',
            success: function(response){
-             if(response != 0){
-				 $("#IFRAImportMsg").html(response);
-				 $("#btnImportIFRA").hide();
+             if(response.success){
+				 $("#IFRAImportMsg").html('<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+response.success+'</div>');
+				// $("#btnImportIFRA").hide();
 				 $("#btnIFRAC").html('Close');
+				 $("#btnImportIFRA").prop("disabled", false);
+				 $("#btnIFRAC").prop("disabled", false);
 				 reload_ifra_data();
               }else{
-                $("#IFRAImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> File upload failed!</div>');
+                $("#IFRAImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+response.error+'</div>');
 				$("#btnImportIFRA").prop("disabled", false);
+				$("#btnIFRAC").prop("disabled", false);
               }
             },
          });
@@ -305,6 +331,7 @@ $('#Importpb').click(function() {
 				$("#Importpb").hide();
 				$("#ImportpbC").show();
 				$('#ImportpbC').html('Close');
+				$("#ImportpC").show();
 				reload_ifra_data();
 			}else{
 				$('#pbmportMsg').html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>');
@@ -316,4 +343,16 @@ $('#Importpb').click(function() {
 		}
 	});
 });
+
+
+$("#overwrite-msg").hide();
+
+$("#overwrite").click(function() {
+    if($(this).is(":checked")) {
+        $("#overwrite-msg").show();
+    } else {
+        $("#overwrite-msg").hide();
+    }
+});
+
 </script>

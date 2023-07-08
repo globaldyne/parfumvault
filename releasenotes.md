@@ -13,5 +13,6 @@ cloud installations like Openshift/EKS, etc
 </strong>
 Whats New in v7.5
 --------------------------
+- Added option to maintain existing IFRA library data prior import
 - Overall IFRA Library improvements
 - Various bug fixes and improvements

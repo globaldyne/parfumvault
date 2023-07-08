@@ -408,14 +408,18 @@ if($_GET['type'] == 'IFRA'){
 		$ext = explode(",",$all_ext);
 	
 		if(in_array($file_ext,$ext)=== false){
-			echo '<div class="alert alert-danger alert-dismissible"><strong>File upload error: </strong>Extension not allowed, please choose a '.$all_ext.' file.</div>';
+			$response['error'] = '<strong>File upload error: </strong>Extension not allowed, please choose a '.$all_ext.' file';
+			echo json_encode($response);
 			return;
 		}
 		
 		if($_FILES["ifraXLS"]["size"] > 0){
 			require_once(__ROOT__.'/func/SimpleXLSX.php');
-			mysqli_query($conn, "TRUNCATE IFRALibrary");
-		
+			
+			if($_GET['overwrite'] == 'true'){
+				mysqli_query($conn, "TRUNCATE IFRALibrary");
+			}
+			
 			$xlsx = SimpleXLSX::parse($filename);
 		
 			try {
@@ -439,17 +443,19 @@ if($_GET['type'] == 'IFRA'){
 						$err = '0';
 					} catch (Exception $e) {
 						$err = '1';
-						//echo 'Error: '.$e;
 					}
 				}
 				if($err){
-					echo '<div class="alert alert-danger"><strong>Import error: </strong>'.$e.'</div>';
+					$response['error'] =  '<strong>Import error: </strong>'.$e;
+					echo json_encode($response);
 					return;
 				}
-				if($_GET['updateCAS'] == '1'){
+				if($_GET['updateCAS'] == 'true'){
 					fixIFRACas($conn);
 				}
-				echo '<div class="alert alert-success">Import success.</div>';
+				$response['success'] =  '<strong>Import success </strong>';
+				echo json_encode($response);
+				return;
 
 		}
 	}

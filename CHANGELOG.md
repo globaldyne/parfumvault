@@ -20,6 +20,7 @@
 - Making ingredient add replacements modals static
 - Moving the majority of js into an external file for full formula view
 - Make sure IFRA database contains data before attempt to import images from pubChem
+- Added option to maintain existing IFRA library data prior import
 
 ### Version 7.4
 - Formula making view confirmation dialogs are now static
