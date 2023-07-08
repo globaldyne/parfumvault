@@ -14,7 +14,7 @@ $defCatClass = $settings['defCatClass'];
           <div>
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h2 class="m-0 font-weight-bold text-primary"><a href="?do=IFRA">IFRA Library</a></h2>
+              <h2 class="m-0 font-weight-bold text-primary"><a href="/?do=IFRA">IFRA Library</a></h2>
             </div>
             <div class="card-body">
               <div class="table-responsive">
@@ -23,15 +23,16 @@ $defCatClass = $settings['defCatClass'];
                     <div class="btn-group">
                       <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
                       <div class="dropdown-menu dropdown-menu-right">
-                        <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#ifra_import"><i class="fa-solid fa-file-excel mr2"></i>Import IFRA xls</a>
+                        <li><a class="dropdown-item" href="#" data-backdrop="static" data-toggle="modal" data-target="#ifra_import"><i class="fa-solid fa-file-excel mr2"></i>Import IFRA xls</a>
                         <?php if($settings['pubChem'] == '1'){?>
-                        <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#pubChem_import"><i class="fa-solid fa-file-import mr2"></i>Import images</a></li>
+                        <li><a class="dropdown-item" href="#" data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#pubChem_import"><i class="fa-solid fa-file-import mr2"></i>Import images</a></li>
                         <?php } ?>
 
                         <li><a class="dropdown-item" id="csv" href="#"><i class="fa-solid fa-file-export mr2"></i>Export to CSV</a></li>
                       </div>
-                    </div>                      
+                    </div>
                   </div>
+                <div class="dropdown-divider"></div>
                 <table id="tdDataIFRA" class="table table-striped table-bordered" style="width:100%">
                   <thead>
                       <tr>
@@ -73,9 +74,6 @@ $defCatClass = $settings['defCatClass'];
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="ifra_import">Import IFRA xls file</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
       </div>
       <div class="modal-body">
        <div id="IFRAImportMsg"></div>
@@ -111,14 +109,11 @@ $defCatClass = $settings['defCatClass'];
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Import images from PubChem</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
       </div>
       <div class="modal-body">
        <div id="pbmportMsg"></div>
        <p class="alert-link"><strong>Confirm import</strong></p>
-       <p class="alert-link"> Are you sure you want to import data from pubChem? This operation will overwrite any existing image data in your IFRA database.</p>
+       <p class="alert-link">Are you sure you want to import data from pubChem? This operation will overwrite any existing image data in your IFRA database.</p>
        <p>By using this service, you agree with <a href="https://pubchemdocs.ncbi.nlm.nih.gov/about" target="_blank">PubChem's</a> terms</p>
        </div>
       <div class="modal-footer">
@@ -143,7 +138,7 @@ $(document).ready(function() {
 	mark: true,
 	language: {
 		loadingRecords: '&nbsp;',
-		processing: '<div class="spinner-grow"></div> Please Wait...',
+		processing: '<div class="spinner-grow mr2"></div>Please Wait...',
 		zeroRecords: 'Nothing found',
 		search: 'Quick Search:',
 		searchPlaceholder: 'Name, CAS, synonyms..',
@@ -257,7 +252,7 @@ $('#csv').on('click',function(){
 });
 
 $('#btnImportIFRA').click(function() {	
-	$("#IFRAImportMsg").html('<div class="alert alert-info"><img src="/img/loading.gif"/>Please wait, file upload in progress....</div>');
+	$("#IFRAImportMsg").html('<div class="alert alert-info"><img src="/img/loading.gif" class="mr2"/>Please wait, file upload in progress....</div>');
 	$("#btnImportIFRA").prop("disabled", true);
 	
 	
@@ -269,7 +264,7 @@ $('#btnImportIFRA').click(function() {
         fd.append('ifraXLS',files[0]);
         $.ajax({
            url: '/pages/upload.php?type=IFRA&updateCAS=' + modify,
-           type: 'post',
+           type: 'POST',
            data: fd,
            contentType: false,
            processData: false,
@@ -293,7 +288,7 @@ $('#btnImportIFRA').click(function() {
 });
 
 $('#Importpb').click(function() {	
-	$("#pbmportMsg").html('<div class="alert alert-info"><img src="/img/loading.gif"/>Please wait, this may take a few minutes, depending your IFRA library size and your internet connection...</div>');
+	$("#pbmportMsg").html('<div class="alert alert-info"><img src="/img/loading.gif" class="mr2"/>Please wait, this may take a few minutes, depending your IFRA library size and your internet connection...</div>');
 	$("#Importpb").prop("disabled", true);
 	$("#ImportpbC").hide();
 
@@ -314,6 +309,7 @@ $('#Importpb').click(function() {
 			}else{
 				$('#pbmportMsg').html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>');
 				$("#Importpb").show();
+				$("#ImportpbC").show();
 				$("#Importpb").prop("disabled", false);
 				$("#ImportpC").show();
 			}

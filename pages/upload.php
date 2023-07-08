@@ -439,12 +439,18 @@ if($_GET['type'] == 'IFRA'){
 						$err = '0';
 					} catch (Exception $e) {
 						$err = '1';
+						//echo 'Error: '.$e;
 					}
+				}
+				if($err){
+					echo '<div class="alert alert-danger"><strong>Import error: </strong>'.$e.'</div>';
+					return;
 				}
 				if($_GET['updateCAS'] == '1'){
 					fixIFRACas($conn);
 				}
-				echo '<div class="alert alert-success alert-dismissible">Import success.</div>';
+				echo '<div class="alert alert-success">Import success.</div>';
+
 		}
 	}
 	return;

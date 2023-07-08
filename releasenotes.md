@@ -13,4 +13,5 @@ cloud installations like Openshift/EKS, etc
 </strong>
 Whats New in v7.5
 --------------------------
+- Overall IFRA Library improvements
 - Various bug fixes and improvements
