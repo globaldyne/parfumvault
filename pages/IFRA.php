@@ -1,10 +1,3 @@
-<?php
-if (!defined('pvault_panel')){ die('Not Found');}
-
-$ifra_q = mysqli_query($conn, "SELECT * FROM IFRALibrary ORDER BY amendment DESC");
-$defCatClass = $settings['defCatClass'];
-
-?>
 <script src="/js/mark/jquery.mark.min.js"></script>
 <script src="/js/mark/datatables.mark.js"></script>
 
@@ -17,7 +10,6 @@ $defCatClass = $settings['defCatClass'];
               <h2 class="m-0 font-weight-bold text-primary"><a href="/?do=IFRA">IFRA Library</a></h2>
             </div>
             <div class="card-body">
-              <div class="table-responsive">
                
                   <div class="text-right">
                     <div class="btn-group">
@@ -33,7 +25,8 @@ $defCatClass = $settings['defCatClass'];
                     </div>
                   </div>
                 <div class="dropdown-divider"></div>
-                <table id="tdDataIFRA" class="table table-striped table-bordered" style="width:100%">
+                <div class="table-responsive">
+                <table id="tdDataIFRA" class="table table-striped table-bordered">
                   <thead>
                       <tr>
                       	<th>Structure</th>
