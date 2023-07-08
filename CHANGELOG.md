@@ -18,6 +18,7 @@
 - Making ingredient add document modal static
 - Making ingredient add synonyms modals static
 - Making ingredient add replacements modals static
+- Moving the majority of js into an external file for full formula view
 
 ### Version 7.4
 - Formula making view confirmation dialogs are now static

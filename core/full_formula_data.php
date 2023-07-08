@@ -17,14 +17,14 @@ require_once(__ROOT__.'/func/countElement.php');
 require_once(__ROOT__.'/func/getIngSupplier.php');
 require_once(__ROOT__.'/func/getCatByID.php');
 
-if(!$_GET['id']){		
+if(!$_REQUEST['id']){		
 	$response['data'] = [];    
 	header('Content-Type: application/json; charset=utf-8');
 	echo json_encode($response);
 	return;
 }
 
-$id = mysqli_real_escape_string($conn, $_GET['id']);
+$id = mysqli_real_escape_string($conn, $_REQUEST['id']);
 
 $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT name,fid,catClass,finalType,defView,isProtected,notes FROM formulasMetaData WHERE id = '$id'"));
 
@@ -35,7 +35,7 @@ if(!$meta['fid']){
 	return;
 }
 
-if($_GET['solvents_only'] === 'true'){
+if($_POST['solvents_only'] === 'true'){
 	
 	$q = mysqli_query($conn,"SELECT formulas.ingredient,formulas.ingredient_id,formulas.quantity,ingredients.profile FROM formulas,ingredients WHERE fid = '".$meta['fid']."' AND ingredients.id = formulas.ingredient_id AND ingredients.profile='solvent'");
 	while($res = mysqli_fetch_array($q)){
