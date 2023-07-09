@@ -114,6 +114,76 @@ if($_GET['restore'] == 'db_bk'){
 	return;
 }
 
+if($_GET['action'] == 'exportIFRA'){
+	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM IFRALibrary")))){
+		$msg['error'] = 'No data found to export.';
+		echo json_encode($msg);
+		return;
+	}
+	$IFRA_Data = 0;
+	$q = mysqli_query($conn, "SELECT * FROM IFRALibrary");
+	while($ifra = mysqli_fetch_assoc($q)){
+		
+		$r['id'] = (int)$ifra['id'];
+		$r['ifra_key'] = (string)$ifra['ifra_key'];
+		$r['image'] = (string)$ifra['image'];
+		$r['amendment'] = (string)$ifra['amendment'];
+		$r['prev_pub'] = (string)$ifra['prev_pub'];
+		$r['last_pub'] = (string)$ifra['last_pub'];
+		$r['deadline_existing'] = (string)$ifra['deadline_existing'];
+		$r['deadline_new'] = (string)$ifra['deadline_new'];
+		$r['name'] = (string)$ifra['name'];
+		$r['cas'] = (string)$ifra['cas'];
+		$r['cas_comment'] = (string)$ifra['cas_comment'];
+		$r['synonyms'] = (string)$ifra['synonyms'];
+		$r['formula'] = (string)$ifra['formula'];
+		$r['flavor_use'] = (string)$ifra['flavor_use'];
+		$r['prohibited_notes'] = (string)$ifra['prohibited_notes'] ?: "-";
+		$r['restricted_photo_notes'] = (string)$ifra['restricted_photo_notes'];
+		$r['restricted_notes'] = (string)$ifra['restricted_notes'];
+		$r['specified_notes'] = (string)$ifra['specified_notes'];
+		$r['type'] = (string)$ifra['type'];
+		$r['risk'] = (string)$ifra['risk'];
+		$r['contrib_others'] = (string)$ifra['contrib_others'];
+		$r['contrib_others_notes'] = (string)$ifra['contrib_others_notes'];
+		$r['cat1'] = (string)$ifra['cat1'];
+		$r['cat2'] = (string)$ifra['cat2'];
+		$r['cat3'] = (string)$ifra['cat3'];
+		$r['cat4'] = (string)$ifra['cat4'];
+		$r['cat5A'] = (string)$ifra['cat5A'];
+		$r['cat5B'] = (string)$ifra['cat5B'];
+		$r['cat5C'] = (string)$ifra['cat5C'];
+		$r['cat5D'] = (string)$ifra['cat5D'];
+		$r['cat6'] = (string)$ifra['cat6'];
+		$r['cat7A'] = (string)$ifra['cat7A'];
+		$r['cat7B'] = (string)$ifra['cat7B'];
+		$r['cat8'] = (string)$ifra['cat8'];
+		$r['cat9'] = (string)$ifra['cat9'];
+		$r['cat10A'] = (string)$ifra['cat10A'];
+		$r['cat10B'] = (string)$ifra['cat10B'];
+		$r['cat11A'] = (string)$ifra['cat11A'];
+		$r['cat11B'] = (string)$ifra['cat11B'];
+		$r['cat12'] = (string)$ifra['cat12'];
+
+		$IFRA_Data++;
+		$if[] = $r;
+	}
+	
+	$vd['product'] = $product;
+	$vd['version'] = $ver;
+	$vd['ifra_entries'] = $IFRA_Data;
+	$vd['timestamp'] = date('d/m/Y H:i:s');
+
+	
+	$result['IFRALibrary'] = $if;
+	$result['pvMeta'] = $vd;
+	
+	header('Content-disposition: attachment; filename=IFRALibrary.json');
+	header('Content-type: application/json');
+	echo json_encode($result, JSON_PRETTY_PRINT);
+	return;
+}
+
 if($_GET['action'] == 'exportFormulas'){
 	if($_GET['fid']){
 		$filter = " WHERE fid ='".$_GET['fid']."'";
