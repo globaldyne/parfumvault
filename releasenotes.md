@@ -13,5 +13,7 @@ cloud installations like Openshift/EKS, etc
 </strong>
 Whats New in v7.6
 --------------------------
+- Added option to delete an IFRA entry
+- IFRA Library extended to display implementation deadlines for new and current creations
 - Various bug fixes and improvements
 - For full details please refer to the CHANGELOG

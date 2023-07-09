@@ -10,7 +10,7 @@
               <h2 class="m-0 font-weight-bold text-primary"><a href="/?do=IFRA">IFRA Library</a></h2>
             </div>
             <div class="card-body">
-               
+               <div id="iframsg"></div>
                   <div class="text-right">
                     <div class="btn-group">
                       <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
@@ -26,7 +26,7 @@
                   </div>
                 <div class="dropdown-divider"></div>
                 <div class="table-responsive">
-                <table id="tdDataIFRA" class="table table-striped table-bordered">
+                <table id="tdDataIFRA" class="stripe row-border order-column" style="width:100%">
                   <thead>
                       <tr>
                       	<th>Structure</th>
@@ -35,6 +35,8 @@
                         <th>Amendment</th>
                         <th>Last publication</th>
                         <th>IFRA Type</th>
+                        <th>Implementation deadline for existing creations</th>
+                        <th>Implementation deadline for new creations</th>
                         <th>Cat1%</th>
                         <th>Cat2%</th>
                         <th>Cat3%</th>
@@ -52,6 +54,7 @@
                         <th>Cat11A%</th>
                         <th>Cat11B%</th>
                         <th>Cat12%</th>
+                        <th></th>
                       </tr>
                    </thead>
                 </table>
@@ -154,18 +157,20 @@ $(document).ready(function() {
 	var tdDataIFRA = $('#tdDataIFRA').DataTable( {
 	columnDefs: [
 		{ className: 'pv_vertical_middle text-center', targets: '_all' },
+		{ orderable: false, targets: [25]}
 	],
 	dom: 'lrftip',
 	processing: true,
 	serverSide: true,
 	searching: true,
 	mark: true,
+	scrollX: true,
 	language: {
 		loadingRecords: '&nbsp;',
 		processing: '<div class="spinner-grow mr2"></div>Please Wait...',
 		zeroRecords: 'Nothing found',
 		search: 'Quick Search:',
-		searchPlaceholder: 'Name, CAS, synonyms..',
+		searchPlaceholder: 'Name, CAS, synonyms...',
 		},
 	ajax: {	
 		url: '/core/list_IFRA_data.php',
@@ -185,6 +190,8 @@ $(document).ready(function() {
 			{ data : 'amendment', title: 'Amendment' },
 			{ data : 'last_pub', title: 'Last publication' },
 			{ data : 'type', title: 'IFRA Type' },
+			{ data : 'deadline_existing', title: 'Implementation deadline for existing creations' },
+			{ data : 'deadline_new', title: 'Implementation deadline for new creations' },
 			{ data : 'cat1', title: 'Cat1%' },
 			{ data : 'cat2', title: 'Cat2%' },
 			{ data : 'cat3', title: 'Cat3%' },
@@ -202,6 +209,8 @@ $(document).ready(function() {
 			{ data : 'cat11A', title: 'Cat11A%' },
 			{ data : 'cat11B', title: 'Cat11B%' },
 			{ data : 'cat12', title: 'Cat12%' },
+			{ data : null, title: '', render: actions },
+
 			],
 	order: [[ 1, 'asc' ]],
 	lengthMenu: [[20, 50, 100, 200, 400], [20, 50, 100, 200, 400]],
@@ -256,6 +265,12 @@ function image(data, type, row){
 
 function reload_ifra_data() {
     $('#tdDataIFRA').DataTable().ajax.reload(null, true);
+}
+
+function actions(data, type, row){
+	data = '<a class="pv_point_gen text-danger" id="dDel" data-name="'+ row.name +'" data-id='+ row.id +'><i class="fas fa-trash mr2"></i></a>';
+	
+	return data;
 }
 
 $('#csv').on('click',function(){
@@ -360,4 +375,51 @@ $("#overwrite").click(function() {
     }
 });
 
+$('#tdDataIFRA').on('click', '[id*=dDel]', function () {
+	var d = {};
+	d.ID = $(this).attr('data-id');
+    d.Name = $(this).attr('data-name');
+
+	bootbox.dialog({
+       title: "Confirm deletion",
+       message : 'Delete IFRA entry <strong>'+ d.Name +'</strong> ?',
+       buttons :{
+           main: {
+               label : "Delete",
+               className : "btn-danger",
+               callback: function (){
+	    			
+				$.ajax({ 
+					url: '/pages/update_data.php', 
+					type: 'POST',
+					data: {
+						IFRA: 'delete',
+						ID: d.ID,
+						type: 'IFRA'
+						},
+					dataType: 'json',
+					success: function (data) {
+						if(data.success){
+							msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+							reload_ifra_data();
+						}else if(data.error){
+							msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+						}
+						$('#iframsg').html(msg);
+					}
+				  });
+				
+                 return true;
+               }
+           },
+           cancel: {
+               label : "Cancel",
+               className : "btn-default",
+               callback : function() {
+                   return true;
+               }
+           }   
+       },onEscape: function () {return true;}
+   });
+});
 </script>
