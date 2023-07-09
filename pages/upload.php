@@ -428,8 +428,22 @@ if($_GET['type'] == 'IFRA'){
 			}catch(PDOException $e){
 				echo $sql . "<br>" . $e->getMessage();
 			}
+			
+			switch ($_GET['IFRAVer']) {
+				case 0:
+					$response['error'] =  '<strong>Please select IFRA amendment</strong>'.$e;
+					echo json_encode($response);
+					return;
+					break;
+				case 49:
+					$fields = 'ifra_key,image,amendment,prev_pub,last_pub,deadline_existing ,deadline_new,name,cas,cas_comment,synonyms,formula,flavor_use,prohibited_notes,restricted_photo_notes,restricted_notes,specified_notes,type,risk,contrib_others,contrib_others_notes,cat1,cat2,cat3,cat4,cat5A ,cat5B,cat5C,cat5D,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12';
+					break;
+				case 51:
+					$fields = 'ifra_key,amendment,prev_pub,last_pub,deadline_existing ,deadline_new,name,cas,cas_comment,synonyms,type,risk,flavor_use,prohibited_notes,restricted_photo_notes,restricted_notes,specified_notes,contrib_others,contrib_others_notes,cat1,cat2,cat3,cat4,cat5A ,cat5B,cat5C,cat5D,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12';
+					break;
+			}
 		
-			$fields = 'ifra_key,image,amendment,prev_pub,last_pub,deadline_existing ,deadline_new,name,cas,cas_comment,synonyms,formula,flavor_use,prohibited_notes,restricted_photo_notes,restricted_notes,specified_notes,type,risk,contrib_others,contrib_others_notes,cat1,cat2,cat3,cat4,cat5A ,cat5B,cat5C,cat5D,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12';
+
 			$values = substr(str_repeat('?,', count(explode(',' , $fields))), 0 , strlen($x) - 1);
 			$stmt = $link->prepare( "INSERT INTO IFRALibrary ($fields) VALUES ($values)");
 			$cols = $xlsx->dimension()[0];//$dim[0];
