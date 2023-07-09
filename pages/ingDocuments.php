@@ -16,7 +16,7 @@ $ingID = mysqli_real_escape_string($conn, $_GET["id"]);
     <div class="btn-group">
     <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
         <div class="dropdown-menu dropdown-menu-right">
-            <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#addDoc"><i class="fa-solid fa-plus mr2"></i>Add new</a></li>
+            <li><a class="dropdown-item" href="#" data-toggle="modal" data-backdrop="static" data-target="#addDoc"><i class="fa-solid fa-plus mr2"></i>Add new</a></li>
         </div>
     </div>                    
   </div>
@@ -41,6 +41,7 @@ $(document).ready(function() {
 	var tdIngDocs = $('#tdIngDocs').DataTable( {
 	columnDefs: [
 		{ className: 'text-center', targets: '_all' },
+		{ orderable: false, targets: [4]}
 	],
 	dom: 'lfrtip',
 	processing: true,
@@ -190,10 +191,7 @@ function reload_doc_data() {
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="addDocument">Add document</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <h5 class="modal-title">Add document</h5>
       </div>
       <div class="modal-body">
       <div id="doc_inf"></div>

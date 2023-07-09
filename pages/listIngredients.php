@@ -89,7 +89,7 @@ $(document).ready(function() {
   	},
 	dom: 'lr<"#advanced_search">tip',
 	initComplete: function(settings, json) {
-        $("#advanced_search").html('<span><hr /><a href="#" class="advanced_search_box" data-toggle="modal" data-target="#adv_search">Advanced Search</a></span>');
+        $("#advanced_search").html('<span><hr /><a href="#" class="advanced_search_box" data-backdrop="static" data-toggle="modal" data-target="#adv_search">Advanced Search</a></span>');
 		$("#tdDataIng_filter").detach().appendTo('#pv_search');
     },
 	processing: true,

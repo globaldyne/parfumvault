@@ -19,9 +19,9 @@ $ingName = mysqli_real_escape_string($conn, $_POST["name"]);
   		<div class="btn-group">
    			<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
     		<div class="dropdown-menu dropdown-menu-right">
-        		<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#addSynonym"><i class="fa-solid fa-plus mr2"></i>Add new</a></li>
+        		<li><a class="dropdown-item" href="#" data-toggle="modal" data-backdrop="static" data-target="#addSynonym"><i class="fa-solid fa-plus mr2"></i>Add new</a></li>
                 <?php if(preg_match('/(Mixture|Blend)/i', $CAS) === 0){	?>
-                <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#pubchem_import"><i class="fa-solid fa-file-import mr2"></i>Import from PubChem</a></li>
+                <li><a class="dropdown-item" href="#" data-toggle="modal" data-backdrop="static" data-target="#pubchem_import"><i class="fa-solid fa-file-import mr2"></i>Import from PubChem</a></li>
 
                 <?php } ?>
     		</div>
@@ -47,6 +47,7 @@ $('[data-toggle="tooltip"]').tooltip();
 var tdSynonyms = $('#tdSynonyms').DataTable( {
 	columnDefs: [
 		{ className: 'text-center', targets: '_all' },
+		{ orderable: false, targets: [2]}
 	],
 	dom: 'lfrtip',
 	processing: true,
@@ -202,10 +203,7 @@ function reload_syn_data() {
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="addSynonym">Add synonym</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <h5 class="modal-title">Add synonym</h5>
       </div>
       <div class="modal-body">
       <div id="infSyn"></div>
@@ -232,9 +230,6 @@ function reload_syn_data() {
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Import synonyms from PubChem</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
       </div>
       <div class="modal-body">
        	<div id="pvImportMsg"></div>
