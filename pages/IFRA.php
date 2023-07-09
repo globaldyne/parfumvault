@@ -80,6 +80,17 @@
                     </div>
                     
                     <div class="form-group">
+                      <div class="col-sm-10">
+                          <label class="control-label" for="IFRAver">IFRA amendment</label> <i class="fa-solid fa-circle-info pv_point_gen" rel="tip" data-title="IFRA file format has been slightly changed after amendment 49, to maintain backwards compatibility, we added the option to select which version you importing."></i>
+                          <select id="IFRAver" class="form-control">
+                              <option value="0" disabled>Please select amendment format</option>
+                              <option value="49">Amendment 49 or older format</option>
+                              <option value="51" selected>Amendment 51 format</option>
+                          </select>
+                      </div>
+                    </div>
+                    
+                    <div class="form-group">
                         <div class="col-sm-10">
                            <input name="overwrite" type="checkbox" id="overwrite"  /> 
                            <label class="control-label" for="overwrite">Overwite current data</label>
@@ -88,7 +99,7 @@
                     <div class="form-group">
                         <div class="col-sm-10">
                            <input name="updateCAS" type="checkbox" id="updateCAS" checked="checked" /> 
-                           <label class="control-label" for="updateCAS">Modify original file</label> <i class="fa-solid fa-circle-info pv_point_gen" rel="tip" data-title="This is required if you are importing the original IFRA file. Currently only supported the 49th amendment xls format."></i>
+                           <label class="control-label" for="updateCAS">Modify original file</label> <i class="fa-solid fa-circle-info pv_point_gen" rel="tip" data-title="This is required if you are importing the original IFRA file."></i>
                         </div>
                     </div>
 
@@ -274,11 +285,12 @@ $('#btnImportIFRA').click(function() {
     var files = $('#ifraXLS')[0].files;
     var modify = $('#updateCAS').prop("checked");
     var overwrite = $('#overwrite').prop("checked");
+    var IFRAver = $('#IFRAver').val();
 
        if(files.length > 0 ){
         fd.append('ifraXLS',files[0]);
         $.ajax({
-           url: '/pages/upload.php?type=IFRA&updateCAS=' + modify + '&overwrite='+ overwrite,
+           url: '/pages/upload.php?type=IFRA&updateCAS=' + modify + '&overwrite='+ overwrite + '&IFRAVer=' + IFRAver,
            type: 'POST',
            data: fd,
            contentType: false,
