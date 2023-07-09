@@ -1,4 +1,5 @@
 # CHANGELOG
+### Version 7.6
 ### Version 7.5
 - Making sure dilutant reset to its default if previously used
 - Making scale formula modal static
