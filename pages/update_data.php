@@ -444,7 +444,7 @@ if($_POST['action'] == 'delete' && $_POST['lidId'] && $_POST['type'] == 'lid'){
 if($_GET['IFRA_PB'] == 'import'){
 	require_once(__ROOT__.'/func/pvFileGet.php');
 	$i = 0;
-	$qCas = mysqli_query($conn,"SELECT cas FROM IFRALibrary");
+	$qCas = mysqli_query($conn,"SELECT cas FROM IFRALibrary WHERE image IS NULL OR image = ''");
 
 	if(!mysqli_num_rows($qCas)){
 		$response["error"] = 'IFRA Database is currently empty';

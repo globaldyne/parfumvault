@@ -2,7 +2,7 @@
 ### Version 7.6
 - Added option to delete an IFRA entry
 - IFRA Library extended to display implementation deadlines for new and current creations
-
+- Check if structural image is already in IFRA Library before attempt downloading it
 
 ### Version 7.5
 - Making sure dilutant reset to its default if previously used
