@@ -1,10 +1,3 @@
-<?php
-if (!defined('pvault_panel')){ die('Not Found');}
-
-$ifra_q = mysqli_query($conn, "SELECT * FROM IFRALibrary ORDER BY amendment DESC");
-$defCatClass = $settings['defCatClass'];
-
-?>
 <script src="/js/mark/jquery.mark.min.js"></script>
 <script src="/js/mark/datatables.mark.js"></script>
 
@@ -14,25 +7,26 @@ $defCatClass = $settings['defCatClass'];
           <div>
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h2 class="m-0 font-weight-bold text-primary"><a href="?do=IFRA">IFRA Library</a></h2>
+              <h2 class="m-0 font-weight-bold text-primary"><a href="/?do=IFRA">IFRA Library</a></h2>
             </div>
             <div class="card-body">
-              <div class="table-responsive">
                
                   <div class="text-right">
                     <div class="btn-group">
                       <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
                       <div class="dropdown-menu dropdown-menu-right">
-                        <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#ifra_import"><i class="fa-solid fa-file-excel mr2"></i>Import IFRA xls</a>
+                        <li><a class="dropdown-item" href="#" data-backdrop="static" data-toggle="modal" data-target="#ifra_import"><i class="fa-solid fa-file-excel mr2"></i>Import IFRA xls</a>
                         <?php if($settings['pubChem'] == '1'){?>
-                        <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#pubChem_import"><i class="fa-solid fa-file-import mr2"></i>Import images</a></li>
+                        <li><a class="dropdown-item" href="#" data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#pubChem_import"><i class="fa-solid fa-file-import mr2"></i>Import images</a></li>
                         <?php } ?>
 
                         <li><a class="dropdown-item" id="csv" href="#"><i class="fa-solid fa-file-export mr2"></i>Export to CSV</a></li>
                       </div>
-                    </div>                      
+                    </div>
                   </div>
-                <table id="tdDataIFRA" class="table table-striped table-bordered" style="width:100%">
+                <div class="dropdown-divider"></div>
+                <div class="table-responsive">
+                <table id="tdDataIFRA" class="table table-striped table-bordered">
                   <thead>
                       <tr>
                       	<th>Structure</th>
@@ -73,29 +67,57 @@ $defCatClass = $settings['defCatClass'];
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="ifra_import">Import IFRA xls file</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
       </div>
       <div class="modal-body">
        <div id="IFRAImportMsg"></div>
-       	<table width="100%">
-       		<tr>
-    	   	<td width="122" valign="top">IFRA xls File:</td>
-				<td width="1519" colspan="3">
-                	<input type="file" id="ifraXLS" name="ifraXLS" />
-				</td>
-			</tr>
-       		<tr>
-       		  <td height="46">Modify file:</td>
-              <td><input name="updateCAS" type="checkbox" id="updateCAS" value="1" checked="checked" />
-                 <span class="font-italic">*this is required if you are importing the original IFRA file</span>
-              </td>
-   		  </tr>
-		</table>
-       <p class="alert-link"><strong>IMPORTANT:</strong></p>
-       <p class="alert-link"> This operation will wipe out any data already in your IFRA Library, so please make sure the file you uploading is in the right format and have taken a <a href="pages/operations.php?do=backupDB">backup</a> before.</p>
-       <p class="alert-link">The IFRA xls can be downloaded from its official <a href="https://ifrafragrance.org/safe-use/standards-guidance" target="_blank">web site</a></p>
+    		<div class="row">
+        		<div class="col-lg mx-auto">
+                    <div class="form-group">
+                        <div class="col-sm-10">
+                            <label class="control-label">IFRA xls File</label>
+                            <input type="file" id="ifraXLS" name="ifraXLS"  class="form-control" />
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                      <div class="col-sm-10">
+                          <label class="control-label" for="IFRAver">IFRA amendment</label> <i class="fa-solid fa-circle-info pv_point_gen" rel="tip" data-title="IFRA file format has been slightly changed after amendment 49, to maintain backwards compatibility, we added the option to select which version you importing."></i>
+                          <select id="IFRAver" class="form-control">
+                              <option value="0" disabled>Please select amendment format</option>
+                              <option value="49">Amendment 49 or older format</option>
+                              <option value="51" selected>Amendment 51 format</option>
+                          </select>
+                      </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="col-sm-10">
+                           <input name="overwrite" type="checkbox" id="overwrite"  /> 
+                           <label class="control-label" for="overwrite">Overwite current data</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-10">
+                           <input name="updateCAS" type="checkbox" id="updateCAS" checked="checked" /> 
+                           <label class="control-label" for="updateCAS">Modify original file</label> <i class="fa-solid fa-circle-info pv_point_gen" rel="tip" data-title="This is required if you are importing the original IFRA file."></i>
+                        </div>
+                    </div>
+
+            	</div>
+            </div>
+            
+            <div id="overwrite-msg">
+                <div class="dropdown-divider"></div>
+            	<div class="col-sm col-sm-10 text-xs-center alert alert-warning">
+                	<p class="alert-link"><strong>IMPORTANT:</strong></p>
+                	<p class="alert-link">This operation will wipe out any data already in your IFRA Library, so please make sure the file you uploading is in the right format and have taken a <a href="/pages/operations.php?do=backupDB">backup</a> before.</p>
+                </div>
+           </div>
+           
+       </div>
+       <div class="dropdown-divider"></div>
+       <div class="col-sm col-sm-10 text-xs-center">
+       		<strong>The IFRA xls can be downloaded from its official <a href="https://ifrafragrance.org/safe-use/standards-guidance" target="_blank">web site</a></strong>
        </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btnIFRAC">Cancel</button>
@@ -111,14 +133,11 @@ $defCatClass = $settings['defCatClass'];
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Import images from PubChem</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
       </div>
       <div class="modal-body">
        <div id="pbmportMsg"></div>
        <p class="alert-link"><strong>Confirm import</strong></p>
-       <p class="alert-link"> Are you sure you want to import data from pubChem? This operation will overwrite any existing image data in your IFRA database.</p>
+       <p class="alert-link">Are you sure you want to import data from pubChem? This operation will overwrite any existing image data in your IFRA database.</p>
        <p>By using this service, you agree with <a href="https://pubchemdocs.ncbi.nlm.nih.gov/about" target="_blank">PubChem's</a> terms</p>
        </div>
       <div class="modal-footer">
@@ -143,7 +162,7 @@ $(document).ready(function() {
 	mark: true,
 	language: {
 		loadingRecords: '&nbsp;',
-		processing: '<div class="spinner-grow"></div> Please Wait...',
+		processing: '<div class="spinner-grow mr2"></div>Please Wait...',
 		zeroRecords: 'Nothing found',
 		search: 'Quick Search:',
 		searchPlaceholder: 'Name, CAS, synonyms..',
@@ -257,32 +276,39 @@ $('#csv').on('click',function(){
 });
 
 $('#btnImportIFRA').click(function() {	
-	$("#IFRAImportMsg").html('<div class="alert alert-info"><img src="/img/loading.gif"/>Please wait, file upload in progress....</div>');
+	$("#IFRAImportMsg").html('<div class="alert alert-info"><img src="/img/loading.gif" class="mr2"/>Please wait, file upload in progress....</div>');
 	$("#btnImportIFRA").prop("disabled", true);
-	
+	$("#btnIFRAC").prop("disabled", true);
+
 	
 	var fd = new FormData();
     var files = $('#ifraXLS')[0].files;
-    var modify = $('#updateCAS').val();
+    var modify = $('#updateCAS').prop("checked");
+    var overwrite = $('#overwrite').prop("checked");
+    var IFRAver = $('#IFRAver').val();
 
        if(files.length > 0 ){
         fd.append('ifraXLS',files[0]);
         $.ajax({
-           url: '/pages/upload.php?type=IFRA&updateCAS=' + modify,
-           type: 'post',
+           url: '/pages/upload.php?type=IFRA&updateCAS=' + modify + '&overwrite='+ overwrite + '&IFRAVer=' + IFRAver,
+           type: 'POST',
            data: fd,
            contentType: false,
            processData: false,
 		         cache: false,
+		   dataType: 'json',
            success: function(response){
-             if(response != 0){
-				 $("#IFRAImportMsg").html(response);
-				 $("#btnImportIFRA").hide();
+             if(response.success){
+				 $("#IFRAImportMsg").html('<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+response.success+'</div>');
+				// $("#btnImportIFRA").hide();
 				 $("#btnIFRAC").html('Close');
+				 $("#btnImportIFRA").prop("disabled", false);
+				 $("#btnIFRAC").prop("disabled", false);
 				 reload_ifra_data();
               }else{
-                $("#IFRAImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> File upload failed!</div>');
+                $("#IFRAImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+response.error+'</div>');
 				$("#btnImportIFRA").prop("disabled", false);
+				$("#btnIFRAC").prop("disabled", false);
               }
             },
          });
@@ -293,7 +319,7 @@ $('#btnImportIFRA').click(function() {
 });
 
 $('#Importpb').click(function() {	
-	$("#pbmportMsg").html('<div class="alert alert-info"><img src="/img/loading.gif"/>Please wait, this may take a few minutes, depending your IFRA library size and your internet connection...</div>');
+	$("#pbmportMsg").html('<div class="alert alert-info"><img src="/img/loading.gif" class="mr2"/>Please wait, this may take a few minutes, depending your IFRA library size and your internet connection...</div>');
 	$("#Importpb").prop("disabled", true);
 	$("#ImportpbC").hide();
 
@@ -310,14 +336,28 @@ $('#Importpb').click(function() {
 				$("#Importpb").hide();
 				$("#ImportpbC").show();
 				$('#ImportpbC').html('Close');
+				$("#ImportpC").show();
 				reload_ifra_data();
 			}else{
 				$('#pbmportMsg').html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>');
 				$("#Importpb").show();
+				$("#ImportpbC").show();
 				$("#Importpb").prop("disabled", false);
 				$("#ImportpC").show();
 			}
 		}
 	});
 });
+
+
+$("#overwrite-msg").hide();
+
+$("#overwrite").click(function() {
+    if($(this).is(":checked")) {
+        $("#overwrite-msg").show();
+    } else {
+        $("#overwrite-msg").hide();
+    }
+});
+
 </script>

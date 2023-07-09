@@ -51,7 +51,7 @@ if($ing['physical_state'] == 1){
     <div class="btn-group">
     <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
         <div class="dropdown-menu dropdown-menu-right">
-            <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#addSupplier"><i class="fa-solid fa-plus mr2"></i>Add new</a></li>
+            <li><a class="dropdown-item" href="#" data-toggle="modal" data-backdrop="static" data-target="#addSupplier"><i class="fa-solid fa-plus mr2"></i>Add new</a></li>
         </div>
     </div>                    
   </div>
@@ -493,10 +493,7 @@ function reload_sup_data() {
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="addSupplier">Add supplier for <?php echo $ing['name']; ?></h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <h5 class="modal-title">Add supplier for <?php echo $ing['name']; ?></h5>
       </div>
       <div class="modal-body">
       <div id="supplier_inf"></div>

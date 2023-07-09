@@ -11,11 +11,9 @@ Also - *-cloud images will be dropped as the same image should be used for local
 cloud installations like Openshift/EKS, etc
 --------------------------
 </strong>
-Whats New in v7.4
+Whats New in v7.5
 --------------------------
-- Minor UI improvements in formula making view
-- Functionality to add comments/notes when adding ingredient in formula making view
-- Added a dropdown menu to view original formula from scheduled formulas
-- Added aditional info in the popup message when replacing an ingredient in formula
-- Change formula history order by most recent changes
-- Added advanced formula editor (quantity only)
+- Added support for IFRA 51 amedment
+- Added option to maintain existing IFRA library data prior import
+- Overall IFRA Library improvements
+- Various bug fixes and improvements

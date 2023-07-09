@@ -1,4 +1,29 @@
 # CHANGELOG
+### Version 7.5
+- Making sure dilutant reset to its default if previously used
+- Making scale formula modal static
+- Making perfume type modal static
+- Change description text type to textarea in perfume types
+- Fix a bug making ingredient fail to load when sorting by category
+- Move session validation on its own js
+- Extend session validation if formula making view
+- Typo fix in marketplace author contact form
+- Added changelog link in the about page
+- Sorting by color key removed from ingredients category settings
+- Sorting by color key removed from formula category settings
+- Making ingredient category modal static
+- Making formula category modal static
+- Making ingredients advanced search modal static
+- Making ingredient add supplier modal static
+- Making ingredient add document modal static
+- Making ingredient add synonyms modals static
+- Making ingredient add replacements modals static
+- Moving the majority of js into an external file for full formula view
+- Make sure IFRA database contains data before attempt to import images from pubChem
+- Added option to maintain existing IFRA library data prior import
+- Added support for IFRA 51 amedment
+- pvToken db field removed
+
 ### Version 7.4
 - Formula making view confirmation dialogs are now static
 - Functionality to add comments/notes when adding ingredient in formula making view
