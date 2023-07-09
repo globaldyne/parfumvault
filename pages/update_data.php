@@ -432,6 +432,13 @@ if($_GET['IFRA_PB'] == 'import'){
 	require_once(__ROOT__.'/func/pvFileGet.php');
 	$i = 0;
 	$qCas = mysqli_query($conn,"SELECT cas FROM IFRALibrary");
+
+	if(!mysqli_num_rows($qCas)){
+		$response["error"] = 'IFRA Database is currently empty';
+		echo json_encode($response);
+		return;
+	}
+	
 	$view =  $settings['pubchem_view'];
 	while($cas = mysqli_fetch_array($qCas)){
 		$image = base64_encode(pv_file_get_contents($pubChemApi.'/pug/compound/name/'.$cas['cas'].'/PNG?record_type='.$view.'&image_size=small'));

@@ -199,6 +199,7 @@ $(document).ready(function(){
 		var purity = $(this).val();
 		if(purity == 100){
 			$("#dilutant").prop("disabled", true); 
+			$("#dilutant").val('');
 		}else{
 			$("#dilutant").prop("disabled", false);
 		}

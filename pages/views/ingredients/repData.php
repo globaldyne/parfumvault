@@ -22,7 +22,7 @@ $ingID = mysqli_real_escape_string($conn, $_POST["ingID"]);
   		<div class="btn-group">
    			<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
     		<div class="dropdown-menu dropdown-menu-right">
-        		<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#addReplacement"><i class="fa-solid fa-plus mr2"></i>Add new</a></li>
+        		<li><a class="dropdown-item" href="#" data-toggle="modal" data-backdrop="static" data-target="#addReplacement"><i class="fa-solid fa-plus mr2"></i>Add new</a></li>
     		</div>
   		</div>                    
 	</div>
@@ -47,6 +47,7 @@ $('[data-toggle="tooltip"]').tooltip();
 var tdReplacements = $('#tdReplacements').DataTable( {
 	columnDefs: [
 		{ className: 'text-center', targets: '_all' },
+		{ orderable: false, targets: [3]}
 	],
 	dom: 'lfrtip',
 	processing: true,
@@ -284,9 +285,6 @@ function reload_rep_data() {
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Add replacement</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
       </div>
       <div class="modal-body">
       <div id="infRep"></div>
