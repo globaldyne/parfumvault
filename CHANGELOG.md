@@ -22,6 +22,7 @@
 - Make sure IFRA database contains data before attempt to import images from pubChem
 - Added option to maintain existing IFRA library data prior import
 - Added support for IFRA 51 amedment
+- pvToken db field removed
 
 ### Version 7.4
 - Formula making view confirmation dialogs are now static

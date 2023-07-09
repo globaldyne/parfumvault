@@ -327,7 +327,6 @@ CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `email` varchar(255) COLLATE utf8_general_ci NOT NULL,
   `password` varchar(255) COLLATE utf8_general_ci NOT NULL,
-  `pvToken` VARCHAR(255) COLLATE utf8_general_ci NULL, 
   `fullName` varchar(255) COLLATE utf8_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
