@@ -993,16 +993,21 @@ if($_GET['action'] == 'rename' && $_GET['fid']){
 	$value = mysqli_real_escape_string($conn, $_POST['value']);
 	$fid = mysqli_real_escape_string($conn, $_GET['fid']);
 	$id = $_POST['pk'];
-	
+	if(!$value){
+		$response["error"] = 'Formula name cannot be empty';
+		echo json_encode($response);
+		return;
+	}
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM formulasMetaData WHERE name = '$value'"))){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Name already exists</a>';
+		$response["error"] = 'Name already exists';
 	}else{
 		mysqli_query($conn, "UPDATE formulasMetaData SET name = '$value' WHERE id = '$id'");
 		if(mysqli_query($conn, "UPDATE formulas SET name = '$value' WHERE fid = '$fid'")){
-			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Formula renamed.</a>';
+			$response["success"] = 'Formula renamed.';
 		}
 	
 	}
+	echo json_encode($response);
 	return;	
 }
 

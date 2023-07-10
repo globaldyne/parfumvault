@@ -28,6 +28,9 @@
                   </div>
                 <div class="dropdown-divider"></div>
                 <div class="table-responsive">
+                <div>
+                Toggle column: <a class="toggle-vis pv_point_gen_color" data-column="0">Structure</a> - <a class="toggle-vis pv_point_gen_color" data-column="4">Last publication</a>
+    			</div>
                 <table id="tdDataIFRA" class="stripe row-border order-column" style="width:100%">
                   <thead>
                       <tr>
@@ -245,6 +248,19 @@ $(document).ready(function() {
             $('#'+id+' td:first-child + td').trigger( 'click' );
         } );
     } );
+	
+	document.querySelectorAll('a.toggle-vis').forEach((el) => {
+		el.addEventListener('click', function (e) {
+			e.preventDefault();
+	 
+			let columnIdx = e.target.getAttribute('data-column');
+			let column = tdDataIFRA.column(columnIdx);
+	 
+			// Toggle the visibility
+			column.visible(!column.visible());
+		});
+	});
+	
 });
 
 function format ( d ) {

@@ -13,6 +13,7 @@ cloud installations like Openshift/EKS, etc
 </strong>
 Whats New in v7.6
 --------------------------
+- Rewrite of formula settings page 
 - Added option to delete an IFRA entry
 - IFRA Library extended to display implementation deadlines for new and current creations
 - Export IFRA Libary to a json format

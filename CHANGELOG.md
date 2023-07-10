@@ -4,6 +4,12 @@
 - IFRA Library extended to display implementation deadlines for new and current creations
 - Check if structural image is already in IFRA Library before attempt downloading it
 - Export IFRA Libary to a json format
+- Prevent a formula to be renamed to blank name
+- Toggle minor fields in IFRA Library
+- Rewrite of formula settings page
+- Enabling user password encryption
+- Fix ui miss aligment for edit user details
+- Update reset password script method
 
 ### Version 7.5
 - Making sure dilutant reset to its default if previously used

@@ -66,8 +66,8 @@ $doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM docu
               <i class="toggle-password fa fa-eye"></i>
             </div>
           </div>
-          <div class="row gutters">
-			<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+          <div class="form-group">
+			<div class="col-sm-12">
 				<div class="text-right">
 					<button type="button" id="save-profile" name="save-profile" class="btn btn-primary">Update</button>
 				</div>
@@ -80,6 +80,7 @@ $doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM docu
 <hr>
 <script>
 $(document).ready(function () {
+	$("#password").val('');
     $(".toggle-password").click(function () {
         var passwordInput = $($(this).siblings(".password-input"));
         var icon = $(this);

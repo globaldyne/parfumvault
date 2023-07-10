@@ -29,7 +29,16 @@ while($fTypes_res = mysqli_fetch_array($fTypes_q)){
 <script src="/js/raty/jquery.raty.js"></script>
 <script src="/js/rating.js"></script>
 <link href="/js/raty/jquery.raty.css" rel="stylesheet">
-  
+
+<style>
+.mfp-iframe-holder .mfp-content {
+    line-height: 0;
+    width: 50%;
+    max-width: 100%; 
+	height: 600px;
+}
+</style>
+
 <div class="card-header py-3">
   <h2 class="m-0 font-weight-bold text-primary"><a href="javascript:list_formulas()">Formulas</a></h2>
   <div id="inMsg"></div>
@@ -250,12 +259,16 @@ function fActions(data, type, row, meta){
 		data = '<div class="dropdown">' +
         '<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
             '<ul class="dropdown-menu dropdown-menu-right">';
-		data += '<li><a class="dropdown-item" href="/pages/operations.php?action=exportFormulas&fid=' + row.fid + '" rel="tip" title="Export '+ row.name +' as JSON" ><i class="fas fa-download mr2"></i>Export as JSON</a></li>'+
-		'<li><a class="dropdown-item popup-link" href="/pages/getFormMeta.php?id=' + row.id + '" rel="tip" title="Show settings of '+ row.name +'"><i class="fas fa-cogs mr2"></i>Settings</a></li>'+
-		'<li><a class="dropdown-item" href="#" id="addTODO" rel="tip" title="Schedule '+ row.name +' to make" data-id='+ row.fid +' data-name="'+ row.name +'"><i class="fas fa-tasks mr2"></i>Schedule to make</a></li>'+
-		'<li><a class="dropdown-item" href="#" id="cloneMe" rel="tip" title="Clone '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"><i class="fas fa-copy mr2"></i>Clone formula</a></li>'+
-		'<div class="dropdown-divider"></div>'+
-		'<li><a class="dropdown-item" href="#" id="deleteMe" style="color: #c9302c;" rel="tip" title="Delete '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"><i class="fas fa-trash mr2"></i>Permanently delete formula</a></li>';
+		data += '<li><a class="dropdown-item popup-link" href="/pages/getFormMeta.php?id=' + row.id + '" rel="tip" title="Show settings of '+ row.name +'"><i class="fas fa-cogs mr2"></i>Settings</a></li>';
+
+		data += '<li><a class="dropdown-item" href="/pages/operations.php?action=exportFormulas&fid=' + row.fid + '" rel="tip" title="Export '+ row.name +' as JSON" ><i class="fas fa-download mr2"></i>Export as JSON</a></li>';
+		
+		data += '<li><a class="dropdown-item" href="#" id="addTODO" rel="tip" title="Schedule '+ row.name +' to make" data-id='+ row.fid +' data-name="'+ row.name +'"><i class="fas fa-tasks mr2"></i>Schedule to make</a></li>';
+		
+		data += '<li><a class="dropdown-item" href="#" id="cloneMe" rel="tip" title="Clone '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"><i class="fas fa-copy mr2"></i>Clone formula</a></li>';
+		
+		data += '<div class="dropdown-divider"></div>';
+		data += '<li><a class="dropdown-item" href="#" id="deleteMe" style="color: #c9302c;" rel="tip" title="Delete '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"><i class="fas fa-trash mr2"></i>Permanently delete formula</a></li>';
 		data += '</ul></div>';
 	
     return data;
