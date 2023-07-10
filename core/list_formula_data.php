@@ -41,19 +41,19 @@ while ($allFormulas = mysqli_fetch_array($formulas)){
 foreach ($formula as $formula) {
 	$r['id'] = (int)$formula['id'];
 	$r['fid'] = (string)$formula['fid'];
-	$r['product_name'] = (string)$formula['product_name']?:'N/A';
-	$r['name'] = (string)$formula['name'];
-	$r['isProtected'] = (int)$formula['isProtected'];
-	$r['profile'] = (string)$formula['profile']?:'N/A';
+	$r['product_name'] = (string)$formula['product_name'] ?: 'N/A';
+	$r['name'] = (string)$formula['name']?:'Unnamed';
+	$r['isProtected'] = (int)$formula['isProtected']?:0;
+	$r['profile'] = (string)$formula['profile']?: 'N/A';
 	$r['sex'] = (string)$formula['sex']?:'N/A';
 	$r['created'] = (string)$formula['created'];
-	$r['catClass'] = (string)$formula['catClass']?:'N/A';
+	$r['catClass'] = (string)$formula['catClass']?: 'N/A';
 	$r['ingredients'] = (int)countElement("formulas WHERE fid = '".$formula['fid']."'",$conn)?:'0';
-	$r['isMade'] = (int)$formula['isMade']?:0;
+	$r['isMade'] = (int)$formula['isMade']?: 0;
 	$r['madeOn'] = (string)$formula['madeOn']?:'N/A';
-	$r['status'] = (int)$formula['status']?:'0';
-	$r['rating'] = (int)$formula['rating']?:'0';
-	$r['revision'] = (int)$formula['revision']?:'0';
+	$r['status'] = (int)$formula['status']?: 0;
+	$r['rating'] = (int)$formula['rating']?: 0;
+	$r['revision'] = (int)$formula['revision']?: 0;
 
 	$rx[]=$r;
 	

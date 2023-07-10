@@ -298,7 +298,7 @@ $('#isMade').click(function() {
 function update_bar(){
      $.getJSON("/core/full_formula_data.php?id="+myID+"&stats_only=1", function (json) {
 		
-		$('#formula_name').html(json.stats.formula_name);
+		$('#formula_name').html(json.stats.formula_name || "Unnamed");
 		$('#formula_desc').html(json.stats.formula_description);
 
 		if(json.stats.top || json.stats.heart || json.stats.base){

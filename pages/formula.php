@@ -55,7 +55,7 @@ if($form[0]['ingredient']){
             
 			  <table width="100%" border="0">
 			    <tr>
-			      <th width="75%" class="left" scope="col"><h2 class="m-0 font-weight-bold text-primary"><a href="javascript:reload_formula_data()"><div id="formula_name"><?=$f_name?></div></a><span class="m-1"><div id="lock_status"><?php if($meta['isProtected']){?><a class="fas fa-lock" href="javascript:setProtected('false')"><?php }else{ ?><a class="fas fa-unlock" href="javascript:setProtected('true')"> <?php } ?></a></div></span></h2>
+			      <th width="75%" class="left" scope="col"><h2 class="m-0 font-weight-bold text-primary"><a href="javascript:reload_formula_data()"><div id="formula_name"><?=$f_name?:'Unnamed'?></div></a><span class="m-1"><div id="lock_status"><?php if($meta['isProtected']){?><a class="fas fa-lock" href="javascript:setProtected('false')"><?php }else{ ?><a class="fas fa-unlock" href="javascript:setProtected('true')"> <?php } ?></a></div></span></h2>
               <h5 class="m-1 text-primary"><span><a href="#" rel="tip" data-placement="right" title="<?=$cat_details['description']?>"><?=ucfirst($meta['catClass'])?></a></span></h5>&nbsp;</th>
 			      <th width="21%" scope="col"><div id="formula_desc"><img src="/img/loading.gif"/></div></th>
 			      <th width="4%" scope="col"><div class="img-formula"><img class="img-perfume" src="<?=$img['docData']?:'/img/ICO_TR.png';?>"/></div></th>

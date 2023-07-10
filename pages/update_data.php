@@ -454,7 +454,7 @@ if($_GET['IFRA_PB'] == 'import'){
 	
 	$view =  $settings['pubchem_view'];
 	while($cas = mysqli_fetch_array($qCas)){
-		$image = base64_encode(pv_file_get_contents($pubChemApi.'/pug/compound/name/'.$cas['cas'].'/PNG?record_type='.$view.'&image_size=small'));
+		$image = base64_encode(pv_file_get_contents($pubChemApi.'/pug/compound/name/'.trim($cas['cas']).'/PNG?record_type='.$view.'&image_size=small'));
 		
 		$imp = mysqli_query($conn,"UPDATE IFRALibrary SET image = '$image' WHERE cas = '".$cas['cas']."'");
 		$i++;

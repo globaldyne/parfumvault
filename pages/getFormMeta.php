@@ -16,7 +16,7 @@ if(!$_GET['id']){
 $id = mysqli_real_escape_string($conn, $_GET['id']);
 $info = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE id = '$id'"));
 
-if(empty($info['name'])){
+if(empty($info['id'])){
 	echo 'Formula not found';
 	return;
 }
@@ -94,7 +94,7 @@ if(empty($_GET['embed'])){
 </style>
 
 <div class="ml2">
-	<h1 class="mgmIngHeader mgmIngHeader-with-separator"><?=$info['name']?></h1><span class="mgmIngHeaderCAS"><?=$info['product_name']?></span>
+	<h1 class="mgmIngHeader mgmIngHeader-with-separator"><?=$info['name']?:'Unnamed'?></h1><span class="mgmIngHeaderCAS"><?=$info['product_name']?></span>
 </div>
 <div class="dropdown-divider"></div>
 <?php } ?>
@@ -107,7 +107,7 @@ if(empty($_GET['embed'])){
  <div class="form-group">
     <label class="control-label col-sm-3" for="formula_name">Formula Name:</label>
     <div class="col-sm-3">
-      <a href="#" data-name="name" class="name" id="formula_name" data-pk="<?php echo $info['id'];?>"><?php echo $info['name'];?></a>
+      <a href="#" data-name="name" class="name" id="formula_name" data-pk="<?php echo $info['id'];?>"><?php echo $info['name']?:'Unnamed';?></a>
     </div>
   </div>
 

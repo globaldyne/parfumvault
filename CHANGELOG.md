@@ -10,6 +10,9 @@
 - Enabling user password encryption
 - Fix ui miss aligment for edit user details
 - Update reset password script method
+- Set defaults for IFRA Library JSON export
+- Set defaults for formula meta data
+- Handle possible spaces in cas numbers when fetching data from pubchem
 
 ### Version 7.5
 - Making sure dilutant reset to its default if previously used
