@@ -14,8 +14,9 @@ cloud installations like Openshift/EKS, etc
 Whats New in v7.6
 --------------------------
 - Rewrite of formula settings page 
-- Added option to delete an IFRA entry
+- Added option to delete in IFRA entry
+- Added option to edit CAS entries in IFRA entry
 - IFRA Library extended to display implementation deadlines for new and current creations
-- Export IFRA Libary to a json format
+- Import/Export IFRA Libary from/to a json format
 - Various bug fixes and improvements
 - For full details please refer to the CHANGELOG

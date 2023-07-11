@@ -694,7 +694,7 @@ formula td, table.table th {
 .pv_point_gen {
 	cursor: pointer;
 	color: currentColor;
-	font-style: normal;
+	font-style: normal !important;
 }
 
 .pv_bar_top_notes {

@@ -12,6 +12,19 @@ require_once(__ROOT__.'/func/priceScrape.php');
 require_once(__ROOT__.'/func/create_thumb.php');
 require_once(__ROOT__.'/func/pvFileGet.php');
 
+//UPDATE CAS IFRA ENTRY
+if($_GET['IFRA'] == 'edit' && $_POST['value'] && $_GET['type'] == 'CAS'){
+	
+	if(mysqli_query($conn, "UPDATE IFRALibrary SET cas = '".$_POST['value']."' WHERE id = '".$_POST['pk']."'")){
+		$response["success"] = 'IFRA entry updated';
+	}else{
+		$response["error"] = 'Something went wrong '.mysqli_error($conn);
+	}
+	
+	echo json_encode($response);
+	return;	
+}
+
 //DELETE IFRA ENTRY
 if($_POST['IFRA'] == 'delete' && $_POST['ID'] && $_POST['type'] == 'IFRA'){
 	
@@ -444,7 +457,7 @@ if($_POST['action'] == 'delete' && $_POST['lidId'] && $_POST['type'] == 'lid'){
 if($_GET['IFRA_PB'] == 'import'){
 	require_once(__ROOT__.'/func/pvFileGet.php');
 	$i = 0;
-	$qCas = mysqli_query($conn,"SELECT cas FROM IFRALibrary WHERE image IS NULL OR image = ''");
+	$qCas = mysqli_query($conn,"SELECT cas FROM IFRALibrary WHERE image IS NULL OR image = '' OR image = '-'");
 
 	if(!mysqli_num_rows($qCas)){
 		$response["error"] = 'IFRA Database is currently empty';
@@ -1004,6 +1017,7 @@ if($_GET['action'] == 'rename' && $_GET['fid']){
 		mysqli_query($conn, "UPDATE formulasMetaData SET name = '$value' WHERE id = '$id'");
 		if(mysqli_query($conn, "UPDATE formulas SET name = '$value' WHERE fid = '$fid'")){
 			$response["success"] = 'Formula renamed.';
+			$response["msg"] = $value;
 		}
 	
 	}

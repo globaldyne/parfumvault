@@ -47,88 +47,45 @@ while($qTags = mysqli_fetch_array($tagsQ)){
 	array_push($tagsData, $tags); 
 }
 
-if(empty($_GET['embed'])){
 ?>
-<!DOCTYPE html>
-<html lang="en">
+<style>
 
-<head>
-
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-
-  <meta name="description" content="<?php echo $product.' - '.$ver;?>">
-  <title><?php echo $info['name'];?></title>
-  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
-  <link href="/css/sb-admin-2.css" rel="stylesheet">
-  <link href="/css/bootstrap-select.min.css" rel="stylesheet">
-  <link href="/css/bootstrap-editable.css" rel="stylesheet">
-  <link href="/css/vault.css" rel="stylesheet">
-  <script src="/js/jquery/jquery.min.js"></script>
-  <script src="/js/jquery-ui.js"></script>
-      
-  <link href="/css/bootstrap.min.css" rel="stylesheet">
-  <link href="/css/fontawesome-free/css/all.min.css" rel="stylesheet">
-
-  <script src="/js/bootstrap.min.js"></script>
-  <script src="/js/bootstrap-editable.js"></script>  
-  <script src="/js/bootstrap-select.js"></script>
-  
-</head>
-
-<style type="text/css">
-.bootstrap-tagsinput .tag {
-  margin-right: 2px;
-  color: white !important;
-  background-color: #0d6efd;
-  padding: 0.2rem;
+.editableform .form-control {
+  width: 500px !important;
 }
-
-.form-inline .form-control {
-    display: inline-block;
-    width: 500px;
-    vertical-align: middle;
-}
-
 </style>
-
-<div class="ml2">
-	<h1 class="mgmIngHeader mgmIngHeader-with-separator"><?=$info['name']?:'Unnamed'?></h1><span class="mgmIngHeaderCAS"><?=$info['product_name']?></span>
-</div>
-<div class="dropdown-divider"></div>
-<?php } ?>
 
 <script src="/js/bootstrap-tagsinput.js"></script> 
 <link href="/css/bootstrap-tagsinput.css" rel="stylesheet" />
+<div id="msg_settungs_info"><div class="alert alert-info">Some of the changes require the page to be reloaded to appear properly. Please remember to refresh your browser if your changes not automatically appear.</div>
 
-<div class="form-horizontal card" id="formula_metadata">
- <div id="set_msg"></div>
+<div class="form-horizontal col-m card pt-3 pl-5 pr-5" id="formula_metadata">
+ <div id="set_msg" class="col-sm"></div>
  <div class="form-group">
-    <label class="control-label col-sm-3" for="formula_name">Formula Name:</label>
-    <div class="col-sm-3">
+    <label class="control-label col-auto" for="formula_name">Formula Name:</label>
+    <div class="col-auto">
       <a href="#" data-name="name" class="name" id="formula_name" data-pk="<?php echo $info['id'];?>"><?php echo $info['name']?:'Unnamed';?></a>
     </div>
   </div>
 
  <div class="form-group">
-    <label class="control-label col-sm-3" for="product_name">Product Name:</label>
-    <div class="col-sm-3">
+    <label class="control-label col-auto" for="product_name">Product Name:</label>
+    <div class="col-auto">
      	<a href="#" data-name="product_name" class="product_name" id="product_name" data-pk="<?php echo $info['id'];?>"><?php echo $info['product_name'] ?: $info['name'];?></a>
     </div>
   </div>
 
  <div class="form-group">
-    <label class="control-label col-sm-3" for="isProtected">Protected:</label>
-    <div class="col-sm-3">
+    <label class="control-label col-auto" for="isProtected">Protected:</label>
+    <div class="col-auto">
      	<input name="isProtected" type="checkbox" id="isProtected" value="1" <?php if($info['isProtected'] == '1'){; ?> checked="checked"  <?php } ?>/>
         <i class="fa-solid fa-circle-info" rel="tip" title="When enabled, formula is protected against deletion. By enabling this, a formula revision will be automatically created."></i>
     </div>
   </div>
   
    <div class="form-group">
-    <label class="control-label col-sm-3" for="customer">Customer:</label>
-    <div class="col-sm-3">
+    <label class="control-label col-auto" for="customer">Customer:</label>
+    <div class="col-auto">
      	<select name="customer" id="customer" class="form-control ellipsis">
       <option value="0">Internal use</option>
       <?php foreach ($customer as $c) {?>
@@ -139,8 +96,8 @@ if(empty($_GET['embed'])){
   </div>
   
  <div class="form-group">
-    <label class="control-label col-sm-3" for="defView">Default view:</label>
-    <div class="col-sm-3">
+    <label class="control-label col-auto" for="defView">Default view:</label>
+    <div class="col-auto">
      	<select name="defView" id="defView" class="form-control">
 			  <option value="1" <?php if($info['defView']=="1") echo 'selected="selected"'; ?> >Ingredient Properties</option>
 			  <option value="2" <?php if($info['defView']=="2") echo 'selected="selected"'; ?> >Ingredient Notes</option>
@@ -149,22 +106,22 @@ if(empty($_GET['embed'])){
  </div>  
   
  <div class="form-group">
-    <label class="control-label col-sm-3" for="profile">Profile:</label>
-    <div class="col-sm-3">
+    <label class="control-label col-auto" for="profile">Profile:</label>
+    <div class="col-auto">
 		<a href="#" id="profile" data-type="select" data-pk="<?php echo $info['id'];?>" data-title="Select profile"></a>
     </div>
  </div>  
   
  <div class="form-group">
-    <label class="control-label col-sm-3" for="tagsinput">Tags:</label>
-    <div class="col-sm-3">
+    <label class="control-label col-auto" for="tagsinput">Tags:</label>
+    <div class="col-auto">
 		<input type="text" class="form-control col-xs-3 control-label" id="tagsinput" data-role="tagsinput" />
     </div>
  </div>
 
  <div class="form-group">
-    <label class="control-label col-sm-3" for="catClass">Purpose:</label>
-    <div class="col-sm-3">
+    <label class="control-label col-auto" for="catClass">Purpose:</label>
+    <div class="col-auto">
 		<select name="catClass" id="catClass" class="form-control ellipsis">
             <option></option>
             <?php foreach ($cats as $IFRACategories) {?>
@@ -175,8 +132,8 @@ if(empty($_GET['embed'])){
  </div>
   
  <div class="form-group">
-    <label class="control-label col-sm-3" for="finalType">Final type:</label>
-    <div class="col-sm-3">
+    <label class="control-label col-auto" for="finalType">Final type:</label>
+    <div class="col-auto">
 		<select name="finalType" id="finalType" class="form-control ellipsis">  
             <option value="100">Concentrated (100%)</option>
 	 		<?php foreach ($fTypes as $fType) {?>
@@ -187,8 +144,8 @@ if(empty($_GET['embed'])){
  </div>
 
  <div class="form-group">
-    <label class="control-label col-sm-3" for="finalType">Status:</label>
-    <div class="col-sm-3">
+    <label class="control-label col-auto" for="finalType">Status:</label>
+    <div class="col-auto">
         <select name="status" id="status" class="form-control ellipsis">  
             <option value="0" <?php if($info['status'] == "0"){ echo 'selected';}?>>Scheduled</option>
             <option value="1" <?php if($info['status'] == "1"){ echo 'selected';}?>>Under Developent</option>
@@ -201,23 +158,24 @@ if(empty($_GET['embed'])){
  </div>
 
  <div class="form-group">
-    <label class="control-label col-sm-3" for="sex">Gender:</label>
-    <div class="col-sm-3">
-		<a href="#" id="sex" data-type="select" data-pk="<?php echo $info['id'];?>" data-title="Select gender"></a>
+    <label class="control-label col-auto" for="gender">Gender:</label>
+    <div class="col-auto">
+		<a href="#" id="gender" data-type="select" data-pk="<?php echo $info['id'];?>" data-title="Select gender"></a>
     </div>
  </div>
  
  <div class="form-group">
-    <label class="control-label col-sm-3" for="doc_file">Picture:</label>
-    <div class="col-sm-3">
+    <label class="control-label col-auto" for="doc_file">Picture:</label>
+    <div class="col-auto">
 		<input type="file" name="doc_file" id="doc_file" />
       	<input type="submit" name="button" class="btn btn-primary" id="pic_upload" value="Upload">
     </div>
+    <div id="upload_resp"></div>
  </div>
  
  <div class="form-group">
-    <label class="control-label col-sm-3" for="notes">Notes:</label>
-    <div class="col-sm-3">
+    <label class="control-label col-auto" for="notes">Notes:</label>
+    <div class="col-auto">
 		<a href="#" data-name="notes" class="notes" data-type="textarea" id="notes" data-pk="<?php echo $info['id'];?>"><?php echo $info['notes']?: 'None';?></a>
     </div>
  </div>
@@ -229,7 +187,7 @@ if(empty($_GET['embed'])){
 <script type="text/javascript" language="javascript" >
 $(document).ready(function(){
 
-$('[rel=tip]').tooltip({placement: 'auto'});
+$('[rel=tip]').tooltip({placement: 'right'});
 
 
 $('#formula_metadata').editable({
@@ -249,6 +207,7 @@ $('#formula_metadata').editable({
   success: function(response) {	
   	if(response.success){
 		msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.success + '</strong></div>';
+		$("#getFormMetaLabel").html(response.msg);
 	}else{
 		msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
 	}
@@ -285,6 +244,7 @@ $('#formula_metadata').editable({
 $('#profile').editable({
 	value: "<?php echo $info['profile'];?>",
 	title: 'Profile',
+	mode: 'inline',
 	url: "/pages/update_data.php?formulaMeta=<?=$info['fid']?>",
 	source: [
 		<?php foreach ($fcat as $cat) { if($cat['type'] == 'profile'){?>		
@@ -293,9 +253,10 @@ $('#profile').editable({
 		]
 });
 
-$('#sex').editable({
+$('#gender').editable({
 	value: "<?php echo $info['sex'];?>",
 	emptytext: 'Please select',
+	mode: 'inline',
 	url: "/pages/update_data.php?formulaMeta=<?=$info['fid']?>",
 	source: [
 		 <?php foreach ($fcat as $cat) { if($cat['type'] == 'sex'){?>		
@@ -406,7 +367,7 @@ $("#customer").change(function() {
 });
 
 $("#pic_upload").click(function(){
-	$("#set_msg").html('<div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
+	$("#upload_resp").html('<div class="dropdown-divider"><div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
 	$("#pic_upload").prop("disabled", true);
     $("#pic_upload").prop('value', 'Please wait...');
 		
@@ -426,18 +387,18 @@ $("#pic_upload").click(function(){
 			  		cache: false,
               success: function(response){
                  if(response != 0){
-                    $("#set_msg").html(response);
+                    $("#upload_resp").html(response);
 					$("#pic_upload").prop("disabled", false);
         			$("#pic_upload").prop('value', 'Upload');
                  }else{
-                    $("#set_msg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> File upload failed!</div>');
+                    $("#upload_resp").html('<div class="dropdown-divider"></div><div class="alert alert-danger"><strong>Error:</strong> File upload failed!</div>');
 					$("#pic_upload").prop("disabled", false);
         			$("#pic_upload").prop('value', 'Upload');
                  }
               },
            });
         }else{
-			$("#set_msg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a file to upload!</div>');
+			$("#upload_resp").html('<div class="dropdown-divider"></div><div class="alert alert-danger"><strong>Error:</strong> Please select a file to upload!</div>');
 			$("#pic_upload").prop("disabled", false);
    			$("#pic_upload").prop('value', 'Upload');
         }
@@ -490,4 +451,4 @@ $('#tagsinput').on('beforeItemRemove', function(event) {
 });
 
 </script>
-</html>
+

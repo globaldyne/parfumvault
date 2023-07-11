@@ -1,6 +1,6 @@
-<script src="/js/mark/jquery.mark.min.js"></script>
-<script src="/js/mark/datatables.mark.js"></script>
-
+<?php
+require_once(__ROOT__.'/func/php-settings.php');
+?>
 <div id="content-wrapper" class="d-flex flex-column">
 <?php require_once(__ROOT__.'/pages/top.php'); ?>
         <div class="container-fluid">
@@ -17,6 +17,9 @@
                       <div class="dropdown-menu dropdown-menu-right">
                         <li class="dropdown-header">Import</li> 
                         <li><a class="dropdown-item" href="#" data-backdrop="static" data-toggle="modal" data-target="#ifra_import"><i class="fa-solid fa-file-excel mr2"></i>Import IFRA xls</a>
+                                	  
+                         <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#import_ifra_json" data-backdrop="static"><i class="fa-solid fa-file-import mr2"></i>Import from JSON</a></li>
+
                         <?php if($settings['pubChem'] == '1'){?>
                         <li><a class="dropdown-item" href="#" data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#pubChem_import"><i class="fa-solid fa-file-import mr2"></i>Import images</a></li>
                         <?php } ?>
@@ -156,6 +159,52 @@
   </div>
 </div>
 
+<!--IMPORT JSON MODAL-->
+<div class="modal fade" id="import_ifra_json" tabindex="-1" role="dialog" aria-labelledby="import_ifra_json" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Import IFRA from a JSON file</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <div id="JSRestMsg"></div>
+      <div class="progress">  
+         <div id="uploadProgressBar" class="progress-bar" role="progressbar" aria-valuemin="0"></div>
+      </div>
+      <div id="backupArea">
+      
+          <div class="form-group">
+              <label class="col-md-3 control-label">JSON file:</label>
+              <div class="col-md-8">
+                 <input type="file" name="backupFile" id="backupFile" class="form-control" />
+              </div>
+          </div>
+          
+          <div class="col-sm dropdown-divider"></div>
+          <div class="col-md-12 alert alert-warning">
+             <p><strong>IMPORTANT:</strong></p>
+              <ul>
+                <li><div id="raw" data-size="<?=getMaximumFileUploadSizeRaw()?>">Maximum file size: <strong><?=getMaximumFileUploadSize()?></strong></div></li>
+                <li>Your current IFRA Library will be <strong>removed</strong> during the import. Please make sure you have taken a backup before imporing a JSON file.</li>
+              </ul>
+    			<p>&nbsp;</p>
+            </div>
+          </div>
+      
+      </div>
+	  <div class="modal-footer">
+        <input type="button" class="btn btn-secondary" data-dismiss="modal" id="btnCloseBK" value="Cancel">
+        <input type="submit" name="btnRestore" class="btn btn-primary" id="btnRestoreIFRA" value="Import">
+      </div>
+   
+  </div>
+  
+</div>
+</div>
+
 <script type="text/javascript">
 $(document).ready(function() {
 	
@@ -191,7 +240,7 @@ $(document).ready(function() {
 	   columns: [
 			{ data : 'image', title: 'Structure', render: image },
             { data : 'name', title: 'Name', render: name },
-			{ data : 'cas', title: 'CAS' },
+			{ data : 'cas', title: 'CAS', render: CAS },
 			{ data : 'amendment', title: 'Amendment' },
 			{ data : 'last_pub', title: 'Last publication' },
 			{ data : 'type', title: 'IFRA Type' },
@@ -275,6 +324,11 @@ function format ( d ) {
 
 function name(data, type, row){
 	return '<i class="pv_point_gen pv_gen_li">'+row.name+'</i>';
+}
+
+function CAS(data, type, row){
+	data = '<a href="#" data-name="cas" class="cas" data-type="text" data-pk="' + row.id + '">' + data + '</a>';
+	return data;
 }
 
 function image(data, type, row){
@@ -440,4 +494,29 @@ $('#tdDataIFRA').on('click', '[id*=dDel]', function () {
        },onEscape: function () {return true;}
    });
 });
+
+$('#tdDataIFRA').editable({
+  container: 'body',
+  selector: 'a.cas',
+  url: "/pages/update_data.php?IFRA=edit&type=CAS",
+  title: 'CAS#',
+  ajaxOptions: { 
+  	dataType: 'json'
+  },
+  success: function(response, newValue) {
+	if(response.error){
+		return response.error; 
+	}else{ 
+		reload_ifra_data();
+	}
+  },
+  validate: function(value){
+   if($.trim(value) == ''){
+	return 'This field is required';
+   }
+  }
+});
 </script>
+<script src="/js/mark/jquery.mark.min.js"></script>
+<script src="/js/mark/datatables.mark.js"></script>
+<script src="/js/import.IFRA.js"></script>

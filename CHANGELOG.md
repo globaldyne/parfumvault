@@ -13,6 +13,11 @@
 - Set defaults for IFRA Library JSON export
 - Set defaults for formula meta data
 - Handle possible spaces in cas numbers when fetching data from pubchem
+- Moving formula settings page to a bootstrap modal
+- Import IFRA library from a json
+- Validate IFRA/Formulas/Ingredients json file before import
+- Added option to edit CAS entries in IFRA entry
+
 
 ### Version 7.5
 - Making sure dilutant reset to its default if previously used

@@ -1,5 +1,5 @@
 /*
-IMPORT FORMULAS JSON
+IMPORT IFRA JSON
 */
 
 function uploadProgressHandler(event) {
@@ -13,7 +13,7 @@ function uploadProgressHandler(event) {
 function loadHandler(event) {
 	$("#status").html(event.target.responseText);
 	$(".progress").hide();
-	//$("#btnRestoreFormulas").hide();
+	//$("#btnRestoreIFRA").hide();
 	$("#backupFile").val('');
 	$('#btnCloseBK').prop('value', 'Close');
 	$("#uploadProgressBar").css("width", "0%");
@@ -28,7 +28,7 @@ function abortHandler(event) {
 }
 	
 $(".progress").hide();
-$("#btnRestoreFormulas").prop("disabled", true);
+$("#btnRestoreIFRA").prop("disabled", true);
 $("#backupFile").change(function(){
 	var allowedTypes = ['application/json'];
 	var file = this.files[0];
@@ -39,23 +39,23 @@ $("#backupFile").change(function(){
 	if(!allowedTypes.includes(fileType)){
 		$("#JSRestMsg").html('<div class="alert alert-info">Invalid file selected. Please select a JSON file exported from PV.</div>');
 		$("#backupFile").val('');
-		$("#btnRestoreFormulas").prop("disabled", true);
+		$("#btnRestoreIFRA").prop("disabled", true);
 		return false;
 	}
 	
 	if (fileSize > fileSizePHP){
 		$("#JSRestMsg").html('<div class="alert alert-info">File size <strong>('+formatBytes(fileSize)+')</strong> is exceeding your server file upload limit '+ formatBytes(fileSizePHP)+'</div>');
 		$("#backupFile").val('');
-		$("#btnRestoreFormulas").prop("disabled", true);
+		$("#btnRestoreIFRA").prop("disabled", true);
 		return false;
 	}
 	
-	$("#btnRestoreFormulas").prop("disabled", false);
-	$('#btnRestoreFormulas').prop('value', 'Import');
+	$("#btnRestoreIFRA").prop("disabled", false);
+	$('#btnRestoreIFRA').prop('value', 'Import');
 });
 
 //RESTORE
-$('#btnRestoreFormulas').click(function() {
+$('#btnRestoreIFRA').click(function() {
 	
 	event.preventDefault();
 	var fd = new FormData();
@@ -66,7 +66,7 @@ $('#btnRestoreFormulas').click(function() {
 	}
 	
 	$.ajax({ 
-		url: '/pages/operations.php?action=restoreFormulas', 
+		url: '/pages/operations.php?action=restoreIFRA', 
 		type: 'POST',
 		data: fd,
 		contentType: false,
@@ -83,25 +83,25 @@ $('#btnRestoreFormulas').click(function() {
                 xhr.addEventListener("error", errorHandler, false);
                 xhr.addEventListener("abort", abortHandler, false);
 				$(".progress").show();
-				$("#btnRestoreFormulas").prop("disabled", true);
-				$('#btnRestoreFormulas').prop('value', 'Please wait...');
+				$("#btnRestoreIFRA").prop("disabled", true);
+				$('#btnRestoreIFRA').prop('value', 'Please wait...');
                 return xhr;
             },
 			
 		success: function (data) {
 			if(data.success){
 				var msg = '<div class="alert alert-success">'+data.success+'</div>';
-				$("#btnRestoreFormulas").hide();
+				$("#btnRestoreIFRA").hide();
 				$("#backupArea").css('display', 'none');
 
 			}else if(data.error){
 				var msg = '<div class="alert alert-danger">'+data.error+'</div>';
-				$("#btnRestoreFormulas").show();
-				$("#btnRestoreFormulas").prop("disabled", false);
-				$('#btnRestoreFormulas').prop('value', 'Import');
+				$("#btnRestoreIFRA").show();
+				$("#btnRestoreIFRA").prop("disabled", false);
+				$('#btnRestoreIFRA').prop('value', 'Import');
 			}
-			$('#btnRestoreFormulas').prop('value', 'Import');
-			$("#btnRestoreFormulas").prop("disabled", false);
+			$('#btnRestoreIFRA').prop('value', 'Import');
+			$("#btnRestoreIFRA").prop("disabled", false);
 			$('#JSRestMsg').html(msg);
 		}
 		

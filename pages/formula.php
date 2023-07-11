@@ -380,7 +380,7 @@ function fetch_formula_settings(){
 		type: 'GET',
 		data: {
 			id: "<?=$meta['id']?>",
-			embed: true
+			//embed: true
 			},
 		dataType: 'html',
 		success: function (data) {

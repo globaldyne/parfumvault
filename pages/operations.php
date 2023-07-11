@@ -297,6 +297,12 @@ if($_GET['action'] == 'restoreFormulas'){
 	if(move_uploaded_file($_FILES['backupFile']['tmp_name'], $target_path)) {
     	$data = json_decode(file_get_contents($target_path), true);
 		
+		if(!$data['formulasMetaData']){
+			$result['error'] = "JSON File seems invalid. Please make sure you importing the right file";
+			echo json_encode($result);
+			return;
+		}
+		
 		foreach ($data['formulasMetaData'] as $meta ){				
 			$name = mysqli_real_escape_string($conn, $meta['name']);
 			$product_name = mysqli_real_escape_string($conn, $meta['product_name']);
@@ -356,6 +362,11 @@ if($_GET['action'] == 'restoreIngredients'){
 	if(move_uploaded_file($_FILES['backupFile']['tmp_name'], $target_path)) {
     	$data = json_decode(file_get_contents($target_path), true);
 		
+		if(!$data['ingredients']){
+			$result['error'] = "JSON File seems invalid. Please make sure you importing the right file";
+			echo json_encode($result);
+			return;
+		}
 		foreach ($data['compositions'] as $cmp ){				
 			
 		 mysqli_query($conn, "INSERT IGNORE INTO `allergens` (`ing`,`name`,`cas`,`ec`,`percentage`,`toDeclare`,`created`) VALUES ('".$cmp['ing']."','".$cmp['name']."','".$cmp['cas']."','".$cmp['ec']."','".$cmp['percentage']."','".$cmp['toDeclare']."', current_timestamp())");
@@ -390,4 +401,54 @@ if($_GET['action'] == 'restoreIngredients'){
 	return;
 
 }
+
+
+if($_GET['action'] == 'restoreIFRA'){
+	if (!file_exists(__ROOT__."/$tmp_path")) {
+		mkdir(__ROOT__."/$tmp_path", 0777, true);
+	}
+	
+	if (!is_writable(__ROOT__."/$tmp_path")) {
+		$result['error'] = "Upload directory not writable. Make sure you have write permissions.";
+		echo json_encode($result);
+		return;
+	}
+	
+	$target_path = __ROOT__.'/'.$tmp_path.basename($_FILES['backupFile']['name']); 
+
+	if(move_uploaded_file($_FILES['backupFile']['tmp_name'], $target_path)) {
+    	$data = json_decode(file_get_contents($target_path), true);
+		if(!$data['IFRALibrary']){
+			$result['error'] = "JSON File seems invalid. Please make sure you importing the right file";
+			echo json_encode($result);
+			return;
+		}
+		mysqli_query($conn, "TRUNCATE IFRALibrary");
+		
+		foreach ($data['IFRALibrary'] as $d ){				
+			
+			$s = mysqli_query($conn, "INSERT INTO `IFRALibrary` (`ifra_key`,`image`,`amendment`,`prev_pub`,`last_pub`,`deadline_existing`,`deadline_new`,`name`,`cas`,`cas_comment`,`synonyms`,`formula`,`flavor_use`,`prohibited_notes`,`restricted_photo_notes`,`restricted_notes`,`specified_notes`,`type`,`risk`,`contrib_others`,`contrib_others_notes`,`cat1`,`cat2`,`cat3`,`cat4`,`cat5A`,`cat5B`,`cat5C`,`cat5D`,`cat6`,`cat7A`,`cat7B`,`cat8`,`cat9`,`cat10A`,`cat10B`,`cat11A`,`cat11B`,`cat12`) VALUES ('".$d['ifra_key']."','".$d['image']."','".$d['amendment']."','".$d['prev_pub']."','".$d['last_pub']."','".$d['deadline_existing']."','".$d['deadline_new']."','".$d['name']."','".$d['cas']."','".$d['cas_comment']."','".$d['synonyms']."','".$d['formula']."','".$d['flavor_use']."','".$d['prohibited_notes']."','".$d['restricted_photo_notes']."','".$d['restricted_notes']."','".$d['specified_notes']."','".$d['type']."','".$d['risk']."','".$d['contrib_others']."','".$d['contrib_others_notes']."','".$d['cat1']."','".$d['cat2']."','".$d['cat3']."','".$d['cat4']."','".$d['cat5A']."','".$d['cat5B']."','".$d['cat5C']."','".$d['cat5D']."','".$d['cat6']."','".$d['cat7A']."','".$d['cat7B']."','".$d['cat8']."','".$d['cat9']."','".$d['cat10A']."','".$d['cat10B']."','".$d['cat11A']."','".$d['cat11B']."','".$d['cat12']."') ");
+				
+		}
+				
+		if($s){
+			$result['success'] = "Import complete";
+			unlink(__ROOT__.'/'.$target_path);
+		}else{
+			$result['error'] = "There was an error importing your JSON file ".mysqli_error($conn);
+			echo json_encode($result);
+			return;
+		}
+			
+	} else {
+		$result['error'] = "There was an error processing json file $target_path, please try again!";
+		echo json_encode($result);
+
+	}
+	echo json_encode($result);
+	return;
+
+}
+
+
 ?>

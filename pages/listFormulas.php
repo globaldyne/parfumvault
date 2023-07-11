@@ -30,14 +30,6 @@ while($fTypes_res = mysqli_fetch_array($fTypes_q)){
 <script src="/js/rating.js"></script>
 <link href="/js/raty/jquery.raty.css" rel="stylesheet">
 
-<style>
-.mfp-iframe-holder .mfp-content {
-    line-height: 0;
-    width: 50%;
-    max-width: 100%; 
-	height: 600px;
-}
-</style>
 
 <div class="card-header py-3">
   <h2 class="m-0 font-weight-bold text-primary"><a href="javascript:list_formulas()">Formulas</a></h2>
@@ -128,12 +120,6 @@ function extrasShow() {
 		"html": true,
 		"delay": {"show": 100, "hide": 0},
 	});
-	$('.popup-link').magnificPopup({
-		type: 'iframe',
-		closeOnContentClick: false,
-		closeOnBgClick: false,
-		showCloseBtn: true,
-	});
 };
 
 $(".tabs").click(function() {
@@ -214,10 +200,11 @@ function fName(data, type, row, meta){
 	}
   return data;
 }
+
+
 function pName(data, type, row, meta){
-	if(type === 'display'){
-		data = '<a class="popup-link" href="/pages/getFormMeta.php?id=' + row.id + '">' + data + '</a>';
-	}
+	data = '<i class="pv_point_gen_color" data-toggle="modal" data-backdrop="static" data-target="#getFormMeta" data-id="' + row.id + '" data-formula="'+row.name+'">'+row.name+'</i>';
+	
   return data;
 }
 
@@ -259,7 +246,8 @@ function fActions(data, type, row, meta){
 		data = '<div class="dropdown">' +
         '<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
             '<ul class="dropdown-menu dropdown-menu-right">';
-		data += '<li><a class="dropdown-item popup-link" href="/pages/getFormMeta.php?id=' + row.id + '" rel="tip" title="Show settings of '+ row.name +'"><i class="fas fa-cogs mr2"></i>Settings</a></li>';
+			
+		data += '<li><i class="pv_point_gen link-dark dropdown-item" data-toggle="modal" data-backdrop="static" data-target="#getFormMeta" data-formula="'+row.name+'" data-id="' + row.id + '"><i class="fas fa-cogs mr2"></i>Settings</i></li>';
 
 		data += '<li><a class="dropdown-item" href="/pages/operations.php?action=exportFormulas&fid=' + row.fid + '" rel="tip" title="Export '+ row.name +' as JSON" ><i class="fas fa-download mr2"></i>Export as JSON</a></li>';
 		
@@ -573,8 +561,38 @@ $('#add_formula_cat').on('click', '[id*=add-fcat]', function () {
 	});
 });
 
+$("#getFormMeta").on("show.bs.modal", function(e) {
+  const id = e.relatedTarget.dataset.id;
+  const formula = e.relatedTarget.dataset.formula;
+
+  $.get("/pages/getFormMeta.php?id=" + id)
+    .then(data => {
+      $("#getFormMetaLabel", this).html(formula);
+      $(".modal-body", this).html(data);
+    });
+	
+});
+
+
 </script>
-            
+
+<!--GET FORMULA SETTINGS MODAL-->            
+<div class="modal fade" id="getFormMeta" tabindex="-1" role="dialog" aria-labelledby="getFormMetalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title mgmIngHeader mgmIngHeader-with-separator" id="getFormMetaLabel">Formula settings</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-danger">Unable to get data</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!--ADD FORMULA MODAL-->
 <div class="modal fade" id="add_formula" tabindex="-1" role="dialog" aria-labelledby="add_formula" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
