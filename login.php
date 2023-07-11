@@ -30,13 +30,24 @@ if($_POST['email'] && $_POST['password']){
 			$_SESSION['userID'] = $row['id'];
 			if($_GET['do']){
 				$redirect = '/index.php?do='.$_GET['do'];
+			}elseif($_GET['url']){
+				$redirect = $_GET['url'];
 			}else{
-				$redirect = '/index.php';
-			}
-			header('Location: '.$redirect);
-	}else{
-		$msg = '<div class="alert alert-danger">Email or password error</div>';
-	}
+        $redirect = '/index.php';
+      }
+
+      // Validate and sanitize the redirect URL
+      if (filter_var($redirect, FILTER_VALIDATE_URL) !== false && strpos($redirect, $_SERVER['HTTP_HOST']) !== false) {
+        header('Location: ' . $redirect);
+        exit;
+      } else {
+        // Redirect URL is invalid or does not belong to the same domain
+        $msg = '<div class="alert alert-danger">Invalid redirect URL</div>';
+      }
+
+  }else{
+    $msg = '<div class="alert alert-danger">Email or password error</div>';
+  }
 }
 
 
