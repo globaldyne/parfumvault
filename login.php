@@ -30,8 +30,6 @@ if($_POST['email'] && $_POST['password']){
 			$_SESSION['userID'] = $row['id'];
 			if($_GET['do']){
 				$redirect = '/index.php?do='.$_GET['do'];
-			}elseif($_GET['url']){
-				$redirect = $_GET['url'];
 			}else{
 				$redirect = '/index.php';
 			}
