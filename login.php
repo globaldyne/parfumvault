@@ -33,7 +33,7 @@ if($_POST['email'] && $_POST['password']){
 			}elseif($_GET['url']){
 				$redirect = $_GET['url'];
 			}else{
-        $redirect = '/index.php';
+        		$redirect = '/index.php';
       }
 
       // Validate and sanitize the redirect URL
