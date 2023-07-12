@@ -17,7 +17,10 @@
 - Import IFRA library from a json
 - Validate IFRA/Formulas/Ingredients json file before import
 - Added option to edit CAS entries in IFRA entry
-
+- Login page auth backend rewrite
+- User register page form element update
+- System install page updates
+- User auto logins and redirect to the dashboard after succesfull system configuration
 
 ### Version 7.5
 - Making sure dilutant reset to its default if previously used

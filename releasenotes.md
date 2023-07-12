@@ -13,6 +13,7 @@ cloud installations like Openshift/EKS, etc
 </strong>
 Whats New in v7.6
 --------------------------
+- Login page auth backend rewrite
 - Rewrite of formula settings page 
 - Added option to delete in IFRA entry
 - Added option to edit CAS entries in IFRA entry

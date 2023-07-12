@@ -42,28 +42,35 @@ $first_time = 1;
                     <strong>Database Settings:</strong>
                     <hr>
                     <div class="form-group">
-                      <input type="text" class="form-control form-control-user" id="dbhost" placeholder="Database Hostname or IP...">
+                      <label for="dbhost" class="form-label">Database Hostname or IP</label>
+                      <input type="text" class="form-control form-control-user" id="dbhost">
                     </div>
                     <div class="form-group">
-                      <input type="text" class="form-control form-control-user" id="dbuser" placeholder="Database Username...">
+                      <label for="dbuser" class="form-label">Database username</label>
+                      <input type="text" class="form-control form-control-user" id="dbuser">
                     </div>
                     <div class="form-group">
-                      <input type="text" class="form-control form-control-user" id="dbpass" placeholder="Database Password...">
+                      <label for="dbpass" class="form-label">Database password</label>
+                      <input type="text" class="form-control form-control-user" id="dbpass">
                     </div>
                      <div class="form-group">
-                      <input type="text" class="form-control form-control-user" id="dbname" placeholder="Database Name...">
+                      <label for="dbname" class="form-label">Database name</label>
+                      <input type="text" class="form-control form-control-user" id="dbname">
                     </div>
                     <hr>
                     <strong>User Settings:</strong>
                     <hr>
                     <div class="form-group">
-                      <input type="text" class="form-control form-control-user" id="fullName" placeholder="Your full name...">
+                      <label for="fullName" class="form-label">Full name</label>
+                      <input type="text" class="form-control form-control-user" id="fullName">
                     </div>      
                     <div class="form-group">
-                      <input type="text" class="form-control form-control-user" id="email" placeholder="Your email...">
+                      <label for="email" class="form-label">Email</label>
+                      <input type="text" class="form-control form-control-user" id="email">
                     </div>
                     <div class="form-group">
-                      <input type="text" class="form-control form-control-user" id="password" placeholder="Password...">
+                      <label for="password" class="form-label">Password</label>
+                      <input type="text" class="form-control form-control-user" id="password">
                     </div>
                     <div class="form-group"></div>
                     <hr>
@@ -108,7 +115,7 @@ $(document).ready(function() {
 			dataType: 'json',
 			success: function (data) {
 				if (data.success){ 
-				    window.location='/'
+				    window.location = '/'
 				}
 				if(data.error){
 					var msg = '<div class="alert alert-danger">'+data.error+'</div>';

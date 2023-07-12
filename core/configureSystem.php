@@ -1,12 +1,11 @@
 <?php
 define('__ROOT__', dirname(dirname(__FILE__)));
 define('pvault_panel', TRUE);
-//require_once(__ROOT__.'/func/pvOnline.php');
 
 
 if($_POST['action'] == 'register'){
-	define('__ROOT__', dirname(dirname(__FILE__))); 
-	define('pvault_panel', TRUE);
+	//define('__ROOT__', dirname(dirname(__FILE__))); 
+	//define('pvault_panel', TRUE);
 
 	require_once(__ROOT__.'/inc/config.php');
 	require_once(__ROOT__.'/inc/opendb.php');
@@ -100,6 +99,10 @@ $allowed_ext = "pdf, doc, docx, xls, csv, xlsx, png, jpg, jpeg, gif";
 $max_filesize = "4194304"; //in bytes
 ?>
 ';
+	session_start();
+	$_SESSION['parfumvault'] = true;
+	$_SESSION['userID'] = mysqli_insert_id($link);
+	
 	}else{
 		$response['error'] = 'DB Schema Creation error. Make sure the database exists in your mysql server and its empty.';
 		echo json_encode($response);
