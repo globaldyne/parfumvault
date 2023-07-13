@@ -11,9 +11,15 @@ Also - *-cloud images will be dropped as the same image should be used for local
 cloud installations like Openshift/EKS, etc
 --------------------------
 </strong>
-Whats New in v7.5
+Whats New in v7.6
 --------------------------
-- Added support for IFRA 51 amedment
-- Added option to maintain existing IFRA library data prior import
-- Overall IFRA Library improvements
+- You can now auto adjust solvent when adding or deleting an ingredient in a formula
+- Login page auth backend rewrite
+- Rewrite of formula settings page 
+- Added option to delete in IFRA entry
+- Added option to edit CAS entries in IFRA entry
+- IFRA Library extended to display implementation deadlines for new and current creations
+- Import/Export IFRA Libary from/to a json format
+- Fix incorrect calculation when using decimals in advanced quanity management for formulas
 - Various bug fixes and improvements
+- For full details please refer to the CHANGELOG

@@ -1,6 +1,6 @@
-<script src="/js/mark/jquery.mark.min.js"></script>
-<script src="/js/mark/datatables.mark.js"></script>
-
+<?php
+require_once(__ROOT__.'/func/php-settings.php');
+?>
 <div id="content-wrapper" class="d-flex flex-column">
 <?php require_once(__ROOT__.'/pages/top.php'); ?>
         <div class="container-fluid">
@@ -10,23 +10,31 @@
               <h2 class="m-0 font-weight-bold text-primary"><a href="/?do=IFRA">IFRA Library</a></h2>
             </div>
             <div class="card-body">
-               
+               <div id="iframsg"></div>
                   <div class="text-right">
                     <div class="btn-group">
                       <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
                       <div class="dropdown-menu dropdown-menu-right">
+                        <li class="dropdown-header">Import</li> 
                         <li><a class="dropdown-item" href="#" data-backdrop="static" data-toggle="modal" data-target="#ifra_import"><i class="fa-solid fa-file-excel mr2"></i>Import IFRA xls</a>
+                                	  
+                         <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#import_ifra_json" data-backdrop="static"><i class="fa-solid fa-file-import mr2"></i>Import from JSON</a></li>
+
                         <?php if($settings['pubChem'] == '1'){?>
                         <li><a class="dropdown-item" href="#" data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#pubChem_import"><i class="fa-solid fa-file-import mr2"></i>Import images</a></li>
                         <?php } ?>
-
-                        <li><a class="dropdown-item" id="csv" href="#"><i class="fa-solid fa-file-export mr2"></i>Export to CSV</a></li>
+                        <li class="dropdown-header">Export</li> 
+           				<li><a class="dropdown-item" href="/pages/operations.php?action=exportIFRA"><i class="fa-solid fa-file-code mr2"></i>Export as JSON</a></li>
+                        <li><a class="dropdown-item" id="csv" href="#"><i class="fa-solid fa-file-export mr2"></i>Export as CSV</a></li>
                       </div>
                     </div>
                   </div>
                 <div class="dropdown-divider"></div>
                 <div class="table-responsive">
-                <table id="tdDataIFRA" class="table table-striped table-bordered">
+                <div>
+                Toggle column: <a class="toggle-vis pv_point_gen_color" data-column="0">Structure</a> - <a class="toggle-vis pv_point_gen_color" data-column="4">Last publication</a>
+    			</div>
+                <table id="tdDataIFRA" class="stripe row-border order-column" style="width:100%">
                   <thead>
                       <tr>
                       	<th>Structure</th>
@@ -35,6 +43,8 @@
                         <th>Amendment</th>
                         <th>Last publication</th>
                         <th>IFRA Type</th>
+                        <th>Implementation deadline for existing creations</th>
+                        <th>Implementation deadline for new creations</th>
                         <th>Cat1%</th>
                         <th>Cat2%</th>
                         <th>Cat3%</th>
@@ -52,6 +62,7 @@
                         <th>Cat11A%</th>
                         <th>Cat11B%</th>
                         <th>Cat12%</th>
+                        <th></th>
                       </tr>
                    </thead>
                 </table>
@@ -148,24 +159,72 @@
   </div>
 </div>
 
+<!--IMPORT JSON MODAL-->
+<div class="modal fade" id="import_ifra_json" tabindex="-1" role="dialog" aria-labelledby="import_ifra_json" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Import IFRA from a JSON file</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <div id="JSRestMsg"></div>
+      <div class="progress">  
+         <div id="uploadProgressBar" class="progress-bar" role="progressbar" aria-valuemin="0"></div>
+      </div>
+      <div id="backupArea">
+      
+          <div class="form-group">
+              <label class="col-md-3 control-label">JSON file:</label>
+              <div class="col-md-8">
+                 <input type="file" name="backupFile" id="backupFile" class="form-control" />
+              </div>
+          </div>
+          
+          <div class="col-sm dropdown-divider"></div>
+          <div class="col-md-12 alert alert-warning">
+             <p><strong>IMPORTANT:</strong></p>
+              <ul>
+                <li><div id="raw" data-size="<?=getMaximumFileUploadSizeRaw()?>">Maximum file size: <strong><?=getMaximumFileUploadSize()?></strong></div></li>
+                <li>Your current IFRA Library will be <strong>removed</strong> during the import. Please make sure you have taken a backup before imporing a JSON file.</li>
+              </ul>
+    			<p>&nbsp;</p>
+            </div>
+          </div>
+      
+      </div>
+	  <div class="modal-footer">
+        <input type="button" class="btn btn-secondary" data-dismiss="modal" id="btnCloseBK" value="Cancel">
+        <input type="submit" name="btnRestore" class="btn btn-primary" id="btnRestoreIFRA" value="Import">
+      </div>
+   
+  </div>
+  
+</div>
+</div>
+
 <script type="text/javascript">
 $(document).ready(function() {
 	
 	var tdDataIFRA = $('#tdDataIFRA').DataTable( {
 	columnDefs: [
 		{ className: 'pv_vertical_middle text-center', targets: '_all' },
+		{ orderable: false, targets: [25]}
 	],
 	dom: 'lrftip',
 	processing: true,
 	serverSide: true,
 	searching: true,
 	mark: true,
+	scrollX: true,
 	language: {
 		loadingRecords: '&nbsp;',
 		processing: '<div class="spinner-grow mr2"></div>Please Wait...',
 		zeroRecords: 'Nothing found',
 		search: 'Quick Search:',
-		searchPlaceholder: 'Name, CAS, synonyms..',
+		searchPlaceholder: 'Name, CAS, synonyms...',
 		},
 	ajax: {	
 		url: '/core/list_IFRA_data.php',
@@ -181,10 +240,12 @@ $(document).ready(function() {
 	   columns: [
 			{ data : 'image', title: 'Structure', render: image },
             { data : 'name', title: 'Name', render: name },
-			{ data : 'cas', title: 'CAS' },
+			{ data : 'cas', title: 'CAS', render: CAS },
 			{ data : 'amendment', title: 'Amendment' },
 			{ data : 'last_pub', title: 'Last publication' },
 			{ data : 'type', title: 'IFRA Type' },
+			{ data : 'deadline_existing', title: 'Implementation deadline for existing creations' },
+			{ data : 'deadline_new', title: 'Implementation deadline for new creations' },
 			{ data : 'cat1', title: 'Cat1%' },
 			{ data : 'cat2', title: 'Cat2%' },
 			{ data : 'cat3', title: 'Cat3%' },
@@ -202,6 +263,8 @@ $(document).ready(function() {
 			{ data : 'cat11A', title: 'Cat11A%' },
 			{ data : 'cat11B', title: 'Cat11B%' },
 			{ data : 'cat12', title: 'Cat12%' },
+			{ data : null, title: '', render: actions },
+
 			],
 	order: [[ 1, 'asc' ]],
 	lengthMenu: [[20, 50, 100, 200, 400], [20, 50, 100, 200, 400]],
@@ -234,6 +297,19 @@ $(document).ready(function() {
             $('#'+id+' td:first-child + td').trigger( 'click' );
         } );
     } );
+	
+	document.querySelectorAll('a.toggle-vis').forEach((el) => {
+		el.addEventListener('click', function (e) {
+			e.preventDefault();
+	 
+			let columnIdx = e.target.getAttribute('data-column');
+			let column = tdDataIFRA.column(columnIdx);
+	 
+			// Toggle the visibility
+			column.visible(!column.visible());
+		});
+	});
+	
 });
 
 function format ( d ) {
@@ -250,12 +326,23 @@ function name(data, type, row){
 	return '<i class="pv_point_gen pv_gen_li">'+row.name+'</i>';
 }
 
+function CAS(data, type, row){
+	data = '<a href="#" data-name="cas" class="cas" data-type="text" data-pk="' + row.id + '">' + data + '</a>';
+	return data;
+}
+
 function image(data, type, row){
 	return '<img src="data:image/png;base64, '+row.image+'" class="img_ifra noexport"/>';
 }
 
 function reload_ifra_data() {
     $('#tdDataIFRA').DataTable().ajax.reload(null, true);
+}
+
+function actions(data, type, row){
+	data = '<a class="pv_point_gen text-danger" id="dDel" data-name="'+ row.name +'" data-id='+ row.id +'><i class="fas fa-trash mr2"></i></a>';
+	
+	return data;
 }
 
 $('#csv').on('click',function(){
@@ -360,4 +447,76 @@ $("#overwrite").click(function() {
     }
 });
 
+$('#tdDataIFRA').on('click', '[id*=dDel]', function () {
+	var d = {};
+	d.ID = $(this).attr('data-id');
+    d.Name = $(this).attr('data-name');
+
+	bootbox.dialog({
+       title: "Confirm deletion",
+       message : 'Delete IFRA entry <strong>'+ d.Name +'</strong> ?',
+       buttons :{
+           main: {
+               label : "Delete",
+               className : "btn-danger",
+               callback: function (){
+	    			
+				$.ajax({ 
+					url: '/pages/update_data.php', 
+					type: 'POST',
+					data: {
+						IFRA: 'delete',
+						ID: d.ID,
+						type: 'IFRA'
+						},
+					dataType: 'json',
+					success: function (data) {
+						if(data.success){
+							msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+							reload_ifra_data();
+						}else if(data.error){
+							msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+						}
+						$('#iframsg').html(msg);
+					}
+				  });
+				
+                 return true;
+               }
+           },
+           cancel: {
+               label : "Cancel",
+               className : "btn-default",
+               callback : function() {
+                   return true;
+               }
+           }   
+       },onEscape: function () {return true;}
+   });
+});
+
+$('#tdDataIFRA').editable({
+  container: 'body',
+  selector: 'a.cas',
+  url: "/pages/update_data.php?IFRA=edit&type=CAS",
+  title: 'CAS#',
+  ajaxOptions: { 
+  	dataType: 'json'
+  },
+  success: function(response, newValue) {
+	if(response.error){
+		return response.error; 
+	}else{ 
+		reload_ifra_data();
+	}
+  },
+  validate: function(value){
+   if($.trim(value) == ''){
+	return 'This field is required';
+   }
+  }
+});
 </script>
+<script src="/js/mark/jquery.mark.min.js"></script>
+<script src="/js/mark/datatables.mark.js"></script>
+<script src="/js/import.IFRA.js"></script>

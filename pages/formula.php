@@ -1,6 +1,6 @@
 <?php 
 if (!defined('pvault_panel')){ die('Not Found');}
-require_once(__ROOT__.'/func/arrFilter.php');
+//require_once(__ROOT__.'/func/arrFilter.php');
 $id = mysqli_real_escape_string($conn, $_GET['id']);
 
 $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT fid,name FROM formulasMetaData WHERE id = '$id'"));
@@ -55,7 +55,7 @@ if($form[0]['ingredient']){
             
 			  <table width="100%" border="0">
 			    <tr>
-			      <th width="75%" class="left" scope="col"><h2 class="m-0 font-weight-bold text-primary"><a href="javascript:reload_formula_data()"><div id="formula_name"><?=$f_name?></div></a><span class="m-1"><div id="lock_status"><?php if($meta['isProtected']){?><a class="fas fa-lock" href="javascript:setProtected('false')"><?php }else{ ?><a class="fas fa-unlock" href="javascript:setProtected('true')"> <?php } ?></a></div></span></h2>
+			      <th width="75%" class="left" scope="col"><h2 class="m-0 font-weight-bold text-primary"><a href="javascript:reload_formula_data()"><div id="formula_name"><?=$f_name?:'Unnamed'?></div></a><span class="m-1"><div id="lock_status"><?php if($meta['isProtected']){?><a class="fas fa-lock" href="javascript:setProtected('false')"><?php }else{ ?><a class="fas fa-unlock" href="javascript:setProtected('true')"> <?php } ?></a></div></span></h2>
               <h5 class="m-1 text-primary"><span><a href="#" rel="tip" data-placement="right" title="<?=$cat_details['description']?>"><?=ucfirst($meta['catClass'])?></a></span></h5>&nbsp;</th>
 			      <th width="21%" scope="col"><div id="formula_desc"><img src="/img/loading.gif"/></div></th>
 			      <th width="4%" scope="col"><div class="img-formula"><img class="img-perfume" src="<?=$img['docData']?:'/img/ICO_TR.png';?>"/></div></th>
@@ -109,8 +109,18 @@ if($form[0]['ingredient']){
                 	<input type="submit" name="add" id="add-btn" class="btn btn-info" value="Add" /> </td>  
                 </div>  
             </div>
+            
+            <div class="col-sm-6 mb-1">
+        		<input type="checkbox" name="reCalcAdd" id="reCalcAdd" value="1" data-val="1" /> Adjust solvent<i class="fa-solid fa-circle-info ml-2 pv_point_gen" rel="tip" data-placement="right" data-title="The added ingredient's quantity will be deducted from the selected solvent."></i>
+            </div>
+            <div id="slvMetaAdd">
+            	<div class="col-sm-6 mr-2 mb-1">
+        			<input name="formulaSolventsAdd" id="formulaSolventsAdd" type="text" class="formulaSolventsAdd pv-form-control">
+            	</div>
           </div>
-
+		  <div class="col-sm dropdown-divider"></div>
+        </div>
+          
           <div id="fetch_formula">
           	<div class="loader-center">
             	<div class="loader"></div>
@@ -217,19 +227,21 @@ $('#add_ing').on('click', '[id*=add-btn]', function () {
 		type: 'POST',
 		data: {
 			action: "addIng",
-			fid: "<?=$fid?>",
+			fid: myFID,
 			quantity: $("#quantity").val(),
 			concentration: $("#concentration").val(),
 			ingredient: $("#ingredient").val(),
-			dilutant: $("#dilutant").val()
+			dilutant: $("#dilutant").val(),			
+			reCalc: $("#reCalcAdd").prop('checked'),
+			formulaSolventID: $("#formulaSolventsAdd").val()
 			},
 		dataType: 'json',
 		success: function (data) {
 			if ( data.success ) {
-				var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+				msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 				reload_formula_data();
 			} else {
-				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + data.error + '</strong></div>';
+				msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + data.error + '</strong></div>';
 			}
 			$('#msgInfo').html(msg);
 		}
@@ -380,7 +392,7 @@ function fetch_formula_settings(){
 		type: 'GET',
 		data: {
 			id: "<?=$meta['id']?>",
-			embed: true
+			//embed: true
 			},
 		dataType: 'html',
 		success: function (data) {

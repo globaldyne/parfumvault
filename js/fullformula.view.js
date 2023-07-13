@@ -432,6 +432,42 @@ $("#formula").on("click", ".open-quantity-dialog", function () {
 	
 });
 
+$("#formulaSolventsAdd").select2({
+	width: '100px',
+	placeholder: 'Available solvents in formula',
+	allowClear: true,
+	dropdownAutoWidth: true,
+	containerCssClass: "formulaSolvents",
+	minimumResultsForSearch: Infinity,
+	ajax: {
+		url: '/core/full_formula_data.php',
+		dataType: 'json',
+		type: 'POST',
+		delay: 100,
+		quietMillis: 250,
+		data: function (data) {
+			return {
+				id: myID,
+				solvents_only: true
+			};
+		},
+		processResults: function(data) {
+			return {
+				results: $.map(data.data, function(obj) {
+				  return {
+					id: obj.ingredient_id,
+					text: obj.ingredient || 'No solvent(s) found in formula',
+				  }
+				})
+			};
+		},
+		cache: true,
+		
+	}
+	
+});
+	
+	
 $('.export_as').click(function() {	
   var format = $(this).attr('data-format');
   $("#formula").tableHTMLExport({
@@ -449,12 +485,21 @@ $('.export_as').click(function() {
   });
 });
 
-$("#slvMeta").hide();
+$("#slvMeta, #slvMetaAdd").hide();
 
 $("#reCalc").click(function() {
     if($(this).is(":checked")) {
         $("#slvMeta").show();
     } else {
         $("#slvMeta").hide();
+    }
+});
+
+
+$("#reCalcAdd").click(function() {
+    if($(this).is(":checked")) {
+        $("#slvMetaAdd").show();
+    } else {
+        $("#slvMetaAdd").hide();
     }
 });

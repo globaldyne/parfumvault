@@ -12,6 +12,32 @@ require_once(__ROOT__.'/func/priceScrape.php');
 require_once(__ROOT__.'/func/create_thumb.php');
 require_once(__ROOT__.'/func/pvFileGet.php');
 
+//UPDATE CAS IFRA ENTRY
+if($_GET['IFRA'] == 'edit' && $_POST['value'] && $_GET['type'] == 'CAS'){
+	
+	if(mysqli_query($conn, "UPDATE IFRALibrary SET cas = '".$_POST['value']."' WHERE id = '".$_POST['pk']."'")){
+		$response["success"] = 'IFRA entry updated';
+	}else{
+		$response["error"] = 'Something went wrong '.mysqli_error($conn);
+	}
+	
+	echo json_encode($response);
+	return;	
+}
+
+//DELETE IFRA ENTRY
+if($_POST['IFRA'] == 'delete' && $_POST['ID'] && $_POST['type'] == 'IFRA'){
+	
+	if(mysqli_query($conn, "DELETE FROM IFRALibrary WHERE id = '".$_POST['ID']."'")){
+		$response["success"] = 'IFRA entry deleted';
+	}else{
+		$response["error"] = 'Something went wrong '.mysqli_error($conn);
+	}
+	
+	echo json_encode($response);
+	return;	
+}
+
 //Merge ingredients
 if($_POST['merge'] && $_POST['ingSrcID'] &&  $_POST['ingSrcName']  && $_POST['fid']){
 	if(!$_POST['dest']){
@@ -431,7 +457,7 @@ if($_POST['action'] == 'delete' && $_POST['lidId'] && $_POST['type'] == 'lid'){
 if($_GET['IFRA_PB'] == 'import'){
 	require_once(__ROOT__.'/func/pvFileGet.php');
 	$i = 0;
-	$qCas = mysqli_query($conn,"SELECT cas FROM IFRALibrary");
+	$qCas = mysqli_query($conn,"SELECT cas FROM IFRALibrary WHERE image IS NULL OR image = '' OR image = '-'");
 
 	if(!mysqli_num_rows($qCas)){
 		$response["error"] = 'IFRA Database is currently empty';
@@ -441,7 +467,7 @@ if($_GET['IFRA_PB'] == 'import'){
 	
 	$view =  $settings['pubchem_view'];
 	while($cas = mysqli_fetch_array($qCas)){
-		$image = base64_encode(pv_file_get_contents($pubChemApi.'/pug/compound/name/'.$cas['cas'].'/PNG?record_type='.$view.'&image_size=small'));
+		$image = base64_encode(pv_file_get_contents($pubChemApi.'/pug/compound/name/'.trim($cas['cas']).'/PNG?record_type='.$view.'&image_size=small'));
 		
 		$imp = mysqli_query($conn,"UPDATE IFRALibrary SET image = '$image' WHERE cas = '".$cas['cas']."'");
 		$i++;
@@ -815,11 +841,11 @@ if($_POST['updateQuantity'] && $_POST['ingQuantityID'] &&  $_POST['ingQuantityNa
 		
 		//UPDATE SOLVENT
 		function formatVal($num){
-    		return sprintf("%+d",$num);
+    		return sprintf("%+.4f",$num);
 		}
 		
 		$curV = mysqli_fetch_array(mysqli_query($conn, "SELECT quantity FROM formulas WHERE fid = '$fid' AND id = '".$ingredient."'"));
-		$diff = number_format(  $curV['quantity'] -  $value  , 4);
+		$diff = number_format($curV['quantity'] -  $value  , 4);
 		$v = formatVal($diff);
 		
 		$qs ="UPDATE formulas SET quantity = quantity $v WHERE fid = '$fid' AND ingredient_id = '".$formulaSolventID."'";
@@ -839,6 +865,7 @@ if($_POST['updateQuantity'] && $_POST['ingQuantityID'] &&  $_POST['ingQuantityNa
 			
 			$lg = "CHANGE: ".$ing_name." Set $name to $value";
 			mysqli_query($conn, "INSERT INTO formula_history (fid,change_made,user) VALUES ('".$meta['id']."','$lg','".$user['fullName']."')");
+			
 			$response["success"] = 'Quantity updated';
 			echo json_encode($response);
 		
@@ -980,16 +1007,22 @@ if($_GET['action'] == 'rename' && $_GET['fid']){
 	$value = mysqli_real_escape_string($conn, $_POST['value']);
 	$fid = mysqli_real_escape_string($conn, $_GET['fid']);
 	$id = $_POST['pk'];
-	
+	if(!$value){
+		$response["error"] = 'Formula name cannot be empty';
+		echo json_encode($response);
+		return;
+	}
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM formulasMetaData WHERE name = '$value'"))){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Name already exists</a>';
+		$response["error"] = 'Name already exists';
 	}else{
 		mysqli_query($conn, "UPDATE formulasMetaData SET name = '$value' WHERE id = '$id'");
 		if(mysqli_query($conn, "UPDATE formulas SET name = '$value' WHERE fid = '$fid'")){
-			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Formula renamed.</a>';
+			$response["success"] = 'Formula renamed.';
+			$response["msg"] = $value;
 		}
 	
 	}
+	echo json_encode($response);
 	return;	
 }
 

@@ -77,7 +77,7 @@ if($_POST['update_user_profile']){
 			echo json_encode($response);
 			return;
 		}else{
-			$p = ",password='$password'";
+			$p = ",password=PASSWORD('$password')";
 		}
 	}
 	
