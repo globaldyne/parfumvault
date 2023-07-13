@@ -1,4 +1,5 @@
 # CHANGELOG
+### Version 7.7
 ### Version 7.6
 - Added option to delete an IFRA entry
 - IFRA Library extended to display implementation deadlines for new and current creations
