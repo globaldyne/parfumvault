@@ -114,6 +114,76 @@ if($_GET['restore'] == 'db_bk'){
 	return;
 }
 
+if($_GET['action'] == 'exportIFRA'){
+	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM IFRALibrary")))){
+		$msg['error'] = 'No data found to export.';
+		echo json_encode($msg);
+		return;
+	}
+	$IFRA_Data = 0;
+	$q = mysqli_query($conn, "SELECT * FROM IFRALibrary");
+	while($ifra = mysqli_fetch_assoc($q)){
+		
+		$r['id'] = (int)$ifra['id'];
+		$r['ifra_key'] = (string)$ifra['ifra_key']?: "-";
+		$r['image'] = (string)$ifra['image']?: "-";
+		$r['amendment'] = (string)$ifra['amendment']?: "-";
+		$r['prev_pub'] = (string)$ifra['prev_pub']?: "-";
+		$r['last_pub'] = (string)$ifra['last_pub']?: "-";
+		$r['deadline_existing'] = (string)$ifra['deadline_existing']?: "-";
+		$r['deadline_new'] = (string)$ifra['deadline_new']?: "-";
+		$r['name'] = (string)$ifra['name']?: "-";
+		$r['cas'] = (string)$ifra['cas']?: "-";
+		$r['cas_comment'] = (string)$ifra['cas_comment']?: "-";
+		$r['synonyms'] = (string)$ifra['synonyms']?: "-";
+		$r['formula'] = (string)$ifra['formula']?: "-";//DEPRECATED IN IFRA 51
+		$r['flavor_use'] = (string)$ifra['flavor_use']?: "-";
+		$r['prohibited_notes'] = (string)$ifra['prohibited_notes'] ?: "-";
+		$r['restricted_photo_notes'] = (string)$ifra['restricted_photo_notes']?: "-";
+		$r['restricted_notes'] = (string)$ifra['restricted_notes']?: "-";
+		$r['specified_notes'] = (string)$ifra['specified_notes']?: "-";
+		$r['type'] = (string)$ifra['type']?: "-";
+		$r['risk'] = (string)$ifra['risk']?: "-";
+		$r['contrib_others'] = (string)$ifra['contrib_others']?: "-";
+		$r['contrib_others_notes'] = (string)$ifra['contrib_others_notes']?: "-";
+		$r['cat1'] = (double)$ifra['cat1']?: 100;
+		$r['cat2'] = (double)$ifra['cat2']?: 100;
+		$r['cat3'] = (double)$ifra['cat3']?: 100;
+		$r['cat4'] = (double)$ifra['cat4']?: 100;
+		$r['cat5A'] = (double)$ifra['cat5A']?: 100;
+		$r['cat5B'] = (double)$ifra['cat5B']?: 100;
+		$r['cat5C'] = (double)$ifra['cat5C']?: 100;
+		$r['cat5D'] = (double)$ifra['cat5D']?: 100;
+		$r['cat6'] = (double)$ifra['cat6']?: 100;
+		$r['cat7A'] = (double)$ifra['cat7A']?: 100;
+		$r['cat7B'] = (double)$ifra['cat7B']?: 100;
+		$r['cat8'] = (double)$ifra['cat8']?: 100;
+		$r['cat9'] = (double)$ifra['cat9']?: 100;
+		$r['cat10A'] = (double)$ifra['cat10A']?: 100;
+		$r['cat10B'] = (double)$ifra['cat10B']?: 100;
+		$r['cat11A'] = (double)$ifra['cat11A']?: 100;
+		$r['cat11B'] = (double)$ifra['cat11B']?: 100;
+		$r['cat12'] = (double)$ifra['cat12']?: 100;
+
+		$IFRA_Data++;
+		$if[] = $r;
+	}
+	
+	$vd['product'] = $product;
+	$vd['version'] = $ver;
+	$vd['ifra_entries'] = $IFRA_Data;
+	$vd['timestamp'] = date('d/m/Y H:i:s');
+
+	
+	$result['IFRALibrary'] = $if;
+	$result['pvMeta'] = $vd;
+	
+	header('Content-disposition: attachment; filename=IFRALibrary.json');
+	header('Content-type: application/json');
+	echo json_encode($result, JSON_PRETTY_PRINT);
+	return;
+}
+
 if($_GET['action'] == 'exportFormulas'){
 	if($_GET['fid']){
 		$filter = " WHERE fid ='".$_GET['fid']."'";
@@ -227,6 +297,12 @@ if($_GET['action'] == 'restoreFormulas'){
 	if(move_uploaded_file($_FILES['backupFile']['tmp_name'], $target_path)) {
     	$data = json_decode(file_get_contents($target_path), true);
 		
+		if(!$data['formulasMetaData']){
+			$result['error'] = "JSON File seems invalid. Please make sure you importing the right file";
+			echo json_encode($result);
+			return;
+		}
+		
 		foreach ($data['formulasMetaData'] as $meta ){				
 			$name = mysqli_real_escape_string($conn, $meta['name']);
 			$product_name = mysqli_real_escape_string($conn, $meta['product_name']);
@@ -286,6 +362,11 @@ if($_GET['action'] == 'restoreIngredients'){
 	if(move_uploaded_file($_FILES['backupFile']['tmp_name'], $target_path)) {
     	$data = json_decode(file_get_contents($target_path), true);
 		
+		if(!$data['ingredients']){
+			$result['error'] = "JSON File seems invalid. Please make sure you importing the right file";
+			echo json_encode($result);
+			return;
+		}
 		foreach ($data['compositions'] as $cmp ){				
 			
 		 mysqli_query($conn, "INSERT IGNORE INTO `allergens` (`ing`,`name`,`cas`,`ec`,`percentage`,`toDeclare`,`created`) VALUES ('".$cmp['ing']."','".$cmp['name']."','".$cmp['cas']."','".$cmp['ec']."','".$cmp['percentage']."','".$cmp['toDeclare']."', current_timestamp())");
@@ -320,4 +401,54 @@ if($_GET['action'] == 'restoreIngredients'){
 	return;
 
 }
+
+
+if($_GET['action'] == 'restoreIFRA'){
+	if (!file_exists(__ROOT__."/$tmp_path")) {
+		mkdir(__ROOT__."/$tmp_path", 0777, true);
+	}
+	
+	if (!is_writable(__ROOT__."/$tmp_path")) {
+		$result['error'] = "Upload directory not writable. Make sure you have write permissions.";
+		echo json_encode($result);
+		return;
+	}
+	
+	$target_path = __ROOT__.'/'.$tmp_path.basename($_FILES['backupFile']['name']); 
+
+	if(move_uploaded_file($_FILES['backupFile']['tmp_name'], $target_path)) {
+    	$data = json_decode(file_get_contents($target_path), true);
+		if(!$data['IFRALibrary']){
+			$result['error'] = "JSON File seems invalid. Please make sure you importing the right file";
+			echo json_encode($result);
+			return;
+		}
+		mysqli_query($conn, "TRUNCATE IFRALibrary");
+		
+		foreach ($data['IFRALibrary'] as $d ){				
+			
+			$s = mysqli_query($conn, "INSERT INTO `IFRALibrary` (`ifra_key`,`image`,`amendment`,`prev_pub`,`last_pub`,`deadline_existing`,`deadline_new`,`name`,`cas`,`cas_comment`,`synonyms`,`formula`,`flavor_use`,`prohibited_notes`,`restricted_photo_notes`,`restricted_notes`,`specified_notes`,`type`,`risk`,`contrib_others`,`contrib_others_notes`,`cat1`,`cat2`,`cat3`,`cat4`,`cat5A`,`cat5B`,`cat5C`,`cat5D`,`cat6`,`cat7A`,`cat7B`,`cat8`,`cat9`,`cat10A`,`cat10B`,`cat11A`,`cat11B`,`cat12`) VALUES ('".$d['ifra_key']."','".$d['image']."','".$d['amendment']."','".$d['prev_pub']."','".$d['last_pub']."','".$d['deadline_existing']."','".$d['deadline_new']."','".$d['name']."','".$d['cas']."','".$d['cas_comment']."','".$d['synonyms']."','".$d['formula']."','".$d['flavor_use']."','".$d['prohibited_notes']."','".$d['restricted_photo_notes']."','".$d['restricted_notes']."','".$d['specified_notes']."','".$d['type']."','".$d['risk']."','".$d['contrib_others']."','".$d['contrib_others_notes']."','".$d['cat1']."','".$d['cat2']."','".$d['cat3']."','".$d['cat4']."','".$d['cat5A']."','".$d['cat5B']."','".$d['cat5C']."','".$d['cat5D']."','".$d['cat6']."','".$d['cat7A']."','".$d['cat7B']."','".$d['cat8']."','".$d['cat9']."','".$d['cat10A']."','".$d['cat10B']."','".$d['cat11A']."','".$d['cat11B']."','".$d['cat12']."') ");
+				
+		}
+				
+		if($s){
+			$result['success'] = "Import complete";
+			unlink(__ROOT__.'/'.$target_path);
+		}else{
+			$result['error'] = "There was an error importing your JSON file ".mysqli_error($conn);
+			echo json_encode($result);
+			return;
+		}
+			
+	} else {
+		$result['error'] = "There was an error processing json file $target_path, please try again!";
+		echo json_encode($result);
+
+	}
+	echo json_encode($result);
+	return;
+
+}
+
+
 ?>

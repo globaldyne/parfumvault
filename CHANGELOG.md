@@ -1,4 +1,31 @@
 # CHANGELOG
+### Version 7.6
+- Added option to delete an IFRA entry
+- IFRA Library extended to display implementation deadlines for new and current creations
+- Check if structural image is already in IFRA Library before attempt downloading it
+- Export IFRA Libary to a json format
+- Prevent a formula to be renamed to blank name
+- Toggle minor fields in IFRA Library
+- Rewrite of formula settings page
+- Enabling user password encryption
+- Fix ui miss aligment for edit user details
+- Update reset password script method
+- Set defaults for IFRA Library JSON export
+- Set defaults for formula meta data
+- Handle possible spaces in cas numbers when fetching data from pubchem
+- Moving formula settings page to a bootstrap modal
+- Import IFRA library from a json
+- Validate IFRA/Formulas/Ingredients json file before import
+- Added option to edit CAS entries in IFRA entry
+- Login page auth backend rewrite
+- User register page form element update
+- System install page updates
+- User auto logins and redirect to the dashboard after succesfull system configuration
+- Fix incorrect calculation when using decimals in advanced quanity management for formulas
+- Auto adjust solvent when deleting an ingredient in a formula
+- Auto adjust solvent when adding an ingredient in a formula
+
+
 ### Version 7.5
 - Making sure dilutant reset to its default if previously used
 - Making scale formula modal static

@@ -10,36 +10,12 @@ if(file_exists('./inc/config.php') == FALSE){
 
 session_start();
 if(isset($_SESSION['parfumvault'])){
-	header('Location: index.php');
+	header('Location: /index.php');
 }
 
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/product.php');
-
-$installed_ver = mysqli_fetch_array(mysqli_query($conn,"SELECT app_ver FROM pv_meta"));
-
-if($_POST['email'] && $_POST['password']){
-	$_POST['email'] = mysqli_real_escape_string($conn,strtolower($_POST['email']));
-	$_POST['password'] = mysqli_real_escape_string($conn,$_POST['password']);
-	
-	$row = mysqli_fetch_assoc(mysqli_query($conn,"SELECT id FROM users WHERE email='".$_POST['email']."' AND password='".$_POST['password']."'"));
-
-	if($row['id']){	// If everything is OK login
-			$_SESSION['parfumvault'] = true;
-			$_SESSION['userID'] = $row['id'];
-			if($_GET['do']){
-				$redirect = '/index.php?do='.$_GET['do'];
-			}elseif($_GET['url']){
-				$redirect = $_GET['url'];
-			}else{
-				$redirect = '/index.php';
-			}
-			header('Location: '.$redirect);
-	}else{
-		$msg = '<div class="alert alert-danger">Email or password error</div>';
-	}
-}
 
 
 ?>
@@ -50,14 +26,6 @@ if($_POST['email'] && $_POST['password']){
 <head>
 
   <meta charset="utf-8">
-  <script type='text/javascript'>
-	if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))){
-			if(screen.height>=1080)
-				document.write('<meta name="viewport" content="width=device-width, initial-scale=2.0, minimum-scale=1.0, maximum-scale=3.0, target-densityDpi=device-dpi, user-scalable=yes">');
-			else	
-				document.write('<meta name="viewport" content="width=device-width, initial-scale=0.5, minimum-scale=0.5, maximum-scale=3.0, target-densityDpi=device-dpi, user-scalable=yes">');
-	}
-  </script>
   <meta name="description" content="<?php echo $product.' - '.$ver;?>">
   <meta name="author" content="JBPARFUM">
   <title><?php echo $product;?> - Login</title>
@@ -91,13 +59,16 @@ if($_POST['email'] && $_POST['password']){
                    <div class="user" id="reg_form">
                     <hr>
                     <div class="form-group">
-                      <input type="text" class="form-control form-control-user" id="fullName" placeholder="Your full name...">
-                    </div>      
+                      <label for="fullName" class="form-label">Full name</label>
+                      <input type="text" class="form-control form-control-user" id="fullName">
+                    </div>
                     <div class="form-group">
-                      <input type="text" class="form-control form-control-user" id="email" placeholder="Your email...">
-                    </div>  
+                      <label for="email" class="form-label">Email</label>
+                      <input type="text" class="form-control form-control-user" id="email">
+                    </div>
                     <div class="form-group">
-                      <input type="text" class="form-control form-control-user" id="password" placeholder="Password...">
+                      <label for="password" class="form-label">Password</label>
+                      <input type="text" class="form-control form-control-user" id="password">
                     </div>
                     <div class="form-group"></div>
                     <button class="btn btn-primary btn-user btn-block" id="registerSubmit">
@@ -109,21 +80,23 @@ if($_POST['email'] && $_POST['password']){
                   <div class="col-lg-6">
                     <div class="p-5">
                       <div class="text-center">
-                        <h1 class="h4 text-gray-900 mb-4">Welcome back!</h1>
+                        <h1 class="h4 text-gray-900 mb-4">Please login</h1>
                       </div>
-                      <?php echo $msg; ?>
-                        <form method="post" enctype="multipart/form-data" class="user" id="login">
+                      <div id="msg"></div>
+                      <div class="user" id="login">
+                      
                         <div class="form-group">
-                          <input type="text" class="form-control form-control-user" name="email"  placeholder="Email...">
+                          <input type="text" class="form-control form-control-user" name="email" id="login_email" placeholder="Email...">
                         </div>
                         <div class="form-group">
-                          <input type="password" class="form-control form-control-user" name="password" placeholder="Password...">
+                          <input type="password" class="form-control form-control-user" name="password" id="login_pass" placeholder="Password...">
                         </div>
                         <div class="form-group"></div>
-                        <button class="btn btn-primary btn-user btn-block">
+                        <button class="btn btn-primary btn-user btn-block" id="login_btn">
                           Login
                         </button>
-                      </form>
+                      </div>
+                      
                       <hr>
                       <div class="text-center">
                         <a class="small" href="#" data-toggle="modal" data-target="#forgot_pass">Forgot Password?</a>
@@ -177,9 +150,6 @@ if($_POST['email'] && $_POST['password']){
 
 <script>
 $(document).ready(function() {
-	$(function () {
-		$('[data-toggle="tooltip"]').tooltip()
-	});
 
 	$('#reg_form').on('click', '[id*=registerSubmit]', function () {
 		$('#registerSubmit').prop('disabled', true);
@@ -211,6 +181,32 @@ $(document).ready(function() {
 		});
 	});
     
+	$('#login_btn').click(function() {
+		$.ajax({ 
+			url: '/core/auth.php', 
+			type: 'POST',
+			data: {
+				action: "login",
+				email: $("#login_email").val(),
+				password: $("#login_pass").val(),
+				do: "<?=$_GET['do']?>",
+				url: "<?=$_GET['url']?>"
+			},
+			dataType: 'json',
+			success: function (data) {
+				if(data.auth.success){
+					
+					window.location = data.auth.redirect ;
+					
+				}else if( data.auth.error){
+					msg = '<div class="alert alert-danger">'+data.auth.msg+'</div>';
+				}
+				
+				$('#msg').html(msg);
+			}
+	  });
+	});
+	
 });//end doc
 
 </script>

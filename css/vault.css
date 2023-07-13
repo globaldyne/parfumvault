@@ -88,6 +88,7 @@ a { text-decoration: none; }
   background: url("/img/logo_400.png");
   background-position: center;
   background-size: cover;
+  height: 430px;
 }
 
 .bg-install-image {
@@ -694,7 +695,7 @@ formula td, table.table th {
 .pv_point_gen {
 	cursor: pointer;
 	color: currentColor;
-	font-style: normal;
+	font-style: normal !important;
 }
 
 .pv_bar_top_notes {
@@ -1089,7 +1090,7 @@ table#tdDataPending.dataTable thead:hover {
 }
 
 .pv_point_gen_color {
-	color: #23527c;
+	color: #23527c !important;
 	cursor: pointer !important;
 	font-style: normal;
 }
@@ -1257,4 +1258,14 @@ hr.hr-text::before {
   color: #131313;
   background-color: #f2f2f2;
   border-color: #ebccd1;
+}
+
+.form-horizontal .control-label {
+  padding: 0px 7px 0px 0px !important;
+  margin-bottom: 0;
+  text-align: right;
+}
+
+#slvMetaDel, #slvMetaAdd {
+	display: none;	
 }
