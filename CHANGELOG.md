@@ -21,6 +21,10 @@
 - User register page form element update
 - System install page updates
 - User auto logins and redirect to the dashboard after succesfull system configuration
+- Fix incorrect calculation when using decimals in advanced quanity management for formulas
+- Auto adjust solvent when deleting an ingredient in a formula
+- Auto adjust solvent when adding an ingredient in a formula
+
 
 ### Version 7.5
 - Making sure dilutant reset to its default if previously used

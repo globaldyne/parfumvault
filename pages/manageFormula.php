@@ -204,10 +204,32 @@ if($_POST['action'] == 'deleteIng' && $_POST['ingID'] && $_POST['ing']){
 	$id = mysqli_real_escape_string($conn, $_POST['ingID']);
 	$ing = mysqli_real_escape_string($conn, $_POST['ing']);
 	$fid = mysqli_real_escape_string($conn, $_POST['fid']);
+	$ingredient_id = mysqli_real_escape_string($conn, $_POST['ingredient_id']);
+	
+	if($_POST['reCalc'] == 'true'){
+		if(!$_POST['formulaSolventID']){
+			$response["error"] = 'Please select solvent';
+			echo json_encode($response);
+			return;
+		}
+		$formulaSolventID = $_POST['formulaSolventID'];
+		
+		if(mysqli_num_rows(mysqli_query($conn,"SELECT id FROM ingredients WHERE id = '".$ingredient_id."' AND profile='solvent'"))){
+			$response["error"] = 'You cannot deduct a solvent from a solvent';
+			echo json_encode($response);
+			return;
+		}
+		
+		$qs = mysqli_fetch_array(mysqli_query($conn,"SELECT quantity FROM formulas WHERE id = '$id' AND fid = '$fid'"));
+		$v = $qs['quantity'];
+		mysqli_query($conn,"UPDATE formulas SET quantity = quantity + $v WHERE fid = '$fid' AND ingredient_id = '".$formulaSolventID."'");
+
+	}
 	
 	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,isProtected FROM formulasMetaData WHERE fid = '$fid'"));
 
 	if($meta['isProtected'] == FALSE){
+		
 		if(mysqli_query($conn, "DELETE FROM formulas WHERE id = '$id' AND fid = '$fid'")){
 			$response['success'] = $ing.' removed from the formula';
 			$lg = "REMOVED: $ing removed";
@@ -244,11 +266,42 @@ if($_POST['action'] == 'addIng' && $_POST['fid']){
 			return;
 		}
 	
+		if($_POST['reCalc'] == 'true'){
+			if(!$_POST['formulaSolventID']){
+				$response["error"] = 'Please select solvent';
+				echo json_encode($response);
+				return;
+			}
+		
+		$formulaSolventID = $_POST['formulaSolventID'];
+		
+		if(mysqli_num_rows(mysqli_query($conn,"SELECT id FROM ingredients WHERE id = '".$ingredient_id."' AND profile='solvent'"))){
+			$response["error"] = 'You cannot add a solvent to a solvent';
+			echo json_encode($response);
+			return;
+		}
+		
+		$slv = mysqli_fetch_array(mysqli_query($conn,"SELECT quantity FROM formulas WHERE ingredient_id = '".$formulaSolventID."' AND fid = '".$fid."'"));
+
+        if($slv['quantity'] < $quantity){
+        	$response["error"] = 'Not enough solvent, available: '.number_format($slv['quantity'],$settings['qStep']).$settings['mUnit'];
+            echo json_encode($response);
+            return;
+        }
+				
+		mysqli_query($conn,"UPDATE formulas SET quantity = quantity - $quantity WHERE fid = '$fid' AND ingredient_id = '".$formulaSolventID."'");
+
+	}
+	
+
+
 		if(mysqli_query($conn,"INSERT INTO formulas(fid,name,ingredient,ingredient_id,concentration,quantity,dilutant) VALUES('$fid','".$meta['name']."','".$ingredient['name']."','".$ingredient_id."','$concentration','$quantity','$dilutant')")){
-			$response['success'] = '<strong>'.$quantity.$settings['mUnit'].'</strong> of <strong>'.$ingredient['name'].'</strong> added to the formula!';
+			
 			$lg = "ADDED: ".$ingredient['name']." $quantity".$settings['mUnit']." @$concentration% $dilutant";
 			mysqli_query($conn, "INSERT INTO formula_history (fid,change_made,user) VALUES ('".$meta['id']."','$lg','".$user['fullName']."')");
 			mysqli_query($conn, "UPDATE formulasMetaData SET status = '1' WHERE fid = '".$meta['fid']."' AND status = '0' AND isProtected = '0'");
+			
+			$response['success'] = '<strong>'.$quantity.$settings['mUnit'].'</strong> of <strong>'.$ingredient['name'].'</strong> added to the formula!';
 			echo json_encode($response);
 			return;
 		}

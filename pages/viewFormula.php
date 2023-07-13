@@ -170,13 +170,23 @@ $('#formula tbody').on( 'click', 'tr.group', function () {
 
 
 $('#formula').on('click', '[id*=rmIng]', function () {
+
 	var ing = {};
 	ing.ID = $(this).attr('data-id');
 	ing.Name = $(this).attr('data-name');
-    
+    ing.ingredient_id = $(this).attr('data-ingredient-id');
+	
 	bootbox.dialog({
        title: "Confirm ingredient removal",
-       message : 'Remove <strong>'+ ing.Name +'</strong> from formula?',
+       message : '<div id="err"></div>'+
+	   			 'Remove <strong>'+ ing.Name +'</strong> from formula?' +
+	   			 '<div class="dropdown-divider"></div>'+
+        		  '<input type="checkbox" name="reCalcDel" id="reCalcDel" value="1" data-val="1" /> Adjust solvent'+
+        			'<div id="slvMetaDel">'+
+        				'<div class="dropdown-divider"></div>'+
+        				'<input name="formulaSolventsDel" id="formulaSolventsDel" type="text" class="formulaSolventsDel pv-form-control">'+
+        				'<div class="dropdown-divider"></div>'+
+        				'<div id="explain" class="alert alert-info">The deducted ingredient quantity will be added to the selected solvent.</div></div>',
        buttons :{
            main: {
                label : "Remove",
@@ -188,22 +198,27 @@ $('#formula').on('click', '[id*=rmIng]', function () {
 					type: 'POST',
 					data: {
 						action: "deleteIng",
-						fid: "<?=$meta['fid']?>",
+						fid: myFID,
 						ingID: ing.ID,
+						reCalc: $("#reCalcDel").prop('checked'),
+						formulaSolventID: $("#formulaSolventsDel").val(),
+						ingredient_id: ing.ingredient_id,
 						ing: ing.Name
 						},
 					dataType: 'json',
 					success: function (data) {
 						if(data.success){
-							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+							msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+							$('#msgInfo').html(msg);
+							reload_formula_data();
+							bootbox.hideAll();
 						}else{
-							var msg ='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+							$('#err').html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>');
 						}
-						$('#msgInfo').html(msg);
-						reload_formula_data();
+						
 					}						
 				  });
-                 return true;
+                 return false;
                }
            },
            cancel: {
@@ -214,7 +229,50 @@ $('#formula').on('click', '[id*=rmIng]', function () {
                }
            }   
        },onEscape: function () {return true;}
-   });
+   }).on('shown.bs.modal', function(e){
+			$("#slvMetaDel").hide();
+			$("#reCalcDel").click(function() {
+    		if($(this).is(":checked")) {
+        		$("#slvMetaDel").show();
+    		} else {
+        		$("#slvMetaDel").hide();
+    		}
+		});
+    
+		$("#formulaSolventsDel").select2({
+			width: '250px',
+			placeholder: 'Available solvents in formula',
+			allowClear: true,
+			dropdownAutoWidth: true,
+			containerCssClass: "formulaSolvents",
+			minimumResultsForSearch: Infinity,
+			ajax: {
+				url: '/core/full_formula_data.php',
+				dataType: 'json',
+				type: 'POST',
+				delay: 100,
+				quietMillis: 250,
+				data: function (data) {
+					return {
+						id: myID,
+						solvents_only: true
+					};
+				},
+				processResults: function(data) {
+					return {
+						results: $.map(data.data, function(obj) {
+						  return {
+							id: obj.ingredient_id,
+							text: obj.ingredient || 'No solvent(s) found in formula',
+						  }
+						})
+					};
+				},
+				cache: true,	
+			}	
+		});
+	
+	});	
 });
 
 $('#formula').on('click', '[id*=exIng]', function () {
@@ -765,7 +823,7 @@ function ingActions(data, type, row, meta){
 	+ '<li><i data-toggle="modal" data-target="#mrgIng" data-backdrop="static" rel="tip" title="Merge '+ row.ingredient.name +'" class="dropdown-item pv_point_gen open-merge-dialog text-warning" data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'"><i class="pv_point_gen fas fa-object-group alert-warning mr2"></i>Merge ingredients</i></li>'
 	
 	+'<div class="dropdown-divider"></div>'
-	+ '<li><i rel="tip" title="Remove '+ row.ingredient.name +'" class="dropdown-item text-danger pv_point_gen" id="rmIng" data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'"><i class="pv_point_gen fas fa-trash mr2 text-danger"></i>Delete</i></li>';
+	+ '<li><i rel="tip" title="Remove '+ row.ingredient.name +'" class="dropdown-item text-danger pv_point_gen" id="rmIng" data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'" data-ingredient-id="'+row.ingredient.id+'"><i class="pv_point_gen fas fa-trash mr2 text-danger"></i>Delete</i></li>';
 	<?php } ?>
 	data += '</ul></div>';
 

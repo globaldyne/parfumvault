@@ -1265,3 +1265,7 @@ hr.hr-text::before {
   margin-bottom: 0;
   text-align: right;
 }
+
+#slvMetaDel, #slvMetaAdd {
+	display: none;	
+}

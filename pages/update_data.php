@@ -841,11 +841,11 @@ if($_POST['updateQuantity'] && $_POST['ingQuantityID'] &&  $_POST['ingQuantityNa
 		
 		//UPDATE SOLVENT
 		function formatVal($num){
-    		return sprintf("%+d",$num);
+    		return sprintf("%+.4f",$num);
 		}
 		
 		$curV = mysqli_fetch_array(mysqli_query($conn, "SELECT quantity FROM formulas WHERE fid = '$fid' AND id = '".$ingredient."'"));
-		$diff = number_format(  $curV['quantity'] -  $value  , 4);
+		$diff = number_format($curV['quantity'] -  $value  , 4);
 		$v = formatVal($diff);
 		
 		$qs ="UPDATE formulas SET quantity = quantity $v WHERE fid = '$fid' AND ingredient_id = '".$formulaSolventID."'";
@@ -865,6 +865,7 @@ if($_POST['updateQuantity'] && $_POST['ingQuantityID'] &&  $_POST['ingQuantityNa
 			
 			$lg = "CHANGE: ".$ing_name." Set $name to $value";
 			mysqli_query($conn, "INSERT INTO formula_history (fid,change_made,user) VALUES ('".$meta['id']."','$lg','".$user['fullName']."')");
+			
 			$response["success"] = 'Quantity updated';
 			echo json_encode($response);
 		
