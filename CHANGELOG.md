@@ -6,6 +6,8 @@
 - Remove glyphicon and replace with fontawesome
 - Calculation tools modal became static
 - Rewrite add formula modal
+- Rephrase formula category add
+- Create formula category modal is dismissed after a succesfull creation
 
 ### Version 7.6
 - Added option to delete an IFRA entry

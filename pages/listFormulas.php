@@ -44,7 +44,7 @@ while($fTypes_res = mysqli_fetch_array($fTypes_q)){
               <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula" data-backdrop="static"><i class="fa-solid fa-plus mr2"></i>Add new formula</a></li>
               <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula_csv" data-backdrop="static"><i class="fa-solid fa-file-csv mr2"></i>Import from CSV</a></li>
               <div class="dropdown-divider"></div>
-              <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula_cat" data-backdrop="static"><i class="fa-solid fa-circle-plus mr2"></i>Add formula category</a></li>
+              <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula_cat" data-backdrop="static"><i class="fa-solid fa-circle-plus mr2"></i>Create formula category</a></li>
               <div class="dropdown-divider"></div>
         	  <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#export_formulas_json" data-backdrop="static"><i class="fa-solid fa-file-export mr2"></i>Export Formulas as JSON</a></li>
         	  <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#import_formulas_json" data-backdrop="static"><i class="fa-solid fa-file-import mr2"></i>Import Formulas from JSON</a></li>
@@ -553,9 +553,11 @@ $('#add_formula_cat').on('click', '[id*=add-fcat]', function () {
 		dataType: 'json',
 		success: function (data) {
 			if(data.error){
-				var msg = '<div class="alert alert-danger">'+data.error+'</div>';
+				msg = '<div class="alert alert-danger">'+data.error+'</div>';
 			}else if(data.success){
-				var msg = '<div class="alert alert-success">'+data.success+'</div>';
+				$('#add_formula_cat').modal('toggle');
+				$('.modal-backdrop').hide();
+				list_formulas();
 			}
 			$('#fcatMsg').html(msg);
 		}
@@ -735,10 +737,7 @@ $("#getFormMeta").on("show.bs.modal", function(e) {
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Add new category</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <h5 class="modal-title">Create new formula category</h5>
       </div>
       
       <div class="modal-body">
@@ -751,7 +750,7 @@ $("#getFormMeta").on("show.bs.modal", function(e) {
 		</div>
       </div>
 	  <div class="modal-footer">
-        <input type="button" class="btn btn-secondary" data-dismiss="modal" id="close_cat" value="Close">
+        <input type="button" class="btn btn-secondary" data-dismiss="modal" id="close_cat" value="Cancel">
         <input type="submit" name="add-fcat" class="btn btn-primary" id="add-fcat" value="Create">
       </div>   
   </div>
