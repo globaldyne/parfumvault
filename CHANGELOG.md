@@ -3,6 +3,7 @@
 - Fix a bug incorrectly showing available solvents when adjust was enabled in ingredient add
 - Making sure add solvent function is reset after is added
 - Added ingredient profile when fetching ingredient data (simple method)
+- Remove glyphicon and replace with fontawesome
 
 ### Version 7.6
 - Added option to delete an IFRA entry
