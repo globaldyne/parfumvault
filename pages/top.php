@@ -65,7 +65,7 @@ if($pv_meta['schema_ver'] < $db_ver){
                   <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
                   Settings
                 </a>
-                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#calcTools">
+                <a class="dropdown-item" href="#" data-toggle="modal" data-backdrop="static" data-target="#calcTools">
                   <i class="fas fa-tools fa-sm fa-fw mr-2 text-gray-400"></i>
                   Calculation Tools
                 </a>
@@ -127,9 +127,7 @@ $(function() {
 <div class="modal fade" id="calcTools" tabindex="-1" role="dialog" aria-labelledby="calcTools" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                 <h4 class="modal-title">Calculation Tools</h4>
+            <div class="modal-header">Calculation tools
             </div>
             <div class="modal-body">
             	<div class="toolsHtml"></div>

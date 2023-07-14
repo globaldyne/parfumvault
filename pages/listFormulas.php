@@ -115,6 +115,7 @@ if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))
 
 <?php } ?>
 <script type="text/javascript" language="javascript" >
+$('.selectpicker').selectpicker('refresh');
 function extrasShow() {
 	$('[rel=tip]').tooltip({
 		"html": true,
@@ -605,54 +606,67 @@ $("#getFormMeta").on("show.bs.modal", function(e) {
       </div>
       <div class="modal-body">
       <div id="addFormulaMsg"></div>
-        <table width="100%" border="0">  
-          <tr>
-            <td width="11%">Name:</td>
-            <td width="89%"><input name="name" id="name" type="text" class="form-control" /></td>
-          </tr>
-          <tr>
-            <td>Profile:</td>
-            <td>
-            <select name="profile" id="profile" class="form-control">
-            <?php foreach ($fcat as $cat) { if($cat['type'] == 'profile'){?>		
-                <option value="<?=$cat['cname']?>"><?=$cat['name']?></option>
-            <?php } }?>
-            </select>
-            </td>
-          </tr>
-           <tr>
-             <td>Purpose: </td>
-             <td><select name="catClass" id="catClass" class="form-control ellipsis">
+      
+<div class="form-horizontal">
+
+      <div class="form-group">
+        <label for="name" class="col-sm-2 control-label">Formula name</label>
+        <div class="col-sm-10">
+          <input name="name" id="name" type="text" class="form-control" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="profile" class="col-sm-2 control-label">Profile</label>
+        <div class="col-sm-10">
+          <select name="profile" id="profile" class="form-control selectpicker" data-live-search="true">
+             <?php foreach ($fcat as $cat) { if($cat['type'] == 'profile'){?>		
+                 <option value="<?=$cat['cname']?>"><?=$cat['name']?></option>
+             <?php } }?>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="catClass" class="col-sm-2 control-label">Purpose</label>
+        <div class="col-sm-10">
+          <select name="catClass" id="catClass" class="form-control selectpicker" data-live-search="true">
             <?php foreach ($cats as $IFRACategories) {?>
                 <option value="cat<?php echo $IFRACategories['name'];?>" <?php echo ($settings['defCatClass']=='cat'.$IFRACategories['name'])?"selected=\"selected\"":""; ?>><?php echo 'Cat'.$IFRACategories['name'].' - '.$IFRACategories['description'];?></option>
             <?php }	?>
-            </select></td>
-           </tr>
-            <tr>
-                <td>Final type:</td>
-                <td>
-                <select name="finalType" id="finalType" class="form-control ellipsis">  
-                    <option value="100">Concentrated (100%)</option>
-					<?php foreach ($fTypes as $fType) {?>
-                        <option value="<?php echo $fType['concentration'];?>" <?php echo ($info['finalType']==$fType['concentration'])?"selected=\"selected\"":""; ?>><?php echo $fType['name'].' ('.$fType['concentration'];?>%)</option>
-                    <?php }	?>			
-                </select>
-                </td>
-          </tr>     
-          <tr>
-            <td valign="top">Customer:</td>
-              <td><select name="customer" id="customer" class="form-control ellipsis">
-                <option value="0">Internal use</option>
-                <?php foreach ((array)$customer as $c) {?>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="finalType" class="col-sm-2 control-label">Final type</label>
+        <div class="col-sm-10">
+          <select name="finalType" id="finalType" class="form-control selectpicker" data-live-search="true">  
+            <option value="100">Concentrated (100%)</option>
+            <?php foreach ($fTypes as $fType) {?>
+                <option value="<?php echo $fType['concentration'];?>" <?php echo ($info['finalType']==$fType['concentration'])?"selected=\"selected\"":""; ?>><?php echo $fType['name'].' ('.$fType['concentration'];?>%)</option>
+             <?php } ?>			
+          </select>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="customer" class="col-sm-2 control-label">Customer</label>
+        <div class="col-sm-10">
+          <select name="customer" id="customer" class="form-control selectpicker" data-live-search="true">
+            <option value="0">Internal use</option>
+            <?php foreach ((array)$customer as $c) {?>
                 <option value="<?=$c['id'];?>"><?=$c['name']?></option>
-                <?php }	?>
-              </select></td>
-          </tr>
-          <tr>
-            <td valign="top">Notes:</td>
-            <td><textarea name="notes" id="notes" cols="45" rows="5" class="form-control"></textarea></td>
-          </tr>  
-        </table>  
+            <?php }	?>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="notes" class="col-sm-2 control-label">Notes</label>
+        <div class="col-sm-10">
+          <textarea name="notes" id="notes" cols="45" rows="5" class="form-control"></textarea>
+        </div>
+      </div>
+    </div>
+
+        
 	  <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <input type="submit" name="button" class="btn btn-primary" id="btnAdd" value="Add">

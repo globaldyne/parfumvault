@@ -4,6 +4,8 @@
 - Making sure add solvent function is reset after is added
 - Added ingredient profile when fetching ingredient data (simple method)
 - Remove glyphicon and replace with fontawesome
+- Calculation tools modal became static
+- Rewrite add formula modal
 
 ### Version 7.6
 - Added option to delete an IFRA entry
