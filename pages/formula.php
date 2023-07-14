@@ -83,14 +83,15 @@ if($form[0]['ingredient']){
           <div class="card-body">
           <div id="msgInfo"></div>
 	      <div id="add_ing">
-           	<div class="form-group">
-          	 	<div class="col-md-4 buffer">
+          
+           	<div class="row">
+          	 	<div class="col-md-4">
 				   <input name="ingredient" id="ingredient" class="pv-form-control main-ingredient"></input>
                 </div>
-                <div class="col-md-2 buffer">
+                <div class="col-md-2">
 					<input type="text" name="concentration" id="concentration" placeholder="Purity %" class="form-control" />
                 </div>
-                <div class="col-md-2 buffer">
+                <div class="col-md-2">
                 	<select name="dilutant" id="dilutant" class="form-control selectpicker" data-live-search="true">
                     	<option value="" selected disabled>Dilutant</option>
                         <option value="none">None</option>
@@ -102,23 +103,23 @@ if($form[0]['ingredient']){
                         ?>
                     </select>
                 </div>
-                <div class="col-md-2 buffer">
+                <div class="col-md-2">
                 	<input type="text" name="quantity" id="quantity" placeholder="Quantity" class="form-control" />				
                 </div>
-                <div class="col-md-2 buffer">
+                <div class="col-md-2">
                 	<input type="submit" name="add" id="add-btn" class="btn btn-info" value="Add" /> </td>  
-                </div>  
+                </div>
             </div>
-            
-            <div class="col-sm-6 mb-1">
+            <div class="col-sm-6 ml-3 mt-2 mb-2">
         		<input type="checkbox" name="reCalcAdd" id="reCalcAdd" value="1" data-val="1" /> Adjust solvent<i class="fa-solid fa-circle-info ml-2 pv_point_gen" rel="tip" data-placement="right" data-title="The added ingredient's quantity will be deducted from the selected solvent."></i>
             </div>
             <div id="slvMetaAdd">
-            	<div class="col-sm-6 mr-2 mb-1">
+            	<div class="col-sm-6 ml-3 mr-2 mb-1">
         			<input name="formulaSolventsAdd" id="formulaSolventsAdd" type="text" class="formulaSolventsAdd pv-form-control">
             	</div>
           </div>
 		  <div class="col-sm dropdown-divider"></div>
+          
         </div>
           
           <div id="fetch_formula">

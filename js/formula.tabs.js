@@ -6,6 +6,7 @@ $(document).ready(function() {
 						   
 	$('#formula_tab').on( 'click', function () {
 		fetch_formula();
+		reset_solv();
 	});
 	
 	$('#impact_tab').on( 'click', function () {
