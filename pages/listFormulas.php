@@ -204,7 +204,7 @@ function fName(data, type, row, meta){
 
 
 function pName(data, type, row, meta){
-	data = '<i class="pv_point_gen_color" data-toggle="modal" data-backdrop="static" data-target="#getFormMeta" data-id="' + row.id + '" data-formula="'+row.name+'">'+row.name+'</i>';
+	data = '<i class="pv_point_gen_color" data-toggle="modal" data-backdrop="static" data-target="#getFormMeta" data-id="' + row.id + '" data-formula="'+row.name+'">'+row.product_name+'</i>';
 	
   return data;
 }

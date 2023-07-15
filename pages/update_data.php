@@ -902,8 +902,12 @@ if($_GET['formulaMeta']){
 	$formula = mysqli_real_escape_string($conn, base64_decode($_GET['formulaMeta']));
 	$id = mysqli_real_escape_string($conn, $_POST['pk']);
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
-	
-	mysqli_query($conn, "UPDATE formulasMetaData SET $name = '$value' WHERE id = '$id'");
+
+	if(mysqli_query($conn, "UPDATE formulasMetaData SET $name = '$value' WHERE id = '$id'")){
+		$response["success"] = true;
+		$response["msg"] = 'Formula meta updated';
+	}
+	echo json_encode($response);
 	return;
 }
 

@@ -9,6 +9,7 @@
 - Rephrase formula category add
 - Create formula category modal is dismissed after a succesfull creation
 - Rewrite some elements in formula settings page
+- Fix a bug preventing product formula name to be displayed in formulas list
 
 ### Version 7.6
 - Added option to delete an IFRA entry

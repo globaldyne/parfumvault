@@ -224,30 +224,35 @@ $(document).ready(function(){
 	});
   
 	$('#formula_metadata').editable({
-	  container: 'body',
-	  selector: 'a.notes',
-	  emptytext: 'None',
-	  url: "/pages/update_data.php?formulaMeta=<?=$info['fid']?>",
-	  title: 'Notes',
-	  mode: 'inline'	
+	 	container: 'body',
+	  	selector: 'a.notes',
+	  	emptytext: 'None',
+	  	url: "/pages/update_data.php?formulaMeta=<?=$info['fid']?>",
+	  	title: 'Notes',
+	  	mode: 'inline'	
 	});
   
 	$('#formula_metadata').editable({
-	  container: 'body',
-	  selector: 'a.product_name',
-	  url: "/pages/update_data.php?formulaMeta=<?=$info['fid']?>",
-	  title: 'Product Name',
-	  mode: 'inline',
-	  emptytext: 'None',
-	  dataType: 'json',
-		  success: function(response, newValue) {
-			if(response.status == 'error') return response.msg; 
-		},
+	 	container: 'body',
+	  	selector: 'a.product_name',
+	  	url: "/pages/update_data.php?formulaMeta=<?=$info['fid']?>",
+	  	title: 'Product Name',
+	  	mode: 'inline',
+	  	emptytext: 'None',
+	  	ajaxOptions: { 
+			dataType: 'json'
+	  	},
+		success: function(response) {	
+			if(response.error){
+				$('#set_msg').html('<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.msg + '</strong></div>');
+			}       
+		}
+		
 	});
 
 
 	$("#isProtected").change(function() {
-	  $.ajax({ 
+	  	$.ajax({ 
 			url: '/pages/update_data.php', 
 			type: 'GET',
 			data: {
@@ -379,48 +384,48 @@ $(document).ready(function(){
 	});
 
 	$("#status").change(function() {
-	 $.ajax({ 
-		url: '/pages/update_data.php', 
-		type: 'POST',
-		data: {
-			formulaSettings: true,
-			fid: '<?=$info['fid']?>',
-			set: 'status',
-			val: $("#status").find(":selected").val(),
-		},
-		dataType: 'json',
-		success: function (response) {
-			if(response.success){
-				msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.success + '</strong></div>';
-			}else{
-				msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
-			}
-			$('#set_msg').html(msg);
-			}
+		$.ajax({ 
+			url: '/pages/update_data.php', 
+			type: 'POST',
+			data: {
+				formulaSettings: true,
+				fid: '<?=$info['fid']?>',
+				set: 'status',
+				val: $("#status").find(":selected").val(),
+			},
+			dataType: 'json',
+			success: function (response) {
+				if(response.success){
+					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.success + '</strong></div>';
+				}else{
+					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
+				}
+					$('#set_msg').html(msg);
+				}
 	  	});
 	});
 
 
 	$("#customer").change(function() {
-	 $.ajax({ 
-		url: '/pages/update_data.php', 
-		type: 'POST',
-		data: {
-			formulaSettings: true,
-			fid: '<?=$info['fid']?>',
-			set: 'customer_id',
-			val: $("#customer").find(":selected").val(),
-		},
-		dataType: 'json',
-		success: function (response) {
-			if(response.success){
-				msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.success + '</strong></div>';
-			}else{
-				msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
-			}
-			$('#set_msg').html(msg);
-			}
-	  	});
+	 	$.ajax({ 
+			url: '/pages/update_data.php', 
+			type: 'POST',
+			data: {
+				formulaSettings: true,
+				fid: '<?=$info['fid']?>',
+				set: 'customer_id',
+				val: $("#customer").find(":selected").val(),
+			},
+			dataType: 'json',
+			success: function (response) {
+				if(response.success){
+					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.success + '</strong></div>';
+				}else{
+					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
+				}
+					$('#set_msg').html(msg);
+				}
+			});
 	});
 
 }); //END DOC
