@@ -13,6 +13,7 @@
 - Limit formula name to 100 chars
 - Product name defaults to "Not set" if none
 - Hide page reload info message when modal is opened for formulas list page 
+- Add selectpicker in formula settings
 
 ### Version 7.6
 - Added option to delete an IFRA entry

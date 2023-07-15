@@ -86,7 +86,7 @@ while($qTags = mysqli_fetch_array($tagsQ)){
    <div class="form-group">
     <label class="control-label col-auto" for="customer">Customer:</label>
     <div class="col-auto">
-     	<select name="customer" id="customer" class="form-control ellipsis">
+     	<select name="customer" id="customer" class="form-control selectpicker" data-live-search="true">
       <option value="0">Internal use</option>
       <?php foreach ($customer as $c) {?>
       <option value="<?=$c['id'];?>" <?php echo ($info['customer_id']==$c['id'])?"selected=\"selected\"":""; ?>><?php echo $c['name'];?></option>
@@ -98,7 +98,7 @@ while($qTags = mysqli_fetch_array($tagsQ)){
  <div class="form-group">
     <label class="control-label col-auto" for="defView">Default view:</label>
     <div class="col-auto">
-     	<select name="defView" id="defView" class="form-control">
+     	<select name="defView" id="defView" class="form-control selectpicker" data-live-search="true">
 			  <option value="1" <?php if($info['defView']=="1") echo 'selected="selected"'; ?> >Ingredient Properties</option>
 			  <option value="2" <?php if($info['defView']=="2") echo 'selected="selected"'; ?> >Ingredient Notes</option>
           </select>
@@ -108,7 +108,7 @@ while($qTags = mysqli_fetch_array($tagsQ)){
  <div class="form-group">
     <label class="control-label col-auto" for="profile">Category:</label>
     <div class="col-auto">
-    	<select name="profile" id="profile" class="form-control">
+    	<select name="profile" id="profile" class="form-control selectpicker" data-live-search="true">
     	<?php foreach ($fcat as $cat) { if($cat['type'] == 'profile'){?>		
 			<option value="<?=$cat['cname'];?>" <?php echo ($info['profile']==$cat['cname'])?"selected=\"selected\"":""; ?>><?php echo $cat['name'];?></option>
         <?php }	} ?>
@@ -126,7 +126,7 @@ while($qTags = mysqli_fetch_array($tagsQ)){
  <div class="form-group">
     <label class="control-label col-auto" for="catClass">Purpose:</label>
     <div class="col-auto">
-		<select name="catClass" id="catClass" class="form-control ellipsis">
+		<select name="catClass" id="catClass" class="form-control selectpicker" data-live-search="true">
             <option></option>
             <?php foreach ($cats as $IFRACategories) {?>
             <option value="cat<?php echo $IFRACategories['name'];?>" <?php echo ($info['catClass']=='cat'.$IFRACategories['name'])?"selected=\"selected\"":""; ?>><?php echo 'Cat'.$IFRACategories['name'].' - '.$IFRACategories['description'];?></option>
@@ -138,7 +138,7 @@ while($qTags = mysqli_fetch_array($tagsQ)){
  <div class="form-group">
     <label class="control-label col-auto" for="finalType">Final type:</label>
     <div class="col-auto">
-		<select name="finalType" id="finalType" class="form-control ellipsis">  
+		<select name="finalType" id="finalType" class="form-control selectpicker" data-live-search="true">  
             <option value="100">Concentrated (100%)</option>
 	 		<?php foreach ($fTypes as $fType) {?>
 			<option value="<?php echo $fType['concentration'];?>" <?php echo ($info['finalType']==$fType['concentration'])?"selected=\"selected\"":""; ?>><?php echo $fType['name'].' ('.$fType['concentration'];?>%)</option>
@@ -150,7 +150,7 @@ while($qTags = mysqli_fetch_array($tagsQ)){
  <div class="form-group">
     <label class="control-label col-auto" for="finalType">Status:</label>
     <div class="col-auto">
-        <select name="status" id="status" class="form-control ellipsis">  
+        <select name="status" id="status" class="form-control selectpicker" data-live-search="true">  
             <option value="0" <?php if($info['status'] == "0"){ echo 'selected';}?>>Scheduled</option>
             <option value="1" <?php if($info['status'] == "1"){ echo 'selected';}?>>Under Developent</option>
             <option value="2" <?php if($info['status'] == "2"){ echo 'selected';}?>>Under Evaluation</option>
@@ -164,7 +164,7 @@ while($qTags = mysqli_fetch_array($tagsQ)){
  <div class="form-group">
     <label class="control-label col-auto" for="gender">Gender:</label>
     <div class="col-auto">
-    <select name="gender" id="gender" class="form-control">
+    <select name="gender" id="gender" class="form-control selectpicker" data-live-search="true">
     <?php foreach ($fcat as $cat) { if($cat['type'] == 'sex'){?>
 		<option value="<?=$cat['cname'];?>" <?php echo ($info['sex']==$cat['cname'])?"selected=\"selected\"":""; ?>><?php echo $cat['name'];?></option>
     <?php } }?>
@@ -513,6 +513,7 @@ $('#tagsinput').on('beforeItemRemove', function(event) {
 		}
 	});
 });
+$('.selectpicker').selectpicker('refresh');
 
 </script>
 
