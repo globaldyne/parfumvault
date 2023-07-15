@@ -56,7 +56,7 @@ if($pv_meta['schema_ver'] < $db_ver){
               </a>
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
               
-				<a class="dropdown-item popup-link" href="/pages/editUser.php">
+				<a class="dropdown-item" href="#" data-toggle="modal" data-backdrop="static" data-target="#editUser">
                   <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                   Edit my details
                 </a>
@@ -110,19 +110,44 @@ $(document).ready(function() {
 		$('#dbUpOk').hide();
 	<?php } ?>
 
-});
-
-$(function() {
-	$.ajax({ 
-		url: '/pages/views/tools/calcTools.php', 
-		type: 'GET',
-		dataType: 'html',
-		success: function (data) {
-			$('.toolsHtml').html(data);
-		}
-	  });
-});
+	$(function() {
+		$.ajax({ 
+			url: '/pages/views/tools/calcTools.php', 
+			type: 'GET',
+			dataType: 'html',
+			success: function (data) {
+				$('.toolsHtml').html(data);
+			}
+		  });
+	});
+	
+	$("#editUser").on("show.bs.modal", function(e) {
+	  $.get("/pages/editUser.php")
+		.then(data => {
+		  $(".modal-body", this).html(data);
+		});
+	});
+	
+});//END DOC
 </script>
+
+<!--EDIT USER PROFILE MODAL-->            
+<div class="modal fade" id="editUser" tabindex="-1" role="dialog" aria-labelledby="editUserLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editUserLabel">Edit my details</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-danger">Unable to get data</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- calcTools Modal -->
 <div class="modal fade" id="calcTools" tabindex="-1" role="dialog" aria-labelledby="calcTools" aria-hidden="true">
     <div class="modal-dialog modal-lg">

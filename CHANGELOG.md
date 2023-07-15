@@ -14,6 +14,7 @@
 - Product name defaults to "Not set" if none
 - Hide page reload info message when modal is opened for formulas list page 
 - Add selectpicker in formula settings
+- User profile details page became modal
 
 ### Version 7.6
 - Added option to delete an IFRA entry
