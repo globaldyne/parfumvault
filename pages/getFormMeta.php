@@ -57,7 +57,7 @@ while($qTags = mysqli_fetch_array($tagsQ)){
 
 <script src="/js/bootstrap-tagsinput.js"></script> 
 <link href="/css/bootstrap-tagsinput.css" rel="stylesheet" />
-<div id="msg_settungs_info"><div class="alert alert-info">Some of the changes require the page to be reloaded to appear properly. Please remember to refresh your browser if your changes not automatically appear.</div>
+<div id="msg_settings_info"><div class="alert alert-info">Some of the changes require the page to be reloaded to appear properly. Please remember to refresh your browser if your changes not automatically appear.</div>
 
 <div class="form-horizontal col-m card pt-3 pl-5 pr-5" id="formula_metadata">
  <div id="set_msg" class="col-sm"></div>
@@ -106,9 +106,13 @@ while($qTags = mysqli_fetch_array($tagsQ)){
  </div>  
   
  <div class="form-group">
-    <label class="control-label col-auto" for="profile">Profile:</label>
+    <label class="control-label col-auto" for="profile">Category:</label>
     <div class="col-auto">
-		<a href="#" id="profile" data-type="select" data-pk="<?php echo $info['id'];?>" data-title="Select profile"></a>
+    	<select name="profile" id="profile" class="form-control">
+    	<?php foreach ($fcat as $cat) { if($cat['type'] == 'profile'){?>		
+			<option value="<?=$cat['cname'];?>" <?php echo ($info['profile']==$cat['cname'])?"selected=\"selected\"":""; ?>><?php echo $cat['name'];?></option>
+        <?php }	} ?>
+        </select>   
     </div>
  </div>  
   
@@ -160,7 +164,11 @@ while($qTags = mysqli_fetch_array($tagsQ)){
  <div class="form-group">
     <label class="control-label col-auto" for="gender">Gender:</label>
     <div class="col-auto">
-		<a href="#" id="gender" data-type="select" data-pk="<?php echo $info['id'];?>" data-title="Select gender"></a>
+    <select name="gender" id="gender" class="form-control">
+    <?php foreach ($fcat as $cat) { if($cat['type'] == 'sex'){?>
+		<option value="<?=$cat['cname'];?>" <?php echo ($info['sex']==$cat['cname'])?"selected=\"selected\"":""; ?>><?php echo $cat['name'];?></option>
+    <?php } }?>
+    </select>
     </div>
  </div>
  
@@ -187,184 +195,207 @@ while($qTags = mysqli_fetch_array($tagsQ)){
 <script type="text/javascript" language="javascript" >
 $(document).ready(function(){
 
-$('[rel=tip]').tooltip({placement: 'right'});
-
-
-$('#formula_metadata').editable({
-  container: 'body',
-  selector: 'a.name',
-  url: "/pages/update_data.php?action=rename&fid=<?=$info['fid']?>",
-  title: 'Name',
-  mode: 'inline',
-  ajaxOptions: { 
-  	dataType: 'json'
-  },
-  validate: function(value){
-  	if($.trim(value) == ''){
-		return 'This field is required';
-   	}
-  },
-  success: function(response) {	
-  	if(response.success){
-		msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.success + '</strong></div>';
-		$("#getFormMetaLabel").html(response.msg);
-	}else{
-		msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
-	}
-	  	$('#set_msg').html(msg);        
-    },
-
-});
+	$('[rel=tip]').tooltip({placement: 'right'});
+	
+	
+	$('#formula_metadata').editable({
+	  container: 'body',
+	  selector: 'a.name',
+	  url: "/pages/update_data.php?action=rename&fid=<?=$info['fid']?>",
+	  title: 'Name',
+	  mode: 'inline',
+	  ajaxOptions: { 
+		dataType: 'json'
+	  },
+	  validate: function(value){
+		if($.trim(value) == ''){
+			return 'This field is required';
+		}
+	  },
+	  success: function(response) {	
+		if(response.success){
+			msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.success + '</strong></div>';
+			$("#getFormMetaLabel").html(response.msg);
+		}else{
+			msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
+		}
+			$('#set_msg').html(msg);        
+		},
+	
+	});
   
-$('#formula_metadata').editable({
-  container: 'body',
-  selector: 'a.notes',
-  emptytext: 'None',
-  url: "/pages/update_data.php?formulaMeta=<?=$info['fid']?>",
-  title: 'Notes',
-  mode: 'inline'
-
-
-});
+	$('#formula_metadata').editable({
+	  container: 'body',
+	  selector: 'a.notes',
+	  emptytext: 'None',
+	  url: "/pages/update_data.php?formulaMeta=<?=$info['fid']?>",
+	  title: 'Notes',
+	  mode: 'inline'
+	
+	
+	});
   
-$('#formula_metadata').editable({
-  container: 'body',
-  selector: 'a.product_name',
-  url: "/pages/update_data.php?formulaMeta=<?=$info['fid']?>",
-  title: 'Product Name',
-  mode: 'inline',
-  emptytext: 'None',
-  dataType: 'json',
-      success: function(response, newValue) {
-        if(response.status == 'error') return response.msg; 
-    },
-
-});
-
-$('#profile').editable({
-	value: "<?php echo $info['profile'];?>",
-	title: 'Profile',
-	mode: 'inline',
-	url: "/pages/update_data.php?formulaMeta=<?=$info['fid']?>",
-	source: [
-		<?php foreach ($fcat as $cat) { if($cat['type'] == 'profile'){?>		
-		 {value: '<?=$cat['cname']?>', text: '<?=$cat['name']?>'},
-		<?php } }?>
-		]
-});
-
-$('#gender').editable({
-	value: "<?php echo $info['sex'];?>",
-	emptytext: 'Please select',
-	mode: 'inline',
-	url: "/pages/update_data.php?formulaMeta=<?=$info['fid']?>",
-	source: [
-		 <?php foreach ($fcat as $cat) { if($cat['type'] == 'sex'){?>		
-		 	{value: '<?=$cat['cname']?>', text: '<?=$cat['name']?>'},
-		<?php } }?>
-	   ]
-});
-});
+	$('#formula_metadata').editable({
+	  container: 'body',
+	  selector: 'a.product_name',
+	  url: "/pages/update_data.php?formulaMeta=<?=$info['fid']?>",
+	  title: 'Product Name',
+	  mode: 'inline',
+	  emptytext: 'None',
+	  dataType: 'json',
+		  success: function(response, newValue) {
+			if(response.status == 'error') return response.msg; 
+		},
+	
+	});
 
 
-
-$("#isProtected").change(function() {
-  $.ajax({ 
+	$("#isProtected").change(function() {
+	  $.ajax({ 
+			url: '/pages/update_data.php', 
+			type: 'GET',
+			data: {
+				protect: '<?=$info['fid']?>',
+				isProtected: $("#isProtected").is(':checked'),
+				},
+			dataType: 'json',
+			success: function (data) {
+				if(data.success){
+					var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + data.success + '</strong></div>';
+				}else{
+					var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + data.error + '</strong></div>';
+				}
+				$('#set_msg').html(msg);
+			}
+		  });
+	});
+  
+	$("#defView").change(function() {
+	 $.ajax({ 
 		url: '/pages/update_data.php', 
 		type: 'GET',
 		data: {
-			protect: '<?=$info['fid']?>',
-			isProtected: $("#isProtected").is(':checked'),
+			formula: '<?=$info['fid']?>',
+			defView: $("#defView").find(":selected").val(),
 			},
-		dataType: 'json',
+		dataType: 'html',
 		success: function (data) {
-			if(data.success){
-				var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + data.success + '</strong></div>';
-			}else{
-				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + data.error + '</strong></div>';
-			}
-			$('#set_msg').html(msg);
+			$('#set_msg').html(data);
 		}
 	  });
-});
-  
-$("#defView").change(function() {
- $.ajax({ 
-	url: '/pages/update_data.php', 
-	type: 'GET',
-	data: {
-		formula: '<?=$info['fid']?>',
-		defView: $("#defView").find(":selected").val(),
-		},
-	dataType: 'html',
-	success: function (data) {
-		$('#set_msg').html(data);
-	}
-  });
-});
+	});
 
-$("#catClass").change(function() {
- $.ajax({ 
-	url: '/pages/update_data.php', 
-	type: 'GET',
-	data: {
-		formula: '<?=$info['fid']?>',
-		catClass: $("#catClass").find(":selected").val(),
-		},
-	dataType: 'html',
-	success: function (data) {
-		$('#set_msg').html(data);
-	}
-  });
-});
-
-$("#finalType").change(function() {
- $.ajax({ 
-	url: '/pages/update_data.php', 
-	type: 'GET',
-	data: {
-		formula: '<?=$info['id']?>',
-		finalType: $("#finalType").find(":selected").val(),
-		},
-	dataType: 'html',
-	success: function (data) {
-		$('#set_msg').html(data);
-	}
-  });
-});
-
-$("#status").change(function() {
- $.ajax({ 
-	url: '/pages/update_data.php', 
-	type: 'GET',
-	data: {
-		formula: '<?=$info['id']?>',
-		updateStatus: 1,
-		formulaStatus: $("#status").find(":selected").val(),
-		},
-	dataType: 'html',
-	success: function (data) {
-		$('#set_msg').html(data);
-	}
-  });
-});
+	$("#profile").change(function() {
+		$.ajax({ 
+			url: "/pages/update_data.php",
+			type: 'POST',
+			data: {
+				formulaSettings: true,
+				fid: '<?=$info['fid']?>',
+				set: 'profile',
+				val: $("#profile").find(":selected").val(),
+			},
+			dataType: 'json',
+			success: function (response) {
+				if(response.success){
+					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.success + '</strong></div>';
+				}else{
+					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
+				}
+				$('#set_msg').html(msg);
+			}
+	  }); 
+	});
 
 
-$("#customer").change(function() {
- $.ajax({ 
-	url: '/pages/update_data.php', 
-	type: 'GET',
-	data: {
-		formula: '<?=$info['fid']?>',
-		customer_id: $("#customer").find(":selected").val(),
-		customer_set: 1
-		},
-	dataType: 'html',
-	success: function (data) {
-		$('#set_msg').html(data);
-	}
-  });
-});
+	$("#gender").change(function() {	
+		$.ajax({ 
+			url: "/pages/update_data.php",
+			type: 'POST',
+			data: {
+				formulaSettings: true,
+				fid: '<?=$info['fid']?>',
+				set: 'sex',
+				val: $("#gender").find(":selected").val(),
+			},
+			dataType: 'json',
+			success: function (response) {
+				if(response.success){
+					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.success + '</strong></div>';
+				}else{
+					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
+				}
+				$('#set_msg').html(msg);
+			}
+	  }); 
+	});
+
+
+
+	$("#catClass").change(function() {
+	 $.ajax({ 
+		url: '/pages/update_data.php', 
+		type: 'GET',
+		data: {
+			formula: '<?=$info['fid']?>',
+			catClass: $("#catClass").find(":selected").val(),
+			},
+		dataType: 'html',
+		success: function (data) {
+			$('#set_msg').html(data);
+		}
+	  });
+	});
+
+	$("#finalType").change(function() {
+	 $.ajax({ 
+		url: '/pages/update_data.php', 
+		type: 'GET',
+		data: {
+			formula: '<?=$info['id']?>',
+			finalType: $("#finalType").find(":selected").val(),
+			},
+		dataType: 'html',
+		success: function (data) {
+			$('#set_msg').html(data);
+		}
+	  });
+	});
+
+	$("#status").change(function() {
+	 $.ajax({ 
+		url: '/pages/update_data.php', 
+		type: 'GET',
+		data: {
+			formula: '<?=$info['id']?>',
+			updateStatus: 1,
+			formulaStatus: $("#status").find(":selected").val(),
+			},
+		dataType: 'html',
+		success: function (data) {
+			$('#set_msg').html(data);
+		}
+	  });
+	});
+
+
+	$("#customer").change(function() {
+	 $.ajax({ 
+		url: '/pages/update_data.php', 
+		type: 'GET',
+		data: {
+			formula: '<?=$info['fid']?>',
+			customer_id: $("#customer").find(":selected").val(),
+			customer_set: 1
+			},
+		dataType: 'html',
+		success: function (data) {
+			$('#set_msg').html(data);
+		}
+	  });
+	});
+
+}); //END DOC
 
 $("#pic_upload").click(function(){
 	$("#upload_resp").html('<div class="dropdown-divider"><div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');

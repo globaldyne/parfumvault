@@ -943,6 +943,21 @@ if($_GET['protect']){
 	return;
 }
 
+if($_POST['formulaSettings'] &&  $_POST['set']){
+	$fid = mysqli_real_escape_string($conn, $_POST['fid']);
+	$set = mysqli_real_escape_string($conn, $_POST['set']);
+	$val = mysqli_real_escape_string($conn, $_POST['val']);
+
+	if(mysqli_query($conn, "UPDATE formulasMetaData SET $set = '$val' WHERE fid = '$fid'")){
+		$response["success"] = "Formula $set updated";
+		echo json_encode($response);
+	}else{
+		$response["error"] = 'Something went wrong';
+		echo json_encode($response);
+	}
+	return;
+}
+
 if($_GET['formula'] &&  $_GET['defView']){
 	$fid = mysqli_real_escape_string($conn, $_GET['formula']);
 	$defView = mysqli_real_escape_string($conn, $_GET['defView']);

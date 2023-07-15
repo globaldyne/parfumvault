@@ -8,6 +8,7 @@
 - Rewrite add formula modal
 - Rephrase formula category add
 - Create formula category modal is dismissed after a succesfull creation
+- Rewrite some elements in formula settings page
 
 ### Version 7.6
 - Added option to delete an IFRA entry
