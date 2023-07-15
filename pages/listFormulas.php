@@ -371,7 +371,7 @@ $('#add_formula').on('click', '[id*=btnAdd]', function () {
 	type: 'POST',
     data: {
 		action: 'addFormula',
-		name: $("#name").val(),
+		name: $("#formula-name").val(),
 		profile: $("#profile").val(),
 		catClass: $("#catClass").val(),
 		finalType: $("#finalType").val(),
@@ -576,6 +576,13 @@ $("#getFormMeta").on("show.bs.modal", function(e) {
 	
 });
 
+$("#formula-name").keyup(function(){
+	var currentText = $(this).val();
+	if (currentText == ""){
+		currentText = "Add new formula";
+	}
+    $("#new-formula-name").text(currentText);
+});
 
 </script>
 
@@ -601,17 +608,17 @@ $("#getFormMeta").on("show.bs.modal", function(e) {
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Add new formula</h5>
+        <h5 class="modal-title mgmIngHeader mgmIngHeader-with-separator" id="new-formula-name">Add new formula</h5>
       </div>
       <div class="modal-body">
       <div id="addFormulaMsg"></div>
       
-<div class="form-horizontal">
+	  <div class="form-horizontal">
 
       <div class="form-group">
-        <label for="name" class="col-sm-2 control-label">Formula name</label>
+        <label for="formula-name" class="col-sm-2 control-label">Formula name</label>
         <div class="col-sm-10">
-          <input name="name" id="name" type="text" class="form-control" />
+          <input name="formula-name" id="formula-name" type="text" class="form-control" />
         </div>
       </div>
       <div class="form-group">

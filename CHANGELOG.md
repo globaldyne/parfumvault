@@ -10,6 +10,8 @@
 - Create formula category modal is dismissed after a succesfull creation
 - Rewrite some elements in formula settings page
 - Fix a bug preventing product formula name to be displayed in formulas list
+- Limit formula name to 100 chars
+- Product name defaults to "Not set" if none
 
 ### Version 7.6
 - Added option to delete an IFRA entry

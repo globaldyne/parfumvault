@@ -405,6 +405,13 @@ if($_POST['action'] == 'addFormula'){
 		echo json_encode($response);
 		return;
 	}
+	
+	if(strlen($_POST['name']) > '100'){
+		$response['error'] = 'Formula name is too big. Max 100 chars allowed.';
+		echo json_encode($response);
+		return;
+	}
+	
 	require_once(__ROOT__.'/func/genFID.php');
 	
 	$name = mysqli_real_escape_string($conn, $_POST['name']);

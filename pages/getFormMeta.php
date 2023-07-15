@@ -71,7 +71,7 @@ while($qTags = mysqli_fetch_array($tagsQ)){
  <div class="form-group">
     <label class="control-label col-auto" for="product_name">Product Name:</label>
     <div class="col-auto">
-     	<a href="#" data-name="product_name" class="product_name" id="product_name" data-pk="<?php echo $info['id'];?>"><?php echo $info['product_name'] ?: $info['name'];?></a>
+     	<a href="#" data-name="product_name" class="product_name" id="product_name" data-pk="<?php echo $info['id'];?>"><?php echo $info['product_name'] ?: 'Not set';?></a>
     </div>
   </div>
 
