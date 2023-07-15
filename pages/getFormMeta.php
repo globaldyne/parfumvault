@@ -57,7 +57,7 @@ while($qTags = mysqli_fetch_array($tagsQ)){
 
 <script src="/js/bootstrap-tagsinput.js"></script> 
 <link href="/css/bootstrap-tagsinput.css" rel="stylesheet" />
-<div id="msg_settings_info"><div class="alert alert-info">Some of the changes require the page to be reloaded to appear properly. Please remember to refresh your browser if your changes not automatically appear.</div>
+<div id="msg_settings_info"><div class="alert alert-info">Some of the changes require the page to be reloaded to appear properly. Please remember to refresh your browser if your changes not automatically appear.</div></div>
 
 <div class="form-horizontal col-m card pt-3 pl-5 pr-5" id="formula_metadata">
  <div id="set_msg" class="col-sm"></div>

@@ -572,6 +572,7 @@ $("#getFormMeta").on("show.bs.modal", function(e) {
     .then(data => {
       $("#getFormMetaLabel", this).html(formula);
       $(".modal-body", this).html(data);
+	  $("#msg_settings_info", this).html('');
     });
 	
 });
