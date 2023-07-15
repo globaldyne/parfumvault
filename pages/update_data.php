@@ -949,7 +949,7 @@ if($_POST['formulaSettings'] &&  $_POST['set']){
 	$val = mysqli_real_escape_string($conn, $_POST['val']);
 
 	if(mysqli_query($conn, "UPDATE formulasMetaData SET $set = '$val' WHERE fid = '$fid'")){
-		$response["success"] = "Formula $set updated";
+		$response["success"] = "Formula settings updated";
 		echo json_encode($response);
 	}else{
 		$response["error"] = 'Something went wrong';
@@ -958,65 +958,7 @@ if($_POST['formulaSettings'] &&  $_POST['set']){
 	return;
 }
 
-if($_GET['formula'] &&  $_GET['defView']){
-	$fid = mysqli_real_escape_string($conn, $_GET['formula']);
-	$defView = mysqli_real_escape_string($conn, $_GET['defView']);
-	
-	if(mysqli_query($conn, "UPDATE formulasMetaData SET defView = '$defView' WHERE fid = '$fid'")){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Default formula view changed!</div>';
-	}else{
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Something went wrong.</div>';
-	}
-	return;
-}
 
-if($_GET['formula'] &&  $_GET['catClass']){
-	$fid = mysqli_real_escape_string($conn, $_GET['formula']);
-	$catClass = mysqli_real_escape_string($conn, $_GET['catClass']);
-	
-	if(mysqli_query($conn, "UPDATE formulasMetaData SET catClass = '$catClass' WHERE fid = '$fid'")){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Purpose changed!</div>';
-	}else{
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Something went wrong.</div>';
-	}
-	return;
-}
-
-if($_GET['formula'] &&  $_GET['finalType']){
-	$fid = mysqli_real_escape_string($conn, $_GET['formula']);
-	$finalType = mysqli_real_escape_string($conn, $_GET['finalType']);
-	
-	if(mysqli_query($conn, "UPDATE formulasMetaData SET finalType = '$finalType' WHERE id = '$fid'")){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Finished product type changed!</div>';
-	}else{
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Something went wrong.</div>';
-	}
-	return;
-}
-
-if($_GET['formula'] &&  $_GET['updateStatus']){
-	$fid = mysqli_real_escape_string($conn, $_GET['formula']);
-	$formulaStatus = mysqli_real_escape_string($conn, $_GET['formulaStatus']);
-	
-	if(mysqli_query($conn, "UPDATE formulasMetaData SET status = '$formulaStatus' WHERE id = '$fid'")){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Status updated!</div>';
-	}else{
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Something went wrong.</div>';
-	}
-	return;
-}
-
-if($_GET['formula'] &&  $_GET['customer_set'] && is_numeric($_GET['customer_id'])){
-	$fid = mysqli_real_escape_string($conn, $_GET['formula']);
-	$customer_id = mysqli_real_escape_string($conn, $_GET['customer_id']);
-	
-	if(mysqli_query($conn, "UPDATE formulasMetaData SET customer_id = '$customer_id' WHERE fid = '$fid'")){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Customer updated!</div>';
-	}else{
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Something went wrong.</div>';
-	}
-	return;
-}
 
 if($_GET['action'] == 'rename' && $_GET['fid']){
 	$value = mysqli_real_escape_string($conn, $_POST['value']);

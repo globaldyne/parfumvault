@@ -197,7 +197,6 @@ $(document).ready(function(){
 
 	$('[rel=tip]').tooltip({placement: 'right'});
 	
-	
 	$('#formula_metadata').editable({
 	  container: 'body',
 	  selector: 'a.name',
@@ -230,9 +229,7 @@ $(document).ready(function(){
 	  emptytext: 'None',
 	  url: "/pages/update_data.php?formulaMeta=<?=$info['fid']?>",
 	  title: 'Notes',
-	  mode: 'inline'
-	
-	
+	  mode: 'inline'	
 	});
   
 	$('#formula_metadata').editable({
@@ -246,7 +243,6 @@ $(document).ready(function(){
 		  success: function(response, newValue) {
 			if(response.status == 'error') return response.msg; 
 		},
-	
 	});
 
 
@@ -271,18 +267,25 @@ $(document).ready(function(){
 	});
   
 	$("#defView").change(function() {
-	 $.ajax({ 
-		url: '/pages/update_data.php', 
-		type: 'GET',
-		data: {
-			formula: '<?=$info['fid']?>',
-			defView: $("#defView").find(":selected").val(),
-			},
-		dataType: 'html',
-		success: function (data) {
-			$('#set_msg').html(data);
-		}
-	  });
+	 	$.ajax({ 
+			url: '/pages/update_data.php', 
+			type: 'POST',
+			data: {
+				formulaSettings: true,
+				fid: '<?=$info['fid']?>',
+				set: 'defView',
+				val: $("#defView").find(":selected").val(),
+				},
+			dataType: 'json',
+			success: function (response) {
+				if(response.success){
+					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.success + '</strong></div>';
+				}else{
+					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
+				}
+				$('#set_msg').html(msg);
+			}
+	 	});
 	});
 
 	$("#profile").change(function() {
@@ -331,68 +334,93 @@ $(document).ready(function(){
 	});
 
 
-
 	$("#catClass").change(function() {
-	 $.ajax({ 
-		url: '/pages/update_data.php', 
-		type: 'GET',
-		data: {
-			formula: '<?=$info['fid']?>',
-			catClass: $("#catClass").find(":selected").val(),
+		$.ajax({ 
+			url: '/pages/update_data.php', 
+			type: 'POST',
+			data: {
+				formulaSettings: true,
+				fid: '<?=$info['fid']?>',
+				set: 'catClass',
+				val: $("#catClass").find(":selected").val(),
 			},
-		dataType: 'html',
-		success: function (data) {
-			$('#set_msg').html(data);
-		}
+			dataType: 'json',
+			success: function (response) {
+				if(response.success){
+					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.success + '</strong></div>';
+				}else{
+					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
+				}
+				$('#set_msg').html(msg);
+			}
 	  });
 	});
 
 	$("#finalType").change(function() {
-	 $.ajax({ 
-		url: '/pages/update_data.php', 
-		type: 'GET',
-		data: {
-			formula: '<?=$info['id']?>',
-			finalType: $("#finalType").find(":selected").val(),
+	 	$.ajax({ 
+			url: '/pages/update_data.php', 
+			type: 'POST',
+			data: {
+				formulaSettings: true,
+				fid: '<?=$info['fid']?>',
+				set: 'finalType',
+				val: $("#finalType").find(":selected").val(),
 			},
-		dataType: 'html',
-		success: function (data) {
-			$('#set_msg').html(data);
-		}
+			dataType: 'json',
+			success: function (response) {
+				if(response.success){
+					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.success + '</strong></div>';
+				}else{
+					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
+				}
+				$('#set_msg').html(msg);
+			}
 	  });
 	});
 
 	$("#status").change(function() {
 	 $.ajax({ 
 		url: '/pages/update_data.php', 
-		type: 'GET',
+		type: 'POST',
 		data: {
-			formula: '<?=$info['id']?>',
-			updateStatus: 1,
-			formulaStatus: $("#status").find(":selected").val(),
-			},
-		dataType: 'html',
-		success: function (data) {
-			$('#set_msg').html(data);
-		}
-	  });
+			formulaSettings: true,
+			fid: '<?=$info['fid']?>',
+			set: 'status',
+			val: $("#status").find(":selected").val(),
+		},
+		dataType: 'json',
+		success: function (response) {
+			if(response.success){
+				msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.success + '</strong></div>';
+			}else{
+				msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
+			}
+			$('#set_msg').html(msg);
+			}
+	  	});
 	});
 
 
 	$("#customer").change(function() {
 	 $.ajax({ 
 		url: '/pages/update_data.php', 
-		type: 'GET',
+		type: 'POST',
 		data: {
-			formula: '<?=$info['fid']?>',
-			customer_id: $("#customer").find(":selected").val(),
-			customer_set: 1
-			},
-		dataType: 'html',
-		success: function (data) {
-			$('#set_msg').html(data);
-		}
-	  });
+			formulaSettings: true,
+			fid: '<?=$info['fid']?>',
+			set: 'customer_id',
+			val: $("#customer").find(":selected").val(),
+		},
+		dataType: 'json',
+		success: function (response) {
+			if(response.success){
+				msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.success + '</strong></div>';
+			}else{
+				msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
+			}
+			$('#set_msg').html(msg);
+			}
+	  	});
 	});
 
 }); //END DOC
