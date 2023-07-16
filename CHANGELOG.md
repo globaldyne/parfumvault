@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 7.8
+- Edit ingredient category rewrite
 
 ### Version 7.7
 - Fix a bug incorrectly showing available solvents when adjust was enabled in ingredient add

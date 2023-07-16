@@ -10,6 +10,50 @@ require_once(__ROOT__.'/func/fixIFRACas.php');
 require_once(__ROOT__.'/func/formatBytes.php');
 require_once(__ROOT__.'/func/create_thumb.php');
 
+if($_GET['upload_ing_cat_pic'] && $_GET['catID']){
+
+	$id = $_GET['catID'];
+	$allowed_ext = "png, jpg, jpeg, gif, bmp";
+
+	$filename = $_FILES["cat-pic-file"]["tmp_name"];  
+    $file_ext = strtolower(end(explode('.',$_FILES['cat-pic-file']['name'])));
+	$file_tmp = $_FILES['cat-pic-file']['tmp_name'];
+    $ext = explode(', ',strtolower($allowed_ext));
+
+	
+	if(!$filename){
+		$response["error"] = 'Please choose a file to upload...';
+		echo json_encode($response);
+		return;
+	}	
+	
+	if (!file_exists(__ROOT__."/uploads/tmp/")) {
+		mkdir(__ROOT__."/uploads/tmp/", 0740, true);
+	}
+		
+	if(in_array($file_ext,$ext)===false){
+		$response["error"] = '<strong>File upload error: </strong>Extension not allowed, please choose a '.$allowed_ext.' file';
+		echo json_encode($response);
+		return;
+	}
+		
+	if($_FILES["cat-pic-file"]["size"] > 0){
+		move_uploaded_file($file_tmp,__ROOT__."/uploads/tmp/".base64_encode($filename));
+		$pic = "/uploads/tmp/".base64_encode($filename);		
+		create_thumb(__ROOT__.$pic,250,250); 
+		$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents(__ROOT__.$pic));
+		
+		if(mysqli_query($conn, "UPDATE ingCategory SET image = '".$docData."' WHERE id = '$id'")){	
+			unlink(__ROOT__.$pic);
+			$response["success"] = array( "msg" => "Category pic updated!", "pic" => $docData);
+			echo json_encode($response);
+			return;
+		}
+	}
+
+	return;
+}
+
 if($_GET['type'] == 'bottle' && $_GET['name']){
 	$name = base64_decode($_GET['name']);
 	$ml = $_GET['size']?:0;

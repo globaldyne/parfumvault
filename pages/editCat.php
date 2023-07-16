@@ -46,24 +46,57 @@ if(isset($_FILES['photo']['name'])){
 $cat = mysqli_fetch_array(mysqli_query($conn, "SELECT image,name FROM ingCategory WHERE id = '$id'")); 
 
 ?>
+<div id="cat-msg"></div>
 
-<form action="/pages/editCat.php?id=<?=$id?>" method="post" enctype="multipart/form-data" name="form">
-<table class="table table-bordered" cellspacing="0">
-    <tr>
-      <td colspan="2" class="badge-primary">Upload image for  <?=$cat['name']?></td>
-    </tr>
-    <tr>
-      <td colspan="2"><?=$msg?></td>
-    </tr>
-    <tr>
-      <td width="12%">Image:</td>
-      <td width="88%"><input type="file" name="photo" id="photo" /></td>
-    </tr>
-    <tr>
-      <td colspan="2">Recommended size: <?=$max_height?>x<?=$max_width?> pixels</td>
-    </tr>
-    <tr>
-      <td colspan="2"><input name="update" type="submit" class="btn-dark" id="update" value="Upload"></td>
-    </tr>
-  </table>
-</form>
+
+	<div class="row">
+      <div class="col-md">
+        <div class="text-center">
+          <div id="cat-pic"><div class="loader"></div></div>
+          <h6>Upload a photo...</h6>
+          <input type="file" name="cat-pic-file" id="cat-pic-file" class="form-control">
+        </div>
+        <div class="dropdown-divider"></div>
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+			<div class="text-right">
+        		<input type="submit" class="btn-dark" id="update-cat" value="Upload" />
+        	</div>
+        </div>
+      </div>
+    </div>
+    <div class="dropdown-divider"></div>
+    <div class="alert alert-info">Recommended size: <?=$max_height?>x<?=$max_width?> pixels</div>
+
+
+<script>
+$(document).ready(function () {
+
+	$('#cat-pic').html('<img class="img-profile-avatar" src="<?=$cat['image']?: '/img/molecule.png'; ?>">');
+	
+	$('#update-cat').click(function() {
+		var fd = new FormData();
+		var files = $('#cat-pic-file')[0].files;
+	
+		if(files.length > 0 ){
+			fd.append('cat-pic-file',files[0]);
+		}
+		$.ajax({ 
+			url: '/pages/upload.php?upload_ing_cat_pic=1&catID=<?=$id?>', 
+			type: 'POST',
+			data: fd,
+			contentType: false,
+			processData: false,
+			cache: false,
+			dataType: 'json',
+			success: function (data) {
+				if(data.success){
+					$('#cat-pic').html('<img class="img-profile-avatar" src="'+data.success.pic+'">');
+	
+				}else if( data.error){
+					$('#cat-msg').html('<div class="alert alert-danger">'+data.error+'</div>');
+				}
+			}
+		  });
+	});
+});
+</script>
