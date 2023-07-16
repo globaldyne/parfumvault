@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 7.8
+
 ### Version 7.7
 - Fix a bug incorrectly showing available solvents when adjust was enabled in ingredient add
 - Making sure add solvent function is reset after is added

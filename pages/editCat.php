@@ -18,7 +18,6 @@ if(isset($_FILES['photo']['name'])){
     $file_tmp =  $_FILES['photo']['tmp_name'];
     $file_type = $_FILES['photo']['type'];
     $file_ext = strtolower(end(explode('.',$_FILES['photo']['name'])));
-    
 
 	
 	$tmp_path = __ROOT__.'/tmp/';
@@ -47,17 +46,8 @@ if(isset($_FILES['photo']['name'])){
 $cat = mysqli_fetch_array(mysqli_query($conn, "SELECT image,name FROM ingCategory WHERE id = '$id'")); 
 
 ?>
-<link href="../css/sb-admin-2.css" rel="stylesheet">
-<link href="../css/bootstrap.min.css" rel="stylesheet">
 
-<style>
-.form-inline .form-control {
-    display: inline-block;
-    width: 500px;
-    vertical-align: middle;
-}
-</style>
-<form action="?id=<?=$id?>" method="post" enctype="multipart/form-data" name="form">
+<form action="/pages/editCat.php?id=<?=$id?>" method="post" enctype="multipart/form-data" name="form">
 <table class="table table-bordered" cellspacing="0">
     <tr>
       <td colspan="2" class="badge-primary">Upload image for  <?=$cat['name']?></td>
