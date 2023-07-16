@@ -80,7 +80,7 @@ function name(data, type, row){
 		data ='<div class="btn-group"><a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'+row.name+'</a><div class="dropdown-menu dropdown-menu-right">';
 		for (var key in row.supplier) {
 			if (row.supplier.hasOwnProperty(key)) {
-				data+='<a class="dropdown-item popup-link" href="'+row.supplier[key].link+'" target="_blank">'+row.supplier[key].name+'</a>';
+				data+='<a class="dropdown-item" href="'+row.supplier[key].link+'" target="_blank">'+row.supplier[key].name+'</a>';
 			}
 		}                
 		data+='</div></div>';

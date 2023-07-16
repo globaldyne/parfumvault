@@ -13,11 +13,6 @@ while ($suppliers = mysqli_fetch_array($sup)){
 	    $supplier[] = $suppliers;
 }
 ?>
-<script src="/js/jquery/jquery.min.js"></script>
-
-<link href="/css/sb-admin-2.css" rel="stylesheet">
-<link href="/css/bootstrap.min.css" rel="stylesheet">
-<link href="/css/vault.css" rel="stylesheet">
 
 <style>
 
@@ -28,47 +23,45 @@ while ($suppliers = mysqli_fetch_array($sup)){
 }
 </style>
 <div class="container">
-    <h1 class="text-primary"><?=$bottle['name']?></h1>
-      <hr>
        <div class="text-center">
           <div id="bottle_pic"><div class="loader"></div></div>
        </div>
-       <div id="bottle_inf"></div>
+       <div id="bottle-inf"></div>
         <p>
         Name: 
-          <input name="name" type="text" class="form-control" id="name" value="<?=$bottle['name']?>" />
+          <input class="form-control" name="bottle-name" type="text"  id="bottle-name" value="<?=$bottle['name']?>" />
         </p>
         <p>            
         Size (ml):
-          <input class="form-control" name="size" type="text" id="size" value="<?=$bottle['ml']?>"/>
+          <input class="form-control" name="bottle-size" type="text" id="bottle-size" value="<?=$bottle['ml']?>"/>
         </p>
         <p>
         Price:
-          <input class="form-control" name="price" type="text" id="price" value="<?=$bottle['price']?>"/>
+          <input class="form-control" name="bottle-price" type="text" id="bottle-price" value="<?=$bottle['price']?>"/>
         </p>
  		<p>
         Height:
-          <input class="form-control" name="height" type="text" id="height" value="<?=$bottle['height']?>"/>
+          <input class="form-control" name="bottle-height" type="text" id="bottle-height" value="<?=$bottle['height']?>"/>
         </p>
         <p>
         Width:
-          <input class="form-control" name="width" type="text" id="width" value="<?=$bottle['width']?>"/>
+          <input class="form-control" name="bottle-width" type="text" id="bottle-width" value="<?=$bottle['width']?>"/>
         </p>
         <p>
         Diameter:
-          <input class="form-control" name="diameter" type="text" id="diameter" value="<?=$bottle['diameter']?>"/>
+          <input class="form-control" name="bottle-diameter" type="text" id="bottle-diameter" value="<?=$bottle['diameter']?>"/>
         </p>
         <p>
         Stock (pieces):
-          <input class="form-control" name="pieces" type="text" id="pieces" value="<?=$bottle['pieces']?>"/>
+          <input class="form-control" name="bottle-pieces" type="text" id="bottle-pieces" value="<?=$bottle['pieces']?>"/>
         </p>        
         <p>
         Notes:
-          <input class="form-control" name="notes" type="text" id="notes" value="<?=$bottle['notes']?>"/>
+          <input class="form-control" name="bottle-notes" type="text" id="bottle-notes" value="<?=$bottle['notes']?>"/>
         </p>
         <p>
         Supplier:
-          <select name="supplier" id="supplier" class="form-control">
+          <select name="bottle-supplier" id="bottle-supplier" class="form-control">
             <option value="" selected></option>
             <?php foreach($supplier as $sup) { ?>
 				<option value="<?php echo $sup['name'];?>" <?php echo ($bottle['supplier']==$sup['name'])?"selected=\"selected\"":""; ?>><?php echo $sup['name'];?></option>
@@ -77,7 +70,7 @@ while ($suppliers = mysqli_fetch_array($sup)){
         </p>
         <p>
         Supplier URL:
-          <input class="form-control" name="supplier_link" type="text" id="supplier_link" value="<?=$bottle['supplier_link']?>"/>
+          <input class="form-control" name="bottle-supplier_link" type="text" id="bottle-supplier_link" value="<?=$bottle['supplier_link']?>"/>
         </p>
         <p>
         Image:
@@ -86,30 +79,30 @@ while ($suppliers = mysqli_fetch_array($sup)){
         <div class="dropdown-divider"></div>
 </div>
       <div class="modal-footer">
-        <input type="submit" name="button" class="btn btn-primary" id="save" value="Save">
+        <input type="submit" name="button" class="btn btn-primary" id="bottle-save" value="Save">
       </div>
     </div>  
 <hr>
 <script>
 $('#bottle_pic').html('<img class="img-profile-avatar" src="<?=$doc['photo']?: '/img/logo_def.png'; ?>">');
 
-$('#save').click(function() {
+$('#bottle-save').click(function() {
 	$.ajax({ 
 		url: '/pages/update_data.php', 
 		type: 'POST',
 		data: {
 			update_bottle_data: 1,
 			bottle_id:  "<?=$bottle['id']?>",
-			name: $("#name").val(),			
-			size: $("#size").val(),
-			price: $("#price").val(),
-			height: $("#height").val(),
-			width: $("#width").val(),
-			diameter: $("#diameter").val(),
-			pieces: $("#pieces").val(),
-			notes: $("#notes").val(),
-			supplier: $("#supplier").val(),
-			supplier_link: $("#supplier_link").val(),
+			name: $("#bottle-name").val(),			
+			size: $("#bottle-size").val(),
+			price: $("#bottle-price").val(),
+			height: $("#bottle-height").val(),
+			width: $("#bottle-width").val(),
+			diameter: $("#bottle-diameter").val(),
+			pieces: $("#bottle-pieces").val(),
+			notes: $("#bottle-notes").val(),
+			supplier: $("#bottle-supplier").val(),
+			supplier_link: $("#bottle-supplier_link").val(),
 			},
 		dataType: 'json',
 		success: function (data) {
@@ -118,7 +111,7 @@ $('#save').click(function() {
 			}else if( data.error){
 				var msg = '<div class="alert alert-danger">'+data.error+'</div>';
 			}
-			$('#bottle_inf').html(msg);
+			$('#bottle-inf').html(msg);
 		}
 	  });
 
@@ -140,9 +133,8 @@ $('#save').click(function() {
 			if(data.success){
 				$('#bottle_pic').html('<img class="img-profile-avatar" src="'+data.success.bottle_pic+'">');
 			}else if( data.error){
-				var msg = '<div class="alert alert-danger">'+data.error+'</div>';
+				$('#bottle-inf').html('<div class="alert alert-danger">'+data.error+'</div>');
 			}
-			$('#bottle_inf').html(msg);
 		}
 	  });
 });
