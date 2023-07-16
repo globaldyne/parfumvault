@@ -31,7 +31,7 @@ require_once(__ROOT__.'/inc/sec.php');
           <th>Description</th>
           <th>Created</th>
           <th>Updated</th>
-          <th>Actions</th>
+          <th></th>
       </tr>
    </thead>
 </table>
@@ -57,7 +57,7 @@ $(document).ready(function() {
 			  { data : 'description', title: 'Description', render: description},
 			  { data : 'created', title: 'Created', render: created},
 			  { data : 'updated', title: 'Updated', render: updated},
-			  { data : null, title: 'Actions', render: actions},		   
+			  { data : null, title: '', render: actions},		   
 			 ],
 	order: [[ 1, 'asc' ]],
 	lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
@@ -86,8 +86,15 @@ function updated(data, type, row){
 	return row.updated;    
 }
 
-function actions(data, type, row){
-	return '<a href="/pages/editHtmlTmpl.php?id='+row.id+'" id="editTmpl" class="fas fa-edit popup-link" data-id="'+row.id+'" data-name="'+row.name+'" rel="tip" title="Edit '+row.name+'"></a> <a href="#" id="sDel" class="fas fa-trash" data-id="'+row.id+'" data-name="'+row.name+'" rel="tip" title="Delete '+row.name+'"></a>';
+function actions(data, type, row){	
+		data = '<div class="dropdown">' +
+        '<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+            '<ul class="dropdown-menu dropdown-menu-right">';
+		data += '<li><a href="#" class="dropdown-item" data-toggle="modal" data-backdrop="static" data-target="#editTmpl" rel="tip" title="Edit '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-edit mr2"></i>Edit</a></li>';
+		data += '<div class="dropdown-divider"></div>';
+		data += '<li><a class="dropdown-item" href="#" id="sDel" style="color: #c9302c;" rel="tip" title="Delete '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-trash mr2"></i>Delete</a></li>';
+		data += '</ul></div>';
+	return data;
 }
 
 
@@ -202,13 +209,18 @@ function extrasShow() {
 		 container: "body",
          delay: {"show": 100, "hide": 0},
      });
-	$('.popup-link').magnificPopup({
-		type: 'iframe',
-		closeOnContentClick: false,
-		closeOnBgClick: false,
-		showCloseBtn: true,
-	});
 };
+
+$("#editTmpl").on("show.bs.modal", function(e) {
+	const id = e.relatedTarget.dataset.id;
+	const name = e.relatedTarget.dataset.name;
+
+	$.get("/pages/editHtmlTmpl.php?id=" + id)
+		.then(data => {
+		$("#editTmplLabel", this).html(name);
+		$(".modal-body", this).html(data);
+	});
+});
 </script>
 
 <!-- ADD TEMPLATE -->
@@ -247,5 +259,20 @@ function extrasShow() {
 </div>
 </div>
 
-
+<!--EDIT MODAL-->            
+<div class="modal fade" id="editTmpl" tabindex="-1" role="dialog" aria-labelledby="editTmplLabel" aria-hidden="true">
+  <div class="modal-dialog pv-modal-xxl modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title mgmIngHeader mgmIngHeader-with-separator" id="editTmplLabel">Edit template</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-danger">Unable to get data</div>
+      </div>
+    </div>
+  </div>
+</div>
 

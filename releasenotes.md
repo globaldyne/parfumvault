@@ -13,6 +13,10 @@ cloud installations like Openshift/EKS, etc
 </strong>
 Whats New in v7.7
 --------------------------
+- Bottle inventory page improvements
+- Customers page improvements
+- Html templates page improvements
+- User profile page improvements
 - Adding formula modal improvements
 - Various bug fixes and improvements
 - For full details please refer to the CHANGELOG

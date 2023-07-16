@@ -1,8 +1,7 @@
 <?php
 define('__ROOT__', dirname(dirname(__FILE__))); 
 
-require(__ROOT__.'/inc/sec.php');
-
+require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 
@@ -10,11 +9,6 @@ require_once(__ROOT__.'/inc/opendb.php');
 $q = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM customers WHERE id = '".$_GET['id']."'")); 
 
 ?>
-<script src="/js/jquery/jquery.min.js"></script>
-
-<link href="/css/sb-admin-2.css" rel="stylesheet">
-<link href="/css/bootstrap.min.css" rel="stylesheet">
-<link href="/css/vault.css" rel="stylesheet">
 
 <style>
 
@@ -25,41 +19,37 @@ $q = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM customers WHERE id = 
 }
 </style>
 <div class="container">
-    <h1 class="text-primary"><?=$q['name']?></h1>
-      <hr>
-       <div class="text-center">
-       </div>
-       <div id="inf"></div>
-        <p>
+	<div id="inf"></div>
+     <p>
         Name: 
-          <input class="form-control" name="name" type="text"  id="name" value="<?=$q['name']?>" />
+        <input class="form-control" name="customer-name" type="text"  id="customer-name" value="<?=$q['name']?>" />
         </p>
         <p>            
         Address:
-          <input class="form-control" name="address" type="text" id="address" value="<?=$q['address']?>"/>
+        <input class="form-control" name="customer-address" type="text" id="customer-address" value="<?=$q['address']?>"/>
         </p>
         <p>
         Email:
-          <input class="form-control" name="email" type="text" id="email" value="<?=$q['email']?>"/>
+        <input class="form-control" name="customer-email" type="text" id="customer-email" value="<?=$q['email']?>"/>
         </p>
         <p>
         Web Site:
-          <input class="form-control" name="web" type="text" id="web" value="<?=$q['web']?>"/>
+        <input class="form-control" name="customer-web" type="text" id="customer-web" value="<?=$q['web']?>"/>
         </p>        
 
         <p>
         Phone:
-          <input class="form-control" name="phone" type="text" id="phone" value="<?=$q['phone']?>"/>
+        <input class="form-control" name="customer-phone" type="text" id="customer-phone" value="<?=$q['phone']?>"/>
         </p>
            
-        <div class="dropdown-divider"></div>
 </div>
       <div class="modal-footer">
         <input type="submit" name="button" class="btn btn-primary" id="save" value="Save">
       </div>
     </div>  
-<hr>
+
 <script>
+$(document).ready(function() {
 
 $('#save').click(function() {
 	$.ajax({ 
@@ -67,12 +57,12 @@ $('#save').click(function() {
 		type: 'POST',
 		data: {
 			update_customer_data: 1,
-			customer_id:  "<?=$q['id']?>",
-			name: $("#name").val(),
-			address: $("#address").val(),
-			email: $("#email").val(),
-			web: $("#web").val(),
-			phone: $("#phone").val(),
+			customer_id: "<?=$q['id']?>",
+			name: $("#customer-name").val(),
+			address: $("#customer-address").val(),
+			email: $("#customer-email").val(),
+			web: $("#customer-web").val(),
+			phone: $("#customer-phone").val(),
 			},
 		dataType: 'json',
 		success: function (data) {
@@ -85,5 +75,7 @@ $('#save').click(function() {
 		}
 	  });
 
+	});
 });
+
 </script>

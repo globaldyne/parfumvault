@@ -15,6 +15,10 @@
 - Hide page reload info message when modal is opened for formulas list page 
 - Add selectpicker in formula settings
 - User profile details page became modal
+- Customers page improvements
+- Lids page improvements
+- Bottles page improvements
+- Html teplates page improvements
 
 ### Version 7.6
 - Added option to delete an IFRA entry
