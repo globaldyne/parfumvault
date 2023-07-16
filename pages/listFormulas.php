@@ -44,7 +44,7 @@ while($fTypes_res = mysqli_fetch_array($fTypes_q)){
               <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula" data-backdrop="static"><i class="fa-solid fa-plus mr2"></i>Add new formula</a></li>
               <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula_csv" data-backdrop="static"><i class="fa-solid fa-file-csv mr2"></i>Import from CSV</a></li>
               <div class="dropdown-divider"></div>
-              <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula_cat" data-backdrop="static"><i class="fa-solid fa-circle-plus mr2"></i>Add formula category</a></li>
+              <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula_cat" data-backdrop="static"><i class="fa-solid fa-circle-plus mr2"></i>Create formula category</a></li>
               <div class="dropdown-divider"></div>
         	  <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#export_formulas_json" data-backdrop="static"><i class="fa-solid fa-file-export mr2"></i>Export Formulas as JSON</a></li>
         	  <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#import_formulas_json" data-backdrop="static"><i class="fa-solid fa-file-import mr2"></i>Import Formulas from JSON</a></li>
@@ -115,6 +115,7 @@ if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))
 
 <?php } ?>
 <script type="text/javascript" language="javascript" >
+$('.selectpicker').selectpicker('refresh');
 function extrasShow() {
 	$('[rel=tip]').tooltip({
 		"html": true,
@@ -203,7 +204,7 @@ function fName(data, type, row, meta){
 
 
 function pName(data, type, row, meta){
-	data = '<i class="pv_point_gen_color" data-toggle="modal" data-backdrop="static" data-target="#getFormMeta" data-id="' + row.id + '" data-formula="'+row.name+'">'+row.name+'</i>';
+	data = '<i class="pv_point_gen_color" data-toggle="modal" data-backdrop="static" data-target="#getFormMeta" data-id="' + row.id + '" data-formula="'+row.name+'">'+row.product_name+'</i>';
 	
   return data;
 }
@@ -370,7 +371,7 @@ $('#add_formula').on('click', '[id*=btnAdd]', function () {
 	type: 'POST',
     data: {
 		action: 'addFormula',
-		name: $("#name").val(),
+		name: $("#formula-name").val(),
 		profile: $("#profile").val(),
 		catClass: $("#catClass").val(),
 		finalType: $("#finalType").val(),
@@ -552,9 +553,11 @@ $('#add_formula_cat').on('click', '[id*=add-fcat]', function () {
 		dataType: 'json',
 		success: function (data) {
 			if(data.error){
-				var msg = '<div class="alert alert-danger">'+data.error+'</div>';
+				msg = '<div class="alert alert-danger">'+data.error+'</div>';
 			}else if(data.success){
-				var msg = '<div class="alert alert-success">'+data.success+'</div>';
+				$('#add_formula_cat').modal('toggle');
+				$('.modal-backdrop').hide();
+				list_formulas();
 			}
 			$('#fcatMsg').html(msg);
 		}
@@ -569,10 +572,18 @@ $("#getFormMeta").on("show.bs.modal", function(e) {
     .then(data => {
       $("#getFormMetaLabel", this).html(formula);
       $(".modal-body", this).html(data);
+	  $("#msg_settings_info", this).html('');
     });
 	
 });
 
+$("#formula-name").keyup(function(){
+	var currentText = $(this).val();
+	if (currentText == ""){
+		currentText = "Add new formula";
+	}
+    $("#new-formula-name").text(currentText);
+});
 
 </script>
 
@@ -598,61 +609,71 @@ $("#getFormMeta").on("show.bs.modal", function(e) {
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Add a new formula</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <h5 class="modal-title mgmIngHeader mgmIngHeader-with-separator" id="new-formula-name">Add new formula</h5>
       </div>
       <div class="modal-body">
       <div id="addFormulaMsg"></div>
-        <table width="100%" border="0">  
-          <tr>
-            <td width="11%">Name:</td>
-            <td width="89%"><input name="name" id="name" type="text" class="form-control" /></td>
-          </tr>
-          <tr>
-            <td>Profile:</td>
-            <td>
-            <select name="profile" id="profile" class="form-control">
-            <?php foreach ($fcat as $cat) { if($cat['type'] == 'profile'){?>		
-                <option value="<?=$cat['cname']?>"><?=$cat['name']?></option>
-            <?php } }?>
-            </select>
-            </td>
-          </tr>
-           <tr>
-             <td>Purpose: </td>
-             <td><select name="catClass" id="catClass" class="form-control ellipsis">
+      
+	  <div class="form-horizontal">
+
+      <div class="form-group">
+        <label for="formula-name" class="col-sm-2 control-label">Formula name</label>
+        <div class="col-sm-10">
+          <input name="formula-name" id="formula-name" type="text" class="form-control" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="profile" class="col-sm-2 control-label">Profile</label>
+        <div class="col-sm-10">
+          <select name="profile" id="profile" class="form-control selectpicker" data-live-search="true">
+             <?php foreach ($fcat as $cat) { if($cat['type'] == 'profile'){?>		
+                 <option value="<?=$cat['cname']?>"><?=$cat['name']?></option>
+             <?php } }?>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="catClass" class="col-sm-2 control-label">Purpose</label>
+        <div class="col-sm-10">
+          <select name="catClass" id="catClass" class="form-control selectpicker" data-live-search="true">
             <?php foreach ($cats as $IFRACategories) {?>
                 <option value="cat<?php echo $IFRACategories['name'];?>" <?php echo ($settings['defCatClass']=='cat'.$IFRACategories['name'])?"selected=\"selected\"":""; ?>><?php echo 'Cat'.$IFRACategories['name'].' - '.$IFRACategories['description'];?></option>
             <?php }	?>
-            </select></td>
-           </tr>
-            <tr>
-                <td>Final type:</td>
-                <td>
-                <select name="finalType" id="finalType" class="form-control ellipsis">  
-                    <option value="100">Concentrated (100%)</option>
-					<?php foreach ($fTypes as $fType) {?>
-                        <option value="<?php echo $fType['concentration'];?>" <?php echo ($info['finalType']==$fType['concentration'])?"selected=\"selected\"":""; ?>><?php echo $fType['name'].' ('.$fType['concentration'];?>%)</option>
-                    <?php }	?>			
-                </select>
-                </td>
-          </tr>     
-          <tr>
-            <td valign="top">Customer:</td>
-              <td><select name="customer" id="customer" class="form-control ellipsis">
-                <option value="0">Internal use</option>
-                <?php foreach ((array)$customer as $c) {?>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="finalType" class="col-sm-2 control-label">Final type</label>
+        <div class="col-sm-10">
+          <select name="finalType" id="finalType" class="form-control selectpicker" data-live-search="true">  
+            <option value="100">Concentrated (100%)</option>
+            <?php foreach ($fTypes as $fType) {?>
+                <option value="<?php echo $fType['concentration'];?>" <?php echo ($info['finalType']==$fType['concentration'])?"selected=\"selected\"":""; ?>><?php echo $fType['name'].' ('.$fType['concentration'];?>%)</option>
+             <?php } ?>			
+          </select>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="customer" class="col-sm-2 control-label">Customer</label>
+        <div class="col-sm-10">
+          <select name="customer" id="customer" class="form-control selectpicker" data-live-search="true">
+            <option value="0">Internal use</option>
+            <?php foreach ((array)$customer as $c) {?>
                 <option value="<?=$c['id'];?>"><?=$c['name']?></option>
-                <?php }	?>
-              </select></td>
-          </tr>
-          <tr>
-            <td valign="top">Notes:</td>
-            <td><textarea name="notes" id="notes" cols="45" rows="5" class="form-control"></textarea></td>
-          </tr>  
-        </table>  
+            <?php }	?>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="notes" class="col-sm-2 control-label">Notes</label>
+        <div class="col-sm-10">
+          <textarea name="notes" id="notes" cols="45" rows="5" class="form-control"></textarea>
+        </div>
+      </div>
+    </div>
+
+        
 	  <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <input type="submit" name="button" class="btn btn-primary" id="btnAdd" value="Add">
@@ -724,10 +745,7 @@ $("#getFormMeta").on("show.bs.modal", function(e) {
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Add new category</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <h5 class="modal-title">Create new formula category</h5>
       </div>
       
       <div class="modal-body">
@@ -740,7 +758,7 @@ $("#getFormMeta").on("show.bs.modal", function(e) {
 		</div>
       </div>
 	  <div class="modal-footer">
-        <input type="button" class="btn btn-secondary" data-dismiss="modal" id="close_cat" value="Close">
+        <input type="button" class="btn btn-secondary" data-dismiss="modal" id="close_cat" value="Cancel">
         <input type="submit" name="add-fcat" class="btn btn-primary" id="add-fcat" value="Create">
       </div>   
   </div>

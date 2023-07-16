@@ -388,6 +388,7 @@ function update_bar(){
 function reload_formula_data() {
     $('#formula').DataTable().ajax.reload(null, true);
 	update_bar();
+	reset_solv();
 };
 
 $('#print').click(() => {

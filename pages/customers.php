@@ -15,7 +15,7 @@
                       <div class="btn-group">
                           <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
                           <div class="dropdown-menu dropdown-menu-right">
-                            <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#addCustomer"><i class="fa-solid fa-plus mr2"></i>Add new</a></li>
+                            <li><a class="dropdown-item" href="#" data-toggle="modal" data-backdrop="static" data-target="#addCustomer"><i class="fa-solid fa-plus mr2"></i>Add new</a></li>
                             <li><a class="dropdown-item" id="exportCSV" href="#"><i class="fa-solid fa-file-export mr2"></i>Export to CSV</a></li>
                           </div>
                         </div>
@@ -29,7 +29,7 @@
                       <th>Address</th>
                       <th>Email</th>
                       <th>Web Site</th>
-                      <th>Actions</th>
+                      <th></th>
                     </tr>
                   </thead>
                 </table>
@@ -46,9 +46,6 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Add customer</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
       </div>
       <div class="modal-body">
       <div id="customer_inf"></div>
@@ -66,12 +63,30 @@
               
               <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <input type="submit" name="button" class="btn btn-primary" id="customer_add" value="Add">
+        	  <input type="submit" name="button" class="btn btn-primary" id="customer_add" value="Add">
       </div>
     </div>
   </div>
 </div>
 </div>
+
+<!--EDIT CUSTOMER MODAL-->            
+<div class="modal fade" id="editCustomer" tabindex="-1" role="dialog" aria-labelledby="editCustomerLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title mgmIngHeader mgmIngHeader-with-separator" id="editCustomerLabel">Edit customer</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-danger">Unable to get data</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 $(document).ready(function() {
 
@@ -115,7 +130,7 @@ $(document).ready(function() {
 			{ data : 'address', title: 'Address' },
 			{ data : 'email', title: 'Email' },
 			{ data : 'web', title: 'Web Site' },
-			{ data : null, title: 'Actions', render: actions },
+			{ data : null, title: '', render: actions },
 
 			],
 	order: [[ 0, 'asc' ]],
@@ -130,7 +145,15 @@ $(document).ready(function() {
 }); //END DOC
 
 function actions(data, type, row){
-	return '<a href="'+ row.web +'" target="_blank" rel="tip" title="Open '+ row.name +' page" class="fas fa-shopping-cart"></a> <a href="pages/editCustomer.php?id='+row.id+'" rel="tip" title="Edit '+ row.name +'" class="fas fa-edit popup-link"><a> <i rel="tip" title="Delete '+ row.name +'" class="pv_point_gen fas fa-trash" style="color: #c9302c;" id="cDel" data-name="'+ row.name +'" data-id='+ row.id +'></i>';    
+		data = '<div class="dropdown">' +
+        '<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+            '<ul class="dropdown-menu dropdown-menu-right">';
+		data += '<li><a href="#" class="dropdown-item" data-toggle="modal" data-backdrop="static" data-target="#editCustomer" rel="tip" title="Edit '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-edit mr2"></i>Edit</a></li>';
+		data += '<li><a href="'+ row.web +'" target="_blank" rel="tip" title="Open '+ row.name +' page"><i class="fas fa-shopping-cart mr2"></i>Go to customer</a></li>';
+		data += '<div class="dropdown-divider"></div>';
+		data += '<li><a class="dropdown-item" href="#" id="cDel" style="color: #c9302c;" rel="tip" title="Delete '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-trash mr2"></i>Delete</a></li>';
+		data += '</ul></div>';
+	return data;
 }
 
 function reload_data() {
@@ -214,13 +237,7 @@ function extrasShow() {
 	$('[rel=tip]').tooltip({
         "html": true,
         "delay": {"show": 100, "hide": 0},
-     });
-	$('.popup-link').magnificPopup({
-		type: 'iframe',
-		closeOnContentClick: false,
-		closeOnBgClick: false,
-		showCloseBtn: true,
-	});
+    });
 };
 
 
@@ -228,5 +245,15 @@ $('#exportCSV').click(() => {
     $('#tdDataCustomers').DataTable().button(0).trigger();
 });
 
+$("#editCustomer").on("show.bs.modal", function(e) {
+	const id = e.relatedTarget.dataset.id;
+	const customer = e.relatedTarget.dataset.name;
+
+	$.get("/pages/editCustomer.php?id=" + id)
+		.then(data => {
+		$("#editCustomerLabel", this).html(customer);
+		$(".modal-body", this).html(data);
+	});
+});
 
 </script>

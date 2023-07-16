@@ -425,47 +425,12 @@ $("#formula").on("click", ".open-quantity-dialog", function () {
 				};
 			},
 			cache: true,
-			
-		}
-		
+		}		
 	});
 	
 });
 
-$("#formulaSolventsAdd").select2({
-	width: '100px',
-	placeholder: 'Available solvents in formula',
-	allowClear: true,
-	dropdownAutoWidth: true,
-	containerCssClass: "formulaSolvents",
-	minimumResultsForSearch: Infinity,
-	ajax: {
-		url: '/core/full_formula_data.php',
-		dataType: 'json',
-		type: 'POST',
-		delay: 100,
-		quietMillis: 250,
-		data: function (data) {
-			return {
-				id: myID,
-				solvents_only: true
-			};
-		},
-		processResults: function(data) {
-			return {
-				results: $.map(data.data, function(obj) {
-				  return {
-					id: obj.ingredient_id,
-					text: obj.ingredient || 'No solvent(s) found in formula',
-				  }
-				})
-			};
-		},
-		cache: true,
-		
-	}
-	
-});
+
 	
 	
 $('.export_as').click(function() {	
@@ -502,4 +467,44 @@ $("#reCalcAdd").click(function() {
     } else {
         $("#slvMetaAdd").hide();
     }
+	
+	$("#formulaSolventsAdd").select2({
+		width: '100px',
+		placeholder: 'Available solvents in formula',
+		allowClear: true,
+		dropdownAutoWidth: true,
+		containerCssClass: "formulaSolvents",
+		minimumResultsForSearch: Infinity,
+		ajax: {
+			url: '/core/full_formula_data.php',
+			dataType: 'json',
+			type: 'POST',
+			delay: 100,
+			quietMillis: 250,
+			data: function (data) {
+				return {
+					id: myID,
+					solvents_only: true
+				};
+			},
+			processResults: function(data) {
+				return {
+					results: $.map(data.data, function(obj) {
+					  return {
+						id: obj.ingredient_id,
+						text: obj.ingredient || 'No solvent(s) found in formula',
+					  }
+					})
+				};
+			},
+			cache: true,
+		}
+	});
+	
 });
+
+function reset_solv(){
+	$("#reCalcAdd").prop( "checked", false );
+	$("#slvMetaAdd").hide();
+	$("#formulaSolventsAdd").val('');
+}

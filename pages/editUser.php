@@ -11,12 +11,7 @@ $user = mysqli_fetch_array(mysqli_query($conn, "SELECT email,fullName FROM users
 $doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM documents WHERE ownerID = '".$_SESSION['userID']."' AND name = 'avatar' AND type = '3'"));
 
 ?>
-<script src="/js/jquery/jquery.min.js"></script>
 
-<link href="/css/sb-admin-2.css" rel="stylesheet">
-<link href="/css/bootstrap.min.css" rel="stylesheet">
-<link href="/css/fontawesome-free/css/all.min.css" rel="stylesheet">
-<link href="/css/vault.css" rel="stylesheet">
 
 <style>
 
@@ -28,8 +23,7 @@ $doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM docu
 
 </style>
 <div class="container">
-    <h1 class="text-primary">Edit Profile</h1>
-      <hr>
+
 	<div class="row">
       <div class="col-md-4">
         <div class="text-center">
@@ -38,7 +32,6 @@ $doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM docu
           <input type="file" name="avatar" id="avatar" class="form-control">
         </div>
         <div class="dropdown-divider"></div>
-        <div class="alert alert-info">If you enable PV Online profile, the same photo will be used as your avatar in PV Online as well.</div>
         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
 			<div class="text-right">
         		<input name="upload-avatar" type="submit" class="btn-dark" id="upload-avatar" value="Upload" />
@@ -47,26 +40,28 @@ $doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM docu
       </div>
       <div class="col-md-8 personal-info">
         <div id="msgU"></div>
-          <div class="form-group">
-            <label class="col-md-3 control-label">Full name:</label>
-            <div class="col-md-8">
+        
+          <div class="form-row">
+            <label class="col-sm-3 control-label">Full name:</label>
+            <div class="col-sm-8">
               <input name="fullName" type="text" id="fullName" class="form-control" value="<?php echo $user['fullName']; ?>">
             </div>
           </div>
-          <div class="form-group">
-            <label class="col-md-3 control-label">Email:</label>
+          <div class="form-row">
+            <label class="col-sm-3 control-label">Email:</label>
             <div class="col-md-8">
               <input name="email" type="text" id="email" class="form-control" value="<?php echo $user['email']; ?>">
             </div>
           </div>
-          <div class="form-group">
-            <label class="col-md-3 control-label">Password:</label>
+          <div class="form-row">
+            <label class="col-sm-3 control-label">Password:</label>
             <div class="col-md-8 password-input-container">
               <input name="password" type="password" id="password" class="form-control password-input" value="">
               <i class="toggle-password fa fa-eye"></i>
             </div>
           </div>
-          <div class="form-group">
+          <div class="dropdown-divider"></div>
+          <div class="form-row">
 			<div class="col-sm-12">
 				<div class="text-right">
 					<button type="button" id="save-profile" name="save-profile" class="btn btn-primary">Update</button>
