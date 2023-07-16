@@ -116,12 +116,6 @@ function extrasShow() {
 		"html": true,
 		"delay": {"show": 100, "hide": 0},
 	});
-	$('.popup-link').magnificPopup({
-		type: 'iframe',
-		closeOnContentClick: false,
-		closeOnBgClick: false,
-		showCloseBtn: true,
-	});
 };
 
 var tableMarket = $("#all-table-market").DataTable({

@@ -36,7 +36,7 @@ while ($suppliers = mysqli_fetch_array($sup)){
                       <th>Price</th>
                       <th>Supplier</th>
                       <th>Pieces</th>
-                      <th>Actions</th>
+                      <th></th>
                     </tr>
                   </thead>
                 </table>
@@ -119,6 +119,22 @@ while ($suppliers = mysqli_fetch_array($sup)){
   </div>
 </div>
 
+<!--EDIT BOTTLE MODAL-->            
+<div class="modal fade" id="editBottle" tabindex="-1" role="dialog" aria-labelledby="editBottleLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title mgmIngHeader mgmIngHeader-with-separator" id="editBottleLabel">Edit bottle</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-danger">Unable to get data</div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script> 
 $(document).ready(function() {
@@ -164,7 +180,7 @@ $(document).ready(function() {
 			{ data : 'price', title: 'Price (<?php echo $settings['currency'];?>)' },
 			{ data : 'supplier', title: 'Supplier' },
 			{ data : 'pieces', title: 'Pieces in stock' },
-			{ data : null, title: 'Actions', render: actions }
+			{ data : null, title: '', render: actions }
 			],
 	order: [[ 0, 'asc' ]],
 	lengthMenu: [[20, 50, 100, 200, 400], [20, 50, 100, 200, 400]],
@@ -217,8 +233,16 @@ function name(data, type, row){
 	return '<i class="pv_point_gen pv_gen_li">'+row.name+'</i>';
 }
 
-function actions(data, type, row){
-	return '<a href="'+ row.supplier_link +'" target="_blank" rel="tip" title="Open '+ row.supplier +' page" class="fas fa-shopping-cart"></a> <a href="pages/editBottle.php?id='+row.id+'" rel="tip" title="Edit '+ row.name +'" class="fas fa-edit popup-link"><a> <i rel="tip" title="Delete '+ row.name +'" class="pv_point_gen fas fa-trash" style="color: #c9302c;" id="btlDel" data-name="'+ row.name +'" data-id='+ row.id +'></i>';    
+function actions(data, type, row){	
+		data = '<div class="dropdown">' +
+        '<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+            '<ul class="dropdown-menu dropdown-menu-right">';
+		data += '<li><a href="#" class="dropdown-item" data-toggle="modal" data-backdrop="static" data-target="#editBottle" rel="tip" title="Edit '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-edit mr2"></i>Edit</a></li>';
+		data += '<li><a href="'+ row.supplier_link +'" target="_blank" rel="tip" title="Open '+ row.supplier +' page"><i class="fas fa-shopping-cart mr2"></i>Go to supplier</a></li>';
+		data += '<div class="dropdown-divider"></div>';
+		data += '<li><a class="dropdown-item" href="#" id="btlDel" style="color: #c9302c;" rel="tip" title="Delete '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-trash mr2"></i>Delete</a></li>';
+		data += '</ul></div>';
+	return data;
 }
 
 function reload_data() {
@@ -331,17 +355,22 @@ function extrasShow() {
         "html": true,
         "delay": {"show": 100, "hide": 0},
      });
-	$('.popup-link').magnificPopup({
-		type: 'iframe',
-		closeOnContentClick: false,
-		closeOnBgClick: false,
-		showCloseBtn: true,
-	});
 };
 
 
 $('#exportCSV').click(() => {
     $('#tdDataBottles').DataTable().button(0).trigger();
+});
+
+$("#editBottle").on("show.bs.modal", function(e) {
+	const id = e.relatedTarget.dataset.id;
+	const bottle = e.relatedTarget.dataset.name;
+
+	$.get("/pages/editBottle.php?id=" + id)
+		.then(data => {
+		$("#editBottleLabel", this).html(bottle);
+		$(".modal-body", this).html(data);
+	});
 });
 </script>
 

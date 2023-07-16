@@ -1,4 +1,25 @@
 # CHANGELOG
+### Version 7.7
+- Fix a bug incorrectly showing available solvents when adjust was enabled in ingredient add
+- Making sure add solvent function is reset after is added
+- Added ingredient profile when fetching ingredient data (simple method)
+- Remove glyphicon and replace with fontawesome
+- Calculation tools modal became static
+- Rewrite add formula modal
+- Rephrase formula category add
+- Create formula category modal is dismissed after a succesfull creation
+- Rewrite some elements in formula settings page
+- Fix a bug preventing product formula name to be displayed in formulas list
+- Limit formula name to 100 chars
+- Product name defaults to "Not set" if none
+- Hide page reload info message when modal is opened for formulas list page 
+- Add selectpicker in formula settings
+- User profile details page became modal
+- Customers page improvements
+- Lids page improvements
+- Bottles page improvements
+- Html teplates page improvements
+
 ### Version 7.6
 - Added option to delete an IFRA entry
 - IFRA Library extended to display implementation deadlines for new and current creations

@@ -70,7 +70,8 @@ $(document).ready(function(){
 							type: obj.type,
 							description: obj.description,
 							physical_state: obj.physical_state,
-							stock: obj.stock
+							stock: obj.stock,
+							profile: obj.profile
 						}
 					})
 				};
@@ -127,6 +128,7 @@ $(document).ready(function(){
 				"<div class='select_result_igredient_info'>" +
 				  "<div class='select_result_igredient_cas'></div>" +
 				  "<div class='select_result_igredient_iupac'></div>" +
+				  "<div class='select_result_igredient_profile'></div>" +
 				"</div>" +
 			  "</div>" +
 			"</div>"
@@ -143,7 +145,8 @@ $(document).ready(function(){
 		  $container.find(".select_result_igredient_description").text(ingredientData.description);
 		  $container.find(".select_result_igredient_cas").append("CAS: " + ingredientData.cas);
 		  $container.find(".select_result_igredient_iupac").append("IUPAC: " + ingredientData.IUPAC);
-		
+		  $container.find(".select_result_igredient_profile").append("Profile: " + ingredientData.profile + " note");
+
 		  return $container;
 	}
 	

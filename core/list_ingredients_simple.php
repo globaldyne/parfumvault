@@ -25,7 +25,7 @@ if ($_POST['isDeepQ'] == "true"){
 	$filter = "WHERE name LIKE '%$s%' OR cas LIKE '%$s%' OR INCI LIKE '%$s%'";
 }
 
-$q = mysqli_query($conn, "SELECT ingredients.id,name,INCI,cas,type,odor,physical_state FROM $t $filter ORDER BY name ASC");
+$q = mysqli_query($conn, "SELECT ingredients.id,name,INCI,cas,type,odor,physical_state,profile FROM $t $filter ORDER BY name ASC");
 while($res = mysqli_fetch_array($q)){
     $ingredients[] = $res;
 }
@@ -40,6 +40,7 @@ foreach ($ingredients as $ingredient) {
 	$r['type'] = (string)$ingredient['type'] ?: 'Unknown';
 	$r['description'] = (string)$ingredient['odor'] ?: 'N/A';
 	$r['physical_state'] = (int)$ingredient['physical_state'] ?: 1;
+	$r['profile'] = (string)$ingredient['profile'] ?: 'Uknwown';
 	$r['stock'] = (float)number_format(getIngSupplier($ingredient['id'],1,$conn)['stock'], $settings['qStep']) ?: 0;
 
 	$rx[]=$r;
