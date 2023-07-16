@@ -3,7 +3,7 @@
 
   var defaultOptions = {
     tagClass: function(item) {
-      return 'label label-info';
+      return 'badge badge-primary';
     },
     focusClass: 'focus',
     itemValue: function(item) {
