@@ -13,6 +13,7 @@ cloud installations like Openshift/EKS, etc
 </strong>
 Whats New in v7.8
 --------------------------
+- Fix a bug causing ingredients synonym search to fail
 - Edit ingredient category rewrite
 - Various bug fixes and improvements
 - For full details please refer to the CHANGELOG

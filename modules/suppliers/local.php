@@ -132,8 +132,8 @@ foreach ($ingredients as $ingredient) {
 	$rx[]=$r;
 }
 
-$total = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM ingredients"));
-$filtered = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM ingredients ".$filter));
+$total = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(name) AS entries FROM $t ingredients"));
+$filtered = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(name) AS entries FROM $t ingredients ".$filter));
 
 $response = array(
   "source" => 'local',

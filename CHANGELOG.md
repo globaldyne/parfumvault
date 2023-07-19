@@ -1,8 +1,11 @@
 # CHANGELOG
 ### Version 7.8
+- Fix a bug causing ingredients synonym search to fail
 - Edit ingredient category rewrite
 - CSS update adding bs4 styling
 - Update tagsinput to bs4 compatibility
+- Added Dockerfile
+- Config php file merged with opendb
 
 ### Version 7.7
 - Fix a bug incorrectly showing available solvents when adjust was enabled in ingredient add
