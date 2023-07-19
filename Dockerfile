@@ -41,9 +41,6 @@ RUN python3 -m pip install --upgrade pip \
 
 RUN dnf update && dnf clean all && rm -rf /var/cache/yum/*
 
-RUN ln -sf /usr/share/zoneinfo/UTC /etc/localtime \
-	&& echo "NETWORKING=yes" > /etc/sysconfig/network
-
 RUN sed -i \
 	-e 's~^;date.timezone =$~date.timezone = UTC~g' \
 	-e 's~^upload_max_filesize.*$~upload_max_filesize = 80M~g' \
@@ -57,6 +54,7 @@ ADD . /html
 RUN mkdir /html/tmp
 RUN chown -R ${uid}.${gid} /html
 ADD scripts/start.sh /start.sh
+ADD scripts/www.conf /etc/php-fpm.d/www.conf
 
 WORKDIR /html
 
