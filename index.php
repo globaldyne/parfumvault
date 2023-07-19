@@ -3,11 +3,11 @@ define('__ROOT__', dirname(__FILE__));
 
 require_once(__ROOT__.'/inc/sec.php');
 
-if(file_exists('./inc/config.php') == FALSE){
+if(file_exists(__ROOT__.'/inc/config.php') == FALSE && !getenv('DB_HOST') && !getenv('DB_USER') && !getenv('DB_PASS') && !getenv('DB_NAME')){
+	
 	session_destroy();
 	header('Location: login.php');
 }
-require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/product.php');
 require_once(__ROOT__.'/inc/opendb.php');
 
@@ -16,7 +16,6 @@ require_once(__ROOT__.'/func/searchIFRA.php');
 require_once(__ROOT__.'/func/formatBytes.php');
 require_once(__ROOT__.'/func/countElement.php');
 
-//require_once(__ROOT__.'/func/pvFileGet.php');
 require_once(__ROOT__.'/func/countPending.php');
 require_once(__ROOT__.'/func/countCart.php');
 require_once(__ROOT__.'/func/pvOnline.php');

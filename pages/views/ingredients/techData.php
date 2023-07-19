@@ -2,8 +2,7 @@
 define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__))))); 
 
 
-require(__ROOT__.'/inc/sec.php');
-require_once(__ROOT__.'/inc/config.php');
+require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
 
 if(!$_POST['ingID']){

@@ -4,10 +4,7 @@ define('pvault_panel', TRUE);
 
 
 if($_POST['action'] == 'register'){
-	//define('__ROOT__', dirname(dirname(__FILE__))); 
-	//define('pvault_panel', TRUE);
 
-	require_once(__ROOT__.'/inc/config.php');
 	require_once(__ROOT__.'/inc/opendb.php');
 	
 	if(!$_POST['password'] || !$_POST['fullName'] || !$_POST['email']){
@@ -48,7 +45,9 @@ if($_POST['action'] == 'register'){
 
 if($_POST['action']=='install'){
 	
-	if(file_exists(__ROOT__.'/inc/config.php') == TRUE){
+//	if(file_exists(__ROOT__.'/inc/config.php') == TRUE){
+	if(file_exists(__ROOT__.'/inc/config.php') == TRUE || getenv('DB_HOST') && getenv('DB_USER') && getenv('DB_PASS') && getenv('DB_NAME')){
+	
 		echo '<div class="alert alert-info alert-dismissible"><strong>System is already configured!</strong></div>';
 		return;
 	}

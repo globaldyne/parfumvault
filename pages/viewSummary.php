@@ -3,7 +3,6 @@
 define('__ROOT__', dirname(dirname(__FILE__))); 
 define('pvault_panel', TRUE);
 
-require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/func/arrFilter.php');
 require_once(__ROOT__.'/func/getCatByID.php');

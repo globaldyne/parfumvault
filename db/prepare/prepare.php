@@ -24,7 +24,6 @@ function prepare($from, $to){
 if($_POST['action'] == 'upgrade'){
 		define('pvault_panel', TRUE);
 		
-		require_once(dirname(dirname(dirname(__FILE__))).'/inc/config.php');
 		require_once(dirname(dirname(dirname(__FILE__))).'/inc/opendb.php');
 		
 		$version = $_POST['version'];

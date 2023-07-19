@@ -2,7 +2,6 @@
 define('pvault_panel', TRUE);
 define('__ROOT__', dirname(__FILE__));
 
-require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/func/rgbToHex.php');
 
