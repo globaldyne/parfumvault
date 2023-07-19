@@ -3,7 +3,6 @@
 define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__))))); 
 
 require_once(__ROOT__.'/inc/sec.php');
-require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 
 ?>
@@ -28,7 +27,7 @@ require_once(__ROOT__.'/inc/opendb.php');
           <th>Colour Key</th>
           <th>Name</th>
           <th>Description</th>
-          <th>Actions</th>
+          <th></th>
         </tr>
       </thead>
     </table>
@@ -55,7 +54,7 @@ $(document).ready(function() {
     			   { data : 'colorKey', title: 'Colour Key', render: ciKey},
 				   { data : 'name', title: 'Name', render: ciName},
 				   { data : 'notes', title: 'Description', render: ciNotes},
-   				   { data : null, title: 'Actions', render: ciActions},		   
+   				   { data : null, title: '', render: ciActions},		   
 				  ],
         order: [[ 2, 'asc' ]],
 		lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
@@ -71,9 +70,10 @@ function ciImage(data, type, row){
 	if(row.image){
 		var cimg = '<img src="' + row.image + '" class="img_ing">';
 	}else{
-		var cimg = '<img src="img/molecule.png" class="img_ing">';
+		var cimg = '<img src="/img/molecule.png" class="img_ing">';
 	}
-	return '<a href="pages/editCat.php?id='+row.id+'" class="popup-link">' + cimg + '</a>';    
+	
+	return '<a href="#" data-id="'+row.id+'" data-toggle="modal" data-backdrop="static" data-target="#editCategory">' + cimg + '</a>';    
 }
 function ciKey(data, type, row){
 	return '<a href="#" class="colorKey" style="background-color: rgb('+row.colorKey+')" id="colorKey" data-name="colorKey" data-type="select" data-pk="'+row.id+'" data-title="Choose Colour Key for '+row.name+'"></a>';    
@@ -217,14 +217,17 @@ function extrasShow() {
         "html": true,
         "delay": {"show": 100, "hide": 0},
      });
-	$('.popup-link').magnificPopup({
-		type: 'iframe',
-		closeOnContentClick: false,
-		closeOnBgClick: false,
-		showCloseBtn: true,
-	});
 };
+$("#editCategory").on("show.bs.modal", function(e) {
+	const id = e.relatedTarget.dataset.id;
+	const name = e.relatedTarget.dataset.name;
 
+	$.get("/pages/editCat.php?id=" + id)
+		.then(data => {
+		$("#editCategoryLabel", this).html(name);
+		$(".modal-body", this).html(data);
+	});
+});
 </script>
 <!--ADD CATEGORY MODAL-->
 <div class="modal fade" id="add_ingredient_cat" tabindex="-1" role="dialog" aria-labelledby="add_ingredient_cat" aria-hidden="true">
@@ -253,4 +256,21 @@ function extrasShow() {
       </div>   
   </div>
 </div>
+</div>
+
+<!--EDIT MODAL-->            
+<div class="modal fade" id="editCategory" tabindex="-1" role="dialog" aria-labelledby="editCategoryLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title mgmIngHeader mgmIngHeader-with-separator" id="editCategoryLabel">Edit category</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-danger">Unable to get data</div>
+      </div>
+    </div>
+  </div>
 </div>

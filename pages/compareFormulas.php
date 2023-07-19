@@ -1,39 +1,3 @@
-<?php 
-if (!defined('pvault_panel')){ die('Not Found');}
-/*
-if($_GET['formula_a'] && $_GET['formula_b']){
-	require_once(__ROOT__.'/func/compareFormulas.php');
-	$id_a = $_GET['formula_a'];
-	$id_b = $_GET['formula_b'];
-
-	$meta_a = mysqli_fetch_array(mysqli_query($conn, "SELECT name,fid FROM formulasMetaData WHERE id = '$id_a'"));
-	$meta_b = mysqli_fetch_array(mysqli_query($conn, "SELECT name,fid FROM formulasMetaData WHERE fid = '$id_b'"));
-
-	if($_REQUEST['compare'] == '2'){		
-		$revision = $_GET['revision'];
-		$meta_b['name'] = $meta_b['name'].' - Revision: '.$_GET['revision'];
-	}
-	
-	$q_a = mysqli_query($conn, "SELECT ingredient,concentration,quantity FROM formulas WHERE fid = '".$meta_a['fid']."' ORDER BY ingredient ASC");
-	if($_REQUEST['compare'] == '1'){
-		$q_b = mysqli_query($conn, "SELECT ingredient,concentration,quantity FROM formulas WHERE fid = '".$meta_b['fid']."' ORDER BY ingredient ASC");
-	}
-	if($_REQUEST['compare'] == '2'){
-		$q_b = mysqli_query($conn, "SELECT ingredient,concentration,quantity FROM formulasRevisions WHERE revision = '$revision' AND fid = '$id_b' ORDER BY ingredient ASC");
-	}
-
-	while ($formula = mysqli_fetch_array($q_a)){
-	    $formula_a[] = $formula;
-	}
-	while ($formula = mysqli_fetch_array($q_b)){
-	    $formula_b[] = $formula;
-	}
-	$r = compareFormula($formula_a, $formula_b, array('ingredient','concentration','quantity'),$meta_a['name'], $meta_b['name']);
-
-	
-}
-*/
-?>
 <div id="content-wrapper" class="d-flex flex-column">
 <?php require_once(__ROOT__.'/pages/top.php'); ?>
         <div class="container-fluid">

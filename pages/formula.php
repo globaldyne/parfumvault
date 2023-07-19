@@ -1,6 +1,5 @@
 <?php 
 if (!defined('pvault_panel')){ die('Not Found');}
-//require_once(__ROOT__.'/func/arrFilter.php');
 $id = mysqli_real_escape_string($conn, $_GET['id']);
 
 $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT fid,name FROM formulasMetaData WHERE id = '$id'"));

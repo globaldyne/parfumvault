@@ -6,7 +6,6 @@ if(!$_GET['ingID']){
 }
 $id = $_GET['ingID'];
 require_once(__ROOT__.'/inc/sec.php');
-require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/func/searchIFRA.php');
 require_once(__ROOT__.'/inc/settings.php');

@@ -3,7 +3,6 @@ if(defined('__ROOT__') == FALSE){
 	define('__ROOT__', dirname(dirname(__FILE__))); 
 }
 require_once(__ROOT__.'/inc/sec.php');
-require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 
@@ -133,8 +132,8 @@ foreach ($ingredients as $ingredient) {
 	$rx[]=$r;
 }
 
-$total = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM ingredients"));
-$filtered = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM ingredients ".$filter));
+$total = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(name) AS entries FROM $t ingredients"));
+$filtered = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(name) AS entries FROM $t ingredients ".$filter));
 
 $response = array(
   "source" => 'local',
