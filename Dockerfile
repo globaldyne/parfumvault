@@ -55,6 +55,7 @@ RUN mkdir /html/tmp
 RUN chown -R ${uid}.${gid} /html
 ADD scripts/start.sh /start.sh
 ADD scripts/www.conf /etc/php-fpm.d/www.conf
+ADD scripts/php-fpm.conf /etc/php-fpm.conf
 
 WORKDIR /html
 
