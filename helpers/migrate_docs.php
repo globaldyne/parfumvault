@@ -10,7 +10,6 @@ WARNING: Please take a full back up of your database before you run this script.
 define('pvault_panel', TRUE);
 define('__ROOT__', dirname(dirname(__FILE__))); 
 
-require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 
 $chk_ing = (mysqli_num_rows(mysqli_query($conn, "SHOW COLUMNS FROM ingredients LIKE 'SDS'")))?TRUE:FALSE;

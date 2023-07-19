@@ -2,7 +2,7 @@
 define('pvault_panel', TRUE);
 define('__ROOT__', dirname(__FILE__)); 
 
-if(file_exists('./inc/config.php') == FALSE){
+if(file_exists(__ROOT__.'/inc/config.php') == FALSE && !getenv('DB_HOST') && !getenv('DB_USER') && !getenv('DB_PASS') && !getenv('DB_NAME')){
 
 	require 'install.php';
 	
@@ -13,7 +13,6 @@ if(isset($_SESSION['parfumvault'])){
 	header('Location: /index.php');
 }
 
-require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/product.php');
 

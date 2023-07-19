@@ -3,7 +3,6 @@
 define('__ROOT__', dirname(dirname(__FILE__))); 
 
 require_once(__ROOT__.'/inc/sec.php');
-require_once(__ROOT__.'/inc/config.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/php-settings.php');
@@ -222,22 +221,22 @@ function fMade(data, type, row, meta){
 
 function fStatus(data, type, row, meta){
 	if(row.status == 0){
-		var data = '<span class="pv-label label label-default">Scheduled</span>';
+		var data = '<span class="pv-label badge badge-secondary">Scheduled</span>';
 	}
 	if(row.status == 1){
-		var data = '<span class="pv-label label label-primary">Under Development</span>';
+		var data = '<span class="pv-label badge badge-primary">Under Development</span>';
 	}
 	if(row.status == 2){
-		var data = '<span class="pv-label label label-info">Under Evaluation</span>';
+		var data = '<span class="pv-label badge badge-info">Under Evaluation</span>';
 	}
 	if(row.status == 3){
-		var data = '<span class="pv-label label label-success">In Production</span>';
+		var data = '<span class="pv-label badge badge-success">In Production</span>';
 	}
 	if(row.status == 4){
-		var data = '<span class="pv-label label label-warning">To be reformulated</span>';
+		var data = '<span class="pv-label badge badge-warning">To be reformulated</span>';
 	}
 	if(row.status == 5){
-		var data = '<span class="pv-label label label-danger">Failure</span>';
+		var data = '<span class="pv-label badge badge-danger">Failure</span>';
 	}
 	
 	return data;
