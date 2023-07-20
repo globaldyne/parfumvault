@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 7.9
+- Fix ingredients export 
 - Fix tmp path
 - Dockerfile update
 - Nginx conf added
