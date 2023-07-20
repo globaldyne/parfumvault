@@ -22,6 +22,7 @@ RUN dnf --setopt=tsflags=nodocs -y install \
 	php-gd \
 	php-pear-Mail \
 	php-mbstring \
+	php-fpm \
 	git \
 	python3-pip \
 	procps \
@@ -51,12 +52,17 @@ RUN sed -i \
 ENV LANG en_GB.UTF-8
 
 ADD . /html
-RUN mkdir /html/tmp
-ADD scripts/start.sh /start.sh
+
+RUN mkdir /tmp/php
+ADD scripts/php-fpm/www.conf /etc/php-fpm.d/www.conf
+ADD scripts/php-fpm/php-fpm.conf /etc/php-fpm.conf
+ADD scripts/entrypoint.sh /usr/bin/entrypoint.sh
+ADD scripts/nginx/nginx.conf /etc/nginx/nginx.conf
+
+RUN chmod +x /usr/bin/entrypoint.sh
 
 WORKDIR /html
 STOPSIGNAL SIGQUIT
 USER ${uid}
 EXPOSE 8000
-CMD ["/bin/bash", "/start.sh"]
-
+ENTRYPOINT ["entrypoint.sh"]

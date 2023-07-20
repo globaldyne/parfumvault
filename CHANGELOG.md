@@ -1,5 +1,8 @@
 # CHANGELOG
 ### Version 7.9
+- Dockerfile update
+- Nginx conf added
+- php-fpm added
 - Added external vars for config
 - Added Dockerfile
 - Code clean-up
