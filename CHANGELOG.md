@@ -13,6 +13,7 @@
 - Added external vars for config
 - Added Dockerfile
 - Code clean-up
+
 ### Version 7.8
 - Fix a bug causing ingredients synonym search to fail
 - Edit ingredient category rewrite
