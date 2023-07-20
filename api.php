@@ -8,7 +8,7 @@ require_once(__ROOT__.'/func/rgbToHex.php');
 $defCatClass = $settings['defCatClass'];
 
 $req_dump = print_r($_REQUEST, TRUE);
-$fp = fopen(__ROOT__.'/logs/api.log', 'a');
+$fp = fopen($tmp_path.'/pv-api.log', 'a');
 fwrite($fp, $req_dump);
 fclose($fp);
 

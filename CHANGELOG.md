@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 7.9
+- Increase nginx body size limit to 200M
 - Fix import permissions/path
 - Fix ingredients export 
 - Fix tmp path
