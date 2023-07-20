@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 7.9
+- Fix import permissions/path
 - Fix ingredients export 
 - Fix tmp path
 - Dockerfile update
