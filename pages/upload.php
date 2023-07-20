@@ -26,8 +26,8 @@ if($_GET['upload_ing_cat_pic'] && $_GET['catID']){
 		return;
 	}	
 	
-	if (!file_exists(__ROOT__."/uploads/tmp/")) {
-		mkdir(__ROOT__."/uploads/tmp/", 0740, true);
+	if (!file_exists($tmp_path)) {
+		mkdir($tmp_path, 0740, true);
 	}
 		
 	if(in_array($file_ext,$ext)===false){
@@ -37,7 +37,7 @@ if($_GET['upload_ing_cat_pic'] && $_GET['catID']){
 	}
 		
 	if($_FILES["cat-pic-file"]["size"] > 0){
-		move_uploaded_file($file_tmp,__ROOT__."/uploads/tmp/".base64_encode($filename));
+		move_uploaded_file($file_tmp,$tmp_path.base64_encode($filename));
 		$pic = "/uploads/tmp/".base64_encode($filename);		
 		create_thumb(__ROOT__.$pic,250,250); 
 		$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents(__ROOT__.$pic));
@@ -72,8 +72,8 @@ if($_GET['type'] == 'bottle' && $_GET['name']){
       $file_type = $_FILES['pic_file']['type'];
       $file_ext = strtolower(end(explode('.',$_FILES['pic_file']['name'])));
 	  
-		if (!file_exists(__ROOT__."/uploads/tmp/")) {
-			mkdir(__ROOT__."/uploads/tmp/", 0740, true);
+		if (!file_exists($tmp_path)) {
+			mkdir($tmp_path, 0740, true);
 		}
 
 		$allowed_ext = "png, jpg, jpeg, gif, bmp";
@@ -95,7 +95,7 @@ if($_GET['type'] == 'bottle' && $_GET['name']){
 			return;
 		  }
 		  
-      if(move_uploaded_file($file_tmp,__ROOT__."/uploads/tmp/".base64_encode($file_name))){
+      if(move_uploaded_file($file_tmp,$tmp_path.base64_encode($file_name))){
 			$photo = "/uploads/tmp/".base64_encode($file_name);
 			create_thumb(__ROOT__.$photo,250,250); 
 			$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents(__ROOT__.$photo));
@@ -132,8 +132,8 @@ if($_GET['type'] == 'lid' && $_GET['style']){
       $file_type = $_FILES['pic_file']['type'];
       $file_ext = strtolower(end(explode('.',$_FILES['pic_file']['name'])));
 	  
-	  	if (!file_exists(__ROOT__."/uploads/tmp/")) {
-			mkdir(__ROOT__."/uploads/tmp/", 0740, true);
+	  	if (!file_exists($tmp_path)) {
+			mkdir($tmp_path, 0740, true);
 		}
 
 		$allowed_ext = "png, jpg, jpeg, gif, bmp";
@@ -154,7 +154,7 @@ if($_GET['type'] == 'lid' && $_GET['style']){
 			echo json_encode($response);
 			return;
 		}
-		if(move_uploaded_file($file_tmp,__ROOT__."/uploads/tmp/".base64_encode($file_name))){
+		if(move_uploaded_file($file_tmp,$tmp_path.base64_encode($file_name))){
 			$photo = "/uploads/tmp/".base64_encode($file_name);
 			create_thumb(__ROOT__.$photo,250,250); 
 			$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents(__ROOT__.$photo));
