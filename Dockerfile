@@ -15,7 +15,6 @@ RUN dnf install -y epel-release
 RUN dnf -y update 
 
 RUN dnf --setopt=tsflags=nodocs -y install \
-	httpd \
 	php \
 	php-cli \
 	php-xml \
@@ -28,6 +27,7 @@ RUN dnf --setopt=tsflags=nodocs -y install \
 	procps \
 	openssl \
 	bc \
+	mysql \
 	&& dnf clean all
 
 RUN dnf install make php-devel php-pear ImageMagick ImageMagick-devel pcre-devel -y
