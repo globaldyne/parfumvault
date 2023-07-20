@@ -7,8 +7,9 @@ $dbpass = getenv('DB_PASS'); //MySQL Password
 $dbname = getenv('DB_NAME'); //MySQL DB name
 
 
-$uploads_path = "uploads/";
-$tmp_path = $uploads_path."tmp/";
-$allowed_ext = "pdf, doc, docx, xls, csv, xlsx, png, jpg, jpeg, gif";
-$max_filesize = "4194304"; //in bytes
+$uploads_path = getenv('UPLOADS_PATH') ?: "uploads/";
+$tmp_path = getenv('TMP_PATH') ?: "tmp/";
+$allowed_ext = getenv('FILE_EXT') ?: "pdf, doc, docx, xls, csv, xlsx, png, jpg, jpeg, gif";
+$max_filesize = getenv('MAX_FILE_SIZE') ?: "4194304";
+
 ?>
