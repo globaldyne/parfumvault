@@ -38,12 +38,12 @@ if($_GET['upload_ing_cat_pic'] && $_GET['catID']){
 		
 	if($_FILES["cat-pic-file"]["size"] > 0){
 		move_uploaded_file($file_tmp,$tmp_path.base64_encode($filename));
-		$pic = "/uploads/tmp/".base64_encode($filename);		
-		create_thumb(__ROOT__.$pic,250,250); 
-		$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents(__ROOT__.$pic));
+		$pic = base64_encode($filename);		
+		create_thumb($tmp_path.$pic,250,250); 
+		$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents($tmp_path.$pic));
 		
 		if(mysqli_query($conn, "UPDATE ingCategory SET image = '".$docData."' WHERE id = '$id'")){	
-			unlink(__ROOT__.$pic);
+			unlink($tmp_path.$pic);
 			$response["success"] = array( "msg" => "Category pic updated!", "pic" => $docData);
 			echo json_encode($response);
 			return;
@@ -96,14 +96,14 @@ if($_GET['type'] == 'bottle' && $_GET['name']){
 		  }
 		  
       if(move_uploaded_file($file_tmp,$tmp_path.base64_encode($file_name))){
-			$photo = "/uploads/tmp/".base64_encode($file_name);
-			create_thumb(__ROOT__.$photo,250,250); 
-			$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents(__ROOT__.$photo));
+			$photo = base64_encode($file_name);
+			create_thumb($tmp_path.$photo,250,250); 
+			$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents($tmp_path.$photo));
 		
 			if(mysqli_query($conn, "INSERT INTO bottles (name, ml, price, height, width, diameter, supplier, supplier_link, notes, pieces) VALUES ('$name', '$ml', '$price', '$height', '$width', '$diameter', '$supplier', '$supplier_link', '$notes', '$pieces')") ){
 				$bottle_id = mysqli_insert_id($conn);
 				mysqli_query($conn, "INSERT INTO documents (ownerID,name,type,notes,docData) VALUES ('".$bottle_id."','$name','4','-','$docData')");
-				unlink(__ROOT__.$photo);
+				unlink($tmp_path.$photo);
 				$response["success"] = $name.' added!';
 			}else{
 				$response["error"] =  'Failed to add '.$name.' - '.mysqli_error($conn);
@@ -155,14 +155,14 @@ if($_GET['type'] == 'lid' && $_GET['style']){
 			return;
 		}
 		if(move_uploaded_file($file_tmp,$tmp_path.base64_encode($file_name))){
-			$photo = "/uploads/tmp/".base64_encode($file_name);
-			create_thumb(__ROOT__.$photo,250,250); 
-			$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents(__ROOT__.$photo));
+			$photo = base64_encode($file_name);
+			create_thumb($tmp_path.$photo,250,250); 
+			$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents($tmp_path.$photo));
 		
 			if(mysqli_query($conn, "INSERT INTO lids (style, colour, price, supplier, supplier_link, pieces) VALUES ('$style', '$colour', '$price', '$supplier', '$supplier_link', '$pieces')") ){
 				$lid_id = mysqli_insert_id($conn);
 				mysqli_query($conn, "INSERT INTO documents (ownerID,name,type,notes,docData) VALUES ('".$lid_id."','$style','5','-','$docData')");
-				unlink(__ROOT__.$photo);
+				unlink($tmp_path.$photo);
 				$response["success"] = $style.' added!';
 			}else{
 				$response["error"] =  'Failed to add '.$style.' - '.mysqli_error($conn);
@@ -189,7 +189,7 @@ if($_GET['type'] && $_GET['id']){
      	$file_type = $_FILES[$field]['type'];
      	$file_ext = strtolower(end(explode('.',$_FILES[$field]['name'])));
 	
-		$tmp_path = __ROOT__.'/tmp/';
+		//$tmp_path = __ROOT__.'/tmp/';
 	
 		if (!file_exists($tmp_path)) {
 			mkdir($tmp_path, 0740, true);
@@ -228,8 +228,8 @@ if($_GET['type'] == 'brand'){
       $file_type = $_FILES['brandLogo']['type'];
       $file_ext = strtolower(end(explode('.',$_FILES['brandLogo']['name'])));
 	  
-	  if (file_exists('../'.$uploads_path.'logo/') === FALSE) {
-    	mkdir('../'.$uploads_path.'logo/', 0740, true);
+	  if (file_exists($tmp_path) === FALSE) {
+    	mkdir($tmp_path, 0740, true);
 	  }
 
 	  $ext = explode(', ', $allowed_ext);
@@ -240,8 +240,8 @@ if($_GET['type'] == 'brand'){
 		 echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>File upload error: </strong>File size must not exceed '.formatBytes($max_filesize).'</div>';
       }else{
 	  
-         if(move_uploaded_file($file_tmp,'../'.$uploads_path.'logo/'.base64_encode($file_name))){
-		 	$brandLogoF = $uploads_path.'logo/'.base64_encode($file_name);
+         if(move_uploaded_file($file_tmp,$tmp_path.base64_encode($file_name))){
+		 	$brandLogoF = $tmp_path.base64_encode($file_name);
 		 	if(mysqli_query($conn, "UPDATE settings SET brandLogo = '$brandLogoF'")){
 		 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Brand logo uploaded</strong></div>';
 			}
