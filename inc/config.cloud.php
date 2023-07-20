@@ -8,7 +8,7 @@ $dbname = getenv('DB_NAME'); //MySQL DB name
 
 
 $uploads_path = getenv('UPLOADS_PATH') ?: "uploads/";
-$tmp_path = getenv('TMP_PATH') ?: "tmp/";
+$tmp_path = getenv('TMP_PATH') ?: "/tmp/";
 $allowed_ext = getenv('FILE_EXT') ?: "pdf, doc, docx, xls, csv, xlsx, png, jpg, jpeg, gif";
 $max_filesize = getenv('MAX_FILE_SIZE') ?: "4194304";
 
