@@ -29,6 +29,7 @@ RUN dnf --setopt=tsflags=nodocs -y install \
 	openssl \
 	bc \
 	mysql \
+	nginx \
 	&& dnf clean all
 
 RUN dnf install make php-devel php-pear ImageMagick ImageMagick-devel pcre-devel -y
