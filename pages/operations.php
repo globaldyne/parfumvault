@@ -28,7 +28,7 @@ if($_GET['do'] == 'db_update'){
 		$sql = __ROOT__.'/db/updates/update_'.$c_ver['schema_ver'].'-'.$u_ver.'.sql';
 	
 		if(file_exists($sql) == TRUE){	
-			$cmd = "mysql -u$dbuser -p$dbpass $dbname < $sql";
+			$cmd = "mysql -u$dbuser -p$dbpass -h$dbhost $dbname < $sql";
 			passthru($cmd,$e);
 		}
 		
@@ -94,7 +94,7 @@ if($_GET['restore'] == 'db_bk'){
 		}
 		
 		system("gunzip -c $target_path > ".$tmp_path.'restore.sql');
-		$cmd = "mysql -u$dbuser -p$dbpass $dbname < ".$tmp_path.'restore.sql'; 
+		$cmd = "mysql -u$dbuser -p$dbpass -h$dbhost $dbname < ".$tmp_path.'restore.sql'; 
 		passthru($cmd,$e);
 		unlink($target_path);
 		//unlink($tmp_path.'restore.sql');

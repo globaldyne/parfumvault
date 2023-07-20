@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 7.9
+- Update mysql restore/backup to use external host
 - Fix uploads tmp path
 - Increase nginx body size limit to 200M
 - Fix import permissions/path
