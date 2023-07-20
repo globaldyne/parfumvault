@@ -277,8 +277,8 @@ if($_GET['update_lid_pic']){
 		return;
 	}	
 	
-	if (!file_exists(__ROOT__."/uploads/tmp/")) {
-		mkdir(__ROOT__."/uploads/tmp/", 0740, true);
+	if (!file_exists($tmp_path)) {
+		mkdir($tmp_path, 0740, true);
 	}
 		
 	if(in_array($file_ext,$ext)===false){
@@ -288,14 +288,14 @@ if($_GET['update_lid_pic']){
 	}
 	$lid = $_GET['lid_id'];
 	if($_FILES["lid_pic"]["size"] > 0){
-		move_uploaded_file($file_tmp,__ROOT__."/uploads/tmp/".base64_encode($filename));
-		$pic = "/uploads/tmp/".base64_encode($filename);		
-		create_thumb(__ROOT__.$pic,250,250); 
-		$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents(__ROOT__.$pic));
+		move_uploaded_file($file_tmp,$tmp_path.base64_encode($filename));
+		$pic = base64_encode($filename);		
+		create_thumb($tmp_path.$pic,250,250); 
+		$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents($tmp_path.$pic));
 		
 		mysqli_query($conn, "DELETE FROM documents WHERE ownerID = '".$lid."' AND type = '5'");
 		if(mysqli_query($conn, "INSERT INTO documents (ownerID,name,type,notes,docData) VALUES ('".$lid."','-','5','-','$docData')")){	
-			unlink(__ROOT__.$pic);
+			unlink($tmp_path.$pic);
 			$response["success"] = array( "msg" => "Pic updated!", "lid_pic" => $docData);
 			echo json_encode($response);
 			return;
@@ -324,8 +324,8 @@ if($_GET['update_bottle_pic']){
 		return;
 	}	
 	
-	if (!file_exists(__ROOT__."/uploads/tmp/")) {
-		mkdir(__ROOT__."/uploads/tmp/", 0740, true);
+	if (!file_exists($tmp_path)) {
+		mkdir($tmp_path, 0740, true);
 	}
 		
 	if(in_array($file_ext,$ext)===false){
@@ -335,14 +335,14 @@ if($_GET['update_bottle_pic']){
 	}
 	$bottle = $_GET['bottle_id'];
 	if($_FILES["bottle_pic"]["size"] > 0){
-		move_uploaded_file($file_tmp,__ROOT__."/uploads/tmp/".base64_encode($filename));
-		$bottle_pic = "/uploads/tmp/".base64_encode($filename);		
-		create_thumb(__ROOT__.$bottle_pic,250,250); 
-		$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents(__ROOT__.$bottle_pic));
+		move_uploaded_file($file_tmp,$tmp_path.base64_encode($filename));
+		$bottle_pic = base64_encode($filename);		
+		create_thumb($tmp_path.$bottle_pic,250,250); 
+		$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents($tmp_path.$bottle_pic));
 		
 		mysqli_query($conn, "DELETE FROM documents WHERE ownerID = '".$bottle."' AND type = '4'");
 		if(mysqli_query($conn, "INSERT INTO documents (ownerID,name,type,notes,docData) VALUES ('".$bottle."','-','4','-','$docData')")){	
-			unlink(__ROOT__.$bottle_pic);
+			unlink($tmp_path.$bottle_pic);
 			$response["success"] = array( "msg" => "Pic updated!", "bottle_pic" => $docData);
 			echo json_encode($response);
 			return;
