@@ -15,7 +15,7 @@
       </ul></td>
       <td>&nbsp;</td>
     </tr>
-    <?php if(getenv('phpMyAdmin') == FALSE){ ?>
+    <?php if(getenv('phpMyAdmin') == "true"){ ?>
     <tr>
       <td><ul>
         <li><a href="/phpMyAdmin/" target="_blank">phpMyAdmin</a></li>
