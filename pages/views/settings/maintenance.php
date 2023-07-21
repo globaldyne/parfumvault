@@ -11,17 +11,11 @@
     </tr>
     <tr>
       <td><ul>
-        <li><a href="/pages/operations.php?do=backupFILES">Backup Files</a></li>
-      </ul></td>
-      <td>&nbsp;</td>
-    </tr>
-    <tr>
-      <td><ul>
         <li> <a href="#" data-toggle="modal" data-backdrop="static" data-keyboard="false" data-target="#restore_db">Restore DB</a></li>
       </ul></td>
       <td>&nbsp;</td>
     </tr>
-    <?php if(file_exists('/config/.DOCKER') == TRUE){ ?>
+    <?php if(getenv('phpMyAdmin') == FALSE){ ?>
     <tr>
       <td><ul>
         <li><a href="/phpMyAdmin/" target="_blank">phpMyAdmin</a></li>

@@ -13,5 +13,7 @@ cloud installations like Openshift/EKS, etc
 </strong>
 Whats New in v7.9
 --------------------------
+- Batch history files will be stored in database now
+
 - Various bug fixes and improvements
 - For full details please refer to the CHANGELOG

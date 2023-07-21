@@ -185,7 +185,7 @@ function iStock(data, type, row, meta){
 		var ingUnit = "gr";
 	}
 	if(meta.settings.json.source == 'local'){
-		return '<a class="popup-link" rel="tip" title="'+ingUnit+'" href="/pages/ingSuppliers.php?id=' + row.id + '&standAlone=1">' + data + '</a>';
+		return '<a class="popup-link" rel="tip" title="'+ingUnit+'" href="/pages/views/ingredients/ingSuppliers.php?id=' + row.id + '&standAlone=1">' + data + '</a>';
 	}else{
 		return 'N/A';
 	}

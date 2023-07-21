@@ -12,8 +12,6 @@ $order_by  = $_POST['order_by']?:'created';
 $order  = $_POST['order_as']?:'ASC';
 $extra = "ORDER BY ".$order_by." ".$order;
 
-$defCatClass = $settings['defCatClass'];
-$defImage = base64_encode(file_get_contents(__ROOT__.'/img/pv_molecule.png'));
 
 $s = trim($_POST['search']['value']);
 

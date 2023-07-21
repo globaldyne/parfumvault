@@ -1,0 +1,1 @@
+ALTER TABLE `batchIDHistory` CHANGE `pdf` `pdf` LONGBLOB NULL DEFAULT NULL; 

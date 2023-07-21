@@ -57,7 +57,8 @@ if($_GET['do'] == 'backupDB'){
 	
 	return;
 }
-
+/*
+DEPRECATED FUNCTION
 if($_GET['do'] == 'backupFILES'){
 	
 	$file = 'backup-'.date("d-m-Y").'.files.gz';
@@ -75,7 +76,7 @@ if($_GET['do'] == 'backupFILES'){
 
 	return;	
 }
-
+*/
 if($_GET['restore'] == 'db_bk'){
 	if (!file_exists($tmp_path)) {
 		mkdir($tmp_path, 0777, true);
@@ -96,8 +97,10 @@ if($_GET['restore'] == 'db_bk'){
 		system("gunzip -c $target_path > ".$tmp_path.'restore.sql');
 		$cmd = "mysql -u$dbuser -p$dbpass -h$dbhost $dbname < ".$tmp_path.'restore.sql'; 
 		passthru($cmd,$e);
+		
 		unlink($target_path);
-		//unlink($tmp_path.'restore.sql');
+		unlink($tmp_path.'restore.sql');
+		
 		if(!$e){
 			$result['success'] = 'Database has been restored. Please refresh the page for the changes to take effect.';
 			unset($_SESSION['parfumvault']);

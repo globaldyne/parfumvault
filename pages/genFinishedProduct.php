@@ -1,11 +1,14 @@
 <?php 
 if (!defined('pvault_panel')){ die('Not Found');}
+require_once(__ROOT__.'/inc/opendb.php');
+
 require_once(__ROOT__.'/libs/fpdf.php');
 require_once(__ROOT__.'/func/genBatchID.php');
 require_once(__ROOT__.'/func/genBatchPDF.php');
 require_once(__ROOT__.'/func/validateFormula.php');
 require_once(__ROOT__.'/func/calcPerc.php');
 require_once(__ROOT__.'/func/calcCosts.php');
+
 if($_POST['formula']){
 	$f_name =  mysqli_real_escape_string($conn, $_POST['formula']);
 	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE fid = '$f_name'"));
@@ -49,15 +52,11 @@ if($_POST['formula']){
 		$sid = $_POST['ingSup'];
 	}
 	if($_POST['batchID'] == '1'){
-		if (!file_exists($uploads_path.'batches')) {
-			mkdir($uploads_path.'batches', 0740, true);
-        }
+
 		define('FPDF_FONTPATH','./fonts');
 		$batchID = genBatchID();
-		$batchFile = $uploads_path.'batches/'.$batchID;
-		$prodName = $meta['product_name'];
-		mysqli_query($conn, "INSERT INTO batchIDHistory (id,fid,pdf,product_name) VALUES ('$batchID','$f_name','$batchFile','".$meta['product_name']."')");
-		genBatchPDF($f_name,$batchID,$bottle,$new_conc,$mg['total_mg'],$ver,$uploads_path,$settings['defCatClass'],$settings['qStep'],$conn);
+		
+		genBatchPDF($f_name,$batchID,$bottle,$new_conc,$mg['total_mg'],$ver,$settings['defCatClass'],$settings['qStep'],$conn);
 	}else{
 		$batchID = 'N/A';
 	}
@@ -129,7 +128,7 @@ $.ajax({
              <h5 class="m-1 text-primary">Formula name: <strong><?php echo $meta['name'];?></strong></h5>
              <h5 class="m-1 text-primary">Bottle: <strong><?php echo $bottle; ?><?=$settings['mUnit']?></strong></h5>
 			 <h5 class="m-1 text-primary">Concentration: <strong><?php echo $type; ?>%</h5>
-             <h5 class="m-1 text-primary"><?php if($_POST['batchID'] == '1'){ echo 'Batch ID: <a href="'.$uploads_path.'batches/'.$batchID.'" target="_blank">'.$batchID.'</a>'; }else{ echo 'Batch ID: <a href="#">N/A</a>';}?></h5>
+             <h5 class="m-1 text-primary"><?php if($_POST['batchID'] == '1'){ echo 'Batch ID: <a href="/pages/viewDoc.php?type=batch&id='.$batchID.'" target="_blank">'.$batchID.'</a>'; }else{ echo 'Batch ID: <a href="#">N/A</a>';}?></h5>
              <h5 class="m-1 text-primary">Category Class: <strong><?php echo ucfirst($defCatClass);?></strong></h5>
              <?php if($sid){?>
              <h5 class="m-1 text-primary">Supplier: <strong><?=getSupplierByID($sid,$conn)['name']?></strong></h5>

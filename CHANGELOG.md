@@ -1,5 +1,15 @@
 # CHANGELOG
 ### Version 7.9
+- Update api to store logs in the tmp directory instead
+- Rewrite formula document upload backend to use json
+- Rewrite ingredient document upload backend to use json
+- Post/upload limits increased to 200M for php-fpm
+- Show an clearer error message when ingredient is missing from the database but exists in formula make view
+- Ingredient management relative paths update
+- Set default value for price to 0 when fail to receive from supplier
+- Deprecating uploads path
+- Deprecating files backup function
+- Batch history files will be stored in database now
 - Disable column statistics when exporting the db
 - Update mysql restore/backup to use external host
 - Fix uploads tmp path

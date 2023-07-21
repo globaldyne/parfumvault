@@ -638,8 +638,8 @@ if($_POST['action'] == 'removeFromCart' && $_POST['materialId']){
 
 //PRINTING
 if($_GET['action'] == 'printLabel' && $_GET['name']){
-	if (file_exists(__ROOT__.'/tmp/labels/') === FALSE) {
-		mkdir(__ROOT__.'/tmp/labels/', 0740, true);
+	if (file_exists($tmp_path.'/labels/') === FALSE) {
+		mkdir($tmp_path.'/labels/', 0740, true);
 	}
 	$name = $_GET['name'];
 		
@@ -685,12 +685,11 @@ if($_GET['action'] == 'printLabel' && $_GET['name']){
 	}
 	$CAS = 'CAS: '.$_GET['cas'];
 	imagettftext($lblF, $settings['label_printer_font_size']/2, 90, 90, 565, $black, $font, $CAS);
-	$save = __ROOT__.'/tmp/labels/'.base64_encode($text.'png');
+	$save = $tmp_path.'/labels/'.base64_encode($text.'png');
 
 	if(imagepng($lblF, $save)){
 		imagedestroy($lblF);
 		shell_exec('/usr/bin/brother_ql -m '.$settings['label_printer_model'].' -p tcp://'.$settings['label_printer_addr'].' print -l '.$settings['label_printer_size'].' '. $save);
-		//echo '<img src="/tmp/labels/'.base64_encode($text.'png').'"/>';
 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Print sent!</div>';
 	}
 	
@@ -699,8 +698,8 @@ if($_GET['action'] == 'printLabel' && $_GET['name']){
 
 //PRINT BOX LABEL
 if($_GET['action'] == 'printBoxLabel' && $_GET['name']){
-	if (file_exists(__ROOT__.'/tmp/labels/') === FALSE) {
-		mkdir(__ROOT__.'/tmp/labels/', 0740, true);
+	if (file_exists($tmp_path.'/labels/') === FALSE) {
+		mkdir($tmp_path.'/labels/', 0740, true);
 	}
 	
 	if(empty($_GET['copies']) || !is_numeric($_GET['copies'])){
@@ -767,12 +766,11 @@ if($_GET['action'] == 'printBoxLabel' && $_GET['name']){
 	imagettftext($lblF, 17, 0, 0, 100, $black, $font, wordwrap ($allergenFinal, 90));
 	imagettftext($lblF, 20, 0, 150, 490, $black, $font, wordwrap ($info, 50));
 
-	$save = __ROOT__.'/tmp/labels/'.base64_encode($text.'png');
+	$save = $tmp_path.'/labels/'.base64_encode($text.'png');
 
 	if(imagepng($lblF, $save)){
 		imagedestroy($lblF);
 		if($_GET['download'] == 'image'){
-			//echo '<img src="/tmp/labels/'.base64_encode($text.'png').'"/>';
 			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><a href="'.'/tmp/labels/'.base64_encode($text.'png').'" target="_blank">Get Label here</a></div>';
 			return;
 		}

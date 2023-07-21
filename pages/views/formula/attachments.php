@@ -16,7 +16,7 @@ $id = mysqli_real_escape_string($conn, $_POST["id"]);
       <div class="btn-group">
         <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
             <div class="dropdown-menu dropdown-menu-right">
-                <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#addDoc"><i class="fa-solid fa-plus mr2"></i>Add new</a></li>
+                <li><a class="dropdown-item" href="#" data-toggle="modal" data-backdrop="static" data-target="#addAttachment"><i class="fa-solid fa-plus mr2"></i>Add new</a></li>
             </div>
       </div>                    
     </div>
@@ -27,7 +27,7 @@ $id = mysqli_real_escape_string($conn, $_POST["id"]);
           <th>Name</th>
           <th>File</th>
           <th>Notes</th>
-          <th>Actions</th>
+          <th></th>
       </tr>
    </thead>
 </table>
@@ -60,7 +60,7 @@ var tdAttachments = $('#tdAttachments').DataTable( {
 			  { data : 'name', title: 'Name', render: name },
 			  { data : 'docData', title: 'File', render: docData},
 			  { data : 'notes', title: 'Notes', render: notes},
-			  { data : null, title: 'Actions', render: actions},		   
+			  { data : null, title: '', render: actions},		   
 			],
 	
 	drawCallback: function ( settings ) {
@@ -86,7 +86,7 @@ function notes(data, type, row){
 }
 
 function actions(data, type, row){
-	return '<a href="#" id="dDel" class="fas fa-trash" data-id="'+row.id+'" data-name="'+row.name+'"></a>';    
+	return '<a href="#" id="dDel" class="fas fa-trash link-danger" data-id="'+row.id+'" data-name="'+row.name+'"></a>';    
 }
 
 $('#tdAttachments').editable({
@@ -112,8 +112,8 @@ $('#tdAttachments').on('click', '[id*=dDel]', function () {
     d.Name = $(this).attr('data-name');
 
 	bootbox.dialog({
-       title: "Confirm attachment removal",
-       message : 'Remove <strong>'+ d.Name +'</strong> from the list?',
+       title: "Confirm file deletion",
+       message : 'Permanently delete <strong>'+ d.Name +'</strong> document?',
        buttons :{
            main: {
                label : "Remove",
@@ -126,11 +126,10 @@ $('#tdAttachments').on('click', '[id*=dDel]', function () {
 					data: {
 						doc: 'delete',
 						id: d.ID,
-						ingID: '<?=$id?>'
+						ownerID: '<?=$id?>'
 						},
 					dataType: 'html',
 					success: function (data) {
-						$('#msg_doc').html(data);
 						reload_doc_data();
 					}
 				  });
@@ -149,7 +148,7 @@ $('#tdAttachments').on('click', '[id*=dDel]', function () {
    });
 });
 
-$('#addDoc').on('click', '[id*=doc_upload]', function () {
+$('#addAttachment').on('click', '[id*=doc_upload]', function () {
 		
 	$("#doc_inf").html('<div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
 	$("#doc_upload").prop("disabled", true);
@@ -167,20 +166,23 @@ $('#addDoc').on('click', '[id*=doc_upload]', function () {
               url: '/pages/upload.php?type=5&doc_name=' + btoa(doc_name) + '&doc_notes=' + btoa(doc_notes) + '&id=<?=$id;?>',
               type: 'POST',
               data: fd,
+			  dataType: 'json',
               contentType: false,
               processData: false,
 			  		cache: false,
               success: function(response){
-                 if(response != 0){
-                    $("#doc_inf").html(response);
+				if ( response.success ) {
 					$("#doc_upload").prop("disabled", false);
         			$("#doc_upload").prop('value', 'Upload');
 					reload_doc_data();
-                 }else{
-                    $("#doc_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> File upload failed!</div>');
+					var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + response.success + '</div>';
+							
+				} else {
 					$("#doc_upload").prop("disabled", false);
         			$("#doc_upload").prop('value', 'Upload');
-                 }
+					var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
+				}
+				$('#doc_inf').html(msg);
               },
            });
         }else{
@@ -198,14 +200,11 @@ function reload_doc_data() {
 
 
 <!-- ADD DOCUMENT-->
-<div class="modal fade" id="addDoc" tabindex="-1" role="dialog" aria-labelledby="addDoc" aria-hidden="true">
+<div class="modal fade" id="addAttachment" tabindex="-1" role="dialog" aria-labelledby="addAttachment" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="addAttachment">Add attachment</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <h5 class="modal-title">Add attachment</h5>
       </div>
       <div class="modal-body">
       <div id="doc_inf"></div>
@@ -213,7 +212,7 @@ function reload_doc_data() {
             Attachment name: 
             <input class="form-control" name="doc_name" type="text" id="doc_name" />
             </p>
-            <p>            
+            <p>
             Notes:
             <input class="form-control" name="doc_notes" type="textarea" id="doc_notes" />
             </p>

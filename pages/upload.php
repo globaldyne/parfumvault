@@ -189,7 +189,6 @@ if($_GET['type'] && $_GET['id']){
      	$file_type = $_FILES[$field]['type'];
      	$file_ext = strtolower(end(explode('.',$_FILES[$field]['name'])));
 	
-		//$tmp_path = __ROOT__.'/tmp/';
 	
 		if (!file_exists($tmp_path)) {
 			mkdir($tmp_path, 0740, true);
@@ -198,21 +197,29 @@ if($_GET['type'] && $_GET['id']){
 	  	$ext = explode(', ', $allowed_ext);
 	  
       	if(in_array($file_ext,$ext)=== false){
-			 echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>File upload error: </strong>Extension not allowed, please choose a '.$allowed_ext.' file.</div>';
-      	}elseif($file_size > $max_filesize){
-			 echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>File upload error: </strong>File size must not exceed '.formatBytes($max_filesize).'</div>';
-      	}else{
-	         if(move_uploaded_file($file_tmp, $tmp_path.$file_name)){
-				if($type == '2'){
-					mysqli_query($conn, "DELETE FROM documents WHERE ownerID = '$ownerID' AND type = '2'");
-				}
-				$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents($tmp_path.$file_name));
-				if(mysqli_query($conn, "INSERT INTO documents (ownerID,type,name,notes,docData) VALUES ('$ownerID','$type','$name','$notes','$docData')")){
-					unlink($tmp_path.$file_name);
-					echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>File uploaded</strong></div>';
-				 }
+      		$response['error'] = '<strong>File upload error: </strong>Extension not allowed, please choose a '.$allowed_ext.' file';
+			echo json_encode($response);
+			return;
+		}
+		
+		if($file_size > $max_filesize){
+			$response['error'] = 'File upload error: </strong>File size must not exceed '.formatBytes($max_filesize);
+			echo json_encode($response);
+			return;
+      	}
+		
+		if(move_uploaded_file($file_tmp, $tmp_path.$file_name)){
+			if($type == '2'){
+				mysqli_query($conn, "DELETE FROM documents WHERE ownerID = '$ownerID' AND type = '2'");
+			}
+			$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents($tmp_path.$file_name));
+			if(mysqli_query($conn, "INSERT INTO documents (ownerID,type,name,notes,docData) VALUES ('$ownerID','$type','$name','$notes','$docData')")){
+				unlink($tmp_path.$file_name);
+				$response['success'] = 'File uploaded';
+				echo json_encode($response);
+				return;
 			 }
-	  }
+	  	}
    }
 	
 	return;	

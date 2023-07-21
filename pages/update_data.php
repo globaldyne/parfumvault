@@ -675,11 +675,11 @@ if($_GET['ingDoc'] == 'update'){
 }
 
 
-//DELETE ING DOCUMENT	
+//DELETE DOCUMENT	
 if($_GET['doc'] == 'delete'){
 
 	$id = mysqli_real_escape_string($conn, $_GET['id']);
-	$ownerID = mysqli_real_escape_string($conn, $_GET['ingID']);
+	$ownerID = mysqli_real_escape_string($conn, $_GET['ownerID']);
 							
 	mysqli_query($conn, "DELETE FROM documents WHERE id = '$id' AND ownerID='$ownerID'");
 	return;

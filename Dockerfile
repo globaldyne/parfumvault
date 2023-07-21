@@ -22,6 +22,7 @@ RUN dnf --setopt=tsflags=nodocs -y install \
 	php-pear-Mail \
 	php-mbstring \
 	php-fpm \
+	phpMyAdmin \
 	git \
 	python3-pip \
 	procps \
@@ -36,6 +37,7 @@ RUN pecl channel-update pecl.php.net
 RUN printf "\n" | pecl install imagick
 RUN dnf remove ImageMagick-devel php-devel make -y
 RUN echo "extension=imagick.so" > /etc/php.d/40-ImageMagick.ini
+
 
 RUN python3 -m pip install --upgrade pip \
         && python3 -m pip install --no-warn-script-location --upgrade brother_ql
@@ -53,6 +55,7 @@ ENV LANG en_GB.UTF-8
 
 ADD . /html
 
+RUN ln -s /usr/share/phpMyAdmin/ /html/phpMyAdmin
 ADD scripts/php-fpm/www.conf /etc/php-fpm.d/www.conf
 ADD scripts/php-fpm/php-fpm.conf /etc/php-fpm.conf
 ADD scripts/entrypoint.sh /usr/bin/entrypoint.sh
