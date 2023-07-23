@@ -47,7 +47,7 @@ require_once(__ROOT__.'/inc/product.php');
           <div class="card-body p-0">
             <!-- Nested Row within Card Body -->
             <div class="row">
-             <?php if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM users")) == 0){ $first_time = 1; ?>
+             <?php if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM users")) == FALSE){ $first_time = 1; ?>
               <div class="col-lg-6 d-none d-lg-block bg-register-image"></div>
               <div class="col-lg-6">
                 <div class="p-5">
@@ -130,7 +130,7 @@ require_once(__ROOT__.'/inc/product.php');
       <div class="modal-body">
 		
          After installing <strong><?=$product?></strong> for the first time, you asked to set a password. This password cannot be retrieved later on as its stored in the database in encrypted format.
-      	<?php if(file_exists('/config/.DOCKER') == TRUE || file_exists('/config/.CLOUD') == TRUE){ ?>
+      	<?php if(getenv('PLATFORM') == 'CLOUD'){ ?>
          To set a new password for a user, you need to execute the command bellow followed by the user's email you want its password reset: 
       <p></p>
       <pre>reset_pass.sh example@example.com</pre>

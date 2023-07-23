@@ -45,38 +45,23 @@ if($_GET['do'] == 'db_update'){
 
 
 if($_GET['do'] == 'backupDB'){
-	
+	if($_GET['bkparams']){
+		$bkparams = $_GET['bkparams'];
+	}
 	$file = 'backup_'.$ver.'_'.date("d-m-Y").'.sql.gz';
 	$mime = "application/x-gzip";
 	
 	header( 'Content-Type: '.$mime );
 	header( 'Content-Disposition: attachment; filename="' .$file. '"' );
-	
-	$cmd = "mysqldump --column-statistics=0 -u $dbuser --password=$dbpass -h $dbhost $dbname | gzip --best";
-	passthru($cmd);
-	
+	//--column-statistics=0
+	$cmd = "mysqldump $bkparams -u $dbuser --password=$dbpass -h $dbhost $dbname | gzip --best";
+	if(passthru($cmd) == FALSE){
+		$result['error'] = 'Error creating database backup';
+	}
+	echo json_encode($result);
 	return;
 }
-/*
-DEPRECATED FUNCTION
-if($_GET['do'] == 'backupFILES'){
-	
-	$file = 'backup-'.date("d-m-Y").'.files.gz';
-	$mime = "application/x-gzip";
-	
-	if (!file_exists($tmp_path)) {
-		mkdir($tmp_path, 0777, true);
-	}
 
-	$cmd = "tar -czvf ".__ROOT__."/tmp/$file ".__ROOT__."/$uploads_path";   
-	shell_exec($cmd);
-	
-	header( 'Content-Type: '.$mime );
-	header( 'Location:/tmp/' .$file );
-
-	return;	
-}
-*/
 if($_GET['restore'] == 'db_bk'){
 	if (!file_exists($tmp_path)) {
 		mkdir($tmp_path, 0777, true);

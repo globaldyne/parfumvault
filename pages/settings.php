@@ -166,48 +166,10 @@ $(function() {
 </div>
 
      <div id="brand">
-         <table width="100%" border="0">
-           <tr>
-             <td colspan="2"><div id="brandMsg"></div></td>
-            </tr>
-           <tr>
-             <td width="7%">Brand Name:</td>
-             <td width="93%"><input name="brandName" type="text" class="form-control" id="brandName" value="<?php echo $settings['brandName'];?>" /></td>
-           </tr>
-           <tr>
-             <td>Address:</td>
-             <td><input name="brandAddress" type="text" class="form-control" id="brandAddress" value="<?php echo $settings['brandAddress'];?>"/></td>
-           </tr>
-           <tr>
-             <td>Email:</td>
-             <td><input name="brandEmail" type="text" class="form-control" id="brandEmail" value="<?php echo $settings['brandEmail'];?>" /></td>
-           </tr>
-           <tr>
-             <td>Contact No:</td>
-             <td><input name="brandPhone" type="text" class="form-control" id="brandPhone" value="<?php echo $settings['brandPhone'];?>" /></td>
-           </tr>
-            <tr>
-               <td>Logo:</td>
-				<td colspan="3">
-                    <form method="post" action="" enctype="multipart/form-data" id="myform">
-                    	<input type="file" id="brandLogo" name="brandLogo" />
-                    	<input type="button" class="btn btn-info" value="Upload" id="brandLogo_upload">
-                    </form>
-                </td>
-		   </tr>
-           <tr>
-             <td>&nbsp;</td>
-             <td>&nbsp;</td>
-             <td>&nbsp;</td>
-           </tr>
-           <tr>
-            <td><input type="submit" name="save-brand" id="save-brand" value="Submit" class="btn btn-info"/></td>
-             <td>&nbsp;</td>
-             <td>&nbsp;</td>
-           </tr>
-           <tr>
-            </tr>
-         </table>
+	   <div class="loader-center">
+       		<div class="loader"></div>
+            <div class="loader-text"></div>
+        </div>
      </div>
      
      <div id="api">
@@ -277,97 +239,44 @@ $(function() {
 <script type="text/javascript" language="javascript" >
 $(document).ready(function() {
 
-$('#save-perf-types').click(function() {
-	$.ajax({ 
-		url: '/pages/update_settings.php', 
-		type: 'POST',
-		data: {
-			manage: 'perfume_types',
-			edp: $("#edp").val(),
-			edc: $("#edc").val(),
-			edt: $("#edt").val(),
-			parfum: $("#parfum").val()
-		},
-		dataType: 'html',
-		success: function (data) {
-			$('#ptypes').html(data);
-		}
-	});
-});
-	
-$('#save-print').click(function() {
-	$.ajax({ 
-		url: '/pages/update_settings.php', 
-		type: 'POST',
-		data: {
-			manage: 'print',
-			label_printer_addr: $("#label_printer_addr").val(),
-			label_printer_model: $("#label_printer_model").val(),
-			label_printer_size: $("#label_printer_size").val(),
-			label_printer_font_size: $("#label_printer_font_size").val()
+	$('#save-perf-types').click(function() {
+		$.ajax({ 
+			url: '/pages/update_settings.php', 
+			type: 'POST',
+			data: {
+				manage: 'perfume_types',
+				edp: $("#edp").val(),
+				edc: $("#edc").val(),
+				edt: $("#edt").val(),
+				parfum: $("#parfum").val()
 			},
-		dataType: 'html',
-		success: function (data) {
-			$('#printMsg').html(data);
-		}
+			dataType: 'html',
+			success: function (data) {
+				$('#ptypes').html(data);
+			}
+		});
 	});
-});
-
-
-$('#save-brand').click(function() {
-	$.ajax({ 
-		url: '/pages/update_settings.php', 
-		type: 'POST',
-		data: {
-			manage: 'brand',
-			
-			brandName: $("#brandName").val(),
-			brandAddress: $("#brandAddress").val(),
-			brandEmail: $("#brandEmail").val(),
-			brandPhone: $("#brandPhone").val(),
-			},
-		dataType: 'html',
-		success: function (data) {
-			$('#brandMsg').html(data);
-		}
-	});
-});
-
-$("#brandLogo_upload").click(function(){
-	$("#brandMsg").html('<div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
-	$("#brandLogo_upload").prop("disabled", true);
-    $("#brandLogo_upload").prop('value', 'Please wait...');
 		
-	var fd = new FormData();
-    var files = $('#brandLogo')[0].files;
-        
-    if(files.length > 0 ){
-    	fd.append('brandLogo',files[0]);
-        $.ajax({
-		  url: '/pages/upload.php?type=brand',
-		  type: 'post',
-		  data: fd,
-		  contentType: false,
-		  processData: false,
-		  success: function(response){
-			 if(response != 0){
-				$("#brandMsg").html(response);
-				$("#brandLogo_upload").prop("disabled", false);
-				$("#brandLogo_upload").prop('value', 'Upload');
-			 }else{
-				$("#brandMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> File upload failed!</div>');
-				$("#brandLogo_upload").prop("disabled", false);
-				$("#brandLogo_upload").prop('value', 'Upload');
-			 }
-		  },
-	   });
-    }else{
-		$("#brandMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a file to upload!</div>');
-		$("#brandLogo_upload").prop("disabled", false);
-		$("#brandLogo_upload").prop('value', 'Upload');
-		}
-	});	
-});
+	$('#save-print').click(function() {
+		$.ajax({ 
+			url: '/pages/update_settings.php', 
+			type: 'POST',
+			data: {
+				manage: 'print',
+				label_printer_addr: $("#label_printer_addr").val(),
+				label_printer_model: $("#label_printer_model").val(),
+				label_printer_size: $("#label_printer_size").val(),
+				label_printer_font_size: $("#label_printer_font_size").val()
+				},
+			dataType: 'html',
+			success: function (data) {
+				$('#printMsg').html(data);
+			}
+		});
+	});
+
+	
+});//END DOC
 
 function list_cat(){
 	$.ajax({ 
@@ -446,6 +355,16 @@ function get_general(){
 		dataType: 'html',
 		success: function (data) {
 			$('#general').html(data);
+		}
+	});
+};
+
+function get_brand(){
+	$.ajax({ 
+		url: '/pages/views/settings/branding.php', 
+		dataType: 'html',
+		success: function (data) {
+			$('#brand').html(data);
 		}
 	});
 };

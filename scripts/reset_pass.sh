@@ -2,7 +2,7 @@
 #
 #
 # Reset admin pass
-# Script Version: v1.5
+# Script Version: v1.6
 # Author: John Belekios <john@globaldyne.co.uk>
 #
 #
@@ -15,18 +15,23 @@ then
 	exit 0;
 fi
 
-
-ID=$(mysql -h localhost -upvault -ppvault pvault -e "SELECT id FROM users WHERE email = '$EMAIL';")
+PASS=$(openssl rand -hex 8)
+ID=$(mysql -u$DB_USER -p$DB_PASS -h$DB_HOST $DB_NAME -e "SELECT id FROM users WHERE email = '$EMAIL';")
 if [ -z "$ID" ]
 then
-        echo "A user with email $EMAIL, not found"
+		mysql -u$DB_USER -p$DB_PASS -h$DB_HOST $DB_NAME -e \
+		       "INSERT INTO users (email,password,fullName) VALUES ('$EMAIL', PASSWORD('$PASS'),'Auto Created')"
+		clear
+		echo "A user with email $EMAIL, not found so its been created"
+		echo Username: $EMAIL
+		echo Password: $PASS
         exit 0;
 fi
 
-PASS=$(openssl rand -hex 8)
-VER=$(cat /var/www/html/VERSION.md)
 
-mysql -h localhost -upvault -ppvault pvault -e \
+VER=$(cat /html/VERSION.md)
+
+mysql -u$DB_USER -p$DB_PASS -h$DB_HOST $DB_NAME -e \
        "UPDATE users SET password = PASSWORD('$PASS') WHERE email = '$EMAIL';"
 
 clear

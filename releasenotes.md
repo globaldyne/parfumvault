@@ -2,6 +2,7 @@
 --------------------------
 IMPORTANT CHANGE COMING UP
 --------------------------
+Docker image port will be changed to 8000 on the next release, please update your configuration accordingly
 Please note, if you using the docker PV version, on version 8.0, 
 we will be removing mariadb from the image and PV will not be provided as a bundle anymore.
 Please make sure you have migrated your database to an external mariadb/mysql instance,
@@ -13,7 +14,9 @@ cloud installations like Openshift/EKS, etc
 </strong>
 Whats New in v7.9
 --------------------------
+- Branding page rewrite
+- Password reset script will auto create a user if called to non existing user
 - Batch history files will be stored in database now
-
+- Generating finished product rewrite
 - Various bug fixes and improvements
 - For full details please refer to the CHANGELOG

@@ -262,10 +262,11 @@ if($_POST['manage'] == 'brand'){
 	$brandPhone = mysqli_real_escape_string($conn, $_POST['brandPhone']);
 
 	if(mysqli_query($conn, "UPDATE settings SET brandName = '$brandName', brandAddress = '$brandAddress', brandEmail = '$brandEmail', brandPhone = '$brandPhone'")){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Brand details updated!</div>';
+		$response['success'] = 'Brand details updated!';
 	}else{
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error updating brand info.</div>';
+		$response['error'] = 'Error updating brand info';
 	}
+	echo json_encode($response);
 	return;
 }
 

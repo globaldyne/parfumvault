@@ -13,7 +13,7 @@ if(!$_GET['id']){
 	
 $id = mysqli_real_escape_string($conn, $_GET['id']);
 
-if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulasMetaData WHERE id = '$id'")) == 0){
+if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulasMetaData WHERE id = '$id'")) == FALSE){
 	echo '<div class="alert alert-info alert-dismissible">Incomplete formula. Please add ingredients.</div>';
 	return;
 }

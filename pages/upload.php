@@ -229,32 +229,45 @@ if($_GET['type'] && $_GET['id']){
 if($_GET['type'] == 'brand'){
 		
 	if(isset($_FILES['brandLogo']['name'])){
-      $file_name = $_FILES['brandLogo']['name'];
-      $file_size = $_FILES['brandLogo']['size'];
-      $file_tmp = $_FILES['brandLogo']['tmp_name'];
-      $file_type = $_FILES['brandLogo']['type'];
-      $file_ext = strtolower(end(explode('.',$_FILES['brandLogo']['name'])));
+     	$file_name = $_FILES['brandLogo']['name'];
+      	$file_size = $_FILES['brandLogo']['size'];
+      	$file_tmp = $_FILES['brandLogo']['tmp_name'];
+      	$file_type = $_FILES['brandLogo']['type'];
+      	$file_ext = strtolower(end(explode('.',$_FILES['brandLogo']['name'])));
 	  
-	  if (file_exists($tmp_path) === FALSE) {
-    	mkdir($tmp_path, 0740, true);
-	  }
-
-	  $ext = explode(', ', $allowed_ext);
-	  
-      if(in_array($file_ext,$ext)=== false){
-		 echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>File upload error: </strong>Extension not allowed, please choose a '.$allowed_ext.' file.</div>';
-      }elseif($file_size > $max_filesize){
-		 echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>File upload error: </strong>File size must not exceed '.formatBytes($max_filesize).'</div>';
-      }else{
+		if (file_exists($tmp_path) === FALSE) {
+			mkdir($tmp_path, 0740, true);
+		}
+	
+		$ext = explode(', ', $allowed_ext);
+		  
+		if(in_array($file_ext,$ext)=== false){
+			$response['error'] = '<strong>File upload error: </strong>Extension not allowed, please choose a '.$allowed_ext.' file';
+			echo json_encode($response);
+			return;
+		}
+			
+		if($file_size > $max_filesize){
+			$response['error'] = 'File upload error: </strong>File size must not exceed '.formatBytes($max_filesize);
+			echo json_encode($response);
+			return;
+		}
 	  
          if(move_uploaded_file($file_tmp,$tmp_path.base64_encode($file_name))){
+			$pic = base64_encode($file_name);		
+			create_thumb($tmp_path.$pic,250,250); 
+			$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents($tmp_path.$pic));
+
 		 	$brandLogoF = $tmp_path.base64_encode($file_name);
-		 	if(mysqli_query($conn, "UPDATE settings SET brandLogo = '$brandLogoF'")){
-		 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Brand logo uploaded</strong></div>';
+		 	if(mysqli_query($conn, "UPDATE settings SET brandLogo = '$docData'")){
+				unlink($tmp_path.$file_name);
+				$response["success"] = array( "msg" => "Pic updated!", "pic" => $docData);
+				echo json_encode($response);
+				return;
 			}
 		 }
 	  }
-   }
+   
 	
 	return;	
 }

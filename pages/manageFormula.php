@@ -770,10 +770,7 @@ if($_GET['action'] == 'printBoxLabel' && $_GET['name']){
 
 	if(imagepng($lblF, $save)){
 		imagedestroy($lblF);
-		if($_GET['download'] == 'image'){
-			echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><a href="'.'/tmp/labels/'.base64_encode($text.'png').'" target="_blank">Get Label here</a></div>';
-			return;
-		}
+
 		for ($k = 0; $k < $copies; $k++){
 			shell_exec('/usr/bin/brother_ql -m '.$settings['label_printer_model'].' -p tcp://'.$settings['label_printer_addr'].' print -l '.$settings['label_printer_size'].' '. $save);
 		}

@@ -53,7 +53,9 @@ $(document).ready(function() {
 		get_api();
 	});
 	
-	
+	$('#brand_tab').on( 'click', function () {
+		get_brand();
+	});
 	
 	get_general();
 });

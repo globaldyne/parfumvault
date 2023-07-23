@@ -11,7 +11,9 @@ require_once(__ROOT__.'/libs/fpdf.php');
 require_once(__ROOT__.'/libs/Html2Pdf.php');
 
 define('__PVLOGO__', __ROOT__.'/img/logo.png');
-define('__BRANDLOGO__', __ROOT__.'/'.$settings['brandLogo']);
+define('__BRANDLOGO__', __ROOT__.'/img/logo.png');
+
+//define('__BRANDLOGO__', __ROOT__.'/'.$settings['brandLogo']);
 
 if ($_REQUEST['action'] == 'generateSDS' && $_REQUEST['kind'] == 'ingredient'){
 	

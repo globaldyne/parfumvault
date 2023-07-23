@@ -1,5 +1,11 @@
 # CHANGELOG
 ### Version 7.9
+- Deprecating view box label as image
+- Finished product rewrite
+- docker compose file update
+- Password reset script will auto create a user if called to non existing user
+- Branding page rewrite
+- HTML template add modal is now static
 - Update api to store logs in the tmp directory instead
 - Rewrite formula document upload backend to use json
 - Rewrite ingredient document upload backend to use json
