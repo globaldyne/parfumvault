@@ -1,5 +1,8 @@
 # CHANGELOG
 ### Version 7.9
+- Set default user for fpm-php (apache)
+- Fix typo in db schema for brandLogo
+- Docker image updates (WIP)
 - IFRA cert generation logo path update
 - Finished product updates/improvements
 - PubChem Structure image will fallback to 2d if 3d is set and fails

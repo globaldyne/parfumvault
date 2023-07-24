@@ -1,11 +1,23 @@
 <?php
 define('pvault_panel', TRUE);
 define('__ROOT__', dirname(__FILE__)); 
+require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/inc/product.php');
 
-if(file_exists(__ROOT__.'/inc/config.php') == FALSE && !getenv('DB_HOST') && !getenv('DB_USER') && !getenv('DB_PASS') && !getenv('DB_NAME')){
+if(file_exists(__ROOT__.'/inc/config.php') == FALSE && !getenv('DB_HOST') || !getenv('DB_USER') || !getenv('DB_PASS') || !getenv('DB_NAME')){
+        require 'install.php';
+}else if (mysqli_query($conn,"DESCRIBE pv_meta") == FALSE && getenv('DB_HOST') && getenv('DB_USER') && getenv('DB_PASS') && getenv('DB_NAME')){
+        //require 'install.php';        
+echo 'kkk';
+        $cmd = 'mysql -u'.getenv('DB_USER').' -p'.getenv('DB_PASS').' -h'.getenv('DB_HOST').' '.getenv('DB_NAME').' < '.__ROOT__.'/db/pvault.sql';
+        passthru($cmd,$e);
+        if(!$e){
+                $app_ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
+                $db_ver  = trim(file_get_contents(__ROOT__.'/db/schema.ver'));
+                mysqli_query($conn,"INSERT INTO pv_meta (schema_ver,app_ver) VALUES ('$db_ver','$app_ver')");
+                header('Location: /');
+        }
 
-	require 'install.php';
-	
 }else{
 
 session_start();
@@ -13,8 +25,7 @@ if(isset($_SESSION['parfumvault'])){
 	header('Location: /index.php');
 }
 
-require_once(__ROOT__.'/inc/opendb.php');
-require_once(__ROOT__.'/inc/product.php');
+
 
 
 ?>

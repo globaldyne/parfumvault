@@ -306,7 +306,7 @@ CREATE TABLE `settings` (
   `brandAddress` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `brandEmail` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `brandPhone` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `brandLogo` `brandLogo` LONGBLOB NULL DEFAULT NULL,
+  `brandLogo` LONGBLOB NULL DEFAULT NULL,
   `pubChem` int(11) DEFAULT NULL,
   `chkVersion` int(11) DEFAULT NULL,
   `qStep` INT(5) NOT NULL DEFAULT '2',

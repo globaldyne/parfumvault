@@ -20,15 +20,15 @@ services:
       - 8000:8000
     restart: always
     environment:
-	  - PLATFORM=CLOUD
+      - PLATFORM=CLOUD
       - DB_HOST=pvdb
       - DB_USER=pvault
       - DB_PASS=pvault
       - DB_NAME=pvault
       - phpMyAdmin='false'
       - MAX_FILE_SIZE='4194304'
-      - TMP_PATH= /tmp/
-      - FILE_EXT= 'pdf, doc, docx, xls, csv, xlsx, png, jpg, jpeg, gif'
-	  - DB_BACKUP_PARAMETERS = '--column-statistics=1'
+      - TMP_PATH=/tmp/
+      - FILE_EXT='pdf, doc, docx, xls, csv, xlsx, png, jpg, jpeg, gif'
+      - DB_BACKUP_PARAMETERS='--column-statistics=1'
 volumes:
   db_data:

@@ -107,7 +107,7 @@ $max_filesize = "4194304"; //in bytes
 		return;
 	}
 	
-	
+	/*
 	if(file_exists('/config/.DOCKER') == TRUE){
 		$cfg = '/config/config.php';	
 		symlink($cfg, __ROOT__.'/inc/config.php');
@@ -115,10 +115,10 @@ $max_filesize = "4194304"; //in bytes
 	}else if(file_exists('/config/.CLOUD') == TRUE){
 		$cfg = '/config/config.cloud.php';
 		symlink($cfg, __ROOT__.'/inc/config.php');
-		
-	}else{
+		*/
+//	}else{
 		$cfg = __ROOT__.'/inc/config.php';
-	}
+	//}
 
 	if(file_put_contents($cfg, $conf) == FALSE){
 		$response['error'] = 'Failed to create config file <strong>'.$cfg.'</strong><p> Make sure your web server has write permissions to the install directory.';
