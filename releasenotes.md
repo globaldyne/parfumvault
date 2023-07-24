@@ -14,7 +14,9 @@ cloud installations like Openshift/EKS, etc
 </strong>
 Whats New in v7.9
 --------------------------
+- PubChem Structure image will fallback to 2d if 3d is set and fails
 - Branding page rewrite
+- Added enviroment variable to customise mysqldump parameters when taking a backup
 - Password reset script will auto create a user if called to non existing user
 - Batch history files will be stored in database now
 - Generating finished product rewrite

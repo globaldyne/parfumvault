@@ -1,5 +1,9 @@
 # CHANGELOG
 ### Version 7.9
+- IFRA cert generation logo path update
+- Finished product updates/improvements
+- PubChem Structure image will fallback to 2d if 3d is set and fails
+- Added enviroment variable to customise mysqldump parameters when taking a backup
 - Deprecating view box label as image
 - Finished product rewrite
 - docker compose file update

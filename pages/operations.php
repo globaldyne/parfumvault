@@ -45,20 +45,16 @@ if($_GET['do'] == 'db_update'){
 
 
 if($_GET['do'] == 'backupDB'){
-	if($_GET['bkparams']){
-		$bkparams = $_GET['bkparams'];
+	if( getenv('DB_BACKUP_PARAMETERS') ){
+		$bkparams = getenv('DB_BACKUP_PARAMETERS');
 	}
 	$file = 'backup_'.$ver.'_'.date("d-m-Y").'.sql.gz';
-	$mime = "application/x-gzip";
 	
-	header( 'Content-Type: '.$mime );
+	header( 'Content-Type: application/x-gzip' );
 	header( 'Content-Disposition: attachment; filename="' .$file. '"' );
-	//--column-statistics=0
 	$cmd = "mysqldump $bkparams -u $dbuser --password=$dbpass -h $dbhost $dbname | gzip --best";
-	if(passthru($cmd) == FALSE){
-		$result['error'] = 'Error creating database backup';
-	}
-	echo json_encode($result);
+	passthru($cmd);
+	
 	return;
 }
 
