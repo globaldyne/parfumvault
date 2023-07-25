@@ -2,7 +2,7 @@
 version: '3.8'
 services:
   pvdb:
-    image: mariadb:latest
+    image: mariadb:10.5
     command: '--default-authentication-plugin=mysql_native_password --innodb-flush-method=fsync'
     volumes:
       - db_data:/var/lib/mysql
