@@ -57,6 +57,7 @@ ADD . /html
 
 
 RUN sed -i "s/ 'localhost'/ getenv(\"DB_HOST\")/g" /etc/phpMyAdmin/config.inc.php
+RUN echo "\$cfg['TempDir'] = '/tmp/'" >> /etc/phpMyAdmin/config.inc.php
 RUN chown -R root.root /etc/phpMyAdmin/
 
 RUN ln -s /usr/share/phpMyAdmin/ /html/phpMyAdmin
@@ -64,8 +65,10 @@ ADD scripts/php-fpm/www.conf /etc/php-fpm.d/www.conf
 ADD scripts/php-fpm/php-fpm.conf /etc/php-fpm.conf
 ADD scripts/entrypoint.sh /usr/bin/entrypoint.sh
 ADD scripts/nginx/nginx.conf /etc/nginx/nginx.conf
+ADD scripts/reset_pass.sh /usr/bin/reset_pass.sh
 
 RUN chmod +x /usr/bin/entrypoint.sh
+RUN chmod +x /usr/bin/reset_pass.sh
 
 WORKDIR /html
 STOPSIGNAL SIGQUIT

@@ -45,8 +45,7 @@ if($_POST['action'] == 'register'){
 
 if($_POST['action']=='install'){
 	
-//	if(file_exists(__ROOT__.'/inc/config.php') == TRUE){
-	if(file_exists(__ROOT__.'/inc/config.php') == TRUE || getenv('DB_HOST') && getenv('DB_USER') && getenv('DB_PASS') && getenv('DB_NAME')){
+	if(file_exists(__ROOT__.'/inc/config.php') == TRUE && getenv('PLATFROM') != 'CLOUD'){
 	
 		echo '<div class="alert alert-info alert-dismissible"><strong>System is already configured!</strong></div>';
 		return;
@@ -78,7 +77,7 @@ if($_POST['action']=='install'){
 	}
 	
 	
-	$cmd = 'mysql -u'.$_POST['dbuser'].' -p'.$_POST['dbpass'].' -h'.$_POST['dbhost'].' '.$_POST['dbname'].' < ../db/pvault.sql'; 
+	$cmd = 'mysql -u'.$_POST['dbuser'].' -p'.$_POST['dbpass'].' -h'.$_POST['dbhost'].' '.$_POST['dbname'].' < '.__ROOT__.'/db/pvault.sql'; 
 	passthru($cmd,$e);
 	if(!$e){
 		mysqli_query($link,"INSERT INTO users (id,email,password,fullName) VALUES ('1','".strtolower($_POST['email'])."','PASSWORD(".$_POST['password'].")','".$_POST['fullName']."')");

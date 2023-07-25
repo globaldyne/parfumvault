@@ -18,7 +18,7 @@ services:
     #image: mysql:latest
     ...
   pvault:
-    image: globaldyne/jbvault:v8.0
+    image: globaldyne/jbvault:latest
     ports:
       - 8000:8000
     restart: always
@@ -48,7 +48,7 @@ Check containers are running and the port mapping:
 $ docker ps
 CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                 NAMES
 b81fb72f3e5a   mariadb:latest                  "docker-entrypoint.s…"   6 seconds ago   Up 4 seconds   3306/tcp, 33060/tcp      docker-compose-db-1
-10ec4668474c   globaldyne/jbvault:v8.0   "/bin/bash /start.sh"    6 seconds ago   Up 4 seconds   0.0.0.0:8000->8000/tcp   docker-compose-pvault-1
+10ec4668474c   globaldyne/jbvault:latest   "/bin/bash /start.sh"    6 seconds ago   Up 4 seconds   0.0.0.0:8000->8000/tcp   docker-compose-pvault-1
 ```
 
 Navigate to `http://localhost:8000` in your web browser to access Perfumers Vault.

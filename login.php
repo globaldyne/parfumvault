@@ -4,22 +4,6 @@ define('__ROOT__', dirname(__FILE__));
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/product.php');
 
-if(file_exists(__ROOT__.'/inc/config.php') == FALSE && !getenv('DB_HOST') || !getenv('DB_USER') || !getenv('DB_PASS') || !getenv('DB_NAME')){
-        require 'install.php';
-}else if (mysqli_query($conn,"DESCRIBE pv_meta") == FALSE && getenv('DB_HOST') && getenv('DB_USER') && getenv('DB_PASS') && getenv('DB_NAME')){
-        //require 'install.php';        
-echo 'kkk';
-        $cmd = 'mysql -u'.getenv('DB_USER').' -p'.getenv('DB_PASS').' -h'.getenv('DB_HOST').' '.getenv('DB_NAME').' < '.__ROOT__.'/db/pvault.sql';
-        passthru($cmd,$e);
-        if(!$e){
-                $app_ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
-                $db_ver  = trim(file_get_contents(__ROOT__.'/db/schema.ver'));
-                mysqli_query($conn,"INSERT INTO pv_meta (schema_ver,app_ver) VALUES ('$db_ver','$app_ver')");
-                header('Location: /');
-        }
-
-}else{
-
 session_start();
 if(isset($_SESSION['parfumvault'])){
 	header('Location: /index.php');
@@ -58,60 +42,81 @@ if(isset($_SESSION['parfumvault'])){
           <div class="card-body p-0">
             <!-- Nested Row within Card Body -->
             <div class="row">
-             <?php if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM users")) == FALSE){ $first_time = 1; ?>
-              <div class="col-lg-6 d-none d-lg-block bg-register-image"></div>
+            <?php
+			if(file_exists(__ROOT__.'/inc/config.php') == FALSE && !getenv('DB_HOST') && !getenv('DB_USER') && !getenv('DB_PASS') && !getenv('DB_NAME')){
+        		require 'install.php';
+				return;
+			}
+			if (mysqli_query($conn,"DESCRIBE pv_meta") == FALSE && getenv('DB_HOST') && getenv('DB_USER') && getenv('DB_PASS') && getenv('DB_NAME')){
+
+				$cmd = 'mysql -u'.getenv('DB_USER').' -p'.getenv('DB_PASS').' -h'.getenv('DB_HOST').' '.getenv('DB_NAME').' < '.__ROOT__.'/db/pvault.sql';
+				passthru($cmd,$e);
+				if(!$e){
+					$app_ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
+					$db_ver  = trim(file_get_contents(__ROOT__.'/db/schema.ver'));
+					mysqli_query($conn,"INSERT INTO pv_meta (schema_ver,app_ver) VALUES ('$db_ver','$app_ver')");
+					header('Location: /');
+				}else{
+					$response['error'] = 'DB Schema Creation error. Make sure the database '.getenv('DB_NAME').' exists in your mysql server '.getenv('DB_HOST').', user '.getenv('DB_USER').' has full permissions on it and its empty.';
+					echo json_encode($response);
+					return;
+				}
+			}
+			?>
+            <?php if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM users")) == FALSE){ $first_time = 1; ?>
+            <div class="col-lg-6 d-none d-lg-block bg-register-image"></div>
+             <div class="col-lg-6">
+              <div class="p-5">
+               <div class="text-center">
+                  <h1 class="h4 text-gray-900 mb-4">Please register a user!</h1>
+               </div>
+               <div id="msg"></div>
+               <div class="user" id="reg_form">
+               <hr>
+               <div class="form-group">
+                  <label for="fullName" class="form-label">Full name</label>
+                  <input type="text" class="form-control form-control-user" id="fullName">
+               </div>
+               <div class="form-group">
+                  <label for="email" class="form-label">Email</label>
+                  <input type="text" class="form-control form-control-user" id="email">
+               </div>
+               <div class="form-group">
+                  <label for="password" class="form-label">Password</label>
+                  <input type="text" class="form-control form-control-user" id="password">
+               </div>
+               <div class="form-group"></div>
+               <button class="btn btn-primary btn-user btn-block" id="registerSubmit">
+                 Register
+               </button>
+            </div>
+            <?php }else{ ?>
+              <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
               <div class="col-lg-6">
                 <div class="p-5">
                   <div class="text-center">
-                    <h1 class="h4 text-gray-900 mb-4">Please register a user!</h1>
+                    <h1 class="h4 text-gray-900 mb-4">Please login</h1>
                   </div>
                   <div id="msg"></div>
-                   <div class="user" id="reg_form">
-                    <hr>
+                  <div class="user" id="login">
+                  
                     <div class="form-group">
-                      <label for="fullName" class="form-label">Full name</label>
-                      <input type="text" class="form-control form-control-user" id="fullName">
+                      <input type="text" class="form-control form-control-user" name="email" id="login_email" placeholder="Email...">
                     </div>
                     <div class="form-group">
-                      <label for="email" class="form-label">Email</label>
-                      <input type="text" class="form-control form-control-user" id="email">
-                    </div>
-                    <div class="form-group">
-                      <label for="password" class="form-label">Password</label>
-                      <input type="text" class="form-control form-control-user" id="password">
+                      <input type="password" class="form-control form-control-user" name="password" id="login_pass" placeholder="Password...">
                     </div>
                     <div class="form-group"></div>
-                    <button class="btn btn-primary btn-user btn-block" id="registerSubmit">
-                      Register
+                    <button class="btn btn-primary btn-user btn-block" id="login_btn">
+                      Login
                     </button>
                   </div>
-                  <?php }else{ ?>
-                  <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
-                  <div class="col-lg-6">
-                    <div class="p-5">
-                      <div class="text-center">
-                        <h1 class="h4 text-gray-900 mb-4">Please login</h1>
-                      </div>
-                      <div id="msg"></div>
-                      <div class="user" id="login">
-                      
-                        <div class="form-group">
-                          <input type="text" class="form-control form-control-user" name="email" id="login_email" placeholder="Email...">
-                        </div>
-                        <div class="form-group">
-                          <input type="password" class="form-control form-control-user" name="password" id="login_pass" placeholder="Password...">
-                        </div>
-                        <div class="form-group"></div>
-                        <button class="btn btn-primary btn-user btn-block" id="login_btn">
-                          Login
-                        </button>
-                      </div>
-                      
-                      <hr>
-                      <div class="text-center">
-                        <a class="small" href="#" data-toggle="modal" data-target="#forgot_pass">Forgot Password?</a>
-                      </div>
-                  <?php } ?>		 		 
+                  
+                  <hr>
+                  <div class="text-center">
+                    <a class="small" href="#" data-toggle="modal" data-target="#forgot_pass">Forgot Password?</a>
+                  </div>
+            <?php } ?>		 		 
                   <hr>
                   <div class="copyright text-center my-auto">
 				  <label class="small">Version: <?php echo $ver; ?> | <?php echo $product; ?></label>
@@ -156,7 +161,7 @@ if(isset($_SESSION['parfumvault'])){
   </div>
 </div>
 
-<?php } ?>
+<?php // } ?>
 
 <script>
 $(document).ready(function() {

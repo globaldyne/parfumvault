@@ -18,8 +18,7 @@ if(file_exists(__ROOT__.'/inc/config.php') == FALSE && getenv('DB_HOST') && gete
 	require_once(__ROOT__.'/inc/config.php');
 }
 
-
-$conn = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname) or die ('Error connecting to database ');
+$conn = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname) or die ('Unable to connect to '.$dbname.' database on '.$dbhost.' host. Please make sure the dabase exists and you user has full permissions on it.');
 mysqli_select_db($conn, $dbname);
 mysqli_set_charset($conn, "utf8");
 

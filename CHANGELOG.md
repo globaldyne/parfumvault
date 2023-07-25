@@ -1,5 +1,11 @@
 # CHANGELOG
 ### Version 7.9
+- Further improvements in the login page and backend db creation
+- A phpMyAdmin user warning message added
+- Release notes update
+- Docker compose update
+- Cloud config file removed
+- Update db connect error message
 - Set default user for fpm-php (apache)
 - Fix typo in db schema for brandLogo
 - Docker image updates (WIP)
@@ -32,7 +38,7 @@
 - Fix tmp path
 - Dockerfile update
 - Nginx conf added
-- php-fpm added
+- php-fpm conf added
 - Added external vars for config
 - Added Dockerfile
 - Code clean-up
