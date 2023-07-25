@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 7.9
+- Added load time meta data in ingredients page
 - Changed inodb flush method for better performance when using docker compose
 - When a material is banned or prohibited, the whole fomula line will be colored red
 - Further improvements in the login page and backend db creation

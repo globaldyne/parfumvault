@@ -1,4 +1,6 @@
 <?php
+$starttime = microtime(true);
+
 if(defined('__ROOT__') == FALSE){
 	define('__ROOT__', dirname(dirname(__FILE__))); 
 }
@@ -146,6 +148,9 @@ $response = array(
 if(empty($r)){
 	$response['data'] = [];
 }
+
+$sys['load_time'] = microtime(true) - $starttime;
+$response['sys'] = $sys;
 
 header('Content-Type: application/json; charset=utf-8');
 echo json_encode($response,JSON_UNESCAPED_UNICODE);
