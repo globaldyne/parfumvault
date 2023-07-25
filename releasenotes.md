@@ -17,6 +17,7 @@ cloud installations like Openshift, EKS, etc
 </strong>
 Whats New in v7.9
 --------------------------
+- When a material is banned or prohibited, the whole fomula line will be colored red
 - PubChem Structure image will fallback to 2d if 3d is set and fails
 - Branding page rewrite
 - Added enviroment variable to customise mysqldump parameters when taking a backup

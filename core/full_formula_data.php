@@ -253,11 +253,12 @@ $m['protected'] = (bool)$meta['isProtected'];
 $new_conc = $_GET['final_total_ml'] ?: 100/100*$_GET['final_type_conc'] ?: 100;
 $carrier = $_GET['final_total_ml'] ?: 100 - $new_conc;
 
-if( validateFormula($meta['fid'], $_GET['final_total_ml'] ?: 100, $new_conc, $mg['total_mg'], $_GET['val_cat']?:$defCatClass, $settings['qStep'], $conn) == TRUE){
-	$val_status = 1;
-	$val_msg = 'Your formula contains materials, exceeding and/or missing IFRA standards. Please alter your formula.';
+if($m['total_ingredients'] != 0){
+	if( validateFormula($meta['fid'], $_GET['final_total_ml'] ?: 100, $new_conc, $mg['total_mg'], $_GET['val_cat']?:	$defCatClass, $settings['qStep'], $conn) == TRUE){
+		$val_status = 1;
+		$val_msg = 'Your formula contains materials, exceeding and/or missing IFRA standards. Please alter your formula.';
+	}
 }
-
 
 $compliance['checked_for'] = (string)$_GET['val_cat'] ?: $defCatClass;
 $compliance['final_total_ml'] = (int)$_GET['final_total_ml'] ?: 100;

@@ -1,9 +1,9 @@
 # CHANGELOG
 ### Version 7.9
+- When a material is banned or prohibited, the whole fomula line will be colored red
 - Further improvements in the login page and backend db creation
 - A phpMyAdmin user warning message added
 - Release notes update
-- Docker compose update
 - Cloud config file removed
 - Update db connect error message
 - Set default user for fpm-php (apache)

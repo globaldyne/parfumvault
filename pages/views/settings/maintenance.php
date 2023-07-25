@@ -24,7 +24,7 @@
   	</tr>
     <tr>
     	<td>
-    	<div class="alert alert-warning">You have enabled phpMyAdmin, please note, managing PV using phpMyAdmin its NOT supported or recommended by any means. If you interfer with backend db you may break your installation and/or loose data.</div>
+    	<div class="alert alert-warning">You have enabled phpMyAdmin, please note, managing PV using phpMyAdmin its NOT supported or recommended by any means. If you interfer with the backend db you may break your installation and/or loose data.</div>
     	</td>
     </tr>
   <?php } ?>
