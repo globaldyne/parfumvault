@@ -4,6 +4,8 @@ echo "----------------------------------"
 echo "READY - Perfumer's Vault Ver $(cat /html/VERSION.md)"
 echo "Starting web server"
 
+mkdir /tmp/php
+
 if [ ! -d $TMP_PATH ] 
 then
     echo "Temp directory not exists, creating $TMP_PATH." 

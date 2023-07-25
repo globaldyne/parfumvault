@@ -57,7 +57,7 @@ ADD . /html
 
 
 RUN sed -i "s/ 'localhost'/ getenv(\"DB_HOST\")/g" /etc/phpMyAdmin/config.inc.php
-RUN echo "\$cfg['TempDir'] = '/tmp/'" >> /etc/phpMyAdmin/config.inc.php
+RUN echo "\$cfg['TempDir'] = '/tmp/';" >> /etc/phpMyAdmin/config.inc.php
 RUN chown -R root.root /etc/phpMyAdmin/
 
 RUN ln -s /usr/share/phpMyAdmin/ /html/phpMyAdmin
@@ -73,6 +73,5 @@ RUN chmod +x /usr/bin/reset_pass.sh
 WORKDIR /html
 STOPSIGNAL SIGQUIT
 USER ${uid}
-RUN mkdir /tmp/php
 EXPOSE 8000
 ENTRYPOINT ["entrypoint.sh"]
