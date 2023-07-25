@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 7.9
+- Update password reset message
 - Set mariadb version to 10.5 in docker compose (higher versions having performance issues)
 - Added load time meta data in ingredients page
 - Changed inodb flush method for better performance when using docker compose

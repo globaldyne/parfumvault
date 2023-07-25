@@ -145,11 +145,13 @@ if(isset($_SESSION['parfumvault'])){
 		
          After installing <strong><?=$product?></strong> for the first time, you asked to set a password. This password cannot be retrieved later on as its stored in the database in encrypted format.
       	<?php if(getenv('PLATFORM') == 'CLOUD'){ ?>
-         To set a new password for a user, you need to execute the command bellow followed by the user's email you want its password reset: 
+         To set a new password for a user, you need to execute the command bellow followed by the user's email you want its password reset.
+         If the user don't exist, will created automatically and the system will generate a random password. 
       <p></p>
       <pre>reset_pass.sh example@example.com</pre>
       <?php }else{ ?>
       		To set a new password, you need manually to access your database and set a new password there for the user you want its password reset.
+            If the user don't exist, will created automatically and the system will generate a random password.
       <?php } ?>
       </div>
       <div class="modal-footer">
