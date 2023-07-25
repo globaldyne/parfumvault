@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 7.9
+- Changed inodb flush method for better performance when using docker compose
 - When a material is banned or prohibited, the whole fomula line will be colored red
 - Further improvements in the login page and backend db creation
 - A phpMyAdmin user warning message added
@@ -8,14 +9,13 @@
 - Update db connect error message
 - Set default user for fpm-php (apache)
 - Fix typo in db schema for brandLogo
-- Docker image updates (WIP)
 - IFRA cert generation logo path update
 - Finished product updates/improvements
 - PubChem Structure image will fallback to 2d if 3d is set and fails
 - Added enviroment variable to customise mysqldump parameters when taking a backup
 - Deprecating view box label as image
 - Finished product rewrite
-- docker compose file update
+- Docker compose file update
 - Password reset script will auto create a user if called to non existing user
 - Branding page rewrite
 - HTML template add modal is now static
@@ -29,7 +29,7 @@
 - Deprecating uploads path
 - Deprecating files backup function
 - Batch history files will be stored in database now
-- Disable column statistics when exporting the db
+- Disable column statistics when exporting the db via docker compose
 - Update mysql restore/backup to use external host
 - Fix uploads tmp path
 - Increase nginx body size limit to 200M
