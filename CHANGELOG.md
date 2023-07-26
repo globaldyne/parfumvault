@@ -1,4 +1,5 @@
 # CHANGELOG
+### Version 8.0
 ### Version 7.9
 - Add icon on error message on login page
 - Handle backend error for login page
