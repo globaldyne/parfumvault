@@ -31,6 +31,7 @@ $(document).ready(function() {
 	var tdDataCustomers = $('#tdDataBatches').DataTable( {
 	columnDefs: [
 		{ className: 'pv_vertical_middle text-center', targets: '_all' },
+		{ orderable: false, targets: [3]}
 	],
 	dom: 'lrftip',
 	processing: true,
@@ -73,12 +74,12 @@ $(document).ready(function() {
 }); //END DOC
 
 function actions(data, type, row){
-	if(row.state){
-		var x = '<a href="'+ row.pdf +'" target="_blank" rel="tip" title="Download file" class="fas fa-file-pdf"></a>'
+	if(row.pdf){
+		var data = '<a href="/pages/viewDoc.php?type=batch&id='+ row.id +'" target="_blank" rel="tip" title="View file" class="fas fa-file-pdf"></a>'
 	}else{
-		var x = '<a href="#" rel="tip" title="File not available" class="fas fa-exclamation-triangle"></a>';
+		var data = '<a href="#" rel="tip" title="File not available" class="fas fa-exclamation-triangle"></a>';
 	}
-	return x;    
+	return data;    
 }
 
 

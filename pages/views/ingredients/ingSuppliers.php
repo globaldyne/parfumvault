@@ -1,6 +1,6 @@
 <?php
 
-define('__ROOT__', dirname(dirname(__FILE__))); 
+define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__))))); 
 
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
@@ -123,7 +123,7 @@ $(document).ready(function() {
 	
 	$('#addSupplier').on('click', '[id*=sAdd]', function () {
 	  $.ajax({ 
-		url: 'update_data.php', 
+		url: '/pages/update_data.php', 
 		type: 'POST',
 		data: {
 			ingSupplier: 'add',
@@ -254,7 +254,7 @@ $('#tdIngSup').editable({
 	type: 'POST',
 	emptytext: "",
 	emptyclass: "",
-  	url: "update_data.php?ingSupplier=update&ingID=<?=$ingID?>",
+  	url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID?>",
     source: [
 			 <?php
 				$res_ing = mysqli_query($conn, "SELECT id,name FROM ingSuppliers ORDER BY name ASC");
@@ -278,7 +278,7 @@ $('#tdIngSup').editable({
 	type: 'POST',
 	emptytext: "",
 	emptyclass: "",
-  	url: "update_data.php?ingSupplier=update&ingID=<?=$ingID?>",
+  	url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID?>",
     source: [
 			 {value: '1', text: 'Available'},
              {value: '2', text: 'Limited availability'},
@@ -293,7 +293,7 @@ $('#tdIngSup').editable({
 	  container: 'body',
 	  selector: 'i.supplierLink',
 	  type: 'POST',
-	  url: "update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
+	  url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
 	  title: 'Store link',
 });
   
@@ -301,7 +301,7 @@ $('#tdIngSup').editable({
 	  container: 'body',
 	  selector: 'i.price',
 	  type: 'POST',
-	  url: "update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
+	  url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
 	  title: 'Price',
 });
 	
@@ -309,7 +309,7 @@ $('#tdIngSup').editable({
   	container: 'body',
   	selector: 'i.size',
   	type: 'POST',
-	url: "update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
+	url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
 	title: 'Size',
 	success: function (data) {
 			reload_sup_data();
@@ -324,7 +324,7 @@ $('#tdIngSup').editable({
   	container: 'body',
   	selector: 'i.mUnit',
   	type: 'POST',
-	url: "update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
+	url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
 	title: 'Measurement Unit',
 	source: [
 			 {value: 'ml', text: 'Milliliter'},
@@ -341,7 +341,7 @@ $('#tdIngSup').editable({
 	container: 'body',
 	selector: 'i.manufacturer',
 	type: 'POST',
-	url: "update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
+	url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
 	title: 'Manufacturer',
 	success: function (data) {
 			reload_sup_data();
@@ -352,7 +352,7 @@ $('#tdIngSup').editable({
 	container: 'body',
 	selector: 'i.batch',
 	type: 'POST',
-	url: "update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
+	url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
 	title: 'Batch',
 	success: function (data) {
 			reload_sup_data();
@@ -363,7 +363,7 @@ $('#tdIngSup').editable({
 	container: 'body',
 	selector: 'i.purchased',
 	type: 'POST',
-	url: "update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
+	url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
 	title: 'Purchase date',
 	type: 'date',
 	success: function (data) {
@@ -375,7 +375,7 @@ $('#tdIngSup').editable({
 	container: 'body',
 	selector: 'i.stock',
 	type: 'POST',
-	url: "update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
+	url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
 	title: 'In Stock',
 	success: function (data) {
 			reload_sup_data();
@@ -388,7 +388,7 @@ $('#tdIngSup').on('click', '[id*=prefSID]', function () {
    	s.Status = $(this).attr('data-status');
 
 	$.ajax({ 
-		url: 'update_data.php', 
+		url: '/pages/update_data.php', 
 		type: 'GET',
 		data: {
 			ingSupplier: 'preferred',
@@ -415,7 +415,7 @@ $('#tdIngSup').on('click', '[id*=getPrice]', function () {
 	$('#supMsg').html('<div class="alert alert-info"><strong>Please wait, trying to fetch supplier data...</strong></div>');
 		$('#' + s.ID).html('<img src="/img/loading.gif"/>');
 		$.ajax({ 
-			url: 'update_data.php', 
+			url: '/pages/update_data.php', 
 			type: 'POST',
 			data: {
 				ingSupplier: 'getPrice',
@@ -453,7 +453,7 @@ $('#tdIngSup').on('click', '[id*=sDel]', function () {
                callback: function (){
 	    			
 				$.ajax({ 
-					url: 'update_data.php', 
+					url: '/pages/update_data.php', 
 					type: 'GET',
 					data: {
 						ingSupplier: 'delete',

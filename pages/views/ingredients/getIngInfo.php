@@ -1,7 +1,9 @@
 <?php
 define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__))))); 
 if(!$_GET['ingID']){
-	echo 'Invalid ID';
+	
+	echo '<div class="alert alert-danger">Ingredient is missing from your ingredients inventory. Please <a href="/?do=ingredients" target="_blank">create</a> it first.</div>';
+	
 	return;
 }
 $id = $_GET['ingID'];

@@ -1,6 +1,6 @@
 <?php
 
-define('__ROOT__', dirname(dirname(__FILE__))); 
+define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__))))); 
 
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
@@ -32,7 +32,7 @@ $ingName = mysqli_real_escape_string($conn, $_GET["name"]);
           <th>EINECS</th>
           <th>Percentage</th>
           <th>Declare</th>
-          <th>Actions</th>
+          <th></th>
       </tr>
    </thead>
 </table>
@@ -62,7 +62,7 @@ var tdCompositions = $('#tdCompositions').DataTable( {
 			  { data : 'ec', title: 'EINECS', render: cmpEC},
 			  { data : 'percentage', title: 'Percentage', render: cmpPerc},
 			  { data : 'toDeclare', title: 'Declare', render: cmpDeclare},
-			  { data : null, title: 'Actions', render: cmpActions},		   
+			  { data : null, title: '', render: cmpActions},		   
 			 ],
 	order: [[ 1, 'asc' ]],
 	lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
@@ -97,7 +97,7 @@ function cmpDeclare(data, type, row){
 }
 
 function cmpActions(data, type, row){
-	return '<a href="#" id="cmpDel" class="fas fa-trash alert-danger" data-id="'+row.id+'" data-name="'+row.name+'"></a>';
+	return '<a href="#" id="cmpDel" class="fas fa-trash link-danger" data-id="'+row.id+'" data-name="'+row.name+'"></a>';
 }
 
 $('#tdCompositions').editable({

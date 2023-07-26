@@ -35,7 +35,7 @@ function search() {
 
 function fetch_whereUsed(){
 	$.ajax({ 
-		url: 'whereUsed.php', 
+		url: '/pages/views/ingredients/whereUsed.php', 
 		type: 'POST',
 		data: {
 			id: btoa(myIngName)
@@ -49,7 +49,7 @@ function fetch_whereUsed(){
 
 function fetch_usageData(){
 	$.ajax({ 
-		url: 'views/ingredients/usageData.php', 
+		url: '/pages/views/ingredients/usageData.php', 
 		type: 'POST',
 		data: {
 			ingID: myIngID
@@ -64,7 +64,7 @@ function fetch_usageData(){
 
 function fetch_sups(){
 	$.ajax({ 
-		url: 'ingSuppliers.php', 
+		url: '/pages/views/ingredients/ingSuppliers.php', 
 		type: 'GET',
 		data: {
 			id: myIngID
@@ -78,7 +78,7 @@ function fetch_sups(){
 	
 function fetch_techs(){
 	$.ajax({ 
-		url: 'views/ingredients/techData.php', 
+		url: '/pages/views/ingredients/techData.php', 
 		type: 'POST',
 		data: {
 			ingID: myIngID,
@@ -92,7 +92,7 @@ function fetch_techs(){
 
 function fetch_docs(){
 	$.ajax({ 
-		url: 'ingDocuments.php', 
+		url: '/pages/views/ingredients/ingDocuments.php', 
 		type: 'GET',
 		data: {
 			id: myIngID
@@ -107,7 +107,7 @@ function fetch_docs(){
 
 function fetch_impact(){
 	$.ajax({ 
-		url: 'views/ingredients/impactData.php', 
+		url: '/pages/views/ingredients/impactData.php', 
 		type: 'POST',
 		data: {
 			ingID: myIngID
@@ -121,7 +121,7 @@ function fetch_impact(){
 
 function fetch_cmps(){
 	$.ajax({ 
-		url: 'compos.php', 
+		url: '/pages/views/ingredients/compos.php', 
 		type: 'GET',
 		data: {
 			name:  btoa(myIngName),
@@ -136,7 +136,7 @@ function fetch_cmps(){
 
 function fetch_safety(){
 	$.ajax({ 
-		url: 'views/ingredients/safetyData.php', 
+		url: '/pages/views/ingredients/safetyData.php', 
 		type: 'POST',
 		data: {
 			ingID: myIngID
@@ -150,7 +150,7 @@ function fetch_safety(){
 
 function fetch_privacy(){
 	$.ajax({ 
-		url: 'views/ingredients/privacyData.php', 
+		url: '/pages/views/ingredients/privacyData.php', 
 		type: 'POST',
 		data: {
 			ingID: myIngID
@@ -164,7 +164,7 @@ function fetch_privacy(){
 
 function fetch_syn(){
 	$.ajax({ 
-		url: 'synonyms.php', 
+		url: '/pages/views/ingredients/synonyms.php', 
 		type: 'POST',
 		data: {
 			name:  btoa(myIngName),

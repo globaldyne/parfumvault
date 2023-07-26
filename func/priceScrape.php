@@ -12,7 +12,7 @@ function priceScrape($url,$size,$start_tag,$end_tag,$extras,$price_per_size){
 	$start = stripos($html, htmlspecialchars_decode($start_tag));
 	$end = stripos($html, htmlspecialchars_decode($end_tag), $offset = $start);
 	$length = $end - $start;
-	$result = substr($html, $start, $length);
+	$result = substr($html, $start, $length) ?: 0;
 
 	return preg_replace("/[^0-9.,]/", "", $result) * $size + (double)$extras;
 }

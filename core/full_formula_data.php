@@ -16,6 +16,8 @@ require_once(__ROOT__.'/func/countElement.php');
 require_once(__ROOT__.'/func/getIngSupplier.php');
 require_once(__ROOT__.'/func/getCatByID.php');
 
+require_once(__ROOT__.'/func/validateFormula.php');
+
 if(!$_REQUEST['id']){		
 	$response['data'] = [];    
 	header('Content-Type: application/json; charset=utf-8');
@@ -25,7 +27,7 @@ if(!$_REQUEST['id']){
 
 $id = mysqli_real_escape_string($conn, $_REQUEST['id']);
 
-$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT name,fid,catClass,finalType,defView,isProtected,notes FROM formulasMetaData WHERE id = '$id'"));
+$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT name,fid,catClass,finalType,defView,isProtected,notes,product_name FROM formulasMetaData WHERE id = '$id'"));
 
 if(!$meta['fid']){		
 	$response['Error'] = (string)'Requested id is not valid.';    
@@ -243,12 +245,29 @@ if($total_cost){
 }
 $m['product_concentration'] = (int)$meta['finalType'];
 $m['formula_name'] = (string)$meta['name'];
+$m['product_name'] = (string)$meta['product_name'] ?: '-';
 $m['formula_fid'] = (string)$meta['fid'];
 $m['formula_description'] = (string)$meta['notes'];
 $m['protected'] = (bool)$meta['isProtected'];
 
+$new_conc = $_GET['final_total_ml'] ?: 100/100*$_GET['final_type_conc'] ?: 100;
+$carrier = $_GET['final_total_ml'] ?: 100 - $new_conc;
 
+if($m['total_ingredients'] != 0){
+	if( validateFormula($meta['fid'], $_GET['final_total_ml'] ?: 100, $new_conc, $mg['total_mg'], $_GET['val_cat']?:	$defCatClass, $settings['qStep'], $conn) == TRUE){
+		$val_status = 1;
+		$val_msg = 'Your formula contains materials, exceeding and/or missing IFRA standards. Please alter your formula.';
+	}
+}
 
+$compliance['checked_for'] = (string)$_GET['val_cat'] ?: $defCatClass;
+$compliance['final_total_ml'] = (int)$_GET['final_total_ml'] ?: 100;
+$compliance['final_type_conc'] = (int)$_GET['final_type_conc'] ?: 100;
+$compliance['carier'] = (int)$carier ?: 100;
+$compliance['status'] = (int)$val_status ?: 0;
+$compliance['message'] = (string)$val_msg ?: 'Formula is IFRA compliant';
+	
+$response['compliance'] = $compliance;
 $response['meta'] = $m;
 
 $s['load_time'] = microtime(true) - $starttime;

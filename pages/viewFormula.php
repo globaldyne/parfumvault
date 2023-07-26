@@ -111,7 +111,7 @@ $(document).ready(function() {
 			}
 			
 			if(data.ingredient.classification == 4){
-				$(row).find('td:eq(0),td:eq(1),td:eq(5),td:eq(6)').addClass('alert-danger').append(' <i rel="tip" title="This material is prohibited" class="pv_point_gen fas fa-ban"></i></div>');
+				$(row).find('td:eq(0),td:eq(1),td:eq(2),td:eq(3),td:eq(4),td:eq(5),td:eq(6),td:eq(7),td:eq(8),td:eq(9)').addClass('bg-danger text-light').append(' <i rel="tip" title="This material is prohibited" class="pv_point_gen fas fa-ban"></i></div>');
             }
 			
 			if( data['usage_regulator'] == "IFRA" && parseFloat(data['usage_limit']) < parseFloat(data['final_concentration'])){
@@ -695,8 +695,9 @@ $('#formula').editable({
 });
 
 function ingName(data, type, row, meta){
+	var ex = '';
 	if(row.exclude_from_calculation == 1){
-		var ex = 'pv_ing_exc';
+		ex = 'pv_ing_exc';
 	}
 	if(row.chk_ingredient){
 		var chkIng = '<i class="fas fa-exclamation" rel="tip" title="'+row.chk_ingredient+'"></i>';

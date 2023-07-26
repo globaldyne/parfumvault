@@ -1,6 +1,6 @@
 <?php
 
-define('__ROOT__', dirname(dirname(__FILE__))); 
+define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__))))); 
 
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
@@ -29,7 +29,7 @@ $ingID = mysqli_real_escape_string($conn, $_GET["id"]);
           <th>File</th>
           <th>Notes</th>
           <th>Size</th>
-          <th>Actions</th>
+          <th></th>
       </tr>
    </thead>
 </table>
@@ -56,7 +56,7 @@ $(document).ready(function() {
 			  { data : 'docData', title: 'File', render: docData},
 			  { data : 'notes', title: 'Notes', render: dNotes},
 			  { data : 'docSize', title: 'Size'},
-			  { data : null, title: 'Actions', render: dActions},		   
+			  { data : null, title: '', render: dActions},		   
 			 ],
 	order: [[ 1, 'asc' ]],
 	lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
@@ -74,7 +74,7 @@ function dNotes(data, type, row){
 	return '<i class="notes pv_point_gen" data-name="notes" data-type="textarea" data-pk="'+row.id+'">'+row.notes+'</i>';    
 }
 function dActions(data, type, row){
-	return '<a href="#" id="dDel" class="fas fa-trash" data-id="'+row.id+'" data-name="'+row.name+'"></a>';    
+	return '<a href="#" id="dDel" class="fas fa-trash link-danger" data-id="'+row.id+'" data-name="'+row.name+'"></a>';    
 }
 
 $('#tdIngDocs').editable({
@@ -114,7 +114,7 @@ $('#tdIngDocs').on('click', '[id*=dDel]', function () {
 					data: {
 						doc: 'delete',
 						id: d.ID,
-						ingID: '<?=$ingID?>'
+						ownerID: '<?=$ingID?>'
 						},
 					dataType: 'html',
 					success: function (data) {
@@ -155,20 +155,22 @@ $('#addDoc').on('click', '[id*=doc_upload]', function () {
               url: 'upload.php?type=1&doc_name=' + btoa(doc_name) + '&doc_notes=' + btoa(doc_notes) + '&id=<?=$ingID;?>',
               type: 'POST',
               data: fd,
+			  dataType: 'json',
               contentType: false,
               processData: false,
 			  		cache: false,
               success: function(response){
-                 if(response != 0){
-                    $("#doc_inf").html(response);
+                 if(response.success){
+                    var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.success + '</strong></div>';
 					$("#doc_upload").prop("disabled", false);
         			$("#doc_upload").prop('value', 'Upload');
 					reload_doc_data();
                  }else{
-                    $("#doc_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> File upload failed!</div>');
+                    $("#doc_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + response.error + '</div>');
 					$("#doc_upload").prop("disabled", false);
         			$("#doc_upload").prop('value', 'Upload');
                  }
+				 $('#doc_inf').html(msg);
               },
            });
         }else{

@@ -28,7 +28,7 @@ if($_GET['do'] == 'db_update'){
 		$sql = __ROOT__.'/db/updates/update_'.$c_ver['schema_ver'].'-'.$u_ver.'.sql';
 	
 		if(file_exists($sql) == TRUE){	
-			$cmd = "mysql -u$dbuser -p$dbpass $dbname < $sql";
+			$cmd = "mysql -u$dbuser -p$dbpass -h$dbhost $dbname < $sql";
 			passthru($cmd,$e);
 		}
 		
@@ -45,43 +45,25 @@ if($_GET['do'] == 'db_update'){
 
 
 if($_GET['do'] == 'backupDB'){
-	
+	if( getenv('DB_BACKUP_PARAMETERS') ){
+		$bkparams = getenv('DB_BACKUP_PARAMETERS');
+	}
 	$file = 'backup_'.$ver.'_'.date("d-m-Y").'.sql.gz';
-	$mime = "application/x-gzip";
 	
-	header( 'Content-Type: '.$mime );
+	header( 'Content-Type: application/x-gzip' );
 	header( 'Content-Disposition: attachment; filename="' .$file. '"' );
-	
-	$cmd = "mysqldump -u $dbuser --password=$dbpass -h $dbhost $dbname | gzip --best";
+	$cmd = "mysqldump $bkparams -u $dbuser --password=$dbpass -h $dbhost $dbname | gzip --best";
 	passthru($cmd);
 	
 	return;
 }
 
-if($_GET['do'] == 'backupFILES'){
-	
-	$file = 'backup-'.date("d-m-Y").'.files.gz';
-	$mime = "application/x-gzip";
-	
-	if (!file_exists(__ROOT__."/tmp")) {
-		mkdir(__ROOT__."/tmp", 0777, true);
-	}
-
-	$cmd = "tar -czvf ".__ROOT__."/tmp/$file ".__ROOT__."/$uploads_path";   
-	shell_exec($cmd);
-	
-	header( 'Content-Type: '.$mime );
-	header( 'Location:/tmp/' .$file );
-
-	return;	
-}
-
 if($_GET['restore'] == 'db_bk'){
-	if (!file_exists(__ROOT__."/$tmp_path")) {
-		mkdir(__ROOT__."/$tmp_path", 0777, true);
+	if (!file_exists($tmp_path)) {
+		mkdir($tmp_path, 0777, true);
 	}
 	
-	$target_path = __ROOT__.'/'.$tmp_path.basename($_FILES['backupFile']['name']); 
+	$target_path = $tmp_path.basename($_FILES['backupFile']['name']); 
 
 	if(move_uploaded_file($_FILES['backupFile']['tmp_name'], $target_path)) {
     	$gz_tmp = basename($_FILES['backupFile']['name']);
@@ -93,11 +75,13 @@ if($_GET['restore'] == 'db_bk'){
 			return;
 		}
 		
-		system("gunzip -c $target_path > ".__ROOT__.'/'.$tmp_path.'restore.sql');
-		$cmd = "mysql -u$dbuser -p$dbpass $dbname < ".__ROOT__.'/'.$tmp_path.'restore.sql'; 
+		system("gunzip -c $target_path > ".$tmp_path.'restore.sql');
+		$cmd = "mysql -u$dbuser -p$dbpass -h$dbhost $dbname < ".$tmp_path.'restore.sql'; 
 		passthru($cmd,$e);
+		
 		unlink($target_path);
-		unlink(__ROOT__.'/'.$tmp_path.'restore.sql');
+		unlink($tmp_path.'restore.sql');
+		
 		if(!$e){
 			$result['success'] = 'Database has been restored. Please refresh the page for the changes to take effect.';
 			unset($_SESSION['parfumvault']);
@@ -263,7 +247,7 @@ if($_GET['action'] == 'exportFormulas'){
 		return;
 	}
 	
-	$file = __ROOT__.'/tmp/pv_formulas.json';
+	$file = $tmp_path.'/pv_formulas.json';
 	unlink($file);
 	
 	$fp = fopen($file, 'w');
@@ -281,17 +265,17 @@ if($_GET['action'] == 'exportFormulas'){
 }
 
 if($_GET['action'] == 'restoreFormulas'){
-	if (!file_exists(__ROOT__."/$tmp_path")) {
-		mkdir(__ROOT__."/$tmp_path", 0777, true);
+	if (!file_exists($tmp_path)) {
+		mkdir($tmp_path, 0777, true);
 	}
 	
-	if (!is_writable(__ROOT__."/$tmp_path")) {
+	if (!is_writable($tmp_path)) {
 		$result['error'] = "Upload directory not writable. Make sure you have write permissions.";
 		echo json_encode($result);
 		return;
 	}
 	
-	$target_path = __ROOT__.'/'.$tmp_path.basename($_FILES['backupFile']['name']); 
+	$target_path = $tmp_path.basename($_FILES['backupFile']['name']); 
 
 	if(move_uploaded_file($_FILES['backupFile']['tmp_name'], $target_path)) {
     	$data = json_decode(file_get_contents($target_path), true);
@@ -328,7 +312,7 @@ if($_GET['action'] == 'restoreFormulas'){
 			
 			if(mysqli_query($conn,$sql)){
 				$result['success'] = "Import complete";
-				unlink(__ROOT__.'/'.$target_path);
+				unlink($target_path);
 			}else{
 				$result['error'] = "There was an error importing your JSON file ".mysqli_error($conn);
 				
@@ -346,17 +330,17 @@ if($_GET['action'] == 'restoreFormulas'){
 }
 
 if($_GET['action'] == 'restoreIngredients'){
-	if (!file_exists(__ROOT__."/$tmp_path")) {
-		mkdir(__ROOT__."/$tmp_path", 0777, true);
+	if (!file_exists($tmp_path)) {
+		mkdir($tmp_path, 0777, true);
 	}
 	
-	if (!is_writable(__ROOT__."/$tmp_path")) {
+	if (!is_writable($tmp_path)) {
 		$result['error'] = "Upload directory not writable. Make sure you have write permissions.";
 		echo json_encode($result);
 		return;
 	}
 	
-	$target_path = __ROOT__.'/'.$tmp_path.basename($_FILES['backupFile']['name']); 
+	$target_path = $tmp_path.basename($_FILES['backupFile']['name']); 
 
 	if(move_uploaded_file($_FILES['backupFile']['tmp_name'], $target_path)) {
     	$data = json_decode(file_get_contents($target_path), true);
@@ -381,7 +365,7 @@ if($_GET['action'] == 'restoreIngredients'){
 			
 			if(mysqli_query($conn,$sql)){
 				$result['success'] = "Import complete";
-				unlink(__ROOT__.'/'.$target_path);
+				unlink($target_path);
 			}else{
 				$result['error'] = "There was an error importing your JSON file ".mysqli_error($conn);
 				echo json_encode($result);
@@ -403,17 +387,17 @@ if($_GET['action'] == 'restoreIngredients'){
 
 
 if($_GET['action'] == 'restoreIFRA'){
-	if (!file_exists(__ROOT__."/$tmp_path")) {
-		mkdir(__ROOT__."/$tmp_path", 0777, true);
+	if (!file_exists($tmp_path)) {
+		mkdir($tmp_path, 0777, true);
 	}
 	
-	if (!is_writable(__ROOT__."/$tmp_path")) {
+	if (!is_writable($tmp_path)) {
 		$result['error'] = "Upload directory not writable. Make sure you have write permissions.";
 		echo json_encode($result);
 		return;
 	}
 	
-	$target_path = __ROOT__.'/'.$tmp_path.basename($_FILES['backupFile']['name']); 
+	$target_path = $tmp_path.basename($_FILES['backupFile']['name']); 
 
 	if(move_uploaded_file($_FILES['backupFile']['tmp_name'], $target_path)) {
     	$data = json_decode(file_get_contents($target_path), true);
@@ -432,7 +416,7 @@ if($_GET['action'] == 'restoreIFRA'){
 				
 		if($s){
 			$result['success'] = "Import complete";
-			unlink(__ROOT__.'/'.$target_path);
+			unlink($target_path);
 		}else{
 			$result['error'] = "There was an error importing your JSON file ".mysqli_error($conn);
 			echo json_encode($result);

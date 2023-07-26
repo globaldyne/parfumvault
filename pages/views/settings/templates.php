@@ -4,14 +4,7 @@ define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__)))));
 require_once(__ROOT__.'/inc/sec.php');
 
 ?>
-<style>
-.mfp-iframe-holder .mfp-content {
-    line-height: 0;
-    width: 1500px;
-    max-width: 1500px; 
-	height: 1000px;
-}
-</style>
+
 <h3>HTML Templates</h3>
 <hr>
 <div class="card-body">
@@ -19,7 +12,7 @@ require_once(__ROOT__.'/inc/sec.php');
     <div class="btn-group">
     <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
         <div class="dropdown-menu dropdown-menu-right">
-            <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#addTmpl"><i class="fa-solid fa-plus mr2"></i>Add new</a></li>
+            <li><a class="dropdown-item" href="#" data-toggle="modal" data-backdrop="static" data-target="#addTmpl"><i class="fa-solid fa-plus mr2"></i>Add new</a></li>
         </div>
     </div>                    
   </div>
@@ -92,7 +85,7 @@ function actions(data, type, row){
             '<ul class="dropdown-menu dropdown-menu-right">';
 		data += '<li><a href="#" class="dropdown-item" data-toggle="modal" data-backdrop="static" data-target="#editTmpl" rel="tip" title="Edit '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-edit mr2"></i>Edit</a></li>';
 		data += '<div class="dropdown-divider"></div>';
-		data += '<li><a class="dropdown-item" href="#" id="sDel" style="color: #c9302c;" rel="tip" title="Delete '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-trash mr2"></i>Delete</a></li>';
+		data += '<li><a class="dropdown-item text-danger" href="#" id="sDel" rel="tip" title="Delete '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-trash mr2"></i>Delete</a></li>';
 		data += '</ul></div>';
 	return data;
 }

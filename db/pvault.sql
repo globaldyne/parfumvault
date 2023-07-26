@@ -16,7 +16,7 @@ CREATE TABLE `batchIDHistory` (
   `id` varchar(50) COLLATE utf8_general_ci NOT NULL,
   `fid` varchar(255) COLLATE utf8_general_ci NOT NULL,
   `product_name` varchar(255) NOT NULL,
-  `pdf` varchar(255) COLLATE utf8_general_ci NOT NULL,
+  `pdf` LONGBLOB NULL DEFAULT NULL,
   `created` timestamp NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
@@ -306,7 +306,7 @@ CREATE TABLE `settings` (
   `brandAddress` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `brandEmail` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `brandPhone` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `brandLogo` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `brandLogo` LONGBLOB NULL DEFAULT NULL,
   `pubChem` int(11) DEFAULT NULL,
   `chkVersion` int(11) DEFAULT NULL,
   `qStep` INT(5) NOT NULL DEFAULT '2',

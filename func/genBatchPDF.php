@@ -2,7 +2,7 @@
 if (!defined('pvault_panel')){ die('Not Found');}
 define('__ROOT__', dirname(dirname(__FILE__))); 
 
-function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $ver, $uploads_path, $defCatClass, $qStep, $conn){
+function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $ver, $defCatClass, $qStep, $conn){
 	class PDF extends FPDF {
 		function Header() {
 			global $fid;
@@ -133,7 +133,7 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $ver, $uploads_pat
 		$allergen[] = $getAllergen['name'];
 	}
 	
-	$coverText = "Profile: ".$meta['profile']." \nSex: ".$meta['sex']." \nCreated: ".$meta['created']." \n".$meta['notes'];
+	$coverText = "Profile: ".$meta['profile']." \nGender: ".$meta['sex']." \nCreated: ".$meta['created']." \n".$meta['notes'];
 	$allergenFinal = implode(", ",array_unique(array_filter($allergen)));
 	if(empty($allergenFinal)){
 		$allergenFinal = 'None found';
@@ -194,8 +194,7 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $ver, $uploads_pat
 	$pdf->MultiCell(280,10,$allergenFinal);
 	
 	
-	
-		//Blends or mixed bases
+	//Blends or mixed bases
 	$pdf->AddPage();
 	$pdf->AliasNbPages();
 	$pdf->SetFont('Arial','BU',10);
@@ -221,8 +220,11 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $ver, $uploads_pat
 		}
 	}	
 	
-	$pdf->Output('F',$uploads_path.'batches/'.$batchID);
-	//$pdf->Output('I');
+	$pdf = base64_encode($pdf->Output('S'));		
+	$docData = 'data:application/pdf;base64,' .$pdf;
+		
+	mysqli_query($conn, "INSERT INTO batchIDHistory (id,fid,pdf,product_name) VALUES ('$batchID','$fid','$pdf','".$meta['product_name']."')");
+
 }
 
 ?>
