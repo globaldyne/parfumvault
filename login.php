@@ -220,9 +220,10 @@ $(document).ready(function() {
 					
 				}else if( data.auth.error){
 					msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mr2"></i>'+data.auth.msg+'</div>';
+					$("#login_btn").prop("disabled", false);
+					$("span").remove();
 				}
-				$("#login_btn").prop("disabled", false);
-				$("span").remove();
+
 				$('#msg').html(msg);
 			},
 			error: function (request, status, error) {

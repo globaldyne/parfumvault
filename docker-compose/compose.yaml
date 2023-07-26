@@ -8,10 +8,10 @@ services:
       - db_data:/var/lib/mysql
     restart: always
     environment:
-      - MYSQL_ROOT_PASSWORD=pvault
-      - MYSQL_DATABASE=pvault
-      - MYSQL_USER=pvault
-      - MYSQL_PASSWORD=pvault
+      MYSQL_ROOT_PASSWORD: pvault
+      MYSQL_DATABASE: pvault
+      MYSQL_USER: pvault
+      MYSQL_PASSWORD: pvault
     expose:
       - 3306
   pvault:
@@ -20,15 +20,15 @@ services:
       - 8000:8000
     restart: always
     environment:
-      - PLATFORM=CLOUD
-      - DB_HOST=pvdb
-      - DB_USER=pvault
-      - DB_PASS=pvault
-      - DB_NAME=pvault
-      - phpMyAdmin=false
-      - MAX_FILE_SIZE=4194304
-      - TMP_PATH=/tmp/
-      - FILE_EXT='pdf, doc, docx, xls, csv, xlsx, png, jpg, jpeg, gif'
-      - DB_BACKUP_PARAMETERS='--column-statistics=1'
+      PLATFORM: CLOUD
+      DB_HOST: pvdb
+      DB_USER: pvault
+      DB_PASS: pvault
+      DB_NAME: pvault
+      phpMyAdmin: 'false'
+      MAX_FILE_SIZE: '4194304'
+      TMP_PATH: /tmp/
+      FILE_EXT: 'pdf, doc, docx, xls, csv, xlsx, png, jpg, jpeg, gif'
+      DB_BACKUP_PARAMETERS: '--column-statistics=1'
 volumes:
   db_data:
