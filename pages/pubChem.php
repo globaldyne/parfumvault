@@ -21,7 +21,13 @@ if(preg_match('/(Mixture|Blend)/i', $cas) === 1){
 
 $properties = 'MolecularFormula,MolecularWeight,XLogP,IUPACName,CanonicalSMILES,ExactMass';
 
-$image = 'data:image/png;base64,'.base64_encode(pv_file_get_contents($pubChemApi.'/pug/compound/name/'.$cas.'/'.$type.'?record_type='.$settings['pubchem_view'].'&image_size=large'));
+$p = base64_encode(pv_file_get_contents($pubChemApi.'/pug/compound/name/'.$cas.'/'.$type.'?record_type='.$settings['pubchem_view'].'&image_size=large'));
+
+if(!$p){//FALL BACK TO 2D	
+	$p = base64_encode(pv_file_get_contents($pubChemApi.'/pug/compound/name/'.$cas.'/'.$type.'?record_type=2d&image_size=large'));
+}
+$image = 'data:image/png;base64,'.$p;
+
 $data = json_decode(trim(pv_file_get_contents($pubChemApi.'/pug/compound/name/'.$cas.'/property/'.$properties.'/JSON')),true);
 
 $molecularWeight = $data['PropertyTable']['Properties']['0']['MolecularWeight'];

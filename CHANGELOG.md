@@ -1,4 +1,57 @@
 # CHANGELOG
+### Version 7.9
+- Add icon on error message on login page
+- Handle backend error for login page
+- Disable login button until the request is complete
+- Link to product web page added in login page footer
+- Increase nginx body size limit to 400M
+- Increase php-fpm post and upload size limit to 400M
+- Remove unused packages from dockerfile
+- Deprecating ImageMagick library in favor of GD
+- Update password reset message
+- Set mariadb version to 10.5 in docker compose (higher versions having performance issues)
+- Added load time meta data in ingredients page
+- Changed inodb flush method for better performance when using docker compose
+- When a material is banned or prohibited, the whole fomula line will be colored red
+- Further improvements in the login page and backend db creation
+- A phpMyAdmin user warning message added
+- Release notes update
+- Cloud config file removed
+- Update db connect error message
+- Set default user for fpm-php (apache)
+- Fix typo in db schema for brandLogo
+- IFRA cert generation logo path update
+- Finished product updates/improvements
+- PubChem Structure image will fallback to 2d if 3d is set and fails
+- Added enviroment variable to customise mysqldump parameters when taking a backup
+- Deprecating view box label as image
+- Finished product rewrite
+- Docker compose file update
+- Password reset script will auto create a user if called to non existing user
+- Branding page rewrite
+- HTML template add modal is now static
+- Update api to store logs in the tmp directory instead
+- Rewrite formula document upload backend to use json
+- Rewrite ingredient document upload backend to use json
+- Show an clearer error message when ingredient is missing from the database but exists in formula make view
+- Ingredient management relative paths update
+- Set default value for price to 0 when fail to receive from supplier
+- Deprecating uploads path
+- Deprecating files backup function
+- Batch history files will be stored in database now
+- Disable column statistics when exporting the db via docker compose
+- Update mysql restore/backup to use external host
+- Fix uploads tmp path
+- Fix import permissions/path
+- Fix ingredients export 
+- Fix tmp path
+- Dockerfile update
+- Nginx conf added
+- php-fpm conf added
+- Added external vars for config
+- Added Dockerfile
+- Code clean-up
+
 ### Version 7.8
 - Fix a bug causing ingredients synonym search to fail
 - Edit ingredient category rewrite

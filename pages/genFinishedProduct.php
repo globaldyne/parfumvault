@@ -48,19 +48,17 @@ if($_POST['formula']){
 	if($_POST['ingSup']){
 		$sid = $_POST['ingSup'];
 	}
-	if($_POST['batchID'] == '1'){
-		if (!file_exists($uploads_path.'batches')) {
-			mkdir($uploads_path.'batches', 0740, true);
-        }
-		define('FPDF_FONTPATH','./fonts');
-		$batchID = genBatchID();
-		$batchFile = $uploads_path.'batches/'.$batchID;
-		$prodName = $meta['product_name'];
-		mysqli_query($conn, "INSERT INTO batchIDHistory (id,fid,pdf,product_name) VALUES ('$batchID','$f_name','$batchFile','".$meta['product_name']."')");
-		genBatchPDF($f_name,$batchID,$bottle,$new_conc,$mg['total_mg'],$ver,$uploads_path,$settings['defCatClass'],$settings['qStep'],$conn);
-	}else{
-		$batchID = 'N/A';
-	}
+
+if($_POST['batchID'] == '1'){
+
+	define('FPDF_FONTPATH',__ROOT__.'/fonts');
+	$batchID = genBatchID();
+	
+	genBatchPDF($f_name,$batchID,$bottle,$new_conc,$mg['total_mg'],$ver,$defCatClass,$settings['qStep'],$conn);
+	
+}else{
+	$batchID = 'N/A';
+}
 	
 ?>
     
@@ -96,6 +94,7 @@ function BoxLabel(download) {
 	}else{
 		$("#inf").html('<div class="alert alert-info alert-dismissible">Generating label...</div>');
 	}
+
 $.ajax({ 
     url: '/pages/manageFormula.php', 
 	type: 'GET',
@@ -129,7 +128,7 @@ $.ajax({
              <h5 class="m-1 text-primary">Formula name: <strong><?php echo $meta['name'];?></strong></h5>
              <h5 class="m-1 text-primary">Bottle: <strong><?php echo $bottle; ?><?=$settings['mUnit']?></strong></h5>
 			 <h5 class="m-1 text-primary">Concentration: <strong><?php echo $type; ?>%</h5>
-             <h5 class="m-1 text-primary"><?php if($_POST['batchID'] == '1'){ echo 'Batch ID: <a href="'.$uploads_path.'batches/'.$batchID.'" target="_blank">'.$batchID.'</a>'; }else{ echo 'Batch ID: <a href="#">N/A</a>';}?></h5>
+     		 <h5 class="m-1 text-primary">Batch ID: <?php if($_POST['batchID'] == '1'){ echo '<a href="/pages/viewDoc.php?type=batch&id='.$batchID.'" target="_blank">'.$batchID.'</a>'; }else{ echo 'N/A';}?></h5>
              <h5 class="m-1 text-primary">Category Class: <strong><?php echo ucfirst($defCatClass);?></strong></h5>
              <?php if($sid){?>
              <h5 class="m-1 text-primary">Supplier: <strong><?=getSupplierByID($sid,$conn)['name']?></strong></h5>
@@ -154,7 +153,6 @@ $.ajax({
                         <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#IFRA"><i class="fa-solid fa-certificate mr2"></i>IFRA Certificate</a></li>
                         <li><a class="dropdown-item" href="javascript:printLabel()" onclick="return confirm('Print label?')"><i class="fa-solid fa-print mr2"></i>Print Label</a></li>
                         <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#printBoxLabel"><i class="fa-solid fa-print mr2"></i>Print Box Label</a></li>
-                        <li><a class="dropdown-item" href="javascript:BoxLabel('image')"><i class="fa-solid fa-image mr2"></i>View Box Label as image</a></li>
                         <li><a class="dropdown-item" href="javascript:BoxLabel('text')"><i class="fa-solid fa-font mr2"></i>View Box Label as text</a></li>
                       </div>
                     </div>

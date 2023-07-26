@@ -26,8 +26,8 @@ if($_GET['upload_ing_cat_pic'] && $_GET['catID']){
 		return;
 	}	
 	
-	if (!file_exists(__ROOT__."/uploads/tmp/")) {
-		mkdir(__ROOT__."/uploads/tmp/", 0740, true);
+	if (!file_exists($tmp_path)) {
+		mkdir($tmp_path, 0740, true);
 	}
 		
 	if(in_array($file_ext,$ext)===false){
@@ -37,13 +37,13 @@ if($_GET['upload_ing_cat_pic'] && $_GET['catID']){
 	}
 		
 	if($_FILES["cat-pic-file"]["size"] > 0){
-		move_uploaded_file($file_tmp,__ROOT__."/uploads/tmp/".base64_encode($filename));
-		$pic = "/uploads/tmp/".base64_encode($filename);		
-		create_thumb(__ROOT__.$pic,250,250); 
-		$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents(__ROOT__.$pic));
+		move_uploaded_file($file_tmp,$tmp_path.base64_encode($filename));
+		$pic = base64_encode($filename);		
+		create_thumb($tmp_path.$pic,250,250); 
+		$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents($tmp_path.$pic));
 		
 		if(mysqli_query($conn, "UPDATE ingCategory SET image = '".$docData."' WHERE id = '$id'")){	
-			unlink(__ROOT__.$pic);
+			unlink($tmp_path.$pic);
 			$response["success"] = array( "msg" => "Category pic updated!", "pic" => $docData);
 			echo json_encode($response);
 			return;
@@ -72,8 +72,8 @@ if($_GET['type'] == 'bottle' && $_GET['name']){
       $file_type = $_FILES['pic_file']['type'];
       $file_ext = strtolower(end(explode('.',$_FILES['pic_file']['name'])));
 	  
-		if (!file_exists(__ROOT__."/uploads/tmp/")) {
-			mkdir(__ROOT__."/uploads/tmp/", 0740, true);
+		if (!file_exists($tmp_path)) {
+			mkdir($tmp_path, 0740, true);
 		}
 
 		$allowed_ext = "png, jpg, jpeg, gif, bmp";
@@ -95,15 +95,15 @@ if($_GET['type'] == 'bottle' && $_GET['name']){
 			return;
 		  }
 		  
-      if(move_uploaded_file($file_tmp,__ROOT__."/uploads/tmp/".base64_encode($file_name))){
-			$photo = "/uploads/tmp/".base64_encode($file_name);
-			create_thumb(__ROOT__.$photo,250,250); 
-			$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents(__ROOT__.$photo));
+      if(move_uploaded_file($file_tmp,$tmp_path.base64_encode($file_name))){
+			$photo = base64_encode($file_name);
+			create_thumb($tmp_path.$photo,250,250); 
+			$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents($tmp_path.$photo));
 		
 			if(mysqli_query($conn, "INSERT INTO bottles (name, ml, price, height, width, diameter, supplier, supplier_link, notes, pieces) VALUES ('$name', '$ml', '$price', '$height', '$width', '$diameter', '$supplier', '$supplier_link', '$notes', '$pieces')") ){
 				$bottle_id = mysqli_insert_id($conn);
 				mysqli_query($conn, "INSERT INTO documents (ownerID,name,type,notes,docData) VALUES ('".$bottle_id."','$name','4','-','$docData')");
-				unlink(__ROOT__.$photo);
+				unlink($tmp_path.$photo);
 				$response["success"] = $name.' added!';
 			}else{
 				$response["error"] =  'Failed to add '.$name.' - '.mysqli_error($conn);
@@ -132,8 +132,8 @@ if($_GET['type'] == 'lid' && $_GET['style']){
       $file_type = $_FILES['pic_file']['type'];
       $file_ext = strtolower(end(explode('.',$_FILES['pic_file']['name'])));
 	  
-	  	if (!file_exists(__ROOT__."/uploads/tmp/")) {
-			mkdir(__ROOT__."/uploads/tmp/", 0740, true);
+	  	if (!file_exists($tmp_path)) {
+			mkdir($tmp_path, 0740, true);
 		}
 
 		$allowed_ext = "png, jpg, jpeg, gif, bmp";
@@ -154,15 +154,15 @@ if($_GET['type'] == 'lid' && $_GET['style']){
 			echo json_encode($response);
 			return;
 		}
-		if(move_uploaded_file($file_tmp,__ROOT__."/uploads/tmp/".base64_encode($file_name))){
-			$photo = "/uploads/tmp/".base64_encode($file_name);
-			create_thumb(__ROOT__.$photo,250,250); 
-			$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents(__ROOT__.$photo));
+		if(move_uploaded_file($file_tmp,$tmp_path.base64_encode($file_name))){
+			$photo = base64_encode($file_name);
+			create_thumb($tmp_path.$photo,250,250); 
+			$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents($tmp_path.$photo));
 		
 			if(mysqli_query($conn, "INSERT INTO lids (style, colour, price, supplier, supplier_link, pieces) VALUES ('$style', '$colour', '$price', '$supplier', '$supplier_link', '$pieces')") ){
 				$lid_id = mysqli_insert_id($conn);
 				mysqli_query($conn, "INSERT INTO documents (ownerID,name,type,notes,docData) VALUES ('".$lid_id."','$style','5','-','$docData')");
-				unlink(__ROOT__.$photo);
+				unlink($tmp_path.$photo);
 				$response["success"] = $style.' added!';
 			}else{
 				$response["error"] =  'Failed to add '.$style.' - '.mysqli_error($conn);
@@ -189,7 +189,6 @@ if($_GET['type'] && $_GET['id']){
      	$file_type = $_FILES[$field]['type'];
      	$file_ext = strtolower(end(explode('.',$_FILES[$field]['name'])));
 	
-		$tmp_path = __ROOT__.'/tmp/';
 	
 		if (!file_exists($tmp_path)) {
 			mkdir($tmp_path, 0740, true);
@@ -198,21 +197,29 @@ if($_GET['type'] && $_GET['id']){
 	  	$ext = explode(', ', $allowed_ext);
 	  
       	if(in_array($file_ext,$ext)=== false){
-			 echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>File upload error: </strong>Extension not allowed, please choose a '.$allowed_ext.' file.</div>';
-      	}elseif($file_size > $max_filesize){
-			 echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>File upload error: </strong>File size must not exceed '.formatBytes($max_filesize).'</div>';
-      	}else{
-	         if(move_uploaded_file($file_tmp, $tmp_path.$file_name)){
-				if($type == '2'){
-					mysqli_query($conn, "DELETE FROM documents WHERE ownerID = '$ownerID' AND type = '2'");
-				}
-				$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents($tmp_path.$file_name));
-				if(mysqli_query($conn, "INSERT INTO documents (ownerID,type,name,notes,docData) VALUES ('$ownerID','$type','$name','$notes','$docData')")){
-					unlink($tmp_path.$file_name);
-					echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>File uploaded</strong></div>';
-				 }
+      		$response['error'] = '<strong>File upload error: </strong>Extension not allowed, please choose a '.$allowed_ext.' file';
+			echo json_encode($response);
+			return;
+		}
+		
+		if($file_size > $max_filesize){
+			$response['error'] = 'File upload error: </strong>File size must not exceed '.formatBytes($max_filesize);
+			echo json_encode($response);
+			return;
+      	}
+		
+		if(move_uploaded_file($file_tmp, $tmp_path.$file_name)){
+			if($type == '2'){
+				mysqli_query($conn, "DELETE FROM documents WHERE ownerID = '$ownerID' AND type = '2'");
+			}
+			$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents($tmp_path.$file_name));
+			if(mysqli_query($conn, "INSERT INTO documents (ownerID,type,name,notes,docData) VALUES ('$ownerID','$type','$name','$notes','$docData')")){
+				unlink($tmp_path.$file_name);
+				$response['success'] = 'File uploaded';
+				echo json_encode($response);
+				return;
 			 }
-	  }
+	  	}
    }
 	
 	return;	
@@ -222,32 +229,45 @@ if($_GET['type'] && $_GET['id']){
 if($_GET['type'] == 'brand'){
 		
 	if(isset($_FILES['brandLogo']['name'])){
-      $file_name = $_FILES['brandLogo']['name'];
-      $file_size = $_FILES['brandLogo']['size'];
-      $file_tmp = $_FILES['brandLogo']['tmp_name'];
-      $file_type = $_FILES['brandLogo']['type'];
-      $file_ext = strtolower(end(explode('.',$_FILES['brandLogo']['name'])));
+     	$file_name = $_FILES['brandLogo']['name'];
+      	$file_size = $_FILES['brandLogo']['size'];
+      	$file_tmp = $_FILES['brandLogo']['tmp_name'];
+      	$file_type = $_FILES['brandLogo']['type'];
+      	$file_ext = strtolower(end(explode('.',$_FILES['brandLogo']['name'])));
 	  
-	  if (file_exists('../'.$uploads_path.'logo/') === FALSE) {
-    	mkdir('../'.$uploads_path.'logo/', 0740, true);
-	  }
+		if (file_exists($tmp_path) === FALSE) {
+			mkdir($tmp_path, 0740, true);
+		}
+	
+		$ext = explode(', ', $allowed_ext);
+		  
+		if(in_array($file_ext,$ext)=== false){
+			$response['error'] = '<strong>File upload error: </strong>Extension not allowed, please choose a '.$allowed_ext.' file';
+			echo json_encode($response);
+			return;
+		}
+			
+		if($file_size > $max_filesize){
+			$response['error'] = 'File upload error: </strong>File size must not exceed '.formatBytes($max_filesize);
+			echo json_encode($response);
+			return;
+		}
+	  
+         if(move_uploaded_file($file_tmp,$tmp_path.base64_encode($file_name))){
+			$pic = base64_encode($file_name);		
+			create_thumb($tmp_path.$pic,250,250); 
+			$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents($tmp_path.$pic));
 
-	  $ext = explode(', ', $allowed_ext);
-	  
-      if(in_array($file_ext,$ext)=== false){
-		 echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>File upload error: </strong>Extension not allowed, please choose a '.$allowed_ext.' file.</div>';
-      }elseif($file_size > $max_filesize){
-		 echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>File upload error: </strong>File size must not exceed '.formatBytes($max_filesize).'</div>';
-      }else{
-	  
-         if(move_uploaded_file($file_tmp,'../'.$uploads_path.'logo/'.base64_encode($file_name))){
-		 	$brandLogoF = $uploads_path.'logo/'.base64_encode($file_name);
-		 	if(mysqli_query($conn, "UPDATE settings SET brandLogo = '$brandLogoF'")){
-		 		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Brand logo uploaded</strong></div>';
+		 	$brandLogoF = $tmp_path.base64_encode($file_name);
+		 	if(mysqli_query($conn, "UPDATE settings SET brandLogo = '$docData'")){
+				unlink($tmp_path.$file_name);
+				$response["success"] = array( "msg" => "Pic updated!", "pic" => $docData);
+				echo json_encode($response);
+				return;
 			}
 		 }
 	  }
-   }
+   
 	
 	return;	
 }

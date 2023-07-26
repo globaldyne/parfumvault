@@ -45,8 +45,7 @@ if($_POST['action'] == 'register'){
 
 if($_POST['action']=='install'){
 	
-//	if(file_exists(__ROOT__.'/inc/config.php') == TRUE){
-	if(file_exists(__ROOT__.'/inc/config.php') == TRUE || getenv('DB_HOST') && getenv('DB_USER') && getenv('DB_PASS') && getenv('DB_NAME')){
+	if(file_exists(__ROOT__.'/inc/config.php') == TRUE && getenv('PLATFROM') != 'CLOUD'){
 	
 		echo '<div class="alert alert-info alert-dismissible"><strong>System is already configured!</strong></div>';
 		return;
@@ -78,7 +77,7 @@ if($_POST['action']=='install'){
 	}
 	
 	
-	$cmd = 'mysql -u'.$_POST['dbuser'].' -p'.$_POST['dbpass'].' -h'.$_POST['dbhost'].' '.$_POST['dbname'].' < ../db/pvault.sql'; 
+	$cmd = 'mysql -u'.$_POST['dbuser'].' -p'.$_POST['dbpass'].' -h'.$_POST['dbhost'].' '.$_POST['dbname'].' < '.__ROOT__.'/db/pvault.sql'; 
 	passthru($cmd,$e);
 	if(!$e){
 		mysqli_query($link,"INSERT INTO users (id,email,password,fullName) VALUES ('1','".strtolower($_POST['email'])."','PASSWORD(".$_POST['password'].")','".$_POST['fullName']."')");
@@ -92,8 +91,7 @@ $dbpass = "'.$_POST['dbpass'].'"; //MySQL Password
 $dbname = "'.$_POST['dbname'].'"; //MySQL DB name
 
 
-$uploads_path = "uploads/";
-$tmp_path = $uploads_path."tmp/";
+$tmp_path = "/tmp/";
 $allowed_ext = "pdf, doc, docx, xls, csv, xlsx, png, jpg, jpeg, gif";
 $max_filesize = "4194304"; //in bytes
 ?>
@@ -108,7 +106,7 @@ $max_filesize = "4194304"; //in bytes
 		return;
 	}
 	
-	
+	/*
 	if(file_exists('/config/.DOCKER') == TRUE){
 		$cfg = '/config/config.php';	
 		symlink($cfg, __ROOT__.'/inc/config.php');
@@ -116,10 +114,10 @@ $max_filesize = "4194304"; //in bytes
 	}else if(file_exists('/config/.CLOUD') == TRUE){
 		$cfg = '/config/config.cloud.php';
 		symlink($cfg, __ROOT__.'/inc/config.php');
-		
-	}else{
+		*/
+//	}else{
 		$cfg = __ROOT__.'/inc/config.php';
-	}
+	//}
 
 	if(file_put_contents($cfg, $conf) == FALSE){
 		$response['error'] = 'Failed to create config file <strong>'.$cfg.'</strong><p> Make sure your web server has write permissions to the install directory.';

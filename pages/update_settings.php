@@ -25,8 +25,8 @@ if($_GET['update_user_avatar']){
 		return;
 	}	
 	
-	if (!file_exists(__ROOT__."/uploads/logo/")) {
-		mkdir(__ROOT__."/uploads/logo/", 0740, true);
+	if (!file_exists($tmp_path."/uploads/logo/")) {
+		mkdir($tmp_path."/uploads/logo/", 0740, true);
 	}
 		
 	if(in_array($file_ext,$ext)===false){
@@ -36,14 +36,14 @@ if($_GET['update_user_avatar']){
 	}
 		
 	if($_FILES["avatar"]["size"] > 0){
-		move_uploaded_file($file_tmp,__ROOT__."/uploads/logo/".base64_encode($filename));
+		move_uploaded_file($file_tmp,$tmp_path."/uploads/logo/".base64_encode($filename));
 		$avatar = "/uploads/logo/".base64_encode($filename);		
-		create_thumb(__ROOT__.$avatar,250,250); 
-		$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents(__ROOT__.$avatar));
+		create_thumb($tmp_path.$avatar,250,250); 
+		$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents($tmp_path.$avatar));
 		
 		mysqli_query($conn, "DELETE FROM documents WHERE ownerID = '".$user['id']."' AND type = '3' AND name = 'avatar'");
 		if(mysqli_query($conn, "INSERT INTO documents (ownerID,type,name,notes,docData) VALUES ('".$user['id']."','3','avatar','Main Profile Avatar','$docData')")){	
-			unlink(__ROOT__.$avatar);
+			unlink($tmp_path.$avatar);
 			$response["success"] = array( "msg" => "User avatar updated!", "avatar" => $docData);
 			echo json_encode($response);
 			return;
@@ -262,10 +262,11 @@ if($_POST['manage'] == 'brand'){
 	$brandPhone = mysqli_real_escape_string($conn, $_POST['brandPhone']);
 
 	if(mysqli_query($conn, "UPDATE settings SET brandName = '$brandName', brandAddress = '$brandAddress', brandEmail = '$brandEmail', brandPhone = '$brandPhone'")){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Brand details updated!</div>';
+		$response['success'] = 'Brand details updated!';
 	}else{
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error updating brand info.</div>';
+		$response['error'] = 'Error updating brand info';
 	}
+	echo json_encode($response);
 	return;
 }
 

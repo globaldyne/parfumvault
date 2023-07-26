@@ -18,7 +18,7 @@ foreach ($docs as $doc) {
 	$r['id'] = (int)$doc['id'];
 	$r['ownerID'] = (int)$doc['ownerID'];
 	$r['type'] = (int)$doc['type'];
-	$r['name'] = (string)$doc['name'];
+	$r['name'] = (string)$doc['name']?:'N/A';
 	$r['notes'] = (string)$doc['notes']?:'N/A';
 	$r['docData'] = (string)$doc['docData'];
 	$r['docSize'] = (string)formatBytes(strlen($doc['docData']));

@@ -1,7 +1,6 @@
 <?php
 
-define('__ROOT__', dirname(dirname(__FILE__))); 
-
+define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__))))); 
 
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
@@ -33,7 +32,7 @@ $ingName = mysqli_real_escape_string($conn, $_POST["name"]);
       <tr>
           <th>Synonym</th>
           <th>Source</th>
-          <th>Actions</th>
+          <th></th>
       </tr>
    </thead>
 </table>
@@ -60,7 +59,7 @@ var tdSynonyms = $('#tdSynonyms').DataTable( {
 	columns: [
 			  { data : 'synonym', title: 'Synonym', render: synName },
 			  { data : 'source', title: 'Source', render: synSource},
-			  { data : null, title: 'Actions', render: synActions},		   
+			  { data : null, title: '', render: synActions},		   
 			 ],
 	order: [[ 1, 'asc' ]],
 	lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
@@ -79,7 +78,7 @@ function synSource(data, type, row){
 
 
 function synActions(data, type, row){
-	return '<a href="#" id="synDel" class="fas fa-trash" data-id="'+row.id+'" data-name="'+row.synonym+'"></a>';    
+	return '<a href="#" id="synDel" class="fas fa-trash link-danger" data-id="'+row.id+'" data-name="'+row.synonym+'"></a>';    
 }
 
 $('#tdSynonyms').editable({
