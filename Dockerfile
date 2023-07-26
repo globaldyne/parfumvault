@@ -15,39 +15,29 @@ RUN dnf -y update
 
 RUN dnf --setopt=tsflags=nodocs -y install \
 	php \
-	php-cli \
-	php-xml \
 	php-mysqlnd \
 	php-gd \
-	php-pear-Mail \
 	php-mbstring \
 	php-fpm \
 	phpMyAdmin \
-	git \
 	python3-pip \
 	procps \
 	openssl \
 	bc \
 	mysql \
 	nginx \
-	&& dnf clean all
-
-RUN dnf install make php-devel php-pear ImageMagick ImageMagick-devel pcre-devel -y
-RUN pecl channel-update pecl.php.net
-RUN printf "\n" | pecl install imagick
-RUN dnf remove ImageMagick-devel php-devel make -y
-RUN echo "extension=imagick.so" > /etc/php.d/40-ImageMagick.ini
+	ncurses
 
 
 RUN python3 -m pip install --upgrade pip \
         && python3 -m pip install --no-warn-script-location --upgrade brother_ql
 
-RUN dnf update && dnf clean all && rm -rf /var/cache/yum/*
+RUN dnf clean all && rm -rf /var/cache/yum/*
 
 RUN sed -i \
 	-e 's~^;date.timezone =$~date.timezone = UTC~g' \
-	-e 's~^upload_max_filesize.*$~upload_max_filesize = 80M~g' \
-	-e 's~^post_max_size.*$~post_max_size = 120M~g' \
+	-e 's~^upload_max_filesize.*$~upload_max_filesize = 400M~g' \
+	-e 's~^post_max_size.*$~post_max_size = 400M~g' \
 	-e 's~^session.auto_start.*$~session.auto_start = 1~g' \
 	/etc/php.ini
 

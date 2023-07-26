@@ -1,5 +1,13 @@
 # CHANGELOG
 ### Version 7.9
+- Add icon on error message on login page
+- Handle backend error for login page
+- Disable login button until the request is complete
+- Link to product web page added in login page footer
+- Increase nginx body size limit to 400M
+- Increase php-fpm post and upload size limit to 400M
+- Remove unused packages from dockerfile
+- Deprecating ImageMagick library in favor of GD
 - Update password reset message
 - Set mariadb version to 10.5 in docker compose (higher versions having performance issues)
 - Added load time meta data in ingredients page
@@ -25,7 +33,6 @@
 - Update api to store logs in the tmp directory instead
 - Rewrite formula document upload backend to use json
 - Rewrite ingredient document upload backend to use json
-- Post/upload limits increased to 200M for php-fpm
 - Show an clearer error message when ingredient is missing from the database but exists in formula make view
 - Ingredient management relative paths update
 - Set default value for price to 0 when fail to receive from supplier
@@ -35,7 +42,6 @@
 - Disable column statistics when exporting the db via docker compose
 - Update mysql restore/backup to use external host
 - Fix uploads tmp path
-- Increase nginx body size limit to 200M
 - Fix import permissions/path
 - Fix ingredients export 
 - Fix tmp path

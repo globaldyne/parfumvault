@@ -29,6 +29,7 @@ if(isset($_SESSION['parfumvault'])){
   <link href="/css/sb-admin-2.css" rel="stylesheet">
   <link href="/css/bootstrap.min.css" rel="stylesheet">
   <link href="/css/vault.css" rel="stylesheet">
+  <link href="/css/fontawesome-free/css/all.min.css" rel="stylesheet">
 
 </head>
 
@@ -99,10 +100,12 @@ if(isset($_SESSION['parfumvault'])){
                   <div class="user" id="login">
                   
                     <div class="form-group">
-                      <input type="text" class="form-control form-control-user" name="email" id="login_email" placeholder="Email...">
+                      <label for="login_email" class="form-label">Email</label>
+                      <input type="text" class="form-control form-control-user" name="login_email" id="login_email">
                     </div>
                     <div class="form-group">
-                      <input type="password" class="form-control form-control-user" name="password" id="login_pass" placeholder="Password...">
+                      <label for="login_pass" class="form-label">Password</label>
+                      <input type="password" class="form-control form-control-user" name="login_pass" id="login_pass">
                     </div>
                     <div class="form-group"></div>
                     <button class="btn btn-primary btn-user btn-block" id="login_btn">
@@ -117,7 +120,7 @@ if(isset($_SESSION['parfumvault'])){
             <?php } ?>		 		 
                   <hr>
                   <div class="copyright text-center my-auto">
-				  <label class="small">Version: <?php echo $ver; ?> | <?php echo $product; ?></label>
+				  <label class="small">Version: <?php echo $ver; ?> | <a href="https://www.jbparfum.com/" class="link-dark" target="_blank"><?php echo $product; ?></a></label>
                   </div>
                 </div>
               </div>
@@ -168,7 +171,7 @@ $(document).ready(function() {
 
 	$('#reg_form').on('click', '[id*=registerSubmit]', function () {
 		$('#registerSubmit').prop('disabled', true);
-		$('#msg').html('<div class="alert alert-info"><img src="/img/loading.gif"/> Please wait, configuring the system...<p><strong>Please do not close, refresh or navigate away from this page. You will be automatically redirected upon a succesfull installation.</strong></p></div>');
+		$('#msg').html('<div class="alert alert-info mr2"><img src="/img/loading.gif"/>Please wait, configuring the system...<p><strong>Please do not close, refresh or navigate away from this page. You will be automatically redirected upon a succesfull installation.</strong></p></div>');
 		$("#reg_form").hide();
 		
 		$.ajax({ 
@@ -186,7 +189,7 @@ $(document).ready(function() {
 				    window.location='/'
 				}
 				if(data.error){
-					var msg = '<div class="alert alert-danger">'+data.error+'</div>';
+					var msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mr2"></i>'+data.error+'</div>';
 				}
 				
 				$("#reg_form").show();
@@ -197,6 +200,8 @@ $(document).ready(function() {
 	});
     
 	$('#login_btn').click(function() {
+		$("#login_btn").prop("disabled", true);
+ 		$('#login_btn').append('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
 		$.ajax({ 
 			url: '/core/auth.php', 
 			type: 'POST',
@@ -214,11 +219,17 @@ $(document).ready(function() {
 					window.location = data.auth.redirect ;
 					
 				}else if( data.auth.error){
-					msg = '<div class="alert alert-danger">'+data.auth.msg+'</div>';
+					msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mr2"></i>'+data.auth.msg+'</div>';
 				}
-				
+				$("#login_btn").prop("disabled", false);
+				$("span").remove();
 				$('#msg').html(msg);
-			}
+			},
+			error: function (request, status, error) {
+        		$('#msg').html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mr2"></i>Unable to handle request, server returned an error: '+request.status+'</div>');
+				$("span").remove();
+    		},
+			
 	  });
 	});
 	
