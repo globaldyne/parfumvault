@@ -1,5 +1,9 @@
 # CHANGELOG
 ### Version 8.0
+- Dockerfile typo fix
+- Docker compose readme update
+- Disable input fields in login page while request is in progress
+
 ### Version 7.9
 - Add icon on error message on login page
 - Handle backend error for login page

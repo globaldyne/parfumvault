@@ -13,12 +13,12 @@ Project structure:
 services:
   db:
     # We use a mariadb image which supports both amd64 & arm64 architecture
-    image: mariadb:latest
+    image: mariadb:10.5
     # If you want to use MySQL instead, uncomment the following line and remove the line above
     #image: mysql:latest
     ...
   pvault:
-    image: globaldyne/jbvault:latest
+    image: globaldyne/jbvault
     ports:
       - 8000:8000
     restart: always
@@ -47,8 +47,8 @@ Check containers are running and the port mapping:
 ```
 $ docker ps
 CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                 NAMES
-b81fb72f3e5a   mariadb:latest                  "docker-entrypoint.s…"   6 seconds ago   Up 4 seconds   3306/tcp, 33060/tcp      docker-compose-db-1
-10ec4668474c   globaldyne/jbvault:latest   "/bin/bash /start.sh"    6 seconds ago   Up 4 seconds   0.0.0.0:8000->8000/tcp   docker-compose-pvault-1
+0205aa69ce88   globaldyne/jbvault            "entrypoint.sh"          40 seconds ago   Up 36 seconds   0.0.0.0:8000->8000/tcp   docker-compose-pvault-1
+bad8eb6f5273   mariadb:10.5   "docker-entrypoint.s…"   40 seconds ago   Up 36 seconds   3306/tcp                 docker-compose-pvdb-1
 ```
 
 Navigate to `http://localhost:8000` in your web browser to access Perfumers Vault.
