@@ -4,6 +4,7 @@
 - Docker compose readme update
 - Disable input fields in login page while request is in progress
 - Code clean up
+- Replacing class mr2 - with mx-2 (WIP)
 
 ### Version 7.9
 - Add icon on error message on login page
