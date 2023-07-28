@@ -3,6 +3,7 @@
 - Dockerfile typo fix
 - Docker compose readme update
 - Disable input fields in login page while request is in progress
+- Code clean up
 
 ### Version 7.9
 - Add icon on error message on login page

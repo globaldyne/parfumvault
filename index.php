@@ -69,25 +69,14 @@ if($pv_meta['app_ver'] < trim(file_get_contents(__ROOT__.'/VERSION.md'))){
   <script src="/js/sb-admin-2.js"></script>
   <script src="/js/validate-session.js"></script>
 
-<script type='text/javascript'>
+<script>
 
 $(document).ready(function() {
 	$('[rel=tip]').tooltip();
 	<?php if($show_release_notes){?>
 	$('#release_notes').modal('show');
 	<?php } ?>
-	$('.popup-link').magnificPopup({
-		type: 'iframe',
-  		closeOnContentClick: false,
-		closeOnBgClick: false,
-  		showCloseBtn: true,
-	});
 	
-    $('#tdData').DataTable({
-	    "paging":   true,
-		"info":   true,
-		"lengthMenu": [[20, 35, 60, -1], [20, 35, 60, "All"]]
-	});
 	<?php if($_GET['do'] == 'listFormulas'){?>
 	list_formulas();
 	<?php } ?>

@@ -38,7 +38,7 @@ while($fTypes_res = mysqli_fetch_array($fTypes_q)){
 <div class="pv_menu_formulas">
     <div class="text-right">
         <div class="btn-group">
-        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
+        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
             <div class="dropdown-menu dropdown-menu-right">
               <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula" data-backdrop="static"><i class="fa-solid fa-plus mr2"></i>Add new formula</a></li>
               <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula_csv" data-backdrop="static"><i class="fa-solid fa-file-csv mr2"></i>Import from CSV</a></li>
