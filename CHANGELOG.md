@@ -8,6 +8,7 @@
 - Helper script update
 - Deprecating uploads directory
 - Return an error if not all the required enviroment variables set for docker
+- Make sure provided platform is upercase for password reset message
 
 ### Version 7.9
 - Add icon on error message on login page
