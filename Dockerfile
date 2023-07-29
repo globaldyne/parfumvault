@@ -8,7 +8,7 @@ FROM quay.io/centos/centos:stream9
 LABEL co.uk.globaldyne.component="perfumers-vault-container"  description="Perfumers Vault container image"  summary="Perfumers Vault container image"  version="PRO"  io.k8s.description="Init Container for Perfumers Vault PRO"  io.k8s.display-name="Perfumers Vault Pro Container"  io.openshift.tags="pvault,jb,perfumer,vault,jbpvault,PRO"  name="globaldyne/pvault"  maintainer="John Belekios"
 
 ARG uid=100001
-ArG gid=100001
+ARG gid=100001
 
 RUN dnf install -y epel-release
 RUN dnf -y update 

@@ -147,7 +147,7 @@ if(isset($_SESSION['parfumvault'])){
       <div class="modal-body">
 		
          After installing <strong><?=$product?></strong> for the first time, you asked to set a password. This password cannot be retrieved later on as its stored in the database in encrypted format.
-      	<?php if(getenv('PLATFORM') == 'CLOUD'){ ?>
+      	<?php if(strtoupper(getenv('PLATFORM')) === 'CLOUD'){ ?>
          To set a new password for a user, you need to execute the command bellow followed by the user's email you want its password reset.
          If the user don't exist, will created automatically and the system will generate a random password. 
       <p></p>
@@ -202,6 +202,8 @@ $(document).ready(function() {
 	$('#login_btn').click(function() {
 		$("#login_btn").prop("disabled", true);
  		$('#login_btn').append('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
+		$("#login_email").prop("disabled", true);
+		$("#login_pass").prop("disabled", true);
 		$.ajax({ 
 			url: '/core/auth.php', 
 			type: 'POST',
@@ -222,13 +224,18 @@ $(document).ready(function() {
 					msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mr2"></i>'+data.auth.msg+'</div>';
 					$("#login_btn").prop("disabled", false);
 					$("span").remove();
+					$("#login_email").prop("disabled", false);
+					$("#login_pass").prop("disabled", false);
 				}
-
+				
 				$('#msg').html(msg);
 			},
 			error: function (request, status, error) {
         		$('#msg').html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mr2"></i>Unable to handle request, server returned an error: '+request.status+'</div>');
 				$("span").remove();
+				$("#login_email").prop("disabled", false);
+				$("#login_pass").prop("disabled", false);
+				$("#login_btn").prop("disabled", false);
     		},
 			
 	  });
