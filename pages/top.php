@@ -12,9 +12,7 @@ if($pv_meta['schema_ver'] < $db_ver){
 <div id="content">
         <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
           <ul class="navbar-nav vault-top ml-auto">
-          <!-- Nav Item - Notifications -->
-            <li class="nav-item dropdown no-arrow mx-1">
-             <!-- Cart -->
+            <!-- Cart -->
             <li class="nav-item dropdown no-arrow mx-1">
               <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-shopping-cart fa-fw"></i>

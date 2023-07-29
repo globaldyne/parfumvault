@@ -10,6 +10,5 @@
 <script>
 $('#footer_release').click(function() {
 	$('#release_notes').modal('show');
-	//console.log('rel');
 });
 </script>

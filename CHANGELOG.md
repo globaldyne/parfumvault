@@ -1,4 +1,15 @@
 # CHANGELOG
+### Version 8.0
+- Dockerfile typo fix
+- Docker compose readme update
+- Disable input fields in login page while request is in progress
+- Code clean up
+- Replacing class mr2 - with mx-2 (WIP)
+- Helper script update
+- Deprecating uploads directory
+- Return an error if not all the required enviroment variables set for docker
+- Make sure provided platform is upercase for password reset message
+
 ### Version 7.9
 - Add icon on error message on login page
 - Handle backend error for login page
