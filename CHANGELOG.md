@@ -1,5 +1,7 @@
 # CHANGELOG
 ### Version 8.1
+- Rewrite maintenance page
+- Improve DB backup operations
 - Main README file update
 
 ### Version 8.0

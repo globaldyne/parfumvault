@@ -1385,3 +1385,7 @@ hr.hr-text::before {
   text-decoration: none;
   background-color: #1d2124;
 }
+
+.form-check-input {
+  position: inherit !important;
+}
