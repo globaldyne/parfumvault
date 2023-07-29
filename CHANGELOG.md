@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 8.1
+- Main README file update
 
 ### Version 8.0
 - Dockerfile typo fix
