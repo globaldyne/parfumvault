@@ -1,3 +1,9 @@
+<?php
+define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__))))); 
+
+$ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
+
+?>
 <div class="col mt-2">
     <div class="row mb-2">
       <div class="col">
