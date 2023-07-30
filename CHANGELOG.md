@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 8.1
+- Fix actions menu not properly showing if formula is short
 - Rewrite maintenance page
 - Improve DB backup operations
 - Main README file update
