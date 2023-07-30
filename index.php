@@ -47,7 +47,9 @@ if($pv_meta['app_ver'] < trim(file_get_contents(__ROOT__.'/VERSION.md'))){
   <link href="/css/bootstrap-select.min.css" rel="stylesheet">
   <link href="/css/bootstrap-editable.css" rel="stylesheet">
   <link href="/css/datatables.min.css" rel="stylesheet">
+  
   <link href="/css/bootstrap.min.css" rel="stylesheet">
+  
   <link href="/css/jquery-ui.css" rel="stylesheet">
   <link href="/css/magnific-popup.css" rel="stylesheet" />
   
@@ -60,7 +62,9 @@ if($pv_meta['app_ver'] < trim(file_get_contents(__ROOT__.'/VERSION.md'))){
   <script src="/js/datatables.min.js"></script> 
   <script src="/js/magnific-popup.js"></script>
   <script src="/js/jquery-ui.js"></script>
+  
   <script src="/js/bootstrap.min.js"></script>
+  
   <script src="/js/bootstrap-select.js"></script>
   <script src="/js/bootstrap-editable.js"></script>
   <script src="/js/dataTables.responsive.min.js"></script>
