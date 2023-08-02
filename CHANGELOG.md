@@ -1,5 +1,8 @@
 # CHANGELOG
 ### Version 8.1
+- Added option to auto redirect to the newly created formula
+- Rename "Add" button to "Add formula" when creating a new formula
+- Added a warning when deleting a formula
 - Fix actions menu not properly showing if formula is short
 - Rewrite maintenance page
 - Improve DB backup operations
