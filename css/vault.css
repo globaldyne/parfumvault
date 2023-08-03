@@ -1389,3 +1389,9 @@ hr.hr-text::before {
 .form-check-input {
   position: inherit !important;
 }
+
+.message-top-container {
+  position:absolute;
+  top:0;
+  right:20px;
+}

@@ -192,18 +192,14 @@ function chkUpdate() {
   <div id="wrapper">
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark">
 
-      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.php">
-        <div class="sidebar-brand-icon">            
-        <p></p>
-        <p></p>
-        <div class="pvLogo"><img src="/img/logo.png"></div>
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/index.php">
+        <div class="sidebar-brand-icon mt-4 mb-4">            
+        	<div class="pvLogo"><img src="/img/logo.png"></div>
         </div>
       </a>        
-      <p></p>
-      <p></p>
 
       <!-- Divider -->
-      <hr class="sidebar-divider my-0">
+      <hr class="sidebar-divider my-2">
       <li class="nav-item">
         <a class="nav-link" href="?do=dashboard">
           <i class="fas fa-fw fa-tachometer-alt"></i>

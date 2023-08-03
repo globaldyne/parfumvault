@@ -1,5 +1,7 @@
 # CHANGELOG
 ### Version 8.1
+- Logo position fix
+- Remove success message when locking or unlocking a formula - only errors will be reported
 - Added option to auto redirect to the newly created formula
 - Rename "Add" button to "Add formula" when creating a new formula
 - Added a warning when deleting a formula
