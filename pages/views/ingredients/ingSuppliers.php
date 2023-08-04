@@ -48,9 +48,9 @@ if($ing['physical_state'] == 1){
 <div class="card-body">
   <div class="text-right">
     <div class="btn-group">
-    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
+    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
         <div class="dropdown-menu dropdown-menu-right">
-            <li><a class="dropdown-item" href="#" data-toggle="modal" data-backdrop="static" data-target="#addSupplier"><i class="fa-solid fa-plus mr2"></i>Add new</a></li>
+            <li><a class="dropdown-item" href="#" data-toggle="modal" data-backdrop="static" data-target="#addSupplier"><i class="fa-solid fa-plus mx-2"></i>Add new</a></li>
         </div>
     </div>                    
   </div>
@@ -164,7 +164,7 @@ $(document).ready(function() {
  Object.getPrototypeOf($('#purchased')).size = function() { return this.length; }; // Workaround for https://github.com/Eonasdan/bootstrap-datetimepicker/issues/1714
 function sName(data, type, row){
 	if(row.preferred == 1){
-		data = '<i class="ingSupplierID pv_point_gen" data-name="ingSupplierID" data-type="select" data-pk="'+row.id+'"><i class="fas fa-star pv_point_gen pv_point_gen_color mr2"></i>'+row.supplierName+'</i>';  
+		data = '<i class="ingSupplierID pv_point_gen" data-name="ingSupplierID" data-type="select" data-pk="'+row.id+'"><i class="fas fa-star pv_point_gen pv_point_gen_color mx-2"></i>'+row.supplierName+'</i>';  
 	}else{
 		data = '<i class="ingSupplierID pv_point_gen" data-name="ingSupplierID" data-type="select" data-pk="'+row.id+'">'+row.supplierName+'</i>';  
 	}
@@ -231,14 +231,14 @@ function sActions(data, type, row){
 				'<ul class="dropdown-menu dropdown-menu-right">';
 	
 	if(row.preferred == 0){
-		data += '<li><a href="#" id="prefSID" data-status="1" data-id="'+row.ingSupplierID+'"><i class="far fa-star pv_point_gen mr2"></i>Set as preferred</a></li>';
+		data += '<li><a href="#" id="prefSID" data-status="1" data-id="'+row.ingSupplierID+'"><i class="far fa-star pv_point_gen mx-2"></i>Set as preferred</a></li>';
 	}
 	
-	data += '<li><a href="#" id="getPrice" data-name="'+row.supplierName+'" data-id="'+encodeURIComponent(row.ingSupplierID)+'" data-link="'+row.supplierLink+'" data-size="'+row.size+'" data-toggle="tooltip" data-placement="top" title="Get the latest price from the supplier."><i class="fas fa-sync pv_point_gen_color mr2"></i>Update price</a></li>';
+	data += '<li><a href="#" id="getPrice" data-name="'+row.supplierName+'" data-id="'+encodeURIComponent(row.ingSupplierID)+'" data-link="'+row.supplierLink+'" data-size="'+row.size+'" data-toggle="tooltip" data-placement="top" title="Get the latest price from the supplier."><i class="fas fa-sync pv_point_gen_color mx-2"></i>Update price</a></li>';
 	
-	data += '<li><a href="'+row.supplierLink+'" target="_blank"><i class="fas fa-store mr2"></i>Go to supplier</a></li>';
+	data += '<li><a href="'+row.supplierLink+'" target="_blank"><i class="fas fa-store mx-2"></i>Go to supplier</a></li>';
 	
-	data += '<li><a href="#" id="sDel" class="text-danger" data-id="'+row.id+'" data-name="'+row.supplierName+'"><i class="fas fa-trash alert-danger mr2"></i>Delete supplier</a></li>'; 
+	data += '<li><a href="#" id="sDel" class="text-danger" data-id="'+row.id+'" data-name="'+row.supplierName+'"><i class="fas fa-trash alert-danger mx-2"></i>Delete supplier</a></li>'; 
 	
 	data += '</ul></div>';
 	return data;

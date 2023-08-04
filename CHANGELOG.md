@@ -1,4 +1,16 @@
 # CHANGELOG
+### Version 8.1
+- Move DB restore modal to the maintenance page
+- Logo position fix
+- Remove success message when locking or unlocking a formula - only errors will be reported
+- Added option to auto redirect to the newly created formula
+- Rename "Add" button to "Add formula" when creating a new formula
+- Added a warning when deleting a formula
+- Fix actions menu not properly showing if formula is short
+- Rewrite maintenance page
+- Improve DB backup operations
+- Main README file update
+
 ### Version 8.0
 - Dockerfile typo fix
 - Docker compose readme update

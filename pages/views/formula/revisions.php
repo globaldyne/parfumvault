@@ -4,9 +4,9 @@
 <div class="card-body">
     <div class="text-right">
       <div class="btn-group">
-        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
             <div class="dropdown-menu dropdown-menu-right">
-                <li><a class="dropdown-item" href="#" id="genRev"><i class="fa-solid fa-plus mr2"></i>Create revision</a><li>
+                <li><a class="dropdown-item" href="#" id="genRev"><i class="fa-solid fa-plus mx-2"></i>Create revision</a><li>
             </div>
       </div>                    
     </div>
@@ -20,7 +20,7 @@
           <th>Revision ID</th>
           <th>Revision taken</th>
           <th>Method</th>
-          <th>Actions</th>
+          <th></th>
       </tr>
    </thead>
 </table>
@@ -53,7 +53,7 @@ $(document).ready(function() {
 			  { data : 'revision', title: 'Revision ID' },
 			  { data : 'revisionDate', title: 'Revision taken' },
 			  { data : 'revisionMethod', title: 'Method' },
-			  { data : null, title: 'Actions', render: actions },
+			  { data : null, title: '', render: actions },
 			],
 	
 	drawCallback: function ( settings ) {
@@ -72,12 +72,16 @@ function actions(data, type, row){
 	if(row.isCurrent == true){
 		return '<strong>Current revision</strong>';
 	}
+	data = '<div class="dropdown">' +
+			'<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+				'<ul class="dropdown-menu dropdown-menu-right">';
+	data += '<li><a href="#" id="cmpRev" data-id="'+row.fid+'" data-revision="'+row.revision+'" class="dropdown-item" title="Compare with the current revision" rel="tip"><i class="fas fa-greater-than-equal mx-2"></i>Compare</a></li>';		
+	data += '<li><a href="#" id="restore" class="dropdown-item" data-id="'+row.fid+'" data-revision="'+row.revision+'"><i class="fas fa-history mx-2"></i>Restore</a></li>';
+	data += '<div class="dropdown-divider"></div>';
+	data += '<li><a href="#" id="dDel" class="dropdown-item text-danger" data-id="'+row.fid+'" data-revision="'+row.revision+'"><i class=" fas fa-trash mx-2"></i>Delete</a></li>';
 	
-	data = '<a href="#" id="cmpRev" data-id="'+row.fid+'" data-revision="'+row.revision+'" class="fas fa-greater-than-equal mr2" title="Compare with the current revision" rel="tip"></a>';
-		
-	data += '<a href="#" id="restore" class="fas fa-history mr2" data-id="'+row.fid+'" data-revision="'+row.revision+'"></a>';
-	data += '<a href="#" id="dDel" class="fas fa-trash mr2" data-id="'+row.fid+'" data-revision="'+row.revision+'"></a>';
-	
+	data += '</ul></div>';
+
 	return data;
 }
 

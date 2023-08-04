@@ -507,4 +507,13 @@ function reset_solv(){
 	$("#reCalcAdd").prop( "checked", false );
 	$("#slvMetaAdd").hide();
 	$("#formulaSolventsAdd").val('');
-}
+};
+
+
+$('.table').on('show.bs.dropdown', function () {
+	 $('.table-responsive').css( "overflow", "inherit" );
+});
+
+$('.table').on('hide.bs.dropdown', function () {
+	 $('.table-responsive').css( "overflow", "auto" );
+});

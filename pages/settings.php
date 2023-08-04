@@ -1,19 +1,14 @@
 <?php if (!defined('pvault_panel')){ die('Not Found');}?>
 <div id="content-wrapper" class="d-flex flex-column">
 <?php 
-require_once(__ROOT__.'/pages/top.php'); 
- 
-
+require_once(__ROOT__.'/pages/top.php');
 require_once(__ROOT__.'/inc/settings.php');
-require_once(__ROOT__.'/func/php-settings.php');
 
 ?>
 <script>
 $(function() {
   $("#settings").tabs();
 });
-
-
 </script>
 <div class="container-fluid">
 
@@ -198,43 +193,7 @@ $(function() {
  </div>
 </div>
 </div>
-<div class="modal fade" id="restore_db" tabindex="-1" role="dialog" aria-labelledby="restore_db" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Restore database from a backup file</h5>
-      </div>
-      <div class="modal-body">
-      <div id="DBRestMsg"></div>
-      <div class="progress">  
-         <div id="uploadProgressBar" class="progress-bar" role="progressbar" aria-valuemin="0"></div>
-      </div>
-      <div id="backupArea">
-          <div class="form-group">
-              <label class="col-md-3 control-label">Backup file:</label>
-              <div class="col-md-8">
-                 <input type="file" name="backupFile" id="backupFile" class="form-control" />
-              </div>
-          </div>
-          <div class="col-md-12">
-             <hr />
-             <p><strong>IMPORTANT:</strong></p>
-              <ul>
-                <li><div id="raw" data-size="<?=getMaximumFileUploadSizeRaw()?>">Maximum file size: <strong><?=getMaximumFileUploadSize()?></strong></div></li>
-                <li>Backup file must match your current PV version<strong> (<?=$ver?>)</strong>, if not downgrade or upgrade accordingly before restoring a backup</li>
-                <li>You current database will be wiped-out so if it contains any data you wanna keep, please take a <a href="/pages/operations.php?do=backupDB">backup</a> first</li>
-              </ul>
-    <p>&nbsp;</p>
-            </div>
-          </div>
-      </div>
-	  <div class="modal-footer">
-        <input type="button" class="btn btn-secondary" data-dismiss="modal" id="btnCloseBK" value="Cancel">
-        <input type="submit" name="btnRestore" class="btn btn-primary" id="btnRestore" value="Restore">
-      </div>
-  </div>
- </div>
-</div>
+
 
 <script type="text/javascript" language="javascript" >
 $(document).ready(function() {
@@ -369,5 +328,4 @@ function get_brand(){
 	});
 };
 </script>
-<script src="/js/settings.backup.js"></script>
 <script src="/js/settings.tabs.js"></script>

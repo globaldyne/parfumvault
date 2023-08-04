@@ -296,10 +296,10 @@ $('table.table').on('click', '[id*=deleteMe]', function () {
     
 	bootbox.dialog({
        title: "Confirm formula deletion",
-       message : 'Permantly delete <strong>'+ $(this).attr('data-name') +'</strong> formula?',
+       message : '<div class="alert alert-warning">WARNING, this action cannot be reverted unless you have a backup.</div><p>Permantly delete <strong>'+ $(this).attr('data-name') +'</strong> formula?</p>',
        buttons :{
            main: {
-               label : "Delete",
+               label : "DELETE",
                className : "btn-danger",
                callback: function (){
 	    			
@@ -384,6 +384,9 @@ $('#add_formula').on('click', '[id*=btnAdd]', function () {
 		}else if(data.success){
 			var rmsg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><a href="?do=Formula&id='+data.success.id+'">'+data.success.msg+'</a></div>';
 			reload_formulas_data();
+			if($("#go_to_formula").prop("checked")){
+				window.location = "/?do=Formula&id=" + data.success.id
+			}
 		}
 	  	$('#addFormulaMsg').html(rmsg);
 		
@@ -613,7 +616,7 @@ $("#formula-name").keyup(function(){
       <div class="modal-body">
       <div id="addFormulaMsg"></div>
       
-	  <div class="form-horizontal">
+      <div class="form-horizontal">
 
       <div class="form-group">
         <label for="formula-name" class="col-sm-2 control-label">Formula name</label>
@@ -642,15 +645,15 @@ $("#formula-name").keyup(function(){
         </div>
       </div>
       <div class="form-group">
-        <label for="finalType" class="col-sm-2 control-label">Final type</label>
-        <div class="col-sm-10">
-          <select name="finalType" id="finalType" class="form-control selectpicker" data-live-search="true">  
-            <option value="100">Concentrated (100%)</option>
-            <?php foreach ($fTypes as $fType) {?>
-                <option value="<?php echo $fType['concentration'];?>" <?php echo ($info['finalType']==$fType['concentration'])?"selected=\"selected\"":""; ?>><?php echo $fType['name'].' ('.$fType['concentration'];?>%)</option>
-             <?php } ?>			
-          </select>
-        </div>
+        	<label for="finalType" class="col-sm-2 control-label">Final type</label>
+        	<div class="col-sm-10">
+          		<select name="finalType" id="finalType" class="form-control selectpicker" data-live-search="true">  
+            		<option value="100">Concentrated (100%)</option>
+            		<?php foreach ($fTypes as $fType) {?>
+                	<option value="<?php echo $fType['concentration'];?>" <?php echo ($info['finalType']==$fType['concentration'])?"selected=\"selected\"":""; ?>><?php echo $fType['name'].' ('.$fType['concentration'];?>%)</option>
+             		<?php } ?>			
+          		</select>
+        	</div>
       </div>
       
       <div class="form-group">
@@ -672,10 +675,16 @@ $("#formula-name").keyup(function(){
       </div>
     </div>
 
-        
+      <hr/>
+      <div class="form-group">
+        <div class="mx-4">
+    		<input type="checkbox" class="form-check-input" id="go_to_formula" checked>
+   			<label class="form-check-label" for="go_to_formula">Go to formula when created</label>
+  		</div>
+      </div>
 	  <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <input type="submit" name="button" class="btn btn-primary" id="btnAdd" value="Add">
+        <input type="submit" name="button" class="btn btn-primary" id="btnAdd" value="Add formula">
       </div>
     </div>
   </div>
