@@ -14,16 +14,16 @@ $defCatClass = $settings['defCatClass'];
     <tr class="noBorder noexport">
      <div class="text-right">
       <div class="btn-group">
-       <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
+       <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
       <div class="dropdown-menu dropdown-menu-right">
-        <li><a class="dropdown-item popup-link" href="/pages/mgmIngredient.php"><i class="fa-solid fa-plus mr2"></i>Create new ingredient</a></li>
+        <li><a class="dropdown-item popup-link" href="/pages/mgmIngredient.php"><i class="fa-solid fa-plus mx-2"></i>Create new ingredient</a></li>
         <div class="dropdown-divider"></div
-        ><li><a class="dropdown-item" id="csv_export" href="/pages/export.php?format=csv&kind=ingredients"><i class="fa-solid fa-file-csv mr2"></i>Export to CSV</a></li>
-        <li><a class="dropdown-item" id="json_export" href="/pages/export.php?format=json&kind=ingredients"><i class="fa-solid fa-file-code mr2"></i>Export to JSON</a></li>
+        ><li><a class="dropdown-item" id="csv_export" href="/pages/export.php?format=csv&kind=ingredients"><i class="fa-solid fa-file-csv mx-2"></i>Export to CSV</a></li>
+        <li><a class="dropdown-item" id="json_export" href="/pages/export.php?format=json&kind=ingredients"><i class="fa-solid fa-file-code mx-2"></i>Export to JSON</a></li>
         <div class="dropdown-divider"></div>
-        <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#csv_import" data-backdrop="static"><i class="fa-solid fa-file-import mr2"></i>Import from CSV</a></li>
-        <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#import_ingredients_json" data-backdrop="static"><i class="fa-solid fa-file-import mr2"></i>Import from JSON</a></li>
-        <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#pv_online_import"><i class="fa-solid fa-cloud-arrow-down mr2"></i>Import from PV Online</a></li>
+        <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#csv_import" data-backdrop="static"><i class="fa-solid fa-file-import mx-2"></i>Import from CSV</a></li>
+        <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#import_ingredients_json" data-backdrop="static"><i class="fa-solid fa-file-import mx-2"></i>Import from JSON</a></li>
+        <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#pv_online_import"><i class="fa-solid fa-cloud-arrow-down mx-2"></i>Import from PV Online</a></li>
       </div>
      </div>                    
     </div>
@@ -36,7 +36,7 @@ $defCatClass = $settings['defCatClass'];
           <input name="ing_search" type="text" class="form-control input-sm pv_input_sm" id="ing_search" value="<?=$_GET['search']?>" placeholder="Ingredient name, CAS, odor..">
             <div class="input-group-btn">
                 <button class="btn btn-search btn-primary" id="pv_search_btn" data-provider="local">
-                    <span class="fas fa-database mr2"></span>
+                    <span class="fas fa-database mx-2"></span>
                     <span class="label-icon"><a href="#" class="btn-search">Local DB</a></span>
                 </button>
                 <label class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
@@ -45,7 +45,7 @@ $defCatClass = $settings['defCatClass'];
                 <ul class="dropdown-menu dropdown-menu-right" role="menu">
                     <?php foreach (loadModules('suppliers') as $search){ ?>
                     <li>
-                        <a href="#" class="supplier" id="provider" data-provider="<?=$search['fileName']?>">
+                        <a href="#" class="supplier dropdown-item" id="provider" data-provider="<?=$search['fileName']?>">
                             <span class="<?=$search['icon']?>"></span>
                             <span class="label-icon"><?=$search['name']?></span>
                         </a>
@@ -222,10 +222,10 @@ function iLimit(data, type, row){
 
 function iSuppliers(data, type, row){
 	if(row.supplier){
-	data ='<div class="btn-group"><button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-store mr2"></i><span class="badge badge-light">'+row.supplier.length+'</span></button><div class="dropdown-menu dropdown-menu-right">';
+	data ='<div class="btn-group"><button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-store mx-2"></i><span class="badge badge-light">'+row.supplier.length+'</span></button><div class="dropdown-menu dropdown-menu-right">';
 	for (var key in row.supplier) {
 		if (row.supplier.hasOwnProperty(key)) {
-			data+='<li><a class="dropdown-item popup-link" href="'+row.supplier[key].link+'"><i class="fa fa-store mr2"></i>'+row.supplier[key].name+'</a></li>';
+			data+='<li><a class="dropdown-item popup-link" href="'+row.supplier[key].link+'"><i class="fa fa-store mx-2"></i>'+row.supplier[key].name+'</a></li>';
 		}
 	}                
 	data+='</div></div></td>';
@@ -237,10 +237,10 @@ function iSuppliers(data, type, row){
 
 function iDocs(data, type, row){
 	if(row.document){	
-		data ='<div class="btn-group"><button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-file-alt mr2"></i><span class="badge badge-light">'+row.document.length+'</span></button><div class="dropdown-menu dropdown-menu-right">';
+		data ='<div class="btn-group"><button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-file-alt mx-2"></i><span class="badge badge-light">'+row.document.length+'</span></button><div class="dropdown-menu dropdown-menu-right">';
 		for (var key in row.document) {
 			if (row.document.hasOwnProperty(key)) {
-				data+='<a class="dropdown-item popup-link" href="/pages/viewDoc.php?id='+row.document[key].id+'"><i class="fa fa-file-alt mr2"></i>'+row.document[key].name+'</a>';
+				data+='<a class="dropdown-item popup-link" href="/pages/viewDoc.php?id='+row.document[key].id+'"><i class="fa fa-file-alt mx-2"></i>'+row.document[key].name+'</a>';
 			}
 		}                
 		data+='</div></div></td>';
@@ -256,21 +256,21 @@ function iDocs(data, type, row){
 function actions(data, type, row, meta){
 	if(meta.settings.json.source == 'PVOnline'){
 		data = '<div class="dropdown">' +
-			'<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+			'<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
 				'<ul class="dropdown-menu dropdown-menu-right">' + 
-				'<li><a rel="tip" title="Import '+ row.name +'" class="pv_point_gen text-dark" id="impIng" data-name="'+ row.name +'" data-id='+ row.id +'><i class="fas fa-download mr2"></i>Import to local DB</a></li>'; 
+				'<li><a rel="tip" title="Import '+ row.name +'" class="pv_point_gen text-dark" id="impIng" data-name="'+ row.name +'" data-id='+ row.id +'><i class="fas fa-download mx-2"></i>Import to local DB</a></li>'; 
 		data += '</ul></div>';		
 	}else{//Treat the rest as local
 		data = '<div class="dropdown">' +
 			'<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
 				'<ul class="dropdown-menu dropdown-menu-right">';
-		data += '<li><a href="/pages/mgmIngredient.php?id='+btoa(row.name)+'" class="popup-link"><i class="fas fa-edit mr2"></i>Manage</a></li>';
+		data += '<li><a href="/pages/mgmIngredient.php?id='+btoa(row.name)+'" class="dropdown-item popup-link"><i class="fas fa-edit mx-2"></i>Manage</a></li>';
 		
-		data += '<li><a class="dropdown-item" href="/pages/export.php?format=json&kind=single-ingredient&id=' + row.id + '" rel="tip" title="Export '+ row.name +' as JSON" ><i class="fas fa-download mr2"></i>Export as JSON</a></li>';
+		data += '<li><a class="dropdown-item" href="/pages/export.php?format=json&kind=single-ingredient&id=' + row.id + '" rel="tip" title="Export '+ row.name +' as JSON" ><i class="fas fa-download mx-2"></i>Export as JSON</a></li>';
 
 		data += '<div class="dropdown-divider"></div>';
 
-		data += '<li><a rel="tip" title="Remove '+ row.name +'" class="pv_point_gen text-danger" id="rmIng" data-name="'+ row.name +'" data-id='+ row.id +'><i class="fas fa-trash mr2"></i>Delete</a></li>'; 
+		data += '<li><a rel="tip" title="Remove '+ row.name +'" class="dropdown-item pv_point_gen text-danger" id="rmIng" data-name="'+ row.name +'" data-id='+ row.id +'><i class="fas fa-trash mx-2"></i>Delete</a></li>'; 
 		data += '</ul></div>';		
 	}
 	

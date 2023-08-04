@@ -47,7 +47,9 @@ if($pv_meta['app_ver'] < trim(file_get_contents(__ROOT__.'/VERSION.md'))){
   <link href="/css/bootstrap-select.min.css" rel="stylesheet">
   <link href="/css/bootstrap-editable.css" rel="stylesheet">
   <link href="/css/datatables.min.css" rel="stylesheet">
+  
   <link href="/css/bootstrap.min.css" rel="stylesheet">
+  
   <link href="/css/jquery-ui.css" rel="stylesheet">
   <link href="/css/magnific-popup.css" rel="stylesheet" />
   
@@ -60,7 +62,9 @@ if($pv_meta['app_ver'] < trim(file_get_contents(__ROOT__.'/VERSION.md'))){
   <script src="/js/datatables.min.js"></script> 
   <script src="/js/magnific-popup.js"></script>
   <script src="/js/jquery-ui.js"></script>
+  
   <script src="/js/bootstrap.min.js"></script>
+  
   <script src="/js/bootstrap-select.js"></script>
   <script src="/js/bootstrap-editable.js"></script>
   <script src="/js/dataTables.responsive.min.js"></script>
@@ -188,18 +192,14 @@ function chkUpdate() {
   <div id="wrapper">
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark">
 
-      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.php">
-        <div class="sidebar-brand-icon">            
-        <p></p>
-        <p></p>
-        <div class="pvLogo"><img src="/img/logo.png"></div>
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/index.php">
+        <div class="sidebar-brand-icon mt-4 mb-4">            
+        	<div class="pvLogo"><img src="/img/logo.png"></div>
         </div>
       </a>        
-      <p></p>
-      <p></p>
 
       <!-- Divider -->
-      <hr class="sidebar-divider my-0">
+      <hr class="sidebar-divider my-2">
       <li class="nav-item">
         <a class="nav-link" href="?do=dashboard">
           <i class="fas fa-fw fa-tachometer-alt"></i>

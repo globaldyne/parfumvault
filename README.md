@@ -40,14 +40,22 @@ To run the latest docker image (scripted):
 
 or manually:
 	
-	docker run --name PV2 \
-		-p 8080:80 \
-		-v PV2_VOL_CONF:/config \
-		-v PV2_VOL_DB:/var/lib/mysql \
-		-v PV2_VOL_UPLOADS:/var/www/html/uploads \
-		globaldyne/jbvault:latest
+	docker run --name pvault -e PLATFORM=CLOUD -e DB_HOST=... -p 8000:8000 -d globaldyne/jbvault
 
-then point your browser to http://localhost:8080
+Please note, all DB_ variables are required.
+
+	- `-e PLATFORM=CLOUD`
+	- `-e DB_HOST=...`
+	- `-e DB_NAME=...`
+	- `-e DB_USER=...`
+	- `-e DB_PASS=...`
+	- `-e phpMyAdmin=false`
+	- `-e MAX_FILE_SIZE=4194304`
+	- `-e TMP_PATH=/tmp/`
+	- `-e FILE_EXT='pdf, doc, docx, xls, csv, xlsx, png, jpg, jpeg, gif'`
+	- `-e DB_BACKUP_PARAMETERS='--column-statistics=1'`
+	
+then point your browser to http://localhost:8000
 
 For more info, please refer to:
 	
