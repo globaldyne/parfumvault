@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 8.1
+- Move DB restore modal to the maintenance page
 - Logo position fix
 - Remove success message when locking or unlocking a formula - only errors will be reported
 - Added option to auto redirect to the newly created formula
