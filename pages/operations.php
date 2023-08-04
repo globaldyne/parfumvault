@@ -48,6 +48,11 @@ if($_GET['do'] == 'backupDB'){
 	if( getenv('DB_BACKUP_PARAMETERS') ){
 		$bkparams = getenv('DB_BACKUP_PARAMETERS');
 	}
+	
+	if($_GET['column_statistics'] === 'true'){
+		$bkparams = '--column-statistics=1';
+	}
+	
 	$file = 'backup_'.$ver.'_'.date("d-m-Y").'.sql.gz';
 	
 	header( 'Content-Type: application/x-gzip' );
