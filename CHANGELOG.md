@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 8.2
+
 ### Version 8.1
 - Move DB restore modal to the maintenance page
 - Logo position fix
