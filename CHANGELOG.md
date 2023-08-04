@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 8.2
+- Fix pv meta data timestamp update
 
 ### Version 8.1
 - Move DB restore modal to the maintenance page

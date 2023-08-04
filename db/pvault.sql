@@ -287,7 +287,7 @@ CREATE TABLE `lids` (
 CREATE TABLE `pv_meta` (
   `schema_ver` varchar(255) COLLATE utf8_general_ci NOT NULL,
   `app_ver` varchar(255) COLLATE utf8_general_ci NOT NULL,
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `updated_at` timestamp on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE `settings` (
