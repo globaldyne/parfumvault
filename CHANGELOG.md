@@ -1,6 +1,9 @@
 # CHANGELOG
 ### Version 8.2
 - Fix pv meta data timestamp update
+- Show server errors if upgrade fails
+- Moving DB upgrade script outside index.php
+- Removed unused array map from db upgrade
 
 ### Version 8.1
 - Move DB restore modal to the maintenance page
