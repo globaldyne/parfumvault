@@ -27,7 +27,7 @@ if(strtoupper(getenv('PLATFORM')) === "CLOUD"){
 
 
 
-$conn = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname) or die ('Unable to connect to '.$dbname.' database on '.$dbhost.' host. Please make sure the dabase exists and user '.$dbuser.' has full permissions on it.');
+$conn = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname) or die ('Unable to connect to '.$dbname.' database on '.$dbhost.' host. Please make sure the database exists and user '.$dbuser.' has full permissions on it.');
 mysqli_select_db($conn, $dbname);
 mysqli_set_charset($conn, "utf8");
 
