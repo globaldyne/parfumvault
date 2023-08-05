@@ -213,7 +213,7 @@ function format ( d ) {
 
 	for (var key in d.labels) {
 		if (d.labels.hasOwnProperty(key)) {
-			details+='<span class="formula_details mr2 label pv-label label-md label-default">'+d.labels[key].name+'</span>';
+			details+='<span class="formula_details mx-2 label pv-label label-md label-default">'+d.labels[key].name+'</span>';
 		}
 	}        
 	
@@ -252,13 +252,13 @@ function actions(data, type, row, meta){
         '<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
             '<ul class="dropdown-menu dropdown-menu-right">';
 		
-		data += '<li><i class="pv_point_gen pv_gen_li dropdown-item" id="import-market-formula" data-id="'+row.id+'" data-name="'+row.name+'" rel="tip" title="Import '+ row.name +' to my database" ><i class="fas fa-download mr2"></i>Import Formula</i></li>';
+		data += '<li><i class="pv_point_gen pv_gen_li dropdown-item" id="import-market-formula" data-id="'+row.id+'" data-name="'+row.name+'" rel="tip" title="Import '+ row.name +' to my database" ><i class="fas fa-download mx-2"></i>Import Formula</i></li>';
 		
-		data += '<li><i class="pv_point_gen pv_gen_li dropdown-item open-contact-dialog" data-toggle="modal"  data-target="#contact-formula-author" data-backdrop="static" data-id="'+row.id+'" data-name="'+row.name+'" rel="tip" title="Contact '+ row.author +' regarding the formula"><i class="fas fa-id-card mr2"></i>Contact the author</i></li>';
+		data += '<li><i class="pv_point_gen pv_gen_li dropdown-item open-contact-dialog" data-toggle="modal"  data-target="#contact-formula-author" data-backdrop="static" data-id="'+row.id+'" data-name="'+row.name+'" rel="tip" title="Contact '+ row.author +' regarding the formula"><i class="fas fa-id-card mx-2"></i>Contact the author</i></li>';
 		
 		data += '<div class="dropdown-divider"></div>';
 		
-		data += '<li><i class="pv_point_gen pv_gen_li dropdown-item open-report-dialog" data-toggle="modal"  data-target="#report-market-formula" data-backdrop="static" style="color: #c9302c;" rel="tip" title="Report '+ row.name +' to admins" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-bug mr2"></i>Report formula</i></li>';
+		data += '<li><i class="pv_point_gen pv_gen_li dropdown-item open-report-dialog" data-toggle="modal"  data-target="#report-market-formula" data-backdrop="static" style="color: #c9302c;" rel="tip" title="Report '+ row.name +' to admins" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-bug mx-2"></i>Report formula</i></li>';
 		
 		data += '</ul></div>';
 	
@@ -271,7 +271,7 @@ function reload_data() {
 
 //Import Formula
 $('#all-table-market').on('click', '[id*=import-market-formula]', function () {
-	$("#impMsg").html('<div class="alert alert-info"><img src="/img/loading.gif" class="mr2"/>Please wait...</div>');
+	$("#impMsg").html('<div class="alert alert-info"><img src="/img/loading.gif" class="mx-2"/>Please wait...</div>');
 	
 	var frm = {};
 	frm.ID = $(this).attr('data-id');
@@ -340,7 +340,7 @@ $("#all-table-market").on("click", ".open-contact-dialog", function () {
 });
 
 $('#contact-formula-author').on('click', '[id*=confirm-contact-author]', function () {
-	$("#cntMsg").html('<div class="alert alert-info"><img src="/img/loading.gif" class="mr2"/>Please wait...</div>');
+	$("#cntMsg").html('<div class="alert alert-info"><img src="/img/loading.gif" class="mx-2"/>Please wait...</div>');
 	$.ajax({ 
 		url: '/pages/pvonline.php', 
 		type: 'POST',
@@ -382,7 +382,7 @@ $("#all-table-market").on("click", ".open-report-dialog", function () {
 });
 
 $('#report-market-formula').on('click', '[id*=confirm-formula-report]', function () {
-	$("#reportMsg").html('<div class="alert alert-info"><img src="/img/loading.gif" class="mr2"/>Please wait...</div>');
+	$("#reportMsg").html('<div class="alert alert-info"><img src="/img/loading.gif" class="mx-2"/>Please wait...</div>');
 	$.ajax({ 
 		url: '/pages/pvonline.php', 
 		type: 'POST',
@@ -408,5 +408,13 @@ $('#report-market-formula').on('click', '[id*=confirm-formula-report]', function
 	  });
 });
 
+
+$('.table').on('show.bs.dropdown', function () {
+	 $('.table-responsive').css( "overflow", "inherit" );
+});
+
+$('.table').on('hide.bs.dropdown', function () {
+	 $('.table-responsive').css( "overflow", "auto" );
+});
 </script>
 

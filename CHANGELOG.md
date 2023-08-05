@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 8.2
+- Fix marketplace actions menu position
 - Fix precision calculation when comparing versions
 - Fix pv meta data timestamp update
 - Show server errors if upgrade fails
