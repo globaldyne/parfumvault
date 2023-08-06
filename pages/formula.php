@@ -158,7 +158,7 @@ if($form[0]['ingredient']){
                   <p>To include this page in your web site, copy this line and paste it into your html code:</p>
                 <p>
                 <pre>&lt;iframe src=&quot;<?=$_SERVER['REQUEST_SCHEME']?>://<?=$_SERVER['SERVER_NAME']?>/pages/viewSummary.php?id=<?=$fid?>&amp;embed=1&quot; title=&quot;<?=$f_name?>&quot;&gt;&lt;/iframe&gt;</pre></p>
-                    <p>For documentation and parameterisation please refer to: <a href="https://www.jbparfum.com/knowledge-base/share-formula-notes/" target="_blank">https://www.jbparfum.com/knowledge-base/share-formula-notes/</a></p>
+                    <p>For documentation and parameterisation please refer to: <a href="https://www.perfumersvault.com/knowledge-base/share-formula-notes/" target="_blank">https://www.perfumersvault.com/knowledge-base/share-formula-notes/</a></p>
                 </div>
                 <?php } ?>
             </div>            

@@ -64,7 +64,7 @@ if($_POST['action']=='install'){
 	}
 	
 	if ( ! is_writable(dirname(__FILE__))) {
-		$response['error'] = 'Home directory isn\'t writable.<p>Please refer to our <a href="https://www.jbparfum.com/knowledge-base/" target="_blank">KB</a> for help.</p>';
+		$response['error'] = 'Home directory isn\'t writable.<p>Please refer to our <a href="https://www.perfumersvault.com/knowledge-base/" target="_blank">KB</a> for help.</p>';
 		echo json_encode($response);
 		return;
 	}

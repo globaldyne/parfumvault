@@ -10,7 +10,7 @@ if($app_ver){
 	$githubVer = 'https://raw.githubusercontent.com/globaldyne/parfumvault/master/VERSION.md';
 	$githubREL = 'https://raw.githubusercontent.com/globaldyne/parfumvault/master/releasenotes.md';
 
-	$docUrl = 'https://www.jbparfum.com/knowledge-base/how-to-update-pv-to-its-latest-version/';
+	$docUrl = 'https://www.perfumersvault.com/knowledge-base/how-to-update-pv-to-its-latest-version/';
 	$data = trim(pv_file_get_contents($githubVer));
 	$gitHubRep = 'https://github.com/globaldyne/parfumvault/archive/refs/tags/v'.$data.'.zip';
 

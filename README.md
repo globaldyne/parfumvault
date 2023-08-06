@@ -29,7 +29,7 @@ This is a FREE software provided as is without ANY warranty under MIT license.
 
 For full features list please visit
 	
-	https://www.jbparfum.com/knowledge-base/
+	https://www.perfumersvault.com/knowledge-base/
 
 
 # Docker Image
@@ -59,5 +59,5 @@ then point your browser to http://localhost:8000
 
 For more info, please refer to:
 	
-	https://www.jbparfum.com/knowledge-base/
+	https://www.perfumersvault.com/knowledge-base/
 

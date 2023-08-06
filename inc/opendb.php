@@ -5,7 +5,7 @@ define('__ROOT__', dirname(__FILE__));
 if(strtoupper(getenv('PLATFORM')) === "CLOUD"){
 	
 	if(!getenv('DB_HOST') || !getenv('DB_USER') || !getenv('DB_PASS') || !getenv('DB_NAME')){
-		echo 'Required parameters not found. Please make sure your provided all the required variables as per <a href="https://www.jbparfum.com/knowledge-base/howto-docker/" target="_blank">documentation</a>';
+		echo 'Required parameters not found. Please make sure your provided all the required variables as per <a href="https://www.perfumersvault.com/knowledge-base/howto-docker/" target="_blank">documentation</a>';
 		exit;
 	}
 

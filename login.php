@@ -19,7 +19,7 @@ if(isset($_SESSION['parfumvault'])){
 
   <meta charset="utf-8">
   <meta name="description" content="<?php echo $product.' - '.$ver;?>">
-  <meta name="author" content="JBPARFUM">
+  <meta name="author" content="perfumersvault">
   <title><?php echo $product;?> - Login</title>
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
@@ -120,7 +120,7 @@ if(isset($_SESSION['parfumvault'])){
             <?php } ?>		 		 
                   <hr>
                   <div class="copyright text-center my-auto">
-				  <label class="small">Version: <?php echo $ver; ?> | <a href="https://www.jbparfum.com/" class="link-dark" target="_blank"><?php echo $product; ?></a></label>
+				  <label class="small">Version: <?php echo $ver; ?> | <a href="https://www.perfumersvault.com/" class="link-dark" target="_blank"><?php echo $product; ?></a></label>
                   </div>
                 </div>
               </div>

@@ -76,7 +76,7 @@
       <div class="modal-body-main">
             <input type="hidden" name="fid" id="fid" />
             <input type="hidden" name="fname" id="fname" />
-            <div class="alert alert-warning">If you believe that <strong><div id="fname" class="d-inline"></div></strong> formula violates our <a href="https://www.jbparfum.com/community_rules" target="_blank">community rules</a>, please use this form to report it explaining in detail what's wrong.<p>Once we receive the report and review it, will take actions, if any required and let the author know.</p><p><strong>Please don't use this form if you have queries or suggestions regarding the formula, use the <i>Contact Author</i> option instead.</strong></p></div>
+            <div class="alert alert-warning">If you believe that <strong><div id="fname" class="d-inline"></div></strong> formula violates our <a href="https://www.perfumersvault.com/community_rules" target="_blank">community rules</a>, please use this form to report it explaining in detail what's wrong.<p>Once we receive the report and review it, will take actions, if any required and let the author know.</p><p><strong>Please don't use this form if you have queries or suggestions regarding the formula, use the <i>Contact Author</i> option instead.</strong></p></div>
             <div class="form-group">
                 <label class="form-label">Full name:</label>
                 <input name="reporterName" id="reporterName" type="text" class="form-control">

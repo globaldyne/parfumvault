@@ -27,7 +27,7 @@ require_once(__ROOT__.'/inc/settings.php');
     <p>Version: <strong><?php echo file_get_contents(__ROOT__.'/VERSION.md');?></strong> PRO</p>
     <p>DB Schema Version: <strong><?php echo $pv_meta['schema_ver'];?></strong></p>
     <p>Release <a href="CHANGELOG.md" target="_blank"><strong>CHANGELOG</strong></a></p>
-    <p><a href="https://www.jbparfum.com" target="_blank">https://www.jbparfum.com</a></p>
+    <p><a href="https://www.perfumersvault.com" target="_blank">https://www.perfumersvault.com</a></p>
     <p>Theme by <a href="https://startbootstrap.com/theme/sb-admin-2/" target="_blank"><strong>SB Admin 2</strong></a></p>
     </td>
   </tr>
