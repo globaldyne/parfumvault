@@ -1,5 +1,7 @@
 # CHANGELOG
 ### Version 8.2
+- Remove unused pvonline functions
+- Improve pvonline stats fetch
 - Migrate pvonline to perfumersvault.com domain
 - Logo for docker added
 - Main docker repo changed to perfumersvault

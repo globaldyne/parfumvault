@@ -141,3 +141,25 @@ $(document).on('click', '#btnImportCSV', function(event){
     })
 
 });
+function get_stats(){
+	$.ajax({ 
+		url: pvOnlineAPI, 
+		dataType: 'json',
+		data: {
+			'do': 'getStats'
+		},
+		success: function (data) {
+			$('#ingredientsTotal').html('<p>Ingredients online: <strong>' + data.ingredientsTotal + '</strong></p>');
+			
+			$('#synonymsTotal').html('Synonyms online: <strong>' + data.synonymsTotal + '</strong>');
+			$('#composTotal').html('Compositions online: <strong>' + data.composTotal + '</strong>');
+
+		},
+		error: function (request, status, error) {
+			$('#pv_online_imp_area').html('<div class="alert alert-danger mt-3"><i class="bi bi-exclamation-circle mx-2"></i></i>Unable to handle request, server returned an error: '+request.status+'</div>');
+			$('#btnImport').prop('disabled', true);
+		},
+		
+	});
+};
+get_stats();

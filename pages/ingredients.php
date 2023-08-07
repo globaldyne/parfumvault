@@ -197,18 +197,30 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
       </div>
       <div class="modal-body">
        <div id="pvImportMsg"></div>
-      <strong>WARNING:</strong><br />
-      you are about to import data from PV Online, please bear in mind, PV Online is a community driven database therefore may contain unvalidated or incorrect data. <br />
-      If your local database contains already an ingredient with the same name, the ingredient data will not be imported.      <div class="dropdown-divider"></div
-      ><p>Ingredients online: <strong><?php echo pvOnlineStats($pvOnlineAPI, 'ingredientsTotal');?></strong></p>
-      <input name="includeSynonyms" type="checkbox" id="includeSynonyms" value="1" />
-      Synonyms online: <strong><?php echo pvOnlineStats($pvOnlineAPI, 'synonymsTotal');?></strong>
-      <p></p>
-      <input name="includeCompositions" type="checkbox" id="includeCompositions" value="1" />
-      Compositions online: <strong><?php echo pvOnlineStats($pvOnlineAPI, 'composTotal');?></strong>
-
-</div>
-	  <div class="modal-footer_2">
+       <div id="pv_online_imp_area">
+           <div class="alert alert-warning">
+               <strong>WARNING:</strong><br />
+              you are about to import data from PV Online, please bear in mind, PV Online is a community driven database therefore may contain unvalidated or incorrect data. <br />
+              If your local database contains already an ingredient with the same name, the ingredient data will not be imported.     
+          </div>
+          <div class="dropdown-divider"></div>
+          <div class="form-group">
+            <div class="mx-4">
+                <div id="ingredientsTotal"></div>
+            </div>
+            <div class="mx-4">
+                <input type="checkbox" class="form-check-input" id="includeSynonyms" name="includeSynonyms" value="1">
+                <label class="form-check-label" for="includeSynonyms"><div id="synonymsTotal"></div></label>
+            </div>          
+            <div class="mx-4">
+                <input type="checkbox" class="form-check-input" id="includeCompositions" name="includeCompositions" value="1">
+                <label class="form-check-label" for="includeCompositions"><div id="composTotal"></div></label>
+            </div>
+          </div>
+      </div>
+      
+      </div>
+      <div class="modal-footer_2">
 	  <?php require('privacy_note.php');?>
       </div>
       <div class="modal-footer">
@@ -221,7 +233,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
 
 <script type="text/javascript" language="javascript" >
 list_ingredients();
-
+var pvOnlineAPI = '<?php echo $pvOnlineAPI; ?>';
 $(function () {
     $(".input-group-btn .dropdown-menu li a").click(function () {
         var selText = $(this).html();
@@ -291,7 +303,11 @@ $('#pv_online_import').on('click', '[id*=btnImport]', function () {
 			
 			$('#importClose').attr('disabled', false);
 		  	$('#pvImportMsg').html(rmsg);
-		}
+		},
+		error: function (request, status, error) {
+			$('#pvImportMsg').html('<div class="alert alert-danger mt-3"><i class="bi bi-exclamation-circle mx-2"></i></i>Unable to handle request, server returned an error: '+request.status+'</div>');
+			$('#btnImport').prop('disabled', false);
+		},
 	  });
 });
 
