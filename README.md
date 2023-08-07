@@ -40,7 +40,7 @@ To run the latest docker image (scripted):
 
 or manually:
 	
-	docker run --name pvault -e PLATFORM=CLOUD -e DB_HOST=... -p 8000:8000 -d globaldyne/jbvault
+	docker run --name pvault -e PLATFORM=CLOUD -e DB_HOST=... -p 8000:8000 -d globaldyne/perfumersvault
 
 Please note, all DB_ variables are required.
 
