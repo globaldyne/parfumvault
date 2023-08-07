@@ -199,9 +199,8 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
        <div id="pvImportMsg"></div>
       <strong>WARNING:</strong><br />
       you are about to import data from PV Online, please bear in mind, PV Online is a community driven database therefore may contain unvalidated or incorrect data. <br />
-      If your local database contains already an ingredient with the same name, the ingredient data will not be imported. 					
-      <p></p>
-      <p>Ingredients online: <strong><?php echo pvOnlineStats($pvOnlineAPI, 'ingredientsTotal');?></strong></p>
+      If your local database contains already an ingredient with the same name, the ingredient data will not be imported.      <div class="dropdown-divider"></div
+      ><p>Ingredients online: <strong><?php echo pvOnlineStats($pvOnlineAPI, 'ingredientsTotal');?></strong></p>
       <input name="includeSynonyms" type="checkbox" id="includeSynonyms" value="1" />
       Synonyms online: <strong><?php echo pvOnlineStats($pvOnlineAPI, 'synonymsTotal');?></strong>
       <p></p>
@@ -266,7 +265,7 @@ function adv_search() {
 $('#pv_online_import').on('click', '[id*=btnImport]', function () {
 	$('#btnImport').attr('disabled', true);
 	$('#importClose').attr('disabled', true);
-	$('#pvImportMsg').html('<div class="alert alert-info"><img src="/img/loading.gif"/> Please wait, this may take a while...</div>');
+	$('#pvImportMsg').html('<div class="alert alert-info mx-2"><img src="/img/loading.gif"/>Please wait, this may take a while...</div>');
 	$.ajax({
 		url: '/pages/pvonline.php', 
 		type: 'POST',

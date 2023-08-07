@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 8.2
+- Migrate pvonline to perfumersvault.com domain
 - Logo for docker added
 - Main docker repo changed to perfumersvault
 - Main website is been moved to www.perfumersvault.com

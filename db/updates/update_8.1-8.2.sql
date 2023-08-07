@@ -1,1 +1,2 @@
 ALTER TABLE `pv_meta` CHANGE `updated_at` `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
+UPDATE `settings` SET `pv_online_api_url` = 'https://online.perfumersvault.com/api.php' WHERE `settings`.`id` = 1; 
