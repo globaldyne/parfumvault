@@ -1,6 +1,6 @@
 Whats New in v8.2
 --------------------------
-- Remove unused pvonline functions
+- Add support to store formula order state
 - Improve pvonline stats fetch
 - Migrate pvonline to perfumersvault.com domain
 - Main website is been moved to www.perfumersvault.com

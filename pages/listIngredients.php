@@ -45,7 +45,7 @@ $defCatClass = $settings['defCatClass'];
                 <ul class="dropdown-menu dropdown-menu-right" role="menu">
                     <?php foreach (loadModules('suppliers') as $search){ ?>
                     <li>
-                        <a href="#" class="supplier dropdown-item" id="provider" data-provider="<?=$search['fileName']?>">
+                        <a href="#" class="supplier dropdown-item" data-provider="<?=$search['fileName']?>">
                             <span class="<?=$search['icon']?>"></span>
                             <span class="label-icon"><?=$search['name']?></span>
                         </a>
