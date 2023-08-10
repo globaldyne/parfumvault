@@ -79,7 +79,11 @@ if($_POST['action']=='install'){
 	if (getenv('PLATFROM') != 'CLOUD') {
 		// compatibility for hosted installation
 		$sql = file_get_contents(__ROOT__.'/db/pvault.sql');
-		mysqli_multi_query($link, $sql);		
+		$e = !mysqli_multi_query($link, $sql);	
+		while(mysqli_more_results($link))
+		{
+		   mysqli_next_result($link);
+		}		
 	}
 	else
 	{
