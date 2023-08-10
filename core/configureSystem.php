@@ -76,9 +76,16 @@ if($_POST['action']=='install'){
 		return;
 	}
 	
-	
-	$cmd = 'mysql -u'.$_POST['dbuser'].' -p'.$_POST['dbpass'].' -h'.$_POST['dbhost'].' '.$_POST['dbname'].' < '.__ROOT__.'/db/pvault.sql'; 
-	passthru($cmd,$e);
+	if (getenv('PLATFROM') != 'CLOUD') {
+		// compatibility for hosted installation
+		$sql = file_get_contents(__ROOT__.'/db/pvault.sql');
+		mysqli_multi_query($link, $sql);		
+	}
+	else
+	{
+		$cmd = 'mysql -u'.$_POST['dbuser'].' -p'.$_POST['dbpass'].' -h'.$_POST['dbhost'].' '.$_POST['dbname'].' < '.__ROOT__.'/db/pvault.sql'; 
+		passthru($cmd,$e);		
+	}
 	if(!$e){
 		mysqli_query($link,"INSERT INTO users (id,email,password,fullName) VALUES ('1','".strtolower($_POST['email'])."','PASSWORD(".$_POST['password'].")','".$_POST['fullName']."')");
 		
