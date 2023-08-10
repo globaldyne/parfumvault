@@ -97,14 +97,14 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
           <div id="errors"></div>
           <div id="msg"><?=$msg?></div>
           <div class="btn-group" id="menu">
-            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
+            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
             <div class="dropdown-menu dropdown-menu-left">
-               <li><a class="dropdown-item" href="#" id="markCompleteMenu"><i class="fa-solid fa-check mr2"></i>Mark formula as complete</a></li>
+               <li><a class="dropdown-item" href="#" id="markCompleteMenu"><i class="fa-solid fa-check mx-2"></i>Mark formula as complete</a></li>
                <div class="dropdown-divider"></div>
                <li class="dropdown-header">Export</li>
-               <li><a class="dropdown-item" href="javascript:export_as('csv')"><i class="fa-solid fa-file-csv mr2"></i>Export as CSV</a></li>
-               <li><a class="dropdown-item" href="javascript:export_as('pdf')"><i class="fa-solid fa-file-code mr2"></i>Export as PDF</a></li>
-               <li><a class="dropdown-item" href="#" id="print"><i class="fa-solid fa-print mr2"></i>Print Formula</a></li>
+               <li><a class="dropdown-item" href="javascript:export_as('csv')"><i class="fa-solid fa-file-csv mx-2"></i>Export as CSV</a></li>
+               <li><a class="dropdown-item" href="javascript:export_as('pdf')"><i class="fa-solid fa-file-code mx-2"></i>Export as PDF</a></li>
+               <li><a class="dropdown-item" href="#" id="print"><i class="fa-solid fa-print mx-2"></i>Print Formula</a></li>
             </div>
         </div>
         <p></p>
@@ -173,14 +173,14 @@ $(document).ready(function() {
 				}
 			},
 		},
-	   columns: [
+	  columns: [
             { data : 'ingredient', title: 'Ingredient', render: ingredient},
             { data : 'concentration', title: 'Purity %' },
             { data : 'quantity', title: 'Quantity (<?=$settings['mUnit']?>)', render: quantity },
             { data : 'inventory.stock', title: 'Availability', render: stock },
 			{ data : null, title: 'Actions', className: 'text-center noexport', render: actions },
 			],
-	   footerCallback : function( tfoot, data, start, end, display ) {    
+	  footerCallback : function( tfoot, data, start, end, display ) {    
 		  var response = this.api().ajax.json();
 		  if(response){
 			 var $td = $(tfoot).find('th');
@@ -193,7 +193,7 @@ $(document).ready(function() {
 			  $(row).find('td:eq(0),td:eq(1),td:eq(2),td:eq(3)').addClass('strikeout');
 		  }
 		  $(row).addClass('pv-zoom');
-	  },
+	 },
 	 order: [[ 0, 'asc' ]],
 	 lengthMenu: [[200, 500, 1000], [200, 500, 1000]],
 	 pageLength: 200,

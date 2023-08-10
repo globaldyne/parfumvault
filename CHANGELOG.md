@@ -1,6 +1,6 @@
 # CHANGELOG
 ### Version 8.2
-- Add support to store formula order state
+- Add support to store formulas and ingredients order state
 - Remove duplicate id for ingredients search provider
 - Remove unused pvonline functions
 - Improve pvonline stats fetch
