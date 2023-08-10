@@ -1,5 +1,7 @@
 # CHANGELOG
 ### Version 8.2
+- Added remote server error handling in marketplace actions
+- update_user_settings will take session name as a parameter
 - Add support to store formulas and ingredients order state
 - Remove duplicate id for ingredients search provider
 - Remove unused pvonline functions

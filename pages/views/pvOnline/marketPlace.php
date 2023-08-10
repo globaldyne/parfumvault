@@ -4,7 +4,7 @@
   <div>
   <div class="card shadow mb-4">
     <div class="card-header py-3">
-      <h2 class="m-0 font-weight-bold text-primary"><a href="javascript:reload_data()">Marketplace</a></h2>
+      <h2 class="m-0 font-weight-bold text-primary"><i id="reload_data" class="pv_point_gen">Marketplace</i></h2>
     </div>
     <div class="card-body">
       <div class="table-responsive">
@@ -213,7 +213,7 @@ function format ( d ) {
 
 	for (var key in d.labels) {
 		if (d.labels.hasOwnProperty(key)) {
-			details+='<span class="formula_details mx-2 label pv-label label-md label-default">'+d.labels[key].name+'</span>';
+			details+='<span class="formula_details mx-2 badge pv-label label-md bg-primary">'+d.labels[key].name+'</span>';
 		}
 	}        
 	
@@ -222,9 +222,9 @@ function format ( d ) {
 
 function cost(data, type, row){
 	if(row.cost == 0){
-		data = '<span class="label pv-label label-md label-success">FREE!</span>';
+		data = '<span class="badge pv-label label-md bg-success">FREE!</span>';
 	}else{
-		data = '<span class="label pv-label label-md label-info">' + row.currency + row.cost + '</span>';
+		data = '<span class="badge pv-label label-md bg-info">' + row.currency + row.cost + '</span>';
 	}
 	return data;
 }
@@ -239,9 +239,9 @@ function name(data, type, row){
 function status(data, type, row, meta){
 	
 	if ( arrayFIDS.includes(row.fid)) {	
-		data = '<span class="label pv-label label-md label-success"><strong>Downloaded</strong></span>';
+		data = '<span class="badge pv-label label-md bg-success"><strong>Downloaded</strong></span>';
 	}else{
-		data = '<span class="label pv-label label-md label-warning"><strong>NEW!!!</strong></span>';
+		data = '<span class="badge pv-label label-md bg-warning"><strong>NEW!!!</strong></span>';
 	}
 	
 	return data;
@@ -265,9 +265,9 @@ function actions(data, type, row, meta){
     return data;
 }
 
-function reload_data() {
+$('#reload_data').click(function reload_data() {
     $('#all-table-market').DataTable().ajax.reload(null, true);
-};
+});
 
 //Import Formula
 $('#all-table-market').on('click', '[id*=import-market-formula]', function () {
@@ -362,7 +362,10 @@ $('#contact-formula-author').on('click', '[id*=confirm-contact-author]', functio
 				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 			}
 			$('#cntMsg').html(msg);
-		}
+		},
+		error: function (request, status, error) {
+        	$('#cntMsg').html('<div class="alert alert-danger"><i class="bi bi-exclamation-circle mx-2"></i>Unable to handle request, server returned an error: '+request.status+'</div>');
+    	},
 	  });
 });
 
@@ -404,7 +407,10 @@ $('#report-market-formula').on('click', '[id*=confirm-formula-report]', function
 				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 			}
 			$('#reportMsg').html(msg);
-		}
+		},
+		error: function (request, status, error) {
+        	$('#reportMsg').html('<div class="alert alert-danger"><i class="bi bi-exclamation-circle mx-2"></i>Unable to handle request, server returned an error: '+request.status+'</div>');
+    	},
 	  });
 });
 

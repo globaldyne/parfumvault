@@ -171,7 +171,7 @@ $(document).ready(function() {
 
 	$('#reg_form').on('click', '[id*=registerSubmit]', function () {
 		$('#registerSubmit').prop('disabled', true);
-		$('#msg').html('<div class="alert alert-info mr2"><img src="/img/loading.gif"/>Please wait, configuring the system...<p><strong>Please do not close, refresh or navigate away from this page. You will be automatically redirected upon a succesfull installation.</strong></p></div>');
+		$('#msg').html('<div class="alert alert-info mx-2"><img src="/img/loading.gif"/>Please wait, configuring the system...<p><strong>Please do not close, refresh or navigate away from this page. You will be automatically redirected upon a succesfull installation.</strong></p></div>');
 		$("#reg_form").hide();
 		
 		$.ajax({ 
@@ -189,7 +189,7 @@ $(document).ready(function() {
 				    window.location='/'
 				}
 				if(data.error){
-					var msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mr2"></i>'+data.error+'</div>';
+					var msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>'+data.error+'</div>';
 				}
 				
 				$("#reg_form").show();
@@ -221,7 +221,7 @@ $(document).ready(function() {
 					window.location = data.auth.redirect ;
 					
 				}else if( data.auth.error){
-					msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mr2"></i>'+data.auth.msg+'</div>';
+					msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>'+data.auth.msg+'</div>';
 					$("#login_btn").prop("disabled", false);
 					$("span").remove();
 					$("#login_email").prop("disabled", false);
@@ -231,7 +231,7 @@ $(document).ready(function() {
 				$('#msg').html(msg);
 			},
 			error: function (request, status, error) {
-        		$('#msg').html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mr2"></i>Unable to handle request, server returned an error: '+request.status+'</div>');
+        		$('#msg').html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>Unable to handle request, server returned an error: '+request.status+'</div>');
 				$("span").remove();
 				$("#login_email").prop("disabled", false);
 				$("#login_pass").prop("disabled", false);
