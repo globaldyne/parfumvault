@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 8.3
+
 ### Version 8.2
 - Check if session exists before it starts it
 - Fix a bug creating invalid password when registering a new user
