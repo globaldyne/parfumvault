@@ -177,6 +177,24 @@ function initTable(tableId, src) {
 		createdRow: function(row, data, dataIndex){
             initRating(row);
         },
+		stateSave: true,
+		stateLoadCallback: function (settings, callback) {
+        	$.ajax( {
+            	url: '/core/update_user_settings.php?set=listFormulas&action=load',
+            	dataType: 'json',
+            	success: function (json) {
+                	callback( json );
+            	}
+        	});
+    	},
+    	stateSaveCallback: function (settings, data) {
+		   $.ajax({
+			 url: "/core/update_user_settings.php?set=listFormulas&action=save",
+			 data: data,
+			 dataType: "json",
+			 type: "POST"
+		  });
+		},
 	});
 }
 

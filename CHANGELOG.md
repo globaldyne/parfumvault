@@ -1,4 +1,26 @@
 # CHANGELOG
+### Version 8.2
+- Check if session exists before it starts it
+- Fix a bug creating invalid password when registering a new user
+- Remove unsed div nesting from first time creation form
+- Added a function to address first time installation in hosted enviroments
+- Added remote server error handling in marketplace actions
+- update_user_settings will take session name as a parameter
+- Add support to store formulas and ingredients order state
+- Remove duplicate id for ingredients search provider
+- Remove unused pvonline functions
+- Improve pvonline stats fetch
+- Migrate pvonline to perfumersvault.com domain
+- Logo for docker added
+- Main docker repo changed to perfumersvault
+- Main website is been moved to www.perfumersvault.com
+- Fix marketplace actions menu position
+- Fix precision calculation when comparing versions
+- Fix pv meta data timestamp update
+- Show server errors if upgrade fails
+- Moving DB upgrade script outside index.php
+- Removed unused array map from db upgrade
+
 ### Version 8.1
 - Move DB restore modal to the maintenance page
 - Logo position fix

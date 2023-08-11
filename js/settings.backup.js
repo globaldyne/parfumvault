@@ -85,6 +85,7 @@ $('#btnRestore').click(function() {
 				$(".progress").show();
 				$("#btnRestore").prop("disabled", true);
 				$('#btnRestore').prop('value', 'Please wait...');
+				$("#bk_res_info").prop('disabled',true);
                 return xhr;
             },
 			
@@ -102,6 +103,7 @@ $('#btnRestore').click(function() {
 			}
 			$('#btnRestore').prop('value', 'Restore');
 			$("#btnRestore").prop("disabled", false);
+			$("#bk_res_info").prop('disabled',false);
 			$('#DBRestMsg').html(msg);
 		}
 		

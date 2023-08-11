@@ -5,7 +5,9 @@ define('__ROOT__', dirname(__FILE__));
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/product.php');
 
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 if(isset($_SESSION['parfumvault'])){
 	header('Location: /index.php');
 }
@@ -19,7 +21,7 @@ if(isset($_SESSION['parfumvault'])){
 
   <meta charset="utf-8">
   <meta name="description" content="<?php echo $product.' - '.$ver;?>">
-  <meta name="author" content="JBPARFUM">
+  <meta name="author" content="perfumersvault">
   <title><?php echo $product;?> - Login</title>
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
@@ -120,7 +122,7 @@ if(isset($_SESSION['parfumvault'])){
             <?php } ?>		 		 
                   <hr>
                   <div class="copyright text-center my-auto">
-				  <label class="small">Version: <?php echo $ver; ?> | <a href="https://www.jbparfum.com/" class="link-dark" target="_blank"><?php echo $product; ?></a></label>
+				  <label class="small">Version: <?php echo $ver; ?> | <a href="https://www.perfumersvault.com/" class="link-dark" target="_blank"><?php echo $product; ?></a></label>
                   </div>
                 </div>
               </div>
@@ -171,7 +173,7 @@ $(document).ready(function() {
 
 	$('#reg_form').on('click', '[id*=registerSubmit]', function () {
 		$('#registerSubmit').prop('disabled', true);
-		$('#msg').html('<div class="alert alert-info mr2"><img src="/img/loading.gif"/>Please wait, configuring the system...<p><strong>Please do not close, refresh or navigate away from this page. You will be automatically redirected upon a succesfull installation.</strong></p></div>');
+		$('#msg').html('<div class="alert alert-info mx-2"><img src="/img/loading.gif"/>Please wait, configuring the system...<p><strong>Please do not close, refresh or navigate away from this page. You will be automatically redirected upon a succesfull installation.</strong></p></div>');
 		$("#reg_form").hide();
 		
 		$.ajax({ 
@@ -189,7 +191,7 @@ $(document).ready(function() {
 				    window.location='/'
 				}
 				if(data.error){
-					var msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mr2"></i>'+data.error+'</div>';
+					var msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>'+data.error+'</div>';
 				}
 				
 				$("#reg_form").show();
@@ -221,7 +223,7 @@ $(document).ready(function() {
 					window.location = data.auth.redirect ;
 					
 				}else if( data.auth.error){
-					msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mr2"></i>'+data.auth.msg+'</div>';
+					msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>'+data.auth.msg+'</div>';
 					$("#login_btn").prop("disabled", false);
 					$("span").remove();
 					$("#login_email").prop("disabled", false);
@@ -231,7 +233,7 @@ $(document).ready(function() {
 				$('#msg').html(msg);
 			},
 			error: function (request, status, error) {
-        		$('#msg').html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mr2"></i>Unable to handle request, server returned an error: '+request.status+'</div>');
+        		$('#msg').html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>Unable to handle request, server returned an error: '+request.status+'</div>');
 				$("span").remove();
 				$("#login_email").prop("disabled", false);
 				$("#login_pass").prop("disabled", false);

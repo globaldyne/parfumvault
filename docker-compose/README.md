@@ -18,7 +18,7 @@ services:
     #image: mysql:latest
     ...
   pvault:
-    image: globaldyne/jbvault
+    image: globaldyne/perfumersvault
     ports:
       - 8000:8000
     restart: always
@@ -47,7 +47,7 @@ Check containers are running and the port mapping:
 ```
 $ docker ps
 CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                 NAMES
-0205aa69ce88   globaldyne/jbvault            "entrypoint.sh"          40 seconds ago   Up 36 seconds   0.0.0.0:8000->8000/tcp   docker-compose-pvault-1
+0205aa69ce88   globaldyne/perfumersvault            "entrypoint.sh"          40 seconds ago   Up 36 seconds   0.0.0.0:8000->8000/tcp   docker-compose-pvault-1
 bad8eb6f5273   mariadb:10.5   "docker-entrypoint.s…"   40 seconds ago   Up 36 seconds   3306/tcp                 docker-compose-pvdb-1
 ```
 

@@ -22,9 +22,9 @@ if($_GET['do'] == 'db_update'){
 		return;
     }
 
-	foreach ( array_map(fn($n) => $n/100, range($c_ver*100, $n_ver*100,  0.1*100)) as $i) {
+	foreach ( range(round($c_ver*100), round($n_ver*100),  0.1*100) as $i ) {
 		$c_ver = mysqli_fetch_array(mysqli_query($conn, "SELECT schema_ver FROM pv_meta"));
-		$u_ver = number_format($i,1);
+		$u_ver = number_format($i/100,1);
 		$sql = __ROOT__.'/db/updates/update_'.$c_ver['schema_ver'].'-'.$u_ver.'.sql';
 	
 		if(file_exists($sql) == TRUE){	
