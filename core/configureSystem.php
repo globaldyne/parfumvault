@@ -96,7 +96,9 @@ $allowed_ext = "pdf, doc, docx, xls, csv, xlsx, png, jpg, jpeg, gif";
 $max_filesize = "4194304"; //in bytes
 ?>
 ';
-	session_start();
+	if (session_status() === PHP_SESSION_NONE) {
+    	session_start();
+	}
 	$_SESSION['parfumvault'] = true;
 	$_SESSION['userID'] = mysqli_insert_id($link);
 	

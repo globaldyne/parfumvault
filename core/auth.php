@@ -19,7 +19,10 @@ if($_POST['action'] == 'login'){
 	$row = mysqli_fetch_assoc(mysqli_query($conn,"SELECT id FROM users WHERE email='".$email."' AND password=PASSWORD('".$password."')"));
 
 	if($row['id']){
-		session_start();
+		if (session_status() === PHP_SESSION_NONE) {
+    		session_start();
+		}
+		
 		$_SESSION['parfumvault'] = true;
 		$_SESSION['userID'] = $row['id'];
 		if($_POST['do']){

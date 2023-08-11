@@ -5,7 +5,9 @@ define('__ROOT__', dirname(__FILE__));
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/product.php');
 
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 if(isset($_SESSION['parfumvault'])){
 	header('Location: /index.php');
 }
