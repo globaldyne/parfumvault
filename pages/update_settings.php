@@ -70,13 +70,15 @@ if($_POST['update_user_profile']){
 	$fullName = mysqli_real_escape_string($conn, $_POST['user_fname']);
 	$email = mysqli_real_escape_string($conn, $_POST['user_email']);
 	
-	if($password = mysqli_real_escape_string($conn, $_POST['user_pass'])){
+	$password = password_hash($password, PASSWORD_DEFAULT);
+
+	if($password){
 		if(strlen($password) < '5'){
 			$response["error"] = "Password must be at least 5 characters long";
 			echo json_encode($response);
 			return;
 		}else{
-			$p = ",password=PASSWORD('$password')";
+			$p = ",password='$password'";
 		}
 	}
 	
