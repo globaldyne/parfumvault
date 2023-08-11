@@ -4,7 +4,7 @@
 <div class="card-body">
     <div class="text-right">
       <div class="btn-group">
-        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
+        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
             <div class="dropdown-menu dropdown-menu-right">
                 <li><a class="dropdown-item" href="#" id="genRev"><i class="fa-solid fa-plus mx-2"></i>Create revision</a><li>
             </div>
@@ -73,7 +73,7 @@ function actions(data, type, row){
 		return '<strong>Current revision</strong>';
 	}
 	data = '<div class="dropdown">' +
-			'<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+			'<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
 				'<ul class="dropdown-menu dropdown-menu-right">';
 	data += '<li><a href="#" id="cmpRev" data-id="'+row.fid+'" data-revision="'+row.revision+'" class="dropdown-item" title="Compare with the current revision" rel="tip"><i class="fas fa-greater-than-equal mx-2"></i>Compare</a></li>';		
 	data += '<li><a href="#" id="restore" class="dropdown-item" data-id="'+row.fid+'" data-revision="'+row.revision+'"><i class="fas fa-history mx-2"></i>Restore</a></li>';
@@ -115,11 +115,11 @@ $('#genRev').click(function() {
 	dataType: 'json',
 	success: function (data) {
 		if ( data.success ) {
-			var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+			var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 			reload_rev_data();
 			//reload_formula_data();
 		} else {
-			var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + data.error + '</strong></div>';
+			var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + data.error + '</strong></div>';
 		}
 		$('#msg_rev').html(msg);
 	}
@@ -154,11 +154,11 @@ $('#tdRevisions').on('click', '[id*=restore]', function () {
 					dataType: 'json',
 					success: function (data) {
 						if ( data.success ) {
-							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 							reload_formula_data();
 							reload_rev_data();
 						} else {
-							var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + data.error + '</strong></div>';
+							var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + data.error + '</strong></div>';
 						}
 						$('#msg_rev').html(msg);
 					}
@@ -204,10 +204,10 @@ $('#tdRevisions').on('click', '[id*=dDel]', function () {
 					dataType: 'json',
 					success: function (data) {
 						if ( data.success ) {
-							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 							reload_rev_data();
 						} else {
-							var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + data.error + '</strong></div>';
+							var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + data.error + '</strong></div>';
 						}
 						$('#msg_rev').html(msg);
 					}

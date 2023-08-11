@@ -77,7 +77,7 @@ if($form[0]['ingredient']){
         </ul>
                      
         <div class="tab-content">
-          <div class="tab-pane fade active" id="main_formula">
+          <div class="tab-pane active" id="main_formula">
 
           <div class="card-body">
           <div id="msgInfo"></div>

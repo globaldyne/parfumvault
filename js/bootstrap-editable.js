@@ -1,7 +1,7 @@
 /*! X-editable - v1.5.3 
 * In-place editing with Twitter Bootstrap, jQuery UI or pure jQuery
 * http://github.com/vitalets/x-editable
-* Copyright (c) 2019 Vitaliy Potapov; Licensed MIT */
+* Copyright (c) 2018 Vitaliy Potapov; Licensed MIT */
 /**
 Form with single input element, two buttons and two states: normal/loading.
 Applied as jQuery method to DIV tag (not to form tag!). This is because form can be in loading state when spinner shown.
@@ -82,10 +82,8 @@ Editableform is linked with one of input types, e.g. 'text', 'select' etc.
             this.initInput();
             
             //append input to form
-            this.$form.find('div.editable-input').append(this.input.$tpl);  
-			//append custom input (pv 7.4)
-            this.$form.find('div.editable-input-pv').append(this.input.$pvtpl);            
-
+            this.$form.find('div.editable-input').append(this.input.$tpl);            
+            
             //append form to container
             this.$div.append(this.$form);
             
@@ -322,7 +320,6 @@ Editableform is linked with one of input types, e.g. 'text', 'select' etc.
                 params = {
                     name: this.options.name || '',
                     value: submitValue,
-					//pvExtra: this.options.pvExtra || '',
                     pk: pk 
                 };
 
@@ -621,7 +618,6 @@ Editableform is linked with one of input types, e.g. 'text', 'select' etc.
     $.fn.editableform.template = '<form class="form-inline editableform">'+
     '<div class="control-group">' + 
     '<div><div class="editable-input"></div><div class="editable-buttons"></div></div>'+
-	'<div><div class="editable-input-pv"></div></div>'+
     '<div class="editable-error-block"></div>' + 
     '</div>' + 
     '</form>';
@@ -667,8 +663,7 @@ Editableform is linked with one of input types, e.g. 'text', 'select' etc.
         * see http://stackoverflow.com/questions/499126/jquery-set-cursor-position-in-text-area
         */        
         setCursorPosition: function(elem, pos) {
-            // see: https://github.com/vitalets/x-editable/issues/939
-            if (elem.setSelectionRange && /text|search|password|tel|url/i.test(elem.type)) {
+            if (elem.setSelectionRange) {
                 try { elem.setSelectionRange(pos, pos); } catch (e) {}
             } else if (elem.createTextRange) {
                 var range = elem.createTextRange();
@@ -977,7 +972,7 @@ Applied as jQuery method.
                     //for some reason FF 20 generates extra event (click) in select2 widget with e.target = document
                     //we need to filter it via construction below. See https://github.com/vitalets/x-editable/issues/199
                     //Possibly related to http://stackoverflow.com/questions/10119793/why-does-firefox-react-differently-from-webkit-and-ie-to-click-event-on-selec
-                     if($target.is(document) || $target.is(document.body)) {
+                    if($target.is(document)) {
                         return;
                     }
                     
@@ -1034,12 +1029,13 @@ Applied as jQuery method.
             }
             //second, try `containerName`
             container = this.$element.data(this.containerName);
+            
             return container;
         },
 
         /* call native method of underlying container, e.g. this.$element.popover('method') */ 
         call: function() {
-            this.$element[this.containerName].apply(this.$element, arguments); 
+            this.$element[this.containerName].apply(this.$element, arguments);
         },        
         
         initContainer: function(){
@@ -1114,7 +1110,7 @@ Applied as jQuery method.
             //if form already exist - delete previous data 
             if(this.$form) {
                 //todo: destroy prev data!
-                //this.$form.destroy();
+                this.$form.remove();
             }
 
             this.$form = $('<div>');
@@ -1882,10 +1878,8 @@ Makes editable any HTML element on the page. Applied as jQuery method.
             }
             
             //set new value
-            if(this.options.pvnoresp) {
-            	this.setValue(params.newValue, false, params.response);
-			}
-			
+            this.setValue(params.newValue, false, params.response);
+            
             /**        
             Fired when new value was submitted. You can use <code>$(this).data('editable')</code> to access to editable instance
             
@@ -2326,17 +2320,7 @@ Makes editable any HTML element on the page. Applied as jQuery method.
         @since 1.4.5        
         @default #FFFF80 
         **/
-        highlight: '#FFFF80',
-		
-		/**
-        Disables data update in div (added in PV 2.1.2)
-        
-        @property pvnoresp
-        @type boolean
-        @since 1.4.5        
-        @default true 
-        **/
-		pvnoresp: true,
+        highlight: '#FFFF80'
     };
     
 }(window.jQuery));
@@ -2371,8 +2355,7 @@ To create your own input you can inherit from this class.
        this method called before render to init $tpl that is inserted in DOM
        */
        prerender: function() {
-           this.$tpl = $(this.options.tpl); //whole tpl as jquery object  
-		   this.$pvtpl = $(this.options.pvtpl); //whole pvtpl as jquery object (PV 7.4)
+           this.$tpl = $(this.options.tpl); //whole tpl as jquery object    
            this.$input = this.$tpl;         //control itself, can be changed in render method
            this.$clear = null;              //clear button
            this.error = null;               //error message, if input cannot be rendered           
@@ -2506,7 +2489,6 @@ To create your own input you can inherit from this class.
        setClass: function() {          
            if(this.options.inputclass) {
                this.$input.addClass(this.options.inputclass); 
-
            } 
        },
 
@@ -2531,16 +2513,6 @@ To create your own input you can inherit from this class.
         @default ''
         **/   
         tpl: '',
-		
-		 /**
-        Additional HTML template to support pv needs (Added on PV: v7.4).
-
-        @property pvtpl 
-        @type string
-        @default ''
-        **/
-		pvtpl: '',
-		
         /**
         CSS class automatically applied to input
         
@@ -3219,10 +3191,6 @@ $(function(){
                             $el.append(fillItems($('<optgroup>', attr), data[i].children)); 
                         } else {
                             attr.value = data[i].value;
-							//ColorKey
-							if(data[i].ck) {
-								attr.style = data[i].ck;
-							}
                             if(data[i].disabled) {
                                 attr.disabled = true;
                             }
@@ -3675,8 +3643,7 @@ You need initially put both `data-value` and element's text youself:
     <a href="#" data-type="select2" data-value="1">Text1</a>
     
     
-@class 
-
+@class select2
 @extends abstractinput
 @since 1.4.1
 @final
@@ -3952,9 +3919,9 @@ $(function(){
             return source;
         },
         
-        // activate: function() {
-        //     this.$input.select2('open');
-        // },
+        activate: function() {
+            this.$input.select2('open');
+        },
         
         destroy: function() {
             if(this.$input) {
@@ -3971,7 +3938,7 @@ $(function(){
         @property tpl 
         @default <input type="hidden">
         **/
-        tpl:'<select></select>',
+        tpl:'<input type="hidden">',
         /**
         Configuration of select2. [Full list of options](http://ivaynberg.github.com/select2).
 
@@ -4753,9 +4720,8 @@ Editableform based on Twitter Bootstrap 3
         initInput: function() {  
             pInitInput.apply(this);
 
-            //for bs3 set default class `input-sm` to standard inputs
             var emptyInputClass = this.input.options.inputclass === null || this.input.options.inputclass === false;
-            var defaultClass = 'input-sm';
+            var defaultClass = 'form-control-sm';
             
             //bs3 add `form-control` class to standard inputs
             var stdtypes = 'text,select,textarea,password,email,url,tel,number,range,time,typeaheadjs'.split(','); 
@@ -4767,7 +4733,7 @@ Editableform based on Twitter Bootstrap 3
                 }
             }             
         
-            //apply bs3 size class also to buttons (to fit size of control)
+            //apply size class also to buttons (to fit size of control)
             var $btn = this.$form.find('.editable-buttons');
             var classes = emptyInputClass ? [defaultClass] : this.input.options.inputclass.split(' ');
             for(var i=0; i<classes.length; i++) {
@@ -4787,20 +4753,20 @@ Editableform based on Twitter Bootstrap 3
     //buttons
     $.fn.editableform.buttons = 
       '<button type="submit" class="btn btn-primary btn-sm editable-submit">'+
-        '<i class="fa-solid fa-check"></i>'+
+        '<i class="fa fa-check" aria-hidden="true"></i>'+
       '</button>'+
       '<button type="button" class="btn btn-default btn-sm editable-cancel">'+
-        '<i class="fa-solid fa-rectangle-xmark"></i>'+
+        '<i class="fa fa-times" aria-hidden="true"></i>'+
       '</button>';         
     
     //error classes
     $.fn.editableform.errorGroupClass = 'has-error';
     $.fn.editableform.errorBlockClass = null;  
     //engine
-    $.fn.editableform.engine = 'bs3';  
+    $.fn.editableform.engine = 'bs4';  
 }(window.jQuery));
 /**
-* Editable Popover3 (for Bootstrap 3) 
+* Editable Popover for Bootstrap 5 based on Popper.js
 * ---------------------
 * requires bootstrap-popover.js
 */
@@ -4811,9 +4777,9 @@ Editableform based on Twitter Bootstrap 3
     $.extend($.fn.editableContainer.Popup.prototype, {
         containerName: 'popover',
         containerDataName: 'bs.popover',
-        innerCss: '.popover-content',
-        defaults: $.fn.popover.Constructor.DEFAULTS,
-
+        innerCss: '.popover-body',
+        defaults: bootstrap.Popover.Default,
+        
         initContainer: function(){
             $.extend(this.containerOptions, {
                 trigger: 'manual',
@@ -4825,205 +4791,54 @@ Editableform based on Twitter Bootstrap 3
             //as template property is used in inputs, hide it from popover
             var t;
             if(this.$element.data('template')) {
-               t = this.$element.data('template');
-               this.$element.removeData('template');  
-            } 
-            
+                t = this.$element.data('template');
+                this.$element.removeData('template');
+            }
+
             this.call(this.containerOptions);
             
             if(t) {
-               //restore data('template')
-               this.$element.data('template', t); 
+                //restore data('template')
+                this.$element.data('template', t);
             }
-        }, 
+        },
         
         /* show */
         innerShow: function () {
-            this.call('show');                
-        },  
+            this.call('show');
+        },
         
         /* hide */
         innerHide: function () {
-            this.call('hide');       
-        }, 
+            this.call('hide');
+        },
         
         /* destroy */
         innerDestroy: function() {
-            this.call('destroy');
-        },                               
+            this.call('dispose');
+        },
         
         setContainerOption: function(key, value) {
-            this.container().options[key] = value; 
-        },               
-
-        /**
-        * move popover to new position. This function mainly copied from bootstrap-popover.
-        */
-        /*jshint laxcomma: true, eqeqeq: false*/
-        setPosition: function () { 
-
-            (function() {
-            /*    
-                var $tip = this.tip()
-                , inside
-                , pos
-                , actualWidth
-                , actualHeight
-                , placement
-                , tp
-                , tpt
-                , tpb
-                , tpl
-                , tpr;
-
-                placement = typeof this.options.placement === 'function' ?
-                this.options.placement.call(this, $tip[0], this.$element[0]) :
-                this.options.placement;
-
-                inside = /in/.test(placement);
-               
-                $tip
-              //  .detach()
-              //vitalets: remove any placement class because otherwise they dont influence on re-positioning of visible popover
-                .removeClass('top right bottom left')
-                .css({ top: 0, left: 0, display: 'block' });
-              //  .insertAfter(this.$element);
-               
-                pos = this.getPosition(inside);
-
-                actualWidth = $tip[0].offsetWidth;
-                actualHeight = $tip[0].offsetHeight;
-
-                placement = inside ? placement.split(' ')[1] : placement;
-
-                tpb = {top: pos.top + pos.height, left: pos.left + pos.width / 2 - actualWidth / 2};
-                tpt = {top: pos.top - actualHeight, left: pos.left + pos.width / 2 - actualWidth / 2};
-                tpl = {top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left - actualWidth};
-                tpr = {top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left + pos.width};
-
-                switch (placement) {
-                    case 'bottom':
-                        if ((tpb.top + actualHeight) > ($(window).scrollTop() + $(window).height())) {
-                            if (tpt.top > $(window).scrollTop()) {
-                                placement = 'top';
-                            } else if ((tpr.left + actualWidth) < ($(window).scrollLeft() + $(window).width())) {
-                                placement = 'right';
-                            } else if (tpl.left > $(window).scrollLeft()) {
-                                placement = 'left';
-                            } else {
-                                placement = 'right';
-                            }
-                        }
-                        break;
-                    case 'top':
-                        if (tpt.top < $(window).scrollTop()) {
-                            if ((tpb.top + actualHeight) < ($(window).scrollTop() + $(window).height())) {
-                                placement = 'bottom';
-                            } else if ((tpr.left + actualWidth) < ($(window).scrollLeft() + $(window).width())) {
-                                placement = 'right';
-                            } else if (tpl.left > $(window).scrollLeft()) {
-                                placement = 'left';
-                            } else {
-                                placement = 'right';
-                            }
-                        }
-                        break;
-                    case 'left':
-                        if (tpl.left < $(window).scrollLeft()) {
-                            if ((tpr.left + actualWidth) < ($(window).scrollLeft() + $(window).width())) {
-                                placement = 'right';
-                            } else if (tpt.top > $(window).scrollTop()) {
-                                placement = 'top';
-                            } else if (tpt.top > $(window).scrollTop()) {
-                                placement = 'bottom';
-                            } else {
-                                placement = 'right';
-                            }
-                        }
-                        break;
-                    case 'right':
-                        if ((tpr.left + actualWidth) > ($(window).scrollLeft() + $(window).width())) {
-                            if (tpl.left > $(window).scrollLeft()) {
-                                placement = 'left';
-                            } else if (tpt.top > $(window).scrollTop()) {
-                                placement = 'top';
-                            } else if (tpt.top > $(window).scrollTop()) {
-                                placement = 'bottom';
-                            }
-                        }
-                        break;
-                }
-
-                switch (placement) {
-                    case 'bottom':
-                        tp = tpb;
-                        break;
-                    case 'top':
-                        tp = tpt;
-                        break;
-                    case 'left':
-                        tp = tpl;
-                        break;
-                    case 'right':
-                        tp = tpr;
-                        break;
-                }
-
-                $tip
-                .offset(tp)
-                .addClass(placement)
-                .addClass('in');
-           */
-                     
-           
-            var $tip = this.tip();
-            
-            var placement = typeof this.options.placement == 'function' ?
-                this.options.placement.call(this, $tip[0], this.$element[0]) :
-                this.options.placement;            
-
-            var autoToken = /\s?auto?\s?/i;
-            var autoPlace = autoToken.test(placement);
-            if (autoPlace) {
-                placement = placement.replace(autoToken, '') || 'top';
-            }
-            
-            
-            var pos = this.getPosition();
-            var actualWidth = $tip[0].offsetWidth;
-            var actualHeight = $tip[0].offsetHeight;
-
-            if (autoPlace) {
-                var $parent = this.$element.parent();
-
-                var orgPlacement = placement;
-                var docScroll    = document.documentElement.scrollTop || document.body.scrollTop;
-                var parentWidth  = this.options.container == 'body' ? window.innerWidth  : $parent.outerWidth();
-                var parentHeight = this.options.container == 'body' ? window.innerHeight : $parent.outerHeight();
-                var parentLeft   = this.options.container == 'body' ? 0 : $parent.offset().left;
-
-                placement = placement == 'bottom' && pos.top   + pos.height  + actualHeight - docScroll > parentHeight  ? 'top'    :
-                            placement == 'top'    && pos.top   - docScroll   - actualHeight < 0                         ? 'bottom' :
-                            placement == 'right'  && pos.right + actualWidth > parentWidth                              ? 'left'   :
-                            placement == 'left'   && pos.left  - actualWidth < parentLeft                               ? 'right'  :
-                            placement;
-
-                $tip
-                  .removeClass(orgPlacement)
-                  .addClass(placement);
+            this.container().options[key] = value;
+        },
+        
+        setPosition: function () {
+            (function() {}).call(this.container());
+        },
+        
+        call: function() {
+            if ( ! $(this.$element).data(this.containerDataName)) {
+                $(this.$element).data(this.containerDataName, bootstrap[this.containerName.replace(this.containerName[0], this.containerName[0].toUpperCase())].getOrCreateInstance(this.$element, this.containerOptions));
             }
 
-
-            var calculatedOffset = this.getCalculatedOffset(placement, pos, actualWidth, actualHeight);
-
-            this.applyPlacement(calculatedOffset, placement);            
-                     
-                
-            }).call(this.container());
-          /*jshint laxcomma: false, eqeqeq: true*/  
-        }            
+            return this.$element[this.containerName].apply(this.$element, arguments); 
+        }, 
+        
+        tip: function() {
+            return this.container() ? $(this.container().tip) : null;
+        }
     });
-
+    
 }(window.jQuery));
 
 /* =========================================================
@@ -6215,9 +6030,9 @@ Editableform based on Twitter Bootstrap 3
 		},
 		headTemplate: '<thead>'+
 							'<tr>'+
-								'<th class="prev"><i class="fas fa-arrow-left"/></th>'+
+								'<th class="prev"><i class="icon-arrow-left"/></th>'+
 								'<th colspan="5" class="datepicker-switch"></th>'+
-								'<th class="next"><i class="fas fa-arrow-right"/></th>'+
+								'<th class="next"><i class="icon-arrow-right"/></th>'+
 							'</tr>'+
 						'</thead>',
 		contTemplate: '<tbody><tr><td colspan="7"></td></tr></tbody>',

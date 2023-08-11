@@ -1,5 +1,6 @@
 # CHANGELOG
-### Version 8.2
+### Version 10.0
+- PV is now using BS5 
 - Rewrite and redesign General tab in ingredient management
 - Move Gerneral tab to its own file
 - Deprecate function sanChar()

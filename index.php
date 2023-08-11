@@ -48,13 +48,14 @@ if($pv_meta['app_ver'] < trim(file_get_contents(__ROOT__.'/VERSION.md'))){
   <link href="/css/bootstrap-editable.css" rel="stylesheet">
   <link href="/css/datatables.min.css" rel="stylesheet">
   
-  <link href="/tests/bs5/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/css/bootstrap.min.css" rel="stylesheet">
   
   <link href="/css/jquery-ui.css" rel="stylesheet">
   <link href="/css/magnific-popup.css" rel="stylesheet" />
   
   <link href="/css/vault.css" rel="stylesheet">
-  
+  <script src="/js/bootstrap.bundle.min.js"></script>
+
   <script src="/js/jquery/jquery.min.js"></script>
   <script src="/js/tableHTMLExport.js"></script>
   <script src="/js/jspdf.min.js"></script>
@@ -63,10 +64,9 @@ if($pv_meta['app_ver'] < trim(file_get_contents(__ROOT__.'/VERSION.md'))){
   <script src="/js/magnific-popup.js"></script>
   <script src="/js/jquery-ui.js"></script>
   
-  	<script src="/tests/bs5/js/bootstrap.bundle.min.js"></script>
 
   <script src="/js/bootstrap-select.js"></script>
-  <script src="/tests/x-editable/bs5/js/bootstrap-editable.js"></script>
+  <script src="/js/bootstrap-editable.js"></script>
   <script src="/js/dataTables.responsive.min.js"></script>
   <script src="/js/bootbox.min.js"></script>
   
@@ -275,9 +275,7 @@ function chkUpdate() {
         <div id="content-wrapper" class="d-flex flex-column">
 			<?php require_once(__ROOT__.'/pages/top.php'); ?>
         <div class="container-fluid">
-          <div>
           <div class="card shadow mb-4">
-           
             <div id="list_formulas">
             	<div class="loader-center">
                 	<div class="loader"></div>
@@ -288,6 +286,7 @@ function chkUpdate() {
           </div>
         </div>
 	   </div>
+       
 		<?php
 		}elseif($_GET['do'] == 'genFinishedProduct'){
 			require_once(__ROOT__.'/pages/genFinishedProduct.php');		

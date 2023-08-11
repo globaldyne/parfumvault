@@ -14,9 +14,9 @@ $id = mysqli_real_escape_string($conn, $_POST["id"]);
 <div class="card-body">
     <div class="text-right">
       <div class="btn-group">
-        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
+        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
             <div class="dropdown-menu dropdown-menu-right">
-                <li><a class="dropdown-item" href="#" data-toggle="modal" data-backdrop="static" data-target="#addAttachment"><i class="fa-solid fa-plus mr2"></i>Add new</a></li>
+                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addAttachment"><i class="fa-solid fa-plus mr2"></i>Add new</a></li>
             </div>
       </div>                    
     </div>
@@ -175,18 +175,18 @@ $('#addAttachment').on('click', '[id*=doc_upload]', function () {
 					$("#doc_upload").prop("disabled", false);
         			$("#doc_upload").prop('value', 'Upload');
 					reload_doc_data();
-					var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + response.success + '</div>';
+					var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + response.success + '</div>';
 							
 				} else {
 					$("#doc_upload").prop("disabled", false);
         			$("#doc_upload").prop('value', 'Upload');
-					var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
+					var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
 				}
 				$('#doc_inf').html(msg);
               },
            });
         }else{
-			$("#doc_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a file to upload!</div>');
+			$("#doc_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a file to upload!</div>');
 			$("#doc_upload").prop("disabled", false);
    			$("#doc_upload").prop('value', 'Upload');
         }
@@ -200,7 +200,7 @@ function reload_doc_data() {
 
 
 <!-- ADD DOCUMENT-->
-<div class="modal fade" id="addAttachment" tabindex="-1" role="dialog" aria-labelledby="addAttachment" aria-hidden="true">
+<div class="modal fade" id="addAttachment" data-bs-backdrop="static"  tabindex="-1" role="dialog" aria-labelledby="addAttachment" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -223,7 +223,7 @@ function reload_doc_data() {
             <div class="dropdown-divider"></div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         <input type="submit" name="button" class="btn btn-primary" id="doc_upload" value="Upload">
       </div>
     </div>

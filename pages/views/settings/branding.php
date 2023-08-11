@@ -113,14 +113,14 @@ $("#brandLogo_upload").click(function(){
 				$('#brandLogo_pic').html('<img class="img-profile-avatar" src="'+response.success.pic+'">');
 
 			 }else{
-				$("#brandMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+response.error+'</div>');
+				$("#brandMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+response.error+'</div>');
 				$("#brandLogo_upload").prop("disabled", false);
 				$("#brandLogo_upload").prop('value', 'Upload');
 			 }
 		  },
 	   });
     }else{
-		$("#brandMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a file to upload!</div>');
+		$("#brandMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a file to upload!</div>');
 		$("#brandLogo_upload").prop("disabled", false);
 		$("#brandLogo_upload").prop('value', 'Upload');
 		}

@@ -11,15 +11,7 @@ $doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM docu
 ?>
 
 
-<style>
 
-.container {
-  max-width: 100%;
-  width: 100%;
-
-}
-
-</style>
 <div class="container">
 
 	<div class="row">
