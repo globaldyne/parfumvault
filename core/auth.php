@@ -16,9 +16,18 @@ if($_POST['action'] == 'login'){
 	$email = mysqli_real_escape_string($conn,strtolower($_POST['email']));
 	$password = mysqli_real_escape_string($conn,$_POST['password']);
 	
-	$row = mysqli_fetch_assoc(mysqli_query($conn,"SELECT id FROM users WHERE email='".$email."' AND password=PASSWORD('".$password."')"));
+	$row = mysqli_fetch_assoc(mysqli_query($conn,"SELECT id,password FROM users WHERE email='".$email."'"));
+	print_r($row);
 
 	if($row['id']){
+		if (!password_verify($password,$row['password']) )
+		{
+			echo $password;
+			$response['auth']['error'] = true;
+			$response['auth']['msg'] = 'Email or password error';
+			echo json_encode($response);
+			return;
+		}
 		session_start();
 		$_SESSION['parfumvault'] = true;
 		$_SESSION['userID'] = $row['id'];
