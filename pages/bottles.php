@@ -19,9 +19,9 @@ while ($suppliers = mysqli_fetch_array($sup)){
                  <tr class="noBorder noexport">
                      <div class="text-right">
                       <div class="btn-group">
-                          <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
+                          <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
                           <div class="dropdown-menu dropdown-menu-right">
-            				<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#addBottle"><i class="fa-solid fa-plus mx-2"></i>Add new</a></li>
+            				<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addBottle"><i class="fa-solid fa-plus mx-2"></i>Add new</a></li>
                             <li><a class="dropdown-item" id="exportCSV" href="#"><i class="fa-solid fa-file-export mx-2"></i>Export to CSV</a></li>
                           </div>
                         </div>        
@@ -48,12 +48,12 @@ while ($suppliers = mysqli_fetch_array($sup)){
     </div>
 
 <!-- ADD BOTTLE MODAL-->
-<div class="modal fade" id="addBottle" tabindex="-1" role="dialog" aria-labelledby="addBottle" aria-hidden="true">
+<div class="modal fade" id="addBottle" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="addBottle" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Add Bottle</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -112,7 +112,7 @@ while ($suppliers = mysqli_fetch_array($sup)){
         <div class="dropdown-divider"></div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         <input type="submit" name="button" class="btn btn-primary" id="bottle_add" value="Add">
       </div>
     </div>
@@ -120,12 +120,12 @@ while ($suppliers = mysqli_fetch_array($sup)){
 </div>
 
 <!--EDIT BOTTLE MODAL-->            
-<div class="modal fade" id="editBottle" tabindex="-1" role="dialog" aria-labelledby="editBottleLabel" aria-hidden="true">
+<div class="modal fade" id="editBottle" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="editBottleLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title mgmIngHeader mgmIngHeader-with-separator" id="editBottleLabel">Edit bottle</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -235,9 +235,9 @@ function name(data, type, row){
 
 function actions(data, type, row){	
 		data = '<div class="dropdown">' +
-        '<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+        '<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
             '<ul class="dropdown-menu dropdown-menu-right">';
-		data += '<li><a href="#" class="dropdown-item" data-toggle="modal" data-backdrop="static" data-target="#editBottle" rel="tip" title="Edit '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-edit mx-2"></i>Edit</a></li>';
+		data += '<li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editBottle" rel="tip" title="Edit '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-edit mx-2"></i>Edit</a></li>';
 		data += '<li><a href="'+ row.supplier_link +'" class="dropdown-item" target="_blank" rel="tip" title="Open '+ row.supplier +' page"><i class="fas fa-shopping-cart mx-2"></i>Go to supplier</a></li>';
 		data += '<div class="dropdown-divider"></div>';
 		data += '<li><a class="dropdown-item" href="#" id="btlDel" style="color: #c9302c;" rel="tip" title="Delete '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-trash mx-2"></i>Delete</a></li>';
@@ -274,10 +274,10 @@ $('#tdDataBottles').on('click', '[id*=btlDel]', function () {
 					dataType: 'json',
 					success: function (data) {
 						if(data.success){
-							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
+							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
 							reload_data();
 						}else if(data.error){
-							var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
+							var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
 						}
 						$('#innermsg').html(msg);
 					}
@@ -331,19 +331,19 @@ $('#bottle_add').on('click', function () {
 			  dataType: 'json',
               success: function(response){
                  if(response.success){
-                    $("#bottle_inf").html('<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+response.success+'</div>');
+                    $("#bottle_inf").html('<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+response.success+'</div>');
 					$("#bottle_add").prop("disabled", false);
         			$("#bottle_add").prop("value", "Add");
 					reload_data();
                  }else{
-                    $("#bottle_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+response.error+'</div>');
+                    $("#bottle_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+response.error+'</div>');
 					$("#bottle_add").prop("disabled", false);
         			$("#bottle_add").prop("value", 'Add');
                  }
               },
            });
         }else{
-			$("#bottle_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a image to upload!</div>');
+			$("#bottle_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a image to upload!</div>');
 			$("#bottle_add").prop("disabled", false);
    			$("#bottle_add").prop("value", "Add");
         }

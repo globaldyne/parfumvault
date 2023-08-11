@@ -2,36 +2,19 @@
 Ingredient management
 */
 
-function search() { 
-	$("#odor").val('Loading...');
-	
-	if ($('#cas').val()) {
-		var	ingName = $('#cas').val();
-	}else if($('#name').val()) {
-		var	ingName = $('#name').val();
-	}else{
-		var	ingName = myIngName
-	}
-	
+function fetch_generalData(){
 	$.ajax({ 
-		url: 'searchTGSC.php', 
-		type: 'POST',
+		url: '/pages/views/ingredients/mgmGeneral.php', 
+		type: 'GET',
 		data: {
-			name: ingName
+			id: btoa(myIngName)
 		},
-		dataType: 'json',
+		dataType: 'html',
 		success: function (data) {
-			if(data.success){
-				tgsc = '<input name="odor" id="odor" type="text" class="form-control" value="' + data.success + '"/>';
-			}else if(data.error){
-				tgsc = '<input name="odor" id="odor" type="text" class="form-control" placeholder="' + data.error + '"/>';
-			}
-			$('#TGSC').html(tgsc);
-		}
+			$('#fetch_generalData').html(data);
+		},
 	});
 };
-
-
 
 function fetch_whereUsed(){
 	$.ajax({ 
@@ -45,7 +28,7 @@ function fetch_whereUsed(){
 			$('#fetch_whereUsed').html(data);
 		},
 	});
-}
+};
 
 function fetch_usageData(){
 	$.ajax({ 
@@ -59,7 +42,7 @@ function fetch_usageData(){
 			$('#fetch_usageData').html(data);
 		},
 	});
-}
+};
 
 
 function fetch_sups(){
@@ -74,7 +57,7 @@ function fetch_sups(){
 			$('#fetch_suppliers').html(data);
 		},
 	});
-}
+};
 	
 function fetch_techs(){
 	$.ajax({ 
@@ -88,7 +71,7 @@ function fetch_techs(){
 			$('#fetch_tech_data').html(data);
 		},
 	});
-}
+};
 
 function fetch_docs(){
 	$.ajax({ 
@@ -102,7 +85,7 @@ function fetch_docs(){
 			$('#fetch_documents').html(data);
 		},
 	});
-}
+};
 
 
 function fetch_impact(){
@@ -117,7 +100,7 @@ function fetch_impact(){
 			$('#fetch_impact').html(data);
 		},
 	});
-}
+};
 
 function fetch_cmps(){
 	$.ajax({ 
@@ -132,7 +115,7 @@ function fetch_cmps(){
 			$('#fetch_composition').html(data);
 		},
 	});
-}
+};
 
 function fetch_safety(){
 	$.ajax({ 
@@ -146,7 +129,7 @@ function fetch_safety(){
 			$('#fetch_safety').html(data);
 		},
 	});
-}
+};
 
 function fetch_privacy(){
 	$.ajax({ 
@@ -160,7 +143,7 @@ function fetch_privacy(){
 			$('#fetch_privacy').html(data);
 		},
 	});
-}
+};
 
 function fetch_syn(){
 	$.ajax({ 
@@ -175,7 +158,7 @@ function fetch_syn(){
 			$('#fetch_synonyms').html(data);
 		},
 	});
-}
+};
 
 function fetch_reps(){
 	$.ajax({ 
@@ -191,7 +174,7 @@ function fetch_reps(){
 			$('#fetch_replacements').html(data);
 		},
 	});
-}
+};
 
 //Clone
 $('#cloneIng').on('click', '[id*=cloneME]', function () {
@@ -286,14 +269,14 @@ if (typeof myCAS !== 'undefined' && myPCH == '1') {
 			}
 		});
 	}
-}
+};
 
 if (typeof myIngID !== 'undefined') {
 	function reload_overview() {
 		$('#ingOverview').html('<img src="/img/loading.gif"/>');
 	
 		$.ajax({ 
-			url: 'ingOverview.php', 
+			url: '/pages/views/ingredients/ingOverview.php', 
 			type: 'GET',
 			data: {
 				id: myIngID
@@ -305,4 +288,4 @@ if (typeof myIngID !== 'undefined') {
 		});
 	};
 	reload_overview();
-}
+};

@@ -1,5 +1,6 @@
 Whats New in v8.2
 --------------------------
+- Rewrite and redesign General tab in ingredient management
 - Add support to store formulas and ingredients order state
 - Improve pvonline stats fetch
 - Migrate pvonline to perfumersvault.com domain

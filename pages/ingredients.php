@@ -43,7 +43,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
     </div>
 
 <!--ADV SEARCH-->
-<div class="modal fade" id="adv_search" tabindex="-1" role="dialog" aria-labelledby="adv_search" aria-hidden="true">
+<div class="modal fade" id="adv_search" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="adv_search" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -103,7 +103,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
 		</table>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         <input type="submit" name="button" class="btn btn-primary" id="btnAdvSearch" value="Search">
       </div>
       </form>
@@ -114,12 +114,12 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
 
 
 <!--IMPORT JSON MODAL-->
-<div class="modal fade" id="import_ingredients_json" tabindex="-1" role="dialog" aria-labelledby="import_ingredients_json" aria-hidden="true">
+<div class="modal fade" id="import_ingredients_json" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="import_ingredients_json" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Import ingredients from a JSON file</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -146,7 +146,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
           </div>
       	</div>
 	  		<div class="modal-footer">
-        		<input type="button" class="btn btn-secondary" data-dismiss="modal" id="btnCloseBK" value="Cancel">
+        		<input type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseBK" value="Cancel">
         		<input type="submit" name="btnRestore" class="btn btn-primary" id="btnRestoreIngredients" value="Import">
       		</div>
   		</div>  
@@ -154,12 +154,12 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
 </div>
 
 <!--CSV IMPORT-->
-<div class="modal fade" id="csv_import" tabindex="-1" role="dialog" aria-labelledby="csv_import" aria-hidden="true">
+<div class="modal fade" id="csv_import" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="csv_import" aria-hidden="true">
   <div class="modal-dialog pv-modal-xxl" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Import ingredients from CSV file</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -181,7 +181,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
         <div class="alert alert-info">Select and match the fields in you CSV file, if a column isn't applicable, set it to <strong>None</strong>. Any existing data in your database will not be replaced and or updated if exists in CSV.</div>
       </div>
       <div class="modal-footer">
-        <input type="button" class="btn btn-secondary" data-dismiss="modal" id="btnCloseCsv" value="Cancel">
+        <input type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseCsv" value="Cancel">
         <input type="submit" class="btn btn-primary" id="btnImportCSV" value="Import">
       </div>
     </div>
@@ -189,7 +189,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
 </div>  
 
 <!--PV ONLINE IMPORT-->
-<div class="modal fade" id="pv_online_import" tabindex="-1" role="dialog" aria-labelledby="pv_online_import" aria-hidden="true" data-backdrop="static">
+<div class="modal fade" id="pv_online_import" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="pv_online_import" aria-hidden="true" data-bs-backdrop="static">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -224,7 +224,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
 	  <?php require('privacy_note.php');?>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="importClose">Close</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="importClose">Close</button>
         <input type="submit" name="button" class="btn btn-primary" id="btnImport" value="Import">
       </div>
     </div>
@@ -290,13 +290,13 @@ $('#pv_online_import').on('click', '[id*=btnImport]', function () {
 		dataType: 'json',
 		success: function (data) {
 			if(data.error){
-				var rmsg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
+				var rmsg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
 				$('#btnImport').attr('disabled', false);
 			}else if(data.warning){
-				var rmsg = '<div class="alert alert-warning alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.warning+'</div>';
+				var rmsg = '<div class="alert alert-warning alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.warning+'</div>';
 				$('#btnImport').hide();
 			}else if(data.success){
-				var rmsg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
+				var rmsg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
 				$('#btnImport').hide();
 				list_ingredients();
 			}

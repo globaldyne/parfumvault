@@ -63,21 +63,21 @@ if($form[0]['ingredient']){
           
             </div>
         <!-- Nav tabs -->
-        <ul class="nav nav-tabs" role="tablist">
-          <li class="active"><a href="#main_formula" id="formula_tab" role="tab" data-toggle="tab"><i class="fa fa-bong mx-2"></i>Formula</a></li>
-    	  <li><a href="#impact" id="impact_tab" role="tab" data-toggle="tab"><i class="fa fa-magic mx-2"></i>Notes Impact</a></li>
-          <li><a href="#pyramid" id="pyramid_tab" role="tab" data-toggle="tab"><i class="fa fa-table mx-2"></i>Olfactory Pyramid</a></li>
-          <li><a href="#summary" id="summary_tab" role="tab" data-toggle="tab"><i class="fa fa-cubes mx-2"></i>Notes Summary</a></li>
-          <li><a href="#ingRep" id="reps_tab" role="tab" data-toggle="tab"><i class="fa fa-exchange-alt mx-2"></i>Replacements</a></li>
-          <li><a href="#attachments" id="attachments_tab" role="tab" data-toggle="tab"><i class="fa fa-paperclip mx-2"></i>Attachments</a></li>
-          <li><a href="#revisions" id="revisions_tab" role="tab" data-toggle="tab"><i class="fa fa-clock-rotate-left mx-2"></i>Revisions</a></li>
-          <li><a href="#timeline" id="timeline_tab" role="tab" data-toggle="tab"><i class="fa fa-timeline mx-2"></i>History</a></li>
+        <ul class="nav nav-tabs mb-3" role="tablist">
+          <li class="nav-item active" role="presentation"><a href="#main_formula" id="formula_tab" role="tab" data-bs-toggle="tab"><i class="fa fa-bong mx-2"></i>Formula</a></li>
+    	  <li class="nav-item" role="presentation"><a href="#impact" id="impact_tab" role="tab" data-bs-toggle="tab"><i class="fa fa-magic mx-2"></i>Notes Impact</a></li>
+          <li class="nav-item" role="presentation"><a href="#pyramid" id="pyramid_tab" role="tab" data-bs-toggle="tab"><i class="fa fa-table mx-2"></i>Olfactory Pyramid</a></li>
+          <li class="nav-item" role="presentation"><a href="#summary" id="summary_tab" role="tab" data-bs-toggle="tab"><i class="fa fa-cubes mx-2"></i>Notes Summary</a></li>
+          <li class="nav-item" role="presentation"><a href="#ingRep" id="reps_tab" role="tab" data-bs-toggle="tab"><i class="fa fa-exchange-alt mx-2"></i>Replacements</a></li>
+          <li class="nav-item" role="presentation"><a href="#attachments" id="attachments_tab" role="tab" data-bs-toggle="tab"><i class="fa fa-paperclip mx-2"></i>Attachments</a></li>
+          <li class="nav-item" role="presentation"><a href="#revisions" id="revisions_tab" role="tab" data-bs-toggle="tab"><i class="fa fa-clock-rotate-left mx-2"></i>Revisions</a></li>
+          <li class="nav-item" role="presentation"><a href="#timeline" id="timeline_tab" role="tab" data-bs-toggle="tab"><i class="fa fa-timeline mx-2"></i>History</a></li>
 
-          <li><a href="#formula_settings" id="formula_settings_tab" role="tab" data-toggle="tab"><i class="fa fa-cogs mx-2"></i>Settings</a></li>
+          <li class="nav-item" role="presentation"><a href="#formula_settings" id="formula_settings_tab" role="tab" data-bs-toggle="tab"><i class="fa fa-cogs mx-2"></i>Settings</a></li>
         </ul>
                      
         <div class="tab-content">
-          <div class="tab-pane fade active in tab-content" id="main_formula">
+          <div class="tab-pane fade active" id="main_formula">
 
           <div class="card-body">
           <div id="msgInfo"></div>
@@ -154,7 +154,7 @@ if($form[0]['ingredient']){
                 <div id="fetch_summary"><div class="loader"></div></div>
                 <?php if($legend){ ?>
                 <div id="share">
-                  <p><a href="#" data-toggle="modal" data-backdrop="static" data-target="#conf_view">Configure view</a></p>
+                  <p><a href="#" data-bs-toggle="modal" data-bs-target="#conf_view">Configure view</a></p>
                   <p>To include this page in your web site, copy this line and paste it into your html code:</p>
                 <p>
                 <pre>&lt;iframe src=&quot;<?=$_SERVER['REQUEST_SCHEME']?>://<?=$_SERVER['SERVER_NAME']?>/pages/viewSummary.php?id=<?=$fid?>&amp;embed=1&quot; title=&quot;<?=$f_name?>&quot;&gt;&lt;/iframe&gt;</pre></p>
@@ -238,10 +238,10 @@ $('#add_ing').on('click', '[id*=add-btn]', function () {
 		dataType: 'json',
 		success: function (data) {
 			if ( data.success ) {
-				msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+				msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 				reload_formula_data();
 			} else {
-				msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + data.error + '</strong></div>';
+				msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + data.error + '</strong></div>';
 			}
 			$('#msgInfo').html(msg);
 		}
@@ -270,7 +270,7 @@ function setProtected(status) {
 					$('#add_ing').show();
 				}
 			} else {
-				$('#msgInfo').html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + data.error + '</strong></div>');
+				$('#msgInfo').html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + data.error + '</strong></div>');
 			}
 		}
 	  });

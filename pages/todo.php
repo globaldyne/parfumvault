@@ -109,7 +109,7 @@ function progress(data, type, row){
 
 function name(data, type, row){
 	
-	data ='<div class="btn-group"><a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'+row.name+'</a><div class="dropdown-menu dropdown-menu-right">';
+	data ='<div class="btn-group"><a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'+row.name+'</a><div class="dropdown-menu dropdown-menu-right">';
 	
 	data+='<li><a class="dropdown-item" href="/pages/makeFormula.php?fid='+ row.fid +'" target="_blank"><i class="fa-solid fa-flask-vial mx-2"></i>Make formula</a></li>';
 
@@ -158,10 +158,10 @@ $('#tdDataScheduled').on('click', '[id*=pend_remove]', function () {
 					dataType: 'json',
 					success: function (data) {
 						if(data.success) {
-							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 								reload_data();
 							} else {
-								var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+								var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 				
 							}
 							$('#innermsg').html(msg);

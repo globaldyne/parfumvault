@@ -207,12 +207,12 @@ $('#formula').on('click', '[id*=rmIng]', function () {
 					dataType: 'json',
 					success: function (data) {
 						if(data.success){
-							msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+							msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 							$('#msgInfo').html(msg);
 							reload_formula_data();
 							bootbox.hideAll();
 						}else{
-							$('#err').html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>');
+							$('#err').html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>');
 						}
 						
 					}						
@@ -293,9 +293,9 @@ $('#formula').on('click', '[id*=exIng]', function () {
 			dataType: 'json',
 			success: function (data) {
 				if(data.success) {
-					var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+					var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 				}else{
-					var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';	
+					var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';	
 				}
 				$('#msgInfo').html(msg);
 				reload_formula_data();
@@ -329,9 +329,9 @@ $('#isMade').click(function() {
 					dataType: 'json',
 					success: function (data) {
 						if(data.success) {
-							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 						}else{
-							var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';	
+							var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';	
 						}
 						$('#msgInfo').html(msg);
 						reload_formula_data();
@@ -405,7 +405,7 @@ $('#print').click(() => {
     </div>
     <div class="text-right">
       <div class="btn-group" id="menu">
-        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
+        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
         <div class="dropdown-menu dropdown-menu-right">
            <li class="dropdown-header">Export</li> 
            <li><a class="dropdown-item export_as" href="#" data-format="csv"><i class="fa-solid fa-file-csv mx-2"></i>Export as CSV</a></li>
@@ -416,12 +416,12 @@ $('#print').click(() => {
            <li class="dropdown-header">Scale Formula</li> 
            <li><a class="dropdown-item manageQuantity" href="#" data-action="multiply"><i class="fa-solid fa-xmark mx-2"></i>Multiply x2</a></li>
            <li><a class="dropdown-item manageQuantity" href="#" data-action="divide"><i class="fa-solid fa-divide mx-2"></i>Divide x2</a></li>
-           <li><a class="dropdown-item" href="#" data-backdrop="static" data-toggle="modal" data-target="#amount_to_make"><i class="fa-solid fa-calculator mx-2"></i>Advanced</a></li>
+           <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#amount_to_make"><i class="fa-solid fa-calculator mx-2"></i>Advanced</a></li>
            <div class="dropdown-divider"></div>
-           <li><a class="dropdown-item" href="#" data-backdrop="static" data-toggle="modal" data-target="#create_accord"><i class="fa-solid fa-list-check mx-2"></i>Create accord</a></li>
-           <li><a class="dropdown-item" href="#" data-backdrop="static" data-toggle="modal" data-target="#conv_ingredient"><i class="fa-solid fa-list-check mx-2"></i>Create ingredient</a></li>
+           <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#create_accord"><i class="fa-solid fa-list-check mx-2"></i>Create accord</a></li>
+           <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#conv_ingredient"><i class="fa-solid fa-list-check mx-2"></i>Create ingredient</a></li>
            <div class="dropdown-divider"></div>
-           <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#schedule_to_make"><i class="fa-regular fa-calendar-plus mx-2"></i>Schedule to make</a></li>
+           <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#schedule_to_make"><i class="fa-regular fa-calendar-plus mx-2"></i>Schedule to make</a></li>
            <li><a class="dropdown-item" href="#" id="isMade"><i class="fa-solid fa-check mx-2"></i>Mark formula as made</a></li>
            <div class="dropdown-divider"></div>
            <li><a class="dropdown-item" href="#" id="cloneMe"><i class="fa-solid fa-copy mx-2"></i>Clone Formula</a></li>
@@ -466,12 +466,12 @@ $('#print').click(() => {
 </table>
 
 <!--Schedule Formula-->
-<div class="modal fade" id="schedule_to_make" tabindex="-1" role="dialog" aria-labelledby="schedule_to_make" aria-hidden="true">
+<div class="modal fade" id="schedule_to_make" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="schedule_to_make" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Schedule formula to make</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -480,7 +480,7 @@ $('#print').click(() => {
       <p>This will add the current formulation to scheduled formulas. Any changes in this formula will not be replicated to the scheduled version. If you make changes here, you have to remove it and re-add it for making.</p>
       <hr />
 	    <div class="modal-footer">
-	     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+	     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
   		 <input type="submit" name="button" class="btn btn-primary" id="addTODO" value="Schedule Formula">
 	   </div>
     </div>
@@ -489,7 +489,7 @@ $('#print').click(() => {
 </div>
 
 <!--Scale Formula-->
-<div class="modal fade" id="amount_to_make" tabindex="-1" role="dialog" aria-labelledby="amount_to_make" aria-hidden="true">
+<div class="modal fade" id="amount_to_make" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="amount_to_make" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -514,7 +514,7 @@ $('#print').click(() => {
 	    <p>&nbsp;</p>
 	    <p>*<a href="https://www.perfumersvault.com/knowledge-base/3-specific-gravity-sg/" target="_blank">Specific Gravity of Ethanol</a></p>
 	    <div class="modal-footer">
-	     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+	     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
   		 <input type="submit" name="button" class="btn btn-primary" id="amountToMake" value="Scale Formula">
 	   </div>
     </div>
@@ -523,7 +523,7 @@ $('#print').click(() => {
 </div>
 
 <!--Create accord-->
-<div class="modal fade" id="create_accord" tabindex="-1" role="dialog" aria-labelledby="create_accord" aria-hidden="true">
+<div class="modal fade" id="create_accord" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="create_accord" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -550,7 +550,7 @@ $('#print').click(() => {
 	    <hr />
 	    <div class="alert alert-info">This will create a new formula from the notes you choose. <br/>The current formula will stay intact.</div>
 	    <div class="modal-footer">
-	     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+	     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
   		 <input type="submit" name="button" class="btn btn-primary" id="createAccord" value="Create">
 	   </div>
     </div>
@@ -559,7 +559,7 @@ $('#print').click(() => {
 </div>
 
 <!--Convert to ingredient-->
-<div class="modal fade" id="conv_ingredient" tabindex="-1" role="dialog" aria-labelledby="conv_ingredient" aria-hidden="true">
+<div class="modal fade" id="conv_ingredient" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="conv_ingredient" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -576,7 +576,7 @@ $('#print').click(() => {
         <hr />
         <div class="alert alert-info">The original formula will not be affected.</div>
 	    <div class="modal-footer">
-	     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+	     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
   		 <input type="submit" name="button" class="btn btn-primary" id="conv2ing" value="Create">
 	   </div>
     </div>
@@ -762,7 +762,7 @@ function ingQuantity(data, type, row, meta){
 		<?php if($settings['editor'] == '1'){?>
 			data = '<a href="#" data-name="quantity" class="quantity" data-type="text" data-pk="' + row.formula_ingredient_id + '">' + data + '</a>';
 		<?php }else{?>
-			data = '<a href="#" data-name="quantity" data-toggle="modal" data-target="#manage-quantity" data-backdrop="static" class="open-quantity-dialog" data-type="text" data-ingid="' + row.formula_ingredient_id + '" data-value="' + row.quantity + '" data-ing="' + row.ingredient.name + '" data-mainingid="'+row.ingredient.id+'">' + row.quantity + '</a>';
+			data = '<a href="#" data-name="quantity" data-toggle="modal" data-bs-target="#manage-quantity" class="open-quantity-dialog" data-type="text" data-ingid="' + row.formula_ingredient_id + '" data-value="' + row.quantity + '" data-ing="' + row.ingredient.name + '" data-mainingid="'+row.ingredient.id+'">' + row.quantity + '</a>';
 		<?php } ?>
 	} 
 
@@ -806,7 +806,7 @@ function ingInv(data, type, row, meta){
 function ingActions(data, type, row, meta){
 
 	data = '<div class="dropdown">' +
-        '<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+        '<button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
             '<ul class="dropdown-menu dropdown-menu-right">';
 
 	data += '<li><a class="dropdown-item link-dark" href="'+ row.ingredient.pref_supplier_link +'" target="_blank" rel="tip" title="Open '+ row.ingredient.pref_supplier +' page"><i class="fas fa-shopping-cart mx-2"></i>Go to supplier</a></li>';
@@ -819,9 +819,9 @@ function ingActions(data, type, row, meta){
 	 	var ex = '<li><i class="dropdown-item pv_point_gen link-dark" rel="tip" id="exIng" title="Include '+ row.ingredient.name +'" data-name="'+ row.ingredient.name +'" data-status="0" data-id="'+ row.formula_ingredient_id +'"><i class="pv_point_gen fas fa-eye mx-2"></i>Include</i></li>';
 	}
 	
-	data += ex + '<li><i data-toggle="modal" data-target="#replaceIng" data-backdrop="static" class="dropdown-item pv_point_gen open-replace-dialog text-info" rel="tip" title="Replace '+ row.ingredient.name +'"  data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'" data-cas="'+row.ingredient.cas+'" data-desc="'+row.ingredient.desc+'"><i class="pv_pont_gen fas fa-exchange-alt text-info mx-2"></i>Replace ingredient</i></li>'
+	data += ex + '<li><i data-bs-toggle="modal" data-bs-target="#replaceIng" class="dropdown-item pv_point_gen open-replace-dialog text-info" rel="tip" title="Replace '+ row.ingredient.name +'"  data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'" data-cas="'+row.ingredient.cas+'" data-desc="'+row.ingredient.desc+'"><i class="pv_pont_gen fas fa-exchange-alt text-info mx-2"></i>Replace ingredient</i></li>'
 	
-	+ '<li><i data-toggle="modal" data-target="#mrgIng" data-backdrop="static" rel="tip" title="Merge '+ row.ingredient.name +'" class="dropdown-item pv_point_gen open-merge-dialog text-warning" data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'"><i class="pv_point_gen fas fa-object-group alert-warning mx-2"></i>Merge ingredients</i></li>'
+	+ '<li><i data-bs-toggle="modal" data-bs-target="#mrgIng" rel="tip" title="Merge '+ row.ingredient.name +'" class="dropdown-item pv_point_gen open-merge-dialog text-warning" data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'"><i class="pv_point_gen fas fa-object-group alert-warning mx-2"></i>Merge ingredients</i></li>'
 	
 	+'<div class="dropdown-divider"></div>'
 	+ '<li><i rel="tip" title="Remove '+ row.ingredient.name +'" class="dropdown-item text-danger pv_point_gen" id="rmIng" data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'" data-ingredient-id="'+row.ingredient.id+'"><i class="pv_point_gen fas fa-trash mx-2 text-danger"></i>Delete</i></li>';
@@ -837,7 +837,7 @@ function ingActions(data, type, row, meta){
 <script src="/js/mark/jquery.mark.min.js"></script>
 <script src="/js/mark/datatables.mark.js"></script>
 
-<div class="modal fade" id="manage-quantity" tabindex="-1" role="dialog" aria-labelledby="manage-quantity" aria-hidden="true">
+<div class="modal fade" id="manage-quantity" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="manage-quantity" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -866,14 +866,14 @@ function ingActions(data, type, row, meta){
 
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
         <input type="submit" name="button" class="btn btn-primary" id="quantityConfirm" value="Update">
       </div>
     </div>
   </div>
 </div>
 
-<div class="modal fade" id="mrgIng" tabindex="-1" role="dialog" aria-labelledby="mrgIng" aria-hidden="true">
+<div class="modal fade" id="mrgIng" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="mrgIng" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -890,14 +890,14 @@ function ingActions(data, type, row, meta){
         <div class="dropdown-divider"></div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
         <input type="submit" name="button" class="btn btn-primary" id="mergeConfirm" value="Merge ingredients">
       </div>
     </div>
   </div>
 </div>
 
-<div class="modal fade" id="replaceIng" tabindex="-1" role="dialog" aria-labelledby="replaceIng" aria-hidden="true">
+<div class="modal fade" id="replaceIng" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="replaceIng" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -929,7 +929,7 @@ function ingActions(data, type, row, meta){
         
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
         <input type="submit" name="button" class="btn btn-primary" id="replaceConfirm" value="Replace ingredient">
       </div>
     </div>

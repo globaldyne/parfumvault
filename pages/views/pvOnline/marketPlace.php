@@ -30,7 +30,7 @@
 </div>
 
 <!--Contact author modal-->
-<div class="modal fade" id="contact-formula-author" tabindex="-1" role="dialog" aria-labelledby="contact-formula-author" aria-hidden="true">
+<div class="modal fade" id="contact-formula-author" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="contact-formula-author" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -55,7 +55,7 @@
                 <textarea name="contactReason" id="contactReason" rows="3" class="form-control"></textarea>
             </div>
             <div class="modal-footer">
-             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
              <input type="submit" name="button" class="btn btn-primary" id="confirm-contact-author" value="Send message">
            </div>
       	</div>
@@ -65,7 +65,7 @@
 </div>
 
 <!--Report formula modal-->
-<div class="modal fade" id="report-market-formula" tabindex="-1" role="dialog" aria-labelledby="report-market-formula" aria-hidden="true">
+<div class="modal fade" id="report-market-formula" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="report-market-formula" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -90,7 +90,7 @@
                 <textarea name="reportReason" id="reportReason" rows="3" class="form-control"></textarea>
             </div>
             <div class="modal-footer">
-             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
              <input type="submit" name="button" class="btn btn-primary" id="confirm-formula-report" value="Report fomula">
            </div>
         </div>
@@ -248,19 +248,15 @@ function status(data, type, row, meta){
 }
 
 function actions(data, type, row, meta){
-		data = '<div class="dropdown">' +
-        '<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
-            '<ul class="dropdown-menu dropdown-menu-right">';
-		
-		data += '<li><i class="pv_point_gen pv_gen_li dropdown-item" id="import-market-formula" data-id="'+row.id+'" data-name="'+row.name+'" rel="tip" title="Import '+ row.name +' to my database" ><i class="fas fa-download mx-2"></i>Import Formula</i></li>';
-		
-		data += '<li><i class="pv_point_gen pv_gen_li dropdown-item open-contact-dialog" data-toggle="modal"  data-target="#contact-formula-author" data-backdrop="static" data-id="'+row.id+'" data-name="'+row.name+'" rel="tip" title="Contact '+ row.author +' regarding the formula"><i class="fas fa-id-card mx-2"></i>Contact the author</i></li>';
-		
-		data += '<div class="dropdown-divider"></div>';
-		
-		data += '<li><i class="pv_point_gen pv_gen_li dropdown-item open-report-dialog" data-toggle="modal"  data-target="#report-market-formula" data-backdrop="static" style="color: #c9302c;" rel="tip" title="Report '+ row.name +' to admins" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-bug mx-2"></i>Report formula</i></li>';
-		
-		data += '</ul></div>';
+	data = '<div class="dropdown">' +
+	'<button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+		'<ul class="dropdown-menu dropdown-menu-right">';
+	data += '<li><i class="pv_point_gen pv_gen_li dropdown-item" id="import-market-formula" data-id="'+row.id+'" data-name="'+row.name+'" rel="tip" title="Import '+ row.name +' to my database" ><i class="fas fa-download mx-2"></i>Import Formula</i></li>';
+	data += '<li><i class="pv_point_gen pv_gen_li dropdown-item open-contact-dialog" data-bs-toggle="modal"  data-bs-target="#contact-formula-author" data-id="'+row.id+'" data-name="'+row.name+'" rel="tip" title="Contact '+ row.author +' regarding the formula"><i class="fas fa-id-card mx-2"></i>Contact the author</i></li>';
+	data += '<div class="dropdown-divider"></div>';
+	data += '<li><i class="pv_point_gen pv_gen_li dropdown-item open-report-dialog link-danger" data-bs-toggle="modal" data-bs-target="#report-market-formula" rel="tip" title="Report '+ row.name +' to admins" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-bug mx-2"></i>Report formula</i></li>';
+	
+	data += '</ul></div>';
 	
     return data;
 }
@@ -314,7 +310,7 @@ $('#all-table-market').on('click', '[id*=import-market-formula]', function () {
            },
            cancel: {
                label : "Cancel",
-               className : "btn-default",
+               className : "btn-secondary",
                callback : function() {
                    return true;
                }
@@ -356,10 +352,10 @@ $('#contact-formula-author').on('click', '[id*=confirm-contact-author]', functio
 		dataType: 'json',
 		success: function (data) {
 			if (data.success) {
-				var msg = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="modal" aria-label="close">x</a>' + data.success + '</div>';
+				var msg = '<div class="alert alert-success"><a href="#" class="close" data-bs-dismiss="modal" aria-label="close">x</a>' + data.success + '</div>';
 				$('#contact-formula-author .modal-body-main').hide();
 			}else{
-				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 			}
 			$('#cntMsg').html(msg);
 		},
@@ -401,10 +397,10 @@ $('#report-market-formula').on('click', '[id*=confirm-formula-report]', function
 		dataType: 'json',
 		success: function (data) {
 			if (data.success) {
-				var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="modal" aria-label="close">x</a>' + data.success + '</div>';
+				var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="modal" aria-label="close">x</a>' + data.success + '</div>';
 				$('#report-market-formula .modal-body-main').hide();
 			}else{
-				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 			}
 			$('#reportMsg').html(msg);
 		},

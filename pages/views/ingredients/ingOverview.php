@@ -1,6 +1,6 @@
 <?php
 
-define('__ROOT__', dirname(dirname(__FILE__))); 
+define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__))))); 
 
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
@@ -28,7 +28,7 @@ if(empty($ingredient['category'])){
     max-height: 100px;
 }
 </style>
-<div class="sub-2-container sub-2-header">
+<div class="sub-2-container sub-2-header mb-4">
 	<div class="sub-2-container">
         <span class="coh-inline-element sub-2-inci">IUPAC</span> 
         <span class="coh-inline-element sub-2-fema"><div id="IUPAC"><?=$ingredient['INCI']?:"Not Available"?></div></span>  

@@ -15,11 +15,11 @@ $ingName = mysqli_real_escape_string($conn, $_POST["name"]);
 <div class="card-body">
  	<div class="text-right">
   		<div class="btn-group">
-   			<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
+   			<button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
     		<div class="dropdown-menu dropdown-menu-right">
-        		<li><a class="dropdown-item" href="#" data-toggle="modal" data-backdrop="static" data-target="#addSynonym"><i class="fa-solid fa-plus mr2"></i>Add new</a></li>
+        		<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-backdrop="static" data-bs-target="#addSynonym"><i class="fa-solid fa-plus mr2"></i>Add new</a></li>
                 <?php if(preg_match('/(Mixture|Blend)/i', $CAS) === 0){	?>
-                <li><a class="dropdown-item" href="#" data-toggle="modal" data-backdrop="static" data-target="#pubchem_import"><i class="fa-solid fa-file-import mr2"></i>Import from PubChem</a></li>
+                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-backdrop="static" data-bs-target="#pubchem_import"><i class="fa-solid fa-file-import mr2"></i>Import from PubChem</a></li>
 
                 <?php } ?>
     		</div>
@@ -177,12 +177,12 @@ $('#addSynonym').on('click', '[id*=synAdd]', function () {
 		dataType: 'json',
 		success: function (data) {
 			if (data.success) {
-	 	 		var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+	 	 		var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 				$("#synonym").val('');
 				$("#source").val('');
 				reload_syn_data();
 			}else{
-				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 			}
 			
 			$('#infSyn').html(msg);
@@ -214,7 +214,7 @@ function reload_syn_data() {
             <div class="dropdown-divider"></div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         <input type="submit" name="button" class="btn btn-primary" id="synAdd" value="Add">
       </div>
     </div>
@@ -238,7 +238,7 @@ function reload_syn_data() {
 	  	For more info regarding PubChem Rest API please refer to its documentation <a href="https://pubchemdocs.ncbi.nlm.nih.gov/about" target="_blank">here.</a> 
       </div>
       <div class="modal-footer" id="import">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         <input type="submit" name="button" class="btn btn-primary" id="importPubChem" value="Import">
       </div>
      </form>

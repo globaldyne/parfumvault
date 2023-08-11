@@ -1,5 +1,13 @@
 # CHANGELOG
 ### Version 8.2
+- Rewrite and redesign General tab in ingredient management
+- Move Gerneral tab to its own file
+- Deprecate function sanChar()
+- Fix tab missconfiguration for ingredient management
+- Make sure solvent isn't enabled if ingredient purity exceeds 100%
+- Deprecate TGSC search function
+- Bootstrap-select update to v1.14.0-beta3
+
 - Added remote server error handling in marketplace actions
 - update_user_settings will take session name as a parameter
 - Add support to store formulas and ingredients order state

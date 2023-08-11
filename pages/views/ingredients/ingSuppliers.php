@@ -48,9 +48,9 @@ if($ing['physical_state'] == 1){
 <div class="card-body">
   <div class="text-right">
     <div class="btn-group">
-    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
+    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
         <div class="dropdown-menu dropdown-menu-right">
-            <li><a class="dropdown-item" href="#" data-toggle="modal" data-backdrop="static" data-target="#addSupplier"><i class="fa-solid fa-plus mx-2"></i>Add new</a></li>
+            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-backdrop="static" data-bs-target="#addSupplier"><i class="fa-solid fa-plus mx-2"></i>Add new</a></li>
         </div>
     </div>                    
   </div>
@@ -143,7 +143,7 @@ $(document).ready(function() {
 		dataType: 'json',
 		success: function (data) {
 			if(data.success){
-				var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+				var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 				$("#supplier_batch").val('');
 				$("#supplier_link").val('');
 				$("#supplier_size").val('');
@@ -152,7 +152,7 @@ $(document).ready(function() {
 				$("#mUnit").val('');
 				reload_sup_data();
 			}else{
-				var msg ='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				var msg ='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 			}
 			$('#supplier_inf').html(msg);
 		}
@@ -206,16 +206,16 @@ function sStock(data, type, row){
 
 function status(data, type, row){
 	if(row.status == 0){
-		var data = '<span class="pv-label label label-default">Unkwnown</span>';
+		var data = '<span class="pv-label badge bg-default">Unkwnown</span>';
 	}
 	if(row.status == 1){
-		var data = '<span class="pv-label label label-success">Available</span>';
+		var data = '<span class="pv-label badge bg-success">Available</span>';
 	}
 	if(row.status == 2){
-		var data = '<span class="pv-label label label-warning">Limited Availability</span>';
+		var data = '<span class="pv-label badge bg-warning">Limited Availability</span>';
 	}
 	if(row.status == 3){
-		var data = '<span class="pv-label label label-danger">Discontinued</span>';
+		var data = '<span class="pv-label badge bg-danger">Discontinued</span>';
 	}
 	
 	return '<i class="status pv_point_gen" data-name="status" data-type="select" data-pk="'+row.id+'">'+data+'</i>';
@@ -227,19 +227,17 @@ function sUpdated(data, type, row){
 
 function sActions(data, type, row){
 	data = '<div class="dropdown">' +
-			'<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+			'<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
 				'<ul class="dropdown-menu dropdown-menu-right">';
 	
 	if(row.preferred == 0){
-		data += '<li><a href="#" id="prefSID" data-status="1" data-id="'+row.ingSupplierID+'"><i class="far fa-star pv_point_gen mx-2"></i>Set as preferred</a></li>';
+		data += '<li><a class="dropdown-item" href="#" id="prefSID" data-status="1" data-id="'+row.ingSupplierID+'"><i class="far fa-star pv_point_gen mx-2"></i>Set as preferred</a></li>';
 	}
 	
-	data += '<li><a href="#" id="getPrice" data-name="'+row.supplierName+'" data-id="'+encodeURIComponent(row.ingSupplierID)+'" data-link="'+row.supplierLink+'" data-size="'+row.size+'" data-toggle="tooltip" data-placement="top" title="Get the latest price from the supplier."><i class="fas fa-sync pv_point_gen_color mx-2"></i>Update price</a></li>';
-	
-	data += '<li><a href="'+row.supplierLink+'" target="_blank"><i class="fas fa-store mx-2"></i>Go to supplier</a></li>';
-	
-	data += '<li><a href="#" id="sDel" class="text-danger" data-id="'+row.id+'" data-name="'+row.supplierName+'"><i class="fas fa-trash alert-danger mx-2"></i>Delete supplier</a></li>'; 
-	
+	data += '<li><a class="dropdown-item" href="#" id="getPrice" data-name="'+row.supplierName+'" data-id="'+encodeURIComponent(row.ingSupplierID)+'" data-link="'+row.supplierLink+'" data-size="'+row.size+'" data-toggle="tooltip" data-placement="top" title="Get the latest price from the supplier."><i class="fas fa-sync pv_point_gen_color mx-2"></i>Update price</a></li>';
+	data += '<li><a class="dropdown-item" href="'+row.supplierLink+'" target="_blank"><i class="fas fa-store mx-2"></i>Go to supplier</a></li>';
+	data += '<div class="dropdown-divider"></div>';
+	data += '<li><a href="#" id="sDel" class="dropdown-item text-danger" data-id="'+row.id+'" data-name="'+row.supplierName+'"><i class="fas fa-trash alert-danger mx-2"></i>Delete supplier</a></li>'; 
 	data += '</ul></div>';
 	return data;
 	
@@ -427,9 +425,9 @@ $('#tdIngSup').on('click', '[id*=getPrice]', function () {
 			dataType: 'json',
 			success: function (data) {
 				if (data.success) {
-		 	 		var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+		 	 		var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 				}else{
-					var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+					var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 				}
 				$('#supMsg').html(msg);
 				reload_sup_data();
@@ -551,7 +549,7 @@ function reload_sup_data() {
             <div class="dropdown-divider"></div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         <input type="submit" name="button" class="btn btn-primary" id="sAdd" value="Add">
       </div>
     </div>

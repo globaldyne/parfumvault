@@ -48,7 +48,7 @@ if($pv_meta['app_ver'] < trim(file_get_contents(__ROOT__.'/VERSION.md'))){
   <link href="/css/bootstrap-editable.css" rel="stylesheet">
   <link href="/css/datatables.min.css" rel="stylesheet">
   
-  <link href="/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/tests/bs5/css/bootstrap.min.css" rel="stylesheet">
   
   <link href="/css/jquery-ui.css" rel="stylesheet">
   <link href="/css/magnific-popup.css" rel="stylesheet" />
@@ -63,10 +63,10 @@ if($pv_meta['app_ver'] < trim(file_get_contents(__ROOT__.'/VERSION.md'))){
   <script src="/js/magnific-popup.js"></script>
   <script src="/js/jquery-ui.js"></script>
   
-  <script src="/js/bootstrap.min.js"></script>
-  
+  	<script src="/tests/bs5/js/bootstrap.bundle.min.js"></script>
+
   <script src="/js/bootstrap-select.js"></script>
-  <script src="/js/bootstrap-editable.js"></script>
+  <script src="/tests/x-editable/bs5/js/bootstrap-editable.js"></script>
   <script src="/js/dataTables.responsive.min.js"></script>
   <script src="/js/bootbox.min.js"></script>
   
@@ -193,7 +193,7 @@ function chkUpdate() {
 		$aria_f = 'false'; 
 	  }
 	  ?> 
-        <a class="nav-link <?php echo $class_f; ?>" href="#" data-toggle="collapse" data-target="#collapseFormulas" aria-expanded="<?php echo $aria_f; ?>" aria-controls="collapseFormulas">
+        <a class="nav-link <?php echo $class_f; ?>" href="#" data-bs-toggle="collapse" data-bs-target="#collapseFormulas" aria-expanded="<?php echo $aria_f; ?>" aria-controls="collapseFormulas">
           <i class="fas fa-fw fa-flask"></i>
           <span>Formula Management</span>
         </a>
@@ -203,7 +203,7 @@ function chkUpdate() {
             <a class="collapse-item <?php if($_GET['do'] == 'listFormulas' | $_GET['do'] == 'Formula'){ echo 'active';}?>" href="?do=listFormulas">Formulas</a>
             <a class="collapse-item <?php if($_GET['do'] == 'compareFormulas'){ echo 'active';}?>" href="/?do=compareFormulas">Compare Formulas</a>
             <a class="collapse-item <?php if($_GET['do'] == 'genFinishedProduct'){ echo 'active';}?>" href="/?do=genFinishedProduct"> Finished Product</a>
-            <a class="collapse-item <?php if($_GET['do'] == 'sellFormula'){ echo 'active';}?>" href="?do=sellFormula">Sell Formula</a>
+            <a class="collapse-item <?php if($_GET['do'] == 'sellFormula'){ echo 'active';}?>" href="/?do=sellFormula">Sell Formula</a>
             <a class="collapse-item <?php if($_GET['do'] == 'todo'){ echo 'active';}?>" href="/?do=todo">Scheduled Formulas <span class="badge badge-danger badge-counter"><?php echo countPending(NULL, NULL, $conn);?></span></a>
           </div>
         </div>
@@ -221,7 +221,7 @@ function chkUpdate() {
 		$aria = 'false'; 
 	  }
 	  ?> 
-        <a class="nav-link <?php echo $class; ?>" href="#" data-toggle="collapse" data-target="#collapseInventoty" aria-expanded="<?php echo $aria; ?>" aria-controls="collapseInventoty">
+        <a class="nav-link <?php echo $class; ?>" href="#" data-bs-toggle="collapse" data-bs-target="#collapseInventoty" aria-expanded="<?php echo $aria; ?>" aria-controls="collapseInventoty">
           <i class="fas fa-fw fa-warehouse"></i>
           <span>Inventory</span>
         </a>
@@ -326,7 +326,7 @@ function chkUpdate() {
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="release_notes">Release Notes</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -334,7 +334,7 @@ function chkUpdate() {
 		Thanks for updating to version <strong><?php echo $ver;?></strong> 
 	    <p><pre><?php echo file_get_contents('releasenotes.md','r');?></pre></p>
 	    <div class="modal-footer">
-	     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+	     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 	   </div>
     </div>
   </div>

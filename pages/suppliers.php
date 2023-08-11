@@ -13,9 +13,9 @@
                 <tr class="noBorder noexport">
                  <div class="text-right">
                   <div class="btn-group">
-                      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
+                      <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
                       <div class="dropdown-menu dropdown-menu-right">
-                        <li><a class="dropdown-item" href="#" data-toggle="modal" data-backdrop="static" data-target="#addSupplier"><i class="fa-solid fa-plus mr2"></i>Add new</a></li>
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addSupplier"><i class="fa-solid fa-plus mr2"></i>Add new</a></li>
                         <li><a class="dropdown-item" id="csv" href="#"><i class="fa-solid fa-file-export mr2"></i>Export to CSV</a></li>
                       </div>
                     </div>        
@@ -110,9 +110,9 @@ function description(data, type, row){
 }
 function actions(data, type, row){
 	data = '<div class="dropdown">' +
-			'<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+			'<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
 				'<ul class="dropdown-menu dropdown-menu-right">';
-	data += '<li><a class="pv_point_gen dropdown-item" data-toggle="modal" id="edit_supplier" data-id="' + row.id + '" data-name="' + row.name + '" data-address="'+row.address+'" data-po="'+row.po+'" data-country="'+row.country+'" data-telephone="'+row.telephone+'" data-url="'+row.url+'" data-email="'+row.email+'"><i class="fas fa-edit mr2"></i>Edit</a></li>';
+	data += '<li><a class="pv_point_gen dropdown-item" data-bs-toggle="modal" id="edit_supplier" data-id="' + row.id + '" data-name="' + row.name + '" data-address="'+row.address+'" data-po="'+row.po+'" data-country="'+row.country+'" data-telephone="'+row.telephone+'" data-url="'+row.url+'" data-email="'+row.email+'"><i class="fas fa-edit mr2"></i>Edit</a></li>';
 	data += '<div class="dropdown-divider"></div>';
 	data += '<li><a class="dropdown-item pv_point_gen text-danger" id="dDel" data-name="'+ row.name +'" data-id='+ row.id +'><i class="fas fa-trash mr2"></i>Delete</a></li>';
 	data += '</ul></div>';
@@ -253,10 +253,10 @@ $('#tdIngSupData').on('click', '[id*=dDel]', function () {
 					dataType: 'json',
 					success: function (data) {
 						if(data.success){
-							msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+							msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 							reload_data();
 						}else if(data.error){
-							msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+							msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 						}
 						$('#supmsg').html(msg);
 					}
@@ -317,10 +317,10 @@ $('#btnAddSupplier').on('click', function () {
 				$("#url").val('');
 				$("#email").val('');
 				
-				msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+				msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 				reload_data();
 			}else if(data.error){
-				msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 			}
 				$('#inf').html(msg);
 			}
@@ -345,10 +345,10 @@ $('#btnEditSupplier').on('click', function () {
 		dataType: 'json',
 		success: function (data) {
 			if(data.success){			
-				msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+				msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 				reload_data();
 			}else if(data.error){
-				msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 			}
 				$('#editSup').html(msg);
 			}
@@ -395,7 +395,7 @@ function reload_data() {
 </script>
 
 <!-- Edit additional info -->
-<div class="modal fade" id="details" tabindex="-1" role="dialog" aria-labelledby="details" aria-hidden="true">
+<div class="modal fade" id="details" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="details" aria-hidden="true">
 <div class="modal-dialog modal-lg" role="document">
   <div class="modal-content">
     <div class="modal-header">
@@ -423,7 +423,7 @@ function reload_data() {
         </div>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
       <input type="submit" name="button" class="btn btn-primary" id="btnEditSupplier" value="Update">
     </div>
   </div>  
@@ -432,12 +432,12 @@ function reload_data() {
 
 
 <!-- ADD NEW-->
-<div class="modal fade" id="addSupplier" tabindex="-1" role="dialog" aria-labelledby="addSupplier" aria-hidden="true">
+<div class="modal fade" id="addSupplier" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="addSupplier" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="addSupplier">Add supplier</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -491,7 +491,7 @@ function reload_data() {
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 <input type="submit" name="button" class="btn btn-primary" id="btnAddSupplier" value="Add">
             </div>
         
