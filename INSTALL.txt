@@ -13,7 +13,7 @@ Open your web browser to you server's url and follow the instruction on the inst
 
 For more info please refer to:
 	
-	https://www.jbparfum.com/knowledge-base/
+	https://www.perfumersvault.com/knowledge-base/
 
 
 To Enable label printing support, additional software is required:

@@ -113,32 +113,7 @@ function list_ingredients(page,limit,filter){
 		});
 };
 
-function updateDB() {
-	$('#dbUpdMsg').html('<div class="alert alert-info"><img src="/img/loading.gif"/><strong> DB schema upgrade in progress. Please wait, this may take a while...</strong></div>');
-	$('#dbUpBtn').hide();
-	$('#dbBkBtn').hide();
-	$('#dbUpOk').hide();
-	$.ajax({ 
-		url: '/pages/operations.php', 
-		type: 'GET',
-		data: {
-			do: "db_update"
-			},
-		dataType: 'json',
-		success: function (data) {
-		if(data.success) {
-			var msg = '<div class="alert alert-success">' + data.success + '</div>';
-			$('#dbUpOk').show();
-		} else {
-			var msg = '<div class="alert alert-danger">' + data.error + '</div>';
-			$('#dbUpBtn').show();
-			$('#dbBkBtn').show();
-			$('#dbUpOk').hide();
-		}
-		$('#dbUpdMsg').html(msg);
-		}
-  	});
-};
+
 
 function updateSYS() {
 	$('#sysUpdMsg').html('<div class="alert alert-info"><img src="/img/loading.gif"/><strong> Core system upgrade in progress. Please wait, DO NOT close, refresh or navigate away from this page. The process may take a while...</strong></div>');
@@ -201,7 +176,7 @@ function chkUpdate() {
       <!-- Divider -->
       <hr class="sidebar-divider my-2">
       <li class="nav-item">
-        <a class="nav-link" href="?do=dashboard">
+        <a class="nav-link" href="/?do=dashboard">
           <i class="fas fa-fw fa-tachometer-alt"></i>
           <span>Dashboard</span></a>
       </li>
@@ -222,7 +197,8 @@ function chkUpdate() {
           <i class="fas fa-fw fa-flask"></i>
           <span>Formula Management</span>
         </a>
-        <div id="collapseFormulas" class="collapse <?php echo $expand_f;?>" aria-labelledby="headingFormulas" data-parent="#accordionSidebar">
+        
+        <div id="collapseFormulas" class="collapse <?php echo $expand_f;?>">
           <div class="bg-white py-2 collapse-inner rounded">
             <a class="collapse-item <?php if($_GET['do'] == 'listFormulas' | $_GET['do'] == 'Formula'){ echo 'active';}?>" href="?do=listFormulas">Formulas</a>
             <a class="collapse-item <?php if($_GET['do'] == 'compareFormulas'){ echo 'active';}?>" href="/?do=compareFormulas">Compare Formulas</a>
@@ -249,7 +225,7 @@ function chkUpdate() {
           <i class="fas fa-fw fa-warehouse"></i>
           <span>Inventory</span>
         </a>
-        <div id="collapseInventoty" class="collapse <?php echo $expand;?>" aria-labelledby="headingInventory" data-parent="#accordionSidebar">
+        <div id="collapseInventoty" class="collapse <?php echo $expand;?>">
           <div class="bg-white py-2 collapse-inner rounded">
             <a class="collapse-item <?php if($_GET['do'] == 'ingredients'){ echo 'active';}?>" href="/?do=ingredients">Ingredients</a>
             <a class="collapse-item <?php if($_GET['do'] == 'batches'){ echo 'active';}?>" href="/?do=batches">Batch history</a>

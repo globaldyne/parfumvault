@@ -77,7 +77,7 @@ $ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
                  <input type="file" name="backupFile" id="backupFile" class="form-control" />
               </div>
           </div>
-          <div class="col-md-12">
+          <div class="col-md-12" id="bk_res_info">
              <hr />
              <p><strong>IMPORTANT:</strong></p>
               <ul>

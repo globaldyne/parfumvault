@@ -4,7 +4,7 @@
   <div>
   <div class="card shadow mb-4">
     <div class="card-header py-3">
-      <h2 class="m-0 font-weight-bold text-primary"><a href="javascript:reload_data()">Marketplace</a></h2>
+      <h2 class="m-0 font-weight-bold text-primary"><i id="reload_data" class="pv_point_gen">Marketplace</i></h2>
     </div>
     <div class="card-body">
       <div class="table-responsive">
@@ -76,7 +76,7 @@
       <div class="modal-body-main">
             <input type="hidden" name="fid" id="fid" />
             <input type="hidden" name="fname" id="fname" />
-            <div class="alert alert-warning">If you believe that <strong><div id="fname" class="d-inline"></div></strong> formula violates our <a href="https://www.jbparfum.com/community_rules" target="_blank">community rules</a>, please use this form to report it explaining in detail what's wrong.<p>Once we receive the report and review it, will take actions, if any required and let the author know.</p><p><strong>Please don't use this form if you have queries or suggestions regarding the formula, use the <i>Contact Author</i> option instead.</strong></p></div>
+            <div class="alert alert-warning">If you believe that <strong><div id="fname" class="d-inline"></div></strong> formula violates our <a href="https://www.perfumersvault.com/community_rules" target="_blank">community rules</a>, please use this form to report it explaining in detail what's wrong.<p>Once we receive the report and review it, will take actions, if any required and let the author know.</p><p><strong>Please don't use this form if you have queries or suggestions regarding the formula, use the <i>Contact Author</i> option instead.</strong></p></div>
             <div class="form-group">
                 <label class="form-label">Full name:</label>
                 <input name="reporterName" id="reporterName" type="text" class="form-control">
@@ -213,7 +213,7 @@ function format ( d ) {
 
 	for (var key in d.labels) {
 		if (d.labels.hasOwnProperty(key)) {
-			details+='<span class="formula_details mr2 label pv-label label-md label-default">'+d.labels[key].name+'</span>';
+			details+='<span class="formula_details mx-2 badge pv-label label-md bg-primary">'+d.labels[key].name+'</span>';
 		}
 	}        
 	
@@ -222,9 +222,9 @@ function format ( d ) {
 
 function cost(data, type, row){
 	if(row.cost == 0){
-		data = '<span class="label pv-label label-md label-success">FREE!</span>';
+		data = '<span class="badge pv-label label-md bg-success">FREE!</span>';
 	}else{
-		data = '<span class="label pv-label label-md label-info">' + row.currency + row.cost + '</span>';
+		data = '<span class="badge pv-label label-md bg-info">' + row.currency + row.cost + '</span>';
 	}
 	return data;
 }
@@ -239,9 +239,9 @@ function name(data, type, row){
 function status(data, type, row, meta){
 	
 	if ( arrayFIDS.includes(row.fid)) {	
-		data = '<span class="label pv-label label-md label-success"><strong>Downloaded</strong></span>';
+		data = '<span class="badge pv-label label-md bg-success"><strong>Downloaded</strong></span>';
 	}else{
-		data = '<span class="label pv-label label-md label-warning"><strong>NEW!!!</strong></span>';
+		data = '<span class="badge pv-label label-md bg-warning"><strong>NEW!!!</strong></span>';
 	}
 	
 	return data;
@@ -252,26 +252,26 @@ function actions(data, type, row, meta){
         '<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
             '<ul class="dropdown-menu dropdown-menu-right">';
 		
-		data += '<li><i class="pv_point_gen pv_gen_li dropdown-item" id="import-market-formula" data-id="'+row.id+'" data-name="'+row.name+'" rel="tip" title="Import '+ row.name +' to my database" ><i class="fas fa-download mr2"></i>Import Formula</i></li>';
+		data += '<li><i class="pv_point_gen pv_gen_li dropdown-item" id="import-market-formula" data-id="'+row.id+'" data-name="'+row.name+'" rel="tip" title="Import '+ row.name +' to my database" ><i class="fas fa-download mx-2"></i>Import Formula</i></li>';
 		
-		data += '<li><i class="pv_point_gen pv_gen_li dropdown-item open-contact-dialog" data-toggle="modal"  data-target="#contact-formula-author" data-backdrop="static" data-id="'+row.id+'" data-name="'+row.name+'" rel="tip" title="Contact '+ row.author +' regarding the formula"><i class="fas fa-id-card mr2"></i>Contact the author</i></li>';
+		data += '<li><i class="pv_point_gen pv_gen_li dropdown-item open-contact-dialog" data-toggle="modal"  data-target="#contact-formula-author" data-backdrop="static" data-id="'+row.id+'" data-name="'+row.name+'" rel="tip" title="Contact '+ row.author +' regarding the formula"><i class="fas fa-id-card mx-2"></i>Contact the author</i></li>';
 		
 		data += '<div class="dropdown-divider"></div>';
 		
-		data += '<li><i class="pv_point_gen pv_gen_li dropdown-item open-report-dialog" data-toggle="modal"  data-target="#report-market-formula" data-backdrop="static" style="color: #c9302c;" rel="tip" title="Report '+ row.name +' to admins" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-bug mr2"></i>Report formula</i></li>';
+		data += '<li><i class="pv_point_gen pv_gen_li dropdown-item open-report-dialog" data-toggle="modal"  data-target="#report-market-formula" data-backdrop="static" style="color: #c9302c;" rel="tip" title="Report '+ row.name +' to admins" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-bug mx-2"></i>Report formula</i></li>';
 		
 		data += '</ul></div>';
 	
     return data;
 }
 
-function reload_data() {
+$('#reload_data').click(function reload_data() {
     $('#all-table-market').DataTable().ajax.reload(null, true);
-};
+});
 
 //Import Formula
 $('#all-table-market').on('click', '[id*=import-market-formula]', function () {
-	$("#impMsg").html('<div class="alert alert-info"><img src="/img/loading.gif" class="mr2"/>Please wait...</div>');
+	$("#impMsg").html('<div class="alert alert-info"><img src="/img/loading.gif" class="mx-2"/>Please wait...</div>');
 	
 	var frm = {};
 	frm.ID = $(this).attr('data-id');
@@ -340,7 +340,7 @@ $("#all-table-market").on("click", ".open-contact-dialog", function () {
 });
 
 $('#contact-formula-author').on('click', '[id*=confirm-contact-author]', function () {
-	$("#cntMsg").html('<div class="alert alert-info"><img src="/img/loading.gif" class="mr2"/>Please wait...</div>');
+	$("#cntMsg").html('<div class="alert alert-info"><img src="/img/loading.gif" class="mx-2"/>Please wait...</div>');
 	$.ajax({ 
 		url: '/pages/pvonline.php', 
 		type: 'POST',
@@ -362,7 +362,10 @@ $('#contact-formula-author').on('click', '[id*=confirm-contact-author]', functio
 				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 			}
 			$('#cntMsg').html(msg);
-		}
+		},
+		error: function (request, status, error) {
+        	$('#cntMsg').html('<div class="alert alert-danger"><i class="bi bi-exclamation-circle mx-2"></i>Unable to handle request, server returned an error: '+request.status+'</div>');
+    	},
 	  });
 });
 
@@ -382,7 +385,7 @@ $("#all-table-market").on("click", ".open-report-dialog", function () {
 });
 
 $('#report-market-formula').on('click', '[id*=confirm-formula-report]', function () {
-	$("#reportMsg").html('<div class="alert alert-info"><img src="/img/loading.gif" class="mr2"/>Please wait...</div>');
+	$("#reportMsg").html('<div class="alert alert-info"><img src="/img/loading.gif" class="mx-2"/>Please wait...</div>');
 	$.ajax({ 
 		url: '/pages/pvonline.php', 
 		type: 'POST',
@@ -404,9 +407,20 @@ $('#report-market-formula').on('click', '[id*=confirm-formula-report]', function
 				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 			}
 			$('#reportMsg').html(msg);
-		}
+		},
+		error: function (request, status, error) {
+        	$('#reportMsg').html('<div class="alert alert-danger"><i class="bi bi-exclamation-circle mx-2"></i>Unable to handle request, server returned an error: '+request.status+'</div>');
+    	},
 	  });
 });
 
+
+$('.table').on('show.bs.dropdown', function () {
+	 $('.table-responsive').css( "overflow", "inherit" );
+});
+
+$('.table').on('hide.bs.dropdown', function () {
+	 $('.table-responsive').css( "overflow", "auto" );
+});
 </script>
 

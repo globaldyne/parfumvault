@@ -13,7 +13,10 @@ if ( (! empty($_SERVER['REQUEST_SCHEME']) && $_SERVER['REQUEST_SCHEME'] == 'http
     $server_request_scheme = 'http';
 }
 
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 if(!isset($_SESSION['parfumvault'])){
 	if($_GET['do']){
 		$redirect = '?do='.$_GET['do'];

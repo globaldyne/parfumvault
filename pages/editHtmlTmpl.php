@@ -54,7 +54,7 @@ $tmpl = mysqli_fetch_array(mysqli_query($conn,"SELECT name,content FROM template
             </div>
         </div>
       <div class="dropdown-divider"></div>
-        <div class="alert alert-info">Please refer <a href="https://www.jbparfum.com/knowledge-base/html-templates/" target="_blank">here</a> for special variables syntax</div>
+        <div class="alert alert-info">Please refer <a href="https://www.perfumersvault.com/knowledge-base/html-templates/" target="_blank">here</a> for special variables syntax</div>
          <div class="modal-footer">
           <input type="submit" name="button" class="btn btn-primary" id="tmpl-save" value="Save changes">
       </div>

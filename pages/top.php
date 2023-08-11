@@ -22,7 +22,7 @@ if($pv_meta['schema_ver'] < $db_ver){
               <!-- Dropdown - cart -->
               <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="messagesDropdown">
                 <?php if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM cart GROUP BY name"))){ ?>
-				<a href="?do=cart" class="dropdown-header"><h6>To be ordered</h6></a>
+				<a href="/?do=cart" class="dropdown-header"><h6>To be ordered</h6></a>
 				<?php
 					$qC = mysqli_query($conn, "SELECT name,ingID FROM cart ORDER BY name ASC LIMIT 5");
 					while ($pC = mysqli_fetch_array($qC)){
@@ -46,7 +46,7 @@ if($pv_meta['schema_ver'] < $db_ver){
             <div class="topbar-divider d-none d-sm-block"></div>
             <li class="nav-item dropdown no-arrow">
               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?php echo $user['fullName'];?></span>
+                <span class="mx-2 d-none d-lg-inline text-gray-600 small"><?php echo $user['fullName'];?></span>
                <div class="icon-container">
                 <img class="img-profile rounded-circle" src="<?=$doc['avatar']?: '/img/logo_def.png'; ?>">
 				<div class="status-circle"></div>
@@ -55,36 +55,36 @@ if($pv_meta['schema_ver'] < $db_ver){
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
               
 				<a class="dropdown-item" href="#" data-toggle="modal" data-backdrop="static" data-target="#editUser">
-                  <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                  <i class="fas fa-user fa-sm fa-fw mx-2 text-gray-400"></i>
                   Edit my details
                 </a>
                 
-                <a class="dropdown-item" href="?do=settings">
-                  <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                <a class="dropdown-item" href="/?do=settings">
+                  <i class="fas fa-cogs fa-sm fa-fw mx-2 text-gray-400"></i>
                   Settings
                 </a>
                 <a class="dropdown-item" href="#" data-toggle="modal" data-backdrop="static" data-target="#calcTools">
-                  <i class="fas fa-tools fa-sm fa-fw mr-2 text-gray-400"></i>
+                  <i class="fas fa-tools fa-sm fa-fw mx-2 text-gray-400"></i>
                   Calculation Tools
                 </a>
                 
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="https://www.jbparfum.com/knowledge-base" target="_blank">
-                  <i class="fas fa-book fa-sm fa-fw mr-2 text-gray-400"></i>
+                <a class="dropdown-item" href="https://www.perfumersvault.com/knowledge-base" target="_blank">
+                  <i class="fas fa-book fa-sm fa-fw mx-2 text-gray-400"></i>
                   Documentation
                 </a>
                 <a class="dropdown-item" href="https://github.com/globaldyne/parfumvault/issues" target="_blank">
-                  <i class="fas fa-lightbulb fa-sm fa-fw mr-2 text-gray-400"></i>
+                  <i class="fas fa-lightbulb fa-sm fa-fw mx-2 text-gray-400"></i>
                   Request a feature / Bug report
                 </a>             
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="https://apps.apple.com/us/app/id1525381567" target="_blank">
-                  <i class="fab fa-apple fa-sm fa-fw mr-2 text-gray-400"></i>
+                  <i class="fab fa-apple fa-sm fa-fw mx-2 text-gray-400"></i>
                   App Store
                 </a>              
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="logout.php">
-                  <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                  <i class="fas fa-sign-out-alt fa-sm fa-fw mx-2 text-gray-400"></i>
                   Logout
                 </a>
               </div>
@@ -176,7 +176,7 @@ $(document).ready(function() {
       </div>
       <div class="modal-footer">
         <a href="/pages/operations.php?do=backupDB" role="button" class="btn btn-primary" id="dbBkBtn">Backup Database</a>
-        <a href="javascript:updateDB()" role="button" class="btn btn-warning" id="dbUpBtn">Upgrade Schema</a>
+        <button type="button" class="btn btn-warning" id="dbUpBtn">Upgrade Schema</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal" id="dbUpOk">Close</button>
       </div>
     </div>
@@ -203,3 +203,6 @@ $(document).ready(function() {
   </div>
 </div>
 <!-- /SYS UPGRADE MODAL -->
+
+
+<script src="/js/sys-upgrade.js"></script>
