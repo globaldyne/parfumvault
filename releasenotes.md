@@ -1,5 +1,6 @@
 Whats New in v8.2
 --------------------------
+- Fix a bug creating invalid password when registering a new user
 - Add support to store formulas and ingredients order state
 - Improve pvonline stats fetch
 - Migrate pvonline to perfumersvault.com domain
