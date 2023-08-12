@@ -173,14 +173,33 @@ $(document).ready(function() {
 	lengthMenu: [[20, 50, 100, 200, 400], [20, 50, 100, 200, 400]],
 	pageLength: 20,
 	displayLength: 20,
+	stateSave: true,
+	stateLoadCallback: function (settings, callback) {
+       	$.ajax( {
+           	url: '/core/update_user_settings.php?set=listLids&action=load',
+           	dataType: 'json',
+           	success: function (json) {
+               	callback( json );
+           	}
+       	});
+    },
+    stateSaveCallback: function (settings, data) {
+	   $.ajax({
+		 url: "/core/update_user_settings.php?set=listLids&action=save",
+		 data: data,
+		 dataType: "json",
+		 type: "POST"
+	  });
+	},
 	drawCallback: function( settings ) {
 		extrasShow();
-    	}
+    },
+
 	});
 	
 	var detailRows = [];
  
-    $('#tdDataLids tbody').on( 'click', 'tr td:first-child', function () {
+    $('#tdDataLids tbody').on( 'click', 'tr td:first-child ', function () {
         var tr = $(this).parents('tr');
         var row = tdDataLids.row( tr );
         var idx = $.inArray( tr.attr('id'), detailRows );
@@ -200,7 +219,7 @@ $(document).ready(function() {
  
     tdDataLids.on( 'draw', function () {
         $.each( detailRows, function ( i, id ) {
-            $('#'+id+' td:first-child + td').trigger( 'click' );
+            $('#'+id+' td:first-child ').trigger( 'click' );
         });
     });
 	

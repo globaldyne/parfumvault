@@ -26,7 +26,7 @@ require_once(__ROOT__.'/inc/opendb.php');
           <th>Name</th>
           <th>Type</th>
           <th>Colour</th>
-          <th>Actions</th>
+          <th></th>
         </tr>
       </thead>
     </table>
@@ -43,7 +43,7 @@ $(document).ready(function() {
 		processing: true,
         language: {
 			loadingRecords: '&nbsp;',
-			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
+			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw">',
 			emptyTable: 'No groups yet.',
 			search: 'Search:'
 			},
@@ -52,12 +52,30 @@ $(document).ready(function() {
 				  { data : 'name', title: 'Name', render: cName },
     			  { data : 'type', title: 'Type', render: cType},
     			  { data : 'colorKey', title: 'Colour Key', render: fKey},
-   				  { data : null, title: 'Actions', render: cActions},		   
+   				  { data : null, title: '', render: cActions},		   
 				 ],
         order: [[ 1, 'asc' ]],
 		lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
         pageLength: 20,
-		displayLength: 20,		
+		displayLength: 20,
+		stateSave: true,
+		stateLoadCallback: function (settings, callback) {
+			$.ajax( {
+				url: '/core/update_user_settings.php?set=listFormulaCat&action=load',
+				dataType: 'json',
+				success: function (json) {
+					callback( json );
+				}
+			});
+		},
+		stateSaveCallback: function (settings, data) {
+		   $.ajax({
+			 url: "/core/update_user_settings.php?set=listFormulaCat&action=save",
+			 data: data,
+			 dataType: "json",
+			 type: "POST"
+		  });
+		},
 	});
 });
 
@@ -72,7 +90,7 @@ function cType(data, type, row){
 }
 
 function cActions(data, type, row){
-	return '<i id="catDel" class="pv_point_gen fas fa-trash" style="color: #c9302c;" data-id="'+row.id+'" data-name="'+row.name+'"></i>';    
+	return '<i id="catDel" class="pv_point_gen fas fa-trash link-danger" data-id="'+row.id+'" data-name="'+row.name+'"></i>';    
 }
 
 function fKey(data, type, row){

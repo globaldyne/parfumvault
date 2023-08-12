@@ -5,6 +5,16 @@
 - Re-design general settings page
 - Add remove user preferences option in maintenance tab
 - Remove git files from docker image
+- Extend order sorting state save for:
+	ingredient categories, 
+	perfume types, 
+	formula categories, 
+	html templates, 
+	batches,
+	suppliers,
+	customers,
+	bottles,
+	lids
 
 ### Version 8.2
 - Check if session exists before it starts it
