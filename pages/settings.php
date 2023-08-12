@@ -30,7 +30,6 @@ $(function() {
      <div class="tab-content">
      
      <div class="tab-pane fade active in tab-content" id="general">
-	    <div id="genMsg"></div>
         <div id="get_general">
             <div class="loader-center">
                 <div class="loader"></div>

@@ -1,5 +1,9 @@
 # CHANGELOG
 ### Version 8.3
+- Blocked upgrades to the future versions starting version 6.0
+- Added option to store user preferences in the database
+- Re-design general settings page
+- Add remove user preferences option in maintenance tab
 
 ### Version 8.2
 - Check if session exists before it starts it
