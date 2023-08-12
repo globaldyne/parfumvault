@@ -13,19 +13,19 @@ require_once(__ROOT__.'/func/php-settings.php');
                <div id="iframsg"></div>
                   <div class="text-right">
                     <div class="btn-group">
-                      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
+                      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
                       <div class="dropdown-menu dropdown-menu-right">
                         <li class="dropdown-header">Import</li> 
-                        <li><a class="dropdown-item" href="#" data-backdrop="static" data-toggle="modal" data-target="#ifra_import"><i class="fa-solid fa-file-excel mr2"></i>Import IFRA xls</a>
+                        <li><a class="dropdown-item" href="#" data-backdrop="static" data-toggle="modal" data-target="#ifra_import"><i class="fa-solid fa-file-excel mx-2"></i>Import IFRA xls</a>
                                 	  
-                         <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#import_ifra_json" data-backdrop="static"><i class="fa-solid fa-file-import mr2"></i>Import from JSON</a></li>
+                         <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#import_ifra_json" data-backdrop="static"><i class="fa-solid fa-file-import mx-2"></i>Import from JSON</a></li>
 
                         <?php if($settings['pubChem'] == '1'){?>
-                        <li><a class="dropdown-item" href="#" data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#pubChem_import"><i class="fa-solid fa-file-import mr2"></i>Import images</a></li>
+                        <li><a class="dropdown-item" href="#" data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#pubChem_import"><i class="fa-solid fa-file-import mx-2"></i>Import images</a></li>
                         <?php } ?>
                         <li class="dropdown-header">Export</li> 
-           				<li><a class="dropdown-item" href="/pages/operations.php?action=exportIFRA"><i class="fa-solid fa-file-code mr2"></i>Export as JSON</a></li>
-                        <li><a class="dropdown-item" id="csv" href="#"><i class="fa-solid fa-file-export mr2"></i>Export as CSV</a></li>
+           				<li><a class="dropdown-item" href="/pages/operations.php?action=exportIFRA"><i class="fa-solid fa-file-code mx-2"></i>Export as JSON</a></li>
+                        <li><a class="dropdown-item" id="csv" href="#"><i class="fa-solid fa-file-export mx-2"></i>Export as CSV</a></li>
                       </div>
                     </div>
                   </div>
@@ -221,7 +221,7 @@ $(document).ready(function() {
 	scrollX: true,
 	language: {
 		loadingRecords: '&nbsp;',
-		processing: '<div class="spinner-grow mr2"></div>Please Wait...',
+		processing: '<div class="spinner-grow mx-2"></div>Please Wait...',
 		zeroRecords: 'Nothing found',
 		search: 'Quick Search:',
 		searchPlaceholder: 'Name, CAS, synonyms...',
@@ -340,7 +340,7 @@ function reload_ifra_data() {
 }
 
 function actions(data, type, row){
-	data = '<a class="pv_point_gen text-danger" id="dDel" data-name="'+ row.name +'" data-id='+ row.id +'><i class="fas fa-trash mr2"></i></a>';
+	data = '<a class="pv_point_gen text-danger" id="dDel" data-name="'+ row.name +'" data-id='+ row.id +'><i class="fas fa-trash mx-2"></i></a>';
 	
 	return data;
 }
@@ -363,7 +363,7 @@ $('#csv').on('click',function(){
 });
 
 $('#btnImportIFRA').click(function() {	
-	$("#IFRAImportMsg").html('<div class="alert alert-info"><img src="/img/loading.gif" class="mr2"/>Please wait, file upload in progress....</div>');
+	$("#IFRAImportMsg").html('<div class="alert alert-info"><img src="/img/loading.gif" class="mx-2"/>Please wait, file upload in progress....</div>');
 	$("#btnImportIFRA").prop("disabled", true);
 	$("#btnIFRAC").prop("disabled", true);
 
@@ -406,7 +406,7 @@ $('#btnImportIFRA').click(function() {
 });
 
 $('#Importpb').click(function() {	
-	$("#pbmportMsg").html('<div class="alert alert-info"><img src="/img/loading.gif" class="mr2"/>Please wait, this may take a few minutes, depending your IFRA library size and your internet connection...</div>');
+	$("#pbmportMsg").html('<div class="alert alert-info"><img src="/img/loading.gif" class="mx-2"/>Please wait, this may take a few minutes, depending your IFRA library size and your internet connection...</div>');
 	$("#Importpb").prop("disabled", true);
 	$("#ImportpbC").hide();
 

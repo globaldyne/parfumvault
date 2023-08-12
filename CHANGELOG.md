@@ -1,4 +1,21 @@
 # CHANGELOG
+### Version 8.3
+- Blocked upgrades to the future versions starting version 6.0
+- Added option to store user preferences in the database
+- Re-design general settings page
+- Add remove user preferences option in maintenance tab
+- Remove git files from docker image
+- Extend order sorting state save for:
+	ingredient categories, 
+	perfume types, 
+	formula categories, 
+	html templates, 
+	batches,
+	suppliers,
+	customers,
+	bottles,
+	lids
+
 ### Version 8.2
 - Check if session exists before it starts it
 - Fix a bug creating invalid password when registering a new user
