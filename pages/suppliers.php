@@ -283,39 +283,39 @@ $('#btnAddSupplier').on('click', function () {
 		type: 'POST',
 		data: {
 			supp: 'add',
-			name: $("#name").val(),
-			address: $("#address").val(),
-			po: $("#po").val(),
-			country: $("#country").val(),
-			telephone: $("#telephone").val(),
-			url: $("#url").val(),
-			email: $("#email").val(),
-			platform: $("#platform").val(),
-			price_tag_start: $("#price_tag_start").val(),
-			price_tag_end: $("#price_tag_end").val(),
-			add_costs: $("#add_costs").val(),
-			description: $("#description").val(),
-			min_ml: $("#min_ml").val(),
-			min_gr: $("#min_gr").val()
+			name: $("#add_supplier #name").val(),
+			address: $("#add_supplier #address").val(),
+			po: $("#add_supplier #po").val(),
+			country: $("#add_supplier #country").val(),
+			telephone: $("#add_supplier #telephone").val(),
+			url: $("#add_supplier #url").val(),
+			email: $("#add_supplier #email").val(),
+			platform: $("#add_supplier #platform").val(),
+			price_tag_start: $("#add_supplier #price_tag_start").val(),
+			price_tag_end: $("#add_supplier #price_tag_end").val(),
+			add_costs: $("#add_supplier #add_costs").val(),
+			description: $("#add_supplier #description").val(),
+			min_ml: $("#add_supplier #min_ml").val(),
+			min_gr: $("#add_supplier #min_gr").val()
 			},
 		dataType: 'json',
 		success: function (data) {
 			if(data.success){
 				$('#inf').html(data);
-				$("#name").val('');
-				$("#description").val('');
-				$("#platform").val('');
-				$("#price_tag_start").val('');
-				$("#price_tag_end").val('');
-				$("#add_costs").val('');
-				$("#min_ml").val('');
-				$("#min_gr").val('');
-				$("#address").val('');
-				$("#po").val('');
-				$("#country").val('');
-				$("#telephone").val('');
-				$("#url").val('');
-				$("#email").val('');
+				$("#add_supplier #name").val('');
+				$("#add_supplier #description").val('');
+				$("#add_supplier #platform").val('');
+				$("#add_supplier #price_tag_start").val('');
+				$("#add_supplier #price_tag_end").val('');
+				$("#add_supplier #add_costs").val('');
+				$("#add_supplier #min_ml").val('');
+				$("#add_supplier #min_gr").val('');
+				$("#add_supplier #address").val('');
+				$("#add_supplier #po").val('');
+				$("#add_supplier #country").val('');
+				$("#add_supplier #telephone").val('');
+				$("#add_supplier #url").val('');
+				$("#add_supplier #email").val('');
 				
 				msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 				reload_data();
@@ -441,7 +441,7 @@ function reload_data() {
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-          <div class="modal-body">
+          <div class="modal-body" id="add_supplier">
           	<div id="inf"></div>
             <div class="container-fluid">
                 <div class="col-md-6">
