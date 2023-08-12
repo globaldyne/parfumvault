@@ -8,12 +8,17 @@ $ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
 <div class="col mt-2">
     <div class="row mb-2">
       <div class="col">
-        <li><a href="#" data-toggle="modal" data-backdrop="static" data-keyboard="false" data-target="#backup_db">Backup DB</a></li>
+        <li><a href="#" data-toggle="modal" data-target="#backup_db">Backup DB</a></li>
       </div>
     </div>
     <div class="row mb-2">
         <div class="col">
-            <li><a href="#" data-toggle="modal" data-backdrop="static" data-keyboard="false" data-target="#restore_db">Restore DB</a></li>
+            <li><a href="#" data-toggle="modal" data-target="#restore_db">Restore DB</a></li>
+        </div>
+    </div>
+    <div class="row mb-2">
+        <div class="col">
+            <li><a href="#" data-toggle="modal" data-target="#clear_user_pref">Clear user preferences</a></li>
         </div>
     </div>
 	<?php if(getenv('phpMyAdmin') == "true"){ ?>
@@ -30,7 +35,28 @@ $ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
     <?php } ?>
 </div>
 
-<div class="modal fade" id="backup_db" tabindex="-1" role="dialog" aria-labelledby="backup_db" aria-hidden="true">
+<div class="modal fade" id="clear_user_pref" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="clear_user_pref" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Clear user preferences</h5>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i>
+        	You can reset any user modifications like table sorting.
+            This will bring Perfumers Vault instalation to its defaults.
+            Your data will not be affected.
+        </div>
+      </div>
+	  <div class="modal-footer">
+        <input type="button" class="btn btn-secondary" data-dismiss="modal" id="btnCloseBK" value="Cancel">
+        <button name="btnClear" class="btn btn-warning" id="btnClear">Clear data</button>
+      </div>
+  </div>
+ </div>
+</div>
+
+<div class="modal fade" id="backup_db" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="backup_db" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -59,7 +85,7 @@ $ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
 </div>
 
 
-<div class="modal fade" id="restore_db" tabindex="-1" role="dialog" aria-labelledby="restore_db" aria-hidden="true">
+<div class="modal fade" id="restore_db" data-backdrop="static" data-keyboard="false"  tabindex="-1" role="dialog" aria-labelledby="restore_db" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -97,6 +123,28 @@ $ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
  </div>
 </div>
 <script>
+$('#btnClear').click(function() {
+	$("#btnClear").prop("disabled", true);			
+
+	$.ajax({
+		url: '/pages/operations.php',
+		data: {
+			do: 'userPerfClear',
+		},
+		cache: false,
+		
+		success: function (data) {
+			$("#btnClear").prop("disabled", false);	
+			$('#clear_user_pref').modal('hide');
+		},
+		error: function (request, status, error) {
+			$("#btnClear").prop("disabled", false);
+		},
+			
+	});
+
+});
+
 $(function () {
   $('[data-toggle="tooltip"]').tooltip();
 });

@@ -22,7 +22,7 @@ require_once(__ROOT__.'/inc/sec.php');
           <th>Name</th>
           <th>Concentration</th>
           <th>Description</th>
-          <th>Actions</th>
+          <th></th>
       </tr>
    </thead>
 </table>
@@ -53,26 +53,44 @@ $(document).ready(function() {
 	order: [[ 1, 'asc' ]],
 	lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
 	pageLength: 20,
-	displayLength: 20,		
+	displayLength: 20,
+	stateSave: true,
+	stateLoadCallback: function (settings, callback) {
+       	$.ajax( {
+           	url: '/core/update_user_settings.php?set=listPerfTypes&action=load',
+           	dataType: 'json',
+           	success: function (json) {
+               	callback( json );
+           	}
+       	});
+    },
+    stateSaveCallback: function (settings, data) {
+	   $.ajax({
+		 url: "/core/update_user_settings.php?set=listPerfTypes&action=save",
+		 data: data,
+		 dataType: "json",
+		 type: "POST"
+	  });
+	},
 	});
 });
 
 function name(data, type, row){
-	return '<a href="#" class="name pv_point_gen" data-name="name" data-type="text" data-pk="'+row.id+'">'+row.name+'</a>';    
-}
+	return '<a href="#" class="name pv_point_gen" data-name="name" data-type="text" data-pk="'+row.id+'">'+row.name+'</a>';
+};
 
 
 function concentration(data, type, row){
 	return '<a href="#" class="concentration pv_point_gen" data-name="concentration" data-type="text" data-pk="'+row.id+'">'+row.concentration+'</a>';    
-}
+};
 
 function description(data, type, row){
 	return '<a href="#" class="description pv_point_gen" data-name="description" data-type="textarea" data-pk="'+row.id+'">'+row.description+'</a>';    
-}
+};
 
 function actions(data, type, row){
-	return '<a href="#" id="sDel" class="fas fa-trash" data-id="'+row.id+'" data-name="'+row.name+'"></a>';
-}
+	return '<a href="#" id="sDel" class="fas fa-trash link-danger" data-id="'+row.id+'" data-name="'+row.name+'"></a>';
+};
 
 
 $('#tdperfTypes').editable({
