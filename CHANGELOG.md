@@ -1,4 +1,5 @@
 # CHANGELOG
+### Version 8.4
 ### Version 8.3
 - Blocked upgrades to the future versions starting version 6.0
 - Added option to store user preferences in the database
