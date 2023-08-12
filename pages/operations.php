@@ -6,6 +6,20 @@ require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/inc/product.php');
 
+
+if($_GET['do'] == 'userPerfClear'){
+
+	if(mysqli_query($conn, "DELETE FROM user_prefs WHERE owner = '".$_SESSION['userID']."'")){
+		$result['success'] = "User prefernces removed";
+	}else{
+		$result['error'] = 'Something went wrong, '.mysqli_error($conn);
+		
+	}
+	echo json_encode($result);
+	return;
+}
+
+
 if($_GET['do'] == 'db_update'){
 
 	$a_ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));

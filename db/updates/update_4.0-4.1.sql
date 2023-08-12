@@ -1,2 +1,0 @@
-ALTER TABLE `IFRALibrary` CHANGE `image` `image` LONGBLOB NULL DEFAULT NULL;
-ALTER TABLE `formulasMetaData` CHANGE `profile` `profile` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
