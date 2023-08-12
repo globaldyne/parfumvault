@@ -1289,7 +1289,7 @@ if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'general'){
 	}else{
 		$name = sanChar(mysqli_real_escape_string($conn, $_POST["name"]));
 
-		$query = "INSERT INTO ingredients (name, INCI, cas, reach, FEMA, type, strength, category, profile, notes, odor, purity, solvent, allergen, physical_state) VALUES ('$name', '$INCI', '$cas', '$reach', '$fema', '$type', '$strength', '$category', '$profile',  '$notes', '$odor', '$purity', '$solvent', '$allergen', '1')";
+		$query = "INSERT INTO ingredients (name, INCI, cas, einecs, reach, FEMA, type, strength, category, profile, notes, odor, purity, solvent, allergen, physical_state) VALUES ('$name', '$INCI', '$cas', '$einecs', '$reach', '$fema', '$type', '$strength', '$category', '$profile',  '$notes', '$odor', '$purity', '$solvent', '$allergen', '1')";
 		
 		if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '$name'"))){
 			$response["error"] = $name.' already exists!';
