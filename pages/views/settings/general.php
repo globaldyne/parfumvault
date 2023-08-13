@@ -87,20 +87,20 @@ while($cats_res = mysqli_fetch_array($cats_q)){
     </div>
   </div>
   <div class="form-row">
-  	<div class="form-group col-md-2">
+  	<div class="form-group col-md-auto">
       	<input name="pubChem" type="checkbox" id="pubChem" value="1" <?php if($settings['pubChem'] == '1'){ ?> checked="checked" <?php } ?>/>
       	<label class="form-check-label" for="pubChem">Enable PubChem</label>
   	</div>
-  	<div class="form-group col-md-2">
+  	<div class="form-group col-md-auto">
       	<input name="chkVersion" type="checkbox" id="chkVersion" value="1" <?php if($settings['chkVersion'] == '1'){ ?> checked="checked" <?php } ?>/>
       	<label class="form-check-label" for="chkVersion">Check for updates</label>
   	</div>
-    <div class="form-group col-md-3">
+    <div class="form-group col-md-auto">
       	<input name="chem_vs_brand" type="checkbox" id="chem_vs_brand" value="1" <?php if($settings['chem_vs_brand'] == '1'){ ?> checked="checked" <?php } ?>/>
       	<label class="form-check-label" for="chem_vs_brand">Show chemical names</label>
   	</div>
     
-    <div class="form-group col-md-3">
+    <div class="form-group col-md-auto">
       	<input name="multi_dim_perc" type="checkbox" id="multi_dim_perc" value="1" <?php if($settings['multi_dim_perc'] == '1'){ ?> checked="checked" <?php } ?>/>
       	<label class="form-check-label" for="multi_dim_perc">Multi-dimensional lookup</label>
   	</div>
