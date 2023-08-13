@@ -262,7 +262,9 @@ $('#renameIng').on('click', '[id*=renameME]', function () {
 		dataType: 'json',
 		success: function (data) {
 			if(data.success){
-				msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+				window.location.href = "/pages/mgmIngredient.php?id=" + data.success.id;
+				reload_ingredients_data();
+				msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success.msg + '</div>';
 			}else if(data.error){
 				msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 			}

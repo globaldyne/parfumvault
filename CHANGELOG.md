@@ -1,5 +1,7 @@
 # CHANGELOG
 ### Version 8.4
+- Auto redirect to the new ingredient when is renamed
+
 ### Version 8.3
 - Blocked upgrades to the future versions starting version 6.0
 - Added option to store user preferences in the database
