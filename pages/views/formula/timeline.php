@@ -45,8 +45,27 @@ $(document).ready(function(){
 	order: [[ 1, 'desc' ]],
 	lengthMenu: [[15, 50, 100, -1], [15, 50, 100, "All"]],
 	pageLength: 15,
-	displayLength: 15
-	});
+	displayLength: 15,
+	stateSave: true,
+	stateLoadCallback: function (settings, callback) {
+		$.ajax( {
+			url: '/core/update_user_settings.php?set=listTimeline&action=load',
+			dataType: 'json',
+			success: function (json) {
+				callback( json );
+			}
+		});
+	},
+	stateSaveCallback: function (settings, data) {
+	   $.ajax({
+		 url: "/core/update_user_settings.php?set=listTimeline&action=save",
+		 data: data,
+		 dataType: "json",
+		 type: "POST"
+	  });
+	},
+	
+  });
 
 });
 </script>

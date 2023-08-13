@@ -1,7 +1,7 @@
 # CHANGELOG
 ### Version 8.4
 - Auto redirect to the new ingredient when is renamed
-- Extend order sorting state save for formula revisions
+- Extend order sorting state save for formula revisions and history
 
 ### Version 8.3
 - Blocked upgrades to the future versions starting version 6.0
