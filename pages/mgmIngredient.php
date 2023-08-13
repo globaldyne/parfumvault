@@ -348,9 +348,6 @@ var myPCH = "<?=$settings['pubChem']?>";
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title">Clone ingredient <?php echo $ing['name']; ?></h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
 			</div>
 			<div class="modal-body">
 				<div id="clone_msg"></div>
@@ -371,9 +368,6 @@ var myPCH = "<?=$settings['pubChem']?>";
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title">Rename ingredient <?php echo $ing['name']; ?></h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
 			</div>
 			<div class="modal-body">
             	<div id="warn"><div class="alert alert-warning"><strong>Warning:</strong> If you rename the ingredient, will affect any formulas that using it as well. Please refer to <strong>Where Used</strong> section to get a list of formulas if any.</div></div>
