@@ -343,7 +343,7 @@ var myPCH = "<?=$settings['pubChem']?>";
 
 
 <!-- Modal Clone-->
-<div class="modal fade" id="cloneIng" tabindex="-1" role="dialog" aria-labelledby="cloneIng" aria-hidden="true">
+<div class="modal fade" id="cloneIng" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="cloneIng" aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -366,7 +366,7 @@ var myPCH = "<?=$settings['pubChem']?>";
 </div>
 
 <!-- Modal Rename-->
-<div class="modal fade" id="renameIng" tabindex="-1" role="dialog" aria-labelledby="renameIng" aria-hidden="true">
+<div class="modal fade" id="renameIng" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="renameIng" aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -390,7 +390,7 @@ var myPCH = "<?=$settings['pubChem']?>";
 </div>
 
 <!-- Modal Gen SDS-->
-<div class="modal fade" id="genSDS" tabindex="-1" role="dialog" aria-labelledby="genSDS" aria-hidden="true">
+<div class="modal fade" id="genSDS" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="genSDS" aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
