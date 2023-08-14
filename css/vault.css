@@ -1395,3 +1395,12 @@ hr.hr-text::before {
   top:0;
   right:20px;
 }
+
+.dataTables_filter input {
+  width: 400px;
+  display: inline-block;
+}
+
+input[type="search"]::-webkit-search-cancel-button {
+    -webkit-appearance: searchfield-cancel-button;
+}

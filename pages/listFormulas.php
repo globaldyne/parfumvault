@@ -129,43 +129,43 @@ $(".tabs").click(function() {
 });
 function initTable(tableId, src) {
     var table = $("#" + tableId).DataTable({
-           ajax: {
-			   url: src,
-		   	   type: 'POST',
-			   dataType: 'json',
-			   data: function(d) {
-					if (d.order.length>0){
-						d.order_by = d.columns[d.order[0].column].data
-						d.order_as = d.order[0].dir
-					}
-        		},
-			   },
-			columns: [
-			   { data : 'name', title: 'Formula Name', render: fName },
-			   { data : 'product_name', title: 'Product Name', render: pName},
-			   { data : 'status', title: 'Status', render: fStatus},
-    		   { data : 'ingredients', title: 'Ingredients'},
-    		   { data : 'revision', title: 'Revision'},
-			   { data : 'isMade', title: 'Made', render: fMade},
-   			   { data : 'rating', title: 'Rating', render: rating},
-			   { data : 'created', title: 'Created'},
-			   { data : null, title: '', render: fActions},				   
-			  ],
-			 processing: true,
-	         serverSide: true,
-			 searching: true,
-			 language: {
-				loadingRecords: '&nbsp;',
-				processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Blending...</span>',
-				emptyTable: "No formulas added yet.",
-				searchPlaceholder: 'Name, or product name..',
-				search: "Search for formula:"
+	   ajax: {
+		   url: src,
+		   type: 'POST',
+		   dataType: 'json',
+		   data: function(d) {
+			   if (d.order.length>0){
+					d.order_by = d.columns[d.order[0].column].data
+					d.order_as = d.order[0].dir
+				}
 			},
-           order: [0,'asc'],
-           columnDefs: [
-				{ orderable: false, targets: [2, 3, 8] },
-				{ className: 'text-center', targets: '_all' },				  
-				],
+		},
+		columns: [
+		   { data : 'name', title: 'Formula Name', render: fName },
+		   { data : 'product_name', title: 'Product Name', render: pName},
+		   { data : 'status', title: 'Status', render: fStatus},
+		   { data : 'ingredients', title: 'Ingredients'},
+		   { data : 'revision', title: 'Revision'},
+		   { data : 'isMade', title: 'Made', render: fMade},
+		   { data : 'rating', title: 'Rating', render: rating},
+		   { data : 'created', title: 'Created'},
+		   { data : null, title: '', render: fActions},				   
+		],
+		processing: true,
+		serverSide: true,
+		searching: true,
+		language: {
+			loadingRecords: '&nbsp;',
+			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>',
+			emptyTable: "No formulas added yet.",
+			searchPlaceholder: 'Formula name, or product name...',
+			search: "Search for formula:"
+		},
+	    order: [0,'asc'],
+	    columnDefs: [
+			{ orderable: false, targets: [2, 3, 8] },
+			{ className: 'text-center', targets: '_all' },				  
+		],
 	    destroy: true,
         bFilter: true,
         paging:  true,
@@ -196,6 +196,19 @@ function initTable(tableId, src) {
 			 type: "POST"
 		  });
 		},
+		/*
+		initComplete: function(settings) {
+      //settings.nTable.id --> Get table ID
+      $('#'+settings.nTable.id+'_filter input').wrap('<div class="d-inline-flex position-relative"></div>').after('<button type="button" class="close position-absolute" aria-label="Close" style="right:5px"><span aria-hidden="true"><i class="fas fa-check-circle alert-success"></i></span></button>').attr('required','required').attr('title','Search');
+
+      // Click Event on Clear button
+      $(document).on('click', '#'+settings.nTable.id+'_filter button', function(){
+         $('#'+settings.nTable.id).DataTable({
+           "retrieve": true,
+          }).search('').draw(); // reDraw table
+      });
+     }
+	 */
 	});
 }
 
