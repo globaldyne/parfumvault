@@ -107,27 +107,33 @@ while($cats_res = mysqli_fetch_array($cats_q)){
    </div>
  </div>
 
-    <div class="col-sm-6">
+    <div class="col-sm-2">
      <h4 class="m-0 mb-4 text-primary">Pyramid View</h4>
      <div class="form-row">
-        <div class="form-group col-sm-2">
+        <div class="form-group col-md-auto">
           <label for="top_n">Top notes %</label>
           <input name="top_n" type="text" class="form-control" id="top_n" value="<?php echo $settings['top_n'];?>"/>
         </div>
       </div>
       <div class="form-row">
-          <div class="form-group  col-sm-2">
+          <div class="form-group  col-md-auto">
             <label for="heart_n">Heart notes %</label>
             <input name="heart_n" type="text" class="form-control" id="heart_n" value="<?php echo $settings['heart_n'];?>"/>
           </div>
       </div>
       <div class="form-row">
-          <div class="form-group col-sm-2">
+          <div class="form-group col-md-auto">
             <label for="base_n">Base notes %</label>
             <input name="base_n" type="text" class="form-control" id="base_n" value="<?php echo $settings['base_n'];?>"/>
           </div>
       </div>
     </div>
+    
+   <div class="col-sm-3">
+   		
+     
+   </div>
+    
     <div class="col dropdown-divider"></div>
     <div class="form-row">
       <div class="col-sm-12">
@@ -136,7 +142,7 @@ while($cats_res = mysqli_fetch_array($cats_q)){
          </div>
       </div>
     </div>
-
+ </div>
 </div>
 
 <script>

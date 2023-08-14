@@ -3,6 +3,7 @@
 - Auto redirect to the new ingredient when is renamed
 - Extend order sorting state save for formula revisions and history
 - Disable state 2hr window expire
+- General settings page div allign fix
 
 ### Version 8.3
 - Blocked upgrades to the future versions starting version 6.0
