@@ -196,19 +196,6 @@ function initTable(tableId, src) {
 			 type: "POST"
 		  });
 		},
-		/*
-		initComplete: function(settings) {
-      //settings.nTable.id --> Get table ID
-      $('#'+settings.nTable.id+'_filter input').wrap('<div class="d-inline-flex position-relative"></div>').after('<button type="button" class="close position-absolute" aria-label="Close" style="right:5px"><span aria-hidden="true"><i class="fas fa-check-circle alert-success"></i></span></button>').attr('required','required').attr('title','Search');
-
-      // Click Event on Clear button
-      $(document).on('click', '#'+settings.nTable.id+'_filter button', function(){
-         $('#'+settings.nTable.id).DataTable({
-           "retrieve": true,
-          }).search('').draw(); // reDraw table
-      });
-     }
-	 */
 	});
 }
 
