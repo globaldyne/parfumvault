@@ -190,6 +190,7 @@ $(document).ready(function() {
 		extrasShow();
     },
 	stateSave: true,
+	stateDuration: -1,
 	stateLoadCallback: function (settings, callback) {
        	$.ajax( {
            	url: '/core/update_user_settings.php?set=listBottles&action=load',

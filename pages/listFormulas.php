@@ -178,6 +178,7 @@ function initTable(tableId, src) {
             initRating(row);
         },
 		stateSave: true,
+		stateDuration: -1,
 		stateLoadCallback: function (settings, callback) {
         	$.ajax( {
             	url: '/core/update_user_settings.php?set=listFormulas&action=load',
