@@ -270,33 +270,42 @@ $(document).ready(function() {
 	lengthMenu: [[20, 50, 100, 200, 400], [20, 50, 100, 200, 400]],
 	pageLength: 20,
 	displayLength: 20,
-	});
 	
-	var detailRows = [];
- 
-    $('#tdDataIFRA tbody').on( 'click', 'tr td:first-child + td', function () {
-        var tr = $(this).parents('tr');
-        var row = tdDataIFRA.row( tr );
-        var idx = $.inArray( tr.attr('id'), detailRows );
- 
-        if ( row.child.isShown() ) {
-            tr.removeClass( 'details' );
-            row.child.hide();
-            detailRows.splice( idx, 1 );
-        } else {
-            tr.addClass( 'details' );
-            row.child( format( row.data() ) ).show();
-            if ( idx === -1 ) {
-                detailRows.push( tr.attr('id') );
-            }
-        }
-    });
- 
-    tdDataIFRA.on( 'draw', function () {
-        $.each( detailRows, function ( i, id ) {
-            $('#'+id+' td:first-child + td').trigger( 'click' );
-        } );
-    } );
+	stateSave: true,
+	stateDuration : -1,
+	stateLoadCallback: function (settings, callback) {
+       	$.ajax( {
+           	url: '/core/update_user_settings.php?set=listIFRA&action=load',
+           	dataType: 'json',
+           	success: function (json) {
+               	callback( json );
+           	}
+       	});
+    },
+    stateSaveCallback: function (settings, data) {
+	   $.ajax({
+		 url: "/core/update_user_settings.php?set=listIFRA&action=save",
+		 data: data,
+		 dataType: "json",
+		 type: "POST"
+	  });
+	},
+	
+	});
+
+	tdDataIFRA.on('requestChild.dt', function (e, row) {
+		row.child(format(row.data())).show();
+	});
+	 
+	tdDataIFRA.on('click', '#ifra_name', function (e) {
+		let tr = e.target.closest('tr');
+		let row = tdDataIFRA.row(tr); 
+		if (row.child.isShown()) {
+			row.child.hide();
+		} else {
+			row.child(format(row.data())).show();
+		}
+	});
 	
 	document.querySelectorAll('a.toggle-vis').forEach((el) => {
 		el.addEventListener('click', function (e) {
@@ -323,7 +332,7 @@ function format ( d ) {
 }
 
 function name(data, type, row){
-	return '<i class="pv_point_gen pv_gen_li">'+row.name+'</i>';
+	return '<i class="pv_point_gen pv_gen_li" id="ifra_name">'+row.name+'</i>';
 }
 
 function CAS(data, type, row){

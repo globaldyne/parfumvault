@@ -198,31 +198,20 @@ $(document).ready(function() {
 
 	});
 	
-	var detailRows = [];
- 
-    $('#tdDataLids tbody').on( 'click', 'tr td:first-child ', function () {
-        var tr = $(this).parents('tr');
-        var row = tdDataLids.row( tr );
-        var idx = $.inArray( tr.attr('id'), detailRows );
- 
-        if ( row.child.isShown() ) {
-            tr.removeClass( 'details' );
-            row.child.hide();
-            detailRows.splice( idx, 1 );
-        } else {
-            tr.addClass( 'details' );
-            row.child( format( row.data() ) ).show();
-            if ( idx === -1 ) {
-                detailRows.push( tr.attr('id') );
-            }
-        }
-    });
- 
-    tdDataLids.on( 'draw', function () {
-        $.each( detailRows, function ( i, id ) {
-            $('#'+id+' td:first-child ').trigger( 'click' );
-        });
-    });
+	
+	tdDataLids.on('requestChild.dt', function (e, row) {
+		row.child(format(row.data())).show();
+	});
+	 
+	tdDataLids.on('click', '#lid_name', function (e) {
+		let tr = e.target.closest('tr');
+		let row = tdDataLids.row(tr); 
+		if (row.child.isShown()) {
+			row.child.hide();
+		} else {
+			row.child(format(row.data())).show();
+		}
+	});
 	
 }); //END DOC
 
@@ -233,7 +222,7 @@ function format ( d ) {
 }
 
 function style(data, type, row){
-	return '<i class="pv_point_gen pv_gen_li">'+row.style+'</i>';
+	return '<i class="pv_point_gen pv_gen_li" id="lid_name">'+row.style+'</i>';
 }
 
 function actions(data, type, row){	
