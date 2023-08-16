@@ -7,6 +7,7 @@
 - Pyramid view values input replaced with sliders
 - State session stored on separate array
 - Remove session state when user preferences reset
+- Added last updated field in formulas list (non sortable limitation)
 
 ### Version 8.3
 - Blocked upgrades to the future versions starting version 6.0
