@@ -5,6 +5,8 @@
 - Disable state 2hr window expire
 - General settings page div allign fix
 - Pyramid view values input replaced with sliders
+- State session stored on separate array
+- Remove session state when user preferences reset
 
 ### Version 8.3
 - Blocked upgrades to the future versions starting version 6.0

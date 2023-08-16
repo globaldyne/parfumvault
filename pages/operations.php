@@ -15,6 +15,7 @@ if($_GET['do'] == 'userPerfClear'){
 		$result['error'] = 'Something went wrong, '.mysqli_error($conn);
 		
 	}
+	unset($_SESSION['user_prefs']);
 	echo json_encode($result);
 	return;
 }
