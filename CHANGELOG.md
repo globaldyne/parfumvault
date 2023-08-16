@@ -4,6 +4,7 @@
 - Extend order sorting state save for formula revisions and history
 - Disable state 2hr window expire
 - General settings page div allign fix
+- Pyramid view values input replaced with sliders
 
 ### Version 8.3
 - Blocked upgrades to the future versions starting version 6.0

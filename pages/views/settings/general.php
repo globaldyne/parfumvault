@@ -111,20 +111,20 @@ while($cats_res = mysqli_fetch_array($cats_q)){
      <h4 class="m-0 mb-4 text-primary">Pyramid View</h4>
      <div class="form-row">
         <div class="form-group col-md-auto">
-          <label for="top_n">Top notes %</label>
-          <input name="top_n" type="text" class="form-control" id="top_n" value="<?php echo $settings['top_n'];?>"/>
+          <label for="top_n" id="top">Top notes %</label>
+          <input name="top_n" type="range" class="form-range" id="top_n" min="0" max="100" value="<?php echo $settings['top_n'];?>" />
         </div>
       </div>
       <div class="form-row">
           <div class="form-group  col-md-auto">
-            <label for="heart_n">Heart notes %</label>
-            <input name="heart_n" type="text" class="form-control" id="heart_n" value="<?php echo $settings['heart_n'];?>"/>
+            <label for="heart_n" id="heart">Heart notes %</label>
+            <input name="heart_n" type="range" class="form-range" id="heart_n" min="0" max="100" value="<?php echo $settings['heart_n'];?>"/>
           </div>
       </div>
       <div class="form-row">
           <div class="form-group col-md-auto">
-            <label for="base_n">Base notes %</label>
-            <input name="base_n" type="text" class="form-control" id="base_n" value="<?php echo $settings['base_n'];?>"/>
+            <label for="base_n" id="base">Base notes %</label>
+            <input name="base_n" type="range" class="form-range" id="base_n" min="0" max="100" value="<?php echo $settings['base_n'];?>"/>
           </div>
       </div>
     </div>
@@ -171,13 +171,28 @@ $('#save-general').click(function() {
 	dataType: 'json',
 	success: function (data) {
 		if(data.success){
-			msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';	
+			msg = '<div class="alert alert-success alert-dismissible"><i class="fa-solid fa-circle-check mx-2"></i><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';	
 		}else{
-			msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
+			msg = '<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-triangle-exclamation mx-2"></i><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
 		}
 		$('#inMsg').html(msg);
 	}
   });
 });
 
+$('#top').text('Top notes ' + $('#top_n').val() + '%');
+$('#heart').text('Heart notes ' + $('#heart_n').val() + '%');
+$('#base').text('Base notes ' + $('#base_n').val() + '%');
+
+$('#top_n').on('input', function(){
+    $('#top').text('Top notes ' + $('#top_n').val() + '%');
+});
+
+$('#heart_n').on('input', function(){
+    $('#heart').text('Heart notes ' + $('#heart_n').val() + '%');
+});
+
+$('#base_n').on('input', function(){
+    $('#base').text('Base notes ' + $('#base_n').val() + '%');
+});
 </script>
