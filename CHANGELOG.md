@@ -16,6 +16,7 @@
 - Added state save for ingredient suppliers
 - Added suppliers info when exporting ingredients
 - Added total materials count per supplier
+- Show saved state search value in  ingredients
 
 ### Version 8.3
 - Blocked upgrades to the future versions starting version 6.0

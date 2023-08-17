@@ -149,6 +149,9 @@ $(document).ready(function() {
            	dataType: 'json',
            	success: function (json) {
                	callback( json );
+				if(json.search.search){
+					$('#ing_search').val(json.search.search);
+				}
            	}
        	});
     },
