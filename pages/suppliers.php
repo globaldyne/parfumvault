@@ -41,7 +41,7 @@
                     </tr>
                   </thead>
                 </table>
-            <script type="text/javascript" language="javascript" >
+<script type="text/javascript" language="javascript" >
 $(document).ready(function() {
 	
 	$('[data-toggle="tooltip"]').tooltip();
@@ -132,7 +132,7 @@ function actions(data, type, row){
 	data = '<div class="dropdown">' +
 			'<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
 				'<ul class="dropdown-menu dropdown-menu-right">';
-	data += '<li><a class="pv_point_gen dropdown-item" data-toggle="modal" id="edit_supplier" data-id="' + row.id + '" data-name="' + row.name + '" data-address="'+row.address+'" data-po="'+row.po+'" data-country="'+row.country+'" data-telephone="'+row.telephone+'" data-url="'+row.url+'" data-email="'+row.email+'"><i class="fas fa-edit mx-2"></i>Edit</a></li>';
+	data += '<li><i class="pv_point_gen dropdown-item text-dark" data-toggle="modal" id="edit_supplier" data-id="' + row.id + '" data-name="' + row.name + '" data-address="'+row.address+'" data-po="'+row.po+'" data-country="'+row.country+'" data-telephone="'+row.telephone+'" data-url="'+row.url+'" data-email="'+row.email+'"><i class="fas fa-edit mx-2"></i>Edit</i></li>';
 	data += '<div class="dropdown-divider"></div>';
 	data += '<li><a class="dropdown-item pv_point_gen text-danger" id="dDel" data-name="'+ row.name +'" data-id='+ row.id +'><i class="fas fa-trash mx-2"></i>Delete</a></li>';
 	data += '</ul></div>';
@@ -421,7 +421,7 @@ function reload_data() {
     <div class="modal-header">
 	    <h5 class="modal-title">Supplier Details</h5>
     </div>
-    <div class="modal-body">
+    <div class="modal-body" id="edit_supplier">
         <div id="editSup"></div>
         <div class="container-fluid">
             <div class="col-sm-12">
