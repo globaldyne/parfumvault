@@ -48,7 +48,7 @@ $(document).ready(function() {
 	var tdIngSupData = $('#tdIngSupData').DataTable( {
 		columnDefs: [
 			{ className: 'text-center', targets: '_all' },
-			{ orderable: false, targets: [2,3,9]}
+			{ orderable: false, targets: [10]}
 		],
 		dom: 'lfrtip',
 		processing: true,
