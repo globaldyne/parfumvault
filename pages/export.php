@@ -40,7 +40,8 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'ingredients'){
 		return;
 	}
 	$ingredients = 0;
-	
+	$suppliers_count = 0;
+
 	$q = mysqli_query($conn, "SELECT * FROM ingredients");
 	while($res = mysqli_fetch_assoc($q)){
 		
@@ -114,16 +115,58 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'ingredients'){
 		$cmp[] = $c;
 	}
 	
+	$q = mysqli_query($conn, "SELECT * FROM suppliers");
+	while($res = mysqli_fetch_assoc($q)){
+
+		$s['id'] = (int)$res['id'];
+		$s['ingSupplierID'] = (int)$res['ingSupplierID'];
+		$s['ingID'] = (int)$res['ingID'];
+		$s['supplierLink'] = (string)$res['supplierLink'] ?: 'N/A';
+		$s['price'] = (double)$res['price'] ?: 0;
+		$s['size'] = (double)$res['size'] ?: 10;
+		$s['manufacturer'] = (string)$res['manufacturer']?: 'N/A';
+		$s['preferred'] = (int)$res['preferred'] ?: 0;
+		$s['batch'] = (string)$res['batch'] ?: 'N/A';
+		$s['purchased'] = (string)$res['purchased'] ?: 'N/A';
+		$s['mUnit'] = (string)$res['mUnit'] ?: 'N/A';
+		$s['stock'] = (double)$res['stock'] ?: 0;
+		$s['status'] = (int)$res['status'] ?: 1;
+		$s['created_at'] = (string)$res['created_at'];
+		$s['updated_at'] = (string)$res['updated_at'];
+		$s['supplier_sku'] = (string)$res['supplier_sku'] ?: 'N/A';
+		$s['internal_sku'] = (string)$res['internal_sku'] ?: 'N/A';
+		$s['storage_location'] = (string)$res['storage_location'] ?: 'N/A';
+
+		$sup[] = $s;
+		$suppliers_count++;
+	}
+	$qs = mysqli_query($conn, "SELECT * FROM ingSuppliers");
+	while($res_sup = mysqli_fetch_assoc($qs)){
+
+		$is['id'] = (int)$res_sup['id'];
+		$is['name'] = (string)$res_sup['name'];
+		$is['address'] = (string)$res_sup['address'] ?: 'N/A';
+		$is['po'] = (string)$res_sup['po'] ?: 'N/A';
+		$is['country'] = (string)$res_sup['country'] ?: 'N/A';
+		$is['telephone'] = (string)$res_sup['telephone']?: 'N/A';
+		$is['url'] = (string)$res_sup['url']?: 'N/A';
+		$is['email'] = (string)$res_sup['email']?: 'N/A';
+
+		$ingSup[] = $is;
+	}
 	
 	
 	$vd['product'] = $product;
 	$vd['version'] = $ver;
 	$vd['ingredients'] = $ingredients;
+	$vd['suppliers'] = $suppliers_count;
 	$vd['timestamp'] = date('d/m/Y H:i:s');
 
 	
 	$result['ingredients'] = $ing;
 	$result['compositions'] = $cmp;
+	$result['suppliers'] = $sup;
+	$result['ingSuppliers'] = $ingSup;
 	$result['pvMeta'] = $vd;
 
 	header('Content-disposition: attachment; filename=ingredients.json');
@@ -141,6 +184,7 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'single-ingredient' && $_GET['i
 		return;
 	}
 	$ingredient = 0;
+	$suppliers_count = 0;
 	
 	$q = mysqli_query($conn, "SELECT * FROM ingredients WHERE id=".$_GET['id']."");
 	while($res = mysqli_fetch_assoc($q)){
@@ -203,7 +247,7 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'single-ingredient' && $_GET['i
 	$q = mysqli_query($conn, "SELECT * FROM allergens WHERE ing ='".$ing['0']['name']."'");
 	while($res = mysqli_fetch_assoc($q)){
 
-		$c['id'] = (string)$res['id'];
+		$c['id'] = (int)$res['id'];
 		$c['ing'] = (string)$res['ing'];
 		$c['name'] = (string)$res['name'];
 		$c['cas'] = (string)$res['cas'] ?: 'N/A';
@@ -216,25 +260,65 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'single-ingredient' && $_GET['i
 	}
 	
 	
+	$q = mysqli_query($conn, "SELECT * FROM suppliers WHERE ingID ='".$ing['0']['id']."'");
+	while($res = mysqli_fetch_assoc($q)){
+
+		$s['id'] = (int)$res['id'];
+		$s['ingSupplierID'] = (int)$res['ingSupplierID'];
+		$s['ingID'] = (int)$res['ingID'];
+		$s['supplierLink'] = (string)$res['supplierLink'] ?: 'N/A';
+		$s['price'] = (double)$res['price'] ?: 0;
+		$s['size'] = (double)$res['size'] ?: 10;
+		$s['manufacturer'] = (string)$res['manufacturer']?: 'N/A';
+		$s['preferred'] = (int)$res['preferred'] ?: 0;
+		$s['batch'] = (string)$res['batch'] ?: 'N/A';
+		$s['purchased'] = (string)$res['purchased'] ?: 'N/A';
+		$s['mUnit'] = (string)$res['mUnit'] ?: 'N/A';
+		$s['stock'] = (double)$res['stock'] ?: 0;
+		$s['status'] = (int)$res['status'] ?: 1;
+		$s['created_at'] = (string)$res['created_at'];
+		$s['updated_at'] = (string)$res['updated_at'];
+		$s['supplier_sku'] = (string)$res['supplier_sku'] ?: 'N/A';
+		$s['internal_sku'] = (string)$res['internal_sku'] ?: 'N/A';
+		$s['storage_location'] = (string)$res['storage_location'] ?: 'N/A';
+
+		$sup[] = $s;
+		$suppliers_count++;
+	
+		$qs = mysqli_query($conn, "SELECT * FROM ingSuppliers WHERE id ='".$s['ingSupplierID']."'");
+		while($res_sup = mysqli_fetch_assoc($qs)){
+	
+			$is['id'] = (int)$res_sup['id'];
+			$is['name'] = (string)$res_sup['name'];
+			$is['address'] = (string)$res_sup['address'] ?: 'N/A';
+			$is['po'] = (string)$res_sup['po'] ?: 'N/A';
+			$is['country'] = (string)$res_sup['country'] ?: 'N/A';
+			$is['telephone'] = (string)$res_sup['telephone'] ?: 'N/A';
+			$is['url'] = (string)$res_sup['url'] ?: 'N/A';
+			$is['email'] = (string)$res_sup['email'] ?: 'N/A';
+	
+			$ingSup[] = $is;
+		}
+	}
+	
 	$vd['product'] = $product;
 	$vd['version'] = $ver;
 	$vd['ingredients'] = $ingredient;
+	$vd['suppliers'] = $suppliers_count;
 	$vd['timestamp'] = date('d/m/Y H:i:s');
 
 	
 	$result['ingredients'] = $ing;
 	$result['compositions'] = $cmp;	
+	$result['suppliers'] = $sup;
+	$result['ingSuppliers'] = $ingSup;
 	$result['pvMeta'] = $vd;
 
 	header('Content-disposition: attachment; filename='.$ing['0']['name'].'.json');
 	header('Content-type: application/json');
 	echo json_encode($result, JSON_PRETTY_PRINT);
 	return;
-	
 
 }
-
-
-
 
 ?>

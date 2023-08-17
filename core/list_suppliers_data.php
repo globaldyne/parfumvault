@@ -24,9 +24,12 @@ while($res = mysqli_fetch_array($q)){
 }
 
 foreach ($rs as $rq) { 
+	$mt = mysqli_fetch_array(mysqli_query($conn, "SELECT COUNT(id) AS mt FROM suppliers WHERE ingSupplierID = '".$rq['id']."'"));
+
 	$r['id'] = (int)$rq['id'];
 	$r['name'] = (string)$rq['name'];
-	$r['address'] = (string)$rq['address'];
+	$r['materials'] = (int)$mt['mt'] ?: 0;
+	$r['address'] = (string)$rq['address']?:'N/A';
 	$r['po'] = (string)$rq['po']?:'N/A';
 	$r['country'] = (string)$rq['country'];
 	$r['telephone'] = (string)$rq['telephone']?:'N/A';

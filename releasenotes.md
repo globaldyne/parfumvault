@@ -1,5 +1,8 @@
 Whats New in v8.4
 --------------------------
+- Add total materials count per supplier
+- Add additiotnal fields for suppliers (sku, storage)
+- Fix an issue allowing blank urls when editong a supplier
 - Added last updated field in formulas list (non sortable limitation)
 - Pyramid view values input replaced with sliders
 - Auto redirect to the new ingredient when is renamed

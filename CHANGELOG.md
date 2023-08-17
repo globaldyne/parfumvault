@@ -9,6 +9,13 @@
 - Remove session state when user preferences reset
 - Added last updated field in formulas list (non sortable limitation)
 - Change details method display for IFRA, bottles and lids
+- Update README to include donations badge
+- Add additiotnal fields for suppliers (sku, storage)
+- Fix an issue allowing blank urls when editong a supplier
+- Redesign add supplier modal
+- Added state save for ingredient suppliers
+- Added suppliers info when exporting ingredients
+- Added total materials count per supplier
 
 ### Version 8.3
 - Blocked upgrades to the future versions starting version 6.0

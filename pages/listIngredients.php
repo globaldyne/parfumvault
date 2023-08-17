@@ -22,7 +22,7 @@ $defCatClass = $settings['defCatClass'];
         <li><a class="dropdown-item" id="json_export" href="/pages/export.php?format=json&kind=ingredients"><i class="fa-solid fa-file-code mx-2"></i>Export to JSON</a></li>
         <div class="dropdown-divider"></div>
         <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#csv_import" data-backdrop="static"><i class="fa-solid fa-file-import mx-2"></i>Import from CSV</a></li>
-        <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#import_ingredients_json" data-backdrop="static"><i class="fa-solid fa-file-import mx-2"></i>Import from JSON</a></li>
+        <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#import_ingredients_json"><i class="fa-solid fa-file-import mx-2"></i>Import from JSON</a></li>
         <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#pv_online_import"><i class="fa-solid fa-cloud-arrow-down mx-2"></i>Import from PV Online</a></li>
       </div>
      </div>                    
