@@ -38,6 +38,8 @@ while ($allFormulas = mysqli_fetch_array($formulas)){
 }
 
 foreach ($formula as $formula) {
+	$fdata = mysqli_fetch_array(mysqli_query($conn, "SELECT updated FROM formulas WHERE fid = '".$formula['fid']."' ORDER BY updated DESC limit 1"));
+	
 	$r['id'] = (int)$formula['id'];
 	$r['fid'] = (string)$formula['fid'];
 	$r['product_name'] = (string)$formula['product_name'] ?: 'N/A';
@@ -46,6 +48,7 @@ foreach ($formula as $formula) {
 	$r['profile'] = (string)$formula['profile']?: 'N/A';
 	$r['sex'] = (string)$formula['sex']?:'N/A';
 	$r['created'] = (string)$formula['created'];
+	$r['updated'] = (string)$fdata['updated'] ?: '-';
 	$r['catClass'] = (string)$formula['catClass']?: 'N/A';
 	$r['ingredients'] = (int)countElement("formulas WHERE fid = '".$formula['fid']."'",$conn)?:'0';
 	$r['isMade'] = (int)$formula['isMade']?: 0;
@@ -53,7 +56,8 @@ foreach ($formula as $formula) {
 	$r['status'] = (int)$formula['status']?: 0;
 	$r['rating'] = (int)$formula['rating']?: 0;
 	$r['revision'] = (int)$formula['revision']?: 0;
-
+	
+	
 	$rx[]=$r;
 	
 }

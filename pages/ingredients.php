@@ -11,7 +11,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
 <style>
 .mfp-iframe-holder .mfp-content {
     line-height: 0;
-    width: 70%;
+    width: 80%;
     max-width: 100%; 
 	height: 1300px;
 }
@@ -114,7 +114,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
 
 
 <!--IMPORT JSON MODAL-->
-<div class="modal fade" id="import_ingredients_json" tabindex="-1" role="dialog" aria-labelledby="import_ingredients_json" aria-hidden="true">
+<div class="modal fade" id="import_ingredients_json" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="import_ingredients_json" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">

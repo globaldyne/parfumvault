@@ -709,13 +709,13 @@ if($_POST['ingSupplier'] == 'getPrice'){
 //ADD ING SUPPLIER
 if($_POST['ingSupplier'] == 'add'){
 	if(empty($_POST['supplier_id']) || empty($_POST['supplier_link']) || empty($_POST['supplier_size'])){
-		$response["error"] = '<strong>Error:</strong> Missing fields!';
+		$response["error"] = 'Error: Missing fields!';
 		echo json_encode($response);
 		return;
 	}
 	
 	if(!is_numeric($_POST['supplier_size']) || !is_numeric($_POST['stock'])){
-		$response["error"] = '<strong>Error:</strong> Only numeric values allowed in size, stock and price fields!';
+		$response["error"] = 'Error: Only numeric values allowed in size, stock and price fields!';
 		echo json_encode($response);
 		return;
 	}
@@ -732,6 +732,10 @@ if($_POST['ingSupplier'] == 'add'){
 	$stock = mysqli_real_escape_string($conn, $_POST['stock'] ?: 0);
 	$mUnit = $_POST['mUnit'];
 	$status = $_POST['status'];
+	$supplier_sku = mysqli_real_escape_string($conn, $_POST['supplier_sku']);
+	$internal_sku = mysqli_real_escape_string($conn, $_POST['internal_sku']);
+	$storage_location = mysqli_real_escape_string($conn, $_POST['storage_location']);
+
 
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT ingSupplierID FROM suppliers WHERE ingSupplierID = '$supplier_id' AND ingID = '$ingID'"))){
 		$response["error"] = '<strong>Error: </strong>'.$supplier_name['name'].' already exists!';
@@ -745,11 +749,13 @@ if($_POST['ingSupplier'] == 'add'){
 		$preferred = '0';
 	}
 		
-	if(mysqli_query($conn, "INSERT INTO suppliers (ingSupplierID,ingID,supplierLink,price,size,manufacturer,preferred,batch,purchased,stock,mUnit,status) VALUES ('$supplier_id','$ingID','$supplier_link','$supplier_price','$supplier_size','$supplier_manufacturer','$preferred','$supplier_batch','$purchased','$stock','$mUnit','$status')")){
-		$response["success"] = '<strong>'.$supplier_name['name'].'</strong> added.';
+	if(mysqli_query($conn, "INSERT INTO suppliers (ingSupplierID,ingID,supplierLink,price,size,manufacturer,preferred,batch,purchased,stock,mUnit,status,supplier_sku,internal_sku,storage_location) VALUES ('$supplier_id','$ingID','$supplier_link','$supplier_price','$supplier_size','$supplier_manufacturer','$preferred','$supplier_batch','$purchased','$stock','$mUnit','$status','$supplier_sku','$internal_sku','$storage_location')")){
+		$response["success"] = $supplier_name['name'].' added.';
+		echo json_encode($response);
+	}else{
+		$response["error"] = mysqli_error($conn);
 		echo json_encode($response);
 	}
-	
 	return;
 }
 
@@ -1037,6 +1043,11 @@ if($_POST['supp'] == 'edit'){
 
 
 if($_POST['supp'] == 'add'){
+	if(!is_numeric($_POST['min_ml']) || !is_numeric($_POST['min_gr'])){
+		$response["error"] = 'Only numeric values allowed in ml and grams fields!';
+		echo json_encode($response);
+		return;
+	}
 	$description = mysqli_real_escape_string($conn, $_POST['description']);
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 	$address = mysqli_real_escape_string($conn, $_POST['address']);
@@ -1478,7 +1489,8 @@ if($_POST['action'] == 'rename' && $_POST['old_ing_name'] && $_POST['ing_id']){
 
 	if($nID = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '$new_ing_name'"))){
 		
-		$response['success'] = $old_ing_name.' renamed to <a href="/pages/mgmIngredient.php?id='.base64_encode($nID['name']).'" >'.$new_ing_name.'</a>!';
+		$response['success']['msg'] = $old_ing_name.' renamed to <a href="/pages/mgmIngredient.php?id='.base64_encode($nID['name']).'" >'.$new_ing_name.'</a>!';
+		$response['success']['id'] = base64_encode($nID['name']);
 		echo json_encode($response);
 		return;
 	}
