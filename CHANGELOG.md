@@ -21,6 +21,7 @@
 - Export suppliers to JSON
 - Export supplier's materials to JSON
 - Improve csv export for IFRA Library
+- Fix formula image upload message
 
 ### Version 8.3
 - Blocked upgrades to the future versions starting version 6.0
