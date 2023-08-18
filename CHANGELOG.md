@@ -1,4 +1,5 @@
 # CHANGELOG
+### Version 8.5
 ### Version 8.4
 - Auto redirect to the new ingredient when is renamed
 - Extend order sorting state save for formula revisions and history
