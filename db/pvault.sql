@@ -383,6 +383,10 @@ CREATE TABLE `suppliers` (
  `stock` decimal(10,3) NOT NULL,
  `status` INT NOT NULL DEFAULT '1' COMMENT '1 = Available\r\n2 = Limited Availability\r\n3 = Not available', 
  `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+ `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ `supplier_sku` VARCHAR(255) NULL, 
+ `internal_sku` VARCHAR(255) NULL,
+ `storage_location` VARCHAR(255) NULL,
  PRIMARY KEY (`id`),
  UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;

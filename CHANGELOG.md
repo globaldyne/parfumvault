@@ -1,4 +1,28 @@
 # CHANGELOG
+### Version 8.4
+- Auto redirect to the new ingredient when is renamed
+- Extend order sorting state save for formula revisions and history
+- Disable state 2hr window expire
+- General settings page div allign fix
+- Pyramid view values input replaced with sliders
+- State session stored on separate array
+- Remove session state when user preferences reset
+- Added last updated field in formulas list (non sortable limitation)
+- Change details method display for IFRA, bottles and lids
+- Update README to include donations badge
+- Add additiotnal fields for suppliers (sku, storage)
+- Fix an issue allowing blank urls when editong a supplier
+- Redesign add supplier modal
+- Added state save for ingredient suppliers
+- Added suppliers info when exporting ingredients
+- Added total materials count per supplier
+- Show saved state search value in  ingredients
+- Rewrite suppliers csv export method
+- Export suppliers to JSON
+- Export supplier's materials to JSON
+- Improve csv export for IFRA Library
+- Fix formula image upload message
+
 ### Version 8.3
 - Blocked upgrades to the future versions starting version 6.0
 - Added option to store user preferences in the database
