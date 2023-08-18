@@ -11,7 +11,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
 <style>
 .mfp-iframe-holder .mfp-content {
     line-height: 0;
-    width: 70%;
+    width: 80%;
     max-width: 100%; 
 	height: 1300px;
 }
