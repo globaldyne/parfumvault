@@ -19,7 +19,7 @@ if( $_GET['set'] && $_GET['action'] == 'save'){
 		case '1':
     	case 'PHP_SESS':
 		default:
-			$_SESSION["$pref_name"] = $_POST;
+			$_SESSION["user_prefs"]["$pref_name"] = $_POST;
 	   		break;
 		   
 	} 
@@ -39,7 +39,7 @@ if($a = $_GET['set'] && $_GET['action'] == 'load'){
     	case 'PHP_SESS':
 		case '1':
 		default:
-			echo json_encode($_SESSION["$pref_name"]) ;
+			echo json_encode($_SESSION["user_prefs"]["$pref_name"]) ;
 	   		break;
 		   
 	}

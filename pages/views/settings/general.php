@@ -87,47 +87,53 @@ while($cats_res = mysqli_fetch_array($cats_q)){
     </div>
   </div>
   <div class="form-row">
-  	<div class="form-group col-md-2">
+  	<div class="form-group col-md-auto">
       	<input name="pubChem" type="checkbox" id="pubChem" value="1" <?php if($settings['pubChem'] == '1'){ ?> checked="checked" <?php } ?>/>
       	<label class="form-check-label" for="pubChem">Enable PubChem</label>
   	</div>
-  	<div class="form-group col-md-2">
+  	<div class="form-group col-md-auto">
       	<input name="chkVersion" type="checkbox" id="chkVersion" value="1" <?php if($settings['chkVersion'] == '1'){ ?> checked="checked" <?php } ?>/>
       	<label class="form-check-label" for="chkVersion">Check for updates</label>
   	</div>
-    <div class="form-group col-md-3">
+    <div class="form-group col-md-auto">
       	<input name="chem_vs_brand" type="checkbox" id="chem_vs_brand" value="1" <?php if($settings['chem_vs_brand'] == '1'){ ?> checked="checked" <?php } ?>/>
       	<label class="form-check-label" for="chem_vs_brand">Show chemical names</label>
   	</div>
     
-    <div class="form-group col-md-3">
+    <div class="form-group col-md-auto">
       	<input name="multi_dim_perc" type="checkbox" id="multi_dim_perc" value="1" <?php if($settings['multi_dim_perc'] == '1'){ ?> checked="checked" <?php } ?>/>
       	<label class="form-check-label" for="multi_dim_perc">Multi-dimensional lookup</label>
   	</div>
    </div>
  </div>
 
-    <div class="col-sm-6">
+    <div class="col-sm-2">
      <h4 class="m-0 mb-4 text-primary">Pyramid View</h4>
      <div class="form-row">
-        <div class="form-group col-sm-2">
-          <label for="top_n">Top notes %</label>
-          <input name="top_n" type="text" class="form-control" id="top_n" value="<?php echo $settings['top_n'];?>"/>
+        <div class="form-group col-md-auto">
+          <label for="top_n" id="top">Top notes %</label>
+          <input name="top_n" type="range" class="form-range" id="top_n" min="0" max="100" value="<?php echo $settings['top_n'];?>" />
         </div>
       </div>
       <div class="form-row">
-          <div class="form-group  col-sm-2">
-            <label for="heart_n">Heart notes %</label>
-            <input name="heart_n" type="text" class="form-control" id="heart_n" value="<?php echo $settings['heart_n'];?>"/>
+          <div class="form-group  col-md-auto">
+            <label for="heart_n" id="heart">Heart notes %</label>
+            <input name="heart_n" type="range" class="form-range" id="heart_n" min="0" max="100" value="<?php echo $settings['heart_n'];?>"/>
           </div>
       </div>
       <div class="form-row">
-          <div class="form-group col-sm-2">
-            <label for="base_n">Base notes %</label>
-            <input name="base_n" type="text" class="form-control" id="base_n" value="<?php echo $settings['base_n'];?>"/>
+          <div class="form-group col-md-auto">
+            <label for="base_n" id="base">Base notes %</label>
+            <input name="base_n" type="range" class="form-range" id="base_n" min="0" max="100" value="<?php echo $settings['base_n'];?>"/>
           </div>
       </div>
     </div>
+    
+   <div class="col-sm-3">
+   		
+     
+   </div>
+    
     <div class="col dropdown-divider"></div>
     <div class="form-row">
       <div class="col-sm-12">
@@ -136,7 +142,7 @@ while($cats_res = mysqli_fetch_array($cats_q)){
          </div>
       </div>
     </div>
-
+ </div>
 </div>
 
 <script>
@@ -165,13 +171,28 @@ $('#save-general').click(function() {
 	dataType: 'json',
 	success: function (data) {
 		if(data.success){
-			msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';	
+			msg = '<div class="alert alert-success alert-dismissible"><i class="fa-solid fa-circle-check mx-2"></i><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';	
 		}else{
-			msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
+			msg = '<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-triangle-exclamation mx-2"></i><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
 		}
 		$('#inMsg').html(msg);
 	}
   });
 });
 
+$('#top').text('Top notes ' + $('#top_n').val() + '%');
+$('#heart').text('Heart notes ' + $('#heart_n').val() + '%');
+$('#base').text('Base notes ' + $('#base_n').val() + '%');
+
+$('#top_n').on('input', function(){
+    $('#top').text('Top notes ' + $('#top_n').val() + '%');
+});
+
+$('#heart_n').on('input', function(){
+    $('#heart').text('Heart notes ' + $('#heart_n').val() + '%');
+});
+
+$('#base_n').on('input', function(){
+    $('#base').text('Base notes ' + $('#base_n').val() + '%');
+});
 </script>

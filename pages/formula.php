@@ -40,8 +40,8 @@ if($form[0]['ingredient']){
 <style>
 .mfp-iframe-holder .mfp-content {
     line-height: 0;
-    width: 1500px;
-    max-width: 1500px; 
+    width: 80%;
+    max-width: 100%; 
 	height: 1300px;
 }
 </style>

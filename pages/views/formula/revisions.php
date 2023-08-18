@@ -62,7 +62,26 @@ $(document).ready(function() {
 	order: [[ 0, 'asc' ]],
 	lengthMenu: [[5, 50, 100, -1], [5, 50, 100, "All"]],
 	pageLength: 5,
-	displayLength: 5
+	displayLength: 5,
+	stateSave: true,
+	stateDuration: -1,
+	stateLoadCallback: function (settings, callback) {
+		$.ajax( {
+			url: '/core/update_user_settings.php?set=listRevisions&action=load',
+			dataType: 'json',
+			success: function (json) {
+				callback( json );
+			}
+		});
+	},
+	stateSaveCallback: function (settings, data) {
+	   $.ajax({
+		 url: "/core/update_user_settings.php?set=listRevisions&action=save",
+		 data: data,
+		 dataType: "json",
+		 type: "POST"
+	  });
+	},
 	});
 });
 
