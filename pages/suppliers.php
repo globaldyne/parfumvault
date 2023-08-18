@@ -10,13 +10,14 @@
               <div class="table-responsive">
             <div id="supmsg"></div>
             <table class="table table-striped table-bordered">
-                <tr class="noBorder noexport">
+                <tr class="noBorder">
                  <div class="text-right">
                   <div class="btn-group">
                       <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
                       <div class="dropdown-menu dropdown-menu-right">
                         <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#addSupplier"><i class="fa-solid fa-plus mx-2"></i>Add new</a></li>
-                        <li><a class="dropdown-item" id="csv" href="#"><i class="fa-solid fa-file-export mx-2"></i>Export to CSV</a></li>
+                        <li><a class="dropdown-item" id="csv_export" href="/pages/export.php?format=csv&kind=suppliers"><i class="fa-solid fa-file-csv mx-2"></i>Export to CSV</a></li>
+        <li><a class="dropdown-item" id="json_export" href="/pages/export.php?format=json&kind=suppliers"><i class="fa-solid fa-file-code mx-2"></i>Export to JSON</a></li>
                       </div>
                     </div>        
                  </div>
@@ -133,6 +134,7 @@ function actions(data, type, row){
 			'<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
 				'<ul class="dropdown-menu dropdown-menu-right">';
 	data += '<li><i class="pv_point_gen dropdown-item text-dark" data-toggle="modal" id="edit_supplier" data-id="' + row.id + '" data-name="' + row.name + '" data-address="'+row.address+'" data-po="'+row.po+'" data-country="'+row.country+'" data-telephone="'+row.telephone+'" data-url="'+row.url+'" data-email="'+row.email+'"><i class="fas fa-edit mx-2"></i>Edit</i></li>';
+	data += '<li><a class="dropdown-item" id="json_export" href="/pages/export.php?format=json&kind=supplier-materials&supplier-name='+row.name+'&id='+row.id+'"><i class="fa-solid fa-file-code mx-2"></i>Export materials to JSON</a></li>';
 	data += '<div class="dropdown-divider"></div>';
 	data += '<li><a class="dropdown-item pv_point_gen text-danger" id="dDel" data-name="'+ row.name +'" data-id='+ row.id +'><i class="fas fa-trash mx-2"></i>Delete</a></li>';
 	data += '</ul></div>';
@@ -375,22 +377,6 @@ $('#btnEditSupplier').on('click', function () {
   });
 });
 
-//Export
-$('#csv').on('click',function(){
-  $("#tdIngSupData").tableHTMLExport({
-	type:'csv',
-	filename:'suppliers.csv',
-	separator: ',',
-  	newline: '\r\n',
-  	trimContent: true,
-  	quoteFields: true,
-	ignoreColumns: '.noexport',
-  	ignoreRows: '.noexport',	
-	htmlContent: false,
-  	// debug
-  	consoleLog: false   
-	});
-});
 
 function reload_data() {
     $('#tdIngSupData').DataTable().ajax.reload(null, true);

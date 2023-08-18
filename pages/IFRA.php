@@ -25,7 +25,7 @@ require_once(__ROOT__.'/func/php-settings.php');
                         <?php } ?>
                         <li class="dropdown-header">Export</li> 
            				<li><a class="dropdown-item" href="/pages/operations.php?action=exportIFRA"><i class="fa-solid fa-file-code mx-2"></i>Export as JSON</a></li>
-                        <li><a class="dropdown-item" id="csv" href="#"><i class="fa-solid fa-file-export mx-2"></i>Export as CSV</a></li>
+                        <li><a class="dropdown-item" id="exportCSV" href="#"><i class="fa-solid fa-file-export mx-2"></i>Export as CSV</a></li>
                       </div>
                     </div>
                   </div>
@@ -214,6 +214,10 @@ $(document).ready(function() {
 		{ orderable: false, targets: [25]}
 	],
 	dom: 'lrftip',
+	buttons: [{
+			extend: 'csvHtml5',
+			title: "IFRALibrary"
+	}],
 	processing: true,
 	serverSide: true,
 	searching: true,
@@ -341,7 +345,7 @@ function CAS(data, type, row){
 }
 
 function image(data, type, row){
-	return '<img src="data:image/png;base64, '+row.image+'" class="img_ifra noexport"/>';
+	return '<img src="data:image/png;base64, '+row.image+'" class="img_ifra"/>';
 }
 
 function reload_ifra_data() {
@@ -354,21 +358,9 @@ function actions(data, type, row){
 	return data;
 }
 
-$('#csv').on('click',function(){
-	$("#tdDataIFRA").tableHTMLExport({
-		type:'csv',
-		filename:'ifra.csv',
-		separator: ',',
-		newline: '\r\n',
-		trimContent: true,
-		quoteFields: true,
-		
-		ignoreColumns: '.noexport',
-		ignoreRows: '.noexport',
-		
-		htmlContent: false,  
-		consoleLog: false   
-	}); 
+
+$('#exportCSV').click(() => {
+    $('#tdDataIFRA').DataTable().button(0).trigger();
 });
 
 $('#btnImportIFRA').click(function() {	

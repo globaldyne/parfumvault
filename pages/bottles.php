@@ -16,7 +16,7 @@ while ($suppliers = mysqli_fetch_array($sup)){
               <div class="table-responsive">
               <div id="innermsg"></div>
                <table class="table table-striped table-bordered">
-                 <tr class="noBorder noexport">
+                 <tr class="noBorder">
                      <div class="text-right">
                       <div class="btn-group">
                           <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>

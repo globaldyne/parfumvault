@@ -1,5 +1,7 @@
 Whats New in v8.4
 --------------------------
+- Export supplier's materials to JSON
+- Export suppliers to JSON
 - Add total materials count per supplier
 - Add additiotnal fields for suppliers (sku, storage)
 - Fix an issue allowing blank urls when editong a supplier

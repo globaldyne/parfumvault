@@ -17,6 +17,10 @@
 - Added suppliers info when exporting ingredients
 - Added total materials count per supplier
 - Show saved state search value in  ingredients
+- Rewrite suppliers csv export method
+- Export suppliers to JSON
+- Export supplier's materials to JSON
+- Improve csv export for IFRA Library
 
 ### Version 8.3
 - Blocked upgrades to the future versions starting version 6.0

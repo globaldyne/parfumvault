@@ -7,6 +7,7 @@ require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/inc/product.php');
 
+//EXPORT INGREDIENTS CSV
 if($_GET['format'] == 'csv' && $_GET['kind'] == 'ingredients'){
 	$defCatClass = $settings['defCatClass'];
 	$r = mysqli_query($conn, "SELECT name,INCI,cas,FEMA,type,strength,profile,physical_state,allergen,odor,impact_top,impact_heart,impact_base FROM ingredients");
@@ -32,6 +33,37 @@ if($_GET['format'] == 'csv' && $_GET['kind'] == 'ingredients'){
 	return;	
 }
 
+//EXPORT SUPPLIERS CSV
+if($_GET['format'] == 'csv' && $_GET['kind'] == 'suppliers'){
+	$r = mysqli_query($conn, "SELECT id,name,address,po,country,telephone,url,email,platform,price_tag_start,price_tag_end,add_costs,price_per_size,notes,min_ml,min_gr FROM ingSuppliers");
+	
+	$res = array();
+	if (mysqli_num_rows($r) > 0) {
+		while ($row = mysqli_fetch_assoc($r)) {
+			$mt = mysqli_fetch_array(mysqli_query($conn, "SELECT COUNT(id) AS mt FROM suppliers WHERE ingSupplierID = '".$row['id']."'"));
+
+			unset($row['id']);
+			$row['materials'] = $mt['mt'];
+			$res[] = $row;
+			
+		}
+	}
+
+	header('Content-Type: text/csv; charset=utf-8');
+	header('Content-Disposition: attachment; filename='.$_GET['kind'].'.csv');
+	$output = fopen('php://output', 'w');
+	fputcsv($output, array('Name', 'Address', 'PO', 'Country', 'Telephone', 'URL', 'Email', 'Platform', 'Price Tag Start', 'Price Tag End', 'Added Costs', 'Price Per Size', 'Notes', 'Min ml', 'Min gr', 'Materials'));
+	
+	if (count($res) > 0) {
+		foreach ($res as $row) {
+			fputcsv($output, $row);
+		}
+	}
+	
+	return;	
+}
+
+//EXPORT INGREDIENTS JSON
 if($_GET['format'] == 'json' && $_GET['kind'] == 'ingredients'){
 		
 	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients")))){
@@ -315,6 +347,102 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'single-ingredient' && $_GET['i
 	$result['pvMeta'] = $vd;
 
 	header('Content-disposition: attachment; filename='.$ing['0']['name'].'.json');
+	header('Content-type: application/json');
+	echo json_encode($result, JSON_PRETTY_PRINT);
+	return;
+
+}
+
+//EXPORT SUPPLIERS JSON
+if($_GET['format'] == 'json' && $_GET['kind'] == 'suppliers'){
+		
+	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingSuppliers")))){
+		$msg['error'] = 'No suppliers found to export.';
+		echo json_encode($msg);
+		return;
+	}
+	$suppliers_count = 0;
+
+	$q = mysqli_query($conn, "SELECT * FROM ingSuppliers");
+	while($res = mysqli_fetch_assoc($q)){
+		$mt = mysqli_fetch_array(mysqli_query($conn, "SELECT COUNT(id) AS mt FROM suppliers WHERE ingSupplierID = '".$res['id']."'"));
+
+		$r['id'] = (int)$res['id'];
+		$r['name'] = (string)$res['name'];
+		$r['address'] = (string)$res['address'];
+		$r['po'] = (string)$res['po'];
+		$r['country'] = (string)$res['country'];
+		$r['telephone'] = (string)$res['telephone'];
+		$r['url'] = (string)$res['url'];
+		$r['email'] = (string)$res['email'];
+		$r['platform'] = (string)$res['platform'];
+		$r['price_tag_start'] = (string)$res['price_tag_start'];
+		$r['price_tag_end'] = (string)$res['price_tag_end'];		
+		$r['add_costs'] = (double)$res['add_costs'];
+		$r['price_per_size'] = (int)$res['price_per_size'];
+		$r['notes'] = (string)$res['notes'];
+		$r['min_ml'] = (double)$res['min_ml'];
+		$r['min_gr'] = (double)$res['min_gr'];
+
+		$r['materials'] = (int)$mt['mt'];
+		
+		$suppliers_count++;
+		$sup[] = $r;
+
+	}
+	
+	$vd['product'] = $product;
+	$vd['version'] = $ver;
+	$vd['suppliers'] = $suppliers_count;
+	$vd['timestamp'] = date('d/m/Y H:i:s');
+
+	$result['suppliers'] = $sup;
+	$result['pvMeta'] = $vd;
+
+	header('Content-disposition: attachment; filename=suppliers.json');
+	header('Content-type: application/json');
+	echo json_encode($result, JSON_PRETTY_PRINT);
+	return;	
+
+}
+
+//EXPORT SUPPLIERS MATERIALS
+if($_GET['format'] == 'json' && $_GET['kind'] == 'supplier-materials' && $_GET['id']){
+		
+	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT ingID FROM suppliers WHERE ingSupplierID=".$_GET['id']."")))){
+		$msg['error'] = 'No data found to export.';
+		echo json_encode($msg);
+		return;
+	}
+	$ingredient = 0;
+	
+	$q = mysqli_query($conn, "SELECT ingID FROM suppliers WHERE ingSupplierID=".$_GET['id']."");
+	while($res = mysqli_fetch_array($q)){
+		
+		$i = mysqli_fetch_array(mysqli_query($conn, "SELECT id,name,cas,created,odor FROM ingredients WHERE id=".$res['ingID'].""));
+		
+		$r['id'] = (int)$i['id'];
+		$r['name'] = (string)$i['name'];
+		$r['cas'] = (string)$i['cas'] ?: 'N/A';
+		$r['created'] = (string)$i['created'] ?: 'N/A';
+		$r['odor'] = (string)$i['odor'] ?: 'N/A';
+
+		$ingredient++;
+		$ing[] = $r;
+	}
+
+	
+	$vd['product'] = $product;
+	$vd['version'] = $ver;
+	$vd['ingredients'] = $ingredient;
+	$vd['supplier'] = $_GET['supplier-name'];
+	$vd['timestamp'] = date('d/m/Y H:i:s');
+
+	
+	$result['supplier_materials'] = $ing;
+	$result['pvMeta'] = $vd;
+
+	header('Content-disposition: attachment; filename='.$_GET['supplier-name'].'_materials.json');
 	header('Content-type: application/json');
 	echo json_encode($result, JSON_PRETTY_PRINT);
 	return;

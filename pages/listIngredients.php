@@ -11,14 +11,14 @@ $defCatClass = $settings['defCatClass'];
 
 ?>
 <table class="table table-striped table-bordered" style="width:100%">
-    <tr class="noBorder noexport">
+    <tr class="noBorder">
      <div class="text-right">
       <div class="btn-group">
        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
       <div class="dropdown-menu dropdown-menu-right">
         <li><a class="dropdown-item popup-link" href="/pages/mgmIngredient.php"><i class="fa-solid fa-plus mx-2"></i>Create new ingredient</a></li>
-        <div class="dropdown-divider"></div
-        ><li><a class="dropdown-item" id="csv_export" href="/pages/export.php?format=csv&kind=ingredients"><i class="fa-solid fa-file-csv mx-2"></i>Export to CSV</a></li>
+        <div class="dropdown-divider"></div>
+        <li><a class="dropdown-item" id="csv_export" href="/pages/export.php?format=csv&kind=ingredients"><i class="fa-solid fa-file-csv mx-2"></i>Export to CSV</a></li>
         <li><a class="dropdown-item" id="json_export" href="/pages/export.php?format=json&kind=ingredients"><i class="fa-solid fa-file-code mx-2"></i>Export to JSON</a></li>
         <div class="dropdown-divider"></div>
         <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#csv_import" data-backdrop="static"><i class="fa-solid fa-file-import mx-2"></i>Import from CSV</a></li>
