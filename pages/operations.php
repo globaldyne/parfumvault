@@ -42,8 +42,21 @@ if($_GET['do'] == 'db_update'){
 		$sql = __ROOT__.'/db/updates/update_'.$c_ver['schema_ver'].'-'.$u_ver.'.sql';
 	
 		if(file_exists($sql) == TRUE){	
-			$cmd = "mysql -u$dbuser -p$dbpass -h$dbhost $dbname < $sql";
-			passthru($cmd,$e);
+			if (checkFunctionIsAvailable("passthru"))
+			{
+				$cmd = "mysql -u$dbuser -p$dbpass -h$dbhost $dbname < $sql";
+				passthru($cmd,$e);
+			}
+			else
+			{
+				// if passthru function is disabled try another method
+				$sql = file_get_contents($sql);
+				$e = !mysqli_multi_query($conn, $sql);	
+				while(mysqli_more_results($conn))
+				{
+					mysqli_next_result($conn);
+				}		
+			}
 		}
 		
 		$q = mysqli_query($conn, "UPDATE pv_meta SET schema_ver = '$u_ver'");
@@ -71,6 +84,8 @@ if($_GET['do'] == 'backupDB'){
 	
 	header( 'Content-Type: application/x-gzip' );
 	header( 'Content-Disposition: attachment; filename="' .$file. '"' );
+
+	//TODO: implement fallback mysql operation + gzip 
 	$cmd = "mysqldump $bkparams -u $dbuser --password=$dbpass -h $dbhost $dbname | gzip --best";
 	passthru($cmd);
 	
@@ -94,7 +109,9 @@ if($_GET['restore'] == 'db_bk'){
 			return;
 		}
 		
+		//TODO: implement fallback gunzip with php
 		system("gunzip -c $target_path > ".$tmp_path.'restore.sql');
+		//TODO: implement fallback mysql operation
 		$cmd = "mysql -u$dbuser -p$dbpass -h$dbhost $dbname < ".$tmp_path.'restore.sql'; 
 		passthru($cmd,$e);
 		

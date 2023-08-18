@@ -35,7 +35,19 @@ function convertPHPSizeToBytes($sSize){
             break;
     }
     return (int)$iValue;
-}      
+}   
+
+
+function checkFunctionIsAvailable($func) {
+    if (ini_get('safe_mode')) return false;
+    $disabled = ini_get('disable_functions');
+    if ($disabled) {
+        $disabled = explode(',', $disabled);
+        $disabled = array_map('trim', $disabled);
+        return !in_array($func, $disabled);
+    }
+    return true;
+}
 
 
 ?>

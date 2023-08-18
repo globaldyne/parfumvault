@@ -50,8 +50,22 @@ if(isset($_SESSION['parfumvault'])){
 			}
 			if (mysqli_query($conn,"DESCRIBE pv_meta") == FALSE && getenv('DB_HOST') && getenv('DB_USER') && getenv('DB_PASS') && getenv('DB_NAME')){
 
-				$cmd = 'mysql -u'.getenv('DB_USER').' -p'.getenv('DB_PASS').' -h'.getenv('DB_HOST').' '.getenv('DB_NAME').' < '.__ROOT__.'/db/pvault.sql';
-				passthru($cmd,$e);
+        if (checkFunctionIsAvailable("passthru"))
+          {
+            $cmd = 'mysql -u'.getenv('DB_USER').' -p'.getenv('DB_PASS').' -h'.getenv('DB_HOST').' '.getenv('DB_NAME').' < '.__ROOT__.'/db/pvault.sql';
+            passthru($cmd,$e);
+          }
+          else
+          {
+            // if passthru function is disabled try another method
+            $sql = file_get_contents(__ROOT__.'/db/pvault.sql');
+            $e = !mysqli_multi_query($link, $sql);	
+            while(mysqli_more_results($link))
+            {
+              mysqli_next_result($link);
+            }		
+          }
+
 				if(!$e){
 					$app_ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
 					$db_ver  = trim(file_get_contents(__ROOT__.'/db/schema.ver'));
