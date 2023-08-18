@@ -196,7 +196,7 @@ function fetch_reps(){
 //Clone
 $('#cloneIng').on('click', '[id*=cloneME]', function () {
 	$.ajax({ 
-		url: 'update_data.php', 
+		url: '/pages/update_data.php', 
 		type: 'POST',
 		data: {
 			action: 'clone',
@@ -251,7 +251,7 @@ $('#genSDS').on('click', '[id*=generateSDS]', function () {
 //Rename
 $('#renameIng').on('click', '[id*=renameME]', function () {
 	$.ajax({ 
-		url: 'update_data.php', 
+		url: '/pages/update_data.php', 
 		type: 'POST',
 		data: {
 			action: 'rename',
@@ -277,7 +277,7 @@ $('#renameIng').on('click', '[id*=renameME]', function () {
 if (typeof myCAS !== 'undefined' && myPCH == '1') {
 	function fetch_pubChem(){
 		$.ajax({ 
-			url: 'pubChem.php', 
+			url: '/pages/pubChem.php', 
 			type: 'GET',
 			data: {
 				cas: myCAS
@@ -295,7 +295,7 @@ if (typeof myIngID !== 'undefined') {
 		$('#ingOverview').html('<img src="/img/loading.gif"/>');
 	
 		$.ajax({ 
-			url: 'ingOverview.php', 
+			url: '/pages/ingOverview.php', 
 			type: 'GET',
 			data: {
 				id: myIngID
