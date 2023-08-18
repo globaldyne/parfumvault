@@ -4,6 +4,9 @@ A sophisticated tool to help perfumers organize their formulas, ingredients and 
 
 This is a FREE software provided as is without ANY warranty under MIT license.
 
+[![Current Release](https://img.shields.io/github/v/release/globaldyne/parfumvault.svg "Current Release")](https://github.com/globaldyne/parfumvault/releases/latest) [![PayPal](https://img.shields.io/badge/donate-PayPal-green.svg)](https://paypal.me/jbparfum) 
+
+
 # Features 
 * Formulae management
 * Formulae comparison

@@ -81,11 +81,11 @@ var myPCH = "<?=$settings['pubChem']?>";
 				<div class="btn-group">
 					<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> Actions</button>
 					<div class="dropdown-menu">
-						<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#printLabel"><i class="fa-solid fa-print mr2"></i>Print Label</a></li>
-						<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#cloneIng"><i class="fa-solid fa-copy mr2"></i>Clone ingredient</a></li>
-						<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#renameIng"><i class="fa-regular fa-pen-to-square mr2"></i>Rename ingredient</a></li>
-                        <li><a class="dropdown-item" href="/pages/export.php?format=json&kind=single-ingredient&id=<?=$ing['id']?>"><i class="fas fa-download mr2"></i>Export as JSON</a></li>
-						<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#genSDS"><i class="fa-solid fa-file-prescription mr2"></i>Generate SDS</a></li>
+						<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#printLabel"><i class="fa-solid fa-print mx-2"></i>Print Label</a></li>
+						<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#cloneIng"><i class="fa-solid fa-copy mx-2"></i>Clone ingredient</a></li>
+						<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#renameIng"><i class="fa-regular fa-pen-to-square mx-2"></i>Rename ingredient</a></li>
+                        <li><a class="dropdown-item" href="/pages/export.php?format=json&kind=single-ingredient&id=<?=$ing['id']?>"><i class="fas fa-download mx-2"></i>Export as JSON</a></li>
+						<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#genSDS"><i class="fa-solid fa-file-prescription mx-2"></i>Generate SDS</a></li>
 					</div>
 				</div>
 			<?php }else {?>
@@ -343,14 +343,11 @@ var myPCH = "<?=$settings['pubChem']?>";
 
 
 <!-- Modal Clone-->
-<div class="modal fade" id="cloneIng" tabindex="-1" role="dialog" aria-labelledby="cloneIng" aria-hidden="true">
+<div class="modal fade" id="cloneIng" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="cloneIng" aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title">Clone ingredient <?php echo $ing['name']; ?></h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
 			</div>
 			<div class="modal-body">
 				<div id="clone_msg"></div>
@@ -366,14 +363,11 @@ var myPCH = "<?=$settings['pubChem']?>";
 </div>
 
 <!-- Modal Rename-->
-<div class="modal fade" id="renameIng" tabindex="-1" role="dialog" aria-labelledby="renameIng" aria-hidden="true">
+<div class="modal fade" id="renameIng" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="renameIng" aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title">Rename ingredient <?php echo $ing['name']; ?></h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
 			</div>
 			<div class="modal-body">
             	<div id="warn"><div class="alert alert-warning"><strong>Warning:</strong> If you rename the ingredient, will affect any formulas that using it as well. Please refer to <strong>Where Used</strong> section to get a list of formulas if any.</div></div>
@@ -390,7 +384,7 @@ var myPCH = "<?=$settings['pubChem']?>";
 </div>
 
 <!-- Modal Gen SDS-->
-<div class="modal fade" id="genSDS" tabindex="-1" role="dialog" aria-labelledby="genSDS" aria-hidden="true">
+<div class="modal fade" id="genSDS" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="genSDS" aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">

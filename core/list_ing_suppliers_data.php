@@ -28,6 +28,10 @@ foreach ($sup as $suppliers) {
 	$r['stock'] = (float)$suppliers['stock']?:0;
 	$r['status'] = (float)$suppliers['status']?:0;
 	$r['updated'] = (string)date_format(date_create($suppliers['updated_at']),"d/m/Y H:i:s");
+	$r['created'] = (string)date_format(date_create($suppliers['created_at']),"d/m/Y H:i:s");
+	$r['internal_sku'] = (string)$suppliers['internal_sku'] ?: "N/A";
+	$r['supplier_sku'] = (string)$suppliers['supplier_sku'] ?: "N/A";
+	$r['storage_location'] = (string)$suppliers['storage_location'] ?: "N/A";
 
 	$response['data'][] = $r;
 }
