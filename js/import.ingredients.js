@@ -90,12 +90,12 @@ $('#btnRestoreIngredients').click(function() {
 			
 		success: function (data) {
 			if(data.success){
-				var msg = '<div class="alert alert-success">'+data.success+'</div>';
+				var msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>'+data.success+'</div>';
 				$("#btnRestoreIngredients").hide();
 				$("#backupArea").css('display', 'none');
 
 			}else if(data.error){
-				var msg = '<div class="alert alert-danger">'+data.error+'</div>';
+				var msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2">'+data.error+'</div>';
 				$("#btnRestoreIngredients").show();
 				$("#btnRestoreIngredients").prop("disabled", false);
 				$('#btnRestoreIngredients').prop('value', 'Import');

@@ -16,7 +16,7 @@ while ($suppliers = mysqli_fetch_array($sup)){
               <div class="table-responsive">
               <div id="innermsg"></div>
                <table class="table table-striped table-bordered">
-                 <tr class="noBorder noexport">
+                 <tr class="noBorder">
                      <div class="text-right">
                       <div class="btn-group">
                           <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
@@ -190,6 +190,7 @@ $(document).ready(function() {
 		extrasShow();
     },
 	stateSave: true,
+	stateDuration: -1,
 	stateLoadCallback: function (settings, callback) {
        	$.ajax( {
            	url: '/core/update_user_settings.php?set=listBottles&action=load',
@@ -209,31 +210,19 @@ $(document).ready(function() {
 	},	
 	});
 	
-	var detailRows = [];
- 
-    $('#tdDataBottles tbody').on( 'click', 'tr td:first-child', function () {
-        var tr = $(this).parents('tr');
-        var row = tdDataBottles.row( tr );
-        var idx = $.inArray( tr.attr('id'), detailRows );
- 
-        if ( row.child.isShown() ) {
-            tr.removeClass( 'details' );
-            row.child.hide();
-            detailRows.splice( idx, 1 );
-        } else {
-            tr.addClass( 'details' );
-            row.child( format( row.data() ) ).show();
-            if ( idx === -1 ) {
-                detailRows.push( tr.attr('id') );
-            }
-        }
-    });
- 
-    tdDataBottles.on( 'draw', function () {
-        $.each( detailRows, function ( i, id ) {
-            $('#'+id+' td:first-child + td').trigger( 'click' );
-        });
-    });
+	tdDataBottles.on('requestChild.dt', function (e, row) {
+		row.child(format(row.data())).show();
+	});
+	 
+	tdDataBottles.on('click', '#bottle_name', function (e) {
+		let tr = e.target.closest('tr');
+		let row = tdDataBottles.row(tr); 
+		if (row.child.isShown()) {
+			row.child.hide();
+		} else {
+			row.child(format(row.data())).show();
+		}
+	});
 }); //END DOC
 
 
@@ -248,7 +237,7 @@ function format ( d ) {
 }
 
 function name(data, type, row){
-	return '<i class="pv_point_gen pv_gen_li">'+row.name+'</i>';
+	return '<i class="pv_point_gen pv_gen_li" id="bottle_name">'+row.name+'</i>';
 }
 
 function actions(data, type, row){	
