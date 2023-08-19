@@ -62,7 +62,7 @@ $(document).ready(function() {
             { data : 'name', title: 'Formula Name', render: name },
 			{ data : null, title: 'Ingredients remaining', render: ingredients },
 			{ data : 'madeOn', title: 'Progress', render: progress },
-			{ data : 'scheduledOn', title: 'Scheduled' },
+			{ data : 'scheduledOn', title: 'Scheduled', render: fDate },
 			{ data : null, title: 'Actions', render: actions },
 			],
 		order: [[ 0, 'asc' ]],
@@ -127,6 +127,20 @@ function ingredients(data, type, row){
 
 function actions(data, type, row){
 	return '<i rel="tip" title="Delete '+ row.name +'" class="pv_point_gen fas fa-trash" style="color: #c9302c;" id="pend_remove" data-name="'+ row.name +'" data-id='+ row.fid +'></i>';    
+}
+
+function fDate(data, type, row, meta){
+  if(type === 'display'){
+    if(data == '0000-00-00 00:00:00'){
+      data = '-';
+    }else{
+	    let dateTimeParts= data.split(/[- :]/); 
+		dateTimeParts[1]--; 
+		const dateObject = new Date(...dateTimeParts); 
+        data = dateObject.toLocaleDateString() + " " + dateObject.toLocaleTimeString();
+    }
+  }
+  return data;
 }
 
 function reload_data() {
