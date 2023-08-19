@@ -200,11 +200,15 @@ $(document).ready(function(){
 	
 	$('#concentration').bind('input', function() {
 		var purity = $(this).val();
-		if(purity == 100){
+		if(purity >= 100){
 			$("#dilutant").prop("disabled", true); 
-			$("#dilutant").val('');
+//			$("#dilutant").val('');
+			$("#dilutant").val('').selectpicker("refresh");
+
 		}else{
 			$("#dilutant").prop("disabled", false);
+		
+			
 		}
 		$('.selectpicker').selectpicker('refresh');
 	});

@@ -3414,6 +3414,7 @@
 
     refresh: function () {
       var that = this;
+	  
       // update options if data attributes have been changed
       var config = $.extend({}, this.options, getAttributesObject(this.$element), this.$element.data()); // in this order on refresh, as user may change attributes on select, and options object is not passed on refresh
       this.options = config;
@@ -3422,6 +3423,7 @@
         this.render();
         this.buildList();
       } else {
+		this.selectpicker.main.data = null; //BS5 FIX
         this.fetchData(function () {
           that.render();
           that.buildList();
