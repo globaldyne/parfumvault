@@ -278,7 +278,7 @@ if (typeof myIngID !== 'undefined') {
 		$('#ingOverview').html('<img src="/img/loading.gif"/>');
 	
 		$.ajax({ 
-			url: '/pages/ingOverview.php', 
+			url: '/pages/views/ingredients/ingOverview.php', 
 			type: 'GET',
 			data: {
 				id: myIngID

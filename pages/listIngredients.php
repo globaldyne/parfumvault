@@ -10,27 +10,27 @@ require_once(__ROOT__.'/func/loadModules.php');
 $defCatClass = $settings['defCatClass'];
 
 ?>
-<table class="table table-striped table-bordered" style="width:100%">
-    <tr class="noBorder">
-     <div class="text-right">
-      <div class="btn-group">
-       <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
-      <div class="dropdown-menu dropdown-menu-right">
-        <li><a class="dropdown-item popup-link" href="/pages/mgmIngredient.php"><i class="fa-solid fa-plus mx-2"></i>Create new ingredient</a></li>
+<div class="col mb-4">
+	<div class="text-right">
+     <div class="btn-group">
+     	<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
+      	<div class="dropdown-menu dropdown-menu-right">
+       	<li><a class="dropdown-item popup-link" href="/pages/mgmIngredient.php"><i class="fa-solid fa-plus mx-2"></i>Create new ingredient</a></li>
         <div class="dropdown-divider"></div>
         <li><a class="dropdown-item" id="csv_export" href="/pages/export.php?format=csv&kind=ingredients"><i class="fa-solid fa-file-csv mx-2"></i>Export to CSV</a></li>
         <li><a class="dropdown-item" id="json_export" href="/pages/export.php?format=json&kind=ingredients"><i class="fa-solid fa-file-code mx-2"></i>Export to JSON</a></li>
         <div class="dropdown-divider"></div>
-        <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#csv_import" data-backdrop="static"><i class="fa-solid fa-file-import mx-2"></i>Import from CSV</a></li>
+        <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#csv_import"><i class="fa-solid fa-file-import mx-2"></i>Import from CSV</a></li>
         <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#import_ingredients_json"><i class="fa-solid fa-file-import mx-2"></i>Import from JSON</a></li>
         <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#pv_online_import"><i class="fa-solid fa-cloud-arrow-down mx-2"></i>Import from PV Online</a></li>
       </div>
      </div>                    
     </div>
-</tr>
-</table>
+</div>
 
-<div id="pv_search">
+<div class="dropdown-divider"></div>
+
+<div id="row pv_search">
 	<div class="text-right">
         <div class="pv_input_grp">   
           <input name="ing_search" type="text" class="form-control input-sm pv_input_sm" id="ing_search" value="<?=$_GET['search']?>" placeholder="Ingredient name, CAS, odor..">
@@ -39,9 +39,7 @@ $defCatClass = $settings['defCatClass'];
                     <span class="fas fa-database mx-2"></span>
                     <span class="label-icon"><a href="#" class="btn-search">Local DB</a></span>
                 </button>
-                <label class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                    <span class="caret"></span>
-              </label>
+                <label class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></label>
                 <ul class="dropdown-menu dropdown-menu-right" role="menu">
                     <?php foreach (loadModules('suppliers') as $search){ ?>
                     <li>
@@ -88,7 +86,7 @@ $(document).ready(function() {
   	},
 	dom: 'lr<"#advanced_search">tip',
 	initComplete: function(settings, json) {
-        $("#advanced_search").html('<span><hr /><a href="#" class="advanced_search_box" data-backdrop="static" data-toggle="modal" data-target="#adv_search">Advanced Search</a></span>');
+        $("#advanced_search").html('<span><hr /><a href="#" class="advanced_search_box mb-2" data-toggle="modal" data-target="#adv_search">Advanced Search</a></span>');
 		$("#tdDataIng_filter").detach().appendTo('#pv_search');
     },
 	processing: true,
