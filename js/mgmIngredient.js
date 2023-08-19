@@ -2,36 +2,19 @@
 Ingredient management
 */
 
-function search() { 
-	$("#odor").val('Loading...');
-	
-	if ($('#cas').val()) {
-		var	ingName = $('#cas').val();
-	}else if($('#name').val()) {
-		var	ingName = $('#name').val();
-	}else{
-		var	ingName = myIngName
-	}
-	
+function fetch_generalData(){
 	$.ajax({ 
-		url: 'searchTGSC.php', 
-		type: 'POST',
+		url: '/pages/views/ingredients/mgmGeneral.php', 
+		type: 'GET',
 		data: {
-			name: ingName
+			id: btoa(myIngName)
 		},
-		dataType: 'json',
+		dataType: 'html',
 		success: function (data) {
-			if(data.success){
-				tgsc = '<input name="odor" id="odor" type="text" class="form-control" value="' + data.success + '"/>';
-			}else if(data.error){
-				tgsc = '<input name="odor" id="odor" type="text" class="form-control" placeholder="' + data.error + '"/>';
-			}
-			$('#TGSC').html(tgsc);
-		}
+			$('#fetch_generalData').html(data);
+		},
 	});
 };
-
-
 
 function fetch_whereUsed(){
 	$.ajax({ 
@@ -277,7 +260,7 @@ $('#renameIng').on('click', '[id*=renameME]', function () {
 if (typeof myCAS !== 'undefined' && myPCH == '1') {
 	function fetch_pubChem(){
 		$.ajax({ 
-			url: '/pages/pubChem.php', 
+			url: '/pages/views/ingredients/pubChem.php', 
 			type: 'GET',
 			data: {
 				cas: myCAS

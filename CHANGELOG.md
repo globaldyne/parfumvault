@@ -1,5 +1,9 @@
 # CHANGELOG
 ### Version 8.5
+- Ingredient general tab re-design
+- Pubchem tab re-design
+- Adding more details when a note is added during formula making
+
 ### Version 8.4
 - Auto redirect to the new ingredient when is renamed
 - Extend order sorting state save for formula revisions and history
