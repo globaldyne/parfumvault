@@ -260,27 +260,13 @@ if($_GET['action'] == 'exportFormulas'){
 	$result['formulas'] = $fd;
 	$result['pvMeta'] = $vd;
 
-	if($_GET['fid']){
-		header('Content-disposition: attachment; filename='.$f['name'].'.json');
-		header('Content-type: application/json');
-		echo json_encode($result, JSON_PRETTY_PRINT);
-		return;
+	if(!$_GET['fid']){
+		$f['name'] = "All_formulas";
 	}
-	
-	$file = $tmp_path.'/pv_formulas.json';
-	unlink($file);
-	
-	$fp = fopen($file, 'w');
-	fwrite($fp, json_encode($result, JSON_PRETTY_PRINT));
-	fclose($fp);
 
-	if(file_exists($file)){
-		$msg['success'] ='<a href="/tmp/pv_formulas.json" target="_blank">JSON File is ready, right click to save it to your computer.</a>';
-	}else{
-		$msg['error'] = 'Error generating JSON file';
-	}
-	
-	echo json_encode($msg);
+	header('Content-disposition: attachment; filename='.$f['name'].'.json');
+	header('Content-type: application/json');
+	echo json_encode($result, JSON_PRETTY_PRINT);
 	return;
 }
 
