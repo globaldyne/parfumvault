@@ -12,7 +12,7 @@ $(function() {
 </script>
 <div class="container-fluid">
 
-<h2 class="m-0 mb-4 text-primary"><a href="?do=settings">Settings</a></h2>
+<h2 class="m-0 mb-4 text-primary"><a href="/?do=settings">Settings</a></h2>
 <div id="settings">
      <ul>
          <li class="active"><a href="#general" id="general_tab" role="tab" data-bs-toggle="tab">General</a></li>
@@ -30,7 +30,6 @@ $(function() {
      <div class="tab-content">
      
      <div class="tab-pane active" id="general">
-	    <div id="genMsg"></div>
         <div id="get_general">
             <div class="loader-center">
                 <div class="loader"></div>
@@ -191,6 +190,7 @@ $(function() {
     
   </div>
  </div>
+</div>
 </div>
 
 

@@ -11,7 +11,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
 <style>
 .mfp-iframe-holder .mfp-content {
     line-height: 0;
-    width: 70%;
+    width: 80%;
     max-width: 100%; 
 	height: 1300px;
 }
@@ -189,7 +189,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
 </div>  
 
 <!--PV ONLINE IMPORT-->
-<div class="modal fade" id="pv_online_import" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="pv_online_import" aria-hidden="true" data-bs-backdrop="static">
+<div class="modal fade" id="pv_online_import" tabindex="-1" role="dialog" aria-labelledby="pv_online_import" aria-hidden="true" data-bs-backdrop="static">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">

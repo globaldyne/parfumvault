@@ -11,7 +11,7 @@ require_once(__ROOT__.'/inc/sec.php');
     <div class="btn-group">
     <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
         <div class="dropdown-menu dropdown-menu-right">
-            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addpType"><i class="fa-solid fa-plus mr2"></i>Add new</a></li>
+            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addpType"><i class="fa-solid fa-plus mx-2"></i>Add new</a></li>
         </div>
     </div>                    
   </div>
@@ -29,7 +29,7 @@ require_once(__ROOT__.'/inc/sec.php');
 <script type="text/javascript" language="javascript" >
 $(document).ready(function() {
 		
-	$('[data-toggle="tooltip"]').tooltip();
+	$('[data-bs-toggle="tooltip"]').tooltip();
 	var tdperfTypes = $('#tdperfTypes').DataTable( {
 	columnDefs: [
 		{ className: 'text-center', targets: '_all' },
@@ -48,31 +48,50 @@ $(document).ready(function() {
 			  { data : 'name', title: 'Name', render: name },
 			  { data : 'concentration', title: 'Concentration', render: concentration},
 			  { data : 'description', title: 'Description', render: description},
-			  { data : null, title: '', render: actions},		   
+			  { data : null, title: 'Actions', render: actions},		   
 			 ],
 	order: [[ 1, 'asc' ]],
 	lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
 	pageLength: 20,
-	displayLength: 20,		
+	displayLength: 20,
+	stateSave: true,
+	stateDuration: -1,
+	stateLoadCallback: function (settings, callback) {
+       	$.ajax( {
+           	url: '/core/update_user_settings.php?set=listPerfTypes&action=load',
+           	dataType: 'json',
+           	success: function (json) {
+               	callback( json );
+           	}
+       	});
+    },
+    stateSaveCallback: function (settings, data) {
+	   $.ajax({
+		 url: "/core/update_user_settings.php?set=listPerfTypes&action=save",
+		 data: data,
+		 dataType: "json",
+		 type: "POST"
+	  });
+	},
 	});
 });
 
 function name(data, type, row){
-	return '<a href="#" class="name pv_point_gen" data-name="name" data-type="text" data-pk="'+row.id+'">'+row.name+'</a>';    
-}
+	return '<a href="#" class="name pv_point_gen" data-name="name" data-type="text" data-pk="'+row.id+'">'+row.name+'</a>';
+};
 
 
 function concentration(data, type, row){
 	return '<a href="#" class="concentration pv_point_gen" data-name="concentration" data-type="text" data-pk="'+row.id+'">'+row.concentration+'</a>';    
-}
+};
 
 function description(data, type, row){
 	return '<a href="#" class="description pv_point_gen" data-name="description" data-type="textarea" data-pk="'+row.id+'">'+row.description+'</a>';    
-}
+};
 
 function actions(data, type, row){
 	return '<a href="#" id="sDel" class="fas fa-trash link-danger" data-id="'+row.id+'" data-name="'+row.name+'"></a>';
-}
+};
 
 
 $('#tdperfTypes').editable({

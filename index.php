@@ -54,8 +54,7 @@ if($pv_meta['app_ver'] < trim(file_get_contents(__ROOT__.'/VERSION.md'))){
   <link href="/css/magnific-popup.css" rel="stylesheet" />
   
   <link href="/css/vault.css" rel="stylesheet">
-  <script src="/js/bootstrap.bundle.min.js"></script>
-
+  
   <script src="/js/jquery/jquery.min.js"></script>
   <script src="/js/tableHTMLExport.js"></script>
   <script src="/js/jspdf.min.js"></script>
@@ -64,7 +63,8 @@ if($pv_meta['app_ver'] < trim(file_get_contents(__ROOT__.'/VERSION.md'))){
   <script src="/js/magnific-popup.js"></script>
   <script src="/js/jquery-ui.js"></script>
   
-
+  <script src="/js/bootstrap.bundle.min.js"></script>
+  
   <script src="/js/bootstrap-select.js"></script>
   <script src="/js/bootstrap-editable.js"></script>
   <script src="/js/dataTables.responsive.min.js"></script>
@@ -203,7 +203,7 @@ function chkUpdate() {
             <a class="collapse-item <?php if($_GET['do'] == 'listFormulas' | $_GET['do'] == 'Formula'){ echo 'active';}?>" href="?do=listFormulas">Formulas</a>
             <a class="collapse-item <?php if($_GET['do'] == 'compareFormulas'){ echo 'active';}?>" href="/?do=compareFormulas">Compare Formulas</a>
             <a class="collapse-item <?php if($_GET['do'] == 'genFinishedProduct'){ echo 'active';}?>" href="/?do=genFinishedProduct"> Finished Product</a>
-            <a class="collapse-item <?php if($_GET['do'] == 'sellFormula'){ echo 'active';}?>" href="/?do=sellFormula">Sell Formula</a>
+            <a class="collapse-item <?php if($_GET['do'] == 'sellFormula'){ echo 'active';}?>" href="?do=sellFormula">Sell Formula</a>
             <a class="collapse-item <?php if($_GET['do'] == 'todo'){ echo 'active';}?>" href="/?do=todo">Scheduled Formulas <span class="badge badge-danger badge-counter"><?php echo countPending(NULL, NULL, $conn);?></span></a>
           </div>
         </div>
@@ -275,7 +275,9 @@ function chkUpdate() {
         <div id="content-wrapper" class="d-flex flex-column">
 			<?php require_once(__ROOT__.'/pages/top.php'); ?>
         <div class="container-fluid">
+          <div>
           <div class="card shadow mb-4">
+           
             <div id="list_formulas">
             	<div class="loader-center">
                 	<div class="loader"></div>
@@ -286,7 +288,6 @@ function chkUpdate() {
           </div>
         </div>
 	   </div>
-       
 		<?php
 		}elseif($_GET['do'] == 'genFinishedProduct'){
 			require_once(__ROOT__.'/pages/genFinishedProduct.php');		

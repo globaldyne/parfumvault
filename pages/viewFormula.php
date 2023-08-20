@@ -153,7 +153,7 @@ $('#formula_tab').on( 'click', function () {
 	formula_table.fixedHeader.enable();
 });
 
-$('a[data-toggle="tab"]').on("shown.bs.tab", function (e) {
+$('a[data-bs-toggle="tab"]').on("shown.bs.tab", function (e) {
 	formula_table.fixedHeader.adjust();
 });
 
@@ -403,6 +403,7 @@ $('#print').click(() => {
           <div id="top_bar" class="progress-bar pv_bar_top_notes" role="progressbar" aria-valuemin="0"><span><div class="top-label"></div></span></div>
       </div>
     </div>
+    <div class="dropdown-divider"></div>
     <div class="text-right">
       <div class="btn-group" id="menu">
         <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
@@ -762,7 +763,7 @@ function ingQuantity(data, type, row, meta){
 		<?php if($settings['editor'] == '1'){?>
 			data = '<a href="#" data-name="quantity" class="quantity" data-type="text" data-pk="' + row.formula_ingredient_id + '">' + data + '</a>';
 		<?php }else{?>
-			data = '<a href="#" data-name="quantity" data-toggle="modal" data-bs-target="#manage-quantity" class="open-quantity-dialog" data-type="text" data-ingid="' + row.formula_ingredient_id + '" data-value="' + row.quantity + '" data-ing="' + row.ingredient.name + '" data-mainingid="'+row.ingredient.id+'">' + row.quantity + '</a>';
+			data = '<a href="#" data-name="quantity" data-bs-toggle="modal" data-bs-target="#manage-quantity" class="open-quantity-dialog" data-type="text" data-ingid="' + row.formula_ingredient_id + '" data-value="' + row.quantity + '" data-ing="' + row.ingredient.name + '" data-mainingid="'+row.ingredient.id+'">' + row.quantity + '</a>';
 		<?php } ?>
 	} 
 

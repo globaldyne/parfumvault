@@ -6,6 +6,21 @@ require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/inc/product.php');
 
+
+if($_GET['do'] == 'userPerfClear'){
+
+	if(mysqli_query($conn, "DELETE FROM user_prefs WHERE owner = '".$_SESSION['userID']."'")){
+		$result['success'] = "User prefernces removed";
+	}else{
+		$result['error'] = 'Something went wrong, '.mysqli_error($conn);
+		
+	}
+	unset($_SESSION['user_prefs']);
+	echo json_encode($result);
+	return;
+}
+
+
 if($_GET['do'] == 'db_update'){
 
 	$a_ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
@@ -245,27 +260,13 @@ if($_GET['action'] == 'exportFormulas'){
 	$result['formulas'] = $fd;
 	$result['pvMeta'] = $vd;
 
-	if($_GET['fid']){
-		header('Content-disposition: attachment; filename='.$f['name'].'.json');
-		header('Content-type: application/json');
-		echo json_encode($result, JSON_PRETTY_PRINT);
-		return;
+	if(!$_GET['fid']){
+		$f['name'] = "All_formulas";
 	}
 	
-	$file = $tmp_path.'/pv_formulas.json';
-	unlink($file);
-	
-	$fp = fopen($file, 'w');
-	fwrite($fp, json_encode($result, JSON_PRETTY_PRINT));
-	fclose($fp);
-
-	if(file_exists($file)){
-		$msg['success'] ='<a href="/tmp/pv_formulas.json" target="_blank">JSON File is ready, right click to save it to your computer.</a>';
-	}else{
-		$msg['error'] = 'Error generating JSON file';
-	}
-	
-	echo json_encode($msg);
+	header('Content-disposition: attachment; filename='.$f['name'].'.json');
+	header('Content-type: application/json');
+	echo json_encode($result, JSON_PRETTY_PRINT);
 	return;
 }
 
@@ -355,10 +356,25 @@ if($_GET['action'] == 'restoreIngredients'){
 			echo json_encode($result);
 			return;
 		}
+		
 		foreach ($data['compositions'] as $cmp ){				
+			mysqli_query($conn, "INSERT IGNORE INTO `allergens` (`ing`,`name`,`cas`,`ec`,`percentage`,`toDeclare`,`created`) VALUES ('".$cmp['ing']."','".$cmp['name']."','".$cmp['cas']."','".$cmp['ec']."','".$cmp['percentage']."','".$cmp['toDeclare']."', current_timestamp())");			
+		}
+		
+		foreach ($data['suppliers'] as $sup ){				
 			
-		 mysqli_query($conn, "INSERT IGNORE INTO `allergens` (`ing`,`name`,`cas`,`ec`,`percentage`,`toDeclare`,`created`) VALUES ('".$cmp['ing']."','".$cmp['name']."','".$cmp['cas']."','".$cmp['ec']."','".$cmp['percentage']."','".$cmp['toDeclare']."', current_timestamp())");
+			mysqli_query($conn, "INSERT IGNORE INTO `suppliers` (`id`,`ingSupplierID`,`ingID`,`supplierLink`,`price`,`size`,`manufacturer`,`preferred`,`batch`,`purchased`,`mUnit`,`stock`,`status`,`supplier_sku`,`internal_sku`,`storage_location`,`created_at`) VALUES ('".$sup['id']."','".$sup['ingSupplierID']."','".$sup['ingID']."','".$sup['supplierLink']."','".$sup['price']."','".$sup['size']."','".$sup['manufacturer']."', '".$sup['preferred']."', '".$sup['batch']."','".$sup['purchased']."','".$sup['mUnit']."','".$sup['stock']."','".$sup['status']."','".$sup['supplier_sku']."','".$sup['internal_sku']."','".$sup['storage_location']."',current_timestamp())");
 			
+		}
+		
+		foreach ($data['ingSuppliers'] as $is ){				
+			
+			if(!mysqli_query($conn, "INSERT IGNORE INTO `ingSuppliers` (`id`,`name`,`address`,`po`,`country`,`telephone`,`url`,`email`) VALUES ('".$is['id']."','".$is['name']."','".$is['address']."','".$is['po']."','".$is['country']."','".$is['telephone']."','".$is['url']."','".$is['email']."')")){
+				
+				$result['error'] = mysqli_error($conn);
+				echo json_encode($result);
+				return;
+			}				
 		}
 		
 		foreach ($data['ingredients'] as $ingredient ){				
@@ -366,7 +382,7 @@ if($_GET['action'] == 'restoreIngredients'){
 			$INCI = mysqli_real_escape_string($conn, $ingredient['INCI']);
 			$notes = mysqli_real_escape_string($conn, $ingredient['notes']);
 
-			$sql = "INSERT IGNORE INTO ingredients(name,INCI,cas,FEMA,type,strength,category,purity,einecs,reach,tenacity,chemical_name,formula,flash_point,notes,flavor_use,soluble,logp,cat1,cat2,cat3,cat4,cat5A,cat5B,cat5C,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12,profile,physical_state,allergen,odor,impact_top,impact_heart,impact_base,created,usage_type,noUsageLimit,byPassIFRA,isPrivate,molecularWeight) VALUES('".$name."','".$INCI."','".$ingredient['cas']."','".$ingredient['FEMA']."','".$ingredient['type']."','".$ingredient['strength']."','".$ingredient['category']."','".$ingredient['purity']."','".$ingredient['einecs']."','".$ingredient['reach']."','".$ingredient['tenacity']."','".$ingredient['chemical_name']."','".$ingredient['formula']."','".$ingredient['flash_point']."','".$notes."','".$ingredient['flavor_use']."','".$ingredient['soluble']."','".$ingredient['logp']."','".$ingredient['cat1']."','".$ingredient['cat2']."','".$ingredient['cat3']."','".$ingredient['cat4']."','".$ingredient['cat5A']."','".$ingredient['cat5B']."','".$ingredient['cat5C']."','".$ingredient['cat6']."','".$ingredient['cat7A']."','".$ingredient['cat7B']."','".$ingredient['cat8']."','".$ingredient['cat9']."','".$ingredient['cat10A']."','".$ingredient['cat10B']."','".$ingredient['cat11A']."','".$ingredient['cat11B']."','".$ingredient['cat12']."','".$ingredient['profile']."','".$ingredient['physical_state']."','".$ingredient['allergen']."','".$ingredient['odor']."','".$ingredient['impact_top']."','".$ingredient['impact_heart']."','".$ingredient['impact_base']."','".$ingredient['created']."','".$ingredient['usage_type']."','".$ingredient['noUsageLimit']."','".$ingredient['byPassIFRA']."','".$ingredient['isPrivate']."','".$ingredient['molecularWeight']."')";
+			$sql = "INSERT IGNORE INTO ingredients(id,name,INCI,cas,FEMA,type,strength,category,purity,einecs,reach,tenacity,chemical_name,formula,flash_point,notes,flavor_use,soluble,logp,cat1,cat2,cat3,cat4,cat5A,cat5B,cat5C,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12,profile,physical_state,allergen,odor,impact_top,impact_heart,impact_base,created,usage_type,noUsageLimit,byPassIFRA,isPrivate,molecularWeight) VALUES('".$ingredient['id']."','".$name."','".$INCI."','".$ingredient['cas']."','".$ingredient['FEMA']."','".$ingredient['type']."','".$ingredient['strength']."','".$ingredient['category']."','".$ingredient['purity']."','".$ingredient['einecs']."','".$ingredient['reach']."','".$ingredient['tenacity']."','".$ingredient['chemical_name']."','".$ingredient['formula']."','".$ingredient['flash_point']."','".$notes."','".$ingredient['flavor_use']."','".$ingredient['soluble']."','".$ingredient['logp']."','".$ingredient['cat1']."','".$ingredient['cat2']."','".$ingredient['cat3']."','".$ingredient['cat4']."','".$ingredient['cat5A']."','".$ingredient['cat5B']."','".$ingredient['cat5C']."','".$ingredient['cat6']."','".$ingredient['cat7A']."','".$ingredient['cat7B']."','".$ingredient['cat8']."','".$ingredient['cat9']."','".$ingredient['cat10A']."','".$ingredient['cat10B']."','".$ingredient['cat11A']."','".$ingredient['cat11B']."','".$ingredient['cat12']."','".$ingredient['profile']."','".$ingredient['physical_state']."','".$ingredient['allergen']."','".$ingredient['odor']."','".$ingredient['impact_top']."','".$ingredient['impact_heart']."','".$ingredient['impact_base']."','".$ingredient['created']."','".$ingredient['usage_type']."','".$ingredient['noUsageLimit']."','".$ingredient['byPassIFRA']."','".$ingredient['isPrivate']."','".$ingredient['molecularWeight']."')";
 			
 			if(mysqli_query($conn,$sql)){
 				$result['success'] = "Import complete";

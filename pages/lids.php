@@ -16,7 +16,7 @@ while ($suppliers = mysqli_fetch_array($sup)){
               <div class="table-responsive">
               <div id="innermsg"></div>
                <table class="table table-striped table-bordered">
-                 <tr class="noBorder noexport">
+                 <tr class="noBorder">
                      <div class="text-right">
                       <div class="btn-group">
                         <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
@@ -106,7 +106,7 @@ while ($suppliers = mysqli_fetch_array($sup)){
 
 
 <!--EDIT LID MODAL-->            
-<div class="modal fade" id="editLid" tabindex="-1" role="dialog" aria-labelledby="editLidLabel" aria-hidden="true">
+<div class="modal fade" id="editLid" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="editLidLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -173,46 +173,56 @@ $(document).ready(function() {
 	lengthMenu: [[20, 50, 100, 200, 400], [20, 50, 100, 200, 400]],
 	pageLength: 20,
 	displayLength: 20,
+	stateSave: true,
+	stateDuration: -1,
+	stateLoadCallback: function (settings, callback) {
+       	$.ajax( {
+           	url: '/core/update_user_settings.php?set=listLids&action=load',
+           	dataType: 'json',
+           	success: function (json) {
+               	callback( json );
+           	}
+       	});
+    },
+    stateSaveCallback: function (settings, data) {
+	   $.ajax({
+		 url: "/core/update_user_settings.php?set=listLids&action=save",
+		 data: data,
+		 dataType: "json",
+		 type: "POST"
+	  });
+	},
 	drawCallback: function( settings ) {
 		extrasShow();
-    	}
+    },
+
 	});
 	
-	var detailRows = [];
- 
-    $('#tdDataLids tbody').on( 'click', 'tr td:first-child', function () {
-        var tr = $(this).parents('tr');
-        var row = tdDataLids.row( tr );
-        var idx = $.inArray( tr.attr('id'), detailRows );
- 
-        if ( row.child.isShown() ) {
-            tr.removeClass( 'details' );
-            row.child.hide();
-            detailRows.splice( idx, 1 );
-        } else {
-            tr.addClass( 'details' );
-            row.child( format( row.data() ) ).show();
-            if ( idx === -1 ) {
-                detailRows.push( tr.attr('id') );
-            }
-        }
-    });
- 
-    tdDataLids.on( 'draw', function () {
-        $.each( detailRows, function ( i, id ) {
-            $('#'+id+' td:first-child + td').trigger( 'click' );
-        });
-    });
+	
+	tdDataLids.on('requestChild.dt', function (e, row) {
+		row.child(format(row.data())).show();
+	});
+	 
+	tdDataLids.on('click', '#lid_name', function (e) {
+		let tr = e.target.closest('tr');
+		let row = tdDataLids.row(tr); 
+		if (row.child.isShown()) {
+			row.child.hide();
+		} else {
+			row.child(format(row.data())).show();
+		}
+	});
 	
 }); //END DOC
 
 
 function format ( d ) {
-   return '<img src="'+d.photo+'" class="img_ifra"/>';
+    details = '<img src="'+d.photo+'" class="img_ifra"/>';
+	return details;
 }
 
 function style(data, type, row){
-	return '<i class="pv_point_gen pv_gen_li">'+row.style+'</i>';
+	return '<i class="pv_point_gen pv_gen_li" id="lid_name">'+row.style+'</i>';
 }
 
 function actions(data, type, row){	

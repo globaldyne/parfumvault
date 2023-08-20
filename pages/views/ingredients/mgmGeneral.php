@@ -101,8 +101,8 @@ $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE n
   <div class="mt-3 col-md-6">
   	<label for="physical_state" class="form-label">Physical State</label>
     <select name="physical_state" id="physical_state" class="form-control selectpicker">
-        <option data-content="<img class='img_ing_sel' src='/img/liquid.png'> Liquid" value="1" <?php if($ing['physical_state']=="1") echo 'selected="selected"'; ?> ></option>
-        <option data-content="<img class='img_ing_sel' src='/img/solid.png'> Solid" value="2" <?php if($ing['physical_state']=="2") echo 'selected="selected"'; ?> ></option>
+        <option data-content="<img class='img_ing_sel' src='/img/liquid.png'>Liquid" value="1" <?php if($ing['physical_state']=="1") echo 'selected="selected"'; ?> ></option>
+        <option data-content="<img class='img_ing_sel' src='/img/solid.png'>Solid" value="2" <?php if($ing['physical_state']=="2") echo 'selected="selected"'; ?> ></option>
     </select>
   </div>
   

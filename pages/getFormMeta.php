@@ -449,7 +449,7 @@ $("#pic_upload").click(function(){
 			  		cache: false,
               success: function(response){
                  if(response != 0){
-                    $("#upload_resp").html(response);
+                    $("#upload_resp").html('<div class="dropdown-divider"></div><div class="alert alert-success">File uploaded!</div>');
 					$("#pic_upload").prop("disabled", false);
         			$("#pic_upload").prop('value', 'Upload');
                  }else{

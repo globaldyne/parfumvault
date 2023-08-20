@@ -248,15 +248,19 @@ function status(data, type, row, meta){
 }
 
 function actions(data, type, row, meta){
-	data = '<div class="dropdown">' +
-	'<button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
-		'<ul class="dropdown-menu dropdown-menu-right">';
-	data += '<li><i class="pv_point_gen pv_gen_li dropdown-item" id="import-market-formula" data-id="'+row.id+'" data-name="'+row.name+'" rel="tip" title="Import '+ row.name +' to my database" ><i class="fas fa-download mx-2"></i>Import Formula</i></li>';
-	data += '<li><i class="pv_point_gen pv_gen_li dropdown-item open-contact-dialog" data-bs-toggle="modal"  data-bs-target="#contact-formula-author" data-id="'+row.id+'" data-name="'+row.name+'" rel="tip" title="Contact '+ row.author +' regarding the formula"><i class="fas fa-id-card mx-2"></i>Contact the author</i></li>';
-	data += '<div class="dropdown-divider"></div>';
-	data += '<li><i class="pv_point_gen pv_gen_li dropdown-item open-report-dialog link-danger" data-bs-toggle="modal" data-bs-target="#report-market-formula" rel="tip" title="Report '+ row.name +' to admins" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-bug mx-2"></i>Report formula</i></li>';
-	
-	data += '</ul></div>';
+		data = '<div class="dropdown">' +
+        '<button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+            '<ul class="dropdown-menu dropdown-menu-right">';
+		
+		data += '<li><i class="pv_point_gen pv_gen_li dropdown-item" id="import-market-formula" data-id="'+row.id+'" data-name="'+row.name+'" rel="tip" title="Import '+ row.name +' to my database" ><i class="fas fa-download mx-2"></i>Import Formula</i></li>';
+		
+		data += '<li><i class="pv_point_gen pv_gen_li dropdown-item open-contact-dialog" data-bs-toggle="modal"  data-bs-target="#contact-formula-author" data-id="'+row.id+'" data-name="'+row.name+'" rel="tip" title="Contact '+ row.author +' regarding the formula"><i class="fas fa-id-card mx-2"></i>Contact the author</i></li>';
+		
+		data += '<div class="dropdown-divider"></div>';
+		
+		data += '<li><i class="pv_point_gen pv_gen_li dropdown-item open-report-dialog link-danger" data-bs-toggle="modal"  data-bs-target="#report-market-formula" rel="tip" title="Report '+ row.name +' to admins" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-bug mx-2"></i>Report formula</i></li>';
+		
+		data += '</ul></div>';
 	
     return data;
 }
@@ -310,7 +314,7 @@ $('#all-table-market').on('click', '[id*=import-market-formula]', function () {
            },
            cancel: {
                label : "Cancel",
-               className : "btn-secondary",
+               className : "btn-default",
                callback : function() {
                    return true;
                }

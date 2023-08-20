@@ -45,7 +45,7 @@ while($fTypes_res = mysqli_fetch_array($fTypes_q)){
               <div class="dropdown-divider"></div>
               <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#add_formula_cat"><i class="fa-solid fa-circle-plus mx-2"></i>Create formula category</a></li>
               <div class="dropdown-divider"></div>
-        	  <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#export_formulas_json"><i class="fa-solid fa-file-export mx-2"></i>Export Formulas as JSON</a></li>
+        	  <li><a class="dropdown-item" href="/pages/operations.php?action=exportFormulas"><i class="fa-solid fa-file-export mx-2"></i>Export Formulas as JSON</a></li>
         	  <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#import_formulas_json"><i class="fa-solid fa-file-import mx-2"></i>Import Formulas from JSON</a></li>
 
             </div>
@@ -83,6 +83,7 @@ if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))
                     <th>Ingredients</th>
                     <th>Revision</th>
                     <th>Created</th>
+                    <th>Updated</th>
                     <th>Made</th>
                     <th>Rating</th>
                     <th></th>
@@ -101,6 +102,7 @@ if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))
                     <th>Ingredients</th>
                     <th>Revision</th>
                     <th>Created</th>
+                    <th>Updated</th>
                     <th>Made</th>
                     <th>Rating</th>
                     <th></th>
@@ -129,43 +131,44 @@ $(".tabs").click(function() {
 });
 function initTable(tableId, src) {
     var table = $("#" + tableId).DataTable({
-           ajax: {
-			   url: src,
-		   	   type: 'POST',
-			   dataType: 'json',
-			   data: function(d) {
-					if (d.order.length>0){
-						d.order_by = d.columns[d.order[0].column].data
-						d.order_as = d.order[0].dir
-					}
-        		},
-			   },
-			columns: [
-			   { data : 'name', title: 'Formula Name', render: fName },
-			   { data : 'product_name', title: 'Product Name', render: pName},
-			   { data : 'status', title: 'Status', render: fStatus},
-    		   { data : 'ingredients', title: 'Ingredients'},
-    		   { data : 'revision', title: 'Revision'},
-			   { data : 'isMade', title: 'Made', render: fMade},
-   			   { data : 'rating', title: 'Rating', render: rating},
-			   { data : 'created', title: 'Created'},
-			   { data : null, title: '', render: fActions},				   
-			  ],
-			 processing: true,
-	         serverSide: true,
-			 searching: true,
-			 language: {
-				loadingRecords: '&nbsp;',
-				processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Blending...</span>',
-				emptyTable: "No formulas added yet.",
-				searchPlaceholder: 'Name, or product name..',
-				search: "Search for formula:"
+	   ajax: {
+		   url: src,
+		   type: 'POST',
+		   dataType: 'json',
+		   data: function(d) {
+			   if (d.order.length>0){
+					d.order_by = d.columns[d.order[0].column].data
+					d.order_as = d.order[0].dir
+				}
 			},
-           order: [0,'asc'],
-           columnDefs: [
-				{ orderable: false, targets: [2, 3, 8] },
-				{ className: 'text-center', targets: '_all' },				  
-				],
+		},
+		columns: [
+		   { data : 'name', title: 'Formula Name', render: fName },
+		   { data : 'product_name', title: 'Product Name', render: pName},
+		   { data : 'status', title: 'Status', render: fStatus},
+		   { data : 'ingredients', title: 'Ingredients'},
+		   { data : 'revision', title: 'Revision'},
+		   { data : 'isMade', title: 'Made', render: fMade},
+		   { data : 'rating', title: 'Rating', render: rating},
+		   { data : 'created', title: 'Created'},
+		   { data : 'updated', title: 'Updated'},
+		   { data : null, title: '', render: fActions},				   
+		],
+		processing: true,
+		serverSide: true,
+		searching: true,
+		language: {
+			loadingRecords: '&nbsp;',
+			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>',
+			emptyTable: "No formulas added yet.",
+			searchPlaceholder: 'Formula name, or product name...',
+			search: "Search for formula:"
+		},
+	    order: [0,'asc'],
+	    columnDefs: [
+			{ orderable: false, targets: [2, 3, 8, 9] },
+			{ className: 'text-center', targets: '_all' },				  
+		],
 	    destroy: true,
         bFilter: true,
         paging:  true,
@@ -178,6 +181,7 @@ function initTable(tableId, src) {
             initRating(row);
         },
 		stateSave: true,
+		stateDuration: -1,
 		stateLoadCallback: function (settings, callback) {
         	$.ajax( {
             	url: '/core/update_user_settings.php?set=listFormulas&action=load',
@@ -535,7 +539,7 @@ $(document).on('click', '#btnImport', function(event){
 function reload_formulas_data() {
     $('#all-table').DataTable().ajax.reload(null, true);
 };
-
+/*
 $('#export_json').click(function() {
 	$('#JSONExportMsg').html('<div class="alert alert-info"><img src="/img/loading.gif"/>Please wait, export in progress....</div>');					 
 	$.ajax({ 
@@ -555,7 +559,7 @@ $('#export_json').click(function() {
     }
   });
 });
-
+*/
 $('#close_export_json').click(function() {
 	$('#JSONExportMsg').html('');
 });

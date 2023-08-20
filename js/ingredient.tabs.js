@@ -7,9 +7,8 @@ $(document).ready(function() {
 		$('#msg_general').html('');
 		fetch_generalData();
 	});
-		
+	
 	$('#usage_tab').on( 'click', function () {
-		$('#ingMsg').html('');
 		fetch_usageData();
 	});
 	
@@ -18,7 +17,6 @@ $(document).ready(function() {
 	});
 	
 	$('#techs_tab').on( 'click', function () {
-		$('#ingMsg').html('');
 		fetch_techs();
 	});
 		
@@ -57,5 +55,6 @@ $(document).ready(function() {
 	$('#reps_tab').on( 'click', function () {
 		fetch_reps();
 	});
+	
 	fetch_generalData();
-})
+});

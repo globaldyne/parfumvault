@@ -28,7 +28,7 @@ function fetch_whereUsed(){
 			$('#fetch_whereUsed').html(data);
 		},
 	});
-};
+}
 
 function fetch_usageData(){
 	$.ajax({ 
@@ -42,7 +42,7 @@ function fetch_usageData(){
 			$('#fetch_usageData').html(data);
 		},
 	});
-};
+}
 
 
 function fetch_sups(){
@@ -57,7 +57,7 @@ function fetch_sups(){
 			$('#fetch_suppliers').html(data);
 		},
 	});
-};
+}
 	
 function fetch_techs(){
 	$.ajax({ 
@@ -71,7 +71,7 @@ function fetch_techs(){
 			$('#fetch_tech_data').html(data);
 		},
 	});
-};
+}
 
 function fetch_docs(){
 	$.ajax({ 
@@ -85,7 +85,7 @@ function fetch_docs(){
 			$('#fetch_documents').html(data);
 		},
 	});
-};
+}
 
 
 function fetch_impact(){
@@ -100,7 +100,7 @@ function fetch_impact(){
 			$('#fetch_impact').html(data);
 		},
 	});
-};
+}
 
 function fetch_cmps(){
 	$.ajax({ 
@@ -115,7 +115,7 @@ function fetch_cmps(){
 			$('#fetch_composition').html(data);
 		},
 	});
-};
+}
 
 function fetch_safety(){
 	$.ajax({ 
@@ -129,7 +129,7 @@ function fetch_safety(){
 			$('#fetch_safety').html(data);
 		},
 	});
-};
+}
 
 function fetch_privacy(){
 	$.ajax({ 
@@ -143,7 +143,7 @@ function fetch_privacy(){
 			$('#fetch_privacy').html(data);
 		},
 	});
-};
+}
 
 function fetch_syn(){
 	$.ajax({ 
@@ -158,7 +158,7 @@ function fetch_syn(){
 			$('#fetch_synonyms').html(data);
 		},
 	});
-};
+}
 
 function fetch_reps(){
 	$.ajax({ 
@@ -174,12 +174,12 @@ function fetch_reps(){
 			$('#fetch_replacements').html(data);
 		},
 	});
-};
+}
 
 //Clone
 $('#cloneIng').on('click', '[id*=cloneME]', function () {
 	$.ajax({ 
-		url: 'update_data.php', 
+		url: '/pages/update_data.php', 
 		type: 'POST',
 		data: {
 			action: 'clone',
@@ -234,7 +234,7 @@ $('#genSDS').on('click', '[id*=generateSDS]', function () {
 //Rename
 $('#renameIng').on('click', '[id*=renameME]', function () {
 	$.ajax({ 
-		url: 'update_data.php', 
+		url: '/pages/update_data.php', 
 		type: 'POST',
 		data: {
 			action: 'rename',
@@ -245,7 +245,9 @@ $('#renameIng').on('click', '[id*=renameME]', function () {
 		dataType: 'json',
 		success: function (data) {
 			if(data.success){
-				msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+				window.location.href = "/pages/mgmIngredient.php?id=" + data.success.id;
+				reload_ingredients_data();
+				msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success.msg + '</div>';
 			}else if(data.error){
 				msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 			}
@@ -258,7 +260,7 @@ $('#renameIng').on('click', '[id*=renameME]', function () {
 if (typeof myCAS !== 'undefined' && myPCH == '1') {
 	function fetch_pubChem(){
 		$.ajax({ 
-			url: 'pubChem.php', 
+			url: '/pages/views/ingredients/pubChem.php', 
 			type: 'GET',
 			data: {
 				cas: myCAS
@@ -269,7 +271,7 @@ if (typeof myCAS !== 'undefined' && myPCH == '1') {
 			}
 		});
 	}
-};
+}
 
 if (typeof myIngID !== 'undefined') {
 	function reload_overview() {
@@ -288,4 +290,4 @@ if (typeof myIngID !== 'undefined') {
 		});
 	};
 	reload_overview();
-};
+}

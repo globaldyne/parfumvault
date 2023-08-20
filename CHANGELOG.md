@@ -1,14 +1,59 @@
 # CHANGELOG
-### Version 10.0
-- PV is now using BS5 
-- Rewrite and redesign General tab in ingredient management
-- Move Gerneral tab to its own file
-- Deprecate function sanChar()
-- Fix tab missconfiguration for ingredient management
-- Make sure solvent isn't enabled if ingredient purity exceeds 100%
-- Deprecate TGSC search function
-- Bootstrap-select update to v1.14.0-beta3
+### Version 8.5
+- Upgrade to Bootstrap 5
+- Fix formulas json export
+- Ingredient general tab re-design
+- Pubchem tab re-design
+- Adding more details when a note is added during formula making
+- Prevent dilutant purity to exceed 100% when composing a formula
+- Restructure ingredient overview page
 
+### Version 8.4
+- Auto redirect to the new ingredient when is renamed
+- Extend order sorting state save for formula revisions and history
+- Disable state 2hr window expire
+- General settings page div allign fix
+- Pyramid view values input replaced with sliders
+- State session stored on separate array
+- Remove session state when user preferences reset
+- Added last updated field in formulas list (non sortable limitation)
+- Change details method display for IFRA, bottles and lids
+- Update README to include donations badge
+- Add additiotnal fields for suppliers (sku, storage)
+- Fix an issue allowing blank urls when editong a supplier
+- Redesign add supplier modal
+- Added state save for ingredient suppliers
+- Added suppliers info when exporting ingredients
+- Added total materials count per supplier
+- Show saved state search value in  ingredients
+- Rewrite suppliers csv export method
+- Export suppliers to JSON
+- Export supplier's materials to JSON
+- Improve csv export for IFRA Library
+- Fix formula image upload message
+
+### Version 8.3
+- Blocked upgrades to the future versions starting version 6.0
+- Added option to store user preferences in the database
+- Re-design general settings page
+- Add remove user preferences option in maintenance tab
+- Remove git files from docker image
+- Extend order sorting state save for:
+	ingredient categories, 
+	perfume types, 
+	formula categories, 
+	html templates, 
+	batches,
+	suppliers,
+	customers,
+	bottles,
+	lids
+
+### Version 8.2
+- Check if session exists before it starts it
+- Fix a bug creating invalid password when registering a new user
+- Remove unsed div nesting from first time creation form
+- Added a function to address first time installation in hosted enviroments
 - Added remote server error handling in marketplace actions
 - update_user_settings will take session name as a parameter
 - Add support to store formulas and ingredients order state

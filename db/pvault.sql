@@ -317,7 +317,8 @@ CREATE TABLE `settings` (
   `pv_online_api_url` varchar(255) COLLATE utf8_general_ci NOT NULL DEFAULT 'https://online.perfumersvault.com/api.php',
   `api` INT NOT NULL DEFAULT '0',
   `api_key` VARCHAR(255) NULL,
-  `editor` int(11) NOT NULL DEFAULT 1 COMMENT '1 = Inline, 2 = Advanced'
+  `editor` int(11) NOT NULL DEFAULT 1 COMMENT '1 = Inline, 2 = Advanced',
+  `user_pref_eng` INT NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 INSERT INTO `settings` (`id`, `label_printer_addr`, `label_printer_model`, `label_printer_size`, `label_printer_font_size`, `currency`, `top_n`, `heart_n`, `base_n`, `chem_vs_brand`, `grp_formula`, `brandName`, `brandAddress`, `brandEmail`, `brandPhone`, `brandLogo`) VALUES
@@ -382,6 +383,10 @@ CREATE TABLE `suppliers` (
  `stock` decimal(10,3) NOT NULL,
  `status` INT NOT NULL DEFAULT '1' COMMENT '1 = Available\r\n2 = Limited Availability\r\n3 = Not available', 
  `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+ `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ `supplier_sku` VARCHAR(255) NULL, 
+ `internal_sku` VARCHAR(255) NULL,
+ `storage_location` VARCHAR(255) NULL,
  PRIMARY KEY (`id`),
  UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -656,4 +661,13 @@ CREATE TABLE `formulasTags` (
 	`formula_id` INT NOT NULL, 
 	`tag_name` VARCHAR(255) NOT NULL, 
 	UNIQUE (`id`)
-) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci; 
+) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+CREATE TABLE `user_prefs` ( 
+	`pref_name` VARCHAR(255) NOT NULL,
+	`pref_data` LONGTEXT NOT NULL,
+	`created_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL,
+	`owner` INT NOT NULL 
+) ENGINE = InnoDB CHARSET=utf8 COLLATE utf8_general_ci; 
+ALTER TABLE `user_prefs` ADD UNIQUE (pref_name);
+

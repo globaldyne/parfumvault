@@ -9,87 +9,87 @@ if($pv_meta['schema_ver'] < $db_ver){
 
 ?>
 <div id="chkUpdMsg"></div>
+<div id="content">
+        <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+          <ul class="navbar-nav vault-top ml-auto">
+            <!-- Cart -->
+            <li class="nav-item dropdown no-arrow mx-1">
+              <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-shopping-cart fa-fw"></i>
+                <!-- Counter - cart -->
+                <span class="badge badge-danger badge-counter"><?php echo countCart($conn); ?></span>
+              </a>
+              <!-- Dropdown - cart -->
+              <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="messagesDropdown">
+                <?php if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM cart GROUP BY name"))){ ?>
+				<a href="/?do=cart" class="dropdown-header"><h6>To be ordered</h6></a>
+				<?php
+					$qC = mysqli_query($conn, "SELECT name,ingID FROM cart ORDER BY name ASC LIMIT 5");
+					while ($pC = mysqli_fetch_array($qC)){
+						$supDetails = getPrefSupplier($pC['ingID'],$conn);
+				?>
+                <a class="dropdown-item d-flex align-items-center" href="<?php echo $supDetails['supplierLink'];?>" target="_blank">
+                  <div class="font-weight-bold">
+                    <div class="text-truncate"><?php echo $pC['name'];?></div>
+                    <div class="small text-gray-500"><?php echo $supDetails['name'];?></div>
+                  </div>
+                </a>
+				<?php } ?>
+	            <a class="dropdown-item text-center small text-gray-500" href="?do=cart">See all...</a>
 
-<nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-  <ul class="navbar-nav ml-auto">
-    <!-- Cart -->
-    <li class="nav-item dropdown no-arrow mx-1">
-      <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <i class="fas fa-shopping-cart fa-fw"></i>
-        <!-- Counter - cart -->
-        <span class="badge badge-danger badge-counter"><?php echo countCart($conn); ?></span>
-      </a>
-      <!-- Dropdown - cart -->
-      <div class="dropdown-list dropdown-menu  shadow animated--grow-in" aria-labelledby="messagesDropdown">
-        <?php if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM cart GROUP BY name"))){ ?>
-        <a href="/?do=cart" class="dropdown-header"><h6>To be ordered</h6></a>
-        <?php
-            $qC = mysqli_query($conn, "SELECT name,ingID FROM cart ORDER BY name ASC LIMIT 5");
-            while ($pC = mysqli_fetch_array($qC)){
-                $supDetails = getPrefSupplier($pC['ingID'],$conn);
-        ?>
-        <a class="dropdown-item d-flex align-items-center" href="<?php echo $supDetails['supplierLink'];?>" target="_blank">
-          <div class="font-weight-bold">
-            <div class="text-truncate"><?php echo $pC['name'];?></div>
-            <div class="small text-gray-500"><?php echo $supDetails['name'];?></div>
-          </div>
-        </a>
-        <?php } ?>
-        <a class="dropdown-item text-center small text-gray-500" href="/?do=cart">See all...</a>
-
-        <?php }else{ ?>
-        <a class="dropdown-item text-center small text-gray-500" href="/?do=cart">No orders to place</a>
-        <?php } ?>	
-        </div>
-    </li>
-    
-    <div class="topbar-divider d-none d-sm-block"></div>
-    <li class="nav-item dropdown no-arrow">
-      <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <span class="mx-2 d-none d-lg-inline text-gray-600 small"><?php echo $user['fullName'];?></span>
-       <div class="icon-container">
-        <img class="img-profile rounded-circle" src="<?=$doc['avatar']?: '/img/logo_def.png'; ?>">
-        <div class="status-circle"></div>
-        </div>
-      </a>
-      <div class="dropdown-menu  shadow animated--grow-in" aria-labelledby="userDropdown">
-      
-        <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#editUser">
-          <i class="fas fa-user fa-sm fa-fw mx-2 text-gray-400"></i>
-          Edit my details
-        </a>
-        
-        <a class="dropdown-item" href="/?do=settings">
-          <i class="fas fa-cogs fa-sm fa-fw mx-2 text-gray-400"></i>
-          Settings
-        </a>
-        <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#calcTools">
-          <i class="fas fa-tools fa-sm fa-fw mx-2 text-gray-400"></i>
-          Calculation Tools
-        </a>
-        
-        <div class="dropdown-divider"></div>
-        <a class="dropdown-item" href="https://www.perfumersvault.com/knowledge-base" target="_blank">
-          <i class="fas fa-book fa-sm fa-fw mx-2 text-gray-400"></i>
-          Documentation
-        </a>
-        <a class="dropdown-item" href="https://github.com/globaldyne/parfumvault/issues" target="_blank">
-          <i class="fas fa-lightbulb fa-sm fa-fw mx-2 text-gray-400"></i>
-          Request a feature / Bug report
-        </a>             
-        <div class="dropdown-divider"></div>
-        <a class="dropdown-item" href="https://apps.apple.com/us/app/id1525381567" target="_blank">
-          <i class="fab fa-apple fa-sm fa-fw mx-2 text-gray-400"></i>
-          App Store
-        </a>              
-        <div class="dropdown-divider"></div>
-        <a class="dropdown-item" href="logout.php">
-          <i class="fas fa-sign-out-alt fa-sm fa-fw mx-2 text-gray-400"></i>
-          Logout
-        </a>
-      </div>
-    </li>
-  </ul>
+				<?php }else{ ?>
+                <a class="dropdown-item text-center small text-gray-500" href="?do=cart">No orders to place</a>
+				<?php } ?>	
+                </div>
+            </li>
+            
+            <div class="topbar-divider d-none d-sm-block"></div>
+            <li class="nav-item dropdown no-arrow">
+              <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="mx-2 d-none d-lg-inline text-gray-600 small"><?php echo $user['fullName'];?></span>
+               <div class="icon-container">
+                <img class="img-profile rounded-circle" src="<?=$doc['avatar']?: '/img/logo_def.png'; ?>">
+				<div class="status-circle"></div>
+				</div>
+              </a>
+              <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+              
+				<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#editUser">
+                  <i class="fas fa-user fa-sm fa-fw mx-2 text-gray-400"></i>
+                  Edit my details
+                </a>
+                
+                <a class="dropdown-item" href="/?do=settings">
+                  <i class="fas fa-cogs fa-sm fa-fw mx-2 text-gray-400"></i>
+                  Settings
+                </a>
+                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#calcTools">
+                  <i class="fas fa-tools fa-sm fa-fw mx-2 text-gray-400"></i>
+                  Calculation Tools
+                </a>
+                
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="https://www.perfumersvault.com/knowledge-base" target="_blank">
+                  <i class="fas fa-book fa-sm fa-fw mx-2 text-gray-400"></i>
+                  Documentation
+                </a>
+                <a class="dropdown-item" href="https://github.com/globaldyne/parfumvault/issues" target="_blank">
+                  <i class="fas fa-lightbulb fa-sm fa-fw mx-2 text-gray-400"></i>
+                  Request a feature / Bug report
+                </a>             
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="https://apps.apple.com/us/app/id1525381567" target="_blank">
+                  <i class="fab fa-apple fa-sm fa-fw mx-2 text-gray-400"></i>
+                  App Store
+                </a>              
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="/logout.php">
+                  <i class="fas fa-sign-out-alt fa-sm fa-fw mx-2 text-gray-400"></i>
+                  Logout
+                </a>
+              </div>
+            </li>
+          </ul>
 <div id="msg"></div>
 </nav>
 

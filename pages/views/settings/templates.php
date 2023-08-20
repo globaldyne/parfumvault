@@ -10,7 +10,7 @@ require_once(__ROOT__.'/inc/sec.php');
 <div class="card-body">
   <div class="text-right">
     <div class="btn-group">
-    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
+    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
         <div class="dropdown-menu dropdown-menu-right">
             <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addTmpl"><i class="fa-solid fa-plus mx-2"></i>Add new</a></li>
         </div>
@@ -59,6 +59,25 @@ $(document).ready(function() {
 	drawCallback: function( settings ) {
 			extrasShow();
      	},
+	stateSave: true,
+	stateDuration: -1,
+	stateLoadCallback: function (settings, callback) {
+       	$.ajax( {
+           	url: '/core/update_user_settings.php?set=listHTMLTmpl&action=load',
+           	dataType: 'json',
+           	success: function (json) {
+               	callback( json );
+           	}
+       	});
+    },
+    stateSaveCallback: function (settings, data) {
+	   $.ajax({
+		 url: "/core/update_user_settings.php?set=listHTMLTmpl&action=save",
+		 data: data,
+		 dataType: "json",
+		 type: "POST"
+	  });
+	},	
 	});
 	
 });
@@ -83,9 +102,9 @@ function actions(data, type, row){
 		data = '<div class="dropdown">' +
         '<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
             '<ul class="dropdown-menu dropdown-menu-right">';
-		data += '<li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editTmpl" rel="tip" title="Edit '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-edit mx-2"></i>Edit</a></li>';
+		data += '<li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editTmpl" rel="tip" title="Edit '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-edit mr2"></i>Edit</a></li>';
 		data += '<div class="dropdown-divider"></div>';
-		data += '<li><a class="dropdown-item text-danger" href="#" id="sDel" rel="tip" title="Delete '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-trash mx-2"></i>Delete</a></li>';
+		data += '<li><a class="dropdown-item text-danger" href="#" id="sDel" rel="tip" title="Delete '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-trash mr2"></i>Delete</a></li>';
 		data += '</ul></div>';
 	return data;
 }
@@ -244,7 +263,7 @@ $("#editTmpl").on("show.bs.modal", function(e) {
             <div class="dropdown-divider"></div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         <input type="submit" name="button" class="btn btn-primary" id="sAdd" value="Add">
       </div>
     </div>

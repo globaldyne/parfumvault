@@ -18,14 +18,14 @@ require_once(__ROOT__.'/func/php-settings.php');
                         <li class="dropdown-header">Import</li> 
                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#ifra_import"><i class="fa-solid fa-file-excel mx-2"></i>Import IFRA xls</a>
                                 	  
-                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#import_ifra_json" data-bs-backdrop="static"><i class="fa-solid fa-file-import mx-2"></i>Import from JSON</a></li>
+                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#import_ifra_json"><i class="fa-solid fa-file-import mx-2"></i>Import from JSON</a></li>
 
                         <?php if($settings['pubChem'] == '1'){?>
                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#pubChem_import"><i class="fa-solid fa-file-import mx-2"></i>Import images</a></li>
                         <?php } ?>
                         <li class="dropdown-header">Export</li> 
            				<li><a class="dropdown-item" href="/pages/operations.php?action=exportIFRA"><i class="fa-solid fa-file-code mx-2"></i>Export as JSON</a></li>
-                        <li><a class="dropdown-item" id="csv" href="#"><i class="fa-solid fa-file-export mx-2"></i>Export as CSV</a></li>
+                        <li><a class="dropdown-item" id="exportCSV" href="#"><i class="fa-solid fa-file-export mx-2"></i>Export as CSV</a></li>
                       </div>
                     </div>
                   </div>
@@ -92,7 +92,7 @@ require_once(__ROOT__.'/func/php-settings.php');
                     
                     <div class="form-group">
                       <div class="col-sm-10">
-                          <label class="control-label" for="IFRAver">IFRA amendment</label><i class="fa-solid fa-circle-info pv_point_gen mx-2" rel="tip" title="IFRA file format has been slightly changed after amendment 49, to maintain backwards compatibility, we added the option to select which version you importing."></i>
+                          <label class="control-label" for="IFRAver">IFRA amendment</label> <i class="fa-solid fa-circle-info pv_point_gen" data-bs-toggle="tooltip" title="IFRA file format has been slightly changed after amendment 49, to maintain backwards compatibility, we added the option to select which version you importing."></i>
                           <select id="IFRAver" class="form-control">
                               <option value="0" disabled>Please select amendment format</option>
                               <option value="49">Amendment 49 or older format</option>
@@ -110,7 +110,7 @@ require_once(__ROOT__.'/func/php-settings.php');
                     <div class="form-group">
                         <div class="col-sm-10">
                            <input name="updateCAS" type="checkbox" id="updateCAS" checked="checked" /> 
-                           <label class="control-label" for="updateCAS">Modify original file</label><i class="fa-solid fa-circle-info pv_point_gen mx-2" rel="tip" title="This is required if you are importing the original IFRA file."></i>
+                           <label class="control-label" for="updateCAS">Modify original file</label> <i class="fa-solid fa-circle-info pv_point_gen" data-bs-toggle="tooltip" title="This is required if you are importing the original IFRA file."></i>
                         </div>
                     </div>
 
@@ -208,12 +208,18 @@ require_once(__ROOT__.'/func/php-settings.php');
 <script type="text/javascript">
 $(document).ready(function() {
 	
+   $('[data-bs-toggle="tooltip"]').tooltip();
+
 	var tdDataIFRA = $('#tdDataIFRA').DataTable( {
 	columnDefs: [
 		{ className: 'pv_vertical_middle text-center', targets: '_all' },
 		{ orderable: false, targets: [25]}
 	],
 	dom: 'lrftip',
+	buttons: [{
+			extend: 'csvHtml5',
+			title: "IFRALibrary"
+	}],
 	processing: true,
 	serverSide: true,
 	searching: true,
@@ -270,33 +276,42 @@ $(document).ready(function() {
 	lengthMenu: [[20, 50, 100, 200, 400], [20, 50, 100, 200, 400]],
 	pageLength: 20,
 	displayLength: 20,
-	});
 	
-	var detailRows = [];
- 
-    $('#tdDataIFRA tbody').on( 'click', 'tr td:first-child + td', function () {
-        var tr = $(this).parents('tr');
-        var row = tdDataIFRA.row( tr );
-        var idx = $.inArray( tr.attr('id'), detailRows );
- 
-        if ( row.child.isShown() ) {
-            tr.removeClass( 'details' );
-            row.child.hide();
-            detailRows.splice( idx, 1 );
-        } else {
-            tr.addClass( 'details' );
-            row.child( format( row.data() ) ).show();
-            if ( idx === -1 ) {
-                detailRows.push( tr.attr('id') );
-            }
-        }
-    });
- 
-    tdDataIFRA.on( 'draw', function () {
-        $.each( detailRows, function ( i, id ) {
-            $('#'+id+' td:first-child + td').trigger( 'click' );
-        } );
-    } );
+	stateSave: true,
+	stateDuration : -1,
+	stateLoadCallback: function (settings, callback) {
+       	$.ajax( {
+           	url: '/core/update_user_settings.php?set=listIFRA&action=load',
+           	dataType: 'json',
+           	success: function (json) {
+               	callback( json );
+           	}
+       	});
+    },
+    stateSaveCallback: function (settings, data) {
+	   $.ajax({
+		 url: "/core/update_user_settings.php?set=listIFRA&action=save",
+		 data: data,
+		 dataType: "json",
+		 type: "POST"
+	  });
+	},
+	
+	});
+
+	tdDataIFRA.on('requestChild.dt', function (e, row) {
+		row.child(format(row.data())).show();
+	});
+	 
+	tdDataIFRA.on('click', '#ifra_name', function (e) {
+		let tr = e.target.closest('tr');
+		let row = tdDataIFRA.row(tr); 
+		if (row.child.isShown()) {
+			row.child.hide();
+		} else {
+			row.child(format(row.data())).show();
+		}
+	});
 	
 	document.querySelectorAll('a.toggle-vis').forEach((el) => {
 		el.addEventListener('click', function (e) {
@@ -323,7 +338,7 @@ function format ( d ) {
 }
 
 function name(data, type, row){
-	return '<i class="pv_point_gen pv_gen_li">'+row.name+'</i>';
+	return '<i class="pv_point_gen pv_gen_li" id="ifra_name">'+row.name+'</i>';
 }
 
 function CAS(data, type, row){
@@ -332,7 +347,7 @@ function CAS(data, type, row){
 }
 
 function image(data, type, row){
-	return '<img src="data:image/png;base64, '+row.image+'" class="img_ifra noexport"/>';
+	return '<img src="data:image/png;base64, '+row.image+'" class="img_ifra"/>';
 }
 
 function reload_ifra_data() {
@@ -345,21 +360,9 @@ function actions(data, type, row){
 	return data;
 }
 
-$('#csv').on('click',function(){
-	$("#tdDataIFRA").tableHTMLExport({
-		type:'csv',
-		filename:'ifra.csv',
-		separator: ',',
-		newline: '\r\n',
-		trimContent: true,
-		quoteFields: true,
-		
-		ignoreColumns: '.noexport',
-		ignoreRows: '.noexport',
-		
-		htmlContent: false,  
-		consoleLog: false   
-	}); 
+
+$('#exportCSV').click(() => {
+    $('#tdDataIFRA').DataTable().button(0).trigger();
 });
 
 $('#btnImportIFRA').click(function() {	

@@ -41,7 +41,7 @@ $ingName = mysqli_real_escape_string($conn, $_GET["name"]);
 <script type="text/javascript" language="javascript" >
 $(document).ready(function() {
 	
-$('[data-toggle="tooltip"]').tooltip();
+$('[data-bs-toggle="tooltip"]').tooltip();
 var tdCompositions = $('#tdCompositions').DataTable( {
 	columnDefs: [
 		{ className: 'text-center', targets: '_all' },
@@ -142,7 +142,7 @@ $('#tdCompositions').editable({
   	selector: 'i.toDeclare',
   	type: 'POST',
 	url: "update_data.php?composition=update&ing=<?=$ingName;?>",
-	title: 'To be declared?',
+	title: 'To be declared',
 	source: [
 			 {value: '0', text: 'No'},
 			 {value: '1', text: 'Yes'},
@@ -266,7 +266,7 @@ function reload_cmp_data() {
 };
 </script>
 <!-- ADD COMPOSITION-->
-<div class="modal fade" id="addComposition" tabindex="-1" role="dialog" aria-labelledby="addComposition" aria-hidden="true">
+<div class="modal fade" id="addComposition" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="addComposition" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -312,7 +312,7 @@ function reload_cmp_data() {
 </div>
 
 <!--ADD FROM CSV MODAL-->
-<div class="modal fade" id="addCSV" tabindex="-1" role="dialog" aria-labelledby="addCSV" aria-hidden="true">
+<div class="modal fade" id="addCSV" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="addCSV" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">

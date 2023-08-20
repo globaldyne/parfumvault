@@ -19,9 +19,9 @@ $ingID = mysqli_real_escape_string($conn, $_POST["ingID"]);
 <div class="card-body">
  	<div class="text-right">
   		<div class="btn-group">
-   			<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
+   			<button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
     		<div class="dropdown-menu dropdown-menu-right">
-        		<li><a class="dropdown-item" href="#" data-toggle="modal" data-backdrop="static" data-target="#addReplacement"><i class="fa-solid fa-plus mr2"></i>Add new</a></li>
+        		<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addReplacement"><i class="fa-solid fa-plus mx-2"></i>Add new</a></li>
     		</div>
   		</div>                    
 	</div>
@@ -42,7 +42,7 @@ $ingID = mysqli_real_escape_string($conn, $_POST["ingID"]);
 <script type="text/javascript" language="javascript" >
 $(document).ready(function() {
 
-$('[data-toggle="tooltip"]').tooltip();
+$('[data-bs-toggle="tooltip"]').tooltip();
 var tdReplacements = $('#tdReplacements').DataTable( {
 	columnDefs: [
 		{ className: 'text-center', targets: '_all' },
@@ -138,7 +138,7 @@ function repNotes(data, type, row){
 }
 
 function repActions(data, type, row){
-	return '<a href="#" id="repDel" class="fas fa-trash" style="color: #c9302c;" data-id="'+row.id+'" data-name="'+row.ing_rep_name+'"></a>';    
+	return '<a href="#" id="repDel" class="fas fa-trash link-danger" data-id="'+row.id+'" data-name="'+row.ing_rep_name+'"></a>';    
 }
 
 
@@ -175,10 +175,10 @@ $('#tdReplacements').on('click', '[id*=repDel]', function () {
 					dataType: 'json',
 					success: function (data) {
 						if(data.success){
-							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 							reload_rep_data();
 						}else{
-							var msg ='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+							var msg ='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 						}
 						$('#infRepOut').html(msg);
 					}
@@ -257,13 +257,13 @@ $('#addReplacement').on('click', '[id*=repAdd]', function () {
 		dataType: 'json',
 		success: function (data) {
 			if(data.success){
-				var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+				var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 				$("#repName").val('');
 				$("#repCas").val('');
 				$("#repNotes").val('');
 				reload_rep_data();
 			}else{
-				var msg ='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				var msg ='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 			}
 			$('#infRep').html(msg);
 		}
@@ -279,7 +279,7 @@ function reload_rep_data() {
 
 </script>
 <!-- ADD ING REPLACEMENT -->
-<div class="modal fade" id="addReplacement" tabindex="-1" role="dialog" aria-labelledby="addReplacement" aria-hidden="true">
+<div class="modal fade" id="addReplacement" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="addReplacement" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -297,7 +297,7 @@ function reload_rep_data() {
         <div class="dropdown-divider"></div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         <input type="submit" name="button" class="btn btn-primary" id="repAdd" value="Add">
       </div>
     </div>

@@ -40,8 +40,8 @@ if($form[0]['ingredient']){
 <style>
 .mfp-iframe-holder .mfp-content {
     line-height: 0;
-    width: 1500px;
-    max-width: 1500px; 
+    width: 80%;
+    max-width: 100%; 
 	height: 1300px;
 }
 </style>
@@ -55,7 +55,7 @@ if($form[0]['ingredient']){
 			  <table width="100%" border="0">
 			    <tr>
 			      <th width="75%" class="left" scope="col"><h2 class="m-0 font-weight-bold text-primary"><a href="javascript:reload_formula_data()"><div id="formula_name"><?=$f_name?:'Unnamed'?></div></a><span class="m-1"><div id="lock_status"><?php if($meta['isProtected']){?><a class="fas fa-lock" href="javascript:setProtected('false')"><?php }else{ ?><a class="fas fa-unlock" href="javascript:setProtected('true')"> <?php } ?></a></div></span></h2>
-              <h5 class="m-1 text-primary"><span><a href="#" rel="tip" data-placement="right" title="<?=$cat_details['description']?>"><?=ucfirst($meta['catClass'])?></a></span></h5>&nbsp;</th>
+              <h5 class="m-1 text-primary"><span><a href="#" rel="tip" data-bs-placement="right" title="<?=$cat_details['description']?>"><?=ucfirst($meta['catClass'])?></a></span></h5>&nbsp;</th>
 			      <th width="21%" scope="col"><div id="formula_desc"><img src="/img/loading.gif"/></div></th>
 			      <th width="4%" scope="col"><div class="img-formula"><img class="img-perfume" src="<?=$img['docData']?:'/img/ICO_TR.png';?>"/></div></th>
 		        </tr>
@@ -63,73 +63,79 @@ if($form[0]['ingredient']){
           
             </div>
         <!-- Nav tabs -->
-        <ul class="nav nav-tabs mb-3" role="tablist">
-          <li class="nav-item active" role="presentation"><a href="#main_formula" id="formula_tab" role="tab" data-bs-toggle="tab"><i class="fa fa-bong mx-2"></i>Formula</a></li>
-    	  <li class="nav-item" role="presentation"><a href="#impact" id="impact_tab" role="tab" data-bs-toggle="tab"><i class="fa fa-magic mx-2"></i>Notes Impact</a></li>
-          <li class="nav-item" role="presentation"><a href="#pyramid" id="pyramid_tab" role="tab" data-bs-toggle="tab"><i class="fa fa-table mx-2"></i>Olfactory Pyramid</a></li>
-          <li class="nav-item" role="presentation"><a href="#summary" id="summary_tab" role="tab" data-bs-toggle="tab"><i class="fa fa-cubes mx-2"></i>Notes Summary</a></li>
-          <li class="nav-item" role="presentation"><a href="#ingRep" id="reps_tab" role="tab" data-bs-toggle="tab"><i class="fa fa-exchange-alt mx-2"></i>Replacements</a></li>
-          <li class="nav-item" role="presentation"><a href="#attachments" id="attachments_tab" role="tab" data-bs-toggle="tab"><i class="fa fa-paperclip mx-2"></i>Attachments</a></li>
-          <li class="nav-item" role="presentation"><a href="#revisions" id="revisions_tab" role="tab" data-bs-toggle="tab"><i class="fa fa-clock-rotate-left mx-2"></i>Revisions</a></li>
-          <li class="nav-item" role="presentation"><a href="#timeline" id="timeline_tab" role="tab" data-bs-toggle="tab"><i class="fa fa-timeline mx-2"></i>History</a></li>
+		<ul class="nav nav-tabs mb-3" role="tablist">
+          <li class="nav-item active" role="presentation">
+          	<a href="#main_formula" id="formula_tab" class="nav-link" aria-selected="true" role="tab" data-bs-toggle="tab"><i class="fa fa-bong mx-2"></i>Formula</a>
+          </li>
+    	  <li class="nav-item" role="presentation">
+          	<a href="#impact" id="impact_tab"class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-magic mx-2"></i>Notes Impact</a>
+          </li>
+          <li class="nav-item" role="presentation">
+          	<a href="#pyramid" id="pyramid_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-table mx-2"></i>Olfactory Pyramid</a>
+          </li>
+          <li class="nav-item" role="presentation"><a href="#summary" id="summary_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-cubes mx-2"></i>Notes Summary</a></li>
+          <li class="nav-item" role="presentation"><a href="#ingRep" id="reps_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-exchange-alt mx-2"></i>Replacements</a></li>
+          <li class="nav-item" role="presentation"><a href="#attachments" id="attachments_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-paperclip mx-2"></i>Attachments</a></li>
+          <li class="nav-item" role="presentation"><a href="#revisions" id="revisions_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-clock-rotate-left mx-2"></i>Revisions</a></li>
+          <li class="nav-item" role="presentation"><a href="#timeline" id="timeline_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-timeline mx-2"></i>History</a></li>
 
-          <li class="nav-item" role="presentation"><a href="#formula_settings" id="formula_settings_tab" role="tab" data-bs-toggle="tab"><i class="fa fa-cogs mx-2"></i>Settings</a></li>
+          <li class="nav-item" role="presentation"><a href="#formula_settings" id="formula_settings_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-cogs mx-2"></i>Settings</a></li>
         </ul>
                      
         <div class="tab-content">
-          <div class="tab-pane active" id="main_formula">
+        	<div class="tab-pane active" id="main_formula">
 
-          <div class="card-body">
-          <div id="msgInfo"></div>
-	      <div id="add_ing">
+          	<div class="card-body">
+         		<div id="msgInfo"></div>
+	      		<div id="add_ing">
           
-           	<div class="row">
-          	 	<div class="col-md-4">
-				   <input name="ingredient" id="ingredient" class="pv-form-control main-ingredient"></input>
-                </div>
-                <div class="col-md-2">
-					<input type="text" name="concentration" id="concentration" placeholder="Purity %" class="form-control" />
-                </div>
-                <div class="col-md-2">
-                	<select name="dilutant" id="dilutant" class="form-control selectpicker" data-live-search="true">
-                    	<option value="" selected disabled>Dilutant</option>
-                        <option value="none">None</option>
-                        <?php
-                        $res_dil = mysqli_query($conn, "SELECT id, name FROM ingredients WHERE type = 'Solvent' OR type = 'Carrier' ORDER BY name ASC");
-                        while ($r_dil = mysqli_fetch_array($res_dil)){
-                        	echo '<option value="'.$r_dil['name'].'">'.$r_dil['name'].'</option>';
-                        }
-                        ?>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                	<input type="text" name="quantity" id="quantity" placeholder="Quantity" class="form-control" />				
-                </div>
-                <div class="col-md-2">
-                	<input type="submit" name="add" id="add-btn" class="btn btn-info" value="Add" /> </td>  
-                </div>
-            </div>
-            <div class="col-sm-6 ml-3 mt-2 mb-2">
-        		<input type="checkbox" name="reCalcAdd" id="reCalcAdd" value="1" data-val="1" /> Adjust solvent<i class="fa-solid fa-circle-info ml-2 pv_point_gen" rel="tip" data-placement="right" data-title="The added ingredient's quantity will be deducted from the selected solvent."></i>
-            </div>
-            <div id="slvMetaAdd">
-            	<div class="col-sm-6 ml-3 mr-2 mb-1">
-        			<input name="formulaSolventsAdd" id="formulaSolventsAdd" type="text" class="formulaSolventsAdd pv-form-control">
-            	</div>
-          </div>
-		  <div class="col-sm dropdown-divider"></div>
+                    <div class="row">
+                        <div class="col-md-4">
+                           <input name="ingredient" id="ingredient" class="pv-form-control main-ingredient"></input>
+                        </div>
+                        <div class="col-md-2">
+                            <input type="text" name="concentration" id="concentration" placeholder="Purity %" class="form-control" />
+                        </div>
+                        <div class="col-md-2">
+                            <select name="dilutant" id="dilutant" class="form-control selectpicker" data-live-search="true">
+                                <option value="" selected disabled>Dilutant</option>
+                                <option value="none">None</option>
+                                <?php
+                                $res_dil = mysqli_query($conn, "SELECT id, name FROM ingredients WHERE type = 'Solvent' OR type = 'Carrier' ORDER BY name ASC");
+                                while ($r_dil = mysqli_fetch_array($res_dil)){
+                                    echo '<option value="'.$r_dil['name'].'">'.$r_dil['name'].'</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <input type="text" name="quantity" id="quantity" placeholder="Quantity" class="form-control" />				
+                        </div>
+                        <div class="col-md-2">
+                            <input type="submit" name="add" id="add-btn" class="btn btn-info" value="Add" /> </td>  
+                        </div>
+                    </div>
+                    
+           			<div class="col-sm-6 ml-3 mt-2 mb-2">
+        			<input type="checkbox" name="reCalcAdd" id="reCalcAdd" value="1" data-val="1" /> Adjust solvent<i class="fa-solid fa-circle-info ml-2 pv_point_gen" rel="tip" data-bs-placement="right" data-title="The added ingredient's quantity will be deducted from the selected solvent."></i>
+            		</div>
+            		<div id="slvMetaAdd">
+            			<div class="col-sm-6 ml-3 mr-2 mb-1">
+        					<input name="formulaSolventsAdd" id="formulaSolventsAdd" type="text" class="formulaSolventsAdd pv-form-control">
+            			</div>
+          			</div>
+		  			<div class="col-sm dropdown-divider"></div>
+        	</div>
           
-        </div>
-          
-          <div id="fetch_formula">
-          	<div class="loader-center">
-            	<div class="loader"></div>
-               	<div class="loader-text"></div>
-            </div>
-          </div>
+              <div id="fetch_formula">
+                <div class="loader-center">
+                    <div class="loader"></div>
+                    <div class="loader-text"></div>
+                </div>
+              </div>
           <?php if($legend){ ?>
           <div id="legend">
-          	<p></p>
+          	<div class="mt-4 dropdown-divider"></div>
             <p>*Values in: <strong class="alert alert-danger">red</strong> exceeds usage level,   <strong class="alert alert-warning">yellow</strong> Specification,   <strong class="alert alert-success">green</strong> are within usage level, <strong class="alert alert-info">blue</strong> are exceeding recommended usage level</p>
             </div>
           <?php } ?>

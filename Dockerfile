@@ -45,7 +45,6 @@ ENV LANG en_GB.UTF-8
 
 ADD . /html
 
-
 RUN sed -i "s/ 'localhost'/ getenv(\"DB_HOST\")/g" /etc/phpMyAdmin/config.inc.php
 RUN echo "\$cfg['TempDir'] = '/tmp/';" >> /etc/phpMyAdmin/config.inc.php
 RUN chown -R root.root /etc/phpMyAdmin/
@@ -59,6 +58,8 @@ ADD scripts/reset_pass.sh /usr/bin/reset_pass.sh
 
 RUN chmod +x /usr/bin/entrypoint.sh
 RUN chmod +x /usr/bin/reset_pass.sh
+
+RUN rm -rf /html/.git /html/.github
 
 WORKDIR /html
 STOPSIGNAL SIGQUIT

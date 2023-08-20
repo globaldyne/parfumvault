@@ -15,11 +15,11 @@ $ingName = mysqli_real_escape_string($conn, $_POST["name"]);
 <div class="card-body">
  	<div class="text-right">
   		<div class="btn-group">
-   			<button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
+   			<button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
     		<div class="dropdown-menu dropdown-menu-right">
-        		<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-backdrop="static" data-bs-target="#addSynonym"><i class="fa-solid fa-plus mr2"></i>Add new</a></li>
+        		<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addSynonym"><i class="fa-solid fa-plus mr2"></i>Add new</a></li>
                 <?php if(preg_match('/(Mixture|Blend)/i', $CAS) === 0){	?>
-                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-backdrop="static" data-bs-target="#pubchem_import"><i class="fa-solid fa-file-import mr2"></i>Import from PubChem</a></li>
+                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#pubchem_import"><i class="fa-solid fa-file-import mx-2"></i>Import from PubChem</a></li>
 
                 <?php } ?>
     		</div>
@@ -41,7 +41,7 @@ $ingName = mysqli_real_escape_string($conn, $_POST["name"]);
 <script type="text/javascript" language="javascript" >
 $(document).ready(function() {
 
-$('[data-toggle="tooltip"]').tooltip();
+$('[data-bs-toggle="tooltip"]').tooltip();
 var tdSynonyms = $('#tdSynonyms').DataTable( {
 	columnDefs: [
 		{ className: 'text-center', targets: '_all' },
@@ -197,7 +197,7 @@ function reload_syn_data() {
 };
 </script>
 <!-- ADD SYNONYM -->
-<div class="modal fade" id="addSynonym" tabindex="-1" role="dialog" aria-labelledby="addSynonym" aria-hidden="true">
+<div class="modal fade" id="addSynonym" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="addSynonym" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -223,7 +223,7 @@ function reload_syn_data() {
 </div>
 
 <!-- PUBCHEM SYNONYM IMPORT -->
-<div class="modal fade" id="pubchem_import" tabindex="-1" role="dialog" aria-labelledby="pubchem_import" aria-hidden="true">
+<div class="modal fade" id="pubchem_import" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="pubchem_import" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">

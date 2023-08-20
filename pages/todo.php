@@ -70,6 +70,7 @@ $(document).ready(function() {
 		pageLength: 20,
 		displayLength: 20,
 		stateSave: true,
+		stateDuration: -1,
 		stateLoadCallback: function (settings, callback) {
 			$.ajax( {
 				url: '/core/update_user_settings.php?set=listTodo&action=load',

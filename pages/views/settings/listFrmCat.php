@@ -11,9 +11,9 @@ require_once(__ROOT__.'/inc/opendb.php');
 <div class="card-body">
   <div class="text-right">
     <div class="btn-group" id="menu">
-        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
+        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
         <div class="dropdown-menu dropdown-menu-right">
-          <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#add_formula_cat"><i class="fa-solid fa-plus mx-2"></i>Add formula category</a></li>
+          <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#add_formula_cat"><i class="fa-solid fa-plus mr2"></i>Add formula category</a></li>
         </div>
     </div>
 	</div>
@@ -43,7 +43,7 @@ $(document).ready(function() {
 		processing: true,
         language: {
 			loadingRecords: '&nbsp;',
-			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
+			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw">',
 			emptyTable: 'No groups yet.',
 			search: 'Search:'
 			},
@@ -57,7 +57,26 @@ $(document).ready(function() {
         order: [[ 1, 'asc' ]],
 		lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
         pageLength: 20,
-		displayLength: 20,		
+		displayLength: 20,
+		stateSave: true,
+		stateDuration: -1,
+		stateLoadCallback: function (settings, callback) {
+			$.ajax( {
+				url: '/core/update_user_settings.php?set=listFormulaCat&action=load',
+				dataType: 'json',
+				success: function (json) {
+					callback( json );
+				}
+			});
+		},
+		stateSaveCallback: function (settings, data) {
+		   $.ajax({
+			 url: "/core/update_user_settings.php?set=listFormulaCat&action=save",
+			 data: data,
+			 dataType: "json",
+			 type: "POST"
+		  });
+		},
 	});
 });
 

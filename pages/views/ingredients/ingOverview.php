@@ -48,9 +48,9 @@ if(empty($ingredient['category'])){
 </div>
 <table width="100%" border="0">
   <tr>
-    <td width="33%" align="center"><h3 class="mgm-cat-in">Olfactive family</h3></td>
-    <td width="33%" align="center"><h3 class="mgm-cat-in"><?php echo $ingredient['profile'].' note'; ?></h3></td>
-    <td width="33%" align="center"><h3 class="mgm-cat-in">Physical State</h3></td>
+    <td align="center"><h3 class="mgm-cat-in">Olfactive family</h3></td>
+    <td align="center"><h3 class="mgm-cat-in"><?php echo $ingredient['profile'].' note'; ?></h3></td>
+    <td align="center"><h3 class="mgm-cat-in">Physical State</h3></td>
   </tr>
   <tr>
     <td align="center"><?=getCatByID($ingredient['category'],TRUE,$conn)?></td>

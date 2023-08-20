@@ -2181,6 +2181,7 @@
           menuStyle = window.getComputedStyle(menu),
           menuWidth = menu.offsetWidth,
 
+
           menuPadding = {
             vert: toInteger(menuStyle.paddingTop) +
                   toInteger(menuStyle.paddingBottom) +

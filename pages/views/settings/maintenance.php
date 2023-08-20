@@ -16,6 +16,11 @@ $ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
             <li><a href="#" data-bs-toggle="modal" data-bs-target="#restore_db">Restore DB</a></li>
         </div>
     </div>
+    <div class="row mb-2">
+        <div class="col">
+            <li><a href="#" data-bs-toggle="modal" data-bs-target="#clear_user_pref">Clear user preferences</a></li>
+        </div>
+    </div>
 	<?php if(getenv('phpMyAdmin') == "true"){ ?>
     <div class="row mb-2">
       <div class="col">
@@ -30,6 +35,27 @@ $ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
     <?php } ?>
 </div>
 
+<div class="modal fade" id="clear_user_pref" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="clear_user_pref" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Clear user preferences</h5>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i>
+        	You can reset any user modifications like table sorting.
+            This will bring Perfumers Vault instalation to its defaults.
+            Your data will not be affected.
+        </div>
+      </div>
+	  <div class="modal-footer">
+        <input type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseBK" value="Cancel">
+        <button name="btnClear" class="btn btn-warning" id="btnClear">Clear data</button>
+      </div>
+  </div>
+ </div>
+</div>
+
 <div class="modal fade" id="backup_db" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="backup_db" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
@@ -42,7 +68,7 @@ $ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
               <div class="form-group">
                 <div class="mx-4">
     				<input type="checkbox" class="form-check-input" id="column-statistics" checked>
-   					<label class="form-check-label" for="column-statistics">Column Statistics<i class="fa-solid fa-circle-info mx-2" data-toggle="tooltip" data-placement="right" title="Add ANALYZE TABLE statements to the output to generate histogram statistics for dumped tables when the dump file is reloaded. Disable this if your back-up fails or takes too long."></i></label>
+   					<label class="form-check-label" for="column-statistics">Column Statistics<i class="fa-solid fa-circle-info mx-2" data-bs-toggle="tooltip" data-bs-placement="right" title="Add ANALYZE TABLE statements to the output to generate histogram statistics for dumped tables when the dump file is reloaded. Disable this if your back-up fails or takes too long."></i></label>
   				</div>
               </div>
               <div class="col-md-12">
@@ -97,8 +123,30 @@ $ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
  </div>
 </div>
 <script>
+$('#btnClear').click(function() {
+	$("#btnClear").prop("disabled", true);			
+
+	$.ajax({
+		url: '/pages/operations.php',
+		data: {
+			do: 'userPerfClear',
+		},
+		cache: false,
+		
+		success: function (data) {
+			$("#btnClear").prop("disabled", false);	
+			$('#clear_user_pref').modal('hide');
+		},
+		error: function (request, status, error) {
+			$("#btnClear").prop("disabled", false);
+		},
+			
+	});
+
+});
+
 $(function () {
-  $('[data-toggle="tooltip"]').tooltip();
+  $('[data-bs-toggle="tooltip"]').tooltip();
 });
 
 $('#bk_modal_open').click(function() {

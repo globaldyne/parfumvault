@@ -4,17 +4,27 @@ define('__ROOT__', dirname(dirname(__FILE__)));
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
+require_once(__ROOT__.'/func/formatBytes.php');
+require_once(__ROOT__.'/func/validateInput.php');
+require_once(__ROOT__.'/func/sanChar.php');
+require_once(__ROOT__.'/func/profileImg.php');
 
-$ingID = mysqli_real_escape_string($conn, base64_decode($_GET["id"]));
+
+$ingID = sanChar(mysqli_real_escape_string($conn, base64_decode($_GET["id"])));
 if($ingID){
 	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$ingID'")))){
 		if(mysqli_query($conn, "INSERT INTO ingredients (name) VALUES ('$ingID')")){
-			$msg='<div class="alert alert-info alert-dismissible"><strong>Info:</strong> ingredient '.$ingID.' created</div>';
+			$msg='<div class="alert alert-info alert-dismissible"><strong>Info:</strong> ingredient '.$ingID.' added</div>';
 		}
 	}
 }
 
-$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT id,cas,name FROM ingredients WHERE name = '$ingID'"));
+$res_ingTypes = mysqli_query($conn, "SELECT id,name FROM ingTypes ORDER BY name ASC");
+$res_ingStrength = mysqli_query($conn, "SELECT id,name FROM ingStrength ORDER BY name ASC");
+$res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCategory ORDER BY name ASC");
+$res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles ORDER BY id ASC");
+
+$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE name = '$ingID'"));
 
 ?>
 <!doctype html>
@@ -35,22 +45,18 @@ $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT id,cas,name FROM ingredien
 	<link href="/css/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     
 	<script src="/js/jquery/jquery.min.js"></script>
-    
-	<script src="/tests/bs5/js/bootstrap.bundle.min.js"></script>
+	<script src="/js/bootstrap.bundle.min.js"></script>
 	<script src="/js/bootstrap-select.js"></script>
-	<script src="/tests/x-editable/bs5/js/bootstrap-editable.js"></script>
-    
+	<script src="/js/bootstrap-editable.js"></script>
 	<script src="/js/datatables.min.js"></script>
 	<script src="/js/bootbox.min.js"></script>
 
     <link href="/css/datatables.min.css" rel="stylesheet"/>
 	<link href="/css/sb-admin-2.css" rel="stylesheet">
-	
-    <link href="/css/bootstrap-select.min.css" rel="stylesheet">
-	<link href="/tests/bs5/css/bootstrap.min.css" rel="stylesheet">
-    
+	<link href="/css/bootstrap-select.min.css" rel="stylesheet">
+	<link href="/css/bootstrap.min.css" rel="stylesheet">
 	<link href="/css/vault.css" rel="stylesheet">
-	<link href="/tests/x-editable/bs5/css/bootstrap-editable.css" rel="stylesheet">
+	<link href="/css/bootstrap-editable.css" rel="stylesheet">
 	<link href="/css/mgmIngredient.css" rel="stylesheet">
 	
 <script>
@@ -103,7 +109,7 @@ var myPCH = "<?=$settings['pubChem']?>";
         </li>
         
 		<li class="nav-item" role="presentation">
-        	<a href="#supply" id="sups_tab"class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-shopping-cart mx-2"></i>Supply</a>
+        	<a href="#supply" id="sups_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-shopping-cart mx-2"></i>Supply</a>
         </li>
 			<li class="nav-item" role="presentation">
             	<a href="#tech_data" id="techs_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-cog mx-2"></i>Technical Data</a>
@@ -140,73 +146,123 @@ var myPCH = "<?=$settings['pubChem']?>";
 		<?php } ?>
 	</ul>
 	<div class="tab-content">
-		<div class="tab-pane active" id="general">
-        	<div id="msg_general"></div>
-			<div id="fetch_generalData"><div class="loader"></div></div>
-		</div>
-        <!--general tab-->
-        <?php if($ingID){?>
-        <div class="tab-pane fade" id="usage_limits">
-            <div id="msg_usage"></div>
-            <div id="fetch_usageData"><div class="loader"></div></div>
-        </div>
-        
-        <div class="tab-pane fade" id="supply">
-            <div id="msg_sup"></div>
-            <div id="fetch_suppliers"><div class="loader"></div></div>
-        </div>
-        
-        <div class="tab-pane fade" id="documents">
-            <div id="msg_docs"></div>
-            <div id="fetch_documents"><div class="loader"></div></div>
-        </div>
-        
-        <div class="tab-pane fade" id="synonyms">
-            <div id="msg_syn"></div>
-            <div id="fetch_synonyms"><div class="loader"></div></div>
-        </div>
-        
-        <div class="tab-pane fade" id="tech_data">
-            <div id="fetch_tech_data"><div class="loader"></div></div>
-        </div>
-        
-        <div class="tab-pane fade" id="safety_info">
-            <div id="fetch_safety"><div class="loader"></div></div>
-        </div>
-        
-        <div class="tab-pane fade" id="note_impact">
-            <div id="fetch_impact"><div class="loader"></div></div>
-        </div>
-        
-        <div class="tab-pane fade" id="whereUsed">
-            <div id="fetch_whereUsed"><div class="loader"></div></div>
-        </div>
-        
-        <div class="tab-pane fade" id="tech_composition">
-            <div id="fetch_composition"><div class="loader"></div></div>
-        </div>
-        
-        <?php if($settings['pubChem'] == '1' && $ing['cas']){?>
-            <div class="tab-pane fade" id="pubChem">
-                <h3>Pub Chem Data</h3>
-                <hr>
-                <div id="pubChemData"> <div class="loader"></div> </div>
+    
+    <div class="tab-pane active" id="general">
+        <div id="fetch_generalData">
+        	<div class="row justify-content-md-center">
+        		<div class="loader"></div>
             </div>
-        <?php } ?>
-        
-        <div class="tab-pane fade" id="privacy">
-            <div id="fetch_privacy"><div class="loader"></div></div>
         </div>
-        
-        <?php } ?>
-        
-        
-        <div class="tab-pane fade" id="ingRep">
-            <div id="fetch_replacements"><div class="loader"></div></div>
+    </div>
+	<!--general tab-->
+
+	<?php if($ingID){?>
+    <div class="tab-pane fade" id="usage_limits">
+        <div id="msg_usage"></div>
+        <div id="fetch_usageData">
+            <div class="row justify-content-md-center">
+            	<div class="loader"></div>
+         	</div>
+    	</div>
+    </div>
+    
+    <div class="tab-pane fade" id="supply">
+        <div id="msg_sup"></div>
+        <div id="fetch_suppliers">
+        	<div class="row justify-content-md-center">
+        		<div class="loader"></div>
+            </div>
         </div>
-</div><!--tabs-->
+    </div>
+    
+    <div class="tab-pane fade" id="documents">
+        <div id="msg_docs"></div>
+        <div id="fetch_documents">
+        	<div class="row justify-content-md-center">
+        		<div class="loader"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="tab-pane fade" id="synonyms">
+        <div id="msg_syn"></div>
+        <div id="fetch_synonyms">
+        	<div class="row justify-content-md-center">
+        		<div class="loader"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="tab-pane fade" id="tech_data">
+        <div id="fetch_tech_data">
+        	<div class="row justify-content-md-center">
+        		<div class="loader"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="safety_info">
+        <div id="fetch_safety">
+            <div class="row justify-content-md-center">
+                <div class="loader"></div>
+             </div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="note_impact">
+        <div id="fetch_impact">
+            <div class="row justify-content-md-center">
+                <div class="loader"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="whereUsed">
+        <div id="fetch_whereUsed">
+        	<div class="row justify-content-md-center">
+        		<div class="loader"></div>
+         	</div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="tech_composition">
+        <div id="fetch_composition">
+            <div class="row justify-content-md-center">
+                <div class="loader"></div>
+            </div>
+        </div>
+    </div>
+
+<?php if($settings['pubChem'] == '1' && $ing['cas']){?>
+	<div class="tab-pane fade" id="pubChem">
+		<div id="pubChemData">
+        	<div class="row justify-content-md-center">
+        		<div class="loader"></div>
+            </div>
+        </div>
+	</div>
+<?php } ?>
+
+    <div class="tab-pane fade" id="privacy">
+        <div id="fetch_privacy">
+            <div class="row justify-content-md-center">
+                <div class="loader"></div>
+            </div>
+        </div>
+    </div>
+
+<?php } ?>
+    
+    <div class="tab-pane fade" id="ingRep">
+        <div id="fetch_replacements">
+            <div class="row justify-content-md-center">
+                <div class="loader"></div>
+            </div>
+        </div>
+    </div>
+
 <!-- Modal Print-->
-<div class="modal fade" id="printLabel" tabindex="-1" role="dialog" aria-labelledby="printLabel" aria-hidden="true">
+<div class="modal fade" id="printLabel" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="printLabel" aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -246,14 +302,11 @@ var myPCH = "<?=$settings['pubChem']?>";
 
 
 <!-- Modal Clone-->
-<div class="modal fade" id="cloneIng" tabindex="-1" role="dialog" aria-labelledby="cloneIng" aria-hidden="true">
+<div class="modal fade" id="cloneIng" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="cloneIng" aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title">Clone ingredient <?php echo $ing['name']; ?></h5>
-				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
 			</div>
 			<div class="modal-body">
 				<div id="clone_msg"></div>
@@ -269,14 +322,11 @@ var myPCH = "<?=$settings['pubChem']?>";
 </div>
 
 <!-- Modal Rename-->
-<div class="modal fade" id="renameIng" tabindex="-1" role="dialog" aria-labelledby="renameIng" aria-hidden="true">
+<div class="modal fade" id="renameIng" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="renameIng" aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title">Rename ingredient <?php echo $ing['name']; ?></h5>
-				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
 			</div>
 			<div class="modal-body">
             	<div id="warn"><div class="alert alert-warning"><strong>Warning:</strong> If you rename the ingredient, will affect any formulas that using it as well. Please refer to <strong>Where Used</strong> section to get a list of formulas if any.</div></div>
@@ -293,7 +343,7 @@ var myPCH = "<?=$settings['pubChem']?>";
 </div>
 
 <!-- Modal Gen SDS-->
-<div class="modal fade" id="genSDS" tabindex="-1" role="dialog" aria-labelledby="genSDS" aria-hidden="true">
+<div class="modal fade" id="genSDS" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="genSDS" aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -361,6 +411,82 @@ $('#printLabel').on('click', '[id*=print]', function () {
 	<?php } ?>
 });
 
+
+$(document).ready(function() {
+	$('[rel=tipsy]').tooltip({placement: 'auto'});
+
+	$('#general').on('click', '[id*=saveGeneral]', function () {
+		<?php if(empty($ing['id'])){ ?>
+			if($.trim($("#name").val()) == ''){
+				$('#ingMsg').html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Name is required</div>');
+				return;
+   			}
+		<?php } ?>
+		$.ajax({ 
+			url: 'update_data.php', 
+			type: 'POST',
+			data: {
+				manage: 'ingredient',
+				tab: 'general',
+				ingID: myIngID,
+				
+				name: $("#name").val(),
+				INCI: $("#INCI").val(),
+				cas: $("#cas").val(),
+				einecs: $("#einecs").val(),
+				reach: $("#reach").val(),
+				fema: $("#fema").val(),
+				isAllergen: $("#isAllergen").is(':checked'),
+				purity: $("#purity").val(),
+				solvent: $("#solvent").val(),
+				profile: $("#profile").val(),					
+				type: $("#type").val(),
+				strength: $("#strength").val(),
+				category: $("#category").val(),
+				physical_state: $("#physical_state").val(),
+				odor: $("#odor").val(),
+				notes: $("#notes").val(),
+				<?php if($ing['name']){?>
+					ing: '<?=$ing['name'];?>'
+				<?php } ?>
+			},
+			dataType: 'json',   			
+			success: function (data) {
+				if(data.success){
+					$('#mgmIngHeaderCAS').html($("#cas").val());
+					$('#IUPAC').html($("#INCI").val());
+					
+					var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+				}else{
+					var msg ='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				}
+				
+				$('#ingMsg').html(msg);
+				
+				if ($('#name').val()) {
+					window.location = 'mgmIngredient.php?id=' + btoa($('#name').val());
+				}
+			    <?php if($ing['id']){ ?>
+				reload_overview();
+				<?php } ?>
+			}
+		});
+	});
+
+
+
+	$('#purity').bind('input', function() {
+		var purity = $(this).val();
+		if(purity == 100){
+			$("#solvent").prop("disabled", true); 
+			$("#solvent").val(''); 
+		}else{
+			$("#solvent").prop("disabled", false);
+		}
+		$('.selectpicker').selectpicker('refresh');
+	});
+	
+});//end doc
 
 </script>
 <script src="/js/mgmIngredient.js"></script>
