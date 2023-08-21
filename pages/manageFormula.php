@@ -524,7 +524,7 @@ if($_POST['action'] == 'makeFormula' && $_POST['fid'] && $_POST['q'] && $_POST['
 	}
 
 	if($notes){
-		$notes = "Formula make, ingredient: ".$_POST['ing']."\\n";
+		$notes = "Formula make, ".$_POST['ing'].": ".$_POST['notes']."\\n";
 		mysqli_query($conn, "UPDATE formulasMetaData SET notes = CONCAT(notes, '".$notes."') WHERE fid = '$fid'");
 	}
 	
