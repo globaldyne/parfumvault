@@ -117,7 +117,7 @@ if($form[0]['ingredient']){
                     </div>
                     
            			<div class="col-sm-6 ml-3 mt-2 mb-2">
-        			<input type="checkbox" name="reCalcAdd" id="reCalcAdd" value="1" data-val="1" /> Adjust solvent<i class="fa-solid fa-circle-info ml-2 pv_point_gen" rel="tip" data-bs-placement="right" data-title="The added ingredient's quantity will be deducted from the selected solvent."></i>
+        			<input type="checkbox" name="reCalcAdd" id="reCalcAdd" value="1" data-val="1" /> Adjust solvent<i class="fa-solid fa-circle-info ml-2 pv_point_gen" rel="tip" data-bs-placement="right" data-bs-title="The added ingredient's quantity will be deducted from the selected solvent."></i>
             		</div>
             		<div id="slvMetaAdd">
             			<div class="col-sm-6 ml-3 mr-2 mb-1">
