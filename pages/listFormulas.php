@@ -150,8 +150,8 @@ function initTable(tableId, src) {
 		   { data : 'revision', title: 'Revision'},
 		   { data : 'isMade', title: 'Made', render: fMade},
 		   { data : 'rating', title: 'Rating', render: rating},
-		   { data : 'created', title: 'Created'},
-		   { data : 'updated', title: 'Updated'},
+		   { data : 'created', title: 'Created', render: fDate},
+		   { data : 'updated', title: 'Updated', render: fDate},
 		   { data : null, title: '', render: fActions},				   
 		],
 		processing: true,
@@ -166,7 +166,7 @@ function initTable(tableId, src) {
 		},
 	    order: [0,'asc'],
 	    columnDefs: [
-			{ orderable: false, targets: [2, 3, 8, 9] },
+			{ orderable: false, targets: [2, 3, 9] },
 			{ className: 'text-center', targets: '_all' },				  
 		],
 	    destroy: true,
@@ -282,6 +282,20 @@ function fActions(data, type, row, meta){
 		data += '</ul></div>';
 	
     return data;
+}
+
+function fDate(data, type, row, meta){
+  if(type === 'display'){
+    if(data == '0000-00-00 00:00:00'){
+      data = '-';
+    }else{
+	    let dateTimeParts= data.split(/[- :]/); 
+		dateTimeParts[1]--; 
+		const dateObject = new Date(...dateTimeParts); 
+        data = dateObject.toLocaleDateString() + " " + dateObject.toLocaleTimeString();
+    }
+  }
+  return data;
 }
 
 //Clone

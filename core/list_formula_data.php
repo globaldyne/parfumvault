@@ -29,16 +29,11 @@ if($s != ''){
    $f = "WHERE 1 AND (name LIKE '%".$s."%' OR product_name LIKE '%".$s."%' OR notes LIKE '%".$s."%')";
 }
 
-$formulas = mysqli_query($conn, "SELECT id,fid,name,product_name,isProtected,profile,sex,created,catClass,isMade,madeOn,status,rating,revision FROM formulasMetaData $f $extra LIMIT $row, $limit");
+$formulas = mysqli_query($conn, "SELECT id,fid,name,product_name,isProtected,profile,sex,created,catClass,isMade,madeOn,status,rating,revision, (SELECT updated FROM formulas WHERE fid = formulasMetaData.fid ORDER BY updated DESC limit 1) as updated, (SELECT  count(dilutant) FROM formulas WHERE fid = formulasMetaData.fid) as ingredients  FROM formulasMetaData $f $extra LIMIT $row, $limit");
 
 
 
-while ($allFormulas = mysqli_fetch_array($formulas)){
-	    $formula[] = $allFormulas;
-}
-
-foreach ($formula as $formula) {
-	$fdata = mysqli_fetch_array(mysqli_query($conn, "SELECT updated FROM formulas WHERE fid = '".$formula['fid']."' ORDER BY updated DESC limit 1"));
+while ($formula = mysqli_fetch_array($formulas)){
 	
 	$r['id'] = (int)$formula['id'];
 	$r['fid'] = (string)$formula['fid'];
@@ -48,9 +43,9 @@ foreach ($formula as $formula) {
 	$r['profile'] = (string)$formula['profile']?: 'N/A';
 	$r['sex'] = (string)$formula['sex']?:'N/A';
 	$r['created'] = (string)$formula['created'];
-	$r['updated'] = (string)$fdata['updated'] ?: '-';
+	$r['updated'] = (string)$formula['updated'] ?: '-';
 	$r['catClass'] = (string)$formula['catClass']?: 'N/A';
-	$r['ingredients'] = (int)countElement("formulas WHERE fid = '".$formula['fid']."'",$conn)?:'0';
+	$r['ingredients'] = (int)$formula["ingredients"]?: '0';
 	$r['isMade'] = (int)$formula['isMade']?: 0;
 	$r['madeOn'] = (string)$formula['madeOn']?:'N/A';
 	$r['status'] = (int)$formula['status']?: 0;
@@ -63,12 +58,12 @@ foreach ($formula as $formula) {
 }
 
 $total = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM formulasMetaData"));
-$filtered = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM formulasMetaData ".$f));
+$filtered = count($rx);
 
 $response = array(
   "draw" => (int)$_POST['draw'],
   "recordsTotal" => (int)$total['entries'],
-  "recordsFiltered" => (int)$filtered['entries'],
+  "recordsFiltered" => (int)$filtered,
   "data" => $rx
 );
 
