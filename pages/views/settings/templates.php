@@ -91,11 +91,33 @@ function description(data, type, row){
 }
 
 function created(data, type, row){
-	return row.created;    
+	data = row.created;
+	if(type === 'display'){
+		if(data == '0000-00-00 00:00:00'){
+      		data = '-';
+    	}else{
+	    	let dateTimeParts= data.split(/[- :]/); 
+			dateTimeParts[1]--; 
+			const dateObject = new Date(...dateTimeParts); 
+        	data = dateObject.toLocaleDateString() + " " + dateObject.toLocaleTimeString();
+   		 }
+  	}
+	return data;    
 }
 
 function updated(data, type, row){
-	return row.updated;    
+	data = row.updated;
+	if(type === 'display'){
+		if(data == '0000-00-00 00:00:00'){
+      		data = '-';
+    	}else{
+	    	let dateTimeParts= data.split(/[- :]/); 
+			dateTimeParts[1]--; 
+			const dateObject = new Date(...dateTimeParts); 
+        	data = dateObject.toLocaleDateString() + " " + dateObject.toLocaleTimeString();
+   		 }
+  	}
+	return data;    
 }
 
 function actions(data, type, row){	
