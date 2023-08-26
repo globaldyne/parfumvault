@@ -45,7 +45,7 @@ while ($formula = mysqli_fetch_array($formulas)){
 	$r['created'] = (string)$formula['created'];
 	$r['updated'] = (string)$formula['updated'] ?: '-';
 	$r['catClass'] = (string)$formula['catClass']?: 'N/A';
-	$r['ingredients'] = (int)$formula["ingredients"]?: '0';
+	$r['ingredients'] = (int)countElement("formulas WHERE fid = '".$formula['fid']."'",$conn)?:'0';
 	$r['isMade'] = (int)$formula['isMade']?: 0;
 	$r['madeOn'] = (string)$formula['madeOn']?:'N/A';
 	$r['status'] = (int)$formula['status']?: 0;
