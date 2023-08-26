@@ -58,12 +58,12 @@ while ($formula = mysqli_fetch_array($formulas)){
 }
 
 $total = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM formulasMetaData"));
-$filtered = count($rx);
+$filtered = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM formulasMetaData ".$f));
 
 $response = array(
   "draw" => (int)$_POST['draw'],
   "recordsTotal" => (int)$total['entries'],
-  "recordsFiltered" => (int)$filtered,
+  "recordsFiltered" => (int)$filtered['entries'],
   "data" => $rx
 );
 

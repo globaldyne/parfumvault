@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 8.6
+- Revert formula count query change
 ### Version 8.5
 - Fix formulas json export
 - Ingredient general tab re-design
