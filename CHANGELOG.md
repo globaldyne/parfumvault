@@ -1,4 +1,12 @@
 # CHANGELOG
+### Version 8.5
+- Fix formulas json export
+- Ingredient general tab re-design
+- Pubchem tab re-design
+- Adding more details when a note is added during formula making
+- Prevent dilutant purity to exceed 100% when composing a formula
+- Restructure ingredient overview page
+
 ### Version 8.4
 - Auto redirect to the new ingredient when is renamed
 - Extend order sorting state save for formula revisions and history

@@ -1,12 +1,8 @@
-Whats New in v8.4
+Whats New in v8.5
 --------------------------
-- Export supplier's materials to JSON
-- Export suppliers to JSON
-- Add total materials count per supplier
-- Add additiotnal fields for suppliers (sku, storage)
-- Fix an issue allowing blank urls when editong a supplier
-- Added last updated field in formulas list (non sortable limitation)
-- Pyramid view values input replaced with sliders
-- Auto redirect to the new ingredient when is renamed
+- Fix formulas json export
+- Ingredient general tab re-design
+- Pubchem tab re-design
+- Adding more details when a note is added during formula making
 - Various bug fixes and improvements
 - For full details please refer to the CHANGELOG

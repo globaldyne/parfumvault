@@ -79,7 +79,7 @@ var myPCH = "<?=$settings['pubChem']?>";
 			<div class="mgm-column mgm-visible-xl mgm-col-xl-5">
 				<h1 class="mgmIngHeader mgmIngHeader-with-separator"><?php if($ingID){ echo $ing['name'];?>
 				<div class="btn-group">
-					<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> Actions</button>
+					<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
 					<div class="dropdown-menu">
 						<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#printLabel"><i class="fa-solid fa-print mx-2"></i>Print Label</a></li>
 						<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#cloneIng"><i class="fa-solid fa-copy mx-2"></i>Clone ingredient</a></li>
@@ -119,188 +119,120 @@ var myPCH = "<?=$settings['pubChem']?>";
 		<?php } ?>
 	</ul>
 	<div class="tab-content">
-		<div class="tab-pane fade active in" id="general">
-			<h3>General</h3>
-			<hr>
-			<table width="100%" border="0">
-				<tr>
-					<td colspan="6"></td>
-				</tr>
-				<?php if(empty($ingID)){?>
-					<tr>
-						<td>Name:</td>
-						<td colspan="5"><input name="name" type="text" class="form-control" id="name" /></td>
-					</tr>
-				<?php } ?>
-				<tr>
-					<td>IUPAC:</td>
-					<td colspan="5"><input name="INCI" type="text" class="form-control" id="INCI" value="<?php echo htmlspecialchars($ing['INCI']); ?>" /></td>
-				</tr>
-				<tr>
-					<td width="20%"><a href="#" rel="tipsy" title="If your material contains multiple CAS, then use Mixture or Blend instead.">CAS #:</a></td>
-					<td colspan="5"><input name="cas" type="text" class="form-control" id="cas" value="<?php echo $ing['cas']; ?>"></td>
-				</tr>
-				<tr>
-				  <td height="31">EINECS:</td>
-				  <td colspan="5"><input name="einecs" type="text" class="form-control" id="einecs" value="<?php echo $ing['einecs']; ?>" /></td>
-			  </tr>
-				<tr>
-					<td height="31">REACH #:</td>
-					<td colspan="5"><input name="reach" type="text" class="form-control" id="reach" value="<?php echo $ing['reach']; ?>" /></td>
-				</tr>
-				<tr>
-					<td height="31">FEMA #:</td>
-					<td colspan="5"><input name="fema" type="text" class="form-control" id="fema" value="<?php echo $ing['FEMA']; ?>" /></td>
-				</tr>
-				<tr>
-					<td height="31"><a href="#" rel="tipsy" title="If enabled, ingredient name will be printed in the box label.">To Declare:</a></td>
-					<td colspan="5"><input name="isAllergen" type="checkbox" id="isAllergen" value="1" <?php if($ing['allergen'] == '1'){; ?> checked="checked"  <?php } ?>/></td>
-				</tr>
-				<tr>
-					<td height="29">Purity %:</td>
-					<td width="50%"><input name="purity" type="text" class="form-control" id="purity" value="<?php echo $ing['purity']?: '100'; ?>" /></td>
-					<td width="1%">&nbsp;</td>
-					<td colspan="3"><select name="solvent" id="solvent" class="form-control selectpicker" data-live-search="true" <?php if($ing['purity'] == 100){ ?>disabled<?php }?> >
-						<option value="" selected disabled>Solvent</option>
-						<option value="None">None</option>
-						<?php
-						$res_dil = mysqli_query($conn, "SELECT id, name FROM ingredients WHERE type = 'Solvent' OR type = 'Carrier' ORDER BY name ASC");
-						while ($r_dil = mysqli_fetch_array($res_dil)){
-							$selected=($ing['solvent'] == $r_dil['name'])? "selected" : "";
-							echo '<option '.$selected.' value="'.$r_dil['name'].'">'.$r_dil['name'].'</option>';
-						}
-						?>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td height="29">Profile:</td>
-				<td colspan="5">
-					<select name="profile" id="profile" class="form-control selectpicker" data-live-search="true">
-						<option value="" selected></option>
-						<?php while ($row_ingProfiles = mysqli_fetch_array($res_ingProfiles)){ ?>
-							<option data-content="<img class='img_ing_sel' src='<?=profileImg($row_ingProfiles['name'])?>'> <?php echo $row_ingProfiles['name'];?>" value="<?php echo $row_ingProfiles['name'];?>" <?php echo ($ing['profile']==$row_ingProfiles['name'])?"selected=\"selected\"":""; ?>></option>
-						<?php } ?>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td height="29">Type:</td>
-				<td colspan="5">
-					<select name="type" id="type" class="form-control selectpicker" data-live-search="true">
-						<option value="" selected></option>
-						<?php 	while ($row_ingTypes = mysqli_fetch_array($res_ingTypes)){ ?>
-							<option value="<?php echo $row_ingTypes['name'];?>" <?php echo ($ing['type']==$row_ingTypes['name'])?"selected=\"selected\"":""; ?>><?php echo $row_ingTypes['name'];?></option>
-						<?php } ?>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td height="28">Strength:</td>
-				<td colspan="5">
-					<select name="strength" id="strength" class="form-control selectpicker" data-live-search="true">
-						<option value="" selected></option>
-						<?php while ($row_ingStrength = mysqli_fetch_array($res_ingStrength)){ ?>
-							<option value="<?php echo $row_ingStrength['name'];?>" <?php echo ($ing['strength']==$row_ingStrength['name'])?"selected=\"selected\"":""; ?>><?php echo $row_ingStrength['name'];?></option>
-						<?php } ?>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td height="31">Olfactive family:</td>
-				<td colspan="5">
-					<select name="category" id="category" class="form-control selectpicker" data-live-search="true">
-						<option value="" selected></option>
-						<?php while ($row_ingCategory = mysqli_fetch_array($res_ingCategory)){ ?>
-							<option data-content="<img class='img_ing_sel' src='<?php if($row_ingCategory['image']){ echo $row_ingCategory['image']; }else{ echo '/img/molecule.png';}?>'><?php echo $row_ingCategory['name'];?>" value="<?php echo $row_ingCategory['id'];?>" <?php echo ($ing['category']==$row_ingCategory['id'])?"selected=\"selected\"":""; ?>></option>
-						<?php } ?>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td>Physical State:</td>
-				<td colspan="5"><select name="physical_state" id="physical_state" class="form-control selectpicker">
-					<option data-content="<img class='img_ing_sel' src='/img/liquid.png'> Liquid" value="1" <?php if($ing['physical_state']=="1") echo 'selected="selected"'; ?> ></option>
-					<option data-content="<img class='img_ing_sel' src='/img/solid.png'> Solid" value="2" <?php if($ing['physical_state']=="2") echo 'selected="selected"'; ?> ></option>
-				</select></td>
-			</tr>                  
-			<tr>
-				<td height="31" valign="top">Odor:</td>
-				<td colspan="3"><div id='TGSC'><input name="odor" id="odor" type="text" class="form-control" value="<?php echo $ing['odor']; ?>"/></div>
-				</td>
-				<?php if(file_exists('searchTGSC.php')){?>
-					<td width="2%">&nbsp;</td>
-					<td width="12%"><a href="javascript:search()" id="search">Search TGSC</a></td>
-				<?php } ?>
-			</tr>
-			<tr>
-				<td valign="top">Notes:</td>
-				<td colspan="5"><textarea name="notes" id="notes" cols="45" rows="5" class="form-control"><?php echo $ing['notes']; ?></textarea></td>
-			</tr>
-		</table>
-		<hr>
-		<p><input type="submit" name="save" class="btn btn-info" id="saveGeneral" value="Save" /></p>
-	</div>
+    
+    <div class="tab-pane active" id="general">
+        <div id="fetch_generalData">
+        	<div class="row justify-content-md-center">
+        		<div class="loader"></div>
+            </div>
+        </div>
+    </div>
 	<!--general tab-->
+
 	<?php if($ingID){?>
     <div class="tab-pane fade" id="usage_limits">
         <div id="msg_usage"></div>
-        <div id="fetch_usageData"><div class="loader"></div></div>
+        <div id="fetch_usageData">
+            <div class="row justify-content-md-center">
+            	<div class="loader"></div>
+         	</div>
+    	</div>
     </div>
     
     <div class="tab-pane fade" id="supply">
         <div id="msg_sup"></div>
-        <div id="fetch_suppliers"><div class="loader"></div></div>
+        <div id="fetch_suppliers">
+        	<div class="row justify-content-md-center">
+        		<div class="loader"></div>
+            </div>
+        </div>
     </div>
     
     <div class="tab-pane fade" id="documents">
         <div id="msg_docs"></div>
-        <div id="fetch_documents"><div class="loader"></div></div>
+        <div id="fetch_documents">
+        	<div class="row justify-content-md-center">
+        		<div class="loader"></div>
+            </div>
+        </div>
     </div>
     
     <div class="tab-pane fade" id="synonyms">
         <div id="msg_syn"></div>
-        <div id="fetch_synonyms"><div class="loader"></div></div>
+        <div id="fetch_synonyms">
+        	<div class="row justify-content-md-center">
+        		<div class="loader"></div>
+            </div>
+        </div>
     </div>
     
     <div class="tab-pane fade" id="tech_data">
-        <div id="fetch_tech_data"><div class="loader"></div></div>
+        <div id="fetch_tech_data">
+        	<div class="row justify-content-md-center">
+        		<div class="loader"></div>
+            </div>
+        </div>
     </div>
 
-<div class="tab-pane fade" id="safety_info">
-	<div id="fetch_safety"><div class="loader"></div></div>
-</div>
+    <div class="tab-pane fade" id="safety_info">
+        <div id="fetch_safety">
+            <div class="row justify-content-md-center">
+                <div class="loader"></div>
+             </div>
+        </div>
+    </div>
 
-<div class="tab-pane fade" id="note_impact">
-	<div id="fetch_impact"><div class="loader"></div></div>
-</div>
+    <div class="tab-pane fade" id="note_impact">
+        <div id="fetch_impact">
+            <div class="row justify-content-md-center">
+                <div class="loader"></div>
+            </div>
+        </div>
+    </div>
 
-<div class="tab-pane fade" id="whereUsed">
-	<div id="fetch_whereUsed"><div class="loader"></div></div>
-</div>
+    <div class="tab-pane fade" id="whereUsed">
+        <div id="fetch_whereUsed">
+        	<div class="row justify-content-md-center">
+        		<div class="loader"></div>
+         	</div>
+        </div>
+    </div>
 
-<div class="tab-pane fade" id="tech_composition">
-	<div id="fetch_composition"><div class="loader"></div></div>
-</div>
+    <div class="tab-pane fade" id="tech_composition">
+        <div id="fetch_composition">
+            <div class="row justify-content-md-center">
+                <div class="loader"></div>
+            </div>
+        </div>
+    </div>
 
 <?php if($settings['pubChem'] == '1' && $ing['cas']){?>
 	<div class="tab-pane fade" id="pubChem">
-		<h3>Pub Chem Data</h3>
-		<hr>
-		<div id="pubChemData"> <div class="loader"></div> </div>
+		<div id="pubChemData">
+        	<div class="row justify-content-md-center">
+        		<div class="loader"></div>
+            </div>
+        </div>
 	</div>
 <?php } ?>
 
-<div class="tab-pane fade" id="privacy">
-	<div id="fetch_privacy"><div class="loader"></div></div>
-</div>
+    <div class="tab-pane fade" id="privacy">
+        <div id="fetch_privacy">
+            <div class="row justify-content-md-center">
+                <div class="loader"></div>
+            </div>
+        </div>
+    </div>
 
 <?php } ?>
-<!--tabs-->
-
-<div class="tab-pane fade" id="ingRep">
-	<div id="fetch_replacements"><div class="loader"></div></div>
-</div>
+    
+    <div class="tab-pane fade" id="ingRep">
+        <div id="fetch_replacements">
+            <div class="row justify-content-md-center">
+                <div class="loader"></div>
+            </div>
+        </div>
+    </div>
 
 <!-- Modal Print-->
 <div class="modal fade" id="printLabel" tabindex="-1" role="dialog" aria-labelledby="printLabel" aria-hidden="true">

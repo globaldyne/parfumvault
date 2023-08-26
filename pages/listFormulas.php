@@ -45,7 +45,7 @@ while($fTypes_res = mysqli_fetch_array($fTypes_q)){
               <div class="dropdown-divider"></div>
               <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula_cat" data-backdrop="static"><i class="fa-solid fa-circle-plus mx-2"></i>Create formula category</a></li>
               <div class="dropdown-divider"></div>
-        	  <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#export_formulas_json" data-backdrop="static"><i class="fa-solid fa-file-export mx-2"></i>Export Formulas as JSON</a></li>
+        	  <li><a class="dropdown-item" href="/pages/operations.php?action=exportFormulas"><i class="fa-solid fa-file-export mx-2"></i>Export Formulas as JSON</a></li>
         	  <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#import_formulas_json" data-backdrop="static"><i class="fa-solid fa-file-import mx-2"></i>Import Formulas from JSON</a></li>
 
             </div>
@@ -540,25 +540,6 @@ function reload_formulas_data() {
     $('#all-table').DataTable().ajax.reload(null, true);
 };
 
-$('#export_json').click(function() {
-	$('#JSONExportMsg').html('<div class="alert alert-info"><img src="/img/loading.gif"/>Please wait, export in progress....</div>');					 
-	$.ajax({ 
-    url: '/pages/operations.php', 
-	type: 'GET',
-    data: {
-		action: 'exportFormulas',
-		},
-	dataType: 'json',
-    success: function (data) {
-		if(data.error){
-			var msg = '<div class="alert alert-danger">'+data.error+'</div>';
-		}else if(data.success){
-			var msg = '<div class="alert alert-success">'+data.success+'</div>';
-		}
-	  	$('#JSONExportMsg').html(msg);
-    }
-  });
-});
 
 $('#close_export_json').click(function() {
 	$('#JSONExportMsg').html('');

@@ -4,7 +4,7 @@ if(!$_GET['cas']){
 	echo 'Error: Missing CAS number';
 	return;
 }
-define('__ROOT__', dirname(dirname(__FILE__))); 
+define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__))))); 
 
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
@@ -70,36 +70,43 @@ $('#pubChemDataJ').on('click', '[id*=btnUpdatePub]', function () {
      
 });
 </script>
-<table width="100%" border="0" id="pubChemDataJ">
-  <tr>
-    <td width="20%" rowspan="7" valign="top"><img src="<?php echo $image;?>"/></td>
-    <td width="34%">Molecular Formula:</td>
-    <td width="46%"><strong><?php echo $molecularFormula;?></strong></td>
-  </tr>
-  <tr>
-    <td>Molecular Weight:</td>
-    <td><strong><?php echo $molecularWeight;?></strong></td>
-  </tr>
-  <tr>
-    <td>Canonical Smiles:</td>
-    <td><strong><?php echo $CanonicalSMILES;?></strong></td>
-  </tr>
-  <tr>
-    <td>Mass:</td>
-    <td><strong><?php echo $ExactMass;?></strong></td>
-  </tr>
-  <tr>
-    <td>XLogP:</td>
-    <td><strong><?php echo $logP;?></strong></td>
-  </tr>
-  <tr>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-  </tr>
-  <tr>
-    <td colspan="2"><input type="submit" class="btn btn-info" name="btnUpdatePub" id="btnUpdatePub" value="Update data" /></td>
-  </tr>
-  <tr>
-   <td colspan="2">&nbsp;</td>
-</tr>
-</table>
+<h3>Pub Chem Data</h3>
+<div class="col dropdown-divider"></div>
+<div class="card rounded" id="pubChemDataJ">
+    <div class="card-body"> 
+        <div class="col-sm-6">
+            <div class="col-sm-5">
+                <img alt="Structure image" src="<?php echo $image;?>"/>
+            </div>
+            <div class="row">
+            	<div class="col">
+                	Molecular Formula: <label><?php echo $molecularFormula;?></label>
+            	</div>
+            </div>
+
+             <div class="row">
+             	<div class="col">
+                	Canonical Smiles: <label><?php echo $CanonicalSMILES;?></label>
+            	</div>
+             </div>
+             <div class="row">
+             	<div class="col">
+                	Mass: <label><?php echo $ExactMass;?></label>
+            	</div>
+             </div>
+             <div class="row">
+             	<div class="col">
+                	XLogP: <label><?php echo $logP;?></label>
+            	</div>
+             </div> 
+             <div class="col dropdown-divider"></div>
+             <div class="row mt-2">
+             	<div class="col">
+                	<input type="submit" class="btn btn-info" name="btnUpdatePub" id="btnUpdatePub" value="Update data" />
+            	</div>
+             </div>                          
+        </div>
+    </div>
+</div>
+
+
