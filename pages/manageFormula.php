@@ -524,7 +524,8 @@ if($_POST['action'] == 'makeFormula' && $_POST['fid'] && $_POST['q'] && $_POST['
 	}
 
 	if($notes){
-		mysqli_query($conn, "UPDATE formulasMetaData SET notes = CONCAT(notes, '$notes') WHERE fid = '$fid'");
+		$notes = "Formula make, ".$_POST['ing'].": ".$_POST['notes']."\\n";
+		mysqli_query($conn, "UPDATE formulasMetaData SET notes = CONCAT(notes, '".$notes."') WHERE fid = '$fid'");
 	}
 	
 	if($qr < $q){

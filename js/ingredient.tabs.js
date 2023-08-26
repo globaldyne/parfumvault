@@ -3,6 +3,11 @@ Ingredient management tabs
 */
 
 $(document).ready(function() {
+	$('#general_tab').on( 'click', function () {
+		$('#msg_general').html('');
+		fetch_generalData();
+	});
+	
 	$('#usage_tab').on( 'click', function () {
 		fetch_usageData();
 	});
@@ -49,6 +54,7 @@ $(document).ready(function() {
 	
 	$('#reps_tab').on( 'click', function () {
 		fetch_reps();
-	})
+	});
 	
-})
+	fetch_generalData();
+});

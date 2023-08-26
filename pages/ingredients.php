@@ -43,7 +43,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
     </div>
 
 <!--ADV SEARCH-->
-<div class="modal fade" id="adv_search" tabindex="-1" role="dialog" aria-labelledby="adv_search" aria-hidden="true">
+<div class="modal fade" id="adv_search" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="adv_search" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -154,7 +154,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
 </div>
 
 <!--CSV IMPORT-->
-<div class="modal fade" id="csv_import" tabindex="-1" role="dialog" aria-labelledby="csv_import" aria-hidden="true">
+<div class="modal fade" id="csv_import" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="csv_import" aria-hidden="true">
   <div class="modal-dialog pv-modal-xxl" role="document">
     <div class="modal-content">
       <div class="modal-header">

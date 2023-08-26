@@ -199,15 +199,14 @@ $(document).ready(function(){
 	});
 	
 	$('#concentration').bind('input', function() {
-		var purity = $(this).val();
-		if(purity == 100){
+		var concentration = $('#concentration').val();
+		if(concentration >= 100){
 			$("#dilutant").prop("disabled", true); 
-			$("#dilutant").val('');
+			$("#dilutant").val('').selectpicker("refresh");
 		}else{
-			$("#dilutant").prop("disabled", false);
+			$("#dilutant").prop("disabled", false).selectpicker('refresh');
 		}
-		$('.selectpicker').selectpicker('refresh');
+		//$('.selectpicker').selectpicker('refresh');
 	});
-
 
 });
