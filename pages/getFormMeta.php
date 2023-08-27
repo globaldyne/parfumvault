@@ -47,43 +47,48 @@ while($qTags = mysqli_fetch_array($tagsQ)){
 
 ?>
 <style>
-
+/*
 .editableform .form-control {
   width: 500px !important;
 }
+*/
 </style>
 
 <script src="/js/bootstrap-tagsinput.js"></script> 
 <link href="/css/bootstrap-tagsinput.css" rel="stylesheet" />
-<div id="msg_settings_info"><div class="alert alert-info">Some of the changes require the page to be reloaded to appear properly. Please remember to refresh your browser if your changes not automatically appear.</div></div>
 
-<div class="form-horizontal col-m card pt-3 pl-5 pr-5" id="formula_metadata">
- <div id="set_msg" class="col-sm"></div>
- <div class="form-group">
-    <label class="control-label col-auto" for="formula_name">Formula Name:</label>
-    <div class="col-auto">
-      <a href="#" data-name="name" class="name" id="formula_name" data-pk="<?php echo $info['id'];?>"><?php echo $info['name']?:'Unnamed';?></a>
-    </div>
-  </div>
+<div id="msg_settings_info">
+	<div class="alert alert-info">Some of the changes require the page to be reloaded to appear properly. Please remember to refresh your browser if your changes not automatically appear.</div>
+	<div id="set_msg"></div>
+</div>
 
- <div class="form-group">
-    <label class="control-label col-auto" for="product_name">Product Name:</label>
-    <div class="col-auto">
+<div class="card-body" id="formula_metadata">
+
+<div class="col-sm-6">
+
+
+   <div class="form-row">
+     <div class="form-group col-md-6">
+        <label class="control-label col-auto" for="formula_name">Formula Name:</label>
+          <a href="#" data-name="name" class="name" id="formula_name" data-pk="<?php echo $info['id'];?>"><?php echo $info['name']?:'Unnamed';?></a>
+      </div>
+     <div class="form-group col-md-6">
+    	<label class="control-label col-auto" for="product_name">Product Name:</label>
      	<a href="#" data-name="product_name" class="product_name" id="product_name" data-pk="<?php echo $info['id'];?>"><?php echo $info['product_name'] ?: 'Not set';?></a>
+     </div>
     </div>
-  </div>
 
- <div class="form-group">
-    <label class="control-label col-auto" for="isProtected">Protected:</label>
-    <div class="col-auto">
+    <div class="form-row">
+     <div class="form-group col-md-6">
+    	<label class="control-label col-auto" for="isProtected">Protected:</label>
      	<input name="isProtected" type="checkbox" id="isProtected" value="1" <?php if($info['isProtected'] == '1'){; ?> checked="checked"  <?php } ?>/>
         <i class="fa-solid fa-circle-info" rel="tip" title="When enabled, formula is protected against deletion. By enabling this, a formula revision will be automatically created."></i>
+     </div>
     </div>
-  </div>
   
-   <div class="form-group">
+   <div class="form-row">
+     <div class="form-group col-md-6">
     <label class="control-label col-auto" for="customer">Customer:</label>
-    <div class="col-auto">
      	<select name="customer" id="customer" class="form-control selectpicker" data-live-search="true">
       <option value="0">Internal use</option>
       <?php foreach ($customer as $c) {?>
@@ -91,63 +96,57 @@ while($qTags = mysqli_fetch_array($tagsQ)){
       <?php }	?>
     </select>
     </div>
-  </div>
-  
- <div class="form-group">
-    <label class="control-label col-auto" for="defView">Default view:</label>
-    <div class="col-auto">
+    <div class="form-group col-md-6">
+    	<label class="control-label col-auto" for="defView">Default view:</label>
      	<select name="defView" id="defView" class="form-control selectpicker" data-live-search="true">
-			  <option value="1" <?php if($info['defView']=="1") echo 'selected="selected"'; ?> >Ingredient Properties</option>
-			  <option value="2" <?php if($info['defView']=="2") echo 'selected="selected"'; ?> >Ingredient Notes</option>
-          </select>
+		  <option value="1" <?php if($info['defView']=="1") echo 'selected="selected"'; ?> >Ingredient Properties</option>
+		  <option value="2" <?php if($info['defView']=="2") echo 'selected="selected"'; ?> >Ingredient Notes</option>
+        </select>
     </div>
  </div>  
   
- <div class="form-group">
-    <label class="control-label col-auto" for="profile">Category:</label>
-    <div class="col-auto">
+   <div class="form-row">
+     <div class="form-group col-md-6">
+    	<label class="control-label col-auto" for="profile">Category:</label>
     	<select name="profile" id="profile" class="form-control selectpicker" data-live-search="true">
     	<?php foreach ($fcat as $cat) { if($cat['type'] == 'profile'){?>		
 			<option value="<?=$cat['cname'];?>" <?php echo ($info['profile']==$cat['cname'])?"selected=\"selected\"":""; ?>><?php echo $cat['name'];?></option>
         <?php }	} ?>
         </select>   
-    </div>
- </div>  
+ 	</div>  
   
- <div class="form-group">
+   	<div class="form-group col-md-6">
     <label class="control-label col-auto" for="tagsinput">Tags:</label>
-    <div class="col-auto">
-		<input type="text" class="form-control col-xs-3 control-label" id="tagsinput" data-role="tagsinput" />
+		<input type="text" class="form-control control-label" id="tagsinput" data-role="tagsinput" />
     </div>
+    
  </div>
 
- <div class="form-group">
+ <div class="form-row">
+   <div class="form-group col-md-6">
     <label class="control-label col-auto" for="catClass">Purpose:</label>
-    <div class="col-auto">
 		<select name="catClass" id="catClass" class="form-control selectpicker" data-live-search="true">
             <option></option>
             <?php foreach ($cats as $IFRACategories) {?>
             <option value="cat<?php echo $IFRACategories['name'];?>" <?php echo ($info['catClass']=='cat'.$IFRACategories['name'])?"selected=\"selected\"":""; ?>><?php echo 'Cat'.$IFRACategories['name'].' - '.$IFRACategories['description'];?></option>
             <?php }	?>
         </select>
-    </div>
- </div>
-  
- <div class="form-group">
+  </div>
+   
+  <div class="form-group col-md-6">
     <label class="control-label col-auto" for="finalType">Final type:</label>
-    <div class="col-auto">
 		<select name="finalType" id="finalType" class="form-control selectpicker" data-live-search="true">  
             <option value="100">Concentrated (100%)</option>
 	 		<?php foreach ($fTypes as $fType) {?>
 			<option value="<?php echo $fType['concentration'];?>" <?php echo ($info['finalType']==$fType['concentration'])?"selected=\"selected\"":""; ?>><?php echo $fType['name'].' ('.$fType['concentration'];?>%)</option>
 			<?php }	?>	
     	</select>
-    </div>
+   </div>
  </div>
 
- <div class="form-group">
+ <div class="form-row">
+   <div class="form-group col-md-6">
     <label class="control-label col-auto" for="finalType">Status:</label>
-    <div class="col-auto">
         <select name="status" id="status" class="form-control selectpicker" data-live-search="true">  
             <option value="0" <?php if($info['status'] == "0"){ echo 'selected';}?>>Scheduled</option>
             <option value="1" <?php if($info['status'] == "1"){ echo 'selected';}?>>Under Developent</option>
@@ -157,11 +156,9 @@ while($qTags = mysqli_fetch_array($tagsQ)){
             <option value="5" <?php if($info['status'] == "5"){ echo 'selected';}?>>Failure</option>
         </select>
     </div>
- </div>
 
- <div class="form-group">
+ <div class="form-group col-md-6">
     <label class="control-label col-auto" for="gender">Gender:</label>
-    <div class="col-auto">
     <select name="gender" id="gender" class="form-control selectpicker" data-live-search="true">
     <?php foreach ($fcat as $cat) { if($cat['type'] == 'sex'){?>
 		<option value="<?=$cat['cname'];?>" <?php echo ($info['sex']==$cat['cname'])?"selected=\"selected\"":""; ?>><?php echo $cat['name'];?></option>
@@ -170,26 +167,27 @@ while($qTags = mysqli_fetch_array($tagsQ)){
     </div>
  </div>
  
- <div class="form-group">
-    <label class="control-label col-auto" for="doc_file">Picture:</label>
-    <div class="col-auto">
-		<input type="file" name="doc_file" id="doc_file" />
-      	<input type="submit" name="button" class="btn btn-primary" id="pic_upload" value="Upload">
-    </div>
-    <div id="upload_resp"></div>
+ <div class="form-row">
+   	<div class="form-group col-md-6">
+        <label class="control-label col-auto" for="doc_file">Picture:</label>
+        <input type="file" name="doc_file" id="doc_file" />
+        <input type="submit" name="button" class="btn btn-primary" id="pic_upload" value="Upload">
+   	 	<div id="upload_resp"></div>
+  	</div>
+    
  </div>
  
- <div class="form-group">
-    <label class="control-label col-auto" for="notes">Notes:</label>
-    <div class="col-auto">
-		<a href="#" data-name="notes" class="notes" data-type="textarea" id="notes" data-pk="<?php echo $info['id'];?>"><?php echo $info['notes']?: 'None';?></a>
-    </div>
- </div>
- 
-  
+</div>
+<div class="col-sm-6">
+     <div class="form-row">
+        <div class="form-group col-auto">
+        <label class="control-label col-auto" for="notes">Notes:</label>
+        <a href="#" data-name="notes" class="notes" data-type="textarea" id="notes" data-pk="<?php echo $info['id'];?>"><?php echo $info['notes']?: 'None';?></a>
+        </div>
+     </div>
 </div>
 
-
+</div>
 <script type="text/javascript" language="javascript" >
 $(document).ready(function(){
 

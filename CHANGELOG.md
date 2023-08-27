@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 8.6
+- Restructure formula settings page 
 - Revert formula count query change
 ### Version 8.5
 - Fix formulas json export
