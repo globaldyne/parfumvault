@@ -21,7 +21,7 @@ if ($_POST['isDeepQ'] == "true"){
 
 }else{
 	$t = "ingredients";	
-	$filter = "WHERE name LIKE '%$s%' OR cas LIKE '%$s%' OR INCI LIKE '%$s%'";
+	$filter = "WHERE name LIKE '%$s%' OR cas LIKE '%$s%' OR INCI LIKE '%$s%' OR odor LIKE '%$s%'";
 }
 
 $q = mysqli_query($conn, "SELECT ingredients.id,name,INCI,cas,type,odor,physical_state,profile FROM $t $filter ORDER BY name ASC");
