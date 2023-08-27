@@ -46,13 +46,7 @@ while($qTags = mysqli_fetch_array($tagsQ)){
 }
 
 ?>
-<style>
-/*
-.editableform .form-control {
-  width: 500px !important;
-}
-*/
-</style>
+
 
 <script src="/js/bootstrap-tagsinput.js"></script> 
 <link href="/css/bootstrap-tagsinput.css" rel="stylesheet" />
@@ -225,7 +219,8 @@ $(document).ready(function(){
 	  	emptytext: 'None',
 	  	url: "/pages/update_data.php?formulaMeta=<?=$info['fid']?>",
 	  	title: 'Notes',
-	  	mode: 'inline'	
+	  	mode: 'inline',
+		inputclass: 'pv-w-500'
 	});
   
 	$('#formula_metadata').editable({
