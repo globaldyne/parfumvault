@@ -147,13 +147,13 @@ $.ajax({
                       <th colspan="8">
                      <div class="text-right">
                       <div class="btn-group">
-                      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
+                      <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
                       <div class="dropdown-menu dropdown-menu-right">
-                        <li><a class="dropdown-item" id="pdf" href="#"><i class="fa-solid fa-file-pdf mr2"></i>Export to PDF</a></li>
-                        <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#IFRA"><i class="fa-solid fa-certificate mr2"></i>IFRA Certificate</a></li>
-                        <li><a class="dropdown-item" href="javascript:printLabel()" onclick="return confirm('Print label?')"><i class="fa-solid fa-print mr2"></i>Print Label</a></li>
-                        <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#printBoxLabel"><i class="fa-solid fa-print mr2"></i>Print Box Label</a></li>
-                        <li><a class="dropdown-item" href="javascript:BoxLabel('text')"><i class="fa-solid fa-font mr2"></i>View Box Label as text</a></li>
+                        <li><a class="dropdown-item" id="pdf" href="#"><i class="fa-solid fa-file-pdf mx-2"></i>Export to PDF</a></li>
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#IFRA"><i class="fa-solid fa-certificate mx-2"></i>IFRA Certificate</a></li>
+                        <li><a class="dropdown-item" href="javascript:printLabel()" onclick="return confirm('Print label?')"><i class="fa-solid fa-print mx-2"></i>Print Label</a></li>
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#printBoxLabel"><i class="fa-solid fa-print mx-2"></i>Print Box Label</a></li>
+                        <li><a class="dropdown-item" href="javascript:BoxLabel('text')"><i class="fa-solid fa-font mx-2"></i>View Box Label as text</a></li>
                       </div>
                     </div>
                     </div>
@@ -292,22 +292,19 @@ $.ajax({
             </div>
             
 <!-- Modal PRINT-->
-<div class="modal fade" id="printBoxLabel" tabindex="-1" role="dialog" aria-labelledby="printBoxLabel" aria-hidden="true">
+<div class="modal fade" id="printBoxLabel" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="printBoxLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="printBoxLabel">Print Box Label</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <h5 class="modal-title">Print Box Label</h5>
       </div>
       <div class="modal-body">
         Copies to print:
           <form action="javascript:BoxLabel()" method="get" name="form1" target="_self" id="form1">
-            <input name="copiesToPrint" type="text" id="copiesToPrint" value="1" />
+          <input name="copiesToPrint" type="text" id="copiesToPrint" value="1" />
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
         <input type="submit" name="button" class="btn btn-primary" id="button" value="Print">
       </div>
      </form>
@@ -316,14 +313,11 @@ $.ajax({
 </div>
 
 <!-- Modal IFRA CERT-->
-<div class="modal fade" id="IFRA" tabindex="-1" role="dialog" aria-labelledby="IFRA" aria-hidden="true">
+<div class="modal fade" id="IFRA" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="IFRA" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Generate IFRA Certification</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
       </div>
       <div class="modal-body">
           Select customer:
@@ -348,7 +342,7 @@ $.ajax({
             </select>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
         <input type="submit" name="button" class="btn btn-primary" id="button" value="Generate">
       </div>
      </form>
@@ -500,20 +494,18 @@ $.ajax({
 
 
 $('#pdf').on('click',function(){
-  $("#formula").tableHTMLExport({
-	type:'pdf',
-	filename:'<?=base64_decode($f_name)?>.pdf',
-	orientation: 'p',
-	trimContent: true,
-    quoteFields: true,
-	ignoreColumns: '.noexport',
-  	ignoreRows: '.noexport',
-	htmlContent: true,
-	maintitle: '<?=base64_decode($f_name)?>',
-	product: '<?php echo trim($product).' '.trim($ver);?>'
-
+	$("#formula").tableHTMLExport({
+		type:'pdf',
+		filename:'<?=base64_decode($f_name)?>.pdf',
+		orientation: 'p',
+		trimContent: true,
+    	quoteFields: true,
+		ignoreColumns: '.noexport',
+  		ignoreRows: '.noexport',
+		htmlContent: true,
+		maintitle: '<?=base64_decode($f_name)?>',
+		product: '<?php echo trim($product).' '.trim($ver);?>'
+	});
 });
- 
-})
 
 </script>
