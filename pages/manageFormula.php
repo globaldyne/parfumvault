@@ -691,7 +691,7 @@ if($_GET['action'] == 'printLabel' && $_GET['name']){
 	if(imagepng($lblF, $save)){
 		imagedestroy($lblF);
 		shell_exec('/usr/bin/brother_ql -m '.$settings['label_printer_model'].' -p tcp://'.$settings['label_printer_addr'].' print -l '.$settings['label_printer_size'].' '. $save);
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Print sent!</div>';
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>Print sent!</div>';
 	}
 	
 	return;
@@ -775,7 +775,7 @@ if($_GET['action'] == 'printBoxLabel' && $_GET['name']){
 		for ($k = 0; $k < $copies; $k++){
 			shell_exec('/usr/bin/brother_ql -m '.$settings['label_printer_model'].' -p tcp://'.$settings['label_printer_addr'].' print -l '.$settings['label_printer_size'].' '. $save);
 		}
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Print sent!</div>';
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>Print sent!</div>';
 	}
 	return;
 }

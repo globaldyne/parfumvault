@@ -245,6 +245,7 @@ $('#formula').on('click', '[id*=rmIng]', function () {
 			dropdownAutoWidth: true,
 			containerCssClass: "formulaSolvents",
 			minimumResultsForSearch: Infinity,
+			dropdownParent: $('.bootbox .modal-content'),
 			ajax: {
 				url: '/core/full_formula_data.php',
 				dataType: 'json',
@@ -404,7 +405,7 @@ $('#print').click(() => {
       </div>
     </div>
     <div class="dropdown-divider"></div>
-    <div class="text-right">
+    <div class="col text-right">
       <div class="btn-group" id="menu">
         <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
         <div class="dropdown-menu dropdown-menu-right">
@@ -860,7 +861,7 @@ function ingActions(data, type, row, meta){
         
         <div id="slvMeta">
         	<div class="dropdown-divider"></div>
-        	<input name="formulaSolvents" id="formulaSolvents" type="text" class="formulaSolvents pv-form-control">
+        	<select name="formulaSolvents" id="formulaSolvents" class="formulaSolvents pv-form-control"></select>
         	<div class="dropdown-divider"></div>
         	<div id="explain" class="alert alert-info">Auto adjust total quantity by increasing or decreasing quantity from the selected solvent if enough available.<br>For example, if you add 1 more ml to the current ingredient, the selected solvent's quantity will be deducted by 1ml equally.</div>
         </div>
@@ -886,7 +887,7 @@ function ingActions(data, type, row, meta){
         <input type="hidden" name="ingSrcName" id="ingSrcName" />
       	<div class="alert alert-info">You can merge <div id="srcIng"></div>'s quantity with another material in formula. Use this method if materials are similar. Please note, this action cannot be reverted, quanity will sum up to the target ingredient's quantity.</div>
         Merge <div id="srcIng"></div> with: 
-        <input name="mrgIngName" id="mrgIngName" type="text" class="mrgIngName pv-form-control">
+        <select name="mrgIngName" id="mrgIngName" class="mrgIngName pv-form-control"></select>
         <p>
         <div class="dropdown-divider"></div>
       </div>
@@ -910,7 +911,7 @@ function ingActions(data, type, row, meta){
         <input type="hidden" name="ingRepName" id="ingRepName" />
       	<div class="alert alert-info">Replace <div id="ingRepName"></div> with another ingredient, quantity and dilution values will not be affected.</div>
         Replace <div id="ingRepName"></div> with: 
-        <input name="repIngNameDest" id="repIngNameDest" type="text" class="repIngNameDest pv-form-control">
+        <select name="repIngNameDest" id="repIngNameDest" class="repIngNameDest pv-form-control"></select>
         <p>
         <div class="dropdown-divider"></div>
         

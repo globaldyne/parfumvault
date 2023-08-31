@@ -68,10 +68,10 @@ $('#create_accord').on('click', '[id*=createAccord]', function () {
 		dataType: 'json',
 		success: function (data) {
 			if(data.success){
-			var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
+			var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
 			reload_formula_data();
 		}else if(data.error){
-			var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
+			var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
 		}
 		$('#accordMsg').html(msg);
 		}
@@ -98,9 +98,9 @@ $('#conv_ingredient').on('click', '[id*=conv2ing]', function () {
 		dataType: 'json',
 		success: function (data) {
 			if(data.success){
-				var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
+				var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
 			}else if(data.error){
-				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
+				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
 			}
 			$('#cnvMsg').html(msg);
 		}
@@ -121,9 +121,9 @@ $.ajax({
 	dataType: 'json',
     success: function (data) {
 		if (data.success) {
-			var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+			var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 		}else{
-			var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+			var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 		}
 		$('#msgInfo').html(msg);
 	}
@@ -145,11 +145,11 @@ $('#schedule_to_make').on('click', '[id*=addTODO]', function () {
 	dataType: 'json',
     success: function (data) {
 		if (data.success) {
-	  		var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+	  		var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 			$('#schedule_to_make').modal('toggle');
 			$('#msgInfo').html(msg);
 		}else{
-			var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+			var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 			$('#scheduleToMakeMsg').html(msg);
 		}
 		
@@ -182,12 +182,12 @@ $('#replaceIng').on('click', '[id*=replaceConfirm]', function () {
 		dataType: 'json',
 		success: function (data) {
 			if(data.success){
-				var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+				var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 				$('#replaceIng').modal('hide'); 
 				reload_formula_data();
 				$('#msgInfo').html(msg);
 			}else{
-				var msg ='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				var msg ='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 				$('#msgRepl').html(msg);
 			}
 			
@@ -226,6 +226,8 @@ $("#formula").on("click", ".open-replace-dialog", function () {
 		dropdownAutoWidth: true,
 		containerCssClass: "repIngNameDest",
 		minimumInputLength: 2,
+		//theme: 'bootstrap-5',
+		dropdownParent: $('#replaceIng .modal-content'),
 		ajax: {
 			url: '/core/list_ingredients_simple.php',
 			dataType: 'json',
@@ -254,11 +256,11 @@ $("#formula").on("click", ".open-replace-dialog", function () {
 			
 		}
 		
-	}).on('select2-selected', function (data) {
-			 repName = data.choice.text;
-			 repID = data.choice.text; //NEEDS ID?!
+	}).on('select2:selecting', function (e) {
+			 repName = e.params.args.data.text;
+			 repID = e.params.args.data.text; //NEEDS ID?!
 			 $("#repGrid").show();
-			 $("#replaceIng #ingTargInfo").html('<strong>'+data.choice.text+'</strong><p><strong>CAS:</strong> ' + data.choice.cas + '</p><p> <strong>Description: </strong>' + data.choice.desc +'</p>');
+			 $("#replaceIng #ingTargInfo").html('<strong>'+e.params.args.data.text+'</strong><p><strong>CAS:</strong> ' + e.params.args.data.cas + '</p><p> <strong>Description: </strong>' +e.params.args.data.desc +'</p>');
 	});
 });
 
@@ -278,12 +280,12 @@ $('#mrgIng').on('click', '[id*=mergeConfirm]', function () {
 		dataType: 'json',
 		success: function (data) {
 			if(data.success){
-				var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+				var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 				$('#mrgIng').modal('hide'); 
 				reload_formula_data();
 				$('#msgInfo').html(msg);
 			}else{
-				var msg ='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				var msg ='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 				$('#msgMerge').html(msg);
 			}
 			
@@ -308,20 +310,21 @@ $("#formula").on("click", ".open-merge-dialog", function () {
 	
 	$("#mrgIngName").select2({
 		width: '250px',
-		placeholder: 'Search for ingredient (name)',
+		placeholder: 'Search for ingredient (name)..',
 		allowClear: true,
 		dropdownAutoWidth: true,
 		containerCssClass: "mrgIngName",
+		dropdownParent: $('#mrgIng .modal-content'),
 		ajax: {
 			url: '/core/full_formula_data.php',
 			dataType: 'json',
 			type: 'POST',
 			delay: 100,
 			quietMillis: 250,
-			data: function (data) {
+			data: function (params) {
 				return {
 					id: myID,
-					search: data
+					search: params.term
 				};
 			},
 			processResults: function(data) {
@@ -339,9 +342,9 @@ $("#formula").on("click", ".open-merge-dialog", function () {
 			
 		}
 		
-	}).on('select2-selected', function (data) {
-			 mrgName = data.choice.text;
-			 mrgID = data.choice.ingId;
+	}).on('select2:selected', function (data) {
+			 mrgName = data.params.text;
+			 mrgID = data.params.ingId;
 	});
 });
 
@@ -363,12 +366,12 @@ $('#manage-quantity').on('click', '[id*=quantityConfirm]', function () {
 		dataType: 'json',
 		success: function (data) {
 			if(data.success){
-				msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+				msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 				$('#manage-quantity').modal('hide'); 
 				reload_formula_data();
 				
 			}else{
-				msg ='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				msg ='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 				$('#msgQuantity').html(msg);
 			}
 			
@@ -402,6 +405,7 @@ $("#formula").on("click", ".open-quantity-dialog", function () {
 		dropdownAutoWidth: true,
 		containerCssClass: "formulaSolvents",
 		minimumResultsForSearch: Infinity,
+		dropdownParent: $('#manage-quantity .modal-content'),
 		ajax: {
 			url: '/core/full_formula_data.php',
 			dataType: 'json',

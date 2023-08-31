@@ -505,9 +505,9 @@ if($_POST['pubChemData'] == 'update' && $_POST['cas']){
 		$q.= mysqli_query($conn, "UPDATE ingredients SET INCI = '$InChI' WHERE cas='$cas'");
 	}
 	if($q){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Data updated!</div>';
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>Data updated!</div>';
 	}else{
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Unable to update data!</div>';
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>Unable to update data!</div>';
 	}
 	return;
 }
@@ -524,7 +524,7 @@ if($_POST['synonym'] == 'import' && $_POST['method'] == 'pubchem'){
 	$cid = $json->InformationList->Information[0]->CID;
 	$source = 'PubChem';
 	if(empty($data)){
-		echo '<div class="alert alert-info alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>No data found!</div>';
+		echo '<div class="alert alert-info alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>No data found!</div>';
 		return;
 	}
 	$i=0;
@@ -544,9 +544,9 @@ if($_POST['synonym'] == 'import' && $_POST['method'] == 'pubchem'){
 		}
 	}
 	if($r){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>'.$i.' </strong>synonym(s) imported!</div>';
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>'.$i.' </strong>synonym(s) imported!</div>';
 	}else{
-		echo '<div class="alert alert-info alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Data already in sync!</div>';
+		echo '<div class="alert alert-info alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>Data already in sync!</div>';
 	}
 	
 	return;
@@ -788,7 +788,7 @@ if($_GET['ingSupplier'] == 'delete'){
 	$ingID = mysqli_real_escape_string($conn, $_GET['ingID']);
 	/*
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM suppliers WHERE id = '$sID' AND ingID = '$ingID' AND preferred = '1'"))){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Preferred supplier cannot be removed. Set as preferred another one first!</div>';
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>Preferred supplier cannot be removed. Set as preferred another one first!</div>';
 		return;
 	}
 	*/							
@@ -1384,7 +1384,7 @@ if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'note_impact'){
 
 	$query = "UPDATE ingredients SET impact_top = '$impact_top',impact_heart = '$impact_heart',impact_base = '$impact_base' WHERE id='$ingID'";
 	if(mysqli_query($conn, $query)){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Note impact has been updated!</div>';
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>Note impact has been updated!</div>';
 	}else{
 		echo '<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> '.mysqli_error($conn).'</div>';
 	}
