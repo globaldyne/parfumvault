@@ -62,11 +62,11 @@ while($qTags = mysqli_fetch_array($tagsQ)){
 
 
    <div class="form-row">
-     <div class="form-group col-md-6">
+     <div class="form-group col">
         <label class="control-label col-auto" for="formula_name">Formula Name:</label>
           <a href="#" data-name="name" class="name" id="formula_name" data-pk="<?php echo $info['id'];?>"><?php echo $info['name']?:'Unnamed';?></a>
       </div>
-     <div class="form-group col-md-6">
+     <div class="form-group col">
     	<label class="control-label col-auto" for="product_name">Product Name:</label>
      	<a href="#" data-name="product_name" class="product_name" id="product_name" data-pk="<?php echo $info['id'];?>"><?php echo $info['product_name'] ?: 'Not set';?></a>
      </div>
@@ -162,10 +162,10 @@ while($qTags = mysqli_fetch_array($tagsQ)){
  </div>
  
  <div class="form-row">
-   	<div class="form-group col-md-6">
+   	<div class="form-group col">
         <label class="control-label col-auto" for="doc_file">Picture:</label>
         <input type="file" name="doc_file" id="doc_file" />
-        <input type="submit" name="button" class="btn btn-primary" id="pic_upload" value="Upload">
+        <input type="submit" name="button" class="btn btn-primary mt-4" id="pic_upload" value="Upload">
    	 	<div id="upload_resp"></div>
   	</div>
     

@@ -43,9 +43,9 @@ while($fTypes_res = mysqli_fetch_array($fTypes_q)){
               <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula" data-backdrop="static"><i class="fa-solid fa-plus mx-2"></i>Add new formula</a></li>
               <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula_csv" data-backdrop="static"><i class="fa-solid fa-file-csv mx-2"></i>Import from CSV</a></li>
               <div class="dropdown-divider"></div>
-              <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula_cat" data-backdrop="static"><i class="fa-solid fa-circle-plus mx-2"></i>Create formula category</a></li>
+              <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula_cat"><i class="fa-solid fa-circle-plus mx-2"></i>Create formula category</a></li>
               <div class="dropdown-divider"></div>
-        	  <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#export_formulas_json" data-backdrop="static"><i class="fa-solid fa-file-export mx-2"></i>Export Formulas as JSON</a></li>
+        	  <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#export_formulas_json"><i class="fa-solid fa-file-export mx-2"></i>Export Formulas as JSON</a></li>
         	  <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#import_formulas_json" data-backdrop="static"><i class="fa-solid fa-file-import mx-2"></i>Import Formulas from JSON</a></li>
 
             </div>
@@ -554,29 +554,6 @@ function reload_formulas_data() {
     $('#all-table').DataTable().ajax.reload(null, true);
 };
 
-$('#export_json').click(function() {
-	$('#JSONExportMsg').html('<div class="alert alert-info"><img src="/img/loading.gif"/>Please wait, export in progress....</div>');					 
-	$.ajax({ 
-    url: '/pages/operations.php', 
-	type: 'GET',
-    data: {
-		action: 'exportFormulas',
-		},
-	dataType: 'json',
-    success: function (data) {
-		if(data.error){
-			var msg = '<div class="alert alert-danger">'+data.error+'</div>';
-		}else if(data.success){
-			var msg = '<div class="alert alert-success">'+data.success+'</div>';
-		}
-	  	$('#JSONExportMsg').html(msg);
-    }
-  });
-});
-
-$('#close_export_json').click(function() {
-	$('#JSONExportMsg').html('');
-});
 
 $('#add_formula_cat').on('click', '[id*=add-fcat]', function () {
 
@@ -785,7 +762,7 @@ $("#formula-name").keyup(function(){
 </div>
 
 <!--ADD CATEGORY MODAL-->
-<div class="modal fade" id="add_formula_cat" tabindex="-1" role="dialog" aria-labelledby="add_formula_cat" aria-hidden="true">
+<div class="modal fade" id="add_formula_cat" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="add_formula_cat" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -810,24 +787,22 @@ $("#formula-name").keyup(function(){
 </div>
 
 <!--EXPORT JSON MODAL-->
-<div class="modal fade" id="export_formulas_json" tabindex="-1" role="dialog" aria-labelledby="export_formulas_json" aria-hidden="true">
+<div class="modal fade" id="export_formulas_json" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="export_formulas_json" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Export formulas as a JSON file</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
       </div>
       <div class="modal-body">
         <div class="form-group">
-            <p>This will generate a JSON file from your formulas. Once the file is generated you should download it to your computer.</p>
-            <div id="JSONExportMsg"></div>
+           <div class="row">
+            	This will generate a JSON file from all of your formulas. This may take a while to complete, depending on how many formulas you have and their complexity.
+           </div>
 		</div>
       </div>
 	  <div class="modal-footer">
-        <input type="button" class="btn btn-secondary" data-dismiss="modal" id="close_export_json" value="Close">
-        <input type="submit" name="btnExport" class="btn btn-primary" id="export_json" value="Export">
+        <input type="button" class="btn btn-secondary" data-dismiss="modal" id="close_export_json" value="Cancel">
+        <a href="/pages/operations.php?action=exportFormulas" class="btn btn-primary active" role="button" aria-pressed="true">Export</a>
       </div>   
   </div>
 </div>

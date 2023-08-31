@@ -6,9 +6,20 @@ require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/func/rgbToHex.php');
 
 $defCatClass = $settings['defCatClass'];
+$log_path = $tmp_path.'/logs/';
+$log_api_file = 'pv-api.log';
+
+
+if (!file_exists($log_path)) {
+	mkdir($log_path, 0740, true);
+}
+
+if (!file_exists($tmp_path.$log_api_file)) {
+    touch($log_path.$log_api_file);
+}
 
 $req_dump = print_r($_REQUEST, TRUE);
-$fp = fopen($tmp_path.'/pv-api.log', 'a');
+$fp = fopen($tmp_path.$log_api_file, 'a');
 fwrite($fp, $req_dump);
 fclose($fp);
 
