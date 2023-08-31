@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 8.6
+- Fix a bug returning error when you searching a non-existing ingredient to merge in formula
 - Restructure formula settings page 
 - Revert formula count query change
 ### Version 8.5
