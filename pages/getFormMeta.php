@@ -58,7 +58,7 @@ while($qTags = mysqli_fetch_array($tagsQ)){
 
 <div class="card-body" id="formula_metadata">
 
-<div class="col-sm-6">
+<div class="col-sm">
 
 
    <div class="form-row">
