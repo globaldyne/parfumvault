@@ -1404,3 +1404,7 @@ hr.hr-text::before {
 input[type="search"]::-webkit-search-cancel-button {
   -webkit-appearance: searchfield-cancel-button;
 }
+
+.pv-w-500 {
+	width: 500px !important;
+}
