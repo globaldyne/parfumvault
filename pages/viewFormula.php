@@ -914,7 +914,7 @@ function ingActions(data, type, row, meta){
         <div class="dropdown-divider"></div>
         
         <div id="repGrid" class="card card-inverse card-reping">
-         <div class="row">
+         <div class="row mt-2">
             <div class="col-sm">
               <div id="ingSrcInfo"></div>
             </div>

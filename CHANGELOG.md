@@ -1,4 +1,11 @@
 # CHANGELOG
+### Version 8.6
+- Fix formulas json export
+- Fix api log file
+- Fix a bug returning error when you searching a non-existing ingredient to merge in formula
+- Restructure formula settings page 
+- Revert formula count query change
+
 ### Version 8.5
 - Fix formulas json export
 - Ingredient general tab re-design
