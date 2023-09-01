@@ -131,7 +131,7 @@ $(document).ready(function() {
 
 <!--EDIT USER PROFILE MODAL-->            
 <div class="modal fade" id="editUser" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="editUserLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="editUserLabel">Edit my details</h5>
