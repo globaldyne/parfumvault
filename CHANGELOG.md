@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 8.7
+
 ### Version 8.6
 - Fix formulas json export
 - Fix api log file
