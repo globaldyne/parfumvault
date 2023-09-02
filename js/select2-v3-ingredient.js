@@ -37,7 +37,7 @@ $(document).ready(function(){
 	$("#ingredient").select2({
 		minimumInputLength: 2,
     	dropdownAutoWidth: true,
-		//theme: 'bootstrap',
+		//containerCssClass : "form-select mb-3",
         allowClear: true,
 		placeholder: 'Choose ingredient (name, cas)',
 		templateResult: formatIngredients,
@@ -80,9 +80,9 @@ $(document).ready(function(){
 		}
 	  
 	}).on('select2:open', () => {
-		$(".select2-with-searchbox:not(:has(a))").prepend('<div id="add_new_ing_sel" class="select_add_new_ingredient "><a class="text-primary fa fa-plus ml2"></a><a href="/pages/mgmIngredient.php" class="popup-link text-primary add-new-ing-sel">Create new ingredient</a></div>');
+		$(".select2-search:not(:has(a))").prepend('<div id="add_new_ing_sel" class="select_add_new_ingredient mb-2"><a class="text-primary fa fa-plus mx-2"></a><a href="/pages/mgmIngredient.php" class="popup-link text-primary add-new-ing-sel">Create new ingredient</a></div>');
 		
-		$(".select2-with-searchbox:not(:has(i))").append('<div class="select2-totalRecords"></div><div class="select_deep_ingredient"><span><div id="select_search_deep" class="select_search_deep"><i class="pv_point_gen" rel="tip" data-placement="bottom" title="Extend search in synonyms"><input data-default="true" type="checkbox" id="isDeep"> Deep Search</i></div></span></div>');
+		$(".select2-search:not(:has(i))").append('<div class="select2-totalRecords"></div><div class="select_deep_ingredient"><span><div id="select_search_deep" class="select_search_deep"><i class="pv_point_gen mx-2" rel="tip" data-placement="bottom" title="Extend search in synonyms"><input data-default="true" type="checkbox" id="isDeep"></i>Deep Search</div></span></div>');
 		
 		$('#isDeep').prop('checked', false);
 		isDeep = false;

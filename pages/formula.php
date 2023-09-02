@@ -91,7 +91,7 @@ if($form[0]['ingredient']){
           
                     <div class="row">
                         <div class="col-md-4">
-                           <select name="ingredient" id="ingredient" class="pv-form-control main-ingredient"></select>
+                           <select name="ingredient" id="ingredient" class="form-select mb-3 main-ingredient"></select>
                         </div>
                         <div class="col-md-2">
                             <input type="text" name="concentration" id="concentration" placeholder="Purity %" class="form-control" />
@@ -112,7 +112,7 @@ if($form[0]['ingredient']){
                             <input type="text" name="quantity" id="quantity" placeholder="Quantity" class="form-control" />				
                         </div>
                         <div class="col-md-2">
-                            <input type="submit" name="add" id="add-btn" class="btn btn-info" value="Add" /> </td>  
+                            <input type="submit" name="add" id="add-btn" class="btn btn-primary" value="Add" /> </td>  
                         </div>
                     </div>
                     
