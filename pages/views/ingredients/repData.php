@@ -82,11 +82,12 @@ function repName(data, type, row){
 	
 	$('#tdReplacements').editable({
 		select2: {
-			width: '250px',
+			width: '100%',
 			placeholder: 'Search for ingredient (name, cas)',
 			allowClear: true,
 			dropdownAutoWidth: true,
 			minimumInputLength: 2,
+			dropdownParent: $('#addReplacement .modal-content'),
 			ajax: {
 				url: '/core/list_ingredients_simple.php',
 				dataType: 'json',
@@ -175,10 +176,10 @@ $('#tdReplacements').on('click', '[id*=repDel]', function () {
 					dataType: 'json',
 					success: function (data) {
 						if(data.success){
-							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+							var msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>' + data.success + '</div>';
 							reload_rep_data();
 						}else{
-							var msg ='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+							var msg ='<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + data.error + '</div>';
 						}
 						$('#infRepOut').html(msg);
 					}
@@ -257,13 +258,13 @@ $('#addReplacement').on('click', '[id*=repAdd]', function () {
 		dataType: 'json',
 		success: function (data) {
 			if(data.success){
-				var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+				var msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>' + data.success + '</div>';
 				$("#repName").val('');
 				$("#repCas").val('');
 				$("#repNotes").val('');
 				reload_rep_data();
 			}else{
-				var msg ='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				var msg ='<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + data.error + '</div>';
 			}
 			$('#infRep').html(msg);
 		}
@@ -287,14 +288,20 @@ function reload_rep_data() {
       </div>
       <div class="modal-body">
       <div id="infRep"></div>
-            Ingredient: 
-            <input name="repName" id="repName" type="text" class="pv-form-control">
-        	<p>
-            </p>
-            Notes: 
-            <textarea name="repNotes" class="form-control" id="repNotes"></textarea>
-            </p>
-        <div class="dropdown-divider"></div>
+      <div class="col-sm">
+      	<div class="form-row">
+        	<div class="col">
+            	<label for="repName">Ingredient</label> 
+            	<select name="repName" id="repName" class="pv-form-control"></select>
+        	</div>
+         </div>
+         <div class="form-row">
+        	<div class="col">
+            	<label for="repNotes">Notes</label>
+            	<textarea name="repNotes" class="form-control" id="repNotes"></textarea>
+            </div>
+         </div>
+      </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

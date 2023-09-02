@@ -845,34 +845,37 @@ function ingActions(data, type, row, meta){
       <div class="modal-header">
         <h5 class="modal-title"><div id="ingQuantityName"></div></h5>
       </div>
-      <div class="modal-body">
+      <div class="card-body">
+	
       	<div id="msgQuantity"></div>
         <input type="hidden" name="ingQuantityID" id="ingQuantityID" />
         <input type="hidden" name="ingQuantityName" id="ingQuantityName" />
         <input type="hidden" name="ingQuantity" id="ingQuantity" />
         <input type="hidden" name="mainingid" id="mainingid" />
         <input type="hidden" name="curQuantity" id="curQuantity" />
-      	
-        Quantity in <?=$settings['mUnit']?> 
-        <input name="ingQuantity" type="text" class="ingQuantity form-control" id="ingQuantity">
-        
-        <div class="dropdown-divider"></div>
-        <input type="checkbox" name="reCalc" id="reCalc" value="1" data-val="1" /> Adjust solvent
-        
-        <div id="slvMeta">
-        	<div class="dropdown-divider"></div>
-        	<select name="formulaSolvents" id="formulaSolvents" class="formulaSolvents pv-form-control"></select>
-        	<div class="dropdown-divider"></div>
-        	<div id="explain" class="alert alert-info">Auto adjust total quantity by increasing or decreasing quantity from the selected solvent if enough available.<br>For example, if you add 1 more ml to the current ingredient, the selected solvent's quantity will be deducted by 1ml equally.</div>
-        </div>
+      	<div class="col">
+        	<label for="ingQuantity" class="form-label mb-2">Quantity in <?=$settings['mUnit']?></label>
+        	<input name="ingQuantity" type="text" class="ingQuantity form-control mb-3" id="ingQuantity">
 
-      </div>
+            <div class="form-row">
+        		<div class="col-md mb-3">
+					<label for="reCalc" class="form-label">Adjust solvent</label>
+        			<input type="checkbox" name="reCalc" id="reCalc" value="1" data-val="1" /> 
+        
+                    <div id="slvMeta">
+                        <select name="formulaSolvents" id="formulaSolvents" class="formulaSolvents form-control"></select>
+                        <div id="explain" class="mt-3 alert alert-info">Auto adjust total quantity by increasing or decreasing quantity from the selected solvent if enough available.<br>For example, if you add 1 more ml to the current ingredient, the selected solvent's quantity will be deducted by 1ml equally.</div>
+                    </div>
+				</div>
+			</div>
+      	</div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
         <input type="submit" name="button" class="btn btn-primary" id="quantityConfirm" value="Update">
       </div>
     </div>
   </div>
+</div>
 </div>
 
 <div class="modal fade" id="mrgIng" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="mrgIng" aria-hidden="true">

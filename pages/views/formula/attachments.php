@@ -16,7 +16,7 @@ $id = mysqli_real_escape_string($conn, $_POST["id"]);
       <div class="btn-group">
         <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
             <div class="dropdown-menu dropdown-menu-right">
-                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-target="#addAttachment"><i class="fa-solid fa-plus mx-2"></i>Add new</a></li>
+                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addAttachment"><i class="fa-solid fa-plus mx-2"></i>Add new</a></li>
             </div>
       </div>                    
     </div>
@@ -200,7 +200,7 @@ function reload_doc_data() {
 
 
 <!-- ADD DOCUMENT-->
-<div class="modal fade" id="addAttachment" tabindex="-1" role="dialog" aria-labelledby="addAttachment" aria-hidden="true">
+<div class="modal fade" id="addAttachment" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="addAttachment" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">

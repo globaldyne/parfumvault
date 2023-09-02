@@ -1,5 +1,5 @@
 <h3>Revisions</h3>
-<div id="msg_rev_info"><div class="alert alert-info">A revision will be automatically created each time you lock the formula if any changes in formulation. Alternatively you can manually create one from the revisions menu.</div>
+<div id="msg_rev_info"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i>A revision will be automatically created each time you lock the formula if any changes in formulation. Alternatively you can manually create one from the revisions menu.</div>
 <hr>
 <div class="card-body">
     <div class="text-right">
@@ -134,11 +134,11 @@ $('#genRev').click(function() {
 	dataType: 'json',
 	success: function (data) {
 		if ( data.success ) {
-			var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+			var msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>' + data.success + '</div>';
 			reload_rev_data();
 			//reload_formula_data();
 		} else {
-			var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + data.error + '</strong></div>';
+			var msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + data.error + '</strong></div>';
 		}
 		$('#msg_rev').html(msg);
 	}
@@ -173,11 +173,11 @@ $('#tdRevisions').on('click', '[id*=restore]', function () {
 					dataType: 'json',
 					success: function (data) {
 						if ( data.success ) {
-							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+							var msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>' + data.success + '</div>';
 							reload_formula_data();
 							reload_rev_data();
 						} else {
-							var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + data.error + '</strong></div>';
+							var msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + data.error + '</strong></div>';
 						}
 						$('#msg_rev').html(msg);
 					}
@@ -223,10 +223,10 @@ $('#tdRevisions').on('click', '[id*=dDel]', function () {
 					dataType: 'json',
 					success: function (data) {
 						if ( data.success ) {
-							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+							var msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>' + data.success + '</div>';
 							reload_rev_data();
 						} else {
-							var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + data.error + '</strong></div>';
+							var msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + data.error + '</strong></div>';
 						}
 						$('#msg_rev').html(msg);
 					}

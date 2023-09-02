@@ -130,7 +130,7 @@ $('#tdSynonyms').on('click', '[id*=synDel]', function () {
            },
            cancel: {
                label : "Cancel",
-               className : "btn-default",
+               className : "btn-secondary",
                callback : function() {
                    return true;
                }
