@@ -166,7 +166,7 @@ function fetch_reps(){
 		type: 'POST',
 		data: {
 			id: btoa(myIngName),
-			cas: btoa(myCAS),
+			cas: myCAS,
 			ingID: myIngID
 		},
 		dataType: 'html',

@@ -17,10 +17,10 @@ $ingID = mysqli_real_escape_string($conn, $_POST["ingID"]);
 <hr>
 <div id="infRepOut"></div>
 <div class="card-body">
- 	<div class="text-right">
+ 	<div class="text-right mx-2">
   		<div class="btn-group">
    			<button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
-    		<div class="dropdown-menu dropdown-menu-right">
+    		<div class="dropdown-menu">
         		<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addReplacement"><i class="fa-solid fa-plus mx-2"></i>Add new</a></li>
     		</div>
   		</div>                    
@@ -87,16 +87,16 @@ function repName(data, type, row){
 			allowClear: true,
 			dropdownAutoWidth: true,
 			minimumInputLength: 2,
-			dropdownParent: $('#addReplacement .modal-content'),
+			dropdownParent: '.popover:last',
 			ajax: {
 				url: '/core/list_ingredients_simple.php',
 				dataType: 'json',
 				type: 'POST',
 				delay: 100,
 				quietMillis: 250,
-				data: function (data) {
+				data: function (params) {
 					return {
-						search: data
+						search: params.term
 					};
 				},
 				processResults: function(data) {
@@ -202,11 +202,12 @@ $('#tdReplacements').on('click', '[id*=repDel]', function () {
 var repCas;
 var repID;
 $("#repName").select2({
-	width: '250px',
+	width: '100%',
 	placeholder: 'Search for ingredient (name, cas)',
 	allowClear: true,
 	dropdownAutoWidth: true,
 	minimumInputLength: 2,
+	dropdownParent: $('#addReplacement .modal-content'),
 	ajax: {
 		url: '/core/list_ingredients_simple.php',
 		dataType: 'json',
@@ -235,10 +236,10 @@ $("#repName").select2({
 		
 	}
 	
-}).on('select2-selected', function (data) {
-  		 repCas = data.choice.cas;
-		 repID = data.choice.ingId;
-		 $('#repNotes').html(data.choice.description);
+}).on('select2:selecting', function (e) {
+  		 repCas = e.params.args.data.cas;
+		 repID = e.params.args.data.ingId;
+		 $('#repNotes').html(e.params.args.data.description);
 });
 
 $('#addReplacement').on('click', '[id*=repAdd]', function () {

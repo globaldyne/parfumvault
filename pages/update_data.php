@@ -603,7 +603,7 @@ if($_GET['synonym'] == 'delete'){
 if($_POST['replacement'] == 'add'){
 	
 	$ing_name = base64_decode($_POST['ing_name']);
-	$ing_cas = base64_decode($_POST['ing_cas']);
+	$ing_cas = trim($_POST['ing_cas']);
 
 	if(empty($_POST['rName'])){
 		$response["error"] = 'Name is required';
