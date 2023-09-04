@@ -236,7 +236,7 @@ function actions(data, type, row){
 	//}
 	
 	if (row.toAdd == 1) {
-		data += '<i data-toggle="modal" data-backdrop="static" data-target="#confirm_add" data-quantity="'+row.quantity+'" data-ingredient="'+row.ingredient+'" data-row-id="'+row.id+'" data-ing-id="'+row.ingID+'" data-qr="'+row.quantity+'" class="mr fas fa-check pv_point_gen" title="Confirm add '+row.ingredient+'"></i>';
+		data += '<i data-toggle="modal" data-target="#confirm_add" data-quantity="'+row.quantity+'" data-ingredient="'+row.ingredient+'" data-row-id="'+row.id+'" data-ing-id="'+row.ingID+'" data-qr="'+row.quantity+'" class="mr fas fa-check pv_point_gen" title="Confirm add '+row.ingredient+'"></i>';
 	}
 	
 					  
@@ -306,6 +306,8 @@ $('#tdDataPending').on('click', '[data-target*=confirm_add]', function () {
 	$("#idRow").text($(this).attr('data-row-id'));
 	$("#amountAdded").val($(this).attr('data-quantity'));
 	$("#qr").text($(this).attr('data-qr'));
+	$("#updateStock").prop( "checked", true );
+	$("#notes").val('');
 });
 
  
@@ -504,7 +506,7 @@ $('#markComplete, #markCompleteMenu').click(function() {
 </div>
 
 <!-- Modal Confirm amount-->
-<div class="modal fade" id="confirm_add" tabindex="-1" role="dialog" aria-labelledby="confirm_add" aria-hidden="true">
+<div class="modal fade" id="confirm_add" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="confirm_add" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">

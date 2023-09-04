@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 8.7
+- Reset form state when adding an ingredient in formula making
 
 ### Version 8.6
 - Fix formulas json export
