@@ -1,6 +1,7 @@
 # CHANGELOG
 ### Version 8.7
 - Reset form state when adding an ingredient in formula making
+- If the materila quantity exceeds the amount in stock, when making a formula, PV will add the material and update material's quantity down to its maximum available, instead if returning an error
 
 ### Version 8.6
 - Fix formulas json export
