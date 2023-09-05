@@ -306,6 +306,8 @@ $('#tdDataPending').on('click', '[data-bs-target*=confirm_add]', function () {
 	$("#idRow").text($(this).attr('data-row-id'));
 	$("#amountAdded").val($(this).attr('data-quantity'));
 	$("#qr").text($(this).attr('data-qr'));
+	$("#updateStock").prop( "checked", true );
+	$("#notes").val('');
 });
 
  
