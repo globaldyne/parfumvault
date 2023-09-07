@@ -278,7 +278,7 @@ function fActions(data, type, row, meta){
 		data += '<li><a class="dropdown-item" href="#" id="cloneMe" rel="tip" title="Clone '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"><i class="fas fa-copy mx-2"></i>Clone formula</a></li>';
 		
 		data += '<div class="dropdown-divider"></div>';
-		data += '<li><a class="dropdown-item" href="#" id="deleteMe" style="color: #c9302c;" rel="tip" title="Delete '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"><i class="fas fa-trash mx-2"></i>Permanently delete formula</a></li>';
+		data += '<li><a class="dropdown-item link-danger" href="#" id="deleteMe" rel="tip" title="Delete '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"><i class="fas fa-trash mx-2"></i>Permanently delete formula</a></li>';
 		data += '</ul></div>';
 	
     return data;
@@ -539,27 +539,7 @@ $(document).on('click', '#btnImport', function(event){
 function reload_formulas_data() {
     $('#all-table').DataTable().ajax.reload(null, true);
 };
-/*
-$('#export_json').click(function() {
-	$('#JSONExportMsg').html('<div class="alert alert-info"><img src="/img/loading.gif"/>Please wait, export in progress....</div>');					 
-	$.ajax({ 
-    url: '/pages/operations.php', 
-	type: 'GET',
-    data: {
-		action: 'exportFormulas',
-		},
-	dataType: 'json',
-    success: function (data) {
-		if(data.error){
-			var msg = '<div class="alert alert-danger">'+data.error+'</div>';
-		}else if(data.success){
-			var msg = '<div class="alert alert-success">'+data.success+'</div>';
-		}
-	  	$('#JSONExportMsg').html(msg);
-    }
-  });
-});
-*/
+
 $('#close_export_json').click(function() {
 	$('#JSONExportMsg').html('');
 });

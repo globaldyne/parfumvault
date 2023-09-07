@@ -82,7 +82,7 @@ if($form[0]['ingredient']){
           <li class="nav-item" role="presentation"><a href="#formula_settings" id="formula_settings_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-cogs mx-2"></i>Settings</a></li>
         </ul>
                      
-        <div class="tab-content">
+        <div class="tab-content table-responsive">
         	<div class="tab-pane active" id="main_formula">
 
           	<div class="card-body">

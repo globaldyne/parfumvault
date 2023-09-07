@@ -15,6 +15,89 @@ $f_name = $meta['name'];
 $fid = $meta['fid'];
 ?>
 
+
+
+<div class="card-body">
+	<div class="col-sm-10" id="progress-area">
+      <div class="progress">
+          <div id="base_bar" class="progress-bar pv_bar_base_notes" role="progressbar" aria-valuemin="0">
+          	<span><div class="base-label"></div></span>
+          </div>
+          <div id="heart_bar" class="progress-bar pv_bar_heart_notes" role="progressbar" aria-valuemin="0">
+          	<span><div class="heart-label"></div></span>
+          </div>
+          <div id="top_bar" class="progress-bar pv_bar_top_notes" role="progressbar" aria-valuemin="0">
+          	<span><div class="top-label"></div></span>
+          </div>
+      </div>
+    </div>
+    
+    <div class="mt-1 mb-1 dropdown-divider"></div>
+    
+    <div class="col text-right">
+      <div class="btn-group" id="menu">
+        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
+        <div class="dropdown-menu dropdown-menu-end">
+           <li class="dropdown-header">Export</li> 
+           <li><a class="dropdown-item export_as" href="#" data-format="csv"><i class="fa-solid fa-file-csv mx-2"></i>Export as CSV</a></li>
+           <li><a class="dropdown-item export_as" href="#" data-format="pdf"><i class="fa-solid fa-file-pdf mx-2"></i>Export as PDF</a></li>
+           <li><a class="dropdown-item" href="/pages/operations.php?action=exportFormulas&fid=<?=$meta['fid']?>"><i class="fa-solid fa-file-code mx-2"></i>Export as JSON</a></li>
+           <li><a class="dropdown-item" href="#" id="print"><i class="fa-solid fa-print mx-2"></i>Print Formula</a></li>
+           <div class="dropdown-divider"></div>
+           <li class="dropdown-header">Scale Formula</li> 
+           <li><a class="dropdown-item manageQuantity" href="#" data-action="multiply"><i class="fa-solid fa-xmark mx-2"></i>Multiply x2</a></li>
+           <li><a class="dropdown-item manageQuantity" href="#" data-action="divide"><i class="fa-solid fa-divide mx-2"></i>Divide x2</a></li>
+           <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#amount_to_make"><i class="fa-solid fa-calculator mx-2"></i>Advanced</a></li>
+           <div class="dropdown-divider"></div>
+           <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#create_accord"><i class="fa-solid fa-list-check mx-2"></i>Create accord</a></li>
+           <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#conv_ingredient"><i class="fa-solid fa-list-check mx-2"></i>Create ingredient</a></li>
+           <div class="dropdown-divider"></div>
+           <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#schedule_to_make"><i class="fa-regular fa-calendar-plus mx-2"></i>Schedule to make</a></li>
+           <li><a class="dropdown-item" href="#" id="isMade"><i class="fa-solid fa-check mx-2"></i>Mark formula as made</a></li>
+           <div class="dropdown-divider"></div>
+           <li><a class="dropdown-item" href="#" id="cloneMe"><i class="fa-solid fa-copy mx-2"></i>Clone Formula</a></li>
+        </div>
+      </div>            
+    </div>
+</div>
+
+
+<table id="formula" class="table table-striped table-bordered nowrap viewFormula" style="width:100%">
+        <thead>
+            <tr>
+                <th>Profile</th>
+                <th>Ingredient</th>
+                <th>CAS</th>
+                <th>Purity %</th>
+                <th>Dilutant</th>
+                <th>Quantity</th>
+                <th>Concentration %*</th>
+                <th>Final Concentration %</th>
+                <th>Cost</th>
+                <th>Inventory</th>
+                <th>Properties</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tfoot>
+        	<tr>
+            <th>Total ingredients:</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th>Total ml:</th>
+            <th>Total conc %</th>
+            <th></th>
+            <th>Cost: </th>
+            <th></th>
+            <th></th>
+            <th></th>
+            </tr>
+        </tfoot>
+</table>
+
+
 <script>
 var myFID = "<?=$meta['fid']?>";
 var myFNAME = "<?=$meta['name']?>";
@@ -94,16 +177,16 @@ $(document).ready(function() {
 		displayLength: 100,
 		createdRow: function( row, data, dataIndex){
 			if( data['usage_regulator'] == "IFRA" && parseFloat(data['usage_limit']) < parseFloat(data['concentration'])){
-				$(row).find('td:eq(5)').addClass('alert-danger').append(' <i rel="tip" title="Max usage: ' + data['usage_limit'] +'% IFRA Regulated" class="pv_point_gen fas fa-info-circle"></i></div>');
+				$(row).find('td:eq(5)').addClass('alert-danger').append(' <i rel="tip" title="Max usage: ' + data['usage_limit'] +'% IFRA Regulated" class="pv_point_gen fas fa-info-circle"></i>');
 			}else if( data['usage_regulator'] == "PV" && parseFloat(data['usage_limit']) < parseFloat(data['concentration'])){
 				if(data['usage_restriction'] == 1){
-					$(row).find('td:eq(5)').addClass('alert-info').append(' <i rel="tip" title="Recommended usage: ' + data['usage_limit'] +'%" class="pv_point_gen fas fa-info-circle"></i></div>');
+					$(row).find('td:eq(5)').addClass('alert-info').append('<i rel="tip" title="Recommended usage: ' + data['usage_limit'] +'%" class="mx-2 pv_point_gen fas fa-info-circle"></i>');
 				}
 				if(data['usage_restriction'] == 2){
-					$(row).find('td:eq(5)').addClass('alert-danger').append(' <i rel="tip" title="Restricted usage: ' + data['usage_limit'] +'%" class="pv_point_gen fas fa-info-circle"></i></div>');
+					$(row).find('td:eq(5)').addClass('alert-danger').append('<i rel="tip" title="Restricted usage: ' + data['usage_limit'] +'%" class="mx-2 pv_point_gen fas fa-info-circle"></i>');
 				}
 				if(data['usage_restriction'] == 3){
-					$(row).find('td:eq(5)').addClass('alert-warning').append(' <i rel="tip" title="Specification: ' + data['usage_limit'] +'%" class="pv_point_gen fas fa-info-circle"></i></div>');
+					$(row).find('td:eq(5)').addClass('alert-warning').append('<i rel="tip" title="Specification: ' + data['usage_limit'] +'%" class="mx-2 pv_point_gen fas fa-info-circle"></i>');
 				}
 
             }else{
@@ -111,20 +194,20 @@ $(document).ready(function() {
 			}
 			
 			if(data.ingredient.classification == 4){
-				$(row).find('td:eq(0),td:eq(1),td:eq(2),td:eq(3),td:eq(4),td:eq(5),td:eq(6),td:eq(7),td:eq(8),td:eq(9)').addClass('bg-danger text-light').append(' <i rel="tip" title="This material is prohibited" class="pv_point_gen fas fa-ban"></i></div>');
+				$(row).find('td:eq(0),td:eq(1),td:eq(2),td:eq(3),td:eq(4),td:eq(5),td:eq(6),td:eq(7),td:eq(8),td:eq(9)').addClass('bg-danger text-light').append('<i rel="tip" title="This material is prohibited" class="mx-2 pv_point_gen fas fa-ban"></i>');
             }
 			
 			if( data['usage_regulator'] == "IFRA" && parseFloat(data['usage_limit']) < parseFloat(data['final_concentration'])){
-				$(row).find('td:eq(6)').addClass('alert-danger').append(' <i rel="tip" title="Max usage: ' + data['usage_limit'] +'% IFRA Regulated" class="pv_point_gen fas fa-info-circle"></i></div>');
+				$(row).find('td:eq(6)').addClass('alert-danger').append('<i rel="tip" title="Max usage: ' + data['usage_limit'] +'% IFRA Regulated" class="mx-2 pv_point_gen fas fa-info-circle"></i>');
 			}else if( data['usage_regulator'] == "PV" && parseFloat(data['usage_limit']) < parseFloat(data['final_concentration'])){
 				if(data['usage_restriction'] == 1){
-					$(row).find('td:eq(6)').addClass('alert-info').append(' <i rel="tip" title="Recommended usage: ' + data['usage_limit'] +'%" class="pv_point_gen fas fa-info-circle"></i></div>');
+					$(row).find('td:eq(6)').addClass('alert-info').append('<i rel="tip" title="Recommended usage: ' + data['usage_limit'] +'%" class="mx-2 pv_point_gen fas fa-info-circle"></i>');
 				}
 				if(data['usage_restriction'] == 2){
-					$(row).find('td:eq(6)').addClass('alert-danger').append(' <i rel="tip" title="Restricted usage: ' + data['usage_limit'] +'%" class="pv_point_gen fas fa-info-circle"></i></div>');
+					$(row).find('td:eq(6)').addClass('alert-danger').append('<i rel="tip" title="Restricted usage: ' + data['usage_limit'] +'%" class="mx-2 pv_point_gen fas fa-info-circle"></i>');
 				}
 				if(data['usage_restriction'] == 3){
-					$(row).find('td:eq(6)').addClass('alert-warning').append(' <i rel="tip" title="Specification: ' + data['usage_limit'] +'%" class="pv_point_gen fas fa-info-circle"></i></div>');
+					$(row).find('td:eq(6)').addClass('alert-warning').append('<i rel="tip" title="Specification: ' + data['usage_limit'] +'%" class="mx-2 pv_point_gen fas fa-info-circle"></i>');
 				}
 			}else{
 				$(row).find('td:eq(6)').addClass('alert-success');
@@ -395,78 +478,6 @@ $('#print').click(() => {
     $('#formula').DataTable().button(0).trigger();
 });
 </script>
-
-<div class="card-body">
-	<div class="col-sm-10" id="progress-area">
-      <div class="progress">
-          <div id="base_bar" class="progress-bar pv_bar_base_notes" role="progressbar" aria-valuemin="0"><span><div class="base-label"></div></span></div>
-          <div id="heart_bar" class="progress-bar pv_bar_heart_notes" role="progressbar" aria-valuemin="0"><span><div class="heart-label"></div></span></div>
-          <div id="top_bar" class="progress-bar pv_bar_top_notes" role="progressbar" aria-valuemin="0"><span><div class="top-label"></div></span></div>
-      </div>
-    </div>
-    <div class="dropdown-divider"></div>
-    <div class="col text-right">
-      <div class="btn-group" id="menu">
-        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
-        <div class="dropdown-menu dropdown-menu-right">
-           <li class="dropdown-header">Export</li> 
-           <li><a class="dropdown-item export_as" href="#" data-format="csv"><i class="fa-solid fa-file-csv mx-2"></i>Export as CSV</a></li>
-           <li><a class="dropdown-item export_as" href="#" data-format="pdf"><i class="fa-solid fa-file-pdf mx-2"></i>Export as PDF</a></li>
-           <li><a class="dropdown-item" href="/pages/operations.php?action=exportFormulas&fid=<?=$meta['fid']?>"><i class="fa-solid fa-file-code mx-2"></i>Export as JSON</a></li>
-           <li><a class="dropdown-item" href="#" id="print"><i class="fa-solid fa-print mx-2"></i>Print Formula</a></li>
-           <div class="dropdown-divider"></div>
-           <li class="dropdown-header">Scale Formula</li> 
-           <li><a class="dropdown-item manageQuantity" href="#" data-action="multiply"><i class="fa-solid fa-xmark mx-2"></i>Multiply x2</a></li>
-           <li><a class="dropdown-item manageQuantity" href="#" data-action="divide"><i class="fa-solid fa-divide mx-2"></i>Divide x2</a></li>
-           <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#amount_to_make"><i class="fa-solid fa-calculator mx-2"></i>Advanced</a></li>
-           <div class="dropdown-divider"></div>
-           <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#create_accord"><i class="fa-solid fa-list-check mx-2"></i>Create accord</a></li>
-           <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#conv_ingredient"><i class="fa-solid fa-list-check mx-2"></i>Create ingredient</a></li>
-           <div class="dropdown-divider"></div>
-           <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#schedule_to_make"><i class="fa-regular fa-calendar-plus mx-2"></i>Schedule to make</a></li>
-           <li><a class="dropdown-item" href="#" id="isMade"><i class="fa-solid fa-check mx-2"></i>Mark formula as made</a></li>
-           <div class="dropdown-divider"></div>
-           <li><a class="dropdown-item" href="#" id="cloneMe"><i class="fa-solid fa-copy mx-2"></i>Clone Formula</a></li>
-        </div>
-        </div>            
-    </div>
-</div>
-<div id="msgInfo"></div>
-<table id="formula" class="table table-striped table-bordered nowrap viewFormula" style="width:100%">
-        <thead>
-            <tr>
-                <th>Profile</th>
-                <th>Ingredient</th>
-                <th>CAS</th>
-                <th>Purity %</th>
-                <th>Dilutant</th>
-                <th>Quantity</th>
-                <th>Concentration %*</th>
-                <th>Final Concentration %</th>
-                <th>Cost</th>
-                <th>Inventory</th>
-                <th>Properties</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tfoot>
-        	<tr>
-            <th>Total ingredients:</th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th>Total ml:</th>
-            <th>Total conc %</th>
-            <th></th>
-            <th>Cost: </th>
-            <th></th>
-            <th></th>
-            <th></th>
-            </tr>
-        </tfoot>
-</table>
-
 <!--Schedule Formula-->
 <div class="modal fade" id="schedule_to_make" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="schedule_to_make" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -809,7 +820,7 @@ function ingActions(data, type, row, meta){
 
 	data = '<div class="dropdown">' +
         '<button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
-            '<ul class="dropdown-menu dropdown-menu-right">';
+            '<ul class="dropdown-menu dropdown-menu-end">';
 
 	data += '<li><a class="dropdown-item link-dark" href="'+ row.ingredient.pref_supplier_link +'" target="_blank" rel="tip" title="Open '+ row.ingredient.pref_supplier +' page"><i class="fas fa-shopping-cart mx-2"></i>Go to supplier</a></li>';
 	
