@@ -63,7 +63,7 @@ $fid = $meta['fid'];
 
 
 <table id="formula" class="table table-striped table-bordered nowrap viewFormula" style="width:100%">
-        <thead>
+        <thead class="table-primary">
             <tr>
                 <th>Profile</th>
                 <th>Ingredient</th>
@@ -79,7 +79,7 @@ $fid = $meta['fid'];
                 <th></th>
             </tr>
         </thead>
-        <tfoot>
+        <tfoot class="table-secondary">
         	<tr>
             <th>Total ingredients:</th>
             <th></th>
@@ -166,7 +166,7 @@ $(document).ready(function() {
 			 $td.eq(0).html("Ingredients: " + response.meta['total_ingredients'] );
 			 $td.eq(4).html("Total: " + response.meta['total_quantity']);// + response.meta['quantity_unit'] );
 			 $td.eq(5).html("Total: " + response.meta['concentration'] + "%" );
-			 $td.eq(7).html("Total: " + response.meta['currency'] + response.meta['total_cost'] + ' <i rel="tip" title="The total price for the 100% concentration." class="pv_point_gen fas fa-info-circle"></i>');
+			 $td.eq(7).html("Total: " + response.meta['currency'] + response.meta['total_cost'] + '<i rel="tip" title="The total price for the 100% concentration." class="mx-2 pv_point_gen fas fa-info-circle"></i>');
 			 $(formula_table.columns(7).header()).html("Final Concentration " + response.meta['product_concentration'] + "%");
 		 }
       },
@@ -263,12 +263,13 @@ $('#formula').on('click', '[id*=rmIng]', function () {
        message : '<div id="err"></div>'+
 	   			 'Remove <strong>'+ ing.Name +'</strong> from formula?' +
 	   			 '<div class="dropdown-divider"></div>'+
-        		  '<input type="checkbox" name="reCalcDel" id="reCalcDel" value="1" data-val="1" /> Adjust solvent'+
+        		  '<input type="checkbox" name="reCalcDel" id="reCalcDel" value="1" data-val="1" />'+
+				  '<label for="reCalcDel" class="form-label mx-2">Adjust solvent</label>'+
         			'<div id="slvMetaDel">'+
         				'<div class="dropdown-divider"></div>'+
-        				'<input name="formulaSolventsDel" id="formulaSolventsDel" type="text" class="formulaSolventsDel pv-form-control">'+
+        				'<select name="formulaSolventsDel" id="formulaSolventsDel" class="formulaSolventsDel pv-form-control"/></select>'+
         				'<div class="dropdown-divider"></div>'+
-        				'<div id="explain" class="alert alert-info">The deducted ingredient quantity will be added to the selected solvent.</div></div>',
+        				'<div id="explain" class="mt-3 alert alert-info">The deducted ingredient quantity will be added to the selected solvent.</div></div>',
        buttons :{
            main: {
                label : "Remove",
@@ -305,7 +306,7 @@ $('#formula').on('click', '[id*=rmIng]', function () {
            },
            cancel: {
                label : "Cancel",
-               className : "btn-default",
+               className : "btn-secondary",
                callback : function() {
                    return true;
                }
@@ -322,7 +323,7 @@ $('#formula').on('click', '[id*=rmIng]', function () {
 		});
     
 		$("#formulaSolventsDel").select2({
-			width: '250px',
+			width: '100%',
 			placeholder: 'Available solvents in formula',
 			allowClear: true,
 			dropdownAutoWidth: true,
@@ -426,7 +427,7 @@ $('#isMade').click(function() {
            },
            cancel: {
                label : "Cancel",
-               className : "btn-default",
+               className : "btn-secondary",
                callback : function() {
                    return true;
                }

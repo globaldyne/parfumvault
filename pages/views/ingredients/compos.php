@@ -185,7 +185,7 @@ $('#tdCompositions').on('click', '[id*=cmpDel]', function () {
            },
            cancel: {
                label : "Cancel",
-               className : "btn-default",
+               className : "btn-secondary",
                callback : function() {
                    return true;
                }

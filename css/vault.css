@@ -721,7 +721,7 @@ formula td, table.table th {
 }
 
 table.fixedHeader-floating {
-	background-color: lightgray;
+	background-color: lightgray !important;
 	color: #666;  
 }
 

@@ -473,11 +473,12 @@ $("#reCalcAdd").click(function() {
     }
 	
 	$("#formulaSolventsAdd").select2({
-		width: '100px',
+		width: '100%',
 		placeholder: 'Available solvents in formula',
 		allowClear: true,
 		dropdownAutoWidth: true,
 		containerCssClass: "formulaSolvents",
+		dropdownParent: $('#add_ing'),
 		minimumResultsForSearch: Infinity,
 		ajax: {
 			url: '/core/full_formula_data.php',

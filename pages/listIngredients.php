@@ -33,23 +33,27 @@ $defCatClass = $settings['defCatClass'];
 <div id="row pv_search">
 	<div class="text-right">
         <div class="pv_input_grp">   
-          <input name="ing_search" type="text" class="form-control input-sm pv_input_sm" id="ing_search" value="<?=$_GET['search']?>" placeholder="Ingredient name, CAS, odor..">
-            <div class="input-group-btn">
-                <button class="btn btn-search btn-primary" id="pv_search_btn" data-provider="local">
-                    <span class="fas fa-database mx-2"></span>
-                    <span class="label-icon"><a href="#" class="btn-search">Local DB</a></span>
-                </button>
-                <label class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"><span class="caret"></span></label>
-                <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                    <?php foreach (loadModules('suppliers') as $search){ ?>
-                    <li>
-                        <a href="#" class="supplier dropdown-item" data-provider="<?=$search['fileName']?>">
-                            <span class="<?=$search['icon']?>"></span>
-                            <span class="label-icon"><?=$search['name']?></span>
-                        </a>
-                    </li>
-                    <?php } ?>
-                </ul>
+          <div class="btn-group input-group-btn">
+          	<input name="ing_search" type="text" class="form-control input-sm pv_input_sm" id="ing_search" value="<?=$_GET['search']?>" placeholder="Ingredient name, CAS, odor..">
+            <button class="btn btn-search btn-primary col" id="pv_search_btn" data-provider="local">
+            	<span class="label-icon">
+                    <i class="fas fa-database mx-2"></i>
+                    <a href="#" class="btn-search">Local DB</a>
+                </span>
+            </button>
+            <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+   				<span class="visually-hidden">Toggle Dropdown</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-right">
+                <?php foreach (loadModules('suppliers') as $search){ ?>
+                <li>
+                    <a href="#" class="supplier dropdown-item" data-provider="<?=$search['fileName']?>">
+                        <span class="<?=$search['icon']?>"></span>
+                        <span class="label-icon"><?=$search['name']?></span>
+                    </a>
+                </li>
+                <?php } ?>
+            </ul>
           </div>
    	  </div>
 	</div>
@@ -352,7 +356,7 @@ $('#tdDataIng').on('click', '[id*=impIng]', function () {
            },
            cancel: {
                label : "Cancel",
-               className : "btn-default",
+               className : "btn-secondary",
                callback : function() {
                    return true;
                }
@@ -401,7 +405,7 @@ $('#tdDataIng').on('click', '[id*=rmIng]', function () {
            },
            cancel: {
                label : "Cancel",
-               className : "btn-default",
+               className : "btn-secondary",
                callback : function() {
                    return true;
                }

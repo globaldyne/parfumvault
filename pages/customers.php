@@ -72,7 +72,7 @@
 
 <!--EDIT CUSTOMER MODAL-->            
 <div class="modal fade" id="editCustomer" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="editCustomerLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title mgmIngHeader mgmIngHeader-with-separator" id="editCustomerLabel">Edit customer</h5>
@@ -170,7 +170,7 @@ function actions(data, type, row){
 		data += '<li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editCustomer" rel="tip" title="Edit '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-edit mx-2"></i>Edit</a></li>';
 		data += '<li><a href="'+ row.web +'" class="dropdown-item" target="_blank" rel="tip" title="Open '+ row.name +' page"><i class="fas fa-shopping-cart mx-2"></i>Go to customer</a></li>';
 		data += '<div class="dropdown-divider"></div>';
-		data += '<li><a class="dropdown-item" href="#" id="cDel" style="color: #c9302c;" rel="tip" title="Delete '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-trash mx-2"></i>Delete</a></li>';
+		data += '<li><a class="dropdown-item link-danger" href="#" id="cDel" rel="tip" title="Delete '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-trash mx-2"></i>Delete</a></li>';
 		data += '</ul></div>';
 	return data;
 }
@@ -218,7 +218,7 @@ $('#tdDataCustomers').on('click', '[id*=cDel]', function () {
            },
            cancel: {
                label : "Cancel",
-               className : "btn-default",
+               className : "btn-secondary",
                callback : function() {
                    return true;
                }

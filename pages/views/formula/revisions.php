@@ -188,7 +188,7 @@ $('#tdRevisions').on('click', '[id*=restore]', function () {
            },
            cancel: {
                label : "Cancel",
-               className : "btn-default",
+               className : "btn-secondary",
                callback : function() {
                    return true;
                }
@@ -237,7 +237,7 @@ $('#tdRevisions').on('click', '[id*=dDel]', function () {
            },
            cancel: {
                label : "Cancel",
-               className : "btn-default",
+               className : "btn-secondary",
                callback : function() {
                    return true;
                }

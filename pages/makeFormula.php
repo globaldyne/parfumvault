@@ -431,7 +431,7 @@ $('#tdDataPending').on('click', '[id*=undo_add]', function () {
            },
            cancel: {
                label : "Cancel",
-               className : "btn-default",
+               className : "btn-secondary",
                callback : function() {
                    return true;
                }
@@ -476,7 +476,7 @@ $('#markComplete, #markCompleteMenu').click(function() {
            },
            cancel: {
                label : "Cancel",
-               className : "btn-default",
+               className : "btn-secondary",
                callback : function() {
                    return true;
                }

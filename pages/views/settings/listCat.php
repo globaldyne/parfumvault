@@ -220,7 +220,7 @@ $('#tdDataCat').on('click', '[id*=catDel]', function () {
            },
            cancel: {
                label : "Cancel",
-               className : "btn-default",
+               className : "btn-secondary",
                callback : function() {
                    return true;
                }
@@ -281,7 +281,7 @@ $("#editCategory").on("show.bs.modal", function(e) {
 
 <!--EDIT MODAL-->            
 <div class="modal fade" id="editCategory" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="editCategoryLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title mgmIngHeader mgmIngHeader-with-separator" id="editCategoryLabel">Edit category</h5>

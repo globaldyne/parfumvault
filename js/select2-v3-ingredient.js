@@ -123,7 +123,7 @@ $(document).ready(function(){
 			"<div class='select_result_igredient clearfix'>" +
 			  "<div class='select_result_igredient_meta'>" +
 				"<div class='select_igredient_title'></div>" +
-				"<span id='stock' ></span></div>"+
+				"<span id='stock'></span></div>"+
 				"<div class='select_result_igredient_description'></div>" +
 				"<div class='select_result_igredient_info'>" +
 				  "<div class='select_result_igredient_cas'></div>" +

@@ -138,7 +138,7 @@ $('#tdDataCart').on('click', '[id*=cart_remove]', function () {
            },
            cancel: {
                label : "Cancel",
-               className : "btn-default",
+               className : "btn-secondary",
                callback : function() {
                    return true;
                }

@@ -177,7 +177,7 @@ $('#tdperfTypes').on('click', '[id*=sDel]', function () {
            },
            cancel: {
                label : "Cancel",
-               className : "btn-default",
+               className : "btn-secondary",
                callback : function() {
                    return true;
                }

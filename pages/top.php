@@ -10,7 +10,7 @@ if($pv_meta['schema_ver'] < $db_ver){
 ?>
 <div id="chkUpdMsg"></div>
 <div id="content">
-        <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+        <nav class="navbar navbar-expand navbar-light bg-light topbar mb-4 static-top shadow">
           <ul class="navbar-nav vault-top ml-auto">
             <!-- Cart -->
             <li class="nav-item dropdown no-arrow mx-1">
@@ -20,9 +20,9 @@ if($pv_meta['schema_ver'] < $db_ver){
                 <span class="badge badge-danger badge-counter"><?php echo countCart($conn); ?></span>
               </a>
               <!-- Dropdown - cart -->
-              <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="messagesDropdown">
+              <div class="dropdown-list dropdown-menu dropdown-menu-end shadow animated--grow-in" aria-labelledby="messagesDropdown">
                 <?php if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM cart GROUP BY name"))){ ?>
-				<a href="/?do=cart" class="dropdown-header"><h6>To be ordered</h6></a>
+				<a href="/?do=cart" class="dropdown-header">To be ordered</a>
 				<?php
 					$qC = mysqli_query($conn, "SELECT name,ingID FROM cart ORDER BY name ASC LIMIT 5");
 					while ($pC = mysqli_fetch_array($qC)){
@@ -35,10 +35,10 @@ if($pv_meta['schema_ver'] < $db_ver){
                   </div>
                 </a>
 				<?php } ?>
-	            <a class="dropdown-item text-center small text-gray-500" href="?do=cart">See all...</a>
+	            <a class="dropdown-item text-center small text-gray-500" href="/?do=cart">See all...</a>
 
 				<?php }else{ ?>
-                <a class="dropdown-item text-center small text-gray-500" href="?do=cart">No orders to place</a>
+                <a class="dropdown-item text-center small text-gray-500" href="/?do=cart">No orders to place</a>
 				<?php } ?>	
                 </div>
             </li>
@@ -52,7 +52,7 @@ if($pv_meta['schema_ver'] < $db_ver){
 				<div class="status-circle"></div>
 				</div>
               </a>
-              <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+              <div class="dropdown-menu dropdown-menu-end shadow animated--grow-in" aria-labelledby="userDropdown">
               
 				<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#editUser">
                   <i class="fas fa-user fa-sm fa-fw mx-2 text-gray-400"></i>

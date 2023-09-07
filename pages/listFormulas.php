@@ -351,7 +351,7 @@ $('table.table').on('click', '[id*=deleteMe]', function () {
            },
            cancel: {
                label : "Cancel",
-               className : "btn-default",
+               className : "btn-secondary",
                callback : function() {
                    return true;
                }
@@ -616,19 +616,19 @@ $("#formula-name").keyup(function(){
         <h5 class="modal-title mgmIngHeader mgmIngHeader-with-separator" id="new-formula-name">Add new formula</h5>
       </div>
       <div class="modal-body">
-      <div id="addFormulaMsg"></div>
+      	<div id="addFormulaMsg"></div>
       
-      <div class="form-horizontal">
+      	<div class="form">
 
-      <div class="form-group">
-        <label for="formula-name" class="col-sm-2 control-label">Formula name</label>
-        <div class="col-sm-10">
-          <input name="formula-name" id="formula-name" type="text" class="form-control" />
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="profile" class="col-sm-2 control-label">Profile</label>
-        <div class="col-sm-10">
+          <div class="row mb-3">
+            <div class="col-sm">
+                <label for="formula-name" class="form-label">Formula name</label>
+                <input name="formula-name" id="formula-name" type="text" class="form-control" />
+            </div>
+          </div>
+      <div class="row mb-3">
+        <div class="col-sm">
+          <label for="profile" class="form-label">Profile</label>
           <select name="profile" id="profile" class="form-control selectpicker" data-live-search="true">
              <?php foreach ($fcat as $cat) { if($cat['type'] == 'profile'){?>		
                  <option value="<?=$cat['cname']?>"><?=$cat['name']?></option>
@@ -636,9 +636,9 @@ $("#formula-name").keyup(function(){
           </select>
         </div>
       </div>
-      <div class="form-group">
-        <label for="catClass" class="col-sm-2 control-label">Purpose</label>
-        <div class="col-sm-10">
+      <div class="row mb-3">
+        <div class="col-sm">
+          <label for="catClass" class="form-label">Purpose</label>
           <select name="catClass" id="catClass" class="form-control selectpicker" data-live-search="true">
             <?php foreach ($cats as $IFRACategories) {?>
                 <option value="cat<?php echo $IFRACategories['name'];?>" <?php echo ($settings['defCatClass']=='cat'.$IFRACategories['name'])?"selected=\"selected\"":""; ?>><?php echo 'Cat'.$IFRACategories['name'].' - '.$IFRACategories['description'];?></option>
@@ -646,9 +646,9 @@ $("#formula-name").keyup(function(){
           </select>
         </div>
       </div>
-      <div class="form-group">
-        	<label for="finalType" class="col-sm-2 control-label">Final type</label>
-        	<div class="col-sm-10">
+      <div class="row mb-3">
+        	<div class="col-sm">
+                <label for="finalType" class="form-label">Final type</label>
           		<select name="finalType" id="finalType" class="form-control selectpicker" data-live-search="true">  
             		<option value="100">Concentrated (100%)</option>
             		<?php foreach ($fTypes as $fType) {?>
@@ -658,9 +658,9 @@ $("#formula-name").keyup(function(){
         	</div>
       </div>
       
-      <div class="form-group">
-        <label for="customer" class="col-sm-2 control-label">Customer</label>
-        <div class="col-sm-10">
+      <div class="row mb-3">
+        <div class="col-sm">
+          <label for="customer" class="form-label">Customer</label>
           <select name="customer" id="customer" class="form-control selectpicker" data-live-search="true">
             <option value="0">Internal use</option>
             <?php foreach ((array)$customer as $c) {?>
@@ -669,16 +669,16 @@ $("#formula-name").keyup(function(){
           </select>
         </div>
       </div>
-      <div class="form-group">
-        <label for="notes" class="col-sm-2 control-label">Notes</label>
-        <div class="col-sm-10">
+      <div class="row mb-3">
+        <div class="col-sm">
+          <label for="notes" class="form-label">Notes</label>
           <textarea name="notes" id="notes" cols="45" rows="5" class="form-control"></textarea>
         </div>
       </div>
     </div>
 
       <hr/>
-      <div class="form-group">
+      <div class="row mb-3">
         <div class="mx-4">
     		<input type="checkbox" class="form-check-input" id="go_to_formula" checked>
    			<label class="form-check-label" for="go_to_formula">Go to formula when created</label>

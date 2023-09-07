@@ -139,7 +139,7 @@ $('#tdAttachments').on('click', '[id*=dDel]', function () {
            },
            cancel: {
                label : "Cancel",
-               className : "btn-default",
+               className : "btn-secondary",
                callback : function() {
                    return true;
                }

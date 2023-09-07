@@ -174,7 +174,7 @@ $('#tdDataScheduled').on('click', '[id*=pend_remove]', function () {
            },
            cancel: {
                label : "Cancel",
-               className : "btn-default",
+               className : "btn-secondary",
                callback : function() {
                    return true;
                }

@@ -49,12 +49,12 @@ require_once(__ROOT__.'/inc/settings.php');
       </div>
       <div class="col-md-4">
         <div class="text-center">
-          <div id="brandLogo_pic"><div class="loader"></div></div>
+          <div id="brandLogo_pic" class="mb-3"><div class="loader"></div></div>
           <input type="file" id="brandLogo" name="brandLogo" class="form-control" />
         </div>
         <div class="dropdown-divider"></div>
         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-			<div class="text-right">
+			<div class="text-right mt-3">
         		<input type="button" class="btn btn-info" value="Upload" id="brandLogo_upload" />
         	</div>
         </div>
