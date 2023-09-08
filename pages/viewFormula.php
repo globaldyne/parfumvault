@@ -94,16 +94,16 @@ $(document).ready(function() {
 		displayLength: 100,
 		createdRow: function( row, data, dataIndex){
 			if( data['usage_regulator'] == "IFRA" && parseFloat(data['usage_limit']) < parseFloat(data['concentration'])){
-				$(row).find('td:eq(5)').addClass('alert-danger').append(' <i rel="tip" title="Max usage: ' + data['usage_limit'] +'% IFRA Regulated" class="pv_point_gen fas fa-info-circle"></i></div>');
+				$(row).find('td:eq(5)').addClass('alert-danger').append('<i rel="tip" title="Max usage: ' + data['usage_limit'] +'% IFRA Regulated" class="mx-2 pv_point_gen fas fa-info-circle"></i>');
 			}else if( data['usage_regulator'] == "PV" && parseFloat(data['usage_limit']) < parseFloat(data['concentration'])){
 				if(data['usage_restriction'] == 1){
-					$(row).find('td:eq(5)').addClass('alert-info').append(' <i rel="tip" title="Recommended usage: ' + data['usage_limit'] +'%" class="pv_point_gen fas fa-info-circle"></i></div>');
+					$(row).find('td:eq(5)').addClass('alert-info').append('<i rel="tip" title="Recommended usage: ' + data['usage_limit'] +'%" class="mx-2 pv_point_gen fas fa-info-circle"></i>');
 				}
 				if(data['usage_restriction'] == 2){
-					$(row).find('td:eq(5)').addClass('alert-danger').append(' <i rel="tip" title="Restricted usage: ' + data['usage_limit'] +'%" class="pv_point_gen fas fa-info-circle"></i></div>');
+					$(row).find('td:eq(5)').addClass('alert-danger').append('<i rel="tip" title="Restricted usage: ' + data['usage_limit'] +'%" class="mx-2 pv_point_gen fas fa-info-circle"></i>');
 				}
 				if(data['usage_restriction'] == 3){
-					$(row).find('td:eq(5)').addClass('alert-warning').append(' <i rel="tip" title="Specification: ' + data['usage_limit'] +'%" class="pv_point_gen fas fa-info-circle"></i></div>');
+					$(row).find('td:eq(5)').addClass('alert-warning').append('<i rel="tip" title="Specification: ' + data['usage_limit'] +'%" class="mx-2 pv_point_gen fas fa-info-circle"></i>');
 				}
 
             }else{
@@ -111,20 +111,20 @@ $(document).ready(function() {
 			}
 			
 			if(data.ingredient.classification == 4){
-				$(row).find('td:eq(0),td:eq(1),td:eq(2),td:eq(3),td:eq(4),td:eq(5),td:eq(6),td:eq(7),td:eq(8),td:eq(9)').addClass('bg-danger text-light').append(' <i rel="tip" title="This material is prohibited" class="pv_point_gen fas fa-ban"></i></div>');
+				$(row).find('td:eq(0),td:eq(1),td:eq(2),td:eq(3),td:eq(4),td:eq(5),td:eq(6),td:eq(7),td:eq(8),td:eq(9)').addClass('bg-danger text-light').append('<i rel="tip" title="This material is prohibited" class="mx-2 pv_point_gen fas fa-ban"></i>');
             }
 			
 			if( data['usage_regulator'] == "IFRA" && parseFloat(data['usage_limit']) < parseFloat(data['final_concentration'])){
-				$(row).find('td:eq(6)').addClass('alert-danger').append(' <i rel="tip" title="Max usage: ' + data['usage_limit'] +'% IFRA Regulated" class="pv_point_gen fas fa-info-circle"></i></div>');
+				$(row).find('td:eq(6)').addClass('alert-danger').append('<i rel="tip" title="Max usage: ' + data['usage_limit'] +'% IFRA Regulated" class="mx-2 pv_point_gen fas fa-info-circle"></i>');
 			}else if( data['usage_regulator'] == "PV" && parseFloat(data['usage_limit']) < parseFloat(data['final_concentration'])){
 				if(data['usage_restriction'] == 1){
-					$(row).find('td:eq(6)').addClass('alert-info').append(' <i rel="tip" title="Recommended usage: ' + data['usage_limit'] +'%" class="pv_point_gen fas fa-info-circle"></i></div>');
+					$(row).find('td:eq(6)').addClass('alert-info').append('<i rel="tip" title="Recommended usage: ' + data['usage_limit'] +'%" class="mx-2 pv_point_gen fas fa-info-circle"></i>');
 				}
 				if(data['usage_restriction'] == 2){
-					$(row).find('td:eq(6)').addClass('alert-danger').append(' <i rel="tip" title="Restricted usage: ' + data['usage_limit'] +'%" class="pv_point_gen fas fa-info-circle"></i></div>');
+					$(row).find('td:eq(6)').addClass('alert-danger').append('<i rel="tip" title="Restricted usage: ' + data['usage_limit'] +'%" class="mx-2 pv_point_gen fas fa-info-circle"></i>');
 				}
 				if(data['usage_restriction'] == 3){
-					$(row).find('td:eq(6)').addClass('alert-warning').append(' <i rel="tip" title="Specification: ' + data['usage_limit'] +'%" class="pv_point_gen fas fa-info-circle"></i></div>');
+					$(row).find('td:eq(6)').addClass('alert-warning').append('<i rel="tip" title="Specification: ' + data['usage_limit'] +'%" class="mx-2 pv_point_gen fas fa-info-circle"></i>');
 				}
 			}else{
 				$(row).find('td:eq(6)').addClass('alert-success');
@@ -429,7 +429,6 @@ $('#print').click(() => {
         </div>            
     </div>
 </div>
-<div id="msgInfo"></div>
 <table id="formula" class="table table-striped table-bordered nowrap viewFormula" style="width:100%">
         <thead>
             <tr>
