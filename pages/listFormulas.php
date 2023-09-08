@@ -593,7 +593,7 @@ $("#formula-name").keyup(function(){
 
 <!--GET FORMULA SETTINGS MODAL-->            
 <div class="modal fade" id="getFormMeta" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="getFormMetalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title mgmIngHeader mgmIngHeader-with-separator" id="getFormMetaLabel">Formula settings</h5>
@@ -695,7 +695,7 @@ $("#formula-name").keyup(function(){
 
 <!--IMPORT FORMULA CSV MODAL-->
 <div class="modal fade" id="add_formula_csv" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="add_formula_csv" aria-hidden="true">
-  <div class="modal-dialog pv-modal-xxl" role="document">
+  <div class="modal-dialog modal-xl" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Import formula from CSV</h5>
@@ -708,15 +708,15 @@ $("#formula-name").keyup(function(){
       <div id=process_area>
       
         <div class="form-group">
-            <label class="col-md-3 control-label">Formula name:</label>
-            <div class="col-md-8">
+            <label class="col-md-3 form-label">Formula name</label>
+            <div class="col-md">
               <input type="text" name="CSVname" id="CSVname" class="form-control"/>
             </div>
 		</div>  
         <div class="form-group">
-            <label class="col-md-3 control-label">Profile:</label>
-            <div class="col-md-8">
-             <select name="CSVProfile" id="CSVProfile" class="form-control">
+            <label class="col-md-3 form-label">Profile</label>
+            <div class="col-md">
+             <select name="CSVProfile" id="CSVProfile" class="form-control selectpicker" data-live-search="true">
              <?php foreach ($fcat as $cat) { if($cat['type'] == 'profile'){?>		
                 <option value="<?=$cat['cname']?>"><?=$cat['name']?></option>
              <?php } }?>
@@ -724,13 +724,13 @@ $("#formula-name").keyup(function(){
             </div>
 		</div>
         <div class="form-group">
-            <label class="col-md-3 control-label">CSV file:</label>
-            <div class="col-md-8">
+            <label class="col-md-3 form-label">CSV file</label>
+            <div class="col-md">
               <input type="file" name="CSVFile" id="CSVFile" class="form-control" />
             </div>
 		</div>
         <div id="step_upload" class="modal-body"></div>
-        <div class="col-md-12">
+        <div class="col-md">
            <hr />
            <p>CSV format: <strong>ingredient,concentration,dilutant,quantity</strong></p>
            <p>Example: <em><strong>Ambroxan,10,TEC,0.15</strong></em></p>
@@ -761,8 +761,8 @@ $("#formula-name").keyup(function(){
       <div class="modal-body">
       	<div id="fcatMsg"></div>
         <div class="form-group">
-              <label class="col-md-3 control-label">Name:</label>
-              <div class="col-md-8">
+              <label class="col-md-3 form-label">Category name</label>
+              <div class="col-md">
               	<input name="fcatName" id="fcatName" type="text" class="form-control" />
               </div>
 		</div>
@@ -775,29 +775,6 @@ $("#formula-name").keyup(function(){
 </div>
 </div>
 
-<!--EXPORT JSON MODAL-->
-<div class="modal fade" id="export_formulas_json" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="export_formulas_json" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Export formulas as a JSON file</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-            <p>This will generate a JSON file from your formulas. Once the file is generated you should download it to your computer.</p>
-            <div id="JSONExportMsg"></div>
-		</div>
-      </div>
-	  <div class="modal-footer">
-        <input type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="close_export_json" value="Close">
-        <input type="submit" name="btnExport" class="btn btn-primary" id="export_json" value="Export">
-      </div>   
-  </div>
-</div>
-</div>
 
 <!--IMPORT JSON MODAL-->
 <div class="modal fade" id="import_formulas_json" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="import_formulas_json" aria-hidden="true">
@@ -817,8 +794,8 @@ $("#formula-name").keyup(function(){
       <div id="backupArea">
       
           <div class="form-group">
-              <label class="col-md-3 control-label">JSON file:</label>
-              <div class="col-md-8">
+              <label class="col-md-3 form-label">JSON file:</label>
+              <div class="col-md">
                  <input type="file" name="backupFile" id="backupFile" class="form-control" />
               </div>
           </div>

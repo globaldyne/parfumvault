@@ -107,7 +107,7 @@ function actions(data, type, row){
 //COMPARE REVISION
 $('#tdRevisions').on('click', '[id*=cmpRev]', function () {
   $.ajax({ 
-	url: '/pages/cmp_formulas_data.php', 
+	url: '/pages/views/formula/cmp_formulas_data.php', 
 	type: 'POST',
 	data: {
 		id_a: '<?=$_GET['id']?>',

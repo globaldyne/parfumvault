@@ -1401,3 +1401,11 @@ hr.hr-text::before {
 input[type="search"]::-webkit-search-cancel-button {
   -webkit-appearance: searchfield-cancel-button;
 }
+
+#formula_a_table.table > tbody  > tr > td {
+  background-color: inherit !important;
+}
+
+#formula_b_table.table > tbody  > tr > td {
+  background-color: inherit !important;
+}
