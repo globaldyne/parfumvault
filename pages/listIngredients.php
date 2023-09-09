@@ -96,6 +96,7 @@ $(document).ready(function() {
 	processing: true,
 	serverSide: true,
 	searching: true,
+	responsive: true,
 	language: {
 		loadingRecords: '&nbsp;',
 		processing: 'Blending...',
@@ -250,7 +251,7 @@ function iSuppliers(data, type, row){
 	data ='<div class="btn-group"><button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-store mx-2"></i><span class="badge badge-light">'+row.supplier.length+'</span></button><div class="dropdown-menu dropdown-menu-right">';
 	for (var key in row.supplier) {
 		if (row.supplier.hasOwnProperty(key)) {
-			data+='<li><a class="dropdown-item popup-link" href="'+row.supplier[key].link+'"><i class="fa fa-store mx-2"></i>'+row.supplier[key].name+'</a></li>';
+			data+='<li><a class="dropdown-item" target="_blank" href="'+row.supplier[key].link+'"><i class="fa fa-store mx-2"></i>'+row.supplier[key].name+'</a></li>';
 		}
 	}                
 	data+='</div></div></td>';

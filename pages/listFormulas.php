@@ -602,7 +602,7 @@ $("#formula-name").keyup(function(){
         </button>
       </div>
       <div class="modal-body">
-        <div class="alert alert-danger">Unable to get data</div>
+        <div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i>Loading...</div>
       </div>
     </div>
   </div>

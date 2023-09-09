@@ -86,13 +86,13 @@ while($qTags = mysqli_fetch_array($tagsQ)){
   
    <div class="form-row">
      <div class="form-group col-md-6">
-    <label class="control-label col-auto" for="customer">Customer:</label>
+    	<label class="control-label col-auto" for="customer">Customer:</label>
         <select name="customer" id="customer" class="form-control selectpicker" data-live-search="true">
-      <option value="0">Internal use</option>
-      <?php foreach ($customer as $c) {?>
-      <option value="<?=$c['id'];?>" <?php echo ($info['customer_id']==$c['id'])?"selected=\"selected\"":""; ?>><?php echo $c['name'];?></option>
-      <?php }   ?>
-    </select>
+      	  <option value="0">Internal use</option>
+		  <?php foreach ($customer as $c) {?>
+          <option value="<?=$c['id'];?>" <?php echo ($info['customer_id']==$c['id'])?"selected=\"selected\"":""; ?>><?php echo $c['name'];?></option>
+          <?php }   ?>
+    	</select>
     </div>
     <div class="form-group col-md-6">
         <label class="control-label col-auto" for="defView">Default view:</label>
@@ -114,7 +114,7 @@ while($qTags = mysqli_fetch_array($tagsQ)){
     </div>  
   
     <div class="form-group col-md-6">
-    <label class="control-label col-auto" for="tagsinput">Tags:</label>
+    	<label class="control-label col-auto" for="tagsinput">Tags:</label>
         <input type="text" class="form-control control-label" id="tagsinput" data-role="tagsinput" />
     </div>
     

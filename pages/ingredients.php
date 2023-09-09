@@ -50,63 +50,67 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
         <h5 class="modal-title">Advanced Search</h5>
       </div>
       <div class="modal-body">
-       <div id="AdvSearchMsg"></div>
-		<form method="post" action="javascript:adv_search()" enctype="multipart/form-data" id="advsearch_form">
-       <table width="100%">
-       		<tr>
-       		  <td valign="top">Name:</td>
-       		  <td colspan="3"><input name="ing_name" type="text" class="form-control input-sm" id="ing_name" placeholder="Any" /></td>
-   		  </tr>
-       		<tr>
-       		  <td valign="top">CAS:</td>
-       		  <td colspan="3"><input type="text" id="ing_cas" class="form-control input-sm" name="ing_cas" placeholder="Any" /></td>
-   		  </tr>
-       		<tr>
-       		  <td valign="top">EINECS:</td>
-       		  <td colspan="3"><input type="text" id="ing_einecs" class="form-control input-sm" name="ing_einecs" placeholder="Any" /></td>
-   		  </tr>
-       		<tr>
-       		  <td valign="top">Synonym:</td>
-       		  <td colspan="3"><input type="text" id="ing_synonym" class="form-control input-sm" name="ing_synonym" placeholder="Any" /></td>
-   		  </tr>
-       		<tr>
-       		  <td valign="top">Odor:</td>
-       		  <td colspan="3"><input type="text" id="ing_odor" class="form-control input-sm" name="ing_odor" placeholder="Any" /></td>
-   		  </tr>
-       		<tr>
-       		  <td valign="top">Profile:</td>
-       		  <td colspan="3">
-              <select name="profile" id="ing_profile" class="form-control selectpicker" data-live-search="true">
-               <option value="" selected>Any</option>
-                <?php
-				while ($row_ingProfiles = mysqli_fetch_array($res_ingProfiles)){ ?>
-					<option data-content="<img class='img_ing_sel' src='<?=profileImg($row_ingProfiles['name'])?>'> <?=$row_ingProfiles['name']?>" value="<?=$row_ingProfiles['name']?>"></option>
-				<?php } ?>
-              </select>
-              </td>
-   		  </tr>
-       		<tr>
-       		  <td valign="top">Category:</td>
-       		  <td colspan="3">
-              <select name="category" id="ing_category" class="form-control selectpicker" data-live-search="true">
-               <option value="" selected>Any</option>
-              <?php while ($row_ingCategory = mysqli_fetch_array($res_ingCategory)){ ?>
-				<option data-content="<img class='img_ing_sel' src='<?php if($row_ingCategory['image']){ echo $row_ingCategory['image']; }else{ echo '/img/molecule.png';}?>'><?=$row_ingCategory['name']?>" value="<?=$row_ingCategory['id'];?>"></option>
-			  <?php } ?>
-              </select>
-              </td>
-   		  </tr>
-       		<tr>
-    	   	<td width="92" valign="top">&nbsp;</td>
-				<td width="1533" colspan="3">&nbsp;</td>
-			</tr>
-		</table>
+          <div class="col-sm-12">
+          
+    		  <div class="mb-1 row">
+                <div class="col-sm">
+                	<label for="ing_name" class="col-sm col-form-label">Ingredient name</label>
+                  	<input type="text" class="form-control" id="ing_name" placeholder="Any">
+                </div>
+              </div>
+    		  <div class="mb-1 row">
+                <div class="col-sm">
+                	<label for="ing_cas" class="col-sm col-form-label">CAS#</label>
+                    <input type="text" class="form-control" id="ing_cas" placeholder="Any">
+                </div>
+              </div>
+    		  <div class="mb-1 row">
+                <div class="col-sm">
+                	<label for="ing_einecs" class="col-sm col-form-label">EINECS</label>
+                    <input type="text" class="form-control" id="ing_einecs" placeholder="Any">
+                </div>
+              </div>
+    		  <div class="mb-1 row">
+                <div class="col-sm">
+                	<label for="ing_synonym" class="col-sm col-form-label">Synonym</label>
+                    <input type="text" class="form-control" id="ing_synonym" placeholder="Any">
+                </div>
+              </div>
+    		  <div class="mb-1 row">
+                <div class="col-sm">
+                	<label for="ing_odor" class="col-sm col-form-label">Odor</label>
+                    <input type="text" class="form-control" id="ing_odor" placeholder="Any">
+                </div>
+              </div>
+    		  <div class="mb-1 row">
+                <div class="col-sm">
+                	<label for="ing_profile" class="col-sm col-form-label">Profile</label>
+                    <select name="profile" id="ing_profile" class="form-control selectpicker" data-live-search="true">
+                       <option value="" selected>Any</option>
+                        <?php
+                        while ($row_ingProfiles = mysqli_fetch_array($res_ingProfiles)){ ?>
+                        <option data-content="<img class='img_ing_sel' src='<?=profileImg($row_ingProfiles['name'])?>'> <?=$row_ingProfiles['name']?>" value="<?=$row_ingProfiles['name']?>"></option>
+                        <?php } ?>
+                  </select>
+                </div>
+              </div>
+    		  <div class="mb-1 row">
+                <div class="col-sm">
+                	<label for="ing_category" class="col-sm col-form-label">Category</label>
+                    <select name="category" id="ing_category" class="form-control selectpicker" data-live-search="true">
+                      <option value="" selected>Any</option>
+                      <?php while ($row_ingCategory = mysqli_fetch_array($res_ingCategory)){ ?>
+                      <option data-content="<img class='img_ing_sel' src='<?php if($row_ingCategory['image']){ echo $row_ingCategory['image']; }else{ echo '/img/molecule.png';}?>'><?=$row_ingCategory['name']?>" value="<?=$row_ingCategory['id'];?>"></option>
+                  <?php } ?>
+                  </select>
+                </div>
+              </div>  
+          </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         <input type="submit" name="button" class="btn btn-primary" id="btnAdvSearch" value="Search">
       </div>
-      </form>
     </div>
   </div>
 </div>  
@@ -244,7 +248,7 @@ $(function () {
     });
 });
 
-function adv_search() {
+$('#btnAdvSearch').click(function() {
     var name = $('#ing_name').val();
     var cas = $('#ing_cas').val();
     var einecs = $('#ing_einecs').val();
@@ -271,7 +275,7 @@ function adv_search() {
 				$('#list_ingredients').html(data);
 		}
 	});
-};
+});
 
 
 $('#pv_online_import').on('click', '[id*=btnImport]', function () {
