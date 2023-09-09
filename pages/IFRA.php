@@ -62,7 +62,7 @@ require_once(__ROOT__.'/func/php-settings.php');
                         <th>Cat11A%</th>
                         <th>Cat11B%</th>
                         <th>Cat12%</th>
-                        <th></th>
+         				<th data-priority="1"></th>
                       </tr>
                    </thead>
                 </table>
@@ -224,7 +224,10 @@ $(document).ready(function() {
 	serverSide: true,
 	searching: true,
 	mark: true,
-	scrollX: true,
+	responsive: true,
+	columnDefs: [
+        { responsivePriority: 1, targets: 0 },
+    ],
 	language: {
 		loadingRecords: '&nbsp;',
 		processing: '<div class="spinner-grow mx-2"></div>Please Wait...',

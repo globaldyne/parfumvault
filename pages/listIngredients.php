@@ -71,7 +71,7 @@ $defCatClass = $settings['defCatClass'];
           <th><?=ucfirst($defCatClass)?></th>
           <th>Supplier(s)</th>
           <th>Document(s)</th>
-          <th></th>
+          <th data-priority="1"></th>
       </tr>
    </thead>
 </table>
@@ -97,6 +97,9 @@ $(document).ready(function() {
 	serverSide: true,
 	searching: true,
 	responsive: true,
+	columnDefs: [
+        { responsivePriority: 1, targets: 0 },
+    ],
 	language: {
 		loadingRecords: '&nbsp;',
 		processing: 'Blending...',

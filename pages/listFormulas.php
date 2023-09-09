@@ -86,7 +86,7 @@ if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))
                     <th>Updated</th>
                     <th>Made</th>
                     <th>Rating</th>
-                    <th></th>
+          			<th data-priority="1"></th>
                 </tr>
             </thead>
         </table>
@@ -105,7 +105,7 @@ if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))
                     <th>Updated</th>
                     <th>Made</th>
                     <th>Rating</th>
-                    <th></th>
+          			<th data-priority="1"></th>
                 </tr>
             </thead>
         </table>
@@ -157,6 +157,10 @@ function initTable(tableId, src) {
 		processing: true,
 		serverSide: true,
 		searching: true,
+		responsive: true,
+		columnDefs: [
+        	{ responsivePriority: 1, targets: 0 },
+    	],
 		language: {
 			loadingRecords: '&nbsp;',
 			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>',

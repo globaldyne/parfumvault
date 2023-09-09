@@ -115,7 +115,7 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
                   <th>Purity</th>
                   <th>Quantity</th>
                   <th>Availability</th>
-                  <th>Actions</th>
+          		  <th data-priority="1"></th>
                 </tr>
               </thead>
               <tfoot>
@@ -155,6 +155,10 @@ $(document).ready(function() {
 	serverSide: true,
 	searching: true,
 	mark: true,
+	responsive: true,
+	columnDefs: [
+        { responsivePriority: 1, targets: 0 },
+    ],
 	language: {
 		loadingRecords: '&nbsp;',
 		processing: 'Please Wait...',
