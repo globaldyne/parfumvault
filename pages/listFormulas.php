@@ -150,17 +150,14 @@ function initTable(tableId, src) {
 		   { data : 'revision', title: 'Revision'},
 		   { data : 'isMade', title: 'Made', render: fMade},
 		   { data : 'rating', title: 'Rating', render: rating},
-		   { data : 'created', title: 'Created'},
-		   { data : 'updated', title: 'Updated'},
+		   { data : 'created', title: 'Created', render: fDate},
+		   { data : 'updated', title: 'Updated', render: fDate},
 		   { data : null, title: '', render: fActions},				   
 		],
 		processing: true,
 		serverSide: true,
 		searching: true,
 		responsive: true,
-		columnDefs: [
-        	{ responsivePriority: 1, targets: 0 },
-    	],
 		language: {
 			loadingRecords: '&nbsp;',
 			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>',
@@ -170,8 +167,9 @@ function initTable(tableId, src) {
 		},
 	    order: [0,'asc'],
 	    columnDefs: [
-			{ orderable: false, targets: [2, 3, 8, 9] },
-			{ className: 'text-center', targets: '_all' },				  
+			{ orderable: false, targets: [2, 3, 9] },
+			{ className: 'text-center', targets: '_all' },
+			{ responsivePriority: 1, targets: 0 }
 		],
 	    destroy: true,
         bFilter: true,
@@ -266,6 +264,20 @@ function fStatus(data, type, row, meta){
 	}
 	
 	return data;
+}
+
+function fDate(data, type, row, meta){
+  if(type === 'display'){
+    if(data == '0000-00-00 00:00:00'){
+      data = '-';
+    }else{
+	    let dateTimeParts= data.split(/[- :]/); 
+		dateTimeParts[1]--; 
+		const dateObject = new Date(...dateTimeParts); 
+        data = dateObject.toLocaleDateString() + " " + dateObject.toLocaleTimeString();
+    }
+  }
+  return data;
 }
 
 function fActions(data, type, row, meta){

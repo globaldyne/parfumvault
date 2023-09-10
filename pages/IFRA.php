@@ -213,7 +213,8 @@ $(document).ready(function() {
 	var tdDataIFRA = $('#tdDataIFRA').DataTable( {
 	columnDefs: [
 		{ className: 'pv_vertical_middle text-center', targets: '_all' },
-		{ orderable: false, targets: [25]}
+		{ orderable: false, targets: [25]},
+		{ responsivePriority: 1, targets: 0 }
 	],
 	dom: 'lrftip',
 	buttons: [{
@@ -225,9 +226,6 @@ $(document).ready(function() {
 	searching: true,
 	mark: true,
 	responsive: true,
-	columnDefs: [
-        { responsivePriority: 1, targets: 0 },
-    ],
 	language: {
 		loadingRecords: '&nbsp;',
 		processing: '<div class="spinner-grow mx-2"></div>Please Wait...',

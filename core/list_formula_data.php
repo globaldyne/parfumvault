@@ -29,7 +29,7 @@ if($s != ''){
    $f = "WHERE 1 AND (name LIKE '%".$s."%' OR product_name LIKE '%".$s."%' OR notes LIKE '%".$s."%')";
 }
 
-$formulas = mysqli_query($conn, "SELECT id,fid,name,product_name,isProtected,profile,sex,created,catClass,isMade,madeOn,status,rating,revision FROM formulasMetaData $f $extra LIMIT $row, $limit");
+$formulas = mysqli_query($conn, "SELECT id,fid,name,product_name,isProtected,profile,sex,created,catClass,isMade,madeOn,status,rating,revision, (SELECT updated FROM formulas WHERE fid = formulasMetaData.fid ORDER BY updated DESC limit 1) as updated, (SELECT  count(dilutant) FROM formulas WHERE fid = formulasMetaData.fid) as ingredients  FROM formulasMetaData $f $extra LIMIT $row, $limit");
 
 
 

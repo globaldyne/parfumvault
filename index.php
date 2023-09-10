@@ -67,7 +67,6 @@ if($pv_meta['app_ver'] < trim(file_get_contents(__ROOT__.'/VERSION.md'))){
   
   <script src="/js/bootstrap-select.js"></script>
   <script src="/js/bootstrap-editable.js"></script>
-  <script src="/js/dataTables.responsive.min.js"></script>
   <script src="/js/bootbox.min.js"></script>
   
   <script src="/js/sb-admin-2.js"></script>
