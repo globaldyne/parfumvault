@@ -792,7 +792,7 @@ function ingNotes(data, type, row, meta){
 	 if(type === 'display'){
 	  <?php if($meta['defView'] == '1'){ $show = 'properties'; }elseif($meta['defView'] == '2'){ $show = 'notes';}?>
 	  <?php if($meta['isProtected'] == FALSE){?>
-	  data = '<i data-name="<?=$show?>" class="pv_point_gen <?=$show?>" data-type="textarea" data-pk="' + row.formula_ingredient_id + '">' + data + '</i>';
+	  data = '<i data-name="<?=$show?>" class="pv_point_gen text-wrap <?=$show?>" data-type="textarea" data-pk="' + row.formula_ingredient_id + '">' + data + '</i>';
 	  <?php } ?>
 	 }
 	return data;

@@ -1412,3 +1412,7 @@ input[type="search"]::-webkit-search-cancel-button {
 th.dt-center, td.dt-center { 
 	text-align: center !important;
 }
+
+.properties {
+  width: 12px;
+}

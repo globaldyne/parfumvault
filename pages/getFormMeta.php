@@ -210,10 +210,10 @@ $(document).ready(function(){
 	  },
 	  success: function(response) {	
 		if(response.success){
-			msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.success + '</strong></div>';
+			msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.success + '</strong></div>';
 			$("#getFormMetaLabel").html(response.msg);
 		}else{
-			msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
+			msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
 		}
 			$('#set_msg').html(msg);        
 		},
@@ -241,7 +241,7 @@ $(document).ready(function(){
 	  	},
 		success: function(response) {	
 			if(response.error){
-				$('#set_msg').html('<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.msg + '</strong></div>');
+				$('#set_msg').html('<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.msg + '</strong></div>');
 			}       
 		}
 		
@@ -259,9 +259,9 @@ $(document).ready(function(){
 			dataType: 'json',
 			success: function (data) {
 				if(data.success){
-					var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + data.success + '</strong></div>';
+					var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + data.success + '</strong></div>';
 				}else{
-					var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + data.error + '</strong></div>';
+					var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + data.error + '</strong></div>';
 				}
 				$('#set_msg').html(msg);
 			}
@@ -281,9 +281,9 @@ $(document).ready(function(){
 			dataType: 'json',
 			success: function (response) {
 				if(response.success){
-					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.success + '</strong></div>';
+					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.success + '</strong></div>';
 				}else{
-					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
+					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
 				}
 				$('#set_msg').html(msg);
 			}
@@ -303,9 +303,9 @@ $(document).ready(function(){
 			dataType: 'json',
 			success: function (response) {
 				if(response.success){
-					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.success + '</strong></div>';
+					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.success + '</strong></div>';
 				}else{
-					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
+					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
 				}
 				$('#set_msg').html(msg);
 			}
@@ -326,9 +326,9 @@ $(document).ready(function(){
 			dataType: 'json',
 			success: function (response) {
 				if(response.success){
-					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.success + '</strong></div>';
+					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.success + '</strong></div>';
 				}else{
-					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
+					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
 				}
 				$('#set_msg').html(msg);
 			}
@@ -349,9 +349,9 @@ $(document).ready(function(){
 			dataType: 'json',
 			success: function (response) {
 				if(response.success){
-					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.success + '</strong></div>';
+					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.success + '</strong></div>';
 				}else{
-					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
+					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
 				}
 				$('#set_msg').html(msg);
 			}
@@ -371,9 +371,9 @@ $(document).ready(function(){
 			dataType: 'json',
 			success: function (response) {
 				if(response.success){
-					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.success + '</strong></div>';
+					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.success + '</strong></div>';
 				}else{
-					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
+					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
 				}
 				$('#set_msg').html(msg);
 			}
@@ -393,9 +393,9 @@ $(document).ready(function(){
 			dataType: 'json',
 			success: function (response) {
 				if(response.success){
-					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.success + '</strong></div>';
+					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.success + '</strong></div>';
 				}else{
-					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
+					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
 				}
 					$('#set_msg').html(msg);
 				}
@@ -416,9 +416,9 @@ $(document).ready(function(){
 			dataType: 'json',
 			success: function (response) {
 				if(response.success){
-					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.success + '</strong></div>';
+					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.success + '</strong></div>';
 				}else{
-					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
+					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
 				}
 					$('#set_msg').html(msg);
 				}

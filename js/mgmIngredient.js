@@ -190,9 +190,9 @@ $('#cloneIng').on('click', '[id*=cloneME]', function () {
 		dataType: 'json',
 		success: function (data) {
 			if(data.success){
-				msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+				msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 			}else if(data.error){
-				msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 			}
 			$('#clone_msg').html(msg);
 		}
@@ -224,7 +224,7 @@ $('#genSDS').on('click', '[id*=generateSDS]', function () {
 			if(data.success){
 				msg = '<div class="alert alert-success">' + data.success + '</div>';
 			}else if(data.error){
-				msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 			}
 			$('#sds_res').html(msg);
 		}
@@ -247,9 +247,9 @@ $('#renameIng').on('click', '[id*=renameME]', function () {
 			if(data.success){
 				window.location.href = "/pages/mgmIngredient.php?id=" + data.success.id;
 				reload_ingredients_data();
-				msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success.msg + '</div>';
+				msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success.msg + '</div>';
 			}else if(data.error){
-				msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 			}
 			$('#rename_msg').html(msg);
 		}
