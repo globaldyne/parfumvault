@@ -129,7 +129,7 @@ $(document).ready(function() {
 			  }],
 		processing: true,
 		mark: true,
-		responsive: true,
+		//responsive: true,
         language: {
 			loadingRecords: '&nbsp;',
 			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Blending...</span>',
@@ -932,7 +932,7 @@ function ingActions(data, type, row, meta){
         <div class="dropdown-divider"></div>
         
         <div id="repGrid" class="card card-inverse card-reping">
-         <div class="row">
+         <div class="row mt-3">
             <div class="col-sm">
               <div id="ingSrcInfo"></div>
             </div>

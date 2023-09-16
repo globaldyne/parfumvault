@@ -65,7 +65,7 @@ if($form[0]['ingredient']){
         <!-- Nav tabs -->
 		<ul class="nav nav-tabs mb-3" role="tablist">
           <li class="nav-item active" role="presentation">
-          	<a href="#main_formula" id="formula_tab" class="nav-link" aria-selected="true" role="tab" data-bs-toggle="tab"><i class="fa fa-bong mx-2"></i>Formula</a>
+          	<a href="#main_formula" id="formula_tab" class="nav-link active" aria-selected="true" role="tab" data-bs-toggle="tab"><i class="fa fa-bong mx-2"></i>Formula</a>
           </li>
     	  <li class="nav-item" role="presentation">
           	<a href="#impact" id="impact_tab"class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-magic mx-2"></i>Notes Impact</a>
