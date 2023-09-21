@@ -51,10 +51,13 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
   <script src="/js/bootbox.min.js"></script>
 
   <style>
-  	table.dataTable {
-  		font-size: x-large !important;
+	.table {
+		--bs-table-bg:  initial;
+	}
+	table.dataTable {
+		font-size: x-large !important;
 		font-weight: bold;
-		color: #494b51;
+		color: #494b51 !important;
 	}
 	.mr {
 		margin: 20px 20px 20px 20px;
@@ -73,12 +76,12 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
 			font-size: 15pt;
 			page-break-inside: auto;
 			page-break-inside: avoid; 
-        	page-break-after: auto;
+			page-break-after: auto;
 		}
 	}
 	
 	table.dataTable thead tr, tfoot tr {
-		background-color: #337ab7c9;
+		background-color: #337ab7c9 !important;
 		color: white;
 	}
   </style>

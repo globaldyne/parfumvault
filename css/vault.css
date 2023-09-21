@@ -1054,7 +1054,7 @@ body {
 }
 
 table.dataTable thead tr {
-	background-color: #4f97d5c9;
+	background-color: #4f97d5c9 !important;
 	color: white;
 }
 
