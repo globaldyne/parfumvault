@@ -504,7 +504,7 @@ if($_POST['action'] == 'makeFormula' && $_POST['fid'] && $_POST['q'] && $_POST['
 	if($_POST['updateStock'] == "true"){
 		$getStock = mysqli_fetch_array(mysqli_query($conn, "SELECT stock,mUnit FROM suppliers WHERE ingID = '$ingID' AND preferred = '1'"));
 		if($getStock['stock'] < $q){
-			//$response['error'] = 'Amount exceeds quantity available in stock ('.$getStock['stock'].$getStock['mUnit'].')';
+			//$response['warning'] = 'Amount exceeds quantity available in stock ('.$getStock['stock'].$getStock['mUnit'].'). The maximum available will be deducted from stock';
 			//echo json_encode($response);
 			//return;
 			$q = $getStock['stock'];
@@ -513,6 +513,7 @@ if($_POST['action'] == 'makeFormula' && $_POST['fid'] && $_POST['q'] && $_POST['
 		$response['success'] .= "<br/><strong>Stock deducted by ".$q.$settings['mUnit']."</strong>";
 	}
 	
+	$q = trim($_POST['q']);
 	if($qr == $q){
 		if(mysqli_query($conn, "UPDATE makeFormula SET toAdd = '0' WHERE fid = '$fid' AND id = '$id'")){
 			$response['success'] = $_POST['ing'].' added!';
