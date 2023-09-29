@@ -526,7 +526,7 @@ $('#markComplete, #markCompleteMenu').click(function() {
         
           <div class="form-row">
             <div class="form-group col-md-6">
-                <label for="amountAdded"> Amount added</label>
+                <label for="amountAdded">Amount added</label>
                 <input name="amountAdded" type="text" id="amountAdded" />
             </div>
           </div>

@@ -486,14 +486,10 @@ $('#print').click(() => {
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Schedule formula to make</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
       </div>
       <div class="modal-body">
       <div id="scheduleToMakeMsg"></div>
-      <p>This will add the current formulation to scheduled formulas. Any changes in this formula will not be replicated to the scheduled version. If you make changes here, you have to remove it and re-add it for making.</p>
-      <hr />
+      <div class="alert alert-info">This will add the current formulation to scheduled formulas. Any changes in this formula will not be replicated to the scheduled version. If you make changes here, you have to remove it and re-add it for making.</div>
 	    <div class="modal-footer">
 	     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
   		 <input type="submit" name="button" class="btn btn-primary" id="addTODO" value="Schedule Formula">
