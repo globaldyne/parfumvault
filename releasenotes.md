@@ -1,4 +1,4 @@
-Whats New in v8.5
+Whats New in v8.8
 --------------------------
 - Upgrade to Bootstrap 5
 - Fix formulas json export
