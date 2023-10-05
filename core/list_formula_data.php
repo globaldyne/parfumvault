@@ -33,7 +33,12 @@ $formulas = mysqli_query($conn, "SELECT id,fid,name,product_name,isProtected,pro
 
 
 
-while ($formula = mysqli_fetch_array($formulas)){
+while ($allFormulas = mysqli_fetch_array($formulas)){
+	    $formula[] = $allFormulas;
+}
+
+foreach ($formula as $formula) {
+	$fdata = mysqli_fetch_array(mysqli_query($conn, "SELECT updated FROM formulas WHERE fid = '".$formula['fid']."' ORDER BY updated DESC limit 1"));
 	
 	$r['id'] = (int)$formula['id'];
 	$r['fid'] = (string)$formula['fid'];
@@ -43,7 +48,7 @@ while ($formula = mysqli_fetch_array($formulas)){
 	$r['profile'] = (string)$formula['profile']?: 'N/A';
 	$r['sex'] = (string)$formula['sex']?:'N/A';
 	$r['created'] = (string)$formula['created'];
-	$r['updated'] = (string)$formula['updated'] ?: '-';
+	$r['updated'] = (string)$fdata['updated'] ?: '-';
 	$r['catClass'] = (string)$formula['catClass']?: 'N/A';
 	$r['ingredients'] = (int)$formula["ingredients"]?: '0';
 	$r['isMade'] = (int)$formula['isMade']?: 0;

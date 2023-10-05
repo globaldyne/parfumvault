@@ -1,5 +1,9 @@
-Whats New in v8.7
+Whats New in v8.8
 --------------------------
-- If the materila quantity exceeds the amount in stock, when making a formula, PV will add the material and update material's quantity down to its maximum available, instead if returning an error
+- Upgrade to Bootstrap 5
+- Fix formulas json export
+- Ingredient general tab re-design
+- Pubchem tab re-design
+- Adding more details when a note is added during formula making
 - Various bug fixes and improvements
 - For full details please refer to the CHANGELOG

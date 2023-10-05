@@ -15,10 +15,10 @@ $ingName = mysqli_real_escape_string($conn, $_GET["name"]);
 <div class="card-body">
  	<div class="text-right">
   		<div class="btn-group">
-   			<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
+   			<button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
     		<div class="dropdown-menu dropdown-menu-right">
-        		<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#addComposition"><i class="fa-solid fa-plus mr2"></i>Add new</a></li>
-        		<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#addCSV"><i class="fa-solid fa-file-import mr2"></i>Upload CSV</a></li>
+        		<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addComposition"><i class="fa-solid fa-plus mr2"></i>Add new</a></li>
+        		<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addCSV"><i class="fa-solid fa-file-import mr2"></i>Upload CSV</a></li>
     		</div>
   		</div>                    
 	</div>
@@ -41,7 +41,7 @@ $ingName = mysqli_real_escape_string($conn, $_GET["name"]);
 <script type="text/javascript" language="javascript" >
 $(document).ready(function() {
 	
-$('[data-toggle="tooltip"]').tooltip();
+$('[data-bs-toggle="tooltip"]').tooltip();
 var tdCompositions = $('#tdCompositions').DataTable( {
 	columnDefs: [
 		{ className: 'text-center', targets: '_all' },
@@ -185,7 +185,7 @@ $('#tdCompositions').on('click', '[id*=cmpDel]', function () {
            },
            cancel: {
                label : "Cancel",
-               className : "btn-default",
+               className : "btn-secondary",
                callback : function() {
                    return true;
                }
@@ -212,14 +212,14 @@ $('#addComposition').on('click', '[id*=cmpAdd]', function () {
 		dataType: 'json',
 		success: function (data) {
 			if (data.success) {
-	 	 		var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+	 	 		var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 				$("#allgName").val('');
 				$("#allgCAS").val('');
 				$("#allgEC").val('');
 				$("#allgPerc").val('');
 				reload_cmp_data();
 			}else{
-				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 			}
 		
 			$('#inf').html(msg);
@@ -250,13 +250,13 @@ $('#addCSV').on('click', '[id*=cmpCSV]', function () {
 			$("#cmpCSV").prop("disabled", false);
 			reload_cmp_data();
 		  }else{
-			$("#CSVImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> File upload failed!</div>');
+			$("#CSVImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> File upload failed!</div>');
 			$("#cmpCSV").prop("disabled", false);
 		  }
 		},
 	 });
 	}else{
-		$("#CSVImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a file to upload!</div>');
+		$("#CSVImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a file to upload!</div>');
 		$("#cmpCSV").prop("disabled", false);
 	}
 });
@@ -266,12 +266,12 @@ function reload_cmp_data() {
 };
 </script>
 <!-- ADD COMPOSITION-->
-<div class="modal fade" id="addComposition" tabindex="-1" role="dialog" aria-labelledby="addComposition" aria-hidden="true">
+<div class="modal fade" id="addComposition" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="addComposition" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="addComposition">Add composition</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -303,7 +303,7 @@ function reload_cmp_data() {
           </label>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         <input type="submit" name="button" class="btn btn-primary" id="cmpAdd" value="Add">
       </div>
     </div>
@@ -312,12 +312,12 @@ function reload_cmp_data() {
 </div>
 
 <!--ADD FROM CSV MODAL-->
-<div class="modal fade" id="addCSV" tabindex="-1" role="dialog" aria-labelledby="addCSV" aria-hidden="true">
+<div class="modal fade" id="addCSV" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="addCSV" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Import CSV</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -342,7 +342,7 @@ function reload_cmp_data() {
           </tr>
         </table>
 	  <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         <input type="submit" name="cmpCSV" class="btn btn-primary" id="cmpCSV" value="Import">
       </div>
     </div>

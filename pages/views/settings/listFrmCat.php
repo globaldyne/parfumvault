@@ -11,9 +11,9 @@ require_once(__ROOT__.'/inc/opendb.php');
 <div class="card-body">
   <div class="text-right">
     <div class="btn-group" id="menu">
-        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
+        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
         <div class="dropdown-menu dropdown-menu-right">
-          <li><a class="dropdown-item" href="#" data-toggle="modal" data-backdrop="static" data-target="#add_formula_cat"><i class="fa-solid fa-plus mr2"></i>Add formula category</a></li>
+          <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#add_formula_cat"><i class="fa-solid fa-plus mr2"></i>Add formula category</a></li>
         </div>
     </div>
 	</div>
@@ -219,7 +219,7 @@ $('#frmDataCat').on('click', '[id*=catDel]', function () {
            },
            cancel: {
                label : "Cancel",
-               className : "btn-default",
+               className : "btn-secondary",
                callback : function() {
                    return true;
                }
@@ -235,7 +235,7 @@ function reload_fcat_data() {
 
 </script>
 <!--ADD CATEGORY MODAL-->
-<div class="modal fade" id="add_formula_cat" tabindex="-1" role="dialog" aria-labelledby="add_formula_cat" aria-hidden="true">
+<div class="modal fade" id="add_formula_cat" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="add_formula_cat" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -259,7 +259,7 @@ function reload_fcat_data() {
 		</div>
       </div>
 	  <div class="modal-footer">
-        <input type="button" class="btn btn-secondary" data-dismiss="modal" id="close_cat" value="Close">
+        <input type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="close_cat" value="Close">
         <input type="submit" name="add-fcat" class="btn btn-primary" id="add-fcat" value="Create">
       </div>   
   </div>

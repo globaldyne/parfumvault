@@ -96,14 +96,13 @@ a { text-decoration: none; }
   background-position: center;
   background-size: cover;
   height: 400px;
-  margin-top: 215px;
 }
 
 .bg-register-image {
   background: url("/img/logo_400.png");
   background-position: center;
   background-size: cover;
-  height: 430px;
+  height: 400px;
 }
 
 .bg-ptypes-image {
@@ -181,8 +180,7 @@ a { text-decoration: none; }
 }
 
 .bg-gradient-primary {
-    background-color: #4e73df;
-    background-image: linear-gradient(180deg, #4e73df 10%, #6122be 100%);
+    background-image: linear-gradient(180deg, #484848 10%, #000 100%);
     background-size: cover;
 }
 
@@ -689,7 +687,7 @@ formula td, table.table th {
 }
 
 .viewFormula {
-    overflow: auto;
+    overflow: auto !important;
 }
 
 .pv_point_gen {
@@ -723,7 +721,7 @@ formula td, table.table th {
 }
 
 table.fixedHeader-floating {
-	background-color: lightgray;
+	background-color: lightgray !important;
 	color: #666;  
 }
 
@@ -765,7 +763,6 @@ table.fixedHeader-floating {
 }
 
 .pv_input_sm {
-	height: 34px !important;
 	width: 250px;
 	display: inline;
 }
@@ -901,7 +898,6 @@ body {
 
 .select2-totalRecords {
 	margin: 5px;
-   	border-top-style: groove;
 	border-width: thin;
 }
 
@@ -1058,7 +1054,7 @@ body {
 }
 
 table.dataTable thead tr {
-	background-color: #4f97d5c9;
+	background-color: #4f97d5c9 !important;
 	color: white;
 }
 
@@ -1405,6 +1401,18 @@ input[type="search"]::-webkit-search-cancel-button {
   -webkit-appearance: searchfield-cancel-button;
 }
 
-.pv-w-500 {
-	width: 500px !important;
+#formula_a_table.table > tbody  > tr > td {
+  background-color: inherit !important;
+}
+
+#formula_b_table.table > tbody  > tr > td {
+  background-color: inherit !important;
+}
+
+th.dt-center, td.dt-center { 
+	text-align: center !important;
+}
+
+.properties {
+  width: 12px;
 }

@@ -38,7 +38,7 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
   <link href="/css/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
   <link href="/css/sb-admin-2.css" rel="stylesheet">
   <script src="/js/jquery/jquery.min.js"></script>
-  <script src="/js/bootstrap.min.js"></script>
+  <script src="/js/bootstrap.bundle.min.js"></script>
   <link href="/css/bootstrap.min.css" rel="stylesheet">
   <script src="/js/jquery-ui.js"></script>
   <link href="/css/jquery-ui.css" rel="stylesheet">
@@ -51,10 +51,13 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
   <script src="/js/bootbox.min.js"></script>
 
   <style>
-  	table.dataTable {
-  		font-size: x-large !important;
+	.table {
+		--bs-table-bg:  initial;
+	}
+	table.dataTable {
+		font-size: x-large !important;
 		font-weight: bold;
-		color: #494b51;
+		color: #494b51 !important;
 	}
 	.mr {
 		margin: 20px 20px 20px 20px;
@@ -73,12 +76,12 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
 			font-size: 15pt;
 			page-break-inside: auto;
 			page-break-inside: avoid; 
-        	page-break-after: auto;
+			page-break-after: auto;
 		}
 	}
 	
 	table.dataTable thead tr, tfoot tr {
-		background-color: #337ab7c9;
+		background-color: #337ab7c9 !important;
 		color: white;
 	}
   </style>
@@ -97,7 +100,7 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
           <div id="errors"></div>
           <div id="msg"><?=$msg?></div>
           <div class="btn-group" id="menu">
-            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
+            <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
             <div class="dropdown-menu dropdown-menu-left">
                <li><a class="dropdown-item" href="#" id="markCompleteMenu"><i class="fa-solid fa-check mx-2"></i>Mark formula as complete</a></li>
                <div class="dropdown-divider"></div>
@@ -115,7 +118,7 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
                   <th>Purity</th>
                   <th>Quantity</th>
                   <th>Availability</th>
-                  <th>Actions</th>
+          		  <th data-priority="1"></th>
                 </tr>
               </thead>
               <tfoot>
@@ -142,6 +145,7 @@ $(document).ready(function() {
 	columnDefs: [
 		{ className: 'pv_vertical_middle text-center', targets: '_all' },
 		{ orderable: false, targets: [3,4] },
+		{ responsivePriority: 1, targets: 0 }
 	],
 	dom: 'lrft',
 	buttons: [{
@@ -155,6 +159,7 @@ $(document).ready(function() {
 	serverSide: true,
 	searching: true,
 	mark: true,
+	responsive: true,
 	language: {
 		loadingRecords: '&nbsp;',
 		processing: 'Please Wait...',
@@ -215,7 +220,7 @@ $(document).ready(function() {
 
 function ingredient(data, type, row){
 
-	data = '<a href="#infoModal" id="ingInfo" data-backdrop="static" data-toggle="modal" data-id="'+row.ingID+'" data-name="'+row.ingredient+'" class="listIngNameCas-with-separator">' + row.ingredient + '</a><span class="listIngHeaderSub"> CAS: <i class="subHeaderCAS">'+row.cas+'</i></span>';
+	data = '<a href="#infoModal" id="ingInfo" data-bs-toggle="modal" data-id="'+row.ingID+'" data-name="'+row.ingredient+'" class="listIngNameCas-with-separator">' + row.ingredient + '</a><span class="listIngHeaderSub"> CAS: <i class="subHeaderCAS">'+row.cas+'</i></span>';
 	return data;
 }
 
@@ -236,7 +241,7 @@ function actions(data, type, row){
 	//}
 	
 	if (row.toAdd == 1) {
-		data += '<i data-toggle="modal" data-target="#confirm_add" data-quantity="'+row.quantity+'" data-ingredient="'+row.ingredient+'" data-row-id="'+row.id+'" data-ing-id="'+row.ingID+'" data-qr="'+row.quantity+'" class="mr fas fa-check pv_point_gen" title="Confirm add '+row.ingredient+'"></i>';
+		data += '<i data-bs-toggle="modal" data-bs-target="#confirm_add" data-quantity="'+row.quantity+'" data-ingredient="'+row.ingredient+'" data-row-id="'+row.id+'" data-ing-id="'+row.ingID+'" data-qr="'+row.quantity+'" class="mr fas fa-check pv_point_gen" title="Confirm add '+row.ingredient+'"></i>';
 	}
 	
 					  
@@ -299,7 +304,7 @@ $('#print').click(() => {
     $('#tdDataPending').DataTable().button(0).trigger();
 });
 
-$('#tdDataPending').on('click', '[data-target*=confirm_add]', function () {
+$('#tdDataPending').on('click', '[data-bs-target*=confirm_add]', function () {
 	$('#errMsg').html('');																
 	$("#ingAdded").text($(this).attr('data-ingredient'));
 	$("#ingID").text($(this).attr('data-ing-id'));
@@ -331,13 +336,13 @@ function addedToFormula() {
 	dataType: 'json',
     success: function (data) {
 		if(data.success) {
-			var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+			var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 			$('#msg').html(msg);
 			$('#confirm_add').modal('toggle');
 			reload_data();
 		
 		} else if(data.error) {
-			var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+			var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 			$('#errMsg').html(msg);
 		}
 		
@@ -360,10 +365,10 @@ $.ajax({
 	dataType: 'json',
     success: function (data) {
 	  	if(data.success) {
-			var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+			var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 			reload_data();
 		} else {
-			var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+			var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 		}
 		$('#msg').html(msg);
     }
@@ -417,10 +422,10 @@ $('#tdDataPending').on('click', '[id*=undo_add]', function () {
 				dataType: 'json',
 				success: function (data) {
 					if(data.success) {
-						var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+						var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 						reload_data();
 					} else {
-						var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+						var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 					}
 					$('#msg').html(msg);
 				}
@@ -431,7 +436,7 @@ $('#tdDataPending').on('click', '[id*=undo_add]', function () {
            },
            cancel: {
                label : "Cancel",
-               className : "btn-default",
+               className : "btn-secondary",
                callback : function() {
                    return true;
                }
@@ -462,10 +467,10 @@ $('#markComplete, #markCompleteMenu').click(function() {
 				dataType: 'json',
 				success: function (data) {
 					if(data.success) {
-						var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+						var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 						reload_data();
 					} else {
-						var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+						var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 					}	
 					$('#msg').html(msg);
 				}
@@ -476,7 +481,7 @@ $('#markComplete, #markCompleteMenu').click(function() {
            },
            cancel: {
                label : "Cancel",
-               className : "btn-default",
+               className : "btn-secondary",
                callback : function() {
                    return true;
                }
@@ -493,20 +498,20 @@ $('#markComplete, #markCompleteMenu').click(function() {
 <script src="/js/mark/datatables.mark.js"></script>
 
 <!-- Modal ING Info -->
-<div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true">
+<div class="modal fade" id="infoModal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             	<div class="modal-body-info">
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
 
 <!-- Modal Confirm amount-->
-<div class="modal fade" id="confirm_add" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="confirm_add" aria-hidden="true">
+<div class="modal fade" id="confirm_add" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="confirm_add" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -521,7 +526,7 @@ $('#markComplete, #markCompleteMenu').click(function() {
         
           <div class="form-row">
             <div class="form-group col-md-6">
-                <label for="amountAdded"> Amount added</label>
+                <label for="amountAdded">Amount added</label>
                 <input name="amountAdded" type="text" id="amountAdded" />
             </div>
           </div>
@@ -542,7 +547,7 @@ $('#markComplete, #markCompleteMenu').click(function() {
   		  </div>
 
           <div class="modal-footer">
-       		<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+       		<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
        		<input type="submit" name="button" class="btn btn-primary" id="button" value="Confirm">
      	  </div>
      

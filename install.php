@@ -18,65 +18,62 @@ $first_time = 1;
   <link href="/css/sb-admin-2.css" rel="stylesheet">
   <link href="/css/vault.css" rel="stylesheet">
   <script src="/js/jquery/jquery.min.js"></script>
-  <script src="/js/bootstrap.min.js"></script>
 </head>
 
 <body class="bg-gradient-primary">
   <div class="container">
-      <div class="col">
-              <div class="col-lg-6 d-none d-lg-block bg-install-image"></div>
-              <div class="col-lg-6">
-                <div class="p-5">
-                  <div class="text-center">
-                    <h1 class="h4 text-gray-900 mb-4">First time setup</h1>
-                  </div>
-                  <div id="msg"></div>
+      <div class="col d-lg-block bg-install-image"></div>
+          <div class="col-lg-12">
+            <div class="p-5">
+              <div class="text-center">
+                <h1 class="h4 text-gray-900 mb-4">First time setup</h1>
+              </div>
+              <div id="msg"></div>
+              
+              <div id="install_form" class="user">
+                <hr>
+                <strong>Database Settings:</strong>
+                <hr>
+                <div class="form-group">
+                  <label for="dbhost" class="form-label">Database Hostname or IP</label>
+                  <input type="text" class="form-control form-control-user" id="dbhost">
+                </div>
+                <div class="form-group">
+                  <label for="dbuser" class="form-label">Database username</label>
+                  <input type="text" class="form-control form-control-user" id="dbuser">
+                </div>
+                <div class="form-group">
+                  <label for="dbpass" class="form-label">Database password</label>
+                  <input type="text" class="form-control form-control-user" id="dbpass">
+                </div>
+                 <div class="form-group">
+                  <label for="dbname" class="form-label">Database name</label>
+                  <input type="text" class="form-control form-control-user" id="dbname">
+                </div>
+                <hr>
+                <strong>User Settings:</strong>
+                <hr>
+                <div class="form-group">
+                  <label for="fullName" class="form-label">Full name</label>
+                  <input type="text" class="form-control form-control-user" id="fullName">
+                </div>      
+                <div class="form-group">
+                  <label for="email" class="form-label">Email</label>
+                  <input type="text" class="form-control form-control-user" id="email">
+                </div>
+                <div class="form-group">
+                  <label for="password" class="form-label">Password</label>
+                  <input type="text" class="form-control form-control-user" id="password">
+                </div>
+                <div class="form-group"></div>
+                <hr>
+                <button name="save" id="saveInstallData" class="btn btn-primary btn-user btn-block">
+                  Save!
+                </button>
+                <p>&nbsp;</p>
+                <p>*All fields required</p>
+              </div>
                   
-				  <div id="install_form" class="user">
-                    <hr>
-                    <strong>Database Settings:</strong>
-                    <hr>
-                    <div class="form-group">
-                      <label for="dbhost" class="form-label">Database Hostname or IP</label>
-                      <input type="text" class="form-control form-control-user" id="dbhost">
-                    </div>
-                    <div class="form-group">
-                      <label for="dbuser" class="form-label">Database username</label>
-                      <input type="text" class="form-control form-control-user" id="dbuser">
-                    </div>
-                    <div class="form-group">
-                      <label for="dbpass" class="form-label">Database password</label>
-                      <input type="text" class="form-control form-control-user" id="dbpass">
-                    </div>
-                     <div class="form-group">
-                      <label for="dbname" class="form-label">Database name</label>
-                      <input type="text" class="form-control form-control-user" id="dbname">
-                    </div>
-                    <hr>
-                    <strong>User Settings:</strong>
-                    <hr>
-                    <div class="form-group">
-                      <label for="fullName" class="form-label">Full name</label>
-                      <input type="text" class="form-control form-control-user" id="fullName">
-                    </div>      
-                    <div class="form-group">
-                      <label for="email" class="form-label">Email</label>
-                      <input type="text" class="form-control form-control-user" id="email">
-                    </div>
-                    <div class="form-group">
-                      <label for="password" class="form-label">Password</label>
-                      <input type="text" class="form-control form-control-user" id="password">
-                    </div>
-                    <div class="form-group"></div>
-                    <hr>
-					<button name="save" id="saveInstallData" class="btn btn-primary btn-user btn-block">
-                      Save!
-                    </button>
-                    <p>&nbsp;</p>
-                    <p>*All fields required</p>
-                  </div>
-                  
-        </div>
       </div>
     </div>
   </div>

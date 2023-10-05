@@ -11,9 +11,9 @@ require_once(__ROOT__.'/inc/opendb.php');
 <div class="card-body">
   <div class="text-right">
     <div class="btn-group" id="menu">
-        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
+        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
         <div class="dropdown-menu dropdown-menu-right">
-          <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_ingredient_cat"><i class="fa-solid fa-plus mx-2"></i>Add ingredient category</a></li>
+          <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#add_ingredient_cat"><i class="fa-solid fa-plus mx-2"></i>Add ingredient category</a></li>
         </div>
     </div>
   </div>
@@ -93,7 +93,7 @@ function ciImage(data, type, row){
 		var cimg = '<img src="/img/molecule.png" class="img_ing">';
 	}
 	
-	return '<a href="#" data-id="'+row.id+'" data-toggle="modal" data-backdrop="static" data-target="#editCategory">' + cimg + '</a>';    
+	return '<a href="#" data-id="'+row.id+'" data-bs-toggle="modal" data-bs-target="#editCategory">' + cimg + '</a>';    
 }
 
 function ciKey(data, type, row){
@@ -109,7 +109,7 @@ function ciNotes(data, type, row){
 };
 
 function ciActions(data, type, row){
-	return '<i id="catDel" class="pv_point_gen fas fa-trash" style="color: #c9302c;" data-id="'+row.id+'" data-name="'+row.name+'"></i>';    
+	return '<i id="catDel" class="pv_point_gen fas fa-trash link-danger" data-id="'+row.id+'" data-name="'+row.name+'"></i>';    
 };
 
 $('#add-category').click(function() {
@@ -220,7 +220,7 @@ $('#tdDataCat').on('click', '[id*=catDel]', function () {
            },
            cancel: {
                label : "Cancel",
-               className : "btn-default",
+               className : "btn-secondary",
                callback : function() {
                    return true;
                }
@@ -251,7 +251,7 @@ $("#editCategory").on("show.bs.modal", function(e) {
 });
 </script>
 <!--ADD CATEGORY MODAL-->
-<div class="modal fade" id="add_ingredient_cat" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="add_ingredient_cat" aria-hidden="true">
+<div class="modal fade" id="add_ingredient_cat" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="add_ingredient_cat" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -272,7 +272,7 @@ $("#editCategory").on("show.bs.modal", function(e) {
 		</div>
       </div>
 	  <div class="modal-footer">
-        <input type="button" class="btn btn-secondary" data-dismiss="modal" id="close_cat" value="Close">
+        <input type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="close_cat" value="Close">
         <input type="submit" name="add-category" class="btn btn-primary" id="add-category" value="Create">
       </div>   
   </div>
@@ -280,12 +280,12 @@ $("#editCategory").on("show.bs.modal", function(e) {
 </div>
 
 <!--EDIT MODAL-->            
-<div class="modal fade" id="editCategory" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="editCategoryLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+<div class="modal fade" id="editCategory" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="editCategoryLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title mgmIngHeader mgmIngHeader-with-separator" id="editCategoryLabel">Edit category</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>

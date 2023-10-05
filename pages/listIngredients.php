@@ -13,16 +13,16 @@ $defCatClass = $settings['defCatClass'];
 <div class="col mb-4">
 	<div class="text-right">
      <div class="btn-group">
-     	<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
+     	<button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
       	<div class="dropdown-menu dropdown-menu-right">
        	<li><a class="dropdown-item popup-link" href="/pages/mgmIngredient.php"><i class="fa-solid fa-plus mx-2"></i>Create new ingredient</a></li>
         <div class="dropdown-divider"></div>
         <li><a class="dropdown-item" id="csv_export" href="/pages/export.php?format=csv&kind=ingredients"><i class="fa-solid fa-file-csv mx-2"></i>Export to CSV</a></li>
         <li><a class="dropdown-item" id="json_export" href="/pages/export.php?format=json&kind=ingredients"><i class="fa-solid fa-file-code mx-2"></i>Export to JSON</a></li>
         <div class="dropdown-divider"></div>
-        <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#csv_import"><i class="fa-solid fa-file-import mx-2"></i>Import from CSV</a></li>
-        <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#import_ingredients_json"><i class="fa-solid fa-file-import mx-2"></i>Import from JSON</a></li>
-        <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#pv_online_import"><i class="fa-solid fa-cloud-arrow-down mx-2"></i>Import from PV Online</a></li>
+        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#csv_import"><i class="fa-solid fa-file-import mx-2"></i>Import from CSV</a></li>
+        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#import_ingredients_json"><i class="fa-solid fa-file-import mx-2"></i>Import from JSON</a></li>
+        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#pv_online_import"><i class="fa-solid fa-cloud-arrow-down mx-2"></i>Import from PV Online</a></li>
       </div>
      </div>                    
     </div>
@@ -33,23 +33,27 @@ $defCatClass = $settings['defCatClass'];
 <div id="row pv_search">
 	<div class="text-right">
         <div class="pv_input_grp">   
-          <input name="ing_search" type="text" class="form-control input-sm pv_input_sm" id="ing_search" value="<?=$_GET['search']?>" placeholder="Ingredient name, CAS, odor..">
-            <div class="input-group-btn">
-                <button class="btn btn-search btn-primary" id="pv_search_btn" data-provider="local">
-                    <span class="fas fa-database mx-2"></span>
-                    <span class="label-icon"><a href="#" class="btn-search">Local DB</a></span>
-                </button>
-                <label class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></label>
-                <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                    <?php foreach (loadModules('suppliers') as $search){ ?>
-                    <li>
-                        <a href="#" class="supplier dropdown-item" data-provider="<?=$search['fileName']?>">
-                            <span class="<?=$search['icon']?>"></span>
-                            <span class="label-icon"><?=$search['name']?></span>
-                        </a>
-                    </li>
-                    <?php } ?>
-                </ul>
+          <div class="btn-group input-group-btn">
+          	<input name="ing_search" type="text" class="form-control input-sm pv_input_sm" id="ing_search" value="<?=$_GET['search']?>" placeholder="Ingredient name, CAS, odor..">
+            <button class="btn btn-search btn-primary col" id="pv_search_btn" data-provider="local">
+            	<span class="label-icon">
+                    <i class="fas fa-database mx-2"></i>
+                    <a href="#" class="btn-search">Local DB</a>
+                </span>
+            </button>
+            <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+   				<span class="visually-hidden">Toggle Dropdown</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-right">
+                <?php foreach (loadModules('suppliers') as $search){ ?>
+                <li>
+                    <a href="#" class="supplier dropdown-item" data-provider="<?=$search['fileName']?>">
+                        <span class="<?=$search['icon']?>"></span>
+                        <span class="label-icon"><?=$search['name']?></span>
+                    </a>
+                </li>
+                <?php } ?>
+            </ul>
           </div>
    	  </div>
 	</div>
@@ -67,7 +71,7 @@ $defCatClass = $settings['defCatClass'];
           <th><?=ucfirst($defCatClass)?></th>
           <th>Supplier(s)</th>
           <th>Document(s)</th>
-          <th></th>
+          <th data-priority="1"></th>
       </tr>
    </thead>
 </table>
@@ -79,23 +83,25 @@ $(document).ready(function() {
 	var tdDataIng = $('#tdDataIng').DataTable( {
 	columnDefs: [
 		{ className: 'pv_vertical_middle text-center', targets: '_all' },
-		{ orderable: false, targets: [1,5,6,7,8,9]}
+		{ orderable: false, targets: [1,5,6,7,8,9]},
+		{ responsivePriority: 1, targets: 0 }
 	],
 	search: {
     	search: "<?=$_GET['search']?>"
   	},
 	dom: 'lr<"#advanced_search">tip',
 	initComplete: function(settings, json) {
-        $("#advanced_search").html('<span><hr /><a href="#" class="advanced_search_box mb-2" data-toggle="modal" data-target="#adv_search">Advanced Search</a></span>');
+        $("#advanced_search").html('<span><hr /><a href="#" class="advanced_search_box mb-2" data-bs-toggle="modal" data-bs-target="#adv_search">Advanced Search</a></span>');
 		$("#tdDataIng_filter").detach().appendTo('#pv_search');
     },
 	processing: true,
 	serverSide: true,
 	searching: true,
+	responsive: true,
 	language: {
 		loadingRecords: '&nbsp;',
 		processing: 'Blending...',
-		zeroRecords: '<div class="alert alert-warning"><strong>Nothing found, try <a href="#" data-toggle="modal" data-target="#adv_search">advanced</a> search instead?</strong></div>',
+		zeroRecords: '<div class="alert alert-warning"><strong>Nothing found, try <a href="#" data-bs-toggle="modal" data-bs-target="#adv_search">advanced</a> search instead?</strong></div>',
 		search: 'Quick Search:',
 		searchPlaceholder: 'Name, CAS, EINECS, IUPAC, odor..',
 		},
@@ -243,10 +249,10 @@ function iLimit(data, type, row){
 
 function iSuppliers(data, type, row){
 	if(row.supplier){
-	data ='<div class="btn-group"><button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-store mx-2"></i><span class="badge badge-light">'+row.supplier.length+'</span></button><div class="dropdown-menu dropdown-menu-right">';
+	data ='<div class="btn-group"><button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-store mx-2"></i><span class="badge badge-light">'+row.supplier.length+'</span></button><div class="dropdown-menu dropdown-menu-right">';
 	for (var key in row.supplier) {
 		if (row.supplier.hasOwnProperty(key)) {
-			data+='<li><a class="dropdown-item popup-link" href="'+row.supplier[key].link+'"><i class="fa fa-store mx-2"></i>'+row.supplier[key].name+'</a></li>';
+			data+='<li><a class="dropdown-item" target="_blank" href="'+row.supplier[key].link+'"><i class="fa fa-store mx-2"></i>'+row.supplier[key].name+'</a></li>';
 		}
 	}                
 	data+='</div></div></td>';
@@ -258,7 +264,7 @@ function iSuppliers(data, type, row){
 
 function iDocs(data, type, row){
 	if(row.document){	
-		data ='<div class="btn-group"><button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-file-alt mx-2"></i><span class="badge badge-light">'+row.document.length+'</span></button><div class="dropdown-menu dropdown-menu-right">';
+		data ='<div class="btn-group"><button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-file-alt mx-2"></i><span class="badge badge-light">'+row.document.length+'</span></button><div class="dropdown-menu dropdown-menu-right">';
 		for (var key in row.document) {
 			if (row.document.hasOwnProperty(key)) {
 				data+='<a class="dropdown-item popup-link" href="/pages/viewDoc.php?id='+row.document[key].id+'"><i class="fa fa-file-alt mx-2"></i>'+row.document[key].name+'</a>';
@@ -277,13 +283,13 @@ function iDocs(data, type, row){
 function actions(data, type, row, meta){
 	if(meta.settings.json.source == 'PVOnline'){
 		data = '<div class="dropdown">' +
-			'<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+			'<button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
 				'<ul class="dropdown-menu dropdown-menu-right">' + 
 				'<li><a rel="tip" title="Import '+ row.name +'" class="pv_point_gen text-dark" id="impIng" data-name="'+ row.name +'" data-id='+ row.id +'><i class="fas fa-download mx-2"></i>Import to local DB</a></li>'; 
 		data += '</ul></div>';		
 	}else{//Treat the rest as local
 		data = '<div class="dropdown">' +
-			'<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+			'<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
 				'<ul class="dropdown-menu dropdown-menu-right">';
 		data += '<li><a href="/pages/mgmIngredient.php?id='+btoa(row.name)+'" class="dropdown-item popup-link"><i class="fas fa-edit mx-2"></i>Manage</a></li>';
 		
@@ -338,9 +344,9 @@ $('#tdDataIng').on('click', '[id*=impIng]', function () {
 					dataType: 'json',
 					success: function (data) {
 						if(data.success) {
-							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 						} else {
-							var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+							var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 				
 						}
 						$('#innermsg').html(msg);
@@ -352,7 +358,7 @@ $('#tdDataIng').on('click', '[id*=impIng]', function () {
            },
            cancel: {
                label : "Cancel",
-               className : "btn-default",
+               className : "btn-secondary",
                callback : function() {
                    return true;
                }
@@ -386,10 +392,10 @@ $('#tdDataIng').on('click', '[id*=rmIng]', function () {
 					dataType: 'json',
 					success: function (data) {
 						if(data.success) {
-								var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+								var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 								reload_ingredients_data();
 							} else {
-								var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+								var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 				
 							}
 							$('#innermsg').html(msg);
@@ -401,7 +407,7 @@ $('#tdDataIng').on('click', '[id*=rmIng]', function () {
            },
            cancel: {
                label : "Cancel",
-               className : "btn-default",
+               className : "btn-secondary",
                callback : function() {
                    return true;
                }
@@ -423,7 +429,7 @@ $(".input-group-btn .dropdown-menu li a").click(function () {
 	
 	$('#pv_search_btn').click();
 	if($('#pv_search_btn').data().provider == 'local'){
-		$("#advanced_search").html('<span><hr /><a href="#" class="advanced_search_box" data-toggle="modal" data-target="#adv_search">Advanced Search</a></span>');
+		$("#advanced_search").html('<span><hr /><a href="#" class="advanced_search_box" data-bs-toggle="modal" data-bs-target="#adv_search">Advanced Search</a></span>');
 	}else{
 		$("#advanced_search").html('');
 	}

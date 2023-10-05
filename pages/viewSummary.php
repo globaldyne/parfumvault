@@ -146,7 +146,7 @@ html {
 
 <!--Configure View-->
 
-<div class="modal fade" id="conf_view" tabindex="-1" role="dialog" aria-labelledby="conf_view" aria-hidden="true">
+<div class="modal fade" id="conf_view" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="conf_view" aria-hidden="true">
   <div class="modal-dialog modal-conf-view" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -231,7 +231,7 @@ html {
               <tr>
                 <td>            
   					<div class="modal-footer">
-     	  				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+     	  				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 	 	  				<input type="submit" name="button" class="btn btn-primary" id="btnUpdate" value="Save">
    		  			</div>
            		 </td>
@@ -261,13 +261,11 @@ function update_view(){
 			dataType: 'json',
 				success: function (data) {
 					if ( data.success ) {
-						var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 						fetch_summary();
 						$('#conf_view').modal('hide');
 					} else {
-						var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>' + data.error + '</strong></div>';
+						$('#confViewMsg').html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i><strong>' + data.error + '</strong></div>');
 					}
-					$('#confViewMsg').html(msg);
 				}
 		});
 	});

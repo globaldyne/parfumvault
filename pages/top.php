@@ -10,19 +10,19 @@ if($pv_meta['schema_ver'] < $db_ver){
 ?>
 <div id="chkUpdMsg"></div>
 <div id="content">
-        <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+        <nav class="navbar navbar-expand navbar-light bg-light topbar mb-4 static-top shadow">
           <ul class="navbar-nav vault-top ml-auto">
             <!-- Cart -->
             <li class="nav-item dropdown no-arrow mx-1">
-              <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-shopping-cart fa-fw"></i>
                 <!-- Counter - cart -->
                 <span class="badge badge-danger badge-counter"><?php echo countCart($conn); ?></span>
               </a>
               <!-- Dropdown - cart -->
-              <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="messagesDropdown">
+              <div class="dropdown-list dropdown-menu dropdown-menu-end shadow animated--grow-in" aria-labelledby="messagesDropdown">
                 <?php if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM cart GROUP BY name"))){ ?>
-				<a href="/?do=cart" class="dropdown-header"><h6>To be ordered</h6></a>
+				<a href="/?do=cart" class="dropdown-header">To be ordered</a>
 				<?php
 					$qC = mysqli_query($conn, "SELECT name,ingID FROM cart ORDER BY name ASC LIMIT 5");
 					while ($pC = mysqli_fetch_array($qC)){
@@ -35,26 +35,26 @@ if($pv_meta['schema_ver'] < $db_ver){
                   </div>
                 </a>
 				<?php } ?>
-	            <a class="dropdown-item text-center small text-gray-500" href="?do=cart">See all...</a>
+	            <a class="dropdown-item text-center small text-gray-500" href="/?do=cart">See all...</a>
 
 				<?php }else{ ?>
-                <a class="dropdown-item text-center small text-gray-500" href="?do=cart">No orders to place</a>
+                <a class="dropdown-item text-center small text-gray-500" href="/?do=cart">No orders to place</a>
 				<?php } ?>	
                 </div>
             </li>
             
             <div class="topbar-divider d-none d-sm-block"></div>
             <li class="nav-item dropdown no-arrow">
-              <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span class="mx-2 d-none d-lg-inline text-gray-600 small"><?php echo $user['fullName'];?></span>
                <div class="icon-container">
                 <img class="img-profile rounded-circle" src="<?=$doc['avatar']?: '/img/logo_def.png'; ?>">
 				<div class="status-circle"></div>
 				</div>
               </a>
-              <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+              <div class="dropdown-menu dropdown-menu-end shadow animated--grow-in" aria-labelledby="userDropdown">
               
-				<a class="dropdown-item" href="#" data-toggle="modal" data-backdrop="static" data-target="#editUser">
+				<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#editUser">
                   <i class="fas fa-user fa-sm fa-fw mx-2 text-gray-400"></i>
                   Edit my details
                 </a>
@@ -63,7 +63,7 @@ if($pv_meta['schema_ver'] < $db_ver){
                   <i class="fas fa-cogs fa-sm fa-fw mx-2 text-gray-400"></i>
                   Settings
                 </a>
-                <a class="dropdown-item" href="#" data-toggle="modal" data-backdrop="static" data-target="#calcTools">
+                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#calcTools">
                   <i class="fas fa-tools fa-sm fa-fw mx-2 text-gray-400"></i>
                   Calculation Tools
                 </a>
@@ -83,7 +83,7 @@ if($pv_meta['schema_ver'] < $db_ver){
                   App Store
                 </a>              
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="logout.php">
+                <a class="dropdown-item" href="/logout.php">
                   <i class="fas fa-sign-out-alt fa-sm fa-fw mx-2 text-gray-400"></i>
                   Logout
                 </a>
@@ -130,12 +130,12 @@ $(document).ready(function() {
 </script>
 
 <!--EDIT USER PROFILE MODAL-->            
-<div class="modal fade" id="editUser" tabindex="-1" role="dialog" aria-labelledby="editUserLabel" aria-hidden="true">
+<div class="modal fade" id="editUser" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="editUserLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="editUserLabel">Edit my details</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -147,7 +147,7 @@ $(document).ready(function() {
 </div>
 
 <!-- calcTools Modal -->
-<div class="modal fade" id="calcTools" tabindex="-1" role="dialog" aria-labelledby="calcTools" aria-hidden="true">
+<div class="modal fade" id="calcTools" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="calcTools" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">Calculation tools
@@ -156,7 +156,7 @@ $(document).ready(function() {
             	<div class="toolsHtml"></div>
             </div>
            	<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 			</div>
         </div>
     </div>
@@ -164,7 +164,7 @@ $(document).ready(function() {
 <!-- /calcTools Modal -->
 
 <!-- DB UPGRADE MODAL -->
-<div class="modal fade" id="dbUpgradeDialog" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="dbUpgradeDialog" aria-hidden="true">
+<div class="modal fade" id="dbUpgradeDialog" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="dbUpgradeDialog" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -177,7 +177,7 @@ $(document).ready(function() {
       <div class="modal-footer">
         <a href="/pages/operations.php?do=backupDB" role="button" class="btn btn-primary" id="dbBkBtn">Backup Database</a>
         <button type="button" class="btn btn-warning" id="dbUpBtn">Upgrade Schema</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="dbUpOk">Close</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="dbUpOk">Close</button>
       </div>
     </div>
   </div>
@@ -185,7 +185,7 @@ $(document).ready(function() {
 <!-- /DB UPGRADE MODAL -->
 
 <!-- SYS UPGRADE MODAL -->
-<div class="modal fade" id="sysUpgradeDialog" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="sysUpgradeDialog" aria-hidden="true">
+<div class="modal fade" id="sysUpgradeDialog" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="sysUpgradeDialog" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -197,7 +197,7 @@ $(document).ready(function() {
       </div>
       <div class="modal-footer">
         <a href="javascript:updateSYS()" role="button" class="btn btn-warning" id="sysUpBtn">Upgrade PVault</a>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="sysUpOk">Close</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="sysUpOk">Close</button>
       </div>
     </div>
   </div>

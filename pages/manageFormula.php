@@ -504,7 +504,7 @@ if($_POST['action'] == 'makeFormula' && $_POST['fid'] && $_POST['q'] && $_POST['
 	if($_POST['updateStock'] == "true"){
 		$getStock = mysqli_fetch_array(mysqli_query($conn, "SELECT stock,mUnit FROM suppliers WHERE ingID = '$ingID' AND preferred = '1'"));
 		if($getStock['stock'] < $q){
-			//$response['error'] = 'Amount exceeds quantity available in stock ('.$getStock['stock'].$getStock['mUnit'].')';
+			//$response['warning'] = 'Amount exceeds quantity available in stock ('.$getStock['stock'].$getStock['mUnit'].'). The maximum available will be deducted from stock';
 			//echo json_encode($response);
 			//return;
 			$q = $getStock['stock'];
@@ -512,6 +512,7 @@ if($_POST['action'] == 'makeFormula' && $_POST['fid'] && $_POST['q'] && $_POST['
 		mysqli_query($conn, "UPDATE suppliers SET stock = stock - $q WHERE ingID = '$ingID' AND preferred = '1'");
 		$response['success'] .= "<br/><strong>Stock deducted by ".$q.$settings['mUnit']."</strong>";
 	}
+	
 	$q = trim($_POST['q']);
 	if($qr == $q){
 		if(mysqli_query($conn, "UPDATE makeFormula SET toAdd = '0' WHERE fid = '$fid' AND id = '$id'")){
@@ -525,7 +526,7 @@ if($_POST['action'] == 'makeFormula' && $_POST['fid'] && $_POST['q'] && $_POST['
 	}
 
 	if($notes){
-		$notes = "Formula make, ".$_POST['ing'].": ".$_POST['notes']."\\n";
+		$notes = "Formula make, ingredient: ".$_POST['ing']."\\n";
 		mysqli_query($conn, "UPDATE formulasMetaData SET notes = CONCAT(notes, '".$notes."') WHERE fid = '$fid'");
 	}
 	
@@ -692,7 +693,7 @@ if($_GET['action'] == 'printLabel' && $_GET['name']){
 	if(imagepng($lblF, $save)){
 		imagedestroy($lblF);
 		shell_exec('/usr/bin/brother_ql -m '.$settings['label_printer_model'].' -p tcp://'.$settings['label_printer_addr'].' print -l '.$settings['label_printer_size'].' '. $save);
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Print sent!</div>';
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>Print sent!</div>';
 	}
 	
 	return;
@@ -776,7 +777,7 @@ if($_GET['action'] == 'printBoxLabel' && $_GET['name']){
 		for ($k = 0; $k < $copies; $k++){
 			shell_exec('/usr/bin/brother_ql -m '.$settings['label_printer_model'].' -p tcp://'.$settings['label_printer_addr'].' print -l '.$settings['label_printer_size'].' '. $save);
 		}
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Print sent!</div>';
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>Print sent!</div>';
 	}
 	return;
 }

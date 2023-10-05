@@ -77,7 +77,7 @@ function reload_data() {
 
 function name(data, type, row){
 	if(row.supplier){
-		data ='<div class="btn-group"><a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'+row.name+'</a><div class="dropdown-menu dropdown-menu-right">';
+		data ='<div class="btn-group"><a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'+row.name+'</a><div class="dropdown-menu dropdown-menu-right">';
 		for (var key in row.supplier) {
 			if (row.supplier.hasOwnProperty(key)) {
 				data+='<a class="dropdown-item" href="'+row.supplier[key].link+'" target="_blank">'+row.supplier[key].name+'</a>';
@@ -91,7 +91,7 @@ function name(data, type, row){
 }
 
 function actions(data, type, row){
-	return '<i rel="tip" title="Remove '+ row.name +'" class="pv_point_gen fas fa-trash" style="color: #c9302c;" id="cart_remove" data-name="'+ row.name +'" data-id='+ row.id +'></i>';    
+	return '<i rel="tip" title="Remove '+ row.name +'" class="pv_point_gen fas fa-trash link-danger" id="cart_remove" data-name="'+ row.name +'" data-id='+ row.id +'></i>';    
 }
 
 function reload_cart_data() {
@@ -123,10 +123,10 @@ $('#tdDataCart').on('click', '[id*=cart_remove]', function () {
 					dataType: 'json',
 					success: function (data) {
 						if(data.success) {
-							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 								reload_cart_data();
 							} else {
-								var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+								var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 				
 							}
 							$('#innermsg').html(msg);
@@ -138,7 +138,7 @@ $('#tdDataCart').on('click', '[id*=cart_remove]', function () {
            },
            cancel: {
                label : "Cancel",
-               className : "btn-default",
+               className : "btn-secondary",
                callback : function() {
                    return true;
                }

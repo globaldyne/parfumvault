@@ -13,15 +13,15 @@ require_once(__ROOT__.'/func/php-settings.php');
                <div id="iframsg"></div>
                   <div class="text-right">
                     <div class="btn-group">
-                      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
+                      <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
                       <div class="dropdown-menu dropdown-menu-right">
                         <li class="dropdown-header">Import</li> 
-                        <li><a class="dropdown-item" href="#" data-backdrop="static" data-toggle="modal" data-target="#ifra_import"><i class="fa-solid fa-file-excel mx-2"></i>Import IFRA xls</a>
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#ifra_import"><i class="fa-solid fa-file-excel mx-2"></i>Import IFRA xls</a>
                                 	  
-                         <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#import_ifra_json" data-backdrop="static"><i class="fa-solid fa-file-import mx-2"></i>Import from JSON</a></li>
+                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#import_ifra_json"><i class="fa-solid fa-file-import mx-2"></i>Import from JSON</a></li>
 
                         <?php if($settings['pubChem'] == '1'){?>
-                        <li><a class="dropdown-item" href="#" data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#pubChem_import"><i class="fa-solid fa-file-import mx-2"></i>Import images</a></li>
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#pubChem_import"><i class="fa-solid fa-file-import mx-2"></i>Import images</a></li>
                         <?php } ?>
                         <li class="dropdown-header">Export</li> 
            				<li><a class="dropdown-item" href="/pages/operations.php?action=exportIFRA"><i class="fa-solid fa-file-code mx-2"></i>Export as JSON</a></li>
@@ -62,7 +62,7 @@ require_once(__ROOT__.'/func/php-settings.php');
                         <th>Cat11A%</th>
                         <th>Cat11B%</th>
                         <th>Cat12%</th>
-                        <th></th>
+         				<th data-priority="1"></th>
                       </tr>
                    </thead>
                 </table>
@@ -73,7 +73,7 @@ require_once(__ROOT__.'/func/php-settings.php');
       </div>
     </div>
 <!--IFRA IMPORT-->
-<div class="modal fade" id="ifra_import" tabindex="-1" role="dialog" aria-labelledby="ifra_import" aria-hidden="true">
+<div class="modal fade" id="ifra_import" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="ifra_import" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-ifra" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -92,7 +92,7 @@ require_once(__ROOT__.'/func/php-settings.php');
                     
                     <div class="form-group">
                       <div class="col-sm-10">
-                          <label class="control-label" for="IFRAver">IFRA amendment</label> <i class="fa-solid fa-circle-info pv_point_gen" rel="tip" data-title="IFRA file format has been slightly changed after amendment 49, to maintain backwards compatibility, we added the option to select which version you importing."></i>
+                          <label class="control-label" for="IFRAver">IFRA amendment</label> <i class="fa-solid fa-circle-info pv_point_gen" data-bs-toggle="tooltip" title="IFRA file format has been slightly changed after amendment 49, to maintain backwards compatibility, we added the option to select which version you importing."></i>
                           <select id="IFRAver" class="form-control">
                               <option value="0" disabled>Please select amendment format</option>
                               <option value="49">Amendment 49 or older format</option>
@@ -110,7 +110,7 @@ require_once(__ROOT__.'/func/php-settings.php');
                     <div class="form-group">
                         <div class="col-sm-10">
                            <input name="updateCAS" type="checkbox" id="updateCAS" checked="checked" /> 
-                           <label class="control-label" for="updateCAS">Modify original file</label> <i class="fa-solid fa-circle-info pv_point_gen" rel="tip" data-title="This is required if you are importing the original IFRA file."></i>
+                           <label class="control-label" for="updateCAS">Modify original file</label> <i class="fa-solid fa-circle-info pv_point_gen" data-bs-toggle="tooltip" title="This is required if you are importing the original IFRA file."></i>
                         </div>
                     </div>
 
@@ -131,7 +131,7 @@ require_once(__ROOT__.'/func/php-settings.php');
        		<strong>The IFRA xls can be downloaded from its official <a href="https://ifrafragrance.org/safe-use/standards-guidance" target="_blank">web site</a></strong>
        </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btnIFRAC">Cancel</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnIFRAC">Cancel</button>
         <input type="submit" name="btnImportIFRA" class="btn btn-primary" id="btnImportIFRA" value="Import">
       </div>
     </div>
@@ -139,7 +139,7 @@ require_once(__ROOT__.'/func/php-settings.php');
 </div>
 
 <!--PUBCHEM IMPORT-->
-<div class="modal fade" id="pubChem_import" tabindex="-1" role="dialog" aria-labelledby="pubChem_import" aria-hidden="true">
+<div class="modal fade" id="pubChem_import" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="pubChem_import" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-pubChem" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -152,7 +152,7 @@ require_once(__ROOT__.'/func/php-settings.php');
        <p>By using this service, you agree with <a href="https://pubchemdocs.ncbi.nlm.nih.gov/about" target="_blank">PubChem's</a> terms</p>
        </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="ImportpbC">Cancel</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="ImportpbC">Cancel</button>
         <input type="submit" name="btnImport" class="btn btn-primary" id="Importpb" value="Import">
       </div>
     </div>
@@ -160,12 +160,12 @@ require_once(__ROOT__.'/func/php-settings.php');
 </div>
 
 <!--IMPORT JSON MODAL-->
-<div class="modal fade" id="import_ifra_json" tabindex="-1" role="dialog" aria-labelledby="import_ifra_json" aria-hidden="true">
+<div class="modal fade" id="import_ifra_json" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="import_ifra_json" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Import IFRA from a JSON file</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -196,7 +196,7 @@ require_once(__ROOT__.'/func/php-settings.php');
       
       </div>
 	  <div class="modal-footer">
-        <input type="button" class="btn btn-secondary" data-dismiss="modal" id="btnCloseBK" value="Cancel">
+        <input type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseBK" value="Cancel">
         <input type="submit" name="btnRestore" class="btn btn-primary" id="btnRestoreIFRA" value="Import">
       </div>
    
@@ -208,10 +208,13 @@ require_once(__ROOT__.'/func/php-settings.php');
 <script type="text/javascript">
 $(document).ready(function() {
 	
+   $('[data-bs-toggle="tooltip"]').tooltip();
+
 	var tdDataIFRA = $('#tdDataIFRA').DataTable( {
 	columnDefs: [
 		{ className: 'pv_vertical_middle text-center', targets: '_all' },
-		{ orderable: false, targets: [25]}
+		{ orderable: false, targets: [25]},
+		{ responsivePriority: 1, targets: 0 }
 	],
 	dom: 'lrftip',
 	buttons: [{
@@ -222,7 +225,7 @@ $(document).ready(function() {
 	serverSide: true,
 	searching: true,
 	mark: true,
-	scrollX: true,
+	responsive: true,
 	language: {
 		loadingRecords: '&nbsp;',
 		processing: '<div class="spinner-grow mx-2"></div>Please Wait...',
@@ -387,21 +390,21 @@ $('#btnImportIFRA').click(function() {
 		   dataType: 'json',
            success: function(response){
              if(response.success){
-				 $("#IFRAImportMsg").html('<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+response.success+'</div>');
+				 $("#IFRAImportMsg").html('<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+response.success+'</div>');
 				// $("#btnImportIFRA").hide();
 				 $("#btnIFRAC").html('Close');
 				 $("#btnImportIFRA").prop("disabled", false);
 				 $("#btnIFRAC").prop("disabled", false);
 				 reload_ifra_data();
               }else{
-                $("#IFRAImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+response.error+'</div>');
+                $("#IFRAImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+response.error+'</div>');
 				$("#btnImportIFRA").prop("disabled", false);
 				$("#btnIFRAC").prop("disabled", false);
               }
             },
          });
   }else{
-	$("#IFRAImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a file to upload!</div>');
+	$("#IFRAImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a file to upload!</div>');
 	$("#btnImportIFRA").prop("disabled", false);
   }	
 });
@@ -420,14 +423,14 @@ $('#Importpb').click(function() {
 		dataType: 'json',
 		success: function (data) {
 			if(data.success){				
-				$('#pbmportMsg').html('<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>');
+				$('#pbmportMsg').html('<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>');
 				$("#Importpb").hide();
 				$("#ImportpbC").show();
 				$('#ImportpbC').html('Close');
 				$("#ImportpC").show();
 				reload_ifra_data();
 			}else{
-				$('#pbmportMsg').html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>');
+				$('#pbmportMsg').html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>');
 				$("#Importpb").show();
 				$("#ImportpbC").show();
 				$("#Importpb").prop("disabled", false);
@@ -473,10 +476,10 @@ $('#tdDataIFRA').on('click', '[id*=dDel]', function () {
 					dataType: 'json',
 					success: function (data) {
 						if(data.success){
-							msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+							msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 							reload_ifra_data();
 						}else if(data.error){
-							msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+							msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 						}
 						$('#iframsg').html(msg);
 					}
@@ -487,7 +490,7 @@ $('#tdDataIFRA').on('click', '[id*=dDel]', function () {
            },
            cancel: {
                label : "Cancel",
-               className : "btn-default",
+               className : "btn-secondary",
                callback : function() {
                    return true;
                }

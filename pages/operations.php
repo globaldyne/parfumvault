@@ -263,7 +263,7 @@ if($_GET['action'] == 'exportFormulas'){
 	if(!$_GET['fid']){
 		$f['name'] = "All_formulas";
 	}
-
+	
 	header('Content-disposition: attachment; filename='.$f['name'].'.json');
 	header('Content-type: application/json');
 	echo json_encode($result, JSON_PRETTY_PRINT);

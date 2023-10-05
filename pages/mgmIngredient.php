@@ -45,7 +45,7 @@ $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE n
 	<link href="/css/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     
 	<script src="/js/jquery/jquery.min.js"></script>
-	<script src="/js/bootstrap.min.js"></script>
+	<script src="/js/bootstrap.bundle.min.js"></script>
 	<script src="/js/bootstrap-select.js"></script>
 	<script src="/js/bootstrap-editable.js"></script>
 	<script src="/js/datatables.min.js"></script>
@@ -74,18 +74,18 @@ var myPCH = "<?=$settings['pubChem']?>";
 </head>
 
 <body>
-	<div class="mgm-ing-theme">
+	<div class="mgm-ing-theme mt-4">
 		<div class="container mgm-ing-bk">
 			<div class="mgm-column mgm-visible-xl mgm-col-xl-5">
 				<h1 class="mgmIngHeader mgmIngHeader-with-separator"><?php if($ingID){ echo $ing['name'];?>
 				<div class="btn-group">
-					<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
+					<button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
 					<div class="dropdown-menu">
-						<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#printLabel"><i class="fa-solid fa-print mx-2"></i>Print Label</a></li>
-						<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#cloneIng"><i class="fa-solid fa-copy mx-2"></i>Clone ingredient</a></li>
-						<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#renameIng"><i class="fa-regular fa-pen-to-square mx-2"></i>Rename ingredient</a></li>
+						<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#printLabel"><i class="fa-solid fa-print mx-2"></i>Print Label</a></li>
+						<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#cloneIng"><i class="fa-solid fa-copy mx-2"></i>Clone ingredient</a></li>
+						<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#renameIng"><i class="fa-regular fa-pen-to-square mx-2"></i>Rename ingredient</a></li>
                         <li><a class="dropdown-item" href="/pages/export.php?format=json&kind=single-ingredient&id=<?=$ing['id']?>"><i class="fas fa-download mx-2"></i>Export as JSON</a></li>
-						<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#genSDS"><i class="fa-solid fa-file-prescription mx-2"></i>Generate SDS</a></li>
+						<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#genSDS"><i class="fa-solid fa-file-prescription mx-2"></i>Generate SDS</a></li>
 					</div>
 				</div>
 			<?php }else {?>
@@ -99,23 +99,50 @@ var myPCH = "<?=$settings['pubChem']?>";
 	<div id="ingOverview"></div>
 	<div class="mgmIngHeader-with-separator-full"></div>
 	<!-- Nav tabs -->
-	<ul class="nav nav-tabs" role="tablist">
-		<li class="active"><a href="#general" role="tab" data-toggle="tab"><icon class="fa fa-table"></icon> General</a></li>
+	<ul class="nav nav-tabs mb-3" role="tablist">
+		<li class="nav-item" role="presentation">
+        <a href="#general" id="general_tab" class="nav-link active" aria-selected="true" role="tab" data-bs-toggle="tab"><i class="fa fa-table mx-2"></i>General</a>
+       	</li>
 		<?php if($ingID){?>
-			<li><a href="#usage_limits" id="usage_tab" role="tab" data-toggle="tab"><i class="fa fa-bong"></i> Usage &amp; Limits</a></li>
-			<li><a href="#supply" id="sups_tab" role="tab" data-toggle="tab"><i class="fa fa-shopping-cart"></i> Supply</a></li>
-			<li><a href="#tech_data" id="techs_tab" role="tab" data-toggle="tab"><i class="fa fa-cog"></i> Technical Data</a></li>
-			<li><a href="#documents" id="docs_tab" role="tab" data-toggle="tab"><i class="fa fa-file-alt"></i> Documents</a></li>
-			<li><a href="#synonyms" id="synonyms_tab" role="tab" data-toggle="tab"><i class="fa fa-bookmark"></i> Synonyms</a></li>
-			<li><a href="#note_impact" id="impact_tab" role="tab" data-toggle="tab"><i class="fa fa-magic"></i> Note Impact</a></li>
-			<li><a href="#tech_composition" id="cmps_tab" ole="tab" data-toggle="tab"><i class="fa fa-th-list"></i> Composition</a></li>
-			<li><a href="#safety_info" id="safety_tab" role="tab" data-toggle="tab"><i class="fa fa-biohazard"></i> Safety</a></li>
+		<li class="nav-item" role="presentation">
+        	<a href="#usage_limits" id="usage_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-bong mx-2"></i>Usage &amp; Limits</a>
+        </li>
+        
+		<li class="nav-item" role="presentation">
+        	<a href="#supply" id="sups_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-shopping-cart mx-2"></i>Supply</a>
+        </li>
+			<li class="nav-item" role="presentation">
+            	<a href="#tech_data" id="techs_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-cog mx-2"></i>Technical Data</a>
+            </li>
+			<li class="nav-item" role="presentation">
+            	<a href="#documents" id="docs_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-file-alt mx-2"></i>Documents</a>
+            </li>
+			<li class="nav-item" role="presentation">
+            	<a href="#synonyms" id="synonyms_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-bookmark mx-2"></i>Synonyms</a>
+            </li>
+			<li class="nav-item" role="presentation">
+            	<a href="#note_impact" id="impact_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-magic mx-2"></i>Note Impact</a>
+            </li>
+			<li class="nav-item" role="presentation">
+            	<a href="#tech_composition" id="cmps_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-th-list mx-2"></i>Composition</a>
+            </li>
+			<li class="nav-item" role="presentation">
+            <a href="#safety_info" id="safety_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-biohazard mx-2"></i>Safety</a>
+            </li>
 			<?php if($settings['pubChem'] == '1' && $ing['cas']){?>
-				<li><a href="#pubChem" id="pubChem_tab" role="tab" data-toggle="tab"><i class="fa fa-atom"></i> Pub Chem</a></li>
+				<li class="nav-item" role="presentation">
+                	<a href="#pubChem" id="pubChem_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-atom mx-2"></i>Pub Chem</a>
+                </li>
 			<?php } ?>  
-			<li><a href="#privacy" id="privacy_tab" role="tab" data-toggle="tab"><i class="fa fa-user-secret"></i> Privacy</a></li>   
-			<li><a href="#whereUsed" id="whereUsed_tab" role="tab" data-toggle="tab"><i class="fa fa-random"></i> Where used?</a></li>
-            <li><a href="#ingRep" id="reps_tab" role="tab" data-toggle="tab"><i class="fa fa-exchange-alt"></i> Replacements</a></li>
+			<li class="nav-item" role="presentation">
+            	<a href="#privacy" id="privacy_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-user-secret mx-2"></i>Privacy</a>
+                </li>   
+			<li class="nav-item" role="presentation">
+            	<a href="#whereUsed" id="whereUsed_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-random mx-2"></i>Where used?</a>
+            </li>
+            <li class="nav-item" role="presentation">
+            	<a href="#ingRep" id="reps_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-exchange-alt mx-2"></i>Replacements</a>
+            </li>
 		<?php } ?>
 	</ul>
 	<div class="tab-content">
@@ -235,12 +262,12 @@ var myPCH = "<?=$settings['pubChem']?>";
     </div>
 
 <!-- Modal Print-->
-<div class="modal fade" id="printLabel" tabindex="-1" role="dialog" aria-labelledby="printLabel" aria-hidden="true">
+<div class="modal fade" id="printLabel" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="printLabel" aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title">Print Label for <?php echo $ing['name']; ?></h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
 			</div>
@@ -265,7 +292,7 @@ var myPCH = "<?=$settings['pubChem']?>";
 					</p>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
 					<input type="submit" name="button" class="btn btn-primary" id="print" value="Print">
 				</div>
 			</div>
@@ -275,7 +302,7 @@ var myPCH = "<?=$settings['pubChem']?>";
 
 
 <!-- Modal Clone-->
-<div class="modal fade" id="cloneIng" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="cloneIng" aria-hidden="true">
+<div class="modal fade" id="cloneIng" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="cloneIng" aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -286,7 +313,7 @@ var myPCH = "<?=$settings['pubChem']?>";
 				Name
 				<input class="form-control" name="cloneIngName" id="cloneIngName" type="text" value="" />            
 				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 					<input type="submit" name="button" class="btn btn-primary" id="cloneME" value="Clone">
 				</div>
 			</div>
@@ -295,7 +322,7 @@ var myPCH = "<?=$settings['pubChem']?>";
 </div>
 
 <!-- Modal Rename-->
-<div class="modal fade" id="renameIng" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="renameIng" aria-hidden="true">
+<div class="modal fade" id="renameIng" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="renameIng" aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -307,7 +334,7 @@ var myPCH = "<?=$settings['pubChem']?>";
 				Name
 				<input class="form-control" name="renameIngName" id="renameIngName" type="text" value="" />            
 				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 					<input type="submit" name="button" class="btn btn-primary" id="renameME" value="Rename">
 				</div>
 			</div>
@@ -316,7 +343,7 @@ var myPCH = "<?=$settings['pubChem']?>";
 </div>
 
 <!-- Modal Gen SDS-->
-<div class="modal fade" id="genSDS" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="genSDS" aria-hidden="true">
+<div class="modal fade" id="genSDS" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="genSDS" aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -350,7 +377,7 @@ var myPCH = "<?=$settings['pubChem']?>";
                 ?>
                 </select>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" id="dis-genSDS" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-secondary" id="dis-genSDS" data-bs-dismiss="modal">Close</button>
 					<input type="submit" name="button" class="btn btn-primary" id="generateSDS" value="Generate">
 				</div>
 			</div>
@@ -391,7 +418,7 @@ $(document).ready(function() {
 	$('#general').on('click', '[id*=saveGeneral]', function () {
 		<?php if(empty($ing['id'])){ ?>
 			if($.trim($("#name").val()) == ''){
-				$('#ingMsg').html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Name is required</div>');
+				$('#ingMsg').html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Name is required</div>');
 				return;
    			}
 		<?php } ?>
@@ -429,9 +456,9 @@ $(document).ready(function() {
 					$('#mgmIngHeaderCAS').html($("#cas").val());
 					$('#IUPAC').html($("#INCI").val());
 					
-					var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+					var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 				}else{
-					var msg ='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+					var msg ='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 				}
 				
 				$('#ingMsg').html(msg);

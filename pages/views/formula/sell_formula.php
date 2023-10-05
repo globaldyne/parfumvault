@@ -25,9 +25,9 @@ $fid = $meta['fid'];
 
 <div>
    <div class="btn-group noexport" id="menu">
-        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
+        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
         <div class="dropdown-menu dropdown-menu-left">
-           <li><a href="#" class="dropdown-item" id="export_pdf"><i class="fa-solid fa-file-export mr2"></i>Export to PDF</a></li>
+           <li><a href="#" class="dropdown-item" id="export_pdf"><i class="fa-solid fa-file-export mx-2"></i>Export to PDF</a></li>
         </div>
     </div>
 </div>

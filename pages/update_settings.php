@@ -162,7 +162,7 @@ if($_POST['manage'] == 'api'){
 	$api = $_POST['api'];
 	$api_key = mysqli_real_escape_string($conn, $_POST['api_key']);
 	if(strlen($api_key) < 8){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>API key must be at least 8 characters long.</div>';	
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>API key must be at least 8 characters long.</div>';	
 		return;
 	}
 	if($_POST["api"] == 'true') {
@@ -188,9 +188,9 @@ if($_POST['manage'] == 'print'){
 	$label_printer_font_size = mysqli_real_escape_string($conn, $_POST['label_printer_font_size']);
 
 	if(mysqli_query($conn, "UPDATE settings SET label_printer_addr='$label_printer_addr', label_printer_model='$label_printer_model', label_printer_size='$label_printer_size', label_printer_font_size='$label_printer_font_size'")){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Settings updated!</div>';	
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>Settings updated!</div>';	
 	}else{
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>An error occured.</div>';	
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>An error occured.</div>';	
 	}
 	return;
 }
@@ -242,9 +242,9 @@ if($_POST['manage'] == 'category'){
 if($_POST['action'] == 'delete' && $_POST['catId']){
 	$catId = mysqli_real_escape_string($conn, $_POST['catId']);
 	if(mysqli_query($conn, "DELETE FROM ingCategory WHERE id = '$catId'")){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Category deleted!</div>';
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>Category deleted!</div>';
 	}else{
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error deleting category.</div>';
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>Error deleting category.</div>';
 	}
 	return;
 }
@@ -280,9 +280,9 @@ if($_POST['manage'] == 'add_frmcategory'){
 if($_POST['action'] == 'del_frmcategory' && $_POST['catId']){
 	$catId = mysqli_real_escape_string($conn, $_POST['catId']);
 	if(mysqli_query($conn, "DELETE FROM formulaCategories WHERE id = '$catId'")){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Category deleted!</div>';
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>Category deleted!</div>';
 	}else{
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error deleting category.</div>';
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>Error deleting category.</div>';
 	}
 	return;
 }
@@ -291,13 +291,13 @@ if($_POST['action'] == 'del_frmcategory' && $_POST['catId']){
 if($_POST['action'] == 'delete' && $_POST['userId']){
 	$userId = mysqli_real_escape_string($conn, $_POST['userId']);
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM users")) <= 1){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error, at least one user needs to exist.</div>';
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>Error, at least one user needs to exist.</div>';
 		return;	
 	}
 	if(mysqli_query($conn, "DELETE FROM users WHERE id = '$userId'")){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>User deleted!</div>';
+		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>User deleted!</div>';
 	}else{
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>Error deleting user.</div>';
+		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>Error deleting user.</div>';
 	}
 	
 	return;
@@ -308,7 +308,7 @@ if($_POST['action'] == 'delete' && $_POST['lidId']){
 	$id = mysqli_real_escape_string($conn, $_POST['lidId']);
 	
 	if(mysqli_query($conn, "DELETE FROM lids WHERE id = '$id'")){
-		echo '<div class="alert alert-success alert-dismissible"><a href="?do=lids" class="close" data-dismiss="alert" aria-label="close">x</a>Item removed!</div>';
+		echo '<div class="alert alert-success alert-dismissible"><a href="?do=lids" class="close" data-bs-dismiss="alert" aria-label="close">x</a>Item removed!</div>';
 	}
 	return;	
 }

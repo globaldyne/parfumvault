@@ -8,17 +8,17 @@ $ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
 <div class="col mt-2">
     <div class="row mb-2">
       <div class="col">
-        <li><a href="#" data-toggle="modal" data-target="#backup_db">Backup DB</a></li>
+        <li><a href="#" data-bs-toggle="modal" data-bs-target="#backup_db">Backup DB</a></li>
       </div>
     </div>
     <div class="row mb-2">
         <div class="col">
-            <li><a href="#" data-toggle="modal" data-target="#restore_db">Restore DB</a></li>
+            <li><a href="#" data-bs-toggle="modal" data-bs-target="#restore_db">Restore DB</a></li>
         </div>
     </div>
     <div class="row mb-2">
         <div class="col">
-            <li><a href="#" data-toggle="modal" data-target="#clear_user_pref">Clear user preferences</a></li>
+            <li><a href="#" data-bs-toggle="modal" data-bs-target="#clear_user_pref">Clear user preferences</a></li>
         </div>
     </div>
 	<?php if(getenv('phpMyAdmin') == "true"){ ?>
@@ -35,7 +35,7 @@ $ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
     <?php } ?>
 </div>
 
-<div class="modal fade" id="clear_user_pref" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="clear_user_pref" aria-hidden="true">
+<div class="modal fade" id="clear_user_pref" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="clear_user_pref" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -49,14 +49,14 @@ $ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
         </div>
       </div>
 	  <div class="modal-footer">
-        <input type="button" class="btn btn-secondary" data-dismiss="modal" id="btnCloseBK" value="Cancel">
+        <input type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseBK" value="Cancel">
         <button name="btnClear" class="btn btn-warning" id="btnClear">Clear data</button>
       </div>
   </div>
  </div>
 </div>
 
-<div class="modal fade" id="backup_db" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="backup_db" aria-hidden="true">
+<div class="modal fade" id="backup_db" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="backup_db" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -68,7 +68,7 @@ $ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
               <div class="form-group">
                 <div class="mx-4">
     				<input type="checkbox" class="form-check-input" id="column-statistics" checked>
-   					<label class="form-check-label" for="column-statistics">Column Statistics<i class="fa-solid fa-circle-info mx-2" data-toggle="tooltip" data-placement="right" title="Add ANALYZE TABLE statements to the output to generate histogram statistics for dumped tables when the dump file is reloaded. Disable this if your back-up fails or takes too long."></i></label>
+   					<label class="form-check-label" for="column-statistics">Column Statistics<i class="fa-solid fa-circle-info mx-2" data-bs-toggle="tooltip" data-bs-placement="right" title="Add ANALYZE TABLE statements to the output to generate histogram statistics for dumped tables when the dump file is reloaded. Disable this if your back-up fails or takes too long."></i></label>
   				</div>
               </div>
               <div class="col-md-12">
@@ -77,7 +77,7 @@ $ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
           </div>
       </div>
 	  <div class="modal-footer">
-        <input type="button" class="btn btn-secondary" data-dismiss="modal" id="btnCloseBK" value="Cancel">
+        <input type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseBK" value="Cancel">
         <button name="btnBackup" class="btn btn-primary" id="btnBackup">Backup</button>
       </div>
   </div>
@@ -85,7 +85,7 @@ $ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
 </div>
 
 
-<div class="modal fade" id="restore_db" data-backdrop="static" data-keyboard="false"  tabindex="-1" role="dialog" aria-labelledby="restore_db" aria-hidden="true">
+<div class="modal fade" id="restore_db" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="restore_db" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -109,14 +109,14 @@ $ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
               <ul>
                 <li><div id="raw" data-size="<?=getMaximumFileUploadSizeRaw()?>">Maximum file size: <strong><?=getMaximumFileUploadSize()?></strong></div></li>
                 <li>Backup file must match your current PV version<strong> (<?=$ver?>)</strong>, if not downgrade or upgrade accordingly before restoring a backup</li>
-                <li>You current database will be wiped-out so if it contains any data you wanna keep, please take a <a href="#" data-toggle="modal" data-backdrop="static" data-keyboard="false" data-target="#backup_db" id="bk_modal_open" class="text-primary">backup</a> first</li>
+                <li>You current database will be wiped-out so if it contains any data you wanna keep, please take a <a href="#" data-bs-toggle="modal" data-bs-target="#backup_db" id="bk_modal_open" class="text-primary">backup</a> first</li>
               </ul>
     <p>&nbsp;</p>
             </div>
           </div>
       </div>
 	  <div class="modal-footer">
-        <input type="button" class="btn btn-secondary" data-dismiss="modal" id="btnCloseBK" value="Cancel">
+        <input type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseBK" value="Cancel">
         <input type="submit" name="btnRestore" class="btn btn-primary" id="btnRestore" value="Restore">
       </div>
   </div>
@@ -146,7 +146,7 @@ $('#btnClear').click(function() {
 });
 
 $(function () {
-  $('[data-toggle="tooltip"]').tooltip();
+  $('[data-bs-toggle="tooltip"]').tooltip();
 });
 
 $('#bk_modal_open').click(function() {

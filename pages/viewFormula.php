@@ -15,6 +15,89 @@ $f_name = $meta['name'];
 $fid = $meta['fid'];
 ?>
 
+
+
+<div class="card-body">
+	<div class="col-sm-10" id="progress-area">
+      <div class="progress">
+          <div id="base_bar" class="progress-bar pv_bar_base_notes" role="progressbar" aria-valuemin="0">
+          	<span><div class="base-label"></div></span>
+          </div>
+          <div id="heart_bar" class="progress-bar pv_bar_heart_notes" role="progressbar" aria-valuemin="0">
+          	<span><div class="heart-label"></div></span>
+          </div>
+          <div id="top_bar" class="progress-bar pv_bar_top_notes" role="progressbar" aria-valuemin="0">
+          	<span><div class="top-label"></div></span>
+          </div>
+      </div>
+    </div>
+    
+    <div class="mt-1 mb-1 dropdown-divider"></div>
+    
+    <div class="col text-right">
+      <div class="btn-group" id="menu">
+        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
+        <div class="dropdown-menu dropdown-menu-end">
+           <li class="dropdown-header">Export</li> 
+           <li><a class="dropdown-item export_as" href="#" data-format="csv"><i class="fa-solid fa-file-csv mx-2"></i>Export as CSV</a></li>
+           <li><a class="dropdown-item export_as" href="#" data-format="pdf"><i class="fa-solid fa-file-pdf mx-2"></i>Export as PDF</a></li>
+           <li><a class="dropdown-item" href="/pages/operations.php?action=exportFormulas&fid=<?=$meta['fid']?>"><i class="fa-solid fa-file-code mx-2"></i>Export as JSON</a></li>
+           <li><a class="dropdown-item" href="#" id="print"><i class="fa-solid fa-print mx-2"></i>Print Formula</a></li>
+           <div class="dropdown-divider"></div>
+           <li class="dropdown-header">Scale Formula</li> 
+           <li><a class="dropdown-item manageQuantity" href="#" data-action="multiply"><i class="fa-solid fa-xmark mx-2"></i>Multiply x2</a></li>
+           <li><a class="dropdown-item manageQuantity" href="#" data-action="divide"><i class="fa-solid fa-divide mx-2"></i>Divide x2</a></li>
+           <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#amount_to_make"><i class="fa-solid fa-calculator mx-2"></i>Advanced</a></li>
+           <div class="dropdown-divider"></div>
+           <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#create_accord"><i class="fa-solid fa-list-check mx-2"></i>Create accord</a></li>
+           <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#conv_ingredient"><i class="fa-solid fa-list-check mx-2"></i>Create ingredient</a></li>
+           <div class="dropdown-divider"></div>
+           <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#schedule_to_make"><i class="fa-regular fa-calendar-plus mx-2"></i>Schedule to make</a></li>
+           <li><a class="dropdown-item" href="#" id="isMade"><i class="fa-solid fa-check mx-2"></i>Mark formula as made</a></li>
+           <div class="dropdown-divider"></div>
+           <li><a class="dropdown-item" href="#" id="cloneMe"><i class="fa-solid fa-copy mx-2"></i>Clone Formula</a></li>
+        </div>
+      </div>            
+    </div>
+</div>
+
+
+<table id="formula" class="table table-striped table-bordered nowrap viewFormula" style="width:100%">
+        <thead class="table-primary">
+            <tr>
+                <th>Profile</th>
+                <th>Ingredient</th>
+                <th>CAS</th>
+                <th>Purity %</th>
+                <th>Dilutant</th>
+                <th>Quantity</th>
+                <th>Concentration %*</th>
+                <th>Final Concentration %</th>
+                <th>Cost</th>
+                <th>Inventory</th>
+                <th>Properties</th>
+          		<th data-priority="1"></th>
+            </tr>
+        </thead>
+        <tfoot class="table-secondary">
+        	<tr>
+            <th>Total ingredients:</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th>Total ml:</th>
+            <th>Total conc %</th>
+            <th></th>
+            <th>Cost: </th>
+            <th></th>
+            <th></th>
+            <th></th>
+            </tr>
+        </tfoot>
+</table>
+
+
 <script>
 var myFID = "<?=$meta['fid']?>";
 var myFNAME = "<?=$meta['name']?>";
@@ -45,7 +128,8 @@ $(document).ready(function() {
   				},
 			  }],
 		processing: true,
-			  mark: true,
+		mark: true,
+		//responsive: true,
         language: {
 			loadingRecords: '&nbsp;',
 			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Blending...</span>',
@@ -83,7 +167,7 @@ $(document).ready(function() {
 			 $td.eq(0).html("Ingredients: " + response.meta['total_ingredients'] );
 			 $td.eq(4).html("Total: " + response.meta['total_quantity']);// + response.meta['quantity_unit'] );
 			 $td.eq(5).html("Total: " + response.meta['concentration'] + "%" );
-			 $td.eq(7).html("Total: " + response.meta['currency'] + response.meta['total_cost'] + ' <i rel="tip" title="The total price for the 100% concentration." class="pv_point_gen fas fa-info-circle"></i>');
+			 $td.eq(7).html("Total: " + response.meta['currency'] + response.meta['total_cost'] + '<i rel="tip" title="The total price for the 100% concentration." class="mx-2 pv_point_gen fas fa-info-circle"></i>');
 			 $(formula_table.columns(7).header()).html("Final Concentration " + response.meta['product_concentration'] + "%");
 		 }
       },
@@ -94,7 +178,7 @@ $(document).ready(function() {
 		displayLength: 100,
 		createdRow: function( row, data, dataIndex){
 			if( data['usage_regulator'] == "IFRA" && parseFloat(data['usage_limit']) < parseFloat(data['concentration'])){
-				$(row).find('td:eq(5)').addClass('alert-danger').append('<i rel="tip" title="Max usage: ' + data['usage_limit'] +'% IFRA Regulated" class="mx-2 pv_point_gen fas fa-info-circle"></i>');
+				$(row).find('td:eq(5)').addClass('alert-danger').append(' <i rel="tip" title="Max usage: ' + data['usage_limit'] +'% IFRA Regulated" class="pv_point_gen fas fa-info-circle"></i>');
 			}else if( data['usage_regulator'] == "PV" && parseFloat(data['usage_limit']) < parseFloat(data['concentration'])){
 				if(data['usage_restriction'] == 1){
 					$(row).find('td:eq(5)').addClass('alert-info').append('<i rel="tip" title="Recommended usage: ' + data['usage_limit'] +'%" class="mx-2 pv_point_gen fas fa-info-circle"></i>');
@@ -153,7 +237,7 @@ $('#formula_tab').on( 'click', function () {
 	formula_table.fixedHeader.enable();
 });
 
-$('a[data-toggle="tab"]').on("shown.bs.tab", function (e) {
+$('a[data-bs-toggle="tab"]').on("shown.bs.tab", function (e) {
 	formula_table.fixedHeader.adjust();
 });
 
@@ -180,12 +264,13 @@ $('#formula').on('click', '[id*=rmIng]', function () {
        message : '<div id="err"></div>'+
 	   			 'Remove <strong>'+ ing.Name +'</strong> from formula?' +
 	   			 '<div class="dropdown-divider"></div>'+
-        		  '<input type="checkbox" name="reCalcDel" id="reCalcDel" value="1" data-val="1" /> Adjust solvent'+
+        		  '<input type="checkbox" name="reCalcDel" id="reCalcDel" value="1" data-val="1" />'+
+				  '<label for="reCalcDel" class="form-label mx-2">Adjust solvent</label>'+
         			'<div id="slvMetaDel">'+
         				'<div class="dropdown-divider"></div>'+
-        				'<input name="formulaSolventsDel" id="formulaSolventsDel" type="text" class="formulaSolventsDel pv-form-control">'+
+        				'<select name="formulaSolventsDel" id="formulaSolventsDel" class="formulaSolventsDel pv-form-control"/></select>'+
         				'<div class="dropdown-divider"></div>'+
-        				'<div id="explain" class="alert alert-info">The deducted ingredient quantity will be added to the selected solvent.</div></div>',
+        				'<div id="explain" class="mt-3 alert alert-info">The deducted ingredient quantity will be added to the selected solvent.</div></div>',
        buttons :{
            main: {
                label : "Remove",
@@ -207,12 +292,12 @@ $('#formula').on('click', '[id*=rmIng]', function () {
 					dataType: 'json',
 					success: function (data) {
 						if(data.success){
-							msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+							msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 							$('#msgInfo').html(msg);
 							reload_formula_data();
 							bootbox.hideAll();
 						}else{
-							$('#err').html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>');
+							$('#err').html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>');
 						}
 						
 					}						
@@ -222,7 +307,7 @@ $('#formula').on('click', '[id*=rmIng]', function () {
            },
            cancel: {
                label : "Cancel",
-               className : "btn-default",
+               className : "btn-secondary",
                callback : function() {
                    return true;
                }
@@ -239,12 +324,13 @@ $('#formula').on('click', '[id*=rmIng]', function () {
 		});
     
 		$("#formulaSolventsDel").select2({
-			width: '250px',
+			width: '100%',
 			placeholder: 'Available solvents in formula',
 			allowClear: true,
 			dropdownAutoWidth: true,
 			containerCssClass: "formulaSolvents",
 			minimumResultsForSearch: Infinity,
+			dropdownParent: $('.bootbox .modal-content'),
 			ajax: {
 				url: '/core/full_formula_data.php',
 				dataType: 'json',
@@ -293,9 +379,9 @@ $('#formula').on('click', '[id*=exIng]', function () {
 			dataType: 'json',
 			success: function (data) {
 				if(data.success) {
-					var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+					var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 				}else{
-					var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';	
+					var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';	
 				}
 				$('#msgInfo').html(msg);
 				reload_formula_data();
@@ -329,9 +415,9 @@ $('#isMade').click(function() {
 					dataType: 'json',
 					success: function (data) {
 						if(data.success) {
-							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 						}else{
-							var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';	
+							var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';	
 						}
 						$('#msgInfo').html(msg);
 						reload_formula_data();
@@ -342,7 +428,7 @@ $('#isMade').click(function() {
            },
            cancel: {
                label : "Cancel",
-               className : "btn-default",
+               className : "btn-secondary",
                callback : function() {
                    return true;
                }
@@ -394,92 +480,18 @@ $('#print').click(() => {
     $('#formula').DataTable().button(0).trigger();
 });
 </script>
-
-<div class="card-body">
-	<div class="col-sm-10" id="progress-area">
-      <div class="progress">
-          <div id="base_bar" class="progress-bar pv_bar_base_notes" role="progressbar" aria-valuemin="0"><span><div class="base-label"></div></span></div>
-          <div id="heart_bar" class="progress-bar pv_bar_heart_notes" role="progressbar" aria-valuemin="0"><span><div class="heart-label"></div></span></div>
-          <div id="top_bar" class="progress-bar pv_bar_top_notes" role="progressbar" aria-valuemin="0"><span><div class="top-label"></div></span></div>
-      </div>
-    </div>
-    <div class="text-right">
-      <div class="btn-group" id="menu">
-        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
-        <div class="dropdown-menu dropdown-menu-right">
-           <li class="dropdown-header">Export</li> 
-           <li><a class="dropdown-item export_as" href="#" data-format="csv"><i class="fa-solid fa-file-csv mx-2"></i>Export as CSV</a></li>
-           <li><a class="dropdown-item export_as" href="#" data-format="pdf"><i class="fa-solid fa-file-pdf mx-2"></i>Export as PDF</a></li>
-           <li><a class="dropdown-item" href="/pages/operations.php?action=exportFormulas&fid=<?=$meta['fid']?>"><i class="fa-solid fa-file-code mx-2"></i>Export as JSON</a></li>
-           <li><a class="dropdown-item" href="#" id="print"><i class="fa-solid fa-print mx-2"></i>Print Formula</a></li>
-           <div class="dropdown-divider"></div>
-           <li class="dropdown-header">Scale Formula</li> 
-           <li><a class="dropdown-item manageQuantity" href="#" data-action="multiply"><i class="fa-solid fa-xmark mx-2"></i>Multiply x2</a></li>
-           <li><a class="dropdown-item manageQuantity" href="#" data-action="divide"><i class="fa-solid fa-divide mx-2"></i>Divide x2</a></li>
-           <li><a class="dropdown-item" href="#" data-backdrop="static" data-toggle="modal" data-target="#amount_to_make"><i class="fa-solid fa-calculator mx-2"></i>Advanced</a></li>
-           <div class="dropdown-divider"></div>
-           <li><a class="dropdown-item" href="#" data-backdrop="static" data-toggle="modal" data-target="#create_accord"><i class="fa-solid fa-list-check mx-2"></i>Create accord</a></li>
-           <li><a class="dropdown-item" href="#" data-backdrop="static" data-toggle="modal" data-target="#conv_ingredient"><i class="fa-solid fa-list-check mx-2"></i>Create ingredient</a></li>
-           <div class="dropdown-divider"></div>
-           <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#schedule_to_make"><i class="fa-regular fa-calendar-plus mx-2"></i>Schedule to make</a></li>
-           <li><a class="dropdown-item" href="#" id="isMade"><i class="fa-solid fa-check mx-2"></i>Mark formula as made</a></li>
-           <div class="dropdown-divider"></div>
-           <li><a class="dropdown-item" href="#" id="cloneMe"><i class="fa-solid fa-copy mx-2"></i>Clone Formula</a></li>
-        </div>
-        </div>            
-    </div>
-</div>
-<table id="formula" class="table table-striped table-bordered nowrap viewFormula" style="width:100%">
-        <thead>
-            <tr>
-                <th>Profile</th>
-                <th>Ingredient</th>
-                <th>CAS</th>
-                <th>Purity %</th>
-                <th>Dilutant</th>
-                <th>Quantity</th>
-                <th>Concentration %*</th>
-                <th>Final Concentration %</th>
-                <th>Cost</th>
-                <th>Inventory</th>
-                <th>Properties</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tfoot>
-        	<tr>
-            <th>Total ingredients:</th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th>Total ml:</th>
-            <th>Total conc %</th>
-            <th></th>
-            <th>Cost: </th>
-            <th></th>
-            <th></th>
-            <th></th>
-            </tr>
-        </tfoot>
-</table>
-
 <!--Schedule Formula-->
-<div class="modal fade" id="schedule_to_make" tabindex="-1" role="dialog" aria-labelledby="schedule_to_make" aria-hidden="true">
+<div class="modal fade" id="schedule_to_make" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="schedule_to_make" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Schedule formula to make</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
       </div>
       <div class="modal-body">
       <div id="scheduleToMakeMsg"></div>
-      <p>This will add the current formulation to scheduled formulas. Any changes in this formula will not be replicated to the scheduled version. If you make changes here, you have to remove it and re-add it for making.</p>
-      <hr />
+      <div class="alert alert-info">This will add the current formulation to scheduled formulas. Any changes in this formula will not be replicated to the scheduled version. If you make changes here, you have to remove it and re-add it for making.</div>
 	    <div class="modal-footer">
-	     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+	     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
   		 <input type="submit" name="button" class="btn btn-primary" id="addTODO" value="Schedule Formula">
 	   </div>
     </div>
@@ -488,7 +500,7 @@ $('#print').click(() => {
 </div>
 
 <!--Scale Formula-->
-<div class="modal fade" id="amount_to_make" tabindex="-1" role="dialog" aria-labelledby="amount_to_make" aria-hidden="true">
+<div class="modal fade" id="amount_to_make" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="amount_to_make" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -513,7 +525,7 @@ $('#print').click(() => {
 	    <p>&nbsp;</p>
 	    <p>*<a href="https://www.perfumersvault.com/knowledge-base/3-specific-gravity-sg/" target="_blank">Specific Gravity of Ethanol</a></p>
 	    <div class="modal-footer">
-	     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+	     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
   		 <input type="submit" name="button" class="btn btn-primary" id="amountToMake" value="Scale Formula">
 	   </div>
     </div>
@@ -522,7 +534,7 @@ $('#print').click(() => {
 </div>
 
 <!--Create accord-->
-<div class="modal fade" id="create_accord" tabindex="-1" role="dialog" aria-labelledby="create_accord" aria-hidden="true">
+<div class="modal fade" id="create_accord" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="create_accord" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -549,7 +561,7 @@ $('#print').click(() => {
 	    <hr />
 	    <div class="alert alert-info">This will create a new formula from the notes you choose. <br/>The current formula will stay intact.</div>
 	    <div class="modal-footer">
-	     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+	     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
   		 <input type="submit" name="button" class="btn btn-primary" id="createAccord" value="Create">
 	   </div>
     </div>
@@ -558,7 +570,7 @@ $('#print').click(() => {
 </div>
 
 <!--Convert to ingredient-->
-<div class="modal fade" id="conv_ingredient" tabindex="-1" role="dialog" aria-labelledby="conv_ingredient" aria-hidden="true">
+<div class="modal fade" id="conv_ingredient" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="conv_ingredient" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -575,7 +587,7 @@ $('#print').click(() => {
         <hr />
         <div class="alert alert-info">The original formula will not be affected.</div>
 	    <div class="modal-footer">
-	     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+	     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
   		 <input type="submit" name="button" class="btn btn-primary" id="conv2ing" value="Create">
 	   </div>
     </div>
@@ -761,7 +773,7 @@ function ingQuantity(data, type, row, meta){
 		<?php if($settings['editor'] == '1'){?>
 			data = '<a href="#" data-name="quantity" class="quantity" data-type="text" data-pk="' + row.formula_ingredient_id + '">' + data + '</a>';
 		<?php }else{?>
-			data = '<a href="#" data-name="quantity" data-toggle="modal" data-target="#manage-quantity" data-backdrop="static" class="open-quantity-dialog" data-type="text" data-ingid="' + row.formula_ingredient_id + '" data-value="' + row.quantity + '" data-ing="' + row.ingredient.name + '" data-mainingid="'+row.ingredient.id+'">' + row.quantity + '</a>';
+			data = '<a href="#" data-name="quantity" data-bs-toggle="modal" data-bs-target="#manage-quantity" class="open-quantity-dialog" data-type="text" data-ingid="' + row.formula_ingredient_id + '" data-value="' + row.quantity + '" data-ing="' + row.ingredient.name + '" data-mainingid="'+row.ingredient.id+'">' + row.quantity + '</a>';
 		<?php } ?>
 	} 
 
@@ -776,7 +788,7 @@ function ingNotes(data, type, row, meta){
 	 if(type === 'display'){
 	  <?php if($meta['defView'] == '1'){ $show = 'properties'; }elseif($meta['defView'] == '2'){ $show = 'notes';}?>
 	  <?php if($meta['isProtected'] == FALSE){?>
-	  data = '<i data-name="<?=$show?>" class="pv_point_gen <?=$show?>" data-type="textarea" data-pk="' + row.formula_ingredient_id + '">' + data + '</i>';
+	  data = '<i data-name="<?=$show?>" class="pv_point_gen text-wrap <?=$show?>" data-type="textarea" data-pk="' + row.formula_ingredient_id + '">' + data + '</i>';
 	  <?php } ?>
 	 }
 	return data;
@@ -805,8 +817,8 @@ function ingInv(data, type, row, meta){
 function ingActions(data, type, row, meta){
 
 	data = '<div class="dropdown">' +
-        '<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
-            '<ul class="dropdown-menu dropdown-menu-right">';
+        '<button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+            '<ul class="dropdown-menu dropdown-menu-end">';
 
 	data += '<li><a class="dropdown-item link-dark" href="'+ row.ingredient.pref_supplier_link +'" target="_blank" rel="tip" title="Open '+ row.ingredient.pref_supplier +' page"><i class="fas fa-shopping-cart mx-2"></i>Go to supplier</a></li>';
 	
@@ -818,9 +830,9 @@ function ingActions(data, type, row, meta){
 	 	var ex = '<li><i class="dropdown-item pv_point_gen link-dark" rel="tip" id="exIng" title="Include '+ row.ingredient.name +'" data-name="'+ row.ingredient.name +'" data-status="0" data-id="'+ row.formula_ingredient_id +'"><i class="pv_point_gen fas fa-eye mx-2"></i>Include</i></li>';
 	}
 	
-	data += ex + '<li><i data-toggle="modal" data-target="#replaceIng" data-backdrop="static" class="dropdown-item pv_point_gen open-replace-dialog text-info" rel="tip" title="Replace '+ row.ingredient.name +'"  data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'" data-cas="'+row.ingredient.cas+'" data-desc="'+row.ingredient.desc+'"><i class="pv_pont_gen fas fa-exchange-alt text-info mx-2"></i>Replace ingredient</i></li>'
+	data += ex + '<li><i data-bs-toggle="modal" data-bs-target="#replaceIng" class="dropdown-item pv_point_gen open-replace-dialog text-info" rel="tip" title="Replace '+ row.ingredient.name +'"  data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'" data-cas="'+row.ingredient.cas+'" data-desc="'+row.ingredient.desc+'"><i class="pv_pont_gen fas fa-exchange-alt text-info mx-2"></i>Replace ingredient</i></li>'
 	
-	+ '<li><i data-toggle="modal" data-target="#mrgIng" data-backdrop="static" rel="tip" title="Merge '+ row.ingredient.name +'" class="dropdown-item pv_point_gen open-merge-dialog text-warning" data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'"><i class="pv_point_gen fas fa-object-group alert-warning mx-2"></i>Merge ingredients</i></li>'
+	+ '<li><i data-bs-toggle="modal" data-bs-target="#mrgIng" rel="tip" title="Merge '+ row.ingredient.name +'" class="dropdown-item pv_point_gen open-merge-dialog text-warning" data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'"><i class="pv_point_gen fas fa-object-group alert-warning mx-2"></i>Merge ingredients</i></li>'
 	
 	+'<div class="dropdown-divider"></div>'
 	+ '<li><i rel="tip" title="Remove '+ row.ingredient.name +'" class="dropdown-item text-danger pv_point_gen" id="rmIng" data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'" data-ingredient-id="'+row.ingredient.id+'"><i class="pv_point_gen fas fa-trash mx-2 text-danger"></i>Delete</i></li>';
@@ -836,43 +848,46 @@ function ingActions(data, type, row, meta){
 <script src="/js/mark/jquery.mark.min.js"></script>
 <script src="/js/mark/datatables.mark.js"></script>
 
-<div class="modal fade" id="manage-quantity" tabindex="-1" role="dialog" aria-labelledby="manage-quantity" aria-hidden="true">
+<div class="modal fade" id="manage-quantity" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="manage-quantity" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title"><div id="ingQuantityName"></div></h5>
       </div>
-      <div class="modal-body">
+      <div class="card-body">
+	
       	<div id="msgQuantity"></div>
         <input type="hidden" name="ingQuantityID" id="ingQuantityID" />
         <input type="hidden" name="ingQuantityName" id="ingQuantityName" />
         <input type="hidden" name="ingQuantity" id="ingQuantity" />
         <input type="hidden" name="mainingid" id="mainingid" />
         <input type="hidden" name="curQuantity" id="curQuantity" />
-      	
-        Quantity in <?=$settings['mUnit']?> 
-        <input name="ingQuantity" type="text" class="ingQuantity form-control" id="ingQuantity">
-        
-        <div class="dropdown-divider"></div>
-        <input type="checkbox" name="reCalc" id="reCalc" value="1" data-val="1" /> Adjust solvent
-        
-        <div id="slvMeta">
-        	<div class="dropdown-divider"></div>
-        	<input name="formulaSolvents" id="formulaSolvents" type="text" class="formulaSolvents pv-form-control">
-        	<div class="dropdown-divider"></div>
-        	<div id="explain" class="alert alert-info">Auto adjust total quantity by increasing or decreasing quantity from the selected solvent if enough available.<br>For example, if you add 1 more ml to the current ingredient, the selected solvent's quantity will be deducted by 1ml equally.</div>
-        </div>
+      	<div class="col">
+        	<label for="ingQuantity" class="form-label mb-2">Quantity in <?=$settings['mUnit']?></label>
+        	<input name="ingQuantity" type="text" class="ingQuantity form-control mb-3" id="ingQuantity">
 
-      </div>
+            <div class="form-row">
+        		<div class="col-md mb-3">
+					<label for="reCalc" class="form-label">Adjust solvent</label>
+        			<input type="checkbox" name="reCalc" id="reCalc" value="1" data-val="1" /> 
+        
+                    <div id="slvMeta">
+                        <select name="formulaSolvents" id="formulaSolvents" class="formulaSolvents form-control"></select>
+                        <div id="explain" class="mt-3 alert alert-info">Auto adjust total quantity by increasing or decreasing quantity from the selected solvent if enough available.<br>For example, if you add 1 more ml to the current ingredient, the selected solvent's quantity will be deducted by 1ml equally.</div>
+                    </div>
+				</div>
+			</div>
+      	</div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
         <input type="submit" name="button" class="btn btn-primary" id="quantityConfirm" value="Update">
       </div>
     </div>
   </div>
 </div>
+</div>
 
-<div class="modal fade" id="mrgIng" tabindex="-1" role="dialog" aria-labelledby="mrgIng" aria-hidden="true">
+<div class="modal fade" id="mrgIng" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="mrgIng" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -884,19 +899,19 @@ function ingActions(data, type, row, meta){
         <input type="hidden" name="ingSrcName" id="ingSrcName" />
       	<div class="alert alert-info">You can merge <div id="srcIng"></div>'s quantity with another material in formula. Use this method if materials are similar. Please note, this action cannot be reverted, quanity will sum up to the target ingredient's quantity.</div>
         Merge <div id="srcIng"></div> with: 
-        <input name="mrgIngName" id="mrgIngName" type="text" class="mrgIngName pv-form-control">
+        <select name="mrgIngName" id="mrgIngName" class="mrgIngName pv-form-control"></select>
         <p>
         <div class="dropdown-divider"></div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
         <input type="submit" name="button" class="btn btn-primary" id="mergeConfirm" value="Merge ingredients">
       </div>
     </div>
   </div>
 </div>
 
-<div class="modal fade" id="replaceIng" tabindex="-1" role="dialog" aria-labelledby="replaceIng" aria-hidden="true">
+<div class="modal fade" id="replaceIng" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="replaceIng" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -908,12 +923,12 @@ function ingActions(data, type, row, meta){
         <input type="hidden" name="ingRepName" id="ingRepName" />
       	<div class="alert alert-info">Replace <div id="ingRepName"></div> with another ingredient, quantity and dilution values will not be affected.</div>
         Replace <div id="ingRepName"></div> with: 
-        <input name="repIngNameDest" id="repIngNameDest" type="text" class="repIngNameDest pv-form-control">
+        <select name="repIngNameDest" id="repIngNameDest" class="repIngNameDest pv-form-control"></select>
         <p>
         <div class="dropdown-divider"></div>
         
         <div id="repGrid" class="card card-inverse card-reping">
-         <div class="row mt-2">
+         <div class="row mt-3">
             <div class="col-sm">
               <div id="ingSrcInfo"></div>
             </div>
@@ -928,7 +943,7 @@ function ingActions(data, type, row, meta){
         
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
         <input type="submit" name="button" class="btn btn-primary" id="replaceConfirm" value="Replace ingredient">
       </div>
     </div>

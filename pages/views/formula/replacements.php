@@ -25,7 +25,7 @@ $fid = mysqli_real_escape_string($conn, $_POST["fid"]);
 <script type="text/javascript" language="javascript" >
 $(document).ready(function() {
 
-$('[data-toggle="tooltip"]').tooltip();
+$('[data-bs-toggle="tooltip"]').tooltip();
 var tdReplacements = $('#tdReplacements').DataTable( {
 	columnDefs: [
 		{ className: 'text-center', targets: '_all' },

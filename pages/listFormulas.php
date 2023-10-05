@@ -38,15 +38,15 @@ while($fTypes_res = mysqli_fetch_array($fTypes_q)){
 <div class="pv_menu_formulas">
     <div class="text-right">
         <div class="btn-group">
-        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
+        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
             <div class="dropdown-menu dropdown-menu-right">
-              <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula" data-backdrop="static"><i class="fa-solid fa-plus mx-2"></i>Add new formula</a></li>
-              <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula_csv" data-backdrop="static"><i class="fa-solid fa-file-csv mx-2"></i>Import from CSV</a></li>
+              <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#add_formula"><i class="fa-solid fa-plus mx-2"></i>Add new formula</a></li>
+              <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#add_formula_csv"><i class="fa-solid fa-file-csv mx-2"></i>Import from CSV</a></li>
               <div class="dropdown-divider"></div>
-              <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_formula_cat"><i class="fa-solid fa-circle-plus mx-2"></i>Create formula category</a></li>
+              <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#add_formula_cat"><i class="fa-solid fa-circle-plus mx-2"></i>Create formula category</a></li>
               <div class="dropdown-divider"></div>
-        	  <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#export_formulas_json"><i class="fa-solid fa-file-export mx-2"></i>Export Formulas as JSON</a></li>
-        	  <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#import_formulas_json" data-backdrop="static"><i class="fa-solid fa-file-import mx-2"></i>Import Formulas from JSON</a></li>
+        	  <li><a class="dropdown-item" href="/pages/operations.php?action=exportFormulas"><i class="fa-solid fa-file-export mx-2"></i>Export Formulas as JSON</a></li>
+        	  <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#import_formulas_json"><i class="fa-solid fa-file-import mx-2"></i>Import Formulas from JSON</a></li>
 
             </div>
         </div>
@@ -59,7 +59,7 @@ if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients")))){
 	echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> no ingredients yet, click <a href="/?do=ingredients">here</a> to add.</div>';
 }
 if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData")))){
-	echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> no formulas yet, click <a href="#" data-toggle="modal" data-target="#add_formula">here</a> to add.</div>';
+	echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> no formulas yet, click <a href="#" data-bs-toggle="modal" data-bs-target="#add_formula">here</a> to add.</div>';
 }else{
 ?>
 <div id="listFormulas">
@@ -86,7 +86,7 @@ if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))
                     <th>Updated</th>
                     <th>Made</th>
                     <th>Rating</th>
-                    <th></th>
+          			<th data-priority="1"></th>
                 </tr>
             </thead>
         </table>
@@ -105,7 +105,7 @@ if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))
                     <th>Updated</th>
                     <th>Made</th>
                     <th>Rating</th>
-                    <th></th>
+          			<th data-priority="1"></th>
                 </tr>
             </thead>
         </table>
@@ -157,6 +157,7 @@ function initTable(tableId, src) {
 		processing: true,
 		serverSide: true,
 		searching: true,
+		responsive: true,
 		language: {
 			loadingRecords: '&nbsp;',
 			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>',
@@ -167,7 +168,8 @@ function initTable(tableId, src) {
 	    order: [0,'asc'],
 	    columnDefs: [
 			{ orderable: false, targets: [2, 3, 9] },
-			{ className: 'text-center', targets: '_all' },				  
+			{ className: 'text-center', targets: '_all' },
+			{ responsivePriority: 1, targets: 0 }
 		],
 	    destroy: true,
         bFilter: true,
@@ -225,7 +227,7 @@ function fName(data, type, row, meta){
 
 
 function pName(data, type, row, meta){
-	data = '<i class="pv_point_gen_color" data-toggle="modal" data-backdrop="static" data-target="#getFormMeta" data-id="' + row.id + '" data-formula="'+row.name+'">'+row.product_name+'</i>';
+	data = '<i class="pv_point_gen_color" data-bs-toggle="modal" data-bs-target="#getFormMeta" data-id="' + row.id + '" data-formula="'+row.name+'">'+row.product_name+'</i>';
 	
   return data;
 }
@@ -264,26 +266,6 @@ function fStatus(data, type, row, meta){
 	return data;
 }
 
-function fActions(data, type, row, meta){
-		data = '<div class="dropdown">' +
-        '<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
-            '<ul class="dropdown-menu dropdown-menu-right">';
-			
-		data += '<li><i class="pv_point_gen link-dark dropdown-item" data-toggle="modal" data-backdrop="static" data-target="#getFormMeta" data-formula="'+row.name+'" data-id="' + row.id + '"><i class="fas fa-cogs mx-2"></i>Settings</i></li>';
-
-		data += '<li><a class="dropdown-item" href="/pages/operations.php?action=exportFormulas&fid=' + row.fid + '" rel="tip" title="Export '+ row.name +' as JSON" ><i class="fas fa-download mx-2"></i>Export as JSON</a></li>';
-		
-		data += '<li><a class="dropdown-item" href="#" id="addTODO" rel="tip" title="Schedule '+ row.name +' to make" data-id='+ row.fid +' data-name="'+ row.name +'"><i class="fas fa-tasks mx-2"></i>Schedule to make</a></li>';
-		
-		data += '<li><a class="dropdown-item" href="#" id="cloneMe" rel="tip" title="Clone '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"><i class="fas fa-copy mx-2"></i>Clone formula</a></li>';
-		
-		data += '<div class="dropdown-divider"></div>';
-		data += '<li><a class="dropdown-item" href="#" id="deleteMe" style="color: #c9302c;" rel="tip" title="Delete '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"><i class="fas fa-trash mx-2"></i>Permanently delete formula</a></li>';
-		data += '</ul></div>';
-	
-    return data;
-}
-
 function fDate(data, type, row, meta){
   if(type === 'display'){
     if(data == '0000-00-00 00:00:00'){
@@ -296,6 +278,26 @@ function fDate(data, type, row, meta){
     }
   }
   return data;
+}
+
+function fActions(data, type, row, meta){
+		data = '<div class="dropdown">' +
+        '<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+            '<ul class="dropdown-menu dropdown-menu-right">';
+			
+		data += '<li><i class="pv_point_gen link-dark dropdown-item" data-bs-toggle="modal" data-bs-target="#getFormMeta" data-formula="'+row.name+'" data-id="' + row.id + '"><i class="fas fa-cogs mx-2"></i>Settings</i></li>';
+
+		data += '<li><a class="dropdown-item" href="/pages/operations.php?action=exportFormulas&fid=' + row.fid + '" rel="tip" title="Export '+ row.name +' as JSON" ><i class="fas fa-download mx-2"></i>Export as JSON</a></li>';
+		
+		data += '<li><a class="dropdown-item" href="#" id="addTODO" rel="tip" title="Schedule '+ row.name +' to make" data-id='+ row.fid +' data-name="'+ row.name +'"><i class="fas fa-tasks mx-2"></i>Schedule to make</a></li>';
+		
+		data += '<li><a class="dropdown-item" href="#" id="cloneMe" rel="tip" title="Clone '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"><i class="fas fa-copy mx-2"></i>Clone formula</a></li>';
+		
+		data += '<div class="dropdown-divider"></div>';
+		data += '<li><a class="dropdown-item link-danger" href="#" id="deleteMe" rel="tip" title="Delete '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"><i class="fas fa-trash mx-2"></i>Permanently delete formula</a></li>';
+		data += '</ul></div>';
+	
+    return data;
 }
 
 //Clone
@@ -315,10 +317,10 @@ $('table.table').on('click', '[id*=cloneMe]', function () {
 		dataType: 'json',
 		success: function (data) {
 			if (data.success) {
-				var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+				var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 				reload_formulas_data();
 			}else{
-				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 			}
 			$('#inMsg').html(msg);
 		}
@@ -352,10 +354,10 @@ $('table.table').on('click', '[id*=deleteMe]', function () {
 						//$('#inMsg').html(data);
 						//reload_formulas_data();
 						if (data.success) {
-							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 							reload_formulas_data();
 						}else{
-							var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+							var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 						}
 						$('#inMsg').html(msg);
 					}
@@ -365,7 +367,7 @@ $('table.table').on('click', '[id*=deleteMe]', function () {
            },
            cancel: {
                label : "Cancel",
-               className : "btn-default",
+               className : "btn-secondary",
                callback : function() {
                    return true;
                }
@@ -390,10 +392,10 @@ $('table.table').on('click', '[id*=addTODO]', function () {
 	dataType: 'json',
     success: function (data) {
 	  	if (data.success) {
-	  		var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+	  		var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 			reload_formulas_data();
 		}else{
-			var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+			var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 		}
 		$('#inMsg').html(msg);
     }
@@ -416,9 +418,9 @@ $('#add_formula').on('click', '[id*=btnAdd]', function () {
 	dataType: 'json',
     success: function (data) {
 		if(data.error){
-			var rmsg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
+			var rmsg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
 		}else if(data.success){
-			var rmsg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><a href="?do=Formula&id='+data.success.id+'">'+data.success.msg+'</a></div>';
+			var rmsg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><a href="?do=Formula&id='+data.success.id+'">'+data.success.msg+'</a></div>';
 			reload_formulas_data();
 			if($("#go_to_formula").prop("checked")){
 				window.location = "/?do=Formula&id=" + data.success.id
@@ -458,7 +460,7 @@ $("input[type=file]").on('change',function(){
 				$("#step_upload").html(response);
 				$("#btnImport").show();
 			  }else{
-				$("#CSVImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> File upload failed!</div>');
+				$("#CSVImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> File upload failed!</div>');
 			  }
 		},
 	 });
@@ -554,6 +556,9 @@ function reload_formulas_data() {
     $('#all-table').DataTable().ajax.reload(null, true);
 };
 
+$('#close_export_json').click(function() {
+	$('#JSONExportMsg').html('');
+});
 
 $('#add_formula_cat').on('click', '[id*=add-fcat]', function () {
 
@@ -603,43 +608,43 @@ $("#formula-name").keyup(function(){
 </script>
 
 <!--GET FORMULA SETTINGS MODAL-->            
-<div class="modal fade" id="getFormMeta" tabindex="-1" role="dialog" aria-labelledby="getFormMetalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+<div class="modal fade" id="getFormMeta" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="getFormMetalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title mgmIngHeader mgmIngHeader-with-separator" id="getFormMetaLabel">Formula settings</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <div class="alert alert-danger">Unable to get data</div>
+        <div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i>Loading...</div>
       </div>
     </div>
   </div>
 </div>
 
 <!--ADD FORMULA MODAL-->
-<div class="modal fade" id="add_formula" tabindex="-1" role="dialog" aria-labelledby="add_formula" aria-hidden="true">
+<div class="modal fade" id="add_formula" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="add_formula" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title mgmIngHeader mgmIngHeader-with-separator" id="new-formula-name">Add new formula</h5>
       </div>
       <div class="modal-body">
-      <div id="addFormulaMsg"></div>
+      	<div id="addFormulaMsg"></div>
       
-      <div class="form-horizontal">
+      	<div class="form">
 
-      <div class="form-group">
-        <label for="formula-name" class="col-sm-2 control-label">Formula name</label>
-        <div class="col-sm-10">
-          <input name="formula-name" id="formula-name" type="text" class="form-control" />
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="profile" class="col-sm-2 control-label">Profile</label>
-        <div class="col-sm-10">
+          <div class="row mb-3">
+            <div class="col-sm">
+                <label for="formula-name" class="form-label">Formula name</label>
+                <input name="formula-name" id="formula-name" type="text" class="form-control" />
+            </div>
+          </div>
+      <div class="row mb-3">
+        <div class="col-sm">
+          <label for="profile" class="form-label">Profile</label>
           <select name="profile" id="profile" class="form-control selectpicker" data-live-search="true">
              <?php foreach ($fcat as $cat) { if($cat['type'] == 'profile'){?>		
                  <option value="<?=$cat['cname']?>"><?=$cat['name']?></option>
@@ -647,9 +652,9 @@ $("#formula-name").keyup(function(){
           </select>
         </div>
       </div>
-      <div class="form-group">
-        <label for="catClass" class="col-sm-2 control-label">Purpose</label>
-        <div class="col-sm-10">
+      <div class="row mb-3">
+        <div class="col-sm">
+          <label for="catClass" class="form-label">Purpose</label>
           <select name="catClass" id="catClass" class="form-control selectpicker" data-live-search="true">
             <?php foreach ($cats as $IFRACategories) {?>
                 <option value="cat<?php echo $IFRACategories['name'];?>" <?php echo ($settings['defCatClass']=='cat'.$IFRACategories['name'])?"selected=\"selected\"":""; ?>><?php echo 'Cat'.$IFRACategories['name'].' - '.$IFRACategories['description'];?></option>
@@ -657,9 +662,9 @@ $("#formula-name").keyup(function(){
           </select>
         </div>
       </div>
-      <div class="form-group">
-        	<label for="finalType" class="col-sm-2 control-label">Final type</label>
-        	<div class="col-sm-10">
+      <div class="row mb-3">
+        	<div class="col-sm">
+                <label for="finalType" class="form-label">Final type</label>
           		<select name="finalType" id="finalType" class="form-control selectpicker" data-live-search="true">  
             		<option value="100">Concentrated (100%)</option>
             		<?php foreach ($fTypes as $fType) {?>
@@ -669,9 +674,9 @@ $("#formula-name").keyup(function(){
         	</div>
       </div>
       
-      <div class="form-group">
-        <label for="customer" class="col-sm-2 control-label">Customer</label>
-        <div class="col-sm-10">
+      <div class="row mb-3">
+        <div class="col-sm">
+          <label for="customer" class="form-label">Customer</label>
           <select name="customer" id="customer" class="form-control selectpicker" data-live-search="true">
             <option value="0">Internal use</option>
             <?php foreach ((array)$customer as $c) {?>
@@ -680,23 +685,23 @@ $("#formula-name").keyup(function(){
           </select>
         </div>
       </div>
-      <div class="form-group">
-        <label for="notes" class="col-sm-2 control-label">Notes</label>
-        <div class="col-sm-10">
+      <div class="row mb-3">
+        <div class="col-sm">
+          <label for="notes" class="form-label">Notes</label>
           <textarea name="notes" id="notes" cols="45" rows="5" class="form-control"></textarea>
         </div>
       </div>
     </div>
 
       <hr/>
-      <div class="form-group">
+      <div class="row mb-3">
         <div class="mx-4">
     		<input type="checkbox" class="form-check-input" id="go_to_formula" checked>
    			<label class="form-check-label" for="go_to_formula">Go to formula when created</label>
   		</div>
       </div>
 	  <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         <input type="submit" name="button" class="btn btn-primary" id="btnAdd" value="Add formula">
       </div>
     </div>
@@ -705,12 +710,12 @@ $("#formula-name").keyup(function(){
 </div>
 
 <!--IMPORT FORMULA CSV MODAL-->
-<div class="modal fade" id="add_formula_csv" tabindex="-1" role="dialog" aria-labelledby="add_formula_csv" aria-hidden="true">
-  <div class="modal-dialog pv-modal-xxl" role="document">
+<div class="modal fade" id="add_formula_csv" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="add_formula_csv" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Import formula from CSV</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -719,15 +724,15 @@ $("#formula-name").keyup(function(){
       <div id=process_area>
       
         <div class="form-group">
-            <label class="col-md-3 control-label">Formula name:</label>
-            <div class="col-md-8">
+            <label class="col-md-3 form-label">Formula name</label>
+            <div class="col-md">
               <input type="text" name="CSVname" id="CSVname" class="form-control"/>
             </div>
 		</div>  
         <div class="form-group">
-            <label class="col-md-3 control-label">Profile:</label>
-            <div class="col-md-8">
-             <select name="CSVProfile" id="CSVProfile" class="form-control">
+            <label class="col-md-3 form-label">Profile</label>
+            <div class="col-md">
+             <select name="CSVProfile" id="CSVProfile" class="form-control selectpicker" data-live-search="true">
              <?php foreach ($fcat as $cat) { if($cat['type'] == 'profile'){?>		
                 <option value="<?=$cat['cname']?>"><?=$cat['name']?></option>
              <?php } }?>
@@ -735,13 +740,13 @@ $("#formula-name").keyup(function(){
             </div>
 		</div>
         <div class="form-group">
-            <label class="col-md-3 control-label">CSV file:</label>
-            <div class="col-md-8">
+            <label class="col-md-3 form-label">CSV file</label>
+            <div class="col-md">
               <input type="file" name="CSVFile" id="CSVFile" class="form-control" />
             </div>
 		</div>
         <div id="step_upload" class="modal-body"></div>
-        <div class="col-md-12">
+        <div class="col-md">
            <hr />
            <p>CSV format: <strong>ingredient,concentration,dilutant,quantity</strong></p>
            <p>Example: <em><strong>Ambroxan,10,TEC,0.15</strong></em></p>
@@ -752,7 +757,7 @@ $("#formula-name").keyup(function(){
       </div>
       
 	  <div class="modal-footer">
-        <input type="button" class="btn btn-secondary" data-dismiss="modal" id="btnCloseCsv" value="Cancel">
+        <input type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseCsv" value="Cancel">
         <input type="submit" name="btnImport" class="btn btn-primary" id="btnImport" value="Import">
       </div>
    
@@ -762,7 +767,7 @@ $("#formula-name").keyup(function(){
 </div>
 
 <!--ADD CATEGORY MODAL-->
-<div class="modal fade" id="add_formula_cat" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="add_formula_cat" aria-hidden="true">
+<div class="modal fade" id="add_formula_cat" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="add_formula_cat" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -772,49 +777,28 @@ $("#formula-name").keyup(function(){
       <div class="modal-body">
       	<div id="fcatMsg"></div>
         <div class="form-group">
-              <label class="col-md-3 control-label">Name:</label>
-              <div class="col-md-8">
+              <label class="col-md-3 form-label">Category name</label>
+              <div class="col-md">
               	<input name="fcatName" id="fcatName" type="text" class="form-control" />
               </div>
 		</div>
       </div>
 	  <div class="modal-footer">
-        <input type="button" class="btn btn-secondary" data-dismiss="modal" id="close_cat" value="Cancel">
+        <input type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="close_cat" value="Cancel">
         <input type="submit" name="add-fcat" class="btn btn-primary" id="add-fcat" value="Create">
       </div>   
   </div>
 </div>
 </div>
 
-<!--EXPORT JSON MODAL-->
-<div class="modal fade" id="export_formulas_json" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="export_formulas_json" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Export formulas as a JSON file</h5>
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-           <div class="row">
-            	This will generate a JSON file from all of your formulas. This may take a while to complete, depending on how many formulas you have and their complexity.
-           </div>
-		</div>
-      </div>
-	  <div class="modal-footer">
-        <input type="button" class="btn btn-secondary" data-dismiss="modal" id="close_export_json" value="Cancel">
-        <a href="/pages/operations.php?action=exportFormulas" class="btn btn-primary active" role="button" aria-pressed="true">Export</a>
-      </div>   
-  </div>
-</div>
-</div>
 
 <!--IMPORT JSON MODAL-->
-<div class="modal fade" id="import_formulas_json" tabindex="-1" role="dialog" aria-labelledby="import_formulas_json" aria-hidden="true">
+<div class="modal fade" id="import_formulas_json" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="import_formulas_json" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Import formulas from a JSON file</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -826,8 +810,8 @@ $("#formula-name").keyup(function(){
       <div id="backupArea">
       
           <div class="form-group">
-              <label class="col-md-3 control-label">JSON file:</label>
-              <div class="col-md-8">
+              <label class="col-md-3 form-label">JSON file:</label>
+              <div class="col-md">
                  <input type="file" name="backupFile" id="backupFile" class="form-control" />
               </div>
           </div>
@@ -844,7 +828,7 @@ $("#formula-name").keyup(function(){
       
       </div>
 	  <div class="modal-footer">
-        <input type="button" class="btn btn-secondary" data-dismiss="modal" id="btnCloseBK" value="Cancel">
+        <input type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseBK" value="Cancel">
         <input type="submit" name="btnRestore" class="btn btn-primary" id="btnRestoreFormulas" value="Import">
       </div>
    

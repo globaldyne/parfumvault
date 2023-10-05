@@ -17,11 +17,11 @@ $ingID = mysqli_real_escape_string($conn, $_POST["ingID"]);
 <hr>
 <div id="infRepOut"></div>
 <div class="card-body">
- 	<div class="text-right">
+ 	<div class="text-right mx-2">
   		<div class="btn-group">
-   			<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
-    		<div class="dropdown-menu dropdown-menu-right">
-        		<li><a class="dropdown-item" href="#" data-toggle="modal" data-backdrop="static" data-target="#addReplacement"><i class="fa-solid fa-plus mr2"></i>Add new</a></li>
+   			<button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
+    		<div class="dropdown-menu">
+        		<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addReplacement"><i class="fa-solid fa-plus mx-2"></i>Add new</a></li>
     		</div>
   		</div>                    
 	</div>
@@ -42,7 +42,7 @@ $ingID = mysqli_real_escape_string($conn, $_POST["ingID"]);
 <script type="text/javascript" language="javascript" >
 $(document).ready(function() {
 
-$('[data-toggle="tooltip"]').tooltip();
+$('[data-bs-toggle="tooltip"]').tooltip();
 var tdReplacements = $('#tdReplacements').DataTable( {
 	columnDefs: [
 		{ className: 'text-center', targets: '_all' },
@@ -82,20 +82,21 @@ function repName(data, type, row){
 	
 	$('#tdReplacements').editable({
 		select2: {
-			width: '250px',
+			width: '100%',
 			placeholder: 'Search for ingredient (name, cas)',
 			allowClear: true,
 			dropdownAutoWidth: true,
 			minimumInputLength: 2,
+			dropdownParent: '.popover:last',
 			ajax: {
 				url: '/core/list_ingredients_simple.php',
 				dataType: 'json',
 				type: 'POST',
 				delay: 100,
 				quietMillis: 250,
-				data: function (data) {
+				data: function (params) {
 					return {
-						search: data
+						search: params.term
 					};
 				},
 				processResults: function(data) {
@@ -138,7 +139,7 @@ function repNotes(data, type, row){
 }
 
 function repActions(data, type, row){
-	return '<a href="#" id="repDel" class="fas fa-trash" style="color: #c9302c;" data-id="'+row.id+'" data-name="'+row.ing_rep_name+'"></a>';    
+	return '<a href="#" id="repDel" class="fas fa-trash link-danger" data-id="'+row.id+'" data-name="'+row.ing_rep_name+'"></a>';    
 }
 
 
@@ -175,10 +176,10 @@ $('#tdReplacements').on('click', '[id*=repDel]', function () {
 					dataType: 'json',
 					success: function (data) {
 						if(data.success){
-							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+							var msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>' + data.success + '</div>';
 							reload_rep_data();
 						}else{
-							var msg ='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+							var msg ='<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + data.error + '</div>';
 						}
 						$('#infRepOut').html(msg);
 					}
@@ -189,7 +190,7 @@ $('#tdReplacements').on('click', '[id*=repDel]', function () {
            },
            cancel: {
                label : "Cancel",
-               className : "btn-default",
+               className : "btn-secondary",
                callback : function() {
                    return true;
                }
@@ -201,11 +202,12 @@ $('#tdReplacements').on('click', '[id*=repDel]', function () {
 var repCas;
 var repID;
 $("#repName").select2({
-	width: '250px',
+	width: '100%',
 	placeholder: 'Search for ingredient (name, cas)',
 	allowClear: true,
 	dropdownAutoWidth: true,
 	minimumInputLength: 2,
+	dropdownParent: $('#addReplacement .modal-content'),
 	ajax: {
 		url: '/core/list_ingredients_simple.php',
 		dataType: 'json',
@@ -234,10 +236,10 @@ $("#repName").select2({
 		
 	}
 	
-}).on('select2-selected', function (data) {
-  		 repCas = data.choice.cas;
-		 repID = data.choice.ingId;
-		 $('#repNotes').html(data.choice.description);
+}).on('select2:selecting', function (e) {
+  		 repCas = e.params.args.data.cas;
+		 repID = e.params.args.data.ingId;
+		 $('#repNotes').html(e.params.args.data.description);
 });
 
 $('#addReplacement').on('click', '[id*=repAdd]', function () {
@@ -257,13 +259,13 @@ $('#addReplacement').on('click', '[id*=repAdd]', function () {
 		dataType: 'json',
 		success: function (data) {
 			if(data.success){
-				var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+				var msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>' + data.success + '</div>';
 				$("#repName").val('');
 				$("#repCas").val('');
 				$("#repNotes").val('');
 				reload_rep_data();
 			}else{
-				var msg ='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				var msg ='<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + data.error + '</div>';
 			}
 			$('#infRep').html(msg);
 		}
@@ -279,7 +281,7 @@ function reload_rep_data() {
 
 </script>
 <!-- ADD ING REPLACEMENT -->
-<div class="modal fade" id="addReplacement" tabindex="-1" role="dialog" aria-labelledby="addReplacement" aria-hidden="true">
+<div class="modal fade" id="addReplacement" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="addReplacement" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -287,17 +289,23 @@ function reload_rep_data() {
       </div>
       <div class="modal-body">
       <div id="infRep"></div>
-            Ingredient: 
-            <input name="repName" id="repName" type="text" class="pv-form-control">
-        	<p>
-            </p>
-            Notes: 
-            <textarea name="repNotes" class="form-control" id="repNotes"></textarea>
-            </p>
-        <div class="dropdown-divider"></div>
+      <div class="col-sm">
+      	<div class="form-row">
+        	<div class="col">
+            	<label for="repName">Ingredient</label> 
+            	<select name="repName" id="repName" class="pv-form-control"></select>
+        	</div>
+         </div>
+         <div class="form-row">
+        	<div class="col">
+            	<label for="repNotes">Notes</label>
+            	<textarea name="repNotes" class="form-control" id="repNotes"></textarea>
+            </div>
+         </div>
+      </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         <input type="submit" name="button" class="btn btn-primary" id="repAdd" value="Add">
       </div>
     </div>
