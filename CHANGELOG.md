@@ -2,6 +2,7 @@
 
 ### Version 8.8
 - Core update to BS5
+- Major code update
 
 ### Version 8.7
 - Reset form state when adding an ingredient in formula making
