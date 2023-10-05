@@ -1,4 +1,9 @@
 # CHANGELOG
+
+### Version 8.8
+- Core update to BS5
+- Major code update
+
 ### Version 8.7
 - Reset form state when adding an ingredient in formula making
 - If the materila quantity exceeds the amount in stock, when making a formula, PV will add the material and update material's quantity down to its maximum available, instead if returning an error
@@ -8,10 +13,11 @@
 - Fix formulas json export
 - Fix api log file
 - Fix a bug returning error when you searching a non-existing ingredient to merge in formula
-- Restructure formula settings page 
+- Restructure formula settings page
 - Revert formula count query change
 
 ### Version 8.5
+- Upgrade to Bootstrap 5
 - Fix formulas json export
 - Ingredient general tab re-design
 - Pubchem tab re-design

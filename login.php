@@ -26,7 +26,7 @@ if(isset($_SESSION['parfumvault'])){
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
   <script src="/js/jquery/jquery.min.js"></script>
-  <script src="/js/bootstrap.min.js"></script>
+  <script src="/js/bootstrap.bundle.min.js"></script>
  
   <link href="/css/sb-admin-2.css" rel="stylesheet">
   <link href="/css/bootstrap.min.css" rel="stylesheet">
@@ -117,12 +117,12 @@ if(isset($_SESSION['parfumvault'])){
                   
                   <hr>
                   <div class="text-center">
-                    <a class="small" href="#" data-toggle="modal" data-target="#forgot_pass">Forgot Password?</a>
+                    <a class="small" href="#" data-bs-toggle="modal" data-bs-target="#forgot_pass">Forgot Password?</a>
                   </div>
             <?php } ?>		 		 
                   <hr>
                   <div class="copyright text-center my-auto">
-				  <label class="small">Version: <?php echo $ver; ?> | <a href="https://www.perfumersvault.com/" class="link-dark" target="_blank"><?php echo $product; ?></a></label>
+				  <label class="small">Version: <?php echo $ver; ?> |<a href="https://www.perfumersvault.com/" class="link-dark mx-1" target="_blank"><?php echo $product; ?></a></label>
                   </div>
                 </div>
               </div>
@@ -137,12 +137,12 @@ if(isset($_SESSION['parfumvault'])){
 
 
 <!--FORGOT PASS INFO-->
-<div class="modal fade" id="forgot_pass" tabindex="-1" role="dialog" aria-labelledby="forgot_pass" aria-hidden="true">
+<div class="modal fade" id="forgot_pass" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="forgot_pass" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Forgot Password</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -160,7 +160,7 @@ if(isset($_SESSION['parfumvault'])){
       <?php } ?>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
   </div>

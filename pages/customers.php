@@ -13,9 +13,9 @@
                  <tr class="noBorder noexport">
                      <div class="text-right">
                       <div class="btn-group">
-                          <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
+                          <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
                           <div class="dropdown-menu dropdown-menu-right">
-                            <li><a class="dropdown-item" href="#" data-toggle="modal" data-backdrop="static" data-target="#addCustomer"><i class="fa-solid fa-plus mx-2"></i>Add new</a></li>
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addCustomer"><i class="fa-solid fa-plus mx-2"></i>Add new</a></li>
                             <li><a class="dropdown-item" id="exportCSV" href="#"><i class="fa-solid fa-file-export mx-2"></i>Export to CSV</a></li>
                           </div>
                         </div>
@@ -41,7 +41,7 @@
     </div>
  
 <!-- ADD NEW-->
-<div class="modal fade" id="addCustomer" tabindex="-1" role="dialog" aria-labelledby="addCustomer" aria-hidden="true">
+<div class="modal fade" id="addCustomer" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="addCustomer" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -62,7 +62,7 @@
               <input class="form-control" name="web" type="text" id="web" /> 
               
               <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         	  <input type="submit" name="button" class="btn btn-primary" id="customer_add" value="Add">
       </div>
     </div>
@@ -71,12 +71,12 @@
 </div>
 
 <!--EDIT CUSTOMER MODAL-->            
-<div class="modal fade" id="editCustomer" tabindex="-1" role="dialog" aria-labelledby="editCustomerLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+<div class="modal fade" id="editCustomer" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="editCustomerLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title mgmIngHeader mgmIngHeader-with-separator" id="editCustomerLabel">Edit customer</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -165,12 +165,12 @@ $(document).ready(function() {
 
 function actions(data, type, row){
 		data = '<div class="dropdown">' +
-        '<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+        '<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
             '<ul class="dropdown-menu dropdown-menu-right">';
-		data += '<li><a href="#" class="dropdown-item" data-toggle="modal" data-backdrop="static" data-target="#editCustomer" rel="tip" title="Edit '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-edit mx-2"></i>Edit</a></li>';
+		data += '<li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editCustomer" rel="tip" title="Edit '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-edit mx-2"></i>Edit</a></li>';
 		data += '<li><a href="'+ row.web +'" class="dropdown-item" target="_blank" rel="tip" title="Open '+ row.name +' page"><i class="fas fa-shopping-cart mx-2"></i>Go to customer</a></li>';
 		data += '<div class="dropdown-divider"></div>';
-		data += '<li><a class="dropdown-item" href="#" id="cDel" style="color: #c9302c;" rel="tip" title="Delete '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-trash mx-2"></i>Delete</a></li>';
+		data += '<li><a class="dropdown-item link-danger" href="#" id="cDel" rel="tip" title="Delete '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-trash mx-2"></i>Delete</a></li>';
 		data += '</ul></div>';
 	return data;
 }
@@ -204,10 +204,10 @@ $('#tdDataCustomers').on('click', '[id*=cDel]', function () {
 					dataType: 'json',
 					success: function (data) {
 						if(data.success){
-							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
+							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
 							reload_data();
 						}else if(data.error){
-							var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
+							var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
 						}
 						$('#innermsg').html(msg);
 					}
@@ -218,7 +218,7 @@ $('#tdDataCustomers').on('click', '[id*=cDel]', function () {
            },
            cancel: {
                label : "Cancel",
-               className : "btn-default",
+               className : "btn-secondary",
                callback : function() {
                    return true;
                }
@@ -242,10 +242,10 @@ $('#customer_add').on('click', function () {
 		},
         success: function(response){
 			if(response.success){
-               $("#customer_inf").html('<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+response.success+'</div>');
+               $("#customer_inf").html('<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+response.success+'</div>');
 				reload_data();
             }else{
-                $("#customer_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+response.error+'</div>');
+                $("#customer_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+response.error+'</div>');
             }
           },
        });

@@ -32,7 +32,7 @@ $doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM docu
         <div class="dropdown-divider"></div>
         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
 			<div class="text-right">
-        		<input name="upload-avatar" type="submit" class="btn btn-dark" id="upload-avatar" value="Upload" />
+        		<input name="upload-avatar" type="submit" class="btn-dark" id="upload-avatar" value="Upload" />
         	</div>
         </div>
       </div>

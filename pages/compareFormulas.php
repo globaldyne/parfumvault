@@ -4,7 +4,7 @@
 		<div>
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h2 class="m-0 font-weight-bold text-primary"><a href="?do=compareFormulas">Compare formulas</a></h2>
+              <h2 class="m-0 font-weight-bold text-primary"><a href="/?do=compareFormulas">Compare formulas</a></h2>
             </div>
             <div class="card-body">
             <?php 
@@ -67,7 +67,7 @@
 <script>
 $('#btnCMP').click(function() {
 	$.ajax({ 
-		url: '/pages/cmp_formulas_data.php', 
+		url: '/pages/views/formula/cmp_formulas_data.php', 
 		type: 'POST',
 		data: {
 			id_a: $("#formula_a").val(),			

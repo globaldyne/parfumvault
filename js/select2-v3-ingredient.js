@@ -37,11 +37,11 @@ $(document).ready(function(){
 	$("#ingredient").select2({
 		minimumInputLength: 2,
     	dropdownAutoWidth: true,
-		theme: 'bootstrap',
+		//containerCssClass : "form-select mb-3",
         allowClear: true,
 		placeholder: 'Choose ingredient (name, cas)',
-		formatResult: formatIngredients,
-		formatSelection: formatIngredientsSelection,
+		templateResult: formatIngredients,
+		templateSelection: formatIngredientsSelection,
 		ajax: {
 			url: '/core/list_ingredients_simple.php',
 			dataType: 'json',
@@ -67,7 +67,7 @@ $(document).ready(function(){
 							name: obj.name,
 							IUPAC: obj.IUPAC,
 							cas: obj.cas,
-							type: obj.type,
+							ingType: obj.type,
 							description: obj.description,
 							physical_state: obj.physical_state,
 							stock: obj.stock,
@@ -79,10 +79,10 @@ $(document).ready(function(){
 			cache: true
 		}
 	  
-	}).on('select2-open', () => {
-		$(".select2-with-searchbox:not(:has(a))").prepend('<div id="add_new_ing_sel" class="select_add_new_ingredient "><a class="text-primary fa fa-plus ml2"></a><a href="/pages/mgmIngredient.php" class="popup-link text-primary add-new-ing-sel">Create new ingredient</a></div>');
+	}).on('select2:open', () => {
+		$(".select2-search:not(:has(a))").prepend('<div id="add_new_ing_sel" class="select_add_new_ingredient mb-2"><a class="text-primary fa fa-plus mx-2"></a><a href="/pages/mgmIngredient.php" class="popup-link text-primary add-new-ing-sel">Create new ingredient</a></div>');
 		
-		$(".select2-with-searchbox:not(:has(i))").append('<div class="select2-totalRecords"></div><div class="select_deep_ingredient"><span><div id="select_search_deep" class="select_search_deep"><i class="pv_point_gen" rel="tip" data-placement="bottom" title="Extend search in synonyms"><input data-default="true" type="checkbox" id="isDeep"> Deep Search</i></div></span></div>');
+		$(".select2-search:not(:has(i))").append('<div class="select2-totalRecords"></div><div class="select_deep_ingredient"><span><div id="select_search_deep" class="select_search_deep"><i class="pv_point_gen mx-2" rel="tip" data-placement="bottom" title="Extend search in synonyms"><input data-default="true" type="checkbox" id="isDeep"></i>Deep Search</div></span></div>');
 		
 		$('#isDeep').prop('checked', false);
 		isDeep = false;
@@ -91,9 +91,9 @@ $(document).ready(function(){
 		$('.popover').hide();
 		extrasShow();
 
-	}).on('select2-selected', function (data) {
-  		var id = data.choice.id;
-   		var type = data.choice.type
+	}).on('select2:selecting', function (e) {
+  		var id = e.params.args.data.id;
+   		var type = e.params.args.data.ingType;
 		
 	  	$(this).attr('ing-id', id);
 	   	$(this).attr('ing-type', type);
@@ -123,7 +123,7 @@ $(document).ready(function(){
 			"<div class='select_result_igredient clearfix'>" +
 			  "<div class='select_result_igredient_meta'>" +
 				"<div class='select_igredient_title'></div>" +
-				"<span id='stock' ></span></div>"+
+				"<span id='stock'></span></div>"+
 				"<div class='select_result_igredient_description'></div>" +
 				"<div class='select_result_igredient_info'>" +
 				  "<div class='select_result_igredient_cas'></div>" +
@@ -156,10 +156,10 @@ $(document).ready(function(){
 	}
 	
 	//UPDATE PURITY
-	$('#ingredient').on('select2-selected', function(data){
-		var ingType = $(data.currentTarget).attr('ing-type');
-		var ingID = $(data.currentTarget).attr('ing-id');
-		
+	$('#ingredient').on('select2:selecting', function(e){
+		var ingType = $(e.currentTarget).attr('ing-type');
+		var ingID = $(e.currentTarget).attr('ing-id');
+		//console.log(e);
 		$.ajax({ 
 			url: '/pages/getIngInfo.php', 
 			type: 'GET',

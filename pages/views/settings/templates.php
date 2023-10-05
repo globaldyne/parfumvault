@@ -10,9 +10,9 @@ require_once(__ROOT__.'/inc/sec.php');
 <div class="card-body">
   <div class="text-right">
     <div class="btn-group">
-    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
+    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
         <div class="dropdown-menu dropdown-menu-right">
-            <li><a class="dropdown-item" href="#" data-toggle="modal" data-backdrop="static" data-target="#addTmpl"><i class="fa-solid fa-plus mr2"></i>Add new</a></li>
+            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addTmpl"><i class="fa-solid fa-plus mx-2"></i>Add new</a></li>
         </div>
     </div>                    
   </div>
@@ -91,40 +91,18 @@ function description(data, type, row){
 }
 
 function created(data, type, row){
-	data = row.created;
-	if(type === 'display'){
-		if(data == '0000-00-00 00:00:00'){
-      		data = '-';
-    	}else{
-	    	let dateTimeParts= data.split(/[- :]/); 
-			dateTimeParts[1]--; 
-			const dateObject = new Date(...dateTimeParts); 
-        	data = dateObject.toLocaleDateString() + " " + dateObject.toLocaleTimeString();
-   		 }
-  	}
-	return data;    
+	return row.created;    
 }
 
 function updated(data, type, row){
-	data = row.updated;
-	if(type === 'display'){
-		if(data == '0000-00-00 00:00:00'){
-      		data = '-';
-    	}else{
-	    	let dateTimeParts= data.split(/[- :]/); 
-			dateTimeParts[1]--; 
-			const dateObject = new Date(...dateTimeParts); 
-        	data = dateObject.toLocaleDateString() + " " + dateObject.toLocaleTimeString();
-   		 }
-  	}
-	return data;    
+	return row.updated;    
 }
 
 function actions(data, type, row){	
 		data = '<div class="dropdown">' +
-        '<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+        '<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
             '<ul class="dropdown-menu dropdown-menu-right">';
-		data += '<li><a href="#" class="dropdown-item" data-toggle="modal" data-backdrop="static" data-target="#editTmpl" rel="tip" title="Edit '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-edit mr2"></i>Edit</a></li>';
+		data += '<li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editTmpl" rel="tip" title="Edit '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-edit mr2"></i>Edit</a></li>';
 		data += '<div class="dropdown-divider"></div>';
 		data += '<li><a class="dropdown-item text-danger" href="#" id="sDel" rel="tip" title="Delete '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-trash mr2"></i>Delete</a></li>';
 		data += '</ul></div>';
@@ -199,7 +177,7 @@ $('#tdTempls').on('click', '[id*=sDel]', function () {
            },
            cancel: {
                label : "Cancel",
-               className : "btn-default",
+               className : "btn-secondary",
                callback : function() {
                    return true;
                }
@@ -221,9 +199,9 @@ $('#addTmpl').on('click', '[id*=sAdd]', function () {
 		dataType: 'json',
 		success: function (data) {
 			if(data.success){
-				var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+				var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 			}else{
-				var msg ='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				var msg ='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 			}
 			$('#tmpl_inf').html(msg);
 			reload_data();
@@ -258,12 +236,12 @@ $("#editTmpl").on("show.bs.modal", function(e) {
 </script>
 
 <!-- ADD TEMPLATE -->
-<div class="modal fade" id="addTmpl" tabindex="-1" role="dialog" aria-labelledby="addTmpl" aria-hidden="true">
+<div class="modal fade" id="addTmpl" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="addTmpl" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Add new template</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -285,7 +263,7 @@ $("#editTmpl").on("show.bs.modal", function(e) {
             <div class="dropdown-divider"></div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         <input type="submit" name="button" class="btn btn-primary" id="sAdd" value="Add">
       </div>
     </div>
@@ -294,12 +272,12 @@ $("#editTmpl").on("show.bs.modal", function(e) {
 </div>
 
 <!--EDIT MODAL-->            
-<div class="modal fade" id="editTmpl" tabindex="-1" role="dialog" aria-labelledby="editTmplLabel" aria-hidden="true">
+<div class="modal fade" id="editTmpl" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="editTmplLabel" aria-hidden="true">
   <div class="modal-dialog pv-modal-xxl modal-dialog-scrollable" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title mgmIngHeader mgmIngHeader-with-separator" id="editTmplLabel">Edit template</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>

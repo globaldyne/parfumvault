@@ -1,5 +1,5 @@
 <?php 
-define('__ROOT__', dirname(dirname(__FILE__))); 
+define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__))))); 
 
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
@@ -69,7 +69,7 @@ var formula_b_table = $('#formula_b_table').DataTable({
 				var formula_a_data = formula_a_table.row(y).data();
 				if (formula_a_data.quantity === formula_b_tableData.quantity &&
 				   formula_a_data.ingredient.name === formula_b_tableData.ingredient.name) {
-				   $(formula_b_tableRow).removeClass().addClass('success');
+				   $(formula_b_tableRow).removeClass().addClass('badge-success');
 				   break; 
 				}else{
 				   $(formula_b_tableRow).removeClass().addClass('pv_formula_diff');
@@ -84,7 +84,7 @@ var formula_b_table = $('#formula_b_table').DataTable({
 </script>
 <div class="compare">
     <div class="cmp_a">
-        <table id="formula_a_table" class="table table-striped table-bordered nowrap viewFormula" style="width:100%">
+        <table id="formula_a_table" class="table table-striped table-bordered nowrap" style="width:100%">
             <thead>
                 <tr>
                     <th>Ingredient</th>
@@ -95,7 +95,7 @@ var formula_b_table = $('#formula_b_table').DataTable({
         </table>
     </div>
         <div class="cmp_a">
-        <table id="formula_b_table" class="table table-striped table-bordered nowrap viewFormula" style="width:100%">
+        <table id="formula_b_table" class="table table-striped table-bordered nowrap" style="width:100%">
             <thead>
                 <tr>
                     <th>Ingredient</th>

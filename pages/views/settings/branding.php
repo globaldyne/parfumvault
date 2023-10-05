@@ -49,12 +49,12 @@ require_once(__ROOT__.'/inc/settings.php');
       </div>
       <div class="col-md-4">
         <div class="text-center">
-          <div id="brandLogo_pic"><div class="loader"></div></div>
+          <div id="brandLogo_pic" class="mb-3"><div class="loader"></div></div>
           <input type="file" id="brandLogo" name="brandLogo" class="form-control" />
         </div>
         <div class="dropdown-divider"></div>
         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-			<div class="text-right">
+			<div class="text-right mt-3">
         		<input type="button" class="btn btn-info" value="Upload" id="brandLogo_upload" />
         	</div>
         </div>
@@ -113,14 +113,14 @@ $("#brandLogo_upload").click(function(){
 				$('#brandLogo_pic').html('<img class="img-profile-avatar" src="'+response.success.pic+'">');
 
 			 }else{
-				$("#brandMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>'+response.error+'</div>');
+				$("#brandMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+response.error+'</div>');
 				$("#brandLogo_upload").prop("disabled", false);
 				$("#brandLogo_upload").prop('value', 'Upload');
 			 }
 		  },
 	   });
     }else{
-		$("#brandMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a file to upload!</div>');
+		$("#brandMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a file to upload!</div>');
 		$("#brandLogo_upload").prop("disabled", false);
 		$("#brandLogo_upload").prop('value', 'Upload');
 		}

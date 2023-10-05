@@ -13,7 +13,7 @@ if(!$_POST['search']){
 	return;
 }
 
-$s = trim($_POST['search']);
+$s = trim($_POST['search']['term']);
 
 if ($_POST['isDeepQ'] == "true"){
 	$t = "synonyms,ingredients";
