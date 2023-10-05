@@ -1,5 +1,7 @@
 # CHANGELOG
 
+### Version 8.9
+
 ### Version 8.8
 - Core update to BS5
 - Major code update
