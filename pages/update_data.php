@@ -11,6 +11,21 @@ require_once(__ROOT__.'/func/priceScrape.php');
 require_once(__ROOT__.'/func/create_thumb.php');
 require_once(__ROOT__.'/func/pvFileGet.php');
 
+
+//WIPE OUT INGREDIENTS
+if($_POST['ingredient_wipe'] == 'true'){
+	
+	if(mysqli_query($conn, "TRUNCATE ingredients")){
+		$response["success"] = 'Ingredients removed';
+	}else{
+		$response["error"] = 'Something went wrong '.mysqli_error($conn);
+	}
+	
+	echo json_encode($response);
+	return;	
+}
+
+
 //UPDATE CAS IFRA ENTRY
 if($_GET['IFRA'] == 'edit' && $_POST['value'] && $_GET['type'] == 'CAS'){
 	
