@@ -1,7 +1,8 @@
 # CHANGELOG
 
 ### Version 8.9
-- Add option to wipe ingredients database
+- Add option to wipe out all ingredients
+- Add option to wipe out all formulas
 
 ### Version 8.8
 - Core update to BS5

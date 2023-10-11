@@ -11,12 +11,39 @@ require_once(__ROOT__.'/func/priceScrape.php');
 require_once(__ROOT__.'/func/create_thumb.php');
 require_once(__ROOT__.'/func/pvFileGet.php');
 
+//WIPE OUT FROMULAS
+if($_POST['formulas_wipe'] == 'true'){
+	
+	if(mysqli_query($conn, "TRUNCATE formulas")){
+		mysqli_query($conn, "TRUNCATE formulasMetaData");
+		mysqli_query($conn, "TRUNCATE formula_history");
+		mysqli_query($conn, "TRUNCATE formulasTags");
+		mysqli_query($conn, "TRUNCATE allergens");
+		mysqli_query($conn, "TRUNCATE formulaCategories");
+		mysqli_query($conn, "TRUNCATE formulasRevisions");
+		mysqli_query($conn, "TRUNCATE makeFormula");
+
+		$response["success"] = 'Formulas and related data deleted';
+	}else{
+		$response["error"] = 'Something went wrong '.mysqli_error($conn);
+	}
+	
+	echo json_encode($response);
+	return;	
+}
 
 //WIPE OUT INGREDIENTS
 if($_POST['ingredient_wipe'] == 'true'){
 	
 	if(mysqli_query($conn, "TRUNCATE ingredients")){
-		$response["success"] = 'Ingredients removed';
+		mysqli_query($conn, "TRUNCATE ingCategory");
+		mysqli_query($conn, "TRUNCATE ingProfiles");
+		mysqli_query($conn, "TRUNCATE ingReplacements");
+		mysqli_query($conn, "TRUNCATE ingSafetyInfo");
+		mysqli_query($conn, "TRUNCATE suppliers");
+		mysqli_query($conn, "TRUNCATE synonyms");
+
+		$response["success"] = 'Ingredients and related data deleted';
 	}else{
 		$response["error"] = 'Something went wrong '.mysqli_error($conn);
 	}
