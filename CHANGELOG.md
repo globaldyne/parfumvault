@@ -1,6 +1,7 @@
 # CHANGELOG
 
 ### Version 8.9
+- Fix api log file error
 - Add option to wipe out all ingredients
 - Add option to wipe out all formulas
 
