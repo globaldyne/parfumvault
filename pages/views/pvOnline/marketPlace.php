@@ -125,7 +125,7 @@ var tableMarket = $("#all-table-market").DataTable({
 	   dataType: 'json',
 	   timeout: 5000,
 	   data: function(d) {
-		   d.do = 'MarketPlace'
+		   d.request = 'MarketPlace'
 		   d.action = 'list_all'
 			if (d.order.length>0){
 				d.order_by = d.columns[d.order[0].column].data
@@ -136,7 +136,7 @@ var tableMarket = $("#all-table-market").DataTable({
 	   columns: [
 	    	{ data : 'name', title: 'Formula Name', render: name},
 			{ data : null, title: 'Status', render: status},
-	    	{ data : 'author', title: 'Author'},
+	    	{ data : 'author', title: 'Author', render: author},
 	   		{ data : 'cost', title: 'License', render: cost},
 	   		{ data : 'created_at', title: 'Published'},
 	   		{ data : null, title: '', render: actions},				   
@@ -232,6 +232,13 @@ function cost(data, type, row){
 function name(data, type, row){
 	
 	data = '<i class="pv_point_gen pv_gen_li" id="open-details"> ' + data + '</i>';
+
+  	return data;
+}
+
+function author(data, type, row){
+	
+	data = '<i class="pv_point_gen pv_gen_li" id="open-details"> <a href="'+row.author.url+'" target="_blank">' + row.author.name + '</a></i>';
 
   	return data;
 }

@@ -225,7 +225,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
       
       </div>
       <div class="modal-footer_2">
-	  <?php require('privacy_note.php');?>
+	  <?php require(__ROOT__.'/pages/privacy_note.php');?>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="importClose">Close</button>
@@ -279,7 +279,7 @@ $('#btnAdvSearch').click(function() {
 
 
 $('#pv_online_import').on('click', '[id*=btnImport]', function () {
-	$('#btnImport').attr('disabled', true);
+	//$('#btnImport').attr('disabled', true);
 	$('#importClose').attr('disabled', true);
 	$('#pvImportMsg').html('<div class="alert alert-info mx-2"><img src="/img/loading.gif"/>Please wait, this may take a while...</div>');
 	$.ajax({
@@ -287,7 +287,7 @@ $('#pv_online_import').on('click', '[id*=btnImport]', function () {
 		type: 'POST',
 		data: {
 			action: 'import',
-			items: 'ingredients,allergens,suppliers,suppliersMeta,synonyms',
+			items: 'ingredients,compositions,synonyms',
 			includeSynonyms: $("#includeSynonyms").is(':checked'),
 			includeCompositions: $("#includeCompositions").is(':checked'),
 			},
@@ -298,7 +298,7 @@ $('#pv_online_import').on('click', '[id*=btnImport]', function () {
 				$('#btnImport').attr('disabled', false);
 			}else if(data.warning){
 				var rmsg = '<div class="alert alert-warning alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.warning+'</div>';
-				$('#btnImport').hide();
+				//$('#btnImport').hide();
 			}else if(data.success){
 				var rmsg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
 				$('#btnImport').hide();
