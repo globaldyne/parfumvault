@@ -162,8 +162,10 @@ if($_POST['action'] == 'import' && $_POST['items']){
 	}
 
 	$i = 0;
+
+	
     foreach ($items as &$item) {
-		
+				
 		$jAPI = $pvOnlineAPI.'?request='.$item.'&src=PV_PRO';
         $jsonData = json_decode(pv_file_get_contents($jAPI), true);
 		
@@ -173,8 +175,15 @@ if($_POST['action'] == 'import' && $_POST['items']){
             return;
          }
 
-         $array_data = $jsonData[$item];
-         foreach ($array_data as $id=>$row) {
+         
+         $perPage = 100;
+		 $totalPages = $jsonData['recordsTotal'];
+		 for ($page = 1; $page <= $totalPages; $page++) {
+			$jAPI = $pvOnlineAPI.'?request='.$item.'&src=PV_PRO&start='.$page.'&length='.$perPage;
+        	$jsonData = json_decode(pv_file_get_contents($jAPI), true);
+			$array_data = $jsonData[$item];
+		 
+		 foreach ($array_data as $id=>$row) {
          	$insertPairs = array();
 			unset($row['structure']);
 			unset($row['techData']);
@@ -210,7 +219,7 @@ if($_POST['action'] == 'import' && $_POST['items']){
 
 		}
 	}
-
+	}
 	if($qIns){
 		$response['success'] = $i.' items imported!';
 	}else{
