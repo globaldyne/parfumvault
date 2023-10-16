@@ -1123,7 +1123,7 @@ if($_POST['supp'] == 'add'){
 		return;
 	}
 
-	if(mysqli_query($conn, "INSERT INTO ingSuppliers (name,address,po,country,telephone,url,email,platform,price_tag_start,price_tag_end,add_costs,notes,min_ml,min_gr) VALUES ('$name','address','po','country','telephone','url','email','$platform','$price_tag_start','$price_tag_end','$add_costs','$description','$min_ml','$min_gr')")){
+	if(mysqli_query($conn, "INSERT INTO ingSuppliers (name,address,po,country,telephone,url,email,platform,price_tag_start,price_tag_end,add_costs,notes,min_ml,min_gr) VALUES ('$name','$address','$po','$country','$telephone','$url','$email','$platform','$price_tag_start','$price_tag_end','$add_costs','$description','$min_ml','$min_gr')")){
 		$response["success"] = 'Supplier '.$name.' added!';
 		echo json_encode($response);
 	}else{
