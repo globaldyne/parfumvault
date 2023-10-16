@@ -279,7 +279,7 @@ $('#btnAdvSearch').click(function() {
 
 
 $('#pv_online_import').on('click', '[id*=btnImport]', function () {
-	//$('#btnImport').attr('disabled', true);
+	$('#btnImport').attr('disabled', true);
 	$('#importClose').attr('disabled', true);
 	$('#pvImportMsg').html('<div class="alert alert-info mx-2"><img src="/img/loading.gif"/>Please wait, this may take a while...</div>');
 	$.ajax({
@@ -298,7 +298,7 @@ $('#pv_online_import').on('click', '[id*=btnImport]', function () {
 				$('#btnImport').attr('disabled', false);
 			}else if(data.warning){
 				var rmsg = '<div class="alert alert-warning alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.warning+'</div>';
-				//$('#btnImport').hide();
+				$('#btnImport').hide();
 			}else if(data.success){
 				var rmsg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
 				$('#btnImport').hide();

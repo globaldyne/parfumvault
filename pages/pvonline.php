@@ -179,7 +179,6 @@ if($_POST['action'] == 'import' && $_POST['items']){
 			unset($row['structure']);
 			unset($row['techData']);
 			unset($row['ifra']);
-			unset($row['cid']);
 			unset($row['IUPAC']);
 			unset($row['ing_id']);
 			foreach ($row as $key=>$val) {

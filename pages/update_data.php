@@ -113,11 +113,11 @@ if($_POST['merge'] && $_POST['ingSrcID'] &&  $_POST['ingSrcName']  && $_POST['fi
 if($_POST['action'] == 'import' && $_POST['source'] == 'PVOnline' && $_POST['kind'] == 'ingredient' && $_POST['ing_id']){
 	$id = mysqli_real_escape_string($conn, $_POST['ing_id']);
 	
-	$jAPI = $pvOnlineAPI.'?do=ingredients&id='.$id;
+	$jAPI = $pvOnlineAPI.'?request=ingredients&src=PV_PRO&id='.$id;
     $jsonData = json_decode(pv_file_get_contents($jAPI), true);
 
     if($jsonData['error']){
-		$response['error'] = 'Error connecting or retrieving data from PV Online '.$jsonData['error'];
+		$response['error'] = 'Error: '.$jsonData['error']['msg'];
 		echo json_encode($response);
         return;
     }
@@ -126,16 +126,17 @@ if($_POST['action'] == 'import' && $_POST['source'] == 'PVOnline' && $_POST['kin
 	
     foreach ($array_data as $id=>$row) {
       	$insertPairs = array();
-		
+		unset($row['structure']);
+		unset($row['techData']);
+		unset($row['ifra']);
+		unset($row['IUPAC']);
+		unset($row['id']);
+			
          foreach ($row as $key=>$val){ 
+		 
           	$insertPairs[addslashes($key)] = addslashes($val);
          }
-		 unset($insertPairs['id']);
-		 unset($insertPairs['risk']);
-		 unset($insertPairs['supplier']);
-		 unset($insertPairs['supplier_link']);
-		 unset($insertPairs['price']);
-
+		 
          $insertKeys = '`' . implode('`,`', array_keys($insertPairs)) . '`';
          $insertVals = '"' . implode('","', array_values($insertPairs)) . '"';
     
