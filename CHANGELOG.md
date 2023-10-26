@@ -1,6 +1,7 @@
 # CHANGELOG
 
 ### Version 8.9
+- Fix deep search option not working on BS5
 - Fix a bug failing to populate soem fields when adding a supplier
 - Update PVOnline api v2
 - Fix api log file error
