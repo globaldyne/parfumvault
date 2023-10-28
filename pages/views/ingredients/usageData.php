@@ -78,7 +78,7 @@ if($usageLimit = searchIFRA($ing['cas'],$ing['name'],null,$conn, $defCatClass)){
             	$limit = searchIFRA($ing['cas'],$ing['name'],null,$conn, 'cat'.$cats[$counter]['name'])){
                 $limit = explode(' - ',$limit);
 			?>
-				<input name="cat<?php echo $cats[$counter]['name'];?>" type="text" class="form-control" id="cat<?php echo $cats[$counter]['name'];?>" disabled value="<?php echo number_format($limit['0'],4); ?>" />
+				<input name="cat<?php echo $cats[$counter]['name'];?>" type="text" class="form-control" id="cat<?php echo $cats[$counter]['name'];?>" disabled value="<?php echo number_format((float)$limit['0'],4); ?>" />
 	        <?php }else{ ?>
                 <input name="cat<?php echo $cats[$counter]['name'];?>" type="text" class="form-control" id="cat<?php echo $cats[$counter]['name'];?>" value="<?php echo number_format($ing['cat'.$cats[$counter]['name']],4); ?>" />
             </td>
