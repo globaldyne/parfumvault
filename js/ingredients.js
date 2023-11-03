@@ -154,6 +154,7 @@ function get_stats(){
 			
 			$('#synonymsTotal').html('Synonyms online: <strong>' + resp.data.stats.Synonyms.count + '</strong>');
 			$('#composTotal').html('Compositions online: <strong>' + resp.data.stats.Compositions.count + '</strong>');
+			$('#ingredientsLimit').html('Import limited to: <strong>' + resp.data.stats.Ingredients.batchLimit + '</strong> materials');
 
 		},
 		error: function (request, status, error) {
