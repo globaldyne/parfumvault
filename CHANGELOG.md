@@ -1,4 +1,5 @@
 # CHANGELOG
+### Version 9.0
 
 ### Version 8.9
 - Fix a bug not returning usage values in ingredient if exists in IFRA library and not contain a numeric value
