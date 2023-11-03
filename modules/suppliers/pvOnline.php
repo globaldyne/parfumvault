@@ -16,12 +16,13 @@ $order  = $_POST['order_as']?:'ASC';
 
 $s = trim($_POST['search']['value']);
 $data = [ 
-		 'do' => 'ingredients',
+		 'request' => 'ingredients',
 		 'start' => $row,
 		 'length' => $limit,
 		 'order_by' => $order_by,
 		 'order_as' => $order,
-		 's' => $s 
+		 'src' => 'PV_PRO',
+		 'search[value]=' => $s 
 		 ];
 		
 $output = json_decode(pvPost($pvOnlineAPI, $data));
@@ -32,7 +33,7 @@ foreach ($output->ingredients as $ingredient){
 	$r['name'] = (string)filter_var ( $ingredient->name, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
    	$r['cas'] = (string)$ingredient->cas ?: 'N/A';
 	$r['odor'] = (string)$ingredient->odor ?: 'N/A';
- 	$r['profile'] = (string)$ingredient->profile ?: 'N/A';
+ 	$r['profile'] = (string)$ingredient->profile ?: 'Uknown';
  	$r['physical_state'] = $ingredient->physical_state ?: 1;
  	$r['category'] = $ingredient->category ?: 0;
  	$r['type'] = (string)$ingredient->type ?: 'N/A';
@@ -55,13 +56,8 @@ foreach ($output->ingredients as $ingredient){
  	$r['impact_heart'] = $ingredient->impact_heart ?: 0;
 	$r['impact_base'] = $ingredient->impact_base ?: 0;
 	
-	//Only the default supplier will be provided
-	$r['supplier'][0]['name'] = (string)$ingredient->supplier ?: 'N/A' ;
-	$r['supplier'][0]['link'] = (string)$ingredient->supplier_link ?: 'N/A' ;
-	$r['price'] = (double)$ingredient->price ?: 0;
-	
+		
 	$r['stock'] = (double)0; //Not available in online
-	
 	$r['info']['byPassIFRA'] = (int)0;//Not available in online
 	
 

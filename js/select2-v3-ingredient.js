@@ -9,7 +9,7 @@ $(document).ready(function(){
 	function extrasShow() {	
 	
 		$('[rel=tip]').tooltip();
-		$('.select2-with-searchbox').on('click', '[id*=select_search_deep]', function () {	 
+		$('.select2-search').on('click', '[id*=select_search_deep]', function () {	 
 		  $('#isDeep').each(function () { this.checked = !this.checked; });
 		  // $('#s2id_autogen1_search').trigger("keydown");
 		   if ($('#isDeep').is(':checked')) {
@@ -82,7 +82,7 @@ $(document).ready(function(){
 	}).on('select2:open', () => {
 		$(".select2-search:not(:has(a))").prepend('<div id="add_new_ing_sel" class="select_add_new_ingredient mb-2"><a class="text-primary fa fa-plus mx-2"></a><a href="/pages/mgmIngredient.php" class="popup-link text-primary add-new-ing-sel">Create new ingredient</a></div>');
 		
-		$(".select2-search:not(:has(i))").append('<div class="select2-totalRecords"></div><div class="select_deep_ingredient"><span><div id="select_search_deep" class="select_search_deep"><i class="pv_point_gen mx-2" rel="tip" data-placement="bottom" title="Extend search in synonyms"><input data-default="true" type="checkbox" id="isDeep"></i>Deep Search</div></span></div>');
+		$(".select2-search:not(:has(i))").append('<div class="select2-totalRecords"></div><div class="select_deep_ingredient"><span><div id="select_search_deep" class="select_search_deep"><i class="pv_point_gen mx-2" rel="tip" data-placement="bottom" title="Extend search in synonyms"><input data-default="true" type="checkbox" id="isDeep"></i><label for="isDeep">Deep Search</label></div></span></div>');
 		
 		$('#isDeep').prop('checked', false);
 		isDeep = false;

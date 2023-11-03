@@ -1,9 +1,8 @@
-Whats New in v8.8
+Whats New in v8.9
 --------------------------
-- Upgrade to Bootstrap 5
-- Fix formulas json export
-- Ingredient general tab re-design
-- Pubchem tab re-design
-- Adding more details when a note is added during formula making
+- Fix a bug failing to populate some fields when adding a supplier
+- Update to PV Online v2
+- Add option to wipe out all ingredients
+- Add option to wipe out all formulas
 - Various bug fixes and improvements
 - For full details please refer to the CHANGELOG

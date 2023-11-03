@@ -204,8 +204,9 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
        <div id="pv_online_imp_area">
            <div class="alert alert-warning">
                <strong>WARNING:</strong><br />
-              you are about to import data from PV Online, please bear in mind, PV Online is a community driven database therefore may contain unvalidated or incorrect data. <br />
-              If your local database contains already an ingredient with the same name, the ingredient data will not be imported.     
+               <li>you are about to import data from PV Online, please bear in mind, PV Online is a community driven database therefore may contain unvalidated or incorrect data. </li><br />
+              <li>If your local database contains already an ingredient with the same name, the ingredient data will not be imported.</li><br />
+               <li><div id="ingredientsLimit">xxx</div></li>
           </div>
           <div class="dropdown-divider"></div>
           <div class="form-group">
@@ -225,7 +226,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
       
       </div>
       <div class="modal-footer_2">
-	  <?php require('privacy_note.php');?>
+	  <?php require(__ROOT__.'/pages/privacy_note.php');?>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="importClose">Close</button>
@@ -287,7 +288,7 @@ $('#pv_online_import').on('click', '[id*=btnImport]', function () {
 		type: 'POST',
 		data: {
 			action: 'import',
-			items: 'ingredients,allergens,suppliers,suppliersMeta,synonyms',
+			items: 'ingredients,compositions,synonyms',
 			includeSynonyms: $("#includeSynonyms").is(':checked'),
 			includeCompositions: $("#includeCompositions").is(':checked'),
 			},

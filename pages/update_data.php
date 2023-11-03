@@ -11,6 +11,48 @@ require_once(__ROOT__.'/func/priceScrape.php');
 require_once(__ROOT__.'/func/create_thumb.php');
 require_once(__ROOT__.'/func/pvFileGet.php');
 
+//WIPE OUT FROMULAS
+if($_POST['formulas_wipe'] == 'true'){
+	
+	if(mysqli_query($conn, "TRUNCATE formulas")){
+		mysqli_query($conn, "TRUNCATE formulasMetaData");
+		mysqli_query($conn, "TRUNCATE formula_history");
+		mysqli_query($conn, "TRUNCATE formulasTags");
+		mysqli_query($conn, "TRUNCATE allergens");
+		mysqli_query($conn, "TRUNCATE formulaCategories");
+		mysqli_query($conn, "TRUNCATE formulasRevisions");
+		mysqli_query($conn, "TRUNCATE makeFormula");
+
+		$response["success"] = 'Formulas and related data deleted';
+	}else{
+		$response["error"] = 'Something went wrong '.mysqli_error($conn);
+	}
+	
+	echo json_encode($response);
+	return;	
+}
+
+//WIPE OUT INGREDIENTS
+if($_POST['ingredient_wipe'] == 'true'){
+	
+	if(mysqli_query($conn, "TRUNCATE ingredients")){
+		mysqli_query($conn, "TRUNCATE ingCategory");
+		mysqli_query($conn, "TRUNCATE ingProfiles");
+		mysqli_query($conn, "TRUNCATE ingReplacements");
+		mysqli_query($conn, "TRUNCATE ingSafetyInfo");
+		mysqli_query($conn, "TRUNCATE suppliers");
+		mysqli_query($conn, "TRUNCATE synonyms");
+
+		$response["success"] = 'Ingredients and related data deleted';
+	}else{
+		$response["error"] = 'Something went wrong '.mysqli_error($conn);
+	}
+	
+	echo json_encode($response);
+	return;	
+}
+
+
 //UPDATE CAS IFRA ENTRY
 if($_GET['IFRA'] == 'edit' && $_POST['value'] && $_GET['type'] == 'CAS'){
 	
@@ -71,11 +113,11 @@ if($_POST['merge'] && $_POST['ingSrcID'] &&  $_POST['ingSrcName']  && $_POST['fi
 if($_POST['action'] == 'import' && $_POST['source'] == 'PVOnline' && $_POST['kind'] == 'ingredient' && $_POST['ing_id']){
 	$id = mysqli_real_escape_string($conn, $_POST['ing_id']);
 	
-	$jAPI = $pvOnlineAPI.'?do=ingredients&id='.$id;
+	$jAPI = $pvOnlineAPI.'?request=ingredients&src=PV_PRO&id='.$id;
     $jsonData = json_decode(pv_file_get_contents($jAPI), true);
 
     if($jsonData['error']){
-		$response['error'] = 'Error connecting or retrieving data from PV Online '.$jsonData['error'];
+		$response['error'] = 'Error: '.$jsonData['error']['msg'];
 		echo json_encode($response);
         return;
     }
@@ -84,16 +126,17 @@ if($_POST['action'] == 'import' && $_POST['source'] == 'PVOnline' && $_POST['kin
 	
     foreach ($array_data as $id=>$row) {
       	$insertPairs = array();
-		
+		unset($row['structure']);
+		unset($row['techData']);
+		unset($row['ifra']);
+		unset($row['IUPAC']);
+		unset($row['id']);
+			
          foreach ($row as $key=>$val){ 
+		 
           	$insertPairs[addslashes($key)] = addslashes($val);
          }
-		 unset($insertPairs['id']);
-		 unset($insertPairs['risk']);
-		 unset($insertPairs['supplier']);
-		 unset($insertPairs['supplier_link']);
-		 unset($insertPairs['price']);
-
+		 
          $insertKeys = '`' . implode('`,`', array_keys($insertPairs)) . '`';
          $insertVals = '"' . implode('","', array_values($insertPairs)) . '"';
     
@@ -1081,7 +1124,7 @@ if($_POST['supp'] == 'add'){
 		return;
 	}
 
-	if(mysqli_query($conn, "INSERT INTO ingSuppliers (name,address,po,country,telephone,url,email,platform,price_tag_start,price_tag_end,add_costs,notes,min_ml,min_gr) VALUES ('$name','address','po','country','telephone','url','email','$platform','$price_tag_start','$price_tag_end','$add_costs','$description','$min_ml','$min_gr')")){
+	if(mysqli_query($conn, "INSERT INTO ingSuppliers (name,address,po,country,telephone,url,email,platform,price_tag_start,price_tag_end,add_costs,notes,min_ml,min_gr) VALUES ('$name','$address','$po','$country','$telephone','$url','$email','$platform','$price_tag_start','$price_tag_end','$add_costs','$description','$min_ml','$min_gr')")){
 		$response["success"] = 'Supplier '.$name.' added!';
 		echo json_encode($response);
 	}else{
