@@ -14,11 +14,11 @@ if($_POST['action'] == 'import' && $_POST['kind'] == 'formula'){
 	
 	$id = mysqli_real_escape_string($conn, $_POST['fid']);
 	
-	$jAPI = $pvOnlineAPI.'?do=MarketPlace&action=get&id='.$id;
+	$jAPI = $pvOnlineAPI.'?request=MarketPlace&action=get&id='.$id;
     $jsonData = json_decode(pv_file_get_contents($jAPI), true);
 
     if($jsonData['error']){
-		$response['error'] = 'Error connecting or retrieving data from PV Online '.$jsonData['error'];
+		$response['error'] = 'Error: '.$jsonData['error']['msg'];
 		echo json_encode($response);
         return;
     }
@@ -81,14 +81,14 @@ if($_POST['action'] == 'contactAuthor'){
 	
 
 	$data = [ 
-		 'do' => 'MarketPlace',
+		 'request' => 'MarketPlace',
 		 'action' => 'contactAuthor',
-		 'src' => 'pvMarket',
-		 'fname' => base64_encode($fname), 
+		 'src' => 'marketplace',
+		 'fname' => $fname, 
 		 'fid' => $fid,
-		 'contactName' => base64_encode($contactName),
-		 'contactEmail' => base64_encode($contactEmail),
-		 'contactReason' => base64_encode($contactReason)
+		 'contactName' => $contactName,
+		 'contactEmail' => $contactEmail,
+		 'contactReason' => $contactReason
 		 ];
 	
     $req = json_decode(pvPost($pvOnlineAPI, $data));
@@ -125,21 +125,23 @@ if($_POST['action'] == 'report' && $_POST['src'] == 'pvMarket'){
 	
 
 	$data = [ 
-		 'do' => 'MarketPlace',
-		 'action' => 'reportFormula',
+		 'request' => 'MarketPlace',
+		 'action' => 'report',
 		 'src' => 'marketplace',
-		 'fname' => base64_encode($fname), 
+		 'fname' => $fname, 
 		 'fid' => $fid,
-		 'reporterName' => base64_encode($reporterName),
-		 'reporterEmail' => base64_encode($reporterEmail),
-		 'reportReason' => base64_encode($reportReason)
+		 'reporterName' => $reporterName,
+		 'reporterEmail' => $reporterEmail,
+		 'reportReason' => $reportReason
 		 ];
 	
     $req = json_decode(pvPost($pvOnlineAPI, $data));
 	if($req->success){
 		$response['success'] = $req->success;
-	}else{
+	}else if($req->error){
 		$response['error'] = $req->error;
+	}else{
+		$response['error'] = "Uknown error";
 	}
 	echo json_encode($response);
 	return;
@@ -153,42 +155,56 @@ if($_POST['action'] == 'import' && $_POST['items']){
 	$items = explode(',',trim($_POST['items']));
     
 	if($_POST['includeSynonyms'] == 'false'){
-		unset($items['4']);
+		unset($items['2']);
 	}
 	if($_POST['includeCompositions'] == 'false'){
 		unset($items['1']);
 	}
 
 	$i = 0;
+
+	
     foreach ($items as &$item) {
-		$jAPI = $pvOnlineAPI.'?do='.$item.'&isAll=1';
+				
+		$jAPI = $pvOnlineAPI.'?request='.$item.'&src=PV_PRO';
         $jsonData = json_decode(pv_file_get_contents($jAPI), true);
 		
         if($jsonData['error']){
-			$response['error'] = 'Error connecting or retrieving data from PV Online '.$jsonData['error'];
+			$response['error'] = 'Error: '.$jsonData['error']['msg'];
 			echo json_encode($response);
             return;
          }
 
-         $array_data = $jsonData[$item];
-         foreach ($array_data as $id=>$row) {
+         
+         $perPage = 100;
+		 $totalPages = $jsonData['recordsTotal'];
+		 for ($page = 1; $page <= $totalPages; $page++) {
+			$jAPI = $pvOnlineAPI.'?request='.$item.'&src=PV_PRO&start='.$page.'&length='.$perPage;
+        	$jsonData = json_decode(pv_file_get_contents($jAPI), true);
+			$array_data = $jsonData[$item];
+		 
+		 foreach ($array_data as $id=>$row) {
          	$insertPairs = array();
-            foreach ($row as $key=>$val) {
-            	$insertPairs[addslashes($key)] = addslashes($val);
+			unset($row['structure']);
+			unset($row['techData']);
+			unset($row['ifra']);
+			unset($row['IUPAC']);
+			unset($row['ing_id']);
+			foreach ($row as $key=>$val) {
+
+				$insertPairs[addslashes($key)] = addslashes($val);
+
             }
             $insertKeys = '`' . implode('`,`', array_keys($insertPairs)) . '`';
             $insertVals = '"' . implode('","', array_values($insertPairs)) . '"';
-            if($item == 'allergens'){
-		        $query = "SELECT name FROM $item WHERE name = '".$insertPairs['name']."' AND ing = '".$insertPairs['ing']."'";
-			}elseif($item == 'suppliers'){
-		        $query = "SELECT ingSupplierID FROM $item WHERE ingSupplierID = '".$insertPairs['ingSupplierID']."' AND ingID = '".$insertPairs['ingID']."'";
-				
-			}elseif($item == 'suppliersMeta'){
-				$item = 'ingSuppliers'; //TODO: TO BE RENAMED
-		        $query = "SELECT id FROM $item WHERE id = '".$insertPairs['id']."' AND name = '".$insertPairs['name']."'";
+            
+			
+			if($item == 'compositions'){
+		        $query = "SELECT name FROM allergens WHERE name = '".$insertPairs['name']."' AND ing = '".$insertPairs['ing']."'";
+				$item = 'allergens';
 			
 			}elseif($item == 'synonyms'){
-		        $query = "SELECT id FROM $item WHERE id = '".$insertPairs['id']."' AND ing = '".$insertPairs['ing']."'";
+		     	$query = "SELECT id FROM synonyms WHERE id = '".$insertPairs['id']."' AND ing = '".$insertPairs['ing_id']."'";
 
 
             }else{
@@ -200,9 +216,10 @@ if($_POST['action'] == 'import' && $_POST['items']){
                 $qIns = mysqli_query($conn,$jsql);
                 $i++;
             }
+
 		}
 	}
-
+	}
 	if($qIns){
 		$response['success'] = $i.' items imported!';
 	}else{

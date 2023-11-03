@@ -141,18 +141,20 @@ $(document).on('click', '#btnImportCSV', function(event){
     })
 
 });
+
 function get_stats(){
 	$.ajax({ 
 		url: pvOnlineAPI, 
 		dataType: 'json',
 		data: {
-			'do': 'getStats'
+			'request': 'getStats'
 		},
-		success: function (data) {
-			$('#ingredientsTotal').html('<p>Ingredients online: <strong>' + data.ingredientsTotal + '</strong></p>');
+		success: function (resp) {
+			$('#ingredientsTotal').html('<p>Ingredients online: <strong>' + resp.data.stats.Ingredients.count + '</strong></p>');
 			
-			$('#synonymsTotal').html('Synonyms online: <strong>' + data.synonymsTotal + '</strong>');
-			$('#composTotal').html('Compositions online: <strong>' + data.composTotal + '</strong>');
+			$('#synonymsTotal').html('Synonyms online: <strong>' + resp.data.stats.Synonyms.count + '</strong>');
+			$('#composTotal').html('Compositions online: <strong>' + resp.data.stats.Compositions.count + '</strong>');
+			$('#ingredientsLimit').html('Import limited to: <strong>' + resp.data.stats.Ingredients.batchLimit + '</strong> materials');
 
 		},
 		error: function (request, status, error) {
@@ -162,4 +164,5 @@ function get_stats(){
 		
 	});
 };
+
 get_stats();

@@ -1,5 +1,14 @@
 # CHANGELOG
 
+### Version 8.9
+- Fix a bug not returning usage values in ingredient if exists in IFRA library and not contain a numeric value
+- Fix deep search option not working on BS5
+- Fix a bug failing to populate soem fields when adding a supplier
+- Update PVOnline api v2
+- Fix api log file error
+- Add option to wipe out all ingredients
+- Add option to wipe out all formulas
+
 ### Version 8.8
 - Core update to BS5
 - Major code update

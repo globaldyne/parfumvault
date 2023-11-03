@@ -47,7 +47,8 @@ while($fTypes_res = mysqli_fetch_array($fTypes_q)){
               <div class="dropdown-divider"></div>
         	  <li><a class="dropdown-item" href="/pages/operations.php?action=exportFormulas"><i class="fa-solid fa-file-export mx-2"></i>Export Formulas as JSON</a></li>
         	  <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#import_formulas_json"><i class="fa-solid fa-file-import mx-2"></i>Import Formulas from JSON</a></li>
-
+ 			  <div class="dropdown-divider"></div>
+        	  <li><a class="dropdown-item text-danger" href="#" id="wipe_all_formulas"><i class="fa-solid fa-trash mx-2"></i>Delete all</a></li>
             </div>
         </div>
     </div>
@@ -362,6 +363,50 @@ $('table.table').on('click', '[id*=deleteMe]', function () {
 						$('#inMsg').html(msg);
 					}
 				  });
+                 return true;
+               }
+           },
+           cancel: {
+               label : "Cancel",
+               className : "btn-secondary",
+               callback : function() {
+                   return true;
+               }
+           }   
+       },onEscape: function () {return true;}
+   });
+});
+
+$('#wipe_all_formulas').click(function() {
+    
+	bootbox.dialog({
+       title: "Confirm formulas wipe",
+       message : 'This will remove ALL of your fromulas from the database.\nThis cannot be reverted so please make sure you have taken a backup first.',
+       buttons :{
+           main: {
+               label : "DELETE ALL",
+               className : "btn-danger",
+               callback: function (){
+	    			
+				$.ajax({
+					url: '/pages/update_data.php', 
+					type: 'POST',
+					data: {
+						formulas_wipe: "true",
+						},
+					dataType: 'json',
+					success: function (data) {
+						if(data.success) {
+								var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+								reload_formulas_data();
+							} else {
+								var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				
+							}
+							$('#innermsg').html(msg);
+					}
+				});
+				
                  return true;
                }
            },

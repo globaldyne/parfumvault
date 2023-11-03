@@ -23,6 +23,9 @@ $defCatClass = $settings['defCatClass'];
         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#csv_import"><i class="fa-solid fa-file-import mx-2"></i>Import from CSV</a></li>
         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#import_ingredients_json"><i class="fa-solid fa-file-import mx-2"></i>Import from JSON</a></li>
         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#pv_online_import"><i class="fa-solid fa-cloud-arrow-down mx-2"></i>Import from PV Online</a></li>
+        <div class="dropdown-divider"></div>
+        <li><a class="dropdown-item text-danger" href="#" id="wipe_all_ing"><i class="fa-solid fa-trash mx-2"></i>Delete all</a></li>
+
       </div>
      </div>                    
     </div>
@@ -449,5 +452,49 @@ function extrasShow() {
 	});
 };
 
+
+$('#wipe_all_ing').click(function() {
+    
+	bootbox.dialog({
+       title: "Confirm ingredient wipe",
+       message : 'This will remove ALL your ingredients from the database.\nThis cannot be reverted so please make sure you have taken a backup first.',
+       buttons :{
+           main: {
+               label : "DELETE ALL",
+               className : "btn-danger",
+               callback: function (){
+	    			
+				$.ajax({
+					url: '/pages/update_data.php', 
+					type: 'POST',
+					data: {
+						ingredient_wipe: "true",
+						},
+					dataType: 'json',
+					success: function (data) {
+						if(data.success) {
+								var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+								reload_ingredients_data();
+							} else {
+								var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				
+							}
+							$('#innermsg').html(msg);
+					}
+				});
+				
+                 return true;
+               }
+           },
+           cancel: {
+               label : "Cancel",
+               className : "btn-secondary",
+               callback : function() {
+                   return true;
+               }
+           }   
+       },onEscape: function () {return true;}
+   });
+});
 </script>
 <script src="/js/import.ingredients.js"></script>
