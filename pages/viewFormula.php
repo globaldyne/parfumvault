@@ -61,7 +61,12 @@ $fid = $meta['fid'];
     </div>
 </div>
 
-
+<div id="row pv_search">
+	<div class="text-right">
+    <label for="pvCustomSearch" class="mx-2"><a href="#" class="link-secondary" rel="tip" title="Use comma (,) separated values to search for different ingredients">Search in formula:</a></label>
+    <input type="text" id="pvCustomSearch" placeholder="CAS, Ingredient, etc..">
+</div>
+</div>
 <table id="formula" class="table table-striped table-bordered nowrap viewFormula" style="width:100%">
         <thead class="table-primary">
             <tr>
@@ -117,9 +122,10 @@ $(document).ready(function() {
 			{ orderable: false, targets: [10, 11] },
         ],
 		search: {
-    		search: "<?=$_GET['search']?>"
+    		search: "<?=$_GET['search']?>",
+			regex: true
   		},
-		dom: 'lfrtip',
+		dom: 'lrtip',
 			buttons: [{
 				extend: 'print',
 				title: "<?=$meta['name']?>",
@@ -128,8 +134,8 @@ $(document).ready(function() {
   				},
 			  }],
 		processing: true,
-		mark: true,
-		//responsive: true,
+		mark: false,
+		responsive: true,
         language: {
 			loadingRecords: '&nbsp;',
 			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Blending...</span>',
@@ -231,6 +237,11 @@ $(document).ready(function() {
             });
 			extrasShow();
 	   }
+});
+
+$('#pvCustomSearch').on('keyup redraw', function() {
+	var searchString = '(' + $('#pvCustomSearch').val().split(/\s*,\s*/).join('|') + ')';
+	formula_table.search(searchString, true).draw(true);
 });
 
 $('#formula_tab').on( 'click', function () {
