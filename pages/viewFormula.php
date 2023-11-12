@@ -135,7 +135,7 @@ $(document).ready(function() {
 			  }],
 		processing: true,
 		mark: false,
-		responsive: true,
+		responsive: false,
         language: {
 			loadingRecords: '&nbsp;',
 			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Blending...</span>',
