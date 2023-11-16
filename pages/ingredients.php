@@ -192,49 +192,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
   </div>
 </div>  
 
-<!--PV ONLINE IMPORT-->
-<div class="modal fade" id="pv_online_import" tabindex="-1" role="dialog" aria-labelledby="pv_online_import" aria-hidden="true" data-bs-backdrop="static">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Import ingredients from PV Online</h5>
-      </div>
-      <div class="modal-body">
-       <div id="pvImportMsg"></div>
-       <div id="pv_online_imp_area">
-           <div class="alert alert-warning">
-               <strong>WARNING:</strong><br />
-               <li>you are about to import data from PV Online, please bear in mind, PV Online is a community driven database therefore may contain unvalidated or incorrect data. </li><br />
-              <li>If your local database contains already an ingredient with the same name, the ingredient data will not be imported.</li><br />
-               <li><div id="ingredientsLimit">xxx</div></li>
-          </div>
-          <div class="dropdown-divider"></div>
-          <div class="form-group">
-            <div class="mx-4">
-                <div id="ingredientsTotal"></div>
-            </div>
-            <div class="mx-4">
-                <input type="checkbox" class="form-check-input" id="includeSynonyms" name="includeSynonyms" value="1">
-                <label class="form-check-label" for="includeSynonyms"><div id="synonymsTotal"></div></label>
-            </div>          
-            <div class="mx-4">
-                <input type="checkbox" class="form-check-input" id="includeCompositions" name="includeCompositions" value="1">
-                <label class="form-check-label" for="includeCompositions"><div id="composTotal"></div></label>
-            </div>
-          </div>
-      </div>
-      
-      </div>
-      <div class="modal-footer_2">
-	  <?php require(__ROOT__.'/pages/privacy_note.php');?>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="importClose">Close</button>
-        <input type="submit" name="button" class="btn btn-primary" id="btnImport" value="Import">
-      </div>
-    </div>
-  </div>
-</div>
+
 
 <script type="text/javascript" language="javascript" >
 list_ingredients();
@@ -278,43 +236,6 @@ $('#btnAdvSearch').click(function() {
 	});
 });
 
-
-$('#pv_online_import').on('click', '[id*=btnImport]', function () {
-	$('#btnImport').attr('disabled', true);
-	$('#importClose').attr('disabled', true);
-	$('#pvImportMsg').html('<div class="alert alert-info mx-2"><img src="/img/loading.gif"/>Please wait, this may take a while...</div>');
-	$.ajax({
-		url: '/pages/pvonline.php', 
-		type: 'POST',
-		data: {
-			action: 'import',
-			items: 'ingredients,compositions,synonyms',
-			includeSynonyms: $("#includeSynonyms").is(':checked'),
-			includeCompositions: $("#includeCompositions").is(':checked'),
-			},
-		dataType: 'json',
-		success: function (data) {
-			if(data.error){
-				var rmsg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
-				$('#btnImport').attr('disabled', false);
-			}else if(data.warning){
-				var rmsg = '<div class="alert alert-warning alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.warning+'</div>';
-				$('#btnImport').hide();
-			}else if(data.success){
-				var rmsg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
-				$('#btnImport').hide();
-				list_ingredients();
-			}
-			
-			$('#importClose').attr('disabled', false);
-		  	$('#pvImportMsg').html(rmsg);
-		},
-		error: function (request, status, error) {
-			$('#pvImportMsg').html('<div class="alert alert-danger mt-3"><i class="bi bi-exclamation-circle mx-2"></i></i>Unable to handle request, server returned an error: '+request.status+'</div>');
-			$('#btnImport').prop('disabled', false);
-		},
-	  });
-});
 
 </script>
 

@@ -22,7 +22,6 @@ $defCatClass = $settings['defCatClass'];
         <div class="dropdown-divider"></div>
         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#csv_import"><i class="fa-solid fa-file-import mx-2"></i>Import from CSV</a></li>
         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#import_ingredients_json"><i class="fa-solid fa-file-import mx-2"></i>Import from JSON</a></li>
-        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#pv_online_import"><i class="fa-solid fa-cloud-arrow-down mx-2"></i>Import from PV Online</a></li>
         <div class="dropdown-divider"></div>
         <li><a class="dropdown-item text-danger" href="#" id="wipe_all_ing"><i class="fa-solid fa-trash mx-2"></i>Delete all</a></li>
 
@@ -200,11 +199,15 @@ function iName(data, type, row, meta){
 }
 
 
-function iProfile(data, type, row){
-	if(row.profile){
-		return '<img src="/img/Pyramid/Pyramid_Slice_'+row.profile+'.png" class="img_ing_prof"/>';    
+function iProfile(data, type, row, meta){
+	if(meta.settings.json.source == 'local'){
+		if(row.profile){
+			return '<img src="/img/Pyramid/Pyramid_Slice_'+row.profile+'.png" class="img_ing_prof"/>';    
+		}else{
+			return '<img src="/img/pv_molecule.png" class="img_ing_prof"/>';
+		}
 	}else{
-		return '<img src="/img/pv_molecule.png" class="img_ing_prof"/>';
+		return '<i class="pv_point_gen" rel="tip" title="Not available in PV Online">N/A</i>';
 	}
 }
 
@@ -217,7 +220,7 @@ function iStock(data, type, row, meta){
 	if(meta.settings.json.source == 'local'){
 		return '<a class="popup-link" rel="tip" title="'+ingUnit+'" href="/pages/views/ingredients/ingSuppliers.php?id=' + row.id + '&standAlone=1">' + data + '</a>';
 	}else{
-		return 'N/A';
+		return '<i class="pv_point_gen" rel="tip" title="Not available in PV Online">N/A</i>';
 	}
 }
 
