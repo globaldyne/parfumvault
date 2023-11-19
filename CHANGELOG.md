@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 9.1
+
 ### Version 9.0
 - Search in formula for ingredients for multiples using comma separated values
 - Removed PV Online batch import
