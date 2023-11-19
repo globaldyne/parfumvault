@@ -4,9 +4,9 @@ tmp/
 logs/
 uploads/
 batches/
-push.sh
 inc/config.php
 *.swp
 t.php
 tests/
-pages/searchTGSC.php
+modules/suppliers/pvOnlineBK.json
+modules/suppliers/pvOnlineBK.php

@@ -1,4 +1,7 @@
 # CHANGELOG
+### Version 9.0
+- Search in formula for ingredients for multiples using comma separated values
+- Removed PV Online batch import
 
 ### Version 8.9
 - Fix a bug not returning usage values in ingredient if exists in IFRA library and not contain a numeric value
