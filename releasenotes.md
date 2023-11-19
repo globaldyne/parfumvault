@@ -1,8 +1,6 @@
-Whats New in v8.9
+Whats New in v9.0
 --------------------------
-- Fix a bug failing to populate some fields when adding a supplier
-- Update to PV Online v2
-- Add option to wipe out all ingredients
-- Add option to wipe out all formulas
+- Search in formula for ingredients for multiples using comma separated values
+- Batch import from PV Online has been deprecated and removed, you can still import single materials
 - Various bug fixes and improvements
 - For full details please refer to the CHANGELOG

@@ -57,7 +57,6 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
 	table.dataTable {
 		font-size: x-large !important;
 		font-weight: bold;
-		color: #494b51 !important;
 	}
 	.mr {
 		margin: 20px 20px 20px 20px;
@@ -81,7 +80,7 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
 	}
 	
 	table.dataTable thead tr, tfoot tr {
-		background-color: #337ab7c9 !important;
+		background-color: #cfe2ff !important;
 		color: white;
 	}
   </style>

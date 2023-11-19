@@ -759,7 +759,7 @@ table.fixedHeader-floating {
 	position: relative;
 	display: inline-table;
 	border-collapse: separate;
-	width: 20% !important;	
+	width: 100% !important;	
 }
 
 .pv_input_sm {
@@ -1415,4 +1415,16 @@ th.dt-center, td.dt-center {
 
 .properties {
   width: 12px;
+}
+
+.pv_online_status_available {
+	color: #2ce65b;
+}
+
+.pv_online_status_notavailable {
+	color: #e62c2c;
+}
+
+.pv_online_status_unknown {
+	color: #e6d22c;
 }
