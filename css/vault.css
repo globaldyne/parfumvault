@@ -1428,3 +1428,7 @@ th.dt-center, td.dt-center {
 .pv_online_status_unknown {
 	color: #e6d22c;
 }
+
+.text-wrap-2 {
+  white-space: break-spaces !important;
+}

@@ -105,7 +105,9 @@ function ciName(data, type, row){
 };
 
 function ciNotes(data, type, row){
-	return '<a class="notes pv_point_gen" data-name="notes" data-type="textarea" data-pk="'+row.id+'">'+row.notes+'</a>';  
+	d = row.notes;
+	//if (d.length>255) { d=d.substring(0,255)+'...' };
+	return '<a class="notes pv_point_gen text-wrap-2" data-name="notes" data-type="textarea" data-pk="'+row.id+'">'+d+'</a>';  
 };
 
 function ciActions(data, type, row){

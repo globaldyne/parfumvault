@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 9.1
+- Fix category description misalignment
 
 ### Version 9.0
 - Search in formula for ingredients for multiples using comma separated values
