@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 9.1
+- Add light theme support (WIP for dark mode)
 - Fix category description misalignment
 
 ### Version 9.0
