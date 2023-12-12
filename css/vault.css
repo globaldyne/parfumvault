@@ -1054,8 +1054,7 @@ body {
 }
 
 table.dataTable thead tr {
-	background-color: #4f97d5c9 !important;
-	color: white;
+	background-color: #cececec9 !important;
 }
 
 table#tdDataPending.dataTable tbody tr:hover {
