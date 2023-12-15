@@ -7,8 +7,6 @@ assignees: ''
 
 ---
 
-**IMPORTANT: IF YOU DONT PROVIDE THE REQUESTED DETAILS THE ISSUE WILL BE IGNORED, ALSO MAKE SURE YOU HAVE REFERRED TO THE DOCUMENTATION BEFORE RAISING A BUG**
-
 **Describe the bug**
 A clear and concise description of what the bug is.
 
