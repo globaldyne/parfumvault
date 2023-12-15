@@ -1,6 +1,7 @@
-Whats New in v9.0
+Whats New in v9.1
 --------------------------
-- Search in formula for ingredients for multiples using comma separated values
-- Batch import from PV Online has been deprecated and removed, you can still import single materials
+- Fix formula changes history not properly logged
+- Fix incorrect solvent management when decreasing/increasing quantity and update solvent in a formula
+- Fix category description misalignment
 - Various bug fixes and improvements
 - For full details please refer to the CHANGELOG

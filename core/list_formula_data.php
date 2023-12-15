@@ -50,7 +50,7 @@ foreach ($formula as $formula) {
 	$r['created'] = (string)$formula['created'];
 	$r['updated'] = (string)$fdata['updated'] ?: '-';
 	$r['catClass'] = (string)$formula['catClass']?: 'N/A';
-	$r['ingredients'] = (int)countElement("formulas WHERE fid = '".$formula['fid']."'",$conn)?:'0';
+	$r['ingredients'] = (int)$formula["ingredients"]?: '0';
 	$r['isMade'] = (int)$formula['isMade']?: 0;
 	$r['madeOn'] = (string)$formula['madeOn']?:'N/A';
 	$r['status'] = (int)$formula['status']?: 0;
@@ -68,7 +68,7 @@ $filtered = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries F
 $response = array(
   "draw" => (int)$_POST['draw'],
   "recordsTotal" => (int)$total['entries'],
-  "recordsFiltered" => (int)$filtered['entries'],
+  "recordsFiltered" => (int)$filtered,
   "data" => $rx
 );
 
