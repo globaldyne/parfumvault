@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 9.2
+
 ### Version 9.1
 - Fix formula changes history not properly logged
 - Fix no formulas error
