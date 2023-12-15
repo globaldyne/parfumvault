@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 9.1
+- Fix formula changes history not properly logged
 - Fix no formulas error
 - Fix incorrect solvent management when decreasing/increasing quantity and update solvent in a formula
 - Add light theme support (WIP for dark mode)

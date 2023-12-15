@@ -297,8 +297,8 @@ if($_POST['action'] == 'addIng' && $_POST['fid']){
 		if(mysqli_query($conn,"INSERT INTO formulas(fid,name,ingredient,ingredient_id,concentration,quantity,dilutant) VALUES('$fid','".$meta['name']."','".$ingredient['name']."','".$ingredient_id."','$concentration','$quantity','$dilutant')")){
 			
 			$lg = "ADDED: ".$ingredient['name']." $quantity".$settings['mUnit']." @$concentration% $dilutant";
-			mysqli_query($conn, "INSERT INTO formula_history (fid,change_made,user) VALUES ('".$meta['id']."','$lg','".$user['fullName']."')");
-			mysqli_query($conn, "UPDATE formulasMetaData SET status = '1' WHERE fid = '".$meta['fid']."' AND status = '0' AND isProtected = '0'");
+			mysqli_query($conn, "INSERT INTO formula_history (fid,change_made,user) VALUES ('".$fid."','$lg','".$user['fullName']."')");
+			mysqli_query($conn, "UPDATE formulasMetaData SET status = '1' WHERE fid = '".$fid."' AND status = '0' AND isProtected = '0'");
 			
 			$response['success'] = '<strong>'.$quantity.$settings['mUnit'].'</strong> of <strong>'.$ingredient['name'].'</strong> added to the formula!';
 			echo json_encode($response);
