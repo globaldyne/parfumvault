@@ -567,7 +567,7 @@ if($_POST['synonym'] == 'import' && $_POST['method'] == 'pubchem'){
 	$cid = $json->InformationList->Information[0]->CID;
 	$source = 'PubChem';
 	if(empty($data)){
-		echo '<div class="alert alert-info alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>No data found!</div>';
+		echo '<div class="alert alert-info">No data found!</div>';
 		return;
 	}
 	$i=0;
@@ -587,9 +587,9 @@ if($_POST['synonym'] == 'import' && $_POST['method'] == 'pubchem'){
 		}
 	}
 	if($r){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>'.$i.' </strong>synonym(s) imported!</div>';
+		echo '<div class="alert alert-success"><strong>'.$i.' </strong>synonym(s) imported!</div>';
 	}else{
-		echo '<div class="alert alert-info alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>Data already in sync!</div>';
+		echo '<div class="alert alert-info">Data already in sync!</div>';
 	}
 	
 	return;
@@ -867,7 +867,7 @@ if($_POST['updateQuantity'] && $_POST['ingQuantityID'] &&  $_POST['ingQuantityNa
 	if($_POST['ingReCalc'] == 'true'){
 		$ingID = $_POST['ingID'];
 		if(!$_POST['formulaSolventID']){
-			$response["error"] = 'Please select solvent';
+			$response["error"] = 'Please select a solvent';
 			echo json_encode($response);
 			return;
 		}
@@ -880,9 +880,11 @@ if($_POST['updateQuantity'] && $_POST['ingQuantityID'] &&  $_POST['ingQuantityNa
 		}
 		
 		$slv = mysqli_fetch_array(mysqli_query($conn,"SELECT quantity FROM formulas WHERE ingredient_id = '".$formulaSolventID."' AND fid = '".$fid."'"));
-
-		if($slv['quantity'] < $_POST['ingQuantity']){
-			$response["error"] = 'Not enough solvent, available: '.number_format($slv['quantity'],$settings['qStep']).$settings['mUnit'];
+		
+		$fq = $_POST['ingQuantity'] - $_POST['curQuantity'];
+		
+		if($slv['quantity'] < $fq){
+			$response["error"] = 'Not enough solvent, available: '.number_format($slv['quantity'],$settings['qStep']).$settings['mUnit'].', Requested: '.number_format($fq,$settings['qStep']).$settings['mUnit'];
 			echo json_encode($response);
 			return;
 		}

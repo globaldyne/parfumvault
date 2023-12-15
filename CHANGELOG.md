@@ -1,4 +1,11 @@
 # CHANGELOG
+### Version 9.1
+- Fix formula changes history not properly logged
+- Fix no formulas error
+- Fix incorrect solvent management when decreasing/increasing quantity and update solvent in a formula
+- Add light theme support (WIP for dark mode)
+- Fix category description misalignment
+
 ### Version 9.0
 - Search in formula for ingredients for multiples using comma separated values
 - Removed PV Online batch import

@@ -63,7 +63,7 @@ foreach ($formula as $formula) {
 }
 
 $total = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM formulasMetaData"));
-$filtered = count($rx);
+$filtered = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM formulasMetaData ".$f));
 
 $response = array(
   "draw" => (int)$_POST['draw'],
