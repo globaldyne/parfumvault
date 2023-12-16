@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 9.2
+- Fix formulas not showing properly for some users if gender is not set
 
 ### Version 9.1
 - Fix formula changes history not properly logged
