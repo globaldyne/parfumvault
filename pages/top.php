@@ -10,12 +10,12 @@ if($pv_meta['schema_ver'] < $db_ver){
 ?>
 <div id="chkUpdMsg"></div>
 <div id="content">
-        <nav class="navbar navbar-expand navbar-light bg-light topbar mb-4 static-top shadow">
+        <nav class="navbar navbar-expand bg-gradient-primary-navbar topbar mb-4 static-top shadow">
           <ul class="navbar-nav vault-top ml-auto">
             <!-- Cart -->
             <li class="nav-item dropdown no-arrow mx-1">
               <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-shopping-cart fa-fw"></i>
+                <i class="fas fa-shopping-cart fa-fw text-white"></i>
                 <!-- Counter - cart -->
                 <span class="badge badge-danger badge-counter"><?php echo countCart($conn); ?></span>
               </a>
@@ -46,7 +46,7 @@ if($pv_meta['schema_ver'] < $db_ver){
             <div class="topbar-divider d-none d-sm-block"></div>
             <li class="nav-item dropdown no-arrow">
               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="mx-2 d-none d-lg-inline text-gray-600 small"><?php echo $user['fullName'];?></span>
+                <span class="mx-2 d-none d-lg-inline text-white small"><?php echo $user['fullName'];?></span>
                <div class="icon-container">
                 <img class="img-profile rounded-circle" src="<?=$doc['avatar']?: '/img/logo_def.png'; ?>">
 				<div class="status-circle"></div>
