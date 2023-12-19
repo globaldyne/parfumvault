@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 9.2
+- Add a watermark when export a formula to sell
 - Add PV product name as a subtitle when export a formula in a pdf
 - Set main navbar to dark colors
 - Fix formulas not showing properly for some users if gender is not set
