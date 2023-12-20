@@ -1431,3 +1431,8 @@ th.dt-center, td.dt-center {
 .text-wrap-2 {
   white-space: break-spaces !important;
 }
+
+.bg-gradient-primary-navbar {
+  background-image: linear-gradient(90deg, #484848 10%, #000000e5 100%);
+  background-size: cover;
+}

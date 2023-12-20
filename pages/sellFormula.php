@@ -10,8 +10,8 @@
 	<div class="card-body">
         <table width="100%" border="0">
           <tr>
-            <td width="9%">Formula:</td>
-            <td width="24%">
+            <td width="10%">Formula:</td>
+            <td width="90%">
             <select id="formulaID" class="form-control selectpicker" data-live-search="true">
              <?php
              $sql = mysqli_query($conn, "SELECT id,name,product_name FROM formulasMetaData ORDER BY name ASC");
@@ -34,15 +34,20 @@
                 ?>
                 </select>
               </td>
-            <td>&nbsp;</td>
           </tr>
           <tr>
-            <td>&nbsp;</td>
-            <td colspan="2">&nbsp;</td>
+            <td>Watermark:</td>
+            <td colspan="2"><input class="mb-2 form-control" name="watermarkText" type="text" id="watermarkText" value="CONFIDENTIAL"></td>
+          </tr>
+          <tr>
+            <td>Watermark size:</td>
+            <td colspan="2"><select name="watermarkTextSize" class="form-control" id="watermarkTextSize">
+              <option value="100">100</option>
+              <option value="200">200</option>
+            </select></td>
           </tr>
           <tr>
             <td><input type="submit" name="button" class="btn btn-info"id="btnGEN" value="Generate"></td>
-            <td colspan="2">&nbsp;</td>
           </tr>
         </table> 
       </div>
@@ -55,9 +60,11 @@
 $('#btnGEN').click(function() {
 	$.ajax({ 
 		url: '/pages/views/formula/sell_formula.php', 
-		type: 'GET',
+		type: 'POST',
 		data: {
-			id: $("#formulaID").val(),			
+			id: $("#formulaID").val(),
+			watermarkText: $("#watermarkText").val(),
+			watermarkTextSize: $("#watermarkTextSize").val()
 			},
 		dataType: 'html',
 		success: function (data) {

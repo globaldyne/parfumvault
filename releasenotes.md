@@ -1,7 +1,6 @@
-Whats New in v9.1
+Whats New in v9.2
 --------------------------
-- Fix formula changes history not properly logged
-- Fix incorrect solvent management when decreasing/increasing quantity and update solvent in a formula
-- Fix category description misalignment
+- Add a watermark when export a formula to sell
+- Fix formulas not showing properly for some users if gender is not set
 - Various bug fixes and improvements
 - For full details please refer to the CHANGELOG

@@ -21,7 +21,10 @@ while($cats_res = mysqli_fetch_array($cats_q)){
 
 
 if($_GET['filter'] && $_GET['profile'] || $_GET['sex']){
-	$f = "WHERE profile = '".$_GET['profile']."' OR sex = '".$_GET['sex']."'";
+	if($_GET['sex']){
+		$gnd = "OR sex = '".$_GET['sex']."'";
+	}
+	$f = "WHERE profile = '".$_GET['profile']."' $gnd";
 }
 $s = trim($_POST['search']['value']);
 
@@ -45,8 +48,8 @@ foreach ($formula as $formula) {
 	$r['product_name'] = (string)$formula['product_name'] ?: 'N/A';
 	$r['name'] = (string)$formula['name']?:'Unnamed';
 	$r['isProtected'] = (int)$formula['isProtected']?:0;
-	$r['profile'] = (string)$formula['profile']?: 'N/A';
-	$r['sex'] = (string)$formula['sex']?:'N/A';
+	$r['profile'] = (string)$formula['profile'] ?: 'N/A';
+	$r['sex'] = (string)$formula['sex'] ?: 'unisex';
 	$r['created'] = (string)$formula['created'];
 	$r['updated'] = (string)$fdata['updated'] ?: '-';
 	$r['catClass'] = (string)$formula['catClass']?: 'N/A';

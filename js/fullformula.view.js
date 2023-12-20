@@ -435,8 +435,6 @@ $("#formula").on("click", ".open-quantity-dialog", function () {
 });
 
 
-	
-	
 $('.export_as').click(function() {	
   var format = $(this).attr('data-format');
   $("#formula").tableHTMLExport({
@@ -450,6 +448,7 @@ $('.export_as').click(function() {
   	ignoreRows: '.noexport',
 	htmlContent: false,
 	orientation: 'l',
+	subtitle: 'Created with Perfumer\'s Vault Pro',
 	maintitle: myFNAME,
   });
 });
