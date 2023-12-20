@@ -89,7 +89,7 @@ CREATE TABLE `formulasMetaData` (
   `product_name` varchar(255) DEFAULT NULL,
   `fid` varchar(255) COLLATE utf8_general_ci NOT NULL,
   `profile` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `sex` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `sex` varchar(255) COLLATE utf8_general_ci DEFAULT 'unisex',
   `notes` text COLLATE utf8_general_ci DEFAULT NULL,
   `created` timestamp NOT NULL DEFAULT current_timestamp(),
   `isProtected` INT NULL DEFAULT '0',
