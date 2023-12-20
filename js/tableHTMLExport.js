@@ -47,6 +47,9 @@ THE SOFTWARE.*/
 				coverFontSize: 10,
 				titleFontSize: 18,
 			    fontSize: 10,
+				imgData: '',
+				watermarkText: '',
+				watermarkTextSize: 200,
             };
             var options = $.extend(defaults, options);
 
@@ -154,8 +157,30 @@ THE SOFTWARE.*/
 
                 return output;
             }
+			
+			//ADD A WATERMARK
+			function addWaterMark(doc) {
+				var totalPages = doc.internal.getNumberOfPages();
+				var pageHeight = doc.internal.pageSize.height || doc.internal.pageSize.getHeight();
+				var pageWidth = doc.internal.pageSize.width || doc.internal.pageSize.getWidth();
 
 
+			  for (i = 1; i <= totalPages; i++) {
+				doc.setPage(i);
+				if(options.imgData){
+					doc.addImage(options.imgData, 'PNG', 40, 40, 75, 75);
+				}
+				doc.saveGraphicsState();
+				doc.setGState(new doc.GState({opacity: 0.3}));
+				doc.setFontSize(options.watermarkTextSize - options.watermarkTextSize.length)
+				doc.text(options.watermarkText,  390 - options.watermarkTextSize.length, 800  , {align: 'center', angle: 45})
+				doc.restoreGraphicsState();
+
+			  }
+			
+			  return doc;
+			}
+			
             var el = this;
             var dataMe;
             if(options.type == 'csv' || options.type == 'txt'){
@@ -235,8 +260,11 @@ THE SOFTWARE.*/
 						})
 					  }
 				}
+				
 				doc.autoTable(contentJsPdf);
 				addFooters(doc);
+				
+				doc = addWaterMark(doc);
                 doc.save(options.filename);
 
             }

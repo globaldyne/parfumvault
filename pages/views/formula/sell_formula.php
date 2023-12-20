@@ -6,12 +6,12 @@ require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/inc/product.php');
 
-if(!$_GET['id']){
+if(!$_POST['id']){
 	echo 'Formula id is missing.';
 	return;
 }
 	
-$id = mysqli_real_escape_string($conn, $_GET['id']);
+$id = mysqli_real_escape_string($conn, $_POST['id']);
 
 if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulasMetaData WHERE id = '$id'")) == FALSE){
 	echo '<div class="alert alert-info alert-dismissible">Incomplete formula. Please add ingredients.</div>';
@@ -61,6 +61,8 @@ $fid = $meta['fid'];
 <script>
 var myFID = "<?=$meta['fid']?>";
 var myFNAME = "<?=$meta['name']?>";
+var watermarkText = "<?=$_POST['watermarkText']?>";
+var watermarkTextSize = "<?=$_POST['watermarkTextSize']?>";
 
 var formula_table = $('#formula').DataTable( {
 	columnDefs: [
@@ -113,7 +115,9 @@ $('#export_pdf').on('click',function(){
 	cover: '<?php echo base64_encode(wordwrap($meta['notes'],100));?>',
 	maintitle: myFNAME,
 	subtitle: $("#customerID").val(),
-	product: '<?php echo trim($product).' '.trim($ver);?>'
+	product: '<?php echo trim($product).' '.trim($ver);?>',
+	watermarkText: watermarkText,
+	watermarkTextSize: watermarkTextSize
   });
 });
 
