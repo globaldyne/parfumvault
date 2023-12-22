@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 9.3
+- Set defaults for non mandatory fields when import a json
 - DB schema clean-up
 - DB Schema price field change to double
 ### Version 9.2
