@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 9.4
+- Fix update message when in cloud enviroment
 
 ### Version 9.3
 - Set defaults for non mandatory fields when import a json
