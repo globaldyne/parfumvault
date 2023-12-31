@@ -3,6 +3,7 @@
 - Set defaults for non mandatory fields when import a json
 - DB schema clean-up
 - DB Schema price field change to double
+
 ### Version 9.2
 - Add a watermark when export a formula to sell
 - Add PV product name as a subtitle when export a formula in a pdf
