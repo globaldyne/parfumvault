@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 9.4
+
 ### Version 9.3
 - Set defaults for non mandatory fields when import a json
 - DB schema clean-up
