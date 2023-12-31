@@ -313,8 +313,12 @@ if($_GET['action'] == 'restoreFormulas'){
 			$name = mysqli_real_escape_string($conn, $formula['name']);
 			$notes = mysqli_real_escape_string($conn, $formula['notes']);
 			$ingredient = mysqli_real_escape_string($conn, $formula['ingredient']);
-		
-			$sql = "INSERT INTO formulas(fid,name,ingredient,ingredient_id,concentration,dilutant,quantity,exclude_from_summary,exclude_from_calculation,notes,created,updated) VALUES('".$formula['fid']."','".$name."','".$ingredient."','".$formula['ingredient_id']."','".$formula['concentration']."','".$formula['dilutant']."','".$formula['quantity']."','".$formula['exclude_from_summary']."','".$formula['exclude_from_calculation']."','".$notes."','".$formula['created']."','".$formula['updated']."')";
+			$exclude_from_summary = $formula['exclude_from_summary'] ?: 0;
+			$exclude_from_calculation = $formula['exclude_from_calculation'] ?: 0;
+			$created = $formula['created'] ?:  date('Y-m-d H:i:s');
+			$updated = $formula['updated'] ?:  date('Y-m-d H:i:s');
+
+			$sql = "INSERT INTO formulas(fid,name,ingredient,ingredient_id,concentration,dilutant,quantity,exclude_from_summary,exclude_from_calculation,notes,created,updated) VALUES('".$formula['fid']."','".$name."','".$ingredient."','".$formula['ingredient_id']."','".$formula['concentration']."','".$formula['dilutant']."','".$formula['quantity']."','".$exclude_from_summary."','".$exclude_from_calculation."','".$notes."','".$created."','".$updated."')";
 			
 			if(mysqli_query($conn,$sql)){
 				$result['success'] = "Import complete";
