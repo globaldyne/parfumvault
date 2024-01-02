@@ -50,7 +50,7 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 	
 	if($_REQUEST['do'] == 'formulas'){
 
-		$sql = mysqli_query($conn, "SELECT name, notes, finalType AS concentration, fid, status, created, isProtected, rating FROM formulasMetaData");
+		$sql = mysqli_query($conn, "SELECT name, product_name, notes, finalType AS concentration, fid, status, created, isProtected, rating FROM formulasMetaData");
 		while($r = mysqli_fetch_assoc($sql)) {
     		if (is_null($r['name']) || empty($r['name'])) {
         		$r['name'] = "N/A";
@@ -62,6 +62,7 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 			$C = date_format(date_create($r['created']),"d/m/Y H:i");
 
 			$r['name'] = (string)$r['name'];
+			$r['product_name'] = (string)$r['product_name'] ?: "Not Set";
 			$r['notes'] = (string)$r['notes'];
 			$r['concentration'] = (int)$r['concentration'];
 			$r['status'] = (int)$r['status'] ?: 0;
@@ -78,9 +79,9 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 	
 	if($_REQUEST['do'] == 'formula'){
 		if($fid = mysqli_real_escape_string($conn, $_REQUEST['fid'])){
-			$sql = mysqli_query($conn, "SELECT name, ingredient, concentration, dilutant, quantity FROM formulas WHERE fid = '$fid'");
+			$sql = mysqli_query($conn, "SELECT fid, name, ingredient, concentration, dilutant, quantity FROM formulas WHERE fid = '$fid'");
 		}else{
-			$sql = mysqli_query($conn, "SELECT name, ingredient, concentration, dilutant, quantity FROM formulas");
+			$sql = mysqli_query($conn, "SELECT fid, name, ingredient, concentration, dilutant, quantity FROM formulas");
 		}
 		$rows = array();
 		while($r = mysqli_fetch_assoc($sql)) {
