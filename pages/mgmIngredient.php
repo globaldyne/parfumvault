@@ -86,6 +86,7 @@ var myPCH = "<?=$settings['pubChem']?>";
 						<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#renameIng"><i class="fa-regular fa-pen-to-square mx-2"></i>Rename ingredient</a></li>
                         <li><a class="dropdown-item" href="/pages/export.php?format=json&kind=single-ingredient&id=<?=$ing['id']?>"><i class="fas fa-download mx-2"></i>Export as JSON</a></li>
 						<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#genSDS"><i class="fa-solid fa-file-prescription mx-2"></i>Generate SDS</a></li>
+						<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#genQRC"><i class="fa-solid fa-qrcode mx-2"></i>Generate QR Code</a></li>
 					</div>
 				</div>
 			<?php }else {?>
@@ -385,7 +386,26 @@ var myPCH = "<?=$settings['pubChem']?>";
 	</div>
 </div>
 
+<!-- Modal QR Code-->
+<div class="modal fade" id="genQRC" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="genQRC" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title"><?php echo $ing['name']; ?></h5>
+			</div>
+			<div class="modal-body">
+            	<div id="warn"><div class="alert alert-warning">Use PV APP to scan the QR</div></div>
+				
+				<div id="QRC" class="d-flex justify-content-center"></div>            
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 <script type="text/javascript" language="javascript">
+
 $('#printLabel').on('click', '[id*=print]', function () {
 	<?php if(empty($settings['label_printer_addr']) || empty($settings['label_printer_model'])){?>
 		$("#msg").html('<div class="alert alert-danger alert-dismissible">Please configure printer details in <a href="?do=settings">settings<a> page</div>');

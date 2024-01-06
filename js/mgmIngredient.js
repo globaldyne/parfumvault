@@ -271,7 +271,7 @@ if (typeof myCAS !== 'undefined' && myPCH == '1') {
 			}
 		});
 	}
-}
+};
 
 if (typeof myIngID !== 'undefined') {
 	function reload_overview() {
@@ -290,4 +290,20 @@ if (typeof myIngID !== 'undefined') {
 		});
 	};
 	reload_overview();
-}
+};
+
+function fetch_qrc(){
+	$.ajax({ 
+		url: '/pages/views/generic/qrcode.php', 
+		type: 'GET',
+		data: {
+			id: myIngID,
+			type: "ingredient"
+		},
+		dataType: 'html',
+		success: function (data) {
+			$('#QRC').html(data);
+		},
+	});
+};
+fetch_qrc();
