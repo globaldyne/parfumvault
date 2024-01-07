@@ -20,8 +20,8 @@ if($_GET['type'] == "ingredient"){
 }
 
 
-$qr->setErrorCorrectLevel(QR_ERROR_CORRECT_LEVEL_M);
-$qr->setTypeNumber(40);
+$qr->setErrorCorrectLevel(QR_ERROR_CORRECT_LEVEL_H);
+$qr->setTypeNumber(20);
 $qr->addData($qrData);
 $qr->make();
 $qr->printHTML();

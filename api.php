@@ -50,7 +50,7 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 	
 	if($_REQUEST['do'] == 'formulas'){
 
-		$sql = mysqli_query($conn, "SELECT name, product_name, notes, finalType AS concentration, fid, status, created, isProtected, rating FROM formulasMetaData");
+		$sql = mysqli_query($conn, "SELECT name, product_name, notes, finalType AS concentration, fid, status, created, isProtected, rating, profile FROM formulasMetaData");
 		while($r = mysqli_fetch_assoc($sql)) {
     		if (is_null($r['name']) || empty($r['name'])) {
         		$r['name'] = "N/A";
@@ -69,6 +69,7 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 			$r['created'] = (string)$C;
 			$r['isProtected'] = (int)$r['isProtected'] ?: 0;
 			$r['rating'] = (int)$r['rating'] ?: 0;
+			$r['profile'] = (string)$r['profile'] ?: "Default";
 
 			$rows[$_REQUEST['do']][] = array_filter($r);
 		}
