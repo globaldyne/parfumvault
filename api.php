@@ -80,9 +80,9 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 	
 	if($_REQUEST['do'] == 'formula'){
 		if($fid = mysqli_real_escape_string($conn, $_REQUEST['fid'])){
-			$sql = mysqli_query($conn, "SELECT fid, name, ingredient, concentration, dilutant, quantity FROM formulas WHERE fid = '$fid'");
+			$sql = mysqli_query($conn, "SELECT fid, name, ingredient, concentration, dilutant, quantity, notes FROM formulas WHERE fid = '$fid'");
 		}else{
-			$sql = mysqli_query($conn, "SELECT fid, name, ingredient, concentration, dilutant, quantity FROM formulas");
+			$sql = mysqli_query($conn, "SELECT fid, name, ingredient, concentration, dilutant, quantity, notes FROM formulas");
 		}
 		$rows = array();
 		while($r = mysqli_fetch_assoc($sql)) {
@@ -100,6 +100,7 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 			$r['dilutant'] = (string)$r['dilutant'];
 			$r['concentration'] = (float)$r['concentration']?:100;
 			$r['quantity'] = (float)$r['quantity']?:0;
+			$r['notes'] = (string)$r['notes'] ?: 'None';
 
 			$rows[$_REQUEST['do']][] = $r;
 		}

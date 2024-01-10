@@ -394,9 +394,11 @@ var myPCH = "<?=$settings['pubChem']?>";
 				<h5 class="modal-title"><?php echo $ing['name']; ?></h5>
 			</div>
 			<div class="modal-body">
-            	<div id="warn"><div class="alert alert-warning">Use PV APP to scan the QR</div></div>
+            	<div class="alert alert-info">Use PV APP to scan the QR</div>
 				
-				<div id="QRC" class="d-flex justify-content-center"></div>            
+				<div id="QRC" class="d-flex justify-content-center"></div>   
+                <hr />
+                <div class="alert alert-info">Download from the App Store</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 				</div>
