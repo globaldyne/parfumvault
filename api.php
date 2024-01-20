@@ -6,6 +6,8 @@ require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/func/rgbToHex.php');
 
 $defCatClass = $settings['defCatClass'];
+$defImage = base64_encode(file_get_contents(__ROOT__.'/img/pv_molecule.png'));
+
 $log_path = $tmp_path.'/logs/';
 $log_api_file = 'pv-api.log';
 
@@ -50,7 +52,7 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 	
 	if($_REQUEST['do'] == 'formulas'){
 
-		$sql = mysqli_query($conn, "SELECT name, product_name, notes, finalType AS concentration, fid, status, created, isProtected, rating, profile, src,customer_id,revision,madeOn FROM formulasMetaData");
+		$sql = mysqli_query($conn, "SELECT id, name, product_name, notes, finalType AS concentration, fid, status, created, isProtected, rating, profile, src,customer_id,revision,madeOn FROM formulasMetaData");
 		while($r = mysqli_fetch_assoc($sql)) {
     		if (is_null($r['name']) || empty($r['name'])) {
         		$r['name'] = "N/A";
@@ -60,7 +62,8 @@ if($_REQUEST['key'] && $_REQUEST['do']){
    			}
 
 			$C = date_format(date_create($r['created']),"d/m/Y H:i");
-
+			$I = mysqli_fetch_array(mysqli_query($conn, "SELECT docData FROM documents WHERE ownerID = '".$r['id']."' AND type = '2'"));
+			
 			$r['name'] = (string)$r['name'];
 			$r['product_name'] = (string)$r['product_name'] ?: "Not Set";
 			$r['notes'] = (string)$r['notes'];
@@ -74,6 +77,7 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 			$r['customer_id'] = (int)$r['customer_id'] ?: 0;
 			$r['revision'] = (int)$r['revision'] ?: 0;
 			$r['madeOn'] = (string)$r['madeOn'] ?: "-";
+			$r['image'] = (string)$I['docData'] ?: $defImage;
 
 			$rows[$_REQUEST['do']][] = array_filter($r);
 		}

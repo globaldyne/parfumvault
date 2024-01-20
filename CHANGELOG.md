@@ -6,6 +6,7 @@
 - Formulas API extended to include more info 
 - Clear file field after a succesful import in IFRA library
 - Fix incorrect json image export in IFRA library
+- Extend API to include formula image 
 
 ### Version 9.3
 - Set defaults for non mandatory fields when import a json
