@@ -3,6 +3,7 @@
 - Fix update message when in cloud enviroment
 - Added support for QR Code for formulas and ingredients that can be scanned using the PV App
 - Added extended support to the API for the PV2 APP
+- Formulas API extended to include more info 
 
 ### Version 9.3
 - Set defaults for non mandatory fields when import a json
