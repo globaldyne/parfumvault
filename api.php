@@ -232,6 +232,30 @@ if($_REQUEST['key'] && $_REQUEST['do']){
        return;
     }
 	
+	if($_REQUEST['do'] == 'documents'){
+       $sql = mysqli_query($conn, "SELECT id, ownerID, type, name, notes, docData, created, updated FROM documents LIMIT 10");
+       $rows = array();
+       	while($rx = mysqli_fetch_assoc($sql)) {
+   			
+			$r['id'] = (int)$rx['id'];			
+		 	$r['ownerID'] = (int)$rx['ownerID'] ?: 0;			
+			$r['type'] = (int)$rx['type'] ?: 0;			
+			$r['name'] = (string)$rx['name'] ?: "-";				
+			$r['notes'] = (string)$rx['notes'] ?: "-";			
+			$r['docData'] = (string)$rx['docData'];			
+			$r['created'] = (string)$rx['created'] ?: "-";			
+			$r['updated'] = (string)$rx['updated'] ?: "-";			
+
+          	$rows[$_REQUEST['do']][] = $r;
+     	}
+       header('Content-Type: application/json; charset=utf-8');
+       echo json_encode($rows, JSON_NUMERIC_CHECK, JSON_PRETTY_PRINT);
+       return;
+    }
+	
+	
+	
+	
 }
 
 
