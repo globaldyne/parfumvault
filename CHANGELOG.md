@@ -8,6 +8,7 @@
 - Fix incorrect json image export in IFRA library
 - Extend API to include formula image 
 - Add supplier name when exporting ingredients to JSON
+- Fix incorrect pagination
 
 ### Version 9.3
 - Set defaults for non mandatory fields when import a json

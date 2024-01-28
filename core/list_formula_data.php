@@ -6,8 +6,11 @@ require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/countElement.php');
 
-
-$row = $_POST['start']?:0;
+if($_GET['filter'] = 1){
+	$row = 0;
+} else {
+	$row = $_POST['start']?:0;
+}
 $limit = $_POST['length']?:10;
 $order_by  = $_POST['order_by']?:'name';
 $order  = $_POST['order_as']?:'ASC';
@@ -71,7 +74,7 @@ $filtered = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries F
 $response = array(
   "draw" => (int)$_POST['draw'],
   "recordsTotal" => (int)$total['entries'],
-  "recordsFiltered" => (int)$filtered,
+  "recordsFiltered" => (int)$filtered['entries'],
   "data" => $rx
 );
 
