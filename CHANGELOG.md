@@ -9,6 +9,7 @@
 - Extend API to include formula image 
 - Add supplier name when exporting ingredients to JSON
 - Fix incorrect pagination
+- Added explanation next to multi-dimensional lookup option
 
 ### Version 9.3
 - Set defaults for non mandatory fields when import a json
