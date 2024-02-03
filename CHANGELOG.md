@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 9.5
+
 ### Version 9.4
 - Fix update message when in cloud enviroment
 - Added support for QR Code for formulas and ingredients that can be scanned using the PV App
