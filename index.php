@@ -237,13 +237,13 @@ function chkUpdate() {
       </li>
     
         <li class="nav-item">
-        <a class="nav-link" href="?do=IFRA">
+        <a class="nav-link" href="/?do=IFRA">
           <i class="fas fa-fw fa-university"></i>
           <span>IFRA Library</span></a>
         </li>
 
         <li class="nav-item">
-        <a class="nav-link" href="?do=statistics">
+        <a class="nav-link" href="/?do=statistics">
           <i class="fas fa-fw fa-chart-area"></i>
           <span>Statistics</span></a>
         </li>

@@ -294,12 +294,29 @@ function fActions(data, type, row, meta){
 		
 		data += '<li><a class="dropdown-item" href="#" id="cloneMe" rel="tip" title="Clone '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"><i class="fas fa-copy mx-2"></i>Clone formula</a></li>';
 		
+		data += '<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#genQRC" data-id="'+ row.fid +'" data-formula="'+ row.name +'"><i class="fa-solid fa-qrcode mx-2"></i>Generate QR Code</a></li>';
+
+
 		data += '<div class="dropdown-divider"></div>';
-		data += '<li><a class="dropdown-item link-danger" href="#" id="deleteMe" rel="tip" title="Delete '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"><i class="fas fa-trash mx-2"></i>Permanently delete formula</a></li>';
+		data += '<li><a class="dropdown-item link-danger" href="#" id="deleteMe" rel="tip" title="Delete '+ row.name +'" data-id="'+ row.id +'" data-name="'+ row.name +'"><i class="fas fa-trash mx-2"></i>Permanently delete formula</a></li>';
 		data += '</ul></div>';
 	
     return data;
 }
+
+//Generate a QR
+$("#genQRC").on("show.bs.modal", function(e) {
+	const id = e.relatedTarget.dataset.id;
+  	const formula = e.relatedTarget.dataset.formula;
+
+  $.get("/pages/views/generic/qrcode.php?type=formula&id=" + id)
+    .then(data => {
+      $("#genQRLabel", this).html(formula);
+      $(".modal-body", this).html(data);
+	 // $("#msg_settings_info", this).html('');
+    });
+
+});
 
 //Clone
 $('table.table').on('click', '[id*=cloneMe]', function () {
@@ -651,6 +668,23 @@ $("#formula-name").keyup(function(){
 });
 
 </script>
+
+<!--GEN QRCODE MODAL-->            
+<div class="modal fade" id="genQRC" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="getFormMetalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title mgmIngHeader mgmIngHeader-with-separator" id="genQRLabel">Please wait...</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body d-flex justify-content-center">
+        <div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i>Loading...</div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!--GET FORMULA SETTINGS MODAL-->            
 <div class="modal fade" id="getFormMeta" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="getFormMetalLabel" aria-hidden="true">

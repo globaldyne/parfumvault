@@ -504,7 +504,7 @@ $('#pdf').on('click',function(){
   		ignoreRows: '.noexport',
 		htmlContent: true,
 		maintitle: '<?=base64_decode($f_name)?>',
-		product: '<?php echo trim($product).' '.trim($ver);?>'
+		product: '<?php echo trim($product).' '.trim($ver);?>',
 	});
 });
 

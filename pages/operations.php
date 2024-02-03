@@ -207,21 +207,22 @@ if($_GET['action'] == 'exportFormulas'){
 		$r['product_name'] = (string)$meta['product_name'];
 		$r['fid'] = (string)$meta['fid'];
 		$r['profile'] = (string)$meta['profile'];
+		$r['category'] = (string)$meta['profile'] ?: 'Default';
 		$r['sex'] = (string)$meta['sex'];
-		$r['notes'] = (string)$meta['notes'];
+		$r['notes'] = (string)$meta['notes'] ?: 'None';
 		$r['created'] = (string)$meta['created'];
-		$r['isProtected'] = (int)$meta['isProtected'];
+		$r['isProtected'] = (int)$meta['isProtected'] ?: 0;
 		$r['defView'] = (int)$meta['defView'];
 		$r['catClass'] = (string)$meta['catClass'];
-		$r['revision'] = (int)$meta['revision'];
-		$r['finalType'] = (int)$meta['finalType'];
+		$r['revision'] = (int)$meta['revision'] ?: 0;
+		$r['finalType'] = (int)$meta['finalType'] ?: 100;
 		$r['isMade'] = (int)$meta['isMade'];
 		$r['madeOn'] = (string)$meta['madeOn'] ?: "0000-00-00 00:00:00";
 		$r['scheduledOn'] = (string)$meta['scheduledOn'];
 		$r['customer_id'] = (int)$meta['customer_id'];
 		$r['status'] = (int)$meta['status'];
 		$r['toDo'] = (int)$meta['toDo'];
-		$r['rating'] = (int)$meta['rating'];
+		$r['rating'] = (int)$meta['rating'] ?: 0;
 		
 		$formulas++;
 		$fm[] = $r;
@@ -236,7 +237,7 @@ if($_GET['action'] == 'exportFormulas'){
 		$f['name'] = (string)$formula['name'];
 		$f['ingredient'] = (string)$formula['ingredient'];
 		$f['ingredient_id'] = (int)$formula['ingredient_id'] ?: 0;
-		$f['concentration'] = (float)$formula['concentration'];
+		$f['concentration'] = (float)$formula['concentration'] ?: 100;
 		$f['dilutant'] = (string)$formula['dilutant'] ?: 'None';
 		$f['quantity'] = (float)$formula['quantity'];
 		$f['exclude_from_summary'] = (int)$formula['exclude_from_summary'];

@@ -102,6 +102,7 @@ while($cats_res = mysqli_fetch_array($cats_q)){
         <div class="form-group col-md-auto">
             <input name="multi_dim_perc" type="checkbox" id="multi_dim_perc" value="1" <?php if($settings['multi_dim_perc'] == '1'){ ?> checked="checked" <?php } ?>/>
             <label class="form-check-label" for="multi_dim_perc">Multi-dimensional lookup</label>
+            <a href="#" class="fas fa-question-circle" rel="tip" title="Enable to include into formulas limits calculation the ingredient's sub materials if exists."></a>
         </div>
      </div>
  </div>

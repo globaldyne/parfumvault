@@ -28,7 +28,6 @@ while($res = mysqli_fetch_array($q)){
 foreach ($ifra as $IFRA) { 
 	$r['id'] = (int)$IFRA['id'];
 	$r['ifra_key'] = (string)$IFRA['ifra_key']?:'N/A';
-	$r['image'] = (string)$IFRA['image']?:'N/A';
 	$r['amendment'] = (int)$IFRA['amendment']?:0;
 	$r['prev_pub'] = (string)$IFRA['prev_pub']?:'N/A';
 	$r['last_pub'] = (string)$IFRA['last_pub']?:'N/A';

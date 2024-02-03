@@ -6,6 +6,8 @@ require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/func/rgbToHex.php');
 
 $defCatClass = $settings['defCatClass'];
+$defImage = base64_encode(file_get_contents(__ROOT__.'/img/pv_molecule.png'));
+
 $log_path = $tmp_path.'/logs/';
 $log_api_file = 'pv-api.log';
 
@@ -50,7 +52,7 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 	
 	if($_REQUEST['do'] == 'formulas'){
 
-		$sql = mysqli_query($conn, "SELECT name, notes, finalType AS concentration, fid, status, created, isProtected, rating FROM formulasMetaData");
+		$sql = mysqli_query($conn, "SELECT id, name, product_name, notes, finalType AS concentration, fid, status, created, isProtected, rating, profile, src,customer_id,revision,madeOn FROM formulasMetaData");
 		while($r = mysqli_fetch_assoc($sql)) {
     		if (is_null($r['name']) || empty($r['name'])) {
         		$r['name'] = "N/A";
@@ -60,14 +62,22 @@ if($_REQUEST['key'] && $_REQUEST['do']){
    			}
 
 			$C = date_format(date_create($r['created']),"d/m/Y H:i");
-
+			$I = mysqli_fetch_array(mysqli_query($conn, "SELECT docData FROM documents WHERE ownerID = '".$r['id']."' AND type = '2'"));
+			
 			$r['name'] = (string)$r['name'];
+			$r['product_name'] = (string)$r['product_name'] ?: "Not Set";
 			$r['notes'] = (string)$r['notes'];
-			$r['concentration'] = (int)$r['concentration'];
+			$r['concentration'] = (int)$r['concentration'] ?: 100;
 			$r['status'] = (int)$r['status'] ?: 0;
-			$r['created'] = (string)$C;
+			$r['created'] = (string)$C ?: "-";
 			$r['isProtected'] = (int)$r['isProtected'] ?: 0;
 			$r['rating'] = (int)$r['rating'] ?: 0;
+			$r['profile'] = (string)$r['profile'] ?: "Default";
+			$r['src'] = (int)$r['src'] ?: 0;
+			$r['customer_id'] = (int)$r['customer_id'] ?: 0;
+			$r['revision'] = (int)$r['revision'] ?: 0;
+			$r['madeOn'] = (string)$r['madeOn'] ?: "-";
+			$r['image'] = (string)$I['docData'] ?: $defImage;
 
 			$rows[$_REQUEST['do']][] = array_filter($r);
 		}
@@ -78,9 +88,9 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 	
 	if($_REQUEST['do'] == 'formula'){
 		if($fid = mysqli_real_escape_string($conn, $_REQUEST['fid'])){
-			$sql = mysqli_query($conn, "SELECT name, ingredient, concentration, dilutant, quantity FROM formulas WHERE fid = '$fid'");
+			$sql = mysqli_query($conn, "SELECT fid, name, ingredient, concentration, dilutant, quantity, notes FROM formulas WHERE fid = '$fid'");
 		}else{
-			$sql = mysqli_query($conn, "SELECT name, ingredient, concentration, dilutant, quantity FROM formulas");
+			$sql = mysqli_query($conn, "SELECT fid, name, ingredient, concentration, dilutant, quantity, notes FROM formulas");
 		}
 		$rows = array();
 		while($r = mysqli_fetch_assoc($sql)) {
@@ -98,6 +108,7 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 			$r['dilutant'] = (string)$r['dilutant'];
 			$r['concentration'] = (float)$r['concentration']?:100;
 			$r['quantity'] = (float)$r['quantity']?:0;
+			$r['notes'] = (string)$r['notes'] ?: 'None';
 
 			$rows[$_REQUEST['do']][] = $r;
 		}
@@ -220,6 +231,30 @@ if($_REQUEST['key'] && $_REQUEST['do']){
        echo json_encode($rows, JSON_NUMERIC_CHECK, JSON_PRETTY_PRINT);
        return;
     }
+	
+	if($_REQUEST['do'] == 'documents'){
+       $sql = mysqli_query($conn, "SELECT id, ownerID, type, name, notes, docData, created, updated FROM documents LIMIT 10");
+       $rows = array();
+       	while($rx = mysqli_fetch_assoc($sql)) {
+   			
+			$r['id'] = (int)$rx['id'];			
+		 	$r['ownerID'] = (int)$rx['ownerID'] ?: 0;			
+			$r['type'] = (int)$rx['type'] ?: 0;			
+			$r['name'] = (string)$rx['name'] ?: "-";				
+			$r['notes'] = (string)$rx['notes'] ?: "-";			
+			$r['docData'] = (string)$rx['docData'];			
+			$r['created'] = (string)$rx['created'] ?: "-";			
+			$r['updated'] = (string)$rx['updated'] ?: "-";			
+
+          	$rows[$_REQUEST['do']][] = $r;
+     	}
+       header('Content-Type: application/json; charset=utf-8');
+       echo json_encode($rows, JSON_NUMERIC_CHECK, JSON_PRETTY_PRINT);
+       return;
+    }
+	
+	
+	
 	
 }
 

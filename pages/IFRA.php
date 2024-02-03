@@ -395,6 +395,7 @@ $('#btnImportIFRA').click(function() {
 				 $("#btnIFRAC").html('Close');
 				 $("#btnImportIFRA").prop("disabled", false);
 				 $("#btnIFRAC").prop("disabled", false);
+				 $("#ifraXLS").val('');
 				 reload_ifra_data();
               }else{
                 $("#IFRAImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+response.error+'</div>');
