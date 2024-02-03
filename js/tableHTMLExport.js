@@ -263,8 +263,9 @@ THE SOFTWARE.*/
 				
 				doc.autoTable(contentJsPdf);
 				addFooters(doc);
-				
-				doc = addWaterMark(doc);
+				if(defaults.watermarkText){
+					doc = addWaterMark(doc);
+				}
                 doc.save(options.filename);
 
             }

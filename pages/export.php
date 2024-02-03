@@ -149,8 +149,11 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'ingredients'){
 	
 	$q = mysqli_query($conn, "SELECT * FROM suppliers");
 	while($res = mysqli_fetch_assoc($q)){
+	   $sd = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingSuppliers WHERE id = '".$s['ingSupplierID']."'"));
+
 
 		$s['id'] = (int)$res['id'];
+		$s['name'] = (string)$sd['name'] ?: "Unknown";
 		$s['ingSupplierID'] = (int)$res['ingSupplierID'];
 		$s['ingID'] = (int)$res['ingID'];
 		$s['supplierLink'] = (string)$res['supplierLink'] ?: 'N/A';
