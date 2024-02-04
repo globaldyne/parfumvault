@@ -134,7 +134,7 @@ $.ajax({
              <h5 class="m-1 text-primary">Supplier: <strong><?=getSupplierByID($sid,$conn)['name']?></strong></h5>
              <?php } ?>
         	<?php }else{ ?>
-              <h2 class="m-0 font-weight-bold text-primary"><a href="?do=genFinishedProduct">Generate Finished Product</a></h2>
+              <h2 class="m-0 font-weight-bold text-primary"><a href="/?do=genFinishedProduct">Generate Finished Product</a></h2>
             <?php } ?>
             </div>
             <div class="card-body">
@@ -362,7 +362,7 @@ $.ajax({
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <input type="submit" name="button" class="btn btn-primary" id="button" value="Generate">
+        <input type="submit" class="btn btn-primary" id="generateCert" value="Generate">
       </div>
      </form>
     </div>
@@ -396,7 +396,7 @@ $.ajax({
    					$fTypes[] = $fTypes_res;
 				}
 			?>
-           <form action="?do=genFinishedProduct&generate=1" method="post" enctype="multipart/form-data" target="_blank">
+           <form action="/?do=genFinishedProduct&generate=1" method="post" enctype="multipart/form-data" target="_blank">
            
            <table width="100%" border="0">
   <tr>

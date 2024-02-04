@@ -1,5 +1,6 @@
 <?php 
 define('__ROOT__', dirname(dirname(__FILE__))); 
+define('FPDF_FONTPATH',__ROOT__.'/fonts');
 
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
@@ -8,6 +9,10 @@ require_once(__ROOT__.'/func/getIFRAMeta.php');
 require_once(__ROOT__.'/func/searchIFRA.php');
 require_once(__ROOT__.'/func/validateFormula.php');
 require_once(__ROOT__.'/func/calcPerc.php');
+
+
+require_once(__ROOT__.'/libs/fpdf.php');
+require_once(__ROOT__.'/libs/Html2Pdf.php');
 
 $bottle = $_GET['bottle'];
 $type = $_GET['conc'];
@@ -62,7 +67,7 @@ if ( empty($customers['name']) || empty($customers['address']) || empty($custome
 
 $tmpl = mysqli_fetch_array(mysqli_query($conn,"SELECT name,content FROM templates WHERE id = '".$_POST['template']."'"));
 
-$search  = array('%LOGO%','%BRAND_NAME%','%BRAND_ADDRESS%','%BRAND_EMAIL%','%BRAND_PHONE%','%CUSTOMER_NAME%','%CUSTOMER_ADDRESS%','%CUSTOMER_EMAIL%','%CUSTOMER_WEB%','%PRODUCT_NAME%','%PRODUCT_SIZE%','%PRODUCT_CONCENTATION%','%IFRA_AMMENDMENT%','%IFRA_AMMENDMENT_DATE%','%PRODUCT_CAT_CLASS%','%PRODUCT_TYPE%','%CURRENT_DATE%');
+$search  = array('%LOGO%','%BRAND_NAME%','%BRAND_ADDRESS%','%BRAND_EMAIL%','%BRAND_PHONE%','%CUSTOMER_NAME%','%CUSTOMER_ADDRESS%','%CUSTOMER_EMAIL%','%CUSTOMER_WEB%','%PRODUCT_NAME%','%PRODUCT_SIZE%','%PRODUCT_CONCENTRATION%','%IFRA_AMENDMENT%','%IFRA_AMENDMENT_DATE%','%PRODUCT_CAT_CLASS%','%PRODUCT_TYPE%','%CURRENT_DATE%');
 
 $replace = array($logo, $settings['brandName'], $settings['brandAddress'], $settings['brandEmail'], $settings['brandPhone'], $customers['name'],$customers['address'],$customers['email'],$customers['web'],$meta['product_name'],$bottle,$type,getIFRAMeta('MAX(amendment)',$conn),getIFRAMeta('MAX(last_pub)',$conn),strtoupper($defCatClass),$type,date('d/M/Y'));
 
@@ -90,7 +95,7 @@ foreach ($form as $formula){
 				<td align="center">'.$ifra['name'].'</td>
 				<td align="center">'.$ifra['cas'].'</td>
 				<td align="center">'.$ifra[$defCatClass].'</td>
-				<td align="center">'.$conc_p.'</td>
+				<td align="center">'.number_format($conc_p, 4).'</td>
 				<td align="center">'.$ifra['risk'].'</td> 
 			</tr>';
 			
@@ -102,13 +107,38 @@ foreach ($form as $formula){
 					<td align="center">'.$cmp['name'].'</td>
 					<td align="center">'.$cmp['cas'].'</td>
 					<td align="center">'.$cmp[$defCatClass].'</td>
-					<td align="center">'.$cmp['percentage']/100*$formula['quantity']/$mg['total_mg']*$new_conc/100*$bottle.'</td>
+					<td align="center">'.number_format($cmp['percentage']/100*$formula['quantity']/$mg['total_mg']*$new_conc/100*$bottle, 4).'</td>
 					<td align="center">'.$cmp['risk'].'</td> 
 				</tr>';
 		}
 	
 	} 
 }
-echo  str_replace( $search, $replace, preg_replace('#(%IFRA_MATERIALS_LIST%)#ms', $x, $tmpl['content']) );
+$contents =  str_replace( $search, $replace, preg_replace('#(%IFRA_MATERIALS_LIST%)#ms', $x, $tmpl['content']) );
+echo $contents;
+/*
+class PDF extends PDF_HTML{
+	function Header() {
+		///$this->Image(__BRANDLOGO__,10,6,30,0,'png');
+		$this->SetFont('Arial','B',15);
+		$this->Cell(80);
+		$this->Cell(40,10,'IFRA Analysis',0,0,'C');
+		$this->Ln(20);
+	}
 
+	function Footer(){
+		$this->SetY(-15);
+		$this->SetFont('Arial','I',8);
+		$this->Cell(0,10,'Page '.$this->PageNo().'/{nb}',0,0,'C');
+	}
+}
+
+$pdf = new PDF();
+$pdf->AliasNbPages();
+$pdf->AddPage();
+$pdf->SetFont('Times','',12);
+$pdf->MultiCell(190,10,$pdf->WriteHTML($contents));
+
+$pdf->Output("D");
+*/
 ?>
