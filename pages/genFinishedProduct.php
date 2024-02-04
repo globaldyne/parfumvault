@@ -150,7 +150,9 @@ $.ajax({
                       <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
                       <div class="dropdown-menu dropdown-menu-right">
                         <li><a class="dropdown-item" id="pdf" href="#"><i class="fa-solid fa-file-pdf mx-2"></i>Export to PDF</a></li>
-                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#IFRA"><i class="fa-solid fa-certificate mx-2"></i>IFRA Certificate</a></li>
+                        <?php if (file_exists(__ROOT__."/pages/views/IFRA/genIFRAdoc.php")) {?>
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#IFRA"><i class="fa-solid fa-certificate mx-2"></i>IFRA Document</a></li>
+                        <?php } ?>
                         <li><a class="dropdown-item" href="javascript:printLabel()" onclick="return confirm('Print label?')"><i class="fa-solid fa-print mx-2"></i>Print Label</a></li>
                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#printBoxLabel"><i class="fa-solid fa-print mx-2"></i>Print Box Label</a></li>
                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#ViewBoxLabel"><i class="fa-solid fa-font mx-2"></i>View Box Label as text</a></li>
@@ -330,17 +332,17 @@ $.ajax({
     </div>
   </div>
 </div>
-
-<!-- Modal IFRA CERT-->
+<?php if (file_exists(__ROOT__."/pages/views/IFRA/genIFRAdoc.php")) {?>
+<!-- Modal IFRA DOC-->
 <div class="modal fade" id="IFRA" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="IFRA" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Generate IFRA Certification</h5>
+        <h5 class="modal-title">Generate IFRA Document</h5>
       </div>
       <div class="modal-body">
           Select customer:
-          <form action="/pages/genIFRAcert.php?fid=<?php echo $meta['fid'];?>&conc=<?php echo $type; ?>&bottle=<?php echo $bottle;?>&defCatClass=<?=$defCatClass?>" method="POST" target="_blank">
+          <form action="/pages/views/IFRA/genIFRAdoc.php?fid=<?php echo $meta['fid'];?>&conc=<?php echo $type; ?>&bottle=<?php echo $bottle;?>&defCatClass=<?=$defCatClass?>" method="POST" target="_blank">
             <select class="form-control" name="customer" id="customer">
             <?php
 				$res = mysqli_query($conn, "SELECT id, name FROM customers ORDER BY name ASC");
@@ -350,7 +352,7 @@ $.ajax({
 			?>
             </select>
         	<br/>
-            Select IFRA Certification template:
+            Select IFRA document template:
             <select class="form-control" name="template" id="template">
             <?php
 				$res = mysqli_query($conn, "SELECT id, name FROM templates ORDER BY name ASC");
@@ -362,12 +364,13 @@ $.ajax({
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <input type="submit" class="btn btn-primary" id="generateCert" value="Generate">
+        <input type="submit" class="btn btn-primary" id="generateDoc" value="Generate">
       </div>
      </form>
     </div>
   </div>
 </div>
+<?php } ?>
             <?php 
 			}else{ 
 				if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))== 0){

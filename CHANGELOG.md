@@ -3,6 +3,7 @@
 - Show ingredients label text in modal in finished product section
 - Move batch history menu under formulas
 - Fix typos in IFRA generation document
+- Remove option to generate IFRA docs
 
 ### Version 9.4
 - Fix update message when in cloud enviroment
