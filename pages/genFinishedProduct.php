@@ -153,7 +153,7 @@ $.ajax({
                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#IFRA"><i class="fa-solid fa-certificate mx-2"></i>IFRA Certificate</a></li>
                         <li><a class="dropdown-item" href="javascript:printLabel()" onclick="return confirm('Print label?')"><i class="fa-solid fa-print mx-2"></i>Print Label</a></li>
                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#printBoxLabel"><i class="fa-solid fa-print mx-2"></i>Print Box Label</a></li>
-                        <li><a class="dropdown-item" href="javascript:BoxLabel('text')"><i class="fa-solid fa-font mx-2"></i>View Box Label as text</a></li>
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#ViewBoxLabel"><i class="fa-solid fa-font mx-2"></i>View Box Label as text</a></li>
                       </div>
                     </div>
                     </div>
@@ -290,7 +290,26 @@ $.ajax({
                 <p>*Values in: <strong class="alert alert-danger">red</strong> exceeds usage level,   <strong class="alert alert-warning">yellow</strong> have no usage level set,   <strong class="alert alert-success">green</strong> are within usage level, <strong class="alert alert-info">blue</strong> are exceeding recommended usage level</p>
                 </div>
             </div>
-            
+
+
+<!--VIEW BOX LABEL MODAL-->            
+<div class="modal fade" id="ViewBoxLabel" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="ViewBoxLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title mgmIngHeader mgmIngHeader-with-separator" id="headerLabel">View Label</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i>Loading...</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <!-- Modal PRINT-->
 <div class="modal fade" id="printBoxLabel" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="printBoxLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -491,7 +510,22 @@ $.ajax({
    </div>
   </div>
 <script type="text/javascript" language="javascript" >
+$("#ViewBoxLabel").on("show.bs.modal", function(e) {
+	
+  const action = "printBoxLabel"; 
+  const batchID = "<?php echo $batchID; ?>";
+  const formula = "<?php echo $f_name; ?>";
+  const carrier = "<?php echo $carrier*100/$bottle;?>";
 
+  const url = "/pages/manageFormula.php?action="+ action + "&batchID=" + batchID +"&name=" + formula + "&carrier=" + carrier +"&download=text";
+
+  $.get(url)
+    .then(data => {
+      $("#headerLabel", this).html(atob(formula));
+      $(".modal-body", this).html(data);
+    });
+	
+});
 
 $('#pdf').on('click',function(){
 	$("#formula").tableHTMLExport({

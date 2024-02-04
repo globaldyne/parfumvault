@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 9.5
+- Show ingredients label text in modal in finished product section
 
 ### Version 9.4
 - Fix update message when in cloud enviroment
