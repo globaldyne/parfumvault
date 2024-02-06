@@ -118,10 +118,28 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 	}
 	
 	if($_REQUEST['do'] == 'ingredients'){
-		$sql = mysqli_query($conn, "SELECT id, name, cas, odor, profile, physical_state, cat4, category, type, INCI, purity,allergen FROM ingredients");
+		$sql = mysqli_query($conn, "SELECT id, name, cas, odor, profile, physical_state, cat1, cat2, cat3, cat4, cat5A, cat5B, cat5C, cat5D, cat6, cat7A, cat7B, cat8, cat9, cat10A, cat10B, cat11A, cat11B, cat12, category, type, INCI, purity,allergen FROM ingredients");
 		while($rx = mysqli_fetch_assoc($sql)) { 
-			if($ifra = mysqli_fetch_array(mysqli_query($conn, "SELECT cat4, type FROM IFRALibrary WHERE cas = '".$rx['cas']."'"))){
-        		$rx['cat4'] = preg_replace("/[^0-9.]/", "", $ifra['cat4']);
+			if($ifra = mysqli_fetch_array(mysqli_query($conn, "SELECT cat1, cat2, cat3, cat4, cat5A, cat5B, cat5C, cat5D, cat6, cat7A, cat7B, cat8, cat9, cat10A, cat10B, cat11A, cat11B, cat12, type FROM IFRALibrary WHERE cas = '".$rx['cas']."'"))){
+        		$rx['cat1'] = preg_replace("/[^0-9.]/", "", $ifra['cat1']);
+        		$rx['cat2'] = preg_replace("/[^0-9.]/", "", $ifra['cat2']);
+        		$rx['cat3'] = preg_replace("/[^0-9.]/", "", $ifra['cat3']);
+				$rx['cat4'] = preg_replace("/[^0-9.]/", "", $ifra['cat4']);
+				
+				$rx['cat5A'] = preg_replace("/[^0-9.]/", "", $ifra['cat5A']);
+				$rx['cat5B'] = preg_replace("/[^0-9.]/", "", $ifra['cat5B']);
+				$rx['cat5C'] = preg_replace("/[^0-9.]/", "", $ifra['cat5C']);
+				$rx['cat5D'] = preg_replace("/[^0-9.]/", "", $ifra['cat5D']);
+				$rx['cat7A'] = preg_replace("/[^0-9.]/", "", $ifra['cat7A']);
+				$rx['cat7B'] = preg_replace("/[^0-9.]/", "", $ifra['cat7B']);
+				$rx['cat8'] = preg_replace("/[^0-9.]/", "", $ifra['cat8']);
+				$rx['cat9'] = preg_replace("/[^0-9.]/", "", $ifra['cat9']);
+				$rx['cat10A'] = preg_replace("/[^0-9.]/", "", $ifra['cat10A']);
+				$rx['cat10B'] = preg_replace("/[^0-9.]/", "", $ifra['cat10B']);
+				$rx['cat11A'] = preg_replace("/[^0-9.]/", "", $ifra['cat11A']);
+				$rx['cat11B'] = preg_replace("/[^0-9.]/", "", $ifra['cat11B']);
+				$rx['cat12'] = preg_replace("/[^0-9.]/", "", $ifra['cat12']);
+				
         		$rx['class'] = $ifra['type'];
    		   }
 		   $gSupQ = mysqli_fetch_array(mysqli_query($conn, "SELECT ingSupplierID, price, size, stock FROM suppliers WHERE ingID = '".$rx['id']."' AND preferred = '1'"));
@@ -157,7 +175,25 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 			$rx['odor'] = (string)$rx['odor'];
 			$rx['profile'] = (string)$rx['profile'];
 			$rx['physical_state'] = (int)$rx['physical_state'];
+			$rx['cat1'] = (double)$rx['cat1'];
+			$rx['cat2'] = (double)$rx['cat2'];
+			$rx['cat3'] = (double)$rx['cat3'];
 			$rx['cat4'] = (double)$rx['cat4'];
+			$rx['cat5A'] = (double)$rx['cat5A'];
+			$rx['cat5B'] = (double)$rx['cat5B'];
+			$rx['cat5C'] = (double)$rx['cat5C'];
+			$rx['cat5D'] = (double)$rx['cat5D'];
+			$rx['cat6'] = (double)$rx['cat6'];
+			$rx['cat7A'] = (double)$rx['cat7A'];
+			$rx['cat7B'] = (double)$rx['cat7B'];
+			$rx['cat8'] = (double)$rx['cat8'];
+			$rx['cat9'] = (double)$rx['cat9'];
+			$rx['cat10A'] = (double)$rx['cat10A'];
+			$rx['cat10B'] = (double)$rx['cat10B'];
+			$rx['cat11A'] = (double)$rx['cat11A'];
+			$rx['cat11B'] = (double)$rx['cat11B'];
+			$rx['cat12'] = (double)$rx['cat12'];
+
 			$rx['allergen'] = (int)$rx['allergen'] ?: (int)'0';
 			$rx['category'] = (int)$rx['category'] ?: (int)'0';
 			$rx['category_name'] = (string)$gCatQ['name'] ?: (string)'Uncategorised';
