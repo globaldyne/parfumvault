@@ -4,7 +4,7 @@
 - Move batch history menu under formulas
 - Fix typos in IFRA generation document
 - Remove option to generate IFRA docs
-- Update API to include full ingredient usage categories
+- Fix passing id instead of fid when deleting a formula
 
 ### Version 9.4
 - Fix update message when in cloud enviroment
