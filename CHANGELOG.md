@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 9.6
+
 ### Version 9.5
 - Show ingredients label text in modal in finished product section
 - Move batch history menu under formulas
