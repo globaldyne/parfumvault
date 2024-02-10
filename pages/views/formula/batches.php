@@ -1,5 +1,9 @@
 <div id="content-wrapper" class="d-flex flex-column">
-<?php require_once(__ROOT__.'/pages/top.php'); ?>
+<?php 
+define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__))))); 
+
+require_once(__ROOT__.'/pages/top.php'); 
+?>
 <div class="container-fluid">
   <div>
   <div class="card shadow mb-4">

@@ -1,4 +1,14 @@
 # CHANGELOG
+### Version 9.5
+- Show ingredients label text in modal in finished product section
+- Move batch history menu under formulas
+- Fix typos in IFRA generation document
+- Remove option to generate IFRA docs
+- Fix passing id instead of fid when deleting a formula
+- Added ingredient count next to each category in formula view
+- Refactor of status bar in formula view
+- Refactor of json data feeding the status bar in formula view
+
 ### Version 9.4
 - Fix update message when in cloud enviroment
 - Added support for QR Code for formulas and ingredients that can be scanned using the PV App

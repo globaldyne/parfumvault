@@ -521,3 +521,41 @@ $('.table').on('show.bs.dropdown', function () {
 $('.table').on('hide.bs.dropdown', function () {
 	 $('.table-responsive').css( "overflow", "auto" );
 });
+
+
+function update_bar(){
+     $.getJSON("/core/full_formula_data.php?id="+myID+"&stats_only=1", function (json) {
+		
+		$('#formula_name').html(json.stats.formula_name || "Unnamed");
+		$('#formula_desc').html(json.stats.formula_description);
+
+		if (json.stats.data) {
+			$('#progress-area').show();
+	
+			var top = Math.round(json.stats.data.top.current);
+			var top_max = Math.round(json.stats.data.top.max);
+	
+			var heart = Math.round(json.stats.data.heart.current);
+			var heart_max = Math.round(json.stats.data.heart.max);
+	
+			var base = Math.round(json.stats.data.base.current);
+			var base_max = Math.round(json.stats.data.base.max);
+	
+			$('#top_bar').attr('aria-valuenow', top).css('width', top + '%').attr('aria-valuemax', top_max);
+			$('#heart_bar').attr('aria-valuenow', heart).css('width', heart + '%').attr('aria-valuemax', heart_max);
+			$('#base_bar').attr('aria-valuenow', base).css('width', base + '%').attr('aria-valuemax', base_max);
+	
+			$('.top-label').html(top + "% Top Notes");
+			$('.heart-label').html(heart + "% Heart Notes");
+			$('.base-label').html(base + "% Base Notes");
+			
+			//$('.Top_notes').html("Top Notes");
+			//$('.Heart_notes').html("Heart Notes");
+			//$('.Base_notes').html("Base Notes");
+
+		} else {
+			$('#progress-area').hide();
+		}
+		
+	}); 
+};

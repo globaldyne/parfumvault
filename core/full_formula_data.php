@@ -78,22 +78,28 @@ if($_POST['search']){
 }
 	
 if(isset($_GET['stats_only'])){
+
+	$formulaName = (string) $meta['name'];
+	$formulaDescription = (string) $meta['notes'];
 	
-	$s['formula_name'] = (string)$meta['name'];
-	$s['formula_description'] = (string)$meta['notes'];
-	$s['top'] = (float)calcPerc($id, 'Top', $settings['top_n'], $conn)?: 0;
-	$s['top_max'] = (float)$settings['top_n']?: 0;
-	$s['heart'] = (float)calcPerc($id, 'Heart', $settings['heart_n'], $conn)?: 0;
-	$s['heart_max'] = (float)$settings['heart_n'];
-	$s['base'] = (float)calcPerc($id, 'Base', $settings['base_n'], $conn)?: 0;
-	$s['base_max'] = (float)$settings['base_n'] ?: 0;
+	$stats['top']['current'] = (float) calcPerc($id, 'Top', $settings['top_n'], $conn) ?: 0;
+	$stats['top']['max'] = (float) $settings['top_n'] ?: 0;
+	
+	$stats['heart']['current'] = (float) calcPerc($id, 'Heart', $settings['heart_n'], $conn) ?: 0;
+	$stats['heart']['max'] = (float) $settings['heart_n'];
 
-	$response['stats'] = $s;
+	$stats['base']['current'] = (float) calcPerc($id, 'Base', $settings['base_n'], $conn) ?: 0;
+	$stats['base']['max'] = (float) $settings['base_n'] ?: 0;
 
+	$response['stats']['formula_name'] = $formulaName;
+	$response['stats']['formula_description'] = $formulaDescription;
+	$response['stats']['data'] = $stats;
+	
 	header('Content-Type: application/json; charset=utf-8');
 	echo json_encode($response);
 	return;
 }
+
 $defCatClass = $meta['catClass'] ?: $settings['defCatClass'];
 
 $formula_q = mysqli_query($conn, "SELECT id,ingredient,concentration,quantity,dilutant,notes,exclude_from_calculation FROM formulas WHERE fid = '".$meta['fid']."' $q ORDER BY ingredient ASC");
@@ -147,7 +153,7 @@ foreach ($form as $formula){
 		$ingName = $chName['chemical_name'];
 	}
 	$r['formula_ingredient_id'] = (int)$formula['id'];       
-	$r['fid'] = (string)$meta['name'];
+	$r['fid'] = (string)$meta['name']; //TODO
 		
 	if($settings['grp_formula'] == '1'){
 		$r['ingredient']['profile'] = (string)$ing_q['profile'] ?: 'Unknown';

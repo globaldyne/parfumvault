@@ -182,7 +182,7 @@ function chkUpdate() {
        
       <li class="nav-item">
       <?php 
-	  if($_GET['do'] == 'listFormulas' || $_GET['do'] == 'genFinishedProduct' || $_GET['do'] == 'compareFormulas' || $_GET['do'] == 'Formula'  || $_GET['do'] == 'sellFormula' || $_GET['do'] == 'todo'){ 
+	  if($_GET['do'] == 'listFormulas' || $_GET['do'] == 'genFinishedProduct' || $_GET['do'] == 'compareFormulas' || $_GET['do'] == 'Formula'  || $_GET['do'] == 'sellFormula' || $_GET['do'] == 'todo' || $_GET['do'] == 'batches' ){ 
 	  	$expand_f = 'show'; 
 		$class_f = ''; 
 		$aria_f = 'true'; 
@@ -204,13 +204,15 @@ function chkUpdate() {
             <a class="collapse-item <?php if($_GET['do'] == 'genFinishedProduct'){ echo 'active';}?>" href="/?do=genFinishedProduct">Finished Product</a>
             <a class="collapse-item <?php if($_GET['do'] == 'sellFormula'){ echo 'active';}?>" href="/?do=sellFormula">Sell Formula</a>
             <a class="collapse-item <?php if($_GET['do'] == 'todo'){ echo 'active';}?>" href="/?do=todo">Scheduled Formulas <span class="badge badge-danger badge-counter"><?php echo countPending(NULL, NULL, $conn);?></span></a>
+             <a class="collapse-item <?php if($_GET['do'] == 'batches'){ echo 'active';}?>" href="/?do=batches">Batch history</a>
+
           </div>
         </div>
       </li>
             
       <li class="nav-item">
       <?php 
-	  if($_GET['do'] == 'ingredients' || $_GET['do'] == 'bottles' || $_GET['do'] == 'lids' || $_GET['do'] == 'batches' || $_GET['do'] == 'suppliers' || $_GET['do'] == 'customers'){ 
+	  if($_GET['do'] == 'ingredients' || $_GET['do'] == 'bottles' || $_GET['do'] == 'lids' || $_GET['do'] == 'suppliers' || $_GET['do'] == 'customers'){ 
 	  	$expand = 'show'; 
 		$class = ''; 
 		$aria = 'true'; 
@@ -227,7 +229,6 @@ function chkUpdate() {
         <div id="collapseInventoty" class="collapse <?php echo $expand;?>">
           <div class="bg-white py-2 collapse-inner rounded">
             <a class="collapse-item <?php if($_GET['do'] == 'ingredients'){ echo 'active';}?>" href="/?do=ingredients">Ingredients</a>
-            <a class="collapse-item <?php if($_GET['do'] == 'batches'){ echo 'active';}?>" href="/?do=batches">Batch history</a>
             <a class="collapse-item <?php if($_GET['do'] == 'suppliers'){ echo 'active';}?>" href="/?do=suppliers">Suppliers</a>
             <a class="collapse-item <?php if($_GET['do'] == 'customers'){ echo 'active';}?>" href="/?do=customers">Customers</a>
             <a class="collapse-item <?php if($_GET['do'] == 'bottles'){ echo 'active';}?>" href="/?do=bottles">Bottles</a>
@@ -299,7 +300,7 @@ function chkUpdate() {
 		}elseif($_GET['do'] == 'addLid'){
 			require_once(__ROOT__.'/pages/addLid.php');	
 		}elseif($_GET['do'] == 'batches'){
-			require_once(__ROOT__.'/pages/batches.php');
+			require_once(__ROOT__.'/pages/views/formula/batches.php');
 		}elseif($_GET['do'] == 'todo'){
 			require_once(__ROOT__.'/pages/todo.php');	
 		}elseif($_GET['do'] == 'cart'){
