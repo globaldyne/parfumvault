@@ -1,9 +1,7 @@
-Whats New in v9.4
+Whats New in v9.5
 --------------------------
-- Added support for QR Code for formulas and ingredients that can be scanned using the PV App
-- Overall support added for PV2 App
-- Fix update message when in cloud enviroment
-- Formulas API update
-- Fix pdf export in finished formula not working
+- Added ingredient count next to each category in formula view
+- Move batch history menu under formulas
 - Various bug fixes and improvements
+- Fix a bug preventing formula deletion 
 - For full details please refer to the CHANGELOG
