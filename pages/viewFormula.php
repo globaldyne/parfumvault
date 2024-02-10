@@ -229,8 +229,12 @@ $(document).ready(function() {
 
             api.column(groupColumn, {page:'current'} ).data().each( function ( group, i ) {
                 if ( last !== group ) {
+					var groupCount = api.rows({ page:'current' }).nodes().toArray().filter(function (row) {
+                		return api.cell(row, groupColumn).data() === group;
+            		}).length;
+
                     $(rows).eq( i ).before(
-                        '<tr class="group noexport"><td colspan="' + rows.columns()[0].length +'"><div class="' + group + '_notes">' + group + ' Notes</div></td></tr>'
+                        '<tr class="group noexport"><td colspan="' + rows.columns()[0].length +'"><div class="' + group + '_notes">' + group + ' Notes (' + groupCount + ')</div></td></tr>'
                     );
                     last = group;
                 }
@@ -449,37 +453,6 @@ $('#isMade').click(function() {
 			 
 });
 
-function update_bar(){
-     $.getJSON("/core/full_formula_data.php?id="+myID+"&stats_only=1", function (json) {
-		
-		$('#formula_name').html(json.stats.formula_name || "Unnamed");
-		$('#formula_desc').html(json.stats.formula_description);
-
-		if(json.stats.top || json.stats.heart || json.stats.base){
-			$('#progress-area').show();
-			
-			var top = Math.round(json.stats.top);
-			var top_max = Math.round(json.stats.top_max);
-			
-			var heart = Math.round(json.stats.heart);
-			var heart_max = Math.round(json.stats.heart_max);
-			
-			var base = Math.round(json.stats.base);
-			var base_max = Math.round(json.stats.base_max);
-	
-			$('#top_bar').attr('aria-valuenow', top).css('width', top+'%').attr('aria-valuemax', top_max);
-			$('#heart_bar').attr('aria-valuenow', heart).css('width', heart+'%').attr('aria-valuemax', heart_max);
-			$('#base_bar').attr('aria-valuenow', base).css('width', base+'%').attr('aria-valuemax', base_max);;
-			
-			$('.top-label').html(top + "% Top Notes");
-			$('.heart-label').html(heart + "% Heart Notes");
-			$('.base-label').html(base + "% Base Notes");
-		}else{
-			$('#progress-area').hide();
-		}
-		
-	}); 
-};
 
 function reload_formula_data() {
     $('#formula').DataTable().ajax.reload(null, true);

@@ -5,6 +5,9 @@
 - Fix typos in IFRA generation document
 - Remove option to generate IFRA docs
 - Fix passing id instead of fid when deleting a formula
+- Added ingredient count next to each category in formula view
+- Refactor of status bar in formula view
+- Refactor of json data feeding the status bar in formula view
 
 ### Version 9.4
 - Fix update message when in cloud enviroment
