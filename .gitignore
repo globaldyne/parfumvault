@@ -10,4 +10,3 @@ t.php
 tests/
 modules/suppliers/pvOnlineBK.json
 modules/suppliers/pvOnlineBK.php
-pages/views/IFRA/genIFRAdoc.php

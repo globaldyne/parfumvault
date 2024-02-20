@@ -1,5 +1,7 @@
 # CHANGELOG
 ### Version 9.6
+- A batch document is automatically generated when a formula is made and marked as complete
+- Put pack IFRA doc creation and added a warning message
 
 ### Version 9.5
 - Show ingredients label text in modal in finished product section

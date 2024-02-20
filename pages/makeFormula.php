@@ -190,6 +190,7 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
                  var $td = $(tfoot).find('th');
                  $td.eq(0).html("Ingredients left: "+ response.meta['total_ingredients_left'] + ' of ' + response.meta['total_ingredients'] );
                  $td.eq(2).html("Total left: " + response.meta['total_quantity_left'] + ' of ' + response.meta['total_quantity'] + response.meta['quantity_unit'] );
+				  total_quantity = response.meta['total_quantity'];
              }
           },
           fnRowCallback : function (row, data, display) {
@@ -461,6 +462,7 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
                     data: {
                         action: "todo",
                         markComplete: 1,
+						totalQuantity: total_quantity,
                         fid: "<?php echo $fid; ?>"
                     },
                     dataType: 'json',

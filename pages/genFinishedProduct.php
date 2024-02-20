@@ -54,7 +54,7 @@ if($_POST['batchID'] == '1'){
 	define('FPDF_FONTPATH',__ROOT__.'/fonts');
 	$batchID = genBatchID();
 	
-	genBatchPDF($f_name,$batchID,$bottle,$new_conc,$mg['total_mg'],$ver,$defCatClass,$settings['qStep'],$conn);
+	genBatchPDF($f_name,$batchID,$bottle,$new_conc,$mg['total_mg'],$defCatClass,$settings['qStep']);
 	
 }else{
 	$batchID = 'N/A';
@@ -341,6 +341,11 @@ $.ajax({
         <h5 class="modal-title">Generate IFRA Document</h5>
       </div>
       <div class="modal-body">
+      <div class="alert alert-warning d-flex align-items-center" role="alert">
+          <div>
+            IMPORTANT: The generated document isn't an official IFRA certificate and needs to be reviewed by a certified person. Also, data needs to be properly verified to make sure there are no errors.
+          </div>
+      </div>
           Select customer:
           <form action="/pages/views/IFRA/genIFRAdoc.php?fid=<?php echo $meta['fid'];?>&conc=<?php echo $type; ?>&bottle=<?php echo $bottle;?>&defCatClass=<?=$defCatClass?>" method="POST" target="_blank">
             <select class="form-control" name="customer" id="customer">
