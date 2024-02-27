@@ -725,8 +725,9 @@ if($_GET['action'] == 'printBoxLabel' && $_GET['name']){
 	}
 	
 	if($settings['label_printer_size'] == '62' || $settings['label_printer_size'] == '62 --red'){
-		$name = mysqli_real_escape_string($conn, $_GET['name']);
-		$q = mysqli_fetch_array(mysqli_query($conn, "SELECT product_name FROM formulasMetaData WHERE fid = '$name'"));
+		
+		$q = mysqli_fetch_array(mysqli_query($conn, "SELECT name,product_name FROM formulasMetaData WHERE fid = '$name'"));
+		$name = $q['name'];
 		$qIng = mysqli_query($conn, "SELECT ingredient FROM formulas WHERE fid = '$name'");
 
 		while($ing = mysqli_fetch_array($qIng)){

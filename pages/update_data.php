@@ -406,6 +406,19 @@ if($_POST['update_bottle_data']){
 		echo json_encode($response);
 		return;
 	}
+	
+	if(!is_numeric($_POST['size'])){
+		$response["error"] = "Size is invalid";
+		echo json_encode($response);
+		return;
+	}
+	
+	if(!is_numeric($_POST['price'])){
+		$response["error"] = "Price is invalid";
+		echo json_encode($response);
+		return;
+	}
+		
 	$id = $_POST['bottle_id'];
 	$name = $_POST['name'];
 	$ml = $_POST['size'];

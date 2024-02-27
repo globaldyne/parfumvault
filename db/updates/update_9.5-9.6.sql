@@ -1,0 +1,1 @@
+ALTER TABLE `user_prefs` ADD `pref_tab` VARCHAR(255) NULL AFTER `pref_data`; 

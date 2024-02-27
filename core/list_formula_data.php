@@ -6,11 +6,7 @@ require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/countElement.php');
 
-if($_GET['filter'] = 1){
-	$row = 0;
-} else {
-	$row = $_POST['start']?:0;
-}
+$row = $_POST['start']?:0;
 $limit = $_POST['length']?:10;
 $order_by  = $_POST['order_by']?:'name';
 $order  = $_POST['order_as']?:'ASC';
@@ -34,8 +30,8 @@ $s = trim($_POST['search']['value']);
 if($s != ''){
    $f = "WHERE 1 AND (name LIKE '%".$s."%' OR product_name LIKE '%".$s."%' OR notes LIKE '%".$s."%')";
 }
-
-$formulas = mysqli_query($conn, "SELECT id,fid,name,product_name,isProtected,profile,sex,created,catClass,isMade,madeOn,status,rating,revision, (SELECT updated FROM formulas WHERE fid = formulasMetaData.fid ORDER BY updated DESC limit 1) as updated, (SELECT  count(dilutant) FROM formulas WHERE fid = formulasMetaData.fid) as ingredients  FROM formulasMetaData $f $extra LIMIT $row, $limit");
+$Query = "SELECT id,fid,name,product_name,isProtected,profile,sex,created,catClass,isMade,madeOn,status,rating,revision, (SELECT updated FROM formulas WHERE fid = formulasMetaData.fid ORDER BY updated DESC limit 1) as updated, (SELECT  count(dilutant) FROM formulas WHERE fid = formulasMetaData.fid) as ingredients  FROM formulasMetaData $f $extra LIMIT $row, $limit";
+$formulas = mysqli_query($conn, $Query);
 
 
 
@@ -75,7 +71,8 @@ $response = array(
   "draw" => (int)$_POST['draw'],
   "recordsTotal" => (int)$total['entries'],
   "recordsFiltered" => (int)$filtered['entries'],
-  "data" => $rx
+  "data" => $rx,
+  "debug" => $Query
 );
 
 if(empty($r)){

@@ -7,22 +7,23 @@ require_once(__ROOT__.'/func/validateFormula.php');
 require_once(__ROOT__.'/func/calcPerc.php');
 require_once(__ROOT__.'/func/calcCosts.php');
 if($_POST['formula']){
-	$f_name =  mysqli_real_escape_string($conn, $_POST['formula']);
-	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE fid = '$f_name'"));
-
-	$formula_q = mysqli_query($conn, "SELECT * FROM formulas WHERE fid = '$f_name' ORDER BY ingredient ASC");
+	$fid = mysqli_real_escape_string($conn, $_POST['formula']);
+	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE fid = '$fid'"));
+	$f_name = $meta['name'];
+	
+	$formula_q = mysqli_query($conn, "SELECT * FROM formulas WHERE fid = '$fid' ORDER BY ingredient ASC");
 	while ($formula = mysqli_fetch_array($formula_q)){
 	    $form[] = $formula;
 	}
-	$mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE fid = '$f_name'"));
+	$mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE fid = '$fid'"));
 	
 	$bottle = mysqli_real_escape_string($conn, $_POST['bottle']);
 	$type = mysqli_real_escape_string($conn, $_POST['type']);
 	$carrier_id = mysqli_real_escape_string($conn, $_POST['carrier']);
 	$lid_id = mysqli_real_escape_string($conn, $_POST['lid']);
-	$bottle_cost = mysqli_fetch_array(mysqli_query($conn, "SELECT  price,ml,name FROM bottles WHERE id = '$bottle'"));
+	$bottle_cost = mysqli_fetch_array(mysqli_query($conn, "SELECT price,ml,name FROM bottles WHERE id = '$bottle' AND price != 0 "));
 	
-	$carrier_cost = mysqli_fetch_array(mysqli_query($conn, "SELECT  price,size FROM suppliers WHERE ingID = '$carrier_id'"));
+	$carrier_cost = mysqli_fetch_array(mysqli_query($conn, "SELECT price,size FROM suppliers WHERE ingID = '$carrier_id'"));
 	
 	$defCatClass = mysqli_real_escape_string($conn, $_POST['defCatClass']);
 
@@ -54,7 +55,7 @@ if($_POST['batchID'] == '1'){
 	define('FPDF_FONTPATH',__ROOT__.'/fonts');
 	$batchID = genBatchID();
 	
-	genBatchPDF($f_name,$batchID,$bottle,$new_conc,$mg['total_mg'],$defCatClass,$settings['qStep']);
+	genBatchPDF($fid,$batchID,$bottle,$new_conc,$mg['total_mg'],$defCatClass,$settings['qStep']);
 	
 }else{
 	$batchID = 'N/A';
@@ -75,7 +76,7 @@ $.ajax({
     data: {
 		action: "printLabel",
 		batchID: "<?php echo $batchID; ?>",
-		name: "<?php echo $f_name; ?>"
+		name: "<?php echo $fid; ?>"
 		},
 	dataType: 'html',
     success: function (data) {
@@ -101,7 +102,7 @@ $.ajax({
     data: {
 		action: "printBoxLabel",
 		batchID: "<?php echo $batchID; ?>",
-		name: "<?php echo $f_name; ?>",
+		name: "<?php echo $fid; ?>",
 		carrier: "<?php echo $carrier*100/$bottle;?>",
 		copies: $("#copiesToPrint").val(),
 		download: download
@@ -379,15 +380,15 @@ $.ajax({
             <?php 
 			}else{ 
 				if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))== 0){
-					echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> You need to <a href="?do=listFormulas">create</a> at least one formula first.</div>';
+					echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> You need to <a href="/?do=listFormulas">create</a> at least one formula first.</div>';
 					return;
 				}
 				if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM bottles"))== 0){
-					echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> You need to <a href="?do=bottles">add</a> at least one bottle in your inventory first.</div>';
+					echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> You need to <a href="/?do=bottles">add</a> at least one bottle in your inventory first.</div>';
 					return;
 				}
 				if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE type = 'Carrier' OR type = 'Solvent'"))== 0){
-					echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> You need to <a href="?do=ingredients">add</a> at least one solvent or carrier first.</div>';
+					echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> You need to <a href="/?do=ingredients">add</a> at least one solvent or carrier first.</div>';
 					return;
 				}
 				
@@ -465,7 +466,7 @@ $.ajax({
     <td>    
     <select name="bottle" id="bottle" class="form-control selectpicker" data-live-search="true">
      <?php
-		$sql = mysqli_query($conn, "SELECT id,name,ml FROM bottles ORDER BY ml DESC");
+		$sql = mysqli_query($conn, "SELECT id,name,ml FROM bottles WHERE ml != 0 ORDER BY ml DESC");
 		while ($bottle = mysqli_fetch_array($sql)){
 			echo '<option value="'.$bottle['id'].'">'.$bottle['name'].' ('.$bottle['ml'].'ml)</option>';
 		}
@@ -522,14 +523,14 @@ $("#ViewBoxLabel").on("show.bs.modal", function(e) {
 	
   const action = "printBoxLabel"; 
   const batchID = "<?php echo $batchID; ?>";
-  const formula = "<?php echo $f_name; ?>";
+  const formula = "<?php echo $fid; ?>";
   const carrier = "<?php echo $carrier*100/$bottle;?>";
 
   const url = "/pages/manageFormula.php?action="+ action + "&batchID=" + batchID +"&name=" + formula + "&carrier=" + carrier +"&download=text";
 
   $.get(url)
     .then(data => {
-      $("#headerLabel", this).html(atob(formula));
+      $("#headerLabel", this).html("<?php echo $f_name; ?>");
       $(".modal-body", this).html(data);
     });
 	
@@ -538,14 +539,14 @@ $("#ViewBoxLabel").on("show.bs.modal", function(e) {
 $('#pdf').on('click',function(){
 	$("#formula").tableHTMLExport({
 		type:'pdf',
-		filename:'<?=base64_decode($f_name)?>.pdf',
+		filename:'<?=$f_name?>.pdf',
 		orientation: 'p',
 		trimContent: true,
     	quoteFields: true,
 		ignoreColumns: '.noexport',
   		ignoreRows: '.noexport',
 		htmlContent: true,
-		maintitle: '<?=base64_decode($f_name)?>',
+		maintitle: '<?=$f_name?>',
 		product: '<?php echo trim($product).' '.trim($ver);?>',
 	});
 });
