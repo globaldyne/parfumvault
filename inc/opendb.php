@@ -1,4 +1,7 @@
-<?php 
+<?php
+
+error_reporting(E_ERROR);
+
 if (!defined('pvault_panel')){ die('Not Found');}  
 define('__ROOT__', dirname(__FILE__)); 
 

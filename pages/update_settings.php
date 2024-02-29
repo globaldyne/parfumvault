@@ -70,7 +70,7 @@ if($_POST['update_user_profile']){
 	$fullName = mysqli_real_escape_string($conn, $_POST['user_fname']);
 	$email = mysqli_real_escape_string($conn, $_POST['user_email']);
 	
-	$password = password_hash($password, PASSWORD_DEFAULT);
+//	$password = password_hash($password, PASSWORD_DEFAULT);
 
 	if($password){
 		if(strlen($password) < '5'){
@@ -78,7 +78,7 @@ if($_POST['update_user_profile']){
 			echo json_encode($response);
 			return;
 		}else{
-			$p = ",password='$password'";
+			$p = ",password=PASSWORD('$password')";
 		}
 	}
 	

@@ -6,6 +6,8 @@
 - Only bottles that contains size and price will be shown as an option in finished product page
 - Fix passing incorrect formula name when generating a finished product resulting in error when creating a pdf
 - Improve user state save method (may need to be revisited)
+- Disable non-error reporting
+- Fix user password update
 
 ### Version 9.5
 - Show ingredients label text in modal in finished product section
