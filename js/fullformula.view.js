@@ -226,6 +226,8 @@ $("#formula").on("click", ".open-replace-dialog", function () {
 		dropdownAutoWidth: true,
 		containerCssClass: "repIngNameDest",
 		minimumInputLength: 2,
+		templateResult: formatIngredients,
+		templateSelection: formatIngredientsSelection,
 		dropdownParent: $('#replaceIng .modal-content'),
 		ajax: {
 			url: '/core/list_ingredients_simple.php',
@@ -244,9 +246,12 @@ $("#formula").on("click", ".open-replace-dialog", function () {
 					results: $.map(data.data, function(obj) {
 					  return {
 						id: obj.name,
-						desc: obj.description,
+						description: obj.description,
 						cas: obj.cas,
-						text: obj.name || 'No ingredient found...',
+						stock: obj.stock,
+						physical_state: obj.physical_state,
+						name: obj.name
+
 					  }
 					})
 				};
@@ -256,14 +261,66 @@ $("#formula").on("click", ".open-replace-dialog", function () {
 		}
 		
 	}).on('select2:selecting', function (e) {
-			 repName = e.params.args.data.text;
-			 repID = e.params.args.data.text; //NEEDS ID?!
+			 repName = e.params.args.data.name;
+			 repID = e.params.args.data.name; //NEEDS ID?!
 			 $("#repGrid").show();
-			 $("#replaceIng #ingTargInfo").html('<strong>'+e.params.args.data.text+'</strong><p><strong>CAS:</strong> ' + e.params.args.data.cas + '</p><p> <strong>Description: </strong>' +e.params.args.data.desc +'</p>');
+			 $("#replaceIng #ingTargInfo").html('<strong>'+e.params.args.data.name+'</strong><p><strong>CAS:</strong> ' + e.params.args.data.cas + '</p><p> <strong>Description: </strong>' +e.params.args.data.description +'</p>');
 	});
 });
 
 
+
+	function formatIngredients (ingredientData) {
+		if (ingredientData.loading) {
+			return ingredientData.name;
+		}
+	 
+		//extrasShow();
+	
+		if (!ingredientData.name){
+			return 'No ingredient found...';
+		}
+		
+		var measureIn;
+		if (ingredientData.physical_state == '1'){
+			measureIn = 'mL';
+		}else if (ingredientData.physical_state == '2'){
+			measureIn = 'grams';
+		}
+		
+		var $container = $(
+			"<div class='select_result_igredient clearfix'>" +
+			  "<div class='select_result_igredient_meta'>" +
+				"<div class='select_igredient_title'></div>" +
+				"<span id='stock'></span></div>"+
+				"<div class='select_result_igredient_description'></div>" +
+				"<div class='select_result_igredient_info'>" +
+				  "<div class='select_result_igredient_cas'></div>" +
+				"</div>" +
+			  "</div>" +
+			"</div>"
+		  );
+		
+		  $container.find(".select_igredient_title").text(ingredientData.name);
+		  if(ingredientData.stock  > 0){
+		  	$container.find("#stock").text('In stock ('+ingredientData.stock + measureIn +')');
+			$container.find("#stock").attr("class", "stock badge badge-instock");
+		  }else{
+			$container.find("#stock").text('Not in stock ('+ingredientData.stock + measureIn +')');
+			$container.find("#stock").attr("class", "stock badge badge-nostock");
+		  }
+		  $container.find(".select_result_igredient_description").text(ingredientData.description);
+		  $container.find(".select_result_igredient_cas").append("CAS: " + ingredientData.cas);
+
+		  return $container;
+	}
+	
+	
+	function formatIngredientsSelection (ingredientData) {
+		return ingredientData.name;
+	}
+	
+	
 
 $('#mrgIng').on('click', '[id*=mergeConfirm]', function () {
 	$.ajax({ 

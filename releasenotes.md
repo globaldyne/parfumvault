@@ -1,5 +1,6 @@
 Whats New in v9.6
 --------------------------
+- Added available stock when searching for an ingredient to replace in formula
 - Making size and price mandatory for bottles inventory
 - A batch document is automatically generated when a formula is made and marked as complete
 - Various bug fixes and improvements

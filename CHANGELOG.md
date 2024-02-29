@@ -8,6 +8,7 @@
 - Improve user state save method (may need to be revisited)
 - Disable non-error reporting
 - Fix user password update
+- Added available stock when searching for an ingredient to replace in formula
 
 ### Version 9.5
 - Show ingredients label text in modal in finished product section
