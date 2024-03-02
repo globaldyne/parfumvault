@@ -1,5 +1,6 @@
 Whats New in v9.6
 --------------------------
+- phpMyAdmin has been removed from the main docker image
 - Fix customer creation
 - Added available stock when searching for an ingredient to replace in formula
 - Making size and price mandatory for bottles inventory

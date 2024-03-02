@@ -21,18 +21,6 @@ $ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
             <li><a href="#" data-bs-toggle="modal" data-bs-target="#clear_user_pref">Clear user preferences</a></li>
         </div>
     </div>
-	<?php if(getenv('phpMyAdmin') == "true"){ ?>
-    <div class="row mb-2">
-      <div class="col">
-        <li><a href="/phpMyAdmin/" target="_blank">phpMyAdmin</a></li>
-      </div>
-    </div>
-    <div class="row mb-2">
-        <div class="col-sm-5">
-            <div class="alert alert-warning">You have enabled phpMyAdmin, please note, managing PV using phpMyAdmin its NOT supported or recommended by any means. If you interfer with the backend db you may break your installation and/or loose data.</div>
-        </div>
-    </div>
-    <?php } ?>
 </div>
 
 <div class="modal fade" id="clear_user_pref" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="clear_user_pref" aria-hidden="true">
