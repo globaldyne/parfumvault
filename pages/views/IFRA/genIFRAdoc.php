@@ -117,29 +117,5 @@ foreach ($form as $formula){
 }
 $contents =  str_replace( $search, $replace, preg_replace('#(%IFRA_MATERIALS_LIST%)#ms', $x, $tmpl['content']) );
 echo $contents;
-/*
-class PDF extends PDF_HTML{
-	function Header() {
-		$this->Image(__BRANDLOGO__,10,6,30,0,'png');
-		$this->SetFont('Arial','B',15);
-		$this->Cell(80);
-		$this->Cell(40,10,'IFRA Analysis',0,0,'C');
-		$this->Ln(20);
-	}
 
-	function Footer(){
-		$this->SetY(-15);
-		$this->SetFont('Arial','I',8);
-		$this->Cell(0,10,'Page '.$this->PageNo().'/{nb}',0,0,'C');
-	}
-}
-
-$pdf = new PDF();
-$pdf->AliasNbPages();
-$pdf->AddPage();
-$pdf->SetFont('Times','',12);
-$pdf->MultiCell(190,10,$pdf->WriteHTML($contents));
-
-$pdf->Output("D");
-*/
 ?>
