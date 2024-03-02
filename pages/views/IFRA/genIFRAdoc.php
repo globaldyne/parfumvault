@@ -62,7 +62,7 @@ if ( empty($settings['brandName']) || empty($settings['brandAddress']) || empty(
 	return;
 }
 if ( empty($customers['name']) || empty($customers['address']) || empty($customers['email']) ){
-	echo 'Missing customers info, please update your customers details in <a href="/?do=settings">settings</a> page first!';
+	echo 'Missing customers info, please update your customers details in <a href="/?do=customers">customers</a> page first!';
 	return;
 }
 
