@@ -53,13 +53,13 @@
             <input class="form-control" name="name" type="text" id="name" />
             <p>
             Address: 
-              <input class="form-control" name="address" type="text" id="addrss" />  
+              <input class="form-control" name="address" type="text" id="address" />  
             <p>
             Email: 
               <input class="form-control" name="email" type="text" id="email" />           
             <p>
             Web Site: 
-              <input class="form-control" name="web" type="text" id="web" /> 
+              <input class="form-control" name="website" type="text" id="website" /> 
               
               <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

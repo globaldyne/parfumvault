@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 9.6
+- Fix customer creation
 - A batch document is automatically generated when a formula is made and marked as complete
 - Put back IFRA doc creation and added a warning message
 - Making size and price mandatory for bottles inventory
