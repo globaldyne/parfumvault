@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 9.6
+- Added env variable to disable password reset info from the login console - PASS_RESET_INFO
 - phpMyAdmin has been removed from the main docker image
 - Fix customer creation
 - A batch document is automatically generated when a formula is made and marked as complete
