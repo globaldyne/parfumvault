@@ -399,9 +399,13 @@ if($_POST['action'] == 'clone' && $_POST['fid']){
             $response['success'] = $fname.' cloned as <a href="/?do=Formula&id='.$nID['id'].'" target="_blank">'.$newName.'</a>!</div>';
         } else {
             $response['error'] = "Failed to fetch ID of cloned record!";
+			echo json_encode($response);
+			return;
         }
     } else {
         $response['error'] = "Failed to clone formula!";
+		echo json_encode($response);
+		return;
     }
 	echo json_encode($response);
 	return;
