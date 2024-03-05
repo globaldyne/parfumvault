@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 9.6
+- Prevent duplicating formulas with the same name
 - Rename Clone formula to Duplicate formula
 - Added validation test for numeric values when adding a supplier for ingredients
 - Added env variable to disable password reset info from the login console - PASS_RESET_INFO

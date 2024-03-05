@@ -1,5 +1,6 @@
 Whats New in v9.6
 --------------------------
+- Prevent duplicating formulas with the same name
 - phpMyAdmin has been removed from the main docker image
 - Fix customer creation
 - Added available stock when searching for an ingredient to replace in formula

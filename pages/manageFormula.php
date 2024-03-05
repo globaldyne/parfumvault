@@ -374,7 +374,7 @@ if($_POST['action'] == 'conv2ing' && $_POST['ingName'] && $_POST['fid']){
 
 }
 
-//CLONE FORMULA
+//DUPLICATE FORMULA
 if($_POST['action'] == 'clone' && $_POST['fid']){
 	require_once(__ROOT__.'/func/genFID.php');
 
@@ -384,15 +384,25 @@ if($_POST['action'] == 'clone' && $_POST['fid']){
 	$newName = $fname.' - (Copy)';
 	$newFid = random_str(40, '1234567890abcdefghijklmnopqrstuvwxyz');
 	
-	if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulasMetaData WHERE fid = '$newFid'"))){
-		$response['success'] = $newName.' already exists, please remove or rename it first!</div>';
-	}else{
-		$sql.=mysqli_query($conn, "INSERT INTO formulasMetaData (fid, name, notes, profile, sex, defView, product_name, catClass) SELECT '$newFid', '$newName', notes, profile, sex, defView, '$newName', catClass FROM formulasMetaData WHERE fid = '$fid'");
-		$sql.=mysqli_query($conn, "INSERT INTO formulas (fid, name, ingredient, ingredient_id, concentration, dilutant, quantity, notes) SELECT '$newFid', '$newName', ingredient, ingredient_id, concentration, dilutant, quantity, notes FROM formulas WHERE fid = '$fid'");
-	}
-	if($nID = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$newFid'"))){
-		$response['success'] = $fname.' cloned as <a href="?do=Formula&id='.$nID['id'].'" target="_blank">'.$newName.'</a>!</div>';
-	}
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM formulasMetaData WHERE name = '$newName'"))){
+		$response['error'] = $newName.' already exists, please remove or rename it first!</div>';
+		echo json_encode($response);
+        return;
+    }
+	$sql1 = "INSERT INTO formulasMetaData (fid, name, notes, profile, sex, defView, product_name, catClass) SELECT '$newFid', '$newName', notes, profile, sex, defView, '$newName', catClass FROM formulasMetaData WHERE fid = '$fid'";
+    $sql2 = "INSERT INTO formulas (fid, name, ingredient, ingredient_id, concentration, dilutant, quantity, notes) SELECT '$newFid', '$newName', ingredient, ingredient_id, concentration, dilutant, quantity, notes FROM formulas WHERE fid = '$fid'";
+    
+    if(mysqli_query($conn, $sql1) && mysqli_query($conn, $sql2)) {
+        // Fetch the id of the newly inserted record
+        $nID = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$newFid'"));
+        if($nID){
+            $response['success'] = $fname.' cloned as <a href="/?do=Formula&id='.$nID['id'].'" target="_blank">'.$newName.'</a>!</div>';
+        } else {
+            $response['error'] = "Failed to fetch ID of cloned record!";
+        }
+    } else {
+        $response['error'] = "Failed to clone formula!";
+    }
 	echo json_encode($response);
 	return;
 }
