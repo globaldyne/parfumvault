@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 9.6
+- Rename Clone formula to Duplicate formula
 - Added validation test for numeric values when adding a supplier for ingredients
 - Added env variable to disable password reset info from the login console - PASS_RESET_INFO
 - phpMyAdmin has been removed from the main docker image
