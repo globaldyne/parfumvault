@@ -3,21 +3,21 @@
 # Perfumers Vault Pro Dockerfile
 # 
 # =============================================================================
-FROM quay.io/centos/centos:stream9
+FROM quay.io/centos/centos:stream9-minimal
 
 LABEL co.uk.globaldyne.component="perfumers-vault-container"  description="Perfumers Vault container image"  summary="Perfumers Vault container image"  version="PRO"  io.k8s.description="Init Container for Perfumers Vault PRO"  io.k8s.display-name="Perfumers Vault Pro Container"  io.openshift.tags="pvault,jb,perfumer,vault,jbpvault,PRO"  name="globaldyne/pvault"  maintainer="John Belekios"
 
 ARG uid=100001
 ARG gid=100001
 
-RUN dnf install -y epel-release
-RUN dnf -y update 
+RUN microdnf install -y epel-release
+RUN microdnf -y update 
 
-#A temp workaround to address dnf module version conflicts
-RUN dnf -y module enable nginx:1.24
-RUN dnf -y module enable php:8.2
+#A temp workaround to address microdnf module version conflicts
+RUN microdnf -y module enable nginx:1.24
+RUN microdnf -y module enable php:8.2
 
-RUN dnf --setopt=tsflags=nodocs -y install \
+RUN microdnf --setopt=tsflags=nodocs -y install \
 	php \
 	php-mysqlnd \
 	php-gd \
@@ -35,7 +35,7 @@ RUN dnf --setopt=tsflags=nodocs -y install \
 RUN python3 -m pip install --upgrade pip \
         && python3 -m pip install --no-warn-script-location --upgrade brother_ql
 
-RUN dnf clean all && rm -rf /var/cache/yum/*
+RUN microdnf clean all && rm -rf /var/cache/yum/*
 
 RUN sed -i \
 	-e 's~^;date.timezone =$~date.timezone = UTC~g' \

@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 9.6
+- Moving docker image to minimal tag
 - Prevent duplicating formulas with the same name
 - Rename Clone formula to Duplicate formula
 - Added validation test for numeric values when adding a supplier for ingredients
