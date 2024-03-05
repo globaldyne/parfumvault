@@ -13,6 +13,10 @@ ARG gid=100001
 RUN dnf install -y epel-release
 RUN dnf -y update 
 
+#A temp workaround to address dnf module version conflicts
+RUN dnf -y module enable nginx:1.24
+RUN dnf -y module enable php:8.2
+
 RUN dnf --setopt=tsflags=nodocs -y install \
 	php \
 	php-mysqlnd \
