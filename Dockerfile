@@ -10,6 +10,7 @@ LABEL co.uk.globaldyne.component="perfumers-vault-container"  description="Perfu
 ARG uid=100001
 ARG gid=100001
 
+RUN dnf clean all && rm -rf /var/cache/yum/*
 RUN dnf install -y epel-release
 RUN dnf -y update 
 
