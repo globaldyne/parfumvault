@@ -81,7 +81,6 @@ var myPCH = "<?=$settings['pubChem']?>";
 				<div class="btn-group">
 					<button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
 					<div class="dropdown-menu">
-						<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#printLabel"><i class="fa-solid fa-print mx-2"></i>Print Label</a></li>
 						<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#cloneIng"><i class="fa-solid fa-copy mx-2"></i>Clone ingredient</a></li>
 						<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#renameIng"><i class="fa-regular fa-pen-to-square mx-2"></i>Rename ingredient</a></li>
                         <li><a class="dropdown-item" href="/pages/export.php?format=json&kind=single-ingredient&id=<?=$ing['id']?>"><i class="fas fa-download mx-2"></i>Export as JSON</a></li>
@@ -262,46 +261,6 @@ var myPCH = "<?=$settings['pubChem']?>";
         </div>
     </div>
 
-<!-- Modal Print-->
-<div class="modal fade" id="printLabel" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="printLabel" aria-hidden="true">
-	<div class="modal-dialog" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title">Print Label for <?php echo $ing['name']; ?></h5>
-				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body">
-				<div id="msg"></div>
-				CAS#:
-				<input class="form-control" name="cas" type="text" value="<?php echo $ing['cas']; ?>" />
-				<p>
-					Dilution %: 
-					<input class="form-control" name="dilution" type="text" id="dilution" value="<?php echo $ing['purity']; ?>" />
-					<p>
-						Dilutant:
-						<select class="form-control" name="dilutant" id="dilutant">
-							<option selected="selected" value="">None</option>
-							<?php
-							$res_ing = mysqli_query($conn, "SELECT id, name FROM ingredients WHERE type = 'Solvent' OR type = 'Carrier' ORDER BY name ASC");
-							while ($r_ing = mysqli_fetch_array($res_ing)){
-								echo '<option value="'.$r_ing['name'].'">'.$r_ing['name'].'</option>';
-							}
-							?>
-						</select>
-					</p>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-					<input type="submit" name="button" class="btn btn-primary" id="print" value="Print">
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-
-
 <!-- Modal Clone-->
 <div class="modal fade" id="cloneIng" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="cloneIng" aria-hidden="true">
 	<div class="modal-dialog" role="document">
@@ -407,32 +366,6 @@ var myPCH = "<?=$settings['pubChem']?>";
 	</div>
 </div>
 <script type="text/javascript" language="javascript">
-
-$('#printLabel').on('click', '[id*=print]', function () {
-	<?php if(empty($settings['label_printer_addr']) || empty($settings['label_printer_model'])){?>
-		$("#msg").html('<div class="alert alert-danger alert-dismissible">Please configure printer details in <a href="?do=settings">settings<a> page</div>');
-	<?php }else{ ?>
-		$("#msg").html('<div class="alert alert-info alert-dismissible">Printing...</div>');
-
-		$.ajax({ 
-			url: 'manageFormula.php', 
-			type: 'GET',
-			data: {
-				action: "printLabel",
-				type: "ingredient",
-				dilution: $("#dilution").val(),
-				cas: $("#cas").val(),
-				dilutant: btoa($("#dilutant").val()),
-				name: btoa(myIngName)
-			},
-			dataType: 'html',
-			success: function (data) {
-				$('#msg').html(data);
-			}
-		});
-	<?php } ?>
-});
-
 
 $(document).ready(function() {
 	$('[rel=tipsy]').tooltip({placement: 'auto'});
