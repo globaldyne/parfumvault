@@ -1,11 +1,13 @@
 <?php 
 if (!defined('pvault_panel')){ die('Not Found');}
+
 require_once(__ROOT__.'/libs/fpdf.php');
 require_once(__ROOT__.'/func/genBatchID.php');
 require_once(__ROOT__.'/func/genBatchPDF.php');
 require_once(__ROOT__.'/func/validateFormula.php');
 require_once(__ROOT__.'/func/calcPerc.php');
 require_once(__ROOT__.'/func/calcCosts.php');
+
 if($_POST['formula']){
 	$fid = mysqli_real_escape_string($conn, $_POST['formula']);
 	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE fid = '$fid'"));
@@ -259,7 +261,6 @@ if($_POST['batchID'] == '1'){
 </div>
 
 
-<?php if (file_exists(__ROOT__."/pages/views/IFRA/genIFRAdoc.php")) {?>
 <!-- Modal IFRA DOC-->
 <div class="modal fade" id="IFRA" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="IFRA" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -302,7 +303,6 @@ if($_POST['batchID'] == '1'){
     </div>
   </div>
 </div>
-<?php } ?>
             <?php 
 			}else{ 
 				if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))== 0){
