@@ -23,17 +23,10 @@ RUN microdnf --setopt=tsflags=nodocs -y install \
 	php-gd \
 	php-mbstring \
 	php-fpm \
-	python3-pip \
-	procps \
 	openssl \
-	bc \
 	mysql \
-	nginx \
-	ncurses
+	nginx
 
-
-RUN python3 -m pip install --upgrade pip \
-        && python3 -m pip install --no-warn-script-location --upgrade brother_ql
 
 RUN microdnf clean all && rm -rf /var/cache/yum/*
 

@@ -1,5 +1,7 @@
 # CHANGELOG
 ### Version 9.6
+- Integration with label printer has been removed
+- Fix typo when generating a label
 - Moving docker image to minimal tag
 - Prevent duplicating formulas with the same name
 - Rename Clone formula to Duplicate formula

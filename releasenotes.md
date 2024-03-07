@@ -1,5 +1,6 @@
 Whats New in v9.6
 --------------------------
+- Integration with label printer has been removed
 - Prevent duplicating formulas with the same name
 - phpMyAdmin has been removed from the main docker image
 - Fix customer creation

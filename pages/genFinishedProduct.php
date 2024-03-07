@@ -63,59 +63,7 @@ if($_POST['batchID'] == '1'){
 	
 ?>
     
-<script>
-function printLabel() {
-	<?php if(empty($settings['label_printer_addr']) || empty($settings['label_printer_model'])){?>
-	$("#inf").html('<div class="alert alert-danger alert-dismissible">Please configure printer details in <a href="?do=settings">settings<a> page</div>');
-	<?php }else{ ?>
-	$("#inf").html('<div class="alert alert-info alert-dismissible">Printing...</div>');
 
-$.ajax({ 
-    url: '/pages/manageFormula.php', 
-	type: 'GET',
-    data: {
-		action: "printLabel",
-		batchID: "<?php echo $batchID; ?>",
-		name: "<?php echo $fid; ?>"
-		},
-	dataType: 'html',
-    success: function (data) {
-	  $('#inf').html(data);
-    }
-  });
-	<?php } ?>
-};
-
-function BoxLabel(download) {
-	<?php if(empty($settings['label_printer_addr']) || empty($settings['label_printer_model']) || $settings['label_printer_size'] != '62'){?>
-	$("#inf").html('<div class="alert alert-danger alert-dismissible">Please configure printer details in <a href="?do=settings">settings<a> page. Note: For this label you need 62mm label</div>');
-	<?php }else{ ?>
-	if(download == null){
-		$("#inf").html('<div class="alert alert-info alert-dismissible">Printing...</div>');
-	}else{
-		$("#inf").html('<div class="alert alert-info alert-dismissible">Generating label...</div>');
-	}
-
-$.ajax({ 
-    url: '/pages/manageFormula.php', 
-	type: 'GET',
-    data: {
-		action: "printBoxLabel",
-		batchID: "<?php echo $batchID; ?>",
-		name: "<?php echo $fid; ?>",
-		carrier: "<?php echo $carrier*100/$bottle;?>",
-		copies: $("#copiesToPrint").val(),
-		download: download
-		},
-	dataType: 'html',
-    success: function (data) {
-	  $('#BoxLabel').modal('toggle');
-	  $('#inf').html(data);
-    }
-  });
-	<?php } ?>
-};
-</script>
 <?php } ?>
 
 <div id="content-wrapper" class="d-flex flex-column">
@@ -154,9 +102,7 @@ $.ajax({
                         <?php if (file_exists(__ROOT__."/pages/views/IFRA/genIFRAdoc.php")) {?>
                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#IFRA"><i class="fa-solid fa-certificate mx-2"></i>IFRA Document</a></li>
                         <?php } ?>
-                        <li><a class="dropdown-item" href="javascript:printLabel()" onclick="return confirm('Print label?')"><i class="fa-solid fa-print mx-2"></i>Print Label</a></li>
-                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#printBoxLabel"><i class="fa-solid fa-print mx-2"></i>Print Box Label</a></li>
-                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#ViewBoxLabel"><i class="fa-solid fa-font mx-2"></i>View Box Label as text</a></li>
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#ViewBoxLabel"><i class="fa-solid fa-font mx-2"></i>View Box Back Label</a></li>
                       </div>
                     </div>
                     </div>
@@ -313,26 +259,6 @@ $.ajax({
 </div>
 
 
-<!-- Modal PRINT-->
-<div class="modal fade" id="printBoxLabel" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="printBoxLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Print Box Label</h5>
-      </div>
-      <div class="modal-body">
-        Copies to print:
-          <form action="javascript:BoxLabel()" method="get" name="form1" target="_self" id="form1">
-          <input name="copiesToPrint" type="text" id="copiesToPrint" value="1" />
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <input type="submit" name="button" class="btn btn-primary" id="button" value="Print">
-      </div>
-     </form>
-    </div>
-  </div>
-</div>
 <?php if (file_exists(__ROOT__."/pages/views/IFRA/genIFRAdoc.php")) {?>
 <!-- Modal IFRA DOC-->
 <div class="modal fade" id="IFRA" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="IFRA" aria-hidden="true">
@@ -416,7 +342,7 @@ $.ajax({
 		$sql = mysqli_query($conn, "SELECT fid,name,product_name FROM formulasMetaData WHERE product_name IS NOT NULL ORDER BY name ASC");
 		while ($formula = mysqli_fetch_array($sql)){
 			echo '<option value="'.$formula['fid'].'">'.$formula['name'].' ('.$formula['product_name'].')</option>';
-		}
+}
 	  ?>
      </select>
    </td>
@@ -521,12 +447,12 @@ $.ajax({
 <script type="text/javascript" language="javascript" >
 $("#ViewBoxLabel").on("show.bs.modal", function(e) {
 	
-  const action = "printBoxLabel"; 
+  const action = "viewBoxLabel"; 
   const batchID = "<?php echo $batchID; ?>";
   const formula = "<?php echo $fid; ?>";
   const carrier = "<?php echo $carrier*100/$bottle;?>";
 
-  const url = "/pages/manageFormula.php?action="+ action + "&batchID=" + batchID +"&name=" + formula + "&carrier=" + carrier +"&download=text";
+  const url = "/pages/manageFormula.php?action="+ action + "&batchID=" + batchID +"&fid=" + formula + "&carrier=" + carrier +"&download=text";
 
   $.get(url)
     .then(data => {

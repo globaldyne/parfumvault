@@ -180,20 +180,6 @@ if($_POST['manage'] == 'api'){
 	return;
 }
 
-	
-if($_POST['manage'] == 'print'){
-	$label_printer_addr = mysqli_real_escape_string($conn, $_POST['label_printer_addr']);
-	$label_printer_model = mysqli_real_escape_string($conn, $_POST['label_printer_model']);
-	$label_printer_size = mysqli_real_escape_string($conn, $_POST['label_printer_size']);
-	$label_printer_font_size = mysqli_real_escape_string($conn, $_POST['label_printer_font_size']);
-
-	if(mysqli_query($conn, "UPDATE settings SET label_printer_addr='$label_printer_addr', label_printer_model='$label_printer_model', label_printer_size='$label_printer_size', label_printer_font_size='$label_printer_font_size'")){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>Settings updated!</div>';	
-	}else{
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>An error occured.</div>';	
-	}
-	return;
-}
 
 
 //BRAND
