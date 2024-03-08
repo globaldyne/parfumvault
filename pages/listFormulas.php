@@ -130,6 +130,7 @@ $(".tabs").click(function() {
      var tableId = $(this).data("table");
      initTable(tableId, src);
 });
+
 function initTable(tableId, src) {
     var table = $("#" + tableId).DataTable({
 	   ajax: {
@@ -177,6 +178,8 @@ function initTable(tableId, src) {
         paging:  true,
 		info:   true,
 		lengthMenu: [[20, 40, 60, 100], [20, 40, 60, 100]],
+		pageLength: 20,
+		displayLength: 20,
 		drawCallback: function( settings ) {
 			extrasShow();
      	},
@@ -187,8 +190,8 @@ function initTable(tableId, src) {
 		stateDuration: -1,
 		stateLoadCallback: function (settings, callback) {
         	$.ajax( {
-            	url: '/core/update_user_settings.php?set=listFormulas&action=load',
-            	dataType: 'json',
+            	url: "/core/update_user_settings.php?set=listFormulas&action=load&tableId=" + tableId,
+            	dataType: "json",
             	success: function (json) {
                 	callback( json );
             	}
@@ -196,7 +199,7 @@ function initTable(tableId, src) {
     	},
     	stateSaveCallback: function (settings, data) {
 		   $.ajax({
-			 url: "/core/update_user_settings.php?set=listFormulas&action=save",
+			 url: "/core/update_user_settings.php?set=listFormulas&action=save&tableId=" + tableId,
 			 data: data,
 			 dataType: "json",
 			 type: "POST"

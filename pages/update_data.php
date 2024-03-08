@@ -406,6 +406,19 @@ if($_POST['update_bottle_data']){
 		echo json_encode($response);
 		return;
 	}
+	
+	if(!is_numeric($_POST['size'])){
+		$response["error"] = "Size is invalid";
+		echo json_encode($response);
+		return;
+	}
+	
+	if(!is_numeric($_POST['price'])){
+		$response["error"] = "Price is invalid";
+		echo json_encode($response);
+		return;
+	}
+		
 	$id = $_POST['bottle_id'];
 	$name = $_POST['name'];
 	$ml = $_POST['size'];
@@ -751,13 +764,13 @@ if($_POST['ingSupplier'] == 'getPrice'){
 
 //ADD ING SUPPLIER
 if($_POST['ingSupplier'] == 'add'){
-	if(empty($_POST['supplier_id']) || empty($_POST['supplier_link']) || empty($_POST['supplier_size'])){
+	if(empty($_POST['supplier_id']) || empty($_POST['supplier_link']) || empty($_POST['supplier_size']) || empty($_POST['supplier_price'])){
 		$response["error"] = 'Error: Missing fields!';
 		echo json_encode($response);
 		return;
 	}
 	
-	if(!is_numeric($_POST['supplier_size']) || !is_numeric($_POST['stock'])){
+	if(!is_numeric($_POST['supplier_size']) || !is_numeric($_POST['stock']) || !is_numeric($_POST['supplier_price'])){
 		$response["error"] = 'Error: Only numeric values allowed in size, stock and price fields!';
 		echo json_encode($response);
 		return;

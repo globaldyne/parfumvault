@@ -374,7 +374,7 @@ if($_POST['action'] == 'conv2ing' && $_POST['ingName'] && $_POST['fid']){
 
 }
 
-//CLONE FORMULA
+//DUPLICATE FORMULA
 if($_POST['action'] == 'clone' && $_POST['fid']){
 	require_once(__ROOT__.'/func/genFID.php');
 
@@ -384,15 +384,29 @@ if($_POST['action'] == 'clone' && $_POST['fid']){
 	$newName = $fname.' - (Copy)';
 	$newFid = random_str(40, '1234567890abcdefghijklmnopqrstuvwxyz');
 	
-	if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulasMetaData WHERE fid = '$newFid'"))){
-		$response['success'] = $newName.' already exists, please remove or rename it first!</div>';
-	}else{
-		$sql.=mysqli_query($conn, "INSERT INTO formulasMetaData (fid, name, notes, profile, sex, defView, product_name, catClass) SELECT '$newFid', '$newName', notes, profile, sex, defView, '$newName', catClass FROM formulasMetaData WHERE fid = '$fid'");
-		$sql.=mysqli_query($conn, "INSERT INTO formulas (fid, name, ingredient, ingredient_id, concentration, dilutant, quantity, notes) SELECT '$newFid', '$newName', ingredient, ingredient_id, concentration, dilutant, quantity, notes FROM formulas WHERE fid = '$fid'");
-	}
-	if($nID = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$newFid'"))){
-		$response['success'] = $fname.' cloned as <a href="?do=Formula&id='.$nID['id'].'" target="_blank">'.$newName.'</a>!</div>';
-	}
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM formulasMetaData WHERE name = '$newName'"))){
+		$response['error'] = $newName.' already exists, please remove or rename it first!</div>';
+		echo json_encode($response);
+        return;
+    }
+	$sql1 = "INSERT INTO formulasMetaData (fid, name, notes, profile, sex, defView, product_name, catClass) SELECT '$newFid', '$newName', notes, profile, sex, defView, '$newName', catClass FROM formulasMetaData WHERE fid = '$fid'";
+    $sql2 = "INSERT INTO formulas (fid, name, ingredient, ingredient_id, concentration, dilutant, quantity, notes) SELECT '$newFid', '$newName', ingredient, ingredient_id, concentration, dilutant, quantity, notes FROM formulas WHERE fid = '$fid'";
+    
+    if(mysqli_query($conn, $sql1) && mysqli_query($conn, $sql2)) {
+        // Fetch the id of the newly inserted record
+        $nID = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$newFid'"));
+        if($nID){
+            $response['success'] = $fname.' cloned as <a href="/?do=Formula&id='.$nID['id'].'" target="_blank">'.$newName.'</a>!</div>';
+        } else {
+            $response['error'] = "Failed to fetch ID of cloned record!";
+			echo json_encode($response);
+			return;
+        }
+    } else {
+        $response['error'] = "Failed to clone formula!";
+		echo json_encode($response);
+		return;
+    }
 	echo json_encode($response);
 	return;
 }
@@ -546,14 +560,27 @@ if($_POST['action'] == 'makeFormula' && $_POST['fid'] && $_POST['q'] && $_POST['
 }
 //MARK COMPLETE
 if($_POST['action'] == 'todo' && $_POST['fid'] && $_POST['markComplete']){
+	require_once(__ROOT__.'/libs/fpdf.php');
+	require_once(__ROOT__.'/func/genBatchID.php');
+	require_once(__ROOT__.'/func/genBatchPDF.php');
+	require_once(__ROOT__.'/func/ml2L.php');
+
 	$fid = mysqli_real_escape_string($conn, $_POST['fid']);
+	$total_quantity = mysqli_real_escape_string($conn, $_POST['totalQuantity']);
+
+	define('FPDF_FONTPATH',__ROOT__.'/fonts');
+	$defCatClass = $settings['defCatClass'];
+	
+		
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = '$fid' AND toAdd = '1'"))){
 		$response['error'] = '<strong>Formula is pending materials to add, cannot be marked as complete.</strong>';
 		echo json_encode($response);
 		return;
 	}
 	if(mysqli_query($conn,"UPDATE formulasMetaData SET isMade = '1', toDo = '0', madeOn = NOW(), status = '2' WHERE fid = '$fid'")){
-		
+		$batchID = genBatchID();
+		genBatchPDF($fid,$batchID,$total_quantity,'100',$total_quantity,$defCatClass,$settings['qStep'],'makeFormula');
+
 		mysqli_query($conn, "DELETE FROM makeFormula WHERE fid = '$fid'");
 		
 		$response['success'] = '<strong>Formula is complete</strong>';
@@ -639,146 +666,49 @@ if($_POST['action'] == 'removeFromCart' && $_POST['materialId']){
 	}
 }
 
-//PRINTING
-if($_GET['action'] == 'printLabel' && $_GET['name']){
-	if (file_exists($tmp_path.'/labels/') === FALSE) {
-		mkdir($tmp_path.'/labels/', 0740, true);
-	}
-	$name = $_GET['name'];
+
+//VIEW BOX BACK LABEL
+if($_GET['action'] == 'viewBoxLabel' && $_GET['fid']){
+	$fid = $_GET['fid'];
+	
+	$q = mysqli_fetch_array(mysqli_query($conn, "SELECT name,product_name FROM formulasMetaData WHERE fid = '".$fid."'"));
+	$name = $q['name'];
+	$qIng = mysqli_query($conn, "SELECT ingredient FROM formulas WHERE fid = '".$fid."'");
+
+	while($ing = mysqli_fetch_array($qIng)){
+		$chName = mysqli_fetch_array(mysqli_query($conn, "SELECT chemical_name,name FROM ingredients WHERE name = '".$ing['ingredient']."' AND allergen = '1'"));
 		
-	if($settings['label_printer_size'] == '62' || $settings['label_printer_size'] == '62 --red'){
-		
-		if($_GET['batchID']){
-			$bNo = $_GET['batchID'];
-		}else{
-			$bNO = 'N/A';
-		}
-				
-		$q = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE fid = '$name'"));
-		$info = "Production: ".date("d/m/Y")."\nProfile: ".$q['profile']."\nSex: ".$q['sex']."\nB. NO: ".$bNo."\nDescription:\n\n".wordwrap($q['notes'],30);
-	}
-	
-	$dim =  explode(',',labelMap($settings['label_printer_size']));
-	
-	$w = $dim['0'];
-	$h = $dim['1'];
-	
-	$lbl = imagecreatetruecolor($w, $h);
-
-	$white = imagecolorallocate($lbl, 255, 255, 255);
-	$black = imagecolorallocate($lbl, 0, 0, 0);	
-	
-	imagefilledrectangle($lbl, 0, 0, $w, $h, $white);
-	
-	$text = trim(base64_decode($name).$extras);
-	$font = __ROOT__.'/fonts/Arial.ttf';
-
-	imagettftext($lbl, $settings['label_printer_font_size'], 0, 0, 50, $black, $font, $text);
-	$lblF = imagerotate($lbl, 90 ,0);
-	
-	if($settings['label_printer_size'] == '62' || $settings['label_printer_size'] == '62 --red'){
-		imagettftext($lblF, 25, 0, 200, 300, $black, $font, $info);
-	}
-	$extras = '';
-	if($_GET['dilution'] && $_GET['dilutant']){
-		$extras = ' @'.$_GET['dilution'].'% in '.base64_decode($_GET['dilutant']);
-						//font size 15 rotate 0 center 360 top 50
-		imagettftext($lblF, $settings['label_printer_font_size']/3, 90, 120, 570, $black, $font, $extras);
-		
-	}
-	$CAS = 'CAS: '.$_GET['cas'];
-	imagettftext($lblF, $settings['label_printer_font_size']/2, 90, 90, 565, $black, $font, $CAS);
-	$save = $tmp_path.'/labels/'.base64_encode($text.'png');
-
-	if(imagepng($lblF, $save)){
-		imagedestroy($lblF);
-		shell_exec('/usr/bin/brother_ql -m '.$settings['label_printer_model'].' -p tcp://'.$settings['label_printer_addr'].' print -l '.$settings['label_printer_size'].' '. $save);
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>Print sent!</div>';
-	}
-	
-	return;
-}
-
-//PRINT BOX LABEL
-if($_GET['action'] == 'printBoxLabel' && $_GET['name']){
-	if (file_exists($tmp_path.'/labels/') === FALSE) {
-		mkdir($tmp_path.'/labels/', 0740, true);
-	}
-	
-	if(empty($_GET['copies']) || !is_numeric($_GET['copies'])){
-		$copies = '1';
-	}else{
-		$copies = intval($_GET['copies']);
-	}
-	
-	if($settings['label_printer_size'] == '62' || $settings['label_printer_size'] == '62 --red'){
-		$name = mysqli_real_escape_string($conn, $_GET['name']);
-		$q = mysqli_fetch_array(mysqli_query($conn, "SELECT product_name FROM formulasMetaData WHERE fid = '$name'"));
-		$qIng = mysqli_query($conn, "SELECT ingredient FROM formulas WHERE fid = '$name'");
-
-		while($ing = mysqli_fetch_array($qIng)){
-			$chName = mysqli_fetch_array(mysqli_query($conn, "SELECT chemical_name,name FROM ingredients WHERE name = '".$ing['ingredient']."' AND allergen = '1'"));
-			
-			if($qCMP = mysqli_query($conn, "SELECT name FROM allergens WHERE ing = '".$ing['ingredient']."' AND toDeclare = '1'")){
-				while($cmp = mysqli_fetch_array($qCMP)){
-					$allergen[] = $cmp['name'];
-				}
+		if($qCMP = mysqli_query($conn, "SELECT name FROM allergens WHERE ing = '".$ing['ingredient']."' AND toDeclare = '1'")){
+			while($cmp = mysqli_fetch_array($qCMP)){
+				$allergen[] = $cmp['name'];
 			}
-			$allergen[] = $chName['chemical_name']?:$chName['name'];
 		}
-		$allergen[] = 'Denatureted Ethyl Alcohol '.$_GET['carrier'].'% Vol, Fragrance, DPG, Distilled Water';
-		
-		if($_GET['batchID']){
-			$bNo = $_GET['batchID'];
-		}else{
-			$bNO = 'N/A';
-		}
-		if($settings['brandName']){
-			$brand = $settings['brandName'];
-		}else{
-			$brand = 'PV Pro';
-		}
-		$allergenFinal = implode(", ",array_filter(array_unique($allergen)));
-		$info = "FOR EXTERNAL USE ONLY. \nKEEP AWAY FROM HEAT AND FLAME. \nKEEP OUT OF REACH OF CHILDREN. \nAVOID SPRAYING IN EYES. \n \nProduction: ".date("d/m/Y")." \nB. NO: ".$bNo." \n$brand";
-		$w = '720';
-		$h = '860';
+		$allergen[] = $chName['chemical_name']?:$chName['name'];
 	}
+	$allergen[] = 'Denatured Ethyl Alcohol '.$_GET['carrier'].'% Vol, Fragrance, DPG, Distilled Water';
 	
-	if($_GET['download'] == 'text'){
-		echo '<pre>';
-		echo 'INGREDIENTS'."\n\n";
-		echo wordwrap ($allergenFinal, 90)."\n\n";
-		echo wordwrap ($info, 50)."\n\n";
-		echo '</pre>';
-		return;
+	if($_GET['batchID']){
+		$bNo = $_GET['batchID'];
+	}else{
+		$bNO = 'N/A';
 	}
-
-	$lbl = imagecreatetruecolor($h, $w);
-
-	$white = imagecolorallocate($lbl, 255, 255, 255);
-	$black = imagecolorallocate($lbl, 0, 0, 0);	
-	
-	imagefilledrectangle($lbl, 0, 0, $h, $w, $white);
-	
-	$text = strtoupper($q['product_name']);
-	$font = __ROOT__.'/fonts/Arial.ttf';
-	//font size 15 rotate 0 center 360 top 50
-	imagettftext($lbl, 25, 0, 300, 50, $black, $font, 'INGREDIENTS');
-	$lblF = imagerotate($lbl, 0 ,0);
-	
-	imagettftext($lblF, 17, 0, 0, 100, $black, $font, wordwrap ($allergenFinal, 90));
-	imagettftext($lblF, 20, 0, 150, 490, $black, $font, wordwrap ($info, 50));
-
-	$save = $tmp_path.'/labels/'.base64_encode($text.'png');
-
-	if(imagepng($lblF, $save)){
-		imagedestroy($lblF);
-
-		for ($k = 0; $k < $copies; $k++){
-			shell_exec('/usr/bin/brother_ql -m '.$settings['label_printer_model'].' -p tcp://'.$settings['label_printer_addr'].' print -l '.$settings['label_printer_size'].' '. $save);
-		}
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>Print sent!</div>';
+	if($settings['brandName']){
+		$brand = $settings['brandName'];
+	}else{
+		$brand = 'PV Pro';
 	}
+	$allergenFinal = implode(", ",array_filter(array_unique($allergen)));
+	$info = "FOR EXTERNAL USE ONLY. \nKEEP AWAY FROM HEAT AND FLAME. \nKEEP OUT OF REACH OF CHILDREN. \nAVOID SPRAYING IN EYES. \n \nProduction: ".date("d/m/Y")." \nB. NO: ".$bNo." \n$brand";
+
+
+	echo "<pre>";
+	echo "<strong>".$name."</strong>\n\n";
+	echo 'INGREDIENTS'."\n\n";
+	echo wordwrap ($allergenFinal, 90)."\n\n";
+	echo wordwrap ($info, 50)."\n\n";
+	echo '</pre>';
+
+
 	return;
 }
 
