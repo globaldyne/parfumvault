@@ -47,7 +47,7 @@
             </select></td>
           </tr>
           <tr>
-            <td><input type="submit" name="button" class="btn btn-info"id="btnGEN" value="Generate"></td>
+            <td><input type="submit" name="button" class="btn btn-info" id="btnGEN" value="Generate"></td>
           </tr>
         </table> 
       </div>
