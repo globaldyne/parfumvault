@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 9.7
+
 ### Version 9.6
 - Integration with label printer has been removed
 - Fix typo when generating a label
