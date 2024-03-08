@@ -114,13 +114,17 @@ if(isset($_SESSION['parfumvault'])){
                       Login
                     </button>
                   </div>
-                  
-                  <hr>
+                 <?php if(strtoupper(getenv('PASS_RESET_INFO') ?: $PASS_RESET_INFO) != "DISABLED"){ ?>
+
+                  <hr />
                   <div class="text-center">
                     <a class="small" href="#" data-bs-toggle="modal" data-bs-target="#forgot_pass">Forgot Password?</a>
                   </div>
-            <?php } ?>		 		 
-                  <hr>
+            <?php
+				 }
+			 } 
+			?>		 		 
+                  <hr />
                   <div class="copyright text-center my-auto">
 				  <label class="small">Version: <?php echo $ver; ?> |<a href="https://www.perfumersvault.com/" class="link-dark mx-1" target="_blank"><?php echo $product; ?></a></label>
                   </div>
@@ -135,6 +139,7 @@ if(isset($_SESSION['parfumvault'])){
  </body>
 </html>
 
+<?php if(strtoupper(getenv('PASS_RESET_INFO') ?: $PASS_RESET_INFO) != "DISABLED"){ ?>
 
 <!--FORGOT PASS INFO-->
 <div class="modal fade" id="forgot_pass" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="forgot_pass" aria-hidden="true">
@@ -166,7 +171,7 @@ if(isset($_SESSION['parfumvault'])){
   </div>
 </div>
 
-<?php // } ?>
+<?php  } ?>
 
 <script>
 $(document).ready(function() {

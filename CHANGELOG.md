@@ -1,4 +1,24 @@
 # CHANGELOG
+### Version 9.6
+- Integration with label printer has been removed
+- Fix typo when generating a label
+- Moving docker image to minimal tag
+- Prevent duplicating formulas with the same name
+- Rename Clone formula to Duplicate formula
+- Added validation test for numeric values when adding a supplier for ingredients
+- Added env variable to disable password reset info from the login console - PASS_RESET_INFO
+- phpMyAdmin has been removed from the main docker image
+- Fix customer creation
+- A batch document is automatically generated when a formula is made and marked as complete
+- Put back IFRA doc creation and added a warning message
+- Making size and price mandatory for bottles inventory
+- Only bottles that contains size and price will be shown as an option in finished product page
+- Fix passing incorrect formula name when generating a finished product resulting in error when creating a pdf
+- Improve user state save method (may need to be revisited)
+- Disable non-error reporting
+- Fix user password update
+- Added available stock when searching for an ingredient to replace in formula
+
 ### Version 9.5
 - Show ingredients label text in modal in finished product section
 - Move batch history menu under formulas

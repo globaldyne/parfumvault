@@ -1,7 +1,13 @@
-Whats New in v9.5
+Whats New in v9.6
 --------------------------
-- Added ingredient count next to each category in formula view
-- Move batch history menu under formulas
+- Integration with label printer has been removed
+- Prevent duplicating formulas with the same name
+- phpMyAdmin has been removed from the main docker image
+- Fix customer creation
+- Added available stock when searching for an ingredient to replace in formula
+- Making size and price mandatory for bottles inventory
+- A batch document is automatically generated when a formula is made and marked as complete
 - Various bug fixes and improvements
 - Fix a bug preventing formula deletion 
+- Fix a user password update error
 - For full details please refer to the CHANGELOG

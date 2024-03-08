@@ -1,28 +1,31 @@
 <?php 
 if (!defined('pvault_panel')){ die('Not Found');}
+
 require_once(__ROOT__.'/libs/fpdf.php');
 require_once(__ROOT__.'/func/genBatchID.php');
 require_once(__ROOT__.'/func/genBatchPDF.php');
 require_once(__ROOT__.'/func/validateFormula.php');
 require_once(__ROOT__.'/func/calcPerc.php');
 require_once(__ROOT__.'/func/calcCosts.php');
-if($_POST['formula']){
-	$f_name =  mysqli_real_escape_string($conn, $_POST['formula']);
-	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE fid = '$f_name'"));
 
-	$formula_q = mysqli_query($conn, "SELECT * FROM formulas WHERE fid = '$f_name' ORDER BY ingredient ASC");
+if($_POST['formula']){
+	$fid = mysqli_real_escape_string($conn, $_POST['formula']);
+	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE fid = '$fid'"));
+	$f_name = $meta['name'];
+	
+	$formula_q = mysqli_query($conn, "SELECT * FROM formulas WHERE fid = '$fid' ORDER BY ingredient ASC");
 	while ($formula = mysqli_fetch_array($formula_q)){
 	    $form[] = $formula;
 	}
-	$mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE fid = '$f_name'"));
+	$mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE fid = '$fid'"));
 	
 	$bottle = mysqli_real_escape_string($conn, $_POST['bottle']);
 	$type = mysqli_real_escape_string($conn, $_POST['type']);
 	$carrier_id = mysqli_real_escape_string($conn, $_POST['carrier']);
 	$lid_id = mysqli_real_escape_string($conn, $_POST['lid']);
-	$bottle_cost = mysqli_fetch_array(mysqli_query($conn, "SELECT  price,ml,name FROM bottles WHERE id = '$bottle'"));
+	$bottle_cost = mysqli_fetch_array(mysqli_query($conn, "SELECT price,ml,name FROM bottles WHERE id = '$bottle' AND price != 0 "));
 	
-	$carrier_cost = mysqli_fetch_array(mysqli_query($conn, "SELECT  price,size FROM suppliers WHERE ingID = '$carrier_id'"));
+	$carrier_cost = mysqli_fetch_array(mysqli_query($conn, "SELECT price,size FROM suppliers WHERE ingID = '$carrier_id'"));
 	
 	$defCatClass = mysqli_real_escape_string($conn, $_POST['defCatClass']);
 
@@ -54,7 +57,7 @@ if($_POST['batchID'] == '1'){
 	define('FPDF_FONTPATH',__ROOT__.'/fonts');
 	$batchID = genBatchID();
 	
-	genBatchPDF($f_name,$batchID,$bottle,$new_conc,$mg['total_mg'],$ver,$defCatClass,$settings['qStep'],$conn);
+	genBatchPDF($fid,$batchID,$bottle,$new_conc,$mg['total_mg'],$defCatClass,$settings['qStep']);
 	
 }else{
 	$batchID = 'N/A';
@@ -62,59 +65,7 @@ if($_POST['batchID'] == '1'){
 	
 ?>
     
-<script>
-function printLabel() {
-	<?php if(empty($settings['label_printer_addr']) || empty($settings['label_printer_model'])){?>
-	$("#inf").html('<div class="alert alert-danger alert-dismissible">Please configure printer details in <a href="?do=settings">settings<a> page</div>');
-	<?php }else{ ?>
-	$("#inf").html('<div class="alert alert-info alert-dismissible">Printing...</div>');
 
-$.ajax({ 
-    url: '/pages/manageFormula.php', 
-	type: 'GET',
-    data: {
-		action: "printLabel",
-		batchID: "<?php echo $batchID; ?>",
-		name: "<?php echo $f_name; ?>"
-		},
-	dataType: 'html',
-    success: function (data) {
-	  $('#inf').html(data);
-    }
-  });
-	<?php } ?>
-};
-
-function BoxLabel(download) {
-	<?php if(empty($settings['label_printer_addr']) || empty($settings['label_printer_model']) || $settings['label_printer_size'] != '62'){?>
-	$("#inf").html('<div class="alert alert-danger alert-dismissible">Please configure printer details in <a href="?do=settings">settings<a> page. Note: For this label you need 62mm label</div>');
-	<?php }else{ ?>
-	if(download == null){
-		$("#inf").html('<div class="alert alert-info alert-dismissible">Printing...</div>');
-	}else{
-		$("#inf").html('<div class="alert alert-info alert-dismissible">Generating label...</div>');
-	}
-
-$.ajax({ 
-    url: '/pages/manageFormula.php', 
-	type: 'GET',
-    data: {
-		action: "printBoxLabel",
-		batchID: "<?php echo $batchID; ?>",
-		name: "<?php echo $f_name; ?>",
-		carrier: "<?php echo $carrier*100/$bottle;?>",
-		copies: $("#copiesToPrint").val(),
-		download: download
-		},
-	dataType: 'html',
-    success: function (data) {
-	  $('#BoxLabel').modal('toggle');
-	  $('#inf').html(data);
-    }
-  });
-	<?php } ?>
-};
-</script>
 <?php } ?>
 
 <div id="content-wrapper" class="d-flex flex-column">
@@ -153,9 +104,7 @@ $.ajax({
                         <?php if (file_exists(__ROOT__."/pages/views/IFRA/genIFRAdoc.php")) {?>
                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#IFRA"><i class="fa-solid fa-certificate mx-2"></i>IFRA Document</a></li>
                         <?php } ?>
-                        <li><a class="dropdown-item" href="javascript:printLabel()" onclick="return confirm('Print label?')"><i class="fa-solid fa-print mx-2"></i>Print Label</a></li>
-                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#printBoxLabel"><i class="fa-solid fa-print mx-2"></i>Print Box Label</a></li>
-                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#ViewBoxLabel"><i class="fa-solid fa-font mx-2"></i>View Box Label as text</a></li>
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#ViewBoxLabel"><i class="fa-solid fa-font mx-2"></i>View Box Back Label</a></li>
                       </div>
                     </div>
                     </div>
@@ -312,27 +261,6 @@ $.ajax({
 </div>
 
 
-<!-- Modal PRINT-->
-<div class="modal fade" id="printBoxLabel" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="printBoxLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Print Box Label</h5>
-      </div>
-      <div class="modal-body">
-        Copies to print:
-          <form action="javascript:BoxLabel()" method="get" name="form1" target="_self" id="form1">
-          <input name="copiesToPrint" type="text" id="copiesToPrint" value="1" />
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <input type="submit" name="button" class="btn btn-primary" id="button" value="Print">
-      </div>
-     </form>
-    </div>
-  </div>
-</div>
-<?php if (file_exists(__ROOT__."/pages/views/IFRA/genIFRAdoc.php")) {?>
 <!-- Modal IFRA DOC-->
 <div class="modal fade" id="IFRA" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="IFRA" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -341,6 +269,11 @@ $.ajax({
         <h5 class="modal-title">Generate IFRA Document</h5>
       </div>
       <div class="modal-body">
+      <div class="alert alert-warning d-flex align-items-center" role="alert">
+          <div>
+            IMPORTANT: The generated document isn't an official IFRA certificate and needs to be reviewed by a certified person. Also, data needs to be properly verified to make sure there are no errors.
+          </div>
+      </div>
           Select customer:
           <form action="/pages/views/IFRA/genIFRAdoc.php?fid=<?php echo $meta['fid'];?>&conc=<?php echo $type; ?>&bottle=<?php echo $bottle;?>&defCatClass=<?=$defCatClass?>" method="POST" target="_blank">
             <select class="form-control" name="customer" id="customer">
@@ -370,19 +303,18 @@ $.ajax({
     </div>
   </div>
 </div>
-<?php } ?>
             <?php 
 			}else{ 
 				if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))== 0){
-					echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> You need to <a href="?do=listFormulas">create</a> at least one formula first.</div>';
+					echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> You need to <a href="/?do=listFormulas">create</a> at least one formula first.</div>';
 					return;
 				}
 				if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM bottles"))== 0){
-					echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> You need to <a href="?do=bottles">add</a> at least one bottle in your inventory first.</div>';
+					echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> You need to <a href="/?do=bottles">add</a> at least one bottle in your inventory first.</div>';
 					return;
 				}
 				if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE type = 'Carrier' OR type = 'Solvent'"))== 0){
-					echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> You need to <a href="?do=ingredients">add</a> at least one solvent or carrier first.</div>';
+					echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> You need to <a href="/?do=ingredients">add</a> at least one solvent or carrier first.</div>';
 					return;
 				}
 				
@@ -410,7 +342,7 @@ $.ajax({
 		$sql = mysqli_query($conn, "SELECT fid,name,product_name FROM formulasMetaData WHERE product_name IS NOT NULL ORDER BY name ASC");
 		while ($formula = mysqli_fetch_array($sql)){
 			echo '<option value="'.$formula['fid'].'">'.$formula['name'].' ('.$formula['product_name'].')</option>';
-		}
+}
 	  ?>
      </select>
    </td>
@@ -460,7 +392,7 @@ $.ajax({
     <td>    
     <select name="bottle" id="bottle" class="form-control selectpicker" data-live-search="true">
      <?php
-		$sql = mysqli_query($conn, "SELECT id,name,ml FROM bottles ORDER BY ml DESC");
+		$sql = mysqli_query($conn, "SELECT id,name,ml FROM bottles WHERE ml != 0 ORDER BY ml DESC");
 		while ($bottle = mysqli_fetch_array($sql)){
 			echo '<option value="'.$bottle['id'].'">'.$bottle['name'].' ('.$bottle['ml'].'ml)</option>';
 		}
@@ -515,16 +447,16 @@ $.ajax({
 <script type="text/javascript" language="javascript" >
 $("#ViewBoxLabel").on("show.bs.modal", function(e) {
 	
-  const action = "printBoxLabel"; 
+  const action = "viewBoxLabel"; 
   const batchID = "<?php echo $batchID; ?>";
-  const formula = "<?php echo $f_name; ?>";
+  const formula = "<?php echo $fid; ?>";
   const carrier = "<?php echo $carrier*100/$bottle;?>";
 
-  const url = "/pages/manageFormula.php?action="+ action + "&batchID=" + batchID +"&name=" + formula + "&carrier=" + carrier +"&download=text";
+  const url = "/pages/manageFormula.php?action="+ action + "&batchID=" + batchID +"&fid=" + formula + "&carrier=" + carrier +"&download=text";
 
   $.get(url)
     .then(data => {
-      $("#headerLabel", this).html(atob(formula));
+      $("#headerLabel", this).html("<?php echo $f_name; ?>");
       $(".modal-body", this).html(data);
     });
 	
@@ -533,14 +465,14 @@ $("#ViewBoxLabel").on("show.bs.modal", function(e) {
 $('#pdf').on('click',function(){
 	$("#formula").tableHTMLExport({
 		type:'pdf',
-		filename:'<?=base64_decode($f_name)?>.pdf',
+		filename:'<?=$f_name?>.pdf',
 		orientation: 'p',
 		trimContent: true,
     	quoteFields: true,
 		ignoreColumns: '.noexport',
   		ignoreRows: '.noexport',
 		htmlContent: true,
-		maintitle: '<?=base64_decode($f_name)?>',
+		maintitle: '<?=$f_name?>',
 		product: '<?php echo trim($product).' '.trim($ver);?>',
 	});
 });

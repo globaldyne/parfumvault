@@ -155,7 +155,7 @@ $(document).ready(function() {
            	dataType: 'json',
            	success: function (json) {
                	callback( json );
-				if(json.search.search){
+				if(json.search.search !== undefined){
 					$('#ing_search').val(json.search.search);
 				}
            	}

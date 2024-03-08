@@ -2,7 +2,9 @@
 if (!defined('pvault_panel')){ die('Not Found');}
 define('__ROOT__', dirname(dirname(__FILE__))); 
 
-function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $ver, $defCatClass, $qStep, $conn){
+function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $defCatClass, $qStep, $formulaTable = 'formulas'){
+	global $conn;
+	
 	class PDF extends FPDF {
 		function Header() {
 			global $fid;
@@ -121,7 +123,7 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $ver, $defCatClass
 
 	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE fid = '$fid'"));
 	
-	$fq = mysqli_query($conn, "SELECT ingredient FROM formulas WHERE fid = '$fid'");
+	$fq = mysqli_query($conn, "SELECT ingredient FROM $formulaTable WHERE fid = '$fid'");
 	while($ing = mysqli_fetch_array($fq)){
 		$getIngAlergen = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '".$ing['ingredient']."' AND allergen = '1'"));
 		$qAll = mysqli_query($conn, "SELECT name FROM allergens WHERE ing = '".$ing['ingredient']."'");
@@ -133,7 +135,7 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $ver, $defCatClass
 		$allergen[] = $getAllergen['name'];
 	}
 	
-	$coverText = "Profile: ".$meta['profile']." \nGender: ".$meta['sex']." \nCreated: ".$meta['created']." \n".$meta['notes'];
+	$coverText = "Profile: ".$meta['profile']." \nGender: ".$meta['sex']." \nCreated: ".$meta['created']." \nMade: ".$meta['madeOn']." \n".$meta['notes'];
 	$allergenFinal = implode(", ",array_unique(array_filter($allergen)));
 	if(empty($allergenFinal)){
 		$allergenFinal = 'None found';
@@ -204,7 +206,7 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $ver, $defCatClass
 		$pdf->Cell(68,12,$heading,1,0,'C');
 	}
 
-	$qAllIng = mysqli_query($conn, "SELECT ingredient,quantity,concentration FROM formulas WHERE fid = '$fid'");
+	$qAllIng = mysqli_query($conn, "SELECT ingredient,quantity,concentration FROM $formulaTable WHERE fid = '$fid'");
 	while ($res_all_ing = mysqli_fetch_array($qAllIng)) {
 		
 		$bldQ = mysqli_query($conn, "SELECT ing,name,cas,percentage FROM allergens WHERE ing = '".$res_all_ing['ingredient']."'");

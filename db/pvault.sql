@@ -288,10 +288,6 @@ CREATE TABLE `pv_meta` (
 
 CREATE TABLE `settings` (
   `id` int(11) NOT NULL,
-  `label_printer_addr` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `label_printer_model` varchar(225) COLLATE utf8_general_ci DEFAULT NULL,
-  `label_printer_size` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `label_printer_font_size` int(11) DEFAULT 80,
   `currency` varchar(40) COLLATE utf8_general_ci DEFAULT NULL,
   `top_n` varchar(10) COLLATE utf8_general_ci NOT NULL,
   `heart_n` varchar(10) COLLATE utf8_general_ci NOT NULL,
@@ -662,6 +658,7 @@ CREATE TABLE `formulasTags` (
 CREATE TABLE `user_prefs` ( 
 	`pref_name` VARCHAR(255) NOT NULL,
 	`pref_data` LONGTEXT NOT NULL,
+	`pref_tab` VARCHAR(255) NULL,
 	`created_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL,
 	`owner` INT NOT NULL 
 ) ENGINE = InnoDB CHARSET=utf8 COLLATE utf8_general_ci; 

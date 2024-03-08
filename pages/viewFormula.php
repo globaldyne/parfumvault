@@ -55,7 +55,7 @@ $fid = $meta['fid'];
            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#schedule_to_make"><i class="fa-regular fa-calendar-plus mx-2"></i>Schedule to make</a></li>
            <li><a class="dropdown-item" href="#" id="isMade"><i class="fa-solid fa-check mx-2"></i>Mark formula as made</a></li>
            <div class="dropdown-divider"></div>
-           <li><a class="dropdown-item" href="#" id="cloneMe"><i class="fa-solid fa-copy mx-2"></i>Clone Formula</a></li>
+           <li><a class="dropdown-item" href="#" id="cloneMe"><i class="fa-solid fa-copy mx-2"></i>Duplicate Formula</a></li>
         </div>
       </div>            
     </div>

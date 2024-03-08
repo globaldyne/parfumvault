@@ -57,10 +57,49 @@ Please note, all DB_ variables are required.
 	- `-e TMP_PATH=/tmp/`
 	- `-e FILE_EXT='pdf, doc, docx, xls, csv, xlsx, png, jpg, jpeg, gif'`
 	- `-e DB_BACKUP_PARAMETERS='--column-statistics=1'`
-	
+
+or via docker compose
+
+	---
+	version: '3.8'
+	services:
+	  pvdb:
+	    image: mariadb:10.5
+	    command: '--default-authentication-plugin=mysql_native_password --innodb-flush-method=fsync'
+	    volumes:
+	      - db_data:/var/lib/mysql
+	    restart: always
+	    environment:
+	      MYSQL_ROOT_PASSWORD: pvault
+	      MYSQL_DATABASE: pvault
+	      MYSQL_USER: pvault
+	      MYSQL_PASSWORD: pvault
+	    expose:
+	      - 3306
+	  pvault:
+	    image: globaldyne/perfumersvault:latest
+	    ports:
+	      - 8000:8000
+	    restart: always
+	    environment:
+	      PLATFORM: CLOUD
+	      DB_HOST: pvdb
+	      DB_USER: pvault
+	      DB_PASS: pvault
+	      DB_NAME: pvault
+	      MAX_FILE_SIZE: 4194304
+	      TMP_PATH: /tmp/
+	      FILE_EXT: 'pdf, doc, docx, xls, csv, xlsx, png, jpg, jpeg, gif'
+	      DB_BACKUP_PARAMETERS: '--column-statistics=1'
+	volumes:
+	  db_data:
+
+
+
 then point your browser to http://localhost:8000
 
 For more info, please refer to:
 	
 	https://www.perfumersvault.com/knowledge-base/
+
 

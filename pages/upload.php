@@ -53,10 +53,28 @@ if($_GET['upload_ing_cat_pic'] && $_GET['catID']){
 	return;
 }
 
-if($_GET['type'] == 'bottle' && $_GET['name']){
+if($_GET['type'] == 'bottle'){
+	if(empty($_GET['name'])){
+		$response["error"] = 'Name is required';
+		echo json_encode($response);
+		return;
+	}
+	
+	if(!is_numeric($_GET['size'])){
+		$response["error"] = 'Bottle size is invalid';
+		echo json_encode($response);
+		return;
+	}
+	
+	if(!is_numeric($_GET['price'])){
+		$response["error"] = 'Bottle price is invalid';
+		echo json_encode($response);
+		return;
+	}
+	
 	$name = base64_decode($_GET['name']);
-	$ml = $_GET['size']?:0;
-	$price = $_GET['price']?:0;
+	$ml = $_GET['size'];
+	$price = $_GET['price'];
 	$height = $_GET['height']?:0;
 	$width = $_GET['width']?:0;
 	$diameter = $_GET['diameter']?:0;
@@ -65,6 +83,7 @@ if($_GET['type'] == 'bottle' && $_GET['name']){
 	$notes = base64_decode($_GET['notes']);
 	$pieces = $_GET['pieces']?:0;
 
+	
 	if(isset($_FILES['pic_file']['name'])){
       $file_name = $_FILES['pic_file']['name'];
       $file_size = $_FILES['pic_file']['size'];
