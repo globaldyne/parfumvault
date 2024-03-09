@@ -1,6 +1,9 @@
 <?php
 define('__ROOT__', dirname(dirname(__FILE__)));
 define('pvault_panel', TRUE);
+require_once(__ROOT__.'/func/php-settings.php');
+
+
 
 
 if($_POST['action'] == 'register'){
@@ -77,8 +80,22 @@ if($_POST['action']=='install'){
 	}
 	
 	
-	$cmd = 'mysql -u'.$_POST['dbuser'].' -p'.$_POST['dbpass'].' -h'.$_POST['dbhost'].' '.$_POST['dbname'].' < '.__ROOT__.'/db/pvault.sql'; 
-	passthru($cmd,$e);
+	if (checkFunctionIsAvailable("passthru"))
+	{
+		$cmd = 'mysql -u'.$_POST['dbuser'].' -p'.$_POST['dbpass'].' -h'.$_POST['dbhost'].' '.$_POST['dbname'].' < '.__ROOT__.'/db/pvault.sql'; 
+		passthru($cmd,$e);
+	}
+	else
+	{
+		// if passthru function is disabled try another method
+		$sql = file_get_contents(__ROOT__.'/db/pvault.sql');
+		$e = !mysqli_multi_query($link, $sql);	
+		while(mysqli_more_results($link))
+		{
+		   mysqli_next_result($link);
+		}		
+	}
+
 	if(!$e){
 		mysqli_query($link,"INSERT INTO users (id,email,password,fullName) VALUES ('1','".strtolower($_POST['email'])."',PASSWORD(".$_POST['password']."),'".$_POST['fullName']."')");
 		
