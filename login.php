@@ -48,8 +48,7 @@ if(isset($_SESSION['parfumvault'])){
         		require 'install.php';
 				return;
 			}
-			if (mysqli_query($conn,"DESCRIBE pv_meta") == FALSE ){
-
+            if (mysqli_num_rows(mysqli_query($conn,"SELECT 1 FROM information_schema.tables WHERE table_schema = '".getenv('DB_NAME')."' AND table_name = 'pv_meta' LIMIT 1")) == 0 && getenv('DB_HOST') && getenv('DB_USER') && getenv('DB_PASS') && getenv('DB_NAME') ){
 				$cmd = 'mysql -u'.getenv('DB_USER').' -p'.getenv('DB_PASS').' -h'.getenv('DB_HOST').' '.getenv('DB_NAME').' < '.__ROOT__.'/db/pvault.sql';
 				passthru($cmd,$e);
 				if(!$e){
@@ -64,7 +63,7 @@ if(isset($_SESSION['parfumvault'])){
 				}
 			}
 			?>
-            <?php if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM users")) == FALSE){ $first_time = 1; ?>
+            <?php if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM users")) == 0){ $first_time = 1; ?>
             <div class="col-lg-6 d-none d-lg-block bg-register-image"></div>
              <div class="col-lg-6">
               <div class="p-5">
