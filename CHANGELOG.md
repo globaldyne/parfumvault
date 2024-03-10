@@ -1,6 +1,7 @@
 # CHANGELOG
 ### Version 9.7
 - Remove epel-release
+- Fix first time installation issue
 
 ### Version 9.6
 - Integration with label printer has been removed
