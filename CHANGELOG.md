@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 9.8
+
 ### Version 9.7
 - Remove epel-release
 - Fix first time installation issue

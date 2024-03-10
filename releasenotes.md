@@ -1,4 +1,3 @@
-Whats New in v9.7
+Whats New in v9.8
 --------------------------
-- Bug fix release
 - For full details please refer to the CHANGELOG
