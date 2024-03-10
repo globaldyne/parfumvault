@@ -48,7 +48,7 @@ if(isset($_SESSION['parfumvault'])){
         		require 'install.php';
 				return;
 			}
-			if (mysqli_query($conn,"SHOW TABLES LIKE pv_meta") == FALSE ){
+			if (mysqli_query($conn,"SHOW TABLES LIKE 'pv_meta'") == FALSE ){
 
 				$cmd = 'mysql -u'.getenv('DB_USER').' -p'.getenv('DB_PASS').' -h'.getenv('DB_HOST').' '.getenv('DB_NAME').' < '.__ROOT__.'/db/pvault.sql';
 				passthru($cmd,$e);
