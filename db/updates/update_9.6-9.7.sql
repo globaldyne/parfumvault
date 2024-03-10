@@ -1,0 +1,1 @@
+CREATE TABLE `backup_provider` ( `id` INT NOT NULL AUTO_INCREMENT , `credentials` JSON NULL DEFAULT '{}' , `provider` VARCHAR(255) NOT NULL , `enabled` INT NOT NULL DEFAULT '0' , UNIQUE (`id`)) ENGINE = InnoDB CHARSET=utf8mb3 COLLATE utf8mb3_general_ci; 
