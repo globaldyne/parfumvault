@@ -2,6 +2,7 @@
 ### Version 9.7
 - Remove epel-release
 - Fix first time installation issue
+- DB update for remote backup engine - WIP - Tech Preview
 
 ### Version 9.6
 - Integration with label printer has been removed
