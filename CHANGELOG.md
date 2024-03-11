@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 9.8
+- Change collation to utf8 for IFRALibrary
 
 ### Version 9.7
 - Remove epel-release
