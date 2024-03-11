@@ -1,7 +1,9 @@
 # CHANGELOG
 ### Version 9.8
 - Change collation to utf8 for IFRALibrary
-
+- Removed legacy db upgrades before version 8.0
+- Moved dropdown actions menu for finished product to the left
+ 
 ### Version 9.7
 - Remove epel-release
 - Fix first time installation issue
