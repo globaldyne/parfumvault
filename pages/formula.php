@@ -246,12 +246,15 @@ $('#add_ing').on('click', '[id*=add-btn]', function () {
 		dataType: 'json',
 		success: function (data) {
 			if ( data.success ) {
-				msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+				$('.toast').toast('show');
+            	$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+				$('.toast-header').removeClass().addClass('toast-header alert-success');
 				reload_formula_data();
 			} else {
-				msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + data.error + '</strong></div>';
+				$('.toast').toast('show');
+            	$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
 			}
-			$('#msgInfo').html(msg);
 		}
 		
 	  });
