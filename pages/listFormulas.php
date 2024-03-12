@@ -32,7 +32,6 @@ while($fTypes_res = mysqli_fetch_array($fTypes_q)){
 
 <div class="card-header py-3">
   <h2 class="m-0 font-weight-bold text-primary"><a href="javascript:list_formulas()">Formulas</a></h2>
-  <div id="inMsg"></div>
 </div>
             
 <div class="pv_menu_formulas">
@@ -337,13 +336,15 @@ $('table.table').on('click', '[id*=cloneMe]', function () {
 			},
 		dataType: 'json',
 		success: function (data) {
-			if (data.success) {
-				var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+			if ( data.success ) {
+            	$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+				$('.toast-header').removeClass().addClass('toast-header alert-success');
 				reload_formulas_data();
-			}else{
-				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+			} else {
+            	$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
 			}
-			$('#inMsg').html(msg);
+			$('.toast').toast('show');
 		}
 	  });
 });
@@ -372,15 +373,15 @@ $('table.table').on('click', '[id*=deleteMe]', function () {
 						},
 					dataType: 'json',
 					success: function (data) {
-						//$('#inMsg').html(data);
-						//reload_formulas_data();
-						if (data.success) {
-							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+						if ( data.success ) {
+							$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+							$('.toast-header').removeClass().addClass('toast-header alert-success');
 							reload_formulas_data();
-						}else{
-							var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+						} else {
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+							$('.toast-header').removeClass().addClass('toast-header alert-danger');
 						}
-						$('#inMsg').html(msg);
+						$('.toast').toast('show');
 					}
 				  });
                  return true;
@@ -416,14 +417,14 @@ $('#wipe_all_formulas').click(function() {
 						},
 					dataType: 'json',
 					success: function (data) {
-						if(data.success) {
-								var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
-								reload_formulas_data();
-							} else {
-								var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
-				
-							}
-							$('#innermsg').html(msg);
+						if ( data.success ) {
+							$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+							$('.toast-header').removeClass().addClass('toast-header alert-success');
+						} else {
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+							$('.toast-header').removeClass().addClass('toast-header alert-danger');
+						}
+						$('.toast').toast('show');
 					}
 				});
 				
@@ -456,13 +457,14 @@ $('table.table').on('click', '[id*=addTODO]', function () {
 		},
 	dataType: 'json',
     success: function (data) {
-	  	if (data.success) {
-	  		var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
-			reload_formulas_data();
-		}else{
-			var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+		if ( data.success ) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+			$('.toast-header').removeClass().addClass('toast-header alert-success');
+		} else {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
 		}
-		$('#inMsg').html(msg);
+		$('.toast').toast('show');
     }
   });
 });

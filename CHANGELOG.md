@@ -1,6 +1,6 @@
 # CHANGELOG
 ### Version 9.8
-- Info message replaced with a toast style in formula management
+- Info message replaced with a toast style
 - Change collation to utf8 for IFRALibrary
 - Removed legacy db upgrades before version 8.0
 - Moved dropdown actions menu for finished product to the left
