@@ -36,68 +36,67 @@ require_once(__ROOT__.'/inc/sec.php');
 </table>
 <script>
 $(document).ready(function() {
-	var BKPOD = "<?php echo $BKPOD; ?>";
-	var tdProv = $('#tdProv').DataTable( {
-	columnDefs: [
-		{ className: 'text-center', targets: '_all' },
-		{ orderable: false, targets: [4] }
-	],
-	dom: 'lfrtip',
-	processing: true,
-	language: {
-		loadingRecords: '&nbsp;',
-		processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
-		emptyTable: 'No providers found.',
-		search: 'Search:'
+	var tdProv = $('#tdProv').DataTable({
+		columnDefs: [
+			{ className: 'text-center', targets: '_all' },
+			{ orderable: false, targets: [4] }
+		],
+		dom: 'lfrtip',
+		processing: true,
+		language: {
+			loadingRecords: '&nbsp;',
+			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
+			emptyTable: 'No providers found.',
+			search: 'Search:'
+			},
+		ajax: {	url: '/core/list_backup_providers_data.php' },
+		columns: [
+				  { data : 'provider', title: 'Provider', render: provider },
+				  { data : 'schedule', title: 'Schedule', render: schedule},
+				  { data : 'state', title: 'State', render: state},
+				  { data : 'description', title: 'Description', render: description},
+				  { data : null, title: '', render: actions},		   
+				 ],
+		order: [[ 1, 'asc' ]],
+		lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
+		pageLength: 20,
+		displayLength: 20,
+		drawCallback: function( settings ) {
+				extrasShow();
+			},
+		stateSave: true,
+		stateDuration: -1,
+		stateLoadCallback: function (settings, callback) {
+			$.ajax( {
+				url: '/core/update_user_settings.php?set=listBKProviders&action=load',
+				dataType: 'json',
+				success: function (json) {
+					callback( json );
+				}
+			});
 		},
-	ajax: {	url: '/core/list_backup_providers_data.php' },
-	columns: [
-			  { data : 'provider', title: 'Provider', render: provider },
-			  { data : 'schedule', title: 'Schedule', render: schedule},
-			  { data : 'state', title: 'State', render: state},
-			  { data : 'description', title: 'Description', render: description},
-			  { data : null, title: '', render: actions},		   
-			 ],
-	order: [[ 1, 'asc' ]],
-	lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
-	pageLength: 20,
-	displayLength: 20,
-	drawCallback: function( settings ) {
-			extrasShow();
-     	},
-	stateSave: true,
-	stateDuration: -1,
-	stateLoadCallback: function (settings, callback) {
-       	$.ajax( {
-           	url: '/core/update_user_settings.php?set=listBKProviders&action=load',
-           	dataType: 'json',
-           	success: function (json) {
-               	callback( json );
-           	}
-       	});
-    },
-    stateSaveCallback: function (settings, data) {
-	   $.ajax({
-		 url: "/core/update_user_settings.php?set=listBKProviders&action=save",
-		 data: data,
-		 dataType: "json",
-		 type: "POST"
-	  });
-	},	
+		stateSaveCallback: function (settings, data) {
+		   $.ajax({
+			 url: "/core/update_user_settings.php?set=listBKProviders&action=save",
+			 data: data,
+			 dataType: "json",
+			 type: "POST"
+		  });
+		},	
 	});
 	
 	$.ajax({
-		url: "http://" + BKPOD +":7000/version",
+		url: "/pages/views/backup_providers/manage.php?action=version",
 		type: "GET",
 		dataType: 'json',
 		success: function (data) {
-			if(data){
+			if(data.success){
 				$("#srv_avail").hide();
 				$("#srv_avail").html('');
 				$("#updateBtn").hide();
-				$("#dataVer").text(data.version);
-				$("#dataBuild").text(data.build);
-				$("#dataChangelog").text(data.changelog);
+				$("#dataVer").text(data.data.version);
+				$("#dataBuild").text(data.data.build);
+				$("#dataChangelog").text(data.data.changelog);
 			} else {
 				$("#main_area, #tdProv").hide();
 				$("#main_area, #tdProv").html('');
@@ -111,7 +110,66 @@ $(document).ready(function() {
 		}
 	});
  
+	
+	$('#listBackup').on('show.bs.modal', function (e) {
+	
+			var tdlistBackup = $('#backupTable').DataTable({
+			columnDefs: [
+				{ className: 'text-center', targets: '_all' },
+				{ orderable: false, targets: [2, 3] }
+			],
+			dom: 'lfrtip',
+			processing: true,
+			language: {
+				loadingRecords: '&nbsp;',
+				processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
+				emptyTable: 'No backups found.',
+				search: 'Search:'
+				},
+			ajax: {	url: '/pages/views/backup_providers/manage.php?action=getRemoteBackups' },
+			columns: [
+					  { data : 'file_name', title: 'File name' },
+					  { data : 'file_id', title: 'File ID'},
+					  { data : null, title: '', render: action_download},
+					  { data : null, title: '', render: action_delete},		   
+					 ],
+			order: [[ 1, 'asc' ]],
+			lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
+			pageLength: 20,
+			displayLength: 20,
+		});
+		
+	});
+	
+	$('#backupTable tbody').on('click', '.delete-btn', function() {
+		var fileId = $(this).data('file-id');
+		// Perform deletion operation using fileId
+		$.ajax({
+			url: "/pages/views/backup_providers/manage.php?action=deleteRemoteBackup&id=" + fileId,
+			type: "GET",
+			dataType: 'json',
+			success: function (data) {
+				if(data.success){
+					var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.message + '</div>';
+				}else{
+					var msg ='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.message + '</div>';
+				}
+				$('#resBK_data').html(msg);
+				reload_bk_data();
+			}
+		});
+		
+	});
+	
 });
+
+function action_download(data, type, row){
+	return '<a href="' + row.download_link + '" target="_blank">Download</a>';
+}
+
+function action_delete(data, type, row){
+	return '<a href="#" class="delete-btn" data-file-id="' + row.file_id + '">Delete</a>';
+}
 
 function provider(data, type, row){
 	return row.provider;    
@@ -221,6 +279,10 @@ function reload_data() {
     $('#tdProv').DataTable().ajax.reload(null, true);
 };
 
+function reload_bk_data() {
+    $('#backupTable').DataTable().ajax.reload(null, true);
+};
+
 function extrasShow() {
 	$('[rel=tip]').tooltip({
          html: true,
@@ -246,7 +308,7 @@ $('#runBackup').on('click', '[id*=cBK]', function () {
 	$("#cBK").prop("disabled", true);
 	$("#bk_inf_run").html('<div class="alert alert-info"><div class="spinner-grow mx-2"></div>Please wait, this may take a while depending the size of your database and your internet connection.</div>');
 	$.ajax({
-		url: "http://" + BKPOD +":7000/createBackup",
+		url: "/pages/views/backup_providers/manage.php?action=createBackup",
 		type: "GET",
 		dataType: 'json',
 		timeout: 10000,
@@ -281,7 +343,7 @@ $('#restart').on('click', '[id*=cRS]', function () {
 function fetchVersionAfterRestart() {
 	setTimeout(function() {
 		$.ajax({
-			url: "http://" + BKPOD +":7000/version",
+			url: "/pages/views/backup_providers/manage.php?action=version",
 			type: "GET",
 			dataType: 'json',
 			timeout: 1000,
@@ -309,7 +371,7 @@ function fetchVersionAfterRestart() {
 
 
 $.ajax({
-	url: "http://" + BKPOD +":7000/restart",
+	url: "/pages/views/backup_providers/manage.php?action=restart",
 	type: "GET",
 	dataType: 'json',
 	success: function (data) {
@@ -317,9 +379,38 @@ $.ajax({
 	}
 });
 	
+
+	
 });
 
 </script>
+<!-- Modal -->
+<div class="modal fade" id="listBackup" tabindex="-1" aria-labelledby="listBackupLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="backupModalLabel">Available Backup Data</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+      <div id="resBK_data"></div>
+        <table id="backupTable" class="table table-striped" style="width:100%">
+            <thead>
+                <tr>
+                    <th>File Name</th>
+                    <th>File ID</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL FOR ADDING A BACKUP PROVIDER -->
 <div class="modal fade" id="addBKProvider" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="addBKProviderLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -459,6 +550,8 @@ $.ajax({
     </div>
   </div>
 </div>
+
+
 
 
 
