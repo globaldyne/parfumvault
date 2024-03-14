@@ -591,7 +591,7 @@ CREATE TABLE `formulasRevisions` (
 
 CREATE TABLE `formula_history` (
  `id` int(11) NOT NULL AUTO_INCREMENT,
- `fid` int(11) NOT NULL,
+ `fid` varchar(255) NOT NULL,
  `change_made` text COLLATE utf8_general_ci NOT NULL,
  `date_time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
  `user` varchar(255) COLLATE utf8_general_ci NOT NULL,
@@ -663,4 +663,12 @@ CREATE TABLE `user_prefs` (
 ) ENGINE = InnoDB CHARSET=utf8 COLLATE utf8_general_ci; 
 ALTER TABLE `user_prefs` ADD UNIQUE (pref_name);
 
-CREATE TABLE `backup_provider` ( `id` INT NOT NULL AUTO_INCREMENT , `credentials` JSON NULL DEFAULT '{}' , `provider` VARCHAR(255) NOT NULL , `enabled` INT NOT NULL DEFAULT '0' , UNIQUE (`id`)) ENGINE = InnoDB CHARSET=utf8mb3 COLLATE utf8mb3_general_ci; 
+CREATE TABLE `backup_provider` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `credentials` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT '{}' CHECK (json_valid(`credentials`)),
+  `provider` varchar(255) NOT NULL,
+  `schedule` time NOT NULL DEFAULT '00:00:00',
+  `enabled` int(11) NOT NULL DEFAULT 0,
+  `description` varchar(255) NOT NULL,
+  UNIQUE KEY `id` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci

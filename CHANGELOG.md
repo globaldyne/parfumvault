@@ -4,6 +4,8 @@
 - Change collation to utf8 for IFRALibrary
 - Removed legacy db upgrades before version 8.0
 - Moved dropdown actions menu for finished product to the left
+- Fix a bug preventing formula hstory to be created for new installations
+- Added an automated backup to Google Drive solution - Currently not publicly available
  
 ### Version 9.7
 - Remove epel-release

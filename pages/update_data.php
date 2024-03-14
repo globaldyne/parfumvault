@@ -161,6 +161,92 @@ if($_POST['action'] == 'import' && $_POST['source'] == 'PVOnline' && $_POST['kin
 	return;
 }
 
+//UPDATE BK PROVIDER
+if ($_REQUEST['bkProv'] == 'update') {
+    if ( empty($_POST['creds']) || empty($_POST['schedule']) || empty($_POST['bkDesc'])) {
+        $response["error"] = 'Missing fields';
+        echo json_encode($response);
+        return;
+    }
+    
+    $enabled = mysqli_real_escape_string($conn, $_POST['enabled']);
+    $schedule = mysqli_real_escape_string($conn, $_POST['schedule']);
+    $bkDesc = mysqli_real_escape_string($conn, $_POST['bkDesc']);
+    $id = mysqli_real_escape_string($conn, $_POST['id']);
+    $creds = mysqli_real_escape_string($conn, $_POST['creds']);
+
+    if (mysqli_query($conn, "UPDATE backup_provider SET credentials = '$creds', enabled = '$enabled', schedule = '$schedule', description = '$bkDesc' WHERE id = '$id'")) {
+        $response["success"] = 'Provider updated';
+    } else {
+        $response["error"] = 'Error: ' . mysqli_error($conn);
+    }
+
+    echo json_encode($response);
+    return;
+}
+
+
+//DELETE BK PROVIDER
+if($_POST['bkProv'] == 'delete' && $_POST['id']){
+	$id = $_POST['id'];
+	$name = $_POST['provider'];
+
+	if(mysqli_query($conn, "DELETE FROM backup_provider WHERE id = '$id'")){
+		$response["success"] = 'backup_provider '.$name.' deleted';
+	}else{
+		$response["error"] = 'Something went wrong '.mysqli_error($conn);
+	}
+	
+	echo json_encode($response);
+	return;	
+}
+
+//ADD NEW BK PROVIDER
+if($_POST['bkProv'] == 'add'){
+	
+	if(empty($_POST['bk_name'])){
+		$response["error"] = 'Provider is required';
+		echo json_encode($response);
+		return;
+	}
+	
+	if(empty($_POST['bk_creds'])){
+		$response["error"] = 'Credentials required';
+		echo json_encode($response);
+		return;
+	}
+
+	if(empty($_POST['bk_desc'])){
+		$response["error"] = 'Description is required.';
+		echo json_encode($response);
+		return;
+	}
+	
+	if(empty($_POST['bk_schedule'])){
+		$response["error"] = 'Schedule is required.';
+		echo json_encode($response);
+		return;
+	}
+	
+	$name = mysqli_real_escape_string($conn,$_POST['bk_name']);
+	$creds = mysqli_real_escape_string($conn,$_POST['bk_creds']);
+	$desc = mysqli_real_escape_string($conn,$_POST['bk_desc']);
+	$bk_schedule = $_POST['bk_schedule'];
+
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM backup_provider WHERE credentials = '$credentials'"))){
+		$response["error"] = $name.' already exists!';
+		echo json_encode($response);
+		return;
+	}
+	
+	if(mysqli_query($conn, "INSERT INTO backup_provider (provider,credentials,description,schedule,enabled) VALUES ('$name','$creds','$desc','$bk_schedule','1')")){
+		$response["success"] = $name.' created!';
+	}else{
+		$response["error"] = 'Error: '.mysqli_error($conn);
+	}
+	echo json_encode($response);
+	return;
+}
 
 
 //UPDATE HTML TEMPLATE

@@ -22,6 +22,7 @@ $(function() {
          <li><a href="#templates" id="templates_tab" role="tab" data-bs-toggle="tab">HTML Templates</a></li>
          <li><a href="#brand" id="brand_tab" role="tab" data-bs-toggle="tab">My Brand</span></a></li>
          <li><a href="#maintenance" id="maintenance_tab">Maintenance</a></li>
+         <li><a href="#bkProviders" id="bkProviders_tab">Backup Providers</a></li>
          <li><a href="#api" id="api_tab" role="tab" data-bs-toggle="tab">API</a></li>
          <li><a href="#about" id="about_tab" role="tab" data-bs-toggle="tab">About</a></li>
      </ul>
@@ -90,9 +91,15 @@ $(function() {
             <div class="loader-text"></div>
         </div>
      </div>
-   
      
 	<div id="maintenance">
+        <div class="loader-center">
+            <div class="loader"></div>
+            <div class="loader-text"></div>
+        </div>
+  	</div>
+    
+    <div id="bkProviders">
         <div class="loader-center">
             <div class="loader"></div>
             <div class="loader-text"></div>
@@ -182,6 +189,16 @@ function get_maintenance(){
 		dataType: 'html',
 		success: function (data) {
 			$('#maintenance').html(data);
+		}
+	});
+};
+
+function get_bkProviders(){
+	$.ajax({ 
+		url: '/pages/views/settings/remote_backup.php', 
+		dataType: 'html',
+		success: function (data) {
+			$('#bkProviders').html(data);
 		}
 	});
 };
