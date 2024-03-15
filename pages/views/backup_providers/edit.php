@@ -9,6 +9,7 @@ $bk = mysqli_fetch_array(mysqli_query($conn,"SELECT * FROM backup_provider WHERE
 ?>
 <div class="card-body">
   <div id="bk-inf"></div>
+  <div class="alert alert-info"><i class="fa-solid fa-triangle-exclamation mx-2"></i>The services has to be restarted for the changes to take effect.</div>
   <div class="row">
     <div class="col-sm">
       <label for="bk-creds" class="form-label">Credentials (JSON)</label>

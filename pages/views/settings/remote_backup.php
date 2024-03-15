@@ -116,7 +116,7 @@ $(document).ready(function() {
 			var tdlistBackup = $('#backupTable').DataTable({
 			columnDefs: [
 				{ className: 'text-center', targets: '_all' },
-				{ orderable: false, targets: [2, 3] }
+				{ orderable: false, targets: [3, 4] }
 			],
 			dom: 'lfrtip',
 			processing: true,
@@ -130,6 +130,7 @@ $(document).ready(function() {
 			columns: [
 					  { data : 'file_name', title: 'File name' },
 					  { data : 'file_id', title: 'File ID'},
+					  { data : 'file_size', title: 'Size'},
 					  { data : null, title: '', render: action_download},
 					  { data : null, title: '', render: action_delete},		   
 					 ],
@@ -311,7 +312,7 @@ $('#runBackup').on('click', '[id*=cBK]', function () {
 		url: "/pages/views/backup_providers/manage.php?action=createBackup",
 		type: "GET",
 		dataType: 'json',
-		timeout: 10000,
+		//timeout: 10000,
 		success: function (data) {
 			if(data.success){
 				
@@ -399,6 +400,7 @@ $.ajax({
                 <tr>
                     <th>File Name</th>
                     <th>File ID</th>
+                    <th>Size</th>
                     <th></th>
                     <th></th>
                 </tr>

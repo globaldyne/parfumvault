@@ -68,6 +68,7 @@ if ($_GET['action'] == 'getRemoteBackups') {
                 $formattedData[] = [
                     'file_name' => $item->file_name,
                     'file_id' => $item->file_id,
+                    'file_size' => $item->file_size,
                     'download_link' => $item->download_link
                 ];
             }
