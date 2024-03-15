@@ -792,10 +792,15 @@ function ingInv(data, type, row, meta){
 	}
 	if(row.ingredient.inventory.stock >= row.quantity){
 		var inv = '<i class="fa fa-check inv-ok" rel="tip" title="Available in stock: '+row.ingredient.inventory.stock+mUnit+'"></i>';
+		
+	}else if(row.ingredient.inventory.stock == 0){
+		var inv = '<i class="fa fa-times inv-out" rel="tip" data-html="true" title="Not in stock from the prefered supplier.<br/> Available: '+row.ingredient.inventory.stock + mUnit +'"></i>';
+		
 	}else if(row.ingredient.inventory.stock <= row.quantity){
-		var inv = '<i class="fa fa-times inv-out" rel="tip" data-html="true" title="Not enough in stock from the prefered supplier.<br/> Available: '+row.ingredient.inventory.stock + mUnit +'"></i>';
+		var inv = '<i class="fa fa-triangle-exclamation inv-low" rel="tip" data-html="true" title="Not enough in stock from the prefered supplier.<br/> Available: '+row.ingredient.inventory.stock + mUnit +'"></i>';
+		
 	}
-
+	
 	if(type === 'display'){
 		data = inv;
 	}

@@ -720,6 +720,10 @@ formula td, table.table th {
 	color: red;
 }
 
+.inv-low {
+	color: orange;
+}
+
 table.fixedHeader-floating {
 	background-color: lightgray !important;
 	color: #666;  

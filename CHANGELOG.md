@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 9.8
+- Added a low stock icon in formula view
 - Fix ingredients reload after ingredient deletion
 - Scheduled formulas removal message update
 - Scheduled formulas notification messages moved to a toast style
