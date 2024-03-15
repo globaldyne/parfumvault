@@ -401,6 +401,7 @@ $('#tdDataIng').on('click', '[id*=rmIng]', function () {
 						if ( data.success ) {
 							$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
 							$('.toast-header').removeClass().addClass('toast-header alert-success');
+							reload_ingredients_data();
 						} else {
 							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
 							$('.toast-header').removeClass().addClass('toast-header alert-danger');

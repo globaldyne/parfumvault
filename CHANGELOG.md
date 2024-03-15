@@ -1,5 +1,8 @@
 # CHANGELOG
 ### Version 9.8
+- Fix ingredients reload after ingredient deletion
+- Scheduled formulas removal message update
+- Scheduled formulas notification messages moved to a toast style
 - Info message replaced with a toast style
 - Change collation to utf8 for IFRALibrary
 - Removed legacy db upgrades before version 8.0

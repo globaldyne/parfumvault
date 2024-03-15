@@ -8,7 +8,6 @@
     </div>
     <div class="card-body">
       <div class="table-responsive">
-      <div id="innermsg"></div>
         <table class="table table-bordered" id="tdDataScheduled" width="100%" cellspacing="0">
           <thead>
             <tr>
@@ -155,10 +154,10 @@ $('#tdDataScheduled').on('click', '[id*=pend_remove]', function () {
     
 	bootbox.dialog({
        title: "Confirm removal",
-       message : 'Remove <strong>'+ frm.Name +'</strong>?',
+       message : "Remove formula <strong>" + frm.Name + "</strong> from scheduled formulas? <br />Your original formula will not be affected but any progress of making the formula will be lost.",
        buttons :{
            main: {
-               label : "Delete",
+               label : "Remove",
                className : "btn-danger",
                callback: function (){
 			   $.ajax({
@@ -172,14 +171,15 @@ $('#tdDataScheduled').on('click', '[id*=pend_remove]', function () {
 						},
 					dataType: 'json',
 					success: function (data) {
-						if(data.success) {
-							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
-								reload_data();
-							} else {
-								var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
-				
-							}
-							$('#innermsg').html(msg);
+						if ( data.success ) {
+            				$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+							$('.toast-header').removeClass().addClass('toast-header alert-success');
+							reload_data();
+						} else {
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+							$('.toast-header').removeClass().addClass('toast-header alert-danger');
+						}
+						$('.toast').toast('show');
 					}
 				});
 				
