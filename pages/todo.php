@@ -42,7 +42,7 @@ $(document).ready(function() {
 	language: {
 		loadingRecords: '&nbsp;',
 		processing: 'Please Wait...',
-		zeroRecords: 'No pending formulas found',
+		zeroRecords: 'No scheduled to make formulas found',
 		search: 'Quick Search:',
 		searchPlaceholder: 'Name..',
 		},

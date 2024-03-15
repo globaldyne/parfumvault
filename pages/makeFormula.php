@@ -335,17 +335,16 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
             },
         dataType: 'json',
         success: function (data) {
-            if(data.success) {
-                var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
-                $('#msg').html(msg);
-                $('#confirm_add').modal('toggle');
-                reload_data();
-            
-            } else if(data.error) {
-                var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
-                $('#errMsg').html(msg);
-            }
-            
+			if(data.success){
+				$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+				$('.toast-header').removeClass().addClass('toast-header alert-success');
+				$('#confirm_add').modal('toggle');
+				reload_data();
+				$('.toast').toast('show');
+			} else if(data.error) {
+				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				$('#errMsg').html(msg);
+			}
         }
       });
     };
@@ -371,6 +370,7 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
                 var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
             }
             $('#msg').html(msg);
+			
         }
       });
     });
@@ -421,12 +421,16 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
                     },
                     dataType: 'json',
                     success: function (data) {
-                        if(data.success) {
-                            var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
-                            reload_data();
-                        } else {
-                            var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
-                        }
+                       	if(data.success){
+							$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+							$('.toast-header').removeClass().addClass('toast-header alert-success');
+							reload_data();
+							bootbox.hideAll();
+							$('.toast').toast('show');
+						}else{
+            				$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+							 var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+                        }	
                         $('#msg').html(msg);
                     }
                 });
@@ -511,6 +515,16 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
         </div>
     </div>
     
+    <!-- TOAST -->
+    <div class="position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 11">
+      <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true">
+        <div class="toast-header">
+          <strong class="me-auto" id="toast-title">...</strong>
+          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+      </div>
+    </div>
+
     <!-- Modal Confirm amount-->
     <div class="modal fade" id="confirm_add" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="confirm_add" aria-hidden="true">
       <div class="modal-dialog" role="document">
