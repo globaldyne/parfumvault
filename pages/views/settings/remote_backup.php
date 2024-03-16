@@ -7,17 +7,18 @@ require_once(__ROOT__.'/inc/sec.php');
 
 <h3>Backup providers</h3>
 <hr>
-<div id="srv_avail"></div>
 <div class="card-body" id="main_area">
   <div class="text-right">
     <div class="btn-group">
-    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
+    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
         <div class="dropdown-menu dropdown-menu-right">
             <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addBKProvider"><i class="fa-solid fa-plus mx-2"></i>Add new</a></li>
-            <li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#info"><i class="fas fa-circle-info mx-2"></i>Info</a></li>
 		<li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#runBackup"><i class="fas fa-person-running mx-2"></i>Run a backup</a></li>
 		<li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#listBackup"><i class="fas fa-list-check mx-2"></i>List backups</a></li>
 		<div class="dropdown-divider"></div>
+        <li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#configure"><i class="fas fa-gears mx-2"></i>Configure</a></li>
+        <li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#info"><i class="fas fa-circle-info mx-2"></i>Info</a></li>
+        <div class="dropdown-divider"></div>
 		<li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#restart"><i class="fas fa-arrows-rotate mx-2"></i>Restart</a></li>
         </div>
     </div>
@@ -84,31 +85,7 @@ $(document).ready(function() {
 		  });
 		},	
 	});
-	
-	$.ajax({
-		url: "/pages/views/backup_providers/manage.php?action=version",
-		type: "GET",
-		dataType: 'json',
-		success: function (data) {
-			if(data.success){
-				$("#srv_avail").hide();
-				$("#srv_avail").html('');
-				$("#updateBtn").hide();
-				$("#dataVer").text(data.data.version);
-				$("#dataBuild").text(data.data.build);
-				$("#dataChangelog").text(data.data.changelog);
-			} else {
-				$("#main_area, #tdProv").hide();
-				$("#main_area, #tdProv").html('');
-				$('#srv_avail').html('<div class="alert alert-danger">Service not available, please make sure the service is installed and running</div>');
-			}
-		},
-		error: function(jqXHR, textStatus, errorThrown) {
-			$("#main_area, #tdProv").hide();
-			$("#main_area, #tdProv").html('');
-			$('#srv_avail').html('<div class="alert alert-danger">Service not available, please make sure the service is installed and running or publicly available.</div>');
-		}
-	});
+
  
 	
 	$('#listBackup').on('show.bs.modal', function (e) {
@@ -305,6 +282,27 @@ $("#edit").on("show.bs.modal", function(e) {
 	});
 });
 
+$("#info").on("show.bs.modal", function(e) {
+	const id = e.relatedTarget.dataset.id;
+	const name = e.relatedTarget.dataset.name;
+
+	$.get("/pages/views/backup_providers/info.php")
+		.then(data => {
+		$(".modal-body", this).html(data);
+	});
+});
+
+$("#configure").on("show.bs.modal", function(e) {
+	const id = e.relatedTarget.dataset.id;
+	const name = e.relatedTarget.dataset.name;
+
+	$.get("/pages/views/backup_providers/configure.php")
+		.then(data => {
+		$(".modal-body", this).html(data);
+	});
+});
+
+
 $('#runBackup').on('click', '[id*=cBK]', function () {
 	$("#cBK").prop("disabled", true);
 	$("#bk_inf_run").html('<div class="alert alert-info"><div class="spinner-grow mx-2"></div>Please wait, this may take a while depending the size of your database and your internet connection.</div>');
@@ -456,6 +454,40 @@ $.ajax({
   </div>
 </div>
 
+<!--CONFIGURE MODAL-->            
+<div class="modal fade" id="configure" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="configureLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title mgmIngHeader mgmIngHeader-with-separator" id="configureLabel">Configure</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-danger">Unable to get data</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--INFO MODAL-->            
+<div class="modal fade" id="info" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="infoLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title mgmIngHeader mgmIngHeader-with-separator" id="infoLabel">Info</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-danger">Unable to get data</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!--EDIT MODAL-->            
 <div class="modal fade" id="edit" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="editLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog" role="document">
@@ -519,39 +551,6 @@ $.ajax({
   </div>
 </div>
 
-<!-- MODAL FOR INFO -->
-<div class="modal fade" id="info" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="infoLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="infoLabel">Info</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div id="res">
-            <div class="row">
-                <div class="col-mb-3">
-                  <label for="bk-ver" class="form-label mx-2">Version:</label>
-                  <div id="dataVer" style="display: inline;">
-                  </div>
-                </div>
-                <div class="col-mb-3">
-                  <label for="bk-build" class="form-label mx-2">Build:</label>
-                  <div id="dataBuild" style="display: inline;">
-                  </div>
-                </div>
-                <div class="col-mb-3">
-                  <label for="bk-changelog" class="form-label mx-2">Release notes:</label>
-                  <div id="dataChangelog">
-                  </div>
-                </div>
-            </div>
-        </div>
-    </div>
-  </div>
-</div>
 
 
 

@@ -29,8 +29,6 @@ if(strtoupper(getenv('PLATFORM')) === "CLOUD"){
 	$conn = dbConnect($dbhost, $dbuser, $dbpass, $dbname);
 }
 
-$BKPOD = getenv('PV_BKPOD') ?: 'localhost';
-
 
 function dbConnect($dbhost, $dbuser, $dbpass, $dbname){
 	$conn = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname) or die ('Unable to connect to '.$dbname.' database on '.	$dbhost.' host. Please make sure the database exists and user '.$dbuser.' has full permissions on it.');

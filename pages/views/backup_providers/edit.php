@@ -17,6 +17,10 @@ $bk = mysqli_fetch_array(mysqli_query($conn,"SELECT * FROM backup_provider WHERE
     </div>
     <div class="col-sm">
       <div class="mb-3">
+        <label for="gdrive_name" class="form-label">Backup folder</label>
+        <input name="gdrive_name" type="gdrive_name" class="form-control" id="gdrive_name" value="<?=$bk['gdrive_name']?>">
+      </div>
+      <div class="mb-3">
         <label for="time" class="form-label">Scheduled Time</label>
         <input name="time" type="time" class="form-control" id="time" value="<?=$bk['schedule']?>">
       </div>
@@ -58,7 +62,8 @@ $('#bk-save').click(function() {
             creds: $("#bk-creds").val(),
             enabled: enabled,
             schedule: $("#time").val(),
-            bkDesc: $("#desc").val()
+            bkDesc: $("#desc").val(),
+			gdrive_name: $("#gdrive_name").val()
         },
         dataType: 'json',
         success: function(data) {

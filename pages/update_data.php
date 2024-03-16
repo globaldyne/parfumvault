@@ -161,9 +161,23 @@ if($_POST['action'] == 'import' && $_POST['source'] == 'PVOnline' && $_POST['kin
 	return;
 }
 
+//UPDATE BK HOST
+if($_POST['bkHost'] == 'update' && $_POST['bk_srv_host']){
+	$bk_srv_host = $_POST['bk_srv_host'];
+
+	if(mysqli_query($conn, "UPDATE settings SET bk_srv_host = '$bk_srv_host'")){
+		$response["success"] = 'Backup host updated';
+	}else{
+		$response["error"] = 'Something went wrong '.mysqli_error($conn);
+	}
+	
+	echo json_encode($response);
+	return;	
+}
+
 //UPDATE BK PROVIDER
 if ($_REQUEST['bkProv'] == 'update') {
-    if ( empty($_POST['creds']) || empty($_POST['schedule']) || empty($_POST['bkDesc'])) {
+    if ( empty($_POST['creds']) || empty($_POST['schedule']) || empty($_POST['bkDesc']) || empty($_POST['gdrive_name'])) {
         $response["error"] = 'Missing fields';
         echo json_encode($response);
         return;
@@ -174,8 +188,9 @@ if ($_REQUEST['bkProv'] == 'update') {
     $bkDesc = mysqli_real_escape_string($conn, $_POST['bkDesc']);
     $id = mysqli_real_escape_string($conn, $_POST['id']);
     $creds = mysqli_real_escape_string($conn, $_POST['creds']);
+    $gdrive_name = mysqli_real_escape_string($conn, $_POST['gdrive_name']);
 
-    if (mysqli_query($conn, "UPDATE backup_provider SET credentials = '$creds', enabled = '$enabled', schedule = '$schedule', description = '$bkDesc' WHERE id = '$id'")) {
+    if (mysqli_query($conn, "UPDATE backup_provider SET credentials = '$creds', enabled = '$enabled', schedule = '$schedule', description = '$bkDesc', gdrive_name = '$gdrive_name' WHERE id = '$id'")) {
         $response["success"] = 'Provider updated';
     } else {
         $response["error"] = 'Error: ' . mysqli_error($conn);

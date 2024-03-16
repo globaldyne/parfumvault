@@ -310,7 +310,8 @@ CREATE TABLE `settings` (
   `api` INT NOT NULL DEFAULT '0',
   `api_key` VARCHAR(255) NULL,
   `editor` int(11) NOT NULL DEFAULT 1 COMMENT '1 = Inline, 2 = Advanced',
-  `user_pref_eng` INT NOT NULL DEFAULT '1'
+  `user_pref_eng` INT NOT NULL DEFAULT '1',
+  `bk_srv_host` varchar(255) COLLATE utf8_general_ci NOT NULL DEFAULT 'localhost'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 INSERT INTO `settings` (`id`, `currency`, `top_n`, `heart_n`, `base_n`, `chem_vs_brand`, `grp_formula`, `brandName`, `brandAddress`, `brandEmail`, `brandPhone`, `brandLogo`) VALUES
@@ -670,5 +671,6 @@ CREATE TABLE `backup_provider` (
   `schedule` time NOT NULL DEFAULT '00:00:00',
   `enabled` int(11) NOT NULL DEFAULT 0,
   `description` varchar(255) NOT NULL,
+  `gdrive_name` varchar(255) NOT NULL DEFAULT 'pvault',
   UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci
