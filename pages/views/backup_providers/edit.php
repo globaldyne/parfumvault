@@ -13,7 +13,7 @@ $bk = mysqli_fetch_array(mysqli_query($conn,"SELECT * FROM backup_provider WHERE
   <div class="row">
     <div class="col-sm">
       <label for="bk-creds" class="form-label">Credentials (JSON)</label>
-      <textarea class="form-control" name="bk-creds" id="bk-creds" rows="20"><?=$bk['credentials']?></textarea>
+      <textarea class="form-control" name="bk-creds" id="bk-creds" rows="20"></textarea>
     </div>
     <div class="col-sm">
       <div class="mb-3">
