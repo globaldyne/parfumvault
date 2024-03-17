@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 9.8
+- Delete scheduled formula when the main formula is deleted
 - Added a low stock icon in formula view
 - Fix ingredients reload after ingredient deletion
 - Scheduled formulas removal message update
