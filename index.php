@@ -322,7 +322,7 @@ function chkUpdate() {
 
 <!-- TOAST -->
 <div class="position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 11">
-  <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
+  <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true">
     <div class="toast-header">
       <strong class="me-auto" id="toast-title">...</strong>
       <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
