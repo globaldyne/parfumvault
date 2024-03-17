@@ -9,7 +9,7 @@ require_once(__ROOT__.'/inc/settings.php');
 $BKPOD = $settings['bk_srv_host'];
 
 if ($_GET['action'] == 'restart'){
-	$url = "http://$BKPOD:7000/restart";
+	$url = "http://$BKPOD/restart";
 	$response = file_get_contents($url);
 	if ($response !== false) {
 		echo json_encode(['success' => true]);
@@ -21,7 +21,7 @@ if ($_GET['action'] == 'restart'){
 
 
 if ($_GET['action'] == 'version'){
-	$url = "http://$BKPOD:7000/version";
+	$url = "http://$BKPOD/version";
 	$response = file_get_contents($url);
 
 	if ($response !== false) {
@@ -41,7 +41,7 @@ if ($_GET['action'] == 'version'){
 
 
 if ($_GET['action'] == 'createBackup') {
-    $url = "http://$BKPOD:7000/createBackup";
+    $url = "http://$BKPOD/createBackup";
     $response = file_get_contents($url);
     
     if ($response !== false) {
@@ -58,7 +58,7 @@ if ($_GET['action'] == 'createBackup') {
 }
 
 if ($_GET['action'] == 'getRemoteBackups') {
-    $url = "http://$BKPOD:7000/getRemoteBackups";
+    $url = "http://$BKPOD/getRemoteBackups";
     $response = file_get_contents($url);
     
     if ($response !== false) {
@@ -87,7 +87,7 @@ if ($_GET['action'] == 'getRemoteBackups') {
 
 if ($_GET['action'] == 'deleteRemoteBackup') {
 	$id = $_GET['id'];
-    $url = "http://$BKPOD:7000/deleteRemoteBackup/$id";
+    $url = "http://$BKPOD/deleteRemoteBackup/$id";
     $response = file_get_contents($url);
     
     if ($response !== false) {
