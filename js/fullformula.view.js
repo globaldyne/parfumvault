@@ -120,12 +120,14 @@ $.ajax({
 		},
 	dataType: 'json',
     success: function (data) {
-		if (data.success) {
-			var msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>' + data.success + '</div>';
-		}else{
-			var msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + data.error + '</div>';
+		if ( data.success ) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+			$('.toast-header').removeClass().addClass('toast-header alert-success');
+		} else {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
 		}
-		$('#msgInfo').html(msg);
+		$('.toast').toast('show');
 	}
 
   });
@@ -144,15 +146,16 @@ $('#schedule_to_make').on('click', '[id*=addTODO]', function () {
 		},
 	dataType: 'json',
     success: function (data) {
-		if (data.success) {
-	  		var msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>' + data.success + '</div>';
+	
+		if ( data.success ) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+			$('.toast-header').removeClass().addClass('toast-header alert-success');
 			$('#schedule_to_make').modal('toggle');
-			$('#msgInfo').html(msg);
-		}else{
-			var msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + data.error + '</div>';
-			$('#scheduleToMakeMsg').html(msg);
+		} else {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
 		}
-		
+		$('.toast').toast('show');
     }
   });
 });
@@ -181,13 +184,14 @@ $('#replaceIng').on('click', '[id*=replaceConfirm]', function () {
 			},
 		dataType: 'json',
 		success: function (data) {
-			if(data.success){
-				var msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>' + data.success + '</div>';
-				$('#replaceIng').modal('hide'); 
+			if ( data.success ) {
+            	$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+				$('.toast-header').removeClass().addClass('toast-header alert-success');
 				reload_formula_data();
-				$('#msgInfo').html(msg);
-			}else{
-				var msg ='<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + data.error + '</div>';
+				$('#replaceIng').modal('hide'); 
+				$('.toast').toast('show');
+			} else {
+            	var msg ='<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + data.error + '</div>';
 				$('#msgRepl').html(msg);
 			}
 			
@@ -335,13 +339,14 @@ $('#mrgIng').on('click', '[id*=mergeConfirm]', function () {
 			},
 		dataType: 'json',
 		success: function (data) {
-			if(data.success){
-				var msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>' + data.success + '</div>';
-				$('#mrgIng').modal('hide'); 
+			if ( data.success ) {
+            	$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+				$('.toast-header').removeClass().addClass('toast-header alert-success');
 				reload_formula_data();
-				$('#msgInfo').html(msg);
-			}else{
-				var msg ='<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + data.error + '</div>';
+				$('#mrgIng').modal('hide'); 
+				$('.toast').toast('show');
+			} else {
+            	var msg ='<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + data.error + '</div>';
 				$('#msgMerge').html(msg);
 			}
 			
