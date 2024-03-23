@@ -206,26 +206,27 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
         });
         
         $('#tdDataPending').on('mouseenter', '.pv-zoom', function() {
-            $(this).addClass('pv-transition')
+            $(this).addClass('pv-transition');
         });
         
         $('#tdDataPending').on('mouseleave', '.pv-zoom', function() {
-            $(this).removeClass('pv-transition')
+            $(this).removeClass('pv-transition');
         });
-        
-        
-        
+        <?php if($settings['pv_scale_enabled']) { ?>
+        $('#tdDataPending tbody').on('click', 'tr', function () {
+        	var rowData = tdDataPending.row(this).data();
+        	rowClickedFunction(rowData);
+    	});
+        <?php } ?>
     });
     
-    
+	
     function ingredient(data, type, row){
-    
         data = '<a href="#infoModal" id="ingInfo" data-bs-toggle="modal" data-id="'+row.ingID+'" data-name="'+row.ingredient+'" class="listIngNameCas-with-separator">' + row.ingredient + '</a><span class="listIngHeaderSub"> CAS: <i class="subHeaderCAS">'+row.cas+'</i></span>';
         return data;
     }
     
     function quantity(data, type, row){
-        
         var overdose = '';
         if(row.overdose != 0 ){
             var overdose = '<span class="ing_alg"> <i rel="tip" title="Overdosed, added '+row.overdose+', instead" class="fas fa-exclamation-triangle"></i></span>';
@@ -234,6 +235,7 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
         data = row.quantity + overdose;
         return data;
     }
+	
     function actions(data, type, row){
         var data;
         //if (row.quantity != row.originalQuantity) {
@@ -267,7 +269,43 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
         return st;
     }
     
-    
+	<?php if($settings['pv_scale_enabled']) { ?>
+    function rowClickedFunction(data) {
+		$.ajax({
+			type: 'POST',
+			url: "/pages/views/pvscale/manage.php?action=send2PVScale",
+			data: JSON.stringify({
+				"formulas": [
+					{
+						"id": data.id,
+						"fid": data.fid,
+						"name": data.name,
+						"ingredient": data.ingredient,
+						"ingredient_id": data.ingID,
+						"concentration": data.concentration,
+						"dilutant": "-",
+						"quantity": data.quantity
+					},
+				],
+				"pvMeta": {
+					"ingredients": 1,
+					"host": "<?=$settings['pv_host']?>"
+				}
+			}),
+			contentType: 'application/json',
+			dataType: 'json',
+			success: function(data) {
+				$('#msg').html(data);
+			},
+			error: function(err) {
+				data = '<div class="alert alert-danger">Unable to get ingredient info</div>';
+				$('#msg').html(err);
+			}
+		});
+
+    };
+	<?php } ?>
+	
     function reload_data() {
         $('#tdDataPending').DataTable().ajax.reload(null, true);
     }
