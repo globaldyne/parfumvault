@@ -12,7 +12,9 @@
 - Moved dropdown actions menu for finished product to the left
 - Fix a bug preventing formula hstory to be created for new installations
 - Added an automated backup to Google Drive solution - Currently not publicly available
- 
+- Added callback function in the api to update formula when making using the PV scale
+- Added config / integration for the PV scale
+
 ### Version 9.7
 - Remove epel-release
 - Fix first time installation issue

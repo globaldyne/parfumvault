@@ -8,3 +8,4 @@ ALTER TABLE `backup_provider` ADD `gdrive_name` VARCHAR(255) CHARACTER SET utf8 
 
 INSERT INTO `backup_provider` (`id`, `credentials`, `provider`, `schedule`, `enabled`, `description`, `gdrive_name`) VALUES
 (1, '{}', 'Google', '00:00:00', 1, 'My PV Backups', 'pvault');
+ALTER TABLE `settings` ADD `pv_scale_host` VARCHAR(255) NOT NULL DEFAULT 'localhost' AFTER `bk_srv_host`; 

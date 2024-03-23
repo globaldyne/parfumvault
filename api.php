@@ -289,9 +289,75 @@ if($_REQUEST['key'] && $_REQUEST['do']){
        return;
     }
 	
+	//CALLBACKS
+	if($_REQUEST['do'] == 'callback'){ 
+		if( $_REQUEST['action'] == 'makeFormula'){
 	
+			$fid = mysqli_real_escape_string($conn, $_REQUEST['fid']);
+			$id = mysqli_real_escape_string($conn, $_REQUEST['id']);
+			$ingID = mysqli_real_escape_string($conn, $_REQUEST['ingId']);
+			$qr = trim($_REQUEST['qr']);
+			
+			if (empty($fid) || empty($id) || empty($ingID) || empty($qr)) {
+				$response['error'] = 'Missing required params';
+				echo json_encode($response);
+				return;
+			}
+			
+			if(!is_numeric($_REQUEST['q'])){
+				$response['error'] = 'Invalid quantity value';
+				echo json_encode($response);
+				return;
+			}
+								 
+			$q = trim($_REQUEST['q']);
+			$notes = mysqli_real_escape_string($conn, $_REQUEST['notes']);
+			
+			if($_REQUEST['updateStock'] == "true"){
+				$getStock = mysqli_fetch_array(mysqli_query($conn, "SELECT stock,mUnit FROM suppliers WHERE ingID = '$ingID' AND preferred = '1'"));
+				if($getStock['stock'] < $q){
+					//$response['warning'] = 'Amount exceeds quantity available in stock ('.$getStock['stock'].$getStock['mUnit'].'). The maximum available will be deducted from stock';
+					//echo json_encode($response);
+					//return;
+					$q = $getStock['stock'];
+				}
+				mysqli_query($conn, "UPDATE suppliers SET stock = stock - $q WHERE ingID = '$ingID' AND preferred = '1'");
+				$response['success'] .= "Stock deducted by ".$q.$settings['mUnit'];
+			}
+			
+			$q = trim($_REQUEST['q']);
+			if($qr == $q){
+				if(mysqli_query($conn, "UPDATE makeFormula SET toAdd = '0' WHERE fid = '$fid' AND id = '$id'")){
+					$response['success'] = $_REQUEST['ing'].' added';
+				}
+			}else{
+				$sub_tot = $qr - $q;
+				if(mysqli_query($conn, "UPDATE makeFormula SET quantity='$sub_tot' WHERE fid = '$fid' AND id = '$id'")){
+					$response['success'] = 'Formula updated';
+				}
+			}
+		
+			if($notes){
+				$notes = "Formula make, ingredient: ".$_REQUEST['ing']."\\n";
+				mysqli_query($conn, "UPDATE formulasMetaData SET notes = CONCAT(notes, '".$notes."') WHERE fid = '$fid'");
+			}
+			
+			if($qr < $q){
+				if(mysqli_query($conn, "UPDATE makeFormula SET overdose = '$q' WHERE fid = '$fid' AND id = '$id'")){
+					$response['success'] = $_REQUEST['ing'].' is overdosed, '.$q.' added';
+				}
+			}
+			
+			if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = '$fid' AND toAdd = '1'"))){
+				$response['success'] = 'All materials added. You should mark formula as complete now';
+			}
+			
+			
+			echo json_encode($response);
+			return;
 	
-	
+		}
+	}
 }
 
 
