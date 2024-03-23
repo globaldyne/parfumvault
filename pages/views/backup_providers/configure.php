@@ -5,33 +5,71 @@ require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 
+$bk = mysqli_fetch_array(mysqli_query($conn,"SELECT * FROM backup_provider WHERE id = '1'"));
 
 ?>
 <div class="card-body">
   <div id="bk-inf"></div>
+  <div class="alert alert-info"><i class="fa-solid fa-triangle-exclamation mx-2"></i>The services has to be restarted for the changes to take effect.</div>
   <div class="row">
-    <div class="col-sm mb-3 mt-3">
-      <label for="bk_srv_host" class="form-label">Backup service host</label>
-      <input name="bk_srv_host" type="bk_srv_host" class="form-control" id="bk_srv_host" value="<?=$settings['bk_srv_host']?>">
-
+    <div class="col-sm">
+      <label for="bk-creds" class="form-label">Credentials (JSON)</label>
+      <textarea class="form-control" name="bk-creds" id="bk-creds" rows="20"><?=$bk['credentials']?></textarea>
     </div>
+    <div class="col-sm">
     
+      <div class="mb-3">
+        <label for="bk_srv_host" class="form-label">Backup service host</label>
+        <input name="bk_srv_host" type="bk_srv_host" class="form-control" id="bk_srv_host" value="<?=$settings['bk_srv_host']?>">
+      </div>
+      <div class="mb-3">
+        <label for="gdrive_name" class="form-label">Backup folder</label>
+        <input name="gdrive_name" type="gdrive_name" class="form-control" id="gdrive_name" value="<?=$bk['gdrive_name']?>">
+      </div>
+      <div class="mb-3">
+        <label for="time" class="form-label">Scheduled Time</label>
+        <input name="time" type="time" class="form-control" id="time" value="<?=$bk['schedule']?>">
+      </div>
+      <div class="mb-3">
+        <label for="desc" class="form-label">Short Description</label>
+        <input name="desc" type="text" class="form-control" id="desc" value="<?=$bk['description']?>">
+      </div>
+      <div class="mb-3 form-check">
+        <input type="checkbox" class="form-check-input" id="enabled" name="enabled" <?php if ($bk['enabled'] == '1') echo 'checked'; ?>>
+        <label class="form-check-label" for="enabled">Enabled</label>
+      </div>
+    </div>
   </div>
   <div class="dropdown-divider"></div>
   <div class="modal-footer">
     <input type="submit" name="button" class="btn btn-primary" id="bk-save" value="Save changes">
   </div>
 </div>
- 
+
 
 <script>
+
+
 $('#bk-save').click(function() {
+    var enabled = $('#enabled').is(':checked') ? '1' : '0';
+    try {
+        JSON.parse($("#bk-creds").val());
+    } catch (error) {
+		var msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>Credentials must be a valid JSON string</div>';
+		$('#bk-inf').html(msg);
+        return;
+    }
     $.ajax({
         url: '/pages/update_data.php',
         type: 'POST',
         data: {
-            bkHost: 'update',
-            bk_srv_host: $("#bk_srv_host").val(),
+            bkProv: 'update',
+            creds: $("#bk-creds").val(),
+            enabled: enabled,
+            schedule: $("#time").val(),
+            bkDesc: $("#desc").val(),
+			gdrive_name: $("#gdrive_name").val(),
+			bk_srv_host: $("#bk_srv_host").val()
         },
         dataType: 'json',
         success: function(data) {
@@ -44,5 +82,6 @@ $('#bk-save').click(function() {
         }
     });
 });
+
 
 </script>

@@ -673,4 +673,7 @@ CREATE TABLE `backup_provider` (
   `description` varchar(255) NOT NULL,
   `gdrive_name` varchar(255) NOT NULL DEFAULT 'pvault',
   UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+
+INSERT INTO `backup_provider` (`id`, `credentials`, `provider`, `schedule`, `enabled`, `description`, `gdrive_name`) VALUES
+(1, '{}', 'Google', '00:00:00', 1, 'My PV Backups', 'pvault');

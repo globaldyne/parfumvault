@@ -57,8 +57,8 @@ $(document).ready(function() {
 		get_brand();
 	});
 	
-	$('#bkProviders_tab').on( 'click', function () {
-		get_bkProviders();
+	$('#integrations_tab').on( 'click', function () {
+		get_integrations();
 	});
 	
 	get_general();

@@ -1,5 +1,5 @@
 <div class="card-body">
-    <div class="row" id="srv_avail">
+    <div class="row" id="srv_info">
         <div class="col-mb-3">
           <label for="bk-ver" class="form-label mx-2">Version:</label>
           <div id="dataVer" style="display: inline;"></div>
@@ -29,13 +29,15 @@ $(document).ready(function() {
 				$("#dataBuild").text(data.data.build);
 				$("#dataChangelog").text(data.data.changelog);
 			} else {
-				$('#srv_avail').html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>Service not available, please make sure the service is installed and running</div>');
+				$('#srv_info').html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>Service not available, please make sure the service is installed and running</div>');
 			}
 		},
 		error: function(jqXHR, textStatus, errorThrown) {
-			$('#srv_avail').html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>Service not available, please make sure the service is installed and running or publicly available.</div>');
+			$('#srv_info').html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>Service not available, please make sure the service is installed and running or publicly available.</div>');
 		}
 	});
+	
+		
 });
 
 </script>
