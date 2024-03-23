@@ -10,14 +10,16 @@ $bk = mysqli_fetch_array(mysqli_query($conn,"SELECT * FROM backup_provider WHERE
 ?>
 <div class="card-body">
   <div id="bk-inf"></div>
-  <div class="alert alert-info"><i class="fa-solid fa-triangle-exclamation mx-2"></i>The services has to be restarted for the changes to take effect.</div>
+  <div class="alert alert-warning"><i class="fa-solid fa-triangle-exclamation mx-2"></i>The services has to be restarted for the changes to take effect.</div>
   <div class="row">
+    <div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i>Follow the official <a href="https://developers.google.com/workspace/guides/create-credentials" target="_blank">Google docs</a> on how to create credentials.</div>
+ 
     <div class="col-sm">
       <label for="bk-creds" class="form-label">Credentials (JSON)</label>
       <textarea class="form-control" name="bk-creds" id="bk-creds" rows="20"><?=$bk['credentials']?></textarea>
     </div>
-    <div class="col-sm">
     
+    <div class="col-sm">
       <div class="mb-3">
         <label for="bk_srv_host" class="form-label">Backup service host</label>
         <input name="bk_srv_host" type="bk_srv_host" class="form-control" id="bk_srv_host" value="<?=$settings['bk_srv_host']?>">
