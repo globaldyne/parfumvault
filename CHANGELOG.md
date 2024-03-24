@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 9.8
+- Update notes summary page to use PV Url
 - Added PV Url in settings, you have to update it according to your current setup
 - Delete scheduled formula when the main formula is deleted
 - Added a low stock icon in formula view
