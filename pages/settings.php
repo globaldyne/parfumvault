@@ -119,28 +119,7 @@ $(function() {
 </div>
 
 
-<script type="text/javascript" language="javascript" >
-$(document).ready(function() {
-
-	$('#save-perf-types').click(function() {
-		$.ajax({ 
-			url: '/pages/update_settings.php', 
-			type: 'POST',
-			data: {
-				manage: 'perfume_types',
-				edp: $("#edp").val(),
-				edc: $("#edc").val(),
-				edt: $("#edt").val(),
-				parfum: $("#parfum").val()
-			},
-			dataType: 'html',
-			success: function (data) {
-				$('#ptypes').html(data);
-			}
-		});
-	});
-	
-});//END DOC
+<script>
 
 function list_cat(){
 	$.ajax({ 

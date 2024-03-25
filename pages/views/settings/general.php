@@ -10,7 +10,6 @@ while($cats_res = mysqli_fetch_array($cats_q)){
     $cats[] = $cats_res;
 }
 ?>
-<div id="inMsg"></div>
 <div class="card-body row">
 	<div class="col-sm-6">
       <div class="form-row">
@@ -177,11 +176,13 @@ $('#save-general').click(function() {
 	dataType: 'json',
 	success: function (data) {
 		if(data.success){
-			msg = '<div class="alert alert-success alert-dismissible"><i class="fa-solid fa-circle-check mx-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';	
-		}else{
-			msg = '<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-triangle-exclamation mx-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
+			$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+			$('.toast-header').removeClass().addClass('toast-header alert-success');
+		} else if(data.error) {
+			$('#toast-title').html('<i class="fa-solid fa-warning mr-2"></i>' + data.error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
 		}
-		$('#inMsg').html(msg);
+		$('.toast').toast('show');
 	}
   });
 });

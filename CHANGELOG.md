@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 9.8
+- Update general settings to use toast messages
 - Added a donation link to the footer
 - Update notes summary page to use PV Url
 - Added PV Url in settings, you have to update it according to your current setup
