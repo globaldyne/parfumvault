@@ -280,6 +280,7 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
 						"id": data.id,
 						"fid": data.fid,
 						"name": data.name,
+						"cas" : data.cas,
 						"ingredient": data.ingredient,
 						"ingredient_id": data.ingID,
 						"concentration": data.concentration,
