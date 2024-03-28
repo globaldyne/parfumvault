@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 9.9
+
 ### Version 9.8
 - Added phpMyAdmin definition in the docker compose
 - Update general settings to use toast messages
