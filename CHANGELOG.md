@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 9.8
+- Added phpMyAdmin definition in the docker compose
 - Update general settings to use toast messages
 - Added a donation link to the footer
 - Update notes summary page to use PV Url

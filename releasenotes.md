@@ -1,5 +1,6 @@
 Whats New in v9.8
 --------------------------
+- Added phpMyAdmin definition in the docker compose
 - Added PV Url in settings, you have to update it according to your current setup
 - Added config / integration for the PV scale
 - Scheduled formulas improvements
