@@ -1,2 +1,0 @@
-ALTER TABLE `batchIDHistory` CHANGE `pdf` `pdf` LONGBLOB NULL DEFAULT NULL; 
-ALTER TABLE `settings` CHANGE `brandLogo` `brandLogo` LONGBLOB NULL DEFAULT NULL; 

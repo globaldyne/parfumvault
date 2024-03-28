@@ -24,6 +24,7 @@ RUN microdnf --setopt=tsflags=nodocs -y install \
 	php-fpm \
 	openssl \
 	mysql \
+	ncurses \
 	nginx
 
 

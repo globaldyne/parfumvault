@@ -1,1 +1,0 @@
-ALTER TABLE `allergens` ADD `toDeclare` INT NOT NULL DEFAULT '0' AFTER `percentage`; 

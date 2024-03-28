@@ -720,6 +720,10 @@ formula td, table.table th {
 	color: red;
 }
 
+.inv-low {
+	color: orange;
+}
+
 table.fixedHeader-floating {
 	background-color: lightgray !important;
 	color: #666;  
@@ -1435,4 +1439,8 @@ th.dt-center, td.dt-center {
 .bg-gradient-primary-navbar {
   background-image: linear-gradient(90deg, #484848 10%, #000000e5 100%);
   background-size: cover;
+}
+
+#liveToast {
+  width: 100%;
 }

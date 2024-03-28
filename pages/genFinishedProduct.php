@@ -99,7 +99,7 @@ if($_POST['batchID'] == '1'){
                      <div class="text-right">
                       <div class="btn-group">
                       <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
-                      <div class="dropdown-menu dropdown-menu-right">
+                      <div class="dropdown-menu dropdown-menu-left">
                         <li><a class="dropdown-item" id="pdf" href="#"><i class="fa-solid fa-file-pdf mx-2"></i>Export to PDF</a></li>
                         <?php if (file_exists(__ROOT__."/pages/views/IFRA/genIFRAdoc.php")) {?>
                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#IFRA"><i class="fa-solid fa-certificate mx-2"></i>IFRA Document</a></li>

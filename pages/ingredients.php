@@ -19,7 +19,6 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
 <div id="content-wrapper" class="d-flex flex-column">
 <?php require_once(__ROOT__.'/pages/top.php'); ?>
         <div class="container-fluid">
-		<div id="innermsg"></div>
           <div>
           <div class="card shadow mb-4">
             <div class="card-header py-3">

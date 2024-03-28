@@ -57,5 +57,9 @@ $(document).ready(function() {
 		get_brand();
 	});
 	
+	$('#integrations_tab').on( 'click', function () {
+		get_integrations();
+	});
+	
 	get_general();
 });

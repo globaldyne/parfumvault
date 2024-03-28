@@ -11,6 +11,7 @@ $ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
         <li><a href="#" data-bs-toggle="modal" data-bs-target="#backup_db">Backup DB</a></li>
       </div>
     </div>
+    
     <div class="row mb-2">
         <div class="col">
             <li><a href="#" data-bs-toggle="modal" data-bs-target="#restore_db">Restore DB</a></li>
