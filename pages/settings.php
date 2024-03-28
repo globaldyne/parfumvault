@@ -22,6 +22,7 @@ $(function() {
          <li><a href="#templates" id="templates_tab" role="tab" data-bs-toggle="tab">HTML Templates</a></li>
          <li><a href="#brand" id="brand_tab" role="tab" data-bs-toggle="tab">My Brand</span></a></li>
          <li><a href="#maintenance" id="maintenance_tab">Maintenance</a></li>
+         <li><a href="#integrations" id="integrations_tab">Integrations</a></li>
          <li><a href="#api" id="api_tab" role="tab" data-bs-toggle="tab">API</a></li>
          <li><a href="#about" id="about_tab" role="tab" data-bs-toggle="tab">About</a></li>
      </ul>
@@ -90,9 +91,15 @@ $(function() {
             <div class="loader-text"></div>
         </div>
      </div>
-   
      
 	<div id="maintenance">
+        <div class="loader-center">
+            <div class="loader"></div>
+            <div class="loader-text"></div>
+        </div>
+  	</div>
+    
+    <div id="integrations">
         <div class="loader-center">
             <div class="loader"></div>
             <div class="loader-text"></div>
@@ -112,28 +119,7 @@ $(function() {
 </div>
 
 
-<script type="text/javascript" language="javascript" >
-$(document).ready(function() {
-
-	$('#save-perf-types').click(function() {
-		$.ajax({ 
-			url: '/pages/update_settings.php', 
-			type: 'POST',
-			data: {
-				manage: 'perfume_types',
-				edp: $("#edp").val(),
-				edc: $("#edc").val(),
-				edt: $("#edt").val(),
-				parfum: $("#parfum").val()
-			},
-			dataType: 'html',
-			success: function (data) {
-				$('#ptypes').html(data);
-			}
-		});
-	});
-	
-});//END DOC
+<script>
 
 function list_cat(){
 	$.ajax({ 
@@ -182,6 +168,16 @@ function get_maintenance(){
 		dataType: 'html',
 		success: function (data) {
 			$('#maintenance').html(data);
+		}
+	});
+};
+
+function get_integrations(){
+	$.ajax({ 
+		url: '/pages/views/settings/integrations.php', 
+		dataType: 'html',
+		success: function (data) {
+			$('#integrations').html(data);
 		}
 	});
 };

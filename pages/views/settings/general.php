@@ -10,7 +10,6 @@ while($cats_res = mysqli_fetch_array($cats_q)){
     $cats[] = $cats_res;
 }
 ?>
-<div id="inMsg"></div>
 <div class="card-body row">
 	<div class="col-sm-6">
       <div class="form-row">
@@ -84,29 +83,17 @@ while($cats_res = mysqli_fetch_array($cats_q)){
             <option value="2" <?php if($settings['editor']=="2") echo 'selected="selected"'; ?> >Advanced</option>
           </select>
         </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group col-md-auto">
-            <input name="pubChem" type="checkbox" id="pubChem" value="1" <?php if($settings['pubChem'] == '1'){ ?> checked="checked" <?php } ?>/>
-            <label class="form-check-label" for="pubChem">Enable PubChem</label>
-        </div>
-        <div class="form-group col-md-auto">
-            <input name="chkVersion" type="checkbox" id="chkVersion" value="1" <?php if($settings['chkVersion'] == '1'){ ?> checked="checked" <?php } ?>/>
-            <label class="form-check-label" for="chkVersion">Check for updates</label>
-        </div>
-        <div class="form-group col-md-auto">
-            <input name="chem_vs_brand" type="checkbox" id="chem_vs_brand" value="1" <?php if($settings['chem_vs_brand'] == '1'){ ?> checked="checked" <?php } ?>/>
-            <label class="form-check-label" for="chem_vs_brand">Show chemical names</label>
+        
+        <div class="form-group col-md-6">
+          <label for="pvHost">PV URL</label>
+          <input name="pvHost" type="text" class="form-control" id="pvHost" value="<?php echo $settings['pv_host'];?>"/>
         </div>
         
-        <div class="form-group col-md-auto">
-            <input name="multi_dim_perc" type="checkbox" id="multi_dim_perc" value="1" <?php if($settings['multi_dim_perc'] == '1'){ ?> checked="checked" <?php } ?>/>
-            <label class="form-check-label" for="multi_dim_perc">Multi-dimensional lookup</label>
-            <a href="#" class="fas fa-question-circle" rel="tip" title="Enable to include into formulas limits calculation the ingredient's sub materials if exists."></a>
-        </div>
-     </div>
- </div>
+      </div>
+      
 
+</div>
+    
     <div class="col-sm-2">
      <h4 class="m-0 mb-4 text-primary">Pyramid View</h4>
      <div class="form-row">
@@ -129,7 +116,27 @@ while($cats_res = mysqli_fetch_array($cats_q)){
       </div>
     </div>
     
-    
+    <div class="col-sm-3">
+        <div class="form-group col-md-auto">
+            <input name="pubChem" type="checkbox" id="pubChem" value="1" <?php if($settings['pubChem'] == '1'){ ?> checked="checked" <?php } ?>/>
+            <label class="form-check-label" for="pubChem">Enable PubChem</label>
+        </div>
+        <div class="form-group col-md-auto">
+            <input name="chkVersion" type="checkbox" id="chkVersion" value="1" <?php if($settings['chkVersion'] == '1'){ ?> checked="checked" <?php } ?>/>
+            <label class="form-check-label" for="chkVersion">Check for updates</label>
+        </div>
+        <div class="form-group col-md-auto">
+            <input name="chem_vs_brand" type="checkbox" id="chem_vs_brand" value="1" <?php if($settings['chem_vs_brand'] == '1'){ ?> checked="checked" <?php } ?>/>
+            <label class="form-check-label" for="chem_vs_brand">Show chemical names</label>
+        </div>
+        
+        <div class="form-group col-md-auto">
+            <input name="multi_dim_perc" type="checkbox" id="multi_dim_perc" value="1" <?php if($settings['multi_dim_perc'] == '1'){ ?> checked="checked" <?php } ?>/>
+            <label class="form-check-label" for="multi_dim_perc">Multi-dimensional lookup</label>
+            <a href="#" class="fas fa-question-circle" rel="tip" title="Enable to include into formulas limits calculation the ingredient's sub materials if exists."></a>
+        </div>
+   </div>
+     
     <div class="col dropdown-divider"></div>
     <div class="form-row">
       <div class="col-sm-12">
@@ -162,16 +169,20 @@ $('#save-general').click(function() {
 			multi_dim_perc: $("#multi_dim_perc").is(':checked'),
 			mUnit: $("#mUnit").val(),
 			editor: $("#editor").val(),
-			user_pref_eng: $("#user_pref_eng").val()
+			user_pref_eng: $("#user_pref_eng").val(),
+			pv_host: $("#pvHost").val()
+
 	},
 	dataType: 'json',
 	success: function (data) {
 		if(data.success){
-			msg = '<div class="alert alert-success alert-dismissible"><i class="fa-solid fa-circle-check mx-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';	
-		}else{
-			msg = '<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-triangle-exclamation mx-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
+			$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+			$('.toast-header').removeClass().addClass('toast-header alert-success');
+		} else if(data.error) {
+			$('#toast-title').html('<i class="fa-solid fa-warning mr-2"></i>' + data.error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
 		}
-		$('#inMsg').html(msg);
+		$('.toast').toast('show');
 	}
   });
 });

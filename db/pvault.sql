@@ -109,46 +109,46 @@ CREATE TABLE `formulasMetaData` (
 
 CREATE TABLE `IFRALibrary` (
   `id` int(11) NOT NULL,
-  `ifra_key` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `ifra_key` varchar(255) DEFAULT NULL,
   `image` longblob DEFAULT NULL,
-  `amendment` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `prev_pub` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `last_pub` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `deadline_existing` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `deadline_new` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `cas` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `cas_comment` text COLLATE utf8_unicode_ci DEFAULT NULL,
-  `synonyms` text COLLATE utf8_unicode_ci DEFAULT NULL,
-  `formula` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `flavor_use` text COLLATE utf8_unicode_ci DEFAULT NULL,
-  `prohibited_notes` text COLLATE utf8_unicode_ci DEFAULT NULL,
-  `restricted_photo_notes` text COLLATE utf8_unicode_ci DEFAULT NULL,
-  `restricted_notes` text COLLATE utf8_unicode_ci DEFAULT NULL,
-  `specified_notes` text COLLATE utf8_unicode_ci DEFAULT NULL,
-  `type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `risk` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `contrib_others` text COLLATE utf8_unicode_ci DEFAULT NULL,
-  `contrib_others_notes` text COLLATE utf8_unicode_ci DEFAULT NULL,
-  `cat1` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `cat2` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `cat3` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `cat4` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `cat5A` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `cat5B` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `cat5C` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `cat5D` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `cat6` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `cat7A` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `cat7B` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `cat8` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `cat9` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `cat10A` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `cat10B` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `cat11A` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `cat11B` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `cat12` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `amendment` varchar(255) DEFAULT NULL,
+  `prev_pub` varchar(255) DEFAULT NULL,
+  `last_pub` varchar(255) DEFAULT NULL,
+  `deadline_existing` varchar(255) DEFAULT NULL,
+  `deadline_new` varchar(255) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `cas` varchar(255) DEFAULT NULL,
+  `cas_comment` text DEFAULT NULL,
+  `synonyms` text DEFAULT NULL,
+  `formula` varchar(255) DEFAULT NULL,
+  `flavor_use` text DEFAULT NULL,
+  `prohibited_notes` text DEFAULT NULL,
+  `restricted_photo_notes` text DEFAULT NULL,
+  `restricted_notes` text DEFAULT NULL,
+  `specified_notes` text DEFAULT NULL,
+  `type` varchar(255) DEFAULT NULL,
+  `risk` varchar(255) DEFAULT NULL,
+  `contrib_others` text DEFAULT NULL,
+  `contrib_others_notes` text DEFAULT NULL,
+  `cat1` varchar(255) DEFAULT NULL,
+  `cat2` varchar(255) DEFAULT NULL,
+  `cat3` varchar(255) DEFAULT NULL,
+  `cat4` varchar(255) DEFAULT NULL,
+  `cat5A` varchar(255) DEFAULT NULL,
+  `cat5B` varchar(255) DEFAULT NULL,
+  `cat5C` varchar(255) DEFAULT NULL,
+  `cat5D` varchar(255) DEFAULT NULL,
+  `cat6` varchar(255) DEFAULT NULL,
+  `cat7A` varchar(255) DEFAULT NULL,
+  `cat7B` varchar(255) DEFAULT NULL,
+  `cat8` varchar(255) DEFAULT NULL,
+  `cat9` varchar(255) DEFAULT NULL,
+  `cat10A` varchar(255) DEFAULT NULL,
+  `cat10B` varchar(255) DEFAULT NULL,
+  `cat11A` varchar(255) DEFAULT NULL,
+  `cat11B` varchar(255) DEFAULT NULL,
+  `cat12` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE `ingCategory` (
   `id` int(11) NOT NULL,
@@ -310,7 +310,11 @@ CREATE TABLE `settings` (
   `api` INT NOT NULL DEFAULT '0',
   `api_key` VARCHAR(255) NULL,
   `editor` int(11) NOT NULL DEFAULT 1 COMMENT '1 = Inline, 2 = Advanced',
-  `user_pref_eng` INT NOT NULL DEFAULT '1'
+  `user_pref_eng` INT NOT NULL DEFAULT '1',
+  `bk_srv_host` varchar(255) COLLATE utf8_general_ci NOT NULL DEFAULT 'localhost',
+  `pv_scale_host` varchar(255) COLLATE utf8_general_ci NOT NULL DEFAULT 'localhost',
+  `pv_scale_enabled` INT NOT NULL DEFAULT '0',
+  `pv_host` VARCHAR(255) NOT NULL DEFAULT 'localhost' 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 INSERT INTO `settings` (`id`, `currency`, `top_n`, `heart_n`, `base_n`, `chem_vs_brand`, `grp_formula`, `brandName`, `brandAddress`, `brandEmail`, `brandPhone`, `brandLogo`) VALUES
@@ -401,8 +405,7 @@ ALTER TABLE `formulasMetaData` ADD UNIQUE(`fid`);
 
 ALTER TABLE `IFRALibrary`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `id` (`id`),
-  ADD KEY `id_2` (`id`);
+  ADD UNIQUE KEY `id` (`id`);
 
 ALTER TABLE `ingCategory`
   ADD PRIMARY KEY (`id`);
@@ -592,7 +595,7 @@ CREATE TABLE `formulasRevisions` (
 
 CREATE TABLE `formula_history` (
  `id` int(11) NOT NULL AUTO_INCREMENT,
- `fid` int(11) NOT NULL,
+ `fid` varchar(255) NOT NULL,
  `change_made` text COLLATE utf8_general_ci NOT NULL,
  `date_time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
  `user` varchar(255) COLLATE utf8_general_ci NOT NULL,
@@ -664,4 +667,16 @@ CREATE TABLE `user_prefs` (
 ) ENGINE = InnoDB CHARSET=utf8 COLLATE utf8_general_ci; 
 ALTER TABLE `user_prefs` ADD UNIQUE (pref_name);
 
-CREATE TABLE `backup_provider` ( `id` INT NOT NULL AUTO_INCREMENT , `credentials` JSON NULL DEFAULT '{}' , `provider` VARCHAR(255) NOT NULL , `enabled` INT NOT NULL DEFAULT '0' , UNIQUE (`id`)) ENGINE = InnoDB CHARSET=utf8mb3 COLLATE utf8mb3_general_ci; 
+CREATE TABLE `backup_provider` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `credentials` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT '{}' CHECK (json_valid(`credentials`)),
+  `provider` varchar(255) NOT NULL,
+  `schedule` time NOT NULL DEFAULT '00:00:00',
+  `enabled` int(11) NOT NULL DEFAULT 0,
+  `description` varchar(255) NOT NULL,
+  `gdrive_name` varchar(255) NOT NULL DEFAULT 'pvault',
+  UNIQUE KEY `id` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+
+INSERT INTO `backup_provider` (`id`, `credentials`, `provider`, `schedule`, `enabled`, `description`, `gdrive_name`) VALUES
+(1, '{}', 'Google', '00:00:00', 1, 'My PV Backups', 'pvault');

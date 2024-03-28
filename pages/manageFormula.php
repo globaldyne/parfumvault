@@ -475,6 +475,7 @@ if($_POST['action'] == 'delete' && $_POST['fid']){
 		mysqli_query($conn, "DELETE FROM formulasRevisions WHERE fid = '$fid'");
 		mysqli_query($conn, "DELETE FROM formula_history WHERE fid = '".$meta['id']."'");
 		mysqli_query($conn, "DELETE FROM formulasTags WHERE formula_id = '".$meta['id']."'");
+		mysqli_query($conn, "DELETE FROM makeFormula WHERE fid = '$fid'");
 		$response['success'] = 'Formula '.$fname.' deleted!';
 	}else{
 		$response['error'] = 'Error deleting '.$fname.' formula!';

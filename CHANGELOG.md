@@ -1,4 +1,25 @@
 # CHANGELOG
+### Version 9.8
+- Added phpMyAdmin definition in the docker compose
+- Update general settings to use toast messages
+- Added a donation link to the footer
+- Update notes summary page to use PV Url
+- Added PV Url in settings, you have to update it according to your current setup
+- Delete scheduled formula when the main formula is deleted
+- Added a low stock icon in formula view
+- Fix ingredients reload after ingredient deletion
+- Scheduled formulas removal message update
+- Scheduled formulas notification messages moved to a toast style
+- Making formulas notification messages moved to a toast style
+- Info message replaced with a toast style
+- Change collation to utf8 for IFRALibrary
+- Removed legacy db upgrades before version 8.0
+- Moved dropdown actions menu for finished product to the left
+- Fix a bug preventing formula hstory to be created for new installations
+- Added an automated backup to Google Drive solution - Currently not publicly available
+- Added callback function in the api to update formula when making using the PV scale
+- Added config / integration for the PV scale
+
 ### Version 9.7
 - Remove epel-release
 - Fix first time installation issue

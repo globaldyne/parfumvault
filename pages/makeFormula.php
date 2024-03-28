@@ -206,26 +206,27 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
         });
         
         $('#tdDataPending').on('mouseenter', '.pv-zoom', function() {
-            $(this).addClass('pv-transition')
+            $(this).addClass('pv-transition');
         });
         
         $('#tdDataPending').on('mouseleave', '.pv-zoom', function() {
-            $(this).removeClass('pv-transition')
+            $(this).removeClass('pv-transition');
         });
-        
-        
-        
+        <?php if($settings['pv_scale_enabled']) { ?>
+        $('#tdDataPending tbody').on('click', 'tr', function () {
+        	var rowData = tdDataPending.row(this).data();
+        	rowClickedFunction(rowData);
+    	});
+        <?php } ?>
     });
     
-    
+	
     function ingredient(data, type, row){
-    
         data = '<a href="#infoModal" id="ingInfo" data-bs-toggle="modal" data-id="'+row.ingID+'" data-name="'+row.ingredient+'" class="listIngNameCas-with-separator">' + row.ingredient + '</a><span class="listIngHeaderSub"> CAS: <i class="subHeaderCAS">'+row.cas+'</i></span>';
         return data;
     }
     
     function quantity(data, type, row){
-        
         var overdose = '';
         if(row.overdose != 0 ){
             var overdose = '<span class="ing_alg"> <i rel="tip" title="Overdosed, added '+row.overdose+', instead" class="fas fa-exclamation-triangle"></i></span>';
@@ -234,6 +235,7 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
         data = row.quantity + overdose;
         return data;
     }
+	
     function actions(data, type, row){
         var data;
         //if (row.quantity != row.originalQuantity) {
@@ -267,7 +269,44 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
         return st;
     }
     
-    
+	<?php if($settings['pv_scale_enabled']) { ?>
+    function rowClickedFunction(data) {
+		$.ajax({
+			type: 'POST',
+			url: "/pages/views/pvscale/manage.php?action=send2PVScale",
+			data: JSON.stringify({
+				"formulas": [
+					{
+						"id": data.id,
+						"fid": data.fid,
+						"name": data.name,
+						"cas" : data.cas,
+						"ingredient": data.ingredient,
+						"ingredient_id": data.ingID,
+						"concentration": data.concentration,
+						"dilutant": "-",
+						"quantity": data.quantity
+					},
+				],
+				"pvMeta": {
+					"ingredients": 1,
+					"host": "<?=$settings['pv_host']?>"
+				}
+			}),
+			contentType: 'application/json',
+			dataType: 'json',
+			success: function(data) {
+				$('#msg').html(data);
+			},
+			error: function(err) {
+				data = '<div class="alert alert-danger">Unable to get ingredient info</div>';
+				$('#msg').html(err);
+			}
+		});
+
+    };
+	<?php } ?>
+	
     function reload_data() {
         $('#tdDataPending').DataTable().ajax.reload(null, true);
     }
@@ -335,17 +374,16 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
             },
         dataType: 'json',
         success: function (data) {
-            if(data.success) {
-                var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
-                $('#msg').html(msg);
-                $('#confirm_add').modal('toggle');
-                reload_data();
-            
-            } else if(data.error) {
-                var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
-                $('#errMsg').html(msg);
-            }
-            
+			if(data.success){
+				$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+				$('.toast-header').removeClass().addClass('toast-header alert-success');
+				$('#confirm_add').modal('toggle');
+				reload_data();
+				$('.toast').toast('show');
+			} else if(data.error) {
+				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				$('#errMsg').html(msg);
+			}
         }
       });
     };
@@ -371,6 +409,7 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
                 var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
             }
             $('#msg').html(msg);
+			
         }
       });
     });
@@ -421,12 +460,16 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
                     },
                     dataType: 'json',
                     success: function (data) {
-                        if(data.success) {
-                            var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
-                            reload_data();
-                        } else {
-                            var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
-                        }
+                       	if(data.success){
+							$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+							$('.toast-header').removeClass().addClass('toast-header alert-success');
+							reload_data();
+							bootbox.hideAll();
+							$('.toast').toast('show');
+						}else{
+            				$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+							 var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+                        }	
                         $('#msg').html(msg);
                     }
                 });
@@ -511,6 +554,16 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
         </div>
     </div>
     
+    <!-- TOAST -->
+    <div class="position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 11">
+      <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true">
+        <div class="toast-header">
+          <strong class="me-auto" id="toast-title">...</strong>
+          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+      </div>
+    </div>
+
     <!-- Modal Confirm amount-->
     <div class="modal fade" id="confirm_add" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="confirm_add" aria-hidden="true">
       <div class="modal-dialog" role="document">

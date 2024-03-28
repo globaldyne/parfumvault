@@ -307,14 +307,15 @@ $('#formula').on('click', '[id*=rmIng]', function () {
 					dataType: 'json',
 					success: function (data) {
 						if(data.success){
-							msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
-							$('#msgInfo').html(msg);
+							$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+							$('.toast-header').removeClass().addClass('toast-header alert-success');
 							reload_formula_data();
 							bootbox.hideAll();
 						}else{
-							$('#err').html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>');
+            				$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+							$('.toast-header').removeClass().addClass('toast-header alert-danger');
 						}
-						
+						$('.toast').toast('show');
 					}						
 				  });
                  return false;
@@ -394,11 +395,13 @@ $('#formula').on('click', '[id*=exIng]', function () {
 			dataType: 'json',
 			success: function (data) {
 				if(data.success) {
-					var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+            		$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+					$('.toast-header').removeClass().addClass('toast-header alert-success');
 				}else{
-					var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';	
+            		$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+					$('.toast-header').removeClass().addClass('toast-header alert-danger');
 				}
-				$('#msgInfo').html(msg);
+				$('.toast').toast('show');
 				reload_formula_data();
 			}
 		  });
@@ -430,11 +433,13 @@ $('#isMade').click(function() {
 					dataType: 'json',
 					success: function (data) {
 						if(data.success) {
-							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+							$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+							$('.toast-header').removeClass().addClass('toast-header alert-success');
 						}else{
-							var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';	
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+							$('.toast-header').removeClass().addClass('toast-header alert-danger');
 						}
-						$('#msgInfo').html(msg);
+						$('.toast').toast('show');
 						reload_formula_data();
 					}
 				  });
@@ -787,10 +792,15 @@ function ingInv(data, type, row, meta){
 	}
 	if(row.ingredient.inventory.stock >= row.quantity){
 		var inv = '<i class="fa fa-check inv-ok" rel="tip" title="Available in stock: '+row.ingredient.inventory.stock+mUnit+'"></i>';
+		
+	}else if(row.ingredient.inventory.stock == 0){
+		var inv = '<i class="fa fa-times inv-out" rel="tip" data-html="true" title="Not in stock from the prefered supplier.<br/> Available: '+row.ingredient.inventory.stock + mUnit +'"></i>';
+		
 	}else if(row.ingredient.inventory.stock <= row.quantity){
-		var inv = '<i class="fa fa-times inv-out" rel="tip" data-html="true" title="Not enough in stock from the prefered supplier.<br/> Available: '+row.ingredient.inventory.stock + mUnit +'"></i>';
+		var inv = '<i class="fa fa-triangle-exclamation inv-low" rel="tip" data-html="true" title="Not enough in stock from the prefered supplier.<br/> Available: '+row.ingredient.inventory.stock + mUnit +'"></i>';
+		
 	}
-
+	
 	if(type === 'display'){
 		data = inv;
 	}
