@@ -269,7 +269,36 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
         return st;
     }
     
+	function reload_data() {
+        $('#tdDataPending').DataTable().ajax.reload(null, true);
+    }
+    
+	
 	<?php if($settings['pv_scale_enabled']) { ?>
+		function pollReloadSignal() {
+			setInterval(function() {
+				$.ajax({
+					url: '/pages/views/pvscale/manage.php?action=check_reload_signal',
+					type: 'GET',
+					success: function(response) {
+						if (response === 'reload') {
+							reload_data();
+							$.ajax({
+								url: '/pages/views/pvscale/manage.php?action=update_reload_signal',
+								type: 'GET'
+							});
+						}
+					},
+					error: function(xhr, status, error) {
+						console.error(xhr.responseText);
+					}
+				});
+			}, 1000);
+		}
+		
+		pollReloadSignal();
+
+			
     function rowClickedFunction(data) {
 		$.ajax({
 			type: 'POST',
@@ -285,7 +314,10 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
 						"ingredient_id": data.ingID,
 						"concentration": data.concentration,
 						"dilutant": "-",
-						"quantity": data.quantity
+						"quantity": data.quantity,
+						"stock" : data.inventory.stock,
+						"mUnit" : data.inventory.mUnit,
+						"pending" : data.toAdd
 					},
 				],
 				"pvMeta": {
@@ -307,10 +339,7 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
     };
 	<?php } ?>
 	
-    function reload_data() {
-        $('#tdDataPending').DataTable().ajax.reload(null, true);
-    }
-    
+  
     $('#tdDataPending').on('click', '[id*=ingInfo]', function () {
         var id = $(this).data('id');
         var name = $(this).data('name');

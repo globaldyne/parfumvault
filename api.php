@@ -299,13 +299,15 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 			$qr = trim($_REQUEST['qr']);
 			
 			if (empty($fid) || empty($id) || empty($ingID) || empty($qr)) {
-				$response['error'] = 'Missing required params';
+				$response['success'] = false;
+				$response['message'] = 'Missing required params';
 				echo json_encode($response);
 				return;
 			}
 			
 			if(!is_numeric($_REQUEST['q'])){
-				$response['error'] = 'Invalid quantity value';
+				$response['success'] = false;
+				$response['message'] = 'Invalid quantity value';
 				echo json_encode($response);
 				return;
 			}
@@ -322,18 +324,25 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 					$q = $getStock['stock'];
 				}
 				mysqli_query($conn, "UPDATE suppliers SET stock = stock - $q WHERE ingID = '$ingID' AND preferred = '1'");
-				$response['success'] .= "Stock deducted by ".$q.$settings['mUnit'];
+					$response['success'] = true;
+					$response['message'] = "Stock deducted by ".$q.$settings['mUnit'];
 			}
 			
 			$q = trim($_REQUEST['q']);
 			if($qr == $q){
 				if(mysqli_query($conn, "UPDATE makeFormula SET toAdd = '0' WHERE fid = '$fid' AND id = '$id'")){
-					$response['success'] = $_REQUEST['ing'].' added';
+					
+
+					$response = array(
+						"success" => true,
+						"message" => $_REQUEST['ing'].' added'
+					);
 				}
 			}else{
 				$sub_tot = $qr - $q;
 				if(mysqli_query($conn, "UPDATE makeFormula SET quantity='$sub_tot' WHERE fid = '$fid' AND id = '$id'")){
-					$response['success'] = 'Formula updated';
+					$response['success'] = true;
+					$response['message'] = 'Formula updated';
 				}
 			}
 		
@@ -344,16 +353,19 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 			
 			if($qr < $q){
 				if(mysqli_query($conn, "UPDATE makeFormula SET overdose = '$q' WHERE fid = '$fid' AND id = '$id'")){
-					$response['success'] = $_REQUEST['ing'].' is overdosed, '.$q.' added';
+					$response['success'] = true;
+					$response['message'] = $_REQUEST['ing'].' is overdosed, '.$q.' added';
 				}
 			}
 			
 			if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = '$fid' AND toAdd = '1'"))){
-				$response['success'] = 'All materials added. You should mark formula as complete now';
+				$response['success'] = true;
+				$response['message'] = 'All materials added. You should mark formula as complete now';
 			}
 			
-			
-			echo json_encode($response);
+			file_put_contents($tmp_path.'reload_signal.txt', 'reload');
+			header('Content-Type: application/json; charset=utf-8');
+       		echo json_encode($response);
 			return;
 	
 		}

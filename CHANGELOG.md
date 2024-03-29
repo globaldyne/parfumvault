@@ -1,6 +1,8 @@
 # CHANGELOG
 ### Version 9.9
 - Fix json import for ingredients if values contains illegal chars
+- Implement signaling for formula reload when its updated via the API
+
 ### Version 9.8
 - Added phpMyAdmin definition in the docker compose
 - Update general settings to use toast messages
