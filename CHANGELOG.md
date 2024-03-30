@@ -2,6 +2,8 @@
 ### Version 9.9
 - Fix json import for ingredients if values contains illegal chars
 - Implement signaling for formula reload when its updated via the API
+- Prevent negative value when updating Make Formula data via the API
+- Add odor to the data sent to PV Scale
 
 ### Version 9.8
 - Added phpMyAdmin definition in the docker compose
