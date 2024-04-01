@@ -506,6 +506,8 @@ if($_POST['action'] == 'makeFormula' && $_POST['fid'] && $_POST['q'] && $_POST['
 	$fid = mysqli_real_escape_string($conn, $_POST['fid']);
 	$id = mysqli_real_escape_string($conn, $_POST['id']);
 	$ingID = mysqli_real_escape_string($conn, $_POST['ingId']);
+	$notes = mysqli_real_escape_string($conn, $_POST['notes']) ?: "-";
+
 	$qr = trim($_POST['qr']);
 	if(!is_numeric($_POST['q'])){
 		$response['error'] = 'Invalid value';
@@ -530,12 +532,12 @@ if($_POST['action'] == 'makeFormula' && $_POST['fid'] && $_POST['q'] && $_POST['
 	
 	$q = trim($_POST['q']);
 	if($qr == $q){
-		if(mysqli_query($conn, "UPDATE makeFormula SET toAdd = '0' WHERE fid = '$fid' AND id = '$id'")){
+		if(mysqli_query($conn, "UPDATE makeFormula SET toAdd = '0', notes = '$notes' WHERE fid = '$fid' AND id = '$id'")){
 			$response['success'] = $_POST['ing'].' added!';
 		}
 	}else{
 		$sub_tot = $qr - $q;
-		if(mysqli_query($conn, "UPDATE makeFormula SET quantity='$sub_tot' WHERE fid = '$fid' AND id = '$id'")){
+		if(mysqli_query($conn, "UPDATE makeFormula SET quantity='$sub_tot', notes = '$notes' WHERE fid = '$fid' AND id = '$id'")){
 			$response['success'] = 'Formula updated!';
 		}
 	}
@@ -582,7 +584,7 @@ if($_POST['action'] == 'todo' && $_POST['fid'] && $_POST['markComplete']){
 		$batchID = genBatchID();
 		genBatchPDF($fid,$batchID,$total_quantity,'100',$total_quantity,$defCatClass,$settings['qStep'],'makeFormula');
 
-		mysqli_query($conn, "DELETE FROM makeFormula WHERE fid = '$fid'");
+		//mysqli_query($conn, "DELETE FROM makeFormula WHERE fid = '$fid'");
 		
 		$response['success'] = '<strong>Formula is complete</strong>';
 	}

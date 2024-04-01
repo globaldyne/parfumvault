@@ -4,6 +4,9 @@
 - Implement signaling for formula reload when its updated via the API
 - Prevent negative value when updating Make Formula data via the API
 - Add odor to the data sent to PV Scale
+- Increase update interval check from PV Scale to 5s
+- Added separate notes field for Formula Make
+- When a formula is marked as completed it generates a document in formula attachments
 
 ### Version 9.8
 - Added phpMyAdmin definition in the docker compose

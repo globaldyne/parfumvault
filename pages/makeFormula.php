@@ -293,7 +293,7 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
 						console.error(xhr.responseText);
 					}
 				});
-			}, 1000);
+			}, 5000);
 		}
 		
 		pollReloadSignal();
@@ -323,7 +323,8 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
 				],
 				"pvMeta": {
 					"ingredients": 1,
-					"host": "<?=$settings['pv_host']?>"
+					"host": "<?=$settings['pv_host']?>",
+					"mUnit" : "<?php echo $settings['mUnit'];?>"
 				}
 			}),
 			contentType: 'application/json',

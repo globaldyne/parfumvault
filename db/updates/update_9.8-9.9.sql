@@ -1,0 +1,1 @@
+ALTER TABLE `makeFormula` ADD `notes` MEDIUMTEXT NOT NULL AFTER `originalQuantity`; 
