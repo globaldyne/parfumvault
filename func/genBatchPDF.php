@@ -117,9 +117,10 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $defCatClass, $qSt
 
 	$display_heading = array('name'=> 'Product', 'ingredient'=> 'Ingredient','concentration'=> 'Concentration',);	
 	$formula_q = mysqli_query($conn, "SELECT * FROM formulas WHERE fid = '$fid' ORDER BY ingredient ASC");
-
-	$header = array('Ingredient', 'CAS#', 'Purity %', 'Dilutant', 'Quantity', 'Concentration %', 'Notes');
+	
+	$header = array('Ingredient', 'CAS#', 'Purity %', 'Dilutant', 'Quantity', 'Concentration %');
 	$hd_blends = array('Ingredient', 'Contains','CAS#', 'Concentration %');
+	$hd_extras = array('Ingredient', 'Notes');
 
 	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE fid = '$fid'"));
 	
@@ -202,11 +203,17 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $defCatClass, $qSt
 	$pdf->SetFont('Arial','BU',10);
 	$pdf->MultiCell(250,10,"Also contains \n");
 
+
+	
 	foreach($hd_blends as $heading) {
 		$pdf->Cell(68,12,$heading,1,0,'C');
 	}
+	if($formulaTable == "makeFormula"){
+		$qAllIng = mysqli_query($conn, "SELECT ingredient,quantity,concentration,notes FROM makeFormula WHERE fid = '$fid'");
+	} else {
+		$qAllIng = mysqli_query($conn, "SELECT ingredient,quantity,concentration FROM $formulaTable WHERE fid = '$fid'");
 
-	$qAllIng = mysqli_query($conn, "SELECT ingredient,quantity,concentration,notes FROM $formulaTable WHERE fid = '$fid'");
+	}
 	while ($res_all_ing = mysqli_fetch_array($qAllIng)) {
 		
 		$bldQ = mysqli_query($conn, "SELECT ing,name,cas,percentage FROM allergens WHERE ing = '".$res_all_ing['ingredient']."'");
@@ -221,6 +228,29 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $defCatClass, $qSt
 			$pdf->Cell(68,8,$bld['percentage'],1,0,'C');
 		}
 	}	
+	
+	//Extras table
+	$pdf->AddPage();
+	$pdf->AliasNbPages();
+	$pdf->SetFont('Arial','BU',10);
+	$pdf->MultiCell(250,10,"Additional information \n");
+	//ADD INFO
+	foreach($hd_extras as $heading) {
+		$pdf->Cell(140,12,$heading,1,0,'C');
+	}
+	if($formulaTable == "makeFormula"){
+		$qExtras = mysqli_query($conn, "SELECT DISTINCT A.ingredient, B.notes FROM formulas A JOIN makeFormula B ON A.ingredient = B.ingredient WHERE A.fid = '$fid' ORDER BY ingredient ASC");
+	} else {
+		$qExtras = mysqli_query($conn, "SELECT ingredient,notes FROM formulas WHERE fid = '$fid'");
+
+	}
+	while ($res_extras = mysqli_fetch_array($qExtras)) {
+		$pdf->Ln();
+		$pdf->SetFont('Arial','',8);
+		$pdf->Cell(140,8,$res_extras['ingredient'],1,0,'C');
+		$pdf->Cell(140,8,$res_extras['notes'] ?: "-",1,0,'C');
+	}	
+	
 	
 	$pdf = base64_encode($pdf->Output('S'));		
 	$docData = 'data:application/pdf;base64,' .$pdf;

@@ -331,12 +331,7 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 			$q = trim($_REQUEST['q']);
 			if($qr == $q){
 				if(mysqli_query($conn, "UPDATE makeFormula SET toAdd = '0' WHERE fid = '$fid' AND id = '$id'")){
-					
-
-					$response = array(
-						"success" => true,
-						"message" => $_REQUEST['ing'].' added'
-					);
+					$response = array("success" => true, "message" => "Ingredient added");
 				}
 			}else{
 				$sub_tot = $qr - $q;
@@ -345,8 +340,7 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 
 				}
 				if(mysqli_query($conn, "UPDATE makeFormula SET quantity='$sub_tot' WHERE fid = '$fid' AND id = '$id'")){
-					$response['success'] = true;
-					$response['message'] = 'Formula updated';
+					$response = array("success" => true, "message" => "Quantity updated ($q)");
 				}
 			}
 		
@@ -368,7 +362,7 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 			}
 			
 			file_put_contents($tmp_path.'reload_signal.txt', 'reload');
-			header('Content-Type: application/json; charset=utf-8');
+			header('Content-Type: application/json;');
        		echo json_encode($response);
 			return;
 	
