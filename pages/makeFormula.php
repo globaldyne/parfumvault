@@ -197,6 +197,9 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
               if (data.toAdd == 0) {
                   $(row).find('td:eq(0),td:eq(1),td:eq(2),td:eq(3)').addClass('strikeout');
               }
+			  if (data.toSkip == 1) {
+                  $(row).find('td:eq(0),td:eq(1),td:eq(2),td:eq(3)').addClass('skipped');
+              }
               $(row).addClass('pv-zoom');
          },
          order: [[ 0, 'asc' ]],
@@ -242,9 +245,12 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
             data = '<i id="undo_add" data-row-id="'+row.id+'" data-ingredient="'+row.ingredient+'" data-originalQuantity="'+row.originalQuantity+'" data-ingID = '+row.ingID+' class="mr fas fa-undo pv_point_gen" title="Reset original quantity for '+row.ingredient+'"></i>';
         //}
         
-        if (row.toAdd == 1) {
+        if (row.toAdd == 1 && row.toSkip == 0) {
             data += '<i data-bs-toggle="modal" data-bs-target="#confirm_add" data-quantity="'+row.quantity+'" data-ingredient="'+row.ingredient+'" data-row-id="'+row.id+'" data-ing-id="'+row.ingID+'" data-qr="'+row.quantity+'" class="mr fas fa-check pv_point_gen" title="Confirm add '+row.ingredient+'"></i>';
-        }
+			
+           data += '<i data-bs-toggle="modal" data-bs-target="#confirm_skip" data-quantity="'+row.quantity+'" data-ingredient="'+row.ingredient+'" data-row-id="'+row.id+'" data-ing-id="'+row.ingID+'" data-qr="'+row.quantity+'" class="mr fas fa-forward pv_point_gen" title="Skip '+row.ingredient+'"></i>';
+
+		}
         
                           
         data += '<i data-ingredient="'+row.ingredient+'" data-quantity="'+row.quantity+'" data-concentration="'+row.concentration+'" data-ingID="'+row.ingID+'" id="addToCart" class="mr fas fa-shopping-cart pv_point_gen"></i>'; 
@@ -318,7 +324,8 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
 						"quantity": data.quantity,
 						"stock" : data.inventory.stock,
 						"mUnit" : data.inventory.mUnit,
-						"pending" : data.toAdd
+						"pending" : data.toAdd,
+						"ApiKey" : "<?php echo $settings['api_key'];?>"
 					},
 				],
 				"pvMeta": {
@@ -385,7 +392,14 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
         $("#notes").val('');
     });
     
-     
+    $('#tdDataPending').on('click', '[data-bs-target*=confirm_skip]', function () {
+        $('#errMsg').html('');																
+        $("#ingSkipped").text($(this).attr('data-ingredient'));
+        $("#ingID").text($(this).attr('data-ing-id'));
+        $("#idRow").text($(this).attr('data-row-id'));
+        $("#notes").val('');
+    });
+	
     //UPDATE AMOUNT
     function addedToFormula() {
         $.ajax({ 
@@ -418,8 +432,36 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
         }
       });
     };
-    
-    
+    //SKIP ADD
+	
+	function skippedFromFormula() {
+        $.ajax({ 
+        url: '/pages/manageFormula.php', 
+        type: 'POST',
+        data: {
+            action: "skipMaterial",
+            notes: $("#skip_notes").val(),
+            ing: $("#ingSkipped").text(),
+            id: $("#idRow").text(),
+            ingId: $("#ingID").text(),
+            fid: "<?php echo $fid; ?>",
+            },
+        dataType: 'json',
+        success: function (data) {
+			if(data.success){
+				$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+				$('.toast-header').removeClass().addClass('toast-header alert-success');
+				$('#confirm_skip').modal('toggle');
+				reload_data();
+				$('.toast').toast('show');
+			} else if(data.error) {
+				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				$('#errMsg').html(msg);
+			}
+        }
+      });
+    };
+    //ADD TO CART
     $('#tdDataPending').on('click', '[id*=addToCart]', function () {
     $.ajax({ 
         url: '/pages/manageFormula.php', 
@@ -641,4 +683,34 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
       </div>
     </div>
   </div>
+  
+      <!-- Modal Skip material-->
+    <div class="modal fade" id="confirm_skip" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="confirm_skip" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+          <div style="display: none;" id="ingID"></div>
+          <div style="display: none;" id="idRow"></div>
+          <h5 class="modal-title" id="ingSkipped"></h5>
+        </div>
+        <div class="modal-body">
+        <div id="errMsg"></div>
+            <form action="javascript:skippedFromFormula()" method="GET" target="_self">
+              
+              <div class="form-group">
+                <label for="notes">Notes</label>
+                <textarea class="form-control" id="skip_notes" rows="3"></textarea>
+              </div>
+    
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <input type="submit" name="button" class="btn btn-primary" id="button" value="Confirm">
+              </div>
+         
+            </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  
 </html>

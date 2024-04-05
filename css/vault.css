@@ -218,6 +218,11 @@ tr.strikeout td:before {
 	text-decoration: line-through solid red 3px;
 }
 
+.skipped {
+	font-style: italic;
+	text-decoration: line-through solid yellow 3px;
+}
+
 #formula td,
   table.table th {
   white-space: nowrap;

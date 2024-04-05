@@ -489,7 +489,7 @@ if($_POST['action'] == 'makeFormula' && $_POST['undo'] == '1'){
 	$q = trim($_POST['originalQuantity']);
 	$ingID = mysqli_real_escape_string($conn, $_POST['ingID']);
 
-	if(mysqli_query($conn, "UPDATE makeFormula SET toAdd = '1', overdose = '0', quantity = '".$_POST['originalQuantity']."' WHERE id = '".$_POST['ID']."'")){
+	if(mysqli_query($conn, "UPDATE makeFormula SET toAdd = '1', skip = '0', overdose = '0', quantity = '".$_POST['originalQuantity']."' WHERE id = '".$_POST['ID']."'")){
 		$response['success'] = $_POST['ing'].'\'s quantity reset';
 		
 		if($_POST['resetStock'] == "true"){
@@ -516,7 +516,6 @@ if($_POST['action'] == 'makeFormula' && $_POST['fid'] && $_POST['q'] && $_POST['
 	}
 						 
 	$q = trim($_POST['q']);
-	$notes = mysqli_real_escape_string($conn, $_POST['notes']);
 	
 	if($_POST['updateStock'] == "true"){
 		$getStock = mysqli_fetch_array(mysqli_query($conn, "SELECT stock,mUnit FROM suppliers WHERE ingID = '$ingID' AND preferred = '1'"));
@@ -542,11 +541,7 @@ if($_POST['action'] == 'makeFormula' && $_POST['fid'] && $_POST['q'] && $_POST['
 		}
 	}
 
-	if($notes){
-		$notes = "Formula make, ingredient: ".$_POST['ing']."\\n";
-		mysqli_query($conn, "UPDATE formulasMetaData SET notes = CONCAT(notes, '".$notes."') WHERE fid = '$fid'");
-	}
-	
+		
 	if($qr < $q){
 		if(mysqli_query($conn, "UPDATE makeFormula SET overdose = '$q' WHERE fid = '$fid' AND id = '$id'")){
 			$response['success'] = $_POST['ing'].' is overdosed, <strong>'.$q.'<strong> added';
@@ -561,6 +556,28 @@ if($_POST['action'] == 'makeFormula' && $_POST['fid'] && $_POST['q'] && $_POST['
 	echo json_encode($response);
 	return;
 }
+
+
+
+//SKIP MATERIAL FROM MAKE FORMULA
+if($_POST['action'] == 'skipMaterial' && $_POST['fid'] &&  $_POST['id']){
+	$fid = mysqli_real_escape_string($conn, $_POST['fid']);
+	$id = mysqli_real_escape_string($conn, $_POST['id']);
+	$ingID = mysqli_real_escape_string($conn, $_POST['ingId']);
+	$notes = mysqli_real_escape_string($conn, $_POST['notes']) ?: "-";
+
+	if(mysqli_query($conn, "UPDATE makeFormula SET skip = '1', notes = '$notes' WHERE fid = '$fid' AND id = '$id'")){
+		$response['success'] = $_POST['ing'].' skipped from the formulation';
+	} else {
+		$response['error'] = 'Error skipping the ingredient';
+	}
+	
+	echo json_encode($response);
+	return;
+}
+
+
+
 //MARK COMPLETE
 if($_POST['action'] == 'todo' && $_POST['fid'] && $_POST['markComplete']){
 	require_once(__ROOT__.'/libs/fpdf.php');

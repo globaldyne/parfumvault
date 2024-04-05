@@ -63,7 +63,8 @@ if($meta == 0){
 		$r['inventory']['mUnit'] = (string)$inventory['mUnit'] ?: $settings['mUnit'];
 	
 		$r['toAdd'] = (int)$rq['toAdd'];
-		
+		$r['toSkip'] = (int)$rq['skip'];
+
 		
 		
 		$rx[]=$r;
