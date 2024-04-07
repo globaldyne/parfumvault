@@ -292,21 +292,24 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 	//CALLBACKS
 	if($_REQUEST['do'] == 'callback'){ 
 	//SKIP MATERIAL FROM MAKE FORMULA
-		if($_REQUEST['action'] == 'skipMaterial' && $_REQUEST['fid'] &&  $_REQUEST['id']){
+		if($_REQUEST['action'] == 'skipMaterial'){
 			$fid = mysqli_real_escape_string($conn, $_REQUEST['fid']);
 			$id = mysqli_real_escape_string($conn, $_REQUEST['id']);
 			$ingID = mysqli_real_escape_string($conn, $_REQUEST['ingId']);
 			$notes = mysqli_real_escape_string($conn, $_REQUEST['notes']) ?: "-";
 		
 			if(mysqli_query($conn, "UPDATE makeFormula SET skip = '1', notes = '$notes' WHERE fid = '$fid' AND id = '$id'")){
-				$response['success'] = $_POST['ing'].' skipped from the formulation';
+				$response['success'] = true;
+				$response['message'] = $_REQUEST['ing'].' skipped from the formulation';
 			} else {
-				$response['error'] = 'Error skipping the ingredient';
+				$response['success'] = false;
+				$response['message'] = 'Error skipping the ingredient';
 			}
-			
+			$response['debug'] = var_dump($_REQUEST);
 			echo json_encode($response);
 			return;
 		}
+		
 		if( $_REQUEST['action'] == 'makeFormula'){
 	
 			$fid = mysqli_real_escape_string($conn, $_REQUEST['fid']);
