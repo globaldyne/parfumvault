@@ -401,8 +401,8 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
 		$('#msgReplace').html('');
 		$("#replacement").val('');
 	
-		repName = "";
-		repID = "";
+		var ingSrcName = $(this).attr('data-ingredient')
+		var ingSrcID = $(this).attr('data-ing-id')	
 		
 		$("#replacement").select2({
 			width: '100%',
