@@ -9,6 +9,7 @@
 - When a formula is marked as completed it generates a document in formula attachments
 - Added API key to the data sent to PV Scale
 - Add material skip when making a formula
+- Add advanced material replacement when making a formula
 
 ### Version 9.8
 - Added phpMyAdmin definition in the docker compose

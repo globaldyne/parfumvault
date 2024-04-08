@@ -65,6 +65,7 @@ CREATE TABLE `makeFormula` (
  `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
  `ingredient` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
  `ingredient_id` INT NOT NULL,
+ `replacement_id` INT NOT NULL DEFAULT '0', 
  `concentration` decimal(5,2) DEFAULT 100.00,
  `dilutant` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
  `quantity` decimal(8,4) DEFAULT NULL,

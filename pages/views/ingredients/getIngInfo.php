@@ -23,6 +23,28 @@ $reps = mysqli_query($conn,"SELECT ing_rep_name,ing_rep_id FROM ingReplacements 
 while($replacements = mysqli_fetch_array($reps)){
 		$replacement[] = $replacements;
 }
+
+if($_GET['replacementsOnly']){
+	$i = 0;
+	foreach ($replacement as $rep) { 
+		$r['id'] = (int)$rep['ing_id'];
+		$r['name'] = (string)$rep['ing_name'];
+	
+		$rx[]=$r;
+		$i++;
+	}
+	
+	$response = array(
+  		"data" => $rx
+	);
+	
+	if(empty($rx)){
+		$response['data'] = array("No results");
+	}
+	header('Content-Type: application/json; charset=utf-8');
+	echo json_encode($response);
+	return;
+}
 ?>
 
 <div class="card shadow mb-4">

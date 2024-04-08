@@ -489,7 +489,7 @@ if($_POST['action'] == 'makeFormula' && $_POST['undo'] == '1'){
 	$q = trim($_POST['originalQuantity']);
 	$ingID = mysqli_real_escape_string($conn, $_POST['ingID']);
 
-	if(mysqli_query($conn, "UPDATE makeFormula SET toAdd = '1', skip = '0', overdose = '0', quantity = '".$_POST['originalQuantity']."' WHERE id = '".$_POST['ID']."'")){
+	if(mysqli_query($conn, "UPDATE makeFormula SET replacement_id = '0', toAdd = '1', skip = '0', overdose = '0', quantity = '".$_POST['originalQuantity']."' WHERE id = '".$_POST['ID']."'")){
 		$response['success'] = $_POST['ing'].'\'s quantity reset';
 		
 		if($_POST['resetStock'] == "true"){
@@ -502,20 +502,33 @@ if($_POST['action'] == 'makeFormula' && $_POST['undo'] == '1'){
 }
 
 //MAKE FORMULA
-if($_POST['action'] == 'makeFormula' && $_POST['fid'] && $_POST['q'] && $_POST['qr'] && $_POST['id']){
+if($_POST['action'] == 'makeFormula' && $_POST['fid'] && $_POST['qr'] && $_POST['id']){
 	$fid = mysqli_real_escape_string($conn, $_POST['fid']);
 	$id = mysqli_real_escape_string($conn, $_POST['id']);
-	$ingID = mysqli_real_escape_string($conn, $_POST['ingId']);
+	
+
+	if($_POST['repID']) {
+		$repID = $_POST['repID'];
+		$ingID = $_POST['repID'];
+	} else {
+		$repID = 0;
+		$ingID = $_POST['ingId'];
+	}
+
+	$ingredient =  mysqli_real_escape_string($conn, $_POST['repName'] ?: $_POST['ing']);
+	
 	$notes = mysqli_real_escape_string($conn, $_POST['notes']) ?: "-";
 
 	$qr = trim($_POST['qr']);
+	$q = trim($_POST['q']);
+	
+	
 	if(!is_numeric($_POST['q'])){
-		$response['error'] = 'Invalid value';
+		$response['error'] = 'Invalid amount value';
 		echo json_encode($response);
 		return;
 	}
 						 
-	$q = trim($_POST['q']);
 	
 	if($_POST['updateStock'] == "true"){
 		$getStock = mysqli_fetch_array(mysqli_query($conn, "SELECT stock,mUnit FROM suppliers WHERE ingID = '$ingID' AND preferred = '1'"));
@@ -529,10 +542,11 @@ if($_POST['action'] == 'makeFormula' && $_POST['fid'] && $_POST['q'] && $_POST['
 		$response['success'] .= "<br/><strong>Stock deducted by ".$q.$settings['mUnit']."</strong>";
 	}
 	
-	$q = trim($_POST['q']);
 	if($qr == $q){
-		if(mysqli_query($conn, "UPDATE makeFormula SET toAdd = '0', notes = '$notes' WHERE fid = '$fid' AND id = '$id'")){
-			$response['success'] = $_POST['ing'].' added!';
+		if(mysqli_query($conn, "UPDATE makeFormula SET replacement_id = '$repID', toAdd = '0', notes = '$notes' WHERE fid = '$fid' AND id = '$id'")){
+			$response['success'] = $ingredient.' added!';
+		} else {
+			$response['error'] = mysqli_error($conn);
 		}
 	}else{
 		$sub_tot = $qr - $q;

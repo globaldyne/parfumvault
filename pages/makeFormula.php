@@ -48,11 +48,14 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
       <script src="/js/datatables.min.js"></script>
       <link href="/css/datatables.min.css" rel="stylesheet"/>
       <link href="/css/vault.css" rel="stylesheet">
+      <link href="/css/select2.css" rel="stylesheet">
+
       <script src="/js/tableHTMLExport.js"></script>
       <script src="/js/jspdf.min.js"></script>
       <script src="/js/jspdf.plugin.autotable.js"></script>
       <script src="/js/bootbox.min.js"></script>
-    
+      <script src="/js/select2.js"></script> 
+
       <style>
         .table {
             --bs-table-bg:  initial;
@@ -86,7 +89,8 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
       </style>
     </head>
     
-    
+    <body id="page-top">
+
     
     <div id="content-wrapper" class="d-flex flex-column">
         <div class="container-fluid">
@@ -221,7 +225,7 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
         	rowClickedFunction(rowData);
     	});
         <?php } ?>
-    });
+  
     
 	
     function ingredient(data, type, row){
@@ -380,7 +384,9 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
     $('#print').click(() => {
         $('#tdDataPending').DataTable().button(0).trigger();
     });
-    
+	
+    var repName;
+	var repID;
     $('#tdDataPending').on('click', '[data-bs-target*=confirm_add]', function () {
         $('#errMsg').html('');																
         $("#ingAdded").text($(this).attr('data-ingredient'));
@@ -390,6 +396,53 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
         $("#qr").text($(this).attr('data-qr'));
         $("#updateStock").prop( "checked", true );
         $("#notes").val('');
+		$("#collapseAdvanced").removeClass('show');
+		
+		$('#msgReplace').html('');
+		$("#replacement").val('');
+	
+		repName = "";
+		repID = "";
+		
+		$("#replacement").select2({
+			width: '100%',
+			placeholder: 'Search for ingredient (name)..',
+			allowClear: true,
+			dropdownAutoWidth: true,
+			containerCssClass: "replacement",
+			dropdownParent: $('#confirm_add .modal-content'),
+			ajax: {
+				url: '/pages/views/ingredients/getIngInfo.php',
+				dataType: 'json',
+				type: 'GET',
+				delay: 100,
+				quietMillis: 250,
+				data: function (params) {
+					return {
+						ingID: ingSrcID,
+						replacementsOnly: true,
+						search: params.term
+					};
+				},
+				processResults: function(data) {
+					return {
+						results: $.map(data.data, function(obj) {
+						  return {
+							id: obj.id,
+							ingId: obj.id,
+							text: obj.name || 'No ingredient found...',
+						  }
+						})
+					};
+				},
+				cache: false,
+				
+			}
+			
+		}).on('select2:selecting', function (e) {
+			repName = e.params.args.data.text;
+			repID = e.params.args.data.id;
+		});
     });
     
     $('#tdDataPending').on('click', '[data-bs-target*=confirm_skip]', function () {
@@ -401,7 +454,7 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
     });
 	
     //UPDATE AMOUNT
-    function addedToFormula() {
+	$('#addedToFormula').click(function() {
         $.ajax({ 
         url: '/pages/manageFormula.php', 
         type: 'POST',
@@ -413,7 +466,8 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
             updateStock: $("#updateStock").is(':checked'),
             ing: $("#ingAdded").text(),
             id: $("#idRow").text(),
-    
+    		repName: repName,
+			repID: repID,
             ingId: $("#ingID").text(),
             fid: "<?php echo $fid; ?>",
             },
@@ -431,10 +485,10 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
 			}
         }
       });
-    };
-    //SKIP ADD
+    });
 	
-	function skippedFromFormula() {
+    //SKIP ADD
+	$('#skippedFromFormula').click(function() {
         $.ajax({ 
         url: '/pages/manageFormula.php', 
         type: 'POST',
@@ -460,7 +514,7 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
 			}
         }
       });
-    };
+    });
     //ADD TO CART
     $('#tdDataPending').on('click', '[id*=addToCart]', function () {
     $.ajax({ 
@@ -607,7 +661,8 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
         
         });
     });
-    
+	
+  });//DOC END
     
     </script>
     <script src="/js/validate-session.js"></script>
@@ -649,7 +704,6 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
         </div>
         <div class="modal-body">
         <div id="errMsg"></div>
-            <form action="javascript:addedToFormula()" method="GET" target="_self">
             
               <div class="form-row">
                 <div class="form-group col-md-6">
@@ -666,19 +720,31 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
                     <label class="form-check-label" for="updateStock">Update stock</label>
                 </div>
               </div>
-              <div class="dropdown-divider"></div>
+              <hr class="border border-default border-1 opacity-75">
               
               <div class="form-group">
                 <label for="notes">Notes</label>
                 <textarea class="form-control" id="notes" rows="3"></textarea>
               </div>
-    
+              <hr class="border border-default border-1 opacity-75">
+    		  <a class="link-primary" data-bs-toggle="collapse" href="#collapseAdvanced" aria-expanded="false" aria-controls="collapseAdvanced">Advanced</a>
+              
+                <div class="collapse" id="collapseAdvanced">
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+  					<strong>Only possible replacements will be listed.</strong>
+				</div>
+                <div class="card card-body">
+        		  <label for="replacement" class="form-label">Select a replacement</label>
+   				  <select name="replacement" id="replacement" class="replacement pv-form-control"></select>
+  				</div>
+                </div>
+              
+              <hr class="border border-default border-1 opacity-75">
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <input type="submit" name="button" class="btn btn-primary" id="button" value="Confirm">
+                <input type="submit" name="addedToFormula" class="btn btn-primary" id="addedToFormula" value="Confirm">
               </div>
          
-            </form>
         </div>
       </div>
     </div>
@@ -695,22 +761,21 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
         </div>
         <div class="modal-body">
         <div id="errMsg"></div>
-            <form action="javascript:skippedFromFormula()" method="GET" target="_self">
               
-              <div class="form-group">
-                <label for="notes">Notes</label>
-                <textarea class="form-control" id="skip_notes" rows="3"></textarea>
-              </div>
-    
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <input type="submit" name="button" class="btn btn-primary" id="button" value="Confirm">
-              </div>
+          <div class="form-group">
+            <label for="notes">Notes</label>
+            <textarea class="form-control" id="skip_notes" rows="3"></textarea>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <input type="submit" name="skippedFromFormula" class="btn btn-primary" id="skippedFromFormula" value="Skip">
+          </div>
          
-            </form>
         </div>
       </div>
     </div>
   </div>
   
+  </body>
 </html>

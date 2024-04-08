@@ -305,7 +305,6 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 				$response['success'] = false;
 				$response['message'] = 'Error skipping the ingredient';
 			}
-			$response['debug'] = var_dump($_REQUEST);
 			echo json_encode($response);
 			return;
 		}

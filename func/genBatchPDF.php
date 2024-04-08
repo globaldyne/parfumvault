@@ -209,7 +209,7 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $defCatClass, $qSt
 		$pdf->Cell(68,12,$heading,1,0,'C');
 	}
 	if($formulaTable == "makeFormula"){
-		$qAllIng = mysqli_query($conn, "SELECT ingredient,quantity,concentration,notes FROM makeFormula WHERE fid = '$fid'");
+		$qAllIng = mysqli_query($conn, "SELECT ingredient,quantity,concentration,notes,replacement_id FROM makeFormula WHERE fid = '$fid'");
 	} else {
 		$qAllIng = mysqli_query($conn, "SELECT ingredient,quantity,concentration FROM $formulaTable WHERE fid = '$fid'");
 
