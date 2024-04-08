@@ -54,8 +54,17 @@ if($_GET['upload_ing_cat_pic'] && $_GET['catID']){
 }
 
 if($_GET['type'] == 'bottle'){
+	
 	if(empty($_GET['name'])){
 		$response["error"] = 'Name is required';
+		echo json_encode($response);
+		return;
+	}
+	
+	$n =  base64_decode($_GET['name']);
+	
+	if (!ctype_alnum($n)) {
+		$response["error"] = 'Name is invalid';
 		echo json_encode($response);
 		return;
 	}
@@ -72,7 +81,7 @@ if($_GET['type'] == 'bottle'){
 		return;
 	}
 	
-	$name = base64_decode($_GET['name']);
+	$name = mysqli_real_escape_string($conn, $n);
 	$ml = $_GET['size'];
 	$price = $_GET['price'];
 	$height = $_GET['height']?:0;
