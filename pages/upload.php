@@ -132,6 +132,8 @@ if($_GET['type'] == 'bottle'){
 			}else{
 				$response["error"] =  'Failed to add '.$name.' - '.mysqli_error($conn);
 			}
+		} else {
+			$response["error"] =  'Failed to add '.$name.' - '.mysqli_error($conn);
 		}
 	  }
 	echo json_encode($response);  
