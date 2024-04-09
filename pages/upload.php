@@ -69,28 +69,24 @@ if($_GET['type'] == 'bottle'){
 		return;
 	}
 	
-	if(!is_numeric($_GET['size'])){
-		$response["error"] = 'Bottle size is invalid';
+	if(!is_numeric($_GET['size']) || !is_numeric($_GET['price']) || !is_numeric($_GET['height']) || !is_numeric($_GET['width']) || !is_numeric($_GET['diameter']) || !is_numeric($_GET['pieces']) ){
+		$response["error"] = 'Form contains invalid values';
 		echo json_encode($response);
 		return;
 	}
 	
-	if(!is_numeric($_GET['price'])){
-		$response["error"] = 'Bottle price is invalid';
-		echo json_encode($response);
-		return;
-	}
+	
 	
 	$name = mysqli_real_escape_string($conn, $n);
 	$ml = $_GET['size'];
 	$price = $_GET['price'];
-	$height = $_GET['height']?:0;
-	$width = $_GET['width']?:0;
-	$diameter = $_GET['diameter']?:0;
-	$supplier = base64_decode($_GET['supplier']);
-	$supplier_link = base64_decode($_GET['supplier_link']);
-	$notes = base64_decode($_GET['notes']);
-	$pieces = $_GET['pieces']?:0;
+	$height = $_GET['height'] ?: 0;
+	$width = $_GET['width'] ?: 0;
+	$diameter = $_GET['diameter'] ? :0;
+	$supplier = mysqli_real_escape_string($conn, base64_decode($_GET['supplier']));
+	$supplier_link = mysqli_real_escape_string($conn, base64_decode($_GET['supplier_link']));
+	$notes = mysqli_real_escape_string($conn, base64_decode($_GET['notes']));
+	$pieces = $_GET['pieces'] ?: 0;
 
 	
 	if(isset($_FILES['pic_file']['name'])){

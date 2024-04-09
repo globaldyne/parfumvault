@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 9.9
+- Update bottle add modal
 - Prevent illegal characters from a bottle name
 - Fix json import for ingredients if values contains illegal chars
 - Implement signaling for formula reload when its updated via the API

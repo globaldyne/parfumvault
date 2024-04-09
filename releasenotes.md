@@ -1,5 +1,6 @@
 Whats New in v9.9
 --------------------------
+- Update view for bottle add modal window
 - Choose a replacement material when making a formula and update stock and final documents automatically
 - Skip a mterial when you making a formula
 - Increase update interval check from PV Scale to 5s
