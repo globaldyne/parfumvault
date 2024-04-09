@@ -493,7 +493,8 @@ if($_POST['action'] == 'makeFormula' && $_POST['undo'] == '1'){
 		$response['success'] = $_POST['ing'].'\'s quantity reset';
 		
 		if($_POST['resetStock'] == "true"){
-			mysqli_query($conn, "UPDATE suppliers SET stock = stock + $q WHERE ingID = '$ingID' AND preferred = '1'");
+			$nIngID = $_POST['repID'] ?: $ingID;
+			mysqli_query($conn, "UPDATE suppliers SET stock = stock + $q WHERE ingID = '$nIngID' AND preferred = '1'");
 			$response['success'] .= "<br/><strong>Stock increased by ".$q.$settings['mUnit']."</strong>";
 		}
 		echo json_encode($response);

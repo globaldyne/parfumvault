@@ -47,6 +47,7 @@ if($meta == 0){
 
 		$r['id'] = (int)$rq['id'];
 		$r['fid'] = (string)$rq['fid'];
+		$r['repID'] = (string)$rq['replacement_id'];
 		$r['name'] = (string)$rq['name'];
 		$r['ingredient'] = (string)$rq['ingredient'];		
 		$r['ingID'] = (int)$rq['ingredient_id'];

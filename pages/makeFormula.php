@@ -246,7 +246,7 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
     function actions(data, type, row){
         var data;
         //if (row.quantity != row.originalQuantity) {
-            data = '<i id="undo_add" data-row-id="'+row.id+'" data-ingredient="'+row.ingredient+'" data-originalQuantity="'+row.originalQuantity+'" data-ingID = '+row.ingID+' class="mr fas fa-undo pv_point_gen" title="Reset original quantity for '+row.ingredient+'"></i>';
+            data = '<i id="undo_add" data-row-id="'+row.id+'" data-ingredient="'+row.ingredient+'" data-originalQuantity="'+row.originalQuantity+'" data-rep-id = '+row.repID+' data-ingID = '+row.ingID+' class="mr fas fa-undo pv_point_gen" title="Reset original quantity for '+row.ingredient+'"></i>';
         //}
         
         if (row.toAdd == 1 && row.toSkip == 0) {
@@ -403,6 +403,9 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
 	
 		var ingSrcName = $(this).attr('data-ingredient')
 		var ingSrcID = $(this).attr('data-ing-id')	
+		
+		repName = "";
+		repID = "";
 		
 		$("#replacement").select2({
 			width: '100%',
@@ -562,6 +565,7 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
         d.ID = $(this).attr('data-row-id');
         d.ingName = $(this).attr('data-ingredient');
         d.ingID = $(this).attr('data-ingID');
+		d.repID = $(this).attr('data-rep-id');
         d.originalQuantity = $(this).attr('data-originalQuantity');
         bootbox.dialog({
            title: "Confirm reset quantity",
@@ -581,6 +585,7 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
                         undo: 1,
                         ing: d.ingName,
                         ingID: d.ingID,
+						repID: d.repID,
                         originalQuantity: d.originalQuantity,
                         resetStock: $("#resetStock").is(':checked'),
                         ID: d.ID

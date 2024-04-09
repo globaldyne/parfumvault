@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 9.9
+- Make sure the correct ingredient's quantity is reset when reseting an ingredient in Formula make which is replaced
 - Update bottle add modal
 - Prevent illegal characters from a bottle name
 - Fix json import for ingredients if values contains illegal chars
