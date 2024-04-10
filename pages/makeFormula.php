@@ -143,7 +143,9 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
     <script>
     var myFNAME = "<?=$meta['name']?>";
     $(document).ready(function() {
-        
+        $('#liveToast').toast({
+  			delay: 10000
+		});
         var tdDataPending = $('#tdDataPending').DataTable( {
         columnDefs: [
             { className: 'pv_vertical_middle text-center', targets: '_all' },
@@ -246,7 +248,7 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
     function actions(data, type, row){
         var data;
         //if (row.quantity != row.originalQuantity) {
-            data = '<i id="undo_add" data-row-id="'+row.id+'" data-ingredient="'+row.ingredient+'" data-originalQuantity="'+row.originalQuantity+'" data-rep-id = '+row.repID+' data-ingID = '+row.ingID+' class="mr fas fa-undo pv_point_gen" title="Reset original quantity for '+row.ingredient+'"></i>';
+            data = '<i id="undo_add" data-row-id="'+row.id+'" data-ingredient="'+row.ingredient+'" data-originalQuantity="'+row.originalQuantity+'" data-rep-name = "'+row.repName+'" data-rep-id = "'+row.repID+'" data-ingID = "'+row.ingID+'" class="mr fas fa-undo pv_point_gen" title="Reset original quantity for '+row.ingredient+'"></i>';
         //}
         
         if (row.toAdd == 1 && row.toSkip == 0) {
@@ -310,6 +312,8 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
 
 			
     function rowClickedFunction(data) {
+		$('#toast-title').html('<i class="fa-solid fa-circle-info mr-2"></i>Connecting to the PV Scale...');
+		$('.toast-header').removeClass().addClass('toast-header alert-warning');
 		$.ajax({
 			type: 'POST',
 			url: "/pages/views/pvscale/manage.php?action=send2PVScale",
@@ -341,14 +345,22 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
 			contentType: 'application/json',
 			dataType: 'json',
 			success: function(data) {
-				$('#msg').html(data);
+				if(data.success == true){
+					$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>Scale data updated');
+					$('.toast-header').removeClass().addClass('toast-header alert-success');
+				}else if(data.success == false){
+					$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+					$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				}
 			},
 			error: function(err) {
-				data = '<div class="alert alert-danger">Unable to get ingredient info</div>';
-				$('#msg').html(err);
-			}
+				//console.log(err);
+				$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>Unable to communicate with the scale.');
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			},
+			timeout: 3000
 		});
-
+		$('.toast').toast('show');
     };
 	<?php } ?>
 	
@@ -414,6 +426,8 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
 			dropdownAutoWidth: true,
 			containerCssClass: "replacement",
 			dropdownParent: $('#confirm_add .modal-content'),
+			templateResult: formatIngredients,
+			templateSelection: formatIngredientsSelection,
 			ajax: {
 				url: '/pages/views/ingredients/getIngInfo.php',
 				dataType: 'json',
@@ -432,8 +446,8 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
 						results: $.map(data.data, function(obj) {
 						  return {
 							id: obj.id,
-							ingId: obj.id,
-							text: obj.name || 'No ingredient found...',
+							stock: obj.stock,
+							name: obj.name,
 						  }
 						})
 					};
@@ -443,11 +457,49 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
 			}
 			
 		}).on('select2:selecting', function (e) {
-			repName = e.params.args.data.text;
+			repName = e.params.args.data.name;
 			repID = e.params.args.data.id;
 		});
     });
     
+	function formatIngredients (ingredientData) {
+		if (ingredientData.loading) {
+			return ingredientData.name;
+		}
+	 
+		//extrasShow();
+	
+		if (!ingredientData.name){
+			return 'No replacement found...';
+		}
+		
+		
+		var $container = $(
+			"<div class='select_result_igredient clearfix'>" +
+			  "<div class='select_result_igredient_meta'>" +
+				"<div class='select_igredient_title'></div>" +
+				"<span id='stock'></span></div>"+
+			  "</div>" +
+			"</div>"
+		  );
+		
+		  $container.find(".select_igredient_title").text(ingredientData.name);
+		  if(ingredientData.stock  > 0){
+		  	$container.find("#stock").text('In stock ('+ingredientData.stock+')');
+			$container.find("#stock").attr("class", "stock badge badge-instock");
+		  }else{
+			$container.find("#stock").text('Not in stock ('+ingredientData.stock+')');
+			$container.find("#stock").attr("class", "stock badge badge-nostock");
+		  }
+
+		  return $container;
+	}
+	
+	
+	function formatIngredientsSelection (ingredientData) {
+		return ingredientData.name;
+	}
+	
     $('#tdDataPending').on('click', '[data-bs-target*=confirm_skip]', function () {
         $('#errMsg').html('');																
         $("#ingSkipped").text($(this).attr('data-ingredient'));
@@ -566,6 +618,8 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
         d.ingName = $(this).attr('data-ingredient');
         d.ingID = $(this).attr('data-ingID');
 		d.repID = $(this).attr('data-rep-id');
+		d.repName = $(this).attr('data-rep-name');
+
         d.originalQuantity = $(this).attr('data-originalQuantity');
         bootbox.dialog({
            title: "Confirm reset quantity",
@@ -586,6 +640,7 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
                         ing: d.ingName,
                         ingID: d.ingID,
 						repID: d.repID,
+						repName: d.repName,
                         originalQuantity: d.originalQuantity,
                         resetStock: $("#resetStock").is(':checked'),
                         ID: d.ID

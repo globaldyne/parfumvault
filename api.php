@@ -305,6 +305,7 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 				$response['success'] = false;
 				$response['message'] = 'Error skipping the ingredient';
 			}
+			header('Content-Type: application/json;');
 			echo json_encode($response);
 			return;
 		}
@@ -360,10 +361,9 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 				}
 			}else{
 				$sub_tot = $qr - $q;
-				if ($sub_tot < 0) {
-					    $sub_tot += abs($sub_tot);
-
-				}
+				//if ($sub_tot < 0) {
+				//	    $sub_tot += abs($sub_tot);
+				//}
 				if(mysqli_query($conn, "UPDATE makeFormula SET quantity='$sub_tot' WHERE fid = '$fid' AND id = '$id'")){
 					$response = array("success" => true, "message" => "Quantity updated ($q)");
 				}

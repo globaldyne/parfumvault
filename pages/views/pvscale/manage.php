@@ -67,7 +67,7 @@ if ($_GET['action'] == 'send2PVScale') {
             if ($responseData !== null) {
                 echo json_encode(['success' => true, 'message' => $responseData->message]);
             } else {
-                echo json_encode(['success' => false, 'error' => 'Error decoding JSON response']);
+                echo json_encode(['success' => false, 'error' => 'Error decoding remote response']);
             }
         }
         

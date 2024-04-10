@@ -121,6 +121,7 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $defCatClass, $qSt
 	$header = array('Ingredient', 'CAS#', 'Purity %', 'Dilutant', 'Quantity', 'Concentration %');
 	$hd_blends = array('Ingredient', 'Contains','CAS#', 'Concentration %');
 	$hd_extras = array('Ingredient', 'Notes');
+	$hd_replacements = array('Ingredient', 'Replacement');
 
 	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE fid = '$fid'"));
 	
@@ -234,6 +235,7 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $defCatClass, $qSt
 	$pdf->AliasNbPages();
 	$pdf->SetFont('Arial','BU',10);
 	$pdf->MultiCell(250,10,"Additional information \n");
+
 	//ADD INFO
 	foreach($hd_extras as $heading) {
 		$pdf->Cell(140,12,$heading,1,0,'C');
@@ -250,8 +252,34 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $defCatClass, $qSt
 		$pdf->Cell(140,8,$res_extras['ingredient'],1,0,'C');
 		$pdf->Cell(140,8,$res_extras['notes'] ?: "-",1,0,'C');
 	}	
+	if($formulaTable == "makeFormula"){
+		//Replacements table
+		$pdf->AddPage();
+		$pdf->AliasNbPages();
+		$pdf->SetFont('Arial','BU',10);
+		$pdf->MultiCell(250,10,"Replacements \n");
+		
+		
+		foreach($hd_replacements as $heading) {
+			$pdf->Cell(140,12,$heading,1,0,'C');
+		}
+		
+			$qRepl = mysqli_query($conn, "SELECT DISTINCT A.ingredient, B.replacement_id FROM formulas A JOIN makeFormula B ON A.ingredient = B.ingredient WHERE A.fid = '$fid' ORDER BY ingredient ASC");
+		
+		while ($res_repl = mysqli_fetch_array($qRepl)) {
+			$repInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE id = '".$res_repl['replacement_id']."'"));
+	
+			$pdf->Ln();
+			$pdf->SetFont('Arial','',8);
+			$pdf->Cell(140,8,$res_repl['ingredient'],1,0,'C');
+			$pdf->Cell(140,8,$repInfo['name'] ?: "-",1,0,'C');
+		}
+	}
 	
 	
+	
+	
+	//GEN PDF
 	$pdf = base64_encode($pdf->Output('S'));		
 	$docData = 'data:application/pdf;base64,' .$pdf;
 	if($formulaTable == "makeFormula"){

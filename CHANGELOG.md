@@ -1,5 +1,7 @@
 # CHANGELOG
 ### Version 9.9
+- Record replaced ingredients when finalising a formula in the generated PDF
+- Increase toast duration for formula making to 10 seconds
 - Make sure the correct ingredient's quantity is reset when reseting an ingredient in Formula make which is replaced
 - Update bottle add modal
 - Prevent illegal characters from a bottle name

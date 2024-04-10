@@ -27,9 +27,10 @@ while($replacements = mysqli_fetch_array($reps)){
 if($_GET['replacementsOnly']){
 	$i = 0;
 	foreach ($replacement as $rep) { 
-		$r['id'] = (int)$rep['ing_id'];
-		$r['name'] = (string)$rep['ing_name'];
-	
+		$r['id'] = (int)$rep['ing_rep_id']?:$rep['ing_id'];
+		$r['name'] = (string)$rep['ing_rep_name']?:$rep['ing_name'];
+		$r['stock'] = getIngStock($rep['ing_rep_id']?:$rep['ing_id'],0,$conn);
+		
 		$rx[]=$r;
 		$i++;
 	}
