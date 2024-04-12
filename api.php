@@ -32,7 +32,7 @@ if (isset($_REQUEST['login']) && isset($_REQUEST['key'])){
 	if(apiCheckAuth($key, $conn) == true){
 		$response['status'] = "Success";
 	}else{
-		$response['status'] = "Failed";
+		$response['status'] = "Auth failed";
 	}
 	header('Content-Type: application/json; charset=utf-8');
     echo json_encode($response);
@@ -44,7 +44,7 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 	$_REQUEST['do'] = strtolower(mysqli_real_escape_string($conn, $_REQUEST['do']));
 
 	if(apiCheckAuth($key, $conn) == false){
-		$response['status'] = "Failed";
+		$response['status'] = "Auth failed";
 		header('Content-Type: application/json; charset=utf-8');
 		echo json_encode($response);
 		return;
@@ -301,6 +301,7 @@ if($_REQUEST['key'] && $_REQUEST['do']){
 			if(mysqli_query($conn, "UPDATE makeFormula SET skip = '1', notes = '$notes' WHERE fid = '$fid' AND id = '$id'")){
 				$response['success'] = true;
 				$response['message'] = $_REQUEST['ing'].' skipped from the formulation';
+				file_put_contents($tmp_path.'reload_signal.txt', 'reload');
 			} else {
 				$response['success'] = false;
 				$response['message'] = 'Error skipping the ingredient';
