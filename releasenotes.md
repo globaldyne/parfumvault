@@ -1,11 +1,11 @@
-Whats New in v9.8
+Whats New in v9.9
 --------------------------
-- Added phpMyAdmin definition in the docker compose
-- Added PV Url in settings, you have to update it according to your current setup
-- Added config / integration for the PV scale
-- Scheduled formulas improvements
-- Added a low stock icon in formula view
-- Added an automated backup to Google Drive solution - Currently not publicly available
-- Info message replaced with a toast style message
-- IFRA Lib under the hood db improvements
+- Record replaced ingredients when finalising a formula in the generated PDF
+- Increase toast duration for formula making to 10 seconds
+- Update view for bottle add modal window
+- Choose a replacement material when making a formula and update stock and final documents automatically
+- Skip a mterial when you making a formula
+- Increase update interval check from PV Scale to 5s
+- Added separate notes field for Formula Make
+- When a formula is marked as completed it generates a document in formula attachments
 - For full details please refer to the CHANGELOG

@@ -13,6 +13,33 @@ require_once(__ROOT__.'/func/searchIFRA.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/getIngStock.php');
 
+if($_GET['replacementsOnly']){
+	$getAllIng = mysqli_query($conn, "SELECT id,name FROM ingredients");
+	while($allIng = mysqli_fetch_array($getAllIng)){
+		$ingredient[] = $allIng;
+	}
+	$i = 0;
+	foreach ($ingredient as $rep) { 
+		$r['id'] = (int)$rep['id'];
+		$r['name'] = (string)$rep['name'];
+		$r['stock'] = getIngStock($rep['id'],0,$conn);
+		
+		$rx[]=$r;
+		$i++;
+	}
+	
+	$response = array(
+  		"data" => $rx
+	);
+	
+	if(empty($rx)){
+		$response['data'] = array("No results");
+	}
+	header('Content-Type: application/json; charset=utf-8');
+	echo json_encode($response);
+	return;
+}
+
 $genIng = mysqli_fetch_array(mysqli_query($conn, "SELECT name,cas,notes,odor FROM ingredients WHERE id  = '$id'"));
 $getIFRA = mysqli_fetch_array(mysqli_query($conn, "SELECT image,amendment,cas_comment,formula,synonyms,cat4,risk FROM IFRALibrary WHERE cas = '".$genIng['cas']."'"));
 
@@ -23,6 +50,8 @@ $reps = mysqli_query($conn,"SELECT ing_rep_name,ing_rep_id FROM ingReplacements 
 while($replacements = mysqli_fetch_array($reps)){
 		$replacement[] = $replacements;
 }
+
+
 ?>
 
 <div class="card shadow mb-4">

@@ -48,11 +48,14 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
       <script src="/js/datatables.min.js"></script>
       <link href="/css/datatables.min.css" rel="stylesheet"/>
       <link href="/css/vault.css" rel="stylesheet">
+      <link href="/css/select2.css" rel="stylesheet">
+
       <script src="/js/tableHTMLExport.js"></script>
       <script src="/js/jspdf.min.js"></script>
       <script src="/js/jspdf.plugin.autotable.js"></script>
       <script src="/js/bootbox.min.js"></script>
-    
+      <script src="/js/select2.js"></script> 
+
       <style>
         .table {
             --bs-table-bg:  initial;
@@ -86,7 +89,8 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
       </style>
     </head>
     
-    
+    <body id="page-top">
+
     
     <div id="content-wrapper" class="d-flex flex-column">
         <div class="container-fluid">
@@ -139,7 +143,9 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
     <script>
     var myFNAME = "<?=$meta['name']?>";
     $(document).ready(function() {
-        
+        $('#liveToast').toast({
+  			delay: 10000
+		});
         var tdDataPending = $('#tdDataPending').DataTable( {
         columnDefs: [
             { className: 'pv_vertical_middle text-center', targets: '_all' },
@@ -197,6 +203,9 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
               if (data.toAdd == 0) {
                   $(row).find('td:eq(0),td:eq(1),td:eq(2),td:eq(3)').addClass('strikeout');
               }
+			  if (data.toSkip == 1) {
+                  $(row).find('td:eq(0),td:eq(1),td:eq(2),td:eq(3)').addClass('skipped');
+              }
               $(row).addClass('pv-zoom');
          },
          order: [[ 0, 'asc' ]],
@@ -218,7 +227,7 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
         	rowClickedFunction(rowData);
     	});
         <?php } ?>
-    });
+  
     
 	
     function ingredient(data, type, row){
@@ -239,12 +248,15 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
     function actions(data, type, row){
         var data;
         //if (row.quantity != row.originalQuantity) {
-            data = '<i id="undo_add" data-row-id="'+row.id+'" data-ingredient="'+row.ingredient+'" data-originalQuantity="'+row.originalQuantity+'" data-ingID = '+row.ingID+' class="mr fas fa-undo pv_point_gen" title="Reset original quantity for '+row.ingredient+'"></i>';
+            data = '<i id="undo_add" data-row-id="'+row.id+'" data-ingredient="'+row.ingredient+'" data-originalQuantity="'+row.originalQuantity+'" data-rep-name = "'+row.repName+'" data-rep-id = "'+row.repID+'" data-ingID = "'+row.ingID+'" class="mr fas fa-undo pv_point_gen" title="Reset original quantity for '+row.ingredient+'"></i>';
         //}
         
-        if (row.toAdd == 1) {
+        if (row.toAdd == 1 && row.toSkip == 0) {
             data += '<i data-bs-toggle="modal" data-bs-target="#confirm_add" data-quantity="'+row.quantity+'" data-ingredient="'+row.ingredient+'" data-row-id="'+row.id+'" data-ing-id="'+row.ingID+'" data-qr="'+row.quantity+'" class="mr fas fa-check pv_point_gen" title="Confirm add '+row.ingredient+'"></i>';
-        }
+			
+           data += '<i data-bs-toggle="modal" data-bs-target="#confirm_skip" data-quantity="'+row.quantity+'" data-ingredient="'+row.ingredient+'" data-row-id="'+row.id+'" data-ing-id="'+row.ingID+'" data-qr="'+row.quantity+'" class="mr fas fa-forward pv_point_gen" title="Skip '+row.ingredient+'"></i>';
+
+		}
         
                           
         data += '<i data-ingredient="'+row.ingredient+'" data-quantity="'+row.quantity+'" data-concentration="'+row.concentration+'" data-ingID="'+row.ingID+'" id="addToCart" class="mr fas fa-shopping-cart pv_point_gen"></i>'; 
@@ -269,8 +281,39 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
         return st;
     }
     
+	function reload_data() {
+        $('#tdDataPending').DataTable().ajax.reload(null, true);
+    }
+    
+	
 	<?php if($settings['pv_scale_enabled']) { ?>
+		function pollReloadSignal() {
+			setInterval(function() {
+				$.ajax({
+					url: '/pages/views/pvscale/manage.php?action=check_reload_signal',
+					type: 'GET',
+					success: function(response) {
+						if (response === 'reload') {
+							reload_data();
+							$.ajax({
+								url: '/pages/views/pvscale/manage.php?action=update_reload_signal',
+								type: 'GET'
+							});
+						}
+					},
+					error: function(xhr, status, error) {
+						console.error(xhr.responseText);
+					}
+				});
+			}, 5000);
+		}
+		
+		pollReloadSignal();
+
+			
     function rowClickedFunction(data) {
+		$('#toast-title').html('<i class="fa-solid fa-circle-info mr-2"></i>Connecting to the PV Scale...');
+		$('.toast-header').removeClass().addClass('toast-header alert-warning');
 		$.ajax({
 			type: 'POST',
 			url: "/pages/views/pvscale/manage.php?action=send2PVScale",
@@ -281,36 +324,47 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
 						"fid": data.fid,
 						"name": data.name,
 						"cas" : data.cas,
+						"odor" : data.odor,
 						"ingredient": data.ingredient,
 						"ingredient_id": data.ingID,
 						"concentration": data.concentration,
 						"dilutant": "-",
-						"quantity": data.quantity
+						"quantity": data.quantity,
+						"stock" : data.inventory.stock,
+						"mUnit" : data.inventory.mUnit,
+						"pending" : data.toAdd,
+						"ApiKey" : "<?php echo $settings['api_key'];?>"
 					},
 				],
 				"pvMeta": {
 					"ingredients": 1,
-					"host": "<?=$settings['pv_host']?>"
+					"host": "<?=$settings['pv_host']?>",
+					"mUnit" : "<?php echo $settings['mUnit'];?>"
 				}
 			}),
 			contentType: 'application/json',
 			dataType: 'json',
 			success: function(data) {
-				$('#msg').html(data);
+				if(data.success == true){
+					$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>Scale data updated');
+					$('.toast-header').removeClass().addClass('toast-header alert-success');
+				}else if(data.success == false){
+					$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+					$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				}
 			},
 			error: function(err) {
-				data = '<div class="alert alert-danger">Unable to get ingredient info</div>';
-				$('#msg').html(err);
-			}
+				//console.log(err);
+				$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>Unable to communicate with the scale.');
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			},
+			timeout: 3000
 		});
-
+		$('.toast').toast('show');
     };
 	<?php } ?>
 	
-    function reload_data() {
-        $('#tdDataPending').DataTable().ajax.reload(null, true);
-    }
-    
+  
     $('#tdDataPending').on('click', '[id*=ingInfo]', function () {
         var id = $(this).data('id');
         var name = $(this).data('name');
@@ -342,7 +396,9 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
     $('#print').click(() => {
         $('#tdDataPending').DataTable().button(0).trigger();
     });
-    
+	
+    var repName;
+	var repID;
     $('#tdDataPending').on('click', '[data-bs-target*=confirm_add]', function () {
         $('#errMsg').html('');																
         $("#ingAdded").text($(this).attr('data-ingredient'));
@@ -352,11 +408,108 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
         $("#qr").text($(this).attr('data-qr'));
         $("#updateStock").prop( "checked", true );
         $("#notes").val('');
+		$("#collapseAdvanced").removeClass('show');
+		
+		$('#msgReplace').html('');
+		$("#replacement").val('');
+	
+		var ingSrcName = $(this).attr('data-ingredient')
+		var ingSrcID = $(this).attr('data-ing-id')	
+		
+		repName = "";
+		repID = "";
+		
+		$("#replacement").select2({
+			width: '100%',
+			placeholder: 'Search for ingredient (name)..',
+			allowClear: true,
+			dropdownAutoWidth: true,
+			containerCssClass: "replacement",
+			dropdownParent: $('#confirm_add .modal-content'),
+			templateResult: formatIngredients,
+			templateSelection: formatIngredientsSelection,
+			ajax: {
+				url: '/pages/views/ingredients/getIngInfo.php',
+				dataType: 'json',
+				type: 'GET',
+				delay: 100,
+				quietMillis: 250,
+				data: function (params) {
+					return {
+						ingID: ingSrcID,
+						replacementsOnly: true,
+						search: params.term
+					};
+				},
+				processResults: function(data) {
+					return {
+						results: $.map(data.data, function(obj) {
+						  return {
+							id: obj.id,
+							stock: obj.stock,
+							name: obj.name,
+						  }
+						})
+					};
+				},
+				cache: false,
+				
+			}
+			
+		}).on('select2:selecting', function (e) {
+			repName = e.params.args.data.name;
+			repID = e.params.args.data.id;
+		});
     });
     
-     
+	function formatIngredients (ingredientData) {
+		if (ingredientData.loading) {
+			return ingredientData.name;
+		}
+	 
+		//extrasShow();
+	
+		if (!ingredientData.name){
+			return 'No replacement found...';
+		}
+		
+		
+		var $container = $(
+			"<div class='select_result_igredient clearfix'>" +
+			  "<div class='select_result_igredient_meta'>" +
+				"<div class='select_igredient_title'></div>" +
+				"<span id='stock'></span></div>"+
+			  "</div>" +
+			"</div>"
+		  );
+		
+		  $container.find(".select_igredient_title").text(ingredientData.name);
+		  if(ingredientData.stock  > 0){
+		  	$container.find("#stock").text('In stock ('+ingredientData.stock+')');
+			$container.find("#stock").attr("class", "stock badge badge-instock");
+		  }else{
+			$container.find("#stock").text('Not in stock ('+ingredientData.stock+')');
+			$container.find("#stock").attr("class", "stock badge badge-nostock");
+		  }
+
+		  return $container;
+	}
+	
+	
+	function formatIngredientsSelection (ingredientData) {
+		return ingredientData.name;
+	}
+	
+    $('#tdDataPending').on('click', '[data-bs-target*=confirm_skip]', function () {
+        $('#errMsg').html('');																
+        $("#ingSkipped").text($(this).attr('data-ingredient'));
+        $("#ingID").text($(this).attr('data-ing-id'));
+        $("#idRow").text($(this).attr('data-row-id'));
+        $("#notes").val('');
+    });
+	
     //UPDATE AMOUNT
-    function addedToFormula() {
+	$('#addedToFormula').click(function() {
         $.ajax({ 
         url: '/pages/manageFormula.php', 
         type: 'POST',
@@ -368,7 +521,8 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
             updateStock: $("#updateStock").is(':checked'),
             ing: $("#ingAdded").text(),
             id: $("#idRow").text(),
-    
+    		repName: repName,
+			repID: repID,
             ingId: $("#ingID").text(),
             fid: "<?php echo $fid; ?>",
             },
@@ -386,9 +540,37 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
 			}
         }
       });
-    };
-    
-    
+    });
+	
+    //SKIP ADD
+	$('#skippedFromFormula').click(function() {
+        $.ajax({ 
+        url: '/pages/manageFormula.php', 
+        type: 'POST',
+        data: {
+            action: "skipMaterial",
+            notes: $("#skip_notes").val(),
+            ing: $("#ingSkipped").text(),
+            id: $("#idRow").text(),
+            ingId: $("#ingID").text(),
+            fid: "<?php echo $fid; ?>",
+            },
+        dataType: 'json',
+        success: function (data) {
+			if(data.success){
+				$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+				$('.toast-header').removeClass().addClass('toast-header alert-success');
+				$('#confirm_skip').modal('toggle');
+				reload_data();
+				$('.toast').toast('show');
+			} else if(data.error) {
+				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				$('#errMsg').html(msg);
+			}
+        }
+      });
+    });
+    //ADD TO CART
     $('#tdDataPending').on('click', '[id*=addToCart]', function () {
     $.ajax({ 
         url: '/pages/manageFormula.php', 
@@ -435,6 +617,9 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
         d.ID = $(this).attr('data-row-id');
         d.ingName = $(this).attr('data-ingredient');
         d.ingID = $(this).attr('data-ingID');
+		d.repID = $(this).attr('data-rep-id');
+		d.repName = $(this).attr('data-rep-name');
+
         d.originalQuantity = $(this).attr('data-originalQuantity');
         bootbox.dialog({
            title: "Confirm reset quantity",
@@ -454,6 +639,8 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
                         undo: 1,
                         ing: d.ingName,
                         ingID: d.ingID,
+						repID: d.repID,
+						repName: d.repName,
                         originalQuantity: d.originalQuantity,
                         resetStock: $("#resetStock").is(':checked'),
                         ID: d.ID
@@ -534,7 +721,8 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
         
         });
     });
-    
+	
+  });//DOC END
     
     </script>
     <script src="/js/validate-session.js"></script>
@@ -576,7 +764,6 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
         </div>
         <div class="modal-body">
         <div id="errMsg"></div>
-            <form action="javascript:addedToFormula()" method="GET" target="_self">
             
               <div class="form-row">
                 <div class="form-group col-md-6">
@@ -593,21 +780,60 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
                     <label class="form-check-label" for="updateStock">Update stock</label>
                 </div>
               </div>
-              <div class="dropdown-divider"></div>
+              <hr class="border border-default border-1 opacity-75">
               
               <div class="form-group">
                 <label for="notes">Notes</label>
                 <textarea class="form-control" id="notes" rows="3"></textarea>
               </div>
-    
+              <hr class="border border-default border-1 opacity-75">
+    		  <a class="link-primary" data-bs-toggle="collapse" href="#collapseAdvanced" aria-expanded="false" aria-controls="collapseAdvanced">Advanced</a>
+              
+                <div class="collapse" id="collapseAdvanced">
+                
+                <div class="card card-body">
+        		  <label for="replacement" class="form-label">Select a replacement</label>
+   				  <select name="replacement" id="replacement" class="replacement pv-form-control"></select>
+  				</div>
+                </div>
+              
+              <hr class="border border-default border-1 opacity-75">
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <input type="submit" name="button" class="btn btn-primary" id="button" value="Confirm">
+                <input type="submit" name="addedToFormula" class="btn btn-primary" id="addedToFormula" value="Confirm">
               </div>
          
-            </form>
         </div>
       </div>
     </div>
   </div>
+  
+      <!-- Modal Skip material-->
+    <div class="modal fade" id="confirm_skip" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="confirm_skip" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+          <div style="display: none;" id="ingID"></div>
+          <div style="display: none;" id="idRow"></div>
+          <h5 class="modal-title" id="ingSkipped"></h5>
+        </div>
+        <div class="modal-body">
+        <div id="errMsg"></div>
+              
+          <div class="form-group">
+            <label for="notes">Notes</label>
+            <textarea class="form-control" id="skip_notes" rows="3"></textarea>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <input type="submit" name="skippedFromFormula" class="btn btn-primary" id="skippedFromFormula" value="Skip">
+          </div>
+         
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  </body>
 </html>

@@ -449,7 +449,7 @@ if($_POST['update_bottle_data']){
 	}
 		
 	$id = $_POST['bottle_id'];
-	$name = $_POST['name'];
+	$name = mysqli_real_escape_string($conn, $_POST['name']);
 	$ml = $_POST['size'];
 	$price = $_POST['price'];
 	$height = $_POST['height'];

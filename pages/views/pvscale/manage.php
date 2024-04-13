@@ -8,7 +8,16 @@ require_once(__ROOT__.'/inc/settings.php');
 
 $PVSCALE = $settings['pv_scale_host'];
 
+if ($_GET['action'] == 'check_reload_signal'){
+	$reloadSignal = file_get_contents($tmp_path.'reload_signal.txt');
+	echo $reloadSignal;
+	return;
+}
 
+if ($_GET['action'] == 'update_reload_signal'){
+	file_put_contents($tmp_path.'reload_signal.txt', 'noreload');;
+	return;
+}
 
 if ($_GET['action'] == 'version'){
 	$url = "http://$PVSCALE/version";
@@ -58,7 +67,7 @@ if ($_GET['action'] == 'send2PVScale') {
             if ($responseData !== null) {
                 echo json_encode(['success' => true, 'message' => $responseData->message]);
             } else {
-                echo json_encode(['success' => false, 'error' => 'Error decoding JSON response']);
+                echo json_encode(['success' => false, 'error' => 'Error decoding remote response']);
             }
         }
         

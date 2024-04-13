@@ -49,7 +49,7 @@ while ($suppliers = mysqli_fetch_array($sup)){
 
 <!-- ADD BOTTLE MODAL-->
 <div class="modal fade" id="addBottle" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="addBottle" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Add Bottle</h5>
@@ -59,57 +59,60 @@ while ($suppliers = mysqli_fetch_array($sup)){
       </div>
       <div class="modal-body">
       <div id="bottle_inf"></div>
-        <p>
-        Name: 
-          <input class="form-control" name="name" type="text" id="name" />
-        </p>
-        <p>            
-        Size (ml):
-          <input class="form-control" name="size" type="text" id="size" />
-        </p>
-        <p>
-        Price:
-          <input class="form-control" name="price" type="text" id="price" />
-        </p>
- 		<p>
-        Height:
-          <input class="form-control" name="height" type="text" id="height" />
-        </p>
-        <p>
-        Width:
-          <input class="form-control" name="width" type="text" id="width" />
-        </p>
-        <p>
-        Diameter:
-          <input class="form-control" name="diameter" type="text" id="diameter" />
-        </p>
-        <p>Stock (pieces): 
-          <input class="form-control" name="pieces" type="text" id="pieces" />
-        </p>
-        <p>
-        Notes:
-          <input class="form-control" name="notes" type="text" id="notes" />
-        </p>
-        <p>
-        Supplier:
-          <select name="supplier" id="supplier" class="form-control">
-            <option value="" selected></option>
-            <?php
-            foreach($supplier as $sup) {
-                echo '<option value="'.$sup['name'].'">'.$sup['name'].'</option>';
-            }
-            ?>
-          </select>
-        </p>
-        <p>
-        Supplier URL:
-          <input class="form-control" name="supplier_link" type="text" id="supplier_link" />
-        </p>
-        <p>
-        Image:
-        <input type="file" name="pic" id="pic" class="form-control" />
-    	</p>            
-        <div class="dropdown-divider"></div>
+      
+      	  <div class="row g-3">
+          <div class="col-md-12">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control" name="name" id="name" required>
+          </div>
+          <div class="col-md-4">
+            <label for="size" class="form-label">Size (ml)</label>
+          	<input type="text" class="form-control" name="size"  id="size" required>
+          </div>
+          <div class="col-md-4">
+            <label for="price" class="form-label">Price</label>
+            <input type="text" class="form-control" name="price"  id="price" required>
+          </div>
+          <div class="col-md-4">
+            <label for="height" class="form-label">Height</label>
+	        <input type="text" class="form-control" name="height"  id="height" required>
+          </div>
+          <div class="col-md-4">
+            <label for="width" class="form-label">Width</label>
+          	<input type="text" class="form-control" name="width"  id="width" required>
+          </div>
+          <div class="col-md-4">
+            <label for="diameter" class="form-label">Diameter</label>
+            <input type="text" class="form-control" name="diameter" id="diameter" required>
+          </div>
+          <div class="col-md-4">
+            <label for="pieces" class="form-label">Stock (pieces)</label>
+            <input type="text" class="form-control" name="pieces" id="pieces" required>
+          </div>
+          <div class="col-md-12">
+            <label for="supplier" class="form-label">Supplier</label>
+            <select name="supplier" id="supplier" class="form-control">
+                <option value="" selected></option>
+                <?php
+                foreach($supplier as $sup) {
+                    echo '<option value="'.$sup['name'].'">'.$sup['name'].'</option>';
+                }
+                ?>
+          	</select>
+          </div>
+          <div class="col-md-12">
+            <label for="supplier_link" class="form-label">Supplier URL</label>
+            <input type="text" class="form-control" name="supplier_link" id="supplier_link" required>
+          </div>
+          <div class="col-md-12">
+            <label for="notes" class="form-label">Notes</label>
+            <input type="text" class="form-control" name="notes" id="notes" required>
+          </div>
+          <div class="col-12">
+            <input type="file" name="pic" id="pic" class="form-control" />
+          </div>
+        </div>      
+            
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
