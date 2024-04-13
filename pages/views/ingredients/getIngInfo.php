@@ -13,23 +13,16 @@ require_once(__ROOT__.'/func/searchIFRA.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/getIngStock.php');
 
-$genIng = mysqli_fetch_array(mysqli_query($conn, "SELECT name,cas,notes,odor FROM ingredients WHERE id  = '$id'"));
-$getIFRA = mysqli_fetch_array(mysqli_query($conn, "SELECT image,amendment,cas_comment,formula,synonyms,cat4,risk FROM IFRALibrary WHERE cas = '".$genIng['cas']."'"));
-
-$reps = mysqli_query($conn,"SELECT ing_rep_name,ing_rep_id FROM ingReplacements WHERE ing_name = '".$genIng['name']."'");
-	if (!mysqli_num_rows($reps)) { 
-		$reps = mysqli_query($conn,"SELECT ing_name,ing_id FROM ingReplacements WHERE ing_rep_name = '".$genIng['name']."'");
-	}
-while($replacements = mysqli_fetch_array($reps)){
-		$replacement[] = $replacements;
-}
-
 if($_GET['replacementsOnly']){
+	$getAllIng = mysqli_query($conn, "SELECT id,name FROM ingredients");
+	while($allIng = mysqli_fetch_array($getAllIng)){
+		$ingredient[] = $allIng;
+	}
 	$i = 0;
-	foreach ($replacement as $rep) { 
-		$r['id'] = (int)$rep['ing_rep_id']?:$rep['ing_id'];
-		$r['name'] = (string)$rep['ing_rep_name']?:$rep['ing_name'];
-		$r['stock'] = getIngStock($rep['ing_rep_id']?:$rep['ing_id'],0,$conn);
+	foreach ($ingredient as $rep) { 
+		$r['id'] = (int)$rep['id'];
+		$r['name'] = (string)$rep['name'];
+		$r['stock'] = getIngStock($rep['id'],0,$conn);
 		
 		$rx[]=$r;
 		$i++;
@@ -46,6 +39,19 @@ if($_GET['replacementsOnly']){
 	echo json_encode($response);
 	return;
 }
+
+$genIng = mysqli_fetch_array(mysqli_query($conn, "SELECT name,cas,notes,odor FROM ingredients WHERE id  = '$id'"));
+$getIFRA = mysqli_fetch_array(mysqli_query($conn, "SELECT image,amendment,cas_comment,formula,synonyms,cat4,risk FROM IFRALibrary WHERE cas = '".$genIng['cas']."'"));
+
+$reps = mysqli_query($conn,"SELECT ing_rep_name,ing_rep_id FROM ingReplacements WHERE ing_name = '".$genIng['name']."'");
+	if (!mysqli_num_rows($reps)) { 
+		$reps = mysqli_query($conn,"SELECT ing_name,ing_id FROM ingReplacements WHERE ing_rep_name = '".$genIng['name']."'");
+	}
+while($replacements = mysqli_fetch_array($reps)){
+		$replacement[] = $replacements;
+}
+
+
 ?>
 
 <div class="card shadow mb-4">
