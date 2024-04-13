@@ -488,12 +488,19 @@ if($_POST['action'] == 'delete' && $_POST['fid']){
 if($_POST['action'] == 'makeFormula' && $_POST['undo'] == '1'){
 	$q = trim($_POST['originalQuantity']);
 	$ingID = mysqli_real_escape_string($conn, $_POST['ingID']);
+	$repName = $_POST['repName'];
 
-	if(mysqli_query($conn, "UPDATE makeFormula SET toAdd = '1', overdose = '0', quantity = '".$_POST['originalQuantity']."' WHERE id = '".$_POST['ID']."'")){
-		$response['success'] = $_POST['ing'].'\'s quantity reset';
+	if(mysqli_query($conn, "UPDATE makeFormula SET replacement_id = '0', toAdd = '1', skip = '0', overdose = '0', quantity = '".$_POST['originalQuantity']."' WHERE id = '".$_POST['ID']."'")){
+		if(!empty($repName)) {
+			$msg = $repName."'s quantity reset";
+		}else{
+			$msg = $_POST['ing']."'s quantity reset";
+		}
+		$response['success'] = $msg;
 		
 		if($_POST['resetStock'] == "true"){
-			mysqli_query($conn, "UPDATE suppliers SET stock = stock + $q WHERE ingID = '$ingID' AND preferred = '1'");
+			$nIngID = $_POST['repID'] ?: $ingID;
+			mysqli_query($conn, "UPDATE suppliers SET stock = stock + $q WHERE ingID = '$nIngID' AND preferred = '1'");
 			$response['success'] .= "<br/><strong>Stock increased by ".$q.$settings['mUnit']."</strong>";
 		}
 		echo json_encode($response);
@@ -502,49 +509,61 @@ if($_POST['action'] == 'makeFormula' && $_POST['undo'] == '1'){
 }
 
 //MAKE FORMULA
-if($_POST['action'] == 'makeFormula' && $_POST['fid'] && $_POST['q'] && $_POST['qr'] && $_POST['id']){
+if($_POST['action'] == 'makeFormula' && $_POST['fid'] && $_POST['qr'] && $_POST['id']){
 	$fid = mysqli_real_escape_string($conn, $_POST['fid']);
 	$id = mysqli_real_escape_string($conn, $_POST['id']);
-	$ingID = mysqli_real_escape_string($conn, $_POST['ingId']);
+	
+
+	if($_POST['repID']) {
+		$repID = $_POST['repID'];
+		$ingID = $_POST['repID'];
+	} else {
+		$repID = 0;
+		$ingID = $_POST['ingId'];
+	}
+
+	$ingredient =  mysqli_real_escape_string($conn, $_POST['repName'] ?: $_POST['ing']);
+	
+	$notes = mysqli_real_escape_string($conn, $_POST['notes']) ?: "-";
+
 	$qr = trim($_POST['qr']);
+	$q = trim($_POST['q']);
+	
+	
 	if(!is_numeric($_POST['q'])){
-		$response['error'] = 'Invalid value';
+		$response['error'] = 'Invalid amount value';
 		echo json_encode($response);
 		return;
 	}
 						 
-	$q = trim($_POST['q']);
-	$notes = mysqli_real_escape_string($conn, $_POST['notes']);
 	
 	if($_POST['updateStock'] == "true"){
 		$getStock = mysqli_fetch_array(mysqli_query($conn, "SELECT stock,mUnit FROM suppliers WHERE ingID = '$ingID' AND preferred = '1'"));
 		if($getStock['stock'] < $q){
-			//$response['warning'] = 'Amount exceeds quantity available in stock ('.$getStock['stock'].$getStock['mUnit'].'). The maximum available will be deducted from stock';
-			//echo json_encode($response);
-			//return;
+			$w = "<p>Amount exceeds quantity available in stock (".$getStock['stock'].$getStock['mUnit']."). The maximum available will be deducted from stock</p>";
+			
 			$q = $getStock['stock'];
 		}
 		mysqli_query($conn, "UPDATE suppliers SET stock = stock - $q WHERE ingID = '$ingID' AND preferred = '1'");
 		$response['success'] .= "<br/><strong>Stock deducted by ".$q.$settings['mUnit']."</strong>";
 	}
 	
-	$q = trim($_POST['q']);
+	$q = trim($_POST['q']); //DIRTY HACK - TODO
+	
 	if($qr == $q){
-		if(mysqli_query($conn, "UPDATE makeFormula SET toAdd = '0' WHERE fid = '$fid' AND id = '$id'")){
-			$response['success'] = $_POST['ing'].' added!';
+		if(mysqli_query($conn, "UPDATE makeFormula SET replacement_id = '$repID', toAdd = '0', notes = '$notes' WHERE fid = '$fid' AND id = '$id'")){
+			$response['success'] = $ingredient.' added in the formula.'.$w;
+		} else {
+			$response['error'] = mysqli_error($conn);
 		}
 	}else{
 		$sub_tot = $qr - $q;
-		if(mysqli_query($conn, "UPDATE makeFormula SET quantity='$sub_tot' WHERE fid = '$fid' AND id = '$id'")){
-			$response['success'] = 'Formula updated!';
+		if(mysqli_query($conn, "UPDATE makeFormula SET  replacement_id = '$repID', quantity='$sub_tot', notes = '$notes' WHERE fid = '$fid' AND id = '$id'")){
+			$response['success'] = 'Formula updated';
 		}
 	}
 
-	if($notes){
-		$notes = "Formula make, ingredient: ".$_POST['ing']."\\n";
-		mysqli_query($conn, "UPDATE formulasMetaData SET notes = CONCAT(notes, '".$notes."') WHERE fid = '$fid'");
-	}
-	
+		
 	if($qr < $q){
 		if(mysqli_query($conn, "UPDATE makeFormula SET overdose = '$q' WHERE fid = '$fid' AND id = '$id'")){
 			$response['success'] = $_POST['ing'].' is overdosed, <strong>'.$q.'<strong> added';
@@ -559,6 +578,28 @@ if($_POST['action'] == 'makeFormula' && $_POST['fid'] && $_POST['q'] && $_POST['
 	echo json_encode($response);
 	return;
 }
+
+
+
+//SKIP MATERIAL FROM MAKE FORMULA
+if($_POST['action'] == 'skipMaterial' && $_POST['fid'] &&  $_POST['id']){
+	$fid = mysqli_real_escape_string($conn, $_POST['fid']);
+	$id = mysqli_real_escape_string($conn, $_POST['id']);
+	$ingID = mysqli_real_escape_string($conn, $_POST['ingId']);
+	$notes = mysqli_real_escape_string($conn, $_POST['notes']) ?: "-";
+
+	if(mysqli_query($conn, "UPDATE makeFormula SET skip = '1', notes = '$notes' WHERE fid = '$fid' AND id = '$id'")){
+		$response['success'] = $_POST['ing'].' skipped from the formulation';
+	} else {
+		$response['error'] = 'Error skipping the ingredient';
+	}
+	
+	echo json_encode($response);
+	return;
+}
+
+
+
 //MARK COMPLETE
 if($_POST['action'] == 'todo' && $_POST['fid'] && $_POST['markComplete']){
 	require_once(__ROOT__.'/libs/fpdf.php');

@@ -65,11 +65,14 @@ CREATE TABLE `makeFormula` (
  `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
  `ingredient` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
  `ingredient_id` INT NOT NULL,
+ `replacement_id` INT NOT NULL DEFAULT '0', 
  `concentration` decimal(5,2) DEFAULT 100.00,
  `dilutant` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
  `quantity` decimal(8,4) DEFAULT NULL,
  `overdose` double(8,4) NOT NULL DEFAULT 0.0000,
  `originalQuantity` double(8,4) DEFAULT NULL,
+ `notes` MEDIUMTEXT NULL,
+ `skip` INT NOT NULL DEFAULT '0', 
  `toAdd` int(11) NOT NULL,
  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;

@@ -361,43 +361,153 @@ if($_GET['action'] == 'restoreIngredients'){
 			echo json_encode($result);
 			return;
 		}
+		/*
+		foreach ($data['suppliers'] as $sup) {
+			$id = mysqli_real_escape_string($conn, $sup['id']);
+			$ingSupplierID = mysqli_real_escape_string($conn, $sup['ingSupplierID']);
+			$ingID = mysqli_real_escape_string($conn, $sup['ingID']);
+			$supplierLink = mysqli_real_escape_string($conn, $sup['supplierLink']);
+			$price = mysqli_real_escape_string($conn, $sup['price']);
+			$size = mysqli_real_escape_string($conn, $sup['size']);
+			$manufacturer = mysqli_real_escape_string($conn, $sup['manufacturer']);
+			$preferred = mysqli_real_escape_string($conn, $sup['preferred']);
+			$batch = mysqli_real_escape_string($conn, $sup['batch']);
+			$purchased = mysqli_real_escape_string($conn, $sup['purchased']);
+			$mUnit = mysqli_real_escape_string($conn, $sup['mUnit']);
+			$stock = mysqli_real_escape_string($conn, $sup['stock']);
+			$status = mysqli_real_escape_string($conn, $sup['status']);
+			$supplier_sku = mysqli_real_escape_string($conn, $sup['supplier_sku']);
+			$internal_sku = mysqli_real_escape_string($conn, $sup['internal_sku']);
+			$storage_location = mysqli_real_escape_string($conn, $sup['storage_location']);
 		
-		foreach ($data['compositions'] as $cmp ){				
-			mysqli_query($conn, "INSERT IGNORE INTO `allergens` (`ing`,`name`,`cas`,`ec`,`percentage`,`toDeclare`,`created`) VALUES ('".$cmp['ing']."','".$cmp['name']."','".$cmp['cas']."','".$cmp['ec']."','".$cmp['percentage']."','".$cmp['toDeclare']."', current_timestamp())");			
+			$sql = "INSERT IGNORE INTO `suppliers` (`id`,`ingSupplierID`,`ingID`,`supplierLink`,`price`,`size`,`manufacturer`,`preferred`,`batch`,`purchased`,`mUnit`,`stock`,`status`,`supplier_sku`,`internal_sku`,`storage_location`,`created_at`) 
+					VALUES ('$id','$ingSupplierID','$ingID','$supplierLink','$price','$size','$manufacturer','$preferred','$batch','$purchased','$mUnit','$stock','$status','$supplier_sku','$internal_sku','$storage_location',current_timestamp())";
+		
+			mysqli_query($conn, $sql);
 		}
-		
-		foreach ($data['suppliers'] as $sup ){				
-			
-			mysqli_query($conn, "INSERT IGNORE INTO `suppliers` (`id`,`ingSupplierID`,`ingID`,`supplierLink`,`price`,`size`,`manufacturer`,`preferred`,`batch`,`purchased`,`mUnit`,`stock`,`status`,`supplier_sku`,`internal_sku`,`storage_location`,`created_at`) VALUES ('".$sup['id']."','".$sup['ingSupplierID']."','".$sup['ingID']."','".$sup['supplierLink']."','".$sup['price']."','".$sup['size']."','".$sup['manufacturer']."', '".$sup['preferred']."', '".$sup['batch']."','".$sup['purchased']."','".$sup['mUnit']."','".$sup['stock']."','".$sup['status']."','".$sup['supplier_sku']."','".$sup['internal_sku']."','".$sup['storage_location']."',current_timestamp())");
-			
-		}
-		
-		foreach ($data['ingSuppliers'] as $is ){				
-			
-			if(!mysqli_query($conn, "INSERT IGNORE INTO `ingSuppliers` (`id`,`name`,`address`,`po`,`country`,`telephone`,`url`,`email`) VALUES ('".$is['id']."','".$is['name']."','".$is['address']."','".$is['po']."','".$is['country']."','".$is['telephone']."','".$is['url']."','".$is['email']."')")){
-				
-				$result['error'] = mysqli_error($conn);
-				echo json_encode($result);
-				return;
-			}				
-		}
-		
-		foreach ($data['ingredients'] as $ingredient ){				
-			$name = mysqli_real_escape_string($conn, $ingredient['name']);
-			$INCI = mysqli_real_escape_string($conn, $ingredient['INCI']);
-			$notes = mysqli_real_escape_string($conn, $ingredient['notes']);
 
-			$sql = "INSERT IGNORE INTO ingredients(id,name,INCI,cas,FEMA,type,strength,category,purity,einecs,reach,tenacity,chemical_name,formula,flash_point,notes,flavor_use,soluble,logp,cat1,cat2,cat3,cat4,cat5A,cat5B,cat5C,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12,profile,physical_state,allergen,odor,impact_top,impact_heart,impact_base,created,usage_type,noUsageLimit,byPassIFRA,isPrivate,molecularWeight) VALUES('".$ingredient['id']."','".$name."','".$INCI."','".$ingredient['cas']."','".$ingredient['FEMA']."','".$ingredient['type']."','".$ingredient['strength']."','".$ingredient['category']."','".$ingredient['purity']."','".$ingredient['einecs']."','".$ingredient['reach']."','".$ingredient['tenacity']."','".$ingredient['chemical_name']."','".$ingredient['formula']."','".$ingredient['flash_point']."','".$notes."','".$ingredient['flavor_use']."','".$ingredient['soluble']."','".$ingredient['logp']."','".$ingredient['cat1']."','".$ingredient['cat2']."','".$ingredient['cat3']."','".$ingredient['cat4']."','".$ingredient['cat5A']."','".$ingredient['cat5B']."','".$ingredient['cat5C']."','".$ingredient['cat6']."','".$ingredient['cat7A']."','".$ingredient['cat7B']."','".$ingredient['cat8']."','".$ingredient['cat9']."','".$ingredient['cat10A']."','".$ingredient['cat10B']."','".$ingredient['cat11A']."','".$ingredient['cat11B']."','".$ingredient['cat12']."','".$ingredient['profile']."','".$ingredient['physical_state']."','".$ingredient['allergen']."','".$ingredient['odor']."','".$ingredient['impact_top']."','".$ingredient['impact_heart']."','".$ingredient['impact_base']."','".$ingredient['created']."','".$ingredient['usage_type']."','".$ingredient['noUsageLimit']."','".$ingredient['byPassIFRA']."','".$ingredient['isPrivate']."','".$ingredient['molecularWeight']."')";
-			
-			if(mysqli_query($conn,$sql)){
-				$result['success'] = "Import complete";
-				unlink($target_path);
-			}else{
-				$result['error'] = "There was an error importing your JSON file ".mysqli_error($conn);
+		*/
+		foreach ($data['compositions'] as $cmp) {
+			// Prepare the statement
+			$stmt = mysqli_prepare($conn, "INSERT IGNORE INTO `allergens` (`ing`,`name`,`cas`,`ec`,`percentage`,`toDeclare`,`created`) VALUES (?, ?, ?, ?, ?, ?, current_timestamp())");
+			// Bind parameters
+			mysqli_stmt_bind_param($stmt, "ssssss", $cmp['ing'], $cmp['name'], $cmp['cas'], $cmp['ec'], $cmp['percentage'], $cmp['toDeclare']);
+			// Execute the statement
+			mysqli_stmt_execute($stmt);
+			// Close the statement
+			mysqli_stmt_close($stmt);
+		}
+
+		foreach ($data['suppliers'] as $sup) {
+			$id = mysqli_real_escape_string($conn, $sup['id']);
+			$ingSupplierID = mysqli_real_escape_string($conn, $sup['ingSupplierID']);
+			$ingID = mysqli_real_escape_string($conn, $sup['ingID']);
+			$supplierLink = mysqli_real_escape_string($conn, $sup['supplierLink']);
+			$price = mysqli_real_escape_string($conn, $sup['price']);
+			$size = mysqli_real_escape_string($conn, $sup['size']);
+			$manufacturer = mysqli_real_escape_string($conn, $sup['manufacturer']);
+			$preferred = mysqli_real_escape_string($conn, $sup['preferred']);
+			$batch = mysqli_real_escape_string($conn, $sup['batch']);
+			$purchased = mysqli_real_escape_string($conn, $sup['purchased']);
+			$mUnit = mysqli_real_escape_string($conn, $sup['mUnit']);
+			$stock = mysqli_real_escape_string($conn, $sup['stock']);
+			$status = mysqli_real_escape_string($conn, $sup['status']);
+			$supplier_sku = mysqli_real_escape_string($conn, $sup['supplier_sku']);
+			$internal_sku = mysqli_real_escape_string($conn, $sup['internal_sku']);
+			$storage_location = mysqli_real_escape_string($conn, $sup['storage_location']);
+		
+			$sql = "INSERT IGNORE INTO `suppliers` (`id`,`ingSupplierID`,`ingID`,`supplierLink`,`price`,`size`,`manufacturer`,`preferred`,`batch`,`purchased`,`mUnit`,`stock`,`status`,`supplier_sku`,`internal_sku`,`storage_location`,`created_at`) 
+					VALUES ('$id','$ingSupplierID','$ingID','$supplierLink','$price','$size','$manufacturer','$preferred','$batch','$purchased','$mUnit','$stock','$status','$supplier_sku','$internal_sku','$storage_location',current_timestamp())";
+		
+			mysqli_query($conn, $sql);
+		}
+
+		
+		foreach ($data['ingSuppliers'] as $is) {
+			$id = mysqli_real_escape_string($conn, $is['id']);
+			$name = mysqli_real_escape_string($conn, $is['name']);
+			$address = mysqli_real_escape_string($conn, $is['address']);
+			$po = mysqli_real_escape_string($conn, $is['po']);
+			$country = mysqli_real_escape_string($conn, $is['country']);
+			$telephone = mysqli_real_escape_string($conn, $is['telephone']);
+			$url = mysqli_real_escape_string($conn, $is['url']);
+			$email = mysqli_real_escape_string($conn, $is['email']);
+		
+			$sql = "INSERT IGNORE INTO `ingSuppliers` (`id`,`name`,`address`,`po`,`country`,`telephone`,`url`,`email`) 
+					VALUES ('$id','$name','$address','$po','$country','$telephone','$url','$email')";
+		
+			if (!mysqli_query($conn, $sql)) {
+				$result['error'] = mysqli_error($conn);
 				echo json_encode($result);
 				return;
 			}
 		}
+
+		
+		foreach ($data['ingredients'] as $ingredient) {
+			$id = mysqli_real_escape_string($conn, $ingredient['id']);
+			$name = mysqli_real_escape_string($conn, $ingredient['name']);
+			$INCI = mysqli_real_escape_string($conn, $ingredient['INCI']);
+			$cas = mysqli_real_escape_string($conn, $ingredient['cas']);
+			$FEMA = mysqli_real_escape_string($conn, $ingredient['FEMA']);
+			$type = mysqli_real_escape_string($conn, $ingredient['type']);
+			$strength = mysqli_real_escape_string($conn, $ingredient['strength']);
+			$category = mysqli_real_escape_string($conn, $ingredient['category']);
+			$purity = mysqli_real_escape_string($conn, $ingredient['purity']);
+			$einecs = mysqli_real_escape_string($conn, $ingredient['einecs']);
+			$reach = mysqli_real_escape_string($conn, $ingredient['reach']);
+			$tenacity = mysqli_real_escape_string($conn, $ingredient['tenacity']);
+			$chemical_name = mysqli_real_escape_string($conn, $ingredient['chemical_name']);
+			$formula = mysqli_real_escape_string($conn, $ingredient['formula']);
+			$flash_point = mysqli_real_escape_string($conn, $ingredient['flash_point']);
+			$notes = mysqli_real_escape_string($conn, $ingredient['notes']);
+			$flavor_use = mysqli_real_escape_string($conn, $ingredient['flavor_use']);
+			$soluble = mysqli_real_escape_string($conn, $ingredient['soluble']);
+			$logp = mysqli_real_escape_string($conn, $ingredient['logp']);
+			$cat1 = mysqli_real_escape_string($conn, $ingredient['cat1']);
+			$cat2 = mysqli_real_escape_string($conn, $ingredient['cat2']);
+			$cat3 = mysqli_real_escape_string($conn, $ingredient['cat3']);
+			$cat4 = mysqli_real_escape_string($conn, $ingredient['cat4']);
+			$cat5A = mysqli_real_escape_string($conn, $ingredient['cat5A']);
+			$cat5B = mysqli_real_escape_string($conn, $ingredient['cat5B']);
+			$cat5C = mysqli_real_escape_string($conn, $ingredient['cat5C']);
+			$cat6 = mysqli_real_escape_string($conn, $ingredient['cat6']);
+			$cat7A = mysqli_real_escape_string($conn, $ingredient['cat7A']);
+			$cat7B = mysqli_real_escape_string($conn, $ingredient['cat7B']);
+			$cat8 = mysqli_real_escape_string($conn, $ingredient['cat8']);
+			$cat9 = mysqli_real_escape_string($conn, $ingredient['cat9']);
+			$cat10A = mysqli_real_escape_string($conn, $ingredient['cat10A']);
+			$cat10B = mysqli_real_escape_string($conn, $ingredient['cat10B']);
+			$cat11A = mysqli_real_escape_string($conn, $ingredient['cat11A']);
+			$cat11B = mysqli_real_escape_string($conn, $ingredient['cat11B']);
+			$cat12 = mysqli_real_escape_string($conn, $ingredient['cat12']);
+			$profile = mysqli_real_escape_string($conn, $ingredient['profile']);
+			$physical_state = mysqli_real_escape_string($conn, $ingredient['physical_state']);
+			$allergen = mysqli_real_escape_string($conn, $ingredient['allergen']);
+			$odor = mysqli_real_escape_string($conn, $ingredient['odor']);
+			$impact_top = mysqli_real_escape_string($conn, $ingredient['impact_top']);
+			$impact_heart = mysqli_real_escape_string($conn, $ingredient['impact_heart']);
+			$impact_base = mysqli_real_escape_string($conn, $ingredient['impact_base']);
+			$created = mysqli_real_escape_string($conn, $ingredient['created']);
+			$usage_type = mysqli_real_escape_string($conn, $ingredient['usage_type']);
+			$noUsageLimit = mysqli_real_escape_string($conn, $ingredient['noUsageLimit']);
+			$byPassIFRA = mysqli_real_escape_string($conn, $ingredient['byPassIFRA']);
+			$isPrivate = mysqli_real_escape_string($conn, $ingredient['isPrivate']);
+			$molecularWeight = mysqli_real_escape_string($conn, $ingredient['molecularWeight']);
+		
+			$sql = "INSERT IGNORE INTO ingredients(id,name,INCI,cas,FEMA,type,strength,category,purity,einecs,reach,tenacity,chemical_name,formula,flash_point,notes,flavor_use,soluble,logp,cat1,cat2,cat3,cat4,cat5A,cat5B,cat5C,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12,profile,physical_state,allergen,odor,impact_top,impact_heart,impact_base,created,usage_type,noUsageLimit,byPassIFRA,isPrivate,molecularWeight) 
+					VALUES ('$id','$name','$INCI','$cas','$FEMA','$type','$strength','$category','$purity','$einecs','$reach','$tenacity','$chemical_name','$formula','$flash_point','$notes','$flavor_use','$soluble','$logp','$cat1','$cat2','$cat3','$cat4','$cat5A','$cat5B','$cat5C','$cat6','$cat7A','$cat7B','$cat8','$cat9','$cat10A','$cat10B','$cat11A','$cat11B','$cat12','$profile','$physical_state','$allergen','$odor','$impact_top','$impact_heart','$impact_base','$created','$usage_type','$noUsageLimit','$byPassIFRA','$isPrivate','$molecularWeight')";
+		
+			if(mysqli_query($conn,$sql)){
+				$result['success'] = "Import complete";
+				unlink($target_path);
+			} else {
+				$result['error'] = "There was an error importing your JSON file " . mysqli_error($conn);
+				echo json_encode($result);
+				return;
+			}
+		}
+
 		
 		
 		

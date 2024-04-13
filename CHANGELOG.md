@@ -1,4 +1,21 @@
 # CHANGELOG
+### Version 9.9
+- Record replaced ingredients when finalising a formula in the generated PDF
+- Increase toast duration for formula making to 10 seconds
+- Make sure the correct ingredient's quantity is reset when reseting an ingredient in Formula make which is replaced
+- Update bottle add modal
+- Prevent illegal characters from a bottle name
+- Fix json import for ingredients if values contains illegal chars
+- Implement signaling for formula reload when its updated via the API
+- Prevent negative value when updating Make Formula data via the API
+- Add odor to the data sent to PV Scale
+- Increase update interval check from PV Scale to 5s
+- Added separate notes field for Formula Make
+- When a formula is marked as completed it generates a document in formula attachments
+- Added API key to the data sent to PV Scale
+- Add material skip when making a formula
+- Add advanced material replacement when making a formula
+
 ### Version 9.8
 - Added phpMyAdmin definition in the docker compose
 - Update general settings to use toast messages
