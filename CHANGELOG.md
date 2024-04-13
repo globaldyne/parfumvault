@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 10.0
+- Fix search when replacing a material
 
 ### Version 9.9
 - Record replaced ingredients when finalising a formula in the generated PDF
