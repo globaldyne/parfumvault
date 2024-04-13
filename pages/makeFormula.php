@@ -790,9 +790,7 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
     		  <a class="link-primary" data-bs-toggle="collapse" href="#collapseAdvanced" aria-expanded="false" aria-controls="collapseAdvanced">Advanced</a>
               
                 <div class="collapse" id="collapseAdvanced">
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-  					<strong>Only possible replacements will be listed.</strong>
-				</div>
+                
                 <div class="card card-body">
         		  <label for="replacement" class="form-label">Select a replacement</label>
    				  <select name="replacement" id="replacement" class="replacement pv-form-control"></select>
