@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 10.0
+
 ### Version 9.9
 - Record replaced ingredients when finalising a formula in the generated PDF
 - Increase toast duration for formula making to 10 seconds

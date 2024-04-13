@@ -1,11 +1,3 @@
-Whats New in v9.9
+Whats New in v10.0
 --------------------------
-- Record replaced ingredients when finalising a formula in the generated PDF
-- Increase toast duration for formula making to 10 seconds
-- Update view for bottle add modal window
-- Choose a replacement material when making a formula and update stock and final documents automatically
-- Skip a mterial when you making a formula
-- Increase update interval check from PV Scale to 5s
-- Added separate notes field for Formula Make
-- When a formula is marked as completed it generates a document in formula attachments
 - For full details please refer to the CHANGELOG
