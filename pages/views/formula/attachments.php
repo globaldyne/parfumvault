@@ -27,6 +27,8 @@ $id = mysqli_real_escape_string($conn, $_POST["id"]);
           <th>Name</th>
           <th>File</th>
           <th>Notes</th>
+          <th>Size</th>
+          <th>Created</th>
           <th></th>
       </tr>
    </thead>
@@ -39,7 +41,7 @@ $('[data-bs-toggle="tooltip"]').tooltip();
 var tdAttachments = $('#tdAttachments').DataTable( {
 	columnDefs: [
 		{ className: 'text-center', targets: '_all' },
-		{ orderable: false, targets: [3] }
+		{ orderable: false, targets: [4] }
 	],
 	dom: 'lfrtip',
 	processing: true,
@@ -60,6 +62,9 @@ var tdAttachments = $('#tdAttachments').DataTable( {
 			  { data : 'name', title: 'Name', render: name },
 			  { data : 'docData', title: 'File', render: docData},
 			  { data : 'notes', title: 'Notes', render: notes},
+			  			  { data : 'docSize', title: 'Size', render: docSize},
+
+			  { data : 'created', title: 'Created', render: created},
 			  { data : null, title: '', render: actions},		   
 			],
 	
@@ -81,8 +86,17 @@ function docData(data, type, row){
 	return '<a href="/pages/viewDoc.php?id='+row.id+'" target="_blank" class="fa fa-file-alt"></a>';    
 }
 
+function docSize(data, type, row){
+	return '<a href="#" class="pv_point_gen">'+row.docSize+'</a>';    
+}
+
+
 function notes(data, type, row){
 	return '<a href="#" class="notes pv_point_gen" data-name="notes" data-type="textarea" data-pk="'+row.id+'">'+row.notes+'</a>';    
+}
+
+function created(data, type, row){
+	return '<a href="#" class="pv_point_gen">'+row.created+'</a>';    
 }
 
 function actions(data, type, row){

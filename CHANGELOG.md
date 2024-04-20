@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 10.0
+- Added document size and created date in fotmula attachements page
 - Fix search when replacing a material
 
 ### Version 9.9
