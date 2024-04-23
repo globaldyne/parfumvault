@@ -62,8 +62,7 @@ var tdAttachments = $('#tdAttachments').DataTable( {
 			  { data : 'name', title: 'Name', render: name },
 			  { data : 'docData', title: 'File', render: docData},
 			  { data : 'notes', title: 'Notes', render: notes},
-			  			  { data : 'docSize', title: 'Size', render: docSize},
-
+			  { data : 'docSize', title: 'Size', render: docSize},
 			  { data : 'created', title: 'Created', render: created},
 			  { data : null, title: '', render: actions},		   
 			],
@@ -172,12 +171,16 @@ $('#addAttachment').on('click', '[id*=doc_upload]', function () {
     var files = $('#doc_file')[0].files;
     var doc_name = $('#doc_name').val();
     var doc_notes = $('#doc_notes').val();
+	var isBatch = 0;
+	if($("#isBatch").prop("checked")){
+		isBatch = 1;
+	}
 
     if(files.length > 0 ){
 		fd.append('doc_file',files[0]);
 
 			$.ajax({
-              url: '/pages/upload.php?type=5&doc_name=' + btoa(doc_name) + '&doc_notes=' + btoa(doc_notes) + '&id=<?=$id;?>',
+              url: '/pages/upload.php?type=5&isBatch=' + isBatch + '&doc_name=' + btoa(doc_name) + '&doc_notes=' + btoa(doc_notes) + '&id=<?=$id;?>',
               type: 'POST',
               data: fd,
 			  dataType: 'json',
@@ -222,19 +225,27 @@ function reload_doc_data() {
       </div>
       <div class="modal-body">
       <div id="doc_inf"></div>
-            <p>
-            Attachment name: 
+      <div class="row">
+         <div class="mb-3">
+            <label for="doc_name" class="form-label">Attachment name</label>
             <input class="form-control" name="doc_name" type="text" id="doc_name" />
-            </p>
-            <p>
-            Notes:
+         </div>
+         <div class="mb-3">
+            <label for="doc_notes" class="form-label">Notes</label>
             <input class="form-control" name="doc_notes" type="textarea" id="doc_notes" />
-            </p>
-            <p>
-            File:
+         </div>
+         <div class="mb-3">
+            <label for="doc_file" class="form-label">File</label>
             <input type="file" name="doc_file" id="doc_file" class="form-control" />
-            </p>            
-            <div class="dropdown-divider"></div>
+         </div>
+         <div class="mb-3">
+            <input type="checkbox" class="form-check-input" id="isBatch">
+            <label class="form-check-label" for="isBatch">This is a batch file</label>
+         </div>
+              
+      </div> 
+        
+      <div class="dropdown-divider"></div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

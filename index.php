@@ -212,7 +212,7 @@ function chkUpdate() {
             
       <li class="nav-item">
       <?php 
-	  if($_GET['do'] == 'ingredients' || $_GET['do'] == 'bottles' || $_GET['do'] == 'lids' || $_GET['do'] == 'suppliers' || $_GET['do'] == 'customers'){ 
+	  if($_GET['do'] == 'ingredients' || $_GET['do'] == 'bottles' || $_GET['do'] == 'lids' || $_GET['do'] == 'suppliers' || $_GET['do'] == 'customers' || $_GET['do'] == 'compounds'){ 
 	  	$expand = 'show'; 
 		$class = ''; 
 		$aria = 'true'; 
@@ -231,6 +231,8 @@ function chkUpdate() {
             <a class="collapse-item <?php if($_GET['do'] == 'ingredients'){ echo 'active';}?>" href="/?do=ingredients">Ingredients</a>
             <a class="collapse-item <?php if($_GET['do'] == 'suppliers'){ echo 'active';}?>" href="/?do=suppliers">Suppliers</a>
             <a class="collapse-item <?php if($_GET['do'] == 'customers'){ echo 'active';}?>" href="/?do=customers">Customers</a>
+             <a class="collapse-item <?php if($_GET['do'] == 'compounds'){ echo 'active';}?>" href="/?do=compounds">Compounds</a>
+
             <a class="collapse-item <?php if($_GET['do'] == 'bottles'){ echo 'active';}?>" href="/?do=bottles">Bottles</a>
             <a class="collapse-item <?php if($_GET['do'] == 'lids'){ echo 'active';}?>" href="/?do=lids">Bottle Lids</a>
           </div>
@@ -313,7 +315,8 @@ function chkUpdate() {
 			require_once(__ROOT__.'/pages/customers.php');
 		}elseif($_GET['do'] == 'compareFormulas'){
 			require_once(__ROOT__.'/pages/compareFormulas.php');
-			
+		}elseif($_GET['do'] == 'compounds'){
+			require_once(__ROOT__.'/pages/compounds.php');	
 		}else{
 			require_once(__ROOT__.'/pages/dashboard.php');
 		}

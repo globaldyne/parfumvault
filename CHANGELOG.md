@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 10.0
+- Added Inventory for finished Compounds
 - Added document size and created date in fotmula attachements page
 - Fix search when replacing a material
 

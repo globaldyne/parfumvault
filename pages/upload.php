@@ -205,6 +205,7 @@ if($_GET['type'] && $_GET['id']){
 	$type = mysqli_real_escape_string($conn, $_GET['type']);
 	$name = base64_decode($_GET['doc_name']);
 	$notes = base64_decode($_GET['doc_notes']);
+	$isBatch = $_GET['isBatch'];
 
 	$field = 'doc_file';
 	
@@ -239,7 +240,7 @@ if($_GET['type'] && $_GET['id']){
 				mysqli_query($conn, "DELETE FROM documents WHERE ownerID = '$ownerID' AND type = '2'");
 			}
 			$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents($tmp_path.$file_name));
-			if(mysqli_query($conn, "INSERT INTO documents (ownerID,type,name,notes,docData) VALUES ('$ownerID','$type','$name','$notes','$docData')")){
+			if(mysqli_query($conn, "INSERT INTO documents (ownerID,type,name,notes,docData,isBatch) VALUES ('$ownerID','$type','$name','$notes','$docData','$isBatch')")){
 				unlink($tmp_path.$file_name);
 				$response['success'] = 'File uploaded';
 				echo json_encode($response);

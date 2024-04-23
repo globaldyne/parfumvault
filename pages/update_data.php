@@ -10,6 +10,88 @@ require_once(__ROOT__.'/func/sanChar.php');
 require_once(__ROOT__.'/func/priceScrape.php');
 require_once(__ROOT__.'/func/create_thumb.php');
 require_once(__ROOT__.'/func/pvFileGet.php');
+	
+//ADD INVENTORY COMPOUND
+if($_POST['action'] == 'add' && $_POST['type'] == 'invCmp'){
+	$name = mysqli_real_escape_string($conn, $_POST['cmp_name']);
+	$size = mysqli_real_escape_string($conn, $_POST['cmp_size']);
+	
+	if(empty($name)){
+		$response["error"] = 'Name is required.';
+		echo json_encode($response);
+		return;
+	}
+	if(!is_numeric($size)){
+		$response["error"] = 'Size can only be numeric';
+		echo json_encode($response);
+		return;
+	}
+	$batch_id = mysqli_real_escape_string($conn, $_POST['cmp_batch']);
+	$location = mysqli_real_escape_string($conn, $_POST['cmp_location']);
+	$description = mysqli_real_escape_string($conn, $_POST['cmp_desc']);
+	$label_info = mysqli_real_escape_string($conn, $_POST['cmp_label_info']);
+
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM inventory_compounds WHERE name = '$name'"))){
+		$response["error"] = 'Error: '.$name.' already exists!';
+		
+	}elseif(mysqli_query($conn, "INSERT INTO inventory_compounds (name,description,batch_id,size,owner_id,location,label_info) VALUES ('$name', '$description', '$batch_id', '$size', '".$user['id']."', '$location', '$label_info' )")){
+		$response["success"] = 'Compound '.$name.' added!';
+	}else{
+		$response["error"] = 'Error adding compound '.mysqli_error($conn);
+	}
+	echo json_encode($response);
+	return;
+}
+
+
+//UPDATE COMPOUND DATA
+if($_POST['update_inv_compound_data']){
+	
+	if(!$_POST['name']){
+		$response["error"] = "Name is required";
+		echo json_encode($response);
+		return;
+	}
+	
+	$id = $_POST['cmp_id'];
+	$name = $_POST['name'];
+	$description = $_POST['description'];
+	$batch_id = $_POST['batch_id'];
+	$size = $_POST['size'];
+	$location  = $_POST['location'] ?: '-';
+	$label_info  = $_POST['label_info'] ?: '-';
+
+	$q = mysqli_query($conn,"UPDATE inventory_compounds SET name = '$name', description = '$description', batch_id = '$batch_id', size = '$size', location = '$location', label_info = '$label_info' WHERE id = '$id'");
+	
+
+	if($q){
+		$response['success'] = "Compound updated";
+	}else{
+		$response['error'] = "Error updating data ".mysqli_error($conn);
+	}
+	
+	echo json_encode($response);
+	
+	
+
+	return;
+}
+
+//DELETE COMPOUND
+if($_POST['action'] == 'delete' && $_POST['compoundId'] && $_POST['type'] == 'invCmp'){
+	$id = mysqli_real_escape_string($conn, $_POST['compoundId']);
+	
+	if(mysqli_query($conn, "DELETE FROM inventory_compounds WHERE id = '$id'")){
+		$response["success"] = 'Compound deleted';
+	}else{
+		$response["error"] = 'Something went wrong '.mysqli_error($conn);
+	}
+	
+	echo json_encode($response);
+	return;	
+}
+
+
 
 //WIPE OUT FROMULAS
 if($_POST['formulas_wipe'] == 'true'){

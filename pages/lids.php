@@ -14,7 +14,6 @@ while ($suppliers = mysqli_fetch_array($sup)){
             </div>
             <div class="card-body">
               <div class="table-responsive">
-              <div id="innermsg"></div>
                <table class="table table-striped table-bordered">
                  <tr class="noBorder">
                      <div class="text-right">
@@ -266,12 +265,14 @@ $('#tdDataLids').on('click', '[id*=ldlDel]', function () {
 					dataType: 'json',
 					success: function (data) {
 						if(data.success){
-							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
+							$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+							$('.toast-header').removeClass().addClass('toast-header alert-success');
 							reload_data();
 						}else if(data.error){
-							var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+							$('.toast-header').removeClass().addClass('toast-header alert-danger');
 						}
-						$('#innermsg').html(msg);
+						$('.toast').toast('show');
 					}
 				});
 				
