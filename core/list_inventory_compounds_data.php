@@ -45,7 +45,7 @@ foreach ($rs as $rq) {
     $r['id'] = (int)$rq['id'];
     $r['name'] = (string)$rq['name'] ?: 'N/A';
     $r['description'] = (string)$rq['description'] ?: 'N/A';
-    $r['batch_id'] = (string)$rq['batch_id'];
+    $r['batch_id'] = (int)$rq['batch_id'];
     $r['size'] = (double)$rq['size'] ?: 0;
     $r['updated'] = (string)$rq['updated'] ?: '00:00:00';
     $r['created'] = (string)$rq['created'] ?: '00:00:00';

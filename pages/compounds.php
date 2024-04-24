@@ -10,10 +10,9 @@ while($res = mysqli_fetch_array($q)){
 
 ?>
 <div class="container-fluid">
-  <div>
   <div class="card shadow mb-4">
     <div class="card-header py-3">
-      <h2 class="m-0 font-weight-bold text-primary"><a href="javascript:reload_data()">Compounds</a></h2>
+      <h2 class="m-0 font-weight-bold text-primary"><a href="#" id="mainTitle">Compounds</a></h2>
     </div>
     <div class="card-body">
       <div class="table-responsive">
@@ -21,8 +20,12 @@ while($res = mysqli_fetch_array($q)){
        <table class="table table-striped table-bordered">
          <tr class="noBorder">
              <div class="form-inline mb-3">
-                <input type="text" class="form-control mr-2" id="btlSize" placeholder="Enter bottle size, eg: 100">
+                <input type="text" class="form-control mt-2 ml-2" id="btlSize" placeholder="Enter bottle size, eg: 100">
                 <button type="button" class="btn btn-primary" id="submitBottleAmount">Submit</button>
+                <div class="ml-2 mt-2">
+                    <input type="checkbox" class="form-check-input" id="expandCheckbox">
+                    <label class="form-check-label" for="expandCheckbox">Expand All</label>
+                </div>
              </div>
              <div class="text-right">
               <div class="btn-group">
@@ -52,7 +55,6 @@ while($res = mysqli_fetch_array($q)){
       </div>
     </div>
   </div>
-</div>
 </div>
 </div>
     
@@ -128,9 +130,7 @@ while($res = mysqli_fetch_array($q)){
 
 <script> 
 $(document).ready(function() {
- $('#submitBottleAmount').click(function() {
-         reload_data();
-  });
+
 	
 	var tdDataCompounds = $('#tdDataCompounds').DataTable( {
 	columnDefs: [
@@ -210,10 +210,37 @@ $(document).ready(function() {
 	});
 	
 	
-	tdDataCompounds.on('requestChild.dt', function (e, row) {
-		row.child(format(row.data())).show();
-	});
-	 
+    // Function to expand all child rows
+    function expandAll() {
+        tdDataCompounds.rows().every(function() {
+            this.child(format(this.data())).show();
+        });
+    }
+
+    // Function to collapse all child rows
+    function collapseAll() {
+        tdDataCompounds.rows().every(function() {
+            this.child.hide();
+        });
+    }
+
+    // Handle checkbox click event
+    $('#expandCheckbox').click(function() {
+        if ($(this).is(':checked')) {
+            expandAll();
+        } else {
+            collapseAll();
+        }
+    });
+	
+	$('#submitBottleAmount, #mainTitle').click(function() {
+	 	reload_data();
+	 	if ($('#expandCheckbox').is(':checked')) {
+            expandAll();
+        } 
+         
+  	});
+	
 	tdDataCompounds.on('click', '#compound_name', function (e) {
 		let tr = e.target.closest('tr');
 		let row = tdDataCompounds.row(tr); 
@@ -224,149 +251,150 @@ $(document).ready(function() {
 		}
 	});
 	
-}); //END DOC
-
-function format(d) {
-    var details = '<strong>Bottle breakdown size: ' + d.btlSize + '<?php echo $settings['mUnit'];?></strong><br><hr/>';
-    $.each(d.breakDown, function(i, breakdownItem) {
-        details += '<span class="details"><strong>' + breakdownItem.name + '(' + breakdownItem.concentration + '%)</strong> ' + breakdownItem.bottles_total + ' Bottles</span><br>';
-    });
-    return details;
-}
+	function reload_data() {
+    	$('#tdDataCompounds').DataTable().ajax.reload(null, true);
+	};
 
 
-function name(data, type, row){
-	return '<i class="pv_point_gen pv_gen_li" id="compound_name">'+row.name+'</i>';
-}
+	function format(d) {
+		var details = '<strong>Bottle breakdown size: ' + d.btlSize + '<?php echo $settings['mUnit'];?></strong><br><hr/>';
+		$.each(d.breakDown, function(i, breakdownItem) {
+			details += '<span class="details"><strong>' + breakdownItem.name + '(' + breakdownItem.concentration + '%)</strong> ' + breakdownItem.bottles_total + ' Bottles</span><br>';
+		});
+		return details;
+	};
+	
+	
+	function name(data, type, row){
+		return '<i class="pv_point_gen pv_gen_li" id="compound_name">'+row.name+'</i>';
+	};
+	
+	function docData(data, type, row){
+		return '<a href="/pages/viewDoc.php?id='+row.batch_id+'" target="_blank" class="fa fa-file-alt"></a>';    
+	};
+	
+	function actions(data, type, row){	
+			data = '<div class="dropdown">' +
+			'<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+				'<ul class="dropdown-menu dropdown-menu-right">';
+			data += '<li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editCompound" rel="tip" title="Edit '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-edit mx-2"></i>Edit</a></li>';
+			data += '<div class="dropdown-divider"></div>';
+			data += '<li><a class="dropdown-item" href="#" id="cmpDel" style="color: #c9302c;" rel="tip" title="Delete '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-trash mx-2"></i>Delete</a></li>';
+			data += '</ul></div>';
+		return data;
+	};
 
-function docData(data, type, row){
-	return '<a href="/pages/viewDoc.php?id='+row.id+'" target="_blank" class="fa fa-file-alt"></a>';    
-};
 
-function actions(data, type, row){	
-		data = '<div class="dropdown">' +
-        '<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
-            '<ul class="dropdown-menu dropdown-menu-right">';
-		data += '<li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editCompound" rel="tip" title="Edit '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-edit mx-2"></i>Edit</a></li>';
-		data += '<div class="dropdown-divider"></div>';
-		data += '<li><a class="dropdown-item" href="#" id="cmpDel" style="color: #c9302c;" rel="tip" title="Delete '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-trash mx-2"></i>Delete</a></li>';
-		data += '</ul></div>';
-	return data;
-};
 
-function reload_data() {
-    $('#tdDataCompounds').DataTable().ajax.reload(null, true);
-};
-
-$('#tdDataCompounds').on('click', '[id*=cmpDel]', function () {
-	var cmp = {};
-	cmp.ID = $(this).attr('data-id');
-	cmp.Name = $(this).attr('data-name');
-    
-	bootbox.dialog({
-       title: "Confirm deletion",
-       message : 'Permanently delete <strong>'+ cmp.Name +'</strong> and its data?',
-       buttons :{
-           main: {
-               label : "Delete",
-               className : "btn-danger",
-               callback: function (){
-	    			
-				$.ajax({
-					url: '/pages/update_data.php', 
-					type: 'POST',
-					data: {
-						action: "delete",
-						type: "invCmp",
-						compoundId: cmp.ID,
-						},
-					dataType: 'json',
-					success: function (data) {
-						if(data.success){
-							$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
-							$('.toast-header').removeClass().addClass('toast-header alert-success');
-							reload_data();
-						}else if(data.error){
-							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
-							$('.toast-header').removeClass().addClass('toast-header alert-danger');
-						}
-						$('.toast').toast('show');
-					}
-				});
-				
-                 return true;
-               }
-           },
-           cancel: {
-               label : "Cancel",
-               className : "btn-secondary",
-               callback : function() {
-                   return true;
-               }
-           }   
-       },onEscape: function () {return true;}
-   });
-});
-  
-
-$('#compound_add').on('click', function () {
-
-	$("#compound_add").prop("disabled", true);
-    $("#compound_add").prop('value', 'Please wait...');
-
-	$.ajax({
-	  url: '/pages/update_data.php', 
-	  type: 'POST',
-	  data: {
-			action: "add",
-			type: "invCmp",
-			cmp_name: $('#cmp_name').val(),
-			cmp_batch: $('#cmp_batch').val(),
-			cmp_size: $('#cmp_size').val(),
-			cmp_location: $('#cmp_location').val(),
-			cmp_desc: $('#cmp_desc').val(),
-			cmp_label_info: $('#cmp_label_info').val()
-	 },
-	  dataType: 'json',
-	  success: function(response){
-		 if(response.success){
-			$("#compound_inf").html('<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+response.success+'</div>');
-			$("#compound_add").prop("disabled", false);
-			$("#compound_add").prop("value", "Add");
-			reload_data();
-		 }else{
-			$("#compound_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+response.error+'</div>');
-			$("#compound_add").prop("disabled", false);
-			$("#compound_add").prop("value", 'Add');
-		 }
-	  },
-   });
-    
+	$('#tdDataCompounds').on('click', '[id*=cmpDel]', function () {
+		var cmp = {};
+		cmp.ID = $(this).attr('data-id');
+		cmp.Name = $(this).attr('data-name');
 		
-});
-
-function extrasShow() {
-	$('[rel=tip]').tooltip({
-        "html": true,
-        "delay": {"show": 100, "hide": 0},
-     });
-};
-
-
-$('#exportCSV').click(() => {
-    $('#tdDataCompounds').DataTable().button(0).trigger();
-});
-
-$("#editCompound").on("show.bs.modal", function(e) {
-	const id = e.relatedTarget.dataset.id;
-	const compound = e.relatedTarget.dataset.name;
-
-	$.get("/pages/views/inventory/editCompound.php?id=" + id)
-		.then(data => {
-		$("#editCompoundLabel", this).html(compound);
-		$(".modal-body", this).html(data);
+		bootbox.dialog({
+		   title: "Confirm deletion",
+		   message : 'Permanently delete <strong>'+ cmp.Name +'</strong> and its data?',
+		   buttons :{
+			   main: {
+				   label : "Delete",
+				   className : "btn-danger",
+				   callback: function (){
+						
+					$.ajax({
+						url: '/pages/update_data.php', 
+						type: 'POST',
+						data: {
+							action: "delete",
+							type: "invCmp",
+							compoundId: cmp.ID,
+							},
+						dataType: 'json',
+						success: function (data) {
+							if(data.success){
+								$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+								$('.toast-header').removeClass().addClass('toast-header alert-success');
+								reload_data();
+							}else if(data.error){
+								$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+								$('.toast-header').removeClass().addClass('toast-header alert-danger');
+							}
+							$('.toast').toast('show');
+						}
+					});
+					
+					 return true;
+				   }
+			   },
+			   cancel: {
+				   label : "Cancel",
+				   className : "btn-secondary",
+				   callback : function() {
+					   return true;
+				   }
+			   }   
+		   },onEscape: function () {return true;}
+	   });
 	});
-});
+	  
+	
+	$('#compound_add').on('click', function () {
+	
+		$("#compound_add").prop("disabled", true);
+		$("#compound_add").prop('value', 'Please wait...');
+	
+		$.ajax({
+		  url: '/pages/update_data.php', 
+		  type: 'POST',
+		  data: {
+				action: "add",
+				type: "invCmp",
+				cmp_name: $('#cmp_name').val(),
+				cmp_batch: $('#cmp_batch').val(),
+				cmp_size: $('#cmp_size').val(),
+				cmp_location: $('#cmp_location').val(),
+				cmp_desc: $('#cmp_desc').val(),
+				cmp_label_info: $('#cmp_label_info').val()
+		 },
+		  dataType: 'json',
+		  success: function(response){
+			 if(response.success){
+				$("#compound_inf").html('<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+response.success+'</div>');
+				$("#compound_add").prop("disabled", false);
+				$("#compound_add").prop("value", "Add");
+				reload_data();
+			 }else{
+				$("#compound_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+response.error+'</div>');
+				$("#compound_add").prop("disabled", false);
+				$("#compound_add").prop("value", 'Add');
+			 }
+		  },
+	   });
+		
+			
+	});
+	
+	function extrasShow() {
+		$('[rel=tip]').tooltip({
+			"html": true,
+			"delay": {"show": 100, "hide": 0},
+		 });
+	};
+	
+	
+	$('#exportCSV').click(() => {
+		$('#tdDataCompounds').DataTable().button(0).trigger();
+	});
+	
+	$("#editCompound").on("show.bs.modal", function(e) {
+		const id = e.relatedTarget.dataset.id;
+		const compound = e.relatedTarget.dataset.name;
+	
+		$.get("/pages/views/inventory/editCompound.php?id=" + id)
+			.then(data => {
+			$("#editCompoundLabel", this).html(compound);
+			$(".modal-body", this).html(data);
+		});
+	});
 
-
+}); //END DOC
 </script>
