@@ -34,6 +34,7 @@ foreach ($rs as $rq) {
 	$r['height'] = (double)$rq['height']?:0;
 	$r['width'] = (double)$rq['width']?:0;
 	$r['diameter'] = (double)$rq['diameter']?:0;
+	$r['weight'] = (double)$rq['weight']?:0;
 	$r['supplier'] = (string)$rq['supplier']?:'N/A';
 	$r['supplier_link'] = (string)$rq['supplier_link']?:'N/A';
 	$r['notes'] = (string)$rq['notes']?:'N/A';

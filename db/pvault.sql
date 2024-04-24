@@ -28,6 +28,7 @@ CREATE TABLE `bottles` (
   `height` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `width` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `diameter` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `weight` DOUBLE NOT NULL DEFAULT '0', 
   `supplier` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `supplier_link` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `notes` text COLLATE utf8_general_ci DEFAULT NULL,

@@ -1,5 +1,8 @@
 # CHANGELOG
 ### Version 10.0
+- Bottle edit page format update
+- Weight added for the bottles inventory
+- Bottles inventory messages changed to toast
 - Added Inventory for finished Compounds
 - Added document size and created date in fotmula attachements page
 - Fix search when replacing a material

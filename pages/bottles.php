@@ -14,7 +14,6 @@ while ($suppliers = mysqli_fetch_array($sup)){
             </div>
             <div class="card-body">
               <div class="table-responsive">
-              <div id="innermsg"></div>
                <table class="table table-striped table-bordered">
                  <tr class="noBorder">
                      <div class="text-right">
@@ -86,10 +85,14 @@ while ($suppliers = mysqli_fetch_array($sup)){
             <input type="text" class="form-control" name="diameter" id="diameter" required>
           </div>
           <div class="col-md-4">
+            <label for="weight" class="form-label">Weight(grams)</label>
+            <input type="text" class="form-control" name="weight" id="weight" required>
+          </div>
+          <div class="col-md-4">
             <label for="pieces" class="form-label">Stock (pieces)</label>
             <input type="text" class="form-control" name="pieces" id="pieces" required>
           </div>
-          <div class="col-md-12">
+          <div class="col-md-4">
             <label for="supplier" class="form-label">Supplier</label>
             <select name="supplier" id="supplier" class="form-control">
                 <option value="" selected></option>
@@ -100,7 +103,7 @@ while ($suppliers = mysqli_fetch_array($sup)){
                 ?>
           	</select>
           </div>
-          <div class="col-md-12">
+          <div class="col-md-4">
             <label for="supplier_link" class="form-label">Supplier URL</label>
             <input type="text" class="form-control" name="supplier_link" id="supplier_link" required>
           </div>
@@ -236,7 +239,8 @@ $(document).ready(function() {
 		'<strong>Height:</strong><br><span class="details">'+d.height+
 		'mm</span><br><strong>Width:</strong><br><span class="details">'+d.width+
 		'mm</span><br><strong>Diameter:</strong><br><span class="details">'+d.diameter+
-		'mm</span><br><strong>Notes:</strong><br><span class="details">'+d.notes;
+		'mm</span><br><strong>Weight:</strong><br><span class="details">'+d.weight+
+		'g</span><br><strong>Notes:</strong><br><span class="details">'+d.notes;
 	
 		return details;
 	};
@@ -286,12 +290,14 @@ $(document).ready(function() {
 						dataType: 'json',
 						success: function (data) {
 							if(data.success){
-								var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
+								$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+								$('.toast-header').removeClass().addClass('toast-header alert-success');
 								reload_data();
 							}else if(data.error){
-								var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
+								$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+								$('.toast-header').removeClass().addClass('toast-header alert-danger');
 							}
-							$('#innermsg').html(msg);
+							$('.toast').toast('show');
 						}
 					});
 					
@@ -321,6 +327,7 @@ $(document).ready(function() {
 		var name = $('#name').val();
 		var size = $('#size').val();
 		var price = $('#price').val();
+		var weight = $('#weight').val();
 		var supplier = $('#supplier').val();
 		var supplier_link = $('#supplier_link').val();
 	
@@ -334,7 +341,7 @@ $(document).ready(function() {
 			fd.append('pic_file',files[0]);
 	
 				$.ajax({
-				  url: '/pages/upload.php?type=bottle&name=' + btoa(name) + '&size=' + size + '&price=' + price + '&supplier=' + btoa(supplier) + '&supplier_link=' + btoa(supplier_link)+ '&height=' + height + '&width=' + width + '&diameter=' + diameter + '&notes=' + btoa(notes) + '&pieces=' + pieces,
+				  url: '/pages/upload.php?type=bottle&name=' + btoa(name) + '&size=' + size + '&price=' + price + '&supplier=' + btoa(supplier) + '&supplier_link=' + btoa(supplier_link)+ '&height=' + height + '&width=' + width + '&diameter=' + diameter + '&notes=' + btoa(notes) + '&pieces=' + pieces + '&weight=' + weight,
 				  type: 'POST',
 				  data: fd,
 				  contentType: false,

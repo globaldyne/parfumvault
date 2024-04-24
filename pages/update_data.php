@@ -541,8 +541,9 @@ if($_POST['update_bottle_data']){
 	$supplier_link = $_POST['supplier_link'];
 	$notes = $_POST['notes'];
 	$pieces = $_POST['pieces']?:0;
-	
-	$q = mysqli_query($conn,"UPDATE bottles SET name= '$name', ml = '$ml', price = '$price', height = '$height', width = '$width', diameter = '$diameter', supplier = '$supplier', supplier_link = '$supplier_link', notes = '$notes', pieces = '$pieces' WHERE id = '$id'");
+	$weight = $_POST['weight']?:0;
+
+	$q = mysqli_query($conn,"UPDATE bottles SET name= '$name', ml = '$ml', price = '$price', height = '$height', width = '$width', diameter = '$diameter', supplier = '$supplier', supplier_link = '$supplier_link', notes = '$notes', pieces = '$pieces', weight = '$weight' WHERE id = '$id'");
 	
 
 	if($q){
