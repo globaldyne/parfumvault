@@ -1,6 +1,7 @@
 <div id="content-wrapper" class="d-flex flex-column">
 <?php 
 require_once(__ROOT__.'/pages/top.php');
+require_once(__ROOT__.'/func/php-settings.php');
 
 $q = mysqli_query($conn, "SELECT id,name FROM documents WHERE type = '5' AND isBatch = '1'");
 while($res = mysqli_fetch_array($q)){
@@ -33,6 +34,9 @@ while($res = mysqli_fetch_array($q)){
                   <div class="dropdown-menu dropdown-menu-right">
                     <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addCompound"><i class="fa-solid fa-plus mx-2"></i>Add new</a></li>
                     <li><a class="dropdown-item" id="exportCSV" href="#"><i class="fa-solid fa-file-export mx-2"></i>Export to CSV</a></li>
+                    <li><a class="dropdown-item" id="exportJSON" href="/pages/export.php?format=json&kind=inventory_compounds"><i class="fa-solid fa-file-export mx-2"></i>Export to JSON</a></li>
+                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#importJSON"><i class="fa-solid fa-file-import mx-2"></i>Import from JSON</a></li>
+
                   </div>
                 </div>        
              </div>
@@ -48,6 +52,8 @@ while($res = mysqli_fetch_array($q)){
               <th>Size(<?php echo $settings['mUnit']; ?>)</th>
               <th>Label</th>
               <th>Location</th>
+              <th>Added</th>
+              <th>Updated</th>
               <th></th>
             </tr>
           </thead>
@@ -128,6 +134,48 @@ while($res = mysqli_fetch_array($q)){
   </div>
 </div>
 
+
+<!--IMPORT JSON MODAL-->
+<div class="modal fade" id="importJSON" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="importJSON" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Import compounds from a JSON file</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      	<div id="JSRestMsg"></div>
+      	<div class="progress">  
+       	  <div id="uploadProgressBar" class="progress-bar" role="progressbar" aria-valuemin="0"></div>
+      	</div>
+      	<div id="backupArea">
+          <div class="form-group">
+              <label class="col-md-3 control-label">JSON file:</label>
+              <div class="col-md-8">
+                 <input type="file" name="jsonFile" id="jsonFile" class="form-control" />
+              </div>
+          </div>
+          	<div class="col-md-12">
+            	 <hr />
+             	<p><strong>IMPORTANT:</strong></p>
+              	<ul>
+                	<li><div id="raw" data-size="<?=getMaximumFileUploadSizeRaw()?>">Maximum file size: <strong><?=getMaximumFileUploadSize()?></strong></div></li>
+                	<li>Any ingredient with the same id will be replaced. Please make sure you have taken a backup before imporing a JSON file.</li>
+              	</ul>
+            </div>
+          </div>
+      	</div>
+	  		<div class="modal-footer">
+        		<input type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseBK" value="Cancel">
+        		<input type="submit" name="btnRestore" class="btn btn-primary" id="btnImportCompounds" value="Import">
+      		</div>
+  		</div>  
+	</div>
+</div>
+
+
 <script> 
 $(document).ready(function() {
 
@@ -135,7 +183,7 @@ $(document).ready(function() {
 	var tdDataCompounds = $('#tdDataCompounds').DataTable( {
 	columnDefs: [
 		{ className: 'pv_vertical_middle text-center', targets: '_all' },
-		{ orderable: false, targets: [6] },
+		{ orderable: false, targets: [8] },
 	],
 	dom: 'lrftip',
 	buttons: [{
@@ -177,6 +225,8 @@ $(document).ready(function() {
 			{ data : 'size', title: 'Size (<?php echo $settings['mUnit'];?>)' },
 			{ data : 'label_info', title: 'Label' },
 			{ data : 'location', title: 'Location' },
+			{ data : 'created', title: 'Inventory add' },
+			{ data : 'updated', title: 'Inventory update' },
 			{ data : null, title: '', render: actions },
 
 			],
@@ -398,3 +448,4 @@ $(document).ready(function() {
 
 }); //END DOC
 </script>
+<script src="/js/import.compounds.js"></script>

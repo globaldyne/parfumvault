@@ -1,5 +1,8 @@
 # CHANGELOG
 ### Version 10.0
+- Added inventory create/update info for compounds
+- Added JSON import/export for compounds
+- Allow a formula to be marked complete when contains skipped materials
 - Bottle edit page format update
 - Weight added for the bottles inventory
 - Bottles inventory messages changed to toast

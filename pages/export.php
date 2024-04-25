@@ -3,9 +3,54 @@ define('__ROOT__', dirname(dirname(__FILE__)));
 
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
-
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/inc/product.php');
+
+//EXPORT COMPOUNDS JSON
+if($_GET['format'] == 'json' && $_GET['kind'] == 'inventory_compounds'){
+		
+	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM inventory_compounds")))){
+		$msg['error'] = 'No compounds found to export.';
+		echo json_encode($msg);
+		return;
+	}
+	$count = 0;
+
+	$q = mysqli_query($conn, "SELECT * FROM inventory_compounds");
+	while($res = mysqli_fetch_assoc($q)){
+
+		$r['id'] = (int)$res['id'];
+		$r['name'] = (string)$res['name'];
+		$r['description'] = (string)$res['description'];
+		$r['batch_id'] = (int)$res['batch_id'];
+		$r['size'] = (string)$res['size'];
+		$r['updated'] = (string)$res['updated'];
+		$r['created'] = (string)$res['created'];
+		$r['owner_id'] = (int)$res['owner_id'];
+		$r['location'] = (string)$res['location'];
+		$r['label_info'] = (string)$res['label_info'];
+		
+		$count++;
+		$ic[] = $r;
+
+	}
+	
+	$vd['product'] = $product;
+	$vd['version'] = $ver;
+	$vd['inventory_compounds'] = $count;
+	$vd['timestamp'] = date('d/m/Y H:i:s');
+
+	$result['inventory_compounds'] = $ic;
+	$result['pvMeta'] = $vd;
+
+	header('Content-disposition: attachment; filename=inventory_compounds.json');
+	header('Content-type: application/json');
+	echo json_encode($result, JSON_PRETTY_PRINT);
+	return;	
+
+}
+
+
 
 //EXPORT INGREDIENTS CSV
 if($_GET['format'] == 'csv' && $_GET['kind'] == 'ingredients'){

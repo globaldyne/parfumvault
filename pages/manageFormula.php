@@ -614,7 +614,7 @@ if($_POST['action'] == 'todo' && $_POST['fid'] && $_POST['markComplete']){
 	$defCatClass = $settings['defCatClass'];
 	
 		
-	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = '$fid' AND toAdd = '1'"))){
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = '$fid' AND toAdd = '1' AND skip = '0'"))){
 		$response['error'] = '<strong>Formula is pending materials to add, cannot be marked as complete.</strong>';
 		echo json_encode($response);
 		return;
