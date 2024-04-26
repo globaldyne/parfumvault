@@ -31,7 +31,7 @@ while($fTypes_res = mysqli_fetch_array($fTypes_q)){
 
 
 <div class="card-header py-3">
-  <h2 class="m-0 font-weight-bold text-primary"><a href="javascript:list_formulas()">Formulas</a></h2>
+  <h2 class="m-0 font-weight-bold text-primary"><a href="#" id="mainTitle">Formulas</a></h2>
 </div>
             
 <div class="pv_menu_formulas">
@@ -116,6 +116,9 @@ if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))
 
 <?php } ?>
 <script type="text/javascript" language="javascript" >
+	$('#mainTitle').click(function() {
+	 	reload_formulas_data();
+  	});
 $('.selectpicker').selectpicker('refresh');
 function extrasShow() {
 	$('[rel=tip]').tooltip({

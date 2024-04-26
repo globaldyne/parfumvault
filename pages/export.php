@@ -6,6 +6,144 @@ require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/inc/product.php');
 
+//EXPORT LIDS JSON
+if($_GET['format'] == 'json' && $_GET['kind'] == 'lids'){
+		
+	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM lids")))){
+		$msg['error'] = 'No lids found to export.';
+		echo json_encode($msg);
+		return;
+	}
+	$count = 0;
+
+	$q = mysqli_query($conn, "SELECT * FROM lids");
+	while($res = mysqli_fetch_assoc($q)){
+
+		$r['id'] = (int)$res['id'];
+		$r['style'] = (string)$res['style'];
+		$r['colour'] = (string)$res['colour'];
+		$r['price'] = (double)$res['price'];
+		$r['currency'] = (string)$settings['currency'];
+		$r['supplier'] = (string)$res['supplier'];
+		$r['supplier_link'] = (string)$res['supplier_link'];
+		$r['pieces'] = (int)$res['pieces'];
+				
+		$count++;
+		$ic[] = $r;
+
+	}
+	
+	$vd['product'] = $product;
+	$vd['version'] = $ver;
+	$vd['lids'] = $count;
+	$vd['timestamp'] = date('d/m/Y H:i:s');
+
+	$result['lids'] = $ic;
+	$result['pvMeta'] = $vd;
+
+	header('Content-disposition: attachment; filename=lids.json');
+	header('Content-type: application/json');
+	echo json_encode($result, JSON_PRETTY_PRINT);
+	return;	
+
+}
+
+
+
+
+
+//EXPORT BOTTLES JSON
+if($_GET['format'] == 'json' && $_GET['kind'] == 'bottles'){
+		
+	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM bottles")))){
+		$msg['error'] = 'No bottles found to export.';
+		echo json_encode($msg);
+		return;
+	}
+	$count = 0;
+
+	$q = mysqli_query($conn, "SELECT * FROM bottles");
+	while($res = mysqli_fetch_assoc($q)){
+
+		$r['id'] = (int)$res['id'];
+		$r['name'] = (string)$res['name'];
+		$r['ml'] = (string)$res['ml'];
+		$r['price'] = (double)$res['price'];
+		$r['currency'] = (string)$settings['currency'];
+		$r['height'] = (double)$res['height'];
+		$r['width'] = (double)$res['width'];
+		$r['diameter'] = (double)$res['diameter'];
+		$r['diameter'] = (double)$res['diameter'];
+		$r['supplier'] = (string)$res['supplier'];
+		$r['supplier_link'] = (string)$res['supplier_link'];
+		$r['notes'] = (string)$res['notes'];
+		$r['pieces'] = (int)$res['pieces'];
+		$r['created'] = (string)$res['created'];
+		$r['updated'] = (string)$res['updated'];
+		
+		$count++;
+		$ic[] = $r;
+
+	}
+	
+	$vd['product'] = $product;
+	$vd['version'] = $ver;
+	$vd['bottles'] = $count;
+	$vd['timestamp'] = date('d/m/Y H:i:s');
+
+	$result['bottles'] = $ic;
+	$result['pvMeta'] = $vd;
+
+	header('Content-disposition: attachment; filename=bottles.json');
+	header('Content-type: application/json');
+	echo json_encode($result, JSON_PRETTY_PRINT);
+	return;	
+
+}
+
+//EXPORT CUSTOMERS JSON
+if($_GET['format'] == 'json' && $_GET['kind'] == 'customers'){
+		
+	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM customers")))){
+		$msg['error'] = 'No customers found to export.';
+		echo json_encode($msg);
+		return;
+	}
+	$count = 0;
+
+	$q = mysqli_query($conn, "SELECT * FROM customers");
+	while($res = mysqli_fetch_assoc($q)){
+
+		$r['id'] = (int)$res['id'];
+		$r['name'] = (string)$res['name'];
+		$r['address'] = (string)$res['address'];
+		$r['email'] = (string)$res['email'];
+		$r['phone'] = (string)$res['phone'];
+		$r['web'] = (string)$res['web'];
+		$r['owner_id'] = (int)$res['owner_id'];
+		$r['created'] = (string)$res['created'];
+		$r['updated'] = (string)$res['updated'];
+		
+		$count++;
+		$ic[] = $r;
+
+	}
+	
+	$vd['product'] = $product;
+	$vd['version'] = $ver;
+	$vd['customers'] = $count;
+	$vd['timestamp'] = date('d/m/Y H:i:s');
+
+	$result['customers'] = $ic;
+	$result['pvMeta'] = $vd;
+
+	header('Content-disposition: attachment; filename=customers.json');
+	header('Content-type: application/json');
+	echo json_encode($result, JSON_PRETTY_PRINT);
+	return;	
+
+}
+
 //EXPORT COMPOUNDS JSON
 if($_GET['format'] == 'json' && $_GET['kind'] == 'inventory_compounds'){
 		

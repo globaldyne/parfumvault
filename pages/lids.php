@@ -22,6 +22,8 @@ while ($suppliers = mysqli_fetch_array($sup)){
                           <div class="dropdown-menu dropdown-menu-right">
                             <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addLid"><i class="fa-solid fa-plus mx-2"></i>Add new</a></li>
                             <li><a class="dropdown-item" id="exportCSV" href="#"><i class="fa-solid fa-file-export mx-2"></i>Export to CSV</a></li>
+                            <li><a class="dropdown-item" id="exportJSON" href="/pages/export.php?format=json&kind=lids"><i class="fa-solid fa-file-export mx-2"></i>Export to JSON</a></li>
+
                           </div>
                         </div>        
                      </div>
@@ -47,61 +49,62 @@ while ($suppliers = mysqli_fetch_array($sup)){
     </div>
     
 <!-- ADD LID MODAL-->
-<div class="modal fade" id="addLid" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="addLid" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+<div class="modal fade" id="addLid" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addLidLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Add Lid</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <h5 class="modal-title" id="addLidLabel">Add Lid</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-      <div id="lid_inf"></div>
-        <p>
-        Style: 
-          <input class="form-control" name="style" type="text" id="style" />
-        </p>
-        <p>            
-        Colour:
-          <input class="form-control" name="colour" type="text" id="colour" />
-        </p>
-        <p>
-        Price:
-          <input class="form-control" name="price" type="text" id="price" />
-        </p>
-        <p>
-        Pieces in stock:
-          <input class="form-control" name="pieces" type="text" id="pieces" />
-        </p>
-        <p>
-        Supplier:
-          <select name="supplier" id="supplier" class="form-control">
-            <option value="" selected></option>
-            <?php
-            foreach($supplier as $sup) {
-                echo '<option value="'.$sup['name'].'">'.$sup['name'].'</option>';
-            }
-            ?>
-          </select>
-        </p>
-        <p>
-        Supplier URL:
-          <input class="form-control" name="supplier_link" type="text" id="supplier_link" />
-        </p>
-        <p>
-        Image:
-        <input type="file" name="pic" id="pic" class="form-control" />
-    	</p>            
+        <div id="lid_inf"></div>
+        <div id="lidForm">
+          <div class="mb-3">
+            <label for="style" class="form-label">Style:</label>
+            <input class="form-control" name="style" type="text" id="style" />
+          </div>
+          <div class="mb-3">
+            <label for="colour" class="form-label">Colour:</label>
+            <input class="form-control" name="colour" type="text" id="colour" />
+          </div>
+          <div class="mb-3">
+            <label for="price" class="form-label">Price:</label>
+            <input class="form-control" name="price" type="text" id="price" />
+          </div>
+          <div class="mb-3">
+            <label for="pieces" class="form-label">Pieces in stock:</label>
+            <input class="form-control" name="pieces" type="text" id="pieces" />
+          </div>
+          <div class="mb-3">
+            <label for="supplier" class="form-label">Supplier:</label>
+            <select name="supplier" id="supplier" class="form-control">
+              <option value="" selected></option>
+			  <?php
+               	foreach($supplier as $sup) {
+               		echo '<option value="'.$sup['name'].'">'.$sup['name'].'</option>';
+            	}
+            	?>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="supplier_link" class="form-label">Supplier URL:</label>
+            <input class="form-control" name="supplier_link" type="text" id="supplier_link" />
+          </div>
+          <div class="mb-3">
+            <label for="pic" class="form-label">Image:</label>
+            <input type="file" name="pic" id="pic" class="form-control" />
+          </div>
+        </div>
         <div class="dropdown-divider"></div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <input type="submit" name="button" class="btn btn-primary" id="lid_add" value="Add">
+        <button type="submit" class="btn btn-primary" id="lid_add">Add</button>
       </div>
     </div>
   </div>
 </div>
+
 
 
 <!--EDIT LID MODAL-->            

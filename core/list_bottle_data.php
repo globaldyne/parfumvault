@@ -39,7 +39,9 @@ foreach ($rs as $rq) {
 	$r['supplier_link'] = (string)$rq['supplier_link']?:'N/A';
 	$r['notes'] = (string)$rq['notes']?:'N/A';
 	$r['pieces'] = (int)$rq['pieces']?:0;
-	
+	$r['created'] = (string)$rq['created']?:'00:00:00';
+	$r['updated'] = (string)$rq['updated']?:'00:00:00';
+
 	$photo = mysqli_fetch_array(mysqli_query($conn,"SELECT docData FROM documents WHERE type = '4' AND ownerID = '".$r['id']."'"));
  	$r['photo'] = (string)$photo['docData']?:'data:image/png;base64,'.$defImage;
 

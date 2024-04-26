@@ -1,5 +1,9 @@
 # CHANGELOG
 ### Version 10.0
+- Added JSON export for customers
+- Added inventory create/update info for customers
+- Customers messages changed to toast
+- Added JSON export for lids
 - Added inventory create/update info for compounds
 - Added JSON import/export for compounds
 - Allow a formula to be marked complete when contains skipped materials

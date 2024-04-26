@@ -32,7 +32,9 @@ CREATE TABLE `bottles` (
   `supplier` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `supplier_link` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `notes` text COLLATE utf8_general_ci DEFAULT NULL,
-  `pieces` int(11) NOT NULL DEFAULT 0
+  `pieces` int(11) NOT NULL DEFAULT 0,
+  `updated` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL, 
+  `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE `customers` (
@@ -41,7 +43,10 @@ CREATE TABLE `customers` (
   `address` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `email` varchar(225) COLLATE utf8_general_ci DEFAULT NULL,
   `phone` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `web` varchar(255) COLLATE utf8_general_ci DEFAULT NULL
+  `web` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `owner_id` INT NOT NULL DEFAULT '0',
+  `updated` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL, 
+  `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE `formulas` (

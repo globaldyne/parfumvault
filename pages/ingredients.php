@@ -22,7 +22,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
           <div>
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h2 class="m-0 font-weight-bold text-primary"><a href="javascript:list_ingredients()">Ingredients</a></h2>
+              <h2 class="m-0 font-weight-bold text-primary"><a href="#" id="mainTitle">Ingredients</a></h2>
             </div>
             <div class="card-body">
               <div class="table-responsive">
@@ -194,6 +194,9 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
 
 
 <script type="text/javascript" language="javascript" >
+$('#mainTitle').click(function() {
+	list_ingredients();
+});
 list_ingredients();
 var pvOnlineAPI = '<?php echo $pvOnlineAPI; ?>';
 $(function () {

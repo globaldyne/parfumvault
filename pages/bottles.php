@@ -22,6 +22,8 @@ while ($suppliers = mysqli_fetch_array($sup)){
                           <div class="dropdown-menu dropdown-menu-right">
             				<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addBottle"><i class="fa-solid fa-plus mx-2"></i>Add new</a></li>
                             <li><a class="dropdown-item" id="exportCSV" href="#"><i class="fa-solid fa-file-export mx-2"></i>Export to CSV</a></li>
+                             <li><a class="dropdown-item" id="exportJSON" href="/pages/export.php?format=json&kind=bottles"><i class="fa-solid fa-file-export mx-2"></i>Export to JSON</a></li>
+
                           </div>
                         </div>        
                      </div>
@@ -35,6 +37,8 @@ while ($suppliers = mysqli_fetch_array($sup)){
                       <th>Price</th>
                       <th>Supplier</th>
                       <th>Pieces</th>
+                      <th>Created</th>
+                      <th>Updated</th>
                       <th></th>
                     </tr>
                   </thead>
@@ -188,6 +192,8 @@ $(document).ready(function() {
 			{ data : 'price', title: 'Price (<?php echo $settings['currency'];?>)' },
 			{ data : 'supplier', title: 'Supplier' },
 			{ data : 'pieces', title: 'Pieces in stock' },
+			{ data : 'created', title: 'Created' },
+			{ data : 'updated', title: 'Updated' },
 			{ data : null, title: '', render: actions }
 			],
 	order: [[ 0, 'asc' ]],

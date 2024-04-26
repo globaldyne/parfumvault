@@ -1393,7 +1393,7 @@ if($_POST['customer'] == 'add'){
 	$web = mysqli_real_escape_string($conn, $_POST['web']);
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM customers WHERE name = '$name'"))){
 		$response["error"] = 'Error: '.$name.' already exists!';
-	}elseif(mysqli_query($conn, "INSERT INTO customers (name,address,email,web) VALUES ('$name', '$address', '$email', '$web')")){
+	}elseif(mysqli_query($conn, "INSERT INTO customers (name,address,email,web,owner_id) VALUES ('$name', '$address', '$email', '$web', '".$user['id']."')")){
 		$response["success"] = 'Customer '.$name.' added!';
 	}else{
 		$response["error"] = 'Error adding customer.';
