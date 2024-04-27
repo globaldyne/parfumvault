@@ -8,6 +8,44 @@ require_once(__ROOT__.'/inc/settings.php');
 
 $PVSCALE = $settings['pv_scale_host'];
 
+
+if ($_POST['action'] == 'update' ){
+	if (!filter_var($_POST['pv_scale_host'], FILTER_VALIDATE_IP)) {
+    	$result['error'] = "Scale IP is invalid";
+		echo json_encode($result);
+		return;
+	}
+
+}
+
+
+if ($_POST['ping']){
+	$pvScHost = $_POST['pv_scale_host'];
+	$timeout = 30; // Timeout in seconds
+	
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, $pvScHost."/ping");
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+	curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
+	$response = curl_exec($ch);
+	$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+	curl_close($ch);
+	
+	if ($http_code == 200 && $response == '{"response":"pong"}') {
+		$sysResponse = file_get_contents("http://".$pvScHost."/sys");
+		echo json_encode([
+			'success' => true,
+			'data' => $response,
+			'sysData' => json_decode($sysResponse, true),
+			'msg' => "Connection was successful"
+			]);
+	} else {
+		echo json_encode(['success' => false, 'data' => $response]);
+	}
+	return;
+}
+
 if ($_GET['action'] == 'check_reload_signal'){
 	$reloadSignal = file_get_contents($tmp_path.'reload_signal.txt');
 	echo $reloadSignal;

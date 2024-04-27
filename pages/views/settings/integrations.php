@@ -12,6 +12,12 @@ if($bkData['enabled']){
 }else{
 	$state = '<span class="card-subtitle badge badge-danger ml-2">Disabled</span>';
 }
+
+if($settings['pv_scale_enabled']){
+	$scaleState = '<span class="card-subtitle badge badge-success ml-2">Enabled</span>';
+}else{
+	$scaleState = '<span class="card-subtitle badge badge-danger ml-2">Disabled</span>';
+}
 ?>
 
 <h3>Integrations</h3>
@@ -46,7 +52,7 @@ if($bkData['enabled']){
             </div>
         </div>
         
-        <!---
+        
         <div class="col-md-2">
             <div id="pvscale">
                 <div class="card" style="width: 18rem;">
@@ -54,7 +60,7 @@ if($bkData['enabled']){
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#63E6BE" d="M128 176a128 128 0 1 1 256 0 128 128 0 1 1 -256 0zM391.8 64C359.5 24.9 310.7 0 256 0S152.5 24.9 120.2 64H64C28.7 64 0 92.7 0 128V448c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V128c0-35.3-28.7-64-64-64H391.8zM296 224c0-10.6-4.1-20.2-10.9-27.4l33.6-78.3c3.5-8.1-.3-17.5-8.4-21s-17.5 .3-21 8.4L255.7 184c-22 .1-39.7 18-39.7 40c0 22.1 17.9 40 40 40s40-17.9 40-40z"/></svg>
                     </div>
                     <div class="card-body">
-                        <h5 class="card-title">PV Scale</h5>
+                        <h5 class="card-title">PV Scale<?php echo $scaleState; ?></h5>
                         <h6 class="card-subtitle mb-2 text-muted">Manage your PV Scale</h6>
                         <p class="card-text">Connect your PV Scale to update the formula in the Making section and inventory in real time while you making the formula</p>
                         <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#configureScale"><i
@@ -66,7 +72,7 @@ if($bkData['enabled']){
             </div>
         </div>
     </div>
- 	-->
+ 	
 </div>
 
 
@@ -101,6 +107,16 @@ $(document).ready(function() {
 		const name = e.relatedTarget.dataset.name;
 	
 		$.get("/pages/views/backup_providers/configure.php")
+			.then(data => {
+			$(".modal-body", this).html(data);
+		});
+	});
+	
+	$("#configureScale").on("show.bs.modal", function(e) {
+		const id = e.relatedTarget.dataset.id;
+		const name = e.relatedTarget.dataset.name;
+	
+		$.get("/pages/views/pvscale/configure.php")
 			.then(data => {
 			$(".modal-body", this).html(data);
 		});
@@ -344,6 +360,23 @@ $(document).ready(function() {
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             <button type="button" class="btn btn-primary" id="cBK">Backup</button>
           </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCALE CONFIGURE MODAL -->            
+<div class="modal fade" id="configureScale" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="configureScaleLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title mgmIngHeader mgmIngHeader-with-separator" id="configureScaleLabel">Configure Scale</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-danger">Unable to get data</div>
       </div>
     </div>
   </div>
