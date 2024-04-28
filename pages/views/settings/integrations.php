@@ -122,6 +122,16 @@ $(document).ready(function() {
 		});
 	});
 
+	$("#buyScale").on("show.bs.modal", function(e) {
+		const id = e.relatedTarget.dataset.id;
+		const name = e.relatedTarget.dataset.name;
+	
+		$.get("/pages/views/pvscale/buy.php")
+			.then(data => {
+			$(".modal-body", this).html(data);
+		});
+	});
+	
 	$("#listBackup").on("show.bs.modal", function(e) {
 		const id = e.relatedTarget.dataset.id;
 		const name = e.relatedTarget.dataset.name;
@@ -360,6 +370,23 @@ $(document).ready(function() {
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             <button type="button" class="btn btn-primary" id="cBK">Backup</button>
           </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCALE BUY MODAL -->            
+<div class="modal fade" id="buyScale" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="buyScale" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title mgmIngHeader mgmIngHeader-with-separator" id="buyScaleLabel">Buy PV Scale</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-danger">Unable to get data</div>
       </div>
     </div>
   </div>

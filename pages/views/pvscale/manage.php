@@ -10,12 +10,23 @@ $PVSCALE = $settings['pv_scale_host'];
 
 
 if ($_POST['action'] == 'update' ){
+	
 	if (!filter_var($_POST['pv_scale_host'], FILTER_VALIDATE_IP)) {
     	$result['error'] = "Scale IP is invalid";
 		echo json_encode($result);
 		return;
 	}
-
+	$pv_scale_enabled = (int)$_POST['enabled'];
+	$q = mysqli_query($conn,"UPDATE settings SET pv_scale_enabled = '$pv_scale_enabled'");
+	
+	if($q){
+		$result['success'] = "Settings updated";
+	} else {
+		$result['error'] = "Unable to update settings ".mysqli_error($conn);
+	}
+	
+	echo json_encode($result);
+	return;
 }
 
 
@@ -80,27 +91,19 @@ if ($_GET['action'] == 'version'){
 if ($_GET['action'] == 'send2PVScale') {
     $url = "http://$PVSCALE/api";
     $jsonData = file_get_contents('php://input');
-    // Decode the JSON data
     $requestData = json_decode($jsonData);
-    // Check if decoding was successful
     if ($requestData !== null) {
-        // Prepare data for sending
         $postData = json_encode($requestData);
-        // Initialize curl session
         $ch = curl_init();
-        // Set curl options
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        // Execute curl session
         $response = curl_exec($ch);
-        // Check for errors
         if ($response === false) {
             echo json_encode(['success' => false, 'error' => 'Error sending data to the remote server: ' . curl_error($ch)]);
         } else {
-            // Process the response
             $responseData = json_decode($response);
             if ($responseData !== null) {
                 echo json_encode(['success' => true, 'message' => $responseData->message]);
@@ -109,7 +112,6 @@ if ($_GET['action'] == 'send2PVScale') {
             }
         }
         
-        // Close curl session
         curl_close($ch);
     } else {
         echo json_encode(['success' => false, 'error' => 'Error decoding JSON data']);
