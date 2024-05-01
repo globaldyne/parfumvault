@@ -15,24 +15,21 @@ require_once(__ROOT__.'/inc/settings.php');
       <div class="mb-3">
         <label for="pv_scale_host" class="form-label">Scale IP</label>
         <input name="pv_scale_host" type="pv_scale_host" class="form-control" id="pv_scale_host" value="<?=$settings['pv_scale_host']?>">
-      </div>
-      <div id="sysData"></div>
-
-    </div>
-    
-    <div class="col-sm">
-      <div class="mb-3">
-        <label for="pv_scale_host" class="form-label">Backup service host</label>
-      </div>
-    
-      <div class="mb-3">
-        <label for="desc" class="form-label">Short Description</label>
-        <input name="desc" type="text" class="form-control" id="desc" value="<?=$bk['description']?>">
-      </div>
+      </div> 
       <div class="mb-3 form-check">
         <input type="checkbox" class="form-check-input" id="pv_scale_enabled" name="pv_scale_enabled" <?php if ($settings['pv_scale_enabled'] == '1') echo 'checked'; ?>>
         <label class="form-check-label" for="pv_scale_enabled">Enabled</label>
       </div>
+      <div id="sysData"></div>
+    </div>
+    
+    <div class="col-sm">
+   
+		<div class="d-grid gap-2 col-6 mx-auto">
+            <input type="submit" name="btnCal" class="btn btn-warning" id="chkConn" value="Calibrate">
+            <input type="submit" name="btnFirm" class="btn btn-info" id="chkFirm" value="Firmware update">
+      	</div>
+      
     </div>
   </div>
   <div class="dropdown-divider"></div>
@@ -47,6 +44,7 @@ require_once(__ROOT__.'/inc/settings.php');
 <script>
 $(document).ready(function() {
   var msg = "";
+  pvScaleConnVal();
   $('#chkConn').click(function(event) {
 	  pvScaleConnVal();
   });
@@ -86,10 +84,10 @@ $(document).ready(function() {
 	});
 	
 	function pvScaleConnVal(callback) {
-    event.preventDefault(); // Prevent form submission
+    //event.preventDefault(); // Prevent form submission
     var success = false;
 
-    $('#scmsg').html('<div class="alert alert-info"><i class="spinner-border spinner-border-sm mx-2"></i>Please wait...</div>');
+    $('#scmsg').html('<div class="alert alert-info"><i class="spinner-border spinner-border-sm mx-2"></i>Trying to connect...</div>');
 
     $('#chkConn').addClass('d-none');
     $('#connSpinner').removeClass('d-none');
@@ -112,13 +110,16 @@ $(document).ready(function() {
                     '<p>Calibration Factor: ' + sysData.calibration_factor + '</p>' +
                     '<p>PV Scale Version: ' + sysData.pvScaleVersion + '</p>'
                 );
-                $('#scmsg').html('<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>' + data.msg + '</div>');
+             //   $('#scmsg').html('<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>' + data.msg + '</div>');
+			 	$('#scmsg').html('');
                 success = true;
             } else {
+				$('#sysData').html('');
                 $('#scmsg').html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>Connection failed</div>');
             }
         },
         error: function() {
+			$('#sysData').html('');
             $('#scmsg').html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>Network error</div>');
         },
         complete: function() {
