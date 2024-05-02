@@ -68,25 +68,43 @@ if ($_GET['action'] == 'update_reload_signal'){
 	return;
 }
 
-if ($_GET['action'] == 'version'){
-	$url = "http://$PVSCALE/version";
+if ($_GET['action'] == 'firmwareCheck'){
+	$url = "http://$PVSCALE/firmware/check";
 	$response = file_get_contents($url);
 
 	if ($response !== false) {
 		$responseData = json_decode($response);
         if ($responseData !== null) {
 
-			echo json_encode(['success' => true, 'data' => $responseData]);
+			echo json_encode(['success' => true, 'response' => $responseData]);
 			
 		} else {
-            echo json_encode(['success' => false, 'error' => 'Error decoding JSON response']);
+            echo json_encode(['success' => false, 'response' => 'Error decoding JSON response']);
         }
 	} else {
-		echo json_encode(['success' => false, 'error' => 'Error occurred getting version']);
+		echo json_encode(['success' => false, 'response' => 'Error occurred getting version']);
 	}
 	return;
 }
 
+if ($_GET['action'] == 'firmwareUpdate'){
+	$url = "http://$PVSCALE/firmware/update";
+	$response = file_get_contents($url);
+
+	if ($response !== false) {
+		$responseData = json_decode($response);
+        if ($responseData->success == true) {
+
+			echo json_encode(['success' => true, 'response' => $responseData->message]);
+			
+		} else {
+            echo json_encode(['success' => false, 'response' => $responseData->message]);
+        }
+	} else {
+		echo json_encode(['success' => false, 'response' => $responseData->message]);
+	}
+	return;
+}
 
 if ($_GET['action'] == 'send2PVScale') {
     $url = "http://$PVSCALE/api";
