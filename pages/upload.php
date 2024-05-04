@@ -206,7 +206,7 @@ if($_GET['type'] && $_GET['id']){
 	$type = mysqli_real_escape_string($conn, $_GET['type']);
 	$name = base64_decode($_GET['doc_name']);
 	$notes = base64_decode($_GET['doc_notes']);
-	$isBatch = $_GET['isBatch'];
+	$isBatch = $_GET['isBatch'] ?: 0;
 
 	$field = 'doc_file';
 	
@@ -244,12 +244,13 @@ if($_GET['type'] && $_GET['id']){
 			if(mysqli_query($conn, "INSERT INTO documents (ownerID,type,name,notes,docData,isBatch) VALUES ('$ownerID','$type','$name','$notes','$docData','$isBatch')")){
 				unlink($tmp_path.$file_name);
 				$response['success'] = 'File uploaded';
-				echo json_encode($response);
-				return;
-			 }
+			}else {
+				$response['error'] = 'File upload error '.mysqli_error($conn);
+			}
+			
 	  	}
    }
-	
+	echo json_encode($response);
 	return;	
 }
 
