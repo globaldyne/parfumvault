@@ -359,7 +359,11 @@ $('table.table').on('click', '[id*=deleteMe]', function () {
     
 	bootbox.dialog({
        title: "Confirm formula deletion",
-       message : '<div class="alert alert-warning">WARNING, this action cannot be reverted unless you have a backup.</div><p>Permantly delete <strong>'+ $(this).attr('data-name') +'</strong> formula?</p>',
+       message : '<div class="alert alert-warning">WARNING, this action cannot be reverted unless you have a backup.</div><p>Permantly delete <strong>'+ $(this).attr('data-name') +'</strong> formula?</p>' +
+	   '<div class="form-group col-sm">' + 
+       	'<input name="archiveFormula" id="archiveFormula" type="checkbox" value="1">'+
+       	'<label class="form-check-label mx-2" for="archiveFormula">Archive formula</label>'+
+       '</div>',
        buttons :{
            main: {
                label : "DELETE",
@@ -370,10 +374,11 @@ $('table.table').on('click', '[id*=deleteMe]', function () {
 					url: '/pages/manageFormula.php', 
 					type: 'POST',
 					data: {
-						action: "delete",
+						action: "deleteFormula",
 						fid: formula.ID,
 						fname: formula.Name,
-						},
+						archiveFormula: $("#archiveFormula").is(':checked'),
+					},
 					dataType: 'json',
 					success: function (data) {
 						if ( data.success ) {

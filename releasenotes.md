@@ -1,5 +1,6 @@
 Whats New in v10.0
 --------------------------
+- Added archive option when deleting a formula
 - Added inventory create/update info for compounds
 - Added JSON import/export for compounds
 - Allow a formula to be marked complete when contains skipped materials

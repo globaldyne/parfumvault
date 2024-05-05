@@ -458,10 +458,24 @@ if($_POST['action'] == 'addFormula'){
 }
 	
 //DELETE FORMULA
-if($_POST['action'] == 'delete' && $_POST['fid']){
+if($_POST['action'] == 'deleteFormula' && $_POST['fid']){
 	$fid = mysqli_real_escape_string($conn, $_POST['fid']);
 	$fname = mysqli_real_escape_string($conn, $_POST['fname']);
 
+	if($_POST['archiveFormula'] == "true"){
+		require_once(__ROOT__.'/libs/fpdf.php');
+		require_once(__ROOT__.'/func/genBatchPDF.php');
+		require_once(__ROOT__.'/func/ml2L.php');
+		
+		define('FPDF_FONTPATH',__ROOT__.'/fonts');
+		
+		$defCatClass = $settings['defCatClass'];
+		$arcID = "Archived-".$fname.$fid;
+		
+		genBatchPDF($fid,$arcID,'100','100','100',$defCatClass,$settings['qStep'],'formulas');
+
+	}
+	
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$fid' AND isProtected = '1'"))){
 		$response['error'] = 'Error deleting formula '.$fname.' is protected.</div>';
 		echo json_encode($response);

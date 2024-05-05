@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 10.0
+- Added archive option when deleting a formula
 - Added JSON export for customers
 - Added inventory create/update info for customers
 - Customers messages changed to toast
