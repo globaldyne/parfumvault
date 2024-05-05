@@ -8,7 +8,7 @@ require_once(__ROOT__.'/pages/top.php');
   <div>
   <div class="card shadow mb-4">
     <div class="card-header py-3">
-      <h2 class="m-0 font-weight-bold text-primary"><a href="javascript:reload_data()">Batch History</a></h2>
+      <h2 class="m-0 font-weight-bold text-primary"><a href="#" id="mainTitle">Batch History</a></h2>
     </div>
     <div class="card-body">
       <div class="table-responsive">
