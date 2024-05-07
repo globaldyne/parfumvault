@@ -16,7 +16,7 @@ require_once(__ROOT__.'/func/getIngStock.php');
 if($_GET['replacementsOnly']){
 	$s = trim($_GET['search']);
 
-	$getAllIng = mysqli_query($conn, "SELECT id,name FROM ingredients WHERE name LIKE '%$s%' OR cas LIKE '%$s%'");
+	$getAllIng = mysqli_query($conn, "SELECT id,name FROM ingredients WHERE name LIKE '%$s%' OR cas LIKE '%$s%' ORDER BY name ASC");
 	while($allIng = mysqli_fetch_array($getAllIng)){
 		$ingredient[] = $allIng;
 	}
