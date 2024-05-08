@@ -21,9 +21,9 @@ require_once(__ROOT__.'/inc/settings.php');
      
     
       <div class="mb-3">
-       PV Scale is a specialy designed analytical scale which will weight, guide you and automatically update your inventory when you formulating.
+       PV Scale is a specially designed formulation scale which will weight, guide you and automatically update your inventory when you formulating.
        <br>
-       It currently not available to buy but you can use discussion settings in github to request/discuss features and been notified when will be available.
+       Its currently not available to buy but you can use discussions page in github to request/discuss features and to be notified when is available.
       </div>
       
     </div>

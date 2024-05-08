@@ -9,9 +9,9 @@ require_once(__ROOT__.'/inc/settings.php');
 ?>
 <div class="card-body">
   <div id="scmsg"></div>
-  <div class="row g-2">
+  <div class="row g-4">
  
-    <div class="col-sm">
+    <div class="col-sm-4">
       <div class="mb-3">
         <label for="pv_scale_host" class="form-label">Scale IP</label>
         <input name="pv_scale_host" type="pv_scale_host" class="form-control" id="pv_scale_host" value="<?=$settings['pv_scale_host']?>">
@@ -22,15 +22,22 @@ require_once(__ROOT__.'/inc/settings.php');
       </div>
       <div id="sysData"></div>
     </div>
-    
-    <div class="col-sm">
-   
-		<div class="d-grid gap-2 col-6 mx-auto">
-            <input type="submit" name="scaleCal" class="btn btn-warning" id="scaleCal" value="Calibrate">
-            <input type="submit" name="btnFirm" class="btn btn-info" id="chkFirm" value="Firmware update">
-      	</div>
-      
+ 
+    <div class="row col-sm g-2 gap-4" id="controlScale">
+        <div class="col-sm-2">
+            <div class="d-grid gap-2 col-6 mx-auto mb-2" >
+                <input type="submit" name="scaleCal" class="btn btn-info" id="scaleCal" value="Calibrate">
+                <input type="submit" name="btnFirm" class="btn btn-info" id="chkFirm" value="Firmware update">
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="d-grid gap-2 col-6 mx-auto mb-2" >
+                <input type="submit" name="scaleScreenOn" class="btn btn-info" id="scaleScreenOn" value="Turn Screen ON">
+                <input type="submit" name="scaleScreenOff" class="btn btn-info" id="scaleScreenOff" value="Turn Screen Off">
+            </div>
+        </div>
     </div>
+    
   </div>
   <div class="dropdown-divider"></div>
   <div class="modal-footer">

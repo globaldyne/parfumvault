@@ -10,6 +10,45 @@ $(document).ready(function() {
 	  pvScaleConnVal();
 	});
 
+	$('#scaleScreenOn').click(function(event) {
+	  	$.ajax({
+			url: '/pages/views/pvscale/manage.php',
+			type: 'GET',
+			data: {
+				action: 'screen',
+				status: 1
+			},
+			dataType: 'json',
+			success: function(data) {
+				if (data.success) {
+					msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>Screen on</div>';
+				} else {
+					msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + data.error + '</div>';
+				}
+				$('#scmsg').html(msg);
+			}
+		});
+	});
+	
+	$('#scaleScreenOff').click(function(event) {
+		$.ajax({
+			url: '/pages/views/pvscale/manage.php',
+			type: 'GET',
+			data: {
+				action: 'screen',
+				status: 0
+			},
+			dataType: 'json',
+			success: function(data) {
+				if (data.success) {
+					msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>Scrreen off</div>';
+				} else {
+					msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + data.error + '</div>';
+				}
+				$('#scmsg').html(msg);
+			}
+		});
+	});
 
 	$('#chkFirm').click(function() {
 		$('#scmsg').html('<div class="alert alert-info"><i class="spinner-border spinner-border-sm mx-2"></i>Please wait...</div>');
@@ -69,30 +108,28 @@ $(document).ready(function() {
 	$('#subScale').click(function() {
 		pvScaleConnVal(function(success) {
 			if (success == true) {
-	
 				var pv_scale_enabled = $('#pv_scale_enabled').is(':checked') ? '1' : '0';
 			} else {
 				var pv_scale_enabled = '0';
 			}
-				$.ajax({
-					url: '/pages/views/pvscale/manage.php',
-					type: 'POST',
-					data: {
-						action: 'update',
-						enabled: pv_scale_enabled,
-						pv_scale_host: $("#pv_scale_host").val()
-					},
-					dataType: 'json',
-					success: function(data) {
-						if (data.success) {
-							msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>' + data.success + '</div>';
-						} else {
-							msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + data.error + '</div>';
-						}
-						$('#scmsg').html(msg);
+			$.ajax({
+				url: '/pages/views/pvscale/manage.php',
+				type: 'POST',
+				data: {
+					action: 'update',
+					enabled: pv_scale_enabled,
+					pv_scale_host: $("#pv_scale_host").val()
+				},
+				dataType: 'json',
+				success: function(data) {
+					if (data.success) {
+						msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>' + data.success + '</div>';
+					} else {
+						msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + data.error + '</div>';
 					}
-				});
-			//}
+					$('#scmsg').html(msg);
+				}
+			});
 			
 		});
 		
@@ -106,6 +143,8 @@ $(document).ready(function() {
 
     $('#chkConn').addClass('d-none');
     $('#connSpinner').removeClass('d-none');
+    $('#controlScale').addClass('d-none');
+
 
     $.ajax({
         url: '/pages/views/pvscale/manage.php',
@@ -125,11 +164,12 @@ $(document).ready(function() {
                     '<p>Calibration Factor: ' + sysData.calibration_factor + '</p>' +
                     '<p>PV Scale Version: ' + sysData.pvScaleVersion + '</p>'
                 );
-             //   $('#scmsg').html('<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>' + data.msg + '</div>');
+    			$('#controlScale').removeClass('d-none');
 			 	$('#scmsg').html('');
                 success = true;
             } else {
 				$('#sysData').html('');
+				$('#controlScale').addClass('d-none');
                 $('#scmsg').html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>Connection failed</div>');
             }
         },
