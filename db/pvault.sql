@@ -606,6 +606,7 @@ CREATE TABLE `formulasRevisions` (
 CREATE TABLE `formula_history` (
  `id` int(11) NOT NULL AUTO_INCREMENT,
  `fid` varchar(255) NOT NULL,
+ `ing_id` INT NOT NULL DEFAULT '0', 
  `change_made` text COLLATE utf8_general_ci NOT NULL,
  `date_time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
  `user` varchar(255) COLLATE utf8_general_ci NOT NULL,

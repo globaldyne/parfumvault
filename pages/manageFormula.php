@@ -232,7 +232,7 @@ if($_POST['action'] == 'deleteIng' && $_POST['ingID'] && $_POST['ing']){
 		if(mysqli_query($conn, "DELETE FROM formulas WHERE id = '$id' AND fid = '$fid'")){
 			$response['success'] = $ing.' removed from the formula';
 			$lg = "REMOVED: $ing removed";
-			mysqli_query($conn, "INSERT INTO formula_history (fid,change_made,user) VALUES ('".$meta['id']."','$lg','".$user['fullName']."')");
+			mysqli_query($conn, "INSERT INTO formula_history (fid,ing_id,change_made,user) VALUES ('".$meta['id']."','".$ingredient_id."','$lg','".$user['fullName']."')");
 		}else{
 			$response['error'] = $ing.' cannot be removed from the formula';
 		}
@@ -297,7 +297,7 @@ if($_POST['action'] == 'addIng' && $_POST['fid']){
 		if(mysqli_query($conn,"INSERT INTO formulas(fid,name,ingredient,ingredient_id,concentration,quantity,dilutant) VALUES('$fid','".$meta['name']."','".$ingredient['name']."','".$ingredient_id."','$concentration','$quantity','$dilutant')")){
 			
 			$lg = "ADDED: ".$ingredient['name']." $quantity".$settings['mUnit']." @$concentration% $dilutant";
-			mysqli_query($conn, "INSERT INTO formula_history (fid,change_made,user) VALUES ('".$fid."','$lg','".$user['fullName']."')");
+			mysqli_query($conn, "INSERT INTO formula_history (fid,ing_id,change_made,user) VALUES ('".$fid."','$ingredient_id','$lg','".$user['fullName']."')");
 			mysqli_query($conn, "UPDATE formulasMetaData SET status = '1' WHERE fid = '".$fid."' AND status = '0' AND isProtected = '0'");
 			
 			$response['success'] = '<strong>'.$quantity.$settings['mUnit'].'</strong> of <strong>'.$ingredient['name'].'</strong> added to the formula!';
@@ -334,7 +334,7 @@ if($_POST['action'] == 'repIng' && $_POST['fid']){
 		if(mysqli_query($conn, "UPDATE formulas SET ingredient = '$ingredient', ingredient_id = '".$ingredient_id['id']."' WHERE ingredient = '$oldIngredient' AND id = '".$_POST['ingSrcID']."' AND fid = '$fid'")){
 			$response['success'] = $oldIngredient.' replaced by '.$ingredient;
 			$lg = "REPLACED: $oldIngredient WITH $ingredient";
-			mysqli_query($conn, "INSERT INTO formula_history (fid,change_made,user) VALUES ('".$meta['id']."','$lg','".$user['fullName']."')");
+			mysqli_query($conn, "INSERT INTO formula_history (fid,ing_id,change_made,user) VALUES ('".$meta['id']."','".$ingredient_id['id']."','$lg','".$user['fullName']."')");
 		}else{
 			$response['error'] = 'Error replacing '.$oldIngredient;
 		}

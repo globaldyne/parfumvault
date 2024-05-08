@@ -1038,8 +1038,8 @@ if($_POST['updateQuantity'] && $_POST['ingQuantityID'] &&  $_POST['ingQuantityNa
 		
 		if(mysqli_query($conn, "UPDATE formulas SET quantity = '$value' WHERE fid = '$fid' AND id = '$ingredient'")){
 			
-			$lg = "CHANGE: ".$ing_name." Set $name to $value";
-			mysqli_query($conn, "INSERT INTO formula_history (fid,change_made,user) VALUES ('".$meta['id']."','$lg','".$user['fullName']."')");
+			$lg = "CHANGED: ".$ing_name." Set $name to $value";
+			mysqli_query($conn, "INSERT INTO formula_history (fid,ing_id,change_made,user) VALUES ('".$meta['id']."','$ingredient','$lg','".$user['fullName']."')");
 			
 			$response["success"] = 'Quantity updated';
 			echo json_encode($response);
@@ -1065,8 +1065,8 @@ if($_POST['value'] && $_GET['formula'] && $_POST['pk']){
 	if($meta['isProtected'] == FALSE){
 					
 		mysqli_query($conn, "UPDATE formulas SET $name = '$value' WHERE fid = '$formula' AND id = '$ingredient'");
-		$lg = "CHANGE: ".$ing_name['ingredient']." Set $name to $value";
-		mysqli_query($conn, "INSERT INTO formula_history (fid,change_made,user) VALUES ('".$meta['id']."','$lg','".$user['fullName']."')");
+		$lg = "CHANGED: ".$ing_name['ingredient']." Set $name to $value";
+		mysqli_query($conn, "INSERT INTO formula_history (fid,ing_id,change_made,user) VALUES ('".$meta['id']."','$ingredient','$lg','".$user['fullName']."')");
 echo mysqli_error($conn);
 	}
 	return;

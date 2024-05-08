@@ -15,6 +15,7 @@
 - Added document size and created date in fotmula attachements page
 - Fix search when replacing a material
 - PV Scale integration - WIP
+- Log ingredient id in history
 
 ### Version 9.9
 - Record replaced ingredients when finalising a formula in the generated PDF
