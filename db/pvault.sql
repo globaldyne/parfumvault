@@ -28,10 +28,13 @@ CREATE TABLE `bottles` (
   `height` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `width` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `diameter` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `weight` DOUBLE NOT NULL DEFAULT '0', 
   `supplier` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `supplier_link` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `notes` text COLLATE utf8_general_ci DEFAULT NULL,
-  `pieces` int(11) NOT NULL DEFAULT 0
+  `pieces` int(11) NOT NULL DEFAULT 0,
+  `updated` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL, 
+  `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE `customers` (
@@ -40,7 +43,10 @@ CREATE TABLE `customers` (
   `address` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `email` varchar(225) COLLATE utf8_general_ci DEFAULT NULL,
   `phone` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `web` varchar(255) COLLATE utf8_general_ci DEFAULT NULL
+  `web` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `owner_id` INT NOT NULL DEFAULT '0',
+  `updated` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL, 
+  `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE `formulas` (
@@ -495,6 +501,7 @@ CREATE TABLE `documents` (
  `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
  `notes` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
  `docData` longblob NOT NULL,
+ `isBatch` INT NOT NULL DEFAULT '0', 
  `created` datetime NOT NULL DEFAULT current_timestamp(),
  `updated` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
  PRIMARY KEY (`id`),
@@ -599,6 +606,7 @@ CREATE TABLE `formulasRevisions` (
 CREATE TABLE `formula_history` (
  `id` int(11) NOT NULL AUTO_INCREMENT,
  `fid` varchar(255) NOT NULL,
+ `ing_id` INT NOT NULL DEFAULT '0', 
  `change_made` text COLLATE utf8_general_ci NOT NULL,
  `date_time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
  `user` varchar(255) COLLATE utf8_general_ci NOT NULL,
@@ -679,7 +687,9 @@ CREATE TABLE `backup_provider` (
   `description` varchar(255) NOT NULL,
   `gdrive_name` varchar(255) NOT NULL DEFAULT 'pvault',
   UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 INSERT INTO `backup_provider` (`id`, `credentials`, `provider`, `schedule`, `enabled`, `description`, `gdrive_name`) VALUES
 (1, '{}', 'Google', '00:00:00', 1, 'My PV Backups', 'pvault');
+
+CREATE TABLE `inventory_compounds` ( `id` INT NOT NULL AUTO_INCREMENT , `name` VARCHAR(255) NOT NULL , `description` TEXT NOT NULL , `batch_id` VARCHAR(255) NOT NULL DEFAULT '-' , `size` DOUBLE NOT NULL DEFAULT '0' , `updated` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `owner_id` INT NOT NULL DEFAULT '0' , `location` VARCHAR(255) NOT NULL , `label_info` TEXT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB CHARSET=utf8 COLLATE utf8_general_ci; 

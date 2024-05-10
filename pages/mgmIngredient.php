@@ -71,6 +71,12 @@ var myPCH = "<?=$settings['pubChem']?>";
 
 
 </script>
+<style>
+body {
+  overflow-y:hidden;
+}
+
+</style>
 </head>
 
 <body>

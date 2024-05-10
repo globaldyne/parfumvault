@@ -38,6 +38,7 @@ foreach ($his as $h){
 	
 	$r['id'] = (int)$h['id'];
 	$r['fid'] = (string)$h['fid'];
+	$r['ing_id'] = (int)$h['ing_id'];
 	$r['change_made'] = (string)$h['change_made'];
 	$r['date_time'] = (string)$h['date_time'];
 	$r['user'] = (string)$h['user'];

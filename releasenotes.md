@@ -1,11 +1,12 @@
-Whats New in v9.9
+Whats New in v10.0
 --------------------------
-- Record replaced ingredients when finalising a formula in the generated PDF
-- Increase toast duration for formula making to 10 seconds
-- Update view for bottle add modal window
-- Choose a replacement material when making a formula and update stock and final documents automatically
-- Skip a mterial when you making a formula
-- Increase update interval check from PV Scale to 5s
-- Added separate notes field for Formula Make
-- When a formula is marked as completed it generates a document in formula attachments
+- Discord - please join here: https://discord.gg/dsQwDAem
+- Added archive option when deleting a formula
+- Added inventory create/update info for compounds
+- Added JSON import/export for compounds
+- Allow a formula to be marked complete when contains skipped materials
+- Bottle edit page format update
+- Weight added for the bottles inventory
+- Added Inventory for finished Compounds
+- Minor improvements in formula attachments section
 - For full details please refer to the CHANGELOG

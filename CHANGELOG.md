@@ -1,4 +1,23 @@
 # CHANGELOG
+### Version 10.0
+- Discord server link added
+- Added archive option when deleting a formula
+- Added JSON export for customers
+- Added inventory create/update info for customers
+- Customers messages changed to toast
+- Added JSON export for lids
+- Added inventory create/update info for compounds
+- Added JSON import/export for compounds
+- Allow a formula to be marked complete when contains skipped materials
+- Bottle edit page format update
+- Weight added for the bottles inventory
+- Bottles inventory messages changed to toast
+- Added Inventory for finished Compounds
+- Added document size and created date in fotmula attachements page
+- Fix search when replacing a material
+- PV Scale integration - WIP
+- Log ingredient id in history
+
 ### Version 9.9
 - Record replaced ingredients when finalising a formula in the generated PDF
 - Increase toast duration for formula making to 10 seconds

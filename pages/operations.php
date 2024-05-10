@@ -569,5 +569,50 @@ if($_GET['action'] == 'restoreIFRA'){
 
 }
 
+//IMPORT COMPOUNDS
+if($_GET['action'] == 'importCompounds'){
+	if (!file_exists($tmp_path)) {
+		mkdir($tmp_path, 0777, true);
+	}
+	
+	if (!is_writable($tmp_path)) {
+		$result['error'] = "Upload directory not writable. Make sure you have write permissions.";
+		echo json_encode($result);
+		return;
+	}
+	
+	$target_path = $tmp_path.basename($_FILES['jsonFile']['name']); 
 
+	if(move_uploaded_file($_FILES['jsonFile']['tmp_name'], $target_path)) {
+    	$data = json_decode(file_get_contents($target_path), true);
+		if(!$data['inventory_compounds']){
+			$result['error'] = "JSON File seems invalid. Please make sure you importing the right file";
+			echo json_encode($result);
+			return;
+		}
+		
+		foreach ($data['inventory_compounds'] as $d ){				
+			
+			$s = mysqli_query($conn, "INSERT INTO `inventory_compounds` (`name`,`description`,`batch_id`,`size`,`updated`,`created`,`location`,`label_info`) VALUES ('".$d['name']."','".$d['description']."','".$d['batch_id']."','".$d['size']."','".$d['updated']."','".$d['created']."','".$d['location']."','".$d['label_info']."') ");
+				
+		}
+				
+		if($s){
+			$result['success'] = "Import complete";
+			unlink($target_path);
+		}else{
+			$result['error'] = "There was an error importing your JSON file ".mysqli_error($conn);
+			echo json_encode($result);
+			return;
+		}
+			
+	} else {
+		$result['error'] = "There was an error processing json file $target_path, please try again!";
+		echo json_encode($result);
+
+	}
+	echo json_encode($result);
+	return;
+
+}
 ?>

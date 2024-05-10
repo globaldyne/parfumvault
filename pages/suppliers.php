@@ -4,7 +4,7 @@
           <div>
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h2 class="m-0 font-weight-bold text-primary"><a href="/?do=suppliers">Suppliers</a></h2>
+              <h2 class="m-0 font-weight-bold text-primary"><a href="#" id="mainTitle">Suppliers</a></h2>
             </div>
              <div class="card-body">
               <div class="table-responsive">
@@ -44,7 +44,9 @@
                 </table>
 <script type="text/javascript" language="javascript" >
 $(document).ready(function() {
-	
+	$('#mainTitle').click(function() {
+	 	reload_data();
+  	});
 	$('[data-toggle="tooltip"]').tooltip();
 	var tdIngSupData = $('#tdIngSupData').DataTable( {
 		columnDefs: [

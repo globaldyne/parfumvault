@@ -10,6 +10,88 @@ require_once(__ROOT__.'/func/sanChar.php');
 require_once(__ROOT__.'/func/priceScrape.php');
 require_once(__ROOT__.'/func/create_thumb.php');
 require_once(__ROOT__.'/func/pvFileGet.php');
+	
+//ADD INVENTORY COMPOUND
+if($_POST['action'] == 'add' && $_POST['type'] == 'invCmp'){
+	$name = mysqli_real_escape_string($conn, $_POST['cmp_name']);
+	$size = mysqli_real_escape_string($conn, $_POST['cmp_size']);
+	
+	if(empty($name)){
+		$response["error"] = 'Name is required.';
+		echo json_encode($response);
+		return;
+	}
+	if(!is_numeric($size)){
+		$response["error"] = 'Size can only be numeric';
+		echo json_encode($response);
+		return;
+	}
+	$batch_id = mysqli_real_escape_string($conn, $_POST['cmp_batch']);
+	$location = mysqli_real_escape_string($conn, $_POST['cmp_location']);
+	$description = mysqli_real_escape_string($conn, $_POST['cmp_desc']);
+	$label_info = mysqli_real_escape_string($conn, $_POST['cmp_label_info']);
+
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM inventory_compounds WHERE name = '$name'"))){
+		$response["error"] = 'Error: '.$name.' already exists!';
+		
+	}elseif(mysqli_query($conn, "INSERT INTO inventory_compounds (name,description,batch_id,size,owner_id,location,label_info) VALUES ('$name', '$description', '$batch_id', '$size', '".$user['id']."', '$location', '$label_info' )")){
+		$response["success"] = 'Compound '.$name.' added!';
+	}else{
+		$response["error"] = 'Error adding compound '.mysqli_error($conn);
+	}
+	echo json_encode($response);
+	return;
+}
+
+
+//UPDATE COMPOUND DATA
+if($_POST['update_inv_compound_data']){
+	
+	if(!$_POST['name']){
+		$response["error"] = "Name is required";
+		echo json_encode($response);
+		return;
+	}
+	
+	$id = $_POST['cmp_id'];
+	$name = $_POST['name'];
+	$description = $_POST['description'];
+	$batch_id = $_POST['batch_id'];
+	$size = $_POST['size'];
+	$location  = $_POST['location'] ?: '-';
+	$label_info  = $_POST['label_info'] ?: '-';
+
+	$q = mysqli_query($conn,"UPDATE inventory_compounds SET name = '$name', description = '$description', batch_id = '$batch_id', size = '$size', location = '$location', label_info = '$label_info' WHERE id = '$id'");
+	
+
+	if($q){
+		$response['success'] = "Compound updated";
+	}else{
+		$response['error'] = "Error updating data ".mysqli_error($conn);
+	}
+	
+	echo json_encode($response);
+	
+	
+
+	return;
+}
+
+//DELETE COMPOUND
+if($_POST['action'] == 'delete' && $_POST['compoundId'] && $_POST['type'] == 'invCmp'){
+	$id = mysqli_real_escape_string($conn, $_POST['compoundId']);
+	
+	if(mysqli_query($conn, "DELETE FROM inventory_compounds WHERE id = '$id'")){
+		$response["success"] = 'Compound deleted';
+	}else{
+		$response["error"] = 'Something went wrong '.mysqli_error($conn);
+	}
+	
+	echo json_encode($response);
+	return;	
+}
+
+
 
 //WIPE OUT FROMULAS
 if($_POST['formulas_wipe'] == 'true'){
@@ -459,8 +541,9 @@ if($_POST['update_bottle_data']){
 	$supplier_link = $_POST['supplier_link'];
 	$notes = $_POST['notes'];
 	$pieces = $_POST['pieces']?:0;
-	
-	$q = mysqli_query($conn,"UPDATE bottles SET name= '$name', ml = '$ml', price = '$price', height = '$height', width = '$width', diameter = '$diameter', supplier = '$supplier', supplier_link = '$supplier_link', notes = '$notes', pieces = '$pieces' WHERE id = '$id'");
+	$weight = $_POST['weight']?:0;
+
+	$q = mysqli_query($conn,"UPDATE bottles SET name= '$name', ml = '$ml', price = '$price', height = '$height', width = '$width', diameter = '$diameter', supplier = '$supplier', supplier_link = '$supplier_link', notes = '$notes', pieces = '$pieces', weight = '$weight' WHERE id = '$id'");
 	
 
 	if($q){
@@ -955,8 +1038,8 @@ if($_POST['updateQuantity'] && $_POST['ingQuantityID'] &&  $_POST['ingQuantityNa
 		
 		if(mysqli_query($conn, "UPDATE formulas SET quantity = '$value' WHERE fid = '$fid' AND id = '$ingredient'")){
 			
-			$lg = "CHANGE: ".$ing_name." Set $name to $value";
-			mysqli_query($conn, "INSERT INTO formula_history (fid,change_made,user) VALUES ('".$meta['id']."','$lg','".$user['fullName']."')");
+			$lg = "CHANGED: ".$ing_name." Set $name to $value";
+			mysqli_query($conn, "INSERT INTO formula_history (fid,ing_id,change_made,user) VALUES ('".$meta['id']."','$ingredient','$lg','".$user['fullName']."')");
 			
 			$response["success"] = 'Quantity updated';
 			echo json_encode($response);
@@ -982,8 +1065,8 @@ if($_POST['value'] && $_GET['formula'] && $_POST['pk']){
 	if($meta['isProtected'] == FALSE){
 					
 		mysqli_query($conn, "UPDATE formulas SET $name = '$value' WHERE fid = '$formula' AND id = '$ingredient'");
-		$lg = "CHANGE: ".$ing_name['ingredient']." Set $name to $value";
-		mysqli_query($conn, "INSERT INTO formula_history (fid,change_made,user) VALUES ('".$meta['id']."','$lg','".$user['fullName']."')");
+		$lg = "CHANGED: ".$ing_name['ingredient']." Set $name to $value";
+		mysqli_query($conn, "INSERT INTO formula_history (fid,ing_id,change_made,user) VALUES ('".$meta['id']."','$ingredient','$lg','".$user['fullName']."')");
 echo mysqli_error($conn);
 	}
 	return;
@@ -1310,7 +1393,7 @@ if($_POST['customer'] == 'add'){
 	$web = mysqli_real_escape_string($conn, $_POST['web']);
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM customers WHERE name = '$name'"))){
 		$response["error"] = 'Error: '.$name.' already exists!';
-	}elseif(mysqli_query($conn, "INSERT INTO customers (name,address,email,web) VALUES ('$name', '$address', '$email', '$web')")){
+	}elseif(mysqli_query($conn, "INSERT INTO customers (name,address,email,web,owner_id) VALUES ('$name', '$address', '$email', '$web', '".$user['id']."')")){
 		$response["success"] = 'Customer '.$name.' added!';
 	}else{
 		$response["error"] = 'Error adding customer.';

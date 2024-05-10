@@ -4,11 +4,10 @@
           <div>
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h2 class="m-0 font-weight-bold text-primary"><a href="javascript:reload_data()">Customers</a></h2>
+              <h2 class="m-0 font-weight-bold text-primary"><a href="#" id="mainTitle">Customers</a></h2>
             </div>
             <div class="card-body">
               <div class="table-responsive">
-              <div id="innermsg"></div>
                 <table class="table table-striped table-bordered">
                  <tr class="noBorder noexport">
                      <div class="text-right">
@@ -17,6 +16,8 @@
                           <div class="dropdown-menu dropdown-menu-right">
                             <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addCustomer"><i class="fa-solid fa-plus mx-2"></i>Add new</a></li>
                             <li><a class="dropdown-item" id="exportCSV" href="#"><i class="fa-solid fa-file-export mx-2"></i>Export to CSV</a></li>
+                            <li><a class="dropdown-item" id="exportJSON" href="/pages/export.php?format=json&kind=customers"><i class="fa-solid fa-file-export mx-2"></i>Export to JSON</a></li>
+
                           </div>
                         </div>
                      </div>
@@ -29,6 +30,8 @@
                       <th>Address</th>
                       <th>Email</th>
                       <th>Web Site</th>
+                      <th>Created</th>
+                      <th>Updated</th>
                       <th></th>
                     </tr>
                   </thead>
@@ -41,34 +44,42 @@
     </div>
  
 <!-- ADD NEW-->
-<div class="modal fade" id="addCustomer" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="addCustomer" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+<div class="modal fade" id="addCustomer" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addCustomerLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Add customer</h5>
+        <h5 class="modal-title" id="addCustomerLabel">Add customer</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-      <div id="customer_inf"></div>
-            Name: 
+        <div id="customer_inf"></div>
+        <div id="customerForm">
+          <div class="mb-3">
+            <label for="name" class="form-label">Name:</label>
             <input class="form-control" name="name" type="text" id="name" />
-            <p>
-            Address: 
-              <input class="form-control" name="address" type="text" id="address" />  
-            <p>
-            Email: 
-              <input class="form-control" name="email" type="text" id="email" />           
-            <p>
-            Web Site: 
-              <input class="form-control" name="website" type="text" id="website" /> 
-              
-              <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        	  <input type="submit" name="button" class="btn btn-primary" id="customer_add" value="Add">
+          </div>
+          <div class="mb-3">
+            <label for="address" class="form-label">Address:</label>
+            <input class="form-control" name="address" type="text" id="address" />
+          </div>
+          <div class="mb-3">
+            <label for="email" class="form-label">Email:</label>
+            <input class="form-control" name="email" type="text" id="email" />
+          </div>
+          <div class="mb-3">
+            <label for="website" class="form-label">Web Site:</label>
+            <input class="form-control" name="website" type="text" id="website" />
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary" id="customer_add">Add</button>
       </div>
     </div>
   </div>
 </div>
-</div>
+
 
 <!--EDIT CUSTOMER MODAL-->            
 <div class="modal fade" id="editCustomer" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="editCustomerLabel" aria-hidden="true">
@@ -89,11 +100,13 @@
 
 <script>
 $(document).ready(function() {
-
+	$('#mainTitle').click(function() {
+	 	reload_data();
+  	});
 	var tdDataCustomers = $('#tdDataCustomers').DataTable( {
 	columnDefs: [
 		{ className: 'pv_vertical_middle text-center', targets: '_all' },
-		{ orderable: false, targets: [4] },
+		{ orderable: false, targets: [6] },
 	],
 	dom: 'lrftip',
 	buttons: [{
@@ -130,6 +143,8 @@ $(document).ready(function() {
 			{ data : 'address', title: 'Address' },
 			{ data : 'email', title: 'Email' },
 			{ data : 'web', title: 'Web Site' },
+			{ data : 'created', title: 'Created' },
+			{ data : 'updated', title: 'Updated' },
 			{ data : null, title: '', render: actions },
 
 			],
@@ -204,12 +219,14 @@ $('#tdDataCustomers').on('click', '[id*=cDel]', function () {
 					dataType: 'json',
 					success: function (data) {
 						if(data.success){
-							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
+							$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+							$('.toast-header').removeClass().addClass('toast-header alert-success');
 							reload_data();
 						}else if(data.error){
-							var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
-						}
-						$('#innermsg').html(msg);
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+								$('.toast-header').removeClass().addClass('toast-header alert-danger');
+							}
+							$('.toast').toast('show');
 					}
 				});
 				

@@ -7,7 +7,7 @@ require_once(__ROOT__.'/func/php-settings.php');
           <div>
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h2 class="m-0 font-weight-bold text-primary"><a href="/?do=IFRA">IFRA Library</a></h2>
+              <h2 class="m-0 font-weight-bold text-primary"><a href="#" id="mainTitle">IFRA Library</a></h2>
             </div>
             <div class="card-body">
                <div id="iframsg"></div>
@@ -207,7 +207,9 @@ require_once(__ROOT__.'/func/php-settings.php');
 
 <script type="text/javascript">
 $(document).ready(function() {
-	
+	$('#mainTitle').click(function() {
+	 	reload_data();
+  	});
    $('[data-bs-toggle="tooltip"]').tooltip();
 
 	var tdDataIFRA = $('#tdDataIFRA').DataTable( {
@@ -351,7 +353,7 @@ function image(data, type, row){
 	return '<img src="data:image/png;base64, '+row.image+'" class="img_ifra"/>';
 }
 
-function reload_ifra_data() {
+function reload_data() {
     $('#tdDataIFRA').DataTable().ajax.reload(null, true);
 }
 
@@ -396,7 +398,7 @@ $('#btnImportIFRA').click(function() {
 				 $("#btnImportIFRA").prop("disabled", false);
 				 $("#btnIFRAC").prop("disabled", false);
 				 $("#ifraXLS").val('');
-				 reload_ifra_data();
+				 reload_data();
               }else{
                 $("#IFRAImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+response.error+'</div>');
 				$("#btnImportIFRA").prop("disabled", false);
@@ -429,7 +431,7 @@ $('#Importpb').click(function() {
 				$("#ImportpbC").show();
 				$('#ImportpbC').html('Close');
 				$("#ImportpC").show();
-				reload_ifra_data();
+				reload_data();
 			}else{
 				$('#pbmportMsg').html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>');
 				$("#Importpb").show();
@@ -478,7 +480,7 @@ $('#tdDataIFRA').on('click', '[id*=dDel]', function () {
 					success: function (data) {
 						if(data.success){
 							msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
-							reload_ifra_data();
+							reload_data();
 						}else if(data.error){
 							msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 						}
@@ -512,7 +514,7 @@ $('#tdDataIFRA').editable({
 	if(response.error){
 		return response.error; 
 	}else{ 
-		reload_ifra_data();
+		reload_data();
 	}
   },
   validate: function(value){

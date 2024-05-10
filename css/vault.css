@@ -1449,3 +1449,9 @@ th.dt-center, td.dt-center {
 #liveToast {
   width: 100%;
 }
+
+.pvScale-data-footer {
+	position: -webkit-sticky; 
+	position: sticky; 
+	bottom: 0; 
+}

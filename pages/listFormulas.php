@@ -31,7 +31,7 @@ while($fTypes_res = mysqli_fetch_array($fTypes_q)){
 
 
 <div class="card-header py-3">
-  <h2 class="m-0 font-weight-bold text-primary"><a href="javascript:list_formulas()">Formulas</a></h2>
+  <h2 class="m-0 font-weight-bold text-primary"><a href="#" id="mainTitle">Formulas</a></h2>
 </div>
             
 <div class="pv_menu_formulas">
@@ -116,6 +116,9 @@ if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))
 
 <?php } ?>
 <script type="text/javascript" language="javascript" >
+	$('#mainTitle').click(function() {
+	 	reload_formulas_data();
+  	});
 $('.selectpicker').selectpicker('refresh');
 function extrasShow() {
 	$('[rel=tip]').tooltip({
@@ -356,7 +359,11 @@ $('table.table').on('click', '[id*=deleteMe]', function () {
     
 	bootbox.dialog({
        title: "Confirm formula deletion",
-       message : '<div class="alert alert-warning">WARNING, this action cannot be reverted unless you have a backup.</div><p>Permantly delete <strong>'+ $(this).attr('data-name') +'</strong> formula?</p>',
+       message : '<div class="alert alert-warning">WARNING, this action cannot be reverted unless you have a backup.</div><p>Permantly delete <strong>'+ $(this).attr('data-name') +'</strong> formula?</p>' +
+	   '<div class="form-group col-sm">' + 
+       	'<input name="archiveFormula" id="archiveFormula" type="checkbox" value="1">'+
+       	'<label class="form-check-label mx-2" for="archiveFormula">Archive formula</label>'+
+       '</div>',
        buttons :{
            main: {
                label : "DELETE",
@@ -367,10 +374,11 @@ $('table.table').on('click', '[id*=deleteMe]', function () {
 					url: '/pages/manageFormula.php', 
 					type: 'POST',
 					data: {
-						action: "delete",
+						action: "deleteFormula",
 						fid: formula.ID,
 						fname: formula.Name,
-						},
+						archiveFormula: $("#archiveFormula").is(':checked'),
+					},
 					dataType: 'json',
 					success: function (data) {
 						if ( data.success ) {
