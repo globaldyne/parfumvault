@@ -10,11 +10,10 @@ while ($suppliers = mysqli_fetch_array($sup)){
           <div>
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h2 class="m-0 font-weight-bold text-primary"><a href="javascript:reload_data()">Bottles</a></h2>
+              <h2 class="m-0 font-weight-bold text-primary"><a href="#" id="mainTitle">Bottles</a></h2>
             </div>
             <div class="card-body">
               <div class="table-responsive">
-              <div id="innermsg"></div>
                <table class="table table-striped table-bordered">
                  <tr class="noBorder">
                      <div class="text-right">
@@ -23,6 +22,8 @@ while ($suppliers = mysqli_fetch_array($sup)){
                           <div class="dropdown-menu dropdown-menu-right">
             				<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addBottle"><i class="fa-solid fa-plus mx-2"></i>Add new</a></li>
                             <li><a class="dropdown-item" id="exportCSV" href="#"><i class="fa-solid fa-file-export mx-2"></i>Export to CSV</a></li>
+                             <li><a class="dropdown-item" id="exportJSON" href="/pages/export.php?format=json&kind=bottles"><i class="fa-solid fa-file-export mx-2"></i>Export to JSON</a></li>
+
                           </div>
                         </div>        
                      </div>
@@ -36,6 +37,8 @@ while ($suppliers = mysqli_fetch_array($sup)){
                       <th>Price</th>
                       <th>Supplier</th>
                       <th>Pieces</th>
+                      <th>Created</th>
+                      <th>Updated</th>
                       <th></th>
                     </tr>
                   </thead>
@@ -86,10 +89,14 @@ while ($suppliers = mysqli_fetch_array($sup)){
             <input type="text" class="form-control" name="diameter" id="diameter" required>
           </div>
           <div class="col-md-4">
+            <label for="weight" class="form-label">Weight(grams)</label>
+            <input type="text" class="form-control" name="weight" id="weight" required>
+          </div>
+          <div class="col-md-4">
             <label for="pieces" class="form-label">Stock (pieces)</label>
             <input type="text" class="form-control" name="pieces" id="pieces" required>
           </div>
-          <div class="col-md-12">
+          <div class="col-md-4">
             <label for="supplier" class="form-label">Supplier</label>
             <select name="supplier" id="supplier" class="form-control">
                 <option value="" selected></option>
@@ -100,7 +107,7 @@ while ($suppliers = mysqli_fetch_array($sup)){
                 ?>
           	</select>
           </div>
-          <div class="col-md-12">
+          <div class="col-md-4">
             <label for="supplier_link" class="form-label">Supplier URL</label>
             <input type="text" class="form-control" name="supplier_link" id="supplier_link" required>
           </div>
@@ -141,7 +148,9 @@ while ($suppliers = mysqli_fetch_array($sup)){
 
 <script> 
 $(document).ready(function() {
-
+	$('#mainTitle').click(function() {
+	 	reload_data();
+  	});
 	var tdDataBottles = $('#tdDataBottles').DataTable( {
 	columnDefs: [
 		{ className: 'pv_vertical_middle text-center', targets: '_all' },
@@ -183,6 +192,8 @@ $(document).ready(function() {
 			{ data : 'price', title: 'Price (<?php echo $settings['currency'];?>)' },
 			{ data : 'supplier', title: 'Supplier' },
 			{ data : 'pieces', title: 'Pieces in stock' },
+			{ data : 'created', title: 'Created' },
+			{ data : 'updated', title: 'Updated' },
 			{ data : null, title: '', render: actions }
 			],
 	order: [[ 0, 'asc' ]],
@@ -226,161 +237,167 @@ $(document).ready(function() {
 			row.child(format(row.data())).show();
 		}
 	});
-}); //END DOC
 
 
-function format ( d ) {
-    details = '<img src="'+d.photo+'" class="img_ifra"/><br><hr/>'+
-	'<strong>Height:</strong><br><span class="details">'+d.height+
-	'mm</span><br><strong>Width:</strong><br><span class="details">'+d.width+
-	'mm</span><br><strong>Diameter:</strong><br><span class="details">'+d.diameter+
-	'mm</span><br><strong>Notes:</strong><br><span class="details">'+d.notes;
 
-	return details;
-}
-
-function name(data, type, row){
-	return '<i class="pv_point_gen pv_gen_li" id="bottle_name">'+row.name+'</i>';
-}
-
-function actions(data, type, row){	
-		data = '<div class="dropdown">' +
-        '<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
-            '<ul class="dropdown-menu dropdown-menu-right">';
-		data += '<li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editBottle" rel="tip" title="Edit '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-edit mx-2"></i>Edit</a></li>';
-		data += '<li><a href="'+ row.supplier_link +'" class="dropdown-item" target="_blank" rel="tip" title="Open '+ row.supplier +' page"><i class="fas fa-shopping-cart mx-2"></i>Go to supplier</a></li>';
-		data += '<div class="dropdown-divider"></div>';
-		data += '<li><a class="dropdown-item" href="#" id="btlDel" style="color: #c9302c;" rel="tip" title="Delete '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-trash mx-2"></i>Delete</a></li>';
-		data += '</ul></div>';
-	return data;
-}
-
-function reload_data() {
-    $('#tdDataBottles').DataTable().ajax.reload(null, true);
-}
-
-$('#tdDataBottles').on('click', '[id*=btlDel]', function () {
-	var btl = {};
-	btl.ID = $(this).attr('data-id');
-	btl.Name = $(this).attr('data-name');
-    
-	bootbox.dialog({
-       title: "Confirm deletion",
-       message : 'Permanently delete <strong>'+ btl.Name +'</strong> and its data?',
-       buttons :{
-           main: {
-               label : "Delete",
-               className : "btn-danger",
-               callback: function (){
-	    			
-				$.ajax({
-					url: '/pages/update_data.php', 
-					type: 'POST',
-					data: {
-						action: "delete",
-						type: "bottle",
-						btlId: btl.ID,
-						},
-					dataType: 'json',
-					success: function (data) {
-						if(data.success){
-							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
-							reload_data();
-						}else if(data.error){
-							var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
+	function format ( d ) {
+		details = '<img src="'+d.photo+'" class="img_ifra"/><br><hr/>'+
+		'<strong>Height:</strong><br><span class="details">'+d.height+
+		'mm</span><br><strong>Width:</strong><br><span class="details">'+d.width+
+		'mm</span><br><strong>Diameter:</strong><br><span class="details">'+d.diameter+
+		'mm</span><br><strong>Weight:</strong><br><span class="details">'+d.weight+
+		'g</span><br><strong>Notes:</strong><br><span class="details">'+d.notes;
+	
+		return details;
+	};
+	
+	function name(data, type, row){
+		return '<i class="pv_point_gen pv_gen_li" id="bottle_name">'+row.name+'</i>';
+	};
+	
+	function actions(data, type, row){	
+			data = '<div class="dropdown">' +
+			'<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+				'<ul class="dropdown-menu dropdown-menu-right">';
+			data += '<li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editBottle" rel="tip" title="Edit '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-edit mx-2"></i>Edit</a></li>';
+			data += '<li><a href="'+ row.supplier_link +'" class="dropdown-item" target="_blank" rel="tip" title="Open '+ row.supplier +' page"><i class="fas fa-shopping-cart mx-2"></i>Go to supplier</a></li>';
+			data += '<div class="dropdown-divider"></div>';
+			data += '<li><a class="dropdown-item" href="#" id="btlDel" style="color: #c9302c;" rel="tip" title="Delete '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-trash mx-2"></i>Delete</a></li>';
+			data += '</ul></div>';
+		return data;
+	};
+	
+	function reload_data() {
+		$('#tdDataBottles').DataTable().ajax.reload(null, true);
+	};
+	
+	$('#tdDataBottles').on('click', '[id*=btlDel]', function () {
+		var btl = {};
+		btl.ID = $(this).attr('data-id');
+		btl.Name = $(this).attr('data-name');
+		
+		bootbox.dialog({
+		   title: "Confirm deletion",
+		   message : 'Permanently delete <strong>'+ btl.Name +'</strong> and its data?',
+		   buttons :{
+			   main: {
+				   label : "Delete",
+				   className : "btn-danger",
+				   callback: function (){
+						
+					$.ajax({
+						url: '/pages/update_data.php', 
+						type: 'POST',
+						data: {
+							action: "delete",
+							type: "bottle",
+							btlId: btl.ID,
+							},
+						dataType: 'json',
+						success: function (data) {
+							if(data.success){
+								$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+								$('.toast-header').removeClass().addClass('toast-header alert-success');
+								reload_data();
+							}else if(data.error){
+								$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+								$('.toast-header').removeClass().addClass('toast-header alert-danger');
+							}
+							$('.toast').toast('show');
 						}
-						$('#innermsg').html(msg);
-					}
-				});
-				
-                 return true;
-               }
-           },
-           cancel: {
-               label : "Cancel",
-               className : "btn-secondary",
-               callback : function() {
-                   return true;
-               }
-           }   
-       },onEscape: function () {return true;}
-   });
-});
-  
-
-$('#bottle_add').on('click', function () {
-
-	$("#bottle_inf").html('<div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
-	$("#bottle_add").prop("disabled", true);
-    $("#bottle_add").prop('value', 'Please wait...');
-		
-	var fd = new FormData();
-    var files = $('#pic')[0].files;
-    var name = $('#name').val();
-    var size = $('#size').val();
-    var price = $('#price').val();
-    var supplier = $('#supplier').val();
-    var supplier_link = $('#supplier_link').val();
-
-    var height = $('#height').val();
-    var width = $('#width').val();
-    var diameter = $('#diameter').val();
-    var notes = $('#notes').val();
-    var pieces = $('#pieces').val();
-
-    if(files.length > 0 ){
-		fd.append('pic_file',files[0]);
-
-			$.ajax({
-              url: '/pages/upload.php?type=bottle&name=' + btoa(name) + '&size=' + size + '&price=' + price + '&supplier=' + btoa(supplier) + '&supplier_link=' + btoa(supplier_link)+ '&height=' + height + '&width=' + width + '&diameter=' + diameter + '&notes=' + btoa(notes) + '&pieces=' + pieces,
-              type: 'POST',
-              data: fd,
-              contentType: false,
-              processData: false,
-			  		cache: false,
-			  dataType: 'json',
-              success: function(response){
-                 if(response.success){
-                    $("#bottle_inf").html('<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+response.success+'</div>');
-					$("#bottle_add").prop("disabled", false);
-        			$("#bottle_add").prop("value", "Add");
-					reload_data();
-                 }else{
-                    $("#bottle_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+response.error+'</div>');
-					$("#bottle_add").prop("disabled", false);
-        			$("#bottle_add").prop("value", 'Add');
-                 }
-              },
-           });
-        }else{
-			$("#bottle_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a image to upload!</div>');
-			$("#bottle_add").prop("disabled", false);
-   			$("#bottle_add").prop("value", "Add");
-        }
-		
-});
-
-function extrasShow() {
-	$('[rel=tip]').tooltip({
-        "html": true,
-        "delay": {"show": 100, "hide": 0},
-     });
-};
-
-
-$('#exportCSV').click(() => {
-    $('#tdDataBottles').DataTable().button(0).trigger();
-});
-
-$("#editBottle").on("show.bs.modal", function(e) {
-	const id = e.relatedTarget.dataset.id;
-	const bottle = e.relatedTarget.dataset.name;
-
-	$.get("/pages/editBottle.php?id=" + id)
-		.then(data => {
-		$("#editBottleLabel", this).html(bottle);
-		$(".modal-body", this).html(data);
+					});
+					
+					 return true;
+				   }
+			   },
+			   cancel: {
+				   label : "Cancel",
+				   className : "btn-secondary",
+				   callback : function() {
+					   return true;
+				   }
+			   }   
+		   },onEscape: function () {return true;}
+	   });
 	});
-});
+	  
+	
+	$('#bottle_add').on('click', function () {
+	
+		$("#bottle_inf").html('<div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
+		$("#bottle_add").prop("disabled", true);
+		$("#bottle_add").prop('value', 'Please wait...');
+			
+		var fd = new FormData();
+		var files = $('#pic')[0].files;
+		var name = $('#name').val();
+		var size = $('#size').val();
+		var price = $('#price').val();
+		var weight = $('#weight').val();
+		var supplier = $('#supplier').val();
+		var supplier_link = $('#supplier_link').val();
+	
+		var height = $('#height').val();
+		var width = $('#width').val();
+		var diameter = $('#diameter').val();
+		var notes = $('#notes').val();
+		var pieces = $('#pieces').val();
+	
+		if(files.length > 0 ){
+			fd.append('pic_file',files[0]);
+	
+				$.ajax({
+				  url: '/pages/upload.php?type=bottle&name=' + btoa(name) + '&size=' + size + '&price=' + price + '&supplier=' + btoa(supplier) + '&supplier_link=' + btoa(supplier_link)+ '&height=' + height + '&width=' + width + '&diameter=' + diameter + '&notes=' + btoa(notes) + '&pieces=' + pieces + '&weight=' + weight,
+				  type: 'POST',
+				  data: fd,
+				  contentType: false,
+				  processData: false,
+						cache: false,
+				  dataType: 'json',
+				  success: function(response){
+					 if(response.success){
+						$("#bottle_inf").html('<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+response.success+'</div>');
+						$("#bottle_add").prop("disabled", false);
+						$("#bottle_add").prop("value", "Add");
+						reload_data();
+					 }else{
+						$("#bottle_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+response.error+'</div>');
+						$("#bottle_add").prop("disabled", false);
+						$("#bottle_add").prop("value", 'Add');
+					 }
+				  },
+			   });
+			}else{
+				$("#bottle_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a image to upload!</div>');
+				$("#bottle_add").prop("disabled", false);
+				$("#bottle_add").prop("value", "Add");
+			}
+			
+	});
+	
+	function extrasShow() {
+		$('[rel=tip]').tooltip({
+			"html": true,
+			"delay": {"show": 100, "hide": 0},
+		 });
+	};
+	
+	
+	$('#exportCSV').click(() => {
+		$('#tdDataBottles').DataTable().button(0).trigger();
+	});
+	
+	$("#editBottle").on("show.bs.modal", function(e) {
+		const id = e.relatedTarget.dataset.id;
+		const bottle = e.relatedTarget.dataset.name;
+	
+		$.get("/pages/editBottle.php?id=" + id)
+			.then(data => {
+			$("#editBottleLabel", this).html(bottle);
+			$(".modal-body", this).html(data);
+		});
+	});
+
+}); //END DOC
 </script>
 

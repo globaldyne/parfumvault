@@ -10,11 +10,10 @@ while ($suppliers = mysqli_fetch_array($sup)){
           <div>
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h2 class="m-0 font-weight-bold text-primary"><a href="javascript:reload_data()">Lids</a></h2>
+              <h2 class="m-0 font-weight-bold text-primary"><a href="#" id="mainTitle">Lids</a></h2>
             </div>
             <div class="card-body">
               <div class="table-responsive">
-              <div id="innermsg"></div>
                <table class="table table-striped table-bordered">
                  <tr class="noBorder">
                      <div class="text-right">
@@ -23,6 +22,8 @@ while ($suppliers = mysqli_fetch_array($sup)){
                           <div class="dropdown-menu dropdown-menu-right">
                             <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addLid"><i class="fa-solid fa-plus mx-2"></i>Add new</a></li>
                             <li><a class="dropdown-item" id="exportCSV" href="#"><i class="fa-solid fa-file-export mx-2"></i>Export to CSV</a></li>
+                            <li><a class="dropdown-item" id="exportJSON" href="/pages/export.php?format=json&kind=lids"><i class="fa-solid fa-file-export mx-2"></i>Export to JSON</a></li>
+
                           </div>
                         </div>        
                      </div>
@@ -48,61 +49,62 @@ while ($suppliers = mysqli_fetch_array($sup)){
     </div>
     
 <!-- ADD LID MODAL-->
-<div class="modal fade" id="addLid" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="addLid" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+<div class="modal fade" id="addLid" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addLidLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Add Lid</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <h5 class="modal-title" id="addLidLabel">Add Lid</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-      <div id="lid_inf"></div>
-        <p>
-        Style: 
-          <input class="form-control" name="style" type="text" id="style" />
-        </p>
-        <p>            
-        Colour:
-          <input class="form-control" name="colour" type="text" id="colour" />
-        </p>
-        <p>
-        Price:
-          <input class="form-control" name="price" type="text" id="price" />
-        </p>
-        <p>
-        Pieces in stock:
-          <input class="form-control" name="pieces" type="text" id="pieces" />
-        </p>
-        <p>
-        Supplier:
-          <select name="supplier" id="supplier" class="form-control">
-            <option value="" selected></option>
-            <?php
-            foreach($supplier as $sup) {
-                echo '<option value="'.$sup['name'].'">'.$sup['name'].'</option>';
-            }
-            ?>
-          </select>
-        </p>
-        <p>
-        Supplier URL:
-          <input class="form-control" name="supplier_link" type="text" id="supplier_link" />
-        </p>
-        <p>
-        Image:
-        <input type="file" name="pic" id="pic" class="form-control" />
-    	</p>            
+        <div id="lid_inf"></div>
+        <div id="lidForm">
+          <div class="mb-3">
+            <label for="style" class="form-label">Style:</label>
+            <input class="form-control" name="style" type="text" id="style" />
+          </div>
+          <div class="mb-3">
+            <label for="colour" class="form-label">Colour:</label>
+            <input class="form-control" name="colour" type="text" id="colour" />
+          </div>
+          <div class="mb-3">
+            <label for="price" class="form-label">Price:</label>
+            <input class="form-control" name="price" type="text" id="price" />
+          </div>
+          <div class="mb-3">
+            <label for="pieces" class="form-label">Pieces in stock:</label>
+            <input class="form-control" name="pieces" type="text" id="pieces" />
+          </div>
+          <div class="mb-3">
+            <label for="supplier" class="form-label">Supplier:</label>
+            <select name="supplier" id="supplier" class="form-control">
+              <option value="" selected></option>
+			  <?php
+               	foreach($supplier as $sup) {
+               		echo '<option value="'.$sup['name'].'">'.$sup['name'].'</option>';
+            	}
+            	?>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="supplier_link" class="form-label">Supplier URL:</label>
+            <input class="form-control" name="supplier_link" type="text" id="supplier_link" />
+          </div>
+          <div class="mb-3">
+            <label for="pic" class="form-label">Image:</label>
+            <input type="file" name="pic" id="pic" class="form-control" />
+          </div>
+        </div>
         <div class="dropdown-divider"></div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <input type="submit" name="button" class="btn btn-primary" id="lid_add" value="Add">
+        <button type="submit" class="btn btn-primary" id="lid_add">Add</button>
       </div>
     </div>
   </div>
 </div>
+
 
 
 <!--EDIT LID MODAL-->            
@@ -124,7 +126,10 @@ while ($suppliers = mysqli_fetch_array($sup)){
 
 <script> 
 $(document).ready(function() {
-
+	$('#mainTitle').click(function() {
+	 	reload_data();
+  	});
+	
 	var tdDataLids = $('#tdDataLids').DataTable( {
 	columnDefs: [
 		{ className: 'pv_vertical_middle text-center', targets: '_all' },
@@ -213,150 +218,154 @@ $(document).ready(function() {
 		}
 	});
 	
-}); //END DOC
 
 
-function format ( d ) {
-    details = '<img src="'+d.photo+'" class="img_ifra"/>';
-	return details;
-}
-
-function style(data, type, row){
-	return '<i class="pv_point_gen pv_gen_li" id="lid_name">'+row.style+'</i>';
-}
-
-function actions(data, type, row){	
-		data = '<div class="dropdown">' +
-        '<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
-            '<ul class="dropdown-menu dropdown-menu-right">';
-		data += '<li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editLid" rel="tip" title="Edit '+ row.style +'" data-id='+ row.id +' data-name="'+ row.style +'"><i class="fas fa-edit mx-2"></i>Edit</a></li>';
-		data += '<li><a href="'+ row.supplier_link +'" target="_blank" class="dropdown-item" rel="tip" title="Open '+ row.style +' page"><i class="fas fa-shopping-cart mx-2"></i>Go to supplier</a></li>';
-		data += '<div class="dropdown-divider"></div>';
-		data += '<li><a class="dropdown-item" href="#" id="ldlDel" style="color: #c9302c;" rel="tip" title="Delete '+ row.name +'" data-id='+ row.id +' data-name="'+ row.style +'"><i class="fas fa-trash mx-2"></i>Delete</a></li>';
-		data += '</ul></div>';
-	return data;
-}
-
-function reload_data() {
-    $('#tdDataLids').DataTable().ajax.reload(null, true);
-}
-
-$('#tdDataLids').on('click', '[id*=ldlDel]', function () {
-	var ldl = {};
-	ldl.ID = $(this).attr('data-id');
-	ldl.Name = $(this).attr('data-name');
-    
-	bootbox.dialog({
-       title: "Confirm deletion",
-       message : 'Permanently delete <strong>'+ ldl.Name +'</strong> and its data?',
-       buttons :{
-           main: {
-               label : "Delete",
-               className : "btn-danger",
-               callback: function (){
-	    			
-				$.ajax({
-					url: '/pages/update_data.php', 
-					type: 'POST',
-					data: {
-						action: "delete",
-						type: "lid",
-						lidId: ldl.ID,
-						},
-					dataType: 'json',
-					success: function (data) {
-						if(data.success){
-							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
-							reload_data();
-						}else if(data.error){
-							var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
+	
+	function format ( d ) {
+		details = '<img src="'+d.photo+'" class="img_ifra"/>';
+		return details;
+	}
+	
+	function style(data, type, row){
+		return '<i class="pv_point_gen pv_gen_li" id="lid_name">'+row.style+'</i>';
+	}
+	
+	function actions(data, type, row){	
+			data = '<div class="dropdown">' +
+			'<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+				'<ul class="dropdown-menu dropdown-menu-right">';
+			data += '<li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editLid" rel="tip" title="Edit '+ row.style +'" data-id='+ row.id +' data-name="'+ row.style +'"><i class="fas fa-edit mx-2"></i>Edit</a></li>';
+			data += '<li><a href="'+ row.supplier_link +'" target="_blank" class="dropdown-item" rel="tip" title="Open '+ row.style +' page"><i class="fas fa-shopping-cart mx-2"></i>Go to supplier</a></li>';
+			data += '<div class="dropdown-divider"></div>';
+			data += '<li><a class="dropdown-item" href="#" id="ldlDel" style="color: #c9302c;" rel="tip" title="Delete '+ row.name +'" data-id='+ row.id +' data-name="'+ row.style +'"><i class="fas fa-trash mx-2"></i>Delete</a></li>';
+			data += '</ul></div>';
+		return data;
+	}
+	
+	function reload_data() {
+		$('#tdDataLids').DataTable().ajax.reload(null, true);
+	}
+	
+	$('#tdDataLids').on('click', '[id*=ldlDel]', function () {
+		var ldl = {};
+		ldl.ID = $(this).attr('data-id');
+		ldl.Name = $(this).attr('data-name');
+		
+		bootbox.dialog({
+		   title: "Confirm deletion",
+		   message : 'Permanently delete <strong>'+ ldl.Name +'</strong> and its data?',
+		   buttons :{
+			   main: {
+				   label : "Delete",
+				   className : "btn-danger",
+				   callback: function (){
+						
+					$.ajax({
+						url: '/pages/update_data.php', 
+						type: 'POST',
+						data: {
+							action: "delete",
+							type: "lid",
+							lidId: ldl.ID,
+							},
+						dataType: 'json',
+						success: function (data) {
+							if(data.success){
+								$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+								$('.toast-header').removeClass().addClass('toast-header alert-success');
+								reload_data();
+							}else if(data.error){
+								$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+								$('.toast-header').removeClass().addClass('toast-header alert-danger');
+							}
+							$('.toast').toast('show');
 						}
-						$('#innermsg').html(msg);
-					}
-				});
-				
-                 return true;
-               }
-           },
-           cancel: {
-               label : "Cancel",
-               className : "btn-secondary",
-               callback : function() {
-                   return true;
-               }
-           }   
-       },onEscape: function () {return true;}
-   });
-});
-  
-
-$('#lid_add').on('click', function () {
-
-	$("#lid_inf").html('<div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
-	$("#lid_add").prop("disabled", true);
-    $("#lid_add").prop('value', 'Please wait...');
-		
-	var fd = new FormData();
-    var files = $('#pic')[0].files;
-    var style = $('#style').val();
-    var price = $('#price').val();
-    var supplier = $('#supplier').val();
-    var supplier_link = $('#supplier_link').val();
-    var pieces = $('#pieces').val();
-    var colour = $('#colour').val();
-
-    if(files.length > 0 ){
-		fd.append('pic_file',files[0]);
-
-			$.ajax({
-              url: '/pages/upload.php?type=lid&style=' + btoa(style) + '&price=' + price + '&supplier=' + btoa(supplier) + '&supplier_link=' + btoa(supplier_link) + '&pieces=' + pieces + '&colour=' + colour,
-              type: 'POST',
-              data: fd,
-              contentType: false,
-              processData: false,
-			  		cache: false,
-			  dataType: 'json',
-              success: function(response){
-                 if(response.success){
-                    $("#lid_inf").html('<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+response.success+'</div>');
-					$("#lid_add").prop("disabled", false);
-        			$("#lid_add").prop("value", "Add");
-					reload_data();
-                 }else{
-                    $("#lid_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+response.error+'</div>');
-					$("#lid_add").prop("disabled", false);
-        			$("#lid_add").prop("value", 'Add');
-                 }
-              },
-           });
-        }else{
-			$("#lid_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a image to upload!</div>');
-			$("#lid_add").prop("disabled", false);
-   			$("#lid_add").prop("value", "Add");
-        }
-		
-});
-
-function extrasShow() {
-	$('[rel=tip]').tooltip({
-        "html": true,
-        "delay": {"show": 100, "hide": 0},
-     });
-};
-
-
-$('#exportCSV').click(() => {
-    $('#tdDataLids').DataTable().button(0).trigger();
-});
-
-$("#editLid").on("show.bs.modal", function(e) {
-	const id = e.relatedTarget.dataset.id;
-	const lid = e.relatedTarget.dataset.style;
-
-	$.get("/pages/editLid.php?id=" + id)
-		.then(data => {
-		$("#editLidLabel", this).html(lid);
-		$(".modal-body", this).html(data);
+					});
+					
+					 return true;
+				   }
+			   },
+			   cancel: {
+				   label : "Cancel",
+				   className : "btn-secondary",
+				   callback : function() {
+					   return true;
+				   }
+			   }   
+		   },onEscape: function () {return true;}
+	   });
 	});
-});
+	  
+	
+	$('#lid_add').on('click', function () {
+	
+		$("#lid_inf").html('<div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
+		$("#lid_add").prop("disabled", true);
+		$("#lid_add").prop('value', 'Please wait...');
+			
+		var fd = new FormData();
+		var files = $('#pic')[0].files;
+		var style = $('#style').val();
+		var price = $('#price').val();
+		var supplier = $('#supplier').val();
+		var supplier_link = $('#supplier_link').val();
+		var pieces = $('#pieces').val();
+		var colour = $('#colour').val();
+	
+		if(files.length > 0 ){
+			fd.append('pic_file',files[0]);
+	
+				$.ajax({
+				  url: '/pages/upload.php?type=lid&style=' + btoa(style) + '&price=' + price + '&supplier=' + btoa(supplier) + '&supplier_link=' + btoa(supplier_link) + '&pieces=' + pieces + '&colour=' + colour,
+				  type: 'POST',
+				  data: fd,
+				  contentType: false,
+				  processData: false,
+						cache: false,
+				  dataType: 'json',
+				  success: function(response){
+					 if(response.success){
+						$("#lid_inf").html('<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+response.success+'</div>');
+						$("#lid_add").prop("disabled", false);
+						$("#lid_add").prop("value", "Add");
+						reload_data();
+					 }else{
+						$("#lid_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+response.error+'</div>');
+						$("#lid_add").prop("disabled", false);
+						$("#lid_add").prop("value", 'Add');
+					 }
+				  },
+			   });
+			}else{
+				$("#lid_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a image to upload!</div>');
+				$("#lid_add").prop("disabled", false);
+				$("#lid_add").prop("value", "Add");
+			}
+			
+	});
+	
+	function extrasShow() {
+		$('[rel=tip]').tooltip({
+			"html": true,
+			"delay": {"show": 100, "hide": 0},
+		 });
+	};
+	
+	
+	$('#exportCSV').click(() => {
+		$('#tdDataLids').DataTable().button(0).trigger();
+	});
+	
+	$("#editLid").on("show.bs.modal", function(e) {
+		const id = e.relatedTarget.dataset.id;
+		const lid = e.relatedTarget.dataset.style;
+	
+		$.get("/pages/editLid.php?id=" + id)
+			.then(data => {
+			$("#editLidLabel", this).html(lid);
+			$(".modal-body", this).html(data);
+		});
+	});
+
+}); //END DOC
 </script>

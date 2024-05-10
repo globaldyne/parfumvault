@@ -69,7 +69,7 @@ if($_GET['type'] == 'bottle'){
 		return;
 	}
 	
-	if(!is_numeric($_GET['size']) || !is_numeric($_GET['price']) || !is_numeric($_GET['height']) || !is_numeric($_GET['width']) || !is_numeric($_GET['diameter']) || !is_numeric($_GET['pieces']) ){
+	if(!is_numeric($_GET['size']) || !is_numeric($_GET['price']) || !is_numeric($_GET['height']) || !is_numeric($_GET['width']) || !is_numeric($_GET['diameter']) || !is_numeric($_GET['pieces']) || !is_numeric($_GET['weight'])){
 		$response["error"] = 'Form contains invalid values';
 		echo json_encode($response);
 		return;
@@ -87,6 +87,7 @@ if($_GET['type'] == 'bottle'){
 	$supplier_link = mysqli_real_escape_string($conn, base64_decode($_GET['supplier_link']));
 	$notes = mysqli_real_escape_string($conn, base64_decode($_GET['notes']));
 	$pieces = $_GET['pieces'] ?: 0;
+	$weight = $_GET['weight'] ?: 0;
 
 	
 	if(isset($_FILES['pic_file']['name'])){
@@ -124,7 +125,7 @@ if($_GET['type'] == 'bottle'){
 			create_thumb($tmp_path.$photo,250,250); 
 			$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents($tmp_path.$photo));
 		
-			if(mysqli_query($conn, "INSERT INTO bottles (name, ml, price, height, width, diameter, supplier, supplier_link, notes, pieces) VALUES ('$name', '$ml', '$price', '$height', '$width', '$diameter', '$supplier', '$supplier_link', '$notes', '$pieces')") ){
+			if(mysqli_query($conn, "INSERT INTO bottles (name, ml, price, height, width, diameter, supplier, supplier_link, notes, pieces, weight) VALUES ('$name', '$ml', '$price', '$height', '$width', '$diameter', '$supplier', '$supplier_link', '$notes', '$pieces', '$weight')") ){
 				$bottle_id = mysqli_insert_id($conn);
 				mysqli_query($conn, "INSERT INTO documents (ownerID,name,type,notes,docData) VALUES ('".$bottle_id."','$name','4','-','$docData')");
 				unlink($tmp_path.$photo);
@@ -205,6 +206,7 @@ if($_GET['type'] && $_GET['id']){
 	$type = mysqli_real_escape_string($conn, $_GET['type']);
 	$name = base64_decode($_GET['doc_name']);
 	$notes = base64_decode($_GET['doc_notes']);
+	$isBatch = $_GET['isBatch'] ?: 0;
 
 	$field = 'doc_file';
 	
@@ -239,15 +241,16 @@ if($_GET['type'] && $_GET['id']){
 				mysqli_query($conn, "DELETE FROM documents WHERE ownerID = '$ownerID' AND type = '2'");
 			}
 			$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents($tmp_path.$file_name));
-			if(mysqli_query($conn, "INSERT INTO documents (ownerID,type,name,notes,docData) VALUES ('$ownerID','$type','$name','$notes','$docData')")){
+			if(mysqli_query($conn, "INSERT INTO documents (ownerID,type,name,notes,docData,isBatch) VALUES ('$ownerID','$type','$name','$notes','$docData','$isBatch')")){
 				unlink($tmp_path.$file_name);
 				$response['success'] = 'File uploaded';
-				echo json_encode($response);
-				return;
-			 }
+			}else {
+				$response['error'] = 'File upload error '.mysqli_error($conn);
+			}
+			
 	  	}
    }
-	
+	echo json_encode($response);
 	return;	
 }
 
