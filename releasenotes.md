@@ -1,5 +1,6 @@
 Whats New in v10.0
 --------------------------
+- Discord - please join here: https://discord.gg/dsQwDAem
 - Added archive option when deleting a formula
 - Added inventory create/update info for compounds
 - Added JSON import/export for compounds

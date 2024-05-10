@@ -69,6 +69,11 @@ if($pv_meta['schema_ver'] < $db_ver){
                 </a>
                 
                 <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="https://discord.gg/dsQwDAem" target="_blank">
+                  <i class="fas fa-book fa-sm fa-fw mx-2 text-gray-400"></i>
+                  Join our Discord Server
+                </a>
+                
                 <a class="dropdown-item" href="https://www.perfumersvault.com/knowledge-base" target="_blank">
                   <i class="fas fa-book fa-sm fa-fw mx-2 text-gray-400"></i>
                   Documentation
