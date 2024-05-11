@@ -10,7 +10,7 @@
 	<div class="card-body">
         <table width="100%" border="0">
           <tr>
-            <td width="10%">Formula:</td>
+            <td width="10%">Formula</td>
             <td width="90%">
             <select id="formulaID" class="form-control selectpicker" data-live-search="true">
              <?php
@@ -23,7 +23,7 @@
            </td>
           </tr>
           <tr>
-            <td>Customer:</td>
+            <td>Customer</td>
             <td>
               <select id="customerID" class="form-control selectpicker" data-live-search="true">
                <?php
@@ -36,12 +36,20 @@
               </td>
           </tr>
           <tr>
-            <td>Watermark:</td>
+            <td>Orientation</td>
+            <td colspan="2"><select name="orientation" class="form-control" id="orientation">
+              <option value="p">Portrait</option>
+              <option value="l">Landscaspe</option>
+            </select></td>
+          </tr>
+          <tr>
+            <td>Watermark</td>
             <td colspan="2"><input class="mb-2 form-control" name="watermarkText" type="text" id="watermarkText" value="CONFIDENTIAL"></td>
           </tr>
           <tr>
-            <td>Watermark size:</td>
+            <td>Watermark size</td>
             <td colspan="2"><select name="watermarkTextSize" class="form-control" id="watermarkTextSize">
+              <option value="50">50</option>
               <option value="100">100</option>
               <option value="200">200</option>
             </select></td>
@@ -64,7 +72,8 @@ $('#btnGEN').click(function() {
 		data: {
 			id: $("#formulaID").val(),
 			watermarkText: $("#watermarkText").val(),
-			watermarkTextSize: $("#watermarkTextSize").val()
+			watermarkTextSize: $("#watermarkTextSize").val(),
+			orientation: $("#orientation").val()
 			},
 		dataType: 'html',
 		success: function (data) {

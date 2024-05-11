@@ -63,13 +63,24 @@ var myFID = "<?=$meta['fid']?>";
 var myFNAME = "<?=$meta['name']?>";
 var watermarkText = "<?=$_POST['watermarkText']?>";
 var watermarkTextSize = "<?=$_POST['watermarkTextSize']?>";
+var orientation = "<?=$_POST['orientation']?>";
 
 var formula_table = $('#formula').DataTable( {
 	columnDefs: [
 		{ className: 'text-center', targets: '_all' },
 		{ orderable: false, targets: '_all' },
 	],
-	dom: 'lrt',
+	dom: 'Blrt',
+	buttons: [
+      {
+        extend: "pdfHtml5",
+		 orientation: 'landscape',
+		 title: myFNAME,
+		 watermark: {text: 'test watermark', color: 'blue', opacity: 0.3, font: 'Courier', bold: true, italics: true},
+        messageBottom: function(){return new Date().toString()},
+        messageTop: $("#customerID").val()
+      }
+    ],
 	processing: false,
 	ajax: {
 		url: '/core/full_formula_data.php?id=<?=$id?>'
@@ -106,7 +117,7 @@ $('#export_pdf').on('click',function(){
   $("#formula").tableHTMLExport({
 	type:'pdf',
 	filename: myFNAME + '.pdf',
-	orientation: 'p',
+	orientation: orientation,
 	trimContent: true,
     quoteFields: true,
 	ignoreColumns: '.noexport',
