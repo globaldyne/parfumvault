@@ -74,7 +74,7 @@ var formula_table = $('#formula').DataTable( {
 	buttons: [
       {
         extend: "pdfHtml5",
-		orientation: orientation,
+		orientation: "landscape",
         title: myFNAME,
         messageBottom: function(){return new Date().toString()},
         messageTop: $("#customerID").val()
@@ -87,10 +87,10 @@ var formula_table = $('#formula').DataTable( {
 	 columns: [
 			   { data : 'ingredient.name', title: 'Ingredient'},
 			   { data : 'ingredient.cas', title: 'CAS#'},
-			   { data : 'purity', title: 'Purity %'},
+			   { data : 'purity', title: 'Purity%'},
 			   { data : 'dilutant', title: 'Dilutant'},
-			   { data : 'quantity', title: 'Quantity (<?=$settings['mUnit']?>)'},
-			   { data : 'concentration', title: 'Concentration %'},
+			   { data : 'quantity', title: 'Quantity(<?=$settings['mUnit']?>)'},
+			   { data : 'concentration', title: 'Concentration%'},
 			   { data : 'ingredient.desc', title: 'Properties'},
 			  ],
 	footerCallback : function( tfoot, data, start, end, display ) {    
