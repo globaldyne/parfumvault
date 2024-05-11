@@ -68,15 +68,14 @@ var orientation = "<?=$_POST['orientation']?>";
 var formula_table = $('#formula').DataTable( {
 	columnDefs: [
 		{ className: 'text-center', targets: '_all' },
-		{ orderable: false, targets: '_all' },
+		{ orderable: true, targets: '_all' },
 	],
-	dom: 'Blrt',
+	dom: 'lrt',
 	buttons: [
       {
         extend: "pdfHtml5",
-		 orientation: 'landscape',
-		 title: myFNAME,
-		 watermark: {text: 'test watermark', color: 'blue', opacity: 0.3, font: 'Courier', bold: true, italics: true},
+		orientation: orientation,
+        title: myFNAME,
         messageBottom: function(){return new Date().toString()},
         messageTop: $("#customerID").val()
       }

@@ -2,6 +2,7 @@
 ### Version 10.1
 - Filter illegal chars in ingredient search
 - Added orientation when exporting to a formula for selling
+- Allow ordering in formula sell table
 ### Version 10.0
 - Discord server link added
 - Added archive option when deleting a formula
