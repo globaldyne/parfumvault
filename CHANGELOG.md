@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 10.1
+- Filter illegal chars in ingredient search
 ### Version 10.0
 - Discord server link added
 - Added archive option when deleting a formula
