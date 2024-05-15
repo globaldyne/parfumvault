@@ -22,6 +22,7 @@
              </select>
            </td>
           </tr>
+
           <tr>
             <td>Customer</td>
             <td>
@@ -36,7 +37,7 @@
               </td>
           </tr>
           <tr>
-            <td>Orientation</td>
+            <td>PDF Orientation</td>
             <td colspan="2"><select name="orientation" class="form-control" id="orientation">
               <option value="p">Portrait</option>
               <option value="l">Landscaspe</option>
@@ -53,6 +54,17 @@
               <option value="100" selected="selected">100</option>
               <option value="200">200</option>
             </select></td>
+          </tr>
+          <tr>
+            <td>Quantity Decimal</td>
+            <td>
+              <select name="qStep" id="qStep" class="form-control">
+                <option value="1" <?php if($settings['qStep']=="1") echo 'selected="selected"'; ?> >0.0</option>
+                <option value="2" <?php if($settings['qStep']=="2") echo 'selected="selected"'; ?> >0.00</option>
+                <option value="3" <?php if($settings['qStep']=="3") echo 'selected="selected"'; ?> >0.000</option>
+                <option value="4" <?php if($settings['qStep']=="4") echo 'selected="selected"'; ?> >0.0000</option>
+              </select>
+           </td>
           </tr>
           <tr>
             <td><input type="submit" name="button" class="btn btn-info" id="btnGEN" value="Generate"></td>
@@ -73,8 +85,9 @@ $('#btnGEN').click(function() {
 			id: $("#formulaID").val(),
 			watermarkText: $("#watermarkText").val(),
 			watermarkTextSize: $("#watermarkTextSize").val(),
-			orientation: $("#orientation").val()
-			},
+			orientation: $("#orientation").val(),
+			qStep: $("#qStep").val()
+		},
 		dataType: 'html',
 		success: function (data) {
 			$('#results').html(data);

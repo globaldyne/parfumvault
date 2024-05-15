@@ -64,6 +64,7 @@ var myFNAME = "<?=$meta['name']?>";
 var watermarkText = "<?=$_POST['watermarkText']?>";
 var watermarkTextSize = "<?=$_POST['watermarkTextSize']?>";
 var orientation = "<?=$_POST['orientation']?>";
+var qStep = "<?=$_POST['qStep']?>";
 
 var formula_table = $('#formula').DataTable( {
 	columnDefs: [
@@ -82,7 +83,11 @@ var formula_table = $('#formula').DataTable( {
     ],
 	processing: false,
 	ajax: {
-		url: '/core/full_formula_data.php?id=<?=$id?>'
+		url: '/core/full_formula_data.php',
+		data: {
+			id: <?=$id?>,
+			qStep: qStep
+		}
 	 },
 	 columns: [
 			   { data : 'ingredient.name', title: 'Ingredient'},

@@ -25,6 +25,10 @@ if(!$_REQUEST['id']){
 	return;
 }
 
+if($_GET['qStep']){
+	$settings['qStep'] = $_GET['qStep'];
+}
+
 $id = mysqli_real_escape_string($conn, $_REQUEST['id']);
 
 $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT name,fid,catClass,finalType,defView,isProtected,notes,product_name FROM formulasMetaData WHERE id = '$id'"));
