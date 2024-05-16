@@ -125,6 +125,9 @@ foreach ($form as $formula){
 		$replacement[] = $replacements;
 	}
 	
+	$totalcontainsOthers = mysqli_num_rows(mysqli_query($conn, "SELECT name,percentage,cas FROM allergens WHERE ing = '".$formula['ingredient']."'"));
+	
+	
 	$inventory = mysqli_fetch_array(mysqli_query($conn, "SELECT stock,mUnit,batch,purchased FROM suppliers WHERE ingID = '".$ing_q['id']."' AND preferred = '1'"));
 	
 	$conc = $formula['concentration'] / 100 * $formula['quantity']/$mg['total_mg'] * 100;
@@ -202,6 +205,7 @@ foreach ($form as $formula){
 		$desc = $formula['notes'];
 	}
 	
+	
 	$r['ingredient']['enc_id'] = (string)base64_encode($ing_q['name']);
 	$r['ingredient']['id'] = (int)$ing_q['id'];
    	$r['ingredient']['name'] = (string)$ingName ?: $formula['ingredient'];
@@ -225,6 +229,9 @@ foreach ($form as $formula){
 		$r['ingredient'][]['replacement']['name'] = (string)$rp['ing_rep_name'] ?: (string)$rp['ing_name'] ?: 'N/A';
 	}
 	$r['ingredient']['replacement']['total'] = $totalReplacements ?: 0;
+	
+	
+	$r['ingredient']['containsOthers']['total'] = $totalcontainsOthers ?: 0;
 	
 	$r['chk_ingredient'] = (string)checkIng($formula['ingredient'],$defCatClass,$conn) ?: null;
 	$r['exclude_from_calculation'] = (int)$formula['exclude_from_calculation'] ?: 0;

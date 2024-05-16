@@ -37,7 +37,8 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
       <meta name="description" content="<?php echo trim($product).' - '.trim($ver);?>">
       <meta name="author" content="<?php echo trim($product).' - '.trim($ver);?>">
       <title><?php echo $meta['name'];?></title>
-      
+        <link href="/css/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" type="text/css">
+
       <link href="/css/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
       <link href="/css/sb-admin-2.css" rel="stylesheet">
       <script src="/js/jquery/jquery.min.js"></script>
@@ -101,6 +102,10 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
             <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
             <div class="dropdown-menu dropdown-menu-left">
                <li><a class="dropdown-item" href="#" id="markCompleteMenu"><i class="fa-solid fa-check mx-2"></i>Mark formula as complete</a></li>
+               <div class="dropdown-divider"></div>
+               <li class="dropdown-header">Options</li>
+               <li><a class="dropdown-item" href="#" id="toggleAdded"><i class="bi bi-list-check mx-2"></i>Show/hide added</a></li>
+
                <div class="dropdown-divider"></div>
                <li class="dropdown-header">Export</li>
                <li><a class="dropdown-item" href="javascript:export_as('csv')"><i class="fa-solid fa-file-csv mx-2"></i>Export as CSV</a></li>
@@ -210,6 +215,14 @@ $(document).ready(function() {
 			  	$(row).find('td:eq(0),td:eq(1),td:eq(2),td:eq(3)').addClass('skipped');
 		  	}
 		  	$(row).addClass('pv-zoom');
+			if (data.toAdd == 0) {
+        		$(row).addClass('d-none');
+    		}
+			$('#toggleAdded').click(function() {
+				if (data.toAdd == 0) {
+					$(row).toggleClass('d-none');
+				}
+			});
 	 	},
 	 	order: [[ 0, 'asc' ]],
 	 	lengthMenu: [[200, 500, 1000], [200, 500, 1000]],
@@ -755,6 +768,9 @@ $(document).ready(function() {
 		
 		});
 	});
+	
+	
+
 	
 });//DOC END
 

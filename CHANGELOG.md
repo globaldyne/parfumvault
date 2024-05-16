@@ -1,5 +1,8 @@
 # CHANGELOG
 ### Version 10.1
+- Added Discord server link to the footer
+- Added Bootstrap-Icons
+- Expand ingredient compositions (if any) when formulating
 - Filter illegal chars in ingredient search
 - Added orientation when exporting to a formula for selling
 - Allow ordering in formula sell table
