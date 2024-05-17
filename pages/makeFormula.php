@@ -108,8 +108,8 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
 
                <div class="dropdown-divider"></div>
                <li class="dropdown-header">Export</li>
-               <li><a class="dropdown-item" href="javascript:export_as('csv')"><i class="fa-solid fa-file-csv mx-2"></i>Export as CSV</a></li>
-               <li><a class="dropdown-item" href="javascript:export_as('pdf')"><i class="fa-solid fa-file-code mx-2"></i>Export as PDF</a></li>
+               <li><a class="dropdown-item export_as" href="#" data-format="csv"><i class="fa-solid fa-file-csv mx-2"></i>Export as CSV</a></li>
+               <li><a class="dropdown-item export_as" href="#" data-format="pdf"><i class="fa-solid fa-file-code mx-2"></i>Export as PDF</a></li>
                <li><a class="dropdown-item" href="#" id="print"><i class="fa-solid fa-print mx-2"></i>Print Formula</a></li>
             </div>
         </div>
@@ -769,26 +769,29 @@ $(document).ready(function() {
 		});
 	});
 	
-	
+	$('.export_as').click(function() {	
+	  var format = $(this).attr('data-format');
+	  $("#tdDataPending").tableHTMLExport({
+		type: format,
+		filename: myFNAME + "." + format,
+		separator: ',',
+		newline: '\r\n',
+		trimContent: true,
+		quoteFields: true,
+		ignoreColumns: '.noexport',
+		ignoreRows: '.noexport',
+		htmlContent: false,
+		orientation: 'l',
+		subtitle: 'Created with Perfumer\'s Vault Pro',
+		maintitle: myFNAME,
+	  });
+	});
 
 	
 });//DOC END
 
-function export_as(type) {
-  $("#tdDataPending").tableHTMLExport({
-	type: type,
-	filename: myFNAME + "." + type,
-	separator: ',',
-	newline: '\r\n',
-	trimContent: true,
-	quoteFields: true,
-	ignoreColumns: '.noexport',
-	ignoreRows: '.noexport',
-	htmlContent: false,
-	orientation: 'l',
-	maintitle: myFNAME,
-  });
-};    
+
+ 
 </script>
 <script src="/js/validate-session.js"></script>
 <script src="/js/mark/jquery.mark.min.js"></script>

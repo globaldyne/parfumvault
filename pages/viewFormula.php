@@ -776,7 +776,7 @@ function ingCAS(data, type, row, meta){
 	if(type === 'display'){
 		data = '<i class="pv_point_gen" rel="tip" title="Click to copy" id="cCAS" data-name="'+row.ingredient.cas+'">'+row.ingredient.cas+'</i>';
 	}
-  	 return data;
+  return data;
 }
   
 function ingConc(data, type, row, meta){
