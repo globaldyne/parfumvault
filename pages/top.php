@@ -80,7 +80,7 @@ if($pv_meta['schema_ver'] < $db_ver){
                 </a>
                 <a class="dropdown-item" href="https://github.com/globaldyne/parfumvault/issues" target="_blank">
                   <i class="fas fa-lightbulb fa-sm fa-fw mx-2 text-gray-400"></i>
-                  Request a feature / Bug report
+                  Bug report
                 </a>             
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="https://apps.apple.com/us/app/id1525381567" target="_blank">

@@ -1,4 +1,15 @@
 # CHANGELOG
+### Version 10.1
+- Added export to JSON for perfume types
+- Added export to JSON for categories
+- Added Discord server link to the footer
+- Added Bootstrap-Icons
+- Expand ingredient compositions (if any) when formulating
+- Filter illegal chars in ingredient search
+- Added orientation when exporting to a formula for selling
+- Allow ordering in formula sell table
+- Set custom decimal precission when generating a formula to sell
+- Fix export functions in Formula Make page
 ### Version 10.0
 - Discord server link added
 - Added archive option when deleting a formula

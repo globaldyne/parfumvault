@@ -63,24 +63,39 @@ var myFID = "<?=$meta['fid']?>";
 var myFNAME = "<?=$meta['name']?>";
 var watermarkText = "<?=$_POST['watermarkText']?>";
 var watermarkTextSize = "<?=$_POST['watermarkTextSize']?>";
+var orientation = "<?=$_POST['orientation']?>";
+var qStep = "<?=$_POST['qStep']?>";
 
 var formula_table = $('#formula').DataTable( {
 	columnDefs: [
 		{ className: 'text-center', targets: '_all' },
-		{ orderable: false, targets: '_all' },
+		{ orderable: true, targets: '_all' },
 	],
 	dom: 'lrt',
+	buttons: [
+      {
+        extend: "pdfHtml5",
+		orientation: "landscape",
+        title: myFNAME,
+        messageBottom: function(){return new Date().toString()},
+        messageTop: $("#customerID").val()
+      }
+    ],
 	processing: false,
 	ajax: {
-		url: '/core/full_formula_data.php?id=<?=$id?>'
+		url: '/core/full_formula_data.php',
+		data: {
+			id: <?=$id?>,
+			qStep: qStep
+		}
 	 },
 	 columns: [
 			   { data : 'ingredient.name', title: 'Ingredient'},
 			   { data : 'ingredient.cas', title: 'CAS#'},
-			   { data : 'purity', title: 'Purity %'},
+			   { data : 'purity', title: 'Purity%'},
 			   { data : 'dilutant', title: 'Dilutant'},
-			   { data : 'quantity', title: 'Quantity (<?=$settings['mUnit']?>)'},
-			   { data : 'concentration', title: 'Concentration %'},
+			   { data : 'quantity', title: 'Quantity(<?=$settings['mUnit']?>)'},
+			   { data : 'concentration', title: 'Concentration%'},
 			   { data : 'ingredient.desc', title: 'Properties'},
 			  ],
 	footerCallback : function( tfoot, data, start, end, display ) {    
@@ -106,7 +121,7 @@ $('#export_pdf').on('click',function(){
   $("#formula").tableHTMLExport({
 	type:'pdf',
 	filename: myFNAME + '.pdf',
-	orientation: 'p',
+	orientation: orientation,
 	trimContent: true,
     quoteFields: true,
 	ignoreColumns: '.noexport',

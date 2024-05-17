@@ -243,6 +243,47 @@ $(document).ready(function() {
 	   }
 });
 
+formula_table.on('click', '.expandAccord', function (e) {
+    let tr = $(this).closest('tr');
+    let row = formula_table.row(tr);
+    if (row.child.isShown()) {
+        row.child.hide();
+        tr.removeClass('shown');
+    } else {
+        showChildRow(row, tr);
+    }
+});
+
+function showChildRow(row, tr) {
+    $.ajax({
+        url: '/core/list_ing_compos_data.php',
+        type: 'GET',
+        data: {
+            id: btoa(row.data().ingredient.name)
+        },
+        dataType: 'json',
+        success: function (data) {
+            row.child(format(data)).show();
+            tr.addClass('shown');
+        }
+    });
+}
+
+function format(d) {
+    var details = '';
+    for (var i = 0; i < d.data.length; i++) {
+        details += '<div class="ingredient">';
+        details += '<i class="bi bi-arrow-return-right mx-2"></i><span class="details">' + d.data[i].name ;
+        details += ' - ' + d.data[i].cas ;
+        details += ' - ' + d.data[i].percentage + '%<br>';
+        details += '</div>';
+    }
+	details += '<br />Total sub ingredients: ' + i;
+    return details;
+}
+
+
+	
 $('#pvCustomSearch').on('keyup redraw', function() {
 	var searchString = '(' + $('#pvCustomSearch').val().split(/\s*,\s*/).join('|') + ')';
 	formula_table.search(searchString, true).draw(true);
@@ -696,21 +737,33 @@ $('#formula').editable({
 
 function ingName(data, type, row, meta){
 	var ex = '';
+	var contains = '';
+	var chkIng = '';
+	var profile_class ='';
+	
+	
+	if(row.ingredient.containsOthers.total){
+		contains = '<i class="fa-solid fa-th-list expandAccord mx-2 pv_point_gen" rel="tip" title="Show/hide sub igredients"></i>';	
+	}
+	
 	if(row.exclude_from_calculation == 1){
 		ex = 'pv_ing_exc';
 	}
+	
 	if(row.chk_ingredient){
-		var chkIng = '<i class="fas fa-exclamation" rel="tip" title="'+row.chk_ingredient+'"></i>';
+		chkIng = '<i class="fas fa-exclamation" rel="tip" title="'+row.chk_ingredient+'"></i>';
 	}else{
-		var chkIng = '';
+		chkIng = '';
 	}
+	
 	if(row.ingredient.profile_plain){
-		var profile_class = '<a href="#" class="'+row.ingredient.profile_plain+'"></a>';
+		profile_class = '<a href="#" class="'+row.ingredient.profile_plain+'"></a>';
 	}else{
-		var profile_class ='';
+		profile_class ='';
 	}
+	
 	if(row.ingredient.enc_id){
-		data = '<a class="popup-link '+ex+'" href="/pages/mgmIngredient.php?id=' + row.ingredient.enc_id + '">' + data + '</a> '+ chkIng + profile_class;
+		data = contains + '<a class="popup-link '+ex+'" href="/pages/mgmIngredient.php?id=' + row.ingredient.enc_id + '">' + data + '</a> '+ chkIng + profile_class;
 	}else{
 		data = '<a class="popup-link '+ex+'" href="/pages/mgmIngredient.php?id=' + btoa(data) + '">' + data + '</a> '+ chkIng + profile_class;
 
@@ -723,7 +776,7 @@ function ingCAS(data, type, row, meta){
 	if(type === 'display'){
 		data = '<i class="pv_point_gen" rel="tip" title="Click to copy" id="cCAS" data-name="'+row.ingredient.cas+'">'+row.ingredient.cas+'</i>';
 	}
-  	 return data;
+  return data;
 }
   
 function ingConc(data, type, row, meta){

@@ -20,7 +20,9 @@ $extra = "ORDER BY ".$order_by." ".$order;
 
 $s = trim($_POST['search']['value']);
 $t = "makeFormula";
-
+if($_GET['qStep']){
+	$settings['qStep'] = $_GET['qStep'];
+}
 
 if($meta == 0){
 	if($s != ''){

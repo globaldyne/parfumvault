@@ -1455,3 +1455,7 @@ th.dt-center, td.dt-center {
 	position: sticky; 
 	bottom: 0; 
 }
+
+.highlight {
+    background-color: yellow !important; /* Change to whatever color you prefer */
+}
