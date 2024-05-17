@@ -41,9 +41,10 @@ if($pv_meta['app_ver'] < trim(file_get_contents(__ROOT__.'/VERSION.md'))){
   
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
-
+  
+  <link href="/css/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" type="text/css">
   <link href="/css/fontawesome-free/css/all.min.css" rel="stylesheet">
-  <link href="/css/sb-admin-2.css" rel="stylesheet">
+  <link href="/css/sb-admin-2.css" rel="stylesheet" />
   <link href="/css/bootstrap-select.min.css" rel="stylesheet">
   <link href="/css/bootstrap-editable.css" rel="stylesheet">
   <link href="/css/datatables.min.css" rel="stylesheet">
@@ -51,7 +52,7 @@ if($pv_meta['app_ver'] < trim(file_get_contents(__ROOT__.'/VERSION.md'))){
   <link href="/css/bootstrap.min.css" rel="stylesheet">
   
   <link href="/css/jquery-ui.css" rel="stylesheet">
-  <link href="/css/magnific-popup.css" rel="stylesheet" />
+  <link href="/css/magnific-popup.css" rel="stylesheet">
   
   <link href="/css/vault.css" rel="stylesheet">
   
