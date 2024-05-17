@@ -13,7 +13,8 @@ require_once(__ROOT__.'/inc/opendb.php');
     <div class="btn-group" id="menu">
         <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
         <div class="dropdown-menu dropdown-menu-right">
-          <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#add_formula_cat"><i class="fa-solid fa-plus mr2"></i>Add formula category</a></li>
+          <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#add_formula_cat"><i class="fa-solid fa-plus mx-2"></i>Add formula category</a></li>
+          <li><a class="dropdown-item" href="/pages/operations.php?action=exportFrmCat"><i class="fa-solid fa-file-code mx-2"></i>Export as JSON</a></li>
         </div>
     </div>
 	</div>

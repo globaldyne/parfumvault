@@ -1,5 +1,7 @@
 # CHANGELOG
 ### Version 10.1
+- Added export to JSON for perfume types
+- Added export to JSON for categories
 - Added Discord server link to the footer
 - Added Bootstrap-Icons
 - Expand ingredient compositions (if any) when formulating
