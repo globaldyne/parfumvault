@@ -1,4 +1,5 @@
 # CHANGELOG
+### Version 10.2
 ### Version 10.1
 - Added export to JSON for perfume types
 - Added export to JSON for categories
