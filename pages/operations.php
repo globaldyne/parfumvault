@@ -615,4 +615,111 @@ if($_GET['action'] == 'importCompounds'){
 	return;
 
 }
+
+//EXPORT INGREDIENT CATEGORIES
+if($_GET['action'] == 'exportIngCat'){
+	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingCategory")))){
+		$msg['error'] = 'No data found to export.';
+		echo json_encode($msg);
+		return;
+	}
+	$data = 0;
+	$q = mysqli_query($conn, "SELECT * FROM ingCategory");
+	while($resData = mysqli_fetch_assoc($q)){
+		
+		$r['id'] = (int)$resData['id'];
+		$r['name'] = (string)$resData['name']?: "-";
+		$r['notes'] = (string)$resData['notes']?: "-";
+		$r['image'] = (string)$resData['image'] ?: "-";
+		$r['colorKey'] = (string)$resData['colorKey']?: "-";
+		
+		$data++;
+		$cat[] = $r;
+	}
+	
+	$vd['product'] = $product;
+	$vd['version'] = $ver;
+	$vd['ingCategory'] = $data;
+	$vd['timestamp'] = date('d/m/Y H:i:s');
+
+	
+	$result['ingCategory'] = $cat;
+	$result['pvMeta'] = $vd;
+	
+	header('Content-disposition: attachment; filename=IngCategories.json');
+	header('Content-type: application/json');
+	echo json_encode($result, JSON_PRETTY_PRINT);
+	return;
+}
+
+//EXPORT FORMULA CATEGORIES
+if($_GET['action'] == 'exportFrmCat'){
+	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulaCategories")))){
+		$msg['error'] = 'No data found to export.';
+		echo json_encode($msg);
+		return;
+	}
+	$data = 0;
+	$q = mysqli_query($conn, "SELECT * FROM formulaCategories");
+	while($resData = mysqli_fetch_assoc($q)){
+		
+		$r['id'] = (int)$resData['id'];
+		$r['name'] = (string)$resData['name']?: "-";
+		$r['cname'] = (string)$resData['cname']?: "-";
+		$r['type'] = (string)$resData['type'] ?: "-";
+		$r['colorKey'] = (string)$resData['colorKey']?: "-";
+		
+		$data++;
+		$cat[] = $r;
+	}
+	
+	$vd['product'] = $product;
+	$vd['version'] = $ver;
+	$vd['formulaCategories'] = $data;
+	$vd['timestamp'] = date('d/m/Y H:i:s');
+
+	
+	$result['formulaCategories'] = $cat;
+	$result['pvMeta'] = $vd;
+	
+	header('Content-disposition: attachment; filename=FormulaCategories.json');
+	header('Content-type: application/json');
+	echo json_encode($result, JSON_PRETTY_PRINT);
+	return;
+}
+
+//EXPORT PERFUME TYPES
+if($_GET['action'] == 'exportPerfTypes'){
+	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM perfumeTypes")))){
+		$msg['error'] = 'No data found to export.';
+		echo json_encode($msg);
+		return;
+	}
+	$data = 0;
+	$q = mysqli_query($conn, "SELECT * FROM perfumeTypes");
+	while($resData = mysqli_fetch_assoc($q)){
+		
+		$r['id'] = (int)$resData['id'];
+		$r['name'] = (string)$resData['name']?: "-";
+		$r['concentration'] = (int)$resData['concentration']?: 100;
+		$r['description'] = (string)$resData['description'] ?: "-";
+		
+		$data++;
+		$cat[] = $r;
+	}
+	
+	$vd['product'] = $product;
+	$vd['version'] = $ver;
+	$vd['perfumeTypes'] = $data;
+	$vd['timestamp'] = date('d/m/Y H:i:s');
+
+	
+	$result['perfumeTypes'] = $cat;
+	$result['pvMeta'] = $vd;
+	
+	header('Content-disposition: attachment; filename=PerfumeTypes.json');
+	header('Content-type: application/json');
+	echo json_encode($result, JSON_PRETTY_PRINT);
+	return;
+}
 ?>
