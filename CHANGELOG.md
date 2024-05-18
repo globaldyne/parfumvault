@@ -1,6 +1,7 @@
 # CHANGELOG
 ### Version 10.2
 - Added JSON export for formula making
+- Table allergens has been renamed to ingredient_compounds
 
 ### Version 10.1
 - Added export to JSON for perfume types

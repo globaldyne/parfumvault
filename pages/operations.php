@@ -389,7 +389,7 @@ if($_GET['action'] == 'restoreIngredients'){
 		*/
 		foreach ($data['compositions'] as $cmp) {
 			// Prepare the statement
-			$stmt = mysqli_prepare($conn, "INSERT IGNORE INTO `allergens` (`ing`,`name`,`cas`,`ec`,`percentage`,`toDeclare`,`created`) VALUES (?, ?, ?, ?, ?, ?, current_timestamp())");
+			$stmt = mysqli_prepare($conn, "INSERT IGNORE INTO `ingredient_compounds` (`ing`,`name`,`cas`,`ec`,`percentage`,`toDeclare`,`created`) VALUES (?, ?, ?, ?, ?, ?, current_timestamp())");
 			// Bind parameters
 			mysqli_stmt_bind_param($stmt, "ssssss", $cmp['ing'], $cmp['name'], $cmp['cas'], $cmp['ec'], $cmp['percentage'], $cmp['toDeclare']);
 			// Execute the statement

@@ -315,7 +315,7 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'ingredients'){
 		$ing[] = $r;
 		
 	}
-	$q = mysqli_query($conn, "SELECT * FROM allergens");
+	$q = mysqli_query($conn, "SELECT * FROM ingredient_compounds");
 	while($res = mysqli_fetch_assoc($q)){
 
 		$c['id'] = (string)$res['id'];
@@ -462,7 +462,7 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'single-ingredient' && $_GET['i
 		$ing[] = $r;
 	}
 	
-	$q = mysqli_query($conn, "SELECT * FROM allergens WHERE ing ='".$ing['0']['name']."'");
+	$q = mysqli_query($conn, "SELECT * FROM ingredient_compounds WHERE ing ='".$ing['0']['name']."'");
 	while($res = mysqli_fetch_assoc($q)){
 
 		$c['id'] = (int)$res['id'];

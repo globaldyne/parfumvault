@@ -6,7 +6,7 @@ require_once(__ROOT__.'/inc/opendb.php');
 
 $ingID = base64_decode($_GET["id"]);
 
-$q = mysqli_query($conn, "SELECT id,ing,name,cas,ec,percentage,toDeclare FROM allergens WHERE ing = '$ingID'");
+$q = mysqli_query($conn, "SELECT id,ing,name,cas,ec,percentage,toDeclare FROM ingredient_compounds WHERE ing = '$ingID'");
 while($res = mysqli_fetch_array($q)){
     $compos[] = $res;
 }

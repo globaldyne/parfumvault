@@ -35,7 +35,7 @@ function multi_dim_search($array, $key, $value){
 function multi_dim_perc($conn, $form, $ingCas, $qStep) {
 	foreach ($form as $formula){
 		
-		if($compos = mysqli_query($conn, "SELECT name,percentage,cas FROM allergens WHERE ing = '".$formula['ingredient']."'")){
+		if($compos = mysqli_query($conn, "SELECT name,percentage,cas FROM ingredient_compounds WHERE ing = '".$formula['ingredient']."'")){
 		
 			while($compo = mysqli_fetch_array($compos)){
 				$cmp[] = $compo;

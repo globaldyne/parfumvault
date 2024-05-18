@@ -125,7 +125,7 @@ foreach ($form as $formula){
 		$replacement[] = $replacements;
 	}
 	
-	$totalcontainsOthers = mysqli_num_rows(mysqli_query($conn, "SELECT name,percentage,cas FROM allergens WHERE ing = '".$formula['ingredient']."'"));
+	$totalcontainsOthers = mysqli_num_rows(mysqli_query($conn, "SELECT name,percentage,cas FROM ingredient_compounds WHERE ing = '".$formula['ingredient']."'"));
 	
 	
 	$inventory = mysqli_fetch_array(mysqli_query($conn, "SELECT stock,mUnit,batch,purchased FROM suppliers WHERE ingID = '".$ing_q['id']."' AND preferred = '1'"));
@@ -134,7 +134,7 @@ foreach ($form as $formula){
   	$conc_final = $formula['concentration'] / 100 * $formula['quantity']/$mg['total_mg'] * $meta['finalType'];
 	
 	if($settings['multi_dim_perc'] == '1'){
-		$compos = mysqli_query($conn, "SELECT name,percentage,cas FROM allergens WHERE ing = '".$formula['ingredient']."'");
+		$compos = mysqli_query($conn, "SELECT name,percentage,cas FROM ingredient_compounds WHERE ing = '".$formula['ingredient']."'");
 		
 		while($compo = mysqli_fetch_array($compos)){
 			$cmp[] = $compo;
