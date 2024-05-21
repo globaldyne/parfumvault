@@ -1,5 +1,7 @@
 # CHANGELOG
 ### Version 10.2
+- Make sure the modal box toggles when trying to schedule a formula which is already scheduled
+- Fix user menu position
 - Added JSON export for formula making
 - Table allergens has been renamed to ingredient_compounds
 
