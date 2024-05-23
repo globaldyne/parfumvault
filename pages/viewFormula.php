@@ -273,8 +273,8 @@ function format(d) {
     var details = '';
     for (var i = 0; i < d.data.length; i++) {
         details += '<div class="ingredient">';
-        details += '<i class="bi bi-arrow-return-right mx-2"></i><span class="details">' + d.data[i].name ;
-        details += ' - ' + d.data[i].cas ;
+        details += '<i class="bi bi-arrow-return-right mx-2"></i><span class="details"><a href="#" id="compoundName" data-query="'+ d.data[i].name +'">' + d.data[i].name + '</a>' ;
+        details += ' - <a href="#" id="compoundCAS" data-query="'+ d.data[i].cas +'">' + d.data[i].cas + '</a>' ;
         details += ' - ' + d.data[i].percentage + '%<br>';
         details += '</div>';
     }
@@ -307,6 +307,22 @@ $('#formula tbody').on( 'click', 'tr.group', function () {
     }
 });
 
+$('#formula').on('click', '[id*=compoundCAS], [id*=compoundName]', function (e) {
+    event.preventDefault();
+	cmpQuery = $(this).attr('data-query');
+	console.log(cmpQuery);
+	formula_table.cells().nodes().to$().removeClass('highlight');
+    if (cmpQuery !== '') {
+		formula_table.rows().every(function(rowIdx, tableLoop, rowLoop) {
+    		$(this.node()).find('td').each(function() {
+            	var cellText = $(this).text();
+                if (cellText.includes(cmpQuery)) {
+                	$(this).addClass('highlight');
+                }
+            });
+        });
+	}
+});
 
 $('#formula').on('click', '[id*=rmIng]', function () {
 

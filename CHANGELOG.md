@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 10.2
+- Highlight corresponded ingredient that matches a compound name or CAS number in a formula
 - Added GHS Classification for ingredient compounds
 - Fix suppliers and compounds count when exporting ingredients to JSON
 - Replace table with div for compositions page
