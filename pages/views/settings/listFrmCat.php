@@ -246,11 +246,11 @@ function reload_fcat_data() {
       <div class="modal-body">
       	<div id="fcatMsgIn"></div>
         <div class="form-group">
-              <label class="col-md-3 control-label">Name:</label>
+              <label class="col-md-3 control-label">Name</label>
               <div class="col-md-8">
               	<input name="fcatName" id="fcatName" type="text" class="form-control" />
               </div>
-              <label class="col-md-3 control-label">Type:</label>
+              <label class="col-md-3 control-label">Type</label>
              <div class="col-md-8">
               <select name="cat_type" id="cat_type" class="form-control">
       			<option value="profile">Profile</option>

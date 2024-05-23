@@ -224,22 +224,21 @@ function reload_data() {
       </div>
       <div class="modal-body">
       <div id="ptype_inf"></div>
-          <p>
-            <p>
-            Name: 
+      
+          <div class="mb-3">
+          	<label for="formFile" class="form-label">Name</label>
             <input class="form-control" name="perfType_name" type="text" id="perfType_name" />
-            </p>
-            
-            <p>
-            Concentration:
+          </div>
+		  <div class="mb-3">
+            <label for="formFile" class="form-label">Concentration</label>
             <input class="form-control" name="perfType_conc" type="text" id="perfType_conc" />
-            </p>
-            <p>
-            Short description:
+          </div>
+		  <div class="mb-3">
+            <label for="formFile" class="form-label">Short description</label>
             <input class="form-control" name="perfType_desc" type="text" id="perfType_desc" />
-            </p>
-            <div class="dropdown-divider"></div>
+          </div>
       </div>
+      
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         <input type="submit" name="button" class="btn btn-primary" id="sAdd" value="Add">

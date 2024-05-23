@@ -1,5 +1,9 @@
 # CHANGELOG
 ### Version 10.2
+- Added GHS Classification for ingredient compounds
+- Fix suppliers and compounds count when exporting ingredients to JSON
+- Replace table with div for compositions page
+- Update perfume types and httml templates page layout
 - Make sure the modal box toggles when trying to schedule a formula which is already scheduled
 - Fix user menu position
 - Added JSON export for formula making

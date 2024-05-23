@@ -1281,6 +1281,8 @@ if($_POST['composition'] == 'add'){
 	$allgCAS = mysqli_real_escape_string($conn, $_POST['allgCAS']);
 	$allgEC = mysqli_real_escape_string($conn, $_POST['allgEC']);	
 	$allgPerc = rtrim(mysqli_real_escape_string($conn, $_POST['allgPerc']),'%');
+	$GHS = rtrim(mysqli_real_escape_string($conn, $_POST['GHS']));
+
 	$ing = base64_decode($_POST['ing']);
 	
 	if($_POST['addToDeclare'] == 'true'){
@@ -1319,7 +1321,7 @@ if($_POST['composition'] == 'add'){
 		return;
 	}
 	
-	if(mysqli_query($conn, "INSERT INTO ingredient_compounds (name,cas,ec,percentage,toDeclare,ing) VALUES ('$allgName','$allgCAS','$allgEC','$allgPerc','$declare','$ing')")){
+	if(mysqli_query($conn, "INSERT INTO ingredient_compounds (name,cas,ec,percentage,GHS,toDeclare,ing) VALUES ('$allgName','$allgCAS','$allgEC','$allgPerc','$GHS','$declare','$ing')")){
 		$response["success"] = '<strong>'.$allgName.'</strong> added to the list';
 		echo json_encode($response);
 	}else{

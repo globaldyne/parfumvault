@@ -247,20 +247,19 @@ $("#editTmpl").on("show.bs.modal", function(e) {
       </div>
       <div class="modal-body">
       <div id="tmpl_inf"></div>
-          <p>
-            <p>
-            Name: 
+       
+		<div class="mb-3">
+  			<label for="formFileMultiple" class="form-label">Name</label>
             <input class="form-control" name="tmpl_name" type="text" id="tmpl_name" />
-            </p>
-            <p>
-            HTML Content:
+        </div>
+		<div class="mb-3">
+  			<label for="formFileMultiple" class="form-label">HTML Content</label>
             <textarea class="form-control" name="tmpl_content" id="tmpl_content" rows="4"></textarea>
-            </p>
-            <p>
-            Short description:
+		</div>
+		<div class="mb-3">
+  			<label for="formFileMultiple" class="form-label">Short description</label>
             <input class="form-control" name="tmpl_desc" type="text" id="tmpl_desc" />
-            </p>
-            <div class="dropdown-divider"></div>
+     	</div>    
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
