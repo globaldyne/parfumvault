@@ -226,15 +226,15 @@ function reload_data() {
       <div id="ptype_inf"></div>
       
           <div class="mb-3">
-          	<label for="formFile" class="form-label">Name</label>
+          	<label for="perfType_name" class="form-label">Name</label>
             <input class="form-control" name="perfType_name" type="text" id="perfType_name" />
           </div>
 		  <div class="mb-3">
-            <label for="formFile" class="form-label">Concentration</label>
+            <label for="perfType_conc" class="form-label">Concentration</label>
             <input class="form-control" name="perfType_conc" type="text" id="perfType_conc" />
           </div>
 		  <div class="mb-3">
-            <label for="formFile" class="form-label">Short description</label>
+            <label for="perfType_desc" class="form-label">Short description</label>
             <input class="form-control" name="perfType_desc" type="text" id="perfType_desc" />
           </div>
       </div>

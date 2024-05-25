@@ -19,12 +19,16 @@ if ($_POST['isDeepQ'] == "true"){
 	$t = "synonyms,ingredients";
 	$filter = "WHERE synonym LIKE '%$s%' AND ing = name GROUP BY name";
 
+} else if($_POST['isAbsolute'] == "true"){
+	$t = "ingredients";	
+	$filter = "WHERE name = '$s' OR cas = '$s' OR einecs = '$s' OR INCI = '$s'";
+	
 }else{
 	$t = "ingredients";	
 	$filter = "WHERE name LIKE '%$s%' OR cas LIKE '%$s%' OR INCI LIKE '%$s%'";
 }
 
-$q = mysqli_query($conn, "SELECT ingredients.id,name,INCI,cas,type,odor,physical_state,profile FROM $t $filter ORDER BY name ASC");
+$q = mysqli_query($conn, "SELECT ingredients.id,name,INCI,cas,einecs,type,odor,physical_state,profile FROM $t $filter ORDER BY name ASC");
 while($res = mysqli_fetch_array($q)){
     $ingredients[] = $res;
 }
@@ -36,6 +40,7 @@ foreach ($ingredients as $ingredient) {
 	$r['name'] = (string)$ingredient['name'];
 	$r['IUPAC'] = (string)$ingredient['INCI']?: 'N/A';
 	$r['cas'] = (string)$ingredient['cas']?: 'N/A';
+	$r['einecs'] = (string)$ingredient['einecs']?: 'N/A';
 	$r['type'] = (string)$ingredient['type'] ?: 'Unknown';
 	$r['description'] = (string)$ingredient['odor'] ?: 'N/A';
 	$r['physical_state'] = (int)$ingredient['physical_state'] ?: 1;
