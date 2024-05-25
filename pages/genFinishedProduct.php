@@ -69,13 +69,13 @@ if($_POST['batchID'] == '1'){
 <?php } ?>
 
 <div id="content-wrapper" class="d-flex flex-column">
-<?php require_once('pages/top.php'); ?>
+<?php require_once(__ROOT__.'/pages/top.php'); ?>
         <div class="container-fluid">
 		<div>
           <div class="card shadow mb-4">
             <div class="card-header py-3"> 
             <?php if($_GET['generate'] && $_POST['formula']){?>
-             <h2 class="m-0 font-weight-bold text-primary"><a href="/?do=genFinishedProduct"><?php echo $meta['product_name'];?></a></h2>
+             <h2 class="m-0 font-weight-bold text-primary"><a href="#"><?php echo $meta['product_name'];?></a></h2>
              <h5 class="m-1 text-primary">Formula name: <strong><?php echo $meta['name'];?></strong></h5>
              <h5 class="m-1 text-primary">Bottle: <strong><?php echo $bottle; ?><?=$settings['mUnit']?></strong></h5>
 			 <h5 class="m-1 text-primary">Concentration: <strong><?php echo $type; ?>%</h5>
@@ -113,10 +113,10 @@ if($_POST['batchID'] == '1'){
                     <tr>
                       <th width="22%">Ingredient</th>
                       <th width="10%">CAS#</th>
-                      <th width="10%">Purity %</th>
+                      <th width="10%">Purity%</th>
                       <th width="10%">Dilutant</th>
                       <th width="10%">Quantity</th>
-                      <th width="10%">Concentration*</th>
+                      <th width="10%">Concentration</th>
                       <th colspan="2">Cost</th>
                     </tr>
                   </thead>
@@ -270,22 +270,23 @@ if($_POST['batchID'] == '1'){
       </div>
       <div class="modal-body">
       <div class="alert alert-warning d-flex align-items-center" role="alert">
-          <div>
-            IMPORTANT: The generated document isn't an official IFRA certificate and needs to be reviewed by a certified person. Also, data needs to be properly verified to make sure there are no errors.
-          </div>
+      		IMPORTANT: The generated document isn't an official IFRA certificate and needs to be reviewed by a certified person. Also, data needs to be properly verified to make sure there are no errors.
       </div>
-          Select customer:
-          <form action="/pages/views/IFRA/genIFRAdoc.php?fid=<?php echo $meta['fid'];?>&conc=<?php echo $type; ?>&bottle=<?php echo $bottle;?>&defCatClass=<?=$defCatClass?>" method="POST" target="_blank">
-            <select class="form-control" name="customer" id="customer">
+
+      <form action="/pages/views/IFRA/genIFRAdoc.php?fid=<?php echo $meta['fid'];?>&conc=<?php echo $type; ?>&bottle=<?php echo $bottle;?>&defCatClass=<?=$defCatClass?>" method="POST" target="_blank">
+	  <div class="mb-3">
+  		<label for="customer" class="form-label">Select customer</label>
+        <select class="form-control" name="customer" id="customer">
             <?php
 				$res = mysqli_query($conn, "SELECT id, name FROM customers ORDER BY name ASC");
 				while ($q = mysqli_fetch_array($res)){
 				echo '<option value="'.$q['id'].'">'.$q['name'].'</option>';
 			}
 			?>
-            </select>
-        	<br/>
-            Select IFRA document template:
+        </select>
+       </div>
+	   <div class="mb-3">
+  			<label for="template" class="form-label">Select IFRA document template</label>
             <select class="form-control" name="template" id="template">
             <?php
 				$res = mysqli_query($conn, "SELECT id, name FROM templates ORDER BY name ASC");
@@ -331,113 +332,109 @@ if($_POST['batchID'] == '1'){
    					$fTypes[] = $fTypes_res;
 				}
 			?>
-           <form action="/?do=genFinishedProduct&generate=1" method="post" enctype="multipart/form-data" target="_blank">
+<form action="/?do=genFinishedProduct&generate=1" method="post" enctype="multipart/form-data" target="_blank">
            
-           <table width="100%" border="0">
-  <tr>
-    <td width="9%">Formula:</td>
-    <td width="24%">
-    <select name="formula" id="formula" class="form-control selectpicker" data-live-search="true">
-     <?php
-		$sql = mysqli_query($conn, "SELECT fid,name,product_name FROM formulasMetaData WHERE product_name IS NOT NULL ORDER BY name ASC");
-		while ($formula = mysqli_fetch_array($sql)){
-			echo '<option value="'.$formula['fid'].'">'.$formula['name'].' ('.$formula['product_name'].')</option>';
-}
-	  ?>
-     </select>
-   </td>
-    <td width="67%">&nbsp;</td>
-  </tr>
-  <tr>
-    <td>Concentration:</td>
-    <td>
-        <select name="type" id="type" class="form-control selectpicker" data-live-search="true">
-     		<option value="100">Concentrated (100%)</option>
-			<?php foreach ($fTypes as $fType) {?>
-              <option value="<?php echo $fType['concentration'];?>" <?php echo ($info['finalType']==$fType['concentration'])?"selected=\"selected\"":""; ?>><?php echo $fType['name'].' ('.$fType['concentration'];?>%)</option>
-            <?php }	?>	
-     	</select>
-    </td>
-    <td>&nbsp;</td>
-  </tr>
-  <tr>
-    <td>Ingredients Supplier:</td>
-    <td><select name="ingSup" id="ingSup" class="form-control selectpicker" data-live-search="true">
-       <option value="0" selected="selected">Formula Defaults</option>
-      <?php foreach ($suppliers as $supplier) {?>
-      <option value="<?=$supplier['id'];?>"><?=$supplier['name'];?></option>
-      <?php	}	?>
-    </select></td>
-    <td>&nbsp;</td>
-  </tr>
-  <tr>
-    <td>Category Class:</td>
-    <td><select name="defCatClass" id="defCatClass" class="form-control selectpicker" data-live-search="true">
-		<?php foreach ($cats as $IFRACategories) {?>
-				<option value="cat<?php echo $IFRACategories['name'];?>" <?php echo ($settings['defCatClass']=='cat'.$IFRACategories['name'])?"selected=\"selected\"":""; ?>><?php echo 'Cat '.$IFRACategories['name'].' - '.$IFRACategories['description'];?></option>
-		  <?php	}	?>
-            </select></td>
-    <td>&nbsp;</td>
-  </tr>
-  <tr>
-    <td>Batch ID:</td>
-    <td><select name="batchID" id="batchID" class="form-control selectpicker" data-live-search="false">
-      <option value="0">Do Not Generate</option>
-      <option value="1">Generate</option>
-    </select></td>
-    <td>&nbsp;</td>
-  </tr>
-  <tr>
-    <td>Bottle:</td>
-    <td>    
-    <select name="bottle" id="bottle" class="form-control selectpicker" data-live-search="true">
-     <?php
-		$sql = mysqli_query($conn, "SELECT id,name,ml FROM bottles WHERE ml != 0 ORDER BY ml DESC");
-		while ($bottle = mysqli_fetch_array($sql)){
-			echo '<option value="'.$bottle['id'].'">'.$bottle['name'].' ('.$bottle['ml'].'ml)</option>';
-		}
-	  ?>
-     </select>
-     </td>
-    <td>&nbsp;</td>
-  </tr>
-  <tr>
-    <td>Carrier:</td>
-    <td>
-    <select name="carrier" id="carrier" class="form-control selectpicker" data-live-search="true">
-      <?php
-		$sql = mysqli_query($conn, "SELECT name,id FROM ingredients WHERE type = 'Carrier' OR type = 'Solvent' ORDER BY name ASC");
-		while ($carrier = mysqli_fetch_array($sql)){
-			echo '<option value="'.$carrier['id'].'">'.$carrier['name'].'</option>';
-		}
-	  ?>
-    </select>
-    </td>
-    <td>&nbsp;</td>
-  </tr>
-  <tr>
-    <td>Bottle Lid:</td>
-    <td><select name="lid" id="lid" class="form-control selectpicker" data-live-search="true">
-      <option value="0" selected="selected">None</option>
-      <?php
-		$sql = mysqli_query($conn, "SELECT style,id FROM lids ORDER BY style ASC");
-		while ($lid = mysqli_fetch_array($sql)){
-			echo '<option value="'.$lid['id'].'">'.$lid['style'].'</option>';
-		}
-	  ?>
-    </select></td>
-    <td>&nbsp;</td>
-  </tr>
-  <tr>
-    <td>&nbsp;</td>
-    <td colspan="2">&nbsp;</td>
-  </tr>
-  <tr>
-    <td><input type="submit" name="button" class="btn btn-info" id="button" value="Generate"></td>
-    <td colspan="2">&nbsp;</td>
-  </tr>
-</table>
-           </form>          
+  <div class="row mb-3">
+    <label for="formula" class="col-sm-1 col-form-label">Formula</label>
+    <div class="col-sm-5">
+      <select name="formula" id="formula" class="form-control selectpicker" data-live-search="true">
+        <?php
+          $sql = mysqli_query($conn, "SELECT fid,name,product_name FROM formulasMetaData WHERE product_name IS NOT NULL ORDER BY name ASC");
+          while ($formula = mysqli_fetch_array($sql)){
+            echo '<option value="'.$formula['fid'].'">'.$formula['name'].' ('.$formula['product_name'].')</option>';
+          }
+        ?>
+      </select>
+    </div>
+  </div>
+  <div class="row mb-3">
+    <label for="type" class="col-sm-1 col-form-label">Concentration</label>
+    <div class="col-sm-5">
+      <select name="type" id="type" class="form-control selectpicker" data-live-search="true">
+        <option value="100">Concentrated (100%)</option>
+        <?php foreach ($fTypes as $fType) {?>
+          <option value="<?php echo $fType['concentration'];?>" <?php echo ($info['finalType']==$fType['concentration'])?"selected=\"selected\"":""; ?>><?php echo $fType['name'].' ('.$fType['concentration'];?>%)</option>
+        <?php } ?>
+      </select>
+    </div>
+  </div>
+  <div class="row mb-3">
+    <label for="ingSup" class="col-sm-1 col-form-label">Ingredients Supplier</label>
+    <div class="col-sm-5">
+      <select name="ingSup" id="ingSup" class="form-control selectpicker" data-live-search="true">
+        <option value="0" selected="selected">Formula Defaults</option>
+        <?php foreach ($suppliers as $supplier) {?>
+          <option value="<?=$supplier['id'];?>"><?=$supplier['name'];?></option>
+        <?php } ?>
+      </select>
+    </div>
+  </div>
+  <div class="row mb-3">
+    <label for="defCatClass" class="col-sm-1 col-form-label">Category Class</label>
+    <div class="col-sm-5">
+      <select name="defCatClass" id="defCatClass" class="form-control selectpicker" data-live-search="true">
+        <?php foreach ($cats as $IFRACategories) {?>
+          <option value="cat<?php echo $IFRACategories['name'];?>" <?php echo ($settings['defCatClass']=='cat'.$IFRACategories['name'])?"selected=\"selected\"":""; ?>><?php echo 'Cat '.$IFRACategories['name'].' - '.$IFRACategories['description'];?></option>
+        <?php } ?>
+      </select>
+    </div>
+  </div>
+  <div class="row mb-3">
+    <label for="batchID" class="col-sm-1 col-form-label">Batch ID</label>
+    <div class="col-sm-5">
+      <select name="batchID" id="batchID" class="form-control selectpicker" data-live-search="false">
+        <option value="0">Do Not Generate</option>
+        <option value="1">Generate</option>
+      </select>
+    </div>
+  </div>
+  <div class="row mb-3">
+    <label for="bottle" class="col-sm-1 col-form-label">Bottle</label>
+    <div class="col-sm-5">
+      <select name="bottle" id="bottle" class="form-control selectpicker" data-live-search="true">
+        <?php
+          $sql = mysqli_query($conn, "SELECT id,name,ml FROM bottles WHERE ml != 0 ORDER BY ml DESC");
+          while ($bottle = mysqli_fetch_array($sql)){
+            echo '<option value="'.$bottle['id'].'">'.$bottle['name'].' ('.$bottle['ml'].'ml)</option>';
+          }
+        ?>
+      </select>
+    </div>
+  </div>
+  <div class="row mb-3">
+    <label for="carrier" class="col-sm-1 col-form-label">Carrier</label>
+    <div class="col-sm-5">
+      <select name="carrier" id="carrier" class="form-control selectpicker" data-live-search="true">
+        <?php
+          $sql = mysqli_query($conn, "SELECT name,id FROM ingredients WHERE type = 'Carrier' OR type = 'Solvent' ORDER BY name ASC");
+          while ($carrier = mysqli_fetch_array($sql)){
+            echo '<option value="'.$carrier['id'].'">'.$carrier['name'].'</option>';
+          }
+        ?>
+      </select>
+    </div>
+  </div>
+  <div class="row mb-3">
+    <label for="lid" class="col-sm-1 col-form-label">Bottle Lid</label>
+    <div class="col-sm-5">
+      <select name="lid" id="lid" class="form-control selectpicker" data-live-search="true">
+        <option value="0" selected="selected">None</option>
+        <?php
+          $sql = mysqli_query($conn, "SELECT style,id FROM lids ORDER BY style ASC");
+          while ($lid = mysqli_fetch_array($sql)){
+            echo '<option value="'.$lid['id'].'">'.$lid['style'].'</option>';
+          }
+        ?>
+      </select>
+    </div>
+  </div>
+  <div class="row mb-3">
+    <div class="col-sm-5">
+      <input type="submit" name="button" class="btn btn-info" id="button" value="Generate">
+    </div>
+  </div>
+</form>
+
             <?php } ?>
            </div>
         </div>

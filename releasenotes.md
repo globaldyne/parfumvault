@@ -1,10 +1,7 @@
-Whats New in v10.1
+Whats New in v10.2
 --------------------------
-- Expand/Collapse ingredient compositions (if any) when formulating
-- Set custom decimal precission when generating a formula to sell
-- Added orientation when exporting to a formula for selling
-- Allow ordering in formula sell table
-- Fix export functions in Formula Make page
-- Added export to JSON for perfume types
-- Added export to JSON for categories
+- Highlight corresponded ingredient that matches a compound name or CAS number in a formula
+- Added GHS Classification for ingredient compounds
+- Auto populate CAS and EC if entry exists as an ingredient when adding components in ingredient composition
+- Added JSON export for formula making
 - For full details please refer to the CHANGELOG

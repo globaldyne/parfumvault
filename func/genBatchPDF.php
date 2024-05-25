@@ -128,7 +128,7 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $defCatClass, $qSt
 	$fq = mysqli_query($conn, "SELECT ingredient FROM $formulaTable WHERE fid = '$fid'");
 	while($ing = mysqli_fetch_array($fq)){
 		$getIngAlergen = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '".$ing['ingredient']."' AND allergen = '1'"));
-		$qAll = mysqli_query($conn, "SELECT name FROM allergens WHERE ing = '".$ing['ingredient']."'");
+		$qAll = mysqli_query($conn, "SELECT name FROM ingredient_compounds WHERE ing = '".$ing['ingredient']."'");
 		
 		while($getAllergen = mysqli_fetch_array($qAll)){
 			$allergen[] = $getAllergen['name'];
@@ -217,7 +217,7 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $defCatClass, $qSt
 	}
 	while ($res_all_ing = mysqli_fetch_array($qAllIng)) {
 		
-		$bldQ = mysqli_query($conn, "SELECT ing,name,cas,percentage FROM allergens WHERE ing = '".$res_all_ing['ingredient']."'");
+		$bldQ = mysqli_query($conn, "SELECT ing,name,cas,percentage FROM ingredient_compounds WHERE ing = '".$res_all_ing['ingredient']."'");
 		while($bld = mysqli_fetch_array($bldQ)){
 			$pdf->Ln();
 			$pdf->SetFont('Arial','',8);

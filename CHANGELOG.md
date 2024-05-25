@@ -1,4 +1,18 @@
 # CHANGELOG
+### Version 10.2
+- Minor improvements in finished product page
+- Auto populate CAS and EC if entry exists as an ingredient when adding components in ingredient composition
+- Extend simple search for ingredients to EC numbers
+- Highlight corresponded ingredient that matches a compound name or CAS number in a formula
+- Added GHS Classification for ingredient compounds
+- Fix suppliers and compounds count when exporting ingredients to JSON
+- Replace table with div for compositions page
+- Update perfume types and httml templates page layout
+- Make sure the modal box toggles when trying to schedule a formula which is already scheduled
+- Fix user menu position
+- Added JSON export for formula making
+- Table allergens has been renamed to ingredient_compounds
+
 ### Version 10.1
 - Added export to JSON for perfume types
 - Added export to JSON for categories
@@ -10,6 +24,7 @@
 - Allow ordering in formula sell table
 - Set custom decimal precission when generating a formula to sell
 - Fix export functions in Formula Make page
+
 ### Version 10.0
 - Discord server link added
 - Added archive option when deleting a formula

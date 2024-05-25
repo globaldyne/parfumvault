@@ -100,7 +100,7 @@ if($_POST['formulas_wipe'] == 'true'){
 		mysqli_query($conn, "TRUNCATE formulasMetaData");
 		mysqli_query($conn, "TRUNCATE formula_history");
 		mysqli_query($conn, "TRUNCATE formulasTags");
-		mysqli_query($conn, "TRUNCATE allergens");
+		mysqli_query($conn, "TRUNCATE ingredient_compounds");
 		mysqli_query($conn, "TRUNCATE formulaCategories");
 		mysqli_query($conn, "TRUNCATE formulasRevisions");
 		mysqli_query($conn, "TRUNCATE makeFormula");
@@ -1281,6 +1281,8 @@ if($_POST['composition'] == 'add'){
 	$allgCAS = mysqli_real_escape_string($conn, $_POST['allgCAS']);
 	$allgEC = mysqli_real_escape_string($conn, $_POST['allgEC']);	
 	$allgPerc = rtrim(mysqli_real_escape_string($conn, $_POST['allgPerc']),'%');
+	$GHS = rtrim(mysqli_real_escape_string($conn, $_POST['GHS']));
+
 	$ing = base64_decode($_POST['ing']);
 	
 	if($_POST['addToDeclare'] == 'true'){
@@ -1313,13 +1315,13 @@ if($_POST['composition'] == 'add'){
 		return;
 	}
 	
-	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM allergens WHERE name = '$allgName' AND ing = '$ing'"))){
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredient_compounds WHERE name = '$allgName' AND ing = '$ing'"))){
 		$response["error"] = '<strong>Error: </strong>'.$allgName.' already exists!';
 		echo json_encode($response);
 		return;
 	}
 	
-	if(mysqli_query($conn, "INSERT INTO allergens (name,cas,ec,percentage,toDeclare,ing) VALUES ('$allgName','$allgCAS','$allgEC','$allgPerc','$declare','$ing')")){
+	if(mysqli_query($conn, "INSERT INTO ingredient_compounds (name,cas,ec,percentage,GHS,toDeclare,ing) VALUES ('$allgName','$allgCAS','$allgEC','$allgPerc','$GHS','$declare','$ing')")){
 		$response["success"] = '<strong>'.$allgName.'</strong> added to the list';
 		echo json_encode($response);
 	}else{
@@ -1343,7 +1345,7 @@ if($_GET['composition'] == 'update'){
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 	$ing = base64_decode($_GET['ing']);
 
-	mysqli_query($conn, "UPDATE allergens SET $name = '$value' WHERE id = '$id' AND ing='$ing'");
+	mysqli_query($conn, "UPDATE ingredient_compounds SET $name = '$value' WHERE id = '$id' AND ing='$ing'");
 	return;
 }
 
@@ -1353,7 +1355,7 @@ if($_POST['composition'] == 'delete'){
 	$id = mysqli_real_escape_string($conn, $_POST['allgID']);
 	$ing = base64_decode($_POST['ing']);
 
-	$delQ = mysqli_query($conn, "DELETE FROM allergens WHERE id = '$id' AND ing='$ing'");	
+	$delQ = mysqli_query($conn, "DELETE FROM ingredient_compounds WHERE id = '$id' AND ing='$ing'");	
 	if($delQ){
 		$response["success"] = '<strong>'.$ing.'</strong> removed!';
 		echo json_encode($response);
@@ -1371,7 +1373,7 @@ if($_POST['ingredient'] == 'delete' && $_POST['ing_id']){
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT ingredient FROM formulas WHERE ingredient = '".$ing['name']."'"))){
 		$response["error"] = '<strong>'.$ing['name'].'</strong> is in use by at least one formula and cannot be removed!</div>';
 	}elseif(mysqli_query($conn, "DELETE FROM ingredients WHERE id = '$id'")){
-		mysqli_query($conn,"DELETE FROM allergens WHERE ing = '".$ing['name']."'");
+		mysqli_query($conn,"DELETE FROM ingredient_compounds WHERE ing = '".$ing['name']."'");
 		$response["success"] = 'Ingredient <strong>'.$ing['name'].'</strong> removed from the database!';
 	}
 	
@@ -1619,7 +1621,7 @@ if($_POST['action'] == 'clone' && $_POST['old_ing_name'] && $_POST['ing_id']){
 		return;
 	}
 	
-	$sql.=mysqli_query($conn, "INSERT INTO allergens (ing,name,cas,percentage) SELECT '$new_ing_name',name,cas,percentage FROM allergens WHERE ing = '$old_ing_name'");
+	$sql.=mysqli_query($conn, "INSERT INTO ingredient_compounds (ing,name,cas,percentage) SELECT '$new_ing_name',name,cas,percentage FROM ingredient_compounds WHERE ing = '$old_ing_name'");
 
 	$sql.=mysqli_query($conn, "INSERT INTO ingredients (name,INCI,type,strength,category,purity,cas,FEMA,reach,tenacity,chemical_name,formula,flash_point,appearance,notes,profile,solvent,odor,allergen,flavor_use,soluble,logp,cat1,cat2,cat3,cat4,cat5A,cat5B,cat5C,cat5D,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12,impact_top,impact_heart,impact_base,created,usage_type,noUsageLimit,isPrivate,molecularWeight,physical_state) SELECT '$new_ing_name',INCI,type,strength,category,purity,cas,FEMA,reach,tenacity,chemical_name,formula,flash_point,appearance,notes,profile,solvent,odor,allergen,flavor_use,soluble,logp,cat1,cat2,cat3,cat4,cat5A,cat5B,cat5C,cat5D,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12,impact_top,impact_heart,impact_base,created,usage_type,noUsageLimit,isPrivate,molecularWeight,physical_state FROM ingredients WHERE id = '$ing_id'");
 
@@ -1652,7 +1654,7 @@ if($_POST['action'] == 'rename' && $_POST['old_ing_name'] && $_POST['ing_id']){
 		return;
 	}
 	
-	$sql.=mysqli_query($conn, "UPDATE allergens SET ing = '$new_ing_name' WHERE ing = '$old_ing_name'");
+	$sql.=mysqli_query($conn, "UPDATE ingredient_compounds SET ing = '$new_ing_name' WHERE ing = '$old_ing_name'");
 
 	$sql.=mysqli_query($conn, "UPDATE ingredients SET name = '$new_ing_name' WHERE name = '$old_ing_name' AND id = '$ing_id'");
 	$sql.=mysqli_query($conn, "UPDATE formulas SET ingredient = '$new_ing_name' WHERE ingredient = '$old_ing_name' AND ingredient_id = '$ing_id'");

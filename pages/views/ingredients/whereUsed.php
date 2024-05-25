@@ -9,7 +9,7 @@ $ingUsage = mysqli_query($conn,"SELECT name,fid FROM formulas WHERE ingredient =
 while($used_res = mysqli_fetch_array($ingUsage)){
 	$used[] = $used_res;
 }
-$ingUsageCmp = mysqli_query($conn,"SELECT ing,percentage FROM allergens WHERE name = '".$ingID."'");
+$ingUsageCmp = mysqli_query($conn,"SELECT ing,percentage FROM ingredient_compounds WHERE name = '".$ingID."'");
 while($used_cmp = mysqli_fetch_array($ingUsageCmp)){
 	$usedCmp[] = $used_cmp;
 }

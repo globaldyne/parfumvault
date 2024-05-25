@@ -150,11 +150,12 @@ $('#schedule_to_make').on('click', '[id*=addTODO]', function () {
 		if ( data.success ) {
 			$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
 			$('.toast-header').removeClass().addClass('toast-header alert-success');
-			$('#schedule_to_make').modal('toggle');
+			
 		} else {
 			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
 			$('.toast-header').removeClass().addClass('toast-header alert-danger');
 		}
+		$('#schedule_to_make').modal('toggle');
 		$('.toast').toast('show');
     }
   });

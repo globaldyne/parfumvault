@@ -254,8 +254,10 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'ingredients'){
 		echo json_encode($msg);
 		return;
 	}
-	$ingredients = 0;
+	$ingredients_count = 0;
 	$suppliers_count = 0;
+	$ing_suppliers_count = 0;
+	$ingredient_compounds_count = 0;
 
 	$q = mysqli_query($conn, "SELECT * FROM ingredients");
 	while($res = mysqli_fetch_assoc($q)){
@@ -311,11 +313,11 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'ingredients'){
 		$r['molecularWeight'] = (string)$res['molecularWeight'];
 
 		
-		$ingredients++;
+		$ingredients_count++;
 		$ing[] = $r;
 		
 	}
-	$q = mysqli_query($conn, "SELECT * FROM allergens");
+	$q = mysqli_query($conn, "SELECT * FROM ingredient_compounds");
 	while($res = mysqli_fetch_assoc($q)){
 
 		$c['id'] = (string)$res['id'];
@@ -324,9 +326,11 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'ingredients'){
 		$c['cas'] = (string)$res['cas'] ?: 'N/A';
 		$c['ec'] = (string)$res['ec'] ?: 'N/A';
 		$c['percentage'] = (double)$res['percentage'];
+		$c['GHS'] = (string)$res['GHS'];
 		$c['toDeclare'] = (int)$res['toDeclare'];
 		$c['created'] = (string)$res['created'];
-
+		
+		$ingredient_compounds_count++;
 		$cmp[] = $c;
 	}
 	
@@ -371,13 +375,15 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'ingredients'){
 		$is['email'] = (string)$res_sup['email']?: 'N/A';
 
 		$ingSup[] = $is;
+		$ing_suppliers_count++;
 	}
 	
 	
 	$vd['product'] = $product;
 	$vd['version'] = $ver;
-	$vd['ingredients'] = $ingredients;
-	$vd['suppliers'] = $suppliers_count;
+	$vd['ingredients'] = $ingredients_count;
+	$vd['suppliers'] = $ing_suppliers_count;
+	$vd['ingredient_compounds'] = $ingredient_compounds_count;
 	$vd['timestamp'] = date('d/m/Y H:i:s');
 
 	
@@ -403,6 +409,8 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'single-ingredient' && $_GET['i
 	}
 	$ingredient = 0;
 	$suppliers_count = 0;
+	$ingredient_compounds_count = 0;
+	$ing_suppliers_count = 0;
 	
 	$q = mysqli_query($conn, "SELECT * FROM ingredients WHERE id=".$_GET['id']."");
 	while($res = mysqli_fetch_assoc($q)){
@@ -462,7 +470,7 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'single-ingredient' && $_GET['i
 		$ing[] = $r;
 	}
 	
-	$q = mysqli_query($conn, "SELECT * FROM allergens WHERE ing ='".$ing['0']['name']."'");
+	$q = mysqli_query($conn, "SELECT * FROM ingredient_compounds WHERE ing ='".$ing['0']['name']."'");
 	while($res = mysqli_fetch_assoc($q)){
 
 		$c['id'] = (int)$res['id'];
@@ -471,10 +479,12 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'single-ingredient' && $_GET['i
 		$c['cas'] = (string)$res['cas'] ?: 'N/A';
 		$c['ec'] = (string)$res['ec'] ?: 'N/A';
 		$c['percentage'] = (double)$res['percentage'];
+		$c['GHS'] = (string)$res['GHS'];
 		$c['toDeclare'] = (int)$res['toDeclare'];
 		$c['created'] = (string)$res['created'];
 
 		$cmp[] = $c;
+		$ingredient_compounds_count++;
 	}
 	
 	
@@ -516,13 +526,15 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'single-ingredient' && $_GET['i
 			$is['email'] = (string)$res_sup['email'] ?: 'N/A';
 	
 			$ingSup[] = $is;
+			$ing_suppliers_count++;
 		}
 	}
 	
 	$vd['product'] = $product;
 	$vd['version'] = $ver;
 	$vd['ingredients'] = $ingredient;
-	$vd['suppliers'] = $suppliers_count;
+	$vd['suppliers'] = $ing_suppliers_count;
+	$vd['ingredient_compounds'] = $ingredient_compounds_count;
 	$vd['timestamp'] = date('d/m/Y H:i:s');
 
 	

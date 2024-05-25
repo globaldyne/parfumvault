@@ -265,11 +265,11 @@ $("#editCategory").on("show.bs.modal", function(e) {
       <div class="modal-body">
       	<div id="catMsgIn"></div>
         <div class="form-group">
-              <label class="col-md-3 control-label">Name:</label>
+              <label class="col-md-3 control-label">Name</label>
               <div class="col-md-8">
               	<input type="text" name="category" id="category" class="form-control"/>
               </div>
-              <label class="col-md-3 control-label">Description:</label>
+              <label class="col-md-3 control-label">Description</label>
              <div class="col-md-8">
               <input type="text" name="cat_notes" id="cat_notes" class="form-control"/>
     		</div>

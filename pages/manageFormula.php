@@ -363,7 +363,7 @@ if($_POST['action'] == 'conv2ing' && $_POST['ingName'] && $_POST['fid']){
 		$conc = number_format($formula['quantity']/100 * 100, $settings['qStep']);
 		$conc_p = number_format($formula['concentration'] / 100 * $conc, $settings['qStep']);
 						
-		mysqli_query($conn, "INSERT INTO allergens (ing, name, cas, percentage) VALUES ('$name','".$formula['ingredient']."','".$ing_data['cas']."','".$conc_p."')");
+		mysqli_query($conn, "INSERT INTO ingredient_compounds (ing, name, cas, percentage) VALUES ('$name','".$formula['ingredient']."','".$ing_data['cas']."','".$conc_p."')");
 	}
 			
 	if(mysqli_query($conn, "INSERT INTO ingredients (name, type, cas, notes) VALUES ('$name','Base','Mixture','Converted from formula $fname')")){
@@ -734,7 +734,7 @@ if($_GET['action'] == 'viewBoxLabel' && $_GET['fid']){
 	while($ing = mysqli_fetch_array($qIng)){
 		$chName = mysqli_fetch_array(mysqli_query($conn, "SELECT chemical_name,name FROM ingredients WHERE name = '".$ing['ingredient']."' AND allergen = '1'"));
 		
-		if($qCMP = mysqli_query($conn, "SELECT name FROM allergens WHERE ing = '".$ing['ingredient']."' AND toDeclare = '1'")){
+		if($qCMP = mysqli_query($conn, "SELECT name FROM ingredient_compounds WHERE ing = '".$ing['ingredient']."' AND toDeclare = '1'")){
 			while($cmp = mysqli_fetch_array($qCMP)){
 				$allergen[] = $cmp['name'];
 			}
