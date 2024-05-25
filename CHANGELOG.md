@@ -1,5 +1,8 @@
 # CHANGELOG
 ### Version 10.2
+- Minor improvements in finished product page
+- Auto populate CAS and EC if entry exists as an ingredient when adding components in ingredient composition
+- Extend simple search for ingredients to EC numbers
 - Highlight corresponded ingredient that matches a compound name or CAS number in a formula
 - Added GHS Classification for ingredient compounds
 - Fix suppliers and compounds count when exporting ingredients to JSON
@@ -21,6 +24,7 @@
 - Allow ordering in formula sell table
 - Set custom decimal precission when generating a formula to sell
 - Fix export functions in Formula Make page
+
 ### Version 10.0
 - Discord server link added
 - Added archive option when deleting a formula

@@ -41,23 +41,25 @@ $ingName = mysqli_real_escape_string($conn, $_GET["name"]);
 
 <script type="text/javascript" language="javascript" >
 $(document).ready(function() {
-	
-$('[data-bs-toggle="tooltip"]').tooltip();
-var tdCompositions = $('#tdCompositions').DataTable( {
-	columnDefs: [
-		{ className: 'text-center', targets: '_all' },
-		{ orderable: false, targets: [4,6] },
-	],
-	dom: 'lfrtip',
-	processing: true,
-	language: {
-		loadingRecords: '&nbsp;',
-		processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
-		emptyTable: 'No compositions added yet.',
-		search: 'Search:'
-		},
-	ajax: {	url: '/core/list_ing_compos_data.php?id=<?=$ingName?>' },
-	columns: [
+
+	$('[data-bs-toggle="tooltip"]').tooltip();
+  	var tdCompositions = $('#tdCompositions').DataTable( {
+		columnDefs: [
+			{ className: 'text-center', targets: '_all' },
+			{ orderable: false, targets: [4,6] },
+		],
+		dom: 'lfrtip',
+		processing: true,
+		language: {
+			loadingRecords: '&nbsp;',
+			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
+			emptyTable: 'No compositions added yet.',
+			search: 'Search:'
+			},
+		ajax: {	
+			url: '/core/list_ing_compos_data.php?id=<?=$ingName?>' 
+			},
+		columns: [
 			  { data : 'name', title: 'Name', render: cmpName },
 			  { data : 'cas', title: 'CAS', render: cmpCAS},
 			  { data : 'ec', title: 'EINECS', render: cmpEC},
@@ -66,32 +68,73 @@ var tdCompositions = $('#tdCompositions').DataTable( {
 			  { data : 'toDeclare', title: 'Declare', render: cmpDeclare},
 			  { data : null, title: '', render: cmpActions},		   
 			 ],
-	order: [[ 1, 'asc' ]],
-	lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
-	pageLength: 20,
-	displayLength: 20,		
+		order: [[ 1, 'asc' ]],
+		lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
+		pageLength: 20,
+		displayLength: 20,		
 	});
-});
+	
+	$('#allgName').on('input', function(){
+		var searchTerm = $(this).val();
+		if (searchTerm.length >= 2) {
+
+			$.ajax({
+				url: '/core/list_ingredients_simple.php',
+				type: 'POST',
+				dataType: 'json',
+				data: { 
+					search: { 
+							term: searchTerm
+					},
+					isAbsolute: "true"
+				},
+				success: function(data) {
+					if(data.data[0].cas) {
+					   $('#allgName').val(data.data[0].name);
+					   $('#allgCAS').val(data.data[0].cas);
+					   $('#allgEC').val(data.data[0].einecs);
+					   $('#addToIng').prop('disabled', true);
+					   if($('#addToIng').prop('checked')){
+							$('#addToIng').prop('checked', false);
+						}
+					} else {
+					   $('#allgCAS').val('');
+					   $('#allgEC').val('');
+					   $('#addToIng').prop('disabled', false);
+
+					}
+				},
+				error: function(xhr, status, error) {
+					console.error('Error:', error);
+				},
+				complete: function() {
+                    
+                }
+			});
+		}
+    });
+	
+});//DOC
 
 function cmpName(data, type, row){
 	return '<i class="name pv_point_gen" data-name="name" data-type="text" data-pk="'+row.id+'">'+row.name+'</i>';    
-}
+};
 
 function cmpCAS(data, type, row){
 	return '<i class="cas pv_point_gen" data-name="cas" data-type="text" data-pk="'+row.id+'">'+row.cas+'</i>';    
-}
+};
 
 function cmpEC(data, type, row){
 	return '<i class="ec pv_point_gen" data-name="ec" data-type="text" data-pk="'+row.id+'">'+row.ec+'</i>';    
-}
+};
 
 function cmpPerc(data, type, row){
 	return '<i class="percentage pv_point_gen" data-name="percentage" data-type="text" data-pk="'+row.id+'">'+row.percentage+'</i>';    
-}
+};
 
 function cmpGHS(data, type, row){
 	return '<i class="GHS pv_point_gen" data-name="GHS" data-type="text" data-pk="'+row.id+'">'+row.GHS+'</i>';    
-}
+};
 
 function cmpDeclare(data, type, row){
 	if(row.toDeclare == 0){
@@ -100,7 +143,7 @@ function cmpDeclare(data, type, row){
 		var declare = 'Yes';
 	}
 	return '<i class="toDeclare pv_point_gen" data-name="toDeclare" data-type="select" data-pk="'+row.id+'">'+declare+'</i>';    
-}
+};
 
 function cmpActions(data, type, row){
 	return '<a href="#" id="cmpDel" class="fas fa-trash link-danger" data-id="'+row.id+'" data-name="'+row.name+'"></a>';
@@ -321,8 +364,7 @@ function reload_cmp_data() {
             <input class="form-check-input" name="addToIng" type="checkbox" id="addToIng" value="1" />
             <label class="form-check-label" for="addToIng">Add to ingredients</label>
         </div>
-    </div>
-
+      </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         <input type="submit" name="button" class="btn btn-primary" id="cmpAdd" value="Add">

@@ -310,7 +310,7 @@ $('#formula tbody').on( 'click', 'tr.group', function () {
 $('#formula').on('click', '[id*=compoundCAS], [id*=compoundName]', function (e) {
     event.preventDefault();
 	cmpQuery = $(this).attr('data-query');
-	console.log(cmpQuery);
+	//console.log(cmpQuery);
 	formula_table.cells().nodes().to$().removeClass('highlight');
     if (cmpQuery !== '') {
 		formula_table.rows().every(function(rowIdx, tableLoop, rowLoop) {
@@ -318,7 +318,15 @@ $('#formula').on('click', '[id*=compoundCAS], [id*=compoundName]', function (e) 
             	var cellText = $(this).text();
                 if (cellText.includes(cmpQuery)) {
                 	$(this).addClass('highlight');
+					var rowTop = $(this).closest('tr').offset().top;
+                    var rowHeight = $(this).closest('tr').outerHeight();
+                    var windowHeight = $(window).height();
+                    var scrollTo = rowTop - (windowHeight / 2) + (rowHeight / 2);
+                    $('html, body').animate({
+                        scrollTop: scrollTo
+                    }, 200);
                 }
+				
             });
         });
 	}

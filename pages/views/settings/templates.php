@@ -249,15 +249,15 @@ $("#editTmpl").on("show.bs.modal", function(e) {
       <div id="tmpl_inf"></div>
        
 		<div class="mb-3">
-  			<label for="formFileMultiple" class="form-label">Name</label>
+  			<label for="tmpl_name" class="form-label">Name</label>
             <input class="form-control" name="tmpl_name" type="text" id="tmpl_name" />
         </div>
 		<div class="mb-3">
-  			<label for="formFileMultiple" class="form-label">HTML Content</label>
+  			<label for="tmpl_content" class="form-label">HTML Content</label>
             <textarea class="form-control" name="tmpl_content" id="tmpl_content" rows="4"></textarea>
 		</div>
 		<div class="mb-3">
-  			<label for="formFileMultiple" class="form-label">Short description</label>
+  			<label for="tmpl_desc" class="form-label">Short description</label>
             <input class="form-control" name="tmpl_desc" type="text" id="tmpl_desc" />
      	</div>    
       </div>
