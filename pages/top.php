@@ -52,7 +52,7 @@ if($pv_meta['schema_ver'] < $db_ver){
 				<div class="status-circle"></div>
 				</div>
               </a>
-              <div class="dropdown-menu dropdown-menu-end shadow animated--grow-in" aria-labelledby="userDropdown">
+              <div class="mx-2 dropdown-menu dropdown-menu-end shadow animated--grow-in" aria-labelledby="userDropdown">
               
 				<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#editUser">
                   <i class="fas fa-user fa-sm fa-fw mx-2 text-gray-400"></i>

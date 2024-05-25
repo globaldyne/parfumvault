@@ -389,9 +389,9 @@ if($_GET['action'] == 'restoreIngredients'){
 		*/
 		foreach ($data['compositions'] as $cmp) {
 			// Prepare the statement
-			$stmt = mysqli_prepare($conn, "INSERT IGNORE INTO `allergens` (`ing`,`name`,`cas`,`ec`,`percentage`,`toDeclare`,`created`) VALUES (?, ?, ?, ?, ?, ?, current_timestamp())");
+			$stmt = mysqli_prepare($conn, "INSERT IGNORE INTO `ingredient_compounds` (`ing`,`name`,`cas`,`ec`,`percentage`,`GHS`,`toDeclare`,`created`) VALUES (?, ?, ?, ?, ?, ?, ?, current_timestamp())");
 			// Bind parameters
-			mysqli_stmt_bind_param($stmt, "ssssss", $cmp['ing'], $cmp['name'], $cmp['cas'], $cmp['ec'], $cmp['percentage'], $cmp['toDeclare']);
+			mysqli_stmt_bind_param($stmt, "sssssss", $cmp['ing'], $cmp['name'], $cmp['cas'], $cmp['ec'], $cmp['percentage'], $cmp['GHS'], $cmp['toDeclare']);
 			// Execute the statement
 			mysqli_stmt_execute($stmt);
 			// Close the statement
@@ -722,4 +722,52 @@ if($_GET['action'] == 'exportPerfTypes'){
 	echo json_encode($result, JSON_PRETTY_PRINT);
 	return;
 }
+
+
+
+//EXPORT MAKING FORMULA
+if($_GET['action'] == 'exportMaking'){
+	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula")))){
+		$msg['error'] = 'No data found to export.';
+		echo json_encode($msg);
+		return;
+	}
+	$data = 0;
+	$q = mysqli_query($conn, "SELECT * FROM makeFormula");
+	while($resData = mysqli_fetch_assoc($q)){
+		
+		$r['id'] = (int)$resData['id'];
+		$r['fid'] = (string)$resData['fid'];
+		$r['name'] = (string)$resData['name'];
+		$r['ingredient'] = (string)$resData['ingredient'];
+		$r['ingredient_id'] = (int)$resData['ingredient_id'];
+		$r['replacement_id'] = (int)$resData['replacement_id'];		
+		$r['concentration'] = (double)$resData['concentration'];
+		$r['dilutant'] = (string)$resData['dilutant'];
+		$r['quantity'] = (double)$resData['quantity'];
+		$r['overdose'] = (double)$resData['overdose'];
+		$r['originalQuantity'] = (double)$resData['originalQuantity'];
+		$r['notes'] = (string)$resData['notes'];
+		$r['skip'] = (int)$resData['skip'];
+		$r['toAdd'] = (int)$resData['toAdd'];
+
+		$data++;
+		$dat_arr[] = $r;
+	}
+	
+	$vd['product'] = $product;
+	$vd['version'] = $ver;
+	$vd['makeFormula'] = $data;
+	$vd['timestamp'] = date('d/m/Y H:i:s');
+
+	
+	$result['makeFormula'] = $dat_arr;
+	$result['pvMeta'] = $vd;
+	
+	header('Content-disposition: attachment; filename=MakeFormula.json');
+	header('Content-type: application/json');
+	echo json_encode($result, JSON_PRETTY_PRINT);
+	return;
+}
+
 ?>

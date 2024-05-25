@@ -310,8 +310,8 @@ if($_GET['type'] == 'cmpCSVImport'){
 		if($_FILES['CSVFile']['size'] > 0){
 			$file = fopen($filename, "r");
 			while (($data = fgetcsv($file, 10000, ",")) !== FALSE){
-				if(!mysqli_num_rows(mysqli_query($conn, "SELECT name FROM allergens WHERE ing = '$ing' AND name = '".trim(ucwords($data['0']))."'"))){
-					$r = mysqli_query($conn, "INSERT INTO allergens (ing, name, cas, ec, percentage) VALUES ('$ing','".trim(ucwords($data['0']))."', '".trim($data['1'])."', '".trim($data['2'])."', '".rtrim($data['3'],'%')."')");
+				if(!mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredient_compounds WHERE ing = '$ing' AND name = '".trim(ucwords($data['0']))."'"))){
+					$r = mysqli_query($conn, "INSERT INTO ingredient_compounds (ing, name, cas, ec, percentage, GHS) VALUES ('$ing','".trim(ucwords($data['0']))."', '".trim($data['1'])."', '".trim($data['2'])."', '".rtrim($data['3'])."', '".rtrim($data['4'])."' )");
 						$i++;
 				}
 			}

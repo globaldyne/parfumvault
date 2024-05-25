@@ -1,6 +1,6 @@
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 
-CREATE TABLE `allergens` (
+CREATE TABLE `ingredient_compounds` (
   `id` int(11) NOT NULL,
   `ing` varchar(255) COLLATE utf8_general_ci NOT NULL,
   `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
@@ -8,6 +8,7 @@ CREATE TABLE `allergens` (
   `ec` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `percentage` DECIMAL(8,4) NOT NULL,
   `toDeclare` INT NOT NULL DEFAULT '0',
+  `GHS` TEXT NOT NULL DEFAULT '-',
   `created` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
@@ -446,7 +447,7 @@ ALTER TABLE `users`
   ADD PRIMARY KEY (`id`);
 
 
-ALTER TABLE `allergens`
+ALTER TABLE `ingredient_compounds`
   ADD PRIMARY KEY (`id`);
 
 ALTER TABLE `bottles`
@@ -491,7 +492,7 @@ ALTER TABLE `settings`
 ALTER TABLE `users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
-ALTER TABLE `allergens`
+ALTER TABLE `ingredient_compounds`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 CREATE TABLE `documents` (
