@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 10.3
+
 ### Version 10.2
 - Minor improvements in finished product page
 - Auto populate CAS and EC if entry exists as an ingredient when adding components in ingredient composition
