@@ -511,13 +511,13 @@ $('#tdIngSup').on('click', '[id*=getPrice]', function () {
 				size: s.Size,
 				ingSupplierID: s.ID,
 				ingID: '<?=$ingID?>'
-				},
+			},
 			dataType: 'json',
 			success: function (data) {
 				if (data.success) {
 		 	 		var msg = '<div class="alert alert-success alert-dismissible"><i class="fa-solid fa-circle-check mx-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 				}else{
-					var msg = '<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-triangle-exclamation mx-2"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+					var msg = '<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-triangle-exclamation mx-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 				}
 				$('#supMsg').html(msg);
 				reload_sup_data();

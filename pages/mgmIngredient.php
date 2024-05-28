@@ -318,21 +318,7 @@ body {
 			<div class="modal-body">
                 <div id="warn">
                 <div class="alert alert-warning">Please note: This feature its under development and in preview state at the moment.</div>
-                	<div class="alert alert-info">A template is required in order to generate an SDS document.
-                To create a new template, go to <a href="/?do=settings" target="_blank">settings</a> and create a new one under HTML Templates.
-                For the available parameters please refer to the documentation <a href="https://www.perfumersvault.com/knowledge-base/html-templates/" target="_blank">here</a>.</div>
-                </div>
-				<div id="sds_res"></div>
-				Select SDS template:
-                <select class="form-control" name="template" id="template">
-                <?php
-                    $res = mysqli_query($conn, "SELECT id, name FROM templates ORDER BY name ASC");
-                    while ($q = mysqli_fetch_array($res)){
-                    echo '<option value="'.$q['id'].'">'.$q['name'].'</option>';
-                }
-                ?>
-                </select>
-                
+				<div id="sds_res"></div>                
                	Select Supplier:
                 <select class="form-control" name="ingSupplier" id="ingSupplier">
                 <?php
