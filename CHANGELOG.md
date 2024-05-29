@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 10.3
+- Ingredient Safety Info update
 - Formula view table element for description and image re-written to div
 - Fix a font for the message returned when error occured during price get request from a supplier 
 - Further improvements in SDS generation

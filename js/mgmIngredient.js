@@ -217,7 +217,7 @@ $('#genSDS').on('click', '[id*=generateSDS]', function () {
 			name: myIngName,
 			id: myIngID,
 			tmpl: $("#template").val(),
-			ingSupplier: $("#ingSupplier").val()
+			ingCustomer: $("#ingCustomer").val()
 		},
 		dataType: 'json',
 		success: function (data) {

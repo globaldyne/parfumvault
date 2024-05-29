@@ -308,35 +308,6 @@ body {
 	</div>
 </div>
 
-<!-- Modal Gen SDS-->
-<div class="modal fade" id="genSDS" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="genSDS" aria-hidden="true">
-	<div class="modal-dialog" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title">Generate SDS for <?php echo $ing['name']; ?></h5>
-			</div>
-			<div class="modal-body">
-                <div id="warn">
-                <div class="alert alert-warning">Please note: This feature its under development and in preview state at the moment.</div>
-				<div id="sds_res"></div>                
-               	Select Supplier:
-                <select class="form-control" name="ingSupplier" id="ingSupplier">
-                <?php
-                    $res = mysqli_query($conn, "SELECT id, name FROM ingSuppliers ORDER BY name ASC");
-                    while ($q = mysqli_fetch_array($res)){
-                    echo '<option value="'.$q['id'].'">'.$q['name'].'</option>';
-                }
-                ?>
-                </select>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" id="dis-genSDS" data-bs-dismiss="modal">Close</button>
-					<input type="submit" name="button" class="btn btn-primary" id="generateSDS" value="Generate">
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-
 <!-- Modal QR Code-->
 <div class="modal fade" id="genQRC" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="genQRC" aria-hidden="true">
 	<div class="modal-dialog" role="document">
@@ -357,7 +328,38 @@ body {
 		</div>
 	</div>
 </div>
-<script type="text/javascript" language="javascript">
+
+<!-- Modal Gen SDS-->
+<div class="modal fade" id="genSDS" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="genSDS" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Generate SDS for <?php echo $ing['name']; ?></h5>
+			</div>
+			<div class="modal-body">
+                <div id="warn">
+                <div class="alert alert-warning">Please note: This feature its under development and in preview state at the moment.</div>
+				<div id="sds_res"></div>                
+               	Select customer:
+                <select class="form-control" name="ingCustomer" id="ingCustomer">
+                <?php
+                    $res = mysqli_query($conn, "SELECT id, name FROM customers ORDER BY name ASC");
+                    while ($q = mysqli_fetch_array($res)){
+                    	echo '<option value="'.$q['id'].'">'.$q['name'].'</option>';
+                	}
+                ?>
+                </select>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" id="dis-genSDS" data-bs-dismiss="modal">Close</button>
+					<input type="submit" name="button" class="btn btn-primary" id="generateSDS" value="Generate">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<script>
 
 $(document).ready(function() {
 	$('[rel=tipsy]').tooltip({placement: 'auto'});

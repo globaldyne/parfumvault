@@ -75,13 +75,9 @@ if ($_REQUEST['action'] == 'generateSDS' && $_REQUEST['kind'] == 'ingredient'){
 	$i['cat12'] = (double)$res['cat12'];
 	
 	
-
-	
 	$ing[] = $g;
 	$ifra[] = $i;
 	$tech[] = $t;
-
-	
 	
 	$q = mysqli_query($conn, "SELECT * FROM ingredient_compounds WHERE ing ='".$ing['0']['name']."'");
 	while($res = mysqli_fetch_assoc($q)){
@@ -98,6 +94,14 @@ if ($_REQUEST['action'] == 'generateSDS' && $_REQUEST['kind'] == 'ingredient'){
 	}
 	
 	
+	$q = mysqli_query($conn, "SELECT id,ingID,GHS FROM ingSafetyInfo WHERE ingID = '".$ingID."'");
+	while($res = mysqli_fetch_assoc($q)){
+		$ex = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM pictograms WHERE code = '".$res['GHS']."'"));
+		$s['GHS'] = (int)$res['GHS'];
+		$s['name'] = (int)$ex['name'];
+
+		$ghs[] = $s;
+	}
 	
 	
 	$vd['product'] = $product;
@@ -106,6 +110,7 @@ if ($_REQUEST['action'] == 'generateSDS' && $_REQUEST['kind'] == 'ingredient'){
 	$vd['timestamp'] = date('d/m/Y H:i:s');
 	
 	$result['General'] = $ing;
+	$result['GHS'] = $ghs;	
 	$result['IFRA'] = $ifra;
 	$result['Technical Data'] = $tech;	
 	$result['compositions'] = $cmp;	
@@ -206,7 +211,28 @@ if ($_REQUEST['action'] == 'generateSDS' && $_REQUEST['kind'] == 'ingredient'){
 				}
 				$pdf->Ln();
 			}
-			
+		} else if ($title == 'GHS' && is_array($content) && !empty($content)) {
+			foreach ($content as $ingredient) {
+				foreach ($ingredient as $key => $value) {
+					// Skip specific fields
+					if (!in_array($key, ['name'] )) {
+						//$pdf->Cell(0, 10, ucfirst($key) . ': ' . $value, 0, 1);
+                   		//$pdf->Image(__ROOT__.'/img/Pictograms/GHS0' . $value . '.png', $pdf->GetX() + 10, $pdf->GetY(), 10);
+ 					$pdf->Cell(0, 10, ucfirst($key) . ': ' . $value, 0, 1);
+                    // Display images next to each other
+                    $imageX = $pdf->GetX();
+                    $imageY = $pdf->GetY();
+                    foreach (explode(' ', $value) as $image) {
+						//$pdf->Cell(0, 10, ucfirst($key) . ': ' . $value, 0, 1);
+                        $pdf->Image(__ROOT__.'/img/Pictograms/GHS0' . $value . '.png', $imageX, $imageY, 10);
+                        $imageX += 12; // Move X position for next image
+                    }
+                    $pdf->Ln(5); // Add some space after images
+					}
+				}
+				$pdf->Ln();
+		}
+				
 		} else if ($title == 'IFRA' && is_array($content) && !empty($content)) {
 			$pdf->SetFillColor(211, 211, 211); // Light gray
 			$pdf->Cell(95, 10, 'Category', 1, 0, 'C', true);
