@@ -4,6 +4,8 @@ define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__)))));
 
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/inc/settings.php');
+require_once(__ROOT__.'/func/php-settings.php');
 
 ?>
 <h3>Ingredient Categories</h3>
@@ -14,6 +16,8 @@ require_once(__ROOT__.'/inc/opendb.php');
         <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
         <div class="dropdown-menu dropdown-menu-right">
           <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#add_ingredient_cat"><i class="fa-solid fa-plus mx-2"></i>Add ingredient category</a></li>
+          <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#import_categories_json"><i class="fa-solid fa-file-import mx-2"></i>Import from JSON</a></li>
+
           <li><a class="dropdown-item" href="/pages/operations.php?action=exportIngCat"><i class="fa-solid fa-file-code mx-2"></i>Export as JSON</a></li>
           
         </div>
@@ -21,7 +25,6 @@ require_once(__ROOT__.'/inc/opendb.php');
   </div>
 </div>
 <div class="card-body">
-   <div id="catMsg"></div>
 	<table id="tdDataCat" class="table table-striped table-bordered nowrap" style="width:100%">
       <thead>
         <tr>
@@ -127,17 +130,16 @@ $.ajax({
 			},
 		dataType: 'json',
 		success: function (data) {
-			
-			if(data.error){
+			if ( data.success ) {
+            	$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+				$('.toast-header').removeClass().addClass('toast-header alert-success');
+				$('#add_ingredient_cat').modal('toggle');
+				reload_cat_data();
+				$('.toast').toast('show');
+			} else {
 				var msg = '<div class="alert alert-danger">'+data.error+'</div>';
 				$('#catMsgIn').html(msg);
-			}else if(data.success){
-				var msg = '<div class="alert alert-success">'+data.success+'</div>';
-				$('#add_ingredient_cat').modal('toggle');
-				$('#catMsg').html(msg);
-				reload_cat_data();
 			}
-			
 			
 		}
 	});
@@ -212,11 +214,18 @@ $('#tdDataCat').on('click', '[id*=catDel]', function () {
 					data: {
 						action: "delete",
 						catId: cat.ID,
-						},
-					dataType: 'html',
+					},
+					dataType: 'json',
 					success: function (data) {
-						$('#catMsg').html(data);
-						reload_cat_data();
+						if ( data.success ) {
+							$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+							$('.toast-header').removeClass().addClass('toast-header alert-success');
+							reload_cat_data();
+						} else {
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+							$('.toast-header').removeClass().addClass('toast-header alert-danger');
+						}
+						$('.toast').toast('show');
 					}
 				  });
                  return true;
@@ -263,7 +272,7 @@ $("#editCategory").on("show.bs.modal", function(e) {
       </div>
       
       <div class="modal-body">
-      	<div id="catMsgIn"></div>
+        <div id="catMsgIn"></div>
         <div class="form-group">
               <label class="col-md-3 control-label">Name</label>
               <div class="col-md-8">
@@ -299,3 +308,46 @@ $("#editCategory").on("show.bs.modal", function(e) {
     </div>
   </div>
 </div>
+
+<!-- IMPORT JSON MODAL -->
+<div class="modal fade" id="import_categories_json" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="import_categories_json" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Import categories from a JSON file</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="JSRestMsg"></div>
+        <div class="progress">  
+          <div id="uploadProgressBar" class="progress-bar" role="progressbar" aria-valuemin="0"></div>
+        </div>
+        <div id="backupArea" class="mt-4">
+          <div class="form-group row">
+            <label for="jsonFile" class="col-md-1 col-form-label">JSON file</label>
+            <div class="col-md">
+              <input type="file" name="jsonFile" id="jsonFile" class="form-control" />
+            </div>
+          </div>
+          <div class="col-md-12 mt-3">
+            <hr />
+            <p><strong>IMPORTANT</strong></p>
+            <ul>
+              <li>
+                <div id="raw" data-size="<?=getMaximumFileUploadSizeRaw()?>">Maximum file size: <strong><?=getMaximumFileUploadSize()?></strong></div>
+              </li>
+              <li>Any formula with the same id will be replaced. Please make sure you have taken a backup before importing a JSON file.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseBK">Cancel</button>
+        <button type="submit" name="btnRestore" class="btn btn-primary" id="btnRestoreCategories">Import</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/js/import.categories.js"></script>

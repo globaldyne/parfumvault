@@ -237,10 +237,11 @@ if($_POST['manage'] == 'category'){
 if($_POST['action'] == 'delete' && $_POST['catId']){
 	$catId = mysqli_real_escape_string($conn, $_POST['catId']);
 	if(mysqli_query($conn, "DELETE FROM ingCategory WHERE id = '$catId'")){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>Category deleted!</div>';
+		$response["success"] = 'Category deleted';
 	}else{
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>Error deleting category.</div>';
+		$response["error"] = 'Error deleting category';
 	}
+	echo json_encode($response);
 	return;
 }
 
