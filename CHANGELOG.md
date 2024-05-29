@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 10.3
+- Formula JSON upload form minor fixes
 - Added JSON file import for ingredient categories
 - Ingredient Safety Info update
 - Formula view table element for description and image re-written to div

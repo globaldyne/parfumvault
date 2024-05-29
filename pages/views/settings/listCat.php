@@ -326,7 +326,7 @@ $("#editCategory").on("show.bs.modal", function(e) {
         </div>
         <div id="backupArea" class="mt-4">
           <div class="form-group row">
-            <label for="jsonFile" class="col-md-1 col-form-label">JSON file</label>
+            <label for="jsonFile" class="col-auto col-form-label">JSON file</label>
             <div class="col-md">
               <input type="file" name="jsonFile" id="jsonFile" class="form-control" />
             </div>
