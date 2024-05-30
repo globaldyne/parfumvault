@@ -338,17 +338,8 @@ body {
 			</div>
 			<div class="modal-body">
                 <div id="warn">
-                <div class="alert alert-warning">Please note: This feature its under development and in preview state at the moment.</div>
-				<div id="sds_res"></div>                
-               	Select customer:
-                <select class="form-control" name="ingCustomer" id="ingCustomer">
-                <?php
-                    $res = mysqli_query($conn, "SELECT id, name FROM customers ORDER BY name ASC");
-                    while ($q = mysqli_fetch_array($res)){
-                    	echo '<option value="'.$q['id'].'">'.$q['name'].'</option>';
-                	}
-                ?>
-                </select>
+                <div class="alert alert-warning"><strong>TECH PREVIEW: This feature its under development and in preview state at the moment.</strong></div>
+				<div id="sds_res"></div>                               
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" id="dis-genSDS" data-bs-dismiss="modal">Close</button>
 					<input type="submit" name="button" class="btn btn-primary" id="generateSDS" value="Generate">
@@ -367,7 +358,7 @@ $(document).ready(function() {
 	$('#general').on('click', '[id*=saveGeneral]', function () {
 		<?php if(empty($ing['id'])){ ?>
 			if($.trim($("#name").val()) == ''){
-				$('#ingMsg').html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Name is required</div>');
+				$('#ingMsg').html('<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-circle-exclamation mr-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>Name is required</strong></div>');
 				return;
    			}
 		<?php } ?>
@@ -405,9 +396,9 @@ $(document).ready(function() {
 					$('#mgmIngHeaderCAS').html($("#cas").val());
 					$('#IUPAC').html($("#INCI").val());
 					
-					var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+					var msg = '<div class="alert alert-success alert-dismissible"><i class="fa-solid fa-circle-check mr-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 				}else{
-					var msg ='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+					var msg ='<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-circle-exclamation mr-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 				}
 				
 				$('#ingMsg').html(msg);

@@ -4,8 +4,6 @@ define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__)))));
 
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
-require_once(__ROOT__.'/inc/settings.php');
-require_once(__ROOT__.'/func/php-settings.php');
 
 ?>
 <h3>Ingredient Categories</h3>
@@ -134,7 +132,7 @@ $.ajax({
             	$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
 				$('.toast-header').removeClass().addClass('toast-header alert-success');
 				$('#add_ingredient_cat').modal('toggle');
-				reload_cat_data();
+				reload_data();
 				$('.toast').toast('show');
 			} else {
 				var msg = '<div class="alert alert-danger">'+data.error+'</div>';
@@ -189,7 +187,7 @@ $('#tdDataCat').editable({
           ],
 	dataType: 'html',
 	success: function () {
-		reload_cat_data();
+		reload_data();
 	}
 });
 
@@ -220,7 +218,7 @@ $('#tdDataCat').on('click', '[id*=catDel]', function () {
 						if ( data.success ) {
 							$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
 							$('.toast-header').removeClass().addClass('toast-header alert-success');
-							reload_cat_data();
+							reload_data();
 						} else {
 							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
 							$('.toast-header').removeClass().addClass('toast-header alert-danger');
@@ -242,7 +240,7 @@ $('#tdDataCat').on('click', '[id*=catDel]', function () {
    });
 });
 
-function reload_cat_data() {
+function reload_data() {
     $('#tdDataCat').DataTable().ajax.reload(null, true);
 };
 
@@ -309,45 +307,4 @@ $("#editCategory").on("show.bs.modal", function(e) {
   </div>
 </div>
 
-<!-- IMPORT JSON MODAL -->
-<div class="modal fade" id="import_categories_json" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="import_categories_json" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Import categories from a JSON file</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div id="JSRestMsg"></div>
-        <div class="progress">  
-          <div id="uploadProgressBar" class="progress-bar" role="progressbar" aria-valuemin="0"></div>
-        </div>
-        <div id="backupArea" class="mt-4">
-          <div class="form-group row">
-            <label for="jsonFile" class="col-auto col-form-label">JSON file</label>
-            <div class="col-md">
-              <input type="file" name="jsonFile" id="jsonFile" class="form-control" />
-            </div>
-          </div>
-          <div class="col-md-12 mt-3">
-            <hr />
-            <p><strong>IMPORTANT</strong></p>
-            <ul>
-              <li>
-                <div id="raw" data-size="<?=getMaximumFileUploadSizeRaw()?>">Maximum file size: <strong><?=getMaximumFileUploadSize()?></strong></div>
-              </li>
-              <li>Any formula with the same id will be replaced. Please make sure you have taken a backup before importing a JSON file.</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseBK">Cancel</button>
-        <button type="submit" name="btnRestore" class="btn btn-primary" id="btnRestoreCategories">Import</button>
-      </div>
-    </div>
-  </div>
-</div>
-<script src="/js/import.categories.js"></script>
+

@@ -1,5 +1,10 @@
 # CHANGELOG
 ### Version 10.3
+- Added JSON import for formula categories
+- Rewrite of categories import to improve ingredients and formula categories import
+- Code clean up
+- Improvements for SDS generation
+- Auto fetch contact data from branding details for SDS
 - Formula JSON upload form minor fixes
 - Added JSON file import for ingredient categories
 - Ingredient Safety Info update

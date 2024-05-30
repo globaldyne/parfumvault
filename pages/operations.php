@@ -616,52 +616,78 @@ if($_GET['action'] == 'importCompounds'){
 
 }
 
-//IMPORT CATEGORIES
-if($_GET['action'] == 'importCategories'){
-	if (!file_exists($tmp_path)) {
-		mkdir($tmp_path, 0777, true);
-	}
-	
-	if (!is_writable($tmp_path)) {
-		$result['error'] = "Upload directory not writable. Make sure you have write permissions.";
-		echo json_encode($result);
-		return;
-	}
-	
-	$target_path = $tmp_path.basename($_FILES['jsonFile']['name']); 
+// IMPORT CATEGORIES
+if ($_GET['action'] == 'importCategories') {
+    if (!file_exists($tmp_path)) {
+        mkdir($tmp_path, 0777, true);
+    }
 
-	if(move_uploaded_file($_FILES['jsonFile']['tmp_name'], $target_path)) {
-    	$data = json_decode(file_get_contents($target_path), true);
-		if(!$data['ingCategory']){
-			$result['error'] = "JSON File seems invalid. Please make sure you importing the right file";
-			echo json_encode($result);
-			return;
-		}
-		
-		foreach ($data['ingCategory'] as $d ){				
-			
-			$s = mysqli_query($conn, "INSERT INTO `ingCategory` (`name`,`notes`,`image`,`colorKey`) VALUES ('".$d['name']."','".$d['notes']."','".$d['image']."','".$d['colorKey']."')");
-				
-		}
-				
-		if($s){
-			$result['success'] = "Import complete";
-			unlink($target_path);
-		}else{
-			$result['error'] = "There was an error importing your JSON file ".mysqli_error($conn);
-			echo json_encode($result);
-			return;
-		}
-			
-	} else {
-		$result['error'] = "There was an error processing json file $target_path, please try again!";
-		//echo json_encode($result);
+    if (!is_writable($tmp_path)) {
+        $result['error'] = "Upload directory not writable. Make sure you have write permissions.";
+        echo json_encode($result);
+        return;
+    }
 
-	}
-	echo json_encode($result);
-	return;
+    $target_path = $tmp_path . basename($_FILES['jsonFile']['name']);
 
+    if (move_uploaded_file($_FILES['jsonFile']['tmp_name'], $target_path)) {
+        $data = json_decode(file_get_contents($target_path), true);
+
+        if (!$data['ingCategory'] && !$data['formulaCategories']) {
+            $result['error'] = "JSON File seems invalid. Please make sure you are importing the right file";
+            echo json_encode($result);
+            return;
+        }
+
+        $conn->autocommit(FALSE); // Turn off auto-commit for transaction
+
+        $success = true;
+
+        if ($data['ingCategory']) {
+            $stmt = $conn->prepare("INSERT INTO `ingCategory` (`name`, `notes`, `image`, `colorKey`) VALUES (?, ?, ?, ?)");
+            foreach ($data['ingCategory'] as $d) {
+                $stmt->bind_param("ssss", $d['name'], $d['notes'], $d['image'], $d['colorKey']);
+                if (!$stmt->execute()) {
+                    $success = false;
+                    $result['error'] = "Error inserting into ingCategory: " . $stmt->error;
+                    break;
+                }
+            }
+            $stmt->close();
+        }
+
+        if ($data['formulaCategories']) {
+            $stmt = $conn->prepare("INSERT INTO `formulaCategories` (`name`, `cname`, `type`, `colorKey`) VALUES (?, ?, ?, ?)");
+            foreach ($data['formulaCategories'] as $d) {
+                $stmt->bind_param("ssss", $d['name'], $d['cname'], $d['type'], $d['colorKey']);
+                if (!$stmt->execute()) {
+                    $success = false;
+                    $result['error'] = "Error inserting into formulaCategories: " . $stmt->error;
+                    break;
+                }
+            }
+            $stmt->close();
+        }
+
+        if ($success) {
+            $conn->commit(); // Commit the transaction
+            $result['success'] = "Import complete";
+            unlink($target_path);
+        } else {
+            $conn->rollback(); // Rollback the transaction on error
+            echo json_encode($result);
+            return;
+        }
+
+        $conn->autocommit(TRUE); // Turn auto-commit back on
+    } else {
+        $result['error'] = "There was an error processing json file $target_path, please try again!";
+    }
+
+    echo json_encode($result);
+    return;
 }
+
 
 
 //EXPORT INGREDIENT CATEGORIES

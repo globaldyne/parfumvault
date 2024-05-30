@@ -6,7 +6,6 @@ require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/inc/product.php');
-
 require_once(__ROOT__.'/libs/fpdf.php');
 
 $imageData = base64_decode(explode(',', $settings['brandLogo'])[1]);
@@ -21,103 +20,141 @@ if ($_REQUEST['action'] == 'generateSDS' && $_REQUEST['kind'] == 'ingredient'){
 	$ingName = mysqli_real_escape_string($conn, $_REQUEST['name']);
 	$ingID = $_REQUEST['id'];
 	define('__INGNAME__',$ingName);
-
-	$supplierID = $_REQUEST['ingSupplier'];
 	
 	
-	$ingData = mysqli_fetch_array(mysqli_query($conn,"SELECT cas,INCI,reach,einecs,chemical_name,formula,flash_point,appearance FROM ingredients WHERE id = '$ingID'"));
-	$supplier = mysqli_fetch_array(mysqli_query($conn,"SELECT name,address,po,country,telephone,url,email FROM ingSuppliers WHERE id = '$supplierID'"));
 
 
+
+	// Use prepared statements to avoid SQL injection
+	$stmt = $conn->prepare("SELECT cas, INCI, reach, einecs, chemical_name, formula, flash_point, appearance FROM ingredients WHERE id = ?");
+	$stmt->bind_param("i", $ingID);
+	$stmt->execute();
+	$ingData = $stmt->get_result()->fetch_assoc();
+	
 	$ingredient_compounds_count = 0;
 	
-	$q = mysqli_query($conn, "SELECT * FROM ingredients WHERE id='$ingID'");
-	$res = mysqli_fetch_assoc($q);
+	// Fetch ingredient details
+	$stmt = $conn->prepare("SELECT * FROM ingredients WHERE id = ?");
+	$stmt->bind_param("i", $ingID);
+	$stmt->execute();
+	$res = $stmt->get_result()->fetch_assoc();
 	
-	$g['name'] = (string)$res['name'];
-	$g['INCI'] = (string)$res['INCI'] ?: 'N/A';
+	$g = [
+		'name' => (string)$res['name'],
+		'INCI' => (string)$res['INCI'] ?: 'N/A',
+		'FEMA' => (string)$res['FEMA'] ?: 'N/A',
+		'einecs' => (string)$res['einecs'] ?: 'N/A',
+		'reach' => (string)$res['reach'] ?: 'N/A',
+		'notes' => (string)$res['notes'] ?: 'N/A',
+		'odor' => (string)$res['odor'],
+		'physical_state' => $res['physical_state'] === 1 ? 'Liquid' : ($res['physical_state'] === 2 ? 'Solid' : 'Unknown')
+	];
+	
 	define('__INGCAS__', $res['cas'] ?: 'N/A');
-	$g['FEMA'] = (string)$res['FEMA']?: 'N/A';
-	$g['einecs'] = (string)$res['einecs']?: 'N/A';
-	$g['reach'] = (string)$res['reach']?: 'N/A';
-	$g['notes'] = (string)$res['notes']?: 'N/A';
-	$g['odor'] = (string)$res['odor'];
-	$g['physical_state'] = (int)$res['physical_state'];
-	$g['physical_state'] = $g['physical_state'] === 1 ? 'Liquid' : ($g['physical_state'] === 2 ? 'Solid' : 'Unknown');
-
-	$t['tenacity'] = (string)$res['tenacity']?: 'N/A';
-	$t['chemical_name'] = (string)$res['chemical_name']?: 'N/A';
-	$t['formula'] = (string)$res['formula']?: 'N/A';
-	$t['flash_point'] = (string)$res['flash_point']?: 'N/A';
-	$t['flavor_use'] = (int)$res['flavor_use'];
-	$t['soluble'] = (string)$res['soluble']?: 'N/A';
-	$t['logp'] = (string)$res['logp']?: 'N/A';
-	$t['appearance'] = (string)$res['appearance']?: 'N/A';
-	$t['molecularWeight'] = (string)$res['molecularWeight']?: 'N/A';
-
 	
-	$i['cat1'] = (double)$res['cat1'];
-	$i['cat2'] = (double)$res['cat2'];
-	$i['cat3'] = (double)$res['cat3'];
-	$i['cat4'] = (double)$res['cat4'];
-	$i['cat5A'] = (double)$res['cat5A'];
-	$i['cat5B'] = (double)$res['cat5B'];
-	$i['cat5C'] = (double)$res['cat5C'];
-	$i['cat6'] = (double)$res['cat6'];
-	$i['cat7A'] = (double)$res['cat7A'];
-	$i['cat7B'] = (double)$res['cat7B'];
-	$i['cat8'] = (double)$res['cat8'];
-	$i['cat9'] = (double)$res['cat9'];
-	$i['cat10A'] = (double)$res['cat10A'];
-	$i['cat10B'] = (double)$res['cat10B'];
-	$i['cat11A'] = (double)$res['cat11A'];
-	$i['cat11B'] = (double)$res['cat11B'];
-	$i['cat12'] = (double)$res['cat12'];
+	$t = [
+		'tenacity' => (string)$res['tenacity'] ?: 'N/A',
+		'chemical_name' => (string)$res['chemical_name'] ?: 'N/A',
+		'formula' => (string)$res['formula'] ?: 'N/A',
+		'flash_point' => (string)$res['flash_point'] ?: 'N/A',
+		'flavor_use' => (int)$res['flavor_use'],
+		'soluble' => (string)$res['soluble'] ?: 'N/A',
+		'logp' => (string)$res['logp'] ?: 'N/A',
+		'appearance' => (string)$res['appearance'] ?: 'N/A',
+		'molecularWeight' => (string)$res['molecularWeight'] ?: 'N/A'
+	];
 	
+	$i = [
+		'cat1' => (double)$res['cat1'],
+		'cat2' => (double)$res['cat2'],
+		'cat3' => (double)$res['cat3'],
+		'cat4' => (double)$res['cat4'],
+		'cat5A' => (double)$res['cat5A'],
+		'cat5B' => (double)$res['cat5B'],
+		'cat5C' => (double)$res['cat5C'],
+		'cat6' => (double)$res['cat6'],
+		'cat7A' => (double)$res['cat7A'],
+		'cat7B' => (double)$res['cat7B'],
+		'cat8' => (double)$res['cat8'],
+		'cat9' => (double)$res['cat9'],
+		'cat10A' => (double)$res['cat10A'],
+		'cat10B' => (double)$res['cat10B'],
+		'cat11A' => (double)$res['cat11A'],
+		'cat11B' => (double)$res['cat11B'],
+		'cat12' => (double)$res['cat12']
+	];
 	
 	$ing[] = $g;
 	$ifra[] = $i;
 	$tech[] = $t;
 	
-	$q = mysqli_query($conn, "SELECT * FROM ingredient_compounds WHERE ing ='".$ing['0']['name']."'");
-	while($res = mysqli_fetch_assoc($q)){
-
-		$c['ing'] = (string)$res['ing'];
-		$c['name'] = (string)$res['name'];
-		$c['CAS'] = (string)$res['cas'] ?: 'N/A';
-		$c['EINECS'] = (string)$res['ec'] ?: 'N/A';
-		$c['Concentration'] = (double)$res['percentage'];
-		$c['GHS'] = (string)$res['GHS'] ?: 'N/A';
-
+	// Fetch ingredient compounds
+	$stmt = $conn->prepare("SELECT * FROM ingredient_compounds WHERE ing = ?");
+	$stmt->bind_param("s", $g['name']);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	
+	$cmp = [];
+	while ($res = $result->fetch_assoc()) {
+		$c = [
+			'ing' => (string)$res['ing'],
+			'name' => (string)$res['name'],
+			'CAS' => (string)$res['cas'] ?: 'N/A',
+			'EINECS' => (string)$res['ec'] ?: 'N/A',
+			'Concentration' => (double)$res['percentage'],
+			'GHS' => (string)$res['GHS'] ?: 'N/A'
+		];
 		$cmp[] = $c;
 		$ingredient_compounds_count++;
 	}
 	
+	// Fetch GHS information
+	$stmt = $conn->prepare("SELECT id, ingID, GHS FROM ingSafetyInfo WHERE ingID = ?");
+	$stmt->bind_param("i", $ingID);
+	$stmt->execute();
+	$result = $stmt->get_result();
 	
-	$q = mysqli_query($conn, "SELECT id,ingID,GHS FROM ingSafetyInfo WHERE ingID = '".$ingID."'");
-	while($res = mysqli_fetch_assoc($q)){
-		$ex = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM pictograms WHERE code = '".$res['GHS']."'"));
-		$s['GHS'] = (int)$res['GHS'];
-		$s['name'] = (int)$ex['name'];
-
+	$ghs = [];
+	while ($res = $result->fetch_assoc()) {
+		$stmt_pictograms = $conn->prepare("SELECT name FROM pictograms WHERE code = ?");
+		$stmt_pictograms->bind_param("s", $res['GHS']);
+		$stmt_pictograms->execute();
+		$ex = $stmt_pictograms->get_result()->fetch_assoc();
+	
+		$s = [
+			'GHS' => (int)$res['GHS'],
+			'name' => (string)$ex['name']
+		];
 		$ghs[] = $s;
 	}
 	
+	// Prepare data for PDF
+	$vd = [
+		'product' => $product,
+		'version' => $ver,
+		'ingredients' => $ingredient,
+		'timestamp' => date('d/m/Y H:i:s')
+	];
 	
-	$vd['product'] = $product;
-	$vd['version'] = $ver;
-	$vd['ingredients'] = $ingredient;
-	$vd['timestamp'] = date('d/m/Y H:i:s');
+	$result = [
+		'General' => $ing,
+		'GHS' => $ghs,
+		'IFRA' => $ifra,
+		'Technical Data' => $tech,
+		'Compositions' => $cmp,
+		'contact' => [
+			"Name" => $settings['brandName'],
+			"Address" => $settings['brandAddress'],
+			"Email" => $settings['brandEmail'],
+			"Phone" => $settings['brandPhone']
+		]
+	];
 	
-	$result['General'] = $ing;
-	$result['GHS'] = $ghs;	
-	$result['IFRA'] = $ifra;
-	$result['Technical Data'] = $tech;	
-	$result['compositions'] = $cmp;	
-
 	$json_data = json_encode($result);
 	$data = json_decode($json_data, true);
-
+	
+	// PDF generation
+	
 	class PDF extends FPDF {
 		private $logoPath;
 	
@@ -125,18 +162,17 @@ if ($_REQUEST['action'] == 'generateSDS' && $_REQUEST['kind'] == 'ingredient'){
 			parent::__construct();
 			$this->logoPath = $logoPath;
 		}
-
+	
 		function Header() {
-			$this->Image($this->logoPath, 10, 6, 30);			
+			$this->Image($this->logoPath, 10, 6, 30);
 			$this->Ln(20);
-
+	
 			$this->SetFont('Arial', 'B', 14);
 			$this->Cell(0, 8, __INGNAME__, 0, 1, 'C');
 			$this->SetFont('Arial', 'B', 8);
-			$this->Cell(0, 5, "CAS: ".__INGCAS__, 0, 1, 'C');
-
+			$this->Cell(0, 5, "CAS: " . __INGCAS__, 0, 1, 'C');
+	
 			$this->Ln(5);
-
 		}
 	
 		function Footer() {
@@ -150,62 +186,54 @@ if ($_REQUEST['action'] == 'generateSDS' && $_REQUEST['kind'] == 'ingredient'){
 	}
 	
 	$pdf = new PDF(__PVLOGO__);
-	//$pdf = new PDF($tempImagePath);
-
-	$pdf->AliasNbPages(); // Set total number of pages
+	
+	$pdf->AliasNbPages();
 	$pdf->AddPage();
 	
 	function addSection($pdf, $title, $content) {
 		$pdf->SetFont('Arial', 'B', 12);
-	
 		$pdf->SetFillColor(3, 189, 123);
 		$pdf->SetTextColor(255, 255, 255);
-	
 		$pdf->Cell(0, 10, $title, 0, 1, 'L', true);
 		$pdf->SetTextColor(0, 0, 0);
-	
 		$pdf->SetFont('Arial', '', 8);
 	
-		if ($title == 'Compositions' && is_array($content) && !empty($content)) {
+		if ($title == 'contact' && is_array($content) && !empty($content)) {
+			foreach ($content as $value) {
+				$pdf->Cell(0, 10, $value, 0, 1);
+			}
+			$pdf->Ln();
+		} else if ($title == 'Compositions' && is_array($content) && !empty($content)) {
 			$pdf->SetFillColor(211, 211, 211); // Light gray
 			$headers = array_keys($content[0]);
 			$headers = array_diff($headers, ['ing']);
 			
 			foreach ($headers as $header) {
-          		$pdf->Cell(38, 8, ucfirst($header), 1, 0, 'C', true);
+				$pdf->Cell(38, 8, ucfirst($header), 1, 0, 'C', true);
 			}
 			$pdf->Ln();
-
-			// Add table data
+	
 			$pdf->SetFont('Arial', '', 8);
 			foreach ($content as $row) {
-            	foreach ($headers as $header) {
+				foreach ($headers as $header) {
 					$cellText = $header == 'Concentration' ? $row[$header] . '%' : $row[$header];
-				//	if ($header == 'GHS') {
-						//$pdf->MultiCell(38, 5, $cellText, 1);
-				//	} else {
-						$pdf->Cell(38, 10, $cellText, 1);
-               //}
-            	}
-            $pdf->Ln();
-        }
-			
+					$pdf->Cell(38, 10, $cellText, 1);
+				}
+				$pdf->Ln();
+			}
 		} else if ($title == 'General' && is_array($content) && !empty($content)) {
 			foreach ($content as $ingredient) {
 				foreach ($ingredient as $key => $value) {
-					// Skip specific fields
-					if (!in_array($key, ['name'] )) {
+					if (!in_array($key, ['name'])) {
 						$pdf->Cell(0, 10, ucfirst($key) . ': ' . $value, 0, 1);
 					}
 				}
 				$pdf->Ln();
 			}
-			
 		} else if ($title == 'Technical Data' && is_array($content) && !empty($content)) {
 			foreach ($content as $ingredient) {
 				foreach ($ingredient as $key => $value) {
-					// Skip specific fields
-					if (!in_array($key, ['name'] )) {
+					if (!in_array($key, ['name'])) {
 						$pdf->Cell(0, 10, ucfirst($key) . ': ' . $value, 0, 1);
 					}
 				}
@@ -214,25 +242,20 @@ if ($_REQUEST['action'] == 'generateSDS' && $_REQUEST['kind'] == 'ingredient'){
 		} else if ($title == 'GHS' && is_array($content) && !empty($content)) {
 			foreach ($content as $ingredient) {
 				foreach ($ingredient as $key => $value) {
-					// Skip specific fields
-					if (!in_array($key, ['name'] )) {
-						//$pdf->Cell(0, 10, ucfirst($key) . ': ' . $value, 0, 1);
-                   		//$pdf->Image(__ROOT__.'/img/Pictograms/GHS0' . $value . '.png', $pdf->GetX() + 10, $pdf->GetY(), 10);
- 					$pdf->Cell(0, 10, ucfirst($key) . ': ' . $value, 0, 1);
-                    // Display images next to each other
-                    $imageX = $pdf->GetX();
-                    $imageY = $pdf->GetY();
-                    foreach (explode(' ', $value) as $image) {
-						//$pdf->Cell(0, 10, ucfirst($key) . ': ' . $value, 0, 1);
-                        $pdf->Image(__ROOT__.'/img/Pictograms/GHS0' . $value . '.png', $imageX, $imageY, 10);
-                        $imageX += 12; // Move X position for next image
-                    }
-                    $pdf->Ln(5); // Add some space after images
+					if (!in_array($key, ['name'])) {
+						$pdf->Cell(0, 10, ucfirst($key) . ': ' . $value, 0, 1);
+						$imageX = $pdf->GetX();
+						$imageY = $pdf->GetY();
+						foreach (explode(' ', $value) as $image) {
+							$pdf->Image(__ROOT__ . '/img/Pictograms/GHS0' . $value . '.png', $imageX, $imageY, 10);
+							$imageX += 12;
+	
+						}
+						$pdf->Ln(5);
 					}
 				}
 				$pdf->Ln();
-		}
-				
+			}
 		} else if ($title == 'IFRA' && is_array($content) && !empty($content)) {
 			$pdf->SetFillColor(211, 211, 211); // Light gray
 			$pdf->Cell(95, 10, 'Category', 1, 0, 'C', true);
@@ -260,19 +283,23 @@ if ($_REQUEST['action'] == 'generateSDS' && $_REQUEST['kind'] == 'ingredient'){
 		}
 		$pdf->Ln(10);
 	}
-
+	// Move the contact section to the beginning
+	if (isset($data['contact'])) {
+		addSection($pdf, 'Contact', $data['contact']);
+		unset($data['contact']);
+	}
 	foreach ($data as $section => $content) {
 		addSection($pdf, ucfirst($section), $content);
 	}
-
-
 	
-	$content = mysqli_real_escape_string($conn,$pdf->Output("S"));
+	$content = mysqli_real_escape_string($conn, $pdf->Output("S"));
+
+
 	//DIRTY WAY TO CLEANUP //TODO
 	mysqli_query($conn, "DELETE FROM documents WHERE ownerID = '$ingID' AND type = '0' AND notes = 'PV Generated'");
 	
 	if(mysqli_query($conn, "INSERT INTO documents(ownerID,type,name,docData,notes) values('$ingID','0','$ingName','$content','PV Generated')")){
-		$response["success"] = '<a href="/pages/viewDoc.php?id='.mysqli_insert_id($conn).'&type=internal" target="_blank">Download file</a>';
+		$response["success"] = '<i class="fa-solid fa-file-pdf mr-2"></i><a href="/pages/viewDoc.php?id='.mysqli_insert_id($conn).'&type=internal" target="_blank">Download file</a>';
 	}else{
 		$response["error"] = "Unable to generate PDF";
 	}

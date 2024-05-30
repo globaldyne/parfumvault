@@ -4,7 +4,6 @@ define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__)))));
 
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
-
 ?>
 <h3>Formula categories</h3>
 <hr>
@@ -14,6 +13,7 @@ require_once(__ROOT__.'/inc/opendb.php');
         <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
         <div class="dropdown-menu dropdown-menu-right">
           <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#add_formula_cat"><i class="fa-solid fa-plus mx-2"></i>Add formula category</a></li>
+          <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#import_categories_json"><i class="fa-solid fa-file-import mx-2"></i>Import from JSON</a></li>
           <li><a class="dropdown-item" href="/pages/operations.php?action=exportFrmCat"><i class="fa-solid fa-file-code mx-2"></i>Export as JSON</a></li>
         </div>
     </div>
@@ -107,17 +107,18 @@ $.ajax({
 			manage: 'add_frmcategory',
 			category: $("#fcatName").val(),
 			cat_type: $("#cat_type").val(),
-			},
+		},
 		dataType: 'json',
 		success: function (data) {
-			if(data.error){
-				var msg = '<div class="alert alert-danger">'+data.error+'</div>';
-				$('#fcatMsgIn').html(msg);
-			}else if(data.success){
-				var msg = '<div class="alert alert-success">'+data.success+'</div>';
+			if ( data.success ) {
+				$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+				$('.toast-header').removeClass().addClass('toast-header alert-success');
+				reload_data();
 				$('#add_formula_cat').modal('toggle');
-				$('#fcatMsg').html(msg);
-				reload_fcat_data();
+				$('.toast').toast('show');
+			} else {
+				var msg = '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mr-2"></i>'+data.error+'</div>';
+				$('#fcatMsgIn').html(msg);
 			}
 			
 		}
@@ -161,7 +162,7 @@ $('#frmDataCat').editable({
           ],
 	dataType: 'html',
 	success: function () {
-		reload_fcat_data();
+		reload_data();
 	}
 });
 
@@ -184,7 +185,7 @@ $('#frmDataCat').editable({
           ],
 	dataType: 'html',
 	success: function () {
-		reload_fcat_data();
+		reload_data();
 	}
 });
 	
@@ -208,11 +209,18 @@ $('#frmDataCat').on('click', '[id*=catDel]', function () {
 					data: {
 						action: "del_frmcategory",
 						catId: cat.ID,
-						},
-					dataType: 'html',
+					},
+					dataType: 'json',
 					success: function (data) {
-						$('#fcatMsg').html(data);
-						reload_fcat_data();
+						if ( data.success ) {
+							$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+							$('.toast-header').removeClass().addClass('toast-header alert-success');
+							reload_data();
+						} else {
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+							$('.toast-header').removeClass().addClass('toast-header alert-danger');
+						}
+						$('.toast').toast('show');
 					}
 				  });
                  return true;
@@ -229,40 +237,42 @@ $('#frmDataCat').on('click', '[id*=catDel]', function () {
    });
 });
 
-function reload_fcat_data() {
+function reload_data() {
     $('#frmDataCat').DataTable().ajax.reload(null, true);
 };
 
 
 </script>
 <!--ADD CATEGORY MODAL-->
-<div class="modal fade" id="add_formula_cat" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="add_formula_cat" aria-hidden="true">
+<div class="modal fade" id="add_formula_cat" data-bs-backdrop="static" tabindex="-1" aria-labelledby="add_formula_cat_label" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Add new category</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       
       <div class="modal-body">
-      	<div id="fcatMsgIn"></div>
-        <div class="form-group">
-              <label class="col-md-3 control-label">Name</label>
-              <div class="col-md-8">
-              	<input name="fcatName" id="fcatName" type="text" class="form-control" />
-              </div>
-              <label class="col-md-3 control-label">Type</label>
-             <div class="col-md-8">
-              <select name="cat_type" id="cat_type" class="form-control">
-      			<option value="profile">Profile</option>
-     			<option value="sex">Gender</option>
-    		  </select>
-    		</div>
-		</div>
+        <div id="fcatMsgIn"></div>
+        <div class="mb-3">
+          <label for="fcatName" class="form-label">Name</label>
+          <input name="fcatName" id="fcatName" type="text" class="form-control" />
+        </div>
+        <div class="mb-3">
+          <label for="cat_type" class="form-label">Type</label>
+          <select name="cat_type" id="cat_type" class="form-select">
+            <option value="profile">Profile</option>
+            <option value="sex">Gender</option>
+          </select>
+        </div>
       </div>
-	  <div class="modal-footer">
-        <input type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="close_cat" value="Close">
-        <input type="submit" name="add-fcat" class="btn btn-primary" id="add-fcat" value="Create">
-      </div>   
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="close_cat">Close</button>
+        <button type="submit" name="add-fcat" class="btn btn-primary" id="add-fcat">Create</button>
+      </div>
+    </div>
   </div>
 </div>
-</div>
+
+
+

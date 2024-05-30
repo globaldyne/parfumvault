@@ -90,12 +90,13 @@ $('#btnRestoreCategories').click(function() {
 			
 		success: function (data) {
 			if(data.success){
-				var msg = '<div class="alert alert-success">'+data.success+'</div>';
+				var msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mr-2"></i>'+data.success+'</div>';
 				$("#btnRestoreCategories").hide();
 				$("#backupArea").css('display', 'none');
+				reload_data();
 
 			}else if(data.error){
-				var msg = '<div class="alert alert-danger">'+data.error+'</div>';
+				var msg = '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mr-2"></i>'+data.error+'</div>';
 				$("#btnRestoreCategories").show();
 				$("#btnRestoreCategories").prop("disabled", false);
 				$('#btnRestoreCategories').prop('value', 'Import');
