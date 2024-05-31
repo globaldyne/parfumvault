@@ -1,10 +1,25 @@
 <div id="content-wrapper" class="d-flex flex-column">
-<?php require_once(__ROOT__.'/pages/top.php'); ?>   
+<?php 
+require_once(__ROOT__.'/pages/top.php');
+require_once(__ROOT__.'/func/php-settings.php');
+
+?>   
 <div class="container-fluid">
   <div>
   <div class="card shadow mb-4">
     <div class="card-header py-3">
       <h2 class="m-0 font-weight-bold text-primary"><a href="#" id="mainTitle">Scheduled Formulas</a></h2>
+    </div>
+    <div class="pv_menu_formulas">
+        <div class="text-right">
+            <div class="btn-group">
+            <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
+                <div class="dropdown-menu dropdown-menu-right">
+                  <li><a class="dropdown-item" href="/pages/operations.php?action=exportMaking"><i class="fa-solid fa-file-export mx-2"></i>Export as JSON</a></li>
+                  <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#import_making_json"><i class="fa-solid fa-file-import mx-2"></i>Import from JSON</a></li>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="card-body">
       <div class="table-responsive">
@@ -65,7 +80,7 @@ $(document).ready(function() {
 			{ data : 'madeOn', title: 'Progress', render: progress },
 			{ data : 'scheduledOn', title: 'Scheduled', render: fDate },
 			{ data : null, title: 'Actions', render: actions },
-			],
+		],
 		order: [[ 0, 'asc' ]],
 		lengthMenu: [[20, 50, 100, 200, 400], [20, 50, 100, 200, 400]],
 		pageLength: 20,
@@ -199,3 +214,45 @@ $('#tdDataScheduled').on('click', '[id*=pend_remove]', function () {
    });
 });
 </script>
+<!-- IMPORT JSON MODAL -->
+<div class="modal fade" id="import_making_json" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="import_making_json" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Import categories from a JSON file</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="JSRestMsg"></div>
+        <div class="progress">  
+          <div id="uploadProgressBar" class="progress-bar" role="progressbar" aria-valuemin="0"></div>
+        </div>
+        <div id="backupArea" class="mt-4">
+          <div class="form-group row">
+            <label for="jsonFile" class="col-auto col-form-label">JSON file</label>
+            <div class="col-md">
+              <input type="file" name="jsonFile" id="jsonFile" class="form-control" />
+            </div>
+          </div>
+          <div class="col-md-12 mt-3">
+            <hr />
+            <p><strong>IMPORTANT</strong></p>
+            <ul>
+              <li>
+                <div id="raw" data-size="<?=getMaximumFileUploadSizeRaw()?>">Maximum file size: <strong><?=getMaximumFileUploadSize()?></strong></div>
+              </li>
+              <li>Please make sure you have taken a backup before importing a JSON file</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseBK">Close</button>
+        <button type="submit" name="btnRestore" class="btn btn-primary" id="btnRestoreMaking">Import</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/js/import.making.js"></script>
