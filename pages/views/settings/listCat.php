@@ -14,6 +14,8 @@ require_once(__ROOT__.'/inc/opendb.php');
         <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
         <div class="dropdown-menu dropdown-menu-right">
           <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#add_ingredient_cat"><i class="fa-solid fa-plus mx-2"></i>Add ingredient category</a></li>
+          <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#import_categories_json"><i class="fa-solid fa-file-import mx-2"></i>Import from JSON</a></li>
+
           <li><a class="dropdown-item" href="/pages/operations.php?action=exportIngCat"><i class="fa-solid fa-file-code mx-2"></i>Export as JSON</a></li>
           
         </div>
@@ -21,7 +23,6 @@ require_once(__ROOT__.'/inc/opendb.php');
   </div>
 </div>
 <div class="card-body">
-   <div id="catMsg"></div>
 	<table id="tdDataCat" class="table table-striped table-bordered nowrap" style="width:100%">
       <thead>
         <tr>
@@ -127,17 +128,16 @@ $.ajax({
 			},
 		dataType: 'json',
 		success: function (data) {
-			
-			if(data.error){
+			if ( data.success ) {
+            	$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+				$('.toast-header').removeClass().addClass('toast-header alert-success');
+				$('#add_ingredient_cat').modal('toggle');
+				reload_data();
+				$('.toast').toast('show');
+			} else {
 				var msg = '<div class="alert alert-danger">'+data.error+'</div>';
 				$('#catMsgIn').html(msg);
-			}else if(data.success){
-				var msg = '<div class="alert alert-success">'+data.success+'</div>';
-				$('#add_ingredient_cat').modal('toggle');
-				$('#catMsg').html(msg);
-				reload_cat_data();
 			}
-			
 			
 		}
 	});
@@ -187,7 +187,7 @@ $('#tdDataCat').editable({
           ],
 	dataType: 'html',
 	success: function () {
-		reload_cat_data();
+		reload_data();
 	}
 });
 
@@ -212,11 +212,18 @@ $('#tdDataCat').on('click', '[id*=catDel]', function () {
 					data: {
 						action: "delete",
 						catId: cat.ID,
-						},
-					dataType: 'html',
+					},
+					dataType: 'json',
 					success: function (data) {
-						$('#catMsg').html(data);
-						reload_cat_data();
+						if ( data.success ) {
+							$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+							$('.toast-header').removeClass().addClass('toast-header alert-success');
+							reload_data();
+						} else {
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+							$('.toast-header').removeClass().addClass('toast-header alert-danger');
+						}
+						$('.toast').toast('show');
 					}
 				  });
                  return true;
@@ -233,7 +240,7 @@ $('#tdDataCat').on('click', '[id*=catDel]', function () {
    });
 });
 
-function reload_cat_data() {
+function reload_data() {
     $('#tdDataCat').DataTable().ajax.reload(null, true);
 };
 
@@ -263,7 +270,7 @@ $("#editCategory").on("show.bs.modal", function(e) {
       </div>
       
       <div class="modal-body">
-      	<div id="catMsgIn"></div>
+        <div id="catMsgIn"></div>
         <div class="form-group">
               <label class="col-md-3 control-label">Name</label>
               <div class="col-md-8">
@@ -299,3 +306,5 @@ $("#editCategory").on("show.bs.modal", function(e) {
     </div>
   </div>
 </div>
+
+

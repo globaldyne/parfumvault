@@ -1,4 +1,20 @@
 # CHANGELOG
+### Version 10.3
+- Added JSON import for Making Formulas
+- Added JSON export for all and specific formulas in making
+- Layout update when adding suppliers for ingredients
+- Added JSON import for formula categories
+- Rewrite of categories import to improve ingredients and formula categories import
+- Code clean up
+- Improvements for SDS generation
+- Auto fetch contact data from branding details for SDS
+- Formula JSON upload form minor fixes
+- Added JSON file import for ingredient categories
+- Ingredient Safety Info update
+- Formula view table element for description and image re-written to div
+- Fix a font for the message returned when error occured during price get request from a supplier 
+- Further improvements in SDS generation
+
 ### Version 10.2
 - Minor improvements in finished product page
 - Auto populate CAS and EC if entry exists as an ingredient when adding components in ingredient composition

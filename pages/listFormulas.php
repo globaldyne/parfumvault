@@ -884,7 +884,7 @@ $("#formula-name").keyup(function(){
 </div>
 
 
-<!--IMPORT JSON MODAL-->
+<!-- IMPORT JSON MODAL -->
 <div class="modal fade" id="import_formulas_json" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="import_formulas_json" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
@@ -895,37 +895,35 @@ $("#formula-name").keyup(function(){
         </button>
       </div>
       <div class="modal-body">
-      <div id="JSRestMsg"></div>
-      <div class="progress">  
-         <div id="uploadProgressBar" class="progress-bar" role="progressbar" aria-valuemin="0"></div>
-      </div>
-      <div id="backupArea">
-      
-          <div class="form-group">
-              <label class="col-md-3 form-label">JSON file:</label>
-              <div class="col-md">
-                 <input type="file" name="backupFile" id="backupFile" class="form-control" />
-              </div>
-          </div>
-          <div class="col-md-12">
-             <hr />
-             <p><strong>IMPORTANT:</strong></p>
-              <ul>
-                <li><div id="raw" data-size="<?=getMaximumFileUploadSizeRaw()?>">Maximum file size: <strong><?=getMaximumFileUploadSize()?></strong></div></li>
-                <li>Any formula with the same id will be replaced. Please make sure you have taken a backup before imporing a JSON file.</li>
-              </ul>
-    			<p>&nbsp;</p>
+        <div id="JSRestMsg"></div>
+        <div class="progress">  
+          <div id="uploadProgressBar" class="progress-bar" role="progressbar" aria-valuemin="0"></div>
+        </div>
+        <div id="backupArea" class="mt-4">
+          <div class="form-group row">
+            <label for="backupFile" class="col-auto col-form-label">JSON file</label>
+            <div class="col-md">
+              <input type="file" name="backupFile" id="backupFile" class="form-control" />
             </div>
           </div>
-      
+          <div class="col-md-12 mt-3">
+            <hr />
+            <p><strong>IMPORTANT</strong></p>
+            <ul>
+              <li>
+                <div id="raw" data-size="<?=getMaximumFileUploadSizeRaw()?>">Maximum file size: <strong><?=getMaximumFileUploadSize()?></strong></div>
+              </li>
+              <li>Any formula with the same id will be replaced. Please make sure you have taken a backup before importing a JSON file.</li>
+            </ul>
+          </div>
+        </div>
       </div>
-	  <div class="modal-footer">
-        <input type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseBK" value="Cancel">
-        <input type="submit" name="btnRestore" class="btn btn-primary" id="btnRestoreFormulas" value="Import">
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseBK">Cancel</button>
+        <button type="submit" name="btnRestore" class="btn btn-primary" id="btnRestoreFormulas">Import</button>
       </div>
-   
+    </div>
   </div>
-  
 </div>
-</div>
+
 <script src="/js/import.formulas.js"></script>

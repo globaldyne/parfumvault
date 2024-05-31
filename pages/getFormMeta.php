@@ -56,7 +56,7 @@ while($qTags = mysqli_fetch_array($tagsQ)){
 <script src="/js/bootstrap-tagsinput.js"></script> 
 <link href="/css/bootstrap-tagsinput.css" rel="stylesheet" />
 <div id="msg_settings_info">
-    <div class="alert alert-info">Some of the changes require the page to be reloaded to appear properly. Please remember to refresh your browser if your changes not automatically appear.</div>
+    <div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i>Some of the changes require the page to be reloaded to appear properly. Please remember to refresh your browser if your changes not automatically appear.</div>
     <div id="set_msg"></div>
 </div>
 
@@ -459,7 +459,7 @@ $("#pic_upload").click(function(){
               },
            });
         }else{
-			$("#upload_resp").html('<div class="dropdown-divider"></div><div class="alert alert-danger"><strong>Error:</strong> Please select a file to upload!</div>');
+			$("#upload_resp").html('<div class="alert alert-danger mt-3"><strong>Please select a file to upload</strong></div>');
 			$("#pic_upload").prop("disabled", false);
    			$("#pic_upload").prop('value', 'Upload');
         }
@@ -475,7 +475,7 @@ $('#tagsinput').on('beforeItemAdd', function(event) {
 			do: "tagadd",
 			fid: '<?=$info['id']?>',
 			tag: tag
-			},
+		},
 		dataType: 'json',
 		success: function (data) {
 		  	if(data.error){

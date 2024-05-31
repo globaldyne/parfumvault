@@ -1577,16 +1577,35 @@ if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'privacy'){
 	return;
 }
 
-if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'safety_info'){
+//ADD PICTOGRAM
+if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'safety_info' && $_POST['action'] == 'add'){
 	$ingID = (int)$_POST['ingID'];
-	require_once(__ROOT__.'/func/updateGHS.php');
-	if(updateGHS($ingID,$_POST['pictogram'],$conn)){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>Safety data has been updated!</div>';
+	$GHS = (int)$_POST['pictogram'];
+
+	if(mysqli_query($conn, "INSERT INTO ingSafetyInfo (GHS, ingID) VALUES ('$GHS','$ingID') ON DUPLICATE KEY UPDATE GHS = VALUES(GHS), ingID = VALUES(ingID)")){
+		$response["success"] = 'Safety data has been updated!';
 	}else{
-		echo '<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> '.mysqli_error($conn).'</div>';
+		$response["error"] = 'Something went wrong '.mysqli_error($conn);
 	}
+	echo json_encode($response);
 	return;
 }
+
+
+//REMOVE PICTOGRAM
+if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'safety_info' && $_POST['pictogram_id'] && $_POST['action'] == 'remove'){
+	$ingID = (int)$_POST['ingID'];
+	$GHS = (int)$_POST['pictogram_id'];
+	
+	if(mysqli_query($conn, "DELETE FROM ingSafetyInfo WHERE GHS = '$GHS' AND ingID = '$ingID'")){
+		$response["success"] = 'Safety data has been updated!';
+	}else{
+		$response["error"] = 'Something went wrong '.mysqli_error($conn);
+	}
+	echo json_encode($response);
+	return;
+}
+
 
 if($_GET['import'] == 'ingredient'){
 		$name = sanChar(mysqli_real_escape_string($conn, base64_decode($_GET["name"])));

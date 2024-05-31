@@ -577,6 +577,8 @@ CREATE TABLE `ingSafetyInfo` (
  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 ALTER TABLE `ingSafetyInfo` ADD UNIQUE(`id`); 
+ALTER TABLE ingSafetyInfo ADD CONSTRAINT unique_ghs_ingid UNIQUE (GHS, ingID);
+
 
 CREATE TABLE `pictograms` (
  `id` int(11) NOT NULL AUTO_INCREMENT,
