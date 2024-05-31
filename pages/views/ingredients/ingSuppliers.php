@@ -599,8 +599,9 @@ function reload_sup_data() {
                 <input class="form-control" name="supplier_link" type="text" id="supplier_link" />
             </div>
             
-        	<div class="form-row mb-2">
-    			<label for="supplier_price">Price (<?php echo $settings['currency']; ?>)</label>
+            <label for="supplier_price">Price*</label>
+        	<div class="input-group mb-2">
+                <span class="input-group-text"><?php echo $settings['currency']; ?></span>
             	<input class="form-control" name="supplier_price" type="text" id="supplier_price" />
             </div>
             
