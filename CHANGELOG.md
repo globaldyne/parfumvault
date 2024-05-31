@@ -1,5 +1,7 @@
 # CHANGELOG
 ### Version 10.3
+- Added JSON import for Making Formulas
+- Added JSON export for all and specific formulas in making
 - Layout update when adding suppliers for ingredients
 - Added JSON import for formula categories
 - Rewrite of categories import to improve ingredients and formula categories import
