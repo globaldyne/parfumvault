@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 10.4
+
 ### Version 10.3
 - Added JSON import for Making Formulas
 - Added JSON export for all and specific formulas in making
