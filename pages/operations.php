@@ -616,6 +616,149 @@ if($_GET['action'] == 'importCompounds'){
 
 }
 
+// IMPORT CATEGORIES
+if ($_GET['action'] == 'importCategories') {
+    if (!file_exists($tmp_path)) {
+        mkdir($tmp_path, 0777, true);
+    }
+
+    if (!is_writable($tmp_path)) {
+        $result['error'] = "Upload directory not writable. Make sure you have write permissions.";
+        echo json_encode($result);
+        return;
+    }
+
+    $target_path = $tmp_path . basename($_FILES['jsonFile']['name']);
+
+    if (move_uploaded_file($_FILES['jsonFile']['tmp_name'], $target_path)) {
+        $data = json_decode(file_get_contents($target_path), true);
+
+        if (!$data['ingCategory'] && !$data['formulaCategories']) {
+            $result['error'] = "JSON File seems invalid. Please make sure you are importing the right file";
+            echo json_encode($result);
+            return;
+        }
+
+        $conn->autocommit(FALSE); // Turn off auto-commit for transaction
+
+        $success = true;
+
+        if ($data['ingCategory']) {
+            $stmt = $conn->prepare("INSERT INTO `ingCategory` (`name`, `notes`, `image`, `colorKey`) VALUES (?, ?, ?, ?)");
+            foreach ($data['ingCategory'] as $d) {
+                $stmt->bind_param("ssss", $d['name'], $d['notes'], $d['image'], $d['colorKey']);
+                if (!$stmt->execute()) {
+                    $success = false;
+                    $result['error'] = "Error inserting into ingCategory: " . $stmt->error;
+                    break;
+                }
+            }
+            $stmt->close();
+        }
+
+        if ($data['formulaCategories']) {
+            $stmt = $conn->prepare("INSERT INTO `formulaCategories` (`name`, `cname`, `type`, `colorKey`) VALUES (?, ?, ?, ?)");
+            foreach ($data['formulaCategories'] as $d) {
+                $stmt->bind_param("ssss", $d['name'], $d['cname'], $d['type'], $d['colorKey']);
+                if (!$stmt->execute()) {
+                    $success = false;
+                    $result['error'] = "Error inserting into formulaCategories: " . $stmt->error;
+                    break;
+                }
+            }
+            $stmt->close();
+        }
+
+        if ($success) {
+            $conn->commit(); // Commit the transaction
+            $result['success'] = "Import complete";
+            unlink($target_path);
+        } else {
+            $conn->rollback(); // Rollback the transaction on error
+            echo json_encode($result);
+            return;
+        }
+
+        $conn->autocommit(TRUE); // Turn auto-commit back on
+    } else {
+        $result['error'] = "There was an error processing json file $target_path, please try again!";
+    }
+
+    echo json_encode($result);
+    return;
+}
+
+
+// IMPORT MAKING
+if ($_GET['action'] == 'importMaking') {
+    if (!file_exists($tmp_path)) {
+        mkdir($tmp_path, 0777, true);
+    }
+
+    if (!is_writable($tmp_path)) {
+        $result['error'] = "Upload directory not writable. Make sure you have write permissions.";
+        echo json_encode($result);
+        return;
+    }
+
+    $target_path = $tmp_path . basename($_FILES['jsonFile']['name']);
+
+    if (move_uploaded_file($_FILES['jsonFile']['tmp_name'], $target_path)) {
+        $data = json_decode(file_get_contents($target_path), true);
+
+        if (!$data || !isset($data['makeFormula'])) {
+            $result['error'] = "JSON File seems invalid. Please make sure you are importing the right file";
+            echo json_encode($result);
+            return;
+        }
+
+        $conn->autocommit(FALSE); // Turn off auto-commit for transaction
+
+        $success = true;
+
+        if (!empty($data['makeFormula'])) {
+            $stmt = $conn->prepare("INSERT INTO `makeFormula` (`fid`, `name`, `ingredient`, `ingredient_id`, `replacement_id`, `concentration`, `dilutant`, `quantity`, `overdose`, `originalQuantity`, `notes`, `skip`, `toAdd`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            foreach ($data['makeFormula'] as $d) {
+                $stmt->bind_param("sssssssssssss", $d['fid'], $d['name'], $d['ingredient'], $d['ingredient_id'], $d['replacement_id'], $d['concentration'], $d['dilutant'], $d['quantity'], $d['overdose'], $d['originalQuantity'], $d['notes'], $d['skip'], $d['toAdd']);
+                if (!$stmt->execute()) {
+                    $success = false;
+                    $result['error'] = "Error inserting into makeFormula: " . $stmt->error;
+                    break;
+                }
+            }
+            $stmt->close();
+        }
+
+        if ($success) {
+			$stmtMeta = $conn->prepare("INSERT INTO formulasMetaData (name, fid, todo) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE name=VALUES(name), todo=VALUES(todo)");
+
+            $todo = 1;
+            $stmtMeta->bind_param("ssi", $data['makeFormula'][0]['name'], $data['makeFormula'][0]['fid'], $todo);
+            if (!$stmtMeta->execute()) {
+                $success = false;
+                $result['error'] = "Error inserting into formulasMetaData " . $stmtMeta->error;
+            }
+            $stmtMeta->close();
+        }
+
+        if ($success) {
+            $conn->commit(); // Commit the transaction
+            $result['success'] = "Import complete";
+            unlink($target_path);
+        } else {
+            $conn->rollback(); // Rollback the transaction on error
+        }
+
+        $conn->autocommit(TRUE); // Turn auto-commit back on
+    } else {
+        $result['error'] = "There was an error processing the JSON file $target_path, please try again!";
+    }
+
+    echo json_encode($result);
+    return;
+}
+
+
 //EXPORT INGREDIENT CATEGORIES
 if($_GET['action'] == 'exportIngCat'){
 	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingCategory")))){
@@ -733,7 +876,12 @@ if($_GET['action'] == 'exportMaking'){
 		return;
 	}
 	$data = 0;
-	$q = mysqli_query($conn, "SELECT * FROM makeFormula");
+	if($fid = $_GET['fid']){
+		 
+		$filter = " WHERE fid = '$fid' ";	
+	}
+	
+	$q = mysqli_query($conn, "SELECT * FROM makeFormula $filter");
 	while($resData = mysqli_fetch_assoc($q)){
 		
 		$r['id'] = (int)$resData['id'];

@@ -308,49 +308,6 @@ body {
 	</div>
 </div>
 
-<!-- Modal Gen SDS-->
-<div class="modal fade" id="genSDS" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="genSDS" aria-hidden="true">
-	<div class="modal-dialog" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title">Generate SDS for <?php echo $ing['name']; ?></h5>
-			</div>
-			<div class="modal-body">
-                <div id="warn">
-                <div class="alert alert-warning">Please note: This feature its under development and in preview state at the moment.</div>
-                	<div class="alert alert-info">A template is required in order to generate an SDS document.
-                To create a new template, go to <a href="/?do=settings" target="_blank">settings</a> and create a new one under HTML Templates.
-                For the available parameters please refer to the documentation <a href="https://www.perfumersvault.com/knowledge-base/html-templates/" target="_blank">here</a>.</div>
-                </div>
-				<div id="sds_res"></div>
-				Select SDS template:
-                <select class="form-control" name="template" id="template">
-                <?php
-                    $res = mysqli_query($conn, "SELECT id, name FROM templates ORDER BY name ASC");
-                    while ($q = mysqli_fetch_array($res)){
-                    echo '<option value="'.$q['id'].'">'.$q['name'].'</option>';
-                }
-                ?>
-                </select>
-                
-               	Select Supplier:
-                <select class="form-control" name="ingSupplier" id="ingSupplier">
-                <?php
-                    $res = mysqli_query($conn, "SELECT id, name FROM ingSuppliers ORDER BY name ASC");
-                    while ($q = mysqli_fetch_array($res)){
-                    echo '<option value="'.$q['id'].'">'.$q['name'].'</option>';
-                }
-                ?>
-                </select>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" id="dis-genSDS" data-bs-dismiss="modal">Close</button>
-					<input type="submit" name="button" class="btn btn-primary" id="generateSDS" value="Generate">
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-
 <!-- Modal QR Code-->
 <div class="modal fade" id="genQRC" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="genQRC" aria-hidden="true">
 	<div class="modal-dialog" role="document">
@@ -371,7 +328,29 @@ body {
 		</div>
 	</div>
 </div>
-<script type="text/javascript" language="javascript">
+
+<!-- Modal Gen SDS-->
+<div class="modal fade" id="genSDS" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="genSDS" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Generate SDS for <?php echo $ing['name']; ?></h5>
+			</div>
+			<div class="modal-body">
+                <div id="warn">
+                <div class="alert alert-warning"><strong>TECH PREVIEW: This feature its under development and in preview state at the moment.</strong></div>
+				<div id="sds_res"></div>                               
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" id="dis-genSDS" data-bs-dismiss="modal">Close</button>
+					<input type="submit" name="button" class="btn btn-primary" id="generateSDS" value="Generate">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<script>
 
 $(document).ready(function() {
 	$('[rel=tipsy]').tooltip({placement: 'auto'});
@@ -379,7 +358,7 @@ $(document).ready(function() {
 	$('#general').on('click', '[id*=saveGeneral]', function () {
 		<?php if(empty($ing['id'])){ ?>
 			if($.trim($("#name").val()) == ''){
-				$('#ingMsg').html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Name is required</div>');
+				$('#ingMsg').html('<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-circle-exclamation mr-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>Name is required</strong></div>');
 				return;
    			}
 		<?php } ?>
@@ -417,9 +396,9 @@ $(document).ready(function() {
 					$('#mgmIngHeaderCAS').html($("#cas").val());
 					$('#IUPAC').html($("#INCI").val());
 					
-					var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+					var msg = '<div class="alert alert-success alert-dismissible"><i class="fa-solid fa-circle-check mr-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 				}else{
-					var msg ='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+					var msg ='<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-circle-exclamation mr-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 				}
 				
 				$('#ingMsg').html(msg);

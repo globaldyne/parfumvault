@@ -3,7 +3,7 @@
 <?php 
 require_once(__ROOT__.'/pages/top.php');
 require_once(__ROOT__.'/inc/settings.php');
-
+require_once(__ROOT__.'/func/php-settings.php');
 ?>
 <script>
 $(function() {
@@ -223,3 +223,45 @@ function get_brand(){
 };
 </script>
 <script src="/js/settings.tabs.js"></script>
+<!-- IMPORT JSON MODAL -->
+<div class="modal fade" id="import_categories_json" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="import_categories_json" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Import categories from a JSON file</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="JSRestMsg"></div>
+        <div class="progress">  
+          <div id="uploadProgressBar" class="progress-bar" role="progressbar" aria-valuemin="0"></div>
+        </div>
+        <div id="backupArea" class="mt-4">
+          <div class="form-group row">
+            <label for="jsonFile" class="col-auto col-form-label">JSON file</label>
+            <div class="col-md">
+              <input type="file" name="jsonFile" id="jsonFile" class="form-control" />
+            </div>
+          </div>
+          <div class="col-md-12 mt-3">
+            <hr />
+            <p><strong>IMPORTANT</strong></p>
+            <ul>
+              <li>
+                <div id="raw" data-size="<?=getMaximumFileUploadSizeRaw()?>">Maximum file size: <strong><?=getMaximumFileUploadSize()?></strong></div>
+              </li>
+              <li>Please make sure you have taken a backup before importing a JSON file</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseBK">Close</button>
+        <button type="submit" name="btnRestore" class="btn btn-primary" id="btnRestoreCategories">Import</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/js/import.categories.js"></script>

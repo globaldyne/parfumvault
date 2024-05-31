@@ -126,7 +126,7 @@ $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE n
 
   <div class="mt-3 col-12">
   	<label for="notes" class="form-label">Notes</label>
-    <textarea name="notes" id="notes" cols="45" rows="5" class="form-control"><?php echo $ing['notes']; ?></textarea>
+    <textarea name="notes" id="notes" cols="45" rows="3" class="form-control"><?php echo $ing['notes']; ?></textarea>
   </div>
   <div class="col-sm dropdown-divider"></div>  
   <div class="mt-3 col-12">

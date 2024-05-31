@@ -237,10 +237,11 @@ if($_POST['manage'] == 'category'){
 if($_POST['action'] == 'delete' && $_POST['catId']){
 	$catId = mysqli_real_escape_string($conn, $_POST['catId']);
 	if(mysqli_query($conn, "DELETE FROM ingCategory WHERE id = '$catId'")){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>Category deleted!</div>';
+		$response["success"] = 'Category deleted';
 	}else{
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>Error deleting category.</div>';
+		$response["error"] = 'Error deleting category';
 	}
+	echo json_encode($response);
 	return;
 }
 
@@ -263,11 +264,10 @@ if($_POST['manage'] == 'add_frmcategory'){
 	
 	if(mysqli_query($conn, "INSERT INTO formulaCategories (name,cname,type) VALUES ('$cat', '".strtolower(str_replace(' ', '',$cat))."', '$type')")){
 		$response["success"] = 'Category '.$cat.' created!';
-		echo json_encode($response);
 	}else{
 		$response["error"] = 'Something went wrong, '.mysqli_error($conn);
-		echo json_encode($response);
 	}
+	echo json_encode($response);
 	return;
 }					
 
@@ -275,37 +275,12 @@ if($_POST['manage'] == 'add_frmcategory'){
 if($_POST['action'] == 'del_frmcategory' && $_POST['catId']){
 	$catId = mysqli_real_escape_string($conn, $_POST['catId']);
 	if(mysqli_query($conn, "DELETE FROM formulaCategories WHERE id = '$catId'")){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>Category deleted!</div>';
+		$response["success"] = 'Category deleted';
 	}else{
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>Error deleting category.</div>';
+		$response["error"] = 'Error deleting category';
 	}
+	echo json_encode($response);
 	return;
-}
-
-//DELETE USER
-if($_POST['action'] == 'delete' && $_POST['userId']){
-	$userId = mysqli_real_escape_string($conn, $_POST['userId']);
-	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM users")) <= 1){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>Error, at least one user needs to exist.</div>';
-		return;	
-	}
-	if(mysqli_query($conn, "DELETE FROM users WHERE id = '$userId'")){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>User deleted!</div>';
-	}else{
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>Error deleting user.</div>';
-	}
-	
-	return;
-}
-
-//DELETE LID
-if($_POST['action'] == 'delete' && $_POST['lidId']){
-	$id = mysqli_real_escape_string($conn, $_POST['lidId']);
-	
-	if(mysqli_query($conn, "DELETE FROM lids WHERE id = '$id'")){
-		echo '<div class="alert alert-success alert-dismissible"><a href="?do=lids" class="close" data-bs-dismiss="alert" aria-label="close">x</a>Item removed!</div>';
-	}
-	return;	
 }
 
 
