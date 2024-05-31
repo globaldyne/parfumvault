@@ -599,17 +599,22 @@ function reload_sup_data() {
                 <input class="form-control" name="supplier_link" type="text" id="supplier_link" />
             </div>
             
-            <label for="supplier_price">Price*</label>
-        	<div class="input-group mb-2">
-                <span class="input-group-text"><?php echo $settings['currency']; ?></span>
-            	<input class="form-control" name="supplier_price" type="text" id="supplier_price" />
+            <div class="row">
+    			<div class="col-md-6">
+                <label for="supplier_price">Price*</label>
+                <div class="input-group mb-2">
+                    <span class="input-group-text"><?php echo $settings['currency']; ?></span>
+                    <input class="form-control" name="supplier_price" type="text" id="supplier_price" />
+                </div>
             </div>
-            
-        	<div class="form-row mb-2">
-    			<label for="supplier_size">Size (<?php if($ing['physical_state'] == '1'){ echo 'ml'; }elseif($ing['physical_state'] == '2'){ echo 'grams'; }else{ echo $settings['mUnit']; }?>)*</label>
-            	<input class="form-control" name="supplier_size" type="text" id="supplier_size" value="10" />
+            <div class="col-md-6">
+                <label for="supplier_size">Size*</label>
+                <div class="input-group mb-2">
+                    <span class="input-group-text"><?php if($ing['physical_state'] == '1'){ echo 'ml'; }elseif($ing['physical_state'] == '2'){ echo 'grams'; }else{ echo $settings['mUnit']; }?></span>
+                    <input class="form-control" name="supplier_size" type="text" id="supplier_size" value="10" />
+                </div>
+                </div>
             </div>
-
         	<div class="form-row mb-2">
     			<label for="supplier_manufacturer">Manufacturer</label>
             	<input class="form-control" name="supplier_manufacturer" type="text" id="supplier_manufacturer" />
@@ -623,10 +628,7 @@ function reload_sup_data() {
     			<label for="purchased">Purchased</label>
 	            <input class="form-control" name="purchased" type="date" id="purchased" />
             </div>
-			<div class="form-row mb-2">
-    			<label for="stock">In stock</label>
-	            <input name="stock" type="text" class="form-control" id="stock" value="0" />
-    	    </div>
+
           	<div class="form-row mb-2">
     			<label for="status">Availability status</label>
                 <select name="status" id="status" class="form-control">
@@ -646,22 +648,33 @@ function reload_sup_data() {
             </div>
           </div>
           
-       	  <div class="col-sm-6">
-			<div class="form-row mb-2">
-    			<label for="supplier_sku">Supplier SKU</label>
-                <input class="form-control" name="supplier_sku" type="text" id="supplier_sku" />
+          <div class="row">
+              <div class="col-sm-6">
+                <div class="form-row mb-2">
+                    <label for="supplier_sku">Supplier SKU</label>
+                    <input class="form-control" name="supplier_sku" type="text" id="supplier_sku" />
+                </div>
+               </div>
+              <div class="col-sm-6">
+
+			  	<div class="form-row mb-2">
+    				<label for="internal_sku">Internal SKU</label>
+                	<input class="form-control" name="internal_sku" type="text" id="internal_sku" />
+            	</div> 
             </div>
-			<div class="form-row mb-2">
-    			<label for="internal_sku">Internal SKU</label>
-                <input class="form-control" name="internal_sku" type="text" id="internal_sku" />
-            </div> 
-			<div class="form-row mb-2">
-    			<label for="storage_location">Storage location</label>
-                <input class="form-control" name="storage_location" type="text" id="storage_location" />
-            </div>
-                           
+            <div class="col-sm-6">
+                <div class="form-row mb-2">
+                    <label for="storage_location">Storage location</label>
+                    <input class="form-control" name="storage_location" type="text" id="storage_location" />
+                </div>
+             </div>
+            <div class="col-sm-6">
+				<div class="form-row mb-2">
+    				<label for="stock">In stock</label>
+	            	<input name="stock" type="text" class="form-control" id="stock" value="0" />
+    	    	</div>
+          	</div>
           </div>
-          
      	</div>
           <div class="dropdown-divider"></div>
           <div class="modal-footer">

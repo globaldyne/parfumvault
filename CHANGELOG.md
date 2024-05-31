@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 10.3
+- Layout update when adding suppliers for ingredients
 - Added JSON import for formula categories
 - Rewrite of categories import to improve ingredients and formula categories import
 - Code clean up
