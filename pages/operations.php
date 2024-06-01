@@ -741,12 +741,67 @@ if ($_GET['action'] == 'importMaking') {
             }
             $stmtMeta->close();
         }
+/*
+		if ($success) {
+            $stmtFormula = $conn->prepare("INSERT IGNORE INTO formulas (name, fid, ingredient, ingredient_id, concentration, dilutant, quantity) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            foreach ($data['makeFormula'] as $d) {
+                $stmtFormula->bind_param("sssssss", $d['name'], $d['fid'], $d['ingredient'], $d['ingredient_id'], $d['concentration'], $d['dilutant'], $d['quantity']);
+                if (!$stmtFormula->execute()) {
+                    $success = false;
+                    $result['error'] = "Error inserting into formulas: " . $stmtFormula->error;
+                    break;
+                }
+            }
+            $stmtFormula->close();
+        }
+*/
+        if (!empty($data['makeFormula'])) {
+            $stmt = $conn->prepare("INSERT INTO `makeFormula` (`fid`, `name`, `ingredient`, `ingredient_id`, `replacement_id`, `concentration`, `dilutant`, `quantity`, `overdose`, `originalQuantity`, `notes`, `skip`, `toAdd`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            foreach ($data['makeFormula'] as $d) {
+                // Fetch ingredient_id
+                $stmtIngredient = $conn->prepare("SELECT id FROM `ingredients` WHERE name = ?");
+                $stmtIngredient->bind_param("s", $d['ingredient_id']);
+                $stmtIngredient->execute();
+                $stmtIngredient->bind_result($ingredient_id);
+                $stmtIngredient->fetch();
+                $stmtIngredient->close();
 
+                // If ingredient not found, insert it and fetch the new id
+                if (empty($ingredient_id)) {
+                    $stmtInsertIngredient = $conn->prepare("INSERT INTO `ingredients` (name) VALUES (?)");
+                    $stmtInsertIngredient->bind_param("s", $d['ingredient']);
+                    if (!$stmtInsertIngredient->execute()) {
+                        $success = false;
+                        $result['error'] = "Error inserting into ingredients: " . $stmtInsertIngredient->error;
+                        break;
+                    }
+                    $ingredient_id = $stmtInsertIngredient->insert_id;
+                    $stmtInsertIngredient->close();
+                }
+
+                // Insert into makeFormula
+                $stmt->bind_param("sssssssssssss", $d['fid'], $d['name'], $d['ingredient'], $ingredient_id, $d['replacement_id'], $d['concentration'], $d['dilutant'], $d['quantity'], $d['overdose'], $d['originalQuantity'], $d['notes'], $d['skip'], $d['toAdd']);
+                if (!$stmt->execute()) {
+                    $success = false;
+                    $result['error'] = "Error inserting into makeFormula: " . $stmt->error;
+                    break;
+                }
+            }
+            $stmt->close();
+        }
 		if ($success) {
             // Insert ignore logic for `formulas`
             $stmtFormula = $conn->prepare("INSERT IGNORE INTO formulas (name, fid, ingredient, ingredient_id, concentration, dilutant, quantity) VALUES (?, ?, ?, ?, ?, ?, ?)");
             foreach ($data['makeFormula'] as $d) {
-                $stmtFormula->bind_param("sssssss", $d['name'], $d['fid'], $d['ingredient'], $d['ingredient_id'], $d['concentration'], $d['dilutant'], $d['quantity']);
+                // Fetch ingredient_id again in case it was updated during the loop
+                $stmtIngredient = $conn->prepare("SELECT id FROM `ingredients` WHERE name = ?");
+                $stmtIngredient->bind_param("s", $d['ingredient']);
+                $stmtIngredient->execute();
+                $stmtIngredient->bind_result($ingredient_id);
+                $stmtIngredient->fetch();
+                $stmtIngredient->close();
+
+                $stmtFormula->bind_param("sssssss", $d['name'], $d['fid'], $d['ingredient'], $ingredient_id, $d['concentration'], $d['dilutant'], $d['quantity']);
                 if (!$stmtFormula->execute()) {
                     $success = false;
                     $result['error'] = "Error inserting into formulas: " . $stmtFormula->error;
