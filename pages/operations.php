@@ -730,6 +730,7 @@ if ($_GET['action'] == 'importMaking') {
         }
 
         if ($success) {
+			//CREATE A FORMULA ENTRY
 			$stmtMeta = $conn->prepare("INSERT INTO formulasMetaData (name, fid, todo) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE name=VALUES(name), todo=VALUES(todo)");
 
             $todo = 1;
@@ -739,6 +740,20 @@ if ($_GET['action'] == 'importMaking') {
                 $result['error'] = "Error inserting into formulasMetaData " . $stmtMeta->error;
             }
             $stmtMeta->close();
+        }
+
+		if ($success) {
+            // Insert ignore logic for `formulas`
+            $stmtFormula = $conn->prepare("INSERT IGNORE INTO formulas (name, fid, ingredient, ingredient_id, concentration, dilutant, quantity) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            foreach ($data['makeFormula'] as $d) {
+                $stmtFormula->bind_param("sssssss", $d['name'], $d['fid'], $d['ingredient'], $d['ingredient_id'], $d['concentration'], $d['dilutant'], $d['quantity']);
+                if (!$stmtFormula->execute()) {
+                    $success = false;
+                    $result['error'] = "Error inserting into formulas: " . $stmtFormula->error;
+                    break;
+                }
+            }
+            $stmtFormula->close();
         }
 
         if ($success) {

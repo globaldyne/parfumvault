@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 10.4
+- Auto create main formula if not exists when you import a formula to make data
 
 ### Version 10.3
 - Added JSON import for Making Formulas
