@@ -1556,10 +1556,11 @@ if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'note_impact'){
 
 	$query = "UPDATE ingredients SET impact_top = '$impact_top',impact_heart = '$impact_heart',impact_base = '$impact_base' WHERE id='$ingID'";
 	if(mysqli_query($conn, $query)){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>Note impact has been updated!</div>';
+		$response["success"] = 'Note impact has been updated';
 	}else{
-		echo '<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> '.mysqli_error($conn).'</div>';
+		$response["error"] = 'Error: '.mysqli_error($conn);
 	}
+	echo json_encode($response);
 	return;
 }
 

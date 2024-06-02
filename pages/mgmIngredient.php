@@ -350,6 +350,7 @@ body {
 </div>
 
 
+
 <script>
 
 $(document).ready(function() {
@@ -358,7 +359,9 @@ $(document).ready(function() {
 	$('#general').on('click', '[id*=saveGeneral]', function () {
 		<?php if(empty($ing['id'])){ ?>
 			if($.trim($("#name").val()) == ''){
-				$('#ingMsg').html('<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-circle-exclamation mr-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>Name is required</strong></div>');
+				$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>Ingredient name is required');
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
 				return;
    			}
 		<?php } ?>
@@ -396,13 +399,14 @@ $(document).ready(function() {
 					$('#mgmIngHeaderCAS').html($("#cas").val());
 					$('#IUPAC').html($("#INCI").val());
 					
-					var msg = '<div class="alert alert-success alert-dismissible"><i class="fa-solid fa-circle-check mr-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+					$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+					$('.toast-header').removeClass().addClass('toast-header alert-success');
 				}else{
-					var msg ='<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-circle-exclamation mr-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+					$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+					$('.toast-header').removeClass().addClass('toast-header alert-danger');
 				}
-				
-				$('#ingMsg').html(msg);
-				
+				$('.toast').toast('show');
+						
 				if ($('#name').val()) {
 					window.location = 'mgmIngredient.php?id=' + btoa($('#name').val());
 				}
@@ -433,6 +437,16 @@ $(document).ready(function() {
 <script src="/js/ingredient.tabs.js"></script>
 
 </div>
+<!-- TOAST -->
+<div class="position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 11">
+  	<div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true">
+    	<div class="toast-header">
+      		<strong class="me-auto" id="toast-title">...</strong>
+      		<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+  		</div>
+	</div>
+</div>
+
 </div>
 </body>
 </html>

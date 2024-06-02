@@ -1,5 +1,7 @@
 # CHANGELOG
 ### Version 10.5
+- Added toast type messages for ingredient managment
+- Minor UI updates for ingredient management
 
 ### Version 10.4
 - Hide skipped materials when making a formula

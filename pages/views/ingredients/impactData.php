@@ -15,40 +15,47 @@ $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT id,impact_top,impact_heart
 
 <h3>Note Impact</h3>
 <hr>
-<table width="100%" border="0">
-    <tr>
-        <td width="9%" height="40">Top:</td>
-        <td width="19%"><select name="impact_top" id="impact_top" class="form-control">
-            <option value="none" selected="selected">None</option>
-            <option value="100" <?php if($ing['impact_top']=="100") echo 'selected="selected"'; ?> >High</option>
-            <option value="50" <?php if($ing['impact_top']=="50") echo 'selected="selected"'; ?> >Medium</option>						
-            <option value="10" <?php if($ing['impact_top']=="10") echo 'selected="selected"'; ?> >Low</option>						
-        </select></td>
-        <td width="72%">&nbsp;</td>
-    </tr>
-    <tr>
-        <td height="40">Heart:</td>
-        <td><select name="impact_heart" id="impact_heart" class="form-control">
-            <option value="none" selected="selected">None</option>
-            <option value="100" <?php if($ing['impact_heart']=="100") echo 'selected="selected"'; ?> >High</option>
-            <option value="50" <?php if($ing['impact_heart']=="50") echo 'selected="selected"'; ?> >Medium</option>
-            <option value="10" <?php if($ing['impact_heart']=="10") echo 'selected="selected"'; ?> >Low</option>
-        </select></td>
-        <td>&nbsp;</td>
-    </tr>
-    <tr>
-        <td height="40">Base:</td>
-        <td><select name="impact_base" id="impact_base" class="form-control">
-            <option value="none" selected="selected">None</option>
-            <option value="100" <?php if($ing['impact_base']=="100") echo 'selected="selected"'; ?> >High</option>
-            <option value="50" <?php if($ing['impact_base']=="50") echo 'selected="selected"'; ?> >Medium</option>
-            <option value="10" <?php if($ing['impact_base']=="10") echo 'selected="selected"'; ?> >Low</option>
-        </select></td>
-        <td>&nbsp;</td>
-    </tr>
-</table>
-<hr />
-<p><input type="submit" name="save" class="btn btn-info" id="saveNoteImpact" value="Save" /></p>
+<div class="container">
+    <div class="row mb-3">
+        <label for="impact_top" class="col-sm-1 col-form-label">Top</label>
+        <div class="col-sm-3">
+            <select name="impact_top" id="impact_top" class="form-control">
+                <option value="none" selected="selected">None</option>
+                <option value="100" <?php if($ing['impact_top']=="100") echo 'selected="selected"'; ?> >High</option>
+                <option value="50" <?php if($ing['impact_top']=="50") echo 'selected="selected"'; ?> >Medium</option>						
+                <option value="10" <?php if($ing['impact_top']=="10") echo 'selected="selected"'; ?> >Low</option>						
+            </select>
+        </div>
+        <div class="col-sm-8"></div>
+    </div>
+    <div class="row mb-3">
+        <label for="impact_heart" class="col-sm-1 col-form-label">Heart</label>
+        <div class="col-sm-3">
+            <select name="impact_heart" id="impact_heart" class="form-control">
+                <option value="none" selected="selected">None</option>
+                <option value="100" <?php if($ing['impact_heart']=="100") echo 'selected="selected"'; ?> >High</option>
+                <option value="50" <?php if($ing['impact_heart']=="50") echo 'selected="selected"'; ?> >Medium</option>
+                <option value="10" <?php if($ing['impact_heart']=="10") echo 'selected="selected"'; ?> >Low</option>
+            </select>
+        </div>
+        <div class="col-sm-8"></div>
+    </div>
+    <div class="row mb-3">
+        <label for="impact_base" class="col-sm-1 col-form-label">Base</label>
+        <div class="col-sm-3">
+            <select name="impact_base" id="impact_base" class="form-control">
+                <option value="none" selected="selected">None</option>
+                <option value="100" <?php if($ing['impact_base']=="100") echo 'selected="selected"'; ?> >High</option>
+                <option value="50" <?php if($ing['impact_base']=="50") echo 'selected="selected"'; ?> >Medium</option>
+                <option value="10" <?php if($ing['impact_base']=="10") echo 'selected="selected"'; ?> >Low</option>
+            </select>
+        </div>
+        <div class="col-sm-8"></div>
+    </div>
+    <hr />
+    <input type="submit" name="save" class="btn btn-primary" id="saveNoteImpact" value="Save" />
+</div>
+
 <script>
 $('#note_impact').on('click', '[id*=saveNoteImpact]', function () {
 	$.ajax({ 
@@ -62,9 +69,16 @@ $('#note_impact').on('click', '[id*=saveNoteImpact]', function () {
 			impact_base: $("#impact_base").val(),
 			impact_heart: $("#impact_heart").val(),
 		},
-		dataType: 'html',
+		dataType: 'json',
 		success: function (data) {
-			$('#ingMsg').html(data);
+			if(data.success){
+				$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+				$('.toast-header').removeClass().addClass('toast-header alert-success');
+			}else{
+				$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			}
+			$('.toast').toast('show');
 		}
 	});
 });

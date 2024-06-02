@@ -15,49 +15,66 @@ $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT id,tenacity,flash_point,ch
 
 ?>
 <h3>Techical Data</h3>
-	<hr>
-	<table width="100%" border="0">
-		<tr>
-			<td width="20%">Tenacity:</td>
-			<td width="80%" colspan="3"><input name="tenacity" type="text" class="form-control" id="tenacity" value="<?php echo $ing['tenacity']; ?>"/></td>
-		</tr>
-		<tr>
-		  <td>Relative Odor Impact:</td>
-		  <td colspan="3"><input name="rdi" type="text" class="form-control" id="rdi" value="<?php echo $ing['rdi']; ?>"/></td>
-	  </tr>
-		<tr>
-			<td>Flash Point:</td>
-			<td colspan="3"><input name="flash_point" type="text" class="form-control" id="flash_point" value="<?php echo $ing['flash_point']; ?>"/></td>
-		</tr>
-		<tr>
-			<td>Chemical Name:</td>
-			<td colspan="3"><input name="chemical_name" type="text" class="form-control" id="chemical_name" value="<?php echo $ing['chemical_name']; ?>"/></td>
-		</tr>
-		<tr>
-			<td>Molecular Formula:</td>
-			<td colspan="3">
+<hr>
+<div class="container">
+    <div class="row mb-3">
+        <label for="tenacity" class="col-sm-2 col-form-label">Tenacity</label>
+        <div class="col-sm-10">
+            <input name="tenacity" type="text" class="form-control" id="tenacity" value="<?php echo $ing['tenacity']; ?>"/>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label for="rdi" class="col-sm-2 col-form-label">Relative Odor Impact</label>
+        <div class="col-sm-10">
+            <input name="rdi" type="text" class="form-control" id="rdi" value="<?php echo $ing['rdi']; ?>"/>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label for="flash_point" class="col-sm-2 col-form-label">Flash Point</label>
+        <div class="col-sm-10">
+            <input name="flash_point" type="text" class="form-control" id="flash_point" value="<?php echo $ing['flash_point']; ?>"/>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label for="chemical_name" class="col-sm-2 col-form-label">Chemical Name</label>
+        <div class="col-sm-10">
+            <input name="chemical_name" type="text" class="form-control" id="chemical_name" value="<?php echo $ing['chemical_name']; ?>"/>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label for="molecularFormula" class="col-sm-2 col-form-label">Molecular Formula</label>
+        <div class="col-sm-10">
             <input name="formula" type="text" class="form-control" id="molecularFormula" value="<?php echo $ing['formula']; ?>">
-			</td>
-		</tr>
-		<tr>
-			<td>Log/P:</td>
-			<td colspan="3"><input name="logp" type="text" class="form-control" id="logp" value="<?php echo $ing['logp']; ?>"/></td>
-		</tr>
-		<tr>
-			<td>Soluble in:</td>
-			<td colspan="3"><input name="soluble" type="text" class="form-control" id="soluble" value="<?php echo $ing['soluble']; ?>"/></td>
-		</tr>
-		<tr>
-			<td>Molecular Weight:</td>
-			<td colspan="3"><input name="molecularWeight" type="text" class="form-control" id="molecularWeight" value="<?php echo $ing['molecularWeight']; ?>"/></td>
-		</tr>
-		<tr>
-			<td>Appearance:</td>
-			<td colspan="3"><input name="appearance" type="text" class="form-control" id="appearance" value="<?php echo $ing['appearance']; ?>"/></td>
-		</tr>
-	</table>
-<hr />
-	<p><input type="submit" name="save" class="btn btn-info" id="saveTechData" value="Save" /></p>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label for="logp" class="col-sm-2 col-form-label">Log/P</label>
+        <div class="col-sm-10">
+            <input name="logp" type="text" class="form-control" id="logp" value="<?php echo $ing['logp']; ?>"/>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label for="soluble" class="col-sm-2 col-form-label">Soluble in</label>
+        <div class="col-sm-10">
+            <input name="soluble" type="text" class="form-control" id="soluble" value="<?php echo $ing['soluble']; ?>"/>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label for="molecularWeight" class="col-sm-2 col-form-label">Molecular Weight</label>
+        <div class="col-sm-10">
+            <input name="molecularWeight" type="text" class="form-control" id="molecularWeight" value="<?php echo $ing['molecularWeight']; ?>"/>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label for="appearance" class="col-sm-2 col-form-label">Appearance</label>
+        <div class="col-sm-10">
+            <input name="appearance" type="text" class="form-control" id="appearance" value="<?php echo $ing['appearance']; ?>"/>
+        </div>
+    </div>
+    <hr />
+    <input type="submit" name="save" class="btn btn-primary" id="saveTechData" value="Save" />
+</div>
+
     
 <script>
 
@@ -82,11 +99,13 @@ $('#saveTechData').click(function() {
 		dataType: 'json',
 		success: function (data) {
 			if(data.success){
-				var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>';
+				$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+				$('.toast-header').removeClass().addClass('toast-header alert-success');
 			}else{
-				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
+				$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
 			}
-			$('#ingMsg').html(msg);
+			$('.toast').toast('show');
 		}
 	});
 });
