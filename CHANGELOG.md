@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 10.4
+- Hide skipped materials when making a formula
 - Auto create main formula if not exists when you import a formula to make data
 
 ### Version 10.3
