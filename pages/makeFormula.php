@@ -216,11 +216,11 @@ $(document).ready(function() {
 			  	$(row).find('td:eq(0),td:eq(1),td:eq(2),td:eq(3)').addClass('skipped');
 		  	}
 		  	$(row).addClass('pv-zoom');
-			if (data.toAdd == 0) {
+			if (data.toAdd == 0 || data.toSkip == 1) {
         		$(row).addClass('d-none');
     		}
 			$('#toggleAdded').click(function() {
-				if (data.toAdd == 0) {
+				if (data.toAdd == 0 || data.toSkip == 1) {
 					$(row).toggleClass('d-none');
 				}
 			});
