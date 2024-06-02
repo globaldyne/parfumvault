@@ -615,15 +615,21 @@ function reload_sup_data() {
                 </div>
                 </div>
             </div>
-        	<div class="form-row mb-2">
-    			<label for="supplier_manufacturer">Manufacturer</label>
-            	<input class="form-control" name="supplier_manufacturer" type="text" id="supplier_manufacturer" />
-            </div>
             
-            <div class="form-row mb-2">
-    			<label for="supplier_batch">Batch</label>
-           		<input class="form-control" name="supplier_batch" type="text" id="supplier_batch" />
+           <div class="row">
+			<div class="col-md-6">
+                <div class="form-row mb-2">
+                    <label for="supplier_manufacturer">Manufacturer</label>
+                    <input class="form-control" name="supplier_manufacturer" type="text" id="supplier_manufacturer" />
+                </div>
             </div>
+            <div class="col-md-6">
+                <div class="form-row mb-2">
+                    <label for="supplier_batch">Batch</label>
+                    <input class="form-control" name="supplier_batch" type="text" id="supplier_batch" />
+                </div>
+            </div>
+           </div>
 			<div class="form-row mb-2">
     			<label for="purchased">Purchased</label>
 	            <input class="form-control" name="purchased" type="date" id="purchased" />

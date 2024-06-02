@@ -219,7 +219,7 @@ $('#tdDataScheduled').on('click', '[id*=pend_remove]', function () {
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Import categories from a JSON file</h5>
+        <h5 class="modal-title">Import a JSON file</h5>
         <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>

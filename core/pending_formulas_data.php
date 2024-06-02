@@ -83,7 +83,7 @@ if($meta == 0){
 	}
 	
 	$m['total_ingredients'] = (int)countElement("$t WHERE fid = '".$_GET['fid']."'",$conn);
-	$m['total_ingredients_left'] = (int)countElement("$t WHERE fid = '".$_GET['fid']."' AND toAdd = '1'",$conn);	
+	$m['total_ingredients_left'] = (int)countElement("$t WHERE fid = '".$_GET['fid']."' AND toAdd = '1' AND skip = '0'",$conn);	
 	$m['total_quantity'] =  (float)ml2l($mg['total_mg'], $settings['qStep'], $settings['mUnit']);
 	$m['total_quantity_left'] =  (float)ml2l($mg['total_mg_left'], $settings['qStep'], $settings['mUnit']);
 	$m['quantity_unit'] = (string)$settings['mUnit'];
@@ -108,7 +108,7 @@ if($meta == 0){
 		$r['name'] = (string)$rq['name'];
 		$q2 = mysqli_fetch_array(mysqli_query($conn, "SELECT toAdd FROM $t WHERE fid = '".$rq['fid']."'"));
 		$r['total_ingredients'] = (int)countElement("$t WHERE fid = '".$rq['fid']."'",$conn);
-		$r['total_ingredients_left'] = (int)countElement("$t WHERE fid = '".$rq['fid']."' AND toAdd = '1'",$conn);	
+		$r['total_ingredients_left'] = (int)countElement("$t WHERE fid = '".$rq['fid']."' AND toAdd = '1' AND skip = '0'",$conn);	
 		$r['toAdd'] = (int)$q2['toAdd'];
 		$r['scheduledOn'] = (string)$rq['scheduledOn'];
 		$r['madeOn'] = (string)$rq['madeOn'] ?: 'In progress';
