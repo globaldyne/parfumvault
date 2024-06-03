@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 10.5
+- Formula comparison minor updates
 - Auto create ingredient when importing a formula from Marketplace if not exists locally 
 - Added toast type messages for ingredient managment
 - Minor UI updates for ingredient management
