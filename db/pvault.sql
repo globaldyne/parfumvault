@@ -503,6 +503,7 @@ CREATE TABLE `documents` (
  `notes` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
  `docData` longblob NOT NULL,
  `isBatch` INT NOT NULL DEFAULT '0', 
+ `isSDS` INT NOT NULL DEFAULT '0', 
  `created` datetime NOT NULL DEFAULT current_timestamp(),
  `updated` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
  PRIMARY KEY (`id`),

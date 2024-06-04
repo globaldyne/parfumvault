@@ -1,5 +1,10 @@
 # CHANGELOG
 ### Version 10.5
+- SDS in ingredient has been renamed to a Document
+- Added synonyms in document generation for ingredients
+- Minor improvements when no ingredients or formulas in the database
+- Edit customer form update to BS5
+- Introduse SDS creation (PREVIEW)
 - Formula comparison minor updates
 - Auto create ingredient when importing a formula from Marketplace if not exists locally 
 - Added toast type messages for ingredient managment

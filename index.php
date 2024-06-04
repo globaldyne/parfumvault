@@ -251,13 +251,21 @@ function chkUpdate() {
           <i class="fas fa-fw fa-chart-area"></i>
           <span>Statistics</span></a>
         </li>
-      <hr class="sidebar-divider d-none d-md-block">
+        
+      	<hr class="sidebar-divider d-none d-md-block">
         <li class="nav-item">
         <a class="nav-link" href="/?do=marketplace">
           <i class="fas fa-fw fa-store"></i>
           <span>Marketplace</span></a>
        </li>
-      
+       <hr class="sidebar-divider d-none d-md-block">
+        <li class="nav-item">
+        <a class="nav-link" href="/?do=genSDS">
+          <i class="fas fa-square-poll-horizontal"></i>
+          My SDSs
+          <span class="mr-5 mt-2 position-absolute top-0 translate-middle badge badge-danger badge-counter">BETA</span>
+          </a>
+       </li>
       <hr class="sidebar-divider d-none d-md-block">
     </ul>
     <?php
@@ -317,7 +325,9 @@ function chkUpdate() {
 		}elseif($_GET['do'] == 'compareFormulas'){
 			require_once(__ROOT__.'/pages/compareFormulas.php');
 		}elseif($_GET['do'] == 'compounds'){
-			require_once(__ROOT__.'/pages/compounds.php');	
+			require_once(__ROOT__.'/pages/compounds.php');
+		}elseif($_GET['do'] == 'genSDS'){
+			require_once(__ROOT__.'/pages/views/regulatory/listSDS.php');				
 		}else{
 			require_once(__ROOT__.'/pages/dashboard.php');
 		}

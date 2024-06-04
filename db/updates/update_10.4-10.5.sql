@@ -1,0 +1,1 @@
+ALTER TABLE `documents` ADD `isSDS` INT NOT NULL DEFAULT '0' AFTER `isBatch`; 

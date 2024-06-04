@@ -90,7 +90,7 @@ body {
 						<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#cloneIng"><i class="fa-solid fa-copy mx-2"></i>Clone ingredient</a></li>
 						<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#renameIng"><i class="fa-regular fa-pen-to-square mx-2"></i>Rename ingredient</a></li>
                         <li><a class="dropdown-item" href="/pages/export.php?format=json&kind=single-ingredient&id=<?=$ing['id']?>"><i class="fas fa-download mx-2"></i>Export as JSON</a></li>
-						<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#genSDS"><i class="fa-solid fa-file-prescription mx-2"></i>Generate SDS</a></li>
+						<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#genDOC"><i class="fa-solid fa-file-prescription mx-2"></i>Generate document</a></li>
 						<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#genQRC"><i class="fa-solid fa-qrcode mx-2"></i>Generate QR Code</a></li>
 					</div>
 				</div>
@@ -329,20 +329,20 @@ body {
 	</div>
 </div>
 
-<!-- Modal Gen SDS-->
-<div class="modal fade" id="genSDS" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="genSDS" aria-hidden="true">
+<!-- Modal Gen DOC-->
+<div class="modal fade" id="genDOC" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="genDOC" aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title">Generate SDS for <?php echo $ing['name']; ?></h5>
+				<h5 class="modal-title">Generate document for <?php echo $ing['name']; ?></h5>
 			</div>
 			<div class="modal-body">
                 <div id="warn">
-                <div class="alert alert-warning"><strong>TECH PREVIEW: This feature its under development and in preview state at the moment.</strong></div>
+                <div class="alert alert-warning"><strong><i class="fa-solid fa-triangle-exclamation mx-2"></i>TECH PREVIEW: This feature its under development and in preview state, use with caution.</strong></div>
 				<div id="sds_res"></div>                               
 				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" id="dis-genSDS" data-bs-dismiss="modal">Close</button>
-					<input type="submit" name="button" class="btn btn-primary" id="generateSDS" value="Generate">
+					<button type="button" class="btn btn-secondary" id="dis-genDOC" data-bs-dismiss="modal">Close</button>
+					<input type="submit" name="button" class="btn btn-primary" id="generateDOC" value="Generate">
 				</div>
 			</div>
 		</div>

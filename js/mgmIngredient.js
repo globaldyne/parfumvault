@@ -200,19 +200,19 @@ $('#cloneIng').on('click', '[id*=cloneME]', function () {
 });
 
 
-$('#genSDS').on('click', '[id*=dis-genSDS]', function () {
+$('#genDOC').on('click', '[id*=dis-genDOC]', function () {
 	$("#sds_res").html('');
 });
 	
 //Generate ing sds
-$('#genSDS').on('click', '[id*=generateSDS]', function () {
-	$("#sds_res").html('<div class="alert alert-info"><img src="/img/loading.gif"/> Please wait, we generating your SDS</div>');
+$('#genDOC').on('click', '[id*=generateDOC]', function () {
+	$("#sds_res").html('<div class="alert alert-info"><img src="/img/loading.gif"/> Please wait, we generating your document</div>');
 
 	$.ajax({ 
 		url: '/core/genDoc.php', 
 		type: 'POST',
 		data: {
-			action: 'generateSDS',
+			action: 'generateDOC',
 			kind: 'ingredient',
 			name: myIngName,
 			id: myIngID,

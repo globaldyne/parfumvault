@@ -10,7 +10,21 @@ require_once(__ROOT__.'/func/sanChar.php');
 require_once(__ROOT__.'/func/priceScrape.php');
 require_once(__ROOT__.'/func/create_thumb.php');
 require_once(__ROOT__.'/func/pvFileGet.php');
+
+//DELETE SDS
+if($_POST['action'] == 'delete' && $_POST['SDSID'] && $_POST['type'] == 'SDS'){
+	$id = mysqli_real_escape_string($conn, $_POST['SDSID']);
 	
+	if(mysqli_query($conn, "DELETE FROM documents WHERE id = '$id' AND isSDS = '1'")){
+		$response["success"] = 'SDS deleted';
+	}else{
+		$response["error"] = 'Something went wrong '.mysqli_error($conn);
+	}
+	
+	echo json_encode($response);
+	return;	
+}
+
 //ADD INVENTORY COMPOUND
 if($_POST['action'] == 'add' && $_POST['type'] == 'invCmp'){
 	$name = mysqli_real_escape_string($conn, $_POST['cmp_name']);

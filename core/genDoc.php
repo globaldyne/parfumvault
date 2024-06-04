@@ -15,7 +15,7 @@ file_put_contents($tempImagePath, $imageData);
 define('__PVLOGO__', $tempImagePath ?:  __ROOT__.'/img/logo.png');
 
 
-if ($_REQUEST['action'] == 'generateSDS' && $_REQUEST['kind'] == 'ingredient'){
+if ($_REQUEST['action'] == 'generateDOC' && $_REQUEST['kind'] == 'ingredient'){
 	
 	$ingName = mysqli_real_escape_string($conn, $_REQUEST['name']);
 	$ingID = $_REQUEST['id'];
@@ -108,6 +108,23 @@ if ($_REQUEST['action'] == 'generateSDS' && $_REQUEST['kind'] == 'ingredient'){
 		$ingredient_compounds_count++;
 	}
 	
+	// Fetch ingredient synonyms
+	$stmt = $conn->prepare("SELECT synonym,source FROM synonyms WHERE ing = ?");
+	$stmt->bind_param("s", $g['name']);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	
+	$syn = [];
+	while ($res = $result->fetch_assoc()) {
+		$c = [
+			'synonym' => (string)$res['synonym'],
+			'source' => (string)$res['source'],
+		];
+		$syn[] = $c;
+	}
+	
+
+
 	// Fetch GHS information
 	$stmt = $conn->prepare("SELECT id, ingID, GHS FROM ingSafetyInfo WHERE ingID = ?");
 	$stmt->bind_param("i", $ingID);
@@ -142,6 +159,7 @@ if ($_REQUEST['action'] == 'generateSDS' && $_REQUEST['kind'] == 'ingredient'){
 		'IFRA' => $ifra,
 		'Technical Data' => $tech,
 		'Compositions' => $cmp,
+		'Synonyms' => $syn,
 		'contact' => [
 			"Name" => $settings['brandName'],
 			"Address" => $settings['brandAddress'],
@@ -221,6 +239,25 @@ if ($_REQUEST['action'] == 'generateSDS' && $_REQUEST['kind'] == 'ingredient'){
 				}
 				$pdf->Ln();
 			}
+		
+		} else if ($title == 'Synonyms' && is_array($content) && !empty($content)) {
+			$pdf->SetFillColor(211, 211, 211); // Light gray
+			$headers = array_keys($content[0]);
+			
+			foreach ($headers as $header) {
+				$pdf->Cell(95, 10, ucfirst($header), 1, 0, 'C', true);
+			}
+			$pdf->Ln();
+	
+			$pdf->SetFont('Arial', '', 7);
+			foreach ($content as $row) {
+				foreach ($headers as $header) {
+					$cellText =  $row[$header];
+					$pdf->Cell(95, 5, $cellText, 1);
+				}
+				$pdf->Ln();
+			}
+			
 		} else if ($title == 'General' && is_array($content) && !empty($content)) {
 			foreach ($content as $ingredient) {
 				foreach ($ingredient as $key => $value) {
@@ -288,6 +325,7 @@ if ($_REQUEST['action'] == 'generateSDS' && $_REQUEST['kind'] == 'ingredient'){
 		addSection($pdf, 'Contact', $data['contact']);
 		unset($data['contact']);
 	}
+	
 	foreach ($data as $section => $content) {
 		addSection($pdf, ucfirst($section), $content);
 	}
@@ -296,7 +334,7 @@ if ($_REQUEST['action'] == 'generateSDS' && $_REQUEST['kind'] == 'ingredient'){
 
 
 	//DIRTY WAY TO CLEANUP //TODO
-	mysqli_query($conn, "DELETE FROM documents WHERE ownerID = '$ingID' AND type = '0' AND notes = 'PV Generated'");
+	mysqli_query($conn, "DELETE FROM documents WHERE ownerID = '$ingID' AND type = '0' AND isSDS = '0' AND notes = 'PV Generated'");
 	
 	if(mysqli_query($conn, "INSERT INTO documents(ownerID,type,name,docData,notes) values('$ingID','0','$ingName','$content','PV Generated')")){
 		$response["success"] = '<i class="fa-solid fa-file-pdf mr-2"></i><a href="/pages/viewDoc.php?id='.mysqli_insert_id($conn).'&type=internal" target="_blank">Download file</a>';

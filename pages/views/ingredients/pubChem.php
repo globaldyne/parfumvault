@@ -102,7 +102,7 @@ $('#pubChemDataJ').on('click', '[id*=btnUpdatePub]', function () {
              <div class="col dropdown-divider"></div>
              <div class="row mt-2">
              	<div class="col">
-                	<input type="submit" class="btn btn-info" name="btnUpdatePub" id="btnUpdatePub" value="Update data" />
+                	<input type="submit" class="btn btn-primary" name="btnUpdatePub" id="btnUpdatePub" value="Update data" />
             	</div>
              </div>                          
         </div>
