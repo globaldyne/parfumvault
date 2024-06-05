@@ -1357,9 +1357,11 @@ if($_GET['composition'] == 'update'){
 	$value = rtrim(mysqli_real_escape_string($conn, $_POST['value']),'%');
 	$id = mysqli_real_escape_string($conn, $_POST['pk']);
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
-	$ing = base64_decode($_GET['ing']);
+	//$ing = base64_decode($_GET['ing']);
 
-	mysqli_query($conn, "UPDATE ingredient_compounds SET $name = '$value' WHERE id = '$id' AND ing='$ing'");
+//	mysqli_query($conn, "UPDATE ingredient_compounds SET $name = '$value' WHERE id = '$id' AND ing='$ing'");
+	mysqli_query($conn, "UPDATE ingredient_compounds SET $name = '$value' WHERE id = '$id'");
+
 	return;
 }
 
@@ -1367,9 +1369,9 @@ if($_GET['composition'] == 'update'){
 if($_POST['composition'] == 'delete'){
 
 	$id = mysqli_real_escape_string($conn, $_POST['allgID']);
-	$ing = base64_decode($_POST['ing']);
+	//$ing = base64_decode($_POST['ing']);
 
-	$delQ = mysqli_query($conn, "DELETE FROM ingredient_compounds WHERE id = '$id' AND ing='$ing'");	
+	$delQ = mysqli_query($conn, "DELETE FROM ingredient_compounds WHERE id = '$id'");	
 	if($delQ){
 		$response["success"] = '<strong>'.$ing.'</strong> removed!';
 		echo json_encode($response);

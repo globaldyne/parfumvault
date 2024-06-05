@@ -31,6 +31,7 @@ $ingName = mysqli_real_escape_string($conn, $_GET["name"]);
           <th>CAS</th>
           <th>EINECS</th>
           <th>Percentage</th>
+          <th>IFRA Regulated</th>
           <th>GHS Classification</th>
           <th>Declare</th>
           <th></th>
@@ -43,10 +44,15 @@ $ingName = mysqli_real_escape_string($conn, $_GET["name"]);
 $(document).ready(function() {
 
 	$('[data-bs-toggle="tooltip"]').tooltip();
-  	var tdCompositions = $('#tdCompositions').DataTable( {
+	var tdCompositions;
+ 	if ($.fn.DataTable.isDataTable('#tdCompositions')) {
+            // Destroy existing DataTable instance
+            $('#tdCompositions').DataTable().destroy();
+        }
+  	tdCompositions = $('#tdCompositions').DataTable( {
 		columnDefs: [
 			{ className: 'text-center', targets: '_all' },
-			{ orderable: false, targets: [4,6] },
+			{ orderable: false, targets: [5, 7] },
 		],
 		dom: 'lfrtip',
 		processing: true,
@@ -58,12 +64,13 @@ $(document).ready(function() {
 			},
 		ajax: {	
 			url: '/core/list_ing_compos_data.php?id=<?=$ingName?>' 
-			},
+		},
 		columns: [
 			  { data : 'name', title: 'Name', render: cmpName },
 			  { data : 'cas', title: 'CAS', render: cmpCAS},
 			  { data : 'ec', title: 'EINECS', render: cmpEC},
 			  { data : 'percentage', title: 'Percentage', render: cmpPerc},
+			  { data : 'IFRA', title: 'IFRA Regulated%'},
 			  { data : 'GHS', title: 'GHS Classification', render: cmpGHS},
 			  { data : 'toDeclare', title: 'Declare', render: cmpDeclare},
 			  { data : null, title: '', render: cmpActions},		   

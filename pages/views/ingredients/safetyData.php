@@ -80,7 +80,7 @@ $(document).ready(function() {
 	
 	$('#safety_info').on('changed.bs.select',  function () {
 		$.ajax({ 
-			url: "update_data.php", 
+			url: "/pages/update_data.php", 
 			type: "POST",
 			data: {
 				manage: "ingredient",
@@ -106,7 +106,7 @@ $(document).ready(function() {
 		var imageId = $(this).data('id');
 		$.ajax({
 			type: "POST",
-			url: "update_data.php",
+			url: "/pages/update_data.php",
 			data: { 
 				manage: "ingredient",
 				tab: "safety_info",

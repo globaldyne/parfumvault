@@ -1,5 +1,8 @@
 # CHANGELOG
 ### Version 10.5
+- Added IFRA limit in composition if found in library
+- Fix incorrect integer format for compos json
+- Remove ing filter when update data for compositions
 - SDS in ingredient has been renamed to a Document
 - Added synonyms in document generation for ingredients
 - Minor improvements when no ingredients or formulas in the database
