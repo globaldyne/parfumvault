@@ -160,7 +160,7 @@ $('#tdCompositions').editable({
 	container: 'body',
     selector: 'i.name',
     type: 'POST',
-    url: "update_data.php?composition=update&ing=<?=$ingName;?>",
+    url: "/pages/update_data.php?composition=update&ing=<?=$ingName;?>",
     title: 'Name'
 });
 
@@ -168,7 +168,7 @@ $('#tdCompositions').editable({
    container: 'body',
    selector: 'i.cas',
    type: 'POST',
-   url: "update_data.php?composition=update&ing=<?=$ingName;?>",
+   url: "/pages/update_data.php?composition=update&ing=<?=$ingName;?>",
    title: 'CAS'
 });
 
@@ -176,7 +176,7 @@ $('#tdCompositions').editable({
    container: 'body',
    selector: 'i.ec',
    type: 'POST',
-   url: "update_data.php?composition=update&ing=<?=$ingName;?>",
+   url: "/pages/update_data.php?composition=update&ing=<?=$ingName;?>",
    title: 'EINECS',
 });
 
@@ -184,7 +184,7 @@ $('#tdCompositions').editable({
     container: 'body',
     selector: 'i.percentage',
     type: 'POST',
-    url: "update_data.php?composition=update&ing=<?=$ingName;?>",
+    url: "/pages/update_data.php?composition=update&ing=<?=$ingName;?>",
     title: 'Percentage'
 });
 
@@ -192,7 +192,7 @@ $('#tdCompositions').editable({
     container: 'body',
     selector: 'i.GHS',
     type: 'POST',
-    url: "update_data.php?composition=update&ing=<?=$ingName;?>",
+    url: "/pages/update_data.php?composition=update&ing=<?=$ingName;?>",
     title: 'GHS'
 });
 
@@ -204,7 +204,7 @@ $('#tdCompositions').editable({
   	container: 'body',
   	selector: 'i.toDeclare',
   	type: 'POST',
-	url: "update_data.php?composition=update&ing=<?=$ingName;?>",
+	url: "/pages/update_data.php?composition=update&ing=<?=$ingName;?>",
 	title: 'To be declared',
 	source: [
 			 {value: '0', text: 'No'},
@@ -230,7 +230,7 @@ $('#tdCompositions').on('click', '[id*=cmpDel]', function () {
                callback: function (){
 	    			
 				$.ajax({ 
-					url: 'update_data.php', 
+					url: '/pages/update_data.php', 
 					type: 'POST',
 					data: {
 						composition: 'delete',
@@ -260,7 +260,7 @@ $('#tdCompositions').on('click', '[id*=cmpDel]', function () {
 
 $('#addComposition').on('click', '[id*=cmpAdd]', function () {
 	$.ajax({ 
-		url: 'update_data.php', 
+		url: '/pages/update_data.php', 
 		type: 'POST',
 		data: {
 			composition: 'add',
@@ -303,7 +303,7 @@ $('#addCSV').on('click', '[id*=cmpCSV]', function () {
 	if(files.length > 0 ){
 	fd.append('CSVFile',files[0]);
 	$.ajax({
-	   url: 'upload.php?type=cmpCSVImport&ingID=<?=$ingName?>',
+	   url: '/pages/upload.php?type=cmpCSVImport&ingID=<?=$ingName?>',
 	   type: 'POST',
 	   data: fd,
 	   contentType: false,

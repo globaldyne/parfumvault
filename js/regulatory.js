@@ -1,9 +1,5 @@
 $(function () {
-  $('#modalToggle').click(function() {
-    $('#modal').modal({
-      backdrop: 'static'
-    });
-  });
+ 
 
   $('#supplierContinue').click(function (e) {
     e.preventDefault();
@@ -30,7 +26,7 @@ $(function () {
 	$('.toast').toast('hide');
     $('.progress-bar').css('width', '60%');
     $('.progress-bar').html('Step 3 of 5');
-    $('#SDSTabs a[href="#compoPanel"]').tab('show');
+    $('#SDSTabs a[href="#tech_composition"]').tab('show');
   });
 
   $('#compoContinue').click(function (e) {
@@ -50,112 +46,10 @@ $(function () {
   })
 
   
-$('#commitSDS').click(function (e) {
-    e.preventDefault();
-
-    var wizardData = {
-        name: prodName,
-        supplier: {
-            name: $('#supplier_name').find("option:selected").text(),
-            po: $('#po').val(),
-            country: $('#country').val(),
-            address: $('#address').val(),
-            telephone: $('#telephone').val(),
-            email: $('#email').val(),
-            url: $('#url').val(),
-        },
-        product: {
-            name: prodName,
-            country: $('#sdsCountry').val(),
-            use: $('#prodUse').val(),
-            lang: $('#sdsLang').val(),
-            type: $('input[name="productType"]:checked').attr('id'),
-        },
-        composition: {
-            state: $('input[name="productState"]:checked').attr('id'),
-        }
-    }
-
-    // Fetch data from the remote URL and append it to wizardData
-    $.ajax({
-        url: '/core/list_ing_compos_data.php?id=' + btoa(prodName),
-        method: 'GET',
-        dataType: 'json',
-        success: function(remoteData) {
-            // Assuming remoteData is an object that we want to merge with wizardData
-            $.extend(true, wizardData, remoteData); // Deep merge
-
-            // Pretty-print the merged JSON data with 2 spaces indentation
-            var prettyJson = JSON.stringify(wizardData, null, 2);
-
-            // Display the pretty-printed JSON data in the #jsonOut element
-            $('#jsonOut').html(prettyJson);
-			generatePDF(wizardData);
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            console.error("Failed to fetch data: ", textStatus, errorThrown);
-        }
-    });
-});
-
 
 })
 
-function generatePDF(data) {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
 
-            // Helper function to convert an object to a table row
-            function objectToTableRow(obj) {
-                return Object.keys(obj).map(key => [key, obj[key]]);
-            }
-
-            // Add Supplier Table
-            doc.text("Supplier", 14, 10);
-            doc.autoTable({
-                startY: 20,
-                head: [['Supplier details']],
-                body: objectToTableRow(data.supplier),
-            });
-
-            // Add Product Table
-            doc.text("Product", 14, doc.autoTable.previous.finalY + 10);
-            doc.autoTable({
-                startY: doc.autoTable.previous.finalY + 20,
-                head: [['Key', 'Value']],
-                body: objectToTableRow(data.product),
-            });
-
-            // Add Composition Table
-/*			
-            doc.text("Composition", 14, doc.autoTable.previous.finalY + 10);
-            doc.autoTable({
-                startY: doc.autoTable.previous.finalY + 20,
-                head: [['Key', 'Value']],
-                body: objectToTableRow(data.composition),
-            });
-*/
-            // Add Data Table
-            doc.text("Composition", 12, doc.autoTable.previous.finalY + 10);
-            doc.autoTable({
-                startY: doc.autoTable.previous.finalY + 20,
-                head: [['Ingredient', 'Name', 'CAS', 'EC', 'GHS', 'Percentage']],
-                body: data.data.map(item => [
-                    item.ing, item.name, item.cas, item.ec, item.GHS, item.percentage
-                ]),
-				styles: { fontSize: 8 }  // Set font size to 8 for this table
-            });
-			
-			doc.setProperties({
-				title: prodName,
-				subject: 'Safety Data Sheet',
-				author: 'JB',
-				keywords: 'SDS, PV, Perfumers Vault',
-				creator: 'Perfumers Vault'
-			});
-            // Save the generated PDF
-            doc.save('wizard_data.pdf');
-        };
 function fetch_safety(){
 	$.ajax({ 
 		url: '/pages/views/ingredients/safetyData.php', 
@@ -170,3 +64,123 @@ function fetch_safety(){
 	});
 };
 
+function fetch_cmps(){
+	$.ajax({ 
+		url: '/pages/views/ingredients/compos.php', 
+		type: 'GET',
+		data: {
+			name:  btoa(prodName),
+			id: ingID
+		},
+		dataType: 'html',
+		success: function (data) {
+			$('#fetch_composition').html(data);
+		},
+	});
+}
+
+ function generatePDF(data) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // Utility function to add section header with background
+    function addSectionHeader(title, y) {
+      doc.setFillColor(100, 100, 25);
+      doc.rect(10, y - 5, 190, 8, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(12);
+      doc.text(title, 12, y);
+      doc.setTextColor(0, 0, 0); // Reset text color
+    }
+
+    // Add borders for sections
+    function addSectionBorder(startY, height) {
+      doc.setDrawColor(0, 0, 0);
+    }
+
+    let currentY = 10;
+
+    // Supplier section
+    addSectionHeader("1. Supplier contact details", currentY);
+    currentY += 1;
+    doc.setFontSize(10);
+    doc.text(`Name: ${data.supplier.name}`, 12, currentY + 10);
+    doc.text(`PO: ${data.supplier.po}`, 12, currentY + 15);
+    doc.text(`Country: ${data.supplier.country}`, 12, currentY + 20);
+    doc.text(`Address: ${data.supplier.address}`, 12, currentY + 25);
+    doc.text(`Telephone: ${data.supplier.telephone}`, 12, currentY + 30);
+    doc.text(`Email: ${data.supplier.email}`, 12, currentY + 35);
+    doc.text(`URL: ${data.supplier.url}`, 12, currentY + 40);
+    addSectionBorder(currentY, 60);
+    currentY += 60;
+
+    // Product section
+    addSectionHeader("2. Product information", currentY);
+    currentY += 10;
+    doc.setFontSize(10);
+    doc.text(`Name: ${data.product.name}`, 12, currentY + 10);
+    doc.text(`Country: ${data.product.country}`, 12, currentY + 15);
+    doc.text(`Use: ${data.product.use}`, 12, currentY + 20);
+    doc.text(`Language: ${data.product.lang}`, 12, currentY + 25);
+    doc.text(`Type: ${data.product.type}`, 12, currentY + 30);
+    doc.text(`State: ${data.product.state}`, 12, currentY + 35);
+    addSectionBorder(currentY, 60);
+    currentY += 60;
+
+    // Remote data section with autoTable
+    addSectionHeader("3. Product composition", currentY);
+    currentY += 10;
+
+    if (data.data.length > 0) {
+      const keys = Object.keys(data.data[0]);
+	  const tableData = data.data.map(item => [
+			item.name, item.cas, item.ec, item.GHS, item.percentage
+		]);
+	  const headData = [['Name', 'CAS', 'EC', 'GHS', 'Percentage']];
+
+      doc.autoTable({
+        startY: currentY,
+        head: headData,
+        body: tableData,
+        styles: { fontSize: 8 }
+      });
+
+      currentY = doc.autoTable.previous.finalY + 10;
+    }
+    addSectionBorder(currentY, doc.autoTable.previous.finalY - currentY + 20);
+
+    // Save the PDF
+    //doc.save('wizardData.pdf');
+	
+	// Convert PDF to Blob
+    const pdfBlob = doc.output('blob');
+
+    // Send Blob to server
+    const formData = new FormData();
+    formData.append('pdf', pdfBlob, 'wizardData.pdf');
+ 	formData.append('name', prodName);
+
+	formData.append('product_use', data.product.use);
+    formData.append('country', data.product.country);
+    formData.append('language', data.product.lang);
+    formData.append('product_type', data.product.type);
+    formData.append('state_state', data.product.state);
+    formData.append('supplier_id', data.supplier.id);
+
+
+  
+	$.ajax({
+      url: '/pages/operations.php',
+      type: 'POST',
+      data: formData,
+      processData: false,
+      contentType: false,
+      success: function(response) {
+        console.log('PDF successfully saved to database');
+		 doc.save('wizardData.pdf');
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.error("Failed to save PDF: ", textStatus, errorThrown);
+      }
+    });
+  }

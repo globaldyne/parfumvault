@@ -10,6 +10,14 @@ while($res = mysqli_fetch_array($q)){
 
 
 ?>
+<style>
+.mfp-iframe-holder .mfp-content {
+    line-height: 0;
+    width: 50%;
+    max-width: 100%; 
+	height: 750px;
+}
+</style>
 <div class="container-fluid">
   <div class="card shadow mb-4">
     <div class="card-header py-3">
@@ -23,8 +31,7 @@ while($res = mysqli_fetch_array($q)){
               <div class="btn-group">
                 <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
                   <div class="dropdown-menu dropdown-menu-right">
-                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#createSDS"><i class="fa-solid fa-plus mx-2"></i>Create new</a></li>
-
+                    <li><a class="dropdown-item popup-link" href="/pages/views/regulatory/wizard.php"><i class="fa-solid fa-plus mx-2"></i>Create new</a></li>
                   </div>
                 </div>        
              </div>
@@ -34,8 +41,9 @@ while($res = mysqli_fetch_array($q)){
         <table class="table table-bordered" id="tdDataSDS" width="100%" cellspacing="0">
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Description</th>
+              <th>Product</th>
+              <th>Use</th>
+              <th>Download</th>
               <th>Created</th>
               <th>Updated</th>
               <th></th>
@@ -47,39 +55,6 @@ while($res = mysqli_fetch_array($q)){
   </div>
 </div>
 </div>
-    
-<!-- ADD NEW MODAL-->
-<div class="modal fade" id="createSDS" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="createSDS" aria-hidden="true">
-  <div class="modal-dialog modal-xl" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Create SDS</h5>
-      </div>
-      <div class="modal-body">
-        <div class="alert alert-danger">Unable to get data</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<!--EDIT MODAL-->            
-<div class="modal fade" id="editSDS" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="editSDS" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title mgmIngHeader mgmIngHeader-with-separator" id="editSDSLabel">Edit SDS</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="alert alert-danger">Unable to get data</div>
-      </div>
-    </div>
-  </div>
-</div>
-
 
 
 
@@ -87,20 +62,19 @@ while($res = mysqli_fetch_array($q)){
 <script> 
 $(document).ready(function() {
 
+	$('.popup-link').magnificPopup({
+		type: 'iframe',
+		closeOnContentClick: false,
+		closeOnBgClick: false,
+		showCloseBtn: true,
+	});
 	
 	var tdDataSDS = $('#tdDataSDS').DataTable( {
 	columnDefs: [
 		{ className: 'pv_vertical_middle text-center', targets: '_all' },
-		{ orderable: false, targets: [1, 4] },
+		{ orderable: false, targets: [2, 5] },
 	],
 	dom: 'lrftip',
-	buttons: [{
-				extend: 'csvHtml5',
-				title: "SDS Inventory",
-				exportOptions: {
-     				columns: [0, 1, 2, 3]
-  				},
-			  }],
 	processing: true,
 	serverSide: true,
 	searching: true,
@@ -110,7 +84,7 @@ $(document).ready(function() {
 		processing: 'Please Wait...',
 		zeroRecords: 'Nothing found',
 		search: 'Quick Search:',
-		searchPlaceholder: 'Name..',
+		searchPlaceholder: 'Product Name..',
 	},
 	ajax: {	
 		url: '/core/list_SDS_data.php',
@@ -124,40 +98,40 @@ $(document).ready(function() {
 			},
 		},
 	
-	columns: [
-            { data : 'name', title: 'Name', render: name },
-            { data : 'description', title: 'Description' },
+		columns: [
+            { data : 'product_name', title: 'Product', render: name },
+            { data : 'product_use', title: 'Product use' },
+            { data : 'docID', title: 'Download', render: docData },
 			{ data : 'created', title: 'Created' },
 			{ data : 'updated', title: 'Updated' },
 			{ data : null, title: '', render: actions },
-
-	],
-	order: [[ 0, 'asc' ]],
-	lengthMenu: [[20, 50, 100, 200, 400], [20, 50, 100, 200, 400]],
-	pageLength: 20,
-	displayLength: 20,
-	stateSave: true,
-	stateDuration: -1,
-	stateLoadCallback: function (settings, callback) {
-       	$.ajax( {
-           	url: '/core/update_user_settings.php?set=listSDS&action=load',
-           	dataType: 'json',
-           	success: function (json) {
-               	callback( json );
-           	}
-       	});
-    },
-    stateSaveCallback: function (settings, data) {
-	   $.ajax({
-		 url: "/core/update_user_settings.php?set=listSDS&action=save",
-		 data: data,
-		 dataType: "json",
-		 type: "POST"
-	  });
-	},
-	drawCallback: function( settings ) {
-		extrasShow();
-    },
+		],
+		order: [[ 0, 'asc' ]],
+		lengthMenu: [[20, 50, 100, 200, 400], [20, 50, 100, 200, 400]],
+		pageLength: 20,
+		displayLength: 20,
+		stateSave: true,
+		stateDuration: -1,
+		stateLoadCallback: function (settings, callback) {
+       		$.ajax( {
+           		url: '/core/update_user_settings.php?set=listSDS&action=load',
+           		dataType: 'json',
+           		success: function (json) {
+            	   	callback( json );
+           		}
+       		});
+    	},
+    	stateSaveCallback: function (settings, data) {
+	   		$.ajax({
+		 		url: "/core/update_user_settings.php?set=listSDS&action=save",
+		 		data: data,
+				dataType: "json",
+			 	type: "POST"
+	  		});
+		},
+		drawCallback: function( settings ) {
+			extrasShow();
+		},
 
 	});
 	
@@ -166,24 +140,22 @@ $(document).ready(function() {
 	function reload_data() {
     	$('#tdDataSDS').DataTable().ajax.reload(null, true);
 	};
-
-
 	
 	function name(data, type, row){
-		return '<i class="pv_point_gen pv_gen_li" id="SDS_name">'+row.name+'</i>';
+		return '<i class="pv_point_gen pv_gen_li" id="SDS_name">'+row.product_name+'</i>';
 	};
 	
 	function docData(data, type, row){
-		return '<a href="/pages/viewDoc.php?id='+row.id+'" target="_blank" class="fa fa-file-alt"></a>';    
+		return '<a href="/pages/viewDoc.php?id='+row.docID+'" target="_blank" class="fa fa-file-alt"></a>';    
 	};
 	
 	function actions(data, type, row){	
 			data = '<div class="dropdown">' +
 			'<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
 				'<ul class="dropdown-menu dropdown-menu-right">';
-			data += '<li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editSDS" rel="tip" title="Edit '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-edit mx-2"></i>Edit</a></li>';
+			data += '<li><a class="dropdown-item popup-link" href="/pages/views/regulatory/wizard.php?id='+row.id+'" rel="tip" title="Edit '+ row.product_name +'"><i class="fas fa-edit mx-2"></i>Edit</a></li>';
 			data += '<div class="dropdown-divider"></div>';
-			data += '<li><a class="dropdown-item" href="#" id="cmpDel" style="color: #c9302c;" rel="tip" title="Delete '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-trash mx-2"></i>Delete</a></li>';
+			data += '<li><a class="dropdown-item" href="#" id="cmpDel" style="color: #c9302c;" rel="tip" title="Delete '+ row.product_name +'" data-id='+ row.id +' data-name="'+ row.product_name +'"><i class="fas fa-trash mx-2"></i>Delete</a></li>';
 			data += '</ul></div>';
 		return data;
 	};
@@ -255,26 +227,8 @@ $(document).ready(function() {
 		$('#tdDataSDS').DataTable().button(0).trigger();
 	});
 	
-	$("#editSDS").on("show.bs.modal", function(e) {
-		const id = e.relatedTarget.dataset.id;
-		const SDS = e.relatedTarget.dataset.name;
-	
-		$.get("/pages/views/regulatory/editSDS.php?id=" + id)
-			.then(data => {
-			$("#editSDSLabel", this).html(SDS);
-			$(".modal-body", this).html(data);
-		});
-	});
 
-	$("#createSDS").on("show.bs.modal", function(e) {
-	
-		$.get("/pages/views/regulatory/wizard.php")
-			.then(data => {
-			//$("#createSDSLabel", this).html(SDS);
-			$(".modal-body", this).html(data);
-		});
-	});
-	
+
 	$('#mainTitle').click(function() {
 	 	reload_data();
   	});
