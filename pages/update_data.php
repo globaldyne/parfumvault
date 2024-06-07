@@ -15,7 +15,9 @@ require_once(__ROOT__.'/func/pvFileGet.php');
 if($_POST['action'] == 'delete' && $_POST['SDSID'] && $_POST['type'] == 'SDS'){
 	$id = mysqli_real_escape_string($conn, $_POST['SDSID']);
 	
-	if(mysqli_query($conn, "DELETE FROM documents WHERE id = '$id' AND isSDS = '1'")){
+	if(mysqli_query($conn, "DELETE FROM documents WHERE ownerID = '$id' AND isSDS = '1'")){
+		mysqli_query($conn, "DELETE FROM sds_data WHERE id = '$id'");
+		
 		$response["success"] = 'SDS deleted';
 	}else{
 		$response["error"] = 'Something went wrong '.mysqli_error($conn);

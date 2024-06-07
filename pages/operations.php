@@ -6,34 +6,6 @@ require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/inc/product.php');
 
-if ($_GET['do'] = 'storeSDS' && isset($_FILES['pdf'])) {
-  $pdfBlob = mysqli_real_escape_string($conn, file_get_contents($_FILES['pdf']['tmp_name']));
-  $name = $_POST['name'];
-  $notes = "SDS wizard generated";
-  $product_use = $_POST['product_use'];
-  $country = $_POST['country'];
-  $language = $_POST['language'];
-  $product_type = $_POST['product_type'];
-  $sttype = $_POST['state_type'];
-  $supplier_id = (int)$_POST['supplier_id'] ?: 0;
-  
-
-  
-  mysqli_query($conn, "INSERT INTO sds_data (product_name,product_use,country,language,product_type,state_type,supplier_id,docID) VALUES ('$name','$product_use','$country','$language','$product_type','$state_type','$supplier_id','0')");
-  
-  $ownerID = mysqli_insert_id($conn);
-	
-  $sds = mysqli_query($conn, "INSERT INTO documents (docData,isSDS,name,type,notes,ownerID) VALUES ('$pdfBlob','1','$name','0','$notes','$ownerID')");
-  
-  if ($sds) {
-    $result['success'] =  "SDS saved - ".  "100000".$ownerID;
-  } else {
-    $result['error'] =  "Error: " . mysqli_error($conn);
-  }
-  
-  echo json_encode($result);
-  return;
-}
 
 if($_GET['do'] == 'userPerfClear'){
 

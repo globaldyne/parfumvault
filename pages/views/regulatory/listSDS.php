@@ -146,7 +146,7 @@ $(document).ready(function() {
 	};
 	
 	function docData(data, type, row){
-		return '<a href="/pages/viewDoc.php?id='+row.docID+'" target="_blank" class="fa fa-file-alt"></a>';    
+		return '<a href="/pages/viewDoc.php?type=sds&id='+row.docID+'" target="_blank" class="fa fa-file-alt"></a>';    
 	};
 	
 	function actions(data, type, row){	

@@ -18,19 +18,15 @@ $res_ingSupplier = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name
   	<link href="/css/fontawesome-free/css/all.min.css" rel="stylesheet">
   	<link href="/css/sb-admin-2.css" rel="stylesheet" />
   	<link href="/css/bootstrap-select.min.css" rel="stylesheet">
-  	<link href="/css/bootstrap-editable.css" rel="stylesheet">
   	<link href="/css/datatables.min.css" rel="stylesheet">
   	<link href="/css/bootstrap.min.css" rel="stylesheet">
   	<link href="/css/jquery-ui.css" rel="stylesheet">
-  	<link href="/css/magnific-popup.css" rel="stylesheet">
   	<link href="/css/vault.css" rel="stylesheet">
 	<script src="/js/jquery/jquery.min.js"></script>
     <script src="/js/datatables.min.js"></script> 
-    <script src="/js/magnific-popup.js"></script>
     <script src="/js/jquery-ui.js"></script>
     <script src="/js/bootstrap.bundle.min.js"></script>
     <script src="/js/bootstrap-select.js"></script>
-    <script src="/js/bootstrap-editable.js"></script>
     <script src="/js/bootbox.min.js"></script>
     <script src="/js/sb-admin-2.js"></script>
     <script src="/js/validate-session.js"></script>
@@ -223,8 +219,9 @@ $res_ingSupplier = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name
     </div>
     
     <div class="tab-pane fade" id="reviewPanel" role="tabpanel">
-      <h4>Review</h4>
-      <button class="btn btn-primary btn-block" id="commitSDS">Save SDS data</button>
+      <h4>SDS</h4>
+      <div id="sdsResult">xx</div>
+      <button class="btn btn-primary btn-block" id="downloadSDS">Download SDS</button>
     </div>
   </div>
 
@@ -312,48 +309,43 @@ $(document).ready(function() {
 		
     });
 
-	$('#commitSDS').click(function (e) {
+	$('#downloadSDS').click(function (e) {
 		e.preventDefault();
 	
-		var wizardData = {
-			supplier: {
+		$.ajax({ 
+			url: '/pages/views/regulatory/genSDS.php', 
+			type: 'POST',
+			dataType: 'json',
+			data: {
+				genSDS: true,
+				name: prodName,
 				supplier_id: $('#supplier_name').val(),
-				name: $('#supplier_name').find("option:selected").text(),
 				po: $('#po').val(),
 				country: $('#country').val(),
 				address: $('#address').val(),
 				telephone: $('#telephone').val(),
 				email: $('#email').val(),
 				url: $('#url').val(),
+				sdsCountry: $('#sdsCountry').val(),
+				prodUse: $('#prodUse').val(),
+				sdsLang: $('#sdsLang').val(),
+				productType: $('input[name="productType"]:checked').attr('id'),
+				productState : $('input[name="productState"]:checked').attr('id'),
+				
 			},
-			product: {
-				name: prodName,
-				country: $('#sdsCountry').val(),
-				use: $('#prodUse').val(),
-				lang: $('#sdsLang').val(),
-				type: $('input[name="productType"]:checked').attr('id'),
-				state : $('input[name="productState"]:checked').attr('id'),
-			},
-			composition: {
-			   
-			}
-		}
-	
-		// Fetch data from the remote URL and append it to wizardData
-		$.ajax({
-			url: '/core/list_ing_compos_data.php?id=' + btoa(prodName),
-			method: 'GET',
-			dataType: 'json',
-			success: function(remoteData) {
-				$.extend(true, wizardData, remoteData); // Deep merge
-				var prettyJson = JSON.stringify(wizardData, null, 2);
-	
-				generatePDF(wizardData);
+			success: function (data) {
+				if(data.success){
+					$('#sdsResult').html('<div class="alert alert-success"><i class="fa-solid fa-file-pdf mx-2"></i>' + data.success + '</div>');
+				}else if(data.error){
+					$('#sdsResult').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error + '</div>');
+				}
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
 				console.error("Failed to fetch data: ", textStatus, errorThrown);
+				$('#sdsResult').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mr-2"></i>Failed to fetch data</div>');
 			}
-		});
+	  });
+	  
 	});
        
 	

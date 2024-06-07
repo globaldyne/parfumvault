@@ -430,7 +430,7 @@ if($_POST['batchID'] == '1'){
   </div>
   <div class="row mb-3">
     <div class="col-sm-5">
-      <input type="submit" name="button" class="btn btn-info" id="button" value="Generate">
+      <input type="submit" name="button" class="btn btn-primary" id="button" value="Generate">
     </div>
   </div>
 </form>
