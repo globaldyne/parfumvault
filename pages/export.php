@@ -325,7 +325,8 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'ingredients'){
 		$c['name'] = (string)$res['name'];
 		$c['cas'] = (string)$res['cas'] ?: 'N/A';
 		$c['ec'] = (string)$res['ec'] ?: 'N/A';
-		$c['percentage'] = (double)$res['percentage'];
+		$c['min_percentage'] = (double)$res['min_percentage'];
+		$c['max_percentage'] = (double)$res['max_percentage'];
 		$c['GHS'] = (string)$res['GHS'];
 		$c['toDeclare'] = (int)$res['toDeclare'];
 		$c['created'] = (string)$res['created'];
@@ -478,7 +479,8 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'single-ingredient' && $_GET['i
 		$c['name'] = (string)$res['name'];
 		$c['cas'] = (string)$res['cas'] ?: 'N/A';
 		$c['ec'] = (string)$res['ec'] ?: 'N/A';
-		$c['percentage'] = (double)$res['percentage'];
+		$c['min_percentage'] = (double)$res['min_percentage'];
+		$c['max_percentage'] = (double)$res['max_percentage'];
 		$c['GHS'] = (string)$res['GHS'];
 		$c['toDeclare'] = (int)$res['toDeclare'];
 		$c['created'] = (string)$res['created'];

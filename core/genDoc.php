@@ -101,7 +101,7 @@ if ($_REQUEST['action'] == 'generateDOC' && $_REQUEST['kind'] == 'ingredient'){
 			'name' => (string)$res['name'],
 			'CAS' => (string)$res['cas'] ?: 'N/A',
 			'EINECS' => (string)$res['ec'] ?: 'N/A',
-			'Concentration' => (double)$res['percentage'],
+			'Concentration (Average)' => $res['min_percentage'] + $res['max_percentage'] / 2,
 			'GHS' => (string)$res['GHS'] ?: 'N/A'
 		];
 		$cmp[] = $c;

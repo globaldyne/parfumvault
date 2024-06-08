@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 10.5
+- Modify json export for ingredients to include min and max compostion percentage
 - Rewrite multi dimensional function
 - Added min and max percentage for compositions
 - Added formula analysis to breakdown sub-materials and percentages
