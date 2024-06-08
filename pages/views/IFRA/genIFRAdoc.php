@@ -102,7 +102,7 @@ foreach ($form as $formula){
 			
           }
 	}
-	if($qCMP = mysqli_query($conn, "SELECT ingredient_compounds.ing, ingredient_compounds.name, ingredient_compounds.cas, ingredient_compounds.percentage, IFRALibrary.risk, IFRALibrary.$defCatClass  FROM ingredient_compounds, IFRALibrary WHERE ingredient_compounds.ing = '".$formula['ingredient']."' AND toDeclare = '1' AND IFRALibrary.name = ingredient_compounds.name GROUP BY name ")){
+	if($qCMP = mysqli_query($conn, "SELECT ingredient_compounds.ing, ingredient_compounds.name, ingredient_compounds.cas, ingredient_compounds.$defPercentage, IFRALibrary.risk, IFRALibrary.$defCatClass  FROM ingredient_compounds, IFRALibrary WHERE ingredient_compounds.ing = '".$formula['ingredient']."' AND toDeclare = '1' AND IFRALibrary.name = ingredient_compounds.name GROUP BY name ")){
 		while($cmp = mysqli_fetch_array($qCMP)){
 			$x .='<tr>
 					<td align="center">'.$cmp['name'].'</td>

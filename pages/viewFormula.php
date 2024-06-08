@@ -275,7 +275,7 @@ function format(d) {
         details += '<div class="ingredient">';
         details += '<i class="bi bi-arrow-return-right mx-2"></i><span class="details"><a href="#" id="compoundName" data-query="'+ d.data[i].name +'">' + d.data[i].name + '</a>' ;
         details += ' - <a href="#" id="compoundCAS" data-query="'+ d.data[i].cas +'">' + d.data[i].cas + '</a>' ;
-        details += ' - ' + d.data[i].percentage + '%<br>';
+        details += ' - ' + d.data[i].avg_percentage + '%<br>';
         details += '</div>';
     }
 	details += '<br />Total sub ingredients: ' + i;

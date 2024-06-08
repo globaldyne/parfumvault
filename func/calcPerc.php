@@ -46,7 +46,7 @@ function multi_dim_perc($conn, $form, $ingCas, $qStep, $defPercentage) {
 				$i = 0;
 				while ($i < $arrayLength){
 					$c = multi_dim_search($a, 'cas', $a['cas'])[$i];
-					$conc[$a['cas']] += number_format($c['percentage']/100 * $formula['quantity'] * $formula['concentration'] / 100, $qStep);
+					$conc[$a['cas']] += number_format($c[$defPercentage]/100 * $formula['quantity'] * $formula['concentration'] / 100, $qStep);
 	
 					$i++;
 				}

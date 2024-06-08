@@ -363,7 +363,7 @@ if($_POST['action'] == 'conv2ing' && $_POST['ingName'] && $_POST['fid']){
 		$conc = number_format($formula['quantity']/100 * 100, $settings['qStep']);
 		$conc_p = number_format($formula['concentration'] / 100 * $conc, $settings['qStep']);
 						
-		mysqli_query($conn, "INSERT INTO ingredient_compounds (ing, name, cas, percentage) VALUES ('$name','".$formula['ingredient']."','".$ing_data['cas']."','".$conc_p."')");
+		mysqli_query($conn, "INSERT INTO ingredient_compounds (ing, name, cas, min_percentage, max_percentage) VALUES ('$name','".$formula['ingredient']."','".$ing_data['cas']."','".$conc_p."','".$conc_p."')");
 	}
 			
 	if(mysqli_query($conn, "INSERT INTO ingredients (name, type, cas, notes) VALUES ('$name','Base','Mixture','Converted from formula $fname')")){

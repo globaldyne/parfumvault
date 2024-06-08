@@ -18,9 +18,7 @@ $fid = mysqli_real_escape_string($conn, $_GET["fid"]);
       <tr>
           <th>Main Ingredient</th>
           <th>Contains</th>
-          <th>Min percentage</th>
-          <th>Max percentage</th>
-          <th>Average percentage</th>
+          <th>Percentage in formula</th>
           <th>Max Allowed</th>
       </tr>
    </thead>
@@ -53,9 +51,7 @@ $(document).ready(function() {
 		columns: [
 			  { data : 'main_ing', title: 'Main Ingredient', render: mainName, name: 'main_ing' },
 			  { data : 'sub_ing', title: 'Contains', render: subIng },
-			  { data : 'min_percentage', title: 'Min percentage(%)' },
-			  { data : 'max_percentage', title: 'Max percentage(%)'},
-			  { data : 'avg_percentage', title: 'Average percentage(%)' },
+			  { data : 'contained_percentage', title: 'Percentage in formula(%)' },
 			  { data : 'max_allowed', title: 'Max allowed(%)' },
 
 		],
