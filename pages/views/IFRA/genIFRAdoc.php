@@ -89,7 +89,7 @@ foreach ($form as $formula){
 			$conc_p = number_format($formula['concentration'] / 100 * $conc, $settings['qStep']);
 					
 			if($settings['multi_dim_perc'] == '1'){
-				$conc_p   += multi_dim_perc($conn, $form, $cas['cas'], $settings['qStep'])[$cas['cas']];
+				$conc_p   += multi_dim_perc($conn, $form, $cas['cas'], $settings['qStep'], $settings['defPercentage'])[$cas['cas']];
 			}
 			
 			$x .='<tr>

@@ -57,7 +57,7 @@ if($_POST['batchID'] == '1'){
 	define('FPDF_FONTPATH',__ROOT__.'/fonts');
 	$batchID = genBatchID();
 	
-	genBatchPDF($fid,$batchID,$bottle,$new_conc,$mg['total_mg'],$defCatClass,$settings['qStep']);
+	genBatchPDF($fid,$batchID,$bottle,$new_conc,$mg['total_mg'],$defCatClass,$settings['qStep'], $settings['defPercentage']);
 	
 }else{
 	$batchID = 'N/A';
@@ -130,7 +130,7 @@ if($_POST['batchID'] == '1'){
 					  	$conc_p = number_format($formula['concentration'] / 100 * $conc, $settings['qStep']);
 					 	
 						if($settings['multi_dim_perc'] == '1'){
-							$conc_p   += multi_dim_perc($conn, $form, $ing_q['cas'], $settings['qStep'])[$ing_q['cas']];
+							$conc_p   += multi_dim_perc($conn, $form, $ing_q['cas'], $settings['qStep'], $settings['defPercentage'])[$ing_q['cas']];
 						}
 					?>
 					  <tr>

@@ -6,7 +6,8 @@ CREATE TABLE `ingredient_compounds` (
   `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
   `cas` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `ec` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `percentage` DECIMAL(8,4) NOT NULL,
+  `min_percentage` DECIMAL(8,4) NOT NULL,
+  `max_percentage` DECIMAL(8,4) NOT NULL,
   `toDeclare` INT NOT NULL DEFAULT '0',
   `GHS` TEXT NOT NULL DEFAULT '-',
   `created` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
@@ -316,6 +317,7 @@ CREATE TABLE `settings` (
   `mUnit` VARCHAR(10) NOT NULL DEFAULT 'ml',
   `multi_dim_perc` INT NOT NULL DEFAULT '0', 
   `defCatClass` VARCHAR(255) NOT NULL DEFAULT 'cat4',
+  `defPercentage` VARCHAR(255) NOT NULL DEFAULT 'max_percentage',
   `pv_online_api_url` varchar(255) COLLATE utf8_general_ci NOT NULL DEFAULT 'https://online.perfumersvault.com/api-data/api.php',
   `api` INT NOT NULL DEFAULT '0',
   `api_key` VARCHAR(255) NULL,

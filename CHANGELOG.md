@@ -1,5 +1,7 @@
 # CHANGELOG
 ### Version 10.5
+- Added min and max percentage for compositions
+- Added formula analysis to breakdown sub-materials and percentages
 - Added IFRA limit in composition if found in library
 - Fix incorrect integer format for compos json
 - Remove ing filter when update data for compositions

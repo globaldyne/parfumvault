@@ -1296,7 +1296,8 @@ if($_POST['composition'] == 'add'){
 	$allgName = mysqli_real_escape_string($conn, $_POST['allgName']);
 	$allgCAS = mysqli_real_escape_string($conn, $_POST['allgCAS']);
 	$allgEC = mysqli_real_escape_string($conn, $_POST['allgEC']);	
-	$allgPerc = rtrim(mysqli_real_escape_string($conn, $_POST['allgPerc']),'%');
+	$minPerc = rtrim(mysqli_real_escape_string($conn, $_POST['minPerc']),'%');
+	$maxPerc = rtrim(mysqli_real_escape_string($conn, $_POST['maxPerc']),'%');
 	$GHS = rtrim(mysqli_real_escape_string($conn, $_POST['GHS']));
 
 	$ing = base64_decode($_POST['ing']);
@@ -1319,14 +1320,26 @@ if($_POST['composition'] == 'add'){
 		return;
 	}
 	
-	if(empty($allgPerc)){
-		$response["error"] = '<strong>Error:</strong> Percentage is required!';
+	if(empty($minPerc)){
+		$response["error"] = 'Minimum percentage is required';
 		echo json_encode($response);
 		return;
 	}
 	
-	if(!is_numeric($allgPerc)){
-		$response["error"] = '<strong>Error:</strong> Percentage value needs to be numeric!';
+	if(empty($maxPerc)){
+		$response["error"] = 'Max percentage is required';
+		echo json_encode($response);
+		return;
+	}
+	
+	if(!is_numeric($minPerc)){
+		$response["error"] = 'Minimum percentage value needs to be numeric!';
+		echo json_encode($response);
+		return;
+	}
+	
+	if(!is_numeric($maxPerc)){
+		$response["error"] = 'Maximum percentage value needs to be numeric!';
 		echo json_encode($response);
 		return;
 	}
@@ -1337,8 +1350,8 @@ if($_POST['composition'] == 'add'){
 		return;
 	}
 	
-	if(mysqli_query($conn, "INSERT INTO ingredient_compounds (name,cas,ec,percentage,GHS,toDeclare,ing) VALUES ('$allgName','$allgCAS','$allgEC','$allgPerc','$GHS','$declare','$ing')")){
-		$response["success"] = '<strong>'.$allgName.'</strong> added to the list';
+	if(mysqli_query($conn, "INSERT INTO ingredient_compounds (name, cas, ec, min_percentage, max_percentage, GHS, toDeclare, ing) VALUES ('$allgName','$allgCAS','$allgEC','$minPerc','$maxPerc','$GHS','$declare','$ing')")){
+		$response["success"] = '<strong>'.$allgName.'</strong> added to the composition';
 		echo json_encode($response);
 	}else{
 		$response["error"] = mysqli_error($conn);
@@ -1659,7 +1672,7 @@ if($_POST['action'] == 'clone' && $_POST['old_ing_name'] && $_POST['ing_id']){
 		return;
 	}
 	
-	$sql.=mysqli_query($conn, "INSERT INTO ingredient_compounds (ing,name,cas,percentage) SELECT '$new_ing_name',name,cas,percentage FROM ingredient_compounds WHERE ing = '$old_ing_name'");
+	$sql.=mysqli_query($conn, "INSERT INTO ingredient_compounds (ing,name,cas,min_percentage,max_percentage) SELECT '$new_ing_name',name,cas,min_percentage,max_percentage FROM ingredient_compounds WHERE ing = '$old_ing_name'");
 
 	$sql.=mysqli_query($conn, "INSERT INTO ingredients (name,INCI,type,strength,category,purity,cas,FEMA,reach,tenacity,chemical_name,formula,flash_point,appearance,notes,profile,solvent,odor,allergen,flavor_use,soluble,logp,cat1,cat2,cat3,cat4,cat5A,cat5B,cat5C,cat5D,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12,impact_top,impact_heart,impact_base,created,usage_type,noUsageLimit,isPrivate,molecularWeight,physical_state) SELECT '$new_ing_name',INCI,type,strength,category,purity,cas,FEMA,reach,tenacity,chemical_name,formula,flash_point,appearance,notes,profile,solvent,odor,allergen,flavor_use,soluble,logp,cat1,cat2,cat3,cat4,cat5A,cat5B,cat5C,cat5D,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12,impact_top,impact_heart,impact_base,created,usage_type,noUsageLimit,isPrivate,molecularWeight,physical_state FROM ingredients WHERE id = '$ing_id'");
 
