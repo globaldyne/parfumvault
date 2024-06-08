@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 10.5
+- Rewrite multi dimensional function
 - Added min and max percentage for compositions
 - Added formula analysis to breakdown sub-materials and percentages
 - Added IFRA limit in composition if found in library
