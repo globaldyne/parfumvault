@@ -66,20 +66,28 @@ No. 2020/878)
                <table class="table table-sds">
                   <tbody>
                      <tr>
-                        <td colspan="4">
-                        <span class="text-inverse">1.1 Product identifier</span><small></small>                        $50.0050$2,500.00</td>
+                        <td>
+                        <span class="text-inverse">1.1 Product identifier</span><small></small></td>
                      </tr>
                      <tr>
-                        <td colspan="4">'.$name.'</td>
+                        <td>'.$name.'</td>
+                     </tr>
+                     <tr>
+                       <td>&nbsp;</td>
+                     </tr>
+                     <tr>
+                       <td>1.2 tified uses of the substance or mixture and uses advised against</td>
+                     </tr>
+                     <tr>
+                       <td>&nbsp;</td>
+                     </tr>
+                     <tr>
+                       <td>&nbsp;</td>
                      </tr>
                      <tr>
                         <td>
                            <span class="text-inverse">Redesign Service</span><br>
-                           <small>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed id sagittis arcu.</small>
-                        </td>
-                        <td width="10%" class="text-center">$50.00</td>
-                        <td width="10%" class="text-center">50</td>
-                        <td width="20%" class="text-right">$2,500.00</td>
+                        <small>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed id sagittis arcu.</small>                        $50.0050$2,500.00</td>
                      </tr>
                   </tbody>
                </table>
@@ -112,12 +120,10 @@ No. 2020/878)
          </div>
          <div class="sds-footer">
             <p class="text-center m-b-5 f-w-600">
-               THANK YOU FOR YOUR BUSINESS
+               '.$product.' - v'.$ver.'
             </p>
             <p class="text-center">
-               <span class="m-r-10"><i class="fa fa-fw fa-lg fa-globe"></i> matiasgallipoli.com</span>
-               <span class="m-r-10"><i class="fa fa-fw fa-lg fa-phone-volume"></i> T:016-18192302</span>
-               <span class="m-r-10"><i class="fa fa-fw fa-lg fa-envelope"></i> rtiemps@gmail.com</span>
+               <span class="m-r-10"><i class="fa fa-fw fa-lg fa-globe mx-2"></i>www.perfumersvault.com</span>
             </p>
          </div>
       </div>
@@ -126,8 +132,7 @@ No. 2020/878)
 
 
 </body>
-</html>
-';
+</html>';
 //$pdfBlob = mysqli_real_escape_string($conn, $docData);
 
 // Insert into sds_data table
