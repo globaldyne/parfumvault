@@ -5,6 +5,7 @@ require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/searchIFRA.php');
+require_once(__ROOT__.'/func/calcPerc.php');
 
 $defCatClass = $settings['defCatClass'];
 
@@ -40,8 +41,13 @@ foreach ($get_data_ings as $get_data_ing) {
 
     $r['formula_percentage'] = ($get_data_ing['quantity'] / $total_quantity) * 100;
 
-    $r['contained_percentage'] = number_format(($r['avg_percentage'] / 100 * $get_data_ing['quantity'] * $r['formula_percentage']  ) / 100, 5);
+    $conc_p = number_format(($r['avg_percentage'] / 100 * $get_data_ing['quantity'] * $r['formula_percentage']  ) / 100, 5);
+	if($settings['multi_dim_perc'] == '1'){
 
+		$conc_p   += multi_dim_perc($conn, $formula_data, $get_data_ing['cas'], $settings['qStep'], $settings['defPercentage'])[$cas['cas']];
+	}
+	
+	$r['contained_percentage'] = $conc_p;
 
     $u = explode(' - ', searchIFRA($get_data_ing['cas'], $get_data_ing['name'], null, $conn, $defCatClass));
     $r['max_allowed'] = $u[0];

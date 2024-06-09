@@ -56,7 +56,7 @@ $(document).ready(function() {
 
 		],
 		rowsGroup: [
-      	'main_ing:name'
+      		'main_ing:name'
     	],
 		drawCallback: function ( settings ) {
 			extrasShow();
@@ -70,11 +70,11 @@ $(document).ready(function() {
 
 	function mainName(data, type, row){
 		return '<i class="ing_name pv_point_gen" data-name="ing_name" data-type="text" data-pk="'+row.id+'">'+row.main_ing+'</i>';    
-	}
+	};
 	
 	function subIng(data, type, row){
 		return '<a class="ing_rep_name" href="#" >' + row.sub_ing + '</a><i class="fas fa-info-circle pv_point_gen mx-2" rel="tip" title="CAS: ' + row.cas + '"></i>';
-	}
+	};
 	
 	
 	
