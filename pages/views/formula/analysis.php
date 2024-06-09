@@ -48,6 +48,7 @@ $(document).ready(function() {
 				fid: '<?=$fid?>',
 			},
 		},
+		mark: true,
 		columns: [
 			  { data : 'main_ing', title: 'Main Ingredient', render: mainName, name: 'main_ing' },
 			  { data : 'sub_ing', title: 'Contains', render: subIng },
