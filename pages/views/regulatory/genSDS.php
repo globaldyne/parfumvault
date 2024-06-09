@@ -8,6 +8,8 @@ require_once(__ROOT__.'/inc/product.php');
 
 if ($_POST['do'] = 'genSDS') {
   $name = $_POST['name'];
+  $sds_tmpl = $_POST['sds_tmpl'];
+
   $notes = "SDS wizard generated";
   $product_use = $_POST['product_use'];
   $country = $_POST['country'];
@@ -27,113 +29,22 @@ if ($_POST['do'] = 'genSDS') {
   $productState = $_POST['productState'];
 
 
-$htmlContent = '
-<!doctype html>
-<html lang="en">
-<head>
+	$qHtml = mysqli_fetch_array(mysqli_query($conn, "SELECT id, content FROM templates WHERE id = '8'"));
+	$htmlContent =  $qHtml['content'];
 
+if ( empty($settings['brandLogo']) ){ 
+	$logo = "/img/logo.png";
+}else{
+	$logo = $settings['brandLogo'];
+}
 
-    <link href="/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/css/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" type="text/css">
-    <link href="/css/fontawesome-free/css/all.min.css" rel="stylesheet">
-    <link href="/css/regulatory.css" rel="stylesheet">
+$search  = array('%LOGO%','%BRAND_NAME%','%BRAND_ADDRESS%','%BRAND_EMAIL%','%BRAND_PHONE%','%CUSTOMER_NAME%','%CUSTOMER_ADDRESS%','%CUSTOMER_EMAIL%','%CUSTOMER_WEB%','%PRODUCT_NAME%','%PRODUCT_SIZE%','%PRODUCT_CONCENTRATION%','%IFRA_AMENDMENT%','%IFRA_AMENDMENT_DATE%','%PRODUCT_CAT_CLASS%','%PRODUCT_TYPE%','%CURRENT_DATE%');
 
-</head>
+$replace = array($logo, $settings['brandName'], $settings['brandAddress'], $settings['brandEmail'], $settings['brandPhone'], $customers['name'],$customers['address'],$customers['email'],$customers['web'],$meta['product_name'],$bottle,$type,'xs','h',strtoupper($defCatClass),$type,date('d/M/Y'));
 
-<body
-<div class="container">
-   <div class="col-md-12">
-      <div class="sds">
-         <div class="sds-company text-inverse f-w-600">
-            '.$name.'
-         </div>           
-         	<div class="sds-date">
-               <small>Language: '.$sdsLang.'</small>
-               <div class="date text-inverse m-t-5">August 3,2024</div>
-               <div class="sds-detail">
-                  According to Regulation (EC) No. 1907/2006 (amended by Regulation (EU)
-No. 2020/878) 
-               </div>
-            </div>
-         <div class="sds-header">
-           <div class="sds-to">
-              <h4>1. Identification of the substance/mixture and of the company/undertaking</h4>
-            </div>
+$contents =  str_replace( $search, $replace, preg_replace('#(%IFRA_MATERIALS_LIST%)#ms', $x, $qHtml['content']) );
+//echo $contents;
 
-         </div>
-         <div class="sds-content">
-            <div class="table-responsive">
-               <table class="table table-sds">
-                  <tbody>
-                     <tr>
-                        <td>
-                        <span class="text-inverse">1.1 Product identifier</span><small></small></td>
-                     </tr>
-                     <tr>
-                        <td>'.$name.'</td>
-                     </tr>
-                     <tr>
-                       <td>&nbsp;</td>
-                     </tr>
-                     <tr>
-                       <td>1.2 tified uses of the substance or mixture and uses advised against</td>
-                     </tr>
-                     <tr>
-                       <td>&nbsp;</td>
-                     </tr>
-                     <tr>
-                       <td>&nbsp;</td>
-                     </tr>
-                     <tr>
-                        <td>
-                           <span class="text-inverse">Redesign Service</span><br>
-                        <small>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed id sagittis arcu.</small>                        $50.0050$2,500.00</td>
-                     </tr>
-                  </tbody>
-               </table>
-            </div>
-            <div class="sds-price">
-               <div class="sds-price-left">
-                  <div class="sds-price-row">
-                     <div class="sub-price">
-                        <small>SUBTOTAL</small>
-                        <span class="text-inverse">$4,500.00</span>
-                     </div>
-                     <div class="sub-price">
-                        <i class="fa fa-plus text-muted"></i>
-                     </div>
-                     <div class="sub-price">
-                        <small>PAYPAL FEE (5.4%)</small>
-                        <span class="text-inverse">$108.00</span>
-                     </div>
-                  </div>
-               </div>
-               <div class="sds-price-right">
-                  <small>TOTAL</small> <span class="f-w-600">$4508.00</span>
-               </div>
-            </div>
-         </div>
-         <div class="sds-note">
-            * Make all cheques payable to [Your Company Name]<br>
-            * Payment is due within 30 days<br>
-            * If you have any questions concerning this sds, contact  [Name, Phone Number, Email]
-         </div>
-         <div class="sds-footer">
-            <p class="text-center m-b-5 f-w-600">
-               '.$product.' - v'.$ver.'
-            </p>
-            <p class="text-center">
-               <span class="m-r-10"><i class="fa fa-fw fa-lg fa-globe mx-2"></i>www.perfumersvault.com</span>
-            </p>
-         </div>
-      </div>
-   </div>
-</div>
-
-
-</body>
-</html>';
-//$pdfBlob = mysqli_real_escape_string($conn, $docData);
 
 // Insert into sds_data table
 $insert_sds_data = mysqli_query($conn, "INSERT INTO sds_data (product_name,product_use,country,language,product_type,state_type,supplier_id,docID) VALUES ('$name','$product_use','$country','$language','$product_type','$state_type','$supplier_id','0')");
@@ -143,16 +54,16 @@ if ($insert_sds_data) {
 
     // Prepare and bind the documents table insert statement
     $stmt = $conn->prepare("INSERT INTO documents (docData, isSDS, name, type, notes, ownerID) VALUES (?, '1', ?, '0', ?, ?)");
-    $stmt->bind_param("bssi", $htmlContent, $name, $notes, $ownerID);
+    $stmt->bind_param("bssi", $contents, $name, $notes, $ownerID);
 
     // Send HTML content as BLOB
-    $stmt->send_long_data(0, $htmlContent);
+    $stmt->send_long_data(0, $contents);
 
     // Execute the query
     $sds = $stmt->execute();
 
     if ($sds) {
-        $result['success'] = $ownerID;
+        $result['success'] = '<a href="/pages/viewDoc.php?type=sds&id='.$ownerID.'" target="_blank">Download file '.$ownerID.'</a>';
     } else {
         $result['error'] = "Error: " . $stmt->error;
     }

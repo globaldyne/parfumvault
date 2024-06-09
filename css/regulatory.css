@@ -9,7 +9,8 @@ body{
 }
 
 .sds-company {
-    font-size: 20px
+    font-size: 20px;
+	margin-bottom: 100px !important;
 }
 
 .sds-header {
@@ -115,4 +116,10 @@ body{
     color: #2d353c;
     background: #fff;
     border-color: #d9dfe3;
+}
+
+.img-thumbnail {
+	width: 150px !important;
+	height: 150px !important;
+	object-fit: cover;
 }

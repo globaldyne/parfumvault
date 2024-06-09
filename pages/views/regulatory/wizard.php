@@ -6,6 +6,7 @@ require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 
 $res_ingSupplier = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
+$res_SDStmpl = mysqli_query($conn, "SELECT * FROM templates ORDER BY name ASC");
 
 ?>
 <!doctype html>
@@ -30,7 +31,9 @@ $res_ingSupplier = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name
     <script src="/js/bootbox.min.js"></script>
     <script src="/js/sb-admin-2.js"></script>
     <script src="/js/validate-session.js"></script>
-      
+  	<script src="/js/bootstrap-editable.js"></script>
+
+	<link href="/css/bootstrap-editable.css" rel="stylesheet">
     <link href="/css/select2.css" rel="stylesheet">
     <script src="/js/select2.js"></script> 
     <script src="/js/regulatory.js"></script> 
@@ -220,7 +223,17 @@ $res_ingSupplier = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name
     
     <div class="tab-pane fade" id="reviewPanel" role="tabpanel">
       <h4>SDS</h4>
-      <div id="sdsResult">xx</div>
+      <div class="col-sm">
+        <div class="mb-4 mt-4">
+          <select name="sds_tmpl" id="sds_tmpl" class="form-control selectpicker" data-live-search="true">
+          	<option selected disabled>Choose an SDS template</option>
+            <?php while ($row_SDStmpl = mysqli_fetch_array($res_SDStmpl)){ ?>
+              <option value="<?=$row_SDStmpl['id']?>"><?=$row_SDStmpl['name'];?></option>
+            <?php } ?>
+          </select>
+        </div>
+      </div>
+      <div class="mt-3" id="sdsResult"></div>
       <button class="btn btn-primary btn-block" id="downloadSDS">Download SDS</button>
     </div>
   </div>
@@ -318,6 +331,7 @@ $(document).ready(function() {
 			dataType: 'json',
 			data: {
 				genSDS: true,
+				tmplID: $('#sds_tmpl').val(),
 				name: prodName,
 				supplier_id: $('#supplier_name').val(),
 				po: $('#po').val(),
