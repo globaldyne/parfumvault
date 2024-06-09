@@ -234,7 +234,7 @@ $res_SDStmpl = mysqli_query($conn, "SELECT * FROM templates ORDER BY name ASC");
         </div>
       </div>
       <div class="mt-3" id="sdsResult"></div>
-      <button class="btn btn-primary btn-block" id="downloadSDS">Download SDS</button>
+      <button class="btn btn-primary btn-block" id="downloadSDS">Generate SDS</button>
     </div>
   </div>
 

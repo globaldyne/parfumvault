@@ -8,7 +8,7 @@ require_once(__ROOT__.'/inc/product.php');
 
 if ($_POST['do'] = 'genSDS') {
   $name = $_POST['name'];
-  $sds_tmpl = $_POST['sds_tmpl'];
+  $sds_tmpl = $_POST['tmplID'];
 
   $notes = "SDS wizard generated";
   $product_use = $_POST['product_use'];
@@ -29,7 +29,7 @@ if ($_POST['do'] = 'genSDS') {
   $productState = $_POST['productState'];
 
 
-	$qHtml = mysqli_fetch_array(mysqli_query($conn, "SELECT id, content FROM templates WHERE id = '8'"));
+	$qHtml = mysqli_fetch_array(mysqli_query($conn, "SELECT id, content FROM templates WHERE id = '$sds_tmpl'"));
 	$htmlContent =  $qHtml['content'];
 
 if ( empty($settings['brandLogo']) ){ 
