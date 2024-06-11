@@ -333,6 +333,7 @@ $(document).ready(function() {
 				genSDS: true,
 				tmplID: $('#sds_tmpl').val(),
 				name: prodName,
+				ingID: ingID,
 				supplier_id: $('#supplier_name').val(),
 				po: $('#po').val(),
 				country: $('#country').val(),

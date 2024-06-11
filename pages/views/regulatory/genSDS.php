@@ -12,6 +12,7 @@ $defPercentage = $settings['defPercentage'];
 
 if ($_POST['do'] = 'genSDS') {
   $name = $_POST['name'];
+  $ingID = $_POST['ingID'];
   $sds_tmpl = $_POST['tmplID'];
 
   $notes = "SDS wizard generated";
@@ -36,11 +37,18 @@ if ($_POST['do'] = 'genSDS') {
 	$qHtml = mysqli_fetch_array(mysqli_query($conn, "SELECT id, content FROM templates WHERE id = '$sds_tmpl'"));
 	$htmlContent =  $qHtml['content'];
 
-if ( empty($settings['brandLogo']) ){ 
-	$logo = "/img/logo.png";
-}else{
-	$logo = $settings['brandLogo'];
-}
+
+	$ingSafetyInfo = mysqli_query($conn, "SELECT id,ingID,GHS FROM ingSafetyInfo WHERE ingID = '$ingID'");
+	while($safety_res = mysqli_fetch_array($ingSafetyInfo)){
+		$safety[] = $safety_res;
+	}
+	
+
+	if ( empty($settings['brandLogo']) ){ 
+		$logo = "/img/logo.png";
+	}else{
+		$logo = $settings['brandLogo'];
+	}
 
 $search  = array(
 	'%LOGO%',
@@ -76,9 +84,15 @@ $replace = array(
 	$customers['web'],
 	$name,
 	$bottle,
-	$type,'xs','h',strtoupper($defCatClass),
+	$type,
+	//'xs',
+	//'h',
+	//strtoupper($defCatClass),
 	$type,date('d/M/Y')
 );
+	foreach($safety as $pictogram){
+    	$y .= '<img class="img-fluid mx-2" style="width: 100px; height: 100px;" src="/img/Pictograms/GHS0'.$pictogram['GHS'].'.png">';
+    }
 
 	if($qCMP = mysqli_query($conn, "SELECT *  FROM ingredient_compounds WHERE ing = '".$name."' ORDER BY name ")){
 		while($cmp = mysqli_fetch_array($qCMP)){
@@ -94,8 +108,15 @@ $replace = array(
 	
 	}
 	
-$contents =  str_replace( $search, $replace, preg_replace('#(%IFRA_MATERIALS_LIST%)#ms', $x, $qHtml['content']) );
-//echo $contents;
+$contents = str_replace(
+    $search,
+    $replace,
+   		preg_replace('#(%CMP_MATERIALS_LIST%)#ms', $x,
+   	 	preg_replace('#(%GHS_LABEL_LIST%)#ms', $y,
+			$qHtml['content']
+		)
+    )
+);
 
 
 // Insert into sds_data table
