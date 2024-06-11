@@ -16,14 +16,12 @@ $tmpl = mysqli_fetch_array(mysqli_query($conn,"SELECT name,content FROM template
             </div>
             <div class="col-sm-3">
                 <div class="special-vars">
-                    <strong>Special vars</strong>
-                    <ul id="addvars">
-                        <li><a onclick="insertAtCaret('tmpl-editor','%LOGO%');" href="#">Add your Logo (IFRA, SDS)</a></li>
-                        <li><a onclick="insertAtCaret('tmpl-editor','%BRAND_NAME%');" href="#">Add your brand name (IFRA, SDS)</a></li>
-                        <li><a onclick="insertAtCaret('tmpl-editor','%BRAND_LOGO%');" href="#">Add your brand logo (SDS)</a></li>
-                        <li><a onclick="insertAtCaret('tmpl-editor','%BRAND_ADDRESS%');" href="#">Add your brand’s address (IFRA, SDS)</a></li>
-                        <li><a onclick="insertAtCaret('tmpl-editor','%BRAND_EMAIL%');" href="#">Add your email (IFRA, SDS)</a></li>
-                        <li><a onclick="insertAtCaret('tmpl-editor','%BRAND_PHONE%');" href="#">Add your phone number (IFRA, SDS)</a></li>
+                    <strong>IFRA Special vars</strong>
+                    <ul id="ifraaddvars">
+                        <li><a onclick="insertAtCaret('tmpl-editor','%BRAND_NAME%');" href="#">Add your brand name (IFRA)</a></li>
+                        <li><a onclick="insertAtCaret('tmpl-editor','%BRAND_ADDRESS%');" href="#">Add your brand’s address (IFRA)</a></li>
+                        <li><a onclick="insertAtCaret('tmpl-editor','%BRAND_EMAIL%');" href="#">Add your email (IFRA)</a></li>
+                        <li><a onclick="insertAtCaret('tmpl-editor','%BRAND_PHONE%');" href="#">Add your phone number (IFRA)</a></li>
                         <li><a onclick="insertAtCaret('tmpl-editor','%CUSTOMER_NAME%');" href="#">Add customer's name (IFRA)</a></li>
                         <li><a onclick="insertAtCaret('tmpl-editor','%CUSTOMER_ADDRESS%');" href="#">Add customer’s address (IFRA)</a></li>
                         <li><a onclick="insertAtCaret('tmpl-editor','%CUSTOMER_EMAIL%');" href="#">Add custtomes email (IFRA)</a></li>
@@ -37,6 +35,15 @@ $tmpl = mysqli_fetch_array(mysqli_query($conn,"SELECT name,content FROM template
                         <li><a onclick="insertAtCaret('tmpl-editor','%PRODUCT_CAT_CLASS%');" href="#">Add the category class of your product (IFRA)</a></li>
                         <li><a onclick="insertAtCaret('tmpl-editor','%CURRENT_DATE%');" href="#">Add the current date (IFRA, SDS)</a></li>
                         <li><a onclick="insertAtCaret('tmpl-editor','%IFRA_MATERIALS_LIST%');" href="#">Add materials in formula found under the IFRA scope (IFRA)</a></li>
+
+                    </ul>
+                </div>
+                <div class="special-vars">
+                    <strong>SDS Special vars</strong>
+                    <ul id="sdsaddvars">
+                        <li><a onclick="insertAtCaret('tmpl-editor','%SDS_LANGUAGE%');" href="#">Language (SDS)</a></li>
+                        <li><a onclick="insertAtCaret('tmpl-editor','%SDS_PRODUCT_NAME%');" href="#">Product (SDS)</a></li>
+
                         <li><a onclick="insertAtCaret('tmpl-editor','%INGREDIENT_NAME%');" href="#">Add the ingredient name (SDS)</a></li>
                         <li><a onclick="insertAtCaret('tmpl-editor','%CAS%');" href="#">Add ingredient’s CAS number (SDS)</a></li>
                         <li><a onclick="insertAtCaret('tmpl-editor','%IUPAC%');" href="#">Add ingredient’s IUPAC data (SDS)</a></li>
@@ -48,7 +55,14 @@ $tmpl = mysqli_fetch_array(mysqli_query($conn,"SELECT name,content FROM template
                         <li><a onclick="insertAtCaret('tmpl-editor','%SUPPLIER_COUNTRY%');" href="#">Add ingredient’s supplier country (SDS)</a></li>
                         <li><a onclick="insertAtCaret('tmpl-editor','%SUPPLIER_PHONE%');" href="#">Add ingredient’s supplier phone number (SDS)</a></li>
                         <li><a onclick="insertAtCaret('tmpl-editor','%SUPPLIER_URL%');" href="#">Add ingredient’s supplier website (SDS)</a></li>
-                        <li><a onclick="insertAtCaret('tmpl-editor','%SUPPLIER_EMAIL%');" href="#">Add ingredient’s supplier email (SDS)</a></li>
+                    	<li><a onclick="insertAtCaret('tmpl-editor','%SUPPLIER_EMAIL%');" href="#">Add ingredient’s supplier email (SDS)</a></li>
+                	</ul>
+                </div>
+                <div class="special-vars">
+                    <strong>Common Special vars</strong>
+                    <ul id="commonaddvars">
+                    	<li><a onclick='insertAtCaret("tmpl-editor","<img src=\"%LOGO%\" class=\"img-thumbnail float-start\" >");' href="#">Add your Logo (IFRA, SDS)</a></li>
+
                     </ul>
                 </div>
             </div>
