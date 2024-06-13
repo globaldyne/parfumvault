@@ -73,7 +73,7 @@ $res_SDStmpl = mysqli_query($conn, "SELECT * FROM templates ORDER BY name ASC");
           <select name="supplier_name" id="supplier_name" class="form-control selectpicker" data-live-search="true">
           	<option selected disabled>Choose a supplier</option>
             <?php while ($row_ingSupplier = mysqli_fetch_array($res_ingSupplier)){ ?>
-              <option value="<?=$row_ingSupplier['id']?>" data-city="<?=$row_ingSupplier['city'];?>" data-email="<?=$row_ingSupplier['email'];?>" data-url="<?=$row_ingSupplier['url'];?>" data-telephone="<?=$row_ingSupplier['telephone'];?>" data-country="<?=$row_ingSupplier['country'];?>" data-po="<?=$row_ingSupplier['po'];?>" data-address="<?=$row_ingSupplier['address'];?>"><?=$row_ingSupplier['name'];?></option>
+              <option value="<?=$row_ingSupplier['id']?>" data-sname="<?=$row_ingSupplier['name'];?>" data-city="<?=$row_ingSupplier['city'];?>" data-email="<?=$row_ingSupplier['email'];?>" data-url="<?=$row_ingSupplier['url'];?>" data-telephone="<?=$row_ingSupplier['telephone'];?>" data-country="<?=$row_ingSupplier['country'];?>" data-po="<?=$row_ingSupplier['po'];?>" data-address="<?=$row_ingSupplier['address'];?>"><?=$row_ingSupplier['name'];?></option>
             <?php } ?>
           </select>
         </div>
@@ -334,6 +334,7 @@ $(document).ready(function() {
 				tmplID: $('#sds_tmpl').val(),
 				name: prodName,
 				ingID: ingID,
+				supplier_name: $('#supplier_name').children(':selected').data('sname'),
 				supplier_id: $('#supplier_name').val(),
 				po: $('#po').val(),
 				country: $('#country').val(),

@@ -1722,6 +1722,68 @@ if($_POST['action'] == 'rename' && $_POST['old_ing_name'] && $_POST['ing_id']){
 }
 
 
+//FIRST AID INFO
+if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'faid_info') {
+    $ingID = (int)$_POST['ingID'];
+    
+    $first_aid_general = $_POST['first_aid_general'];
+    $first_aid_inhalation = $_POST['first_aid_inhalation'];
+    $first_aid_skin = $_POST['first_aid_skin'];
+    $first_aid_eye = $_POST['first_aid_eye'];
+    $first_aid_ingestion = $_POST['first_aid_ingestion'];
+    $first_aid_self_protection = $_POST['first_aid_self_protection'];
+    $first_aid_symptoms = $_POST['first_aid_symptoms'];
+    $first_aid_dr_notes = $_POST['first_aid_dr_notes'];
+    
+	 // Check if all fields are populated
+    if (
+        empty($ingID) || empty($first_aid_general) || empty($first_aid_inhalation) ||
+        empty($first_aid_skin) || empty($first_aid_eye) || empty($first_aid_ingestion) ||
+        empty($first_aid_self_protection) || empty($first_aid_symptoms) || empty($first_aid_dr_notes)
+    ) {
+        $response["error"] = 'All fields are required.';
+        echo json_encode($response);
+        return;
+    }
+	
+    // Prepare the SQL statement
+    $stmt = $conn->prepare(
+        "INSERT INTO ingredient_safety_data (
+            ingID, first_aid_general, first_aid_inhalation, first_aid_skin, first_aid_eye, 
+            first_aid_ingestion, first_aid_self_protection, first_aid_symptoms, first_aid_dr_notes
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE 
+            first_aid_general = VALUES(first_aid_general),
+            first_aid_inhalation = VALUES(first_aid_inhalation),
+            first_aid_skin = VALUES(first_aid_skin),
+            first_aid_eye = VALUES(first_aid_eye),
+            first_aid_ingestion = VALUES(first_aid_ingestion),
+            first_aid_self_protection = VALUES(first_aid_self_protection),
+            first_aid_symptoms = VALUES(first_aid_symptoms),
+            first_aid_dr_notes = VALUES(first_aid_dr_notes)"
+    );
+    
+    // Bind the parameters
+    $stmt->bind_param(
+        'issssssss', $ingID, $first_aid_general, $first_aid_inhalation, $first_aid_skin, $first_aid_eye, 
+        $first_aid_ingestion, $first_aid_self_protection, $first_aid_symptoms, $first_aid_dr_notes
+    );
+    
+    // Execute the statement
+    if ($stmt->execute()) {
+        $response["success"] = 'First aid data has been updated!';
+    } else {
+        $response["error"] = 'Something went wrong ' . $stmt->error;
+    }
+    
+    // Close the statement
+    $stmt->close();
+    
+    echo json_encode($response);
+    return;
+}
+
+
 
 header('Location: /');
 exit;

@@ -18,7 +18,6 @@ $tmpl = mysqli_fetch_array(mysqli_query($conn,"SELECT name,content FROM template
                 <div class="special-vars">
                     <strong>IFRA Special vars</strong>
                     <ul id="ifraaddvars">
-                        <li><a onclick="insertAtCaret('tmpl-editor','%BRAND_NAME%');" href="#">Add your brand name</a></li>
                         <li><a onclick="insertAtCaret('tmpl-editor','%BRAND_ADDRESS%');" href="#">Add your brand’s address</a></li>
                         <li><a onclick="insertAtCaret('tmpl-editor','%BRAND_EMAIL%');" href="#">Add your email</a></li>
                         <li><a onclick="insertAtCaret('tmpl-editor','%BRAND_PHONE%');" href="#">Add your phone number</a></li>
@@ -40,23 +39,25 @@ $tmpl = mysqli_fetch_array(mysqli_query($conn,"SELECT name,content FROM template
                 <div class="special-vars">
                     <strong>SDS Special vars</strong>
                     <ul id="sdsaddvars">
-                        <li><a onclick="insertAtCaret('tmpl-editor','%SDS_LANGUAGE%');" href="#">Language</a></li>
-                        <li><a onclick="insertAtCaret('tmpl-editor','%SDS_PRODUCT_NAME%');" href="#">Product</a></li>
+                        <li><a onclick="insertAtCaret('tmpl-editor','%SDS_LANGUAGE%');" href="#">Add SDS Language</a></li>
+                        <li><a onclick="insertAtCaret('tmpl-editor','%SDS_PRODUCT_NAME%');" href="#">Add product name</a></li>
                         <li><a onclick="insertAtCaret('tmpl-editor','%GHS_LABEL_LIST%');" href="#">Add GHS data</a></li>
                         <li><a onclick="insertAtCaret('tmpl-editor','%CMP_MATERIALS_LIST%');" href="#">Add compositions</a></li>
+                        <li><a onclick="insertAtCaret('tmpl-editor','%SDS_SUPPLIER_NAME%');" href="#">Add supplier name</a></li>
+                        <li><a onclick="insertAtCaret('tmpl-editor','%SDS_SUPPLIER_ADDRESS%');" href="#">Add supplier address</a></li>
+                        <li><a onclick="insertAtCaret('tmpl-editor','%SDS_SUPPLIER_PO%');" href="#">Add ingredient’s supplier postal code</a></li>
+                        <li><a onclick="insertAtCaret('tmpl-editor','%SDS_SUPPLIER_COUNTRY%');" href="#">Add ingredient’s supplier country</a></li>
+                        <li><a onclick="insertAtCaret('tmpl-editor','%SDS_SUPPLIER_PHONE%');" href="#">Add ingredient’s supplier phone number</a></li>
+                        <li><a onclick="insertAtCaret('tmpl-editor','%SDS_SUPPLIER_URL%');" href="#">Add ingredient’s supplier website</a></li>
+                    	<li><a onclick="insertAtCaret('tmpl-editor','%SDS_SUPPLIER_EMAIL%');" href="#">Add ingredient’s supplier email</a></li>
+                        
+                    	<li><a onclick="insertAtCaret('tmpl-editor','%SDS_DISCLAIMER%');" href="#">Add disclaimer info</a></li>
 
-                        <li><a onclick="insertAtCaret('tmpl-editor','%INGREDIENT_NAME%');" href="#">Add the ingredient name</a></li>
                         <li><a onclick="insertAtCaret('tmpl-editor','%CAS%');" href="#">Add ingredient’s CAS number</a></li>
                         <li><a onclick="insertAtCaret('tmpl-editor','%IUPAC%');" href="#">Add ingredient’s IUPAC data</a></li>
                         <li><a onclick="insertAtCaret('tmpl-editor','%REACH%');" href="#">Add ingredient’s REACH number</a></li>
                         <li><a onclick="insertAtCaret('tmpl-editor','%EINECS%');" href="#">Add ingredient’s EINECS - EC</a></li>
-                        <li><a onclick="insertAtCaret('tmpl-editor','%SUPPLIER_NAME%');" href="#">Add ingredient’s supplier name</a></li>
-                        <li><a onclick="insertAtCaret('tmpl-editor','%SUPPLIER_ADDRESS%');" href="#">Add ingredient’s supplier address</a></li>
-                        <li><a onclick="insertAtCaret('tmpl-editor','%SUPPLIER_PO%');" href="#">Add ingredient’s supplier postal code</a></li>
-                        <li><a onclick="insertAtCaret('tmpl-editor','%SUPPLIER_COUNTRY%');" href="#">Add ingredient’s supplier country</a></li>
-                        <li><a onclick="insertAtCaret('tmpl-editor','%SUPPLIER_PHONE%');" href="#">Add ingredient’s supplier phone number</a></li>
-                        <li><a onclick="insertAtCaret('tmpl-editor','%SUPPLIER_URL%');" href="#">Add ingredient’s supplier website</a></li>
-                    	<li><a onclick="insertAtCaret('tmpl-editor','%SUPPLIER_EMAIL%');" href="#">Add ingredient’s supplier email</a></li>
+
                 	</ul>
                 </div>
                 <div class="special-vars">
@@ -64,6 +65,7 @@ $tmpl = mysqli_fetch_array(mysqli_query($conn,"SELECT name,content FROM template
                     <ul id="commonaddvars">
                     	<li><a onclick='insertAtCaret("tmpl-editor","<img src=\"%LOGO%\" class=\"img-thumbnail float-start\" >");' href="#">Add your Logo</a></li>
                         <li><a onclick="insertAtCaret('tmpl-editor','%CURRENT_DATE%');" href="#">Add the current date</a></li>
+                        <li><a onclick="insertAtCaret('tmpl-editor','%BRAND_NAME%');" href="#">Add your brand name</a></li>
 
                     </ul>
                 </div>
