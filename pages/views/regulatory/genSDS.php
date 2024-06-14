@@ -93,6 +93,21 @@ $search  = array(
 	'%FIRE_ADVICE%',
  	'%FIRE_OTHER_INFO%',
  
+ 
+ 
+  	'%EXPOSURE_OCC_LIMIT%',
+ 	'%EXPOSURE_BIO_LIMIT%',
+ 	'%EXPOSURE_USE_LIMIT%',
+ 	'%EXPOSURE_OTHER_REM%',
+ 	'%EXPOSURE_FACE_PROTECTION%',
+ 	'%EXPOSURE_SKIN_PROTECTION%',
+ 	'%EXPOSURE_RESP_PROTECTION%',
+ 	'%EXPOSURE_ENV_EXPOSURE%',
+ 	'%EXPOSURE_CONS_EXPOSURE%',
+ 	'%EXPOSURE_OTHER_INFO%',
+
+ 
+ 
 	'%SDS_DISCLAIMER%',
 	'%CURRENT_DATE%'
 );
@@ -129,6 +144,16 @@ $replace = array(
 	$ingSafetyInfo['firefighting_other_info'],
 
 
+	$ingSafetyInfo['exposure_occupational_limits'],
+    $ingSafetyInfo['exposure_biological_limits'],
+    $ingSafetyInfo['exposure_intented_use_limits'],
+    $ingSafetyInfo['exposure_other_remarks'],
+    $ingSafetyInfo['exposure_face_protection'],
+    $ingSafetyInfo['exposure_skin_protection'],
+    $ingSafetyInfo['exposure_respiratory_protection'],
+    $ingSafetyInfo['exposure_env_exposure'],
+    $ingSafetyInfo['exposure_consumer_exposure'],
+    $ingSafetyInfo['exposure_other_info'],
 
 	$disclaimer,
 	date('d/M/Y')

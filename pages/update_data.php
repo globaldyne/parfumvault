@@ -1946,6 +1946,78 @@ if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'HS') {
     return;
 }
 
+//EXPOSURE DATA
+if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'exposure_data') {
+    $ingID = (int)$_POST['ingID'];
+
+    // New fields for exposure data
+    $exposure_occupational_limits = $_POST['exposure_occupational_limits'];
+    $exposure_biological_limits = $_POST['exposure_biological_limits'];
+    $exposure_intented_use_limits = $_POST['exposure_intented_use_limits'];
+    $exposure_other_remarks = $_POST['exposure_other_remarks'];
+    $exposure_face_protection = $_POST['exposure_face_protection'];
+    $exposure_skin_protection = $_POST['exposure_skin_protection'];
+    $exposure_respiratory_protection = $_POST['exposure_respiratory_protection'];
+    $exposure_env_exposure = $_POST['exposure_env_exposure'];
+    $exposure_consumer_exposure = $_POST['exposure_consumer_exposure'];
+    $exposure_other_info = $_POST['exposure_other_info'];
+
+    // Check if all fields are populated
+    if (
+        empty($ingID) || empty($exposure_occupational_limits) || empty($exposure_biological_limits) || 
+        empty($exposure_intented_use_limits) || empty($exposure_other_remarks) || empty($exposure_face_protection) || 
+        empty($exposure_skin_protection) || empty($exposure_respiratory_protection) || empty($exposure_env_exposure) || 
+        empty($exposure_consumer_exposure) || empty($exposure_other_info)
+    ) {
+        $response["error"] = 'All fields are required';
+        echo json_encode($response);
+        return;
+    }
+
+    // Prepare the SQL statement
+    $stmt = $conn->prepare(
+        "INSERT INTO ingredient_safety_data (
+            ingID, exposure_occupational_limits, exposure_biological_limits, 
+            exposure_intented_use_limits, exposure_other_remarks, 
+            exposure_face_protection, exposure_skin_protection, 
+            exposure_respiratory_protection, exposure_env_exposure, 
+            exposure_consumer_exposure, exposure_other_info
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE 
+            exposure_occupational_limits = VALUES(exposure_occupational_limits),
+            exposure_biological_limits = VALUES(exposure_biological_limits),
+            exposure_intented_use_limits = VALUES(exposure_intented_use_limits),
+            exposure_other_remarks = VALUES(exposure_other_remarks),
+            exposure_face_protection = VALUES(exposure_face_protection),
+            exposure_skin_protection = VALUES(exposure_skin_protection),
+            exposure_respiratory_protection = VALUES(exposure_respiratory_protection),
+            exposure_env_exposure = VALUES(exposure_env_exposure),
+            exposure_consumer_exposure = VALUES(exposure_consumer_exposure),
+            exposure_other_info = VALUES(exposure_other_info)"
+    );
+
+    // Bind the parameters
+    $stmt->bind_param(
+        'issssssssss', $ingID, $exposure_occupational_limits, $exposure_biological_limits, 
+        $exposure_intented_use_limits, $exposure_other_remarks, 
+        $exposure_face_protection, $exposure_skin_protection, 
+        $exposure_respiratory_protection, $exposure_env_exposure, 
+        $exposure_consumer_exposure, $exposure_other_info
+    );
+
+    // Execute the statement
+    if ($stmt->execute()) {
+        $response["success"] = 'Exposure data has been updated';
+    } else {
+        $response["error"] = 'Something went wrong ' . $stmt->error;
+    }
+
+    // Close the statement
+    $stmt->close();
+
+    echo json_encode($response);
+    return;
+}
 
 
 

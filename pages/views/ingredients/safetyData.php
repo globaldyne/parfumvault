@@ -262,11 +262,76 @@ $ingSafetyInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredien
   
   
   
+  
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseExposure" aria-expanded="false" aria-controls="panelsStayOpen-collapseExposure">
+        8. Exposure controls/personal protection
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapseExposure" class="accordion-collapse collapse">
+      <div class="accordion-body">
+      	<div id="ExposureMsg"></div>
+        
+		<div class="row mb-3">
+            <div class="col-md-6">
+              <label for="exposure_occupational_limits" class="form-label">Occupational Limits</label>
+                <input name="exposure_occupational_limits" type="text" class="form-control" id="exposure_occupational_limits" value="<?=$ingSafetyInfo['exposure_occupational_limits']?>">
+            </div>
+            <div class="col-md-6">
+              <label for="exposure_biological_limits" class="form-label">Biological Limits</label>
+                <input name="exposure_biological_limits" type="text" class="form-control" id="exposure_biological_limits" value="<?=$ingSafetyInfo['exposure_biological_limits']?>">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="exposure_intented_use_limits" class="form-label">Intended Use Limits</label>
+                <input name="exposure_intented_use_limits" type="text" class="form-control" id="exposure_intented_use_limits" value="<?=$ingSafetyInfo['exposure_intented_use_limits']?>">
+            </div>
+            <div class="col-md-6">
+              <label for="exposure_other_remarks" class="form-label">Other Remarks</label>
+                <input name="exposure_other_remarks" type="text" class="form-control" id="exposure_other_remarks" value="<?=$ingSafetyInfo['exposure_other_remarks']?>">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="exposure_face_protection" class="form-label">Face Protection</label>
+                <input name="exposure_face_protection" type="text" class="form-control" id="exposure_face_protection" value="<?=$ingSafetyInfo['exposure_face_protection']?>">
+            </div>
+            <div class="col-md-6">
+              <label for="exposure_skin_protection" class="form-label">Skin Protection</label>
+                <input name="exposure_skin_protection" type="text" class="form-control" id="exposure_skin_protection" value="<?=$ingSafetyInfo['exposure_skin_protection']?>">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="exposure_respiratory_protection" class="form-label">Respiratory protection</label>
+                <input name="exposure_respiratory_protection" type="text" class="form-control" id="exposure_respiratory_protection" value="<?=$ingSafetyInfo['exposure_respiratory_protection']?>">
+            </div>
+            <div class="col-md-6">
+              <label for="exposure_env_exposure" class="form-label">Environmental exposure controls</label>
+                <input name="exposure_env_exposure" type="text" class="form-control" id="exposure_env_exposure" value="<?=$ingSafetyInfo['exposure_env_exposure']?>">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="exposure_consumer_exposure" class="form-label">Consumer exposure controls</label>
+                <input name="exposure_consumer_exposure" type="text" class="form-control" id="exposure_consumer_exposure" value="<?=$ingSafetyInfo['exposure_consumer_exposure']?>">
+            </div>
+            <div class="col-md-6">
+              <label for="exposure_other_info" class="form-label">Additional information</label>
+                <input name="exposure_other_info" type="text" class="form-control" id="exposure_other_info" value="<?=$ingSafetyInfo['exposure_other_info']?>">
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary" id="save_exposure">Save data</button>
+        
+      </div>
+    </div>
+  </div>
+    
+  
+  
 </div>
-
-
-
-
 
 
   
@@ -442,7 +507,39 @@ $(document).ready(function() {
 		});
 	});
 	
-	
+	$('#save_exposure').on('click',  function () {
+		$.ajax({ 
+			url: "/pages/update_data.php", 
+			type: "POST",
+			data: {
+				manage: "ingredient",
+				tab: "exposure_data",
+				ingID: "<?=$_POST['ingID'];?>",
+				exposure_occupational_limits: $("#exposure_occupational_limits").val(),
+				exposure_biological_limits: $("#exposure_biological_limits").val(),
+				exposure_intented_use_limits: $("#exposure_intented_use_limits").val(),
+				exposure_other_remarks: $("#exposure_other_remarks").val(),
+				exposure_face_protection: $("#exposure_face_protection").val(),
+				exposure_skin_protection: $("#exposure_skin_protection").val(),
+				exposure_respiratory_protection: $("#exposure_respiratory_protection").val(),
+				exposure_env_exposure: $("#exposure_env_exposure").val(),
+				exposure_consumer_exposure: $("#exposure_consumer_exposure").val(),
+				exposure_other_info: $("#exposure_other_info").val()
+
+			},
+			dataType: 'json',
+			success: function (data) {
+				if (data.success) {
+					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+
+				}else{
+					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				}
+		
+				$('#ExposureMsg').html(msg);
+			}
+		});
+	});
 	
 	
 	
