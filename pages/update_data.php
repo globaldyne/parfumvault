@@ -1783,6 +1783,173 @@ if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'faid_info') {
     return;
 }
 
+//FIREFIGHTING
+if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'fire_info') {
+    $ingID = (int)$_POST['ingID'];
+    
+    $firefighting_suitable_media = $_POST['firefighting_suitable_media'];
+    $firefighting_non_suitable_media = $_POST['firefighting_non_suitable_media'];
+    $firefighting_special_hazards = $_POST['firefighting_special_hazards'];
+    $firefighting_advice = $_POST['firefighting_advice'];
+    $firefighting_other_info = $_POST['firefighting_other_info'];
+    
+    // Check if all fields are populated
+    if (
+        empty($ingID) || empty($firefighting_suitable_media) || empty($firefighting_non_suitable_media) ||
+        empty($firefighting_special_hazards) || empty($firefighting_advice) || empty($firefighting_other_info)
+    ) {
+        $response["error"] = 'All fields are required';
+        echo json_encode($response);
+        return;
+    }
+    
+    // Prepare the SQL statement
+    $stmt = $conn->prepare(
+        "INSERT INTO ingredient_safety_data (
+            ingID, firefighting_suitable_media, firefighting_non_suitable_media, 
+            firefighting_special_hazards, firefighting_advice, firefighting_other_info
+        ) VALUES (?, ?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE 
+            firefighting_suitable_media = VALUES(firefighting_suitable_media),
+            firefighting_non_suitable_media = VALUES(firefighting_non_suitable_media),
+            firefighting_special_hazards = VALUES(firefighting_special_hazards),
+            firefighting_advice = VALUES(firefighting_advice),
+            firefighting_other_info = VALUES(firefighting_other_info)"
+    );
+    
+    // Bind the parameters
+    $stmt->bind_param(
+        'isssss', $ingID, $firefighting_suitable_media, $firefighting_non_suitable_media, 
+        $firefighting_special_hazards, $firefighting_advice, $firefighting_other_info
+    );
+    
+    // Execute the statement
+    if ($stmt->execute()) {
+        $response["success"] = 'Firefighting data has been updated';
+    } else {
+        $response["error"] = 'Something went wrong ' . $stmt->error;
+    }
+    
+    // Close the statement
+    $stmt->close();
+    
+    echo json_encode($response);
+    return;
+}
+
+
+//ACCIDENTAL RELEASE
+if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'save_acc_rel') {
+    $ingID = (int)$_POST['ingID'];
+    
+    $accidental_release_per_precautions = $_POST['accidental_release_per_precautions'];
+    $accidental_release_env_precautions = $_POST['accidental_release_env_precautions'];
+    $accidental_release_cleaning = $_POST['accidental_release_cleaning'];
+	$accidental_release_refs =  $_POST['accidental_release_refs'];
+    $accidental_release_other_info = $_POST['accidental_release_other_info'];
+    
+    // Check if all fields are populated
+    if (
+        empty($ingID) || empty($accidental_release_per_precautions) || empty($accidental_release_env_precautions) ||
+        empty($accidental_release_cleaning) ||  empty($accidental_release_refs) || empty($accidental_release_other_info)
+    ) {
+        $response["error"] = 'All fields are required';
+        echo json_encode($response);
+        return;
+    }
+    
+    // Prepare the SQL statement
+    $stmt = $conn->prepare(
+        "INSERT INTO ingredient_safety_data (
+            ingID, accidental_release_per_precautions, accidental_release_env_precautions, 
+            accidental_release_cleaning, accidental_release_refs, accidental_release_other_info
+        ) VALUES (?, ?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE 
+            accidental_release_per_precautions = VALUES(accidental_release_per_precautions),
+            accidental_release_env_precautions = VALUES(accidental_release_env_precautions),
+            accidental_release_cleaning = VALUES(accidental_release_cleaning),
+			accidental_release_refs = VALUES(accidental_release_refs),
+            accidental_release_other_info = VALUES(accidental_release_other_info)"
+    );
+    
+    // Bind the parameters
+    $stmt->bind_param(
+        'isssss', $ingID, $accidental_release_per_precautions, $accidental_release_env_precautions, 
+        $accidental_release_cleaning, $accidental_release_refs, $accidental_release_other_info
+    );
+    
+    // Execute the statement
+    if ($stmt->execute()) {
+        $response["success"] = 'Accidental release data has been updated';
+    } else {
+        $response["error"] = 'Something went wrong ' . $stmt->error;
+    }
+    
+    // Close the statement
+    $stmt->close();
+    
+    echo json_encode($response);
+    return;
+}
+
+//HANDLING & STORAGE
+if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'HS') {
+    $ingID = (int)$_POST['ingID'];
+    
+    $handling_protection = $_POST['handling_protection'];
+    $handling_hygiene = $_POST['handling_hygiene'];
+    $handling_safe_storage = $_POST['handling_safe_storage'];
+	$handling_joint_storage =  $_POST['handling_joint_storage'];
+    $handling_specific_uses = $_POST['handling_specific_uses'];
+    
+    // Check if all fields are populated
+    if (
+        empty($ingID) || empty($handling_protection) || empty($handling_hygiene) ||
+        empty($handling_safe_storage) ||  empty($handling_joint_storage) || empty($handling_specific_uses)
+    ) {
+        $response["error"] = 'All fields are required';
+        echo json_encode($response);
+        return;
+    }
+    
+    // Prepare the SQL statement
+    $stmt = $conn->prepare(
+        "INSERT INTO ingredient_safety_data (
+            ingID, handling_protection, handling_hygiene, 
+            handling_safe_storage, handling_joint_storage, handling_specific_uses
+        ) VALUES (?, ?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE 
+            handling_protection = VALUES(handling_protection),
+            handling_hygiene = VALUES(handling_hygiene),
+            handling_safe_storage = VALUES(handling_safe_storage),
+			handling_joint_storage = VALUES(handling_joint_storage),
+            handling_specific_uses = VALUES(handling_specific_uses)"
+    );
+    
+    // Bind the parameters
+    $stmt->bind_param(
+        'isssss', $ingID, $handling_protection, $handling_hygiene, 
+        $handling_safe_storage, $handling_joint_storage, $handling_specific_uses
+    );
+    
+    // Execute the statement
+    if ($stmt->execute()) {
+        $response["success"] = 'Handling and storage data has been updated';
+    } else {
+        $response["error"] = 'Something went wrong ' . $stmt->error;
+    }
+    
+    // Close the statement
+    $stmt->close();
+    
+    echo json_encode($response);
+    return;
+}
+
+
+
+
+
 
 
 header('Location: /');

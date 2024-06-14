@@ -54,7 +54,7 @@ effects.';
 		$safety[] = $safety_res;
 	}
 	
-	$ingFaidInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredient_safety_data WHERE ingID = '$ingID'"));
+	$ingSafetyInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredient_safety_data WHERE ingID = '$ingID'"));
 
 	if ( empty($settings['brandLogo']) ){ 
 		$logo = "/img/logo.png";
@@ -87,6 +87,12 @@ $search  = array(
 	'%FIRST_AID_SYMPTOMS%',
 	'%FIRST_AID_DR_NOTES%',
 
+ 	'%FIRE_SUIT_MEDIA%',
+	'%FIRE_NONSUIT_MEDIA%',
+	'%FIRE_SPECIAL_HAZARDS%',
+	'%FIRE_ADVICE%',
+ 	'%FIRE_OTHER_INFO%',
+ 
 	'%SDS_DISCLAIMER%',
 	'%CURRENT_DATE%'
 );
@@ -107,14 +113,22 @@ $replace = array(
 	$type,
 	$brand_name,					
 					
-	$ingFaidInfo['first_aid_general'],
-	$ingFaidInfo['first_aid_inhalation'],
-	$ingFaidInfo['first_aid_skin'],
-	$ingFaidInfo['first_aid_eye'],
-	$ingFaidInfo['first_aid_ingestion'],
-	$ingFaidInfo['first_aid_self_protection'],
-	$ingFaidInfo['first_aid_symptoms'],
-	$ingFaidInfo['first_aid_dr_notes'],
+	$ingSafetyInfo['first_aid_general'],
+	$ingSafetyInfo['first_aid_inhalation'],
+	$ingSafetyInfo['first_aid_skin'],
+	$ingSafetyInfo['first_aid_eye'],
+	$ingSafetyInfo['first_aid_ingestion'],
+	$ingSafetyInfo['first_aid_self_protection'],
+	$ingSafetyInfo['first_aid_symptoms'],
+	$ingSafetyInfo['first_aid_dr_notes'],
+
+	$ingSafetyInfo['firefighting_suitable_media'],
+	$ingSafetyInfo['firefighting_non_suitable_media'],
+	$ingSafetyInfo['firefighting_special_hazards'],
+	$ingSafetyInfo['firefighting_advice'],
+	$ingSafetyInfo['firefighting_other_info'],
+
+
 
 	$disclaimer,
 	date('d/M/Y')

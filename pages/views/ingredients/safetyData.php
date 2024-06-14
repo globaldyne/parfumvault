@@ -19,7 +19,7 @@ while($pictograms_res = mysqli_fetch_array($pictograms)){
 	$pictogram[] = $pictograms_res;
 }
 
-$ingFaidInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredient_safety_data WHERE ingID = '".$_POST['ingID']."'"));
+$ingSafetyInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredient_safety_data WHERE ingID = '".$_POST['ingID']."'"));
 
 
 ?>
@@ -44,14 +44,14 @@ $ingFaidInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredient_
 </style>
 <h3>Safety Information</h3>
 <div class="container">
-	<div class="accordion" id="accordionPanelsStayOpenExample">
+	<div class="accordion" id="accordionPanelsSafetyInfo">
   <div class="accordion-item">
     <h2 class="accordion-header">
-      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseGHS" aria-expanded="true" aria-controls="panelsStayOpen-collapseGHS">
-        Hazard Pictograms
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseGHS" aria-expanded="false" aria-controls="panelsStayOpen-collapseGHS">
+      2. Hazards identification
       </button>
     </h2>
-    <div id="panelsStayOpen-collapseGHS" class="accordion-collapse collapse show">
+    <div id="panelsStayOpen-collapseGHS" class="accordion-collapse collapse">
           <div class="accordion-body">
               <div class="row g-3 align-items-center">
             	<div class="mt-5 mb-5 col-auto">
@@ -92,7 +92,7 @@ $ingFaidInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredient_
   <div class="accordion-item">
     <h2 class="accordion-header">
       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseFaid" aria-expanded="false" aria-controls="panelsStayOpen-collapseFaid">
-        First aid measures
+       4. First aid measures
       </button>
     </h2>
     <div id="panelsStayOpen-collapseFaid" class="accordion-collapse collapse">
@@ -103,38 +103,38 @@ $ingFaidInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredient_
               <div class="col-md-6">
                 <div class="form-group">
                   <label for="first_aid_general">General</label>
-                  <input name="first_aid_general" type="text" class="form-control" id="first_aid_general" value="<?=$ingFaidInfo['first_aid_general']?>">
+                  <input name="first_aid_general" type="text" class="form-control" id="first_aid_general" value="<?=$ingSafetyInfo['first_aid_general']?>">
                 </div>
                 <div class="form-group">
                   <label for="first_aid_inhalation">Inhalation</label>
-                  <input name="first_aid_inhalation" type="text" class="form-control" id="first_aid_inhalation" value="<?=$ingFaidInfo['first_aid_inhalation']?>">
+                  <input name="first_aid_inhalation" type="text" class="form-control" id="first_aid_inhalation" value="<?=$ingSafetyInfo['first_aid_inhalation']?>">
                 </div>
                 <div class="form-group">
                   <label for="first_aid_skin">Skin contact</label>
-                  <input name="first_aid_skin" type="text" class="form-control" id="first_aid_skin" value="<?=$ingFaidInfo['first_aid_skin']?>">
+                  <input name="first_aid_skin" type="text" class="form-control" id="first_aid_skin" value="<?=$ingSafetyInfo['first_aid_skin']?>">
                 </div>
                 <div class="form-group">
                   <label for="first_aid_eye">Eye contact</label>
-                  <input name="first_aid_eye" type="text" class="form-control" id="first_aid_eye" value="<?=$ingFaidInfo['first_aid_eye']?>">
+                  <input name="first_aid_eye" type="text" class="form-control" id="first_aid_eye" value="<?=$ingSafetyInfo['first_aid_eye']?>">
                 </div>
               </div>
     
               <div class="col-md-6">
                 <div class="form-group">
                   <label for="first_aid_ingestion">Ingestion</label>
-                  <input name="first_aid_ingestion" type="text" class="form-control" id="first_aid_ingestion" value="<?=$ingFaidInfo['first_aid_ingestion']?>">
+                  <input name="first_aid_ingestion" type="text" class="form-control" id="first_aid_ingestion" value="<?=$ingSafetyInfo['first_aid_ingestion']?>">
                 </div>
                 <div class="form-group">
                   <label for="first_aid_self_protection">Self Protection</label>
-                  <input name="first_aid_self_protection" type="text" class="form-control" id="first_aid_self_protection" value="<?=$ingFaidInfo['first_aid_self_protection']?>">
+                  <input name="first_aid_self_protection" type="text" class="form-control" id="first_aid_self_protection" value="<?=$ingSafetyInfo['first_aid_self_protection']?>">
                 </div>
                 <div class="form-group">
                   <label for="first_aid_symptoms">Symptoms</label>
-                  <input name="first_aid_symptoms" type="text" class="form-control" id="first_aid_symptoms" value="<?=$ingFaidInfo['first_aid_symptoms']?>">
+                  <input name="first_aid_symptoms" type="text" class="form-control" id="first_aid_symptoms" value="<?=$ingSafetyInfo['first_aid_symptoms']?>">
                 </div>
                 <div class="form-group">
                   <label for="first_aid_dr_notes">Doctor's Notes</label>
-                  <input name="first_aid_dr_notes" type="text" class="form-control" id="first_aid_dr_notes" value="<?=$ingFaidInfo['first_aid_dr_notes']?>">
+                  <input name="first_aid_dr_notes" type="text" class="form-control" id="first_aid_dr_notes" value="<?=$ingSafetyInfo['first_aid_dr_notes']?>">
                 </div>
               </div>
             </div>
@@ -149,34 +149,35 @@ $ingFaidInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredient_
   <div class="accordion-item">
     <h2 class="accordion-header">
       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseFire" aria-expanded="false" aria-controls="panelsStayOpen-collapseFire">
-        Firefighting measures
+        5. Firefighting measures
       </button>
     </h2>
     <div id="panelsStayOpen-collapseFire" class="accordion-collapse collapse">
       <div class="accordion-body">
+         <div id="FireMsg"></div>
             <div class="row mb-3">
                 <div class="col-md-6">
-                    <label for="suitableMedia" class="form-label">Suitable Media</label>
-                    <input type="text" class="form-control" id="suitableMedia" name="firefighting_suitable_media">
+                    <label for="firefighting_suitable_media" class="form-label">Suitable Media</label>
+                    <input name="firefighting_suitable_media" type="text" class="form-control" id="firefighting_suitable_media" value="<?=$ingSafetyInfo['firefighting_suitable_media']?>">
                 </div>
                 <div class="col-md-6">
-                    <label for="nonSuitableMedia" class="form-label">Non-Suitable Media</label>
-                    <input type="text" class="form-control" id="nonSuitableMedia" name="firefighting_non_suitable_media">
+                    <label for="firefighting_non_suitable_media" class="form-label">Non-Suitable Media</label>
+                    <input name="firefighting_non_suitable_media" type="text" class="form-control" id="firefighting_non_suitable_media" value="<?=$ingSafetyInfo['firefighting_non_suitable_media']?>">
                 </div>
             </div>
             <div class="row mb-3">
                 <div class="col-md-6">
-                    <label for="specialHazards" class="form-label">Special Hazards</label>
-                    <input type="text" class="form-control" id="specialHazards" name="firefighting_special_hazards">
+                    <label for="firefighting_special_hazards" class="form-label">Special Hazards</label>
+                    <input name="firefighting_special_hazards" type="text" class="form-control" id="firefighting_special_hazards" value="<?=$ingSafetyInfo['firefighting_special_hazards']?>">
                 </div>
                 <div class="col-md-6">
-                    <label for="advice" class="form-label">Advice</label>
-                    <input type="text" class="form-control" id="advice" name="firefighting_advice">
+                    <label for="firefighting_advice" class="form-label">Advice</label>
+                    <input name="firefighting_advice" type="text" class="form-control" id="firefighting_advice" value="<?=$ingSafetyInfo['firefighting_advice']?>">
                 </div>
             </div>
             <div class="mb-3">
-                <label for="otherInfo" class="form-label">Other Information</label>
-                <textarea class="form-control" id="otherInfo" name="firefighting_other_info" rows="4"></textarea>
+                <label for="firefighting_other_info" class="form-label">Other Information</label>
+                <textarea class="form-control" id="firefighting_other_info" name="firefighting_other_info" rows="4"><?=$ingSafetyInfo['firefighting_other_info']?></textarea>
             </div>
             <button type="submit" class="btn btn-primary" id="save_fire">Save data</button>
       </div>
@@ -186,41 +187,78 @@ $ingFaidInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredient_
   <div class="accordion-item">
     <h2 class="accordion-header">
       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseAccRel" aria-expanded="false" aria-controls="panelsStayOpen-collapseAccRel">
-        Accidental release measures
+        6. Accidental release measures
       </button>
     </h2>
     <div id="panelsStayOpen-collapseAccRel" class="accordion-collapse collapse">
       <div class="accordion-body">
-            <div class="row mb-3">
+      	<div id="AccRelMsg"></div>
+         <div class="row mb-3">
             <div class="col-md-6">
-                <label for="precautions" class="form-label">Precautions</label>
-                <input type="text" class="form-control" id="precautions" name="accidental_release_per_precautions">
+                <label for="accidental_release_per_precautions" class="form-label">Personal Precautions</label>
+                <input name="accidental_release_per_precautions" type="text" class="form-control" id="accidental_release_per_precautions" value="<?=$ingSafetyInfo['accidental_release_per_precautions']?>">
             </div>
             <div class="col-md-6">
-                <label for="envPrecautions" class="form-label">Environmental Precautions</label>
-                <input type="text" class="form-control" id="envPrecautions" name="accidental_release_env_precautions">
+                <label for="accidental_release_env_precautions" class="form-label">Environmental Precautions</label>
+                <input name="accidental_release_env_precautions" type="text" class="form-control" id="accidental_release_env_precautions" value="<?=$ingSafetyInfo['accidental_release_env_precautions']?>">
             </div>
         </div>
         <div class="row mb-3">
             <div class="col-md-6">
-                <label for="cleaning" class="form-label">Cleaning Methods</label>
-                <input type="text" class="form-control" id="cleaning" name="accidental_release_cleaning">
+                <label for="accidental_release_cleaning" class="form-label">Cleaning Methods</label>
+                <input name="accidental_release_cleaning" type="text" class="form-control" id="accidental_release_cleaning" value="<?=$ingSafetyInfo['accidental_release_cleaning']?>">
             </div>
             <div class="col-md-6">
-                <label for="refs" class="form-label">References</label>
-                <input type="text" class="form-control" id="refs" name="accidental_release_refs">
+                <label for="accidental_release_refs" class="form-label">References</label>
+                <input name="accidental_release_refs" type="text" class="form-control" id="accidental_release_refs" value="<?=$ingSafetyInfo['accidental_release_refs']?>">
             </div>
         </div>
         <div class="mb-3">
-            <label for="otherInfo" class="form-label">Other Information</label>
-            <textarea class="form-control" id="otherInfo" name="accidental_release_other_info" rows="4"></textarea>
+            <label for="accidental_release_other_info" class="form-label">Other Information</label>
+            <textarea class="form-control" id="accidental_release_other_info" name="accidental_release_other_info" rows="4"><?=$ingSafetyInfo['accidental_release_other_info']?></textarea>
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary" id="save_acc_rel">Save data</button>
       </div>
     </div>
   </div>
   
-  
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseHS" aria-expanded="false" aria-controls="panelsStayOpen-collapseHS">
+        7. Handling and Storage
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapseHS" class="accordion-collapse collapse">
+      <div class="accordion-body">
+      	<div id="HSMsg"></div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="handling_protection" class="form-label">Protection</label>
+                <input name="handling_protection" type="text" class="form-control" id="handling_protection" value="<?=$ingSafetyInfo['handling_protection']?>">
+            </div>
+            <div class="col-md-6">
+              <label for="handling_hygiene" class="form-label">Hygiene</label>
+                <input name="handling_hygiene" type="text" class="form-control" id="handling_hygiene" value="<?=$ingSafetyInfo['handling_hygiene']?>">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="handling_safe_storage" class="form-label">Safe Storage</label>
+                <input name="handling_safe_storage" type="text" class="form-control" id="handling_safe_storage" value="<?=$ingSafetyInfo['handling_safe_storage']?>">
+            </div>
+            <div class="col-md-6">
+              <label for="handling_joint_storage" class="form-label">Joint Storage</label>
+                <input name="handling_joint_storage" type="text" class="form-control" id="handling_joint_storage" value="<?=$ingSafetyInfo['handling_joint_storage']?>">
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="specificUses" class="form-label">Specific Uses</label>
+            <textarea class="form-control" id="handling_specific_uses" name="handling_specific_uses" rows="2"><?=$ingSafetyInfo['handling_specific_uses']?></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" id="save_HS">Save data</button>
+      </div>
+    </div>
+  </div>
   
   
   
@@ -287,36 +325,129 @@ $(document).ready(function() {
 		});
 	});
 	
-		$('#save_faid').on('click',  function () {
-			$.ajax({ 
-				url: "/pages/update_data.php", 
-				type: "POST",
-				data: {
-					manage: "ingredient",
-					tab: "faid_info",
-					ingID: "<?=$_POST['ingID'];?>",
-					first_aid_general: $("#first_aid_general").val(),
-					first_aid_inhalation: $("#first_aid_inhalation").val(),
-					first_aid_skin: $("#first_aid_skin").val(),
-					first_aid_eye: $("#first_aid_eye").val(),
-					first_aid_ingestion: $("#first_aid_ingestion").val(),
-					first_aid_self_protection: $("#first_aid_self_protection").val(),
-					first_aid_symptoms: $("#first_aid_symptoms").val(),
-					first_aid_dr_notes: $("#first_aid_dr_notes").val(),
-				},
-				dataType: 'json',
-				success: function (data) {
-					if (data.success) {
-						msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+	$('#save_faid').on('click',  function () {
+		$.ajax({ 
+			url: "/pages/update_data.php", 
+			type: "POST",
+			data: {
+				manage: "ingredient",
+				tab: "faid_info",
+				ingID: "<?=$_POST['ingID'];?>",
+				first_aid_general: $("#first_aid_general").val(),
+				first_aid_inhalation: $("#first_aid_inhalation").val(),
+				first_aid_skin: $("#first_aid_skin").val(),
+				first_aid_eye: $("#first_aid_eye").val(),
+				first_aid_ingestion: $("#first_aid_ingestion").val(),
+				first_aid_self_protection: $("#first_aid_self_protection").val(),
+				first_aid_symptoms: $("#first_aid_symptoms").val(),
+				first_aid_dr_notes: $("#first_aid_dr_notes").val(),
+			},
+			dataType: 'json',
+			success: function (data) {
+				if (data.success) {
+					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 
-					}else{
-						msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
-					}
-			
-					$('#FaidMsg').html(msg);
+				}else{
+					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 				}
-			});
+		
+				$('#FaidMsg').html(msg);
+			}
+		});
 	});
+	
+	
+	$('#save_fire').on('click',  function () {
+		$.ajax({ 
+			url: "/pages/update_data.php", 
+			type: "POST",
+			data: {
+				manage: "ingredient",
+				tab: "fire_info",
+				ingID: "<?=$_POST['ingID'];?>",
+				firefighting_suitable_media: $("#firefighting_suitable_media").val(),
+				firefighting_non_suitable_media: $("#firefighting_non_suitable_media").val(),
+				firefighting_special_hazards: $("#firefighting_special_hazards").val(),
+				firefighting_advice: $("#firefighting_advice").val(),
+				firefighting_other_info: $("#firefighting_other_info").val()
+			},
+			dataType: 'json',
+			success: function (data) {
+				if (data.success) {
+					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+
+				}else{
+					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				}
+		
+				$('#FireMsg').html(msg);
+			}
+		});
+	});
+	
+	$('#save_acc_rel').on('click',  function () {
+		$.ajax({ 
+			url: "/pages/update_data.php", 
+			type: "POST",
+			data: {
+				manage: "ingredient",
+				tab: "save_acc_rel",
+				ingID: "<?=$_POST['ingID'];?>",
+				accidental_release_per_precautions: $("#accidental_release_per_precautions").val(),
+				accidental_release_env_precautions: $("#accidental_release_env_precautions").val(),
+				accidental_release_cleaning: $("#accidental_release_cleaning").val(),
+				accidental_release_refs: $("#accidental_release_refs").val(),
+				accidental_release_other_info: $("#accidental_release_other_info").val()
+			},
+			dataType: 'json',
+			success: function (data) {
+				if (data.success) {
+					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+
+				}else{
+					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				}
+		
+				$('#AccRelMsg').html(msg);
+			}
+		});
+	});
+	
+	
+	$('#save_HS').on('click',  function () {
+		$.ajax({ 
+			url: "/pages/update_data.php", 
+			type: "POST",
+			data: {
+				manage: "ingredient",
+				tab: "HS",
+				ingID: "<?=$_POST['ingID'];?>",
+				handling_protection: $("#handling_protection").val(),
+				handling_hygiene: $("#handling_hygiene").val(),
+				handling_safe_storage: $("#handling_safe_storage").val(),
+				handling_joint_storage: $("#handling_joint_storage").val(),
+				handling_specific_uses: $("#handling_specific_uses").val()
+			},
+			dataType: 'json',
+			success: function (data) {
+				if (data.success) {
+					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+
+				}else{
+					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				}
+		
+				$('#HSMsg').html(msg);
+			}
+		});
+	});
+	
+	
+	
+	
+	
+	
+	
 	
 });
 </script>
