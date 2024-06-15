@@ -331,6 +331,142 @@ $ingSafetyInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredien
     
   
   
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapsePCProperties" aria-expanded="false" aria-controls="panelsStayOpen-collapsePCProperties">
+        9. Physical and chemical Properties
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapsePCProperties" class="accordion-collapse collapse">
+      <div class="accordion-body">
+      	<div id="PCPropertiesMsg"></div>
+          <div class="alert alert-info mt-4"><i class="fa-solid fa-info mx-2"></i>
+                Some variables for this section are provided by the General and Technical Data of the ingredient
+          </div>
+		<div class="row mb-3">
+            <div class="col-md-6">
+              <label for="odor_threshold" class="form-label">Odor threshold</label>
+                <input name="odor_threshold" type="text" class="form-control" id="odor_threshold" value="<?=$ingSafetyInfo['odor_threshold']?>">
+            </div>
+            <div class="col-md-6">
+              <label for="pH" class="form-label">pH</label>
+                <input name="pH" type="text" class="form-control" id="pH" value="<?=$ingSafetyInfo['pH']?>">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="melting_point" class="form-label">Melting/Freezing point</label>
+                <input name="melting_point" type="text" class="form-control" id="melting_point" value="<?=$ingSafetyInfo['melting_point']?>">
+            </div>
+            <div class="col-md-6">
+              <label for="boiling_point" class="form-label">Boiling point</label>
+                <input name="boiling_point" type="text" class="form-control" id="boiling_point" value="<?=$ingSafetyInfo['boiling_point']?>">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="flash_point" class="form-label">Flash point</label>
+                <input name="flash_point" type="text" class="form-control" id="flash_point" value="<?=$ingSafetyInfo['flash_point']?>">
+            </div>
+            <div class="col-md-6">
+              <label for="evaporation_rate" class="form-label">Evaporation rate</label>
+                <input name="evaporation_rate" type="text" class="form-control" id="evaporation_rate" value="<?=$ingSafetyInfo['evaporation_rate']?>">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="flammability" class="form-label">Flammability</label>
+                <input name="flammability" type="text" class="form-control" id="flammability" value="<?=$ingSafetyInfo['flammability']?>">
+            </div>
+            <div class="col-md-6">
+              <label for="low_flammability_limit" class="form-label">Lower limit of flammability</label>
+                <input name="low_flammability_limit" type="text" class="form-control" id="low_flammability_limit" value="<?=$ingSafetyInfo['low_flammability_limit']?>">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="vapour_pressure" class="form-label">Vapour pressure</label>
+                <input name="vapour_pressure" type="text" class="form-control" id="vapour_pressure" value="<?=$ingSafetyInfo['vapour_pressure']?>">
+            </div>
+            <div class="col-md-6">
+              <label for="vapour_density" class="form-label">Vapour density</label>
+                <input name="vapour_density" type="text" class="form-control" id="vapour_density" value="<?=$ingSafetyInfo['vapour_density']?>">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="relative_density" class="form-label">Relative density</label>
+                <input name="relative_density" type="text" class="form-control" id="relative_density" value="<?=$ingSafetyInfo['relative_density']?>">
+            </div>
+        </div>
+        
+        <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="oxidising_properties" class="form-label">Oxidising properties</label>
+                <input name="oxidising_properties" type="text" class="form-control" id="oxidising_properties" value="<?=$ingSafetyInfo['oxidising_properties']?>">
+            </div>        
+            <div class="col-md-6">
+              <label for="solubility" class="form-label">Solubility</label>
+                <input name="solubility" type="text" class="form-control" id="solubility" value="<?=$ingSafetyInfo['solubility']?>">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="auto_infl_temp" class="form-label">Auto-inflammability temperature</label>
+                <input name="auto_infl_temp" type="text" class="form-control" id="auto_infl_temp" value="<?=$ingSafetyInfo['auto_infl_temp']?>">
+            </div>        
+            <div class="col-md-6">
+              <label for="decomp_temp" class="form-label">Decomposition temperature</label>
+                <input name="decomp_temp" type="text" class="form-control" id="decomp_temp" value="<?=$ingSafetyInfo['decomp_temp']?>">
+            </div>
+        </div> 
+        <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="viscosity" class="form-label">Viscosity</label>
+                <input name="viscosity" type="text" class="form-control" id="viscosity" value="<?=$ingSafetyInfo['viscosity']?>">
+            </div>        
+            <div class="col-md-6">
+              <label for="explosive_properties" class="form-label">Explosive properties</label>
+                <input name="explosive_properties" type="text" class="form-control" id="explosive_properties" value="<?=$ingSafetyInfo['explosive_properties']?>">
+            </div>
+        </div> 
+        <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="particle_chars" class="form-label">Particle characteristics</label>
+                <input name="particle_chars" type="text" class="form-control" id="particle_chars" value="<?=$ingSafetyInfo['particle_chars']?>">
+            </div>        
+            <div class="col-md-6">
+              <label for="logP" class="form-label">Partition coefficient, n-octanol/water(log Pow)</label>
+                <input name="logP" type="text" class="form-control" id="logP" value="<?=$ingSafetyInfo['logP']?>">
+            </div>
+        </div>        
+        <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="soluble" class="form-label">Water solubility</label>
+                <input name="soluble" type="text" class="form-control" id="soluble" value="<?=$ingSafetyInfo['soluble']?>">
+            </div>        
+            <div class="col-md-6">
+              <label for="color" class="form-label">Color</label>
+                <input name="color" type="text" class="form-control" id="color" value="<?=$ingSafetyInfo['color']?>">
+            </div>
+        </div>
+        
+        <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="pcp_other_info" class="form-label">Other safety information</label>
+                <input name="pcp_other_info" type="text" class="form-control" id="pcp_other_info" value="<?=$ingSafetyInfo['pcp_other_info']?>">
+            </div>        
+            <div class="col-md-6">
+              <label for="pcp_other_sec_info" class="form-label">Other security characteristics</label>
+                <input name="pcp_other_sec_info" type="text" class="form-control" id="pcp_other_sec_info" value="<?=$ingSafetyInfo['pcp_other_sec_info']?>">
+            </div>
+        </div>               
+        <button type="submit" class="btn btn-primary" id="save_pcp">Save data</button>
+        
+      </div>
+    </div>
+  </div>
+  
 </div>
 
 
@@ -541,7 +677,52 @@ $(document).ready(function() {
 		});
 	});
 	
-	
+	$('#save_pcp').on('click',  function () {
+		$.ajax({ 
+			url: "/pages/update_data.php", 
+			type: "POST",
+			data: {
+				manage: "ingredient",
+				tab: "pcp",
+				ingID: "<?=$_POST['ingID'];?>",
+				odor_threshold: $("#odor_threshold").val(),
+				pH: $("#pH").val(),
+				melting_point: $("#melting_point").val(),
+				boiling_point: $("#boiling_point").val(),
+				flash_point: $("#flash_point").val(),
+				evaporation_rate: $("#evaporation_rate").val(),
+				solubility: $("#solubility").val(),
+				auto_infl_temp: $("#auto_infl_temp").val(),
+				decomp_temp: $("#decomp_temp").val(),
+				viscosity: $("#viscosity").val(),
+				explosive_properties: $("#explosive_properties").val(),
+				oxidising_properties: $("#oxidising_properties").val(),
+				particle_chars: $("#particle_chars").val(),
+				flammability: $("#flammability").val(),
+				logP: $("#logP").val(),
+				soluble: $("#soluble").val(),
+				color: $("#color").val(),
+				low_flammability_limit: $("#low_flammability_limit").val(),
+				vapour_pressure: $("#vapour_pressure").val(),
+				vapour_density: $("#vapour_density").val(),
+				relative_density: $("#relative_density").val(),
+				pcp_other_info: $("#pcp_other_info").val(),
+				pcp_other_sec_info: $("#pcp_other_sec_info").val()
+
+			},
+			dataType: 'json',
+			success: function (data) {
+				if (data.success) {
+					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+
+				}else{
+					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				}
+		
+				$('#PCPropertiesMsg').html(msg);
+			}
+		});
+	});	
 	
 	
 	

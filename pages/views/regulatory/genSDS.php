@@ -55,6 +55,7 @@ effects.';
 	}
 	
 	$ingSafetyInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredient_safety_data WHERE ingID = '$ingID'"));
+	$ingAllInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE id = '$ingID'"));
 
 	if ( empty($settings['brandLogo']) ){ 
 		$logo = "/img/logo.png";
@@ -121,6 +122,34 @@ $search  = array(
  	'%EXPOSURE_ENV_EXPOSURE%',
  	'%EXPOSURE_CONS_EXPOSURE%',
  	'%EXPOSURE_OTHER_INFO%',
+	
+ 	//Section 9
+ 	'%PHYSICAL_STATE%',
+	'%COLOR%',
+	'%ODOR%',
+	'%ODOR_THRESHOLD%',
+	'%PH%',
+	'%MELTING_POINT%',
+	'%BOILING_POINT%',
+	'%FLASH_POINT%',
+	'%EVAPORATION_RATE%',
+	'%FLAMMABILITY%',
+	'%LOWER_FLAMMABILITY_LIMIT%',
+	'%VAPOUR_PRESSURE%',
+	'%VAPOUR_DENSITY%',
+	'%RELATIVE_DENSITY%',
+	'%SOLUBILITY%',
+	'%LOGP%',
+	'%AUTO_INFL_TEMP%',
+	'%DECOMP_TEMP%',
+	'%VISCOSITY%',
+	'%EXPLOSIVE_PROPERTIES%',
+	'%OXIDISING_PROPERTIES%',
+	'%SOLVENTS%',
+	'%PARTICLE_CHARACTERISTICS%',
+	'%PCP_OTHER_INFO%',
+	'%PCP_OTHER_SEC_INFO%',
+
 
  
  	//Misc
@@ -186,6 +215,36 @@ $replace = array(
     $ingSafetyInfo['exposure_env_exposure'],
     $ingSafetyInfo['exposure_consumer_exposure'],
     $ingSafetyInfo['exposure_other_info'],
+	
+	//Section 9
+	//$ingAllInfo['physical_state'],
+	$productState,
+	$ingSafetyInfo['color'],
+	$ingAllInfo['odor'],
+	$ingSafetyInfo['odor_threshold'],
+	$ingSafetyInfo['pH'],
+	$ingSafetyInfo['melting_point'],
+	$ingSafetyInfo['boiling_point'],
+	$ingSafetyInfo['flash_point'],
+	$ingSafetyInfo['evaporation_rate'],
+	$ingSafetyInfo['flammability'],
+	$ingSafetyInfo['low_flammability_limit'],
+	$ingSafetyInfo['vapour_presure'],
+	$ingSafetyInfo['vapour_density'],
+	$ingSafetyInfo['relative_density'],
+	$ingSafetyInfo['solubility'],
+	$ingSafetyInfo['logp'],
+	$ingSafetyInfo['auto_infl_temp'],
+	$ingSafetyInfo['decomp_temp'],
+	$ingSafetyInfo['viscosity'],
+	$ingSafetyInfo['explosive_properties'],
+	$ingSafetyInfo['oxidising_properties'],
+	$ingSafetyInfo['soluble'],
+	$ingSafetyInfo['particle_chars'],
+	$ingSafetyInfo['pcp_other_info'],
+	$ingSafetyInfo['pcp_other_sec_info'],
+
+
 
 	$disclaimer,
 	date('d/M/Y')

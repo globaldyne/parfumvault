@@ -2020,6 +2020,114 @@ if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'exposure_data') {
 }
 
 
+//PCP
+if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'pcp') {
+    $ingID = (int)$_POST['ingID'];
+
+    $odor_threshold = $_POST['odor_threshold'];
+    $pH = $_POST['pH'];
+    $melting_point = $_POST['melting_point'];
+    $boiling_point = $_POST['boiling_point'];
+    $flash_point = $_POST['flash_point'];
+    $evaporation_rate = $_POST['evaporation_rate'];
+    $solubility = $_POST['solubility'];
+    $auto_infl_temp = $_POST['auto_infl_temp'];
+    $decomp_temp = $_POST['decomp_temp'];
+    $viscosity = $_POST['viscosity'];
+    $explosive_properties = $_POST['explosive_properties'];
+    $oxidising_properties = $_POST['oxidising_properties'];
+    $particle_chars = $_POST['particle_chars'];
+    $flammability = $_POST['flammability'];
+    $logP = $_POST['logP'];
+    $soluble = $_POST['soluble'];
+    $color = $_POST['color'];
+    $low_flammability_limit = $_POST['low_flammability_limit'];
+    $vapour_pressure = $_POST['vapour_pressure'];
+    $vapour_density = $_POST['vapour_density'];
+    $relative_density = $_POST['relative_density'];
+    $pcp_other_info = $_POST['pcp_other_info'];
+    $pcp_other_sec_info = $_POST['pcp_other_sec_info'];
+
+    // Check if all fields are populated
+    if (
+        empty($ingID) || empty($odor_threshold) || empty($pH) || 
+        empty($melting_point) || empty($boiling_point) || empty($flash_point) || 
+        empty($evaporation_rate) || empty($solubility) || empty($auto_infl_temp) || 
+        empty($decomp_temp) || empty($viscosity) || empty($explosive_properties) || 
+        empty($oxidising_properties) || empty($particle_chars) || empty($flammability) || 
+        empty($logP) || empty($soluble) || empty($color) || empty($low_flammability_limit) || 
+        empty($vapour_pressure) || empty($vapour_density) || empty($relative_density) || 
+        empty($pcp_other_info) || empty($pcp_other_sec_info)
+    ) {
+        $response["error"] = 'All fields are required';
+        echo json_encode($response);
+        return;
+    }
+
+    // Prepare the SQL statement
+    $stmt = $conn->prepare(
+        "INSERT INTO ingredient_safety_data (
+            ingID, odor_threshold, pH, melting_point, boiling_point, flash_point, 
+            evaporation_rate, solubility, auto_infl_temp, decomp_temp, viscosity, 
+            explosive_properties, oxidising_properties, particle_chars, flammability, 
+            logP, soluble, color, low_flammability_limit, vapour_pressure, vapour_density, 
+            relative_density, pcp_other_info, pcp_other_sec_info
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE 
+            odor_threshold = VALUES(odor_threshold),
+            pH = VALUES(pH),
+            melting_point = VALUES(melting_point),
+            boiling_point = VALUES(boiling_point),
+            flash_point = VALUES(flash_point),
+            evaporation_rate = VALUES(evaporation_rate),
+            solubility = VALUES(solubility),
+            auto_infl_temp = VALUES(auto_infl_temp),
+            decomp_temp = VALUES(decomp_temp),
+            viscosity = VALUES(viscosity),
+            explosive_properties = VALUES(explosive_properties),
+            oxidising_properties = VALUES(oxidising_properties),
+            particle_chars = VALUES(particle_chars),
+            flammability = VALUES(flammability),
+            logP = VALUES(logP),
+            soluble = VALUES(soluble),
+            color = VALUES(color),
+            low_flammability_limit = VALUES(low_flammability_limit),
+            vapour_pressure = VALUES(vapour_pressure),
+            vapour_density = VALUES(vapour_density),
+            relative_density = VALUES(relative_density),
+            pcp_other_info = VALUES(pcp_other_info),
+            pcp_other_sec_info = VALUES(pcp_other_sec_info)"
+    );
+
+    // Check if the statement was prepared successfully
+    if (!$stmt) {
+        $response["error"] = 'Prepare failed: ' . $conn->error;
+        echo json_encode($response);
+        return;
+    }
+
+    // Bind the parameters
+    $stmt->bind_param(
+        'isssssssssssssssssssssss', $ingID, $odor_threshold, $pH, $melting_point, $boiling_point, 
+        $flash_point, $evaporation_rate, $solubility, $auto_infl_temp, $decomp_temp, 
+        $viscosity, $explosive_properties, $oxidising_properties, $particle_chars, 
+        $flammability, $logP, $soluble, $color, $low_flammability_limit, $vapour_pressure, 
+        $vapour_density, $relative_density, $pcp_other_info, $pcp_other_sec_info
+    );
+
+    // Execute the statement
+    if ($stmt->execute()) {
+        $response["success"] = 'Ingredient safety data has been updated';
+    } else {
+        $response["error"] = 'Something went wrong ' . $stmt->error;
+    }
+
+    // Close the statement
+    $stmt->close();
+
+    echo json_encode($response);
+    return;
+}
 
 
 
