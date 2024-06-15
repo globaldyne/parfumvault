@@ -63,6 +63,7 @@ effects.';
 	}
 
 $search  = array(
+	//General
 	'%LOGO%',
 	'%SDS_PRODUCT_NAME%',
 	'%SDS_LANGUAGE%',
@@ -78,6 +79,7 @@ $search  = array(
 	'%PRODUCT_TYPE%',
 	'%BRAND_NAME%',
 	
+	//Section 4
 	'%FIRST_AID_GENERAL%',
 	'%FIRST_AID_INHALATION%',
 	'%FIRST_AID_SKIN%',
@@ -87,14 +89,28 @@ $search  = array(
 	'%FIRST_AID_SYMPTOMS%',
 	'%FIRST_AID_DR_NOTES%',
 
+	//Section 5
  	'%FIRE_SUIT_MEDIA%',
 	'%FIRE_NONSUIT_MEDIA%',
 	'%FIRE_SPECIAL_HAZARDS%',
 	'%FIRE_ADVICE%',
  	'%FIRE_OTHER_INFO%',
- 
- 
- 
+	
+ 	//Section 6
+	'%ACC_REL_PERSONAL_CAUTIONS%',
+	'%ACC_REL_ENV_CAUTIONS%',
+	'%ACC_REL_CLEANING%',
+	'%ACC_REL_REFERENCES%',
+	'%ACC_REL_OTHER_INFO%',
+
+	//Section 7
+ 	'%HS_PROTECTION%',
+ 	'%HS_HYGIENE%',
+ 	'%HS_SAFE_STORE%',
+ 	'%HS_JOINT_STORE%',
+ 	'%HS_SPECIFIC_USES%',
+
+ 	//Section 8
   	'%EXPOSURE_OCC_LIMIT%',
  	'%EXPOSURE_BIO_LIMIT%',
  	'%EXPOSURE_USE_LIMIT%',
@@ -107,7 +123,7 @@ $search  = array(
  	'%EXPOSURE_OTHER_INFO%',
 
  
- 
+ 	//Misc
 	'%SDS_DISCLAIMER%',
 	'%CURRENT_DATE%'
 );
@@ -127,7 +143,8 @@ $replace = array(
 	$po,	
 	$type,
 	$brand_name,					
-					
+	
+	//Section 4
 	$ingSafetyInfo['first_aid_general'],
 	$ingSafetyInfo['first_aid_inhalation'],
 	$ingSafetyInfo['first_aid_skin'],
@@ -136,14 +153,29 @@ $replace = array(
 	$ingSafetyInfo['first_aid_self_protection'],
 	$ingSafetyInfo['first_aid_symptoms'],
 	$ingSafetyInfo['first_aid_dr_notes'],
-
+	
+	//Section 5
 	$ingSafetyInfo['firefighting_suitable_media'],
 	$ingSafetyInfo['firefighting_non_suitable_media'],
 	$ingSafetyInfo['firefighting_special_hazards'],
 	$ingSafetyInfo['firefighting_advice'],
 	$ingSafetyInfo['firefighting_other_info'],
 
+	//Section 6
+	$ingSafetyInfo['accidental_release_per_precautions'],
+	$ingSafetyInfo['accidental_release_env_precautions'],
+	$ingSafetyInfo['accidental_release_cleaning'],
+	$ingSafetyInfo['accidental_release_refs'],
+	$ingSafetyInfo['accidental_release_other_info'],
+	
+	//Section 7
+	$ingSafetyInfo['handling_protection'],
+	$ingSafetyInfo['handling_hygiene'],
+	$ingSafetyInfo['handling_safe_storage'],
+	$ingSafetyInfo['handling_joint_storage'],
+	$ingSafetyInfo['handling_specific_uses'],
 
+	//Section 8
 	$ingSafetyInfo['exposure_occupational_limits'],
     $ingSafetyInfo['exposure_biological_limits'],
     $ingSafetyInfo['exposure_intented_use_limits'],
