@@ -8,11 +8,12 @@ $tmpl = mysqli_fetch_array(mysqli_query($conn,"SELECT name,content FROM template
 
 ?>
 <div class="card-body">
-  <div id="tmpl-inf"></div>
+
       <div class="row">
             <div class="col-sm-8">
+            	<div id="tmpl-inf"></div>
                 HTML Content:
-                <textarea class="form-control" name="tmpl-editor" id="tmpl-editor" rows="30"><?=$tmpl['content']?></textarea>
+                <textarea class="form-control mt-2" name="tmpl-editor" id="tmpl-editor" rows="30"><?=$tmpl['content']?></textarea>
             </div>
             <div class="col-sm-3">
                 <div class="special-vars">
