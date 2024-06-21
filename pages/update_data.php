@@ -11,6 +11,28 @@ require_once(__ROOT__.'/func/priceScrape.php');
 require_once(__ROOT__.'/func/create_thumb.php');
 require_once(__ROOT__.'/func/pvFileGet.php');
 
+
+//UPDATE SDS DISCLAIMER
+if($_POST['settings'] == 'sds'){
+	$sds_disc_content = mysqli_real_escape_string($conn, $_POST['sds_disc_content']);
+	
+	if(empty($sds_disc_content)){
+		$response["error"] = 'Disclaimer text is required.';
+		echo json_encode($response);
+		return;
+	}
+
+
+	if(mysqli_query($conn, "UPDATE settings SET  sds_disclaimer = '$sds_disc_content'")){
+		$response["success"] = 'SDS Disclaimer text updated';
+	}else{
+		$response["error"] = 'Error '.mysqli_error($conn);
+	}
+	echo json_encode($response);
+	return;
+}
+
+
 //DELETE SDS
 if($_POST['action'] == 'delete' && $_POST['SDSID'] && $_POST['type'] == 'SDS'){
 	$id = mysqli_real_escape_string($conn, $_POST['SDSID']);

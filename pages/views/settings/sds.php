@@ -18,10 +18,7 @@ require_once(__ROOT__.'/inc/settings.php');
 		</div>
   
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <input type="submit" name="button" class="btn btn-primary" id="sds_set_update" value="Add">
-      </div>
+      <input type="submit" name="button" class="btn btn-primary" id="sds_set_update" value="Save">
 </div>
 
 <script>
@@ -38,17 +35,19 @@ $('#sds_set_update').click(function() {
 		url: '/pages/update_data.php', 
 		type: 'POST',
 		data: {
-			sds: 'settings',
+			settings: 'sds',
 			sds_disc_content: $("#sds_disc_content").val(),
 		},
 		dataType: 'json',
 		success: function (data) {
 			if(data.success){
-				var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
-			}else{
-				var msg ='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+				$('.toast-header').removeClass().addClass('toast-header alert-success');
+			} else if(data.error) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mr-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
 			}
-			$('#tmpl_inf').html(msg);
+			$('.toast').toast('show');
 		}
 	  });
 	});

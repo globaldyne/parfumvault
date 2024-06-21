@@ -38,13 +38,10 @@ if ($_POST['do'] = 'genSDS') {
 
 
 	$brand_name = $settings['brandName'];
-	$disclaimer = 'The information given in this Safety Data Sheet is based on our present knowledge and on european and national
-regulations.This Safety Data Sheet describes safety requirements relative to identified uses, it doesn\'t guarantee all the
-product properties particularly in the case of non identified uses.The product mustn\'t be used for any uses other than
-those identified under heading 1.Since the user\'s working conditions are not known by us, it is the responsability of the
-user to take all necessary measures to comply with legal requirements for specific uses and avoid negative health
-effects.';
+	//$disclaimer = $settings['sds_disclaimer'];
 	
+	$disclaimer = nl2br(htmlspecialchars_decode($settings['sds_disclaimer'], ENT_QUOTES));
+			
 	$qHtml = mysqli_fetch_array(mysqli_query($conn, "SELECT id, content FROM templates WHERE id = '$sds_tmpl'"));
 	$htmlContent =  $qHtml['content'];
 
