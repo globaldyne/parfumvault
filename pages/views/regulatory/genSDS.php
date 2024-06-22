@@ -154,8 +154,59 @@ if ($_POST['do'] = 'genSDS') {
     '%STABILLITY_AVOID%',
     '%STABILLITY_INCOMPATIBILITY%',
 
+//SECTION 11
+    '%TOXICOLOGICAL_ACUTE_ORAL%',
+    '%TOXICOLOGICAL_ACUTE_DERMAL%',
+    '%TOXICOLOGICAL_ACUTE_INHALATION%',
+    '%TOXICOLOGICAL_SKIN%',
+    '%TOXICOLOGICAL_EYE%',
+    '%TOXICOLOGICAL_SENSITISATION%',
+    '%TOXICOLOGICAL_ORGAN_REPEATED%',
+    '%TOXICOLOGICAL_ORGAN_SINGLE%',
+    '%TOXICOLOGICAL_CARCINOGENCITY%',
+    '%TOXICOLOGICAL_REPRODUCTIVE%',
+    '%TOXICOLOGICAL_CELL_MUTATION%',
+    '%TOXICOLOGICAL_RESP_TRACT%',
+    '%TOXICOLOGICAL_OTHER_INFO%',
+    '%TOXICOLOGICAL_OTHER_HAZARDS%',
 
+  //Section 12
+    '%ECOLOGICAL_TOXICITY%',
+    '%ECOLOGICAL_PERSISTENCE%',
+    '%ECOLOGICAL_BIOACCUMULATIVE%',
+    '%ECOLOGICAL_SOIL_MOBILITY%',
+    '%ECOLOGICAL_PBT_VPVB%',
+    '%ECOLOGICAL_ENDOCRINE_PROPERTIES%',
+    '%ECOLOGICAL_OTHER_ADV_EFFECTS%',
+    '%ECOLOGICAL_ADDITIONAL_ECOTOXICOLOGICAL_INFO%',
 
+  //Section 13
+    '%DISPOSAL_PRODUCT%',
+    '%DISPOSAL_REMARKS%',
+
+  //Section 14
+    '%TRANSPORT_UN_NUMBER%',
+    '%TRANSPORT_SHIPPING_NAME%',
+    '%TRANSPORT_HAZARD_CLASS%',
+    '%TRANSPORT_PACKING_GROUP%',
+    '%TRANSPORT_ENV_HAZARDS%',
+    '%TRANSPORT_PRECAUTIONS%',
+    '%TRANSPORT_BULK_SHIPPING%',
+
+  //Section 15
+    '%LEGISLATION_SAFETY%',
+    '%LEGISLATION_EU%',
+    '%LEGISLATION_CHEMICAL_SAFETY_ASSESSMENT%',
+    '%LEGISLATION_OTHER_INFO%',
+
+//Section 16
+    '%ADD_INFO_CHANGES%',
+    '%ADD_INFO_ACRONYMS%',
+    '%ADD_INFO_REFERENCES%',
+    '%ADD_INFO_HAZCOM%',
+    '%ADD_INFO_GHS%',
+    '%ADD_INFO_TRAINING%',
+    '%ADD_INFO_OTHER%',
 
   //Misc
     '%SDS_DISCLAIMER%',
@@ -234,7 +285,7 @@ if ($_POST['do'] = 'genSDS') {
     $ingSafetyInfo['evaporation_rate'],
     $ingSafetyInfo['flammability'],
     $ingSafetyInfo['low_flammability_limit'],
-    $ingSafetyInfo['vapour_presure'],
+    $ingSafetyInfo['vapour_pressure'],
     $ingSafetyInfo['vapour_density'],
     $ingSafetyInfo['relative_density'],
     $ingSafetyInfo['solubility'],
@@ -256,80 +307,126 @@ if ($_POST['do'] = 'genSDS') {
     $ingSafetyInfo['stabillity_avoid'],
     $ingSafetyInfo['stabillity_incompatibility'],
 
+//Section 11
+    $ingSafetyInfo['toxicological_acute_oral'],
+    $ingSafetyInfo['toxicological_acute_dermal'],
+    $ingSafetyInfo['toxicological_acute_inhalation'],
+    $ingSafetyInfo['toxicological_skin'],
+    $ingSafetyInfo['toxicological_eye'],
+    $ingSafetyInfo['toxicological_sensitisation'],
+    $ingSafetyInfo['toxicological_organ_repeated'],
+    $ingSafetyInfo['toxicological_organ_single'],
+    $ingSafetyInfo['toxicological_carcinogencity'],
+    $ingSafetyInfo['toxicological_reproductive'],
+    $ingSafetyInfo['toxicological_cell_mutation'],
+    $ingSafetyInfo['toxicological_resp_tract'],
+    $ingSafetyInfo['toxicological_other_info'],
+    $ingSafetyInfo['toxicological_other_hazards'],
 
-  //Section 11
   //Section 12
+    $ingSafetyInfo['ecological_toxicity'],
+    $ingSafetyInfo['ecological_persistence'],
+    $ingSafetyInfo['ecological_bioaccumulative'],
+    $ingSafetyInfo['ecological_soil_mobility'],
+    $ingSafetyInfo['ecological_PBT_vPvB'],
+    $ingSafetyInfo['ecological_endocrine_properties'],
+    $ingSafetyInfo['ecological_other_adv_effects'],
+    $ingSafetyInfo['ecological_additional_ecotoxicological_info'],
+    
   //Section 13
+    $ingSafetyInfo['disposal_product'],
+    $ingSafetyInfo['disposal_remarks'],
+    
   //Section 14
+    $ingSafetyInfo['transport_un_number'],
+    $ingSafetyInfo['transport_shipping_name'],
+    $ingSafetyInfo['transport_hazard_class'],
+    $ingSafetyInfo['transport_packing_group'],
+    $ingSafetyInfo['transport_env_hazards'],
+    $ingSafetyInfo['transport_precautions'],
+    $ingSafetyInfo['transport_bulk_shipping'],
+
+
+
   //Section 15
-  //Section 16
+    $ingSafetyInfo['legislation_safety'],
+    $ingSafetyInfo['legislation_eu'],
+    $ingSafetyInfo['legislation_chemical_safety_assessment'],
+    $ingSafetyInfo['legislation_other_info'],
 
-
+//Section 16
+    $ingSafetyInfo['add_info_changes'],
+    $ingSafetyInfo['add_info_acronyms'],
+    $ingSafetyInfo['add_info_references'],
+    $ingSafetyInfo['add_info_HazCom'],
+    $ingSafetyInfo['add_info_GHS'],
+    $ingSafetyInfo['add_info_training'],
+    $ingSafetyInfo['add_info_other'],
 
 
     $disclaimer,
     date('d/M/Y')
   );
-  foreach($safety as $pictogram){
-    $y .= '<img class="img-fluid mx-2" style="width: 100px; height: 100px;" src="/img/Pictograms/GHS0'.$pictogram['GHS'].'.png">';
+foreach($safety as $pictogram){
+  $y .= '<img class="img-fluid mx-2" style="width: 100px; height: 100px;" src="/img/Pictograms/GHS0'.$pictogram['GHS'].'.png">';
+}
+
+if($qCMP = mysqli_query($conn, "SELECT *  FROM ingredient_compounds WHERE ing = '".$name."' ORDER BY name ")){
+  while($cmp = mysqli_fetch_array($qCMP)){
+    $x .='<tr>
+    <td align="center">'.$cmp['name'].'</td>
+    <td align="center">'.$cmp['cas'].'</td>
+    <td align="center">'.$cmp['ec'].'</td>
+    <td align="center">'.$cmp['min_percentage'].'</td>
+    <td align="center">'.$cmp['min_percentage'].'</td>
+    <td align="center">'.$cmp['GHS'].'</td>
+    </tr>';
   }
 
-  if($qCMP = mysqli_query($conn, "SELECT *  FROM ingredient_compounds WHERE ing = '".$name."' ORDER BY name ")){
-    while($cmp = mysqli_fetch_array($qCMP)){
-      $x .='<tr>
-      <td align="center">'.$cmp['name'].'</td>
-      <td align="center">'.$cmp['cas'].'</td>
-      <td align="center">'.$cmp['ec'].'</td>
-      <td align="center">'.$cmp['min_percentage'].'</td>
-      <td align="center">'.$cmp['min_percentage'].'</td>
-      <td align="center">'.$cmp['GHS'].'</td>
-      </tr>';
-    }
+}
 
-  }
-  
-  $contents = str_replace(
-    $search,
-    $replace,
-    preg_replace('#(%CMP_MATERIALS_LIST%)#ms', $x,
-      preg_replace('#(%GHS_LABEL_LIST%)#ms', $y,
-        $qHtml['content']
-      )
+$contents = str_replace(
+  $search,
+  $replace,
+  preg_replace('#(%CMP_MATERIALS_LIST%)#ms', $x,
+    preg_replace('#(%GHS_LABEL_LIST%)#ms', $y,
+      $qHtml['content']
     )
-  );
+  )
+);
 
 
 // Insert into sds_data table
-  $insert_sds_data = mysqli_query($conn, "INSERT INTO sds_data (product_name,product_use,country,language,product_type,state_type,supplier_id,docID) VALUES ('$name','$product_use','$country','$language','$product_type','$state_type','$supplier_id','0')");
+$insert_sds_data = mysqli_query($conn, "INSERT INTO sds_data (product_name,product_use,country,language,product_type,state_type,supplier_id,docID) VALUES ('$name','$product_use','$country','$language','$product_type','$state_type','$supplier_id','0')");
 
-  if ($insert_sds_data) {
-    $ownerID = mysqli_insert_id($conn);
+if ($insert_sds_data) {
+  $ownerID = mysqli_insert_id($conn);
 
     // Prepare and bind the documents table insert statement
-    $stmt = $conn->prepare("INSERT INTO documents (docData, isSDS, name, type, notes, ownerID) VALUES (?, '1', ?, '0', ?, ?)");
-    $stmt->bind_param("bssi", $contents, $name, $notes, $ownerID);
+  $stmt = $conn->prepare("INSERT INTO documents (docData, isSDS, name, type, notes, ownerID) VALUES (?, '1', ?, '0', ?, ?)");
+  $stmt->bind_param("bssi", $contents, $name, $notes, $ownerID);
 
     // Send HTML content as BLOB
-    $stmt->send_long_data(0, $contents);
+  $stmt->send_long_data(0, $contents);
 
     // Execute the query
-    $sds = $stmt->execute();
+  $sds = $stmt->execute();
 
-    if ($sds) {
-      $result['success'] = '<a href="/pages/viewDoc.php?type=sds&id='.$ownerID.'" target="_blank">Download file '.$ownerID.'</a>';
-    } else {
-      $result['error'] = "Error: " . $stmt->error;
-    }
-
-    $stmt->close();
+  if ($sds) {
+    $result['success'] = '<a href="/pages/viewDoc.php?type=sds&id='.$ownerID.'" target="_blank">Download file '.$ownerID.'</a>';
   } else {
-    $result['error'] = "Error: " . mysqli_error($conn);
+    $result['error'] = "Error: " . $stmt->error;
   }
 
-  $conn->close();
+  $stmt->close();
+} else {
+  $result['error'] = "Error: " . mysqli_error($conn);
+}
 
-  echo json_encode($result);
-  return;
+$conn->close();
+
+echo json_encode($result);
+return;
 }
 
 
