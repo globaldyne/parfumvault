@@ -45,7 +45,6 @@ while($res = mysqli_fetch_array($q)){
               <th>Use</th>
               <th>Download</th>
               <th>Created</th>
-              <th>Updated</th>
               <th></th>
             </tr>
           </thead>
@@ -72,7 +71,7 @@ $(document).ready(function() {
 	var tdDataSDS = $('#tdDataSDS').DataTable( {
 	columnDefs: [
 		{ className: 'pv_vertical_middle text-center', targets: '_all' },
-		{ orderable: false, targets: [2, 5] },
+		{ orderable: false, targets: [2, 4] },
 	],
 	dom: 'lrftip',
 	processing: true,
@@ -103,7 +102,6 @@ $(document).ready(function() {
             { data : 'product_use', title: 'Product use' },
             { data : 'docID', title: 'Download', render: docData },
 			{ data : 'created', title: 'Created' },
-			{ data : 'updated', title: 'Updated' },
 			{ data : null, title: '', render: actions },
 		],
 		order: [[ 0, 'asc' ]],
@@ -153,8 +151,6 @@ $(document).ready(function() {
 			data = '<div class="dropdown">' +
 			'<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
 				'<ul class="dropdown-menu dropdown-menu-right">';
-			data += '<li><a class="dropdown-item popup-link" href="/pages/views/regulatory/wizard.php?id='+row.id+'" rel="tip" title="Edit '+ row.product_name +'"><i class="fas fa-edit mx-2"></i>Edit</a></li>';
-			data += '<div class="dropdown-divider"></div>';
 			data += '<li><a class="dropdown-item" href="#" id="cmpDel" style="color: #c9302c;" rel="tip" title="Delete '+ row.product_name +'" data-id='+ row.id +' data-name="'+ row.product_name +'"><i class="fas fa-trash mx-2"></i>Delete</a></li>';
 			data += '</ul></div>';
 		return data;
@@ -223,10 +219,7 @@ $(document).ready(function() {
 	};
 	
 	
-	$('#exportCSV').click(() => {
-		$('#tdDataSDS').DataTable().button(0).trigger();
-	});
-	
+
 
 
 	$('#mainTitle').click(function() {

@@ -397,7 +397,7 @@ $contents = str_replace(
 
 
 // Insert into sds_data table
-$insert_sds_data = mysqli_query($conn, "INSERT INTO sds_data (product_name,product_use,country,language,product_type,state_type,supplier_id,docID) VALUES ('$name','$product_use','$country','$language','$product_type','$state_type','$supplier_id','0')");
+$insert_sds_data = mysqli_query($conn, "INSERT INTO sds_data (product_name,product_use,country,language,product_type,state_type,supplier_id,docID) VALUES ('$name','$prodUse','$country','$language','$product_type','$state_type','$supplier_id','0')");
 
 if ($insert_sds_data) {
   $ownerID = mysqli_insert_id($conn);
