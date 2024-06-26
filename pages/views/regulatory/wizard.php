@@ -218,7 +218,7 @@ $res_SDStmpl = mysqli_query($conn, "SELECT * FROM templates ORDER BY name ASC");
     
     <div class="tab-pane fade" id="reviewPanel" role="tabpanel">
       <h4>Generate SDS</h4>
-      <div class="alert alert-warning"><strong><i class="fa-solid fa-triangle-exclamation mx-2"></i>To create or update an SDS template, go to Settings -> <a href="https://vault.jbparfum.com/?do=settings#templates">HTML Templates</a></strong></div>
+      <div class="alert alert-warning"><strong><i class="fa-solid fa-triangle-exclamation mx-2"></i>To create or update an SDS template, go to Settings -> <a href="https://vault.jbparfum.com/?do=settings#templates" target="_blank">HTML Templates</a></strong></div>
       <div class="col-sm">
         <div class="mb-4 mt-4">
           <select name="sds_tmpl" id="sds_tmpl" class="form-control selectpicker" data-live-search="true">
