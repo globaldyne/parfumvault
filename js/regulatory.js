@@ -1,7 +1,10 @@
 $(function () {
  
-
-  $('#supplierContinue').click(function (e) {
+	/*
+	$('#product_tab').on( 'click', function () {
+	});
+	*/
+  $('#supplierContinue, #product_tab').click(function (e) {
     e.preventDefault();
 	if( $('#address').val() === "" ||  $('#po').val() === "" ||  $('#country').val() === "" ||  $('#telephone').val() === "" ||  $('#email').val() === "" ||  $('#url').val() === ""){
 		$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>All fields required');
@@ -10,36 +13,42 @@ $(function () {
 		return;
 	}
 	$('.toast').toast('hide');
-    $('.progress-bar').css('width', '40%');
-    $('.progress-bar').html('Step 2 of 5');
     $('#SDSTabs a[href="#productPanel"]').tab('show');
   });
 
-  $('#productContinue').click(function (e) {
+  $('#productContinue, #cmps_tab').click(function (e) {
     e.preventDefault();
-		if( $('#prodName').val() === "" ||  $('#prodUse').val() === "" ||  $('#sdsCountry').val() === "" ||  $('#sdsLang').val() === "" ){
+	if( $('#prodName').val() === "" ||  $('#prodUse').val() === "" ||  $('#sdsCountry').val() === "" ||  $('#sdsLang').val() === "" ){
 		$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>All fields required');
 		$('.toast-header').removeClass().addClass('toast-header alert-danger');
 		$('.toast').toast('show');
 		return;
 	}
 	$('.toast').toast('hide');
-    $('.progress-bar').css('width', '60%');
-    $('.progress-bar').html('Step 3 of 5');
     $('#SDSTabs a[href="#tech_composition"]').tab('show');
   });
 
-  $('#compoContinue').click(function (e) {
+  $('#compoContinue, #safety_tab').click(function (e) {
     e.preventDefault();
-    $('.progress-bar').css('width', '80%');
-    $('.progress-bar').html('Step 4 of 5');
+	if( $('#prodName').val() === "" ||  $('#prodUse').val() === "" ||  $('#sdsCountry').val() === "" ||  $('#sdsLang').val() === "" ){
+		$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>All fields required');
+		$('.toast-header').removeClass().addClass('toast-header alert-danger');
+		$('.toast').toast('show');
+		return;
+	}
+	$('.toast').toast('hide');
     $('#SDSTabs a[href="#safety_info"]').tab('show');
   });
 
-  $('#ghsContinue').click(function (e) {
+  $('#ghsContinue, #gen_tab').click(function (e) {
     e.preventDefault();
-    $('.progress-bar').css('width', '100%');
-    $('.progress-bar').html('Step 5 of 5');
+	if( $('#prodName').val() === "" ||  $('#prodUse').val() === "" ||  $('#sdsCountry').val() === "" ||  $('#sdsLang').val() === "" ){
+		$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>All fields required');
+		$('.toast-header').removeClass().addClass('toast-header alert-danger');
+		$('.toast').toast('show');
+		return;
+	}
+	$('.toast').toast('hide');
     $('#SDSTabs a[href="#reviewPanel"]').tab('show');
   })
 

@@ -44,26 +44,23 @@ $res_SDStmpl = mysqli_query($conn, "SELECT * FROM templates ORDER BY name ASC");
 
 <body>
 <div class="container mt-5">
-  <ul class="nav nav-tabs" id="SDSTabs" role="tablist">
-    <li class="nav-item">
-      <a class="nav-link active" data-bs-toggle="tab" href="#supplierPanel" role="tab"><i class="fa fa-shopping-cart mx-2"></i>Supplier</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" data-bs-toggle="tab" href="#productPanel" role="tab"><i class="fa-brands fa-product-hunt mx-2"></i>Product</a>
-    </li>
-    
-<li class="nav-item" role="presentation">
-            	<a href="#tech_composition" id="cmps_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-th-list mx-2"></i>Composition</a>
-            </li>
-    
-    <li class="nav-item" role="presentation">
-    	<a href="#safety_info" id="safety_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-biohazard mx-2"></i>Safety</a>
-    </li>
-   
-    <li class="nav-item">
-      <a class="nav-link" data-bs-toggle="tab" href="#reviewPanel" role="tab"><i class="fa-solid fa-file-shield mx-2"></i>Review SDS</a>
-    </li>
-  </ul>
+    <ul class="nav nav-tabs" id="SDSTabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#supplierPanel" role="tab"><i class="fa fa-shopping-cart mx-2"></i>Supplier</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#productPanel" id="product_tab" role="tab"><i class="fa-brands fa-product-hunt mx-2"></i>Product</a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a href="#tech_composition" id="cmps_tab" class="nav-link" aria-selected="false" role="tab"><i class="fa fa-th-list mx-2"></i>Composition</a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a href="#safety_info" id="safety_tab" class="nav-link" aria-selected="false" role="tab"><i class="fa fa-biohazard mx-2"></i>Safety</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="gen_tab" href="#reviewPanel" role="tab"><i class="fa-solid fa-file-shield mx-2"></i>Choose template</a>
+        </li>
+    </ul>
 
   <div class="tab-content mt-2">
     <div class="tab-pane fade show active" id="supplierPanel" role="tabpanel">
@@ -125,7 +122,6 @@ $res_SDStmpl = mysqli_query($conn, "SELECT * FROM templates ORDER BY name ASC");
             </div>
           </div>
         </div>
-
       
       </div>
       <hr>
@@ -148,7 +144,7 @@ $res_SDStmpl = mysqli_query($conn, "SELECT * FROM templates ORDER BY name ASC");
         <div class="col-sm">
           <div class="mb-2">
             <label for="prodUse">Product use</label>
-            <input name="prodUse" type="text" required class="form-control" id="prodUse" value="FRAG">
+            <input name="prodUse" type="text" class="form-control" id="prodUse" placeholder="eg: Fragrance">
           </div>
         </div>
       </div>
@@ -157,13 +153,13 @@ $res_SDStmpl = mysqli_query($conn, "SELECT * FROM templates ORDER BY name ASC");
         <div class="col-sm">
           <div class="mb-2">
             <label for="sdsCountry">Country</label>
-            <input name="sdsCountry" type="text" required class="form-control" id="sdsCountry" value="UK">
+            <input name="sdsCountry" type="text" class="form-control" id="sdsCountry" placeholder="eg: UK">
           </div>
         </div>
         <div class="col-sm">
           <div class="mb-2">
             <label for="sdsLang">Language</label>
-            <input name="sdsLang" type="text" required class="form-control" id="sdsLang" value="EN">
+            <input name="sdsLang" type="text" class="form-control" id="sdsLang" placeholder="eg: EN">
           </div>
         </div>
       </div>
@@ -182,7 +178,7 @@ $res_SDStmpl = mysqli_query($conn, "SELECT * FROM templates ORDER BY name ASC");
 
    	<div class="tab-pane fade" id="tech_composition">
       <h4>3. Product composition</h4>
-      <div class="alert alert-warning"><strong><i class="fa-solid fa-triangle-exclamation mx-2"></i>Updating data bellow will also update main material's data!</strong></div>
+      <div class="alert alert-warning"><strong><i class="fa-solid fa-triangle-exclamation mx-2"></i>Updating data bellow will also update main material's data</strong></div>
 
         <div id="fetch_composition">
             <div class="row justify-content-md-center">
@@ -202,7 +198,7 @@ $res_SDStmpl = mysqli_query($conn, "SELECT * FROM templates ORDER BY name ASC");
       <label class="form-check-label" for="GAS">GAS <i class="fa-solid fa-wind"></i></label>
     </div>
 
-      <hr />
+      <hr>
       <button class="btn btn-secondary" id="compoContinue">Continue</button>
     </div>
     
@@ -210,7 +206,7 @@ $res_SDStmpl = mysqli_query($conn, "SELECT * FROM templates ORDER BY name ASC");
       
 
     <div class="tab-pane fade" id="safety_info">
-        <div class="alert alert-warning"><strong><i class="fa-solid fa-triangle-exclamation mx-2"></i>Updating data bellow will also update main material's data!</strong></div>
+        <div class="alert alert-warning"><strong><i class="fa-solid fa-triangle-exclamation mx-2"></i>Updating data bellow will also update main material's data</strong></div>
         <div id="fetch_safety">
             <div class="row justify-content-md-center">
                 <div class="loader"></div>
@@ -222,7 +218,8 @@ $res_SDStmpl = mysqli_query($conn, "SELECT * FROM templates ORDER BY name ASC");
     </div>
     
     <div class="tab-pane fade" id="reviewPanel" role="tabpanel">
-      <h4>SDS</h4>
+      <h4>Generate SDS</h4>
+      <div class="alert alert-warning"><strong><i class="fa-solid fa-triangle-exclamation mx-2"></i>To create or update an SDS template, go to Settings -> <a href="https://vault.jbparfum.com/?do=settings#templates">HTML Templates</a></strong></div>
       <div class="col-sm">
         <div class="mb-4 mt-4">
           <select name="sds_tmpl" id="sds_tmpl" class="form-control selectpicker" data-live-search="true">
@@ -238,8 +235,6 @@ $res_SDStmpl = mysqli_query($conn, "SELECT * FROM templates ORDER BY name ASC");
     </div>
   </div>
 
-  <div class="progress mt-5">
-    <div class="progress-bar" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">Step 1 of 5</div>
   </div>
 
 
@@ -282,7 +277,7 @@ $(document).ready(function() {
         dropdownAutoWidth: true,
         containerCssClass: "prodName",
 		//dropdownParent: $('#createSDS'),
-       // minimumInputLength: 2,
+        minimumInputLength: 2,
         ajax: {
             url: '/core/list_ingredients_simple.php',
             dataType: 'json',
@@ -324,7 +319,6 @@ $(document).ready(function() {
 
 	$('#downloadSDS').click(function (e) {
 		e.preventDefault();
-	
 		$.ajax({ 
 			url: '/pages/views/regulatory/genSDS.php', 
 			type: 'POST',
@@ -346,8 +340,7 @@ $(document).ready(function() {
 				prodUse: $('#prodUse').val(),
 				sdsLang: $('#sdsLang').val(),
 				productType: $('input[name="productType"]:checked').attr('id'),
-				productState : $('input[name="productState"]:checked').attr('id'),
-				
+				productState : $('input[name="productState"]:checked').attr('id')
 			},
 			success: function (data) {
 				if(data.success){

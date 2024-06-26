@@ -11,6 +11,13 @@ $defPercentage = $settings['defPercentage'];
 
 
 if ($_POST['do'] = 'genSDS') {
+	
+  if(empty($_POST['tmplID'])){
+	 $result['error'] = "Please select a template";
+	 echo json_encode($result);
+	 return;
+  }
+  
   $supplier_id = $_POST['supplier_id'];
   $name = $_POST['name'];
   $ingID = $_POST['ingID'];
@@ -61,7 +68,7 @@ if ($_POST['do'] = 'genSDS') {
   }
 
   $search  = array(
-  //General
+  	//General
     '%LOGO%',
     '%SDS_PRODUCT_NAME%',
     '%SDS_LANGUAGE%',
@@ -77,7 +84,7 @@ if ($_POST['do'] = 'genSDS') {
     '%PRODUCT_TYPE%',
     '%BRAND_NAME%',
 
-  //Section 4
+  	//Section 4
     '%FIRST_AID_GENERAL%',
     '%FIRST_AID_INHALATION%',
     '%FIRST_AID_SKIN%',
@@ -87,28 +94,28 @@ if ($_POST['do'] = 'genSDS') {
     '%FIRST_AID_SYMPTOMS%',
     '%FIRST_AID_DR_NOTES%',
 
-  //Section 5
+  	//Section 5
     '%FIRE_SUIT_MEDIA%',
     '%FIRE_NONSUIT_MEDIA%',
     '%FIRE_SPECIAL_HAZARDS%',
     '%FIRE_ADVICE%',
     '%FIRE_OTHER_INFO%',
 
-  //Section 6
+  	//Section 6
     '%ACC_REL_PERSONAL_CAUTIONS%',
     '%ACC_REL_ENV_CAUTIONS%',
     '%ACC_REL_CLEANING%',
     '%ACC_REL_REFERENCES%',
     '%ACC_REL_OTHER_INFO%',
 
-  //Section 7
+  	//Section 7
     '%HS_PROTECTION%',
     '%HS_HYGIENE%',
     '%HS_SAFE_STORE%',
     '%HS_JOINT_STORE%',
     '%HS_SPECIFIC_USES%',
 
-  //Section 8
+  	//Section 8
     '%EXPOSURE_OCC_LIMIT%',
     '%EXPOSURE_BIO_LIMIT%',
     '%EXPOSURE_USE_LIMIT%',
@@ -120,7 +127,7 @@ if ($_POST['do'] = 'genSDS') {
     '%EXPOSURE_CONS_EXPOSURE%',
     '%EXPOSURE_OTHER_INFO%',
 
-  //Section 9
+	//Section 9
     '%PHYSICAL_STATE%',
     '%COLOR%',
     '%ODOR%',
@@ -147,14 +154,14 @@ if ($_POST['do'] = 'genSDS') {
     '%PCP_OTHER_INFO%',
     '%PCP_OTHER_SEC_INFO%',
 
-  //Section 10
+  	//Section 10
     '%STABILLITY_REACTIVITY%',
     '%STABILLITY_CHEMICAL%',
     '%STABILLITY_REACTIONS%',
     '%STABILLITY_AVOID%',
     '%STABILLITY_INCOMPATIBILITY%',
 
-//SECTION 11
+	//SECTION 11
     '%TOXICOLOGICAL_ACUTE_ORAL%',
     '%TOXICOLOGICAL_ACUTE_DERMAL%',
     '%TOXICOLOGICAL_ACUTE_INHALATION%',
@@ -170,7 +177,7 @@ if ($_POST['do'] = 'genSDS') {
     '%TOXICOLOGICAL_OTHER_INFO%',
     '%TOXICOLOGICAL_OTHER_HAZARDS%',
 
-  //Section 12
+  	//Section 12
     '%ECOLOGICAL_TOXICITY%',
     '%ECOLOGICAL_PERSISTENCE%',
     '%ECOLOGICAL_BIOACCUMULATIVE%',
@@ -180,11 +187,11 @@ if ($_POST['do'] = 'genSDS') {
     '%ECOLOGICAL_OTHER_ADV_EFFECTS%',
     '%ECOLOGICAL_ADDITIONAL_ECOTOXICOLOGICAL_INFO%',
 
-  //Section 13
+  	//Section 13
     '%DISPOSAL_PRODUCT%',
     '%DISPOSAL_REMARKS%',
 
-  //Section 14
+  	//Section 14
     '%TRANSPORT_UN_NUMBER%',
     '%TRANSPORT_SHIPPING_NAME%',
     '%TRANSPORT_HAZARD_CLASS%',
@@ -193,13 +200,13 @@ if ($_POST['do'] = 'genSDS') {
     '%TRANSPORT_PRECAUTIONS%',
     '%TRANSPORT_BULK_SHIPPING%',
 
-  //Section 15
+  	//Section 15
     '%LEGISLATION_SAFETY%',
     '%LEGISLATION_EU%',
     '%LEGISLATION_CHEMICAL_SAFETY_ASSESSMENT%',
     '%LEGISLATION_OTHER_INFO%',
 
-//Section 16
+	//Section 16
     '%ADD_INFO_CHANGES%',
     '%ADD_INFO_ACRONYMS%',
     '%ADD_INFO_REFERENCES%',
@@ -208,7 +215,7 @@ if ($_POST['do'] = 'genSDS') {
     '%ADD_INFO_TRAINING%',
     '%ADD_INFO_OTHER%',
 
-  //Misc
+  	//Misc
     '%SDS_DISCLAIMER%',
     '%CURRENT_DATE%'
   );
@@ -229,7 +236,7 @@ if ($_POST['do'] = 'genSDS') {
     $type,
     $brand_name,          
 
-  //Section 4
+  	//Section 4
     $ingSafetyInfo['first_aid_general'],
     $ingSafetyInfo['first_aid_inhalation'],
     $ingSafetyInfo['first_aid_skin'],
@@ -239,28 +246,28 @@ if ($_POST['do'] = 'genSDS') {
     $ingSafetyInfo['first_aid_symptoms'],
     $ingSafetyInfo['first_aid_dr_notes'],
 
-  //Section 5
+  	//Section 5
     $ingSafetyInfo['firefighting_suitable_media'],
     $ingSafetyInfo['firefighting_non_suitable_media'],
     $ingSafetyInfo['firefighting_special_hazards'],
     $ingSafetyInfo['firefighting_advice'],
     $ingSafetyInfo['firefighting_other_info'],
 
-  //Section 6
+  	//Section 6
     $ingSafetyInfo['accidental_release_per_precautions'],
     $ingSafetyInfo['accidental_release_env_precautions'],
     $ingSafetyInfo['accidental_release_cleaning'],
     $ingSafetyInfo['accidental_release_refs'],
     $ingSafetyInfo['accidental_release_other_info'],
 
-  //Section 7
+  	//Section 7
     $ingSafetyInfo['handling_protection'],
     $ingSafetyInfo['handling_hygiene'],
     $ingSafetyInfo['handling_safe_storage'],
     $ingSafetyInfo['handling_joint_storage'],
     $ingSafetyInfo['handling_specific_uses'],
 
-  //Section 8
+ 	//Section 8
     $ingSafetyInfo['exposure_occupational_limits'],
     $ingSafetyInfo['exposure_biological_limits'],
     $ingSafetyInfo['exposure_intented_use_limits'],
@@ -272,8 +279,7 @@ if ($_POST['do'] = 'genSDS') {
     $ingSafetyInfo['exposure_consumer_exposure'],
     $ingSafetyInfo['exposure_other_info'],
 
-  //Section 9
-  //$ingAllInfo['physical_state'],
+  	//Section 9
     $productState,
     $ingSafetyInfo['color'],
     $ingAllInfo['odor'],
@@ -300,14 +306,14 @@ if ($_POST['do'] = 'genSDS') {
     $ingSafetyInfo['pcp_other_info'],
     $ingSafetyInfo['pcp_other_sec_info'],
 
-  //Section 10
+  	//Section 10
     $ingSafetyInfo['stabillity_reactivity'],
     $ingSafetyInfo['stabillity_chemical'],
     $ingSafetyInfo['stabillity_reactions'],
     $ingSafetyInfo['stabillity_avoid'],
     $ingSafetyInfo['stabillity_incompatibility'],
 
-//Section 11
+	//Section 11
     $ingSafetyInfo['toxicological_acute_oral'],
     $ingSafetyInfo['toxicological_acute_dermal'],
     $ingSafetyInfo['toxicological_acute_inhalation'],
@@ -323,7 +329,7 @@ if ($_POST['do'] = 'genSDS') {
     $ingSafetyInfo['toxicological_other_info'],
     $ingSafetyInfo['toxicological_other_hazards'],
 
-  //Section 12
+  	//Section 12
     $ingSafetyInfo['ecological_toxicity'],
     $ingSafetyInfo['ecological_persistence'],
     $ingSafetyInfo['ecological_bioaccumulative'],
@@ -333,11 +339,11 @@ if ($_POST['do'] = 'genSDS') {
     $ingSafetyInfo['ecological_other_adv_effects'],
     $ingSafetyInfo['ecological_additional_ecotoxicological_info'],
     
-  //Section 13
+  	//Section 13
     $ingSafetyInfo['disposal_product'],
     $ingSafetyInfo['disposal_remarks'],
     
-  //Section 14
+  	//Section 14
     $ingSafetyInfo['transport_un_number'],
     $ingSafetyInfo['transport_shipping_name'],
     $ingSafetyInfo['transport_hazard_class'],
@@ -346,15 +352,13 @@ if ($_POST['do'] = 'genSDS') {
     $ingSafetyInfo['transport_precautions'],
     $ingSafetyInfo['transport_bulk_shipping'],
 
-
-
-  //Section 15
+  	//Section 15
     $ingSafetyInfo['legislation_safety'],
     $ingSafetyInfo['legislation_eu'],
     $ingSafetyInfo['legislation_chemical_safety_assessment'],
     $ingSafetyInfo['legislation_other_info'],
 
-//Section 16
+	//Section 16
     $ingSafetyInfo['add_info_changes'],
     $ingSafetyInfo['add_info_acronyms'],
     $ingSafetyInfo['add_info_references'],
@@ -367,6 +371,7 @@ if ($_POST['do'] = 'genSDS') {
     $disclaimer,
     date('d/M/Y')
   );
+  
 foreach($safety as $pictogram){
   $y .= '<img class="img-fluid mx-2" style="width: 100px; height: 100px;" src="/img/Pictograms/GHS0'.$pictogram['GHS'].'.png">';
 }
@@ -396,20 +401,14 @@ $contents = str_replace(
 );
 
 
-// Insert into sds_data table
 $insert_sds_data = mysqli_query($conn, "INSERT INTO sds_data (product_name,product_use,country,language,product_type,state_type,supplier_id,docID) VALUES ('$name','$prodUse','$country','$language','$product_type','$state_type','$supplier_id','0')");
 
 if ($insert_sds_data) {
   $ownerID = mysqli_insert_id($conn);
 
-    // Prepare and bind the documents table insert statement
   $stmt = $conn->prepare("INSERT INTO documents (docData, isSDS, name, type, notes, ownerID) VALUES (?, '1', ?, '0', ?, ?)");
   $stmt->bind_param("bssi", $contents, $name, $notes, $ownerID);
-
-    // Send HTML content as BLOB
   $stmt->send_long_data(0, $contents);
-
-    // Execute the query
   $sds = $stmt->execute();
 
   if ($sds) {
