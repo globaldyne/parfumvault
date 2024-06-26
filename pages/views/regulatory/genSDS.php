@@ -428,6 +428,4 @@ echo json_encode($result);
 return;
 }
 
-
-
 ?>
