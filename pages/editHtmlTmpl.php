@@ -13,7 +13,7 @@ $tmpl = mysqli_fetch_array(mysqli_query($conn,"SELECT name,content FROM template
             <div class="col-sm-8">
             	<div id="tmpl-inf"></div>
                 HTML Content:
-                <textarea class="form-control mt-2" name="tmpl-editor" id="tmpl-editor" rows="30"><?=$tmpl['content']?></textarea>
+                <textarea class="form-control mt-2 mb-2" name="tmpl-editor" id="tmpl-editor" rows="40"><?=$tmpl['content']?></textarea>
             </div>
             <div class="col-sm-3">
                 <div class="special-vars">
@@ -73,7 +73,7 @@ $tmpl = mysqli_fetch_array(mysqli_query($conn,"SELECT name,content FROM template
             </div>
         </div>
       <div class="dropdown-divider"></div>
-        <div class="alert alert-info"><i class="fa-solid fa-circle-exclamation mr-2"></i>Please refer <a href="https://www.perfumersvault.com/knowledge-base/html-templates/" target="_blank">here</a> for special variables syntax</div>
+        <div class="alert alert-info"><i class="fa-solid fa-circle-exclamation mr-2"></i>Please refer <a href="https://www.perfumersvault.com/knowledge-base/html-templates/" target="_blank">here</a> for additional special variables syntax</div>
          <div class="modal-footer">
           <input type="submit" name="button" class="btn btn-primary" id="tmpl-save" value="Save changes">
       </div>
