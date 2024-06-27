@@ -412,7 +412,7 @@ if ($insert_sds_data) {
   $sds = $stmt->execute();
 
   if ($sds) {
-    $result['success'] = '<a href="/pages/viewDoc.php?type=sds&id='.$ownerID.'" target="_blank">Download file '.$ownerID.'</a>';
+    $result['success'] = '<a href="/pages/viewDoc.php?type=sds&id='.$ownerID.'" target="_blank">View the SDS file</a>';
   } else {
     $result['error'] = "Error: " . $stmt->error;
   }
