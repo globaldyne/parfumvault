@@ -1,9 +1,5 @@
 $(function () {
  
-	/*
-	$('#product_tab').on( 'click', function () {
-	});
-	*/
   $('#supplierContinue, #product_tab').click(function (e) {
     e.preventDefault();
 	if( $('#address').val() === "" ||  $('#po').val() === "" ||  $('#country').val() === "" ||  $('#telephone').val() === "" ||  $('#email').val() === "" ||  $('#url').val() === ""){
