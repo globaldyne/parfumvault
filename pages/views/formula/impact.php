@@ -1,6 +1,6 @@
 <?php
 
-define('__ROOT__', dirname(dirname(__FILE__))); 
+define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__))))); 
 
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
@@ -21,12 +21,12 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulas WHERE fid = '$fi
 }
 </style>
 
-<script src="../js/amcharts_3.21.15.free/amcharts/amcharts.js"></script>
-<script src="../js/amcharts_3.21.15.free/amcharts/serial.js"></script>
-<script src="../js/amcharts_3.21.15.free/amcharts/themes/light.js"></script>
+<script src="/js/amcharts_3.21.15.free/amcharts/amcharts.js"></script>
+<script src="/js/amcharts_3.21.15.free/amcharts/serial.js"></script>
+<script src="/js/amcharts_3.21.15.free/amcharts/themes/light.js"></script>
 
-<script src="../js/amcharts_3.21.15.free/amcharts/plugins/export/export.min.js"></script>
-<link rel="stylesheet" href="../js/amcharts_3.21.15.free/amcharts/plugins/export/export.css" type="text/css" media="all" /> 
+<script src="/js/amcharts_3.21.15.free/amcharts/plugins/export/export.min.js"></script>
+<link rel="stylesheet" href="/js/amcharts_3.21.15.free/amcharts/plugins/export/export.css" type="text/css" media="all" /> 
 
 <script>
 

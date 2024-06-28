@@ -15,7 +15,3 @@ For more info please refer to:
 	
 	https://www.perfumersvault.com/knowledge-base/
 
-
-To Enable label printing support, additional software is required:
-
-	https://github.com/pklaus/brother_ql

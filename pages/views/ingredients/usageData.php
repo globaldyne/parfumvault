@@ -92,7 +92,7 @@ if($usageLimit = searchIFRA($ing['cas'],$ing['name'],null,$conn, $defCatClass)){
 <hr />
 <p> To set a category to zero, please type <strong>0.0</strong> instead of 0</p>
 <hr />
-<p><input type="submit" name="save" class="btn btn-info" id="saveUsage" value="Save" /></p>
+<p><input type="submit" name="save" class="btn btn-primary" id="saveUsage" value="Save" /></p>
 <script>
 var byPassIFRA = <?=$ing['byPassIFRA']?>;
 var byPassState = '<?=$byPass?>';
@@ -181,11 +181,13 @@ $(document).ready(function() {
 			dataType: 'json',
 			success: function (data) {
 				if(data.success){
-					var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+					$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+					$('.toast-header').removeClass().addClass('toast-header alert-success');
 				}else{
-					var msg ='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+					$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+					$('.toast-header').removeClass().addClass('toast-header alert-danger');
 				}
-				$('#ingMsg').html(msg);
+				$('.toast').toast('show');
 			}
 		});
 	});

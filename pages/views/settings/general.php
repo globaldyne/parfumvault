@@ -89,6 +89,15 @@ while($cats_res = mysqli_fetch_array($cats_q)){
           <input name="pvHost" type="text" class="form-control" id="pvHost" value="<?php echo $settings['pv_host'];?>"/>
         </div>
         
+        <div class="form-group col-md-6">
+          <label for="defPercentage">Calculate sub materials as</label>
+          <select name="defPercentage" id="defPercentage" class="form-control">
+            <option value="min_percentage" <?php if($settings['defPercentage']=="min_percentage") echo 'selected="selected"'; ?> >Minimum value</option>
+            <option value="max_percentage" <?php if($settings['defPercentage']=="max_percentage") echo 'selected="selected"'; ?> >Maximum value</option>
+           <!-- <option value="avg_percentage" <?php if($settings['defPercentage']=="avg_percentage") echo 'selected="selected"'; ?> >Average value</option> -->
+          </select>
+        </div>
+    
       </div>
       
 
@@ -141,7 +150,7 @@ while($cats_res = mysqli_fetch_array($cats_q)){
     <div class="form-row">
       <div class="col-sm-12">
          <div class="text-left">
-            <input type="submit" name="save-general" id="save-general" value="Save" class="btn btn-info"/>
+            <input type="submit" name="save-general" id="save-general" value="Save" class="btn btn-primary"/>
          </div>
       </div>
     </div>
@@ -170,7 +179,8 @@ $('#save-general').click(function() {
 			mUnit: $("#mUnit").val(),
 			editor: $("#editor").val(),
 			user_pref_eng: $("#user_pref_eng").val(),
-			pv_host: $("#pvHost").val()
+			pv_host: $("#pvHost").val(),
+			defPercentage: $("#defPercentage").val()
 
 	},
 	dataType: 'json',

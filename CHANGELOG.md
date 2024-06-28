@@ -1,4 +1,22 @@
 # CHANGELOG
+### Version 10.5
+- Modify json export for ingredients to include min and max compostion percentage
+- Rewrite multi dimensional function
+- Added min and max percentage for compositions
+- Added formula analysis to breakdown sub-materials and percentages
+- Added IFRA limit in composition if found in library
+- Fix incorrect integer format for compos json
+- Remove ing filter when update data for compositions
+- SDS in ingredient has been renamed to a Document
+- Added synonyms in document generation for ingredients
+- Minor improvements when no ingredients or formulas in the database
+- Edit customer form update to BS5
+- Introduse SDS creation (PREVIEW)
+- Formula comparison minor updates
+- Auto create ingredient when importing a formula from Marketplace if not exists locally 
+- Added toast type messages for ingredient managment
+- Minor UI updates for ingredient management
+
 ### Version 10.4
 - Hide skipped materials when making a formula
 - Auto create main formula if not exists when you import a formula to make data

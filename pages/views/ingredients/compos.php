@@ -4,7 +4,13 @@ define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__)))));
 
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/inc/settings.php');
 
+
+$defPercentage = ($settings['avg'] == $defPercentage) ? "Average percentage used" : 
+         (($settings['min'] == $defPercentage) ? "Minimum percentage used" : 
+         (($settings['max'] == $defPercentage) ? "Maximum percentage used" : ""));
+		 
 $ingID = mysqli_real_escape_string($conn, $_GET["id"]);
 $ingName = mysqli_real_escape_string($conn, $_GET["name"]);
 
@@ -30,7 +36,10 @@ $ingName = mysqli_real_escape_string($conn, $_GET["name"]);
           <th>Name</th>
           <th>CAS</th>
           <th>EINECS</th>
-          <th>Percentage</th>
+          <th>Min percentage</th>
+          <th>Max percentage</th>
+          <th>Average percentage</th>
+          <th>IFRA Regulated</th>
           <th>GHS Classification</th>
           <th>Declare</th>
           <th></th>
@@ -41,12 +50,17 @@ $ingName = mysqli_real_escape_string($conn, $_GET["name"]);
 
 <script type="text/javascript" language="javascript" >
 $(document).ready(function() {
+	
 
-	$('[data-bs-toggle="tooltip"]').tooltip();
-  	var tdCompositions = $('#tdCompositions').DataTable( {
+	var tdCompositions;
+ 	if ($.fn.DataTable.isDataTable('#tdCompositions')) {
+            // Destroy existing DataTable instance
+            $('#tdCompositions').DataTable().destroy();
+        }
+  	tdCompositions = $('#tdCompositions').DataTable( {
 		columnDefs: [
 			{ className: 'text-center', targets: '_all' },
-			{ orderable: false, targets: [4,6] },
+			{ orderable: false, targets: [5, 7] },
 		],
 		dom: 'lfrtip',
 		processing: true,
@@ -58,16 +72,22 @@ $(document).ready(function() {
 			},
 		ajax: {	
 			url: '/core/list_ing_compos_data.php?id=<?=$ingName?>' 
-			},
+		},
 		columns: [
 			  { data : 'name', title: 'Name', render: cmpName },
 			  { data : 'cas', title: 'CAS', render: cmpCAS},
 			  { data : 'ec', title: 'EINECS', render: cmpEC},
-			  { data : 'percentage', title: 'Percentage', render: cmpPerc},
+			  { data : 'min_percentage', title: 'Min percentage' , render: cmpMinPerc},
+			  { data : 'max_percentage', title: 'Max percentage' , render: cmpMaxPerc},
+			  { data : 'avg_percentage', title: 'Avg percentage'},
+			  { data : 'IFRA', title: 'IFRA Regulated%'},
 			  { data : 'GHS', title: 'GHS Classification', render: cmpGHS},
 			  { data : 'toDeclare', title: 'Declare', render: cmpDeclare},
 			  { data : null, title: '', render: cmpActions},		   
 			 ],
+		drawCallback: function ( settings ) {
+			$('[rel=tip]').tooltip();
+		},
 		order: [[ 1, 'asc' ]],
 		lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
 		pageLength: 20,
@@ -128,8 +148,12 @@ function cmpEC(data, type, row){
 	return '<i class="ec pv_point_gen" data-name="ec" data-type="text" data-pk="'+row.id+'">'+row.ec+'</i>';    
 };
 
-function cmpPerc(data, type, row){
-	return '<i class="percentage pv_point_gen" data-name="percentage" data-type="text" data-pk="'+row.id+'">'+row.percentage+'</i>';    
+function cmpMinPerc(data, type, row){
+	return '<i class="min_percentage pv_point_gen" data-name="min_percentage" data-type="text" data-pk="'+row.id+'">'+row.min_percentage+'</i>';    
+};
+
+function cmpMaxPerc(data, type, row){
+	return '<i class="max_percentage pv_point_gen" data-name="max_percentage" data-type="text" data-pk="'+row.id+'">'+row.max_percentage+'</i>';    
 };
 
 function cmpGHS(data, type, row){
@@ -153,7 +177,7 @@ $('#tdCompositions').editable({
 	container: 'body',
     selector: 'i.name',
     type: 'POST',
-    url: "update_data.php?composition=update&ing=<?=$ingName;?>",
+    url: "/pages/update_data.php?composition=update&ing=<?=$ingName;?>",
     title: 'Name'
 });
 
@@ -161,7 +185,7 @@ $('#tdCompositions').editable({
    container: 'body',
    selector: 'i.cas',
    type: 'POST',
-   url: "update_data.php?composition=update&ing=<?=$ingName;?>",
+   url: "/pages/update_data.php?composition=update&ing=<?=$ingName;?>",
    title: 'CAS'
 });
 
@@ -169,23 +193,37 @@ $('#tdCompositions').editable({
    container: 'body',
    selector: 'i.ec',
    type: 'POST',
-   url: "update_data.php?composition=update&ing=<?=$ingName;?>",
+   url: "/pages/update_data.php?composition=update&ing=<?=$ingName;?>",
    title: 'EINECS',
 });
 
 $('#tdCompositions').editable({
     container: 'body',
-    selector: 'i.percentage',
+    selector: 'i.min_percentage',
     type: 'POST',
-    url: "update_data.php?composition=update&ing=<?=$ingName;?>",
-    title: 'Percentage'
+    url: "/pages/update_data.php?composition=update&ing=<?=$ingName;?>",
+    title: 'Min percentage',
+	success: function (data) {
+			reload_cmp_data();
+	}
+});
+
+$('#tdCompositions').editable({
+    container: 'body',
+    selector: 'i.max_percentage',
+    type: 'POST',
+    url: "/pages/update_data.php?composition=update&ing=<?=$ingName;?>",
+    title: 'Max percentage',
+	success: function (data) {
+			reload_cmp_data();
+	}
 });
 
 $('#tdCompositions').editable({
     container: 'body',
     selector: 'i.GHS',
     type: 'POST',
-    url: "update_data.php?composition=update&ing=<?=$ingName;?>",
+    url: "/pages/update_data.php?composition=update&ing=<?=$ingName;?>",
     title: 'GHS'
 });
 
@@ -197,7 +235,7 @@ $('#tdCompositions').editable({
   	container: 'body',
   	selector: 'i.toDeclare',
   	type: 'POST',
-	url: "update_data.php?composition=update&ing=<?=$ingName;?>",
+	url: "/pages/update_data.php?composition=update&ing=<?=$ingName;?>",
 	title: 'To be declared',
 	source: [
 			 {value: '0', text: 'No'},
@@ -223,7 +261,7 @@ $('#tdCompositions').on('click', '[id*=cmpDel]', function () {
                callback: function (){
 	    			
 				$.ajax({ 
-					url: 'update_data.php', 
+					url: '/pages/update_data.php', 
 					type: 'POST',
 					data: {
 						composition: 'delete',
@@ -253,19 +291,20 @@ $('#tdCompositions').on('click', '[id*=cmpDel]', function () {
 
 $('#addComposition').on('click', '[id*=cmpAdd]', function () {
 	$.ajax({ 
-		url: 'update_data.php', 
+		url: '/pages/update_data.php', 
 		type: 'POST',
 		data: {
 			composition: 'add',
 			allgName: $("#allgName").val(),
-			allgPerc: $("#allgPerc").val(),
+			minPerc: $("#minPerc").val(),
+			maxPerc: $("#maxPerc").val(),
 			allgCAS: $("#allgCAS").val(),
 			allgEC: $("#allgEC").val(),	
 			GHS: $("#GHS").val(),	
 			addToIng: $("#addToIng").is(':checked'),
 			addToDeclare: $("#addToDeclare").is(':checked'),
 			ing: '<?=$ingName?>'
-			},
+		},
 		dataType: 'json',
 		success: function (data) {
 			if (data.success) {
@@ -273,7 +312,8 @@ $('#addComposition').on('click', '[id*=cmpAdd]', function () {
 				$("#allgName").val('');
 				$("#allgCAS").val('');
 				$("#allgEC").val('');
-				$("#allgPerc").val('');
+				$("#minPerc").val('');
+				$("#maxPerc").val('');
 				$("#GHS").val('');
 				reload_cmp_data();
 			}else{
@@ -296,7 +336,7 @@ $('#addCSV').on('click', '[id*=cmpCSV]', function () {
 	if(files.length > 0 ){
 	fd.append('CSVFile',files[0]);
 	$.ajax({
-	   url: 'upload.php?type=cmpCSVImport&ingID=<?=$ingName?>',
+	   url: '/pages/upload.php?type=cmpCSVImport&ingID=<?=$ingName?>',
 	   type: 'POST',
 	   data: fd,
 	   contentType: false,
@@ -348,8 +388,12 @@ function reload_cmp_data() {
         	<input class="form-control" name="allgEC" type="text" id="allgEC" />
         </div>
         <div class="mb-3">
-	        <label for="allgPerc" class="form-label">Percentage</label>
-    	    <input class="form-control" name="allgPerc" type="text" id="allgPerc" />
+	        <label for="minPerc" class="form-label">Min percentage</label>
+    	    <input class="form-control" name="minPerc" type="text" id="minPerc" />
+        </div>
+        <div class="mb-3">
+	        <label for="maxPerc" class="form-label">Max percentage</label>
+    	    <input class="form-control" name="maxPerc" type="text" id="maxPerc" />
         </div>
         <div class="mb-3">
 	        <label for="GHS" class="form-label">GHS Classification</label>
@@ -392,8 +436,8 @@ function reload_cmp_data() {
             <input type="file" name="CSVFile" id="CSVFile" class="form-control" />
         </div>
         <hr class="dropdown-divider" />        
-        <p>CSV format: <strong>ingredient,CAS,EINECS,percentage,GHS</strong></p>
-        <p>Example: <em><strong>Citral,5392-40-5,226-394-6,0.15,Skin Irrit. 2-Eye Irrit</strong></em></p>
+        <p>CSV format: <strong>ingredient,CAS,EINECS,min percentage, max percentage,GHS</strong></p>
+        <p>Example: <em><strong>Citral,5392-40-5,226-394-6,0.15,2.3,Skin Irrit. 2-Eye Irrit</strong></em></p>
         <p>Duplicates will be ignored.</p>
             
 	  <div class="modal-footer">

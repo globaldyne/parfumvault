@@ -2,7 +2,7 @@
 if (!defined('pvault_panel')){ die('Not Found');}
 define('__ROOT__', dirname(dirname(__FILE__))); 
 
-function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $defCatClass, $qStep, $formulaTable = 'formulas'){
+function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $defCatClass, $qStep, $defPercentage, $formulaTable = 'formulas'){
 	global $conn;
 	
 	class PDF extends FPDF {
@@ -217,7 +217,7 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $defCatClass, $qSt
 	}
 	while ($res_all_ing = mysqli_fetch_array($qAllIng)) {
 		
-		$bldQ = mysqli_query($conn, "SELECT ing,name,cas,percentage FROM ingredient_compounds WHERE ing = '".$res_all_ing['ingredient']."'");
+		$bldQ = mysqli_query($conn, "SELECT ing,name,cas,$defPercentage FROM ingredient_compounds WHERE ing = '".$res_all_ing['ingredient']."'");
 		while($bld = mysqli_fetch_array($bldQ)){
 			$pdf->Ln();
 			$pdf->SetFont('Arial','',8);
@@ -226,7 +226,7 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $defCatClass, $qSt
 
 			$pdf->Cell(68,8,$bld['name'],1,0,'C');
 			$pdf->Cell(68,8,$bld['cas'],1,0,'C');
-			$pdf->Cell(68,8,$bld['percentage'],1,0,'C');
+			$pdf->Cell(68,8,$bld[$defPercentage],1,0,'C');
 		}
 	}	
 	

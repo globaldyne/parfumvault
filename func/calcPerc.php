@@ -15,27 +15,30 @@ function calcPerc($id, $profile, $percent, $conn){
 	return;
 }
 
-function multi_dim_search($array, $key, $value){
+function multi_dim_search($array, $key, $value) {
     $results = array();
 
     if (is_array($array)) {
         if (isset($array[$key]) && $array[$key] == $value) {
             $results[] = $array;
         }
-		
+
         foreach ($array as $subarray) {
-            $results = array_merge($results, multi_dim_search($subarray, $key, $value));
+            $subresults = multi_dim_search($subarray, $key, $value);
+            if (!empty($subresults)) {
+                $results = array_merge($results, $subresults);
+            }
         }
-		
     }
 
     return $results;
 }
 
-function multi_dim_perc($conn, $form, $ingCas, $qStep) {
+
+function multi_dim_perc($conn, $form, $ingCas, $qStep, $defPercentage) {
 	foreach ($form as $formula){
 		
-		if($compos = mysqli_query($conn, "SELECT name,percentage,cas FROM ingredient_compounds WHERE ing = '".$formula['ingredient']."'")){
+		if($compos = mysqli_query($conn, "SELECT name,$defPercentage,cas FROM ingredient_compounds WHERE ing = '".$formula['ingredient']."'")){
 		
 			while($compo = mysqli_fetch_array($compos)){
 				$cmp[] = $compo;
@@ -46,7 +49,7 @@ function multi_dim_perc($conn, $form, $ingCas, $qStep) {
 				$i = 0;
 				while ($i < $arrayLength){
 					$c = multi_dim_search($a, 'cas', $a['cas'])[$i];
-					$conc[$a['cas']] += number_format($c['percentage']/100 * $formula['quantity'] * $formula['concentration'] / 100, $qStep);
+					$conc[$a['cas']] += number_format($c[$defPercentage]/100 * $formula['quantity'] * $formula['concentration'] / 100, $qStep);
 	
 					$i++;
 				}

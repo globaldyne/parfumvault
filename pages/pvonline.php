@@ -42,9 +42,15 @@ if($_POST['action'] == 'import' && $_POST['kind'] == 'formula'){
       	foreach ($row as $key=>$val) {
       		$insertPairs[addslashes($key)] = addslashes($val);
       	}
-      $insertVals = '"'.$jsonData['meta']['fid'].'",'.'"'.$jsonData['meta']['name'].'",'.'"' . implode('","', array_values($insertPairs)) . '"';
+		$getIng = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '".$row['ingredient']."'"));
+		if(!$getIng['id']){
+			mysqli_query($conn, "INSERT INTO ingredients (name) VALUES ('".$row['ingredient']."')");
+			$getIng['id'] = mysqli_insert_id($conn);
+		}
+		
+      	$insertVals = '"'.$jsonData['meta']['fid'].'",'.'"'.$jsonData['meta']['name'].'",'.'"'.$getIng['id'].'",'.'"' . implode('","', array_values($insertPairs)) . '"';
    
-      $jsql = "INSERT INTO formulas (`fid`,`name`,`ingredient`,`concentration`,`dilutant`,`quantity`,`notes`) VALUES ({$insertVals});";
+      $jsql = "INSERT INTO formulas (`fid`,`name`,`ingredient_id`,`ingredient`,`concentration`,`dilutant`,`quantity`,`notes`) VALUES ({$insertVals});";
        $qIns.= mysqli_query($conn,$jsql);
     
 	}

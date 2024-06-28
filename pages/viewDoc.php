@@ -15,6 +15,12 @@ switch($type){
 		echo $q['docData'];
 		break;
 		
+	case 'sds':
+		$q = mysqli_fetch_array(mysqli_query($conn, "SELECT name, docData FROM documents WHERE ownerID = '$id' AND isSDS = '1'"));
+		header('Content-Type: text/html');
+		echo $q['docData'];
+		break;
+		
 	case 'batch':
 		$q = mysqli_fetch_array(mysqli_query($conn, "SELECT product_name, pdf FROM batchIDHistory WHERE id = '$id'"));
 		header('Content-Type: application/pdf');

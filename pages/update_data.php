@@ -10,7 +10,45 @@ require_once(__ROOT__.'/func/sanChar.php');
 require_once(__ROOT__.'/func/priceScrape.php');
 require_once(__ROOT__.'/func/create_thumb.php');
 require_once(__ROOT__.'/func/pvFileGet.php');
+
+
+//UPDATE SDS DISCLAIMER
+if($_POST['settings'] == 'sds'){
+	$sds_disc_content = mysqli_real_escape_string($conn, $_POST['sds_disc_content']);
 	
+	if(empty($sds_disc_content)){
+		$response["error"] = 'Disclaimer text is required.';
+		echo json_encode($response);
+		return;
+	}
+
+
+	if(mysqli_query($conn, "UPDATE settings SET  sds_disclaimer = '$sds_disc_content'")){
+		$response["success"] = 'SDS Disclaimer text updated';
+	}else{
+		$response["error"] = 'Error '.mysqli_error($conn);
+	}
+	echo json_encode($response);
+	return;
+}
+
+
+//DELETE SDS
+if($_POST['action'] == 'delete' && $_POST['SDSID'] && $_POST['type'] == 'SDS'){
+	$id = mysqli_real_escape_string($conn, $_POST['SDSID']);
+	
+	if(mysqli_query($conn, "DELETE FROM documents WHERE ownerID = '$id' AND isSDS = '1'")){
+		mysqli_query($conn, "DELETE FROM sds_data WHERE id = '$id'");
+		
+		$response["success"] = 'SDS deleted';
+	}else{
+		$response["error"] = 'Something went wrong '.mysqli_error($conn);
+	}
+	
+	echo json_encode($response);
+	return;	
+}
+
 //ADD INVENTORY COMPOUND
 if($_POST['action'] == 'add' && $_POST['type'] == 'invCmp'){
 	$name = mysqli_real_escape_string($conn, $_POST['cmp_name']);
@@ -1280,7 +1318,8 @@ if($_POST['composition'] == 'add'){
 	$allgName = mysqli_real_escape_string($conn, $_POST['allgName']);
 	$allgCAS = mysqli_real_escape_string($conn, $_POST['allgCAS']);
 	$allgEC = mysqli_real_escape_string($conn, $_POST['allgEC']);	
-	$allgPerc = rtrim(mysqli_real_escape_string($conn, $_POST['allgPerc']),'%');
+	$minPerc = rtrim(mysqli_real_escape_string($conn, $_POST['minPerc']),'%');
+	$maxPerc = rtrim(mysqli_real_escape_string($conn, $_POST['maxPerc']),'%');
 	$GHS = rtrim(mysqli_real_escape_string($conn, $_POST['GHS']));
 
 	$ing = base64_decode($_POST['ing']);
@@ -1303,14 +1342,26 @@ if($_POST['composition'] == 'add'){
 		return;
 	}
 	
-	if(empty($allgPerc)){
-		$response["error"] = '<strong>Error:</strong> Percentage is required!';
+	if(empty($minPerc)){
+		$response["error"] = 'Minimum percentage is required';
 		echo json_encode($response);
 		return;
 	}
 	
-	if(!is_numeric($allgPerc)){
-		$response["error"] = '<strong>Error:</strong> Percentage value needs to be numeric!';
+	if(empty($maxPerc)){
+		$response["error"] = 'Max percentage is required';
+		echo json_encode($response);
+		return;
+	}
+	
+	if(!is_numeric($minPerc)){
+		$response["error"] = 'Minimum percentage value needs to be numeric!';
+		echo json_encode($response);
+		return;
+	}
+	
+	if(!is_numeric($maxPerc)){
+		$response["error"] = 'Maximum percentage value needs to be numeric!';
 		echo json_encode($response);
 		return;
 	}
@@ -1321,8 +1372,8 @@ if($_POST['composition'] == 'add'){
 		return;
 	}
 	
-	if(mysqli_query($conn, "INSERT INTO ingredient_compounds (name,cas,ec,percentage,GHS,toDeclare,ing) VALUES ('$allgName','$allgCAS','$allgEC','$allgPerc','$GHS','$declare','$ing')")){
-		$response["success"] = '<strong>'.$allgName.'</strong> added to the list';
+	if(mysqli_query($conn, "INSERT INTO ingredient_compounds (name, cas, ec, min_percentage, max_percentage, GHS, toDeclare, ing) VALUES ('$allgName','$allgCAS','$allgEC','$minPerc','$maxPerc','$GHS','$declare','$ing')")){
+		$response["success"] = '<strong>'.$allgName.'</strong> added to the composition';
 		echo json_encode($response);
 	}else{
 		$response["error"] = mysqli_error($conn);
@@ -1343,9 +1394,11 @@ if($_GET['composition'] == 'update'){
 	$value = rtrim(mysqli_real_escape_string($conn, $_POST['value']),'%');
 	$id = mysqli_real_escape_string($conn, $_POST['pk']);
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
-	$ing = base64_decode($_GET['ing']);
+	//$ing = base64_decode($_GET['ing']);
 
-	mysqli_query($conn, "UPDATE ingredient_compounds SET $name = '$value' WHERE id = '$id' AND ing='$ing'");
+//	mysqli_query($conn, "UPDATE ingredient_compounds SET $name = '$value' WHERE id = '$id' AND ing='$ing'");
+	mysqli_query($conn, "UPDATE ingredient_compounds SET $name = '$value' WHERE id = '$id'");
+
 	return;
 }
 
@@ -1353,9 +1406,9 @@ if($_GET['composition'] == 'update'){
 if($_POST['composition'] == 'delete'){
 
 	$id = mysqli_real_escape_string($conn, $_POST['allgID']);
-	$ing = base64_decode($_POST['ing']);
+	//$ing = base64_decode($_POST['ing']);
 
-	$delQ = mysqli_query($conn, "DELETE FROM ingredient_compounds WHERE id = '$id' AND ing='$ing'");	
+	$delQ = mysqli_query($conn, "DELETE FROM ingredient_compounds WHERE id = '$id'");	
 	if($delQ){
 		$response["success"] = '<strong>'.$ing.'</strong> removed!';
 		echo json_encode($response);
@@ -1556,10 +1609,11 @@ if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'note_impact'){
 
 	$query = "UPDATE ingredients SET impact_top = '$impact_top',impact_heart = '$impact_heart',impact_base = '$impact_base' WHERE id='$ingID'";
 	if(mysqli_query($conn, $query)){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>Note impact has been updated!</div>';
+		$response["success"] = 'Note impact has been updated';
 	}else{
-		echo '<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> '.mysqli_error($conn).'</div>';
+		$response["error"] = 'Error: '.mysqli_error($conn);
 	}
+	echo json_encode($response);
 	return;
 }
 
@@ -1640,7 +1694,7 @@ if($_POST['action'] == 'clone' && $_POST['old_ing_name'] && $_POST['ing_id']){
 		return;
 	}
 	
-	$sql.=mysqli_query($conn, "INSERT INTO ingredient_compounds (ing,name,cas,percentage) SELECT '$new_ing_name',name,cas,percentage FROM ingredient_compounds WHERE ing = '$old_ing_name'");
+	$sql.=mysqli_query($conn, "INSERT INTO ingredient_compounds (ing,name,cas,min_percentage,max_percentage) SELECT '$new_ing_name',name,cas,min_percentage,max_percentage FROM ingredient_compounds WHERE ing = '$old_ing_name'");
 
 	$sql.=mysqli_query($conn, "INSERT INTO ingredients (name,INCI,type,strength,category,purity,cas,FEMA,reach,tenacity,chemical_name,formula,flash_point,appearance,notes,profile,solvent,odor,allergen,flavor_use,soluble,logp,cat1,cat2,cat3,cat4,cat5A,cat5B,cat5C,cat5D,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12,impact_top,impact_heart,impact_base,created,usage_type,noUsageLimit,isPrivate,molecularWeight,physical_state) SELECT '$new_ing_name',INCI,type,strength,category,purity,cas,FEMA,reach,tenacity,chemical_name,formula,flash_point,appearance,notes,profile,solvent,odor,allergen,flavor_use,soluble,logp,cat1,cat2,cat3,cat4,cat5A,cat5B,cat5C,cat5D,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12,impact_top,impact_heart,impact_base,created,usage_type,noUsageLimit,isPrivate,molecularWeight,physical_state FROM ingredients WHERE id = '$ing_id'");
 
@@ -1690,6 +1744,852 @@ if($_POST['action'] == 'rename' && $_POST['old_ing_name'] && $_POST['ing_id']){
 }
 
 
+//FIRST AID INFO
+if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'faid_info') {
+    $ingID = (int)$_POST['ingID'];
+    
+    $first_aid_general = $_POST['first_aid_general'];
+    $first_aid_inhalation = $_POST['first_aid_inhalation'];
+    $first_aid_skin = $_POST['first_aid_skin'];
+    $first_aid_eye = $_POST['first_aid_eye'];
+    $first_aid_ingestion = $_POST['first_aid_ingestion'];
+    $first_aid_self_protection = $_POST['first_aid_self_protection'];
+    $first_aid_symptoms = $_POST['first_aid_symptoms'];
+    $first_aid_dr_notes = $_POST['first_aid_dr_notes'];
+    
+	 // Check if all fields are populated
+    if (
+        empty($ingID) || empty($first_aid_general) || empty($first_aid_inhalation) ||
+        empty($first_aid_skin) || empty($first_aid_eye) || empty($first_aid_ingestion) ||
+        empty($first_aid_self_protection) || empty($first_aid_symptoms) || empty($first_aid_dr_notes)
+    ) {
+        $response["error"] = 'All fields are required.';
+        echo json_encode($response);
+        return;
+    }
+	
+    // Prepare the SQL statement
+    $stmt = $conn->prepare(
+        "INSERT INTO ingredient_safety_data (
+            ingID, first_aid_general, first_aid_inhalation, first_aid_skin, first_aid_eye, 
+            first_aid_ingestion, first_aid_self_protection, first_aid_symptoms, first_aid_dr_notes
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE 
+            first_aid_general = VALUES(first_aid_general),
+            first_aid_inhalation = VALUES(first_aid_inhalation),
+            first_aid_skin = VALUES(first_aid_skin),
+            first_aid_eye = VALUES(first_aid_eye),
+            first_aid_ingestion = VALUES(first_aid_ingestion),
+            first_aid_self_protection = VALUES(first_aid_self_protection),
+            first_aid_symptoms = VALUES(first_aid_symptoms),
+            first_aid_dr_notes = VALUES(first_aid_dr_notes)"
+    );
+    
+    // Bind the parameters
+    $stmt->bind_param(
+        'issssssss', $ingID, $first_aid_general, $first_aid_inhalation, $first_aid_skin, $first_aid_eye, 
+        $first_aid_ingestion, $first_aid_self_protection, $first_aid_symptoms, $first_aid_dr_notes
+    );
+    
+    // Execute the statement
+    if ($stmt->execute()) {
+        $response["success"] = 'First aid data has been updated!';
+    } else {
+        $response["error"] = 'Something went wrong ' . $stmt->error;
+    }
+    
+    // Close the statement
+    $stmt->close();
+    
+    echo json_encode($response);
+    return;
+}
+
+//FIREFIGHTING
+if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'fire_info') {
+    $ingID = (int)$_POST['ingID'];
+    
+    $firefighting_suitable_media = $_POST['firefighting_suitable_media'];
+    $firefighting_non_suitable_media = $_POST['firefighting_non_suitable_media'];
+    $firefighting_special_hazards = $_POST['firefighting_special_hazards'];
+    $firefighting_advice = $_POST['firefighting_advice'];
+    $firefighting_other_info = $_POST['firefighting_other_info'];
+    
+    // Check if all fields are populated
+    if (
+        empty($ingID) || empty($firefighting_suitable_media) || empty($firefighting_non_suitable_media) ||
+        empty($firefighting_special_hazards) || empty($firefighting_advice) || empty($firefighting_other_info)
+    ) {
+        $response["error"] = 'All fields are required';
+        echo json_encode($response);
+        return;
+    }
+    
+    // Prepare the SQL statement
+    $stmt = $conn->prepare(
+        "INSERT INTO ingredient_safety_data (
+            ingID, firefighting_suitable_media, firefighting_non_suitable_media, 
+            firefighting_special_hazards, firefighting_advice, firefighting_other_info
+        ) VALUES (?, ?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE 
+            firefighting_suitable_media = VALUES(firefighting_suitable_media),
+            firefighting_non_suitable_media = VALUES(firefighting_non_suitable_media),
+            firefighting_special_hazards = VALUES(firefighting_special_hazards),
+            firefighting_advice = VALUES(firefighting_advice),
+            firefighting_other_info = VALUES(firefighting_other_info)"
+    );
+    
+    // Bind the parameters
+    $stmt->bind_param(
+        'isssss', $ingID, $firefighting_suitable_media, $firefighting_non_suitable_media, 
+        $firefighting_special_hazards, $firefighting_advice, $firefighting_other_info
+    );
+    
+    // Execute the statement
+    if ($stmt->execute()) {
+        $response["success"] = 'Firefighting data has been updated';
+    } else {
+        $response["error"] = 'Something went wrong ' . $stmt->error;
+    }
+    
+    // Close the statement
+    $stmt->close();
+    
+    echo json_encode($response);
+    return;
+}
+
+
+//ACCIDENTAL RELEASE
+if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'save_acc_rel') {
+    $ingID = (int)$_POST['ingID'];
+    
+    $accidental_release_per_precautions = $_POST['accidental_release_per_precautions'];
+    $accidental_release_env_precautions = $_POST['accidental_release_env_precautions'];
+    $accidental_release_cleaning = $_POST['accidental_release_cleaning'];
+	$accidental_release_refs =  $_POST['accidental_release_refs'];
+    $accidental_release_other_info = $_POST['accidental_release_other_info'];
+    
+    // Check if all fields are populated
+    if (
+        empty($ingID) || empty($accidental_release_per_precautions) || empty($accidental_release_env_precautions) ||
+        empty($accidental_release_cleaning) ||  empty($accidental_release_refs) || empty($accidental_release_other_info)
+    ) {
+        $response["error"] = 'All fields are required';
+        echo json_encode($response);
+        return;
+    }
+    
+    // Prepare the SQL statement
+    $stmt = $conn->prepare(
+        "INSERT INTO ingredient_safety_data (
+            ingID, accidental_release_per_precautions, accidental_release_env_precautions, 
+            accidental_release_cleaning, accidental_release_refs, accidental_release_other_info
+        ) VALUES (?, ?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE 
+            accidental_release_per_precautions = VALUES(accidental_release_per_precautions),
+            accidental_release_env_precautions = VALUES(accidental_release_env_precautions),
+            accidental_release_cleaning = VALUES(accidental_release_cleaning),
+			accidental_release_refs = VALUES(accidental_release_refs),
+            accidental_release_other_info = VALUES(accidental_release_other_info)"
+    );
+    
+    // Bind the parameters
+    $stmt->bind_param(
+        'isssss', $ingID, $accidental_release_per_precautions, $accidental_release_env_precautions, 
+        $accidental_release_cleaning, $accidental_release_refs, $accidental_release_other_info
+    );
+    
+    // Execute the statement
+    if ($stmt->execute()) {
+        $response["success"] = 'Accidental release data has been updated';
+    } else {
+        $response["error"] = 'Something went wrong ' . $stmt->error;
+    }
+    
+    // Close the statement
+    $stmt->close();
+    
+    echo json_encode($response);
+    return;
+}
+
+//HANDLING & STORAGE
+if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'HS') {
+    $ingID = (int)$_POST['ingID'];
+    
+    $handling_protection = $_POST['handling_protection'];
+    $handling_hygiene = $_POST['handling_hygiene'];
+    $handling_safe_storage = $_POST['handling_safe_storage'];
+	$handling_joint_storage =  $_POST['handling_joint_storage'];
+    $handling_specific_uses = $_POST['handling_specific_uses'];
+    
+    // Check if all fields are populated
+    if (
+        empty($ingID) || empty($handling_protection) || empty($handling_hygiene) ||
+        empty($handling_safe_storage) ||  empty($handling_joint_storage) || empty($handling_specific_uses)
+    ) {
+        $response["error"] = 'All fields are required';
+        echo json_encode($response);
+        return;
+    }
+    
+    // Prepare the SQL statement
+    $stmt = $conn->prepare(
+        "INSERT INTO ingredient_safety_data (
+            ingID, handling_protection, handling_hygiene, 
+            handling_safe_storage, handling_joint_storage, handling_specific_uses
+        ) VALUES (?, ?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE 
+            handling_protection = VALUES(handling_protection),
+            handling_hygiene = VALUES(handling_hygiene),
+            handling_safe_storage = VALUES(handling_safe_storage),
+			handling_joint_storage = VALUES(handling_joint_storage),
+            handling_specific_uses = VALUES(handling_specific_uses)"
+    );
+    
+    // Bind the parameters
+    $stmt->bind_param(
+        'isssss', $ingID, $handling_protection, $handling_hygiene, 
+        $handling_safe_storage, $handling_joint_storage, $handling_specific_uses
+    );
+    
+    // Execute the statement
+    if ($stmt->execute()) {
+        $response["success"] = 'Handling and storage data has been updated';
+    } else {
+        $response["error"] = 'Something went wrong ' . $stmt->error;
+    }
+    
+    // Close the statement
+    $stmt->close();
+    
+    echo json_encode($response);
+    return;
+}
+
+//EXPOSURE DATA
+if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'exposure_data') {
+    $ingID = (int)$_POST['ingID'];
+
+    // New fields for exposure data
+    $exposure_occupational_limits = $_POST['exposure_occupational_limits'];
+    $exposure_biological_limits = $_POST['exposure_biological_limits'];
+    $exposure_intented_use_limits = $_POST['exposure_intented_use_limits'];
+    $exposure_other_remarks = $_POST['exposure_other_remarks'];
+    $exposure_face_protection = $_POST['exposure_face_protection'];
+    $exposure_skin_protection = $_POST['exposure_skin_protection'];
+    $exposure_respiratory_protection = $_POST['exposure_respiratory_protection'];
+    $exposure_env_exposure = $_POST['exposure_env_exposure'];
+    $exposure_consumer_exposure = $_POST['exposure_consumer_exposure'];
+    $exposure_other_info = $_POST['exposure_other_info'];
+
+    // Check if all fields are populated
+    if (
+        empty($ingID) || empty($exposure_occupational_limits) || empty($exposure_biological_limits) || 
+        empty($exposure_intented_use_limits) || empty($exposure_other_remarks) || empty($exposure_face_protection) || 
+        empty($exposure_skin_protection) || empty($exposure_respiratory_protection) || empty($exposure_env_exposure) || 
+        empty($exposure_consumer_exposure) || empty($exposure_other_info)
+    ) {
+        $response["error"] = 'All fields are required';
+        echo json_encode($response);
+        return;
+    }
+
+    // Prepare the SQL statement
+    $stmt = $conn->prepare(
+        "INSERT INTO ingredient_safety_data (
+            ingID, exposure_occupational_limits, exposure_biological_limits, 
+            exposure_intented_use_limits, exposure_other_remarks, 
+            exposure_face_protection, exposure_skin_protection, 
+            exposure_respiratory_protection, exposure_env_exposure, 
+            exposure_consumer_exposure, exposure_other_info
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE 
+            exposure_occupational_limits = VALUES(exposure_occupational_limits),
+            exposure_biological_limits = VALUES(exposure_biological_limits),
+            exposure_intented_use_limits = VALUES(exposure_intented_use_limits),
+            exposure_other_remarks = VALUES(exposure_other_remarks),
+            exposure_face_protection = VALUES(exposure_face_protection),
+            exposure_skin_protection = VALUES(exposure_skin_protection),
+            exposure_respiratory_protection = VALUES(exposure_respiratory_protection),
+            exposure_env_exposure = VALUES(exposure_env_exposure),
+            exposure_consumer_exposure = VALUES(exposure_consumer_exposure),
+            exposure_other_info = VALUES(exposure_other_info)"
+    );
+
+    // Bind the parameters
+    $stmt->bind_param(
+        'issssssssss', $ingID, $exposure_occupational_limits, $exposure_biological_limits, 
+        $exposure_intented_use_limits, $exposure_other_remarks, 
+        $exposure_face_protection, $exposure_skin_protection, 
+        $exposure_respiratory_protection, $exposure_env_exposure, 
+        $exposure_consumer_exposure, $exposure_other_info
+    );
+
+    // Execute the statement
+    if ($stmt->execute()) {
+        $response["success"] = 'Exposure data has been updated';
+    } else {
+        $response["error"] = 'Something went wrong ' . $stmt->error;
+    }
+
+    // Close the statement
+    $stmt->close();
+
+    echo json_encode($response);
+    return;
+}
+
+
+//PCP
+if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'pcp') {
+    $ingID = (int)$_POST['ingID'];
+
+    $odor_threshold = $_POST['odor_threshold'];
+    $pH = $_POST['pH'];
+    $melting_point = $_POST['melting_point'];
+    $boiling_point = $_POST['boiling_point'];
+    $flash_point = $_POST['flash_point'];
+    $evaporation_rate = $_POST['evaporation_rate'];
+    $solubility = $_POST['solubility'];
+    $auto_infl_temp = $_POST['auto_infl_temp'];
+    $decomp_temp = $_POST['decomp_temp'];
+    $viscosity = $_POST['viscosity'];
+    $explosive_properties = $_POST['explosive_properties'];
+    $oxidising_properties = $_POST['oxidising_properties'];
+    $particle_chars = $_POST['particle_chars'];
+    $flammability = $_POST['flammability'];
+    $logP = $_POST['logP'];
+    $soluble = $_POST['soluble'];
+    $color = $_POST['color'];
+    $low_flammability_limit = $_POST['low_flammability_limit'];
+    $vapour_pressure = $_POST['vapour_pressure'];
+    $vapour_density = $_POST['vapour_density'];
+    $relative_density = $_POST['relative_density'];
+    $pcp_other_info = $_POST['pcp_other_info'];
+    $pcp_other_sec_info = $_POST['pcp_other_sec_info'];
+
+    // Check if all fields are populated
+    if (
+        empty($ingID) || empty($odor_threshold) || empty($pH) || 
+        empty($melting_point) || empty($boiling_point) || empty($flash_point) || 
+        empty($evaporation_rate) || empty($solubility) || empty($auto_infl_temp) || 
+        empty($decomp_temp) || empty($viscosity) || empty($explosive_properties) || 
+        empty($oxidising_properties) || empty($particle_chars) || empty($flammability) || 
+        empty($logP) || empty($soluble) || empty($color) || empty($low_flammability_limit) || 
+        empty($vapour_pressure) || empty($vapour_density) || empty($relative_density) || 
+        empty($pcp_other_info) || empty($pcp_other_sec_info)
+    ) {
+        $response["error"] = 'All fields are required';
+        echo json_encode($response);
+        return;
+    }
+
+    // Prepare the SQL statement
+    $stmt = $conn->prepare(
+        "INSERT INTO ingredient_safety_data (
+            ingID, odor_threshold, pH, melting_point, boiling_point, flash_point, 
+            evaporation_rate, solubility, auto_infl_temp, decomp_temp, viscosity, 
+            explosive_properties, oxidising_properties, particle_chars, flammability, 
+            logP, soluble, color, low_flammability_limit, vapour_pressure, vapour_density, 
+            relative_density, pcp_other_info, pcp_other_sec_info
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE 
+            odor_threshold = VALUES(odor_threshold),
+            pH = VALUES(pH),
+            melting_point = VALUES(melting_point),
+            boiling_point = VALUES(boiling_point),
+            flash_point = VALUES(flash_point),
+            evaporation_rate = VALUES(evaporation_rate),
+            solubility = VALUES(solubility),
+            auto_infl_temp = VALUES(auto_infl_temp),
+            decomp_temp = VALUES(decomp_temp),
+            viscosity = VALUES(viscosity),
+            explosive_properties = VALUES(explosive_properties),
+            oxidising_properties = VALUES(oxidising_properties),
+            particle_chars = VALUES(particle_chars),
+            flammability = VALUES(flammability),
+            logP = VALUES(logP),
+            soluble = VALUES(soluble),
+            color = VALUES(color),
+            low_flammability_limit = VALUES(low_flammability_limit),
+            vapour_pressure = VALUES(vapour_pressure),
+            vapour_density = VALUES(vapour_density),
+            relative_density = VALUES(relative_density),
+            pcp_other_info = VALUES(pcp_other_info),
+            pcp_other_sec_info = VALUES(pcp_other_sec_info)"
+    );
+
+    // Check if the statement was prepared successfully
+    if (!$stmt) {
+        $response["error"] = 'Prepare failed: ' . $conn->error;
+        echo json_encode($response);
+        return;
+    }
+
+    // Bind the parameters
+    $stmt->bind_param(
+        'isssssssssssssssssssssss', $ingID, $odor_threshold, $pH, $melting_point, $boiling_point, 
+        $flash_point, $evaporation_rate, $solubility, $auto_infl_temp, $decomp_temp, 
+        $viscosity, $explosive_properties, $oxidising_properties, $particle_chars, 
+        $flammability, $logP, $soluble, $color, $low_flammability_limit, $vapour_pressure, 
+        $vapour_density, $relative_density, $pcp_other_info, $pcp_other_sec_info
+    );
+
+    // Execute the statement
+    if ($stmt->execute()) {
+        $response["success"] = 'Ingredient safety data has been updated';
+    } else {
+        $response["error"] = 'Something went wrong ' . $stmt->error;
+    }
+
+    // Close the statement
+    $stmt->close();
+
+    echo json_encode($response);
+    return;
+}
+
+//SR INFO
+if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'sr_info') {
+    $ingID = (int)$_POST['ingID'];
+
+
+    $stabillity_reactivity = $_POST['stabillity_reactivity'];
+    $stabillity_chemical = $_POST['stabillity_chemical'];
+    $stabillity_reactions = $_POST['stabillity_reactions'];
+    $stabillity_avoid = $_POST['stabillity_avoid'];
+    $stabillity_incompatibility = $_POST['stabillity_incompatibility'];
+   
+
+    // Check if all fields are populated
+    if (
+        empty($ingID) || empty($stabillity_reactivity) || empty($stabillity_chemical) || 
+        empty($stabillity_reactions) || empty($stabillity_avoid) || empty($stabillity_incompatibility)
+    ) {
+        $response["error"] = 'All fields are required';
+        echo json_encode($response);
+        return;
+    }
+
+    // Prepare the SQL statement
+    $stmt = $conn->prepare(
+        "INSERT INTO ingredient_safety_data (
+            ingID, stabillity_reactivity, stabillity_chemical, stabillity_reactions, stabillity_avoid, stabillity_incompatibility
+        ) VALUES (?, ?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE 
+            stabillity_reactivity = VALUES(stabillity_reactivity),
+            stabillity_chemical = VALUES(stabillity_chemical),
+            stabillity_reactions = VALUES(stabillity_reactions),
+            stabillity_avoid = VALUES(stabillity_avoid),
+            stabillity_incompatibility = VALUES(stabillity_incompatibility)"
+    );
+
+    // Check if the statement was prepared successfully
+    if (!$stmt) {
+        $response["error"] = 'Prepare failed: ' . $conn->error;
+        echo json_encode($response);
+        return;
+    }
+
+    // Bind the parameters
+    $stmt->bind_param( 'isssss', $ingID, $stabillity_reactivity, $stabillity_chemical, $stabillity_reactions, $stabillity_avoid, $stabillity_incompatibility );
+
+    // Execute the statement
+    if ($stmt->execute()) {
+        $response["success"] = 'Stability and reactivity data has been updated';
+    } else {
+        $response["error"] = 'Something went wrong ' . $stmt->error;
+    }
+
+    // Close the statement
+    $stmt->close();
+
+    echo json_encode($response);
+    return;
+}
+
+
+//TOXICOLOGICAL INFO
+if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'tx_info') {
+    $ingID = (int)$_POST['ingID'];
+
+    $toxicological_acute_oral = $_POST['toxicological_acute_oral'];
+    $toxicological_acute_dermal = $_POST['toxicological_acute_dermal'];
+    $toxicological_acute_inhalation = $_POST['toxicological_acute_inhalation'];
+    $toxicological_skin = $_POST['toxicological_skin'];
+    $toxicological_eye = $_POST['toxicological_eye'];
+    $toxicological_sensitisation = $_POST['toxicological_sensitisation'];
+    $toxicological_organ_repeated = $_POST['toxicological_organ_repeated'];
+    $toxicological_organ_single = $_POST['toxicological_organ_single'];
+    $toxicological_carcinogencity = $_POST['toxicological_carcinogencity'];
+    $toxicological_reproductive = $_POST['toxicological_reproductive'];
+    $toxicological_cell_mutation = $_POST['toxicological_cell_mutation'];
+    $toxicological_resp_tract = $_POST['toxicological_resp_tract'];
+    $toxicological_other_info = $_POST['toxicological_other_info'];
+    $toxicological_other_hazards = $_POST['toxicological_other_hazards'];
+
+
+    // Check if all fields are populated
+    if (
+        empty($ingID) || empty($toxicological_acute_oral) || empty($toxicological_acute_dermal) || 
+        empty($toxicological_acute_inhalation) || empty($toxicological_skin) || empty($toxicological_eye) || 
+        empty($toxicological_sensitisation) || empty($toxicological_organ_repeated) || empty($toxicological_organ_single) || 
+        empty($toxicological_carcinogencity) || empty($toxicological_reproductive) || empty($toxicological_cell_mutation) || 
+        empty($toxicological_resp_tract) || empty($toxicological_other_info) || empty($toxicological_other_hazards)
+    ) {
+        $response["error"] = 'All fields are required';
+        echo json_encode($response);
+        return;
+    }
+
+    // Prepare the SQL statement
+    $stmt = $conn->prepare(
+        "INSERT INTO ingredient_safety_data (
+            ingID, toxicological_acute_oral, toxicological_acute_dermal, toxicological_acute_inhalation, toxicological_skin, toxicological_eye, toxicological_sensitisation, toxicological_organ_repeated, toxicological_organ_single, toxicological_carcinogencity, toxicological_reproductive, toxicological_cell_mutation, toxicological_resp_tract, toxicological_other_info, toxicological_other_hazards
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE 
+            toxicological_acute_oral = VALUES(toxicological_acute_oral),
+            toxicological_acute_dermal = VALUES(toxicological_acute_dermal),
+            toxicological_acute_inhalation = VALUES(toxicological_acute_inhalation),
+            toxicological_skin = VALUES(toxicological_skin),
+            toxicological_eye = VALUES(toxicological_eye),
+            toxicological_sensitisation = VALUES(toxicological_sensitisation),
+            toxicological_organ_repeated = VALUES(toxicological_organ_repeated),
+            toxicological_organ_single = VALUES(toxicological_organ_single),
+            toxicological_carcinogencity = VALUES(toxicological_carcinogencity),
+            toxicological_reproductive = VALUES(toxicological_reproductive),
+            toxicological_cell_mutation = VALUES(toxicological_cell_mutation),
+            toxicological_resp_tract = VALUES(toxicological_resp_tract),
+            toxicological_other_info = VALUES(toxicological_other_info),
+            toxicological_other_hazards = VALUES(toxicological_other_hazards)"
+    );
+
+    // Check if the statement was prepared successfully
+    if (!$stmt) {
+        $response["error"] = 'Prepare failed: ' . $conn->error;
+        echo json_encode($response);
+        return;
+    }
+
+    // Bind the parameters
+    $stmt->bind_param(
+        'issssssssssssss', $ingID, $toxicological_acute_oral, $toxicological_acute_dermal, $toxicological_acute_inhalation, $toxicological_skin, $toxicological_eye, $toxicological_sensitisation, $toxicological_organ_repeated, $toxicological_organ_single, $toxicological_carcinogencity, $toxicological_reproductive, $toxicological_cell_mutation, $toxicological_resp_tract, $toxicological_other_info, 
+        $toxicological_other_hazards
+    );
+
+    // Execute the statement
+    if ($stmt->execute()) {
+        $response["success"] = 'Toxicology data has been updated';
+    } else {
+        $response["error"] = 'Something went wrong ' . $stmt->error;
+    }
+
+    // Close the statement
+    $stmt->close();
+
+    echo json_encode($response);
+    return;
+}
+
+
+//ECOLOGICAL INFO
+if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'ec_info') {
+    $ingID = (int)$_POST['ingID'];
+
+    $ecological_toxicity = $_POST['ecological_toxicity'];
+    $ecological_persistence = $_POST['ecological_persistence'];
+    $ecological_bioaccumulative = $_POST['ecological_bioaccumulative'];
+    $ecological_soil_mobility = $_POST['ecological_soil_mobility'];
+    $ecological_PBT_vPvB = $_POST['ecological_PBT_vPvB'];
+    $ecological_endocrine_properties = $_POST['ecological_endocrine_properties'];
+    $ecological_other_adv_effects = $_POST['ecological_other_adv_effects'];
+    $ecological_additional_ecotoxicological_info = $_POST['ecological_additional_ecotoxicological_info'];
+
+    // Check if all fields are populated
+    if (
+        empty($ingID) || empty($ecological_toxicity) || empty($ecological_persistence) || empty($ecological_bioaccumulative) || empty($ecological_soil_mobility) || empty($ecological_PBT_vPvB) || 
+        empty($ecological_endocrine_properties) || empty($ecological_other_adv_effects) || empty($ecological_additional_ecotoxicological_info)
+    ) {
+        $response["error"] = 'All fields are required';
+        echo json_encode($response);
+        return;
+    }
+
+    // Prepare the SQL statement
+    $stmt = $conn->prepare(
+        "INSERT INTO ingredient_safety_data (
+            ingID, ecological_toxicity, ecological_persistence, ecological_bioaccumulative, ecological_soil_mobility, ecological_PBT_vPvB, ecological_endocrine_properties, ecological_other_adv_effects, ecological_additional_ecotoxicological_info
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE 
+            ecological_toxicity = VALUES(ecological_toxicity),
+            ecological_persistence = VALUES(ecological_persistence),
+            ecological_bioaccumulative = VALUES(ecological_bioaccumulative),
+            ecological_soil_mobility = VALUES(ecological_soil_mobility),
+            ecological_PBT_vPvB = VALUES(ecological_PBT_vPvB),
+            ecological_endocrine_properties = VALUES(ecological_endocrine_properties),
+            ecological_other_adv_effects = VALUES(ecological_other_adv_effects),
+            ecological_additional_ecotoxicological_info = VALUES(ecological_additional_ecotoxicological_info)"
+    );
+
+    // Check if the statement was prepared successfully
+    if (!$stmt) {
+        $response["error"] = 'Prepare failed: ' . $conn->error;
+        echo json_encode($response);
+        return;
+    }
+
+    // Bind the parameters
+    $stmt->bind_param(
+        'issssssss', $ingID, $ecological_toxicity, $ecological_persistence, $ecological_bioaccumulative, $ecological_soil_mobility, $ecological_PBT_vPvB, $ecological_endocrine_properties, $ecological_other_adv_effects, $ecological_additional_ecotoxicological_info
+    );
+
+    // Execute the statement
+    if ($stmt->execute()) {
+        $response["success"] = 'Ecology data has been updated';
+    } else {
+        $response["error"] = 'Something went wrong ' . $stmt->error;
+    }
+
+    // Close the statement
+    $stmt->close();
+
+    echo json_encode($response);
+    return;
+}
+
+
+//DISPOSE INFO
+if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'dis_info') {
+    $ingID = (int)$_POST['ingID'];
+
+
+    $disposal_product = $_POST['disposal_product'];
+    $disposal_remarks = $_POST['disposal_remarks'];
+
+
+    // Check if all fields are populated
+    if ( empty($ingID) || empty($disposal_product) || empty($disposal_remarks) ) {
+        $response["error"] = 'All fields are required';
+        echo json_encode($response);
+        return;
+    }
+
+    // Prepare the SQL statement
+    $stmt = $conn->prepare(
+        "INSERT INTO ingredient_safety_data ( ingID, disposal_product, disposal_remarks ) VALUES (?, ?, ?)
+        ON DUPLICATE KEY UPDATE 
+            disposal_product = VALUES(disposal_product),
+            disposal_remarks = VALUES(disposal_remarks)"
+    );
+
+    // Check if the statement was prepared successfully
+    if (!$stmt) {
+        $response["error"] = 'Prepare failed: ' . $conn->error;
+        echo json_encode($response);
+        return;
+    }
+
+    // Bind the parameters
+    $stmt->bind_param( 'iss', $ingID, $disposal_product, $disposal_remarks );
+
+    // Execute the statement
+    if ($stmt->execute()) {
+        $response["success"] = 'Dispose data has been updated';
+    } else {
+        $response["error"] = 'Something went wrong ' . $stmt->error;
+    }
+
+    // Close the statement
+    $stmt->close();
+
+    echo json_encode($response);
+    return;
+}
+
+
+
+
+//TRANSPORTATION INFO
+if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'trans_info') {
+    $ingID = (int)$_POST['ingID'];
+
+    $transport_un_number = $_POST['transport_un_number'];
+    $transport_shipping_name = $_POST['transport_shipping_name'];
+    $transport_hazard_class = $_POST['transport_hazard_class'];
+    $transport_packing_group = $_POST['transport_packing_group'];
+    $transport_env_hazards = $_POST['transport_env_hazards'];
+    $transport_precautions = $_POST['transport_precautions'];
+    $transport_bulk_shipping = $_POST['transport_bulk_shipping'];
+
+    // Check if all fields are populated
+    if (
+        empty($ingID) || empty($transport_un_number) || empty($transport_shipping_name) || empty($transport_hazard_class) || empty($transport_packing_group) || empty($transport_env_hazards) || 
+        empty($transport_precautions) || empty($transport_bulk_shipping)
+    ) {
+        $response["error"] = 'All fields are required';
+        echo json_encode($response);
+        return;
+    }
+
+    // Prepare the SQL statement
+    $stmt = $conn->prepare(
+        "INSERT INTO ingredient_safety_data (
+            ingID, transport_un_number, transport_shipping_name, transport_hazard_class, transport_packing_group, transport_env_hazards, transport_precautions, transport_bulk_shipping
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE 
+            transport_un_number = VALUES(transport_un_number),
+            transport_shipping_name = VALUES(transport_shipping_name),
+            transport_hazard_class = VALUES(transport_hazard_class),
+            transport_packing_group = VALUES(transport_packing_group),
+            transport_env_hazards = VALUES(transport_env_hazards),
+            transport_precautions = VALUES(transport_precautions),
+            transport_bulk_shipping = VALUES(transport_bulk_shipping)"
+    );
+
+    // Check if the statement was prepared successfully
+    if (!$stmt) {
+        $response["error"] = 'Prepare failed: ' . $conn->error;
+        echo json_encode($response);
+        return;
+    }
+
+    // Bind the parameters
+    $stmt->bind_param(
+        'isssssss', $ingID, $transport_un_number, $transport_shipping_name, $transport_hazard_class, $transport_packing_group, $transport_env_hazards, $transport_precautions, $transport_bulk_shipping
+    );
+
+    // Execute the statement
+    if ($stmt->execute()) {
+        $response["success"] = 'Transportation data has been updated';
+    } else {
+        $response["error"] = 'Something went wrong ' . $stmt->error;
+    }
+
+    // Close the statement
+    $stmt->close();
+
+    echo json_encode($response);
+    return;
+}
+
+//LEGISLATION INFO
+if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'leg_info') {
+    $ingID = (int)$_POST['ingID'];
+
+    $legislation_safety = $_POST['legislation_safety'];
+    $legislation_eu = $_POST['legislation_eu'];
+    $legislation_chemical_safety_assessment = $_POST['legislation_chemical_safety_assessment'];
+    $legislation_other_info = $_POST['legislation_other_info'];
+
+
+    // Check if all fields are populated
+    if (
+        empty($ingID) || empty($legislation_safety) || empty($legislation_eu) || empty($legislation_chemical_safety_assessment) || empty($legislation_other_info)
+    ) {
+        $response["error"] = 'All fields are required';
+        echo json_encode($response);
+        return;
+    }
+
+    // Prepare the SQL statement
+    $stmt = $conn->prepare(
+        "INSERT INTO ingredient_safety_data (
+            ingID, legislation_safety, legislation_eu, legislation_chemical_safety_assessment, legislation_other_info
+        ) VALUES (?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE 
+            legislation_safety = VALUES(legislation_safety),
+            legislation_eu = VALUES(legislation_eu),
+            legislation_chemical_safety_assessment = VALUES(legislation_chemical_safety_assessment),
+            legislation_other_info = VALUES(legislation_other_info)"
+    );
+
+    // Check if the statement was prepared successfully
+    if (!$stmt) {
+        $response["error"] = 'Prepare failed: ' . $conn->error;
+        echo json_encode($response);
+        return;
+    }
+
+    // Bind the parameters
+    $stmt->bind_param( 'issss', $ingID, $legislation_safety, $legislation_eu, $legislation_chemical_safety_assessment, $legislation_other_info );
+
+    // Execute the statement
+    if ($stmt->execute()) {
+        $response["success"] = 'Legislation data has been updated';
+    } else {
+        $response["error"] = 'Something went wrong ' . $stmt->error;
+    }
+
+    // Close the statement
+    $stmt->close();
+
+    echo json_encode($response);
+    return;
+}
+
+
+
+//ADDITIONAL INFO
+if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'add_info') {
+    $ingID = (int)$_POST['ingID'];
+
+    $add_info_changes = $_POST['add_info_changes'];
+    $add_info_acronyms = $_POST['add_info_acronyms'];
+    $add_info_references = $_POST['add_info_references'];
+    $add_info_HazCom = $_POST['add_info_HazCom'];
+	$add_info_GHS = $_POST['add_info_GHS'];
+	$add_info_training = $_POST['add_info_training'];
+	$add_info_other = $_POST['add_info_other'];
+
+    // Check if all fields are populated
+    if (
+        empty($ingID) || empty($add_info_changes) || empty($add_info_acronyms) || empty($add_info_references) || empty($add_info_HazCom) || empty($add_info_GHS) || empty($add_info_training) || empty($add_info_other) 
+    ) {
+        $response["error"] = 'All fields are required';
+        echo json_encode($response);
+        return;
+    }
+
+    // Prepare the SQL statement
+    $stmt = $conn->prepare(
+        "INSERT INTO ingredient_safety_data (
+            ingID, add_info_changes, add_info_acronyms, add_info_references, add_info_HazCom, add_info_GHS, add_info_training, add_info_other
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE 
+            add_info_changes = VALUES(add_info_changes),
+            add_info_acronyms = VALUES(add_info_acronyms),
+            add_info_references = VALUES(add_info_references),
+            add_info_HazCom = VALUES(add_info_HazCom),
+            add_info_GHS = VALUES(add_info_GHS),
+            add_info_training = VALUES(add_info_training),
+            add_info_other = VALUES(add_info_other)"
+    );
+
+    // Check if the statement was prepared successfully
+    if (!$stmt) {
+        $response["error"] = 'Prepare failed: ' . $conn->error;
+        echo json_encode($response);
+        return;
+    }
+
+    // Bind the parameters
+    $stmt->bind_param( 'isssssss', $ingID, $add_info_changes, $add_info_acronyms, $add_info_references, $add_info_HazCom, $add_info_GHS , $add_info_training , $add_info_other );
+
+    // Execute the statement
+    if ($stmt->execute()) {
+        $response["success"] = 'Additional info data has been updated';
+    } else {
+        $response["error"] = 'Something went wrong ' . $stmt->error;
+    }
+
+    // Close the statement
+    $stmt->close();
+
+    echo json_encode($response);
+    return;
+}
 
 header('Location: /');
 exit;
