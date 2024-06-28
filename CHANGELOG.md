@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 10.6
+
 ### Version 10.5
 - Modify json export for ingredients to include min and max compostion percentage
 - Rewrite multi dimensional function
