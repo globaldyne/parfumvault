@@ -9,6 +9,10 @@ $(document).ready(function() {
 		reset_solv();
 	});
 	
+	$('#analysis_tab').on( 'click', function () {
+		fetch_analysis();
+	});
+	
 	$('#impact_tab').on( 'click', function () {
 		fetch_impact();
 	});

@@ -24,6 +24,7 @@ while($fTypes_res = mysqli_fetch_array($fTypes_q)){
     $fTypes[] = $fTypes_res;
 }
 
+$cFormoulas = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"));
 ?>
 <script src="/js/raty/jquery.raty.js"></script>
 <script src="/js/rating.js"></script>
@@ -46,8 +47,10 @@ while($fTypes_res = mysqli_fetch_array($fTypes_q)){
               <div class="dropdown-divider"></div>
         	  <li><a class="dropdown-item" href="/pages/operations.php?action=exportFormulas"><i class="fa-solid fa-file-export mx-2"></i>Export Formulas as JSON</a></li>
         	  <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#import_formulas_json"><i class="fa-solid fa-file-import mx-2"></i>Import Formulas from JSON</a></li>
+              <?php if($cFormoulas){ ?>
  			  <div class="dropdown-divider"></div>
         	  <li><a class="dropdown-item text-danger" href="#" id="wipe_all_formulas"><i class="fa-solid fa-trash mx-2"></i>Delete all</a></li>
+              <?php } ?>
             </div>
         </div>
     </div>
@@ -56,10 +59,10 @@ while($fTypes_res = mysqli_fetch_array($fTypes_q)){
 
 <?php
 if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients")))){
-	echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> no ingredients yet, click <a href="/?do=ingredients">here</a> to add.</div>';
+	echo '<div class="row g-3"><div class="alert alert-info alert-dismissible"><i class="fa-solid fa-circle-info mx-2"></i><strong>No ingredients yet, click <a href="/?do=ingredients">here</a> to create a new one </strong></div></div>';
 }
-if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData")))){
-	echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> no formulas yet, click <a href="#" data-bs-toggle="modal" data-bs-target="#add_formula">here</a> to add.</div>';
+if(empty($cFormoulas)){
+	echo '<div class="row g-3"><div class="alert alert-info alert-dismissible"><i class="fa-solid fa-circle-info mx-2"></i><strong>No formulas yet, click <a href="#" data-bs-toggle="modal" data-bs-target="#add_formula">here</a> to add or use the <a href="/?do=marketplace">Marketplace</a> to import a demo one</strong></div></div>';
 }else{
 ?>
 <div id="listFormulas">
@@ -165,7 +168,7 @@ function initTable(tableId, src) {
 		language: {
 			loadingRecords: '&nbsp;',
 			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>',
-			emptyTable: "No formulas added yet.",
+			emptyTable: '<div class="row g-3"><div class="alert alert-info alert-dismissible"><i class="fa-solid fa-circle-info mx-2"></i><strong>No formulas yet, click <a href="#" data-bs-toggle="modal" data-bs-target="#add_formula">here</a> to add or use the <a href="/?do=marketplace">Marketplace</a> to import a demo one</strong></div></div>',
 			searchPlaceholder: 'Formula name, or product name...',
 			search: "Search for formula:"
 		},
@@ -428,6 +431,7 @@ $('#wipe_all_formulas').click(function() {
 						if ( data.success ) {
 							$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
 							$('.toast-header').removeClass().addClass('toast-header alert-success');
+							reload_formulas_data();
 						} else {
 							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
 							$('.toast-header').removeClass().addClass('toast-header alert-danger');

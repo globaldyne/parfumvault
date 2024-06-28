@@ -18,34 +18,32 @@ $q = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM customers WHERE id = 
 }
 </style>
 <div class="container">
-	<div id="inf"></div>
-     <p>
-        Name: 
-        <input class="form-control" name="customer-name" type="text"  id="customer-name" value="<?=$q['name']?>" />
-        </p>
-        <p>            
-        Address:
-        <input class="form-control" name="customer-address" type="text" id="customer-address" value="<?=$q['address']?>"/>
-        </p>
-        <p>
-        Email:
-        <input class="form-control" name="customer-email" type="text" id="customer-email" value="<?=$q['email']?>"/>
-        </p>
-        <p>
-        Web Site:
-        <input class="form-control" name="customer-web" type="text" id="customer-web" value="<?=$q['web']?>"/>
-        </p>        
-
-        <p>
-        Phone:
-        <input class="form-control" name="customer-phone" type="text" id="customer-phone" value="<?=$q['phone']?>"/>
-        </p>
-           
-</div>
-      <div class="modal-footer">
+    <div id="inf"></div>
+    <div class="mb-3">
+        <label for="customer-name" class="form-label">Name</label>
+        <input class="form-control" name="customer-name" type="text" id="customer-name" value="<?=$q['name']?>" />
+    </div>
+    <div class="mb-3">
+        <label for="customer-address" class="form-label">Address</label>
+        <input class="form-control" name="customer-address" type="text" id="customer-address" value="<?=$q['address']?>" />
+    </div>
+    <div class="mb-3">
+        <label for="customer-email" class="form-label">Email</label>
+        <input class="form-control" name="customer-email" type="text" id="customer-email" value="<?=$q['email']?>" />
+    </div>
+    <div class="mb-3">
+        <label for="customer-web" class="form-label">Web Site</label>
+        <input class="form-control" name="customer-web" type="text" id="customer-web" value="<?=$q['web']?>" />
+    </div>
+    <div class="mb-3">
+        <label for="customer-phone" class="form-label">Phone</label>
+        <input class="form-control" name="customer-phone" type="text" id="customer-phone" value="<?=$q['phone']?>" />
+    </div>
+    <div class="modal-footer">
         <input type="submit" name="button" class="btn btn-primary" id="save" value="Save">
-      </div>
-    </div>  
+    </div>
+</div>
+
 
 <script>
 $(document).ready(function() {

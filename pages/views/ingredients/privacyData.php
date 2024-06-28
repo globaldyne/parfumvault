@@ -14,7 +14,7 @@ $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT id,isPrivate FROM ingredie
 ?>
 <h3>Privacy</h3>
 <div id="prvMsg"></div>
-	<hr />
+<hr />
 	<div class="row">
     	<div class="col-xs-4">
       		<a href="#" rel="tipsy" title="If enabled, ingredient will automatically excluded if you choose to upload your ingredients to PV Online. Will also kept private from other users in your local installation if you create any.">Private:</a>
@@ -22,7 +22,7 @@ $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT id,isPrivate FROM ingredie
 		</div>
     </div>
 	<hr />
-	<p><input type="submit" name="save" class="btn btn-info" id="savePrivacy" value="Save" /></p>
+	<input type="submit" name="save" class="btn btn-primary" id="savePrivacy" value="Save" />
     
 <script>
 $('[rel=tipsy]').tooltip({placement: 'auto'});
@@ -40,11 +40,13 @@ $('#privacy').on('click', '[id*=savePrivacy]', function () {
 		dataType: 'json',
 		success: function (data) {
 			if(data.success){
-				var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+				$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+				$('.toast-header').removeClass().addClass('toast-header alert-success');
 			}else{
-				var msg ='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
 			}
-				$('#prvMsg').html(msg);
+			$('.toast').toast('show');
 		}
 	});
 });

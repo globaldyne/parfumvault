@@ -96,6 +96,9 @@ if($form[0]['ingredient']){
           	<a href="#main_formula" id="formula_tab" class="nav-link active" aria-selected="true" role="tab" data-bs-toggle="tab"><i class="fa fa-bong mx-2"></i>Formula</a>
           </li>
     	  <li class="nav-item" role="presentation">
+          	<a href="#analysis" id="analysis_tab"class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-magnifying-glass-chart mx-2"></i>Analysis</a>
+          </li>          
+    	  <li class="nav-item" role="presentation">
           	<a href="#impact" id="impact_tab"class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-magic mx-2"></i>Notes Impact</a>
           </li>
           <li class="nav-item" role="presentation">
@@ -173,6 +176,12 @@ if($form[0]['ingredient']){
 </div>
 <!--Formula-->
 
+        <div class="tab-pane fade" id="analysis">
+            <div class="card-body">
+                <div id="fetch_analysis"><div class="loader"></div></div>
+            </div>            
+        </div>
+        
         <div class="tab-pane fade" id="impact">
             <div class="card-body">
                 <div id="fetch_impact"><div class="loader"></div></div>
@@ -349,7 +358,7 @@ function fetch_pyramid(){
 
 function fetch_impact(){
 	$.ajax({ 
-		url: '/pages/impact.php', 
+		url: '/pages/views/formula/impact.php', 
 		type: 'GET',
 		data: {
 			id: "<?php echo $fid; ?>"
@@ -362,13 +371,27 @@ function fetch_impact(){
 }
 
 
+function fetch_analysis(){
+	$.ajax({ 
+		url: '/pages/views/formula/analysis.php', 
+		type: 'GET',
+		data: {
+			fid: "<?php echo $fid; ?>"
+		},
+		dataType: 'html',
+		success: function (data) {
+		  $('#fetch_analysis').html(data);
+		}
+	});
+}
+
 function fetch_summary(){
 $.ajax({ 
     url: '/pages/viewSummary.php', 
 	type: 'GET',
     data: {
 		id: "<?=$fid?>"
-		},
+	},
 	dataType: 'html',
 		success: function (data) {
 			$('#fetch_summary').html(data);
@@ -385,7 +408,7 @@ function fetch_replacements(){
 		type: 'POST',
 		data: {
 			fid: "<?=$fid?>"
-			},
+		},
 		dataType: 'html',
 		success: function (data) {
 		  $('#fetch_replacements').html(data);
@@ -399,7 +422,7 @@ function fetch_attachments(){
 		type: 'POST',
 		data: {
 			id: "<?=$meta['id']?>"
-			},
+		},
 		dataType: 'html',
 		success: function (data) {
 		  $('#fetch_attachments').html(data);
@@ -414,7 +437,7 @@ function fetch_revisions(){
 		data: {
 			fid: "<?=$fid?>",
 			id: "<?=$meta['id']?>"
-			},
+		},
 		dataType: 'html',
 		success: function (data) {
 		  $('#fetch_revisions').html(data);
@@ -429,7 +452,7 @@ function fetch_formula_settings(){
 		data: {
 			id: "<?=$meta['id']?>",
 			//embed: true
-			},
+		},
 		dataType: 'html',
 		success: function (data) {
 		  $('#fetch_formula_settings').html(data);
@@ -443,7 +466,7 @@ function fetch_timeline(){
 		type: 'GET',
 		data: {
 			id: "<?=$meta['id']?>",
-			},
+		},
 		dataType: 'html',
 		success: function (data) {
 		  $('#fetch_timeline').html(data);

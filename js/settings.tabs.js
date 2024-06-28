@@ -25,8 +25,8 @@ $(document).ready(function() {
 		list_templates();
 	});
 		
-	$('#print_tab').on( 'click', function () {
-		
+	$('#sds_tab').on( 'click', function () {
+		list_sds_settings();
 	});
 		
 	$('#brand_tab').on( 'click', function () {

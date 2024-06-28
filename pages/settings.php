@@ -20,6 +20,7 @@ $(function() {
          <li><a href="#frmCat" id="frmCat_tab" role="tab" data-bs-toggle="tab">Formula Categories</a></li>
          <li><a href="#perfumeTypes" id="perfume_types_tab" role="tab" data-bs-toggle="tab">Perfume Types</a></li>
          <li><a href="#templates" id="templates_tab" role="tab" data-bs-toggle="tab">HTML Templates</a></li>
+         <li><a href="#sds" id="sds_tab" role="tab" data-bs-toggle="tab">SDS Settings</a></li>
          <li><a href="#brand" id="brand_tab" role="tab" data-bs-toggle="tab">My Brand</span></a></li>
          <li><a href="#maintenance" id="maintenance_tab">Maintenance</a></li>
          <li><a href="#integrations" id="integrations_tab">Integrations</a></li>
@@ -78,6 +79,15 @@ $(function() {
         </div>
 	</div>
    
+    <div id="sds">
+        <div id="list_sds_settings">
+            <div class="loader-center">
+                <div class="loader"></div>
+                <div class="loader-text"></div>
+            </div>
+        </div>
+	</div>
+    
      <div id="brand">
 	   <div class="loader-center">
        		<div class="loader"></div>
@@ -158,6 +168,16 @@ function list_templates(){
 		dataType: 'html',
 		success: function (data) {
 			$('#list_templates').html(data);
+		}
+	});
+};
+
+function list_sds_settings(){
+	$.ajax({ 
+		url: '/pages/views/settings/sds.php', 
+		dataType: 'html',
+		success: function (data) {
+			$('#list_sds_settings').html(data);
 		}
 	});
 };

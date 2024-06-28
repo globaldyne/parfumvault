@@ -3,13 +3,17 @@ define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__)))));
 
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/inc/settings.php');
+
+$defPercentage = $settings['defPercentage'];
+
 $ingID = mysqli_real_escape_string($conn, base64_decode($_POST["id"]));
 
 $ingUsage = mysqli_query($conn,"SELECT name,fid FROM formulas WHERE ingredient = '".$ingID."'");
 while($used_res = mysqli_fetch_array($ingUsage)){
 	$used[] = $used_res;
 }
-$ingUsageCmp = mysqli_query($conn,"SELECT ing,percentage FROM ingredient_compounds WHERE name = '".$ingID."'");
+$ingUsageCmp = mysqli_query($conn,"SELECT ing,min_percentage,max_percentage FROM ingredient_compounds WHERE name = '".$ingID."'");
 while($used_cmp = mysqli_fetch_array($ingUsageCmp)){
 	$usedCmp[] = $used_cmp;
 }
@@ -57,7 +61,7 @@ if(count((array)$used) == 0 && count((array)$usedCmp) == 0){
            		<a href="/pages/mgmIngredient.php?id=<?=base64_encode($used['ing'])?>"><?=$used['ing']?></a>
             </td>
             <td width="19%">
-           		<a href="#"><?=$used['percentage']?:'N/A'?></a>
+           		<a href="#"><?=$used[$defPercentage]?:'N/A'?></a>
             </td>
           </tr>
           <?php } ?>

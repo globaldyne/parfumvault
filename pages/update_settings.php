@@ -108,7 +108,8 @@ if($_POST['manage'] == 'general'){
 	$mUnit = mysqli_real_escape_string($conn, $_POST['mUnit']);
 	$editor = mysqli_real_escape_string($conn, $_POST['editor']);
 	$user_pref_eng = mysqli_real_escape_string($conn, $_POST['user_pref_eng']);
-
+	$defPercentage =  $_POST['defPercentage'];
+	
 	if($_POST["chem_vs_brand"] == 'true') {
 		$chem_vs_brand = '1';
 	}else{
@@ -157,7 +158,7 @@ if($_POST['manage'] == 'general'){
 		return;
 	}
 	
-	if(mysqli_query($conn, "UPDATE settings SET currency = '$currency', top_n = '$top_n', heart_n = '$heart_n', base_n = '$base_n', chem_vs_brand = '$chem_vs_brand', grp_formula = '$grp_formula', pubChem='$pubChem', chkVersion='$chkVersion', qStep = '$qStep', defCatClass = '$defCatClass', pubchem_view = '$pubchem_view', multi_dim_perc = '$multi_dim_perc', mUnit = '$mUnit', editor = '$editor', user_pref_eng = '$user_pref_eng', pv_host = '".$_POST['pv_host']."'")){
+	if(mysqli_query($conn, "UPDATE settings SET currency = '$currency', top_n = '$top_n', heart_n = '$heart_n', base_n = '$base_n', chem_vs_brand = '$chem_vs_brand', grp_formula = '$grp_formula', pubChem='$pubChem', chkVersion='$chkVersion', qStep = '$qStep', defCatClass = '$defCatClass', pubchem_view = '$pubchem_view', multi_dim_perc = '$multi_dim_perc', mUnit = '$mUnit', editor = '$editor', user_pref_eng = '$user_pref_eng', pv_host = '".$_POST['pv_host']."', defPercentage = '$defPercentage'")){
 		$response["success"] = 'Settings updated!';
 	}else{
 		$response["error"] = 'An error occured '.mysqli_error($conn);	

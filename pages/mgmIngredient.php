@@ -90,7 +90,7 @@ body {
 						<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#cloneIng"><i class="fa-solid fa-copy mx-2"></i>Clone ingredient</a></li>
 						<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#renameIng"><i class="fa-regular fa-pen-to-square mx-2"></i>Rename ingredient</a></li>
                         <li><a class="dropdown-item" href="/pages/export.php?format=json&kind=single-ingredient&id=<?=$ing['id']?>"><i class="fas fa-download mx-2"></i>Export as JSON</a></li>
-						<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#genSDS"><i class="fa-solid fa-file-prescription mx-2"></i>Generate SDS</a></li>
+						<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#genDOC"><i class="fa-solid fa-file-prescription mx-2"></i>Generate document</a></li>
 						<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#genQRC"><i class="fa-solid fa-qrcode mx-2"></i>Generate QR Code</a></li>
 					</div>
 				</div>
@@ -329,25 +329,26 @@ body {
 	</div>
 </div>
 
-<!-- Modal Gen SDS-->
-<div class="modal fade" id="genSDS" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="genSDS" aria-hidden="true">
+<!-- Modal Gen DOC-->
+<div class="modal fade" id="genDOC" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="genDOC" aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title">Generate SDS for <?php echo $ing['name']; ?></h5>
+				<h5 class="modal-title">Generate document for <?php echo $ing['name']; ?></h5>
 			</div>
 			<div class="modal-body">
                 <div id="warn">
-                <div class="alert alert-warning"><strong>TECH PREVIEW: This feature its under development and in preview state at the moment.</strong></div>
+                <div class="alert alert-warning"><strong><i class="fa-solid fa-triangle-exclamation mx-2"></i>TECH PREVIEW: This feature its under development and in preview state, use with caution.</strong></div>
 				<div id="sds_res"></div>                               
 				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" id="dis-genSDS" data-bs-dismiss="modal">Close</button>
-					<input type="submit" name="button" class="btn btn-primary" id="generateSDS" value="Generate">
+					<button type="button" class="btn btn-secondary" id="dis-genDOC" data-bs-dismiss="modal">Close</button>
+					<input type="submit" name="button" class="btn btn-primary" id="generateDOC" value="Generate">
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
+
 
 
 <script>
@@ -358,7 +359,9 @@ $(document).ready(function() {
 	$('#general').on('click', '[id*=saveGeneral]', function () {
 		<?php if(empty($ing['id'])){ ?>
 			if($.trim($("#name").val()) == ''){
-				$('#ingMsg').html('<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-circle-exclamation mr-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>Name is required</strong></div>');
+				$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>Ingredient name is required');
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
 				return;
    			}
 		<?php } ?>
@@ -396,13 +399,14 @@ $(document).ready(function() {
 					$('#mgmIngHeaderCAS').html($("#cas").val());
 					$('#IUPAC').html($("#INCI").val());
 					
-					var msg = '<div class="alert alert-success alert-dismissible"><i class="fa-solid fa-circle-check mr-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+					$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+					$('.toast-header').removeClass().addClass('toast-header alert-success');
 				}else{
-					var msg ='<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-circle-exclamation mr-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+					$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+					$('.toast-header').removeClass().addClass('toast-header alert-danger');
 				}
-				
-				$('#ingMsg').html(msg);
-				
+				$('.toast').toast('show');
+						
 				if ($('#name').val()) {
 					window.location = 'mgmIngredient.php?id=' + btoa($('#name').val());
 				}
@@ -433,6 +437,16 @@ $(document).ready(function() {
 <script src="/js/ingredient.tabs.js"></script>
 
 </div>
+<!-- TOAST -->
+<div class="position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 11">
+  	<div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true">
+    	<div class="toast-header">
+      		<strong class="me-auto" id="toast-title">...</strong>
+      		<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+  		</div>
+	</div>
+</div>
+
 </div>
 </body>
 </html>
