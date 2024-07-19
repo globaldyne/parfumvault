@@ -119,7 +119,7 @@ while($res = mysqli_fetch_array($q)){
 
 <!--EDIT MODAL-->            
 <div class="modal fade" id="editCompound" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="editCompound" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title mgmIngHeader mgmIngHeader-with-separator" id="editCompoundLabel">Edit compound</h5>
@@ -410,12 +410,12 @@ $(document).ready(function() {
 			 if(response.success){
 				$("#compound_inf").html('<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+response.success+'</div>');
 				$("#compound_add").prop("disabled", false);
-				$("#compound_add").prop("value", "Add");
+				$("#compound_add").prop("value", "Add compound");
 				reload_data();
 			 }else{
 				$("#compound_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+response.error+'</div>');
 				$("#compound_add").prop("disabled", false);
-				$("#compound_add").prop("value", 'Add');
+				$("#compound_add").prop("value", 'Add compound');
 			 }
 		  },
 	   });

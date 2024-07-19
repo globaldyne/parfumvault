@@ -1,5 +1,7 @@
 # CHANGELOG
 ### Version 10.6
+- Minor cosmetic updates in the compounds page
+- Discord invite update
 
 ### Version 10.5
 - Modify json export for ingredients to include min and max compostion percentage
