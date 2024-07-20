@@ -12,7 +12,7 @@ $first_time = 1;
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="<?php echo $product.' - '.$ver;?>">
   <meta name="author" content="<?php echo $product.' - '.$ver;?>">
-  <title><?php echo $product;?> - First time setup!</title>
+  <title><?php echo $product;?> - First time setup</title>
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
   <link href="/css/sb-admin-2.css" rel="stylesheet">
@@ -68,7 +68,7 @@ $first_time = 1;
                 <div class="form-group"></div>
                 <hr>
                 <button name="save" id="saveInstallData" class="btn btn-primary btn-user btn-block">
-                  Save!
+                  Save
                 </button>
                 <p>&nbsp;</p>
                 <p>*All fields required</p>
