@@ -1,0 +1,28 @@
+.table {
+	--bs-table-bg:  initial;
+}
+table.dataTable {
+	font-size: x-large !important;
+	font-weight: bold;
+}
+.mr {
+	margin: 20px 20px 20px 20px;
+	display: inline;
+}
+@media print {
+	table, table tr, table td {
+		border-top: #000 solid 2px;
+		border-bottom: #000 solid 2px;
+		border-left: #000 solid 2px;
+		border-right: #000 solid 2px;
+		font-family: arial, sans-serif;
+		font-weight: bold;
+		width: 50%;
+		margin-left: 1px;
+		font-size: 15pt;
+		page-break-inside: auto;
+		page-break-inside: avoid; 
+		page-break-after: auto;
+	}
+}
+	

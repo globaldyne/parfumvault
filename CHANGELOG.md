@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 10.6
+- Move styling to its own file for MakeFormula page
 - Minor cosmetic updates in the compounds page
 - Discord invite update
 

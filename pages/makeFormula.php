@@ -50,43 +50,14 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
       <link href="/css/datatables.min.css" rel="stylesheet"/>
       <link href="/css/vault.css" rel="stylesheet">
       <link href="/css/select2.css" rel="stylesheet">
+      <link href="/css/makeFormula.css" rel="stylesheet">
 
       <script src="/js/tableHTMLExport.js"></script>
       <script src="/js/jspdf.min.js"></script>
       <script src="/js/jspdf.plugin.autotable.js"></script>
       <script src="/js/bootbox.min.js"></script>
-      <script src="/js/select2.js"></script> 
-
-      <style>
-        .table {
-            --bs-table-bg:  initial;
-        }
-        table.dataTable {
-            font-size: x-large !important;
-            font-weight: bold;
-        }
-        .mr {
-            margin: 20px 20px 20px 20px;
-            display: inline;
-        }
-        @media print {
-            table, table tr, table td {
-                border-top: #000 solid 2px;
-                border-bottom: #000 solid 2px;
-                border-left: #000 solid 2px;
-                border-right: #000 solid 2px;
-                font-family: arial, sans-serif;
-                font-weight: bold;
-                width: 50%;
-                margin-left: 1px;
-                font-size: 15pt;
-                page-break-inside: auto;
-                page-break-inside: avoid; 
-                page-break-after: auto;
-            }
-        }
-        
-      </style>
+      <script src="/js/select2.js"></script>
+   
 </head>
 
     <div class="container-fluid">
