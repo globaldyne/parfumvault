@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 10.7
+
 ### Version 10.6
 - Ingredient Where Used page minor improvements
 - Ingredient Usage & Limits page minor improvements
