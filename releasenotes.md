@@ -1,10 +1,6 @@
-Whats New in v10.5
+Whats New in v10.6
 --------------------------
-- Added min and max percentage for compositions
-- Added formula analysis to breakdown sub-materials and percentages
-- Introduse SDS creation (PREVIEW)
-- Added IFRA limit in composition if found in library
-- SDS in ingredient has been renamed to a Document
-- Added synonyms in document generation for ingredients
-- Auto create ingredient when importing a formula from Marketplace if not exists locally 
-- For full details please refer to the CHANGELOG
+- Respect classification type from the IFRA Library
+- Added banned/prohibited materials in the formula legend
+- Discord invite update
+- This release may include more changes, for full details please refer to the CHANGELOG

@@ -191,7 +191,7 @@ foreach ($form as $formula){
 
 	}
 
-	$u = explode(' - ',searchIFRA($ing_q['cas'],$formula['ingredient'],null,$conn,$defCatClass));
+	$u = explode(' - ',searchIFRA($ing_q['cas'],$formula['ingredient'],null,$defCatClass));
 	
 	if(($u['0'] && $ing_q['byPassIFRA'] == 0)){
 		$r['usage_limit'] = number_format((float)$u['0']?:100, $settings['qStep']);
@@ -200,7 +200,8 @@ foreach ($form as $formula){
 	}else{
 		$r['usage_limit'] = number_format((float)$ing_q["$defCatClass"], $settings['qStep']) ?: 100;
 		$r['usage_restriction'] = (int)$ing_q['classification'];
-		$r['usage_regulator'] = (string)'PV';
+		$r['usage_regulator'] = (string)"PV";
+		$r['ingredient']['classification'] = (int)$ing_q['classification'] ?: 1;
 	}
 	
 	if($meta['defView'] == '1'){
@@ -215,7 +216,7 @@ foreach ($form as $formula){
    	$r['ingredient']['name'] = (string)$ingName ?: $formula['ingredient'];
 	$r['ingredient']['cas'] = (string)$ing_q['cas'] ?: 'N/A';
 	$r['ingredient']['physical_state'] = (int)$ing_q['physical_state'];
-	$r['ingredient']['classification'] = (int)$ing_q['classification'] ?: 1;
+	//$r['ingredient']['classification'] = (int)$ing_q['classification'] ?: 1;
 	$r['ingredient']['type'] = (string)$ing_q['type'] ?: 'Unknown';
 
 	$r['ingredient']['desc'] = (string)$desc ?: '-';
@@ -227,12 +228,12 @@ foreach ($form as $formula){
 	$r['ingredient']['inventory']['batch'] = (string)$inventory['batch'] ?: 'N/A';
 	$r['ingredient']['inventory']['purchased'] = (string)$inventory['purchased'] ?: 'N/A';
 	
-	$totalReplacements = 0;
-	foreach ($replacement as $rp){
-		$totalReplacements++;
-		$r['ingredient'][]['replacement']['name'] = (string)$rp['ing_rep_name'] ?: (string)$rp['ing_name'] ?: 'N/A';
-	}
-	$r['ingredient']['replacement']['total'] = $totalReplacements ?: 0;
+	//$totalReplacements = 0;
+	//foreach ($replacement as $rp){
+	//	$totalReplacements++;
+	//	$r['ingredient'][]['replacement']['name'] = (string)$rp['ing_rep_name'] ?: (string)$rp['ing_name'] ?: 'N/A';
+	//}
+	//$r['ingredient']['replacement']['total'] = $totalReplacements ?: 0;
 	
 	
 	$r['ingredient']['containsOthers']['total'] = $totalcontainsOthers ?: 0;

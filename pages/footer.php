@@ -8,7 +8,7 @@
 </a></strong></span>
 	<hr>
         <span><strong><a href="https://www.perfumersvault.com" target="_blank"><?php echo $product; ?></a></strong>
-        <div id="footer_release" class="pv_point_gen"> Version: <strong><?php echo $ver; ?> | <a href="https://discord.gg/dsQwDAem" target="_blank">Discord Server</a></strong></div>
+        <div id="footer_release" class="pv_point_gen"> Version: <strong><?php echo $ver; ?> | <a href="https://discord.gg/WxNE8kR8ug" target="_blank">Discord Server</a></strong></div>
         <br />Copyright &copy; 2017-<?php echo date('Y'); ?> </span>
       </div>
     </div>
