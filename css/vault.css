@@ -1457,5 +1457,15 @@ th.dt-center, td.dt-center {
 }
 
 .highlight {
-    background-color: #f5f597 !important; /* Change to whatever color you prefer */
+    background-color: #f5f597 !important;
+}
+
+.bg-banned {
+  --bs-bg-opacity: 0.7;
+  background-color: rgba(var(--bs-danger-rgb),var(--bs-bg-opacity)) !important;
+}
+
+.bg-banned a {
+  color: inherit;
+  text-decoration: none;
 }

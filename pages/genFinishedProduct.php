@@ -123,7 +123,7 @@ if($_POST['batchID'] == '1'){
                   <?php foreach ($form as $formula){
 					    $ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT id,cas,$defCatClass,byPassIFRA FROM ingredients WHERE name = '".$formula['ingredient']."'"));
 
-						$limit = explode(' - ',searchIFRA($ing_q['cas'],$formula['ingredient'],null,$conn,$defCatClass));
+						$limit = explode(' - ',searchIFRA($ing_q['cas'],$formula['ingredient'],null,$defCatClass));
 					  
 					    $new_quantity = $formula['quantity']/$mg['total_mg']*$new_conc;
 					  	$conc = $new_quantity/$bottle * 100;						
