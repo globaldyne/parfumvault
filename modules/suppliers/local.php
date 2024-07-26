@@ -95,7 +95,7 @@ foreach ($ingredients as $ingredient) {
 	$r['category']['name'] = (string)$cat['name']?: 'N/A';
 	$r['category']['image'] = (string)$cat['image']?: '/img/pv_molecule.png';
 
-	if(($limit = searchIFRA($ingredient['cas'],$ingredient['name'],null,$conn,$defCatClass)) && $ingredient['byPassIFRA'] == 0){
+	if(($limit = searchIFRA($ingredient['cas'],$ingredient['name'],null,$defCatClass)) && $ingredient['byPassIFRA'] == 0){
 		$limit = explode(' - ', $limit);		
 		$r['usage']['limit'] = (float)$limit['0'];
 		$r['usage']['reason'] = (string)$limit['1'];

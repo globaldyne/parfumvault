@@ -1,4 +1,16 @@
 # CHANGELOG
+### Version 10.6
+- Ingredient Where Used page minor improvements
+- Ingredient Usage & Limits page minor improvements
+- Respect classification type from the IFRA Library
+- Major refactor in formula limits presentation
+- Removed a. element properties from banned/prohibited materials
+- Updated red color for banned/prohibited materials
+- Added banned/prohibited materials in the formula legend
+- Move styling to its own file for MakeFormula page
+- Minor cosmetic updates in the compounds page
+- Discord invite update
+
 ### Version 10.5
 - Modify json export for ingredients to include min and max compostion percentage
 - Rewrite multi dimensional function

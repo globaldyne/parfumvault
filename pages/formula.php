@@ -88,7 +88,7 @@ if($form[0]['ingredient']){
                   </div>
                 </div>
 
-          
+          		<div id="compliance"></div>
             </div>
         <!-- Nav tabs -->
 		<ul class="nav nav-tabs mb-3" role="tablist">
@@ -169,7 +169,7 @@ if($form[0]['ingredient']){
           <?php if($legend){ ?>
           <div id="legend">
           	<div class="mt-4 dropdown-divider"></div>
-            <p>*Values in: <strong class="alert alert-danger">red</strong> exceeds usage level,   <strong class="alert alert-warning">yellow</strong> Specification,   <strong class="alert alert-success">green</strong> are within usage level, <strong class="alert alert-info">blue</strong> are exceeding recommended usage level</p>
+            <p>*Values in: <strong class="alert alert-danger mx-2">red</strong> exceeds usage level, <strong class="alert bg-banned mx-2">dark red</strong> banned/prohibited, <strong class="alert alert-warning mx-2">yellow</strong> Specification,<strong class="alert alert-success mx-2">green</strong> are within usage level,<strong class="alert alert-info mx-2">blue</strong> are exceeding recommended usage level</p>
             </div>
           <?php } ?>
   </div>
