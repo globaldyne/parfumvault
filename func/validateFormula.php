@@ -6,7 +6,7 @@ function validateFormula($fid, $bottle, $new_conc, $mg, $defCatClass, $qStep, $c
 	while ($formula = mysqli_fetch_array($formula_q)) {
 		$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT cas, $defCatClass FROM ingredients WHERE name = '".$formula['ingredient']."'"));
 
-		$limitIFRA = searchIFRA($ing_q['cas'],$formula['ingredient'],null,$conn,$defCatClass);
+		$limitIFRA = searchIFRA($ing_q['cas'],$formula['ingredient'],null,$defCatClass);
 		$limit = explode(' - ', $limitIFRA);
 		$limit = $limit['0'];
 					  

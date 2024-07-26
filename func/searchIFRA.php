@@ -1,7 +1,8 @@
 <?php 
 if (!defined('pvault_panel')){ die('Not Found');}
 
-function searchIFRA($cas, $name, $get, $conn, $defCatClass ){
+function searchIFRA($cas, $name, $get,  $defCatClass ){
+	global $conn;
 	if(empty($name)){
 		return null;
 	}

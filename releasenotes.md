@@ -1,4 +1,6 @@
 Whats New in v10.6
 --------------------------
+- Respect classification type from the IFRA Library
+- Added banned/prohibited materials in the formula legend
 - Discord invite update
-- For full details please refer to the CHANGELOG
+- This release may include more changes, for full details please refer to the CHANGELOG

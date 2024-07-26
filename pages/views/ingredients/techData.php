@@ -80,7 +80,7 @@ $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT id,tenacity,flash_point,ch
 
 $('#saveTechData').click(function() {
 	$.ajax({ 
-		url: 'update_data.php', 
+		url: '/pages/update_data.php', 
 		type: 'POST',
 		data: {
 			manage: 'ingredient',
