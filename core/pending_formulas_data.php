@@ -45,7 +45,7 @@ if($meta == 0){
 	
 	foreach ($rs as $rq) {
 		$gING = mysqli_fetch_array(mysqli_query($conn, "SELECT cas,odor FROM ingredients WHERE name = '".$rq['ingredient']."'"));
-		$inventory = mysqli_fetch_array(mysqli_query($conn, "SELECT stock,mUnit FROM suppliers WHERE ingID = '".$rq['ingredient_id']."' AND preferred = '1'"));
+		$inventory = mysqli_fetch_array(mysqli_query($conn, "SELECT SUM(stock) AS stock,mUnit FROM suppliers WHERE ingID = '".$rq['ingredient_id']."' "));
 		$repq = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE id = '".$rq['replacement_id']."'"));
 
 		$r['id'] = (int)$rq['id'];

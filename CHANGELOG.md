@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 10.7
+- Show available stock from all the available suppliers when making a formula, instead of the preferred one only
 
 ### Version 10.6
 - Ingredient Where Used page minor improvements
