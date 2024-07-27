@@ -26,6 +26,12 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
 		$msg = '<div class="alert alert-warning"><a href="#" id="markComplete"><strong>All materials added. Mark formula as complete?</strong></a></div>';
 
 }
+//$res_ingSupplier = mysqli_query($conn, "SELECT id,name FROM ingSuppliers ORDER BY name ASC");
+
+$qS = mysqli_query($conn, "SELECT id,name FROM ingSuppliers ORDER BY name ASC");
+	while($res = mysqli_fetch_array($qS)){
+    	$res_ingSupplier[] = $res;
+	}
 ?>
 <!doctype html>
 <html lang="en" data-bs-theme="light">
@@ -118,6 +124,15 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
 <script>
 var myFNAME = "<?=$meta['name']?>";
 $(document).ready(function() {
+	$('#updateStock').click(function(){
+		if($(this).is(':checked')){
+			$('#supplier').prop('disabled', false);
+		}else{
+			$('#supplier').prop('disabled', true);
+		}
+	});
+	
+	
 	$('#pvScale-data-footer').addClass('d-none');
 	$('#mainTitle').click(function() {
 	 	reload_data();
@@ -440,6 +455,7 @@ $(document).ready(function() {
 		$("#amountAdded").val($(this).attr('data-quantity'));
 		$("#qr").text($(this).attr('data-qr'));
 		$("#updateStock").prop( "checked", true );
+		$("#supplier").val('');
 		$("#notes").val('');
 		$("#collapseAdvanced").removeClass('show');
 		
@@ -552,6 +568,7 @@ $(document).ready(function() {
 			notes: $("#notes").val(),
 			qr: $("#qr").text(),
 			updateStock: $("#updateStock").is(':checked'),
+			supplier: $("#supplier").val(),
 			ing: $("#ingAdded").text(),
 			id: $("#idRow").text(),
 			repName: repName,
@@ -644,7 +661,15 @@ $(document).ready(function() {
 		   title: "Confirm reset quantity",
 		   message : 'Reset <strong>'+ d.ingName +'\'s</strong> quantity to <strong>'+ d.originalQuantity +'</strong>?' +
 		   '<hr />' 
-		   +'<input name="resetStock" id="resetStock" type="checkbox" value="1" checked> Reset stock',
+		   + '<input name="resetStock" id="resetStock" type="checkbox" value="1" checked> Reset stock'
+		   + '<div class="mt-2 form-row col-auto">'
+           +     '<label for="supplier">Supplier</label>'
+           +     '<select name="supplier" id="supplier" class="form-control selectpicker" data-live-search="true">'
+           +     '<?php foreach ($res_ingSupplier as $rs) { ?>'
+           +        '<option value="<?=$rs['id']?>"><?=$rs['name'];?></option>'
+           +     '<?php } ?>'
+           +    '</select>'
+           +   '</div>',
 		   buttons :{
 			   main: {
 			   label : "Reset",
@@ -662,6 +687,7 @@ $(document).ready(function() {
 						repName: d.repName,
 						originalQuantity: d.originalQuantity,
 						resetStock: $("#resetStock").is(':checked'),
+						supplier: $("#supplier").val(),
 						ID: d.ID
 					},
 					dataType: 'json',
@@ -815,13 +841,20 @@ $(document).ready(function() {
               <div class="dropdown-divider"></div>
               
               <div class="form-row">
-                <div class="form-group col-md-6">
+                <div class="form-group col-auto">
                     <input name="updateStock" id="updateStock" type="checkbox" value="1" checked>
                     <label class="form-check-label" for="updateStock">Update stock</label>
                 </div>
+              </div>        
+              <div class="form-row col-auto">
+                <label for="supplier">Supplier</label>
+                <select name="supplier" id="supplier" class="form-control selectpicker" data-live-search="true">
+                <?php foreach ($res_ingSupplier as $rs) { ?>
+                    <option value="<?=$rs['id']?>"><?=$rs['name'];?></option>
+                <?php } ?>
+                </select>
               </div>
               <hr class="border border-default border-1 opacity-75">
-              
               <div class="form-group">
                 <label for="notes">Notes</label>
                 <textarea class="form-control" id="notes" rows="3"></textarea>
