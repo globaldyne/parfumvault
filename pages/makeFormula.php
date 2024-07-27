@@ -26,7 +26,6 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
 		$msg = '<div class="alert alert-warning"><a href="#" id="markComplete"><strong>All materials added. Mark formula as complete?</strong></a></div>';
 
 }
-//$res_ingSupplier = mysqli_query($conn, "SELECT id,name FROM ingSuppliers ORDER BY name ASC");
 
 $qS = mysqli_query($conn, "SELECT id,name FROM ingSuppliers ORDER BY name ASC");
 	while($res = mysqli_fetch_array($qS)){
@@ -329,10 +328,6 @@ $(document).ready(function() {
 			}
 		});
 		
-	
-		
-		
-		
 			
 		$('#pvScale-data-footer').removeClass('d-none');
 		function pollReloadSignal() {
@@ -455,7 +450,7 @@ $(document).ready(function() {
 		$("#amountAdded").val($(this).attr('data-quantity'));
 		$("#qr").text($(this).attr('data-qr'));
 		$("#updateStock").prop( "checked", true );
-		$("#supplier").val('');
+		$('#supplier').prop('disabled', false);
 		$("#notes").val('');
 		$("#collapseAdvanced").removeClass('show');
 		
@@ -646,7 +641,6 @@ $(document).ready(function() {
 	  });
 	});
 	
-
 	 
 	$('#tdDataPending').on('click', '[id*=undo_add]', function () {
 		var d = {};
@@ -655,16 +649,18 @@ $(document).ready(function() {
 		d.ingID = $(this).attr('data-ingID');
 		d.repID = $(this).attr('data-rep-id');
 		d.repName = $(this).attr('data-rep-name');
-	
 		d.originalQuantity = $(this).attr('data-originalQuantity');
+		
+	
 		bootbox.dialog({
 		   title: "Confirm reset quantity",
 		   message : 'Reset <strong>'+ d.ingName +'\'s</strong> quantity to <strong>'+ d.originalQuantity +'</strong>?' +
 		   '<hr />' 
-		   + '<input name="resetStock" id="resetStock" type="checkbox" value="1" checked> Reset stock'
+		   + '<input name="resetStock" id="resetStock" class="mx-2" type="checkbox" value="1" checked>'
+		   + '<label for="resetStock">Reset stock</label>'
 		   + '<div class="mt-2 form-row col-auto">'
-           +     '<label for="supplier">Supplier</label>'
-           +     '<select name="supplier" id="supplier" class="form-control selectpicker" data-live-search="true">'
+           +     '<label for="supplier_res">Supplier</label>'
+           +     '<select name="supplier_res" id="supplier_res" class="form-control selectpicker" data-live-search="true">'
            +     '<?php foreach ($res_ingSupplier as $rs) { ?>'
            +        '<option value="<?=$rs['id']?>"><?=$rs['name'];?></option>'
            +     '<?php } ?>'
@@ -687,7 +683,7 @@ $(document).ready(function() {
 						repName: d.repName,
 						originalQuantity: d.originalQuantity,
 						resetStock: $("#resetStock").is(':checked'),
-						supplier: $("#supplier").val(),
+						supplier: $("#supplier_res").val(),
 						ID: d.ID
 					},
 					dataType: 'json',
@@ -718,7 +714,13 @@ $(document).ready(function() {
 			   }   
 		   },onEscape: function () {return true;}
 	   });
-		
+		$('#resetStock').click(function(){
+			if($(this).is(':checked')){
+				$('#supplier_res').prop('disabled', false);
+			}else{
+				$('#supplier_res').prop('disabled', true);
+			}
+		});
 	});
 
 	
