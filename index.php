@@ -183,7 +183,7 @@ function chkUpdate() {
        
       <li class="nav-item">
       <?php 
-	  if($_GET['do'] == 'listFormulas' || $_GET['do'] == 'genFinishedProduct' || $_GET['do'] == 'compareFormulas' || $_GET['do'] == 'Formula'  || $_GET['do'] == 'sellFormula' || $_GET['do'] == 'todo' || $_GET['do'] == 'batches' ){ 
+	  if($_GET['do'] == 'listFormulas' || $_GET['do'] == 'genFinishedProduct' || $_GET['do'] == 'compareFormulas' || $_GET['do'] == 'Formula'  || $_GET['do'] == 'sellFormula' || $_GET['do'] == 'scheduledFormulas' || $_GET['do'] == 'batches' ){ 
 	  	$expand_f = 'show'; 
 		$class_f = ''; 
 		$aria_f = 'true'; 
@@ -204,7 +204,7 @@ function chkUpdate() {
             <a class="collapse-item <?php if($_GET['do'] == 'compareFormulas'){ echo 'active';}?>" href="/?do=compareFormulas">Compare Formulas</a>
             <a class="collapse-item <?php if($_GET['do'] == 'genFinishedProduct'){ echo 'active';}?>" href="/?do=genFinishedProduct">Finished Product</a>
             <a class="collapse-item <?php if($_GET['do'] == 'sellFormula'){ echo 'active';}?>" href="/?do=sellFormula">Sell Formula</a>
-            <a class="collapse-item <?php if($_GET['do'] == 'todo'){ echo 'active';}?>" href="/?do=todo">Scheduled Formulas <span class="badge badge-danger badge-counter"><?php echo countPending(NULL, NULL, $conn);?></span></a>
+            <a class="collapse-item <?php if($_GET['do'] == 'scheduledFormulas'){ echo 'active';}?>" href="/?do=scheduledFormulas">Scheduled Formulas <span class="badge badge-danger badge-counter"><?php echo countPending(NULL, NULL, $conn);?></span></a>
              <a class="collapse-item <?php if($_GET['do'] == 'batches'){ echo 'active';}?>" href="/?do=batches">Batch history</a>
 
           </div>
@@ -312,8 +312,8 @@ function chkUpdate() {
 			require_once(__ROOT__.'/pages/addLid.php');	
 		}elseif($_GET['do'] == 'batches'){
 			require_once(__ROOT__.'/pages/views/formula/batches.php');
-		}elseif($_GET['do'] == 'todo'){
-			require_once(__ROOT__.'/pages/todo.php');	
+		}elseif($_GET['do'] == 'scheduledFormulas'){
+			require_once(__ROOT__.'/pages/scheduledFormulas.php');	
 		}elseif($_GET['do'] == 'cart'){
 			require_once(__ROOT__.'/pages/cart.php');	
 		}elseif($_GET['do'] == 'suppliers'){

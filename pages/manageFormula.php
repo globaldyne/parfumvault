@@ -672,7 +672,7 @@ if($_POST['action'] == 'todo' && $_POST['fid'] && $_POST['add']){
 
 
 		mysqli_query($conn, "UPDATE formulasMetaData SET toDo = '1', status = '1', isMade = '0', scheduledOn = NOW() WHERE fid = '$fid'");
-		$response['success'] = 'Formula <a href="/?do=todo">'.$fname.'</a> scheduled to make!';		
+		$response['success'] = 'Formula <a href="/?do=scheduledFormulas">'.$fname.'</a> scheduled to make!';		
 	}else{
 		$response['error'] = 'An error occured '.mysqli_error($conn);
 	}
