@@ -1,5 +1,6 @@
 Whats New in v10.7
 --------------------------
+- Fix IFRA Document failing to be generated
 - Added a pending materials page to list all pending materials and their quantity required for the pending formulas
 - Choose which supplier you updating the stock when making a formula
 - Show available stock from all the available suppliers when making a formula, instead of the preferred one only
