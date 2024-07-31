@@ -20,7 +20,8 @@ require_once(__ROOT__.'/inc/opendb.php');
           <th>Formula</th>
           <th>Ingredient</th>
           <th>CAS#</th>
-          <th>Quantity</th>
+          <th>Quantity required</th>
+          <th>Quantity in stock</th>
           <th>Buy</th>
         </tr>
       </thead>
@@ -32,14 +33,14 @@ $(document).ready(function() {
 		var tdDataM = $("#tdDataM").DataTable( {
 		columnDefs: [
 			{ className: "text-center", targets: "_all" },
-			{ orderable: false, targets: [4]},
+			{ orderable: false, targets: [5]},
         ],
 		dom: "lfrtip",
 		buttons: [{
 			extend: "csvHtml5",
 			title: "Pending materials",
 			exportOptions: {
-				columns: [0, 1, 2, 3]
+				columns: [0, 1, 2, 3, 4]
 			},
 		}],
 		processing: true,
@@ -55,7 +56,9 @@ $(document).ready(function() {
 			   { data : "formula", title: "Formula", render: formulaName },
     		   { data : "ingredient", title: "Ingredient", render: ingredientName },
     		   { data : "cas", title: "CAS#", render: ingredientCAS },
-			   { data : "quantity", title: "Quantity"},
+			   { data : "quantity", title: "Quantity required"},
+			   { data : "inventory.stock", title: "Quantity in stock", render: stock},
+			   
 			   { data : null, title: "Supplier(s)", render: iSuppliers}
 		],
         order: [[ 0, "asc" ]],
@@ -78,6 +81,21 @@ $(document).ready(function() {
 		return row.cas;
 	}
 	
+	
+	function stock(data, type, row){
+		var st;
+		if (parseFloat(row.inventory.stock) >= parseFloat(row.quantity)){
+			st = '<i class = "stock2 badge badge-instock">Enough in stock: '+row.inventory.stock+''+row.inventory.mUnit+'</i>';
+		
+		}else if (parseFloat(row.inventory.stock) < parseFloat(row.quantity) && row.inventory.stock != 0){
+			st = '<i class = "stock2 badge badge-notenoughstock">Not Enough in stock: '+row.inventory.stock+''+row.inventory.mUnit+'</i>';
+		
+		}else{
+			st = '<i class = "stock2 badge badge-nostock">Not in stock: '+row.inventory.stock+''+row.inventory.mUnit+'</i>';
+		}
+		
+		return st;
+	}
 	function iSuppliers(data, type, row){
 		if(row.supplier){
 			data = '<div class="btn-group"><button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-store mx-2"></i><span class="badge badge-light">' + row.supplier.length + '</span></button><div class="dropdown-menu">';

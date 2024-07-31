@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 10.7
+- Formula Make page refactor
 - Lids page minor update
 - Added a pending materials page to list all pending materials and their quantity required for the pending formulas
 - todo.php has been renamed to scheduledFormulas.php

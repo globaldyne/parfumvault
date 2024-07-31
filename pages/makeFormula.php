@@ -28,9 +28,10 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = 
 }
 
 $qS = mysqli_query($conn, "SELECT id,name FROM ingSuppliers ORDER BY name ASC");
-	while($res = mysqli_fetch_array($qS)){
-    	$res_ingSupplier[] = $res;
-	}
+while($res = mysqli_fetch_array($qS)){
+    $res_ingSupplier[] = $res;
+}
+
 ?>
 <!doctype html>
 <html lang="en" data-bs-theme="light">
@@ -122,7 +123,12 @@ $qS = mysqli_query($conn, "SELECT id,name FROM ingSuppliers ORDER BY name ASC");
     
 <script>
 var myFNAME = "<?=$meta['name']?>";
+var fid = "<?=$fid?>";
+var repName;
+var repID;
+
 $(document).ready(function() {
+	
 	$('#updateStock').click(function(){
 		if($(this).is(':checked')){
 			$('#supplier').prop('disabled', false);
@@ -165,9 +171,9 @@ $(document).ready(function() {
 		zeroRecords: 'No pending ingredients found',
 		search: 'Quick Search:',
 		searchPlaceholder: 'Ingredient..',
-		},
+	},
 	ajax: {	
-		url: '/core/pending_formulas_data.php?meta=0&fid=<?=$fid?>',
+		url: '/core/pending_formulas_data.php?meta=0&fid=' + fid,
 		type: 'POST',
 		dataType: 'json',
 		data: function(d) {
@@ -354,293 +360,60 @@ $(document).ready(function() {
 		pollReloadSignal();
 	
 			
-	function rowClickedFunction(data) {
-		$('#toast-title').html('<i class="fa-solid fa-circle-info mr-2"></i>Connecting to the PV Scale...');
-		$('.toast-header').removeClass().addClass('toast-header alert-warning');
-		$.ajax({
-			type: 'POST',
-			url: "/pages/views/pvscale/manage.php?action=send2PVScale",
-			data: JSON.stringify({
-				"formulas": [
-					{
-						"id": data.id,
-						"fid": data.fid,
-						"name": data.name,
-						"cas" : data.cas,
-						"odor" : data.odor,
-						"ingredient": data.ingredient,
-						"ingredient_id": data.ingID,
-						"concentration": data.concentration,
-						"dilutant": "-",
-						"quantity": data.quantity,
-						"stock" : data.inventory.stock,
-						"mUnit" : data.inventory.mUnit,
-						"pending" : data.toAdd,
-						"ApiKey" : "<?php echo $settings['api_key'];?>"
-					},
-				],
-				"pvMeta": {
-					"ingredients": 1,
-					"host": "<?=$settings['pv_host']?>",
-					"mUnit" : "<?php echo $settings['mUnit'];?>"
-				}
-			}),
-			contentType: 'application/json',
-			dataType: 'json',
-			success: function(data) {
-				if(data.success == true){
-					$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>Scale data updated');
-					$('.toast-header').removeClass().addClass('toast-header alert-success');
-				}else if(data.success == false){
-					$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+		function rowClickedFunction(data) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-info mr-2"></i>Connecting to the PV Scale...');
+			$('.toast-header').removeClass().addClass('toast-header alert-warning');
+			$.ajax({
+				type: 'POST',
+				url: "/pages/views/pvscale/manage.php?action=send2PVScale",
+				data: JSON.stringify({
+					"formulas": [
+						{
+							"id": data.id,
+							"fid": data.fid,
+							"name": data.name,
+							"cas" : data.cas,
+							"odor" : data.odor,
+							"ingredient": data.ingredient,
+							"ingredient_id": data.ingID,
+							"concentration": data.concentration,
+							"dilutant": "-",
+							"quantity": data.quantity,
+							"stock" : data.inventory.stock,
+							"mUnit" : data.inventory.mUnit,
+							"pending" : data.toAdd,
+							"ApiKey" : "<?php echo $settings['api_key'];?>"
+						},
+					],
+					"pvMeta": {
+						"ingredients": 1,
+						"host": "<?=$settings['pv_host']?>",
+						"mUnit" : "<?php echo $settings['mUnit'];?>"
+					}
+				}),
+				contentType: 'application/json',
+				dataType: 'json',
+				success: function(data) {
+					if(data.success == true){
+						$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>Scale data updated');
+						$('.toast-header').removeClass().addClass('toast-header alert-success');
+					}else if(data.success == false){
+						$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+						$('.toast-header').removeClass().addClass('toast-header alert-danger');
+					}
+				},
+				error: function(err) {
+					//console.log(err);
+					$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>Unable to communicate with the scale.');
 					$('.toast-header').removeClass().addClass('toast-header alert-danger');
-				}
-			},
-			error: function(err) {
-				//console.log(err);
-				$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>Unable to communicate with the scale.');
-				$('.toast-header').removeClass().addClass('toast-header alert-danger');
-			},
-			timeout: 3000
-		});
-		$('.toast').toast('show');
-	};
+				},
+				timeout: 3000
+			});
+			$('.toast').toast('show');
+		};
 	<?php } ?>
 	
-	
-	$('#tdDataPending').on('click', '[id*=ingInfo]', function () {
-		var id = $(this).data('id');
-		var name = $(this).data('name');
 		
-		$('.modal-title').html(name);   
-		$('.modal-body-info').html('loading');
-		
-		$.ajax({
-		   type: 'GET',
-		   url: '/pages/views/ingredients/getIngInfo.php',
-		   data:{
-			   ingID: id
-			},
-		   success: function(data) {
-			 $('.modal-body-info').html(data);
-		   },
-		   error:function(err){
-			data = '<div class="alert alert-danger">Unable to get ingredient info</div>';
-			$('.modal-body-info').html(data);
-		   }
-		})
-	 });
-	
-	
-	$('#title').click(function() {
-		$('#msg').html('');
-	});
-	
-	$('#print').click(() => {
-		$('#tdDataPending').DataTable().button(0).trigger();
-	});
-	
-	var repName;
-	var repID;
-	$('#tdDataPending').on('click', '[data-bs-target*=confirm_add]', function () {
-		$('#errMsg').html('');																
-		$("#ingAdded").text($(this).attr('data-ingredient'));
-		$("#ingID").text($(this).attr('data-ing-id'));
-		$("#idRow").text($(this).attr('data-row-id'));
-		$("#amountAdded").val($(this).attr('data-quantity'));
-		$("#qr").text($(this).attr('data-qr'));
-		$("#updateStock").prop( "checked", true );
-		$('#supplier').prop('disabled', false);
-		$("#notes").val('');
-		$("#collapseAdvanced").removeClass('show');
-		
-		$('#msgReplace').html('');
-		$("#replacement").val('');
-	
-		var ingSrcName = $(this).attr('data-ingredient')
-		var ingSrcID = $(this).attr('data-ing-id')	
-		
-		repName = "";
-		repID = "";
-		
-		$("#replacement").select2({
-			width: '100%',
-			placeholder: 'Search for ingredient (name)..',
-			allowClear: true,
-			dropdownAutoWidth: true,
-			containerCssClass: "replacement",
-			dropdownParent: $('#confirm_add .modal-content'),
-			templateResult: formatIngredients,
-			templateSelection: formatIngredientsSelection,
-			ajax: {
-				url: '/pages/views/ingredients/getIngInfo.php',
-				dataType: 'json',
-				type: 'GET',
-				delay: 100,
-				quietMillis: 250,
-				data: function (params) {
-					return {
-						ingID: ingSrcID,
-						replacementsOnly: true,
-						search: params.term
-					};
-				},
-				processResults: function(data) {
-					return {
-						results: $.map(data.data, function(obj) {
-						  return {
-							id: obj.id,
-							stock: obj.stock,
-							name: obj.name,
-						  }
-						})
-					};
-				},
-				cache: false,
-				
-			}
-			
-		}).on('select2:selecting', function (e) {
-			repName = e.params.args.data.name;
-			repID = e.params.args.data.id;
-		});
-	});
-	
-	function formatIngredients (ingredientData) {
-		if (ingredientData.loading) {
-			return ingredientData.name;
-		}
-	 
-		//extrasShow();
-	
-		if (!ingredientData.name){
-			return 'No replacement found...';
-		}
-		
-		
-		var $container = $(
-			"<div class='select_result_igredient clearfix'>" +
-			  "<div class='select_result_igredient_meta'>" +
-				"<div class='select_igredient_title'></div>" +
-				"<span id='stock'></span></div>"+
-			  "</div>" +
-			"</div>"
-		  );
-		
-		  $container.find(".select_igredient_title").text(ingredientData.name);
-		  if(ingredientData.stock  > 0){
-			$container.find("#stock").text('In stock ('+ingredientData.stock+')');
-			$container.find("#stock").attr("class", "stock badge badge-instock");
-		  }else{
-			$container.find("#stock").text('Not in stock ('+ingredientData.stock+')');
-			$container.find("#stock").attr("class", "stock badge badge-nostock");
-		  }
-	
-		  return $container;
-	}
-	
-	
-	function formatIngredientsSelection (ingredientData) {
-		return ingredientData.name;
-	}
-	
-	$('#tdDataPending').on('click', '[data-bs-target*=confirm_skip]', function () {
-		$('#errMsg').html('');																
-		$("#ingSkipped").text($(this).attr('data-ingredient'));
-		$("#ingID").text($(this).attr('data-ing-id'));
-		$("#idRow").text($(this).attr('data-row-id'));
-		$("#notes").val('');
-	});
-	
-	//UPDATE AMOUNT
-	$('#addedToFormula').click(function() {
-		$.ajax({ 
-		url: '/pages/manageFormula.php', 
-		type: 'POST',
-		data: {
-			action: "makeFormula",
-			q: $("#amountAdded").val(),
-			notes: $("#notes").val(),
-			qr: $("#qr").text(),
-			updateStock: $("#updateStock").is(':checked'),
-			supplier: $("#supplier").val(),
-			ing: $("#ingAdded").text(),
-			id: $("#idRow").text(),
-			repName: repName,
-			repID: repID,
-			ingId: $("#ingID").text(),
-			fid: "<?php echo $fid; ?>",
-			},
-		dataType: 'json',
-		success: function (data) {
-			if(data.success){
-				$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
-				$('.toast-header').removeClass().addClass('toast-header alert-success');
-				$('#confirm_add').modal('toggle');
-				reload_data();
-				$('.toast').toast('show');
-			} else if(data.error) {
-				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
-				$('#errMsg').html(msg);
-			}
-		}
-	  });
-	});
-	
-	//SKIP ADD
-	$('#skippedFromFormula').click(function() {
-		$.ajax({ 
-		url: '/pages/manageFormula.php', 
-		type: 'POST',
-		data: {
-			action: "skipMaterial",
-			notes: $("#skip_notes").val(),
-			ing: $("#ingSkipped").text(),
-			id: $("#idRow").text(),
-			ingId: $("#ingID").text(),
-			fid: "<?php echo $fid; ?>",
-			},
-		dataType: 'json',
-		success: function (data) {
-			if(data.success){
-				$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
-				$('.toast-header').removeClass().addClass('toast-header alert-success');
-				$('#confirm_skip').modal('toggle');
-				reload_data();
-				$('.toast').toast('show');
-			} else if(data.error) {
-				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
-				$('#errMsg').html(msg);
-			}
-		}
-	  });
-	});
-	//ADD TO CART
-	$('#tdDataPending').on('click', '[id*=addToCart]', function () {
-	$.ajax({ 
-		url: '/pages/manageFormula.php', 
-		type: 'POST',
-		data: {
-			action: "addToCart",
-			material: $(this).attr('data-ingredient'),
-			purity: $(this).attr('data-concentration'),
-			quantity: $(this).attr('data-quantity'),
-			ingID: $(this).attr('data-ingID')
-			},
-		dataType: 'json',
-		success: function (data) {
-			if(data.success) {
-				var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
-				reload_data();
-			} else {
-				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
-			}
-			$('#msg').html(msg);
-			
-		}
-	  });
-	});
-	
 	 
 	$('#tdDataPending').on('click', '[id*=undo_add]', function () {
 		var d = {};
@@ -724,68 +497,7 @@ $(document).ready(function() {
 	});
 
 	
-	$('#markComplete, #markCompleteMenu').click(function() {
-		   bootbox.dialog({
-		   title: "Confirm formula completion",
-		   message : "Mark formula <strong> <?php echo $meta['name'];?></strong> as complete?",
-		   buttons :{
-			  main: {
-			  label : "Mark as complete",
-			  className : "btn-warning",
-			 callback: function (){
-			 $.ajax({ 
-				url: 'manageFormula.php', 
-					type: 'POST',
-					data: {
-						action: "todo",
-						markComplete: 1,
-						totalQuantity: total_quantity,
-						fid: "<?php echo $fid; ?>"
-					},
-					dataType: 'json',
-					success: function (data) {
-						if(data.success) {
-							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
-							reload_data();
-						} else {
-							var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
-						}	
-						$('#msg').html(msg);
-					}
-				});
-					
-					 return true;
-				   }
-			   },
-			   cancel: {
-				   label : "Cancel",
-				   className : "btn-secondary",
-				   callback : function() {
-					   return true;
-				   }
-			   }   
-		   },onEscape: function () {return true;}
-		
-		});
-	});
-	
-	$('.export_as').click(function() {	
-	  var format = $(this).attr('data-format');
-	  $("#tdDataPending").tableHTMLExport({
-		type: format,
-		filename: myFNAME + "." + format,
-		separator: ',',
-		newline: '\r\n',
-		trimContent: true,
-		quoteFields: true,
-		ignoreColumns: '.noexport',
-		ignoreRows: '.noexport',
-		htmlContent: false,
-		orientation: 'l',
-		subtitle: 'Created with Perfumer\'s Vault Pro',
-		maintitle: myFNAME,
-	  });
-	});
+
 
 	
 });//DOC END
@@ -796,7 +508,8 @@ $(document).ready(function() {
 <script src="/js/validate-session.js"></script>
 <script src="/js/mark/jquery.mark.min.js"></script>
 <script src="/js/mark/datatables.mark.js"></script>
-    
+<script src="/js/makeFormula.js"></script>
+
     <!-- Modal ING Info -->
     <div class="modal fade" id="infoModal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -850,11 +563,7 @@ $(document).ready(function() {
               </div>        
               <div class="form-row col-auto">
                 <label for="supplier">Supplier</label>
-                <select name="supplier" id="supplier" class="form-control selectpicker" data-live-search="true">
-                <?php foreach ($res_ingSupplier as $rs) { ?>
-                    <option value="<?=$rs['id']?>"><?=$rs['name'];?></option>
-                <?php } ?>
-                </select>
+                <select name="supplier" id="supplier" class="supplier pv-form-control"></select>
               </div>
               <hr class="border border-default border-1 opacity-75">
               <div class="form-group">
