@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 10.8
+
 ### Version 10.7
 - Removed ingredient purity and dilutant from Finished Product page for cleaner view
 - Moved IFRA doc to a modal window
