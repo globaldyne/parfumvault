@@ -513,8 +513,13 @@ if($_POST['action'] == 'makeFormula' && $_POST['undo'] == '1'){
 		$response['success'] = $msg;
 		
 		if($_POST['resetStock'] == "true"){
+			if(!($_POST['supplier'])){
+				$response['error'] = 'Please select a supplier';
+				echo json_encode($response);
+				return;
+			}
 			$nIngID = $_POST['repID'] ?: $ingID;
-			mysqli_query($conn, "UPDATE suppliers SET stock = stock + $q WHERE ingID = '$nIngID' AND preferred = '1'");
+			mysqli_query($conn, "UPDATE suppliers SET stock = stock + $q WHERE ingID = '$nIngID' AND ingSupplierID = '".$_POST['supplier']."'");
 			$response['success'] .= "<br/><strong>Stock increased by ".$q.$settings['mUnit']."</strong>";
 		}
 		echo json_encode($response);
@@ -552,13 +557,18 @@ if($_POST['action'] == 'makeFormula' && $_POST['fid'] && $_POST['qr'] && $_POST[
 						 
 	
 	if($_POST['updateStock'] == "true"){
-		$getStock = mysqli_fetch_array(mysqli_query($conn, "SELECT stock,mUnit FROM suppliers WHERE ingID = '$ingID' AND preferred = '1'"));
+		if(!($_POST['supplier'])){
+			$response['error'] = 'Please select a supplier';
+			echo json_encode($response);
+			return;
+		}
+		$getStock = mysqli_fetch_array(mysqli_query($conn, "SELECT stock,mUnit FROM suppliers WHERE ingID = '$ingID' AND ingSupplierID = '".$_POST['supplier']."'"));
 		if($getStock['stock'] < $q){
 			$w = "<p>Amount exceeds quantity available in stock (".$getStock['stock'].$getStock['mUnit']."). The maximum available will be deducted from stock</p>";
 			
 			$q = $getStock['stock'];
 		}
-		mysqli_query($conn, "UPDATE suppliers SET stock = stock - $q WHERE ingID = '$ingID' AND preferred = '1'");
+		mysqli_query($conn, "UPDATE suppliers SET stock = stock - $q WHERE ingID = '$ingID' AND ingSupplierID = '".$_POST['supplier']."'");
 		$response['success'] .= "<br/><strong>Stock deducted by ".$q.$settings['mUnit']."</strong>";
 	}
 	
@@ -662,7 +672,7 @@ if($_POST['action'] == 'todo' && $_POST['fid'] && $_POST['add']){
 
 
 		mysqli_query($conn, "UPDATE formulasMetaData SET toDo = '1', status = '1', isMade = '0', scheduledOn = NOW() WHERE fid = '$fid'");
-		$response['success'] = 'Formula <a href="/?do=todo">'.$fname.'</a> scheduled to make!';		
+		$response['success'] = 'Formula <a href="/?do=scheduledFormulas">'.$fname.'</a> scheduled to make!';		
 	}else{
 		$response['error'] = 'An error occured '.mysqli_error($conn);
 	}

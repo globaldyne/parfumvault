@@ -44,36 +44,42 @@ if($meta == 0){
 	}
 	
 	foreach ($rs as $rq) {
-		$gING = mysqli_fetch_array(mysqli_query($conn, "SELECT cas,odor FROM ingredients WHERE name = '".$rq['ingredient']."'"));
-		$inventory = mysqli_fetch_array(mysqli_query($conn, "SELECT stock,mUnit FROM suppliers WHERE ingID = '".$rq['ingredient_id']."' AND preferred = '1'"));
+		$gING = mysqli_fetch_array(mysqli_query($conn, "SELECT cas, odor FROM ingredients WHERE name = '".$rq['ingredient']."'"));
+		$inventory = mysqli_fetch_array(mysqli_query($conn, "SELECT ingSupplierID, SUM(stock) OVER() AS stock, mUnit FROM suppliers WHERE ingID = '".$rq['ingredient_id']."'"));
+		$supplier = mysqli_fetch_array(mysqli_query($conn, "SELECT id, name FROM ingSuppliers WHERE id = '".$inventory['ingSupplierID']."'"));
+	
 		$repq = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE id = '".$rq['replacement_id']."'"));
-
+	
 		$r['id'] = (int)$rq['id'];
 		$r['fid'] = (string)$rq['fid'];
 		$r['repID'] = (string)$rq['replacement_id'];
 		$r['repName'] = (string)$repq['name'];
 		$r['name'] = (string)$rq['name'];
-		$r['ingredient'] = (string)$rq['ingredient'];		
+		$r['ingredient'] = (string)$rq['ingredient'];        
 		$r['ingID'] = (int)$rq['ingredient_id'];
-		$r['cas'] = (string)$gING['cas']?:'N/A';
-		$r['odor'] = (string)$gING['odor']?:'N/A';
-
+		$r['cas'] = (string)$gING['cas'] ?: 'N/A';
+		$r['odor'] = (string)$gING['odor'] ?: 'N/A';
+	
 		$r['concentration'] = (float)$rq['concentration'];
 		$r['dilutant'] = (string)$rq['dilutant'] ?: 'None';
-		$r['quantity'] = number_format((float)$rq['quantity'], $settings['qStep'],'.', '') ?: 0;
-		$r['originalQuantity'] = number_format((float)$rq['originalQuantity'], $settings['qStep'],'.', '') ?: 0;
-		$r['overdose'] = number_format((float)$rq['overdose'], $settings['qStep'],'.', '') ?: 0;
-
+		$r['quantity'] = number_format((float)$rq['quantity'], $settings['qStep'], '.', '') ?: 0;
+		$r['originalQuantity'] = number_format((float)$rq['originalQuantity'], $settings['qStep'], '.', '') ?: 0;
+		$r['overdose'] = number_format((float)$rq['overdose'], $settings['qStep'], '.', '') ?: 0;
+	
 		$r['inventory']['stock'] = (float)$inventory['stock'] ?: 0;
 		$r['inventory']['mUnit'] = (string)$inventory['mUnit'] ?: $settings['mUnit'];
 	
+		$r['inventory'][]['supplier'] = [
+			'name' => (string)$supplier['name'],
+			'id' => (string)$supplier['id']
+		];
+	
 		$r['toAdd'] = (int)$rq['toAdd'];
 		$r['toSkip'] = (int)$rq['skip'];
-
-		
-		
-		$rx[]=$r;
+	
+		$rx[] = $r;
 	}
+
 	foreach ($rsq as $rq) {
 		$mg['total_mg'] += $rq['quantity'];
 	}

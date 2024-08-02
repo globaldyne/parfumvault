@@ -15,27 +15,28 @@ require_once(__ROOT__.'/func/calcPerc.php');
 require_once(__ROOT__.'/libs/fpdf.php');
 require_once(__ROOT__.'/libs/Html2Pdf.php');
 
-$bottle = $_GET['bottle'];
-$type = $_GET['conc'];
+$bottle = $_POST['bottle'];
+$type = $_POST['conc'];
 $defCatClass = $settings['defCatClass'];
+$defPercentage = $settings['defPercentage'];
 
 if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM IFRALibrary"))){
-	echo 'You need to <a href="/?do=IFRA">import</a> the IFRA xls first.';
+	echo '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mr-2"></i>You need to <a href="/?do=IFRA" target="_blank">import</a> the IFRA xls first</div>';
 	return;
 }
 
 if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM templates"))){
-	echo 'You need to <a href="/?do=settings">add</a> an IFRA template first.';
+	echo '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mr-2"></i>You need to <a href="/?do=settings" target="_blank">add</a> an IFRA template first</div>';
 	return;
 }
 
-$defCatClass = mysqli_real_escape_string($conn, $_GET['defCatClass']);
+$defCatClass = mysqli_real_escape_string($conn, $_POST['defCatClass']);
 
 if(empty($defCatClass)){
 	$defCatClass = $settings['defCatClass'];
 }
 	
-$fid = mysqli_real_escape_string($conn, $_GET['fid']);
+$fid = mysqli_real_escape_string($conn, $_POST['fid']);
 
 
 $cid = mysqli_real_escape_string($conn, $_POST['customer']);
@@ -47,7 +48,7 @@ $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg F
 $new_conc = $bottle/100*$type;
 
 if(validateFormula($fid, $bottle, $new_conc, $mg['total_mg'], $defCatClass, $settings['qStep'], $conn) == TRUE){
-	echo 'Error: Your formula contains materials, exceeding and/or missing IFRA standards. Please alter your formula and try again.';
+	echo '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mr-2"></i>Your formula contains materials, exceeding and/or missing IFRA standards. Please alter your formula and try again</div>';
 	return;
 }
 
@@ -58,11 +59,11 @@ if ( empty($settings['brandLogo']) ){
 	$logo = $settings['brandLogo'];
 }
 if ( empty($settings['brandName']) || empty($settings['brandAddress']) || empty($settings['brandEmail']) || empty($settings['brandPhone']) ){
-	echo 'Missing brand info, please update your brand details in <a href="/?do=settings">settings</a> page first!';
+	echo '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mr-2"></i>Missing brand info, please update your brand details in <a href="/?do=settings">settings</a> page first</div>';
 	return;
 }
 if ( empty($customers['name']) || empty($customers['address']) || empty($customers['email']) ){
-	echo 'Missing customers info, please update your customers details in <a href="/?do=customers">customers</a> page first!';
+	echo '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mr-2"></i>Missing customers info, please update your customers details in <a href="/?do=customers">customers</a> page first</div>';
 	return;
 }
 
@@ -102,6 +103,7 @@ foreach ($form as $formula){
 			
           }
 	}
+
 	if($qCMP = mysqli_query($conn, "SELECT ingredient_compounds.ing, ingredient_compounds.name, ingredient_compounds.cas, ingredient_compounds.$defPercentage, IFRALibrary.risk, IFRALibrary.$defCatClass  FROM ingredient_compounds, IFRALibrary WHERE ingredient_compounds.ing = '".$formula['ingredient']."' AND toDeclare = '1' AND IFRALibrary.name = ingredient_compounds.name GROUP BY name ")){
 		while($cmp = mysqli_fetch_array($qCMP)){
 			$x .='<tr>
