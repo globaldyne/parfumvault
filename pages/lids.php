@@ -13,22 +13,17 @@ while ($suppliers = mysqli_fetch_array($sup)){
               <h2 class="m-0 font-weight-bold text-primary"><a href="#" id="mainTitle">Lids</a></h2>
             </div>
             <div class="card-body">
-              <div class="table-responsive">
-               <table class="table table-striped table-bordered">
-                 <tr class="noBorder">
-                     <div class="text-right">
-                      <div class="btn-group">
-                        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
-                          <div class="dropdown-menu dropdown-menu-right">
-                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addLid"><i class="fa-solid fa-plus mx-2"></i>Add new</a></li>
-                            <li><a class="dropdown-item" id="exportCSV" href="#"><i class="fa-solid fa-file-export mx-2"></i>Export to CSV</a></li>
-                            <li><a class="dropdown-item" id="exportJSON" href="/pages/export.php?format=json&kind=lids"><i class="fa-solid fa-file-export mx-2"></i>Export to JSON</a></li>
-
-                          </div>
-                        </div>        
-                     </div>
-                 </tr>
-                </table>
+             
+               <div class="text-right">
+                  <div class="btn-group">
+                     <button type="button" class="btn btn-primary dropdown-toggle mb-3" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
+                      <div class="dropdown-menu dropdown-menu-right">
+                      <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addLid"><i class="fa-solid fa-plus mx-2"></i>Add new</a></li>
+                       <li><a class="dropdown-item" id="exportCSV" href="#"><i class="fa-solid fa-file-export mx-2"></i>Export to CSV</a></li>
+                       <li><a class="dropdown-item" id="exportJSON" href="/pages/export.php?format=json&kind=lids"><i class="fa-solid fa-file-export mx-2"></i>Export to JSON</a></li>
+                   </div>
+                 </div>        
+                 
                 <table class="table table-bordered" id="tdDataLids" width="100%" cellspacing="0">
                   <thead>
                     <tr>

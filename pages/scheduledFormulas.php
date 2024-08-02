@@ -15,6 +15,8 @@ require_once(__ROOT__.'/func/php-settings.php');
             <div class="btn-group">
             <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
                 <div class="dropdown-menu dropdown-menu-right">
+                  <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#required_materials"><i class="fa-solid fa-pallet mx-2"></i>Required ingredients</a></li>
+                  <div class="dropdown-divider"></div>
                   <li><a class="dropdown-item" href="/pages/operations.php?action=exportMaking"><i class="fa-solid fa-file-export mx-2"></i>Export as JSON</a></li>
                   <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#import_making_json"><i class="fa-solid fa-file-import mx-2"></i>Import from JSON</a></li>
                 </div>
@@ -106,6 +108,15 @@ $(document).ready(function() {
 		},
   	});
 	
+	$("#required_materials").on("show.bs.modal", function(e) {
+		const id = e.relatedTarget.dataset.id;
+		const name = e.relatedTarget.dataset.name;
+	
+		$.get("/pages/views/formula/pendingMaterials.php")
+			.then(data => {
+				$(".modal-body", this).html(data);
+		});
+	});
 }); //END DOC
 
 function progress(data, type, row){
@@ -255,4 +266,23 @@ $('#tdDataScheduled').on('click', '[id*=pend_remove]', function () {
     </div>
   </div>
 </div>
+
+<!-- REQUIRED MATERIALS MODAL -->
+<div class="modal fade" id="required_materials" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="required_materials" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Required ingredients for all the pending formulas</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">Please wait...</div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseBK">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="/js/import.making.js"></script>

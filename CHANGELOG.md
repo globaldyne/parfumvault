@@ -1,4 +1,17 @@
 # CHANGELOG
+### Version 10.7
+- Removed ingredient purity and dilutant from Finished Product page for cleaner view
+- Moved IFRA doc to a modal window
+- Added a print button for the generated IFRA Doc
+- Fix IFRA Document failing to be generated
+- Formula Make page refactor
+- Lids page minor update
+- Added a pending materials page to list all pending materials and their quantity required for the pending formulas
+- todo.php has been renamed to scheduledFormulas.php
+- Add suppliers in pending formulas backend
+- Choose which supplier you updating the stock when making a formula
+- Show available stock from all the available suppliers when making a formula, instead of the preferred one only
+
 ### Version 10.6
 - Ingredient Where Used page minor improvements
 - Ingredient Usage & Limits page minor improvements
