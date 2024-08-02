@@ -15,8 +15,8 @@ require_once(__ROOT__.'/func/calcPerc.php');
 require_once(__ROOT__.'/libs/fpdf.php');
 require_once(__ROOT__.'/libs/Html2Pdf.php');
 
-$bottle = $_GET['bottle'];
-$type = $_GET['conc'];
+$bottle = $_POST['bottle'];
+$type = $_POST['conc'];
 $defCatClass = $settings['defCatClass'];
 $defPercentage = $settings['defPercentage'];
 
@@ -30,13 +30,13 @@ if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM templates"))){
 	return;
 }
 
-$defCatClass = mysqli_real_escape_string($conn, $_GET['defCatClass']);
+$defCatClass = mysqli_real_escape_string($conn, $_POST['defCatClass']);
 
 if(empty($defCatClass)){
 	$defCatClass = $settings['defCatClass'];
 }
 	
-$fid = mysqli_real_escape_string($conn, $_GET['fid']);
+$fid = mysqli_real_escape_string($conn, $_POST['fid']);
 
 
 $cid = mysqli_real_escape_string($conn, $_POST['customer']);

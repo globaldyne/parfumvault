@@ -1,5 +1,8 @@
 # CHANGELOG
 ### Version 10.7
+- Removed ingredient purity and dilutant from Finished Product page for cleaner view
+- Moved IFRA doc to a modal window
+- Added a print button for the generated IFRA Doc
 - Fix IFRA Document failing to be generated
 - Formula Make page refactor
 - Lids page minor update
