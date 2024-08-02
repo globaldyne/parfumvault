@@ -429,7 +429,7 @@ if($_POST['batchID'] == '1'){
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" id="printIFRADoc">Print</button>
+        <button type="button" class="btn btn-primary" id="printIFRADoc">Print<i class="fa-solid fa-arrow-up-right-from-square ml-2"></i></button>
       </div>
     </div>
   </div>
