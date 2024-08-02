@@ -45,7 +45,7 @@ if($_POST['formula']){
 	$carrier = $bottle - $new_conc;
 	
 	if(validateFormula($meta['fid'], $bottle, $new_conc, $mg['total_mg'], $defCatClass, $settings['qStep'], $conn) == TRUE){
-		$msg =  '<div class="alert alert-danger alert-dismissible">Your formula contains materials, exceeding and/or missing IFRA standards. Please alter your formula.</div>';
+		$msg =  '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mr-2"></i>Your formula contains materials, exceeding and/or missing IFRA standards. Please alter your formula</div>';
 	}
 	
 	if($_POST['ingSup']){
@@ -215,11 +215,8 @@ if($_POST['batchID'] == '1'){
                     </tr>
                   </tfoot>                                    
                 </table> 
-                <div>
-                <p></p>
-                <p>*Values in: <strong class="alert alert-danger">red</strong> exceeds usage level,   <strong class="alert alert-warning">yellow</strong> have no usage level set,   <strong class="alert alert-success">green</strong> are within usage level, <strong class="alert alert-info">blue</strong> are exceeding recommended usage level</p>
-                </div>
-            </div>
+          		<div class="mt-4 mb-4 dropdown-divider"></div>
+           		<p>*Values in: <strong class="alert alert-danger mx-2">red</strong> exceeds usage level, <strong class="alert bg-banned mx-2">dark red</strong> banned/prohibited, <strong class="alert alert-warning mx-2">yellow</strong> Specification,<strong class="alert alert-success mx-2">green</strong> are within usage level,<strong class="alert alert-info mx-2">blue</strong> are exceeding recommended usage level</p>
 
 
 <!--VIEW BOX LABEL MODAL-->            
@@ -282,15 +279,15 @@ if($_POST['batchID'] == '1'){
             <?php 
 			}else{ 
 				if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))== 0){
-					echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> You need to <a href="/?do=listFormulas">create</a> at least one formula first.</div>';
+					echo '<div class="alert alert-info"><strong>INFO: </strong> You need to <a href="/?do=listFormulas">create</a> at least one formula first.</div>';
 					return;
 				}
 				if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM bottles"))== 0){
-					echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> You need to <a href="/?do=bottles">add</a> at least one bottle in your inventory first.</div>';
+					echo '<div class="alert alert-info"><strong>INFO: </strong> You need to <a href="/?do=bottles">add</a> at least one bottle in your inventory first.</div>';
 					return;
 				}
 				if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE type = 'Carrier' OR type = 'Solvent'"))== 0){
-					echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> You need to <a href="/?do=ingredients">add</a> at least one solvent or carrier first.</div>';
+					echo '<div class="alert alert-info"><strong>INFO: </strong> You need to <a href="/?do=ingredients">add</a> at least one solvent or carrier first.</div>';
 					return;
 				}
 				

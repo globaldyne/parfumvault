@@ -21,12 +21,12 @@ $defCatClass = $settings['defCatClass'];
 $defPercentage = $settings['defPercentage'];
 
 if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM IFRALibrary"))){
-	echo 'You need to <a href="/?do=IFRA">import</a> the IFRA xls first.';
+	echo '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mr-2"></i>You need to <a href="/?do=IFRA" target="_blank">import</a> the IFRA xls first</div>';
 	return;
 }
 
 if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM templates"))){
-	echo 'You need to <a href="/?do=settings">add</a> an IFRA template first.';
+	echo '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mr-2"></i>You need to <a href="/?do=settings" target="_blank">add</a> an IFRA template first</div>';
 	return;
 }
 
@@ -48,7 +48,7 @@ $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg F
 $new_conc = $bottle/100*$type;
 
 if(validateFormula($fid, $bottle, $new_conc, $mg['total_mg'], $defCatClass, $settings['qStep'], $conn) == TRUE){
-	echo 'Error: Your formula contains materials, exceeding and/or missing IFRA standards. Please alter your formula and try again.';
+	echo '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mr-2"></i>Your formula contains materials, exceeding and/or missing IFRA standards. Please alter your formula and try again</div>';
 	return;
 }
 
@@ -59,11 +59,11 @@ if ( empty($settings['brandLogo']) ){
 	$logo = $settings['brandLogo'];
 }
 if ( empty($settings['brandName']) || empty($settings['brandAddress']) || empty($settings['brandEmail']) || empty($settings['brandPhone']) ){
-	echo 'Missing brand info, please update your brand details in <a href="/?do=settings">settings</a> page first!';
+	echo '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mr-2"></i>Missing brand info, please update your brand details in <a href="/?do=settings">settings</a> page first</div>';
 	return;
 }
 if ( empty($customers['name']) || empty($customers['address']) || empty($customers['email']) ){
-	echo 'Missing customers info, please update your customers details in <a href="/?do=customers">customers</a> page first!';
+	echo '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mr-2"></i>Missing customers info, please update your customers details in <a href="/?do=customers">customers</a> page first</div>';
 	return;
 }
 
