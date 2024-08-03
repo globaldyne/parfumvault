@@ -1,5 +1,7 @@
 # CHANGELOG
 ### Version 10.8
+- Refactor of validateFormula() function
+- Renamed clone formula to duplicate
 
 ### Version 10.7
 - Removed ingredient purity and dilutant from Finished Product page for cleaner view

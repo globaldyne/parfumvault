@@ -277,7 +277,7 @@ $carrier = $_GET['final_total_ml'] ?: 100 - $new_conc;
 
 
 if($m['total_ingredients'] != 0 && !$_POST['search']){	
-	if( validateFormula($meta['fid'], $_GET['final_total_ml'] ?: 100, $new_conc, $mg['total_mg'], $_GET['val_cat']?:	$defCatClass, $settings['qStep'], $conn) == TRUE){
+	if( validateFormula($meta['fid'], $_GET['final_total_ml'] ?: 100, $new_conc, $mg['total_mg'], $_GET['val_cat']?:	$defCatClass, $settings['qStep']) == TRUE){
 		$val_status = 1;
 		$val_msg = 'Your formula contains materials, exceeding and/or missing IFRA standards. Please alter your formula.';
 	}

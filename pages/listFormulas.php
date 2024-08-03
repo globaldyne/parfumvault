@@ -300,7 +300,7 @@ function fActions(data, type, row, meta){
 		
 		data += '<li><a class="dropdown-item" href="#" id="addTODO" rel="tip" title="Schedule '+ row.name +' to make" data-id='+ row.fid +' data-name="'+ row.name +'"><i class="fas fa-tasks mx-2"></i>Schedule to make</a></li>';
 		
-		data += '<li><a class="dropdown-item" href="#" id="cloneMe" rel="tip" title="Clone '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"><i class="fas fa-copy mx-2"></i>Clone formula</a></li>';
+		data += '<li><a class="dropdown-item" href="#" id="cloneMe" rel="tip" title="Duplicate '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"><i class="fas fa-copy mx-2"></i>Duplicate formula</a></li>';
 		
 		data += '<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#genQRC" data-id="'+ row.fid +'" data-formula="'+ row.name +'"><i class="fa-solid fa-qrcode mx-2"></i>Generate QR Code</a></li>';
 
@@ -326,7 +326,7 @@ $("#genQRC").on("show.bs.modal", function(e) {
 
 });
 
-//Clone
+//Duplicate
 $('table.table').on('click', '[id*=cloneMe]', function () {
 	var formula = {};
 	formula.ID = $(this).attr('data-id');

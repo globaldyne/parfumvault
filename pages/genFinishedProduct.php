@@ -44,8 +44,12 @@ if($_POST['formula']){
 	$new_conc = $bottle/100*$type;
 	$carrier = $bottle - $new_conc;
 	
-	if(validateFormula($meta['fid'], $bottle, $new_conc, $mg['total_mg'], $defCatClass, $settings['qStep'], $conn) == TRUE){
-		$msg =  '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mr-2"></i>Your formula contains materials, exceeding and/or missing IFRA standards. Please alter your formula</div>';
+	$rs = validateFormula($meta['fid'], $bottle, $new_conc, $mg['total_mg'], $defCatClass, $settings['qStep']);
+	if( $rs !== 0){
+		$msg = '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mr-2"></i>Your formula contains materials, exceeding and/or missing IFRA standards, therefore you will not be able to generate an IFRA document</div>';
+		foreach ($rs as $error) {
+        //	echo "- " . $error . "\n";
+    	}
 	}
 	
 	if($_POST['ingSup']){
