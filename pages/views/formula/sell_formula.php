@@ -69,6 +69,9 @@ var fid = "<?=$id?>";
 var fontSize = parseInt("<?=$_POST['fontSize']?>");
 var image = "<?php echo $settings['brandLogo'] ?: "data:image/png;base64,".base64_encode(file_get_contents(__ROOT__.'/img/logo_def.png')); ?>";
 
+var logoSizeW = parseInt("<?=$_POST['logoSizeW'] ?: 200 ?>");
+var logoSizeH = parseInt("<?=$_POST['logoSizeH'] ?: 200 ?>");
+
 var formula_table = $('#formula').DataTable( {
 	columnDefs: [
 		{ className: 'text-center', targets: '_all' },
@@ -87,7 +90,9 @@ var formula_table = $('#formula').DataTable( {
 			doc.content.splice( 1, 0, {
 				margin: [ 0, 0, 0, 12 ],
 				alignment: 'center',
-				image: image
+				image: image,
+				width: logoSizeW,
+				height: logoSizeH,
 			});
 			doc.watermark =  {text: watermarkText, color: 'blue', opacity: watermarkTextOp,  bold: false, italics: false};
 			doc.defaultStyle.fontSize = fontSize;          

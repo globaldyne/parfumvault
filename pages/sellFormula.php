@@ -71,7 +71,20 @@
           <input class="form-control" name="fontSize" type="text" id="fontSize" value="8">
         </div>
       </div>
-    
+      <div class="row mb-3">
+        <label for="logoSizeW" class="col-sm-1 col-form-label">Logo width (px)</label>
+        <div class="col-sm-5">
+          <input class="form-control" name="logoSizeW" type="text" id="logoSizeW" value="200">
+        </div>
+      </div>
+      
+      <div class="row mb-3">
+        <label for="logoSizeH" class="col-sm-1 col-form-label">Logo height (px)</label>
+        <div class="col-sm-5">
+          <input class="form-control" name="logoSizeH" type="text" id="logoSizeH" value="200">
+        </div>
+      </div>
+      
       <div class="row mb-3">
         <label for="qStep" class="col-sm-1 col-form-label">Quantity Decimal</label>
         <div class="col-sm-5">
@@ -107,7 +120,9 @@ $('#btnGEN').click(function() {
 			watermarkTextOp: $("#watermarkTextOp").val(),
 			orientation: $("#orientation").val(),
 			qStep: $("#qStep").val(),
-			fontSize: $("#fontSize").val()
+			fontSize: $("#fontSize").val(),
+			logoSizeW: $("#logoSizeW").val(),
+			logoSizeH: $("#logoSizeH").val(),
 		},
 		dataType: 'html',
 		success: function (data) {
