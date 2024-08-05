@@ -163,8 +163,9 @@ foreach ($form as $formula){
 		$chName = mysqli_fetch_array(mysqli_query($conn,"SELECT chemical_name FROM ingredients WHERE name = '".$formula['ingredient']."'"));
 		$ingName = $chName['chemical_name'];
 	}
-	$r['formula_ingredient_id'] = (int)$formula['id'];       
-	$r['fid'] = (string)$meta['name']; //TODO
+	$r['formula_ingredient_id'] = (int)$formula['id'];  
+	$r['formula_name'] = (string)$meta['name'];
+	$r['fid'] = (string)$meta['fid']; //TODO
 		
 	if($settings['grp_formula'] == '1'){
 		$r['ingredient']['profile'] = (string)$ing_q['profile'] ?: 'Unknown';

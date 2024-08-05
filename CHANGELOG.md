@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 10.8
+- Various minor improvements for Formula view
 - Rewrite Sell Formula for BS5
 - Added a font size when exporting a PDF in Sell Formula
 - Added brand logo when exporting a PDF in Sell Formula
