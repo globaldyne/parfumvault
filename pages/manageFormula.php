@@ -303,6 +303,9 @@ if($_POST['action'] == 'addIng' && $_POST['fid']){
 			$response['success'] = '<strong>'.$quantity.$settings['mUnit'].'</strong> of <strong>'.$ingredient['name'].'</strong> added to the formula!';
 			echo json_encode($response);
 			return;
+		} else {
+			$response['error'] = 'Something went wrong, '.mysqli_error($conn);
+			echo json_encode($response);
 		}
 		
 	}
