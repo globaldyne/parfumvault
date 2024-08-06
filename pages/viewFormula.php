@@ -63,9 +63,9 @@ $fid = $meta['fid'];
 
 <div id="row pv_search">
 	<div class="text-right">
-    <label for="pvCustomSearch" class="mx-2"><a href="#" class="link-secondary" rel="tip" title="Use comma (,) separated values to search for different ingredients">Search in formula:</a></label>
-    <input type="text" id="pvCustomSearch" placeholder="CAS, Ingredient, etc..">
-</div>
+    	<label for="pvCustomSearch" class="mx-2"><a href="#" class="link-secondary" rel="tip" title="Use comma (,) separated values to search for different ingredients">Search in formula:</a></label>
+    	<input type="text" id="pvCustomSearch" placeholder="CAS, Ingredient, etc..">
+	</div>
 </div>
 <table id="formula" class="table table-striped table-bordered nowrap viewFormula" style="width:100%">
         <thead class="table-primary">
@@ -142,10 +142,14 @@ $(document).ready(function() {
 			emptyTable: '<div class="alert alert-warning"><strong>Empty formula. Please add ingredients.</strong></div>',
 			search: "Search in formula:",
 			searchPlaceholder: "CAS, Ingredient, etc.."
-			},
+		},
     	ajax: {
-    		url: '/core/full_formula_data.php?id=<?=$id?>'
- 		 },
+    		url: '/core/full_formula_data.php',
+			type: 'POST',
+			data:{
+		   		id: "<?=$meta['id']?>",
+			}
+ 		},
 		columns: [
 			{ data : 'ingredient.profile', title: 'Profile' },
 			{ data : 'ingredient.name', title: 'Ingredient', render: ingName},
