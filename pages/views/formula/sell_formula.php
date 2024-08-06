@@ -23,7 +23,7 @@ $fid = $meta['fid'];
 ?>
 
 
-<div>
+<div class="mt-4 mr-4 text-right">
    <div class="btn-group" id="menu">
         <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
         <div class="dropdown-menu dropdown-menu-left">
