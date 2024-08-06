@@ -1,5 +1,6 @@
 Whats New in v10.8
 --------------------------
+- Complete rewrite for Finished Product page
 - Added a font size when exporting a PDF in Sell Formula
 - Added brand logo when exporting a PDF in Sell Formula
 - Added opacity for watermak in Sell Formula page

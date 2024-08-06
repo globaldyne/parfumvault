@@ -87,6 +87,8 @@ var formula_table = $('#formula').DataTable( {
         messageBottom: function(){return new Date().toString()},
         messageTop: $("#customerID").val(),
 		customize: function ( doc ) {
+			doc.styles.tableHeader.fontSize = fontSize;
+			doc.styles.tableFooter.fontSize = fontSize;
 			doc.content.splice( 1, 0, {
 				margin: [ 0, 0, 0, 12 ],
 				alignment: 'center',

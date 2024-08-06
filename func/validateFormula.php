@@ -34,12 +34,12 @@ function validateFormula($fid, $bottle, $new_conc, $mg, $defCatClass, $qStep) {
 
         if ($limit ) {
             if ($limit < $conc_p) {
-                $errors[] = "Ingredient $ingredient_name exceeds IFRA limit $limit";
+                $errors[] = "Ingredient $ingredient_name exceeds IFRA limit $limit%";
             }
         } else {
             if ($ing[$defCatClass] !== null) {
                 if ($ing[$defCatClass] < $conc_p) {
-                    $errors[] = "Ingredient $ingredient_name exceeds local DB limit";
+                    $errors[] = "Ingredient $ingredient_name exceeds local DB limit%";
                 }
             } else {
                 $errors[] = "No limit record found for ingredient $ingredient_name";

@@ -48,7 +48,7 @@ $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg F
 $new_conc = $bottle/100*$type;
 
 if(validateFormula($fid, $bottle, $new_conc, $mg['total_mg'], $defCatClass, $settings['qStep']) !== 0){
-	echo '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mr-2"></i>Your formula contains materials, exceeding and/or missing IFRA standards</div>';
+	echo '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mr-2"></i>Your formula contains materials not compatible with IFRA standards</div>';
 	return;
 }
 
