@@ -30,7 +30,7 @@ if($ingredientsConf == FALSE){
 }else{
 		?>
               <div class="dash_charts">
-              <div class="shadow-lg p-3 mb-5 bg-white rounded charts_box">
+              <div class="shadow-lg p-3 mb-5 rounded charts_box">
               
                 <div class="col-md-6">
                 <div class="box" id="formulas-pie">
