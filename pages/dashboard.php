@@ -24,9 +24,9 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))){
           <div class="row">
         <?php
 if($ingredientsConf == FALSE){
-	echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> no ingredients yet, click <a href="/?do=ingredients">here</a> to add.</div>';
+	echo '<div class="alert alert-info"><i class="fa-solid fa-circle-exclamation mr-2"></i><strong>No ingredients yet, click <a href="/?do=ingredients">here</a> to add.</strong></div>';
 }elseif($formulasConf == FALSE){
-	echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> no formulas added yet</div>';
+	echo '<div class="alert alert-info"><i class="fa-solid fa-circle-exclamation mr-2"></i><strong>No formulas added yet, click <a href="/?do=listFormulas">here</a> to add.</strong></div>';
 }else{
 		?>
               <div class="dash_charts">
