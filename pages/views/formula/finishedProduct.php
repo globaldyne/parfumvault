@@ -213,8 +213,8 @@ $(document).ready(function() {
 					doc.pageMargins = [50,20,50,20];
 					doc.content[1].table.widths = ['*', '*', '*', '*', '*' ];
 					
-					doc.styles.tableHeader.fontSize = 8;
-					doc.styles.tableFooter.fontSize = 8;
+					doc.styles.tableHeader.fontSize = 9;
+					doc.styles.tableFooter.fontSize = 9;
 					var footerData = [];
 					$('#formula tfoot tr').each(function () {
 						var rowData = [];
@@ -236,9 +236,13 @@ $(document).ready(function() {
 	
 					doc.styles.tableFooter = {
 						bold: true,
-						fontSize: 10,
+						fontSize: 9,
 						alignment: 'center',
-						//color: 'blue'
+						//color: 'blue',
+						margin: [0, 0, 0, 2],
+						border: [false, false, false, true],
+						borderColor: '#000000',
+						borderWidth: 1
 					};
 				}
 			}
