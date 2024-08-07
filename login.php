@@ -15,8 +15,7 @@ if(isset($_SESSION['parfumvault'])){
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" data-bs-theme="light">
 <head>
 
   <meta charset="utf-8">
@@ -95,7 +94,7 @@ if(isset($_SESSION['parfumvault'])){
               <div class="col-lg-6">
                 <div class="p-5">
                   <div class="text-center">
-                    <h1 class="h4 text-gray-900 mb-4">Please login</h1>
+                    <h1 class="h4 mb-4">Please login</h1>
                   </div>
                   <div id="msg"></div>
                   <div class="user" id="login">
@@ -125,7 +124,7 @@ if(isset($_SESSION['parfumvault'])){
 			?>		 		 
                   <hr />
                   <div class="copyright text-center my-auto">
-				  <label class="small">Version: <?php echo $ver; ?> |<a href="https://www.perfumersvault.com/" class="link-dark mx-1" target="_blank"><?php echo $product; ?></a></label>
+				  <label class="small">Version: <?php echo $ver; ?> |<a href="https://www.perfumersvault.com/" class="mx-1" target="_blank"><?php echo $product; ?></a></label>
                   </div>
                 </div>
               </div>

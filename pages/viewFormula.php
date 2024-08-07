@@ -781,19 +781,19 @@ function ingActions(data, type, row, meta){
         '<button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
             '<ul class="dropdown-menu dropdown-menu-end">';
 
-	data += '<li><a class="dropdown-item link-dark" href="'+ row.ingredient.pref_supplier_link +'" target="_blank" rel="tip" title="Open '+ row.ingredient.pref_supplier +' page"><i class="fas fa-shopping-cart mx-2"></i>Go to supplier</a></li>';
+	data += '<li><a class="dropdown-item" href="'+ row.ingredient.pref_supplier_link +'" target="_blank" rel="tip" title="Open '+ row.ingredient.pref_supplier +' page"><i class="fas fa-shopping-cart mx-2"></i>Go to supplier</a></li>';
 	
 	<?php if($meta['isProtected'] == FALSE){?>
 	if(row.exclude_from_calculation == 0){
-	 	var ex = '<li><i class="dropdown-item pv_point_gen link-dark" rel="tip" id="exIng" title="Exclude '+ row.ingredient.name +'" data-name="'+ row.ingredient.name +'" data-status="1" data-id="'+ row.formula_ingredient_id +'"><i class="pv_point_gen fas fa-eye-slash mx-2"></i>Exlude</i></li>';
+	 	var ex = '<li><i class="dropdown-item pv_point_gen" rel="tip" id="exIng" title="Exclude '+ row.ingredient.name +'" data-name="'+ row.ingredient.name +'" data-status="1" data-id="'+ row.formula_ingredient_id +'"><i class="pv_point_gen fas fa-eye-slash mx-2"></i>Exlude</i></li>';
 		
 	}else if(row.exclude_from_calculation == 1){
-	 	var ex = '<li><i class="dropdown-item pv_point_gen link-dark" rel="tip" id="exIng" title="Include '+ row.ingredient.name +'" data-name="'+ row.ingredient.name +'" data-status="0" data-id="'+ row.formula_ingredient_id +'"><i class="pv_point_gen fas fa-eye mx-2"></i>Include</i></li>';
+	 	var ex = '<li><i class="dropdown-item pv_point_gen" rel="tip" id="exIng" title="Include '+ row.ingredient.name +'" data-name="'+ row.ingredient.name +'" data-status="0" data-id="'+ row.formula_ingredient_id +'"><i class="pv_point_gen fas fa-eye mx-2"></i>Include</i></li>';
 	}
 	
-	data += ex + '<li><i data-bs-toggle="modal" data-bs-target="#replaceIng" class="dropdown-item pv_point_gen open-replace-dialog text-info" rel="tip" title="Replace '+ row.ingredient.name +'"  data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'" data-cas="'+row.ingredient.cas+'" data-desc="'+row.ingredient.desc+'"><i class="pv_pont_gen fas fa-exchange-alt text-info mx-2"></i>Replace ingredient</i></li>'
+	data += ex + '<li><i data-bs-toggle="modal" data-bs-target="#replaceIng" class="dropdown-item pv_point_gen open-replace-dialog text-info-emphasis" rel="tip" title="Replace '+ row.ingredient.name +'"  data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'" data-cas="'+row.ingredient.cas+'" data-desc="'+row.ingredient.desc+'"><i class="pv_pont_gen fas fa-exchange-alt text-info-emphasis mx-2"></i>Replace ingredient</i></li>'
 	
-	+ '<li><i data-bs-toggle="modal" data-bs-target="#mrgIng" rel="tip" title="Merge '+ row.ingredient.name +'" class="dropdown-item pv_point_gen open-merge-dialog text-warning" data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'"><i class="pv_point_gen fas fa-object-group alert-warning mx-2"></i>Merge ingredients</i></li>'
+	+ '<li><i data-bs-toggle="modal" data-bs-target="#mrgIng" rel="tip" title="Merge '+ row.ingredient.name +'" class="dropdown-item pv_point_gen open-merge-dialog text-warning-emphasis" data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'"><i class="pv_point_gen fas fa-object-group alert-warning mx-2"></i>Merge ingredients</i></li>'
 	
 	+'<div class="dropdown-divider"></div>'
 	+ '<li><i rel="tip" title="Remove '+ row.ingredient.name +'" class="dropdown-item text-danger pv_point_gen" id="rmIng" data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'" data-ingredient-id="'+row.ingredient.id+'"><i class="pv_point_gen fas fa-trash mx-2 text-danger"></i>Delete</i></li>';

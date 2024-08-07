@@ -167,7 +167,7 @@ function fDate(data, type, row, meta){
 }
 
 function actions(data, type, row){
-	return '<i rel="tip" title="Delete '+ row.name +'" class="pv_point_gen fas fa-trash" style="color: #c9302c;" id="pend_remove" data-name="'+ row.name +'" data-id='+ row.fid +'></i>';    
+	return '<i rel="tip" title="Delete '+ row.name +'" class="pv_point_gen fas fa-trash text-danger" id="pend_remove" data-name="'+ row.name +'" data-id='+ row.fid +'></i>';    
 }
 
 function reload_data() {

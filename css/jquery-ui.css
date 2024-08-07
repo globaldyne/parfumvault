@@ -902,16 +902,16 @@ body .ui-tooltip {
 }
 .ui-widget-content {
 	border: 1px solid #dddddd;
-	background: #ffffff;
-	color: #333333;
+	background: var(--bs-body-bg);
+	color: var(--bs-body-color);
 }
 .ui-widget-content a {
-	color: #333333;
+	color: var(--bs-body-color);
 }
 .ui-widget-header {
 	border: 1px solid #dddddd;
-	background: #e9e9e9;
-	color: #333333;
+	background: var(--bs-body-bg);
+	color: var(--bs-body-color);
 	font-weight: bold;
 }
 .ui-widget-header a {

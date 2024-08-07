@@ -11,27 +11,7 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 :root {
-  --blue: #4e73df;
-  --indigo: #6610f2;
-  --purple: #6f42c1;
-  --pink: #e83e8c;
-  --red: #e74a3b;
-  --orange: #fd7e14;
-  --yellow: #f6c23e;
-  --green: #1cc88a;
-  --teal: #20c9a6;
-  --cyan: #36b9cc;
-  --white: #fff;
-  --gray: #858796;
-  --gray-dark: #5a5c69;
-  --primary: #4e73df;
-  --secondary: #858796;
-  --success: #1cc88a;
-  --info: #36b9cc;
-  --warning: #f6c23e;
-  --danger: #e74a3b;
-  --light: #f8f9fc;
-  --dark: #5a5c69;
+
   --breakpoint-xs: 0;
   --breakpoint-sm: 576px;
   --breakpoint-md: 768px;
@@ -165,7 +145,6 @@ a {
 }
 
 a:hover {
-  color: #224abe;
   text-decoration: underline;
 }
 
@@ -535,11 +514,6 @@ kbd kbd {
   font-weight: 700;
 }
 
-pre {
-  display: block;
-  font-size: 87.5%;
-  color: #3a3b45;
-}
 
 pre code {
   font-size: inherit;
@@ -1366,27 +1340,7 @@ pre code {
   }
 }
 
-.table {
-  width: 100%;
-  margin-bottom: 1rem;
-  color: #858796;
-}
 
-.table th,
-.table td {
-  padding: 0.75rem;
-  vertical-align: top;
-  border-top: 1px solid #e3e6f0;
-}
-
-.table thead th {
-  vertical-align: bottom;
-  border-bottom: 2px solid #e3e6f0;
-}
-
-.table tbody + tbody {
-  border-top: 2px solid #e3e6f0;
-}
 
 .table-sm th,
 .table-sm td {
@@ -1614,11 +1568,7 @@ pre code {
   background-color: rgba(0, 0, 0, 0.075);
 }
 
-.table .thead-dark th {
-  color: #fff;
-  background-color: #5a5c69;
-  border-color: #6c6e7e;
-}
+
 
 .table .thead-light th {
   color: #6e707e;
@@ -1626,29 +1576,7 @@ pre code {
   border-color: #e3e6f0;
 }
 
-.table-dark {
-  color: #fff;
-  background-color: #5a5c69;
-}
 
-.table-dark th,
-.table-dark td,
-.table-dark thead th {
-  border-color: #6c6e7e;
-}
-
-.table-dark.table-bordered {
-  border: 0;
-}
-
-.table-dark.table-striped tbody tr:nth-of-type(odd) {
-  background-color: rgba(255, 255, 255, 0.05);
-}
-
-.table-dark.table-hover tbody tr:hover {
-  color: #fff;
-  background-color: rgba(255, 255, 255, 0.075);
-}
 
 @media (max-width: 575.98px) {
   .table-responsive-sm {
@@ -5376,13 +5304,13 @@ a.badge-dark:focus, a.badge-dark.focus {
   font-size: 1.5rem;
   font-weight: 700;
   line-height: 1;
-  color: #000;
+  color: var(--bs-body-color);
   text-shadow: 0 1px 0 #fff;
   opacity: .5;
 }
 
 .close:hover {
-  color: #000;
+  color: var(--bs-secondary-color);
   text-decoration: none;
 }
 

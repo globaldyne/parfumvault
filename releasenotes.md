@@ -1,5 +1,6 @@
 Whats New in v10.8
 --------------------------
+- Added support for a dark theme
 - Complete rewrite for Finished Product page
 - Added a font size when exporting a PDF in Sell Formula
 - Added brand logo when exporting a PDF in Sell Formula

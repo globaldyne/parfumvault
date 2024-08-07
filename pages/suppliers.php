@@ -135,7 +135,7 @@ function actions(data, type, row){
 	data = '<div class="dropdown">' +
 			'<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
 				'<ul class="dropdown-menu dropdown-menu-right">';
-	data += '<li><i class="pv_point_gen dropdown-item text-dark" data-bs-toggle="modal" data-bs-target="#details" id="edit_supplier" data-id="' + row.id + '" data-name="' + row.name + '" data-address="'+row.address+'" data-po="'+row.po+'" data-country="'+row.country+'" data-telephone="'+row.telephone+'" data-url="'+row.url+'" data-email="'+row.email+'"><i class="fas fa-edit mx-2"></i>Edit</i></li>';
+	data += '<li><i class="pv_point_gen dropdown-item" data-bs-toggle="modal" data-bs-target="#details" id="edit_supplier" data-id="' + row.id + '" data-name="' + row.name + '" data-address="'+row.address+'" data-po="'+row.po+'" data-country="'+row.country+'" data-telephone="'+row.telephone+'" data-url="'+row.url+'" data-email="'+row.email+'"><i class="fas fa-edit mx-2"></i>Edit</i></li>';
 	data += '<li><a class="dropdown-item" id="json_export" href="/pages/export.php?format=json&kind=supplier-materials&supplier-name='+row.name+'&id='+row.id+'"><i class="fa-solid fa-file-code mx-2"></i>Export materials to JSON</a></li>';
 	data += '<div class="dropdown-divider"></div>';
 	data += '<li><a class="dropdown-item pv_point_gen text-danger" id="dDel" data-name="'+ row.name +'" data-id='+ row.id +'><i class="fas fa-trash mx-2"></i>Delete</a></li>';

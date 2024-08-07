@@ -53,10 +53,10 @@ fetch_ifraStats();
 }
 </style>
 
-<script src="js/amcharts_3.21.15.free/amcharts/amcharts.js"></script>
-<script src="js/amcharts_3.21.15.free/amcharts/serial.js"></script>
-<script src="js/amcharts_3.21.15.free/amcharts/pie.js"></script>
-<script src="js/amcharts_3.21.15.free/amcharts/themes/light.js"></script>
+<script src="/js/amcharts_3.21.15.free/amcharts/amcharts.js"></script>
+<script src="/js/amcharts_3.21.15.free/amcharts/serial.js"></script>
+<script src="/js/amcharts_3.21.15.free/amcharts/pie.js"></script>
+<script src="/js/amcharts_3.21.15.free/amcharts/themes/light.js"></script>
 
 <div class="container-fluid">
 	<h2 class="m-0 mb-4 text-primary">Statistics</h2>

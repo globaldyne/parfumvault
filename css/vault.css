@@ -73,7 +73,9 @@ html {
 	background-color:#FFF;
 }
 
-a { text-decoration: none; }
+a { 
+	text-decoration: none;
+}
 
 .navbar {
     position: relative;
@@ -328,7 +330,7 @@ tr.strikeout td:before {
 }
 
 .loader-text {
-  color: #000;
+  color: var( --bs-body-color);
   font-family: arial, sans-serif;
   text-align:center;
 }
@@ -437,7 +439,7 @@ formula td, table.table th {
 	font-size: 3rem;
 	line-height: 3rem;
 	color: #004372;
-	background: white;
+	background: var( --bs-body-bg);
 }
 .mgmIngHeader-with-separator::after {
     content: '';
@@ -466,7 +468,7 @@ formula td, table.table th {
 	font-size: 1.875rem;
 	margin-top: 0.9375rem;
 	display: block;
-	background: white;
+	background: var( --bs-body-bg);
 }
 
 .mgm-row-xl > .mgm-row-inner > .mgm-column {
@@ -494,7 +496,7 @@ formula td, table.table th {
 }
 
 .mgm-cat-in {
-	color: #444444;
+	color: var( --bs-body-color);
 	font-size: 0.825rem;
 	text-transform: uppercase;
 	font-weight: 300;
@@ -520,7 +522,7 @@ formula td, table.table th {
 .listIngName {
     font-size: 1.1rem;
     line-height: 2rem;
-    color: #004372;
+    color: var( --bs-body-color);
   /*  background: white; */
 	font-weight: bolder;
 }
@@ -610,7 +612,7 @@ formula td, table.table th {
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
     font-size: 0.85rem;
-    color: #444444;
+    color: var( --bs-body-color);
     font-weight: 300;
 }
 
@@ -619,12 +621,12 @@ formula td, table.table th {
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
     font-size: 0.85rem;
-    color: #444444;
+    color: var( --bs-body-color);
     font-weight: 300;
 }
 
 .mgm-ing-bk {
-    background-color: white;
+    background-color: var( --bs-body-bg);
 }
 
 .ing_ico_list {
@@ -646,7 +648,7 @@ formula td, table.table th {
 }
 
 .mgm-ing-theme {
-	background-color: fff;
+	background-color: var( --bs-body-bg);
 	/*
 	background-image: linear-gradient(to bottom, transparent, white 75%), url("/img/molecule.png");
 	background-repeat: no-repeat;
@@ -755,7 +757,7 @@ table.fixedHeader-floating {
 }
 
 .pv_gen_li {
-	color: #23527c;
+	color: var( --bs-body-color);
 }
 
 .advanced_search_box {
@@ -867,7 +869,7 @@ body {
 
 .select_search_deep {
   font-size: medium;
-  color: black;
+  color: var( --bs-body-color);
   display: inline;
   text-align: right;
   align-self: start;
@@ -1082,6 +1084,10 @@ table#tdDataPending.dataTable thead:hover {
 	transform: scale(1.05);
 }
 
+.pv-transition td {
+    background-color: var(--bs-secondary-bg);
+}
+
 .schedule_details {
 	font-size: medium;
 	font-style: normal;
@@ -1094,7 +1100,6 @@ table#tdDataPending.dataTable thead:hover {
 }
 
 .pv_point_gen_color {
-	color: #23527c !important;
 	cursor: pointer !important;
 	font-style: normal;
 }
@@ -1202,13 +1207,8 @@ hr.hr-text::before {
 .text-reset {
  color:inherit!important
 }
-.link-primary {
- color:#0d6efd
-}
-.link-primary:focus,
-.link-primary:hover {
- color:#0a58ca
-}
+
+
 .link-secondary {
  color:#6c757d
 }

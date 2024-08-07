@@ -28,7 +28,7 @@ $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE n
 
 ?>
 <!doctype html>
-<html lang="en">
+<html lang="en" data-bs-theme="<?=$settings['bs_theme']?>">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">

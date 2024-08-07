@@ -34,7 +34,7 @@ while($res = mysqli_fetch_array($qS)){
 
 ?>
 <!doctype html>
-<html lang="en" data-bs-theme="light">
+	<html lang="en" data-bs-theme="<?=$settings['bs_theme']?>">
     <head>
 	  <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">

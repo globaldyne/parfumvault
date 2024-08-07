@@ -98,9 +98,15 @@ while($cats_res = mysqli_fetch_array($cats_q)){
           </select>
         </div>
     
-      </div>
-      
-
+        <div class="form-group col-md-6">
+          <label for="bs_theme">Theme</label>
+          <select name="bs_theme" id="bs_theme" class="form-control">
+            <option value="light" <?php if($settings['bs_theme']=="light") echo 'selected="selected"'; ?> >Light</option>
+            <option value="dark" <?php if($settings['bs_theme']=="dark") echo 'selected="selected"'; ?> >Dark</option>
+          </select>
+        </div>
+        
+    </div>
 </div>
     
     <div class="col-sm-2">
@@ -180,7 +186,8 @@ $('#save-general').click(function() {
 			editor: $("#editor").val(),
 			user_pref_eng: $("#user_pref_eng").val(),
 			pv_host: $("#pvHost").val(),
-			defPercentage: $("#defPercentage").val()
+			defPercentage: $("#defPercentage").val(),
+			bs_theme: $("#bs_theme").val()
 
 	},
 	dataType: 'json',

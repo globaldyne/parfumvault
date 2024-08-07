@@ -170,7 +170,7 @@ function initTable(tableId, src) {
 			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>',
 			emptyTable: '<div class="row g-3"><div class="alert alert-info alert-dismissible"><i class="fa-solid fa-circle-info mx-2"></i><strong>No formulas yet, click <a href="#" data-bs-toggle="modal" data-bs-target="#add_formula">here</a> to add or use the <a href="/?do=marketplace">Marketplace</a> to import a demo one</strong></div></div>',
 			searchPlaceholder: 'Formula name, or product name...',
-			search: "Search for formula:"
+			search: "Search"
 		},
 	    order: [0,'asc'],
 	    columnDefs: [
@@ -244,7 +244,7 @@ function pName(data, type, row, meta){
 function fMade(data, type, row, meta){
 	if(type === 'display'){
 		if(row.isMade == 1){
-			var data = '<i class="fas fa-check-circle alert-success" rel="tip" title="Formula last made on ' + row.madeOn + '"></i>';
+			var data = '<i class="fas fa-check-circle text-success-emphasis" rel="tip" title="Formula last made on ' + row.madeOn + '"></i>';
 		}else{
 			var data = '<i class="fas fa-hourglass-start" rel="tip" title="Formula is not made yet"></i>';
 		}
@@ -294,7 +294,7 @@ function fActions(data, type, row, meta){
         '<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
             '<ul class="dropdown-menu dropdown-menu-right">';
 			
-		data += '<li><i class="pv_point_gen link-dark dropdown-item" data-bs-toggle="modal" data-bs-target="#getFormMeta" data-formula="'+row.name+'" data-id="' + row.id + '"><i class="fas fa-cogs mx-2"></i>Settings</i></li>';
+		data += '<li><a class="pv_point_gen dropdown-item" data-bs-toggle="modal" data-bs-target="#getFormMeta" data-formula="'+row.name+'" data-id="' + row.id + '"><i class="fas fa-cogs mx-2"></i>Settings</a></li>';
 
 		data += '<li><a class="dropdown-item" href="/pages/operations.php?action=exportFormulas&fid=' + row.fid + '" rel="tip" title="Export '+ row.name +' as JSON" ><i class="fas fa-download mx-2"></i>Export as JSON</a></li>';
 		

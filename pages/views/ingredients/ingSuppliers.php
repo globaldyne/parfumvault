@@ -19,6 +19,8 @@ if($ing['physical_state'] == 1){
 }
 ?>
 <?php if($_GET['standAlone'] == 1){ ?>
+	<html lang="en" data-bs-theme="<?=$settings['bs_theme']?>">
+
 	<link href="/css/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     
 	<script src="/js/jquery/jquery.min.js"></script>
@@ -39,7 +41,7 @@ if($ing['physical_state'] == 1){
     <style>
 		body { margin: 10; }
 	</style>
-    
+    </html>
 <?php } ?>
 
 <h3>Suppliers</h3>
