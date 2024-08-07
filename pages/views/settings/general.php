@@ -110,7 +110,7 @@ while($cats_res = mysqli_fetch_array($cats_q)){
 </div>
     
     <div class="col-sm-2">
-     <h4 class="m-0 mb-4 text-primary">Pyramid View</h4>
+     <h4 class="m-0 mb-4">Pyramid View</h4>
      <div class="form-row">
         <div class="form-group col-md-auto">
           <label for="top_n" id="top">Top notes %</label>

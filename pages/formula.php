@@ -54,23 +54,23 @@ if($form[0]['ingredient']){
             
                 <div class="d-flex w-100">
                   <div class="flex-grow-1 text-start" style="width: 75%;">
-                    <h2 class="m-0 fw-bold text-primary">
-                      <a href="javascript:reload_formula_data()">
-                        <div id="formula_name"><?= $f_name ?: 'Unnamed' ?></div>
+                    <h2 class="m-0 fw-bold text-body">
+                      <a href="#">
+                        <div id="formula_name" class="text-body-emphasis"><?=$f_name ?: 'Unnamed' ?></div>
                       </a>
                       <span class="m-1">
                         <div id="lock_status">
                           <?php if ($meta['isProtected']) { ?>
-                            <a class="fas fa-lock" href="javascript:setProtected('false')"></a>
+                            <a class="fas fa-lock text-body-emphasis" href="javascript:setProtected('false')"></a>
                           <?php } else { ?>
-                            <a class="fas fa-unlock" href="javascript:setProtected('true')"></a>
+                            <a class="fas fa-unlock text-body-emphasis" href="javascript:setProtected('true')"></a>
                           <?php } ?>
                         </div>
                       </span>
                     </h2>
                     <h5 class="m-1 text-primary">
                       <span>
-                        <a href="#" rel="tip" data-bs-placement="right" title="<?= $cat_details['description'] ?>">
+                        <a href="#" rel="tip" class="text-secondary-emphasis"" data-bs-placement="right" title="<?= $cat_details['description'] ?>">
                           <?= ucfirst($meta['catClass']) ?>
                         </a>
                       </span>
@@ -253,6 +253,10 @@ document.title = "<?=$meta['name'].' - '.$product?>";
 var myFID = "<?=$fid?>";
 var isProtected = "<?=$meta['isProtected']?>"
 
+$('#formula_name').click(function() {
+    reload_formula_data();
+});
+    
 $('#add_ing').hide();
 
 if(isProtected == '0'){
@@ -279,7 +283,7 @@ $('#add_ing').on('click', '[id*=add-btn]', function () {
 			dilutant: $("#dilutant").val(),			
 			reCalc: $("#reCalcAdd").prop('checked'),
 			formulaSolventID: $("#formulaSolventsAdd").val()
-			},
+		},
 		dataType: 'json',
 		success: function (data) {
 			if ( data.success ) {
@@ -302,7 +306,7 @@ function setProtected(status) {
 		url: '/pages/update_data.php', 
 		type: 'GET',
 		data: {
-			protect: '<?=$fid?>',
+			protect: myFID,
 			isProtected: status,
 			},
 		dataType: 'json',
@@ -310,10 +314,10 @@ function setProtected(status) {
 			if ( data.success ) {
 				fetch_formula();
 				if( data.success == 'Formula locked'){
-					$('#lock_status').html('<a class="fas fa-lock" href="javascript:setProtected(\'false\')">');
+					$('#lock_status').html('<a class="fas fa-lock text-body-emphasis" href="javascript:setProtected(\'false\')">');
 					$('#add_ing').hide();
 				}else{
-					$('#lock_status').html('<a class="fas fa-unlock" href="javascript:setProtected(\'true\')">');
+					$('#lock_status').html('<a class="fas fa-unlock text-body-emphasis" href="javascript:setProtected(\'true\')">');
 					$('#add_ing').show();
 				}
 			} else {
@@ -346,8 +350,8 @@ function fetch_pyramid(){
 		type: 'GET',
 		data: {
 			formula: "<?=$id?>",
-			fid: "<?=$fid?>"
-			},
+			fid: myFID
+		},
 		dataType: 'html',
 		success: function (data) {
 		  $('#fetch_pyramid').html(data);
@@ -361,8 +365,8 @@ function fetch_impact(){
 		url: '/pages/views/formula/impact.php', 
 		type: 'GET',
 		data: {
-			id: "<?php echo $fid; ?>"
-			},
+			id: myFID
+		},
 		dataType: 'html',
 		success: function (data) {
 		  $('#fetch_impact').html(data);
@@ -376,7 +380,7 @@ function fetch_analysis(){
 		url: '/pages/views/formula/analysis.php', 
 		type: 'GET',
 		data: {
-			fid: "<?php echo $fid; ?>"
+			fid: myFID
 		},
 		dataType: 'html',
 		success: function (data) {
@@ -390,7 +394,7 @@ $.ajax({
     url: '/pages/viewSummary.php', 
 	type: 'GET',
     data: {
-		id: "<?=$fid?>"
+		id: myFID
 	},
 	dataType: 'html',
 		success: function (data) {
@@ -407,7 +411,7 @@ function fetch_replacements(){
 		url: '/pages/views/formula/replacements.php', 
 		type: 'POST',
 		data: {
-			fid: "<?=$fid?>"
+			fid: myFID
 		},
 		dataType: 'html',
 		success: function (data) {
@@ -435,7 +439,7 @@ function fetch_revisions(){
 		url: '/pages/views/formula/revisions.php', 
 		type: 'GET',
 		data: {
-			fid: "<?=$fid?>",
+			fid: myFID,
 			id: "<?=$meta['id']?>"
 		},
 		dataType: 'html',

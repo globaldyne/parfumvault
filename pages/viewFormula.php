@@ -67,7 +67,7 @@ $fid = $meta['fid'];
     	<input type="text" id="pvCustomSearch" placeholder="CAS, Ingredient, etc..">
 	</div>
 </div>
-<table id="formula" class="table table-striped table-bordered nowrap viewFormula" style="width:100%">
+<table id="formula" class="table table-hover table-striped table-bordered nowrap viewFormula" style="width:100%">
         <thead class="table-primary">
             <tr>
                 <th>Profile</th>

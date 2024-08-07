@@ -118,10 +118,11 @@ if(empty($cFormoulas)){
 </div>
 
 <?php } ?>
-<script type="text/javascript" language="javascript" >
-	$('#mainTitle').click(function() {
-	 	reload_formulas_data();
-  	});
+<script>
+
+$('#mainTitle').click(function() {
+	reload_formulas_data();
+});
 $('.selectpicker').selectpicker('refresh');
 function extrasShow() {
 	$('[rel=tip]').tooltip({
