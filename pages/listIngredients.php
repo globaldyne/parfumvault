@@ -61,7 +61,7 @@ $defCatClass = $settings['defCatClass'];
 	</div>
 </div>
 
-<table id="tdDataIng" class="table table-striped table-bordered" style="width:100%">
+<table id="tdDataIng" class="table table-striped" style="width:100%">
   <thead>
       <tr>
           <th>Name</th>
@@ -85,7 +85,7 @@ $(document).ready(function() {
 	var tdDataIng = $('#tdDataIng').DataTable( {
 	columnDefs: [
 		{ className: 'pv_vertical_middle text-center', targets: '_all' },
-		{ orderable: false, targets: [1,5,6,7,8,9]},
+		{ orderable: false, targets: [1,2,5,6,7,8,9]},
 		{ responsivePriority: 1, targets: 0 }
 	],
 	search: {
@@ -289,13 +289,13 @@ function iDocs(data, type, row){
 function actions(data, type, row, meta){
 	if(meta.settings.json.source == 'PVOnline'){
 		data = '<div class="dropdown">' +
-			'<button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+			'<button type="button" class="btn" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
 				'<ul class="dropdown-menu dropdown-menu-right">' + 
-				'<li><a rel="tip" title="Import '+ row.name +'" class="pv_point_gen text-dark" id="impIng" data-name="'+ row.name +'" data-id='+ row.id +'><i class="fas fa-download mx-2"></i>Import to local DB</a></li>'; 
+				'<li><a rel="tip" title="Import '+ row.name +'" class="pv_point_gen" id="impIng" data-name="'+ row.name +'" data-id='+ row.id +'><i class="fas fa-download mx-2"></i>Import to local DB</a></li>'; 
 		data += '</ul></div>';		
 	}else{//Treat the rest as local
 		data = '<div class="dropdown">' +
-			'<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+			'<button type="button" class="btn btn-floating hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
 				'<ul class="dropdown-menu dropdown-menu-right">';
 		data += '<li><a href="/pages/mgmIngredient.php?id='+btoa(row.name)+'" class="dropdown-item popup-link"><i class="fas fa-edit mx-2"></i>Manage</a></li>';
 		

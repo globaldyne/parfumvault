@@ -17,7 +17,7 @@ require_once(__ROOT__.'/inc/sec.php');
     </div>                    
   </div>
 </div>
-<table id="tdperfTypes" class="table table-striped table-bordered" style="width:100%">
+<table id="tdperfTypes" class="table table-striped" style="width:100%">
   <thead>
       <tr>
           <th>Name</th>
@@ -49,7 +49,7 @@ $(document).ready(function() {
 			  { data : 'name', title: 'Name', render: name },
 			  { data : 'concentration', title: 'Concentration', render: concentration},
 			  { data : 'description', title: 'Description', render: description},
-			  { data : null, title: 'Actions', render: actions},		   
+			  { data : null, title: '', render: actions},		   
 			 ],
 	order: [[ 1, 'asc' ]],
 	lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],

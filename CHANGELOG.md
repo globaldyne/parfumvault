@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 10.8
+- Table border removed from tables
 - Added support for a dark theme
 - Complete rewrite for Finished Product page
 - Various minor improvements for Formula view

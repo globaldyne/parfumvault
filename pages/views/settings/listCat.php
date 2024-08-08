@@ -23,7 +23,7 @@ require_once(__ROOT__.'/inc/opendb.php');
   </div>
 </div>
 <div class="card-body">
-	<table id="tdDataCat" class="table table-striped table-bordered nowrap" style="width:100%">
+	<table id="tdDataCat" class="table table-striped nowrap" style="width:100%">
       <thead>
         <tr>
           <th>Image</th>

@@ -10,7 +10,7 @@ require_once(__ROOT__.'/inc/opendb.php');
 	<div class="container-fluid">
     	<div class="card shadow mb-4">
         	<div class="card-header py-3"> 
-              <h2 class="m-0 font-weight-bold text-primary">Generate Finished Product</a>
+              <h2 class="m-0 font-weight-bold">Generate Finished Product</a>
             </div>
               <div class="mt-4 mr-4 text-right">
               	<div class="btn-group">
@@ -24,7 +24,7 @@ require_once(__ROOT__.'/inc/opendb.php');
             </div>
             <div class="card-body">
            		<div id="compliance"></div>
-                <table id="formula" class="table table-striped table-bordered nowrap" style="width:100%">
+                <table id="formula" class="table table-striped nowrap" style="width:100%">
                     <thead class="table-primary">
                         <tr>
                             <th>Ingredient</th>
@@ -40,45 +40,45 @@ require_once(__ROOT__.'/inc/opendb.php');
                         </tr>
                         <tr>
                             <th></th>
-                            <th class="fw-medium text-primary text-right">Sub Total</th>
-                            <th class="fw-medium text-primary text-center" id="sub-total-quantity"></th>
-                            <th class="fw-medium text-primary text-center" id="sub-total-concentration"></th>
-                            <th class="fw-medium text-primary text-center" id="sub-total-cost"></th>
+                            <th class="fw-medium text-info-emphasis text-right">Sub Total</th>
+                            <th class="fw-medium text-info-emphasis text-center" id="sub-total-quantity"></th>
+                            <th class="fw-medium text-info-emphasis text-center" id="sub-total-concentration"></th>
+                            <th class="fw-medium text-info-emphasis text-center" id="sub-total-cost"></th>
                         </tr>
                         <tr>
                             <th></th>
-                            <th class="fw-medium text-primary text-right">Carrier/Solvent</th>
-                            <th class="fw-medium text-primary text-center" id="carrier-quantity"></th>
-                            <th class="fw-medium text-primary text-center" id="carrier-concentration"></th>
-                            <th class="fw-medium text-primary text-center" id="carrier-cost"></th>
+                            <th class="fw-medium text-info-emphasis text-right">Carrier/Solvent</th>
+                            <th class="fw-medium text-info-emphasis text-center" id="carrier-quantity"></th>
+                            <th class="fw-medium text-info-emphasis text-center" id="carrier-concentration"></th>
+                            <th class="fw-medium text-info-emphasis text-center" id="carrier-cost"></th>
                         </tr>
                         <tr>
                             <th></th>
-                            <th class="fw-medium text-primary text-right">Bottle</th>
-                            <th class="fw-medium text-primary text-center" id="bottle-quantity"></th>
-                            <th class="fw-medium text-primary text-center">-</th>
-                            <th class="fw-medium text-primary text-center" id="bottle-cost"></th>
+                            <th class="fw-medium text-info-emphasis text-right">Bottle</th>
+                            <th class="fw-medium text-info-emphasis text-center" id="bottle-quantity"></th>
+                            <th class="fw-medium text-info-emphasis text-center">-</th>
+                            <th class="fw-medium text-info-emphasis text-center" id="bottle-cost"></th>
                         </tr>
                         <tr>
                             <th></th>
-                            <th class="fw-medium text-primary text-right">Lid</th>
-                            <th class="fw-medium text-primary text-center" id="lid-style"></th>
-                            <th class="fw-medium text-primary text-center">-</th>
-                            <th class="fw-medium text-primary text-center" id="lid-cost"></th>
+                            <th class="fw-medium text-info-emphasis text-right">Lid</th>
+                            <th class="fw-medium text-info-emphasis text-center" id="lid-style"></th>
+                            <th class="fw-medium text-info-emphasis text-center">-</th>
+                            <th class="fw-medium text-info-emphasis text-center" id="lid-cost"></th>
                         </tr>
                         <tr>
                             <th></th>
-                            <th class="fw-medium text-primary text-right">Batch No</th>
-                            <th class="fw-medium text-primary text-center" id="batch-no"></th>
-                            <th class="fw-medium text-primary text-center">-</th>
-                            <th class="fw-medium text-primary text-center">-</th>
+                            <th class="fw-medium text-info-emphasis text-right">Batch No</th>
+                            <th class="fw-medium text-info-emphasis text-center" id="batch-no"></th>
+                            <th class="fw-medium text-info-emphasis text-center">-</th>
+                            <th class="fw-medium text-info-emphasis text-center">-</th>
                         </tr>
                         <tr>
                             <th></th>
-                            <th class="fw-bold text-primary text-right">Total</th>
-                            <th class="fw-bold text-primary text-center" id="total-quantity"></th>
-                            <th class="fw-bold text-primary text-center" id="total-concentration"></th>
-                            <th class="fw-bold text-primary text-center" id="total-cost"></th>
+                            <th class="fw-bold text-info-emphasis text-right">Total</th>
+                            <th class="fw-bold text-info-emphasis text-center" id="total-quantity"></th>
+                            <th class="fw-bold text-info-emphasis text-center" id="total-concentration"></th>
+                            <th class="fw-bold text-info-emphasis text-center" id="total-cost"></th>
                         </tr>
                    </tfoot>
                 </table>

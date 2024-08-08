@@ -8,7 +8,7 @@ require_once(__ROOT__.'/func/php-settings.php');
   <div>
   <div class="card shadow mb-4">
     <div class="card-header py-3">
-      <h2 class="m-0 font-weight-bold text-primary"><a href="#" id="mainTitle">Scheduled Formulas</a></h2>
+      <h2 class="m-0 font-weight-bold text-primary-emphasis"><a href="#" id="mainTitle">Scheduled Formulas</a></h2>
     </div>
     <div class="pv_menu_formulas">
         <div class="text-right">
@@ -25,14 +25,14 @@ require_once(__ROOT__.'/func/php-settings.php');
     </div>
     <div class="card-body">
       <div class="table-responsive">
-        <table class="table table-bordered" id="tdDataScheduled" width="100%" cellspacing="0">
+        <table class="table table-striped" id="tdDataScheduled" width="100%" cellspacing="0">
           <thead>
             <tr>
               <th>Formula Name</th>
               <th>Ingredients Pending</th>
               <th>Progress</th>
               <th>Scheduled</th>
-              <th>Actions</th>
+              <th></th>
             </tr>
           </thead>
         </table>
@@ -76,37 +76,37 @@ $(document).ready(function() {
 				}
 			},
 		},
-	   columns: [
+	columns: [
             { data : 'name', title: 'Formula Name', render: name },
 			{ data : null, title: 'Ingredients remaining', render: ingredients },
 			{ data : 'madeOn', title: 'Progress', render: progress },
 			{ data : 'scheduledOn', title: 'Scheduled', render: fDate },
-			{ data : null, title: 'Actions', render: actions },
+			{ data : null, title: '', render: actions },
 		],
-		order: [[ 0, 'asc' ]],
-		lengthMenu: [[20, 50, 100, 200, 400], [20, 50, 100, 200, 400]],
-		pageLength: 20,
-		displayLength: 20,
-		stateSave: true,
-		stateDuration: -1,
-		stateLoadCallback: function (settings, callback) {
-			$.ajax( {
-				url: '/core/update_user_settings.php?set=listTodo&action=load',
-				dataType: 'json',
-				success: function (json) {
-					callback( json );
-				}
-			});
-		},
-		stateSaveCallback: function (settings, data) {
-		   $.ajax({
-			 url: "/core/update_user_settings.php?set=listTodo&action=save",
-			 data: data,
-			 dataType: "json",
-			 type: "POST"
-		  });
-		},
-  	});
+	order: [[ 0, 'asc' ]],
+	lengthMenu: [[20, 50, 100, 200, 400], [20, 50, 100, 200, 400]],
+	pageLength: 20,
+	displayLength: 20,
+	stateSave: true,
+	stateDuration: -1,
+	stateLoadCallback: function (settings, callback) {
+		$.ajax( {
+			url: '/core/update_user_settings.php?set=listTodo&action=load',
+			dataType: 'json',
+			success: function (json) {
+				callback( json );
+			}
+		});
+	},
+	stateSaveCallback: function (settings, data) {
+	   $.ajax({
+		 url: "/core/update_user_settings.php?set=listTodo&action=save",
+		 data: data,
+		 dataType: "json",
+		 type: "POST"
+	  });
+	},
+  });
 	
 	$("#required_materials").on("show.bs.modal", function(e) {
 		const id = e.relatedTarget.dataset.id;
@@ -117,113 +117,115 @@ $(document).ready(function() {
 				$(".modal-body", this).html(data);
 		});
 	});
-}); //END DOC
 
-function progress(data, type, row){
-	
- 	const perc = Math.round(100 - (row.total_ingredients_left / row.total_ingredients) * 100);
- 	const nowVal = row.total_ingredients_left;
-	const maxVal = row.total_ingredients;
-	
-	if(perc != 0){
-		data = '<div class="progress">' + 
-			  '<div class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: '+perc+'%;" aria-valuenow="'+nowVal+'" aria-valuemin="0" aria-valuemax="100">'+perc+'% Complete</div>' +
-			'</div>';
-	}else{
-		data = '<i class="fas fa-hourglass-start" rel="tip" title="Not started yet"></i>';
+
+	function progress(data, type, row){
+		
+		const perc = Math.round(100 - (row.total_ingredients_left / row.total_ingredients) * 100);
+		const nowVal = row.total_ingredients_left;
+		const maxVal = row.total_ingredients;
+		
+		if(perc != 0){
+			data = '<div class="progress">' + 
+				  '<div class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: '+perc+'%;" aria-valuenow="'+nowVal+'" aria-valuemin="0" aria-valuemax="100">'+perc+'% Complete</div>' +
+				'</div>';
+		}else{
+			data = '<i class="fas fa-hourglass-start" rel="tip" title="Not started yet"></i>';
+		}
+		return data;
 	}
-	return data;
-}
-
-function name(data, type, row){
 	
-	data ='<div class="btn-group"><a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'+row.name+'</a><div class="dropdown-menu dropdown-menu-right">';
+	function name(data, type, row){
+		
+		data ='<div class="btn-group"><a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'+row.name+'</a><div class="dropdown-menu dropdown-menu-right">';
+		
+		data+='<li><a class="dropdown-item" href="/pages/makeFormula.php?fid='+ row.fid +'" target="_blank"><i class="fa-solid fa-flask-vial mx-2"></i>Make formula</a></li>';
 	
-	data+='<li><a class="dropdown-item" href="/pages/makeFormula.php?fid='+ row.fid +'" target="_blank"><i class="fa-solid fa-flask-vial mx-2"></i>Make formula</a></li>';
-
-	data+='<li><a class="dropdown-item" href="/?do=Formula&id='+row.id+'" target="_blank"><i class="fa-solid fa-flask mx-2"></i>Go to formula</a></li>';
-		                
-	data+='</div></div>';
-	return data;
-}
-
-function ingredients(data, type, row){
-	data = row.total_ingredients_left + '/' + row.total_ingredients ;	
-	return data;
-}
-
-function fDate(data, type, row, meta){
-  if(type === 'display'){
-    if(data == '0000-00-00 00:00:00'){
-      data = '-';
-    }else{
-	    let dateTimeParts= data.split(/[- :]/); 
-		dateTimeParts[1]--; 
-		const dateObject = new Date(...dateTimeParts); 
-        data = dateObject.toLocaleDateString() + " " + dateObject.toLocaleTimeString();
-    }
-  }
-  return data;
-}
-
-function actions(data, type, row){
-	return '<i rel="tip" title="Delete '+ row.name +'" class="pv_point_gen fas fa-trash text-danger" id="pend_remove" data-name="'+ row.name +'" data-id='+ row.fid +'></i>';    
-}
-
-function reload_data() {
-    $('#tdDataScheduled').DataTable().ajax.reload(null, true);
-}
-
-
-$('#tdDataScheduled').on('click', '[id*=pend_remove]', function () {
-	var frm = {};
-	frm.ID = $(this).attr('data-id');
-	frm.Name = $(this).attr('data-name');
-    
-	bootbox.dialog({
-       title: "Confirm removal",
-       message : "Remove formula <strong>" + frm.Name + "</strong> from scheduled formulas? <br />Your original formula will not be affected but any progress of making the formula will be lost.",
-       buttons :{
-           main: {
-               label : "Remove",
-               className : "btn-danger",
-               callback: function (){
-			   $.ajax({
-					url: '/pages/manageFormula.php', 
-					type: 'POST',
-					data: {
-						action: 'todo',
-						fid: frm.ID,
-						name: frm.Name,
-						remove: true,
-						},
-					dataType: 'json',
-					success: function (data) {
-						if ( data.success ) {
-            				$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
-							$('.toast-header').removeClass().addClass('toast-header alert-success');
-							reload_data();
-						} else {
-							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
-							$('.toast-header').removeClass().addClass('toast-header alert-danger');
+		data+='<li><a class="dropdown-item" href="/?do=Formula&id='+row.id+'" target="_blank"><i class="fa-solid fa-flask mx-2"></i>Go to formula</a></li>';
+							
+		data+='</div></div>';
+		return data;
+	}
+	
+	function ingredients(data, type, row){
+		data = row.total_ingredients_left + '/' + row.total_ingredients ;	
+		return data;
+	}
+	
+	function fDate(data, type, row, meta){
+	  if(type === 'display'){
+		if(data == '0000-00-00 00:00:00'){
+		  data = '-';
+		}else{
+			let dateTimeParts= data.split(/[- :]/); 
+			dateTimeParts[1]--; 
+			const dateObject = new Date(...dateTimeParts); 
+			data = dateObject.toLocaleDateString() + " " + dateObject.toLocaleTimeString();
+		}
+	  }
+	  return data;
+	}
+	
+	function actions(data, type, row){
+		return '<i rel="tip" title="Delete '+ row.name +'" class="pv_point_gen fas fa-trash text-danger" id="pend_remove" data-name="'+ row.name +'" data-id='+ row.fid +'></i>';    
+	}
+	
+	function reload_data() {
+		$('#tdDataScheduled').DataTable().ajax.reload(null, true);
+	}
+	
+	
+	$('#tdDataScheduled').on('click', '[id*=pend_remove]', function () {
+		var frm = {};
+		frm.ID = $(this).attr('data-id');
+		frm.Name = $(this).attr('data-name');
+		
+		bootbox.dialog({
+		   title: "Confirm removal",
+		   message : "Remove formula <strong>" + frm.Name + "</strong> from scheduled formulas? <br />Your original formula will not be affected but any progress of making the formula will be lost.",
+		   buttons :{
+			   main: {
+				   label : "Remove",
+				   className : "btn-danger",
+				   callback: function (){
+				   $.ajax({
+						url: '/pages/manageFormula.php', 
+						type: 'POST',
+						data: {
+							action: 'todo',
+							fid: frm.ID,
+							name: frm.Name,
+							remove: true,
+							},
+						dataType: 'json',
+						success: function (data) {
+							if ( data.success ) {
+								$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+								$('.toast-header').removeClass().addClass('toast-header alert-success');
+								reload_data();
+							} else {
+								$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+								$('.toast-header').removeClass().addClass('toast-header alert-danger');
+							}
+							$('.toast').toast('show');
 						}
-						$('.toast').toast('show');
-					}
-				});
-				
-                 return true;
-               }
-           },
-           cancel: {
-               label : "Cancel",
-               className : "btn-secondary",
-               callback : function() {
-                   return true;
-               }
-           }   
-       },onEscape: function () {return true;}
-   });
-});
+					});
+					
+					 return true;
+				   }
+			   },
+			   cancel: {
+				   label : "Cancel",
+				   className : "btn-secondary",
+				   callback : function() {
+					   return true;
+				   }
+			   }   
+		   },onEscape: function () {return true;}
+	   });
+	});
+
+}); //END DOC
 </script>
 <!-- IMPORT JSON MODAL -->
 <div class="modal fade" id="import_making_json" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="import_making_json" aria-hidden="true">

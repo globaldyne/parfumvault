@@ -43,7 +43,7 @@ while($res = mysqli_fetch_array($q)){
          </tr>
         </table>
 
-        <table class="table table-bordered" id="tdDataCompounds" width="100%" cellspacing="0">
+        <table class="table table-striped" id="tdDataCompounds" width="100%" cellspacing="0">
           <thead>
             <tr>
               <th>Name</th>
@@ -325,7 +325,7 @@ $(document).ready(function() {
 	
 	function actions(data, type, row){	
 			data = '<div class="dropdown">' +
-			'<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+			'<button type="button" class="btn btn-floating hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
 				'<ul class="dropdown-menu dropdown-menu-right">';
 			data += '<li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editCompound" rel="tip" title="Edit '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-edit mx-2"></i>Edit</a></li>';
 			data += '<div class="dropdown-divider"></div>';

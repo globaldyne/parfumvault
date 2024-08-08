@@ -21,7 +21,7 @@ require_once(__ROOT__.'/inc/opendb.php');
 </div>
     <div class="card-body">
     <div id="fcatMsg"></div>
-    <table id="frmDataCat" class="table table-bordered" style="width:100%">
+    <table id="frmDataCat" class="table table-striped" style="width:100%">
       <thead>
         <tr>
           <th>Name</th>

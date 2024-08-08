@@ -19,7 +19,7 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))){
 <?php require_once(__ROOT__.'/pages/top.php'); ?>
         <div class="container-fluid">
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="m-0 mb-4 text-primary">Dashboard</h1>
+            <h1 class="m-0 mb-4">Dashboard</h1>
           </div>
           <div class="row">
         <?php

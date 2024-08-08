@@ -59,7 +59,7 @@ fetch_ifraStats();
 <script src="/js/amcharts_3.21.15.free/amcharts/themes/light.js"></script>
 
 <div class="container-fluid">
-	<h2 class="m-0 mb-4 text-primary">Statistics</h2>
+	<h2 class="m-0 mb-4 text-primary-emphasis">Statistics</h2>
      <div id="statistics">
          <ul>
              <li><a href="#ingUsage_tab"><span>Ingredients Usage</span></a></li>

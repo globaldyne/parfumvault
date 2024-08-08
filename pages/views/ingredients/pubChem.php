@@ -71,42 +71,40 @@ $('#pubChemDataJ').on('click', '[id*=btnUpdatePub]', function () {
 });
 </script>
 <h3>Pub Chem Data</h3>
-<div class="col dropdown-divider"></div>
-<div class="card rounded" id="pubChemDataJ">
-    <div class="card-body"> 
-        <div class="col-sm-6">
-            <div class="col-sm-5">
-                <img alt="Structure image" src="<?php echo $image;?>"/>
-            </div>
-            <div class="row">
-            	<div class="col">
-                	Molecular Formula: <label><?php echo $molecularFormula;?></label>
-            	</div>
-            </div>
-
-             <div class="row">
-             	<div class="col">
-                	Canonical Smiles: <label><?php echo $CanonicalSMILES;?></label>
-            	</div>
-             </div>
-             <div class="row">
-             	<div class="col">
-                	Mass: <label><?php echo $ExactMass;?></label>
-            	</div>
-             </div>
-             <div class="row">
-             	<div class="col">
-                	XLogP: <label><?php echo $logP;?></label>
-            	</div>
-             </div> 
-             <div class="col dropdown-divider"></div>
-             <div class="row mt-2">
-             	<div class="col">
-                	<input type="submit" class="btn btn-primary" name="btnUpdatePub" id="btnUpdatePub" value="Update data" />
-            	</div>
-             </div>                          
-        </div>
+<div class="container">
+  <div class="row">
+    <div class="col-md-2">
+      <img src="<?php echo $image;?>" class="img-fluid d-block" alt="Molecule Image" />
     </div>
+    <div class="col-md-10">
+      <div class="row mb-2">
+        <div class="col-md-2">Molecular Formula</div>
+        <div class="col-md-8"><strong><?php echo $molecularFormula;?></strong></div>
+      </div>
+      <div class="row mb-2">
+        <div class="col-md-2">Molecular Weight</div>
+        <div class="col-md-8"><strong><?php echo $molecularWeight;?></strong></div>
+      </div>
+      <div class="row mb-2">
+        <div class="col-md-2">Canonical Smiles</div>
+        <div class="col-md-8"><strong><?php echo $CanonicalSMILES;?></strong></div>
+      </div>
+      <div class="row mb-2">
+        <div class="col-md-2">Mass</div>
+        <div class="col-md-8"><strong><?php echo $ExactMass;?></strong></div>
+      </div>
+      <div class="row mb-2">
+        <div class="col-md-2">XLogP</div>
+        <div class="col-md-8"><strong><?php echo $logP;?></strong></div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <input type="submit" class="btn btn-primary" name="btnUpdatePub" id="btnUpdatePub" value="Update data" />
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
 
 

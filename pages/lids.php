@@ -24,7 +24,7 @@ while ($suppliers = mysqli_fetch_array($sup)){
                    </div>
                  </div>        
                  
-                <table class="table table-bordered" id="tdDataLids" width="100%" cellspacing="0">
+                <table class="table table-striped" id="tdDataLids" width="100%" cellspacing="0">
                   <thead>
                     <tr>
                       <th>Style</th>
@@ -227,7 +227,7 @@ $(document).ready(function() {
 	
 	function actions(data, type, row){	
 			data = '<div class="dropdown">' +
-			'<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+			'<button type="button" class="btn btn-floating hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
 				'<ul class="dropdown-menu dropdown-menu-right">';
 			data += '<li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editLid" rel="tip" title="Edit '+ row.style +'" data-id='+ row.id +' data-name="'+ row.style +'"><i class="fas fa-edit mx-2"></i>Edit</a></li>';
 			data += '<li><a href="'+ row.supplier_link +'" target="_blank" class="dropdown-item" rel="tip" title="Open '+ row.style +' page"><i class="fas fa-shopping-cart mx-2"></i>Go to supplier</a></li>';

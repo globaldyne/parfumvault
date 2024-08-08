@@ -160,7 +160,7 @@ if($_POST['manage'] == 'general'){
 	}
 	
 	if(mysqli_query($conn, "UPDATE settings SET currency = '$currency', top_n = '$top_n', heart_n = '$heart_n', base_n = '$base_n', chem_vs_brand = '$chem_vs_brand', grp_formula = '$grp_formula', pubChem='$pubChem', chkVersion='$chkVersion', qStep = '$qStep', defCatClass = '$defCatClass', pubchem_view = '$pubchem_view', multi_dim_perc = '$multi_dim_perc', mUnit = '$mUnit', editor = '$editor', user_pref_eng = '$user_pref_eng', pv_host = '".$_POST['pv_host']."', defPercentage = '$defPercentage', bs_theme = '$bs_theme'")){
-		$response["success"] = 'Settings updated!';
+		$response["success"] = 'Settings updated';
 	}else{
 		$response["error"] = 'An error occured '.mysqli_error($conn);	
 	}
@@ -201,7 +201,7 @@ if($_POST['manage'] == 'brand'){
 	$brandPhone = mysqli_real_escape_string($conn, $_POST['brandPhone']);
 
 	if(mysqli_query($conn, "UPDATE settings SET brandName = '$brandName', brandAddress = '$brandAddress', brandEmail = '$brandEmail', brandPhone = '$brandPhone'")){
-		$response['success'] = 'Brand details updated!';
+		$response['success'] = 'Brand details updated';
 	}else{
 		$response['error'] = 'Error updating brand info';
 	}

@@ -1,5 +1,6 @@
 Whats New in v10.8
 --------------------------
+- This release also contains various UI and backend minor improvements
 - Added support for a dark theme
 - Complete rewrite for Finished Product page
 - Added a font size when exporting a PDF in Sell Formula

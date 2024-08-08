@@ -3,7 +3,7 @@
 <div class="container-fluid">
   <div class="card shadow mb-4">
         <div class="card-header py-3"> 
-           <h2 class="m-0 font-weight-bold text-primary">Finished Product</h2>
+           <h2 class="m-0 font-weight-bold text-primary-emphasis">Finished Product</h2>
     	</div>
 		<div class="card-body">
 <?php 

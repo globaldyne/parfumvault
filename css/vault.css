@@ -438,7 +438,7 @@ formula td, table.table th {
 .mgmIngHeader {
 	font-size: 3rem;
 	line-height: 3rem;
-	color: #004372;
+	color: var( --bs-body-color);
 	background: var( --bs-body-bg);
 }
 .mgmIngHeader-with-separator::after {
@@ -786,7 +786,7 @@ table.fixedHeader-floating {
 	font-size: 1.2rem;
 	display: inline;
 	font-weight: bold;
-	color: #77716f !important
+	color: var( --bs-secondary-color ) !important;
 }
 
 .pv_exclusions {
@@ -1063,11 +1063,11 @@ body {
 #customer_name, #formula_name {
   display: inline;
 }
-
+/*
 table.dataTable thead tr {
 	background-color: #cececec9 !important;
 }
-
+*/
 table#tdDataPending.dataTable tbody tr:hover {
 	background-color: #ae9292;
 }

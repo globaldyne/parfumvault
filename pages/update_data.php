@@ -1684,12 +1684,12 @@ if($_POST['action'] == 'clone' && $_POST['old_ing_name'] && $_POST['ing_id']){
 	$old_ing_name = mysqli_real_escape_string($conn, $_POST['old_ing_name']);
 	$new_ing_name = mysqli_real_escape_string($conn, $_POST['new_ing_name']);
 	if(empty($new_ing_name)){
-		$response['error'] = '<strong>Error: </strong>Please enter a name!';
+		$response['error'] = 'Please provide a name';
 		echo json_encode($response);
 		return;
 	}
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '$new_ing_name'"))){
-		$response['error'] = '<strong>Error: </strong>'.$new_ing_name.' already exists!';
+		$response['error'] = $new_ing_name.' already exists';
 		echo json_encode($response);
 		return;
 	}
@@ -1700,7 +1700,7 @@ if($_POST['action'] == 'clone' && $_POST['old_ing_name'] && $_POST['ing_id']){
 
 	if($nID = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '$new_ing_name'"))){
 		
-		$response['success'] = $old_ing_name.' cloned as <a href="/pages/mgmIngredient.php?id='.base64_encode($nID['name']).'" >'.$new_ing_name.'</a>!';
+		$response['success'] = $old_ing_name.' duplicated as <a href="/pages/mgmIngredient.php?id='.base64_encode($nID['name']).'" >'.$new_ing_name.'</a>';
 		echo json_encode($response);
 		return;
 	}
@@ -1717,12 +1717,12 @@ if($_POST['action'] == 'rename' && $_POST['old_ing_name'] && $_POST['ing_id']){
 	$old_ing_name = mysqli_real_escape_string($conn, $_POST['old_ing_name']);
 	$new_ing_name = mysqli_real_escape_string($conn, $_POST['new_ing_name']);
 	if(empty($new_ing_name)){
-		$response['error'] = '<strong>Error: </strong>Please enter a name!';
+		$response['error'] = 'Please provide a name';
 		echo json_encode($response);
 		return;
 	}
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '$new_ing_name'"))){
-		$response['error'] = '<strong>Error: </strong>'.$new_ing_name.' already exists!';
+		$response['error'] = $new_ing_name.' already exists';
 		echo json_encode($response);
 		return;
 	}
@@ -1734,7 +1734,7 @@ if($_POST['action'] == 'rename' && $_POST['old_ing_name'] && $_POST['ing_id']){
 
 	if($nID = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '$new_ing_name'"))){
 		
-		$response['success']['msg'] = $old_ing_name.' renamed to <a href="/pages/mgmIngredient.php?id='.base64_encode($nID['name']).'" >'.$new_ing_name.'</a>!';
+		$response['success']['msg'] = $old_ing_name.' renamed to <a href="/pages/mgmIngredient.php?id='.base64_encode($nID['name']).'" >'.$new_ing_name.'</a>';
 		$response['success']['id'] = base64_encode($nID['name']);
 		echo json_encode($response);
 		return;

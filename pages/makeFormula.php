@@ -91,7 +91,7 @@ while($res = mysqli_fetch_array($qS)){
                <li><a class="dropdown-item" href="#" id="print"><i class="fa-solid fa-print mx-2"></i>Print Formula</a></li>
             </div>
         </div>
-            <table class="table table-bordered" id="tdDataPending" width="100%" cellspacing="0">
+            <table class="table table-striped" id="tdDataPending" width="100%" cellspacing="0">
               <thead>
                 <tr>
                   <th>Ingredient</th>

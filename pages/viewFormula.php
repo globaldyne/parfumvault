@@ -67,7 +67,7 @@ $fid = $meta['fid'];
     	<input type="text" id="pvCustomSearch" placeholder="CAS, Ingredient, etc..">
 	</div>
 </div>
-<table id="formula" class="table table-hover table-striped table-bordered nowrap viewFormula" style="width:100%">
+<table id="formula" class="table table-hover table-striped nowrap viewFormula" style="width:100%">
         <thead class="table-primary">
             <tr>
                 <th>Profile</th>
@@ -778,7 +778,7 @@ function ingInv(data, type, row, meta){
 function ingActions(data, type, row, meta){
 
 	data = '<div class="dropdown">' +
-        '<button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+        '<button type="button" class="btn" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
             '<ul class="dropdown-menu dropdown-menu-end">';
 
 	data += '<li><a class="dropdown-item" href="'+ row.ingredient.pref_supplier_link +'" target="_blank" rel="tip" title="Open '+ row.ingredient.pref_supplier +' page"><i class="fas fa-shopping-cart mx-2"></i>Go to supplier</a></li>';

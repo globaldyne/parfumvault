@@ -32,7 +32,7 @@ $fid = $meta['fid'];
     </div>
 </div>
 <hr />
-<table id="formula" class="table table-striped table-bordered nowrap">
+<table id="formula" class="table table-striped">
     <thead>
         <tr>
             <th>Ingredient</th>

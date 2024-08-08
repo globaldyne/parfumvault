@@ -4,9 +4,7 @@
     <div>
       <div class="card shadow mb-4">
         <div class="card-header py-3">
-          <h2 class="m-0 fw-bold text-primary">
-            <a href="/?do=compareFormulas">Compare formulas</a>
-          </h2>
+          <h2 class="m-0 fw-bold text-primary-emphasis">Compare formulas</h2>
         </div>
         <div class="card-body">
           <?php 

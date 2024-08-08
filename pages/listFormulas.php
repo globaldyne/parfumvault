@@ -77,7 +77,7 @@ if(empty($cFormoulas)){
 </ul>
 <div class="tab-content table-responsive">
     <div class="tab-pane" id="tab-all">
-        <table id="all-table" class="table table-striped table-bordered" width="100%" cellspacing="0">
+        <table id="all-table" class="table table-striped" width="100%" cellspacing="0">
             <thead>
                 <tr>
                     <th>Formula Name</th>
@@ -96,7 +96,7 @@ if(empty($cFormoulas)){
     </div>
     <?php foreach ($fcat as $cat) {?>
     <div class="tab-pane" id="tab-<?=$cat['cname']?>">
-        <table id="<?=$cat['cname']?>-table" class="table table-striped table-bordered" width="100%" cellspacing="0">
+        <table id="<?=$cat['cname']?>-table" class="table table-striped" width="100%" cellspacing="0">
             <thead>
                 <tr>
                     <th>Formula Name</th>
@@ -119,572 +119,574 @@ if(empty($cFormoulas)){
 
 <?php } ?>
 <script>
+$(document).ready(function() {
 
-$('#mainTitle').click(function() {
-	reload_formulas_data();
-});
-$('.selectpicker').selectpicker('refresh');
-function extrasShow() {
-	$('[rel=tip]').tooltip({
-		"html": true,
-		"delay": {"show": 100, "hide": 0},
+	$('#mainTitle').click(function() {
+		reload_formulas_data();
 	});
-};
-
-$(".tabs").click(function() {
-     var src = $(this).data("source");
-     var tableId = $(this).data("table");
-     initTable(tableId, src);
-});
-
-function initTable(tableId, src) {
-    var table = $("#" + tableId).DataTable({
-	   ajax: {
-		   url: src,
-		   type: 'POST',
-		   dataType: 'json',
-		   data: function(d) {
-			   if (d.order.length>0){
-					d.order_by = d.columns[d.order[0].column].data
-					d.order_as = d.order[0].dir
-				}
+	$('.selectpicker').selectpicker('refresh');
+	function extrasShow() {
+		$('[rel=tip]').tooltip({
+			"html": true,
+			"delay": {"show": 100, "hide": 0},
+		});
+	};
+	
+	$(".tabs").click(function() {
+		 var src = $(this).data("source");
+		 var tableId = $(this).data("table");
+		 initTable(tableId, src);
+	});
+	
+	function initTable(tableId, src) {
+		var table = $("#" + tableId).DataTable({
+		   ajax: {
+			   url: src,
+			   type: 'POST',
+			   dataType: 'json',
+			   data: function(d) {
+				   if (d.order.length>0){
+						d.order_by = d.columns[d.order[0].column].data
+						d.order_as = d.order[0].dir
+					}
+				},
 			},
-		},
-		columns: [
-		   { data : 'name', title: 'Formula Name', render: fName },
-		   { data : 'product_name', title: 'Product Name', render: pName},
-		   { data : 'status', title: 'Status', render: fStatus},
-		   { data : 'ingredients', title: 'Ingredients'},
-		   { data : 'revision', title: 'Revision'},
-		   { data : 'isMade', title: 'Made', render: fMade},
-		   { data : 'rating', title: 'Rating', render: rating},
-		   { data : 'created', title: 'Created', render: fDate},
-		   { data : 'updated', title: 'Updated', render: fDate},
-		   { data : null, title: '', render: fActions},				   
-		],
-		processing: true,
-		serverSide: true,
-		searching: true,
-		responsive: true,
-		language: {
-			loadingRecords: '&nbsp;',
-			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>',
-			emptyTable: '<div class="row g-3"><div class="alert alert-info alert-dismissible"><i class="fa-solid fa-circle-info mx-2"></i><strong>No formulas yet, click <a href="#" data-bs-toggle="modal" data-bs-target="#add_formula">here</a> to add or use the <a href="/?do=marketplace">Marketplace</a> to import a demo one</strong></div></div>',
-			searchPlaceholder: 'Formula name, or product name...',
-			search: "Search"
-		},
-	    order: [0,'asc'],
-	    columnDefs: [
-			{ orderable: false, targets: [2, 3, 9] },
-			{ className: 'text-center', targets: '_all' },
-			{ responsivePriority: 1, targets: 0 }
-		],
-	    destroy: true,
-        bFilter: true,
-        paging:  true,
-		info:   true,
-		lengthMenu: [[20, 40, 60, 100], [20, 40, 60, 100]],
-		pageLength: 20,
-		displayLength: 20,
-		drawCallback: function( settings ) {
-			extrasShow();
-     	},
-		createdRow: function(row, data, dataIndex){
-            initRating(row);
-        },
-		stateSave: true,
-		stateDuration: -1,
-		stateLoadCallback: function (settings, callback) {
-        	$.ajax( {
-            	url: "/core/update_user_settings.php?set=listFormulas&action=load&tableId=" + tableId,
-            	dataType: "json",
-            	success: function (json) {
-                	callback( json );
-            	}
-        	});
-    	},
-    	stateSaveCallback: function (settings, data) {
-		   $.ajax({
-			 url: "/core/update_user_settings.php?set=listFormulas&action=save&tableId=" + tableId,
-			 data: data,
-			 dataType: "json",
-			 type: "POST"
-		  });
-		},
-	});
-}
-
-initTable("all-table", "/core/list_formula_data.php");
-
-$("#listFormulas").tabs();
-
-function rating(data, type, row, meta){
-  	data = '<span class="rating" data-id='+row.id+' data-score="'+row.rating+'"></span>';
-	return data;
-}
-
-function fName(data, type, row, meta){
-	if(type === 'display'){
-		if(row.isProtected == 1){
-			var pad = 'class="fas fa-lock" rel="tip" title="Formula is protected"';
-		}else{
-			var pad = 'class="fas fa-unlock"  rel="tip" title="Formula is not protected"';
-		}
-		data = '<div '+ pad +'></div><a href="/?do=Formula&id=' + row.id + '" target="_blank"> ' + data + '</a>';
-	}
-  return data;
-}
-
-
-function pName(data, type, row, meta){
-	data = '<i class="pv_point_gen_color" data-bs-toggle="modal" data-bs-target="#getFormMeta" data-id="' + row.id + '" data-formula="'+row.name+'">'+row.product_name+'</i>';
-	
-  return data;
-}
-
-function fMade(data, type, row, meta){
-	if(type === 'display'){
-		if(row.isMade == 1){
-			var data = '<i class="fas fa-check-circle text-success-emphasis" rel="tip" title="Formula last made on ' + row.madeOn + '"></i>';
-		}else{
-			var data = '<i class="fas fa-hourglass-start" rel="tip" title="Formula is not made yet"></i>';
-		}
-	}
-  return data;
-}
-
-function fStatus(data, type, row, meta){
-	if(row.status == 0){
-		var data = '<span class="pv-label badge badge-secondary">Scheduled</span>';
-	}
-	if(row.status == 1){
-		var data = '<span class="pv-label badge badge-primary">Under Development</span>';
-	}
-	if(row.status == 2){
-		var data = '<span class="pv-label badge badge-info">Under Evaluation</span>';
-	}
-	if(row.status == 3){
-		var data = '<span class="pv-label badge badge-success">In Production</span>';
-	}
-	if(row.status == 4){
-		var data = '<span class="pv-label badge badge-warning">To be reformulated</span>';
-	}
-	if(row.status == 5){
-		var data = '<span class="pv-label badge badge-danger">Failure</span>';
+			columns: [
+			   { data : 'name', title: 'Formula Name', render: fName },
+			   { data : 'product_name', title: 'Product Name', render: pName},
+			   { data : 'status', title: 'Status', render: fStatus},
+			   { data : 'ingredients', title: 'Ingredients'},
+			   { data : 'revision', title: 'Revision'},
+			   { data : 'isMade', title: 'Made', render: fMade},
+			   { data : 'rating', title: 'Rating', render: rating},
+			   { data : 'created', title: 'Created', render: fDate},
+			   { data : 'updated', title: 'Updated', render: fDate},
+			   { data : null, title: '', render: fActions},				   
+			],
+			processing: true,
+			serverSide: true,
+			searching: true,
+			responsive: true,
+			language: {
+				loadingRecords: '&nbsp;',
+				processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>',
+				emptyTable: '<div class="row g-3"><div class="alert alert-info alert-dismissible"><i class="fa-solid fa-circle-info mx-2"></i><strong>No formulas yet, click <a href="#" data-bs-toggle="modal" data-bs-target="#add_formula">here</a> to add or use the <a href="/?do=marketplace">Marketplace</a> to import a demo one</strong></div></div>',
+				searchPlaceholder: 'Formula name, or product name...',
+				search: "Search"
+			},
+			order: [0,'asc'],
+			columnDefs: [
+				{ orderable: false, targets: [2, 3, 9] },
+				{ className: 'text-center', targets: '_all' },
+				{ responsivePriority: 1, targets: 0 }
+			],
+			destroy: true,
+			bFilter: true,
+			paging:  true,
+			info:   true,
+			lengthMenu: [[20, 40, 60, 100], [20, 40, 60, 100]],
+			pageLength: 20,
+			displayLength: 20,
+			drawCallback: function( settings ) {
+				extrasShow();
+			},
+			createdRow: function(row, data, dataIndex){
+				initRating(row);
+			},
+			stateSave: true,
+			stateDuration: -1,
+			stateLoadCallback: function (settings, callback) {
+				$.ajax( {
+					url: "/core/update_user_settings.php?set=listFormulas&action=load&tableId=" + tableId,
+					dataType: "json",
+					success: function (json) {
+						callback( json );
+					}
+				});
+			},
+			stateSaveCallback: function (settings, data) {
+			   $.ajax({
+				 url: "/core/update_user_settings.php?set=listFormulas&action=save&tableId=" + tableId,
+				 data: data,
+				 dataType: "json",
+				 type: "POST"
+			  });
+			},
+		});
 	}
 	
-	return data;
-}
-
-function fDate(data, type, row, meta){
-  if(type === 'display'){
-    if(data == '0000-00-00 00:00:00'){
-      data = '-';
-    }else{
-	    let dateTimeParts= data.split(/[- :]/); 
-		dateTimeParts[1]--; 
-		const dateObject = new Date(...dateTimeParts); 
-        data = dateObject.toLocaleDateString() + " " + dateObject.toLocaleTimeString();
-    }
-  }
-  return data;
-}
-
-function fActions(data, type, row, meta){
-		data = '<div class="dropdown">' +
-        '<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
-            '<ul class="dropdown-menu dropdown-menu-right">';
+	initTable("all-table", "/core/list_formula_data.php");
+	
+	$("#listFormulas").tabs();
+	
+	function rating(data, type, row, meta){
+		data = '<span class="rating" data-id='+row.id+' data-score="'+row.rating+'"></span>';
+		return data;
+	}
+	
+	function fName(data, type, row, meta){
+		if(type === 'display'){
+			if(row.isProtected == 1){
+				var pad = 'class="fas fa-lock" rel="tip" title="Formula is protected"';
+			}else{
+				var pad = 'class="fas fa-unlock"  rel="tip" title="Formula is not protected"';
+			}
+			data = '<div '+ pad +'></div><a href="/?do=Formula&id=' + row.id + '" target="_blank"> ' + data + '</a>';
+		}
+	  return data;
+	}
+	
+	
+	function pName(data, type, row, meta){
+		data = '<i class="pv_point_gen_color" data-bs-toggle="modal" data-bs-target="#getFormMeta" data-id="' + row.id + '" data-formula="'+row.name+'">'+row.product_name+'</i>';
+		
+	  return data;
+	}
+	
+	function fMade(data, type, row, meta){
+		if(type === 'display'){
+			if(row.isMade == 1){
+				var data = '<i class="fas fa-check-circle text-success-emphasis" rel="tip" title="Formula last made on ' + row.madeOn + '"></i>';
+			}else{
+				var data = '<i class="fas fa-hourglass-start" rel="tip" title="Formula is not made yet"></i>';
+			}
+		}
+	  return data;
+	}
+	
+	function fStatus(data, type, row, meta){
+		if(row.status == 0){
+			var data = '<span class="pv-label badge badge-secondary">Scheduled</span>';
+		}
+		if(row.status == 1){
+			var data = '<span class="pv-label badge badge-primary">Under Development</span>';
+		}
+		if(row.status == 2){
+			var data = '<span class="pv-label badge badge-info">Under Evaluation</span>';
+		}
+		if(row.status == 3){
+			var data = '<span class="pv-label badge badge-success">In Production</span>';
+		}
+		if(row.status == 4){
+			var data = '<span class="pv-label badge badge-warning">To be reformulated</span>';
+		}
+		if(row.status == 5){
+			var data = '<span class="pv-label badge badge-danger">Failure</span>';
+		}
+		
+		return data;
+	}
+	
+	function fDate(data, type, row, meta){
+	  if(type === 'display'){
+		if(data == '0000-00-00 00:00:00'){
+		  data = '-';
+		}else{
+			let dateTimeParts= data.split(/[- :]/); 
+			dateTimeParts[1]--; 
+			const dateObject = new Date(...dateTimeParts); 
+			data = dateObject.toLocaleDateString() + " " + dateObject.toLocaleTimeString();
+		}
+	  }
+	  return data;
+	}
+	
+	function fActions(data, type, row, meta){
+			data = '<div class="dropdown">' +
+			'<button type="button" class="btn btn-floating hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+				'<ul class="dropdown-menu dropdown-menu-right">';
+				
+			data += '<li><a class="pv_point_gen dropdown-item" data-bs-toggle="modal" data-bs-target="#getFormMeta" data-formula="'+row.name+'" data-id="' + row.id + '"><i class="fas fa-cogs mx-2"></i>Settings</a></li>';
+	
+			data += '<li><a class="dropdown-item" href="/pages/operations.php?action=exportFormulas&fid=' + row.fid + '" rel="tip" title="Export '+ row.name +' as JSON" ><i class="fas fa-download mx-2"></i>Export as JSON</a></li>';
 			
-		data += '<li><a class="pv_point_gen dropdown-item" data-bs-toggle="modal" data-bs-target="#getFormMeta" data-formula="'+row.name+'" data-id="' + row.id + '"><i class="fas fa-cogs mx-2"></i>Settings</a></li>';
-
-		data += '<li><a class="dropdown-item" href="/pages/operations.php?action=exportFormulas&fid=' + row.fid + '" rel="tip" title="Export '+ row.name +' as JSON" ><i class="fas fa-download mx-2"></i>Export as JSON</a></li>';
-		
-		data += '<li><a class="dropdown-item" href="#" id="addTODO" rel="tip" title="Schedule '+ row.name +' to make" data-id='+ row.fid +' data-name="'+ row.name +'"><i class="fas fa-tasks mx-2"></i>Schedule to make</a></li>';
-		
-		data += '<li><a class="dropdown-item" href="#" id="cloneMe" rel="tip" title="Duplicate '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"><i class="fas fa-copy mx-2"></i>Duplicate formula</a></li>';
-		
-		data += '<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#genQRC" data-id="'+ row.fid +'" data-formula="'+ row.name +'"><i class="fa-solid fa-qrcode mx-2"></i>Generate QR Code</a></li>';
-
-
-		data += '<div class="dropdown-divider"></div>';
-		data += '<li><a class="dropdown-item link-danger" href="#" id="deleteMe" rel="tip" title="Delete '+ row.name +'" data-id="'+ row.fid +'" data-name="'+ row.name +'"><i class="fas fa-trash mx-2"></i>Permanently delete formula</a></li>';
-		data += '</ul></div>';
+			data += '<li><a class="dropdown-item" href="#" id="addTODO" rel="tip" title="Schedule '+ row.name +' to make" data-id='+ row.fid +' data-name="'+ row.name +'"><i class="fas fa-tasks mx-2"></i>Schedule to make</a></li>';
+			
+			data += '<li><a class="dropdown-item" href="#" id="cloneMe" rel="tip" title="Duplicate '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"><i class="fas fa-copy mx-2"></i>Duplicate formula</a></li>';
+			
+			data += '<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#genQRC" data-id="'+ row.fid +'" data-formula="'+ row.name +'"><i class="fa-solid fa-qrcode mx-2"></i>Generate QR Code</a></li>';
 	
-    return data;
-}
-
-//Generate a QR
-$("#genQRC").on("show.bs.modal", function(e) {
-	const id = e.relatedTarget.dataset.id;
-  	const formula = e.relatedTarget.dataset.formula;
-
-  $.get("/pages/views/generic/qrcode.php?type=formula&id=" + id)
-    .then(data => {
-      $("#genQRLabel", this).html(formula);
-      $(".modal-body", this).html(data);
-	 // $("#msg_settings_info", this).html('');
-    });
-
-});
-
-//Duplicate
-$('table.table').on('click', '[id*=cloneMe]', function () {
-	var formula = {};
-	formula.ID = $(this).attr('data-id');
-	formula.Name = $(this).attr('data-name');
 	
-	$.ajax({ 
+			data += '<div class="dropdown-divider"></div>';
+			data += '<li><a class="dropdown-item link-danger" href="#" id="deleteMe" rel="tip" title="Delete '+ row.name +'" data-id="'+ row.fid +'" data-name="'+ row.name +'"><i class="fas fa-trash mx-2"></i>Permanently delete formula</a></li>';
+			data += '</ul></div>';
+		
+		return data;
+	}
+	
+	//Generate a QR
+	$("#genQRC").on("show.bs.modal", function(e) {
+		const id = e.relatedTarget.dataset.id;
+		const formula = e.relatedTarget.dataset.formula;
+	
+	  $.get("/pages/views/generic/qrcode.php?type=formula&id=" + id)
+		.then(data => {
+		  $("#genQRLabel", this).html(formula);
+		  $(".modal-body", this).html(data);
+		 // $("#msg_settings_info", this).html('');
+		});
+	
+	});
+	
+	//Duplicate
+	$('table.table').on('click', '[id*=cloneMe]', function () {
+		var formula = {};
+		formula.ID = $(this).attr('data-id');
+		formula.Name = $(this).attr('data-name');
+		
+		$.ajax({ 
+			url: '/pages/manageFormula.php', 
+			type: 'POST',
+			data: {
+				action: "clone",
+				fid: formula.ID,
+				fname: formula.Name,
+				},
+			dataType: 'json',
+			success: function (data) {
+				if ( data.success ) {
+					$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+					$('.toast-header').removeClass().addClass('toast-header alert-success');
+					reload_formulas_data();
+				} else {
+					$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+					$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				}
+				$('.toast').toast('show');
+			}
+		  });
+	});
+	
+	$('table.table').on('click', '[id*=deleteMe]', function () {
+		var formula = {};
+		formula.ID = $(this).attr('data-id');
+		formula.Name = $(this).attr('data-name');
+		
+		bootbox.dialog({
+		   title: "Confirm formula deletion",
+		   message : '<div class="alert alert-warning">WARNING, this action cannot be reverted unless you have a backup.</div><p>Permantly delete <strong>'+ $(this).attr('data-name') +'</strong> formula?</p>' +
+		   '<div class="form-group col-sm">' + 
+			'<input name="archiveFormula" id="archiveFormula" type="checkbox" value="1">'+
+			'<label class="form-check-label mx-2" for="archiveFormula">Archive formula</label>'+
+		   '</div>',
+		   buttons :{
+			   main: {
+				   label : "DELETE",
+				   className : "btn-danger",
+				   callback: function (){
+						
+					$.ajax({ 
+						url: '/pages/manageFormula.php', 
+						type: 'POST',
+						data: {
+							action: "deleteFormula",
+							fid: formula.ID,
+							fname: formula.Name,
+							archiveFormula: $("#archiveFormula").is(':checked'),
+						},
+						dataType: 'json',
+						success: function (data) {
+							if ( data.success ) {
+								$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+								$('.toast-header').removeClass().addClass('toast-header alert-success');
+								reload_formulas_data();
+							} else {
+								$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+								$('.toast-header').removeClass().addClass('toast-header alert-danger');
+							}
+							$('.toast').toast('show');
+						}
+					  });
+					 return true;
+				   }
+			   },
+			   cancel: {
+				   label : "Cancel",
+				   className : "btn-secondary",
+				   callback : function() {
+					   return true;
+				   }
+			   }   
+		   },onEscape: function () {return true;}
+	   });
+	});
+	
+	$('#wipe_all_formulas').click(function() {
+		
+		bootbox.dialog({
+		   title: "Confirm formulas wipe",
+		   message : 'This will remove ALL of your fromulas from the database.\nThis cannot be reverted so please make sure you have taken a backup first.',
+		   buttons :{
+			   main: {
+				   label : "DELETE ALL",
+				   className : "btn-danger",
+				   callback: function (){
+						
+					$.ajax({
+						url: '/pages/update_data.php', 
+						type: 'POST',
+						data: {
+							formulas_wipe: "true",
+							},
+						dataType: 'json',
+						success: function (data) {
+							if ( data.success ) {
+								$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+								$('.toast-header').removeClass().addClass('toast-header alert-success');
+								reload_formulas_data();
+							} else {
+								$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+								$('.toast-header').removeClass().addClass('toast-header alert-danger');
+							}
+							$('.toast').toast('show');
+						}
+					});
+					
+					 return true;
+				   }
+			   },
+			   cancel: {
+				   label : "Cancel",
+				   className : "btn-secondary",
+				   callback : function() {
+					   return true;
+				   }
+			   }   
+		   },onEscape: function () {return true;}
+	   });
+	});
+	
+	$('table.table').on('click', '[id*=addTODO]', function () {
+		var formula = {};
+		formula.ID = $(this).attr('data-id');
+		formula.Name = $(this).attr('data-name');
+		$.ajax({ 
 		url: '/pages/manageFormula.php', 
 		type: 'POST',
 		data: {
-			action: "clone",
+			action: 'todo',
 			fid: formula.ID,
 			fname: formula.Name,
+			add: true,
 			},
 		dataType: 'json',
 		success: function (data) {
 			if ( data.success ) {
-            	$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+				$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
 				$('.toast-header').removeClass().addClass('toast-header alert-success');
-				reload_formulas_data();
 			} else {
-            	$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+				$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
 				$('.toast-header').removeClass().addClass('toast-header alert-danger');
 			}
 			$('.toast').toast('show');
 		}
 	  });
-});
-
-$('table.table').on('click', '[id*=deleteMe]', function () {
-	var formula = {};
-	formula.ID = $(this).attr('data-id');
-	formula.Name = $(this).attr('data-name');
-    
-	bootbox.dialog({
-       title: "Confirm formula deletion",
-       message : '<div class="alert alert-warning">WARNING, this action cannot be reverted unless you have a backup.</div><p>Permantly delete <strong>'+ $(this).attr('data-name') +'</strong> formula?</p>' +
-	   '<div class="form-group col-sm">' + 
-       	'<input name="archiveFormula" id="archiveFormula" type="checkbox" value="1">'+
-       	'<label class="form-check-label mx-2" for="archiveFormula">Archive formula</label>'+
-       '</div>',
-       buttons :{
-           main: {
-               label : "DELETE",
-               className : "btn-danger",
-               callback: function (){
-	    			
-				$.ajax({ 
-					url: '/pages/manageFormula.php', 
-					type: 'POST',
-					data: {
-						action: "deleteFormula",
-						fid: formula.ID,
-						fname: formula.Name,
-						archiveFormula: $("#archiveFormula").is(':checked'),
-					},
-					dataType: 'json',
-					success: function (data) {
-						if ( data.success ) {
-							$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
-							$('.toast-header').removeClass().addClass('toast-header alert-success');
-							reload_formulas_data();
-						} else {
-							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
-							$('.toast-header').removeClass().addClass('toast-header alert-danger');
-						}
-						$('.toast').toast('show');
-					}
-				  });
-                 return true;
-               }
-           },
-           cancel: {
-               label : "Cancel",
-               className : "btn-secondary",
-               callback : function() {
-                   return true;
-               }
-           }   
-       },onEscape: function () {return true;}
-   });
-});
-
-$('#wipe_all_formulas').click(function() {
-    
-	bootbox.dialog({
-       title: "Confirm formulas wipe",
-       message : 'This will remove ALL of your fromulas from the database.\nThis cannot be reverted so please make sure you have taken a backup first.',
-       buttons :{
-           main: {
-               label : "DELETE ALL",
-               className : "btn-danger",
-               callback: function (){
-	    			
-				$.ajax({
-					url: '/pages/update_data.php', 
-					type: 'POST',
-					data: {
-						formulas_wipe: "true",
-						},
-					dataType: 'json',
-					success: function (data) {
-						if ( data.success ) {
-							$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
-							$('.toast-header').removeClass().addClass('toast-header alert-success');
-							reload_formulas_data();
-						} else {
-							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
-							$('.toast-header').removeClass().addClass('toast-header alert-danger');
-						}
-						$('.toast').toast('show');
-					}
-				});
-				
-                 return true;
-               }
-           },
-           cancel: {
-               label : "Cancel",
-               className : "btn-secondary",
-               callback : function() {
-                   return true;
-               }
-           }   
-       },onEscape: function () {return true;}
-   });
-});
-
-$('table.table').on('click', '[id*=addTODO]', function () {
-	var formula = {};
-	formula.ID = $(this).attr('data-id');
-	formula.Name = $(this).attr('data-name');
-	$.ajax({ 
-    url: '/pages/manageFormula.php', 
-	type: 'POST',
-    data: {
-		action: 'todo',
-		fid: formula.ID,
-		fname: formula.Name,
-		add: true,
-		},
-	dataType: 'json',
-    success: function (data) {
-		if ( data.success ) {
-			$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
-			$('.toast-header').removeClass().addClass('toast-header alert-success');
-		} else {
-			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
-			$('.toast-header').removeClass().addClass('toast-header alert-danger');
-		}
-		$('.toast').toast('show');
-    }
-  });
-});
-
-$('#add_formula').on('click', '[id*=btnAdd]', function () {
-	$.ajax({ 
-    url: '/pages/manageFormula.php', 
-	type: 'POST',
-    data: {
-		action: 'addFormula',
-		name: $("#formula-name").val(),
-		profile: $("#profile").val(),
-		catClass: $("#catClass").val(),
-		finalType: $("#finalType").val(),
-		notes: $("#notes").val(),
-		customer: $("#customer").val(),
-		},
-	dataType: 'json',
-    success: function (data) {
-		if(data.error){
-			var rmsg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
-		}else if(data.success){
-			var rmsg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><a href="?do=Formula&id='+data.success.id+'">'+data.success.msg+'</a></div>';
-			reload_formulas_data();
-			if($("#go_to_formula").prop("checked")){
-				window.location = "/?do=Formula&id=" + data.success.id
-			}
-		}
-	  	$('#addFormulaMsg').html(rmsg);
-		
-    }
-  });
-});
-
-$("#btnImport").prop("disabled", true);
-$("#btnImport").hide();
+	});
 	
-$("input[type=file]").on('change',function(){	
-	var fd = new FormData();
-    var files = $('#CSVFile')[0].files;
-	var formula_name = $('#CSVname').val();
-	
-	if ( formula_name == '') {
-		var filename = $('input[type=file]').val().replace(/C:\\fakepath\\/i, '').replace(/.csv/i, '');
-		$('#CSVname').val(filename);
-	}
-	
-	if(files.length > 0 ){
-		fd.append('CSVFile',files[0]);
-		$.ajax({
-		   url: '/pages/upload.php?type=frmCSVImport&step=upload',
-		   type: 'POST',
-		   data: fd,
-		   contentType: false,
-		   processData: false,
-				 cache: false,
-		   success: function(response){
-			 if(response != 0){
-				$("#CSVImportMsg").html('');
-				$("#step_upload").html(response);
-				$("#btnImport").show();
-			  }else{
-				$("#CSVImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> File upload failed!</div>');
-			  }
-		},
-	 });
-	}else{
-		$("#CSVImportMsg").html('<div class="alert alert-danger">Please select a file to upload!</div>');
-	}
-});
-
-
-var total_selection = 0;
-var ingredient = 0;
-var concentration = 0;
-var dilutant = 0;
-var quantity = 0;
-
-var column_data = [];
-
-$(document).on('change', '.set_column_data', function(){
-    var column_name = $(this).val();
-    var column_number = $(this).data('column_number');
-    if(column_name in column_data) {
-	  $('#CSVImportMsg').html('<div class="alert alert-danger"><strong>'+column_name+'</strong> is already assigned.</div>');
-      $(this).val('');
-      return false;
-    }else{
-		$('#CSVImportMsg').html('');
-	}
-
-    if(column_name != '') {
-      column_data[column_name] = column_number;
-    } else {
-      const entries = Object.entries(column_data);
-
-      for(const [key, value] of entries) {
-        if(value == column_number) {
-          delete column_data[key];
-        }
-      }
-    }
-
-    total_selection = Object.keys(column_data).length;
-
-    if(total_selection == 4) {
-		$('#btnImport').prop("disabled", false);
-        ingredient = column_data.ingredient;
-		concentration = column_data.concentration;
-		dilutant = column_data.dilutant;
-		quantity = column_data.quantity;
-    } else {
-		$('#btnImport').prop("disabled", true);
-    }
-
-  });
-
-$(document).on('click', '#btnImport', function(event){
-
-    event.preventDefault();
-   	var formula_name = $('#CSVname').val();
-    var formula_profile = $('#CSVProfile').val();
-	
-    $.ajax({
-      url: "/pages/upload.php?type=frmCSVImport&step=import",
-      method: "POST",
-      data:{		  
-	  	  formula_name: formula_name,
-		  formula_profile: formula_profile,
-		  ingredient: ingredient, 
-		  concentration: concentration, 
-		  dilutant: dilutant, 
-		  quantity: quantity
-		  },
-      beforeSend:function(){
-        $('#btnImport').prop("disabled", true);
-      },
-      success:function(data) {
-		  if (data.indexOf('Error:') > -1) {
-			  $('#btnImport').prop("disabled", false);
-			  $('#CSVImportMsg').html(data);
-		  }else{
-			$('#btnImport').prop("disabled", false);
-			$('#btnImport').hide();
-			$('#btnCloseCsv').prop('value', 'Close');
-			$('#process_area').css('display', 'none');
-			$('#CSVImportMsg').html(data);
-			reload_formulas_data();
-		  }
-      }
-    })
-
-  });
-  
-function reload_formulas_data() {
-    $('#all-table').DataTable().ajax.reload(null, true);
-};
-
-$('#close_export_json').click(function() {
-	$('#JSONExportMsg').html('');
-});
-
-$('#add_formula_cat').on('click', '[id*=add-fcat]', function () {
-
-	$.ajax({ 
-		url: '/pages/update_settings.php', 
-			type: 'POST',
-			data: {
-				manage: 'add_frmcategory',
-				category: $("#fcatName").val(),
-				cat_type: 'profile',
+	$('#add_formula').on('click', '[id*=btnAdd]', function () {
+		$.ajax({ 
+		url: '/pages/manageFormula.php', 
+		type: 'POST',
+		data: {
+			action: 'addFormula',
+			name: $("#formula-name").val(),
+			profile: $("#profile").val(),
+			catClass: $("#catClass").val(),
+			finalType: $("#finalType").val(),
+			notes: $("#notes").val(),
+			customer: $("#customer").val(),
 			},
 		dataType: 'json',
 		success: function (data) {
 			if(data.error){
-				msg = '<div class="alert alert-danger">'+data.error+'</div>';
+				var rmsg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
 			}else if(data.success){
-				$('#add_formula_cat').modal('toggle');
-				$('.modal-backdrop').hide();
-				list_formulas();
+				var rmsg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><a href="?do=Formula&id='+data.success.id+'">'+data.success.msg+'</a></div>';
+				reload_formulas_data();
+				if($("#go_to_formula").prop("checked")){
+					window.location = "/?do=Formula&id=" + data.success.id
+				}
 			}
-			$('#fcatMsg').html(msg);
+			$('#addFormulaMsg').html(rmsg);
+			
+		}
+	  });
+	});
+	
+	$("#btnImport").prop("disabled", true);
+	$("#btnImport").hide();
+		
+	$("input[type=file]").on('change',function(){	
+		var fd = new FormData();
+		var files = $('#CSVFile')[0].files;
+		var formula_name = $('#CSVname').val();
+		
+		if ( formula_name == '') {
+			var filename = $('input[type=file]').val().replace(/C:\\fakepath\\/i, '').replace(/.csv/i, '');
+			$('#CSVname').val(filename);
+		}
+		
+		if(files.length > 0 ){
+			fd.append('CSVFile',files[0]);
+			$.ajax({
+			   url: '/pages/upload.php?type=frmCSVImport&step=upload',
+			   type: 'POST',
+			   data: fd,
+			   contentType: false,
+			   processData: false,
+					 cache: false,
+			   success: function(response){
+				 if(response != 0){
+					$("#CSVImportMsg").html('');
+					$("#step_upload").html(response);
+					$("#btnImport").show();
+				  }else{
+					$("#CSVImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> File upload failed!</div>');
+				  }
+			},
+		 });
+		}else{
+			$("#CSVImportMsg").html('<div class="alert alert-danger">Please select a file to upload!</div>');
 		}
 	});
-});
-
-$("#getFormMeta").on("show.bs.modal", function(e) {
-  const id = e.relatedTarget.dataset.id;
-  const formula = e.relatedTarget.dataset.formula;
-
-  $.get("/pages/getFormMeta.php?id=" + id)
-    .then(data => {
-      $("#getFormMetaLabel", this).html(formula);
-      $(".modal-body", this).html(data);
-	  $("#msg_settings_info", this).html('');
-    });
 	
-});
+	
+	var total_selection = 0;
+	var ingredient = 0;
+	var concentration = 0;
+	var dilutant = 0;
+	var quantity = 0;
+	
+	var column_data = [];
+	
+	$(document).on('change', '.set_column_data', function(){
+		var column_name = $(this).val();
+		var column_number = $(this).data('column_number');
+		if(column_name in column_data) {
+		  $('#CSVImportMsg').html('<div class="alert alert-danger"><strong>'+column_name+'</strong> is already assigned.</div>');
+		  $(this).val('');
+		  return false;
+		}else{
+			$('#CSVImportMsg').html('');
+		}
+	
+		if(column_name != '') {
+		  column_data[column_name] = column_number;
+		} else {
+		  const entries = Object.entries(column_data);
+	
+		  for(const [key, value] of entries) {
+			if(value == column_number) {
+			  delete column_data[key];
+			}
+		  }
+		}
+	
+		total_selection = Object.keys(column_data).length;
+	
+		if(total_selection == 4) {
+			$('#btnImport').prop("disabled", false);
+			ingredient = column_data.ingredient;
+			concentration = column_data.concentration;
+			dilutant = column_data.dilutant;
+			quantity = column_data.quantity;
+		} else {
+			$('#btnImport').prop("disabled", true);
+		}
+	
+	  });
+	
+	$(document).on('click', '#btnImport', function(event){
+	
+		event.preventDefault();
+		var formula_name = $('#CSVname').val();
+		var formula_profile = $('#CSVProfile').val();
+		
+		$.ajax({
+		  url: "/pages/upload.php?type=frmCSVImport&step=import",
+		  method: "POST",
+		  data:{		  
+			  formula_name: formula_name,
+			  formula_profile: formula_profile,
+			  ingredient: ingredient, 
+			  concentration: concentration, 
+			  dilutant: dilutant, 
+			  quantity: quantity
+			  },
+		  beforeSend:function(){
+			$('#btnImport').prop("disabled", true);
+		  },
+		  success:function(data) {
+			  if (data.indexOf('Error:') > -1) {
+				  $('#btnImport').prop("disabled", false);
+				  $('#CSVImportMsg').html(data);
+			  }else{
+				$('#btnImport').prop("disabled", false);
+				$('#btnImport').hide();
+				$('#btnCloseCsv').prop('value', 'Close');
+				$('#process_area').css('display', 'none');
+				$('#CSVImportMsg').html(data);
+				reload_formulas_data();
+			  }
+		  }
+		})
+	
+	  });
+	  
+	function reload_formulas_data() {
+		$('#all-table').DataTable().ajax.reload(null, true);
+	};
+	
+	$('#close_export_json').click(function() {
+		$('#JSONExportMsg').html('');
+	});
+	
+	$('#add_formula_cat').on('click', '[id*=add-fcat]', function () {
+	
+		$.ajax({ 
+			url: '/pages/update_settings.php', 
+				type: 'POST',
+				data: {
+					manage: 'add_frmcategory',
+					category: $("#fcatName").val(),
+					cat_type: 'profile',
+				},
+			dataType: 'json',
+			success: function (data) {
+				if(data.error){
+					msg = '<div class="alert alert-danger">'+data.error+'</div>';
+				}else if(data.success){
+					$('#add_formula_cat').modal('toggle');
+					$('.modal-backdrop').hide();
+					list_formulas();
+				}
+				$('#fcatMsg').html(msg);
+			}
+		});
+	});
+	
+	$("#getFormMeta").on("show.bs.modal", function(e) {
+	  const id = e.relatedTarget.dataset.id;
+	  const formula = e.relatedTarget.dataset.formula;
+	
+	  $.get("/pages/getFormMeta.php?id=" + id)
+		.then(data => {
+		  $("#getFormMetaLabel", this).html(formula);
+		  $(".modal-body", this).html(data);
+		  $("#msg_settings_info", this).html('');
+		});
+		
+	});
+	
+	$("#formula-name").keyup(function(){
+		var currentText = $(this).val();
+		if (currentText == ""){
+			currentText = "Add new formula";
+		}
+		$("#new-formula-name").text(currentText);
+	});
 
-$("#formula-name").keyup(function(){
-	var currentText = $(this).val();
-	if (currentText == ""){
-		currentText = "Add new formula";
-	}
-    $("#new-formula-name").text(currentText);
 });
-
 </script>
 
 <!--GEN QRCODE MODAL-->            

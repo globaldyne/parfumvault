@@ -5,7 +5,7 @@
     <div>
       <div class="card shadow mb-4">
         <div class="card-header py-3"> 
-           <h2 class="m-0 font-weight-bold text-primary">Sell Formula</h2>
+           <h2 class="m-0 font-weight-bold text-primary-emphasis">Sell Formula</h2>
     	</div>
 	<div class="card-body">
  

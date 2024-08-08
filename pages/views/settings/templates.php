@@ -10,14 +10,14 @@ require_once(__ROOT__.'/inc/sec.php');
 <div class="card-body">
   <div class="text-right">
     <div class="btn-group">
-    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
+    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
         <div class="dropdown-menu">
             <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addTmpl"><i class="fa-solid fa-plus mx-2"></i>Add new</a></li>
         </div>
     </div>                    
   </div>
 </div>
-<table id="tdTempls" class="table table-striped table-bordered" style="width:100%">
+<table id="tdTempls" class="table table-striped" style="width:100%">
   <thead>
       <tr>
           <th>Name</th>
@@ -28,7 +28,7 @@ require_once(__ROOT__.'/inc/sec.php');
       </tr>
    </thead>
 </table>
-<script type="text/javascript" language="javascript" >
+<script>
 $(document).ready(function() {
 		
 	var tdTempls = $('#tdTempls').DataTable( {
@@ -100,7 +100,7 @@ function updated(data, type, row){
 
 function actions(data, type, row){	
 		data = '<div class="dropdown">' +
-        '<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+        '<button type="button" class="btn btn-floating hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
             '<ul class="dropdown-menu">';
 		data += '<li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editTmpl" rel="tip" title="Edit '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-edit mr2"></i>Edit</a></li>';
 		data += '<div class="dropdown-divider"></div>';
