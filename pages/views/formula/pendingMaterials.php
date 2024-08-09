@@ -14,7 +14,7 @@ require_once(__ROOT__.'/inc/opendb.php');
            <li><a class="dropdown-item" id="exportCSV" href="#"><i class="fa-solid fa-file-export mx-2"></i>Export to CSV</a></li>
        </div>
    	</div> 
-	<table id="tdDataM" class="table table-striped table-bordered nowrap" style="width:100%">
+	<table id="tdDataM" class="table table-striped" style="width:100%">
       <thead>
         <tr>
           <th>Formula</th>

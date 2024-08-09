@@ -28,7 +28,7 @@ $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE n
 
 ?>
 <!doctype html>
-<html lang="en">
+<html lang="en" data-bs-theme="<?=$settings['bs_theme']?>">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
@@ -87,7 +87,7 @@ body {
 				<div class="btn-group">
 					<button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
 					<div class="dropdown-menu">
-						<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#cloneIng"><i class="fa-solid fa-copy mx-2"></i>Clone ingredient</a></li>
+						<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#cloneIng"><i class="fa-solid fa-copy mx-2"></i>Duplicate ingredient</a></li>
 						<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#renameIng"><i class="fa-regular fa-pen-to-square mx-2"></i>Rename ingredient</a></li>
                         <li><a class="dropdown-item" href="/pages/export.php?format=json&kind=single-ingredient&id=<?=$ing['id']?>"><i class="fas fa-download mx-2"></i>Export as JSON</a></li>
 						<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#genDOC"><i class="fa-solid fa-file-prescription mx-2"></i>Generate document</a></li>
@@ -267,12 +267,12 @@ body {
         </div>
     </div>
 
-<!-- Modal Clone-->
+<!-- Modal Duplicate-->
 <div class="modal fade" id="cloneIng" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="cloneIng" aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title">Clone ingredient <?php echo $ing['name']; ?></h5>
+				<h5 class="modal-title">Duplicate ingredient <?php echo $ing['name']; ?></h5>
 			</div>
 			<div class="modal-body">
 				<div id="clone_msg"></div>
@@ -280,7 +280,7 @@ body {
 				<input class="form-control" name="cloneIngName" id="cloneIngName" type="text" value="" />            
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-					<input type="submit" name="button" class="btn btn-primary" id="cloneME" value="Clone">
+					<input type="submit" name="button" class="btn btn-primary" id="cloneME" value="Duplicate">
 				</div>
 			</div>
 		</div>
@@ -297,7 +297,7 @@ body {
 			<div class="modal-body">
             	<div id="warn"><div class="alert alert-warning"><strong>Warning:</strong> If you rename the ingredient, will affect any formulas that using it as well. Please refer to <strong>Where Used</strong> section to get a list of formulas if any.</div></div>
 				<div id="rename_msg"></div>
-				Name
+				New name
 				<input class="form-control" name="renameIngName" id="renameIngName" type="text" value="" />            
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

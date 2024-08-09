@@ -3522,7 +3522,7 @@
 
       classNames.DIVIDER = 'dropdown-divider';
       classNames.SHOW = 'show';
-      classNames.BUTTONCLASS = 'btn-light';
+      classNames.BUTTONCLASS = 'btn-outline-pv-2';
       classNames.POPOVERHEADER = 'popover-header';
       classNames.ICONBASE = '';
       classNames.TICKICON = 'bs-ok-default';

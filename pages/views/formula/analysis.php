@@ -13,7 +13,7 @@ $fid = mysqli_real_escape_string($conn, $_GET["fid"]);
 <h3>Composition analysis</h3>
 <hr>
 
-<table id="tdAnalysis" class="table table-striped table-bordered" style="width:100%">
+<table id="tdAnalysis" class="table table-striped" style="width:100%">
   <thead>
       <tr>
           <th>Main Ingredient</th>

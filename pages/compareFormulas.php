@@ -4,25 +4,23 @@
     <div>
       <div class="card shadow mb-4">
         <div class="card-header py-3">
-          <h2 class="m-0 fw-bold text-primary">
-            <a href="/?do=compareFormulas">Compare formulas</a>
-          </h2>
+          <h2 class="m-0 fw-bold text-primary-emphasis">Compare formulas</h2>
         </div>
         <div class="card-body">
           <?php 
             if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))== 0){
-              echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> You need to <a href="?do=listFormulas">create</a> at least one formula first.</div>';
+              echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> You need to <a href="/?do=listFormulas">create</a> at least one formula first.</div>';
               return;
             }
             
             if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE type = 'Carrier' OR type = 'Solvent'"))== 0){
-              echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> You need to <a href="?do=ingredients">add</a> at least one solvent or carrier first.</div>';
+              echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> You need to <a href="/?do=ingredients">add</a> at least one solvent or carrier first.</div>';
               return;
             }
           ?>
           <div>
             <div class="mb-3 row">
-              <label for="formula_a" class="col-sm-1 col-form-label">Formula A</label>
+              <label for="formula_a" class="col-form-label">Formula A</label>
               <div class="col-sm-10">
                 <select name="formula_a" id="formula_a" class="form-control selectpicker" data-live-search="true">
                   <?php
@@ -35,7 +33,7 @@
               </div>
             </div>
             <div class="mb-3 row">
-              <label for="formula_b" class="col-sm-1 col-form-label">Formula B</label>
+              <label for="formula_b" class="col-form-label">Formula B</label>
               <div class="col-sm-10">
                 <select name="formula_b" id="formula_b" class="form-control selectpicker" data-live-search="true">
                   <?php
@@ -61,18 +59,23 @@
 </div>
 
 <script>
-$('#btnCMP').click(function() {
-	$.ajax({ 
-		url: '/pages/views/formula/cmp_formulas_data.php', 
-		type: 'POST',
-		data: {
-			id_a: $("#formula_a").val(),			
-			id_b: $("#formula_b").val(),
-			},
-		dataType: 'html',
-		success: function (data) {
-			$('#cmp_results').html(data);
-		}
-	  });
+$(document).ready(function() {
+
+	$('#btnCMP').click(function() {
+		$.ajax({ 
+			url: '/pages/views/formula/cmp_formulas_data.php', 
+			type: 'POST',
+			data: {
+				id_a: $("#formula_a").val(),			
+				id_b: $("#formula_b").val(),
+				},
+			dataType: 'html',
+			success: function (data) {
+				$('#cmp_results').html(data);
+			}
+		  });
+	});
+	
 });
+
 </script>

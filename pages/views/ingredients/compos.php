@@ -30,7 +30,7 @@ $ingName = mysqli_real_escape_string($conn, $_GET["name"]);
 	</div>
 </div>
 
-<table id="tdCompositions" class="table table-striped table-bordered" style="width:100%">
+<table id="tdCompositions" class="table table-striped" style="width:100%">
   <thead>
       <tr>
           <th>Name</th>
@@ -48,7 +48,7 @@ $ingName = mysqli_real_escape_string($conn, $_GET["name"]);
 </table>
 
 
-<script type="text/javascript" language="javascript" >
+<script>
 $(document).ready(function() {
 	
 
@@ -60,7 +60,7 @@ $(document).ready(function() {
   	tdCompositions = $('#tdCompositions').DataTable( {
 		columnDefs: [
 			{ className: 'text-center', targets: '_all' },
-			{ orderable: false, targets: [5, 7] },
+			{ orderable: false, targets: [5, 9] },
 		],
 		dom: 'lfrtip',
 		processing: true,

@@ -10,7 +10,7 @@ $res_SDStmpl = mysqli_query($conn, "SELECT * FROM templates ORDER BY name ASC");
 
 ?>
 <!doctype html>
-<html lang="en">
+<html lang="en" data-bs-theme="<?=$settings['bs_theme']?>">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">

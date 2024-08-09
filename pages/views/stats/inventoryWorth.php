@@ -6,7 +6,7 @@ require_once(__ROOT__.'/inc/sec.php');
 ?>
 <h3>Inventory Worth</h3>
 <hr>
-<table id="tdInvWorth" class="table table-striped table-bordered" style="width:100%">
+<table id="tdInvWorth" class="table table-striped" style="width:100%">
   <thead>
       <tr>
           <th>Type</th>
@@ -14,7 +14,7 @@ require_once(__ROOT__.'/inc/sec.php');
       </tr>
    </thead>
 </table>
-<script type="text/javascript" language="javascript" >
+<script>
 $(document).ready(function() {
 		
 	var tdInvWorth = $('#tdInvWorth').DataTable( {
@@ -37,17 +37,17 @@ $(document).ready(function() {
 			  { data : 'worth', title: 'Worth', render: worth},
 			 ],
 	});
+
+
+	function type(data, type, row){
+		return "Ingredients";    
+	}
+	
+	
+	function worth(data, type, row){
+		return row.currency + row.ingredients.total_worth;    
+	}
+
 });
-
-function type(data, type, row){
-	return "Ingredients";    
-}
-
-
-function worth(data, type, row){
-	return row.currency + row.ingredients.total_worth;    
-}
-
-
 </script>
 

@@ -2,7 +2,7 @@
 <hr>
 <div class="card-body">
   <div>
-    <table class="table table-bordered" id="tdHistory" width="100%" cellspacing="0">
+    <table class="table table-striped" id="tdHistory" width="100%" cellspacing="0">
       <thead>
           <tr>
               <th>Changes</th>
@@ -14,7 +14,7 @@
   </div>
 </div>
 
-<script type="text/javascript" language="javascript" >
+<script>
 $(document).ready(function(){
 
 	var tdHistory = $('#tdHistory').DataTable( {
@@ -35,13 +35,12 @@ $(document).ready(function(){
 		data: {
 				id: '<?=$_GET['id']?>',
 			},
-		},
+	},
 	columns: [
 			  { data : 'change_made', title: 'Changes' },
 			  { data : 'date_time', title: 'Date' },
 			  { data : 'user', title: 'User' },
 			],
-	
 	order: [[ 1, 'desc' ]],
 	lengthMenu: [[15, 50, 100, -1], [15, 50, 100, "All"]],
 	pageLength: 15,

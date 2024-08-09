@@ -1,5 +1,5 @@
 .table {
-	--bs-table-bg:  initial;
+	--bs-table-bg:  var(--bs-body-bg);
 }
 table.dataTable {
 	font-size: x-large !important;

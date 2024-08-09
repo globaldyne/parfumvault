@@ -19,18 +19,18 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))){
 <?php require_once(__ROOT__.'/pages/top.php'); ?>
         <div class="container-fluid">
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="m-0 mb-4 text-primary">Dashboard</h1>
+            <h1 class="m-0 mb-4">Dashboard</h1>
           </div>
           <div class="row">
         <?php
 if($ingredientsConf == FALSE){
-	echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> no ingredients yet, click <a href="/?do=ingredients">here</a> to add.</div>';
+	echo '<div class="alert alert-info"><i class="fa-solid fa-circle-exclamation mr-2"></i><strong>No ingredients yet, click <a href="/?do=ingredients">here</a> to add.</strong></div>';
 }elseif($formulasConf == FALSE){
-	echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> no formulas added yet</div>';
+	echo '<div class="alert alert-info"><i class="fa-solid fa-circle-exclamation mr-2"></i><strong>No formulas added yet, click <a href="/?do=listFormulas">here</a> to add.</strong></div>';
 }else{
 		?>
               <div class="dash_charts">
-              <div class="shadow-lg p-3 mb-5 bg-white rounded charts_box">
+              <div class="shadow-lg p-3 mb-5 rounded charts_box">
               
                 <div class="col-md-6">
                 <div class="box" id="formulas-pie">
@@ -72,7 +72,7 @@ if($ingredientsConf == FALSE){
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                       <div class="text-xs font-weight-bold text-primary text-uppercase mb-1"><a href="/?do=listFormulas">All Formulas</a></div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo countElement("formulasMetaData",$conn); ?></div>
+                      <div class="h5 mb-0 font-weight-bold"><?php echo countElement("formulasMetaData",$conn); ?></div>
                     </div>
                     <div class="col-auto">
                       <i class="fas fa-flask fa-2x text-gray-300"></i>
@@ -88,7 +88,7 @@ if($ingredientsConf == FALSE){
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                       <div class="text-xs font-weight-bold text-warning text-uppercase mb-1"><a href="/?do=suppliers">Suppliers</a></div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo countElement("ingSuppliers",$conn); ?></div>
+                      <div class="h5 mb-0 font-weight-bold"><?php echo countElement("ingSuppliers",$conn); ?></div>
                     </div>
                     <div class="col-auto">
                       <i class="fas fa-store fa-2x text-gray-300"></i>
@@ -104,7 +104,7 @@ if($ingredientsConf == FALSE){
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                       <div class="text-xs font-weight-bold text-success text-uppercase mb-1"><a href="/?do=IFRA">IFRA Entries</a></div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo countElement("IFRALibrary",$conn); ?></div>
+                      <div class="h5 mb-0 font-weight-bold"><?php echo countElement("IFRALibrary",$conn); ?></div>
                     </div>
                     <div class="col-auto">
                       <i class="fas fa-university fa-2x text-gray-300"></i>
@@ -120,7 +120,7 @@ if($ingredientsConf == FALSE){
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                       <div class="text-xs font-weight-bold text-info text-uppercase mb-1"><a href="/?do=ingredients">All Ingredients</a></div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo countElement("ingredients",$conn); ?></div>
+                      <div class="h5 mb-0 font-weight-bold"><?php echo countElement("ingredients",$conn); ?></div>
                     </div>
                     <div class="col-auto">
                       <i class="fas fa-vial fa-2x text-gray-300"></i>
@@ -136,7 +136,7 @@ if($ingredientsConf == FALSE){
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                       <div class="text-xs font-weight-bold text-primary text-uppercase mb-1"><a href="/?do=settings#categories">Categories</a></div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo countElement("ingCategory",$conn); ?></div>
+                      <div class="h5 mb-0 font-weight-bold"><?php echo countElement("ingCategory",$conn); ?></div>
                     </div>
                     <div class="col-auto">
                       <i class="fas fa-puzzle-piece fa-2x text-gray-300"></i>
@@ -152,7 +152,7 @@ if($ingredientsConf == FALSE){
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                       <div class="text-xs font-weight-bold text-warning text-uppercase mb-1"><a href="/?do=bottles">Bottles</a></div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo countElement("bottles",$conn); ?></div>
+                      <div class="h5 mb-0 font-weight-bold"><?php echo countElement("bottles",$conn); ?></div>
                     </div>
                     <div class="col-auto">
                       <i class="fas fa-spray-can fa-2x text-gray-300"></i>
@@ -168,7 +168,7 @@ if($ingredientsConf == FALSE){
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                       <div class="text-xs font-weight-bold text-success text-uppercase mb-1"><a href="/?do=lids">Bottle Lids</a></div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo countElement("lids",$conn); ?></div>
+                      <div class="h5 mb-0 font-weight-bold"><?php echo countElement("lids",$conn); ?></div>
                     </div>
                     <div class="col-auto">
                       <i class="fas fa-prescription-bottle fa-2x text-gray-300"></i>
@@ -184,7 +184,7 @@ if($ingredientsConf == FALSE){
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                       <div class="text-xs font-weight-bold text-info text-uppercase mb-1"><a href="/?do=scheduledFormulas">Formulas to make</a></div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo countElement("makeFormula WHERE toAdd = '1' GROUP BY name",$conn); ?></div>
+                      <div class="h5 mb-0 font-weight-bold"><?php echo countElement("makeFormula WHERE toAdd = '1' GROUP BY name",$conn); ?></div>
                     </div>
                     <div class="col-auto">
                       <i class="fas fa-flask fa-2x text-gray-300"></i>

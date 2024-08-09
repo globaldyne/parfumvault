@@ -19,6 +19,8 @@ if($ing['physical_state'] == 1){
 }
 ?>
 <?php if($_GET['standAlone'] == 1){ ?>
+	<html lang="en" data-bs-theme="<?=$settings['bs_theme']?>">
+
 	<link href="/css/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     
 	<script src="/js/jquery/jquery.min.js"></script>
@@ -39,7 +41,7 @@ if($ing['physical_state'] == 1){
     <style>
 		body { margin: 10; }
 	</style>
-    
+    </html>
 <?php } ?>
 
 <h3>Suppliers</h3>
@@ -49,7 +51,7 @@ if($ing['physical_state'] == 1){
   <div class="text-right">
     <div class="btn-group">
     <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
-        <div class="dropdown-menu dropdown-menu-right">
+        <div class="dropdown-menu dropdown-menu-left">
             <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addSupplier"><i class="fa-solid fa-plus mx-2"></i>Add new</a></li>
         </div>
     </div>                    
@@ -57,7 +59,7 @@ if($ing['physical_state'] == 1){
 
 
 </div>
-<table id="tdIngSup" class="table table-striped table-bordered" style="width:100%">
+<table id="tdIngSup" class="table table-striped" style="width:100%">
   <thead>
       <tr>
           <th>Name</th>
@@ -79,7 +81,7 @@ if($ing['physical_state'] == 1){
       </tr>
    </thead>
 </table>
-<script type="text/javascript" language="javascript" >
+<script>
 $(document).ready(function() {
 	$("#supplier_name").change(function () {
     	vol = $(this).children(':selected').data('vol');
@@ -271,8 +273,8 @@ function storage_location(data, type, row){
 
 function sActions(data, type, row){
 	data = '<div class="dropdown">' +
-			'<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
-				'<ul class="dropdown-menu dropdown-menu-right">';
+			'<button type="button" class="btn btn-floating hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+				'<ul class="dropdown-menu">';
 	
 	if(row.preferred == 0){
 		data += '<li><a class="dropdown-item" href="#" id="prefSID" data-status="1" data-id="'+row.ingSupplierID+'"><i class="far fa-star pv_point_gen mx-2"></i>Set as preferred</a></li>';

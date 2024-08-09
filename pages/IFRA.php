@@ -7,7 +7,7 @@ require_once(__ROOT__.'/func/php-settings.php');
           <div>
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h2 class="m-0 font-weight-bold text-primary"><a href="#" id="mainTitle">IFRA Library</a></h2>
+              <h2 class="m-0 font-weight-bold text-primary-emphasis"><a href="#" id="mainTitle">IFRA Library</a></h2>
             </div>
             <div class="card-body">
                <div id="iframsg"></div>
@@ -34,7 +34,7 @@ require_once(__ROOT__.'/func/php-settings.php');
                 <div>
                 Toggle column: <a class="toggle-vis pv_point_gen_color" data-column="0">Structure</a> - <a class="toggle-vis pv_point_gen_color" data-column="4">Last publication</a>
     			</div>
-                <table id="tdDataIFRA" class="stripe row-border order-column" style="width:100%">
+                <table id="tdDataIFRA" class="table table-striped stripe row-border order-column" style="width:100%">
                   <thead>
                       <tr>
                       	<th>Structure</th>

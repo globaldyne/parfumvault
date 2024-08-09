@@ -67,18 +67,18 @@ while($qTags = mysqli_fetch_array($tagsQ)){
 
    <div class="form-row">
      <div class="form-group col">
-        <label class="control-label col-auto" for="formula_name">Formula Name:</label>
+        <label class="control-label col-auto" for="formula_name">Formula Name</label>
           <a href="#" data-name="name" class="name" id="formula_name" data-pk="<?php echo $info['id'];?>"><?php echo $info['name']?:'Unnamed';?></a>
       </div>
      <div class="form-group col">
-        <label class="control-label col-auto" for="product_name">Product Name:</label>
+        <label class="control-label col-auto" for="product_name">Product Name</label>
         <a href="#" data-name="product_name" class="product_name" id="product_name" data-pk="<?php echo $info['id'];?>"><?php echo $info['product_name'] ?: 'Not set';?></a>
      </div>
     </div>
 
     <div class="form-row">
      <div class="form-group col-md-6">
-        <label class="control-label col-auto" for="isProtected">Protected:</label>
+        <label class="control-label col-auto" for="isProtected">Protected</label>
         <input name="isProtected" type="checkbox" id="isProtected" value="1" <?php if($info['isProtected'] == '1'){; ?> checked="checked"  <?php } ?>/>
         <i class="fa-solid fa-circle-info" rel="tip" title="When enabled, formula is protected against deletion. By enabling this, a formula revision will be automatically created."></i>
      </div>
@@ -86,7 +86,7 @@ while($qTags = mysqli_fetch_array($tagsQ)){
   
    <div class="form-row">
      <div class="form-group col-md-6">
-    	<label class="control-label col-auto" for="customer">Customer:</label>
+    	<label class="control-label col-auto" for="customer">Customer</label>
         <select name="customer" id="customer" class="form-control selectpicker" data-live-search="true">
       	  <option value="0">Internal use</option>
 		  <?php foreach ($customer as $c) {?>
@@ -95,7 +95,7 @@ while($qTags = mysqli_fetch_array($tagsQ)){
     	</select>
     </div>
     <div class="form-group col-md-6">
-        <label class="control-label col-auto" for="defView">Default view:</label>
+        <label class="control-label col-auto" for="defView">Default view</label>
         <select name="defView" id="defView" class="form-control selectpicker" data-live-search="true">
           <option value="1" <?php if($info['defView']=="1") echo 'selected="selected"'; ?> >Ingredient Properties</option>
           <option value="2" <?php if($info['defView']=="2") echo 'selected="selected"'; ?> >Ingredient Notes</option>
@@ -105,7 +105,7 @@ while($qTags = mysqli_fetch_array($tagsQ)){
   
    <div class="form-row">
      <div class="form-group col-md-6">
-        <label class="control-label col-auto" for="profile">Category:</label>
+        <label class="control-label col-auto" for="profile">Category</label>
         <select name="profile" id="profile" class="form-control selectpicker" data-live-search="true">
         <?php foreach ($fcat as $cat) { if($cat['type'] == 'profile'){?>        
             <option value="<?=$cat['cname'];?>" <?php echo ($info['profile']==$cat['cname'])?"selected=\"selected\"":""; ?>><?php echo $cat['name'];?></option>
@@ -114,7 +114,7 @@ while($qTags = mysqli_fetch_array($tagsQ)){
     </div>  
   
     <div class="form-group col-md-6">
-    	<label class="control-label col-auto" for="tagsinput">Tags:</label>
+    	<label class="control-label col-auto" for="tagsinput">Tags</label>
         <input type="text" class="form-control control-label" id="tagsinput" data-role="tagsinput" />
     </div>
     
@@ -122,7 +122,7 @@ while($qTags = mysqli_fetch_array($tagsQ)){
 
  <div class="form-row">
    <div class="form-group col-md-6">
-    <label class="control-label col-auto" for="catClass">Purpose:</label>
+    <label class="control-label col-auto" for="catClass">Purpose</label>
         <select name="catClass" id="catClass" class="form-control selectpicker" data-live-search="true">
             <option></option>
             <?php foreach ($cats as $IFRACategories) {?>
@@ -132,7 +132,7 @@ while($qTags = mysqli_fetch_array($tagsQ)){
   </div>
    
   <div class="form-group col-md-6">
-    <label class="control-label col-auto" for="finalType">Final type:</label>
+    <label class="control-label col-auto" for="finalType">Final type</label>
         <select name="finalType" id="finalType" class="form-control selectpicker" data-live-search="true">  
             <option value="100">Concentrated (100%)</option>
             <?php foreach ($fTypes as $fType) {?>
@@ -144,7 +144,7 @@ while($qTags = mysqli_fetch_array($tagsQ)){
 
  <div class="form-row">
    <div class="form-group col-md-6">
-    <label class="control-label col-auto" for="finalType">Status:</label>
+    <label class="control-label col-auto" for="finalType">Status</label>
         <select name="status" id="status" class="form-control selectpicker" data-live-search="true">  
             <option value="0" <?php if($info['status'] == "0"){ echo 'selected';}?>>Scheduled</option>
             <option value="1" <?php if($info['status'] == "1"){ echo 'selected';}?>>Under Developent</option>
@@ -156,7 +156,7 @@ while($qTags = mysqli_fetch_array($tagsQ)){
     </div>
 
  <div class="form-group col-md-6">
-    <label class="control-label col-auto" for="gender">Gender:</label>
+    <label class="control-label col-auto" for="gender">Gender</label>
     <select name="gender" id="gender" class="form-control selectpicker" data-live-search="true">
     <?php foreach ($fcat as $cat) { if($cat['type'] == 'sex'){?>
         <option value="<?=$cat['cname'];?>" <?php echo ($info['sex']==$cat['cname'])?"selected=\"selected\"":""; ?>><?php echo $cat['name'];?></option>
@@ -167,7 +167,7 @@ while($qTags = mysqli_fetch_array($tagsQ)){
  
  <div class="form-row">
     <div class="form-group col">
-        <label class="control-label col-auto" for="doc_file">Picture:</label>
+        <label class="control-label col-auto" for="doc_file">Picture</label>
         <input type="file" name="doc_file" id="doc_file" />
         <input type="submit" name="button" class="btn btn-primary mt-4" id="pic_upload" value="Upload">
         <div id="upload_resp"></div>
@@ -179,7 +179,7 @@ while($qTags = mysqli_fetch_array($tagsQ)){
 <div class="col-sm-6">
      <div class="form-row">
         <div class="form-group col-auto">
-        <label class="control-label col-auto" for="notes">Notes:</label>
+        <label class="control-label col-auto" for="notes">Notes</label>
         <a href="#" data-name="notes" class="notes" data-type="textarea" id="notes" data-pk="<?php echo $info['id'];?>"><?php echo $info['notes']?: 'None';?></a>
         </div>
      </div>
@@ -189,7 +189,7 @@ while($qTags = mysqli_fetch_array($tagsQ)){
  
 
 
-<script type="text/javascript" language="javascript" >
+<script>
 $(document).ready(function(){
 
 	$('[rel=tip]').tooltip({placement: 'right'});

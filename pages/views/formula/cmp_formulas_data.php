@@ -84,7 +84,7 @@ var formula_b_table = $('#formula_b_table').DataTable({
 </script>
 <div class="compare">
     <div class="cmp_a">
-        <table id="formula_a_table" class="table table-striped table-bordered nowrap" style="width:100%">
+        <table id="formula_a_table" class="table table-striped nowrap" style="width:100%">
             <thead>
                 <tr>
                     <th>Ingredient</th>
@@ -95,7 +95,7 @@ var formula_b_table = $('#formula_b_table').DataTable({
         </table>
     </div>
         <div class="cmp_a">
-        <table id="formula_b_table" class="table table-striped table-bordered nowrap" style="width:100%">
+        <table id="formula_b_table" class="table table-striped nowrap" style="width:100%">
             <thead>
                 <tr>
                     <th>Ingredient</th>

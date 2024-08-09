@@ -26,7 +26,7 @@ if(count((array)$used) == 0 && count((array)$usedCmp) == 0){
 <h3><?=$ingID?> is used in <?=count((array)$used)?> formulas</h3>
 <?php if(count((array)$used)){ ?>
 <div class="where_used mb-3">
-    <table class="table table-bordered dataTable no-footer"> 
+    <table class="table table-striped"> 
         <thead>
             <tr>
                 <th>Formula name</th>
