@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 10.9
+
 ### Version 10.8
 - Fix API key update not returning error in correct format
 - Rewrite API page
