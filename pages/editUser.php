@@ -26,13 +26,12 @@ $doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM docu
       <div class="col-md-4">
         <div class="text-center">
           <div id="profile_pic"><div class="loader"></div></div>
-          <h6>Upload a different photo...</h6>
-          <input type="file" name="avatar" id="avatar" class="form-control">
+          <input type="file" name="avatar" id="avatar" class="mt-2 form-control">
         </div>
         <div class="dropdown-divider"></div>
         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
 			<div class="text-right">
-        		<input name="upload-avatar" type="submit" class="btn-dark" id="upload-avatar" value="Upload" />
+        		<input name="upload-avatar" type="submit" class="btn btn-secondary mt-2" id="upload-avatar" value="Upload" />
         	</div>
         </div>
       </div>
@@ -60,7 +59,7 @@ $doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM docu
           </div>
           <div class="dropdown-divider"></div>
           <div class="form-row">
-			<div class="col-sm-12">
+			<div class="col-sm-auto">
 				<div class="mt-2 text-right">
 					<button type="button" id="save-profile" name="save-profile" class="btn btn-primary">Update</button>
 				</div>
@@ -86,56 +85,56 @@ $(document).ready(function () {
         }
     });
 
-$('#profile_pic').html('<img class="img-profile-avatar" src="<?=$doc['avatar']?: '/img/logo_def.png'; ?>">');
-
-$('#save-profile').click(function() {
-	$.ajax({ 
-		url: '/pages/update_settings.php', 
-		type: 'POST',
-		data: {
-			update_user_profile: 1,
-			user_fname: $("#fullName").val(),			
-			user_email: $("#email").val(),
-			user_pass: $("#password").val()
-			},
-		dataType: 'json',
-		success: function (data) {
-			if(data.success){
-				var msg = '<div class="alert alert-success">'+data.success+'</div>';
-			}else if( data.error){
-				var msg = '<div class="alert alert-danger">'+data.error+'</div>';
+	$('#profile_pic').html('<img class="img-profile-avatar" src="<?=$doc['avatar']?: '/img/logo_def.png'; ?>">');
+	
+	$('#save-profile').click(function() {
+		$.ajax({ 
+			url: '/pages/update_settings.php', 
+			type: 'POST',
+			data: {
+				update_user_profile: 1,
+				user_fname: $("#fullName").val(),			
+				user_email: $("#email").val(),
+				user_pass: $("#password").val()
+				},
+			dataType: 'json',
+			success: function (data) {
+				if(data.success){
+					var msg = '<div class="alert alert-success">'+data.success+'</div>';
+				}else if( data.error){
+					var msg = '<div class="alert alert-danger">'+data.error+'</div>';
+				}
+				$('#msgU').html(msg);
 			}
-			$('#msgU').html(msg);
+		  });
+	});
+	
+	$('#upload-avatar').click(function() {
+		var fd = new FormData();
+		var files = $('#avatar')[0].files;
+	
+		if(files.length > 0 ){
+			fd.append('avatar',files[0]);
 		}
-	  });
-});
-
-$('#upload-avatar').click(function() {
-	var fd = new FormData();
-    var files = $('#avatar')[0].files;
-
-    if(files.length > 0 ){
-		fd.append('avatar',files[0]);
-	}
-	$.ajax({ 
-		url: '/pages/update_settings.php?update_user_avatar=1', 
-		type: 'POST',
-		data: fd,
-		contentType: false,
-      	processData: false,
-		cache: false,
-		dataType: 'json',
-		success: function (data) {
-			if(data.success){
-				var msg = '<div class="alert alert-success">'+data.success.msg+'</div>';
-				$('#profile_pic').html('<img class="img-profile-avatar" src="'+data.success.avatar+'">');
-
-			}else if( data.error){
-				var msg = '<div class="alert alert-danger">'+data.error+'</div>';
+		$.ajax({ 
+			url: '/pages/update_settings.php?update_user_avatar=1', 
+			type: 'POST',
+			data: fd,
+			contentType: false,
+			processData: false,
+			cache: false,
+			dataType: 'json',
+			success: function (data) {
+				if(data.success){
+					var msg = '<div class="alert alert-success">'+data.success.msg+'</div>';
+					$('#profile_pic').html('<img class="img-profile-avatar" src="'+data.success.avatar+'">');
+	
+				}else if( data.error){
+					var msg = '<div class="alert alert-danger">'+data.error+'</div>';
+				}
+				$('#msgU').html(msg);
 			}
-			$('#msgU').html(msg);
-		}
-	  });
-});
+		  });
+	});
 });
 </script>
