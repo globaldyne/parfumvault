@@ -61,17 +61,18 @@ $(document).ready(function(){
 					$(".select2-totalRecords").html('');
 				}
 				return {
-					results: $.map(data.data, function(obj) {
+					results: $.map(data.data, function(ingData) {
 						return {
-							id: obj.id,
-							name: obj.name,
-							IUPAC: obj.IUPAC,
-							cas: obj.cas,
-							ingType: obj.type,
-							description: obj.description,
-							physical_state: obj.physical_state,
-							stock: obj.stock,
-							profile: obj.profile
+							id: ingData.id,
+							name: ingData.name,
+							IUPAC: ingData.IUPAC,
+							cas: ingData.cas,
+							ingType: ingData.type,
+							description: ingData.description,
+							physical_state: ingData.physical_state,
+							stock: ingData.stock,
+							profile: ingData.profile,
+							mUnit: ingData.mUnit
 						}
 					})
 				};
@@ -80,7 +81,7 @@ $(document).ready(function(){
 		}
 	  
 	}).on('select2:open', () => {
-		$(".select2-search:not(:has(a))").prepend('<div id="add_new_ing_sel" class="select_add_new_ingredient mb-2"><a class="text-primary fa fa-plus mx-2"></a><a href="/pages/mgmIngredient.php" class="popup-link text-primary add-new-ing-sel">Create new ingredient</a></div>');
+		$(".select2-search:not(:has(a))").prepend('<div id="add_new_ing_sel" class="select_add_new_ingredient mb-2"><a href="/pages/mgmIngredient.php" class="popup-link add-new-ing-sel"><i class="fa fa-plus mx-2"></i>Create new ingredient</a></div>');
 		
 		$(".select2-search:not(:has(i))").append('<div class="select2-totalRecords"></div><div class="select_deep_ingredient"><span><div id="select_search_deep" class="select_search_deep"><i class="pv_point_gen mx-2" rel="tip" data-placement="bottom" title="Extend search in synonyms"><input data-default="true" type="checkbox" id="isDeep"></i><label for="isDeep">Deep Search</label></div></span></div>');
 		
@@ -112,13 +113,8 @@ $(document).ready(function(){
 			return 'No ingredient found...';
 		}
 		
-		var measureIn;
-		if (ingredientData.physical_state == '1'){
-			measureIn = 'mL';
-		}else if (ingredientData.physical_state == '2'){
-			measureIn = 'grams';
-		}
-		
+		let measureIn = ingredientData.mUnit || (ingredientData.physical_state == '1' ? 'mL' : ingredientData.physical_state == '2' ? 'grams' : '');
+
 		var $container = $(
 			"<div class='select_result_igredient clearfix'>" +
 			  "<div class='select_result_igredient_meta'>" +
@@ -166,20 +162,20 @@ $(document).ready(function(){
 			data: {
 				filter: "purity",
 				id: ingID
-				},
+			},
 			dataType: 'json',
 			success: function (data) {
-			  if(ingType == 'Solvent'){
-				$("#concentration").prop("disabled", true); 
-				$("#dilutant").prop("disabled", true);
-				$("#concentration").val(100);
-				$("#dilutant").val('None');
-			  }else{
-				$("#concentration").prop("disabled", false);
-				$("#concentration").val(data.purity).trigger("input");;
-			  }
-			 $("#quantity").prop("disabled", false);
-			 $("#quantity").val();
+				if(ingType == 'Solvent'){
+					$("#concentration").prop("disabled", true); 
+					$("#dilutant").prop("disabled", true);
+					$("#concentration").val(100);
+					$("#dilutant").val('None');
+			  	}else{
+					$("#concentration").prop("disabled", false);
+					$("#concentration").val(data.purity).trigger("input");;
+			  	}
+			 	$("#quantity").prop("disabled", false);
+			 	$("#quantity").val();
 			}
 		  });
 		

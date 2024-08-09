@@ -1,5 +1,9 @@
 # CHANGELOG
 ### Version 10.8
+- Fix API key update not returning error in correct format
+- Rewrite API page
+- Rewrite About page
+- Try to get measurement unit from ingredient supplier first for ingredient search in formulation
 - Table border removed from tables
 - Added support for a dark theme
 - Complete rewrite for Finished Product page

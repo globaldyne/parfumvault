@@ -173,7 +173,8 @@ if($_POST['manage'] == 'api'){
 	$api = $_POST['api'];
 	$api_key = mysqli_real_escape_string($conn, $_POST['api_key']);
 	if(strlen($api_key) < 8){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>API key must be at least 8 characters long.</div>';	
+		$response['error'] =  'API key must be at least 8 characters long';	
+		echo json_encode($response);
 		return;
 	}
 	if($_POST["api"] == 'true') {
@@ -185,7 +186,7 @@ if($_POST['manage'] == 'api'){
 	if(mysqli_query($conn, "UPDATE settings SET api = '$api', api_key='$api_key'")){
 		$response['success'] = 'API settings updated!';	
 	}else{
-		$response['success'] = 'An error occured '.mysqli_error($conn);	
+		$response['error'] = 'An error occured '.mysqli_error($conn);	
 	}
 	echo json_encode($response);
 	return;

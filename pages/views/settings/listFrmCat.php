@@ -33,7 +33,7 @@ require_once(__ROOT__.'/inc/opendb.php');
     </table>
 </div>
  
-<script type="text/javascript" language="javascript" >
+<script>
 $(document).ready(function() {
 		var frmDataCat = $('#frmDataCat').DataTable( {
 		columnDefs: [
@@ -79,167 +79,168 @@ $(document).ready(function() {
 		  });
 		},
 	});
-});
 
 
 
-function cName(data, type, row){
-	return '<a class="name pv_point_gen" data-name="name" data-type="text" data-pk="'+row.id+'">'+row.name+'</a>';    
-}
-
-function cType(data, type, row){
-	return '<a class="type pv_point_gen" data-name="type" data-type="select" data-pk="'+row.id+'">'+row.type+'</a>';    
-}
-
-function cActions(data, type, row){
-	return '<i id="catDel" class="pv_point_gen fas fa-trash link-danger" data-id="'+row.id+'" data-name="'+row.name+'"></i>';    
-}
-
-function fKey(data, type, row){
-	return '<a href="#" class="colorKey" style="background-color: '+row.colorKey+'" id="colorKey" data-name="colorKey" data-type="select" data-pk="'+row.id+'" data-title="Choose Colour Key for '+row.name+'"></a>';    
-}
-
-$('#add-fcat').click(function() {
-$.ajax({ 
-	url: '/pages/update_settings.php', 
-		type: 'POST',
-		data: {
-			manage: 'add_frmcategory',
-			category: $("#fcatName").val(),
-			cat_type: $("#cat_type").val(),
-		},
-		dataType: 'json',
-		success: function (data) {
-			if ( data.success ) {
-				$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
-				$('.toast-header').removeClass().addClass('toast-header alert-success');
-				reload_data();
-				$('#add_formula_cat').modal('toggle');
-				$('.toast').toast('show');
-			} else {
-				var msg = '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mr-2"></i>'+data.error+'</div>';
-				$('#fcatMsgIn').html(msg);
+	function cName(data, type, row){
+		return '<a class="name pv_point_gen" data-name="name" data-type="text" data-pk="'+row.id+'">'+row.name+'</a>';    
+	}
+	
+	function cType(data, type, row){
+		return '<a class="type pv_point_gen" data-name="type" data-type="select" data-pk="'+row.id+'">'+row.type+'</a>';    
+	}
+	
+	function cActions(data, type, row){
+		return '<i id="catDel" class="pv_point_gen fas fa-trash link-danger" data-id="'+row.id+'" data-name="'+row.name+'"></i>';    
+	}
+	
+	function fKey(data, type, row){
+		return '<a href="#" class="colorKey" style="background-color: '+row.colorKey+'" id="colorKey" data-name="colorKey" data-type="select" data-pk="'+row.id+'" data-title="Choose Colour Key for '+row.name+'"></a>';    
+	}
+	
+	$('#add-fcat').click(function() {
+	$.ajax({ 
+		url: '/pages/update_settings.php', 
+			type: 'POST',
+			data: {
+				manage: 'add_frmcategory',
+				category: $("#fcatName").val(),
+				cat_type: $("#cat_type").val(),
+			},
+			dataType: 'json',
+			success: function (data) {
+				if ( data.success ) {
+					$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+					$('.toast-header').removeClass().addClass('toast-header alert-success');
+					reload_data();
+					$('#add_formula_cat').modal('toggle');
+					$('.toast').toast('show');
+				} else {
+					var msg = '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mr-2"></i>'+data.error+'</div>';
+					$('#fcatMsgIn').html(msg);
+				}
+				
 			}
-			
+		});
+	});
+	
+	
+	
+	$('#frmDataCat').editable({
+	  container: 'body',
+	  selector: 'a.name',
+	  url: "/pages/update_data.php?settings=fcat",
+	  title: 'Category name',
+	  type: "POST",
+	  dataType: 'json',
+	  validate: function(value){
+	   if($.trim(value) == ''){
+		return 'This field is required';
+	   }
+	  }
+	});
+	 
+	
+	//Change type
+	$('#frmDataCat').editable({
+		pvnoresp: false,
+		highlight: false,
+		title: 'Category type',
+		selector: 'a.type',
+		type: "POST",
+		emptytext: "",
+		emptyclass: "",
+		url: "/pages/update_data.php?settings=fcat",
+		source: [
+				 <?php
+					$getCK = mysqli_query($conn, "SELECT type FROM formulaCategories GROUP BY type");
+					while ($r = mysqli_fetch_array($getCK)){
+				 ?>
+					{value: "<?=$r['type']?>", text: "<?=$r['type']?>"},
+				<?php } ?>
+			  ],
+		dataType: 'html',
+		success: function () {
+			reload_data();
 		}
 	});
-});
-
-
-
-$('#frmDataCat').editable({
-  container: 'body',
-  selector: 'a.name',
-  url: "/pages/update_data.php?settings=fcat",
-  title: 'Category name',
-  type: "POST",
-  dataType: 'json',
-  validate: function(value){
-   if($.trim(value) == ''){
-    return 'This field is required';
-   }
-  }
-});
- 
-
-//Change type
-$('#frmDataCat').editable({
-	pvnoresp: false,
-	highlight: false,
-	title: 'Category type',
-	selector: 'a.type',
-	type: "POST",
-	emptytext: "",
-	emptyclass: "",
-  	url: "/pages/update_data.php?settings=fcat",
-    source: [
-			 <?php
-				$getCK = mysqli_query($conn, "SELECT type FROM formulaCategories GROUP BY type");
-				while ($r = mysqli_fetch_array($getCK)){
-			 ?>
-				{value: "<?=$r['type']?>", text: "<?=$r['type']?>"},
-			<?php } ?>
-          ],
-	dataType: 'html',
-	success: function () {
-		reload_data();
-	}
-});
-
-//Change colorKey
-$('#frmDataCat').editable({
-	pvnoresp: false,
-	highlight: false,
-	selector: 'a.colorKey',
-	type: "POST",
-	emptytext: "",
-	emptyclass: "",
-  	url: "/pages/update_data.php?settings=fcat",
-    source: [
-			 <?php
-				$getCK = mysqli_query($conn, "SELECT name,rgb FROM colorKey ORDER BY name ASC");
-				while ($r = mysqli_fetch_array($getCK)){
-				echo '{value: "'.$r['rgb'].'", text: "'.$r['name'].'", ck: "color: rgb('.$r['rgb'].')"},';
-			}
-			?>
-          ],
-	dataType: 'html',
-	success: function () {
-		reload_data();
-	}
-});
 	
-$('#frmDataCat').on('click', '[id*=catDel]', function () {
-	var cat = {};
-	cat.ID = $(this).attr('data-id');
-	cat.Name = $(this).attr('data-name');
-    
-	bootbox.dialog({
-       title: "Confirm category deletion",
-       message : 'Delete <strong>'+ $(this).attr('data-name') +'</strong> category?',
-       buttons :{
-           main: {
-               label : "Delete",
-               className : "btn-danger",
-               callback: function (){
-	    			
-				$.ajax({ 
-					url: '/pages/update_settings.php', 
-					type: 'POST',
-					data: {
-						action: "del_frmcategory",
-						catId: cat.ID,
-					},
-					dataType: 'json',
-					success: function (data) {
-						if ( data.success ) {
-							$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
-							$('.toast-header').removeClass().addClass('toast-header alert-success');
-							reload_data();
-						} else {
-							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
-							$('.toast-header').removeClass().addClass('toast-header alert-danger');
+	//Change colorKey
+	$('#frmDataCat').editable({
+		pvnoresp: false,
+		highlight: false,
+		selector: 'a.colorKey',
+		type: "POST",
+		emptytext: "",
+		emptyclass: "",
+		url: "/pages/update_data.php?settings=fcat",
+		source: [
+				 <?php
+					$getCK = mysqli_query($conn, "SELECT name,rgb FROM colorKey ORDER BY name ASC");
+					while ($r = mysqli_fetch_array($getCK)){
+					echo '{value: "'.$r['rgb'].'", text: "'.$r['name'].'", ck: "color: rgb('.$r['rgb'].')"},';
+				}
+				?>
+			  ],
+		dataType: 'html',
+		success: function () {
+			reload_data();
+		}
+	});
+		
+	$('#frmDataCat').on('click', '[id*=catDel]', function () {
+		var cat = {};
+		cat.ID = $(this).attr('data-id');
+		cat.Name = $(this).attr('data-name');
+		
+		bootbox.dialog({
+		   title: "Confirm category deletion",
+		   message : 'Delete <strong>'+ $(this).attr('data-name') +'</strong> category?',
+		   buttons :{
+			   main: {
+				   label : "Delete",
+				   className : "btn-danger",
+				   callback: function (){
+						
+					$.ajax({ 
+						url: '/pages/update_settings.php', 
+						type: 'POST',
+						data: {
+							action: "del_frmcategory",
+							catId: cat.ID,
+						},
+						dataType: 'json',
+						success: function (data) {
+							if ( data.success ) {
+								$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+								$('.toast-header').removeClass().addClass('toast-header alert-success');
+								reload_data();
+							} else {
+								$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+								$('.toast-header').removeClass().addClass('toast-header alert-danger');
+							}
+							$('.toast').toast('show');
 						}
-						$('.toast').toast('show');
-					}
-				  });
-                 return true;
-               }
-           },
-           cancel: {
-               label : "Cancel",
-               className : "btn-secondary",
-               callback : function() {
-                   return true;
-               }
-           }   
-       },onEscape: function () {return true;}
-   });
-});
+					  });
+					 return true;
+				   }
+			   },
+			   cancel: {
+				   label : "Cancel",
+				   className : "btn-secondary",
+				   callback : function() {
+					   return true;
+				   }
+			   }   
+		   },onEscape: function () {return true;}
+	   });
+	});
+	
+	function reload_data() {
+		$('#frmDataCat').DataTable().ajax.reload(null, true);
+	};
 
-function reload_data() {
-    $('#frmDataCat').DataTable().ajax.reload(null, true);
-};
+});
 
 
 </script>

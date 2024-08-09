@@ -845,7 +845,7 @@ body {
 }
 
 .add-new-ing-sel {
-	color: #337ab7;
+	color: var( --bs-body-color);
 	display: inline-table;
 	padding: 14px 14px 14px 8px;
 	height: 22px;
