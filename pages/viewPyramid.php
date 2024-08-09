@@ -15,7 +15,7 @@ if(!$_GET['formula']){
 $formula = mysqli_real_escape_string($conn, $_GET['formula']);
 $fid = mysqli_real_escape_string($conn, $_GET['fid']);
 if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulas WHERE fid = '$fid'")))){
-	echo '<div class="alert alert-info alert-dismissible">Incomplete formula.</div>';
+	echo '<div class="alert alert-info">Incomplete formula.</div>';
 	return;
 }
 ?>
@@ -29,12 +29,12 @@ if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulas WHERE fid 
   font-size: 11px;
 }						
 </style>
-<script src="../js/amcharts_3.21.15.free/amcharts/amcharts.js"></script>
-<script src="../js/amcharts_3.21.15.free/amcharts/funnel.js"></script>
-<script src="../js/amcharts_3.21.15.free/amcharts/themes/light.js"></script>
+<script src="/js/amcharts_3.21.15.free/amcharts/amcharts.js"></script>
+<script src="/js/amcharts_3.21.15.free/amcharts/funnel.js"></script>
+<script src="/js/amcharts_3.21.15.free/amcharts/themes/light.js"></script>
 
-<script src="../js/amcharts_3.21.15.free/amcharts/plugins/export/export.min.js"></script>
-<link rel="stylesheet" href="../js/amcharts_3.21.15.free/amcharts/plugins/export/export.css" type="text/css" media="all" />  
+<script src="/js/amcharts_3.21.15.free/amcharts/plugins/export/export.min.js"></script>
+<link rel="stylesheet" href="/js/amcharts_3.21.15.free/amcharts/plugins/export/export.css" type="text/css" media="all" />  
 <script>
 var chart = AmCharts.makeChart( "chartdiv", {
   "type": "funnel",
@@ -73,7 +73,8 @@ var chart = AmCharts.makeChart( "chartdiv", {
   "export": {
     "enabled": true
   }
-} );
+  
+});
 </script>
 
 <div id="wrapper">

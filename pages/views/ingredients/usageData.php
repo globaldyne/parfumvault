@@ -124,7 +124,7 @@ $(document).ready(function() {
 	function unlimited_usage(status,maxulimit){
 		$('#usage_type').prop('disabled', status);
 		<?php foreach ($cats as $cat) {?>
-			$('#cat<?php echo $cat['name'];?>').prop('readonly', status).val(maxulimit);
+			$('#cat<?php echo $cat['name'];?>').prop('disabled', status).val(maxulimit);
 		<?php } ?>
 	}
 	

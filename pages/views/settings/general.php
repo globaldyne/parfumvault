@@ -98,13 +98,19 @@ while($cats_res = mysqli_fetch_array($cats_q)){
           </select>
         </div>
     
-      </div>
-      
-
+        <div class="form-group col-md-6">
+          <label for="bs_theme">Theme</label><a href="#" class="ml-2 fas fa-question-circle" rel="tip" title="Requires a page refresh for the changes to take effect"></a>
+          <select name="bs_theme" id="bs_theme" class="form-control">
+            <option value="light" <?php if($settings['bs_theme']=="light") echo 'selected="selected"'; ?> >Light</option>
+            <option value="dark" <?php if($settings['bs_theme']=="dark") echo 'selected="selected"'; ?> >Dark</option>
+          </select>
+        </div>
+        
+    </div>
 </div>
     
     <div class="col-sm-2">
-     <h4 class="m-0 mb-4 text-primary">Pyramid View</h4>
+     <h4 class="m-0 mb-4">Pyramid View</h4>
      <div class="form-row">
         <div class="form-group col-md-auto">
           <label for="top_n" id="top">Top notes %</label>
@@ -141,8 +147,7 @@ while($cats_res = mysqli_fetch_array($cats_q)){
         
         <div class="form-group col-md-auto">
             <input name="multi_dim_perc" type="checkbox" id="multi_dim_perc" value="1" <?php if($settings['multi_dim_perc'] == '1'){ ?> checked="checked" <?php } ?>/>
-            <label class="form-check-label" for="multi_dim_perc">Multi-dimensional lookup</label>
-            <a href="#" class="fas fa-question-circle" rel="tip" title="Enable to include into formulas limits calculation the ingredient's sub materials if exists."></a>
+            <label class="form-check-label" for="multi_dim_perc">Multi-dimensional lookup</label><a href="#" class="ml-2 fas fa-question-circle" rel="tip" title="Enable to include into formulas limits calculation the ingredient's sub materials if exists."></a>
         </div>
    </div>
      
@@ -158,58 +163,65 @@ while($cats_res = mysqli_fetch_array($cats_q)){
 </div>
 
 <script>
-$('#save-general').click(function() {
-	$.ajax({ 
-		url: '/pages/update_settings.php', 
-		type: 'POST',
-		data: {
-			manage: 'general',
-			currency: $("#currency").val(),
-			top_n: $("#top_n").val(),
-			heart_n: $("#heart_n").val(),
-			base_n: $("#base_n").val(),
-			qStep: $("#qStep").val(),
-			defCatClass: $("#defCatClass").val(),
-			pubchem_view: $("#pubchem_view").val(),
-			grp_formula: $("#grp_formula").val(),
-			chem_vs_brand: $("#chem_vs_brand").is(':checked'),
-			pubChem: $("#pubChem").is(':checked'),
-			chkVersion: $("#chkVersion").is(':checked'),
-			multi_dim_perc: $("#multi_dim_perc").is(':checked'),
-			mUnit: $("#mUnit").val(),
-			editor: $("#editor").val(),
-			user_pref_eng: $("#user_pref_eng").val(),
-			pv_host: $("#pvHost").val(),
-			defPercentage: $("#defPercentage").val()
+$(document).ready(function() {
 
-	},
-	dataType: 'json',
-	success: function (data) {
-		if(data.success){
-			$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
-			$('.toast-header').removeClass().addClass('toast-header alert-success');
-		} else if(data.error) {
-			$('#toast-title').html('<i class="fa-solid fa-warning mr-2"></i>' + data.error);
-			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+	$('[rel=tip]').tooltip();
+	$('#save-general').click(function() {
+		$.ajax({ 
+			url: '/pages/update_settings.php', 
+			type: 'POST',
+			data: {
+				manage: 'general',
+				currency: $("#currency").val(),
+				top_n: $("#top_n").val(),
+				heart_n: $("#heart_n").val(),
+				base_n: $("#base_n").val(),
+				qStep: $("#qStep").val(),
+				defCatClass: $("#defCatClass").val(),
+				pubchem_view: $("#pubchem_view").val(),
+				grp_formula: $("#grp_formula").val(),
+				chem_vs_brand: $("#chem_vs_brand").is(':checked'),
+				pubChem: $("#pubChem").is(':checked'),
+				chkVersion: $("#chkVersion").is(':checked'),
+				multi_dim_perc: $("#multi_dim_perc").is(':checked'),
+				mUnit: $("#mUnit").val(),
+				editor: $("#editor").val(),
+				user_pref_eng: $("#user_pref_eng").val(),
+				pv_host: $("#pvHost").val(),
+				defPercentage: $("#defPercentage").val(),
+				bs_theme: $("#bs_theme").val()
+	
+		},
+		dataType: 'json',
+		success: function (data) {
+			if(data.success){
+				$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+				$('.toast-header').removeClass().addClass('toast-header alert-success');
+			} else if(data.error) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mr-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			}
+			$('.toast').toast('show');
 		}
-		$('.toast').toast('show');
-	}
-  });
+	  });
+	});
+	
+	$('#top').text('Top notes ' + $('#top_n').val() + '%');
+	$('#heart').text('Heart notes ' + $('#heart_n').val() + '%');
+	$('#base').text('Base notes ' + $('#base_n').val() + '%');
+	
+	$('#top_n').on('input', function(){
+		$('#top').text('Top notes ' + $('#top_n').val() + '%');
+	});
+	
+	$('#heart_n').on('input', function(){
+		$('#heart').text('Heart notes ' + $('#heart_n').val() + '%');
+	});
+	
+	$('#base_n').on('input', function(){
+		$('#base').text('Base notes ' + $('#base_n').val() + '%');
+	});
+	
 });
 
-$('#top').text('Top notes ' + $('#top_n').val() + '%');
-$('#heart').text('Heart notes ' + $('#heart_n').val() + '%');
-$('#base').text('Base notes ' + $('#base_n').val() + '%');
-
-$('#top_n').on('input', function(){
-    $('#top').text('Top notes ' + $('#top_n').val() + '%');
-});
-
-$('#heart_n').on('input', function(){
-    $('#heart').text('Heart notes ' + $('#heart_n').val() + '%');
-});
-
-$('#base_n').on('input', function(){
-    $('#base').text('Base notes ' + $('#base_n').val() + '%');
-});
 </script>

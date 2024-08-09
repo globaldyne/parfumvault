@@ -109,6 +109,7 @@ if($_POST['manage'] == 'general'){
 	$editor = mysqli_real_escape_string($conn, $_POST['editor']);
 	$user_pref_eng = mysqli_real_escape_string($conn, $_POST['user_pref_eng']);
 	$defPercentage =  $_POST['defPercentage'];
+	$bs_theme = $_POST['bs_theme'];
 	
 	if($_POST["chem_vs_brand"] == 'true') {
 		$chem_vs_brand = '1';
@@ -158,8 +159,8 @@ if($_POST['manage'] == 'general'){
 		return;
 	}
 	
-	if(mysqli_query($conn, "UPDATE settings SET currency = '$currency', top_n = '$top_n', heart_n = '$heart_n', base_n = '$base_n', chem_vs_brand = '$chem_vs_brand', grp_formula = '$grp_formula', pubChem='$pubChem', chkVersion='$chkVersion', qStep = '$qStep', defCatClass = '$defCatClass', pubchem_view = '$pubchem_view', multi_dim_perc = '$multi_dim_perc', mUnit = '$mUnit', editor = '$editor', user_pref_eng = '$user_pref_eng', pv_host = '".$_POST['pv_host']."', defPercentage = '$defPercentage'")){
-		$response["success"] = 'Settings updated!';
+	if(mysqli_query($conn, "UPDATE settings SET currency = '$currency', top_n = '$top_n', heart_n = '$heart_n', base_n = '$base_n', chem_vs_brand = '$chem_vs_brand', grp_formula = '$grp_formula', pubChem='$pubChem', chkVersion='$chkVersion', qStep = '$qStep', defCatClass = '$defCatClass', pubchem_view = '$pubchem_view', multi_dim_perc = '$multi_dim_perc', mUnit = '$mUnit', editor = '$editor', user_pref_eng = '$user_pref_eng', pv_host = '".$_POST['pv_host']."', defPercentage = '$defPercentage', bs_theme = '$bs_theme'")){
+		$response["success"] = 'Settings updated';
 	}else{
 		$response["error"] = 'An error occured '.mysqli_error($conn);	
 	}
@@ -172,7 +173,8 @@ if($_POST['manage'] == 'api'){
 	$api = $_POST['api'];
 	$api_key = mysqli_real_escape_string($conn, $_POST['api_key']);
 	if(strlen($api_key) < 8){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>API key must be at least 8 characters long.</div>';	
+		$response['error'] =  'API key must be at least 8 characters long';	
+		echo json_encode($response);
 		return;
 	}
 	if($_POST["api"] == 'true') {
@@ -184,7 +186,7 @@ if($_POST['manage'] == 'api'){
 	if(mysqli_query($conn, "UPDATE settings SET api = '$api', api_key='$api_key'")){
 		$response['success'] = 'API settings updated!';	
 	}else{
-		$response['success'] = 'An error occured '.mysqli_error($conn);	
+		$response['error'] = 'An error occured '.mysqli_error($conn);	
 	}
 	echo json_encode($response);
 	return;
@@ -200,7 +202,7 @@ if($_POST['manage'] == 'brand'){
 	$brandPhone = mysqli_real_escape_string($conn, $_POST['brandPhone']);
 
 	if(mysqli_query($conn, "UPDATE settings SET brandName = '$brandName', brandAddress = '$brandAddress', brandEmail = '$brandEmail', brandPhone = '$brandPhone'")){
-		$response['success'] = 'Brand details updated!';
+		$response['success'] = 'Brand details updated';
 	}else{
 		$response['error'] = 'Error updating brand info';
 	}

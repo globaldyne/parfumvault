@@ -22,7 +22,7 @@ $ingID = mysqli_real_escape_string($conn, $_GET["id"]);
 
 
 </div>
-<table id="tdIngDocs" class="table table-striped table-bordered" style="width:100%">
+<table id="tdIngDocs" class="table table-striped" style="width:100%">
   <thead>
       <tr>
           <th>Document</th>
@@ -33,7 +33,7 @@ $ingID = mysqli_real_escape_string($conn, $_GET["id"]);
       </tr>
    </thead>
 </table>
-<script type="text/javascript" language="javascript" >
+<script>
 $(document).ready(function() {
 	
 	$('[data-bs-toggle="tooltip"]').tooltip();

@@ -27,7 +27,7 @@ $ingName = mysqli_real_escape_string($conn, $_POST["name"]);
 	</div>
 </div>
 
-<table id="tdSynonyms" class="table table-striped table-bordered" style="width:100%">
+<table id="tdSynonyms" class="table table-striped" style="width:100%">
   <thead>
       <tr>
           <th>Synonym</th>
@@ -38,7 +38,7 @@ $ingName = mysqli_real_escape_string($conn, $_POST["name"]);
 </table>
 
 
-<script type="text/javascript" language="javascript" >
+<script>
 $(document).ready(function() {
 
 $('[data-bs-toggle="tooltip"]').tooltip();

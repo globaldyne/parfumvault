@@ -73,7 +73,9 @@ html {
 	background-color:#FFF;
 }
 
-a { text-decoration: none; }
+a { 
+	text-decoration: none;
+}
 
 .navbar {
     position: relative;
@@ -328,7 +330,7 @@ tr.strikeout td:before {
 }
 
 .loader-text {
-  color: #000;
+  color: var( --bs-body-color);
   font-family: arial, sans-serif;
   text-align:center;
 }
@@ -436,8 +438,8 @@ formula td, table.table th {
 .mgmIngHeader {
 	font-size: 3rem;
 	line-height: 3rem;
-	color: #004372;
-	background: white;
+	color: var( --bs-body-color);
+	background: var( --bs-body-bg);
 }
 .mgmIngHeader-with-separator::after {
     content: '';
@@ -466,7 +468,7 @@ formula td, table.table th {
 	font-size: 1.875rem;
 	margin-top: 0.9375rem;
 	display: block;
-	background: white;
+	background: var( --bs-body-bg);
 }
 
 .mgm-row-xl > .mgm-row-inner > .mgm-column {
@@ -494,7 +496,7 @@ formula td, table.table th {
 }
 
 .mgm-cat-in {
-	color: #444444;
+	color: var( --bs-body-color);
 	font-size: 0.825rem;
 	text-transform: uppercase;
 	font-weight: 300;
@@ -520,7 +522,7 @@ formula td, table.table th {
 .listIngName {
     font-size: 1.1rem;
     line-height: 2rem;
-    color: #004372;
+    color: var( --bs-body-color);
   /*  background: white; */
 	font-weight: bolder;
 }
@@ -610,7 +612,7 @@ formula td, table.table th {
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
     font-size: 0.85rem;
-    color: #444444;
+    color: var( --bs-body-color);
     font-weight: 300;
 }
 
@@ -619,12 +621,12 @@ formula td, table.table th {
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
     font-size: 0.85rem;
-    color: #444444;
+    color: var( --bs-body-color);
     font-weight: 300;
 }
 
 .mgm-ing-bk {
-    background-color: white;
+    background-color: var( --bs-body-bg);
 }
 
 .ing_ico_list {
@@ -646,7 +648,7 @@ formula td, table.table th {
 }
 
 .mgm-ing-theme {
-	background-color: fff;
+	background-color: var( --bs-body-bg);
 	/*
 	background-image: linear-gradient(to bottom, transparent, white 75%), url("/img/molecule.png");
 	background-repeat: no-repeat;
@@ -755,7 +757,7 @@ table.fixedHeader-floating {
 }
 
 .pv_gen_li {
-	color: #23527c;
+	color: var( --bs-body-color);
 }
 
 .advanced_search_box {
@@ -784,7 +786,7 @@ table.fixedHeader-floating {
 	font-size: 1.2rem;
 	display: inline;
 	font-weight: bold;
-	color: #77716f !important
+	color: var( --bs-secondary-color ) !important;
 }
 
 .pv_exclusions {
@@ -843,7 +845,7 @@ body {
 }
 
 .add-new-ing-sel {
-	color: #337ab7;
+	color: var( --bs-body-color);
 	display: inline-table;
 	padding: 14px 14px 14px 8px;
 	height: 22px;
@@ -867,7 +869,7 @@ body {
 
 .select_search_deep {
   font-size: medium;
-  color: black;
+  color: var( --bs-body-color);
   display: inline;
   text-align: right;
   align-self: start;
@@ -909,12 +911,12 @@ body {
 	margin: 5px;
 	border-width: thin;
 }
-
+/*
 .bootstrap-select.disabled, .bootstrap-select > .disabled {
   cursor: not-allowed;
   background-color: #eee;
 }
-
+*/
 .shared-formula-accept {
   float: right;
   border: none;
@@ -1061,11 +1063,11 @@ body {
 #customer_name, #formula_name {
   display: inline;
 }
-
+/*
 table.dataTable thead tr {
 	background-color: #cececec9 !important;
 }
-
+*/
 table#tdDataPending.dataTable tbody tr:hover {
 	background-color: #ae9292;
 }
@@ -1082,6 +1084,10 @@ table#tdDataPending.dataTable thead:hover {
 	transform: scale(1.05);
 }
 
+.pv-transition td {
+    background-color: var(--bs-secondary-bg);
+}
+
 .schedule_details {
 	font-size: medium;
 	font-style: normal;
@@ -1094,7 +1100,6 @@ table#tdDataPending.dataTable thead:hover {
 }
 
 .pv_point_gen_color {
-	color: #23527c !important;
 	cursor: pointer !important;
 	font-style: normal;
 }
@@ -1202,13 +1207,8 @@ hr.hr-text::before {
 .text-reset {
  color:inherit!important
 }
-.link-primary {
- color:#0d6efd
-}
-.link-primary:focus,
-.link-primary:hover {
- color:#0a58ca
-}
+
+
 .link-secondary {
  color:#6c757d
 }
@@ -1468,4 +1468,22 @@ th.dt-center, td.dt-center {
 .bg-banned a {
   color: inherit;
   text-decoration: none;
+}
+
+.btn-outline-pv-2 {
+  display: block;
+  width: 100%;
+  padding: .375rem .75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--bs-body-color);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: var(--bs-body-bg);
+  background-clip: padding-box;
+  border: var(--bs-border-width) solid var(--bs-border-color);
+  border-radius: var(--bs-border-radius);
+  transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }

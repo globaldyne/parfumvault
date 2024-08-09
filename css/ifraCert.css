@@ -7,7 +7,7 @@
 p { 
 	margin-bottom: 0in; 
 	direction: ltr; 
-	color: #000000; 
+	color:  var(--bs-body-color); 
 	widows: 2; 
 	orphans: 2;
 }
@@ -31,7 +31,7 @@ h1 {
 	margin-top: 0in; 
 	margin-bottom: 0in; 
 	direction: ltr; 
-	color: #000000; 
+	color:  var(--bs-body-color);
 	text-align: center; 
 	widows: 2; 
 	orphans: 2;
@@ -53,4 +53,12 @@ h1.ctl {
 	font-family: "Helvetica 45 Light", "Vrinda", sans-serif; 
 	font-size: 10pt; 
 	font-weight: normal; 
+}
+
+body {
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+  margin: 0;
+  padding: 0;
+  font-family: var(--bs-body-font-family); /* Use Bootstrap's default font */
 }

@@ -7,48 +7,39 @@ while ($suppliers = mysqli_fetch_array($sup)){
 	    $supplier[] = $suppliers;
 }
 ?>
-          <div>
-          <div class="card shadow mb-4">
-            <div class="card-header py-3">
-              <h2 class="m-0 font-weight-bold text-primary"><a href="#" id="mainTitle">Bottles</a></h2>
-            </div>
-            <div class="card-body">
-              <div class="table-responsive">
-               <table class="table table-striped table-bordered">
-                 <tr class="noBorder">
-                     <div class="text-right">
-                      <div class="btn-group">
-                          <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
-                          <div class="dropdown-menu dropdown-menu-right">
-            				<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addBottle"><i class="fa-solid fa-plus mx-2"></i>Add new</a></li>
-                            <li><a class="dropdown-item" id="exportCSV" href="#"><i class="fa-solid fa-file-export mx-2"></i>Export to CSV</a></li>
-                             <li><a class="dropdown-item" id="exportJSON" href="/pages/export.php?format=json&kind=bottles"><i class="fa-solid fa-file-export mx-2"></i>Export to JSON</a></li>
-
-                          </div>
-                        </div>        
-                     </div>
-                 </tr>
-                </table>
-                <table class="table table-bordered" id="tdDataBottles" width="100%" cellspacing="0">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Size (ml)</th>
-                      <th>Price</th>
-                      <th>Supplier</th>
-                      <th>Pieces</th>
-                      <th>Created</th>
-                      <th>Updated</th>
-                      <th></th>
-                    </tr>
-                  </thead>
-                </table>
+  <div class="card shadow mb-4">
+      <div class="card-header py-3">
+         <h2 class="m-0 font-weight-bold text-primary"><a href="#" id="mainTitle">Bottles</a></h2>
+      </div>
+      <div class="card-body">
+      	<div class="text-right">
+           	<div class="btn-group">
+               	<button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
+                 <div class="dropdown-menu dropdown-menu-right">
+                 <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addBottle"><i class="fa-solid fa-plus mx-2"></i>Add new</a></li>
+                 <li><a class="dropdown-item" id="exportCSV" href="#"><i class="fa-solid fa-file-export mx-2"></i>Export to CSV</a></li>
+                 <li><a class="dropdown-item" id="exportJSON" href="/pages/export.php?format=json&kind=bottles"><i class="fa-solid fa-file-export mx-2"></i>Export to JSON</a></li>
               </div>
-            </div>
-          </div>
+            </div>        
+        </div>   
+        <table class="table table-striped" id="tdDataBottles" width="100%" cellspacing="0">
+           <thead>
+              <tr>
+                <th>Name</th>
+                <th>Size (ml)</th>
+                <th>Price</th>
+                <th>Supplier</th>
+                <th>Pieces</th>
+                <th>Created</th>
+                <th>Updated</th>
+                <th></th>
+              </tr>
+            </thead>
+          </table>
         </div>
       </div>
     </div>
+  </div>
 
 <!-- ADD BOTTLE MODAL-->
 <div class="modal fade" id="addBottle" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="addBottle" aria-hidden="true">
@@ -154,7 +145,7 @@ $(document).ready(function() {
 	var tdDataBottles = $('#tdDataBottles').DataTable( {
 	columnDefs: [
 		{ className: 'pv_vertical_middle text-center', targets: '_all' },
-		{ orderable: false, targets: [5] },
+		{ orderable: false, targets: [7] },
 	],
 	dom: 'lrftip',
 	buttons: [{
@@ -257,7 +248,7 @@ $(document).ready(function() {
 	
 	function actions(data, type, row){	
 			data = '<div class="dropdown">' +
-			'<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+			'<button type="button" class="btn btn-floating hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
 				'<ul class="dropdown-menu dropdown-menu-right">';
 			data += '<li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editBottle" rel="tip" title="Edit '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-edit mx-2"></i>Edit</a></li>';
 			data += '<li><a href="'+ row.supplier_link +'" class="dropdown-item" target="_blank" rel="tip" title="Open '+ row.supplier +' page"><i class="fas fa-shopping-cart mx-2"></i>Go to supplier</a></li>';

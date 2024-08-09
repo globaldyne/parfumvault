@@ -5,7 +5,7 @@
     <div class="text-right">
       <div class="btn-group">
         <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
-            <div class="dropdown-menu dropdown-menu-right">
+            <div class="dropdown-menu">
                 <li><a class="dropdown-item" href="#" id="genRev"><i class="fa-solid fa-plus mx-2"></i>Create revision</a><li>
             </div>
       </div>                    
@@ -14,7 +14,7 @@
 
 <div id="msg_rev"></div>
 
-<table id="tdRevisions" class="table table-striped table-bordered" style="width:100%">
+<table id="tdRevisions" class="table table-striped" style="width:100%">
   <thead>
       <tr>
           <th>Revision ID</th>
@@ -25,7 +25,7 @@
    </thead>
 </table>
 
-<script type="text/javascript" language="javascript" >
+<script>
 $(document).ready(function() {
 
 	$('[data-bs-toggle="tooltip"]').tooltip();
@@ -92,7 +92,7 @@ function actions(data, type, row){
 		return '<strong>Current revision</strong>';
 	}
 	data = '<div class="dropdown">' +
-			'<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+			'<button type="button" class="btn btn-floating hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
 				'<ul class="dropdown-menu dropdown-menu-right">';
 	data += '<li><a href="#" id="cmpRev" data-id="'+row.fid+'" data-revision="'+row.revision+'" class="dropdown-item" title="Compare with the current revision" rel="tip"><i class="fas fa-greater-than-equal mx-2"></i>Compare</a></li>';		
 	data += '<li><a href="#" id="restore" class="dropdown-item" data-id="'+row.fid+'" data-revision="'+row.revision+'"><i class="fas fa-history mx-2"></i>Restore</a></li>';

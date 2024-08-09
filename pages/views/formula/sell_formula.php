@@ -23,8 +23,8 @@ $fid = $meta['fid'];
 ?>
 
 
-<div>
-   <div class="btn-group noexport" id="menu">
+<div class="mt-4 mr-4 text-right">
+   <div class="btn-group" id="menu">
         <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
         <div class="dropdown-menu dropdown-menu-left">
            <li><a href="#" class="dropdown-item" id="export_pdf"><i class="fa-solid fa-file-export mx-2"></i>Export to PDF</a></li>
@@ -32,7 +32,7 @@ $fid = $meta['fid'];
     </div>
 </div>
 <hr />
-<table id="formula" class="table table-striped table-bordered nowrap">
+<table id="formula" class="table table-striped">
     <thead>
         <tr>
             <th>Ingredient</th>
@@ -62,9 +62,15 @@ $fid = $meta['fid'];
 var myFID = "<?=$meta['fid']?>";
 var myFNAME = "<?=$meta['name']?>";
 var watermarkText = "<?=$_POST['watermarkText']?>";
-var watermarkTextSize = "<?=$_POST['watermarkTextSize']?>";
+var watermarkTextOp =  parseFloat("<?=$_POST['watermarkTextOp']?>");
 var orientation = "<?=$_POST['orientation']?>";
 var qStep = "<?=$_POST['qStep']?>";
+var fid = "<?=$id?>";
+var fontSize = parseInt("<?=$_POST['fontSize']?>");
+var image = "<?php echo $settings['brandLogo'] ?: "data:image/png;base64,".base64_encode(file_get_contents(__ROOT__.'/img/logo_def.png')); ?>";
+
+var logoSizeW = parseInt("<?=$_POST['logoSizeW'] ?: 200 ?>");
+var logoSizeH = parseInt("<?=$_POST['logoSizeH'] ?: 200 ?>");
 
 var formula_table = $('#formula').DataTable( {
 	columnDefs: [
@@ -75,17 +81,31 @@ var formula_table = $('#formula').DataTable( {
 	buttons: [
       {
         extend: "pdfHtml5",
-		orientation: "landscape",
+		footer: true,
+		orientation: orientation,
         title: myFNAME,
         messageBottom: function(){return new Date().toString()},
-        messageTop: $("#customerID").val()
+        messageTop: $("#customerID").val(),
+		customize: function ( doc ) {
+			doc.styles.tableHeader.fontSize = fontSize;
+			doc.styles.tableFooter.fontSize = fontSize;
+			doc.content.splice( 1, 0, {
+				margin: [ 0, 0, 0, 12 ],
+				alignment: 'center',
+				image: image,
+				width: logoSizeW,
+				height: logoSizeH,
+			});
+			doc.watermark =  {text: watermarkText, color: 'blue', opacity: watermarkTextOp,  bold: false, italics: false};
+			doc.defaultStyle.fontSize = fontSize;          
+		},
       }
     ],
 	processing: false,
 	ajax: {
 		url: '/core/full_formula_data.php',
 		data: {
-			id: <?=$id?>,
+			id: fid,
 			qStep: qStep
 		}
 	 },
@@ -98,15 +118,15 @@ var formula_table = $('#formula').DataTable( {
 			   { data : 'concentration', title: 'Concentration%'},
 			   { data : 'ingredient.desc', title: 'Properties'},
 			  ],
-	footerCallback : function( tfoot, data, start, end, display ) {    
+	 footerCallback : function( tfoot, data, start, end, display ) {    
   
-	  var response = this.api().ajax.json();
-	  if(response){
-		 var $td = $(tfoot).find('th');
-		 $td.eq(0).html("Ingredients: " + response.meta['total_ingredients'] );
-		 $td.eq(4).html("Total: " + response.meta['total_quantity']);
-	 }
-  },
+		 var response = this.api().ajax.json();
+		 if(response){
+			 var $td = $(tfoot).find('th');
+			 $td.eq(0).html("Ingredients: " + response.meta['total_ingredients'] );
+			 $td.eq(4).html("Total: " + response.meta['total_quantity']);
+		 }
+  	},
   
 	order: [[ 0, 'asc' ]],
 	lengthMenu: [[200, 500, -1], [200, 500, "All"]],
@@ -115,25 +135,7 @@ var formula_table = $('#formula').DataTable( {
 	  
 });
 
-
-	
-$('#export_pdf').on('click',function(){
-  $("#formula").tableHTMLExport({
-	type:'pdf',
-	filename: myFNAME + '.pdf',
-	orientation: orientation,
-	trimContent: true,
-    quoteFields: true,
-	ignoreColumns: '.noexport',
-  	ignoreRows: '.noexport',
-	htmlContent: true,
-	cover: '<?php echo base64_encode(wordwrap($meta['notes'],100));?>',
-	maintitle: myFNAME,
-	subtitle: $("#customerID").val(),
-	product: '<?php echo trim($product).' '.trim($ver);?>',
-	watermarkText: watermarkText,
-	watermarkTextSize: watermarkTextSize
-  });
+$('#export_pdf').click(() => {
+    $('#formula').DataTable().button(0).trigger();
 });
-
 </script>

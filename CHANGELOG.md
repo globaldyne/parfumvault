@@ -1,4 +1,23 @@
 # CHANGELOG
+### Version 10.8
+- Fix API key update not returning error in correct format
+- Rewrite API page
+- Rewrite About page
+- Try to get measurement unit from ingredient supplier first for ingredient search in formulation
+- Table border removed from tables
+- Added support for a dark theme
+- Complete rewrite for Finished Product page
+- Various minor improvements for Formula view
+- Rewrite Sell Formula for BS5
+- Added a font size when exporting a PDF in Sell Formula
+- Added brand logo when exporting a PDF in Sell Formula
+- Added opacity for watermak in Sell Formula page
+- Replaced PDF export in Sell Formula with the native DataTables function
+- Removed the space from ml2L function when appending the measurement unit
+- Default PV Logo update
+- Refactor of validateFormula() function
+- Renamed clone formula to duplicate
+
 ### Version 10.7
 - Removed ingredient purity and dilutant from Finished Product page for cleaner view
 - Moved IFRA doc to a modal window

@@ -248,14 +248,15 @@ $("#formula").on("click", ".open-replace-dialog", function () {
 			},
 			processResults: function(data) {
 				return {
-					results: $.map(data.data, function(obj) {
+					results: $.map(data.data, function(ingData) {
 					  return {
-						id: obj.name,
-						description: obj.description,
-						cas: obj.cas,
-						stock: obj.stock,
-						physical_state: obj.physical_state,
-						name: obj.name
+						id: ingData.name,
+						description: ingData.description,
+						cas: ingData.cas,
+						stock: ingData.stock,
+						physical_state: ingData.physical_state,
+						name: ingData.name,
+						mUnit: ingData.mUnit
 
 					  }
 					})
@@ -286,12 +287,8 @@ $("#formula").on("click", ".open-replace-dialog", function () {
 			return 'No ingredient found...';
 		}
 		
-		var measureIn;
-		if (ingredientData.physical_state == '1'){
-			measureIn = 'mL';
-		}else if (ingredientData.physical_state == '2'){
-			measureIn = 'grams';
-		}
+		let measureIn = ingredientData.mUnit || (ingredientData.physical_state == '1' ? 'mL' : ingredientData.physical_state == '2' ? 'grams' : '');
+
 		
 		var $container = $(
 			"<div class='select_result_igredient clearfix'>" +

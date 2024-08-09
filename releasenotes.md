@@ -1,10 +1,11 @@
-Whats New in v10.7
+Whats New in v10.8
 --------------------------
-- Removed ingredient purity and dilutant from Finished Product page for cleaner view
-- Moved IFRA doc to a modal window
-- Added a print button for the generated IFRA Doc
-- Fix IFRA Document failing to be generated
-- Added a pending materials page to list all pending materials and their quantity required for the pending formulas
-- Choose which supplier you updating the stock when making a formula
-- Show available stock from all the available suppliers when making a formula, instead of the preferred one only
+- This release also contains various UI and backend minor improvements
+- Added support for a dark theme
+- Complete rewrite for Finished Product page
+- Added a font size when exporting a PDF in Sell Formula
+- Added brand logo when exporting a PDF in Sell Formula
+- Added opacity for watermak in Sell Formula page
+- Replaced PDF export in Sell Formula with the native DataTables function
+- Under the hood improvements for Finished Product page
 - This release may include more changes, for full details please refer to the CHANGELOG

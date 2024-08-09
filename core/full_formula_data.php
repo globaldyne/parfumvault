@@ -163,8 +163,9 @@ foreach ($form as $formula){
 		$chName = mysqli_fetch_array(mysqli_query($conn,"SELECT chemical_name FROM ingredients WHERE name = '".$formula['ingredient']."'"));
 		$ingName = $chName['chemical_name'];
 	}
-	$r['formula_ingredient_id'] = (int)$formula['id'];       
-	$r['fid'] = (string)$meta['name']; //TODO
+	$r['formula_ingredient_id'] = (int)$formula['id'];  
+	$r['formula_name'] = (string)$meta['name'];
+	$r['fid'] = (string)$meta['fid']; //TODO
 		
 	if($settings['grp_formula'] == '1'){
 		$r['ingredient']['profile'] = (string)$ing_q['profile'] ?: 'Unknown';
@@ -277,7 +278,7 @@ $carrier = $_GET['final_total_ml'] ?: 100 - $new_conc;
 
 
 if($m['total_ingredients'] != 0 && !$_POST['search']){	
-	if( validateFormula($meta['fid'], $_GET['final_total_ml'] ?: 100, $new_conc, $mg['total_mg'], $_GET['val_cat']?:	$defCatClass, $settings['qStep'], $conn) == TRUE){
+	if( validateFormula($meta['fid'], $_GET['final_total_ml'] ?: 100, $new_conc, $mg['total_mg'], $_GET['val_cat']?:	$defCatClass, $settings['qStep']) == TRUE){
 		$val_status = 1;
 		$val_msg = 'Your formula contains materials, exceeding and/or missing IFRA standards. Please alter your formula.';
 	}

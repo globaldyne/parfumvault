@@ -32,7 +32,7 @@ $ingSafetyInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredien
     position: absolute;
     top: 5px;
     right: 5px;
-    background-color: white;
+    background-color: var( --bs-body-bg);
     border-radius: 50%;
     padding: 5px;
     cursor: pointer;

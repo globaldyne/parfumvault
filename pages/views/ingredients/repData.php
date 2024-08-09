@@ -27,19 +27,19 @@ $ingID = mysqli_real_escape_string($conn, $_POST["ingID"]);
 	</div>
 </div>
 
-<table id="tdReplacements" class="table table-striped table-bordered" style="width:100%">
+<table id="tdReplacements" class="table table-striped" style="width:100%">
   <thead>
       <tr>
           <th>Name</th>
           <th>CAS</th>
           <th>Notes</th>
-          <th>Actions</th>
+          <th></th>
       </tr>
    </thead>
 </table>
 
 
-<script type="text/javascript" language="javascript" >
+<script>
 $(document).ready(function() {
 
 $('[data-bs-toggle="tooltip"]').tooltip();
@@ -69,7 +69,7 @@ var tdReplacements = $('#tdReplacements').DataTable( {
 			  { data : null, title: 'Name', render: repName },
 			  { data : 'ing_rep_cas', title: 'CAS' },
 			  { data : 'notes', title: 'Notes', render: repNotes },
-			  { data : null, title: 'Actions', render: repActions },		   
+			  { data : null, title: '', render: repActions },		   
 			 ],
 	order: [[ 1, 'asc' ]],
 	lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],

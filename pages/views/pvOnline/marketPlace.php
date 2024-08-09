@@ -4,12 +4,12 @@
   <div>
   <div class="card shadow mb-4">
     <div class="card-header py-3">
-      <h2 class="m-0 font-weight-bold text-primary"><i id="reload_data" class="pv_point_gen">Marketplace</i></h2>
+      <h2 class="m-0 font-weight-bold text-primary-emphasis"><i id="reload_data" class="pv_point_gen">Marketplace</i></h2>
     </div>
     <div class="card-body">
       <div class="table-responsive">
       <div id="data_area">
-       		<table id="all-table-market" class="table table-bordered" width="100%" cellspacing="0">
+       		<table id="all-table-market" class="table table-striped" width="100%" cellspacing="0">
             	<thead>
                 	<tr>
                     	<th>Formula Name</th>
@@ -256,7 +256,7 @@ function status(data, type, row, meta){
 
 function actions(data, type, row, meta){
 		data = '<div class="dropdown">' +
-        '<button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+        '<button type="button" class="btn" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
             '<ul class="dropdown-menu dropdown-menu-right">';
 		
 		data += '<li><i class="pv_point_gen pv_gen_li dropdown-item" id="import-market-formula" data-id="'+row.id+'" data-name="'+row.name+'" rel="tip" title="Import '+ row.name +' to my database" ><i class="fas fa-download mx-2"></i>Import Formula</i></li>';

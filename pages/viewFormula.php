@@ -63,11 +63,11 @@ $fid = $meta['fid'];
 
 <div id="row pv_search">
 	<div class="text-right">
-    <label for="pvCustomSearch" class="mx-2"><a href="#" class="link-secondary" rel="tip" title="Use comma (,) separated values to search for different ingredients">Search in formula:</a></label>
-    <input type="text" id="pvCustomSearch" placeholder="CAS, Ingredient, etc..">
+    	<label for="pvCustomSearch" class="mx-2"><a href="#" class="link-secondary" rel="tip" title="Use comma (,) separated values to search for different ingredients">Search in formula:</a></label>
+    	<input type="text" id="pvCustomSearch" placeholder="CAS, Ingredient, etc..">
+	</div>
 </div>
-</div>
-<table id="formula" class="table table-striped table-bordered nowrap viewFormula" style="width:100%">
+<table id="formula" class="table table-hover table-striped nowrap viewFormula" style="width:100%">
         <thead class="table-primary">
             <tr>
                 <th>Profile</th>
@@ -128,11 +128,11 @@ $(document).ready(function() {
 		dom: 'lrtip',
 			buttons: [{
 				extend: 'print',
-				title: "<?=$meta['name']?>",
+				title: myFNAME,
 				exportOptions: {
      				columns: [1, 2, 3, 4, 5, 6, 7, 8, 10]
   				},
-			  }],
+		}],
 		processing: true,
 		mark: false,
 		responsive: false,
@@ -142,25 +142,29 @@ $(document).ready(function() {
 			emptyTable: '<div class="alert alert-warning"><strong>Empty formula. Please add ingredients.</strong></div>',
 			search: "Search in formula:",
 			searchPlaceholder: "CAS, Ingredient, etc.."
-			},
+		},
     	ajax: {
-    		url: '/core/full_formula_data.php?id=<?=$id?>'
- 		 },
-		 columns: [
-				   { data : 'ingredient.profile', title: 'Profile' },
-				   { data : 'ingredient.name', title: 'Ingredient', render: ingName},
-    			   { data : 'ingredient.cas', title: 'CAS #', render: ingCAS},
-				   { data : 'purity', title: 'Purity %', render: ingConc},
-				   { data : 'dilutant', title: 'Dilutant', render: ingSolvent},
-				   { data : 'quantity', title: 'Quantity (<?=$settings['mUnit']?>)', render: ingQuantity},
-				   { data : 'concentration', title: 'Concentration 100%', render: ingSetConc},
-				   { data : 'final_concentration', title: 'Final Concentration <?=$meta['finalType']?>%'},
-				   { data : 'cost', title: 'Cost (<?=$settings['currency']?>)'},
-				   { data : 'ingredient.inventory.stock', title: 'Inventory', className: 'text-center noexport', render: ingInv },
-				   { data : 'ingredient.desc', title: 'Properties', render: ingNotes},
-   				   { data : null, title: '', className: 'text-center noexport', render: ingActions},		   
+    		url: '/core/full_formula_data.php',
+			type: 'POST',
+			data:{
+		   		id: "<?=$meta['id']?>",
+			}
+ 		},
+		columns: [
+			{ data : 'ingredient.profile', title: 'Profile' },
+			{ data : 'ingredient.name', title: 'Ingredient', render: ingName},
+    		{ data : 'ingredient.cas', title: 'CAS #', render: ingCAS},
+			{ data : 'purity', title: 'Purity %', render: ingConc},
+			{ data : 'dilutant', title: 'Dilutant', render: ingSolvent},
+			{ data : 'quantity', title: 'Quantity (<?=$settings['mUnit']?>)', render: ingQuantity},
+			{ data : 'concentration', title: 'Concentration 100%', render: ingSetConc},
+			{ data : 'final_concentration', title: 'Final Concentration <?=$meta['finalType']?>%'},
+			{ data : 'cost', title: 'Cost (<?=$settings['currency']?>)'},
+			{ data : 'ingredient.inventory.stock', title: 'Inventory', className: 'text-center noexport', render: ingInv },
+			{ data : 'ingredient.desc', title: 'Properties', render: ingNotes},
+   			{ data : null, title: '', className: 'text-center noexport', render: ingActions},		   
 				   
-				  ],
+		],
 		fixedHeader: {
 			"header": true,
             "footer": true
@@ -454,7 +458,7 @@ $('#formula').on('click', '[id*=exIng]', function () {
 			type: 'POST',
 			data: {
 				action: "excIng",
-				fid: "<?=$meta['fid']?>",
+				fid: myFID,
 				ingID: ing.ID,
 				ingName: ing.Name,
 				status: ing.Status
@@ -495,7 +499,7 @@ $('#isMade').click(function() {
 					type: 'POST',
 					data: {
 						isMade: "1",
-						fid: "<?=$meta['fid']?>",
+						fid: myFID,
 						},
 					dataType: 'json',
 					success: function (data) {
@@ -535,124 +539,7 @@ function reload_formula_data() {
 $('#print').click(() => {
     $('#formula').DataTable().button(0).trigger();
 });
-</script>
-<!--Schedule Formula-->
-<div class="modal fade" id="schedule_to_make" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="schedule_to_make" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Schedule formula to make</h5>
-      </div>
-      <div class="modal-body">
-      <div id="scheduleToMakeMsg"></div>
-      <div class="alert alert-info">This will add the current formulation to scheduled formulas. Any changes in this formula will not be replicated to the scheduled version. If you make changes here, you have to remove it and re-add it for making.</div>
-	    <div class="modal-footer">
-	     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-  		 <input type="submit" name="button" class="btn btn-primary" id="addTODO" value="Schedule Formula">
-	   </div>
-    </div>
-  </div>
- </div>
-</div>
 
-<!--Scale Formula-->
-<div class="modal fade" id="amount_to_make" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="amount_to_make" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Scale formula</h5>
-      </div>
-      <div class="modal-body">
-      <div id="amountToMakeMsg"></div>
-      <p>This will re-calculate the ingredients quantity as per the new total.</p>
-      <hr />
-        <table width="313" border="0">
-          <tr>
-	       <td width="66" height="31"><strong>SG<span class="sup">*</span> :</strong></td>
-	       <td width="237"><input name="sg" type="text" id="sg" value="1.000" />
-            <strong><?=$settings['mUnit']?></strong></td>
-          </tr>
-	     <tr>
-	       <td><strong>Amount:</strong></td>
-	       <td><input name="totalAmount" type="text" id="totalAmount" value="100" />
-            <strong><?=$settings['mUnit']?></strong></td>
-          </tr>
-        </table>
-	    <p>&nbsp;</p>
-	    <p>*<a href="https://www.perfumersvault.com/knowledge-base/3-specific-gravity-sg/" target="_blank">Specific Gravity of Ethanol</a></p>
-	    <div class="modal-footer">
-	     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-  		 <input type="submit" name="button" class="btn btn-primary" id="amountToMake" value="Scale Formula">
-	   </div>
-    </div>
-  </div>
- </div>
-</div>
-
-<!--Create accord-->
-<div class="modal fade" id="create_accord" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="create_accord" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Create accord</h5>
-      </div>
-      <div class="modal-body">
-      <div id="accordMsg"></div>
-        <table width="313" border="0">
-          <tr>
-	       <td width="106" height="31"><strong>Accord from:</strong></td>
-	       <td width="197"><label>
-	         <select name="accordProfile" id="accordProfile" class="form-control">
-	           <option value="Top">Top notes</option>
-	           <option value="Heart">Heart Notes</option>
-	           <option value="Base">Base Notes</option>
-	           </select>
-	         </label></td>
-          </tr>
-	     <tr>
-	       <td><strong>Name:</strong></td>
-	       <td><input name="accordName" type="text" class="form-control" id="accordName" value="<?=$f_name?> accord" /></td>
-          </tr>
-        </table>
-	    <hr />
-	    <div class="alert alert-info">This will create a new formula from the notes you choose. <br/>The current formula will stay intact.</div>
-	    <div class="modal-footer">
-	     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-  		 <input type="submit" name="button" class="btn btn-primary" id="createAccord" value="Create">
-	   </div>
-    </div>
-  </div>
- </div>
-</div>
-
-<!--Convert to ingredient-->
-<div class="modal fade" id="conv_ingredient" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="conv_ingredient" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Create ingredient from formula</h5>
-      </div>
-      <div class="modal-body">
-      <div id="cnvMsg"></div>
-        <table width="313" border="0">
-	     <tr>
-	       <td><strong>Name:</strong></td>
-	       <td><input name="ingName" type="text" class="form-control" id="ingName" value="<?=$f_name?>" /></td>
-          </tr>
-        </table>
-        <hr />
-        <div class="alert alert-info">The original formula will not be affected.</div>
-	    <div class="modal-footer">
-	     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-  		 <input type="submit" name="button" class="btn btn-primary" id="conv2ing" value="Create">
-	   </div>
-    </div>
-  </div>
- </div>
-</div>
-
-
-<script>
 
 function extrasShow() {
 	$('[rel=tip]').tooltip({
@@ -673,7 +560,7 @@ function extrasShow() {
 $('#formula').editable({
   container: 'body',
   selector: 'a.concentration',
-  url: "/pages/update_data.php?formula=<?=$meta['fid']?>",
+  url: "/pages/update_data.php?formula=" + myFID,
   title: 'Purity %',
   type: "POST",
   dataType: 'json',
@@ -695,28 +582,29 @@ $('#formula').editable({
 });
 <?php if($settings['editor'] == '1'){?>
 $('#formula').editable({
-  container: 'body',
-  selector: 'a.quantity',
-  url: "/pages/update_data.php?formula=<?=$meta['fid']?>",
-  title: 'Quantity in <?=$settings['mUnit']?>',
-  type: "POST",
-  dataType: 'json',
-	  success: function(response, newValue) {
-		if(response.status == 'error'){
-			return response.msg; 
-		}else{ 
-			reload_formula_data();
-		}
-	},
-  validate: function(value){
-   if($.trim(value) == ''){
-	return 'This field is required';
-   }
-   if($.isNumeric(value) == '' ){
-	return 'Numbers only!';
-   }
-  }
+	container: 'body',
+  	selector: 'a.quantity',
+  	url: "/pages/update_data.php?formula=" + myFID,
+  	title: 'Quantity in <?=$settings['mUnit']?>',
+  	type: "POST",
+  	dataType: 'json',
+		success: function(response, newValue) {
+			if(response.status == 'error'){
+				return response.msg; 
+			}else{ 
+				reload_formula_data();
+			}
+		},
+	validate: function(value){
+   		if($.trim(value) == ''){
+			return 'This field is required';
+   		}
+   		if($.isNumeric(value) == '' ){
+			return 'Numbers only!';
+   		}
+  	}
 });
+
 <?php } ?>
 $('#formula').editable({
 	container: 'body',
@@ -724,16 +612,16 @@ $('#formula').editable({
 	type: 'POST',
 	emptytext: "",
 	emptyclass: "",
-	url: "/pages/update_data.php?formula=<?=$meta['fid']?>",
+	url: "/pages/update_data.php?formula=" + myFID,
 	title: 'Choose solvent',
 	source: [
-			 <?php
-				$res_ing = mysqli_query($conn, "SELECT id, name FROM ingredients WHERE type = 'Solvent' OR type = 'Carrier' ORDER BY name ASC");
-				while ($r_ing = mysqli_fetch_array($res_ing)){
-				echo '{value: "'.$r_ing['name'].'", text: "'.$r_ing['name'].'"},';
-			}
-			?>
-		  ],
+		<?php
+			$res_ing = mysqli_query($conn, "SELECT id, name FROM ingredients WHERE type = 'Solvent' OR type = 'Carrier' ORDER BY name ASC");
+			while ($r_ing = mysqli_fetch_array($res_ing)){
+			echo '{value: "'.$r_ing['name'].'", text: "'.$r_ing['name'].'"},';
+		}
+		?>
+	],
 	dataType: 'json',
 	success: function(response, newValue) {
 		if(response.status == 'error'){
@@ -748,7 +636,7 @@ $('#formula').editable({
 $('#formula').editable({
   container: 'body',
   selector: 'i.notes',
-  url: "/pages/update_data.php?formula=<?=$fid?>",
+  url: "/pages/update_data.php?formula=" + myFID,
   title: 'Notes',
   type: "POST",
   dataType: 'json',
@@ -802,7 +690,7 @@ function ingCAS(data, type, row, meta){
 	if(type === 'display'){
 		data = '<i class="pv_point_gen" rel="tip" title="Click to copy" id="cCAS" data-name="'+row.ingredient.cas+'">'+row.ingredient.cas+'</i>';
 	}
-  return data;
+	return data;
 }
   
 function ingConc(data, type, row, meta){
@@ -833,7 +721,7 @@ function ingSolvent(data, type, row, meta){
 			data = 'None';
 		}
 	}
-  return data;
+ 	return data;
 }
   
 function ingQuantity(data, type, row, meta){
@@ -890,22 +778,22 @@ function ingInv(data, type, row, meta){
 function ingActions(data, type, row, meta){
 
 	data = '<div class="dropdown">' +
-        '<button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+        '<button type="button" class="btn" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
             '<ul class="dropdown-menu dropdown-menu-end">';
 
-	data += '<li><a class="dropdown-item link-dark" href="'+ row.ingredient.pref_supplier_link +'" target="_blank" rel="tip" title="Open '+ row.ingredient.pref_supplier +' page"><i class="fas fa-shopping-cart mx-2"></i>Go to supplier</a></li>';
+	data += '<li><a class="dropdown-item" href="'+ row.ingredient.pref_supplier_link +'" target="_blank" rel="tip" title="Open '+ row.ingredient.pref_supplier +' page"><i class="fas fa-shopping-cart mx-2"></i>Go to supplier</a></li>';
 	
 	<?php if($meta['isProtected'] == FALSE){?>
 	if(row.exclude_from_calculation == 0){
-	 	var ex = '<li><i class="dropdown-item pv_point_gen link-dark" rel="tip" id="exIng" title="Exclude '+ row.ingredient.name +'" data-name="'+ row.ingredient.name +'" data-status="1" data-id="'+ row.formula_ingredient_id +'"><i class="pv_point_gen fas fa-eye-slash mx-2"></i>Exlude</i></li>';
+	 	var ex = '<li><i class="dropdown-item pv_point_gen" rel="tip" id="exIng" title="Exclude '+ row.ingredient.name +'" data-name="'+ row.ingredient.name +'" data-status="1" data-id="'+ row.formula_ingredient_id +'"><i class="pv_point_gen fas fa-eye-slash mx-2"></i>Exlude</i></li>';
 		
 	}else if(row.exclude_from_calculation == 1){
-	 	var ex = '<li><i class="dropdown-item pv_point_gen link-dark" rel="tip" id="exIng" title="Include '+ row.ingredient.name +'" data-name="'+ row.ingredient.name +'" data-status="0" data-id="'+ row.formula_ingredient_id +'"><i class="pv_point_gen fas fa-eye mx-2"></i>Include</i></li>';
+	 	var ex = '<li><i class="dropdown-item pv_point_gen" rel="tip" id="exIng" title="Include '+ row.ingredient.name +'" data-name="'+ row.ingredient.name +'" data-status="0" data-id="'+ row.formula_ingredient_id +'"><i class="pv_point_gen fas fa-eye mx-2"></i>Include</i></li>';
 	}
 	
-	data += ex + '<li><i data-bs-toggle="modal" data-bs-target="#replaceIng" class="dropdown-item pv_point_gen open-replace-dialog text-info" rel="tip" title="Replace '+ row.ingredient.name +'"  data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'" data-cas="'+row.ingredient.cas+'" data-desc="'+row.ingredient.desc+'"><i class="pv_pont_gen fas fa-exchange-alt text-info mx-2"></i>Replace ingredient</i></li>'
+	data += ex + '<li><i data-bs-toggle="modal" data-bs-target="#replaceIng" class="dropdown-item pv_point_gen open-replace-dialog text-info-emphasis" rel="tip" title="Replace '+ row.ingredient.name +'"  data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'" data-cas="'+row.ingredient.cas+'" data-desc="'+row.ingredient.desc+'"><i class="pv_pont_gen fas fa-exchange-alt text-info-emphasis mx-2"></i>Replace ingredient</i></li>'
 	
-	+ '<li><i data-bs-toggle="modal" data-bs-target="#mrgIng" rel="tip" title="Merge '+ row.ingredient.name +'" class="dropdown-item pv_point_gen open-merge-dialog text-warning" data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'"><i class="pv_point_gen fas fa-object-group alert-warning mx-2"></i>Merge ingredients</i></li>'
+	+ '<li><i data-bs-toggle="modal" data-bs-target="#mrgIng" rel="tip" title="Merge '+ row.ingredient.name +'" class="dropdown-item pv_point_gen open-merge-dialog text-warning-emphasis" data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'"><i class="pv_point_gen fas fa-object-group alert-warning mx-2"></i>Merge ingredients</i></li>'
 	
 	+'<div class="dropdown-divider"></div>'
 	+ '<li><i rel="tip" title="Remove '+ row.ingredient.name +'" class="dropdown-item text-danger pv_point_gen" id="rmIng" data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'" data-ingredient-id="'+row.ingredient.id+'"><i class="pv_point_gen fas fa-trash mx-2 text-danger"></i>Delete</i></li>';
@@ -917,9 +805,124 @@ function ingActions(data, type, row, meta){
 
 </script>
 <script src="/js/fullformula.view.js"></script>
-
 <script src="/js/mark/jquery.mark.min.js"></script>
 <script src="/js/mark/datatables.mark.js"></script>
+
+<!--Schedule Formula-->
+<div class="modal fade" id="schedule_to_make" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="schedule_to_make" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Schedule formula to make</h5>
+      </div>
+      <div class="modal-body">
+      <div id="scheduleToMakeMsg"></div>
+      <div class="alert alert-info">This will add the current formulation to scheduled formulas. Any changes in this formula will not be replicated to the scheduled version. If you make changes here, you have to remove it and re-add it for making.</div>
+	    <div class="modal-footer">
+	     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+  		 <input type="submit" name="button" class="btn btn-primary" id="addTODO" value="Schedule Formula">
+	   </div>
+    </div>
+  </div>
+ </div>
+</div>
+
+<!--Scale Formula-->
+<div class="modal fade" id="amount_to_make" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="amount_to_make" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Scale formula</h5>
+      </div>
+      <div class="modal-body">
+        <div id="amountToMakeMsg"></div>
+        <p>This will re-calculate the ingredients quantity as per the new total.</p>
+        <hr />
+        <div class="mb-3">
+          <label for="sg" class="form-label"><strong>SG<span class="sup">*</span></strong></label>
+          <div class="input-group">
+            <input name="sg" type="text" class="form-control" id="sg" value="1.000" />
+            <span class="input-group-text"><strong><?=$settings['mUnit']?></strong></span>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="totalAmount" class="form-label"><strong>New amount</strong></label>
+          <div class="input-group">
+            <input name="totalAmount" type="text" class="form-control" id="totalAmount" value="100" />
+            <span class="input-group-text"><strong><?=$settings['mUnit']?></strong></span>
+          </div>
+        </div>
+        <hr />
+        <p>*<a href="https://www.perfumersvault.com/knowledge-base/3-specific-gravity-sg/" target="_blank">Specific Gravity of Ethanol</a></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <input type="submit" name="button" class="btn btn-primary" id="amountToMake" value="Scale Formula">
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!--Create accord-->
+<div class="modal fade" id="create_accord" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="create_accord" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Create accord</h5>
+      </div>
+      <div class="modal-body">
+        <div id="accordMsg"></div>
+        <div class="mb-3">
+          <label for="accordProfile" class="form-label"><strong>Accord from</strong></label>
+          <select name="accordProfile" id="accordProfile" class="form-control">
+            <option value="Top">Top notes</option>
+            <option value="Heart">Heart Notes</option>
+            <option value="Base">Base Notes</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="accordName" class="form-label"><strong>Name</strong></label>
+          <input name="accordName" type="text" class="form-control" id="accordName" value="<?=$f_name?> accord" />
+        </div>
+        <hr />
+        <div class="alert alert-info"><i class="fa-solid fa-circle-exclamation mr-2"></i>This will create a new formula from the notes you choose. <br/>The current formula will stay intact.</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <input type="submit" name="button" class="btn btn-primary" id="createAccord" value="Create">
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!--Convert to ingredient-->
+<div class="modal fade" id="conv_ingredient" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="conv_ingredient" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Create ingredient from formula</h5>
+      </div>
+      <div class="modal-body">
+        <div id="cnvMsg"></div>
+        <div class="mb-3">
+          <label for="ingName" class="form-label"><strong>Name</strong></label>
+          <input name="ingName" type="text" class="form-control" id="ingName" value="<?=$f_name?>" />
+        </div>
+        <hr />
+        <div class="alert alert-info">
+          <i class="fa-solid fa-circle-exclamation mr-2"></i>The original formula will not be affected.
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <input type="submit" name="button" class="btn btn-primary" id="conv2ing" value="Create">
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <div class="modal fade" id="manage-quantity" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="manage-quantity" aria-hidden="true">
   <div class="modal-dialog" role="document">

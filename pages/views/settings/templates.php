@@ -10,14 +10,14 @@ require_once(__ROOT__.'/inc/sec.php');
 <div class="card-body">
   <div class="text-right">
     <div class="btn-group">
-    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
-        <div class="dropdown-menu dropdown-menu-right">
-            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addTmpl"><i class="fa-solid fa-plus mx-2"></i>Add new</a></li>
+    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
+        <div class="dropdown-menu">
+            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addTmpl"><i class="fa-solid fa-plus mx-2"></i>Add new template</a></li>
         </div>
     </div>                    
   </div>
 </div>
-<table id="tdTempls" class="table table-striped table-bordered" style="width:100%">
+<table id="tdTempls" class="table table-striped" style="width:100%">
   <thead>
       <tr>
           <th>Name</th>
@@ -28,210 +28,212 @@ require_once(__ROOT__.'/inc/sec.php');
       </tr>
    </thead>
 </table>
-<script type="text/javascript" language="javascript" >
+<script>
 $(document).ready(function() {
 		
 	var tdTempls = $('#tdTempls').DataTable( {
-	columnDefs: [
-		{ className: 'text-center', targets: '_all' },
-		{ orderable: false, targets: [4] }
-	],
-	dom: 'lfrtip',
-	processing: true,
-	language: {
-		loadingRecords: '&nbsp;',
-		processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
-		emptyTable: 'No templates found.',
-		search: 'Search:'
+		columnDefs: [
+			{ className: 'text-center', targets: '_all' },
+			{ orderable: false, targets: [4] }
+		],
+		dom: 'lfrtip',
+		processing: true,
+		language: {
+			loadingRecords: '&nbsp;',
+			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
+			emptyTable: 'No templates found.',
+			search: 'Search:'
+			},
+		ajax: {	url: '/core/list_templates_data.php' },
+		columns: [
+				  { data : 'name', title: 'Name', render: name },
+				  { data : 'description', title: 'Description', render: description},
+				  { data : 'created', title: 'Created', render: created},
+				  { data : 'updated', title: 'Updated', render: updated},
+				  { data : null, title: '', render: actions},		   
+		],
+		order: [[ 1, 'asc' ]],
+		lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
+		pageLength: 20,
+		displayLength: 20,
+		drawCallback: function( settings ) {
+				extrasShow();
 		},
-	ajax: {	url: '/core/list_templates_data.php' },
-	columns: [
-			  { data : 'name', title: 'Name', render: name },
-			  { data : 'description', title: 'Description', render: description},
-			  { data : 'created', title: 'Created', render: created},
-			  { data : 'updated', title: 'Updated', render: updated},
-			  { data : null, title: '', render: actions},		   
-			 ],
-	order: [[ 1, 'asc' ]],
-	lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
-	pageLength: 20,
-	displayLength: 20,
-	drawCallback: function( settings ) {
-			extrasShow();
-     	},
-	stateSave: true,
-	stateDuration: -1,
-	stateLoadCallback: function (settings, callback) {
-       	$.ajax( {
-           	url: '/core/update_user_settings.php?set=listHTMLTmpl&action=load',
-           	dataType: 'json',
-           	success: function (json) {
-               	callback( json );
-           	}
-       	});
-    },
-    stateSaveCallback: function (settings, data) {
-	   $.ajax({
-		 url: "/core/update_user_settings.php?set=listHTMLTmpl&action=save",
-		 data: data,
-		 dataType: "json",
-		 type: "POST"
-	  });
-	},	
+		stateSave: true,
+		stateDuration: -1,
+		stateLoadCallback: function (settings, callback) {
+			$.ajax( {
+				url: '/core/update_user_settings.php?set=listHTMLTmpl&action=load',
+				dataType: 'json',
+				success: function (json) {
+					callback( json );
+				}
+			});
+		},
+		stateSaveCallback: function (settings, data) {
+		   $.ajax({
+			 url: "/core/update_user_settings.php?set=listHTMLTmpl&action=save",
+			 data: data,
+			 dataType: "json",
+			 type: "POST"
+		  });
+		},	
 	});
 	
-});
-
-function name(data, type, row){
-	return '<a href="#" class="name pv_point_gen" data-name="name" data-type="text" data-pk="'+row.id+'">'+row.name+'</a>';    
-}
-
-function description(data, type, row){
-	return '<a href="#" class="description pv_point_gen" data-name="description" data-type="textarea" data-pk="'+row.id+'">'+row.description+'</a>';    
-}
-
-function created(data, type, row){
-	return row.created;    
-}
-
-function updated(data, type, row){
-	return row.updated;    
-}
-
-function actions(data, type, row){	
-		data = '<div class="dropdown">' +
-        '<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
-            '<ul class="dropdown-menu dropdown-menu-right">';
-		data += '<li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editTmpl" rel="tip" title="Edit '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-edit mr2"></i>Edit</a></li>';
-		data += '<div class="dropdown-divider"></div>';
-		data += '<li><a class="dropdown-item text-danger" href="#" id="sDel" rel="tip" title="Delete '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-trash mr2"></i>Delete</a></li>';
-		data += '</ul></div>';
-	return data;
-}
 
 
-$('#tdTempls').editable({
-	  container: 'body',
-	  selector: 'a.name',
-	  type: 'POST',
-	  url: "/pages/update_data.php?tmpl=update",
-	  title: 'Template name',
-	  success: function (data) {
-		reload_data();
-	  },
-  	  validate: function(value){
-   		if($.trim(value) == ''){
-			return 'This field is required';
-   		}
-	 }
-});
-  
-
-$('#tdTempls').editable({
-  	container: 'body',
-  	selector: 'a.description',
-  	type: 'POST',
-	url: "/pages/update_data.php?tmpl=update",
-	title: 'Short description',
-	success: function (data) {
-		reload_data();
-	},
-	validate: function(value){
-   		if($.trim(value) == ''){
-			return 'This field is required';
-   		}
-	 }
-});
- 
-
-$('#tdTempls').on('click', '[id*=sDel]', function () {
-	var tmpl = {};
-	tmpl.ID = $(this).attr('data-id');
-	tmpl.Name = $(this).attr('data-name');
-    
-	bootbox.dialog({
-       title: "Confirm template removal",
-       message : 'Delete <strong>'+ tmpl.Name +'</strong>?',
-       buttons :{
-           main: {
-               label : "Remove",
-               className : "btn-danger",
-               callback: function (){
-	    			
-				$.ajax({ 
-					url: '/pages/update_data.php', 
-					type: 'POST',
-					data: {
-						tmpl: 'delete',
-						tmplID: tmpl.ID,
-						tmplName: tmpl.Name
-						},
-					dataType: 'json',
-					success: function (data) {
-						reload_data();
-					}
-				  });
-				
-                 return true;
-               }
-           },
-           cancel: {
-               label : "Cancel",
-               className : "btn-secondary",
-               callback : function() {
-                   return true;
-               }
-           }   
-       },onEscape: function () {return true;}
-   });
-});
-
-$('#addTmpl').on('click', '[id*=sAdd]', function () {
-	$.ajax({ 
-		url: '/pages/update_data.php', 
-		type: 'POST',
-		data: {
-			tmpl: 'add',
-			tmpl_name: $("#tmpl_name").val(),
-			tmpl_content: $("#tmpl_content").val(),
-			tmpl_desc: $("#tmpl_desc").val(),	
-			},
-		dataType: 'json',
-		success: function (data) {
-			if(data.success){
-				var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
-			}else{
-				var msg ='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
-			}
-			$('#tmpl_inf').html(msg);
+	function name(data, type, row){
+		return '<a href="#" class="name pv_point_gen" data-name="name" data-type="text" data-pk="'+row.id+'">'+row.name+'</a>';    
+	}
+	
+	function description(data, type, row){
+		return '<a href="#" class="description pv_point_gen" data-name="description" data-type="textarea" data-pk="'+row.id+'">'+row.description+'</a>';    
+	}
+	
+	function created(data, type, row){
+		return row.created;    
+	}
+	
+	function updated(data, type, row){
+		return row.updated;    
+	}
+	
+	function actions(data, type, row){	
+			data = '<div class="dropdown">' +
+			'<button type="button" class="btn btn-floating hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+				'<ul class="dropdown-menu">';
+			data += '<li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editTmpl" rel="tip" title="Edit '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-edit mx-2"></i>Edit</a></li>';
+			data += '<div class="dropdown-divider"></div>';
+			data += '<li><a class="dropdown-item text-danger" href="#" id="sDel" rel="tip" title="Delete '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-trash mx-2"></i>Delete</a></li>';
+			data += '</ul></div>';
+		return data;
+	}
+	
+	
+	$('#tdTempls').editable({
+		  container: 'body',
+		  selector: 'a.name',
+		  type: 'POST',
+		  url: "/pages/update_data.php?tmpl=update",
+		  title: 'Template name',
+		  success: function (data) {
 			reload_data();
-		}
-	  });
-});
-
-function reload_data() {
-    $('#tdTempls').DataTable().ajax.reload(null, true);
-};
-
-function extrasShow() {
-	$('[rel=tip]').tooltip({
-         html: true,
-		 boundary: "window",
-		 overflow: "auto",
-		 container: "body",
-         delay: {"show": 100, "hide": 0},
-     });
-};
-
-$("#editTmpl").on("show.bs.modal", function(e) {
-	const id = e.relatedTarget.dataset.id;
-	const name = e.relatedTarget.dataset.name;
-
-	$.get("/pages/editHtmlTmpl.php?id=" + id)
-		.then(data => {
-		$("#editTmplLabel", this).html(name);
-		$(".modal-body", this).html(data);
+		  },
+		  validate: function(value){
+			if($.trim(value) == ''){
+				return 'This field is required';
+			}
+		 }
 	});
+	  
+	
+	$('#tdTempls').editable({
+		container: 'body',
+		selector: 'a.description',
+		type: 'POST',
+		url: "/pages/update_data.php?tmpl=update",
+		title: 'Short description',
+		success: function (data) {
+			reload_data();
+		},
+		validate: function(value){
+			if($.trim(value) == ''){
+				return 'This field is required';
+			}
+		 }
+	});
+	 
+	
+	$('#tdTempls').on('click', '[id*=sDel]', function () {
+		var tmpl = {};
+		tmpl.ID = $(this).attr('data-id');
+		tmpl.Name = $(this).attr('data-name');
+		
+		bootbox.dialog({
+		   title: "Confirm template removal",
+		   message : 'Delete <strong>'+ tmpl.Name +'</strong>?',
+		   buttons :{
+			   main: {
+				   label : "Remove",
+				   className : "btn-danger",
+				   callback: function (){
+						
+					$.ajax({ 
+						url: '/pages/update_data.php', 
+						type: 'POST',
+						data: {
+							tmpl: 'delete',
+							tmplID: tmpl.ID,
+							tmplName: tmpl.Name
+						},
+						dataType: 'json',
+						success: function (data) {
+							reload_data();
+						}
+					  });
+					
+					 return true;
+				   }
+			   },
+			   cancel: {
+				   label : "Cancel",
+				   className : "btn-secondary",
+				   callback : function() {
+					   return true;
+				   }
+			   }   
+		   },onEscape: function () {return true;}
+	   });
+	});
+	
+	$('#addTmpl').on('click', '[id*=sAdd]', function () {
+		$.ajax({ 
+			url: '/pages/update_data.php', 
+			type: 'POST',
+			data: {
+				tmpl: 'add',
+				tmpl_name: $("#tmpl_name").val(),
+				tmpl_content: $("#tmpl_content").val(),
+				tmpl_desc: $("#tmpl_desc").val(),	
+				},
+			dataType: 'json',
+			success: function (data) {
+				if(data.success){
+					var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+				}else{
+					var msg ='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + data.error + '</div>';
+				}
+				$('#tmpl_inf').html(msg);
+				reload_data();
+			}
+		  });
+	});
+	
+	function reload_data() {
+		$('#tdTempls').DataTable().ajax.reload(null, true);
+	};
+	
+	function extrasShow() {
+		$('[rel=tip]').tooltip({
+			 html: true,
+			 boundary: "window",
+			 overflow: "auto",
+			 container: "body",
+			 delay: {"show": 100, "hide": 0},
+		 });
+	};
+	
+	$("#editTmpl").on("show.bs.modal", function(e) {
+		const id = e.relatedTarget.dataset.id;
+		const name = e.relatedTarget.dataset.name;
+	
+		$.get("/pages/editHtmlTmpl.php?id=" + id)
+			.then(data => {
+			$("#editTmplLabel", this).html(name);
+			$(".modal-body", this).html(data);
+		});
+	});
+
 });
 </script>
 

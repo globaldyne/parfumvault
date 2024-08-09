@@ -16,34 +16,27 @@ while($res = mysqli_fetch_array($q)){
       <h2 class="m-0 font-weight-bold text-primary"><a href="#" id="mainTitle">Compounds</a></h2>
     </div>
     <div class="card-body">
-      <div class="table-responsive">
-      <div id="innermsg"></div>
-       <table class="table table-striped table-bordered">
-         <tr class="noBorder">
-             <div class="form-inline mb-3">
-                <input type="text" class="form-control mt-2 ml-2" id="btlSize" placeholder="Enter bottle size, eg: 100">
-                <button type="button" class="btn btn-primary" id="submitBottleAmount">Submit</button>
-                <div class="ml-2 mt-2">
-                    <input type="checkbox" class="form-check-input" id="expandCheckbox">
-                    <label class="form-check-label" for="expandCheckbox">Expand All</label>
-                </div>
+        <div class="form-inline mb-3">
+           <input type="text" class="form-control mt-2 ml-2" id="btlSize" placeholder="Enter bottle size, eg: 100">
+           <button type="button" class="btn btn-primary" id="submitBottleAmount">Submit</button>
+           <div class="ml-2 mt-2">
+               <input type="checkbox" class="form-check-input" id="expandCheckbox">
+               <label class="form-check-label" for="expandCheckbox">Expand All</label>
+           </div>
+        </div>
+        <div class="text-right">
+           <div class="btn-group">
+               <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
+               <div class="dropdown-menu dropdown-menu-right">
+               <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addCompound"><i class="fa-solid fa-plus mx-2"></i>Add new</a></li>
+               <li><a class="dropdown-item" id="exportCSV" href="#"><i class="fa-solid fa-file-export mx-2"></i>Export to CSV</a></li>
+               <li><a class="dropdown-item" id="exportJSON" href="/pages/export.php?format=json&kind=inventory_compounds"><i class="fa-solid fa-file-export mx-2"></i>Export to JSON</a></li>
+               <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#importJSON"><i class="fa-solid fa-file-import mx-2"></i>Import from JSON</a></li>
              </div>
-             <div class="text-right">
-              <div class="btn-group">
-                <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
-                  <div class="dropdown-menu dropdown-menu-right">
-                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addCompound"><i class="fa-solid fa-plus mx-2"></i>Add new</a></li>
-                    <li><a class="dropdown-item" id="exportCSV" href="#"><i class="fa-solid fa-file-export mx-2"></i>Export to CSV</a></li>
-                    <li><a class="dropdown-item" id="exportJSON" href="/pages/export.php?format=json&kind=inventory_compounds"><i class="fa-solid fa-file-export mx-2"></i>Export to JSON</a></li>
-                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#importJSON"><i class="fa-solid fa-file-import mx-2"></i>Import from JSON</a></li>
+           </div>
+        </div>
 
-                  </div>
-                </div>        
-             </div>
-         </tr>
-        </table>
-
-        <table class="table table-bordered" id="tdDataCompounds" width="100%" cellspacing="0">
+        <table class="table table-striped" id="tdDataCompounds" width="100%" cellspacing="0">
           <thead>
             <tr>
               <th>Name</th>
@@ -61,7 +54,6 @@ while($res = mysqli_fetch_array($q)){
       </div>
     </div>
   </div>
-</div>
 </div>
     
 <!-- ADD NEW MODAL-->
@@ -325,7 +317,7 @@ $(document).ready(function() {
 	
 	function actions(data, type, row){	
 			data = '<div class="dropdown">' +
-			'<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+			'<button type="button" class="btn btn-floating hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
 				'<ul class="dropdown-menu dropdown-menu-right">';
 			data += '<li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editCompound" rel="tip" title="Edit '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-edit mx-2"></i>Edit</a></li>';
 			data += '<div class="dropdown-divider"></div>';

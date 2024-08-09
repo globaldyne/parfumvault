@@ -38,7 +38,7 @@ while($res = mysqli_fetch_array($q)){
          </tr>
         </table>
 
-        <table class="table table-bordered" id="tdDataSDS" width="100%" cellspacing="0">
+        <table class="table table-striped" id="tdDataSDS" width="100%" cellspacing="0">
           <thead>
             <tr>
               <th>Product</th>

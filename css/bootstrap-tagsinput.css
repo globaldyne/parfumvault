@@ -4,7 +4,7 @@
  */
 
 .bootstrap-tagsinput {
-  background-color: #fff;
+  background-color: var( --bs-body-bg);
   border: 1px solid #ccc;
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
   display: inline-block;
@@ -42,7 +42,7 @@
 }
 .bootstrap-tagsinput .tag {
   margin-right: 2px;
-  color: white;
+  color: var(  --bs-light );
 }
 .bootstrap-tagsinput .tag [data-role="remove"] {
   margin-left: 8px;
