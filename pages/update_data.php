@@ -688,7 +688,7 @@ if($_GET['IFRA_PB'] == 'import'){
 	return;
 }
 
-//IMPORT SYNONYMS FROM PubChem
+//Update data FROM PubChem
 if($_POST['pubChemData'] == 'update' && $_POST['cas']){
 	$cas = trim($_POST['cas']);
 	$molecularWeight = $_POST['molecularWeight'];
@@ -730,7 +730,8 @@ if($_POST['synonym'] == 'import' && $_POST['method'] == 'pubchem'){
 	$cid = $json->InformationList->Information[0]->CID;
 	$source = 'PubChem';
 	if(empty($data)){
-		echo '<div class="alert alert-info">No data found!</div>';
+		$response["error"] = 'No data found';
+		echo json_encode($response);
 		return;
 	}
 	$i=0;
@@ -750,11 +751,11 @@ if($_POST['synonym'] == 'import' && $_POST['method'] == 'pubchem'){
 		}
 	}
 	if($r){
-		echo '<div class="alert alert-success"><strong>'.$i.' </strong>synonym(s) imported!</div>';
+		$response["success"] = $i.' synonym(s) imported';
 	}else{
-		echo '<div class="alert alert-info">Data already in sync!</div>';
+		$response["error"] = 'Data already in sync';
 	}
-	
+	echo json_encode($response);
 	return;
 }
 
@@ -766,19 +767,19 @@ if($_POST['synonym'] == 'add'){
 	$ing = base64_decode($_POST['ing']);
 
 	if(empty($synonym)){
-		$response["error"] = '<strong>Error:</strong> Synonym is required!';
+		$response["error"] = 'Synonym name is required';
 		echo json_encode($response);
 		return;
 	}
 	
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT synonym FROM synonyms WHERE synonym = '$synonym' AND ing = '$ing'"))){
-		$response["error"] = '<strong>Error: </strong>'.$synonym.' already exists!';
+		$response["error"] = $synonym.' already exists!';
 		echo json_encode($response);
 		return;
 	}
 	
 	if(mysqli_query($conn, "INSERT INTO synonyms (synonym,source,ing) VALUES ('$synonym','$source','$ing')")){
-		$response["success"] = '<strong>'.$synonym.'</strong> added to the list!';
+		$response["success"] = $synonym.' added to the list!';
 		echo json_encode($response);
 	}
 	
