@@ -118,7 +118,7 @@ $(document).ready(function() {
 						data: {
 							synonym: 'delete',
 							id: syn.ID,
-							},
+						},
 						dataType: 'html',
 						success: function (data) {
 							reload_syn_data();

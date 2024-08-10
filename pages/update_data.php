@@ -1383,7 +1383,7 @@ if($_POST['composition'] == 'add'){
 	
 	if($_POST['addToIng'] == 'true'){
 		if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$allgName'")))){
-			mysqli_query($conn, "INSERT INTO ingredients (name,cas) VALUES ('$allgName','$allgCAS')");		
+			mysqli_query($conn, "INSERT INTO ingredients (name,cas,einecs) VALUES ('$allgName','$allgCAS','$allgEC')");		
 		}
 	}
 
