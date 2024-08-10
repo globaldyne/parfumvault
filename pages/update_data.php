@@ -1541,42 +1541,68 @@ if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'general'){
 }
 
 
-if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'usage_limits'){
-	$ingID = (int)$_POST['ingID'];
-	if($_POST['flavor_use'] == 'true') { $flavor_use = '1'; }else{ $flavor_use = '0'; }
-	if($_POST['noUsageLimit'] == 'true'){ $noUsageLimit = '1'; }else{ $noUsageLimit = '0'; }
-	if($_POST['byPassIFRA'] == 'true'){ $byPassIFRA = '1'; }else{ $byPassIFRA = '0'; }
-	if($_POST["isAllergen"] == 'true') { $allergen = '1'; }else{ $allergen = '0'; }
-	$usage_type = mysqli_real_escape_string($conn, $_POST['usage_type']);
-	$cat1 = validateInput($_POST['cat1'] ?: '100');
-	$cat2 = validateInput($_POST['cat2'] ?: '100');
-	$cat3 = validateInput($_POST['cat3'] ?: '100');
-	$cat4 = validateInput($_POST['cat4'] ?: '100');
-	$cat5A = validateInput($_POST['cat5A'] ?: '100');
-	$cat5B = validateInput($_POST['cat5B'] ?: '100');
-	$cat5C = validateInput($_POST['cat5C'] ?: '100');
-	$cat5D = validateInput($_POST['cat5D'] ?: '100');
-	$cat6 = validateInput($_POST['cat6'] ?: '100');
-	$cat7A = validateInput($_POST['cat7A'] ?: '100');
-	$cat7B = validateInput($_POST['cat7B'] ?: '100');
-	$cat8 = validateInput($_POST['cat8'] ?: '100');
-	$cat9 = validateInput($_POST['cat9'] ?: '100');
-	$cat10A = validateInput($_POST['cat10A'] ?: '100');
-	$cat10B = validateInput($_POST['cat10B'] ?: '100');
-	$cat11A = validateInput($_POST['cat11A'] ?: '100');
-	$cat11B = validateInput($_POST['cat11B'] ?: '100');
-	$cat12 = validateInput($_POST['cat12'] ?: '100');
-	
-	$query = "UPDATE ingredients SET byPassIFRA = '$byPassIFRA', noUsageLimit = '$noUsageLimit',flavor_use='$flavor_use',usage_type = '$usage_type', allergen='$allergen', cat1 = '$cat1', cat2 = '$cat2', cat3 = '$cat3', cat4 = '$cat4', cat5A = '$cat5A', cat5B = '$cat5B', cat5C = '$cat5C', cat5D = '$cat5D', cat6 = '$cat6', cat7A = '$cat7A', cat7B = '$cat7B', cat8 = '$cat8', cat9 = '$cat9', cat10A = '$cat10A', cat10B = '$cat10B', cat11A = '$cat11A', cat11B = '$cat11B', cat12 = '$cat12' WHERE id='$ingID'";
-	if(mysqli_query($conn, $query)){
-		$response["success"] = 'Usage limits has been updated!';
-	}else{
-			
-		$response["error"] = 'Something went wrong '.mysqli_error($conn);
-	}	
-	echo json_encode($response);
-	return;
+if ($_POST['manage'] === 'ingredient' && $_POST['tab'] === 'usage_limits') {
+    $ingID = (int) $_POST['ingID'];
+
+    $flavor_use = ($_POST['flavor_use'] === 'true') ? 1 : 0;
+    $noUsageLimit = ($_POST['noUsageLimit'] === 'true') ? 1 : 0;
+    $byPassIFRA = ($_POST['byPassIFRA'] === 'true') ? 1 : 0;
+    $allergen = ($_POST['isAllergen'] === 'true') ? 1 : 0;
+
+    $usage_type = mysqli_real_escape_string($conn, trim($_POST['usage_type']));
+
+    $categories = [
+        'cat1' => (float) $_POST['cat1'],
+        'cat2' => (float) $_POST['cat2'],
+        'cat3' => (float) $_POST['cat3'],
+        'cat4' => (float) $_POST['cat4'],
+        'cat5A' => (float) $_POST['cat5A'],
+        'cat5B' => (float) $_POST['cat5B'],
+        'cat5C' => (float) $_POST['cat5C'],
+        'cat5D' => (float) $_POST['cat5D'],
+        'cat6' => (float) $_POST['cat6'],
+        'cat7A' => (float) $_POST['cat7A'],
+        'cat7B' => (float) $_POST['cat7B'],
+        'cat8' => (float) $_POST['cat8'],
+        'cat9' => (float) $_POST['cat9'],
+        'cat10A' => (float) $_POST['cat10A'],
+        'cat10B' => (float) $_POST['cat10B'],
+        'cat11A' => (float) $_POST['cat11A'],
+        'cat11B' => (float) $_POST['cat11B'],
+        'cat12' => (float) $_POST['cat12'],
+    ];
+
+    $stmt = $conn->prepare(
+        "UPDATE ingredients SET byPassIFRA = ?, noUsageLimit = ?, flavor_use = ?, 
+        usage_type = ?, allergen = ?, cat1 = ?, cat2 = ?, cat3 = ?, cat4 = ?, 
+        cat5A = ?, cat5B = ?, cat5C = ?, cat5D = ?, cat6 = ?, cat7A = ?, cat7B = ?, 
+        cat8 = ?, cat9 = ?, cat10A = ?, cat10B = ?, cat11A = ?, cat11B = ?, 
+        cat12 = ? WHERE id = ?"
+    );
+
+    $stmt->bind_param(
+        'iiisiddddddddddddddddddi',
+        $byPassIFRA, $noUsageLimit, $flavor_use, $usage_type, $allergen, 
+        $categories['cat1'], $categories['cat2'], $categories['cat3'], 
+        $categories['cat4'], $categories['cat5A'], $categories['cat5B'], 
+        $categories['cat5C'], $categories['cat5D'], $categories['cat6'], 
+        $categories['cat7A'], $categories['cat7B'], $categories['cat8'], 
+        $categories['cat9'], $categories['cat10A'], $categories['cat10B'], 
+        $categories['cat11A'], $categories['cat11B'], $categories['cat12'], $ingID
+    );
+
+    if ($stmt->execute()) {
+        $response["success"] = 'Usage limits have been updated!';
+    } else {
+        $response["error"] = 'Something went wrong: ' . $stmt->error;
+    }
+
+    $stmt->close();
+
+    echo json_encode($response);
+    return;
 }
+
 
 if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'tech_data'){
 	$ingID = (int)$_POST['ingID'];

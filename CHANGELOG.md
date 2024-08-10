@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 10.9
+- Rewrite backend for usage and limits update
 - To Declare option is now moved under Udage and Limits section for ingredients
 - Fix materials not updating corrrectly when added in the cart
 - Added CSV export for cart ingredients

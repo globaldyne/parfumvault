@@ -118,9 +118,7 @@ if($usageLimit = searchIFRA($ing['cas'],$ing['name'],null,$defCatClass)){
     </table>
 </div>
 <hr />
-<p>To set a category to zero, please type <strong>0.0</strong> instead of 0</p>
-<hr />
-<p><input type="submit" name="save" class="btn btn-primary" id="saveUsage" value="Save" /></p>
+<p><input type="submit" name="saveUsage" class="btn btn-primary" id="saveUsage" value="Save" /></p>
 
 <script>
 var byPassIFRA = <?=$ing['byPassIFRA']?>;
@@ -167,7 +165,7 @@ $(document).ready(function() {
 	
 	if(disLimits === 1){
 		$('#noUsageLimit').prop('checked', true);
-		unlimited_usage(true,'100');
+		unlimited_usage(true,'100.0000');
 	}
 	
 	$('#byPassIFRA').click(function(){
@@ -180,9 +178,9 @@ $(document).ready(function() {
 		
 	$('#noUsageLimit').click(function(){
 		if($(this).is(':checked')){
-			unlimited_usage(true,'100.00');
+			unlimited_usage(true,'100.0000');
 		}else{
-			unlimited_usage(false,'100.00');
+			unlimited_usage(false,'100.0000');
 		}
 	});
 	
@@ -201,7 +199,7 @@ $(document).ready(function() {
 				byPassIFRA: $("#byPassIFRA").is(':checked'),
 				isAllergen: $("#isAllergen").is(':checked'),
 				<?php foreach ($cats as $cat) {?>
-					cat<?php echo $cat['name'];?>: $("#cat<?php echo $cat['name'];?>").val(),
+					cat<?php echo $cat['name'];?>: parseFloat($("#cat<?php echo $cat['name'];?>").val()),
 				<?php } ?>
 			},
 			dataType: 'json',
