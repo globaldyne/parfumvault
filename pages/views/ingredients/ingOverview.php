@@ -46,16 +46,28 @@ if(empty($ingredient['category'])){
         <span class="sub-2-fema"><?=$ingredient['reach']?:"Not Available"?></span>
     </div>
 </div>
-<table width="100%" border="0">
-  <tr>
-    <td align="center"><h3 class="mgm-cat-in">Olfactive family</h3></td>
-    <td align="center"><h3 class="mgm-cat-in"><?php echo $ingredient['profile'].' note'; ?></h3></td>
-    <td align="center"><h3 class="mgm-cat-in">Physical State</h3></td>
-  </tr>
-  <tr>
-    <td align="center"><?=getCatByID($ingredient['category'],TRUE,$conn)?></td>
-    <td align="center"><img src="<?=profileImg($ingredient['profile'])?>" class="img_ing"/></td>
-    <td align="center"><?=getIngState($ingredient['physical_state'],'img_ing')?></td>
-  </tr>
-</table>
+
+  <div class="row text-center mb-3">
+    <div class="col-md-4">
+      <h3 class="mgm-cat-in">Olfactive family</h3>
+    </div>
+    <div class="col-md-4">
+      <h3 class="mgm-cat-in"><?php echo $ingredient['profile'].' note'; ?></h3>
+    </div>
+    <div class="col-md-4">
+      <h3 class="mgm-cat-in">Physical State</h3>
+    </div>
+  </div>
+  <div class="row text-center">
+    <div class="col-md-4">
+      <?=getCatByID($ingredient['category'], TRUE, $conn)?>
+    </div>
+    <div class="col-md-4">
+      <img src="<?=profileImg($ingredient['profile'])?>" class="img_ing"/>
+    </div>
+    <div class="col-md-4">
+      <?=getIngState($ingredient['physical_state'], 'img_ing')?>
+    </div>
+  </div>
+
 
