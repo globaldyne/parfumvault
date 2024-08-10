@@ -85,7 +85,7 @@ $(document).ready(function() {
 		container: 'body',
 		selector: 'i.synonym',
 		type: 'POST',
-		url: "update_data.php?synonym=update&ing=<?=$ingName;?>",
+		url: "/pages/update_data.php?synonym=update&ing=<?=$ingName;?>",
 		title: 'Synonym'
 	});
 
@@ -93,7 +93,7 @@ $(document).ready(function() {
 	   container: 'body',
 	   selector: 'i.source',
 	   type: 'POST',
-	   url: "update_data.php?synonym=update&ing=<?=$ingName;?>",
+	   url: "/pages/update_data.php?synonym=update&ing=<?=$ingName;?>",
 	   title: 'Source'
 	});
 
@@ -113,7 +113,7 @@ $(document).ready(function() {
 				   callback: function (){
 						
 					$.ajax({ 
-						url: 'update_data.php', 
+						url: '/pages/update_data.php', 
 						type: 'GET',
 						data: {
 							synonym: 'delete',
