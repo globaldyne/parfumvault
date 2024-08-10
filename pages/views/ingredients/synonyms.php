@@ -16,8 +16,8 @@ $ingName = mysqli_real_escape_string($conn, $_POST["name"]);
  	<div class="text-right">
   		<div class="btn-group">
    			<button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
-    		<div class="dropdown-menu dropdown-menu-right">
-        		<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addSynonym"><i class="fa-solid fa-plus mr2"></i>Add new</a></li>
+    		<div class="dropdown-menu">
+        		<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addSynonym"><i class="fa-solid fa-plus mx-2"></i>Add new</a></li>
                 <?php if(preg_match('/(Mixture|Blend)/i', $CAS) === 0){	?>
                 <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#pubchem_import"><i class="fa-solid fa-file-import mx-2"></i>Import from PubChem</a></li>
 
