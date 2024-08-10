@@ -1,5 +1,10 @@
 # CHANGELOG
 ### Version 10.9
+- Fix materials not updating corrrectly when added in the cart
+- Added CSV export for cart ingredients
+- Added a toast message for the cart actions
+- Added a toast message when adding an ingredient to the cart in Make Formula
+- CSS clean-up
 
 ### Version 10.8
 - Fix API key update not returning error in correct format

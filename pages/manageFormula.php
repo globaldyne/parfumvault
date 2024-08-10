@@ -716,13 +716,16 @@ if($_POST['action'] == 'addToCart' && $_POST['material'] && $_POST['quantity']){
 		if(mysqli_query($conn, "UPDATE cart SET quantity = quantity + '$quantity' WHERE name = '$material'")){
 			$response['success'] = 'Additional '.$quantity.$settings['mUnit'].' of '.$material.' added to the cart.';
 		}
+		echo json_encode($response);
+		return;
 	}
 									
 	if(mysqli_query($conn, "INSERT INTO cart (ingID,name,quantity,purity) VALUES ('$ingID','$material','$quantity','$purity')")){
 		$response['success'] = $material.' added to the cart!';
+		echo json_encode($response);
+		return;
 	}
 	
-	echo json_encode($response);
 	return;
 }
 

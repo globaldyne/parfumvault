@@ -9,6 +9,14 @@
     <div class="card-body">
       <div class="table-responsive">
       <div id="innermsg"></div>
+      <div class="mt-4 mr-4 text-right">
+      	<div class="btn-group" id="menu">
+        	<button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
+            <div class="dropdown-menu dropdown-menu-left">
+               <li><a href="#" class="dropdown-item" id="export_csv"><i class="fa-solid fa-file-export mx-2"></i>Export to CSV</a></li>
+           </div>
+       	</div>
+       </div>
         <table class="table table-striped" id="tdDataCart" width="100%" cellspacing="0">
           <thead>
             <tr>
@@ -45,6 +53,15 @@ $(document).ready(function() {
 			search: 'Quick Search:',
 			searchPlaceholder: 'Name..',
 		},
+		buttons: [{
+        	extend: "csv",
+			filename: "Cart ingredients",
+            exportOptions: {
+            	columns: [0, 1, 2],
+				stripHtml: true,
+				orthogonal: 'export'
+           	}
+		}],
 		ajax: {	
 			url: '/core/cart_data.php',
 			type: 'POST',
@@ -61,7 +78,7 @@ $(document).ready(function() {
 			{ data : 'purity', title: 'Purity (%)' },
 			{ data : 'quantity', title: 'Quantity (<?=$settings['mUnit']?>)' },
 			{ data : null, title: '', render: actions },
-	
+
 		],
 		order: [[ 0, 'asc' ]],
 		lengthMenu: [[20, 50, 100, 200, 400], [20, 50, 100, 200, 400]],
@@ -90,6 +107,9 @@ $(document).ready(function() {
 		}else{
 			data = 'N/A';
 		}
+		if (type === 'export') {
+              data = row.name;
+        }
 		return data;
 	}
 	
@@ -126,13 +146,14 @@ $(document).ready(function() {
 						dataType: 'json',
 						success: function (data) {
 							if(data.success) {
-								var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
-									reload_cart_data();
-								} else {
-									var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
-					
-								}
-								$('#innermsg').html(msg);
+								$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+								$('.toast-header').removeClass().addClass('toast-header alert-success');
+								reload_cart_data();
+							}else if(data.error){
+								$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+								$('.toast-header').removeClass().addClass('toast-header alert-danger');
+							}
+							$('.toast').toast('show');
 						}
 					});
 					
@@ -148,6 +169,10 @@ $(document).ready(function() {
 			   }   
 		   },onEscape: function () {return true;}
 	   });
+	});
+
+	$('#export_csv').click(() => {
+		$('#tdDataCart').DataTable().button(0).trigger();
 	});
 
 }); //END DOC
