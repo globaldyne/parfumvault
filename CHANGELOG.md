@@ -1,5 +1,7 @@
 # CHANGELOG
 ### Version 10.9
+- Hide privacy tab for ingredients as is not yet utilised
+- Tech data page updates
 - Update synonyms backend to json format
 - If Prohibition is selected in ingredient usage and limits then the usage values set to 0
 - Rewrite backend for usage and limits update

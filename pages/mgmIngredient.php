@@ -140,9 +140,11 @@ body {
                 	<a href="#pubChem" id="pubChem_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-atom mx-2"></i>Pub Chem</a>
                 </li>
 			<?php } ?>  
-			<li class="nav-item" role="presentation">
+			<!--
+            <li class="nav-item" role="presentation">
             	<a href="#privacy" id="privacy_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-user-secret mx-2"></i>Privacy</a>
-                </li>   
+             </li>
+             -->
 			<li class="nav-item" role="presentation">
             	<a href="#whereUsed" id="whereUsed_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-random mx-2"></i>Where used?</a>
             </li>
