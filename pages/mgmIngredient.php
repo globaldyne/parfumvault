@@ -356,7 +356,7 @@ body {
 <script>
 
 $(document).ready(function() {
-	$('[rel=tipsy]').tooltip({placement: 'auto'});
+	$('[rel=tip]').tooltip({placement: 'auto'});
 
 	$('#general').on('click', '[id*=saveGeneral]', function () {
 		<?php if(empty($ing['id'])){ ?>
@@ -368,7 +368,7 @@ $(document).ready(function() {
    			}
 		<?php } ?>
 		$.ajax({ 
-			url: 'update_data.php', 
+			url: '/pages/update_data.php', 
 			type: 'POST',
 			data: {
 				manage: 'ingredient',
