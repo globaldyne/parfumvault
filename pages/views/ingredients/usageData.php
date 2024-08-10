@@ -21,7 +21,7 @@ $cols = 3;
 $usageStyle = array('even_ing','odd_ing');
 $defCatClass = $settings['defCatClass'];
 
-$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT id, cas,name,usage_type,noUsageLimit,byPassIFRA,flavor_use,cat1,cat2,cat3,cat4,cat5A,cat5B,cat5C,cat5D,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12 FROM ingredients WHERE id = '".$_POST['ingID']."'"));
+$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT id, cas,name,usage_type,noUsageLimit,byPassIFRA,flavor_use,allergen,cat1,cat2,cat3,cat4,cat5A,cat5B,cat5C,cat5D,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12 FROM ingredients WHERE id = '".$_POST['ingID']."'"));
 
 $rType = searchIFRA($ing['cas'],$ing['name'],'type', $defCatClass);
 $limit = searchIFRA($ing['cas'],$ing['name'],null, 'cat'.$cats[$counter]['name']);
@@ -41,33 +41,43 @@ if($usageLimit = searchIFRA($ing['cas'],$ing['name'],null,$defCatClass)){
 <hr>
 <div class="container-fluid">
     <div class="row mb-2">
-        <div class="col-sm-2">
+        <div class="col-sm-1">
             Bypass IFRA 
             <i rel="tip" title="Enable this to bypass IFRA values and set your own. This is not recommended though." class="pv_point_gen fas fa-info-circle"></i>
         </div>
-        <div class="col-md-4">
+        <div class="col-sm-1">
             <input name="byPassIFRA" type="checkbox" <?php echo $byPass ?: 'disabled'; ?> id="byPassIFRA" value="1" <?php if($ing['byPassIFRA'] == '1'){ ?> checked="checked" <?php } ?>/>
         </div>
     </div>
     <div class="row mb-2">
-        <div class="col-sm-2">
+        <div class="col-sm-1">
             No usage limit
             <i rel="tip" title="This will set all values to 100% if no IFRA entries found or IFRA lookup is bypassed." class="pv_point_gen fas fa-info-circle"></i>
         </div>
-        <div class="col-sm-2">
+        <div class="col-sm-1">
             <input name="noUsageLimit" type="checkbox" <?php echo $noLimit; ?> id="noUsageLimit" value="1" <?php if($ing['noUsageLimit'] == '1'){ ?> checked="checked" <?php } ?>/>
         </div>
     </div>
     <div class="row mb-2">
-        <div class="col-sm-2">
+        <div class="col-sm-1">
             Flavor use
         </div>
-        <div class="col-sm-2">
+        <div class="col-sm-1">
             <input name="flavor_use" type="checkbox" id="flavor_use" value="1" <?php if($ing['flavor_use'] == '1'){ ?> checked="checked" <?php } ?>/>
         </div>
     </div>
+    <div class="row mb-2">
+    	<div class="col-sm-1">
+        	<label class="form-check-label" for="isAllergen" >To Declare</label>
+            <i class="fa-solid fa-circle-info mx-2 pv_point_gen" rel="tip" title="If enabled, ingredient name will be printed in the box label."></i>
+        </div>
+        <div class="col-sm-1">
+            <input name="isAllergen" type="checkbox" id="isAllergen" value="1" <?php if($ing['allergen'] == '1'){; ?> checked="checked"  <?php } ?>/>
+        </div>    
+    </div>
+
     <div class="row mb-3">
-        <div class="col-sm-2">
+        <div class="col-sm-1">
             Usage classification
         </div>
         <div class="col-sm-4">
@@ -179,7 +189,7 @@ $(document).ready(function() {
 	
 	$('#usage_limits').on('click', '[id*=saveUsage]', function () {
 		$.ajax({ 
-			url: 'update_data.php', 
+			url: '/pages/update_data.php', 
 			type: 'POST',
 			data: {
 				manage: 'ingredient',
@@ -189,6 +199,7 @@ $(document).ready(function() {
 				flavor_use: $("#flavor_use").is(':checked'),
 				noUsageLimit: $("#noUsageLimit").is(':checked'),
 				byPassIFRA: $("#byPassIFRA").is(':checked'),
+				isAllergen: $("#isAllergen").is(':checked'),
 				<?php foreach ($cats as $cat) {?>
 					cat<?php echo $cat['name'];?>: $("#cat<?php echo $cat['name'];?>").val(),
 				<?php } ?>

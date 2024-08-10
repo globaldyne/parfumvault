@@ -1502,7 +1502,6 @@ if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'general'){
 	$einecs = preg_replace('/\s+/', '', trim(mysqli_real_escape_string($conn, $_POST["einecs"])));
 	$reach = preg_replace('/\s+/', '', trim(mysqli_real_escape_string($conn, $_POST["reach"])));
 	$fema = preg_replace('/\s+/', '', trim(mysqli_real_escape_string($conn, $_POST["fema"])));
-	if($_POST["isAllergen"] == 'true') { $allergen = '1'; }else{ $allergen = '0'; }
 	$purity = validateInput($_POST["purity"]);
 	$profile = mysqli_real_escape_string($conn, $_POST["profile"]);
 	$type = mysqli_real_escape_string($conn, $_POST["type"]);	
@@ -1515,7 +1514,7 @@ if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'general'){
 //	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '".$_POST['name']."'"))){
 	if(empty($_POST['name'])){
 	
-		$query = "UPDATE ingredients SET INCI = '$INCI',cas = '$cas',solvent='".$_POST["solvent"]."', einecs = '$einecs', reach = '$reach',FEMA = '$fema',allergen='$allergen',purity='$purity',profile='$profile',type = '$type',strength = '$strength', category='$category',physical_state = '$physical_state',odor = '$odor',notes = '$notes' WHERE name='$ing'";
+		$query = "UPDATE ingredients SET INCI = '$INCI',cas = '$cas',solvent='".$_POST["solvent"]."', einecs = '$einecs', reach = '$reach',FEMA = '$fema',purity='$purity',profile='$profile',type = '$type',strength = '$strength', category='$category',physical_state = '$physical_state',odor = '$odor',notes = '$notes' WHERE name='$ing'";
 		
 		if(mysqli_query($conn, $query)){
 			$response["success"] = 'General details have been updated!';
@@ -1547,6 +1546,7 @@ if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'usage_limits'){
 	if($_POST['flavor_use'] == 'true') { $flavor_use = '1'; }else{ $flavor_use = '0'; }
 	if($_POST['noUsageLimit'] == 'true'){ $noUsageLimit = '1'; }else{ $noUsageLimit = '0'; }
 	if($_POST['byPassIFRA'] == 'true'){ $byPassIFRA = '1'; }else{ $byPassIFRA = '0'; }
+	if($_POST["isAllergen"] == 'true') { $allergen = '1'; }else{ $allergen = '0'; }
 	$usage_type = mysqli_real_escape_string($conn, $_POST['usage_type']);
 	$cat1 = validateInput($_POST['cat1'] ?: '100');
 	$cat2 = validateInput($_POST['cat2'] ?: '100');
@@ -1567,7 +1567,7 @@ if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'usage_limits'){
 	$cat11B = validateInput($_POST['cat11B'] ?: '100');
 	$cat12 = validateInput($_POST['cat12'] ?: '100');
 	
-	$query = "UPDATE ingredients SET byPassIFRA = '$byPassIFRA', noUsageLimit = '$noUsageLimit',flavor_use='$flavor_use',usage_type = '$usage_type', cat1 = '$cat1', cat2 = '$cat2', cat3 = '$cat3', cat4 = '$cat4', cat5A = '$cat5A', cat5B = '$cat5B', cat5C = '$cat5C', cat5D = '$cat5D', cat6 = '$cat6', cat7A = '$cat7A', cat7B = '$cat7B', cat8 = '$cat8', cat9 = '$cat9', cat10A = '$cat10A', cat10B = '$cat10B', cat11A = '$cat11A', cat11B = '$cat11B', cat12 = '$cat12' WHERE id='$ingID'";
+	$query = "UPDATE ingredients SET byPassIFRA = '$byPassIFRA', noUsageLimit = '$noUsageLimit',flavor_use='$flavor_use',usage_type = '$usage_type', allergen='$allergen', cat1 = '$cat1', cat2 = '$cat2', cat3 = '$cat3', cat4 = '$cat4', cat5A = '$cat5A', cat5B = '$cat5B', cat5C = '$cat5C', cat5D = '$cat5D', cat6 = '$cat6', cat7A = '$cat7A', cat7B = '$cat7B', cat8 = '$cat8', cat9 = '$cat9', cat10A = '$cat10A', cat10B = '$cat10B', cat11A = '$cat11A', cat11B = '$cat11B', cat12 = '$cat12' WHERE id='$ingID'";
 	if(mysqli_query($conn, $query)){
 		$response["success"] = 'Usage limits has been updated!';
 	}else{
