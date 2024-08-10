@@ -131,9 +131,7 @@ $(document).ready(function() {
 
 	function unlimited_usage(status,maxulimit){
 		$('#usage_type').prop('disabled', status);
-		<?php foreach ($cats as $cat) {?>
-			$('#cat<?php echo $cat['name'];?>').prop('disabled', status).val(maxulimit);
-		<?php } ?>
+		$("input[id^='cat']").prop('disabled', status).val(maxulimit);
 	}
 	
 	function byPassCheck(s){
@@ -184,6 +182,15 @@ $(document).ready(function() {
 		}
 	});
 	
+	$('#usage_type').click('change', handleUsageTypeChange);
+
+    function handleUsageTypeChange() {		
+        if ($('#usage_type').val() === "4") {
+   			$("input[id^='cat']").prop('disabled', true).val('0.0000');
+        } else {
+		    $("input[id^='cat']").prop('disabled', false);
+        }
+    }
 	
 	$('#usage_limits').on('click', '[id*=saveUsage]', function () {
 		$.ajax({ 
@@ -211,6 +218,12 @@ $(document).ready(function() {
 					$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
 					$('.toast-header').removeClass().addClass('toast-header alert-danger');
 				}
+				$('.toast').toast('show');
+			},
+			error: function (xhr, status, error) {
+				console.error("AJAX Error:", status, error);
+				$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i> An error occurred. Please try again.');
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
 				$('.toast').toast('show');
 			}
 		});

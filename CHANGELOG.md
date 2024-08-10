@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 10.9
+- If Prohibition is selected in ingredient usage and limits then the usage values set to 0
 - Rewrite backend for usage and limits update
 - To Declare option is now moved under Udage and Limits section for ingredients
 - Fix materials not updating corrrectly when added in the cart
