@@ -278,7 +278,7 @@ body {
 			</div>
 			<div class="modal-body">
 				<div id="clone_msg"></div>
-				Name
+				<label for="cloneIngName" class="form-label">Name</label>
 				<input class="form-control" name="cloneIngName" id="cloneIngName" type="text" value="" />            
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -299,7 +299,7 @@ body {
 			<div class="modal-body">
             	<div id="warn"><div class="alert alert-warning"><strong>Warning:</strong> If you rename the ingredient, will affect any formulas that using it as well. Please refer to <strong>Where Used</strong> section to get a list of formulas if any.</div></div>
 				<div id="rename_msg"></div>
-				New name
+				<label for="renameIngName" class="form-label">New name</label>
 				<input class="form-control" name="renameIngName" id="renameIngName" type="text" value="" />            
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -341,7 +341,7 @@ body {
 			<div class="modal-body">
                 <div id="warn">
                 <div class="alert alert-warning"><strong><i class="fa-solid fa-triangle-exclamation mx-2"></i>TECH PREVIEW: This feature its under development and in preview state, use with caution.</strong></div>
-				<div id="sds_res"></div>                               
+				<div id="doc_res"></div>                               
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" id="dis-genDOC" data-bs-dismiss="modal">Close</button>
 					<input type="submit" name="button" class="btn btn-primary" id="generateDOC" value="Generate">
