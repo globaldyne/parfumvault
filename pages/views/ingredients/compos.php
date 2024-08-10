@@ -134,279 +134,291 @@ $(document).ready(function() {
 		}
     });
 	
+
+	function cmpName(data, type, row){
+		return '<i class="name pv_point_gen" data-name="name" data-type="text" data-pk="'+row.id+'">'+row.name+'</i>';    
+	};
+	
+	function cmpCAS(data, type, row){
+		return '<i class="cas pv_point_gen" data-name="cas" data-type="text" data-pk="'+row.id+'">'+row.cas+'</i>';    
+	};
+	
+	function cmpEC(data, type, row){
+		return '<i class="ec pv_point_gen" data-name="ec" data-type="text" data-pk="'+row.id+'">'+row.ec+'</i>';    
+	};
+	
+	function cmpMinPerc(data, type, row){
+		return '<i class="min_percentage pv_point_gen" data-name="min_percentage" data-type="text" data-pk="'+row.id+'">'+row.min_percentage+'</i>';    
+	};
+	
+	function cmpMaxPerc(data, type, row){
+		return '<i class="max_percentage pv_point_gen" data-name="max_percentage" data-type="text" data-pk="'+row.id+'">'+row.max_percentage+'</i>';    
+	};
+	
+	function cmpGHS(data, type, row){
+		return '<i class="GHS pv_point_gen" data-name="GHS" data-type="text" data-pk="'+row.id+'">'+row.GHS+'</i>';    
+	};
+	
+	function cmpDeclare(data, type, row){
+		if(row.toDeclare == 0){
+			var declare = 'No';
+		}else if(row.toDeclare == 1){
+			var declare = 'Yes';
+		}
+		return '<i class="toDeclare pv_point_gen" data-name="toDeclare" data-type="select" data-pk="'+row.id+'">'+declare+'</i>';    
+	};
+	
+	function cmpActions(data, type, row){
+		return '<a href="#" id="cmpDel" class="fas fa-trash link-danger" data-id="'+row.id+'" data-name="'+row.name+'"></a>';
+	};
+	
+	$('#tdCompositions').editable({
+		container: 'body',
+		selector: 'i.name',
+		type: 'POST',
+		url: "/pages/update_data.php?composition=update&ing=<?=$ingName;?>",
+		title: 'Name'
+	});
+	
+	$('#tdCompositions').editable({
+	   container: 'body',
+	   selector: 'i.cas',
+	   type: 'POST',
+	   url: "/pages/update_data.php?composition=update&ing=<?=$ingName;?>",
+	   title: 'CAS'
+	});
+	
+	$('#tdCompositions').editable({
+	   container: 'body',
+	   selector: 'i.ec',
+	   type: 'POST',
+	   url: "/pages/update_data.php?composition=update&ing=<?=$ingName;?>",
+	   title: 'EINECS',
+	});
+	
+	$('#tdCompositions').editable({
+		container: 'body',
+		selector: 'i.min_percentage',
+		type: 'POST',
+		url: "/pages/update_data.php?composition=update&ing=<?=$ingName;?>",
+		title: 'Min percentage',
+		success: function (data) {
+				reload_cmp_data();
+		}
+	});
+	
+	$('#tdCompositions').editable({
+		container: 'body',
+		selector: 'i.max_percentage',
+		type: 'POST',
+		url: "/pages/update_data.php?composition=update&ing=<?=$ingName;?>",
+		title: 'Max percentage',
+		success: function (data) {
+				reload_cmp_data();
+		}
+	});
+	
+	$('#tdCompositions').editable({
+		container: 'body',
+		selector: 'i.GHS',
+		type: 'POST',
+		url: "/pages/update_data.php?composition=update&ing=<?=$ingName;?>",
+		title: 'GHS'
+	});
+	
+	$('#tdCompositions').editable({
+		pvnoresp: false,
+		highlight: false,
+		emptytext: "",
+		emptyclass: "",
+		container: 'body',
+		selector: 'i.toDeclare',
+		type: 'POST',
+		url: "/pages/update_data.php?composition=update&ing=<?=$ingName;?>",
+		title: 'To be declared',
+		source: [
+				 {value: '0', text: 'No'},
+				 {value: '1', text: 'Yes'},
+		],
+		success: function (data) {
+				reload_cmp_data();
+		}
+	});
+	
+	$('#tdCompositions').on('click', '[id*=cmpDel]', function () {
+		var cmp = {};
+		cmp.ID = $(this).attr('data-id');
+		cmp.Name = $(this).attr('data-name');
+	
+		bootbox.dialog({
+		   title: "Confirm removal",
+		   message : 'Remove <strong>'+ cmp.Name +'</strong> from the list?',
+		   buttons :{
+			   main: {
+				   label : "Remove",
+				   className : "btn-danger",
+				   callback: function (){
+						
+					$.ajax({ 
+						url: '/pages/update_data.php', 
+						type: 'POST',
+						data: {
+							composition: 'delete',
+							allgID: cmp.ID,
+							ing: '<?=$ingName?>'
+							},
+						dataType: 'json',
+						success: function (data) {
+							reload_cmp_data();
+						}
+					  });
+	
+					 return true;
+				   }
+			   },
+			   cancel: {
+				   label : "Cancel",
+				   className : "btn-secondary",
+				   callback : function() {
+					   return true;
+				   }
+			   }   
+		   },onEscape: function () {return true;}
+	   });
+	});
+	
+	
+	$('#addComposition').on('click', '[id*=cmpAdd]', function () {
+		$.ajax({ 
+			url: '/pages/update_data.php', 
+			type: 'POST',
+			data: {
+				composition: 'add',
+				allgName: $("#allgName").val(),
+				minPerc: $("#minPerc").val(),
+				maxPerc: $("#maxPerc").val(),
+				allgCAS: $("#allgCAS").val(),
+				allgEC: $("#allgEC").val(),	
+				GHS: $("#GHS").val(),	
+				addToIng: $("#addToIng").is(':checked'),
+				addToDeclare: $("#addToDeclare").is(':checked'),
+				ing: '<?=$ingName?>'
+			},
+			dataType: 'json',
+			success: function (data) {
+				if (data.success) {
+					var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+					$("#allgName").val('');
+					$("#allgCAS").val('');
+					$("#allgEC").val('');
+					$("#minPerc").val('');
+					$("#maxPerc").val('');
+					$("#GHS").val('');
+					reload_cmp_data();
+				}else{
+					var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				}
+			
+				$('#inf').html(msg);
+	
+			}
+		  });
+	});
+	
+	$('#addCSV').on('click', '[id*=cmpCSV]', function () {
+		$("#CSVImportMsg").html('<div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
+		$("#cmpCSV").prop("disabled", true);
+			
+		var fd = new FormData();
+		var files = $('#CSVFile')[0].files;
+	
+		if(files.length > 0 ){
+		fd.append('CSVFile',files[0]);
+		$.ajax({
+		   url: '/pages/upload.php?type=cmpCSVImport&ingID=<?=$ingName?>',
+		   type: 'POST',
+		   data: fd,
+		   contentType: false,
+		   processData: false,
+				 cache: false,
+		   success: function(response){
+			 if(response != 0){
+				$("#CSVImportMsg").html(response);
+				$("#cmpCSV").prop("disabled", false);
+				reload_cmp_data();
+			  }else{
+				$("#CSVImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> File upload failed!</div>');
+				$("#cmpCSV").prop("disabled", false);
+			  }
+			},
+		 });
+		}else{
+			$("#CSVImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a file to upload!</div>');
+			$("#cmpCSV").prop("disabled", false);
+		}
+	});
+	
+	function reload_cmp_data() {
+		$('#tdCompositions').DataTable().ajax.reload(null, true);
+	};
+
 });//DOC
 
-function cmpName(data, type, row){
-	return '<i class="name pv_point_gen" data-name="name" data-type="text" data-pk="'+row.id+'">'+row.name+'</i>';    
-};
-
-function cmpCAS(data, type, row){
-	return '<i class="cas pv_point_gen" data-name="cas" data-type="text" data-pk="'+row.id+'">'+row.cas+'</i>';    
-};
-
-function cmpEC(data, type, row){
-	return '<i class="ec pv_point_gen" data-name="ec" data-type="text" data-pk="'+row.id+'">'+row.ec+'</i>';    
-};
-
-function cmpMinPerc(data, type, row){
-	return '<i class="min_percentage pv_point_gen" data-name="min_percentage" data-type="text" data-pk="'+row.id+'">'+row.min_percentage+'</i>';    
-};
-
-function cmpMaxPerc(data, type, row){
-	return '<i class="max_percentage pv_point_gen" data-name="max_percentage" data-type="text" data-pk="'+row.id+'">'+row.max_percentage+'</i>';    
-};
-
-function cmpGHS(data, type, row){
-	return '<i class="GHS pv_point_gen" data-name="GHS" data-type="text" data-pk="'+row.id+'">'+row.GHS+'</i>';    
-};
-
-function cmpDeclare(data, type, row){
-	if(row.toDeclare == 0){
-		var declare = 'No';
-	}else if(row.toDeclare == 1){
-		var declare = 'Yes';
-	}
-	return '<i class="toDeclare pv_point_gen" data-name="toDeclare" data-type="select" data-pk="'+row.id+'">'+declare+'</i>';    
-};
-
-function cmpActions(data, type, row){
-	return '<a href="#" id="cmpDel" class="fas fa-trash link-danger" data-id="'+row.id+'" data-name="'+row.name+'"></a>';
-}
-
-$('#tdCompositions').editable({
-	container: 'body',
-    selector: 'i.name',
-    type: 'POST',
-    url: "/pages/update_data.php?composition=update&ing=<?=$ingName;?>",
-    title: 'Name'
-});
-
-$('#tdCompositions').editable({
-   container: 'body',
-   selector: 'i.cas',
-   type: 'POST',
-   url: "/pages/update_data.php?composition=update&ing=<?=$ingName;?>",
-   title: 'CAS'
-});
-
-$('#tdCompositions').editable({
-   container: 'body',
-   selector: 'i.ec',
-   type: 'POST',
-   url: "/pages/update_data.php?composition=update&ing=<?=$ingName;?>",
-   title: 'EINECS',
-});
-
-$('#tdCompositions').editable({
-    container: 'body',
-    selector: 'i.min_percentage',
-    type: 'POST',
-    url: "/pages/update_data.php?composition=update&ing=<?=$ingName;?>",
-    title: 'Min percentage',
-	success: function (data) {
-			reload_cmp_data();
-	}
-});
-
-$('#tdCompositions').editable({
-    container: 'body',
-    selector: 'i.max_percentage',
-    type: 'POST',
-    url: "/pages/update_data.php?composition=update&ing=<?=$ingName;?>",
-    title: 'Max percentage',
-	success: function (data) {
-			reload_cmp_data();
-	}
-});
-
-$('#tdCompositions').editable({
-    container: 'body',
-    selector: 'i.GHS',
-    type: 'POST',
-    url: "/pages/update_data.php?composition=update&ing=<?=$ingName;?>",
-    title: 'GHS'
-});
-
-$('#tdCompositions').editable({
-	pvnoresp: false,
-	highlight: false,
-	emptytext: "",
-	emptyclass: "",
-  	container: 'body',
-  	selector: 'i.toDeclare',
-  	type: 'POST',
-	url: "/pages/update_data.php?composition=update&ing=<?=$ingName;?>",
-	title: 'To be declared',
-	source: [
-			 {value: '0', text: 'No'},
-			 {value: '1', text: 'Yes'},
-			 ],
-	success: function (data) {
-			reload_cmp_data();
-	}
-});
-
-$('#tdCompositions').on('click', '[id*=cmpDel]', function () {
-	var cmp = {};
-	cmp.ID = $(this).attr('data-id');
-    cmp.Name = $(this).attr('data-name');
-
-	bootbox.dialog({
-       title: "Confirm removal",
-       message : 'Remove <strong>'+ cmp.Name +'</strong> from the list?',
-       buttons :{
-           main: {
-               label : "Remove",
-               className : "btn-danger",
-               callback: function (){
-	    			
-				$.ajax({ 
-					url: '/pages/update_data.php', 
-					type: 'POST',
-					data: {
-						composition: 'delete',
-						allgID: cmp.ID,
-						ing: '<?=$ingName?>'
-						},
-					dataType: 'json',
-					success: function (data) {
-						reload_cmp_data();
-					}
-				  });
-
-                 return true;
-               }
-           },
-           cancel: {
-               label : "Cancel",
-               className : "btn-secondary",
-               callback : function() {
-                   return true;
-               }
-           }   
-       },onEscape: function () {return true;}
-   });
-});
-
-
-$('#addComposition').on('click', '[id*=cmpAdd]', function () {
-	$.ajax({ 
-		url: '/pages/update_data.php', 
-		type: 'POST',
-		data: {
-			composition: 'add',
-			allgName: $("#allgName").val(),
-			minPerc: $("#minPerc").val(),
-			maxPerc: $("#maxPerc").val(),
-			allgCAS: $("#allgCAS").val(),
-			allgEC: $("#allgEC").val(),	
-			GHS: $("#GHS").val(),	
-			addToIng: $("#addToIng").is(':checked'),
-			addToDeclare: $("#addToDeclare").is(':checked'),
-			ing: '<?=$ingName?>'
-		},
-		dataType: 'json',
-		success: function (data) {
-			if (data.success) {
-	 	 		var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
-				$("#allgName").val('');
-				$("#allgCAS").val('');
-				$("#allgEC").val('');
-				$("#minPerc").val('');
-				$("#maxPerc").val('');
-				$("#GHS").val('');
-				reload_cmp_data();
-			}else{
-				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
-			}
-		
-			$('#inf').html(msg);
-
-		}
-	  });
-});
-
-$('#addCSV').on('click', '[id*=cmpCSV]', function () {
-    $("#CSVImportMsg").html('<div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
-	$("#cmpCSV").prop("disabled", true);
-		
-	var fd = new FormData();
-    var files = $('#CSVFile')[0].files;
-
-	if(files.length > 0 ){
-	fd.append('CSVFile',files[0]);
-	$.ajax({
-	   url: '/pages/upload.php?type=cmpCSVImport&ingID=<?=$ingName?>',
-	   type: 'POST',
-	   data: fd,
-	   contentType: false,
-	   processData: false,
-			 cache: false,
-	   success: function(response){
-		 if(response != 0){
-			$("#CSVImportMsg").html(response);
-			$("#cmpCSV").prop("disabled", false);
-			reload_cmp_data();
-		  }else{
-			$("#CSVImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> File upload failed!</div>');
-			$("#cmpCSV").prop("disabled", false);
-		  }
-		},
-	 });
-	}else{
-		$("#CSVImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a file to upload!</div>');
-		$("#cmpCSV").prop("disabled", false);
-	}
-});
-
-function reload_cmp_data() {
-    $('#tdCompositions').DataTable().ajax.reload(null, true);
-};
 </script>
 <!-- ADD COMPOSITION-->
-<div class="modal fade" id="addComposition" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="addComposition" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+<div class="modal fade" id="addComposition" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addComposition" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="addComposition">Add composition</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div id="inf"></div>
-        <div class="mb-3">
-	        <label for="allgName" class="form-label">Name</label>
-    	    <input class="form-control" name="allgName" type="text" id="allgName" />
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label for="allgName" class="form-label">Name</label>
+              <input class="form-control" name="allgName" type="text" id="allgName" />
+            </div>
+            <div class="mb-3">
+              <label for="allgCAS" class="form-label">CAS</label>
+              <input class="form-control" name="allgCAS" type="text" id="allgCAS" />
+            </div>
+            <div class="mb-3">
+              <label for="allgEC" class="form-label">EINECS</label>
+              <input class="form-control" name="allgEC" type="text" id="allgEC" />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label for="minPerc" class="form-label">Min percentage</label>
+              <div class="input-group mb-2">
+              	<span class="input-group-text">%</span>
+              	<input class="form-control" name="minPerc" type="text" id="minPerc" />
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="maxPerc" class="form-label">Max percentage</label>
+              <div class="input-group mb-2">
+              	<span class="input-group-text">%</span>
+              	<input class="form-control" name="maxPerc" type="text" id="maxPerc" />
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="GHS" class="form-label">GHS Classification</label>
+              <input class="form-control" name="GHS" type="text" id="GHS" />
+            </div>
+          </div>
         </div>
-        <div class="mb-3">
-        	<label for="allgCAS" class="form-label">CAS</label>
-        	<input class="form-control" name="allgCAS" type="text" id="allgCAS" />
-        </div>
-        <div class="mb-3">
-        	<label for="allgEC" class="form-label">EINECS</label>
-        	<input class="form-control" name="allgEC" type="text" id="allgEC" />
-        </div>
-        <div class="mb-3">
-	        <label for="minPerc" class="form-label">Min percentage</label>
-    	    <input class="form-control" name="minPerc" type="text" id="minPerc" />
-        </div>
-        <div class="mb-3">
-	        <label for="maxPerc" class="form-label">Max percentage</label>
-    	    <input class="form-control" name="maxPerc" type="text" id="maxPerc" />
-        </div>
-        <div class="mb-3">
-	        <label for="GHS" class="form-label">GHS Classification</label>
-    	    <input class="form-control" name="GHS" type="text" id="GHS" />
-        </div>        
         <hr class="dropdown-divider" />
         <div class="form-check">
-            <input class="form-check-input" name="addToDeclare" type="checkbox" id="addToDeclare" value="1" />
-            <label class="form-check-label" for="addToDeclare">To declare in warnings</label>
+          <input class="form-check-input" name="addToDeclare" type="checkbox" id="addToDeclare" value="1" />
+          <label class="form-check-label" for="addToDeclare">To declare in warnings</label>
         </div>
         <div class="form-check">
-            <input class="form-check-input" name="addToIng" type="checkbox" id="addToIng" value="1" />
-            <label class="form-check-label" for="addToIng">Add to ingredients</label>
+          <input class="form-check-input" name="addToIng" type="checkbox" id="addToIng" value="1" />
+          <label class="form-check-label" for="addToIng">Add to ingredients</label>
         </div>
       </div>
       <div class="modal-footer">
@@ -416,35 +428,31 @@ function reload_cmp_data() {
     </div>
   </div>
 </div>
-</div>
+
 
 <!--ADD FROM CSV MODAL-->
-<div class="modal fade" id="addCSV" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="addCSV" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+<div class="modal fade" id="addCSV" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addCSV" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Import CSV</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-      
-      <div id="CSVImportMsg"></div>
-     	<div class="mb-3">
-  			<label for="formFile" class="form-label">Choose file</label>
-            <input type="file" name="CSVFile" id="CSVFile" class="form-control" />
+        <div id="CSVImportMsg"></div>
+        <div class="mb-3">
+          <label for="formFile" class="form-label">Choose file</label>
+          <input type="file" name="CSVFile" id="CSVFile" class="form-control" />
         </div>
-        <hr class="dropdown-divider" />        
-        <p>CSV format: <strong>ingredient,CAS,EINECS,min percentage, max percentage,GHS</strong></p>
-        <p>Example: <em><strong>Citral,5392-40-5,226-394-6,0.15,2.3,Skin Irrit. 2-Eye Irrit</strong></em></p>
+        <hr class="dropdown-divider" />
+        <p>CSV format: <strong>ingredient, CAS, EINECS, min percentage, max percentage, GHS</strong></p>
+        <p>Example: <em><strong>Citral, 5392-40-5, 226-394-6, 0.15, 2.3, Skin Irrit. 2-Eye Irrit</strong></em></p>
         <p>Duplicates will be ignored.</p>
-            
-	  <div class="modal-footer">
+      </div>
+      <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         <input type="submit" name="cmpCSV" class="btn btn-primary" id="cmpCSV" value="Import">
       </div>
     </div>
   </div>
-</div>
 </div>

@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 10.9
+- Compostion page updates and improvements
 - Hide privacy tab for ingredients as is not yet utilised
 - Tech data page updates
 - Update synonyms backend to json format
