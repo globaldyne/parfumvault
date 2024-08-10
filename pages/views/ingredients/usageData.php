@@ -222,7 +222,7 @@ $(document).ready(function() {
 			},
 			error: function (xhr, status, error) {
 				console.error("AJAX Error:", status, error);
-				$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i> An error occurred. Please try again.');
+				$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i> An error occurred, ' + error);
 				$('.toast-header').removeClass().addClass('toast-header alert-danger');
 				$('.toast').toast('show');
 			}
