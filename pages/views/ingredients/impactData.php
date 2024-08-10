@@ -51,7 +51,7 @@ $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT id,impact_top,impact_heart
 $(document).ready(function() {
 	$('#note_impact').on('click', '[id*=saveNoteImpact]', function () {
 		$.ajax({ 
-			url: 'update_data.php', 
+			url: '/pages/update_data.php', 
 			type: 'POST',
 			data: {
 				manage: 'ingredient',
