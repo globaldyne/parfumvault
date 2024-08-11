@@ -659,34 +659,51 @@ if($_POST['action'] == 'delete' && $_POST['lidId'] && $_POST['type'] == 'lid'){
 }
 
 //IMPORT IMAGES FROM PUBCHEM
-if($_GET['IFRA_PB'] == 'import'){
-	require_once(__ROOT__.'/func/pvFileGet.php');
-	$i = 0;
-	$qCas = mysqli_query($conn,"SELECT cas FROM IFRALibrary WHERE image IS NULL OR image = '' OR image = '-'");
+if(isset($_GET['IFRA_PB']) && $_GET['IFRA_PB'] === 'import'){
+    require_once(__ROOT__.'/func/pvFileGet.php');
+    
+    $i = 0;
+    $response = [];
 
-	if(!mysqli_num_rows($qCas)){
-		$response["error"] = 'IFRA Database is currently empty';
-		echo json_encode($response);
-		return;
-	}
-	
-	$view =  $settings['pubchem_view'];
-	while($cas = mysqli_fetch_array($qCas)){
-		$image = base64_encode(pv_file_get_contents($pubChemApi.'/pug/compound/name/'.trim($cas['cas']).'/PNG?record_type='.$view.'&image_size=small'));
-		
-		$imp = mysqli_query($conn,"UPDATE IFRALibrary SET image = '$image' WHERE cas = '".$cas['cas']."'");
-		$i++;
-		
-		usleep(.1 * 1000000);
-	}
-	if($imp){
-		$response["success"] = $i.' images updated!';
-	}else{
-		$response["error"] = 'Something went wrong '.mysqli_error($conn);
-	}
-	echo json_encode($response);
-	return;
+    $qCas = mysqli_query($conn, "SELECT cas FROM IFRALibrary WHERE image IS NULL OR image = '' OR image = '-'");
+
+    if(!$qCas || mysqli_num_rows($qCas) == 0){
+        $response["error"] = 'IFRA Database is currently empty or there was a problem with the query.';
+        echo json_encode($response);
+        return;
+    }
+
+    $view = $settings['pubchem_view'];
+
+    while($cas = mysqli_fetch_assoc($qCas)){
+        $casNumber = trim($cas['cas']);
+        $imageUrl = $pubChemApi.'/pug/compound/name/'.$casNumber.'/PNG?record_type='.$view.'&image_size=small';
+        $imageContent = pv_file_get_contents($imageUrl);
+        
+        if($imageContent !== false){
+            $image = base64_encode($imageContent);
+            $stmt = $conn->prepare("UPDATE IFRALibrary SET image = ? WHERE cas = ?");
+            $stmt->bind_param('ss', $image, $casNumber);
+
+            if($stmt->execute()){
+                $i++;
+            } else {
+                $response["error"] = 'Error updating image for CAS: '.$casNumber.' - '.mysqli_error($conn);
+                echo json_encode($response);
+                return;
+            }
+
+            $stmt->close();
+        }
+
+        usleep(100000); // 0.1 seconds delay
+    }
+
+    $response["success"] = $i.' images updated!';
+    echo json_encode($response);
+    return;
 }
+
 
 //Update data FROM PubChem
 if($_POST['pubChemData'] == 'update' && $_POST['cas']){

@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 11.0
+- IFRA structure images import improvements
 
 ### Version 10.9
 - Sys update check improvements

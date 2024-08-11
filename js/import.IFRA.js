@@ -93,7 +93,7 @@ $('#btnRestoreIFRA').click(function() {
 				var msg = '<div class="alert alert-success">'+data.success+'</div>';
 				$("#btnRestoreIFRA").hide();
 				$("#backupArea").css('display', 'none');
-
+				$('#tdDataIFRA').DataTable().ajax.reload(null, true);
 			}else if(data.error){
 				var msg = '<div class="alert alert-danger">'+data.error+'</div>';
 				$("#btnRestoreIFRA").show();
