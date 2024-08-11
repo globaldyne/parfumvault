@@ -72,15 +72,15 @@ $(document).ready(function() {
 	
 	function formulaName(data, type, row){
 		return row.formula;
-	}
+	};
 	
 	function ingredientName(data, type, row){
 		return row.ingredient;
-	}
+	};
 	
 	function ingredientCAS(data, type, row){
 		return row.cas;
-	}
+	};
 	
 	
 	function stock(data, type, row){
