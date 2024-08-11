@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 10.9
+- Sell formula PDF export updates
 - Fix a bug causing json import for ingredients to fail
 - Include EINECS when adding ingredient entry from compositions
 - Compostion page updates and improvements
