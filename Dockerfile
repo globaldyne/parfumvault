@@ -39,7 +39,9 @@ RUN sed -i \
 ENV LANG en_GB.UTF-8
 
 ADD . /html
-RUN cat /html/.git/COMMIT_EDITMSG | sed -n 's/^\[\(.*\)\].*/\[\1\]/p' > /html/COMMIT
+RUN if [ -f .git/COMMIT_EDITMSG ]; then \
+      cat .git/COMMIT_EDITMSG | sed -n 's/^\[\(.*\)\].*/\[\1\]/p' > /html/COMMIT; \
+    fi
 
 ADD scripts/php-fpm/www.conf /etc/php-fpm.d/www.conf
 ADD scripts/php-fpm/php-fpm.conf /etc/php-fpm.conf
