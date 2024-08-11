@@ -17,7 +17,7 @@ if($pv_meta['schema_ver'] < $db_ver){
               <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-shopping-cart fa-fw text-white"></i>
                 <!-- Counter - cart -->
-                <span class="badge badge-danger badge-counter"><?php echo countCart($conn); ?></span>
+                <span class="badge badge-danger badge-counter"><?php echo countCart(); ?></span>
               </a>
               <!-- Dropdown - cart -->
               <div class="dropdown-list dropdown-menu dropdown-menu-end shadow animated--grow-in" aria-labelledby="messagesDropdown">
