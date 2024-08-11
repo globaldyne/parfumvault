@@ -1,7 +1,10 @@
 <?php 
 if (!defined('pvault_panel')){ die('Not Found');}
 if(!$commit = file_get_contents(__ROOT__.'/COMMIT')){
-	$commit = explode('-',file_get_contents(__ROOT__.'/.git/COMMIT_EDITMSG'))[0];
+	
+	if(!$commit = explode('-',file_get_contents(__ROOT__.'/.git/COMMIT_EDITMSG'))[0]){
+		$commit = getenv('GIT_COMMIT_ID');
+	}
 }
 	
 ?>
