@@ -10,7 +10,6 @@ require_once(__ROOT__.'/func/php-settings.php');
               <h2 class="m-0 font-weight-bold text-primary-emphasis"><a href="#" id="mainTitle">IFRA Library</a></h2>
             </div>
             <div class="card-body">
-               <div id="iframsg"></div>
                   <div class="text-right">
                     <div class="btn-group">
                       <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
@@ -479,12 +478,14 @@ $(document).ready(function() {
 						dataType: 'json',
 						success: function (data) {
 							if(data.success){
-								msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+								$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+								$('.toast-header').removeClass().addClass('toast-header alert-success');
 								reload_data();
 							}else if(data.error){
-								msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+								$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+								$('.toast-header').removeClass().addClass('toast-header alert-danger');
 							}
-							$('#iframsg').html(msg);
+							$('.toast').toast('show');
 						}
 					  });
 					
