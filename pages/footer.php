@@ -12,7 +12,7 @@ if ($commit === false || empty(trim($commit))) {
         $commitParts = explode('-', $gitEditMsg);
         $commit = trim($commitParts[0]);
     } else {
-        $commit = getenv('GIT_COMMIT_ID');
+        $commit = getenv('OPENSHIFT_BUILD_COMMIT');
     }
 }
 
