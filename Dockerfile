@@ -25,10 +25,10 @@ RUN microdnf --setopt=tsflags=nodocs -y install \
 	openssl \
 	mysql \
 	ncurses \
-	nginx
+	nginx \
+	git
 
 
-RUN microdnf clean all && rm -rf /var/cache/yum/*
 
 RUN sed -i \
 	-e 's~^;date.timezone =$~date.timezone = UTC~g' \
@@ -53,6 +53,8 @@ RUN chmod +x /usr/bin/entrypoint.sh
 RUN chmod +x /usr/bin/reset_pass.sh
 
 RUN rm -rf /html/.git /html/.github
+RUN microdnf -y remove git
+RUN microdnf clean all && rm -rf /var/cache/yum/*
 
 WORKDIR /html
 STOPSIGNAL SIGQUIT
