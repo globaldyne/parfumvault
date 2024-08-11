@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 10.9
+- Sys update check improvements
 - Dashboard page updates
 - Set datatable entries to the middle
 - Sell formula PDF export updates

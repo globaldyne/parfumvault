@@ -193,51 +193,73 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
 
 
 
-<script type="text/javascript" language="javascript" >
-$('#mainTitle').click(function() {
+<script>
+$(document).ready(function() {
+	
+	$('#mainTitle').click(function() {
+		list_ingredients();
+	});
+	
 	list_ingredients();
-});
-list_ingredients();
-var pvOnlineAPI = '<?php echo $pvOnlineAPI; ?>';
-$(function () {
-    $(".input-group-btn .dropdown-menu li a").click(function () {
-        var selText = $(this).html();
-		var provider = $(this).attr('id');
-		  
-        $(this).parents(".input-group-btn").find(".btn-search").html(selText);
-		$(this).parents(".input-group-btn").find(".btn-search").attr('id',provider);
-    });
-});
-
-$('#btnAdvSearch').click(function() {
-    var name = $('#ing_name').val();
-    var cas = $('#ing_cas').val();
-    var einecs = $('#ing_einecs').val();
-    var odor = $('#ing_odor').val();
-    var profile = $('#ing_profile').val();
-    var cat = $('#ing_category').val();
-    var synonym = $('#ing_synonym').val();
-
-	$.ajax({ 
-		url: '/pages/listIngredients.php',
-		type: 'GET',
-		data: {
-			"adv": 1,
-			"name": name,
-			"cas": cas,
-			"einecs": einecs,
-			"odor": odor,
-			"profile": profile,
-			"cat": cat,
-			"synonym": synonym
-		},
-		dataType: 'html',
+	var pvOnlineAPI = '<?php echo $pvOnlineAPI; ?>';
+	$(function () {
+		$(".input-group-btn .dropdown-menu li a").click(function () {
+			var selText = $(this).html();
+			var provider = $(this).attr('id');
+			  
+			$(this).parents(".input-group-btn").find(".btn-search").html(selText);
+			$(this).parents(".input-group-btn").find(".btn-search").attr('id',provider);
+		});
+	});
+	
+	$('#btnAdvSearch').click(function() {
+		var name = $('#ing_name').val();
+		var cas = $('#ing_cas').val();
+		var einecs = $('#ing_einecs').val();
+		var odor = $('#ing_odor').val();
+		var profile = $('#ing_profile').val();
+		var cat = $('#ing_category').val();
+		var synonym = $('#ing_synonym').val();
+	
+		$.ajax({ 
+			url: '/pages/listIngredients.php',
+			type: 'GET',
+			data: {
+				"adv": 1,
+				"name": name,
+				"cas": cas,
+				"einecs": einecs,
+				"odor": odor,
+				"profile": profile,
+				"cat": cat,
+				"synonym": synonym
+			},
+			dataType: 'html',
+				success: function (data) {
+					$('#list_ingredients').html(data);
+			}
+		});
+	});
+	
+	function list_ingredients(page, limit, filter) {
+		$('#list_ingredients').html('<img class="loader loader-center" src="/img/Testtube.gif"/>');
+		$.ajax({
+			url: '/pages/listIngredients.php',
+			type: 'GET',
+			data: {
+				search: '<?= htmlspecialchars($_GET['search']) ?>'
+			},
+			dataType: 'html',
 			success: function (data) {
 				$('#list_ingredients').html(data);
-		}
-	});
-});
+			},
+			error: function () {
+				$('#list_ingredients').html('<div class="alert alert-danger">Failed to load ingredients. Please try again later.</div>');
+			}
+		});
+	};
 
+});
 
 </script>
 
