@@ -688,7 +688,7 @@ if($_GET['IFRA_PB'] == 'import'){
 	return;
 }
 
-//IMPORT SYNONYMS FROM PubChem
+//Update data FROM PubChem
 if($_POST['pubChemData'] == 'update' && $_POST['cas']){
 	$cas = trim($_POST['cas']);
 	$molecularWeight = $_POST['molecularWeight'];
@@ -730,7 +730,8 @@ if($_POST['synonym'] == 'import' && $_POST['method'] == 'pubchem'){
 	$cid = $json->InformationList->Information[0]->CID;
 	$source = 'PubChem';
 	if(empty($data)){
-		echo '<div class="alert alert-info">No data found!</div>';
+		$response["error"] = 'No data found';
+		echo json_encode($response);
 		return;
 	}
 	$i=0;
@@ -750,11 +751,11 @@ if($_POST['synonym'] == 'import' && $_POST['method'] == 'pubchem'){
 		}
 	}
 	if($r){
-		echo '<div class="alert alert-success"><strong>'.$i.' </strong>synonym(s) imported!</div>';
+		$response["success"] = $i.' synonym(s) imported';
 	}else{
-		echo '<div class="alert alert-info">Data already in sync!</div>';
+		$response["error"] = 'Data already in sync';
 	}
-	
+	echo json_encode($response);
 	return;
 }
 
@@ -766,19 +767,19 @@ if($_POST['synonym'] == 'add'){
 	$ing = base64_decode($_POST['ing']);
 
 	if(empty($synonym)){
-		$response["error"] = '<strong>Error:</strong> Synonym is required!';
+		$response["error"] = 'Synonym name is required';
 		echo json_encode($response);
 		return;
 	}
 	
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT synonym FROM synonyms WHERE synonym = '$synonym' AND ing = '$ing'"))){
-		$response["error"] = '<strong>Error: </strong>'.$synonym.' already exists!';
+		$response["error"] = $synonym.' already exists!';
 		echo json_encode($response);
 		return;
 	}
 	
 	if(mysqli_query($conn, "INSERT INTO synonyms (synonym,source,ing) VALUES ('$synonym','$source','$ing')")){
-		$response["success"] = '<strong>'.$synonym.'</strong> added to the list!';
+		$response["success"] = $synonym.' added to the list!';
 		echo json_encode($response);
 	}
 	
@@ -1382,7 +1383,7 @@ if($_POST['composition'] == 'add'){
 	
 	if($_POST['addToIng'] == 'true'){
 		if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$allgName'")))){
-			mysqli_query($conn, "INSERT INTO ingredients (name,cas) VALUES ('$allgName','$allgCAS')");		
+			mysqli_query($conn, "INSERT INTO ingredients (name,cas,einecs) VALUES ('$allgName','$allgCAS','$allgEC')");		
 		}
 	}
 
@@ -1502,7 +1503,6 @@ if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'general'){
 	$einecs = preg_replace('/\s+/', '', trim(mysqli_real_escape_string($conn, $_POST["einecs"])));
 	$reach = preg_replace('/\s+/', '', trim(mysqli_real_escape_string($conn, $_POST["reach"])));
 	$fema = preg_replace('/\s+/', '', trim(mysqli_real_escape_string($conn, $_POST["fema"])));
-	if($_POST["isAllergen"] == 'true') { $allergen = '1'; }else{ $allergen = '0'; }
 	$purity = validateInput($_POST["purity"]);
 	$profile = mysqli_real_escape_string($conn, $_POST["profile"]);
 	$type = mysqli_real_escape_string($conn, $_POST["type"]);	
@@ -1515,7 +1515,7 @@ if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'general'){
 //	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '".$_POST['name']."'"))){
 	if(empty($_POST['name'])){
 	
-		$query = "UPDATE ingredients SET INCI = '$INCI',cas = '$cas',solvent='".$_POST["solvent"]."', einecs = '$einecs', reach = '$reach',FEMA = '$fema',allergen='$allergen',purity='$purity',profile='$profile',type = '$type',strength = '$strength', category='$category',physical_state = '$physical_state',odor = '$odor',notes = '$notes' WHERE name='$ing'";
+		$query = "UPDATE ingredients SET INCI = '$INCI',cas = '$cas',solvent='".$_POST["solvent"]."', einecs = '$einecs', reach = '$reach',FEMA = '$fema',purity='$purity',profile='$profile',type = '$type',strength = '$strength', category='$category',physical_state = '$physical_state',odor = '$odor',notes = '$notes' WHERE name='$ing'";
 		
 		if(mysqli_query($conn, $query)){
 			$response["success"] = 'General details have been updated!';
@@ -1542,41 +1542,68 @@ if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'general'){
 }
 
 
-if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'usage_limits'){
-	$ingID = (int)$_POST['ingID'];
-	if($_POST['flavor_use'] == 'true') { $flavor_use = '1'; }else{ $flavor_use = '0'; }
-	if($_POST['noUsageLimit'] == 'true'){ $noUsageLimit = '1'; }else{ $noUsageLimit = '0'; }
-	if($_POST['byPassIFRA'] == 'true'){ $byPassIFRA = '1'; }else{ $byPassIFRA = '0'; }
-	$usage_type = mysqli_real_escape_string($conn, $_POST['usage_type']);
-	$cat1 = validateInput($_POST['cat1'] ?: '100');
-	$cat2 = validateInput($_POST['cat2'] ?: '100');
-	$cat3 = validateInput($_POST['cat3'] ?: '100');
-	$cat4 = validateInput($_POST['cat4'] ?: '100');
-	$cat5A = validateInput($_POST['cat5A'] ?: '100');
-	$cat5B = validateInput($_POST['cat5B'] ?: '100');
-	$cat5C = validateInput($_POST['cat5C'] ?: '100');
-	$cat5D = validateInput($_POST['cat5D'] ?: '100');
-	$cat6 = validateInput($_POST['cat6'] ?: '100');
-	$cat7A = validateInput($_POST['cat7A'] ?: '100');
-	$cat7B = validateInput($_POST['cat7B'] ?: '100');
-	$cat8 = validateInput($_POST['cat8'] ?: '100');
-	$cat9 = validateInput($_POST['cat9'] ?: '100');
-	$cat10A = validateInput($_POST['cat10A'] ?: '100');
-	$cat10B = validateInput($_POST['cat10B'] ?: '100');
-	$cat11A = validateInput($_POST['cat11A'] ?: '100');
-	$cat11B = validateInput($_POST['cat11B'] ?: '100');
-	$cat12 = validateInput($_POST['cat12'] ?: '100');
-	
-	$query = "UPDATE ingredients SET byPassIFRA = '$byPassIFRA', noUsageLimit = '$noUsageLimit',flavor_use='$flavor_use',usage_type = '$usage_type', cat1 = '$cat1', cat2 = '$cat2', cat3 = '$cat3', cat4 = '$cat4', cat5A = '$cat5A', cat5B = '$cat5B', cat5C = '$cat5C', cat5D = '$cat5D', cat6 = '$cat6', cat7A = '$cat7A', cat7B = '$cat7B', cat8 = '$cat8', cat9 = '$cat9', cat10A = '$cat10A', cat10B = '$cat10B', cat11A = '$cat11A', cat11B = '$cat11B', cat12 = '$cat12' WHERE id='$ingID'";
-	if(mysqli_query($conn, $query)){
-		$response["success"] = 'Usage limits has been updated!';
-	}else{
-			
-		$response["error"] = 'Something went wrong '.mysqli_error($conn);
-	}	
-	echo json_encode($response);
-	return;
+if ($_POST['manage'] === 'ingredient' && $_POST['tab'] === 'usage_limits') {
+    $ingID = (int) $_POST['ingID'];
+
+    $flavor_use = ($_POST['flavor_use'] === 'true') ? 1 : 0;
+    $noUsageLimit = ($_POST['noUsageLimit'] === 'true') ? 1 : 0;
+    $byPassIFRA = ($_POST['byPassIFRA'] === 'true') ? 1 : 0;
+    $allergen = ($_POST['isAllergen'] === 'true') ? 1 : 0;
+
+    $usage_type = mysqli_real_escape_string($conn, trim($_POST['usage_type']));
+
+    $categories = [
+        'cat1' => (float) $_POST['cat1'],
+        'cat2' => (float) $_POST['cat2'],
+        'cat3' => (float) $_POST['cat3'],
+        'cat4' => (float) $_POST['cat4'],
+        'cat5A' => (float) $_POST['cat5A'],
+        'cat5B' => (float) $_POST['cat5B'],
+        'cat5C' => (float) $_POST['cat5C'],
+        'cat5D' => (float) $_POST['cat5D'],
+        'cat6' => (float) $_POST['cat6'],
+        'cat7A' => (float) $_POST['cat7A'],
+        'cat7B' => (float) $_POST['cat7B'],
+        'cat8' => (float) $_POST['cat8'],
+        'cat9' => (float) $_POST['cat9'],
+        'cat10A' => (float) $_POST['cat10A'],
+        'cat10B' => (float) $_POST['cat10B'],
+        'cat11A' => (float) $_POST['cat11A'],
+        'cat11B' => (float) $_POST['cat11B'],
+        'cat12' => (float) $_POST['cat12'],
+    ];
+
+    $stmt = $conn->prepare(
+        "UPDATE ingredients SET byPassIFRA = ?, noUsageLimit = ?, flavor_use = ?, 
+        usage_type = ?, allergen = ?, cat1 = ?, cat2 = ?, cat3 = ?, cat4 = ?, 
+        cat5A = ?, cat5B = ?, cat5C = ?, cat5D = ?, cat6 = ?, cat7A = ?, cat7B = ?, 
+        cat8 = ?, cat9 = ?, cat10A = ?, cat10B = ?, cat11A = ?, cat11B = ?, 
+        cat12 = ? WHERE id = ?"
+    );
+
+    $stmt->bind_param(
+        'iiisiddddddddddddddddddi',
+        $byPassIFRA, $noUsageLimit, $flavor_use, $usage_type, $allergen, 
+        $categories['cat1'], $categories['cat2'], $categories['cat3'], 
+        $categories['cat4'], $categories['cat5A'], $categories['cat5B'], 
+        $categories['cat5C'], $categories['cat5D'], $categories['cat6'], 
+        $categories['cat7A'], $categories['cat7B'], $categories['cat8'], 
+        $categories['cat9'], $categories['cat10A'], $categories['cat10B'], 
+        $categories['cat11A'], $categories['cat11B'], $categories['cat12'], $ingID
+    );
+
+    if ($stmt->execute()) {
+        $response["success"] = 'Usage limits have been updated!';
+    } else {
+        $response["error"] = 'Something went wrong: ' . $stmt->error;
+    }
+
+    $stmt->close();
+
+    echo json_encode($response);
+    return;
 }
+
 
 if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'tech_data'){
 	$ingID = (int)$_POST['ingID'];

@@ -295,13 +295,15 @@ function formatSuppliersSelection (supplierData) {
 			},
 			dataType: 'json',
 			success: function (data) {
-				if(data.success) {
-					var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+				if(data.success){
+					$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+					$('.toast-header').removeClass().addClass('toast-header alert-success');
 					reload_data();
-				} else {
-					var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				}else if(data.error){
+					$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+					$('.toast-header').removeClass().addClass('toast-header alert-danger');
 				}
-				$('#msg').html(msg);
+				$('.toast').toast('show');
 			}
 	  	});
 	});

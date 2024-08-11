@@ -140,9 +140,11 @@ body {
                 	<a href="#pubChem" id="pubChem_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-atom mx-2"></i>Pub Chem</a>
                 </li>
 			<?php } ?>  
-			<li class="nav-item" role="presentation">
+			<!--
+            <li class="nav-item" role="presentation">
             	<a href="#privacy" id="privacy_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-user-secret mx-2"></i>Privacy</a>
-                </li>   
+             </li>
+             -->
 			<li class="nav-item" role="presentation">
             	<a href="#whereUsed" id="whereUsed_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-random mx-2"></i>Where used?</a>
             </li>
@@ -276,7 +278,7 @@ body {
 			</div>
 			<div class="modal-body">
 				<div id="clone_msg"></div>
-				Name
+				<label for="cloneIngName" class="form-label">Name</label>
 				<input class="form-control" name="cloneIngName" id="cloneIngName" type="text" value="" />            
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -297,7 +299,7 @@ body {
 			<div class="modal-body">
             	<div id="warn"><div class="alert alert-warning"><strong>Warning:</strong> If you rename the ingredient, will affect any formulas that using it as well. Please refer to <strong>Where Used</strong> section to get a list of formulas if any.</div></div>
 				<div id="rename_msg"></div>
-				New name
+				<label for="renameIngName" class="form-label">New name</label>
 				<input class="form-control" name="renameIngName" id="renameIngName" type="text" value="" />            
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -339,7 +341,7 @@ body {
 			<div class="modal-body">
                 <div id="warn">
                 <div class="alert alert-warning"><strong><i class="fa-solid fa-triangle-exclamation mx-2"></i>TECH PREVIEW: This feature its under development and in preview state, use with caution.</strong></div>
-				<div id="sds_res"></div>                               
+				<div id="doc_res"></div>                               
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" id="dis-genDOC" data-bs-dismiss="modal">Close</button>
 					<input type="submit" name="button" class="btn btn-primary" id="generateDOC" value="Generate">
@@ -354,7 +356,7 @@ body {
 <script>
 
 $(document).ready(function() {
-	$('[rel=tipsy]').tooltip({placement: 'auto'});
+	$('[rel=tip]').tooltip({placement: 'auto'});
 
 	$('#general').on('click', '[id*=saveGeneral]', function () {
 		<?php if(empty($ing['id'])){ ?>
@@ -366,7 +368,7 @@ $(document).ready(function() {
    			}
 		<?php } ?>
 		$.ajax({ 
-			url: 'update_data.php', 
+			url: '/pages/update_data.php', 
 			type: 'POST',
 			data: {
 				manage: 'ingredient',

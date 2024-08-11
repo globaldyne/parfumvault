@@ -33,7 +33,7 @@ $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE n
     <input name="INCI" type="text" class="form-control" id="INCI" value="<?php echo htmlspecialchars($ing['INCI']); ?>" />
   </div>
   <div class="mt-3 col-md-6">
-    <label for="cas" class="form-label">CAS</label><i class="fa-solid fa-circle-info mx-2 pv_point_gen" rel="tipsy" title="If your material contains multiple CAS, then use Mixture or Blend instead."></i>
+    <label for="cas" class="form-label">CAS</label><i class="fa-solid fa-circle-info mx-2 pv_point_gen" rel="tip" title="If your material contains multiple CAS, then use Mixture or Blend instead."></i>
     <input name="cas" type="text" class="form-control" id="cas" value="<?php echo $ing['cas']; ?>">
     
   </div>
@@ -119,10 +119,6 @@ $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE n
   	<label for="odor" class="form-label">Odor</label>
     <input name="odor" id="odor" type="text" class="form-control" value="<?php echo $ing['odor']; ?>"/>
   </div>
-  <div class="mt-3 col-12">
-      <label class="form-check-label" for="isAllergen" >To Declare</label>
-      <input name="isAllergen" type="checkbox" id="isAllergen" value="1" <?php if($ing['allergen'] == '1'){; ?> checked="checked"  <?php } ?>/><i class="fa-solid fa-circle-info mx-2 pv_point_gen" rel="tipsy" title="If enabled, ingredient name will be printed in the box label."></i>
-  </div>
 
   <div class="mt-3 col-12">
   	<label for="notes" class="form-label">Notes</label>
@@ -138,17 +134,17 @@ $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE n
         
 <script>
 $(document).ready(function() {
-	$('[rel=tipsy]').tooltip({placement: 'auto'});
+	$('[rel=tip]').tooltip({placement: 'auto'});
 
 	$('#general').on('click', '[id*=saveGeneral]', function () {
 		<?php if(empty($ing['id'])){ ?>
 			if($.trim($("#name").val()) == ''){
-				$('#msg_general').html('<div class="alert alert-danger mx-2"><strong>Error:</strong>Name is required</div>');
+				$('#msg_general').html('<div class="alert alert-danger mx-2"><strong>Name is required</strong></div>');
 				return;
    			}
 		<?php } ?>
 		$.ajax({ 
-			url: 'update_data.php', 
+			url: '/pages/update_data.php', 
 			type: 'POST',
 			data: {
 				manage: 'ingredient',
@@ -161,7 +157,6 @@ $(document).ready(function() {
 				einecs: $("#einecs").val(),
 				reach: $("#reach").val(),
 				fema: $("#fema").val(),
-				isAllergen: $("#isAllergen").is(':checked'),
 				purity: $("#purity").val(),
 				solvent: $("#solvent").val(),
 				profile: $("#profile").val(),					
