@@ -41,7 +41,6 @@ ENV LANG en_GB.UTF-8
 
 ADD . /html
 
-RUN git log -1 --format="%h" > /html/COMMIT
 
 ADD scripts/php-fpm/www.conf /etc/php-fpm.d/www.conf
 ADD scripts/php-fpm/php-fpm.conf /etc/php-fpm.conf
@@ -52,6 +51,7 @@ ADD scripts/reset_pass.sh /usr/bin/reset_pass.sh
 RUN chmod +x /usr/bin/entrypoint.sh
 RUN chmod +x /usr/bin/reset_pass.sh
 
+RUN git log -1 --format="%h" > /html/COMMIT
 RUN rm -rf /html/.git /html/.github
 RUN microdnf -y remove git
 RUN microdnf clean all && rm -rf /var/cache/yum/*
