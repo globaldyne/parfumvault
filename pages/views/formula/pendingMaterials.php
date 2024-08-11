@@ -28,7 +28,8 @@ require_once(__ROOT__.'/inc/opendb.php');
     </table>
 </div>
                 
-<script type="text/javascript">
+<script>
+
 $(document).ready(function() {
 		var tdDataM = $("#tdDataM").DataTable( {
 		columnDefs: [
@@ -53,33 +54,33 @@ $(document).ready(function() {
 		},
     	ajax: {	url: "/core/list_pending_materials_data.php" },
 		columns: [
-			   { data : "formula", title: "Formula", render: formulaName },
+			   { data : "formula", title: "Formula", render: formulaName, name: "formula" },
     		   { data : "ingredient", title: "Ingredient", render: ingredientName },
     		   { data : "cas", title: "CAS#", render: ingredientCAS },
 			   { data : "quantity", title: "Quantity required"},
 			   { data : "inventory.stock", title: "Quantity in stock", render: stock},
-			   
 			   { data : null, title: "Supplier(s)", render: iSuppliers}
 		],
+		rowsGroup: [
+      		'formula:name'
+    	],
         order: [[ 0, "asc" ]],
 		lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
         pageLength: 20,
-		displayLength: 20,
-			drawCallback: function( settings ) {
-    	},
+		displayLength: 20
 	});
 	
 	function formulaName(data, type, row){
 		return row.formula;
-	}
+	};
 	
 	function ingredientName(data, type, row){
 		return row.ingredient;
-	}
+	};
 	
 	function ingredientCAS(data, type, row){
 		return row.cas;
-	}
+	};
 	
 	
 	function stock(data, type, row){
@@ -95,7 +96,8 @@ $(document).ready(function() {
 		}
 		
 		return st;
-	}
+	};
+	
 	function iSuppliers(data, type, row){
 		if(row.supplier){
 			data = '<div class="btn-group"><button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-store mx-2"></i><span class="badge badge-light">' + row.supplier.length + '</span></button><div class="dropdown-menu">';
@@ -109,7 +111,7 @@ $(document).ready(function() {
 			data = "N/A";
 		}
 		return data;
-	}
+	};
 
 	$("#exportCSV").click(() => {
 		$("#tdDataM").DataTable().button(0).trigger();

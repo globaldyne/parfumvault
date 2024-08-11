@@ -16,7 +16,7 @@ tr.noBorder td {
 .table th,
 .table td {
   padding: 0.2rem;
-  vertical-align: top;
+  vertical-align: middle;
   border-top: 1px solid #e3e6f0;
 }
 
@@ -273,7 +273,7 @@ tr.strikeout td:before {
     border-top-right-radius: 0;
     border-bottom-right-radius: 3px;
     border-bottom-left-radius: 3px;
-    padding: 10px 10px 10px 150px;
+    padding: 10px 250px 10px 250px;
 	box-sizing: border-box;
 }
 

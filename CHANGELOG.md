@@ -1,4 +1,24 @@
 # CHANGELOG
+### Version 10.9
+- Sys update check improvements
+- Dashboard page updates
+- Set datatable entries to the middle
+- Sell formula PDF export updates
+- Fix a bug causing json import for ingredients to fail
+- Include EINECS when adding ingredient entry from compositions
+- Compostion page updates and improvements
+- Hide privacy tab for ingredients as is not yet utilised
+- Tech data page updates
+- Update synonyms backend to json format
+- If Prohibition is selected in ingredient usage and limits then the usage values set to 0
+- Rewrite backend for usage and limits update
+- To Declare option is now moved under Udage and Limits section for ingredients
+- Fix materials not updating corrrectly when added in the cart
+- Added CSV export for cart ingredients
+- Added a toast message for the cart actions
+- Added a toast message when adding an ingredient to the cart in Make Formula
+- CSS clean-up
+
 ### Version 10.8
 - Fix API key update not returning error in correct format
 - Rewrite API page

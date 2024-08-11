@@ -25,10 +25,9 @@ RUN microdnf --setopt=tsflags=nodocs -y install \
 	openssl \
 	mysql \
 	ncurses \
-	nginx
+	nginx 
 
 
-RUN microdnf clean all && rm -rf /var/cache/yum/*
 
 RUN sed -i \
 	-e 's~^;date.timezone =$~date.timezone = UTC~g' \
@@ -40,6 +39,9 @@ RUN sed -i \
 ENV LANG en_GB.UTF-8
 
 ADD . /html
+RUN if [ -f .git/COMMIT_EDITMSG ]; then \
+      cat .git/COMMIT_EDITMSG | sed -n 's/^\[\(.*\)\].*/\[\1\]/p' > /html/COMMIT; \
+    fi
 
 ADD scripts/php-fpm/www.conf /etc/php-fpm.d/www.conf
 ADD scripts/php-fpm/php-fpm.conf /etc/php-fpm.conf
@@ -50,7 +52,9 @@ ADD scripts/reset_pass.sh /usr/bin/reset_pass.sh
 RUN chmod +x /usr/bin/entrypoint.sh
 RUN chmod +x /usr/bin/reset_pass.sh
 
+
 RUN rm -rf /html/.git /html/.github
+RUN microdnf clean all && rm -rf /var/cache/yum/*
 
 WORKDIR /html
 STOPSIGNAL SIGQUIT

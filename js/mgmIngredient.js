@@ -201,12 +201,12 @@ $('#cloneIng').on('click', '[id*=cloneME]', function () {
 
 
 $('#genDOC').on('click', '[id*=dis-genDOC]', function () {
-	$("#sds_res").html('');
+	$("#doc_res").html('');
 });
 	
 //Generate ing sds
 $('#genDOC').on('click', '[id*=generateDOC]', function () {
-	$("#sds_res").html('<div class="alert alert-info"><img src="/img/loading.gif"/> Please wait, we generating your document</div>');
+	$("#doc_res").html('<div class="alert alert-info"><img src="/img/loading.gif"/> Please wait, we generating your document</div>');
 
 	$.ajax({ 
 		url: '/core/genDoc.php', 
@@ -226,7 +226,7 @@ $('#genDOC').on('click', '[id*=generateDOC]', function () {
 			}else if(data.error){
 				msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 			}
-			$('#sds_res').html(msg);
+			$('#doc_res').html(msg);
 		}
 	});
 });
