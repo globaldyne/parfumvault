@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 10.9
+- Set datatable entries to the middle
 - Sell formula PDF export updates
 - Fix a bug causing json import for ingredients to fail
 - Include EINECS when adding ingredient entry from compositions
