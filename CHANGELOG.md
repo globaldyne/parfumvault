@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 11.0
+
 ### Version 10.9
 - Sys update check improvements
 - Dashboard page updates
