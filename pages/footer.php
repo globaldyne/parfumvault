@@ -1,11 +1,25 @@
 <?php 
 if (!defined('pvault_panel')){ die('Not Found');}
-if(!$commit = file_get_contents(__ROOT__.'/COMMIT')){
-	
-	if(!$commit = explode('-',file_get_contents(__ROOT__.'/.git/COMMIT_EDITMSG'))[0]){
-		$commit = getenv('GIT_COMMIT_ID');
-	}
+$commitFile = __ROOT__ . '/COMMIT';
+$gitEditMsgFile = __ROOT__ . '/.git/COMMIT_EDITMSG';
+
+$commit = @file_get_contents($commitFile);
+
+if ($commit === false || empty(trim($commit))) {
+    $gitEditMsg = @file_get_contents($gitEditMsgFile);
+
+    if ($gitEditMsg !== false && !empty(trim($gitEditMsg))) {
+        $commitParts = explode('-', $gitEditMsg);
+        $commit = trim($commitParts[0]);
+    } else {
+        $commit = getenv('GIT_COMMIT_ID');
+    }
 }
+
+if (empty($commit)) {
+    $commit = 'unknown'; // fallback if commit is not found in any source
+}
+
 	
 ?>
 

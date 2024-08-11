@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 10.9
+- Fix a bug causing json import for ingredients to fail
 - Include EINECS when adding ingredient entry from compositions
 - Compostion page updates and improvements
 - Hide privacy tab for ingredients as is not yet utilised
