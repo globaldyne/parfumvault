@@ -25,8 +25,7 @@ RUN microdnf --setopt=tsflags=nodocs -y install \
 	openssl \
 	mysql \
 	ncurses \
-	nginx \
-	git
+	nginx 
 
 
 
@@ -51,9 +50,9 @@ ADD scripts/reset_pass.sh /usr/bin/reset_pass.sh
 RUN chmod +x /usr/bin/entrypoint.sh
 RUN chmod +x /usr/bin/reset_pass.sh
 
-RUN git log -1 --format="%h" > /html/COMMIT
+RUN cat .git/COMMIT_EDITMSG | sed -n 's/^\[\(.*\)\].*/\[\1\]/p'  > /html/COMMIT
+
 RUN rm -rf /html/.git /html/.github
-RUN microdnf -y remove git
 RUN microdnf clean all && rm -rf /var/cache/yum/*
 
 WORKDIR /html
