@@ -99,7 +99,7 @@ while($cats_res = mysqli_fetch_array($cats_q)){
         </div>
     
         <div class="form-group col-md-6">
-          <label for="bs_theme">Theme</label><a href="#" class="ml-2 fas fa-question-circle" rel="tip" title="Requires a page refresh for the changes to take effect"></a>
+          <label for="bs_theme">Theme</label><a href="#" class="ml-2 fas fa-question-circle" rel="tip" title="A page refresh may required for the changes to take effect fully"></a>
           <select name="bs_theme" id="bs_theme" class="form-control">
             <option value="light" <?php if($settings['bs_theme']=="light") echo 'selected="selected"'; ?> >Light</option>
             <option value="dark" <?php if($settings['bs_theme']=="dark") echo 'selected="selected"'; ?> >Dark</option>
@@ -197,6 +197,7 @@ $(document).ready(function() {
 			if(data.success){
 				$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
 				$('.toast-header').removeClass().addClass('toast-header alert-success');
+				document.documentElement.setAttribute('data-bs-theme',$("#bs_theme").val())
 			} else if(data.error) {
 				$('#toast-title').html('<i class="fa-solid fa-warning mr-2"></i>' + data.error);
 				$('.toast-header').removeClass().addClass('toast-header alert-danger');
