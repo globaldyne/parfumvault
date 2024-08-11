@@ -16,7 +16,7 @@ tr.noBorder td {
 .table th,
 .table td {
   padding: 0.2rem;
-  vertical-align: initial;
+  vertical-align: middle;
   border-top: 1px solid #e3e6f0;
 }
 
