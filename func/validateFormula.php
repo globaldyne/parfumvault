@@ -25,7 +25,8 @@ function validateFormula($fid, $bottle, $new_conc, $mg, $defCatClass, $qStep) {
         $ing = mysqli_fetch_array($ingredient_query);
         $cas = $ing['cas'];
         $limitIFRA = searchIFRA($cas, $ingredient_name, null, $defCatClass);
-        $limit = explode(' - ', $limitIFRA)[0];
+        //$limit = explode(' - ', $limitIFRA)[0];
+		$limit = searchIFRA($ing_q['cas'],$formula['ingredient'],null,$defCatClass)['val'];
 
         // Calculate new quantity and concentration
         $new_quantity = $formula['quantity'] / $mg * $new_conc;

@@ -192,11 +192,13 @@ foreach ($form as $formula){
 
 	}
 
-	$u = explode(' - ',searchIFRA($ing_q['cas'],$formula['ingredient'],null,$defCatClass));
+	$u = searchIFRA($ing_q['cas'],$formula['ingredient'],null,$defCatClass);
+	//$u = explode(' - ',searchIFRA($ing_q['cas'],$formula['ingredient'],null,$defCatClass));
 	
-	if(($u['0'] && $ing_q['byPassIFRA'] == 0)){
-		$r['usage_limit'] = (float)number_format((float)$u['0'], $settings['qStep']);
-		$r['usage_restriction'] = (string)$u['1'] ?: 'N/A';
+	if(($u['val'] || $u['type'] && $ing_q['byPassIFRA'] == 0)){
+		$r['usage_limit'] = (float)number_format((float)$u['val'], $settings['qStep']);
+		$r['usage_restriction'] = (string)$u['risk'] ?: 'N/A';
+		$r['usage_restriction_type'] = (string)$u['type'] ?: 'N/A';
 		$r['usage_regulator'] = (string)"IFRA";
 	}else{
 		$r['usage_limit'] = number_format((float)$ing_q["$defCatClass"], $settings['qStep']) ?: 100;

@@ -219,7 +219,7 @@ $(document).ready(function() {
 		  checkUsage('td:eq(5)', data['usage_regulator'], data['usage_limit'], data['concentration'], data['usage_restriction']);
 		
 		  // Check ingredient classification
-		  if (data.ingredient.classification == 4 || data['usage_limit'] == 0) {
+		  if (data.ingredient.classification == 4 || data['usage_restriction_type'] == 'PROHIBITION') {
 			$(row).find('td').not('td:eq(7),td:eq(8),td:eq(9),:eq(10)').addClass('bg-banned text-light').append('<i rel="tip" title="This material is prohibited" class="mx-2 pv_point_gen fas fa-ban"></i>');
 		  }
 		
