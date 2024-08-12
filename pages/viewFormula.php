@@ -195,7 +195,7 @@ $(document).ready(function() {
 		
 		  const checkUsage = (selector, regulator, limit, concentration, restriction) => {
 			if (regulator === "IFRA" && parseFloat(limit) < parseFloat(concentration)) {
-			  setAlertClassAndIcon(selector, 'alert-danger', `Max usage: ${limit}% IFRA Regulated`);
+			  setAlertClassAndIcon(selector, 'alert-danger', `Max usage: ${limit}% IFRA Regulated,  ${restriction}`);
 			} else if (regulator === "PV" && parseFloat(limit) < parseFloat(concentration)) {
 			  switch (restriction) {
 				case 1:

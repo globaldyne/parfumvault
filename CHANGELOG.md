@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 11.0
+- Treat empty IFRA Library values (PROHIBITION, SPECIFICATION) as 0% allowed
 - IFRA structure images import improvements
 
 ### Version 10.9

@@ -22,7 +22,11 @@ function searchIFRA($cas, $name, $get,  $defCatClass ){
 				if(!$res["$defCatClass"]){
 					return $res['type'].' - '.$res['risk'];
 				}else{
-					return $res["$defCatClass"].' - '.$res['risk'];
+					if ($res["$defCatClass"] === 0 || $res["$defCatClass"] === null || !is_numeric($res["$defCatClass"])) {
+						return '0'.' - '.$res['risk'];
+    				}else{
+						return $res["$defCatClass"].' - '.$res['risk'];
+					}
 				}
 			}
 		}

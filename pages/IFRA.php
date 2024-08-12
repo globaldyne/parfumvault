@@ -118,7 +118,7 @@ require_once(__ROOT__.'/func/php-settings.php');
             
             <div id="overwrite-msg">
                 <div class="dropdown-divider"></div>
-            	<div class="col-sm col-sm-10 text-xs-center alert alert-warning">
+            	<div class="col-sm col-sm-auto text-xs-center alert alert-warning">
                 	<p class="alert-link"><strong>IMPORTANT:</strong></p>
                 	<p class="alert-link">This operation will wipe out any data already in your IFRA Library, so please make sure the file you uploading is in the right format and have taken a <a href="/pages/operations.php?do=backupDB">backup</a> before.</p>
                 </div>
