@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 11.0
+- Fix a bug preventing adding new ingredients
 - Treat empty IFRA Library values (PROHIBITION, SPECIFICATION) as 0% allowed
 - IFRA structure images import improvements
 
