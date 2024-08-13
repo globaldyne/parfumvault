@@ -199,14 +199,17 @@ $(document).ready(function() {
 			} else if (regulator === "PV" && parseFloat(limit) < parseFloat(concentration)) {
 			  switch (restriction) {
 				case 1:
-				  setAlertClassAndIcon(selector, 'alert-info', `Recommended usage: ${limit}%`);
+				  setAlertClassAndIcon(selector, 'alert-info', `Recommended usage: ${limit}% PV Regulated`);
 				  break;
 				case 2:
-				  setAlertClassAndIcon(selector, 'alert-danger', `Restricted usage: ${limit}%`);
+				  setAlertClassAndIcon(selector, 'alert-danger', `Restricted usage: ${limit}% PV Regulated`);
 				  break;
 				case 3:
-				  setAlertClassAndIcon(selector, 'alert-warning', `Specification: ${limit}%`);
+				  setAlertClassAndIcon(selector, 'alert-warning', `Specification: ${limit}% PV Regulated`);
 				  break;
+				case 4:
+				  setAlertClassAndIcon(selector, 'alert-warning', `Prohibited or Banned - PV Regulated`);
+				  break;  
 				default:
 				  setAlertClassAndIcon(selector, 'alert-success', '');
 			  }

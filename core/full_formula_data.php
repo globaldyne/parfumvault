@@ -121,6 +121,7 @@ while ($formula = mysqli_fetch_array($formula_q)){
 foreach ($form as $formula){
 	
 	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT id, name, cas, $defCatClass, profile, odor, category, physical_state,usage_type AS classification, type, byPassIFRA FROM ingredients WHERE name = '".$formula['ingredient']."'"));
+	/*
 	$reps = mysqli_query($conn,"SELECT ing_rep_name FROM ingReplacements WHERE ing_name = '".$formula['ingredient']."'");
 	if (mysqli_num_rows($reps)==0) { 
 		$reps = mysqli_query($conn,"SELECT ing_name FROM ingReplacements WHERE ing_rep_name = '".$formula['ingredient']."'");
@@ -128,7 +129,7 @@ foreach ($form as $formula){
 	while($replacements = mysqli_fetch_array($reps)){
 		$replacement[] = $replacements;
 	}
-	
+	*/
 	$totalcontainsOthers = mysqli_num_rows(mysqli_query($conn, "SELECT name,$defPercentage,cas FROM ingredient_compounds WHERE ing = '".$formula['ingredient']."'"));
 	
 	
@@ -203,6 +204,18 @@ foreach ($form as $formula){
 	}else{
 		$r['usage_limit'] = number_format((float)$ing_q["$defCatClass"], $settings['qStep']) ?: 100;
 		$r['usage_restriction'] = (int)$ing_q['classification'];
+		
+		if ($ing_q['classification'] == 1) {
+			$r['usage_restriction_type'] = 'RECOMMENDATION';
+		} elseif ($ing_q['classification'] == 2) {
+			$r['usage_restriction_type'] = 'RESTRICTION';
+		} elseif ($ing_q['classification'] == 3) {
+			$r['usage_restriction_type'] = 'SPECIFICATION';
+		} elseif ($ing_q['classification'] == 4) {
+			$r['usage_restriction_type'] = 'PROHIBITION';
+		} else {
+			$r['usage_restriction_type'] = 'RECOMMENDATION';
+		}
 		$r['usage_regulator'] = (string)"PV";
 		$r['ingredient']['classification'] = (int)$ing_q['classification'] ?: 1;
 	}
