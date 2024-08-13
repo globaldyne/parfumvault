@@ -314,14 +314,17 @@ $(document).ready(function() {
 			} else if (regulator === "PV" && parseFloat(limit) < parseFloat(concentration)) {
 			  switch (restriction) {
 				case 1:
-				  setAlertClassAndIcon(selector, 'alert-info', `Recommended usage: ${limit}%`);
+				  setAlertClassAndIcon(selector, 'alert-info', `Recommended usage: ${limit}% <p>PV Regulated</p>`);
 				  break;
 				case 2:
-				  setAlertClassAndIcon(selector, 'alert-danger', `Restricted usage: ${limit}%`);
+				  setAlertClassAndIcon(selector, 'alert-danger', `Restricted usage: ${limit}% <p>PV Regulated</p>`);
 				  break;
 				case 3:
-				  setAlertClassAndIcon(selector, 'alert-warning', `Specification: ${limit}%`);
+				  setAlertClassAndIcon(selector, 'alert-warning', `Specification: ${limit}% <p>PV Regulated</p>`);
 				  break;
+				case 4:
+				  setAlertClassAndIcon(selector, 'alert-warning', `Prohibited or Banned - <p>PV Regulated</p>`);
+				  break; 
 				default:
 				  setAlertClassAndIcon(selector, 'alert-success', '');
 			  }
@@ -334,7 +337,7 @@ $(document).ready(function() {
 		  checkUsage('td:eq(3)', data['usage_regulator'], data['usage_limit'], data['concentration'], data['usage_restriction']);
 		
 		  // Check ingredient classification
-		  if (data.ingredient.classification == 4) {
+		  if (data.ingredient.classification == 4 || data['usage_restriction_type'] == 'PROHIBITION') {
 			$(row).find('td').not('td:eq(5)').addClass('bg-banned text-light').append('<i rel="tip" title="This material is prohibited" class="mx-2 pv_point_gen fas fa-ban"></i>');
 		  }
 		
