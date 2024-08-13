@@ -174,9 +174,9 @@ if($_POST['ingredient_wipe'] == 'true'){
 
 
 //UPDATE CAS IFRA ENTRY
-if($_GET['IFRA'] == 'edit' && $_POST['value'] && $_GET['type'] == 'CAS'){
-	
-	if(mysqli_query($conn, "UPDATE IFRALibrary SET cas = '".$_POST['value']."' WHERE id = '".$_POST['pk']."'")){
+if($_REQUEST['IFRA'] == 'edit'){
+	$type = $_REQUEST['type'];
+	if(mysqli_query($conn, "UPDATE IFRALibrary SET $type = '".$_REQUEST['value']."' WHERE id = '".$_REQUEST['pk']."'")){
 		$response["success"] = 'IFRA entry updated';
 	}else{
 		$response["error"] = 'Something went wrong '.mysqli_error($conn);

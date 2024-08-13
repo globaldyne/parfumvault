@@ -195,20 +195,20 @@ $(document).ready(function() {
 		
 		  const checkUsage = (selector, regulator, limit, concentration, restriction) => {
 			if (regulator === "IFRA" && parseFloat(limit) < parseFloat(concentration)) {
-			  setAlertClassAndIcon(selector, 'alert-danger', `Max usage: ${limit}% IFRA Regulated,  ${restriction}`);
+			  setAlertClassAndIcon(selector, 'alert-danger', `Max usage: ${limit}% <p>IFRA Regulated</p> ${restriction}`);
 			} else if (regulator === "PV" && parseFloat(limit) < parseFloat(concentration)) {
 			  switch (restriction) {
 				case 1:
-				  setAlertClassAndIcon(selector, 'alert-info', `Recommended usage: ${limit}% PV Regulated`);
+				  setAlertClassAndIcon(selector, 'alert-info', `Recommended usage: ${limit}% <p>PV Regulated</p>`);
 				  break;
 				case 2:
-				  setAlertClassAndIcon(selector, 'alert-danger', `Restricted usage: ${limit}% PV Regulated`);
+				  setAlertClassAndIcon(selector, 'alert-danger', `Restricted usage: ${limit}% <p>PV Regulated</p>`);
 				  break;
 				case 3:
-				  setAlertClassAndIcon(selector, 'alert-warning', `Specification: ${limit}% PV Regulated`);
+				  setAlertClassAndIcon(selector, 'alert-warning', `Specification: ${limit}% <p>PV Regulated</p>`);
 				  break;
 				case 4:
-				  setAlertClassAndIcon(selector, 'alert-warning', `Prohibited or Banned - PV Regulated`);
+				  setAlertClassAndIcon(selector, 'alert-warning', `Prohibited or Banned - <p>PV Regulated</p>`);
 				  break;  
 				default:
 				  setAlertClassAndIcon(selector, 'alert-success', '');

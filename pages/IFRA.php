@@ -254,23 +254,23 @@ $(document).ready(function() {
 			{ data : 'type', title: 'IFRA Type' },
 			{ data : 'deadline_existing', title: 'Implementation deadline for existing creations' },
 			{ data : 'deadline_new', title: 'Implementation deadline for new creations' },
-			{ data : 'cat1', title: 'Cat1%' },
-			{ data : 'cat2', title: 'Cat2%' },
-			{ data : 'cat3', title: 'Cat3%' },
-			{ data : 'cat4', title: 'Cat4%' },
-			{ data : 'cat5A', title: 'Cat5A%' },
-			{ data : 'cat5B', title: 'Cat5B%' },
-			{ data : 'cat5C', title: 'Cat5C%' },
-			{ data : 'cat5D', title: 'Cat5D%' },
-			{ data : 'cat6', title: 'Cat6%' },
-			{ data : 'cat7A', title: 'Cat7A%' },
-			{ data : 'cat7B', title: 'Cat7B%' },
-			{ data : 'cat8', title: 'Cat8%' },
-			{ data : 'cat9', title: 'Cat9%' },
-			{ data : 'cat10A', title: 'Cat10A%' },
-			{ data : 'cat11A', title: 'Cat11A%' },
-			{ data : 'cat11B', title: 'Cat11B%' },
-			{ data : 'cat12', title: 'Cat12%' },
+			{ data: 'cat1', title: 'Cat1%', render: (data, type, row) => renderCategory(data, row, 'cat1') },
+			{ data: 'cat2', title: 'Cat2%', render: (data, type, row) => renderCategory(data, row, 'cat2') },
+			{ data: 'cat3', title: 'Cat3%', render: (data, type, row) => renderCategory(data, row, 'cat3') },
+			{ data: 'cat4', title: 'Cat4%', render: (data, type, row) => renderCategory(data, row, 'cat4') },
+			{ data: 'cat5A', title: 'Cat5A%', render: (data, type, row) => renderCategory(data, row, 'cat5A') },
+			{ data: 'cat5B', title: 'Cat5B%', render: (data, type, row) => renderCategory(data, row, 'cat5B') },
+			{ data: 'cat5C', title: 'Cat5C%', render: (data, type, row) => renderCategory(data, row, 'cat5C') },
+			{ data: 'cat5D', title: 'Cat5D%', render: (data, type, row) => renderCategory(data, row, 'cat5D') },
+			{ data: 'cat6', title: 'Cat6%', render: (data, type, row) => renderCategory(data, row, 'cat6') },
+			{ data: 'cat7A', title: 'Cat7A%', render: (data, type, row) => renderCategory(data, row, 'cat7A') },
+			{ data: 'cat7B', title: 'Cat7B%', render: (data, type, row) => renderCategory(data, row, 'cat7B') },
+			{ data: 'cat8', title: 'Cat8%', render: (data, type, row) => renderCategory(data, row, 'cat8') },
+			{ data: 'cat9', title: 'Cat9%', render: (data, type, row) => renderCategory(data, row, 'cat9') },
+			{ data: 'cat10A', title: 'Cat10A%', render: (data, type, row) => renderCategory(data, row, 'cat10A') },
+			{ data: 'cat11A', title: 'Cat11A%', render: (data, type, row) => renderCategory(data, row, 'cat11A') },
+			{ data: 'cat11B', title: 'Cat11B%', render: (data, type, row) => renderCategory(data, row, 'cat11B') },
+			{ data: 'cat12', title: 'Cat12%', render: (data, type, row) => renderCategory(data, row, 'cat12') },
 			{ data : null, title: '', render: actions }
 		],
 		order: [[ 1, 'asc' ]],
@@ -345,6 +345,10 @@ $(document).ready(function() {
 	function CAS(data, type, row){
 		data = '<a href="#" data-name="cas" class="cas" data-type="text" data-pk="' + row.id + '">' + data + '</a>';
 		return data;
+	};
+	
+	function renderCategory(data, row, category){
+    	return '<a href="#" data-name="' + category + '" class="' + category + '" data-type="text" data-pk="' + row.id + '">' + data + '</a>';
 	};
 	
 	function image(data, type, row){
@@ -504,26 +508,66 @@ $(document).ready(function() {
 	});
 	
 	$('#tdDataIFRA').editable({
-	  container: 'body',
-	  selector: 'a.cas',
-	  url: "/pages/update_data.php?IFRA=edit&type=CAS",
-	  title: 'CAS#',
-	  ajaxOptions: { 
-		dataType: 'json'
-	  },
-	  success: function(response, newValue) {
-		if(response.error){
-			return response.error; 
-		}else{ 
-			reload_data();
-		}
-	  },
-	  validate: function(value){
-		  	if($.trim(value) == ''){
+		container: 'body',
+	  	selector: 'a.cas',
+	  	url: "/pages/update_data.php?IFRA=edit&type=cas",
+	  	title: 'CAS#',
+	  	ajaxOptions: { 
+			dataType: 'json'
+	  	},
+	  	success: function(response, newValue) {
+			if(response.error){
+				return response.error; 
+			}else{ 
+				reload_data();
+			}
+	  	},
+	  	validate: function(value){
+			if($.trim(value) == ''){
 				return 'This field is required';
 			}
 	  	}
 	});
+	
+	$('#tdDataIFRA').editable({
+		container: 'body',
+		selector: 'a.cat1, a.cat2, a.cat3, a.cat4, a.cat5A, a.cat5B, a.cat5C, a.cat5D, a.cat6, a.cat7A, a.cat7B, a.cat8, a.cat9, a.cat10A, a.cat11A, a.cat11B, a.cat12',
+		type: 'POST',
+		url: "/pages/update_data.php",
+		
+		params: function(params) {
+        	var category = String($(params).attr('name').split(' ')[0]).toUpperCase();
+	        return {
+    	        IFRA: 'edit',
+        	    type: category,
+            	value: parseFloat(params.value),
+				pk: params.pk
+        	};
+    	},
+		title: function(params) {
+			var category = $(params).attr('data-name').split(' ')[0];
+			return category.toUpperCase() + '%';
+		},
+		ajaxOptions: { 
+			dataType: 'json'
+		},
+		success: function(response, newValue) {
+			if (response.error) {
+				return response.error; 
+			} else { 
+				reload_data();
+			}
+		},
+		validate: function(value) {
+			if ($.trim(value) === '') {
+				return 'This field is required';
+			}
+			if (!/^\d+(\.\d+)?$/.test(value)) {
+				return 'Please enter a valid number (e.g., 1.23)';
+			}
+		}
+	});
+
 
 });
 </script>
