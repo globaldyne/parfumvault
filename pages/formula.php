@@ -73,7 +73,7 @@ if($form[0]['ingredient']){
                         <a href="#" rel="tip" class="text-secondary-emphasis" data-bs-placement="right" title="<?= $cat_details['description'] ?>">
                           <?= ucfirst($meta['catClass']) ?>
                         </a>
-                        <div id="max_usage"></div>
+                        <div id="max_usage" class="text-secondary-emphasis"></div>
                       </span>
                     </h5>
                   </div>
