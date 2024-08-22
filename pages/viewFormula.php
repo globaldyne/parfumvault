@@ -180,7 +180,7 @@ $(document).ready(function() {
 			 $td.eq(5).html("Total: " + response.meta['concentration'] + "%" );
 			 $td.eq(7).html("Total: " + response.meta['currency'] + response.meta['total_cost'] + '<i rel="tip" title="The total price for the 100% concentration." class="mx-2 pv_point_gen fas fa-info-circle"></i>');
 			 $(formula_table.columns(7).header()).html("Final Concentration " + response.meta['product_concentration'] + "%");
-			 $('#max_usage').html('Max usage: ' + response.meta['max_usage'] + '% <i rel="tip" title="This represents the maximum allowed usage in a final product for the selected IFRA category" class="mx-2 pv_point_gen fas fa-info-circle"></i>');
+			 $('#max_usage').html('Max usage: ' + response.meta['max_usage'] + '% <i rel="tip" title="This represents the maximum allowed usage in a final product for the selected IFRA category. <p>If your database contains missing or incomplete ingredient data, this will fail.</p>" class="mx-2 pv_point_gen fas fa-info-circle"></i>');
 		 }
       },
 	  

@@ -292,8 +292,12 @@ for ($c = 1; $c <= 100; $c++) {
         break;
     }
 }
-$m['max_usage'] = $lastValAccepted;
+if( $lastValAccepted !== null) {
 
+	$m['max_usage'] = $lastValAccepted;
+} else {
+	$m['max_usage'] = 'Unable to calculate';
+}
 /*
 $new_conc = $_GET['final_total_ml'] ?: 100/100*$_GET['final_type_conc'] ?: 100;
 $carrier = $_GET['final_total_ml'] ?: 100 - $new_conc;
