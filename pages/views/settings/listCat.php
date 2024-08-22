@@ -254,7 +254,7 @@ $(document).ready(function() {
 		const id = e.relatedTarget.dataset.id;
 		const name = e.relatedTarget.dataset.name;
 	
-		$.get("/pages/editCat.php?id=" + id)
+		$.get("/pages/views/settings/editCat.php?id=" + id)
 			.then(data => {
 			$("#editCategoryLabel", this).html(name);
 			$(".modal-body", this).html(data);

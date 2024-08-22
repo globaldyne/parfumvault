@@ -104,6 +104,16 @@ $(document).ready(function() {
 	};
 	
 
+	$("#editProfile").on("show.bs.modal", function(e) {
+		const id = e.relatedTarget.dataset.id;
+		const name = e.relatedTarget.dataset.name;
+	
+		$.get("/pages/views/settings/editProfile.php?id=" + id)
+			.then(data => {
+			$("#editProfileLabel", this).html(name);
+			$(".modal-body", this).html(data);
+		});
+	});
 	
 	$('#add-prof').click(function() {
 		$.ajax({ 
@@ -251,4 +261,19 @@ $(document).ready(function() {
 </div>
 
 
-
+<!--EDIT MODAL-->            
+<div class="modal fade" id="editProfile" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="editProfileLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title mgmIngHeader mgmIngHeader-with-separator" id="editProfileLabel">Edit profile</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-danger">Unable to get data</div>
+      </div>
+    </div>
+  </div>
+</div>
