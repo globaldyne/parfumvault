@@ -106,7 +106,7 @@ $(document).ready(function() {
 			zeroRecords: '<div class="alert alert-warning"><strong>Nothing found, try <a href="#" data-bs-toggle="modal" data-bs-target="#adv_search">advanced</a> search instead?</strong></div>',
 			search: 'Quick Search:',
 			searchPlaceholder: 'Name, CAS, EINECS, IUPAC, odor..',
-			},
+		},
 		ajax: {	
 			url: '/core/list_ingredients_data.php',
 			type: 'POST',
@@ -483,6 +483,11 @@ $(document).ready(function() {
 								$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
 								$('.toast-header').removeClass().addClass('toast-header alert-danger');
 							}
+							$('.toast').toast('show');
+						},
+						error: function (xhr, status, error) {
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+							$('.toast-header').removeClass().addClass('toast-header alert-danger');
 							$('.toast').toast('show');
 						}
 					});
