@@ -6,15 +6,19 @@ require_once(__ROOT__.'/func/profileImg.php');
 
 
 $ingID = mysqli_real_escape_string($conn, base64_decode($_GET["id"]));
-
-
 $res_ingTypes = mysqli_query($conn, "SELECT id,name FROM ingTypes ORDER BY name ASC");
 $res_ingStrength = mysqli_query($conn, "SELECT id,name FROM ingStrength ORDER BY name ASC");
 $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCategory ORDER BY name ASC");
 $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles ORDER BY id ASC");
-
 $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE name = '$ingID'"));
 
+if($_GET["newIngName"]){
+	$newIngName = mysqli_real_escape_string($conn, base64_decode($_GET["newIngName"]));
+
+	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$ingName'")))){
+		$ing['cas'] = mysqli_real_escape_string($conn, $_GET["newIngCAS"]);
+	}
+}
 ?>
 <h3>General</h3>
 <hr>
@@ -24,7 +28,7 @@ $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE n
  <?php if(empty($ingID)){?>
  <div class="mt-3 col-12">
     <label for="name" class="form-label">Name</label>
-    <input name="name" type="text" class="form-control" id="name" />
+    <input name="name" type="text" class="form-control" id="name" value="<?=$newIngName?>">
  </div>
  <?php } ?>
   
@@ -39,21 +43,21 @@ $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE n
   </div>
   <div class="mt-3 col-md-6">
     <label for="einecs" class="form-label">EINECS</label>
-    <input name="einecs" type="text" class="form-control" id="einecs" value="<?php echo $ing['einecs']; ?>" />
+    <input name="einecs" type="text" class="form-control" id="einecs" value="<?php echo $ing['einecs']; ?>">
   </div>
   <div class="mt-3 col-md-6">
     <label for="reach" class="form-label">REACH</label>
-    <input name="reach" type="text" class="form-control" id="reach" value="<?php echo $ing['reach']; ?>" />
+    <input name="reach" type="text" class="form-control" id="reach" value="<?php echo $ing['reach']; ?>">
   </div>
 
   <div class="mt-3 col-md-6">
     <label for="fema" class="form-label">FEMA</label>
-    <input name="fema" type="text" class="form-control" id="fema" value="<?php echo $ing['FEMA']; ?>" />
+    <input name="fema" type="text" class="form-control" id="fema" value="<?php echo $ing['FEMA']; ?>">
   </div>
   
   <div class="mt-3 col-md-6">
     <label for="purity" class="form-label">Purity</label>
-    <input name="purity" type="text" class="form-control" id="purity" value="<?php echo $ing['purity']?: '100'; ?>" />
+    <input name="purity" type="text" class="form-control" id="purity" value="<?php echo $ing['purity']?: '100'; ?>">
   </div>
   <div class="mt-3 col-md-6">
     <label for="solvent" class="form-label">Solvent</label>
@@ -139,7 +143,9 @@ $(document).ready(function() {
 	$('#general').on('click', '[id*=saveGeneral]', function () {
 		<?php if(empty($ing['id'])){ ?>
 			if($.trim($("#name").val()) == ''){
-				$('#msg_general').html('<div class="alert alert-danger mx-2"><strong>Name is required</strong></div>');
+				$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>Ingredient name is required');
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
 				return;
    			}
 		<?php } ?>
@@ -150,13 +156,13 @@ $(document).ready(function() {
 				manage: 'ingredient',
 				tab: 'general',
 				ingID: myIngID,
-				
 				name: $("#name").val(),
 				INCI: $("#INCI").val(),
 				cas: $("#cas").val(),
 				einecs: $("#einecs").val(),
 				reach: $("#reach").val(),
 				fema: $("#fema").val(),
+				isAllergen: $("#isAllergen").is(':checked'),
 				purity: $("#purity").val(),
 				solvent: $("#solvent").val(),
 				profile: $("#profile").val(),					
@@ -176,19 +182,25 @@ $(document).ready(function() {
 					$('#mgmIngHeaderCAS').html($("#cas").val());
 					$('#IUPAC').html($("#INCI").val());
 					
-					var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+					$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+					$('.toast-header').removeClass().addClass('toast-header alert-success');
 				}else{
-					var msg ='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+					$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+					$('.toast-header').removeClass().addClass('toast-header alert-danger');
 				}
-				
-				$('#msg_general').html(msg);
-				
+				$('.toast').toast('show');
+						
 				if ($('#name').val()) {
 					window.location = 'mgmIngredient.php?id=' + btoa($('#name').val());
 				}
 			    <?php if($ing['id']){ ?>
 				reload_overview();
 				<?php } ?>
+			},
+			error: function (xhr, status, error) {
+				$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
 			}
 		});
 	});

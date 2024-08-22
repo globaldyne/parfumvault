@@ -70,7 +70,7 @@ if($form[0]['ingredient']){
                     </h2>
                     <h5 class="m-1 text-primary">
                       <span>
-                        <a href="#" rel="tip" class="text-secondary-emphasis"" data-bs-placement="right" title="<?= $cat_details['description'] ?>">
+                        <a href="#" rel="tip" class="text-secondary-emphasis" data-bs-placement="right" title="<?= $cat_details['description'] ?>">
                           <?= ucfirst($meta['catClass']) ?>
                         </a>
                       </span>
@@ -251,7 +251,7 @@ if($form[0]['ingredient']){
 <script>
 document.title = "<?=$meta['name'].' - '.$product?>";
 var myFID = "<?=$fid?>";
-var isProtected = "<?=$meta['isProtected']?>"
+var isProtected = "<?=$meta['isProtected']?>";
 
 $('#formula_name').click(function() {
     reload_formula_data();

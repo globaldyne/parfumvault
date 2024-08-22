@@ -5,6 +5,7 @@ require_once(__ROOT__.'/inc/sec.php');
 
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
+require_once(__ROOT__.'/func/php-settings.php');
 
 
 $id = mysqli_real_escape_string($conn, $_GET['id']);
@@ -679,6 +680,18 @@ function ingName(data, type, row, meta){
 		profile_class ='';
 	}
 	
+	if(row.chk_ingredient_code === 4){
+		data ='<div class="btn-group"><a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'+row.ingredient.name+'</a><div class="dropdown-menu dropdown-menu-right">';
+		
+		data+='<li><a class="dropdown-item popup-link" href="/pages/mgmIngredient.php?newIngName='+ btoa(row.ingredient.name) +'&newIngCAS='+ row.ingredient.cas +'"><i class="fa-solid fa-flask-vial mx-2"></i>Create ingredient</a></li>';
+	
+		data+='<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#import_ingredients_json"><i class="bi bi-filetype-json mx-2"></i>Import from JSON</a></li>';
+		data+='<li><a class="dropdown-item" href="https://online.perfumersvault.com/query/' + row.ingredient.name+ '" target="_blank"><i class="fa-solid fa-cloud-arrow-down mx-2"></i>Search PV Online<i class="ml-2 fa-solid fa-arrow-up-right-from-square"></i></a></li>';
+				
+		data+='</div></div>';
+		return data;
+	}
+	
 	if(row.ingredient.enc_id){
 		data = contains + '<a class="popup-link '+ex+'" href="/pages/mgmIngredient.php?id=' + row.ingredient.enc_id + '">' + data + '</a> '+ chkIng + profile_class;
 	}else{
@@ -810,6 +823,7 @@ function ingActions(data, type, row, meta){
 <script src="/js/fullformula.view.js"></script>
 <script src="/js/mark/jquery.mark.min.js"></script>
 <script src="/js/mark/datatables.mark.js"></script>
+<script src="/js/import.ingredients.js"></script>
 
 <!--Schedule Formula-->
 <div class="modal fade" id="schedule_to_make" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="schedule_to_make" aria-hidden="true">
@@ -1027,4 +1041,44 @@ function ingActions(data, type, row, meta){
       </div>
     </div>
   </div>
+</div>
+
+<!--IMPORT JSON MODAL-->
+<div class="modal fade" id="import_ingredients_json" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="import_ingredients_json" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Import ingredients from a JSON file</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      	<div id="JSRestMsg"></div>
+      	<div class="progress">  
+       	  <div id="uploadProgressBar" class="progress-bar" role="progressbar" aria-valuemin="0"></div>
+      	</div>
+      	<div id="backupArea">
+          <div class="form-group">
+              <label class="col-md-3 control-label">JSON file:</label>
+              <div class="col-md-8">
+                 <input type="file" name="backupFile" id="backupFile" class="form-control" />
+              </div>
+          </div>
+          	<div class="col-md-12">
+            	 <hr />
+             	<p><strong>IMPORTANT:</strong></p>
+              	<ul>
+                	<li><div id="raw" data-size="<?=getMaximumFileUploadSizeRaw()?>">Maximum file size: <strong><?=getMaximumFileUploadSize()?></strong></div></li>
+                	<li>Any ingredient with the same id will be replaced. Please make sure you have taken a backup before imporing a JSON file.</li>
+              	</ul>
+            </div>
+          </div>
+      	</div>
+	  		<div class="modal-footer">
+        		<input type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseBK" value="Cancel">
+        		<input type="submit" name="btnRestore" class="btn btn-primary" id="btnRestoreIngredients" value="Import">
+      		</div>
+  		</div>  
+	</div>
 </div>

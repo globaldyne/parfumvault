@@ -61,7 +61,7 @@ if($_POST['adv']){
 
 $extra = "ORDER BY ".$order_by." ".$order;
 
-$s = trim(mysqli_real_escape_string($conn,$_POST['search']['value']));
+$s = trim(mysqli_real_escape_string($conn,$_POST['search']['value'] ?: $_POST['pvSearch']));
 
 if($s != ''){
    $t = '';

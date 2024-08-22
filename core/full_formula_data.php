@@ -232,7 +232,6 @@ foreach ($form as $formula){
    	$r['ingredient']['name'] = (string)$ingName ?: $formula['ingredient'];
 	$r['ingredient']['cas'] = (string)$ing_q['cas'] ?: 'N/A';
 	$r['ingredient']['physical_state'] = (int)$ing_q['physical_state'];
-	//$r['ingredient']['classification'] = (int)$ing_q['classification'] ?: 1;
 	$r['ingredient']['type'] = (string)$ing_q['type'] ?: 'Unknown';
 
 	$r['ingredient']['desc'] = (string)$desc ?: '-';
@@ -244,17 +243,11 @@ foreach ($form as $formula){
 	$r['ingredient']['inventory']['batch'] = (string)$inventory['batch'] ?: 'N/A';
 	$r['ingredient']['inventory']['purchased'] = (string)$inventory['purchased'] ?: 'N/A';
 	
-	//$totalReplacements = 0;
-	//foreach ($replacement as $rp){
-	//	$totalReplacements++;
-	//	$r['ingredient'][]['replacement']['name'] = (string)$rp['ing_rep_name'] ?: (string)$rp['ing_name'] ?: 'N/A';
-	//}
-	//$r['ingredient']['replacement']['total'] = $totalReplacements ?: 0;
-	
 	
 	$r['ingredient']['containsOthers']['total'] = $totalcontainsOthers ?: 0;
 	
-	$r['chk_ingredient'] = (string)checkIng($formula['ingredient'],$defCatClass,$conn) ?: null;
+	$r['chk_ingredient'] = (string)checkIng($formula['ingredient'],$defCatClass,$conn)['text'];
+	$r['chk_ingredient_code'] = (int)checkIng($formula['ingredient'],$defCatClass,$conn)['code'];
 	$r['exclude_from_calculation'] = (int)$formula['exclude_from_calculation'] ?: 0;
 	
 	
