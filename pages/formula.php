@@ -296,6 +296,11 @@ $('#add_ing').on('click', '[id*=add-btn]', function () {
 				$('.toast-header').removeClass().addClass('toast-header alert-danger');
 			}
 			$('.toast').toast('show');
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
 		}
 		
 	  });
@@ -323,6 +328,11 @@ function setProtected(status) {
 				}
 			} else {
 				$('#msgInfo').html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + data.error + '</strong></div>');
+			},
+			error: function (xhr, status, error) {
+				$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
 			}
 		}
 	  });
