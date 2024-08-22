@@ -728,10 +728,11 @@ if($_POST['pubChemData'] == 'update' && $_POST['cas']){
 		$q.= mysqli_query($conn, "UPDATE ingredients SET INCI = '$InChI' WHERE cas='$cas'");
 	}
 	if($q){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>Data updated!</div>';
+		$response["success"] = 'Local data updated';
 	}else{
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>Unable to update data!</div>';
+		$response["error"] = 'Unable to update data';
 	}
+	echo json_encode($response);
 	return;
 }
 

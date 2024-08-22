@@ -1,5 +1,8 @@
 # CHANGELOG
 ### Version 11.0
+- Changed datatype for PubChem to json
+- Added a button to view ingredient data in PubChem
+- Fix PubChemData update button
 - Added more error handling for ajax requests
 - Added a var (pvSearch) to search ingredients in the local datatabase
 - Changed the way the ingredient is handled when exists in a formula but not in the database. Instead of auto creating it when clicked, it presents options to create it, search in PV Online or import via JSON
