@@ -13,7 +13,7 @@ require_once(__ROOT__.'/inc/opendb.php');
         <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
         <div class="dropdown-menu">
           <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#add_ingredient_prof"><i class="fa-solid fa-plus mx-2"></i>Add ingredient profile</a></li>
-          <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#import_profiles_json"><i class="fa-solid fa-file-import mx-2"></i>Import from JSON</a></li>
+          <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#import_categories_json"><i class="fa-solid fa-file-import mx-2"></i>Import from JSON</a></li>
           <li><a class="dropdown-item" href="/pages/operations.php?action=exportIngProf"><i class="fa-solid fa-file-code mx-2"></i>Export as JSON</a></li>
         </div>
     </div>

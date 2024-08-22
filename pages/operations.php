@@ -645,7 +645,7 @@ if ($_GET['action'] == 'importCategories') {
     if (move_uploaded_file($_FILES['jsonFile']['tmp_name'], $target_path)) {
         $data = json_decode(file_get_contents($target_path), true);
 
-        if (!$data['ingCategory'] && !$data['formulaCategories']) {
+        if (!$data['ingCategory'] && !$data['formulaCategories'] && !$data['ingProfiles']) {
             $result['error'] = "JSON File seems invalid. Please make sure you are importing the right file";
             echo json_encode($result);
             return;
@@ -675,6 +675,19 @@ if ($_GET['action'] == 'importCategories') {
                 if (!$stmt->execute()) {
                     $success = false;
                     $result['error'] = "Error inserting into formulaCategories: " . $stmt->error;
+                    break;
+                }
+            }
+            $stmt->close();
+        }
+		
+		if ($data['ingProfiles']) {
+            $stmt = $conn->prepare("INSERT INTO `ingProfiles` (`name`, `notes`, `image`) VALUES (?, ?, ?)");
+            foreach ($data['ingProfiles'] as $d) {
+                $stmt->bind_param("sss", $d['name'], $d['notes'], $d['image']);
+                if (!$stmt->execute()) {
+                    $success = false;
+                    $result['error'] = "Error inserting into ingProfiles: " . $stmt->error;
                     break;
                 }
             }
