@@ -48,8 +48,8 @@ foreach ($get_data_ings as $get_data_ing) {
 	}
 	
 	$r['contained_percentage'] = $conc_p;
+    $u = searchIFRA($get_data_ing['cas'], $get_data_ing['name'], null, $defCatClass);
 
-    $u = explode(' - ', searchIFRA($get_data_ing['cas'], $get_data_ing['name'], null, $defCatClass));
     $r['max_allowed'] = $u[0];
 
     $response['data'][] = $r;
