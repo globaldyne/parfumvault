@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 11.0
+- Making SDS GA
 - Added maximum allowed usage for a formula
 - Changed datatype for PubChem to json
 - Added a button to view ingredient data in PubChem

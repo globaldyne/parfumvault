@@ -260,8 +260,7 @@ function chkUpdate() {
       <li class="nav-item">
         <a class="nav-link" href="/?do=genSDS">
           <i class="fas fa-square-poll-horizontal"></i>
-          My SDSs
-          <span class="position-absolute top-0 translate-middle badge badge-danger badge-counter">BETA</span>
+          <span>My SDSs</span>
         </a>
       </li>
 
