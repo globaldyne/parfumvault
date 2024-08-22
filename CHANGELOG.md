@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 11.0
+- Added maximum allowed usage for a formula
 - Changed datatype for PubChem to json
 - Added a button to view ingredient data in PubChem
 - Fix PubChemData update button

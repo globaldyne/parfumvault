@@ -281,6 +281,20 @@ $m['formula_fid'] = (string)$meta['fid'];
 $m['formula_description'] = (string)$meta['notes'];
 $m['protected'] = (bool)$meta['isProtected'];
 
+$lastValAccepted = null;
+
+for ($c = 1; $c <= 100; $c++) {
+	$result = validateFormula($meta['fid'], $m['concentration'], $c, $mg['total_mg'], $defCatClass, $settings['qStep']);
+
+    if ($result === 0) {
+        $lastValAccepted = $c;
+    } else {
+        break;
+    }
+}
+$m['max_usage'] = $lastValAccepted;
+
+/*
 $new_conc = $_GET['final_total_ml'] ?: 100/100*$_GET['final_type_conc'] ?: 100;
 $carrier = $_GET['final_total_ml'] ?: 100 - $new_conc;
 
@@ -300,6 +314,7 @@ $compliance['status'] = (int)$val_status ?: 0;
 $compliance['message'] = (string)$val_msg ?: 'Formula is IFRA compliant';
 	
 $response['compliance'] = $compliance;
+*/
 $response['meta'] = $m;
 
 $s['load_time'] = microtime(true) - $starttime;
