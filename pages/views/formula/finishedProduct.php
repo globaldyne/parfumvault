@@ -146,7 +146,7 @@ require_once(__ROOT__.'/inc/opendb.php');
             </select>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         <input type="submit" class="btn btn-primary" id="generateDoc" value="Generate">
       </div>
     </div>
