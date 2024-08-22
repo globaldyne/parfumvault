@@ -248,6 +248,44 @@ if($_POST['action'] == 'delete' && $_POST['catId']){
 	return;
 }
 
+//ADD INGREDIENT PROFILE
+if($_POST['manage'] == 'add_ingprof'){
+	$profile = mysqli_real_escape_string($conn, $_POST['profile']);
+	$description = mysqli_real_escape_string($conn, $_POST['description']);
+	
+	if(empty($profile)){
+		$response["error"] = 'Profile name is required.';
+		echo json_encode($response);
+		return;
+	}
+	
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingProfiles WHERE name = '$profile'"))){
+		$response["error"] = 'Profile name '.$profile.' already exists';
+		echo json_encode($response);
+		return;
+	}
+	if(mysqli_query($conn, "INSERT INTO ingProfiles (name,notes) VALUES ('$profile', '$description')")){
+		$response["success"] = 'Profile '.$profile.' added';
+		echo json_encode($response);
+	}else{
+		$response["error"] = 'Something went wrong, '.mysqli_error($conn);
+		echo json_encode($response);
+	}
+	return;
+}					
+
+//DELETE INGREDIENT PROFILE
+if($_POST['action'] == 'ingProfile' && $_POST['profId']){
+	$profId = mysqli_real_escape_string($conn, $_POST['profId']);
+	if(mysqli_query($conn, "DELETE FROM ingProfiles WHERE id = '$profId'")){
+		$response["success"] = 'Profile deleted';
+	}else{
+		$response["error"] = 'Error deleting profile';
+	}
+	echo json_encode($response);
+	return;
+}
+
 //ADD FORMULA CATEGORY
 if($_POST['manage'] == 'add_frmcategory'){
 	$cat = mysqli_real_escape_string($conn, $_POST['category']);

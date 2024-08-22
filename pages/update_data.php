@@ -1228,6 +1228,15 @@ if($_GET['settings'] == 'cat'){
 	return;
 }
 
+if($_GET['settings'] == 'prof'){
+	$value = mysqli_real_escape_string($conn, $_POST['value']);
+	$id = mysqli_real_escape_string($conn, $_POST['pk']);
+	$name = mysqli_real_escape_string($conn, $_POST['name']);
+
+	mysqli_query($conn, "UPDATE ingProfiles SET $name = '$value' WHERE id = '$id'");
+	return;
+}
+
 if($_GET['settings'] == 'fcat'){
 	$value = mysqli_real_escape_string($conn, $_POST['value']);
 	$cat_id = mysqli_real_escape_string($conn, $_POST['pk']);
