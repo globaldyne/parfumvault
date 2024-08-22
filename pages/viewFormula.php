@@ -385,17 +385,17 @@ $('#formula').on('click', '[id*=rmIng]', function () {
 							$('.toast-header').removeClass().addClass('toast-header alert-success');
 							reload_formula_data();
 							bootbox.hideAll();
+							$('.toast').toast('show');
 						}else{
-            				$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
-							$('.toast-header').removeClass().addClass('toast-header alert-danger');
+            				$('#err').html('<div class="alert alert-danger"><strong>' + data.error + '</strong></div>');
 						}
-						$('.toast').toast('show');
+						
 					},
 					error: function (xhr, status, error) {
 						$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
 						$('.toast-header').removeClass().addClass('toast-header alert-danger');
 						$('.toast').toast('show');
-					}
+					},
 				  });
                  return false;
                }

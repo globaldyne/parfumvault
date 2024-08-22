@@ -309,34 +309,35 @@ $('#add_ing').on('click', '[id*=add-btn]', function () {
 
 function setProtected(status) {
   $.ajax({ 
-		url: '/pages/update_data.php', 
-		type: 'GET',
-		data: {
-			protect: myFID,
-			isProtected: status,
-			},
-		dataType: 'json',
-		success: function (data) {
-			if ( data.success ) {
-				fetch_formula();
-				if( data.success == 'Formula locked'){
-					$('#lock_status').html('<a class="fas fa-lock text-body-emphasis" href="javascript:setProtected(\'false\')">');
-					$('#add_ing').hide();
-				}else{
-					$('#lock_status').html('<a class="fas fa-unlock text-body-emphasis" href="javascript:setProtected(\'true\')">');
-					$('#add_ing').show();
-				}
-			} else {
-				$('#msgInfo').html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + data.error + '</strong></div>');
-			},
-			error: function (xhr, status, error) {
-				$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
-				$('.toast-header').removeClass().addClass('toast-header alert-danger');
-				$('.toast').toast('show');
-			}
-		}
-	  });
-};
+    url: '/pages/update_data.php', 
+    type: 'GET',
+    data: {
+      protect: myFID,
+      isProtected: status,
+    },
+    dataType: 'json',
+    success: function (data) {
+      if (data.success) {
+        fetch_formula();
+        if (data.success === 'Formula locked') {
+          $('#lock_status').html('<a class="fas fa-lock text-body-emphasis" href="javascript:setProtected(\'false\')"></a>');
+          $('#add_ing').hide();
+        } else {
+          $('#lock_status').html('<a class="fas fa-unlock text-body-emphasis" href="javascript:setProtected(\'true\')"></a>');
+          $('#add_ing').show();
+        }
+      } else {
+        $('#msgInfo').html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + data.error + '</strong></div>');
+      }
+    },
+    error: function (xhr, status, error) {
+      $('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i> An ' + status + ' occurred, check server logs for more info. ' + error);
+      $('.toast-header').removeClass().addClass('toast-header alert-danger');
+      $('.toast').toast('show');
+    }
+  });
+}
+
 
 function fetch_formula(){
 $.ajax({ 
