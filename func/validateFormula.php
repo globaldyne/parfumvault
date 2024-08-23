@@ -24,22 +24,27 @@ function validateFormula($fid, $bottle, $new_conc, $mg, $defCatClass, $qStep) {
 
         $ing = mysqli_fetch_array($ingredient_query);
         $cas = $ing['cas'];
-        $limitIFRA = searchIFRA($cas, $ingredient_name, null, $defCatClass);
-        $limit = explode(' - ', $limitIFRA)[0];
-
+		$limitIFRA = searchIFRA($cas,$ingredient_name,null,$defCatClass);
+		$limit = $limitIFRA['val'];
+		$type = $limitIFRA['type'];
+		
+		
         // Calculate new quantity and concentration
         $new_quantity = $formula['quantity'] / $mg * $new_conc;
         $conc = ($new_quantity / $bottle) * 100;
         $conc_p = number_format(($formula['concentration'] / 100) * $conc, $qStep);
 
-        if ($limit ) {
+        if ($limit) {
             if ($limit < $conc_p) {
-                $errors[] = "Ingredient $ingredient_name exceeds IFRA limit $limit%";
+                $errors[] = "$ingredient_name exceeds IFRA limit $limit% - $type";
+				if($type === "PROHIBITION"){
+					$errors[] = "$type is PROHIBITED";
+				}
             }
         } else {
             if ($ing[$defCatClass] !== null) {
                 if ($ing[$defCatClass] < $conc_p) {
-                    $errors[] = "Ingredient $ingredient_name exceeds local DB limit%";
+                    $errors[] = "$ingredient_name exceeds local DB limit $ing[$defCatClass]%";
                 }
             } else {
                 $errors[] = "No limit record found for ingredient $ingredient_name";

@@ -23,11 +23,14 @@ $defCatClass = $settings['defCatClass'];
 
 $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT id, cas,name,usage_type,noUsageLimit,byPassIFRA,flavor_use,allergen,cat1,cat2,cat3,cat4,cat5A,cat5B,cat5C,cat5D,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12 FROM ingredients WHERE id = '".$_POST['ingID']."'"));
 
-$rType = searchIFRA($ing['cas'],$ing['name'],'type', $defCatClass);
-$limit = searchIFRA($ing['cas'],$ing['name'],null, 'cat'.$cats[$counter]['name']);
+//$rType = searchIFRA($ing['cas'],$ing['name'],'type', $defCatClass);
+//$limit = searchIFRA($ing['cas'],$ing['name'],null, 'cat'.$cats[$counter]['name']);
+/*
 if($reason = searchIFRA($ing['cas'],$ing['name'],null,$defCatClass)){
 	$reason = explode(' - ',$reason);
 }
+*/
+$reason = searchIFRA($ing['cas'],$ing['name'],null,$defCatClass);
 
 if($usageLimit = searchIFRA($ing['cas'],$ing['name'],null,$defCatClass)){ 
 	$noLimit = 'disabled'; 
@@ -81,7 +84,7 @@ if($usageLimit = searchIFRA($ing['cas'],$ing['name'],null,$defCatClass)){
             Usage classification
         </div>
         <div class="col-sm-4">
-            <div id="class_bypass"><?php echo $rType.' - '.$reason['1']; ?></div>
+            <div id="class_bypass"><?php echo $reason['type'].' - '.$reason['risk']; ?></div>
             <div id="usage_type_bypass">
                 <select name="usage_type" id="usage_type" class="form-select">
                     <option value="1" <?php if($ing['usage_type'] == "1") echo 'selected'; ?>>Recommendation</option>
@@ -97,7 +100,7 @@ if($usageLimit = searchIFRA($ing['cas'],$ing['name'],null,$defCatClass)){
 <div class="container-fluid">
     <table class="table">
         <?php for($i = 0; $i < $rows / $cols; $i++) { ?>
-            <tr <?php if($rType){ ?>class="<?php echo $usageStyle[$i % 2]; ?>" <?php }?>>
+            <tr <?php if($reason['type']){ ?>class="<?php echo $usageStyle[$i % 2]; ?>" <?php }?>>
                 <?php for($j = 0; $j < $cols && $counter <= $rows; $j++, $counter++) { ?>
                     <td align="center">
                         <a href="#" rel="tip" title="<?php echo $cats[$counter]['description']; ?>">Cat<?php echo $cats[$counter]['name']; ?> %:</a>
@@ -105,9 +108,9 @@ if($usageLimit = searchIFRA($ing['cas'],$ing['name'],null,$defCatClass)){
                     <td>
                         <?php
                         if($ing['byPassIFRA'] == 0 && $limit = searchIFRA($ing['cas'], $ing['name'], null, 'cat'.$cats[$counter]['name'])){
-                            $limit = explode(' - ', $limit);
+                           // $limit = explode(' - ', $limit);
                         ?>
-                            <input name="cat<?php echo $cats[$counter]['name']; ?>" type="text" class="form-control" id="cat<?php echo $cats[$counter]['name']; ?>" disabled value="<?php echo number_format((float)$limit[0], 4); ?>" />
+                            <input name="cat<?php echo $cats[$counter]['name']; ?>" type="text" class="form-control" id="cat<?php echo $cats[$counter]['name']; ?>" disabled value="<?php echo number_format((float)$limit['val'], 4); ?>" />
                         <?php } else { ?>
                             <input name="cat<?php echo $cats[$counter]['name']; ?>" type="text" class="form-control" id="cat<?php echo $cats[$counter]['name']; ?>" value="<?php echo number_format($ing['cat'.$cats[$counter]['name']], 4); ?>" />
                         <?php } ?>
@@ -158,7 +161,10 @@ $(document).ready(function() {
 		byPassCheck(true);
 	}else if (byPassIFRA === 0){
 		byPassCheck(false);
-		
+	}  
+	  
+	if ($('#usage_type').val() === "4") {
+		$("input[id^='cat']").prop('disabled', true).val('0.0000');
 	}
 	
 	if(disLimits === 1){

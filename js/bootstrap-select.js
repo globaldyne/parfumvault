@@ -952,7 +952,7 @@
     this.init();
   };
 
-  Selectpicker.VERSION = '1.14.0-beta3';
+  Selectpicker.VERSION = '1.14.0-beta3';//PV MODIFIED
 
   // part of this is duplicated in i18n/defaults-en_US.js. Make sure to update both.
   Selectpicker.DEFAULTS = {
@@ -976,7 +976,7 @@
     doneButton: false,
     doneButtonText: 'Close',
     multipleSeparator: ', ',
-    styleBase: 'btn',
+    styleBase: '',
     style: classNames.BUTTONCLASS,
     size: 'auto',
     title: null,

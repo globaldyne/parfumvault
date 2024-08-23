@@ -1,5 +1,5 @@
-<?php if (!defined('pvault_panel')){ die('Not Found');}?>
 <?php
+
 function checkIng($ingredient, $defCatClass, $conn){
 	$chk = mysqli_query($conn, "SELECT id, name, $defCatClass, profile, cas FROM ingredients WHERE name = '$ingredient' OR chemical_name = '$ingredient'");	
 	if(mysqli_num_rows($chk)){
@@ -11,17 +11,17 @@ function checkIng($ingredient, $defCatClass, $conn){
 			$chkPrice = mysqli_fetch_array(mysqli_query($conn, "SELECT price FROM suppliers WHERE ingID = '".$qValues['id']."'"));
 			
 			if(empty($chkIFRA[$defCatClass]) && !isset($qValues[$defCatClass])){
-				return 'Missing usage data';
+				return ['text' => 'Missing usage data', 'code' => 1];
 			}
 			if(empty($chkPrice['price'])){
-				return 'Missing pricing data';
+				return ['text' => 'Missing pricing data', 'code' => 2];
 			}
 			if(!($qValues['profile'])){
-				return 'Missing profile data';
+				return ['text' => 'Missing profile data', 'code' => 3];
 			}
 		}
 	}else{
-		return 'Ingredient is missing from the database';
+        return ['text' => 'Ingredient is missing from the database', 'code' => 4];
 	}
 }
-?>
+

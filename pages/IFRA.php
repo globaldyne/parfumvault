@@ -10,7 +10,6 @@ require_once(__ROOT__.'/func/php-settings.php');
               <h2 class="m-0 font-weight-bold text-primary-emphasis"><a href="#" id="mainTitle">IFRA Library</a></h2>
             </div>
             <div class="card-body">
-               <div id="iframsg"></div>
                   <div class="text-right">
                     <div class="btn-group">
                       <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
@@ -75,7 +74,7 @@ require_once(__ROOT__.'/func/php-settings.php');
 <!--IFRA IMPORT-->
 <div class="modal fade" id="ifra_import" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="ifra_import" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-ifra" role="document">
-    <div class="modal-content">
+    <div class="modal-content modal-lg">
       <div class="modal-header">
         <h5 class="modal-title" id="ifra_import">Import IFRA xls file</h5>
       </div>
@@ -119,7 +118,7 @@ require_once(__ROOT__.'/func/php-settings.php');
             
             <div id="overwrite-msg">
                 <div class="dropdown-divider"></div>
-            	<div class="col-sm col-sm-10 text-xs-center alert alert-warning">
+            	<div class="col-sm col-sm-auto text-xs-center alert alert-warning">
                 	<p class="alert-link"><strong>IMPORTANT:</strong></p>
                 	<p class="alert-link">This operation will wipe out any data already in your IFRA Library, so please make sure the file you uploading is in the right format and have taken a <a href="/pages/operations.php?do=backupDB">backup</a> before.</p>
                 </div>
@@ -141,7 +140,7 @@ require_once(__ROOT__.'/func/php-settings.php');
 <!--PUBCHEM IMPORT-->
 <div class="modal fade" id="pubChem_import" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="pubChem_import" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-pubChem" role="document">
-    <div class="modal-content">
+    <div class="modal-content modal-lg">
       <div class="modal-header">
         <h5 class="modal-title">Import images from PubChem</h5>
       </div>
@@ -205,7 +204,7 @@ require_once(__ROOT__.'/func/php-settings.php');
 </div>
 </div>
 
-<script type="text/javascript">
+<script>
 $(document).ready(function() {
 	$('#mainTitle').click(function() {
 	 	reload_data();
@@ -213,92 +212,91 @@ $(document).ready(function() {
    $('[data-bs-toggle="tooltip"]').tooltip();
 
 	var tdDataIFRA = $('#tdDataIFRA').DataTable( {
-	columnDefs: [
-		{ className: 'pv_vertical_middle text-center', targets: '_all' },
-		{ orderable: false, targets: [25]},
-		{ responsivePriority: 1, targets: 0 }
-	],
-	dom: 'lrftip',
-	buttons: [{
-			extend: 'csvHtml5',
-			title: "IFRALibrary"
-	}],
-	processing: true,
-	serverSide: true,
-	searching: true,
-	mark: true,
-	responsive: true,
-	language: {
-		loadingRecords: '&nbsp;',
-		processing: '<div class="spinner-grow mx-2"></div>Please Wait...',
-		zeroRecords: 'Nothing found',
-		search: 'Quick Search:',
-		searchPlaceholder: 'Name, CAS, synonyms...',
+		columnDefs: [
+			{ className: 'pv_vertical_middle text-center', targets: '_all' },
+			{ orderable: false, targets: [25]},
+			{ responsivePriority: 1, targets: 0 }
+		],
+		dom: 'lrftip',
+		buttons: [{
+				extend: 'csvHtml5',
+				title: "IFRALibrary"
+		}],
+		processing: true,
+		serverSide: true,
+		searching: true,
+		mark: true,
+		responsive: true,
+		language: {
+			loadingRecords: '&nbsp;',
+			processing: '<div class="spinner-grow mx-2"></div>Please Wait...',
+			zeroRecords: 'Nothing found',
+			search: 'Quick Search:',
+			searchPlaceholder: 'Name, CAS, synonyms...',
 		},
-	ajax: {	
-		url: '/core/list_IFRA_data.php',
-		type: 'POST',
-		dataType: 'json',
-		data: function(d) {
-			if (d.order.length>0){
-				d.order_by = d.columns[d.order[0].column].data
-				d.order_as = d.order[0].dir
-			}
+		ajax: {	
+			url: '/core/list_IFRA_data.php',
+			type: 'POST',
+			dataType: 'json',
+			data: function(d) {
+				if (d.order.length>0){
+					d.order_by = d.columns[d.order[0].column].data
+					d.order_as = d.order[0].dir
+				}
+			 },
 		 },
-	    },
-	   columns: [
+		 columns: [
 			{ data : 'image', title: 'Structure', render: image },
-            { data : 'name', title: 'Name', render: name },
+			{ data : 'name', title: 'Name', render: name },
 			{ data : 'cas', title: 'CAS', render: CAS },
 			{ data : 'amendment', title: 'Amendment' },
 			{ data : 'last_pub', title: 'Last publication' },
 			{ data : 'type', title: 'IFRA Type' },
 			{ data : 'deadline_existing', title: 'Implementation deadline for existing creations' },
 			{ data : 'deadline_new', title: 'Implementation deadline for new creations' },
-			{ data : 'cat1', title: 'Cat1%' },
-			{ data : 'cat2', title: 'Cat2%' },
-			{ data : 'cat3', title: 'Cat3%' },
-			{ data : 'cat4', title: 'Cat4%' },
-			{ data : 'cat5A', title: 'Cat5A%' },
-			{ data : 'cat5B', title: 'Cat5B%' },
-			{ data : 'cat5C', title: 'Cat5C%' },
-			{ data : 'cat5D', title: 'Cat5D%' },
-			{ data : 'cat6', title: 'Cat6%' },
-			{ data : 'cat7A', title: 'Cat7A%' },
-			{ data : 'cat7B', title: 'Cat7B%' },
-			{ data : 'cat8', title: 'Cat8%' },
-			{ data : 'cat9', title: 'Cat9%' },
-			{ data : 'cat10A', title: 'Cat10A%' },
-			{ data : 'cat11A', title: 'Cat11A%' },
-			{ data : 'cat11B', title: 'Cat11B%' },
-			{ data : 'cat12', title: 'Cat12%' },
-			{ data : null, title: '', render: actions },
-
-			],
-	order: [[ 1, 'asc' ]],
-	lengthMenu: [[20, 50, 100, 200, 400], [20, 50, 100, 200, 400]],
-	pageLength: 20,
-	displayLength: 20,
-	
-	stateSave: true,
-	stateDuration : -1,
-	stateLoadCallback: function (settings, callback) {
-       	$.ajax( {
-           	url: '/core/update_user_settings.php?set=listIFRA&action=load',
-           	dataType: 'json',
-           	success: function (json) {
-               	callback( json );
-           	}
-       	});
-    },
-    stateSaveCallback: function (settings, data) {
-	   $.ajax({
-		 url: "/core/update_user_settings.php?set=listIFRA&action=save",
-		 data: data,
-		 dataType: "json",
-		 type: "POST"
-	  });
-	},
+			{ data: 'cat1', title: 'Cat1%', render: (data, type, row) => renderCategory(data, row, 'cat1') },
+			{ data: 'cat2', title: 'Cat2%', render: (data, type, row) => renderCategory(data, row, 'cat2') },
+			{ data: 'cat3', title: 'Cat3%', render: (data, type, row) => renderCategory(data, row, 'cat3') },
+			{ data: 'cat4', title: 'Cat4%', render: (data, type, row) => renderCategory(data, row, 'cat4') },
+			{ data: 'cat5A', title: 'Cat5A%', render: (data, type, row) => renderCategory(data, row, 'cat5A') },
+			{ data: 'cat5B', title: 'Cat5B%', render: (data, type, row) => renderCategory(data, row, 'cat5B') },
+			{ data: 'cat5C', title: 'Cat5C%', render: (data, type, row) => renderCategory(data, row, 'cat5C') },
+			{ data: 'cat5D', title: 'Cat5D%', render: (data, type, row) => renderCategory(data, row, 'cat5D') },
+			{ data: 'cat6', title: 'Cat6%', render: (data, type, row) => renderCategory(data, row, 'cat6') },
+			{ data: 'cat7A', title: 'Cat7A%', render: (data, type, row) => renderCategory(data, row, 'cat7A') },
+			{ data: 'cat7B', title: 'Cat7B%', render: (data, type, row) => renderCategory(data, row, 'cat7B') },
+			{ data: 'cat8', title: 'Cat8%', render: (data, type, row) => renderCategory(data, row, 'cat8') },
+			{ data: 'cat9', title: 'Cat9%', render: (data, type, row) => renderCategory(data, row, 'cat9') },
+			{ data: 'cat10A', title: 'Cat10A%', render: (data, type, row) => renderCategory(data, row, 'cat10A') },
+			{ data: 'cat11A', title: 'Cat11A%', render: (data, type, row) => renderCategory(data, row, 'cat11A') },
+			{ data: 'cat11B', title: 'Cat11B%', render: (data, type, row) => renderCategory(data, row, 'cat11B') },
+			{ data: 'cat12', title: 'Cat12%', render: (data, type, row) => renderCategory(data, row, 'cat12') },
+			{ data : null, title: '', render: actions }
+		],
+		order: [[ 1, 'asc' ]],
+		lengthMenu: [[20, 50, 100, 200, 400], [20, 50, 100, 200, 400]],
+		pageLength: 20,
+		displayLength: 20,
+		
+		stateSave: true,
+		stateDuration : -1,
+		stateLoadCallback: function (settings, callback) {
+			$.ajax( {
+				url: '/core/update_user_settings.php?set=listIFRA&action=load',
+				dataType: 'json',
+				success: function (json) {
+					callback( json );
+				}
+			});
+		},
+		stateSaveCallback: function (settings, data) {
+		   $.ajax({
+			 url: "/core/update_user_settings.php?set=listIFRA&action=save",
+			 data: data,
+			 dataType: "json",
+			 type: "POST"
+		  });
+		},
 	
 	});
 
@@ -328,200 +326,249 @@ $(document).ready(function() {
 		});
 	});
 	
-});
 
-function format ( d ) {
-    details = '<strong>Synonyms:</strong><br><span class="ifra_details">'+d.synonyms+
-	'</span><br><strong>CAS Comment:</strong><br><span class="ifra_details">'+d.cas_comment+
-	'</span><br><strong>Risk:</strong><br><span class="ifra_details">'+d.risk+
-	'</span><br><strong>Specified Notes:</strong><br><span class="ifra_details">'+d.specified_notes+
-	'</span><br><strong>Flavor Use:</strong><br><span class="ifra_details">'+d.flavor_use;
 
-	return details;
-}
-
-function name(data, type, row){
-	return '<i class="pv_point_gen pv_gen_li" id="ifra_name">'+row.name+'</i>';
-}
-
-function CAS(data, type, row){
-	data = '<a href="#" data-name="cas" class="cas" data-type="text" data-pk="' + row.id + '">' + data + '</a>';
-	return data;
-}
-
-function image(data, type, row){
-	return '<img src="data:image/png;base64, '+row.image+'" class="img_ifra"/>';
-}
-
-function reload_data() {
-    $('#tdDataIFRA').DataTable().ajax.reload(null, true);
-}
-
-function actions(data, type, row){
-	data = '<a class="pv_point_gen text-danger" id="dDel" data-name="'+ row.name +'" data-id='+ row.id +'><i class="fas fa-trash mx-2"></i></a>';
+	function format ( d ) {
+		details = '<strong>Synonyms:</strong><br><span class="ifra_details">'+d.synonyms+
+		'</span><br><strong>CAS Comment:</strong><br><span class="ifra_details">'+d.cas_comment+
+		'</span><br><strong>Risk:</strong><br><span class="ifra_details">'+d.risk+
+		'</span><br><strong>Specified Notes:</strong><br><span class="ifra_details">'+d.specified_notes+
+		'</span><br><strong>Flavor Use:</strong><br><span class="ifra_details">'+d.flavor_use;
 	
-	return data;
-}
-
-
-$('#exportCSV').click(() => {
-    $('#tdDataIFRA').DataTable().button(0).trigger();
-});
-
-$('#btnImportIFRA').click(function() {	
-	$("#IFRAImportMsg").html('<div class="alert alert-info"><img src="/img/loading.gif" class="mx-2"/>Please wait, file upload in progress....</div>');
-	$("#btnImportIFRA").prop("disabled", true);
-	$("#btnIFRAC").prop("disabled", true);
-
+		return details;
+	};
 	
-	var fd = new FormData();
-    var files = $('#ifraXLS')[0].files;
-    var modify = $('#updateCAS').prop("checked");
-    var overwrite = $('#overwrite').prop("checked");
-    var IFRAver = $('#IFRAver').val();
-
-       if(files.length > 0 ){
-        fd.append('ifraXLS',files[0]);
-        $.ajax({
-           url: '/pages/upload.php?type=IFRA&updateCAS=' + modify + '&overwrite='+ overwrite + '&IFRAVer=' + IFRAver,
-           type: 'POST',
-           data: fd,
-           contentType: false,
-           processData: false,
-		         cache: false,
-		   dataType: 'json',
-           success: function(response){
-             if(response.success){
-				 $("#IFRAImportMsg").html('<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+response.success+'</div>');
-				// $("#btnImportIFRA").hide();
-				 $("#btnIFRAC").html('Close');
-				 $("#btnImportIFRA").prop("disabled", false);
-				 $("#btnIFRAC").prop("disabled", false);
-				 $("#ifraXLS").val('');
-				 reload_data();
-              }else{
-                $("#IFRAImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+response.error+'</div>');
-				$("#btnImportIFRA").prop("disabled", false);
-				$("#btnIFRAC").prop("disabled", false);
-              }
-            },
-         });
-  }else{
-	$("#IFRAImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a file to upload!</div>');
-	$("#btnImportIFRA").prop("disabled", false);
-  }	
-});
-
-$('#Importpb').click(function() {	
-	$("#pbmportMsg").html('<div class="alert alert-info"><img src="/img/loading.gif" class="mx-2"/>Please wait, this may take a few minutes, depending your IFRA library size and your internet connection...</div>');
-	$("#Importpb").prop("disabled", true);
-	$("#ImportpbC").hide();
-
-	$.ajax({
-		url: '/pages/update_data.php', 
-		type: 'GET',
-		data: {
-			IFRA_PB: "import",
+	function name(data, type, row){
+		return '<i class="pv_point_gen pv_gen_li" id="ifra_name">'+row.name+'</i>';
+	};
+	
+	function CAS(data, type, row){
+		data = '<a href="#" data-name="cas" class="cas" data-type="text" data-pk="' + row.id + '">' + data + '</a>';
+		return data;
+	};
+	
+	function renderCategory(data, row, category){
+    	return '<a href="#" data-name="' + category + '" class="' + category + '" data-type="text" data-pk="' + row.id + '">' + data + '</a>';
+	};
+	
+	function image(data, type, row){
+		return '<img src="data:image/png;base64, '+row.image+'" class="img_ifra"/>';
+	};
+	
+	function reload_data() {
+		$('#tdDataIFRA').DataTable().ajax.reload(null, true);
+	};
+	
+	function actions(data, type, row){
+		data = '<a class="pv_point_gen text-danger" id="dDel" data-name="'+ row.name +'" data-id='+ row.id +'><i class="fas fa-trash mx-2"></i></a>';
+		
+		return data;
+	};
+	
+	
+	$('#exportCSV').click(() => {
+		$('#tdDataIFRA').DataTable().button(0).trigger();
+	});
+	
+	$('#btnImportIFRA').click(function() {	
+		$("#IFRAImportMsg").html('<div class="alert alert-info"><img src="/img/loading.gif" class="mx-2"/>Please wait, file upload in progress....</div>');
+		$("#btnImportIFRA").prop("disabled", true);
+		$("#btnIFRAC").prop("disabled", true);
+	
+		
+		var fd = new FormData();
+		var files = $('#ifraXLS')[0].files;
+		var modify = $('#updateCAS').prop("checked");
+		var overwrite = $('#overwrite').prop("checked");
+		var IFRAver = $('#IFRAver').val();
+	
+		if(files.length > 0 ){
+			fd.append('ifraXLS',files[0]);
+			$.ajax({
+			   url: '/pages/upload.php?type=IFRA&updateCAS=' + modify + '&overwrite='+ overwrite + '&IFRAVer=' + IFRAver,
+			   type: 'POST',
+			   data: fd,
+			   contentType: false,
+			   processData: false,
+			   cache: false,
+			   dataType: 'json',
+			   success: function(response){
+				 if(response.success){
+					 $("#IFRAImportMsg").html('<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+response.success+'</div>');
+					// $("#btnImportIFRA").hide();
+					 $("#btnIFRAC").html('Close');
+					 $("#btnImportIFRA").prop("disabled", false);
+					 $("#btnIFRAC").prop("disabled", false);
+					 $("#ifraXLS").val('');
+					 reload_data();
+				  }else{
+					$("#IFRAImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+response.error+'</div>');
+					$("#btnImportIFRA").prop("disabled", false);
+					$("#btnIFRAC").prop("disabled", false);
+				  }
+				},
+			});
+	  }else{
+		$("#IFRAImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a file to upload!</div>');
+		$("#btnImportIFRA").prop("disabled", false);
+	  }	
+	});
+	
+	$('#Importpb').click(function() {	
+		$("#pbmportMsg").html('<div class="alert alert-info"><img src="/img/loading.gif" class="mx-2"/>Please wait, this may take a few minutes, depending your IFRA library size and your internet connection...</div>');
+		$("#Importpb").prop("disabled", true);
+		$("#ImportpbC").hide();
+	
+		$.ajax({
+			url: '/pages/update_data.php', 
+			type: 'GET',
+			data: {
+				IFRA_PB: "import",
 			},
-		dataType: 'json',
-		success: function (data) {
-			if(data.success){				
-				$('#pbmportMsg').html('<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>');
-				$("#Importpb").hide();
-				$("#ImportpbC").show();
-				$('#ImportpbC').html('Close');
-				$("#ImportpC").show();
+			dataType: 'json',
+			success: function (data) {
+				if(data.success){				
+					$('#pbmportMsg').html('<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.success+'</div>');
+					$("#Importpb").hide();
+					$("#ImportpbC").show();
+					$('#ImportpbC').html('Close');
+					$("#ImportpC").show();
+					$("#Importpb").prop("disabled", false);
+					reload_data();
+				}else{
+					$('#pbmportMsg').html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>');
+					$("#Importpb").show();
+					$("#ImportpbC").show();
+					$("#Importpb").prop("disabled", false);
+					$("#ImportpC").show();
+				}
+			}
+		});
+	});
+	
+	
+	$("#overwrite-msg").hide();
+	
+	$("#overwrite").click(function() {
+		if($(this).is(":checked")) {
+			$("#overwrite-msg").show();
+		} else {
+			$("#overwrite-msg").hide();
+		}
+	});
+	
+	$('#tdDataIFRA').on('click', '[id*=dDel]', function () {
+		var d = {};
+		d.ID = $(this).attr('data-id');
+		d.Name = $(this).attr('data-name');
+	
+		bootbox.dialog({
+		   title: "Confirm deletion",
+		   message : 'Delete IFRA entry <strong>'+ d.Name +'</strong> ?',
+		   buttons :{
+			   main: {
+				   label : "Delete",
+				   className : "btn-danger",
+				   callback: function (){
+						
+					$.ajax({ 
+						url: '/pages/update_data.php', 
+						type: 'POST',
+						data: {
+							IFRA: 'delete',
+							ID: d.ID,
+							type: 'IFRA'
+						},
+						dataType: 'json',
+						success: function (data) {
+							if(data.success){
+								$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+								$('.toast-header').removeClass().addClass('toast-header alert-success');
+								reload_data();
+							}else if(data.error){
+								$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+								$('.toast-header').removeClass().addClass('toast-header alert-danger');
+							}
+							$('.toast').toast('show');
+						}
+					  });
+					
+					 return true;
+				   }
+			   },
+			   cancel: {
+				   label : "Cancel",
+				   className : "btn-secondary",
+				   callback : function() {
+					   return true;
+				   }
+			   }   
+		   },onEscape: function () {return true;}
+	   });
+	});
+	
+	$('#tdDataIFRA').editable({
+		container: 'body',
+	  	selector: 'a.cas',
+	  	url: "/pages/update_data.php?IFRA=edit&type=cas",
+	  	title: 'CAS#',
+	  	ajaxOptions: { 
+			dataType: 'json'
+	  	},
+	  	success: function(response, newValue) {
+			if(response.error){
+				return response.error; 
+			}else{ 
 				reload_data();
-			}else{
-				$('#pbmportMsg').html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>');
-				$("#Importpb").show();
-				$("#ImportpbC").show();
-				$("#Importpb").prop("disabled", false);
-				$("#ImportpC").show();
+			}
+	  	},
+	  	validate: function(value){
+			if($.trim(value) == ''){
+				return 'This field is required';
+			}
+	  	}
+	});
+	
+	$('#tdDataIFRA').editable({
+		container: 'body',
+		selector: 'a.cat1, a.cat2, a.cat3, a.cat4, a.cat5A, a.cat5B, a.cat5C, a.cat5D, a.cat6, a.cat7A, a.cat7B, a.cat8, a.cat9, a.cat10A, a.cat11A, a.cat11B, a.cat12',
+		type: 'POST',
+		url: "/pages/update_data.php",
+		
+		params: function(params) {
+        	var category = String($(params).attr('name').split(' ')[0]).toUpperCase();
+	        return {
+    	        IFRA: 'edit',
+        	    type: category,
+            	value: parseFloat(params.value),
+				pk: params.pk
+        	};
+    	},
+		title: function(params) {
+			var category = $(params).attr('data-name').split(' ')[0];
+			return category.toUpperCase() + '%';
+		},
+		ajaxOptions: { 
+			dataType: 'json'
+		},
+		success: function(response, newValue) {
+			if (response.error) {
+				return response.error; 
+			} else { 
+				reload_data();
+			}
+		},
+		validate: function(value) {
+			if ($.trim(value) === '') {
+				return 'This field is required';
+			}
+			if (!/^\d+(\.\d+)?$/.test(value)) {
+				return 'Please enter a valid number (e.g., 1.23)';
 			}
 		}
 	});
-});
 
 
-$("#overwrite-msg").hide();
-
-$("#overwrite").click(function() {
-    if($(this).is(":checked")) {
-        $("#overwrite-msg").show();
-    } else {
-        $("#overwrite-msg").hide();
-    }
-});
-
-$('#tdDataIFRA').on('click', '[id*=dDel]', function () {
-	var d = {};
-	d.ID = $(this).attr('data-id');
-    d.Name = $(this).attr('data-name');
-
-	bootbox.dialog({
-       title: "Confirm deletion",
-       message : 'Delete IFRA entry <strong>'+ d.Name +'</strong> ?',
-       buttons :{
-           main: {
-               label : "Delete",
-               className : "btn-danger",
-               callback: function (){
-	    			
-				$.ajax({ 
-					url: '/pages/update_data.php', 
-					type: 'POST',
-					data: {
-						IFRA: 'delete',
-						ID: d.ID,
-						type: 'IFRA'
-						},
-					dataType: 'json',
-					success: function (data) {
-						if(data.success){
-							msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
-							reload_data();
-						}else if(data.error){
-							msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
-						}
-						$('#iframsg').html(msg);
-					}
-				  });
-				
-                 return true;
-               }
-           },
-           cancel: {
-               label : "Cancel",
-               className : "btn-secondary",
-               callback : function() {
-                   return true;
-               }
-           }   
-       },onEscape: function () {return true;}
-   });
-});
-
-$('#tdDataIFRA').editable({
-  container: 'body',
-  selector: 'a.cas',
-  url: "/pages/update_data.php?IFRA=edit&type=CAS",
-  title: 'CAS#',
-  ajaxOptions: { 
-  	dataType: 'json'
-  },
-  success: function(response, newValue) {
-	if(response.error){
-		return response.error; 
-	}else{ 
-		reload_data();
-	}
-  },
-  validate: function(value){
-   if($.trim(value) == ''){
-	return 'This field is required';
-   }
-  }
 });
 </script>
 <script src="/js/mark/jquery.mark.min.js"></script>

@@ -395,6 +395,11 @@ $(document).ready(function() {
 								$('.toast-header').removeClass().addClass('toast-header alert-danger');
 							}
 							$('.toast').toast('show');
+						},
+						error: function (xhr, status, error) {
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+							$('.toast-header').removeClass().addClass('toast-header alert-danger');
+							$('.toast').toast('show');
 						}
 					  });
 					 return true;
@@ -439,6 +444,11 @@ $(document).ready(function() {
 								$('.toast-header').removeClass().addClass('toast-header alert-danger');
 							}
 							$('.toast').toast('show');
+						},
+						error: function (xhr, status, error) {
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+							$('.toast-header').removeClass().addClass('toast-header alert-danger');
+							$('.toast').toast('show');
 						}
 					});
 					
@@ -479,6 +489,11 @@ $(document).ready(function() {
 				$('.toast-header').removeClass().addClass('toast-header alert-danger');
 			}
 			$('.toast').toast('show');
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
 		}
 	  });
 	});
@@ -501,7 +516,7 @@ $(document).ready(function() {
 			if(data.error){
 				var rmsg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
 			}else if(data.success){
-				var rmsg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><a href="?do=Formula&id='+data.success.id+'">'+data.success.msg+'</a></div>';
+				var rmsg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><a href="/?do=Formula&id='+data.success.id+'">'+data.success.msg+'</a></div>';
 				reload_formulas_data();
 				if($("#go_to_formula").prop("checked")){
 					window.location = "/?do=Formula&id=" + data.success.id

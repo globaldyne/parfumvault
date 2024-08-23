@@ -9,6 +9,51 @@ require_once(__ROOT__.'/func/fixIFRACas.php');
 require_once(__ROOT__.'/func/formatBytes.php');
 require_once(__ROOT__.'/func/create_thumb.php');
 
+//UPLOAD ING PROFILE
+if($_GET['upload_ing_prof_pic'] && $_GET['profID']){
+
+	$id = (int)$_GET['profID'];
+	$allowed_ext = "png, jpg, jpeg, gif, bmp";
+
+	$filename = $_FILES["prof-pic-file"]["tmp_name"];  
+    $file_ext = strtolower(end(explode('.',$_FILES['prof-pic-file']['name'])));
+	$file_tmp = $_FILES['prof-pic-file']['tmp_name'];
+    $ext = explode(', ',strtolower($allowed_ext));
+
+	
+	if(!$filename){
+		$response["error"] = 'Please choose a file to upload...';
+		echo json_encode($response);
+		return;
+	}	
+	
+	if (!file_exists($tmp_path)) {
+		mkdir($tmp_path, 0740, true);
+	}
+		
+	if(in_array($file_ext,$ext)===false){
+		$response["error"] = 'Extension not allowed, please choose a '.$allowed_ext.' file';
+		echo json_encode($response);
+		return;
+	}
+		
+	if($_FILES["prof-pic-file"]["size"] > 0){
+		move_uploaded_file($file_tmp,$tmp_path.base64_encode($filename));
+		$pic = base64_encode($filename);		
+		create_thumb($tmp_path.$pic,250,250); 
+		$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents($tmp_path.$pic));
+		
+		if(mysqli_query($conn, "UPDATE ingProfiles SET image = '".$docData."' WHERE id = '$id'")){	
+			unlink($tmp_path.$pic);
+			$response["success"] = array( "msg" => "Profile image updated", "pic" => $docData);
+			echo json_encode($response);
+			return;
+		}
+	}
+
+	return;
+}
+
 if($_GET['upload_ing_cat_pic'] && $_GET['catID']){
 
 	$id = $_GET['catID'];

@@ -126,15 +126,29 @@ foreach ($form as $formula){
 		$r['cost'] = (float)calcCosts(getPrefSupplier($ing_q['id'],$conn)['price'],$new_quantity, $formula['concentration'], getPrefSupplier($ing_q['id'],$conn)['size']);
     } 
 
-	$u = explode(' - ',searchIFRA($ing_q['cas'],$formula['ingredient'],null,$defCatClass));
-	
-	if(($u['0'] && $ing_q['byPassIFRA'] == 0)){
-		$r['usage_limit'] = number_format((float)$u['0']?:100, $settings['qStep']);
-		$r['usage_restriction'] = (string)$u['1'] ?: 'N/A';
+	//$u = explode(' - ',searchIFRA($ing_q['cas'],$formula['ingredient'],null,$defCatClass));
+	$u = searchIFRA($ing_q['cas'],$formula['ingredient'],null,$defCatClass);
+
+	//if(($u['0'] && $ing_q['byPassIFRA'] == 0)){
+	if(($u['val'] || $u['type'] && $ing_q['byPassIFRA'] == 0)){	
+		$r['usage_limit'] = number_format((float)$u['val']?:100, $settings['qStep']);
+		$r['usage_restriction'] = (string)$u['risk'] ?: 'N/A';
+		$r['usage_restriction_type'] = (string)$u['type'] ?: 'N/A';
 		$r['usage_regulator'] = (string)"IFRA";
 	}else{
 		$r['usage_limit'] = number_format((float)$ing_q["$defCatClass"], $settings['qStep']) ?: 100;
 		$r['usage_restriction'] = (int)$ing_q['classification'];
+		if ($ing_q['classification'] == 1) {
+			$r['usage_restriction_type'] = 'RECOMMENDATION';
+		} elseif ($ing_q['classification'] == 2) {
+			$r['usage_restriction_type'] = 'RESTRICTION';
+		} elseif ($ing_q['classification'] == 3) {
+			$r['usage_restriction_type'] = 'SPECIFICATION';
+		} elseif ($ing_q['classification'] == 4) {
+			$r['usage_restriction_type'] = 'PROHIBITION';
+		} else {
+			$r['usage_restriction_type'] = 'RECOMMENDATION';
+		}
 		$r['usage_regulator'] = (string)"PV";
 		$r['ingredient']['classification'] = (int)$ing_q['classification'] ?: 1;
 	}

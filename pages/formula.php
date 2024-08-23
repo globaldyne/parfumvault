@@ -70,9 +70,10 @@ if($form[0]['ingredient']){
                     </h2>
                     <h5 class="m-1 text-primary">
                       <span>
-                        <a href="#" rel="tip" class="text-secondary-emphasis"" data-bs-placement="right" title="<?= $cat_details['description'] ?>">
+                        <a href="#" rel="tip" class="text-secondary-emphasis" data-bs-placement="right" title="<?= $cat_details['description'] ?>">
                           <?= ucfirst($meta['catClass']) ?>
                         </a>
+                        <div id="max_usage" class="text-secondary-emphasis"></div>
                       </span>
                     </h5>
                   </div>
@@ -251,7 +252,7 @@ if($form[0]['ingredient']){
 <script>
 document.title = "<?=$meta['name'].' - '.$product?>";
 var myFID = "<?=$fid?>";
-var isProtected = "<?=$meta['isProtected']?>"
+var isProtected = "<?=$meta['isProtected']?>";
 
 $('#formula_name').click(function() {
     reload_formula_data();
@@ -295,6 +296,11 @@ $('#add_ing').on('click', '[id*=add-btn]', function () {
 				$('.toast-header').removeClass().addClass('toast-header alert-danger');
 			}
 			$('.toast').toast('show');
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
 		}
 		
 	  });
@@ -303,29 +309,35 @@ $('#add_ing').on('click', '[id*=add-btn]', function () {
 
 function setProtected(status) {
   $.ajax({ 
-		url: '/pages/update_data.php', 
-		type: 'GET',
-		data: {
-			protect: myFID,
-			isProtected: status,
-			},
-		dataType: 'json',
-		success: function (data) {
-			if ( data.success ) {
-				fetch_formula();
-				if( data.success == 'Formula locked'){
-					$('#lock_status').html('<a class="fas fa-lock text-body-emphasis" href="javascript:setProtected(\'false\')">');
-					$('#add_ing').hide();
-				}else{
-					$('#lock_status').html('<a class="fas fa-unlock text-body-emphasis" href="javascript:setProtected(\'true\')">');
-					$('#add_ing').show();
-				}
-			} else {
-				$('#msgInfo').html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + data.error + '</strong></div>');
-			}
-		}
-	  });
-};
+    url: '/pages/update_data.php', 
+    type: 'GET',
+    data: {
+      protect: myFID,
+      isProtected: status,
+    },
+    dataType: 'json',
+    success: function (data) {
+      if (data.success) {
+        fetch_formula();
+        if (data.success === 'Formula locked') {
+          $('#lock_status').html('<a class="fas fa-lock text-body-emphasis" href="javascript:setProtected(\'false\')"></a>');
+          $('#add_ing').hide();
+        } else {
+          $('#lock_status').html('<a class="fas fa-unlock text-body-emphasis" href="javascript:setProtected(\'true\')"></a>');
+          $('#add_ing').show();
+        }
+      } else {
+        $('#msgInfo').html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + data.error + '</strong></div>');
+      }
+    },
+    error: function (xhr, status, error) {
+      $('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i> An ' + status + ' occurred, check server logs for more info. ' + error);
+      $('.toast-header').removeClass().addClass('toast-header alert-danger');
+      $('.toast').toast('show');
+    }
+  });
+}
+
 
 function fetch_formula(){
 $.ajax({ 

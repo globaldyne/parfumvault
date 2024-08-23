@@ -61,7 +61,7 @@ if($_POST['adv']){
 
 $extra = "ORDER BY ".$order_by." ".$order;
 
-$s = trim(mysqli_real_escape_string($conn,$_POST['search']['value']));
+$s = trim(mysqli_real_escape_string($conn,$_POST['search']['value'] ?: $_POST['pvSearch']));
 
 if($s != ''){
    $t = '';
@@ -95,10 +95,11 @@ foreach ($ingredients as $ingredient) {
 	$r['category']['name'] = (string)$cat['name']?: 'N/A';
 	$r['category']['image'] = (string)$cat['image']?: '/img/pv_molecule.png';
 
+
 	if(($limit = searchIFRA($ingredient['cas'],$ingredient['name'],null,$defCatClass)) && $ingredient['byPassIFRA'] == 0){
-		$limit = explode(' - ', $limit);		
-		$r['usage']['limit'] = (float)$limit['0'];
-		$r['usage']['reason'] = (string)$limit['1'];
+		//$limit = explode(' - ', $limit);		
+		$r['usage']['limit'] = (float)$limit['val'];
+		$r['usage']['reason'] = (string)$limit['risk'];
 	}else{
 		$r['usage']['limit'] = number_format((float)$ingredient["$defCatClass"], $settings['qStep']) ?: 100;
 		$r['usage']['reason'] = (int)$ingredient['usage_type'];
