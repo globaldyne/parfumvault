@@ -172,8 +172,7 @@ CREATE TABLE `ingCategory` (
 CREATE TABLE `ingProfiles` (
   `id` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
-  `notes` text COLLATE utf8_general_ci DEFAULT NULL,
-  `image` LONGBLOB NULL
+  `notes` text COLLATE utf8_general_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 INSERT INTO `ingProfiles` (`id`, `name`, `notes`) VALUES

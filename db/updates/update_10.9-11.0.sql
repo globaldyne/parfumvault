@@ -1,1 +1,0 @@
-ALTER TABLE `ingProfiles` ADD `image` LONGBLOB NOT NULL AFTER `notes`; 

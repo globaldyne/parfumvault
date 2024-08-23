@@ -12,9 +12,7 @@ $(document).ready(function() {
 	$('#cat_tab').on( 'click', function () {
 		list_cat();
 	});
-	$('#prof_tab').on( 'click', function () {
-		list_prof();
-	})	
+		
 	$('#frmCat_tab').on( 'click', function () {
 		list_fcat();
 	});
@@ -69,16 +67,6 @@ $(document).ready(function() {
 			dataType: 'html',
 			success: function (data) {
 				$('#list_cat').html(data);
-			}
-		});
-	};
-	
-	function list_prof(){
-		$.ajax({ 
-			url: '/pages/views/settings/listIngProfiles.php', 
-			dataType: 'html',
-			success: function (data) {
-				$('#list_prof').html(data);
 			}
 		});
 	};
