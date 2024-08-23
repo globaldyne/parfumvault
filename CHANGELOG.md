@@ -1,6 +1,5 @@
 # CHANGELOG
 ### Version 11.0
-- Making ingredient profile customizable
 - Making SDS GA
 - Added maximum allowed usage for a formula
 - Changed datatype for PubChem to json
