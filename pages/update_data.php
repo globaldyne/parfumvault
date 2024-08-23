@@ -174,9 +174,9 @@ if($_POST['ingredient_wipe'] == 'true'){
 
 
 //UPDATE CAS IFRA ENTRY
-if($_GET['IFRA'] == 'edit' && $_POST['value'] && $_GET['type'] == 'CAS'){
-	
-	if(mysqli_query($conn, "UPDATE IFRALibrary SET cas = '".$_POST['value']."' WHERE id = '".$_POST['pk']."'")){
+if($_REQUEST['IFRA'] == 'edit'){
+	$type = $_REQUEST['type'];
+	if(mysqli_query($conn, "UPDATE IFRALibrary SET $type = '".$_REQUEST['value']."' WHERE id = '".$_REQUEST['pk']."'")){
 		$response["success"] = 'IFRA entry updated';
 	}else{
 		$response["error"] = 'Something went wrong '.mysqli_error($conn);
@@ -659,34 +659,51 @@ if($_POST['action'] == 'delete' && $_POST['lidId'] && $_POST['type'] == 'lid'){
 }
 
 //IMPORT IMAGES FROM PUBCHEM
-if($_GET['IFRA_PB'] == 'import'){
-	require_once(__ROOT__.'/func/pvFileGet.php');
-	$i = 0;
-	$qCas = mysqli_query($conn,"SELECT cas FROM IFRALibrary WHERE image IS NULL OR image = '' OR image = '-'");
+if(isset($_GET['IFRA_PB']) && $_GET['IFRA_PB'] === 'import'){
+    require_once(__ROOT__.'/func/pvFileGet.php');
+    
+    $i = 0;
+    $response = [];
 
-	if(!mysqli_num_rows($qCas)){
-		$response["error"] = 'IFRA Database is currently empty';
-		echo json_encode($response);
-		return;
-	}
-	
-	$view =  $settings['pubchem_view'];
-	while($cas = mysqli_fetch_array($qCas)){
-		$image = base64_encode(pv_file_get_contents($pubChemApi.'/pug/compound/name/'.trim($cas['cas']).'/PNG?record_type='.$view.'&image_size=small'));
-		
-		$imp = mysqli_query($conn,"UPDATE IFRALibrary SET image = '$image' WHERE cas = '".$cas['cas']."'");
-		$i++;
-		
-		usleep(.1 * 1000000);
-	}
-	if($imp){
-		$response["success"] = $i.' images updated!';
-	}else{
-		$response["error"] = 'Something went wrong '.mysqli_error($conn);
-	}
-	echo json_encode($response);
-	return;
+    $qCas = mysqli_query($conn, "SELECT cas FROM IFRALibrary WHERE image IS NULL OR image = '' OR image = '-'");
+
+    if(!$qCas || mysqli_num_rows($qCas) == 0){
+        $response["error"] = 'IFRA Database is currently empty or there was a problem with the query.';
+        echo json_encode($response);
+        return;
+    }
+
+    $view = $settings['pubchem_view'];
+
+    while($cas = mysqli_fetch_assoc($qCas)){
+        $casNumber = trim($cas['cas']);
+        $imageUrl = $pubChemApi.'/pug/compound/name/'.$casNumber.'/PNG?record_type='.$view.'&image_size=small';
+        $imageContent = pv_file_get_contents($imageUrl);
+        
+        if($imageContent !== false){
+            $image = base64_encode($imageContent);
+            $stmt = $conn->prepare("UPDATE IFRALibrary SET image = ? WHERE cas = ?");
+            $stmt->bind_param('ss', $image, $casNumber);
+
+            if($stmt->execute()){
+                $i++;
+            } else {
+                $response["error"] = 'Error updating image for CAS: '.$casNumber.' - '.mysqli_error($conn);
+                echo json_encode($response);
+                return;
+            }
+
+            $stmt->close();
+        }
+
+        usleep(100000); // 0.1 seconds delay
+    }
+
+    $response["success"] = $i.' images updated!';
+    echo json_encode($response);
+    return;
 }
+
 
 //Update data FROM PubChem
 if($_POST['pubChemData'] == 'update' && $_POST['cas']){
@@ -711,10 +728,11 @@ if($_POST['pubChemData'] == 'update' && $_POST['cas']){
 		$q.= mysqli_query($conn, "UPDATE ingredients SET INCI = '$InChI' WHERE cas='$cas'");
 	}
 	if($q){
-		echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>Data updated!</div>';
+		$response["success"] = 'Local data updated';
 	}else{
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>Unable to update data!</div>';
+		$response["error"] = 'Unable to update data';
 	}
+	echo json_encode($response);
 	return;
 }
 
@@ -1210,6 +1228,15 @@ if($_GET['settings'] == 'cat'){
 	return;
 }
 
+if($_GET['settings'] == 'prof'){
+	$value = mysqli_real_escape_string($conn, $_POST['value']);
+	$id = mysqli_real_escape_string($conn, $_POST['pk']);
+	$name = mysqli_real_escape_string($conn, $_POST['name']);
+
+	mysqli_query($conn, "UPDATE ingProfiles SET $name = '$value' WHERE id = '$id'");
+	return;
+}
+
 if($_GET['settings'] == 'fcat'){
 	$value = mysqli_real_escape_string($conn, $_POST['value']);
 	$cat_id = mysqli_real_escape_string($conn, $_POST['pk']);
@@ -1525,7 +1552,7 @@ if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'general'){
 	}else{
 		$name = sanChar(mysqli_real_escape_string($conn, $_POST["name"]));
 
-		$query = "INSERT INTO ingredients (name, INCI, cas, einecs, reach, FEMA, type, strength, category, profile, notes, odor, purity, solvent, allergen, physical_state) VALUES ('$name', '$INCI', '$cas', '$einecs', '$reach', '$fema', '$type', '$strength', '$category', '$profile',  '$notes', '$odor', '$purity', '$solvent', '$allergen', '1')";
+		$query = "INSERT INTO ingredients (name, INCI, cas, einecs, reach, FEMA, type, strength, category, profile, notes, odor, purity, solvent, physical_state) VALUES ('$name', '$INCI', '$cas', '$einecs', '$reach', '$fema', '$type', '$strength', '$category', '$profile',  '$notes', '$odor', '$purity', '$solvent', '1')";
 		
 		if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '$name'"))){
 			$response["error"] = $name.' already exists!';

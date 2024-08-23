@@ -45,9 +45,9 @@ if(empty($data)){
 <script>
 $(document).ready(function(){
   
-$('#pubChemDataJ').on('click', '[id*=btnUpdatePub]', function () {
+$('#btnUpdatePub').on('click', function () {
 	$.ajax({ 
-		url: 'update_data.php', 
+		url: '/pages/update_data.php', 
 		type: 'POST',
 		data: {
 			pubChemData: 'update',
@@ -58,12 +58,19 @@ $('#pubChemDataJ').on('click', '[id*=btnUpdatePub]', function () {
 			CanonicalSMILES: "<?=$CanonicalSMILES?>",
 			ExactMass: "<?=$ExactMass?>",
 			cas: "<?=$cas?>",
-			},
-		dataType: 'html',
+		},
+		dataType: 'JSON',
 		success: function (data) {
-			$('#ingMsg').html(data);
+			$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+			$('.toast-header').removeClass().addClass('toast-header alert-success');
 			$("#INCI").val("<?=$InChI?>");
 			reload_overview();
+			$('.toast').toast('show');
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
 		}
 	  });             
 });
@@ -99,7 +106,12 @@ $('#pubChemDataJ').on('click', '[id*=btnUpdatePub]', function () {
       </div>
       <div class="row">
         <div class="col-12">
-          <input type="submit" class="btn btn-primary" name="btnUpdatePub" id="btnUpdatePub" value="Update data" />
+        	<input class="btn btn-primary mx-2" name="btnUpdatePub" id="btnUpdatePub" value="Update data" />
+	    	<a href="https://pubchem.ncbi.nlm.nih.gov/#query=<?=$cas?>" target="_blank">
+    			<button class="btn btn-warning" name="btnViewPub" id="btnViewPub">
+        			View in PubChem <i class="fa-solid fa-arrow-up-right-from-square"></i>
+    			</button>
+			</a>
         </div>
       </div>
     </div>

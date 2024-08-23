@@ -38,7 +38,7 @@ require_once(__ROOT__.'/inc/opendb.php');
                 
 <script>
 $(document).ready(function() {
-		var tdDataCat = $('#tdDataCat').DataTable( {
+	var tdDataCat = $('#tdDataCat').DataTable( {
 		columnDefs: [
 			{ className: 'text-center', targets: '_all' },
 			{ orderable: false, targets: [0,1,4] }
@@ -96,7 +96,7 @@ $(document).ready(function() {
 		}
 		
 		return '<a href="#" data-id="'+row.id+'" data-bs-toggle="modal" data-bs-target="#editCategory">' + cimg + '</a>';    
-	}
+	};
 	
 	function ciKey(data, type, row){
 		return '<a href="#" class="colorKey" style="background-color: rgb('+row.colorKey+')" id="colorKey" data-name="colorKey" data-type="select" data-pk="'+row.id+'" data-title="Choose Colour Key for '+row.name+'"></a>';
@@ -254,7 +254,7 @@ $(document).ready(function() {
 		const id = e.relatedTarget.dataset.id;
 		const name = e.relatedTarget.dataset.name;
 	
-		$.get("/pages/editCat.php?id=" + id)
+		$.get("/pages/views/settings/editCat.php?id=" + id)
 			.then(data => {
 			$("#editCategoryLabel", this).html(name);
 			$(".modal-body", this).html(data);

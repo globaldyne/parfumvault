@@ -35,7 +35,7 @@ require_once(__ROOT__.'/inc/opendb.php');
  
 <script>
 $(document).ready(function() {
-		var frmDataCat = $('#frmDataCat').DataTable( {
+	var frmDataCat = $('#frmDataCat').DataTable( {
 		columnDefs: [
 			{ className: 'text-center', targets: '_all' },
 			{ orderable: false, targets: [2,3] }
@@ -47,14 +47,14 @@ $(document).ready(function() {
 			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw">',
 			emptyTable: 'No groups yet.',
 			search: 'Search:'
-			},
+		},
     	ajax: {	url: '/core/list_frmCat_data.php' },
 		columns: [
-				  { data : 'name', title: 'Name', render: cName },
-    			  { data : 'type', title: 'Type', render: cType},
-    			  { data : 'colorKey', title: 'Colour Key', render: fKey},
-   				  { data : null, title: '', render: cActions},		   
-				 ],
+			{ data : 'name', title: 'Name', render: cName },
+    		{ data : 'type', title: 'Type', render: cType},
+    		{ data : 'colorKey', title: 'Colour Key', render: fKey},
+   			{ data : null, title: '', render: cActions},		   
+		],
         order: [[ 1, 'asc' ]],
 		lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
         pageLength: 20,
@@ -84,19 +84,19 @@ $(document).ready(function() {
 
 	function cName(data, type, row){
 		return '<a class="name pv_point_gen" data-name="name" data-type="text" data-pk="'+row.id+'">'+row.name+'</a>';    
-	}
+	};
 	
 	function cType(data, type, row){
 		return '<a class="type pv_point_gen" data-name="type" data-type="select" data-pk="'+row.id+'">'+row.type+'</a>';    
-	}
+	};
 	
 	function cActions(data, type, row){
 		return '<i id="catDel" class="pv_point_gen fas fa-trash link-danger" data-id="'+row.id+'" data-name="'+row.name+'"></i>';    
-	}
+	};
 	
 	function fKey(data, type, row){
 		return '<a href="#" class="colorKey" style="background-color: '+row.colorKey+'" id="colorKey" data-name="colorKey" data-type="select" data-pk="'+row.id+'" data-title="Choose Colour Key for '+row.name+'"></a>';    
-	}
+	};
 	
 	$('#add-fcat').click(function() {
 	$.ajax({ 

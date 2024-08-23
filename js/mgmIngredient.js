@@ -7,7 +7,9 @@ function fetch_generalData(){
 		url: '/pages/views/ingredients/mgmGeneral.php', 
 		type: 'GET',
 		data: {
-			id: btoa(myIngName)
+			id: btoa(myIngName),
+			newIngName: newIngName,
+			newIngCAS: newIngCAS
 		},
 		dataType: 'html',
 		success: function (data) {
@@ -224,9 +226,12 @@ $('#genDOC').on('click', '[id*=generateDOC]', function () {
 			if(data.success){
 				msg = '<div class="alert alert-success">' + data.success + '</div>';
 			}else if(data.error){
-				msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				msg = '<div class="alert alert-danger">' + data.error + '</div>';
 			}
 			$('#doc_res').html(msg);
+		},
+		error: function (xhr, status, error) {
+			$('#doc_res').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mr-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 		}
 	});
 });

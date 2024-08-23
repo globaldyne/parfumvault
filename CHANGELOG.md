@@ -1,4 +1,18 @@
 # CHANGELOG
+### Version 11.0
+- Making SDS GA
+- Added maximum allowed usage for a formula
+- Changed datatype for PubChem to json
+- Added a button to view ingredient data in PubChem
+- Fix PubChemData update button
+- Added more error handling for ajax requests
+- Added a var (pvSearch) to search ingredients in the local datatabase
+- Changed the way the ingredient is handled when exists in a formula but not in the database. Instead of auto creating it when clicked, it presents options to create it, search in PV Online or import via JSON
+- Added editability in IFRA Library
+- Fix a bug preventing adding new ingredients
+- Treat empty IFRA Library values (PROHIBITION, SPECIFICATION) as 0% allowed
+- IFRA structure images import improvements
+
 ### Version 10.9
 - Sys update check improvements
 - Dashboard page updates

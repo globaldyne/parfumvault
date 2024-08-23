@@ -1,5 +1,5 @@
 <?php
-define('__ROOT__', dirname(dirname(__FILE__))); 
+define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__))))); 
 
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
@@ -10,37 +10,6 @@ $id = mysqli_real_escape_string($conn, $_GET['id']);
 	
 $max_height = 200;
 $max_width = 200;
-
-if(isset($_FILES['photo']['name'])){
-	$file_name = $_FILES['photo']['name'];
-    $file_size = $_FILES['photo']['size'];
-    $file_tmp =  $_FILES['photo']['tmp_name'];
-    $file_type = $_FILES['photo']['type'];
-    $file_ext = strtolower(end(explode('.',$_FILES['photo']['name'])));
-
-	
-	$tmp_path = __ROOT__.'/tmp/';
-	
-	if (!file_exists($tmp_path)) {
-		mkdir($tmp_path, 0740, true);
-	}
-	  
-    $ext = explode(', ',strtolower($allowed_ext));
-
-
- 	if(in_array($file_ext,$ext)=== false){
-		$msg = '<div class="alert alert-danger alert-dismissible"><strong>File upload error: </strong>Extension '.$file_ext.' not allowed, please choose a '.$allowed_ext.' file.</div>';
-    }elseif($file_size > $max_filesize){
-		$msg = '<div class="alert alert-danger alert-dismissible"><strong>File upload error: </strong>File size must not exceed '.formatBytes($max_filesize).'</div>';
-    }else{
-		imageResize($tmp_path, $file_tmp, $file_name, $max_height, $max_width);
-    	$data = 'data:image/' . $file_ext . ';base64,' . base64_encode(file_get_contents($tmp_path.$file_name));
-		if(mysqli_query($conn, "UPDATE ingCategory SET image = '".$data."' WHERE id = '$id'")or die(mysqli_error($conn))){
-			unlink($tmp_path.$file_name);
-			$msg = '<div class="alert alert-success alert-dismissible"><strong>File uploaded</div>';
-		}
-    }
-}
 
 $cat = mysqli_fetch_array(mysqli_query($conn, "SELECT image,name FROM ingCategory WHERE id = '$id'")); 
 
@@ -90,7 +59,7 @@ $(document).ready(function () {
 			success: function (data) {
 				if(data.success){
 					$('#cat-pic').html('<img class="img-profile-avatar" src="'+data.success.pic+'">');
-	
+					$('#tdDataCat').DataTable().ajax.reload(null, true);
 				}else if( data.error){
 					$('#cat-msg').html('<div class="alert alert-danger">'+data.error+'</div>');
 				}

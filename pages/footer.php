@@ -17,7 +17,7 @@ if ($commit === false || empty(trim($commit))) {
 }
 
 if (empty($commit)) {
-    $commit = 'unknown'; // fallback if commit is not found in any source
+    $commit = ''; // fallback if commit is not found in any source
 }
 
 	

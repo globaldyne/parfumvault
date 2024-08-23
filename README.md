@@ -62,7 +62,6 @@ Please note, all DB_ variables are required.
 or via docker compose
 
 	---
-	version: '3.8'
 	services:
 	  pvdb:
 	    image: mariadb:10.5

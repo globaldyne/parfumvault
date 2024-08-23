@@ -93,8 +93,8 @@ $('#btnRestoreCategories').click(function() {
 				var msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mr-2"></i>'+data.success+'</div>';
 				$("#btnRestoreCategories").hide();
 				$("#backupArea").css('display', 'none');
-				reload_data();
-
+				//reload_data();
+				$('#tdDataCat, #frmDataCat').DataTable().ajax.reload(null, true);
 			}else if(data.error){
 				var msg = '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mr-2"></i>'+data.error+'</div>';
 				$("#btnRestoreCategories").show();

@@ -121,6 +121,7 @@ while ($formula = mysqli_fetch_array($formula_q)){
 foreach ($form as $formula){
 	
 	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT id, name, cas, $defCatClass, profile, odor, category, physical_state,usage_type AS classification, type, byPassIFRA FROM ingredients WHERE name = '".$formula['ingredient']."'"));
+	/*
 	$reps = mysqli_query($conn,"SELECT ing_rep_name FROM ingReplacements WHERE ing_name = '".$formula['ingredient']."'");
 	if (mysqli_num_rows($reps)==0) { 
 		$reps = mysqli_query($conn,"SELECT ing_name FROM ingReplacements WHERE ing_rep_name = '".$formula['ingredient']."'");
@@ -128,7 +129,7 @@ foreach ($form as $formula){
 	while($replacements = mysqli_fetch_array($reps)){
 		$replacement[] = $replacements;
 	}
-	
+	*/
 	$totalcontainsOthers = mysqli_num_rows(mysqli_query($conn, "SELECT name,$defPercentage,cas FROM ingredient_compounds WHERE ing = '".$formula['ingredient']."'"));
 	
 	
@@ -192,15 +193,28 @@ foreach ($form as $formula){
 
 	}
 
-	$u = explode(' - ',searchIFRA($ing_q['cas'],$formula['ingredient'],null,$defCatClass));
+	$u = searchIFRA($ing_q['cas'],$formula['ingredient'],null,$defCatClass);
 	
-	if(($u['0'] && $ing_q['byPassIFRA'] == 0)){
-		$r['usage_limit'] = number_format((float)$u['0']?:100, $settings['qStep']);
-		$r['usage_restriction'] = (string)$u['1'] ?: 'N/A';
+	if(($u['val'] || $u['type'] && $ing_q['byPassIFRA'] == 0)){
+		$r['usage_limit'] = (float)number_format((float)$u['val'], $settings['qStep']);
+		$r['usage_restriction'] = (string)$u['risk'] ?: 'N/A';
+		$r['usage_restriction_type'] = (string)$u['type'] ?: 'N/A';
 		$r['usage_regulator'] = (string)"IFRA";
 	}else{
 		$r['usage_limit'] = number_format((float)$ing_q["$defCatClass"], $settings['qStep']) ?: 100;
 		$r['usage_restriction'] = (int)$ing_q['classification'];
+		
+		if ($ing_q['classification'] == 1) {
+			$r['usage_restriction_type'] = 'RECOMMENDATION';
+		} elseif ($ing_q['classification'] == 2) {
+			$r['usage_restriction_type'] = 'RESTRICTION';
+		} elseif ($ing_q['classification'] == 3) {
+			$r['usage_restriction_type'] = 'SPECIFICATION';
+		} elseif ($ing_q['classification'] == 4) {
+			$r['usage_restriction_type'] = 'PROHIBITION';
+		} else {
+			$r['usage_restriction_type'] = 'RECOMMENDATION';
+		}
 		$r['usage_regulator'] = (string)"PV";
 		$r['ingredient']['classification'] = (int)$ing_q['classification'] ?: 1;
 	}
@@ -217,7 +231,6 @@ foreach ($form as $formula){
    	$r['ingredient']['name'] = (string)$ingName ?: $formula['ingredient'];
 	$r['ingredient']['cas'] = (string)$ing_q['cas'] ?: 'N/A';
 	$r['ingredient']['physical_state'] = (int)$ing_q['physical_state'];
-	//$r['ingredient']['classification'] = (int)$ing_q['classification'] ?: 1;
 	$r['ingredient']['type'] = (string)$ing_q['type'] ?: 'Unknown';
 
 	$r['ingredient']['desc'] = (string)$desc ?: '-';
@@ -229,17 +242,11 @@ foreach ($form as $formula){
 	$r['ingredient']['inventory']['batch'] = (string)$inventory['batch'] ?: 'N/A';
 	$r['ingredient']['inventory']['purchased'] = (string)$inventory['purchased'] ?: 'N/A';
 	
-	//$totalReplacements = 0;
-	//foreach ($replacement as $rp){
-	//	$totalReplacements++;
-	//	$r['ingredient'][]['replacement']['name'] = (string)$rp['ing_rep_name'] ?: (string)$rp['ing_name'] ?: 'N/A';
-	//}
-	//$r['ingredient']['replacement']['total'] = $totalReplacements ?: 0;
-	
 	
 	$r['ingredient']['containsOthers']['total'] = $totalcontainsOthers ?: 0;
 	
-	$r['chk_ingredient'] = (string)checkIng($formula['ingredient'],$defCatClass,$conn) ?: null;
+	$r['chk_ingredient'] = (string)checkIng($formula['ingredient'],$defCatClass,$conn)['text'];
+	$r['chk_ingredient_code'] = (int)checkIng($formula['ingredient'],$defCatClass,$conn)['code'];
 	$r['exclude_from_calculation'] = (int)$formula['exclude_from_calculation'] ?: 0;
 	
 	
@@ -273,6 +280,24 @@ $m['formula_fid'] = (string)$meta['fid'];
 $m['formula_description'] = (string)$meta['notes'];
 $m['protected'] = (bool)$meta['isProtected'];
 
+$lastValAccepted = null;
+
+for ($c = 1; $c <= 100; $c++) {
+	$result = validateFormula($meta['fid'], 100, $c, $mg['total_mg'], $defCatClass, $settings['qStep']);
+
+    if ($result === 0) {
+        $lastValAccepted = $c;
+    } else {
+        break;
+    }
+}
+if( $lastValAccepted !== null) {
+
+	$m['max_usage'] = $lastValAccepted;
+} else {
+	$m['max_usage'] = 'Unable to calculate';
+}
+/*
 $new_conc = $_GET['final_total_ml'] ?: 100/100*$_GET['final_type_conc'] ?: 100;
 $carrier = $_GET['final_total_ml'] ?: 100 - $new_conc;
 
@@ -292,6 +317,7 @@ $compliance['status'] = (int)$val_status ?: 0;
 $compliance['message'] = (string)$val_msg ?: 'Formula is IFRA compliant';
 	
 $response['compliance'] = $compliance;
+*/
 $response['meta'] = $m;
 
 $s['load_time'] = microtime(true) - $starttime;

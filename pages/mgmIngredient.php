@@ -11,13 +11,6 @@ require_once(__ROOT__.'/func/profileImg.php');
 
 
 $ingID = sanChar(mysqli_real_escape_string($conn, base64_decode($_GET["id"])));
-if($ingID){
-	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$ingID'")))){
-		if(mysqli_query($conn, "INSERT INTO ingredients (name) VALUES ('$ingID')")){
-			$msg='<div class="alert alert-info alert-dismissible"><strong>Info:</strong> ingredient '.$ingID.' added</div>';
-		}
-	}
-}
 
 $res_ingTypes = mysqli_query($conn, "SELECT id,name FROM ingTypes ORDER BY name ASC");
 $res_ingStrength = mysqli_query($conn, "SELECT id,name FROM ingStrength ORDER BY name ASC");
@@ -61,10 +54,12 @@ $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE n
 	
 <script>
 var myIngName = "<?=$ing['name']?>";
-var myIngID = '';
+var newIngName = "<?=$_GET["newIngName"]?>";
+var newIngCAS = "<?=$_GET["newIngCAS"]?>";
+var myIngID;
 <?php if($ing['id']){ ?>
 
-var myIngID = "<?=$ing['id']?>";
+myIngID = "<?=$ing['id']?>";
 var myCAS = "<?=$ing['cas']?>";
 var myPCH = "<?=$settings['pubChem']?>";
 <?php } ?>
@@ -353,88 +348,6 @@ body {
 
 
 
-<script>
-
-$(document).ready(function() {
-	$('[rel=tip]').tooltip({placement: 'auto'});
-
-	$('#general').on('click', '[id*=saveGeneral]', function () {
-		<?php if(empty($ing['id'])){ ?>
-			if($.trim($("#name").val()) == ''){
-				$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>Ingredient name is required');
-				$('.toast-header').removeClass().addClass('toast-header alert-danger');
-				$('.toast').toast('show');
-				return;
-   			}
-		<?php } ?>
-		$.ajax({ 
-			url: '/pages/update_data.php', 
-			type: 'POST',
-			data: {
-				manage: 'ingredient',
-				tab: 'general',
-				ingID: myIngID,
-				
-				name: $("#name").val(),
-				INCI: $("#INCI").val(),
-				cas: $("#cas").val(),
-				einecs: $("#einecs").val(),
-				reach: $("#reach").val(),
-				fema: $("#fema").val(),
-				isAllergen: $("#isAllergen").is(':checked'),
-				purity: $("#purity").val(),
-				solvent: $("#solvent").val(),
-				profile: $("#profile").val(),					
-				type: $("#type").val(),
-				strength: $("#strength").val(),
-				category: $("#category").val(),
-				physical_state: $("#physical_state").val(),
-				odor: $("#odor").val(),
-				notes: $("#notes").val(),
-				<?php if($ing['name']){?>
-					ing: '<?=$ing['name'];?>'
-				<?php } ?>
-			},
-			dataType: 'json',   			
-			success: function (data) {
-				if(data.success){
-					$('#mgmIngHeaderCAS').html($("#cas").val());
-					$('#IUPAC').html($("#INCI").val());
-					
-					$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
-					$('.toast-header').removeClass().addClass('toast-header alert-success');
-				}else{
-					$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
-					$('.toast-header').removeClass().addClass('toast-header alert-danger');
-				}
-				$('.toast').toast('show');
-						
-				if ($('#name').val()) {
-					window.location = 'mgmIngredient.php?id=' + btoa($('#name').val());
-				}
-			    <?php if($ing['id']){ ?>
-				reload_overview();
-				<?php } ?>
-			}
-		});
-	});
-
-
-
-	$('#purity').bind('input', function() {
-		var purity = $(this).val();
-		if(purity == 100){
-			$("#solvent").prop("disabled", true); 
-			$("#solvent").val(''); 
-		}else{
-			$("#solvent").prop("disabled", false);
-		}
-		$('.selectpicker').selectpicker('refresh');
-	});
-	
-});//end doc
-
-</script>
 <script src="/js/mgmIngredient.js"></script>
 <script src="/js/ingredient.tabs.js"></script>
 
