@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 11.1
+
 ### Version 11.0
 - Making SDS GA
 - Added maximum allowed usage for a formula
