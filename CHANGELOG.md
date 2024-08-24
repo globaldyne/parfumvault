@@ -1,5 +1,9 @@
 # CHANGELOG
 ### Version 11.1
+- Improved error handling when generating a batch document and archiving a formula
+- Blocked auto update for versions before 10.x
+- Fix formula archiving when deleting a formula
+- Fix auto pdf generation when a formula is marked as complete
 
 ### Version 11.0
 - Making SDS GA

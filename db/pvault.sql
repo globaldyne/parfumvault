@@ -15,7 +15,7 @@ CREATE TABLE `ingredient_compounds` (
 
 
 CREATE TABLE `batchIDHistory` (
-  `id` varchar(50) COLLATE utf8_general_ci NOT NULL,
+  `id` varchar(255) COLLATE utf8_general_ci NOT NULL,
   `fid` varchar(255) COLLATE utf8_general_ci NOT NULL,
   `product_name` varchar(255) NOT NULL,
   `pdf` LONGBLOB NULL DEFAULT NULL,
