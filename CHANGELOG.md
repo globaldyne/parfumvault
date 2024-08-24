@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 11.1
+- jquery update to 3.7.1
 - Improved error handling when generating a batch document and archiving a formula
 - Blocked auto update for versions before 10.x
 - Fix formula archiving when deleting a formula
