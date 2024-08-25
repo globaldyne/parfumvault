@@ -472,7 +472,13 @@ $(document).ready(function() {
 							 var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 						}	
 						$('#msg').html(msg);
+					},
+					error: function (xhr, status, error) {
+						$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+						$('.toast-header').removeClass().addClass('toast-header alert-danger');
+						$('.toast').toast('show');
 					}
+					
 				});
 					
 					 return true;
@@ -497,9 +503,6 @@ $(document).ready(function() {
 	});
 
 	
-
-
-	
 });//DOC END
 
 
@@ -510,114 +513,124 @@ $(document).ready(function() {
 <script src="/js/mark/datatables.mark.js"></script>
 <script src="/js/makeFormula.js"></script>
 
-    <!-- Modal ING Info -->
-    <div class="modal fade" id="infoModal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                    <div class="modal-body-info">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
-                </div>
+<!-- Modal ING Info -->
+<div class="modal fade" id="infoModal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="infoModalLabel"><div id="infoModalTitle">Ingredienet name</div></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="infoModalBody"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
+</div>
+
     
-    <!-- TOAST -->
-    <div class="position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 11">
-      <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true">
-        <div class="toast-header">
-          <strong class="me-auto" id="toast-title">...</strong>
-          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+<!-- TOAST -->
+<div class="position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 11">
+  <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true">
+    <div class="toast-header">
+      <strong class="me-auto" id="toast-title">...</strong>
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Confirm amount-->
+<div class="modal fade" id="confirm_add" data-bs-backdrop="static" tabindex="-1" aria-labelledby="confirm_add" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="ingAdded"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div style="display: none;" id="ingID"></div>
+      <div style="display: none;" id="idRow"></div>
+      <div style="display: none;" id="qr"></div>
+      <div class="modal-body">
+        <div id="errMsg"></div>
+        
+        <div class="mb-3">
+          <label for="amountAdded" class="form-label">Amount added</label>
+          <input name="amountAdded" type="text" id="amountAdded" class="form-control" />
+        </div>
+
+        <div class="dropdown-divider"></div>
+
+        <div class="mb-3 form-check">
+          <input name="updateStock" id="updateStock" type="checkbox" class="form-check-input" value="1" checked>
+          <label class="form-check-label" for="updateStock">Update stock</label>
+        </div>
+        
+        <div class="mb-3">
+          <label for="supplier" class="form-label">Supplier</label>
+          <select name="supplier" id="supplier" class="form-select"></select>
+        </div>
+
+        <hr class="border border-default border-1 opacity-75">
+        
+        <div class="mb-3">
+          <label for="notes" class="form-label">Notes</label>
+          <textarea class="form-control" id="notes" rows="3"></textarea>
+        </div>
+
+        <hr class="border border-default border-1 opacity-75">
+        
+        <a class="link-primary" data-bs-toggle="collapse" href="#collapseAdvanced" aria-expanded="false" aria-controls="collapseAdvanced">Advanced</a>
+        <div class="collapse" id="collapseAdvanced">
+          <div class="card card-body mt-3">
+            <label for="replacement" class="form-label">Select a replacement</label>
+            <select name="replacement" id="replacement" class="form-select"></select>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Modal Confirm amount-->
-    <div class="modal fade" id="confirm_add" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="confirm_add" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-          <div style="display: none;" id="ingID"></div>
-          <div style="display: none;" id="idRow"></div>
-          <div style="display: none;" id="qr"></div>
-          <h5 class="modal-title" id="ingAdded"></h5>
-        </div>
-        <div class="modal-body">
-        <div id="errMsg"></div>
-            
-              <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label for="amountAdded">Amount added</label>
-                    <input name="amountAdded" type="text" id="amountAdded" />
-                </div>
-              </div>
-              
-              <div class="dropdown-divider"></div>
-              
-              <div class="form-row">
-                <div class="form-group col-auto">
-                    <input name="updateStock" id="updateStock" type="checkbox" value="1" checked>
-                    <label class="form-check-label" for="updateStock">Update stock</label>
-                </div>
-              </div>        
-              <div class="form-row col-auto">
-                <label for="supplier">Supplier</label>
-                <select name="supplier" id="supplier" class="supplier pv-form-control"></select>
-              </div>
-              <hr class="border border-default border-1 opacity-75">
-              <div class="form-group">
-                <label for="notes">Notes</label>
-                <textarea class="form-control" id="notes" rows="3"></textarea>
-              </div>
-              <hr class="border border-default border-1 opacity-75">
-    		  <a class="link-primary" data-bs-toggle="collapse" href="#collapseAdvanced" aria-expanded="false" aria-controls="collapseAdvanced">Advanced</a>
-              
-                <div class="collapse" id="collapseAdvanced">
-                
-                <div class="card card-body">
-        		  <label for="replacement" class="form-label">Select a replacement</label>
-   				  <select name="replacement" id="replacement" class="replacement pv-form-control"></select>
-  				</div>
-                </div>
-              
-              <hr class="border border-default border-1 opacity-75">
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <input type="submit" name="addedToFormula" class="btn btn-primary" id="addedToFormula" value="Confirm">
-              </div>
-         
-        </div>
+      <hr class="border border-default border-1 opacity-75">
+      
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <input type="submit" name="addedToFormula" class="btn btn-primary" id="addedToFormula" value="Confirm">
       </div>
     </div>
   </div>
+</div>
+
   
-      <!-- Modal Skip material-->
-    <div class="modal fade" id="confirm_skip" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="confirm_skip" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-          <div style="display: none;" id="ingID"></div>
-          <div style="display: none;" id="idRow"></div>
-          <h5 class="modal-title" id="ingSkipped"></h5>
-        </div>
-        <div class="modal-body">
-        <div id="errMsg"></div>
-              
-          <div class="form-group">
-            <label for="notes">Notes</label>
-            <textarea class="form-control" id="skip_notes" rows="3"></textarea>
-          </div>
+<!-- Modal Skip material-->
+<div class="modal fade" id="confirm_skip" data-bs-backdrop="static" tabindex="-1" aria-labelledby="confirm_skip" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="ingSkipped"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
 
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <input type="submit" name="skippedFromFormula" class="btn btn-primary" id="skippedFromFormula" value="Skip">
-          </div>
-         
+      <div style="display: none;" id="ingID"></div>
+      <div style="display: none;" id="idRow"></div>
+
+      <div class="modal-body">
+        <div id="errMsg"></div>
+        
+        <div class="form-group">
+          <label for="skip_notes" class="form-label">Notes</label>
+          <textarea class="form-control" id="skip_notes" rows="3"></textarea>
         </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <input type="submit" name="skippedFromFormula" class="btn btn-primary" id="skippedFromFormula" value="Skip">
       </div>
     </div>
   </div>
+</div>
+
   
   </body>
 </html>

@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 11.1
+- Make formula improvements
 - Bootstrap update to 5.3.3
 - jquery update to 3.7.1
 - Improved error handling when generating a batch document and archiving a formula
