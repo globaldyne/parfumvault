@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 11.1
+- PDF doc generation is now GA for ingredients
 - Make formula improvements
 - Bootstrap update to 5.3.3
 - jquery update to 3.7.1

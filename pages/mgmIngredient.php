@@ -335,7 +335,7 @@ body {
 			</div>
 			<div class="modal-body">
                 <div id="warn">
-                <div class="alert alert-warning"><strong><i class="fa-solid fa-triangle-exclamation mx-2"></i>TECH PREVIEW: This feature its under development and in preview state, use with caution.</strong></div>
+                <div class="alert alert-info"><strong>Create a PDF document with the basic ingredient data.</strong></div>
 				<div id="doc_res"></div>                               
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" id="dis-genDOC" data-bs-dismiss="modal">Close</button>

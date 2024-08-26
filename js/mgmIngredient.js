@@ -217,9 +217,7 @@ $('#genDOC').on('click', '[id*=generateDOC]', function () {
 			action: 'generateDOC',
 			kind: 'ingredient',
 			name: myIngName,
-			id: myIngID,
-			tmpl: $("#template").val(),
-			ingCustomer: $("#ingCustomer").val()
+			id: myIngID
 		},
 		dataType: 'json',
 		success: function (data) {
