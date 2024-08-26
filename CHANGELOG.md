@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 11.1
+- Error handling for ingredient management
 - PDF doc generation is now GA for ingredients
 - Make formula improvements
 - Bootstrap update to 5.3.3
