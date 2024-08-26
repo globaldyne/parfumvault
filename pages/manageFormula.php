@@ -11,16 +11,20 @@ require_once(__ROOT__.'/func/get_formula_notes.php');
 
 if($_POST['do'] == 'tagadd' && $_POST['fid'] && $_POST['tag']){
 	if(mysqli_num_rows(mysqli_query($conn,"SELECT id FROM formulasTags WHERE formula_id='".$_POST['fid']."' AND tag_name = '".$_POST['tag']."'"))){
-		//$response['error'] = 'Tag already exists';
-		//echo json_encode($response);
+		$response[] = '';
+		echo json_encode($response);
 		return;
 	}
 	mysqli_query($conn,"INSERT INTO formulasTags (formula_id,tag_name) VALUES('".$_POST['fid']."','".$_POST['tag']."')" );
+	$response[] = '';
+	echo json_encode($response);
 	return;
 }
 
 if($_POST['do'] == 'tagremove' && $_POST['fid'] && $_POST['tag']){
 	mysqli_query($conn,"DELETE FROM formulasTags WHERE formula_id='".$_POST['fid']."' AND tag_name = '".$_POST['tag']."'" );
+	$response[] = '';
+	echo json_encode($response);
 	return;
 }
 
