@@ -78,11 +78,18 @@ $(document).ready(function() {
 			dataType: 'json',
 			success: function (data) {
 				if(data.success) {
-					var msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>' + data.success + '</div>';
+					$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>' + data.success);
+					$('.toast-header').removeClass().addClass('toast-header alert-success');
 				}else{
-					var msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + data.error + '</div>';
+					$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>' + data.error);
+					$('.toast-header').removeClass().addClass('toast-header alert-danger');
 				}
-				$('#brandMsg').html(msg);
+				$('.toast').toast('show');
+			},
+			error: function (xhr, status, error) {
+				$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
 			}
 		});
 	});
