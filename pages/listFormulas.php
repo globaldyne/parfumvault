@@ -222,7 +222,7 @@ $(document).ready(function() {
 	function rating(data, type, row, meta){
 		data = '<span class="rating" data-id='+row.id+' data-score="'+row.rating+'"></span>';
 		return data;
-	}
+	};
 	
 	function fName(data, type, row, meta){
 		if(type === 'display'){
@@ -234,14 +234,14 @@ $(document).ready(function() {
 			data = '<div '+ pad +'></div><a href="/?do=Formula&id=' + row.id + '" target="_blank"> ' + data + '</a>';
 		}
 	  return data;
-	}
+	};
 	
 	
 	function pName(data, type, row, meta){
 		data = '<i class="pv_point_gen_color" data-bs-toggle="modal" data-bs-target="#getFormMeta" data-id="' + row.id + '" data-formula="'+row.name+'">'+row.product_name+'</i>';
 		
 	  return data;
-	}
+	};
 	
 	function fMade(data, type, row, meta){
 		if(type === 'display'){
@@ -252,7 +252,7 @@ $(document).ready(function() {
 			}
 		}
 	  return data;
-	}
+	};
 	
 	function fStatus(data, type, row, meta){
 		if(row.status == 0){
@@ -275,7 +275,7 @@ $(document).ready(function() {
 		}
 		
 		return data;
-	}
+	};
 	
 	function fDate(data, type, row, meta){
 	  if(type === 'display'){
@@ -289,7 +289,7 @@ $(document).ready(function() {
 		}
 	  }
 	  return data;
-	}
+	};
 	
 	function fActions(data, type, row, meta){
 			data = '<div class="dropdown">' +
@@ -312,7 +312,7 @@ $(document).ready(function() {
 			data += '</ul></div>';
 		
 		return data;
-	}
+	};
 	
 	//Generate a QR
 	$("#genQRC").on("show.bs.modal", function(e) {
@@ -341,7 +341,7 @@ $(document).ready(function() {
 				action: "clone",
 				fid: formula.ID,
 				fname: formula.Name,
-				},
+			},
 			dataType: 'json',
 			success: function (data) {
 				if ( data.success ) {
@@ -352,6 +352,11 @@ $(document).ready(function() {
 					$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
 					$('.toast-header').removeClass().addClass('toast-header alert-danger');
 				}
+				$('.toast').toast('show');
+			},
+			error: function (xhr, status, error) {
+				$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
 				$('.toast').toast('show');
 			}
 		  });
@@ -432,7 +437,7 @@ $(document).ready(function() {
 						type: 'POST',
 						data: {
 							formulas_wipe: "true",
-							},
+						},
 						dataType: 'json',
 						success: function (data) {
 							if ( data.success ) {
@@ -478,7 +483,7 @@ $(document).ready(function() {
 			fid: formula.ID,
 			fname: formula.Name,
 			add: true,
-			},
+		},
 		dataType: 'json',
 		success: function (data) {
 			if ( data.success ) {
@@ -510,7 +515,7 @@ $(document).ready(function() {
 			finalType: $("#finalType").val(),
 			notes: $("#notes").val(),
 			customer: $("#customer").val(),
-			},
+		},
 		dataType: 'json',
 		success: function (data) {
 			if(data.error){
