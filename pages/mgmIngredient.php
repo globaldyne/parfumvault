@@ -292,7 +292,7 @@ body {
 				<h5 class="modal-title">Rename ingredient <?php echo $ing['name']; ?></h5>
 			</div>
 			<div class="modal-body">
-            	<div id="warn"><div class="alert alert-warning"><strong>Warning:</strong> If you rename the ingredient, will affect any formulas that using it as well. Please refer to <strong>Where Used</strong> section to get a list of formulas if any.</div></div>
+            	<div id="warn"><div class="alert alert-warning"><i class="fa-solid fa-circle-info mx-2"></i>Renaming the ingredient, will affect any formulas that using it as well. Please refer to <strong>Where Used?</strong> section to get a list of formulas using it, if any.</div></div>
 				<div id="rename_msg"></div>
 				<label for="renameIngName" class="form-label">New name</label>
 				<input class="form-control" name="renameIngName" id="renameIngName" type="text" value="" />            
@@ -313,11 +313,11 @@ body {
 				<h5 class="modal-title"><?php echo $ing['name']; ?></h5>
 			</div>
 			<div class="modal-body">
-            	<div class="alert alert-info">Use PV APP to scan the QR</div>
+            	<div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i>Use PV APP to scan the QR</div>
 				
 				<div id="QRC" class="d-flex justify-content-center"></div>   
                 <hr />
-                <div class="alert alert-info">Download from the App Store</div>
+                <div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i>Download from the <a href="#">App Store</a></div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 				</div>
