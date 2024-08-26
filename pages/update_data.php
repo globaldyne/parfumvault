@@ -11,6 +11,21 @@ require_once(__ROOT__.'/func/priceScrape.php');
 require_once(__ROOT__.'/func/create_thumb.php');
 require_once(__ROOT__.'/func/pvFileGet.php');
 
+//DELETE BATCH
+if($_POST['action'] == 'batch' && $_POST['bid'] && $_POST['remove'] == true){
+	$id = mysqli_real_escape_string($conn, $_POST['bid']);
+	$name = mysqli_real_escape_string($conn, $_POST['name']);
+
+	if(mysqli_query($conn, "DELETE FROM batchIDHistory WHERE id = '$id'")){
+	
+		$response["success"] = 'Batch '.$id.' for product '.$name.' deleted';
+	}else{
+		$response["error"] = 'Something went wrong '.mysqli_error($conn);
+	}
+	
+	echo json_encode($response);
+	return;	
+}
 
 //UPDATE SDS DISCLAIMER
 if($_POST['settings'] == 'sds'){

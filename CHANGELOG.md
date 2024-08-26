@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 11.1
+- Added deletion for batches
 - Error handling for ingredient management
 - PDF doc generation is now GA for ingredients
 - Make formula improvements
