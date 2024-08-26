@@ -10,16 +10,6 @@ $doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM docu
 
 ?>
 
-
-<style>
-
-.container {
-  max-width: 100%;
-  width: 100%;
-
-}
-
-</style>
 <div class="container">
 
 	<div class="row">
@@ -96,7 +86,7 @@ $(document).ready(function () {
 				user_fname: $("#fullName").val(),			
 				user_email: $("#email").val(),
 				user_pass: $("#password").val()
-				},
+			},
 			dataType: 'json',
 			success: function (data) {
 				if(data.success){
@@ -105,6 +95,9 @@ $(document).ready(function () {
 					var msg = '<div class="alert alert-danger">'+data.error+'</div>';
 				}
 				$('#msgU').html(msg);
+			},
+			error: function (xhr, status, error) {
+				$('#msgU').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mr-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 			}
 		  });
 	});
@@ -133,6 +126,9 @@ $(document).ready(function () {
 					var msg = '<div class="alert alert-danger">'+data.error+'</div>';
 				}
 				$('#msgU').html(msg);
+			},
+			error: function (xhr, status, error) {
+				$('#msgU').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mr-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 			}
 		  });
 	});
