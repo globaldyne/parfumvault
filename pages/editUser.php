@@ -59,7 +59,7 @@ $doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM docu
       </div>
   </div>
 </div>
-<hr>
+
 <script>
 $(document).ready(function () {
 	$("#password").val('');
