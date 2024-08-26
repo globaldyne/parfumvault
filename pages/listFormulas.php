@@ -523,7 +523,9 @@ $(document).ready(function() {
 				}
 			}
 			$('#addFormulaMsg').html(rmsg);
-			
+		},
+		error: function (xhr, status, error) {
+			$('#addFormulaMsg').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 		}
 	  });
 	});
@@ -618,20 +620,20 @@ $(document).ready(function() {
 		var formula_profile = $('#CSVProfile').val();
 		
 		$.ajax({
-		  url: "/pages/upload.php?type=frmCSVImport&step=import",
-		  method: "POST",
-		  data:{		  
+			url: "/pages/upload.php?type=frmCSVImport&step=import",
+		  	method: "POST",
+		  	data:{		  
 			  formula_name: formula_name,
 			  formula_profile: formula_profile,
 			  ingredient: ingredient, 
 			  concentration: concentration, 
 			  dilutant: dilutant, 
 			  quantity: quantity
-			  },
-		  beforeSend:function(){
-			$('#btnImport').prop("disabled", true);
-		  },
-		  success:function(data) {
+			},
+		  	beforeSend:function(){
+				$('#btnImport').prop("disabled", true);
+		  	},
+		  	success:function(data) {
 			  if (data.indexOf('Error:') > -1) {
 				  $('#btnImport').prop("disabled", false);
 				  $('#CSVImportMsg').html(data);
@@ -665,17 +667,20 @@ $(document).ready(function() {
 					manage: 'add_frmcategory',
 					category: $("#fcatName").val(),
 					cat_type: 'profile',
-				},
+			},
 			dataType: 'json',
 			success: function (data) {
 				if(data.error){
-					msg = '<div class="alert alert-danger">'+data.error+'</div>';
+					msg = '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>'+data.error+'</div>';
 				}else if(data.success){
 					$('#add_formula_cat').modal('toggle');
 					$('.modal-backdrop').hide();
 					list_formulas();
 				}
 				$('#fcatMsg').html(msg);
+			},
+			error: function (xhr, status, error) {
+				$('#fcatMsg').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 			}
 		});
 	});
@@ -710,9 +715,7 @@ $(document).ready(function() {
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title mgmIngHeader mgmIngHeader-with-separator" id="genQRLabel">Please wait...</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+		<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body d-flex justify-content-center">
         <div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i>Loading...</div>
@@ -727,9 +730,7 @@ $(document).ready(function() {
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title mgmIngHeader mgmIngHeader-with-separator" id="getFormMetaLabel">Formula settings</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i>Loading...</div>
@@ -824,86 +825,87 @@ $(document).ready(function() {
 </div>
 
 <!--IMPORT FORMULA CSV MODAL-->
-<div class="modal fade" id="add_formula_csv" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="add_formula_csv" aria-hidden="true">
-  <div class="modal-dialog modal-xl" role="document">
+<div class="modal fade" id="add_formula_csv" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Import formula from CSV</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">
-      <div id="CSVImportMsg"></div>
-      <div id=process_area>
       
-        <div class="form-group">
-            <label class="col-md-3 form-label">Formula name</label>
-            <div class="col-md">
+      <div class="modal-body">
+        <div id="CSVImportMsg"></div>
+        <div id="process_area">
+          <div class="mb-3 row">
+            <label for="CSVname" class="col-md-3 col-form-label">Formula name</label>
+            <div class="col-md-9">
               <input type="text" name="CSVname" id="CSVname" class="form-control"/>
             </div>
-		</div>  
-        <div class="form-group">
-            <label class="col-md-3 form-label">Profile</label>
-            <div class="col-md">
-             <select name="CSVProfile" id="CSVProfile" class="form-control selectpicker" data-live-search="true">
-             <?php foreach ($fcat as $cat) { if($cat['type'] == 'profile'){?>		
+          </div>
+          
+          <div class="mb-3 row">
+            <label for="CSVProfile" class="col-md-3 col-form-label">Profile</label>
+            <div class="col-md-9">
+              <select name="CSVProfile" id="CSVProfile" class="form-control selectpicker" data-live-search="true">
+                <?php foreach ($fcat as $cat) { if($cat['type'] == 'profile'){?>
                 <option value="<?=$cat['cname']?>"><?=$cat['name']?></option>
-             <?php } }?>
-             </select>
+                <?php } }?>
+              </select>
             </div>
-		</div>
-        <div class="form-group">
-            <label class="col-md-3 form-label">CSV file</label>
-            <div class="col-md">
+          </div>
+          
+          <div class="mb-3 row">
+            <label for="CSVFile" class="col-md-3 col-form-label">CSV file</label>
+            <div class="col-md-9">
               <input type="file" name="CSVFile" id="CSVFile" class="form-control" />
             </div>
-		</div>
-        <div id="step_upload" class="modal-body"></div>
-        <div class="col-md">
-           <hr />
-           <p>CSV format: <strong>ingredient,concentration,dilutant,quantity</strong></p>
-           <p>Example: <em><strong>Ambroxan,10,TEC,0.15</strong></em></p>
+          </div>
+
+          <div id="step_upload" class="modal-body"></div>
+          <div class="col-md-12">
+            <hr />
+            <p>CSV format: <strong>ingredient, concentration, dilutant, quantity</strong></p>
+            <p>Example: <em><strong>Ambroxan, 10, TEC, 0.15</strong></em></p>
+          </div>
         </div>
-        
-        </div>
-        
       </div>
       
-	  <div class="modal-footer">
-        <input type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseCsv" value="Cancel">
-        <input type="submit" name="btnImport" class="btn btn-primary" id="btnImport" value="Import">
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseCsv">Cancel</button>
+        <button type="submit" name="btnImport" class="btn btn-primary" id="btnImport">Import</button>
       </div>
-   
+    </div>
   </div>
-  
-</div>
 </div>
 
+
 <!--ADD CATEGORY MODAL-->
-<div class="modal fade" id="add_formula_cat" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="add_formula_cat" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+<div class="modal fade" id="add_formula_cat" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Create new formula category</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       
       <div class="modal-body">
-      	<div id="fcatMsg"></div>
-        <div class="form-group">
-              <label class="col-md-3 form-label">Category name</label>
-              <div class="col-md">
-              	<input name="fcatName" id="fcatName" type="text" class="form-control" />
-              </div>
-		</div>
+        <div id="fcatMsg"></div>
+        <div class="mb-3 row">
+          <label for="fcatName" class="col-sm-4 col-form-label">Category name</label>
+          <div class="col-md-12">
+            <input name="fcatName" id="fcatName" type="text" class="form-control" />
+          </div>
+        </div>
       </div>
-	  <div class="modal-footer">
-        <input type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="close_cat" value="Cancel">
-        <input type="submit" name="add-fcat" class="btn btn-primary" id="add-fcat" value="Create">
-      </div>   
+	  
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="close_cat">Cancel</button>
+        <button type="submit" name="add-fcat" class="btn btn-primary" id="add-fcat">Create</button>
+      </div>
+    </div>
   </div>
 </div>
-</div>
+
 
 
 <!-- IMPORT JSON MODAL -->
@@ -912,9 +914,7 @@ $(document).ready(function() {
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Import formulas from a JSON file</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div id="JSRestMsg"></div>
