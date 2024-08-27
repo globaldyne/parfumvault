@@ -54,9 +54,9 @@ $(document).ready(function() {
 
 	var tdCompositions;
  	if ($.fn.DataTable.isDataTable('#tdCompositions')) {
-            // Destroy existing DataTable instance
-            $('#tdCompositions').DataTable().destroy();
-        }
+        // Destroy existing DataTable instance
+    	$('#tdCompositions').DataTable().destroy();
+    }
   	tdCompositions = $('#tdCompositions').DataTable( {
 		columnDefs: [
 			{ className: 'text-center', targets: '_all' },
@@ -104,7 +104,7 @@ $(document).ready(function() {
 				dataType: 'json',
 				data: { 
 					search: { 
-							term: searchTerm
+						term: searchTerm
 					},
 					isAbsolute: "true"
 				},
@@ -270,6 +270,11 @@ $(document).ready(function() {
 						dataType: 'json',
 						success: function (data) {
 							reload_cmp_data();
+						},
+						error: function (xhr, status, error) {
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+							$('.toast-header').removeClass().addClass('toast-header alert-danger');
+							$('.toast').toast('show');
 						}
 					  });
 	
@@ -431,20 +436,20 @@ $(document).ready(function() {
 
 
 <!--ADD FROM CSV MODAL-->
-<div class="modal fade" id="addCSV" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addCSV" aria-hidden="true">
+<div class="modal fade" id="addCSV" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addCSVLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Import CSV</h5>
+        <h5 class="modal-title" id="addCSVLabel">Import CSV</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div id="CSVImportMsg"></div>
         <div class="mb-3">
-          <label for="formFile" class="form-label">Choose file</label>
+          <label for="CSVFile" class="form-label">Choose file</label>
           <input type="file" name="CSVFile" id="CSVFile" class="form-control" />
         </div>
-        <hr class="dropdown-divider" />
+        <hr />
         <p>CSV format: <strong>ingredient, CAS, EINECS, min percentage, max percentage, GHS</strong></p>
         <p>Example: <em><strong>Citral, 5392-40-5, 226-394-6, 0.15, 2.3, Skin Irrit. 2-Eye Irrit</strong></em></p>
         <p>Duplicates will be ignored.</p>
@@ -456,3 +461,4 @@ $(document).ready(function() {
     </div>
   </div>
 </div>
+

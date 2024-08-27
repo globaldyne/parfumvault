@@ -122,6 +122,11 @@ $(document).ready(function() {
 						dataType: 'html',
 						success: function (data) {
 							reload_syn_data();
+						},
+						error: function (xhr, status, error) {
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+							$('.toast-header').removeClass().addClass('toast-header alert-danger');
+							$('.toast').toast('show');
 						}
 					  });
 	
@@ -203,23 +208,24 @@ $(document).ready(function() {
 });
 </script>
 <!-- ADD SYNONYM -->
-<div class="modal fade" id="addSynonym" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="addSynonym" aria-hidden="true">
+<div class="modal fade" id="addSynonym" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addSynonymLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Add synonym</h5>
+        <h5 class="modal-title" id="addSynonymLabel">Add Synonym</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-      	<div id="infSyn"></div>
-            <div class="mb-3 col-sm-auto">
-            	<label for="synonym">Name</label> 
-            	<input class="form-control" name="synonym" type="text" id="synonym" />
-            </div>
-            <div class="mb-3 col-sm-auto">
-            	<label for="source">Source</label>
-            	<input class="form-control" name="source" type="text" id="source" />
-            </div>
-            <div class="dropdown-divider"></div>
+        <div id="infSyn"></div>
+        <div class="mb-3">
+          <label for="synonym" class="form-label">Name</label>
+          <input class="form-control" name="synonym" type="text" id="synonym" />
+        </div>
+        <div class="mb-3">
+          <label for="source" class="form-label">Source</label>
+          <input class="form-control" name="source" type="text" id="source" />
+        </div>
+        <div class="dropdown-divider"></div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -228,28 +234,28 @@ $(document).ready(function() {
     </div>
   </div>
 </div>
-</div>
+
 
 <!-- PUBCHEM SYNONYM IMPORT -->
-<div class="modal fade" id="pubchem_import" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="pubchem_import" aria-hidden="true">
+<div class="modal fade" id="pubchem_import" data-bs-backdrop="static" tabindex="-1" aria-labelledby="pubchemImportLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Import synonyms from PubChem</h5>
+        <h5 class="modal-title" id="pubchemImportLabel">Import Synonyms from PubChem</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-       	<div id="pvImportMsg"></div>
-	      <strong>WARNING:</strong><br />
-    	  you are about to import data from PubChem.com, if your local database contains already the same data, new data will not be imported. <p></p>
-		
-      	<div class="dropdown-divider"></div>
-	  	For more info regarding PubChem Rest API please refer to its documentation <a href="https://pubchemdocs.ncbi.nlm.nih.gov/about" target="_blank">here.</a> 
+        <div id="pvImportMsg"></div>
+        <strong>WARNING:</strong><br />
+        You are about to import data from PubChem.com. If your local database already contains the same data, new data will not be imported.
+        <p></p>
+        <div class="dropdown-divider"></div>
+        For more info regarding PubChem REST API, please refer to its documentation <a href="https://pubchemdocs.ncbi.nlm.nih.gov/about" target="_blank">here.</a>
       </div>
       <div class="modal-footer" id="import">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         <input type="submit" name="button" class="btn btn-primary" id="importPubChem" value="Import">
       </div>
-     </form>
     </div>
   </div>
 </div>

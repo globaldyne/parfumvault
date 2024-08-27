@@ -14,56 +14,56 @@ $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT id,tenacity,flash_point,ch
 
 
 ?>
-<h3>Techical Data</h3>
+<h3>Technical Data</h3>
 <hr>
 <div class="container">
     <div class="row mb-3">
         <div class="col-md-6">
-            <label for="tenacity" class="col-form-label">Tenacity</label>
+            <label for="tenacity" class="form-label">Tenacity</label>
             <input name="tenacity" type="text" class="form-control" id="tenacity" value="<?php echo $ing['tenacity']; ?>"/>
         </div>
         <div class="col-md-6">
-            <label for="rdi" class="col-form-label">Relative Odor Impact</label>
+            <label for="rdi" class="form-label">Relative Odor Impact</label>
             <input name="rdi" type="text" class="form-control" id="rdi" value="<?php echo $ing['rdi']; ?>"/>
         </div>
     </div>
 
     <div class="row mb-3">
         <div class="col-md-6">
-            <label for="flash_point" class="col-form-label">Flash Point</label>
+            <label for="flash_point" class="form-label">Flash Point</label>
             <input name="flash_point" type="text" class="form-control" id="flash_point" value="<?php echo $ing['flash_point']; ?>"/>
         </div>
         <div class="col-md-6">
-            <label for="chemical_name" class="col-form-label">Chemical Name</label>
+            <label for="chemical_name" class="form-label">Chemical Name</label>
             <input name="chemical_name" type="text" class="form-control" id="chemical_name" value="<?php echo $ing['chemical_name']; ?>"/>
         </div>
     </div>
 
     <div class="row mb-3">
         <div class="col-md-6">
-            <label for="molecularFormula" class="col-form-label">Molecular Formula</label>
+            <label for="molecularFormula" class="form-label">Molecular Formula</label>
             <input name="formula" type="text" class="form-control" id="molecularFormula" value="<?php echo $ing['formula']; ?>">
         </div>
         <div class="col-md-6">
-            <label for="logp" class="col-form-label">Log/P</label>
+            <label for="logp" class="form-label">Log/P</label>
             <input name="logp" type="text" class="form-control" id="logp" value="<?php echo $ing['logp']; ?>"/>
         </div>
     </div>
 
     <div class="row mb-3">
         <div class="col-md-6">
-            <label for="soluble" class="col-form-label">Soluble in</label>
+            <label for="soluble" class="form-label">Soluble in</label>
             <input name="soluble" type="text" class="form-control" id="soluble" value="<?php echo $ing['soluble']; ?>"/>
         </div>
         <div class="col-md-6">
-            <label for="molecularWeight" class="col-form-label">Molecular Weight</label>
+            <label for="molecularWeight" class="form-label">Molecular Weight</label>
             <input name="molecularWeight" type="text" class="form-control" id="molecularWeight" value="<?php echo $ing['molecularWeight']; ?>"/>
         </div>
     </div>
 
     <div class="row mb-3">
         <div class="col-md-6">
-            <label for="appearance" class="col-form-label">Appearance</label>
+            <label for="appearance" class="form-label">Appearance</label>
             <input name="appearance" type="text" class="form-control" id="appearance" value="<?php echo $ing['appearance']; ?>"/>
         </div>
     </div>
@@ -71,6 +71,7 @@ $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT id,tenacity,flash_point,ch
     <hr />
     <input type="submit" name="save" class="btn btn-primary" id="saveTechData" value="Save" />
 </div>
+
 
 
     
@@ -104,6 +105,11 @@ $(document).ready(function() {
 					$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>' + data.error);
 					$('.toast-header').removeClass().addClass('toast-header alert-danger');
 				}
+				$('.toast').toast('show');
+			},
+			error: function (xhr, status, error) {
+				$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
 				$('.toast').toast('show');
 			}
 		});
