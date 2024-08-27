@@ -115,9 +115,7 @@ while($res = mysqli_fetch_array($q)){
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title mgmIngHeader mgmIngHeader-with-separator" id="editCompoundLabel">Edit compound</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div class="alert alert-danger">Unable to get data</div>
@@ -133,9 +131,7 @@ while($res = mysqli_fetch_array($q)){
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Import compounds from a JSON file</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
       	<div id="JSRestMsg"></div>
@@ -173,81 +169,81 @@ $(document).ready(function() {
 
 	
 	var tdDataCompounds = $('#tdDataCompounds').DataTable( {
-	columnDefs: [
-		{ className: 'pv_vertical_middle text-center', targets: '_all' },
-		{ orderable: false, targets: [8] },
-	],
-	dom: 'lrftip',
-	buttons: [{
-				extend: 'csvHtml5',
-				title: "Compounds Inventory",
-				exportOptions: {
-     				columns: [0, 1, 2, 3, 4, 5]
-  				},
-			  }],
-	processing: true,
-	serverSide: true,
-	searching: true,
-	mark: true,
-	language: {
-		loadingRecords: '&nbsp;',
-		processing: 'Please Wait...',
-		zeroRecords: 'Nothing found',
-		search: 'Quick Search:',
-		searchPlaceholder: 'Name..',
+		columnDefs: [
+			{ className: 'pv_vertical_middle text-center', targets: '_all' },
+			{ orderable: false, targets: [8] },
+		],
+		dom: 'lrftip',
+		buttons: [{
+					extend: 'csvHtml5',
+					title: "Compounds Inventory",
+					exportOptions: {
+						columns: [0, 1, 2, 3, 4, 5]
+					},
+				  }],
+		processing: true,
+		serverSide: true,
+		searching: true,
+		mark: true,
+		language: {
+			loadingRecords: '&nbsp;',
+			processing: 'Please Wait...',
+			zeroRecords: 'Nothing found',
+			search: 'Quick Search:',
+			searchPlaceholder: 'Name..',
 		},
-	ajax: {	
-		url: '/core/list_inventory_compounds_data.php',
-		type: 'POST',
-		dataType: 'json',
-				data: function(d) {
-				var btlSize = $('#btlSize').val();
-
-				if (d.order.length>0){
-					d.order_by = d.columns[d.order[0].column].data
-					d.order_as = d.order[0].dir
-				}
-				d.btlSize = btlSize;
+		ajax: {	
+			url: '/core/list_inventory_compounds_data.php',
+			type: 'POST',
+			dataType: 'json',
+					data: function(d) {
+					var btlSize = $('#btlSize').val();
+	
+					if (d.order.length>0){
+						d.order_by = d.columns[d.order[0].column].data
+						d.order_as = d.order[0].dir
+					}
+					d.btlSize = btlSize;
+				},
 			},
+		columns: [
+				{ data : 'name', title: 'Name', render: name },
+				{ data : 'description', title: 'Description' },
+				{ data : 'batch_id', title: 'Batch', render: docData },
+				{ data : 'size', title: 'Size (<?php echo $settings['mUnit'];?>)' },
+				{ data : 'label_info', title: 'Label' },
+				{ data : 'location', title: 'Location' },
+				{ data : 'created', title: 'Inventory add' },
+				{ data : 'updated', title: 'Inventory update' },
+				{ data : null, title: '', render: actions },
+	
+		],
+		order: [[ 0, 'asc' ]],
+		lengthMenu: [[20, 50, 100, 200, 400], [20, 50, 100, 200, 400]],
+		pageLength: 20,
+		displayLength: 20,
+		stateSave: true,
+		stateDuration: -1,
+		stateLoadCallback: function (settings, callback) {
+			$.ajax( {
+				url: '/core/update_user_settings.php?set=listInvComp&action=load',
+				dataType: 'json',
+				success: function (json) {
+					callback( json );
+				}
+			});
 		},
-	   columns: [
-            { data : 'name', title: 'Name', render: name },
-            { data : 'description', title: 'Description' },
-			{ data : 'batch_id', title: 'Batch', render: docData },
-			{ data : 'size', title: 'Size (<?php echo $settings['mUnit'];?>)' },
-			{ data : 'label_info', title: 'Label' },
-			{ data : 'location', title: 'Location' },
-			{ data : 'created', title: 'Inventory add' },
-			{ data : 'updated', title: 'Inventory update' },
-			{ data : null, title: '', render: actions },
-
-			],
-	order: [[ 0, 'asc' ]],
-	lengthMenu: [[20, 50, 100, 200, 400], [20, 50, 100, 200, 400]],
-	pageLength: 20,
-	displayLength: 20,
-	stateSave: true,
-	stateDuration: -1,
-	stateLoadCallback: function (settings, callback) {
-       	$.ajax( {
-           	url: '/core/update_user_settings.php?set=listInvComp&action=load',
-           	dataType: 'json',
-           	success: function (json) {
-               	callback( json );
-           	}
-       	});
-    },
-    stateSaveCallback: function (settings, data) {
-	   $.ajax({
-		 url: "/core/update_user_settings.php?set=listInvComp&action=save",
-		 data: data,
-		 dataType: "json",
-		 type: "POST"
-	  });
-	},
-	drawCallback: function( settings ) {
-		extrasShow();
-    },
+		stateSaveCallback: function (settings, data) {
+		   $.ajax({
+			 url: "/core/update_user_settings.php?set=listInvComp&action=save",
+			 data: data,
+			 dataType: "json",
+			 type: "POST"
+		  });
+		},
+		drawCallback: function( settings ) {
+			extrasShow();
+		},
 
 	});
 	
@@ -349,7 +345,7 @@ $(document).ready(function() {
 							action: "delete",
 							type: "invCmp",
 							compoundId: cmp.ID,
-							},
+						},
 						dataType: 'json',
 						success: function (data) {
 							if(data.success){

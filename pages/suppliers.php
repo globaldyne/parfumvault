@@ -42,7 +42,7 @@
                     </tr>
                   </thead>
                 </table>
-<script type="text/javascript" language="javascript" >
+<script>
 $(document).ready(function() {
 	$('#mainTitle').click(function() {
 	 	reload_data();
@@ -60,7 +60,7 @@ $(document).ready(function() {
 			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>',
 			emptyTable: 'No suppliers added yet.',
 			search: 'Search:'
-			},
+		},
 		ajax: {	url: '/core/list_suppliers_data.php' },
 		columns: [
 				  { data : 'name', title: 'Name', render: name },
@@ -321,7 +321,7 @@ $('#btnAddSupplier').on('click', function () {
 			description: $("#add_supplier #description").val(),
 			min_ml: $("#add_supplier #min_ml").val(),
 			min_gr: $("#add_supplier #min_gr").val()
-			},
+		},
 		dataType: 'json',
 		success: function (data) {
 			if(data.success){
@@ -464,9 +464,7 @@ function reload_data() {
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="addSupplier">Add supplier</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
           <div class="modal-body" id="add_supplier">
           	<div id="inf"></div>
