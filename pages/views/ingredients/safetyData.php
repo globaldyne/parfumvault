@@ -1,6 +1,6 @@
 <?php
 define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__))))); 
-if(!$_POST['ingID']){
+if(!$_GET['ingID']){
   echo 'Invalid ID';
   return;
 }
@@ -9,7 +9,7 @@ require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
 
 
-$ingSafetyInfo = mysqli_query($conn, "SELECT id,ingID,GHS FROM ingSafetyInfo WHERE ingID = '".$_POST['ingID']."'");
+$ingSafetyInfo = mysqli_query($conn, "SELECT id,ingID,GHS FROM ingSafetyInfo WHERE ingID = '".$_GET['ingID']."'");
 while($safety_res = mysqli_fetch_array($ingSafetyInfo)){
   $safety[] = $safety_res;
 }
@@ -19,7 +19,7 @@ while($pictograms_res = mysqli_fetch_array($pictograms)){
   $pictogram[] = $pictograms_res;
 }
 
-$ingSafetyInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredient_safety_data WHERE ingID = '".$_POST['ingID']."'"));
+$ingSafetyInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredient_safety_data WHERE ingID = '".$_GET['ingID']."'"));
 
 
 ?>
@@ -888,7 +888,7 @@ $ingSafetyInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredien
         data: {
           manage: "ingredient",
           tab: "add_info",
-          ingID: "<?=$_POST['ingID'];?>",
+          ingID: "<?=$_GET['ingID'];?>",
           add_info_changes: $("#add_info_changes").val(),
           add_info_acronyms: $("#add_info_acronyms").val(),
           add_info_references: $("#add_info_references").val(),
@@ -919,7 +919,7 @@ $ingSafetyInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredien
         data: {
           manage: "ingredient",
           tab: "leg_info",
-          ingID: "<?=$_POST['ingID'];?>",
+          ingID: "<?=$_GET['ingID'];?>",
           legislation_safety: $("#legislation_safety").val(),
           legislation_eu: $("#legislation_eu").val(),
           legislation_chemical_safety_assessment: $("#legislation_chemical_safety_assessment").val(),
@@ -946,7 +946,7 @@ $ingSafetyInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredien
         data: {
           manage: "ingredient",
           tab: "trans_info",
-          ingID: "<?=$_POST['ingID'];?>",
+          ingID: "<?=$_GET['ingID'];?>",
           transport_un_number: $("#transport_un_number").val(),
           transport_shipping_name: $("#transport_shipping_name").val(),
           transport_hazard_class: $("#transport_hazard_class").val(),
@@ -976,7 +976,7 @@ $ingSafetyInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredien
         data: {
           manage: "ingredient",
           tab: "dis_info",
-          ingID: "<?=$_POST['ingID'];?>",
+          ingID: "<?=$_GET['ingID'];?>",
           disposal_product: $("#disposal_product").val(),
           disposal_remarks: $("#disposal_remarks").val()
         },
@@ -1001,7 +1001,7 @@ $ingSafetyInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredien
         data: {
           manage: "ingredient",
           tab: "ec_info",
-          ingID: "<?=$_POST['ingID'];?>",
+          ingID: "<?=$_GET['ingID'];?>",
           ecological_toxicity: $("#ecological_toxicity").val(),
           ecological_persistence: $("#ecological_persistence").val(),
           ecological_bioaccumulative: $("#ecological_bioaccumulative").val(),
@@ -1033,7 +1033,7 @@ $ingSafetyInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredien
         data: {
           manage: "ingredient",
           tab: "tx_info",
-          ingID: "<?=$_POST['ingID'];?>",
+          ingID: "<?=$_GET['ingID'];?>",
           toxicological_acute_oral: $("#toxicological_acute_oral").val(),
           toxicological_acute_dermal: $("#toxicological_acute_dermal").val(),
           toxicological_acute_inhalation: $("#toxicological_acute_inhalation").val(),
@@ -1072,7 +1072,7 @@ $ingSafetyInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredien
         data: {
           manage: "ingredient",
           tab: "sr_info",
-          ingID: "<?=$_POST['ingID'];?>",
+          ingID: "<?=$_GET['ingID'];?>",
           stabillity_reactivity: $("#stabillity_reactivity").val(),
           stabillity_chemical: $("#stabillity_chemical").val(),
           stabillity_reactions: $("#stabillity_reactions").val(),
@@ -1100,7 +1100,7 @@ $ingSafetyInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredien
         data: {
           manage: "ingredient",
           tab: "safety_info",
-          ingID: "<?=$_POST['ingID'];?>",
+          ingID: "<?=$_GET['ingID'];?>",
           pictogram: $("#pictogram").val(),
           action: "add"
         },
@@ -1125,7 +1125,7 @@ $ingSafetyInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredien
         data: { 
           manage: "ingredient",
           tab: "safety_info",
-          ingID: "<?=$_POST['ingID'];?>",
+          ingID: "<?=$_GET['ingID'];?>",
           pictogram_id: imageId,
           action: "remove"
         },
@@ -1149,7 +1149,7 @@ $ingSafetyInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredien
         data: {
           manage: "ingredient",
           tab: "faid_info",
-          ingID: "<?=$_POST['ingID'];?>",
+          ingID: "<?=$_GET['ingID'];?>",
           first_aid_general: $("#first_aid_general").val(),
           first_aid_inhalation: $("#first_aid_inhalation").val(),
           first_aid_skin: $("#first_aid_skin").val(),
@@ -1181,7 +1181,7 @@ $ingSafetyInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredien
         data: {
           manage: "ingredient",
           tab: "fire_info",
-          ingID: "<?=$_POST['ingID'];?>",
+          ingID: "<?=$_GET['ingID'];?>",
           firefighting_suitable_media: $("#firefighting_suitable_media").val(),
           firefighting_non_suitable_media: $("#firefighting_non_suitable_media").val(),
           firefighting_special_hazards: $("#firefighting_special_hazards").val(),
@@ -1209,7 +1209,7 @@ $ingSafetyInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredien
         data: {
           manage: "ingredient",
           tab: "save_acc_rel",
-          ingID: "<?=$_POST['ingID'];?>",
+          ingID: "<?=$_GET['ingID'];?>",
           accidental_release_per_precautions: $("#accidental_release_per_precautions").val(),
           accidental_release_env_precautions: $("#accidental_release_env_precautions").val(),
           accidental_release_cleaning: $("#accidental_release_cleaning").val(),
@@ -1238,7 +1238,7 @@ $ingSafetyInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredien
         data: {
           manage: "ingredient",
           tab: "HS",
-          ingID: "<?=$_POST['ingID'];?>",
+          ingID: "<?=$_GET['ingID'];?>",
           handling_protection: $("#handling_protection").val(),
           handling_hygiene: $("#handling_hygiene").val(),
           handling_safe_storage: $("#handling_safe_storage").val(),
@@ -1266,7 +1266,7 @@ $ingSafetyInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredien
         data: {
           manage: "ingredient",
           tab: "exposure_data",
-          ingID: "<?=$_POST['ingID'];?>",
+          ingID: "<?=$_GET['ingID'];?>",
           exposure_occupational_limits: $("#exposure_occupational_limits").val(),
           exposure_biological_limits: $("#exposure_biological_limits").val(),
           exposure_intented_use_limits: $("#exposure_intented_use_limits").val(),
@@ -1300,7 +1300,7 @@ $ingSafetyInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredien
         data: {
           manage: "ingredient",
           tab: "pcp",
-          ingID: "<?=$_POST['ingID'];?>",
+          ingID: "<?=$_GET['ingID'];?>",
           odor_threshold: $("#odor_threshold").val(),
           pH: $("#pH").val(),
           melting_point: $("#melting_point").val(),

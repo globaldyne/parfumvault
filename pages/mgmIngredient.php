@@ -10,14 +10,18 @@ require_once(__ROOT__.'/func/sanChar.php');
 require_once(__ROOT__.'/func/profileImg.php');
 
 
-$ingID = sanChar(mysqli_real_escape_string($conn, base64_decode($_GET["id"])));
-
+if($ingID = $_GET["id"]){
+	if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE id = '$ingID'"))){
+		echo '<div class="alert alert-danger">No such ingredient found</div>';
+		return;
+	}
+}
 $res_ingTypes = mysqli_query($conn, "SELECT id,name FROM ingTypes ORDER BY name ASC");
 $res_ingStrength = mysqli_query($conn, "SELECT id,name FROM ingStrength ORDER BY name ASC");
 $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCategory ORDER BY name ASC");
 $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles ORDER BY id ASC");
 
-$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE name = '$ingID'"));
+$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE id = '$ingID'"));
 
 ?>
 <!doctype html>

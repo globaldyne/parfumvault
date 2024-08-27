@@ -7,7 +7,7 @@ function fetch_generalData(){
 		url: '/pages/views/ingredients/mgmGeneral.php', 
 		type: 'GET',
 		data: {
-			id: btoa(myIngName),
+			id: myIngID,
 			newIngName: newIngName,
 			newIngCAS: newIngCAS
 		},
@@ -24,9 +24,10 @@ function fetch_generalData(){
 function fetch_whereUsed(){
 	$.ajax({ 
 		url: '/pages/views/ingredients/whereUsed.php', 
-		type: 'POST',
+		type: 'GET',
 		data: {
-			id: btoa(myIngName)
+			ingName: btoa(myIngName),
+			ingID: myIngID
 		},
 		dataType: 'html',
 		success: function (data) {
@@ -41,7 +42,7 @@ function fetch_whereUsed(){
 function fetch_usageData(){
 	$.ajax({ 
 		url: '/pages/views/ingredients/usageData.php', 
-		type: 'POST',
+		type: 'GET',
 		data: {
 			ingID: myIngID
 		},
@@ -76,7 +77,7 @@ function fetch_sups(){
 function fetch_techs(){
 	$.ajax({ 
 		url: '/pages/views/ingredients/techData.php', 
-		type: 'POST',
+		type: 'GET',
 		data: {
 			ingID: myIngID,
 		},
@@ -111,7 +112,7 @@ function fetch_docs(){
 function fetch_impact(){
 	$.ajax({ 
 		url: '/pages/views/ingredients/impactData.php', 
-		type: 'POST',
+		type: 'GET',
 		data: {
 			ingID: myIngID
 		},
@@ -146,7 +147,7 @@ function fetch_cmps(){
 function fetch_safety(){
 	$.ajax({ 
 		url: '/pages/views/ingredients/safetyData.php', 
-		type: 'POST',
+		type: 'GET',
 		data: {
 			ingID: myIngID
 		},
@@ -163,7 +164,7 @@ function fetch_safety(){
 function fetch_privacy(){
 	$.ajax({ 
 		url: '/pages/views/ingredients/privacyData.php', 
-		type: 'POST',
+		type: 'GET',
 		data: {
 			ingID: myIngID
 		},
@@ -177,7 +178,7 @@ function fetch_privacy(){
 function fetch_syn(){
 	$.ajax({ 
 		url: '/pages/views/ingredients/synonyms.php', 
-		type: 'POST',
+		type: 'GET',
 		data: {
 			name:  btoa(myIngName),
 			cas: myCAS || btoa(myIngID)
@@ -195,7 +196,7 @@ function fetch_syn(){
 function fetch_reps(){
 	$.ajax({ 
 		url: '/pages/views/ingredients/repData.php', 
-		type: 'POST',
+		type: 'GET',
 		data: {
 			id: btoa(myIngName),
 			cas: myCAS,
@@ -285,7 +286,6 @@ $('#renameIng').on('click', '[id*=renameME]', function () {
 		success: function (data) {
 			if(data.success){
 				window.location.href = "/pages/mgmIngredient.php?id=" + data.success.id;
-				reload_ingredients_data();
 				msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>' + data.success.msg + '</div>';
 			}else if(data.error){
 				msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + data.error + '</div>';

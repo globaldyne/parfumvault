@@ -1573,9 +1573,10 @@ if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'general'){
 			$response["error"] = $name.' already exists!';
 		}else{
 			if(mysqli_query($conn, $query)){
-				$response["success"] = 'Ingredient <strong>'.$name.'</strong> created';
+				$response["success"] = 'Ingredient '.$name.' created';
+				$response["ingid"] = mysqli_insert_id($conn);
 			}else{
-				$response["error"] = '<strong>Error:</strong> Failed to create ingredient</div>';
+				$response["error"] = 'Failed to create ingredient';
 			}
 		}
 	}
@@ -1767,9 +1768,9 @@ if($_POST['action'] == 'clone' && $_POST['old_ing_name'] && $_POST['ing_id']){
 
 	$sql.=mysqli_query($conn, "INSERT INTO ingredients (name,INCI,type,strength,category,purity,cas,FEMA,reach,tenacity,chemical_name,formula,flash_point,appearance,notes,profile,solvent,odor,allergen,flavor_use,soluble,logp,cat1,cat2,cat3,cat4,cat5A,cat5B,cat5C,cat5D,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12,impact_top,impact_heart,impact_base,created,usage_type,noUsageLimit,isPrivate,molecularWeight,physical_state) SELECT '$new_ing_name',INCI,type,strength,category,purity,cas,FEMA,reach,tenacity,chemical_name,formula,flash_point,appearance,notes,profile,solvent,odor,allergen,flavor_use,soluble,logp,cat1,cat2,cat3,cat4,cat5A,cat5B,cat5C,cat5D,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12,impact_top,impact_heart,impact_base,created,usage_type,noUsageLimit,isPrivate,molecularWeight,physical_state FROM ingredients WHERE id = '$ing_id'");
 
-	if($nID = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '$new_ing_name'"))){
+	if($nID = mysqli_fetch_array(mysqli_query($conn, "SELECT id,name FROM ingredients WHERE name = '$new_ing_name'"))){
 		
-		$response['success'] = $old_ing_name.' duplicated as <a href="/pages/mgmIngredient.php?id='.base64_encode($nID['name']).'" >'.$new_ing_name.'</a>';
+		$response['success'] = $old_ing_name.' duplicated as <a href="/pages/mgmIngredient.php?id='.$nID['id'].'" >'.$new_ing_name.'</a>';
 		echo json_encode($response);
 		return;
 	}
@@ -1801,10 +1802,10 @@ if($_POST['action'] == 'rename' && $_POST['old_ing_name'] && $_POST['ing_id']){
 	$sql.=mysqli_query($conn, "UPDATE ingredients SET name = '$new_ing_name' WHERE name = '$old_ing_name' AND id = '$ing_id'");
 	$sql.=mysqli_query($conn, "UPDATE formulas SET ingredient = '$new_ing_name' WHERE ingredient = '$old_ing_name' AND ingredient_id = '$ing_id'");
 
-	if($nID = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '$new_ing_name'"))){
+	if($nID = mysqli_fetch_array(mysqli_query($conn, "SELECT id,name FROM ingredients WHERE name = '$new_ing_name'"))){
 		
-		$response['success']['msg'] = $old_ing_name.' renamed to <a href="/pages/mgmIngredient.php?id='.base64_encode($nID['name']).'" >'.$new_ing_name.'</a>';
-		$response['success']['id'] = base64_encode($nID['name']);
+		$response['success']['msg'] = $old_ing_name.' renamed to <a href="/pages/mgmIngredient.php?id='.$nID['id'].'" >'.$new_ing_name.'</a>';
+		$response['success']['id'] = $nID['id'];
 		echo json_encode($response);
 		return;
 	}

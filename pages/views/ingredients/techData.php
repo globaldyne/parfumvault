@@ -5,12 +5,12 @@ define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__)))));
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
 
-if(!$_POST['ingID']){
+if(!$_GET['ingID']){
 	echo 'Invalid ID';
 	return;
 }
 
-$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT id,tenacity,flash_point,chemical_name,formula,logp,soluble,molecularWeight,appearance,rdi FROM ingredients WHERE id = '".$_POST['ingID']."'"));
+$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT id,tenacity,flash_point,chemical_name,formula,logp,soluble,molecularWeight,appearance,rdi FROM ingredients WHERE id = '".$_GET['ingID']."'"));
 
 
 ?>

@@ -43,7 +43,7 @@ while($res = mysqli_fetch_array($qS)){
       <meta name="description" content="<?php echo trim($product).' - '.trim($ver);?>">
       <meta name="author" content="<?php echo trim($product).' - '.trim($ver);?>">
       <title><?php echo $meta['name'];?></title>
-        <link href="/css/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" type="text/css">
+      <link href="/css/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" type="text/css">
 
       <link href="/css/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
       <link href="/css/sb-admin-2.css" rel="stylesheet">
@@ -57,12 +57,15 @@ while($res = mysqli_fetch_array($qS)){
       <link href="/css/vault.css" rel="stylesheet">
       <link href="/css/select2.css" rel="stylesheet">
       <link href="/css/makeFormula.css" rel="stylesheet">
+  	  <link href="/css/magnific-popup.css" rel="stylesheet">
 
       <script src="/js/tableHTMLExport.js"></script>
       <script src="/js/jspdf.min.js"></script>
       <script src="/js/jspdf.plugin.autotable.js"></script>
       <script src="/js/bootbox.min.js"></script>
       <script src="/js/select2.js"></script>
+      <script src="/js/magnific-popup.js"></script>
+
    
 </head>
 
@@ -147,79 +150,82 @@ $(document).ready(function() {
 		delay: 10000
 	});
 	var tdDataPending = $('#tdDataPending').DataTable( {
-	columnDefs: [
-		{ className: 'pv_vertical_middle text-center', targets: '_all' },
-		{ orderable: false, targets: [3,4] },
-		{ responsivePriority: 1, targets: 0 }
-	],
-	dom: 'lrft',
-	buttons: [{
+		columnDefs: [
+			{ className: 'pv_vertical_middle text-center', targets: '_all' },
+			{ orderable: false, targets: [3,4] },
+			{ responsivePriority: 1, targets: 0 }
+		],
+		dom: 'lrft',
+		buttons: [{
 				extend: 'print',
 				title: myFNAME,
 				exportOptions: {
 					columns: [0, 1, 2, 3]
 				},
-			  }],
-	processing: true,
-	serverSide: true,
-	searching: true,
-	mark: true,
-	responsive: true,
-	language: {
-		loadingRecords: '&nbsp;',
-		processing: 'Please Wait...',
-		zeroRecords: 'No pending ingredients found',
-		search: 'Quick Search:',
-		searchPlaceholder: 'Ingredient..',
-	},
-	ajax: {	
-		url: '/core/pending_formulas_data.php?meta=0&fid=' + fid,
-		type: 'POST',
-		dataType: 'json',
-		data: function(d) {
-				if (d.order.length>0){
-					d.order_by = d.columns[d.order[0].column].data
-					d.order_as = d.order[0].dir
+		}],
+		processing: true,
+		serverSide: true,
+		searching: true,
+		mark: true,
+		responsive: true,
+		language: {
+			loadingRecords: '&nbsp;',
+			processing: 'Please Wait...',
+			zeroRecords: 'No pending ingredients found',
+			search: 'Quick Search:',
+			searchPlaceholder: 'Ingredient..',
+		},
+		ajax: {	
+			url: '/core/pending_formulas_data.php?meta=0&fid=' + fid,
+			type: 'POST',
+			dataType: 'json',
+			data: function(d) {
+					if (d.order.length>0){
+						d.order_by = d.columns[d.order[0].column].data
+						d.order_as = d.order[0].dir
+					}
+				},
+			},
+			columns: [
+				{ data : 'ingredient', title: 'Ingredient', render: ingredient},
+				{ data : 'concentration', title: 'Purity %' },
+				{ data : 'quantity', title: 'Quantity (<?=$settings['mUnit']?>)', render: quantity },
+				{ data : 'inventory.stock', title: 'Availability', render: stock },
+				{ data : null, title: 'Actions', className: 'text-center noexport', render: actions },
+			],
+			footerCallback : function( tfoot, data, start, end, display ) {    
+			  var response = this.api().ajax.json();
+				if(response){
+					var $td = $(tfoot).find('th');
+					$td.eq(0).html("Ingredients left: "+ response.meta['total_ingredients_left'] + ' of ' + response.meta['total_ingredients'] );
+					$td.eq(2).html("Total left: " + response.meta['total_quantity_left'] + ' of ' + response.meta['total_quantity'] + response.meta['quantity_unit'] );
+					total_quantity = response.meta['total_quantity'];
 				}
 			},
-		},
-	  	columns: [
-			{ data : 'ingredient', title: 'Ingredient', render: ingredient},
-			{ data : 'concentration', title: 'Purity %' },
-			{ data : 'quantity', title: 'Quantity (<?=$settings['mUnit']?>)', render: quantity },
-			{ data : 'inventory.stock', title: 'Availability', render: stock },
-			{ data : null, title: 'Actions', className: 'text-center noexport', render: actions },
-		],
-	  	footerCallback : function( tfoot, data, start, end, display ) {    
-		  var response = this.api().ajax.json();
-		  	if(response){
-			 	var $td = $(tfoot).find('th');
-			 	$td.eq(0).html("Ingredients left: "+ response.meta['total_ingredients_left'] + ' of ' + response.meta['total_ingredients'] );
-			 	$td.eq(2).html("Total left: " + response.meta['total_quantity_left'] + ' of ' + response.meta['total_quantity'] + response.meta['quantity_unit'] );
-			  	total_quantity = response.meta['total_quantity'];
-		 	}
-	  	},
-	  	fnRowCallback : function (row, data, display) {
-			if (data.toAdd == 0) {
-				$(row).find('td:eq(0),td:eq(1),td:eq(2),td:eq(3)').addClass('strikeout');
-		  	}
-		  	if (data.toSkip == 1) {
-			  	$(row).find('td:eq(0),td:eq(1),td:eq(2),td:eq(3)').addClass('skipped');
-		  	}
-		  	$(row).addClass('pv-zoom');
-			if (data.toAdd == 0 || data.toSkip == 1) {
-        		$(row).addClass('d-none');
-    		}
-			$('#toggleAdded').click(function() {
-				if (data.toAdd == 0 || data.toSkip == 1) {
-					$(row).toggleClass('d-none');
+			fnRowCallback : function (row, data, display) {
+				if (data.toAdd == 0) {
+					$(row).find('td:eq(0),td:eq(1),td:eq(2),td:eq(3)').addClass('strikeout');
 				}
-			});
-	 	},
-	 	order: [[ 0, 'asc' ]],
-	 	lengthMenu: [[200, 500, 1000], [200, 500, 1000]],
-	 	pageLength: 200,
-	 	displayLength: 200,
+				if (data.toSkip == 1) {
+					$(row).find('td:eq(0),td:eq(1),td:eq(2),td:eq(3)').addClass('skipped');
+				}
+				$(row).addClass('pv-zoom');
+				if (data.toAdd == 0 || data.toSkip == 1) {
+					$(row).addClass('d-none');
+				}
+				$('#toggleAdded').click(function() {
+					if (data.toAdd == 0 || data.toSkip == 1) {
+						$(row).toggleClass('d-none');
+					}
+				});
+			},
+			drawCallback: function( settings ) {
+				extrasShow();
+			},
+			order: [[ 0, 'asc' ]],
+			lengthMenu: [[200, 500, 1000], [200, 500, 1000]],
+			pageLength: 200,
+			displayLength: 200,
 	});
 	
 	$('#tdDataPending').on('mouseenter', '.pv-zoom', function() {
@@ -239,9 +245,12 @@ $(document).ready(function() {
 
 
 	function ingredient(data, type, row){
-		data = '<a href="#infoModal" id="ingInfo" data-bs-toggle="modal" data-id="'+row.ingID+'" data-name="'+row.ingredient+'" class="listIngNameCas-with-separator">' + row.ingredient + '</a><span class="listIngHeaderSub"> CAS: <i class="subHeaderCAS">'+row.cas+'</i></span>';
+		data ='<div class="listIngNameCas-with-separator"><a href="#" class="dropdown-toggle " data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'+row.ingredient+'</a><span class="listIngHeaderSub"> CAS: <i class="subHeaderCAS">'+row.cas+'</i></span><div class="dropdown-menu dropdown-menu-right">';
+		data+='<li><a class="dropdown-item " href="#infoModal" id="ingInfo" data-bs-toggle="modal" data-id="'+row.ingID+'" data-name="'+row.ingredient+'" ><i class="fa-solid fa-circle-info mx-2"></i>Quick Info</a></li>';
+		data+='<li><a class="dropdown-item popup-link" href="/pages/mgmIngredient.php?id='+row.ingID+'" target="_blank"><i class="fa-solid fa-eye mx-2"></i>Go to ingredient</a></li>';
+		data+='</div></div>';
 		return data;
-	}
+	};
 	
 	function quantity(data, type, row){
 		var overdose = '';
@@ -251,7 +260,7 @@ $(document).ready(function() {
 		
 		data = row.quantity + overdose;
 		return data;
-	}
+	};
 	
 	function actions(data, type, row){
 		var data;
@@ -270,7 +279,7 @@ $(document).ready(function() {
 		data += '<i data-ingredient="'+row.ingredient+'" data-quantity="'+row.quantity+'" data-concentration="'+row.concentration+'" data-ingID="'+row.ingID+'" id="addToCart" class="mr fas fa-shopping-cart pv_point_gen"></i>'; 
 						 
 		return data;    
-	}
+	};
 	
 	function stock(data, type, row){
 	
@@ -287,13 +296,24 @@ $(document).ready(function() {
 		}
 		
 		return st;
-	}
+	};
 	
 	function reload_data() {
 		$('#tdDataPending').DataTable().ajax.reload(null, true);
-	}
+	};
 	
-	
+	function extrasShow() {
+		$('[rel=tip]').tooltip({
+			"html": true,
+			"delay": {"show": 100, "hide": 0},
+		 });
+		$('.popup-link').magnificPopup({
+			type: 'iframe',
+			closeOnContentClick: false,
+			closeOnBgClick: false,
+			showCloseBtn: true,
+		});
+	};
 	<?php if($settings['pv_scale_enabled']) { ?>
 		var pvScaleHost = "<?php echo $settings['pv_scale_host']?: '0.0.0.0'; ?>";	
 		var ws = new WebSocket("ws://" + pvScaleHost + ":81");

@@ -1,5 +1,8 @@
 # CHANGELOG
 ### Version 11.1
+- Change ingredient manage to id instead of a name
+- Added a link to the full ingredient data in MakeFormula
+- Removed row zoom for MakeFormula
 - Bootbox 6.0 update
 - Added deletion for batches
 - Error handling for ingredient management

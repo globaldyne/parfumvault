@@ -69,7 +69,7 @@ $(document).ready(function() {
 			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
 			emptyTable: 'No compositions added yet.',
 			search: 'Search:'
-			},
+		},
 		ajax: {	
 			url: '/core/list_ing_compos_data.php?id=<?=$ingName?>' 
 		},
@@ -84,7 +84,7 @@ $(document).ready(function() {
 			  { data : 'GHS', title: 'GHS Classification', render: cmpGHS},
 			  { data : 'toDeclare', title: 'Declare', render: cmpDeclare},
 			  { data : null, title: '', render: cmpActions},		   
-			 ],
+		],
 		drawCallback: function ( settings ) {
 			$('[rel=tip]').tooltip();
 		},
@@ -237,8 +237,8 @@ $(document).ready(function() {
 		url: "/pages/update_data.php?composition=update&ing=<?=$ingName;?>",
 		title: 'To be declared',
 		source: [
-				 {value: '0', text: 'No'},
-				 {value: '1', text: 'Yes'},
+			{value: '0', text: 'No'},
+			{value: '1', text: 'Yes'},
 		],
 		success: function (data) {
 				reload_cmp_data();
@@ -266,7 +266,7 @@ $(document).ready(function() {
 							composition: 'delete',
 							allgID: cmp.ID,
 							ing: '<?=$ingName?>'
-							},
+						},
 						dataType: 'json',
 						success: function (data) {
 							reload_cmp_data();

@@ -697,7 +697,7 @@ function ingName(data, type, row, meta){
 	}
 	
 	if(row.ingredient.enc_id){
-		data = contains + '<a class="popup-link '+ex+'" href="/pages/mgmIngredient.php?id=' + row.ingredient.enc_id + '">' + data + '</a> '+ chkIng + profile_class;
+		data = contains + '<a class="popup-link '+ex+'" href="/pages/mgmIngredient.php?id=' + row.ingredient.id + '">' + data + '</a> '+ chkIng + profile_class;
 	}else{
 		data = '<a class="popup-link '+ex+'" href="/pages/mgmIngredient.php?id=' + btoa(data) + '">' + data + '</a> '+ chkIng + profile_class;
 

@@ -191,11 +191,11 @@ $(document).ready(function() {
 		}
 		if(meta.settings.json.source == 'local'){
 			
-			return '<a class="popup-link listIngName listIngName-with-separator" href="/pages/mgmIngredient.php?id=' + btoa(row.name) + '">' + data + '</a>'+alg+'<span class="listIngHeaderSub">CAS: <i class="pv_point_gen subHeaderCAS" rel="tip" title="Click to copy cas" id="cCAS" data-name="'+row.cas+'">'+row.cas+'</i> | EINECS: <i class="pv_point_gen subHeaderCAS">'+row.einecs+'</i></span>';
+			return '<a class="popup-link listIngName listIngName-with-separator" href="/pages/mgmIngredient.php?id=' + row.id + '">' + data + '</a>'+alg+'<span class="listIngHeaderSub">CAS: <i class="pv_point_gen subHeaderCAS" rel="tip" title="Click to copy cas" id="cCAS" data-name="'+row.cas+'">'+row.cas+'</i> | EINECS: <i class="pv_point_gen subHeaderCAS">'+row.einecs+'</i></span>';
 		}else{
 			return '<a class="listIngName listIngName-with-separator" href="#">' + data + '</a>'+alg+'<span class="listIngHeaderSub">CAS: <i class="pv_point_gen subHeaderCAS" rel="tip" title="Click to copy cas" id="cCAS" data-name="'+row.cas+'">'+row.cas+'</i> | EINECS: <i class="pv_point_gen subHeaderCAS">'+row.einecs+'</i></span>';
 		}
-	}
+	};
 	
 	
 	function iProfile(data, type, row, meta){
@@ -208,7 +208,7 @@ $(document).ready(function() {
 		}else{
 			return '<i class="pv_point_gen" rel="tip" title="Not available in PV Online">N/A</i>';
 		}
-	}
+	};
 	
 	function iStock(data, type, row, meta){
 		if (row.physical_state == 1) {
@@ -221,7 +221,7 @@ $(document).ready(function() {
 		}else{
 			return '<i class="pv_point_gen" rel="tip" title="Not available in PV Online">N/A</i>';
 		}
-	}
+	};
 	
 	function iCategory(data, type, row){
 		if(row.category.image){
@@ -229,7 +229,7 @@ $(document).ready(function() {
 		}else{
 			return '<img src="/img/pv_molecule.png" class="img_ing_prof"/>';
 		}
-	}
+	};
 	
 	function iLimit(data, type, row){
 		var byPassIFRA = '';
@@ -250,7 +250,7 @@ $(document).ready(function() {
 		}
 		
 		return '<i class="pv_point_gen pv_gen_li" rel="tip" title="'+reason+'">'+row.usage.limit+'</i>'+byPassIFRA;
-	}
+	};
 	
 	function iSuppliers(data, type, row){
 		if(row.supplier){
@@ -265,7 +265,7 @@ $(document).ready(function() {
 			data = 'N/A';
 		}
 		return data;
-	}
+	};
 	
 	function iDocs(data, type, row){
 		if(row.document){	
@@ -282,7 +282,7 @@ $(document).ready(function() {
 			}
 		
 		return data;
-	}
+	};
 	
 	
 	function actions(data, type, row, meta){
@@ -307,7 +307,7 @@ $(document).ready(function() {
 		}
 		
 		return data;
-	}
+	};
 	
 	
 	$('#tdDataIng').on('click', '[id*=cCAS]', function () {
@@ -345,7 +345,7 @@ $(document).ready(function() {
 							source: "PVOnline",
 							kind: "ingredient",
 							ing_id: ing.ID,
-							},
+						},
 						dataType: 'json',
 						success: function (data) {
 							if ( data.success ) {
@@ -394,7 +394,7 @@ $(document).ready(function() {
 						data: {
 							ingredient: "delete",
 							ing_id: ing.ID,
-							},
+						},
 						dataType: 'json',
 						success: function (data) {
 							if ( data.success ) {
@@ -473,7 +473,7 @@ $(document).ready(function() {
 						type: 'POST',
 						data: {
 							ingredient_wipe: "true",
-							},
+						},
 						dataType: 'json',
 						success: function (data) {
 							if ( data.success ) {

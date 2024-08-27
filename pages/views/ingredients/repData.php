@@ -5,9 +5,9 @@ define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__)))));
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
 
-$ingName = mysqli_real_escape_string($conn, $_POST["id"]);
-$ingCAS = mysqli_real_escape_string($conn, $_POST["cas"]);
-$ingID = mysqli_real_escape_string($conn, $_POST["ingID"]);
+$ingName = mysqli_real_escape_string($conn, $_GET["id"]);
+$ingCAS = mysqli_real_escape_string($conn, $_GET["cas"]);
+$ingID = mysqli_real_escape_string($conn, $_GET["ingID"]);
 
 ?>
 <link href="/css/select2.css" rel="stylesheet">

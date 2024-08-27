@@ -5,8 +5,8 @@ define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__)))));
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
 
-$CAS = mysqli_real_escape_string($conn, $_POST["cas"]);
-$ingName = mysqli_real_escape_string($conn, $_POST["name"]);
+$CAS = mysqli_real_escape_string($conn, $_GET["cas"]);
+$ingName = mysqli_real_escape_string($conn, $_GET["name"]);
 
 ?>
 
