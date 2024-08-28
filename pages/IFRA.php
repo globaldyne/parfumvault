@@ -159,50 +159,40 @@ require_once(__ROOT__.'/func/php-settings.php');
 </div>
 
 <!--IMPORT JSON MODAL-->
-<div class="modal fade" id="import_ifra_json" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="import_ifra_json" aria-hidden="true">
+<div class="modal fade" id="import_ifra_json" data-bs-backdrop="static" tabindex="-1" aria-labelledby="import_ifra_json_label" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Import IFRA from a JSON file</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <h5 class="modal-title" id="import_ifra_json_label">Import IFRA from a JSON file</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-      <div id="JSRestMsg"></div>
-      <div class="progress">  
-         <div id="uploadProgressBar" class="progress-bar" role="progressbar" aria-valuemin="0"></div>
-      </div>
-      <div id="backupArea">
-      
-          <div class="form-group">
-              <label class="col-md-3 control-label">JSON file:</label>
-              <div class="col-md-8">
-                 <input type="file" name="backupFile" id="backupFile" class="form-control" />
-              </div>
+        <div id="JSRestMsg"></div>
+        <div class="progress mb-3">
+          <div id="uploadProgressBar" class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
+        </div>
+        <div id="backupArea">
+          <div class="mb-3">
+            <label for="backupFile" class="form-label">JSON file:</label>
+            <input type="file" name="backupFile" id="backupFile" class="form-control" />
           </div>
-          
-          <div class="col-sm dropdown-divider"></div>
-          <div class="col-md-12 alert alert-warning">
-             <p><strong>IMPORTANT:</strong></p>
-              <ul>
-                <li><div id="raw" data-size="<?=getMaximumFileUploadSizeRaw()?>">Maximum file size: <strong><?=getMaximumFileUploadSize()?></strong></div></li>
-                <li>Your current IFRA Library will be <strong>removed</strong> during the import. Please make sure you have taken a backup before imporing a JSON file.</li>
-              </ul>
-    			<p>&nbsp;</p>
-            </div>
+          <div class="alert alert-warning">
+            <p><strong>IMPORTANT:</strong></p>
+            <ul>
+              <li id="raw" data-size="<?=getMaximumFileUploadSizeRaw()?>">Maximum file size: <strong><?=getMaximumFileUploadSize()?></strong></li>
+              <li>Your current IFRA Library will be <strong>removed</strong> during the import. Please make sure you have taken a backup before importing a JSON file.</li>
+            </ul>
           </div>
-      
+        </div>
       </div>
-	  <div class="modal-footer">
-        <input type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseBK" value="Cancel">
-        <input type="submit" name="btnRestore" class="btn btn-primary" id="btnRestoreIFRA" value="Import">
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseBK">Cancel</button>
+        <button type="submit" name="btnRestore" class="btn btn-primary" id="btnRestoreIFRA">Import</button>
       </div>
-   
+    </div>
   </div>
-  
 </div>
-</div>
+
 
 <script>
 $(document).ready(function() {
@@ -482,13 +472,18 @@ $(document).ready(function() {
 						dataType: 'json',
 						success: function (data) {
 							if(data.success){
-								$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+								$('#toast-title').html('<i class="fa-solid fa-circle-check mx-2"></i>' + data.success);
 								$('.toast-header').removeClass().addClass('toast-header alert-success');
 								reload_data();
 							}else if(data.error){
-								$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+								$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>' + data.error);
 								$('.toast-header').removeClass().addClass('toast-header alert-danger');
 							}
+							$('.toast').toast('show');
+						},
+						error: function (xhr, status, error) {
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+							$('.toast-header').removeClass().addClass('toast-header alert-danger');
 							$('.toast').toast('show');
 						}
 					  });

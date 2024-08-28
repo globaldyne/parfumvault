@@ -42,45 +42,43 @@ while ($suppliers = mysqli_fetch_array($sup)){
   </div>
 
 <!-- ADD BOTTLE MODAL-->
-<div class="modal fade" id="addBottle" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="addBottle" aria-hidden="true">
+<div class="modal fade" id="addBottle" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addBottleLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Add Bottle</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <h5 class="modal-title" id="addBottleLabel">Add Bottle</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-      <div id="bottle_inf"></div>
-      
-      	  <div class="row g-3">
+        <div id="bottle_inf"></div>
+        
+        <div class="row g-3">
           <div class="col-md-12">
             <label for="name" class="form-label">Name</label>
             <input type="text" class="form-control" name="name" id="name" required>
           </div>
           <div class="col-md-4">
             <label for="size" class="form-label">Size (ml)</label>
-          	<input type="text" class="form-control" name="size"  id="size" required>
+            <input type="text" class="form-control" name="size" id="size" required>
           </div>
           <div class="col-md-4">
             <label for="price" class="form-label">Price</label>
-            <input type="text" class="form-control" name="price"  id="price" required>
+            <input type="text" class="form-control" name="price" id="price" required>
           </div>
           <div class="col-md-4">
             <label for="height" class="form-label">Height</label>
-	        <input type="text" class="form-control" name="height"  id="height" required>
+            <input type="text" class="form-control" name="height" id="height" required>
           </div>
           <div class="col-md-4">
             <label for="width" class="form-label">Width</label>
-          	<input type="text" class="form-control" name="width"  id="width" required>
+            <input type="text" class="form-control" name="width" id="width" required>
           </div>
           <div class="col-md-4">
             <label for="diameter" class="form-label">Diameter</label>
             <input type="text" class="form-control" name="diameter" id="diameter" required>
           </div>
           <div class="col-md-4">
-            <label for="weight" class="form-label">Weight(grams)</label>
+            <label for="weight" class="form-label">Weight (grams)</label>
             <input type="text" class="form-control" name="weight" id="weight" required>
           </div>
           <div class="col-md-4">
@@ -90,13 +88,13 @@ while ($suppliers = mysqli_fetch_array($sup)){
           <div class="col-md-4">
             <label for="supplier" class="form-label">Supplier</label>
             <select name="supplier" id="supplier" class="form-control">
-                <option value="" selected></option>
-                <?php
-                foreach($supplier as $sup) {
-                    echo '<option value="'.$sup['name'].'">'.$sup['name'].'</option>';
-                }
-                ?>
-          	</select>
+              <option value="" selected></option>
+              <?php
+              foreach($supplier as $sup) {
+                echo '<option value="'.$sup['name'].'">'.$sup['name'].'</option>';
+              }
+              ?>
+            </select>
           </div>
           <div class="col-md-4">
             <label for="supplier_link" class="form-label">Supplier URL</label>
@@ -109,8 +107,8 @@ while ($suppliers = mysqli_fetch_array($sup)){
           <div class="col-12">
             <input type="file" name="pic" id="pic" class="form-control" />
           </div>
-        </div>      
-            
+        </div>
+        
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -120,15 +118,14 @@ while ($suppliers = mysqli_fetch_array($sup)){
   </div>
 </div>
 
+
 <!--EDIT BOTTLE MODAL-->            
-<div class="modal fade" id="editBottle" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="editBottleLabel" aria-hidden="true">
+<div class="modal fade" id="editBottle" data-bs-backdrop="static" tabindex="-1" aria-labelledby="editBottleLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title mgmIngHeader mgmIngHeader-with-separator" id="editBottleLabel">Edit bottle</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div class="alert alert-danger">Unable to get data</div>
@@ -137,48 +134,49 @@ while ($suppliers = mysqli_fetch_array($sup)){
   </div>
 </div>
 
+
 <script> 
 $(document).ready(function() {
 	$('#mainTitle').click(function() {
 	 	reload_data();
   	});
 	var tdDataBottles = $('#tdDataBottles').DataTable( {
-	columnDefs: [
-		{ className: 'pv_vertical_middle text-center', targets: '_all' },
-		{ orderable: false, targets: [7] },
-	],
-	dom: 'lrftip',
-	buttons: [{
-				extend: 'csvHtml5',
-				title: "Bottle Inventory",
-				exportOptions: {
-     				columns: [0, 1, 2, 3, 4]
-  				},
-			  }],
-	processing: true,
-	serverSide: true,
-	searching: true,
-	mark: true,
-	language: {
-		loadingRecords: '&nbsp;',
-		processing: 'Please Wait...',
-		zeroRecords: 'Nothing found',
-		search: 'Quick Search:',
-		searchPlaceholder: 'Name..',
+		columnDefs: [
+			{ className: 'pv_vertical_middle text-center', targets: '_all' },
+			{ orderable: false, targets: [7] },
+		],
+		dom: 'lrftip',
+		buttons: [{
+					extend: 'csvHtml5',
+					title: "Bottle Inventory",
+					exportOptions: {
+						columns: [0, 1, 2, 3, 4]
+					},
+		}],
+		processing: true,
+		serverSide: true,
+		searching: true,
+		mark: true,
+		language: {
+			loadingRecords: '&nbsp;',
+			processing: 'Please Wait...',
+			zeroRecords: 'Nothing found',
+			search: 'Quick Search:',
+			searchPlaceholder: 'Name..',
 		},
-	ajax: {	
-		url: '/core/list_bottle_data.php',
-		type: 'POST',
-		dataType: 'json',
-		data: function(d) {
-				if (d.order.length>0){
-					d.order_by = d.columns[d.order[0].column].data
-					d.order_as = d.order[0].dir
-				}
-			},
+		ajax: {	
+			url: '/core/list_bottle_data.php',
+			type: 'POST',
+			dataType: 'json',
+			data: function(d) {
+					if (d.order.length>0){
+						d.order_by = d.columns[d.order[0].column].data
+						d.order_as = d.order[0].dir
+					}
+				},
 		},
-	   columns: [
-            { data : 'name', title: 'Name', render: name },
+		columns: [
+			{ data : 'name', title: 'Name', render: name },
 			{ data : 'ml', title: 'Size (ml)' },
 			{ data : 'price', title: 'Price (<?php echo $settings['currency'];?>)' },
 			{ data : 'supplier', title: 'Supplier' },
@@ -186,33 +184,33 @@ $(document).ready(function() {
 			{ data : 'created', title: 'Created' },
 			{ data : 'updated', title: 'Updated' },
 			{ data : null, title: '', render: actions }
-			],
-	order: [[ 0, 'asc' ]],
-	lengthMenu: [[20, 50, 100, 200, 400], [20, 50, 100, 200, 400]],
-	pageLength: 20,
-	displayLength: 20,
-	drawCallback: function( settings ) {
-		extrasShow();
-    },
-	stateSave: true,
-	stateDuration: -1,
-	stateLoadCallback: function (settings, callback) {
-       	$.ajax( {
-           	url: '/core/update_user_settings.php?set=listBottles&action=load',
-           	dataType: 'json',
-           	success: function (json) {
-               	callback( json );
-           	}
-       	});
-    },
-    stateSaveCallback: function (settings, data) {
-	   $.ajax({
-		 url: "/core/update_user_settings.php?set=listBottles&action=save",
-		 data: data,
-		 dataType: "json",
-		 type: "POST"
-	  });
-	},	
+		],
+		order: [[ 0, 'asc' ]],
+		lengthMenu: [[20, 50, 100, 200, 400], [20, 50, 100, 200, 400]],
+		pageLength: 20,
+		displayLength: 20,
+		drawCallback: function( settings ) {
+			extrasShow();
+		},
+		stateSave: true,
+		stateDuration: -1,
+		stateLoadCallback: function (settings, callback) {
+			$.ajax( {
+				url: '/core/update_user_settings.php?set=listBottles&action=load',
+				dataType: 'json',
+				success: function (json) {
+					callback( json );
+				}
+			});
+		},
+		stateSaveCallback: function (settings, data) {
+		   $.ajax({
+			 url: "/core/update_user_settings.php?set=listBottles&action=save",
+			 data: data,
+			 dataType: "json",
+			 type: "POST"
+		  });
+		},	
 	});
 	
 	tdDataBottles.on('requestChild.dt', function (e, row) {
@@ -295,6 +293,11 @@ $(document).ready(function() {
 								$('.toast-header').removeClass().addClass('toast-header alert-danger');
 							}
 							$('.toast').toast('show');
+						},
+						error: function (xhr, status, error) {
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+							$('.toast-header').removeClass().addClass('toast-header alert-danger');
+							$('.toast').toast('show');
 						}
 					});
 					
@@ -315,7 +318,7 @@ $(document).ready(function() {
 	
 	$('#bottle_add').on('click', function () {
 	
-		$("#bottle_inf").html('<div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
+		$("#bottle_inf").html('<div class="alert alert-info">Please wait, file upload in progress....</div>');
 		$("#bottle_add").prop("disabled", true);
 		$("#bottle_add").prop('value', 'Please wait...');
 			
@@ -357,6 +360,9 @@ $(document).ready(function() {
 						$("#bottle_add").prop("value", 'Add');
 					 }
 				  },
+					error: function (xhr, status, error) {
+						$('#bottle_inf').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+					}
 			   });
 			}else{
 				$("#bottle_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a image to upload!</div>');
