@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 11.2
+- Add full usage tab for formula per IFRA category
 - Ignore non-numeric values in IFRA library when calculating max usage
 
 ### Version 11.1
