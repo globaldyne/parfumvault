@@ -42,69 +42,68 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
     </div>
 
 <!--ADV SEARCH-->
-<div class="modal fade" id="adv_search" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="adv_search" aria-hidden="true">
+<div class="modal fade" id="adv_search" data-bs-backdrop="static" tabindex="-1" aria-labelledby="adv_search_label" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Advanced Search</h5>
+        <h5 class="modal-title" id="adv_search_label">Advanced Search</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-          <div class="col-sm-12">
-          
-    		  <div class="mb-1 row">
-                <div class="col-sm">
-                	<label for="ing_name" class="col-sm col-form-label">Ingredient name</label>
-                  	<input type="text" class="form-control" id="ing_name" placeholder="Any">
-                </div>
-              </div>
-    		  <div class="mb-1 row">
-                <div class="col-sm">
-                	<label for="ing_cas" class="col-sm col-form-label">CAS#</label>
-                    <input type="text" class="form-control" id="ing_cas" placeholder="Any">
-                </div>
-              </div>
-    		  <div class="mb-1 row">
-                <div class="col-sm">
-                	<label for="ing_einecs" class="col-sm col-form-label">EINECS</label>
-                    <input type="text" class="form-control" id="ing_einecs" placeholder="Any">
-                </div>
-              </div>
-    		  <div class="mb-1 row">
-                <div class="col-sm">
-                	<label for="ing_synonym" class="col-sm col-form-label">Synonym</label>
-                    <input type="text" class="form-control" id="ing_synonym" placeholder="Any">
-                </div>
-              </div>
-    		  <div class="mb-1 row">
-                <div class="col-sm">
-                	<label for="ing_odor" class="col-sm col-form-label">Odor</label>
-                    <input type="text" class="form-control" id="ing_odor" placeholder="Any">
-                </div>
-              </div>
-    		  <div class="mb-1 row">
-                <div class="col-sm">
-                	<label for="ing_profile" class="col-sm col-form-label">Profile</label>
-                    <select name="profile" id="ing_profile" class="form-control selectpicker" data-live-search="true">
-                       <option value="" selected>Any</option>
-                        <?php
-                        while ($row_ingProfiles = mysqli_fetch_array($res_ingProfiles)){ ?>
-                        <option data-content="<img class='img_ing_sel' src='<?=profileImg($row_ingProfiles['name'])?>'> <?=$row_ingProfiles['name']?>" value="<?=$row_ingProfiles['name']?>"></option>
-                        <?php } ?>
-                  </select>
-                </div>
-              </div>
-    		  <div class="mb-1 row">
-                <div class="col-sm">
-                	<label for="ing_category" class="col-sm col-form-label">Category</label>
-                    <select name="category" id="ing_category" class="form-control selectpicker" data-live-search="true">
-                      <option value="" selected>Any</option>
-                      <?php while ($row_ingCategory = mysqli_fetch_array($res_ingCategory)){ ?>
-                      <option data-content="<img class='img_ing_sel' src='<?php if($row_ingCategory['image']){ echo $row_ingCategory['image']; }else{ echo '/img/molecule.png';}?>'><?=$row_ingCategory['name']?>" value="<?=$row_ingCategory['id'];?>"></option>
-                  <?php } ?>
-                  </select>
-                </div>
-              </div>  
+        <div class="col-sm-12">
+          <div class="mb-3 row">
+            <div class="col-sm">
+              <label for="ing_name" class="col-form-label">Ingredient Name</label>
+              <input type="text" class="form-control" id="ing_name" placeholder="Any">
+            </div>
           </div>
+          <div class="mb-3 row">
+            <div class="col-sm">
+              <label for="ing_cas" class="col-form-label">CAS#</label>
+              <input type="text" class="form-control" id="ing_cas" placeholder="Any">
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <div class="col-sm">
+              <label for="ing_einecs" class="col-form-label">EINECS</label>
+              <input type="text" class="form-control" id="ing_einecs" placeholder="Any">
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <div class="col-sm">
+              <label for="ing_synonym" class="col-form-label">Synonym</label>
+              <input type="text" class="form-control" id="ing_synonym" placeholder="Any">
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <div class="col-sm">
+              <label for="ing_odor" class="col-form-label">Odor</label>
+              <input type="text" class="form-control" id="ing_odor" placeholder="Any">
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <div class="col-sm">
+              <label for="ing_profile" class="col-form-label">Profile</label>
+              <select name="profile" id="ing_profile" class="form-control selectpicker" data-live-search="true">
+                <option value="" selected>Any</option>
+                <?php while ($row_ingProfiles = mysqli_fetch_array($res_ingProfiles)){ ?>
+                  <option data-content="<img class='img_ing_sel' src='<?=profileImg($row_ingProfiles['name'])?>'> <?=$row_ingProfiles['name']?>" value="<?=$row_ingProfiles['name']?>"></option>
+                <?php } ?>
+              </select>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <div class="col-sm">
+              <label for="ing_category" class="col-form-label">Category</label>
+              <select name="category" id="ing_category" class="form-control selectpicker" data-live-search="true">
+                <option value="" selected>Any</option>
+                <?php while ($row_ingCategory = mysqli_fetch_array($res_ingCategory)){ ?>
+                  <option data-content="<img class='img_ing_sel' src='<?php if($row_ingCategory['image']){ echo $row_ingCategory['image']; }else{ echo '/img/molecule.png';}?>'><?=$row_ingCategory['name']?>" value="<?=$row_ingCategory['id'];?>"></option>
+                <?php } ?>
+              </select>
+            </div>
+          </div>  
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -112,84 +111,77 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
       </div>
     </div>
   </div>
-</div>  
+</div>
+ 
 
 
 
 <!--IMPORT JSON MODAL-->
-<div class="modal fade" id="import_ingredients_json" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="import_ingredients_json" aria-hidden="true">
+<div class="modal fade" id="import_ingredients_json" data-bs-backdrop="static" tabindex="-1" aria-labelledby="importIngredientsJsonLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Import ingredients from a JSON file</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <h5 class="modal-title" id="importIngredientsJsonLabel">Import Ingredients from a JSON File</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-      	<div id="JSRestMsg"></div>
-      	<div class="progress">  
-       	  <div id="uploadProgressBar" class="progress-bar" role="progressbar" aria-valuemin="0"></div>
-      	</div>
-      	<div id="backupArea">
-          <div class="form-group">
-              <label class="col-md-3 control-label">JSON file:</label>
-              <div class="col-md-8">
-                 <input type="file" name="backupFile" id="backupFile" class="form-control" />
-              </div>
-          </div>
-          	<div class="col-md-12">
-            	 <hr />
-             	<p><strong>IMPORTANT:</strong></p>
-              	<ul>
-                	<li><div id="raw" data-size="<?=getMaximumFileUploadSizeRaw()?>">Maximum file size: <strong><?=getMaximumFileUploadSize()?></strong></div></li>
-                	<li>Any ingredient with the same id will be replaced. Please make sure you have taken a backup before imporing a JSON file.</li>
-              	</ul>
-            </div>
-          </div>
-      	</div>
-	  		<div class="modal-footer">
-        		<input type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseBK" value="Cancel">
-        		<input type="submit" name="btnRestore" class="btn btn-primary" id="btnRestoreIngredients" value="Import">
-      		</div>
-  		</div>  
-	</div>
-</div>
-
-<!--CSV IMPORT-->
-<div class="modal fade" id="csv_import" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="csv_import" aria-hidden="true">
-  <div class="modal-dialog pv-modal-xxl" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Import ingredients from CSV file</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-       <div id="CSVImportMsg"></div>
-        <div id=process_area>
-
-           <table width="100%">
-                <tr>
-                <td width="92" valign="top">CSV File:</td>
-                    <td width="1533" colspan="3">
-                        <input type="file" id="CSVFile" name="CSVFile" />
-                    </td>
-                </tr>
-            </table>
-        
+        <div id="JSRestMsg"></div>
+        <div class="progress mb-3">
+          <div id="uploadProgressBar" class="progress-bar" role="progressbar" aria-valuemin="0"></div>
         </div>
-        <div id="step_upload" class="modal-body"></div>
-        <div class="alert alert-info">Select and match the fields in you CSV file, if a column isn't applicable, set it to <strong>None</strong>. Any existing data in your database will not be replaced and or updated if exists in CSV.</div>
+        <div id="backupArea">
+          <div class="mb-3">
+            <label for="backupFile" class="form-label">JSON file:</label>
+            <input type="file" name="backupFile" id="backupFile" class="form-control" />
+          </div>
+          <div>
+            <hr />
+            <p><strong>IMPORTANT:</strong></p>
+            <ul>
+              <li><div id="raw" data-size="<?=getMaximumFileUploadSizeRaw()?>">Maximum file size: <strong><?=getMaximumFileUploadSize()?></strong></div></li>
+              <li>Any ingredient with the same ID will be replaced. Please make sure you have taken a backup before importing a JSON file.</li>
+            </ul>
+          </div>
+        </div>
       </div>
       <div class="modal-footer">
-        <input type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseCsv" value="Cancel">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseBK">Cancel</button>
+        <input type="submit" name="btnRestore" class="btn btn-primary" id="btnRestoreIngredients" value="Import">
+      </div>
+    </div>  
+  </div>
+</div>
+
+
+<!--CSV IMPORT-->
+<div class="modal fade" id="csv_import" data-bs-backdrop="static" tabindex="-1" aria-labelledby="csvImportLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="csvImportLabel">Import Ingredients from CSV File</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="CSVImportMsg"></div>
+        <div id="process_area">
+          <div class="mb-3">
+            <label for="CSVFile" class="form-label">CSV File:</label>
+            <input type="file" class="form-control" id="CSVFile" name="CSVFile">
+          </div>
+        </div>
+        <div id="step_upload" class="modal-body"></div>
+        <div class="alert alert-info">
+          Select and match the fields in your CSV file. If a column isn't applicable, set it to <strong>None</strong>. Any existing data in your database will not be replaced or updated if it already exists in the CSV.
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseCsv">Cancel</button>
         <input type="submit" class="btn btn-primary" id="btnImportCSV" value="Import">
       </div>
     </div>
   </div>
-</div>  
+</div>
+
 
 
 

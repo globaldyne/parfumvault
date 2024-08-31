@@ -48,65 +48,65 @@ $(document).ready(function() {
 	 	reload_data();
   	});
 	var tdDataScheduled = $('#tdDataScheduled').DataTable( {
-	columnDefs: [
-		{ className: 'pv_vertical_middle text-center', targets: '_all' },
-		{ orderable: false, targets: [1,4] },
-	],
-	dom: 'lrftip',
-	processing: true,
-	serverSide: true,
-	searching: true,
-	mark: true,
-	responsive: true,
-	language: {
-		loadingRecords: '&nbsp;',
-		processing: 'Please Wait...',
-		zeroRecords: 'No scheduled to make formulas found',
-		search: 'Quick Search:',
-		searchPlaceholder: 'Name..',
-		},
-	ajax: {	
-		url: '/core/pending_formulas_data.php?meta=1',
-		type: 'POST',
-		dataType: 'json',
-		data: function(d) {
-				if (d.order.length>0){
-					d.order_by = d.columns[d.order[0].column].data
-					d.order_as = d.order[0].dir
-				}
-			},
-		},
-	columns: [
-            { data : 'name', title: 'Formula Name', render: name },
-			{ data : null, title: 'Ingredients remaining', render: ingredients },
-			{ data : 'madeOn', title: 'Progress', render: progress },
-			{ data : 'scheduledOn', title: 'Scheduled', render: fDate },
-			{ data : null, title: '', render: actions },
+		columnDefs: [
+			{ className: 'pv_vertical_middle text-center', targets: '_all' },
+			{ orderable: false, targets: [1,4] },
 		],
-	order: [[ 0, 'asc' ]],
-	lengthMenu: [[20, 50, 100, 200, 400], [20, 50, 100, 200, 400]],
-	pageLength: 20,
-	displayLength: 20,
-	stateSave: true,
-	stateDuration: -1,
-	stateLoadCallback: function (settings, callback) {
-		$.ajax( {
-			url: '/core/update_user_settings.php?set=listTodo&action=load',
+		dom: 'lrftip',
+		processing: true,
+		serverSide: true,
+		searching: true,
+		mark: true,
+		responsive: true,
+		language: {
+			loadingRecords: '&nbsp;',
+			processing: 'Please Wait...',
+			zeroRecords: 'No scheduled to make formulas found',
+			search: 'Quick Search:',
+			searchPlaceholder: 'Name..',
+		},
+		ajax: {	
+			url: '/core/pending_formulas_data.php?meta=1',
+			type: 'POST',
 			dataType: 'json',
-			success: function (json) {
-				callback( json );
-			}
-		});
-	},
-	stateSaveCallback: function (settings, data) {
-	   $.ajax({
-		 url: "/core/update_user_settings.php?set=listTodo&action=save",
-		 data: data,
-		 dataType: "json",
-		 type: "POST"
+			data: function(d) {
+					if (d.order.length>0){
+						d.order_by = d.columns[d.order[0].column].data
+						d.order_as = d.order[0].dir
+					}
+				},
+			},
+			columns: [
+				{ data : 'name', title: 'Formula Name', render: name },
+				{ data : null, title: 'Ingredients remaining', render: ingredients },
+				{ data : 'madeOn', title: 'Progress', render: progress },
+				{ data : 'scheduledOn', title: 'Scheduled', render: fDate },
+				{ data : null, title: '', render: actions },
+		],
+		order: [[ 0, 'asc' ]],
+		lengthMenu: [[20, 50, 100, 200, 400], [20, 50, 100, 200, 400]],
+		pageLength: 20,
+		displayLength: 20,
+		stateSave: true,
+		stateDuration: -1,
+		stateLoadCallback: function (settings, callback) {
+			$.ajax( {
+				url: '/core/update_user_settings.php?set=listTodo&action=load',
+				dataType: 'json',
+				success: function (json) {
+					callback( json );
+				}
+			});
+		},
+		stateSaveCallback: function (settings, data) {
+		   $.ajax({
+			 url: "/core/update_user_settings.php?set=listTodo&action=save",
+			 data: data,
+			 dataType: "json",
+			 type: "POST"
+		  });
+		},
 	  });
-	},
-  });
 	
 	$("#required_materials").on("show.bs.modal", function(e) {
 		const id = e.relatedTarget.dataset.id;
@@ -133,7 +133,7 @@ $(document).ready(function() {
 			data = '<i class="fas fa-hourglass-start" rel="tip" title="Not started yet"></i>';
 		}
 		return data;
-	}
+	};
 	
 	function name(data, type, row){
 		
@@ -145,12 +145,12 @@ $(document).ready(function() {
 							
 		data+='</div></div>';
 		return data;
-	}
+	};
 	
 	function ingredients(data, type, row){
 		data = row.total_ingredients_left + '/' + row.total_ingredients ;	
 		return data;
-	}
+	};
 	
 	function fDate(data, type, row, meta){
 	  if(type === 'display'){
@@ -164,15 +164,15 @@ $(document).ready(function() {
 		}
 	  }
 	  return data;
-	}
+	};
 	
 	function actions(data, type, row){
 		return '<i rel="tip" title="Delete '+ row.name +'" class="pv_point_gen fas fa-trash text-danger" id="pend_remove" data-name="'+ row.name +'" data-id='+ row.fid +'></i>';    
-	}
+	};
 	
 	function reload_data() {
 		$('#tdDataScheduled').DataTable().ajax.reload(null, true);
-	}
+	};
 	
 	
 	$('#tdDataScheduled').on('click', '[id*=pend_remove]', function () {
@@ -196,7 +196,7 @@ $(document).ready(function() {
 							fid: frm.ID,
 							name: frm.Name,
 							remove: true,
-							},
+						},
 						dataType: 'json',
 						success: function (data) {
 							if ( data.success ) {
@@ -207,6 +207,11 @@ $(document).ready(function() {
 								$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
 								$('.toast-header').removeClass().addClass('toast-header alert-danger');
 							}
+							$('.toast').toast('show');
+						},
+						error: function (xhr, status, error) {
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+							$('.toast-header').removeClass().addClass('toast-header alert-danger');
 							$('.toast').toast('show');
 						}
 					});

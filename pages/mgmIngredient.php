@@ -6,18 +6,21 @@ require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/formatBytes.php');
 require_once(__ROOT__.'/func/validateInput.php');
-require_once(__ROOT__.'/func/sanChar.php');
 require_once(__ROOT__.'/func/profileImg.php');
 
 
-$ingID = sanChar(mysqli_real_escape_string($conn, base64_decode($_GET["id"])));
-
+if($ingID = $_GET["id"]){
+	if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE id = '$ingID'"))){
+		echo '<div class="alert alert-danger">No such ingredient found</div>';
+		return;
+	}
+}
 $res_ingTypes = mysqli_query($conn, "SELECT id,name FROM ingTypes ORDER BY name ASC");
 $res_ingStrength = mysqli_query($conn, "SELECT id,name FROM ingStrength ORDER BY name ASC");
 $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCategory ORDER BY name ASC");
 $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles ORDER BY id ASC");
 
-$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE name = '$ingID'"));
+$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE id = '$ingID'"));
 
 ?>
 <!doctype html>
@@ -292,7 +295,7 @@ body {
 				<h5 class="modal-title">Rename ingredient <?php echo $ing['name']; ?></h5>
 			</div>
 			<div class="modal-body">
-            	<div id="warn"><div class="alert alert-warning"><strong>Warning:</strong> If you rename the ingredient, will affect any formulas that using it as well. Please refer to <strong>Where Used</strong> section to get a list of formulas if any.</div></div>
+            	<div id="warn"><div class="alert alert-warning"><i class="fa-solid fa-circle-info mx-2"></i>Renaming the ingredient, will affect any formulas that using it as well. Please refer to <strong>Where Used?</strong> section to get a list of formulas using it, if any.</div></div>
 				<div id="rename_msg"></div>
 				<label for="renameIngName" class="form-label">New name</label>
 				<input class="form-control" name="renameIngName" id="renameIngName" type="text" value="" />            
@@ -313,11 +316,11 @@ body {
 				<h5 class="modal-title"><?php echo $ing['name']; ?></h5>
 			</div>
 			<div class="modal-body">
-            	<div class="alert alert-info">Use PV APP to scan the QR</div>
+            	<div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i>Use PV APP to scan the QR</div>
 				
 				<div id="QRC" class="d-flex justify-content-center"></div>   
                 <hr />
-                <div class="alert alert-info">Download from the App Store</div>
+                <div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i>Download from the <a href="#">App Store</a></div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 				</div>
@@ -335,7 +338,7 @@ body {
 			</div>
 			<div class="modal-body">
                 <div id="warn">
-                <div class="alert alert-warning"><strong><i class="fa-solid fa-triangle-exclamation mx-2"></i>TECH PREVIEW: This feature its under development and in preview state, use with caution.</strong></div>
+                <div class="alert alert-info"><strong>Create a PDF document with the basic ingredient data.</strong></div>
 				<div id="doc_res"></div>                               
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" id="dis-genDOC" data-bs-dismiss="modal">Close</button>

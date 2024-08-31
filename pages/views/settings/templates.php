@@ -84,19 +84,19 @@ $(document).ready(function() {
 
 	function name(data, type, row){
 		return '<a href="#" class="name pv_point_gen" data-name="name" data-type="text" data-pk="'+row.id+'">'+row.name+'</a>';    
-	}
+	};
 	
 	function description(data, type, row){
 		return '<a href="#" class="description pv_point_gen" data-name="description" data-type="textarea" data-pk="'+row.id+'">'+row.description+'</a>';    
-	}
+	};
 	
 	function created(data, type, row){
 		return row.created;    
-	}
+	};
 	
 	function updated(data, type, row){
 		return row.updated;    
-	}
+	};
 	
 	function actions(data, type, row){	
 			data = '<div class="dropdown">' +
@@ -107,7 +107,7 @@ $(document).ready(function() {
 			data += '<li><a class="dropdown-item text-danger" href="#" id="sDel" rel="tip" title="Delete '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-trash mx-2"></i>Delete</a></li>';
 			data += '</ul></div>';
 		return data;
-	}
+	};
 	
 	
 	$('#tdTempls').editable({
@@ -238,30 +238,28 @@ $(document).ready(function() {
 </script>
 
 <!-- ADD TEMPLATE -->
-<div class="modal fade" id="addTmpl" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="addTmpl" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+<div class="modal fade" id="addTmpl" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addTmplLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Add new template</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-      <div id="tmpl_inf"></div>
-       
-		<div class="mb-3">
-  			<label for="tmpl_name" class="form-label">Name</label>
-            <input class="form-control" name="tmpl_name" type="text" id="tmpl_name" />
+        <div id="tmpl_inf"></div>
+
+        <div class="mb-3">
+          <label for="tmpl_name" class="form-label">Name</label>
+          <input class="form-control" name="tmpl_name" type="text" id="tmpl_name" />
         </div>
-		<div class="mb-3">
-  			<label for="tmpl_content" class="form-label">HTML Content</label>
-            <textarea class="form-control" name="tmpl_content" id="tmpl_content" rows="4"></textarea>
-		</div>
-		<div class="mb-3">
-  			<label for="tmpl_desc" class="form-label">Short description</label>
-            <input class="form-control" name="tmpl_desc" type="text" id="tmpl_desc" />
-     	</div>    
+        <div class="mb-3">
+          <label for="tmpl_content" class="form-label">HTML Content</label>
+          <textarea class="form-control" name="tmpl_content" id="tmpl_content" rows="4"></textarea>
+        </div>
+        <div class="mb-3">
+          <label for="tmpl_desc" class="form-label">Short description</label>
+          <input class="form-control" name="tmpl_desc" type="text" id="tmpl_desc" />
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -270,7 +268,7 @@ $(document).ready(function() {
     </div>
   </div>
 </div>
-</div>
+
 
 <!--EDIT MODAL-->            
 <div class="modal fade" id="editTmpl" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="editTmplLabel" aria-hidden="true">
@@ -278,9 +276,7 @@ $(document).ready(function() {
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title mgmIngHeader mgmIngHeader-with-separator" id="editTmplLabel">Edit template</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div class="alert alert-danger">Unable to get data</div>

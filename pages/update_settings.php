@@ -95,8 +95,9 @@ if($_POST['update_user_profile']){
 }
 
 if($_POST['manage'] == 'general'){
-	$currency = utf8_encode(htmlentities($_POST['currency']));
-	
+	$currency = $_POST['currency'];
+	$currency_code = $_POST['currency_code'];
+
 	$top_n = mysqli_real_escape_string($conn, $_POST['top_n']);
 	$heart_n = mysqli_real_escape_string($conn, $_POST['heart_n']);
 	$base_n = mysqli_real_escape_string($conn, $_POST['base_n']);
@@ -134,32 +135,14 @@ if($_POST['manage'] == 'general'){
 	}else{
 		$multi_dim_perc = '0';
 	}
-	
-	if(is_numeric($top_n) == FALSE){
-		$response["error"] = 'Invalid value for top notes';
-		echo json_encode($response);
-		return;
-	}
-	
-	if(is_numeric($heart_n) == FALSE){
-		$response["error"] = 'Invalid value for heart notes';
-		echo json_encode($response);
-		return;
-	}
-	
-	if(is_numeric($base_n) == FALSE){
-		$response["error"] = 'Invalid value for base notes';
-		echo json_encode($response);
-		return;
-	}
-	
+		
 	if(empty($_POST['pv_host']) || empty($_POST['currency'])){
 		$response["error"] = 'Fields cannot be empty';
 		echo json_encode($response);
 		return;
 	}
 	
-	if(mysqli_query($conn, "UPDATE settings SET currency = '$currency', top_n = '$top_n', heart_n = '$heart_n', base_n = '$base_n', chem_vs_brand = '$chem_vs_brand', grp_formula = '$grp_formula', pubChem='$pubChem', chkVersion='$chkVersion', qStep = '$qStep', defCatClass = '$defCatClass', pubchem_view = '$pubchem_view', multi_dim_perc = '$multi_dim_perc', mUnit = '$mUnit', editor = '$editor', user_pref_eng = '$user_pref_eng', pv_host = '".$_POST['pv_host']."', defPercentage = '$defPercentage', bs_theme = '$bs_theme'")){
+	if(mysqli_query($conn, "UPDATE settings SET currency = '$currency', currency_code = '$currency_code', top_n = '$top_n', heart_n = '$heart_n', base_n = '$base_n', chem_vs_brand = '$chem_vs_brand', grp_formula = '$grp_formula', pubChem='$pubChem', chkVersion='$chkVersion', qStep = '$qStep', defCatClass = '$defCatClass', pubchem_view = '$pubchem_view', multi_dim_perc = '$multi_dim_perc', mUnit = '$mUnit', editor = '$editor', user_pref_eng = '$user_pref_eng', pv_host = '".$_POST['pv_host']."', defPercentage = '$defPercentage', bs_theme = '$bs_theme'")){
 		$response["success"] = 'Settings updated';
 	}else{
 		$response["error"] = 'An error occured '.mysqli_error($conn);	

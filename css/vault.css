@@ -1088,11 +1088,11 @@ table#tdDataPending.dataTable tbody tr:hover  {
 table#tdDataPending.dataTable thead:hover {
   background-color: #ae9292;
 }
-
+/*
 .pv-transition {
 	transform: scale(1.05);
 }
-
+*/
 .pv-transition td {
     background-color: var(--bs-secondary-bg);
 }

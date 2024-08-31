@@ -4917,6 +4917,7 @@ a.badge-dark:focus, a.badge-dark.focus {
 .alert-dark .alert-link {
   color: #18181c !important;
 }
+/*
 
 @-webkit-keyframes progress-bar-stripes {
   from {
@@ -4935,16 +4936,17 @@ a.badge-dark:focus, a.badge-dark.focus {
     background-position: 0 0;
   }
 }
+*/
 
-.progress {
+.formula-progress-bar {
   display: flex;
   height: 1rem;
   overflow: hidden;
   font-size: 0.75rem;
-  background-color: #eaecf4;
+  background-color: var( --bs-secondary-bg);
   border-radius: 0.35rem;
 }
-
+/*
 .progress-bar {
   display: flex;
   flex-direction: column;
@@ -4978,7 +4980,7 @@ a.badge-dark:focus, a.badge-dark.focus {
     animation: none;
   }
 }
-
+*/
 .media {
   display: flex;
   align-items: flex-start;

@@ -99,14 +99,12 @@ while ($suppliers = mysqli_fetch_array($sup)){
 
 
 <!--EDIT LID MODAL-->            
-<div class="modal fade" id="editLid" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="editLidLabel" aria-hidden="true">
+<div class="modal fade" id="editLid" data-bs-backdrop="static" tabindex="-1" aria-labelledby="editLidLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title mgmIngHeader mgmIngHeader-with-separator" id="editLidLabel">Edit lid</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <h5 class="modal-title mgmIngHeader mgmIngHeader-with-separator" id="editLidLabel">Edit Lid</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div class="alert alert-danger">Unable to get data</div>
@@ -114,6 +112,7 @@ while ($suppliers = mysqli_fetch_array($sup)){
     </div>
   </div>
 </div>
+
 
 <script> 
 $(document).ready(function() {
@@ -257,7 +256,7 @@ $(document).ready(function() {
 							action: "delete",
 							type: "lid",
 							lidId: ldl.ID,
-							},
+						},
 						dataType: 'json',
 						success: function (data) {
 							if(data.success){
@@ -268,6 +267,11 @@ $(document).ready(function() {
 								$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
 								$('.toast-header').removeClass().addClass('toast-header alert-danger');
 							}
+							$('.toast').toast('show');
+						},
+						error: function (xhr, status, error) {
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+							$('.toast-header').removeClass().addClass('toast-header alert-danger');
 							$('.toast').toast('show');
 						}
 					});

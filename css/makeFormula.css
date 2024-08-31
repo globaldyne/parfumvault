@@ -25,4 +25,10 @@ table.dataTable {
 		page-break-after: auto;
 	}
 }
-	
+
+.mfp-iframe-holder .mfp-content {
+    line-height: 0;
+    width: 80% !important;
+    max-width: 100% !important; 
+	height: 1300px !important;
+}

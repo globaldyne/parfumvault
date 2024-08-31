@@ -1,7 +1,7 @@
 <?php 
 if (!defined('pvault_panel')){ die('Not Found');}
 
-function searchIFRA($cas, $name, $get, $defCatClass) {
+function searchIFRA($cas, $name, $get, $defCatClass, $isFormula = 0) {
     global $conn;
     
     if (empty($name)) {
@@ -15,8 +15,11 @@ function searchIFRA($cas, $name, $get, $defCatClass) {
         } else {
             $q = "name = '$name' OR synonyms LIKE '%$name%'";
         }
-        
-        $query = "SELECT risk, $defCatClass, type, formula FROM IFRALibrary WHERE $q";
+        if($isFormula){
+			$query = "SELECT risk, $defCatClass, type, formula FROM IFRALibrary WHERE $q AND $defCatClass REGEXP '^[0-9]+$'";
+		} else {
+        	$query = "SELECT risk, $defCatClass, type, formula FROM IFRALibrary WHERE $q";
+		}
         $result = mysqli_query($conn, $query);
         $res = mysqli_fetch_array($result, MYSQLI_ASSOC);
 

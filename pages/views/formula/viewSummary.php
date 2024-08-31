@@ -1,6 +1,6 @@
 <?php
 
-define('__ROOT__', dirname(dirname(__FILE__))); 
+define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__))))); 
 define('pvault_panel', TRUE);
 
 require_once(__ROOT__.'/inc/opendb.php');
@@ -257,7 +257,7 @@ function update_view(){
 				manage_view: '1',
 				ex_status: $("#" + $(this).val()).is(':checked'),
 				ex_ing: $(this).val()
-				},
+			},
 			dataType: 'json',
 				success: function (data) {
 					if ( data.success ) {
@@ -266,7 +266,10 @@ function update_view(){
 					} else {
 						$('#confViewMsg').html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i><strong>' + data.error + '</strong></div>');
 					}
-				}
+			},
+			error: function (xhr, status, error) {
+				$('#confViewMsg').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+			}
 		});
 	});
 

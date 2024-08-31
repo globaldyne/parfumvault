@@ -43,7 +43,7 @@ while($res = mysqli_fetch_array($qS)){
       <meta name="description" content="<?php echo trim($product).' - '.trim($ver);?>">
       <meta name="author" content="<?php echo trim($product).' - '.trim($ver);?>">
       <title><?php echo $meta['name'];?></title>
-        <link href="/css/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" type="text/css">
+      <link href="/css/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" type="text/css">
 
       <link href="/css/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
       <link href="/css/sb-admin-2.css" rel="stylesheet">
@@ -57,12 +57,15 @@ while($res = mysqli_fetch_array($qS)){
       <link href="/css/vault.css" rel="stylesheet">
       <link href="/css/select2.css" rel="stylesheet">
       <link href="/css/makeFormula.css" rel="stylesheet">
+  	  <link href="/css/magnific-popup.css" rel="stylesheet">
 
       <script src="/js/tableHTMLExport.js"></script>
       <script src="/js/jspdf.min.js"></script>
       <script src="/js/jspdf.plugin.autotable.js"></script>
       <script src="/js/bootbox.min.js"></script>
       <script src="/js/select2.js"></script>
+      <script src="/js/magnific-popup.js"></script>
+
    
 </head>
 
@@ -147,79 +150,82 @@ $(document).ready(function() {
 		delay: 10000
 	});
 	var tdDataPending = $('#tdDataPending').DataTable( {
-	columnDefs: [
-		{ className: 'pv_vertical_middle text-center', targets: '_all' },
-		{ orderable: false, targets: [3,4] },
-		{ responsivePriority: 1, targets: 0 }
-	],
-	dom: 'lrft',
-	buttons: [{
+		columnDefs: [
+			{ className: 'pv_vertical_middle text-center', targets: '_all' },
+			{ orderable: false, targets: [3,4] },
+			{ responsivePriority: 1, targets: 0 }
+		],
+		dom: 'lrft',
+		buttons: [{
 				extend: 'print',
 				title: myFNAME,
 				exportOptions: {
 					columns: [0, 1, 2, 3]
 				},
-			  }],
-	processing: true,
-	serverSide: true,
-	searching: true,
-	mark: true,
-	responsive: true,
-	language: {
-		loadingRecords: '&nbsp;',
-		processing: 'Please Wait...',
-		zeroRecords: 'No pending ingredients found',
-		search: 'Quick Search:',
-		searchPlaceholder: 'Ingredient..',
-	},
-	ajax: {	
-		url: '/core/pending_formulas_data.php?meta=0&fid=' + fid,
-		type: 'POST',
-		dataType: 'json',
-		data: function(d) {
-				if (d.order.length>0){
-					d.order_by = d.columns[d.order[0].column].data
-					d.order_as = d.order[0].dir
+		}],
+		processing: true,
+		serverSide: true,
+		searching: true,
+		mark: true,
+		responsive: true,
+		language: {
+			loadingRecords: '&nbsp;',
+			processing: 'Please Wait...',
+			zeroRecords: 'No pending ingredients found',
+			search: 'Quick Search:',
+			searchPlaceholder: 'Ingredient..',
+		},
+		ajax: {	
+			url: '/core/pending_formulas_data.php?meta=0&fid=' + fid,
+			type: 'POST',
+			dataType: 'json',
+			data: function(d) {
+					if (d.order.length>0){
+						d.order_by = d.columns[d.order[0].column].data
+						d.order_as = d.order[0].dir
+					}
+				},
+			},
+			columns: [
+				{ data : 'ingredient', title: 'Ingredient', render: ingredient},
+				{ data : 'concentration', title: 'Purity %' },
+				{ data : 'quantity', title: 'Quantity (<?=$settings['mUnit']?>)', render: quantity },
+				{ data : 'inventory.stock', title: 'Availability', render: stock },
+				{ data : null, title: 'Actions', className: 'text-center noexport', render: actions },
+			],
+			footerCallback : function( tfoot, data, start, end, display ) {    
+			  var response = this.api().ajax.json();
+				if(response){
+					var $td = $(tfoot).find('th');
+					$td.eq(0).html("Ingredients left: "+ response.meta['total_ingredients_left'] + ' of ' + response.meta['total_ingredients'] );
+					$td.eq(2).html("Total left: " + response.meta['total_quantity_left'] + ' of ' + response.meta['total_quantity'] + response.meta['quantity_unit'] );
+					total_quantity = response.meta['total_quantity'];
 				}
 			},
-		},
-	  	columns: [
-			{ data : 'ingredient', title: 'Ingredient', render: ingredient},
-			{ data : 'concentration', title: 'Purity %' },
-			{ data : 'quantity', title: 'Quantity (<?=$settings['mUnit']?>)', render: quantity },
-			{ data : 'inventory.stock', title: 'Availability', render: stock },
-			{ data : null, title: 'Actions', className: 'text-center noexport', render: actions },
-		],
-	  	footerCallback : function( tfoot, data, start, end, display ) {    
-		  var response = this.api().ajax.json();
-		  	if(response){
-			 	var $td = $(tfoot).find('th');
-			 	$td.eq(0).html("Ingredients left: "+ response.meta['total_ingredients_left'] + ' of ' + response.meta['total_ingredients'] );
-			 	$td.eq(2).html("Total left: " + response.meta['total_quantity_left'] + ' of ' + response.meta['total_quantity'] + response.meta['quantity_unit'] );
-			  	total_quantity = response.meta['total_quantity'];
-		 	}
-	  	},
-	  	fnRowCallback : function (row, data, display) {
-			if (data.toAdd == 0) {
-				$(row).find('td:eq(0),td:eq(1),td:eq(2),td:eq(3)').addClass('strikeout');
-		  	}
-		  	if (data.toSkip == 1) {
-			  	$(row).find('td:eq(0),td:eq(1),td:eq(2),td:eq(3)').addClass('skipped');
-		  	}
-		  	$(row).addClass('pv-zoom');
-			if (data.toAdd == 0 || data.toSkip == 1) {
-        		$(row).addClass('d-none');
-    		}
-			$('#toggleAdded').click(function() {
-				if (data.toAdd == 0 || data.toSkip == 1) {
-					$(row).toggleClass('d-none');
+			fnRowCallback : function (row, data, display) {
+				if (data.toAdd == 0) {
+					$(row).find('td:eq(0),td:eq(1),td:eq(2),td:eq(3)').addClass('strikeout');
 				}
-			});
-	 	},
-	 	order: [[ 0, 'asc' ]],
-	 	lengthMenu: [[200, 500, 1000], [200, 500, 1000]],
-	 	pageLength: 200,
-	 	displayLength: 200,
+				if (data.toSkip == 1) {
+					$(row).find('td:eq(0),td:eq(1),td:eq(2),td:eq(3)').addClass('skipped');
+				}
+				$(row).addClass('pv-zoom');
+				if (data.toAdd == 0 || data.toSkip == 1) {
+					$(row).addClass('d-none');
+				}
+				$('#toggleAdded').click(function() {
+					if (data.toAdd == 0 || data.toSkip == 1) {
+						$(row).toggleClass('d-none');
+					}
+				});
+			},
+			drawCallback: function( settings ) {
+				extrasShow();
+			},
+			order: [[ 0, 'asc' ]],
+			lengthMenu: [[200, 500, 1000], [200, 500, 1000]],
+			pageLength: 200,
+			displayLength: 200,
 	});
 	
 	$('#tdDataPending').on('mouseenter', '.pv-zoom', function() {
@@ -239,9 +245,12 @@ $(document).ready(function() {
 
 
 	function ingredient(data, type, row){
-		data = '<a href="#infoModal" id="ingInfo" data-bs-toggle="modal" data-id="'+row.ingID+'" data-name="'+row.ingredient+'" class="listIngNameCas-with-separator">' + row.ingredient + '</a><span class="listIngHeaderSub"> CAS: <i class="subHeaderCAS">'+row.cas+'</i></span>';
+		data ='<div class="listIngNameCas-with-separator"><a href="#" class="dropdown-toggle " data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'+row.ingredient+'</a><span class="listIngHeaderSub"> CAS: <i class="subHeaderCAS">'+row.cas+'</i></span><div class="dropdown-menu dropdown-menu-right">';
+		data+='<li><a class="dropdown-item " href="#infoModal" id="ingInfo" data-bs-toggle="modal" data-id="'+row.ingID+'" data-name="'+row.ingredient+'" ><i class="fa-solid fa-circle-info mx-2"></i>Quick Info</a></li>';
+		data+='<li><a class="dropdown-item popup-link" href="/pages/mgmIngredient.php?id='+row.ingID+'" target="_blank"><i class="fa-solid fa-eye mx-2"></i>Go to ingredient</a></li>';
+		data+='</div></div>';
 		return data;
-	}
+	};
 	
 	function quantity(data, type, row){
 		var overdose = '';
@@ -251,7 +260,7 @@ $(document).ready(function() {
 		
 		data = row.quantity + overdose;
 		return data;
-	}
+	};
 	
 	function actions(data, type, row){
 		var data;
@@ -270,7 +279,7 @@ $(document).ready(function() {
 		data += '<i data-ingredient="'+row.ingredient+'" data-quantity="'+row.quantity+'" data-concentration="'+row.concentration+'" data-ingID="'+row.ingID+'" id="addToCart" class="mr fas fa-shopping-cart pv_point_gen"></i>'; 
 						 
 		return data;    
-	}
+	};
 	
 	function stock(data, type, row){
 	
@@ -287,13 +296,24 @@ $(document).ready(function() {
 		}
 		
 		return st;
-	}
+	};
 	
 	function reload_data() {
 		$('#tdDataPending').DataTable().ajax.reload(null, true);
-	}
+	};
 	
-	
+	function extrasShow() {
+		$('[rel=tip]').tooltip({
+			"html": true,
+			"delay": {"show": 100, "hide": 0},
+		 });
+		$('.popup-link').magnificPopup({
+			type: 'iframe',
+			closeOnContentClick: false,
+			closeOnBgClick: false,
+			showCloseBtn: true,
+		});
+	};
 	<?php if($settings['pv_scale_enabled']) { ?>
 		var pvScaleHost = "<?php echo $settings['pv_scale_host']?: '0.0.0.0'; ?>";	
 		var ws = new WebSocket("ws://" + pvScaleHost + ":81");
@@ -472,7 +492,13 @@ $(document).ready(function() {
 							 var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 						}	
 						$('#msg').html(msg);
+					},
+					error: function (xhr, status, error) {
+						$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+						$('.toast-header').removeClass().addClass('toast-header alert-danger');
+						$('.toast').toast('show');
 					}
+					
 				});
 					
 					 return true;
@@ -497,9 +523,6 @@ $(document).ready(function() {
 	});
 
 	
-
-
-	
 });//DOC END
 
 
@@ -510,114 +533,124 @@ $(document).ready(function() {
 <script src="/js/mark/datatables.mark.js"></script>
 <script src="/js/makeFormula.js"></script>
 
-    <!-- Modal ING Info -->
-    <div class="modal fade" id="infoModal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                    <div class="modal-body-info">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
-                </div>
+<!-- Modal ING Info -->
+<div class="modal fade" id="infoModal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="infoModalLabel"><div id="infoModalTitle">Ingredienet name</div></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="infoModalBody"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
+</div>
+
     
-    <!-- TOAST -->
-    <div class="position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 11">
-      <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true">
-        <div class="toast-header">
-          <strong class="me-auto" id="toast-title">...</strong>
-          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+<!-- TOAST -->
+<div class="position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 11">
+  <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true">
+    <div class="toast-header">
+      <strong class="me-auto" id="toast-title">...</strong>
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Confirm amount-->
+<div class="modal fade" id="confirm_add" data-bs-backdrop="static" tabindex="-1" aria-labelledby="confirm_add" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="ingAdded"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div style="display: none;" id="ingID"></div>
+      <div style="display: none;" id="idRow"></div>
+      <div style="display: none;" id="qr"></div>
+      <div class="modal-body">
+        <div id="errMsg"></div>
+        
+        <div class="mb-3">
+          <label for="amountAdded" class="form-label">Amount added</label>
+          <input name="amountAdded" type="text" id="amountAdded" class="form-control" />
+        </div>
+
+        <div class="dropdown-divider"></div>
+
+        <div class="mb-3 form-check">
+          <input name="updateStock" id="updateStock" type="checkbox" class="form-check-input" value="1" checked>
+          <label class="form-check-label" for="updateStock">Update stock</label>
+        </div>
+        
+        <div class="mb-3">
+          <label for="supplier" class="form-label">Supplier</label>
+          <select name="supplier" id="supplier" class="form-select"></select>
+        </div>
+
+        <hr class="border border-default border-1 opacity-75">
+        
+        <div class="mb-3">
+          <label for="notes" class="form-label">Notes</label>
+          <textarea class="form-control" id="notes" rows="3"></textarea>
+        </div>
+
+        <hr class="border border-default border-1 opacity-75">
+        
+        <a class="link-primary" data-bs-toggle="collapse" href="#collapseAdvanced" aria-expanded="false" aria-controls="collapseAdvanced">Advanced</a>
+        <div class="collapse" id="collapseAdvanced">
+          <div class="card card-body mt-3">
+            <label for="replacement" class="form-label">Select a replacement</label>
+            <select name="replacement" id="replacement" class="form-select"></select>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Modal Confirm amount-->
-    <div class="modal fade" id="confirm_add" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="confirm_add" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-          <div style="display: none;" id="ingID"></div>
-          <div style="display: none;" id="idRow"></div>
-          <div style="display: none;" id="qr"></div>
-          <h5 class="modal-title" id="ingAdded"></h5>
-        </div>
-        <div class="modal-body">
-        <div id="errMsg"></div>
-            
-              <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label for="amountAdded">Amount added</label>
-                    <input name="amountAdded" type="text" id="amountAdded" />
-                </div>
-              </div>
-              
-              <div class="dropdown-divider"></div>
-              
-              <div class="form-row">
-                <div class="form-group col-auto">
-                    <input name="updateStock" id="updateStock" type="checkbox" value="1" checked>
-                    <label class="form-check-label" for="updateStock">Update stock</label>
-                </div>
-              </div>        
-              <div class="form-row col-auto">
-                <label for="supplier">Supplier</label>
-                <select name="supplier" id="supplier" class="supplier pv-form-control"></select>
-              </div>
-              <hr class="border border-default border-1 opacity-75">
-              <div class="form-group">
-                <label for="notes">Notes</label>
-                <textarea class="form-control" id="notes" rows="3"></textarea>
-              </div>
-              <hr class="border border-default border-1 opacity-75">
-    		  <a class="link-primary" data-bs-toggle="collapse" href="#collapseAdvanced" aria-expanded="false" aria-controls="collapseAdvanced">Advanced</a>
-              
-                <div class="collapse" id="collapseAdvanced">
-                
-                <div class="card card-body">
-        		  <label for="replacement" class="form-label">Select a replacement</label>
-   				  <select name="replacement" id="replacement" class="replacement pv-form-control"></select>
-  				</div>
-                </div>
-              
-              <hr class="border border-default border-1 opacity-75">
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <input type="submit" name="addedToFormula" class="btn btn-primary" id="addedToFormula" value="Confirm">
-              </div>
-         
-        </div>
+      <hr class="border border-default border-1 opacity-75">
+      
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <input type="submit" name="addedToFormula" class="btn btn-primary" id="addedToFormula" value="Confirm">
       </div>
     </div>
   </div>
+</div>
+
   
-      <!-- Modal Skip material-->
-    <div class="modal fade" id="confirm_skip" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="confirm_skip" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-          <div style="display: none;" id="ingID"></div>
-          <div style="display: none;" id="idRow"></div>
-          <h5 class="modal-title" id="ingSkipped"></h5>
-        </div>
-        <div class="modal-body">
-        <div id="errMsg"></div>
-              
-          <div class="form-group">
-            <label for="notes">Notes</label>
-            <textarea class="form-control" id="skip_notes" rows="3"></textarea>
-          </div>
+<!-- Modal Skip material-->
+<div class="modal fade" id="confirm_skip" data-bs-backdrop="static" tabindex="-1" aria-labelledby="confirm_skip" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="ingSkipped"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
 
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <input type="submit" name="skippedFromFormula" class="btn btn-primary" id="skippedFromFormula" value="Skip">
-          </div>
-         
+      <div style="display: none;" id="ingID"></div>
+      <div style="display: none;" id="idRow"></div>
+
+      <div class="modal-body">
+        <div id="errMsg"></div>
+        
+        <div class="form-group">
+          <label for="skip_notes" class="form-label">Notes</label>
+          <textarea class="form-control" id="skip_notes" rows="3"></textarea>
         </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <input type="submit" name="skippedFromFormula" class="btn btn-primary" id="skippedFromFormula" value="Skip">
       </div>
     </div>
   </div>
+</div>
+
   
   </body>
 </html>
