@@ -195,28 +195,43 @@ foreach ($form as $formula){
 
 	$u = searchIFRA($ing_q['cas'],$formula['ingredient'],null,$defCatClass);
 	
-	if(($u['val'] || $u['type'] && $ing_q['byPassIFRA'] == 0)){
-		$r['usage_limit'] = (float)number_format((float)$u['val'], $settings['qStep']);
-		$r['usage_restriction'] = (string)$u['risk'] ?: 'N/A';
-		$r['usage_restriction_type'] = (string)$u['type'] ?: 'N/A';
-		$r['usage_regulator'] = (string)"IFRA";
-	}else{
-		$r['usage_limit'] = number_format((float)$ing_q["$defCatClass"], $settings['qStep']) ?: 100;
-		$r['usage_restriction'] = (int)$ing_q['classification'];
+	if (($u['val'] || $u['type']) && $ing_q['byPassIFRA'] === '0' && $formula['exclude_from_calculation'] == '0') {
+		$r['usage_limit'] = number_format((float)$u['val'], $settings['qStep']);
+		$r['usage_restriction'] = isset($u['risk']) ? (string)$u['risk'] : 'N/A';
+		$r['usage_restriction_type'] = isset($u['type']) ? (string)$u['type'] : 'N/A';
+		$r['usage_regulator'] = 'IFRA';
 		
-		if ($ing_q['classification'] == 1) {
-			$r['usage_restriction_type'] = 'RECOMMENDATION';
-		} elseif ($ing_q['classification'] == 2) {
-			$r['usage_restriction_type'] = 'RESTRICTION';
-		} elseif ($ing_q['classification'] == 3) {
-			$r['usage_restriction_type'] = 'SPECIFICATION';
-		} elseif ($ing_q['classification'] == 4) {
-			$r['usage_restriction_type'] = 'PROHIBITION';
-		} else {
-			$r['usage_restriction_type'] = 'RECOMMENDATION';
+
+	} else {
+		$r['usage_limit'] = number_format((float)($ing_q["$defCatClass"] ?? 100), $settings['qStep']);
+		$r['usage_restriction'] = (int)($ing_q['classification'] ?? 1);
+		
+
+		switch ($ing_q['classification']) {
+			case 1:
+				$r['usage_restriction_type'] = 'RECOMMENDATION';
+				break;
+			case 2:
+				$r['usage_restriction_type'] = 'RESTRICTION';
+				break;
+			case 3:
+				$r['usage_restriction_type'] = 'SPECIFICATION';
+				break;
+			case 4:
+				$r['usage_restriction_type'] = 'PROHIBITION';
+				break;
+			default:
+				$r['usage_restriction_type'] = 'RECOMMENDATION';
+				break;
 		}
-		$r['usage_regulator'] = (string)"PV";
-		$r['ingredient']['classification'] = (int)$ing_q['classification'] ?: 1;
+	
+		$r['usage_regulator'] = 'PV';
+		$r['ingredient']['classification'] = (int)($ing_q['classification'] ?? 1);
+	}
+	if($ing_q['byPassIFRA'] === '0') {
+		$r['isIFRAbyPass'] = (int)0;
+	} else {
+		$r['isIFRAbyPass'] = (int)1;
 	}
 	
 	if($meta['defView'] == '1'){
@@ -295,29 +310,9 @@ if( $lastValAccepted !== null) {
 
 	$m['max_usage'] = $lastValAccepted;
 } else {
-	$m['max_usage'] = 'Unable to calculate';
-}
-/*
-$new_conc = $_GET['final_total_ml'] ?: 100/100*$_GET['final_type_conc'] ?: 100;
-$carrier = $_GET['final_total_ml'] ?: 100 - $new_conc;
-
-
-if($m['total_ingredients'] != 0 && !$_POST['search']){	
-	if( validateFormula($meta['fid'], $_GET['final_total_ml'] ?: 100, $new_conc, $mg['total_mg'], $_GET['val_cat']?:	$defCatClass, $settings['qStep']) == TRUE){
-		$val_status = 1;
-		$val_msg = 'Your formula contains materials, exceeding and/or missing IFRA standards. Please alter your formula.';
-	}
+	$m['max_usage'] = 'Unable to calculate ';
 }
 
-$compliance['checked_for'] = (string)$_GET['val_cat'] ?: $defCatClass;
-$compliance['final_total_ml'] = (int)$_GET['final_total_ml'] ?: 100;
-$compliance['final_type_conc'] = (int)$_GET['final_type_conc'] ?: 100;
-$compliance['carier'] = (int)$carier ?: 100;
-$compliance['status'] = (int)$val_status ?: 0;
-$compliance['message'] = (string)$val_msg ?: 'Formula is IFRA compliant';
-	
-$response['compliance'] = $compliance;
-*/
 $response['meta'] = $m;
 
 $s['load_time'] = microtime(true) - $starttime;

@@ -331,34 +331,37 @@ function setProtected(status) {
       }
     },
     error: function (xhr, status, error) {
-      $('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i> An ' + status + ' occurred, check server logs for more info. ' + error);
+      $('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. ' + error);
       $('.toast-header').removeClass().addClass('toast-header alert-danger');
       $('.toast').toast('show');
     }
   });
-}
+};
 
 
 function fetch_formula(){
 $.ajax({ 
-    url: '/pages/viewFormula.php', 
+    url: '/pages/views/formula/viewFormula.php', 
 	type: 'GET',
     data: {
 		id: "<?=$id?>",
 		"search": "<?=$_GET['search']?>"
-		},
+	},
 	dataType: 'html',
 		success: function (data) {
 			$('#fetch_formula').html(data);
+		},
+		error: function (xhr, status, error) {
+			$('#fetch_formula').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 		}
 	});
-}
+};
 
 fetch_formula();
 
 function fetch_pyramid(){
 	$.ajax({ 
-		url: '/pages/viewPyramid.php', 
+		url: '/pages/views/formula/viewPyramid.php', 
 		type: 'GET',
 		data: {
 			formula: "<?=$id?>",
@@ -367,9 +370,12 @@ function fetch_pyramid(){
 		dataType: 'html',
 		success: function (data) {
 		  $('#fetch_pyramid').html(data);
+		},
+		error: function (xhr, status, error) {
+			$('#fetch_pyramid').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 		}
 	});
-}
+};
 
 
 function fetch_impact(){
@@ -382,9 +388,12 @@ function fetch_impact(){
 		dataType: 'html',
 		success: function (data) {
 		  $('#fetch_impact').html(data);
+		},
+		error: function (xhr, status, error) {
+			$('#fetch_impact').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 		}
 	});
-}
+};
 
 
 function fetch_analysis(){
@@ -397,13 +406,16 @@ function fetch_analysis(){
 		dataType: 'html',
 		success: function (data) {
 		  $('#fetch_analysis').html(data);
+		},
+		error: function (xhr, status, error) {
+			$('#fetch_analysis').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 		}
 	});
-}
+};
 
 function fetch_summary(){
 $.ajax({ 
-    url: '/pages/viewSummary.php', 
+    url: '/pages/views/formula/viewSummary.php', 
 	type: 'GET',
     data: {
 		id: myFID
@@ -411,9 +423,12 @@ $.ajax({
 	dataType: 'html',
 		success: function (data) {
 			$('#fetch_summary').html(data);
+		},
+		error: function (xhr, status, error) {
+			$('#fetch_summary').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 		}
 	});
-}
+};
 
 
 
@@ -428,9 +443,12 @@ function fetch_replacements(){
 		dataType: 'html',
 		success: function (data) {
 		  $('#fetch_replacements').html(data);
+		},
+		error: function (xhr, status, error) {
+			$('#fetch_replacements').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 		}
 	});
-}
+};
 
 function fetch_attachments(){
 	$.ajax({ 
@@ -442,9 +460,12 @@ function fetch_attachments(){
 		dataType: 'html',
 		success: function (data) {
 		  $('#fetch_attachments').html(data);
+		},
+		error: function (xhr, status, error) {
+			$('#fetch_attachments').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 		}
 	});
-}
+};
 
 function fetch_revisions(){
 	$.ajax({ 
@@ -457,13 +478,16 @@ function fetch_revisions(){
 		dataType: 'html',
 		success: function (data) {
 		  $('#fetch_revisions').html(data);
+		},
+		error: function (xhr, status, error) {
+			$('#fetch_revisions').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 		}
 	});
-}
+};
 
 function fetch_formula_settings(){
 	$.ajax({ 
-		url: '/pages/getFormMeta.php',
+		url: '/pages/views/formula/getFormMeta.php',
 		type: 'GET',
 		data: {
 			id: "<?=$meta['id']?>",
@@ -472,9 +496,12 @@ function fetch_formula_settings(){
 		dataType: 'html',
 		success: function (data) {
 		  $('#fetch_formula_settings').html(data);
+		},
+		error: function (xhr, status, error) {
+			$('#fetch_formula_settings').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 		}
 	});
-}
+};
 
 function fetch_timeline(){
 	$.ajax({ 
@@ -486,9 +513,12 @@ function fetch_timeline(){
 		dataType: 'html',
 		success: function (data) {
 		  $('#fetch_timeline').html(data);
+		},
+		error: function (xhr, status, error) {
+			$('#fetch_timeline').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 		}
 	});
-}
+};
 
 </script>
 <script src="/js/formula.tabs.js"></script>

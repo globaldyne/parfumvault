@@ -1,4 +1,28 @@
 # CHANGELOG
+### Version 11.1
+- When an ingredient is excluded from formula calculation will also be excluded from any IFRA validations
+- Add a warning in a formula when the ingredient has ifra by passed
+- Fix IFRA by pass in formulas
+- Fix progress bar in formula view not showing properly
+- Added currency list
+- Set default currency to GBP
+- Directory restructure - WIP
+- Fix DeepSearch function not properly showing
+- Change ingredient manage to id instead of a name
+- Added a link to the full ingredient data in MakeFormula
+- Removed row zoom for MakeFormula
+- Bootbox 6.0 update
+- Added deletion for batches
+- Error handling for ingredient management
+- PDF doc generation is now GA for ingredients
+- Make formula improvements
+- Bootstrap update to 5.3.3
+- jquery update to 3.7.1
+- Improved error handling when generating a batch document and archiving a formula
+- Blocked auto update for versions before 10.x
+- Fix formula archiving when deleting a formula
+- Fix auto pdf generation when a formula is marked as complete
+
 ### Version 11.0
 - Making SDS GA
 - Added maximum allowed usage for a formula

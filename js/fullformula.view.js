@@ -15,10 +15,15 @@ $('.manageQuantity').click(function() {
 		do: 'scale',
 		scale: $(this).attr('data-action'),
 		formula: myFID,
-		},
+	},
     success: function (data) {
 		reload_formula_data();
-    }
+    },
+	error: function (xhr, status, error) {
+		$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+		$('.toast-header').removeClass().addClass('toast-header alert-danger');
+		$('.toast').toast('show');
+	}
   });
 });
 
@@ -39,11 +44,16 @@ $('#amount_to_make').on('click', '[id*=amountToMake]', function () {
 			fid: myFID,
 			SG: $("#sg").val(),
 			amount: $("#totalAmount").val(),
-			},
+		},
 		success: function (data) {
 			$('#amountToMakeMsg').html(data);
 			$('#amount_to_make').modal('toggle');
 			reload_formula_data();
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
 		}
 	  });
 	}
@@ -64,16 +74,21 @@ $('#create_accord').on('click', '[id*=createAccord]', function () {
 			fid: myFID,
 			accordName: $("#accordName").val(),
 			accordProfile: $("#accordProfile").val(),
-			},
+		},
 		dataType: 'json',
 		success: function (data) {
 			if(data.success){
-			var msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>'+data.success+'</div>';
-			reload_formula_data();
-		}else if(data.error){
-			var msg = '<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-triangle-exclamation mx-2"></i>'+data.error+'</div>';
-		}
-		$('#accordMsg').html(msg);
+				var msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>'+data.success+'</div>';
+				reload_formula_data();
+			}else if(data.error){
+				var msg = '<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-triangle-exclamation mx-2"></i>'+data.error+'</div>';
+			}
+				$('#accordMsg').html(msg);
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
 		}
 	  });
 	}
@@ -94,7 +109,7 @@ $('#conv_ingredient').on('click', '[id*=conv2ing]', function () {
 			fname: myFNAME,
 			ingName: $("#ingName").val(),
 			action: 'conv2ing',
-			},
+		},
 		dataType: 'json',
 		success: function (data) {
 			if(data.success){
@@ -103,6 +118,11 @@ $('#conv_ingredient').on('click', '[id*=conv2ing]', function () {
 				var msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>'+data.error+'</div>';
 			}
 			$('#cnvMsg').html(msg);
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
 		}
 	  });
 	}
@@ -117,7 +137,7 @@ $.ajax({
 		action: "clone",
 		fname: myFNAME,
 		fid: myFID,
-		},
+	},
 	dataType: 'json',
     success: function (data) {
 		if ( data.success ) {
@@ -127,6 +147,11 @@ $.ajax({
 			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
 			$('.toast-header').removeClass().addClass('toast-header alert-danger');
 		}
+		$('.toast').toast('show');
+	},
+	error: function (xhr, status, error) {
+		$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+		$('.toast-header').removeClass().addClass('toast-header alert-danger');
 		$('.toast').toast('show');
 	}
 
@@ -143,10 +168,9 @@ $('#schedule_to_make').on('click', '[id*=addTODO]', function () {
 		fname: myFNAME,
 		fid: myFID,
 		add: true,
-		},
+	},
 	dataType: 'json',
     success: function (data) {
-	
 		if ( data.success ) {
 			$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
 			$('.toast-header').removeClass().addClass('toast-header alert-success');
@@ -157,7 +181,12 @@ $('#schedule_to_make').on('click', '[id*=addTODO]', function () {
 		}
 		$('#schedule_to_make').modal('toggle');
 		$('.toast').toast('show');
-    }
+    },
+	error: function (xhr, status, error) {
+		$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+		$('.toast-header').removeClass().addClass('toast-header alert-danger');
+		$('.toast').toast('show');
+	}
   });
 });
 
@@ -182,7 +211,7 @@ $('#replaceIng').on('click', '[id*=replaceConfirm]', function () {
 			ingSrcName: $("#ingRepName").val(),
 			ingSrcID: $("#ingRepID").val(),
 			fid: myFID,
-			},
+		},
 		dataType: 'json',
 		success: function (data) {
 			if ( data.success ) {
@@ -195,8 +224,12 @@ $('#replaceIng').on('click', '[id*=replaceConfirm]', function () {
             	var msg ='<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + data.error + '</div>';
 				$('#msgRepl').html(msg);
 			}
-			
 		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+		}
 	  });
 });
 
@@ -206,7 +239,6 @@ $("#formula").on("click", ".open-replace-dialog", function () {
 	$("#replaceIng #ingTargInfo").html('');
 	$("#replaceIng #repIngNameDest").val( '' );
 	$("#repGrid").hide();
-
 	
 	var ingRepName = $(this).data('name');
 	var ingRepID = $(this).data('id');
@@ -334,7 +366,7 @@ $('#mrgIng').on('click', '[id*=mergeConfirm]', function () {
 			ingSrcName: $("#ingSrcName").val(),
 			ingSrcID: $("#ingSrcID").val(),
 			fid: myFID,
-			},
+		},
 		dataType: 'json',
 		success: function (data) {
 			if ( data.success ) {
@@ -347,8 +379,12 @@ $('#mrgIng').on('click', '[id*=mergeConfirm]', function () {
             	var msg ='<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + data.error + '</div>';
 				$('#msgMerge').html(msg);
 			}
-			
 		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+		}
 	  });
 });
 
@@ -413,7 +449,7 @@ $('#manage-quantity').on('click', '[id*=quantityConfirm]', function () {
 		type: 'POST',
 		data: {
 			updateQuantity: "true",
-			ingQuantity: $(".ingQuantity").val(),
+			ingQuantity: $("#ingQuantity").val(),
 			ingQuantityName: $("#ingQuantityName").val(),
 			ingQuantityID: $("#ingQuantityID").val(),
 			ingID: $("#mainingid").val(),
@@ -421,7 +457,7 @@ $('#manage-quantity').on('click', '[id*=quantityConfirm]', function () {
 			ingReCalc: $("#reCalc").prop('checked'),
 			formulaSolventID: $("#formulaSolvents").val(),
 			fid: myFID,
-			},
+		},
 		dataType: 'json',
 		success: function (data) {
 			if(data.success){
@@ -433,8 +469,12 @@ $('#manage-quantity').on('click', '[id*=quantityConfirm]', function () {
 				msg ='<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + data.error + '</div>';
 				$('#msgQuantity').html(msg);
 			}
-			
 		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+		}
 	  });
 });
 
@@ -605,13 +645,10 @@ function update_bar(){
 			$('#heart_bar').attr('aria-valuenow', heart).css('width', heart + '%').attr('aria-valuemax', heart_max);
 			$('#base_bar').attr('aria-valuenow', base).css('width', base + '%').attr('aria-valuemax', base_max);
 	
-			$('.top-label').html(top + "% Top Notes");
-			$('.heart-label').html(heart + "% Heart Notes");
-			$('.base-label').html(base + "% Base Notes");
+			$('#top_label').html(top + "% Top Notes");
+			$('#heart_label').html(heart + "% Heart Notes");
+			$('#base_label').html(base + "% Base Notes");
 			
-			//$('.Top_notes').html("Top Notes");
-			//$('.Heart_notes').html("Heart Notes");
-			//$('.Base_notes').html("Base Notes");
 
 		} else {
 			$('#progress-area').hide();
@@ -619,3 +656,5 @@ function update_bar(){
 		
 	}); 
 };
+
+update_bar();

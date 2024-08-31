@@ -88,13 +88,13 @@ $(document).ready(function() {
 	  	title: 'Document name',
  	});
   
- $('#tdIngDocs').editable({
+	$('#tdIngDocs').editable({
 	  container: 'body',
 	  selector: 'i.notes',
 	  type: 'POST',
 	  url: "/pages/update_data.php?ingDoc=update&ingID=<?=$ingID;?>",
 	  title: 'Notes',
- });
+	});
 
 	
 	$('#tdIngDocs').on('click', '[id*=dDel]', function () {
@@ -123,6 +123,11 @@ $(document).ready(function() {
 						success: function (data) {
 							$('#msg_doc').html(data);
 							reload_doc_data();
+						},
+						error: function (xhr, status, error) {
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+							$('.toast-header').removeClass().addClass('toast-header alert-danger');
+							$('.toast').toast('show');
 						}
 					  });
 					
@@ -194,26 +199,27 @@ $(document).ready(function() {
 
 
 <!-- ADD DOCUMENT-->
-<div class="modal fade" id="addDoc" tabindex="-1" data-bs-backdrop="static" role="dialog" aria-labelledby="addDoc" aria-hidden="true">
+<div class="modal fade" id="addDoc" tabindex="-1" data-bs-backdrop="static" aria-labelledby="addDocLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Add document</h5>
+        <h5 class="modal-title" id="addDocLabel">Add Document</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-      	<div id="doc_inf"></div>
-      	<div class="mb-2 col-sm">
-            <label for="doc_name" class="col-form-label">Document name</label> 
-        	<input class="form-control" name="doc_name" type="text" id="doc_name" />
+        <div id="doc_inf"></div>
+        <div class="mb-2">
+          <label for="doc_name" class="form-label">Document Name</label>
+          <input class="form-control" name="doc_name" type="text" id="doc_name" />
         </div>
-        <div class="mb-2 col-sm">            
-            <label for="doc_notes" class="col-form-label">Notes</label> 
-            <input class="form-control" name="doc_notes" type="textarea" id="doc_notes" />
+        <div class="mb-2">
+          <label for="doc_notes" class="form-label">Notes</label>
+          <textarea class="form-control" name="doc_notes" id="doc_notes"></textarea>
         </div>
-        <div class="mb-2 col-sm">
-            <label for="doc_file" class="col-form-label">File</label> 
-            <input type="file" name="doc_file" id="doc_file" class="form-control" />
-        </div>            
+        <div class="mb-2">
+          <label for="doc_file" class="form-label">File</label>
+          <input type="file" name="doc_file" id="doc_file" class="form-control" />
+        </div>
         <div class="dropdown-divider"></div>
       </div>
       <div class="modal-footer">
@@ -222,5 +228,4 @@ $(document).ready(function() {
       </div>
     </div>
   </div>
-</div>
 </div>

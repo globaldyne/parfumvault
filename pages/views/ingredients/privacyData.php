@@ -1,6 +1,6 @@
 <?php
 define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__))))); 
-if(!$_POST['ingID']){
+if(!$_GET['ingID']){
 	echo 'Invalid ID';
 	return;
 }
@@ -9,7 +9,7 @@ require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
 
 
-$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT id,isPrivate FROM ingredients WHERE id = '".$_POST['ingID']."'"));
+$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT id,isPrivate FROM ingredients WHERE id = '".$_GET['ingID']."'"));
 
 ?>
 <h3>Privacy</h3>

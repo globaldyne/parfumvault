@@ -1,14 +1,14 @@
 <?php 
 if (!defined('pvault_panel')){ die('Not Found');}
 
-function validateFormula($fid, $bottle, $new_conc, $mg, $defCatClass, $qStep) {
+function validateFormula($fid, $bottle, $new_conc, $mg, $defCatClass, $qStep, $isFormula = 0) {
 	global $conn;
 	
     // Initialize arrays to collect validation results and error messages
     $errors = array();
 
     // Fetch formula details
-    $formula_query = mysqli_query($conn, "SELECT ingredient, quantity, concentration FROM formulas WHERE fid = '$fid'");
+    $formula_query = mysqli_query($conn, "SELECT ingredient, quantity, concentration FROM formulas WHERE fid = '$fid' AND  	exclude_from_calculation = '0' ");
     if (!$formula_query) {
         return array("Error fetching formula details");
     }
@@ -24,7 +24,7 @@ function validateFormula($fid, $bottle, $new_conc, $mg, $defCatClass, $qStep) {
 
         $ing = mysqli_fetch_array($ingredient_query);
         $cas = $ing['cas'];
-		$limitIFRA = searchIFRA($cas,$ingredient_name,null,$defCatClass);
+		$limitIFRA = searchIFRA($cas,$ingredient_name,null,$defCatClass,$isFormula);
 		$limit = $limitIFRA['val'];
 		$type = $limitIFRA['type'];
 		

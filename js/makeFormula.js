@@ -312,21 +312,21 @@ function formatSuppliersSelection (supplierData) {
 		var id = $(this).data('id');
 		var name = $(this).data('name');
 		
-		$('.modal-title').html(name);   
-		$('.modal-body-info').html('loading');
+		$('#infoModalTitle').html(name);   
+		$('#infoModalBody').html('loading');
 		
 		$.ajax({
 		   type: 'GET',
 		   url: '/pages/views/ingredients/getIngInfo.php',
 		   data:{
 			   ingID: id
-			},
+		   },
 		   success: function(data) {
-			 $('.modal-body-info').html(data);
+			 $('#infoModalBody').html(data);
 		   },
 		   error:function(err){
-			data = '<div class="alert alert-danger">Unable to get ingredient info</div>';
-			$('.modal-body-info').html(data);
+			   data = '<div class="alert alert-danger">Unable to get ingredient info</div>';
+				$('#infoModalBody').html(data);
 		   }
 		})
 	 });
@@ -343,7 +343,7 @@ function formatSuppliersSelection (supplierData) {
 	
 	$('#tdDataPending').on('click', '[data-bs-target*=confirm_skip]', function () {
 		$('#errMsg').html('');																
-		$("#ingSkipped").text($(this).attr('data-ingredient'));
+		$("#ingSkipped").text('Skipping ' + $(this).attr('data-ingredient'));
 		$("#ingID").text($(this).attr('data-ing-id'));
 		$("#idRow").text($(this).attr('data-row-id'));
 		$("#notes").val('');

@@ -58,11 +58,11 @@
           </div>
           <div class="mb-3">
             <label for="email" class="form-label">Email:</label>
-            <input class="form-control" name="email" type="text" id="email" />
+            <input class="form-control" name="email" type="email" id="email" />
           </div>
           <div class="mb-3">
-            <label for="website" class="form-label">Web Site:</label>
-            <input class="form-control" name="website" type="text" id="website" />
+            <label for="website" class="form-label">Website:</label>
+            <input class="form-control" name="website" type="url" id="website" />
           </div>
         </div>
       </div>
@@ -75,15 +75,14 @@
 </div>
 
 
+
 <!--EDIT CUSTOMER MODAL-->            
-<div class="modal fade" id="editCustomer" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="editCustomerLabel" aria-hidden="true">
+<div class="modal fade" id="editCustomer" data-bs-backdrop="static" tabindex="-1" aria-labelledby="editCustomerLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title mgmIngHeader mgmIngHeader-with-separator" id="editCustomerLabel">Edit customer</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div class="alert alert-danger">Unable to get data</div>
@@ -91,6 +90,7 @@
     </div>
   </div>
 </div>
+
 
 <script>
 $(document).ready(function() {
@@ -131,7 +131,7 @@ $(document).ready(function() {
 						d.order_as = d.order[0].dir
 					}
 				},
-			},
+		},
 		columns: [
 			{ data : 'name', title: 'Name' },
 			{ data : 'address', title: 'Address' },
@@ -211,14 +211,19 @@ $(document).ready(function() {
 						dataType: 'json',
 						success: function (data) {
 							if(data.success){
-								$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+								$('#toast-title').html('<i class="fa-solid fa-circle-check mx-2"></i>' + data.success);
 								$('.toast-header').removeClass().addClass('toast-header alert-success');
 								reload_data();
 							}else if(data.error){
-								$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
-									$('.toast-header').removeClass().addClass('toast-header alert-danger');
-								}
-								$('.toast').toast('show');
+								$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>' + data.error);
+								$('.toast-header').removeClass().addClass('toast-header alert-danger');
+							}
+							$('.toast').toast('show');
+						},
+						error: function (xhr, status, error) {
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+							$('.toast-header').removeClass().addClass('toast-header alert-danger');
+							$('.toast').toast('show');
 						}
 					});
 					
@@ -257,6 +262,9 @@ $(document).ready(function() {
 					$("#customer_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+response.error+'</div>');
 				}
 			  },
+				error: function (xhr, status, error) {
+					$('#customer_inf').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+				}
 		   });
 		
 	});

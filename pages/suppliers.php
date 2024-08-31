@@ -42,7 +42,7 @@
                     </tr>
                   </thead>
                 </table>
-<script type="text/javascript" language="javascript" >
+<script>
 $(document).ready(function() {
 	$('#mainTitle').click(function() {
 	 	reload_data();
@@ -60,7 +60,7 @@ $(document).ready(function() {
 			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>',
 			emptyTable: 'No suppliers added yet.',
 			search: 'Search:'
-			},
+		},
 		ajax: {	url: '/core/list_suppliers_data.php' },
 		columns: [
 				  { data : 'name', title: 'Name', render: name },
@@ -283,6 +283,11 @@ $('#tdIngSupData').on('click', '[id*=dDel]', function () {
 							msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 						}
 						$('#supmsg').html(msg);
+					},
+					error: function (xhr, status, error) {
+						$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+						$('.toast-header').removeClass().addClass('toast-header alert-danger');
+						$('.toast').toast('show');
 					}
 				  });
 				
@@ -321,7 +326,7 @@ $('#btnAddSupplier').on('click', function () {
 			description: $("#add_supplier #description").val(),
 			min_ml: $("#add_supplier #min_ml").val(),
 			min_gr: $("#add_supplier #min_gr").val()
-			},
+		},
 		dataType: 'json',
 		success: function (data) {
 			if(data.success){
@@ -346,8 +351,11 @@ $('#btnAddSupplier').on('click', function () {
 			}else if(data.error){
 				msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 			}
-				$('#inf').html(msg);
-			}
+			$('#inf').html(msg);
+		},
+		error: function (xhr, status, error) {
+			$('#inf').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+		}
   });
 });
 
@@ -365,7 +373,7 @@ $('#btnEditSupplier').on('click', function () {
 			telephone: $("#telephone").val(),
 			url: $("#url").val(),
 			email: $("#email").val(),
-			},
+		},
 		dataType: 'json',
 		success: function (data) {
 			if(data.success){			
@@ -374,8 +382,11 @@ $('#btnEditSupplier').on('click', function () {
 			}else if(data.error){
 				msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 			}
-				$('#editSup').html(msg);
-			}
+			$('#editSup').html(msg);
+		},
+		error: function (xhr, status, error) {
+			$('#editSup').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+		}
   });
 });
 
@@ -403,167 +414,165 @@ function reload_data() {
 </script>
 
 <!-- Edit additional info -->
-<div class="modal fade" id="details" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="details" aria-hidden="true">
-<div class="modal-dialog modal-lg" role="document">
-  <div class="modal-content">
-    <div class="modal-header">
-	    <h5 class="modal-title">Supplier Details</h5>
-    </div>
-    <div class="modal-body" id="edit_supplier">
-        <div id="editSup"></div>
-        <div class="container-fluid">
-            <div class="col-sm-12">
-               <input type="hidden" name="id" id="id" />
-               <input type="hidden" name="name" id="name" />
-               
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label for="address">Address</label>
-                        <input class="form-control" name="address" type="text" id="address" />
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="address">Postal Code</label>
-                        <input class="form-control" name="po" type="text" id="po" />
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label for="country">Country</label>
-                        <input class="form-control" name="country" type="text" id="country" />
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="telephone">Telephone</label>
-                        <input class="form-control" name="telephone" type="text" id="telephone" />
-                    </div>
-                </div>                             
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label for="url">Website</label>
-                        <input class="form-control" name="url" type="text" id="url" />
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="email">Email</label>
-                        <input class="form-control" name="email" type="text" id="email" />
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-      <input type="submit" name="button" class="btn btn-primary" id="btnEditSupplier" value="Update">
-    </div>
-  </div>  
-</div>
-</div>
-
-
-<!-- ADD NEW-->
-<div class="modal fade" id="addSupplier" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="addSupplier" aria-hidden="true">
+<div class="modal fade" id="details" data-bs-backdrop="static" tabindex="-1" aria-labelledby="detailsLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="addSupplier">Add supplier</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <h5 class="modal-title" id="detailsLabel">Supplier Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-          <div class="modal-body" id="add_supplier">
-          	<div id="inf"></div>
-            <div class="container-fluid">
-                <div class="col-sm-12">
-                    <div class="form-row">
-    					<div class="form-group col-md-6">
-                            <label for="name">Name</label>
-                            <input class="form-control" name="name" type="text" id="name" />
-                    	</div>
-                        <div class="form-group col-md-6">
-                            <label for="address">Address</label>
-                                <input class="form-control" name="address" type="text" id="address" />
-                        </div>
-                    </div>
-                    <div class="form-row">
-    					<div class="form-group col-md-6">
-                            <label for="po">Postal Code</label>
-                            <input class="form-control" name="po" type="text" id="po" />
-                    	</div>
-                        <div class="form-group col-md-6">
-                            <label for="country">Country</label>
-                                <input class="form-control" name="country" type="text" id="country" />
-                        </div>
-                    </div>
-                    <div class="form-row">
-    					<div class="form-group col-md-6">
-                            <label for="telephone">Telephone</label>
-                            <input class="form-control" name="po" type="text" id="telephone" />
-                    	</div>
-                        <div class="form-group col-md-6">
-                            <label for="website">Website</label>
-                                <input class="form-control" name="website" type="text" id="website" />
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-    					<div class="form-group col-md-6">
-                            <label for="email">Email</label>
-                            <input class="form-control" name="po" type="text" id="email" />
-                    	</div>
-                        <div class="form-group col-md-6">
-                            <label for="platform">Platform</label>
-                            <select class="form-control" name="select" id="platform">
-                            	<option value="woocomerce">Woocomerce</option>
-                            	<option value="shopify">Shopify</option>
-                            	<option value="Other">Other/Custom</option>
-                          	</select>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-12">
-                    <div class="form-row">
-    					<div class="form-group col-md-6">
-                            <label for="price_tag_start">Price start tag</label>
-                            <input class="form-control" name="price_tag_start" type="text" id="price_tag_start" />
-                    	</div>
-                        <div class="form-group col-md-6">
-                            <label for="price_tag_end">Price end tag</label>
-                            <input class="form-control" name="price_tag_end" type="text" id="price_tag_end" />
-                        </div>
-                    </div>
-                    <div class="form-row">
-    					<div class="form-group col-md-6">
-                            <label for="add_costs">Additional costs</label>
-                            <input class="form-control" name="add_costs" type="text" id="add_costs" />
-                    	</div>
-                        <div class="form-group col-md-6">
-                            <label for="min_ml">Minimum ml quantity</label>
-                            <input class="form-control" name="min_ml" type="text" id="min_ml" />
-                        </div>
-                    </div>
-                    <div class="form-row">
-    					<div class="form-group col-md-6">
-                            <label for="min_gr">Minimum grams quantity</label>
-                            <input class="form-control" name="min_gr" type="text" id="min_gr" />
-                    	</div>
-                        <div class="form-group col-md-6">
-                            <label for="price_per_size">Price to be calucalted per</label>
-                            <select class="form-control" name="select" id="price_per_size">
-                            	<option value="0">Product</option>
-                            	<option value="1">Volume</option>
-                         	</select>
-                        </div>
-                    </div>
-                    <div class="form-row mb-3">
-                     	<label for="description">Description</label>
-                        <input class="form-control" name="description" type="text" id="description" />   
-                    </div>
-                </div>
+      <div class="modal-body" id="edit_supplier">
+        <div id="editSup"></div>
+        <div class="container-fluid">
+          <div class="col-sm-12">
+            <input type="hidden" name="id" id="id" />
+            <input type="hidden" name="name" id="name" />
+            <div class="row mb-3">
+              <div class="form-group col-md-6">
+                <label for="address">Address</label>
+                <input class="form-control" name="address" type="text" id="address" />
+              </div>
+              <div class="form-group col-md-6">
+                <label for="po">Postal Code</label>
+                <input class="form-control" name="po" type="text" id="po" />
+              </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <input type="submit" name="button" class="btn btn-primary" id="btnAddSupplier" value="Add">
+            <div class="row mb-3">
+              <div class="form-group col-md-6">
+                <label for="country">Country</label>
+                <input class="form-control" name="country" type="text" id="country" />
+              </div>
+              <div class="form-group col-md-6">
+                <label for="telephone">Telephone</label>
+                <input class="form-control" name="telephone" type="text" id="telephone" />
+              </div>
             </div>
-        
-    		</div>
-  		</div>
-	</div>
+            <div class="row mb-3">
+              <div class="form-group col-md-6">
+                <label for="url">Website</label>
+                <input class="form-control" name="url" type="text" id="url" />
+              </div>
+              <div class="form-group col-md-6">
+                <label for="email">Email</label>
+                <input class="form-control" name="email" type="text" id="email" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <input type="submit" name="button" class="btn btn-primary" id="btnEditSupplier" value="Update">
+      </div>
+    </div>
+  </div>
 </div>
+
+
+
+<!-- ADD NEW-->
+<div class="modal fade" id="addSupplier" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addSupplierLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addSupplierLabel">Add Supplier</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="add_supplier">
+        <div id="inf"></div>
+        <div class="container-fluid">
+          <div class="col-sm-12">
+            <div class="row mb-3">
+              <div class="form-group col-md-6">
+                <label for="name">Name</label>
+                <input class="form-control" name="name" type="text" id="name" />
+              </div>
+              <div class="form-group col-md-6">
+                <label for="address">Address</label>
+                <input class="form-control" name="address" type="text" id="address" />
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="form-group col-md-6">
+                <label for="po">Postal Code</label>
+                <input class="form-control" name="po" type="text" id="po" />
+              </div>
+              <div class="form-group col-md-6">
+                <label for="country">Country</label>
+                <input class="form-control" name="country" type="text" id="country" />
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="form-group col-md-6">
+                <label for="telephone">Telephone</label>
+                <input class="form-control" name="telephone" type="text" id="telephone" />
+              </div>
+              <div class="form-group col-md-6">
+                <label for="website">Website</label>
+                <input class="form-control" name="website" type="text" id="website" />
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="form-group col-md-6">
+                <label for="email">Email</label>
+                <input class="form-control" name="email" type="text" id="email" />
+              </div>
+              <div class="form-group col-md-6">
+                <label for="platform">Platform</label>
+                <select class="form-control" name="platform" id="platform">
+                  <option value="woocommerce">Woocommerce</option>
+                  <option value="shopify">Shopify</option>
+                  <option value="other">Other/Custom</option>
+                </select>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="form-group col-md-6">
+                <label for="price_tag_start">Price Start Tag</label>
+                <input class="form-control" name="price_tag_start" type="text" id="price_tag_start" />
+              </div>
+              <div class="form-group col-md-6">
+                <label for="price_tag_end">Price End Tag</label>
+                <input class="form-control" name="price_tag_end" type="text" id="price_tag_end" />
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="form-group col-md-6">
+                <label for="add_costs">Additional Costs</label>
+                <input class="form-control" name="add_costs" type="text" id="add_costs" />
+              </div>
+              <div class="form-group col-md-6">
+                <label for="min_ml">Minimum ml Quantity</label>
+                <input class="form-control" name="min_ml" type="text" id="min_ml" />
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="form-group col-md-6">
+                <label for="min_gr">Minimum Grams Quantity</label>
+                <input class="form-control" name="min_gr" type="text" id="min_gr" />
+              </div>
+              <div class="form-group col-md-6">
+                <label for="price_per_size">Price to be Calculated Per</label>
+                <select class="form-control" name="price_per_size" id="price_per_size">
+                  <option value="0">Product</option>
+                  <option value="1">Volume</option>
+                </select>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="form-group">
+                <label for="description">Description</label>
+                <input class="form-control" name="description" type="text" id="description" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <input type="submit" name="button" class="btn btn-primary" id="btnAddSupplier" value="Add">
+      </div>
+    </div>
+  </div>
+</div>
+

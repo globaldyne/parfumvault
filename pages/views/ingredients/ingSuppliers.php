@@ -91,66 +91,64 @@ $(document).ready(function() {
 	
 	$('[data-bs-toggle="tooltip"]').tooltip();
 	var tdIngSup = $('#tdIngSup').DataTable( {
-	columnDefs: [
-		{ className: 'text-center', targets: '_all' },
-		{ orderable: false, targets: [15] },
-		{ responsivePriority: 1, targets: 0 }
-	],
-	dom: 'lfrtip',
-	processing: true,
-	responsive: true,
-	language: {
-		loadingRecords: '&nbsp;',
-		processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
-		emptyTable: 'No suppliers added yet.',
-		search: 'Search:'
+		columnDefs: [
+			{ className: 'text-center', targets: '_all' },
+			{ orderable: false, targets: [15] },
+			{ responsivePriority: 1, targets: 0 }
+		],
+		dom: 'lfrtip',
+		processing: true,
+		responsive: true,
+		language: {
+			loadingRecords: '&nbsp;',
+			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
+			emptyTable: 'No suppliers added yet.',
+			search: 'Search:'
 		},
-	ajax: {	url: '/core/list_ing_suppliers_data.php?id=<?=$ingID?>' },
-	columns: [
-			  { data : 'supplierName', title: 'Name', render: sName },
-			  { data : 'supplierLink', title: 'eShop', render: sLink},
-			  { data : 'price', title: 'Price(<?=$settings['currency']?>)', render: sPrice},
-			  { data : 'size', title: 'Size', render: sSize},
-			  { data : 'mUnit', title: 'Measurement Unit', render: mUnit},
-			  { data : 'manufacturer', title: 'Manufacturer', render: sManufacturer},
-			  { data : 'batch', title: 'Batch', render: sBatch},
-			  { data : 'purchased', title: 'Purchased', render: sPurchased},
-			  { data : 'stock', title: 'In Stock', render: sStock},
-			  { data : 'internal_sku', title: 'Internal SKU', render: internal_sku},
-			  { data : 'supplier_sku', title: 'Supplier SKU', render: supplier_sku},
-			  { data : 'storage_location', title: 'Storage location', render: storage_location},
-
-			  { data : 'status', title: 'Status', render: status},
-			  { data : 'updated', title: 'Last update'},
-			  { data : 'created', title: 'Created'},
-
-			  { data : null, title: '', render: sActions},		   
-			 ],
-	order: [[ 1, 'asc' ]],
-	lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
-	pageLength: 20,
-	displayLength: 20,
-	
-	stateSave: true,
-	stateDuration : -1,
-	stateLoadCallback: function (settings, callback) {
-       	$.ajax( {
-           	url: '/core/update_user_settings.php?set=listIngSuppliers&action=load',
-           	dataType: 'json',
-           	success: function (json) {
-               	callback( json );
-           	}
-       	});
-    },
-    stateSaveCallback: function (settings, data) {
-	   $.ajax({
-		 url: "/core/update_user_settings.php?set=listIngSuppliers&action=save",
-		 data: data,
-		 dataType: "json",
-		 type: "POST"
-	  });
-	},
-});
+		ajax: {	url: '/core/list_ing_suppliers_data.php?id=<?=$ingID?>' },
+		columns: [
+			{ data : 'supplierName', title: 'Name', render: sName },
+			{ data : 'supplierLink', title: 'eShop', render: sLink},
+			{ data : 'price', title: 'Price(<?=$settings['currency']?>)', render: sPrice},
+			{ data : 'size', title: 'Size', render: sSize},
+			{ data : 'mUnit', title: 'Measurement Unit', render: mUnit},
+			{ data : 'manufacturer', title: 'Manufacturer', render: sManufacturer},
+			{ data : 'batch', title: 'Batch', render: sBatch},
+			{ data : 'purchased', title: 'Purchased', render: sPurchased},
+			{ data : 'stock', title: 'In Stock', render: sStock},
+			{ data : 'internal_sku', title: 'Internal SKU', render: internal_sku},
+			{ data : 'supplier_sku', title: 'Supplier SKU', render: supplier_sku},
+			{ data : 'storage_location', title: 'Storage location', render: storage_location},
+			{ data : 'status', title: 'Status', render: status},
+			{ data : 'updated', title: 'Last update'},
+			{ data : 'created', title: 'Created'},
+			{ data : null, title: '', render: sActions},		   
+		],
+		order: [[ 1, 'asc' ]],
+		lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
+		pageLength: 20,
+		displayLength: 20,
+		
+		stateSave: true,
+		stateDuration : -1,
+		stateLoadCallback: function (settings, callback) {
+			$.ajax( {
+				url: '/core/update_user_settings.php?set=listIngSuppliers&action=load',
+				dataType: 'json',
+				success: function (json) {
+					callback( json );
+				}
+			});
+		},
+		stateSaveCallback: function (settings, data) {
+		   $.ajax({
+			 url: "/core/update_user_settings.php?set=listIngSuppliers&action=save",
+			 data: data,
+			 dataType: "json",
+			 type: "POST"
+		  });
+		},
+	});
 	
 	
 	$('#addSupplier').on('click', '[id*=sAdd]', function () {
@@ -174,7 +172,7 @@ $(document).ready(function() {
 			storage_location: $("#storage_location").val(),
 
 			ingID: '<?=$ingID;?>'
-			},
+		},
 		dataType: 'json',
 		success: function (data) {
 			if(data.success){
@@ -283,7 +281,7 @@ function sActions(data, type, row){
 	data += '<li><a class="dropdown-item" href="#" id="getPrice" data-name="'+row.supplierName+'" data-id="'+encodeURIComponent(row.ingSupplierID)+'" data-link="'+row.supplierLink+'" data-size="'+row.size+'" data-toggle="tooltip" data-placement="top" title="Get the latest price from the supplier."><i class="fas fa-sync pv_point_gen_color mx-2"></i>Update price</a></li>';
 	data += '<li><a class="dropdown-item" href="'+row.supplierLink+'" target="_blank"><i class="fas fa-store mx-2"></i>Go to supplier</a></li>';
 	data += '<div class="dropdown-divider"></div>';
-	data += '<li><a href="#" id="sDel" class="dropdown-item text-danger" data-id="'+row.id+'" data-name="'+row.supplierName+'"><i class="fas fa-trash alert-danger mx-2"></i>Delete supplier</a></li>'; 
+	data += '<li><a href="#" id="sDel" class="dropdown-item link-danger" data-id="'+row.id+'" data-name="'+row.supplierName+'"><i class="fas fa-trash link-danger mx-2"></i>Delete supplier</a></li>'; 
 	data += '</ul></div>';
 	return data;
 	
@@ -306,9 +304,9 @@ $('#tdIngSup').editable({
 					echo '{value: "'.htmlspecialchars($r_ing['id']).'", text: "'.htmlspecialchars($r_ing['name']).'"},';
 			}
 			?>
-          ],
+    ],
     success: function (data) {
-			reload_sup_data();
+		reload_sup_data();
 	}
 });
 
@@ -327,9 +325,9 @@ $('#tdIngSup').editable({
 			 {value: '1', text: 'Available'},
              {value: '2', text: 'Limited availability'},
 			 {value: '3', text: 'Discontinued / Cannot sourced'},
-          	],
+    ],
     success: function (data) {
-			reload_sup_data();
+		reload_sup_data();
 	}
 });
 
@@ -388,7 +386,7 @@ $('#tdIngSup').editable({
 			 {value: 'g', text: 'Grams'},
 			 {value: 'L', text: 'Liter'},
 			 {value: 'fl. oz.', text: 'Fluid ounce (fl. oz.)'}
-			 ],
+	],
 	success: function (data) {
 		reload_sup_data();
 	}
@@ -549,10 +547,15 @@ $('#tdIngSup').on('click', '[id*=sDel]', function () {
 						ingSupplier: 'delete',
 						sID: ing.ID,
 						ingID: '<?=$ingID?>'
-						},
+					},
 					dataType: 'html',
 					success: function (data) {
 						reload_sup_data();
+					},
+					error: function (xhr, status, error) {
+						$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+						$('.toast-header').removeClass().addClass('toast-header alert-danger');
+						$('.toast').toast('show');
 					}
 				  });
 				

@@ -57,67 +57,65 @@ while($res = mysqli_fetch_array($q)){
 </div>
     
 <!-- ADD NEW MODAL-->
-<div class="modal fade" id="addCompound" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="addCompound" aria-hidden="true">
+<div class="modal fade" id="addCompound" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addCompoundLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Add compound</h5>
+        <h5 class="modal-title" id="addCompoundLabel">Add Compound</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-      <div id="compound_inf"></div>
-          <div class="row">
-              <div class="mb-3">
-                <label for="cmp_name" class="form-label">Compound name</label>
-                <input name="cmp_name" type="cmp_name" class="form-control" id="cmp_name">
-              </div>
-              <div class="mb-3">
-                <label for="cmp_batch" class="form-label">Batch</label>
-                <select name="cmp_batch" id="cmp_batch" class="form-control selectpicker" data-live-search="true" >
-            		<option value="" selected></option>
-            		<?php
-						foreach($data as $b) {
-							echo '<option value="'.$b['id'].'">'.$b['name'].'</option>';
-						}
-					?>
-				</select>
-              </div>
-              <div class="mb-3">
-                <label for="cmp_size" class="form-label">Bottle size (<?php echo $settings['mUnit']; ?>)</label>
-                <input name="cmp_size" type="text" class="form-control" id="cmp_size">
-              </div>
-              <div class="mb-3">
-                <label for="cmp_location" class="form-label">Location</label>
-                <input name="cmp_location" type="text" class="form-control" id="cmp_location">
-              </div>
-              <div class="mb-3">
-                <label for="cmp_desc" class="form-label">Short Description</label>
-                <input name="cmp_desc" type="text" class="form-control" id="cmp_desc">
-              </div>
-             <div class="col-sm">
-               <label for="cmp_label_info" class="form-label">Label info</label>
-               <textarea class="form-control" name="cmp_label_info" id="cmp_label_info" rows="5"></textarea>
-             </div>
+        <div id="compound_inf"></div>
+        <div class="row">
+          <div class="mb-3">
+            <label for="cmp_name" class="form-label">Compound Name</label>
+            <input name="cmp_name" type="text" class="form-control" id="cmp_name">
+          </div>
+          <div class="mb-3">
+            <label for="cmp_batch" class="form-label">Batch</label>
+            <select name="cmp_batch" id="cmp_batch" class="form-control selectpicker" data-live-search="true">
+              <option value="" selected></option>
+              <?php foreach($data as $b) {
+                echo '<option value="'.$b['id'].'">'.$b['name'].'</option>';
+              } ?>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="cmp_size" class="form-label">Bottle Size (<?php echo $settings['mUnit']; ?>)</label>
+            <input name="cmp_size" type="text" class="form-control" id="cmp_size">
+          </div>
+          <div class="mb-3">
+            <label for="cmp_location" class="form-label">Location</label>
+            <input name="cmp_location" type="text" class="form-control" id="cmp_location">
+          </div>
+          <div class="mb-3">
+            <label for="cmp_desc" class="form-label">Short Description</label>
+            <input name="cmp_desc" type="text" class="form-control" id="cmp_desc">
+          </div>
+          <div class="mb-3">
+            <label for="cmp_label_info" class="form-label">Label Info</label>
+            <textarea class="form-control" name="cmp_label_info" id="cmp_label_info" rows="5"></textarea>
+          </div>
         </div>
-      <div class="dropdown-divider"></div>
+        <div class="dropdown-divider"></div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <input type="submit" name="button" class="btn btn-primary" id="compound_add" value="Add compound">
+        <input type="submit" name="button" class="btn btn-primary" id="compound_add" value="Add Compound">
       </div>
     </div>
   </div>
 </div>
 
 
+
 <!--EDIT MODAL-->            
-<div class="modal fade" id="editCompound" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="editCompound" aria-hidden="true">
+<div class="modal fade" id="editCompound" data-bs-backdrop="static" tabindex="-1" aria-labelledby="editCompoundLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title mgmIngHeader mgmIngHeader-with-separator" id="editCompoundLabel">Edit compound</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <h5 class="modal-title mgmIngHeader mgmIngHeader-with-separator" id="editCompoundLabel">Edit Compound</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div class="alert alert-danger">Unable to get data</div>
@@ -127,45 +125,47 @@ while($res = mysqli_fetch_array($q)){
 </div>
 
 
+
 <!--IMPORT JSON MODAL-->
-<div class="modal fade" id="importJSON" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="importJSON" aria-hidden="true">
+<div class="modal fade" id="importJSON" data-bs-backdrop="static" tabindex="-1" aria-labelledby="importJSONLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Import compounds from a JSON file</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <h5 class="modal-title" id="importJSONLabel">Import compounds from a JSON file</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-      	<div id="JSRestMsg"></div>
-      	<div class="progress">  
-       	  <div id="uploadProgressBar" class="progress-bar" role="progressbar" aria-valuemin="0"></div>
-      	</div>
-      	<div id="backupArea">
-          <div class="form-group">
-              <label class="col-md-3 control-label">JSON file:</label>
-              <div class="col-md-8">
-                 <input type="file" name="jsonFile" id="jsonFile" class="form-control" />
-              </div>
-          </div>
-          	<div class="col-md-12">
-            	 <hr />
-             	<p><strong>IMPORTANT:</strong></p>
-              	<ul>
-                	<li><div id="raw" data-size="<?=getMaximumFileUploadSizeRaw()?>">Maximum file size: <strong><?=getMaximumFileUploadSize()?></strong></div></li>
-                	<li>Any ingredient with the same id will be replaced. Please make sure you have taken a backup before imporing a JSON file.</li>
-              	</ul>
+        <div id="JSRestMsg"></div>
+        <div class="progress mb-3">  
+          <div id="uploadProgressBar" class="progress-bar" role="progressbar" aria-valuemin="0"></div>
+        </div>
+        <div id="backupArea">
+          <div class="form-group row mb-3">
+            <label for="jsonFile" class="col-md-3 col-form-label">JSON file:</label>
+            <div class="col-md-8">
+              <input type="file" name="jsonFile" id="jsonFile" class="form-control" />
             </div>
           </div>
-      	</div>
-	  		<div class="modal-footer">
-        		<input type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseBK" value="Cancel">
-        		<input type="submit" name="btnRestore" class="btn btn-primary" id="btnImportCompounds" value="Import">
-      		</div>
-  		</div>  
-	</div>
+          <div class="col-md-12">
+            <hr />
+            <p><strong>IMPORTANT:</strong></p>
+            <ul>
+              <li>
+                <div id="raw" data-size="<?=getMaximumFileUploadSizeRaw()?>">Maximum file size: <strong><?=getMaximumFileUploadSize()?></strong></div>
+              </li>
+              <li>Any ingredient with the same ID will be replaced. Please make sure you have taken a backup before importing a JSON file.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseBK">Cancel</button>
+        <input type="submit" name="btnRestore" class="btn btn-primary" id="btnImportCompounds" value="Import">
+      </div>
+    </div>  
+  </div>
 </div>
+
 
 
 <script> 
@@ -173,46 +173,46 @@ $(document).ready(function() {
 
 	
 	var tdDataCompounds = $('#tdDataCompounds').DataTable( {
-	columnDefs: [
-		{ className: 'pv_vertical_middle text-center', targets: '_all' },
-		{ orderable: false, targets: [8] },
-	],
-	dom: 'lrftip',
-	buttons: [{
+		columnDefs: [
+			{ className: 'pv_vertical_middle text-center', targets: '_all' },
+			{ orderable: false, targets: [8] },
+		],
+		dom: 'lrftip',
+		buttons: [{
 				extend: 'csvHtml5',
 				title: "Compounds Inventory",
 				exportOptions: {
-     				columns: [0, 1, 2, 3, 4, 5]
-  				},
-			  }],
-	processing: true,
-	serverSide: true,
-	searching: true,
-	mark: true,
-	language: {
-		loadingRecords: '&nbsp;',
-		processing: 'Please Wait...',
-		zeroRecords: 'Nothing found',
-		search: 'Quick Search:',
-		searchPlaceholder: 'Name..',
+					columns: [0, 1, 2, 3, 4, 5]
+				},
+		}],
+		processing: true,
+		serverSide: true,
+		searching: true,
+		mark: true,
+		language: {
+			loadingRecords: '&nbsp;',
+			processing: 'Please Wait...',
+			zeroRecords: 'Nothing found',
+			search: 'Quick Search:',
+			searchPlaceholder: 'Name..',
 		},
-	ajax: {	
-		url: '/core/list_inventory_compounds_data.php',
-		type: 'POST',
-		dataType: 'json',
-				data: function(d) {
-				var btlSize = $('#btlSize').val();
-
-				if (d.order.length>0){
-					d.order_by = d.columns[d.order[0].column].data
-					d.order_as = d.order[0].dir
-				}
-				d.btlSize = btlSize;
-			},
+		ajax: {	
+			url: '/core/list_inventory_compounds_data.php',
+			type: 'POST',
+			dataType: 'json',
+					data: function(d) {
+					var btlSize = $('#btlSize').val();
+	
+					if (d.order.length>0){
+						d.order_by = d.columns[d.order[0].column].data
+						d.order_as = d.order[0].dir
+					}
+					d.btlSize = btlSize;
+				},
 		},
-	   columns: [
-            { data : 'name', title: 'Name', render: name },
-            { data : 'description', title: 'Description' },
+		columns: [
+			{ data : 'name', title: 'Name', render: name },
+			{ data : 'description', title: 'Description' },
 			{ data : 'batch_id', title: 'Batch', render: docData },
 			{ data : 'size', title: 'Size (<?php echo $settings['mUnit'];?>)' },
 			{ data : 'label_info', title: 'Label' },
@@ -220,34 +220,34 @@ $(document).ready(function() {
 			{ data : 'created', title: 'Inventory add' },
 			{ data : 'updated', title: 'Inventory update' },
 			{ data : null, title: '', render: actions },
-
-			],
-	order: [[ 0, 'asc' ]],
-	lengthMenu: [[20, 50, 100, 200, 400], [20, 50, 100, 200, 400]],
-	pageLength: 20,
-	displayLength: 20,
-	stateSave: true,
-	stateDuration: -1,
-	stateLoadCallback: function (settings, callback) {
-       	$.ajax( {
-           	url: '/core/update_user_settings.php?set=listInvComp&action=load',
-           	dataType: 'json',
-           	success: function (json) {
-               	callback( json );
-           	}
-       	});
-    },
-    stateSaveCallback: function (settings, data) {
-	   $.ajax({
-		 url: "/core/update_user_settings.php?set=listInvComp&action=save",
-		 data: data,
-		 dataType: "json",
-		 type: "POST"
-	  });
-	},
-	drawCallback: function( settings ) {
-		extrasShow();
-    },
+	
+		],
+		order: [[ 0, 'asc' ]],
+		lengthMenu: [[20, 50, 100, 200, 400], [20, 50, 100, 200, 400]],
+		pageLength: 20,
+		displayLength: 20,
+		stateSave: true,
+		stateDuration: -1,
+		stateLoadCallback: function (settings, callback) {
+			$.ajax( {
+				url: '/core/update_user_settings.php?set=listInvComp&action=load',
+				dataType: 'json',
+				success: function (json) {
+					callback( json );
+				}
+			});
+		},
+		stateSaveCallback: function (settings, data) {
+		   $.ajax({
+			 url: "/core/update_user_settings.php?set=listInvComp&action=save",
+			 data: data,
+			 dataType: "json",
+			 type: "POST"
+		  });
+		},
+		drawCallback: function( settings ) {
+			extrasShow();
+		},
 
 	});
 	
@@ -257,14 +257,14 @@ $(document).ready(function() {
         tdDataCompounds.rows().every(function() {
             this.child(format(this.data())).show();
         });
-    }
+    };
 
     // Function to collapse all child rows
     function collapseAll() {
         tdDataCompounds.rows().every(function() {
             this.child.hide();
         });
-    }
+    };
 
     // Handle checkbox click event
     $('#expandCheckbox').click(function() {
@@ -349,7 +349,7 @@ $(document).ready(function() {
 							action: "delete",
 							type: "invCmp",
 							compoundId: cmp.ID,
-							},
+						},
 						dataType: 'json',
 						success: function (data) {
 							if(data.success){
@@ -360,6 +360,11 @@ $(document).ready(function() {
 								$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
 								$('.toast-header').removeClass().addClass('toast-header alert-danger');
 							}
+							$('.toast').toast('show');
+						},
+						error: function (xhr, status, error) {
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+							$('.toast-header').removeClass().addClass('toast-header alert-danger');
 							$('.toast').toast('show');
 						}
 					});
@@ -410,6 +415,11 @@ $(document).ready(function() {
 				$("#compound_add").prop("value", 'Add compound');
 			 }
 		  },
+			error: function (xhr, status, error) {
+				$("#compound_inf").html('<div class="alert alert-danger">An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');
+				$("#compound_add").prop("disabled", false);
+				$("#compound_add").prop("value", 'Add compound');
+			}
 	   });
 		
 			

@@ -25,12 +25,12 @@ $(document).ready(function() {
 		},
 		ajax: {
     		url: '/core/full_formula_data.php?id=<?=$id_a?>'
- 		 },
+ 		},
 		columns: [
-				   { data : 'ingredient.name', title: 'Ingredient'},
-				   { data : 'purity', title: 'Purity %'},
-				   { data : 'quantity', title: 'Quantity'},
-				  ],
+			{ data : 'ingredient.name', title: 'Ingredient'},
+			{ data : 'purity', title: 'Purity %'},
+			{ data : 'quantity', title: 'Quantity'},
+		],
 		lengthMenu: [[50, 100, 200, -1], [50, 100, 200, "All"]],
         pageLength: 100,
 		displayLength: 100,
@@ -52,15 +52,15 @@ var formula_b_table = $('#formula_b_table').DataTable({
 			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
 			emptyTable: "Incomplete formula.",
 			search: "Search in formula:",
-			},
+		},
     	ajax: {
     		url: url
  		},
 		columns: [
-				   { data : 'ingredient.name', title: 'Ingredient'},
-				   { data : 'purity', title: 'Purity %'},
-				   { data : 'quantity', title: 'Quantity'},
-				  ],
+			{ data : 'ingredient.name', title: 'Ingredient'},
+			{ data : 'purity', title: 'Purity %'},
+			{ data : 'quantity', title: 'Quantity'},
+		],
 	    lengthMenu: [[50, 100, 200, -1], [50, 100, 200, "All"]],
         pageLength: 100,
 		displayLength: 100,
@@ -94,8 +94,8 @@ var formula_b_table = $('#formula_b_table').DataTable({
             </thead>
         </table>
     </div>
-        <div class="cmp_a">
-        <table id="formula_b_table" class="table table-striped nowrap" style="width:100%">
+    <div class="cmp_a">
+    	<table id="formula_b_table" class="table table-striped nowrap" style="width:100%">
             <thead>
                 <tr>
                     <th>Ingredient</th>

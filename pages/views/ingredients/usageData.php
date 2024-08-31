@@ -1,6 +1,6 @@
 <?php
 define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__))))); 
-if(!$_POST['ingID']){
+if(!$_GET['ingID']){
 	echo 'Invalid ID';
 	return;
 }
@@ -21,7 +21,7 @@ $cols = 3;
 $usageStyle = array('even_ing','odd_ing');
 $defCatClass = $settings['defCatClass'];
 
-$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT id, cas,name,usage_type,noUsageLimit,byPassIFRA,flavor_use,allergen,cat1,cat2,cat3,cat4,cat5A,cat5B,cat5C,cat5D,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12 FROM ingredients WHERE id = '".$_POST['ingID']."'"));
+$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT id, cas,name,usage_type,noUsageLimit,byPassIFRA,flavor_use,allergen,cat1,cat2,cat3,cat4,cat5A,cat5B,cat5C,cat5D,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12 FROM ingredients WHERE id = '".$_GET['ingID']."'"));
 
 //$rType = searchIFRA($ing['cas'],$ing['name'],'type', $defCatClass);
 //$limit = searchIFRA($ing['cas'],$ing['name'],null, 'cat'.$cats[$counter]['name']);

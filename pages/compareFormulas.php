@@ -68,7 +68,7 @@ $(document).ready(function() {
 			data: {
 				id_a: $("#formula_a").val(),			
 				id_b: $("#formula_b").val(),
-				},
+			},
 			dataType: 'html',
 			success: function (data) {
 				$('#cmp_results').html(data);

@@ -1,8 +1,12 @@
-Whats New in v11.0
+Whats New in v11.1
 --------------------------
-- Added maximum allowed usage for a formula
-- Added a button to view ingredient data in PubChem
-- Changed the way the ingredient is handled when exists in a formula but not in the database. Instead of auto creating it when clicked, it presents options to create it, search in PV Online or import via JSON
-- Added editability in IFRA Library
-- Treat empty IFRA Library values (PROHIBITION, SPECIFICATION) as 0% allowed
+- Add a warning in a formula when the ingredient has ifra by passed
+- Fix IFRA by pass in formulas
+- Fix progress bar in formula view not showing properly
+- Added currency list - you should re-set your currency
+- Added a link to the full ingredient data in MakeFormula
+- Removed row zoom for MakeFormula
+- Added deletion for batches
+- PDF doc generation is now GA for ingredients
+- Make formula improvements
 - This release may include more changes, for full details please refer to the CHANGELOG
