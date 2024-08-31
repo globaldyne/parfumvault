@@ -4937,7 +4937,7 @@ a.badge-dark:focus, a.badge-dark.focus {
 }
 
 .progress {
-  display: flex;
+  display: flex !important;
   height: 1rem;
   overflow: hidden;
   font-size: 0.75rem;

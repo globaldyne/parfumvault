@@ -97,9 +97,7 @@ require_once(__ROOT__.'/inc/opendb.php');
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title mgmIngHeader mgmIngHeader-with-separator" id="headerLabel">View Label</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body modal-Label-body-data">
         <div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i>Loading...</div>
@@ -154,26 +152,27 @@ require_once(__ROOT__.'/inc/opendb.php');
 </div>
            
       
-  <!-- Modal IFRA Doc -->
-  <div class="modal fade" id="ifraDocModal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="ifraDocModalLabel" aria-hidden="true">
-  <div class="modal-dialog odal-dialog-scrollable modal-fullscreen" role="document">
+<!-- Modal IFRA Doc -->
+<div class="modal fade" id="ifraDocModal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="ifraDocModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-fullscreen" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="ifraDocModalLabel">IFRA Document</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body modal-IFRA-body-data">
         Loading...
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" id="printIFRADoc" data-print-target=".modal-IFRA-body-data">Print<i class="fa-solid fa-arrow-up-right-from-square ml-2"></i></button>
+        <button type="button" class="btn btn-primary" id="printIFRADoc" data-print-target=".modal-IFRA-body-data">
+          Print<i class="fa-solid fa-arrow-up-right-from-square ms-2"></i>
+        </button>
       </div>
     </div>
   </div>
 </div>
+
 <script>
 var id = "<?=$_POST['fid']?>";
 var bottle_id = "<?=$_POST['bottle_id']?>";

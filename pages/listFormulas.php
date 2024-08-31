@@ -170,7 +170,7 @@ $(document).ready(function() {
 			language: {
 				loadingRecords: '&nbsp;',
 				processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>',
-				emptyTable: '<div class="row g-3"><div class="alert alert-info alert-dismissible"><i class="fa-solid fa-circle-info mx-2"></i><strong>No formulas yet, click <a href="#" data-bs-toggle="modal" data-bs-target="#add_formula">here</a> to add or use the <a href="/?do=marketplace">Marketplace</a> to import a demo one</strong></div></div>',
+				emptyTable: '<div class="row g-3"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>No formulas yet, click <a href="#" data-bs-toggle="modal" data-bs-target="#add_formula">here</a> to add or use the <a href="/?do=marketplace">Marketplace</a> to import a demo one</strong></div></div>',
 				searchPlaceholder: 'Formula name, or product name...',
 				search: "Search"
 			},
@@ -181,7 +181,6 @@ $(document).ready(function() {
 				{ responsivePriority: 1, targets: 0 }
 			],
 			destroy: true,
-			bFilter: true,
 			paging:  true,
 			info:   true,
 			lengthMenu: [[20, 40, 60, 100], [20, 40, 60, 100]],
@@ -694,7 +693,7 @@ $(document).ready(function() {
 	  const id = e.relatedTarget.dataset.id;
 	  const formula = e.relatedTarget.dataset.formula;
 	
-	  $.get("/pages/getFormMeta.php?id=" + id)
+	  $.get("/pages/views/formula/getFormMeta.php?id=" + id)
 		.then(data => {
 		  $("#getFormMetaLabel", this).html(formula);
 		  $(".modal-body", this).html(data);

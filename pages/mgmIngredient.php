@@ -6,7 +6,6 @@ require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/formatBytes.php');
 require_once(__ROOT__.'/func/validateInput.php');
-require_once(__ROOT__.'/func/sanChar.php');
 require_once(__ROOT__.'/func/profileImg.php');
 
 

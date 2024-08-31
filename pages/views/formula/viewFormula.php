@@ -1,5 +1,5 @@
 <?php 
-define('__ROOT__', dirname(dirname(__FILE__))); 
+define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__))))); 
 
 require_once(__ROOT__.'/inc/sec.php');
 
@@ -22,13 +22,13 @@ $fid = $meta['fid'];
 	<div class="col-sm-10" id="progress-area">
       <div class="progress">
           <div id="base_bar" class="progress-bar pv_bar_base_notes" role="progressbar" aria-valuemin="0">
-          	<span><div class="base-label"></div></span>
+          	<span><div id="base_label"></div></span>
           </div>
           <div id="heart_bar" class="progress-bar pv_bar_heart_notes" role="progressbar" aria-valuemin="0">
-          	<span><div class="heart-label"></div></span>
+          	<span><div id="heart_label"></div></span>
           </div>
           <div id="top_bar" class="progress-bar pv_bar_top_notes" role="progressbar" aria-valuemin="0">
-          	<span><div class="top-label"></div></span>
+          	<span><div id="top_label"></div></span>
           </div>
       </div>
     </div>
@@ -377,7 +377,7 @@ $('#formula').on('click', '[id*=rmIng]', function () {
 						formulaSolventID: $("#formulaSolventsDel").val(),
 						ingredient_id: ing.ingredient_id,
 						ing: ing.Name
-						},
+					},
 					dataType: 'json',
 					success: function (data) {
 						if(data.success){
@@ -470,7 +470,7 @@ $('#formula').on('click', '[id*=exIng]', function () {
 				ingID: ing.ID,
 				ingName: ing.Name,
 				status: ing.Status
-				},
+			},
 			dataType: 'json',
 			success: function (data) {
 				if(data.success) {
@@ -488,7 +488,7 @@ $('#formula').on('click', '[id*=exIng]', function () {
 });
 
 
-	update_bar();
+	
 	
 });//doc ready
 
@@ -508,7 +508,7 @@ $('#isMade').click(function() {
 					data: {
 						isMade: "1",
 						fid: myFID,
-						},
+					},
 					dataType: 'json',
 					success: function (data) {
 						if(data.success) {
@@ -662,10 +662,16 @@ function ingName(data, type, row, meta){
 	var contains = '';
 	var chkIng = '';
 	var profile_class ='';
-	
+	var IFRAbyPASSED = '';
 	
 	if(row.ingredient.containsOthers.total){
 		contains = '<i class="fa-solid fa-th-list expandAccord mx-2 pv_point_gen" rel="tip" title="Show/hide sub igredients"></i>';	
+	}
+	
+	if(row.isIFRAbyPass === 1){
+		IFRAbyPASSED = '<i class="ml-2 fas fa-triangle-exclamation" rel="tip" title="IFRA is by passed"></i>';	
+	}else{
+		IFRAbyPASSED = '';
 	}
 	
 	if(row.exclude_from_calculation == 1){
@@ -697,21 +703,21 @@ function ingName(data, type, row, meta){
 	}
 	
 	if(row.ingredient.enc_id){
-		data = contains + '<a class="popup-link '+ex+'" href="/pages/mgmIngredient.php?id=' + row.ingredient.id + '">' + data + '</a> '+ chkIng + profile_class;
+		data = contains + '<a class="popup-link '+ex+'" href="/pages/mgmIngredient.php?id=' + row.ingredient.id + '">' + data + '</a> '+ chkIng + IFRAbyPASSED + profile_class;
 	}else{
 		data = '<a class="popup-link '+ex+'" href="/pages/mgmIngredient.php?id=' + btoa(data) + '">' + data + '</a> '+ chkIng + profile_class;
 
 	}
 
   return data;
-}
+};
 
 function ingCAS(data, type, row, meta){
 	if(type === 'display'){
 		data = '<i class="pv_point_gen" rel="tip" title="Click to copy" id="cCAS" data-name="'+row.ingredient.cas+'">'+row.ingredient.cas+'</i>';
 	}
 	return data;
-}
+};
   
 function ingConc(data, type, row, meta){
   if( isProtected == false ){
@@ -723,7 +729,7 @@ function ingConc(data, type, row, meta){
   }
 
   return data;
-}
+};
 
 function ingSolvent(data, type, row, meta){
 	if( isProtected == false ){
@@ -742,7 +748,7 @@ function ingSolvent(data, type, row, meta){
 		}
 	}
  	return data;
-}
+};
   
 function ingQuantity(data, type, row, meta){
 	if( isProtected == false ){
@@ -754,11 +760,11 @@ function ingQuantity(data, type, row, meta){
 	} 
 
 	return data;
-}
+};
 
 function ingSetConc(data, type, row, meta){
 	return data;
-}
+};
 
 function ingNotes(data, type, row, meta){
 	 if(type === 'display'){
@@ -768,7 +774,7 @@ function ingNotes(data, type, row, meta){
 	  <?php } ?>
 	 }
 	return data;
-}
+};
   
   
 function ingInv(data, type, row, meta){
@@ -793,7 +799,7 @@ function ingInv(data, type, row, meta){
 	}
 
   return data;
-}
+};
 
 function ingActions(data, type, row, meta){
 
@@ -821,7 +827,7 @@ function ingActions(data, type, row, meta){
 	data += '</ul></div>';
 
    return data;
-}
+};
 
 </script>
 <script src="/js/fullformula.view.js"></script>
@@ -945,68 +951,80 @@ function ingActions(data, type, row, meta){
 </div>
 
 
-<div class="modal fade" id="manage-quantity" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="manage-quantity" aria-hidden="true">
+<div class="modal fade" id="manage-quantity" data-bs-backdrop="static" tabindex="-1" aria-labelledby="manageQuantityLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title"><div id="ingQuantityName"></div></h5>
+        <h5 class="modal-title" id="manageQuantityLabel"><span id="ingQuantityName"></span></h5>
       </div>
-      <div class="card-body">
-	
-      	<div id="msgQuantity"></div>
+      <div class="modal-body">
+        <div id="msgQuantity"></div>
+        
         <input type="hidden" name="ingQuantityID" id="ingQuantityID" />
-        <input type="hidden" name="ingQuantityName" id="ingQuantityName" />
-        <input type="hidden" name="ingQuantity" id="ingQuantity" />
+        <input type="hidden" name="ingQuantityName" id="ingQuantityNameHidden" />
+        <input type="hidden" name="ingQuantity" id="ingQuantityHidden" />
         <input type="hidden" name="mainingid" id="mainingid" />
         <input type="hidden" name="curQuantity" id="curQuantity" />
-      	<div class="col">
-        	<label for="ingQuantity" class="form-label mb-2">Quantity in <?=$settings['mUnit']?></label>
-        	<input name="ingQuantity" type="text" class="ingQuantity form-control mb-3" id="ingQuantity">
-
-            <div class="form-row">
-        		<div class="col-md mb-3">
-					<label for="reCalc" class="form-label">Adjust solvent</label>
-        			<input type="checkbox" name="reCalc" id="reCalc" value="1" data-val="1" /> 
         
-                    <div id="slvMeta">
-                        <select name="formulaSolvents" id="formulaSolvents" class="formulaSolvents form-control"></select>
-                        <div id="explain" class="mt-3 alert alert-info">Auto adjust total quantity by increasing or decreasing quantity from the selected solvent if enough available.<br>For example, if you add 1 more ml to the current ingredient, the selected solvent's quantity will be deducted by 1ml equally.</div>
-                    </div>
-				</div>
-			</div>
-      	</div>
+        <div class="mb-3">
+          <label for="ingQuantity" class="form-label">Quantity in <?= $settings['mUnit'] ?></label>
+          <input name="ingQuantity" type="text" class="form-control" id="ingQuantity">
+        </div>
+
+        <div class="form-check mb-3">
+          <input type="checkbox" class="form-check-input" name="reCalc" id="reCalc" value="1" data-val="1">
+          <label class="form-check-label" for="reCalc">Adjust solvent</label>
+        </div>
+
+        <div id="slvMeta" class="mb-3">
+          <label for="formulaSolvents" class="form-label">Select Solvent</label>
+          <select name="formulaSolvents" id="formulaSolvents" class="form-select"></select>
+          <div id="explain" class="mt-3 alert alert-info">
+            Auto adjust the total quantity by increasing or decreasing quantity from the selected solvent if enough is available.<br>
+            For example, if you add 1 more <?= $settings['mUnit'] ?> to the current ingredient, the selected solvent's quantity will be deducted by 1<?= $settings['mUnit'] ?> equally.
+          </div>
+        </div>
+        
+      </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <input type="submit" name="button" class="btn btn-primary" id="quantityConfirm" value="Update">
+        <button type="submit" class="btn btn-primary" id="quantityConfirm">Update</button>
       </div>
     </div>
   </div>
 </div>
-</div>
 
-<div class="modal fade" id="mrgIng" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="mrgIng" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+
+<div class="modal fade" id="mrgIng" data-bs-backdrop="static" tabindex="-1" aria-labelledby="mrgIngLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Merge ingredients</h5>
+        <h5 class="modal-title" id="mrgIngLabel">Merge ingredients</h5>
       </div>
       <div class="modal-body">
-      	<div id="msgMerge"></div>
+        <div id="msgMerge"></div>
         <input type="hidden" name="ingSrcID" id="ingSrcID" />
         <input type="hidden" name="ingSrcName" id="ingSrcName" />
-      	<div class="alert alert-info">You can merge <div id="srcIng"></div>'s quantity with another material in formula. Use this method if materials are similar. Please note, this action cannot be reverted, quanity will sum up to the target ingredient's quantity.</div>
-        Merge <div id="srcIng"></div> with: 
-        <select name="mrgIngName" id="mrgIngName" class="mrgIngName pv-form-control"></select>
-        <p>
+        
+        <div class="alert alert-info">
+          You can merge <span id="srcIng"></span>'s quantity with another material in the formula. Use this method if the materials are similar. Please note, this action cannot be reverted, and the quantity will be added to the target ingredient's quantity.
+        </div>
+        
+        <div class="mb-3">
+          Merge <span id="srcIng"></span> with: 
+          <select name="mrgIngName" id="mrgIngName" class="form-select"></select>
+        </div>
+        
         <div class="dropdown-divider"></div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <input type="submit" name="button" class="btn btn-primary" id="mergeConfirm" value="Merge ingredients">
+        <button type="submit" class="btn btn-primary" id="mergeConfirm">Merge ingredients</button>
       </div>
     </div>
   </div>
 </div>
+
 
 <div class="modal fade" id="replaceIng" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="replaceIng" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
@@ -1053,9 +1071,7 @@ function ingActions(data, type, row, meta){
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Import ingredients from a JSON file</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
       	<div id="JSRestMsg"></div>

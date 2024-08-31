@@ -1,5 +1,9 @@
 Whats New in v11.1
 --------------------------
+- Add a warning in a formula when the ingredient has ifra by passed
+- Fix IFRA by pass in formulas
+- Fix progress bar in formula view not showing properly
+- Added currency list - you should re-set your currency
 - Added a link to the full ingredient data in MakeFormula
 - Removed row zoom for MakeFormula
 - Added deletion for batches

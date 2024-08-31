@@ -1,5 +1,13 @@
 # CHANGELOG
 ### Version 11.1
+- When an ingredient is excluded from formula calculation will also be excluded from any IFRA validations
+- Add a warning in a formula when the ingredient has ifra by passed
+- Fix IFRA by pass in formulas
+- Fix progress bar in formula view not showing properly
+- Added currency list
+- Set default currency to GBP
+- Directory restructure - WIP
+- Fix DeepSearch function not properly showing
 - Change ingredient manage to id instead of a name
 - Added a link to the full ingredient data in MakeFormula
 - Removed row zoom for MakeFormula

@@ -299,7 +299,8 @@ CREATE TABLE `pv_meta` (
 
 CREATE TABLE `settings` (
   `id` int(11) NOT NULL,
-  `currency` varchar(40) COLLATE utf8_general_ci DEFAULT NULL,
+  `currency` varchar(255) NOT NULL DEFAULT '£',
+  `currency_code` VARCHAR(255) NOT NULL DEFAULT 'GBP', 
   `top_n` varchar(10) COLLATE utf8_general_ci NOT NULL,
   `heart_n` varchar(10) COLLATE utf8_general_ci NOT NULL,
   `base_n` varchar(10) COLLATE utf8_general_ci NOT NULL,

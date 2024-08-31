@@ -11,168 +11,175 @@ while($cats_res = mysqli_fetch_array($cats_q)){
 }
 ?>
 <div class="card-body row">
-	<div class="col-sm-6">
-      <div class="form-row">
-        <div class="form-group col-md-6">
-            <label for="currency">Currency</label>
-            <input name="currency" type="text" class="form-control" id="currency" value="<?php echo utf8_encode($settings['currency']);?>"/>
+    <div class="col-sm-6">
+        <div class="row">
+            <div class="mb-3 col-md-6">
+                <label for="currency" class="form-label">Currency</label>
+                <select name="currency" id="currency" class="form-select">
+                    <?php
+                    $json = file_get_contents(__ROOT__.'/inc/currencies.json');
+                    $currencies = json_decode($json, true);
+                    foreach ($currencies as $code => $details) {
+                        $symbol = $details['symbol'];
+                        $selected = ($settings['currency_code'] == $code) ? 'selected' : '';
+                        $name = $details['name'];
+                        echo "<option value=\"$symbol|$code\" $selected>$name ($symbol) [$code]</option>";
+                    }
+                    ?>
+                </select>
+            </div>
+            <div class="mb-3 col-md-6">
+                <label for="user_pref_eng" class="form-label">User preferences engine</label>
+                <select name="user_pref_eng" id="user_pref_eng" class="form-select">
+                    <option value="1" <?= $settings['user_pref_eng'] == "1" ? 'selected' : '' ?>>PHP SESSION</option>
+                    <option value="2" <?= $settings['user_pref_eng'] == "2" ? 'selected' : '' ?>>DB Backend</option>
+                </select>
+            </div>
         </div>
-        <div class="form-group col-md-6">
-          <label for="user_pref_eng">User preferences engine</label>
-          <select name="user_pref_eng" id="user_pref_eng" class="form-control">
-            <option value="1" <?php if($settings['user_pref_eng']=="1") echo 'selected="selected"'; ?> >PHP SESSION</option>
-            <option value="2" <?php if($settings['user_pref_eng']=="2") echo 'selected="selected"'; ?> >DB Backend</option>
-          </select>
+
+        <div class="row">
+            <div class="mb-3 col-md-6">
+                <label for="grp_formula" class="form-label">Group formula</label>
+                <select name="grp_formula" id="grp_formula" class="form-select">
+                    <option value="0" <?= $settings['grp_formula'] == "0" ? 'selected' : '' ?>>Plain</option>
+                    <option value="1" <?= $settings['grp_formula'] == "1" ? 'selected' : '' ?>>By notes</option>
+                    <option value="2" <?= $settings['grp_formula'] == "2" ? 'selected' : '' ?>>By category</option>
+                </select>
+            </div>
+            <div class="mb-3 col-md-6">
+                <label for="pubchem_view" class="form-label">PubChem view</label>
+                <select name="pubchem_view" id="pubchem_view" class="form-select">
+                    <option value="2d" <?= $settings['pubchem_view'] == "2d" ? 'selected' : '' ?>>2D</option>
+                    <option value="3d" <?= $settings['pubchem_view'] == "3d" ? 'selected' : '' ?>>3D</option>
+                </select>
+            </div>
         </div>
-      </div>
-      
-      <div class="form-row">
-          <div class="form-group col-md-6">
-            <label for="grp_formula">Group formula</label>
-            <select name="grp_formula" id="grp_formula" class="form-control">
-              <option value="0" <?php if($settings['grp_formula']=="0") echo 'selected="selected"'; ?> >Plain</option>
-              <option value="1" <?php if($settings['grp_formula']=="1") echo 'selected="selected"'; ?> >By notes</option>
-              <option value="2" <?php if($settings['grp_formula']=="2") echo 'selected="selected"'; ?> >By category</option>
-            </select>
-          </div>
-          <div class="form-group col-md-6">
-          <label for="pubchem_view">PubChem view</label>
-          <select name="pubchem_view" id="pubchem_view" class="form-control">
-            <option value="2d" <?php if($settings['pubchem_view']=="2d") echo 'selected="selected"'; ?> >2D</option>
-            <option value="3d" <?php if($settings['pubchem_view']=="3d") echo 'selected="selected"'; ?> >3D</option>
-          </select>
-          </div>
-      </div>
-      
-      <div class="form-row">
-        <div class="form-group col-md-6">
-          <label for="qStep">Quantity Decimal</label>
-          <select name="qStep" id="qStep" class="form-control">
-            <option value="1" <?php if($settings['qStep']=="1") echo 'selected="selected"'; ?> >0.0</option>
-            <option value="2" <?php if($settings['qStep']=="2") echo 'selected="selected"'; ?> >0.00</option>
-            <option value="3" <?php if($settings['qStep']=="3") echo 'selected="selected"'; ?> >0.000</option>
-            <option value="4" <?php if($settings['qStep']=="4") echo 'selected="selected"'; ?> >0.0000</option>
-          </select>
+
+        <div class="row">
+            <div class="mb-3 col-md-6">
+                <label for="qStep" class="form-label">Quantity Decimal</label>
+                <select name="qStep" id="qStep" class="form-select">
+                    <option value="1" <?= $settings['qStep'] == "1" ? 'selected' : '' ?>>0.0</option>
+                    <option value="2" <?= $settings['qStep'] == "2" ? 'selected' : '' ?>>0.00</option>
+                    <option value="3" <?= $settings['qStep'] == "3" ? 'selected' : '' ?>>0.000</option>
+                    <option value="4" <?= $settings['qStep'] == "4" ? 'selected' : '' ?>>0.0000</option>
+                </select>
+            </div>
+
+            <div class="mb-3 col-md-6">
+                <label for="defCatClass" class="form-label">Default Category</label>
+                <select name="defCatClass" id="defCatClass" class="form-select">
+                    <?php foreach ($cats as $IFRACategories) {?>
+                    <option value="cat<?= htmlspecialchars($IFRACategories['name']) ?>" <?= $settings['defCatClass'] == 'cat' . $IFRACategories['name'] ? 'selected' : '' ?>>
+                        <?= 'Cat ' . htmlspecialchars($IFRACategories['name']) . ' - ' . htmlspecialchars($IFRACategories['description']) ?>
+                    </option>
+                    <?php } ?>
+                </select>
+            </div>
         </div>
-    
-        <div class="form-group col-md-6">
-          <label for="defCatClass">Default Category</label>
-          <select name="defCatClass" id="defCatClass" class="form-control">
-            <?php foreach ($cats as $IFRACategories) {?>
-            <option value="cat<?php echo $IFRACategories['name'];?>" <?php echo ($settings['defCatClass']=='cat'.$IFRACategories['name'])?"selected=\"selected\"":""; ?>><?php echo 'Cat '.$IFRACategories['name'].' - '.$IFRACategories['description'];?>
-            </option>
-              <?php	}	?>
-          </select>
+
+        <div class="row">
+            <div class="mb-3 col-md-6">
+                <label for="mUnit" class="form-label">Measurement Unit</label>
+                <select name="mUnit" id="mUnit" class="form-select">
+                    <option value="ml" <?= $settings['mUnit'] == "ml" ? 'selected' : '' ?>>Milliliter</option>
+                    <option value="g" <?= $settings['mUnit'] == "g" ? 'selected' : '' ?>>Grams</option>
+                    <option value="L" <?= $settings['mUnit'] == "L" ? 'selected' : '' ?>>Liter</option>
+                    <option value="fl. oz." <?= $settings['mUnit'] == "fl. oz." ? 'selected' : '' ?>>Fluid ounce (fl. oz.)</option>
+                </select>
+            </div>
+            <div class="mb-3 col-md-6">
+                <label for="editor" class="form-label">Formula editor</label>
+                <select name="editor" id="editor" class="form-select">
+                    <option value="1" <?= $settings['editor'] == "1" ? 'selected' : '' ?>>Standard</option>
+                    <option value="2" <?= $settings['editor'] == "2" ? 'selected' : '' ?>>Advanced</option>
+                </select>
+            </div>
+
+            <div class="mb-3 col-md-6">
+                <label for="pvHost" class="form-label">PV URL</label>
+                <input name="pvHost" type="text" class="form-control" id="pvHost" value="<?= htmlspecialchars($settings['pv_host']) ?>"/>
+            </div>
+
+            <div class="mb-3 col-md-6">
+                <label for="defPercentage" class="form-label">Calculate sub materials as</label>
+                <select name="defPercentage" id="defPercentage" class="form-select">
+                    <option value="min_percentage" <?= $settings['defPercentage'] == "min_percentage" ? 'selected' : '' ?>>Minimum value</option>
+                    <option value="max_percentage" <?= $settings['defPercentage'] == "max_percentage" ? 'selected' : '' ?>>Maximum value</option>
+                    <!-- <option value="avg_percentage" <?= $settings['defPercentage'] == "avg_percentage" ? 'selected' : '' ?>>Average value</option> -->
+                </select>
+            </div>
+
+            <div class="mb-3 col-md-6">
+                <label for="bs_theme" class="form-label">Theme</label>
+                <a href="#" class="ms-2 fas fa-question-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="A page refresh may be required for the changes to take effect fully"></a>
+                <select name="bs_theme" id="bs_theme" class="form-select">
+                    <option value="light" <?= $settings['bs_theme'] == "light" ? 'selected' : '' ?>>Light</option>
+                    <option value="dark" <?= $settings['bs_theme'] == "dark" ? 'selected' : '' ?>>Dark</option>
+                </select>
+            </div>
         </div>
-      </div>
-    
-      <div class="form-row">
-        <div class="form-group col-md-6">
-          <label for="mUnit">Measurement Unit</label>
-          <select name="mUnit" id="mUnit" class="form-control">
-            <option value="ml" <?php if($settings['mUnit']=="ml") echo 'selected="selected"'; ?> >Milliliter</option>
-            <option value="g" <?php if($settings['mUnit']=="g") echo 'selected="selected"'; ?> >Grams</option>
-            <option value="L" <?php if($settings['mUnit']=="L") echo 'selected="selected"'; ?> >Liter</option>
-            <option value="fl. oz." <?php if($settings['mUnit']=="fl. oz.") echo 'selected="selected"'; ?> >Fluid ounce (fl. oz.)</option>
-          </select>
-        </div>
-        <div class="form-group col-md-6">
-          <label for="editor">Formula editor</label>
-          <select name="editor" id="editor" class="form-control">
-            <option value="1" <?php if($settings['editor']=="1") echo 'selected="selected"'; ?> >Standard</option>
-            <option value="2" <?php if($settings['editor']=="2") echo 'selected="selected"'; ?> >Advanced</option>
-          </select>
-        </div>
-        
-        <div class="form-group col-md-6">
-          <label for="pvHost">PV URL</label>
-          <input name="pvHost" type="text" class="form-control" id="pvHost" value="<?php echo $settings['pv_host'];?>"/>
-        </div>
-        
-        <div class="form-group col-md-6">
-          <label for="defPercentage">Calculate sub materials as</label>
-          <select name="defPercentage" id="defPercentage" class="form-control">
-            <option value="min_percentage" <?php if($settings['defPercentage']=="min_percentage") echo 'selected="selected"'; ?> >Minimum value</option>
-            <option value="max_percentage" <?php if($settings['defPercentage']=="max_percentage") echo 'selected="selected"'; ?> >Maximum value</option>
-           <!-- <option value="avg_percentage" <?php if($settings['defPercentage']=="avg_percentage") echo 'selected="selected"'; ?> >Average value</option> -->
-          </select>
-        </div>
-    
-        <div class="form-group col-md-6">
-          <label for="bs_theme">Theme</label><a href="#" class="ml-2 fas fa-question-circle" rel="tip" title="A page refresh may required for the changes to take effect fully"></a>
-          <select name="bs_theme" id="bs_theme" class="form-control">
-            <option value="light" <?php if($settings['bs_theme']=="light") echo 'selected="selected"'; ?> >Light</option>
-            <option value="dark" <?php if($settings['bs_theme']=="dark") echo 'selected="selected"'; ?> >Dark</option>
-          </select>
-        </div>
-        
     </div>
-</div>
-    
+
     <div class="col-sm-2">
-     <h4 class="m-0 mb-4">Pyramid View</h4>
-     <div class="form-row">
-        <div class="form-group col-md-auto">
-          <label for="top_n" id="top">Top notes %</label>
-          <input name="top_n" type="range" class="form-range" id="top_n" min="0" max="100" value="<?php echo $settings['top_n'];?>" />
+        <h4 class="m-0 mb-4">Pyramid View</h4>
+        <div class="mb-3">
+            <label for="top_n" class="form-label" id="top">Top notes %</label>
+            <input name="top_n" type="range" class="form-range" id="top_n" min="0" max="100" value="<?= htmlspecialchars($settings['top_n']) ?>" />
         </div>
-      </div>
-      <div class="form-row">
-          <div class="form-group  col-md-auto">
-            <label for="heart_n" id="heart">Heart notes %</label>
-            <input name="heart_n" type="range" class="form-range" id="heart_n" min="0" max="100" value="<?php echo $settings['heart_n'];?>"/>
-          </div>
-      </div>
-      <div class="form-row">
-          <div class="form-group col-md-auto">
-            <label for="base_n" id="base">Base notes %</label>
-            <input name="base_n" type="range" class="form-range" id="base_n" min="0" max="100" value="<?php echo $settings['base_n'];?>"/>
-          </div>
-      </div>
+        <div class="mb-3">
+            <label for="heart_n" class="form-label" id="heart">Heart notes %</label>
+            <input name="heart_n" type="range" class="form-range" id="heart_n" min="0" max="100" value="<?= htmlspecialchars($settings['heart_n']) ?>"/>
+        </div>
+        <div class="mb-3">
+            <label for="base_n" class="form-label" id="base">Base notes %</label>
+            <input name="base_n" type="range" class="form-range" id="base_n" min="0" max="100" value="<?= htmlspecialchars($settings['base_n']) ?>"/>
+        </div>
     </div>
-    
+
     <div class="col-sm-3">
-        <div class="form-group col-md-auto">
-            <input name="pubChem" type="checkbox" id="pubChem" value="1" <?php if($settings['pubChem'] == '1'){ ?> checked="checked" <?php } ?>/>
+        <div class="form-check mb-3">
+            <input name="pubChem" type="checkbox" class="form-check-input" id="pubChem" value="1" <?= $settings['pubChem'] == '1' ? 'checked' : '' ?>/>
             <label class="form-check-label" for="pubChem">Enable PubChem</label>
         </div>
-        <div class="form-group col-md-auto">
-            <input name="chkVersion" type="checkbox" id="chkVersion" value="1" <?php if($settings['chkVersion'] == '1'){ ?> checked="checked" <?php } ?>/>
+        <div class="form-check mb-3">
+            <input name="chkVersion" type="checkbox" class="form-check-input" id="chkVersion" value="1" <?= $settings['chkVersion'] == '1' ? 'checked' : '' ?>/>
             <label class="form-check-label" for="chkVersion">Check for updates</label>
         </div>
-        <div class="form-group col-md-auto">
-            <input name="chem_vs_brand" type="checkbox" id="chem_vs_brand" value="1" <?php if($settings['chem_vs_brand'] == '1'){ ?> checked="checked" <?php } ?>/>
+        <div class="form-check mb-3">
+            <input name="chem_vs_brand" type="checkbox" class="form-check-input" id="chem_vs_brand" value="1" <?= $settings['chem_vs_brand'] == '1' ? 'checked' : '' ?>/>
             <label class="form-check-label" for="chem_vs_brand">Show chemical names</label>
         </div>
-        
-        <div class="form-group col-md-auto">
-            <input name="multi_dim_perc" type="checkbox" id="multi_dim_perc" value="1" <?php if($settings['multi_dim_perc'] == '1'){ ?> checked="checked" <?php } ?>/>
-            <label class="form-check-label" for="multi_dim_perc">Multi-dimensional lookup</label><a href="#" class="ml-2 fas fa-question-circle" rel="tip" title="Enable to include into formulas limits calculation the ingredient's sub materials if exists."></a>
+
+        <div class="form-check mb-3">
+            <input name="multi_dim_perc" type="checkbox" class="form-check-input" id="multi_dim_perc" value="1" <?= $settings['multi_dim_perc'] == '1' ? 'checked' : '' ?>/>
+            <label class="form-check-label" for="multi_dim_perc">Multi-dimensional lookup</label>
+            <a href="#" class="ms-2 fas fa-question-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Enable to include into formulas limits calculation the ingredient's sub materials if exists."></a>
         </div>
-   </div>
-     
-    <div class="col dropdown-divider"></div>
-    <div class="form-row">
-      <div class="col-sm-12">
-         <div class="text-left">
-            <input type="submit" name="save-general" id="save-general" value="Save" class="btn btn-primary"/>
-         </div>
-      </div>
     </div>
- </div>
+
+    <div class="col dropdown-divider"></div>
+    <div class="row">
+        <div class="col-sm-12 text-start">
+            <input type="submit" name="save-general" id="save-general" value="Save" class="btn btn-primary"/>
+        </div>
+    </div>
 </div>
 
 <script>
 $(document).ready(function() {
 
-	$('[rel=tip]').tooltip();
+	$('[data-bs-toggle=tooltip]').tooltip();
 	$('#save-general').click(function() {
+		var selectedCurrency = $("#currency").val();
+        var currencyData = selectedCurrency.split('|');
 		$.ajax({ 
 			url: '/pages/update_settings.php', 
 			type: 'POST',
 			data: {
 				manage: 'general',
-				currency: $("#currency").val(),
+				currency: currencyData[0], // Symbol
+            	currency_code: currencyData[1], // Code
 				top_n: $("#top_n").val(),
 				heart_n: $("#heart_n").val(),
 				base_n: $("#base_n").val(),
