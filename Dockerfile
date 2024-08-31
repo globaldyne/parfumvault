@@ -36,7 +36,7 @@ RUN sed -i \
 	-e 's~^session.auto_start.*$~session.auto_start = 1~g' \
 	/etc/php.ini
 
-ENV LANG en_GB.UTF-8
+ENV LANG=en_GB.UTF-8
 
 ADD . /html
 RUN if [ -f .git/COMMIT_EDITMSG ]; then \
