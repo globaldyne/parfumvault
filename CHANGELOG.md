@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 11.2
+
 ### Version 11.1
 - When an ingredient is excluded from formula calculation will also be excluded from any IFRA validations
 - Add a warning in a formula when the ingredient has ifra by passed
