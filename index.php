@@ -344,26 +344,24 @@ function chkUpdate() {
     </div>
 
     <!-- RELEASE NOTES -->
-    <div class="modal fade" id="release_notes" tabindex="-1" role="dialog" aria-labelledby="release_notes" aria-hidden="true">
-      <div class="modal-dialog modal-lg" role="document">
+    <div class="modal fade" id="release_notes" tabindex="-1" aria-labelledby="release_notes_label" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="release_notes">Release Notes</h5>
-            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
+            <h5 class="modal-title" id="release_notes_label">Release Notes</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
             Thanks for updating to version <strong><?php echo $ver;?></strong>
             <p><pre><?php echo file_get_contents('releasenotes.md','r');?></pre></p>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
           </div>
         </div>
       </div>
     </div>
-  </div>
+
 </body>
 
 </html>
