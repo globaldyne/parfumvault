@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 11.2
+- Ignore non-numeric values in IFRA library when calculating max usage
 
 ### Version 11.1
 - When an ingredient is excluded from formula calculation will also be excluded from any IFRA validations

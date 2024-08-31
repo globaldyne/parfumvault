@@ -669,7 +669,7 @@ function ingName(data, type, row, meta){
 	}
 	
 	if(row.isIFRAbyPass === 1){
-		IFRAbyPASSED = '<i class="ml-2 fas fa-triangle-exclamation" rel="tip" title="IFRA is by passed"></i>';	
+		IFRAbyPASSED = '<i class="ml-2 fas fa-triangle-exclamation" rel="tip" title="IFRA is by-passed"></i>';	
 	}else{
 		IFRAbyPASSED = '';
 	}
