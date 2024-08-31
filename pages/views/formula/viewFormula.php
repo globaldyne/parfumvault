@@ -20,7 +20,7 @@ $fid = $meta['fid'];
 
 <div class="card-body">
 	<div class="col-sm-10" id="progress-area">
-      <div class="progress">
+      <div class="formula-progress-bar">
           <div id="base_bar" class="progress-bar pv_bar_base_notes" role="progressbar" aria-valuemin="0">
           	<span><div id="base_label"></div></span>
           </div>
