@@ -7,7 +7,16 @@ require_once(__ROOT__.'/inc/sec.php');
 $fid = $_GET["fid"];
 
 ?>
+<div class="text-right">
+	<div class="btn-group">
+      <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
+      <div class="dropdown-menu">                                	  
+        <li><a class="dropdown-item" id="exportCSV" href="#"><i class="fa-solid fa-file-export mx-2"></i>Export as CSV</a></li>
+        <li><a class="dropdown-item" id="exportPDF" href="#"><i class="fa-solid fa-file-pdf mx-2"></i>Export as PDF</a></li>
 
+      </div>
+  </div>
+</div>
 <h3>Composition analysis</h3>
 <hr>
 
@@ -32,6 +41,16 @@ $(document).ready(function() {
 			{ orderable: false, targets: '_all' }
 		],
 		dom: 'lfrtip',
+	   buttons: [
+        	{
+				extend: 'csvHtml5',
+				title: "Formula Analysis"
+			},
+			{
+            	extend: 'pdfHtml5',
+            	title: "Formula Analysis"
+        	}
+    	],
 		processing: true,
 		language: {
 			loadingRecords: '&nbsp;',
@@ -84,5 +103,12 @@ $(document).ready(function() {
 		return maxData;
 	};
 	
+	$("#exportCSV").click(() => {
+		$("#tdAnalysis").DataTable().button(0).trigger();
+	});
+	
+	$("#exportPDF").click(() => {
+		$("#tdAnalysis").DataTable().button(1).trigger();
+	});
 });
 </script>

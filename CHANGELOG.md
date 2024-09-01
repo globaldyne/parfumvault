@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 11.2
+- Added pdf and csv export for formula analysis
 - If now numeric value found when IFRA library is looked-up in formula analysis, will return 'No value'
 - Fixed an issue preventing formula analysis to show the max allowed value from the IFRA library
 - Increase page size for formula analysis
