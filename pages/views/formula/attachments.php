@@ -3,9 +3,8 @@
 define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__))))); 
 
 require_once(__ROOT__.'/inc/sec.php');
-require_once(__ROOT__.'/inc/opendb.php');
 
-$id = mysqli_real_escape_string($conn, $_POST["id"]);
+$id = $_POST["id"];
 
 ?>
 
@@ -34,7 +33,7 @@ $id = mysqli_real_escape_string($conn, $_POST["id"]);
    </thead>
 </table>
 
-<script type="text/javascript" language="javascript" >
+<script>
 $(document).ready(function() {
 
 	$('[data-bs-toggle="tooltip"]').tooltip();
@@ -55,8 +54,8 @@ $(document).ready(function() {
 			url: '/core/list_formula_attachments_data.php',
 			type: 'POST',
 			data: {
-					id: '<?=$id?>',
-				},
+				id: '<?=$id?>',
+			},
 		},
 		columns: [
 		  { data : 'name', title: 'Name', render: name },
@@ -68,7 +67,7 @@ $(document).ready(function() {
 		],
 		
 		drawCallback: function ( settings ) {
-				extrasShow();
+			extrasShow();
 		},
 		order: [[ 0, 'asc' ]],
 		lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
