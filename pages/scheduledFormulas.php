@@ -233,14 +233,12 @@ $(document).ready(function() {
 }); //END DOC
 </script>
 <!-- IMPORT JSON MODAL -->
-<div class="modal fade" id="import_making_json" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="import_making_json" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
+<div class="modal fade" id="import_making_json" data-bs-backdrop="static" tabindex="-1" aria-labelledby="import_making_json" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Import a JSON file</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div id="JSRestMsg"></div>
@@ -274,15 +272,14 @@ $(document).ready(function() {
   </div>
 </div>
 
+
 <!-- REQUIRED MATERIALS MODAL -->
-<div class="modal fade" id="required_materials" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="required_materials" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-scrollable modal-xl" role="document">
+<div class="modal fade" id="required_materials" data-bs-backdrop="static" tabindex="-1" aria-labelledby="required_materials" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-xl">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Required ingredients for all the pending formulas</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">Please wait...</div>
       <div class="modal-footer">
@@ -291,5 +288,6 @@ $(document).ready(function() {
     </div>
   </div>
 </div>
+
 
 <script src="/js/import.making.js"></script>

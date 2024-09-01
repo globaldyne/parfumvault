@@ -1,9 +1,7 @@
 <div class="text-right">
 	<div class="btn-group">
       <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
-      <div class="dropdown-menu dropdown-menu-right">                                	  
-        <li class="dropdown-header">Export</li> 
-        <li><a class="dropdown-item" href="/pages/operations.php?action=exportIFRA"><i class="fa-solid fa-file-code mx-2"></i>Export as JSON</a></li>
+      <div class="dropdown-menu">                                	  
         <li><a class="dropdown-item" id="exportCSV" href="#"><i class="fa-solid fa-file-export mx-2"></i>Export as CSV</a></li>
       </div>
   </div>
@@ -79,8 +77,10 @@ $(document).ready(function() {
 			{ data: 'cat11B', title: 'Cat11B%'},
 			{ data: 'cat12', title: 'Cat12%'}
 		]
+	});
 	
-	
+	$("#exportCSV").click(() => {
+		$("#tdDataUsage").DataTable().button(0).trigger();
 	});
 
 });

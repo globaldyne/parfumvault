@@ -13,7 +13,7 @@ require_once(__ROOT__.'/func/php-settings.php');
                   <div class="text-right">
                     <div class="btn-group">
                       <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
-                      <div class="dropdown-menu dropdown-menu-right">
+                      <div class="dropdown-menu">
                         <li class="dropdown-header">Import</li> 
                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#ifra_import"><i class="fa-solid fa-file-excel mx-2"></i>Import IFRA xls</a>
                                 	  
