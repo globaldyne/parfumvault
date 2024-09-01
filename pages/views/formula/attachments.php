@@ -143,6 +143,11 @@ $(document).ready(function() {
 						dataType: 'html',
 						success: function (data) {
 							reload_doc_data();
+						},
+						error: function (xhr, status, error) {
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+							$('.toast-header').removeClass().addClass('toast-header alert-danger');
+							$('.toast').toast('show');
 						}
 					  });
 					
@@ -185,7 +190,7 @@ $(document).ready(function() {
 				  dataType: 'json',
 				  contentType: false,
 				  processData: false,
-						cache: false,
+				  cache: false,
 				  success: function(response){
 					if ( response.success ) {
 						$("#doc_upload").prop("disabled", false);
@@ -200,6 +205,11 @@ $(document).ready(function() {
 					}
 					$('#doc_inf').html(msg);
 				  },
+					error: function (xhr, status, error) {
+						$('#doc_inf').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+						$("#doc_upload").prop("disabled", false);
+						$("#doc_upload").prop('value', 'Upload');
+					}
 			   });
 			}else{
 				$("#doc_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a file to upload!</div>');
