@@ -24,7 +24,7 @@ function validateFormula($fid, $bottle, $new_conc, $mg, $defCatClass, $qStep, $i
 
         $ing = mysqli_fetch_array($ingredient_query);
         $cas = $ing['cas'];
-		$limitIFRA = searchIFRA($cas,$ingredient_name,null,$defCatClass,$isFormula);
+		$limitIFRA = searchIFRA($cas,$ingredient_name,null,$defCatClass,0);
 		$limit = $limitIFRA['val'];
 		$type = $limitIFRA['type'];
 		
