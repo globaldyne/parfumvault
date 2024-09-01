@@ -9,7 +9,6 @@ require_once(__ROOT__.'/func/calcPerc.php');
 
 $defCatClass = $settings['defCatClass'];
 
-
 $q = mysqli_query($conn, "SELECT ingredient, quantity FROM formulas WHERE fid = '".$_POST["fid"]."'");
 $total_quantity = 0;
 $formula_data = array();
@@ -50,7 +49,8 @@ foreach ($get_data_ings as $get_data_ing) {
 	$r['contained_percentage'] = $conc_p;
     $u = searchIFRA($get_data_ing['cas'], $get_data_ing['name'], null, $defCatClass);
 
-    $r['max_allowed'] = $u[0];
+    $r['max_allowed_val'] = $u['val'] ?: 'No value';
+    $r['max_allowed_reason'] = $u['risk'];
 
     $response['data'][] = $r;
 }
@@ -63,5 +63,3 @@ header('Content-Type: application/json; charset=utf-8');
 echo json_encode($response);
 return;
 ?>
-
-

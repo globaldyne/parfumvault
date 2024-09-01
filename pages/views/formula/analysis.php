@@ -3,10 +3,8 @@
 define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__))))); 
 
 require_once(__ROOT__.'/inc/sec.php');
-require_once(__ROOT__.'/inc/opendb.php');
 
-
-$fid = mysqli_real_escape_string($conn, $_GET["fid"]);
+$fid = $_GET["fid"];
 
 ?>
 
@@ -53,7 +51,7 @@ $(document).ready(function() {
 			  { data : 'main_ing', title: 'Main Ingredient', render: mainName, name: 'main_ing' },
 			  { data : 'sub_ing', title: 'Contains', render: subIng },
 			  { data : 'contained_percentage', title: 'Percentage in formula(%)' },
-			  { data : 'max_allowed', title: 'Max allowed(%)' },
+			  { data : 'max_allowed_val', title: 'Max allowed(%)', render: maxAllowedReason },
 
 		],
 		rowsGroup: [
@@ -63,9 +61,9 @@ $(document).ready(function() {
 			extrasShow();
 		},
 		order: [[ 0, 'asc' ]],
-		lengthMenu: [[50, 100, 200, -1], [50, 100, 200, "All"]],
-		pageLength: 50,
-		displayLength: 50
+		lengthMenu: [[150, 250, 350, -1], [150, 250, 350, "All"]],
+		pageLength: 150,
+		displayLength: 150
 	});
 
 
@@ -77,7 +75,14 @@ $(document).ready(function() {
 		return '<a class="ing_rep_name" href="#" >' + row.sub_ing + '</a><i class="fas fa-info-circle pv_point_gen mx-2" rel="tip" title="CAS: ' + row.cas + '"></i>';
 	};
 	
-	
+	function maxAllowedReason(data, type, row){
+		if(row.max_allowed_reason) {
+			maxData = '<a class="ing_rep_name" href="#" >' + row.max_allowed_val + '</a><i class="fas fa-info-circle pv_point_gen mx-2" rel="tip" title="' + row.max_allowed_reason + '"></i>';
+		} else {
+			maxData = '<a class="ing_rep_name" href="#" >' + row.max_allowed_val + '</a>';
+		}
+		return maxData;
+	};
 	
 });
 </script>

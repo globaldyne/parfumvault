@@ -1,5 +1,8 @@
 # CHANGELOG
 ### Version 11.2
+- If now numeric value found when IFRA library is looked-up in formula analysis, will return 'No value'
+- Fixed an issue preventing formula analysis to show the max allowed value from the IFRA library
+- Increase page size for formula analysis
 - Add full usage tab for formula per IFRA category
 - Ignore non-numeric values in IFRA library when calculating max usage
 

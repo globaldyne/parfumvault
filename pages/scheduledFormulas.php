@@ -47,10 +47,10 @@ $(document).ready(function() {
 	$('#mainTitle').click(function() {
 	 	reload_data();
   	});
-	var tdDataScheduled = $('#tdDataScheduled').DataTable( {
+	var tdDataScheduled = $('#tdDataScheduled').DataTable({
 		columnDefs: [
 			{ className: 'pv_vertical_middle text-center', targets: '_all' },
-			{ orderable: false, targets: [1,4] },
+			{ orderable: false, targets: [1, 4] },
 		],
 		dom: 'lrftip',
 		processing: true,
@@ -65,48 +65,49 @@ $(document).ready(function() {
 			search: 'Quick Search:',
 			searchPlaceholder: 'Name..',
 		},
-		ajax: {	
+		ajax: {
 			url: '/core/pending_formulas_data.php?meta=1',
 			type: 'POST',
 			dataType: 'json',
 			data: function(d) {
-					if (d.order.length>0){
-						d.order_by = d.columns[d.order[0].column].data
-						d.order_as = d.order[0].dir
-					}
-				},
+				if (d.order.length > 0) {
+					d.order_by = d.columns[d.order[0].column].data;
+					d.order_as = d.order[0].dir;
+				}
 			},
-			columns: [
-				{ data : 'name', title: 'Formula Name', render: name },
-				{ data : null, title: 'Ingredients remaining', render: ingredients },
-				{ data : 'madeOn', title: 'Progress', render: progress },
-				{ data : 'scheduledOn', title: 'Scheduled', render: fDate },
-				{ data : null, title: '', render: actions },
+		},
+		columns: [
+			{ data: 'name', title: 'Formula Name', render: name },
+			{ data: null, title: 'Ingredients remaining', render: ingredients },
+			{ data: 'madeOn', title: 'Progress', render: progress },
+			{ data: 'scheduledOn', title: 'Scheduled', render: fDate },
+			{ data: null, title: '', render: actions },
 		],
-		order: [[ 0, 'asc' ]],
+		order: [[0, 'asc']],
 		lengthMenu: [[20, 50, 100, 200, 400], [20, 50, 100, 200, 400]],
 		pageLength: 20,
 		displayLength: 20,
 		stateSave: true,
 		stateDuration: -1,
-		stateLoadCallback: function (settings, callback) {
-			$.ajax( {
+		stateLoadCallback: function(settings, callback) {
+			$.ajax({
 				url: '/core/update_user_settings.php?set=listTodo&action=load',
 				dataType: 'json',
-				success: function (json) {
-					callback( json );
+				success: function(json) {
+					callback(json);
 				}
 			});
 		},
-		stateSaveCallback: function (settings, data) {
-		   $.ajax({
-			 url: "/core/update_user_settings.php?set=listTodo&action=save",
-			 data: data,
-			 dataType: "json",
-			 type: "POST"
-		  });
+		stateSaveCallback: function(settings, data) {
+			$.ajax({
+				url: "/core/update_user_settings.php?set=listTodo&action=save",
+				data: data,
+				dataType: "json",
+				type: "POST"
+			});
 		},
-	  });
+	});
+
 	
 	$("#required_materials").on("show.bs.modal", function(e) {
 		const id = e.relatedTarget.dataset.id;
