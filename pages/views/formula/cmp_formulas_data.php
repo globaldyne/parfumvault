@@ -34,18 +34,18 @@ $(document).ready(function() {
 		lengthMenu: [[50, 100, 200, -1], [50, 100, 200, "All"]],
         pageLength: 100,
 		displayLength: 100,
-});
+	});
   
-formula_a_table.on('draw', function () {
-	formula_a_length = formula_a_table.rows().count();
-});
+	formula_a_table.on('draw', function () {
+		formula_a_length = formula_a_table.rows().count();
+	});
 
 
-var url = '/core/full_formula_data.php?id=<?=$id_b?>';
-<?php if($_POST['revID']){ ?>
+	var url = '/core/full_formula_data.php?id=<?=$id_b?>';
+	<?php if($_POST['revID']){ ?>
 	var url = '/core/full_revision_data.php?fid=<?=$_POST['fid']?>&revID=<?=$_POST['revID']?>';
-<?php } ?>
-var formula_b_table = $('#formula_b_table').DataTable({
+	<?php } ?>
+	var formula_b_table = $('#formula_b_table').DataTable({
 		dom: 'lfrtip',
         language: {
 			loadingRecords: '&nbsp;',
