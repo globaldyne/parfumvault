@@ -49,7 +49,7 @@ foreach ($get_data_ings as $get_data_ing) {
 	$r['contained_percentage'] = $conc_p;
     $u = searchIFRA($get_data_ing['cas'], $get_data_ing['name'], null, $defCatClass);
 
-    $r['max_allowed_val'] = $u['val'] ?: 'No value';
+    $r['max_allowed_val'] = $u['val'] ?: $u['type'] ?: 'No value';
     $r['max_allowed_reason'] = $u['risk'];
 
     $response['data'][] = $r;
