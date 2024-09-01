@@ -220,7 +220,7 @@ $(document).ready(function() {
 		language: {
 			loadingRecords: '&nbsp;',
 			processing: '<div class="spinner-grow mx-2"></div>Please Wait...',
-			zeroRecords: 'Nothing found',
+			zeroRecords: '<div class="mt-4 alert alert-warning"><strong>Nothing found, have you <a href="#" data-bs-toggle="modal" data-bs-target="#ifra_import">imported</a> the IFRA library?</strong></div>',
 			search: 'Quick Search:',
 			searchPlaceholder: 'Name, CAS, synonyms...',
 		},
