@@ -167,7 +167,7 @@ $(document).ready(function() {
 	
 	$('#addAttachment').on('click', '[id*=doc_upload]', function () {
 			
-		$("#doc_inf").html('<div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
+		$("#doc_inf").html('<div class="alert alert-info">Please wait, file upload in progress....</div>');
 		$("#doc_upload").prop("disabled", true);
 		$("#doc_upload").prop('value', 'Please wait...');
 			
