@@ -315,7 +315,7 @@ function chkUpdate() {
       } elseif ($_GET['do'] == 'cart') {
           require_once(__ROOT__.'/pages/cart.php');    
       } elseif ($_GET['do'] == 'suppliers') {
-          require_once(__ROOT__.'/pages/suppliers.php');
+          require_once(__ROOT__.'/pages/views/inventory/suppliers.php');
       } elseif ($_GET['do'] == 'sellFormula') {
           require_once(__ROOT__.'/pages/sellFormula.php');
       } elseif ($_GET['do'] == 'customers') {

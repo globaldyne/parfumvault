@@ -8,27 +8,33 @@ require_once(__ROOT__.'/func/formatBytes.php');
 
 $ingID = mysqli_real_escape_string($conn, $_POST["id"]);
 
-$q = mysqli_query($conn, "SELECT * FROM documents WHERE ownerID = '$ingID' AND type = '5'");
-while($res = mysqli_fetch_array($q)){
-    $docs[] = $res;
+$stmt = $conn->prepare("SELECT * FROM documents WHERE ownerID = ? AND type = ?");
+$type = 5;
+$stmt->bind_param("ii", $ingID, $type);
+$stmt->execute();
+$result = $stmt->get_result();
+
+$response = ['data' => []];
+
+while ($doc = $result->fetch_assoc()) {
+    $r = [
+        'id' => (int)$doc['id'],
+        'ownerID' => (int)$doc['ownerID'],
+        'type' => (int)$doc['type'],
+        'name' => (string)$doc['name'] ?: 'N/A',
+        'notes' => (string)$doc['notes'] ?: 'N/A',
+        'created' => (string)$doc['created'] ?: 'N/A',
+        'docData' => (string)$doc['docData'],
+        'docSize' => formatBytes(strlen($doc['docData']))
+    ];
+    
+    $response['data'][] = $r;
 }
 
-foreach ($docs as $doc) { 
+$stmt->close();
 
-	$r['id'] = (int)$doc['id'];
-	$r['ownerID'] = (int)$doc['ownerID'];
-	$r['type'] = (int)$doc['type'];
-	$r['name'] = (string)$doc['name']?:'N/A';
-	$r['notes'] = (string)$doc['notes']?:'N/A';
-	$r['created'] = (string)$doc['created']?:'N/A';
-	$r['docData'] = (string)$doc['docData'];
-	$r['docSize'] = (string)formatBytes(strlen($doc['docData']));
-
-	$response['data'][] = $r;
-}
-
-if(empty($r)){
-	$response['data'] = [];
+if (empty($response['data'])) {
+    $response['data'] = [];
 }
 
 header('Content-Type: application/json; charset=utf-8');

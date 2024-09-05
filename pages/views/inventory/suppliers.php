@@ -8,8 +8,7 @@
             </div>
              <div class="card-body">
               <div class="table-responsive">
-            <div id="supmsg"></div>
-            <table class="table table-striped table-bordered">
+            	<table class="table table-striped table-bordered">
                 <tr class="noBorder">
                  <div class="text-right">
                   <div class="btn-group">
@@ -63,19 +62,19 @@ $(document).ready(function() {
 		},
 		ajax: {	url: '/core/list_suppliers_data.php' },
 		columns: [
-				  { data : 'name', title: 'Name', render: name },
-				  { data : 'materials', title: 'Materials' },
-				  { data : 'platform', title: 'Platform', render: platform},
-				  { data : 'price_tag_start', title: 'Price start tag', render: price_tag_start},
-				  { data : 'price_tag_end', title: 'Price end tag', render: price_tag_end},
-				  { data : 'add_costs', title: 'Additional costs', render: add_costs},
-				  { data : 'price_per_size', title: 'Price per size', render: price_per_size},
-				  { data : 'min_ml', title: 'Min ml', render: min_ml},
-				  { data : 'min_gr', title: 'Min grams', render: min_gr},
-				  { data : 'description', title: 'Description', render: description},
+		  { data : 'name', title: 'Name', render: name },
+		  { data : 'materials', title: 'Materials' },
+		  { data : 'platform', title: 'Platform', render: platform},
+		  { data : 'price_tag_start', title: 'Price start tag', render: price_tag_start},
+		  { data : 'price_tag_end', title: 'Price end tag', render: price_tag_end},
+		  { data : 'add_costs', title: 'Additional costs', render: add_costs},
+		  { data : 'price_per_size', title: 'Price per size', render: price_per_size},
+		  { data : 'min_ml', title: 'Min ml', render: min_ml},
+		  { data : 'min_gr', title: 'Min grams', render: min_gr},
+		  { data : 'description', title: 'Description', render: description},
 	
-				  { data : null, title: '', render: actions},		   
-				 ],
+		  { data : null, title: '', render: actions},		   
+		],
 		order: [[ 1, 'asc' ]],
 		lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
 		pageLength: 20,
@@ -104,33 +103,40 @@ $(document).ready(function() {
 
 function name(data, type, row){
 	return '<i class="name pv_point_gen" data-name="name" data-type="text" data-pk="'+row.id+'">'+row.name+'</i>';    
-}
+};
 
 function platform(data, type, row){
 	return '<i class="platform pv_point_gen" data-name="platform" data-type="select" data-pk="'+row.id+'">'+row.platform+'</i>';
-}
+};
 
 function price_tag_start(data, type, row){
 	return '<i class="price_tag_start pv_point_gen" data-name="price_tag_start" data-type="textarea" data-pk="'+row.id+'">'+atob(row.price_tag_start)+'</i>';    
-}
+};
+
 function price_tag_end(data, type, row){
 	return '<i class="price_tag_end pv_point_gen" data-name="price_tag_end" data-type="textarea" data-pk="'+row.id+'">'+atob(row.price_tag_end)+'</i>';    
-}
+};
+
 function add_costs(data, type, row){
 	return '<i class="add_costs pv_point_gen" data-name="add_costs" data-type="text" data-pk="'+row.id+'">'+row.add_costs+'</i>';    
-}
+};
+
 function price_per_size(data, type, row){
 	return '<i class="price_per_size pv_point_gen" data-name="price_per_size" data-type="select" data-pk="'+row.id+'">'+row.price_per_size+'</i>';    
-}
+};
+
 function min_ml(data, type, row){
-	return '<i class="min_ml pv_point_gen" data-name="min_ml" data-type="text" data-pk="'+row.id+'">'+row.min_ml+'</i>';    
-}
+	return '<i class="min_ml pv_point_gen" data-name="min_ml" data-type="text" data-pk="'+row.id+'">'+row.min_ml+'</i>';
+};
+
 function min_gr(data, type, row){
 	return '<i class="min_gr pv_point_gen" data-name="min_gr" data-type="text" data-pk="'+row.id+'">'+row.min_gr+'</i>';
-}
+};
+
 function description(data, type, row){
 	return '<i class="notes pv_point_gen" data-name="notes" data-type="textarea" data-pk="'+row.id+'">'+row.notes+'</i>';    
-}
+};
+
 function actions(data, type, row){
 	data = '<div class="dropdown">' +
 			'<button type="button" class="btn btn-floating hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
@@ -142,7 +148,7 @@ function actions(data, type, row){
 	data += '</ul></div>';
 	
 	return data;
-}
+};
 
 $('#tdIngSupData').editable({
   container: 'body',
@@ -175,9 +181,9 @@ $('#tdIngSupData').editable({
 	type: 'POST',
   	url: "/pages/update_data.php?settings=sup",
     source: [
-			 {value: "0", text: "Product"},
-			 {value: "1", text: "Volume"},
-          ],
+		 {value: "0", text: "Product"},
+		 {value: "1", text: "Volume"},
+    ],
 });
 
 $('#tdIngSupData').editable({
@@ -277,12 +283,14 @@ $('#tdIngSupData').on('click', '[id*=dDel]', function () {
 					dataType: 'json',
 					success: function (data) {
 						if(data.success){
-							msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+							$('#toast-title').html('<i class="fa-solid fa-circle-check mx-2"></i>' + data.success);
+							$('.toast-header').removeClass().addClass('toast-header alert-success');
 							reload_data();
 						}else if(data.error){
-							msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>' + data.error);
+							$('.toast-header').removeClass().addClass('toast-header alert-danger');
 						}
-						$('#supmsg').html(msg);
+						$('.toast').toast('show');
 					},
 					error: function (xhr, status, error) {
 						$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
@@ -410,6 +418,7 @@ function reload_data() {
 
         $("#details").modal("show");
 	});
+	
 });
 </script>
 

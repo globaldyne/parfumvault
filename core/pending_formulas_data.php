@@ -8,144 +8,122 @@ require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/ml2L.php');
 require_once(__ROOT__.'/func/countElement.php');
 
-$meta = $_GET['meta'];
 
-$row = $_POST['start']?:0;
-$limit = $_POST['length']?:10;
+$meta = isset($_GET['meta']) ? (int)$_GET['meta'] : 0;
+$row = isset($_POST['start']) ? (int)$_POST['start'] : 0;
+$limit = isset($_POST['length']) ? (int)$_POST['length'] : 10;
 
+$order_by = isset($_POST['order_by']) ? mysqli_real_escape_string($conn, $_POST['order_by']) : 'ingredient';
+$order_as = isset($_POST['order_as']) ? mysqli_real_escape_string($conn, $_POST['order_as']) : 'ASC';
+$extra = "ORDER BY toAdd DESC, $order_by $order_as";
 
-$order_by  = "toAdd DESC, ".$_POST['order_by']?:'ingredient';
-$order  = $_POST['order_as']?:'ASC';
-$extra = "ORDER BY ".$order_by." ".$order;
+$search = isset($_POST['search']['value']) ? trim(mysqli_real_escape_string($conn, $_POST['search']['value'])) : '';
+$table = "makeFormula";
+$fid = isset($_GET['fid']) ? mysqli_real_escape_string($conn, $_GET['fid']) : '';
 
-$s = trim($_POST['search']['value']);
-$t = "makeFormula";
-if($_GET['qStep']){
-	$settings['qStep'] = $_GET['qStep'];
+if (isset($_GET['qStep'])) {
+    $settings['qStep'] = $_GET['qStep'];
 }
 
-if($meta == 0){
-	if($s != ''){
- 	  $f = "  AND (ingredient LIKE '%".$s."%')";
-	}
-	$q = mysqli_query($conn, "SELECT * FROM $t WHERE fid = '".$_GET['fid']."' $f $extra LIMIT $row, $limit");
-	while($res = mysqli_fetch_array($q)){
-    	$rs[] = $res;
-	}
+$filter = $search !== '' ? " AND (ingredient LIKE '%$search%')" : '';
 
-	$q = mysqli_query($conn, "SELECT quantity FROM $t WHERE fid = '".$_GET['fid']."'");
-	while($res = mysqli_fetch_array($q)){
-    	$rsq[] = $res;
-	}
-	
-	$q = mysqli_query($conn, "SELECT quantity FROM $t WHERE fid = '".$_GET['fid']."' AND toAdd = '1'");
-	while($res = mysqli_fetch_array($q)){
-    	$rsL[] = $res;
-	}
-	
-	foreach ($rs as $rq) {
-		$gING = mysqli_fetch_array(mysqli_query($conn, "SELECT cas, odor FROM ingredients WHERE name = '".$rq['ingredient']."'"));
-		$inventory = mysqli_fetch_array(mysqli_query($conn, "SELECT ingSupplierID, SUM(stock) OVER() AS stock, mUnit FROM suppliers WHERE ingID = '".$rq['ingredient_id']."'"));
-		$supplier = mysqli_fetch_array(mysqli_query($conn, "SELECT id, name FROM ingSuppliers WHERE id = '".$inventory['ingSupplierID']."'"));
-	
-		$repq = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE id = '".$rq['replacement_id']."'"));
-	
-		$r['id'] = (int)$rq['id'];
-		$r['fid'] = (string)$rq['fid'];
-		$r['repID'] = (string)$rq['replacement_id'];
-		$r['repName'] = (string)$repq['name'];
-		$r['name'] = (string)$rq['name'];
-		$r['ingredient'] = (string)$rq['ingredient'];        
-		$r['ingID'] = (int)$rq['ingredient_id'];
-		$r['cas'] = (string)$gING['cas'] ?: 'N/A';
-		$r['odor'] = (string)$gING['odor'] ?: 'N/A';
-	
-		$r['concentration'] = (float)$rq['concentration'];
-		$r['dilutant'] = (string)$rq['dilutant'] ?: 'None';
-		$r['quantity'] = number_format((float)$rq['quantity'], $settings['qStep'], '.', '') ?: 0;
-		$r['originalQuantity'] = number_format((float)$rq['originalQuantity'], $settings['qStep'], '.', '') ?: 0;
-		$r['overdose'] = number_format((float)$rq['overdose'], $settings['qStep'], '.', '') ?: 0;
-	
-		$r['inventory']['stock'] = (float)$inventory['stock'] ?: 0;
-		$r['inventory']['mUnit'] = (string)$inventory['mUnit'] ?: $settings['mUnit'];
-	
-		$r['inventory'][]['supplier'] = [
-			'name' => (string)$supplier['name'],
-			'id' => (string)$supplier['id']
-		];
-	
-		$r['toAdd'] = (int)$rq['toAdd'];
-		$r['toSkip'] = (int)$rq['skip'];
-	
-		$rx[] = $r;
-	}
+$response = ['data' => [], 'meta' => []];
+$mg = ['total_mg' => 0, 'total_mg_left' => 0];
+$rx = [];
 
-	foreach ($rsq as $rq) {
-		$mg['total_mg'] += $rq['quantity'];
-	}
-	
-	foreach ($rsL as $rq) {
-		$mg['total_mg_left'] += $rq['quantity'];
-	}
-	
-	$m['total_ingredients'] = (int)countElement("$t WHERE fid = '".$_GET['fid']."'",$conn);
-	$m['total_ingredients_left'] = (int)countElement("$t WHERE fid = '".$_GET['fid']."' AND toAdd = '1' AND skip = '0'",$conn);	
-	$m['total_quantity'] =  (float)ml2l($mg['total_mg'], $settings['qStep'], $settings['mUnit']);
-	$m['total_quantity_left'] =  (float)ml2l($mg['total_mg_left'], $settings['qStep'], $settings['mUnit']);
-	$m['quantity_unit'] = (string)$settings['mUnit'];
-	
-	$total = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM makeFormula WHERE fid = '".$_GET['fid']."'"));
-	$filtered = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM makeFormula WHERE fid = '".$_GET['fid']."' ".$f));
-	
-}else{
-	if($s != ''){
- 	  $f = "  AND (name LIKE '%".$s."%')";
-	}
-	$q = mysqli_query($conn, "SELECT id, fid, name, madeOn, scheduledOn, toDo AS toAdd FROM formulasMetaData WHERE toDo = '1' $f $extra LIMIT $row, $limit");
-	
+if ($meta === 0) {
+    $q = mysqli_query($conn, "SELECT * FROM $table WHERE fid = '$fid' $filter $extra LIMIT $row, $limit");
+    while ($res = mysqli_fetch_assoc($q)) {
+        $rs[] = $res;
+    }
 
-	while($res = mysqli_fetch_array($q)){
-    	$rs[] = $res;
-	}
-	
-	foreach ($rs as $rq) { 
-		$r['id'] = (int)$rq['id'];
-		$r['fid'] = (string)$rq['fid'];
-		$r['name'] = (string)$rq['name'];
-		$q2 = mysqli_fetch_array(mysqli_query($conn, "SELECT toAdd FROM $t WHERE fid = '".$rq['fid']."'"));
-		$r['total_ingredients'] = (int)countElement("$t WHERE fid = '".$rq['fid']."'",$conn);
-		$r['total_ingredients_left'] = (int)countElement("$t WHERE fid = '".$rq['fid']."' AND toAdd = '1' AND skip = '0'",$conn);	
-		$r['toAdd'] = (int)$q2['toAdd'];
-		$r['scheduledOn'] = (string)$rq['scheduledOn'];
-		$r['madeOn'] = (string)$rq['madeOn'] ?: 'In progress';
+    $rsq = mysqli_fetch_all(mysqli_query($conn, "SELECT quantity FROM $table WHERE fid = '$fid'"), MYSQLI_ASSOC);
+    $rsL = mysqli_fetch_all(mysqli_query($conn, "SELECT quantity FROM $table WHERE fid = '$fid' AND toAdd = '1'"), MYSQLI_ASSOC);
+    
+    foreach ($rs as $rq) {
+        $ingredient = mysqli_fetch_assoc(mysqli_query($conn, "SELECT cas, odor FROM ingredients WHERE name = '" . mysqli_real_escape_string($conn, $rq['ingredient']) . "'"));
+        $inventory = mysqli_fetch_assoc(mysqli_query($conn, "SELECT ingSupplierID, SUM(stock) OVER() AS stock, mUnit FROM suppliers WHERE ingID = '" . (int)$rq['ingredient_id'] . "'"));
+        $supplier = mysqli_fetch_assoc(mysqli_query($conn, "SELECT id, name FROM ingSuppliers WHERE id = '" . (int)$inventory['ingSupplierID'] . "'"));
+        $replacement = mysqli_fetch_assoc(mysqli_query($conn, "SELECT name FROM ingredients WHERE id = '" . (int)$rq['replacement_id'] . "'"));
 
-		$rx[]=$r;
-	}
-	
-	$total = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM formulasMetaData WHERE toDo = '1'"));
-	$filtered = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM formulasMetaData WHERE todo = '1' ".$f));
-	
+        $r = [
+            'id' => (int)$rq['id'],
+            'fid' => (string)$rq['fid'],
+            'repID' => (string)$rq['replacement_id'],
+            'repName' => (string)$replacement['name'],
+            'name' => (string)$rq['name'],
+            'ingredient' => (string)$rq['ingredient'],
+            'ingID' => (int)$rq['ingredient_id'],
+            'cas' => (string)($ingredient['cas'] ?? 'N/A'),
+            'odor' => (string)($ingredient['odor'] ?? 'N/A'),
+            'concentration' => (float)$rq['concentration'],
+            'dilutant' => (string)($rq['dilutant'] ?? 'None'),
+            'quantity' => number_format((float)$rq['quantity'], $settings['qStep'], '.', '') ?: 0,
+            'originalQuantity' => number_format((float)$rq['originalQuantity'], $settings['qStep'], '.', '') ?: 0,
+            'overdose' => number_format((float)$rq['overdose'], $settings['qStep'], '.', '') ?: 0,
+            'inventory' => [
+                'stock' => (float)($inventory['stock'] ?? 0),
+                'mUnit' => (string)($inventory['mUnit'] ?? $settings['mUnit']),
+                'supplier' => [
+                    'name' => (string)$supplier['name'],
+                    'id' => (string)$supplier['id'],
+                ]
+            ],
+            'toAdd' => (int)$rq['toAdd'],
+            'toSkip' => (int)$rq['skip']
+        ];
+        
+        $rx[] = $r;
+    }
+
+    foreach ($rsq as $rq) {
+        $mg['total_mg'] += (float)$rq['quantity'];
+    }
+    foreach ($rsL as $rq) {
+        $mg['total_mg_left'] += (float)$rq['quantity'];
+    }
+
+    $m = [
+        'total_ingredients' => (int)countElement("$table WHERE fid = '$fid'", $conn),
+        'total_ingredients_left' => (int)countElement("$table WHERE fid = '$fid' AND toAdd = '1' AND skip = '0'", $conn),
+        'total_quantity' => (float)ml2l($mg['total_mg'], $settings['qStep'], $settings['mUnit']),
+        'total_quantity_left' => (float)ml2l($mg['total_mg_left'], $settings['qStep'], $settings['mUnit']),
+        'quantity_unit' => (string)$settings['mUnit']
+    ];
+
+    $response['meta'] = $m;
+    
+    $total = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS entries FROM $table WHERE fid = '$fid'"));
+    $filtered = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS entries FROM $table WHERE fid = '$fid' $filter"));
+} else {
+    $filter = $search !== '' ? " AND (name LIKE '%$search%')" : '';
+    $q = mysqli_query($conn, "SELECT id, fid, name, madeOn, scheduledOn, toDo AS toAdd FROM formulasMetaData WHERE toDo = '1' $filter $extra LIMIT $row, $limit");
+    
+    while ($res = mysqli_fetch_assoc($q)) {
+        $r = [
+            'id' => (int)$res['id'],
+            'fid' => (string)$res['fid'],
+            'name' => (string)$res['name'],
+            'total_ingredients' => (int)countElement("$table WHERE fid = '" . mysqli_real_escape_string($conn, $res['fid']) . "'", $conn),
+            'total_ingredients_left' => (int)countElement("$table WHERE fid = '" . mysqli_real_escape_string($conn, $res['fid']) . "' AND toAdd = '1' AND skip = '0'", $conn),
+            'toAdd' => (int)$res['toAdd'],
+            'scheduledOn' => (string)$res['scheduledOn'],
+            'madeOn' => (string)($res['madeOn'] ?? 'In progress')
+        ];
+
+        $rx[] = $r;
+    }
+
+    $total = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS entries FROM formulasMetaData WHERE toDo = '1'"));
+    $filtered = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS entries FROM formulasMetaData WHERE toDo = '1' $filter"));
 }
 
-
-
-$response = array(
-  "draw" => (int)$_POST['draw'],
-  "recordsTotal" => (int)$total['entries'],
-  "recordsFiltered" => (int)$filtered['entries'],
-  "data" => $rx
-);
-
-if(empty($r)){
-	$response['data'] = [];
-}
-
-
-if($m){
-	$response['meta'] = $m;
-}else{
-	$response['meta'] = [];
-}
+$response = array_merge($response, [
+    "draw" => isset($_POST['draw']) ? (int)$_POST['draw'] : 1,
+    "recordsTotal" => (int)$total['entries'],
+    "recordsFiltered" => (int)$filtered['entries'],
+    "data" => $rx
+]);
 
 header('Content-Type: application/json; charset=utf-8');
 echo json_encode($response);

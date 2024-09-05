@@ -44,6 +44,12 @@ require_once(__ROOT__.'/func/php-settings.php');
 </div>
 <script>
 $(document).ready(function() {
+	function extrasShow() {
+		$('[rel=tip]').tooltip({
+			"html": true,
+			"delay": {"show": 100, "hide": 0},
+		});
+	};
 	$('#mainTitle').click(function() {
 	 	reload_data();
   	});
@@ -89,6 +95,9 @@ $(document).ready(function() {
 		displayLength: 20,
 		stateSave: true,
 		stateDuration: -1,
+		drawCallback: function( settings ) {
+			extrasShow();
+		},
 		stateLoadCallback: function(settings, callback) {
 			$.ajax({
 				url: '/core/update_user_settings.php?set=listTodo&action=load',
@@ -168,7 +177,12 @@ $(document).ready(function() {
 	};
 	
 	function actions(data, type, row){
-		return '<i rel="tip" title="Delete '+ row.name +'" class="pv_point_gen fas fa-trash text-danger" id="pend_remove" data-name="'+ row.name +'" data-id='+ row.fid +'></i>';    
+		data = '<div class="dropdown">' +
+			'<button type="button" class="btn" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+				'<ul class="dropdown-menu dropdown-menu-right">';
+		data += '<li><a class="dropdown-item link-danger" href="#" id="pend_remove" rel="tip" title="Delete '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"><i class="fas fa-trash mx-2"></i>Delete</a></li>';
+		data += '</ul></div>';
+		return data;  
 	};
 	
 	function reload_data() {

@@ -30,74 +30,86 @@
 </div>
 
 <!--Contact author modal-->
-<div class="modal fade" id="contact-formula-author" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="contact-formula-author" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
+<div class="modal fade" id="contact-formula-author" data-bs-backdrop="static" tabindex="-1" aria-labelledby="contact-formula-author" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Contact <div id="fname" class="d-inline"></div> formula's author</h5>
+        <h5 class="modal-title">Contact <span id="fname-display" class="d-inline"></span> formula's author</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-      <div id="cntMsg"></div>
-      	<div class="modal-body-main">
-            <input type="hidden" name="fid" id="fid" />
-            <input type="hidden" name="fname" id="fname" />
-            <div class="alert alert-warning">You can contact the author of the formula using the form bellow if you have queries or recommendations regarding this formula.<p><strong>Please note, your full name and your email address will be shared with the author(s) of the formula in order they can get in touch to discuss further. Also, a copy of your message will be shared with the admins to ensure there is no service abuse.</strong></p></div>
-            <div class="form-group">
-                <label class="form-label">Full name:</label>
-                <input name="contactName" id="contactName" type="text" class="form-control">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Email:</label>
-                <input name="contactEmail" id="contactEmail" type="text" class="form-control">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Comments:</label>
-                <textarea name="contactReason" id="contactReason" rows="3" class="form-control"></textarea>
-            </div>
-            <div class="modal-footer">
-             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-             <input type="submit" name="button" class="btn btn-primary" id="confirm-contact-author" value="Send message">
-           </div>
-      	</div>
+        <div id="cntMsg"></div>
+        <div class="modal-body-main">
+          <input type="hidden" name="fid" id="fid" />
+          <input type="hidden" name="fname" id="fname" />
+          <div class="alert alert-warning">
+            You can contact the author of the formula using the form below if you have queries or recommendations regarding this formula.
+            <p><strong>Please note, your full name and your email address will be shared with the author(s) of the formula so they can get in touch to discuss further. Also, a copy of your message will be shared with the admins to ensure there is no service abuse.</strong></p>
+          </div>
+          <div class="mb-3">
+            <label for="contactName" class="form-label">Full name:</label>
+            <input name="contactName" id="contactName" type="text" class="form-control">
+          </div>
+          <div class="mb-3">
+            <label for="contactEmail" class="form-label">Email:</label>
+            <input name="contactEmail" id="contactEmail" type="email" class="form-control">
+          </div>
+          <div class="mb-3">
+            <label for="contactReason" class="form-label">Comments:</label>
+            <textarea name="contactReason" id="contactReason" rows="3" class="form-control"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary" id="confirm-contact-author">Send message</button>
+      </div>
     </div>
   </div>
- </div>
 </div>
 
+
 <!--Report formula modal-->
-<div class="modal fade" id="report-market-formula" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="report-market-formula" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
+<div class="modal fade" id="report-market-formula" data-bs-backdrop="static" tabindex="-1" aria-labelledby="report-market-formula" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Report <div id="fname" class="d-inline"></div> formula</h5>
+        <h5 class="modal-title">Report <span id="fname-display" class="d-inline"></span> formula</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-      <div id="reportMsg"></div>
-      <div class="modal-body-main">
-            <input type="hidden" name="fid" id="fid" />
-            <input type="hidden" name="fname" id="fname" />
-            <div class="alert alert-warning">If you believe that <strong><div id="fname" class="d-inline"></div></strong> formula violates our <a href="https://www.perfumersvault.com/community_rules" target="_blank">community rules</a>, please use this form to report it explaining in detail what's wrong.<p>Once we receive the report and review it, will take actions, if any required and let the author know.</p><p><strong>Please don't use this form if you have queries or suggestions regarding the formula, use the <i>Contact Author</i> option instead.</strong></p></div>
-            <div class="form-group">
-                <label class="form-label">Full name:</label>
-                <input name="reporterName" id="reporterName" type="text" class="form-control">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Email:</label>
-                <input name="reporterEmail" id="reporterEmail" type="text" class="form-control">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Please provide the reason you reporting <div id="fname" class="d-inline"></div> formula in detail:</label>
-                <textarea name="reportReason" id="reportReason" rows="3" class="form-control"></textarea>
-            </div>
-            <div class="modal-footer">
-             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-             <input type="submit" name="button" class="btn btn-primary" id="confirm-formula-report" value="Report fomula">
-           </div>
+        <div id="reportMsg"></div>
+        <div class="modal-body-main">
+          <input type="hidden" name="fid" id="fid" />
+          <input type="hidden" name="fname" id="fname" />
+          <div class="alert alert-warning">
+            If you believe that <strong><span id="fname-display" class="d-inline"></span></strong> formula violates our 
+            <a href="https://www.perfumersvault.com/community_rules" target="_blank">community rules</a>, please use this form to report it explaining in detail what's wrong.
+            <p>Once we receive the report and review it, we will take actions, if any required, and let the author know.</p>
+            <p><strong>Please don't use this form if you have queries or suggestions regarding the formula, use the <i>Contact Author</i> option instead.</strong></p>
+          </div>
+          <div class="mb-3">
+            <label for="reporterName" class="form-label">Full name:</label>
+            <input name="reporterName" id="reporterName" type="text" class="form-control">
+          </div>
+          <div class="mb-3">
+            <label for="reporterEmail" class="form-label">Email:</label>
+            <input name="reporterEmail" id="reporterEmail" type="email" class="form-control">
+          </div>
+          <div class="mb-3">
+            <label for="reportReason" class="form-label">Please provide the reason you're reporting <span id="fname-display" class="d-inline"></span> formula in detail:</label>
+            <textarea name="reportReason" id="reportReason" rows="3" class="form-control"></textarea>
+          </div>
         </div>
-     </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary" id="confirm-formula-report">Report formula</button>
+      </div>
+    </div>
   </div>
- </div>
 </div>
+
 <?php
 $qPVfids = mysqli_query($conn,"SELECT fid FROM formulasMetaData WHERE src = '1'");
 while ($rPVFIDS = mysqli_fetch_array($qPVfids)){
@@ -105,329 +117,327 @@ while ($rPVFIDS = mysqli_fetch_array($qPVfids)){
 }
 $json_fids = json_encode($result_fids);
 ?>
-<script type="text/javascript" language="javascript" >
+<script>
 
-const arrayFIDS = <?php echo $json_fids; ?> || '0';
+$(document).ready(function() {
 
+	const arrayFIDS = <?php echo $json_fids; ?> || '0';
 
-$.fn.dataTable.ext.errMode = 'none';
-function extrasShow() {
-	$('[rel=tip]').tooltip({
-		"html": true,
-		"delay": {"show": 100, "hide": 0},
-	});
-};
-
-var tableMarket = $("#all-table-market").DataTable({
-   	ajax: {
-	   url: '<?=$pvOnlineAPI?>',
-	   type: 'POST',
-	   dataType: 'json',
-	   timeout: 5000,
-	   data: function(d) {
-		   d.request = 'MarketPlace'
-		   d.action = 'list_all'
-			if (d.order.length>0){
-				d.order_by = d.columns[d.order[0].column].data
-				d.order_as = d.order[0].dir
-			}
-		 },
-	    },
-	   columns: [
-	    	{ data : 'name', title: 'Formula Name', render: name},
+	$.fn.dataTable.ext.errMode = 'none';
+	function extrasShow() {
+		$('[rel=tip]').tooltip({
+			"html": true,
+			"delay": {"show": 100, "hide": 0},
+		});
+	};
+	
+	var tableMarket = $("#all-table-market").DataTable({
+		ajax: {
+			url: '<?=$pvOnlineAPI?>',
+		   	type: 'POST',
+		   	dataType: 'json',
+		   	timeout: 5000,
+		   	data: function(d) {
+			   d.request = 'MarketPlace'
+			   d.action = 'list_all'
+				if (d.order.length>0){
+					d.order_by = d.columns[d.order[0].column].data
+					d.order_as = d.order[0].dir
+				}
+			 },
+		  },
+		  columns: [
+			{ data : 'name', title: 'Formula Name', render: name},
 			{ data : null, title: 'Status', render: status},
-	    	{ data : 'author', title: 'Author', render: author},
-	   		{ data : 'cost', title: 'License', render: cost},
-	   		{ data : 'created_at', title: 'Published'},
-	   		{ data : null, title: '', render: actions},				   
-	  	],
-	   processing: true,
-	   serverSide: true,
-	   searching: true,
-	   language: {
-		  loadingRecords: '&nbsp;',
-		  processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Blending...</span>',
-		  emptyTable: '<div class="alert alert-warning"><strong>No formulas found in Marketplace, please come back later.</strong></div>',
-		  searchPlaceholder: 'Formula name..',
-		  search: "Search for formula:"
-        },
-       order: [0,'asc'],
-   	   columnDefs: [
+			{ data : 'author', title: 'Author', render: author},
+			{ data : 'cost', title: 'License', render: cost},
+			{ data : 'created_at', title: 'Published'},
+			{ data : null, title: '', render: actions},				   
+		  ],
+		  processing: true,
+		  serverSide: true,
+		  searching: true,
+		  language: {
+			 loadingRecords: '&nbsp;',
+			 processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Blending...</span>',
+			 emptyTable: '<div class="alert alert-warning"><strong>No formulas found in Marketplace, please come back later.</strong></div>',
+			 searchPlaceholder: 'Formula name..',
+			 search: "Search for formula:"
+		  },
+		  order: [0,'asc'],
+		  columnDefs: [
 			{ orderable: false, targets: [3,5] },
 			{ className: 'text-center', targets: '_all' },				  
-		],
-	destroy: true,
-	bFilter: true,
-	paging:  true,
-	info:   true,
-	lengthMenu: [[20, 40, 60, 100], [20, 40, 60, 100]],
-	drawCallback: function( settings ) {
-		extrasShow();
-	},
-	createdRow: function(row, data, dataIndex){
-	// initRating(row);
-	},
+		  ],
+		  destroy: true,
+		  paging:  true,
+		  info:   true,
+		  lengthMenu: [[20, 40, 60, 100], [20, 40, 60, 100]],
+		  drawCallback: function( settings ) {
+			extrasShow();
+		  },
+		  
+	}).on('error.dt', function ( e, settings, techNote, message ) {
+		var m = message.split(' - ');
+		$('#data_area').html('<div class="alert alert-danger"><strong>' + m[1] + '</strong></div>');
+	});
 	
-		
-				
-
-}).on('error.dt', function ( e, settings, techNote, message ) {
-	var m = message.split(' - ');
-	$('#data_area').html('<div class="alert alert-danger"><strong>' + m[1] + '</strong></div>');
-});
-
-var detailRows = [];
-
-$('#all-table-market tbody').on( 'click', '[id*=open-details]', function () {
-	var tr = $(this).parents('tr');
-	var row = tableMarket.row( tr );
-	var idx = $.inArray( tr.attr('id'), detailRows );
-
-	if ( row.child.isShown() ) {
-		tr.removeClass( 'details' );
-		row.child.hide();
-		detailRows.splice( idx, 1 );
-	} else {
-		tr.addClass( 'details' );
-		row.child( format( row.data() ) ).show();
-		if ( idx === -1 ) {
-			detailRows.push( tr.attr('id') );
+	var detailRows = [];
+	
+	$('#all-table-market tbody').on( 'click', '[id*=open-details]', function () {
+		var tr = $(this).parents('tr');
+		var row = tableMarket.row( tr );
+		var idx = $.inArray( tr.attr('id'), detailRows );
+	
+		if ( row.child.isShown() ) {
+			tr.removeClass( 'details' );
+			row.child.hide();
+			detailRows.splice( idx, 1 );
+		} else {
+			tr.addClass( 'details' );
+			row.child( format( row.data() ) ).show();
+			if ( idx === -1 ) {
+				detailRows.push( tr.attr('id') );
+			}
 		}
-	}
-});
-
-tableMarket.on( 'draw', function () {
-	$.each( detailRows, function ( i, id ) {
-		$('#'+id+' td:first-child + td').trigger( 'click' );
+	});
+	
+	tableMarket.on( 'draw', function () {
+		$.each( detailRows, function ( i, id ) {
+			$('#'+id+' td:first-child + td').trigger( 'click' );
+		} );
 	} );
-} );
-
-
-function format ( d ) {		
-
-    details = '<strong>Description:</strong><br><span class="formula_details">'+d.notes +
-		'</span><br><strong>Published:</strong><br><span class="formula_details">'+d.created_at +
-		'</span><br><strong>Updated:</strong><br><span class="formula_details">'+d.updated_at+'</span>' +
-		'</span><br><strong>Downloads:</strong><br><span class="formula_details">'+d.downloads+'</span>' +
-		'<br><strong>Labels:</strong><br>';
-
-	for (var key in d.labels) {
-		if (d.labels.hasOwnProperty(key)) {
-			details+='<span class="formula_details mx-2 badge pv-label label-md bg-primary">'+d.labels[key].name+'</span>';
+	
+	
+	function format ( d ) {		
+	
+		details = '<strong>Description:</strong><br><span class="formula_details">'+d.notes +
+			'</span><br><strong>Published:</strong><br><span class="formula_details">'+d.created_at +
+			'</span><br><strong>Updated:</strong><br><span class="formula_details">'+d.updated_at+'</span>' +
+			'</span><br><strong>Downloads:</strong><br><span class="formula_details">'+d.downloads+'</span>' +
+			'<br><strong>Labels:</strong><br>';
+	
+		for (var key in d.labels) {
+			if (d.labels.hasOwnProperty(key)) {
+				details+='<span class="formula_details mx-2 badge pv-label label-md bg-primary">'+d.labels[key].name+'</span>';
+			}
+		}        
+		
+		return details;
+	}
+	
+	function cost(data, type, row){
+		if(row.cost == 0){
+			data = '<span class="badge pv-label label-md bg-success">FREE!</span>';
+		}else{
+			data = '<span class="badge pv-label label-md bg-info">' + row.currency + row.cost + '</span>';
 		}
-	}        
-	
-	return details;
-}
-
-function cost(data, type, row){
-	if(row.cost == 0){
-		data = '<span class="badge pv-label label-md bg-success">FREE!</span>';
-	}else{
-		data = '<span class="badge pv-label label-md bg-info">' + row.currency + row.cost + '</span>';
-	}
-	return data;
-}
-
-function name(data, type, row){
-	
-	data = '<i class="pv_point_gen pv_gen_li" id="open-details"> ' + data + '</i>';
-
-  	return data;
-}
-
-function author(data, type, row){
-	
-	data = '<i class="pv_point_gen pv_gen_li" id="open-details"> <a href="'+row.author.url+'" target="_blank">' + row.author.name + '</a></i>';
-
-  	return data;
-}
-
-function status(data, type, row, meta){
-	
-	if ( arrayFIDS.includes(row.fid)) {	
-		data = '<span class="badge pv-label label-md bg-success"><strong>Downloaded</strong></span>';
-	}else{
-		data = '<span class="badge pv-label label-md bg-warning"><strong>NEW!!!</strong></span>';
+		return data;
 	}
 	
-	return data;
-}
-
-function actions(data, type, row, meta){
-		data = '<div class="dropdown">' +
-        '<button type="button" class="btn" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
-            '<ul class="dropdown-menu dropdown-menu-right">';
+	function name(data, type, row){
 		
-		data += '<li><i class="pv_point_gen pv_gen_li dropdown-item" id="import-market-formula" data-id="'+row.id+'" data-name="'+row.name+'" rel="tip" title="Import '+ row.name +' to my database" ><i class="fas fa-download mx-2"></i>Import Formula</i></li>';
-		
-		data += '<li><i class="pv_point_gen pv_gen_li dropdown-item open-contact-dialog" data-bs-toggle="modal"  data-bs-target="#contact-formula-author" data-id="'+row.id+'" data-name="'+row.name+'" rel="tip" title="Contact '+ row.author +' regarding the formula"><i class="fas fa-id-card mx-2"></i>Contact the author</i></li>';
-		
-		data += '<div class="dropdown-divider"></div>';
-		
-		data += '<li><i class="pv_point_gen pv_gen_li dropdown-item open-report-dialog link-danger" data-bs-toggle="modal"  data-bs-target="#report-market-formula" rel="tip" title="Report '+ row.name +' to admins" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-bug mx-2"></i>Report formula</i></li>';
-		
-		data += '</ul></div>';
+		data = '<i class="pv_point_gen pv_gen_li" id="open-details"> ' + data + '</i>';
 	
-    return data;
-}
-
-$('#reload_data').click(function reload_data() {
-    $('#all-table-market').DataTable().ajax.reload(null, true);
-});
-
-//Import Formula
-$('#all-table-market').on('click', '[id*=import-market-formula]', function () {
-	$("#impMsg").html('<div class="alert alert-info"><img src="/img/loading.gif" class="mx-2"/>Please wait...</div>');
+		return data;
+	}
 	
-	var frm = {};
-	frm.ID = $(this).attr('data-id');
-	frm.Name = $(this).attr('data-name');
-    
-	bootbox.dialog({
-       title: "Confirm import",
-       message : '<div id="impMsg">Import <strong>'+ frm.Name +'</strong>\'s data from Marketplace? <hr/><div class="alert alert-warning"><strong>Please note: data maybe incorrect and/or incomplete, you should validate them after import.</strong></div></div>',
-       buttons :{
-           main: {
-               label : "Import formula",
-               className : "btn-warning",
-               callback: function (){
-	    			
-					$.ajax({
-						url: '/pages/pvonline.php', 
-						type: 'POST',
-						data: {
-							action: "import",
-							source: "pvMarket",
-							kind: "formula",
-							fid: frm.ID,
+	function author(data, type, row){
+		
+		data = '<i class="pv_point_gen pv_gen_li" id="open-details"> <a href="'+row.author.url+'" target="_blank">' + row.author.name + '</a></i>';
+	
+		return data;
+	}
+	
+	function status(data, type, row, meta){
+		
+		if ( arrayFIDS.includes(row.fid)) {	
+			data = '<span class="badge pv-label label-md bg-success"><strong>Downloaded</strong></span>';
+		}else{
+			data = '<span class="badge pv-label label-md bg-warning"><strong>NEW!!!</strong></span>';
+		}
+		
+		return data;
+	}
+	
+	function actions(data, type, row, meta){
+			data = '<div class="dropdown">' +
+			'<button type="button" class="btn" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+				'<ul class="dropdown-menu dropdown-menu-right">';
+			
+			data += '<li><i class="pv_point_gen pv_gen_li dropdown-item" id="import-market-formula" data-id="'+row.id+'" data-name="'+row.name+'" rel="tip" title="Import '+ row.name +' to my database" ><i class="fas fa-download mx-2"></i>Import Formula</i></li>';
+			
+			data += '<li><i class="pv_point_gen pv_gen_li dropdown-item open-contact-dialog" data-bs-toggle="modal"  data-bs-target="#contact-formula-author" data-id="'+row.id+'" data-name="'+row.name+'" rel="tip" title="Contact '+ row.author.name +' regarding the formula"><i class="fas fa-id-card mx-2"></i>Contact the author</i></li>';
+			
+			data += '<div class="dropdown-divider"></div>';
+			
+			data += '<li><i class="pv_point_gen pv_gen_li dropdown-item open-report-dialog link-danger" data-bs-toggle="modal"  data-bs-target="#report-market-formula" rel="tip" title="Report '+ row.name +' to admins" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-bug mx-2"></i>Report formula</i></li>';
+			
+			data += '</ul></div>';
+		
+		return data;
+	}
+	
+	$('#reload_data').click(function reload_data() {
+		$('#all-table-market').DataTable().ajax.reload(null, true);
+	});
+	
+	//Import Formula
+	$('#all-table-market').on('click', '[id*=import-market-formula]', function () {
+		$("#impMsg").html('<div class="alert alert-info"><img src="/img/loading.gif" class="mx-2"/>Please wait...</div>');
+		
+		var frm = {};
+		frm.ID = $(this).attr('data-id');
+		frm.Name = $(this).attr('data-name');
+		
+		bootbox.dialog({
+		   title: "Confirm import",
+		   message : '<div id="impMsg">Import <strong>'+ frm.Name +'</strong>\'s data from Marketplace? <hr/><div class="alert alert-warning"><strong>Please note: data maybe incorrect and/or incomplete, you should validate them after import.</strong></div></div>',
+		   buttons :{
+			   main: {
+				   label : "Import formula",
+				   className : "btn-warning",
+				   callback: function (){
+						$.ajax({
+							url: '/pages/pvonline.php', 
+							type: 'POST',
+							data: {
+								action: "import",
+								source: "pvMarket",
+								kind: "formula",
+								fid: frm.ID,
 							},
-						dataType: 'json',
-						success: function (data) {
-							if(data.success) {
-							    location.reload(true);
-								bootbox.hideAll();
-								return true;
-							} else {								
-								$('#impMsg').html('<div class="alert alert-danger">' + data.error + '</div>');
-								return false;
-							}
-							
-						}
-					});
-				
-                 return false;
-               }
-           },
-           cancel: {
-               label : "Cancel",
-               className : "btn-secondary",
-               callback : function() {
-                   return true;
-               }
-           }   
-       },onEscape: function () {return true;}
-   });
-});
-
-
-//Contact author
-$("#all-table-market").on("click", ".open-contact-dialog", function () {
-	$('#cntMsg').html('');
-	$('#contact-formula-author .modal-body-main').show();
-	$("#contactName, #contactEmail, #contactReason").val('');
+							dataType: 'json',
+							success: function (data) {
+								if(data.success) {
+									location.reload(true);
+									bootbox.hideAll();
+									return true;
+								} else {								
+									$('#impMsg').html('<div class="alert alert-danger">' + data.error + '</div>');
+									return false;
+								}
+							},
+							error: function (request, status, error) {
+								$('#impMsg').html('<div class="alert alert-danger"><i class="bi bi-exclamation-circle mx-2"></i>Unable to handle request, server returned an error: '+request.status+'</div>');
+							},
+						});
+					
+					 return false;
+				   }
+			   },
+			   cancel: {
+				   label : "Cancel",
+				   className : "btn-secondary",
+				   callback : function() {
+					   return true;
+				   }
+			   }   
+		   },onEscape: function () {return true;}
+	   });
+	});
 	
-	var fname = $(this).data('name');
-	var fid = $(this).data('id');
 	
-	$("#contact-formula-author #fname").val( fname );
-	$("#contact-formula-author #fid").val( fid );
-	$("#contact-formula-author #fname").html( fname );
-
-});
-
-$('#contact-formula-author').on('click', '[id*=confirm-contact-author]', function () {
-	$("#cntMsg").html('<div class="alert alert-info"><img src="/img/loading.gif" class="mx-2"/>Please wait...</div>');
-	$.ajax({ 
-		url: '/pages/pvonline.php', 
-		type: 'POST',
-		data: {
-			action: "contactAuthor",
-			src: 'pvMarket',
-			contactName: $('#contactName').val(),
-			contactEmail: $('#contactEmail').val(),
-			contactReason: $('#contactReason').val(),			
-			fname: $('#fname').val(),
-			fid: $('#fid').val()
+	//Contact author
+	$("#all-table-market").on("click", ".open-contact-dialog", function () {
+		$('#cntMsg').html('');
+		$('#contact-formula-author .modal-body-main').show();
+		$("#contactName, #contactEmail, #contactReason").val('');
+		
+		var fname = $(this).data('name');
+		var fid = $(this).data('id');
+		
+		$("#contact-formula-author #fname").val( fname );
+		$("#contact-formula-author #fid").val( fid );
+		$("#contact-formula-author #fname").html( fname );
+	
+	});
+	
+	$('#contact-formula-author').on('click', '[id*=confirm-contact-author]', function () {
+		$("#cntMsg").html('<div class="alert alert-info"><img src="/img/loading.gif" class="mx-2"/>Please wait...</div>');
+		$.ajax({ 
+			url: '/pages/pvonline.php', 
+			type: 'POST',
+			data: {
+				action: "contactAuthor",
+				src: 'pvMarket',
+				contactName: $('#contactName').val(),
+				contactEmail: $('#contactEmail').val(),
+				contactReason: $('#contactReason').val(),			
+				fname: $('#fname').val(),
+				fid: $('#fid').val()
 			},
-		dataType: 'json',
-		success: function (data) {
-			if (data.success) {
-				var msg = '<div class="alert alert-success"><a href="#" class="close" data-bs-dismiss="modal" aria-label="close">x</a>' + data.success + '</div>';
-				$('#contact-formula-author .modal-body-main').hide();
-			}else{
-				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
-			}
-			$('#cntMsg').html(msg);
-		},
-		error: function (request, status, error) {
-        	$('#cntMsg').html('<div class="alert alert-danger"><i class="bi bi-exclamation-circle mx-2"></i>Unable to handle request, server returned an error: '+request.status+'</div>');
-    	},
-	  });
-});
-
-//Report formula
-$("#all-table-market").on("click", ".open-report-dialog", function () {
-	$('#reportMsg').html('');
-	$('#report-market-formula .modal-body-main').show();
-	$("#reporterName, #reporterEmail, #reportReason").val('');
-	
-	var fname = $(this).data('name');
-	var fid = $(this).data('id');
-	
-	$("#report-market-formula #fname").val( fname );
-	$("#report-market-formula #fid").val( fid );
-	$("#report-market-formula #fname").html( fname );
-
-});
-
-$('#report-market-formula').on('click', '[id*=confirm-formula-report]', function () {
-	$("#reportMsg").html('<div class="alert alert-info"><img src="/img/loading.gif" class="mx-2"/>Please wait...</div>');
-	$.ajax({ 
-		url: '/pages/pvonline.php', 
-		type: 'POST',
-		data: {
-			action: 'report',
-			src: 'pvMarket',
-			reporterName: $('#reporterName').val(),
-			reporterEmail: $('#reporterEmail').val(),
-			reportReason: $('#reportReason').val(),
-			fname: $('#report-market-formula #fname').val(),
-			fid: $('#report-market-formula #fid').val()
+			dataType: 'json',
+			success: function (data) {
+				if (data.success) {
+					var msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>' + data.success + '</div>';
+					$('#contact-formula-author .modal-body-main').hide();
+				}else{
+					var msg = '<div class="alert alert-danger"><i class="bi bi-exclamation-circle mx-2"></i>' + data.error + '</div>';
+				}
+				$('#cntMsg').html(msg);
 			},
-		dataType: 'json',
-		success: function (data) {
-			if (data.success) {
-				var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="modal" aria-label="close">x</a>' + data.success + '</div>';
-				$('#report-market-formula .modal-body-main').hide();
-			}else{
-				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
-			}
-			$('#reportMsg').html(msg);
-		},
-		error: function (request, status, error) {
-        	$('#reportMsg').html('<div class="alert alert-danger"><i class="bi bi-exclamation-circle mx-2"></i>Unable to handle request, server returned an error: '+request.status+'</div>');
-    	},
-	  });
+			error: function (request, status, error) {
+				$('#cntMsg').html('<div class="alert alert-danger"><i class="bi bi-exclamation-circle mx-2"></i>Unable to handle request, server returned an error: '+request.status+'</div>');
+			},
+		  });
+	});
+	
+	//Report formula
+	$("#all-table-market").on("click", ".open-report-dialog", function () {
+		$('#reportMsg').html('');
+		$('#report-market-formula .modal-body-main').show();
+		$("#reporterName, #reporterEmail, #reportReason").val('');
+		
+		var fname = $(this).data('name');
+		var fid = $(this).data('id');
+		
+		$("#report-market-formula #fname").val( fname );
+		$("#report-market-formula #fid").val( fid );
+		$("#report-market-formula #fname").html( fname );
+	
+	});
+	
+	$('#report-market-formula').on('click', '[id*=confirm-formula-report]', function () {
+		$("#reportMsg").html('<div class="alert alert-info"><img src="/img/loading.gif" class="mx-2"/>Please wait...</div>');
+		$.ajax({ 
+			url: '/pages/pvonline.php', 
+			type: 'POST',
+			data: {
+				action: 'report',
+				src: 'pvMarket',
+				reporterName: $('#reporterName').val(),
+				reporterEmail: $('#reporterEmail').val(),
+				reportReason: $('#reportReason').val(),
+				fname: $('#report-market-formula #fname').val(),
+				fid: $('#report-market-formula #fid').val()
+			},
+			dataType: 'json',
+			success: function (data) {
+				if (data.success) {
+					var msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>' + data.success + '</div>';
+					$('#report-market-formula .modal-body-main').hide();
+				}else{
+					var msg = '<div class="alert alert-danger"><i class="bi bi-exclamation-circle mx-2"></i>' + data.error + '</div>';
+				}
+				$('#reportMsg').html(msg);
+			},
+			error: function (request, status, error) {
+				$('#reportMsg').html('<div class="alert alert-danger"><i class="bi bi-exclamation-circle mx-2"></i>Unable to handle request, server returned an error: '+request.status+'</div>');
+			},
+		  });
+	});
+	
+	
+	$('.table').on('show.bs.dropdown', function () {
+		 $('.table-responsive').css( "overflow", "inherit" );
+	});
+	
+	$('.table').on('hide.bs.dropdown', function () {
+		 $('.table-responsive').css( "overflow", "auto" );
+	});
+
 });
 
-
-$('.table').on('show.bs.dropdown', function () {
-	 $('.table-responsive').css( "overflow", "inherit" );
-});
-
-$('.table').on('hide.bs.dropdown', function () {
-	 $('.table-responsive').css( "overflow", "auto" );
-});
 </script>
 

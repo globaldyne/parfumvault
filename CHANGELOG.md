@@ -1,5 +1,7 @@
 # CHANGELOG
 ### Version 11.2
+- Refactor of backend
+- Fix author name not display properly in the contact form in Marketplace
 - IFRA library categories changed to FLOAT
 - Added pdf and csv export for formula analysis
 - If now numeric value found when IFRA library is looked-up in formula analysis, will return 'No value'

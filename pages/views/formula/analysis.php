@@ -4,8 +4,6 @@ define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__)))));
 
 require_once(__ROOT__.'/inc/sec.php');
 
-$fid = $_GET["fid"];
-
 ?>
 <div class="text-right">
 	<div class="btn-group">
@@ -34,7 +32,7 @@ $fid = $_GET["fid"];
 
 <script>
 $(document).ready(function() {
-
+	var fid = '<?=$_GET["fid"]?>';
 	var tdAnalysis = $('#tdAnalysis').DataTable( {
 		columnDefs: [
 			{ className: 'text-center', targets: '_all' },
@@ -62,7 +60,7 @@ $(document).ready(function() {
 			url: '/core/list_formula_analysis_data.php',
 			type: 'POST',
 			data: {
-				fid: '<?=$fid?>',
+				fid: fid,
 			},
 		},
 		mark: true,
@@ -79,6 +77,25 @@ $(document).ready(function() {
 		drawCallback: function ( settings ) {
 			extrasShow();
 		},
+		stateSave: true,
+		stateDuration: -1,
+		stateLoadCallback: function (settings, callback) {
+			$.ajax( {
+				url: "/core/update_user_settings.php?set=formulaAnalysis&action=load&tableId=" + fid,
+				dataType: "json",
+				success: function (json) {
+					callback( json );
+				}
+			});
+		},
+		stateSaveCallback: function (settings, data) {
+		   $.ajax({
+			 url: "/core/update_user_settings.php?set=formulaAnalysis&action=save&tableId=" + fid,
+			 data: data,
+			 dataType: "json",
+			 type: "POST"
+		  });
+		},
 		order: [[ 0, 'asc' ]],
 		lengthMenu: [[150, 250, 350, -1], [150, 250, 350, "All"]],
 		pageLength: 150,
@@ -87,7 +104,7 @@ $(document).ready(function() {
 
 
 	function mainName(data, type, row){
-		return '<i class="ing_name pv_point_gen" data-name="ing_name" data-type="text" data-pk="'+row.id+'">'+row.main_ing+'</i>';    
+		return '<a class="ing_name pv_point_gen popup-link" href="/pages/mgmIngredient.php?id=' + row.id + '">'+row.main_ing + '</a>';    
 	};
 	
 	function subIng(data, type, row){
