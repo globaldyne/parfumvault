@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 11.3
+
 ### Version 11.2
 - Refactor of backend
 - Fix author name not display properly in the contact form in Marketplace
