@@ -17,23 +17,25 @@ $cat = mysqli_fetch_array(mysqli_query($conn, "SELECT image,name FROM ingCategor
 <div id="cat-msg"></div>
 
 
-	<div class="row">
-      <div class="col-md">
-        <div class="text-center">
-          <div id="cat-pic"><div class="loader"></div></div>
-          <h6>Upload a photo...</h6>
-          <input type="file" name="cat-pic-file" id="cat-pic-file" class="form-control">
-        </div>
-        <div class="dropdown-divider"></div>
-        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-			<div class="text-right mt-3 mb-3">
-        		<input type="submit" class="btn btn-primary" id="update-cat" value="Upload" />
-        	</div>
-        </div>
+<div class="row">
+  <div class="col-md">
+    <div class="text-center">
+      <div id="cat-pic">
+        <div class="loader"></div>
+      </div>
+      <input type="file" name="cat-pic-file" id="cat-pic-file" class="mt-4 form-control">
+    </div>
+    <div class="divider"></div>
+    <div class="col-12">
+      <div class="text-end mt-3 mb-3">
+        <input type="submit" class="btn btn-primary" id="update-cat" value="Upload" />
       </div>
     </div>
-    <div class="dropdown-divider"></div>
-    <div class="alert alert-info">Recommended size: <?=$max_height?>x<?=$max_width?> pixels</div>
+  </div>
+</div>
+<div class="divider"></div>
+<div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i>Recommended size: <?=$max_height?>x<?=$max_width?> pixels</div>
+
 
 
 <script>
@@ -63,6 +65,11 @@ $(document).ready(function () {
 				}else if( data.error){
 					$('#cat-msg').html('<div class="alert alert-danger">'+data.error+'</div>');
 				}
+			},
+			error: function (xhr, status, error) {
+				$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
 			}
 		  });
 	});

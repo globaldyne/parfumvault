@@ -56,7 +56,7 @@ $(function () {
 function fetch_safety(){
 	$.ajax({ 
 		url: '/pages/views/ingredients/safetyData.php', 
-		type: 'POST',
+		type: 'GET',
 		data: {
 			ingID: ingID
 		},

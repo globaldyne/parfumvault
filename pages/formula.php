@@ -98,6 +98,9 @@ if($form[0]['ingredient']){
           </li>
     	  <li class="nav-item" role="presentation">
           	<a href="#analysis" id="analysis_tab"class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-magnifying-glass-chart mx-2"></i>Analysis</a>
+          </li>
+    	  <li class="nav-item" role="presentation">
+          	<a href="#usage" id="usage_tab"class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-bong mx-2"></i>Usage Data</a>
           </li>          
     	  <li class="nav-item" role="presentation">
           	<a href="#impact" id="impact_tab"class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-magic mx-2"></i>Notes Impact</a>
@@ -182,7 +185,11 @@ if($form[0]['ingredient']){
                 <div id="fetch_analysis"><div class="loader"></div></div>
             </div>            
         </div>
-        
+        <div class="tab-pane fade" id="usage">
+            <div class="card-body">
+                <div id="fetch_usage"><div class="loader"></div></div>
+            </div>            
+        </div>        
         <div class="tab-pane fade" id="impact">
             <div class="card-body">
                 <div id="fetch_impact"><div class="loader"></div></div>
@@ -409,6 +416,23 @@ function fetch_analysis(){
 		},
 		error: function (xhr, status, error) {
 			$('#fetch_analysis').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+		}
+	});
+};
+
+function fetch_usage(){
+	$.ajax({ 
+		url: '/pages/views/formula/usage.php', 
+		type: 'GET',
+		data: {
+			fid: myFID
+		},
+		dataType: 'html',
+		success: function (data) {
+		  $('#fetch_usage').html(data);
+		},
+		error: function (xhr, status, error) {
+			$('#fetch_usage').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 		}
 	});
 };

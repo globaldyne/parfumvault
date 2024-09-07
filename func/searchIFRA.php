@@ -16,9 +16,9 @@ function searchIFRA($cas, $name, $get, $defCatClass, $isFormula = 0) {
             $q = "name = '$name' OR synonyms LIKE '%$name%'";
         }
         if($isFormula){
-			$query = "SELECT risk, $defCatClass, type, formula FROM IFRALibrary WHERE $q AND $defCatClass REGEXP '^[0-9]+$'";
+			$query = "SELECT risk, $defCatClass, type FROM IFRALibrary WHERE $q AND $defCatClass REGEXP '^[0-9,]+$'";
 		} else {
-        	$query = "SELECT risk, $defCatClass, type, formula FROM IFRALibrary WHERE $q";
+        	$query = "SELECT risk, $defCatClass, type FROM IFRALibrary WHERE $q";
 		}
         $result = mysqli_query($conn, $query);
         $res = mysqli_fetch_array($result, MYSQLI_ASSOC);
@@ -44,7 +44,7 @@ function searchIFRA($cas, $name, $get, $defCatClass, $isFormula = 0) {
                         return array(
                             'risk' => $res['risk'],
                             'type' => $res['type'],
-                            'val' => $res[$defCatClass]
+                            'val' => (double)$res[$defCatClass]
                         );
                     }
                 }

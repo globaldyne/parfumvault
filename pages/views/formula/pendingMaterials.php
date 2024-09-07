@@ -3,14 +3,13 @@
 define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__))))); 
 
 require_once(__ROOT__.'/inc/sec.php');
-require_once(__ROOT__.'/inc/opendb.php');
 
 ?>
 <div class="card-body">
  	<div class="text-right">
       <div class="btn-group">
          <button type="button" class="btn btn-primary dropdown-toggle mb-3" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
-          <div class="dropdown-menu dropdown-menu-right">
+          <div class="dropdown-menu">
            <li><a class="dropdown-item" id="exportCSV" href="#"><i class="fa-solid fa-file-export mx-2"></i>Export to CSV</a></li>
        </div>
    	</div> 

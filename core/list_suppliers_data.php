@@ -4,65 +4,62 @@ define('__ROOT__', dirname(dirname(__FILE__)));
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
 
-$row = $_POST['start']?:0;
-$limit = $_POST['length']?:20;
+$row = isset($_POST['start']) ? (int)$_POST['start'] : 0;
+$limit = isset($_POST['length']) ? (int)$_POST['length'] : 20;
+$order_by = isset($_POST['order_by']) ? mysqli_real_escape_string($conn, $_POST['order_by']) : 'name';
+$order = isset($_POST['order_as']) ? mysqli_real_escape_string($conn, $_POST['order_as']) : 'ASC';
+$search_value = isset($_POST['search']['value']) ? trim(mysqli_real_escape_string($conn, $_POST['search']['value'])) : '';
 
-$order_by  = $_POST['order_by']?:'name';
-$order  = $_POST['order_as']?:'ASC';
-$extra = "ORDER BY ".$order_by." ".$order;
+$table = "ingSuppliers";
+$extra = "ORDER BY $order_by $order";
 
-$s = trim($_POST['search']['value']);
-$t = "ingSuppliers";
+$filter = $search_value !== '' ? "WHERE name LIKE '%$search_value%'" : '';
 
-if($s != ''){
-   $f = "WHERE 1 AND (name LIKE '%".$s."%')";
-}
+$query = mysqli_query($conn, "SELECT * FROM $table $filter $extra LIMIT $row, $limit");
 
-$q = mysqli_query($conn, "SELECT * FROM $t $f $extra LIMIT $row, $limit");
-while($res = mysqli_fetch_array($q)){
+$rs = [];
+while ($res = mysqli_fetch_assoc($query)) {
     $rs[] = $res;
 }
 
-foreach ($rs as $rq) { 
-	$mt = mysqli_fetch_array(mysqli_query($conn, "SELECT COUNT(id) AS mt FROM suppliers WHERE ingSupplierID = '".$rq['id']."'"));
+$rx = [];
+foreach ($rs as $rq) {
+    $mt_query = mysqli_query($conn, "SELECT COUNT(id) AS mt FROM suppliers WHERE ingSupplierID = '" . (int)$rq['id'] . "'");
+    $mt = mysqli_fetch_assoc($mt_query);
 
-	$r['id'] = (int)$rq['id'];
-	$r['name'] = (string)$rq['name'];
-	$r['materials'] = (int)$mt['mt'] ?: 0;
-	$r['address'] = (string)$rq['address']?:'N/A';
-	$r['po'] = (string)$rq['po']?:'N/A';
-	$r['country'] = (string)$rq['country'];
-	$r['telephone'] = (string)$rq['telephone']?:'N/A';
-	$r['url'] = (string)$rq['url']?:'N/A';
-	$r['email'] = (string)$rq['email']?:'N/A';
- 	$r['platform'] = (string)$rq['platform']?:'N/A';
-	$r['price_tag_start'] = (string)base64_encode($rq['price_tag_start']?:'N/A');
- 	$r['price_tag_end'] = (string)base64_encode($rq['price_tag_end']?:'N/A');
- 	$r['add_costs'] = (double)$rq['add_costs']?:0;
- 	$r['notes'] = (string)$rq['notes']?:'N/A';
- 	$r['min_ml'] = (double)$rq['min_ml']?:0;
- 	$r['min_gr'] = (double)$rq['min_gr']?:0;
-	if($rq['price_per_size'] == '0'){
-		$r['price_per_size'] = (string)'Product';
-	}else{
-		$r['price_per_size'] = (string)'Volume';
-	}
-	
-	$rx[]=$r;
+    $rx[] = [
+        'id' => (int)$rq['id'],
+        'name' => (string)$rq['name'],
+        'materials' => (int)$mt['mt'] ?: 0,
+        'address' => (string)($rq['address'] ?: 'N/A'),
+        'po' => (string)($rq['po'] ?: 'N/A'),
+        'country' => (string)$rq['country'],
+        'telephone' => (string)($rq['telephone'] ?: 'N/A'),
+        'url' => (string)($rq['url'] ?: 'N/A'),
+        'email' => (string)($rq['email'] ?: 'N/A'),
+        'platform' => (string)($rq['platform'] ?: 'N/A'),
+        'price_tag_start' => (string)base64_encode($rq['price_tag_start'] ?: 'N/A'),
+        'price_tag_end' => (string)base64_encode($rq['price_tag_end'] ?: 'N/A'),
+        'add_costs' => (float)($rq['add_costs'] ?: 0),
+        'notes' => (string)($rq['notes'] ?: 'N/A'),
+        'min_ml' => (float)($rq['min_ml'] ?: 0),
+        'min_gr' => (float)($rq['min_gr'] ?: 0),
+        'price_per_size' => $rq['price_per_size'] == '0' ? 'Product' : 'Volume',
+    ];
 }
-$total = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM $t"));
-$filtered = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM $t ".$f));
 
-$response = array(
-  "draw" => (int)$_POST['draw'],
-  "recordsTotal" => (int)$total['entries'],
-  "recordsFiltered" => (int)$filtered['entries'],
-  "data" => $rx
-);
+$total_query = mysqli_query($conn, "SELECT COUNT(id) AS entries FROM $table");
+$total = mysqli_fetch_assoc($total_query)['entries'];
 
-if(empty($r)){
-	$response['data'] = [];
-}
+$filtered_query = mysqli_query($conn, "SELECT COUNT(id) AS entries FROM $table $filter");
+$filtered = mysqli_fetch_assoc($filtered_query)['entries'];
+
+$response = [
+    "draw" => isset($_POST['draw']) ? (int)$_POST['draw'] : 1,
+    "recordsTotal" => (int)$total,
+    "recordsFiltered" => (int)$filtered,
+    "data" => $rx ?: []
+];
 
 header('Content-Type: application/json; charset=utf-8');
 echo json_encode($response);

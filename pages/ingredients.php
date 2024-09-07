@@ -51,6 +51,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
       </div>
       <div class="modal-body">
         <div class="col-sm-12">
+          <div id="advsearchmsg"></div>
           <div class="mb-3 row">
             <div class="col-sm">
               <label for="ing_name" class="col-form-label">Ingredient Name</label>
@@ -135,12 +136,13 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
             <input type="file" name="backupFile" id="backupFile" class="form-control" />
           </div>
           <div>
-            <hr />
-            <p><strong>IMPORTANT:</strong></p>
+          <div class="mt-2 alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i>
+          	<strong>IMPORTANT</strong>
             <ul>
               <li><div id="raw" data-size="<?=getMaximumFileUploadSizeRaw()?>">Maximum file size: <strong><?=getMaximumFileUploadSize()?></strong></div></li>
               <li>Any ingredient with the same ID will be replaced. Please make sure you have taken a backup before importing a JSON file.</li>
             </ul>
+            </div>
           </div>
         </div>
       </div>
@@ -155,7 +157,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
 
 <!--CSV IMPORT-->
 <div class="modal fade" id="csv_import" data-bs-backdrop="static" tabindex="-1" aria-labelledby="csvImportLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
+  <div class="modal-dialog pv-modal-xxl" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="csvImportLabel">Import Ingredients from CSV File</h5>
@@ -170,7 +172,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
           </div>
         </div>
         <div id="step_upload" class="modal-body"></div>
-        <div class="alert alert-info">
+        <div class="mt-2 alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i>
           Select and match the fields in your CSV file. If a column isn't applicable, set it to <strong>None</strong>. Any existing data in your database will not be replaced or updated if it already exists in the CSV.
         </div>
       </div>
@@ -229,6 +231,9 @@ $(document).ready(function() {
 			dataType: 'html',
 				success: function (data) {
 					$('#list_ingredients').html(data);
+			},
+			error: function (xhr, status, error) {
+				$('#advsearchmsg').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-xmark mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');
 			}
 		});
 	});
@@ -245,8 +250,8 @@ $(document).ready(function() {
 			success: function (data) {
 				$('#list_ingredients').html(data);
 			},
-			error: function () {
-				$('#list_ingredients').html('<div class="alert alert-danger">Failed to load ingredients. Please try again later.</div>');
+			error: function (xhr, status, error) {
+				$('#list_ingredients').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-xmark mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');
 			}
 		});
 	};

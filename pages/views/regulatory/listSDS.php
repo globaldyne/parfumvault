@@ -148,11 +148,11 @@ $(document).ready(function() {
 	};
 	
 	function actions(data, type, row){	
-			data = '<div class="dropdown">' +
-			'<button type="button" class="btn btn-primary btn-floating dropdown-toggle hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+		data = '<div class="dropdown">' +
+			'<button type="button" class="btn" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
 				'<ul class="dropdown-menu dropdown-menu-right">';
-			data += '<li><a class="dropdown-item" href="#" id="cmpDel" style="color: #c9302c;" rel="tip" title="Delete '+ row.product_name +'" data-id='+ row.id +' data-name="'+ row.product_name +'"><i class="fas fa-trash mx-2"></i>Delete</a></li>';
-			data += '</ul></div>';
+		data += '<li><a class="dropdown-item link-danger" href="#" id="cmpDel" rel="tip" title="Delete '+ row.product_name +'" data-id='+ row.id +' data-name="'+ row.product_name +'"><i class="fas fa-trash mx-2"></i>Delete</a></li>';
+		data += '</ul></div>';
 		return data;
 	};
 
@@ -207,9 +207,6 @@ $(document).ready(function() {
 		   },onEscape: function () {return true;}
 	   });
 	});
-	  
-	
-
 	
 	function extrasShow() {
 		$('[rel=tip]').tooltip({
@@ -217,10 +214,6 @@ $(document).ready(function() {
 			"delay": {"show": 100, "hide": 0},
 		 });
 	};
-	
-	
-
-
 
 	$('#mainTitle').click(function() {
 	 	reload_data();
