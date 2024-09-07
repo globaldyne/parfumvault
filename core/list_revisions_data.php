@@ -5,10 +5,11 @@ require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 
-$row = $_POST['start']?:0;
-$limit = $_POST['length']?:10;
-$order_by  = $_POST['order_by']?:'revisionDate';
-$order  = $_POST['order_as']?:'ASC';
+$row = isset($_POST['start']) ? (int)$_POST['start'] : 0;
+$limit = isset($_POST['length']) ? (int)$_POST['length'] : 10;
+$order_by = isset($_POST['order_by']) ? mysqli_real_escape_string($conn, $_POST['order_by']) : 'revisionDate';
+$order = isset($_POST['order_as']) && in_array(strtoupper($_POST['order_as']), ['ASC', 'DESC']) ? strtoupper($_POST['order_as']) : 'ASC';
+
 $extra = "ORDER BY ".$order_by." ".$order;
 
 $current_rev = mysqli_fetch_array(mysqli_query($conn, "SELECT id,revision FROM formulasMetaData WHERE fid = '".$_GET['fid']."'"));
@@ -40,13 +41,10 @@ foreach ($revs as $rev) {
 
 	$rx[]=$r;
 }
-$total = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM formulasRevisions ".$f));
-$filtered = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM formulasRevisions ".$f));
 
 $response = array(
   "draw" => (int)$_POST['draw'],
   "recordsTotal" => (int)$i,
-  "recordsFiltered" => (int)$i,
   "debug" => $q,
   "data" => $rx
 );

@@ -43,7 +43,7 @@
             <div class="row mb-3">
               <label for="orientation" class="col-form-label">PDF Orientation</label>
               <div class="col-sm-9">
-                <select name="orientation" class="form-control" id="orientation">
+                <select name="orientation" class="form-select" id="orientation">
                   <option value="portrait">Portrait</option>
                   <option value="landscape">Landscape</option>
                 </select>
@@ -63,7 +63,7 @@
             <div class="row mb-3">
               <label for="watermarkTextOp" class="col-form-label">Watermark opacity</label>
               <div class="col-sm-9">
-                <select name="watermarkTextOp" class="form-control" id="watermarkTextOp">
+                <select name="watermarkTextOp" class="form-select" id="watermarkTextOp">
                   <option value="0.1">0.1</option>
                   <option value="0.2" selected="selected">0.2</option>
                   <option value="0.3">0.3</option>
@@ -95,7 +95,7 @@
             <div class="row mb-3">
               <label for="qStep" class="col-form-label">Quantity Decimal</label>
               <div class="col-sm-9">
-                <select name="qStep" id="qStep" class="form-control">
+                <select name="qStep" id="qStep" class="form-select">
                   <option value="1" <?php if($settings['qStep']=="1") echo 'selected="selected"'; ?>>0.0</option>
                   <option value="2" <?php if($settings['qStep']=="2") echo 'selected="selected"'; ?>>0.00</option>
                   <option value="3" <?php if($settings['qStep']=="3") echo 'selected="selected"'; ?>>0.000</option>

@@ -44,13 +44,19 @@ require_once(__ROOT__.'/func/php-settings.php');
 </div>
 <script>
 $(document).ready(function() {
+	function extrasShow() {
+		$('[rel=tip]').tooltip({
+			"html": true,
+			"delay": {"show": 100, "hide": 0},
+		});
+	};
 	$('#mainTitle').click(function() {
 	 	reload_data();
   	});
-	var tdDataScheduled = $('#tdDataScheduled').DataTable( {
+	var tdDataScheduled = $('#tdDataScheduled').DataTable({
 		columnDefs: [
 			{ className: 'pv_vertical_middle text-center', targets: '_all' },
-			{ orderable: false, targets: [1,4] },
+			{ orderable: false, targets: [1, 4] },
 		],
 		dom: 'lrftip',
 		processing: true,
@@ -65,48 +71,52 @@ $(document).ready(function() {
 			search: 'Quick Search:',
 			searchPlaceholder: 'Name..',
 		},
-		ajax: {	
+		ajax: {
 			url: '/core/pending_formulas_data.php?meta=1',
 			type: 'POST',
 			dataType: 'json',
 			data: function(d) {
-					if (d.order.length>0){
-						d.order_by = d.columns[d.order[0].column].data
-						d.order_as = d.order[0].dir
-					}
-				},
+				if (d.order.length > 0) {
+					d.order_by = d.columns[d.order[0].column].data;
+					d.order_as = d.order[0].dir;
+				}
 			},
-			columns: [
-				{ data : 'name', title: 'Formula Name', render: name },
-				{ data : null, title: 'Ingredients remaining', render: ingredients },
-				{ data : 'madeOn', title: 'Progress', render: progress },
-				{ data : 'scheduledOn', title: 'Scheduled', render: fDate },
-				{ data : null, title: '', render: actions },
+		},
+		columns: [
+			{ data: 'name', title: 'Formula Name', render: name },
+			{ data: null, title: 'Ingredients remaining', render: ingredients },
+			{ data: 'madeOn', title: 'Progress', render: progress },
+			{ data: 'scheduledOn', title: 'Scheduled', render: fDate },
+			{ data: null, title: '', render: actions },
 		],
-		order: [[ 0, 'asc' ]],
+		order: [[0, 'asc']],
 		lengthMenu: [[20, 50, 100, 200, 400], [20, 50, 100, 200, 400]],
 		pageLength: 20,
 		displayLength: 20,
 		stateSave: true,
 		stateDuration: -1,
-		stateLoadCallback: function (settings, callback) {
-			$.ajax( {
+		drawCallback: function( settings ) {
+			extrasShow();
+		},
+		stateLoadCallback: function(settings, callback) {
+			$.ajax({
 				url: '/core/update_user_settings.php?set=listTodo&action=load',
 				dataType: 'json',
-				success: function (json) {
-					callback( json );
+				success: function(json) {
+					callback(json);
 				}
 			});
 		},
-		stateSaveCallback: function (settings, data) {
-		   $.ajax({
-			 url: "/core/update_user_settings.php?set=listTodo&action=save",
-			 data: data,
-			 dataType: "json",
-			 type: "POST"
-		  });
+		stateSaveCallback: function(settings, data) {
+			$.ajax({
+				url: "/core/update_user_settings.php?set=listTodo&action=save",
+				data: data,
+				dataType: "json",
+				type: "POST"
+			});
 		},
-	  });
+	});
+
 	
 	$("#required_materials").on("show.bs.modal", function(e) {
 		const id = e.relatedTarget.dataset.id;
@@ -167,7 +177,12 @@ $(document).ready(function() {
 	};
 	
 	function actions(data, type, row){
-		return '<i rel="tip" title="Delete '+ row.name +'" class="pv_point_gen fas fa-trash text-danger" id="pend_remove" data-name="'+ row.name +'" data-id='+ row.fid +'></i>';    
+		data = '<div class="dropdown">' +
+			'<button type="button" class="btn" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+				'<ul class="dropdown-menu dropdown-menu-right">';
+		data += '<li><a class="dropdown-item link-danger" href="#" id="pend_remove" rel="tip" title="Delete '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"><i class="fas fa-trash mx-2"></i>Delete</a></li>';
+		data += '</ul></div>';
+		return data;  
 	};
 	
 	function reload_data() {
@@ -233,14 +248,12 @@ $(document).ready(function() {
 }); //END DOC
 </script>
 <!-- IMPORT JSON MODAL -->
-<div class="modal fade" id="import_making_json" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="import_making_json" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
+<div class="modal fade" id="import_making_json" data-bs-backdrop="static" tabindex="-1" aria-labelledby="import_making_json" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Import a JSON file</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div id="JSRestMsg"></div>
@@ -274,15 +287,14 @@ $(document).ready(function() {
   </div>
 </div>
 
+
 <!-- REQUIRED MATERIALS MODAL -->
-<div class="modal fade" id="required_materials" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="required_materials" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-scrollable modal-xl" role="document">
+<div class="modal fade" id="required_materials" data-bs-backdrop="static" tabindex="-1" aria-labelledby="required_materials" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-xl">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Required ingredients for all the pending formulas</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">Please wait...</div>
       <div class="modal-footer">
@@ -291,5 +303,6 @@ $(document).ready(function() {
     </div>
   </div>
 </div>
+
 
 <script src="/js/import.making.js"></script>

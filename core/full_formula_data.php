@@ -298,7 +298,7 @@ $m['protected'] = (bool)$meta['isProtected'];
 $lastValAccepted = null;
 
 for ($c = 1; $c <= 100; $c++) {
-	$result = validateFormula($meta['fid'], 100, $c, $mg['total_mg'], $defCatClass, $settings['qStep']);
+	$result = validateFormula($meta['fid'], 100, $c, $mg['total_mg'], $defCatClass, $settings['qStep'],1);
 
     if ($result === 0) {
         $lastValAccepted = $c;

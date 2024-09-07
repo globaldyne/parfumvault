@@ -5,50 +5,51 @@ require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
 
 
-$row = $_POST['start']?:0;
-$limit = $_POST['length']?:10;
+$row = isset($_POST['start']) ? (int)$_POST['start'] : 0;
+$limit = isset($_POST['length']) ? (int)$_POST['length'] : 10;
+$order_by = isset($_POST['order_by']) ? mysqli_real_escape_string($conn, $_POST['order_by']) : 'name';
+$order_as = isset($_POST['order_as']) ? mysqli_real_escape_string($conn, $_POST['order_as']) : 'ASC';
+$search_value = isset($_POST['search']['value']) ? trim(mysqli_real_escape_string($conn, $_POST['search']['value'])) : '';
 
+$table = "templates";
+$extra = "ORDER BY $order_by $order_as";
 
-$order_by  = $_POST['order_by']?:'name';
-$order  = $_POST['order_as']?:'ASC';
-$extra = "ORDER BY ".$order_by." ".$order;
+$filter = $search_value !== '' ? "WHERE name LIKE '%$search_value%'" : '';
 
-$s = trim($_POST['search']['value']);
-$t = "templates";
+$query = mysqli_query($conn, "SELECT * FROM $table $filter $extra LIMIT $row, $limit");
 
-if($s != ''){
-   $f = "WHERE 1 AND (name LIKE '%".$s."%')";
-}
-$q = mysqli_query($conn, "SELECT * FROM $t $f $extra LIMIT $row, $limit");
-while($res = mysqli_fetch_array($q)){
+$rs = [];
+while ($res = mysqli_fetch_assoc($query)) {
     $rs[] = $res;
 }
 
+$rx = [];
 foreach ($rs as $rq) { 
-	$r['id'] = (int)$rq['id'];
-	$r['name'] = (string)$rq['name'];
-	$r['content'] = (string)$rq['content'];
-	$r['created'] = (string)$rq['created'];
-	$r['updated'] = (string)$rq['updated'];
-	$r['description'] = (string)$rq['description'];
-
-	$rx[]=$r;
+    $rx[] = [
+        'id' => (int)$rq['id'],
+        'name' => (string)$rq['name'],
+        'content' => (string)$rq['content'],
+        'created' => (string)$rq['created'],
+        'updated' => (string)$rq['updated'],
+        'description' => (string)$rq['description']
+    ];
 }
 
+$total_query = mysqli_query($conn, "SELECT COUNT(id) AS entries FROM $table");
+$total = mysqli_fetch_assoc($total_query)['entries'];
 
+$filtered_query = mysqli_query($conn, "SELECT COUNT(id) AS entries FROM $table $filter");
+$filtered = mysqli_fetch_assoc($filtered_query)['entries'];
 
-$total = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM $t"));
-$filtered = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM $t ".$f));
+$response = [
+    "draw" => isset($_POST['draw']) ? (int)$_POST['draw'] : 1,
+    "recordsTotal" => (int)$total,
+    "recordsFiltered" => (int)$filtered,
+    "data" => $rx
+];
 
-$response = array(
-  "draw" => (int)$_POST['draw'],
-  "recordsTotal" => (int)$total['entries'],
-  "recordsFiltered" => (int)$filtered['entries'],
-  "data" => $rx
-);
-
-if(empty($r)){
-	$response['data'] = [];
+if (empty($rx)) {
+    $response['data'] = [];
 }
 
 header('Content-Type: application/json; charset=utf-8');

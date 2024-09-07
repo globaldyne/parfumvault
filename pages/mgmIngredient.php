@@ -99,7 +99,7 @@ body {
 		<span class="mgmIngHeaderCAS" id="mgmIngHeaderCAS"><?=$ing['cas']?></span>
 	</div>
 
-	<div id="ingMsg"><?=$msg?></div>
+	<div id="ingMsg"></div>
 	<div id="ingOverview"></div>
 	<div class="mgmIngHeader-with-separator-full"></div>
 	<!-- Nav tabs -->

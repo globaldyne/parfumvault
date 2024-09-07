@@ -587,7 +587,15 @@ if($_GET['type'] == 'IFRA'){
 				foreach ( $xlsx->rows() as $k => $r ) {
 					for ( $i = 0; $i < $cols; $i ++ ) {
 						$l = $i+1;
-						$stmt->bindValue( $l, $r[ $i]);
+						//$stmt->bindValue( $l, $r[ $i]);
+						$columnName = explode(',', $fields)[$i];
+                    
+						// Check if the category columns contains non-numeric data
+						if (strpos($columnName, 'cat') === 0 && !is_numeric($r[$i])) {
+							$stmt->bindValue($l, 100);
+						} else {
+							$stmt->bindValue($l, $r[$i]);
+						}
 					}
 					try {
 						$stmt->execute();

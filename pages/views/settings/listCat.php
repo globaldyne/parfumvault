@@ -266,49 +266,51 @@ $(document).ready(function() {
 
 </script>
 <!--ADD CATEGORY MODAL-->
-<div class="modal fade" id="add_ingredient_cat" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="add_ingredient_cat" aria-hidden="true">
+<div class="modal fade" id="add_ingredient_cat" data-bs-backdrop="static" tabindex="-1" aria-labelledby="add_ingredient_cat" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Add new category</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> 
       </div>
       
       <div class="modal-body">
         <div id="catMsgIn"></div>
         <div class="form-group">
-        	<div class="mb-3">
-              <label class="form-label">Name</label>
-	          <input type="text" name="category" id="category" class="form-control"/>
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Description</label>
-              <input type="text" name="cat_notes" id="cat_notes" class="form-control"/>
-    		</div>
-		</div>
+          <div class="mb-3">
+            <label for="category" class="form-label">Name</label>
+            <input type="text" name="category" id="category" class="form-control"/>
+          </div>
+          <div class="mb-3">
+            <label for="cat_notes" class="form-label">Description</label>
+            <input type="text" name="cat_notes" id="cat_notes" class="form-control"/>
+          </div>
+        </div>
       </div>
-	  <div class="modal-footer">
+
+      <div class="modal-footer">
         <input type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="close_cat" value="Close">
         <input type="submit" name="add-category" class="btn btn-primary" id="add-category" value="Create">
       </div>   
-  </div>
-</div>
-</div>
-
-<!--EDIT MODAL-->            
-<div class="modal fade" id="editCategory" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="editCategoryLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title mgmIngHeader mgmIngHeader-with-separator" id="editCategoryLabel">Edit category</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="alert alert-danger">Unable to get data</div>
-      </div>
     </div>
   </div>
 </div>
 
 
+<!--EDIT MODAL-->            
+<div class="modal fade" id="editCategory" data-bs-backdrop="static" tabindex="-1" aria-labelledby="editCategoryLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title mgmIngHeader mgmIngHeader-with-separator" id="editCategoryLabel">Edit category</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-danger">Unable to get data</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

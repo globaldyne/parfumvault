@@ -64,7 +64,7 @@ $fid = $meta['fid'];
 
 <div id="row pv_search">
 	<div class="text-right">
-    	<label for="pvCustomSearch" class="mx-2"><a href="#" class="link-secondary" rel="tip" title="Use comma (,) separated values to search for different ingredients">Search in formula:</a></label>
+    	<label for="pvCustomSearch" class="mx-2"><a href="#" class="text-light-emphasis" rel="tip" title="Use comma (,) separated values to search for different ingredients">Search in formula:</a></label>
     	<input type="text" id="pvCustomSearch" placeholder="CAS, Ingredient, etc..">
 	</div>
 </div>
@@ -669,7 +669,7 @@ function ingName(data, type, row, meta){
 	}
 	
 	if(row.isIFRAbyPass === 1){
-		IFRAbyPASSED = '<i class="ml-2 fas fa-triangle-exclamation" rel="tip" title="IFRA is by passed"></i>';	
+		IFRAbyPASSED = '<i class="ml-2 fas fa-triangle-exclamation" rel="tip" title="IFRA is by-passed"></i>';	
 	}else{
 		IFRAbyPASSED = '';
 	}

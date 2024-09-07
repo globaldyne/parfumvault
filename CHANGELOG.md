@@ -1,4 +1,15 @@
 # CHANGELOG
+### Version 11.2
+- Refactor of backend
+- Fix author name not display properly in the contact form in Marketplace
+- IFRA library categories changed to FLOAT
+- Added pdf and csv export for formula analysis
+- If now numeric value found when IFRA library is looked-up in formula analysis, will return 'No value'
+- Fixed an issue preventing formula analysis to show the max allowed value from the IFRA library
+- Increase page size for formula analysis
+- Add full usage tab for formula per IFRA category
+- Ignore non-numeric values in IFRA library when calculating max usage
+
 ### Version 11.1
 - When an ingredient is excluded from formula calculation will also be excluded from any IFRA validations
 - Add a warning in a formula when the ingredient has ifra by passed
