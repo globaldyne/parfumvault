@@ -64,8 +64,8 @@ $fid = $meta['fid'];
 
 <div id="row pv_search">
 	<div class="text-right">
-    	<label for="pvCustomSearch" class="mx-2"><a href="#" class="text-light-emphasis fs-6" rel="tip" title="Use comma (,) separated values to search for different ingredients">Search by</a></label>
-    	<input type="text" id="pvCustomSearch" class="pvCustomSearch" placeholder="CAS, Ingredient, etc..">
+    	<label for="pvCustomSearch" class="mx-2"><a href="#" class="text-light-emphasis fs-6" rel="tip" title="Use comma (,) separated values to search for different ingredients"><i class="fa-solid fa-circle-info"></i></a></label>
+    	<input type="text" id="pvCustomSearch" class="pvCustomSearch" placeholder="Search by CAS, Ingredient, etc..">
 	</div>
 </div>
 <table id="formula" class="table table-hover table-striped nowrap viewFormula" style="width:100%">
