@@ -58,7 +58,8 @@ $(document).ready(function() {
 			loadingRecords: '&nbsp;',
 			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>',
 			emptyTable: 'No suppliers added yet.',
-			search: 'Search:'
+			searchPlaceholder: 'Search by name...',
+			search: ''
 		},
 		ajax: {	url: '/core/list_suppliers_data.php' },
 		columns: [

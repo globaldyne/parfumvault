@@ -46,8 +46,8 @@ $(document).ready(function() {
 			loadingRecords: '&nbsp;',
 			processing: '<div class="spinner-grow"></div> Please Wait...',
 			zeroRecords: 'Nothing found',
-			search: 'Quick Search:',
-			searchPlaceholder: 'Batch ID..',
+			search: '',
+			searchPlaceholder: 'Search by Batch ID or Product name...',
 		},
 		ajax: {	
 			url: '/core/list_batch_data.php',
@@ -99,18 +99,18 @@ $(document).ready(function() {
 		if(row.pdf){
 			var data = '<a href="/pages/viewDoc.php?type=batch&id='+ row.id +'" target="_blank" rel="tip" title="View file">' + row.id + '<i class="fas fa-file-pdf ml-2"></i></a>'
 		}else{
-			var data = '<a href="#" rel="tip" title="File not available" class="fas fa-exclamation-triangle"></a>';
+			var data = '<a href="#" rel="tip" title="File not available">'+ row.id +'<i class="fas fa-exclamation-triangle ml-2"></i></a>';
 		}
 		return data;    
 	};
 
 	function actions(data, type, row){
-		if(row.pdf){
-			var data = '<i rel="tip" title="Delete '+ row.id +'" class="pv_point_gen fas fa-trash text-danger" id="batch_del" data-name="'+ row.product_name +'" data-id='+ row.id +'></i>'
-		}else{
-			var data = '<a href="#" rel="tip" title="File not available" class="fas fa-exclamation-triangle"></a>';
-		}
-		return data;    
+		data = '<div class="dropdown">' +
+			'<button type="button" class="btn" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+				'<ul class="dropdown-menu">';
+		data += '<li><a class="dropdown-item link-danger" href="#" id="batch_del" rel="tip" title="Delete '+ row.id +'" data-id='+ row.id +' data-name="'+ row.product_name +'"><i class="fas fa-trash mx-2"></i>Delete</a></li>';
+		data += '</ul></div>';
+		return data;  
 	};
 	
 	
@@ -122,7 +122,7 @@ $(document).ready(function() {
 	};
 	
 	function reload_data() {
-		$('#tdDataBatches').DataTable().ajax.reload(null, true);
+		$('#tdDataBatches').DataTable().ajax.reload(null, false);
 	};
 	
 	$('#tdDataBatches').on('click', '[id*=batch_del]', function () {

@@ -141,8 +141,8 @@ $(document).ready(function() {
 			loadingRecords: '&nbsp;',
 			processing: 'Please Wait...',
 			zeroRecords: 'Nothing found',
-			search: 'Quick Search:',
-			searchPlaceholder: 'Name..',
+			search: '',
+			searchPlaceholder: 'Search by name...',
 		},
 		ajax: {	
 			url: '/core/list_lid_data.php',

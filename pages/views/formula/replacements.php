@@ -35,15 +35,16 @@ $(document).ready(function() {
 			loadingRecords: '&nbsp;',
 			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
 			emptyTable: 'No replacements found.',
-			search: 'Search:'
+			search: '',
+			searchPlaceholder: 'Search by ingredient...',
 		},
 		ajax: {	
 			url: '/core/list_ing_rep_data.php',
 			type: 'POST',
 			data: {
-					fid: '<?=$fid?>',
-					view: 'formula',
-				},
+				fid: '<?=$fid?>',
+				view: 'formula',
+			},
 		},
 		columns: [
 			{ data : 'ing_name', title: 'Main Ingredient', render: repName, name: 'main_ing' },

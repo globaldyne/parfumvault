@@ -5,55 +5,81 @@ require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 
-$row = $_POST['start']?:0;
-$limit = $_POST['length']?:10;
+$row = isset($_POST['start']) ? (int)$_POST['start'] : 0;
+$limit = isset($_POST['length']) ? (int)$_POST['length'] : 10;
 
-$order_by  = $_POST['order_by']?:'created';
-$order  = $_POST['order_as']?:'ASC';
-$extra = "ORDER BY ".$order_by." ".$order;
+$order_by = isset($_POST['order_by']) ? $_POST['order_by'] : 'created';
+$order = isset($_POST['order_as']) && in_array(strtoupper($_POST['order_as']), ['ASC', 'DESC']) ? strtoupper($_POST['order_as']) : 'ASC';
 
+$extra = "ORDER BY $order_by $order";
 
-$s = trim($_POST['search']['value']);
+$search_value = isset($_POST['search']['value']) ? trim($_POST['search']['value']) : '';
+$f = '';
 
-if($s != ''){
-   $f = "WHERE 1 AND (id LIKE '%".$s."%')";
+if (!empty($search_value)) {
+    $f = "WHERE id LIKE ? OR product_name LIKE ?";
 }
 
-$q = mysqli_query($conn, "SELECT * FROM batchIDHistory $f $extra LIMIT $row, $limit");
-while($res = mysqli_fetch_array($q)){
+$query = "SELECT * FROM batchIDHistory $f $extra LIMIT ?, ?";
+$stmt = $conn->prepare($query);
+
+if (!empty($search_value)) {
+    $search_param = "%$search_value%";
+    $stmt->bind_param('ssii', $search_param, $search_param, $row, $limit);
+} else {
+    $stmt->bind_param('ii', $row, $limit);
+}
+
+$stmt->execute();
+$result = $stmt->get_result();
+
+$rs = [];
+while ($res = $result->fetch_assoc()) {
     $rs[] = $res;
 }
 
-foreach ($rs as $rq) { 
-	
-	if(file_exists(__ROOT__.'/'.$rq['pdf']) === TRUE){
-		$s = 1;
-	}
-	
-	$r['id'] = (string)$rq['id'];
-	$r['fid'] = (string)$rq['fid'];
-	$r['product_name'] = (string)$rq['product_name']?:'N/A';
-	$r['pdf'] = (string)$rq['pdf'];
-	$r['state'] = (int)$s?:0;
-	$r['created'] = (string)$rq['created'];
+$rx = [];
+foreach ($rs as $rq) {
+    $state = 0;
+    if (file_exists(__ROOT__.'/'.$rq['pdf'])) {
+        $state = 1;
+    }
 
-	$rx[]=$r;
+    $r = [
+        'id' => (string)$rq['id'],
+        'fid' => (string)$rq['fid'],
+        'product_name' => (string)$rq['product_name'] ?: 'N/A',
+        'pdf' => (string)$rq['pdf'],
+        'state' => (int)$state,
+        'created' => (string)$rq['created']
+    ];
+
+    $rx[] = $r;
 }
-$total = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM batchIDHistory"));
-$filtered = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM batchIDHistory ".$f));
 
-$response = array(
-  "draw" => (int)$_POST['draw'],
-  "recordsTotal" => (int)$total['entries'],
-  "recordsFiltered" => (int)$filtered['entries'],
-  "data" => $rx
-);
+$total_query = "SELECT COUNT(id) AS entries FROM batchIDHistory";
+$total_result = mysqli_fetch_assoc(mysqli_query($conn, $total_query));
 
-if(empty($r)){
-	$response['data'] = [];
+$filtered_query = "SELECT COUNT(id) AS entries FROM batchIDHistory $f";
+$filtered_stmt = $conn->prepare($filtered_query);
+
+if (!empty($search_value)) {
+    $filtered_stmt->bind_param('ss', $search_param, $search_param);
 }
+$filtered_stmt->execute();
+$filtered_result = $filtered_stmt->get_result();
+$filtered = $filtered_result->fetch_assoc();
+
+$response = [
+    "draw" => isset($_POST['draw']) ? (int)$_POST['draw'] : 1,
+    "recordsTotal" => (int)$total_result['entries'],
+    "recordsFiltered" => (int)$filtered['entries'],
+    "data" => !empty($rx) ? $rx : []
+];
 
 header('Content-Type: application/json; charset=utf-8');
 echo json_encode($response);
+
 return;
+
 ?>

@@ -1,5 +1,9 @@
 # CHANGELOG
 ### Version 11.3
+- Increase filter box size
+- Extended search to the product name for Batches
+- Added delete option for Batches even if the pdf is missing
+- Batches backend rewrite
 
 ### Version 11.2
 - Refactor of backend

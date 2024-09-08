@@ -172,8 +172,8 @@ $(document).ready(function() {
 			loadingRecords: '&nbsp;',
 			processing: 'Please Wait...',
 			zeroRecords: 'No pending ingredients found',
-			search: 'Quick Search:',
-			searchPlaceholder: 'Ingredient..',
+			search: '',
+			searchPlaceholder: 'Search by ingredient...',
 		},
 		ajax: {	
 			url: '/core/pending_formulas_data.php?meta=0&fid=' + fid,
