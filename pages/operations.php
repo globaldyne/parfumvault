@@ -557,10 +557,68 @@ if($_GET['action'] == 'restoreIFRA'){
 		mysqli_query($conn, "TRUNCATE IFRALibrary");
 		
 		foreach ($data['IFRALibrary'] as $d ){				
-			
-			$s = mysqli_query($conn, "INSERT INTO `IFRALibrary` (`ifra_key`,`image`,`amendment`,`prev_pub`,`last_pub`,`deadline_existing`,`deadline_new`,`name`,`cas`,`cas_comment`,`synonyms`,`formula`,`flavor_use`,`prohibited_notes`,`restricted_photo_notes`,`restricted_notes`,`specified_notes`,`type`,`risk`,`contrib_others`,`contrib_others_notes`,`cat1`,`cat2`,`cat3`,`cat4`,`cat5A`,`cat5B`,`cat5C`,`cat5D`,`cat6`,`cat7A`,`cat7B`,`cat8`,`cat9`,`cat10A`,`cat10B`,`cat11A`,`cat11B`,`cat12`) VALUES ('".$d['ifra_key']."','".$d['image']."','".$d['amendment']."','".$d['prev_pub']."','".$d['last_pub']."','".$d['deadline_existing']."','".$d['deadline_new']."','".$d['name']."','".$d['cas']."','".$d['cas_comment']."','".$d['synonyms']."','".$d['formula']."','".$d['flavor_use']."','".$d['prohibited_notes']."','".$d['restricted_photo_notes']."','".$d['restricted_notes']."','".$d['specified_notes']."','".$d['type']."','".$d['risk']."','".$d['contrib_others']."','".$d['contrib_others_notes']."','".$d['cat1']."','".$d['cat2']."','".$d['cat3']."','".$d['cat4']."','".$d['cat5A']."','".$d['cat5B']."','".$d['cat5C']."','".$d['cat5D']."','".$d['cat6']."','".$d['cat7A']."','".$d['cat7B']."','".$d['cat8']."','".$d['cat9']."','".$d['cat10A']."','".$d['cat10B']."','".$d['cat11A']."','".$d['cat11B']."','".$d['cat12']."') ");
-				
-		}
+		$ifra_key = mysqli_real_escape_string($conn, $d['ifra_key']);
+		$image = mysqli_real_escape_string($conn, $d['image']);
+		$amendment = mysqli_real_escape_string($conn, $d['amendment']);
+		$prev_pub = mysqli_real_escape_string($conn, $d['prev_pub']);
+		$last_pub = mysqli_real_escape_string($conn, $d['last_pub']);
+		$deadline_existing = mysqli_real_escape_string($conn, $d['deadline_existing']);
+		$deadline_new = mysqli_real_escape_string($conn, $d['deadline_new']);
+		$name = mysqli_real_escape_string($conn, $d['name']);
+		$cas = mysqli_real_escape_string($conn, $d['cas']);
+		$cas_comment = mysqli_real_escape_string($conn, $d['cas_comment']);
+		$synonyms = mysqli_real_escape_string($conn, $d['synonyms']);
+		$formula = mysqli_real_escape_string($conn, $d['formula']);
+		$flavor_use = mysqli_real_escape_string($conn, $d['flavor_use']);
+		$prohibited_notes = mysqli_real_escape_string($conn, $d['prohibited_notes']);
+		$restricted_photo_notes = mysqli_real_escape_string($conn, $d['restricted_photo_notes']);
+		$restricted_notes = mysqli_real_escape_string($conn, $d['restricted_notes']);
+		$specified_notes = mysqli_real_escape_string($conn, $d['specified_notes']);
+		$type = mysqli_real_escape_string($conn, $d['type']);
+		$risk = mysqli_real_escape_string($conn, $d['risk']);
+		$contrib_others = mysqli_real_escape_string($conn, $d['contrib_others']);
+		$contrib_others_notes = mysqli_real_escape_string($conn, $d['contrib_others_notes']);
+	
+		$cat1 = isset($d['cat1']) && $d['cat1'] !== '' ? floatval($d['cat1']) : 100;
+		$cat2 = isset($d['cat2']) && $d['cat2'] !== '' ? floatval($d['cat2']) : 100;
+		$cat3 = isset($d['cat3']) && $d['cat3'] !== '' ? floatval($d['cat3']) : 100;
+		$cat4 = isset($d['cat4']) && $d['cat4'] !== '' ? floatval($d['cat4']) : 100;
+		$cat5A = isset($d['cat5A']) && $d['cat5A'] !== '' ? floatval($d['cat5A']) : 100;
+		$cat5B = isset($d['cat5B']) && $d['cat5B'] !== '' ? floatval($d['cat5B']) : 100;
+		$cat5C = isset($d['cat5C']) && $d['cat5C'] !== '' ? floatval($d['cat5C']) : 100;
+		$cat5D = isset($d['cat5D']) && $d['cat5D'] !== '' ? floatval($d['cat5D']) : 100;
+		$cat6 = isset($d['cat6']) && $d['cat6'] !== '' ? floatval($d['cat6']) : 100;
+		$cat7A = isset($d['cat7A']) && $d['cat7A'] !== '' ? floatval($d['cat7A']) : 100;
+		$cat7B = isset($d['cat7B']) && $d['cat7B'] !== '' ? floatval($d['cat7B']) : 100;
+		$cat8 = isset($d['cat8']) && $d['cat8'] !== '' ? floatval($d['cat8']) : 100;
+		$cat9 = isset($d['cat9']) && $d['cat9'] !== '' ? floatval($d['cat9']) : 100;
+		$cat10A = isset($d['cat10A']) && $d['cat10A'] !== '' ? floatval($d['cat10A']) : 100;
+		$cat10B = isset($d['cat10B']) && $d['cat10B'] !== '' ? floatval($d['cat10B']) : 100;
+		$cat11A = isset($d['cat11A']) && $d['cat11A'] !== '' ? floatval($d['cat11A']) : 100;
+		$cat11B = isset($d['cat11B']) && $d['cat11B'] !== '' ? floatval($d['cat11B']) : 100;
+		$cat12 = isset($d['cat12']) && $d['cat12'] !== '' ? floatval($d['cat12']) : 100;
+	
+		$s = mysqli_query($conn, "
+			INSERT INTO `IFRALibrary` (
+				`ifra_key`, `image`, `amendment`, `prev_pub`, `last_pub`, 
+				`deadline_existing`, `deadline_new`, `name`, `cas`, `cas_comment`, 
+				`synonyms`, `formula`, `flavor_use`, `prohibited_notes`, `restricted_photo_notes`, 
+				`restricted_notes`, `specified_notes`, `type`, `risk`, `contrib_others`, 
+				`contrib_others_notes`, `cat1`, `cat2`, `cat3`, `cat4`, `cat5A`, 
+				`cat5B`, `cat5C`, `cat5D`, `cat6`, `cat7A`, `cat7B`, `cat8`, `cat9`, 
+				`cat10A`, `cat10B`, `cat11A`, `cat11B`, `cat12`
+			) VALUES (
+				'$ifra_key', '$image', '$amendment', '$prev_pub', '$last_pub', 
+				'$deadline_existing', '$deadline_new', '$name', '$cas', '$cas_comment', 
+				'$synonyms', '$formula', '$flavor_use', '$prohibited_notes', '$restricted_photo_notes', 
+				'$restricted_notes', '$specified_notes', '$type', '$risk', '$contrib_others', 
+				'$contrib_others_notes', $cat1, $cat2, $cat3, $cat4, $cat5A, 
+				$cat5B, $cat5C, $cat5D, $cat6, $cat7A, $cat7B, $cat8, $cat9, 
+				$cat10A, $cat10B, $cat11A, $cat11B, $cat12
+			)
+		");
+	}
+
 				
 		if($s){
 			$result['success'] = "Import complete";

@@ -1,5 +1,8 @@
 # CHANGELOG
 ### Version 11.3
+- Structure update
+- UI update for IFRA Library
+- Refactor JSON import for IFRALibrary
 - Increase filter box size
 - Extended search to the product name for Batches
 - Added delete option for Batches even if the pdf is missing

@@ -16,7 +16,7 @@ if($_GET['id'] && $_GET['filter']){
 		$response[$filter] = $info[$filter] ?: "None";
 		break;
 	  case "purity":
-		$response[$filter] = $info[$filter] ?: 100;
+		$response[$filter] = (float)$info[$filter] ?: 100;
 		break;
 	  
 	  default:

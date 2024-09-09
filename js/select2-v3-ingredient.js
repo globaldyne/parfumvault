@@ -183,7 +183,7 @@ $(document).ready(function(){
 		var ingID = $(e.currentTarget).attr('ing-id');
 		//console.log(e);
 		$.ajax({ 
-			url: '/pages/getIngInfo.php', 
+			url: '/core/getIngInfo.php', 
 			type: 'GET',
 			data: {
 				filter: "purity",
@@ -206,7 +206,7 @@ $(document).ready(function(){
 		  });
 		
 		$.ajax({ 
-			url: '/pages/getIngInfo.php', 
+			url: '/core/getIngInfo.php', 
 			type: 'GET',
 			data: {
 				filter: "solvent",

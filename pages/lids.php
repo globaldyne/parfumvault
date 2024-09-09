@@ -222,11 +222,11 @@ $(document).ready(function() {
 	function actions(data, type, row){	
 			data = '<div class="dropdown">' +
 			'<button type="button" class="btn btn-floating hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
-				'<ul class="dropdown-menu dropdown-menu-right">';
+				'<ul class="dropdown-menu">';
 			data += '<li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editLid" rel="tip" title="Edit '+ row.style +'" data-id='+ row.id +' data-name="'+ row.style +'"><i class="fas fa-edit mx-2"></i>Edit</a></li>';
 			data += '<li><a href="'+ row.supplier_link +'" target="_blank" class="dropdown-item" rel="tip" title="Open '+ row.style +' page"><i class="fas fa-shopping-cart mx-2"></i>Go to supplier</a></li>';
 			data += '<div class="dropdown-divider"></div>';
-			data += '<li><a class="dropdown-item" href="#" id="ldlDel" style="color: #c9302c;" rel="tip" title="Delete '+ row.name +'" data-id='+ row.id +' data-name="'+ row.style +'"><i class="fas fa-trash mx-2"></i>Delete</a></li>';
+			data += '<li><a class="dropdown-item link-danger" href="#" id="ldlDel" rel="tip" title="Delete '+ row.name +'" data-id='+ row.id +' data-name="'+ row.style +'"><i class="fas fa-trash mx-2"></i>Delete</a></li>';
 			data += '</ul></div>';
 		return data;
 	};
