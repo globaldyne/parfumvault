@@ -1,5 +1,7 @@
 # CHANGELOG
 ### Version 11.3
+- Ingredient UI update
+- Formula UI and backend update
 - Structure update
 - UI update for IFRA Library
 - Refactor JSON import for IFRALibrary

@@ -56,8 +56,11 @@ if($_GET["newIngName"]){
   </div>
   
   <div class="mt-3 col-md-6">
-    <label for="purity" class="form-label">Purity</label>
-    <input name="purity" type="text" class="form-control" id="purity" value="<?php echo $ing['purity']?: '100'; ?>">
+     <label for="purity" class="form-label">Purity</label>
+     <div class="input-group">
+    	<input name="purity" type="text" class="form-control" id="purity" value="<?php echo $ing['purity']?: '100'; ?>"  aria-label="purity" aria-describedby="purity-addon">
+        <span class="input-group-text" id="purity-addon">%</span>
+  	</div>
   </div>
   <div class="mt-3 col-md-6">
     <label for="solvent" class="form-label">Solvent</label>
