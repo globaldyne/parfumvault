@@ -419,7 +419,7 @@ $(document).ready(function() {
 				$('.modal-IFRA-body-data').html(data);
 				$('#ifraDocModal').modal('show'); 
 				$("#generateDoc").prop("disabled", false);
- 				$("span").remove();
+ 				$("#generateDoc span").remove();
 				$("#template").prop("disabled", false);
 				$("#customer").prop("disabled", false);
 		   },
@@ -428,7 +428,7 @@ $(document).ready(function() {
 				$('.modal-IFRA-body-data').html(data);
 				$('#ifraDocModal').modal('show'); 
 				$("#generateDoc").prop("disabled", false);
- 				$("span").remove();
+ 				$("#generateDoc span").remove();
 				$("#template").prop("disabled", false);
 				$("#customer").prop("disabled", false);
 		   }
