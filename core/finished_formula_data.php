@@ -190,7 +190,7 @@ $m['total_cost'] = (float)number_format(array_sum($tot) + $lid['price'] + $carri
 
 
 $m['cat_class'] = (string)$defCatClass;
-$m['currency'] = (string)utf8_encode($settings['currency']);
+$m['currency'] = (string)$settings['currency'];
 $m['product_concentration'] = (int)$concentration;
 $m['formula_name'] = (string)$meta['name'];
 $m['product_name'] = (string)$meta['product_name'] ?: '-';

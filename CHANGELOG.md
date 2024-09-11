@@ -1,5 +1,9 @@
 # CHANGELOG
 ### Version 11.3
+- A new updated IFRA document added
+- IFRA document will show the maximum limit per all categories for 100% concentration
+- IFRA document will be generated regardless if final product is off ifra limits
+- Fixed currency symbol for finished product
 - Ingredient UI update
 - Formula UI and backend update
 - Structure update
