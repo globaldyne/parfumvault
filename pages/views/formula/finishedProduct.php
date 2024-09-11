@@ -145,7 +145,7 @@ require_once(__ROOT__.'/inc/opendb.php');
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <input type="submit" class="btn btn-primary" id="generateDoc" value="Generate">
+        <button type="button" class="btn btn-primary" id="generateDoc">Generate</button>
       </div>
     </div>
   </div>
@@ -400,6 +400,10 @@ $(document).ready(function() {
 
 	$('#generateDoc').click(function() {
 		$('.modal-IFRA-body-data').html('loading');
+		$("#generateDoc").prop("disabled", true);
+ 		$('#generateDoc').append('<span class="spinner-border spinner-border-sm mx-2" role="status" aria-hidden="true"></span>');
+		$("#template").prop("disabled", true);
+		$("#customer").prop("disabled", true);
 		$.ajax({
 		   type: 'POST',
 		   url: '/pages/views/IFRA/genIFRAdoc.php',
@@ -414,11 +418,19 @@ $(document).ready(function() {
 		   success: function(data) {
 				$('.modal-IFRA-body-data').html(data);
 				$('#ifraDocModal').modal('show'); 
+				$("#generateDoc").prop("disabled", false);
+ 				$("span").remove();
+				$("#template").prop("disabled", false);
+				$("#customer").prop("disabled", false);
 		   },
-		   error:function(err){
-				data = '<div class="alert alert-danger">Unable to generate data</div>';
+		   error:function(xhr, status, error){
+				data = '<div class="alert alert-danger">Unable to generate data, ' + error + '</div>';
 				$('.modal-IFRA-body-data').html(data);
 				$('#ifraDocModal').modal('show'); 
+				$("#generateDoc").prop("disabled", false);
+ 				$("span").remove();
+				$("#template").prop("disabled", false);
+				$("#customer").prop("disabled", false);
 		   }
 		})
 	 });
