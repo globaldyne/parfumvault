@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 11.4
+
 ### Version 11.3
 - Minor UI updates
 - Fix merge ingredient returning incorrect value when nothing found
