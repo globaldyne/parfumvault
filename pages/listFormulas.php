@@ -368,7 +368,7 @@ $(document).ready(function() {
 		
 		bootbox.dialog({
 		   title: "Confirm formula deletion",
-		   message : '<div class="alert alert-warning">WARNING, this action cannot be reverted unless you have a backup.</div><p>Permantly delete <strong>'+ $(this).attr('data-name') +'</strong> formula?</p>' +
+		   message : '<div class="alert alert-warning"><i class="fa-solid fa-triangle-exclamation mx-2"></i>WARNING, this action cannot be reverted unless you have a backup.</div><p>Permantly delete <strong>'+ $(this).attr('data-name') +'</strong> formula?</p>' +
 		   '<div class="form-group col-sm">' + 
 			'<input name="archiveFormula" id="archiveFormula" type="checkbox" value="1">'+
 			'<label class="form-check-label mx-2" for="archiveFormula">Archive formula</label>'+

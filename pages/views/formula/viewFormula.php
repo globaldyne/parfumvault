@@ -967,8 +967,11 @@ function ingActions(data, type, row, meta){
         <input type="hidden" name="curQuantity" id="curQuantity" />
         
         <div class="mb-3">
-          <label for="ingQuantity" class="form-label">Quantity in <?= $settings['mUnit'] ?></label>
-          <input name="ingQuantity" type="text" class="form-control" id="ingQuantity">
+          	<label for="ingQuantity" class="form-label">Quantity in <?= $settings['mUnit'] ?></label>
+           	<div class="input-group">
+          		<input name="ingQuantity" type="text" class="form-control" id="ingQuantity">
+          		<span class="input-group-text" id="quantity-addon"><?=$settings['mUnit']?></span>
+			</div>
         </div>
 
         <div class="form-check mb-3">
@@ -979,8 +982,7 @@ function ingActions(data, type, row, meta){
         <div id="slvMeta" class="mb-3">
           <label for="formulaSolvents" class="form-label">Select Solvent</label>
           <select name="formulaSolvents" id="formulaSolvents" class="form-select"></select>
-          <div id="explain" class="mt-3 alert alert-info">
-            Auto adjust the total quantity by increasing or decreasing quantity from the selected solvent if enough is available.<br>
+          <div id="explain" class="mt-3 alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i>Auto adjust the total quantity by increasing or decreasing quantity from the selected solvent if enough is available.<br>
             For example, if you add 1 more <?= $settings['mUnit'] ?> to the current ingredient, the selected solvent's quantity will be deducted by 1<?= $settings['mUnit'] ?> equally.
           </div>
         </div>
@@ -1006,8 +1008,7 @@ function ingActions(data, type, row, meta){
         <input type="hidden" name="ingSrcID" id="ingSrcID" />
         <input type="hidden" name="ingSrcName" id="ingSrcName" />
         
-        <div class="alert alert-info">
-          You can merge <span id="srcIng"></span>'s quantity with another material in the formula. Use this method if the materials are similar. Please note, this action cannot be reverted, and the quantity will be added to the target ingredient's quantity.
+        <div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i>You can merge <span id="srcIng"></span>'s quantity with another material in the formula. Use this method if the materials are similar. Please note, this action cannot be reverted, and the quantity will be added to the target ingredient's quantity.
         </div>
         
         <div class="mb-3">
@@ -1036,7 +1037,7 @@ function ingActions(data, type, row, meta){
       	<div id="msgRepl"></div>
         <input type="hidden" name="ingRepID" id="ingRepID" />
         <input type="hidden" name="ingRepName" id="ingRepName" />
-      	<div class="alert alert-info">Replace <div id="ingRepName"></div> with another ingredient, quantity and dilution values will not be affected.</div>
+      	<div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i>Replace <div id="ingRepName"></div> with another ingredient, quantity and dilution values will not be affected.</div>
         Replace <div id="ingRepName"></div> with: 
         <select name="repIngNameDest" id="repIngNameDest" class="repIngNameDest pv-form-control"></select>
         <p>

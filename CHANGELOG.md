@@ -1,5 +1,9 @@
 # CHANGELOG
 ### Version 11.3
+- Minor UI updates
+- Fix merge ingredient returning incorrect value when nothing found
+- Fix placeholder for ingredient selection in formula
+- Added force delete for ingredients in use
 - A new updated IFRA document added
 - IFRA document will show the maximum limit per all categories for 100% concentration
 - IFRA document will be generated regardless if final product is off ifra limits
