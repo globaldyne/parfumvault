@@ -1,5 +1,6 @@
 Whats New in v11.3
 --------------------------
+- Added force delete for ingredients in use
 - Use the new IFRA document for full compatibility
 - IFRA document will show the maximum limit per all categories for 100% concentration
 - IFRA document will be generated regardless if final product is off ifra limits

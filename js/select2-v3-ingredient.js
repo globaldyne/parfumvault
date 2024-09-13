@@ -38,7 +38,7 @@ $(document).ready(function(){
 		minimumInputLength: 2,
 		dropdownAutoWidth: true,
 		allowClear: true,
-		placeholder: 'Choose ingredient (name, cas)',
+		placeholder: '',
 		templateResult: formatIngredients,
 		templateSelection: formatIngredientsSelection,
 		ajax: {
@@ -174,6 +174,10 @@ $(document).ready(function(){
 	
 	
 	function formatIngredientsSelection (ingredientData) {
+		if (ingredientData.id === '') {
+      		return 'Search ingredients (name, cas)';
+    	}
+
 		return ingredientData.name;
 	}
 	

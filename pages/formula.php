@@ -158,7 +158,7 @@ require_once(__ROOT__.'/func/convert_to_decimal_point.php');
                     <div class="col-md-2">
                         <div class="input-group">
                             <input type="text" name="quantity" id="quantity" placeholder="Quantity" class="form-control" aria-label="quantity" aria-describedby="quantity-addon">
-                            <span class="input-group-text" id="quantity-addon"><?= convert_to_decimal_point($settings['qStep']) ?></span>
+                            <span class="input-group-text" id="quantity-addon"><?= convert_to_decimal_point($settings['qStep']).$settings['mUnit'] ?></span>
                         </div>
                     </div>
                     
