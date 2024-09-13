@@ -221,8 +221,8 @@ $(document).ready(function() {
 			loadingRecords: '&nbsp;',
 			processing: '<div class="spinner-grow mx-2"></div>Please Wait...',
 			zeroRecords: '<div class="mt-4 alert alert-warning"><strong>Nothing found, have you <a href="#" data-bs-toggle="modal" data-bs-target="#ifra_import">imported</a> the IFRA library?</strong></div>',
-			search: 'Quick Search:',
-			searchPlaceholder: 'Name, CAS, synonyms...',
+			search: '',
+			searchPlaceholder: 'Search by name, CAS, synonyms...',
 		},
 		ajax: {	
 			url: '/core/list_IFRA_data.php',
@@ -349,11 +349,18 @@ $(document).ready(function() {
 		$('#tdDataIFRA').DataTable().ajax.reload(null, true);
 	};
 	
-	function actions(data, type, row){
-		data = '<a class="pv_point_gen text-danger" id="dDel" data-name="'+ row.name +'" data-id='+ row.id +'><i class="fas fa-trash mx-2"></i></a>';
-		
-		return data;
+	function actions(data, type, row) {
+	    data = '<div class="dropdown">' +
+        '<button type="button" class="btn btn-floating hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
+        '<i class="fas fa-ellipsis-v"></i></button>' +
+        '<ul class="dropdown-menu">';
+    	data += '<li><a class="dropdown-item link-danger" href="#" id="dDel" title="Delete ' + row.name + '" data-id="' + row.id + '" data-name="' + row.name + '">' +
+        '<i class="fas fa-trash mx-2"></i>Delete</a></li>';
+    	data += '</ul></div>';
+
+    	return data;
 	};
+
 	
 	
 	$('#exportCSV').click(() => {

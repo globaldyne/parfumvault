@@ -46,7 +46,8 @@ $(document).ready(function() {
 			loadingRecords: '&nbsp;',
 			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw">',
 			emptyTable: 'No groups yet.',
-			search: 'Search:'
+			search: '',
+			searchPlaceholder: 'Search by name...',
 		},
     	ajax: {	url: '/core/list_frmCat_data.php' },
 		columns: [
@@ -91,7 +92,12 @@ $(document).ready(function() {
 	};
 	
 	function cActions(data, type, row){
-		return '<i id="catDel" class="pv_point_gen fas fa-trash link-danger" data-id="'+row.id+'" data-name="'+row.name+'"></i>';    
+		data = '<div class="dropdown">' +
+		'<button type="button" class="btn btn-floating hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+			'<ul class="dropdown-menu">';
+		data += '<li><a class="dropdown-item text-danger" href="#" id="catDel" rel="tip" title="Delete '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-trash mx-2"></i>Delete</a></li>';
+		data += '</ul></div>';
+		return data;
 	};
 	
 	function fKey(data, type, row){

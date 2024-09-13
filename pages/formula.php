@@ -29,7 +29,7 @@ while ($ingredient = mysqli_fetch_array($ingredients)){
 if($form[0]['ingredient']){
 	$legend = 1;
 }
-
+require_once(__ROOT__.'/func/convert_to_decimal_point.php');
 
 ?>
 
@@ -123,46 +123,70 @@ if($form[0]['ingredient']){
           	<div class="card-body">
          		<div id="msgInfo"></div>
 	      		<div id="add_ing">
-          
-                    <div class="row">
-                        <div class="col-md-4">
-                           <select name="ingredient" id="ingredient" class="form-select mb-3 main-ingredient"></select>
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" name="concentration" id="concentration" placeholder="Purity %" class="form-control" />
-                        </div>
-                        <div class="col-md-2">
-                            <select name="dilutant" id="dilutant" class="form-control selectpicker" data-live-search="true">
-                                <option value="" selected disabled>Dilutant</option>
-                                <option value="none">None</option>
-                                <?php
-                                $res_dil = mysqli_query($conn, "SELECT id, name FROM ingredients WHERE type = 'Solvent' OR type = 'Carrier' ORDER BY name ASC");
-                                while ($r_dil = mysqli_fetch_array($res_dil)){
-                                    echo '<option value="'.$r_dil['name'].'">'.$r_dil['name'].'</option>';
-                                }
-                                ?>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" name="quantity" id="quantity" placeholder="Quantity" class="form-control" />				
-                        </div>
-                        <div class="col-md-2">
-                            <input type="submit" name="add" id="add-btn" class="btn btn-primary" value="Add" /> </td>  
+                <div class="row">
+                    <!-- Ingredient Selection -->
+                    <div class="col-md-4">
+                        <select name="ingredient" id="ingredient" class="form-select mb-3 main-ingredient"></select>
+                    </div>
+                    
+                    <!-- Concentration Input -->
+                    <div class="col-md-2">
+                        <div class="input-group">
+                            <input type="text" name="concentration" id="concentration" placeholder="Purity" class="form-control" aria-label="concentration" aria-describedby="conc-addon">
+                            <span class="input-group-text" id="conc-addon">%</span>
                         </div>
                     </div>
                     
-           			<div class="col-sm-6 ml-3 mt-2 mb-2">
-        			<input type="checkbox" name="reCalcAdd" id="reCalcAdd" value="1" data-val="1" />
-                    <label for"reCalcAdd" class="form-label">Adjust solvent</label>
+                    <!-- Dilutant Selection -->
+                    <div class="col-md-2">
+                        <select name="dilutant" id="dilutant" class="form-control selectpicker" data-live-search="true">
+                            <option value="" disabled selected>Select Dilutant</option>
+                            <option value="none">None</option>
+                            <?php
+                            $stmt = $conn->prepare("SELECT id, name FROM ingredients WHERE type = 'Solvent' OR type = 'Carrier' ORDER BY name ASC");
+                            $stmt->execute();
+                            $res_dil = $stmt->get_result();
+                            while ($r_dil = $res_dil->fetch_assoc()) {
+                                $selected = ($r_dil['name'] == $selected_dilutant) ? 'selected' : '';
+                                echo '<option value="' . htmlspecialchars($r_dil['name']) . '" ' . $selected . '>' . htmlspecialchars($r_dil['name']) . '</option>';
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    
+                    <!-- Quantity Input -->
+                    <div class="col-md-2">
+                        <div class="input-group">
+                            <input type="text" name="quantity" id="quantity" placeholder="Quantity" class="form-control" aria-label="quantity" aria-describedby="quantity-addon">
+                            <span class="input-group-text" id="quantity-addon"><?= convert_to_decimal_point($settings['qStep']).$settings['mUnit'] ?></span>
+                        </div>
+                    </div>
+                    
+                    <!-- Add Button -->
+                    <div class="col-md-2">
+                        <input type="submit" name="add" id="add-btn" class="btn btn-primary" value="Add">
+                    </div>
+                </div>
+                
+                <!-- Adjust Solvent Checkbox -->
+                <div class="col-sm-6 ml-3 mt-2 mb-2">
+                    <input type="checkbox" name="reCalcAdd" id="reCalcAdd" value="1" data-val="1">
+                    <label for="reCalcAdd" class="form-label">Adjust solvent</label>
                     <i class="fa-solid fa-circle-info ml-1 pv_point_gen" rel="tip" data-bs-placement="right" data-bs-title="The added ingredient's quantity will be deducted from the selected solvent."></i>
-            		</div>
-            		<div id="slvMetaAdd">
-            			<div class="col-sm-6 ml-3 mr-2 mb-1">
-        					<select name="formulaSolventsAdd" id="formulaSolventsAdd" class="formulaSolventsAdd pv-form-control"></select>
-            			</div>
-          			</div>
-		  			<div class="col-sm dropdown-divider"></div>
-        	</div>
+                </div>
+            
+                <!-- Solvent Meta Section -->
+                <div id="slvMetaAdd">
+                    <div class="col-sm-6 ml-3 mr-2 mb-1">
+                        <label for="formulaSolventsAdd" class="form-label">Formula Solvents</label>
+               			<select name="formulaSolventsAdd" id="formulaSolventsAdd" class="form-control formulaSolventsAdd"></select>
+                    </div>
+                </div>
+                
+                <!-- Divider -->
+                <div class="col-sm dropdown-divider"></div>
+            </div>
+
           
               <div id="fetch_formula">
                 <div class="loader-center">

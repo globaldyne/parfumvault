@@ -228,7 +228,7 @@ $(document).ready(function() {
 				}else if( data.auth.error){
 					msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>'+data.auth.msg+'</div>';
 					$("#login_btn").prop("disabled", false);
-					$("span").remove();
+					$("#login_btn span").remove();
 					$("#login_email").prop("disabled", false);
 					$("#login_pass").prop("disabled", false);
 				}
@@ -237,7 +237,7 @@ $(document).ready(function() {
 			},
 			error: function (request, status, error) {
         		$('#msg').html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>Unable to handle request, server returned an error: '+request.status+'</div>');
-				$("span").remove();
+				$("#login_btn span").remove();
 				$("#login_email").prop("disabled", false);
 				$("#login_pass").prop("disabled", false);
 				$("#login_btn").prop("disabled", false);

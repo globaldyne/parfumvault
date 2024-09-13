@@ -274,6 +274,8 @@ foreach ($form as $formula){
 
 if(empty($r)){
 	$response['data'] = [];
+	echo json_encode($response);
+	return;
 }
 
 $m['total_ingredients'] = (int)countElement("formulas WHERE fid = '".$meta['fid']."'",$conn);	

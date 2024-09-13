@@ -68,8 +68,8 @@ $(document).ready(function() {
 			loadingRecords: '&nbsp;',
 			processing: 'Please Wait...',
 			zeroRecords: 'No scheduled to make formulas found',
-			search: 'Quick Search:',
-			searchPlaceholder: 'Name..',
+			search: '',
+			searchPlaceholder: 'Search by formula name...',
 		},
 		ajax: {
 			url: '/core/pending_formulas_data.php?meta=1',

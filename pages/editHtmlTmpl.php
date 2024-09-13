@@ -30,9 +30,7 @@ $tmpl = mysqli_fetch_array(mysqli_query($conn,"SELECT name,content FROM template
                         <li><a onclick="insertAtCaret('tmpl-editor','%PRODUCT_CONCENTRATION%');" href="#">Add product concentration</a></li>
                         <li><a onclick="insertAtCaret('tmpl-editor','%IFRA_AMENDMENT%');" href="#">Add the IFRA amendment number you use</a></li>
                         <li><a onclick="insertAtCaret('tmpl-editor','%IFRA_AMENDMENT_DATE%');" href="#">Add the IFRA amendment release date</a></li>
-                        <li><a onclick="insertAtCaret('tmpl-editor','%PRODUCT_CAT_CLASS%');" href="#">Add the category class of your product</a></li>
-                        <li><a onclick="insertAtCaret('tmpl-editor','%PRODUCT_TYPE%');" href="#">Add the product type</a></li>
-                        <li><a onclick="insertAtCaret('tmpl-editor','%PRODUCT_CAT_CLASS%');" href="#">Add the category class of your product</a></li>
+                        <li><a onclick="insertAtCaret('tmpl-editor','%IFRA_CAT_LIST%');" href="#">Add IFRA categories and limits</a></li>
                         <li><a onclick="insertAtCaret('tmpl-editor','%IFRA_MATERIALS_LIST%');" href="#">Add materials in formula found under the IFRA scope</a></li>
 
                     </ul>
