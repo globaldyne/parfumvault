@@ -96,16 +96,19 @@ if($usageLimit){
             <tr <?php if($usageLimit['type']){ ?>class="<?php echo $usageStyle[$i % 2]; ?>" <?php }?>>
                 <?php for($j = 0; $j < $cols && $counter <= $rows; $j++, $counter++) { ?>
                     <td align="center">
-                        <a href="#" rel="tip" title="<?php echo $cats[$counter]['description']; ?>">Cat<?php echo $cats[$counter]['name']; ?> %:</a>
+                        <a href="#" rel="tip" title="<?php echo $cats[$counter]['description']; ?>">Cat<?php echo $cats[$counter]['name']; ?></a>
                     </td>
                     <td>
+                    <div class="input-group">
                         <?php
                         if($ing['byPassIFRA'] == 0 && $limit = searchIFRA($ing['cas'], $ing['name'], null, 'cat'.$cats[$counter]['name'])){
                         ?>
-                            <input name="cat<?php echo $cats[$counter]['name']; ?>" type="text" class="form-control" id="cat<?php echo $cats[$counter]['name']; ?>" disabled value="<?php echo number_format((float)$limit['val'], 4); ?>" />
+                            <input name="cat<?php echo $cats[$counter]['name']; ?>" type="text" class="form-control" id="cat<?php echo $cats[$counter]['name']; ?>" disabled value="<?php echo number_format((float)$limit['val'], 4); ?>" aria-label="cat<?php echo $cats[$counter]['name']; ?>" aria-describedby="cat-addon">
                         <?php } else { ?>
-                            <input name="cat<?php echo $cats[$counter]['name']; ?>" type="text" class="form-control" id="cat<?php echo $cats[$counter]['name']; ?>" value="<?php echo number_format($ing['cat'.$cats[$counter]['name']], 4); ?>" />
+                            <input name="cat<?php echo $cats[$counter]['name']; ?>" type="text" class="form-control" id="cat<?php echo $cats[$counter]['name']; ?>" value="<?php echo number_format($ing['cat'.$cats[$counter]['name']], 4); ?>" aria-label="cat<?php echo $cats[$counter]['name']; ?>" aria-describedby="cat-addon">
                         <?php } ?>
+                       <span class="input-group-text" id="cat-addon">%</span>
+                    </div>    
                     </td>
                 <?php } ?>
             </tr>
@@ -113,7 +116,7 @@ if($usageLimit){
     </table>
 </div>
 <hr />
-<p><input type="submit" name="saveUsage" class="btn btn-primary" id="saveUsage" value="Save" /></p>
+<p><input type="submit" name="saveUsage" class="btn btn-primary" id="saveUsage" value="Save"></p>
 
 <script>
 var byPassIFRA = <?=$ing['byPassIFRA']?>;

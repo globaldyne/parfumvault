@@ -161,8 +161,8 @@ $(document).ready(function() {
 			 loadingRecords: '&nbsp;',
 			 processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Blending...</span>',
 			 emptyTable: '<div class="alert alert-warning"><strong>No formulas found in Marketplace, please come back later.</strong></div>',
-			 searchPlaceholder: 'Formula name..',
-			 search: "Search for formula:"
+			 searchPlaceholder: 'Search by formula name..',
+			 search: ''
 		  },
 		  order: [0,'asc'],
 		  columnDefs: [

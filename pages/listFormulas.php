@@ -171,8 +171,8 @@ $(document).ready(function() {
 				loadingRecords: '&nbsp;',
 				processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>',
 				emptyTable: '<div class="row g-3"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>No formulas yet, click <a href="#" data-bs-toggle="modal" data-bs-target="#add_formula">here</a> to add or use the <a href="/?do=marketplace">Marketplace</a> to import a demo one</strong></div></div>',
-				searchPlaceholder: 'Formula name, or product name...',
-				search: "Search"
+				searchPlaceholder: 'Search by formula, or product name...',
+				search: ''
 			},
 			order: [0,'asc'],
 			columnDefs: [
@@ -368,7 +368,7 @@ $(document).ready(function() {
 		
 		bootbox.dialog({
 		   title: "Confirm formula deletion",
-		   message : '<div class="alert alert-warning">WARNING, this action cannot be reverted unless you have a backup.</div><p>Permantly delete <strong>'+ $(this).attr('data-name') +'</strong> formula?</p>' +
+		   message : '<div class="alert alert-warning"><i class="fa-solid fa-triangle-exclamation mx-2"></i>WARNING, this action cannot be reverted unless you have a backup.</div><p>Permantly delete <strong>'+ $(this).attr('data-name') +'</strong> formula?</p>' +
 		   '<div class="form-group col-sm">' + 
 			'<input name="archiveFormula" id="archiveFormula" type="checkbox" value="1">'+
 			'<label class="form-check-label mx-2" for="archiveFormula">Archive formula</label>'+

@@ -386,7 +386,11 @@ $(document).ready(function() {
 		
 		bootbox.dialog({
 		   title: "Confirm ingredient deletion",
-		   message : 'Permanently delete <strong>'+ ing.Name +'</strong> and its data?',
+		   message : '<div class="alert alert-warning"><i class="fa-solid fa-triangle-exclamation mx-2"></i>WARNING, this action cannot be reverted.</div><p>Permantly delete <strong>'+ ing.Name +'</strong> and its data?</p>' +
+		   '<div class="form-group col-sm">' + 
+			'<input name="forceDelIng" id="forceDelIng" type="checkbox" value="1">'+
+			'<label class="form-check-label mx-2" for="forceDelIng">Force delete ingredient in use</label>'+
+		   '</div>',
 		   buttons :{
 			   main: {
 				   label : "Delete",
@@ -399,6 +403,7 @@ $(document).ready(function() {
 						data: {
 							ingredient: "delete",
 							ing_id: ing.ID,
+							forceDelIng: $("#forceDelIng").is(':checked')
 						},
 						dataType: 'json',
 						success: function (data) {

@@ -1,4 +1,23 @@
 # CHANGELOG
+### Version 11.3
+- Minor UI updates
+- Fix merge ingredient returning incorrect value when nothing found
+- Fix placeholder for ingredient selection in formula
+- Added force delete for ingredients in use
+- A new updated IFRA document added
+- IFRA document will show the maximum limit per all categories for 100% concentration
+- IFRA document will be generated regardless if final product is off ifra limits
+- Fixed currency symbol for finished product
+- Ingredient UI update
+- Formula UI and backend update
+- Structure update
+- UI update for IFRA Library
+- Refactor JSON import for IFRALibrary
+- Increase filter box size
+- Extended search to the product name for Batches
+- Added delete option for Batches even if the pdf is missing
+- Batches backend rewrite
+
 ### Version 11.2
 - Refactor of backend
 - Fix author name not display properly in the contact form in Marketplace

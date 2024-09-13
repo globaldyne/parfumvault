@@ -38,7 +38,7 @@ $(document).ready(function(){
 		minimumInputLength: 2,
 		dropdownAutoWidth: true,
 		allowClear: true,
-		placeholder: 'Choose ingredient (name, cas)',
+		placeholder: '',
 		templateResult: formatIngredients,
 		templateSelection: formatIngredientsSelection,
 		ajax: {
@@ -174,61 +174,58 @@ $(document).ready(function(){
 	
 	
 	function formatIngredientsSelection (ingredientData) {
+		if (ingredientData.id === '') {
+      		return 'Search ingredients (name, cas)';
+    	}
+
 		return ingredientData.name;
 	}
 	
 	//UPDATE PURITY
-	$('#ingredient').on('select2:selecting', function(e){
+	$('#ingredient').on('select2:selecting', function(e) {
 		var ingType = $(e.currentTarget).attr('ing-type');
 		var ingID = $(e.currentTarget).attr('ing-id');
-		//console.log(e);
-		$.ajax({ 
-			url: '/pages/getIngInfo.php', 
+		
+		$.ajax({
+			url: '/core/getIngInfo.php',
 			type: 'GET',
 			data: {
-				filter: "purity",
+				filter: "purity,solvent",
 				id: ingID
 			},
 			dataType: 'json',
-			success: function (data) {
-				if(ingType == 'Solvent'){
-					$("#concentration").prop("disabled", true); 
-					$("#dilutant").prop("disabled", true);
-					$("#concentration").val(100);
-					$("#dilutant").val('None');
-			  	}else{
-					$("#concentration").prop("disabled", false);
-					$("#concentration").val(data.purity).trigger("input");;
-			  	}
-			 	$("#quantity").prop("disabled", false);
-			 	$("#quantity").val();
-			}
-		  });
-		
-		$.ajax({ 
-			url: '/pages/getIngInfo.php', 
-			type: 'GET',
-			data: {
-				filter: "solvent",
-				id: ingID
-				},
-			dataType: 'json',
-			success: function (data) {
-			  $('#dilutant').val(data.solvent);
+			success: function(data) {
+				if (ingType === 'Solvent') {
+					$("#concentration").prop("disabled", true).val(100);
+					$("#dilutant").prop("disabled", true).val('none').selectpicker("refresh");
+				} else {
+					$("#concentration").prop("disabled", false).val(data.purity).trigger("input");
+					$("#dilutant").prop("disabled", false).val(data.solvent).selectpicker("refresh");
+				}
+	
+				$("#quantity").prop("disabled", false);
+			},
+			error: function(xhr, status, error) {
+				console.error('Error fetching ingredient info:', error);
 			}
 		});
-	
 	});
 	
-	$('#concentration').bind('input', function() {
-		var concentration = $('#concentration').val();
-		if(concentration >= 100){
-			$("#dilutant").prop("disabled", true); 
-			$("#dilutant").val('').selectpicker("refresh");
-		}else{
-			$("#dilutant").prop("disabled", false).selectpicker('refresh');
+	$('#concentration').on('input', function() {
+		const MAX_CONCENTRATION = 100;
+		var concentration = parseFloat($(this).val());
+	
+		if (!isNaN(concentration)) {
+			if (concentration >= MAX_CONCENTRATION) {
+				$("#dilutant").prop("disabled", true).val('none').selectpicker("refresh");
+			} else {
+				$("#dilutant").prop("disabled", false).selectpicker("refresh");
+			}
+		} else {
+			console.warn('Invalid concentration input');
 		}
-		//$('.selectpicker').selectpicker('refresh');
 	});
+
+
 
 });

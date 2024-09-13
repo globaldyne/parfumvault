@@ -1466,9 +1466,15 @@ if($_POST['ingredient'] == 'delete' && $_POST['ing_id']){
 	$id = mysqli_real_escape_string($conn, $_POST['ing_id']);
 	$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE id = '$id'"));
 	
-	if(mysqli_num_rows(mysqli_query($conn, "SELECT ingredient FROM formulas WHERE ingredient = '".$ing['name']."'"))){
-		$response["error"] = '<strong>'.$ing['name'].'</strong> is in use by at least one formula and cannot be removed!</div>';
-	}elseif(mysqli_query($conn, "DELETE FROM ingredients WHERE id = '$id'")){
+	if($_POST['forceDelIng'] == "false"){
+
+			if(mysqli_num_rows(mysqli_query($conn, "SELECT ingredient FROM formulas WHERE ingredient = '".$ing['name']."'"))){
+			$response["error"] = '<strong>'.$ing['name'].'</strong> is in use by at least one formula and cannot be removed!</div>';
+			echo json_encode($response);
+			return;
+		}
+	}
+	if(mysqli_query($conn, "DELETE FROM ingredients WHERE id = '$id'")){
 		mysqli_query($conn,"DELETE FROM ingredient_compounds WHERE ing = '".$ing['name']."'");
 		$response["success"] = 'Ingredient <strong>'.$ing['name'].'</strong> removed from the database!';
 	}

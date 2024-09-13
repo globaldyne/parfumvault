@@ -64,8 +64,8 @@ $fid = $meta['fid'];
 
 <div id="row pv_search">
 	<div class="text-right">
-    	<label for="pvCustomSearch" class="mx-2"><a href="#" class="text-light-emphasis" rel="tip" title="Use comma (,) separated values to search for different ingredients">Search in formula:</a></label>
-    	<input type="text" id="pvCustomSearch" placeholder="CAS, Ingredient, etc..">
+    	<label for="pvCustomSearch" class="mx-2"><a href="#" class="text-light-emphasis fs-6" rel="tip" title="Use comma (,) separated values to search for different ingredients"><i class="fa-solid fa-circle-info"></i></a></label>
+    	<input type="text" id="pvCustomSearch" class="pvCustomSearch" placeholder="Search by CAS, Ingredient, etc..">
 	</div>
 </div>
 <table id="formula" class="table table-hover table-striped nowrap viewFormula" style="width:100%">
@@ -141,8 +141,8 @@ $(document).ready(function() {
 			loadingRecords: '&nbsp;',
 			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Blending...</span>',
 			emptyTable: '<div class="alert alert-warning"><strong>Empty formula. Please add ingredients.</strong></div>',
-			search: "Search in formula:",
-			searchPlaceholder: "CAS, Ingredient, etc.."
+			search: '',
+			searchPlaceholder: "Search by CAS, Ingredient..."
 		},
     	ajax: {
     		url: '/core/full_formula_data.php',
@@ -967,8 +967,11 @@ function ingActions(data, type, row, meta){
         <input type="hidden" name="curQuantity" id="curQuantity" />
         
         <div class="mb-3">
-          <label for="ingQuantity" class="form-label">Quantity in <?= $settings['mUnit'] ?></label>
-          <input name="ingQuantity" type="text" class="form-control" id="ingQuantity">
+          	<label for="ingQuantity" class="form-label">Quantity in <?= $settings['mUnit'] ?></label>
+           	<div class="input-group">
+          		<input name="ingQuantity" type="text" class="form-control" id="ingQuantity">
+          		<span class="input-group-text" id="quantity-addon"><?=$settings['mUnit']?></span>
+			</div>
         </div>
 
         <div class="form-check mb-3">
@@ -979,8 +982,7 @@ function ingActions(data, type, row, meta){
         <div id="slvMeta" class="mb-3">
           <label for="formulaSolvents" class="form-label">Select Solvent</label>
           <select name="formulaSolvents" id="formulaSolvents" class="form-select"></select>
-          <div id="explain" class="mt-3 alert alert-info">
-            Auto adjust the total quantity by increasing or decreasing quantity from the selected solvent if enough is available.<br>
+          <div id="explain" class="mt-3 alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i>Auto adjust the total quantity by increasing or decreasing quantity from the selected solvent if enough is available.<br>
             For example, if you add 1 more <?= $settings['mUnit'] ?> to the current ingredient, the selected solvent's quantity will be deducted by 1<?= $settings['mUnit'] ?> equally.
           </div>
         </div>
@@ -1006,8 +1008,7 @@ function ingActions(data, type, row, meta){
         <input type="hidden" name="ingSrcID" id="ingSrcID" />
         <input type="hidden" name="ingSrcName" id="ingSrcName" />
         
-        <div class="alert alert-info">
-          You can merge <span id="srcIng"></span>'s quantity with another material in the formula. Use this method if the materials are similar. Please note, this action cannot be reverted, and the quantity will be added to the target ingredient's quantity.
+        <div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i>You can merge <span id="srcIng"></span>'s quantity with another material in the formula. Use this method if the materials are similar. Please note, this action cannot be reverted, and the quantity will be added to the target ingredient's quantity.
         </div>
         
         <div class="mb-3">
@@ -1036,7 +1037,7 @@ function ingActions(data, type, row, meta){
       	<div id="msgRepl"></div>
         <input type="hidden" name="ingRepID" id="ingRepID" />
         <input type="hidden" name="ingRepName" id="ingRepName" />
-      	<div class="alert alert-info">Replace <div id="ingRepName"></div> with another ingredient, quantity and dilution values will not be affected.</div>
+      	<div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i>Replace <div id="ingRepName"></div> with another ingredient, quantity and dilution values will not be affected.</div>
         Replace <div id="ingRepName"></div> with: 
         <select name="repIngNameDest" id="repIngNameDest" class="repIngNameDest pv-form-control"></select>
         <p>

@@ -53,7 +53,8 @@ $(document).ready(function() {
 			loadingRecords: '&nbsp;',
 			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
 			emptyTable: 'No synonyms added yet.',
-			search: 'Search:'
+			search: '',
+			searchPlaceholder: 'Search by name...',
 		},
 		ajax: {	url: '/core/list_ing_synonyms_data.php?id=<?=$ingName?>' },
 		columns: [
@@ -78,7 +79,12 @@ $(document).ready(function() {
 
 
 	function synActions(data, type, row){
-		return '<a href="#" id="synDel" class="fas fa-trash link-danger" data-id="'+row.id+'" data-name="'+row.synonym+'"></a>';    
+		data = '<div class="dropdown">' +
+		'<button type="button" class="btn btn-floating hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+			'<ul class="dropdown-menu">';
+		data += '<li><a class="dropdown-item text-danger" href="#" id="synDel" rel="tip" title="Remove '+ row.synonym +'" data-id='+ row.id +' data-name="'+ row.synonym +'"><i class="fas fa-trash mx-2"></i>Remove</a></li>';
+		data += '</ul></div>';
+		return data;
 	};
 
 	$('#tdSynonyms').editable({

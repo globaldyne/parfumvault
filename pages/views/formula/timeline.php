@@ -27,13 +27,14 @@ $(document).ready(function(){
 			loadingRecords: '&nbsp;',
 			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
 			emptyTable: 'No data found.',
-			search: 'Search:'
+			search: '',
+			searchPlaceholder: 'Search by name...',
 		},
 		ajax: {	
 			url: '/core/formula_timeline_data.php',
 			type: 'GET',
 			data: {
-					id: '<?=$_GET['id']?>',
+				id: '<?=$_GET['id']?>',
 			},
 		},
 		columns: [

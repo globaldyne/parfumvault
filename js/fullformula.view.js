@@ -258,7 +258,7 @@ $("#formula").on("click", ".open-replace-dialog", function () {
 	
 	$("#repIngNameDest").select2({
 		width: '100%',
-		placeholder: 'Search for ingredient (name, cas)',
+		placeholder: '',
 		allowClear: true,
 		dropdownAutoWidth: true,
 		containerCssClass: "repIngNameDest",
@@ -309,12 +309,15 @@ $("#formula").on("click", ".open-replace-dialog", function () {
 
 
 	function formatIngredients (ingredientData) {
+		//console.log(ingredientData);
+		if (ingredientData.name === '') {
+      		return 'Search for ingredient (name, cas)';
+    	}
+
 		if (ingredientData.loading) {
 			return ingredientData.name;
 		}
-	 
-		//extrasShow();
-	
+	 	
 		if (!ingredientData.name){
 			return 'No ingredient found...';
 		}

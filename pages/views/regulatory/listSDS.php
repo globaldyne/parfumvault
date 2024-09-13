@@ -82,8 +82,8 @@ $(document).ready(function() {
 		loadingRecords: '&nbsp;',
 		processing: 'Please Wait...',
 		zeroRecords: 'Nothing found',
-		search: 'Quick Search:',
-		searchPlaceholder: 'Product Name..',
+		search: '',
+		searchPlaceholder: 'Search by name...',
 	},
 	ajax: {	
 		url: '/core/list_SDS_data.php',
