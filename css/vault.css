@@ -836,6 +836,16 @@ body {
 	background-color: #f6c23e75 !important;	
 }
 
+.pv_formula_nodiff {
+  color: #fff;
+  background-color: #539562 !important;
+}
+
+.pv_formula_missing {
+  background-color: #bd8787 !important;
+}
+
+
 #formula_name {
     display: inline;
 }
@@ -1335,8 +1345,9 @@ hr.hr-text::before {
 
 .badge-success {
   color: #fff;
-  background-color: #28a745;
+  background-color: #28a745 !important;
 }
+
 
 .badge-success[href]:hover, .badge-success[href]:focus {
   color: #fff;

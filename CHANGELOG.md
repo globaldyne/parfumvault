@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 11.4
+- Cleaner and better view for formula comparison
 
 ### Version 11.3
 - Minor UI updates
