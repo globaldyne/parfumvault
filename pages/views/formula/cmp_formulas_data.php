@@ -66,7 +66,9 @@ $(document).ready(function() {
     lengthMenu: [[50, 100, 200, -1], [50, 100, 200, "All"]],
     pageLength: 100,
     displayLength: 100,
-
+	drawCallback: function( settings ) {
+			extrasShow();
+	},
     rowCallback: function (formula_b_tableRow, formula_b_tableData) {
       var isMatching = false;
       var comparisonIcon = '';
@@ -79,9 +81,9 @@ $(document).ready(function() {
           isMatching = true;
 
           if (parseFloat(formula_b_tableData.concentration) > parseFloat(formula_a_data.concentration)) {
-            comparisonIcon = '<i class="fa-solid fa-arrow-trend-up"></i>';
+            comparisonIcon = '<i class="fa-solid fa-arrow-trend-up" rel="tip" title="Value has been increased"></i>';
           } else if (parseFloat(formula_b_tableData.concentration) < parseFloat(formula_a_data.concentration)) {
-            comparisonIcon = '<i class="fa-solid fa-arrow-trend-down"></i>';
+            comparisonIcon = '<i class="fa-solid fa-arrow-trend-down" rel="tip" title="Value has been decreased"></i>';
           }
 
           $('td:eq(2)', formula_b_tableRow).html(formula_b_tableData.concentration + ' ' + comparisonIcon);
@@ -92,7 +94,7 @@ $(document).ready(function() {
       if (!isMatching) {
         $(formula_b_tableRow).removeClass().addClass('pv_formula_missing');
  		var currentHtml = $('td:eq(2)', formula_b_tableRow).html();
-        $('td:eq(2)', formula_b_tableRow).html(currentHtml + ' <i class="fa-solid fa-circle-minus"></i>');
+        $('td:eq(2)', formula_b_tableRow).html(currentHtml + ' <i class="fa-solid fa-circle-minus" rel="tip" title="Ingredient has been removed"></i>');
 
       } else {
         if (comparisonIcon !== '') {
@@ -105,6 +107,12 @@ $(document).ready(function() {
   });
 });
 
+function extrasShow() {
+	$('[rel=tip]').tooltip({
+		"html": true,
+		"delay": {"show": 100, "hide": 0},
+	 });
+};
 </script>
 <div class="compare">
     <div class="cmp_a">
