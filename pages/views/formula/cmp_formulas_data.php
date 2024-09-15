@@ -37,6 +37,9 @@ $(document).ready(function() {
     lengthMenu: [[50, 100, 200, -1], [50, 100, 200, "All"]],
     pageLength: 100,
     displayLength: 100,
+	drawCallback: function( settings ) {
+		extrasShow();
+	},
   });
   
   $('<div class="formula-name" style="float:left; font-weight:bold; margin-top:-35px;">' + formula_a_name + '</div>').appendTo('.formula-name-a');
@@ -85,9 +88,9 @@ $(document).ready(function() {
           isMatching = true;
 
           if (parseFloat(formula_b_tableData.concentration) > parseFloat(formula_a_data.concentration)) {
-            comparisonIcon = '<i class="fa-solid fa-arrow-trend-up" rel="tip" title="Value has been increased"></i>';
+            comparisonIcon = '<i class="fa-solid fa-arrow-trend-up mx-2" rel="tip" title="Value has been increased"></i>';
           } else if (parseFloat(formula_b_tableData.concentration) < parseFloat(formula_a_data.concentration)) {
-            comparisonIcon = '<i class="fa-solid fa-arrow-trend-down" rel="tip" title="Value has been decreased"></i>';
+            comparisonIcon = '<i class="fa-solid fa-arrow-trend-down mx-2" rel="tip" title="Value has been decreased"></i>';
           }
 
           $('td:eq(2)', formula_b_tableRow).html(formula_b_tableData.concentration + ' ' + comparisonIcon);
@@ -98,7 +101,7 @@ $(document).ready(function() {
       if (!isMatching) {
         $(formula_b_tableRow).removeClass().addClass('pv_formula_added');
  		var currentHtml = $('td:eq(2)', formula_b_tableRow).html();
-        $('td:eq(2)', formula_b_tableRow).html(currentHtml + ' <i class="fa-solid fa-circle-plus" rel="tip" title="Ingredient has been added"></i>');
+        $('td:eq(2)', formula_b_tableRow).html(currentHtml + ' <i class="fa-solid fa-circle-plus mx-2" rel="tip" title="Ingredient has been added"></i>');
 
       } else {
         if (comparisonIcon !== '') {
@@ -110,7 +113,33 @@ $(document).ready(function() {
     }
   });
   
-    $('<div class="formula-name" style="float:left; font-weight:bold; margin-top:-35px;">' + formula_b_name + '</div>').appendTo('.formula-name-b');
+  $('<div class="formula-name" style="float:left; font-weight:bold; margin-top:-35px;">' + formula_b_name + '</div>').appendTo('.formula-name-b');
+
+  formula_b_table.on('draw', function () {
+    formula_b_length = formula_b_table.rows().count();
+
+    formula_a_table.rows().every(function () {
+      var formula_a_data = this.data();
+      var isFoundInB = false;
+
+      for (var x = 0; x < formula_b_length; x++) {
+        var formula_b_data = formula_b_table.row(x).data();
+
+        if (formula_a_data.ingredient.name === formula_b_data.ingredient.name) {
+          isFoundInB = true;
+          break;
+        }
+      }
+
+      if (!isFoundInB) {
+        $(this.node()).addClass('pv_formula_missing');
+		 // Get the current concentration cell value and append the minus icon
+        var currentHtml = $('td:eq(2)', this.node()).html();
+        $('td:eq(2)', this.node()).html(currentHtml + ' <i class="fa-solid fa-circle-minus mx-2" rel="tip" title="Ingredient has been removed"></i>');
+
+      }
+    });
+  });
 
   function extrasShow() {
 	$('[rel=tip]').tooltip({
