@@ -66,8 +66,10 @@ $(document).ready(function() {
 			url: '/pages/views/formula/cmp_formulas_data.php', 
 			type: 'POST',
 			data: {
-				id_a: $("#formula_a").val(),			
+				id_a: $("#formula_a").val(),
+                name_a: $("#formula_a option:selected").text(),
 				id_b: $("#formula_b").val(),
+                name_b: $("#formula_b option:selected").text(),
 			},
 			dataType: 'html',
 			success: function (data) {

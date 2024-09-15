@@ -14,10 +14,12 @@ $id_b = mysqli_real_escape_string($conn, $_POST['id_b']);
 
 $(document).ready(function() {
   var formula_a_length;
+  var formula_a_name = '<?=$_POST['name_a']?>'; // Replace with dynamic name if needed
+  var formula_b_name = '<?=$_POST['name_b']?>'; //
   
   var formula_a_table = $('#formula_a_table').DataTable({
-    dom: 'lfrtip',
-    language: {
+    dom: '<"top"f><"formula-name-a">rt<"bottom"lip><"clear">',
+	language: {
       loadingRecords: '&nbsp;',
       processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
       emptyTable: "Incomplete formula.",
@@ -36,6 +38,8 @@ $(document).ready(function() {
     pageLength: 100,
     displayLength: 100,
   });
+  
+  $('<div class="formula-name" style="float:left; font-weight:bold; margin-top:-35px;">' + formula_a_name + '</div>').appendTo('.formula-name-a');
 
   formula_a_table.on('draw', function () {
     formula_a_length = formula_a_table.rows().count();
@@ -47,7 +51,7 @@ $(document).ready(function() {
   <?php } ?>
 
   var formula_b_table = $('#formula_b_table').DataTable({
-    dom: 'lfrtip',
+    dom: '<"top"f><"formula-name-b">rt<"bottom"lip><"clear">',
     language: {
       loadingRecords: '&nbsp;',
       processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
@@ -92,9 +96,9 @@ $(document).ready(function() {
       }
 
       if (!isMatching) {
-        $(formula_b_tableRow).removeClass().addClass('pv_formula_missing');
+        $(formula_b_tableRow).removeClass().addClass('pv_formula_added');
  		var currentHtml = $('td:eq(2)', formula_b_tableRow).html();
-        $('td:eq(2)', formula_b_tableRow).html(currentHtml + ' <i class="fa-solid fa-circle-minus" rel="tip" title="Ingredient has been removed"></i>');
+        $('td:eq(2)', formula_b_tableRow).html(currentHtml + ' <i class="fa-solid fa-circle-plus" rel="tip" title="Ingredient has been added"></i>');
 
       } else {
         if (comparisonIcon !== '') {
@@ -105,14 +109,19 @@ $(document).ready(function() {
       }
     }
   });
-});
+  
+    $('<div class="formula-name" style="float:left; font-weight:bold; margin-top:-35px;">' + formula_b_name + '</div>').appendTo('.formula-name-b');
 
-function extrasShow() {
+  function extrasShow() {
 	$('[rel=tip]').tooltip({
 		"html": true,
 		"delay": {"show": 100, "hide": 0},
 	 });
-};
+  };
+	
+});
+
+
 </script>
 <div class="compare">
     <div class="cmp_a">
