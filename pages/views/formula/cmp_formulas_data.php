@@ -37,12 +37,12 @@ $(document).ready(function() {
     lengthMenu: [[50, 100, 200, -1], [50, 100, 200, "All"]],
     pageLength: 100,
     displayLength: 100,
-	drawCallback: function( settings ) {
+	drawCallback: function() {
 		extrasShow();
 	},
   });
   
-  $('<div class="formula-name" style="float:left; font-weight:bold; margin-top:-35px;">' + formula_a_name + '</div>').appendTo('.formula-name-a');
+  $('<div class="formula-name" style="float:left; font-weight:bold; margin-top:-35px;"><a href="/?do=Formula&id=<?=$id_a?>" target="_blank">' + formula_a_name + '<i class="fa-solid fa-arrow-up-right-from-square ml-2"></i></a></div>').appendTo('.formula-name-a');
 
   formula_a_table.on('draw', function () {
     formula_a_length = formula_a_table.rows().count();
@@ -73,8 +73,8 @@ $(document).ready(function() {
     lengthMenu: [[50, 100, 200, -1], [50, 100, 200, "All"]],
     pageLength: 100,
     displayLength: 100,
-	drawCallback: function( settings ) {
-			extrasShow();
+	drawCallback: function() {
+		extrasShow();
 	},
     rowCallback: function (formula_b_tableRow, formula_b_tableData) {
       var isMatching = false;
@@ -113,7 +113,7 @@ $(document).ready(function() {
     }
   });
   
-  $('<div class="formula-name" style="float:left; font-weight:bold; margin-top:-35px;">' + formula_b_name + '</div>').appendTo('.formula-name-b');
+  $('<div class="formula-name" style="float:left; font-weight:bold; margin-top:-35px;"><a href="/?do=Formula&id=<?=$id_b?>" target="_blank">' + formula_b_name + '<i class="fa-solid fa-arrow-up-right-from-square ml-2"></i></a></div>').appendTo('.formula-name-b');
 
   formula_b_table.on('draw', function () {
     formula_b_length = formula_b_table.rows().count();
@@ -133,7 +133,6 @@ $(document).ready(function() {
 
       if (!isFoundInB) {
         $(this.node()).addClass('pv_formula_missing');
-		 // Get the current concentration cell value and append the minus icon
         var currentHtml = $('td:eq(2)', this.node()).html();
         $('td:eq(2)', this.node()).html(currentHtml + ' <i class="fa-solid fa-circle-minus mx-2" rel="tip" title="Ingredient has been removed"></i>');
 
