@@ -839,6 +839,10 @@ body {
   background-color: #47aa5d !important;
 }
 
+.pv_formula_match {
+  background-color: #47aa5d !important;
+}
+
 .pv_formula_missing {
   background-color: #bd8787 !important;
 }

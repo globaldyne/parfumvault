@@ -14,11 +14,12 @@ $id_b = mysqli_real_escape_string($conn, $_POST['id_b']);
 
 $(document).ready(function() {
   var formula_a_length;
-  var formula_a_name = '<?=$_POST['name_a']?>'; // Replace with dynamic name if needed
-  var formula_b_name = '<?=$_POST['name_b']?>'; //
+  var formula_a_name = '<?=$_POST['name_a']?>';
+  var formula_b_name = '<?=$_POST['name_b']?>';
   
   var formula_a_table = $('#formula_a_table').DataTable({
     dom: '<"top"f><"formula-name-a">rt<"bottom"lip><"clear">',
+	processing: true,
 	language: {
       loadingRecords: '&nbsp;',
       processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
@@ -37,9 +38,6 @@ $(document).ready(function() {
     lengthMenu: [[50, 100, 200, -1], [50, 100, 200, "All"]],
     pageLength: 100,
     displayLength: 100,
-	drawCallback: function() {
-		extrasShow();
-	},
   });
   
   $('<div class="formula-name" style="float:left; font-weight:bold; margin-top:-35px;"><a href="/?do=Formula&id=<?=$id_a?>" target="_blank">' + formula_a_name + '<i class="fa-solid fa-arrow-up-right-from-square ml-2"></i></a></div>').appendTo('.formula-name-a');
@@ -55,6 +53,7 @@ $(document).ready(function() {
 
   var formula_b_table = $('#formula_b_table').DataTable({
     dom: '<"top"f><"formula-name-b">rt<"bottom"lip><"clear">',
+	processing: true,
     language: {
       loadingRecords: '&nbsp;',
       processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
@@ -73,9 +72,7 @@ $(document).ready(function() {
     lengthMenu: [[50, 100, 200, -1], [50, 100, 200, "All"]],
     pageLength: 100,
     displayLength: 100,
-	drawCallback: function() {
-		extrasShow();
-	},
+	
     rowCallback: function (formula_b_tableRow, formula_b_tableData) {
       var isMatching = false;
       var comparisonIcon = '';
@@ -91,7 +88,15 @@ $(document).ready(function() {
             comparisonIcon = '<i class="fa-solid fa-arrow-trend-up mx-2" rel="tip" title="Value has been increased"></i>';
           } else if (parseFloat(formula_b_tableData.concentration) < parseFloat(formula_a_data.concentration)) {
             comparisonIcon = '<i class="fa-solid fa-arrow-trend-down mx-2" rel="tip" title="Value has been decreased"></i>';
-          }
+          }else {
+        	comparisonIcon = '<i class="fa-solid fa-check mx-2" rel="tip" title="Value matches"></i>';
+         	//$(formula_b_tableRow).removeClass().addClass('pv_formula_nodiff');
+			$(formula_b_tableRow).addClass('pv_formula_nodiff');
+
+		  	$(formula_a_table.row(y).node()).addClass('pv_formula_nodiff');
+        	$('td:eq(2)', formula_a_table.row(y).node()).html(formula_a_data.concentration + ' <i class="fa-solid fa-check mx-2" rel="tip" title="Value matches"></i>');
+    		extrasShow();
+      }
 
           $('td:eq(2)', formula_b_tableRow).html(formula_b_tableData.concentration + ' ' + comparisonIcon);
           break;
@@ -100,11 +105,11 @@ $(document).ready(function() {
 
       if (!isMatching) {
         $(formula_b_tableRow).removeClass().addClass('pv_formula_added');
- 		var currentHtml = $('td:eq(2)', formula_b_tableRow).html();
+ 		var currentHtml = $('td:eq(2)', formula_b_tableRow).text();
         $('td:eq(2)', formula_b_tableRow).html(currentHtml + ' <i class="fa-solid fa-circle-plus mx-2" rel="tip" title="Ingredient has been added"></i>');
 
       } else {
-        if (comparisonIcon !== '') {
+    	if (comparisonIcon !== '' && comparisonIcon.indexOf('fa-check') === -1) {
           $(formula_b_tableRow).removeClass().addClass('pv_formula_diff');
         } else {
           $(formula_b_tableRow).removeClass().addClass('pv_formula_nodiff');
@@ -133,8 +138,9 @@ $(document).ready(function() {
 
       if (!isFoundInB) {
         $(this.node()).addClass('pv_formula_missing');
-        var currentHtml = $('td:eq(2)', this.node()).html();
+        var currentHtml = $('td:eq(2)', this.node()).text();
         $('td:eq(2)', this.node()).html(currentHtml + ' <i class="fa-solid fa-circle-minus mx-2" rel="tip" title="Ingredient has been removed"></i>');
+    	extrasShow();
 
       }
     });
