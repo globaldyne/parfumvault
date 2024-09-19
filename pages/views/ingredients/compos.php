@@ -92,7 +92,9 @@ $(document).ready(function() {
 		order: [[ 1, 'asc' ]],
 		lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
 		pageLength: 20,
-		displayLength: 20,		
+		displayLength: 20,
+		scrollCollapse: true,
+    	scrollY: '500px'
 	});
 	
 	$('#allgName').on('input', function(){
