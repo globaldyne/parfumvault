@@ -4,6 +4,7 @@ define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__)))));
 
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/inc/settings.php');
 
 if(!$_GET['ingID']){
 	echo 'Invalid ID';
@@ -34,7 +35,10 @@ $ing['soluble'] = explode(',', $ing['soluble']);
     <div class="row mb-3">
         <div class="col-md-6">
             <label for="flash_point" class="form-label">Flash Point</label>
-            <input name="flash_point" type="text" class="form-control" id="flash_point" value="<?php echo $ing['flash_point']; ?>" />
+            <div class="input-group">
+            	<input name="flash_point" type="text" class="form-control" id="flash_point" value="<?php echo $ing['flash_point']; ?>" />
+            	<span class="input-group-text" id="cat-addon"><?=$settings['temp_sys']?></span>
+           	</div>
         </div>
         <div class="col-md-6">
             <label for="chemical_name" class="form-label">Chemical Name</label>

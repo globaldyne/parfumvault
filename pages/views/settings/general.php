@@ -118,6 +118,16 @@ while($cats_res = mysqli_fetch_array($cats_q)){
                     <option value="dark" <?= $settings['bs_theme'] == "dark" ? 'selected' : '' ?>>Dark</option>
                 </select>
             </div>
+            
+            <div class="mb-3 col-md-6">
+               <label for="temp_sys" class="form-label">Temprature unit</label>
+               <select name="temp_sys" id="temp_sys" class="form-select">
+                   <option value="°C" <?= $settings['temp_sys'] == "°C" ? 'selected' : '' ?>>Celsius (°C)</option>
+                   <option value="°F" <?= $settings['temp_sys'] == "°F" ? 'selected' : '' ?>>Fahrenheit (°F)</option>
+                   <option value="K" <?= $settings['temp_sys'] == "K" ? 'selected' : '' ?>>Kelvin (K)</option>
+               </select>
+            </div>
+            
         </div>
     </div>
 
@@ -196,7 +206,8 @@ $(document).ready(function() {
 				user_pref_eng: $("#user_pref_eng").val(),
 				pv_host: $("#pvHost").val(),
 				defPercentage: $("#defPercentage").val(),
-				bs_theme: $("#bs_theme").val()
+				bs_theme: $("#bs_theme").val(),
+				temp_sys: $("#temp_sys").val()
 	
 		},
 		dataType: 'json',

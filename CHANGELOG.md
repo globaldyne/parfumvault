@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 11.4
+- Add temprature measurement unit
 - Add solubility options instead of a free text for ingredients
 - Cleaner and better view for formula comparison
 - Minor UI updates
