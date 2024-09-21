@@ -70,6 +70,16 @@ $ing['soluble'] = explode(',', $ing['soluble']);
                     <?php if(in_array('2', $ing['soluble'])) echo 'checked'; ?>>
                 <label class="form-check-label" for="solubleEthanol">Ethanol</label>
             </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" name="soluble[]" id="solubleDPG" value="3" 
+                    <?php if(in_array('3', $ing['soluble'])) echo 'checked'; ?>>
+                <label class="form-check-label" for="solubleDPG">DPG</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" name="soluble[]" id="solubleIPM" value="4" 
+                    <?php if(in_array('4', $ing['soluble'])) echo 'checked'; ?>>
+                <label class="form-check-label" for="solubleIPM">IPM</label>
+            </div>
         </div>
         <div class="col-md-6">
             <label for="molecularWeight" class="form-label">Molecular Weight</label>
