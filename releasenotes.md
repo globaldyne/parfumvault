@@ -1,7 +1,3 @@
-Whats New in v11.4
+Whats New in v11.5
 --------------------------
-- Add shelf life for ingredients
-- Add temprature measurement unit
-- Add solubility options instead of a free text for ingredients
-- Cleaner and better view for formula comparison
 - This release may include more changes, for full details please refer to the CHANGELOG
