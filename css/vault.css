@@ -832,8 +832,23 @@ body {
 }
 
 .pv_formula_diff {
-	color: #858796;
 	background-color: #f6c23e75 !important;	
+}
+
+.pv_formula_nodiff {
+  background-color: #47aa5d !important;
+}
+
+.pv_formula_match {
+  background-color: #47aa5d !important;
+}
+
+.pv_formula_missing {
+  background-color: #bd8787 !important;
+}
+
+.pv_formula_added {
+  background-color: #a587bd !important;
 }
 
 #formula_name {
@@ -1335,8 +1350,9 @@ hr.hr-text::before {
 
 .badge-success {
   color: #fff;
-  background-color: #28a745;
+  background-color: #28a745 !important;
 }
+
 
 .badge-success[href]:hover, .badge-success[href]:focus {
   color: #fff;

@@ -94,15 +94,17 @@ $ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
           </div>
           <div class="col-md-12" id="bk_res_info">
              <hr />
-             <p><strong>IMPORTANT:</strong></p>
-              <ul>
-                <li><div id="raw" data-size="<?=getMaximumFileUploadSizeRaw()?>">Maximum file size: <strong><?=getMaximumFileUploadSize()?></strong></div></li>
-                <li>Backup file must match your current PV version<strong> (<?=$ver?>)</strong>, if not downgrade or upgrade accordingly before restoring a backup</li>
-                <li>You current database will be wiped-out so if it contains any data you wanna keep, please take a <a href="#" data-bs-toggle="modal" data-bs-target="#backup_db" id="bk_modal_open" class="text-primary">backup</a> first</li>
-              </ul>
-    <p>&nbsp;</p>
-            </div>
+             <div class="alert alert-info">
+             	<i class="fa-solid fa-circle-info"></i>
+             	<strong>IMPORTANT</strong>
+                  <ul>
+                    <li><div id="raw" data-size="<?=getMaximumFileUploadSizeRaw()?>">Maximum file size: <strong><?=getMaximumFileUploadSize()?></strong></div></li>
+                    <li>Backup file must match your current PV version<strong> (<?=$ver?>)</strong>, if not downgrade or upgrade accordingly before restoring a backup</li>
+                    <li>You current database will be wiped-out so if it contains any data you wanna keep, please take a <a href="#" data-bs-toggle="modal" data-bs-target="#backup_db" id="bk_modal_open" class="text-primary">backup</a> first</li>
+                  </ul>
+    		</div>
           </div>
+        </div>
       </div>
 	  <div class="modal-footer">
         <input type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseBK" value="Cancel">
@@ -128,6 +130,9 @@ $('#btnClear').click(function() {
 		},
 		error: function (request, status, error) {
 			$("#btnClear").prop("disabled", false);
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
 		},
 			
 	});

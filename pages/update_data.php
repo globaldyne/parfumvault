@@ -1665,11 +1665,12 @@ if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'tech_data'){
 	$molecularWeight = mysqli_real_escape_string($conn, $_POST["molecularWeight"]);
 	$appearance = mysqli_real_escape_string($conn, $_POST["appearance"]);
 	$rdi = (int)$_POST["rdi"]?:0;
+	$shelf_life = mysqli_real_escape_string($conn, $_POST["shelf_life"]) ?: 0;
 
 	
-	$query = "UPDATE ingredients SET tenacity='$tenacity',flash_point='$flash_point',chemical_name='$chemical_name',formula='$formula',logp = '$logp',soluble = '$soluble',molecularWeight = '$molecularWeight',appearance='$appearance',rdi='$rdi' WHERE id='$ingID'";
+	$query = "UPDATE ingredients SET tenacity='$tenacity',flash_point='$flash_point',chemical_name='$chemical_name',formula='$formula',logp = '$logp',soluble = '$soluble',molecularWeight = '$molecularWeight',appearance='$appearance',rdi='$rdi', shelf_life = '$shelf_life' WHERE id='$ingID'";
 	if(mysqli_query($conn, $query)){
-		$response["success"] = 'Technical data has been updated!';
+		$response["success"] = 'Technical data has been updated';
 	}else{
 		$response["error"] = 'Something went wrong '.mysqli_error($conn);
 	}	

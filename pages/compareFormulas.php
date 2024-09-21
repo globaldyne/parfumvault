@@ -9,12 +9,12 @@
         <div class="card-body">
           <?php 
             if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))== 0){
-              echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> You need to <a href="/?do=listFormulas">create</a> at least one formula first.</div>';
+              echo '<div class="alert alert-info"><i class="fa-solid fa-triangle-exclamation mx-2"></i>You need to <a href="/?do=listFormulas">create</a> at least one formula first.</div>';
               return;
             }
             
             if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE type = 'Carrier' OR type = 'Solvent'"))== 0){
-              echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> You need to <a href="/?do=ingredients">add</a> at least one solvent or carrier first.</div>';
+              echo '<div class="alert alert-info"><i class="fa-solid fa-triangle-exclamation mx-2"></i>You need to <a href="/?do=ingredients">add</a> at least one solvent or carrier first.</div>';
               return;
             }
           ?>
@@ -66,8 +66,10 @@ $(document).ready(function() {
 			url: '/pages/views/formula/cmp_formulas_data.php', 
 			type: 'POST',
 			data: {
-				id_a: $("#formula_a").val(),			
+				id_a: $("#formula_a").val(),
+                name_a: $("#formula_a option:selected").text(),
 				id_b: $("#formula_b").val(),
+                name_b: $("#formula_b option:selected").text(),
 			},
 			dataType: 'html',
 			success: function (data) {

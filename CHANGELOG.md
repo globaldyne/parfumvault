@@ -1,4 +1,11 @@
 # CHANGELOG
+### Version 11.4
+- Add shelf life for ingredients
+- Add temprature measurement unit
+- Add solubility options instead of a free text for ingredients
+- Cleaner and better view for formula comparison
+- Minor UI updates
+
 ### Version 11.3
 - Minor UI updates
 - Fix merge ingredient returning incorrect value when nothing found
