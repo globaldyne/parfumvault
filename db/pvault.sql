@@ -234,7 +234,8 @@ CREATE TABLE `ingredients` (
   `isPrivate` INT NULL DEFAULT '0',
   `molecularWeight` VARCHAR(255) NULL,
   `physical_state` INT NULL DEFAULT '1',
-  `cid` INT NULL, 
+  `cid` INT NULL,
+  `shelf_life` INT NOT NULL DEFAULT '0'
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
@@ -329,7 +330,8 @@ CREATE TABLE `settings` (
   `pv_scale_enabled` INT NOT NULL DEFAULT '0',
   `pv_host` VARCHAR(255) NOT NULL DEFAULT 'localhost',
   `sds_disclaimer` MEDIUMTEXT NOT NULL DEFAULT 'PLEASE ADD A PROPER DISCLAIMER MESSAGE',
-  `bs_theme` VARCHAR(255) NOT NULL DEFAULT 'light'
+  `bs_theme` VARCHAR(255) NOT NULL DEFAULT 'light',
+  `temp_sys` VARCHAR(255) NOT NULL DEFAULT '°C'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 INSERT INTO `settings` (`id`, `currency`, `top_n`, `heart_n`, `base_n`, `chem_vs_brand`, `grp_formula`, `brandName`, `brandAddress`, `brandEmail`, `brandPhone`, `brandLogo`) VALUES

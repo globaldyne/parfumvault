@@ -3,7 +3,6 @@ define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__)))));
 
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
-
 require_once(__ROOT__.'/inc/settings.php');
 
 ?>
@@ -25,7 +24,7 @@ require_once(__ROOT__.'/inc/settings.php');
     </div>
 </div>
 <div class="col-2">
-    <input type="submit" name="save-api" id="save-api" value="Submit" class="btn btn-primary"/>
+    <input type="submit" name="save-api" id="save-api" value="Save" class="btn btn-primary"/>
 </div>
 
 
@@ -49,6 +48,11 @@ $(document).ready(function() {
 					$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
 					$('.toast-header').removeClass().addClass('toast-header alert-danger');
 				}
+				$('.toast').toast('show');
+			},
+			error: function (xhr, status, error) {
+				$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
 				$('.toast').toast('show');
 			}
 		});
