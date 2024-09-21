@@ -11,7 +11,7 @@ if(!$_GET['ingID']){
 	return;
 }
 
-$query = "SELECT id, tenacity, flash_point, chemical_name, formula, logp, soluble, molecularWeight, appearance, rdi FROM ingredients WHERE id = '".$_GET['ingID']."'";
+$query = "SELECT id, tenacity, flash_point, chemical_name, formula, logp, soluble, molecularWeight, appearance, rdi, shelf_life FROM ingredients WHERE id = '".$_GET['ingID']."'";
 $result = mysqli_query($conn, $query);
 $ing = mysqli_fetch_array($result);
 
@@ -37,7 +37,7 @@ $ing['soluble'] = explode(',', $ing['soluble']);
             <label for="flash_point" class="form-label">Flash Point</label>
             <div class="input-group">
             	<input name="flash_point" type="text" class="form-control" id="flash_point" value="<?php echo $ing['flash_point']; ?>" />
-            	<span class="input-group-text" id="cat-addon"><?=$settings['temp_sys']?></span>
+            	<span class="input-group-text" id="flash-point-addon"><?=$settings['temp_sys']?></span>
            	</div>
         </div>
         <div class="col-md-6">
@@ -82,6 +82,13 @@ $ing['soluble'] = explode(',', $ing['soluble']);
             <label for="appearance" class="form-label">Appearance</label>
             <input name="appearance" type="text" class="form-control" id="appearance" value="<?php echo $ing['appearance']; ?>" />
         </div>
+        <div class="col-md-6">
+            <label for="shelf_life" class="form-label">Shelf Life</label>
+            <div class="input-group">
+            	<input name="shelf_life" type="text" class="form-control" id="shelf_life" value="<?php echo $ing['shelf_life']; ?>" />
+            	<span class="input-group-text" id="shelf-life-addon">Months</span>
+            </div>
+        </div>
     </div>
 
     <hr />
@@ -115,7 +122,8 @@ $(document).ready(function() {
 				soluble: solubleValues.join(','),
 				molecularWeight: $("#molecularWeight").val(),
 				appearance: $("#appearance").val(),
-				rdi: $("#rdi").val()
+				rdi: $("#rdi").val(),
+				shelf_life: $("#shelf_life").val()
 			},
 			dataType: 'json',
 			success: function (data) {

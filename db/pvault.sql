@@ -234,7 +234,8 @@ CREATE TABLE `ingredients` (
   `isPrivate` INT NULL DEFAULT '0',
   `molecularWeight` VARCHAR(255) NULL,
   `physical_state` INT NULL DEFAULT '1',
-  `cid` INT NULL, 
+  `cid` INT NULL,
+  `shelf_life` INT NOT NULL DEFAULT '0'
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
