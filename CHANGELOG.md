@@ -1,5 +1,8 @@
 # CHANGELOG
 ### Version 11.5
+- Refactor local ingredients module
+- Refactor suppliers stock backend
+- Refactor PV-Online ingredients search
 
 ### Version 11.4
 - Add shelf life for ingredients
