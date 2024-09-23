@@ -26,6 +26,12 @@ function sanitizeInput($conn, $input) {
 // Advanced search filters
 $filter = 'WHERE 1=1';  // Base filter
 
+// Basic search
+$searchTerm = sanitizeInput($conn, $_POST['search']['value'] ?? $_POST['pvSearch']);
+if ($searchTerm) {
+    $filter = "WHERE 1 AND (name LIKE '%$searchTerm%' OR cas LIKE '%$searchTerm%' OR einecs LIKE '%$searchTerm%' OR odor LIKE '%$searchTerm%' OR INCI LIKE '%$searchTerm%')";
+}
+
 if ($_POST['adv']) {
     $name = sanitizeInput($conn, $_POST['name']) ?: '%';
     $filter .= " AND name LIKE '%$name%'";
@@ -47,21 +53,16 @@ if ($_POST['adv']) {
 
     $synonym = sanitizeInput($conn, $_POST['synonym']);
     if ($synonym) {
-        $filter = "WHERE synonym LIKE '%$synonym%' AND ing = name GROUP BY name";
+        $filter = "WHERE synonyms.synonym LIKE '%$synonym%' GROUP BY ing";
     }
 }
 
-// Basic search
-$searchTerm = sanitizeInput($conn, $_POST['search']['value'] ?? $_POST['pvSearch']);
-if ($searchTerm) {
-    $filter = "WHERE 1 AND (name LIKE '%$searchTerm%' OR cas LIKE '%$searchTerm%' OR einecs LIKE '%$searchTerm%' OR odor LIKE '%$searchTerm%' OR INCI LIKE '%$searchTerm%')";
-}
 
 $extra = "ORDER BY $order_by $order";
 
 // Fetch ingredients based on filter and pagination
 $query = "SELECT ingredients.id, name, INCI, cas, einecs, profile, category, odor, $defCatClass, allergen, usage_type, logp, formula, flash_point, molecularWeight, byPassIFRA, physical_state 
-          FROM ingredients 
+          FROM ingredients  
           $filter 
           $extra 
           LIMIT $row, $limit";
@@ -144,9 +145,14 @@ foreach ($ingredients as $ingredient) {
 }
 
 // Fetch total entries
-$total = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(name) AS entries FROM ingredients"));
-$filtered = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(name) AS entries FROM ingredients $filter"));
+if($synonym){
+	$total = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(synonym) AS entries FROM synonyms"));
+	$filtered = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(synonym) AS entries FROM synonyms $filter"));
 
+}else{
+	$total = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(name) AS entries FROM ingredients"));
+	$filtered = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(name) AS entries FROM ingredients $filter"));
+}
 // Prepare JSON response
 $response = [
     "source" => 'local',

@@ -1,7 +1,9 @@
 # CHANGELOG
 ### Version 11.5
+- Improved filtering for advanced search in ingredients
+- UI updates for ingredients
+- Improve PV Online search
 - Refactor local ingredients module
-- Refactor suppliers stock backend
 - Refactor PV-Online ingredients search
 
 ### Version 11.4

@@ -54,7 +54,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
           <div id="advsearchmsg"></div>
           <div class="mb-3 row">
             <div class="col-sm">
-              <label for="ing_name" class="col-form-label">Ingredient Name</label>
+              <label for="ing_name" class="col-form-label">Ingredient name</label>
               <input type="text" class="form-control" id="ing_name" placeholder="Any">
             </div>
           </div>
@@ -107,6 +107,12 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
         </div>
       </div>
       <div class="modal-footer">
+       <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="retainModal" checked>
+        <label class="form-check-label" for="retainModal">
+          Retain window after search
+        </label>
+      </div>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         <input type="submit" name="button" class="btn btn-primary" id="btnAdvSearch" value="Search">
       </div>
@@ -214,7 +220,8 @@ $(document).ready(function() {
 		var profile = $('#ing_profile').val();
 		var cat = $('#ing_category').val();
 		var synonym = $('#ing_synonym').val();
-	
+    	var retainModal = $('#retainModal').is(':checked');
+
 		$.ajax({ 
 			url: '/pages/listIngredients.php',
 			type: 'GET',
@@ -231,6 +238,10 @@ $(document).ready(function() {
 			dataType: 'html',
 				success: function (data) {
 					$('#list_ingredients').html(data);
+					if (!retainModal) {
+        				$('#adv_search').modal('hide');
+    				}
+					
 			},
 			error: function (xhr, status, error) {
 				$('#advsearchmsg').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-xmark mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');

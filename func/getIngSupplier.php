@@ -1,70 +1,44 @@
 <?php 
 if (!defined('pvault_panel')){ die('Not Found');}
 
-// Function to get suppliers or stock for an ingredient
-function getIngSupplier($ingID, $getStock, $conn) {
-    $ingID = (int)$ingID;  // Ensure $ingID is an integer for security
+function getIngSupplier($ingID,$getStock,$conn){
+	
+if($getStock == 1){
+	$result = mysqli_fetch_array(mysqli_query($conn, "SELECT mUnit, SUM(stock) AS stock FROM suppliers WHERE ingID = '$ingID'"));	
+}else{
+	$q = mysqli_query($conn, "SELECT ingSupplierID,supplierLink,status FROM suppliers WHERE ingID = '$ingID'");
+	while($r = mysqli_fetch_array($q)){
+		$sup = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingSuppliers WHERE id = '".$r['ingSupplierID']."'"));
 
-    if ($getStock == 1) {
-        $stmt = $conn->prepare("SELECT mUnit, SUM(stock) AS stock FROM suppliers WHERE ingID = ?");
-        $stmt->bind_param('i', $ingID);
-        $stmt->execute();
-        $result = $stmt->get_result()->fetch_assoc();
-    } else {
-        $stmt = $conn->prepare("SELECT ingSupplierID, supplierLink, status FROM suppliers WHERE ingID = ?");
-        $stmt->bind_param('i', $ingID);
-        $stmt->execute();
-        $result = [];
-
-        $queryResult = $stmt->get_result();
-        while ($r = $queryResult->fetch_assoc()) {
-            $supplierInfo = getSupplierByID($r['ingSupplierID'], $conn);
-            if ($supplierInfo) {
-                $result[] = array_merge($r, $supplierInfo);
-            }
-        }
-    }
-
-    return $result ?: null;
+		$result[] = array_merge((array)$r, (array)$sup);
+	}
+}
+	return $result;
 }
 
-// Function to get preferred supplier for an ingredient
-function getPrefSupplier($ingID, $conn) {
-    $ingID = (int)$ingID;  // Ensure $ingID is an integer for security
 
-    $stmt = $conn->prepare("SELECT price, ingSupplierID, size, supplierLink FROM suppliers WHERE ingID = ? AND preferred = '1'");
-    $stmt->bind_param('i', $ingID);
-    $stmt->execute();
-    $ing = $stmt->get_result()->fetch_assoc();
+function getPrefSupplier($ingID,$conn){
+	
+	$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT price,ingSupplierID,size,supplierLink FROM suppliers WHERE ingID = '$ingID' AND preferred = '1'"));
+	$sup = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingSuppliers WHERE id = '".$ing['ingSupplierID']."'"));
+		
+	$result = array_merge((array)$ing, (array)$sup);
 
-    if ($ing) {
-        $supplierInfo = getSupplierByID($ing['ingSupplierID'], $conn);
-        return array_merge($ing, $supplierInfo);
-    }
-
-    return null;
+	return $result;
 }
 
-// Function to get single supplier's price for an ingredient
-function getSingleSupplier($sID, $ingID, $conn) {
-    $sID = (int)$sID;
-    $ingID = (int)$ingID;
-
-    $stmt = $conn->prepare("SELECT price FROM suppliers WHERE ingSupplierID = ? AND ingID = ?");
-    $stmt->bind_param('ii', $sID, $ingID);
-    $stmt->execute();
-    return $stmt->get_result()->fetch_assoc();
+function getSingleSupplier($sID,$ingID,$conn){
+	
+	$result = mysqli_fetch_array(mysqli_query($conn, "SELECT price FROM suppliers WHERE ingSupplierID = '$sID' AND ingID = '$ingID'"));
+		
+	return $result;
 }
 
-// Helper function to get supplier name by supplier ID
-function getSupplierByID($sID, $conn) {
-    $sID = (int)$sID;
-
-    $stmt = $conn->prepare("SELECT name FROM ingSuppliers WHERE id = ?");
-    $stmt->bind_param('i', $sID);
-    $stmt->execute();
-    return $stmt->get_result()->fetch_assoc();
+function getSupplierByID($sID,$conn){
+	
+	$result = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingSuppliers WHERE id = '$sID'"));
+		
+	return $result;
 }
-
 
 ?>
