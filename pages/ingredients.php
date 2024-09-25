@@ -99,7 +99,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
               <select name="category" id="ing_category" class="form-control selectpicker" data-live-search="true">
                 <option value="" selected>Any</option>
                 <?php while ($row_ingCategory = mysqli_fetch_array($res_ingCategory)){ ?>
-                  <option data-content="<img class='img_ing_sel' src='<?php if($row_ingCategory['image']){ echo $row_ingCategory['image']; }else{ echo '/img/molecule.png';}?>'><?=$row_ingCategory['name']?>" value="<?=$row_ingCategory['id'];?>"></option>
+    <option data-content="<img class='img_ing_sel' src='<?php if($row_ingCategory['image']){ echo $row_ingCategory['image']; }else{ echo '/img/molecule.png';}?>'><?=$row_ingCategory['name']?>" data-text="<?=$row_ingCategory['name']?>" value="<?=$row_ingCategory['id'];?>"></option>
                 <?php } ?>
               </select>
             </div>
