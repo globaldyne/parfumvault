@@ -1,5 +1,8 @@
 # CHANGELOG
 ### Version 11.5
+- Fix revisions comparison
+- Update logout script
+- Check if session already started for user session
 - Improved filtering for advanced search in ingredients
 - UI updates for ingredients
 - Improve PV Online search

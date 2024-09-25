@@ -111,10 +111,10 @@ $(document).ready(function() {
 				"EINECS": $('#ing_einecs').val(),
 				"Odor": $('#ing_odor').val(),
 				"Profile": $('#ing_profile').val(),
-				"Category": $('#ing_category').val(),
+				"Category": $('#ing_category').find('option:selected').data('text'),
 				"Synonym": $('#ing_synonym').val()
 			};
-		
+
 			$.each(filters, function(key, value) {
 				if (value) {
 					$('#filter').append(`

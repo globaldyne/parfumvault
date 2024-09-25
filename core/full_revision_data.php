@@ -36,12 +36,18 @@ while ($res = mysqli_fetch_array($q)){
 }
 
 foreach ($rev as $revision){
+	$mg['total_mg'] += $revision['quantity'];
+	$conc = $revision['concentration'] / 100 * $revision['quantity']/$mg['total_mg'] * 100;
+
 	$r['id'] = (int)$revision['id'];
 	$r['fid'] = (string)$revision['fid'];
 	$r['name'] = (string)$revision['name'];
 	$r['ingredient']['name'] = (string)$revision['ingredient'];
 	$r['ingredient']['id'] = (int)$revision['ingredient_id'];
-	$r['purity'] = (double)$revision['concentration'];
+	$r['purity'] = (float)$revision['concentration'];
+	
+    $r['concentration'] = number_format($conc, $settings['qStep']) ?: 0.000;
+
 	$r['dilutant'] = (string)$revision['dilutant'];
 	$r['quantity'] = number_format((float)$revision['quantity'], $settings['qStep'],'.', '') ?: 0;
 	$r['notes'] = (string)$revision['notes'];
