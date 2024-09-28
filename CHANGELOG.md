@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 11.6
+
 ### Version 11.5
 - Fix revisions comparison
 - Update logout script
