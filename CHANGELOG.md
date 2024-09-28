@@ -1,4 +1,14 @@
 # CHANGELOG
+### Version 11.5
+- Fix revisions comparison
+- Update logout script
+- Check if session already started for user session
+- Improved filtering for advanced search in ingredients
+- UI updates for ingredients
+- Improve PV Online search
+- Refactor local ingredients module
+- Refactor PV-Online ingredients search
+
 ### Version 11.4
 - Add shelf life for ingredients
 - Add temprature measurement unit

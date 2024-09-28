@@ -93,9 +93,74 @@ $(document).ready(function() {
 		},
 		dom: 'lr<"#advanced_search">tip',
 		initComplete: function(settings, json) {
-			$("#advanced_search").html('<span><hr /><a href="#" class="advanced_search_box mb-2" data-bs-toggle="modal" data-bs-target="#adv_search">Advanced Search</a></span>');
+			$("#advanced_search").html(`
+				<span>
+					<hr />
+					<div id="filter" class="d-flex flex-wrap mb-2"></div>
+					<a href="#" class="advanced_search_box" data-bs-toggle="modal" data-bs-target="#adv_search">
+						<i class="fa-solid fa-magnifying-glass mx-2"></i>Advanced Search
+					</a>
+				</span>
+			`);
+		
 			$("#tdDataIng_filter").detach().appendTo('#pv_search');
+		
+			var filters = {
+				"Ingredient name": $('#ing_name').val(),
+				"CAS#": $('#ing_cas').val(),
+				"EINECS": $('#ing_einecs').val(),
+				"Odor": $('#ing_odor').val(),
+				"Profile": $('#ing_profile').val(),
+				"Category": $('#ing_category').find('option:selected').data('text'),
+				"Synonym": $('#ing_synonym').val()
+			};
+
+			$.each(filters, function(key, value) {
+				if (value) {
+					$('#filter').append(`
+						<span class="pv-label badge badge-primary mx-1">
+							${key}: ${value}
+							<button type="button" class="btn-close btn-close-white mx-1" aria-label="Remove" data-field="${key}"></button>
+						</span>
+					`);
+				}
+			});
+	
+			$('#filter').on('click', '.btn-close', function() {
+				var field = $(this).data('field');
+		
+				switch (field) {
+					case "Ingredient name":
+						$('#ing_name').val('');
+						break;
+					case "CAS#":
+						$('#ing_cas').val('');
+						break;
+					case "EINECS":
+						$('#ing_einecs').val('');
+						break;
+					case "Odor":
+						$('#ing_odor').val('');
+						break;
+					case "Profile":
+						$('#ing_profile').val('').trigger('change');
+						break;
+						
+					case "Category":
+						$('#ing_category').val('').trigger('change');
+						break;
+						
+					case "Synonym":
+						$('#ing_synonym').val('');
+						break;
+				}
+		
+				tdDataIng.search('').draw();
+				$('#btnAdvSearch').trigger('click');
+				$(this).parent().remove();
+			});
 		},
+
 		processing: true,
 		serverSide: true,
 		searching: true,
@@ -103,7 +168,7 @@ $(document).ready(function() {
 		language: {
 			loadingRecords: '&nbsp;',
 			processing: 'Blending...',
-			zeroRecords: '<div class="alert alert-warning"><strong>Nothing found, try <a href="#" data-bs-toggle="modal" data-bs-target="#adv_search">advanced</a> search instead?</strong></div>',
+			zeroRecords: '<div class="alert alert-warning mt-2"><i class="fa-solid fa-triangle-exclamation mx-2"></i><strong>Nothing found, try <a href="#" data-bs-toggle="modal" data-bs-target="#adv_search">advanced</a> search instead?</strong></div>',
 			search: 'Quick Search:',
 			searchPlaceholder: 'Name, CAS, EINECS, IUPAC, odor..',
 		},
@@ -177,10 +242,13 @@ $(document).ready(function() {
         tdDataIng.search($(this).val()).draw();
     });
 	
-	$('#pv_search').on('click', '[id*=pv_search_btn]', function () {
-		var ingSearch = {};
-		ingSearch.txt = $('#ing_search').val();
-		tdDataIng.search(ingSearch.txt).draw();
+	$("#pv_search_btn").click(function () {
+		var ingSearch = {
+        	txt: $('#ing_search').val()
+    	};
+    	if (tdDataIng) {
+        	tdDataIng.search(ingSearch.txt).draw();
+    	}
 	});
 	
  					   
@@ -439,7 +507,7 @@ $(document).ready(function() {
 	});
 	
 	function reload_ingredients_data() {
-		$('#tdDataIng').DataTable().ajax.reload(null, true);
+		$('#tdDataIng').DataTable().ajax.reload(null, false);
 	}
 	
 	$(".input-group-btn .dropdown-menu li a").click(function () {
@@ -449,11 +517,12 @@ $(document).ready(function() {
 		$(this).parents(".input-group-btn").find(".btn-search").html(selText);
 		$(this).parents(".input-group-btn").find(".btn-search").attr('data-provider',provider);
 		
-		$('#pv_search_btn').click();
-		if($('#pv_search_btn').data().provider == 'local'){
+		$('#pv_search_btn').trigger('click');
+		if($('#pv_search_btn').data('provider') === 'local'){
 			$("#advanced_search").html('<span><hr /><a href="#" class="advanced_search_box" data-bs-toggle="modal" data-bs-target="#adv_search">Advanced Search</a></span>');
 		}else{
 			$("#advanced_search").html('');
+			tdDataIng.settings()[0].oLanguage.sEmptyTable = '<div class="alert alert-warning mt-2"><i class="fa-solid fa-triangle-exclamation mx-2"></i><strong>Nothing found, try a different term instead? You can search for ingredient name or CAS number</strong></div>';
 		}
 		
 	});
