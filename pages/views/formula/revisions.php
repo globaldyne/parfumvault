@@ -109,6 +109,8 @@ $(document).ready(function() {
 			id_a: '<?=$_GET['id']?>',
 			fid: '<?=$_GET['fid']?>',
 			revID: $(this).attr('data-revision'),
+			name_a: 'Current revision',
+			name_b: 'Revision ' + $(this).attr('data-revision')
 		},
 		dataType: 'html',
 		success: function (data) {
