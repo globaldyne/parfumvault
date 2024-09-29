@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 11.6
+- Minor updates in sys-upgrade
 
 ### Version 11.5
 - Fix revisions comparison

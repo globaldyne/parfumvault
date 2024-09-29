@@ -32,7 +32,7 @@ if($_GET['do'] == 'db_update'){
 		require_once($script);
 	}
   	if($c_ver == $n_ver){
-		$result['error'] = "No update is needed.";
+		$result['error'] = "No update is needed";
 		echo json_encode($result);
 		return;
     }
@@ -51,7 +51,7 @@ if($_GET['do'] == 'db_update'){
 	}
 
 	if($q){
-		$result['success'] = "<strong>Your database has been updated!</strong>";
+		$result['success'] = "Your database has been updated";
 		echo json_encode($result);
 	}
 	
