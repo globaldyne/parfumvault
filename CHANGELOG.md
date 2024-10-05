@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 11.6
+- Fix a bug incorrectly marking materials as banned in a formula
 - Fix a typo in db schema creation for new installations
 - Minor updates in sys-upgrade
 
