@@ -1,4 +1,9 @@
 # CHANGELOG
+### Version 11.6
+- Fix a bug incorrectly marking materials as banned in a formula
+- Fix a typo in db schema creation for new installations
+- Minor updates in sys-upgrade
+
 ### Version 11.5
 - Fix revisions comparison
 - Update logout script

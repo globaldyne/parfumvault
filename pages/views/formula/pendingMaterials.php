@@ -49,7 +49,8 @@ $(document).ready(function() {
 			loadingRecords: "&nbsp;",
 			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>',
 			emptyTable: "No pending materials",
-			search: "Search:"
+			search: "",
+			searchPlaceholder: 'Search by formula, ingredient or CAS...',
 		},
     	ajax: {	url: "/core/list_pending_materials_data.php" },
 		columns: [

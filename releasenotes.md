@@ -1,6 +1,5 @@
-Whats New in v11.5
+Whats New in v11.6
 --------------------------
-- Improved filtering for advanced search in ingredients
-- UI updates for ingredients
-- Improve PV Online search
+- Fix a bug incorrectly marking materials as banned in a formula
+- Fix a bug preventing db creation for new installations
 - This release may include more changes, for full details please refer to the CHANGELOG
