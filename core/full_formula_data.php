@@ -226,7 +226,7 @@ foreach ($form as $formula){
 		}
 	
 		$r['usage_regulator'] = 'PV';
-		$r['ingredient']['classification'] = (int)($ing_q['classification'] ?? 1);
+		$r['ingredient']['classification'] = (int)isset($ing_q['classification']) ?: 1;
 	}
 	if($ing_q['byPassIFRA'] === '0') {
 		$r['isIFRAbyPass'] = (int)0;
