@@ -172,16 +172,42 @@ $(document).ready(function() {
         },
   		footerCallback : function( tfoot, data, start, end, display ) {    
       
-		  var response = this.api().ajax.json();
-		  if(response){
-			 var $td = $(tfoot).find('th');
-			 $td.eq(0).html("Ingredients: " + response.meta['total_ingredients'] );
-			 $td.eq(4).html("Total: " + response.meta['total_quantity']);// + response.meta['quantity_unit'] );
-			 $td.eq(5).html("Total: " + response.meta['concentration'] + "%" );
-			 $td.eq(7).html("Total: " + response.meta['currency'] + response.meta['total_cost'] + '<i rel="tip" title="The total price for the 100% concentration." class="mx-2 pv_point_gen fas fa-info-circle"></i>');
-			 $(formula_table.columns(7).header()).html("Final Concentration " + response.meta['product_concentration'] + "%");
-			 $('#max_usage').html('Max usage: ' + response.meta['max_usage'] + '% <i rel="tip" title="This represents the maximum allowed usage in a final product for the selected IFRA category. <p>If your database contains missing or incomplete ingredient data, this will fail.</p>" class="mx-2 pv_point_gen fas fa-info-circle"></i>');
-		 }
+		var response = this.api().ajax.json();
+
+		if (response && response.meta) {
+			var $tfoot = $(tfoot);
+			if ($tfoot.length > 0) {
+				var $td = $tfoot.find('th');
+				
+				// Update "Ingredients"
+				if ($td.eq(0)) {
+					$td.eq(0).html("Ingredients: " + (response.meta.total_ingredients || 0));
+				}
+				// Update "Total Quantity"
+				if ($td.eq(4)) {
+					$td.eq(4).html("Total: " + (response.meta.total_quantity || 0));
+				}
+				// Update "Total Concentration"
+				if ($td.eq(5)) {
+					$td.eq(5).html("Total: " + (response.meta.concentration || 0) + "%");
+				}
+				// Update "Total Cost"
+				if ($td.eq(7)) {
+					$td.eq(7).html("Total: " + (response.meta.currency || '') + (response.meta.total_cost || 0) + 
+						'<i rel="tip" title="The total price for the 100% concentration." class="mx-2 pv_point_gen fas fa-info-circle"></i>'
+					);
+				}
+				// Update table column header
+				if (formula_table && formula_table.columns(7).header()) {
+					$(formula_table.columns(7).header()).html("Final Concentration " + (response.meta.product_concentration || 0) + "%");
+				}
+				// Update "Max Usage"
+				$('#max_usage').html('Max usage: ' + (response.meta.max_usage || 0) + '% ' +
+					'<i rel="tip" title="This represents the maximum allowed usage in a final product for the selected IFRA category. <p>If your database contains missing or incomplete ingredient data, this will fail.</p>" class="mx-2 pv_point_gen fas fa-info-circle"></i>'
+				);
+			}
+		}
+
       },
 	  
         order: [[ groupColumn, 'desc' ]],

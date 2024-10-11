@@ -1,5 +1,7 @@
 # CHANGELOG
 ### Version 11.7
+- Make sure empty formula returns array for meta data
+- Set scroll collapse for datatbales in ingredients to false
 
 ### Version 11.5
 - Fix revisions comparison
