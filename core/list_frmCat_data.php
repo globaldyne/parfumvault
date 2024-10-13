@@ -18,7 +18,7 @@ foreach ($cats as $category) {
 	$response['data'][] = $r;
 }
 
-if(empty($r)){
+if(empty($c)){
 	$response['data'] = [];
 }
 

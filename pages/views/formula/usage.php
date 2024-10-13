@@ -31,7 +31,20 @@
       </tr>
    </thead>
 </table>
-
+<div class="mt-4">
+    <div class="alert alert-info">
+    	<i class="fa-solid fa-circle-info mx-2"></i>
+    	<strong>IFRA Categories explanation</strong>
+        <table id="tdDataIFRACat" class="table table-striped" style="width:100%">
+          <thead>
+              <tr>
+                <th>Category name</th>
+                <th>Purpose</th>
+              </tr>
+           </thead>
+        </table>
+    </div>
+</div>
 <script>
 $(document).ready(function() {
 	var tdDataUsage = $('#tdDataUsage').DataTable( {
@@ -79,6 +92,34 @@ $(document).ready(function() {
 		]
 	});
 	
+	var tdDataIFRACat = $('#tdDataIFRACat').DataTable( {
+		columnDefs: [
+			{ className: 'pv_vertical_middle text-center', targets: '_all' },
+			{ orderable: false, targets: ['_all']},
+		],
+		dom: 'rt',
+		processing: true,
+		serverSide: true,
+		searching: false,
+		responsive: true,
+		ajax: {	
+			url: '/core/list_ifra_cat_data.php',
+			type: 'POST',
+			dataType: 'json'
+		 },
+		 columns: [
+			{ data: 'name', title: 'Category name', render: catFullName},
+			{ data: 'description', title: 'Purpose'}
+		]
+	});
+	
+	
+	function catFullName(data, type, row){
+		
+		return 'Cat' + row.name;   
+		 
+	};
+
 	$("#exportCSV").click(() => {
 		$("#tdDataUsage").DataTable().button(0).trigger();
 	});
