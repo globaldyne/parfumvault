@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 11.7
+- Formula settings page minor updates
 - Add IFRA Categories explanation in usage page
 - Make sure empty formula returns array for meta data
 - Set scroll collapse for datatbales in ingredients to false
