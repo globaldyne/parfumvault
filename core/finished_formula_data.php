@@ -167,9 +167,6 @@ foreach ($form as $formula){
 	
 }
 
-if(empty($r)){
-	$response['data'] = [];
-}
 $carrier_sub_cost = number_format($carrier_cost['price'] / $carrier_cost['size'] * $carrier, $settings['qStep']);
 
 $m['sub_total_quantity'] = number_format(array_sum($new_tot), $settings['qStep']);
@@ -224,6 +221,10 @@ $response['compliance'] = $compliance;
 $response['meta'] = $m;
 
 
+if(empty($r)){
+	$response['meta'] = [];
+	$response['data'] = [];
+}
 header('Content-Type: application/json; charset=utf-8');
 echo json_encode($response);
 return;

@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 11.7
+- Show/hide api key
 - Formula settings page minor updates
 - Add IFRA Categories explanation in usage page
 - Make sure empty formula returns array for meta data

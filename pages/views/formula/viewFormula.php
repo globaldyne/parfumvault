@@ -114,9 +114,8 @@ var isProtected = true;
 <?php } ?>
 var reCalc=0;
 $(document).ready(function() {
-						   
-  var groupColumn = 0;
-  var formula_table = $('#formula').DataTable( {
+  	var groupColumn = 0;
+  	var formula_table = $('#formula').DataTable( {
 		columnDefs: [
             { visible: false, targets: groupColumn },
 			{ className: 'text-center', targets: '_all' },
