@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 11.7
+- Added formula obscure when in a locked state
 - Show/hide api key
 - Formula settings page minor updates
 - Add IFRA Categories explanation in usage page

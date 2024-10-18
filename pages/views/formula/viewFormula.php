@@ -43,7 +43,7 @@ $fid = $meta['fid'];
            <li><a class="dropdown-item export_as" href="#" data-format="csv"><i class="fa-solid fa-file-csv mx-2"></i>Export as CSV</a></li>
            <li><a class="dropdown-item export_as" href="#" data-format="pdf"><i class="fa-solid fa-file-pdf mx-2"></i>Export as PDF</a></li>
            <li><a class="dropdown-item" href="/pages/operations.php?action=exportFormulas&fid=<?=$meta['fid']?>"><i class="fa-solid fa-file-code mx-2"></i>Export as JSON</a></li>
-           <li><a class="dropdown-item" href="#" id="print"><i class="fa-solid fa-print mx-2"></i>Print Formula</a></li>
+           <li><a class="dropdown-item" href="#" id="print"><i class="fa-solid fa-print mx-2"></i>Print fFormula</a></li>
            <div class="dropdown-divider"></div>
            <li class="dropdown-header">Scale Formula</li> 
            <li><a class="dropdown-item manageQuantity" href="#" data-action="multiply"><i class="fa-solid fa-xmark mx-2"></i>Multiply x2</a></li>
@@ -56,7 +56,10 @@ $fid = $meta['fid'];
            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#schedule_to_make"><i class="fa-regular fa-calendar-plus mx-2"></i>Schedule to make</a></li>
            <li><a class="dropdown-item" href="#" id="isMade"><i class="fa-solid fa-check mx-2"></i>Mark formula as made</a></li>
            <div class="dropdown-divider"></div>
-           <li><a class="dropdown-item" href="#" id="cloneMe"><i class="fa-solid fa-copy mx-2"></i>Duplicate Formula</a></li>
+           <li><a class="dropdown-item" href="#" id="cloneMe"><i class="fa-solid fa-copy mx-2"></i>Duplicate formula</a></li>
+           <?php if($meta['isProtected'] == TRUE){?>
+           <li><a class="dropdown-item" href="#" id="toggle-obs"><i class="fa-solid fa-user-ninja mx-2"></i>Toggle obscure Formula</a></li>
+           <?php } ?>
         </div>
       </div>            
     </div>
@@ -158,7 +161,7 @@ $(document).ready(function() {
 			{ data : 'dilutant', title: 'Dilutant', render: ingSolvent},
 			{ data : 'quantity', title: 'Quantity (<?=$settings['mUnit']?>)', render: ingQuantity},
 			{ data : 'concentration', title: 'Concentration 100%', render: ingSetConc},
-			{ data : 'final_concentration', title: 'Final Concentration <?=$meta['finalType']?>%'},
+			{ data : 'final_concentration', title: 'Final Concentration <?=$meta['finalType']?>%', render: ingFinalSetConc},
 			{ data : 'cost', title: 'Cost (<?=$settings['currency']?>)'},
 			{ data : 'ingredient.inventory.stock', title: 'Inventory', className: 'text-center noexport', render: ingInv },
 			{ data : 'ingredient.desc', title: 'Properties', render: ingNotes},
@@ -275,243 +278,426 @@ $(document).ready(function() {
             });
 			extrasShow();
 	   }
-});
-
-formula_table.on('click', '.expandAccord', function (e) {
-    let tr = $(this).closest('tr');
-    let row = formula_table.row(tr);
-    if (row.child.isShown()) {
-        row.child.hide();
-        tr.removeClass('shown');
-    } else {
-        showChildRow(row, tr);
-    }
-});
-
-function showChildRow(row, tr) {
-    $.ajax({
-        url: '/core/list_ing_compos_data.php',
-        type: 'GET',
-        data: {
-            id: btoa(row.data().ingredient.name)
-        },
-        dataType: 'json',
-        success: function (data) {
-            row.child(format(data)).show();
-            tr.addClass('shown');
-        }
-    });
-}
-
-function format(d) {
-    var details = '';
-    for (var i = 0; i < d.data.length; i++) {
-        details += '<div class="ingredient">';
-        details += '<i class="bi bi-arrow-return-right mx-2"></i><span class="details"><a href="#" id="compoundName" data-query="'+ d.data[i].name +'">' + d.data[i].name + '</a>' ;
-        details += ' - <a href="#" id="compoundCAS" data-query="'+ d.data[i].cas +'">' + d.data[i].cas + '</a>' ;
-        details += ' - ' + d.data[i].avg_percentage + '%<br>';
-        details += '</div>';
-    }
-	details += '<br />Total sub ingredients: ' + i;
-    return details;
-}
-
-
+	});
 	
-$('#pvCustomSearch').on('keyup redraw', function() {
-	var searchString = '(' + $('#pvCustomSearch').val().split(/\s*,\s*/).join('|') + ')';
-	formula_table.search(searchString, true).draw(true);
-});
-
-$('#formula_tab').on( 'click', function () {
-	formula_table.fixedHeader.enable();
-});
-
-$('a[data-bs-toggle="tab"]').on("shown.bs.tab", function (e) {
-	formula_table.fixedHeader.adjust();
-});
-
-// Order by the grouping
-$('#formula tbody').on( 'click', 'tr.group', function () {
-    var currentOrder = formula_table.order()[0];
-    if ( currentOrder[0] === groupColumn && currentOrder[1] === 'asc' ) {
-         formula_table.order( [ groupColumn, 'desc' ] ).draw();
-    }else {
-         formula_table.order( [ groupColumn, 'asc' ] ).draw();
-    }
-});
-
-$('#formula').on('click', '[id*=compoundCAS], [id*=compoundName]', function (e) {
-    event.preventDefault();
-	cmpQuery = $(this).attr('data-query');
-	//console.log(cmpQuery);
-	formula_table.cells().nodes().to$().removeClass('highlight');
-    if (cmpQuery !== '') {
-		formula_table.rows().every(function(rowIdx, tableLoop, rowLoop) {
-    		$(this.node()).find('td').each(function() {
-            	var cellText = $(this).text();
-                if (cellText.includes(cmpQuery)) {
-                	$(this).addClass('highlight');
-					var rowTop = $(this).closest('tr').offset().top;
-                    var rowHeight = $(this).closest('tr').outerHeight();
-                    var windowHeight = $(window).height();
-                    var scrollTo = rowTop - (windowHeight / 2) + (rowHeight / 2);
-                    $('html, body').animate({
-                        scrollTop: scrollTo
-                    }, 200);
-                }
-				
-            });
-        });
-	}
-});
-
-$('#formula').on('click', '[id*=rmIng]', function () {
-
-	var ing = {};
-	ing.ID = $(this).attr('data-id');
-	ing.Name = $(this).attr('data-name');
-    ing.ingredient_id = $(this).attr('data-ingredient-id');
+	formula_table.on('click', '.expandAccord', function (e) {
+		let tr = $(this).closest('tr');
+		let row = formula_table.row(tr);
+		if (row.child.isShown()) {
+			row.child.hide();
+			tr.removeClass('shown');
+		} else {
+			showChildRow(row, tr);
+		}
+	});
 	
-	bootbox.dialog({
-       title: "Confirm ingredient removal",
-       message : '<div id="err"></div>'+
-	   			 'Remove <strong>'+ ing.Name +'</strong> from formula?' +
-	   			 '<div class="dropdown-divider"></div>'+
-        		  '<input type="checkbox" name="reCalcDel" id="reCalcDel" value="1" data-val="1" />'+
-				  '<label for="reCalcDel" class="form-label mx-2">Adjust solvent</label>'+
-        			'<div id="slvMetaDel">'+
-        				'<div class="dropdown-divider"></div>'+
-        				'<select name="formulaSolventsDel" id="formulaSolventsDel" class="formulaSolventsDel pv-form-control"/></select>'+
-        				'<div class="dropdown-divider"></div>'+
-        				'<div id="explain" class="mt-3 alert alert-info">The deducted ingredient quantity will be added to the selected solvent.</div></div>',
-       buttons :{
-           main: {
-               label : "Remove",
-               className : "btn-danger",
-               callback: function (){
-	    			
-				$.ajax({ 
-					url: '/pages/manageFormula.php', 
-					type: 'POST',
-					data: {
-						action: "deleteIng",
-						fid: myFID,
-						ingID: ing.ID,
-						reCalc: $("#reCalcDel").prop('checked'),
-						formulaSolventID: $("#formulaSolventsDel").val(),
-						ingredient_id: ing.ingredient_id,
-						ing: ing.Name
-					},
-					dataType: 'json',
-					success: function (data) {
-						if(data.success){
-							$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
-							$('.toast-header').removeClass().addClass('toast-header alert-success');
-							reload_formula_data();
-							bootbox.hideAll();
-							$('.toast').toast('show');
-						}else{
-            				$('#err').html('<div class="alert alert-danger"><strong>' + data.error + '</strong></div>');
-						}
-						
-					},
-					error: function (xhr, status, error) {
-						$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
-						$('.toast-header').removeClass().addClass('toast-header alert-danger');
-						$('.toast').toast('show');
-					},
-				  });
-                 return false;
-               }
-           },
-           cancel: {
-               label : "Cancel",
-               className : "btn-secondary",
-               callback : function() {
-                   return true;
-               }
-           }   
-       },onEscape: function () {return true;}
-   }).on('shown.bs.modal', function(e){
-			$("#slvMetaDel").hide();
-			$("#reCalcDel").click(function() {
-    		if($(this).is(":checked")) {
-        		$("#slvMetaDel").show();
-    		} else {
-        		$("#slvMetaDel").hide();
-    		}
-		});
-    
-		$("#formulaSolventsDel").select2({
-			width: '100%',
-			placeholder: 'Available solvents in formula',
-			allowClear: true,
-			dropdownAutoWidth: true,
-			containerCssClass: "formulaSolvents",
-			minimumResultsForSearch: Infinity,
-			dropdownParent: $('.bootbox .modal-content'),
-			ajax: {
-				url: '/core/full_formula_data.php',
-				dataType: 'json',
-				type: 'POST',
-				delay: 100,
-				quietMillis: 250,
-				data: function (data) {
-					return {
-						id: myID,
-						solvents_only: true
-					};
-				},
-				processResults: function(data) {
-					return {
-						results: $.map(data.data, function(obj) {
-						  return {
-							id: obj.ingredient_id,
-							text: obj.ingredient || 'No solvent(s) found in formula',
-						  }
-						})
-					};
-				},
-				cache: true,	
-			}	
-		});
-	
-	});	
-});
-
-$('#formula').on('click', '[id*=exIng]', function () {
-	var ing = {};
-	ing.ID = $(this).attr('data-id');
-	ing.Name = $(this).attr('data-name');
-	ing.Status = $(this).attr('data-status');
-			
-		$.ajax({ 
-			url: '/pages/manageFormula.php', 
-			type: 'POST',
+	function showChildRow(row, tr) {
+		$.ajax({
+			url: '/core/list_ing_compos_data.php',
+			type: 'GET',
 			data: {
-				action: "excIng",
-				fid: myFID,
-				ingID: ing.ID,
-				ingName: ing.Name,
-				status: ing.Status
+				id: btoa(row.data().ingredient.name)
 			},
 			dataType: 'json',
 			success: function (data) {
-				if(data.success) {
-            		$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
-					$('.toast-header').removeClass().addClass('toast-header alert-success');
-				}else{
-            		$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
-					$('.toast-header').removeClass().addClass('toast-header alert-danger');
-				}
-				$('.toast').toast('show');
-				reload_formula_data();
+				row.child(format(data)).show();
+				tr.addClass('shown');
 			}
-		  });
+		});
+	}
+	
+	function format(d) {
+		var details = '';
+		for (var i = 0; i < d.data.length; i++) {
+			details += '<div class="ingredient">';
+			details += '<i class="bi bi-arrow-return-right mx-2"></i><span class="details"><a href="#" id="compoundName" data-query="'+ d.data[i].name +'">' + d.data[i].name + '</a>' ;
+			details += ' - <a href="#" id="compoundCAS" data-query="'+ d.data[i].cas +'">' + d.data[i].cas + '</a>' ;
+			details += ' - ' + d.data[i].avg_percentage + '%<br>';
+			details += '</div>';
+		}
+		details += '<br />Total sub ingredients: ' + i;
+		return details;
+	}
+	
+	
+		
+	$('#pvCustomSearch').on('keyup redraw', function() {
+		var searchString = '(' + $('#pvCustomSearch').val().split(/\s*,\s*/).join('|') + ')';
+		formula_table.search(searchString, true).draw(true);
+	});
+	
+	$('#formula_tab').on( 'click', function () {
+		formula_table.fixedHeader.enable();
+	});
+	
+	$('a[data-bs-toggle="tab"]').on("shown.bs.tab", function (e) {
+		formula_table.fixedHeader.adjust();
+	});
+	
+	// Order by the grouping
+	$('#formula tbody').on( 'click', 'tr.group', function () {
+		var currentOrder = formula_table.order()[0];
+		if ( currentOrder[0] === groupColumn && currentOrder[1] === 'asc' ) {
+			 formula_table.order( [ groupColumn, 'desc' ] ).draw();
+		}else {
+			 formula_table.order( [ groupColumn, 'asc' ] ).draw();
+		}
+	});
+	
+	$('#formula').on('click', '[id*=compoundCAS], [id*=compoundName]', function (e) {
+		event.preventDefault();
+		cmpQuery = $(this).attr('data-query');
+		//console.log(cmpQuery);
+		formula_table.cells().nodes().to$().removeClass('highlight');
+		if (cmpQuery !== '') {
+			formula_table.rows().every(function(rowIdx, tableLoop, rowLoop) {
+				$(this.node()).find('td').each(function() {
+					var cellText = $(this).text();
+					if (cellText.includes(cmpQuery)) {
+						$(this).addClass('highlight');
+						var rowTop = $(this).closest('tr').offset().top;
+						var rowHeight = $(this).closest('tr').outerHeight();
+						var windowHeight = $(window).height();
+						var scrollTo = rowTop - (windowHeight / 2) + (rowHeight / 2);
+						$('html, body').animate({
+							scrollTop: scrollTo
+						}, 200);
+					}
+					
+				});
+			});
+		}
+	});
+	
+	$('#formula').on('click', '[id*=rmIng]', function () {
+	
+		var ing = {};
+		ing.ID = $(this).attr('data-id');
+		ing.Name = $(this).attr('data-name');
+		ing.ingredient_id = $(this).attr('data-ingredient-id');
+		
+		bootbox.dialog({
+		   title: "Confirm ingredient removal",
+		   message : '<div id="err"></div>'+
+					 'Remove <strong>'+ ing.Name +'</strong> from formula?' +
+					 '<div class="dropdown-divider"></div>'+
+					  '<input type="checkbox" name="reCalcDel" id="reCalcDel" value="1" data-val="1" />'+
+					  '<label for="reCalcDel" class="form-label mx-2">Adjust solvent</label>'+
+						'<div id="slvMetaDel">'+
+							'<div class="dropdown-divider"></div>'+
+							'<select name="formulaSolventsDel" id="formulaSolventsDel" class="formulaSolventsDel pv-form-control"/></select>'+
+							'<div class="dropdown-divider"></div>'+
+							'<div id="explain" class="mt-3 alert alert-info">The deducted ingredient quantity will be added to the selected solvent.</div></div>',
+		   buttons :{
+			   main: {
+				   label : "Remove",
+				   className : "btn-danger",
+				   callback: function (){
+						
+					$.ajax({ 
+						url: '/pages/manageFormula.php', 
+						type: 'POST',
+						data: {
+							action: "deleteIng",
+							fid: myFID,
+							ingID: ing.ID,
+							reCalc: $("#reCalcDel").prop('checked'),
+							formulaSolventID: $("#formulaSolventsDel").val(),
+							ingredient_id: ing.ingredient_id,
+							ing: ing.Name
+						},
+						dataType: 'json',
+						success: function (data) {
+							if(data.success){
+								$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+								$('.toast-header').removeClass().addClass('toast-header alert-success');
+								reload_formula_data();
+								bootbox.hideAll();
+								$('.toast').toast('show');
+							}else{
+								$('#err').html('<div class="alert alert-danger"><strong>' + data.error + '</strong></div>');
+							}
+							
+						},
+						error: function (xhr, status, error) {
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+							$('.toast-header').removeClass().addClass('toast-header alert-danger');
+							$('.toast').toast('show');
+						},
+					  });
+					 return false;
+				   }
+			   },
+			   cancel: {
+				   label : "Cancel",
+				   className : "btn-secondary",
+				   callback : function() {
+					   return true;
+				   }
+			   }   
+		   },onEscape: function () {return true;}
+	   }).on('shown.bs.modal', function(e){
+				$("#slvMetaDel").hide();
+				$("#reCalcDel").click(function() {
+				if($(this).is(":checked")) {
+					$("#slvMetaDel").show();
+				} else {
+					$("#slvMetaDel").hide();
+				}
+			});
+		
+			$("#formulaSolventsDel").select2({
+				width: '100%',
+				placeholder: 'Available solvents in formula',
+				allowClear: true,
+				dropdownAutoWidth: true,
+				containerCssClass: "formulaSolvents",
+				minimumResultsForSearch: Infinity,
+				dropdownParent: $('.bootbox .modal-content'),
+				ajax: {
+					url: '/core/full_formula_data.php',
+					dataType: 'json',
+					type: 'POST',
+					delay: 100,
+					quietMillis: 250,
+					data: function (data) {
+						return {
+							id: myID,
+							solvents_only: true
+						};
+					},
+					processResults: function(data) {
+						return {
+							results: $.map(data.data, function(obj) {
+							  return {
+								id: obj.ingredient_id,
+								text: obj.ingredient || 'No solvent(s) found in formula',
+							  }
+							})
+						};
+					},
+					cache: true,	
+				}	
+			});
+		
+		});	
+	});
+	
+	$('#formula').on('click', '[id*=exIng]', function () {
+		var ing = {};
+		ing.ID = $(this).attr('data-id');
+		ing.Name = $(this).attr('data-name');
+		ing.Status = $(this).attr('data-status');
 				
-});
-
+			$.ajax({ 
+				url: '/pages/manageFormula.php', 
+				type: 'POST',
+				data: {
+					action: "excIng",
+					fid: myFID,
+					ingID: ing.ID,
+					ingName: ing.Name,
+					status: ing.Status
+				},
+				dataType: 'json',
+				success: function (data) {
+					if(data.success) {
+						$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+						$('.toast-header').removeClass().addClass('toast-header alert-success');
+					}else{
+						$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+						$('.toast-header').removeClass().addClass('toast-header alert-danger');
+					}
+					$('.toast').toast('show');
+					reload_formula_data();
+				}
+			  });
+					
+	});
+	
+	function ingName(data, type, row, meta){
+		var ex = '';
+		var contains = '';
+		var chkIng = '';
+		var profile_class ='';
+		var IFRAbyPASSED = '';
+		
+		if(row.ingredient.containsOthers.total){
+			contains = '<i class="fa-solid fa-th-list expandAccord mx-2 pv_point_gen" rel="tip" title="Show/hide sub igredients"></i>';	
+		}
+		
+		if(row.isIFRAbyPass === 1){
+			IFRAbyPASSED = '<i class="ml-2 fas fa-triangle-exclamation" rel="tip" title="IFRA is by-passed"></i>';	
+		}else{
+			IFRAbyPASSED = '';
+		}
+		
+		if(row.exclude_from_calculation == 1){
+			ex = 'pv_ing_exc';
+		}
+		
+		if(row.chk_ingredient){
+			chkIng = '<i class="fas fa-exclamation" rel="tip" title="'+row.chk_ingredient+'"></i>';
+		}else{
+			chkIng = '';
+		}
+		
+		if(row.ingredient.profile_plain){
+			profile_class = '<a href="#" class="'+row.ingredient.profile_plain+'"></a>';
+		}else{
+			profile_class ='';
+		}
+		
+		if(row.chk_ingredient_code === 4){
+			data ='<div class="btn-group"><a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'+row.ingredient.name+'</a><div class="dropdown-menu dropdown-menu-right">';
+			
+			data+='<li><a class="dropdown-item popup-link" href="/pages/mgmIngredient.php?newIngName='+ btoa(row.ingredient.name) +'&newIngCAS='+ row.ingredient.cas +'"><i class="fa-solid fa-flask-vial mx-2"></i>Create ingredient</a></li>';
+		
+			data+='<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#import_ingredients_json"><i class="bi bi-filetype-json mx-2"></i>Import from JSON</a></li>';
+			data+='<li><a class="dropdown-item" href="https://online.perfumersvault.com/query/' + row.ingredient.name+ '" target="_blank"><i class="fa-solid fa-cloud-arrow-down mx-2"></i>Search PV Online<i class="ml-2 fa-solid fa-arrow-up-right-from-square"></i></a></li>';
+					
+			data+='</div></div>';
+			return data;
+		}
+		
+		if(row.ingredient.enc_id){
+			data = contains + '<a class="popup-link '+ex+'" href="/pages/mgmIngredient.php?id=' + row.ingredient.id + '">' + data + '</a> '+ chkIng + IFRAbyPASSED + profile_class;
+		}else{
+			data = '<a class="popup-link '+ex+'" href="/pages/mgmIngredient.php?id=' + btoa(data) + '">' + data + '</a> '+ chkIng + profile_class;
+	
+		}
+	
+	  return data;
+	};
+	
+	function ingCAS(data, type, row, meta){
+		if(type === 'display'){
+			data = '<i class="pv_point_gen" rel="tip" title="Click to copy" id="cCAS" data-name="'+row.ingredient.cas+'">'+row.ingredient.cas+'</i>';
+		}
+		return data;
+	};
+	  
+	function ingConc(data, type, row, meta){
+	  if( isProtected == false ){
+		  if( row.ingredient.profile == "Solvent"){
+			  data = 100;
+		  }else{
+			data = '<a href="#" data-name="concentration" class="concentration" data-type="text" data-pk="' + row.formula_ingredient_id + '">' + data + '</a>';
+		  }
+	  }
+	
+	  return data;
+	};
+	
+	function ingSolvent(data, type, row, meta){
+		if( isProtected == false ){
+		  if(row.purity !== 100){
+			if(row.ingredient.profile == "Solvent"){
+				data = 'None';
+			}else{
+				data = '<a href="#" data-name="dilutant" class="solvent" data-type="select" data-pk="' + row.formula_ingredient_id + '">' + data + '</a>';
+			}
+		 }else{
+			data = 'None';
+		  }
+		}else{
+			if(row.purity === 100){
+				data = 'None';
+			}
+		}
+		return data;
+	};
+	  
+	function ingQuantity(data, type, row, meta){
+		if( isProtected == false ){
+			<?php if($settings['editor'] == '1'){?>
+				data = '<a href="#" data-name="quantity" class="quantity" data-type="text" data-pk="' + row.formula_ingredient_id + '">' + row.quantity + '</a>';
+			<?php }else{?>
+				data = '<a href="#" data-name="quantity" data-bs-toggle="modal" data-bs-target="#manage-quantity" class="open-quantity-dialog" data-type="text" data-ingid="' + row.formula_ingredient_id + '" data-value="' + row.quantity + '" data-ing="' + row.ingredient.name + '" data-mainingid="'+row.ingredient.id+'">' + row.quantity + '</a>';
+			<?php } ?>
+		} else {
+			data = '<div class="quantity-details">' + row.quantity + '</div>';	
+		}
+	
+		return data;
+	};
+	
+	function ingSetConc(data, type, row, meta){
+		
+		return '<div class="concentration-details">' + row.concentration + '</div>';	
+		
+	};
+	
+	function ingFinalSetConc(data, type, row, meta){
+		
+		return '<div class="final-concentration-details">' + row.final_concentration + '</div>';	
+		
+	};
+	
+	function ingNotes(data, type, row, meta){
+		 if(type === 'display'){
+		  <?php if($meta['defView'] == '1'){ $show = 'properties'; }elseif($meta['defView'] == '2'){ $show = 'notes';}?>
+		  <?php if($meta['isProtected'] == FALSE){?>
+		  data = '<i data-name="<?=$show?>" class="pv_point_gen text-wrap <?=$show?>" data-type="textarea" data-pk="' + row.formula_ingredient_id + '">' + data + '</i>';
+		  <?php } ?>
+		 }
+		return data;
+	};
+	  
+	  
+	function ingInv(data, type, row, meta){
+		if (row.ingredient.physical_state == 1){
+			var mUnit = 'ml';
+		}else if (row.ingredient.physical_state == 2){
+			var mUnit = 'gr';
+		}
+		if(row.ingredient.inventory.stock >= row.quantity){
+			var inv = '<i class="fa fa-check inv-ok" rel="tip" title="Available in stock: '+row.ingredient.inventory.stock+mUnit+'"></i>';
+			
+		}else if(row.ingredient.inventory.stock == 0){
+			var inv = '<i class="fa fa-times inv-out" rel="tip" data-html="true" title="Not in stock from the prefered supplier.<br/> Available: '+row.ingredient.inventory.stock + mUnit +'"></i>';
+			
+		}else if(row.ingredient.inventory.stock <= row.quantity){
+			var inv = '<i class="fa fa-triangle-exclamation inv-low" rel="tip" data-html="true" title="Not enough in stock from the prefered supplier.<br/> Available: '+row.ingredient.inventory.stock + mUnit +'"></i>';
+			
+		}
+		
+		if(type === 'display'){
+			data = inv;
+		}
+	
+	  return data;
+	};
+	
+	function ingActions(data, type, row, meta){
+	
+		data = '<div class="dropdown">' +
+			'<button type="button" class="btn" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+				'<ul class="dropdown-menu dropdown-menu-end">';
+	
+		data += '<li><a class="dropdown-item" href="'+ row.ingredient.pref_supplier_link +'" target="_blank" rel="tip" title="Open '+ row.ingredient.pref_supplier +' page"><i class="fas fa-shopping-cart mx-2"></i>Go to supplier</a></li>';
+		
+		<?php if($meta['isProtected'] == FALSE){?>
+		if(row.exclude_from_calculation == 0){
+			var ex = '<li><i class="dropdown-item pv_point_gen" rel="tip" id="exIng" title="Exclude '+ row.ingredient.name +'" data-name="'+ row.ingredient.name +'" data-status="1" data-id="'+ row.formula_ingredient_id +'"><i class="pv_point_gen fas fa-eye-slash mx-2"></i>Exlude</i></li>';
+			
+		}else if(row.exclude_from_calculation == 1){
+			var ex = '<li><i class="dropdown-item pv_point_gen" rel="tip" id="exIng" title="Include '+ row.ingredient.name +'" data-name="'+ row.ingredient.name +'" data-status="0" data-id="'+ row.formula_ingredient_id +'"><i class="pv_point_gen fas fa-eye mx-2"></i>Include</i></li>';
+		}
+		
+		data += ex + '<li><i data-bs-toggle="modal" data-bs-target="#replaceIng" class="dropdown-item pv_point_gen open-replace-dialog text-info-emphasis" rel="tip" title="Replace '+ row.ingredient.name +'"  data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'" data-cas="'+row.ingredient.cas+'" data-desc="'+row.ingredient.desc+'"><i class="pv_pont_gen fas fa-exchange-alt text-info-emphasis mx-2"></i>Replace ingredient</i></li>'
+		
+		+ '<li><i data-bs-toggle="modal" data-bs-target="#mrgIng" rel="tip" title="Merge '+ row.ingredient.name +'" class="dropdown-item pv_point_gen open-merge-dialog text-warning-emphasis" data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'"><i class="pv_point_gen fas fa-object-group alert-warning mx-2"></i>Merge ingredients</i></li>'
+		
+		+'<div class="dropdown-divider"></div>'
+		+ '<li><i rel="tip" title="Remove '+ row.ingredient.name +'" class="dropdown-item text-danger pv_point_gen" id="rmIng" data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'" data-ingredient-id="'+row.ingredient.id+'"><i class="pv_point_gen fas fa-trash mx-2 text-danger"></i>Delete</i></li>';
+		<?php } ?>
+		data += '</ul></div>';
+	
+	   return data;
+	};
+	
+	
 
 	
 	
@@ -588,6 +774,31 @@ function extrasShow() {
 		closeOnBgClick: false,
 		showCloseBtn: true,
 	});
+	
+	var obsDiv = $(".quantity-details, .concentration-details, .final-concentration-details");
+    
+    if (sessionStorage.getItem("obsState") === "true") {
+        obsDiv.addClass("div-obs");
+    } else {
+        obsDiv.removeClass("div-obs");
+    }
+	if(isProtected == false){
+		 if (obsDiv.hasClass("div-obs")) {
+			obsDiv.removeClass("div-obs");
+			sessionStorage.setItem("obsState", "false");
+		}
+	}
+    $("#toggle-obs").click(function (e) {
+        e.preventDefault();
+
+        if (obsDiv.hasClass("div-obs")) {
+            obsDiv.removeClass("div-obs");
+            sessionStorage.setItem("obsState", "false");
+        } else {
+            obsDiv.addClass("div-obs");
+            sessionStorage.setItem("obsState", "true");
+        }
+    });
 };
   
 $('#formula').editable({
@@ -682,177 +893,7 @@ $('#formula').editable({
 	},
 });
 
-function ingName(data, type, row, meta){
-	var ex = '';
-	var contains = '';
-	var chkIng = '';
-	var profile_class ='';
-	var IFRAbyPASSED = '';
-	
-	if(row.ingredient.containsOthers.total){
-		contains = '<i class="fa-solid fa-th-list expandAccord mx-2 pv_point_gen" rel="tip" title="Show/hide sub igredients"></i>';	
-	}
-	
-	if(row.isIFRAbyPass === 1){
-		IFRAbyPASSED = '<i class="ml-2 fas fa-triangle-exclamation" rel="tip" title="IFRA is by-passed"></i>';	
-	}else{
-		IFRAbyPASSED = '';
-	}
-	
-	if(row.exclude_from_calculation == 1){
-		ex = 'pv_ing_exc';
-	}
-	
-	if(row.chk_ingredient){
-		chkIng = '<i class="fas fa-exclamation" rel="tip" title="'+row.chk_ingredient+'"></i>';
-	}else{
-		chkIng = '';
-	}
-	
-	if(row.ingredient.profile_plain){
-		profile_class = '<a href="#" class="'+row.ingredient.profile_plain+'"></a>';
-	}else{
-		profile_class ='';
-	}
-	
-	if(row.chk_ingredient_code === 4){
-		data ='<div class="btn-group"><a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'+row.ingredient.name+'</a><div class="dropdown-menu dropdown-menu-right">';
-		
-		data+='<li><a class="dropdown-item popup-link" href="/pages/mgmIngredient.php?newIngName='+ btoa(row.ingredient.name) +'&newIngCAS='+ row.ingredient.cas +'"><i class="fa-solid fa-flask-vial mx-2"></i>Create ingredient</a></li>';
-	
-		data+='<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#import_ingredients_json"><i class="bi bi-filetype-json mx-2"></i>Import from JSON</a></li>';
-		data+='<li><a class="dropdown-item" href="https://online.perfumersvault.com/query/' + row.ingredient.name+ '" target="_blank"><i class="fa-solid fa-cloud-arrow-down mx-2"></i>Search PV Online<i class="ml-2 fa-solid fa-arrow-up-right-from-square"></i></a></li>';
-				
-		data+='</div></div>';
-		return data;
-	}
-	
-	if(row.ingredient.enc_id){
-		data = contains + '<a class="popup-link '+ex+'" href="/pages/mgmIngredient.php?id=' + row.ingredient.id + '">' + data + '</a> '+ chkIng + IFRAbyPASSED + profile_class;
-	}else{
-		data = '<a class="popup-link '+ex+'" href="/pages/mgmIngredient.php?id=' + btoa(data) + '">' + data + '</a> '+ chkIng + profile_class;
 
-	}
-
-  return data;
-};
-
-function ingCAS(data, type, row, meta){
-	if(type === 'display'){
-		data = '<i class="pv_point_gen" rel="tip" title="Click to copy" id="cCAS" data-name="'+row.ingredient.cas+'">'+row.ingredient.cas+'</i>';
-	}
-	return data;
-};
-  
-function ingConc(data, type, row, meta){
-  if( isProtected == false ){
-	  if( row.ingredient.profile == "Solvent"){
-		  data = 100;
-	  }else{
-	  	data = '<a href="#" data-name="concentration" class="concentration" data-type="text" data-pk="' + row.formula_ingredient_id + '">' + data + '</a>';
-	  }
-  }
-
-  return data;
-};
-
-function ingSolvent(data, type, row, meta){
-	if( isProtected == false ){
-	  if(row.purity !== 100){
-		if(row.ingredient.profile == "Solvent"){
-			data = 'None';
-		}else{
-			data = '<a href="#" data-name="dilutant" class="solvent" data-type="select" data-pk="' + row.formula_ingredient_id + '">' + data + '</a>';
-		}
-	 }else{
-		data = 'None';
-	  }
-	}else{
-		if(row.purity === 100){
-			data = 'None';
-		}
-	}
- 	return data;
-};
-  
-function ingQuantity(data, type, row, meta){
-	if( isProtected == false ){
-		<?php if($settings['editor'] == '1'){?>
-			data = '<a href="#" data-name="quantity" class="quantity" data-type="text" data-pk="' + row.formula_ingredient_id + '">' + data + '</a>';
-		<?php }else{?>
-			data = '<a href="#" data-name="quantity" data-bs-toggle="modal" data-bs-target="#manage-quantity" class="open-quantity-dialog" data-type="text" data-ingid="' + row.formula_ingredient_id + '" data-value="' + row.quantity + '" data-ing="' + row.ingredient.name + '" data-mainingid="'+row.ingredient.id+'">' + row.quantity + '</a>';
-		<?php } ?>
-	} 
-
-	return data;
-};
-
-function ingSetConc(data, type, row, meta){
-	return data;
-};
-
-function ingNotes(data, type, row, meta){
-	 if(type === 'display'){
-	  <?php if($meta['defView'] == '1'){ $show = 'properties'; }elseif($meta['defView'] == '2'){ $show = 'notes';}?>
-	  <?php if($meta['isProtected'] == FALSE){?>
-	  data = '<i data-name="<?=$show?>" class="pv_point_gen text-wrap <?=$show?>" data-type="textarea" data-pk="' + row.formula_ingredient_id + '">' + data + '</i>';
-	  <?php } ?>
-	 }
-	return data;
-};
-  
-  
-function ingInv(data, type, row, meta){
-	if (row.ingredient.physical_state == 1){
-		var mUnit = 'ml';
-	}else if (row.ingredient.physical_state == 2){
-		var mUnit = 'gr';
-	}
-	if(row.ingredient.inventory.stock >= row.quantity){
-		var inv = '<i class="fa fa-check inv-ok" rel="tip" title="Available in stock: '+row.ingredient.inventory.stock+mUnit+'"></i>';
-		
-	}else if(row.ingredient.inventory.stock == 0){
-		var inv = '<i class="fa fa-times inv-out" rel="tip" data-html="true" title="Not in stock from the prefered supplier.<br/> Available: '+row.ingredient.inventory.stock + mUnit +'"></i>';
-		
-	}else if(row.ingredient.inventory.stock <= row.quantity){
-		var inv = '<i class="fa fa-triangle-exclamation inv-low" rel="tip" data-html="true" title="Not enough in stock from the prefered supplier.<br/> Available: '+row.ingredient.inventory.stock + mUnit +'"></i>';
-		
-	}
-	
-	if(type === 'display'){
-		data = inv;
-	}
-
-  return data;
-};
-
-function ingActions(data, type, row, meta){
-
-	data = '<div class="dropdown">' +
-        '<button type="button" class="btn" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
-            '<ul class="dropdown-menu dropdown-menu-end">';
-
-	data += '<li><a class="dropdown-item" href="'+ row.ingredient.pref_supplier_link +'" target="_blank" rel="tip" title="Open '+ row.ingredient.pref_supplier +' page"><i class="fas fa-shopping-cart mx-2"></i>Go to supplier</a></li>';
-	
-	<?php if($meta['isProtected'] == FALSE){?>
-	if(row.exclude_from_calculation == 0){
-	 	var ex = '<li><i class="dropdown-item pv_point_gen" rel="tip" id="exIng" title="Exclude '+ row.ingredient.name +'" data-name="'+ row.ingredient.name +'" data-status="1" data-id="'+ row.formula_ingredient_id +'"><i class="pv_point_gen fas fa-eye-slash mx-2"></i>Exlude</i></li>';
-		
-	}else if(row.exclude_from_calculation == 1){
-	 	var ex = '<li><i class="dropdown-item pv_point_gen" rel="tip" id="exIng" title="Include '+ row.ingredient.name +'" data-name="'+ row.ingredient.name +'" data-status="0" data-id="'+ row.formula_ingredient_id +'"><i class="pv_point_gen fas fa-eye mx-2"></i>Include</i></li>';
-	}
-	
-	data += ex + '<li><i data-bs-toggle="modal" data-bs-target="#replaceIng" class="dropdown-item pv_point_gen open-replace-dialog text-info-emphasis" rel="tip" title="Replace '+ row.ingredient.name +'"  data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'" data-cas="'+row.ingredient.cas+'" data-desc="'+row.ingredient.desc+'"><i class="pv_pont_gen fas fa-exchange-alt text-info-emphasis mx-2"></i>Replace ingredient</i></li>'
-	
-	+ '<li><i data-bs-toggle="modal" data-bs-target="#mrgIng" rel="tip" title="Merge '+ row.ingredient.name +'" class="dropdown-item pv_point_gen open-merge-dialog text-warning-emphasis" data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'"><i class="pv_point_gen fas fa-object-group alert-warning mx-2"></i>Merge ingredients</i></li>'
-	
-	+'<div class="dropdown-divider"></div>'
-	+ '<li><i rel="tip" title="Remove '+ row.ingredient.name +'" class="dropdown-item text-danger pv_point_gen" id="rmIng" data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'" data-ingredient-id="'+row.ingredient.id+'"><i class="pv_point_gen fas fa-trash mx-2 text-danger"></i>Delete</i></li>';
-	<?php } ?>
-	data += '</ul></div>';
-
-   return data;
-};
 
 </script>
 <script src="/js/fullformula.view.js"></script>

@@ -1521,3 +1521,15 @@ th.dt-center, td.dt-center {
   border-radius: var(--bs-border-radius);
   transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }
+
+.div-obs{
+    filter: blur(3px);
+}
+
+.concentration-details {
+  display: inline-block;
+}
+
+.final-concentration-details {
+  display: inline-block;
+}
