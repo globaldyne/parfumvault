@@ -316,12 +316,11 @@ $(document).ready(function() {
 	if(isProtected == '0'){
 		$('#add_ing').show();	
 	}
-	
-	$("#concentration").prop("disabled", true); 
-	$("#dilutant").prop("disabled", true);
-	$('#quantity').prop("disabled", true);
-	
 });//END DOC - TODO
+
+$("#concentration").prop("disabled", true); 
+$("#dilutant").prop("disabled", true);
+$('#quantity').prop("disabled", true);
 
 
 //Add ingredient

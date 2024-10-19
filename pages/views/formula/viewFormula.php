@@ -150,7 +150,7 @@ $(document).ready(function() {
     		url: '/core/full_formula_data.php',
 			type: 'POST',
 			data:{
-		   		id: "<?=$meta['id']?>",
+		   		id: myID,
 			}
  		},
 		columns: [
