@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 11.7
+- Formulation: Make sure dilutant is disabled if material is at 100%
 - Formulation: Auto remove/add decimal point in quantity depending user's input
 - Formulation: Added formula obscure when in a locked state
 - Settings: Show/hide api key

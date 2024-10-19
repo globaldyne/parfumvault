@@ -200,7 +200,7 @@ $(document).ready(function(){
 					$("#dilutant").prop("disabled", true).val('none').selectpicker("refresh");
 				} else {
 					$("#concentration").prop("disabled", false).val(data.purity).trigger("input");
-					$("#dilutant").prop("disabled", false).val(data.solvent).selectpicker("refresh");
+					//$("#dilutant").prop("disabled", false).val(data.solvent).selectpicker("refresh");
 				}
 	
 				$("#quantity").prop("disabled", false);
@@ -211,7 +211,7 @@ $(document).ready(function(){
 		});
 	});
 	
-	$('#concentration').on('input', function() {
+	$('#concentration').on('input change', function() {
 		const MAX_CONCENTRATION = 100;
 		var concentration = parseFloat($(this).val());
 	
