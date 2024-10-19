@@ -1,7 +1,8 @@
 # CHANGELOG
 ### Version 11.7
-- Added formula obscure when in a locked state
-- Show/hide api key
+- Formulation: Auto remove/add decimal point in quantity depending user's input
+- Formulation: Added formula obscure when in a locked state
+- Settings: Show/hide api key
 - Formula settings page minor updates
 - Add IFRA Categories explanation in usage page
 - Make sure empty formula returns array for meta data
