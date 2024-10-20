@@ -1,6 +1,7 @@
 # CHANGELOG
 ### Version 11.8
 - User registration and login error handling improvements
+- System installation error handling improvements
 
 ### Version 11.7
 - Formulation: Make sure dilutant is disabled if material is at 100%
