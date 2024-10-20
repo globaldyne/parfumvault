@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 11.8
+
 ### Version 11.7
 - Formulation: Make sure dilutant is disabled if material is at 100%
 - Formulation: Auto remove/add decimal point in quantity depending user's input
