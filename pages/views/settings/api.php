@@ -20,7 +20,10 @@ require_once(__ROOT__.'/inc/settings.php');
 <div class="row mb-3">
     <div class="col-4">
         <label for="pv_api_key">API Key</label>
-        <input name="pv_api_key" type="text" class="form-control" id="pv_api_key" value="<?=$settings['api_key']?>" />
+        <div class="col-md-8 password-input-container">
+        	<input name="pv_api_key" type="password" class="form-control password-input" id="pv_api_key" value="<?=$settings['api_key']?>" />
+        	<i class="toggle-password fa fa-eye"></i>
+        </div>
     </div>
 </div>
 <div class="col-2">
@@ -30,6 +33,17 @@ require_once(__ROOT__.'/inc/settings.php');
 
 <script>
 $(document).ready(function() {
+	$(".toggle-password").click(function () {
+        var passwordInput = $($(this).siblings(".password-input"));
+        var icon = $(this);
+        if (passwordInput.attr("type") == "password") {
+            passwordInput.attr("type", "text");
+            icon.removeClass("fa-eye").addClass("fa-eye-slash");
+        } else {
+            passwordInput.attr("type", "password");
+            icon.removeClass("fa-eye-slash").addClass("fa-eye");
+        }
+    });
 	$('#save-api').click(function() {
 		$.ajax({ 
 			url: '/pages/update_settings.php', 

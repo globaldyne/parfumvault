@@ -274,6 +274,7 @@ foreach ($form as $formula){
 
 if(empty($r)){
 	$response['data'] = [];
+	$response['meta'] = [];
 	echo json_encode($response);
 	return;
 }

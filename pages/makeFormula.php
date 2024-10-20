@@ -86,12 +86,12 @@ while($res = mysqli_fetch_array($qS)){
                <li class="dropdown-header">Options</li>
                <li><a class="dropdown-item" href="#" id="toggleAdded"><i class="bi bi-list-check mx-2"></i>Show/hide added</a></li>
 
-               <div class="dropdown-divider"></div>
-               <li class="dropdown-header">Export</li>
+               	<div class="dropdown-divider"></div>
+               	<li class="dropdown-header">Export</li>
           		<li><a class="dropdown-item" href="/pages/operations.php?action=exportMaking&fid=<?=$fid?>"><i class="fa-solid fa-file-code mx-2"></i>Export as JSON</a></li>
                <li><a class="dropdown-item export_as" href="#" data-format="csv"><i class="fa-solid fa-file-csv mx-2"></i>Export as CSV</a></li>
                <li><a class="dropdown-item export_as" href="#" data-format="pdf"><i class="fa-solid fa-file-code mx-2"></i>Export as PDF</a></li>
-               <li><a class="dropdown-item" href="#" id="print"><i class="fa-solid fa-print mx-2"></i>Print Formula</a></li>
+               <li><a class="dropdown-item" href="#" id="print"><i class="fa-solid fa-print mx-2"></i>Print formula</a></li>
             </div>
         </div>
             <table class="table table-striped" id="tdDataPending" width="100%" cellspacing="0">
