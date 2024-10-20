@@ -57,14 +57,11 @@ while($qTags = mysqli_fetch_array($tagsQ)){
 <link href="/css/bootstrap-tagsinput.css" rel="stylesheet" />
 <div id="msg_settings_info">
     <div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i>Some of the changes require the page to be reloaded to appear properly. Please remember to refresh your browser if your changes not automatically appear.</div>
-    <div id="set_msg"></div>
 </div>
-
+<div id="set_msg"></div>
 <div class="card-body" id="formula_metadata">
 
 <div class="col-sm">
-
-
    <div class="form-row">
      <div class="form-group col">
         <label class="control-label col-auto" for="formula_name">Formula Name</label>
@@ -210,7 +207,6 @@ $(document).ready(function(){
 	  },
 	  success: function(response) {	
 		if(response.success){
-			msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.success + '</strong></div>';
 			$("#getFormMetaLabel").html(response.msg);
 		}else{
 			msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
@@ -264,12 +260,11 @@ $(document).ready(function(){
 			},
 			dataType: 'json',
 			success: function (data) {
-				if(data.success){
-					var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + data.success + '</strong></div>';
-				}else{
-					var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + data.error + '</strong></div>';
-				}
-				$('#set_msg').html(msg);
+				if (data.success === 'Formula locked') {
+	          		$('#lock_status').html('<a class="fas fa-lock text-body-emphasis" href="javascript:setProtected(\'false\')"></a>');
+        		} else {
+          			$('#lock_status').html('<a class="fas fa-unlock text-body-emphasis" href="javascript:setProtected(\'true\')"></a>');
+        		}
 			},
 			error: function (xhr, status, error) {
 				$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');
@@ -455,98 +450,107 @@ $(document).ready(function(){
 			});
 	});
 
-}); //END DOC
 
-$("#pic_upload").click(function(){
-	$("#upload_resp").html('<div class="dropdown-divider"><div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
-	$("#pic_upload").prop("disabled", true);
-    $("#pic_upload").prop('value', 'Please wait...');
-		
-	var fd = new FormData();
-    var files = $('#doc_file')[0].files;
-    var doc_name = '<?=$info['name']?>';
-
-    if(files.length > 0 ){
-		fd.append('doc_file',files[0]);
-
-			$.ajax({
-              url: '/pages/upload.php?type=2&doc_name=' + btoa(doc_name) + '&id=<?=$id?>',
-              type: 'POST',
-              data: fd,
-              contentType: false,
-              processData: false,
-			  		cache: false,
-              success: function(response){
-                 if(response != 0){
-                    $("#upload_resp").html('<div class="dropdown-divider"></div><div class="alert alert-success">File uploaded!</div>');
-					$("#pic_upload").prop("disabled", false);
-        			$("#pic_upload").prop('value', 'Upload');
-                 }else{
-                    $("#upload_resp").html('<div class="dropdown-divider"></div><div class="alert alert-danger"><strong>Error:</strong> File upload failed!</div>');
-					$("#pic_upload").prop("disabled", false);
-        			$("#pic_upload").prop('value', 'Upload');
-                 }
-              },
-           });
-        }else{
-			$("#upload_resp").html('<div class="alert alert-danger mt-3"><strong>Please select a file to upload</strong></div>');
-			$("#pic_upload").prop("disabled", false);
-   			$("#pic_upload").prop('value', 'Upload');
-        }
-});	
-
-
-$('#tagsinput').on('beforeItemAdd', function(event) {
-   var tag = event.item;   
-   $.ajax({ 
-		url: '/pages/manageFormula.php', 
-		type: 'POST',
-		data: {
-			do: "tagadd",
-			fid: '<?=$info['id']?>',
-			tag: tag
-		},
-		dataType: 'json',
-		success: function (data) {
-		  	if(data.error){
-				$('#tagsinput').tagsinput('remove', tag, {preventPost: true});
-				$('#set_msg').html(data.error);
+	
+	$("#pic_upload").click(function(){
+		$("#upload_resp").html('<div class="dropdown-divider"><div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
+		$("#pic_upload").prop("disabled", true);
+		$("#pic_upload").prop('value', 'Please wait...');
+			
+		var fd = new FormData();
+		var files = $('#doc_file')[0].files;
+		var doc_name = '<?=$info['name']?>';
+	
+		if(files.length > 0 ){
+			fd.append('doc_file',files[0]);
+	
+				$.ajax({
+				  url: '/pages/upload.php?type=2&doc_name=' + btoa(doc_name) + '&id=<?=$id?>',
+				  type: 'POST',
+				  data: fd,
+				  contentType: false,
+				  processData: false,
+						cache: false,
+				  success: function(response){
+					 if(response != 0){
+						$("#upload_resp").html('<div class="dropdown-divider"></div><div class="alert alert-success">File uploaded!</div>');
+						$("#pic_upload").prop("disabled", false);
+						$("#pic_upload").prop('value', 'Upload');
+					 }else{
+						$("#upload_resp").html('<div class="dropdown-divider"></div><div class="alert alert-danger"><strong>Error:</strong> File upload failed!</div>');
+						$("#pic_upload").prop("disabled", false);
+						$("#pic_upload").prop('value', 'Upload');
+					 }
+				  },
+			   });
+			}else{
+				$("#upload_resp").html('<div class="alert alert-danger mt-3"><strong>Please select a file to upload</strong></div>');
+				$("#pic_upload").prop("disabled", false);
+				$("#pic_upload").prop('value', 'Upload');
 			}
-		},
-		error: function (xhr, status, error) {
-			$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');
-		}
+	});	
+	
+	
+	$('#tagsinput').on('beforeItemAdd', function(event) {
+	   var tag = event.item;   
+	   $.ajax({ 
+			url: '/pages/manageFormula.php', 
+			type: 'POST',
+			data: {
+				do: "tagadd",
+				fid: '<?=$info['id']?>',
+				tag: tag
+			},
+			dataType: 'json',
+			success: function (data) {
+				if(data.error){
+					$('#tagsinput').tagsinput('remove', tag, {preventPost: true});
+					$('#set_msg').html(data.error);
+				}
+			},
+			error: function (xhr, status, error) {
+				$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');
+			}
+		});
 	});
-});
-
-
-$('#tagsinput').val('<?=implode(",",$tagsData)?>');
+	$('.selectpicker').selectpicker('refresh');
+	
+}); //END DOC
+//$('#tagsinput').tagsinput();
+$('#tagsinput').val('<?= implode(",", $tagsData) ?>');
 $('#tagsinput').tagsinput('refresh');
 
-
 $('#tagsinput').on('beforeItemRemove', function(event) {
-   var tag = event.item;   
+   var tag = event.item;
+
    $.ajax({ 
 		url: '/pages/manageFormula.php', 
 		type: 'POST',
 		data: {
 			do: "tagremove",
-			fid: '<?=$info['id']?>',
+			fid: '<?= $info['id'] ?>',
 			tag: tag
-			},
+		},
 		dataType: 'json',
 		success: function (data) {
-		  	if(data.error){
-				$('#tagsinput').tagsinput('add', tag, {preventPost: true});
-				$('#set_msg').html(data.error);
+		  	if (data.error) {
+				$('#tagsinput').tagsinput('add', tag, { preventPost: true });
+				$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i> ' + data.error + '</div>');
 			}
 		},
 		error: function (xhr, status, error) {
-			$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');
+			let errorMessage = '<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred. ';
+			if (xhr.responseText) {
+				errorMessage += 'Server response: ' + xhr.responseText;
+			} else {
+				errorMessage += error;
+			}
+			errorMessage += '</div>';
+			$('#set_msg').html(errorMessage);
 		}
 	});
 });
-$('.selectpicker').selectpicker('refresh');
+
 
 </script>
 

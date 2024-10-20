@@ -119,7 +119,12 @@ $(document).ready(function() {
 			},
 		  }
 		],
-		processing: false,
+		processing: true,
+		language: {
+			loadingRecords: 'Blending...',
+			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>',
+			emptyTable: '<div class="alert alert-warning"><strong><i class="fa-solid fa-circle-info mx-2"></i>Empty or invalid formula</strong></div>',
+		},
 		ajax: {
 			url: '/core/full_formula_data.php',
 			data: {

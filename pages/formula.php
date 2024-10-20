@@ -29,7 +29,7 @@ while ($ingredient = mysqli_fetch_array($ingredients)){
 if($form[0]['ingredient']){
 	$legend = 1;
 }
-require_once(__ROOT__.'/func/convert_to_decimal_point.php');
+//require_once(__ROOT__.'/func/convert_to_decimal_point.php');
 
 ?>
 
@@ -158,7 +158,7 @@ require_once(__ROOT__.'/func/convert_to_decimal_point.php');
                     <div class="col-md-2">
                         <div class="input-group">
                             <input type="text" name="quantity" id="quantity" placeholder="Quantity" class="form-control" aria-label="quantity" aria-describedby="quantity-addon">
-                            <span class="input-group-text" id="quantity-addon"><?= convert_to_decimal_point($settings['qStep']).$settings['mUnit'] ?></span>
+                            <span class="input-group-text" id="quantity-addon"></span>
                         </div>
                     </div>
                     
@@ -281,19 +281,42 @@ require_once(__ROOT__.'/func/convert_to_decimal_point.php');
 
 <script src="/js/select2-v3-ingredient.js"></script>
 <script>
-document.title = "<?=$meta['name'].' - '.$product?>";
-var myFID = "<?=$fid?>";
-var isProtected = "<?=$meta['isProtected']?>";
+$(document).ready(function() {
 
-$('#formula_name').click(function() {
-    reload_formula_data();
-});
-    
-$('#add_ing').hide();
-
-if(isProtected == '0'){
-	$('#add_ing').show();	
-}
+	function convertToDecimalPoint(qStep, hasDot) {
+		let zeros = '0'.repeat(qStep);
+		return hasDot ? zeros : '.' + zeros;
+	}
+	
+	const settings = {
+		qStep: <?=$settings['qStep']?>,
+		mUnit: '<?=$settings['mUnit']?>'
+	};
+	
+	function updateSpan() {
+		let quantityInput = document.getElementById('quantity').value;
+		let hasDot = quantityInput.includes('.');
+		let decimalPart = convertToDecimalPoint(settings.qStep, hasDot);
+		document.getElementById('quantity-addon').textContent = decimalPart + settings.mUnit;
+	}
+	
+	document.getElementById('quantity').addEventListener('input', updateSpan);
+	document.getElementById('quantity-addon').textContent = convertToDecimalPoint(settings.qStep, false) + settings.mUnit;
+	
+	document.title = "<?=$meta['name'].' - '.$product?>";
+	var myFID = "<?=$fid?>";
+	var isProtected = "<?=$meta['isProtected']?>";
+	
+	$('#formula_name').click(function() {
+		reload_formula_data();
+	});
+		
+	$('#add_ing').hide();
+	
+	if(isProtected == '0'){
+		$('#add_ing').show();	
+	}
+});//END DOC - TODO
 
 $("#concentration").prop("disabled", true); 
 $("#dilutant").prop("disabled", true);
@@ -477,9 +500,6 @@ $.ajax({
 		}
 	});
 };
-
-
-
 
 function fetch_replacements(){
 	$.ajax({ 

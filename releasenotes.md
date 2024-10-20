@@ -1,5 +1,6 @@
-Whats New in v11.6
+Whats New in v11.7
 --------------------------
-- Fix a bug incorrectly marking materials as banned in a formula
-- Fix a bug preventing db creation for new installations
+- Auto remove/add decimal point in quantity depending user's input
+- Added formula obscure when in a locked state
+- Add IFRA Categories explanation in usage page
 - This release may include more changes, for full details please refer to the CHANGELOG

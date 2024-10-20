@@ -201,8 +201,8 @@ $(document).ready(function() {
 		paging: false,
         language: {
 			loadingRecords: '&nbsp;',
-			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Blending...</span>',
-			emptyTable: '<div class="alert alert-warning"><strong>Empty formula</strong></div>',
+			//processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>',
+			emptyTable: '<div class="alert alert-warning"><strong><i class="fa-solid fa-circle-info mx-2"></i>Empty or invalid formula</strong></div>',
 		},
 		//dom: 'B',
 		buttons: [

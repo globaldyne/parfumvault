@@ -1,8 +1,13 @@
 # CHANGELOG
-### Version 11.6
-- Fix a bug incorrectly marking materials as banned in a formula
-- Fix a typo in db schema creation for new installations
-- Minor updates in sys-upgrade
+### Version 11.7
+- Formulation: Make sure dilutant is disabled if material is at 100%
+- Formulation: Auto remove/add decimal point in quantity depending user's input
+- Formulation: Added formula obscure when in a locked state
+- Settings: Show/hide api key
+- Formula settings page minor updates
+- Add IFRA Categories explanation in usage page
+- Make sure empty formula returns array for meta data
+- Set scroll collapse for datatbales in ingredients to false
 
 ### Version 11.5
 - Fix revisions comparison
