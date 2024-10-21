@@ -18,7 +18,7 @@ while($res = mysqli_fetch_array($q)){
     <div class="card-body">
         <div class="form-inline mb-3">
            <input type="text" class="form-control mt-2 ml-2" id="btlSize" placeholder="Enter bottle size, eg: 100">
-           <button type="button" class="btn btn-primary" id="submitBottleAmount">Submit</button>
+           <button type="button" class="btn btn-primary" id="submitBottleAmount">Calculate</button>
            <div class="ml-2 mt-2">
                <input type="checkbox" class="form-check-input" id="expandCheckbox">
                <label class="form-check-label" for="expandCheckbox">Expand All</label>
