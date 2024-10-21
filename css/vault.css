@@ -1533,3 +1533,7 @@ th.dt-center, td.dt-center {
 .final-concentration-details {
   display: inline-block;
 }
+
+.bootstrap-select > .dropdown-toggle.bs-placeholder, .bootstrap-select > .dropdown-toggle.bs-placeholder:active, .bootstrap-select > .dropdown-toggle.bs-placeholder:focus, .bootstrap-select > .dropdown-toggle.bs-placeholder:disabled {  background-color: var(--bs-secondary-bg);
+  opacity: 1;
+}

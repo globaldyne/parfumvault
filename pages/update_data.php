@@ -571,13 +571,13 @@ if($_POST['update_bottle_data']){
 		return;
 	}
 	
-	if(!is_numeric($_POST['size'])){
+	if(!is_numeric($_POST['size']) || $_POST['size'] <= 0) {
 		$response["error"] = "Size is invalid";
 		echo json_encode($response);
 		return;
 	}
 	
-	if(!is_numeric($_POST['price'])){
+	if (!is_numeric($_POST['price']) || $_POST['price'] <= 0) {
 		$response["error"] = "Price is invalid";
 		echo json_encode($response);
 		return;
@@ -623,10 +623,17 @@ if($_POST['update_lid_data']){
 	$id = $_POST['lid_id'];
 	$style = $_POST['style'];
 	$colour = $_POST['colour'];
-	$price = $_POST['price'];
 	$supplier = $_POST['supplier'];
 	$supplier_link = $_POST['supplier_link'];
 	$pieces = $_POST['pieces']?:0;
+	
+	if (!is_numeric($_POST['price']) || $_POST['price'] <= 0 ) {
+    	$response["error"] = 'Price cannot be empty or 0';
+    	echo json_encode($response);
+    	return;
+	}
+	
+	$price = $_POST['price'];
 	
 	$q = mysqli_query($conn,"UPDATE lids SET style= '$style', colour = '$colour', price = '$price', supplier = '$supplier', supplier_link = '$supplier_link', pieces = '$pieces' WHERE id = '$id'");
 	
