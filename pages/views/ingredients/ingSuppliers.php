@@ -357,8 +357,11 @@ $('#tdIngSup').editable({
 			return 'This field is required';
 		}
 		if($.isNumeric(value) == '' ){
-			return 'Numbers only!';
+			return 'Numbers only';
 		}
+		if(parseFloat(value) === 0) {
+            return 'Value cannot be 0';
+        }
   	}
 });
 	

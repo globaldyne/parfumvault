@@ -85,10 +85,10 @@ if($_POST['action'] == 'add' && $_POST['type'] == 'invCmp'){
 	$label_info = mysqli_real_escape_string($conn, $_POST['cmp_label_info']);
 
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM inventory_compounds WHERE name = '$name'"))){
-		$response["error"] = 'Error: '.$name.' already exists!';
+		$response["error"] = 'Error: '.$name.' already exists';
 		
 	}elseif(mysqli_query($conn, "INSERT INTO inventory_compounds (name,description,batch_id,size,owner_id,location,label_info) VALUES ('$name', '$description', '$batch_id', '$size', '".$user['id']."', '$location', '$label_info' )")){
-		$response["success"] = 'Compound '.$name.' added!';
+		$response["success"] = 'Compound '.$name.' added';
 	}else{
 		$response["error"] = 'Error adding compound '.mysqli_error($conn);
 	}
