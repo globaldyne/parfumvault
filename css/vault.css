@@ -1537,3 +1537,90 @@ th.dt-center, td.dt-center {
 .bootstrap-select > .dropdown-toggle.bs-placeholder, .bootstrap-select > .dropdown-toggle.bs-placeholder:active, .bootstrap-select > .dropdown-toggle.bs-placeholder:focus, .bootstrap-select > .dropdown-toggle.bs-placeholder:disabled {  background-color: var(--bs-secondary-bg);
   opacity: 1;
 }
+
+/* -------------------------------------------------------------------------- */
+/*                                    Badges                                  */
+/* -------------------------------------------------------------------------- */
+.badge-subtle-primary {
+  color: var(--pv2-primary-text-emphasis);
+  background-color: var(--pv2-primary-bg-subtle);
+}
+.badge-subtle-primary[href]:hover, .badge-subtle-primary[href]:focus {
+  text-decoration: none;
+  color: var(--pv2-primary-text-emphasis);
+  background-color: var(--pv2-primary-bg-subtle);
+}
+
+.badge-subtle-secondary {
+  color: var(--pv2-secondary-text-emphasis);
+  background-color: var(--pv2-secondary-bg-subtle);
+}
+.badge-subtle-secondary[href]:hover, .badge-subtle-secondary[href]:focus {
+  text-decoration: none;
+  color: var(--pv2-secondary-text-emphasis);
+  background-color: var(--pv2-secondary-bg-subtle);
+}
+
+.badge-subtle-success {
+  color: var(--pv2-success-text-emphasis);
+  background-color: var(--pv2-success-bg-subtle);
+}
+.badge-subtle-success[href]:hover, .badge-subtle-success[href]:focus {
+  text-decoration: none;
+  color: var(--pv2-success-text-emphasis);
+  background-color: var(--pv2-success-bg-subtle);
+}
+
+.badge-subtle-info {
+  color: var(--pv2-info-text-emphasis);
+  background-color: var(--pv2-info-bg-subtle);
+}
+.badge-subtle-info[href]:hover, .badge-subtle-info[href]:focus {
+  text-decoration: none;
+  color: var(--pv2-info-text-emphasis);
+  background-color: var(--pv2-info-bg-subtle);
+}
+
+.badge-subtle-warning {
+  color: var(--pv2-warning-text-emphasis);
+  background-color: var(--pv2-warning-bg-subtle);
+}
+.badge-subtle-warning[href]:hover, .badge-subtle-warning[href]:focus {
+  text-decoration: none;
+  color: var(--pv2-warning-text-emphasis);
+  background-color: var(--pv2-warning-bg-subtle);
+}
+
+.badge-subtle-danger {
+  color: var(--pv2-danger-text-emphasis);
+  background-color: var(--pv2-danger-bg-subtle);
+}
+.badge-subtle-danger[href]:hover, .badge-subtle-danger[href]:focus {
+  text-decoration: none;
+  color: var(--pv2-danger-text-emphasis);
+  background-color: var(--pv2-danger-bg-subtle);
+}
+
+.badge-subtle-light {
+  color: var(--pv2-light-text-emphasis);
+  background-color: var(--pv2-light-bg-subtle);
+}
+.badge-subtle-light[href]:hover, .badge-subtle-light[href]:focus {
+  text-decoration: none;
+  color: var(--pv2-light-text-emphasis);
+  background-color: var(--pv2-light-bg-subtle);
+}
+
+.badge-subtle-dark {
+  color: var(--pv2-dark-text-emphasis);
+  background-color: var(--pv2-dark-bg-subtle);
+}
+.badge-subtle-dark[href]:hover, .badge-subtle-dark[href]:focus {
+  text-decoration: none;
+  color: var(--pv2-dark-text-emphasis);
+  background-color: var(--pv2-dark-bg-subtle);
+}
+
+.progress-bar {
+  color: var(--bs-light) !important;
+}

@@ -1,5 +1,8 @@
 # CHANGELOG
 ### Version 11.8
+- Increase quantity storage for formulas
+- Update formulas status badges
+- Update ingredient advanced search filter
 - Improve lids and bottles add/edit/update
 - Prevent prices to be set to 0
 - Prevent Finished product generation if no or invalid prices or supplier info is detected

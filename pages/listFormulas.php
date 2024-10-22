@@ -255,22 +255,22 @@ $(document).ready(function() {
 	
 	function fStatus(data, type, row, meta){
 		if(row.status == 0){
-			var data = '<span class="pv-label badge badge-secondary">Scheduled</span>';
+			var data = '<span class="badge rounded-pill d-block p-2 badge-secondary">Scheduled<span class="ms-1 fas fa-hourglass-end" data-fa-transform="shrink-2"></span></span>';
 		}
 		if(row.status == 1){
-			var data = '<span class="pv-label badge badge-primary">Under Development</span>';
+			var data = '<span class="badge rounded-pill d-block p-2 badge-primary">Under Development<span class="ms-1 fas fa-spinner" data-fa-transform="shrink-2"></span></span>';
 		}
 		if(row.status == 2){
-			var data = '<span class="pv-label badge badge-info">Under Evaluation</span>';
+			var data = '<span class="badge rounded-pill d-block p-2 badge-info">Under Evaluation<span class="ms-1 fas fa-user-check" data-fa-transform="shrink-2"></span></span>';
 		}
 		if(row.status == 3){
-			var data = '<span class="pv-label badge badge-success">In Production</span>';
+			var data = '<span class="badge rounded-pill d-block p-2 badge-success">In Production<span class="ms-1 fas fa-check" data-fa-transform="shrink-2"></span></span>';
 		}
 		if(row.status == 4){
-			var data = '<span class="pv-label badge badge-warning">To be reformulated</span>';
+			var data = '<span class="badge rounded-pill d-block p-2 badge-warning">To be reformulated<span class="ms-1 fas fa-redo" data-fa-transform="shrink-2"></span></span>';
 		}
 		if(row.status == 5){
-			var data = '<span class="pv-label badge badge-danger">Failure</span>';
+			var data = '<span class="badge rounded-pill d-block p-2 badge-danger">Failure<span class="ms-1 fas fa-ban" data-fa-transform="shrink-2"></span></span>';
 		}
 		
 		return data;
