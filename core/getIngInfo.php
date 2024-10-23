@@ -29,7 +29,7 @@ if (isset($_GET['id']) && isset($_GET['filter'])) {
                     break;
             }
         } else {
-            $response[$filter] = "No data";
+            $response[$filter] = (int)100;
         }
     }
 

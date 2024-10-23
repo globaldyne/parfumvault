@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 11.8
+- Return 100 in purity if no data by default 
 - Increase quantity storage for formulas
 - Update formulas status badges
 - Update ingredient advanced search filter
