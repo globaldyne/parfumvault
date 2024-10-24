@@ -1,5 +1,7 @@
 # CHANGELOG
 ### Version 11.8
+- Error handling for Formula Make page
+- Readme file update
 - Return 100 in purity if no data by default 
 - Increase quantity storage for formulas
 - Update formulas status badges
