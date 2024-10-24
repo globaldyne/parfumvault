@@ -30,6 +30,11 @@ This is a FREE software provided as is without ANY warranty under MIT license.
 * Multiple suppliers per ingredient
 * Calculate costs against specific supplier
 * Fetch the price automatically (Depends on suppliers platform)
+* Dark mode support
+* SDS generation for ingredients
+* IFRA document generation for formulations
+* Document html templates
+* Batch history
 
 For full features list please visit
 	
