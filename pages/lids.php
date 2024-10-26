@@ -51,23 +51,23 @@ while ($suppliers = mysqli_fetch_array($sup)){
         <div id="lid_inf"></div>
         <div id="lidForm">
           <div class="mb-3">
-            <label for="style" class="form-label">Style:</label>
+            <label for="style" class="form-label">Style</label>
             <input class="form-control" name="style" type="text" id="style" />
           </div>
           <div class="mb-3">
-            <label for="colour" class="form-label">Colour:</label>
+            <label for="colour" class="form-label">Colour</label>
             <input class="form-control" name="colour" type="text" id="colour" />
           </div>
           <div class="mb-3">
-            <label for="price" class="form-label">Price:</label>
+            <label for="price" class="form-label">Price</label>
             <input class="form-control" name="price" type="text" id="price" />
           </div>
           <div class="mb-3">
-            <label for="pieces" class="form-label">Pieces in stock:</label>
+            <label for="pieces" class="form-label">Pieces in stock</label>
             <input class="form-control" name="pieces" type="text" id="pieces" />
           </div>
           <div class="mb-3">
-            <label for="supplier" class="form-label">Supplier:</label>
+            <label for="supplier" class="form-label">Supplier</label>
             <select name="supplier" id="supplier" class="form-control">
               <option value="" selected></option>
 			  <?php
@@ -78,11 +78,11 @@ while ($suppliers = mysqli_fetch_array($sup)){
             </select>
           </div>
           <div class="mb-3">
-            <label for="supplier_link" class="form-label">Supplier URL:</label>
+            <label for="supplier_link" class="form-label">Supplier URL</label>
             <input class="form-control" name="supplier_link" type="text" id="supplier_link" />
           </div>
           <div class="mb-3">
-            <label for="pic" class="form-label">Image:</label>
+            <label for="pic" class="form-label">Image</label>
             <input type="file" name="pic" id="pic" class="form-control" />
           </div>
         </div>
@@ -260,11 +260,11 @@ $(document).ready(function() {
 						dataType: 'json',
 						success: function (data) {
 							if(data.success){
-								$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+								$('#toast-title').html('<i class="fa-solid fa-circle-check mx-2"></i>' + data.success);
 								$('.toast-header').removeClass().addClass('toast-header alert-success');
 								reload_data();
 							}else if(data.error){
-								$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+								$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>' + data.error);
 								$('.toast-header').removeClass().addClass('toast-header alert-danger');
 							}
 							$('.toast').toast('show');
@@ -293,7 +293,7 @@ $(document).ready(function() {
 	
 	$('#lid_add').on('click', function () {
 	
-		$("#lid_inf").html('<div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
+		$("#lid_inf").html('<div class="alert alert-info">Please wait, file upload in progress....</div>');
 		$("#lid_add").prop("disabled", true);
 		$("#lid_add").prop('value', 'Please wait...');
 			
@@ -319,19 +319,19 @@ $(document).ready(function() {
 				  dataType: 'json',
 				  success: function(response){
 					 if(response.success){
-						$("#lid_inf").html('<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+response.success+'</div>');
+						$("#lid_inf").html('<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>'+response.success+'</div>');
 						$("#lid_add").prop("disabled", false);
 						$("#lid_add").prop("value", "Add");
 						reload_data();
 					 }else{
-						$("#lid_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+response.error+'</div>');
+						$("#lid_inf").html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>'+response.error+'</div>');
 						$("#lid_add").prop("disabled", false);
 						$("#lid_add").prop("value", 'Add');
 					 }
 				  },
 			   });
 			}else{
-				$("#lid_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a image to upload!</div>');
+				$("#lid_inf").html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>Please select a image to upload</div>');
 				$("#lid_add").prop("disabled", false);
 				$("#lid_add").prop("value", "Add");
 			}

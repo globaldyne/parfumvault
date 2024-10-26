@@ -85,10 +85,10 @@ if($_POST['action'] == 'add' && $_POST['type'] == 'invCmp'){
 	$label_info = mysqli_real_escape_string($conn, $_POST['cmp_label_info']);
 
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM inventory_compounds WHERE name = '$name'"))){
-		$response["error"] = 'Error: '.$name.' already exists!';
+		$response["error"] = 'Error: '.$name.' already exists';
 		
 	}elseif(mysqli_query($conn, "INSERT INTO inventory_compounds (name,description,batch_id,size,owner_id,location,label_info) VALUES ('$name', '$description', '$batch_id', '$size', '".$user['id']."', '$location', '$label_info' )")){
-		$response["success"] = 'Compound '.$name.' added!';
+		$response["success"] = 'Compound '.$name.' added';
 	}else{
 		$response["error"] = 'Error adding compound '.mysqli_error($conn);
 	}
@@ -571,13 +571,13 @@ if($_POST['update_bottle_data']){
 		return;
 	}
 	
-	if(!is_numeric($_POST['size'])){
+	if(!is_numeric($_POST['size']) || $_POST['size'] <= 0) {
 		$response["error"] = "Size is invalid";
 		echo json_encode($response);
 		return;
 	}
 	
-	if(!is_numeric($_POST['price'])){
+	if (!is_numeric($_POST['price']) || $_POST['price'] <= 0) {
 		$response["error"] = "Price is invalid";
 		echo json_encode($response);
 		return;
@@ -623,10 +623,17 @@ if($_POST['update_lid_data']){
 	$id = $_POST['lid_id'];
 	$style = $_POST['style'];
 	$colour = $_POST['colour'];
-	$price = $_POST['price'];
 	$supplier = $_POST['supplier'];
 	$supplier_link = $_POST['supplier_link'];
 	$pieces = $_POST['pieces']?:0;
+	
+	if (!is_numeric($_POST['price']) || $_POST['price'] <= 0 ) {
+    	$response["error"] = 'Price cannot be empty or 0';
+    	echo json_encode($response);
+    	return;
+	}
+	
+	$price = $_POST['price'];
 	
 	$q = mysqli_query($conn,"UPDATE lids SET style= '$style', colour = '$colour', price = '$price', supplier = '$supplier', supplier_link = '$supplier_link', pieces = '$pieces' WHERE id = '$id'");
 	
@@ -978,7 +985,7 @@ if($_POST['ingSupplier'] == 'add'){
 
 
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT ingSupplierID FROM suppliers WHERE ingSupplierID = '$supplier_id' AND ingID = '$ingID'"))){
-		$response["error"] = '<strong>Error: </strong>'.$supplier_name['name'].' already exists!';
+		$response["error"] = $supplier_name['name'].' already exists';
 		echo json_encode($response);
 		return;
 	}
@@ -990,7 +997,7 @@ if($_POST['ingSupplier'] == 'add'){
 	}
 		
 	if(mysqli_query($conn, "INSERT INTO suppliers (ingSupplierID,ingID,supplierLink,price,size,manufacturer,preferred,batch,purchased,stock,mUnit,status,supplier_sku,internal_sku,storage_location) VALUES ('$supplier_id','$ingID','$supplier_link','$supplier_price','$supplier_size','$supplier_manufacturer','$preferred','$supplier_batch','$purchased','$stock','$mUnit','$status','$supplier_sku','$internal_sku','$storage_location')")){
-		$response["success"] = $supplier_name['name'].' added.';
+		$response["success"] = $supplier_name['name'].' added';
 		echo json_encode($response);
 	}else{
 		$response["error"] = mysqli_error($conn);
@@ -1044,18 +1051,18 @@ if($_POST['updateQuantity'] && $_POST['ingQuantityID'] &&  $_POST['ingQuantityNa
 	$ing_name = $_POST['ingQuantityName'];
 	
 	if(empty($_POST['ingQuantity'])){
-		$response["error"] = 'Quantity cannot be empty.';
+		$response["error"] = 'Quantity cannot be empty';
 		echo json_encode($response);
 		return;
 	}
 	if(!is_numeric($_POST['ingQuantity'])){
-		$response["error"] = 'Quantity must be numeric only.';
+		$response["error"] = 'Quantity must be numeric only';
 		echo json_encode($response);
 		return;
 	}
 	
 	if($_POST['curQuantity'] == $_POST['ingQuantity']){
-		$response["error"] = 'Quantity is already the same.';
+		$response["error"] = 'Quantity is already the same';
 		echo json_encode($response);
 		return;
 	}

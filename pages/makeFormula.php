@@ -635,7 +635,7 @@ $(document).ready(function() {
       <div style="display: none;" id="idRow"></div>
 
       <div class="modal-body">
-        <div id="errMsg"></div>
+        <div id="errSkip"></div>
         
         <div class="form-group">
           <label for="skip_notes" class="form-label">Notes</label>

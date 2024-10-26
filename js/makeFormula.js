@@ -215,28 +215,32 @@ function formatSuppliersSelection (supplierData) {
 			  main: {
 			  label : "Mark as complete",
 			  className : "btn-warning",
-			 callback: function (){
-			 $.ajax({ 
-				url: '/pages/manageFormula.php', 
-					type: 'POST',
-					data: {
-						action: "todo",
-						markComplete: 1,
-						totalQuantity: total_quantity,
-						fid: fid
-					},
-					dataType: 'json',
-					success: function (data) {
-						if(data.success) {
-							var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
-							reload_data();
-						} else {
-							var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
-						}	
-						$('#msg').html(msg);
-					}
-				});
-					
+              callback: function (){
+				 $.ajax({ 
+					url: '/pages/manageFormula.php', 
+						type: 'POST',
+						data: {
+							action: "todo",
+							markComplete: 1,
+							totalQuantity: total_quantity,
+							fid: fid
+						},
+						dataType: 'json',
+						success: function (data) {
+							if(data.success) {
+								var msg = '<div class="alert alert-success alert-dismissible"><i class="fa-solid fa-circle-check mx-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+								reload_data();
+							} else {
+								var msg = '<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-triangle-exclamation mx-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+							}	
+							$('#msg').html(msg);
+						},
+						error: function (xhr, status, error) {
+							$('#msg').html('<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-triangle-exclamation mx-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>An ' + status + ' occurred, check server logs for more info. ' + error + '</div>');
+
+						}
+					});
+						
 					 return true;
 				   }
 			   },
@@ -275,8 +279,12 @@ function formatSuppliersSelection (supplierData) {
 				$('.toast').toast('show');
 			} else if(data.error) {
 				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
-				$('#errMsg').html(msg);
+				$('#errSkip').html(msg);
 			}
+		},
+		error: function (xhr, status, error) {
+			$('#errSkip').html('<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-triangle-exclamation mx-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>An ' + status + ' occurred, check server logs for more info. ' + error + '</div>');
+
 		}
 	  });
 	});
@@ -303,6 +311,11 @@ function formatSuppliersSelection (supplierData) {
 					$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
 					$('.toast-header').removeClass().addClass('toast-header alert-danger');
 				}
+				$('.toast').toast('show');
+			},
+			error: function (xhr, status, error) {
+				$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
 				$('.toast').toast('show');
 			}
 	  	});
@@ -342,7 +355,7 @@ function formatSuppliersSelection (supplierData) {
 	
 	
 	$('#tdDataPending').on('click', '[data-bs-target*=confirm_skip]', function () {
-		$('#errMsg').html('');																
+		$('#errSkip').html('');													
 		$("#ingSkipped").text('Skipping ' + $(this).attr('data-ingredient'));
 		$("#ingID").text($(this).attr('data-ing-id'));
 		$("#idRow").text($(this).attr('data-row-id'));

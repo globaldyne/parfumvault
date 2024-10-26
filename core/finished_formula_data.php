@@ -44,11 +44,11 @@ $bottle_id = $_POST['bottle_id'];
 $concentration =  $_POST['concentration'];
 $carrier_id = $_POST['carrier_id'];
 $lid_id = $_POST['lid_id'];
-	
+
 $bottle = mysqli_fetch_array(mysqli_query($conn, "SELECT price,ml,name FROM bottles WHERE id = '$bottle_id' AND price != 0 "));
 	
 $carrier_cost = mysqli_fetch_array(mysqli_query($conn, "SELECT price,size FROM suppliers WHERE ingID = '$carrier_id'"));
-	
+
 if($_POST['lid_id']){
 	$lid = mysqli_fetch_array(mysqli_query($conn, "SELECT  price,style FROM lids WHERE id = '$lid_id'"));
 }else{
@@ -166,8 +166,11 @@ foreach ($form as $formula){
 	}
 	
 }
-
-$carrier_sub_cost = number_format($carrier_cost['price'] / $carrier_cost['size'] * $carrier, $settings['qStep']);
+if($carrier_cost['price'] && $carrier_cost['size'] && $carrier){
+	$carrier_sub_cost = number_format($carrier_cost['price'] / $carrier_cost['size'] * $carrier, $settings['qStep']);
+} else {
+	$carrier_sub_cost = 0;
+}
 
 $m['sub_total_quantity'] = number_format(array_sum($new_tot), $settings['qStep']);
 $m['carrier_quantity'] = number_format($carrier, $settings['qStep']);
@@ -180,7 +183,7 @@ $m['batchNo'] = $batchID;
 $m['total_quantity'] = (float)number_format( array_sum($new_tot) + $carrier,$settings['qStep']);
 $m['quantity_unit'] = (string)$settings['mUnit'];
 $m['sub_concentration'] = (float)number_format(array_sum($conc_tot),$settings['qStep']);
-$m['carrier_concentration'] = (float)number_format($carrier * 100 / $bottle['ml'],$settings['qStep']);
+$m['carrier_concentration'] = (float)number_format($carrier ?? 100 * 100 / $bottle['ml'],$settings['qStep']);
 $m['sub_cost'] = (float)number_format(array_sum($tot),$settings['qStep']);
 $m['bottle_cost'] = (float)number_format($bottle['price'],$settings['qStep']);
 $m['total_cost'] = (float)number_format(array_sum($tot) + $lid['price'] + $carrier_sub_cost + $bottle['price'], $settings['qStep']);

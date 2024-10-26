@@ -346,11 +346,11 @@ $(document).ready(function() {
 				  data: fd,
 				  contentType: false,
 				  processData: false,
-						cache: false,
+				  cache: false,
 				  dataType: 'json',
 				  success: function(response){
 					 if(response.success){
-						$("#bottle_inf").html('<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+response.success+'</div>');
+						$("#bottle_inf").html('<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>'+response.success+'</div>');
 						$("#bottle_add").prop("disabled", false);
 						$("#bottle_add").prop("value", "Add");
 						reload_data();
@@ -365,7 +365,7 @@ $(document).ready(function() {
 					}
 			   });
 			}else{
-				$("#bottle_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a image to upload!</div>');
+				$("#bottle_inf").html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>Please select a image to upload</div>');
 				$("#bottle_add").prop("disabled", false);
 				$("#bottle_add").prop("value", "Add");
 			}
