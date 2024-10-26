@@ -1,4 +1,17 @@
 # CHANGELOG
+### Version 11.8
+- Error handling for Formula Make page
+- Readme file update
+- Return 100 in purity if no data by default 
+- Increase quantity storage for formulas
+- Update formulas status badges
+- Update ingredient advanced search filter
+- Improve lids and bottles add/edit/update
+- Prevent prices to be set to 0
+- Prevent Finished product generation if no or invalid prices or supplier info is detected
+- User registration and login error handling improvements
+- System installation error handling improvements
+
 ### Version 11.7
 - Formulation: Make sure dilutant is disabled if material is at 100%
 - Formulation: Auto remove/add decimal point in quantity depending user's input

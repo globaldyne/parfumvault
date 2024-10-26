@@ -114,13 +114,18 @@ if($_GET['type'] == 'bottle'){
 		return;
 	}
 	
-	if(!is_numeric($_GET['size']) || !is_numeric($_GET['price']) || !is_numeric($_GET['height']) || !is_numeric($_GET['width']) || !is_numeric($_GET['diameter']) || !is_numeric($_GET['pieces']) || !is_numeric($_GET['weight'])){
-		$response["error"] = 'Form contains invalid values';
+	if (!is_numeric($_GET['size']) || $_GET['size'] <= 0 ||
+		!is_numeric($_GET['price']) || $_GET['price'] <= 0 ||
+		!is_numeric($_GET['height']) || $_GET['height'] <= 0 ||
+		!is_numeric($_GET['width']) || $_GET['width'] <= 0 ||
+		!is_numeric($_GET['diameter']) || $_GET['diameter'] <= 0 ||
+		!is_numeric($_GET['pieces']) || $_GET['pieces'] <= 0 ||
+		!is_numeric($_GET['weight']) || $_GET['weight'] <= 0) {
+		
+		$response["error"] = 'Form contains invalid values. No 0 or empty values are allowed';
 		echo json_encode($response);
 		return;
 	}
-	
-	
 	
 	$name = mysqli_real_escape_string($conn, $n);
 	$ml = $_GET['size'];
@@ -174,7 +179,7 @@ if($_GET['type'] == 'bottle'){
 				$bottle_id = mysqli_insert_id($conn);
 				mysqli_query($conn, "INSERT INTO documents (ownerID,name,type,notes,docData) VALUES ('".$bottle_id."','$name','4','-','$docData')");
 				unlink($tmp_path.$photo);
-				$response["success"] = $name.' added!';
+				$response["success"] = $name.' added';
 			}else{
 				$response["error"] =  'Failed to add '.$name.' - '.mysqli_error($conn);
 			}
@@ -190,7 +195,12 @@ if($_GET['type'] == 'lid' && $_GET['style']){
 	
 	$style = base64_decode($_GET['style']);
 	$color = base64_decode($_GET['color']);
-	$price = $_GET['price']?:0;
+	if (!is_numeric($_GET['price']) || $_GET['price'] <= 0 ) {
+    	$response["error"] = 'Price cannot be empty or 0';
+    	echo json_encode($response);
+    	return;
+	}
+	$price = $_GET['price'];
 	$supplier = base64_decode($_GET['supplier']);
 	$supplier_link = base64_decode($_GET['supplier_link']);
 	$pieces = $_GET['pieces']?:0;
@@ -212,7 +222,7 @@ if($_GET['type'] == 'lid' && $_GET['style']){
 	  	$ext = explode(', ', $allowed_ext);
 	  
       	if(in_array($file_ext,$ext)===false){
-			$response["error"] = '<strong>File upload error: </strong>Extension not allowed, please choose a '.$allowed_ext.' file';
+			$response["error"] = 'Extension not allowed, please choose a '.$allowed_ext.' file';
 			echo json_encode($response);
 			return;
 		}
@@ -222,7 +232,7 @@ if($_GET['type'] == 'lid' && $_GET['style']){
 			 return;
      	}
 	   	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM lids WHERE style = '$style'"))){
-			$response["error"] = $style.' already exists!';
+			$response["error"] = $style.' already exists';
 			echo json_encode($response);
 			return;
 		}
@@ -270,13 +280,13 @@ if($_GET['type'] && $_GET['id']){
 	  	$ext = explode(', ', $allowed_ext);
 	  
       	if(in_array($file_ext,$ext)=== false){
-      		$response['error'] = '<strong>File upload error: </strong>Extension not allowed, please choose a '.$allowed_ext.' file';
+      		$response['error'] = 'Extension not allowed, please choose a '.$allowed_ext.' file';
 			echo json_encode($response);
 			return;
 		}
 		
 		if($file_size > $max_filesize){
-			$response['error'] = 'File upload error: </strong>File size must not exceed '.formatBytes($max_filesize);
+			$response['error'] = 'File size must not exceed '.formatBytes($max_filesize);
 			echo json_encode($response);
 			return;
       	}
@@ -316,13 +326,13 @@ if($_GET['type'] == 'brand'){
 		$ext = explode(', ', $allowed_ext);
 		  
 		if(in_array($file_ext,$ext)=== false){
-			$response['error'] = '<strong>File upload error: </strong>Extension not allowed, please choose a '.$allowed_ext.' file';
+			$response['error'] = 'Extension not allowed, please choose a '.$allowed_ext.' file';
 			echo json_encode($response);
 			return;
 		}
 			
 		if($file_size > $max_filesize){
-			$response['error'] = 'File upload error: </strong>File size must not exceed '.formatBytes($max_filesize);
+			$response['error'] = 'File size must not exceed '.formatBytes($max_filesize);
 			echo json_encode($response);
 			return;
 		}
@@ -361,9 +371,9 @@ if($_GET['type'] == 'cmpCSVImport'){
 				}
 			}
 			if($r){
-				echo '<div class="alert alert-success alert-dismissible">'.$i.' Items imported</div>';
+				echo '<div class="alert alert-success">'.$i.' Items imported</div>';
 			}else{
-				echo '<div class="alert alert-danger alert-dismissible">Failed to import the CSV file. Please check syntax is correct.</div>';
+				echo '<div class="alert alert-danger">Failed to import the CSV file. Please check syntax is correct.</div>';
 			}
 		}
 		fclose($file);  
@@ -379,7 +389,7 @@ if($_GET['type'] == 'ingCSVImport'){
 		$file_array = explode(".", $_FILES['CSVFile']['name']);
 		$extension = end($file_array);
 		if($extension != 'csv') {
-			echo '<div class="alert alert-danger">Error: Invalid csv file.</div>';
+			echo '<div class="alert alert-danger">Invalid csv file.</div>';
 			return; 
 		}
 		$csv_file_data = fopen($_FILES['CSVFile']['tmp_name'], 'r');
@@ -442,9 +452,9 @@ if($_GET['type'] == 'ingCSVImport'){
 			$query = "INSERT INTO ingredients (name,INCI,cas,FEMA,type,strength, profile,physical_state,allergen,odor,impact_top,impact_heart,impact_base) VALUES ".implode(",", $data)."";
 			$res =  mysqli_query($conn,$query);
 			if($res){
-				echo '<div class="alert alert-success alert-dismissible">'.$i.' Ingredients imported</div>';;
+				echo '<div class="alert alert-success">'.$i.' Ingredients imported</div>';;
 			}else{
-				echo '<div class="alert alert-danger">Error: Incorrect CSV data '.$query.'</div>';
+				echo '<div class="alert alert-danger">Incorrect CSV data '.$query.'</div>';
 			}
 		}else{
 			echo '<div class="alert alert-info">Nothing to import, data already exists</div>';
@@ -460,7 +470,7 @@ if($_GET['type'] == 'frmCSVImport'){
 		$file_array = explode(".", $_FILES['CSVFile']['name']);
 		$extension = end($file_array);
 		if($extension != 'csv') {
-			echo '<div class="alert alert-danger">Error: Invalid csv file.</div>';
+			echo '<div class="alert alert-danger">Invalid csv file.</div>';
 			return; 
 		}
 		$csv_file_data = fopen($_FILES['CSVFile']['tmp_name'], 'r');
@@ -505,7 +515,7 @@ if($_GET['type'] == 'frmCSVImport'){
 		$profile = $_POST['formula_profile'];
 		
 		if(empty($name)){
-			echo '<div class="alert alert-danger">Error: Name field cannot be empty</div>';
+			echo '<div class="alert alert-danger">Name field cannot be empty</div>';
 			return;
 		}
 		require_once(__ROOT__.'/func/genFID.php');
@@ -529,7 +539,7 @@ if($_GET['type'] == 'frmCSVImport'){
 				echo '<div class="alert alert-success alert-dismissible"><strong><a href="?do=Formula&id='.mysqli_insert_id($conn).'" target="_blank">Formula '.$name.'</a></strong> has been imported!</div>';
 			}
 		}else{
-			echo '<div class="alert alert-danger">Error: Incorrect CSV data '.$query.'</div>';
+			echo '<div class="alert alert-danger">Incorrect CSV data '.$query.'</div>';
 		}
 		
 	}
@@ -545,7 +555,7 @@ if($_GET['type'] == 'IFRA'){
 		$ext = explode(",",$all_ext);
 	
 		if(in_array($file_ext,$ext)=== false){
-			$response['error'] = '<strong>File upload error: </strong>Extension not allowed, please choose a '.$all_ext.' file';
+			$response['error'] = 'Extension not allowed, please choose a '.$all_ext.' file';
 			echo json_encode($response);
 			return;
 		}

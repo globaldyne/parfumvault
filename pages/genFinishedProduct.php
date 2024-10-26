@@ -10,15 +10,26 @@
 if (!defined('pvault_panel')){ die('Not Found');}
 
 	if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))){
-		echo '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mr-2"></i>You need to <a href="/?do=listFormulas">create</a> at least one formula before you be able to generate a finished product</div>';
+		echo '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>You need to <a href="/?do=listFormulas">create</a> at least one formula before you be able to generate a finished product</div>';
 		return;
 	}
 	if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM bottles"))){
-		echo '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mr-2"></i>You need to <a href="/?do=bottles">add</a> at least one bottle in your inventory first</div>';
+		echo '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>You need to <a href="/?do=bottles">add</a> at least one bottle in your inventory first</div>';
 		return;
 	}
+	
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM bottles WHERE price <= '0'"))){
+		echo '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>Please make sure all your bottles suppliers contains valid prices</div>';
+		return;
+	}
+	
 	if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE type = 'Carrier' OR type = 'Solvent'"))){
-		echo '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mr-2"></i>You need to <a href="/?do=ingredients">add</a> at least one solvent or carrier first</div>';
+		echo '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>You need to <a href="/?do=ingredients">add</a> at least one solvent or carrier first</div>';
+		return;
+	}
+	
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM suppliers WHERE price <= '0'"))){
+		echo '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>Please make sure all your ingredients suppliers contains valid prices</div>';
 		return;
 	}
 	

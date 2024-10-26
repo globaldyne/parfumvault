@@ -84,7 +84,7 @@ $(document).ready(function() {
 
 	$('#install_form').on('click', '[id*=saveInstallData]', function () {
 		$('#saveInstallData').prop('disabled', true);
-		$('#msg').html('<div class="alert alert-info"><img src="/img/loading.gif"/> Please wait, configuring the system...<p><strong>Please do not close, refresh or navigate away from this page. You will be automatically redirected upon a succesfull installation.</strong></p></div>');
+		$('#msg').html('<div class="alert alert-info mx-2"><img src="/img/loading.gif"/>Please wait, configuring the system...<p><strong>Please do not close, refresh or navigate away from this page. You will be automatically redirected upon a succesfull installation.</strong></p></div>');
 		$("#install_form").hide();
 		
 		$.ajax({ 
@@ -102,19 +102,25 @@ $(document).ready(function() {
 			},
 			dataType: 'json',
 			success: function (data) {
-				if (data.success){ 
-				    window.location = '/'
+				if (data.success) { 
+					window.location = '/';
 				}
-				if(data.error){
-					var msg = '<div class="alert alert-danger">'+data.error+'</div>';
+				if (data.error) {
+					var msg = '<div class="alert alert-danger mx-2"><i class="fa-solid fa-triangle-exclamation"></i>' + data.error + '</div>';
+					$('#msg').html(msg);
 					$("#install_form").show();
 					$('#saveInstallData').prop('disabled', false);
 				}
+			},
+			error: function (xhr, status, error) {
+				var msg = '<div class="alert alert-danger mx-2"><i class="fa-solid fa-triangle-exclamation"></i>' + error + '</div>';
 				$('#msg').html(msg);
+				$("#install_form").show();
+				$('#saveInstallData').prop('disabled', false);
 			}
 		});
 	});
     
-});//end doc
+});
 
 </script>

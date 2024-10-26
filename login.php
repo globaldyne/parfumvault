@@ -44,7 +44,7 @@ if(isset($_SESSION['parfumvault'])){
             <div class="row">
             <?php
 			if(file_exists(__ROOT__.'/inc/config.php') == FALSE && !getenv('DB_HOST') && !getenv('DB_USER') && !getenv('DB_PASS') && !getenv('DB_NAME')){
-        		require 'install.php';
+        		require (__ROOT__.'/install.php');
 				return;
 			}
             if (mysqli_num_rows(mysqli_query($conn,"SELECT 1 FROM information_schema.tables WHERE table_schema = '".getenv('DB_NAME')."' AND table_name = 'pv_meta' LIMIT 1")) == 0 && getenv('DB_HOST') && getenv('DB_USER') && getenv('DB_PASS') && getenv('DB_NAME') ){
@@ -190,18 +190,23 @@ $(document).ready(function() {
 			},
 			dataType: 'json',
 			success: function (data) {
-				if (data.success){ 
-				    window.location='/'
+				if (data.success) { 
+					window.location = '/';
+				} 
+				if (data.error) {
+					var msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + data.error + '</div>';
+					$('#msg').html(msg);
 				}
-				if(data.error){
-					var msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>'+data.error+'</div>';
-				}
-				
 				$("#reg_form").show();
 				$('#registerSubmit').prop('disabled', false);
+			},
+			error: function (xhr, status, error) {
+				var msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + error + '</div>';
 				$('#msg').html(msg);
+				$("#reg_form").show();
+				$('#registerSubmit').prop('disabled', false);
 			}
-		});
+    	});
 	});
     
 	$('#login_btn').click(function() {
@@ -236,7 +241,7 @@ $(document).ready(function() {
 				$('#msg').html(msg);
 			},
 			error: function (request, status, error) {
-        		$('#msg').html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>Unable to handle request, server returned an error: '+request.status+'</div>');
+        		$('#msg').html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>Unable to handle request, server returned an error: ' + request.status + ' - ' +error + '</div>');
 				$("#login_btn span").remove();
 				$("#login_email").prop("disabled", false);
 				$("#login_pass").prop("disabled", false);

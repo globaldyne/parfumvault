@@ -1,6 +1,8 @@
-Whats New in v11.7
+Whats New in v11.8
 --------------------------
-- Auto remove/add decimal point in quantity depending user's input
-- Added formula obscure when in a locked state
-- Add IFRA Categories explanation in usage page
+- Increase quantity storage for formulas
+- Update formulas status badges
+- Update ingredient advanced search filter
+- Prevent prices to be set to 0
+- Prevent Finished product generation if no or invalid prices or supplier info is detected
 - This release may include more changes, for full details please refer to the CHANGELOG

@@ -118,9 +118,11 @@ $(document).ready(function() {
 			$.each(filters, function(key, value) {
 				if (value) {
 					$('#filter').append(`
-						<span class="pv-label badge badge-primary mx-1">
+						<span class="badge rounded-pill d-block p-2 mx-2 badge-primary">
 							${key}: ${value}
+							<span class="ms-1" data-fa-transform="shrink-2"></span>
 							<button type="button" class="btn-close btn-close-white mx-1" aria-label="Remove" data-field="${key}"></button>
+						</span>
 						</span>
 					`);
 				}
