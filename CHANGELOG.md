@@ -1,6 +1,7 @@
 # CHANGELOG
 ### Version 11.9
 - Set compounds id to integer for exported ingredients
+- Validate if suppliers price is 0 when importing ingredients from a JSON
 
 ### Version 11.8
 - Error handling for Formula Make page
