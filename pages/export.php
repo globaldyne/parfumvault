@@ -345,7 +345,7 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'ingredients'){
 		$s['ingSupplierID'] = (int)$res['ingSupplierID'];
 		$s['ingID'] = (int)$res['ingID'];
 		$s['supplierLink'] = (string)$res['supplierLink'] ?: 'N/A';
-		$s['price'] = (double)$res['price'] ?: 0;
+		$s['price'] = (double)$res['price'];
 		$s['size'] = (double)$res['size'] ?: 10;
 		$s['manufacturer'] = (string)$res['manufacturer']?: 'N/A';
 		$s['preferred'] = (int)$res['preferred'] ?: 0;
@@ -497,7 +497,7 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'single-ingredient' && $_GET['i
 		$s['ingSupplierID'] = (int)$res['ingSupplierID'];
 		$s['ingID'] = (int)$res['ingID'];
 		$s['supplierLink'] = (string)$res['supplierLink'] ?: 'N/A';
-		$s['price'] = (double)$res['price'] ?: 0;
+		$s['price'] = (double)$res['price'];
 		$s['size'] = (double)$res['size'] ?: 10;
 		$s['manufacturer'] = (string)$res['manufacturer']?: 'N/A';
 		$s['preferred'] = (int)$res['preferred'] ?: 0;
