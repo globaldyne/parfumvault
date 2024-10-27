@@ -99,8 +99,6 @@ $('#btnRestoreIngredients').click(function() {
 				
 				if (data.warning) {
 					msg = '<div class="alert alert-warning"><i class="fa-solid fa-exclamation-circle mx-2"></i><strong>Import complete with warnings</strong> <br/>' + data.warning + '</div>';
-					//$("#btnRestoreIngredients").show();
-					//$("#btnRestoreIngredients").prop("disabled", false);
 				}
 				
 				if (data.error) {
@@ -112,6 +110,10 @@ $('#btnRestoreIngredients').click(function() {
 			
 				$('#btnRestoreIngredients').prop('value', 'Import');
 				$("#btnRestoreIngredients").prop("disabled", false);
+				$('#JSRestMsg').html(msg);
+			},
+			error: function (xhr, status, error) {
+				msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>';
 				$('#JSRestMsg').html(msg);
 			}
 
