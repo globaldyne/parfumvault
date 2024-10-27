@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 11.9
+- Set compounds id to integer for exported ingredients
 
 ### Version 11.8
 - Error handling for Formula Make page

@@ -320,7 +320,7 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'ingredients'){
 	$q = mysqli_query($conn, "SELECT * FROM ingredient_compounds");
 	while($res = mysqli_fetch_assoc($q)){
 
-		$c['id'] = (string)$res['id'];
+		$c['id'] = (int)$res['id'];
 		$c['ing'] = (string)$res['ing'];
 		$c['name'] = (string)$res['name'];
 		$c['cas'] = (string)$res['cas'] ?: 'N/A';
