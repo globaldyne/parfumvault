@@ -430,10 +430,7 @@ if($_GET['action'] == 'restoreIngredients'){
 		
 			// Validate that price is numeric, non-empty, and non-zero
 			if (!is_numeric($price) || empty($price) || $price == 0) {
-				//$result['error'] = "Invalid price for supplier ID $id";
-				//echo json_encode($result);
-				//return;
-				$warn.="Invalid price for supplier ID $id<br/>";
+				$warn.="Invalid price for supplier ID $id - Ignoring<br/>";
 				continue; // Skip to the next entry
 			}
 			$sql = "INSERT IGNORE INTO `suppliers` (`id`,`ingSupplierID`,`ingID`,`supplierLink`,`price`,`size`,`manufacturer`,`preferred`,`batch`,`purchased`,`mUnit`,`stock`,`status`,`supplier_sku`,`internal_sku`,`storage_location`,`created_at`) 
