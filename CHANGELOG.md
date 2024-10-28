@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 11.9
+- Prevent adding an ingredient with incomplete supplier data to a formula
 - New dashboard update, including better and  cleaner view
 - Set compounds id to integer for exported ingredients
 - Validate if suppliers price is 0 when importing ingredients from a JSON

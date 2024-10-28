@@ -35,21 +35,24 @@ while($res = mysqli_fetch_array($q)){
 $i = 0;
 foreach ($ingredients as $ingredient) { 
 
-	$supp = getIngSupplier($ingredient['id'],1,$conn); 
-	$r['id'] = (int)$ingredient['id'];
-	$r['name'] = (string)$ingredient['name'];
-	$r['IUPAC'] = (string)$ingredient['INCI']?: 'N/A';
-	$r['cas'] = (string)$ingredient['cas']?: 'N/A';
-	$r['einecs'] = (string)$ingredient['einecs']?: 'N/A';
-	$r['type'] = (string)$ingredient['type'] ?: 'Unknown';
-	$r['description'] = (string)$ingredient['odor'] ?: 'N/A';
-	$r['physical_state'] = (int)$ingredient['physical_state'] ?: 1;
-	$r['profile'] = (string)$ingredient['profile'] ?: 'Uknwown';
-	$r['stock'] = (float)number_format($supp['stock'], $settings['qStep']) ?: 0;
-	$r['mUnit'] = (string)$supp['mUnit'];
-
-	$rx[]=$r;
-	$i++;
+	$supp = getIngSupplier($ingredient['id'],1,$conn);
+	if($supp['price']){
+		
+		$r['id'] = (int)$ingredient['id'];
+		$r['name'] = (string)$ingredient['name'];
+		$r['IUPAC'] = (string)$ingredient['INCI']?: 'N/A';
+		$r['cas'] = (string)$ingredient['cas']?: 'N/A';
+		$r['einecs'] = (string)$ingredient['einecs']?: 'N/A';
+		$r['type'] = (string)$ingredient['type'] ?: 'Unknown';
+		$r['description'] = (string)$ingredient['odor'] ?: 'N/A';
+		$r['physical_state'] = (int)$ingredient['physical_state'] ?: 1;
+		$r['profile'] = (string)$ingredient['profile'] ?: 'Uknwown';
+		$r['stock'] = (float)number_format($supp['stock'], $settings['qStep']) ?: 0;
+		$r['mUnit'] = (string)$supp['mUnit'];
+		
+		$rx[]=$r;
+		$i++;
+	}
 }
 
 $response = array(
