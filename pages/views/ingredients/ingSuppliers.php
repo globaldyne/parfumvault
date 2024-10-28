@@ -553,9 +553,15 @@ $('#tdIngSup').on('click', '[id*=sDel]', function () {
 						sID: ing.ID,
 						ingID: '<?=$ingID?>'
 					},
-					dataType: 'html',
+					dataType: 'json',
 					success: function (data) {
-						reload_sup_data();
+						if(data.success){
+							reload_sup_data();
+						} else {
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>' + data.error);
+							$('.toast-header').removeClass().addClass('toast-header alert-danger');
+							$('.toast').toast('show');
+						}
 					},
 					error: function (xhr, status, error) {
 						$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);

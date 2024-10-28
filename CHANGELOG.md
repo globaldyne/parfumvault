@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 11.9
+- Prevent deletion of the last left supplier in an ingredient
 - Prevent adding an ingredient with incomplete supplier data to a formula
 - New dashboard update, including better and  cleaner view
 - Set compounds id to integer for exported ingredients
