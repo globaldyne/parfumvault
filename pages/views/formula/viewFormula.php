@@ -123,6 +123,9 @@ $(document).ready(function() {
             { visible: false, targets: groupColumn },
 			{ className: 'text-center', targets: '_all' },
 			{ orderable: false, targets: [10, 11] },
+			<?php if($meta['defView'] == '3'){ ?>
+			{ targets: [10], visible: false }
+			<?php } ?>
         ],
 		search: {
     		search: "<?=$_GET['search']?>",

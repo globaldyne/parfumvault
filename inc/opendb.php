@@ -22,6 +22,8 @@ if(strtoupper(getenv('PLATFORM')) === "CLOUD"){
 	$max_filesize = getenv('MAX_FILE_SIZE') ?: "4194304";
 	$bkparams =  getenv('DB_BACKUP_PARAMETERS') ?: '--column-statistics=1';
 	
+	$sysLogs = getenv('SYS_LOGS') ?: FALSE;
+	
 	$conn = dbConnect($dbhost, $dbuser, $dbpass, $dbname);
 
 }elseif(file_exists(__ROOT__.'/inc/config.php') == TRUE) {

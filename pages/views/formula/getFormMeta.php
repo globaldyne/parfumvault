@@ -93,9 +93,10 @@ while($qTags = mysqli_fetch_array($tagsQ)){
     </div>
     <div class="form-group col-md-6">
         <label class="control-label col-auto" for="defView">Default view</label>
-        <select name="defView" id="defView" class="form-control selectpicker" data-live-search="true">
+        <select name="defView" id="defView" class="form-control selectpicker" data-live-search="false">
           <option value="1" <?php if($info['defView']=="1") echo 'selected="selected"'; ?> >Ingredient Properties</option>
           <option value="2" <?php if($info['defView']=="2") echo 'selected="selected"'; ?> >Ingredient Notes</option>
+          <option value="3" <?php if($info['defView']=="3") echo 'selected="selected"'; ?> >None</option>
         </select>
     </div>
  </div>  
@@ -142,7 +143,7 @@ while($qTags = mysqli_fetch_array($tagsQ)){
  <div class="form-row">
    <div class="form-group col-md-6">
     <label class="control-label col-auto" for="finalType">Status</label>
-        <select name="status" id="status" class="form-control selectpicker" data-live-search="true">  
+        <select name="status" id="status" class="form-control selectpicker" data-live-search="false">  
             <option value="0" <?php if($info['status'] == "0"){ echo 'selected';}?>>Scheduled</option>
             <option value="1" <?php if($info['status'] == "1"){ echo 'selected';}?>>Under Developent</option>
             <option value="2" <?php if($info['status'] == "2"){ echo 'selected';}?>>Under Evaluation</option>
@@ -154,7 +155,7 @@ while($qTags = mysqli_fetch_array($tagsQ)){
 
  <div class="form-group col-md-6">
     <label class="control-label col-auto" for="gender">Gender</label>
-    <select name="gender" id="gender" class="form-control selectpicker" data-live-search="true">
+    <select name="gender" id="gender" class="form-control selectpicker" data-live-search="false">
     <?php foreach ($fcat as $cat) { if($cat['type'] == 'sex'){?>
         <option value="<?=$cat['cname'];?>" <?php echo ($info['sex']==$cat['cname'])?"selected=\"selected\"":""; ?>><?php echo $cat['name'];?></option>
     <?php } }?>
