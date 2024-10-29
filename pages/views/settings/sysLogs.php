@@ -16,7 +16,7 @@ require_once(__ROOT__.'/inc/opendb.php');
     if ($platform !== "CLOUD") {
         echo '<div class="mt-4 alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>This feature is only available in cloud or Docker installations.</div>';
     } elseif (!$sysLogsEnabled) {
-        echo '<div class="mt-4 alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>System logs are disabled by configuration.</div>';
+        echo '<div class="mt-4 alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>System logs access is disabled by configuration.</div>';
     } else {
 ?>
         <div class="mb-3 col mt-2">
