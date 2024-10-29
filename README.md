@@ -97,7 +97,6 @@ or via docker compose
 	      TMP_PATH: /tmp/
 	      FILE_EXT: 'pdf, doc, docx, xls, csv, xlsx, png, jpg, jpeg, gif'
 	      DB_BACKUP_PARAMETERS: '--column-statistics=1'
-		  SYS_LOGS: DISABLED
 	volumes:
 	  db_data:
 
