@@ -13,8 +13,13 @@ if (!$sysLogs) {
     return;
 }
 
-$logFile = $_GET['log'] ?? 'error';
-$logPath = ($logFile === 'access') ? '/tmp/nginx-access.log' : '/tmp/nginx-error.log';
+$logFile = $_GET['log'] ?? 'access';
+$logPath = match ($logFile) {
+    'access' => '/tmp/nginx-access.log',
+    'error' => '/tmp/nginx-error.log',
+    'fpm' => '/tmp/php-fpm-www-error.log',
+    default => '/tmp/nginx-access.log',
+};
 
 if (file_exists($logPath) && is_readable($logPath)) {
     header('Content-Type: text/plain; charset=utf-8');
