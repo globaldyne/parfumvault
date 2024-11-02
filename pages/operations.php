@@ -428,6 +428,11 @@ if($_GET['action'] == 'restoreIngredients'){
 			$internal_sku = mysqli_real_escape_string($conn, $sup['internal_sku']);
 			$storage_location = mysqli_real_escape_string($conn, $sup['storage_location']);
 		
+			// Validate that price is numeric, non-empty, and non-zero
+			if (!is_numeric($price) || empty($price) || $price == 0) {
+				$warn.="Invalid price for supplier ID $id - Ignoring<br/>";
+				continue; // Skip to the next entry
+			}
 			$sql = "INSERT IGNORE INTO `suppliers` (`id`,`ingSupplierID`,`ingID`,`supplierLink`,`price`,`size`,`manufacturer`,`preferred`,`batch`,`purchased`,`mUnit`,`stock`,`status`,`supplier_sku`,`internal_sku`,`storage_location`,`created_at`) 
 					VALUES ('$id','$ingSupplierID','$ingID','$supplierLink','$price','$size','$manufacturer','$preferred','$batch','$purchased','$mUnit','$stock','$status','$supplier_sku','$internal_sku','$storage_location',current_timestamp())";
 		
@@ -510,14 +515,20 @@ if($_GET['action'] == 'restoreIngredients'){
 			$sql = "INSERT IGNORE INTO ingredients(id,name,INCI,cas,FEMA,type,strength,category,purity,einecs,reach,tenacity,chemical_name,formula,flash_point,notes,flavor_use,soluble,logp,cat1,cat2,cat3,cat4,cat5A,cat5B,cat5C,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12,profile,physical_state,allergen,odor,impact_top,impact_heart,impact_base,created,usage_type,noUsageLimit,byPassIFRA,isPrivate,molecularWeight) 
 					VALUES ('$id','$name','$INCI','$cas','$FEMA','$type','$strength','$category','$purity','$einecs','$reach','$tenacity','$chemical_name','$formula','$flash_point','$notes','$flavor_use','$soluble','$logp','$cat1','$cat2','$cat3','$cat4','$cat5A','$cat5B','$cat5C','$cat6','$cat7A','$cat7B','$cat8','$cat9','$cat10A','$cat10B','$cat11A','$cat11B','$cat12','$profile','$physical_state','$allergen','$odor','$impact_top','$impact_heart','$impact_base','$created','$usage_type','$noUsageLimit','$byPassIFRA','$isPrivate','$molecularWeight')";
 		
-			if(mysqli_query($conn,$sql)){
+			if (mysqli_query($conn, $sql)) {
 				$result['success'] = "Import complete";
+			
+				if ($warn) {
+					$result['warning'] = $warn;  // Set warning message if $err is not empty
+				}
+			
 				unlink($target_path);
 			} else {
-				$result['error'] = "There was an error importing your JSON file " . mysqli_error($conn);
+				$result['error'] = "There was an error importing your JSON file: " . mysqli_error($conn);
 				echo json_encode($result);
 				return;
 			}
+
 		}
 
 		

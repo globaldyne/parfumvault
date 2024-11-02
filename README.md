@@ -63,6 +63,7 @@ Please note, all DB_ variables are required.
 	- `-e TMP_PATH=/tmp/`
 	- `-e FILE_EXT='pdf, doc, docx, xls, csv, xlsx, png, jpg, jpeg, gif'`
 	- `-e DB_BACKUP_PARAMETERS='--column-statistics=1'`
+	- `-e SYS_LOGS=DISABLED`
 
 or via docker compose
 

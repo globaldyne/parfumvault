@@ -1624,3 +1624,30 @@ th.dt-center, td.dt-center {
 .progress-bar {
   color: var(--bs-light) !important;
 }
+
+.dashboard {
+  background:#e0eafc;
+  color:#3f80ea
+}
+.dashboard-text {
+  color:#3f80ea
+}
+[data-bs-theme=dark] .dashboard {
+  background:#343a4b;
+  color:#f4f7f9
+}
+[data-bs-theme=dark] .dashboard-text {
+  color:#f4f7f9
+}
+.dashboard-img {
+  max-width:110px;
+  width:100%
+}
+@media(min-width:1440px) {
+  .dashboard-img {
+    max-width:110px !important;
+	max-height: 110px !important;
+	border-radius: 10px;
+	vertical-align: inherit;
+  }
+}

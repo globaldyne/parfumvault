@@ -4,7 +4,7 @@ if (!defined('pvault_panel')){ die('Not Found');}
 function getIngSupplier($ingID,$getStock,$conn){
 	
 if($getStock == 1){
-	$result = mysqli_fetch_array(mysqli_query($conn, "SELECT mUnit, SUM(stock) AS stock FROM suppliers WHERE ingID = '$ingID'"));	
+	$result = mysqli_fetch_array(mysqli_query($conn, "SELECT mUnit, price, SUM(stock) AS stock FROM suppliers WHERE ingID = '$ingID'"));	
 }else{
 	$q = mysqli_query($conn, "SELECT ingSupplierID,supplierLink,status FROM suppliers WHERE ingID = '$ingID'");
 	while($r = mysqli_fetch_array($q)){

@@ -123,6 +123,9 @@ $(document).ready(function() {
             { visible: false, targets: groupColumn },
 			{ className: 'text-center', targets: '_all' },
 			{ orderable: false, targets: [10, 11] },
+			<?php if($meta['defView'] == '3'){ ?>
+			{ targets: [10], visible: false }
+			<?php } ?>
         ],
 		search: {
     		search: "<?=$_GET['search']?>",
@@ -910,7 +913,7 @@ $('#formula').editable({
       </div>
       <div class="modal-body">
       <div id="scheduleToMakeMsg"></div>
-      <div class="alert alert-info">This will add the current formulation to scheduled formulas. Any changes in this formula will not be replicated to the scheduled version. If you make changes here, you have to remove it and re-add it for making.</div>
+      <div class="alert alert-info"><i class="fa-solid fa-circle-exclamation mx-2"></i>This will add the current formulation to scheduled formulas. Any changes in this formula will not be replicated to the scheduled version. If you make changes here, you have to remove it and re-add it for making.</div>
 	    <div class="modal-footer">
 	     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
   		 <input type="submit" name="button" class="btn btn-primary" id="addTODO" value="Schedule Formula">

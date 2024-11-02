@@ -93,9 +93,10 @@ while($qTags = mysqli_fetch_array($tagsQ)){
     </div>
     <div class="form-group col-md-6">
         <label class="control-label col-auto" for="defView">Default view</label>
-        <select name="defView" id="defView" class="form-control selectpicker" data-live-search="true">
+        <select name="defView" id="defView" class="form-control selectpicker" data-live-search="false">
           <option value="1" <?php if($info['defView']=="1") echo 'selected="selected"'; ?> >Ingredient Properties</option>
           <option value="2" <?php if($info['defView']=="2") echo 'selected="selected"'; ?> >Ingredient Notes</option>
+          <option value="3" <?php if($info['defView']=="3") echo 'selected="selected"'; ?> >None</option>
         </select>
     </div>
  </div>  
@@ -142,7 +143,7 @@ while($qTags = mysqli_fetch_array($tagsQ)){
  <div class="form-row">
    <div class="form-group col-md-6">
     <label class="control-label col-auto" for="finalType">Status</label>
-        <select name="status" id="status" class="form-control selectpicker" data-live-search="true">  
+        <select name="status" id="status" class="form-control selectpicker" data-live-search="false">  
             <option value="0" <?php if($info['status'] == "0"){ echo 'selected';}?>>Scheduled</option>
             <option value="1" <?php if($info['status'] == "1"){ echo 'selected';}?>>Under Developent</option>
             <option value="2" <?php if($info['status'] == "2"){ echo 'selected';}?>>Under Evaluation</option>
@@ -154,7 +155,7 @@ while($qTags = mysqli_fetch_array($tagsQ)){
 
  <div class="form-group col-md-6">
     <label class="control-label col-auto" for="gender">Gender</label>
-    <select name="gender" id="gender" class="form-control selectpicker" data-live-search="true">
+    <select name="gender" id="gender" class="form-control selectpicker" data-live-search="false">
     <?php foreach ($fcat as $cat) { if($cat['type'] == 'sex'){?>
         <option value="<?=$cat['cname'];?>" <?php echo ($info['sex']==$cat['cname'])?"selected=\"selected\"":""; ?>><?php echo $cat['name'];?></option>
     <?php } }?>
@@ -240,7 +241,7 @@ $(document).ready(function(){
 	  	},
 		success: function(response) {	
 			if(response.error){
-				$('#set_msg').html('<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.msg + '</strong></div>');
+				$('#set_msg').html('<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong><i class="fa-solid fa-circle-check mx-2"></i>' + response.msg + '</strong></div>');
 			}       
 		},
 		error: function (xhr, status, error) {
@@ -285,9 +286,9 @@ $(document).ready(function(){
 			dataType: 'json',
 			success: function (response) {
 				if(response.success){
-					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.success + '</strong></div>';
+					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong><i class="fa-solid fa-circle-check mx-2"></i>' + response.success + '</strong></div>';
 				}else{
-					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
+					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + response.error + '</strong></div>';
 				}
 				$('#set_msg').html(msg);
 			},
@@ -310,7 +311,7 @@ $(document).ready(function(){
 			dataType: 'json',
 			success: function (response) {
 				if(response.success){
-					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.success + '</strong></div>';
+					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong><i class="fa-solid fa-circle-check mx-2"></i>' + response.success + '</strong></div>';
 				}else{
 					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
 				}
@@ -336,7 +337,7 @@ $(document).ready(function(){
 			dataType: 'json',
 			success: function (response) {
 				if(response.success){
-					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.success + '</strong></div>';
+					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong><i class="fa-solid fa-circle-check mx-2"></i>' + response.success + '</strong></div>';
 				}else{
 					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
 				}
@@ -362,7 +363,7 @@ $(document).ready(function(){
 			dataType: 'json',
 			success: function (response) {
 				if(response.success){
-					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.success + '</strong></div>';
+					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong><i class="fa-solid fa-circle-check mx-2"></i>' + response.success + '</strong></div>';
 				}else{
 					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
 				}
@@ -387,7 +388,7 @@ $(document).ready(function(){
 			dataType: 'json',
 			success: function (response) {
 				if(response.success){
-					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.success + '</strong></div>';
+					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong><i class="fa-solid fa-circle-check mx-2"></i>' + response.success + '</strong></div>';
 				}else{
 					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
 				}
@@ -412,7 +413,7 @@ $(document).ready(function(){
 			dataType: 'json',
 			success: function (response) {
 				if(response.success){
-					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.success + '</strong></div>';
+					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong><i class="fa-solid fa-circle-check mx-2"></i>' + response.success + '</strong></div>';
 				}else{
 					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
 				}
@@ -438,7 +439,7 @@ $(document).ready(function(){
 			dataType: 'json',
 			success: function (response) {
 				if(response.success){
-					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.success + '</strong></div>';
+					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong><i class="fa-solid fa-circle-check mx-2"></i>' + response.success + '</strong></div>';
 				}else{
 					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
 				}
@@ -473,18 +474,18 @@ $(document).ready(function(){
 						cache: false,
 				  success: function(response){
 					 if(response != 0){
-						$("#upload_resp").html('<div class="dropdown-divider"></div><div class="alert alert-success">File uploaded!</div>');
+						$("#upload_resp").html('<div class="alert alert-success mt-3"><i class="fa-solid fa-circle-check mx-2"></i>File uploaded</div>');
 						$("#pic_upload").prop("disabled", false);
 						$("#pic_upload").prop('value', 'Upload');
 					 }else{
-						$("#upload_resp").html('<div class="dropdown-divider"></div><div class="alert alert-danger"><strong>Error:</strong> File upload failed!</div>');
+						$("#upload_resp").html('<div class="alert alert-danger mt-3"><i class="fa-solid fa-triangle-exclamation mx-2"></i>File upload failed</div>');
 						$("#pic_upload").prop("disabled", false);
 						$("#pic_upload").prop('value', 'Upload');
 					 }
 				  },
 			   });
 			}else{
-				$("#upload_resp").html('<div class="alert alert-danger mt-3"><strong>Please select a file to upload</strong></div>');
+				$("#upload_resp").html('<div class="alert alert-danger mt-3"><i class="fa-solid fa-triangle-exclamation mx-2"></i>Please select a file to upload</div>');
 				$("#pic_upload").prop("disabled", false);
 				$("#pic_upload").prop('value', 'Upload');
 			}

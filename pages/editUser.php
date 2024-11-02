@@ -29,19 +29,19 @@ $doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM docu
         <div id="msgU"></div>
         
           <div class="form-row">
-            <label class="col-sm-3 control-label">Full name:</label>
+            <label class="col-sm-3 control-label">Full name</label>
             <div class="col-sm-8">
               <input name="fullName" type="text" id="fullName" class="mb-2 form-control" value="<?php echo $user['fullName']; ?>">
             </div>
           </div>
           <div class="form-row">
-            <label class="col-sm-3 control-label">Email:</label>
+            <label class="col-sm-3 control-label">Email</label>
             <div class="col-md-8">
               <input name="email" type="text" id="email" class="mb-2 form-control" value="<?php echo $user['email']; ?>">
             </div>
           </div>
           <div class="form-row">
-            <label class="col-sm-3 control-label">Password:</label>
+            <label class="col-sm-3 control-label">Password</label>
             <div class="col-md-8 password-input-container">
               <input name="password" type="password" id="password" class="mb-2 form-control password-input" value="">
               <i class="toggle-password fa fa-eye"></i>

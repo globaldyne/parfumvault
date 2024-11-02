@@ -320,7 +320,7 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'ingredients'){
 	$q = mysqli_query($conn, "SELECT * FROM ingredient_compounds");
 	while($res = mysqli_fetch_assoc($q)){
 
-		$c['id'] = (string)$res['id'];
+		$c['id'] = (int)$res['id'];
 		$c['ing'] = (string)$res['ing'];
 		$c['name'] = (string)$res['name'];
 		$c['cas'] = (string)$res['cas'] ?: 'N/A';
@@ -345,7 +345,7 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'ingredients'){
 		$s['ingSupplierID'] = (int)$res['ingSupplierID'];
 		$s['ingID'] = (int)$res['ingID'];
 		$s['supplierLink'] = (string)$res['supplierLink'] ?: 'N/A';
-		$s['price'] = (double)$res['price'] ?: 0;
+		$s['price'] = (double)$res['price'];
 		$s['size'] = (double)$res['size'] ?: 10;
 		$s['manufacturer'] = (string)$res['manufacturer']?: 'N/A';
 		$s['preferred'] = (int)$res['preferred'] ?: 0;
@@ -497,7 +497,7 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'single-ingredient' && $_GET['i
 		$s['ingSupplierID'] = (int)$res['ingSupplierID'];
 		$s['ingID'] = (int)$res['ingID'];
 		$s['supplierLink'] = (string)$res['supplierLink'] ?: 'N/A';
-		$s['price'] = (double)$res['price'] ?: 0;
+		$s['price'] = (double)$res['price'];
 		$s['size'] = (double)$res['size'] ?: 10;
 		$s['manufacturer'] = (string)$res['manufacturer']?: 'N/A';
 		$s['preferred'] = (int)$res['preferred'] ?: 0;

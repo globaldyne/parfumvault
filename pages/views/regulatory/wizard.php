@@ -125,7 +125,7 @@ $res_SDStmpl = mysqli_query($conn, "SELECT * FROM templates ORDER BY name ASC");
       
       </div>
       <hr>
-      <button class="btn btn-secondary" id="supplierContinue">Continue</button>
+      <button class="btn btn-primary" id="supplierContinue">Continue</button>
     </div>
 
     <div class="tab-pane fade" id="productPanel" role="tabpanel">
@@ -173,7 +173,7 @@ $res_SDStmpl = mysqli_query($conn, "SELECT * FROM templates ORDER BY name ASC");
         <label class="form-check-label" for="Mixture">Product is a mixture</label>
       </div>
       <hr>
-      <button class="btn btn-secondary" id="productContinue">Continue</button>
+      <button class="btn btn-primary" id="productContinue">Continue</button>
     </div>
 
    	<div class="tab-pane fade" id="tech_composition">
@@ -199,7 +199,7 @@ $res_SDStmpl = mysqli_query($conn, "SELECT * FROM templates ORDER BY name ASC");
     </div>
 
       <hr>
-      <button class="btn btn-secondary mb-2" id="compoContinue">Continue</button>
+      <button class="btn btn-primary mb-2" id="compoContinue">Continue</button>
     </div>
     
 
@@ -213,7 +213,7 @@ $res_SDStmpl = mysqli_query($conn, "SELECT * FROM templates ORDER BY name ASC");
              </div>
         </div>
         <hr>
-        <button class="btn btn-secondary  mb-2" id="ghsContinue">Continue</button>
+        <button class="btn btn-primary  mb-2" id="ghsContinue">Continue</button>
     </div>
     
     <div class="tab-pane fade" id="reviewPanel" role="tabpanel">
