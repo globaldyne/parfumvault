@@ -82,6 +82,8 @@ $(document).ready(function() {
 		loadingRecords: '&nbsp;',
 		processing: 'Please Wait...',
 		zeroRecords: 'Nothing found',
+		emptyTable: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>No documents found</strong></div></div>',
+
 		search: '',
 		searchPlaceholder: 'Search by name...',
 	},
