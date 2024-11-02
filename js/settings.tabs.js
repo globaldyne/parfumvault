@@ -61,7 +61,24 @@ $(document).ready(function() {
 		get_integrations();
 	});
 	
-		function list_cat(){
+	$('#logs_tab').on( 'click', function () {
+		get_syslogs();
+	});
+	
+	function get_syslogs(){
+		$.ajax({ 
+			url: '/pages/views/settings/sysLogs.php', 
+			dataType: 'html',
+			success: function (data) {
+				$('#syslogs').html(data);
+			},
+			error: function (xhr, status, error) {
+				$('#syslogs').html('<div class="mt-4 alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check configuration as this page may have been disabled / restricted. '+ error +'</div>');
+			}
+		});
+	}
+	
+	function list_cat(){
 		$.ajax({ 
 			url: '/pages/views/settings/listCat.php', 
 			dataType: 'html',
@@ -170,5 +187,6 @@ $(document).ready(function() {
 			}
 		});
 	};
+	
 	get_general();
 });

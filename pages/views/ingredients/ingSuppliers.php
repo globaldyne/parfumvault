@@ -8,15 +8,16 @@ require_once(__ROOT__.'/inc/settings.php');
 
 $ingID = mysqli_real_escape_string($conn, $_GET["id"]);
 
-$q = mysqli_query($conn, "SELECT * FROM suppliers WHERE ingID = '$ingID' ORDER BY preferred");
+//$q = mysqli_query($conn, "SELECT * FROM suppliers WHERE ingID = '$ingID' ORDER BY preferred");
 $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT name,physical_state FROM ingredients WHERE id ='$ingID'"));
 $res_ingSupplier = mysqli_query($conn, "SELECT id,name,min_ml,min_gr FROM ingSuppliers ORDER BY name ASC");
-
+/*
 if($ing['physical_state'] == 1){
 	$mUnit = 'ml';
 }elseif($ing['physical_state'] == 2){
 	$mUnit = 'grams';
 }
+*/
 ?>
 <?php if($_GET['standAlone'] == 1){ ?>
 	<html lang="en" data-bs-theme="<?=$settings['bs_theme']?>">
@@ -102,7 +103,7 @@ $(document).ready(function() {
 		language: {
 			loadingRecords: '&nbsp;',
 			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
-			emptyTable: 'No suppliers added yet.',
+			emptyTable: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>No suppliers added yet. You have to add at least one supplier to be able to use this ingredient in formulas</strong></div></div>',
 			search: '',
 			searchPlaceholder: 'Search by name...',
 		},
@@ -198,391 +199,400 @@ $(document).ready(function() {
 	});
 	
 	
-});//END DOC
- Object.getPrototypeOf($('#purchased')).size = function() { return this.length; }; // Workaround for https://github.com/Eonasdan/bootstrap-datetimepicker/issues/1714
-function sName(data, type, row){
-	if(row.preferred == 1){
-		data = '<i class="ingSupplierID pv_point_gen" data-name="ingSupplierID" data-type="select" data-pk="'+row.id+'"><i class="fas fa-star pv_point_gen pv_point_gen_color mx-2"></i>'+row.supplierName+'</i>';  
-	}else{
-		data = '<i class="ingSupplierID pv_point_gen" data-name="ingSupplierID" data-type="select" data-pk="'+row.id+'">'+row.supplierName+'</i>';  
-	}
-	
-	return data;
-};
-
-function sLink(data, type, row){
-	return '<i class="supplierLink pv_point_gen" data-name="supplierLink" data-type="textarea" data-pk="'+row.id+'">'+row.supplierLink+'</i>';    
-};
-
-function sPrice(data, type, row){
-	return '<i id="'+row.ingSupplierID+'" class="price pv_point_gen" data-name="price" data-type="text" data-pk="'+row.id+'">'+row.price+'</i>';    
-};
-
-function sSize(data, type, row){
-	return '<i class="size pv_point_gen" data-name="size" data-type="text" data-pk="'+row.id+'">'+row.size+'</i>';    
-};
-
-function mUnit(data, type, row){
-	return '<i class="mUnit pv_point_gen" data-name="mUnit" data-type="select" data-pk="'+row.id+'">'+row.mUnit+'</i>';
-};
-
-function sManufacturer(data, type, row){
-	return '<i class="manufacturer pv_point_gen" data-name="manufacturer" data-type="text" data-pk="'+row.id+'">'+row.manufacturer+'</i>';    
-};
-
-function sBatch(data, type, row){
-	return '<i class="batch pv_point_gen" data-name="batch" data-type="text" data-pk="'+row.id+'">'+row.batch+'</i>';    
-};
-
-function sPurchased(data, type, row){
-	return '<i class="purchased pv_point_gen" data-name="purchased" data-type="date" data-pk="'+row.id+'">'+row.purchased+'</i>';    
-};
-
-function sStock(data, type, row){
-	return '<i class="stock pv_point_gen" data-name="stock" data-type="text" data-pk="'+row.id+'">'+row.stock+'</i>';    
-};
-
-function status(data, type, row){
-	if(row.status == 0){
-		var data = '<span class="pv-label badge bg-default">Unkwnown</span>';
-	}
-	if(row.status == 1){
-		var data = '<span class="pv-label badge bg-success">Available</span>';
-	}
-	if(row.status == 2){
-		var data = '<span class="pv-label badge bg-warning">Limited Availability</span>';
-	}
-	if(row.status == 3){
-		var data = '<span class="pv-label badge bg-danger">Discontinued</span>';
-	}
-	
-	return '<i class="status pv_point_gen" data-name="status" data-type="select" data-pk="'+row.id+'">'+data+'</i>';
-};
-
-function internal_sku(data, type, row){
-	return '<i class="internal_sku pv_point_gen" data-name="internal_sku" data-type="text" data-pk="'+row.id+'">'+row.internal_sku+'</i>';    
-};
-
-function supplier_sku(data, type, row){
-	return '<i class="supplier_sku pv_point_gen" data-name="supplier_sku" data-type="text" data-pk="'+row.id+'">'+row.supplier_sku+'</i>';    
-};
-
-function storage_location(data, type, row){
-	return '<i class="storage_location pv_point_gen" data-name="storage_location" data-type="text" data-pk="'+row.id+'">'+row.storage_location+'</i>';    
-};
-
-function sActions(data, type, row){
-	data = '<div class="dropdown">' +
-			'<button type="button" class="btn btn-floating hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
-				'<ul class="dropdown-menu">';
-	
-	if(row.preferred == 0){
-		data += '<li><a class="dropdown-item" href="#" id="prefSID" data-status="1" data-id="'+row.ingSupplierID+'"><i class="far fa-star pv_point_gen mx-2"></i>Set as preferred</a></li>';
-	}
-	
-	data += '<li><a class="dropdown-item" href="#" id="getPrice" data-name="'+row.supplierName+'" data-id="'+encodeURIComponent(row.ingSupplierID)+'" data-link="'+row.supplierLink+'" data-size="'+row.size+'" data-toggle="tooltip" data-placement="top" title="Get the latest price from the supplier."><i class="fas fa-sync pv_point_gen_color mx-2"></i>Update price</a></li>';
-	data += '<li><a class="dropdown-item" href="'+row.supplierLink+'" target="_blank"><i class="fas fa-store mx-2"></i>Go to supplier</a></li>';
-	data += '<div class="dropdown-divider"></div>';
-	data += '<li><a href="#" id="sDel" class="dropdown-item link-danger" data-id="'+row.id+'" data-name="'+row.supplierName+'"><i class="fas fa-trash link-danger mx-2"></i>Delete supplier</a></li>'; 
-	data += '</ul></div>';
-	return data;
-	
-}
-
-$('#tdIngSup').editable({
-	pvnoresp: false,
-	highlight: false,
-	title: "Supplier's Name",
-	container: 'body',
-	selector: 'i.ingSupplierID',
-	type: 'POST',
-	emptytext: "",
-	emptyclass: "",
-  	url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID?>",
-    source: [
-			 <?php
-				$res_ing = mysqli_query($conn, "SELECT id,name FROM ingSuppliers ORDER BY name ASC");
-				while ($r_ing = mysqli_fetch_array($res_ing)){
-					echo '{value: "'.htmlspecialchars($r_ing['id']).'", text: "'.htmlspecialchars($r_ing['name']).'"},';
-			}
-			?>
-    ],
-    success: function (data) {
-		reload_sup_data();
-	}
-});
-
-
-$('#tdIngSup').editable({
-	pvnoresp: false,
-	highlight: false,
-	title: "Availability status",
-	container: 'body',
-	selector: 'i.status',
-	type: 'POST',
-	emptytext: "",
-	emptyclass: "",
-  	url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID?>",
-    source: [
-			 {value: '1', text: 'Available'},
-             {value: '2', text: 'Limited availability'},
-			 {value: '3', text: 'Discontinued / Cannot sourced'},
-    ],
-    success: function (data) {
-		reload_sup_data();
-	}
-});
-
-$('#tdIngSup').editable({
-	container: 'body',
-	selector: 'i.supplierLink',
-	type: 'POST',
-	url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
-	title: 'Store link',
-	validate: function(value){
-		if($.trim(value) == ''){
-			return 'This field is required';
+	 Object.getPrototypeOf($('#purchased')).size = function() { return this.length; }; // Workaround for https://github.com/Eonasdan/bootstrap-datetimepicker/issues/1714
+	function sName(data, type, row){
+		if(row.preferred == 1){
+			data = '<i class="ingSupplierID pv_point_gen" data-name="ingSupplierID" data-type="select" data-pk="'+row.id+'"><i class="fas fa-star pv_point_gen pv_point_gen_color mx-2"></i>'+row.supplierName+'</i>';  
+		}else{
+			data = '<i class="ingSupplierID pv_point_gen" data-name="ingSupplierID" data-type="select" data-pk="'+row.id+'">'+row.supplierName+'</i>';  
 		}
-  	}
-});
-  
-$('#tdIngSup').editable({
-	container: 'body',
-	selector: 'i.price',
-	type: 'POST',
-	url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
-	title: 'Price',
-	validate: function(value){
-		if($.trim(value) == ''){
-			return 'This field is required';
-		}
-		if($.isNumeric(value) == '' ){
-			return 'Numbers only';
-		}
-		if(parseFloat(value) === 0) {
-            return 'Value cannot be 0';
-        }
-  	}
-});
+		
+		return data;
+	};
 	
-$('#tdIngSup').editable({
-  	container: 'body',
-  	selector: 'i.size',
-  	type: 'POST',
-	url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
-	title: 'Size',
-	success: function (data) {
-		reload_sup_data();
-	}
-});
+	function sLink(data, type, row){
+		return '<i class="supplierLink pv_point_gen" data-name="supplierLink" data-type="textarea" data-pk="'+row.id+'">'+row.supplierLink+'</i>';    
+	};
 	
-$('#tdIngSup').editable({
-	pvnoresp: false,
-	highlight: false,
-	emptytext: "",
-	emptyclass: "",
-  	container: 'body',
-  	selector: 'i.mUnit',
-  	type: 'POST',
-	url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
-	title: 'Measurement Unit',
-	source: [
-			 {value: 'ml', text: 'Milliliter'},
-			 {value: 'g', text: 'Grams'},
-			 {value: 'L', text: 'Liter'},
-			 {value: 'fl. oz.', text: 'Fluid ounce (fl. oz.)'}
-	],
-	success: function (data) {
-		reload_sup_data();
+	function sPrice(data, type, row){
+		return '<i id="'+row.ingSupplierID+'" class="price pv_point_gen" data-name="price" data-type="text" data-pk="'+row.id+'">'+row.price+'</i>';    
+	};
+	
+	function sSize(data, type, row){
+		return '<i class="size pv_point_gen" data-name="size" data-type="text" data-pk="'+row.id+'">'+row.size+'</i>';    
+	};
+	
+	function mUnit(data, type, row){
+		return '<i class="mUnit pv_point_gen" data-name="mUnit" data-type="select" data-pk="'+row.id+'">'+row.mUnit+'</i>';
+	};
+	
+	function sManufacturer(data, type, row){
+		return '<i class="manufacturer pv_point_gen" data-name="manufacturer" data-type="text" data-pk="'+row.id+'">'+row.manufacturer+'</i>';    
+	};
+	
+	function sBatch(data, type, row){
+		return '<i class="batch pv_point_gen" data-name="batch" data-type="text" data-pk="'+row.id+'">'+row.batch+'</i>';    
+	};
+	
+	function sPurchased(data, type, row){
+		return '<i class="purchased pv_point_gen" data-name="purchased" data-type="date" data-pk="'+row.id+'">'+row.purchased+'</i>';    
+	};
+	
+	function sStock(data, type, row){
+		return '<i class="stock pv_point_gen" data-name="stock" data-type="text" data-pk="'+row.id+'">'+row.stock+'</i>';    
+	};
+	
+	function status(data, type, row){
+		if(row.status == 0){
+			var data = '<span class="pv-label badge bg-default">Unkwnown</span>';
+		}
+		if(row.status == 1){
+			var data = '<span class="pv-label badge bg-success">Available</span>';
+		}
+		if(row.status == 2){
+			var data = '<span class="pv-label badge bg-warning">Limited Availability</span>';
+		}
+		if(row.status == 3){
+			var data = '<span class="pv-label badge bg-danger">Discontinued</span>';
+		}
+		
+		return '<i class="status pv_point_gen" data-name="status" data-type="select" data-pk="'+row.id+'">'+data+'</i>';
+	};
+	
+	function internal_sku(data, type, row){
+		return '<i class="internal_sku pv_point_gen" data-name="internal_sku" data-type="text" data-pk="'+row.id+'">'+row.internal_sku+'</i>';    
+	};
+	
+	function supplier_sku(data, type, row){
+		return '<i class="supplier_sku pv_point_gen" data-name="supplier_sku" data-type="text" data-pk="'+row.id+'">'+row.supplier_sku+'</i>';    
+	};
+	
+	function storage_location(data, type, row){
+		return '<i class="storage_location pv_point_gen" data-name="storage_location" data-type="text" data-pk="'+row.id+'">'+row.storage_location+'</i>';    
+	};
+	
+	function sActions(data, type, row){
+		data = '<div class="dropdown">' +
+				'<button type="button" class="btn btn-floating hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+					'<ul class="dropdown-menu">';
+		
+		if(row.preferred == 0){
+			data += '<li><a class="dropdown-item" href="#" id="prefSID" data-status="1" data-id="'+row.ingSupplierID+'"><i class="far fa-star pv_point_gen mx-2"></i>Set as preferred</a></li>';
+		}
+		
+		data += '<li><a class="dropdown-item" href="#" id="getPrice" data-name="'+row.supplierName+'" data-id="'+encodeURIComponent(row.ingSupplierID)+'" data-link="'+row.supplierLink+'" data-size="'+row.size+'" data-toggle="tooltip" data-placement="top" title="Get the latest price from the supplier."><i class="fas fa-sync pv_point_gen_color mx-2"></i>Update price</a></li>';
+		data += '<li><a class="dropdown-item" href="'+row.supplierLink+'" target="_blank"><i class="fas fa-store mx-2"></i>Go to supplier</a></li>';
+		data += '<div class="dropdown-divider"></div>';
+		data += '<li><a href="#" id="sDel" class="dropdown-item link-danger" data-id="'+row.id+'" data-name="'+row.supplierName+'"><i class="fas fa-trash link-danger mx-2"></i>Delete supplier</a></li>'; 
+		data += '</ul></div>';
+		return data;
+		
 	}
-});
-
-$('#tdIngSup').editable({
-	container: 'body',
-	selector: 'i.manufacturer',
-	type: 'POST',
-	url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
-	title: 'Manufacturer',
-	success: function (data) {
-		reload_sup_data();
-	}
-});
-
-$('#tdIngSup').editable({
-	container: 'body',
-	selector: 'i.batch',
-	type: 'POST',
-	url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
-	title: 'Batch',
-	success: function (data) {
-		reload_sup_data();
-	}
-});
-
-$('#tdIngSup').editable({
-	container: 'body',
-	selector: 'i.purchased',
-	type: 'POST',
-	url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
-	title: 'Purchase date',
-	type: 'date',
-	success: function (data) {
-		reload_sup_data();
-	}
-});
-  
-$('#tdIngSup').editable({
-	container: 'body',
-	selector: 'i.stock',
-	type: 'POST',
-	url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
-	title: 'In Stock',
-	success: function (data) {
-		reload_sup_data();
-	}
-});
-
-$('#tdIngSup').editable({
-  	container: 'body',
-  	selector: 'i.internal_sku',
-  	type: 'POST',
-	url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
-	title: 'Internal SKU',
-	success: function (data) {
-		reload_sup_data();
-	}
-});
-
-$('#tdIngSup').editable({
-  	container: 'body',
-  	selector: 'i.supplier_sku',
-  	type: 'POST',
-	url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
-	title: 'Supplier SKU',
-	success: function (data) {
-		reload_sup_data();
-	}
-});
-
-$('#tdIngSup').editable({
-  	container: 'body',
-  	selector: 'i.storage_location',
-  	type: 'POST',
-	url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
-	title: 'Storage location',
-	success: function (data) {
-		reload_sup_data();
-	}
-});
-
-
-$('#tdIngSup').on('click', '[id*=prefSID]', function () {
-	var s = {};
-	s.ID = $(this).attr('data-id');
-   	s.Status = $(this).attr('data-status');
-
-	$.ajax({ 
-		url: '/pages/update_data.php', 
-		type: 'GET',
-		data: {
-			ingSupplier: 'preferred',
-			sID: s.ID,
-			status: s.Status,
-			ingID: '<?=$ingID?>'
-			},
-		dataType: 'html',
+	
+	$('#tdIngSup').editable({
+		pvnoresp: false,
+		highlight: false,
+		title: "Supplier's Name",
+		container: 'body',
+		selector: 'i.ingSupplierID',
+		type: 'POST',
+		emptytext: "",
+		emptyclass: "",
+		url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID?>",
+		source: [
+				 <?php
+					$res_ing = mysqli_query($conn, "SELECT id,name FROM ingSuppliers ORDER BY name ASC");
+					while ($r_ing = mysqli_fetch_array($res_ing)){
+						echo '{value: "'.htmlspecialchars($r_ing['id']).'", text: "'.htmlspecialchars($r_ing['name']).'"},';
+				}
+				?>
+		],
 		success: function (data) {
 			reload_sup_data();
 		}
-	  });
-
-});
-
-$('#tdIngSup').on('click', '[id*=getPrice]', function () {
-	var s = {};
-	s.ID = $(this).attr('data-id');
-   	s.Name = $(this).attr('data-name');
-	s.Link = $(this).attr('data-link');
-   	s.Size = $(this).attr('data-size');
-
-	$('#supMsg').html('<div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>Please wait, trying to fetch supplier data...</strong></div>');
-		$('#' + s.ID).html('<img src="/img/loading.gif"/>');
+	});
+	
+	
+	$('#tdIngSup').editable({
+		pvnoresp: false,
+		highlight: false,
+		title: "Availability status",
+		container: 'body',
+		selector: 'i.status',
+		type: 'POST',
+		emptytext: "",
+		emptyclass: "",
+		url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID?>",
+		source: [
+				 {value: '1', text: 'Available'},
+				 {value: '2', text: 'Limited availability'},
+				 {value: '3', text: 'Discontinued / Cannot sourced'},
+		],
+		success: function (data) {
+			reload_sup_data();
+		}
+	});
+	
+	$('#tdIngSup').editable({
+		container: 'body',
+		selector: 'i.supplierLink',
+		type: 'POST',
+		url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
+		title: 'Store link',
+		validate: function(value){
+			if($.trim(value) == ''){
+				return 'This field is required';
+			}
+		}
+	});
+	  
+	$('#tdIngSup').editable({
+		container: 'body',
+		selector: 'i.price',
+		type: 'POST',
+		url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
+		title: 'Price',
+		validate: function(value){
+			if($.trim(value) == ''){
+				return 'This field is required';
+			}
+			if($.isNumeric(value) == '' ){
+				return 'Numbers only';
+			}
+			if(parseFloat(value) === 0) {
+				return 'Value cannot be 0';
+			}
+		}
+	});
+		
+	$('#tdIngSup').editable({
+		container: 'body',
+		selector: 'i.size',
+		type: 'POST',
+		url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
+		title: 'Size',
+		success: function (data) {
+			reload_sup_data();
+		}
+	});
+		
+	$('#tdIngSup').editable({
+		pvnoresp: false,
+		highlight: false,
+		emptytext: "",
+		emptyclass: "",
+		container: 'body',
+		selector: 'i.mUnit',
+		type: 'POST',
+		url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
+		title: 'Measurement Unit',
+		source: [
+				 {value: 'ml', text: 'Milliliter'},
+				 {value: 'g', text: 'Grams'},
+				 {value: 'L', text: 'Liter'},
+				 {value: 'fl. oz.', text: 'Fluid ounce (fl. oz.)'}
+		],
+		success: function (data) {
+			reload_sup_data();
+		}
+	});
+	
+	$('#tdIngSup').editable({
+		container: 'body',
+		selector: 'i.manufacturer',
+		type: 'POST',
+		url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
+		title: 'Manufacturer',
+		success: function (data) {
+			reload_sup_data();
+		}
+	});
+	
+	$('#tdIngSup').editable({
+		container: 'body',
+		selector: 'i.batch',
+		type: 'POST',
+		url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
+		title: 'Batch',
+		success: function (data) {
+			reload_sup_data();
+		}
+	});
+	
+	$('#tdIngSup').editable({
+		container: 'body',
+		selector: 'i.purchased',
+		type: 'POST',
+		url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
+		title: 'Purchase date',
+		type: 'date',
+		success: function (data) {
+			reload_sup_data();
+		}
+	});
+	  
+	$('#tdIngSup').editable({
+		container: 'body',
+		selector: 'i.stock',
+		type: 'POST',
+		url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
+		title: 'In Stock',
+		success: function (data) {
+			reload_sup_data();
+		}
+	});
+	
+	$('#tdIngSup').editable({
+		container: 'body',
+		selector: 'i.internal_sku',
+		type: 'POST',
+		url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
+		title: 'Internal SKU',
+		success: function (data) {
+			reload_sup_data();
+		}
+	});
+	
+	$('#tdIngSup').editable({
+		container: 'body',
+		selector: 'i.supplier_sku',
+		type: 'POST',
+		url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
+		title: 'Supplier SKU',
+		success: function (data) {
+			reload_sup_data();
+		}
+	});
+	
+	$('#tdIngSup').editable({
+		container: 'body',
+		selector: 'i.storage_location',
+		type: 'POST',
+		url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
+		title: 'Storage location',
+		success: function (data) {
+			reload_sup_data();
+		}
+	});
+	
+	
+	$('#tdIngSup').on('click', '[id*=prefSID]', function () {
+		var s = {};
+		s.ID = $(this).attr('data-id');
+		s.Status = $(this).attr('data-status');
+	
 		$.ajax({ 
 			url: '/pages/update_data.php', 
-			type: 'POST',
+			type: 'GET',
 			data: {
-				ingSupplier: 'getPrice',
-				sLink: s.Link,
-				size: s.Size,
-				ingSupplierID: s.ID,
+				ingSupplier: 'preferred',
+				sID: s.ID,
+				status: s.Status,
 				ingID: '<?=$ingID?>'
-			},
-			dataType: 'json',
+				},
+			dataType: 'html',
 			success: function (data) {
-				if (data.success) {
-		 	 		var msg = '<div class="alert alert-success alert-dismissible"><i class="fa-solid fa-circle-check mx-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
-				}else{
-					var msg = '<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-triangle-exclamation mx-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
-				}
-				$('#supMsg').html(msg);
 				reload_sup_data();
 			}
 		  });
 	
-});
+	});
 	
-$('#tdIngSup').on('click', '[id*=sDel]', function () {
-	var ing = {};
-	ing.ID = $(this).attr('data-id');
-	ing.Name = $(this).attr('data-name');
-    
-	bootbox.dialog({
-       title: "Confirm supplier removal",
-       message : 'Remove <strong>'+ ing.Name +'</strong> from the list?',
-       buttons :{
-           main: {
-               label : "Remove",
-               className : "btn-danger",
-               callback: function (){
-	    			
-				$.ajax({ 
-					url: '/pages/update_data.php', 
-					type: 'GET',
-					data: {
-						ingSupplier: 'delete',
-						sID: ing.ID,
-						ingID: '<?=$ingID?>'
-					},
-					dataType: 'html',
-					success: function (data) {
-						reload_sup_data();
-					},
-					error: function (xhr, status, error) {
-						$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
-						$('.toast-header').removeClass().addClass('toast-header alert-danger');
-						$('.toast').toast('show');
+	$('#tdIngSup').on('click', '[id*=getPrice]', function () {
+		var s = {};
+		s.ID = $(this).attr('data-id');
+		s.Name = $(this).attr('data-name');
+		s.Link = $(this).attr('data-link');
+		s.Size = $(this).attr('data-size');
+	
+		$('#supMsg').html('<div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>Please wait, trying to fetch supplier data...</strong></div>');
+			$('#' + s.ID).html('<img src="/img/loading.gif"/>');
+			$.ajax({ 
+				url: '/pages/update_data.php', 
+				type: 'POST',
+				data: {
+					ingSupplier: 'getPrice',
+					sLink: s.Link,
+					size: s.Size,
+					ingSupplierID: s.ID,
+					ingID: '<?=$ingID?>'
+				},
+				dataType: 'json',
+				success: function (data) {
+					if (data.success) {
+						var msg = '<div class="alert alert-success alert-dismissible"><i class="fa-solid fa-circle-check mx-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+					}else{
+						var msg = '<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-triangle-exclamation mx-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 					}
-				  });
-				
-                 return true;
-               }
-           },
-           cancel: {
-               label : "Cancel",
-               className : "btn-secondary",
-               callback : function() {
-                   return true;
-               }
-           }   
-       },onEscape: function () {return true;}
-   });
-});
+					$('#supMsg').html(msg);
+					reload_sup_data();
+				}
+			  });
+		
+	});
+		
+	$('#tdIngSup').on('click', '[id*=sDel]', function () {
+		var ing = {};
+		ing.ID = $(this).attr('data-id');
+		ing.Name = $(this).attr('data-name');
+		
+		bootbox.dialog({
+		   title: "Confirm supplier removal",
+		   message : 'Remove <strong>'+ ing.Name +'</strong> from the list?',
+		   buttons :{
+			   main: {
+				   label : "Remove",
+				   className : "btn-danger",
+				   callback: function (){
+						
+					$.ajax({ 
+						url: '/pages/update_data.php', 
+						type: 'GET',
+						data: {
+							ingSupplier: 'delete',
+							sID: ing.ID,
+							ingID: '<?=$ingID?>'
+						},
+						dataType: 'json',
+						success: function (data) {
+							if(data.success){
+								reload_sup_data();
+							} else {
+								$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>' + data.error);
+								$('.toast-header').removeClass().addClass('toast-header alert-danger');
+								$('.toast').toast('show');
+							}
+						},
+						error: function (xhr, status, error) {
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+							$('.toast-header').removeClass().addClass('toast-header alert-danger');
+							$('.toast').toast('show');
+						}
+					  });
+					
+					 return true;
+				   }
+			   },
+			   cancel: {
+				   label : "Cancel",
+				   className : "btn-secondary",
+				   callback : function() {
+					   return true;
+				   }
+			   }   
+		   },onEscape: function () {return true;}
+	   });
+	});
+	
+	
+	
+	function reload_sup_data() {
+		$('#tdIngSup').DataTable().ajax.reload(null, true);
+	};
 
 
+});//END DOC
 
-function reload_sup_data() {
-    $('#tdIngSup').DataTable().ajax.reload(null, true);
-};
 </script>
 
 <!-- ADD SUPPLIER-->

@@ -4,25 +4,20 @@ define('__ROOT__', dirname(dirname(__FILE__)));
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
 
-$cat_q = mysqli_query($conn, "SELECT id,name,cname,type,colorKey FROM formulaCategories");
-while($cats_res = mysqli_fetch_array($cat_q)){
-    $cats[] = $cats_res;
-}
+$cat_q = mysqli_query($conn, "SELECT id, name, cname, type, colorKey FROM formulaCategories");
 
-foreach ($cats as $category) { 
-	$r['id'] = (int)$category['id'];
-	$r['name'] = (string)$category['name'];
-	$r['cname'] = (string)$category['cname'];
-	$r['type'] = (string)$category['type'];
-	$r['colorKey'] = (string)'rgba('.$category['colorKey'].')';
-	$response['data'][] = $r;
-}
+$response = ['data' => []];
 
-if(empty($c)){
-	$response['data'] = [];
+while ($category = mysqli_fetch_assoc($cat_q)) {
+    $response['data'][] = [
+        'id' => (int)$category['id'],
+        'name' => $category['name'],
+        'cname' => $category['cname'],
+        'type' => $category['type'],
+        'colorKey' => 'rgba(' . $category['colorKey'] . ')'
+    ];
 }
 
 header('Content-Type: application/json; charset=utf-8');
 echo json_encode($response);
 return;
-?>

@@ -10,4 +10,6 @@ $dbname = "pvault"; //MySQL DB name
 $tmp_path = "/tmp/";
 $allowed_ext = "pdf, doc, docx, xls, csv, xlsx, png, jpg, jpeg, gif";
 $max_filesize = "4194304"; //in bytes
+$sysLogs = FALSE;
+
 ?>

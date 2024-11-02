@@ -7,7 +7,7 @@ require_once(__ROOT__.'/func/php-settings.php');
 ?>
 <div class="container-fluid">
 
-<h2 class="m-0 mb-4"><a href="/?do=settings">Settings</a></h2>
+<h2 class="m-0 mb-4">Settings</h2>
 <div id="settings">
      <ul>
          <li class="active"><a href="#general" id="general_tab" role="tab" data-bs-toggle="tab">General</a></li>
@@ -20,6 +20,7 @@ require_once(__ROOT__.'/func/php-settings.php');
          <li><a href="#maintenance" id="maintenance_tab">Maintenance</a></li>
          <li><a href="#integrations" id="integrations_tab">Integrations</a></li>
          <li><a href="#api" id="api_tab" role="tab" data-bs-toggle="tab">API</a></li>
+         <li><a href="#syslogs" id="logs_tab" role="tab" data-bs-toggle="tab">System logs</a></li>
          <li><a href="#about" id="about_tab" role="tab" data-bs-toggle="tab">About</a></li>
      </ul>
      
@@ -111,6 +112,13 @@ require_once(__ROOT__.'/func/php-settings.php');
         </div>
   	</div>
     
+    <div id="syslogs">
+        <div class="loader-center">
+            <div class="loader"></div>
+            <div class="loader-text"></div>
+        </div>
+  	</div>
+        
     <div id="about">
         <div class="loader-center">
             <div class="loader"></div>

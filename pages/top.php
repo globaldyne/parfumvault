@@ -48,7 +48,11 @@ if($pv_meta['schema_ver'] < $db_ver){
             	<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span class="mx-2 d-none d-lg-inline text-white small"><?php echo $user['fullName'];?></span>
                	<div class="icon-container">
-                	<img class="img-profile rounded-circle" src="<?=$doc['avatar']?: '/img/logo_def.png'; ?>">
+                     <?php if ($doc['avatar']){ ?>
+                        <img src="<?=$doc['avatar']?: '/img/ICO_TR.png'; ?>" class="img-profile rounded-circle">
+                    <?php } else { ?>
+						<i class="fa-regular fa-user fa-2xl text-info"></i>
+                   <?php } ?>
 				</div>
               </a>
               <div class="mx-2 dropdown-menu dropdown-menu-end shadow animated--grow-in" aria-labelledby="userDropdown">

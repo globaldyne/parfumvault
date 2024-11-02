@@ -1033,13 +1033,22 @@ if($_GET['ingSupplier'] == 'delete'){
 
 	$sID = mysqli_real_escape_string($conn, $_GET['sID']);
 	$ingID = mysqli_real_escape_string($conn, $_GET['ingID']);
-	/*
-	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM suppliers WHERE id = '$sID' AND ingID = '$ingID' AND preferred = '1'"))){
-		echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>Preferred supplier cannot be removed. Set as preferred another one first!</div>';
+	
+	$supplierCount = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM suppliers WHERE ingID = '$ingID'"));
+    if ($supplierCount <= 1) {
+        $response["error"] = 'Cannot delete the last supplier for this ingredient';
+		echo json_encode($response);
 		return;
+    }
+								
+	if(mysqli_query($conn, "DELETE FROM suppliers WHERE id = '$sID' AND ingID='$ingID'")){
+		$response["success"] = 'Supplier deleted';
+		echo json_encode($response);
+	} else {
+		$response["error"] = mysqli_error($conn);
+		echo json_encode($response);
 	}
-	*/							
-	mysqli_query($conn, "DELETE FROM suppliers WHERE id = '$sID' AND ingID='$ingID'");
+	
 	return;
 }
 

@@ -1,4 +1,17 @@
 # CHANGELOG
+### Version 11.9
+- Added system logs access via the UI for docker/cloud installations - this comes disabled by default
+- Hide properties column in formulas
+- Fix a bug preventing formula categories to be shown properly
+- Set default avantar to user ico
+- Cosmetic UI updates
+- Update empty message for ingredients
+- Prevent deletion of the last left supplier in an ingredient
+- Prevent adding an ingredient with incomplete supplier data to a formula
+- New dashboard update, including better and  cleaner view
+- Set compounds id to integer for exported ingredients
+- Validate if suppliers price is 0 when importing ingredients from a JSON
+
 ### Version 11.8
 - Error handling for Formula Make page
 - Readme file update

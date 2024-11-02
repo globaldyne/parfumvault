@@ -29,7 +29,92 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))){
                 echo '<div class="alert alert-info"><i class="fa-solid fa-circle-exclamation me-2"></i><strong>No formulas added yet, click <a href="/?do=listFormulas">here</a> to add.</strong></div>';
             } else {
             ?>
+            
             <div class="row">
+                <div class="col-12 col-sm-6 col-xxl-3 d-flex">
+                    <div class="card dashboard flex-fill">
+                        <div class="card-body p-0 d-flex flex-fill">
+                            <div class="row g-0 w-100">
+                                <div class="col-6">
+                                    <div class="dashboard-text p-3 m-1">
+                                        <h4 class="dashboard-text">Welcome Back, <?php echo explode(" ", $user['fullName'])[0];?>!</h4>
+                                        <p class="mb-0"></p>
+                                    </div>
+                                </div>
+                                <div class="col-6 align-self-end text-end">
+                                <?php if ($doc['avatar']){ ?>
+                                    <img src="<?=$doc['avatar']?: '/img/ICO_TR.png'; ?>" class="img-fluid dashboard-img">
+								<?php } else { ?>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="img-fluid dashboard-img" viewBox="0 0 448 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512l388.6 0c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304l-91.4 0z"/></svg>
+                                <?php } ?>	
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-xxl-3 d-flex">
+                    <div class="card flex-fill">
+                        <div class="card-body py-4">
+                            <div class="d-flex align-items-start">
+                                <div class="flex-grow-1">
+                                    <h3 class="mb-2"><?php echo countElement("formulasMetaData", $conn); ?></h3>
+                                    <p class="mb-2"><a href="/?do=listFormulas">My Formulas</a></p>
+                                    <div class="mb-0">
+                                        <span class="text-muted">Manage formulas you own or create new ones</span>
+                                    </div>
+                                </div>
+                                <div class="d-inline-block ms-3">
+                                    <div class="stat">
+                                        <i class="fa-solid fa-flask fa-2x text-info"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-xxl-3 d-flex">
+                    <div class="card flex-fill">
+                        <div class="card-body py-4">
+                            <div class="d-flex align-items-start">
+                                <div class="flex-grow-1">
+                                    <h3 class="mb-2"><?php echo countElement("ingredients", $conn); ?></h3>
+                                    <p class="mb-2"><a href="/?do=ingredients">My Ingredients</a></p>
+                                    <div class="mb-0">
+                                        <span class="text-muted">Manage your ingredients inventory, add, edit, delete, etc</span>
+                                    </div>
+                                </div>
+                                <div class="d-inline-block ms-3">
+                                    <div class="stat">
+                                        <i class="fas fa-vial fa-2x text-success"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-xxl-3 d-flex">
+                    <div class="card flex-fill">
+                        <div class="card-body py-4">
+                            <div class="d-flex align-items-start">
+                                <div class="flex-grow-1">
+                                    <h3 class="mb-2"><?php echo countElement("makeFormula WHERE toAdd = '1' GROUP BY name", $conn); ?></h3>
+                                    <p class="mb-2"><a href="/?do=scheduledFormulas">Pending Formulas</a></p>
+                                    <div class="mb-0">
+                                        <span class="text-muted">See and manage formulas you have in schedule to make or started making already</span>
+                                    </div>
+                                </div>
+                                <div class="d-inline-block ms-3">
+                                    <div class="stat">
+                                        <i class="fa-solid fa-clock fa-2x text-warning"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                    
+            <div class="row mt-4">
                 <div class="col-md-6 mb-4">
                     <div class="card shadow-lg p-3 rounded">
                         <div class="card-header">
@@ -54,23 +139,7 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))){
             </div>
             <?php } ?>
             <div class="row">
-                <div class="col-xl-3 col-md-6 mb-4">
-                    <div class="card border-left-primary shadow h-100 py-2">
-                        <div class="card-body">
-                            <div class="row align-items-center">
-                                <div class="col">
-                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                        <a href="/?do=listFormulas">All Formulas</a>
-                                    </div>
-                                    <div class="h5 mb-0 font-weight-bold"><?php echo countElement("formulasMetaData", $conn); ?></div>
-                                </div>
-                                <div class="col-auto">
-                                    <i class="fas fa-flask fa-2x text-gray-300"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
                 <div class="col-xl-3 col-md-6 mb-4">
                     <div class="card border-left-warning shadow h-100 py-2">
                         <div class="card-body">
@@ -105,23 +174,7 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))){
                         </div>
                     </div>
                 </div>
-                <div class="col-xl-3 col-md-6 mb-4">
-                    <div class="card border-left-info shadow h-100 py-2">
-                        <div class="card-body">
-                            <div class="row align-items-center">
-                                <div class="col">
-                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                        <a href="/?do=ingredients">All Ingredients</a>
-                                    </div>
-                                    <div class="h5 mb-0 font-weight-bold"><?php echo countElement("ingredients", $conn); ?></div>
-                                </div>
-                                <div class="col-auto">
-                                    <i class="fas fa-vial fa-2x text-gray-300"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
                 <div class="col-xl-3 col-md-6 mb-4">
                     <div class="card border-left-primary shadow h-100 py-2">
                         <div class="card-body">
@@ -173,23 +226,7 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))){
                         </div>
                     </div>
                 </div>
-                <div class="col-xl-3 col-md-6 mb-4">
-                    <div class="card border-left-info shadow h-100 py-2">
-                        <div class="card-body">
-                            <div class="row align-items-center">
-                                <div class="col">
-                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                        <a href="/?do=scheduledFormulas">Formulas to make</a>
-                                    </div>
-                                    <div class="h5 mb-0 font-weight-bold"><?php echo countElement("makeFormula WHERE toAdd = '1' GROUP BY name", $conn); ?></div>
-                                </div>
-                                <div class="col-auto">
-                                    <i class="fas fa-flask fa-2x text-gray-300"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                
             </div>
         </div>
     </div>

@@ -88,22 +88,35 @@ $('#btnRestoreIngredients').click(function() {
                 return xhr;
             },
 			
-		success: function (data) {
-			if(data.success){
-				var msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>'+data.success+'</div>';
-				$("#btnRestoreIngredients").hide();
-				$("#backupArea").css('display', 'none');
-
-			}else if(data.error){
-				var msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2">'+data.error+'</div>';
-				$("#btnRestoreIngredients").show();
-				$("#btnRestoreIngredients").prop("disabled", false);
+			success: function (data) {
+				let msg = '';
+			
+				if (data.success) {
+					msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>' + data.success + '</div>';
+					$("#btnRestoreIngredients").hide();
+					$("#backupArea").css('display', 'none');
+				}
+				
+				if (data.warning) {
+					msg = '<div class="alert alert-warning"><i class="fa-solid fa-exclamation-circle mx-2"></i><strong>Import complete with warnings</strong> <br/>' + data.warning + '</div>';
+				}
+				
+				if (data.error) {
+					msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + data.error + '</div>';
+					$("#btnRestoreIngredients").show();
+					$("#btnRestoreIngredients").prop("disabled", false);
+					$('#btnRestoreIngredients').prop('value', 'Import');
+				}
+			
 				$('#btnRestoreIngredients').prop('value', 'Import');
+				$("#btnRestoreIngredients").prop("disabled", false);
+				$('#JSRestMsg').html(msg);
+			},
+			error: function (xhr, status, error) {
+				msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>';
+				$('#JSRestMsg').html(msg);
 			}
-			$('#btnRestoreIngredients').prop('value', 'Import');
-			$("#btnRestoreIngredients").prop("disabled", false);
-			$('#JSRestMsg').html(msg);
-		}
+
 		
 	  });
 });
