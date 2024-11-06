@@ -50,7 +50,7 @@ $bottle = mysqli_fetch_array(mysqli_query($conn, "SELECT price,ml,name FROM bott
 $carrier_cost = mysqli_fetch_array(mysqli_query($conn, "SELECT price,size FROM suppliers WHERE ingID = '$carrier_id'"));
 
 if($_POST['accessory_id']){
-	if(!$accessory = mysqli_fetch_array(mysqli_query($conn, "SELECT name, price, accessory FROM accessories WHERE id = '$accessory_id'"))){
+	if(!$accessory = mysqli_fetch_array(mysqli_query($conn, "SELECT name, price, accessory FROM inventory_accessories WHERE id = '$accessory_id'"))){
 	//}else{
 		$accessory['price'] = 0;
 		$accessory['accessory'] = 'none';

@@ -282,7 +282,7 @@ INSERT INTO `ingTypes` (`id`, `name`) VALUES
 (6, 'Solvent'),
 (7, 'Base');
 
-CREATE TABLE `accessories` (
+CREATE TABLE `inventory_accessories` (
   `id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
   `accessory` varchar(255) NOT NULL,
@@ -444,8 +444,8 @@ ALTER TABLE `ingSuppliers`
 ALTER TABLE `ingTypes`
   ADD PRIMARY KEY (`id`);
 
-ALTER TABLE `accessories`
-  ADD PRIMARY KEY (`id`);
+ALTER TABLE `inventory_accessories` ADD PRIMARY KEY (`id`);
+ALTER TABLE `inventory_accessories` ADD UNIQUE(`name`);
 
 ALTER TABLE `settings`
   ADD PRIMARY KEY (`id`);
@@ -490,8 +490,7 @@ ALTER TABLE `ingSuppliers`
 ALTER TABLE `ingTypes`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
-ALTER TABLE `accessories`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `inventory_accessories` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `settings`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;

@@ -232,7 +232,7 @@ if($_GET['type'] == 'accessory' && $_GET['name']){
 			 echo json_encode($response);
 			 return;
      	}
-	   	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM accessories WHERE name = '$name'"))){
+	   	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM inventory_accessories WHERE name = '$name'"))){
 			$response["error"] = $name.' already exists';
 			echo json_encode($response);
 			return;
@@ -242,7 +242,7 @@ if($_GET['type'] == 'accessory' && $_GET['name']){
 			create_thumb($tmp_path.$photo,250,250); 
 			$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents($tmp_path.$photo));
 		
-			if(mysqli_query($conn, "INSERT INTO accessories (name, accessory, price, supplier, supplier_link, pieces) VALUES ('$name', '$accessory', '$price', '$supplier', '$supplier_link', '$pieces')") ){
+			if(mysqli_query($conn, "INSERT INTO inventory_accessories (name, accessory, price, supplier, supplier_link, pieces) VALUES ('$name', '$accessory', '$price', '$supplier', '$supplier_link', '$pieces')") ){
 				$accessory_id = mysqli_insert_id($conn);
 				mysqli_query($conn, "INSERT INTO documents (ownerID,name,type,notes,docData) VALUES ('".$accessory_id."','$name','5','-','$docData')");
 				unlink($tmp_path.$photo);

@@ -9,14 +9,14 @@ require_once(__ROOT__.'/inc/product.php');
 //EXPORT ACCESSORIES JSON
 if($_GET['format'] == 'json' && $_GET['kind'] == 'accessories'){
 		
-	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM accessories")))){
-		$msg['error'] = 'No accessories found to export.';
+	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM inventory_accessories")))){
+		$msg['error'] = 'No accessories found to export';
 		echo json_encode($msg);
 		return;
 	}
 	$count = 0;
 
-	$q = mysqli_query($conn, "SELECT * FROM accessories");
+	$q = mysqli_query($conn, "SELECT * FROM inventory_accessories");
 	while($res = mysqli_fetch_assoc($q)){
 
 		$r['id'] = (int)$res['id'];
@@ -35,10 +35,10 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'accessories'){
 	
 	$vd['product'] = $product;
 	$vd['version'] = $ver;
-	$vd['accessories'] = $count;
+	$vd['inventory_accessories'] = $count;
 	$vd['timestamp'] = date('d/m/Y H:i:s');
 
-	$result['accessories'] = $ic;
+	$result['inventory_accessories'] = $ic;
 	$result['pvMeta'] = $vd;
 
 	header('Content-disposition: attachment; filename=accessories_inventory.json');
@@ -49,14 +49,11 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'accessories'){
 }
 
 
-
-
-
 //EXPORT BOTTLES JSON
 if($_GET['format'] == 'json' && $_GET['kind'] == 'bottles'){
 		
 	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM bottles")))){
-		$msg['error'] = 'No bottles found to export.';
+		$msg['error'] = 'No bottles found to export';
 		echo json_encode($msg);
 		return;
 	}

@@ -937,7 +937,7 @@ if($_POST['update_accessory_data']){
 	
 	$price = $_POST['price'];
 	
-	$q = mysqli_query($conn,"UPDATE accessories SET name = '$name', accessory = '$accessory', price = '$price', supplier = '$supplier', supplier_link = '$supplier_link', pieces = '$pieces' WHERE id = '$id'");
+	$q = mysqli_query($conn,"UPDATE inventory_accessories SET name = '$name', accessory = '$accessory', price = '$price', supplier = '$supplier', supplier_link = '$supplier_link', pieces = '$pieces' WHERE id = '$id'");
 	
 
 	if($q){
@@ -971,7 +971,7 @@ if($_POST['action'] == 'delete' && $_POST['btlId'] && $_POST['type'] == 'bottle'
 if($_POST['action'] == 'delete' && $_POST['accessoryId'] && $_POST['type'] == 'accessory'){
 	$id = mysqli_real_escape_string($conn, $_POST['accessoryId']);
 	
-	if(mysqli_query($conn, "DELETE FROM accessories WHERE id = '$id'")){
+	if(mysqli_query($conn, "DELETE FROM inventory_accessories WHERE id = '$id'")){
 		mysqli_query($conn, "DELETE FROM documents WHERE ownerID = '$id' AND type = '5'");
 		$response["success"] = 'Accessory deleted';
 	}else{
@@ -3775,6 +3775,61 @@ if($_GET['action'] == 'restoreIFRA'){
 	return;
 
 }
+
+//IMPORT ACCESSORIES
+if ($_GET['action'] == 'importAccessories') {
+    if (!file_exists($tmp_path)) {
+        mkdir($tmp_path, 0777, true);
+    }
+
+    if (!is_writable($tmp_path)) {
+        $result['error'] = "Upload directory not writable. Make sure you have write permissions.";
+        echo json_encode($result);
+        return;
+    }
+
+    $target_path = $tmp_path . basename($_FILES['jsonFile']['name']); 
+
+    if (move_uploaded_file($_FILES['jsonFile']['tmp_name'], $target_path)) {
+        $data = json_decode(file_get_contents($target_path), true);
+        if (!$data['inventory_accessories']) {
+            $result['error'] = "JSON File seems invalid. Please make sure you are importing the right file";
+            echo json_encode($result);
+            return;
+        }
+
+        foreach ($data['inventory_accessories'] as $d) {				
+            $s = mysqli_query($conn, "
+                INSERT INTO `inventory_accessories` 
+                (`name`, `accessory`, `price`, `supplier`, `supplier_link`, `pieces`) 
+                VALUES 
+                ('" . $d['name'] . "', '" . $d['accessory'] . "', '" . $d['price'] . "', '" . $d['supplier'] . "', '" . $d['supplier_link'] . "', '" . $d['pieces'] . "')
+                ON DUPLICATE KEY UPDATE
+                `accessory` = VALUES(`accessory`), 
+                `price` = VALUES(`price`), 
+                `supplier` = VALUES(`supplier`), 
+                `supplier_link` = VALUES(`supplier_link`), 
+                `pieces` = VALUES(`pieces`)
+            ");
+        }
+
+        if ($s) {
+            $result['success'] = "Import complete";
+            unlink($target_path);
+        } else {
+            $result['error'] = "There was an error importing your JSON file " . mysqli_error($conn);
+            echo json_encode($result);
+            return;
+        }
+    } else {
+        $result['error'] = "There was an error processing the JSON file $target_path, please try again!";
+        echo json_encode($result);
+    }
+
+    echo json_encode($result);
+    return;
+}
+
 
 //IMPORT COMPOUNDS
 if($_GET['action'] == 'importCompounds'){

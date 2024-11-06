@@ -143,7 +143,7 @@ if (!defined('pvault_panel')){ die('Not Found');}
               <select name="accessory_id" id="accessory_id" class="form-control selectpicker" data-live-search="true">
                 <option selected="selected">None</option>
                 <?php
-                  $sql = mysqli_query($conn, "SELECT id, name, accessory FROM accessories ORDER BY name ASC");
+                  $sql = mysqli_query($conn, "SELECT id, name, accessory FROM inventory_accessories ORDER BY name ASC");
                   while ($accessory = mysqli_fetch_array($sql)){
                     echo '<option value="'.$accessory['id'].'">'.$accessory['name'].' ('.$accessory['accessory'].')</option>';
                   }

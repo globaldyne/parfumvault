@@ -13,7 +13,7 @@ function uploadProgressHandler(event) {
 function loadHandler(event) {
 	$("#status").html(event.target.responseText);
 	$(".progress").hide();
-	//$("#btnImportCompounds").hide();
+	//$("#btnImportAccessories").hide();
 	$("#jsonFile").val('');
 	$('#btnCloseBK').prop('value', 'Close');
 	$("#uploadProgressBar").css("width", "0%");
@@ -28,7 +28,7 @@ function abortHandler(event) {
 }
 	
 $(".progress").hide();
-$("#btnImportCompounds").prop("disabled", true);
+$("#btnImportAccessories").prop("disabled", true);
 $("#jsonFile").change(function(){
 	var allowedTypes = ['application/json'];
 	var file = this.files[0];
@@ -39,22 +39,23 @@ $("#jsonFile").change(function(){
 	if(!allowedTypes.includes(fileType)){
 		$("#JSRestMsg").html('<div class="alert alert-info">Invalid file selected. Please select a JSON file exported from PV.</div>');
 		$("#jsonFile").val('');
-		$("#btnImportCompounds").prop("disabled", true);
+		$("#btnImportAccessories").prop("disabled", true);
 		return false;
 	}
 	
 	if (fileSize > fileSizePHP){
 		$("#JSRestMsg").html('<div class="alert alert-info">File size <strong>('+formatBytes(fileSize)+')</strong> is exceeding your server file upload limit '+ formatBytes(fileSizePHP)+'</div>');
 		$("#jsonFile").val('');
-		$("#btnImportCompounds").prop("disabled", true);
+		$("#btnImportAccessories").prop("disabled", true);
 		return false;
 	}
 	
-	$("#btnImportCompounds").prop("disabled", false);
-	$('#btnImportCompounds').prop('value', 'Import');
+	$("#btnImportAccessories").prop("disabled", false);
+	$('#btnImportAccessories').prop('value', 'Import');
 });
 
-$('#btnImportCompounds').click(function() {
+
+$('#btnImportAccessories').click(function() {
 	
 	event.preventDefault();
 	var fd = new FormData();
@@ -65,7 +66,7 @@ $('#btnImportCompounds').click(function() {
 	}
 	
 	$.ajax({ 
-		url: '/core/core.php?action=importCompounds', 
+		url: '/core/core.php?action=importAccessories', 
 		type: 'POST',
 		data: fd,
 		contentType: false,
@@ -74,37 +75,37 @@ $('#btnImportCompounds').click(function() {
 		dataType: 'json',
 		xhr: function () {
             var xhr = new window.XMLHttpRequest();
-            xhr.upload.addEventListener("progress", uploadProgressHandler, false);
+            xhr.upload.addEventListener("progress", uploadProgressHandler, false );
             xhr.addEventListener("load", loadHandler, false);
             xhr.addEventListener("error", errorHandler, false);
             xhr.addEventListener("abort", abortHandler, false);
 			$(".progress").show();
-			$("#btnImportCompounds").prop("disabled", true);
-			$('#btnImportCompounds').prop('value', 'Please wait...');
+			$("#btnImportAccessories").prop("disabled", true);
+			$('#btnImportAccessories').prop('value', 'Please wait...');
         	return xhr;
-        },
-			
+        },	
 		success: function (data) {
 			if(data.success){
 				var msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>'+data.success+'</div>';
-				$("#btnImportCompounds").hide();
+				$("#btnImportAccessories").hide();
 				$("#backupArea").css('display', 'none');
+				$('#tdDataAccessories').DataTable().ajax.reload(null, true);
 
 			}else if(data.error){
 				var msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>'+data.error+'</div>';
-				$("#btnImportCompounds").show();
-				$("#btnImportCompounds").prop("disabled", false);
-				$('#btnImportCompounds').prop('value', 'Import');
+				$("#btnImportAccessories").show();
+				$("#btnImportAccessories").prop("disabled", false);
+				$('#btnImportAccessories').prop('value', 'Import');
 			}
-			$('#btnImportCompounds').prop('value', 'Import');
-			$("#btnImportCompounds").prop("disabled", false);
+			$('#btnImportAccessories').prop('value', 'Import');
+			$("#btnImportAccessories").prop("disabled", false);
 			$('#JSRestMsg').html(msg);
 		},
 		error: function (xhr, status, error) {
 			var msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. ' + error + '</div>';
-			$("#btnImportCompounds").show();
-			$("#btnImportCompounds").prop("disabled", false);
-			$('#btnImportCompounds').prop('value', 'Import');
+			$("#btnImportAccessories").show();
+			$("#btnImportAccessories").prop("disabled", false);
+			$('#btnImportAccessories').prop('value', 'Import');
 		}
 		
 	  });

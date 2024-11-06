@@ -21,7 +21,7 @@ if($s != ''){
    $f = "WHERE 1 AND (name LIKE '%".$s."%')";
 }
 
-$q = mysqli_query($conn, "SELECT * FROM accessories $f $extra LIMIT $row, $limit");
+$q = mysqli_query($conn, "SELECT * FROM inventory_accessories $f $extra LIMIT $row, $limit");
 while($res = mysqli_fetch_array($q)){
     $rs[] = $res;
 }
@@ -40,8 +40,8 @@ foreach ($rs as $rq) {
 
 	$rx[]=$r;
 }
-$total = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM accessories"));
-$filtered = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM accessories ".$f));
+$total = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM inventory_accessories"));
+$filtered = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM inventory_accessories ".$f));
 
 $response = array(
   "draw" => (int)$_POST['draw'],
