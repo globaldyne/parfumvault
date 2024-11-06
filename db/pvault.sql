@@ -798,6 +798,8 @@ INSERT INTO `backup_provider` (`id`, `credentials`, `provider`, `schedule`, `ena
 
 CREATE TABLE `inventory_compounds` ( `id` INT NOT NULL AUTO_INCREMENT , `name` VARCHAR(255) NOT NULL , `description` TEXT NOT NULL , `batch_id` VARCHAR(255) NOT NULL DEFAULT '-' , `size` DOUBLE NOT NULL DEFAULT '0' , `updated` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `owner_id` INT NOT NULL DEFAULT '0' , `location` VARCHAR(255) NOT NULL , `label_info` TEXT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB CHARSET=utf8 COLLATE utf8_general_ci; 
 
+ALTER TABLE `inventory_compounds` ADD UNIQUE(`name`);
+
 CREATE TABLE `sds_data` ( `id` INT NOT NULL AUTO_INCREMENT , `product_name` VARCHAR(255) NOT NULL , `product_use` VARCHAR(255) NOT NULL , `country` VARCHAR(255) NOT NULL DEFAULT 'United Kingdom' , `language` VARCHAR(255) NOT NULL DEFAULT 'English' , `product_type` VARCHAR(255) NOT NULL DEFAULT 'Substance' , `state_type` VARCHAR(255) NOT NULL DEFAULT 'Liquid' , `supplier_id` INT NOT NULL , `docID` INT NOT NULL, `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `updated` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB CHARSET=utf8 COLLATE utf8_general_ci; 
 
 CREATE TABLE `ingredient_safety_data` (

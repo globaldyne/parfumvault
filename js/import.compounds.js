@@ -89,7 +89,7 @@ $('#btnImportCompounds').click(function() {
 				var msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>'+data.success+'</div>';
 				$("#btnImportCompounds").hide();
 				$("#backupArea").css('display', 'none');
-
+				$('#tdDataCompounds').DataTable().ajax.reload(null, true);
 			}else if(data.error){
 				var msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>'+data.error+'</div>';
 				$("#btnImportCompounds").show();

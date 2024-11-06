@@ -131,7 +131,7 @@ while ($suppliers = mysqli_fetch_array($sup)){
               <li>
                 <div id="raw" data-size="<?=getMaximumFileUploadSizeRaw()?>">Maximum file size: <strong><?=getMaximumFileUploadSize()?></strong></div>
               </li>
-              <li>Any accessory with a name that already exists, will be ignored.</li>
+              <li>Any accessory with a name that already exists, will be updated.</li>
             </ul>
           </div>
         </div>

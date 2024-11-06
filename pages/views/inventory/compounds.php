@@ -153,7 +153,7 @@ while($res = mysqli_fetch_array($q)){
               <li>
                 <div id="raw" data-size="<?=getMaximumFileUploadSizeRaw()?>">Maximum file size: <strong><?=getMaximumFileUploadSize()?></strong></div>
               </li>
-              <li>Any compound with the same ID will be replaced. Please make sure you have taken a backup before importing a JSON file.</li>
+              <li>Any compound with the same name that already exists, will be updated.</li>
             </ul>
           </div>
         </div>
