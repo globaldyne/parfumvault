@@ -3,7 +3,6 @@
 - Lids inventory dropped to accessories
 - Minor overall UI updates
 - Migrating backend scripts under a common backend api
-- Update to php 8.3 for Docker images
 
 ### Version 11.9
 - Added system logs access via the UI for docker/cloud installations - this comes disabled by default
