@@ -3776,6 +3776,65 @@ if($_GET['action'] == 'restoreIFRA'){
 
 }
 
+//IMPORT BOTTLES
+if ($_GET['action'] == 'importBottles') {
+    if (!file_exists($tmp_path)) {
+        mkdir($tmp_path, 0777, true);
+    }
+
+    if (!is_writable($tmp_path)) {
+        $result['error'] = "Upload directory not writable. Make sure you have write permissions.";
+        echo json_encode($result);
+        return;
+    }
+
+    $target_path = $tmp_path . basename($_FILES['jsonFile']['name']); 
+
+    if (move_uploaded_file($_FILES['jsonFile']['tmp_name'], $target_path)) {
+        $data = json_decode(file_get_contents($target_path), true);
+        if (!$data['inventory_bottles']) {
+            $result['error'] = "JSON File seems invalid. Please make sure you are importing the right file";
+            echo json_encode($result);
+            return;
+        }
+
+        foreach ($data['inventory_bottles'] as $d) {				
+			$s = mysqli_query($conn, "
+				INSERT INTO `bottles` 
+				(`name`, `ml`, `price`, `height`, `width`, `diameter`, `weight`, `supplier`, `supplier_link`, `notes`, `pieces`) 
+				VALUES 
+				('" . $d['name'] . "', '" . $d['ml'] . "', '" . $d['price'] . "', '" . $d['height'] . "', '" . $d['width'] . "', '" . $d['diameter'] . "', '" . $d['weight'] . "', '" . $d['supplier'] . "', '" . $d['supplier_link'] . "', '" . $d['notes'] . "', '" . $d['pieces'] . "')
+				ON DUPLICATE KEY UPDATE
+				`ml` = VALUES(`ml`), 
+				`price` = VALUES(`price`), 
+				`height` = VALUES(`height`), 
+				`width` = VALUES(`width`), 
+				`diameter` = VALUES(`diameter`), 
+				`weight` = VALUES(`weight`), 
+				`supplier` = VALUES(`supplier`), 
+				`supplier_link` = VALUES(`supplier_link`), 
+				`notes` = VALUES(`notes`), 
+				`pieces` = VALUES(`pieces`)
+			");
+        }
+
+        if ($s) {
+            $result['success'] = "Import complete";
+            unlink($target_path);
+        } else {
+            $result['error'] = "There was an error importing your JSON file " . mysqli_error($conn);
+            echo json_encode($result);
+            return;
+        }
+    } else {
+        $result['error'] = "There was an error processing the JSON file $target_path, please try again!";
+        echo json_encode($result);
+    }
+
+    echo json_encode($result);
+    return;
+}
+
 //IMPORT ACCESSORIES
 if ($_GET['action'] == 'importAccessories') {
     if (!file_exists($tmp_path)) {

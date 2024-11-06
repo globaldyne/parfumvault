@@ -69,6 +69,7 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'bottles'){
 		$r['currency'] = (string)$settings['currency'];
 		$r['height'] = (double)$res['height'];
 		$r['width'] = (double)$res['width'];
+		$r['weight'] = (double)$res['weight'];
 		$r['diameter'] = (double)$res['diameter'];
 		$r['diameter'] = (double)$res['diameter'];
 		$r['supplier'] = (string)$res['supplier'];
@@ -85,13 +86,13 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'bottles'){
 	
 	$vd['product'] = $product;
 	$vd['version'] = $ver;
-	$vd['bottles'] = $count;
+	$vd['inventory_bottles'] = $count;
 	$vd['timestamp'] = date('d/m/Y H:i:s');
 
-	$result['bottles'] = $ic;
+	$result['inventory_bottles'] = $ic;
 	$result['pvMeta'] = $vd;
 
-	header('Content-disposition: attachment; filename=bottles.json');
+	header('Content-disposition: attachment; filename=bottles_inventory.json');
 	header('Content-type: application/json');
 	echo json_encode($result, JSON_PRETTY_PRINT);
 	return;	

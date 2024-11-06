@@ -126,13 +126,15 @@ while ($suppliers = mysqli_fetch_array($sup)){
           </div>
           <div class="col-md-12">
             <hr />
-            <p><strong>IMPORTANT:</strong></p>
-            <ul>
-              <li>
-                <div id="raw" data-size="<?=getMaximumFileUploadSizeRaw()?>">Maximum file size: <strong><?=getMaximumFileUploadSize()?></strong></div>
-              </li>
-              <li>Any accessory with a name that already exists, will be updated.</li>
-            </ul>
+            <div class="alert alert-info">
+                <p><strong>IMPORTANT:</strong></p>
+                <ul>
+                  <li>
+                    <div id="raw" data-size="<?=getMaximumFileUploadSizeRaw()?>">Maximum file size: <strong><?=getMaximumFileUploadSize()?></strong></div>
+                  </li>
+                  <li>Any accessory with a name that already exists, will be updated.</li>
+                </ul>
+            </div>
           </div>
         </div>
       </div>

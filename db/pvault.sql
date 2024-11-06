@@ -457,8 +457,8 @@ ALTER TABLE `users`
 ALTER TABLE `ingredient_compounds`
   ADD PRIMARY KEY (`id`);
 
-ALTER TABLE `bottles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `bottles` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `bottles` ADD UNIQUE(`name`);
 
 ALTER TABLE `customers`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
