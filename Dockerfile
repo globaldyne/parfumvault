@@ -14,7 +14,7 @@ RUN microdnf -y update
 
 #A temp workaround to address microdnf module version conflicts
 RUN microdnf -y module enable nginx:1.24
-RUN microdnf -y module enable php:8.2
+RUN microdnf -y module enable php:8.3
 
 RUN microdnf --setopt=tsflags=nodocs -y install \
 	php \
