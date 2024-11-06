@@ -6,22 +6,22 @@ require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/inc/product.php');
 
-//EXPORT LIDS JSON
-if($_GET['format'] == 'json' && $_GET['kind'] == 'lids'){
+//EXPORT ACCESSORIES JSON
+if($_GET['format'] == 'json' && $_GET['kind'] == 'accessories'){
 		
-	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM lids")))){
-		$msg['error'] = 'No lids found to export.';
+	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM accessories")))){
+		$msg['error'] = 'No accessories found to export.';
 		echo json_encode($msg);
 		return;
 	}
 	$count = 0;
 
-	$q = mysqli_query($conn, "SELECT * FROM lids");
+	$q = mysqli_query($conn, "SELECT * FROM accessories");
 	while($res = mysqli_fetch_assoc($q)){
 
 		$r['id'] = (int)$res['id'];
-		$r['style'] = (string)$res['style'];
-		$r['colour'] = (string)$res['colour'];
+		$r['name'] = (string)$res['name'];
+		$r['accessory'] = (string)$res['accessory'];
 		$r['price'] = (double)$res['price'];
 		$r['currency'] = (string)$settings['currency'];
 		$r['supplier'] = (string)$res['supplier'];
@@ -35,13 +35,13 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'lids'){
 	
 	$vd['product'] = $product;
 	$vd['version'] = $ver;
-	$vd['lids'] = $count;
+	$vd['accessories'] = $count;
 	$vd['timestamp'] = date('d/m/Y H:i:s');
 
-	$result['lids'] = $ic;
+	$result['accessories'] = $ic;
 	$result['pvMeta'] = $vd;
 
-	header('Content-disposition: attachment; filename=lids.json');
+	header('Content-disposition: attachment; filename=accessories_inventory.json');
 	header('Content-type: application/json');
 	echo json_encode($result, JSON_PRETTY_PRINT);
 	return;	

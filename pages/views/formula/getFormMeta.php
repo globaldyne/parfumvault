@@ -195,7 +195,7 @@ $(document).ready(function(){
 	$('#formula_metadata').editable({
 	  container: 'body',
 	  selector: 'a.name',
-	  url: "/pages/update_data.php?action=rename&fid=<?=$info['fid']?>",
+	  url: "/core/core.php?action=rename&fid=<?=$info['fid']?>",
 	  title: 'Name',
 	  mode: 'inline',
 	  ajaxOptions: { 
@@ -224,7 +224,7 @@ $(document).ready(function(){
 	 	container: 'body',
 	  	selector: 'a.notes',
 	  	emptytext: 'None',
-	  	url: "/pages/update_data.php?formulaMeta=<?=$info['fid']?>",
+	  	url: "/core/core.php?formulaMeta=<?=$info['fid']?>",
 	  	title: 'Notes',
 	  	mode: 'inline'	
 	});
@@ -232,7 +232,7 @@ $(document).ready(function(){
 	$('#formula_metadata').editable({
 	 	container: 'body',
 	  	selector: 'a.product_name',
-	  	url: "/pages/update_data.php?formulaMeta=<?=$info['fid']?>",
+	  	url: "/core/core.php?formulaMeta=<?=$info['fid']?>",
 	  	title: 'Product Name',
 	  	mode: 'inline',
 	  	emptytext: 'None',
@@ -253,7 +253,7 @@ $(document).ready(function(){
 
 	$("#isProtected").change(function() {
 	  	$.ajax({ 
-			url: '/pages/update_data.php', 
+			url: '/core/core.php', 
 			type: 'GET',
 			data: {
 				protect: '<?=$info['fid']?>',
@@ -275,7 +275,7 @@ $(document).ready(function(){
   
 	$("#defView").change(function() {
 	 	$.ajax({ 
-			url: '/pages/update_data.php', 
+			url: '/core/core.php', 
 			type: 'POST',
 			data: {
 				formulaSettings: true,
@@ -300,7 +300,7 @@ $(document).ready(function(){
 
 	$("#profile").change(function() {
 		$.ajax({ 
-			url: "/pages/update_data.php",
+			url: "/core/core.php",
 			type: 'POST',
 			data: {
 				formulaSettings: true,
@@ -326,7 +326,7 @@ $(document).ready(function(){
 
 	$("#gender").change(function() {	
 		$.ajax({ 
-			url: "/pages/update_data.php",
+			url: "/core/core.php",
 			type: 'POST',
 			data: {
 				formulaSettings: true,
@@ -352,7 +352,7 @@ $(document).ready(function(){
 
 	$("#catClass").change(function() {
 		$.ajax({ 
-			url: '/pages/update_data.php', 
+			url: '/core/core.php', 
 			type: 'POST',
 			data: {
 				formulaSettings: true,
@@ -377,7 +377,7 @@ $(document).ready(function(){
 
 	$("#finalType").change(function() {
 	 	$.ajax({ 
-			url: '/pages/update_data.php', 
+			url: '/core/core.php', 
 			type: 'POST',
 			data: {
 				formulaSettings: true,
@@ -402,7 +402,7 @@ $(document).ready(function(){
 
 	$("#status").change(function() {
 		$.ajax({ 
-			url: '/pages/update_data.php', 
+			url: '/core/core.php', 
 			type: 'POST',
 			data: {
 				formulaSettings: true,
@@ -428,7 +428,7 @@ $(document).ready(function(){
 
 	$("#customer").change(function() {
 	 	$.ajax({ 
-			url: '/pages/update_data.php', 
+			url: '/core/core.php', 
 			type: 'POST',
 			data: {
 				formulaSettings: true,
@@ -495,7 +495,7 @@ $(document).ready(function(){
 	$('#tagsinput').on('beforeItemAdd', function(event) {
 	   var tag = event.item;   
 	   $.ajax({ 
-			url: '/pages/manageFormula.php', 
+			url: '/core/core.php', 
 			type: 'POST',
 			data: {
 				do: "tagadd",
@@ -525,7 +525,7 @@ $('#tagsinput').on('beforeItemRemove', function(event) {
    var tag = event.item;
 
    $.ajax({ 
-		url: '/pages/manageFormula.php', 
+		url: '/core/core.php', 
 		type: 'POST',
 		data: {
 			do: "tagremove",

@@ -327,7 +327,7 @@ $('#quantity').prop("disabled", true);
 $('#add_ing').on('click', '[id*=add-btn]', function () {
 	
 	$.ajax({ 
-		url: '/pages/manageFormula.php', 
+		url: '/core/core.php', 
 		type: 'POST',
 		data: {
 			action: "addIng",
@@ -363,7 +363,7 @@ $('#add_ing').on('click', '[id*=add-btn]', function () {
 
 function setProtected(status) {
   $.ajax({ 
-    url: '/pages/update_data.php', 
+    url: '/core/core.php', 
     type: 'GET',
     data: {
       protect: myFID,

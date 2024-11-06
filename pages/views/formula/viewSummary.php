@@ -250,7 +250,7 @@ function update_view(){
 	
 	$('.ex_ing').each(function(){
 		$.ajax({ 
-			url: '/pages/manageFormula.php', 
+			url: '/core/core.php', 
 			type: 'GET',
 			data: {
 				fid: '<?=$fid?>',

@@ -184,7 +184,7 @@ $(document).ready(function() {
 		var selectedCurrency = $("#currency").val();
         var currencyData = selectedCurrency.split('|');
 		$.ajax({ 
-			url: '/pages/update_settings.php', 
+			url: '/core/core.php', 
 			type: 'POST',
 			data: {
 				manage: 'general',

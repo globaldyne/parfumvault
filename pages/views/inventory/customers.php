@@ -104,11 +104,11 @@ $(document).ready(function() {
 		],
 		dom: 'lrftip',
 		buttons: [{
-				extend: 'csvHtml5',
-				title: "Customers",
-				exportOptions: {
-					columns: [0, 1, 2, 3]
-				},
+			extend: 'csvHtml5',
+			title: "Customers",
+			exportOptions: {
+				columns: [0, 1, 2, 3]
+			},
 		}],
 		processing: true,
 		serverSide: true,
@@ -117,7 +117,8 @@ $(document).ready(function() {
 		language: {
 			loadingRecords: '&nbsp;',
 			processing: 'Please Wait...',
-			zeroRecords: 'Nothing found',
+			zeroRecords: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>Nothing found</strong></div></div>',
+			emptyTable: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>No customers added yet</strong></div></div>',
 			search: '',
 			searchPlaceholder: 'Search by name...',
 		},
@@ -201,13 +202,13 @@ $(document).ready(function() {
 				   callback: function (){
 						
 					$.ajax({
-						url: '/pages/update_data.php', 
+						url: '/core/core.php', 
 						type: 'POST',
 						data: {
 							action: "delete",
 							type: "customer",
 							customer_id: c.ID,
-							},
+						},
 						dataType: 'json',
 						success: function (data) {
 							if(data.success){
@@ -244,7 +245,7 @@ $(document).ready(function() {
 	
 	$('#customer_add').on('click', function () {
 		$.ajax({
-			url: '/pages/update_data.php',
+			url: '/core/core.php',
 			type: 'POST',
 			dataType: 'json',
 			data: {
@@ -285,7 +286,7 @@ $(document).ready(function() {
 		const id = e.relatedTarget.dataset.id;
 		const customer = e.relatedTarget.dataset.name;
 	
-		$.get("/pages/editCustomer.php?id=" + id)
+		$.get("/pages/views/inventory/editCustomer.php?id=" + id)
 			.then(data => {
 			$("#editCustomerLabel", this).html(customer);
 			$(".modal-body", this).html(data);

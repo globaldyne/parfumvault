@@ -46,7 +46,7 @@ $(document).ready(function() {
     });
 	$('#save-api').click(function() {
 		$.ajax({ 
-			url: '/pages/update_settings.php', 
+			url: '/core/core.php', 
 			type: 'POST',
 			data: {
 				manage: 'api',		

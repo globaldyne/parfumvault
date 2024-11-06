@@ -47,7 +47,7 @@ $(document).ready(function(){
   
 $('#btnUpdatePub').on('click', function () {
 	$.ajax({ 
-		url: '/pages/update_data.php', 
+		url: '/core/core.php', 
 		type: 'POST',
 		data: {
 			pubChemData: 'update',

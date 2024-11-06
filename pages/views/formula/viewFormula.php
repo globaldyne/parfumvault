@@ -42,7 +42,7 @@ $fid = $meta['fid'];
            <li class="dropdown-header">Export</li> 
            <li><a class="dropdown-item export_as" href="#" data-format="csv"><i class="fa-solid fa-file-csv mx-2"></i>Export as CSV</a></li>
            <li><a class="dropdown-item export_as" href="#" data-format="pdf"><i class="fa-solid fa-file-pdf mx-2"></i>Export as PDF</a></li>
-           <li><a class="dropdown-item" href="/pages/operations.php?action=exportFormulas&fid=<?=$meta['fid']?>"><i class="fa-solid fa-file-code mx-2"></i>Export as JSON</a></li>
+           <li><a class="dropdown-item" href="/core/core.php?action=exportFormulas&fid=<?=$meta['fid']?>"><i class="fa-solid fa-file-code mx-2"></i>Export as JSON</a></li>
            <li><a class="dropdown-item" href="#" id="print"><i class="fa-solid fa-print mx-2"></i>Print fFormula</a></li>
            <div class="dropdown-divider"></div>
            <li class="dropdown-header">Scale Formula</li> 
@@ -398,7 +398,7 @@ $(document).ready(function() {
 				   callback: function (){
 						
 					$.ajax({ 
-						url: '/pages/manageFormula.php', 
+						url: '/core/core.php', 
 						type: 'POST',
 						data: {
 							action: "deleteIng",
@@ -493,7 +493,7 @@ $(document).ready(function() {
 		ing.Status = $(this).attr('data-status');
 				
 			$.ajax({ 
-				url: '/pages/manageFormula.php', 
+				url: '/core/core.php', 
 				type: 'POST',
 				data: {
 					action: "excIng",
@@ -717,7 +717,7 @@ $('#isMade').click(function() {
                callback: function (){
 	    			
 				$.ajax({ 
-					url: '/pages/manageFormula.php', 
+					url: '/core/core.php', 
 					type: 'POST',
 					data: {
 						isMade: "1",
@@ -807,7 +807,7 @@ function extrasShow() {
 $('#formula').editable({
   container: 'body',
   selector: 'a.concentration',
-  url: "/pages/update_data.php?formula=" + myFID,
+  url: "/core/core.php?formula=" + myFID,
   title: 'Purity %',
   type: "POST",
   dataType: 'json',
@@ -831,7 +831,7 @@ $('#formula').editable({
 $('#formula').editable({
 	container: 'body',
   	selector: 'a.quantity',
-  	url: "/pages/update_data.php?formula=" + myFID,
+  	url: "/core/core.php?formula=" + myFID,
   	title: 'Quantity in <?=$settings['mUnit']?>',
   	type: "POST",
   	dataType: 'json',
@@ -859,7 +859,7 @@ $('#formula').editable({
 	type: 'POST',
 	emptytext: "",
 	emptyclass: "",
-	url: "/pages/update_data.php?formula=" + myFID,
+	url: "/core/core.php?formula=" + myFID,
 	title: 'Choose solvent',
 	source: [
 		<?php
@@ -883,7 +883,7 @@ $('#formula').editable({
 $('#formula').editable({
   container: 'body',
   selector: 'i.notes',
-  url: "/pages/update_data.php?formula=" + myFID,
+  url: "/core/core.php?formula=" + myFID,
   title: 'Notes',
   type: "POST",
   dataType: 'json',

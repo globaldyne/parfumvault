@@ -47,7 +47,8 @@ $(document).ready(function() {
 		language: {
 			loadingRecords: '&nbsp;',
 			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
-			emptyTable: 'No attachments found.',
+			zeroRecords: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>Nothing found</strong></div></div>',
+			emptyTable: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>No attachments found</strong></div></div>',
 			search: '',
 			searchPlaceholder: 'Search by name...',
 		},
@@ -106,7 +107,7 @@ $(document).ready(function() {
 		  container: 'body',
 		  selector: 'a.name',
 		  type: 'POST',
-		  url: "/pages/update_data.php?ingDoc=update&ingID=<?=$id;?>",
+		  url: "/core/core.php?ingDoc=update&ingID=<?=$id;?>",
 		  title: 'Attachment name',
 	 });
 	  
@@ -114,7 +115,7 @@ $(document).ready(function() {
 		  container: 'body',
 		  selector: 'a.notes',
 		  type: 'POST',
-		  url: "/pages/update_data.php?ingDoc=update&ingID=<?=$id;?>",
+		  url: "/core/core.php?ingDoc=update&ingID=<?=$id;?>",
 		  title: 'Notes',
 	 });
 	
@@ -134,7 +135,7 @@ $(document).ready(function() {
 				   callback: function (){
 						
 					$.ajax({ 
-						url: '/pages/update_data.php', 
+						url: '/core/core.php', 
 						type: 'GET',
 						data: {
 							doc: 'delete',

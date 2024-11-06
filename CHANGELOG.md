@@ -1,5 +1,8 @@
 # CHANGELOG
 ### Version 12.0
+- Lids inventory dropped to accessories
+- Minor overall UI updates
+- Migrating backend scripts under a common backend api
 
 ### Version 11.9
 - Added system logs access via the UI for docker/cloud installations - this comes disabled by default

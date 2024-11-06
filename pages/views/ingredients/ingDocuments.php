@@ -92,7 +92,7 @@ $(document).ready(function() {
 		container: 'body',
 	  	selector: 'i.name',
 	  	type: 'POST',
-	  	url: "/pages/update_data.php?ingDoc=update&ingID=<?=$ingID;?>",
+	  	url: "/core/core.php?ingDoc=update&ingID=<?=$ingID;?>",
 	  	title: 'Document name',
  	});
   
@@ -100,7 +100,7 @@ $(document).ready(function() {
 	  container: 'body',
 	  selector: 'i.notes',
 	  type: 'POST',
-	  url: "/pages/update_data.php?ingDoc=update&ingID=<?=$ingID;?>",
+	  url: "/core/core.php?ingDoc=update&ingID=<?=$ingID;?>",
 	  title: 'Notes',
 	});
 
@@ -120,7 +120,7 @@ $(document).ready(function() {
 				   callback: function (){
 						
 					$.ajax({ 
-						url: '/pages/update_data.php', 
+						url: '/core/core.php', 
 						type: 'GET',
 						data: {
 							doc: 'delete',

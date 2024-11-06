@@ -16,7 +16,7 @@ require_once(__ROOT__.'/inc/opendb.php');
           <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#add_ingredient_cat"><i class="fa-solid fa-plus mx-2"></i>Add ingredient category</a></li>
           <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#import_categories_json"><i class="fa-solid fa-file-import mx-2"></i>Import from JSON</a></li>
 
-          <li><a class="dropdown-item" href="/pages/operations.php?action=exportIngCat"><i class="fa-solid fa-file-code mx-2"></i>Export as JSON</a></li>
+          <li><a class="dropdown-item" href="/core/core.php?action=exportIngCat"><i class="fa-solid fa-file-code mx-2"></i>Export as JSON</a></li>
           
         </div>
     </div>
@@ -124,7 +124,7 @@ $(document).ready(function() {
 	
 	$('#add-category').click(function() {
 	$.ajax({ 
-		url: '/pages/update_settings.php', 
+		url: '/core/core.php', 
 			type: 'POST',
 			data: {
 				manage: 'category',
@@ -153,7 +153,7 @@ $(document).ready(function() {
 	$('#tdDataCat').editable({
 		container: 'body',
 	  	selector: 'a.name',
-	  	url: "/pages/update_data.php?settings=cat",
+	  	url: "/core/core.php?settings=cat",
 	  	title: 'Category',
 	  	type: "POST",
 	  	dataType: 'json',
@@ -167,7 +167,7 @@ $(document).ready(function() {
 	$('#tdDataCat').editable({
 		container: 'body',
 		selector: 'a.notes',
-		url: "/pages/update_data.php?settings=cat",
+		url: "/core/core.php?settings=cat",
 		title: 'Description',
 		type: "POST",
 		dataType: 'json',
@@ -181,7 +181,7 @@ $(document).ready(function() {
 		type: "POST",
 		emptytext: "",
 		emptyclass: "",
-		url: "pages/update_data.php?settings=cat",
+		url: "/core/core.php?settings=cat",
 		source: [
 				 <?php
 					$getCK = mysqli_query($conn, "SELECT name,rgb FROM colorKey ORDER BY name ASC");
@@ -212,7 +212,7 @@ $(document).ready(function() {
 				   callback: function (){
 						
 					$.ajax({ 
-						url: '/pages/update_settings.php', 
+						url: '/core/core.php', 
 						type: 'POST',
 						data: {
 							action: "delete",

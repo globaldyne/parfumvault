@@ -120,7 +120,7 @@ $(document).ready(function() {
 			highlight: false,
 			emptytext: null,
 			emptyclass: null,
-			url: "update_data.php?replacement=update&ing=<?=$ingName;?>",
+			url: "core.php?replacement=update&ing=<?=$ingName;?>",
 			dataType: 'json',
 			success: function (data) {
 				reload_rep_data();
@@ -153,7 +153,7 @@ $(document).ready(function() {
 	   container: 'body',
 	   selector: 'i.repNotes',
 	   type: 'POST',
-	   url: "update_data.php?replacement=update&ing=<?=$ingName;?>",
+	   url: "core.php?replacement=update&ing=<?=$ingName;?>",
 	   title: 'Notes'
 	});
 	
@@ -172,7 +172,7 @@ $(document).ready(function() {
 				   callback: function (){
 						
 					$.ajax({ 
-						url: 'update_data.php', 
+						url: 'core.php', 
 						type: 'POST',
 						data: {
 							replacement: 'delete',
@@ -258,7 +258,7 @@ $(document).ready(function() {
 	
 	$('#addReplacement').on('click', '[id*=repAdd]', function () {
 		$.ajax({ 
-			url: 'update_data.php', 
+			url: 'core.php', 
 			type: 'POST',
 			data: {
 				replacement: 'add',

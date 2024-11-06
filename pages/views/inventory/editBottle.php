@@ -1,5 +1,5 @@
 <?php
-define('__ROOT__', dirname(dirname(__FILE__))); 
+define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__))))); 
 
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
@@ -88,7 +88,7 @@ $('#bottle_pic').html('<img class="img-profile-avatar" src="<?=$doc['photo']?: '
 
 $('#bottle-save').click(function() {
 	$.ajax({ 
-		url: '/pages/update_data.php', 
+		url: '/core/core.php', 
 		type: 'POST',
 		data: {
 			update_bottle_data: 1,
@@ -123,7 +123,7 @@ $('#bottle-save').click(function() {
 		fd.append('bottle_pic',files[0]);
 	}
 	$.ajax({ 
-		url: '/pages/update_data.php?update_bottle_pic=1&bottle_id=<?=$bottle['id']?>', 
+		url: '/core/core.php?update_bottle_pic=1&bottle_id=<?=$bottle['id']?>', 
 		type: 'POST',
 		data: fd,
 		contentType: false,

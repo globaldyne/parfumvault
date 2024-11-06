@@ -6,19 +6,19 @@ require_once(__ROOT__.'/inc/sec.php');
 if(file_exists(__ROOT__.'/inc/config.php') == FALSE && !getenv('DB_HOST') && !getenv('DB_USER') && !getenv('DB_PASS') && !getenv('DB_NAME')){
 	
 	session_destroy();
-	header('Location: login.php');
+	header('Location: /login.php');
 }
 require_once(__ROOT__.'/inc/product.php');
 require_once(__ROOT__.'/inc/opendb.php');
 
-require_once(__ROOT__.'/func/checkIng.php');
-require_once(__ROOT__.'/func/searchIFRA.php');
-require_once(__ROOT__.'/func/formatBytes.php');
-require_once(__ROOT__.'/func/countElement.php');
+//require_once(__ROOT__.'/func/checkIng.php');
+//require_once(__ROOT__.'/func/searchIFRA.php');
+//require_once(__ROOT__.'/func/formatBytes.php');
+//require_once(__ROOT__.'/func/countElement.php');
 
 require_once(__ROOT__.'/func/countPending.php');
 require_once(__ROOT__.'/func/countCart.php');
-require_once(__ROOT__.'/func/pvOnline.php');
+//require_once(__ROOT__.'/func/pvOnline.php');
 require_once(__ROOT__.'/func/getIngSupplier.php');
 require_once(__ROOT__.'/inc/settings.php');
 
@@ -211,7 +211,7 @@ function chkUpdate() {
 
       <li class="nav-item">
         <?php 
-          $inventoryPages = ['ingredients', 'bottles', 'lids', 'suppliers', 'customers', 'compounds'];
+          $inventoryPages = ['ingredients', 'bottles', 'accessories', 'suppliers', 'customers', 'compounds'];
           $isActiveInventory = in_array($_GET['do'], $inventoryPages);
           $expand = $isActiveInventory ? 'show' : ''; 
           $class = $isActiveInventory ? '' : 'collapsed'; 
@@ -228,7 +228,7 @@ function chkUpdate() {
             <a class="collapse-item <?php echo $_GET['do'] === 'customers' ? 'active' : ''; ?>" href="/?do=customers">Customers</a>
             <a class="collapse-item <?php echo $_GET['do'] === 'compounds' ? 'active' : ''; ?>" href="/?do=compounds">Compounds</a>
             <a class="collapse-item <?php echo $_GET['do'] === 'bottles' ? 'active' : ''; ?>" href="/?do=bottles">Bottles</a>
-            <a class="collapse-item <?php echo $_GET['do'] === 'lids' ? 'active' : ''; ?>" href="/?do=lids">Bottle Lids</a>
+            <a class="collapse-item <?php echo $_GET['do'] === 'accessories' ? 'active' : ''; ?>" href="/?do=accessories">Accessories</a>
           </div>
         </div>
       </li>
@@ -279,7 +279,7 @@ function chkUpdate() {
       } elseif ($_GET['do'] == 'statistics') {
           require_once(__ROOT__.'/pages/statistics.php');
       } elseif ($_GET['do'] == 'IFRA') {
-          require_once(__ROOT__.'/pages/IFRA.php');
+          require_once(__ROOT__.'/pages/views/regulatory/IFRA.php');
       } elseif ($_GET['do'] == 'listFormulas') {
     ?>
         <div id="content-wrapper" class="d-flex flex-column">
@@ -301,13 +301,9 @@ function chkUpdate() {
       } elseif ($_GET['do'] == 'genFinishedProduct') {
           require_once(__ROOT__.'/pages/genFinishedProduct.php');        
       } elseif ($_GET['do'] == 'bottles') {
-          require_once(__ROOT__.'/pages/bottles.php');        
-      } elseif ($_GET['do'] == 'addBottle') {
-          require_once(__ROOT__.'/pages/addBottle.php');        
-      } elseif ($_GET['do'] == 'lids') {
-          require_once(__ROOT__.'/pages/lids.php');
-      } elseif ($_GET['do'] == 'addLid') {
-          require_once(__ROOT__.'/pages/addLid.php');    
+          require_once(__ROOT__.'/pages/views/inventory/bottles.php');        
+      } elseif ($_GET['do'] == 'accessories') {
+          require_once(__ROOT__.'/pages/views/inventory/accessories.php');
       } elseif ($_GET['do'] == 'batches') {
           require_once(__ROOT__.'/pages/views/formula/batches.php');
       } elseif ($_GET['do'] == 'scheduledFormulas') {
@@ -319,11 +315,11 @@ function chkUpdate() {
       } elseif ($_GET['do'] == 'sellFormula') {
           require_once(__ROOT__.'/pages/sellFormula.php');
       } elseif ($_GET['do'] == 'customers') {
-          require_once(__ROOT__.'/pages/customers.php');
+          require_once(__ROOT__.'/pages/views/inventory/customers.php');
       } elseif ($_GET['do'] == 'compareFormulas') {
           require_once(__ROOT__.'/pages/compareFormulas.php');
       } elseif ($_GET['do'] == 'compounds') {
-          require_once(__ROOT__.'/pages/compounds.php');
+          require_once(__ROOT__.'/pages/views/inventory/compounds.php');
       } elseif ($_GET['do'] == 'genSDS') {
           require_once(__ROOT__.'/pages/views/regulatory/listSDS.php');                
       } else {

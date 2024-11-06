@@ -191,32 +191,33 @@ if($_GET['type'] == 'bottle'){
 	return;
 }
 
-if($_GET['type'] == 'lid' && $_GET['style']){
+if($_GET['type'] == 'accessory' && $_GET['name']){
 	
-	$style = base64_decode($_GET['style']);
-	$color = base64_decode($_GET['color']);
+	$name = base64_decode($_GET['name']);
+	$accessory = base64_decode($_GET['accessory']);
+	
 	if (!is_numeric($_GET['price']) || $_GET['price'] <= 0 ) {
     	$response["error"] = 'Price cannot be empty or 0';
     	echo json_encode($response);
     	return;
 	}
+	
 	$price = $_GET['price'];
 	$supplier = base64_decode($_GET['supplier']);
 	$supplier_link = base64_decode($_GET['supplier_link']);
-	$pieces = $_GET['pieces']?:0;
-	$colour = $_GET['colour'];
-
+	$pieces = $_GET['pieces'] ?: 0;
+	
 
 	if(isset($_FILES['pic_file']['name'])){
-      $file_name = $_FILES['pic_file']['name'];
-      $file_size = $_FILES['pic_file']['size'];
-      $file_tmp = $_FILES['pic_file']['tmp_name'];
-      $file_type = $_FILES['pic_file']['type'];
-      $file_ext = strtolower(end(explode('.',$_FILES['pic_file']['name'])));
+		$file_name = $_FILES['pic_file']['name'];
+      	$file_size = $_FILES['pic_file']['size'];
+      	$file_tmp = $_FILES['pic_file']['tmp_name'];
+      	$file_type = $_FILES['pic_file']['type'];
+      	$file_ext = strtolower(end(explode('.',$_FILES['pic_file']['name'])));
 	  
 	  	if (!file_exists($tmp_path)) {
 			mkdir($tmp_path, 0740, true);
-		}
+	   	}
 
 		$allowed_ext = "png, jpg, jpeg, gif, bmp";
 	  	$ext = explode(', ', $allowed_ext);
@@ -231,8 +232,8 @@ if($_GET['type'] == 'lid' && $_GET['style']){
 			 echo json_encode($response);
 			 return;
      	}
-	   	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM lids WHERE style = '$style'"))){
-			$response["error"] = $style.' already exists';
+	   	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM accessories WHERE name = '$name'"))){
+			$response["error"] = $name.' already exists';
 			echo json_encode($response);
 			return;
 		}
@@ -241,13 +242,13 @@ if($_GET['type'] == 'lid' && $_GET['style']){
 			create_thumb($tmp_path.$photo,250,250); 
 			$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents($tmp_path.$photo));
 		
-			if(mysqli_query($conn, "INSERT INTO lids (style, colour, price, supplier, supplier_link, pieces) VALUES ('$style', '$colour', '$price', '$supplier', '$supplier_link', '$pieces')") ){
-				$lid_id = mysqli_insert_id($conn);
-				mysqli_query($conn, "INSERT INTO documents (ownerID,name,type,notes,docData) VALUES ('".$lid_id."','$style','5','-','$docData')");
+			if(mysqli_query($conn, "INSERT INTO accessories (name, accessory, price, supplier, supplier_link, pieces) VALUES ('$name', '$accessory', '$price', '$supplier', '$supplier_link', '$pieces')") ){
+				$accessory_id = mysqli_insert_id($conn);
+				mysqli_query($conn, "INSERT INTO documents (ownerID,name,type,notes,docData) VALUES ('".$accessory_id."','$name','5','-','$docData')");
 				unlink($tmp_path.$photo);
-				$response["success"] = $style.' added!';
+				$response["success"] = $name.' added';
 			}else{
-				$response["error"] =  'Failed to add '.$style.' - '.mysqli_error($conn);
+				$response["error"] =  'Failed to add '.$name.' - '.mysqli_error($conn);
 			}
 		}
 	  }

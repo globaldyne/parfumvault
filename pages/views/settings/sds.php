@@ -24,7 +24,7 @@ $(document).ready(function() {
 $('#sds_set_update').click(function() {
 
 	$.ajax({ 
-		url: '/pages/update_data.php', 
+		url: '/core/core.php', 
 		type: 'POST',
 		data: {
 			settings: 'sds',

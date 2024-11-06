@@ -23,7 +23,7 @@ require_once(__ROOT__.'/func/php-settings.php');
                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#pubChem_import"><i class="fa-solid fa-file-import mx-2"></i>Import images</a></li>
                         <?php } ?>
                         <li class="dropdown-header">Export</li> 
-           				<li><a class="dropdown-item" href="/pages/operations.php?action=exportIFRA"><i class="fa-solid fa-file-code mx-2"></i>Export as JSON</a></li>
+           				<li><a class="dropdown-item" href="/core/core.php?action=exportIFRA"><i class="fa-solid fa-file-code mx-2"></i>Export as JSON</a></li>
                         <li><a class="dropdown-item" id="exportCSV" href="#"><i class="fa-solid fa-file-export mx-2"></i>Export as CSV</a></li>
                       </div>
                     </div>
@@ -120,7 +120,7 @@ require_once(__ROOT__.'/func/php-settings.php');
                 <div class="dropdown-divider"></div>
             	<div class="col-sm col-sm-auto text-xs-center alert alert-warning">
                 	<p class="alert-link"><strong>IMPORTANT:</strong></p>
-                	<p class="alert-link">This operation will wipe out any data already in your IFRA Library, so please make sure the file you uploading is in the right format and have taken a <a href="/pages/operations.php?do=backupDB">backup</a> before.</p>
+                	<p class="alert-link">This operation will wipe out any data already in your IFRA Library, so please make sure the file you uploading is in the right format and have taken a <a href="/core/core.php?do=backupDB">backup</a> before.</p>
                 </div>
            </div>
            
@@ -220,7 +220,8 @@ $(document).ready(function() {
 		language: {
 			loadingRecords: '&nbsp;',
 			processing: '<div class="spinner-grow mx-2"></div>Please Wait...',
-			zeroRecords: '<div class="mt-4 alert alert-warning"><strong>Nothing found, have you <a href="#" data-bs-toggle="modal" data-bs-target="#ifra_import">imported</a> the IFRA library?</strong></div>',
+			zeroRecords: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>Nothing found</strong></div></div>',
+			emptyTable: '<div class="mt-4 alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>Nothing found, have you <a href="#" data-bs-toggle="modal" data-bs-target="#ifra_import">imported</a> the IFRA library?</strong></div>',
 			search: '',
 			searchPlaceholder: 'Search by name, CAS, synonyms...',
 		},
@@ -417,7 +418,7 @@ $(document).ready(function() {
 		$("#ImportpbC").hide();
 	
 		$.ajax({
-			url: '/pages/update_data.php', 
+			url: '/core/core.php', 
 			type: 'GET',
 			data: {
 				IFRA_PB: "import",
@@ -469,7 +470,7 @@ $(document).ready(function() {
 				   callback: function (){
 						
 					$.ajax({ 
-						url: '/pages/update_data.php', 
+						url: '/core/core.php', 
 						type: 'POST',
 						data: {
 							IFRA: 'delete',
@@ -512,7 +513,7 @@ $(document).ready(function() {
 	$('#tdDataIFRA').editable({
 		container: 'body',
 	  	selector: 'a.cas',
-	  	url: "/pages/update_data.php?IFRA=edit&type=cas",
+	  	url: "/core/core.php?IFRA=edit&type=cas",
 	  	title: 'CAS#',
 	  	ajaxOptions: { 
 			dataType: 'json'
@@ -535,7 +536,7 @@ $(document).ready(function() {
 		container: 'body',
 		selector: 'a.cat1, a.cat2, a.cat3, a.cat4, a.cat5A, a.cat5B, a.cat5C, a.cat5D, a.cat6, a.cat7A, a.cat7B, a.cat8, a.cat9, a.cat10A, a.cat11A, a.cat11B, a.cat12',
 		type: 'POST',
-		url: "/pages/update_data.php",
+		url: "/core/core.php",
 		
 		params: function(params) {
         	var category = String($(params).attr('name').split(' ')[0]).toUpperCase();

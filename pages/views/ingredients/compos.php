@@ -184,7 +184,7 @@ $(document).ready(function() {
 		container: 'body',
 		selector: 'i.name',
 		type: 'POST',
-		url: "/pages/update_data.php?composition=update&ing=<?=$ingName;?>",
+		url: "/core/core.php?composition=update&ing=<?=$ingName;?>",
 		title: 'Name'
 	});
 	
@@ -192,7 +192,7 @@ $(document).ready(function() {
 	   container: 'body',
 	   selector: 'i.cas',
 	   type: 'POST',
-	   url: "/pages/update_data.php?composition=update&ing=<?=$ingName;?>",
+	   url: "/core/core.php?composition=update&ing=<?=$ingName;?>",
 	   title: 'CAS'
 	});
 	
@@ -200,7 +200,7 @@ $(document).ready(function() {
 	   container: 'body',
 	   selector: 'i.ec',
 	   type: 'POST',
-	   url: "/pages/update_data.php?composition=update&ing=<?=$ingName;?>",
+	   url: "/core/core.php?composition=update&ing=<?=$ingName;?>",
 	   title: 'EINECS',
 	});
 	
@@ -208,7 +208,7 @@ $(document).ready(function() {
 		container: 'body',
 		selector: 'i.min_percentage',
 		type: 'POST',
-		url: "/pages/update_data.php?composition=update&ing=<?=$ingName;?>",
+		url: "/core/core.php?composition=update&ing=<?=$ingName;?>",
 		title: 'Min percentage',
 		success: function (data) {
 				reload_cmp_data();
@@ -219,7 +219,7 @@ $(document).ready(function() {
 		container: 'body',
 		selector: 'i.max_percentage',
 		type: 'POST',
-		url: "/pages/update_data.php?composition=update&ing=<?=$ingName;?>",
+		url: "/core/core.php?composition=update&ing=<?=$ingName;?>",
 		title: 'Max percentage',
 		success: function (data) {
 				reload_cmp_data();
@@ -230,7 +230,7 @@ $(document).ready(function() {
 		container: 'body',
 		selector: 'i.GHS',
 		type: 'POST',
-		url: "/pages/update_data.php?composition=update&ing=<?=$ingName;?>",
+		url: "/core/core.php?composition=update&ing=<?=$ingName;?>",
 		title: 'GHS'
 	});
 	
@@ -242,7 +242,7 @@ $(document).ready(function() {
 		container: 'body',
 		selector: 'i.toDeclare',
 		type: 'POST',
-		url: "/pages/update_data.php?composition=update&ing=<?=$ingName;?>",
+		url: "/core/core.php?composition=update&ing=<?=$ingName;?>",
 		title: 'To be declared',
 		source: [
 			{value: '0', text: 'No'},
@@ -268,7 +268,7 @@ $(document).ready(function() {
 				   callback: function (){
 						
 					$.ajax({ 
-						url: '/pages/update_data.php', 
+						url: '/core/core.php', 
 						type: 'POST',
 						data: {
 							composition: 'delete',
@@ -303,7 +303,7 @@ $(document).ready(function() {
 	
 	$('#addComposition').on('click', '[id*=cmpAdd]', function () {
 		$.ajax({ 
-			url: '/pages/update_data.php', 
+			url: '/core/core.php', 
 			type: 'POST',
 			data: {
 				composition: 'add',

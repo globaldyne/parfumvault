@@ -66,7 +66,7 @@ $('#btnImportCompounds').click(function() {
 	}
 	
 	$.ajax({ 
-		url: '/pages/operations.php?action=importCompounds', 
+		url: '/core/core.php?action=importCompounds', 
 		type: 'POST',
 		data: fd,
 		contentType: false,

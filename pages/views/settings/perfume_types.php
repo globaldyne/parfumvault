@@ -12,7 +12,7 @@ require_once(__ROOT__.'/inc/sec.php');
     <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
         <div class="dropdown-menu">
             <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addpType"><i class="fa-solid fa-plus mx-2"></i>Add new</a></li>
-          <li><a class="dropdown-item" href="/pages/operations.php?action=exportPerfTypes"><i class="fa-solid fa-file-code mx-2"></i>Export as JSON</a></li>
+          <li><a class="dropdown-item" href="/core/core.php?action=exportPerfTypes"><i class="fa-solid fa-file-code mx-2"></i>Export as JSON</a></li>
         </div>
     </div>                    
   </div>
@@ -104,7 +104,7 @@ $(document).ready(function() {
 		  container: 'body',
 		  selector: 'a.name',
 		  type: 'POST',
-		  url: "/pages/update_data.php?perfType=update",
+		  url: "/core/core.php?perfType=update",
 		  title: 'Perfume type name',
 		  success: function (data) {
 				reload_data();
@@ -121,7 +121,7 @@ $(document).ready(function() {
 		  container: 'body',
 		  selector: 'a.concentration',
 		  type: 'POST',
-		  url: "/pages/update_data.php?perfType=update",
+		  url: "/core/core.php?perfType=update",
 		  title: 'Concentration in %',
 		  success: function (data) {
 				reload_data();
@@ -141,7 +141,7 @@ $(document).ready(function() {
 		container: 'body',
 		selector: 'a.description',
 		type: 'POST',
-		url: "/pages/update_data.php?perfType=update",
+		url: "/core/core.php?perfType=update",
 		title: 'Short description',
 		success: function (data) {
 				reload_data();
@@ -165,7 +165,7 @@ $(document).ready(function() {
 				   callback: function (){
 						
 					$.ajax({ 
-						url: '/pages/update_data.php', 
+						url: '/core/core.php', 
 						type: 'POST',
 						data: {
 							perfType: 'delete',
@@ -194,7 +194,7 @@ $(document).ready(function() {
 	
 	$('#addpType').on('click', '[id*=sAdd]', function () {
 		$.ajax({ 
-			url: '/pages/update_data.php', 
+			url: '/core/core.php', 
 			type: 'POST',
 			data: {
 				perfType: 'add',

@@ -66,7 +66,7 @@ $('#btnRestoreFormulas').click(function() {
 	}
 	
 	$.ajax({ 
-		url: '/pages/operations.php?action=restoreFormulas', 
+		url: '/core/core.php?action=restoreFormulas', 
 		type: 'POST',
 		data: fd,
 		contentType: false,

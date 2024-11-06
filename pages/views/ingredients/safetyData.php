@@ -883,7 +883,7 @@ $ingSafetyInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredien
 
     $('#save_addinf').on('click',  function () {
       $.ajax({ 
-        url: "/pages/update_data.php", 
+        url: "/core/core.php", 
         type: "POST",
         data: {
           manage: "ingredient",
@@ -914,7 +914,7 @@ $ingSafetyInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredien
     
     $('#save_leg').on('click',  function () {
       $.ajax({ 
-        url: "/pages/update_data.php", 
+        url: "/core/core.php", 
         type: "POST",
         data: {
           manage: "ingredient",
@@ -941,7 +941,7 @@ $ingSafetyInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredien
     
     $('#save_trans').on('click',  function () {
       $.ajax({ 
-        url: "/pages/update_data.php", 
+        url: "/core/core.php", 
         type: "POST",
         data: {
           manage: "ingredient",
@@ -971,7 +971,7 @@ $ingSafetyInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredien
 
     $('#save_dis').on('click',  function () {
       $.ajax({ 
-        url: "/pages/update_data.php", 
+        url: "/core/core.php", 
         type: "POST",
         data: {
           manage: "ingredient",
@@ -996,7 +996,7 @@ $ingSafetyInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredien
 
     $('#save_ec').on('click',  function () {
       $.ajax({ 
-        url: "/pages/update_data.php", 
+        url: "/core/core.php", 
         type: "POST",
         data: {
           manage: "ingredient",
@@ -1028,7 +1028,7 @@ $ingSafetyInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredien
     
     $('#save_tx').on('click',  function () {
       $.ajax({ 
-        url: "/pages/update_data.php", 
+        url: "/core/core.php", 
         type: "POST",
         data: {
           manage: "ingredient",
@@ -1067,7 +1067,7 @@ $ingSafetyInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredien
     
     $('#save_sr').on('click',  function () {
       $.ajax({ 
-        url: "/pages/update_data.php", 
+        url: "/core/core.php", 
         type: "POST",
         data: {
           manage: "ingredient",
@@ -1095,7 +1095,7 @@ $ingSafetyInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredien
     
     $('#safety_info').on('changed.bs.select',  function () {
       $.ajax({ 
-        url: "/pages/update_data.php", 
+        url: "/core/core.php", 
         type: "POST",
         data: {
           manage: "ingredient",
@@ -1121,7 +1121,7 @@ $ingSafetyInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredien
       var imageId = $(this).data('id');
       $.ajax({
         type: "POST",
-        url: "/pages/update_data.php",
+        url: "/core/core.php",
         data: { 
           manage: "ingredient",
           tab: "safety_info",
@@ -1144,7 +1144,7 @@ $ingSafetyInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredien
     
     $('#save_faid').on('click',  function () {
       $.ajax({ 
-        url: "/pages/update_data.php", 
+        url: "/core/core.php", 
         type: "POST",
         data: {
           manage: "ingredient",
@@ -1176,7 +1176,7 @@ $ingSafetyInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredien
     
     $('#save_fire').on('click',  function () {
       $.ajax({ 
-        url: "/pages/update_data.php", 
+        url: "/core/core.php", 
         type: "POST",
         data: {
           manage: "ingredient",
@@ -1204,7 +1204,7 @@ $ingSafetyInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredien
     
     $('#save_acc_rel').on('click',  function () {
       $.ajax({ 
-        url: "/pages/update_data.php", 
+        url: "/core/core.php", 
         type: "POST",
         data: {
           manage: "ingredient",
@@ -1233,7 +1233,7 @@ $ingSafetyInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredien
     
     $('#save_HS').on('click',  function () {
       $.ajax({ 
-        url: "/pages/update_data.php", 
+        url: "/core/core.php", 
         type: "POST",
         data: {
           manage: "ingredient",
@@ -1261,7 +1261,7 @@ $ingSafetyInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredien
     
     $('#save_exposure').on('click',  function () {
       $.ajax({ 
-        url: "/pages/update_data.php", 
+        url: "/core/core.php", 
         type: "POST",
         data: {
           manage: "ingredient",
@@ -1295,7 +1295,7 @@ $ingSafetyInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredien
     
     $('#save_pcp').on('click',  function () {
       $.ajax({ 
-        url: "/pages/update_data.php", 
+        url: "/core/core.php", 
         type: "POST",
         data: {
           manage: "ingredient",

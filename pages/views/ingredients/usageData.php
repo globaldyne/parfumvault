@@ -195,7 +195,7 @@ $(document).ready(function() {
 	
 	$('#usage_limits').on('click', '[id*=saveUsage]', function () {
 		$.ajax({ 
-			url: '/pages/update_data.php', 
+			url: '/core/core.php', 
 			type: 'POST',
 			data: {
 				manage: 'ingredient',

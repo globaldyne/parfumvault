@@ -1,29 +1,21 @@
 <div id="content-wrapper" class="d-flex flex-column">
 <?php require_once(__ROOT__.'/pages/top.php'); ?>
      <div class="container-fluid">
-          <div>
           <div class="card shadow mb-4">
             <div class="card-header py-3">
               <h2 class="m-0 font-weight-bold text-primary"><a href="#" id="mainTitle">Suppliers</a></h2>
             </div>
              <div class="card-body">
-              <div class="table-responsive">
-            	<table class="table table-striped table-bordered">
-                <tr class="noBorder">
-                 <div class="text-right">
+                <div class="text-right">
                   <div class="btn-group">
                       <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
                       <div class="dropdown-menu dropdown-menu-right">
-                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addSupplier"><i class="fa-solid fa-plus mx-2"></i>Add new</a></li>
-                        <li><a class="dropdown-item" id="csv_export" href="/pages/export.php?format=csv&kind=suppliers"><i class="fa-solid fa-file-csv mx-2"></i>Export to CSV</a></li>
+                      <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addSupplier"><i class="fa-solid fa-plus mx-2"></i>Add new</a></li>
+                      <li><a class="dropdown-item" id="csv_export" href="/pages/export.php?format=csv&kind=suppliers"><i class="fa-solid fa-file-csv mx-2"></i>Export to CSV</a></li>
         <li><a class="dropdown-item" id="json_export" href="/pages/export.php?format=json&kind=suppliers"><i class="fa-solid fa-file-code mx-2"></i>Export to JSON</a></li>
                       </div>
                     </div>        
                  </div>
-            </tr>
-            </table>
-            <div class="card-body">
-              <div class="table-responsive">
                 <table class="table table-striped" id="tdIngSupData" width="100%" cellspacing="0">
                   <thead>
                     <tr>
@@ -41,6 +33,11 @@
                     </tr>
                   </thead>
                 </table>
+                </div>
+               </div>
+              </div>
+            </div>
+                
 <script>
 $(document).ready(function() {
 	$('#mainTitle').click(function() {
@@ -57,7 +54,8 @@ $(document).ready(function() {
 		language: {
 			loadingRecords: '&nbsp;',
 			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>',
-			emptyTable: 'No suppliers added yet.',
+			zeroRecords: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>Nothing found</strong></div></div>',
+			emptyTable: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>No suppliers added yet</strong></div></div>',
 			searchPlaceholder: 'Search by name...',
 			search: ''
 		},
@@ -154,7 +152,7 @@ function actions(data, type, row){
 $('#tdIngSupData').editable({
   container: 'body',
   selector: 'i.name',
-  url: "/pages/update_data.php?settings=sup",
+  url: "/core/core.php?settings=sup",
   title: 'Supplier',
   type: "POST",
   validate: function(value){
@@ -168,7 +166,7 @@ $('#tdIngSupData').editable({
 	container: 'body',
 	selector: 'i.platform',
 	type: 'POST',
-  	url: "/pages/update_data.php?settings=sup",
+  	url: "/core/core.php?settings=sup",
     source: [
 			 {value: "woocomerce", text: "Woocomerce"},
 			 {value: "shopify", text: "Shopify"},
@@ -180,7 +178,7 @@ $('#tdIngSupData').editable({
 	container: 'body',
 	selector: 'i.price_per_size',
 	type: 'POST',
-  	url: "/pages/update_data.php?settings=sup",
+  	url: "/core/core.php?settings=sup",
     source: [
 		 {value: "0", text: "Product"},
 		 {value: "1", text: "Volume"},
@@ -190,7 +188,7 @@ $('#tdIngSupData').editable({
 $('#tdIngSupData').editable({
   container: 'body',
   selector: 'i.min_ml',
-  url: "/pages/update_data.php?settings=sup",
+  url: "/core/core.php?settings=sup",
   title: 'Minimum ml',
   type: "POST",
   validate: function(value){
@@ -206,7 +204,7 @@ $('#tdIngSupData').editable({
 $('#tdIngSupData').editable({
   container: 'body',
   selector: 'i.min_gr',
-  url: "/pages/update_data.php?settings=sup",
+  url: "/core/core.php?settings=sup",
   title: 'Minimum grams',
   type: "POST",
   validate: function(value){
@@ -222,7 +220,7 @@ $('#tdIngSupData').editable({
 $('#tdIngSupData').editable({
   container: 'body',
   selector: 'i.price_tag_start',
-  url: "/pages/update_data.php?settings=sup",
+  url: "/core/core.php?settings=sup",
   title: 'Price tag start',
   type: "POST"
 });
@@ -230,7 +228,7 @@ $('#tdIngSupData').editable({
 $('#tdIngSupData').editable({
   container: 'body',
   selector: 'i.price_tag_end',
-  url: "/pages/update_data.php?settings=sup",
+  url: "/core/core.php?settings=sup",
   title: 'Price tag end',
   type: "POST"
 });
@@ -238,7 +236,7 @@ $('#tdIngSupData').editable({
 $('#tdIngSupData').editable({
   container: 'body',
   selector: 'i.add_costs',
-  url: "/pages/update_data.php?settings=sup",
+  url: "/core/core.php?settings=sup",
   title: 'Additional Costs',
   type: "POST",
   validate: function(value){
@@ -254,7 +252,7 @@ $('#tdIngSupData').editable({
 $('#tdIngSupData').editable({
   container: 'body',
   selector: 'i.notes',
-  url: "/pages/update_data.php?settings=sup",
+  url: "/core/core.php?settings=sup",
   title: 'Description',
   type: "POST",
 });
@@ -275,7 +273,7 @@ $('#tdIngSupData').on('click', '[id*=dDel]', function () {
                callback: function (){
 	    			
 				$.ajax({ 
-					url: '/pages/update_data.php', 
+					url: '/core/core.php', 
 					type: 'GET',
 					data: {
 						supp: 'delete',
@@ -317,7 +315,7 @@ $('#tdIngSupData').on('click', '[id*=dDel]', function () {
 
 $('#btnAddSupplier').on('click', function () {
 	$.ajax({ 
-		url: '/pages/update_data.php', 
+		url: '/core/core.php', 
 		type: 'POST',
 		data: {
 			supp: 'add',
@@ -370,7 +368,7 @@ $('#btnAddSupplier').on('click', function () {
 
 $('#btnEditSupplier').on('click', function () {
 	$.ajax({ 
-		url: '/pages/update_data.php', 
+		url: '/core/core.php', 
 		type: 'POST',
 		data: {
 			supp: 'edit',

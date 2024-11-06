@@ -45,7 +45,7 @@ $cFormoulas = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaDa
               <div class="dropdown-divider"></div>
               <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#add_formula_cat"><i class="fa-solid fa-circle-plus mx-2"></i>Create formula category</a></li>
               <div class="dropdown-divider"></div>
-        	  <li><a class="dropdown-item" href="/pages/operations.php?action=exportFormulas"><i class="fa-solid fa-file-export mx-2"></i>Export Formulas as JSON</a></li>
+        	  <li><a class="dropdown-item" href="/core/core.php?action=exportFormulas"><i class="fa-solid fa-file-export mx-2"></i>Export Formulas as JSON</a></li>
         	  <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#import_formulas_json"><i class="fa-solid fa-file-import mx-2"></i>Import Formulas from JSON</a></li>
               <?php if($cFormoulas){ ?>
  			  <div class="dropdown-divider"></div>
@@ -298,7 +298,7 @@ $(document).ready(function() {
 				
 			data += '<li><a class="pv_point_gen dropdown-item" data-bs-toggle="modal" data-bs-target="#getFormMeta" data-formula="'+row.name+'" data-id="' + row.id + '"><i class="fas fa-cogs mx-2"></i>Settings</a></li>';
 	
-			data += '<li><a class="dropdown-item" href="/pages/operations.php?action=exportFormulas&fid=' + row.fid + '" rel="tip" title="Export '+ row.name +' as JSON" ><i class="fas fa-download mx-2"></i>Export as JSON</a></li>';
+			data += '<li><a class="dropdown-item" href="/core/core.php?action=exportFormulas&fid=' + row.fid + '" rel="tip" title="Export '+ row.name +' as JSON" ><i class="fas fa-download mx-2"></i>Export as JSON</a></li>';
 			
 			data += '<li><a class="dropdown-item" href="#" id="addTODO" rel="tip" title="Schedule '+ row.name +' to make" data-id='+ row.fid +' data-name="'+ row.name +'"><i class="fas fa-tasks mx-2"></i>Schedule to make</a></li>';
 			
@@ -335,7 +335,7 @@ $(document).ready(function() {
 		formula.Name = $(this).attr('data-name');
 		
 		$.ajax({ 
-			url: '/pages/manageFormula.php', 
+			url: '/core/core.php', 
 			type: 'POST',
 			data: {
 				action: "clone",
@@ -381,7 +381,7 @@ $(document).ready(function() {
 				   callback: function (){
 						
 					$.ajax({ 
-						url: '/pages/manageFormula.php', 
+						url: '/core/core.php', 
 						type: 'POST',
 						data: {
 							action: "deleteFormula",
@@ -433,7 +433,7 @@ $(document).ready(function() {
 				   callback: function (){
 						
 					$.ajax({
-						url: '/pages/update_data.php', 
+						url: '/core/core.php', 
 						type: 'POST',
 						data: {
 							formulas_wipe: "true",
@@ -476,7 +476,7 @@ $(document).ready(function() {
 		formula.ID = $(this).attr('data-id');
 		formula.Name = $(this).attr('data-name');
 		$.ajax({ 
-		url: '/pages/manageFormula.php', 
+		url: '/core/core.php', 
 		type: 'POST',
 		data: {
 			action: 'todo',
@@ -505,7 +505,7 @@ $(document).ready(function() {
 	
 	$('#add_formula').on('click', '[id*=btnAdd]', function () {
 		$.ajax({ 
-		url: '/pages/manageFormula.php', 
+		url: '/core/core.php', 
 		type: 'POST',
 		data: {
 			action: 'addFormula',
@@ -666,7 +666,7 @@ $(document).ready(function() {
 	$('#add_formula_cat').on('click', '[id*=add-fcat]', function () {
 	
 		$.ajax({ 
-			url: '/pages/update_settings.php', 
+			url: '/core/core.php', 
 				type: 'POST',
 				data: {
 					manage: 'add_frmcategory',

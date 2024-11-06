@@ -39,7 +39,8 @@ $(document).ready(function() {
 		language: {
 			loadingRecords: '&nbsp;',
 			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
-			emptyTable: 'No revisions found.',
+			zeroRecords: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>Nothing found</strong></div></div>',
+			emptyTable: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>No revisions found</strong></div></div>',
 		},
 		ajax: {	
 			url: '/core/list_revisions_data.php',
@@ -123,7 +124,7 @@ $(document).ready(function() {
 	//CREATE REVISION
 	$('#genRev').click(function() {
 	  $.ajax({ 
-		url: '/pages/update_data.php', 
+		url: '/core/core.php', 
 		type: 'GET',
 		data: {
 			fid: '<?=$_GET['fid']?>',
@@ -160,7 +161,7 @@ $(document).ready(function() {
 				   callback: function (){
 						
 					$.ajax({ 
-						url: '/pages/manageFormula.php', 
+						url: '/core/core.php', 
 						type: 'GET',
 						data: {
 							restore: "rev",
@@ -210,7 +211,7 @@ $(document).ready(function() {
 				   callback: function (){
 						
 					$.ajax({ 
-						url: '/pages/manageFormula.php', 
+						url: '/core/core.php', 
 						type: 'GET',
 						data: {
 							delete: "rev",

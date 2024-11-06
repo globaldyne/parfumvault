@@ -17,7 +17,7 @@ require_once(__ROOT__.'/func/php-settings.php');
                 <div class="dropdown-menu dropdown-menu-right">
                   <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#required_materials"><i class="fa-solid fa-pallet mx-2"></i>Required ingredients</a></li>
                   <div class="dropdown-divider"></div>
-                  <li><a class="dropdown-item" href="/pages/operations.php?action=exportMaking"><i class="fa-solid fa-file-export mx-2"></i>Export as JSON</a></li>
+                  <li><a class="dropdown-item" href="/core/core.php?action=exportMaking"><i class="fa-solid fa-file-export mx-2"></i>Export as JSON</a></li>
                   <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#import_making_json"><i class="fa-solid fa-file-import mx-2"></i>Import from JSON</a></li>
                 </div>
             </div>
@@ -205,7 +205,7 @@ $(document).ready(function() {
 				   className : "btn-danger",
 				   callback: function (){
 				   $.ajax({
-						url: '/pages/manageFormula.php', 
+						url: '/core/core.php', 
 						type: 'POST',
 						data: {
 							action: 'todo',

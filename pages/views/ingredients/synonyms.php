@@ -93,7 +93,7 @@ $(document).ready(function() {
 		container: 'body',
 		selector: 'i.synonym',
 		type: 'POST',
-		url: "/pages/update_data.php?synonym=update&ing=<?=$ingName;?>",
+		url: "/core/core.php?synonym=update&ing=<?=$ingName;?>",
 		title: 'Synonym'
 	});
 
@@ -101,7 +101,7 @@ $(document).ready(function() {
 	   container: 'body',
 	   selector: 'i.source',
 	   type: 'POST',
-	   url: "/pages/update_data.php?synonym=update&ing=<?=$ingName;?>",
+	   url: "/core/core.php?synonym=update&ing=<?=$ingName;?>",
 	   title: 'Source'
 	});
 
@@ -121,7 +121,7 @@ $(document).ready(function() {
 				   callback: function (){
 						
 					$.ajax({ 
-						url: '/pages/update_data.php', 
+						url: '/core/core.php', 
 						type: 'GET',
 						data: {
 							synonym: 'delete',
@@ -157,7 +157,7 @@ $(document).ready(function() {
 		$('#importPubChem').attr('disabled', true);
 		$('#pvImportMsg').html('<div class="alert alert-info">Please wait...</div>');			
 		$.ajax({ 
-			url: '/pages/update_data.php', 
+			url: '/core/core.php', 
 			type: 'POST',
 			data: {
 				synonym: 'import',
@@ -183,7 +183,7 @@ $(document).ready(function() {
 	
 	$('#addSynonym').on('click', '[id*=synAdd]', function () {
 		$.ajax({ 
-			url: '/pages/update_data.php', 
+			url: '/core/core.php', 
 			type: 'POST',
 			data: {
 				synonym: 'add',

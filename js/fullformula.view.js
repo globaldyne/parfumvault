@@ -9,7 +9,7 @@
 //MULTIPLY - DIVIDE
 $('.manageQuantity').click(function() {
 	$.ajax({ 
-    url: '/pages/manageFormula.php', 
+    url: '/core/core.php', 
 	type: 'POST',
     data: {
 		do: 'scale',
@@ -37,7 +37,7 @@ $('#amount_to_make').on('click', '[id*=amountToMake]', function () {
 	  	$('#amountToMakeMsg').html('<div class="alert alert-danger"><strong>Error:</strong> all fields required!</div>');		
 	}else{
 		$.ajax({ 
-		url: '/pages/manageFormula.php', 
+		url: '/core/core.php', 
 		type: 'POST',
 		cache: false,
 		data: {
@@ -67,7 +67,7 @@ $('#create_accord').on('click', '[id*=createAccord]', function () {
 	  	$('#accordMsg').html('<div class="alert alert-danger"><strong>Error:</strong> Accord name required!</div>');	
 	}else{
 		$.ajax({ 
-		url: '/pages/manageFormula.php', 
+		url: '/core/core.php', 
 		type: 'POST',
 		cache: false,
 		data: {
@@ -101,7 +101,7 @@ $('#conv_ingredient').on('click', '[id*=conv2ing]', function () {
 	  	$('#cnvMsg').html('<div class="alert alert-danger alert-dismissible"><strong>Error:</strong> Ingredient name required!</div>');	
 	}else{
 		$.ajax({ 
-		url: '/pages/manageFormula.php', 
+		url: '/core/core.php', 
 		type: 'POST',
 		cache: false,
 		data: {
@@ -131,7 +131,7 @@ $('#conv_ingredient').on('click', '[id*=conv2ing]', function () {
 //Clone
 $('#cloneMe').click(function() {
 $.ajax({ 
-    url: '/pages/manageFormula.php', 
+    url: '/core/core.php', 
 	type: 'POST',
     data: {
 		action: "clone",
@@ -161,7 +161,7 @@ $.ajax({
 //Add in Schedule
 $('#schedule_to_make').on('click', '[id*=addTODO]', function () {
 	$.ajax({ 
-    url: '/pages/manageFormula.php', 
+    url: '/core/core.php', 
 	type: 'POST',
     data: {
 		action: 'todo',
@@ -203,7 +203,7 @@ $('#formula').on('click', '[id*=cCAS]', function () {
 
 $('#replaceIng').on('click', '[id*=replaceConfirm]', function () {
 	$.ajax({ 
-		url: "/pages/manageFormula.php" , 
+		url: "/core/core.php" , 
 		type: 'POST',
 		data: {
 			action: "repIng",
@@ -361,7 +361,7 @@ $("#formula").on("click", ".open-replace-dialog", function () {
 
 $('#mrgIng').on('click', '[id*=mergeConfirm]', function () {
 	$.ajax({ 
-		url: '/pages/update_data.php', 
+		url: '/core/core.php', 
 		type: 'POST',
 		data: {
 			merge: "true",
@@ -448,7 +448,7 @@ $("#formula").on("click", ".open-merge-dialog", function () {
 
 $('#manage-quantity').on('click', '[id*=quantityConfirm]', function () {
 	$.ajax({ 
-		url: '/pages/update_data.php', 
+		url: '/core/core.php', 
 		type: 'POST',
 		data: {
 			updateQuantity: "true",

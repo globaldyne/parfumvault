@@ -66,7 +66,7 @@ $('#btnRestoreCategories').click(function() {
 	}
 	
 	$.ajax({ 
-		url: '/pages/operations.php?action=importCategories', 
+		url: '/core/core.php?action=importCategories', 
 		type: 'POST',
 		data: fd,
 		contentType: false,

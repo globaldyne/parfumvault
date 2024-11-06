@@ -47,15 +47,15 @@
             <p><strong>Please note, your full name and your email address will be shared with the author(s) of the formula so they can get in touch to discuss further. Also, a copy of your message will be shared with the admins to ensure there is no service abuse.</strong></p>
           </div>
           <div class="mb-3">
-            <label for="contactName" class="form-label">Full name:</label>
+            <label for="contactName" class="form-label">Full name</label>
             <input name="contactName" id="contactName" type="text" class="form-control">
           </div>
           <div class="mb-3">
-            <label for="contactEmail" class="form-label">Email:</label>
+            <label for="contactEmail" class="form-label">Email</label>
             <input name="contactEmail" id="contactEmail" type="email" class="form-control">
           </div>
           <div class="mb-3">
-            <label for="contactReason" class="form-label">Comments:</label>
+            <label for="contactReason" class="form-label">Comments</label>
             <textarea name="contactReason" id="contactReason" rows="3" class="form-control"></textarea>
           </div>
         </div>
@@ -89,15 +89,15 @@
             <p><strong>Please don't use this form if you have queries or suggestions regarding the formula, use the <i>Contact Author</i> option instead.</strong></p>
           </div>
           <div class="mb-3">
-            <label for="reporterName" class="form-label">Full name:</label>
+            <label for="reporterName" class="form-label">Full name</label>
             <input name="reporterName" id="reporterName" type="text" class="form-control">
           </div>
           <div class="mb-3">
-            <label for="reporterEmail" class="form-label">Email:</label>
+            <label for="reporterEmail" class="form-label">Email</label>
             <input name="reporterEmail" id="reporterEmail" type="email" class="form-control">
           </div>
           <div class="mb-3">
-            <label for="reportReason" class="form-label">Please provide the reason you're reporting <span id="fname-display" class="d-inline"></span> formula in detail:</label>
+            <label for="reportReason" class="form-label">Please provide the reason you're reporting <span id="fname-display" class="d-inline"></span> formula in detail</label>
             <textarea name="reportReason" id="reportReason" rows="3" class="form-control"></textarea>
           </div>
         </div>
@@ -299,7 +299,7 @@ $(document).ready(function() {
 				   className : "btn-warning",
 				   callback: function (){
 						$.ajax({
-							url: '/pages/pvonline.php', 
+							url: '/core/core.php', 
 							type: 'POST',
 							data: {
 								action: "import",
@@ -355,8 +355,9 @@ $(document).ready(function() {
 	
 	$('#contact-formula-author').on('click', '[id*=confirm-contact-author]', function () {
 		$("#cntMsg").html('<div class="alert alert-info"><img src="/img/loading.gif" class="mx-2"/>Please wait...</div>');
+		$('#contact-formula-author, #confirm-contact-author').prop('disabled', true);
 		$.ajax({ 
-			url: '/pages/pvonline.php', 
+			url: '/core/core.php', 
 			type: 'POST',
 			data: {
 				action: "contactAuthor",
@@ -371,14 +372,17 @@ $(document).ready(function() {
 			success: function (data) {
 				if (data.success) {
 					var msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>' + data.success + '</div>';
-					$('#contact-formula-author .modal-body-main').hide();
+					$('#contact-formula-author .modal-body-main, #contact-formula-author #confirm-contact-author').hide();
+					$('#contact-formula-author, #confirm-contact-author').prop('disabled', true);
 				}else{
 					var msg = '<div class="alert alert-danger"><i class="bi bi-exclamation-circle mx-2"></i>' + data.error + '</div>';
+					$('#contact-formula-author, #confirm-contact-author').prop('disabled', false);
 				}
 				$('#cntMsg').html(msg);
 			},
 			error: function (request, status, error) {
 				$('#cntMsg').html('<div class="alert alert-danger"><i class="bi bi-exclamation-circle mx-2"></i>Unable to handle request, server returned an error: '+request.status+'</div>');
+				$('#contact-formula-author, #confirm-contact-author').prop('disabled', false);
 			},
 		  });
 	});
@@ -400,8 +404,10 @@ $(document).ready(function() {
 	
 	$('#report-market-formula').on('click', '[id*=confirm-formula-report]', function () {
 		$("#reportMsg").html('<div class="alert alert-info"><img src="/img/loading.gif" class="mx-2"/>Please wait...</div>');
+		$('#report-market-formula, #confirm-formula-report').prop('disabled', true);
+
 		$.ajax({ 
-			url: '/pages/pvonline.php', 
+			url: '/core/core.php', 
 			type: 'POST',
 			data: {
 				action: 'report',
@@ -416,14 +422,18 @@ $(document).ready(function() {
 			success: function (data) {
 				if (data.success) {
 					var msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>' + data.success + '</div>';
-					$('#report-market-formula .modal-body-main').hide();
+					$('#report-market-formula .modal-body-main, #report-market-formula #confirm-formula-report').hide();
+					
 				}else{
 					var msg = '<div class="alert alert-danger"><i class="bi bi-exclamation-circle mx-2"></i>' + data.error + '</div>';
+					$('#report-market-formula, #confirm-formula-report').prop('disabled', false);
 				}
 				$('#reportMsg').html(msg);
 			},
 			error: function (request, status, error) {
 				$('#reportMsg').html('<div class="alert alert-danger"><i class="bi bi-exclamation-circle mx-2"></i>Unable to handle request, server returned an error: '+request.status+'</div>');
+				$('#report-market-formula, #confirm-formula-report').prop('disabled', false);
+
 			},
 		  });
 	});

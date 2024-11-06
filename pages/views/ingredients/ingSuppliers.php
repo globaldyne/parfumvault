@@ -156,7 +156,7 @@ $(document).ready(function() {
 	
 	$('#addSupplier').on('click', '[id*=sAdd]', function () {
 	  $.ajax({ 
-		url: '/pages/update_data.php', 
+		url: '/core/core.php', 
 		type: 'POST',
 		data: {
 			ingSupplier: 'add',
@@ -298,7 +298,7 @@ $(document).ready(function() {
 		type: 'POST',
 		emptytext: "",
 		emptyclass: "",
-		url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID?>",
+		url: "/core/core.php?ingSupplier=update&ingID=<?=$ingID?>",
 		source: [
 				 <?php
 					$res_ing = mysqli_query($conn, "SELECT id,name FROM ingSuppliers ORDER BY name ASC");
@@ -322,7 +322,7 @@ $(document).ready(function() {
 		type: 'POST',
 		emptytext: "",
 		emptyclass: "",
-		url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID?>",
+		url: "/core/core.php?ingSupplier=update&ingID=<?=$ingID?>",
 		source: [
 				 {value: '1', text: 'Available'},
 				 {value: '2', text: 'Limited availability'},
@@ -337,7 +337,7 @@ $(document).ready(function() {
 		container: 'body',
 		selector: 'i.supplierLink',
 		type: 'POST',
-		url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
+		url: "/core/core.php?ingSupplier=update&ingID=<?=$ingID;?>",
 		title: 'Store link',
 		validate: function(value){
 			if($.trim(value) == ''){
@@ -350,7 +350,7 @@ $(document).ready(function() {
 		container: 'body',
 		selector: 'i.price',
 		type: 'POST',
-		url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
+		url: "/core/core.php?ingSupplier=update&ingID=<?=$ingID;?>",
 		title: 'Price',
 		validate: function(value){
 			if($.trim(value) == ''){
@@ -369,7 +369,7 @@ $(document).ready(function() {
 		container: 'body',
 		selector: 'i.size',
 		type: 'POST',
-		url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
+		url: "/core/core.php?ingSupplier=update&ingID=<?=$ingID;?>",
 		title: 'Size',
 		success: function (data) {
 			reload_sup_data();
@@ -384,7 +384,7 @@ $(document).ready(function() {
 		container: 'body',
 		selector: 'i.mUnit',
 		type: 'POST',
-		url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
+		url: "/core/core.php?ingSupplier=update&ingID=<?=$ingID;?>",
 		title: 'Measurement Unit',
 		source: [
 				 {value: 'ml', text: 'Milliliter'},
@@ -401,7 +401,7 @@ $(document).ready(function() {
 		container: 'body',
 		selector: 'i.manufacturer',
 		type: 'POST',
-		url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
+		url: "/core/core.php?ingSupplier=update&ingID=<?=$ingID;?>",
 		title: 'Manufacturer',
 		success: function (data) {
 			reload_sup_data();
@@ -412,7 +412,7 @@ $(document).ready(function() {
 		container: 'body',
 		selector: 'i.batch',
 		type: 'POST',
-		url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
+		url: "/core/core.php?ingSupplier=update&ingID=<?=$ingID;?>",
 		title: 'Batch',
 		success: function (data) {
 			reload_sup_data();
@@ -423,7 +423,7 @@ $(document).ready(function() {
 		container: 'body',
 		selector: 'i.purchased',
 		type: 'POST',
-		url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
+		url: "/core/core.php?ingSupplier=update&ingID=<?=$ingID;?>",
 		title: 'Purchase date',
 		type: 'date',
 		success: function (data) {
@@ -435,7 +435,7 @@ $(document).ready(function() {
 		container: 'body',
 		selector: 'i.stock',
 		type: 'POST',
-		url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
+		url: "/core/core.php?ingSupplier=update&ingID=<?=$ingID;?>",
 		title: 'In Stock',
 		success: function (data) {
 			reload_sup_data();
@@ -446,7 +446,7 @@ $(document).ready(function() {
 		container: 'body',
 		selector: 'i.internal_sku',
 		type: 'POST',
-		url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
+		url: "/core/core.php?ingSupplier=update&ingID=<?=$ingID;?>",
 		title: 'Internal SKU',
 		success: function (data) {
 			reload_sup_data();
@@ -457,7 +457,7 @@ $(document).ready(function() {
 		container: 'body',
 		selector: 'i.supplier_sku',
 		type: 'POST',
-		url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
+		url: "/core/core.php?ingSupplier=update&ingID=<?=$ingID;?>",
 		title: 'Supplier SKU',
 		success: function (data) {
 			reload_sup_data();
@@ -468,7 +468,7 @@ $(document).ready(function() {
 		container: 'body',
 		selector: 'i.storage_location',
 		type: 'POST',
-		url: "/pages/update_data.php?ingSupplier=update&ingID=<?=$ingID;?>",
+		url: "/core/core.php?ingSupplier=update&ingID=<?=$ingID;?>",
 		title: 'Storage location',
 		success: function (data) {
 			reload_sup_data();
@@ -482,7 +482,7 @@ $(document).ready(function() {
 		s.Status = $(this).attr('data-status');
 	
 		$.ajax({ 
-			url: '/pages/update_data.php', 
+			url: '/core/core.php', 
 			type: 'GET',
 			data: {
 				ingSupplier: 'preferred',
@@ -508,7 +508,7 @@ $(document).ready(function() {
 		$('#supMsg').html('<div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>Please wait, trying to fetch supplier data...</strong></div>');
 			$('#' + s.ID).html('<img src="/img/loading.gif"/>');
 			$.ajax({ 
-				url: '/pages/update_data.php', 
+				url: '/core/core.php', 
 				type: 'POST',
 				data: {
 					ingSupplier: 'getPrice',
@@ -546,7 +546,7 @@ $(document).ready(function() {
 				   callback: function (){
 						
 					$.ajax({ 
-						url: '/pages/update_data.php', 
+						url: '/core/core.php', 
 						type: 'GET',
 						data: {
 							ingSupplier: 'delete',

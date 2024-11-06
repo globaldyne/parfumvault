@@ -282,13 +282,13 @@ INSERT INTO `ingTypes` (`id`, `name`) VALUES
 (6, 'Solvent'),
 (7, 'Base');
 
-CREATE TABLE `lids` (
+CREATE TABLE `accessories` (
   `id` int(11) NOT NULL,
-  `style` varchar(255) COLLATE utf8_general_ci NOT NULL,
-  `colour` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  `accessory` varchar(255) NOT NULL,
   `price` DOUBLE DEFAULT 0,
-  `supplier` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `supplier_link` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `supplier` varchar(255) NOT NULL,
+  `supplier_link` varchar(255) NOT NULL,
   `pieces` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
@@ -444,7 +444,7 @@ ALTER TABLE `ingSuppliers`
 ALTER TABLE `ingTypes`
   ADD PRIMARY KEY (`id`);
 
-ALTER TABLE `lids`
+ALTER TABLE `accessories`
   ADD PRIMARY KEY (`id`);
 
 ALTER TABLE `settings`
@@ -490,7 +490,7 @@ ALTER TABLE `ingSuppliers`
 ALTER TABLE `ingTypes`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
-ALTER TABLE `lids`
+ALTER TABLE `accessories`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `settings`

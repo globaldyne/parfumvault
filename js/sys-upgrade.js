@@ -5,7 +5,7 @@ $('#dbUpBtn').click(function() {
 	$('#dbBkBtn').hide();
 	$('#dbUpOk').hide();
 	$.ajax({ 
-		url: '/pages/operations.php', 
+		url: '/core/core.php', 
 		type: 'GET',
 		data: {
 			'do': "db_update"

@@ -43,19 +43,19 @@ $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg F
 $bottle_id = $_POST['bottle_id'];
 $concentration =  $_POST['concentration'];
 $carrier_id = $_POST['carrier_id'];
-$lid_id = $_POST['lid_id'];
+$accessory_id = $_POST['accessory_id'];
 
 $bottle = mysqli_fetch_array(mysqli_query($conn, "SELECT price,ml,name FROM bottles WHERE id = '$bottle_id' AND price != 0 "));
 	
 $carrier_cost = mysqli_fetch_array(mysqli_query($conn, "SELECT price,size FROM suppliers WHERE ingID = '$carrier_id'"));
 
-if($_POST['lid_id']){
-	$lid = mysqli_fetch_array(mysqli_query($conn, "SELECT  price,style FROM lids WHERE id = '$lid_id'"));
-}else{
-	$lid['price'] = 0;
-	$lid['style'] = 'none';
+if($_POST['accessory_id']){
+	if(!$accessory = mysqli_fetch_array(mysqli_query($conn, "SELECT name, price, accessory FROM accessories WHERE id = '$accessory_id'"))){
+	//}else{
+		$accessory['price'] = 0;
+		$accessory['accessory'] = 'none';
+	}
 }
-	
 $new_conc = $bottle['ml'] / 100 * $concentration;
 $carrier = $bottle['ml'] - $new_conc;
 	
@@ -177,8 +177,8 @@ $m['carrier_quantity'] = number_format($carrier, $settings['qStep']);
 $m['carrier_quantity'] = number_format($carrier, $settings['qStep']);
 $m['carrier_cost'] =  (float)$carrier_sub_cost;
 $m['bottle_quantity'] = (float)$bottle['ml'];
-$m['lid_cost'] = (float)$lid['price'];
-$m['lid_style'] = (string)$lid['style'];
+$m['accessory_cost'] = (float)$accessory['price'];
+$m['accessory'] = (string)$accessory['name'].' ('.$accessory['accessory'].')';
 $m['batchNo'] = $batchID;
 $m['total_quantity'] = (float)number_format( array_sum($new_tot) + $carrier,$settings['qStep']);
 $m['quantity_unit'] = (string)$settings['mUnit'];
@@ -186,7 +186,7 @@ $m['sub_concentration'] = (float)number_format(array_sum($conc_tot),$settings['q
 $m['carrier_concentration'] = (float)number_format($carrier ?? 100 * 100 / $bottle['ml'],$settings['qStep']);
 $m['sub_cost'] = (float)number_format(array_sum($tot),$settings['qStep']);
 $m['bottle_cost'] = (float)number_format($bottle['price'],$settings['qStep']);
-$m['total_cost'] = (float)number_format(array_sum($tot) + $lid['price'] + $carrier_sub_cost + $bottle['price'], $settings['qStep']);
+$m['total_cost'] = (float)number_format(array_sum($tot) + $accessory['price'] + $carrier_sub_cost + $bottle['price'], $settings['qStep']);
 
 
 $m['cat_class'] = (string)$defCatClass;

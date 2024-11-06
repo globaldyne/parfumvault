@@ -29,7 +29,7 @@ $('[rel=tipsy]').tooltip({placement: 'auto'});
 
 $('#privacy').on('click', '[id*=savePrivacy]', function () {
 	$.ajax({ 
-		url: 'update_data.php', 
+		url: '/core/core.php', 
 		type: 'POST',
 		data: {
 			manage: 'ingredient',

@@ -115,7 +115,7 @@ $(document).ready(function() {
 		  container: 'body',
 		  selector: 'a.name',
 		  type: 'POST',
-		  url: "/pages/update_data.php?tmpl=update",
+		  url: "/core/core.php?tmpl=update",
 		  title: 'Template name',
 		  success: function (data) {
 			reload_data();
@@ -132,7 +132,7 @@ $(document).ready(function() {
 		container: 'body',
 		selector: 'a.description',
 		type: 'POST',
-		url: "/pages/update_data.php?tmpl=update",
+		url: "/core/core.php?tmpl=update",
 		title: 'Short description',
 		success: function (data) {
 			reload_data();
@@ -160,7 +160,7 @@ $(document).ready(function() {
 				   callback: function (){
 						
 					$.ajax({ 
-						url: '/pages/update_data.php', 
+						url: '/core/core.php', 
 						type: 'POST',
 						data: {
 							tmpl: 'delete',
@@ -189,7 +189,7 @@ $(document).ready(function() {
 	
 	$('#addTmpl').on('click', '[id*=sAdd]', function () {
 		$.ajax({ 
-			url: '/pages/update_data.php', 
+			url: '/core/core.php', 
 			type: 'POST',
 			data: {
 				tmpl: 'add',
@@ -228,7 +228,7 @@ $(document).ready(function() {
 		const id = e.relatedTarget.dataset.id;
 		const name = e.relatedTarget.dataset.name;
 	
-		$.get("/pages/editHtmlTmpl.php?id=" + id)
+		$.get("/pages/views/settings/editHtmlTmpl.php?id=" + id)
 			.then(data => {
 			$("#editTmplLabel", this).html(name);
 			$(".modal-body", this).html(data);
