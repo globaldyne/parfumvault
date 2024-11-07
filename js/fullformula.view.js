@@ -6,18 +6,22 @@
  * Full formula js helpers
  */
 
-//MULTIPLY - DIVIDE
+//SCALE FORMULA SIMPLE
 $('.manageQuantity').click(function() {
 	$.ajax({ 
     url: '/core/core.php', 
 	type: 'POST',
     data: {
-		do: 'scale',
+		action: 'simpleScale',
 		scale: $(this).attr('data-action'),
 		formula: myFID,
 	},
+	dataType: 'json',
     success: function (data) {
 		reload_formula_data();
+		$('#toast-title').html('<i class="fa-solid fa-circle-check mx-2"></i>' + data.success);
+		$('.toast-header').removeClass().addClass('toast-header alert-success');
+		$('.toast').toast('show');
     },
 	error: function (xhr, status, error) {
 		$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
@@ -27,33 +31,43 @@ $('.manageQuantity').click(function() {
   });
 });
 
-//AMOUNT TO MAKE
+//SCALE FORMULA ADVANCED
 $('#amount_to_make').on('click', '[id*=amountToMake]', function () {
+	$('#amountToMakeMsg').html('');
 	if($("#sg").val().trim() == '' ){
         $('#sg').focus();
-	  	$('#amountToMakeMsg').html('<div class="alert alert-danger"><strong>Error:</strong> all fields required!</div>');
+	  	$('#amountToMakeMsg').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>Specific gravity is required</div>');
 	}else if($("#totalAmount").val().trim() == '' ){
  		$('#totalAmount').focus();
-	  	$('#amountToMakeMsg').html('<div class="alert alert-danger"><strong>Error:</strong> all fields required!</div>');		
+	  	$('#amountToMakeMsg').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>New amount is required</div>');		
 	}else{
+		$('#amountToMakeMsg').html('<div class="alert alert-info mx-2"><img src="/img/loading.gif"/>Scaling the formula...</div>');
+		$('#amountToMake').prop('disabled', true);
 		$.ajax({ 
 		url: '/core/core.php', 
 		type: 'POST',
 		cache: false,
 		data: {
+			action: 'advancedScale',
 			fid: myFID,
 			SG: $("#sg").val(),
 			amount: $("#totalAmount").val(),
 		},
+		dataType: 'json',
 		success: function (data) {
-			$('#amountToMakeMsg').html(data);
-			$('#amount_to_make').modal('toggle');
-			reload_formula_data();
+			if( data.success ){
+				$('#amountToMakeMsg').html('');
+				$('#amount_to_make').modal('toggle');
+				$('#amountToMake').prop('disabled', false);
+				reload_formula_data();
+			} else {
+				$('#amountToMakeMsg').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>' + data.error + '</div>');
+				$('#amountToMake').prop('disabled', false);
+			}
 		},
 		error: function (xhr, status, error) {
-			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
-			$('.toast-header').removeClass().addClass('toast-header alert-danger');
-			$('.toast').toast('show');
+			$('#amountToMakeMsg').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. ' + error + '</div>');
+			$('#amountToMake').prop('disabled', false);
 		}
 	  });
 	}

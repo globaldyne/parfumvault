@@ -217,7 +217,7 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))){
                                     <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                         <a href="/?do=accessories">Accessories</a>
                                     </div>
-                                    <div class="h5 mb-0 font-weight-bold"><?php echo countElement("accessories", $conn); ?></div>
+                                    <div class="h5 mb-0 font-weight-bold"><?php echo countElement("inventory_accessories", $conn); ?></div>
                                 </div>
                                 <div class="col-auto">
                                     <i class="fas fa-prescription-bottle fa-2x text-gray-300"></i>

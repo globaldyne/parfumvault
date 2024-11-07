@@ -6,3 +6,5 @@ ALTER TABLE `inventory_accessories` CHANGE `supplier` `supplier` VARCHAR(255) NO
 ALTER TABLE `inventory_accessories` ADD UNIQUE(`name`);
 ALTER TABLE `inventory_compounds` ADD UNIQUE(`name`);
 ALTER TABLE `bottles` ADD UNIQUE(`name`);
+ALTER TABLE `customers` ADD UNIQUE(`name`);
+ALTER TABLE `ingSuppliers` ADD UNIQUE(`name`);

@@ -129,13 +129,13 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'customers'){
 	
 	$vd['product'] = $product;
 	$vd['version'] = $ver;
-	$vd['customers'] = $count;
+	$vd['inventory_customers'] = $count;
 	$vd['timestamp'] = date('d/m/Y H:i:s');
 
-	$result['customers'] = $ic;
+	$result['inventory_customers'] = $ic;
 	$result['pvMeta'] = $vd;
 
-	header('Content-disposition: attachment; filename=customers.json');
+	header('Content-disposition: attachment; filename=customers_inventory.json');
 	header('Content-type: application/json');
 	echo json_encode($result, JSON_PRETTY_PRINT);
 	return;	
@@ -187,7 +187,6 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'inventory_compounds'){
 }
 
 
-
 //EXPORT INGREDIENTS CSV
 if($_GET['format'] == 'csv' && $_GET['kind'] == 'ingredients'){
 	$defCatClass = $settings['defCatClass'];
@@ -201,7 +200,7 @@ if($_GET['format'] == 'csv' && $_GET['kind'] == 'ingredients'){
 	}
 
 	header('Content-Type: text/csv; charset=utf-8');
-	header('Content-Disposition: attachment; filename='.$_GET['kind'].'.csv');
+	header('Content-Disposition: attachment; filename=inventory_'.$_GET['kind'].'.csv');
 	$output = fopen('php://output', 'w');
 	fputcsv($output, array('Name', 'INCI', 'CAS', 'FEMA', 'Type', 'Strength', 'Profile', 'Physical State', 'Allergen', 'Odor Description', 'Top Note Impact', 'Heart Note Impact', 'Base Note Impact'));
 	
@@ -214,35 +213,6 @@ if($_GET['format'] == 'csv' && $_GET['kind'] == 'ingredients'){
 	return;	
 }
 
-//EXPORT SUPPLIERS CSV
-if($_GET['format'] == 'csv' && $_GET['kind'] == 'suppliers'){
-	$r = mysqli_query($conn, "SELECT id,name,address,po,country,telephone,url,email,platform,price_tag_start,price_tag_end,add_costs,price_per_size,notes,min_ml,min_gr FROM ingSuppliers");
-	
-	$res = array();
-	if (mysqli_num_rows($r) > 0) {
-		while ($row = mysqli_fetch_assoc($r)) {
-			$mt = mysqli_fetch_array(mysqli_query($conn, "SELECT COUNT(id) AS mt FROM suppliers WHERE ingSupplierID = '".$row['id']."'"));
-
-			unset($row['id']);
-			$row['materials'] = $mt['mt'];
-			$res[] = $row;
-			
-		}
-	}
-
-	header('Content-Type: text/csv; charset=utf-8');
-	header('Content-Disposition: attachment; filename='.$_GET['kind'].'.csv');
-	$output = fopen('php://output', 'w');
-	fputcsv($output, array('Name', 'Address', 'PO', 'Country', 'Telephone', 'URL', 'Email', 'Platform', 'Price Tag Start', 'Price Tag End', 'Added Costs', 'Price Per Size', 'Notes', 'Min ml', 'Min gr', 'Materials'));
-	
-	if (count($res) > 0) {
-		foreach ($res as $row) {
-			fputcsv($output, $row);
-		}
-	}
-	
-	return;	
-}
 
 //EXPORT INGREDIENTS JSON
 if($_GET['format'] == 'json' && $_GET['kind'] == 'ingredients'){
@@ -591,13 +561,13 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'suppliers'){
 	
 	$vd['product'] = $product;
 	$vd['version'] = $ver;
-	$vd['suppliers'] = $suppliers_count;
+	$vd['inventory_suppliers'] = $suppliers_count;
 	$vd['timestamp'] = date('d/m/Y H:i:s');
 
-	$result['suppliers'] = $sup;
+	$result['inventory_suppliers'] = $sup;
 	$result['pvMeta'] = $vd;
 
-	header('Content-disposition: attachment; filename=suppliers.json');
+	header('Content-disposition: attachment; filename=suppliers_inventory.json');
 	header('Content-type: application/json');
 	echo json_encode($result, JSON_PRETTY_PRINT);
 	return;	

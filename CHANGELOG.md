@@ -6,6 +6,12 @@
 - Import json functions update
 - Added import for accessories
 - Added import for bottles
+- Added import for suppliers
+- Added import for customers
+- Droped old CSV export for suppliers
+- Fixed pagination for suppliers
+- Formula scaling improvements
+- Add ingredient to formula backend update
 
 ### Version 11.9
 - Added system logs access via the UI for docker/cloud installations - this comes disabled by default

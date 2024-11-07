@@ -460,8 +460,8 @@ ALTER TABLE `ingredient_compounds`
 ALTER TABLE `bottles` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `bottles` ADD UNIQUE(`name`);
 
-ALTER TABLE `customers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `customers` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `customers` ADD UNIQUE(`name`);
 
 ALTER TABLE `formulas`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
@@ -484,8 +484,8 @@ ALTER TABLE `ingredients`
 ALTER TABLE `ingStrength`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
-ALTER TABLE `ingSuppliers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `ingSuppliers` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `ingSuppliers` ADD UNIQUE(`name`);
 
 ALTER TABLE `ingTypes`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
@@ -615,7 +615,7 @@ CREATE TABLE `formulasRevisions` (
 
 CREATE TABLE `formula_history` (
  `id` int(11) NOT NULL AUTO_INCREMENT,
- `fid` varchar(255) NOT NULL,
+ `fid` int(11) NOT NULL,
  `ing_id` INT NOT NULL DEFAULT '0', 
  `change_made` text COLLATE utf8_general_ci NOT NULL,
  `date_time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),

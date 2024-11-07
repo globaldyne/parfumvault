@@ -330,8 +330,9 @@ $('#add_ing').on('click', '[id*=add-btn]', function () {
 		url: '/core/core.php', 
 		type: 'POST',
 		data: {
-			action: "addIng",
+			action: "addIngToFormula",
 			fid: myFID,
+			id: <?php echo $id; ?>,
 			quantity: $("#quantity").val(),
 			concentration: $("#concentration").val(),
 			ingredient: $("#ingredient").val(),
@@ -342,17 +343,17 @@ $('#add_ing').on('click', '[id*=add-btn]', function () {
 		dataType: 'json',
 		success: function (data) {
 			if ( data.success ) {
-            	$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+            	$('#toast-title').html('<i class="fa-solid fa-circle-check mx-2"></i>' + data.success);
 				$('.toast-header').removeClass().addClass('toast-header alert-success');
 				reload_formula_data();
 			} else {
-            	$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+            	$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>' + data.error);
 				$('.toast-header').removeClass().addClass('toast-header alert-danger');
 			}
 			$('.toast').toast('show');
 		},
 		error: function (xhr, status, error) {
-			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error);
 			$('.toast-header').removeClass().addClass('toast-header alert-danger');
 			$('.toast').toast('show');
 		}

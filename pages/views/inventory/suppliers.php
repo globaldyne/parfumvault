@@ -1,5 +1,8 @@
 <div id="content-wrapper" class="d-flex flex-column">
-<?php require_once(__ROOT__.'/pages/top.php'); ?>
+<?php 
+require_once(__ROOT__.'/pages/top.php'); 
+require_once(__ROOT__.'/func/php-settings.php');
+?>
      <div class="container-fluid">
           <div class="card shadow mb-4">
             <div class="card-header py-3">
@@ -11,8 +14,9 @@
                       <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
                       <div class="dropdown-menu dropdown-menu-right">
                       <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addSupplier"><i class="fa-solid fa-plus mx-2"></i>Add new</a></li>
-                      <li><a class="dropdown-item" id="csv_export" href="/pages/export.php?format=csv&kind=suppliers"><i class="fa-solid fa-file-csv mx-2"></i>Export to CSV</a></li>
+                      <li><a class="dropdown-item" id="exportCSV" href="#"><i class="fa-solid fa-file-export mx-2"></i>Export to CSV</a></li>
         <li><a class="dropdown-item" id="json_export" href="/pages/export.php?format=json&kind=suppliers"><i class="fa-solid fa-file-code mx-2"></i>Export to JSON</a></li>
+                       <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#importJSON"><i class="fa-solid fa-file-import mx-2"></i>Import from JSON</a></li>
                       </div>
                     </div>        
                  </div>
@@ -50,7 +54,16 @@ $(document).ready(function() {
 			{ orderable: false, targets: [10]}
 		],
 		dom: 'lfrtip',
+		buttons: [{
+			extend: 'csvHtml5',
+			title: "Suppliers",
+			exportOptions: {
+				columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+			},
+		}],
 		processing: true,
+		serverSide: false,
+		searching: true,
 		language: {
 			loadingRecords: '&nbsp;',
 			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>',
@@ -59,7 +72,11 @@ $(document).ready(function() {
 			searchPlaceholder: 'Search by name...',
 			search: ''
 		},
-		ajax: {	url: '/core/list_suppliers_data.php' },
+		ajax: {	
+			url: '/core/list_suppliers_data.php',
+			type: 'POST',
+			dataType: 'json',
+		},
 		columns: [
 		  { data : 'name', title: 'Name', render: name },
 		  { data : 'materials', title: 'Materials' },
@@ -100,307 +117,307 @@ $(document).ready(function() {
 	});
 
 
-function name(data, type, row){
-	return '<i class="name pv_point_gen" data-name="name" data-type="text" data-pk="'+row.id+'">'+row.name+'</i>';    
-};
-
-function platform(data, type, row){
-	return '<i class="platform pv_point_gen" data-name="platform" data-type="select" data-pk="'+row.id+'">'+row.platform+'</i>';
-};
-
-function price_tag_start(data, type, row){
-	return '<i class="price_tag_start pv_point_gen" data-name="price_tag_start" data-type="textarea" data-pk="'+row.id+'">'+atob(row.price_tag_start)+'</i>';    
-};
-
-function price_tag_end(data, type, row){
-	return '<i class="price_tag_end pv_point_gen" data-name="price_tag_end" data-type="textarea" data-pk="'+row.id+'">'+atob(row.price_tag_end)+'</i>';    
-};
-
-function add_costs(data, type, row){
-	return '<i class="add_costs pv_point_gen" data-name="add_costs" data-type="text" data-pk="'+row.id+'">'+row.add_costs+'</i>';    
-};
-
-function price_per_size(data, type, row){
-	return '<i class="price_per_size pv_point_gen" data-name="price_per_size" data-type="select" data-pk="'+row.id+'">'+row.price_per_size+'</i>';    
-};
-
-function min_ml(data, type, row){
-	return '<i class="min_ml pv_point_gen" data-name="min_ml" data-type="text" data-pk="'+row.id+'">'+row.min_ml+'</i>';
-};
-
-function min_gr(data, type, row){
-	return '<i class="min_gr pv_point_gen" data-name="min_gr" data-type="text" data-pk="'+row.id+'">'+row.min_gr+'</i>';
-};
-
-function description(data, type, row){
-	return '<i class="notes pv_point_gen" data-name="notes" data-type="textarea" data-pk="'+row.id+'">'+row.notes+'</i>';    
-};
-
-function actions(data, type, row){
-	data = '<div class="dropdown">' +
-			'<button type="button" class="btn btn-floating hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
-				'<ul class="dropdown-menu dropdown-menu-right">';
-	data += '<li><i class="pv_point_gen dropdown-item" data-bs-toggle="modal" data-bs-target="#details" id="edit_supplier" data-id="' + row.id + '" data-name="' + row.name + '" data-address="'+row.address+'" data-po="'+row.po+'" data-country="'+row.country+'" data-telephone="'+row.telephone+'" data-url="'+row.url+'" data-email="'+row.email+'"><i class="fas fa-edit mx-2"></i>Edit</i></li>';
-	data += '<li><a class="dropdown-item" id="json_export" href="/pages/export.php?format=json&kind=supplier-materials&supplier-name='+row.name+'&id='+row.id+'"><i class="fa-solid fa-file-code mx-2"></i>Export materials to JSON</a></li>';
-	data += '<div class="dropdown-divider"></div>';
-	data += '<li><a class="dropdown-item pv_point_gen text-danger" id="dDel" data-name="'+ row.name +'" data-id='+ row.id +'><i class="fas fa-trash mx-2"></i>Delete</a></li>';
-	data += '</ul></div>';
+	function name(data, type, row){
+		return '<i class="name pv_point_gen" data-name="name" data-type="text" data-pk="'+row.id+'">'+row.name+'</i>';    
+	};
 	
-	return data;
-};
-
-$('#tdIngSupData').editable({
-  container: 'body',
-  selector: 'i.name',
-  url: "/core/core.php?settings=sup",
-  title: 'Supplier',
-  type: "POST",
-  validate: function(value){
-   if($.trim(value) == ''){
-    return 'This field is required';
-   }
-  }
-});
-
-$('#tdIngSupData').editable({
-	container: 'body',
-	selector: 'i.platform',
-	type: 'POST',
-  	url: "/core/core.php?settings=sup",
-    source: [
-			 {value: "woocomerce", text: "Woocomerce"},
-			 {value: "shopify", text: "Shopify"},
-			 {value: "other", text: "Custom/Other"},
-          ],
-});
-
-$('#tdIngSupData').editable({
-	container: 'body',
-	selector: 'i.price_per_size',
-	type: 'POST',
-  	url: "/core/core.php?settings=sup",
-    source: [
-		 {value: "0", text: "Product"},
-		 {value: "1", text: "Volume"},
-    ],
-});
-
-$('#tdIngSupData').editable({
-  container: 'body',
-  selector: 'i.min_ml',
-  url: "/core/core.php?settings=sup",
-  title: 'Minimum ml',
-  type: "POST",
-  validate: function(value){
-	if($.trim(value) == ''){
-		return 'This field cannot be empty, set 0 for none';
-	}
-   	if($.isNumeric(value) == '' ){
-		return 'Numbers only!';
-	}
-  }
-});
-
-$('#tdIngSupData').editable({
-  container: 'body',
-  selector: 'i.min_gr',
-  url: "/core/core.php?settings=sup",
-  title: 'Minimum grams',
-  type: "POST",
-  validate: function(value){
-	if($.trim(value) == ''){
-		return 'This field cannot be empty, set 0 for none';
-	}
-	if($.isNumeric(value) == '' ){
-		return 'Numbers only!';
-	}
-  }
-});
-
-$('#tdIngSupData').editable({
-  container: 'body',
-  selector: 'i.price_tag_start',
-  url: "/core/core.php?settings=sup",
-  title: 'Price tag start',
-  type: "POST"
-});
-
-$('#tdIngSupData').editable({
-  container: 'body',
-  selector: 'i.price_tag_end',
-  url: "/core/core.php?settings=sup",
-  title: 'Price tag end',
-  type: "POST"
-});
-
-$('#tdIngSupData').editable({
-  container: 'body',
-  selector: 'i.add_costs',
-  url: "/core/core.php?settings=sup",
-  title: 'Additional Costs',
-  type: "POST",
-  validate: function(value){
-	  if($.trim(value) == ''){
-		return 'This field cannot be empty, set 0 for none';
-	  }
-	  if($.isNumeric(value) == '' ){
-		return 'Numbers only!';
-	  }
-  }
-});
-
-$('#tdIngSupData').editable({
-  container: 'body',
-  selector: 'i.notes',
-  url: "/core/core.php?settings=sup",
-  title: 'Description',
-  type: "POST",
-});
-
+	function platform(data, type, row){
+		return '<i class="platform pv_point_gen" data-name="platform" data-type="select" data-pk="'+row.id+'">'+row.platform+'</i>';
+	};
 	
-$('#tdIngSupData').on('click', '[id*=dDel]', function () {
-	var d = {};
-	d.ID = $(this).attr('data-id');
-    d.Name = $(this).attr('data-name');
+	function price_tag_start(data, type, row){
+		return '<i class="price_tag_start pv_point_gen" data-name="price_tag_start" data-type="textarea" data-pk="'+row.id+'">'+atob(row.price_tag_start)+'</i>';    
+	};
+	
+	function price_tag_end(data, type, row){
+		return '<i class="price_tag_end pv_point_gen" data-name="price_tag_end" data-type="textarea" data-pk="'+row.id+'">'+atob(row.price_tag_end)+'</i>';    
+	};
+	
+	function add_costs(data, type, row){
+		return '<i class="add_costs pv_point_gen" data-name="add_costs" data-type="text" data-pk="'+row.id+'">'+row.add_costs+'</i>';    
+	};
+	
+	function price_per_size(data, type, row){
+		return '<i class="price_per_size pv_point_gen" data-name="price_per_size" data-type="select" data-pk="'+row.id+'">'+row.price_per_size+'</i>';    
+	};
+	
+	function min_ml(data, type, row){
+		return '<i class="min_ml pv_point_gen" data-name="min_ml" data-type="text" data-pk="'+row.id+'">'+row.min_ml+'</i>';
+	};
+	
+	function min_gr(data, type, row){
+		return '<i class="min_gr pv_point_gen" data-name="min_gr" data-type="text" data-pk="'+row.id+'">'+row.min_gr+'</i>';
+	};
 
-	bootbox.dialog({
-       title: "Confirm deletion",
-       message : 'Delete supplier <strong>'+ d.Name +'</strong> ?',
-       buttons :{
-           main: {
-               label : "Delete",
-               className : "btn-danger",
-               callback: function (){
-	    			
-				$.ajax({ 
-					url: '/core/core.php', 
-					type: 'GET',
-					data: {
-						supp: 'delete',
-						ID: d.ID,
+	function description(data, type, row){
+		return '<i class="notes pv_point_gen" data-name="notes" data-type="textarea" data-pk="'+row.id+'">'+row.notes+'</i>';    
+	};
+	
+	function actions(data, type, row){
+		data = '<div class="dropdown">' +
+				'<button type="button" class="btn btn-floating hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+					'<ul class="dropdown-menu dropdown-menu-right">';
+		data += '<li><i class="pv_point_gen dropdown-item" data-bs-toggle="modal" data-bs-target="#details" id="edit_supplier" data-id="' + row.id + '" data-name="' + row.name + '" data-address="'+row.address+'" data-po="'+row.po+'" data-country="'+row.country+'" data-telephone="'+row.telephone+'" data-url="'+row.url+'" data-email="'+row.email+'"><i class="fas fa-edit mx-2"></i>Edit</i></li>';
+		data += '<li><a class="dropdown-item" id="json_export" href="/pages/export.php?format=json&kind=supplier-materials&supplier-name='+row.name+'&id='+row.id+'"><i class="fa-solid fa-file-code mx-2"></i>Export materials to JSON</a></li>';
+		data += '<div class="dropdown-divider"></div>';
+		data += '<li><a class="dropdown-item pv_point_gen text-danger" id="dDel" data-name="'+ row.name +'" data-id='+ row.id +'><i class="fas fa-trash mx-2"></i>Delete</a></li>';
+		data += '</ul></div>';
+		
+		return data;
+	};
+	
+	$('#tdIngSupData').editable({
+	  container: 'body',
+	  selector: 'i.name',
+	  url: "/core/core.php?settings=sup",
+	  title: 'Supplier',
+	  type: "POST",
+	  validate: function(value){
+	   if($.trim(value) == ''){
+		return 'This field is required';
+	   }
+	  }
+	});
+	
+	$('#tdIngSupData').editable({
+		container: 'body',
+		selector: 'i.platform',
+		type: 'POST',
+		url: "/core/core.php?settings=sup",
+		source: [
+				 {value: "woocomerce", text: "Woocomerce"},
+				 {value: "shopify", text: "Shopify"},
+				 {value: "other", text: "Custom/Other"},
+			  ],
+	});
+	
+	$('#tdIngSupData').editable({
+		container: 'body',
+		selector: 'i.price_per_size',
+		type: 'POST',
+		url: "/core/core.php?settings=sup",
+		source: [
+			 {value: "0", text: "Product"},
+			 {value: "1", text: "Volume"},
+		],
+	});
+	
+	$('#tdIngSupData').editable({
+	  container: 'body',
+	  selector: 'i.min_ml',
+	  url: "/core/core.php?settings=sup",
+	  title: 'Minimum ml',
+	  type: "POST",
+	  validate: function(value){
+		if($.trim(value) == ''){
+			return 'This field cannot be empty, set 0 for none';
+		}
+		if($.isNumeric(value) == '' ){
+			return 'Numbers only!';
+		}
+	  }
+	});
+	
+	$('#tdIngSupData').editable({
+	  container: 'body',
+	  selector: 'i.min_gr',
+	  url: "/core/core.php?settings=sup",
+	  title: 'Minimum grams',
+	  type: "POST",
+	  validate: function(value){
+		if($.trim(value) == ''){
+			return 'This field cannot be empty, set 0 for none';
+		}
+		if($.isNumeric(value) == '' ){
+			return 'Numbers only!';
+		}
+	  }
+	});
+	
+	$('#tdIngSupData').editable({
+	  container: 'body',
+	  selector: 'i.price_tag_start',
+	  url: "/core/core.php?settings=sup",
+	  title: 'Price tag start',
+	  type: "POST"
+	});
+	
+	$('#tdIngSupData').editable({
+	  container: 'body',
+	  selector: 'i.price_tag_end',
+	  url: "/core/core.php?settings=sup",
+	  title: 'Price tag end',
+	  type: "POST"
+	});
+	
+	$('#tdIngSupData').editable({
+	  container: 'body',
+	  selector: 'i.add_costs',
+	  url: "/core/core.php?settings=sup",
+	  title: 'Additional Costs',
+	  type: "POST",
+	  validate: function(value){
+		  if($.trim(value) == ''){
+			return 'This field cannot be empty, set 0 for none';
+		  }
+		  if($.isNumeric(value) == '' ){
+			return 'Numbers only!';
+		  }
+	  }
+	});
+	
+	$('#tdIngSupData').editable({
+	  container: 'body',
+	  selector: 'i.notes',
+	  url: "/core/core.php?settings=sup",
+	  title: 'Description',
+	  type: "POST",
+	});
+	
+		
+	$('#tdIngSupData').on('click', '[id*=dDel]', function () {
+		var d = {};
+		d.ID = $(this).attr('data-id');
+		d.Name = $(this).attr('data-name');
+	
+		bootbox.dialog({
+		   title: "Confirm deletion",
+		   message : 'Delete supplier <strong>'+ d.Name +'</strong> ?',
+		   buttons :{
+			   main: {
+				   label : "Delete",
+				   className : "btn-danger",
+				   callback: function (){
+						
+					$.ajax({ 
+						url: '/core/core.php', 
+						type: 'GET',
+						data: {
+							supp: 'delete',
+							ID: d.ID,
+							},
+						dataType: 'json',
+						success: function (data) {
+							if(data.success){
+								$('#toast-title').html('<i class="fa-solid fa-circle-check mx-2"></i>' + data.success);
+								$('.toast-header').removeClass().addClass('toast-header alert-success');
+								reload_data();
+							}else if(data.error){
+								$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>' + data.error);
+								$('.toast-header').removeClass().addClass('toast-header alert-danger');
+							}
+							$('.toast').toast('show');
 						},
-					dataType: 'json',
-					success: function (data) {
-						if(data.success){
-							$('#toast-title').html('<i class="fa-solid fa-circle-check mx-2"></i>' + data.success);
-							$('.toast-header').removeClass().addClass('toast-header alert-success');
-							reload_data();
-						}else if(data.error){
-							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>' + data.error);
+						error: function (xhr, status, error) {
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
 							$('.toast-header').removeClass().addClass('toast-header alert-danger');
+							$('.toast').toast('show');
 						}
-						$('.toast').toast('show');
-					},
-					error: function (xhr, status, error) {
-						$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
-						$('.toast-header').removeClass().addClass('toast-header alert-danger');
-						$('.toast').toast('show');
-					}
-				  });
-				
-                 return true;
-               }
-           },
-           cancel: {
-               label : "Cancel",
-               className : "btn-secondary",
-               callback : function() {
-                   return true;
-               }
-           }   
-       },onEscape: function () {return true;}
-   });
-});
-
-
-$('#btnAddSupplier').on('click', function () {
-	$.ajax({ 
-		url: '/core/core.php', 
-		type: 'POST',
-		data: {
-			supp: 'add',
-			name: $("#add_supplier #name").val(),
-			address: $("#add_supplier #address").val(),
-			po: $("#add_supplier #po").val(),
-			country: $("#add_supplier #country").val(),
-			telephone: $("#add_supplier #telephone").val(),
-			url: $("#add_supplier #url").val(),
-			email: $("#add_supplier #email").val(),
-			platform: $("#add_supplier #platform").val(),
-			price_tag_start: $("#add_supplier #price_tag_start").val(),
-			price_tag_end: $("#add_supplier #price_tag_end").val(),
-			add_costs: $("#add_supplier #add_costs").val(),
-			description: $("#add_supplier #description").val(),
-			min_ml: $("#add_supplier #min_ml").val(),
-			min_gr: $("#add_supplier #min_gr").val()
-		},
-		dataType: 'json',
-		success: function (data) {
-			if(data.success){
-				$('#inf').html(data);
-				$("#add_supplier #name").val('');
-				$("#add_supplier #description").val('');
-				$("#add_supplier #platform").val('');
-				$("#add_supplier #price_tag_start").val('');
-				$("#add_supplier #price_tag_end").val('');
-				$("#add_supplier #add_costs").val('');
-				$("#add_supplier #min_ml").val('');
-				$("#add_supplier #min_gr").val('');
-				$("#add_supplier #address").val('');
-				$("#add_supplier #po").val('');
-				$("#add_supplier #country").val('');
-				$("#add_supplier #telephone").val('');
-				$("#add_supplier #url").val('');
-				$("#add_supplier #email").val('');
-				
-				msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
-				reload_data();
-			}else if(data.error){
-				msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+					  });
+					
+					 return true;
+				   }
+			   },
+			   cancel: {
+				   label : "Cancel",
+				   className : "btn-secondary",
+				   callback : function() {
+					   return true;
+				   }
+			   }   
+		   },onEscape: function () {return true;}
+	   });
+	});
+	
+	
+	$('#btnAddSupplier').on('click', function () {
+		$.ajax({ 
+			url: '/core/core.php', 
+			type: 'POST',
+			data: {
+				supp: 'add',
+				name: $("#add_supplier #name").val(),
+				address: $("#add_supplier #address").val(),
+				po: $("#add_supplier #po").val(),
+				country: $("#add_supplier #country").val(),
+				telephone: $("#add_supplier #telephone").val(),
+				url: $("#add_supplier #url").val(),
+				email: $("#add_supplier #email").val(),
+				platform: $("#add_supplier #platform").val(),
+				price_tag_start: $("#add_supplier #price_tag_start").val(),
+				price_tag_end: $("#add_supplier #price_tag_end").val(),
+				add_costs: $("#add_supplier #add_costs").val(),
+				description: $("#add_supplier #description").val(),
+				min_ml: $("#add_supplier #min_ml").val(),
+				min_gr: $("#add_supplier #min_gr").val()
+			},
+			dataType: 'json',
+			success: function (data) {
+				if(data.success){
+					$('#inf').html(data);
+					$("#add_supplier #name").val('');
+					$("#add_supplier #description").val('');
+					$("#add_supplier #platform").val('');
+					$("#add_supplier #price_tag_start").val('');
+					$("#add_supplier #price_tag_end").val('');
+					$("#add_supplier #add_costs").val('');
+					$("#add_supplier #min_ml").val('');
+					$("#add_supplier #min_gr").val('');
+					$("#add_supplier #address").val('');
+					$("#add_supplier #po").val('');
+					$("#add_supplier #country").val('');
+					$("#add_supplier #telephone").val('');
+					$("#add_supplier #url").val('');
+					$("#add_supplier #email").val('');
+					
+					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+					reload_data();
+				}else if(data.error){
+					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				}
+				$('#inf').html(msg);
+			},
+			error: function (xhr, status, error) {
+				$('#inf').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 			}
-			$('#inf').html(msg);
-		},
-		error: function (xhr, status, error) {
-			$('#inf').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
-		}
-  });
-});
-
-$('#btnEditSupplier').on('click', function () {
-	$.ajax({ 
-		url: '/core/core.php', 
-		type: 'POST',
-		data: {
-			supp: 'edit',
-			id: $("#id").val(),
-			name: $("#name").val(),
-			address: $("#address").val(),
-			po: $("#po").val(),
-			country: $("#country").val(),
-			telephone: $("#telephone").val(),
-			url: $("#url").val(),
-			email: $("#email").val(),
-		},
-		dataType: 'json',
-		success: function (data) {
-			if(data.success){			
-				msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
-				reload_data();
-			}else if(data.error){
-				msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+	  });
+	});
+	
+	$('#btnEditSupplier').on('click', function () {
+		$.ajax({ 
+			url: '/core/core.php', 
+			type: 'POST',
+			data: {
+				supp: 'edit',
+				id: $("#id").val(),
+				name: $("#name").val(),
+				address: $("#address").val(),
+				po: $("#po").val(),
+				country: $("#country").val(),
+				telephone: $("#telephone").val(),
+				url: $("#url").val(),
+				email: $("#email").val(),
+			},
+			dataType: 'json',
+			success: function (data) {
+				if(data.success){			
+					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+					reload_data();
+				}else if(data.error){
+					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+				}
+				$('#editSup').html(msg);
+			},
+			error: function (xhr, status, error) {
+				$('#editSup').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 			}
-			$('#editSup').html(msg);
-		},
-		error: function (xhr, status, error) {
-			$('#editSup').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
-		}
-  });
-});
-
-
-function reload_data() {
-    $('#tdIngSupData').DataTable().ajax.reload(null, true);
-};
+	  });
+	});
+	
+	
+	function reload_data() {
+		$('#tdIngSupData').DataTable().ajax.reload(null, true);
+	};
 
 	$('#tdIngSupData').on('click', '[id*=edit_supplier]', function () {
         
@@ -418,6 +435,9 @@ function reload_data() {
         $("#details").modal("show");
 	});
 	
+	$('#exportCSV').click(() => {
+		$('#tdIngSupData').DataTable().button(0).trigger();
+	});
 });
 </script>
 
@@ -476,7 +496,47 @@ function reload_data() {
   </div>
 </div>
 
-
+<!--IMPORT JSON MODAL-->
+<div class="modal fade" id="importJSON" data-bs-backdrop="static" tabindex="-1" aria-labelledby="importJSONLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="importJSONLabel">Import suppliers from a JSON file</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="JSRestMsg"></div>
+        <div class="progress mb-3">  
+          <div id="uploadProgressBar" class="progress-bar" role="progressbar" aria-valuemin="0"></div>
+        </div>
+        <div id="backupArea">
+          <div class="form-group row mb-3">
+            <label for="jsonFile" class="col-md-3 col-form-label">JSON file</label>
+            <div class="col-md-8">
+              <input type="file" name="jsonFile" id="jsonFile" class="form-control" />
+            </div>
+          </div>
+          <div class="col-md-12">
+            <hr />
+            <div class="alert alert-info">
+                <p><strong>IMPORTANT:</strong></p>
+                <ul>
+                  <li>
+                    <div id="raw" data-size="<?=getMaximumFileUploadSizeRaw()?>">Maximum file size: <strong><?=getMaximumFileUploadSize()?></strong></div>
+                  </li>
+                  <li>Any supplier with a name that already exists, will be updated.</li>
+                </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseBK">Close</button>
+        <input type="submit" name="btnRestore" class="btn btn-primary" id="btnImportSuppliers" value="Import">
+      </div>
+    </div>  
+  </div>
+</div>
 
 <!-- ADD NEW-->
 <div class="modal fade" id="addSupplier" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addSupplierLabel" aria-hidden="true">
@@ -583,4 +643,5 @@ function reload_data() {
     </div>
   </div>
 </div>
+<script src="/js/import.suppliers.js"></script>
 

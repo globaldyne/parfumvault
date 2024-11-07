@@ -3776,6 +3776,123 @@ if($_GET['action'] == 'restoreIFRA'){
 
 }
 
+//IMPORT SUPPLIERS
+if ($_GET['action'] == 'importSuppliers') {
+    if (!file_exists($tmp_path)) {
+        mkdir($tmp_path, 0777, true);
+    }
+
+    if (!is_writable($tmp_path)) {
+        $result['error'] = "Upload directory not writable. Make sure you have write permissions.";
+        echo json_encode($result);
+        return;
+    }
+
+    $target_path = $tmp_path . basename($_FILES['jsonFile']['name']); 
+
+    if (move_uploaded_file($_FILES['jsonFile']['tmp_name'], $target_path)) {
+        $data = json_decode(file_get_contents($target_path), true);
+        if (!$data['inventory_suppliers']) {
+            $result['error'] = "JSON File seems invalid. Please make sure you are importing the right file";
+            echo json_encode($result);
+            return;
+        }
+
+        foreach ($data['inventory_suppliers'] as $d) {				
+			$s = mysqli_query($conn, "
+				INSERT INTO `ingSuppliers` 
+				(`name`, `address`, `po`, `country`, `telephone`, `url`, `email`, `platform`, `price_tag_start`, `price_tag_end`, `add_costs`, `price_per_size`, `notes`, `min_ml`, `min_gr`) 
+				VALUES 
+				('" . $d['name'] . "', '" . $d['address'] . "', '" . $d['po'] . "', '" . $d['country'] . "', '" . $d['telephone'] . "', '" . $d['url'] . "', '" . $d['email'] . "', '" . $d['platform'] . "', '" . $d['price_tag_start'] . "', '" . $d['price_tag_end'] . "', '" . $d['add_costs'] . "', '" . $d['price_per_size'] . "', '" . $d['notes'] . "', '" . $d['min_ml'] . "', '" . $d['min_gr'] . "')
+				ON DUPLICATE KEY UPDATE
+				`address` = VALUES(`address`), 
+				`po` = VALUES(`po`), 
+				`country` = VALUES(`country`), 
+				`telephone` = VALUES(`telephone`), 
+				`url` = VALUES(`url`), 
+				`email` = VALUES(`email`), 
+				`platform` = VALUES(`platform`), 
+				`price_tag_start` = VALUES(`price_tag_start`), 
+				`price_tag_end` = VALUES(`price_tag_end`), 
+				`add_costs` = VALUES(`add_costs`), 
+				`price_per_size` = VALUES(`price_per_size`), 
+				`notes` = VALUES(`notes`), 
+				`min_ml` = VALUES(`min_ml`), 
+				`min_gr` = VALUES(`min_gr`)
+			");
+        }
+
+        if ($s) {
+            $result['success'] = "Import complete";
+            unlink($target_path);
+        } else {
+            $result['error'] = "There was an error importing your JSON file " . mysqli_error($conn);
+            echo json_encode($result);
+            return;
+        }
+    } else {
+        $result['error'] = "There was an error processing the JSON file $target_path, please try again!";
+        echo json_encode($result);
+    }
+
+    echo json_encode($result);
+    return;
+}
+
+//IMPORT CUSTOMERS
+if ($_GET['action'] == 'importCustomers') {
+    if (!file_exists($tmp_path)) {
+        mkdir($tmp_path, 0777, true);
+    }
+
+    if (!is_writable($tmp_path)) {
+        $result['error'] = "Upload directory not writable. Make sure you have write permissions.";
+        echo json_encode($result);
+        return;
+    }
+
+    $target_path = $tmp_path . basename($_FILES['jsonFile']['name']); 
+
+    if (move_uploaded_file($_FILES['jsonFile']['tmp_name'], $target_path)) {
+        $data = json_decode(file_get_contents($target_path), true);
+        if (!$data['inventory_customers']) {
+            $result['error'] = "JSON File seems invalid. Please make sure you are importing the right file";
+            echo json_encode($result);
+            return;
+        }
+
+        foreach ($data['inventory_customers'] as $d) {				
+			$s = mysqli_query($conn, "
+				INSERT INTO `customers` 
+				(`name`, `address`, `email`, `phone`, `web`, `owner_id`) 
+				VALUES 
+				('" . $d['name'] . "', '" . $d['address'] . "', '" . $d['email'] . "', '" . $d['phone'] . "', '" . $d['web'] . "', '" . $d['owner_id'] . "')
+				ON DUPLICATE KEY UPDATE
+				`address` = VALUES(`address`), 
+				`email` = VALUES(`email`), 
+				`phone` = VALUES(`phone`), 
+				`web` = VALUES(`web`), 
+				`owner_id` = VALUES(`owner_id`)
+			");
+        }
+
+        if ($s) {
+            $result['success'] = "Import complete";
+            unlink($target_path);
+        } else {
+            $result['error'] = "There was an error importing your JSON file " . mysqli_error($conn);
+            echo json_encode($result);
+            return;
+        }
+    } else {
+        $result['error'] = "There was an error processing the JSON file $target_path, please try again!";
+        echo json_encode($result);
+    }
+
+    echo json_encode($result);
+    return;
+}
+
 //IMPORT BOTTLES
 if ($_GET['action'] == 'importBottles') {
     if (!file_exists($tmp_path)) {
@@ -4520,46 +4637,84 @@ if($_GET['manage_view'] == '1'){
 	return;
 }
 
-//AMOUNT TO MAKE
-if($_POST['fid'] && $_POST['SG'] && $_POST['amount']){
-	$fid = mysqli_real_escape_string($conn, $_POST['fid']);
-	$SG = mysqli_real_escape_string($conn, $_POST['SG']);
-	$amount = mysqli_real_escape_string($conn, $_POST['amount']);
+//SCALE FORMULA
+if ($_POST['fid'] && $_POST['action'] == 'advancedScale' && $_POST['SG'] && $_POST['amount']) {
+    $fid = mysqli_real_escape_string($conn, $_POST['fid']);
+    $SG = mysqli_real_escape_string($conn, $_POST['SG']);
+    $amount = mysqli_real_escape_string($conn, $_POST['amount']);
 
-	$new_amount = $amount * $SG;
-	$mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE fid = '$fid'"));
+    $new_amount = $amount * $SG;
+    $mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE fid = '$fid'"));
 
-	$q = mysqli_query($conn, "SELECT quantity,ingredient FROM formulas WHERE fid = '$fid'");
-	while($cur =  mysqli_fetch_array($q)){
-		$nq = $cur['quantity']/$mg['total_mg']*$new_amount;		
-		if(empty($nq)){
-			$response['error'] = 'Something went wrong...';
-			echo json_encode($response);
-			return;
-		}
-		mysqli_query($conn,"UPDATE formulas SET quantity = '$nq' WHERE fid = '$fid' AND quantity = '".$cur['quantity']."' AND ingredient = '".$cur['ingredient']."'");
-	}
-	return;
+    $q = mysqli_query($conn, "SELECT quantity, ingredient FROM formulas WHERE fid = '$fid'");
+    $all_success = true;
+
+    while ($cur = mysqli_fetch_array($q)) {
+        $nq = $cur['quantity'] / $mg['total_mg'] * $new_amount;
+        
+        if (empty($nq)) {
+            $response['error'] = 'Something went wrong...';
+            echo json_encode($response);
+            return;
+        }
+
+        $update = mysqli_query($conn, "UPDATE formulas SET quantity = '$nq' WHERE fid = '$fid' AND quantity = '" . $cur['quantity'] . "' AND ingredient = '" . $cur['ingredient'] . "'");
+        
+        if (!$update) {
+            $all_success = false;
+            $error_message = mysqli_error($conn);
+            break; 
+        }
+    }
+
+    if ($all_success) {
+        $response['success'] = 'Formula scaled';
+    } else {
+        $response['error'] = 'Something went wrong... ' . $error_message;
+    }
+
+    echo json_encode($response);
+    return;
 }
 
 
 //DIVIDE - MULTIPLY
-if($_POST['formula'] && $_POST['do'] == 'scale'){
-	$fid = mysqli_real_escape_string($conn, $_POST['formula']);
+if ($_POST['formula'] && $_POST['action'] == 'simpleScale') {
+    $fid = mysqli_real_escape_string($conn, $_POST['formula']);
+    $q = mysqli_query($conn, "SELECT quantity, ingredient FROM formulas WHERE fid = '$fid'");
+    $all_success = true;
 	
-	$q = mysqli_query($conn, "SELECT quantity,ingredient FROM formulas WHERE fid = '$fid'");
-	while($cur =  mysqli_fetch_array($q)){
-		if($_POST['scale'] == 'multiply'){
-			$nq = $cur['quantity']*2;
-		}elseif($_POST['scale'] == 'divide'){
-			$nq = $cur['quantity']/2;
-		}
-		
-		mysqli_query($conn,"UPDATE formulas SET quantity = '$nq' WHERE fid = '$fid' AND quantity = '".$cur['quantity']."' AND ingredient = '".$cur['ingredient']."'");
-	}	
-	
-	return;
+    while ($cur = mysqli_fetch_array($q)) {
+        // Calculate the new quantity based on the scale action
+        if ($_POST['scale'] == 'multiply') {
+            $nq = $cur['quantity'] * 2;
+        } elseif ($_POST['scale'] == 'divide') {
+            $nq = $cur['quantity'] / 2;
+        } else {
+            $all_success = false;
+            $error_message = "Invalid scale action.";
+            break; 
+        }
+
+        $update = mysqli_query($conn, "UPDATE formulas SET quantity = '$nq' WHERE fid = '$fid' AND quantity = '" . $cur['quantity'] . "' AND ingredient = '" . $cur['ingredient'] . "'");
+        
+        if (!$update) {
+            $all_success = false;
+            $error_message = mysqli_error($conn); 
+            break; 
+        }
+    }
+
+    if ($all_success) {
+        $response['success'] = 'Formula scaled successfully';
+    } else {
+        $response['error'] = 'Error during scaling: ' . $error_message;
+    }
+
+    echo json_encode($response);
+    return;
 }
+
 
 //DELETE INGREDIENT
 if($_POST['action'] == 'deleteIng' && $_POST['ingID'] && $_POST['ing']){
@@ -4605,8 +4760,9 @@ if($_POST['action'] == 'deleteIng' && $_POST['ingID'] && $_POST['ing']){
 }
 
 //ADD INGREDIENT
-if($_POST['action'] == 'addIng' && $_POST['fid']){
+if($_POST['action'] == 'addIngToFormula'){
 	$fid = mysqli_real_escape_string($conn, $_POST['fid']);
+	$id = mysqli_real_escape_string($conn, $_POST['id']);
 	$ingredient_id = mysqli_real_escape_string($conn, $_POST['ingredient']);
 	$quantity = preg_replace("/[^0-9.]/", "", mysqli_real_escape_string($conn, $_POST['quantity']));
 	$concentration = preg_replace("/[^0-9.]/", "", mysqli_real_escape_string($conn, $_POST['concentration']));
@@ -4614,26 +4770,30 @@ if($_POST['action'] == 'addIng' && $_POST['fid']){
 	$ingredient = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE id = '$ingredient_id'"));
 	
 	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,isProtected,name FROM formulasMetaData WHERE fid = '$fid'"));
-	if($meta['isProtected'] == FALSE){
-		
-		if (empty($quantity) || empty($concentration)){
-			$response['error'] = 'Missing required fields';
-			echo json_encode($response);
-			return;
-		}
-			
-		if(mysqli_num_rows(mysqli_query($conn, "SELECT ingredient_id FROM formulas WHERE ingredient_id = '$ingredient_id' AND fid = '$fid'"))){
-			$response['error'] = $ingredient['name'].' already exists in formula!';
-			echo json_encode($response);
-			return;
-		}
+	if($meta['isProtected'] == TRUE){
+		$response["error"] = 'Formula is protected and cannot be modified';
+		echo json_encode($response);
+		return;
+	}
 	
-		if($_POST['reCalc'] == 'true'){
-			if(!$_POST['formulaSolventID']){
-				$response["error"] = 'Please select solvent';
-				echo json_encode($response);
-				return;
-			}
+	if (empty($quantity) || empty($concentration)){
+		$response['error'] = 'Missing required fields';
+		echo json_encode($response);
+		return;
+	}
+			
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT ingredient_id FROM formulas WHERE ingredient_id = '$ingredient_id' AND fid = '$fid'"))){
+		$response['error'] = $ingredient['name'].' already exists in formula';
+		echo json_encode($response);
+		return;
+	}
+	
+	if($_POST['reCalc'] == 'true'){
+		if(!$_POST['formulaSolventID']){
+			$response["error"] = 'Please select solvent';
+			echo json_encode($response);
+			return;
+		}
 		
 		$formulaSolventID = $_POST['formulaSolventID'];
 		
@@ -4655,22 +4815,23 @@ if($_POST['action'] == 'addIng' && $_POST['fid']){
 
 	}
 	
-
-
-		if(mysqli_query($conn,"INSERT INTO formulas(fid,name,ingredient,ingredient_id,concentration,quantity,dilutant) VALUES('$fid','".$meta['name']."','".$ingredient['name']."','".$ingredient_id."','$concentration','$quantity','$dilutant')")){
+	if(mysqli_query($conn,"INSERT INTO formulas(fid,name,ingredient,ingredient_id,concentration,quantity,dilutant) VALUES('$fid','".$meta['name']."','".$ingredient['name']."','".$ingredient_id."','$concentration','$quantity','$dilutant')")){
 			
-			$lg = "ADDED: ".$ingredient['name']." $quantity".$settings['mUnit']." @$concentration% $dilutant";
-			mysqli_query($conn, "INSERT INTO formula_history (fid,ing_id,change_made,user) VALUES ('".$fid."','$ingredient_id','$lg','".$user['fullName']."')");
-			mysqli_query($conn, "UPDATE formulasMetaData SET status = '1' WHERE fid = '".$fid."' AND status = '0' AND isProtected = '0'");
+		$lg = "ADDED: ".$ingredient['name']." $quantity".$settings['mUnit']." @$concentration% $dilutant";
+		mysqli_query($conn, "INSERT INTO formula_history (fid,ing_id,change_made,user) VALUES ('".$id."','$ingredient_id','$lg','".$user['fullName']."')");
+		mysqli_query($conn, "UPDATE formulasMetaData SET status = '1' WHERE fid = '".$fid."' AND status = '0' AND isProtected = '0'");
 			
-			$response['success'] = '<strong>'.$quantity.$settings['mUnit'].'</strong> of <strong>'.$ingredient['name'].'</strong> added to the formula!';
-			echo json_encode($response);
-			return;
-		} else {
-			$response['error'] = 'Something went wrong, '.mysqli_error($conn);
-			echo json_encode($response);
-		}
+		$response['success'] = '<strong>'.$quantity.$settings['mUnit'].'</strong> of <strong>'.$ingredient['name'].'</strong> added to the formula';
+		echo json_encode($response);
+		return;
+	} else {
+		$response['error'] = 'Something went wrong '.mysqli_error($conn);
+		echo json_encode($response);
+	}
 		
+ 	if(mysqli_error($conn)){
+		$response['error'] = 'Something went wrong '.mysqli_error($conn);
+		echo json_encode($response);
 	}
 	return;
 }
