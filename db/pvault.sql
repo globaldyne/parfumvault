@@ -62,7 +62,7 @@ CREATE TABLE `formulas` (
   `quantity` decimal(10,4) DEFAULT NULL,
   `exclude_from_summary` INT NOT NULL DEFAULT '0', 
   `exclude_from_calculation` INT NOT NULL DEFAULT '0',
-  `notes` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `notes` varchar(255) DEFAULT NULL,
   `created` datetime NOT NULL DEFAULT current_timestamp(),
   `updated` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;

@@ -11,7 +11,7 @@
 - Droped old CSV export for suppliers
 - Fixed pagination for suppliers
 - Formula scaling improvements
-- Add ingredient to formula backend update
+- Added ingredient to formula backend update
 
 ### Version 11.9
 - Added system logs access via the UI for docker/cloud installations - this comes disabled by default
