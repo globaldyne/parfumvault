@@ -12,7 +12,8 @@
 - Fixed pagination for suppliers
 - Formula scaling improvements
 - Added ingredient to formula backend update
-
+- Fix invalid formula update date on empty formulas
+ 
 ### Version 11.9
 - Added system logs access via the UI for docker/cloud installations - this comes disabled by default
 - Hide properties column in formulas

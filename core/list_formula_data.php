@@ -68,7 +68,7 @@ foreach ($formulaData as $formula) {
         'profile' => (string)($formula['profile'] ?: 'N/A'),
         'sex' => (string)($formula['sex'] ?: 'unisex'),
         'created' => (string)$formula['created'],
-        'updated' => (string)($formula['updated'] ?: '-'),
+        'updated' => (string)($formula['updated'] ?: '0000-00-00 00:00:00'),
         'catClass' => (string)($formula['catClass'] ?: 'N/A'),
         'ingredients' => (int)($formula['ingredients'] ?: 0),
         'isMade' => (int)($formula['isMade'] ?: 0),
