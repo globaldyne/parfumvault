@@ -8,3 +8,5 @@ ALTER TABLE `inventory_compounds` ADD UNIQUE(`name`);
 ALTER TABLE `bottles` ADD UNIQUE(`name`);
 ALTER TABLE `customers` ADD UNIQUE(`name`);
 ALTER TABLE `ingSuppliers` ADD UNIQUE(`name`);
+ALTER TABLE `formulasMetaData` CHANGE `sex` `gender` VARCHAR(255) NULL DEFAULT 'unisex'; 
+UPDATE `formulaCategories` SET type = 'gender' WHERE type = 'sex';

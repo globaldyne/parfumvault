@@ -21,12 +21,12 @@ while ($cats_res = mysqli_fetch_assoc($cats_q)) {
 }
 */
 $filters = [];
-if (!empty($_GET['filter']) && (!empty($_GET['profile']) || !empty($_GET['sex']))) {
+if (!empty($_GET['filter']) && (!empty($_GET['profile']) || !empty($_GET['gender']))) {
     if (!empty($_GET['profile'])) {
         $filters[] = "profile = '" . mysqli_real_escape_string($conn, $_GET['profile']) . "'";
     }
-    if (!empty($_GET['sex'])) {
-        $filters[] = "sex = '" . mysqli_real_escape_string($conn, $_GET['sex']) . "'";
+    if (!empty($_GET['gender'])) {
+        $filters[] = "gender = '" . mysqli_real_escape_string($conn, $_GET['gender']) . "'";
     }
 }
 
@@ -40,7 +40,7 @@ $f = !empty($filters) ? 'WHERE ' . implode(' AND ', $filters) : '';
 
 $Query = "
     SELECT 
-        id, fid, name, product_name, isProtected, profile, sex, created, 
+        id, fid, name, product_name, isProtected, profile, gender, created, 
         catClass, isMade, madeOn, status, rating, revision, 
         (SELECT updated FROM formulas WHERE fid = formulasMetaData.fid ORDER BY updated DESC LIMIT 1) AS updated, 
         (SELECT COUNT(dilutant) FROM formulas WHERE fid = formulasMetaData.fid) AS ingredients 
@@ -66,7 +66,7 @@ foreach ($formulaData as $formula) {
         'name' => (string)($formula['name'] ?: 'Unnamed'),
         'isProtected' => (int)($formula['isProtected'] ?: 0),
         'profile' => (string)($formula['profile'] ?: 'N/A'),
-        'sex' => (string)($formula['sex'] ?: 'unisex'),
+        'gender' => (string)($formula['gender'] ?: 'unisex'),
         'created' => (string)$formula['created'],
         'updated' => (string)($formula['updated'] ?: '0000-00-00 00:00:00'),
         'catClass' => (string)($formula['catClass'] ?: 'N/A'),

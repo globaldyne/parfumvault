@@ -136,7 +136,7 @@ $(document).ready(function() {
 	$('#frmDataCat').editable({
 	  container: 'body',
 	  selector: 'a.name',
-	  url: "/core/core.php?settings=fcat",
+	  url: "/core/core.php?settings=fcat&action=updateFormulaCategory",
 	  title: 'Category name',
 	  type: "POST",
 	  dataType: 'json',
@@ -157,18 +157,25 @@ $(document).ready(function() {
 		type: "POST",
 		emptytext: "",
 		emptyclass: "",
-		url: "/core/core.php?settings=fcat",
+		url: "/core/core.php?settings=fcat&action=updateFormulaCategory",
 		source: [
-				 <?php
-					$getCK = mysqli_query($conn, "SELECT type FROM formulaCategories GROUP BY type");
-					while ($r = mysqli_fetch_array($getCK)){
-				 ?>
-					{value: "<?=$r['type']?>", text: "<?=$r['type']?>"},
-				<?php } ?>
-			  ],
-		dataType: 'html',
-		success: function () {
-			reload_data();
+        	{value: 'gender', text: 'Gender'},
+            {value: 'profile', text: 'Profile'},
+		],
+		dataType: 'json',
+		success: function (data) {
+			if (data.success) {
+				reload_data();
+			} else if (data.error) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
 		}
 	});
 	
@@ -180,7 +187,7 @@ $(document).ready(function() {
 		type: "POST",
 		emptytext: "",
 		emptyclass: "",
-		url: "/core/core.php?settings=fcat",
+		url: "/core/core.php?settings=fcat&action=updateFormulaCategory",
 		source: [
 				 <?php
 					$getCK = mysqli_query($conn, "SELECT name,rgb FROM colorKey ORDER BY name ASC");
@@ -189,7 +196,7 @@ $(document).ready(function() {
 				}
 				?>
 			  ],
-		dataType: 'html',
+		dataType: 'json',
 		success: function () {
 			reload_data();
 		}
@@ -270,7 +277,7 @@ $(document).ready(function() {
           <label for="cat_type" class="form-label">Type</label>
           <select name="cat_type" id="cat_type" class="form-select">
             <option value="profile">Profile</option>
-            <option value="sex">Gender</option>
+            <option value="gender">Gender</option>
           </select>
         </div>
       </div>

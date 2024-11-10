@@ -156,8 +156,8 @@ while($qTags = mysqli_fetch_array($tagsQ)){
  <div class="form-group col-md-6">
     <label class="control-label col-auto" for="gender">Gender</label>
     <select name="gender" id="gender" class="form-control selectpicker" data-live-search="false">
-    <?php foreach ($fcat as $cat) { if($cat['type'] == 'sex'){?>
-        <option value="<?=$cat['cname'];?>" <?php echo ($info['sex']==$cat['cname'])?"selected=\"selected\"":""; ?>><?php echo $cat['name'];?></option>
+    <?php foreach ($fcat as $cat) { if($cat['type'] == 'gender'){?>
+        <option value="<?=$cat['cname'];?>" <?php echo ($info['gender']==$cat['cname'])?"selected=\"selected\"":""; ?>><?php echo $cat['name'];?></option>
     <?php } }?>
     </select>
     </div>
@@ -331,7 +331,7 @@ $(document).ready(function(){
 			data: {
 				formulaSettings: true,
 				fid: '<?=$info['fid']?>',
-				set: 'sex',
+				set: 'gender',
 				val: $("#gender").find(":selected").val(),
 			},
 			dataType: 'json',

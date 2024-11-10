@@ -1570,13 +1570,18 @@ if($_GET['settings'] == 'prof'){
 	return;
 }
 
-if($_GET['settings'] == 'fcat'){
+if($_GET['settings'] == 'fcat' && $_GET['action'] == 'updateFormulaCategory' ){
 	$value = mysqli_real_escape_string($conn, $_POST['value']);
 	$cat_id = mysqli_real_escape_string($conn, $_POST['pk']);
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 
-	mysqli_query($conn, "UPDATE formulaCategories SET $name = '$value' WHERE id = '$cat_id'");
-	return;
+	if(mysqli_query($conn, "UPDATE formulaCategories SET $name = '$value' WHERE id = '$cat_id'")){
+		$response["success"] = 'Formula actegory updated';
+	} else {
+		$response["error"] = mysqli_error($conn);
+	}
+	echo json_encode($response);
+	return;	
 }
 
 if($_GET['settings'] == 'sup'){
@@ -3007,7 +3012,7 @@ if($_POST['action'] == 'import' && $_POST['kind'] == 'formula'){
 	  return;
 	}
 
-	$q = "INSERT INTO formulasMetaData (name,product_name,fid,profile,sex,notes,defView,catClass,finalType,status,src) VALUES ('".$jsonData['meta']['name']."','".$jsonData['meta']['product_name']."','".$jsonData['meta']['fid']."','".$jsonData['meta']['profile']."','".$jsonData['meta']['sex']."','".$jsonData['meta']['notes']."','".$jsonData['meta']['defView']."','".$jsonData['meta']['catClass']."','".$jsonData['meta']['finalType']."','".$jsonData['meta']['status']."','1')";
+	$q = "INSERT INTO formulasMetaData (name,product_name,fid,profile,gender,notes,defView,catClass,finalType,status,src) VALUES ('".$jsonData['meta']['name']."','".$jsonData['meta']['product_name']."','".$jsonData['meta']['fid']."','".$jsonData['meta']['profile']."','".$jsonData['meta']['gender']."','".$jsonData['meta']['notes']."','".$jsonData['meta']['defView']."','".$jsonData['meta']['catClass']."','".$jsonData['meta']['finalType']."','".$jsonData['meta']['status']."','1')";
 	
     $qIns = mysqli_query($conn,$q);
 	$last_id = mysqli_insert_id($conn);
@@ -3334,7 +3339,7 @@ if($_GET['action'] == 'exportFormulas'){
 		$r['fid'] = (string)$meta['fid'];
 		$r['profile'] = (string)$meta['profile'];
 		$r['category'] = (string)$meta['profile'] ?: 'Default';
-		$r['sex'] = (string)$meta['sex'];
+		$r['gender'] = (string)$meta['gender'];
 		$r['notes'] = (string)$meta['notes'] ?: 'None';
 		$r['created'] = (string)$meta['created'];
 		$r['isProtected'] = (int)$meta['isProtected'] ?: 0;
@@ -3424,7 +3429,7 @@ if($_GET['action'] == 'restoreFormulas'){
 			$product_name = mysqli_real_escape_string($conn, $meta['product_name']);
 			$notes = mysqli_real_escape_string($conn, $meta['notes']);
 			
-			$sql = "INSERT IGNORE INTO formulasMetaData(name,product_name,fid,profile,sex,notes,created,isProtected,defView,catClass,revision,finalType,isMade,madeOn,scheduledOn,customer_id,status,toDo,rating) VALUES('".$name."','".$product_name."','".$meta['fid']."','".$meta['profile']."','".$meta['sex']."','".$notes."','".$meta['created']."','".$meta['isProtected']."','".$meta['defView']."','".$meta['catClass']."','".$meta['revision']."','".$meta['finalType']."','".$meta['isMade']."','".$meta['madeOn']."','".$meta['scheduledOn']."','".$meta['customer_id']."','".$meta['status']."','".$meta['toDo']."','".$meta['rating']."')";
+			$sql = "INSERT IGNORE INTO formulasMetaData(name,product_name,fid,profile,gender,notes,created,isProtected,defView,catClass,revision,finalType,isMade,madeOn,scheduledOn,customer_id,status,toDo,rating) VALUES('".$name."','".$product_name."','".$meta['fid']."','".$meta['profile']."','".$meta['gender']."','".$notes."','".$meta['created']."','".$meta['isProtected']."','".$meta['defView']."','".$meta['catClass']."','".$meta['revision']."','".$meta['finalType']."','".$meta['isMade']."','".$meta['madeOn']."','".$meta['scheduledOn']."','".$meta['customer_id']."','".$meta['status']."','".$meta['toDo']."','".$meta['rating']."')";
 			
 			if(mysqli_query($conn,$sql)){
 				mysqli_query($conn,"DELETE FROM formulas WHERE fid = '".$meta['fid']."'");
@@ -4916,7 +4921,7 @@ if($_POST['action'] == 'clone' && $_POST['fid']){
 		echo json_encode($response);
         return;
     }
-	$sql1 = "INSERT INTO formulasMetaData (fid, name, notes, profile, sex, defView, product_name, catClass) SELECT '$newFid', '$newName', notes, profile, sex, defView, '$newName', catClass FROM formulasMetaData WHERE fid = '$fid'";
+	$sql1 = "INSERT INTO formulasMetaData (fid, name, notes, profile, gender, defView, product_name, catClass) SELECT '$newFid', '$newName', notes, profile, gender, defView, '$newName', catClass FROM formulasMetaData WHERE fid = '$fid'";
     $sql2 = "INSERT INTO formulas (fid, name, ingredient, ingredient_id, concentration, dilutant, quantity, notes) SELECT '$newFid', '$newName', ingredient, ingredient_id, concentration, dilutant, quantity, notes FROM formulas WHERE fid = '$fid'";
     
     if(mysqli_query($conn, $sql1) && mysqli_query($conn, $sql2)) {

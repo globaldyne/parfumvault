@@ -100,7 +100,7 @@ CREATE TABLE `formulasMetaData` (
   `product_name` varchar(255) DEFAULT NULL,
   `fid` varchar(255) COLLATE utf8_general_ci NOT NULL,
   `profile` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `sex` varchar(255) COLLATE utf8_general_ci DEFAULT 'unisex',
+  `gender` varchar(255) COLLATE utf8_general_ci DEFAULT 'unisex',
   `notes` text COLLATE utf8_general_ci DEFAULT NULL,
   `created` timestamp NOT NULL DEFAULT current_timestamp(),
   `isProtected` INT NULL DEFAULT '0',
@@ -632,7 +632,7 @@ CREATE TABLE `formulaCategories` (
  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
-INSERT INTO `formulaCategories` (`id`, `name`, `cname`, `type`) VALUES (NULL, 'Oriental', 'oriental', 'profile'), (NULL, 'Woody', 'woody', 'profile'), (NULL, 'Floral', 'floral', 'profile'), (NULL, 'Fresh', 'fresh', 'profile'), (NULL, 'Unisex', 'unisex', 'sex'), (NULL, 'Men', 'men', 'sex'), (NULL, 'Women', 'women', 'sex');
+INSERT INTO `formulaCategories` (`id`, `name`, `cname`, `type`) VALUES (NULL, 'Oriental', 'oriental', 'profile'), (NULL, 'Woody', 'woody', 'profile'), (NULL, 'Floral', 'floral', 'profile'), (NULL, 'Fresh', 'fresh', 'profile'), (NULL, 'Unisex', 'unisex', 'gender'), (NULL, 'Men', 'men', 'gender'), (NULL, 'Women', 'women', 'gender');
 
 CREATE TABLE `synonyms` ( `id` INT NOT NULL , `ing` VARCHAR(255) NOT NULL, `cid` INT(10) NULL DEFAULT NULL , `synonym` VARCHAR(255) NOT NULL , `source` VARCHAR(255) NULL DEFAULT NULL, `created_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ) ENGINE = InnoDB;
 
