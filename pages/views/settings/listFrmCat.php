@@ -106,8 +106,8 @@ $(document).ready(function() {
 	};
 	
 	$('#add-fcat').click(function() {
-	$.ajax({ 
-		url: '/core/core.php', 
+		$.ajax({ 
+			url: '/core/core.php', 
 			type: 'POST',
 			data: {
 				manage: 'add_frmcategory',
@@ -117,34 +117,50 @@ $(document).ready(function() {
 			dataType: 'json',
 			success: function (data) {
 				if ( data.success ) {
-					$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+					$('#toast-title').html('<i class="fa-solid fa-circle-check mx-2"></i>' + data.success);
 					$('.toast-header').removeClass().addClass('toast-header alert-success');
 					reload_data();
 					$('#add_formula_cat').modal('toggle');
 					$('.toast').toast('show');
 				} else {
-					var msg = '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mr-2"></i>'+data.error+'</div>';
-					$('#fcatMsgIn').html(msg);
+					$('#fcatMsgIn').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>'+data.error+'</div>');
 				}
-				
+			},
+			error: function (xhr, status, error) {
+				$('#fcatMsgIn').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 			}
 		});
 	});
 	
 	
-	
 	$('#frmDataCat').editable({
-	  container: 'body',
-	  selector: 'a.name',
-	  url: "/core/core.php?settings=fcat&action=updateFormulaCategory",
-	  title: 'Category name',
-	  type: "POST",
-	  dataType: 'json',
-	  validate: function(value){
-	   if($.trim(value) == ''){
-		return 'This field is required';
-	   }
-	  }
+		container: 'body',
+	  	selector: 'a.name',
+	  	url: "/core/core.php?settings=fcat&action=updateFormulaCategory",
+	  	title: 'Category name',
+	  	ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
+		success: function (data) {
+			if ( data.success ) {
+				reload_data();
+			} else if ( data.error ) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+		},
+		validate: function(value){
+			if($.trim(value) == ''){
+				return 'This field is required';
+			}
+		}
 	});
 	 
 	
@@ -154,7 +170,6 @@ $(document).ready(function() {
 		highlight: false,
 		title: 'Category type',
 		selector: 'a.type',
-		type: "POST",
 		emptytext: "",
 		emptyclass: "",
 		url: "/core/core.php?settings=fcat&action=updateFormulaCategory",
@@ -162,7 +177,10 @@ $(document).ready(function() {
         	{value: 'gender', text: 'Gender'},
             {value: 'profile', text: 'Profile'},
 		],
-		dataType: 'json',
+		ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
 		success: function (data) {
 			if (data.success) {
 				reload_data();
@@ -184,21 +202,34 @@ $(document).ready(function() {
 		pvnoresp: false,
 		highlight: false,
 		selector: 'a.colorKey',
-		type: "POST",
 		emptytext: "",
 		emptyclass: "",
 		url: "/core/core.php?settings=fcat&action=updateFormulaCategory",
 		source: [
-				 <?php
-					$getCK = mysqli_query($conn, "SELECT name,rgb FROM colorKey ORDER BY name ASC");
-					while ($r = mysqli_fetch_array($getCK)){
-					echo '{value: "'.$r['rgb'].'", text: "'.$r['name'].'", ck: "color: rgb('.$r['rgb'].')"},';
-				}
-				?>
-			  ],
-		dataType: 'json',
-		success: function () {
-			reload_data();
+			<?php
+			$getCK = mysqli_query($conn, "SELECT name,rgb FROM colorKey ORDER BY name ASC");
+			while ($r = mysqli_fetch_array($getCK)){
+				echo '{value: "'.$r['rgb'].'", text: "'.$r['name'].'", ck: "color: rgb('.$r['rgb'].')"},';
+			}
+			?>
+		],
+		ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
+		success: function (data) {
+			if (data.success) {
+				reload_data();
+			} else if (data.error) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
 		}
 	});
 		
@@ -215,7 +246,6 @@ $(document).ready(function() {
 				   label : "Delete",
 				   className : "btn-danger",
 				   callback: function (){
-						
 					$.ajax({ 
 						url: '/core/core.php', 
 						type: 'POST',
@@ -226,13 +256,18 @@ $(document).ready(function() {
 						dataType: 'json',
 						success: function (data) {
 							if ( data.success ) {
-								$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+								$('#toast-title').html('<i class="fa-solid fa-circle-check mx-2"></i>' + data.success);
 								$('.toast-header').removeClass().addClass('toast-header alert-success');
 								reload_data();
 							} else {
-								$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+								$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>' + data.error);
 								$('.toast-header').removeClass().addClass('toast-header alert-danger');
 							}
+							$('.toast').toast('show');
+						},
+						error: function (xhr, status, error) {
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An error occurred, check server logs for more info. '+ error);
+							$('.toast-header').removeClass().addClass('toast-header alert-danger');
 							$('.toast').toast('show');
 						}
 					  });
@@ -256,8 +291,8 @@ $(document).ready(function() {
 
 });
 
-
 </script>
+
 <!--ADD CATEGORY MODAL-->
 <div class="modal fade" id="add_formula_cat" data-bs-backdrop="static" tabindex="-1" aria-labelledby="add_formula_cat_label" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -288,6 +323,3 @@ $(document).ready(function() {
     </div>
   </div>
 </div>
-
-
-
