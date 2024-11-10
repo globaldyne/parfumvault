@@ -1213,24 +1213,33 @@ if($_POST['replacement'] == 'delete'){
 
 
 //UPDATE ING DOCUMENT
-if($_GET['ingDoc'] == 'update'){
+if($_GET['action'] == 'updateDocument'){
 	$value = mysqli_real_escape_string($conn, $_POST['value']);
 	$id = mysqli_real_escape_string($conn, $_POST['pk']);
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 	$ownerID = mysqli_real_escape_string($conn, $_GET['ingID']);
 
-	mysqli_query($conn, "UPDATE documents SET $name = '$value' WHERE ownerID = '$ownerID' AND id='$id'");
+	if(mysqli_query($conn, "UPDATE documents SET $name = '$value' WHERE ownerID = '$ownerID' AND id='$id'")){
+		$response["success"] = 'Document updated';
+	}else{
+		$response["error"] = 'Error: '.mysqli_error($conn);
+	}
+	echo json_encode($response);
 	return;
 }
 
 
 //DELETE DOCUMENT	
-if($_GET['doc'] == 'delete'){
-
+if($_GET['action'] == 'deleteDocument'){
 	$id = mysqli_real_escape_string($conn, $_GET['id']);
 	$ownerID = mysqli_real_escape_string($conn, $_GET['ownerID']);
 							
-	mysqli_query($conn, "DELETE FROM documents WHERE id = '$id' AND ownerID='$ownerID'");
+	if(mysqli_query($conn, "DELETE FROM documents WHERE id = '$id' AND ownerID='$ownerID'")){
+		$response["success"] = 'Document deletetd';
+	}else{
+		$response["error"] = 'Error: '.mysqli_error($conn);
+	}
+	echo json_encode($response);
 	return;
 }
 

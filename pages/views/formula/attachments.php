@@ -104,22 +104,27 @@ $(document).ready(function() {
 	};
 	
 	$('#tdAttachments').editable({
-		  container: 'body',
-		  selector: 'a.name',
-		  type: 'POST',
-		  url: "/core/core.php?ingDoc=update&ingID=<?=$id;?>",
-		  title: 'Attachment name',
+		container: 'body',
+		selector: 'a.name',
+		ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
+		url: "/core/core.php?action=updateDocument&ingID=<?=$id;?>",
+		title: 'Attachment name',
 	 });
 	  
 	 $('#tdAttachments').editable({
-		  container: 'body',
-		  selector: 'a.notes',
-		  type: 'POST',
-		  url: "/core/core.php?ingDoc=update&ingID=<?=$id;?>",
-		  title: 'Notes',
+		 container: 'body',
+		 selector: 'a.notes',
+		 ajaxOptions: {
+			 type: "POST",
+			 dataType: 'json'
+		 },
+		 url: "/core/core.php?action=updateDocument&ingID=<?=$id;?>",
+		 title: 'Notes',
 	 });
 	
-		
 	$('#tdAttachments').on('click', '[id*=dDel]', function () {
 		var d = {};
 		d.ID = $(this).attr('data-id');
@@ -133,18 +138,21 @@ $(document).ready(function() {
 				   label : "Remove",
 				   className : "btn-danger",
 				   callback: function (){
-						
-					$.ajax({ 
+				 	$.ajax({ 
 						url: '/core/core.php', 
 						type: 'GET',
 						data: {
-							doc: 'delete',
+							action: 'deleteDocument',
 							id: d.ID,
 							ownerID: '<?=$id?>'
 						},
-						dataType: 'html',
+						dataType: 'json',
 						success: function (data) {
-							reload_doc_data();
+							if( data.success){
+								reload_doc_data();
+							} else {
+								$('#doc_inf').html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>');
+							}
 						},
 						error: function (xhr, status, error) {
 							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);

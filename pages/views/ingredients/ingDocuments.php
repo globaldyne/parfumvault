@@ -53,11 +53,11 @@ $(document).ready(function() {
 		},
 		ajax: {	url: '/core/list_ing_doc_data.php?id=<?=$ingID?>' },
 		columns: [
-				  { data : 'name', title: 'Document', render: dName },
-				  { data : 'docData', title: 'File', render: docData},
-				  { data : 'notes', title: 'Notes', render: dNotes},
-				  { data : 'docSize', title: 'Size'},
-				  { data : null, title: '', render: dActions},		   
+			{ data : 'name', title: 'Document', render: dName },
+			{ data : 'docData', title: 'File', render: docData},
+			{ data : 'notes', title: 'Notes', render: dNotes},
+			{ data : 'docSize', title: 'Size'},
+			{ data : null, title: '', render: dActions},		   
 		],
 		order: [[ 1, 'asc' ]],
 		lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
@@ -91,17 +91,23 @@ $(document).ready(function() {
 	$('#tdIngDocs').editable({
 		container: 'body',
 	  	selector: 'i.name',
-	  	type: 'POST',
-	  	url: "/core/core.php?ingDoc=update&ingID=<?=$ingID;?>",
+	  	ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
+	  	url: "/core/core.php?action=updateDocument&ingID=<?=$ingID;?>",
 	  	title: 'Document name',
  	});
   
 	$('#tdIngDocs').editable({
-	  container: 'body',
-	  selector: 'i.notes',
-	  type: 'POST',
-	  url: "/core/core.php?ingDoc=update&ingID=<?=$ingID;?>",
-	  title: 'Notes',
+		container: 'body',
+	  	selector: 'i.notes',
+	  	ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
+	  	url: "/core/core.php?action=updateDocument&ingID=<?=$ingID;?>",
+	  	title: 'Notes',
 	});
 
 	
@@ -123,13 +129,17 @@ $(document).ready(function() {
 						url: '/core/core.php', 
 						type: 'GET',
 						data: {
-							doc: 'delete',
+							action: 'deleteDocument',
 							id: d.ID,
 							ownerID: '<?=$ingID?>'
 						},
-						dataType: 'html',
+						dataType: 'json',
 						success: function (data) {
-							$('#msg_doc').html(data);
+							if( data.success){
+								reload_doc_data();
+							} else {
+								$('#doc_inf').html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>');
+							}
 							reload_doc_data();
 						},
 						error: function (xhr, status, error) {
