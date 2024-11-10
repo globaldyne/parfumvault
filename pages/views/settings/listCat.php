@@ -154,10 +154,26 @@ $(document).ready(function() {
 	$('#tdDataCat').editable({
 		container: 'body',
 	  	selector: 'a.name',
-	  	url: "/core/core.php?settings=cat",
+	  	url: "/core/core.php?action=ingredientCategories",
 	  	title: 'Category',
-	  	type: "POST",
-	  	dataType: 'json',
+	  	ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
+		success: function (data) {
+			if (data.success) {
+				reload_data();
+			} else if (data.error) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+		},
 	  	validate: function(value){
 	   		if($.trim(value) == ''){
 				return 'This field is required';
@@ -168,10 +184,26 @@ $(document).ready(function() {
 	$('#tdDataCat').editable({
 		container: 'body',
 		selector: 'a.notes',
-		url: "/core/core.php?settings=cat",
+		url: "/core/core.php?action=ingredientCategories",
 		title: 'Description',
-		type: "POST",
-		dataType: 'json',
+		ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
+		success: function (data) {
+			if (data.success) {
+				reload_data();
+			} else if (data.error) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+		},
 	});
 	
 	//Change colorKey
@@ -179,22 +211,35 @@ $(document).ready(function() {
 		pvnoresp: false,
 		highlight: false,
 		selector: 'a.colorKey',
-		type: "POST",
 		emptytext: "",
 		emptyclass: "",
-		url: "/core/core.php?settings=cat",
+		url: "/core/core.php?action=ingredientCategories",
 		source: [
-				 <?php
-					$getCK = mysqli_query($conn, "SELECT name,rgb FROM colorKey ORDER BY name ASC");
-					while ($r = mysqli_fetch_array($getCK)){
-					echo '{value: "'.$r['rgb'].'", text: "'.$r['name'].'", ck: "color: rgb('.$r['rgb'].')"},';
-				}
-				?>
+		 <?php
+			$getCK = mysqli_query($conn, "SELECT name,rgb FROM colorKey ORDER BY name ASC");
+			while ($r = mysqli_fetch_array($getCK)){
+				echo '{value: "'.$r['rgb'].'", text: "'.$r['name'].'", ck: "color: rgb('.$r['rgb'].')"},';
+			}
+		?>
 		],
-		dataType: 'html',
-		success: function () {
-			reload_data();
-		}
+		ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
+		success: function (data) {
+			if (data.success) {
+				reload_data();
+			} else if (data.error) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+		},
 	});
 	
 		
@@ -212,25 +257,30 @@ $(document).ready(function() {
 				   className : "btn-danger",
 				   callback: function (){
 						
-					$.ajax({ 
-						url: '/core/core.php', 
-						type: 'POST',
-						data: {
-							action: "delete",
-							catId: cat.ID,
-						},
-						dataType: 'json',
-						success: function (data) {
-							if ( data.success ) {
-								$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
-								$('.toast-header').removeClass().addClass('toast-header alert-success');
-								reload_data();
-							} else {
-								$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+						$.ajax({ 
+							url: '/core/core.php', 
+							type: 'POST',
+							data: {
+								action: "delete",
+								catId: cat.ID,
+							},
+							dataType: 'json',
+							success: function (data) {
+								if ( data.success ) {
+									$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+									$('.toast-header').removeClass().addClass('toast-header alert-success');
+									reload_data();
+								} else {
+									$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+									$('.toast-header').removeClass().addClass('toast-header alert-danger');
+								}
+								$('.toast').toast('show');
+							},
+							error: function (xhr, status, error) {
+								$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An error occurred, check server logs for more info. '+ error);
 								$('.toast-header').removeClass().addClass('toast-header alert-danger');
-							}
-							$('.toast').toast('show');
-						}
+								$('.toast').toast('show');
+							},
 					  });
 					 return true;
 				   }

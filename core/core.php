@@ -1561,12 +1561,18 @@ if($_GET['action'] == 'rename' && $_GET['fid']){
 	return;	
 }
 
-if($_GET['settings'] == 'cat'){
+if($_GET['action'] == 'ingredientCategories'){
 	$value = mysqli_real_escape_string($conn, $_POST['value']);
 	$cat_id = mysqli_real_escape_string($conn, $_POST['pk']);
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 
-	mysqli_query($conn, "UPDATE ingCategory SET $name = '$value' WHERE id = '$cat_id'");
+	if(mysqli_query($conn, "UPDATE ingCategory SET $name = '$value' WHERE id = '$cat_id'")){
+		$response["success"] = 'Ingredient category updated';
+	}else{
+		$response["error"] = mysqli_error($conn);
+	}
+	
+	echo json_encode($response);
 	return;
 }
 
