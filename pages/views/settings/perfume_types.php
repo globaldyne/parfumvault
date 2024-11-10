@@ -102,32 +102,58 @@ $(document).ready(function() {
 	
 	
 	$('#tdperfTypes').editable({
-		  container: 'body',
-		  selector: 'a.name',
-		  type: 'POST',
-		  url: "/core/core.php?perfType=update",
-		  title: 'Perfume type name',
-		  success: function (data) {
+		container: 'body',
+		selector: 'a.name',
+		url: "/core/core.php?perfType=update",
+		title: 'Perfume type name',
+		ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
+		success: function (data) {
+			if (data.success) {
 				reload_data();
-		  },
-		
-		 validate: function(value){
+			} else if (data.error) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+		},		
+		validate: function(value){
 			if($.trim(value) == ''){
 				return 'This field is required';
 			}
-		 }
+		}
 	});
 	  
 	$('#tdperfTypes').editable({
-		  container: 'body',
-		  selector: 'a.concentration',
-		  type: 'POST',
-		  url: "/core/core.php?perfType=update",
-		  title: 'Concentration in %',
-		  success: function (data) {
-				reload_data();
+		container: 'body',
+		selector: 'a.concentration',
+		url: "/core/core.php?perfType=update",
+		title: 'Concentration in %',
+		ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
 		},
-		
+		success: function (data) {
+			if (data.success) {
+				reload_data();
+			} else if (data.error) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+		},
 		validate: function(value){
 			if($.trim(value) == ''){
 				return 'This field is required';
@@ -141,12 +167,26 @@ $(document).ready(function() {
 	$('#tdperfTypes').editable({
 		container: 'body',
 		selector: 'a.description',
-		type: 'POST',
 		url: "/core/core.php?perfType=update",
 		title: 'Short description',
-		success: function (data) {
-				reload_data();
+		ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
 		},
+		success: function (data) {
+			if (data.success) {
+				reload_data();
+			} else if (data.error) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+		}
 	});
 	 
 	
@@ -172,11 +212,23 @@ $(document).ready(function() {
 							perfType: 'delete',
 							pID: pType.ID,
 							pName: pType.Name
-							},
+						},
 						dataType: 'json',
 						success: function (data) {
-							reload_data();
+							if (data.success) {
+								reload_data();
+							} else if (data.error) {
+								$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+								$('.toast-header').removeClass().addClass('toast-header alert-danger');
+								$('.toast').toast('show');
+							}
+						},
+						error: function (xhr, status, error) {
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An error occurred, check server logs for more info. '+ error);
+							$('.toast-header').removeClass().addClass('toast-header alert-danger');
+							$('.toast').toast('show');
 						}
+
 					  });
 					
 					 return true;
@@ -212,6 +264,11 @@ $(document).ready(function() {
 				}
 				$('#ptype_inf').html(msg);
 				reload_data();
+			},
+			error: function (xhr, status, error) {
+				$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An error occurred, check server logs for more info. '+ error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
 			}
 		  });
 	});
@@ -256,6 +313,3 @@ $(document).ready(function() {
   </div>
 </div>
 </div>
-
-
-
