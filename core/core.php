@@ -636,7 +636,7 @@ if($_REQUEST['action'] == 'htmlTmplUpdate'){
 	if(mysqli_query($conn, "UPDATE templates SET $name = '$value' WHERE id = '$id'")){
 		$response["success"] = 'Template updated';
 	}else{
-		$response["error"] = 'Error: '.mysqli_error($conn);
+		$response["error"] = mysqli_error($conn);
 	}
 	
 	echo json_encode($response);

@@ -86,7 +86,7 @@ $(document).ready(function() {
 			url: '/core/core.php', 
 			type: 'POST',
 			data: {
-				tmpl: 'update',
+				action: 'htmlTmplUpdate',
 				name: 'content',
 				pk: <?=$_GET['id']?> ,
 				value: $("#tmpl-editor").val(),
