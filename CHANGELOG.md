@@ -16,6 +16,7 @@
 - Update empty table message
 - Rename sex to gender
 - Error handling improvements
+- Date Format update
 
 ### Version 11.9
 - Added system logs access via the UI for docker/cloud installations - this comes disabled by default

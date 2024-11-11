@@ -159,8 +159,8 @@ $(document).ready(function() {
 			   { data : 'revision', title: 'Revision'},
 			   { data : 'isMade', title: 'Made', render: fMade},
 			   { data : 'rating', title: 'Rating', render: rating},
-			   { data : 'created', title: 'Created', render: fDate},
-			   { data : 'updated', title: 'Updated', render: fDate},
+			   { data : 'created', title: 'Created', render: formatDate},
+			   { data : 'updated', title: 'Updated', render: formatDate},
 			   { data : null, title: '', render: fActions},				   
 			],
 			processing: true,
@@ -277,19 +277,26 @@ $(document).ready(function() {
 		return data;
 	};
 	
-	function fDate(data, type, row, meta){
-	  if(type === 'display'){
-		if(data == '0000-00-00 00:00:00'){
-		  data = '-';
-		}else{
-			let dateTimeParts= data.split(/[- :]/); 
-			dateTimeParts[1]--; 
-			const dateObject = new Date(...dateTimeParts); 
-			data = dateObject.toLocaleDateString() + " " + dateObject.toLocaleTimeString();
+	function formatDate(data, type) {
+	  if (type === 'display') {
+		if (data === '0000-00-00 00:00:00') {
+		  return '-';
+		}
+		
+		try {
+		  const [year, month, day, hour, minute, second] = data.split(/[- :]/).map(Number);
+		  const dateObject = new Date(year, month - 1, day, hour, minute, second);
+	
+		  return `${dateObject.toLocaleDateString()} ${dateObject.toLocaleTimeString()}`;
+		} catch (error) {
+		  console.error("Date parsing error:", error);
+		  return data; // Return original data if parsing fails
 		}
 	  }
+	
 	  return data;
-	};
+	}
+
 	
 	function fActions(data, type, row, meta){
 			data = '<div class="dropdown">' +
