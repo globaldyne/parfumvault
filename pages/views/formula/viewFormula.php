@@ -489,31 +489,34 @@ $(document).ready(function() {
 		ing.ID = $(this).attr('data-id');
 		ing.Name = $(this).attr('data-name');
 		ing.Status = $(this).attr('data-status');
-				
-			$.ajax({ 
-				url: '/core/core.php', 
-				type: 'POST',
-				data: {
-					action: "excIng",
-					fid: myFID,
-					ingID: ing.ID,
-					ingName: ing.Name,
-					status: ing.Status
-				},
-				dataType: 'json',
-				success: function (data) {
-					if(data.success) {
-						$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
-						$('.toast-header').removeClass().addClass('toast-header alert-success');
-					}else{
-						$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
-						$('.toast-header').removeClass().addClass('toast-header alert-danger');
-					}
-					$('.toast').toast('show');
-					reload_formula_data();
+		$.ajax({ 
+			url: '/core/core.php', 
+			type: 'POST',
+			data: {
+				action: "excIng",
+				fid: myFID,
+				ingID: ing.ID,
+				ingName: ing.Name,
+				status: ing.Status
+			},
+			dataType: 'json',
+			success: function (data) {
+				if(data.success) {
+					$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+					$('.toast-header').removeClass().addClass('toast-header alert-success');
+				}else{
+					$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+					$('.toast-header').removeClass().addClass('toast-header alert-danger');
 				}
-			  });
-					
+				$('.toast').toast('show');
+				reload_formula_data();
+			},
+			error: function (xhr, status, error) {
+				$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			},
+		  });					
 	});
 	
 	function ingName(data, type, row, meta){
@@ -624,15 +627,11 @@ $(document).ready(function() {
 	};
 	
 	function ingSetConc(data, type, row, meta){
-		
-		return '<div class="concentration-details">' + row.concentration + '</div>';	
-		
+		return '<div class="concentration-details">' + row.concentration + '</div>';
 	};
 	
 	function ingFinalSetConc(data, type, row, meta){
-		
-		return '<div class="final-concentration-details">' + row.final_concentration + '</div>';	
-		
+		return '<div class="final-concentration-details">' + row.final_concentration + '</div>';
 	};
 	
 	function ingNotes(data, type, row, meta){
@@ -700,54 +699,229 @@ $(document).ready(function() {
 	
 	
 
+	function extrasShow() {
+		$('[rel=tip]').tooltip({
+			 html: true,
+			 boundary: "window",
+			 overflow: "auto",
+			 container: "body",
+			 delay: {"show": 100, "hide": 0},
+		 });
+		$('.popup-link').magnificPopup({
+			type: 'iframe',
+			closeOnContentClick: false,
+			closeOnBgClick: false,
+			showCloseBtn: true,
+		});
+		
+		var obsDiv = $(".quantity-details, .concentration-details, .final-concentration-details");
+		
+		if (sessionStorage.getItem("obsState") === "true") {
+			obsDiv.addClass("div-obs");
+		} else {
+			obsDiv.removeClass("div-obs");
+		}
+		if(isProtected == false){
+			 if (obsDiv.hasClass("div-obs")) {
+				obsDiv.removeClass("div-obs");
+				sessionStorage.setItem("obsState", "false");
+			}
+		}
+		$("#toggle-obs").click(function (e) {
+			e.preventDefault();
 	
+			if (obsDiv.hasClass("div-obs")) {
+				obsDiv.removeClass("div-obs");
+				sessionStorage.setItem("obsState", "false");
+			} else {
+				obsDiv.addClass("div-obs");
+				sessionStorage.setItem("obsState", "true");
+			}
+		});
+	};
+	  
+	$('#formula').editable({
+		container: 'body',
+		selector: 'a.concentration',
+		url: "/core/core.php?formula=" + myFID,
+		title: 'Purity %',
+		ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
+		success: function (data) {
+			if ( data.success ) {
+				reload_formula_data();
+			} else if ( data.error ) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+		},
+		validate: function(value){
+			if($.trim(value) == ''){
+				return 'This field is required';
+			}
+			if($.isNumeric(value) == '' ){
+				return 'Numbers only';
+			}
+		}
+	});
+	<?php if($settings['editor'] == '1'){?>
+	$('#formula').editable({
+		container: 'body',
+		selector: 'a.quantity',
+		url: "/core/core.php?formula=" + myFID,
+		title: 'Quantity in <?=$settings['mUnit']?>',
+		ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
+		success: function (data) {
+			if ( data.success ) {
+				reload_formula_data();
+			} else if ( data.error ) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+		},
+		validate: function(value){
+			if($.trim(value) == ''){
+				return 'This field is required';
+			}
+			if($.isNumeric(value) == '' ){
+				return 'Numbers only';
+			}
+		}
+	});
+	
+	<?php } ?>
+	$('#formula').editable({
+		container: 'body',
+		selector: 'a.solvent',
+		emptytext: "",
+		emptyclass: "",
+		url: "/core/core.php?formula=" + myFID,
+		title: 'Choose solvent',
+		source: [
+		<?php
+			$res_ing = mysqli_query($conn, "SELECT id, name FROM ingredients WHERE type = 'Solvent' OR type = 'Carrier' ORDER BY name ASC");
+			while ($r_ing = mysqli_fetch_array($res_ing)){
+			echo '{value: "'.$r_ing['name'].'", text: "'.$r_ing['name'].'"},';
+		}
+		?>
+		],
+		ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
+		success: function (data) {
+			if ( data.success ) {
+				reload_formula_data();
+			} else if ( data.error ) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+		},
+	
+	});
+	
+	$('#formula').editable({
+	  container: 'body',
+	  selector: 'i.notes',
+	  url: "/core/core.php?formula=" + myFID,
+	  title: 'Notes',
+		ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
+		success: function (data) {
+			if ( data.success ) {
+				reload_formula_data();
+			} else if ( data.error ) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+		},
+	});
+	
+	$('#isMade').click(function() {
+		bootbox.dialog({
+		   title: "Confirm formula is made?",
+		   message : 'If confirmed, ingredients amount will be deducted from the inventory accordingly, where enough in stock.',
+		   buttons :{
+			   main: {
+				   label : "Confirm",
+				   className : "btn-primary",
+				   callback: function (){
+					$.ajax({ 
+						url: '/core/core.php', 
+						type: 'POST',
+						data: {
+							isMade: "1",
+							fid: myFID,
+						},
+						dataType: 'json',
+						success: function (data) {
+							if(data.success) {
+								$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+								$('.toast-header').removeClass().addClass('toast-header alert-success');
+							}else{
+								$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+								$('.toast-header').removeClass().addClass('toast-header alert-danger');
+							}
+							$('.toast').toast('show');
+							reload_formula_data();
+						},
+						error: function (xhr, status, error) {
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
+							$('.toast-header').removeClass().addClass('toast-header alert-danger');
+							$('.toast').toast('show');
+						},
+					  });
+					 return true;
+				   }
+			   },
+			   cancel: {
+				   label : "Cancel",
+				   className : "btn-secondary",
+				   callback : function() {
+					   return true;
+				   }
+			   }   
+		   },onEscape: function () {return true;}
+	   });
+				 
+	});
+	
+	$('#print').click(() => {
+		$('#formula').DataTable().button(0).trigger();
+	});
 	
 });//doc ready
-
-$('#isMade').click(function() {
-	bootbox.dialog({
-       title: "Confirm formula is made?",
-       message : 'If confirmed, ingredients amount will be deducted from the inventory accordingly, where enough in stock.',
-       buttons :{
-           main: {
-               label : "Confirm",
-               className : "btn-primary",
-               callback: function (){
-	    			
-				$.ajax({ 
-					url: '/core/core.php', 
-					type: 'POST',
-					data: {
-						isMade: "1",
-						fid: myFID,
-					},
-					dataType: 'json',
-					success: function (data) {
-						if(data.success) {
-							$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
-							$('.toast-header').removeClass().addClass('toast-header alert-success');
-						}else{
-							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
-							$('.toast-header').removeClass().addClass('toast-header alert-danger');
-						}
-						$('.toast').toast('show');
-						reload_formula_data();
-					}
-				  });
-                 return true;
-               }
-           },
-           cancel: {
-               label : "Cancel",
-               className : "btn-secondary",
-               callback : function() {
-                   return true;
-               }
-           }   
-       },onEscape: function () {return true;}
-   });
-			 
-});
 
 
 function reload_formula_data() {
@@ -755,145 +929,6 @@ function reload_formula_data() {
 	update_bar();
 	reset_solv();
 };
-
-$('#print').click(() => {
-    $('#formula').DataTable().button(0).trigger();
-});
-
-
-function extrasShow() {
-	$('[rel=tip]').tooltip({
-         html: true,
-		 boundary: "window",
-		 overflow: "auto",
-		 container: "body",
-         delay: {"show": 100, "hide": 0},
-     });
-	$('.popup-link').magnificPopup({
-		type: 'iframe',
-		closeOnContentClick: false,
-		closeOnBgClick: false,
-		showCloseBtn: true,
-	});
-	
-	var obsDiv = $(".quantity-details, .concentration-details, .final-concentration-details");
-    
-    if (sessionStorage.getItem("obsState") === "true") {
-        obsDiv.addClass("div-obs");
-    } else {
-        obsDiv.removeClass("div-obs");
-    }
-	if(isProtected == false){
-		 if (obsDiv.hasClass("div-obs")) {
-			obsDiv.removeClass("div-obs");
-			sessionStorage.setItem("obsState", "false");
-		}
-	}
-    $("#toggle-obs").click(function (e) {
-        e.preventDefault();
-
-        if (obsDiv.hasClass("div-obs")) {
-            obsDiv.removeClass("div-obs");
-            sessionStorage.setItem("obsState", "false");
-        } else {
-            obsDiv.addClass("div-obs");
-            sessionStorage.setItem("obsState", "true");
-        }
-    });
-};
-  
-$('#formula').editable({
-  container: 'body',
-  selector: 'a.concentration',
-  url: "/core/core.php?formula=" + myFID,
-  title: 'Purity %',
-  type: "POST",
-  dataType: 'json',
-  success: function(response, newValue) {
-	if(response.status == 'error'){
-		return response.msg; 
-	}else{
-		reload_formula_data();
-	}
-  },
-  validate: function(value){
-  	if($.trim(value) == ''){
-		return 'This field is required';
-   	}
-	if($.isNumeric(value) == '' ){
-		return 'Numbers only!';
-   	}
-  }
-});
-<?php if($settings['editor'] == '1'){?>
-$('#formula').editable({
-	container: 'body',
-  	selector: 'a.quantity',
-  	url: "/core/core.php?formula=" + myFID,
-  	title: 'Quantity in <?=$settings['mUnit']?>',
-  	type: "POST",
-  	dataType: 'json',
-		success: function(response, newValue) {
-			if(response.status == 'error'){
-				return response.msg; 
-			}else{ 
-				reload_formula_data();
-			}
-		},
-	validate: function(value){
-   		if($.trim(value) == ''){
-			return 'This field is required';
-   		}
-   		if($.isNumeric(value) == '' ){
-			return 'Numbers only!';
-   		}
-  	}
-});
-
-<?php } ?>
-$('#formula').editable({
-	container: 'body',
-	selector: 'a.solvent',
-	type: 'POST',
-	emptytext: "",
-	emptyclass: "",
-	url: "/core/core.php?formula=" + myFID,
-	title: 'Choose solvent',
-	source: [
-		<?php
-			$res_ing = mysqli_query($conn, "SELECT id, name FROM ingredients WHERE type = 'Solvent' OR type = 'Carrier' ORDER BY name ASC");
-			while ($r_ing = mysqli_fetch_array($res_ing)){
-			echo '{value: "'.$r_ing['name'].'", text: "'.$r_ing['name'].'"},';
-		}
-		?>
-	],
-	dataType: 'json',
-	success: function(response, newValue) {
-		if(response.status == 'error'){
-			return response.msg; 
-		}else{
-			reload_formula_data();
-		}
-	}
-
-});
-
-$('#formula').editable({
-  container: 'body',
-  selector: 'i.notes',
-  url: "/core/core.php?formula=" + myFID,
-  title: 'Notes',
-  type: "POST",
-  dataType: 'json',
-		success: function(response, newValue) {
-		if(response.status == 'error'){
-			return response.msg; 
-		}else{
-			reload_formula_data();
-		}
-	},
-});
-
 
 
 </script>

@@ -206,7 +206,7 @@ $(document).ready(function() {
 		   message : 'Delete revision <strong>'+ r.Revision +'</strong>?',
 		   buttons :{
 			   main: {
-				   label : "Remove",
+				   label : "Delete",
 				   className : "btn-danger",
 				   callback: function (){
 						
@@ -245,12 +245,20 @@ $(document).ready(function() {
 	});
 	
 	
-	
 	function reload_rev_data() {
 		$('#cmp_res').html('');
 		$('#tdRevisions').DataTable().ajax.reload(null, true);
 	};
-
+	
+	function extrasShow() {
+		$('[rel=tip]').tooltip({
+			 html: true,
+			 boundary: "window",
+			 overflow: "auto",
+			 container: "body",
+			 delay: {"show": 100, "hide": 0},
+		 });
+	}
 });
 
 </script>

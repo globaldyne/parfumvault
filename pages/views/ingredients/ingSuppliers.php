@@ -194,7 +194,10 @@ $(document).ready(function() {
 				var msg ='<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-triangle-exclamation mx-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 			}
 			$('#supplier_inf').html(msg);
-		}
+		},
+		error: function (xhr, status, error) {
+			$('#supplier_inf').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error+'</div>');
+		},
 	  });
 	});
 	
@@ -295,20 +298,34 @@ $(document).ready(function() {
 		title: "Supplier's Name",
 		container: 'body',
 		selector: 'i.ingSupplierID',
-		type: 'POST',
 		emptytext: "",
 		emptyclass: "",
 		url: "/core/core.php?ingSupplier=update&ingID=<?=$ingID?>",
 		source: [
-				 <?php
-					$res_ing = mysqli_query($conn, "SELECT id,name FROM ingSuppliers ORDER BY name ASC");
-					while ($r_ing = mysqli_fetch_array($res_ing)){
-						echo '{value: "'.htmlspecialchars($r_ing['id']).'", text: "'.htmlspecialchars($r_ing['name']).'"},';
-				}
-				?>
+		 <?php
+			$res_ing = mysqli_query($conn, "SELECT id,name FROM ingSuppliers ORDER BY name ASC");
+			while ($r_ing = mysqli_fetch_array($res_ing)){
+				echo '{value: "'.htmlspecialchars($r_ing['id']).'", text: "'.htmlspecialchars($r_ing['name']).'"},';
+		}
+		?>
 		],
+		ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
 		success: function (data) {
-			reload_sup_data();
+			if ( data.success ) {
+				reload_sup_data();
+			} else if ( data.error ) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
 		}
 	});
 	
@@ -319,26 +336,57 @@ $(document).ready(function() {
 		title: "Availability status",
 		container: 'body',
 		selector: 'i.status',
-		type: 'POST',
 		emptytext: "",
 		emptyclass: "",
 		url: "/core/core.php?ingSupplier=update&ingID=<?=$ingID?>",
 		source: [
-				 {value: '1', text: 'Available'},
-				 {value: '2', text: 'Limited availability'},
-				 {value: '3', text: 'Discontinued / Cannot sourced'},
+			{value: '1', text: 'Available'},
+			{value: '2', text: 'Limited availability'},
+			{value: '3', text: 'Discontinued / Cannot sourced'},
 		],
+		ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
 		success: function (data) {
-			reload_sup_data();
+			if ( data.success ) {
+				reload_sup_data();
+			} else if ( data.error ) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
 		}
 	});
 	
 	$('#tdIngSup').editable({
 		container: 'body',
 		selector: 'i.supplierLink',
-		type: 'POST',
 		url: "/core/core.php?ingSupplier=update&ingID=<?=$ingID;?>",
 		title: 'Store link',
+		ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
+		success: function (data) {
+			if ( data.success ) {
+				reload_sup_data();
+			} else if ( data.error ) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+		},
 		validate: function(value){
 			if($.trim(value) == ''){
 				return 'This field is required';
@@ -349,9 +397,26 @@ $(document).ready(function() {
 	$('#tdIngSup').editable({
 		container: 'body',
 		selector: 'i.price',
-		type: 'POST',
 		url: "/core/core.php?ingSupplier=update&ingID=<?=$ingID;?>",
 		title: 'Price',
+		ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
+		success: function (data) {
+			if ( data.success ) {
+				reload_sup_data();
+			} else if ( data.error ) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+		},	
 		validate: function(value){
 			if($.trim(value) == ''){
 				return 'This field is required';
@@ -368,12 +433,26 @@ $(document).ready(function() {
 	$('#tdIngSup').editable({
 		container: 'body',
 		selector: 'i.size',
-		type: 'POST',
 		url: "/core/core.php?ingSupplier=update&ingID=<?=$ingID;?>",
 		title: 'Size',
+		ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
 		success: function (data) {
-			reload_sup_data();
-		}
+			if ( data.success ) {
+				reload_sup_data();
+			} else if ( data.error ) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+		},
 	});
 		
 	$('#tdIngSup').editable({
@@ -383,96 +462,208 @@ $(document).ready(function() {
 		emptyclass: "",
 		container: 'body',
 		selector: 'i.mUnit',
-		type: 'POST',
 		url: "/core/core.php?ingSupplier=update&ingID=<?=$ingID;?>",
 		title: 'Measurement Unit',
 		source: [
-				 {value: 'ml', text: 'Milliliter'},
-				 {value: 'g', text: 'Grams'},
-				 {value: 'L', text: 'Liter'},
-				 {value: 'fl. oz.', text: 'Fluid ounce (fl. oz.)'}
+			{value: 'ml', text: 'Milliliter'},
+			{value: 'g', text: 'Grams'},
+			{value: 'L', text: 'Liter'},
+			{value: 'fl. oz.', text: 'Fluid ounce (fl. oz.)'}
 		],
+		ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
 		success: function (data) {
-			reload_sup_data();
-		}
+			if ( data.success ) {
+				reload_sup_data();
+			} else if ( data.error ) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+		},
 	});
 	
 	$('#tdIngSup').editable({
 		container: 'body',
 		selector: 'i.manufacturer',
-		type: 'POST',
 		url: "/core/core.php?ingSupplier=update&ingID=<?=$ingID;?>",
 		title: 'Manufacturer',
+		ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
 		success: function (data) {
-			reload_sup_data();
-		}
+			if ( data.success ) {
+				reload_sup_data();
+			} else if ( data.error ) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+		},
 	});
 	
 	$('#tdIngSup').editable({
 		container: 'body',
 		selector: 'i.batch',
-		type: 'POST',
 		url: "/core/core.php?ingSupplier=update&ingID=<?=$ingID;?>",
 		title: 'Batch',
+		ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
 		success: function (data) {
-			reload_sup_data();
-		}
+			if ( data.success ) {
+				reload_sup_data();
+			} else if ( data.error ) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+		},
 	});
 	
 	$('#tdIngSup').editable({
 		container: 'body',
 		selector: 'i.purchased',
-		type: 'POST',
 		url: "/core/core.php?ingSupplier=update&ingID=<?=$ingID;?>",
 		title: 'Purchase date',
 		type: 'date',
+		ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
 		success: function (data) {
-			reload_sup_data();
-		}
+			if ( data.success ) {
+				reload_sup_data();
+			} else if ( data.error ) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+		},
 	});
 	  
 	$('#tdIngSup').editable({
 		container: 'body',
 		selector: 'i.stock',
-		type: 'POST',
 		url: "/core/core.php?ingSupplier=update&ingID=<?=$ingID;?>",
 		title: 'In Stock',
+		ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
 		success: function (data) {
-			reload_sup_data();
-		}
+			if ( data.success ) {
+				reload_sup_data();
+			} else if ( data.error ) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+		},
 	});
 	
 	$('#tdIngSup').editable({
 		container: 'body',
 		selector: 'i.internal_sku',
-		type: 'POST',
 		url: "/core/core.php?ingSupplier=update&ingID=<?=$ingID;?>",
 		title: 'Internal SKU',
+		ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
 		success: function (data) {
-			reload_sup_data();
-		}
+			if ( data.success ) {
+				reload_sup_data();
+			} else if ( data.error ) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+		},
 	});
 	
 	$('#tdIngSup').editable({
 		container: 'body',
 		selector: 'i.supplier_sku',
-		type: 'POST',
 		url: "/core/core.php?ingSupplier=update&ingID=<?=$ingID;?>",
 		title: 'Supplier SKU',
+		ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
 		success: function (data) {
-			reload_sup_data();
-		}
+			if ( data.success ) {
+				reload_sup_data();
+			} else if ( data.error ) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+		},
 	});
 	
 	$('#tdIngSup').editable({
 		container: 'body',
 		selector: 'i.storage_location',
-		type: 'POST',
 		url: "/core/core.php?ingSupplier=update&ingID=<?=$ingID;?>",
 		title: 'Storage location',
+		ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
 		success: function (data) {
-			reload_sup_data();
-		}
+			if ( data.success ) {
+				reload_sup_data();
+			} else if ( data.error ) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+		},
 	});
 	
 	
@@ -489,11 +680,16 @@ $(document).ready(function() {
 				sID: s.ID,
 				status: s.Status,
 				ingID: '<?=$ingID?>'
-				},
-			dataType: 'html',
+			},
+			dataType: 'json',
 			success: function (data) {
 				reload_sup_data();
-			}
+			},
+			error: function (xhr, status, error) {
+				$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			},
 		  });
 	
 	});
@@ -526,7 +722,12 @@ $(document).ready(function() {
 					}
 					$('#supMsg').html(msg);
 					reload_sup_data();
-				}
+				},
+				error: function (xhr, status, error) {
+					$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
+					$('.toast-header').removeClass().addClass('toast-header alert-danger');
+					$('.toast').toast('show');
+				},
 			  });
 		
 	});
@@ -544,7 +745,6 @@ $(document).ready(function() {
 				   label : "Remove",
 				   className : "btn-danger",
 				   callback: function (){
-						
 					$.ajax({ 
 						url: '/core/core.php', 
 						type: 'GET',

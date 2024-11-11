@@ -113,31 +113,59 @@ $(document).ready(function() {
 	
 	
 	$('#tdTempls').editable({
-		  container: 'body',
-		  selector: 'a.name',
-		  type: 'POST',
-		  url: "/core/core.php?tmpl=update",
-		  title: 'Template name',
-		  success: function (data) {
-			reload_data();
-		  },
-		  validate: function(value){
+		container: 'body',
+		selector: 'a.name',
+		url: "/core/core.php?action=htmlTmplUpdate",
+		title: 'Template name',
+		ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
+		success: function (data) {
+			if ( data.success ) {
+				reload_data();
+			} else if ( data.error ) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+		},
+		validate: function(value){
 			if($.trim(value) == ''){
 				return 'This field is required';
 			}
-		 }
+		}
 	});
 	  
 	
 	$('#tdTempls').editable({
 		container: 'body',
 		selector: 'a.description',
-		type: 'POST',
-		url: "/core/core.php?tmpl=update",
+		ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
+		url: "/core/core.php?action=htmlTmplUpdate",
 		title: 'Short description',
 		success: function (data) {
-			reload_data();
+			if ( data.success ) {
+				reload_data();
+			} else if ( data.error ) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
 		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+		},		
 		validate: function(value){
 			if($.trim(value) == ''){
 				return 'This field is required';
@@ -152,26 +180,30 @@ $(document).ready(function() {
 		tmpl.Name = $(this).attr('data-name');
 		
 		bootbox.dialog({
-		   title: "Confirm template removal",
+		   title: "Confirm template deletion",
 		   message : 'Delete <strong>'+ tmpl.Name +'</strong>?',
 		   buttons :{
 			   main: {
-				   label : "Remove",
+				   label : "Delete",
 				   className : "btn-danger",
 				   callback: function (){
-						
 					$.ajax({ 
 						url: '/core/core.php', 
 						type: 'POST',
 						data: {
-							tmpl: 'delete',
+							action: 'htmlTmplDelete',
 							tmplID: tmpl.ID,
 							tmplName: tmpl.Name
 						},
 						dataType: 'json',
 						success: function (data) {
 							reload_data();
-						}
+						},
+						error: function (xhr, status, error) {
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An error occurred, check server logs for more info. '+ error);
+							$('.toast-header').removeClass().addClass('toast-header alert-danger');
+							$('.toast').toast('show');
+						},
 					  });
 					
 					 return true;
@@ -193,7 +225,7 @@ $(document).ready(function() {
 			url: '/core/core.php', 
 			type: 'POST',
 			data: {
-				tmpl: 'add',
+				action: 'htmlTmplAdd',
 				tmpl_name: $("#tmpl_name").val(),
 				tmpl_content: $("#tmpl_content").val(),
 				tmpl_desc: $("#tmpl_desc").val(),	
@@ -201,12 +233,15 @@ $(document).ready(function() {
 			dataType: 'json',
 			success: function (data) {
 				if(data.success){
-					var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+					var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><i class="fa-solid fa-circle-check mx-2"></i>' + data.success + '</div>';
+					reload_data();
 				}else{
 					var msg ='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + data.error + '</div>';
 				}
 				$('#tmpl_inf').html(msg);
-				reload_data();
+			},
+			error: function (xhr, status, error) {
+				$('#tmpl_inf').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An error occurred, check server logs for more info. '+ error +'</div>');
 			}
 		  });
 	});
@@ -271,7 +306,6 @@ $(document).ready(function() {
   </div>
 </div>
 
-
 <!--EDIT MODAL-->            
 <div class="modal fade" id="editTmpl" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="editTmplLabel" aria-hidden="true">
   <div class="modal-dialog pv-modal-xxl modal-dialog-scrollable" role="document">
@@ -286,4 +320,3 @@ $(document).ready(function() {
     </div>
   </div>
 </div>
-

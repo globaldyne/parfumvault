@@ -232,7 +232,17 @@ $(document).ready(function() {
 	function reload_doc_data() {
 		$('#tdAttachments').DataTable().ajax.reload(null, true);
 	};
-
+	
+	function extrasShow() {
+		$('[rel=tip]').tooltip({
+			 html: true,
+			 boundary: "window",
+			 overflow: "auto",
+			 container: "body",
+			 delay: {"show": 100, "hide": 0},
+		 });
+	}
+	
 });
 </script>
 

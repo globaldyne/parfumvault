@@ -330,7 +330,7 @@ if($_POST['action'] == 'batch' && $_POST['bid'] && $_POST['remove'] == true){
 }
 
 //UPDATE SDS DISCLAIMER
-if($_POST['settings'] == 'sds'){
+if($_POST['action'] == 'sdsDisclaimerContent'){
 	$sds_disc_content = mysqli_real_escape_string($conn, $_POST['sds_disc_content']);
 	
 	if(empty($sds_disc_content)){
@@ -627,10 +627,8 @@ if ($_REQUEST['bkProv'] == 'update') {
 }
 
 
-
-
 //UPDATE HTML TEMPLATE
-if($_REQUEST['tmpl'] == 'update'){
+if($_REQUEST['action'] == 'htmlTmplUpdate'){
 	$value = mysqli_real_escape_string($conn,$_POST['value']);
 	$id = mysqli_real_escape_string($conn, $_POST['pk']);
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
@@ -646,7 +644,7 @@ if($_REQUEST['tmpl'] == 'update'){
 }
 
 //DELETE HTML TEMPLATE
-if($_POST['tmpl'] == 'delete' && $_POST['tmplID']){
+if($_POST['action'] == 'htmlTmplDelete' && $_POST['tmplID']){
 	$id = $_POST['tmplID'];
 	$name = $_POST['tmplName'];
 
@@ -661,7 +659,7 @@ if($_POST['tmpl'] == 'delete' && $_POST['tmplID']){
 }
 
 //ADD NEW TEMPLATE
-if($_POST['tmpl'] == 'add'){
+if($_POST['action'] == 'htmlTmplAdd'){
 	
 	if(empty($_POST['tmpl_name'])){
 		$response["error"] = 'Name is required';
@@ -1115,13 +1113,13 @@ if($_POST['synonym'] == 'add'){
 	}
 	
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT synonym FROM synonyms WHERE synonym = '$synonym' AND ing = '$ing'"))){
-		$response["error"] = $synonym.' already exists!';
+		$response["error"] = $synonym.' already exists';
 		echo json_encode($response);
 		return;
 	}
 	
 	if(mysqli_query($conn, "INSERT INTO synonyms (synonym,source,ing) VALUES ('$synonym','$source','$ing')")){
-		$response["success"] = $synonym.' added to the list!';
+		$response["success"] = $synonym.' added to the list';
 		echo json_encode($response);
 	}
 	
@@ -1136,7 +1134,12 @@ if($_GET['synonym'] == 'update'){
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 	$ing = base64_decode($_GET['ing']);
 
-	mysqli_query($conn, "UPDATE synonyms SET $name = '$value' WHERE id = '$id' AND ing='$ing'");
+	if(mysqli_query($conn, "UPDATE synonyms SET $name = '$value' WHERE id = '$id' AND ing='$ing'")){
+		$response["success"] = 'Synonym updated';
+	} else {
+		$response["error"] = mysqli_error($conn);
+	}
+	echo json_encode($response);
 	return;
 }
 
@@ -1144,7 +1147,12 @@ if($_GET['synonym'] == 'update'){
 //DELETE ING SYNONYM	
 if($_GET['synonym'] == 'delete'){
 	$id = mysqli_real_escape_string($conn, $_GET['id']);
-	mysqli_query($conn, "DELETE FROM synonyms WHERE id = '$id'");
+	if(mysqli_query($conn, "DELETE FROM synonyms WHERE id = '$id'")){
+		$response["success"] = 'Synonym deleted';	
+	} else {
+		$response["error"] = mysqli_error($conn);
+	}
+	echo json_encode($response);
 	return;
 }
 
@@ -1309,11 +1317,11 @@ if($_POST['ingSupplier'] == 'add'){
 		
 	if(mysqli_query($conn, "INSERT INTO suppliers (ingSupplierID,ingID,supplierLink,price,size,manufacturer,preferred,batch,purchased,stock,mUnit,status,supplier_sku,internal_sku,storage_location) VALUES ('$supplier_id','$ingID','$supplier_link','$supplier_price','$supplier_size','$supplier_manufacturer','$preferred','$supplier_batch','$purchased','$stock','$mUnit','$status','$supplier_sku','$internal_sku','$storage_location')")){
 		$response["success"] = $supplier_name['name'].' added';
-		echo json_encode($response);
 	}else{
 		$response["error"] = mysqli_error($conn);
-		echo json_encode($response);
 	}
+	
+	echo json_encode($response);
 	return;
 }
 
@@ -1324,7 +1332,13 @@ if($_GET['ingSupplier'] == 'update'){
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 	$ingID = mysqli_real_escape_string($conn, $_GET['ingID']);
 
-	mysqli_query($conn, "UPDATE suppliers SET $name = '$value' WHERE id = '$id' AND ingID='$ingID'");
+	if(mysqli_query($conn, "UPDATE suppliers SET $name = '$value' WHERE id = '$id' AND ingID='$ingID'")){
+		$response["success"] = 'Supplier updated';
+	} else {
+		$response["error"] = mysqli_error($conn);
+	}
+	
+	echo json_encode($response);
 	return;
 }
 
@@ -1335,7 +1349,12 @@ if($_GET['ingSupplier'] == 'preferred'){
 	$status = mysqli_real_escape_string($conn, $_GET['status']);
 	
 	mysqli_query($conn, "UPDATE suppliers SET preferred = '0' WHERE ingID='$ingID'");
-	mysqli_query($conn, "UPDATE suppliers SET preferred = '$status' WHERE ingSupplierID = '$sID' AND ingID='$ingID'");
+	if(mysqli_query($conn, "UPDATE suppliers SET preferred = '$status' WHERE ingSupplierID = '$sID' AND ingID='$ingID'")){
+		$response["success"] = 'Supplier set to prefered';
+	} else {
+		$response["error"] = mysqli_error($conn);
+	}
+	echo json_encode($response);
 	return;
 }
 
@@ -1354,12 +1373,10 @@ if($_GET['ingSupplier'] == 'delete'){
 								
 	if(mysqli_query($conn, "DELETE FROM suppliers WHERE id = '$sID' AND ingID='$ingID'")){
 		$response["success"] = 'Supplier deleted';
-		echo json_encode($response);
 	} else {
 		$response["error"] = mysqli_error($conn);
-		echo json_encode($response);
 	}
-	
+	echo json_encode($response);
 	return;
 }
 
@@ -1463,11 +1480,16 @@ if($_POST['value'] && $_GET['formula'] && $_POST['pk']){
 	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,isProtected FROM formulasMetaData WHERE fid = '".$_GET['formula']."'"));
 	if($meta['isProtected'] == FALSE){
 					
-		mysqli_query($conn, "UPDATE formulas SET $name = '$value' WHERE fid = '$formula' AND id = '$ingredient'");
-		$lg = "CHANGED: ".$ing_name['ingredient']." Set $name to $value";
-		mysqli_query($conn, "INSERT INTO formula_history (fid,ing_id,change_made,user) VALUES ('".$meta['id']."','$ingredient','$lg','".$user['fullName']."')");
-echo mysqli_error($conn);
+		if(mysqli_query($conn, "UPDATE formulas SET $name = '$value' WHERE fid = '$formula' AND id = '$ingredient'")){
+			
+			$lg = "CHANGED: ".$ing_name['ingredient']." Set $name to $value";
+			mysqli_query($conn, "INSERT INTO formula_history (fid,ing_id,change_made,user) VALUES ('".$meta['id']."','$ingredient','$lg','".$user['fullName']."')");
+			$response["success"] = 'Formula updated';
+		} else {
+			$response["error"] = mysqli_error($conn);
+		}
 	}
+	echo json_encode($response);
 	return;
 }
 
@@ -1712,13 +1734,13 @@ if($_POST['composition'] == 'add'){
 	}
 	
 	if(empty($allgName)){
-		$response["error"] = '<strong>Error:</strong> Name is required!';
+		$response["error"] = 'Name is required';
 		echo json_encode($response);
 		return;
 	}
 	
 	if(empty($allgCAS)){
-		$response["error"] = '<strong>Error:</strong> CAS number is required!';
+		$response["error"] = 'CAS number is required';
 		echo json_encode($response);
 		return;
 	}
@@ -1736,29 +1758,27 @@ if($_POST['composition'] == 'add'){
 	}
 	
 	if(!is_numeric($minPerc)){
-		$response["error"] = 'Minimum percentage value needs to be numeric!';
+		$response["error"] = 'Minimum percentage value needs to be numeric';
 		echo json_encode($response);
 		return;
 	}
 	
 	if(!is_numeric($maxPerc)){
-		$response["error"] = 'Maximum percentage value needs to be numeric!';
+		$response["error"] = 'Maximum percentage value needs to be numeric';
 		echo json_encode($response);
 		return;
 	}
 	
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredient_compounds WHERE name = '$allgName' AND ing = '$ing'"))){
-		$response["error"] = '<strong>Error: </strong>'.$allgName.' already exists!';
+		$response["error"] = $allgName.' already exists';
 		echo json_encode($response);
 		return;
 	}
 	
 	if(mysqli_query($conn, "INSERT INTO ingredient_compounds (name, cas, ec, min_percentage, max_percentage, GHS, toDeclare, ing) VALUES ('$allgName','$allgCAS','$allgEC','$minPerc','$maxPerc','$GHS','$declare','$ing')")){
-		$response["success"] = '<strong>'.$allgName.'</strong> added to the composition';
-		echo json_encode($response);
+		$response["success"] = $allgName.' added to the composition';
 	}else{
 		$response["error"] = mysqli_error($conn);
-		echo json_encode($response);
 	}
 	
 	if($_POST['addToIng'] == 'true'){
@@ -1766,7 +1786,8 @@ if($_POST['composition'] == 'add'){
 			mysqli_query($conn, "INSERT INTO ingredients (name,cas,einecs) VALUES ('$allgName','$allgCAS','$allgEC')");		
 		}
 	}
-
+	
+	echo json_encode($response);
 	return;
 }
 
@@ -1775,11 +1796,14 @@ if($_GET['composition'] == 'update'){
 	$value = rtrim(mysqli_real_escape_string($conn, $_POST['value']),'%');
 	$id = mysqli_real_escape_string($conn, $_POST['pk']);
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
-	//$ing = base64_decode($_GET['ing']);
 
-//	mysqli_query($conn, "UPDATE ingredient_compounds SET $name = '$value' WHERE id = '$id' AND ing='$ing'");
-	mysqli_query($conn, "UPDATE ingredient_compounds SET $name = '$value' WHERE id = '$id'");
-
+	if(mysqli_query($conn, "UPDATE ingredient_compounds SET $name = '$value' WHERE id = '$id'")){
+		$response["success"] = 'Ingredient updated';
+	} else {
+		$response["error"] = mysqli_error($conn);
+	}
+	
+	echo json_encode($response);
 	return;
 }
 
@@ -1791,10 +1815,12 @@ if($_POST['composition'] == 'delete'){
 
 	$delQ = mysqli_query($conn, "DELETE FROM ingredient_compounds WHERE id = '$id'");	
 	if($delQ){
-		$response["success"] = '<strong>'.$ing.'</strong> removed!';
-		echo json_encode($response);
+		$response["success"] = $ing.' deleted';
+	}else {
+		$response["error"] = mysqli_error($conn);
 	}
 	
+	echo json_encode($response);
 	return;
 }
 
@@ -5333,4 +5359,3 @@ if($_GET['action'] == 'viewBoxLabel' && $_GET['fid']){
 
 	return;
 }
-

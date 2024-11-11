@@ -129,5 +129,15 @@ $(document).ready(function() {
 	$("#exportPDF").click(() => {
 		$("#tdAnalysis").DataTable().button(1).trigger();
 	});
+	
+	function extrasShow() {
+		$('[rel=tip]').tooltip({
+			 html: true,
+			 boundary: "window",
+			 overflow: "auto",
+			 container: "body",
+			 delay: {"show": 100, "hide": 0},
+		 });
+	}
 });
 </script>

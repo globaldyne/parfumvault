@@ -1,7 +1,8 @@
 <?php
 define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__))))); 
 if(!$_GET['ingID']){
-	echo 'Invalid ID';
+	$response["error"] = 'Invalid ID';
+	echo json_encode($response);
 	return;
 }
 
