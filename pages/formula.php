@@ -83,9 +83,7 @@ if($form[0]['ingredient']){
                     </div>
                   </div>
                   <div class="flex-shrink-0">
-                    <div class="img-formula">
-                      <img class="img-perfume" src="<?= $img['docData'] ?: '/img/ICO_TR.png' ?>" alt="Formula Image"/>
-                    </div>
+                    <div id="img-formula"><img src="/img/loading.gif" alt="Loading"/></div>
                   </div>
                 </div>
 
@@ -282,7 +280,7 @@ if($form[0]['ingredient']){
 <script src="/js/select2-v3-ingredient.js"></script>
 <script>
 $(document).ready(function() {
-
+	$("#img-formula").html('<img class="img-perfume" src="<?= $img['docData'] ?: '/img/ICO_TR.png' ?>" alt="Formula Image"/>');
 	function convertToDecimalPoint(qStep, hasDot) {
 		let zeros = '0'.repeat(qStep);
 		return hasDot ? zeros : '.' + zeros;

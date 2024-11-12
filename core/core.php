@@ -836,7 +836,7 @@ if($_GET['update_bottle_pic']){
 	}
 		
 	if(in_array($file_ext,$ext)===false){
-		$response["error"] = '<strong>File upload error: </strong>Extension not allowed, please choose a '.$allowed_ext.' file';
+		$response["error"] = 'Extension not allowed, please choose a '.$allowed_ext.' file';
 		echo json_encode($response);
 		return;
 	}
@@ -850,7 +850,7 @@ if($_GET['update_bottle_pic']){
 		mysqli_query($conn, "DELETE FROM documents WHERE ownerID = '".$bottle."' AND type = '4'");
 		if(mysqli_query($conn, "INSERT INTO documents (ownerID,name,type,notes,docData) VALUES ('".$bottle."','-','4','-','$docData')")){	
 			unlink($tmp_path.$bottle_pic);
-			$response["success"] = array( "msg" => "Pic updated!", "bottle_pic" => $docData);
+			$response["success"] = array( "msg" => "File uploaded", "file" => $docData);
 			echo json_encode($response);
 			return;
 		}
@@ -1500,8 +1500,9 @@ if($_GET['formulaMeta']){
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 
 	if(mysqli_query($conn, "UPDATE formulasMetaData SET $name = '$value' WHERE id = '$id'")){
-		$response["success"] = true;
-		$response["msg"] = 'Formula meta updated';
+		$response["success"] = 'Formula meta updated';
+	} else {
+		$response["error"] = mysqli_error($conn);
 	}
 	echo json_encode($response);
 	return;

@@ -55,9 +55,7 @@ while($qTags = mysqli_fetch_array($tagsQ)){
 
 <script src="/js/bootstrap-tagsinput.js"></script> 
 <link href="/css/bootstrap-tagsinput.css" rel="stylesheet" />
-<div id="msg_settings_info">
-    <div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i>Some of the changes require the page to be reloaded to appear properly. Please remember to refresh your browser if your changes not automatically appear.</div>
-</div>
+
 <div id="set_msg"></div>
 <div class="card-body" id="formula_metadata">
 
@@ -193,32 +191,32 @@ $(document).ready(function(){
 	$('[rel=tip]').tooltip({placement: 'right'});
 	
 	$('#formula_metadata').editable({
-	  container: 'body',
-	  selector: 'a.name',
-	  url: "/core/core.php?action=rename&fid=<?=$info['fid']?>",
-	  title: 'Name',
-	  mode: 'inline',
-	  ajaxOptions: { 
-		dataType: 'json'
-	  },
-	  validate: function(value){
-		if($.trim(value) == ''){
-			return 'This field is required';
-		}
-	  },
-	  success: function(response) {	
-		if(response.success){
-			$("#getFormMetaLabel").html(response.msg);
-		}else{
-			msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
-		}
-			$('#set_msg').html(msg);        
-		},
-		error: function (xhr, status, error) {
-			$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');
-		}
-	
-	});
+		container: 'body',
+	  	selector: 'a.name',
+	  	url: "/core/core.php?action=rename&fid=<?=$info['fid']?>",
+	  	title: 'Name',
+	  	mode: 'inline',
+	  	ajaxOptions: { 
+			dataType: 'json'
+	  	},
+	  	validate: function(value){
+			if($.trim(value) == ''){
+				return 'This field is required';
+			}
+	  	},
+	  	success: function(response) {	
+			if(response.success){
+				$("#getFormMetaLabel").html(response.msg);
+				$("#formula_name").html(response.msg);
+			}else{
+				msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong><i class="fa-solid fa-circle-exclamation mx-2"></i>' + response.error + '</strong></div>';
+			}
+				$('#set_msg').html(msg);        
+			},
+			error: function (xhr, status, error) {
+				$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');
+			}
+		});
   
 	$('#formula_metadata').editable({
 	 	container: 'body',
@@ -226,7 +224,25 @@ $(document).ready(function(){
 	  	emptytext: 'None',
 	  	url: "/core/core.php?formulaMeta=<?=$info['fid']?>",
 	  	title: 'Notes',
-	  	mode: 'inline'	
+	  	mode: 'inline',
+		ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
+		success: function (data) {
+			if ( data.success ) {
+				$('#formula_desc').html( $('#notes').text() );
+			} else if ( data.error ) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+		},
 	});
   
 	$('#formula_metadata').editable({
@@ -415,12 +431,12 @@ $(document).ready(function(){
 				if(response.success){
 					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong><i class="fa-solid fa-circle-check mx-2"></i>' + response.success + '</strong></div>';
 				}else{
-					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
+					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong><i class="fa-solid fa-circle-exclamation mx-2"></i>' + response.error + '</strong></div>';
 				}
 					$('#set_msg').html(msg);
 				},
 				error: function (xhr, status, error) {
-					$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');
+					$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');
 				}
 	  	});
 	});
@@ -441,12 +457,12 @@ $(document).ready(function(){
 				if(response.success){
 					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong><i class="fa-solid fa-circle-check mx-2"></i>' + response.success + '</strong></div>';
 				}else{
-					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
+					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong><i class="fa-solid fa-circle-exclamation mx-2"></i>' + response.error + '</strong></div>';
 				}
 					$('#set_msg').html(msg);
 				},
 				error: function (xhr, status, error) {
-					$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');
+					$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');
 				}
 			});
 	});
@@ -454,7 +470,7 @@ $(document).ready(function(){
 
 	
 	$("#pic_upload").click(function(){
-		$("#upload_resp").html('<div class="dropdown-divider"><div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
+		$("#upload_resp").html('<div class="dropdown-divider"><div class="alert alert-info">Please wait, file upload in progress...</div>');
 		$("#pic_upload").prop("disabled", true);
 		$("#pic_upload").prop('value', 'Please wait...');
 			
@@ -471,18 +487,22 @@ $(document).ready(function(){
 				  data: fd,
 				  contentType: false,
 				  processData: false,
-						cache: false,
-				  success: function(response){
-					 if(response != 0){
-						$("#upload_resp").html('<div class="alert alert-success mt-3"><i class="fa-solid fa-circle-check mx-2"></i>File uploaded</div>');
+				  cache: false,
+				  dataType: 'json',
+				  success: function(data){
+					 if(data.success){
+						$("#upload_resp").html('<div class="alert alert-success mt-3"><i class="fa-solid fa-circle-check mx-2"></i>'+ data.success.msg +'</div>');
 						$("#pic_upload").prop("disabled", false);
 						$("#pic_upload").prop('value', 'Upload');
+						$("#img-formula").html('<img class="img-perfume" src="'+data.success.file+'">');
 					 }else{
-						$("#upload_resp").html('<div class="alert alert-danger mt-3"><i class="fa-solid fa-triangle-exclamation mx-2"></i>File upload failed</div>');
+						$("#upload_resp").html('<div class="alert alert-danger mt-3"><i class="fa-solid fa-triangle-exclamation mx-2"></i>'+ data.error +'</div>');
 						$("#pic_upload").prop("disabled", false);
 						$("#pic_upload").prop('value', 'Upload');
 					 }
-				  },
+				  },error: function (xhr, status, error) {
+					$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');
+				}
 			   });
 			}else{
 				$("#upload_resp").html('<div class="alert alert-danger mt-3"><i class="fa-solid fa-triangle-exclamation mx-2"></i>Please select a file to upload</div>');

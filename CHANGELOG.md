@@ -17,6 +17,11 @@
 - Rename sex to gender
 - Error handling improvements
 - Date Format update
+- Auto update image for formulas when uploaded
+- Auto update text title and description after a succesfull update for a formula
+- File upload improvements
+- Various wording updates
+- Removed user alert to reload formula settings pages when making a changes
 
 ### Version 11.9
 - Added system logs access via the UI for docker/cloud installations - this comes disabled by default

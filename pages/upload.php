@@ -155,7 +155,7 @@ if($_GET['type'] == 'bottle'){
 	  	$ext = explode(', ', $allowed_ext);
 	  
       	if(in_array($file_ext,$ext)===false){
-			$response["error"] = '<strong>File upload error: </strong>Extension not allowed, please choose a '.$allowed_ext.' file';
+			$response["error"] = 'Extension not allowed, please choose a '.$allowed_ext.' file';
 			echo json_encode($response);
 			return;
 		}
@@ -165,7 +165,7 @@ if($_GET['type'] == 'bottle'){
 			 return;
      	 }
 		 if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM bottles WHERE name = '$name'"))){
-			$response["error"] = $name.' already exists!';
+			$response["error"] = $name.' already exists';
 			echo json_encode($response);
 			return;
 		  }
@@ -299,7 +299,9 @@ if($_GET['type'] && $_GET['id']){
 			$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents($tmp_path.$file_name));
 			if(mysqli_query($conn, "INSERT INTO documents (ownerID,type,name,notes,docData,isBatch) VALUES ('$ownerID','$type','$name','$notes','$docData','$isBatch')")){
 				unlink($tmp_path.$file_name);
-				$response['success'] = 'File uploaded';
+//				$response['success'] = 'File uploaded';
+				$response["success"] = array( "msg" => "File uploaded", "file" => $docData);
+
 			}else {
 				$response['error'] = 'File upload error '.mysqli_error($conn);
 			}
