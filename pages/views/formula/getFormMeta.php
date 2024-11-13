@@ -214,7 +214,7 @@ $(document).ready(function(){
 				$('#set_msg').html(msg);        
 			},
 			error: function (xhr, status, error) {
-				$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');
+				$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error +'</div>');
 			}
 		});
   
@@ -261,7 +261,7 @@ $(document).ready(function(){
 			}       
 		},
 		error: function (xhr, status, error) {
-			$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');
+			$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error +'</div>');
 		}
 		
 	});
@@ -284,7 +284,7 @@ $(document).ready(function(){
         		}
 			},
 			error: function (xhr, status, error) {
-				$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');
+				$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error +'</div>');
 			}
 		  });
 	});
@@ -309,7 +309,7 @@ $(document).ready(function(){
 				$('#set_msg').html(msg);
 			},
 			error: function (xhr, status, error) {
-				$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');
+				$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error +'</div>');
 			}
 	 	});
 	});
@@ -334,7 +334,7 @@ $(document).ready(function(){
 				$('#set_msg').html(msg);
 			},
 			error: function (xhr, status, error) {
-				$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');
+				$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error +'</div>');
 			}
 	  }); 
 	});
@@ -360,7 +360,7 @@ $(document).ready(function(){
 				$('#set_msg').html(msg);
 			},
 			error: function (xhr, status, error) {
-				$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');
+				$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error +'</div>');
 			}
 	  }); 
 	});
@@ -386,7 +386,7 @@ $(document).ready(function(){
 				$('#set_msg').html(msg);
 			},
 			error: function (xhr, status, error) {
-				$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');
+				$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error +'</div>');
 			}
 	  });
 	});
@@ -411,7 +411,7 @@ $(document).ready(function(){
 				$('#set_msg').html(msg);
 			},
 			error: function (xhr, status, error) {
-				$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');
+				$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error +'</div>');
 			}
 	  });
 	});
@@ -436,7 +436,7 @@ $(document).ready(function(){
 					$('#set_msg').html(msg);
 				},
 				error: function (xhr, status, error) {
-					$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');
+					$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error +'</div>');
 				}
 	  	});
 	});
@@ -462,7 +462,7 @@ $(document).ready(function(){
 					$('#set_msg').html(msg);
 				},
 				error: function (xhr, status, error) {
-					$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');
+					$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error +'</div>');
 				}
 			});
 	});
@@ -501,7 +501,7 @@ $(document).ready(function(){
 						$("#pic_upload").prop('value', 'Upload');
 					 }
 				  },error: function (xhr, status, error) {
-					$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');
+					$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error +'</div>');
 				}
 			   });
 			}else{
@@ -530,7 +530,7 @@ $(document).ready(function(){
 				}
 			},
 			error: function (xhr, status, error) {
-				$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');
+				$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error +'</div>');
 			}
 		});
 	});
@@ -560,7 +560,7 @@ $('#tagsinput').on('beforeItemRemove', function(event) {
 			}
 		},
 		error: function (xhr, status, error) {
-			let errorMessage = '<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred. ';
+			let errorMessage = '<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred.';
 			if (xhr.responseText) {
 				errorMessage += 'Server response: ' + xhr.responseText;
 			} else {
