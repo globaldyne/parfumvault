@@ -32,10 +32,19 @@ if(strtoupper(getenv('PLATFORM')) === "CLOUD"){
 }
 
 
-function dbConnect($dbhost, $dbuser, $dbpass, $dbname){
-	$conn = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname) or die ('Unable to connect to '.$dbname.' database on '.	$dbhost.' host. Please make sure the database exists and user '.$dbuser.' has full permissions on it.');
-	mysqli_select_db($conn, $dbname);
-	mysqli_set_charset($conn, "utf8");
-	return $conn;
+function dbConnect(string $dbhost, string $dbuser, string $dbpass, string $dbname) {
+    mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+    try {
+        $conn = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
+        mysqli_set_charset($conn, "utf8");
+        return $conn;
+    } catch (mysqli_sql_exception $e) {
+		$msg = "Database connection error: " . $e->getMessage();
+		$response["error"] = $msg;
+		echo json_encode($response);
+        error_log($msg);
+        return false; // Return false on failure
+    }
 }
+
 ?>

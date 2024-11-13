@@ -23,6 +23,7 @@
 - Various wording updates
 - Removed user alert to reload formula settings pages when making a changes
 - Added openshift yaml manifests
+- Improve db connect method
 
 ### Version 11.9
 - Added system logs access via the UI for docker/cloud installations - this comes disabled by default
