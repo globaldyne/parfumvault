@@ -4,6 +4,10 @@ define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__)))));
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
+require_once(__ROOT__.'/func/convertTime.php');
+
+$session_validity_calc = convertTime($session_timeout);
+
 $cats_q = mysqli_query($conn, "SELECT id,name,description,type FROM IFRACategories ORDER BY id ASC");
 
 while($cats_res = mysqli_fetch_array($cats_q)){
@@ -166,9 +170,15 @@ while($cats_res = mysqli_fetch_array($cats_q)){
             <label class="form-check-label" for="multi_dim_perc">Multi-dimensional lookup</label>
             <a href="#" class="ms-2 fas fa-question-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Enable to include into formulas limits calculation the ingredient's sub materials if exists."></a>
         </div>
+       <hr />
+       <div class="col-sm-auto">
+			User session validity: <?php echo "Hours: " . $session_validity_calc['hours'] . ", Minutes: " . $session_validity_calc['minutes']; ?>
+            <a href="#" class="ms-2 fas fa-question-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Please refer to the KB article how to modify this if needed"></a>
+
+       </div>
     </div>
 
-    <div class="col dropdown-divider"></div>
+
     <div class="row">
         <div class="col-sm-12 text-start">
             <input type="submit" name="save-general" id="save-general" value="Save" class="btn btn-primary"/>

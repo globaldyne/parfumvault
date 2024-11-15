@@ -62,11 +62,11 @@ while($qTags = mysqli_fetch_array($tagsQ)){
 <div class="col-sm">
    <div class="form-row">
      <div class="form-group col">
-        <label class="control-label col-auto" for="formula_name">Formula Name</label>
+        <label class="control-label col-auto" for="formula_name">Formula name</label>
           <a href="#" data-name="name" class="name" id="formula_name" data-pk="<?php echo $info['id'];?>"><?php echo $info['name']?:'Unnamed';?></a>
       </div>
      <div class="form-group col">
-        <label class="control-label col-auto" for="product_name">Product Name</label>
+        <label class="control-label col-auto" for="product_name">Product name</label>
         <a href="#" data-name="product_name" class="product_name" id="product_name" data-pk="<?php echo $info['id'];?>"><?php echo $info['product_name'] ?: 'Not set';?></a>
      </div>
     </div>
@@ -208,13 +208,13 @@ $(document).ready(function(){
 			if(response.success){
 				$("#getFormMetaLabel").html(response.msg);
 				$("#formula_name").html(response.msg);
+				$('#set_msg').html('');
 			}else{
-				msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong><i class="fa-solid fa-circle-exclamation mx-2"></i>' + response.error + '</strong></div>';
+				$('#set_msg').html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong><i class="fa-solid fa-circle-exclamation mx-2"></i>' + response.error + '</strong></div>');
 			}
-				$('#set_msg').html(msg);        
-			},
-			error: function (xhr, status, error) {
-				$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error +'</div>');
+		},
+		error: function (xhr, status, error) {
+			$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error +'</div>');
 			}
 		});
   

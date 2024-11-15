@@ -24,6 +24,11 @@
 - Removed user alert to reload formula settings pages when making a changes
 - Added openshift yaml manifests
 - Improve db connect method
+- Added a dedicated page to display in case of fatal error
+- Added a session timeout to automatically logoff the user after 30 minutes of inactivity - configurable by user
+- Change selected material color to yellow in formula making for better descrimination
+- Various minor updates and code clean-up
+- Added a function to convert session time to hours/mins
 
 ### Version 11.9
 - Added system logs access via the UI for docker/cloud installations - this comes disabled by default

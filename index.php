@@ -10,15 +10,8 @@ if(file_exists(__ROOT__.'/inc/config.php') == FALSE && !getenv('DB_HOST') && !ge
 }
 require_once(__ROOT__.'/inc/product.php');
 require_once(__ROOT__.'/inc/opendb.php');
-
-//require_once(__ROOT__.'/func/checkIng.php');
-//require_once(__ROOT__.'/func/searchIFRA.php');
-//require_once(__ROOT__.'/func/formatBytes.php');
-//require_once(__ROOT__.'/func/countElement.php');
-
 require_once(__ROOT__.'/func/countPending.php');
 require_once(__ROOT__.'/func/countCart.php');
-//require_once(__ROOT__.'/func/pvOnline.php');
 require_once(__ROOT__.'/func/getIngSupplier.php');
 require_once(__ROOT__.'/inc/settings.php');
 

@@ -1,36 +1,37 @@
 <?php 
 if (!defined('pvault_panel')){ die('Not Found');}
-$id = mysqli_real_escape_string($conn, $_GET['id']);
 
-$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT fid,name FROM formulasMetaData WHERE id = '$id'"));
-if($meta['fid'] == FALSE){
-	echo 'Formula doesn\'t exist';
-	exit;
+$id = (int)$_GET['id'] ?? null;
+
+if (!$id) {
+    $error_msg = "Invalid formula ID provided.";
+    require_once(__ROOT__ . '/pages/error.php');
+    return;
 }
 
-$f_name = $meta['name'];
-$fid = $meta['fid'];
+if($meta = mysqli_fetch_array(mysqli_query($conn, "SELECT fid,name FROM formulasMetaData WHERE id = '$id'"))){
 
-$cat_details = mysqli_fetch_array(mysqli_query($conn, "SELECT description FROM IFRACategories WHERE name = '4'"));
-
-$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,name,isProtected,catClass FROM formulasMetaData WHERE fid = '$fid'"));
-$img = mysqli_fetch_array(mysqli_query($conn, "SELECT docData FROM documents WHERE ownerID = '$id' AND type = '2'"));
-
-$formula_q = mysqli_query($conn, "SELECT ingredient FROM formulas WHERE fid = '$fid'");
-while ($formula = mysqli_fetch_array($formula_q)){
-	$form[] = $formula;
+	$f_name = $meta['name'];
+	$fid = $meta['fid'];
+	$cat_details = mysqli_fetch_array(mysqli_query($conn, "SELECT description FROM IFRACategories WHERE name = '4'"));
+	
+	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,name,isProtected,catClass FROM formulasMetaData WHERE fid = '$fid'"));
+	$img = mysqli_fetch_array(mysqli_query($conn, "SELECT docData FROM documents WHERE ownerID = '$id' AND type = '2'"));
+	
+	$formula_q = mysqli_query($conn, "SELECT ingredient FROM formulas WHERE fid = '$fid'");
+	while ($formula = mysqli_fetch_array($formula_q)){
+		$form[] = $formula;
+	}
+	/*
+	$ingredients = mysqli_query($conn, "SELECT id, name, chemical_name, INCI, CAS FROM ingredients ORDER BY name ASC");
+	while ($ingredient = mysqli_fetch_array($ingredients)){
+		$ing[] = $ingredient;
+	}
+	*/
+	if($form[0]['ingredient']){
+		$legend = 1;
+	}
 }
-
-$ingredients = mysqli_query($conn, "SELECT id, name, chemical_name, INCI, CAS FROM ingredients ORDER BY name ASC");
-while ($ingredient = mysqli_fetch_array($ingredients)){
-	$ing[] = $ingredient;
-}
-
-if($form[0]['ingredient']){
-	$legend = 1;
-}
-//require_once(__ROOT__.'/func/convert_to_decimal_point.php');
-
 ?>
 
 <link href="/css/select2.css" rel="stylesheet">
@@ -46,8 +47,15 @@ if($form[0]['ingredient']){
 }
 </style>
 <div id="content-wrapper" class="d-flex flex-column">
-<?php require_once(__ROOT__.'/pages/top.php'); ?>
-	<div class="container-fluid">
+<?php 
+require_once(__ROOT__.'/pages/top.php');
+if(!$fid){
+	$error_msg = "The requested formula id: ".$id.", cannot be found";
+	require_once(__ROOT__.'/pages/error.php');
+	return;
+}
+?>
+	<div class="container-fluid">    
 		<div>
           <div class="card shadow mb-4">
             <div class="card-header py-3"> 
