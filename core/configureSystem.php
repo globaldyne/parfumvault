@@ -94,13 +94,14 @@ $dbname = "'.$_POST['dbname'].'"; //MySQL DB name
 $tmp_path = "/tmp/";
 $allowed_ext = "pdf, doc, docx, xls, csv, xlsx, png, jpg, jpeg, gif";
 $max_filesize = "4194304"; //in bytes
+$session_timeout = 1800; //Time in seconds
 ?>
 ';
-	if (session_status() === PHP_SESSION_NONE) {
-    	session_start();
-	}
-	$_SESSION['parfumvault'] = true;
-	$_SESSION['userID'] = mysqli_insert_id($link);
+		if (session_status() === PHP_SESSION_NONE) {
+			session_start();
+		}
+		$_SESSION['parfumvault'] = true;
+		$_SESSION['userID'] = mysqli_insert_id($link);
 	
 	}else{
 		$response['error'] = 'DB Schema Creation error. Make sure the database exists in your mysql server and its empty.';

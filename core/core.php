@@ -1572,15 +1572,18 @@ if($_GET['action'] == 'rename' && $_GET['fid']){
 	}
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM formulasMetaData WHERE name = '$value'"))){
 		$response["error"] = 'Name already exists';
+		echo json_encode($response);
+	
 	}else{
 		mysqli_query($conn, "UPDATE formulasMetaData SET name = '$value' WHERE id = '$id'");
 		if(mysqli_query($conn, "UPDATE formulas SET name = '$value' WHERE fid = '$fid'")){
-			$response["success"] = 'Formula renamed.';
+			$response["success"] = 'Formula renamed';
 			$response["msg"] = $value;
+			echo json_encode($response);
 		}
 	
 	}
-	echo json_encode($response);
+	
 	return;	
 }
 
