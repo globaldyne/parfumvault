@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 12.1
+
 ### Version 12.0
 - Lids inventory dropped to accessories
 - Minor overall UI updates
