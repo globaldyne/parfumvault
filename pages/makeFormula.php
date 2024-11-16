@@ -1,6 +1,9 @@
 <?php
 define('pvault_panel', TRUE);
-session_start();
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 define('__ROOT__', dirname(dirname(__FILE__))); 
 
