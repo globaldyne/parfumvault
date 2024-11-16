@@ -165,11 +165,11 @@ $(document).ready(function() {
 		],
 		dom: 'lrft',
 		buttons: [{
-				extend: 'print',
-				title: myFNAME,
-				exportOptions: {
-					columns: [0, 1, 2, 3]
-				},
+			extend: 'print',
+			title: myFNAME,
+			exportOptions: {
+				columns: [0, 1, 2, 3]
+			},
 		}],
 		processing: true,
 		serverSide: true,
@@ -179,7 +179,8 @@ $(document).ready(function() {
 		language: {
 			loadingRecords: '&nbsp;',
 			processing: 'Please Wait...',
-			zeroRecords: 'No pending ingredients found',
+			zeroRecords: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>Nothing found</strong></div></div>',
+			emptyTable: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>No pending ingredients</strong></div></div>',
 			search: '',
 			searchPlaceholder: 'Search by ingredient...',
 		},
