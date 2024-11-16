@@ -1,36 +1,37 @@
 <?php 
 if (!defined('pvault_panel')){ die('Not Found');}
-$id = mysqli_real_escape_string($conn, $_GET['id']);
 
-$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT fid,name FROM formulasMetaData WHERE id = '$id'"));
-if($meta['fid'] == FALSE){
-	echo 'Formula doesn\'t exist';
-	exit;
+$id = (int)$_GET['id'] ?? null;
+
+if (!$id) {
+    $error_msg = "Invalid formula ID provided.";
+    require_once(__ROOT__ . '/pages/error.php');
+    return;
 }
 
-$f_name = $meta['name'];
-$fid = $meta['fid'];
+if($meta = mysqli_fetch_array(mysqli_query($conn, "SELECT fid,name FROM formulasMetaData WHERE id = '$id'"))){
 
-$cat_details = mysqli_fetch_array(mysqli_query($conn, "SELECT description FROM IFRACategories WHERE name = '4'"));
-
-$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,name,isProtected,catClass FROM formulasMetaData WHERE fid = '$fid'"));
-$img = mysqli_fetch_array(mysqli_query($conn, "SELECT docData FROM documents WHERE ownerID = '$id' AND type = '2'"));
-
-$formula_q = mysqli_query($conn, "SELECT ingredient FROM formulas WHERE fid = '$fid'");
-while ($formula = mysqli_fetch_array($formula_q)){
-	$form[] = $formula;
+	$f_name = $meta['name'];
+	$fid = $meta['fid'];
+	$cat_details = mysqli_fetch_array(mysqli_query($conn, "SELECT description FROM IFRACategories WHERE name = '4'"));
+	
+	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,name,isProtected,catClass FROM formulasMetaData WHERE fid = '$fid'"));
+	$img = mysqli_fetch_array(mysqli_query($conn, "SELECT docData FROM documents WHERE ownerID = '$id' AND type = '2'"));
+	
+	$formula_q = mysqli_query($conn, "SELECT ingredient FROM formulas WHERE fid = '$fid'");
+	while ($formula = mysqli_fetch_array($formula_q)){
+		$form[] = $formula;
+	}
+	/*
+	$ingredients = mysqli_query($conn, "SELECT id, name, chemical_name, INCI, CAS FROM ingredients ORDER BY name ASC");
+	while ($ingredient = mysqli_fetch_array($ingredients)){
+		$ing[] = $ingredient;
+	}
+	*/
+	if($form[0]['ingredient']){
+		$legend = 1;
+	}
 }
-
-$ingredients = mysqli_query($conn, "SELECT id, name, chemical_name, INCI, CAS FROM ingredients ORDER BY name ASC");
-while ($ingredient = mysqli_fetch_array($ingredients)){
-	$ing[] = $ingredient;
-}
-
-if($form[0]['ingredient']){
-	$legend = 1;
-}
-//require_once(__ROOT__.'/func/convert_to_decimal_point.php');
-
 ?>
 
 <link href="/css/select2.css" rel="stylesheet">
@@ -46,8 +47,15 @@ if($form[0]['ingredient']){
 }
 </style>
 <div id="content-wrapper" class="d-flex flex-column">
-<?php require_once(__ROOT__.'/pages/top.php'); ?>
-	<div class="container-fluid">
+<?php 
+require_once(__ROOT__.'/pages/top.php');
+if(!$fid){
+	$error_msg = "The requested formula id: ".$id.", cannot be found";
+	require_once(__ROOT__.'/pages/error.php');
+	return;
+}
+?>
+	<div class="container-fluid">    
 		<div>
           <div class="card shadow mb-4">
             <div class="card-header py-3"> 
@@ -83,9 +91,7 @@ if($form[0]['ingredient']){
                     </div>
                   </div>
                   <div class="flex-shrink-0">
-                    <div class="img-formula">
-                      <img class="img-perfume" src="<?= $img['docData'] ?: '/img/ICO_TR.png' ?>" alt="Formula Image"/>
-                    </div>
+                    <div id="img-formula"><img src="/img/loading.gif" alt="Loading"/></div>
                   </div>
                 </div>
 
@@ -282,7 +288,7 @@ if($form[0]['ingredient']){
 <script src="/js/select2-v3-ingredient.js"></script>
 <script>
 $(document).ready(function() {
-
+	$("#img-formula").html('<img class="img-perfume" src="<?= $img['docData'] ?: '/img/ICO_TR.png' ?>" alt="Formula Image"/>');
 	function convertToDecimalPoint(qStep, hasDot) {
 		let zeros = '0'.repeat(qStep);
 		return hasDot ? zeros : '.' + zeros;
@@ -327,11 +333,12 @@ $('#quantity').prop("disabled", true);
 $('#add_ing').on('click', '[id*=add-btn]', function () {
 	
 	$.ajax({ 
-		url: '/pages/manageFormula.php', 
+		url: '/core/core.php', 
 		type: 'POST',
 		data: {
-			action: "addIng",
+			action: "addIngToFormula",
 			fid: myFID,
+			id: <?php echo $id; ?>,
 			quantity: $("#quantity").val(),
 			concentration: $("#concentration").val(),
 			ingredient: $("#ingredient").val(),
@@ -342,17 +349,17 @@ $('#add_ing').on('click', '[id*=add-btn]', function () {
 		dataType: 'json',
 		success: function (data) {
 			if ( data.success ) {
-            	$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+            	$('#toast-title').html('<i class="fa-solid fa-circle-check mx-2"></i>' + data.success);
 				$('.toast-header').removeClass().addClass('toast-header alert-success');
 				reload_formula_data();
 			} else {
-            	$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+            	$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>' + data.error);
 				$('.toast-header').removeClass().addClass('toast-header alert-danger');
 			}
 			$('.toast').toast('show');
 		},
 		error: function (xhr, status, error) {
-			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error);
 			$('.toast-header').removeClass().addClass('toast-header alert-danger');
 			$('.toast').toast('show');
 		}
@@ -363,7 +370,7 @@ $('#add_ing').on('click', '[id*=add-btn]', function () {
 
 function setProtected(status) {
   $.ajax({ 
-    url: '/pages/update_data.php', 
+    url: '/core/core.php', 
     type: 'GET',
     data: {
       protect: myFID,

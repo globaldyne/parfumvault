@@ -118,7 +118,7 @@ $('#btnClear').click(function() {
 	$("#btnClear").prop("disabled", true);			
 
 	$.ajax({
-		url: '/pages/operations.php',
+		url: '/core/core.php',
 		data: {
 			do: 'userPerfClear',
 		},
@@ -153,7 +153,7 @@ $('#btnBackup').click(function() {
 	$("#btnCloseBK").prop("disabled", true);
  	$('#btnBackup').prepend('<span class="spinner-border spinner-border-sm mx-2" id="bk_span" aria-hidden="true"></span>');
 	$.ajax({
-		url: '/pages/operations.php',
+		url: '/core/core.php',
 		data: {
 			do: 'backupDB',
 			column_statistics: $('#column-statistics').prop("checked")

@@ -174,7 +174,7 @@ function formatSuppliersSelection (supplierData) {
 	//UPDATE AMOUNT
 	$('#addedToFormula').click(function() {
 		$.ajax({ 
-		url: '/pages/manageFormula.php', 
+		url: '/core/core.php', 
 		type: 'POST',
 		data: {
 			action: "makeFormula",
@@ -217,7 +217,7 @@ function formatSuppliersSelection (supplierData) {
 			  className : "btn-warning",
               callback: function (){
 				 $.ajax({ 
-					url: '/pages/manageFormula.php', 
+					url: '/core/core.php', 
 						type: 'POST',
 						data: {
 							action: "todo",
@@ -259,7 +259,7 @@ function formatSuppliersSelection (supplierData) {
 	//SKIP ADD
 	$('#skippedFromFormula').click(function() {
 		$.ajax({ 
-		url: '/pages/manageFormula.php', 
+		url: '/core/core.php', 
 		type: 'POST',
 		data: {
 			action: "skipMaterial",
@@ -292,7 +292,7 @@ function formatSuppliersSelection (supplierData) {
 	//ADD TO CART
 	$('#tdDataPending').on('click', '[id*=addToCart]', function () {
 		$.ajax({ 
-			url: '/pages/manageFormula.php', 
+			url: '/core/core.php', 
 			type: 'POST',
 			data: {
 				action: "addToCart",

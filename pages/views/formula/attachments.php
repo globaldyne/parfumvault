@@ -47,7 +47,8 @@ $(document).ready(function() {
 		language: {
 			loadingRecords: '&nbsp;',
 			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
-			emptyTable: 'No attachments found.',
+			zeroRecords: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>Nothing found</strong></div></div>',
+			emptyTable: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>No attachments found</strong></div></div>',
 			search: '',
 			searchPlaceholder: 'Search by name...',
 		},
@@ -103,22 +104,27 @@ $(document).ready(function() {
 	};
 	
 	$('#tdAttachments').editable({
-		  container: 'body',
-		  selector: 'a.name',
-		  type: 'POST',
-		  url: "/pages/update_data.php?ingDoc=update&ingID=<?=$id;?>",
-		  title: 'Attachment name',
+		container: 'body',
+		selector: 'a.name',
+		ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
+		url: "/core/core.php?action=updateDocument&ingID=<?=$id;?>",
+		title: 'Attachment name',
 	 });
 	  
 	 $('#tdAttachments').editable({
-		  container: 'body',
-		  selector: 'a.notes',
-		  type: 'POST',
-		  url: "/pages/update_data.php?ingDoc=update&ingID=<?=$id;?>",
-		  title: 'Notes',
+		 container: 'body',
+		 selector: 'a.notes',
+		 ajaxOptions: {
+			 type: "POST",
+			 dataType: 'json'
+		 },
+		 url: "/core/core.php?action=updateDocument&ingID=<?=$id;?>",
+		 title: 'Notes',
 	 });
 	
-		
 	$('#tdAttachments').on('click', '[id*=dDel]', function () {
 		var d = {};
 		d.ID = $(this).attr('data-id');
@@ -132,18 +138,21 @@ $(document).ready(function() {
 				   label : "Remove",
 				   className : "btn-danger",
 				   callback: function (){
-						
-					$.ajax({ 
-						url: '/pages/update_data.php', 
+				 	$.ajax({ 
+						url: '/core/core.php', 
 						type: 'GET',
 						data: {
-							doc: 'delete',
+							action: 'deleteDocument',
 							id: d.ID,
 							ownerID: '<?=$id?>'
 						},
-						dataType: 'html',
+						dataType: 'json',
 						success: function (data) {
-							reload_doc_data();
+							if( data.success){
+								reload_doc_data();
+							} else {
+								$('#doc_inf').html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>');
+							}
 						},
 						error: function (xhr, status, error) {
 							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
@@ -223,7 +232,17 @@ $(document).ready(function() {
 	function reload_doc_data() {
 		$('#tdAttachments').DataTable().ajax.reload(null, true);
 	};
-
+	
+	function extrasShow() {
+		$('[rel=tip]').tooltip({
+			 html: true,
+			 boundary: "window",
+			 overflow: "auto",
+			 container: "body",
+			 delay: {"show": 100, "hide": 0},
+		 });
+	}
+	
 });
 </script>
 

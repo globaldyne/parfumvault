@@ -1,5 +1,9 @@
 <div id="content-wrapper" class="d-flex flex-column">
-<?php require_once(__ROOT__.'/pages/top.php'); ?>
+<?php
+require_once(__ROOT__.'/pages/top.php');
+require_once(__ROOT__.'/func/php-settings.php');
+
+?>
         <div class="container-fluid">
           <div>
           <div class="card shadow mb-4">
@@ -14,7 +18,7 @@
                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addCustomer"><i class="fa-solid fa-plus mx-2"></i>Add new</a></li>
                         <li><a class="dropdown-item" id="exportCSV" href="#"><i class="fa-solid fa-file-export mx-2"></i>Export to CSV</a></li>
                         <li><a class="dropdown-item" id="exportJSON" href="/pages/export.php?format=json&kind=customers"><i class="fa-solid fa-file-export mx-2"></i>Export to JSON</a></li>
-
+               			<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#importJSON"><i class="fa-solid fa-file-import mx-2"></i>Import from JSON</a></li>
                         </div>
                     </div>
                 </div>
@@ -74,7 +78,47 @@
   </div>
 </div>
 
-
+<!--IMPORT JSON MODAL-->
+<div class="modal fade" id="importJSON" data-bs-backdrop="static" tabindex="-1" aria-labelledby="importJSONLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="importJSONLabel">Import customers from a JSON file</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="JSRestMsg"></div>
+        <div class="progress mb-3">  
+          <div id="uploadProgressBar" class="progress-bar" role="progressbar" aria-valuemin="0"></div>
+        </div>
+        <div id="backupArea">
+          <div class="form-group row mb-3">
+            <label for="jsonFile" class="col-md-3 col-form-label">JSON file</label>
+            <div class="col-md-8">
+              <input type="file" name="jsonFile" id="jsonFile" class="form-control" />
+            </div>
+          </div>
+          <div class="col-md-12">
+            <hr />
+            <div class="alert alert-info">
+                <p><strong>IMPORTANT:</strong></p>
+                <ul>
+                  <li>
+                    <div id="raw" data-size="<?=getMaximumFileUploadSizeRaw()?>">Maximum file size: <strong><?=getMaximumFileUploadSize()?></strong></div>
+                  </li>
+                  <li>Any customer with a name that already exists, will be updated.</li>
+                </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseBK">Close</button>
+        <input type="submit" name="btnRestore" class="btn btn-primary" id="btnImportCustomers" value="Import">
+      </div>
+    </div>  
+  </div>
+</div>
 
 <!--EDIT CUSTOMER MODAL-->            
 <div class="modal fade" id="editCustomer" data-bs-backdrop="static" tabindex="-1" aria-labelledby="editCustomerLabel" aria-hidden="true">
@@ -104,11 +148,11 @@ $(document).ready(function() {
 		],
 		dom: 'lrftip',
 		buttons: [{
-				extend: 'csvHtml5',
-				title: "Customers",
-				exportOptions: {
-					columns: [0, 1, 2, 3]
-				},
+			extend: 'csvHtml5',
+			title: "Customers",
+			exportOptions: {
+				columns: [0, 1, 2, 3]
+			},
 		}],
 		processing: true,
 		serverSide: true,
@@ -117,7 +161,8 @@ $(document).ready(function() {
 		language: {
 			loadingRecords: '&nbsp;',
 			processing: 'Please Wait...',
-			zeroRecords: 'Nothing found',
+			zeroRecords: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>Nothing found</strong></div></div>',
+			emptyTable: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>No customers added yet</strong></div></div>',
 			search: '',
 			searchPlaceholder: 'Search by name...',
 		},
@@ -201,13 +246,13 @@ $(document).ready(function() {
 				   callback: function (){
 						
 					$.ajax({
-						url: '/pages/update_data.php', 
+						url: '/core/core.php', 
 						type: 'POST',
 						data: {
 							action: "delete",
 							type: "customer",
 							customer_id: c.ID,
-							},
+						},
 						dataType: 'json',
 						success: function (data) {
 							if(data.success){
@@ -244,7 +289,7 @@ $(document).ready(function() {
 	
 	$('#customer_add').on('click', function () {
 		$.ajax({
-			url: '/pages/update_data.php',
+			url: '/core/core.php',
 			type: 'POST',
 			dataType: 'json',
 			data: {
@@ -285,7 +330,7 @@ $(document).ready(function() {
 		const id = e.relatedTarget.dataset.id;
 		const customer = e.relatedTarget.dataset.name;
 	
-		$.get("/pages/editCustomer.php?id=" + id)
+		$.get("/pages/views/inventory/editCustomer.php?id=" + id)
 			.then(data => {
 			$("#editCustomerLabel", this).html(customer);
 			$(".modal-body", this).html(data);
@@ -295,3 +340,4 @@ $(document).ready(function() {
 }); //END DOC
 
 </script>
+<script src="/js/import.customers.js"></script>

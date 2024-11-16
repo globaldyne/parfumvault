@@ -1,9 +1,23 @@
-Whats New in v11.9
+Whats New in v12.0
 --------------------------
-- Added system logs access via the UI for docker/cloud installations - this comes disabled by default and requires to be enabled in order to access it
-- You can now hide properties column in formulas
-- Fix a bug preventing formula categories to be shown properly
-- Prevent deletion of the last left supplier in an ingredient
-- Prevent adding an ingredient with incomplete supplier data to a formula
-- New dashboard update, including better and  cleaner view
+- Lids inventory dropped to accessories
+- Import json functions update
+- Added import for accessories
+- Added import for bottles
+- Added import for suppliers
+- Added import for customers
+- Fixed pagination for suppliers
+- Formula scaling improvements
+- Fix invalid formula update date on empty formulas
+- Update empty table message
+- Rename sex to gender
+- Error handling improvements
+- Date Format update
+- Auto update image for formulas when uploaded
+- Auto update text title and description after a succesfull update for a formula
+- Removed user alert to reload formula settings pages when making a changes
+- Added openshift yaml manifests
+- Added a dedicated page to display in case of fatal error
+- Added a session timeout to automatically logoff the user after 30 minutes of inactivity - Please refer to the KB online if you want to change the default value
+- Change selected material color to yellow in formula making for better descrimination
 - This release may include more changes, for full details please refer to the CHANGELOG

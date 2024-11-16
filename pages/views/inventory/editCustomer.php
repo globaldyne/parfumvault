@@ -1,5 +1,5 @@
 <?php
-define('__ROOT__', dirname(dirname(__FILE__))); 
+define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__))))); 
 
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
@@ -50,7 +50,7 @@ $(document).ready(function() {
 
 $('#save').click(function() {
 	$.ajax({ 
-		url: '/pages/update_data.php', 
+		url: '/core/core.php', 
 		type: 'POST',
 		data: {
 			update_customer_data: 1,

@@ -66,7 +66,7 @@ $('#btnRestoreIFRA').click(function() {
 	}
 	
 	$.ajax({ 
-		url: '/pages/operations.php?action=restoreIFRA', 
+		url: '/core/core.php?action=restoreIFRA', 
 		type: 'POST',
 		data: fd,
 		contentType: false,

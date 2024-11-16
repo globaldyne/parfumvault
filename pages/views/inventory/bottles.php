@@ -1,12 +1,14 @@
 <div id="content-wrapper" class="d-flex flex-column">
-<?php require_once(__ROOT__.'/pages/top.php'); ?>
-        <div class="container-fluid">
-<?php
+<?php 
+require_once(__ROOT__.'/pages/top.php'); 
+require_once(__ROOT__.'/func/php-settings.php');
+        
 $sup = mysqli_query($conn, "SELECT id,name FROM ingSuppliers ORDER BY name ASC");
 while ($suppliers = mysqli_fetch_array($sup)){
 	    $supplier[] = $suppliers;
 }
 ?>
+<div class="container-fluid">
   <div class="card shadow mb-4">
       <div class="card-header py-3">
          <h2 class="m-0 font-weight-bold text-primary"><a href="#" id="mainTitle">Bottles</a></h2>
@@ -15,10 +17,11 @@ while ($suppliers = mysqli_fetch_array($sup)){
       	<div class="text-right">
            	<div class="btn-group">
                	<button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
-                 <div class="dropdown-menu dropdown-menu-right">
-                 <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addBottle"><i class="fa-solid fa-plus mx-2"></i>Add new</a></li>
-                 <li><a class="dropdown-item" id="exportCSV" href="#"><i class="fa-solid fa-file-export mx-2"></i>Export to CSV</a></li>
-                 <li><a class="dropdown-item" id="exportJSON" href="/pages/export.php?format=json&kind=bottles"><i class="fa-solid fa-file-export mx-2"></i>Export to JSON</a></li>
+                <div class="dropdown-menu dropdown-menu-right">
+                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addBottle"><i class="fa-solid fa-plus mx-2"></i>Add new</a></li>
+                <li><a class="dropdown-item" id="exportCSV" href="#"><i class="fa-solid fa-file-export mx-2"></i>Export to CSV</a></li>
+                <li><a class="dropdown-item" id="exportJSON" href="/pages/export.php?format=json&kind=bottles"><i class="fa-solid fa-file-export mx-2"></i>Export to JSON</a></li>
+               <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#importJSON"><i class="fa-solid fa-file-import mx-2"></i>Import from JSON</a></li>
               </div>
             </div>        
         </div>   
@@ -118,10 +121,51 @@ while ($suppliers = mysqli_fetch_array($sup)){
   </div>
 </div>
 
+<!--IMPORT JSON MODAL-->
+<div class="modal fade" id="importJSON" data-bs-backdrop="static" tabindex="-1" aria-labelledby="importJSONLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="importJSONLabel">Import bottles from a JSON file</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="JSRestMsg"></div>
+        <div class="progress mb-3">  
+          <div id="uploadProgressBar" class="progress-bar" role="progressbar" aria-valuemin="0"></div>
+        </div>
+        <div id="backupArea">
+          <div class="form-group row mb-3">
+            <label for="jsonFile" class="col-md-3 col-form-label">JSON file</label>
+            <div class="col-md-8">
+              <input type="file" name="jsonFile" id="jsonFile" class="form-control" />
+            </div>
+          </div>
+          <div class="col-md-12">
+            <hr />
+            <div class="alert alert-info">
+                <p><strong>IMPORTANT:</strong></p>
+                <ul>
+                  <li>
+                    <div id="raw" data-size="<?=getMaximumFileUploadSizeRaw()?>">Maximum file size: <strong><?=getMaximumFileUploadSize()?></strong></div>
+                  </li>
+                  <li>Any bottle with a name that already exists, will be updated.</li>
+                </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseBK">Close</button>
+        <input type="submit" name="btnRestore" class="btn btn-primary" id="btnImportBottles" value="Import">
+      </div>
+    </div>  
+  </div>
+</div>
 
 <!--EDIT BOTTLE MODAL-->            
 <div class="modal fade" id="editBottle" data-bs-backdrop="static" tabindex="-1" aria-labelledby="editBottleLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title mgmIngHeader mgmIngHeader-with-separator" id="editBottleLabel">Edit bottle</h5>
@@ -147,11 +191,11 @@ $(document).ready(function() {
 		],
 		dom: 'lrftip',
 		buttons: [{
-					extend: 'csvHtml5',
-					title: "Bottle Inventory",
-					exportOptions: {
-						columns: [0, 1, 2, 3, 4]
-					},
+			extend: 'csvHtml5',
+			title: "Bottle Inventory",
+			exportOptions: {
+				columns: [0, 1, 2, 3, 4]
+			},
 		}],
 		processing: true,
 		serverSide: true,
@@ -160,7 +204,8 @@ $(document).ready(function() {
 		language: {
 			loadingRecords: '&nbsp;',
 			processing: 'Please Wait...',
-			zeroRecords: 'Nothing found',
+			zeroRecords: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>Nothing found</strong></div></div>',
+			emptyTable: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>No bootles added yet</strong></div></div>',
 			search: '',
 			searchPlaceholder: 'Search by name...',
 		},
@@ -275,7 +320,7 @@ $(document).ready(function() {
 				   callback: function (){
 						
 					$.ajax({
-						url: '/pages/update_data.php', 
+						url: '/core/core.php', 
 						type: 'POST',
 						data: {
 							action: "delete",
@@ -388,7 +433,7 @@ $(document).ready(function() {
 		const id = e.relatedTarget.dataset.id;
 		const bottle = e.relatedTarget.dataset.name;
 	
-		$.get("/pages/editBottle.php?id=" + id)
+		$.get("/pages/views/inventory/editBottle.php?id=" + id)
 			.then(data => {
 			$("#editBottleLabel", this).html(bottle);
 			$(".modal-body", this).html(data);
@@ -397,4 +442,4 @@ $(document).ready(function() {
 
 }); //END DOC
 </script>
-
+<script src="/js/import.bottles.js"></script>

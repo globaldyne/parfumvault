@@ -153,13 +153,13 @@ while($res = mysqli_fetch_array($q)){
               <li>
                 <div id="raw" data-size="<?=getMaximumFileUploadSizeRaw()?>">Maximum file size: <strong><?=getMaximumFileUploadSize()?></strong></div>
               </li>
-              <li>Any ingredient with the same ID will be replaced. Please make sure you have taken a backup before importing a JSON file.</li>
+              <li>Any compound with the same name that already exists, will be updated.</li>
             </ul>
           </div>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseBK">Cancel</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseBK">Close</button>
         <input type="submit" name="btnRestore" class="btn btn-primary" id="btnImportCompounds" value="Import">
       </div>
     </div>  
@@ -179,11 +179,11 @@ $(document).ready(function() {
 		],
 		dom: 'lrftip',
 		buttons: [{
-				extend: 'csvHtml5',
-				title: "Compounds Inventory",
-				exportOptions: {
-					columns: [0, 1, 2, 3, 4, 5]
-				},
+			extend: 'csvHtml5',
+			title: "Compounds Inventory",
+			exportOptions: {
+				columns: [0, 1, 2, 3, 4, 5]
+			},
 		}],
 		processing: true,
 		serverSide: true,
@@ -192,7 +192,8 @@ $(document).ready(function() {
 		language: {
 			loadingRecords: '&nbsp;',
 			processing: 'Please Wait...',
-			zeroRecords: 'Nothing found',
+			zeroRecords: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>Nothing found</strong></div></div>',
+			emptyTable: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>No compounds added yet</strong></div></div>',
 			search: '',
 			searchPlaceholder: 'Search by name...',
 		},
@@ -200,15 +201,14 @@ $(document).ready(function() {
 			url: '/core/list_inventory_compounds_data.php',
 			type: 'POST',
 			dataType: 'json',
-					data: function(d) {
-					var btlSize = $('#btlSize').val();
-	
-					if (d.order.length>0){
-						d.order_by = d.columns[d.order[0].column].data
-						d.order_as = d.order[0].dir
-					}
-					d.btlSize = btlSize;
-				},
+			data: function(d) {
+			var btlSize = $('#btlSize').val();
+				if (d.order.length>0){
+					d.order_by = d.columns[d.order[0].column].data
+					d.order_as = d.order[0].dir
+				}
+				d.btlSize = btlSize;
+			},
 		},
 		columns: [
 			{ data : 'name', title: 'Name', render: name },
@@ -343,7 +343,7 @@ $(document).ready(function() {
 				   callback: function (){
 						
 					$.ajax({
-						url: '/pages/update_data.php', 
+						url: '/core/core.php', 
 						type: 'POST',
 						data: {
 							action: "delete",
@@ -390,7 +390,7 @@ $(document).ready(function() {
 		$("#compound_add").prop('value', 'Please wait...');
 	
 		$.ajax({
-		  url: '/pages/update_data.php', 
+		  url: '/core/core.php', 
 		  type: 'POST',
 		  data: {
 				action: "add",

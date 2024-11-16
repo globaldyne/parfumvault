@@ -1,5 +1,5 @@
 <?php 
-define('__ROOT__', dirname(dirname(__FILE__))); 
+define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__))))); 
 
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
@@ -78,30 +78,35 @@ $tmpl = mysqli_fetch_array(mysqli_query($conn,"SELECT name,content FROM template
  </div>
 </div>
 
-
 <script>
+$(document).ready(function() {
 
-
-$('#tmpl-save').click(function() {
-	$.ajax({ 
-		url: '/pages/update_data.php', 
-		type: 'POST',
-		data: {
-			tmpl: 'update',
-			name: 'content',
-			pk: <?=$_GET['id']?> ,
-			value: $("#tmpl-editor").val(),
-		},
-		dataType: 'json',   			
-		success: function (data) {
-			if(data.success){
-				var msg = '<div class="alert alert-success">' + data.success + '</div>';
-			}else{
-				var msg ='<div class="alert alert-danger">' + data.error + '</div>';
+	$('#tmpl-save').click(function() {
+		$.ajax({ 
+			url: '/core/core.php', 
+			type: 'POST',
+			data: {
+				action: 'htmlTmplUpdate',
+				name: 'content',
+				pk: <?=$_GET['id']?> ,
+				value: $("#tmpl-editor").val(),
+			},
+			dataType: 'json',   			
+			success: function (data) {
+				if(data.success){
+					var msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>' + data.success + '</div>';
+				}else{
+					var msg ='<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>' + data.error + '</div>';
+				}
+				$('#tmpl-inf').html(msg);
+			},
+			error: function (xhr, status, error) {
+				$('#tmpl-inf').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error +'</div>');
 			}
-			$('#tmpl-inf').html(msg);
-		}
+		});
 	});
+	
 });
+
 </script>
 <script src="/js/helpers.js"></script>

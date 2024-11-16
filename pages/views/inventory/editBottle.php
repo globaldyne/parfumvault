@@ -1,5 +1,5 @@
 <?php
-define('__ROOT__', dirname(dirname(__FILE__))); 
+define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__))))); 
 
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
@@ -88,7 +88,7 @@ $('#bottle_pic').html('<img class="img-profile-avatar" src="<?=$doc['photo']?: '
 
 $('#bottle-save').click(function() {
 	$.ajax({ 
-		url: '/pages/update_data.php', 
+		url: '/core/core.php', 
 		type: 'POST',
 		data: {
 			update_bottle_data: 1,
@@ -104,39 +104,43 @@ $('#bottle-save').click(function() {
 			notes: $("#bottle-notes").val(),
 			supplier: $("#bottle-supplier").val(),
 			supplier_link: $("#bottle-supplier_link").val(),
-			},
+		},
 		dataType: 'json',
 		success: function (data) {
 			if(data.success){
-				var msg = '<div class="alert alert-success">'+data.success+'</div>';
+				var msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>'+data.success+'</div>';
 			}else if( data.error){
-				var msg = '<div class="alert alert-danger">'+data.error+'</div>';
+				var msg = '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>'+data.error+'</div>';
 			}
 			$('#bottle-inf').html(msg);
+		},error: function (xhr, status, error) {
+			$('#bottle-inf').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');
 		}
-	  });
+	});
 
 	var fd = new FormData();
     var files = $('#bottle_pic_file')[0].files;
 
     if(files.length > 0 ){
 		fd.append('bottle_pic',files[0]);
-	}
-	$.ajax({ 
-		url: '/pages/update_data.php?update_bottle_pic=1&bottle_id=<?=$bottle['id']?>', 
-		type: 'POST',
-		data: fd,
-		contentType: false,
-      	processData: false,
-		cache: false,
-		dataType: 'json',
-		success: function (data) {
-			if(data.success){
-				$('#bottle_pic').html('<img class="img-profile-avatar" src="'+data.success.bottle_pic+'">');
-			}else if( data.error){
-				$('#bottle-inf').html('<div class="alert alert-danger">'+data.error+'</div>');
+		$.ajax({ 
+			url: '/core/core.php?update_bottle_pic=1&bottle_id=<?=$bottle['id']?>', 
+			type: 'POST',
+			data: fd,
+			contentType: false,
+			processData: false,
+			cache: false,
+			dataType: 'json',
+			success: function (data) {
+				if(data.success){
+					$('#bottle_pic').html('<img class="img-profile-avatar" src="'+data.success.file+'">');
+				}else if( data.error){
+					$('#bottle-inf').html('<div class="alert alert-danger">'+data.error+'</div>');
+				}
+			},error: function (xhr, status, error) {
+				$('#bottle-inf').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');
 			}
-		}
-	  });
+		  });
+	}
 });
 </script>

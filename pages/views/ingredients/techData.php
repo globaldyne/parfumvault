@@ -118,7 +118,7 @@ $(document).ready(function() {
 			solubleValues.push($(this).val());
 		});
 		$.ajax({ 
-			url: '/pages/update_data.php', 
+			url: '/core/core.php', 
 			type: 'POST',
 			data: {
 				manage: 'ingredient',

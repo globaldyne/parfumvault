@@ -66,7 +66,7 @@ $('#btnRestore').click(function() {
 	}
 	
 	$.ajax({ 
-		url: '/pages/operations.php?restore=db_bk', 
+		url: '/core/core.php?restore=db_bk', 
 		type: 'POST',
 		data: fd,
 		contentType: false,

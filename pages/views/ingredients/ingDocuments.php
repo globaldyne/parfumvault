@@ -53,11 +53,11 @@ $(document).ready(function() {
 		},
 		ajax: {	url: '/core/list_ing_doc_data.php?id=<?=$ingID?>' },
 		columns: [
-				  { data : 'name', title: 'Document', render: dName },
-				  { data : 'docData', title: 'File', render: docData},
-				  { data : 'notes', title: 'Notes', render: dNotes},
-				  { data : 'docSize', title: 'Size'},
-				  { data : null, title: '', render: dActions},		   
+			{ data : 'name', title: 'Document', render: dName },
+			{ data : 'docData', title: 'File', render: docData},
+			{ data : 'notes', title: 'Notes', render: dNotes},
+			{ data : 'docSize', title: 'Size'},
+			{ data : null, title: '', render: dActions},		   
 		],
 		order: [[ 1, 'asc' ]],
 		lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
@@ -83,7 +83,7 @@ $(document).ready(function() {
 		data = '<div class="dropdown">' +
 		'<button type="button" class="btn btn-floating hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
 			'<ul class="dropdown-menu">';
-		data += '<li><a class="dropdown-item text-danger" href="#" id="dDel" rel="tip" title="Remove '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-trash mx-2"></i>Remove</a></li>';
+		data += '<li><a class="dropdown-item text-danger" href="#" id="dDel" rel="tip" title="Delete '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-trash mx-2"></i>Delete</a></li>';
 		data += '</ul></div>';
 		return data;
 	};
@@ -91,17 +91,51 @@ $(document).ready(function() {
 	$('#tdIngDocs').editable({
 		container: 'body',
 	  	selector: 'i.name',
-	  	type: 'POST',
-	  	url: "/pages/update_data.php?ingDoc=update&ingID=<?=$ingID;?>",
-	  	title: 'Document name',
+	  	ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
+		success: function (data) {
+			if ( data.success ) {
+				reload_doc_data();
+			} else if ( data.error ) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+		},
+	  	url: "/core/core.php?action=updateDocument&ingID=<?=$ingID;?>",
+	  	title: 'Document name'
  	});
   
 	$('#tdIngDocs').editable({
-	  container: 'body',
-	  selector: 'i.notes',
-	  type: 'POST',
-	  url: "/pages/update_data.php?ingDoc=update&ingID=<?=$ingID;?>",
-	  title: 'Notes',
+		container: 'body',
+	  	selector: 'i.notes',
+	  	ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
+		success: function (data) {
+			if ( data.success ) {
+				reload_doc_data();
+			} else if ( data.error ) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+		},
+	  	url: "/core/core.php?action=updateDocument&ingID=<?=$ingID;?>",
+	  	title: 'Notes'
 	});
 
 	
@@ -111,29 +145,32 @@ $(document).ready(function() {
 		d.Name = $(this).attr('data-name');
 	
 		bootbox.dialog({
-		   title: "Confirm document removal",
-		   message : 'Remove <strong>'+ d.Name +'</strong> from the list?',
+		   title: "Confirm document deletion",
+		   message : 'Delete <strong>'+ d.Name +'</strong> from the list?',
 		   buttons :{
 			   main: {
-				   label : "Remove",
+				   label : "Delete",
 				   className : "btn-danger",
 				   callback: function (){
-						
-					$.ajax({ 
-						url: '/pages/update_data.php', 
+					  $.ajax({ 
+						url: '/core/core.php', 
 						type: 'GET',
 						data: {
-							doc: 'delete',
+							action: 'deleteDocument',
 							id: d.ID,
 							ownerID: '<?=$ingID?>'
 						},
-						dataType: 'html',
+						dataType: 'json',
 						success: function (data) {
-							$('#msg_doc').html(data);
+							if( data.success){
+								reload_doc_data();
+							} else {
+								$('#doc_inf').html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>');
+							}
 							reload_doc_data();
 						},
 						error: function (xhr, status, error) {
-							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error);
 							$('.toast-header').removeClass().addClass('toast-header alert-danger');
 							$('.toast').toast('show');
 						}
@@ -155,7 +192,7 @@ $(document).ready(function() {
 
 	$('#addDoc').on('click', '[id*=doc_upload]', function () {
 			
-		$("#doc_inf").html('<div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
+		$("#doc_inf").html('<div class="alert alert-info">Please wait, file upload in progress...</div>');
 		$("#doc_upload").prop("disabled", true);
 		$("#doc_upload").prop('value', 'Please wait...');
 			
@@ -174,15 +211,15 @@ $(document).ready(function() {
 				  dataType: 'json',
 				  contentType: false,
 				  processData: false,
-						cache: false,
+				  cache: false,
 				  success: function(response){
 					 if(response.success){
-						var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.success + '</strong></div>';
+						var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong><i class="fa-solid fa-circle-check mx-2"></i>' + response.success + '</strong></div>';
 						$("#doc_upload").prop("disabled", false);
 						$("#doc_upload").prop('value', 'Upload');
 						reload_doc_data();
 					 }else{
-						$("#doc_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + response.error + '</div>');
+						$("#doc_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><i class="fa-solid fa-circle-exclamation mx-2"></i>' + response.error + '</div>');
 						$("#doc_upload").prop("disabled", false);
 						$("#doc_upload").prop('value', 'Upload');
 					 }
@@ -190,7 +227,7 @@ $(document).ready(function() {
 				  },
 			   });
 			}else{
-				$("#doc_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a file to upload!</div>');
+				$("#doc_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><i class="fa-solid fa-circle-exclamation mx-2"></i>Please select a file to upload</div>');
 				$("#doc_upload").prop("disabled", false);
 				$("#doc_upload").prop('value', 'Upload');
 			}

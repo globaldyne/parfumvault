@@ -24,10 +24,10 @@ $(document).ready(function() {
 $('#sds_set_update').click(function() {
 
 	$.ajax({ 
-		url: '/pages/update_data.php', 
+		url: '/core/core.php', 
 		type: 'POST',
 		data: {
-			settings: 'sds',
+			action: 'sdsDisclaimerContent',
 			sds_disc_content: $("#sds_disc_content").val(),
 		},
 		dataType: 'json',
@@ -39,6 +39,11 @@ $('#sds_set_update').click(function() {
 				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
 				$('.toast-header').removeClass().addClass('toast-header alert-danger');
 			}
+			$('.toast').toast('show');
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
 			$('.toast').toast('show');
 		}
 	  });

@@ -6,22 +6,22 @@ require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/inc/product.php');
 
-//EXPORT LIDS JSON
-if($_GET['format'] == 'json' && $_GET['kind'] == 'lids'){
+//EXPORT ACCESSORIES JSON
+if($_GET['format'] == 'json' && $_GET['kind'] == 'accessories'){
 		
-	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM lids")))){
-		$msg['error'] = 'No lids found to export.';
+	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM inventory_accessories")))){
+		$msg['error'] = 'No accessories found to export';
 		echo json_encode($msg);
 		return;
 	}
 	$count = 0;
 
-	$q = mysqli_query($conn, "SELECT * FROM lids");
+	$q = mysqli_query($conn, "SELECT * FROM inventory_accessories");
 	while($res = mysqli_fetch_assoc($q)){
 
 		$r['id'] = (int)$res['id'];
-		$r['style'] = (string)$res['style'];
-		$r['colour'] = (string)$res['colour'];
+		$r['name'] = (string)$res['name'];
+		$r['accessory'] = (string)$res['accessory'];
 		$r['price'] = (double)$res['price'];
 		$r['currency'] = (string)$settings['currency'];
 		$r['supplier'] = (string)$res['supplier'];
@@ -35,13 +35,13 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'lids'){
 	
 	$vd['product'] = $product;
 	$vd['version'] = $ver;
-	$vd['lids'] = $count;
+	$vd['inventory_accessories'] = $count;
 	$vd['timestamp'] = date('d/m/Y H:i:s');
 
-	$result['lids'] = $ic;
+	$result['inventory_accessories'] = $ic;
 	$result['pvMeta'] = $vd;
 
-	header('Content-disposition: attachment; filename=lids.json');
+	header('Content-disposition: attachment; filename=accessories_inventory.json');
 	header('Content-type: application/json');
 	echo json_encode($result, JSON_PRETTY_PRINT);
 	return;	
@@ -49,14 +49,11 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'lids'){
 }
 
 
-
-
-
 //EXPORT BOTTLES JSON
 if($_GET['format'] == 'json' && $_GET['kind'] == 'bottles'){
 		
 	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM bottles")))){
-		$msg['error'] = 'No bottles found to export.';
+		$msg['error'] = 'No bottles found to export';
 		echo json_encode($msg);
 		return;
 	}
@@ -72,6 +69,7 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'bottles'){
 		$r['currency'] = (string)$settings['currency'];
 		$r['height'] = (double)$res['height'];
 		$r['width'] = (double)$res['width'];
+		$r['weight'] = (double)$res['weight'];
 		$r['diameter'] = (double)$res['diameter'];
 		$r['diameter'] = (double)$res['diameter'];
 		$r['supplier'] = (string)$res['supplier'];
@@ -88,13 +86,13 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'bottles'){
 	
 	$vd['product'] = $product;
 	$vd['version'] = $ver;
-	$vd['bottles'] = $count;
+	$vd['inventory_bottles'] = $count;
 	$vd['timestamp'] = date('d/m/Y H:i:s');
 
-	$result['bottles'] = $ic;
+	$result['inventory_bottles'] = $ic;
 	$result['pvMeta'] = $vd;
 
-	header('Content-disposition: attachment; filename=bottles.json');
+	header('Content-disposition: attachment; filename=bottles_inventory.json');
 	header('Content-type: application/json');
 	echo json_encode($result, JSON_PRETTY_PRINT);
 	return;	
@@ -131,13 +129,13 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'customers'){
 	
 	$vd['product'] = $product;
 	$vd['version'] = $ver;
-	$vd['customers'] = $count;
+	$vd['inventory_customers'] = $count;
 	$vd['timestamp'] = date('d/m/Y H:i:s');
 
-	$result['customers'] = $ic;
+	$result['inventory_customers'] = $ic;
 	$result['pvMeta'] = $vd;
 
-	header('Content-disposition: attachment; filename=customers.json');
+	header('Content-disposition: attachment; filename=customers_inventory.json');
 	header('Content-type: application/json');
 	echo json_encode($result, JSON_PRETTY_PRINT);
 	return;	
@@ -189,7 +187,6 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'inventory_compounds'){
 }
 
 
-
 //EXPORT INGREDIENTS CSV
 if($_GET['format'] == 'csv' && $_GET['kind'] == 'ingredients'){
 	$defCatClass = $settings['defCatClass'];
@@ -203,7 +200,7 @@ if($_GET['format'] == 'csv' && $_GET['kind'] == 'ingredients'){
 	}
 
 	header('Content-Type: text/csv; charset=utf-8');
-	header('Content-Disposition: attachment; filename='.$_GET['kind'].'.csv');
+	header('Content-Disposition: attachment; filename=inventory_'.$_GET['kind'].'.csv');
 	$output = fopen('php://output', 'w');
 	fputcsv($output, array('Name', 'INCI', 'CAS', 'FEMA', 'Type', 'Strength', 'Profile', 'Physical State', 'Allergen', 'Odor Description', 'Top Note Impact', 'Heart Note Impact', 'Base Note Impact'));
 	
@@ -216,35 +213,6 @@ if($_GET['format'] == 'csv' && $_GET['kind'] == 'ingredients'){
 	return;	
 }
 
-//EXPORT SUPPLIERS CSV
-if($_GET['format'] == 'csv' && $_GET['kind'] == 'suppliers'){
-	$r = mysqli_query($conn, "SELECT id,name,address,po,country,telephone,url,email,platform,price_tag_start,price_tag_end,add_costs,price_per_size,notes,min_ml,min_gr FROM ingSuppliers");
-	
-	$res = array();
-	if (mysqli_num_rows($r) > 0) {
-		while ($row = mysqli_fetch_assoc($r)) {
-			$mt = mysqli_fetch_array(mysqli_query($conn, "SELECT COUNT(id) AS mt FROM suppliers WHERE ingSupplierID = '".$row['id']."'"));
-
-			unset($row['id']);
-			$row['materials'] = $mt['mt'];
-			$res[] = $row;
-			
-		}
-	}
-
-	header('Content-Type: text/csv; charset=utf-8');
-	header('Content-Disposition: attachment; filename='.$_GET['kind'].'.csv');
-	$output = fopen('php://output', 'w');
-	fputcsv($output, array('Name', 'Address', 'PO', 'Country', 'Telephone', 'URL', 'Email', 'Platform', 'Price Tag Start', 'Price Tag End', 'Added Costs', 'Price Per Size', 'Notes', 'Min ml', 'Min gr', 'Materials'));
-	
-	if (count($res) > 0) {
-		foreach ($res as $row) {
-			fputcsv($output, $row);
-		}
-	}
-	
-	return;	
-}
 
 //EXPORT INGREDIENTS JSON
 if($_GET['format'] == 'json' && $_GET['kind'] == 'ingredients'){
@@ -593,13 +561,13 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'suppliers'){
 	
 	$vd['product'] = $product;
 	$vd['version'] = $ver;
-	$vd['suppliers'] = $suppliers_count;
+	$vd['inventory_suppliers'] = $suppliers_count;
 	$vd['timestamp'] = date('d/m/Y H:i:s');
 
-	$result['suppliers'] = $sup;
+	$result['inventory_suppliers'] = $sup;
 	$result['pvMeta'] = $vd;
 
-	header('Content-disposition: attachment; filename=suppliers.json');
+	header('Content-disposition: attachment; filename=suppliers_inventory.json');
 	header('Content-type: application/json');
 	echo json_encode($result, JSON_PRETTY_PRINT);
 	return;	

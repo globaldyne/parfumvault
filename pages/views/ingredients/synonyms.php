@@ -41,7 +41,6 @@ $ingName = mysqli_real_escape_string($conn, $_GET["name"]);
 <script>
 $(document).ready(function() {
 
-	$('[data-bs-toggle="tooltip"]').tooltip();
 	var tdSynonyms = $('#tdSynonyms').DataTable( {
 		columnDefs: [
 			{ className: 'text-center', targets: '_all' },
@@ -84,7 +83,7 @@ $(document).ready(function() {
 		data = '<div class="dropdown">' +
 		'<button type="button" class="btn btn-floating hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
 			'<ul class="dropdown-menu">';
-		data += '<li><a class="dropdown-item text-danger" href="#" id="synDel" rel="tip" title="Remove '+ row.synonym +'" data-id='+ row.id +' data-name="'+ row.synonym +'"><i class="fas fa-trash mx-2"></i>Remove</a></li>';
+		data += '<li><a class="dropdown-item text-danger" href="#" id="synDel"><i class="fas fa-trash mx-2"></i>Delete</a></li>';
 		data += '</ul></div>';
 		return data;
 	};
@@ -92,17 +91,51 @@ $(document).ready(function() {
 	$('#tdSynonyms').editable({
 		container: 'body',
 		selector: 'i.synonym',
-		type: 'POST',
-		url: "/pages/update_data.php?synonym=update&ing=<?=$ingName;?>",
+		ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
+		success: function (data) {
+			if ( data.success ) {
+				reload_data();
+			} else if ( data.error ) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+		},
+		url: "/core/core.php?synonym=update&ing=<?=$ingName;?>",
 		title: 'Synonym'
 	});
 
 	$('#tdSynonyms').editable({
 	   container: 'body',
 	   selector: 'i.source',
-	   type: 'POST',
-	   url: "/pages/update_data.php?synonym=update&ing=<?=$ingName;?>",
-	   title: 'Source'
+	   ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
+		success: function (data) {
+			if ( data.success ) {
+				reload_data();
+			} else if ( data.error ) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+		},
+	    url: "/core/core.php?synonym=update&ing=<?=$ingName;?>",
+	    title: 'Source'
 	});
 
 
@@ -112,16 +145,15 @@ $(document).ready(function() {
 		syn.Name = $(this).attr('data-name');
 	
 		bootbox.dialog({
-		   title: "Confirm removal",
-		   message : 'Remove <strong>'+ syn.Name +'</strong> from the list?',
+		   title: "Confirm delete",
+		   message : 'Delete <strong>'+ syn.Name +'</strong> from the list?',
 		   buttons :{
 			   main: {
-				   label : "Remove",
+				   label : "Delete",
 				   className : "btn-danger",
 				   callback: function (){
-						
-					$.ajax({ 
-						url: '/pages/update_data.php', 
+				      $.ajax({ 
+						url: '/core/core.php', 
 						type: 'GET',
 						data: {
 							synonym: 'delete',
@@ -129,7 +161,7 @@ $(document).ready(function() {
 						},
 						dataType: 'html',
 						success: function (data) {
-							reload_syn_data();
+							reload_data();
 						},
 						error: function (xhr, status, error) {
 							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
@@ -137,7 +169,6 @@ $(document).ready(function() {
 							$('.toast').toast('show');
 						}
 					  });
-	
 					 return true;
 				   }
 			   },
@@ -157,7 +188,7 @@ $(document).ready(function() {
 		$('#importPubChem').attr('disabled', true);
 		$('#pvImportMsg').html('<div class="alert alert-info">Please wait...</div>');			
 		$.ajax({ 
-			url: '/pages/update_data.php', 
+			url: '/core/core.php', 
 			type: 'POST',
 			data: {
 				synonym: 'import',
@@ -169,13 +200,18 @@ $(document).ready(function() {
 			success: function (data) {
 				if (data.success) {
 					var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><i class="fa-solid fa-check mx-2"></i>' + data.success + '</div>';
-					reload_syn_data();
+					reload_data();
 					reload_overview();
 				}else{
 					var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + data.error + '</div>';
 				}
 				$('#pvImportMsg').html(msg);
 				$('#importPubChem').attr('disabled', false);
+			},
+			error: function (xhr, status, error) {
+				$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
 			}
 		});		
 				 
@@ -183,7 +219,7 @@ $(document).ready(function() {
 	
 	$('#addSynonym').on('click', '[id*=synAdd]', function () {
 		$.ajax({ 
-			url: '/pages/update_data.php', 
+			url: '/core/core.php', 
 			type: 'POST',
 			data: {
 				synonym: 'add',
@@ -197,19 +233,20 @@ $(document).ready(function() {
 					var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><i class="fa-solid fa-check mx-2"></i>' + data.success + '</div>';
 					$("#synonym").val('');
 					$("#source").val('');
-					reload_syn_data();
+					reload_data();
 				}else{
 					var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + data.error + '</div>';
 				}
-				
-				$('#infSyn').html(msg);
-				
+				$('#infSyn').html(msg);				
+			},
+			error: function (xhr, status, error) {
+				$('#infSyn').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');
 			}
 		  });
 	});
 	
 	
-	function reload_syn_data() {
+	function reload_data() {
 		$('#tdSynonyms').DataTable().ajax.reload(null, true);
 	};
 	

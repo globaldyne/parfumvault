@@ -16,22 +16,22 @@ require_once(__ROOT__.'/inc/product.php');
 
 
 $fid = mysqli_real_escape_string($conn, $_GET['fid']);
-if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$fid'")) == FALSE){
-	echo 'Formula doesn\'t exist';
-	return;
+
+if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$fid'"))){
+	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM formulasMetaData WHERE fid = '$fid'"));
+	if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = '$fid' AND toAdd = '1'"))){
+			$msg = '<div class="alert alert-warning"><a href="#" id="markComplete"><strong>All materials added. Mark formula as complete?</strong></a></div>';
+	
+	}
+	
+	$qS = mysqli_query($conn, "SELECT id,name FROM ingSuppliers ORDER BY name ASC");
+	while($res = mysqli_fetch_array($qS)){
+		$res_ingSupplier[] = $res;
+	}
+	$formula_not_found = false;
+} else {
+	$formula_not_found = true;	
 }
-$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM formulasMetaData WHERE fid = '$fid'"));
-
-if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = '$fid' AND toAdd = '1'"))){
-		$msg = '<div class="alert alert-warning"><a href="#" id="markComplete"><strong>All materials added. Mark formula as complete?</strong></a></div>';
-
-}
-
-$qS = mysqli_query($conn, "SELECT id,name FROM ingSuppliers ORDER BY name ASC");
-while($res = mysqli_fetch_array($qS)){
-    $res_ingSupplier[] = $res;
-}
-
 ?>
 <!doctype html>
 	<html lang="en" data-bs-theme="<?=$settings['bs_theme']?>">
@@ -68,7 +68,13 @@ while($res = mysqli_fetch_array($qS)){
 
    
 </head>
-
+<?php
+if($formula_not_found){
+	$error_msg = "The requested formula cannot be found";
+	require_once(__ROOT__.'/pages/error.php');
+	return;
+}
+?>
     <div class="container-fluid">
       <div class="card shadow mb-4">
         <div class="card-header py-3">
@@ -85,10 +91,9 @@ while($res = mysqli_fetch_array($qS)){
                <div class="dropdown-divider"></div>
                <li class="dropdown-header">Options</li>
                <li><a class="dropdown-item" href="#" id="toggleAdded"><i class="bi bi-list-check mx-2"></i>Show/hide added</a></li>
-
                	<div class="dropdown-divider"></div>
                	<li class="dropdown-header">Export</li>
-          		<li><a class="dropdown-item" href="/pages/operations.php?action=exportMaking&fid=<?=$fid?>"><i class="fa-solid fa-file-code mx-2"></i>Export as JSON</a></li>
+          		<li><a class="dropdown-item" href="/core/core.php?action=exportMaking&fid=<?=$fid?>"><i class="fa-solid fa-file-code mx-2"></i>Export as JSON</a></li>
                <li><a class="dropdown-item export_as" href="#" data-format="csv"><i class="fa-solid fa-file-csv mx-2"></i>Export as CSV</a></li>
                <li><a class="dropdown-item export_as" href="#" data-format="pdf"><i class="fa-solid fa-file-code mx-2"></i>Export as PDF</a></li>
                <li><a class="dropdown-item" href="#" id="print"><i class="fa-solid fa-print mx-2"></i>Print formula</a></li>
@@ -465,7 +470,7 @@ $(document).ready(function() {
 			   className : "btn-danger",
 			 callback: function (){
 			 $.ajax({ 
-				url: '/pages/manageFormula.php', 
+				url: '/core/core.php', 
 					type: 'POST',
 					data: {
 						action: "makeFormula",

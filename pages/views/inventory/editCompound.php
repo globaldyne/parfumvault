@@ -66,7 +66,7 @@ $(document).ready(function() {
 
 	$('#cmp_edit_save').click(function() {
 		$.ajax({ 
-			url: '/pages/update_data.php', 
+			url: '/core/core.php', 
 			type: 'POST',
 			data: {
 				update_inv_compound_data: 1,

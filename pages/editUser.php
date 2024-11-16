@@ -21,7 +21,7 @@ $doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM docu
         <div class="dropdown-divider"></div>
         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
 			<div class="text-right">
-        		<input name="upload-avatar" type="submit" class="btn btn-secondary mt-2" id="upload-avatar" value="Upload" />
+        		<input name="upload-avatar" type="submit" class="btn btn-warning mt-2" id="upload-avatar" value="Upload" />
         	</div>
         </div>
       </div>
@@ -79,7 +79,7 @@ $(document).ready(function () {
 	
 	$('#save-profile').click(function() {
 		$.ajax({ 
-			url: '/pages/update_settings.php', 
+			url: '/core/core.php', 
 			type: 'POST',
 			data: {
 				update_user_profile: 1,
@@ -90,14 +90,14 @@ $(document).ready(function () {
 			dataType: 'json',
 			success: function (data) {
 				if(data.success){
-					var msg = '<div class="alert alert-success">'+data.success+'</div>';
+					var msg = '<div class="alert alert-success"><i class="fa-solid fa-check mx-2"></i>'+data.success+'</div>';
 				}else if( data.error){
-					var msg = '<div class="alert alert-danger">'+data.error+'</div>';
+					var msg = '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>'+data.error+'</div>';
 				}
 				$('#msgU').html(msg);
 			},
 			error: function (xhr, status, error) {
-				$('#msgU').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mr-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+				$('#msgU').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 			}
 		  });
 	});
@@ -110,7 +110,7 @@ $(document).ready(function () {
 			fd.append('avatar',files[0]);
 		}
 		$.ajax({ 
-			url: '/pages/update_settings.php?update_user_avatar=1', 
+			url: '/core/core.php?update_user_avatar=1', 
 			type: 'POST',
 			data: fd,
 			contentType: false,
@@ -119,16 +119,16 @@ $(document).ready(function () {
 			dataType: 'json',
 			success: function (data) {
 				if(data.success){
-					var msg = '<div class="alert alert-success">'+data.success.msg+'</div>';
+					var msg = '<div class="alert alert-success"><i class="fa-solid fa-check mx-2"></i>'+data.success.msg+'</div>';
 					$('#profile_pic').html('<img class="img-profile-avatar" src="'+data.success.avatar+'">');
 	
 				}else if( data.error){
-					var msg = '<div class="alert alert-danger">'+data.error+'</div>';
+					var msg = '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>'+data.error+'</div>';
 				}
 				$('#msgU').html(msg);
 			},
 			error: function (xhr, status, error) {
-				$('#msgU').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mr-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+				$('#msgU').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 			}
 		  });
 	});
