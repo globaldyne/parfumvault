@@ -23,7 +23,7 @@ $fid = mysqli_real_escape_string($conn, $_GET['fid']);
 if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$fid'"))){
 	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM formulasMetaData WHERE fid = '$fid'"));
 	if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = '$fid' AND toAdd = '1'"))){
-			$msg = '<div class="alert alert-warning"><a href="#" id="markComplete"><strong>All materials added. Mark formula as complete?</strong></a></div>';
+			$msg = '<div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><a href="#" id="markComplete"><strong>All materials added. Mark formula as complete?</strong></a></div>';
 	
 	}
 	
