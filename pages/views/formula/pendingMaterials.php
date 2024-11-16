@@ -17,10 +17,18 @@ require_once(__ROOT__.'/inc/sec.php');
    	</div> 
     
     <div id="pendingMaterialsTabs">
-     <ul>
-         <li class="active"><a href="#overall" id="overall_tab" role="tab" data-bs-toggle="tab">Overall</a></li>
-         <li><a href="#summary" id="summary_tab" role="tab" data-bs-toggle="tab">Summary</a></li>
-     </ul>
+        <ul>
+            <li class="active">
+                <a href="#overall" id="overall_tab" role="tab" data-bs-toggle="tab">
+                    <i class="fa-solid fa-pallet mx-2"></i> Overall
+                </a>
+            </li>
+            <li>
+                <a href="#summary" id="summary_tab" role="tab" data-bs-toggle="tab">
+                    <i class="fa-solid fa-list-ol mx-2"></i> Summary
+                </a>
+            </li>
+        </ul>
      
      <div class="tab-content">
      
@@ -61,7 +69,7 @@ require_once(__ROOT__.'/inc/sec.php');
 
 $(document).ready(function() {
 	$("#pendingMaterialsTabs").tabs();
-
+	
 	var tdDataM = $("#tdDataM").DataTable( {
 		columnDefs: [
 			{ className: "text-center", targets: "_all" },
@@ -96,9 +104,11 @@ $(document).ready(function() {
 			   { data : "inventory.stock", title: "Quantity in stock", render: stock},
 			   { data : null, title: "Supplier(s)", render: iSuppliers}
 		],
+		/*
 		rowsGroup: [
       		'formula:name'
     	],
+		*/
         order: [[ 0, "asc" ]],
 		lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
         pageLength: 20,
