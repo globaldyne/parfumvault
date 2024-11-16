@@ -1109,7 +1109,7 @@ table#tdDataPending.dataTable thead:hover {
 }
 */
 .pv-transition td {
-    background-color: var(--bs-secondary-bg);
+    background-color: var(--bs-warning-border-subtle);
 }
 
 .schedule_details {

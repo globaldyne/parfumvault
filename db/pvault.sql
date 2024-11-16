@@ -62,7 +62,7 @@ CREATE TABLE `formulas` (
   `quantity` decimal(10,4) DEFAULT NULL,
   `exclude_from_summary` INT NOT NULL DEFAULT '0', 
   `exclude_from_calculation` INT NOT NULL DEFAULT '0',
-  `notes` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `notes` varchar(255) DEFAULT NULL,
   `created` datetime NOT NULL DEFAULT current_timestamp(),
   `updated` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -100,7 +100,7 @@ CREATE TABLE `formulasMetaData` (
   `product_name` varchar(255) DEFAULT NULL,
   `fid` varchar(255) COLLATE utf8_general_ci NOT NULL,
   `profile` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `sex` varchar(255) COLLATE utf8_general_ci DEFAULT 'unisex',
+  `gender` varchar(255) COLLATE utf8_general_ci DEFAULT 'unisex',
   `notes` text COLLATE utf8_general_ci DEFAULT NULL,
   `created` timestamp NOT NULL DEFAULT current_timestamp(),
   `isProtected` INT NULL DEFAULT '0',
@@ -282,13 +282,13 @@ INSERT INTO `ingTypes` (`id`, `name`) VALUES
 (6, 'Solvent'),
 (7, 'Base');
 
-CREATE TABLE `lids` (
+CREATE TABLE `inventory_accessories` (
   `id` int(11) NOT NULL,
-  `style` varchar(255) COLLATE utf8_general_ci NOT NULL,
-  `colour` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  `accessory` varchar(255) NOT NULL,
   `price` DOUBLE DEFAULT 0,
-  `supplier` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `supplier_link` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `supplier` varchar(255) NOT NULL,
+  `supplier_link` varchar(255) NOT NULL,
   `pieces` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
@@ -444,8 +444,8 @@ ALTER TABLE `ingSuppliers`
 ALTER TABLE `ingTypes`
   ADD PRIMARY KEY (`id`);
 
-ALTER TABLE `lids`
-  ADD PRIMARY KEY (`id`);
+ALTER TABLE `inventory_accessories` ADD PRIMARY KEY (`id`);
+ALTER TABLE `inventory_accessories` ADD UNIQUE(`name`);
 
 ALTER TABLE `settings`
   ADD PRIMARY KEY (`id`);
@@ -457,11 +457,11 @@ ALTER TABLE `users`
 ALTER TABLE `ingredient_compounds`
   ADD PRIMARY KEY (`id`);
 
-ALTER TABLE `bottles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `bottles` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `bottles` ADD UNIQUE(`name`);
 
-ALTER TABLE `customers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `customers` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `customers` ADD UNIQUE(`name`);
 
 ALTER TABLE `formulas`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
@@ -484,14 +484,13 @@ ALTER TABLE `ingredients`
 ALTER TABLE `ingStrength`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
-ALTER TABLE `ingSuppliers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `ingSuppliers` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `ingSuppliers` ADD UNIQUE(`name`);
 
 ALTER TABLE `ingTypes`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
-ALTER TABLE `lids`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `inventory_accessories` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `settings`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
@@ -616,7 +615,7 @@ CREATE TABLE `formulasRevisions` (
 
 CREATE TABLE `formula_history` (
  `id` int(11) NOT NULL AUTO_INCREMENT,
- `fid` varchar(255) NOT NULL,
+ `fid` int(11) NOT NULL,
  `ing_id` INT NOT NULL DEFAULT '0', 
  `change_made` text COLLATE utf8_general_ci NOT NULL,
  `date_time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -633,7 +632,7 @@ CREATE TABLE `formulaCategories` (
  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
-INSERT INTO `formulaCategories` (`id`, `name`, `cname`, `type`) VALUES (NULL, 'Oriental', 'oriental', 'profile'), (NULL, 'Woody', 'woody', 'profile'), (NULL, 'Floral', 'floral', 'profile'), (NULL, 'Fresh', 'fresh', 'profile'), (NULL, 'Unisex', 'unisex', 'sex'), (NULL, 'Men', 'men', 'sex'), (NULL, 'Women', 'women', 'sex');
+INSERT INTO `formulaCategories` (`id`, `name`, `cname`, `type`) VALUES (NULL, 'Oriental', 'oriental', 'profile'), (NULL, 'Woody', 'woody', 'profile'), (NULL, 'Floral', 'floral', 'profile'), (NULL, 'Fresh', 'fresh', 'profile'), (NULL, 'Unisex', 'unisex', 'gender'), (NULL, 'Men', 'men', 'gender'), (NULL, 'Women', 'women', 'gender');
 
 CREATE TABLE `synonyms` ( `id` INT NOT NULL , `ing` VARCHAR(255) NOT NULL, `cid` INT(10) NULL DEFAULT NULL , `synonym` VARCHAR(255) NOT NULL , `source` VARCHAR(255) NULL DEFAULT NULL, `created_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ) ENGINE = InnoDB;
 
@@ -798,6 +797,8 @@ INSERT INTO `backup_provider` (`id`, `credentials`, `provider`, `schedule`, `ena
 (1, '{}', 'Google', '00:00:00', 1, 'My PV Backups', 'pvault');
 
 CREATE TABLE `inventory_compounds` ( `id` INT NOT NULL AUTO_INCREMENT , `name` VARCHAR(255) NOT NULL , `description` TEXT NOT NULL , `batch_id` VARCHAR(255) NOT NULL DEFAULT '-' , `size` DOUBLE NOT NULL DEFAULT '0' , `updated` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `owner_id` INT NOT NULL DEFAULT '0' , `location` VARCHAR(255) NOT NULL , `label_info` TEXT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB CHARSET=utf8 COLLATE utf8_general_ci; 
+
+ALTER TABLE `inventory_compounds` ADD UNIQUE(`name`);
 
 CREATE TABLE `sds_data` ( `id` INT NOT NULL AUTO_INCREMENT , `product_name` VARCHAR(255) NOT NULL , `product_use` VARCHAR(255) NOT NULL , `country` VARCHAR(255) NOT NULL DEFAULT 'United Kingdom' , `language` VARCHAR(255) NOT NULL DEFAULT 'English' , `product_type` VARCHAR(255) NOT NULL DEFAULT 'Substance' , `state_type` VARCHAR(255) NOT NULL DEFAULT 'Liquid' , `supplier_id` INT NOT NULL , `docID` INT NOT NULL, `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `updated` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB CHARSET=utf8 COLLATE utf8_general_ci; 
 

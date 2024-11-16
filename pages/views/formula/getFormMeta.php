@@ -55,20 +55,18 @@ while($qTags = mysqli_fetch_array($tagsQ)){
 
 <script src="/js/bootstrap-tagsinput.js"></script> 
 <link href="/css/bootstrap-tagsinput.css" rel="stylesheet" />
-<div id="msg_settings_info">
-    <div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i>Some of the changes require the page to be reloaded to appear properly. Please remember to refresh your browser if your changes not automatically appear.</div>
-</div>
+
 <div id="set_msg"></div>
 <div class="card-body" id="formula_metadata">
 
 <div class="col-sm">
    <div class="form-row">
      <div class="form-group col">
-        <label class="control-label col-auto" for="formula_name">Formula Name</label>
+        <label class="control-label col-auto" for="formula_name">Formula name</label>
           <a href="#" data-name="name" class="name" id="formula_name" data-pk="<?php echo $info['id'];?>"><?php echo $info['name']?:'Unnamed';?></a>
       </div>
      <div class="form-group col">
-        <label class="control-label col-auto" for="product_name">Product Name</label>
+        <label class="control-label col-auto" for="product_name">Product name</label>
         <a href="#" data-name="product_name" class="product_name" id="product_name" data-pk="<?php echo $info['id'];?>"><?php echo $info['product_name'] ?: 'Not set';?></a>
      </div>
     </div>
@@ -156,8 +154,8 @@ while($qTags = mysqli_fetch_array($tagsQ)){
  <div class="form-group col-md-6">
     <label class="control-label col-auto" for="gender">Gender</label>
     <select name="gender" id="gender" class="form-control selectpicker" data-live-search="false">
-    <?php foreach ($fcat as $cat) { if($cat['type'] == 'sex'){?>
-        <option value="<?=$cat['cname'];?>" <?php echo ($info['sex']==$cat['cname'])?"selected=\"selected\"":""; ?>><?php echo $cat['name'];?></option>
+    <?php foreach ($fcat as $cat) { if($cat['type'] == 'gender'){?>
+        <option value="<?=$cat['cname'];?>" <?php echo ($info['gender']==$cat['cname'])?"selected=\"selected\"":""; ?>><?php echo $cat['name'];?></option>
     <?php } }?>
     </select>
     </div>
@@ -193,46 +191,64 @@ $(document).ready(function(){
 	$('[rel=tip]').tooltip({placement: 'right'});
 	
 	$('#formula_metadata').editable({
-	  container: 'body',
-	  selector: 'a.name',
-	  url: "/pages/update_data.php?action=rename&fid=<?=$info['fid']?>",
-	  title: 'Name',
-	  mode: 'inline',
-	  ajaxOptions: { 
-		dataType: 'json'
-	  },
-	  validate: function(value){
-		if($.trim(value) == ''){
-			return 'This field is required';
-		}
-	  },
-	  success: function(response) {	
-		if(response.success){
-			$("#getFormMetaLabel").html(response.msg);
-		}else{
-			msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
-		}
-			$('#set_msg').html(msg);        
+		container: 'body',
+	  	selector: 'a.name',
+	  	url: "/core/core.php?action=rename&fid=<?=$info['fid']?>",
+	  	title: 'Name',
+	  	mode: 'inline',
+	  	ajaxOptions: { 
+			dataType: 'json'
+	  	},
+	  	validate: function(value){
+			if($.trim(value) == ''){
+				return 'This field is required';
+			}
+	  	},
+	  	success: function(response) {	
+			if(response.success){
+				$("#getFormMetaLabel").html(response.msg);
+				$("#formula_name").html(response.msg);
+				$('#set_msg').html('');
+			}else{
+				$('#set_msg').html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong><i class="fa-solid fa-circle-exclamation mx-2"></i>' + response.error + '</strong></div>');
+			}
 		},
 		error: function (xhr, status, error) {
-			$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');
-		}
-	
-	});
+			$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error +'</div>');
+			}
+		});
   
 	$('#formula_metadata').editable({
 	 	container: 'body',
 	  	selector: 'a.notes',
 	  	emptytext: 'None',
-	  	url: "/pages/update_data.php?formulaMeta=<?=$info['fid']?>",
+	  	url: "/core/core.php?formulaMeta=<?=$info['fid']?>",
 	  	title: 'Notes',
-	  	mode: 'inline'	
+	  	mode: 'inline',
+		ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
+		success: function (data) {
+			if ( data.success ) {
+				$('#formula_desc').html( $('#notes').text() );
+			} else if ( data.error ) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+		},
 	});
   
 	$('#formula_metadata').editable({
 	 	container: 'body',
 	  	selector: 'a.product_name',
-	  	url: "/pages/update_data.php?formulaMeta=<?=$info['fid']?>",
+	  	url: "/core/core.php?formulaMeta=<?=$info['fid']?>",
 	  	title: 'Product Name',
 	  	mode: 'inline',
 	  	emptytext: 'None',
@@ -245,7 +261,7 @@ $(document).ready(function(){
 			}       
 		},
 		error: function (xhr, status, error) {
-			$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');
+			$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error +'</div>');
 		}
 		
 	});
@@ -253,7 +269,7 @@ $(document).ready(function(){
 
 	$("#isProtected").change(function() {
 	  	$.ajax({ 
-			url: '/pages/update_data.php', 
+			url: '/core/core.php', 
 			type: 'GET',
 			data: {
 				protect: '<?=$info['fid']?>',
@@ -268,14 +284,14 @@ $(document).ready(function(){
         		}
 			},
 			error: function (xhr, status, error) {
-				$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');
+				$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error +'</div>');
 			}
 		  });
 	});
   
 	$("#defView").change(function() {
 	 	$.ajax({ 
-			url: '/pages/update_data.php', 
+			url: '/core/core.php', 
 			type: 'POST',
 			data: {
 				formulaSettings: true,
@@ -293,14 +309,14 @@ $(document).ready(function(){
 				$('#set_msg').html(msg);
 			},
 			error: function (xhr, status, error) {
-				$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');
+				$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error +'</div>');
 			}
 	 	});
 	});
 
 	$("#profile").change(function() {
 		$.ajax({ 
-			url: "/pages/update_data.php",
+			url: "/core/core.php",
 			type: 'POST',
 			data: {
 				formulaSettings: true,
@@ -318,7 +334,7 @@ $(document).ready(function(){
 				$('#set_msg').html(msg);
 			},
 			error: function (xhr, status, error) {
-				$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');
+				$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error +'</div>');
 			}
 	  }); 
 	});
@@ -326,12 +342,12 @@ $(document).ready(function(){
 
 	$("#gender").change(function() {	
 		$.ajax({ 
-			url: "/pages/update_data.php",
+			url: "/core/core.php",
 			type: 'POST',
 			data: {
 				formulaSettings: true,
 				fid: '<?=$info['fid']?>',
-				set: 'sex',
+				set: 'gender',
 				val: $("#gender").find(":selected").val(),
 			},
 			dataType: 'json',
@@ -344,7 +360,7 @@ $(document).ready(function(){
 				$('#set_msg').html(msg);
 			},
 			error: function (xhr, status, error) {
-				$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');
+				$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error +'</div>');
 			}
 	  }); 
 	});
@@ -352,7 +368,7 @@ $(document).ready(function(){
 
 	$("#catClass").change(function() {
 		$.ajax({ 
-			url: '/pages/update_data.php', 
+			url: '/core/core.php', 
 			type: 'POST',
 			data: {
 				formulaSettings: true,
@@ -370,14 +386,14 @@ $(document).ready(function(){
 				$('#set_msg').html(msg);
 			},
 			error: function (xhr, status, error) {
-				$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');
+				$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error +'</div>');
 			}
 	  });
 	});
 
 	$("#finalType").change(function() {
 	 	$.ajax({ 
-			url: '/pages/update_data.php', 
+			url: '/core/core.php', 
 			type: 'POST',
 			data: {
 				formulaSettings: true,
@@ -395,14 +411,14 @@ $(document).ready(function(){
 				$('#set_msg').html(msg);
 			},
 			error: function (xhr, status, error) {
-				$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');
+				$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error +'</div>');
 			}
 	  });
 	});
 
 	$("#status").change(function() {
 		$.ajax({ 
-			url: '/pages/update_data.php', 
+			url: '/core/core.php', 
 			type: 'POST',
 			data: {
 				formulaSettings: true,
@@ -415,12 +431,12 @@ $(document).ready(function(){
 				if(response.success){
 					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong><i class="fa-solid fa-circle-check mx-2"></i>' + response.success + '</strong></div>';
 				}else{
-					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
+					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong><i class="fa-solid fa-circle-exclamation mx-2"></i>' + response.error + '</strong></div>';
 				}
 					$('#set_msg').html(msg);
 				},
 				error: function (xhr, status, error) {
-					$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');
+					$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error +'</div>');
 				}
 	  	});
 	});
@@ -428,7 +444,7 @@ $(document).ready(function(){
 
 	$("#customer").change(function() {
 	 	$.ajax({ 
-			url: '/pages/update_data.php', 
+			url: '/core/core.php', 
 			type: 'POST',
 			data: {
 				formulaSettings: true,
@@ -441,12 +457,12 @@ $(document).ready(function(){
 				if(response.success){
 					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong><i class="fa-solid fa-circle-check mx-2"></i>' + response.success + '</strong></div>';
 				}else{
-					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
+					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong><i class="fa-solid fa-circle-exclamation mx-2"></i>' + response.error + '</strong></div>';
 				}
 					$('#set_msg').html(msg);
 				},
 				error: function (xhr, status, error) {
-					$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');
+					$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error +'</div>');
 				}
 			});
 	});
@@ -454,7 +470,7 @@ $(document).ready(function(){
 
 	
 	$("#pic_upload").click(function(){
-		$("#upload_resp").html('<div class="dropdown-divider"><div class="alert alert-info alert-dismissible">Please wait, file upload in progress....</div>');
+		$("#upload_resp").html('<div class="dropdown-divider"><div class="alert alert-info">Please wait, file upload in progress...</div>');
 		$("#pic_upload").prop("disabled", true);
 		$("#pic_upload").prop('value', 'Please wait...');
 			
@@ -471,18 +487,22 @@ $(document).ready(function(){
 				  data: fd,
 				  contentType: false,
 				  processData: false,
-						cache: false,
-				  success: function(response){
-					 if(response != 0){
-						$("#upload_resp").html('<div class="alert alert-success mt-3"><i class="fa-solid fa-circle-check mx-2"></i>File uploaded</div>');
+				  cache: false,
+				  dataType: 'json',
+				  success: function(data){
+					 if(data.success){
+						$("#upload_resp").html('<div class="alert alert-success mt-3"><i class="fa-solid fa-circle-check mx-2"></i>'+ data.success.msg +'</div>');
 						$("#pic_upload").prop("disabled", false);
 						$("#pic_upload").prop('value', 'Upload');
+						$("#img-formula").html('<img class="img-perfume" src="'+data.success.file+'">');
 					 }else{
-						$("#upload_resp").html('<div class="alert alert-danger mt-3"><i class="fa-solid fa-triangle-exclamation mx-2"></i>File upload failed</div>');
+						$("#upload_resp").html('<div class="alert alert-danger mt-3"><i class="fa-solid fa-triangle-exclamation mx-2"></i>'+ data.error +'</div>');
 						$("#pic_upload").prop("disabled", false);
 						$("#pic_upload").prop('value', 'Upload');
 					 }
-				  },
+				  },error: function (xhr, status, error) {
+					$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error +'</div>');
+				}
 			   });
 			}else{
 				$("#upload_resp").html('<div class="alert alert-danger mt-3"><i class="fa-solid fa-triangle-exclamation mx-2"></i>Please select a file to upload</div>');
@@ -495,7 +515,7 @@ $(document).ready(function(){
 	$('#tagsinput').on('beforeItemAdd', function(event) {
 	   var tag = event.item;   
 	   $.ajax({ 
-			url: '/pages/manageFormula.php', 
+			url: '/core/core.php', 
 			type: 'POST',
 			data: {
 				do: "tagadd",
@@ -510,7 +530,7 @@ $(document).ready(function(){
 				}
 			},
 			error: function (xhr, status, error) {
-				$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');
+				$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error +'</div>');
 			}
 		});
 	});
@@ -525,7 +545,7 @@ $('#tagsinput').on('beforeItemRemove', function(event) {
    var tag = event.item;
 
    $.ajax({ 
-		url: '/pages/manageFormula.php', 
+		url: '/core/core.php', 
 		type: 'POST',
 		data: {
 			do: "tagremove",
@@ -540,7 +560,7 @@ $('#tagsinput').on('beforeItemRemove', function(event) {
 			}
 		},
 		error: function (xhr, status, error) {
-			let errorMessage = '<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred. ';
+			let errorMessage = '<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred.';
 			if (xhr.responseText) {
 				errorMessage += 'Server response: ' + xhr.responseText;
 			} else {

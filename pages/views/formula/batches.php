@@ -139,7 +139,7 @@ $(document).ready(function() {
 				   className : "btn-danger",
 				   callback: function (){
 				   $.ajax({
-						url: '/pages/update_data.php', 
+						url: '/core/core.php', 
 						type: 'POST',
 						data: {
 							action: 'batch',

@@ -215,7 +215,7 @@ function fetch_reps(){
 //Clone
 $('#cloneIng').on('click', '[id*=cloneME]', function () {
 	$.ajax({ 
-		url: '/pages/update_data.php', 
+		url: '/core/core.php', 
 		type: 'POST',
 		data: {
 			action: 'clone',
@@ -274,7 +274,7 @@ $('#genDOC').on('click', '[id*=generateDOC]', function () {
 //Rename
 $('#renameIng').on('click', '[id*=renameME]', function () {
 	$.ajax({ 
-		url: '/pages/update_data.php', 
+		url: '/core/core.php', 
 		type: 'POST',
 		data: {
 			action: 'rename',

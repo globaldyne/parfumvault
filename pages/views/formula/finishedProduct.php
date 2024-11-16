@@ -61,10 +61,10 @@ require_once(__ROOT__.'/inc/opendb.php');
                         </tr>
                         <tr>
                             <th></th>
-                            <th class="fw-medium text-info-emphasis text-right">Lid</th>
-                            <th class="fw-medium text-info-emphasis text-center" id="lid-style"></th>
+                            <th class="fw-medium text-info-emphasis text-right">Accessory</th>
+                            <th class="fw-medium text-info-emphasis text-center" id="accessory"></th>
                             <th class="fw-medium text-info-emphasis text-center">-</th>
-                            <th class="fw-medium text-info-emphasis text-center" id="lid-cost"></th>
+                            <th class="fw-medium text-info-emphasis text-center" id="accessory-cost"></th>
                         </tr>
                         <tr>
                             <th></th>
@@ -177,7 +177,7 @@ require_once(__ROOT__.'/inc/opendb.php');
 var id = "<?=$_POST['fid']?>";
 var bottle_id = "<?=$_POST['bottle_id']?>";
 var carrier_id = "<?=$_POST['carrier_id']?>";
-var lid_id = "<?=$_POST['lid_id']?>";
+var accessory_id = "<?=$_POST['accessory_id']?>";
 var concentration = "<?=$_POST['concentration']?>";
 var defCatClass = "<?=$_POST['defCatClass']?>";
 var supplier_id = "<?=$_POST['supplier_id']?>";
@@ -253,7 +253,7 @@ $(document).ready(function() {
 		   		id: id,
 				bottle_id: $("#bottle_id").val(),
 				carrier_id: $("#carrier_id").val(),
-				lid_id: $("#lid_id").val(),
+				accessory_id: $("#accessory_id").val(),
 				concentration: $("#concentration").val(),
 				defCatClass: $("#defCatClass").val(),
 				supplier_id: $("#supplier_id").val(),
@@ -280,8 +280,8 @@ $(document).ready(function() {
 				$('#sub-total-quantity').text(response.meta['sub_total_quantity'] + response.meta['quantity_unit']);
 				$('#carrier-quantity').text(response.meta['carrier_quantity'] + response.meta['quantity_unit']);
 				$('#bottle-quantity').text(response.meta['bottle_quantity'] + response.meta['quantity_unit']);
-				$('#lid-cost').html(response.meta['currency'] + response.meta['lid_cost']);
-				$('#lid-style').text(response.meta['lid_style']);
+				$('#accessory-cost').html(response.meta['currency'] + response.meta['accessory_cost']);
+				$('#accessory').text(response.meta['accessory']);
 				
 				if(response.meta['batchNo']){
 					$('#batch-no').html('<a href="/pages/viewDoc.php?type=batch&id=' + response.meta['batchNo'] + '" target="_blank">' + response.meta['batchNo'] + '</a>');
@@ -388,7 +388,7 @@ $(document).ready(function() {
 		
 	  const action = "viewBoxLabel"; 
 	
-	  const url = "/pages/manageFormula.php?action="+ action + "&batchID=" + batchNo +"&fid=" + fid + "&carrier=" + carrier_concentration +"&download=text";
+	  const url = "/core/core.php?action="+ action + "&batchID=" + batchNo +"&fid=" + fid + "&carrier=" + carrier_concentration +"&download=text";
 	
 	  $.get(url)
 		.then(data => {

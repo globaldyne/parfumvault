@@ -1,7 +1,8 @@
 <?php
 define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__))))); 
 if(!$_GET['ingID']){
-	echo 'Invalid ID';
+	$response["error"] = 'Invalid ID';
+	echo json_encode($response);
 	return;
 }
 
@@ -195,7 +196,7 @@ $(document).ready(function() {
 	
 	$('#usage_limits').on('click', '[id*=saveUsage]', function () {
 		$.ajax({ 
-			url: '/pages/update_data.php', 
+			url: '/core/core.php', 
 			type: 'POST',
 			data: {
 				manage: 'ingredient',

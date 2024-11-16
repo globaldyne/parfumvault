@@ -66,7 +66,7 @@ $('#btnRestoreIngredients').click(function() {
 	}
 	
 	$.ajax({ 
-		url: '/pages/operations.php?action=restoreIngredients', 
+		url: '/core/core.php?action=restoreIngredients', 
 		type: 'POST',
 		data: fd,
 		contentType: false,

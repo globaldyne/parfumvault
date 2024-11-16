@@ -1,9 +1,11 @@
 <?php
 
 if(!$_GET['cas']){
-	echo 'Error: Missing CAS number';
+	$response["error"] = 'Missing CAS number';
+	echo json_encode($response);
 	return;
 }
+
 define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__))))); 
 
 require_once(__ROOT__.'/inc/sec.php');
@@ -45,35 +47,35 @@ if(empty($data)){
 <script>
 $(document).ready(function(){
   
-$('#btnUpdatePub').on('click', function () {
-	$.ajax({ 
-		url: '/pages/update_data.php', 
-		type: 'POST',
-		data: {
-			pubChemData: 'update',
-			molecularWeight: "<?=$molecularWeight?>",
-			logP: "<?=$logP?>",
-			molecularFormula: "<?=$molecularFormula?>",
-			InChI: "<?=$InChI?>",
-			CanonicalSMILES: "<?=$CanonicalSMILES?>",
-			ExactMass: "<?=$ExactMass?>",
-			cas: "<?=$cas?>",
-		},
-		dataType: 'JSON',
-		success: function (data) {
-			$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
-			$('.toast-header').removeClass().addClass('toast-header alert-success');
-			$("#INCI").val("<?=$InChI?>");
-			reload_overview();
-			$('.toast').toast('show');
-		},
-		error: function (xhr, status, error) {
-			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
-			$('.toast-header').removeClass().addClass('toast-header alert-danger');
-			$('.toast').toast('show');
-		}
-	  });             
-});
+	$('#btnUpdatePub').on('click', function () {
+		$.ajax({ 
+			url: '/core/core.php', 
+			type: 'POST',
+			data: {
+				pubChemData: 'update',
+				molecularWeight: "<?=$molecularWeight?>",
+				logP: "<?=$logP?>",
+				molecularFormula: "<?=$molecularFormula?>",
+				InChI: "<?=$InChI?>",
+				CanonicalSMILES: "<?=$CanonicalSMILES?>",
+				ExactMass: "<?=$ExactMass?>",
+				cas: "<?=$cas?>",
+			},
+			dataType: 'JSON',
+			success: function (data) {
+				$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+				$('.toast-header').removeClass().addClass('toast-header alert-success');
+				$("#INCI").val("<?=$InChI?>");
+				reload_overview();
+				$('.toast').toast('show');
+			},
+			error: function (xhr, status, error) {
+				$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		  });             
+	});
      
 });
 </script>
@@ -117,6 +119,3 @@ $('#btnUpdatePub').on('click', function () {
     </div>
   </div>
 </div>
-
-
-

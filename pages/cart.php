@@ -136,7 +136,7 @@ $(document).ready(function() {
 				   className : "btn-danger",
 				   callback: function (){
 				   		$.ajax({
-							url: '/pages/manageFormula.php', 
+							url: '/core/core.php', 
 							type: 'POST',
 							data: {
 								action: "removeFromCart",

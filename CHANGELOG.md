@@ -1,4 +1,35 @@
 # CHANGELOG
+### Version 12.0
+- Lids inventory dropped to accessories
+- Minor overall UI updates
+- Migrating backend scripts under a common backend api
+- Import json functions update
+- Added import for accessories
+- Added import for bottles
+- Added import for suppliers
+- Added import for customers
+- Droped old CSV export for suppliers
+- Fixed pagination for suppliers
+- Formula scaling improvements
+- Added ingredient to formula backend update
+- Fix invalid formula update date on empty formulas
+- Update empty table message
+- Rename sex to gender
+- Error handling improvements
+- Date Format update
+- Auto update image for formulas when uploaded
+- Auto update text title and description after a succesfull update for a formula
+- File upload improvements
+- Various wording updates
+- Removed user alert to reload formula settings pages when making a changes
+- Added openshift yaml manifests
+- Improve db connect method
+- Added a dedicated page to display in case of fatal error
+- Added a session timeout to automatically logoff the user after 30 minutes of inactivity - configurable by user
+- Change selected material color to yellow in formula making for better descrimination
+- Various minor updates and code clean-up
+- Added a function to convert session time to hours/mins
+
 ### Version 11.9
 - Added system logs access via the UI for docker/cloud installations - this comes disabled by default
 - Hide properties column in formulas

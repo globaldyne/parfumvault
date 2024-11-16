@@ -53,7 +53,8 @@ $(document).ready(function() {
 		language: {
 			loadingRecords: '&nbsp;',
 			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
-			emptyTable: 'No sub materials found',
+			zeroRecords: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>Nothing found</strong></div></div>',
+			emptyTable: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>No sub materials found</strong></div></div>',
 			search: '',
 			searchPlaceholder: 'Search by ingredient...',
 		},
@@ -128,5 +129,15 @@ $(document).ready(function() {
 	$("#exportPDF").click(() => {
 		$("#tdAnalysis").DataTable().button(1).trigger();
 	});
+	
+	function extrasShow() {
+		$('[rel=tip]').tooltip({
+			 html: true,
+			 boundary: "window",
+			 overflow: "auto",
+			 container: "body",
+			 delay: {"show": 100, "hide": 0},
+		 });
+	}
 });
 </script>

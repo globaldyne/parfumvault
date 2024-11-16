@@ -1,5 +1,5 @@
 /*
-IMPORT INGREDIENTS JSON
+IMPORT JSON
 */
 
 function uploadProgressHandler(event) {
@@ -54,7 +54,6 @@ $("#jsonFile").change(function(){
 	$('#btnImportCompounds').prop('value', 'Import');
 });
 
-//RESTORE Ingredients
 $('#btnImportCompounds').click(function() {
 	
 	event.preventDefault();
@@ -66,7 +65,7 @@ $('#btnImportCompounds').click(function() {
 	}
 	
 	$.ajax({ 
-		url: '/pages/operations.php?action=importCompounds', 
+		url: '/core/core.php?action=importCompounds', 
 		type: 'POST',
 		data: fd,
 		contentType: false,
@@ -74,28 +73,25 @@ $('#btnImportCompounds').click(function() {
 		cache: false,
 		dataType: 'json',
 		xhr: function () {
-                var xhr = new window.XMLHttpRequest();
-                xhr.upload.addEventListener("progress",
-                    uploadProgressHandler,
-                    false
-                );
-                xhr.addEventListener("load", loadHandler, false);
-                xhr.addEventListener("error", errorHandler, false);
-                xhr.addEventListener("abort", abortHandler, false);
-				$(".progress").show();
-				$("#btnImportCompounds").prop("disabled", true);
-				$('#btnImportCompounds').prop('value', 'Please wait...');
-                return xhr;
-            },
+            var xhr = new window.XMLHttpRequest();
+            xhr.upload.addEventListener("progress", uploadProgressHandler, false);
+            xhr.addEventListener("load", loadHandler, false);
+            xhr.addEventListener("error", errorHandler, false);
+            xhr.addEventListener("abort", abortHandler, false);
+			$(".progress").show();
+			$("#btnImportCompounds").prop("disabled", true);
+			$('#btnImportCompounds').prop('value', 'Please wait...');
+        	return xhr;
+        },
 			
 		success: function (data) {
 			if(data.success){
 				var msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>'+data.success+'</div>';
 				$("#btnImportCompounds").hide();
 				$("#backupArea").css('display', 'none');
-
+				$('#tdDataCompounds').DataTable().ajax.reload(null, true);
 			}else if(data.error){
-				var msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2">'+data.error+'</div>';
+				var msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>'+data.error+'</div>';
 				$("#btnImportCompounds").show();
 				$("#btnImportCompounds").prop("disabled", false);
 				$('#btnImportCompounds').prop('value', 'Import');
@@ -103,6 +99,12 @@ $('#btnImportCompounds').click(function() {
 			$('#btnImportCompounds').prop('value', 'Import');
 			$("#btnImportCompounds").prop("disabled", false);
 			$('#JSRestMsg').html(msg);
+		},
+		error: function (xhr, status, error) {
+			var msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. ' + error + '</div>';
+			$("#btnImportCompounds").show();
+			$("#btnImportCompounds").prop("disabled", false);
+			$('#btnImportCompounds').prop('value', 'Import');
 		}
 		
 	  });

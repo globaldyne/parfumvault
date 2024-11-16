@@ -184,7 +184,7 @@ $(document).ready(function() {
         </div>
       </div>
       <div class="modal-footer">
-        <a href="/pages/operations.php?do=backupDB" role="button" class="btn btn-primary" id="dbBkBtn">Backup Database</a>
+        <a href="/core/core.php?do=backupDB" role="button" class="btn btn-primary" id="dbBkBtn">Backup Database</a>
         <button type="button" class="btn btn-warning" id="dbUpBtn">Upgrade Schema</button>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="dbUpOk">Close</button>
       </div>

@@ -60,79 +60,27 @@ $(document).ready(function() {
 			url: '/core/list_ing_rep_data.php',
 			type: 'POST',
 			data: {
-					ing_name: '<?=$ingName?>',
-					ing_cas: '<?=$ingCAS?>',
-					view: 'ingredients',
-				},
+				ing_name: '<?=$ingName?>',
+				ing_cas: '<?=$ingCAS?>',
+				view: 'ingredients',
+			},
 		},
 		columns: [
-				  { data : null, title: 'Name', render: repName },
-				  { data : 'ing_rep_cas', title: 'CAS' },
-				  { data : 'notes', title: 'Notes', render: repNotes },
-				  { data : null, title: '', render: repActions },		   
+			{ data : null, title: 'Name', render: repName },
+			{ data : 'ing_rep_cas', title: 'CAS' },
+			{ data : 'notes', title: 'Notes', render: repNotes },
+			{ data : null, title: '', render: repActions },		   
 		],
 		order: [[ 1, 'asc' ]],
 		lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
 		pageLength: 20,
-		displayLength: 20,		
+		displayLength: 20
 	});
 
 	
 	function repName(data, type, row){
-		
-		$('#tdReplacements').editable({
-			select2: {
-				width: '100%',
-				placeholder: 'Search for ingredient (name, cas)',
-				allowClear: true,
-				dropdownAutoWidth: true,
-				minimumInputLength: 2,
-				dropdownParent: '.popover:last',
-				ajax: {
-					url: '/core/list_ingredients_simple.php',
-					dataType: 'json',
-					type: 'POST',
-					delay: 100,
-					quietMillis: 250,
-					data: function (params) {
-						return {
-							search: params.term
-						};
-					},
-					processResults: function(data) {
-						return {
-							results: $.map(data.data, function(obj) {
-							  return {
-								id: obj.name, //TODO: TO BE CHANGED TO ID WHEN THE BACKEND IS READY
-								repID: obj.id,
-								text: obj.name || 'No ingredient found...',
-							  }
-							})
-						};
-					},
-					cache: true,
-					
-				}
-			},
-			tpl:'<input type="hidden">',
-			selector: 'i.replaceIngredient',
-			pvnoresp: false,
-			highlight: false,
-			emptytext: null,
-			emptyclass: null,
-			url: "update_data.php?replacement=update&ing=<?=$ingName;?>",
-			dataType: 'json',
-			success: function (data) {
-				reload_rep_data();
-			},
-			validate: function(value){
-				if($.trim(value) == ''){
-					return 'Ingredient is required';
-				}
-			}
-	});
-		return '<i class="pv_point_gen replaceIngredient" style="color: #337ab7;" rel="tip" title="Replace '+ row.ing_rep_name +'"  data-name="ing_rep_name" data-type="select2" data-pk="'+ row.id +'" data-title="Choose Ingredient to replace '+ row.ing_rep_name +'">'+ row.ing_rep_name +'</i>'; 
-	}
+		return row.ing_rep_name;
+	};
 	
 	function repNotes(data, type, row){
 		return '<i class="repNotes pv_point_gen" data-name="notes" data-type="textarea" data-pk="'+row.id+'">'+row.notes+'</i>';    
@@ -143,7 +91,7 @@ $(document).ready(function() {
 		data = '<div class="dropdown">' +
 		'<button type="button" class="btn btn-floating hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
 			'<ul class="dropdown-menu">';
-		data += '<li><a class="dropdown-item text-danger" href="#" id="repDel" rel="tip" title="Remove '+ row.ing_rep_name +'" data-id='+ row.id +' data-name="'+ row.ing_rep_name +'"><i class="fas fa-trash mx-2"></i>Remove</a></li>';
+		data += '<li><a class="dropdown-item text-danger" href="#" id="repDel" rel="tip" title="Delete '+ row.ing_rep_name +'" data-id='+ row.id +' data-name="'+ row.ing_rep_name +'"><i class="fas fa-trash mx-2"></i>Delete</a></li>';
 		data += '</ul></div>';
 		return data;    
 	}
@@ -152,9 +100,26 @@ $(document).ready(function() {
 	$('#tdReplacements').editable({
 	   container: 'body',
 	   selector: 'i.repNotes',
-	   type: 'POST',
-	   url: "update_data.php?replacement=update&ing=<?=$ingName;?>",
-	   title: 'Notes'
+	   url: "/core/core.php?replacement=update&ing=<?=$ingName;?>",
+	   title: 'Notes',
+	   ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
+		success: function (data) {
+			if ( data.success ) {
+				reload_rep_data();
+			} else if ( data.error ) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+		}
 	});
 	
 	$('#tdReplacements').on('click', '[id*=repDel]', function () {
@@ -163,16 +128,16 @@ $(document).ready(function() {
 		rep.Name = $(this).attr('data-name');
 	
 		bootbox.dialog({
-		   title: "Confirm removal",
-		   message : 'Remove <strong>'+ rep.Name +'</strong> from the list?',
+		   title: "Confirm deletion",
+		   message : 'Delete <strong>'+ rep.Name +'</strong>?',
 		   buttons :{
 			   main: {
-				   label : "Remove",
+				   label : "Delete",
 				   className : "btn-danger",
 				   callback: function (){
 						
 					$.ajax({ 
-						url: 'update_data.php', 
+						url: '/core/core.php', 
 						type: 'POST',
 						data: {
 							replacement: 'delete',
@@ -258,7 +223,7 @@ $(document).ready(function() {
 	
 	$('#addReplacement').on('click', '[id*=repAdd]', function () {
 		$.ajax({ 
-			url: 'update_data.php', 
+			url: '/core/core.php', 
 			type: 'POST',
 			data: {
 				replacement: 'add',
@@ -282,6 +247,9 @@ $(document).ready(function() {
 					var msg ='<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + data.error + '</div>';
 				}
 				$('#infRep').html(msg);
+			},
+			error: function (xhr, status, error) {
+				$('#infRep').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 			}
 		  });
 	});
@@ -320,4 +288,3 @@ $(document).ready(function() {
     </div>
   </div>
 </div>
-

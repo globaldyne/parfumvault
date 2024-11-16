@@ -66,7 +66,7 @@ $(document).ready(function() {
 	
 	$('#save-brand').click(function() {
 		$.ajax({ 
-			url: '/pages/update_settings.php', 
+			url: '/core/core.php', 
 			type: 'POST',
 			data: {
 				manage: 'brand',

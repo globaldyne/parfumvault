@@ -68,6 +68,7 @@ $(document).ready(function() {
 			loadingRecords: '&nbsp;',
 			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
 			emptyTable: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>No compositions added yet</strong></div></div>',
+			zeroRecords: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>Nothing found</strong></div></div>',
 			search: '',
 			searchPlaceholder: 'Search by name...',
 		},
@@ -124,7 +125,6 @@ $(document).ready(function() {
 					   $('#allgCAS').val('');
 					   $('#allgEC').val('');
 					   $('#addToIng').prop('disabled', false);
-
 					}
 				},
 				error: function(xhr, status, error) {
@@ -175,7 +175,7 @@ $(document).ready(function() {
 		data = '<div class="dropdown">' +
 		'<button type="button" class="btn btn-floating hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
 			'<ul class="dropdown-menu">';
-		data += '<li><a class="dropdown-item text-danger" href="#" id="cmpDel" rel="tip" title="Remove '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-trash mx-2"></i>Remove</a></li>';
+		data += '<li><a class="dropdown-item text-danger" href="#" id="cmpDel" rel="tip" title="Delete '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-trash mx-2"></i>Delete</a></li>';
 		data += '</ul></div>';
 		return data;
 	};
@@ -183,55 +183,151 @@ $(document).ready(function() {
 	$('#tdCompositions').editable({
 		container: 'body',
 		selector: 'i.name',
-		type: 'POST',
-		url: "/pages/update_data.php?composition=update&ing=<?=$ingName;?>",
-		title: 'Name'
+		url: "/core/core.php?composition=update&ing=<?=$ingName;?>",
+		title: 'Name',
+		ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
+		success: function (data) {
+			if ( data.success ) {
+				reload_cmp_data();
+			} else if ( data.error ) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+		}
 	});
 	
 	$('#tdCompositions').editable({
 	   container: 'body',
 	   selector: 'i.cas',
-	   type: 'POST',
-	   url: "/pages/update_data.php?composition=update&ing=<?=$ingName;?>",
-	   title: 'CAS'
+	   url: "/core/core.php?composition=update&ing=<?=$ingName;?>",
+	   title: 'CAS',
+	   ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
+		success: function (data) {
+			if ( data.success ) {
+				reload_cmp_data();
+			} else if ( data.error ) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+		}
 	});
 	
 	$('#tdCompositions').editable({
 	   container: 'body',
 	   selector: 'i.ec',
-	   type: 'POST',
-	   url: "/pages/update_data.php?composition=update&ing=<?=$ingName;?>",
+	   url: "/core/core.php?composition=update&ing=<?=$ingName;?>",
 	   title: 'EINECS',
+	   ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
+		success: function (data) {
+			if ( data.success ) {
+				reload_cmp_data();
+			} else if ( data.error ) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+		}
 	});
 	
 	$('#tdCompositions').editable({
 		container: 'body',
 		selector: 'i.min_percentage',
-		type: 'POST',
-		url: "/pages/update_data.php?composition=update&ing=<?=$ingName;?>",
+		url: "/core/core.php?composition=update&ing=<?=$ingName;?>",
 		title: 'Min percentage',
+		ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
 		success: function (data) {
+			if ( data.success ) {
 				reload_cmp_data();
+			} else if ( data.error ) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
 		}
 	});
 	
 	$('#tdCompositions').editable({
 		container: 'body',
 		selector: 'i.max_percentage',
-		type: 'POST',
-		url: "/pages/update_data.php?composition=update&ing=<?=$ingName;?>",
+		url: "/core/core.php?composition=update&ing=<?=$ingName;?>",
 		title: 'Max percentage',
+		ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
 		success: function (data) {
+			if ( data.success ) {
 				reload_cmp_data();
+			} else if ( data.error ) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
 		}
 	});
 	
 	$('#tdCompositions').editable({
 		container: 'body',
 		selector: 'i.GHS',
-		type: 'POST',
-		url: "/pages/update_data.php?composition=update&ing=<?=$ingName;?>",
-		title: 'GHS'
+		url: "/core/core.php?composition=update&ing=<?=$ingName;?>",
+		title: 'GHS',
+		ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
+		success: function (data) {
+			if ( data.success ) {
+				reload_cmp_data();
+			} else if ( data.error ) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+		}
 	});
 	
 	$('#tdCompositions').editable({
@@ -241,15 +337,29 @@ $(document).ready(function() {
 		emptyclass: "",
 		container: 'body',
 		selector: 'i.toDeclare',
-		type: 'POST',
-		url: "/pages/update_data.php?composition=update&ing=<?=$ingName;?>",
+		url: "/core/core.php?composition=update&ing=<?=$ingName;?>",
 		title: 'To be declared',
 		source: [
 			{value: '0', text: 'No'},
 			{value: '1', text: 'Yes'},
 		],
+		ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
 		success: function (data) {
+			if ( data.success ) {
 				reload_cmp_data();
+			} else if ( data.error ) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
 		}
 	});
 	
@@ -260,15 +370,14 @@ $(document).ready(function() {
 	
 		bootbox.dialog({
 		   title: "Confirm removal",
-		   message : 'Remove <strong>'+ cmp.Name +'</strong> from the list?',
+		   message : 'Delete <strong>'+ cmp.Name +'</strong> from the list?',
 		   buttons :{
 			   main: {
-				   label : "Remove",
+				   label : "Delete",
 				   className : "btn-danger",
 				   callback: function (){
-						
 					$.ajax({ 
-						url: '/pages/update_data.php', 
+						url: '/core/core.php', 
 						type: 'POST',
 						data: {
 							composition: 'delete',
@@ -280,12 +389,11 @@ $(document).ready(function() {
 							reload_cmp_data();
 						},
 						error: function (xhr, status, error) {
-							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error);
 							$('.toast-header').removeClass().addClass('toast-header alert-danger');
 							$('.toast').toast('show');
 						}
-					  });
-	
+					  });	
 					 return true;
 				   }
 			   },
@@ -303,7 +411,7 @@ $(document).ready(function() {
 	
 	$('#addComposition').on('click', '[id*=cmpAdd]', function () {
 		$.ajax({ 
-			url: '/pages/update_data.php', 
+			url: '/core/core.php', 
 			type: 'POST',
 			data: {
 				composition: 'add',
@@ -320,7 +428,7 @@ $(document).ready(function() {
 			dataType: 'json',
 			success: function (data) {
 				if (data.success) {
-					var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+					var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><i class="fa-solid fa-circle-check mx-2"></i>' + data.success + '</div>';
 					$("#allgName").val('');
 					$("#allgCAS").val('');
 					$("#allgEC").val('');
@@ -329,11 +437,12 @@ $(document).ready(function() {
 					$("#GHS").val('');
 					reload_cmp_data();
 				}else{
-					var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
-				}
-			
+					var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><i class="fa-solid fa-circle-exclamation mx-2"></i>' + data.error + '</div>';
+				}			
 				$('#inf').html(msg);
-	
+			},
+			error: function (xhr, status, error) {
+				$('#inf').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 			}
 		  });
 	});
@@ -353,7 +462,7 @@ $(document).ready(function() {
 		   data: fd,
 		   contentType: false,
 		   processData: false,
-				 cache: false,
+		   cache: false,
 		   success: function(response){
 			 if(response != 0){
 				$("#CSVImportMsg").html(response);
@@ -469,4 +578,3 @@ $(document).ready(function() {
     </div>
   </div>
 </div>
-

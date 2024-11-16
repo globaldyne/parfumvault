@@ -11,6 +11,8 @@ require_once(__ROOT__.'/func/getIngState.php');
 
 
 if(empty($_GET["id"])){
+	$response["error"] = 'Invalid ID';
+	echo json_encode($response);
 	return;
 }
 $ingID = mysqli_real_escape_string($conn, $_GET["id"]);
@@ -69,5 +71,3 @@ if(empty($ingredient['category'])){
       <?=getIngState($ingredient['physical_state'], 'img_ing')?>
     </div>
   </div>
-
-

@@ -138,14 +138,14 @@ if (!defined('pvault_panel')){ die('Not Found');}
             </div>
           </div>
           <div class="col-md-6">
-            <label for="lid" class="col-form-label">Bottle Lid</label>
+            <label for="accessory_id" class="col-form-label">Accessory</label>
             <div>
-              <select name="lid_id" id="lid_id" class="form-control selectpicker" data-live-search="true">
-                <option value="0" selected="selected">None</option>
+              <select name="accessory_id" id="accessory_id" class="form-control selectpicker" data-live-search="true">
+                <option selected="selected">None</option>
                 <?php
-                  $sql = mysqli_query($conn, "SELECT style,id FROM lids ORDER BY style ASC");
-                  while ($lid = mysqli_fetch_array($sql)){
-                    echo '<option value="'.$lid['id'].'">'.$lid['style'].'</option>';
+                  $sql = mysqli_query($conn, "SELECT id, name, accessory FROM inventory_accessories ORDER BY name ASC");
+                  while ($accessory = mysqli_fetch_array($sql)){
+                    echo '<option value="'.$accessory['id'].'">'.$accessory['name'].' ('.$accessory['accessory'].')</option>';
                   }
                 ?>
               </select>
@@ -172,7 +172,7 @@ $('#btnGEN').click(function() {
 			fid: $("#formulaID").val(),
 			bottle_id: $("#bottle_id").val(),
 			carrier_id: $("#carrier_id").val(),
-			lid_id: $("#lid_id").val(),
+			accessory_id: $("#accessory_id").val(),
 			concentration: $("#concentration").val(),
 			defCatClass: $("#defCatClass").val(),
 			supplier_id: $("#supplier_id").val(),

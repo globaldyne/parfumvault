@@ -408,7 +408,7 @@ $(document).ready(function() {
 				   callback: function (){
 						
 					$.ajax({
-						url: '/pages/update_data.php', 
+						url: '/core/core.php', 
 						type: 'POST',
 						data: {
 							action: "import",
@@ -468,7 +468,7 @@ $(document).ready(function() {
 				   callback: function (){
 						
 					$.ajax({
-						url: '/pages/update_data.php', 
+						url: '/core/core.php', 
 						type: 'POST',
 						data: {
 							ingredient: "delete",
@@ -555,7 +555,7 @@ $(document).ready(function() {
 				   callback: function (){
 						
 					$.ajax({
-						url: '/pages/update_data.php', 
+						url: '/core/core.php', 
 						type: 'POST',
 						data: {
 							ingredient_wipe: "true",

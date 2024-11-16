@@ -15,7 +15,7 @@ function initRating(container){
 			if(cur == '1' && score == '1'){
 				score = 0;
 			}
-			$.post('/pages/manageFormula.php',
+			$.post('/core/core.php',
 				{ update_rating: 1, fid: fid, score: score }
 			);
 			//reload_formulas_data();

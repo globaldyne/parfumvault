@@ -66,7 +66,7 @@ $('#btnRestoreMaking').click(function() {
 	}
 	
 	$.ajax({ 
-		url: '/pages/operations.php?action=importMaking', 
+		url: '/core/core.php?action=importMaking', 
 		type: 'POST',
 		data: fd,
 		contentType: false,
