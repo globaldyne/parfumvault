@@ -1,7 +1,7 @@
 # CHANGELOG
 ### Version 12.1
 - Added summary of total amount required for pending materials
-
+- Added list of materials per supplier
 ### Version 12.0
 - Lids inventory dropped to accessories
 - Minor overall UI updates

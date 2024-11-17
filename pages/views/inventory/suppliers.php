@@ -79,7 +79,7 @@ $(document).ready(function() {
 		},
 		columns: [
 		  { data : 'name', title: 'Name', render: name },
-		  { data : 'materials', title: 'Materials' },
+		  { data : 'materials', title: 'Materials', render: materials },
 		  { data : 'platform', title: 'Platform', render: platform},
 		  { data : 'price_tag_start', title: 'Price start tag', render: price_tag_start},
 		  { data : 'price_tag_end', title: 'Price end tag', render: price_tag_end},
@@ -119,6 +119,12 @@ $(document).ready(function() {
 
 	function name(data, type, row){
 		return '<i class="name pv_point_gen" data-name="name" data-type="text" data-pk="'+row.id+'">'+row.name+'</i>';    
+	};
+	
+	function materials(data, type, row){
+		
+		var data = '<a class="pv_point_gen" href="#" data-bs-toggle="modal" data-bs-target="#supplier_materials" data-id="' + row.id + '" data-name="' + row.name + '">' + row.materials + '</a></li>';
+		return data;    
 	};
 	
 	function platform(data, type, row){
@@ -593,8 +599,36 @@ $(document).ready(function() {
 	$('#exportCSV').click(() => {
 		$('#tdIngSupData').DataTable().button(0).trigger();
 	});
+	
+	$("#supplier_materials").on("show.bs.modal", function(e) {
+		const id = e.relatedTarget.dataset.id;
+		const name = e.relatedTarget.dataset.name;
+	
+		$.get('/pages/views/inventory/supplierMaterials.php?id=' + id +' &name=' + name)
+			.then(data => {
+				$(".modal-body", this).html(data);
+		});
+	});
+	
 });
 </script>
+
+<!-- REQUIRED MATERIALS MODAL -->
+<div class="modal fade" id="supplier_materials" data-bs-backdrop="static" tabindex="-1" aria-labelledby="supplier_materials" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">All supplier materials</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">Please wait...</div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseBK">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <!-- Edit additional info -->
 <div class="modal fade" id="details" data-bs-backdrop="static" tabindex="-1" aria-labelledby="detailsLabel" aria-hidden="true">
