@@ -10,7 +10,7 @@ require_once(__ROOT__.'/inc/sec.php');
       <div class="btn-group">
          <button type="button" class="btn btn-primary dropdown-toggle mb-3" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
           <div class="dropdown-menu">
-        	   <li><a class="dropdown-item" id="exportCSV" href="#"><i class="fa-solid fa-file-export mx-2"></i>Export to CSV</a></li>
+        	   <li><a class="dropdown-item" id="exportSMCSV" href="#"><i class="fa-solid fa-file-export mx-2"></i>Export to CSV</a></li>
 
        </div>
    	</div> 
@@ -41,7 +41,7 @@ $(document).ready(function() {
 			extend: "csvHtml5",
 			title: "Supplier materials",
 			exportOptions: {
-				columns: [0, 1]
+				columns: [0]
 			},
 		}],
 		processing: true,
@@ -81,7 +81,7 @@ $(document).ready(function() {
 		return data;
 	};
 
-	$("#exportOverallCSV").click(() => {
+	$("#exportSMCSV").click(() => {
 		$("#tdDataSM").DataTable().button(0).trigger();
 	});
 	
