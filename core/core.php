@@ -1625,12 +1625,17 @@ if($_GET['settings'] == 'fcat' && $_GET['action'] == 'updateFormulaCategory' ){
 	return;	
 }
 
-if($_GET['settings'] == 'sup'){
+if($_GET['kind'] == 'suppliers' && $_GET['action'] == 'supplier_update'){
 	$value = htmlentities($_POST['value']);
 	$sup_id = mysqli_real_escape_string($conn, $_POST['pk']);
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 
-	mysqli_query($conn, "UPDATE ingSuppliers SET $name = '$value' WHERE id = '$sup_id'");
+	if(mysqli_query($conn, "UPDATE ingSuppliers SET $name = '$value' WHERE id = '$sup_id'")){
+		$response["success"] = 'Supplier updated';
+	} else {
+		$response["error"] = mysqli_error($conn);
+	}
+	echo json_encode($response);
 	return;	
 }
 

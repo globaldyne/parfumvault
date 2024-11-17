@@ -167,111 +167,266 @@ $(document).ready(function() {
 	};
 	
 	$('#tdIngSupData').editable({
-	  container: 'body',
-	  selector: 'i.name',
-	  url: "/core/core.php?settings=sup",
-	  title: 'Supplier',
-	  type: "POST",
-	  validate: function(value){
-	   if($.trim(value) == ''){
-		return 'This field is required';
-	   }
-	  }
+		container: 'body',
+	  	selector: 'i.name',
+	  	url: "/core/core.php?action=supplier_update&kind=suppliers",
+	 	title: 'Supplier',
+		ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
+		success: function (data) {
+			if ( data.success ) {
+				reload_data();
+			} else if ( data.error ) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+		},
+	  	validate: function(value){
+	   		if($.trim(value) == ''){
+				return 'This field is required';
+	   		}
+	  	}
 	});
 	
 	$('#tdIngSupData').editable({
 		container: 'body',
 		selector: 'i.platform',
-		type: 'POST',
-		url: "/core/core.php?settings=sup",
+		url: "/core/core.php?action=supplier_update&kind=suppliers",
 		source: [
-				 {value: "woocomerce", text: "Woocomerce"},
-				 {value: "shopify", text: "Shopify"},
-				 {value: "other", text: "Custom/Other"},
-			  ],
+			{value: "woocomerce", text: "Woocomerce"},
+			{value: "shopify", text: "Shopify"},
+			{value: "other", text: "Custom/Other"},
+		],
+		title: 'Supplier platform',
+		ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
+		success: function (data) {
+			if ( data.success ) {
+				reload_data();
+			} else if ( data.error ) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+		}
 	});
 	
 	$('#tdIngSupData').editable({
 		container: 'body',
 		selector: 'i.price_per_size',
-		type: 'POST',
-		url: "/core/core.php?settings=sup",
+		url: "/core/core.php?action=supplier_update&kind=suppliers",
 		source: [
-			 {value: "0", text: "Product"},
-			 {value: "1", text: "Volume"},
+			 {value: "0", text: "Product size"},
+			 {value: "1", text: "Volume size"},
 		],
-	});
-	
-	$('#tdIngSupData').editable({
-	  container: 'body',
-	  selector: 'i.min_ml',
-	  url: "/core/core.php?settings=sup",
-	  title: 'Minimum ml',
-	  type: "POST",
-	  validate: function(value){
-		if($.trim(value) == ''){
-			return 'This field cannot be empty, set 0 for none';
+		title: 'Price per',
+		ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
+		success: function (data) {
+			if ( data.success ) {
+				reload_data();
+			} else if ( data.error ) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
 		}
-		if($.isNumeric(value) == '' ){
-			return 'Numbers only!';
+	});
+	
+	$('#tdIngSupData').editable({
+	  	container: 'body',
+	  	selector: 'i.min_ml',
+	  	url: "/core/core.php?action=supplier_update&kind=suppliers",
+	  	title: 'Minimum ml',
+	  	ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
+		success: function (data) {
+			if ( data.success ) {
+				reload_data();
+			} else if ( data.error ) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+		},
+		validate: function(value){
+			if($.trim(value) == ''){
+				return 'This field cannot be empty, set to 0 for none';
+			}
+			if($.isNumeric(value) == '' ){
+				return 'Numbers only';
+			}
 		}
-	  }
 	});
 	
 	$('#tdIngSupData').editable({
-	  container: 'body',
-	  selector: 'i.min_gr',
-	  url: "/core/core.php?settings=sup",
-	  title: 'Minimum grams',
-	  type: "POST",
-	  validate: function(value){
-		if($.trim(value) == ''){
-			return 'This field cannot be empty, set 0 for none';
+	  	container: 'body',
+	  	selector: 'i.min_gr',
+	  	url: "/core/core.php?action=supplier_update&kind=suppliers",
+	  	title: 'Minimum grams',
+	  	  	ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
+		success: function (data) {
+			if ( data.success ) {
+				reload_data();
+			} else if ( data.error ) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+		},
+	  	validate: function(value){
+			if($.trim(value) == ''){
+				return 'This field cannot be empty, set 0 for none';
+			}
+			if($.isNumeric(value) == '' ){
+				return 'Numbers only!';
+			}
+	  	}
+	});
+	
+	$('#tdIngSupData').editable({
+		container: 'body',
+	  	selector: 'i.price_tag_start',
+	  	url: "/core/core.php?action=supplier_update&kind=suppliers",
+	  	title: 'Price tag start',
+  	  	ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
+		success: function (data) {
+			if ( data.success ) {
+				reload_data();
+			} else if ( data.error ) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
 		}
-		if($.isNumeric(value) == '' ){
-			return 'Numbers only!';
+	});
+	
+	$('#tdIngSupData').editable({
+		container: 'body',
+	  	selector: 'i.price_tag_end',
+	  	url: "/core/core.php?action=supplier_update&kind=suppliers",
+	  	title: 'Price tag end',
+	  	  	ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
+		success: function (data) {
+			if ( data.success ) {
+				reload_data();
+			} else if ( data.error ) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
 		}
-	  }
 	});
 	
 	$('#tdIngSupData').editable({
-	  container: 'body',
-	  selector: 'i.price_tag_start',
-	  url: "/core/core.php?settings=sup",
-	  title: 'Price tag start',
-	  type: "POST"
+		container: 'body',
+	  	selector: 'i.add_costs',
+	  	url: "/core/core.php?action=supplier_update&kind=suppliers",
+	  	title: 'Additional Costs',
+	  	  	ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
+		success: function (data) {
+			if ( data.success ) {
+				reload_data();
+			} else if ( data.error ) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+		},
+	  	validate: function(value){
+			if($.trim(value) == ''){
+				return 'This field cannot be empty, set to 0 for none';
+			}
+			if($.isNumeric(value) == '' ){
+				return 'Numbers only';
+			}
+	  	}
 	});
 	
 	$('#tdIngSupData').editable({
-	  container: 'body',
-	  selector: 'i.price_tag_end',
-	  url: "/core/core.php?settings=sup",
-	  title: 'Price tag end',
-	  type: "POST"
-	});
-	
-	$('#tdIngSupData').editable({
-	  container: 'body',
-	  selector: 'i.add_costs',
-	  url: "/core/core.php?settings=sup",
-	  title: 'Additional Costs',
-	  type: "POST",
-	  validate: function(value){
-		  if($.trim(value) == ''){
-			return 'This field cannot be empty, set 0 for none';
-		  }
-		  if($.isNumeric(value) == '' ){
-			return 'Numbers only!';
-		  }
-	  }
-	});
-	
-	$('#tdIngSupData').editable({
-	  container: 'body',
-	  selector: 'i.notes',
-	  url: "/core/core.php?settings=sup",
-	  title: 'Description',
-	  type: "POST",
+		container: 'body',
+	  	selector: 'i.notes',
+	  	url: "/core/core.php?action=supplier_update&kind=suppliers",
+	  	title: 'Description',
+  	  	ajaxOptions: {
+			type: "POST",
+			dataType: 'json'
+		},
+		success: function (data) {
+			if ( data.success ) {
+				reload_data();
+			} else if ( data.error ) {
+				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		},
+		error: function (xhr, status, error) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+		}
 	});
 	
 		
@@ -295,7 +450,7 @@ $(document).ready(function() {
 						data: {
 							supp: 'delete',
 							ID: d.ID,
-							},
+						},
 						dataType: 'json',
 						success: function (data) {
 							if(data.success){
