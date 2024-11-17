@@ -94,7 +94,10 @@ $(document).ready(function() {
 			searchPlaceholder: 'Search by formula, ingredient or CAS...',
 		},
     	ajax: {	
-			url: "/core/list_pending_materials_data.php?kind=overall" 
+			url: "/core/list_pending_materials_data.php",
+			data: {
+				kind: 'overall'
+			}
 		},
 		columns: [
 			   { data : "formula", title: "Formula", render: formulaName, name: "formula" },
@@ -139,7 +142,10 @@ $(document).ready(function() {
 			searchPlaceholder: 'Search by formula, ingredient or CAS...',
 		},
     	ajax: {
-			url: "/core/list_pending_materials_data.php?kind=summary" 
+			url: "/core/list_pending_materials_data.php",
+			data: {
+				kind: 'summary'
+			}
 		},
 		columns: [
     		   { data : "ingredient", title: "Ingredient", render: ingredientName },
