@@ -2,6 +2,8 @@
 ### Version 12.1
 - Added summary of total amount required for pending materials
 - Added list of materials per supplier
+- Added kubernetes manifest for emphemeral db storage
+- Renamed openshift folder to k8s
 ### Version 12.0
 - Lids inventory dropped to accessories
 - Minor overall UI updates
