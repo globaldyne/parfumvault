@@ -13,9 +13,16 @@ Project structure:
 The manifest will create pods for the pv app using the latest image tag, mariadb and phpmyadmin
 
 
-## Deploy in openshift via cli
+## Deploy in openshift via cli using persistent storage
 
 ```
 $ oc apply -f pvault-ocp-persistent.yaml
+```
+
+
+## Deploy in openshift via cli using ephemeral storage (for testing or development purposes only)
+
+```
+$ oc apply -f pvault-ocp-ephemeral.yaml
 ```
 
