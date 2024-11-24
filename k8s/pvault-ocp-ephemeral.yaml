@@ -3,20 +3,6 @@ kind: Namespace
 metadata:
   name: pvault
 ---
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  labels:
-    com.jbparfum.service: db-data
-  name: db-data
-  namespace: pvault
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 100Mi
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -159,11 +145,13 @@ spec:
           ports:
             - containerPort: 3306
               protocol: TCP
+          volumeMounts:
+            - name: db-data
+              mountPath: /var/lib/mysql
       restartPolicy: Always
       volumes:
         - name: db-data
-          persistentVolumeClaim:
-            claimName: db-data
+          emptyDir: {}
 ---
 apiVersion: v1
 kind: Service
