@@ -47,8 +47,8 @@ foreach ($rs as $rq) {
     $r['description'] = (string)$rq['description'] ?: 'N/A';
     $r['batch_id'] = (int)$rq['batch_id'];
     $r['size'] = (double)$rq['size'] ?: 0;
-    $r['updated'] = (string)$rq['updated'] ?: '00:00:00';
-    $r['created'] = (string)$rq['created'] ?: '00:00:00';
+    $r['updated_at'] = (string)$rq['updated_at'] ?: '00:00:00';
+    $r['created_at'] = (string)$rq['created_at'] ?: '00:00:00';
     $r['label_info'] = (string)$rq['label_info'] ?: '-';
     $r['location'] = (string)$rq['location'] ?: '-';
     $r['owner_id'] = (int)$rq['owner_id'] ?: 0;

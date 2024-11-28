@@ -182,8 +182,8 @@ $(document).ready(function() {
 			{ data : 'address', title: 'Address' },
 			{ data : 'email', title: 'Email' },
 			{ data : 'web', title: 'Web Site' },
-			{ data : 'created', title: 'Created' },
-			{ data : 'updated', title: 'Updated' },
+			{ data : 'created_at', title: 'Created' },
+			{ data : 'updated_at', title: 'Updated' },
 			{ data : null, title: '', render: actions }
 		],
 		order: [[ 0, 'asc' ]],

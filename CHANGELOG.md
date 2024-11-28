@@ -4,6 +4,9 @@
 - Added list of materials per supplier
 - Added kubernetes manifest for emphemeral db storage
 - Renamed openshift folder to k8s
+- Added create and update timestamps
+- Added user_id to enable multi-user access (FOR SAS ONLY)
+
 ### Version 12.0
 - Lids inventory dropped to accessories
 - Minor overall UI updates

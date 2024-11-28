@@ -6,7 +6,7 @@ require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/func/pvFileGet.php');
 
 // Sanitize input
-$app_ver = filter_input(INPUT_GET, 'app_ver', FILTER_SANITIZE_STRING);
+$app_ver = filter_input(INPUT_GET, 'app_ver', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
 if ($app_ver) {
     $githubVerUrl = 'https://raw.githubusercontent.com/globaldyne/parfumvault/master/VERSION.md';

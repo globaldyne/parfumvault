@@ -33,8 +33,8 @@ foreach ($rs as $rq) {
 	$r['phone'] = (string)$rq['phone']?:'N/A';
 	$r['email'] = (string)$rq['email']?:'N/A';
 	$r['web'] = (string)$rq['web']?:'N/A';
-	$r['created'] = (string)$rq['created']?:'00:00:00';
-	$r['updated'] = (string)$rq['updated']?:'00:00:00';
+	$r['created_at'] = (string)$rq['created_at']?:'00:00:00';
+	$r['updated_at'] = (string)$rq['updated_at']?:'00:00:00';
 
 	$rx[]=$r;
 }

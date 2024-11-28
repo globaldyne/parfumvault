@@ -2146,7 +2146,7 @@ if($_POST['action'] == 'clone' && $_POST['old_ing_name'] && $_POST['ing_id']){
 	
 	$sql.=mysqli_query($conn, "INSERT INTO ingredient_compounds (ing,name,cas,min_percentage,max_percentage) SELECT '$new_ing_name',name,cas,min_percentage,max_percentage FROM ingredient_compounds WHERE ing = '$old_ing_name'");
 
-	$sql.=mysqli_query($conn, "INSERT INTO ingredients (name,INCI,type,strength,category,purity,cas,FEMA,reach,tenacity,chemical_name,formula,flash_point,appearance,notes,profile,solvent,odor,allergen,flavor_use,soluble,logp,cat1,cat2,cat3,cat4,cat5A,cat5B,cat5C,cat5D,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12,impact_top,impact_heart,impact_base,created,usage_type,noUsageLimit,isPrivate,molecularWeight,physical_state) SELECT '$new_ing_name',INCI,type,strength,category,purity,cas,FEMA,reach,tenacity,chemical_name,formula,flash_point,appearance,notes,profile,solvent,odor,allergen,flavor_use,soluble,logp,cat1,cat2,cat3,cat4,cat5A,cat5B,cat5C,cat5D,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12,impact_top,impact_heart,impact_base,created,usage_type,noUsageLimit,isPrivate,molecularWeight,physical_state FROM ingredients WHERE id = '$ing_id'");
+	$sql.=mysqli_query($conn, "INSERT INTO ingredients (name,INCI,type,strength,category,purity,cas,FEMA,reach,tenacity,chemical_name,formula,flash_point,appearance,notes,profile,solvent,odor,allergen,flavor_use,soluble,logp,cat1,cat2,cat3,cat4,cat5A,cat5B,cat5C,cat5D,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12,impact_top,impact_heart,impact_base,usage_type,noUsageLimit,isPrivate,molecularWeight,physical_state) SELECT '$new_ing_name',INCI,type,strength,category,purity,cas,FEMA,reach,tenacity,chemical_name,formula,flash_point,appearance,notes,profile,solvent,odor,allergen,flavor_use,soluble,logp,cat1,cat2,cat3,cat4,cat5A,cat5B,cat5C,cat5D,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12,impact_top,impact_heart,impact_base,usage_type,noUsageLimit,isPrivate,molecularWeight,physical_state FROM ingredients WHERE id = '$ing_id'");
 
 	if($nID = mysqli_fetch_array(mysqli_query($conn, "SELECT id,name FROM ingredients WHERE name = '$new_ing_name'"))){
 		
@@ -3190,7 +3190,7 @@ if($_POST['action'] == 'report' && $_POST['src'] == 'pvMarket'){
 
 if($_GET['do'] == 'userPerfClear'){
 
-	if(mysqli_query($conn, "DELETE FROM user_prefs WHERE owner = '".$_SESSION['userID']."'")){
+	if(mysqli_query($conn, "DELETE FROM user_prefs WHERE owner_id = '".$_SESSION['userID']."'")){
 		$result['success'] = "User prefernces removed";
 	}else{
 		$result['error'] = 'Something went wrong, '.mysqli_error($conn);
@@ -3391,7 +3391,7 @@ if($_GET['action'] == 'exportFormulas'){
 		$r['category'] = (string)$meta['profile'] ?: 'Default';
 		$r['gender'] = (string)$meta['gender'];
 		$r['notes'] = (string)$meta['notes'] ?: 'None';
-		$r['created'] = (string)$meta['created'];
+		$r['created_at'] = (string)$meta['created_at'];
 		$r['isProtected'] = (int)$meta['isProtected'] ?: 0;
 		$r['defView'] = (int)$meta['defView'];
 		$r['catClass'] = (string)$meta['catClass'];
@@ -3424,7 +3424,7 @@ if($_GET['action'] == 'exportFormulas'){
 		$f['exclude_from_summary'] = (int)$formula['exclude_from_summary'];
 		$f['exclude_from_calculation'] = (int)$formula['exclude_from_calculation'];
 		$f['notes'] = (string)$formula['notes'] ?: 'None';
-		$f['created'] = (string)$formula['created'];
+		$f['created_at'] = (string)$formula['created_at'];
 		$f['updated'] = (string)$formula['updated'];
 		
 		$ingredients++;
@@ -3479,7 +3479,7 @@ if($_GET['action'] == 'restoreFormulas'){
 			$product_name = mysqli_real_escape_string($conn, $meta['product_name']);
 			$notes = mysqli_real_escape_string($conn, $meta['notes']);
 			
-			$sql = "INSERT IGNORE INTO formulasMetaData(name,product_name,fid,profile,gender,notes,created,isProtected,defView,catClass,revision,finalType,isMade,madeOn,scheduledOn,customer_id,status,toDo,rating) VALUES('".$name."','".$product_name."','".$meta['fid']."','".$meta['profile']."','".$meta['gender']."','".$notes."','".$meta['created']."','".$meta['isProtected']."','".$meta['defView']."','".$meta['catClass']."','".$meta['revision']."','".$meta['finalType']."','".$meta['isMade']."','".$meta['madeOn']."','".$meta['scheduledOn']."','".$meta['customer_id']."','".$meta['status']."','".$meta['toDo']."','".$meta['rating']."')";
+			$sql = "INSERT IGNORE INTO formulasMetaData(name,product_name,fid,profile,gender,notes,isProtected,defView,catClass,revision,finalType,isMade,madeOn,scheduledOn,customer_id,status,toDo,rating) VALUES('".$name."','".$product_name."','".$meta['fid']."','".$meta['profile']."','".$meta['gender']."','".$notes."','".$meta['isProtected']."','".$meta['defView']."','".$meta['catClass']."','".$meta['revision']."','".$meta['finalType']."','".$meta['isMade']."','".$meta['madeOn']."','".$meta['scheduledOn']."','".$meta['customer_id']."','".$meta['status']."','".$meta['toDo']."','".$meta['rating']."')";
 			
 			if(mysqli_query($conn,$sql)){
 				mysqli_query($conn,"DELETE FROM formulas WHERE fid = '".$meta['fid']."'");
@@ -3497,10 +3497,8 @@ if($_GET['action'] == 'restoreFormulas'){
 			$ingredient = mysqli_real_escape_string($conn, $formula['ingredient']);
 			$exclude_from_summary = $formula['exclude_from_summary'] ?: 0;
 			$exclude_from_calculation = $formula['exclude_from_calculation'] ?: 0;
-			$created = $formula['created'] ?:  date('Y-m-d H:i:s');
-			$updated = $formula['updated'] ?:  date('Y-m-d H:i:s');
 
-			$sql = "INSERT INTO formulas(fid,name,ingredient,ingredient_id,concentration,dilutant,quantity,exclude_from_summary,exclude_from_calculation,notes,created,updated) VALUES('".$formula['fid']."','".$name."','".$ingredient."','".$formula['ingredient_id']."','".$formula['concentration']."','".$formula['dilutant']."','".$formula['quantity']."','".$exclude_from_summary."','".$exclude_from_calculation."','".$notes."','".$created."','".$updated."')";
+			$sql = "INSERT INTO formulas(fid,name,ingredient,ingredient_id,concentration,dilutant,quantity,exclude_from_summary,exclude_from_calculation,notes) VALUES('".$formula['fid']."','".$name."','".$ingredient."','".$formula['ingredient_id']."','".$formula['concentration']."','".$formula['dilutant']."','".$formula['quantity']."','".$exclude_from_summary."','".$exclude_from_calculation."','".$notes."')";
 			
 			if(mysqli_query($conn,$sql)){
 				$result['success'] = "Import complete";
@@ -3542,34 +3540,9 @@ if($_GET['action'] == 'restoreIngredients'){
 			echo json_encode($result);
 			return;
 		}
-		/*
-		foreach ($data['suppliers'] as $sup) {
-			$id = mysqli_real_escape_string($conn, $sup['id']);
-			$ingSupplierID = mysqli_real_escape_string($conn, $sup['ingSupplierID']);
-			$ingID = mysqli_real_escape_string($conn, $sup['ingID']);
-			$supplierLink = mysqli_real_escape_string($conn, $sup['supplierLink']);
-			$price = mysqli_real_escape_string($conn, $sup['price']);
-			$size = mysqli_real_escape_string($conn, $sup['size']);
-			$manufacturer = mysqli_real_escape_string($conn, $sup['manufacturer']);
-			$preferred = mysqli_real_escape_string($conn, $sup['preferred']);
-			$batch = mysqli_real_escape_string($conn, $sup['batch']);
-			$purchased = mysqli_real_escape_string($conn, $sup['purchased']);
-			$mUnit = mysqli_real_escape_string($conn, $sup['mUnit']);
-			$stock = mysqli_real_escape_string($conn, $sup['stock']);
-			$status = mysqli_real_escape_string($conn, $sup['status']);
-			$supplier_sku = mysqli_real_escape_string($conn, $sup['supplier_sku']);
-			$internal_sku = mysqli_real_escape_string($conn, $sup['internal_sku']);
-			$storage_location = mysqli_real_escape_string($conn, $sup['storage_location']);
-		
-			$sql = "INSERT IGNORE INTO `suppliers` (`id`,`ingSupplierID`,`ingID`,`supplierLink`,`price`,`size`,`manufacturer`,`preferred`,`batch`,`purchased`,`mUnit`,`stock`,`status`,`supplier_sku`,`internal_sku`,`storage_location`,`created_at`) 
-					VALUES ('$id','$ingSupplierID','$ingID','$supplierLink','$price','$size','$manufacturer','$preferred','$batch','$purchased','$mUnit','$stock','$status','$supplier_sku','$internal_sku','$storage_location',current_timestamp())";
-		
-			mysqli_query($conn, $sql);
-		}
 
-		*/
 		foreach ($data['compositions'] as $cmp) {
-			$stmt = mysqli_prepare($conn, "INSERT IGNORE INTO `ingredient_compounds` (`ing`, `name`, `cas`, `ec`, `min_percentage`, `max_percentage`, `GHS`, `toDeclare`, `created`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, current_timestamp())");
+			$stmt = mysqli_prepare($conn, "INSERT IGNORE INTO `ingredient_compounds` (`ing`, `name`, `cas`, `ec`, `min_percentage`, `max_percentage`, `GHS`, `toDeclare`, `created_at`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, current_timestamp())");
 		
 			if ($stmt === false) {
 				$result['error'] = 'Prepare failed: ' . mysqli_error($conn);
@@ -3686,15 +3659,15 @@ if($_GET['action'] == 'restoreIngredients'){
 			$impact_top = mysqli_real_escape_string($conn, $ingredient['impact_top']);
 			$impact_heart = mysqli_real_escape_string($conn, $ingredient['impact_heart']);
 			$impact_base = mysqli_real_escape_string($conn, $ingredient['impact_base']);
-			$created = mysqli_real_escape_string($conn, $ingredient['created']);
+			//$created = mysqli_real_escape_string($conn, $ingredient['created']);
 			$usage_type = mysqli_real_escape_string($conn, $ingredient['usage_type']);
 			$noUsageLimit = mysqli_real_escape_string($conn, $ingredient['noUsageLimit']);
 			$byPassIFRA = mysqli_real_escape_string($conn, $ingredient['byPassIFRA']);
 			$isPrivate = mysqli_real_escape_string($conn, $ingredient['isPrivate']);
 			$molecularWeight = mysqli_real_escape_string($conn, $ingredient['molecularWeight']);
 		
-			$sql = "INSERT IGNORE INTO ingredients(id,name,INCI,cas,FEMA,type,strength,category,purity,einecs,reach,tenacity,chemical_name,formula,flash_point,notes,flavor_use,soluble,logp,cat1,cat2,cat3,cat4,cat5A,cat5B,cat5C,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12,profile,physical_state,allergen,odor,impact_top,impact_heart,impact_base,created,usage_type,noUsageLimit,byPassIFRA,isPrivate,molecularWeight) 
-					VALUES ('$id','$name','$INCI','$cas','$FEMA','$type','$strength','$category','$purity','$einecs','$reach','$tenacity','$chemical_name','$formula','$flash_point','$notes','$flavor_use','$soluble','$logp','$cat1','$cat2','$cat3','$cat4','$cat5A','$cat5B','$cat5C','$cat6','$cat7A','$cat7B','$cat8','$cat9','$cat10A','$cat10B','$cat11A','$cat11B','$cat12','$profile','$physical_state','$allergen','$odor','$impact_top','$impact_heart','$impact_base','$created','$usage_type','$noUsageLimit','$byPassIFRA','$isPrivate','$molecularWeight')";
+			$sql = "INSERT IGNORE INTO ingredients(id,name,INCI,cas,FEMA,type,strength,category,purity,einecs,reach,tenacity,chemical_name,formula,flash_point,notes,flavor_use,soluble,logp,cat1,cat2,cat3,cat4,cat5A,cat5B,cat5C,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12,profile,physical_state,allergen,odor,impact_top,impact_heart,impact_base,usage_type,noUsageLimit,byPassIFRA,isPrivate,molecularWeight) 
+					VALUES ('$id','$name','$INCI','$cas','$FEMA','$type','$strength','$category','$purity','$einecs','$reach','$tenacity','$chemical_name','$formula','$flash_point','$notes','$flavor_use','$soluble','$logp','$cat1','$cat2','$cat3','$cat4','$cat5A','$cat5B','$cat5C','$cat6','$cat7A','$cat7B','$cat8','$cat9','$cat10A','$cat10B','$cat11A','$cat11B','$cat12','$profile','$physical_state','$allergen','$odor','$impact_top','$impact_heart','$impact_base','$usage_type','$noUsageLimit','$byPassIFRA','$isPrivate','$molecularWeight')";
 		
 			if (mysqli_query($conn, $sql)) {
 				$result['success'] = "Import complete";
@@ -4087,15 +4060,13 @@ if ($_GET['action'] == 'importCompounds') {
         foreach ($data['inventory_compounds'] as $d) {				
             $s = mysqli_query($conn, "
                 INSERT INTO `inventory_compounds` 
-                (`name`, `description`, `batch_id`, `size`, `updated`, `created`, `location`, `label_info`) 
+                (`name`, `description`, `batch_id`, `size`, `location`, `label_info`) 
                 VALUES 
-                ('" . $d['name'] . "', '" . $d['description'] . "', '" . $d['batch_id'] . "', '" . $d['size'] . "', '" . $d['updated'] . "', '" . $d['created'] . "', '" . $d['location'] . "', '" . $d['label_info'] . "')
+                ('" . $d['name'] . "', '" . $d['description'] . "', '" . $d['batch_id'] . "', '" . $d['size'] . "', '" . $d['location'] . "', '" . $d['label_info'] . "')
                 ON DUPLICATE KEY UPDATE
                 `description` = VALUES(`description`), 
                 `batch_id` = VALUES(`batch_id`), 
                 `size` = VALUES(`size`), 
-                `updated` = VALUES(`updated`), 
-                `created` = VALUES(`created`), 
                 `location` = VALUES(`location`), 
                 `label_info` = VALUES(`label_info`)
             ");
