@@ -6,6 +6,7 @@
 - Renamed openshift folder to k8s
 - Added create and update timestamps
 - Added user_id to enable multi-user access (FOR SAS ONLY)
+- Update install page
 
 ### Version 12.0
 - Lids inventory dropped to accessories

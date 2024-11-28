@@ -82,7 +82,10 @@ if(isset($_SESSION['parfumvault'])){
                </div>
                <div class="form-group">
                   <label for="password" class="form-label">Password</label>
-                  <input type="text" class="form-control form-control-user" id="password">
+                  <div class="col-md-auto password-input-container">
+                      <input name="password" type="password" id="password" class="form-control password-input" value="">
+                      <i class="toggle-password fa fa-eye"></i>
+                  </div>
                </div>
                <div class="form-group"></div>
                <button class="btn btn-primary btn-user btn-block" id="registerSubmit">
@@ -173,7 +176,17 @@ if(isset($_SESSION['parfumvault'])){
 
 <script>
 $(document).ready(function() {
-
+    $(".toggle-password").click(function () {
+        var passwordInput = $($(this).siblings(".password-input"));
+        var icon = $(this);
+        if (passwordInput.attr("type") == "password") {
+            passwordInput.attr("type", "text");
+            icon.removeClass("fa-eye").addClass("fa-eye-slash");
+        } else {
+            passwordInput.attr("type", "password");
+            icon.removeClass("fa-eye-slash").addClass("fa-eye");
+        }
+    });
 	$('#reg_form').on('click', '[id*=registerSubmit]', function () {
 		$('#registerSubmit').prop('disabled', true);
 		$('#msg').html('<div class="alert alert-info mx-2"><img src="/img/loading.gif"/>Please wait, configuring the system...<p><strong>Please do not close, refresh or navigate away from this page. You will be automatically redirected upon a succesfull installation.</strong></p></div>');

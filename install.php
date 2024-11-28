@@ -16,6 +16,7 @@ $first_time = 1;
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
   <link href="/css/sb-admin-2.css" rel="stylesheet">
+  <link href="/css/bootstrap.min.css" rel="stylesheet">
   <link href="/css/vault.css" rel="stylesheet">
   <script src="/js/jquery/jquery.min.js"></script>
 </head>
@@ -35,35 +36,38 @@ $first_time = 1;
                 <strong>Database Settings:</strong>
                 <hr>
                 <div class="form-group">
-                  <label for="dbhost" class="form-label">Database Hostname or IP</label>
-                  <input type="text" class="form-control form-control-user" id="dbhost">
+                  <label for="dbhost" class="control-label">Database Hostname or IP</label>
+                  <input type="text" class="form-control" id="dbhost">
                 </div>
                 <div class="form-group">
-                  <label for="dbuser" class="form-label">Database username</label>
-                  <input type="text" class="form-control form-control-user" id="dbuser">
+                  <label for="dbuser" class="control-label">Database username</label>
+                  <input type="text" class="form-control" id="dbuser">
                 </div>
                 <div class="form-group">
-                  <label for="dbpass" class="form-label">Database password</label>
-                  <input type="text" class="form-control form-control-user" id="dbpass">
+                  <label for="dbpass" class="control-label">Database password</label>
+                  <input type="text" class="form-control" id="dbpass">
                 </div>
                  <div class="form-group">
-                  <label for="dbname" class="form-label">Database name</label>
-                  <input type="text" class="form-control form-control-user" id="dbname">
+                  <label for="dbname" class="control-label">Database name</label>
+                  <input type="text" class="form-control" id="dbname">
                 </div>
                 <hr>
                 <strong>User Settings:</strong>
                 <hr>
                 <div class="form-group">
-                  <label for="fullName" class="form-label">Full name</label>
-                  <input type="text" class="form-control form-control-user" id="fullName">
+                  <label for="fullName" class="control-label">Full name</label>
+                  <input type="text" class="form-control" id="fullName">
                 </div>      
                 <div class="form-group">
-                  <label for="email" class="form-label">Email</label>
-                  <input type="text" class="form-control form-control-user" id="email">
+                  <label for="email" class="control-label">Email</label>
+                  <input type="text" class="form-control" id="email">
                 </div>
                 <div class="form-group">
-                  <label for="password" class="form-label">Password</label>
-                  <input type="text" class="form-control form-control-user" id="password">
+                  <label for="password" class="control-label">Password</label>
+                  <div class="col-md-auto password-input-container">
+                    <input name="password" type="password" id="password" class="form-control password-input" value="">
+                    <i class="toggle-password fa fa-eye"></i>
+                  </div>
                 </div>
                 <div class="form-group"></div>
                 <hr>
@@ -81,7 +85,17 @@ $first_time = 1;
 </html>
 <script>
 $(document).ready(function() {
-
+    $(".toggle-password").click(function () {
+        var passwordInput = $($(this).siblings(".password-input"));
+        var icon = $(this);
+        if (passwordInput.attr("type") == "password") {
+            passwordInput.attr("type", "text");
+            icon.removeClass("fa-eye").addClass("fa-eye-slash");
+        } else {
+            passwordInput.attr("type", "password");
+            icon.removeClass("fa-eye-slash").addClass("fa-eye");
+        }
+    });
 	$('#install_form').on('click', '[id*=saveInstallData]', function () {
 		$('#saveInstallData').prop('disabled', true);
 		$('#msg').html('<div class="alert alert-info mx-2"><img src="/img/loading.gif"/>Please wait, configuring the system...<p><strong>Please do not close, refresh or navigate away from this page. You will be automatically redirected upon a succesfull installation.</strong></p></div>');
@@ -106,14 +120,14 @@ $(document).ready(function() {
 					window.location = '/';
 				}
 				if (data.error) {
-					var msg = '<div class="alert alert-danger mx-2"><i class="fa-solid fa-triangle-exclamation"></i>' + data.error + '</div>';
+					var msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + data.error + '</div>';
 					$('#msg').html(msg);
 					$("#install_form").show();
 					$('#saveInstallData').prop('disabled', false);
 				}
 			},
 			error: function (xhr, status, error) {
-				var msg = '<div class="alert alert-danger mx-2"><i class="fa-solid fa-triangle-exclamation"></i>' + error + '</div>';
+				var msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + error + '</div>';
 				$('#msg').html(msg);
 				$("#install_form").show();
 				$('#saveInstallData').prop('disabled', false);
