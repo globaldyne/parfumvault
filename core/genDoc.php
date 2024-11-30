@@ -10,20 +10,19 @@ require_once(__ROOT__.'/libs/fpdf.php');
 
 $imageData = base64_decode(explode(',', $settings['brandLogo'])[1]);
 $tempImagePath = $tmp_path.'/temp_logo.png';
+
+if (!file_exists($tmp_path)) {
+			mkdir($tmp_path, 0740, true);
+}
+
 file_put_contents($tempImagePath, $imageData);
-
 define('__PVLOGO__', $tempImagePath ?:  __ROOT__.'/img/logo.png');
-
 
 if ($_REQUEST['action'] == 'generateDOC' && $_REQUEST['kind'] == 'ingredient'){
 	
 	$ingName = mysqli_real_escape_string($conn, $_REQUEST['name']);
 	$ingID = $_REQUEST['id'];
 	define('__INGNAME__',$ingName);
-	
-	
-
-
 
 	// Use prepared statements to avoid SQL injection
 	$stmt = $conn->prepare("SELECT cas, INCI, reach, einecs, chemical_name, formula, flash_point, appearance FROM ingredients WHERE id = ?");

@@ -1842,14 +1842,14 @@ if($_POST['ingredient'] == 'delete' && $_POST['ing_id']){
 	if($_POST['forceDelIng'] == "false"){
 
 			if(mysqli_num_rows(mysqli_query($conn, "SELECT ingredient FROM formulas WHERE ingredient = '".$ing['name']."'"))){
-			$response["error"] = '<strong>'.$ing['name'].'</strong> is in use by at least one formula and cannot be removed!</div>';
+			$response["error"] = $ing['name'].' is in use by at least one formula and cannot be deleted';
 			echo json_encode($response);
 			return;
 		}
 	}
 	if(mysqli_query($conn, "DELETE FROM ingredients WHERE id = '$id'")){
 		mysqli_query($conn,"DELETE FROM ingredient_compounds WHERE ing = '".$ing['name']."'");
-		$response["success"] = 'Ingredient <strong>'.$ing['name'].'</strong> removed from the database!';
+		$response["success"] = 'Ingredient '.$ing['name'].' and its data deleted';
 	}
 	
 	echo json_encode($response);
@@ -2127,8 +2127,8 @@ if($_GET['import'] == 'ingredient'){
 	return;
 }
 
-//CLONE INGREDIENT
-if($_POST['action'] == 'clone' && $_POST['old_ing_name'] && $_POST['ing_id']){
+//DUPLICATE INGREDIENT
+if($_POST['action'] == 'duplicate_ingredient' && $_POST['old_ing_name'] && $_POST['ing_id']){
 	$ing_id = mysqli_real_escape_string($conn, $_POST['ing_id']);
 
 	$old_ing_name = mysqli_real_escape_string($conn, $_POST['old_ing_name']);
@@ -2149,7 +2149,7 @@ if($_POST['action'] == 'clone' && $_POST['old_ing_name'] && $_POST['ing_id']){
 	$sql.=mysqli_query($conn, "INSERT INTO ingredients (name,INCI,type,strength,category,purity,cas,FEMA,reach,tenacity,chemical_name,formula,flash_point,appearance,notes,profile,solvent,odor,allergen,flavor_use,soluble,logp,cat1,cat2,cat3,cat4,cat5A,cat5B,cat5C,cat5D,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12,impact_top,impact_heart,impact_base,usage_type,noUsageLimit,isPrivate,molecularWeight,physical_state) SELECT '$new_ing_name',INCI,type,strength,category,purity,cas,FEMA,reach,tenacity,chemical_name,formula,flash_point,appearance,notes,profile,solvent,odor,allergen,flavor_use,soluble,logp,cat1,cat2,cat3,cat4,cat5A,cat5B,cat5C,cat5D,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12,impact_top,impact_heart,impact_base,usage_type,noUsageLimit,isPrivate,molecularWeight,physical_state FROM ingredients WHERE id = '$ing_id'");
 
 	if($nID = mysqli_fetch_array(mysqli_query($conn, "SELECT id,name FROM ingredients WHERE name = '$new_ing_name'"))){
-		
+
 		$response['success'] = $old_ing_name.' duplicated as <a href="/pages/mgmIngredient.php?id='.$nID['id'].'" >'.$new_ing_name.'</a>';
 		echo json_encode($response);
 		return;

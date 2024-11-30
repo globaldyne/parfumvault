@@ -366,7 +366,7 @@ $(document).ready(function() {
 			data = '<div class="dropdown">' +
 				'<button type="button" class="btn btn-floating hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
 					'<ul class="dropdown-menu dropdown-menu-right">';
-			data += '<li><a href="/pages/mgmIngredient.php?id='+btoa(row.name)+'" class="dropdown-item popup-link"><i class="fas fa-edit mx-2"></i>Manage</a></li>';
+			data += '<li><a href="/pages/mgmIngredient.php?id=' + row.id + '" class="dropdown-item popup-link"><i class="fas fa-edit mx-2"></i>Manage</a></li>';
 			
 			data += '<li><a class="dropdown-item" href="/pages/export.php?format=json&kind=single-ingredient&id=' + row.id + '" rel="tip" title="Export '+ row.name +' as JSON" ><i class="fas fa-download mx-2"></i>Export as JSON</a></li>';
 	

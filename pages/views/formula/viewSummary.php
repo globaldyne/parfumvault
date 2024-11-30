@@ -5,7 +5,6 @@ define('pvault_panel', TRUE);
 
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/func/arrFilter.php');
-require_once(__ROOT__.'/func/getCatByID.php');
 require_once(__ROOT__.'/func/get_formula_notes.php');
 
 if(!$_GET['id']){

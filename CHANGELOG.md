@@ -5,8 +5,12 @@
 - Added kubernetes manifest for emphemeral db storage
 - Renamed openshift folder to k8s
 - Added create and update timestamps
-- Added user_id to enable multi-user access (FOR SAS ONLY)
+- Added user_id to enable multi-user access (FOR SAAS ONLY)
 - Update install page
+- Fix Manage link in ingredients actions
+- Make sure tmp file is created before try to generate a PDF for ingredient
+- Wording update
+- Code clean-up
 
 ### Version 12.0
 - Lids inventory dropped to accessories

@@ -67,90 +67,92 @@ if($pv_meta['app_ver'] < trim(file_get_contents(__ROOT__.'/VERSION.md'))){
   <script src="/js/validate-session.js"></script>
 
 <script>
+$(document).ready(function() {
 
-$(function () {
-    $('[rel=tip]').tooltip();
+	$(function () {
+		$('[rel=tip]').tooltip();
+	
+		// Show release notes if necessary
+		<?php if ($show_release_notes) { ?>
+			$('#release_notes').modal('show');
+		<?php } ?>
+	
+		// Check for formulas list
+		<?php if ($_GET['do'] === 'listFormulas') { ?>
+			listFormulas();
+		<?php } ?>
+	
+		// Check for version updates if needed
+		<?php if ($settings['chkVersion'] === '1') { ?>
+			chkUpdate();
+		<?php } ?>
+	});
+	
+	// Function to list formulas
+	function listFormulas() {
+		$.ajax({
+			url: '/pages/listFormulas.php',
+			dataType: 'html',
+			success: function (data) {
+				$('#list_formulas').html(data);
+			},
+			error: function () {
+				$('#list_formulas').html('<div class="alert alert-danger">Failed to load formulas. Please try again later.</div>');
+			}
+		});
+	};
+	
+	// Function to update the system
+	function updateSYS() {
+		$('#sysUpdMsg').html('<div class="alert alert-info"><img src="/img/loading.gif"/> Core system upgrade in progress. Please wait, DO NOT close, refresh or navigate away from this page. The process may take a while...</div>');
+		$('#sysUpBtn, #sysUpOk').hide();
+	
+		$.ajax({
+			url: '/pages/UpgradeCore.php',
+			type: 'GET',
+			dataType: 'json',
+			success: function (data) {
+				let msg = '';
+				if (data.success) {
+					msg = `<div class="alert alert-success">${data.success}</div>`;
+				} else {
+					msg = `<div class="alert alert-danger">${data.error}</div>`;
+					$('#sysUpBtn').show();
+				}
+				$('#sysUpdMsg').html(msg);
+			},
+			error: function () {
+				$('#sysUpdMsg').html('<div class="alert alert-danger">Upgrade failed. Please try again later.</div>');
+				$('#sysUpBtn').show();
+			}
+		});
+	};
+	
+	// Function to check for updates
+	function chkUpdate() {
+		$.ajax({
+			url: '/core/checkVer.php',
+			type: 'GET',
+			data: {
+				app_ver: '<?= $ver ?>'
+			},
+			dataType: 'json',
+			success: function (data) {
+				if (data.success) {
+					let msg = `<div class="alert alert-info">${data.success}</div>`;
+					$('#chkUpdMsg').html(msg);
+				} else if (data.error) {
+					let msg = `<div class="alert alert-danger">${data.error}</div>`;
+					$('#chkUpdMsg').html(msg);
+				}
+			},
+			error: function () {
+				$('#chkUpdMsg').html('<div class="alert alert-danger"><strong>Error:</strong> Unable to check for updates. Please try again later.</div>');
+			}
+		});
+	};
 
-    // Show release notes if necessary
-    <?php if ($show_release_notes) { ?>
-        $('#release_notes').modal('show');
-    <?php } ?>
-
-    // Check for formulas list
-    <?php if ($_GET['do'] === 'listFormulas') { ?>
-        listFormulas();
-    <?php } ?>
-
-    // Check for version updates if needed
-    <?php if ($settings['chkVersion'] === '1') { ?>
-        chkUpdate();
-    <?php } ?>
-});
-
-// Function to list formulas
-function listFormulas() {
-    $.ajax({
-        url: '/pages/listFormulas.php',
-        dataType: 'html',
-        success: function (data) {
-            $('#list_formulas').html(data);
-        },
-        error: function () {
-            $('#list_formulas').html('<div class="alert alert-danger">Failed to load formulas. Please try again later.</div>');
-        }
     });
-};
-
-// Function to update the system
-function updateSYS() {
-    $('#sysUpdMsg').html('<div class="alert alert-info"><img src="/img/loading.gif"/> Core system upgrade in progress. Please wait, DO NOT close, refresh or navigate away from this page. The process may take a while...</div>');
-    $('#sysUpBtn, #sysUpOk').hide();
-
-    $.ajax({
-        url: '/pages/UpgradeCore.php',
-        type: 'GET',
-        dataType: 'json',
-        success: function (data) {
-            let msg = '';
-            if (data.success) {
-                msg = `<div class="alert alert-success">${data.success}</div>`;
-            } else {
-                msg = `<div class="alert alert-danger">${data.error}</div>`;
-                $('#sysUpBtn').show();
-            }
-            $('#sysUpdMsg').html(msg);
-        },
-        error: function () {
-            $('#sysUpdMsg').html('<div class="alert alert-danger">Upgrade failed. Please try again later.</div>');
-            $('#sysUpBtn').show();
-        }
-    });
-};
-
-// Function to check for updates
-function chkUpdate() {
-    $.ajax({
-        url: '/core/checkVer.php',
-        type: 'GET',
-        data: {
-            app_ver: '<?= $ver ?>'
-        },
-        dataType: 'json',
-        success: function (data) {
-            if (data.success) {
-                let msg = `<div class="alert alert-info">${data.success}</div>`;
-                $('#chkUpdMsg').html(msg);
-            } else if (data.error) {
-                let msg = `<div class="alert alert-danger">${data.error}</div>`;
-                $('#chkUpdMsg').html(msg);
-            }
-        },
-        error: function () {
-            $('#chkUpdMsg').html('<div class="alert alert-danger"><strong>Error:</strong> Unable to check for updates. Please try again later.</div>');
-        }
-    });
-};
-
 
 </script>
 </head>

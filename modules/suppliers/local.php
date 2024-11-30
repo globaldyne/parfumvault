@@ -10,7 +10,7 @@ require_once(__ROOT__.'/inc/settings.php');
 
 require_once(__ROOT__.'/func/getIngSupplier.php');
 require_once(__ROOT__.'/func/searchIFRA.php');
-require_once(__ROOT__.'/func/getCatByID.php');
+//require_once(__ROOT__.'/func/getCatByID.php');
 require_once(__ROOT__.'/func/getDocument.php');
 
 $defCatClass = $settings['defCatClass'];
