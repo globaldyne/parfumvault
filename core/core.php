@@ -4642,25 +4642,25 @@ if($_GET['delete'] == 'rev' && $_GET['revision'] && $_GET['fid']){
 }
 
 //MANAGE VIEW
-if($_GET['manage_view'] == '1'){
-	$ing = mysqli_real_escape_string($conn,str_replace('_', ' ',$_GET['ex_ing']));
-	
-	if($_GET['ex_status'] == 'true'){
-		$status = '0';
-	}elseif($_GET['ex_status'] == 'false'){
-		$status = '1';
-	}
-	$fid = $_GET['fid'];
-	
-	$q = mysqli_query($conn, "UPDATE formulas SET exclude_from_summary = '$status' WHERE fid = '$fid' AND ingredient = '$ing'");
-	if($q){
-		$response['success'] = 'View updated!';
-	}else{
-		$response['error'] = 'Something went wrong';
-	}
-	
-	echo json_encode($response);
-	return;
+if ($_GET['manage_view'] == '1') {
+    $ing = mysqli_real_escape_string($conn, str_replace('_', ' ', $_GET['ex_ing']));
+    $fid = mysqli_real_escape_string($conn, $_GET['fid']);
+    $ex_status = filter_var($_GET['ex_status'], FILTER_VALIDATE_BOOLEAN);
+
+    $status = $ex_status ? '0' : '1';
+
+    $query = "UPDATE formulas SET exclude_from_summary = '$status' WHERE fid = '$fid' AND ingredient = '$ing'";
+    $result = mysqli_query($conn, $query);
+
+    if ($result) {
+        $response = ['success' => 'View updated!'];
+    } else {
+        $response = ['error' => 'Something went wrong', 'details' => mysqli_error($conn)];
+    }
+
+    header('Content-Type: application/json');
+    echo json_encode($response);
+    return;
 }
 
 //SCALE FORMULA

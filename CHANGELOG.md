@@ -11,6 +11,7 @@
 - Make sure tmp file is created before try to generate a PDF for ingredient
 - Wording update
 - Code clean-up
+- Formula notes summary re-write
 
 ### Version 12.0
 - Lids inventory dropped to accessories

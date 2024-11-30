@@ -15,7 +15,7 @@ if(!$_GET['id']){
 $fid = mysqli_real_escape_string($conn, $_GET['id']);
 
 if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulas WHERE fid = '$fid'")) == 0){
-	echo '<div class="alert alert-info alert-dismissible">Incomplete formula. Please add ingredients.</div>';
+	echo '<div class="alert alert-info">Incomplete formula. Please add ingredients.</div>';
 	return;
 }
 
@@ -63,216 +63,120 @@ formula td, table.table th {
 	display: inline-block;	
 }
 </style>
-<?php if($_GET['text_colour']){ ?>
-<style>
-html {
-	color: <?=$_GET['text_colour']?>;
-}
-</style>
-<?php } ?>
+
 <div id="notes_summary_view">
-<?php if($top_cat){ ?>
-<table border="0">
-  <tr>
-    <td height="30" colspan="2" align="left"><strong>Top Notes</strong></td>
-  </tr>
-  <tr>
-    <?php foreach ($top_cat as $x){ 
-	if($top_ex){
-		if (array_search($x['name'],$top_ex) !== false){
-			unset($x['name']);
-			unset($x['image']);
-		}
-	}
-	?>
-		<td><figure><img class="img_ing" src="<?=$x['image']?>" />
-		<figcaption><?=$x['name']?></figcaption></figure></td>
-	<?php }?>  
-    </tr>
-</table>
-<?php } ?>
-<?php if($heart_cat){ ?>
-<table border="0">
-  <tr>
-    <td height="30" align="left"><strong>Heart Notes</strong></td>
-  </tr>
-  <tr>
-    <?php foreach ($heart_cat as $x){ 
-	if($heart_ex) {
-		if (array_search($x['name'],$heart_ex) !== false){
-			unset($x['name']);
-			unset($x['image']);
-		}
-	}
-	?>
-		<td><figure><img class="img_ing" src="<?=$x['image']?>" />
-		<figcaption><?=$x['name']?></figcaption></figure></td>
-	<?php }?>
-  </tr>
-</table>
-<?php } ?>
-<?php if($base_cat){ ?>
-<table border="0">
-  <tr>
-    <td height="30" colspan="2" align="left"><strong>Base Notes</strong></td>
-  </tr>
-  <tr>
-    <?php foreach ($base_cat as $x){
-		if($base_ex) {
-			if (array_search($x['name'],$base_ex) !== false){
-				unset($x['name']);
-				unset($x['image']);
-			}
-		}
-	?>
-		<td><figure><img class="img_ing" src="<?=$x['image']?>" />
-		<figcaption><?=$x['name']?></figcaption></figure></td>
-	<?php }?>
-  </tr>
-</table>
-<?php } ?>
-<p>&nbsp;</p>
-<?php if($description['notes'] && $_GET['no_description'] != '1'){ ?>
-<table width="50%" border="0">
-  <tr>
-    <td width="831"><?=$description['notes']?></td>
-  </tr>
-</table>
-<?php } ?>
+    <?php 
+    function render_notes($title, $categories, $excludes) {
+        if (!$categories) return;
+
+        echo "<table border='0'>";
+        echo "<tr><td colspan='2' height='30' align='left'><strong>{$title}</strong></td></tr>";
+        echo "<tr>";
+
+        foreach ($categories as $item) {
+            if ($excludes && in_array($item['name'], $excludes)) {
+                continue;
+            }
+
+            echo "<td>
+                    <figure>
+                        <img class='img_ing' src='{$item['image']}' alt='{$item['name']}' />
+                        <figcaption>{$item['name']}</figcaption>
+                    </figure>
+                  </td>";
+        }
+
+        echo "</tr></table>";
+    }
+
+    render_notes("Top Notes", $top_cat ?? [], $top_ex ?? []);
+    render_notes("Heart Notes", $heart_cat ?? [], $heart_ex ?? []);
+    render_notes("Base Notes", $base_cat ?? [], $base_ex ?? []);
+    ?>
+
+    <?php if (!empty($description['notes']) && ($_GET['no_description'] ?? '0') != '1') : ?>
+        <table width="50%" border="0">
+            <tr>
+                <td><?= htmlspecialchars($description['notes']) ?></td>
+            </tr>
+        </table>
+    <?php endif; ?>
 </div>
-<?php if(!$_GET['embed']){?>
-<p>&nbsp;</p>
 
-<!--Configure View-->
-
+<?php if (!isset($_GET['embed'])) : ?>
+<!-- Configure View Modal -->
 <div class="modal fade" id="conf_view" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="conf_view" aria-hidden="true">
-  <div class="modal-dialog modal-conf-view" role="document">
+    <div class="modal-dialog modal-conf-view" role="document">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Choose which notes will be displayed</h5>
-      </div>
-      <div class="modal-body">
-   	    <div id="confViewMsg"></div>
-          <form action="javascript:update_view()">   
-           <div class="conf_tbl">
-            <table width="100%" border="0">
-              <tr>
-                <td colspan="2"><strong>Top notes</strong><hr /></td>
-              </tr>
-              <?php foreach ($top_cat as $x){
-				  if (!is_numeric(array_search($x['name'],$top_ex ))){
-					//   echo '<pre>'; print_r($x); echo '</pre>';
-			  ?>
-              <tr>
-				<td width="54%" height="29" ex_top_ing_name="<?=$x['name']?>"><?=$x['name']?></td>
-                <td width="46%"><input name="ex_top_ing" class="ex_ing" type="checkbox" id="<?=str_replace(' ', '_',$x['ing'])?>" value="<?=str_replace(' ', '_',$x['ing'])?>" checked="checked" /></td>
-              </tr>
-              <?php }else{ ?>
-			  <tr>
-				<td width="54%" ex_top_ing_name="<?=$x['name']?>"><?=$x['name']?></td>
-                <td width="46%"><input name="ex_top_ing" class="ex_ing" type="checkbox" id="<?=str_replace(' ', '_',$x['ing'])?>" value="<?=str_replace(' ', '_',$x['ing'])?>" /></td>
-              </tr>
-			 <?php 
-			 	}
-			  }
-			  ?>
-             </table>
-            </div>
-             
-           <div class="conf_tbl">
-            <table width="100%" border="0">
-              <tr>
-                <td colspan="2"><p><strong>Heart notes</strong></p><hr /></td>
-              </tr>
-              <?php foreach ($heart_cat as $x){
-						if (!is_numeric(array_search($x['name'],$heart_ex ))){
-			   ?>
-              <tr>
-				<td width="40%" height="29"><?=$x['name']?></td>
-                <td width="51%"><input name="ex_heart_ing" class="ex_ing" type="checkbox" id="<?=str_replace(' ', '_',$x['ing'])?>" value="<?=str_replace(' ', '_',$x['ing'])?>" checked="checked" /></td>
-              </tr>
-              <?php }else{ ?>
-              <tr>
-				<td><?=$x['name']?></td>
-                <td width="51%"><input name="ex_heart_ing" class="ex_ing" type="checkbox" id="<?=str_replace(' ', '_',$x['ing'])?>" value="<?=str_replace(' ', '_',$x['ing'])?>" /></td>
-              </tr>
-              <?php 
-			 	}
-			  }
-			  ?>
-             </table> 
-            </div>
+        <div class="modal-header">
+            <h5 class="modal-title">Choose which notes will be displayed</h5>
+        </div>
+        <div class="modal-body">
+            <div id="confViewMsg"></div>
+                <?php 
+                function render_config_table($title, $categories, $excludes, $inputName) {
+                    echo "<div class='conf_tbl'><table width='100%' border='0'>";
+                    echo "<tr><td colspan='2'><strong>{$title}</strong><hr /></td></tr>";
 
-            <div class="conf_tbl">
-             <table width="100%" border="0">
-              <tr>
-                <td colspan="2"><p><strong>Base notes</strong></p><hr /></td>
-              </tr>
-              <?php foreach ($base_cat as $x){
-						if (!is_numeric(array_search($x['name'],$base_ex ))){
-			  ?>
-              <tr>
-				<td width="40%" height="29"><?=$x['name']?></td>
-                <td width="60%"><input name="ex_base_ing" class="ex_ing" type="checkbox" id="<?=str_replace(' ', '_',$x['ing'])?>" value="<?=str_replace(' ', '_',$x['ing'])?>" checked="checked" /></td>
-              </tr>
-             <?php }else{ ?>
-              <tr>
-				<td><?=$x['name']?></td>
-                <td width="60%"><input name="ex_base_ing" class="ex_ing" type="checkbox" id="<?=str_replace(' ', '_',$x['ing'])?>" value="<?=str_replace(' ', '_',$x['ing'])?>" /></td>
-              </tr>
-              <?php 
-			 	}
-			  }
-			  ?>
-            </table>
+                    foreach ($categories as $item) {
+                        $checked = !in_array($item['name'], $excludes) ? "checked='checked'" : "";
+                        $inputId = str_replace(' ', '_', $item['ing']);
+                        echo "<tr>
+                                <td width='54%' ex_{$inputName}_ing_name='{$item['name']}'>{$item['name']}</td>
+                                <td width='46%'>
+                                    <input name='ex_{$inputName}_ing' class='ex_ing' type='checkbox' id='{$inputId}' value='{$inputId}' {$checked} />
+                                </td>
+                              </tr>";
+                    }
+
+                    echo "</table></div>";
+                }
+
+                render_config_table("Top Notes", $top_cat ?? [], $top_ex ?? [], "top");
+                render_config_table("Heart Notes", $heart_cat ?? [], $heart_ex ?? [], "heart");
+                render_config_table("Base Notes", $base_cat ?? [], $base_ex ?? [], "base");
+                ?>
+			</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <input type="submit" class="btn btn-primary" id="btnUpdateView" value="Save">
             </div>
-            <table width="100%" border="0">
-              <tr>
-                <td>            
-  					<div class="modal-footer">
-     	  				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-	 	  				<input type="submit" name="button" class="btn btn-primary" id="btnUpdate" value="Save">
-   		  			</div>
-           		 </td>
-    			</tr>
-			</table>
-          </form>
+        </div>
     </div>
-  </div>
-  </div>
 </div>
 
 <script>
+$('#btnUpdateView').click(function() {
+	$('.ex_ing').each(function () {
+		const data = {
+			fid: '<?= $fid ?>',
+			manage_view: '1',
+			ex_status: $("#" + $(this).val()).is(':checked') ? 1 : 0,
+			ex_ing: $(this).val()
+		};
 
-
-function update_view(){
-	
-	$('.ex_ing').each(function(){
-		$.ajax({ 
-			url: '/core/core.php', 
+		$.ajax({
+			url: '/core/core.php',
 			type: 'GET',
-			data: {
-				fid: '<?=$fid?>',
-				manage_view: '1',
-				ex_status: $("#" + $(this).val()).is(':checked'),
-				ex_ing: $(this).val()
-			},
+			data,
 			dataType: 'json',
-				success: function (data) {
-					if ( data.success ) {
-						fetch_summary();
-						$('#conf_view').modal('hide');
-					} else {
-						$('#confViewMsg').html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i><strong>' + data.error + '</strong></div>');
-					}
+			success: function (response) {
+				if (response.success) {
+					fetch_summary();
+					$('#conf_view').modal('hide');
+				} else {
+					$('#confViewMsg').html(
+						`<div class="alert alert-danger"><strong>${response.error}</strong></div>`
+					);
+				}
 			},
 			error: function (xhr, status, error) {
-				$('#confViewMsg').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+				$('#confViewMsg').html(
+					`<div class="alert alert-danger">An error occurred: ${status}. ${error}</div>`
+				);
 			}
 		});
 	});
-
-}
-
+});
 </script>
-<?php } ?>
+<?php endif; ?>
