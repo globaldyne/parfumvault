@@ -47,7 +47,7 @@ if($_POST['action']=='install'){
 	
 	if(file_exists(__ROOT__.'/inc/config.php') == TRUE && getenv('PLATFROM') != 'CLOUD'){
 	
-		echo '<div class="alert alert-info alert-dismissible"><strong>System is already configured!</strong></div>';
+		echo '<div class="alert alert-info"><strong>System is already configured</strong></div>';
 		return;
 	}
 

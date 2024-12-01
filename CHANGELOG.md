@@ -14,6 +14,7 @@
 - Formula notes summary re-write
 - Added an error message next to misconfigured ingredients 
 - Include supplier data when duplicating an ingredient
+- Added enviroment variables for user creation
 
 ### Version 12.0
 - Lids inventory dropped to accessories

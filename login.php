@@ -54,6 +54,12 @@ if(isset($_SESSION['parfumvault'])){
 					$app_ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
 					$db_ver  = trim(file_get_contents(__ROOT__.'/db/schema.ver'));
 					mysqli_query($conn,"INSERT INTO pv_meta (schema_ver,app_ver) VALUES ('$db_ver','$app_ver')");
+					if(getenv('USER_EMAIL') && getenv('USER_NAME') && getenv('USER_PASSWORD')){
+						$user_email = getenv('USER_EMAIL');
+						$user_name = getenv('USER_NAME');
+						$user_password = getenv('USER_PASSWORD');
+						mysqli_query($conn,"INSERT INTO users (email,fullName,password) VALUES ('$user_email','$user_name',PASSWORD('$user_password'))");
+					}
 					header('Location: /');
 				}else{
 					$response['error'] = 'DB Schema Creation error. Make sure the database '.getenv('DB_NAME').' exists in your mysql server '.getenv('DB_HOST').', user '.getenv('DB_USER').' has full permissions on it and its empty.';
