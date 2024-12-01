@@ -390,8 +390,6 @@ $(document).ready(function() {
 	
 			
 		function rowClickedFunction(data) {
-			$('#toast-title').html('<i class="fa-solid fa-circle-info mr-2"></i>Connecting to the PV Scale...');
-			$('.toast-header').removeClass().addClass('toast-header alert-warning');
 			$.ajax({
 				type: 'POST',
 				url: "/pages/views/pvscale/manage.php?action=send2PVScale",
@@ -424,21 +422,22 @@ $(document).ready(function() {
 				dataType: 'json',
 				success: function(data) {
 					if(data.success == true){
-						$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>Scale data updated');
-						$('.toast-header').removeClass().addClass('toast-header alert-success');
+						console.log("Scale updated " + data.success);
 					}else if(data.success == false){
 						$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
 						$('.toast-header').removeClass().addClass('toast-header alert-danger');
 					}
+					$('.toast').toast('show');
 				},
 				error: function(err) {
-					//console.log(err);
-					$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>Unable to communicate with the scale.');
+					console.error(err);
+					$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>Unable to communicate with the scale, ' + err.statusText);
 					$('.toast-header').removeClass().addClass('toast-header alert-danger');
+					$('.toast').toast('show');
 				},
 				timeout: 3000
 			});
-			$('.toast').toast('show');
+			
 		};
 	<?php } ?>
 	

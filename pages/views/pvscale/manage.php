@@ -158,6 +158,23 @@ if ($_GET['action'] == 'screen'){
 	return;
 }
 
+if ($_GET['action'] == 'completeSetup'){
+	$url = "http://$PVSCALE/configure/sys/1";
+	$response = file_get_contents($url);
 
+	if ($response !== false) {
+		$responseData = json_decode($response);
+        if ($responseData !== null) {
+
+			echo json_encode(['success' => true, 'response' => $responseData]);
+			
+		} else {
+            echo json_encode(['success' => false, 'response' => 'Error decoding JSON response']);
+        }
+	} else {
+		echo json_encode(['success' => false, 'response' => 'Error occurred getting version']);
+	}
+	return;
+}
 
 ?>
