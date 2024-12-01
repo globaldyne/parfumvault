@@ -12,6 +12,7 @@
 - Wording update
 - Code clean-up
 - Formula notes summary re-write
+- Added an error message next to misconfigured ingredients 
 
 ### Version 12.0
 - Lids inventory dropped to accessories
