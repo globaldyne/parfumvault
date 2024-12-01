@@ -2145,8 +2145,13 @@ if($_POST['action'] == 'duplicate_ingredient' && $_POST['old_ing_name'] && $_POS
 	}
 	
 	$sql.=mysqli_query($conn, "INSERT INTO ingredient_compounds (ing,name,cas,min_percentage,max_percentage) SELECT '$new_ing_name',name,cas,min_percentage,max_percentage FROM ingredient_compounds WHERE ing = '$old_ing_name'");
+	
 
 	$sql.=mysqli_query($conn, "INSERT INTO ingredients (name,INCI,type,strength,category,purity,cas,FEMA,reach,tenacity,chemical_name,formula,flash_point,appearance,notes,profile,solvent,odor,allergen,flavor_use,soluble,logp,cat1,cat2,cat3,cat4,cat5A,cat5B,cat5C,cat5D,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12,impact_top,impact_heart,impact_base,usage_type,noUsageLimit,isPrivate,molecularWeight,physical_state) SELECT '$new_ing_name',INCI,type,strength,category,purity,cas,FEMA,reach,tenacity,chemical_name,formula,flash_point,appearance,notes,profile,solvent,odor,allergen,flavor_use,soluble,logp,cat1,cat2,cat3,cat4,cat5A,cat5B,cat5C,cat5D,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12,impact_top,impact_heart,impact_base,usage_type,noUsageLimit,isPrivate,molecularWeight,physical_state FROM ingredients WHERE id = '$ing_id'");
+
+	$newID = mysqli_insert_id($conn);
+	
+	$sql.=mysqli_query($conn, "INSERT INTO suppliers (ingSupplierID,ingID,supplierLink,price,size,manufacturer,preferred,batch,purchased,mUnit,stock,status,supplier_sku,internal_sku,storage_location) SELECT ingSupplierID,'$newID',supplierLink,price,size,manufacturer,preferred,batch,purchased,mUnit,stock,status,supplier_sku,internal_sku,storage_location FROM suppliers WHERE ingID = '$ing_id'");
 
 	if($nID = mysqli_fetch_array(mysqli_query($conn, "SELECT id,name FROM ingredients WHERE name = '$new_ing_name'"))){
 

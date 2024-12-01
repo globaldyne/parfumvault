@@ -13,6 +13,7 @@
 - Code clean-up
 - Formula notes summary re-write
 - Added an error message next to misconfigured ingredients 
+- Include supplier data when duplicating an ingredient
 
 ### Version 12.0
 - Lids inventory dropped to accessories
