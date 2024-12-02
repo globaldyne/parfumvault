@@ -1651,3 +1651,7 @@ th.dt-center, td.dt-center {
 	vertical-align: inherit;
   }
 }
+
+.pv-fa-2xl {
+  font-size: 20em;
+}
