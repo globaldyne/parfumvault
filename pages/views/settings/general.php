@@ -158,12 +158,13 @@ while($cats_res = mysqli_fetch_array($cats_q)){
         </div>
         
         <div class="form-check mb-3">
-        	<?php echo "S".$disable_updates; if($disable_updates === true) { ?>
-				 <input name="chkVersion" type="checkbox" disabled class="form-check-input" id="chkVersion" />
-			<?php } else { ?>
-            <input name="chkVersion" type="checkbox" class="form-check-input" id="chkVersion" value="1" <?= $settings['chkVersion'] == '1' ? 'checked' : '' ?>/>
-            <?php } ?>
-            <label class="form-check-label" for="chkVersion">Check for updates</label>
+          <?php if (isset($disable_updates) && $disable_updates === true) { ?>
+              <input name="chkVersion" type="checkbox" disabled class="form-check-input" id="chkVersion" />
+              <label class="form-check-label" for="chkVersion">Check for updates (Disabled)</label>
+          <?php } else { ?>
+              <input name="chkVersion" type="checkbox" class="form-check-input" id="chkVersion" value="1" <?= isset($settings['chkVersion']) && $settings['chkVersion'] == '1' ? 'checked' : '' ?>/>
+              <label class="form-check-label" for="chkVersion">Check for updates</label>
+          <?php } ?>
         </div>
         
         <div class="form-check mb-3">
