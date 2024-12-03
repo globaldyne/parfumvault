@@ -24,7 +24,7 @@ if(strtoupper(getenv('PLATFORM')) === "CLOUD"){
 	$bkparams =  getenv('DB_BACKUP_PARAMETERS') ?: '--column-statistics=1';
     $sysLogsEnabled = strtoupper(getenv('SYS_LOGS')) === 'ENABLED' || getenv('SYS_LOGS') === '1';
 	$session_timeout = getenv('SYS_TIMEOUT') ?: 1800;
-echo	$disable_updates = getenv('DISABLE_UPDATES');
+	$disable_updates = getenv('DISABLE_UPDATES');
 	
 	$conn = dbConnect($dbhost, $dbuser, $dbpass, $dbname);
 
