@@ -28,7 +28,7 @@ if(strtoupper(getenv('PLATFORM')) === "CLOUD"){
 	
 	$conn = dbConnect($dbhost, $dbuser, $dbpass, $dbname);
 
-}elseif(file_exists(__ROOT__.'/inc/config.php') == TRUE) {
+}elseif(file_exists(__ROOT__.'/inc/config.php') === TRUE) {
 	require_once(__ROOT__.'/inc/config.php');
 	$conn = dbConnect($dbhost, $dbuser, $dbpass, $dbname);
 }

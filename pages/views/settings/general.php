@@ -158,7 +158,7 @@ while($cats_res = mysqli_fetch_array($cats_q)){
         </div>
         
         <div class="form-check mb-3">
-          <?php if (isset($disable_updates) && $disable_updates === true) { ?>
+          <?php if (isset($disable_updates) && $disable_updates === TRUE) { ?>
               <input name="chkVersion" type="checkbox" disabled class="form-check-input" id="chkVersion" />
               <label class="form-check-label" for="chkVersion">Check for updates (Disabled)</label>
           <?php } else { ?>
