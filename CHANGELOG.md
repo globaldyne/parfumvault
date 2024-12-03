@@ -15,6 +15,8 @@
 - Added an error message next to misconfigured ingredients 
 - Include supplier data when duplicating an ingredient
 - Added enviroment variables for user creation
+- Added enviroment variable to disable updates
+- Improve overall sys upgrade
 
 ### Version 12.0
 - Lids inventory dropped to accessories

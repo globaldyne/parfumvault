@@ -83,9 +83,21 @@ $(document).ready(function() {
 		<?php } ?>
 	
 		// Check for version updates if needed
-		<?php if ($settings['chkVersion'] === '1') { ?>
+	<?php 
+	if (isset($disable_updates)) {
+		if ($disable_updates === false && isset($settings['chkVersion']) && $settings['chkVersion'] === '1') {
+			// If disable_updates is explicitly false and chkVersion is '1', call chkUpdate()
+	?>		
 			chkUpdate();
-		<?php } ?>
+	<?php }
+		// If disable_updates is true, do nothing (chkUpdate is not called)
+	} elseif (isset($settings['chkVersion']) && $settings['chkVersion'] === '1') {
+		// If disable_updates is not set, fall back to chkVersion
+	?>
+		chkUpdate();
+	<?php } ?>
+
+
 	});
 	
 	// Function to list formulas
@@ -139,20 +151,23 @@ $(document).ready(function() {
 			dataType: 'json',
 			success: function (data) {
 				if (data.success) {
-					let msg = `<div class="alert alert-info">${data.success}</div>`;
+					let msg = `<button type="button" class="btn btn-outline-primary">${data.success}</button>`;
 					$('#chkUpdMsg').html(msg);
 				} else if (data.error) {
-					let msg = `<div class="alert alert-danger">${data.error}</div>`;
-					$('#chkUpdMsg').html(msg);
+					$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+					$('.toast-header').removeClass().addClass('toast-header alert-danger');
+					$('.toast').toast('show');
 				}
 			},
-			error: function () {
-				$('#chkUpdMsg').html('<div class="alert alert-danger"><strong>Error:</strong> Unable to check for updates. Please try again later.</div>');
+			error: function (xhr, status, error) {
+				$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
 			}
 		});
 	};
 
-    });
+});
 
 </script>
 </head>

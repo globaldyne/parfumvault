@@ -8,10 +8,11 @@ if($pv_meta['schema_ver'] < $db_ver){
 }
 
 ?>
-<div id="chkUpdMsg"></div>
 <div id="content">
         <nav class="navbar navbar-expand bg-gradient-primary-navbar topbar mb-4 static-top shadow">
-          <ul class="navbar-nav vault-top ml-auto">
+          <ul class="navbar-nav float-end ml-auto">
+          <div class="mt-3" id="chkUpdMsg"></div>
+
             <!-- Cart -->
             <li class="nav-item dropdown no-arrow mx-1">
               <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -195,13 +196,13 @@ $(document).ready(function() {
 
 <!-- SYS UPGRADE MODAL -->
 <div class="modal fade" id="sysUpgradeDialog" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="sysUpgradeDialog" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">PVault core Upgrade</h5>
+        <h5 class="modal-title">Perfumers Vault version upgrade</h5>
       </div>
       <div class="modal-body" id="sysUpdMsg">
-        <div class="alert alert-warning"><strong>Your PVault installation wiil be upgraded to its latest version.</strong></div>
+        <div class="alert alert-warning"><i class="fa-solid fa-circle-info mx-2"></i><strong>Perfumers Vault will be upgraded to its latest version.<p>Please make sure you have read the release notes before upgrading.</p></strong></div>
         <pre><div id="new-rel">Check the release notes <a href="#" id="load-rel-notes">here</a></div></pre>
       </div>
       <div class="modal-footer">
