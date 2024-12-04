@@ -5,7 +5,7 @@ error_reporting(E_ERROR);
 if (!defined('pvault_panel')){ die('Not Found');}  
 define('__ROOT__', dirname(__FILE__)); 
 
-if(strtoupper(getenv('PLATFORM')) === "CLOUD"){
+if(getenv('PLATFORM') === "CLOUD"){
 	
 	if(!getenv('DB_HOST') || !getenv('DB_USER') || !getenv('DB_PASS') || !getenv('DB_NAME')){
 		$error_msg = 'Required parameters not found. Please make sure your provided all the required variables as per <a href="https://www.perfumersvault.com/knowledge-base/howto-docker/" target="_blank">documentation</a>';
@@ -22,7 +22,7 @@ if(strtoupper(getenv('PLATFORM')) === "CLOUD"){
 	$allowed_ext = getenv('FILE_EXT') ?: "pdf, doc, docx, xls, csv, xlsx, png, jpg, jpeg, gif";
 	$max_filesize = getenv('MAX_FILE_SIZE') ?: "4194304";
 	$bkparams =  getenv('DB_BACKUP_PARAMETERS') ?: '--column-statistics=1';
-    $sysLogsEnabled = strtoupper(getenv('SYS_LOGS')) === 'ENABLED' || getenv('SYS_LOGS') === '1';
+	$sysLogsEnabled = getenv('SYS_LOGS') === 'ENABLED' || getenv('SYS_LOGS') === '1';
 	$session_timeout = getenv('SYS_TIMEOUT') ?: 1800;
 	$disable_updates = getenv('DISABLE_UPDATES');
 	

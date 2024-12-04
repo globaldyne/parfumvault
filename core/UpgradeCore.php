@@ -42,12 +42,9 @@ if ($res === TRUE) {
 	echo json_encode($response);
 			
 }else {
-	$response["error"] = "Something went wrong...";
-	echo json_encode($response);
-	
+	$response["error"] = "Something went wrong. Check server logs";
+	echo json_encode($response);	
 }
 
 return;
 ?>
-
-

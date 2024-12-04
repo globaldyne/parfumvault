@@ -120,7 +120,7 @@ $(document).ready(function() {
 		$('#sysUpBtn, #sysUpOk').hide();
 	
 		$.ajax({
-			url: '/pages/UpgradeCore.php',
+			url: '/core/UpgradeCore.php',
 			type: 'GET',
 			dataType: 'json',
 			success: function (data) {

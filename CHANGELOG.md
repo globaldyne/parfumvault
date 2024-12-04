@@ -17,6 +17,7 @@
 - Added enviroment variables for user creation
 - Added enviroment variable to disable updates
 - Improve overall sys upgrade
+- Make sure it retrieves the write tag when upgrading from github
 
 ### Version 12.0
 - Lids inventory dropped to accessories
