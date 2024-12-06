@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 12.2
+
 ### Version 12.1
 - Added summary of total amount required for pending materials
 - Added list of materials per supplier
