@@ -1,0 +1,206 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pvault
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    com.jbparfum.service: phpmyadmin
+  name: phpmyadmin
+  namespace: pvault
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      com.jbparfum.service: phpmyadmin
+  template:
+    metadata:
+      labels:
+        com.jbparfum.service: phpmyadmin
+    spec:
+      containers:
+        - env:
+            - name: DB_HOST
+              value: pvdb
+          image: globaldyne/phpmyadmin:cloud
+          name: phpmyadmin
+          ports:
+            - containerPort: 8000
+              protocol: TCP
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    com.jbparfum.service: phpmyadmin
+  name: phpmyadmin
+  namespace: pvault
+spec:
+  ports:
+    - name: "9000"
+      port: 9000
+      targetPort: 8000
+  selector:
+    com.jbparfum.service: phpmyadmin
+---
+apiVersion: v1
+kind: Service
+metadata:
+
+  labels:
+    com.jbparfum.service: pvault
+  name: pvault
+  namespace: pvault
+spec:
+  ports:
+    - name: "8000"
+      port: 8000
+      targetPort: 8000
+  selector:
+    com.jbparfum.service: pvault
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    com.jbparfum.service: pvault
+  name: pvault
+  namespace: pvault
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      com.jbparfum.service: pvault
+  template:
+    metadata:
+      labels:
+        com.jbparfum.service: pvault
+    spec:
+      containers:
+        - env:
+            - name: DB_BACKUP_PARAMETERS
+              value: --column-statistics=1
+            - name: DB_HOST
+              value: pvdb
+            - name: DB_NAME
+              value: pvault
+            - name: DB_PASS
+              value: pvault
+            - name: DB_USER
+              value: pvault
+            - name: FILE_EXT
+              value: pdf, doc, docx, xls, csv, xlsx, png, jpg, jpeg, gif
+            - name: MAX_FILE_SIZE
+              value: "4194304"
+            - name: PLATFORM
+              value: CLOUD
+            - name: SYS_LOGS
+              value: ENABLED
+            - name: TMP_PATH
+              value: /tmp/
+          image: globaldyne/perfumersvault:latest
+          name: pvault
+          ports:
+            - containerPort: 8000
+              protocol: TCP
+      restartPolicy: Always
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    com.jbparfum.service: pvdb
+  name: pvdb
+  namespace: pvault
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      com.jbparfum.service: pvdb
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        com.jbparfum.service: pvdb
+    spec:
+      containers:
+        - args:
+            - --default-authentication-plugin=mysql_native_password
+            - --innodb-flush-method=fsync
+          env:
+            - name: MYSQL_DATABASE
+              value: pvault
+            - name: MYSQL_PASSWORD
+              value: pvault
+            - name: MYSQL_ROOT_PASSWORD
+              value: pvault
+            - name: MYSQL_USER
+              value: pvault
+          image: mariadb:10.5
+          name: pvdb
+          ports:
+            - containerPort: 3306
+              protocol: TCP
+          volumeMounts:
+            - name: db-data
+              mountPath: /var/lib/mysql
+      restartPolicy: Always
+      volumes:
+        - name: db-data
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    com.jbparfum.service: pvdb
+  name: pvdb
+  namespace: pvault
+spec:
+  ports:
+    - name: "3306"
+      port: 3306
+      targetPort: 3306
+  selector:
+    com.jbparfum.service: pvdb
+---
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: pvault
+  namespace: pvault
+  labels:
+    com.jbparfum.service: pvault
+spec:
+  to:
+    kind: Service
+    name: pvault
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+  port:
+    targetPort: '8000'
+  alternateBackends: 
+---
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: phpmyadmin
+  namespace: pvault
+  labels:
+    com.jbparfum.service: phpmyadmin
+spec:
+  to:
+    kind: Service
+    name: phpmyadmin
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+    destinationCACertificate: ''
+  path: /
+  port:
+    targetPort: '9000'
+  alternateBackends: []

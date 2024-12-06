@@ -217,8 +217,8 @@ $(document).ready(function() {
 			{ data : 'size', title: 'Size (<?php echo $settings['mUnit'];?>)' },
 			{ data : 'label_info', title: 'Label' },
 			{ data : 'location', title: 'Location' },
-			{ data : 'created', title: 'Inventory add' },
-			{ data : 'updated', title: 'Inventory update' },
+			{ data : 'created_at', title: 'Inventory add' },
+			{ data : 'updated_at', title: 'Inventory update' },
 			{ data : null, title: '', render: actions },
 	
 		],

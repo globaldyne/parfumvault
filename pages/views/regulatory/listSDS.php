@@ -103,7 +103,7 @@ $(document).ready(function() {
             { data : 'product_name', title: 'Product', render: name },
             { data : 'product_use', title: 'Product use' },
             { data : 'docID', title: 'Download', render: docData },
-			{ data : 'created', title: 'Created' },
+			{ data : 'created_at', title: 'Created' },
 			{ data : null, title: '', render: actions },
 		],
 		order: [[ 0, 'asc' ]],

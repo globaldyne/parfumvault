@@ -76,8 +76,8 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'bottles'){
 		$r['supplier_link'] = (string)$res['supplier_link'];
 		$r['notes'] = (string)$res['notes'];
 		$r['pieces'] = (int)$res['pieces'];
-		$r['created'] = (string)$res['created'];
-		$r['updated'] = (string)$res['updated'];
+		$r['created_at'] = (string)$res['created_at'];
+		$r['updated_at'] = (string)$res['updated_at'];
 		
 		$count++;
 		$ic[] = $r;
@@ -119,8 +119,8 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'customers'){
 		$r['phone'] = (string)$res['phone'];
 		$r['web'] = (string)$res['web'];
 		$r['owner_id'] = (int)$res['owner_id'];
-		$r['created'] = (string)$res['created'];
-		$r['updated'] = (string)$res['updated'];
+		$r['created_at'] = (string)$res['created_at'];
+		$r['updated_at'] = (string)$res['updated_at'];
 		
 		$count++;
 		$ic[] = $r;
@@ -160,8 +160,8 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'inventory_compounds'){
 		$r['description'] = (string)$res['description'];
 		$r['batch_id'] = (int)$res['batch_id'];
 		$r['size'] = (string)$res['size'];
-		$r['updated'] = (string)$res['updated'];
-		$r['created'] = (string)$res['created'];
+		$r['updated_at'] = (string)$res['updated_at'];
+		$r['created_at'] = (string)$res['created_at'];
 		$r['owner_id'] = (int)$res['owner_id'];
 		$r['location'] = (string)$res['location'];
 		$r['label_info'] = (string)$res['label_info'];
@@ -273,7 +273,7 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'ingredients'){
 		$r['impact_top'] = (int)$res['impact_top'];
 		$r['impact_heart'] = (int)$res['impact_heart'];
 		$r['impact_base'] = (int)$res['impact_base'];
-		$r['created'] = (string)$res['created'];
+		$r['created_at'] = (string)$res['created_at'];
 		$r['usage_type'] = (string)$res['usage_type'];
 		$r['noUsageLimit'] = (int)$res['noUsageLimit'];
 		$r['byPassIFRA'] = (int)$res['byPassIFRA'];
@@ -297,7 +297,7 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'ingredients'){
 		$c['max_percentage'] = (double)$res['max_percentage'];
 		$c['GHS'] = (string)$res['GHS'];
 		$c['toDeclare'] = (int)$res['toDeclare'];
-		$c['created'] = (string)$res['created'];
+		$c['created_at'] = (string)$res['created_at'];
 		
 		$ingredient_compounds_count++;
 		$cmp[] = $c;
@@ -427,7 +427,7 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'single-ingredient' && $_GET['i
 		$r['impact_top'] = (int)$res['impact_top'];
 		$r['impact_heart'] = (int)$res['impact_heart'];
 		$r['impact_base'] = (int)$res['impact_base'];
-		$r['created'] = (string)$res['created'];
+		$r['created_at'] = (string)$res['created_at'];
 		$r['usage_type'] = (string)$res['usage_type'];
 		$r['noUsageLimit'] = (int)$res['noUsageLimit'];
 		$r['byPassIFRA'] = (int)$res['byPassIFRA'];
@@ -451,7 +451,7 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'single-ingredient' && $_GET['i
 		$c['max_percentage'] = (double)$res['max_percentage'];
 		$c['GHS'] = (string)$res['GHS'];
 		$c['toDeclare'] = (int)$res['toDeclare'];
-		$c['created'] = (string)$res['created'];
+		$c['created_at'] = (string)$res['created_at'];
 
 		$cmp[] = $c;
 		$ingredient_compounds_count++;
@@ -592,7 +592,7 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'supplier-materials' && $_GET['
 		$r['id'] = (int)$i['id'];
 		$r['name'] = (string)$i['name'];
 		$r['cas'] = (string)$i['cas'] ?: 'N/A';
-		$r['created'] = (string)$i['created'] ?: 'N/A';
+		$r['created_at'] = (string)$i['created_at'] ?: 'N/A';
 		$r['odor'] = (string)$i['odor'] ?: 'N/A';
 
 		$ingredient++;

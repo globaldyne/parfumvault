@@ -120,9 +120,6 @@ $(document).ready(function() {
 
 	
 	$("#required_materials").on("show.bs.modal", function(e) {
-		const id = e.relatedTarget.dataset.id;
-		const name = e.relatedTarget.dataset.name;
-	
 		$.get("/pages/views/formula/pendingMaterials.php")
 			.then(data => {
 				$(".modal-body", this).html(data);

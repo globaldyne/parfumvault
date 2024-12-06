@@ -40,9 +40,9 @@ $f = !empty($filters) ? 'WHERE ' . implode(' AND ', $filters) : '';
 
 $Query = "
     SELECT 
-        id, fid, name, product_name, isProtected, profile, gender, created, 
+        id, fid, name, product_name, isProtected, profile, gender, created_at, 
         catClass, isMade, madeOn, status, rating, revision, 
-        (SELECT updated FROM formulas WHERE fid = formulasMetaData.fid ORDER BY updated DESC LIMIT 1) AS updated, 
+        (SELECT updated_at FROM formulas WHERE fid = formulasMetaData.fid ORDER BY updated_at DESC LIMIT 1) AS updated_at, 
         (SELECT COUNT(dilutant) FROM formulas WHERE fid = formulasMetaData.fid) AS ingredients 
     FROM formulasMetaData 
     $f 
@@ -67,8 +67,8 @@ foreach ($formulaData as $formula) {
         'isProtected' => (int)($formula['isProtected'] ?: 0),
         'profile' => (string)($formula['profile'] ?: 'N/A'),
         'gender' => (string)($formula['gender'] ?: 'unisex'),
-        'created' => (string)$formula['created'],
-        'updated' => (string)($formula['updated'] ?: '0000-00-00 00:00:00'),
+        'created_at' => (string)($formula['created_at'] ?: '0000-00-00 00:00:00'),
+        'updated_at' => (string)($formula['updated_at'] ?: '0000-00-00 00:00:00'),
         'catClass' => (string)($formula['catClass'] ?: 'N/A'),
         'ingredients' => (int)($formula['ingredients'] ?: 0),
         'isMade' => (int)($formula['isMade'] ?: 0),

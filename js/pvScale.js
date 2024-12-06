@@ -7,7 +7,7 @@ $(document).ready(function() {
 	pvScaleConnVal();
 	
 	$('#chkConn').click(function(event) {
-	  pvScaleConnVal();
+		pvScaleConnVal();
 	});
 
 	$('#scaleScreenOn').click(function(event) {
@@ -103,7 +103,6 @@ $(document).ready(function() {
 	});
 	
 
-
 	
 	$('#subScale').click(function() {
 		pvScaleConnVal(function(success) {
@@ -167,6 +166,15 @@ $(document).ready(function() {
     			$('#controlScale').removeClass('d-none');
 			 	$('#scmsg').html('');
                 success = true;
+				
+					$.ajax({
+						url: '/pages/views/pvscale/manage.php',
+						type: 'GET',
+						data: {
+							action: 'completeSetup',
+						},
+						dataType: 'json'
+					});
             } else {
 				$('#sysData').html('');
 				$('#controlScale').addClass('d-none');

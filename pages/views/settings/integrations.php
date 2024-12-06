@@ -24,14 +24,11 @@ if($settings['pv_scale_enabled']){
 <hr>
 <div class="card-body" id="main_area">
     <div class="row">
-        <div class="col-md-2">
+        <div class="col-sm-3">
             <div id="backups">
-                <div class="card" style="width: 18rem;">
+                <div class="card w-60">
                    <div class="mx-4">
-						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                            <path fill="#74C0FC"
-                                d="M339 314.9L175.4 32h161.2l163.6 282.9H339zm-137.5 23.6L120.9 480h310.5L512 338.5H201.5zM154.1 67.4L0 338.5 80.6 480 237 208.8 154.1 67.4z" />
-                        </svg>
+						<i class="fa-brands fa-google-drive pv-fa-2xl mx-2 mt-4 mb-2" style="color: #74C0FC;"></i>
                     </div>
                     <div class="card-body">
                         <h5 class="card-title">Backups<?php echo $state; ?></h5>
@@ -53,11 +50,11 @@ if($settings['pv_scale_enabled']){
         </div>
         
         
-        <div class="col-md-2">
+        <div class="col-sm-3">
             <div id="pvscale">
-                <div class="card" style="width: 18rem;">
+                <div class="card w-60">
                     <div class="mx-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#63E6BE" d="M128 176a128 128 0 1 1 256 0 128 128 0 1 1 -256 0zM391.8 64C359.5 24.9 310.7 0 256 0S152.5 24.9 120.2 64H64C28.7 64 0 92.7 0 128V448c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V128c0-35.3-28.7-64-64-64H391.8zM296 224c0-10.6-4.1-20.2-10.9-27.4l33.6-78.3c3.5-8.1-.3-17.5-8.4-21s-17.5 .3-21 8.4L255.7 184c-22 .1-39.7 18-39.7 40c0 22.1 17.9 40 40 40s40-17.9 40-40z"/></svg>
+						<i class="fa-solid fa-weight-scale pv-fa-2xl mx-2 mt-4 mb-2" style="color: #63E6BE;"></i>
                     </div>
                     <div class="card-body">
                         <h5 class="card-title">PV Scale<?php echo $scaleState; ?></h5>

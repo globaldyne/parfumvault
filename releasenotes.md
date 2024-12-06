@@ -1,23 +1,6 @@
-Whats New in v12.0
+Whats New in v12.1
 --------------------------
-- Lids inventory dropped to accessories
-- Import json functions update
-- Added import for accessories
-- Added import for bottles
-- Added import for suppliers
-- Added import for customers
-- Fixed pagination for suppliers
-- Formula scaling improvements
-- Fix invalid formula update date on empty formulas
-- Update empty table message
-- Rename sex to gender
-- Error handling improvements
-- Date Format update
-- Auto update image for formulas when uploaded
-- Auto update text title and description after a succesfull update for a formula
-- Removed user alert to reload formula settings pages when making a changes
-- Added openshift yaml manifests
-- Added a dedicated page to display in case of fatal error
-- Added a session timeout to automatically logoff the user after 30 minutes of inactivity - Please refer to the KB online if you want to change the default value
-- Change selected material color to yellow in formula making for better descrimination
+- Update install page
+- Added summary of total amount required for pending materials
+- Added list of materials per supplier
 - This release may include more changes, for full details please refer to the CHANGELOG

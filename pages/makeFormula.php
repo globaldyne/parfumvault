@@ -1,6 +1,9 @@
 <?php
 define('pvault_panel', TRUE);
-session_start();
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 define('__ROOT__', dirname(dirname(__FILE__))); 
 
@@ -20,7 +23,7 @@ $fid = mysqli_real_escape_string($conn, $_GET['fid']);
 if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$fid'"))){
 	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM formulasMetaData WHERE fid = '$fid'"));
 	if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = '$fid' AND toAdd = '1'"))){
-			$msg = '<div class="alert alert-warning"><a href="#" id="markComplete"><strong>All materials added. Mark formula as complete?</strong></a></div>';
+			$msg = '<div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><a href="#" id="markComplete"><strong>All materials added. Mark formula as complete?</strong></a></div>';
 	
 	}
 	
@@ -162,11 +165,11 @@ $(document).ready(function() {
 		],
 		dom: 'lrft',
 		buttons: [{
-				extend: 'print',
-				title: myFNAME,
-				exportOptions: {
-					columns: [0, 1, 2, 3]
-				},
+			extend: 'print',
+			title: myFNAME,
+			exportOptions: {
+				columns: [0, 1, 2, 3]
+			},
 		}],
 		processing: true,
 		serverSide: true,
@@ -176,7 +179,8 @@ $(document).ready(function() {
 		language: {
 			loadingRecords: '&nbsp;',
 			processing: 'Please Wait...',
-			zeroRecords: 'No pending ingredients found',
+			zeroRecords: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>Nothing found</strong></div></div>',
+			emptyTable: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>No pending ingredients</strong></div></div>',
 			search: '',
 			searchPlaceholder: 'Search by ingredient...',
 		},
@@ -386,8 +390,6 @@ $(document).ready(function() {
 	
 			
 		function rowClickedFunction(data) {
-			$('#toast-title').html('<i class="fa-solid fa-circle-info mr-2"></i>Connecting to the PV Scale...');
-			$('.toast-header').removeClass().addClass('toast-header alert-warning');
 			$.ajax({
 				type: 'POST',
 				url: "/pages/views/pvscale/manage.php?action=send2PVScale",
@@ -420,21 +422,22 @@ $(document).ready(function() {
 				dataType: 'json',
 				success: function(data) {
 					if(data.success == true){
-						$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>Scale data updated');
-						$('.toast-header').removeClass().addClass('toast-header alert-success');
+						console.log("Scale updated " + data.success);
 					}else if(data.success == false){
 						$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
 						$('.toast-header').removeClass().addClass('toast-header alert-danger');
 					}
+					$('.toast').toast('show');
 				},
 				error: function(err) {
-					//console.log(err);
-					$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>Unable to communicate with the scale.');
+					console.error(err);
+					$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>Unable to communicate with the scale, ' + err.statusText);
 					$('.toast-header').removeClass().addClass('toast-header alert-danger');
+					$('.toast').toast('show');
 				},
 				timeout: 3000
 			});
-			$('.toast').toast('show');
+			
 		};
 	<?php } ?>
 	

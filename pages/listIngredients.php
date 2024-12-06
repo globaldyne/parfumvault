@@ -79,7 +79,6 @@ $defCatClass = $settings['defCatClass'];
 </table>
 
 <script>
-
 $(document).ready(function() {
 	
 	var tdDataIng = $('#tdDataIng').DataTable( {
@@ -162,7 +161,6 @@ $(document).ready(function() {
 				$(this).parent().remove();
 			});
 		},
-
 		processing: true,
 		serverSide: true,
 		searching: true,
@@ -254,19 +252,65 @@ $(document).ready(function() {
 	});
 	
  					   
-	function iName(data, type, row, meta){
-		var alg = '';
-		if(row.allergen == 1){
-			alg = '<span class="ing_alg"><i rel="tip" title="Allergen" class="fas fa-exclamation-triangle"></i></span>';
+	function iName(data, type, row, meta) {
+		// Ensure data and row are valid
+		if (!data || !row) return "";
+		// Helper function to escape HTML
+		const escapeHTML = (str) => {
+			return String(str)
+				.replace(/&/g, "&amp;")
+				.replace(/</g, "&lt;")
+				.replace(/>/g, "&gt;")
+				.replace(/"/g, "&quot;")
+				.replace(/'/g, "&#039;");
+		};
+	
+		// Initialize variables for additional indicators
+		let allergenIndicator = "";
+		let errorIndicator = "";
+	
+		// Check if ingredient has allergen
+		if (row.allergen == 1) {
+			allergenIndicator =
+				'<span class="ing_alg"><i rel="tip" title="Allergen" class="fas fa-exclamation-triangle"></i></span>';
 		}
-		if(meta.settings.json.source == 'local'){
-			
-			return '<a class="popup-link listIngName listIngName-with-separator" href="/pages/mgmIngredient.php?id=' + row.id + '">' + data + '</a>'+alg+'<span class="listIngHeaderSub">CAS: <i class="pv_point_gen subHeaderCAS" rel="tip" title="Click to copy cas" id="cCAS" data-name="'+row.cas+'">'+row.cas+'</i> | EINECS: <i class="pv_point_gen subHeaderCAS">'+row.einecs+'</i></span>';
-		}else{
-			return '<a class="listIngName listIngName-with-separator" href="#">' + data + '</a>'+alg+'<span class="listIngHeaderSub">CAS: <i class="pv_point_gen subHeaderCAS" rel="tip" title="Click to copy cas" id="cCAS" data-name="'+row.cas+'">'+row.cas+'</i> | EINECS: <i class="pv_point_gen subHeaderCAS">'+row.einecs+'</i></span>';
+	
+		// Check if ingredient has error
+		if (row.error) {
+			errorIndicator = `<span class="ing_alg"><i rel="tip" title="${escapeHTML(
+				row.error
+			)}" class="fas fa-xmark text-danger"></i></span>`;
+		}
+	
+		// Determine source and construct the link and additional details
+		const isLocal = meta?.settings?.json?.source === "local";
+		const ingredientName = escapeHTML(row.name);
+		const casNumber = escapeHTML(row.cas || "N/A");
+		const einecsNumber = escapeHTML(row.einecs || "N/A");
+	
+		if (isLocal) {
+			return `
+				<a class="popup-link listIngName listIngName-with-separator" href="/pages/mgmIngredient.php?id=${row.id}">
+					${ingredientName}
+				</a>
+				${allergenIndicator}
+				${errorIndicator}
+				<span class="listIngHeaderSub">
+					CAS: <i class="pv_point_gen subHeaderCAS" rel="tip" title="Click to copy CAS" id="copyCAS" data-name="${casNumber}">${casNumber}</i> 
+					| EINECS: <i class="pv_point_gen subHeaderCAS">${einecsNumber}</i>
+				</span>`;
+		} else {
+			return `
+				<a class="listIngName listIngName-with-separator" href="#">
+					${ingredientName}
+				</a>
+				${allergenIndicator}
+				<span class="listIngHeaderSub">
+					CAS: <i class="pv_point_gen subHeaderCAS" rel="tip" title="Click to copy CAS" id="copyCAS" data-name="${casNumber}">${casNumber}</i> 
+					| EINECS: <i class="pv_point_gen subHeaderCAS">${einecsNumber}</i>
+				</span>`;
 		}
 	};
-	
 	
 	function iProfile(data, type, row, meta){
 		if(meta.settings.json.source == 'local'){
@@ -366,7 +410,7 @@ $(document).ready(function() {
 			data = '<div class="dropdown">' +
 				'<button type="button" class="btn btn-floating hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
 					'<ul class="dropdown-menu dropdown-menu-right">';
-			data += '<li><a href="/pages/mgmIngredient.php?id='+btoa(row.name)+'" class="dropdown-item popup-link"><i class="fas fa-edit mx-2"></i>Manage</a></li>';
+			data += '<li><a href="/pages/mgmIngredient.php?id=' + row.id + '" class="dropdown-item popup-link"><i class="fas fa-edit mx-2"></i>Manage</a></li>';
 			
 			data += '<li><a class="dropdown-item" href="/pages/export.php?format=json&kind=single-ingredient&id=' + row.id + '" rel="tip" title="Export '+ row.name +' as JSON" ><i class="fas fa-download mx-2"></i>Export as JSON</a></li>';
 	
@@ -380,18 +424,48 @@ $(document).ready(function() {
 	};
 	
 	
-	$('#tdDataIng').on('click', '[id*=cCAS]', function () {
-		var copy = {};
-		copy.Name = $(this).attr('data-name');
-		const el = document.createElement('textarea');
-		el.value = copy.Name;
-		document.body.appendChild(el);
-		el.select();
-		document.execCommand('copy');
-		document.body.removeChild(el);
+	$('#tdDataIng').on('click', '[id*=copyCAS]', function () {
+		const casNumber = $(this).attr('data-name'); // Retrieve the CAS number
+	
+		if (!casNumber) {
+			console.warn("No CAS number found for copying.");
+			return;
+		}
+	
+		// Create a temporary textarea to hold the CAS number
+		const tempTextarea = document.createElement('textarea');
+		tempTextarea.value = casNumber;
+		tempTextarea.style.position = 'absolute';
+		tempTextarea.style.left = '-9999px'; // Position off-screen to avoid UI disruption
+	
+		document.body.appendChild(tempTextarea); // Append to the DOM
+		tempTextarea.select(); // Select the content
+	
+		try {
+			// Execute the copy command
+			const successful = document.execCommand('copy');
+			if (successful) {
+				// Show Bootstrap tooltip
+				const $element = $(this);
+				$element.attr('data-bs-original-title', 'Copied!'); // Set tooltip text
+				const tooltip = bootstrap.Tooltip.getInstance($element[0]) || new bootstrap.Tooltip($element[0]);
+				tooltip.show();
+	
+				// Hide tooltip after 4 seconds
+				setTimeout(() => {
+					tooltip.hide();
+					$element.removeAttr('data-bs-original-title'); // Clear tooltip to reset for future use
+				}, 4000);
+			} else {
+				console.warn("Copy command was unsuccessful.");
+			}
+		} catch (err) {
+			console.error("Error copying CAS number:", err);
+		}
+	
+		document.body.removeChild(tempTextarea); // Remove the temporary element
 	});
-	
-	
+
 	
 	$('#tdDataIng').on('click', '[id*=impIng]', function () {
 		var ing = {};

@@ -156,10 +156,17 @@ while($cats_res = mysqli_fetch_array($cats_q)){
             <input name="pubChem" type="checkbox" class="form-check-input" id="pubChem" value="1" <?= $settings['pubChem'] == '1' ? 'checked' : '' ?>/>
             <label class="form-check-label" for="pubChem">Enable PubChem</label>
         </div>
+        
         <div class="form-check mb-3">
-            <input name="chkVersion" type="checkbox" class="form-check-input" id="chkVersion" value="1" <?= $settings['chkVersion'] == '1' ? 'checked' : '' ?>/>
-            <label class="form-check-label" for="chkVersion">Check for updates</label>
+          <?php if (isset($disable_updates) && $disable_updates == 'true') { ?>
+              <input name="chkVersion" type="checkbox" disabled class="form-check-input" id="chkVersion" />
+              <label class="form-check-label" for="chkVersion">Check for updates (Disabled)</label>
+          <?php } else { ?>
+              <input name="chkVersion" type="checkbox" class="form-check-input" id="chkVersion" value="1" <?= isset($settings['chkVersion']) && $settings['chkVersion'] == '1' ? 'checked' : '' ?>/>
+              <label class="form-check-label" for="chkVersion">Check for updates</label>
+          <?php } ?>
         </div>
+        
         <div class="form-check mb-3">
             <input name="chem_vs_brand" type="checkbox" class="form-check-input" id="chem_vs_brand" value="1" <?= $settings['chem_vs_brand'] == '1' ? 'checked' : '' ?>/>
             <label class="form-check-label" for="chem_vs_brand">Show chemical names</label>

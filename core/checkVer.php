@@ -6,7 +6,7 @@ require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/func/pvFileGet.php');
 
 // Sanitize input
-$app_ver = filter_input(INPUT_GET, 'app_ver', FILTER_SANITIZE_STRING);
+$app_ver = filter_input(INPUT_GET, 'app_ver', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
 if ($app_ver) {
     $githubVerUrl = 'https://raw.githubusercontent.com/globaldyne/parfumvault/master/VERSION.md';
@@ -27,10 +27,10 @@ if ($app_ver) {
     $gitHubRep = 'https://github.com/globaldyne/parfumvault/archive/refs/tags/v'.$data.'.zip';
 
     if (version_compare($app_ver, $data, '<')) {
-        $response["success"] = '<strong>New <a href="'.$gitHubRep.'" target="_blank">version ('.$data.')</a> is available!</strong>';
-        $response["success"] .= file_exists('/config/.DOCKER') === TRUE || getenv('PLATFORM') === 'CLOUD'
-            ? ' Please refer <a href="'.$docUrl.'" target="_blank">here</a> for update instructions.'
-            : ' <a href="#" data-bs-toggle="modal" data-bs-target="#sysUpgradeDialog" data-ver="'.$githubVerUrl.'">Upgrade available.</a>';
+        //$response["success"] = '<strong>New <a href="'.$gitHubRep.'" target="_blank">version ('.$data.')</a> is available!</strong>';
+        $response["success"] .= getenv('PLATFORM') === 'CLOUD'
+            ? ' <a href="'.$docUrl.'" target="_blank">Upgrade available ('.$data.')</a> '
+            : ' <a href="#" data-bs-toggle="modal" data-bs-target="#sysUpgradeDialog" data-ver="'.$githubVerUrl.'">Upgrade available. ('.$data.')</a>';
         echo json_encode($response);
     } else {
         $response["info"] = 'No updates available.';

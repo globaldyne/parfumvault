@@ -24,12 +24,7 @@ if(empty($ingredient['category'])){
 
 ?>
 
-<style>
 
-.img_ing {
-    max-height: 100px;
-}
-</style>
 <div class="sub-2-container sub-2-header mb-4">
 	<div class="sub-2-container">
         <span class="coh-inline-element sub-2-inci">IUPAC</span> 
@@ -62,12 +57,12 @@ if(empty($ingredient['category'])){
   </div>
   <div class="row text-center">
     <div class="col-md-4">
-      <?=getCatByID($ingredient['category'], TRUE, $conn)?>
+      <?=getCatByID($ingredient['category'], TRUE, 'img_ing_overview')?>
     </div>
     <div class="col-md-4">
-      <img src="<?=profileImg($ingredient['profile'])?>" class="img_ing"/>
+      <img src="<?=profileImg($ingredient['profile'])?>" class="img_ing_overview"/>
     </div>
     <div class="col-md-4">
-      <?=getIngState($ingredient['physical_state'], 'img_ing')?>
+      <?=getIngState($ingredient['physical_state'], 'img_ing_overview')?>
     </div>
   </div>
