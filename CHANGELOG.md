@@ -1,4 +1,24 @@
 # CHANGELOG
+### Version 12.1
+- Added summary of total amount required for pending materials
+- Added list of materials per supplier
+- Added kubernetes manifest for emphemeral db storage
+- Renamed openshift folder to k8s
+- Added create and update timestamps
+- Added user_id to enable multi-user access (FOR SAAS ONLY)
+- Update install page
+- Fix Manage link in ingredients actions
+- Make sure tmp file is created before try to generate a PDF for ingredient
+- Wording update
+- Code clean-up
+- Formula notes summary re-write
+- Added an error message next to misconfigured ingredients 
+- Include supplier data when duplicating an ingredient
+- Added enviroment variables for user creation
+- Added enviroment variable to disable updates
+- Improve overall sys upgrade
+- Make sure it retrieves the write tag when upgrading from github
+
 ### Version 12.0
 - Lids inventory dropped to accessories
 - Minor overall UI updates

@@ -39,7 +39,7 @@ $cFormoulas = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaDa
     <div class="text-right">
         <div class="btn-group">
         <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
-            <div class="dropdown-menu dropdown-menu-right">
+            <div class="dropdown-menu">
               <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#add_formula"><i class="fa-solid fa-plus mx-2"></i>Add new formula</a></li>
               <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#add_formula_csv"><i class="fa-solid fa-file-csv mx-2"></i>Import from CSV</a></li>
               <div class="dropdown-divider"></div>
@@ -159,8 +159,8 @@ $(document).ready(function() {
 			   { data : 'revision', title: 'Revision'},
 			   { data : 'isMade', title: 'Made', render: fMade},
 			   { data : 'rating', title: 'Rating', render: rating},
-			   { data : 'created', title: 'Created', render: formatDate},
-			   { data : 'updated', title: 'Updated', render: formatDate},
+			   { data : 'created_at', title: 'Created', render: formatDate},
+			   { data : 'updated_at', title: 'Updated', render: formatDate},
 			   { data : null, title: '', render: fActions},				   
 			],
 			processing: true,

@@ -1,5 +1,5 @@
+//Update system
 $('#dbUpBtn').click(function() {
-
 	$('#dbUpdMsg').html('<div class="alert alert-info"><img src="/img/loading.gif"/><strong> DB schema upgrade in progress. Please wait, this may take a while...</strong></div>');
 	$('#dbUpBtn').hide();
 	$('#dbBkBtn').hide();
@@ -30,3 +30,4 @@ $('#dbUpBtn').click(function() {
   	});
 	
 });
+

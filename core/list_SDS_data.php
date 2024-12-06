@@ -35,8 +35,8 @@ foreach ($rs as $rq) {
         'state_type' => (string)$rq['state_type'],
         'supplier_id' => (int)$rq['supplier_id'],
         'docID' => (int)$rq['id'],
-        'updated' => (string)($rq['updated'] ?: '00:00:00'),
-        'created' => (string)($rq['created'] ?: '00:00:00'),
+        'updated_at' => (string)($rq['updated_at'] ?: '00:00:00'),
+        'created_at' => (string)($rq['created_at'] ?: '00:00:00'),
     ];
 }
 

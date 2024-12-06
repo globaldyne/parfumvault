@@ -226,8 +226,8 @@ $(document).ready(function() {
 			{ data : 'price', title: 'Price (<?php echo $settings['currency'];?>)' },
 			{ data : 'supplier', title: 'Supplier' },
 			{ data : 'pieces', title: 'Pieces in stock' },
-			{ data : 'created', title: 'Created' },
-			{ data : 'updated', title: 'Updated' },
+			{ data : 'created_at', title: 'Created' },
+			{ data : 'updated_at', title: 'Updated' },
 			{ data : null, title: '', render: actions }
 		],
 		order: [[ 0, 'asc' ]],

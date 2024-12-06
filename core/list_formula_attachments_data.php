@@ -23,7 +23,7 @@ while ($doc = $result->fetch_assoc()) {
         'type' => (int)$doc['type'],
         'name' => (string)$doc['name'] ?: 'N/A',
         'notes' => (string)$doc['notes'] ?: 'N/A',
-        'created' => (string)$doc['created'] ?: 'N/A',
+        'created_at' => (string)$doc['created_at'] ?: 'N/A',
         'docData' => (string)$doc['docData'],
         'docSize' => formatBytes(strlen($doc['docData']))
     ];

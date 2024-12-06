@@ -54,6 +54,12 @@ if(isset($_SESSION['parfumvault'])){
 					$app_ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
 					$db_ver  = trim(file_get_contents(__ROOT__.'/db/schema.ver'));
 					mysqli_query($conn,"INSERT INTO pv_meta (schema_ver,app_ver) VALUES ('$db_ver','$app_ver')");
+					if(getenv('USER_EMAIL') && getenv('USER_NAME') && getenv('USER_PASSWORD')){
+						$user_email = getenv('USER_EMAIL');
+						$user_name = getenv('USER_NAME');
+						$user_password = getenv('USER_PASSWORD');
+						mysqli_query($conn,"INSERT INTO users (email,fullName,password) VALUES ('$user_email','$user_name',PASSWORD('$user_password'))");
+					}
 					header('Location: /');
 				}else{
 					$response['error'] = 'DB Schema Creation error. Make sure the database '.getenv('DB_NAME').' exists in your mysql server '.getenv('DB_HOST').', user '.getenv('DB_USER').' has full permissions on it and its empty.';
@@ -82,7 +88,10 @@ if(isset($_SESSION['parfumvault'])){
                </div>
                <div class="form-group">
                   <label for="password" class="form-label">Password</label>
-                  <input type="text" class="form-control form-control-user" id="password">
+                  <div class="col-md-auto password-input-container">
+                      <input name="password" type="password" id="password" class="form-control password-input" value="">
+                      <i class="toggle-password fa fa-eye"></i>
+                  </div>
                </div>
                <div class="form-group"></div>
                <button class="btn btn-primary btn-user btn-block" id="registerSubmit">
@@ -173,7 +182,17 @@ if(isset($_SESSION['parfumvault'])){
 
 <script>
 $(document).ready(function() {
-
+    $(".toggle-password").click(function () {
+        var passwordInput = $($(this).siblings(".password-input"));
+        var icon = $(this);
+        if (passwordInput.attr("type") == "password") {
+            passwordInput.attr("type", "text");
+            icon.removeClass("fa-eye").addClass("fa-eye-slash");
+        } else {
+            passwordInput.attr("type", "password");
+            icon.removeClass("fa-eye-slash").addClass("fa-eye");
+        }
+    });
 	$('#reg_form').on('click', '[id*=registerSubmit]', function () {
 		$('#registerSubmit').prop('disabled', true);
 		$('#msg').html('<div class="alert alert-info mx-2"><img src="/img/loading.gif"/>Please wait, configuring the system...<p><strong>Please do not close, refresh or navigate away from this page. You will be automatically redirected upon a succesfull installation.</strong></p></div>');

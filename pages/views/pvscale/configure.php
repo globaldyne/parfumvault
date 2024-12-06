@@ -48,12 +48,4 @@ require_once(__ROOT__.'/inc/settings.php');
 </div>
 
 
-<script>
-$(document).ready(function() {
-
-
-
-});
-
-</script>
 <script src="/js/pvScale.js"></script>

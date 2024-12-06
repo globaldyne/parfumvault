@@ -213,13 +213,13 @@ function fetch_reps(){
 }
 
 //Clone
-$('#cloneIng').on('click', '[id*=cloneME]', function () {
+$('#duplicateIng').on('click', '[id*=duplicateME]', function () {
 	$.ajax({ 
 		url: '/core/core.php', 
 		type: 'POST',
 		data: {
-			action: 'clone',
-			new_ing_name: $("#cloneIngName").val(),
+			action: 'duplicate_ingredient',
+			new_ing_name: $("#duplicateIngName").val(),
 			old_ing_name: myIngName,
 			ing_id: myIngID
 		},
@@ -230,10 +230,10 @@ $('#cloneIng').on('click', '[id*=cloneME]', function () {
 			}else if(data.error){
 				msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + data.error + '</div>';
 			}
-			$('#clone_msg').html(msg);
+			$('#duplicate_msg').html(msg);
 		},
 		error: function (xhr, status, error) {
-			$('#clone_msg').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+			$('#duplicate_msg').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 		}
 	});
 });

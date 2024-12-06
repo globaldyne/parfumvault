@@ -85,7 +85,7 @@ body {
 				<div class="btn-group">
 					<button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
 					<div class="dropdown-menu">
-						<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#cloneIng"><i class="fa-solid fa-copy mx-2"></i>Duplicate ingredient</a></li>
+						<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#duplicateIng"><i class="fa-solid fa-copy mx-2"></i>Duplicate ingredient</a></li>
 						<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#renameIng"><i class="fa-regular fa-pen-to-square mx-2"></i>Rename ingredient</a></li>
                         <li><a class="dropdown-item" href="/pages/export.php?format=json&kind=single-ingredient&id=<?=$ing['id']?>"><i class="fas fa-download mx-2"></i>Export as JSON</a></li>
 						<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#genDOC"><i class="fa-solid fa-file-prescription mx-2"></i>Generate document</a></li>
@@ -268,19 +268,19 @@ body {
     </div>
 
 <!-- Modal Duplicate-->
-<div class="modal fade" id="cloneIng" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="cloneIng" aria-hidden="true">
+<div class="modal fade" id="duplicateIng" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="duplicateIng" aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title">Duplicate ingredient <?php echo $ing['name']; ?></h5>
 			</div>
 			<div class="modal-body">
-				<div id="clone_msg"></div>
-				<label for="cloneIngName" class="form-label">Name</label>
-				<input class="form-control" name="cloneIngName" id="cloneIngName" type="text" value="" />            
+				<div id="duplicate_msg"></div>
+				<label for="duplicateIngName" class="form-label">Name</label>
+				<input class="form-control" name="duplicateIngName" id="duplicateIngName" type="text" value="" />            
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-					<input type="submit" name="button" class="btn btn-primary" id="cloneME" value="Duplicate">
+					<input type="submit" name="button" class="btn btn-primary" id="duplicateME" value="Duplicate">
 				</div>
 			</div>
 		</div>
