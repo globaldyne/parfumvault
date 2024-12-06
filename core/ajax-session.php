@@ -7,7 +7,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-if(strtoupper(getenv('PLATFORM')) === "CLOUD"){
+if(getenv('PLATFORM') === "CLOUD"){
 	$session_timeout = getenv('SYS_TIMEOUT') ?: 1800;
 } else {
 	require_once(__ROOT__.'/inc/config.php');
