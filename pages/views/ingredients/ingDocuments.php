@@ -214,7 +214,7 @@ $(document).ready(function() {
 				  cache: false,
 				  success: function(response){
 					 if(response.success){
-						var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong><i class="fa-solid fa-circle-check mx-2"></i>' + response.success + '</strong></div>';
+						var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong><i class="fa-solid fa-circle-check mx-2"></i>' + response.success.msg + '</strong></div>';
 						$("#doc_upload").prop("disabled", false);
 						$("#doc_upload").prop('value', 'Upload');
 						reload_doc_data();
