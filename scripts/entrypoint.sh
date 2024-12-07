@@ -14,4 +14,5 @@ fi
 
 php-fpm
 nginx -e /tmp/error.log
-tail -f /tmp/*.log
+touch /tmp/php-fpm-www-error.log
+tail -f /tmp/php-fpm-www-error.log
