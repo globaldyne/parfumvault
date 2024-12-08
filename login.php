@@ -126,7 +126,7 @@ if(isset($_SESSION['parfumvault'])){
                             WHERE id = (SELECT id FROM users LIMIT 1)";
                         $updateStmt = $conn->prepare($updateUserQuery);
                         $updateStmt->bind_param('sss', $userEmail, $userName, $userPassword);
-                        if (!$insertStmt->execute()) {
+                        if (!$updateStmt->execute()) {
 							// Log insert error
 							error_log("Failed to insert user: " . $insertStmt->error);
 							//echo json_encode(['error' => 'Failed to insert user.']);
