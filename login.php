@@ -126,7 +126,14 @@ if(isset($_SESSION['parfumvault'])){
                             WHERE id = (SELECT id FROM users LIMIT 1)";
                         $updateStmt = $conn->prepare($updateUserQuery);
                         $updateStmt->bind_param('sss', $userEmail, $userName, $userPassword);
-                        $updateStmt->execute();
+                        if (!$insertStmt->execute()) {
+							// Log insert error
+							error_log("Failed to insert user: " . $insertStmt->error);
+							//echo json_encode(['error' => 'Failed to insert user.']);
+							$error_msg = "User query failed: " . $conn->error;
+        					require_once(__ROOT__.'/pages/error.php');
+							return;
+						}
                     } else {
                         // Insert new user
                         $insertUserQuery = "
@@ -134,7 +141,14 @@ if(isset($_SESSION['parfumvault'])){
                             VALUES (?, ?, PASSWORD(?))";
                         $insertStmt = $conn->prepare($insertUserQuery);
                         $insertStmt->bind_param('sss', $userEmail, $userName, $userPassword);
-                        $insertStmt->execute();
+                        if (!$insertStmt->execute()) {
+							// Log insert error
+							error_log("Failed to insert user: " . $insertStmt->error);
+							//echo json_encode(['error' => 'Failed to insert user.']);
+							$error_msg = "User query failed: " . $conn->error;
+        					require_once(__ROOT__.'/pages/error.php');
+							return;
+						}
                     }
                 }
             } else {
