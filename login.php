@@ -51,7 +51,7 @@ if(isset($_SESSION['parfumvault'])){
                 require __ROOT__ . '/install.php';
                 return;
             }
-            
+            $isDemo = getenv('DEMO_MODE') ?: 0;
             // Check if the `pv_meta` table exists
             $schemaCheckQuery = "
                 SELECT 1 
@@ -118,7 +118,7 @@ if(isset($_SESSION['parfumvault'])){
                     $userName = getenv('USER_NAME');
                     $userPassword = getenv('USER_PASSWORD');
             
-                    if ($userExists) {
+                    if ($userExists && !$isDemo) {
                         // Update existing user
                         $updateUserQuery = "
                             UPDATE users 
