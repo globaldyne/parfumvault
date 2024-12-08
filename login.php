@@ -42,32 +42,112 @@ if(isset($_SESSION['parfumvault'])){
           <div class="card-body p-0">
             <!-- Nested Row within Card Body -->
             <div class="row">
-            <?php
-			if(file_exists(__ROOT__.'/inc/config.php') == FALSE && !getenv('DB_HOST') && !getenv('DB_USER') && !getenv('DB_PASS') && !getenv('DB_NAME')){
-        		require (__ROOT__.'/install.php');
-				return;
-			}
-            if (mysqli_num_rows(mysqli_query($conn,"SELECT 1 FROM information_schema.tables WHERE table_schema = '".getenv('DB_NAME')."' AND table_name = 'pv_meta' LIMIT 1")) == 0 && getenv('DB_HOST') && getenv('DB_USER') && getenv('DB_PASS') && getenv('DB_NAME') ){
-				$cmd = 'mysql -u'.getenv('DB_USER').' -p'.getenv('DB_PASS').' -h'.getenv('DB_HOST').' '.getenv('DB_NAME').' < '.__ROOT__.'/db/pvault.sql';
-				passthru($cmd,$e);
-				if(!$e){
-					$app_ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
-					$db_ver  = trim(file_get_contents(__ROOT__.'/db/schema.ver'));
-					mysqli_query($conn,"INSERT INTO pv_meta (schema_ver,app_ver) VALUES ('$db_ver','$app_ver')");
-					if(getenv('USER_EMAIL') && getenv('USER_NAME') && getenv('USER_PASSWORD')){
-						$user_email = getenv('USER_EMAIL');
-						$user_name = getenv('USER_NAME');
-						$user_password = getenv('USER_PASSWORD');
-						mysqli_query($conn,"INSERT INTO users (email,fullName,password) VALUES ('$user_email','$user_name',PASSWORD('$user_password'))");
-					}
-					header('Location: /');
-				}else{
-					$response['error'] = 'DB Schema Creation error. Make sure the database '.getenv('DB_NAME').' exists in your mysql server '.getenv('DB_HOST').', user '.getenv('DB_USER').' has full permissions on it and its empty.';
-					echo json_encode($response);
-					return;
-				}
-			}
-			?>
+			<?php
+            if (!file_exists(__ROOT__ . '/inc/config.php') && 
+                !getenv('DB_HOST') && 
+                !getenv('DB_USER') && 
+                !getenv('DB_PASS') && 
+                !getenv('DB_NAME')) {
+                require __ROOT__ . '/install.php';
+                return;
+            }
+            
+            // Check if the `pv_meta` table exists
+            $schemaCheckQuery = "
+                SELECT 1 
+                FROM information_schema.tables 
+                WHERE table_schema = ? 
+                  AND table_name = 'pv_meta' 
+                LIMIT 1";
+            $schemaExistsStmt = $conn->prepare($schemaCheckQuery);
+            
+            if ($schemaExistsStmt) {
+                $dbName = getenv('DB_NAME');
+                $schemaExistsStmt->bind_param('s', $dbName);
+                $schemaExistsStmt->execute();
+                $schemaExistsStmt->store_result();
+            
+                if ($schemaExistsStmt->num_rows === 0 && getenv('DB_HOST') && getenv('DB_USER') && getenv('DB_PASS') && getenv('DB_NAME')) {
+                    // Run schema creation script
+                    $cmd = sprintf(
+                        'mysql -u%s -p%s -h%s %s < %s/db/pvault.sql',
+                        escapeshellarg(getenv('DB_USER')),
+                        escapeshellarg(getenv('DB_PASS')),
+                        escapeshellarg(getenv('DB_HOST')),
+                        escapeshellarg(getenv('DB_NAME')),
+                        escapeshellarg(__ROOT__)
+                    );
+                    passthru($cmd, $exitCode);
+            
+                    if ($exitCode === 0) {
+                        // Insert schema and app versions
+                        $app_ver = trim(file_get_contents(__ROOT__ . '/VERSION.md'));
+                        $db_ver = trim(file_get_contents(__ROOT__ . '/db/schema.ver'));
+            
+                        $insertMetaQuery = "
+                            INSERT INTO pv_meta (schema_ver, app_ver) 
+                            VALUES (?, ?)";
+                        $metaStmt = $conn->prepare($insertMetaQuery);
+                        $metaStmt->bind_param('ss', $db_ver, $app_ver);
+                        $metaStmt->execute();
+						header('Location: /');
+                    } else {
+                        // Handle schema creation error
+                        $response = [
+                            'error' => sprintf(
+                                'DB Schema Creation error. Make sure the database %s exists on your MySQL server %s, user %s has full permissions on it, and it is empty.',
+                                getenv('DB_NAME'),
+                                getenv('DB_HOST'),
+                                getenv('DB_USER')
+                            )
+                        ];
+                        echo json_encode($response);
+                        return;
+                    }
+                }
+            }
+            
+            // Check and manage user creation or update
+            $userCheckQuery = "SELECT id FROM users LIMIT 1";
+            $userResult = $conn->query($userCheckQuery);
+            
+            if ($userResult) {
+                $userExists = $userResult->num_rows > 0;
+                if (getenv('USER_EMAIL') && getenv('USER_NAME') && getenv('USER_PASSWORD')) {
+                    $userEmail = getenv('USER_EMAIL');
+                    $userName = getenv('USER_NAME');
+                    $userPassword = getenv('USER_PASSWORD');
+            
+                    if ($userExists) {
+                        // Update existing user
+                        $updateUserQuery = "
+                            UPDATE users 
+                            SET email = ?, fullName = ?, password = PASSWORD(?) 
+                            WHERE id = (SELECT id FROM users LIMIT 1)";
+                        $updateStmt = $conn->prepare($updateUserQuery);
+                        $updateStmt->bind_param('sss', $userEmail, $userName, $userPassword);
+                        $updateStmt->execute();
+                    } else {
+                        // Insert new user
+                        $insertUserQuery = "
+                            INSERT INTO users (email, fullName, password) 
+                            VALUES (?, ?, PASSWORD(?))";
+                        $insertStmt = $conn->prepare($insertUserQuery);
+                        $insertStmt->bind_param('sss', $userEmail, $userName, $userPassword);
+                        $insertStmt->execute();
+                    }
+                }
+            } else {
+                // Handle user query error
+                error_log("User query failed: " . $conn->error);
+                echo json_encode(['error' => 'Internal Server Error']);
+                return;
+            }
+            
+            // Redirect to home page if all operations succeed
+            //header('Location: /');
+            ?>
+
             <?php if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM users")) == 0){ $first_time = 1; ?>
             <div class="col-lg-6 d-none d-lg-block bg-register-image"></div>
              <div class="col-lg-6">

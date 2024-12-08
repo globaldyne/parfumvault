@@ -1,5 +1,8 @@
 # CHANGELOG
 ### Version 12.2
+- Docker file update
+- Fixed document upload for ingredients returning incorrect results
+- Update login method
 
 ### Version 12.1
 - Added summary of total amount required for pending materials
