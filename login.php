@@ -140,6 +140,8 @@ if(isset($_SESSION['parfumvault'])){
             } else {
                 // Handle user query error
                 error_log("User query failed: " . $conn->error);
+				$error_msg = "User query failed: " . $conn->error;
+        		require_once(__ROOT__.'/pages/error.php');
                 echo json_encode(['error' => 'Internal Server Error']);
                 return;
             }
