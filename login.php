@@ -130,7 +130,7 @@ if(isset($_SESSION['parfumvault'])){
 							// Log insert error
 							error_log("Failed to insert user: " . $insertStmt->error);
 							//echo json_encode(['error' => 'Failed to insert user.']);
-							$error_msg = "User query failed: " . $conn->error;
+							$error_msg = "User query failed: " . $insertStmt->error;
         					require_once(__ROOT__.'/pages/error.php');
 							return;
 						}
@@ -145,7 +145,7 @@ if(isset($_SESSION['parfumvault'])){
 							// Log insert error
 							error_log("Failed to insert user: " . $insertStmt->error);
 							//echo json_encode(['error' => 'Failed to insert user.']);
-							$error_msg = "User query failed: " . $conn->error;
+							$error_msg = "User query failed: " . $insertStmt->error;
         					require_once(__ROOT__.'/pages/error.php');
 							return;
 						}
@@ -154,7 +154,7 @@ if(isset($_SESSION['parfumvault'])){
             } else {
                 // Handle user query error
                 error_log("User query failed: " . $conn->error);
-				$error_msg = "User query failed: " . $conn->error;
+				$error_msg = "User query failed ";
         		require_once(__ROOT__.'/pages/error.php');
                 echo json_encode(['error' => 'Internal Server Error']);
                 return;
