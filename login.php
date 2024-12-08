@@ -106,62 +106,61 @@ if(isset($_SESSION['parfumvault'])){
                     }
                 }
             }
-            
-            // Check and manage user creation or update
-            $userCheckQuery = "SELECT id FROM users LIMIT 1";
-            $userResult = $conn->query($userCheckQuery);
-            
-            if ($userResult) {
-                $userExists = $userResult->num_rows > 0;
-                if (getenv('USER_EMAIL') && getenv('USER_NAME') && getenv('USER_PASSWORD')) {
-                    $userEmail = getenv('USER_EMAIL');
-                    $userName = getenv('USER_NAME');
-                    $userPassword = getenv('USER_PASSWORD');
-            
-                    if ($userExists && !$isDemo) {
-                        // Update existing user
-                        $updateUserQuery = "
-                            UPDATE users 
-                            SET email = ?, fullName = ?, password = PASSWORD(?) 
-                            WHERE id = (SELECT id FROM users LIMIT 1)";
-                        $updateStmt = $conn->prepare($updateUserQuery);
-                        $updateStmt->bind_param('sss', $userEmail, $userName, $userPassword);
-                        if (!$updateStmt->execute()) {
-							// Log insert error
-							error_log("Failed to insert user: " . $insertStmt->error);
-							//echo json_encode(['error' => 'Failed to insert user.']);
-							$error_msg = "User query failed: " . $insertStmt->error;
-        					require_once(__ROOT__.'/pages/error.php');
-							return;
+            if(!$isDemo){
+
+				// Check and manage user creation or update
+				$userCheckQuery = "SELECT id FROM users LIMIT 1";
+				$userResult = $conn->query($userCheckQuery);
+				
+				if ($userResult) {
+					$userExists = $userResult->num_rows > 0;
+					if (getenv('USER_EMAIL') && getenv('USER_NAME') && getenv('USER_PASSWORD')) {
+						$userEmail = getenv('USER_EMAIL');
+						$userName = getenv('USER_NAME');
+						$userPassword = getenv('USER_PASSWORD');
+				
+						if ($userExists) {
+							// Update existing user
+							$updateUserQuery = "
+								UPDATE users 
+								SET email = ?, fullName = ?, password = PASSWORD(?) 
+								WHERE id = (SELECT id FROM users LIMIT 1)";
+							$updateStmt = $conn->prepare($updateUserQuery);
+							$updateStmt->bind_param('sss', $userEmail, $userName, $userPassword);
+							if (!$updateStmt->execute()) {
+								// Log insert error
+								error_log("Failed to insert user: " . $insertStmt->error);
+								//echo json_encode(['error' => 'Failed to insert user.']);
+								$error_msg = "User query failed: " . $insertStmt->error;
+								require_once(__ROOT__.'/pages/error.php');
+								return;
+							}
+						} else {
+							// Insert new user
+							$insertUserQuery = "
+								INSERT INTO users (email, fullName, password) 
+								VALUES (?, ?, PASSWORD(?))";
+							$insertStmt = $conn->prepare($insertUserQuery);
+							$insertStmt->bind_param('sss', $userEmail, $userName, $userPassword);
+							if (!$insertStmt->execute()) {
+								// Log insert error
+								error_log("Failed to insert user: " . $insertStmt->error);
+								//echo json_encode(['error' => 'Failed to insert user.']);
+								$error_msg = "User query failed: " . $insertStmt->error;
+								require_once(__ROOT__.'/pages/error.php');
+								return;
+							}
 						}
-                    } else {
-                        // Insert new user
-                        $insertUserQuery = "
-                            INSERT INTO users (email, fullName, password) 
-                            VALUES (?, ?, PASSWORD(?))";
-                        $insertStmt = $conn->prepare($insertUserQuery);
-                        $insertStmt->bind_param('sss', $userEmail, $userName, $userPassword);
-                        if (!$insertStmt->execute()) {
-							// Log insert error
-							error_log("Failed to insert user: " . $insertStmt->error);
-							//echo json_encode(['error' => 'Failed to insert user.']);
-							$error_msg = "User query failed: " . $insertStmt->error;
-        					require_once(__ROOT__.'/pages/error.php');
-							return;
-						}
-                    }
-                }
-            } else {
-                // Handle user query error
-                error_log("User query failed: " . $conn->error);
-				$error_msg = "User query failed ";
-        		require_once(__ROOT__.'/pages/error.php');
-                echo json_encode(['error' => 'Internal Server Error']);
-                return;
-            }
-            
-            // Redirect to home page if all operations succeed
-            //header('Location: /');
+					}
+				} else {
+					// Handle user query error
+					error_log("User query failed: " . $conn->error);
+					$error_msg = "User query failed ";
+					require_once(__ROOT__.'/pages/error.php');
+					echo json_encode(['error' => 'Internal Server Error']);
+					return;
+				}
+			}
             ?>
 
             <?php if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM users")) == 0){ $first_time = 1; ?>
