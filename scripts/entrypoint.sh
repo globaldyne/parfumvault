@@ -4,6 +4,13 @@ echo "----------------------------------"
 echo "READY - Perfumer's Vault Ver $(cat /html/VERSION.md)"
 echo "Starting web server"
 
+if ps aux | grep -q "[n]ginx"; then
+    echo "Server is ready"
+else
+    echo "Failed to start nginx."
+fi
+
+
 mkdir /tmp/php
 
 if [ ! -d $TMP_PATH ] 
