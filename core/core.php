@@ -58,7 +58,12 @@ if($_GET['update_user_avatar']){
 }
 
 if($_POST['update_user_profile']){
-	
+	if (getenv('USER_EMAIL') && getenv('USER_NAME') && getenv('USER_PASSWORD')) {
+		$response["error"] = "User information is externally managed and cannot be updated here.";
+		echo json_encode($response);
+		return;
+	}
+
 	if(!$_POST['user_fname'] || !$_POST['user_email'] || !$_POST['user_pass']){
 		$response["error"] = "All fields are required";
 		echo json_encode($response);

@@ -3,6 +3,10 @@
 - Docker file update
 - Fixed document upload for ingredients returning incorrect results
 - Update login method
+- Fix API formula failing to return formulas
+- Added formulas upload via the API
+- Prevent user profile update if managed externally
+- API now allows upload for formulas, ingredients
 
 ### Version 12.1
 - Added summary of total amount required for pending materials
