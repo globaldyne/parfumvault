@@ -57,17 +57,34 @@ function validateKeyAndExecute($conn, $key, $callback) {
 $key = $_REQUEST['key'] ?? null;
 $do = strtolower($_REQUEST['do'] ?? '');
 $type = $_REQUEST['type'] ?? null;
-
+/*
 if (!$key || !$do) {
     header('Content-Type: application/json; charset=utf-8');
     echo json_encode(['status' => 'Invalid API call']);
     return;
 }
+*/
+$validEndpoints = [
+    'upload' => ['formula', 'ingredients'],
+    'get' => ['formula', 'ingredients', 'categories', 'suppliers', 'documents'],
+    'manage' => ['makeformula']
+];
+
+// Function to return valid endpoints
+function getValidEndpoints($endpoints) {
+    $formatted = [];
+    foreach ($endpoints as $do => $types) {
+        foreach ($types as $type) {
+            $formatted[] = ['do' => $do, 'type' => $type];
+        }
+    }
+    return $formatted;
+}
 
 // Route requests
 switch ($do) {
     case 'upload':
-        if ($type === 'formula') {
+        if ($type === 'formulas') {
             validateKeyAndExecute($conn, $key, function () {
                 require_once(__ROOT__ . '/api-functions/formulas_upload.php');
             });
@@ -75,12 +92,19 @@ switch ($do) {
             validateKeyAndExecute($conn, $key, function () {
                 require_once(__ROOT__ . '/api-functions/ingredients_upload.php');
             });
+        } else {
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode([
+                'status' => 'Invalid type for upload',
+                'valid_endpoints' => getValidEndpoints($validEndpoints)
+            ], JSON_PRETTY_PRINT);
+            return;
         }
         break;
 
     case 'get':
         $apiFileMap = [
-            'formula' => '/api-functions/formulas_get.php',
+            'formulas' => '/api-functions/formulas_get.php',
             'ingredients' => '/api-functions/ingredients_get.php',
             'categories' => '/api-functions/categories_get.php',
             'suppliers' => '/api-functions/suppliers_get.php',
@@ -90,6 +114,13 @@ switch ($do) {
             validateKeyAndExecute($conn, $key, function () use ($type, $apiFileMap) {
                 require_once(__ROOT__ . $apiFileMap[$type]);
             });
+        } else {
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode([
+                'status' => 'Invalid type for get',
+                'valid_endpoints' => getValidEndpoints($validEndpoints)
+            ], JSON_PRETTY_PRINT);
+            return;
         }
         break;
 
@@ -98,13 +129,22 @@ switch ($do) {
             validateKeyAndExecute($conn, $key, function () {
                 require_once(__ROOT__ . '/api-functions/manage_makeformula.php');
             });
+        } else {
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode([
+                'status' => 'Invalid type for manage',
+                'valid_endpoints' => getValidEndpoints($validEndpoints)
+            ], JSON_PRETTY_PRINT);
+            return;
         }
         break;
 
     default:
         header('Content-Type: application/json; charset=utf-8');
-        echo json_encode(['status' => 'Unknown action']);
-        break;
+        echo json_encode([
+            'status' => 'Unknown action',
+            'valid_endpoints' => getValidEndpoints($validEndpoints)
+        ], JSON_PRETTY_PRINT);
+        return;
 }
-
 ?>
