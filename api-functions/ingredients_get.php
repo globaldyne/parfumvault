@@ -3,6 +3,7 @@
 if (!defined('pvault_panel')){ die('Not Found');}
 
 header('Content-Type: application/json; charset=utf-8');
+global $conn;
 
 // Function to fetch data as associative array
 function fetch_assoc($conn, $query) {

@@ -1,5 +1,6 @@
 <?php
 if (!defined('pvault_panel')){ die('Not Found');}
+global $conn;
 
 $json = file_get_contents('php://input');
 $data = json_decode($json, true);

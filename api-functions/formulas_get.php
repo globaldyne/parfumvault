@@ -1,5 +1,6 @@
 <?php
 if (!defined('pvault_panel')){ die('Not Found');}
+global $conn;
 
 if ($fid = mysqli_real_escape_string($conn, $_REQUEST['fid'])) {
     $sql = mysqli_query($conn, "SELECT id, fid, name, product_name, notes, finalType AS concentration, status, created_at, isProtected, rating, profile, src, customer_id, revision, madeOn FROM formulasMetaData WHERE fid = '$fid'");

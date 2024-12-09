@@ -1,5 +1,6 @@
 <?php
 if (!defined('pvault_panel')){ die('Not Found');}
+global $conn;
 
 if($_REQUEST['action'] == 'skipMaterial'){
 	$fid = mysqli_real_escape_string($conn, $_REQUEST['fid']);

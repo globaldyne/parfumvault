@@ -3,6 +3,7 @@
 if (!defined('pvault_panel')){ die('Not Found');}
 
 header('Content-Type: application/json');
+global $conn;
 
 $sql = mysqli_query($conn, "SELECT id, name, notes, image, colorKey FROM ingCategory");
 

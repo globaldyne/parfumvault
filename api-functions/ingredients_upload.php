@@ -3,6 +3,7 @@
 if (!defined('pvault_panel')){ die('Not Found');}
 
 header('Content-Type: application/json');
+global $conn;
 
 $rawData = file_get_contents("php://input");
 $data = json_decode($rawData, true);
