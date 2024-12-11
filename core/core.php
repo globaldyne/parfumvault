@@ -57,51 +57,58 @@ if($_GET['update_user_avatar']){
 	return;
 }
 
-if($_POST['update_user_profile']){
-	if (getenv('USER_EMAIL') && getenv('USER_NAME') && getenv('USER_PASSWORD')) {
-		$response["error"] = "User information is externally managed and cannot be updated here.";
-		echo json_encode($response);
-		return;
-	}
+if ($_POST['update_user_profile']) {
+    if (getenv('USER_EMAIL') && getenv('USER_NAME') && getenv('USER_PASSWORD')) {
+        $response["error"] = "User information is externally managed and cannot be updated here.";
+        echo json_encode($response);
+        return;
+    }
 
-	if(!$_POST['user_fname'] || !$_POST['user_email'] || !$_POST['user_pass']){
-		$response["error"] = "All fields are required";
-		echo json_encode($response);
-		return;
-	}
-	
-	if(strlen($_POST['user_fname']) < '5'){
-		$response['error'] = "Full name must be at least 5 characters long!";
-		echo json_encode($response);
-		return;
-	}
-	
-	$fullName = mysqli_real_escape_string($conn, $_POST['user_fname']);
-	$email = mysqli_real_escape_string($conn, $_POST['user_email']);
-	
-//	$password = password_hash($password, PASSWORD_DEFAULT);
+    // Validate required fields
+    if (empty($_POST['user_fname']) || empty($_POST['user_email'])) {
+        $response["error"] = "All fields are required";
+        echo json_encode($response);
+        return;
+    }
 
-	if($password){
-		if(strlen($password) < '5'){
-			$response["error"] = "Password must be at least 5 characters long";
-			echo json_encode($response);
-			return;
-		}else{
-			$p = ",password=PASSWORD('$password')";
-		}
-	}
-	
-	if(mysqli_query($conn, "UPDATE users SET fullName = '$fullName', email = '$email' $p")){
-		$response["success"] = "User details updated";
-		echo json_encode($response);
-	}else{
-		$response["error"] = 'Failed to update user details '.mysqli_error($conn);
-		echo json_encode($response);
-	}
-	
+    // Validate full name length
+    if (strlen($_POST['user_fname']) < 5) {
+        $response['error'] = "Full name must be at least 5 characters long!";
+        echo json_encode($response);
+        return;
+    }
 
-	return;
+    // Sanitize inputs
+    $fullName = mysqli_real_escape_string($conn, $_POST['user_fname']);
+    $email = mysqli_real_escape_string($conn, $_POST['user_email']);
+    $password = $_POST['user_pass'];
+
+    // Handle password update
+    $p = '';
+    if (!empty($password)) {
+        if (strlen($password) < 5) {
+            $response["error"] = "Password must be at least 5 characters long";
+            echo json_encode($response);
+            return;
+        } else {
+            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+            $p = ", password='$hashedPassword'";
+        }
+    }
+
+    // Update user details
+    $updateQuery = "UPDATE users SET fullName = '$fullName', email = '$email' $p";
+    if (mysqli_query($conn, $updateQuery)) {
+        $response["success"] = "User details updated";
+        echo json_encode($response);
+    } else {
+        $response["error"] = 'Failed to update user details: ' . mysqli_error($conn);
+        echo json_encode($response);
+    }
+
+    return;
 }
+
 
 if($_POST['manage'] == 'general'){
 	$currency = $_POST['currency'];

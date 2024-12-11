@@ -119,19 +119,21 @@ if(isset($_SESSION['parfumvault'])){
 						$userName = getenv('USER_NAME');
 						$userPassword = getenv('USER_PASSWORD');
 				
+						// Check if the password is already hashed by looking at the format
+						$isHashed = preg_match('/^\$2[ayb]\$.{56}$/', $userPassword); // Matches bcrypt format
+						$hashedPassword = $isHashed ? $userPassword : password_hash($userPassword, PASSWORD_DEFAULT);
+				
 						if ($userExists) {
 							// Update existing user
 							$updateUserQuery = "
 								UPDATE users 
-								SET email = ?, fullName = ?, password = PASSWORD(?) 
+								SET email = ?, fullName = ?, password = ? 
 								WHERE id = (SELECT id FROM users LIMIT 1)";
 							$updateStmt = $conn->prepare($updateUserQuery);
-							$updateStmt->bind_param('sss', $userEmail, $userName, $userPassword);
+							$updateStmt->bind_param('sss', $userEmail, $userName, $hashedPassword);
 							if (!$updateStmt->execute()) {
-								// Log insert error
-								error_log("Failed to insert user: " . $insertStmt->error);
-								//echo json_encode(['error' => 'Failed to insert user.']);
-								$error_msg = "User query failed: " . $insertStmt->error;
+								error_log("Failed to update user: " . $updateStmt->error);
+								$error_msg = "User query failed: " . $updateStmt->error;
 								require_once(__ROOT__.'/pages/error.php');
 								return;
 							}
@@ -139,13 +141,12 @@ if(isset($_SESSION['parfumvault'])){
 							// Insert new user
 							$insertUserQuery = "
 								INSERT INTO users (email, fullName, password) 
-								VALUES (?, ?, PASSWORD(?))";
+								VALUES (?, ?, ?)";
 							$insertStmt = $conn->prepare($insertUserQuery);
-							$insertStmt->bind_param('sss', $userEmail, $userName, $userPassword);
+							$insertStmt->bind_param('sss', $userEmail, $userName, $hashedPassword);
+				
 							if (!$insertStmt->execute()) {
-								// Log insert error
 								error_log("Failed to insert user: " . $insertStmt->error);
-								//echo json_encode(['error' => 'Failed to insert user.']);
 								$error_msg = "User query failed: " . $insertStmt->error;
 								require_once(__ROOT__.'/pages/error.php');
 								return;
@@ -160,6 +161,7 @@ if(isset($_SESSION['parfumvault'])){
 					echo json_encode(['error' => 'Internal Server Error']);
 					return;
 				}
+
 			}
             ?>
 
@@ -216,7 +218,7 @@ if(isset($_SESSION['parfumvault'])){
                       Login
                     </button>
                   </div>
-                 <?php if(strtoupper(getenv('PASS_RESET_INFO') ?: $PASS_RESET_INFO) != "DISABLED"){ ?>
+                 <?php if(getenv('PASS_RESET_INFO' ?: $PASS_RESET_INFO) !== "DISABLED"){ ?>
 
                   <hr />
                   <div class="text-center">
@@ -241,30 +243,33 @@ if(isset($_SESSION['parfumvault'])){
  </body>
 </html>
 
-<?php if(strtoupper(getenv('PASS_RESET_INFO') ?: $PASS_RESET_INFO) != "DISABLED"){ ?>
+<?php if(getenv('PASS_RESET_INFO' ?: $PASS_RESET_INFO) !== "DISABLED"){ ?>
 
 <!--FORGOT PASS INFO-->
-<div class="modal fade" id="forgot_pass" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="forgot_pass" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+<div class="modal fade" id="forgot_pass" data-bs-backdrop="static" tabindex="-1" aria-labelledby="forgot_pass_label" aria-hidden="true">
+  <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Forgot Password</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <h5 class="modal-title" id="forgot_pass_label">Forgot Password</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-		
-         After installing <strong><?=$product?></strong> for the first time, you asked to set a password. This password cannot be retrieved later on as its stored in the database in encrypted format.
-      	<?php if(strtoupper(getenv('PLATFORM')) === 'CLOUD'){ ?>
-         To set a new password for a user, you need to execute the command bellow followed by the user's email you want its password reset.
-         If the user don't exist, will created automatically and the system will generate a random password. 
-      <p></p>
-      <pre>reset_pass.sh example@example.com</pre>
-      <?php }else{ ?>
-      		To set a new password, you need manually to access your database and set a new password there for the user you want its password reset.
-            If the user don't exist, will created automatically and the system will generate a random password.
-      <?php } ?>
+        <p>
+          When you first installed <strong><?=$product?></strong>, you were prompted to set a password. 
+          This password is stored securely in an encrypted format and cannot be retrieved later.
+        </p>
+        <?php if (getenv('PLATFORM') === 'CLOUD') { ?>
+          <p>
+            To reset a user's password, run the command below with the email of the user whose password you want to reset. 
+            If the user does not exist, a new account will be created automatically with a randomly generated password.
+          </p>
+          <pre><code>reset_pass.sh example@example.com</code></pre>
+        <?php } else { ?>
+          <p>
+            To reset a password, you will need to manually access your database and update the password for the desired user. 
+            If the user does not exist, create a new record with a randomly generated password.
+          </p>
+        <?php } ?>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
@@ -272,6 +277,7 @@ if(isset($_SESSION['parfumvault'])){
     </div>
   </div>
 </div>
+
 
 <?php  } ?>
 
