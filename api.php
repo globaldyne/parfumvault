@@ -75,7 +75,7 @@ function getValidEndpoints($endpoints) {
     $formatted = [];
     foreach ($endpoints as $do => $types) {
         foreach ($types as $type) {
-            $formatted[] = ['do' => $do, 'type' => $type];
+            $formatted[] = ['method' => 'POST','do' => $do, 'type' => $type];
         }
     }
     return $formatted;
