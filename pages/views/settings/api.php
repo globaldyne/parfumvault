@@ -7,7 +7,7 @@ require_once(__ROOT__.'/inc/settings.php');
 
 ?>
 
-<h6>API can be used to access PV Pro from other apps like PV Mobile APP</h6>
+<h5>API can be used to access PV Pro from other apps like PV Mobile APP</h5>
 <hr />
 
 <div class="row mb-3">
@@ -25,6 +25,21 @@ require_once(__ROOT__.'/inc/settings.php');
         	<i class="toggle-password fa fa-eye"></i>
         </div>
     </div>
+    <div class="col-6">
+        <h6>Available API calls</h6>
+        <table id="endpointsTable" class="table table-striped nowrap" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Action</th>
+                    <th>Type</th>
+                    <th>Syntax</th>
+                    <th>Method</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
 </div>
 <div class="col-2">
     <input type="submit" name="save-api" id="save-api" value="Save" class="btn btn-primary"/>
@@ -33,17 +48,56 @@ require_once(__ROOT__.'/inc/settings.php');
 
 <script>
 $(document).ready(function() {
+	var	api_key = 'xxxxxx';
+
 	$(".toggle-password").click(function () {
         var passwordInput = $($(this).siblings(".password-input"));
-        var icon = $(this);
+        
+		var icon = $(this);
+		reload_data();
         if (passwordInput.attr("type") == "password") {
             passwordInput.attr("type", "text");
             icon.removeClass("fa-eye").addClass("fa-eye-slash");
+			api_key = $("#pv_api_key").val();
         } else {
             passwordInput.attr("type", "password");
             icon.removeClass("fa-eye-slash").addClass("fa-eye");
+			api_key = 'xxxxxx';
         }
     });
+	
+   $('#endpointsTable').DataTable({
+	   	dom: '',
+		processing: true,
+        language: {
+			loadingRecords: '&nbsp;',
+			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>',
+			zeroRecords: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>Nothing found</strong></div></div>',
+			search: '',
+			searchPlaceholder: 'Search by name...',
+		},
+		ajax: {
+			url: '/api.php',
+			dataSrc: 'valid_endpoints'
+		},
+		columns: [
+			{ data: 'method', title: 'Method' },
+			{ data: 'do', title: 'Action' },
+			{ data: 'type', title: 'Type' },
+			{ data: '', title: 'Syntax', render: syntax}
+		]
+	});
+	
+	function syntax(data, type, row){
+		var furl = '/api.php?key=' + api_key + '&do=' + row.do + '&type=' + row.type;
+		data = '<a href="' + furl + '" target="_blank" class="text-info-emphasis">' + furl + '<i class="fa-solid fa-arrow-up-right-from-square mx-2"></i></a>';
+		return data;
+	}
+	
+	function reload_data() {
+		$('#endpointsTable').DataTable().ajax.reload(null, true);
+	};
+	
 	$('#save-api').click(function() {
 		$.ajax({ 
 			url: '/core/core.php', 

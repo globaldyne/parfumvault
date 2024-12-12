@@ -3,8 +3,9 @@ define('__ROOT__', dirname(dirname(__FILE__)));
 define('pvault_panel', TRUE);
 
 require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/func/cleanupNonHashedPasswords.php');
 
-if(strtoupper(getenv('PLATFORM')) === "CLOUD"){
+if(getenv('PLATFORM') === "CLOUD"){
 	$session_timeout = getenv('SYS_TIMEOUT') ?: 1800;
 } else {
 	require_once(__ROOT__.'/inc/config.php');
@@ -17,6 +18,13 @@ if ($_POST['action'] == 'login') {
         echo json_encode($response);
         return;
     }
+    
+	if(cleanupNonHashedPasswords($conn)){
+		$response['auth']['error'] = true;
+        $response['auth']['msg'] = 'Your password has to be reset. Please <a href="/">reload</a> the page to recreate your user';
+        echo json_encode($response);
+        return;
+	}
 
     $email = mysqli_real_escape_string($conn, strtolower($_POST['email']));
     $password = $_POST['password'];
