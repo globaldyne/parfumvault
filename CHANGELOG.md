@@ -1,4 +1,19 @@
 # CHANGELOG
+### Version 12.2
+- Docker file update
+- Fixed document upload for ingredients returning incorrect results
+- Update login method
+- Fix API formula failing to return formulas
+- Added formulas upload via the API
+- Prevent user profile update if managed externally
+- API now allows upload for formulas, ingredients
+- User password is now using a stronger encryption algorithm
+- Forgot password modal update for BS5
+- Forgot password wording update
+- Check if user password is already encrypted when env user variables provided, encrypt if not
+- Added a stress test script to crate dummy formulas
+- Added available API calls endpoint table
+
 ### Version 12.1
 - Added summary of total amount required for pending materials
 - Added list of materials per supplier

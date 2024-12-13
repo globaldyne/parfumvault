@@ -145,7 +145,8 @@ $(document).ready(function() {
         language: {
 			loadingRecords: '&nbsp;',
 			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Blending...</span>',
-			emptyTable: '<div class="alert alert-warning"><strong>Empty formula. Please add ingredients.</strong></div>',
+			zeroRecords: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>Nothing found</strong></div></div>',
+			emptyTable: '<div class="row g-3 mt-1"><div class="alert alert-warning"><strong><i class="fa-solid fa-circle-info mx-2"></i>Empty formula. Please add ingredients.</strong></div></div>',
 			search: '',
 			searchPlaceholder: "Search by CAS, Ingredient..."
 		},
