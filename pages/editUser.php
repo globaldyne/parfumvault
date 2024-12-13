@@ -31,19 +31,19 @@ $doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM docu
           <div class="form-row">
             <label class="col-sm-3 control-label">Full name</label>
             <div class="col-sm-8">
-              <input name="fullName" type="text" id="fullName" class="mb-2 form-control" value="<?php echo $user['fullName']; ?>">
+              <input name="fullName" type="text" id="fullName" class="mb-2 form-control" <?php if (getenv('USER_NAME')){?>disabled<?php } ?> value="<?php echo $user['fullName']; ?>">
             </div>
           </div>
           <div class="form-row">
             <label class="col-sm-3 control-label">Email</label>
             <div class="col-md-8">
-              <input name="email" type="text" id="email" class="mb-2 form-control" value="<?php echo $user['email']; ?>">
+              <input name="email" type="text" id="email" class="mb-2 form-control" <?php if (getenv('USER_EMAIL')){?>disabled<?php } ?> value="<?php echo $user['email']; ?>">
             </div>
           </div>
           <div class="form-row">
             <label class="col-sm-3 control-label">Password</label>
             <div class="col-md-8 password-input-container">
-              <input name="password" type="password" id="password" class="mb-2 form-control password-input" value="">
+              <input name="password" type="password" id="password" class="mb-2 form-control <?php if (getenv('USER_PASSWORD')){?>disabled<?php } ?> password-input" value="">
               <i class="toggle-password fa fa-eye"></i>
             </div>
           </div>
@@ -51,7 +51,7 @@ $doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM docu
           <div class="form-row">
 			<div class="col-sm-auto">
 				<div class="mt-2 text-right">
-					<button type="button" id="save-profile" name="save-profile" class="btn btn-primary">Update</button>
+					<button type="button" id="save-profile" name="save-profile" <?php if (getenv('USER_EMAIL')){?>disabled<?php } ?> class="btn btn-primary">Update</button>
 				</div>
 			</div>
           </div>

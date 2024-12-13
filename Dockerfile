@@ -25,7 +25,8 @@ RUN microdnf --setopt=tsflags=nodocs -y install \
 	openssl \
 	mysql \
 	ncurses \
-	nginx 
+	nginx \
+	procps-ng 
 
 
 
