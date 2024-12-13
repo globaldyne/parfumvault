@@ -1,7 +1,7 @@
 <?php
 define('pvault_panel', TRUE);
 define('__ROOT__', dirname(__FILE__));
-define('LOG_PATH', __ROOT__ . '/logs/');
+define('LOG_PATH', '/tmp/logs/');
 define('DEFAULT_IMAGE', __ROOT__ . '/img/pv_molecule.png');
 define('LOG_API_FILE', 'pv-api.log');
 

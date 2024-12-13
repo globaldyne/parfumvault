@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 12.3
+- Fix API log file
 
 ### Version 12.2
 - Docker file update
