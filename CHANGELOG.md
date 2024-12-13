@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 12.3
+
 ### Version 12.2
 - Docker file update
 - Fixed document upload for ingredients returning incorrect results
