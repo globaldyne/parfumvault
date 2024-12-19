@@ -285,7 +285,7 @@ $(document).ready(function() {
       } elseif ($_GET['do'] == 'settings') {
           require_once(__ROOT__.'/pages/settings.php');
       } elseif ($_GET['do'] == 'marketplace') {
-          require_once(__ROOT__.'/pages/views/pvOnline/marketPlace.php');
+          require_once(__ROOT__.'/pages/views/pvLibrary/marketPlace.php');
       } elseif ($_GET['do'] == 'statistics') {
           require_once(__ROOT__.'/pages/statistics.php');
       } elseif ($_GET['do'] == 'IFRA') {

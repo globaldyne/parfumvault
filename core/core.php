@@ -7,7 +7,7 @@ require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/inc/product.php');
 require_once(__ROOT__.'/func/labelMap.php');
 require_once(__ROOT__.'/func/get_formula_notes.php');
-require_once(__ROOT__.'/func/pvOnline.php');
+require_once(__ROOT__.'/func/pvPost.php');
 require_once(__ROOT__.'/func/pvFileGet.php');
 require_once(__ROOT__.'/func/validateInput.php');
 require_once(__ROOT__.'/func/sanChar.php');
@@ -558,11 +558,11 @@ if($_POST['merge'] && $_POST['ingSrcID'] &&  $_POST['ingSrcName']  && $_POST['fi
 
 }
 
-//PVOnline Single Import						
-if($_POST['action'] == 'import' && $_POST['source'] == 'PVOnline' && $_POST['kind'] == 'ingredient' && $_POST['ing_id']){
+//PVLibrary Single Import						
+if($_POST['action'] == 'import' && $_POST['source'] == 'PVLibrary' && $_POST['kind'] == 'ingredient' && $_POST['ing_id']){
 	$id = mysqli_real_escape_string($conn, $_POST['ing_id']);
 	
-	$jAPI = $pvOnlineAPI.'?request=ingredients&src=PV_PRO&id='.$id;
+	$jAPI = $pvLibraryAPI.'?request=ingredients&src=PV_PRO&id='.$id;
     $jsonData = json_decode(pv_file_get_contents($jAPI), true);
 
     if($jsonData['error']){
@@ -3064,7 +3064,7 @@ if($_POST['action'] == 'import' && $_POST['kind'] == 'formula'){
 	
 	$id = mysqli_real_escape_string($conn, $_POST['fid']);
 	
-	$jAPI = $pvOnlineAPI.'?request=MarketPlace&action=get&id='.$id;
+	$jAPI = $pvLibraryAPI.'?request=MarketPlace&action=get&id='.$id;
     $jsonData = json_decode(pv_file_get_contents($jAPI), true);
 
     if($jsonData['error']){
@@ -3147,7 +3147,7 @@ if($_POST['action'] == 'contactAuthor'){
 		 'contactReason' => $contactReason
 		 ];
 	
-    $req = json_decode(pvPost($pvOnlineAPI, $data));
+    $req = json_decode(pvPost($pvLibraryAPI, $data));
 	if($req->success){
 		$response['success'] = $req->success;
 	}else{
@@ -3191,7 +3191,7 @@ if($_POST['action'] == 'report' && $_POST['src'] == 'pvMarket'){
 		 'reportReason' => $reportReason
 		 ];
 	
-    $req = json_decode(pvPost($pvOnlineAPI, $data));
+    $req = json_decode(pvPost($pvLibraryAPI, $data));
 	if($req->success){
 		$response['success'] = $req->success;
 	}else if($req->error){

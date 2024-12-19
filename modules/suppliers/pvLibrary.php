@@ -4,7 +4,7 @@
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
-require_once(__ROOT__.'/func/pvOnline.php');
+require_once(__ROOT__.'/func/pvPost.php');
 
 
 $row = isset($_POST['start']) ? (int)$_POST['start'] : 0;
@@ -27,7 +27,7 @@ $data = [
 ];
 
 // Make API request and decode the JSON response
-$output = json_decode(pvPost($pvOnlineAPI, $data));
+$output = json_decode(pvPost($pvLibraryAPI, $data));
 
 // Initialize response array
 $rx = [];
@@ -78,7 +78,7 @@ if (isset($output->ingredients) && is_array($output->ingredients)) {
 
 // Prepare final response
 $response = [
-    'source' => 'PVOnline',
+    'source' => 'PVLibrary',
     'draw' => isset($_POST['draw']) ? (int) $_POST['draw'] : 0,
     'recordsTotal' => (int) ($output->ingredientsTotal ?? 0),
     'recordsFiltered' => (int) ($output->ingredientsFiltered ?? 0),

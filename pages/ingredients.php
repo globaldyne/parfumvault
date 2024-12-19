@@ -201,7 +201,7 @@ $(document).ready(function() {
 	});
 	
 	list_ingredients();
-	var pvOnlineAPI = '<?php echo $pvOnlineAPI; ?>';
+	var pvLibraryAPI = '<?php echo $pvLibraryAPI; ?>';
 	$(function () {
 		$(".input-group-btn .dropdown-menu li a").click(function () {
 			var selText = $(this).html();
