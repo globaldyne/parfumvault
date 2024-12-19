@@ -1,6 +1,7 @@
 # CHANGELOG
 ### Version 12.3
 - Fix API log file
+- PV Online has been renamed to PV Library
 
 ### Version 12.2
 - Docker file update

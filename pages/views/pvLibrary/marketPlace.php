@@ -133,7 +133,7 @@ $(document).ready(function() {
 	
 	var tableMarket = $("#all-table-market").DataTable({
 		ajax: {
-			url: '<?=$pvOnlineAPI?>',
+			url: '<?=$pvLibraryAPI?>',
 		   	type: 'POST',
 		   	dataType: 'json',
 		   	timeout: 5000,
