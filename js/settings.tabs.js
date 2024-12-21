@@ -37,8 +37,8 @@ $(document).ready(function() {
 		get_maintenance();
 	});
 		
-	$('#pvOnline_tab').on( 'click', function () {
-		get_pvonline();
+	$('#pvLibrary_tab').on( 'click', function () {
+		get_pvlibrary();
 	});
 	
 	$('#api_tab').on( 'click', function () {
