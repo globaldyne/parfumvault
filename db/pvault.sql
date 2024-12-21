@@ -342,7 +342,7 @@ CREATE TABLE `settings` (
   `multi_dim_perc` INT NOT NULL DEFAULT '0', 
   `defCatClass` VARCHAR(255) NOT NULL DEFAULT 'cat4',
   `defPercentage` VARCHAR(255) NOT NULL DEFAULT 'max_percentage',
-  `pv_online_api_url` varchar(255) COLLATE utf8_general_ci NOT NULL DEFAULT 'https://online.perfumersvault.com/api-data/api.php',
+  `pv_library_api_url` varchar(255) COLLATE utf8_general_ci NOT NULL DEFAULT 'https://library.perfumersvault.com/api-data/api.php',
   `api` INT NOT NULL DEFAULT '0',
   `api_key` VARCHAR(255) NULL,
   `editor` int(11) NOT NULL DEFAULT 1 COMMENT '1 = Inline, 2 = Advanced',

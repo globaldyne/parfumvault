@@ -320,7 +320,7 @@ $(document).ready(function() {
 				return '<img src="/img/pv_molecule.png" class="img_ing_prof"/>';
 			}
 		}else{
-			return '<i class="pv_point_gen" rel="tip" title="Not available in PV Online">N/A</i>';
+			return '<i class="pv_point_gen" rel="tip" title="Not available in PV Library">N/A</i>';
 		}
 	};
 	
@@ -333,7 +333,7 @@ $(document).ready(function() {
 		if(meta.settings.json.source == 'local'){
 			return '<a class="popup-link" rel="tip" title="'+ingUnit+'" href="/pages/views/ingredients/ingSuppliers.php?id=' + row.id + '&standAlone=1">' + data + '</a>';
 		}else{
-			return '<i class="pv_point_gen" rel="tip" title="Not available in PV Online">N/A</i>';
+			return '<i class="pv_point_gen" rel="tip" title="Not available in PV Library">N/A</i>';
 		}
 	};
 	
@@ -400,7 +400,7 @@ $(document).ready(function() {
 	
 	
 	function actions(data, type, row, meta){
-		if(meta.settings.json.source == 'PVOnline'){
+		if(meta.settings.json.source == 'PVLibrary'){
 			data = '<div class="dropdown">' +
 				'<button type="button" class="btn" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
 					'<ul class="dropdown-menu dropdown-menu-right">' + 
@@ -474,7 +474,7 @@ $(document).ready(function() {
 		
 		bootbox.dialog({
 		   title: "Confirm ingredient import",
-		   message : 'Import <strong>'+ ing.Name +'</strong>\'s data from PVOnline? <hr/><div class="alert alert-warning"><strong>Please note: data maybe incorrect and/or incomplete, you should validate them after import.</strong></div>',
+		   message : 'Import <strong>'+ ing.Name +'</strong>\'s data from PVLibrary? <hr/><div class="alert alert-warning"><strong>Please note: data maybe incorrect and/or incomplete, you should validate them after import.</strong></div>',
 		   buttons :{
 			   main: {
 				   label : "Import",
@@ -486,7 +486,7 @@ $(document).ready(function() {
 						type: 'POST',
 						data: {
 							action: "import",
-							source: "PVOnline",
+							source: "PVLibrary",
 							kind: "ingredient",
 							ing_id: ing.ID,
 						},
