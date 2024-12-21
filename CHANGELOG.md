@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 12.4
+
 ### Version 12.3
 - Fix API log file
 - PV Online has been renamed to PV Library
