@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 12.4
+- Remove password hashing detection
 
 ### Version 12.3
 - Fix API log file
