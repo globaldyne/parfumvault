@@ -41,6 +41,7 @@ if ($sql && mysqli_num_rows($sql) > 0) {
                     'fid' => (string)$i['fid'],
                     'ingredient' => (string)$i['ingredient'],
                     'concentration' => (float)$i['concentration'] ?: 100,
+                    'dilutant' => (string)$i['dilutant'] ?: "None",
                     'quantity' => (float)$i['quantity'] ?: 0,
                     'notes' => (string)$i['notes'] ?: '-'
                 ];
