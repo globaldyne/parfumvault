@@ -57,16 +57,23 @@ function validateKeyAndExecute($conn, $key, $callback) {
 $key = $_REQUEST['key'] ?? null;
 $do = strtolower($_REQUEST['do'] ?? '');
 $type = $_REQUEST['type'] ?? null;
-/*
-if (!$key || !$do) {
-    header('Content-Type: application/json; charset=utf-8');
-    echo json_encode(['status' => 'Invalid API call']);
-    return;
+
+
+if ($key && $do === 'auth') {
+    if(!apiCheckAuth($key, $conn)) {
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode(['type'=>'auth','status' => 'failed']);
+        return;
+    } else {
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode(['type'=>'auth','status' => 'success']);
+        return;
+    }
 }
-*/
+
 $validEndpoints = [
     'upload' => ['formula', 'ingredients'],
-    'get' => ['formula', 'ingredients', 'categories', 'suppliers', 'documents'],
+    'get' => ['formulas', 'ingredients', 'categories', 'suppliers', 'documents'],
     'manage' => ['makeformula']
 ];
 
