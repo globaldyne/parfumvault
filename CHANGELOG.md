@@ -2,6 +2,7 @@
 ### Version 12.4
 - Remove password hashing detection
 - Add dilutant in API formulas
+- API has been extended to provide IFRA library data
 
 ### Version 12.3
 - Fix API log file

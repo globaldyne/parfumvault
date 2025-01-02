@@ -73,7 +73,7 @@ if ($key && $do === 'auth') {
 
 $validEndpoints = [
     'upload' => ['formula', 'ingredients'],
-    'get' => ['formulas', 'ingredients', 'categories', 'suppliers', 'documents'],
+    'get' => ['formulas', 'ingredients', 'categories', 'suppliers', 'documents', 'ifra'],
     'manage' => ['makeformula']
 ];
 
@@ -116,6 +116,7 @@ switch ($do) {
             'categories' => '/api-functions/categories_get.php',
             'suppliers' => '/api-functions/suppliers_get.php',
             'documents' => '/api-functions/documents_get.php',
+            'ifra' => '/api-functions/ifra_get.php'
         ];
         if (isset($apiFileMap[$type])) {
             validateKeyAndExecute($conn, $key, function () use ($type, $apiFileMap) {
