@@ -3,6 +3,8 @@
 - Remove password hashing detection
 - Add dilutant in API formulas
 - API has been extended to provide IFRA library data
+- Rewritten the core upgrade process
+- Added update log history
 
 ### Version 12.3
 - Fix API log file
