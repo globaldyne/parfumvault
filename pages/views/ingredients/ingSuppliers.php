@@ -8,16 +8,9 @@ require_once(__ROOT__.'/inc/settings.php');
 
 $ingID = mysqli_real_escape_string($conn, $_GET["id"]);
 
-//$q = mysqli_query($conn, "SELECT * FROM suppliers WHERE ingID = '$ingID' ORDER BY preferred");
 $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT name,physical_state FROM ingredients WHERE id ='$ingID'"));
 $res_ingSupplier = mysqli_query($conn, "SELECT id,name,min_ml,min_gr FROM ingSuppliers ORDER BY name ASC");
-/*
-if($ing['physical_state'] == 1){
-	$mUnit = 'ml';
-}elseif($ing['physical_state'] == 2){
-	$mUnit = 'grams';
-}
-*/
+
 ?>
 <?php if($_GET['standAlone'] == 1){ ?>
 	<html lang="en" data-bs-theme="<?=$settings['bs_theme']?>">
@@ -66,7 +59,7 @@ if($ing['physical_state'] == 1){
           <th>Name</th>
           <th>eShop</th>
           <th>Price</th>
-          <th>Size</th>
+          <th>Quantity</th>
           <th>Measurement Unit</th>
           <th>Manufacturer</th>
           <th>Batch</th>
@@ -112,7 +105,7 @@ $(document).ready(function() {
 			{ data : 'supplierName', title: 'Name', render: sName },
 			{ data : 'supplierLink', title: 'eShop', render: sLink},
 			{ data : 'price', title: 'Price(<?=$settings['currency']?>)', render: sPrice},
-			{ data : 'size', title: 'Size', render: sSize},
+			{ data : 'size', title: 'Quantity', render: quantity},
 			{ data : 'mUnit', title: 'Measurement Unit', render: mUnit},
 			{ data : 'manufacturer', title: 'Manufacturer', render: sManufacturer},
 			{ data : 'batch', title: 'Batch', render: sBatch},
@@ -221,7 +214,7 @@ $(document).ready(function() {
 		return '<i id="'+row.ingSupplierID+'" class="price pv_point_gen" data-name="price" data-type="text" data-pk="'+row.id+'">'+row.price+'</i>';    
 	};
 	
-	function sSize(data, type, row){
+	function quantity(data, type, row){
 		return '<i class="size pv_point_gen" data-name="size" data-type="text" data-pk="'+row.id+'">'+row.size+'</i>';    
 	};
 	
@@ -828,7 +821,7 @@ $(document).ready(function() {
                 </div>
             </div>
             <div class="col-md-6">
-                <label for="supplier_size">Size*</label>
+                <label for="supplier_size">Quantity*</label>
                 <div class="input-group mb-2">
                     <span class="input-group-text"><?php if($ing['physical_state'] == '1'){ echo 'ml'; }elseif($ing['physical_state'] == '2'){ echo 'grams'; }else{ echo $settings['mUnit']; }?></span>
                     <input class="form-control" name="supplier_size" type="text" id="supplier_size" value="10" />
@@ -864,7 +857,7 @@ $(document).ready(function() {
                 </select>
             </div>    
             <div class="form-row mb-2">
-    			<label for="mUnit">Measurement Unit</label>
+    			<label for="mUnit">Purchase Unit</label>
                 <select name="mUnit" id="mUnit" class="form-control">
                   <option value="ml">Milliliter</option>
                   <option value="g">Grams</option>

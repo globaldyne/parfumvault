@@ -5,6 +5,7 @@
 - API has been extended to provide IFRA library data
 - Rewritten the core upgrade process
 - Added update log history
+- Renamed Measurement Unit to Purchase Unit for ingredients supplier for better clarity
 
 ### Version 12.3
 - Fix API log file
