@@ -7,6 +7,8 @@
 - Added update log history
 - Renamed Measurement Unit to Purchase Unit for ingredients supplier for better clarity
 - Restructure Index.php
+- Update empty table for cart
+- Update actions menu for cart
 
 ### Version 12.3
 - Fix API log file
