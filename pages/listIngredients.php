@@ -598,7 +598,7 @@ $(document).ready(function() {
 			$("#advanced_search").html('<span><hr /><a href="#" class="advanced_search_box" data-bs-toggle="modal" data-bs-target="#adv_search">Advanced Search</a></span>');
 		}else{
 			$("#advanced_search").html('');
-			tdDataIng.settings()[0].oLanguage.sEmptyTable = '<div class="alert alert-warning mt-2"><i class="fa-solid fa-triangle-exclamation mx-2"></i><strong>Nothing found, try a different term instead? You can search for ingredient name or CAS number</strong></div>';
+			tdDataIng.settings()[0].language.emptyTable = '<div class="alert alert-warning mt-2"><i class="fa-solid fa-triangle-exclamation mx-2"></i><strong>Nothing found, try a different term instead? You can search for ingredient name or CAS number</strong></div>';
 		}
 		
 	});

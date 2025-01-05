@@ -9,6 +9,7 @@
 - Restructure Index.php
 - Update empty table for cart
 - Update actions menu for cart
+- Update ingredients datatable empty table function
 
 ### Version 12.3
 - Fix API log file
