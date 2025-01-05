@@ -6,6 +6,7 @@
 - Rewritten the core upgrade process
 - Added update log history
 - Renamed Measurement Unit to Purchase Unit for ingredients supplier for better clarity
+- Restructure Index.php
 
 ### Version 12.3
 - Fix API log file

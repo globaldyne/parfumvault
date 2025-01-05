@@ -22,12 +22,7 @@ if($meta = mysqli_fetch_array(mysqli_query($conn, "SELECT fid,name FROM formulas
 	while ($formula = mysqli_fetch_array($formula_q)){
 		$form[] = $formula;
 	}
-	/*
-	$ingredients = mysqli_query($conn, "SELECT id, name, chemical_name, INCI, CAS FROM ingredients ORDER BY name ASC");
-	while ($ingredient = mysqli_fetch_array($ingredients)){
-		$ing[] = $ingredient;
-	}
-	*/
+	
 	if($form[0]['ingredient']){
 		$legend = 1;
 	}

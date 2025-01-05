@@ -30,94 +30,131 @@ $cFormoulas = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaDa
 <script src="/js/rating.js"></script>
 <link href="/js/raty/jquery.raty.css" rel="stylesheet">
 
+<div id="content-wrapper" class="d-flex flex-column">
+    <?php require_once(__ROOT__ . '/pages/top.php'); ?>
+    <div class="container-fluid">
+        <div>
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h2 class="m-0 font-weight-bold text-primary">
+                        <a href="#" id="mainTitle">Formulas</a>
+                    </h2>
+                </div>
 
-<div class="card-header py-3">
-  <h2 class="m-0 font-weight-bold text-primary"><a href="#" id="mainTitle">Formulas</a></h2>
-</div>
-            
-<div class="pv_menu_formulas">
-    <div class="text-right">
-        <div class="btn-group">
-        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
-            <div class="dropdown-menu">
-              <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#add_formula"><i class="fa-solid fa-plus mx-2"></i>Add new formula</a></li>
-              <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#add_formula_csv"><i class="fa-solid fa-file-csv mx-2"></i>Import from CSV</a></li>
-              <div class="dropdown-divider"></div>
-              <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#add_formula_cat"><i class="fa-solid fa-circle-plus mx-2"></i>Create formula category</a></li>
-              <div class="dropdown-divider"></div>
-        	  <li><a class="dropdown-item" href="/core/core.php?action=exportFormulas"><i class="fa-solid fa-file-export mx-2"></i>Export Formulas as JSON</a></li>
-        	  <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#import_formulas_json"><i class="fa-solid fa-file-import mx-2"></i>Import Formulas from JSON</a></li>
-              <?php if($cFormoulas){ ?>
- 			  <div class="dropdown-divider"></div>
-        	  <li><a class="dropdown-item text-danger" href="#" id="wipe_all_formulas"><i class="fa-solid fa-trash mx-2"></i>Delete all</a></li>
-              <?php } ?>
+                <div class="pv_menu_formulas">
+                    <div class="text-right">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fa fa-bars mx-2"></i>Actions
+                            </button>
+                            <div class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#add_formula">
+                                        <i class="fa-solid fa-plus mx-2"></i>Add new formula
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#add_formula_csv">
+                                        <i class="fa-solid fa-file-csv mx-2"></i>Import from CSV
+                                    </a>
+                                </li>
+                                <div class="dropdown-divider"></div>
+                                <li>
+                                    <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#add_formula_cat">
+                                        <i class="fa-solid fa-circle-plus mx-2"></i>Create formula category
+                                    </a>
+                                </li>
+                                <div class="dropdown-divider"></div>
+                                <li>
+                                    <a class="dropdown-item" href="/core/core.php?action=exportFormulas">
+                                        <i class="fa-solid fa-file-export mx-2"></i>Export Formulas as JSON
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#import_formulas_json">
+                                        <i class="fa-solid fa-file-import mx-2"></i>Import Formulas from JSON
+                                    </a>
+                                </li>
+                                <?php if ($cFormoulas) { ?>
+                                <div class="dropdown-divider"></div>
+                                <li>
+                                    <a class="dropdown-item text-danger" href="#" id="wipe_all_formulas">
+                                        <i class="fa-solid fa-trash mx-2"></i>Delete all
+                                    </a>
+                                </li>
+                                <?php } ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <?php
+                if (empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients")))) {
+                    echo '<div class="row g-3"><div class="alert alert-info alert-dismissible"><i class="fa-solid fa-circle-info mx-2"></i><strong>No ingredients yet, click <a href="/?do=ingredients">here</a> to create a new one</strong></div></div>';
+                }
+                if (empty($cFormoulas)) {
+                    echo '<div class="row g-3"><div class="alert alert-info alert-dismissible"><i class="fa-solid fa-circle-info mx-2"></i><strong>No formulas yet, click <a href="#" data-bs-toggle="modal" data-bs-target="#add_formula">here</a> to add or use the <a href="/?do=marketplace">Marketplace</a> to import a demo one</strong></div></div>';
+                } else {
+                ?>
+                <div id="listFormulas">
+                    <ul>
+                        <li class="tabs">
+                            <a href="#tab-all">All formulas</a>
+                        </li>
+                        <?php foreach ($fcat as $cat) { ?>
+                        <li class="tabs" data-source="/core/list_formula_data.php?filter=1&<?= $cat['type'] ?>=<?= $cat['cname'] ?>" data-table="<?= $cat['cname'] ?>-table">
+                            <a href="#tab-<?= $cat['cname'] ?>"><?= $cat['name'] ?></a>
+                        </li>
+                        <?php } ?>
+                    </ul>
+                    <div class="tab-content table-responsive">
+                        <div class="tab-pane" id="tab-all">
+                            <table id="all-table" class="table table-striped" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>Formula Name</th>
+                                        <th>Product Name</th>
+                                        <th>Status</th>
+                                        <th>Ingredients</th>
+                                        <th>Revision</th>
+                                        <th>Created</th>
+                                        <th>Updated</th>
+                                        <th>Made</th>
+                                        <th>Rating</th>
+                                        <th data-priority="1"></th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                        <?php foreach ($fcat as $cat) { ?>
+                        <div class="tab-pane" id="tab-<?= $cat['cname'] ?>">
+                            <table id="<?= $cat['cname'] ?>-table" class="table table-striped" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>Formula Name</th>
+                                        <th>Product Name</th>
+                                        <th>Status</th>
+                                        <th>Ingredients</th>
+                                        <th>Revision</th>
+                                        <th>Created</th>
+                                        <th>Updated</th>
+                                        <th>Made</th>
+                                        <th>Rating</th>
+                                        <th data-priority="1"></th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                        <?php } ?>
+                    </div>
+                </div>
+                <?php } ?>
             </div>
         </div>
     </div>
 </div>
 
 
-<?php
-if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients")))){
-	echo '<div class="row g-3"><div class="alert alert-info alert-dismissible"><i class="fa-solid fa-circle-info mx-2"></i><strong>No ingredients yet, click <a href="/?do=ingredients">here</a> to create a new one </strong></div></div>';
-}
-if(empty($cFormoulas)){
-	echo '<div class="row g-3"><div class="alert alert-info alert-dismissible"><i class="fa-solid fa-circle-info mx-2"></i><strong>No formulas yet, click <a href="#" data-bs-toggle="modal" data-bs-target="#add_formula">here</a> to add or use the <a href="/?do=marketplace">Marketplace</a> to import a demo one</strong></div></div>';
-}else{
-?>
-<div id="listFormulas">
-<ul>
- <li class="tabs">
-    <a href="#tab-all">All formulas</a>
- </li>
- <?php foreach ($fcat as $cat) { ?>
- <li class="tabs" data-source="/core/list_formula_data.php?filter=1&<?=$cat['type']?>=<?=$cat['cname']?>" data-table="<?=$cat['cname']?>-table">
-    <a href="#tab-<?=$cat['cname']?>"><?=$cat['name']?></a>
- <?php } ?>       
-</ul>
-<div class="tab-content table-responsive">
-    <div class="tab-pane" id="tab-all">
-        <table id="all-table" class="table table-striped" width="100%" cellspacing="0">
-            <thead>
-                <tr>
-                    <th>Formula Name</th>
-                    <th>Product Name</th>
-                    <th>Status</th>
-                    <th>Ingredients</th>
-                    <th>Revision</th>
-                    <th>Created</th>
-                    <th>Updated</th>
-                    <th>Made</th>
-                    <th>Rating</th>
-          			<th data-priority="1"></th>
-                </tr>
-            </thead>
-        </table>
-    </div>
-    <?php foreach ($fcat as $cat) {?>
-    <div class="tab-pane" id="tab-<?=$cat['cname']?>">
-        <table id="<?=$cat['cname']?>-table" class="table table-striped" width="100%" cellspacing="0">
-            <thead>
-                <tr>
-                    <th>Formula Name</th>
-                    <th>Product Name</th>
-                    <th>Status</th>
-                    <th>Ingredients</th>
-                    <th>Revision</th>
-                    <th>Created</th>
-                    <th>Updated</th>
-                    <th>Made</th>
-                    <th>Rating</th>
-          			<th data-priority="1"></th>
-                </tr>
-            </thead>
-        </table>
-    </div>
-    <?php } ?>
-  </div>
-</div>
-
-<?php } ?>
 <script>
 $(document).ready(function() {
 
