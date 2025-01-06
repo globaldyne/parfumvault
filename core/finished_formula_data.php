@@ -16,7 +16,7 @@ require_once(__ROOT__.'/func/getIngSupplier.php');
 require_once(__ROOT__.'/func/validateFormula.php');
 
 $role = (int)$user['role'];
-$userID = isset($_SESSION['userID']) ? (int)$_SESSION['userID'] : 0;
+$userID = (int)$user['id'];
 
 if (!$_POST['id']) {		
 	$response['data'] = [];    
