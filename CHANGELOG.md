@@ -10,6 +10,8 @@
 - Update empty table for cart
 - Update actions menu for cart
 - Update ingredients datatable empty table function
+- Various security updates across the app and user access management
+- Better error handling for datatables
 
 ### Version 12.3
 - Fix API log file

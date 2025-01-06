@@ -368,9 +368,12 @@ INSERT INTO `settings` (`id`, `currency`, `top_n`, `heart_n`, `base_n`, `chem_vs
 
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
-  `email` varchar(255) COLLATE utf8_general_ci NOT NULL,
-  `password` varchar(255) COLLATE utf8_general_ci NOT NULL,
-  `fullName` varchar(255) COLLATE utf8_general_ci NOT NULL
+  `email` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `fullName` varchar(255) NOT NULL,
+  `role` INT NOT NULL DEFAULT '1',
+  `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 
