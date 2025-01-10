@@ -14,6 +14,7 @@
 - Improve formula revisions
 - Remove formulas export menu if no formulas
 - Import formulas from a text
+- Improve docker startup
 
 ### Version 12.3
 - Fix API log file
