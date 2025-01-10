@@ -14,6 +14,124 @@ require_once(__ROOT__.'/func/sanChar.php');
 require_once(__ROOT__.'/func/priceScrape.php');
 require_once(__ROOT__.'/func/create_thumb.php');
 
+$userID = (int)$user['id'];
+$role = (int)$user['role'];
+
+//IMPORT FORMULA FROM TEXT
+if ($_POST['action'] == 'importTXTFormula') {
+    require_once(__ROOT__ . '/func/genFID.php');
+
+    $formulaName = isset($_POST['formulaName']) ? trim($_POST['formulaName']) : '';
+    $formulaData = isset($_POST['formulaData']) ? trim($_POST['formulaData']) : '';
+
+    $response = [];
+
+    if (empty($formulaName) || empty($formulaData)) {
+        $response['error'] = 'Formula name and data are required.';
+        echo json_encode($response);
+        return;
+    }
+
+	// Replace commas with dots in formula data
+	$formulaData = str_replace(',', '.', $formulaData);
+    // Check if formula name exists
+    $query = "SELECT COUNT(*) as count FROM formulasMetaData WHERE name = ? AND owner_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param('si', $formulaName, $userID);
+
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+
+    if ($row['count'] > 0) {
+        $response['error'] = 'Formula name already exists.';
+        echo json_encode($response);
+        return;
+    }
+
+    // Insert new formula metadata
+    $fid = random_str(40, '1234567890abcdefghijklmnopqrstuvwxyz');
+    $notes = "Imported via text";
+
+    $insertQuery = "INSERT INTO formulasMetaData (fid, name, notes, owner_id) VALUES (?, ?, ?, ?)";
+    $stmt = $conn->prepare($insertQuery);
+    $stmt->bind_param('sssi', $fid, $formulaName, $notes, $userID);
+
+    if ($stmt->execute()) {
+        // Get the last inserted ID
+        $last_id = $conn->insert_id;
+
+        // Parse and insert formula data
+        $rows = explode("\n", $formulaData);
+        $formulaInsertSuccess = true;
+
+        foreach ($rows as $row) {
+            // Match flexible patterns for quantity, ingredient name, and percentage
+            if (preg_match('/^(\d+(\.\d+)?)\s+(.+?)(\d+(\.\d+)?%)?$|(.+?)\s*(\d+(\.\d+)?%)?\s+(\d+(\.\d+)?)$/', $row, $matches)) {
+                if (!empty($matches[1])) {
+                    // Format: Quantity first (e.g., "5.00 phenyl acetaldehyde 50%")
+                    $quantity = floatval($matches[1]);
+                    $ingredient = trim($matches[3]);
+                    $percentage = isset($matches[4]) ? floatval($matches[4]) : 100;
+                } else {
+                    // Format: Quantity last (e.g., "phenyl acetaldehyde 50% 5")
+                    $quantity = floatval($matches[9]);
+                    $ingredient = trim($matches[6]);
+                    $percentage = isset($matches[7]) ? floatval($matches[7]) : 100;
+                }
+
+                $dilutant = $percentage < 100 ? 'DPG' : 'None';
+
+                // Clean up the ingredient name
+                $baseIngredient = preg_replace('/\s*\d+(\.\d+)?%\s*/', '', $ingredient);
+                $baseIngredient = ucwords($baseIngredient);
+
+                // Check if the ingredient exists in the database
+                $getIngQuery = "SELECT id FROM ingredients WHERE name = ?";
+                $getIngStmt = $conn->prepare($getIngQuery);
+                $getIngStmt->bind_param('s', $baseIngredient);
+                $getIngStmt->execute();
+                $getIngResult = $getIngStmt->get_result();
+                $ingredientRow = $getIngResult->fetch_assoc();
+
+                $ingredient_id = $ingredientRow['id'] ?? 0; // Use ID if found, otherwise 0
+
+                // Insert into formulas table
+                $ingredientQuery = "INSERT INTO formulas (fid, name, ingredient_id, ingredient, quantity, concentration, dilutant) VALUES (?, ?, ?, ?, ?, ?, ?)";
+                $ingredientStmt = $conn->prepare($ingredientQuery);
+                $ingredientStmt->bind_param('ssisdss', $fid, $formulaName, $ingredient_id, $baseIngredient, $quantity, $percentage, $dilutant);
+
+                if (!$ingredientStmt->execute()) {
+                    $formulaInsertSuccess = false;
+                    break;
+                }
+            }
+        }
+
+        // Insert tag associated with the formula
+        if ($formulaInsertSuccess) {
+            $tagQuery = "INSERT INTO formulasTags (formula_id, tag_name) VALUES (?, 'Imported formula')";
+            $tagStmt = $conn->prepare($tagQuery);
+            $tagStmt->bind_param('i', $last_id);
+
+            if ($tagStmt->execute()) {
+                $response['success'] = 'Formula imported successfully.';
+            } else {
+                $response['error'] = 'Failed to insert formula tag.';
+            }
+        } else {
+            $response['error'] = 'Failed to insert formula data.';
+        }
+    } else {
+        $response['error'] = 'Failed to import formula metadata.';
+    }
+
+    // Return JSON response
+    echo json_encode($response);
+    return;
+}
+
+
 if($_GET['update_user_avatar']){
 	$allowed_ext = "png, jpg, jpeg, gif, bmp";
 
@@ -1525,10 +1643,10 @@ if($_GET['createRev'] == 'man'){
 	$fid = $_GET['fid'];
 	
 	if($l = createFormulaRevision($fid,'Manually',$conn)){
-		$response["success"] = 'Revision created (If changes detected)';
+		$response["success"] = 'Revision created';
 		echo json_encode($response);
 	}else{
-		$response["error"] = 'Unable to create revision, please make sure formula exists and contains at least one ingredient.';
+		$response["error"] = 'No changes detected in formula';
 		echo json_encode($response);
 	}
 	return;
@@ -3219,42 +3337,68 @@ if($_GET['do'] == 'userPerfClear'){
 }
 
 
-if($_GET['do'] == 'db_update'){
+if (isset($_GET['do']) && $_GET['do'] === 'db_update') {
+    $a_ver = trim(@file_get_contents(__ROOT__ . '/VERSION.md'));
+    $n_ver = trim(@file_get_contents(__ROOT__ . '/db/schema.ver'));
 
-	$a_ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
-	$n_ver = trim(file_get_contents(__ROOT__.'/db/schema.ver'));
-	$c_ver = trim($pv_meta['schema_ver']);
-	$script = __ROOT__.'/db/scripts/update_'.$c_ver.'-'.$n_ver.'.php';
-
-	if(file_exists($script) == TRUE){
-		require_once($script);
-	}
-  	if($c_ver == $n_ver){
-		$result['error'] = "No update is needed";
-		echo json_encode($result);
-		return;
+    if (empty($a_ver) || empty($n_ver)) {
+        echo json_encode(['error' => 'Version information is missing.']);
+        return;
     }
 
-	foreach ( range(round($c_ver*100), round($n_ver*100),  0.1*100) as $i ) {
-		$c_ver = mysqli_fetch_array(mysqli_query($conn, "SELECT schema_ver FROM pv_meta"));
-		$u_ver = number_format($i/100,1);
-		$sql = __ROOT__.'/db/updates/update_'.$c_ver['schema_ver'].'-'.$u_ver.'.sql';
-	
-		if(file_exists($sql) == TRUE){	
-			$cmd = "mysql -u$dbuser -p$dbpass -h$dbhost $dbname < $sql";
-			passthru($cmd,$e);
-		}
-		
-		$q = mysqli_query($conn, "UPDATE pv_meta SET schema_ver = '$u_ver'");
-	}
+    $c_ver = trim($pv_meta['schema_ver']);
+    $script = __ROOT__ . "/db/scripts/update_{$c_ver}-{$n_ver}.php";
 
-	if($q){
-		$result['success'] = "Your database has been updated";
-		echo json_encode($result);
-	}
-	
-	return;
+    if (file_exists($script)) {
+        require_once $script;
+    }
+
+    if ($c_ver === $n_ver) {
+        echo json_encode(['error' => 'No update is needed.']);
+        return;
+    }
+
+    $currentVer = floatval($c_ver);
+    $newVer = floatval($n_ver);
+
+    foreach (range(round($currentVer * 100), round($newVer * 100), 10) as $i) {
+        $u_ver = number_format($i / 100, 1);
+
+        // Check if SQL update file exists
+        $sqlFile = __ROOT__ . "/db/updates/update_{$currentVer}-{$u_ver}.sql";
+        if (file_exists($sqlFile)) {
+            $sqlContent = file_get_contents($sqlFile);
+            if ($sqlContent) {
+                // Execute the SQL update
+                if (!mysqli_multi_query($conn, $sqlContent)) {
+                    echo json_encode(['error' => 'Failed to apply SQL update: ' . mysqli_error($conn)]);
+                    return;
+                }
+                while (mysqli_next_result($conn)) { /* Flush multi-query results */ }
+            }
+        }
+
+        // Update schema version in the database
+        $stmt = $conn->prepare("UPDATE pv_meta SET schema_ver = ?");
+        $stmt->bind_param("s", $u_ver);
+        if (!$stmt->execute()) {
+            echo json_encode(['error' => 'Failed to update schema version: ' . $stmt->error]);
+            return;
+        }
+        $stmt->close();
+    }
+
+    // Log update history
+    $stmt = $conn->prepare("INSERT INTO update_history (prev_ver, new_ver) VALUES (?, ?)");
+    $stmt->bind_param("ss", $c_ver, $a_ver);
+    if ($stmt->execute()) {
+        echo json_encode(['success' => 'Your database has been updated.']);
+    } else {
+        echo json_encode(['error' => 'Failed to log update history: ' . $stmt->error]);
+    }
+    $stmt->close();
 }
+
 
 
 if($_GET['do'] == 'backupDB'){

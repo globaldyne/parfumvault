@@ -90,7 +90,7 @@ if(isset($_SESSION['parfumvault'])){
                         $metaStmt = $conn->prepare($insertMetaQuery);
                         $metaStmt->bind_param('ss', $db_ver, $app_ver);
                         $metaStmt->execute();
-						header('Location: /');
+						            header('Location: /');
                     } else {
                         // Handle schema creation error
                         $response = [
@@ -106,7 +106,7 @@ if(isset($_SESSION['parfumvault'])){
                     }
                 }
             }
-            if(!$isDemo){
+      if(!$isDemo){
 
 				// Check and manage user creation or update
 				$userCheckQuery = "SELECT id FROM users LIMIT 1";
@@ -163,55 +163,55 @@ if(isset($_SESSION['parfumvault'])){
 				}
 
 			}
-            ?>
+    ?>
 
-            <?php if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM users")) == 0){ $first_time = 1; ?>
-            <div class="col-lg-6 d-none d-lg-block bg-register-image"></div>
-             <div class="col-lg-6">
-              <div class="p-5">
-               <div class="text-center">
-                  <h1 class="h4 text-gray-900 mb-4">Please register a user!</h1>
-               </div>
-               <div id="msg"></div>
-               <div class="user" id="reg_form">
-               <hr>
-               <div class="form-group">
-                  <label for="fullName" class="form-label">Full name</label>
-                  <input type="text" class="form-control form-control-user" id="fullName">
-               </div>
-               <div class="form-group">
-                  <label for="email" class="form-label">Email</label>
-                  <input type="text" class="form-control form-control-user" id="email">
-               </div>
-               <div class="form-group">
-                  <label for="password" class="form-label">Password</label>
-                  <div class="col-md-auto password-input-container">
-                      <input name="password" type="password" id="password" class="form-control password-input" value="">
-                      <i class="toggle-password fa fa-eye"></i>
-                  </div>
-               </div>
-               <div class="form-group"></div>
-               <button class="btn btn-primary btn-user btn-block" id="registerSubmit">
-                 Register
-               </button>
+    <?php if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM users")) == 0){ $first_time = 1; ?>
+
+      <div class="col-lg-6 d-none d-lg-block bg-register-image"></div>
+        <div class="col-lg-6">
+          <div class="p-5">
+            <div class="text-center">
+                <h1 class="h4 text-gray-900 mb-4">Please register a user</h1>
             </div>
-            <?php }else{ ?>
+            <div id="msg"></div>
+            <div class="user" id="reg_form">
+              <hr>
+              <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="fullName" placeholder="Full name">
+                <label for="fullName">Full name</label>
+              </div>
+              <div class="form-floating mb-3">
+                <input type="email" class="form-control" id="email" placeholder="Email">
+                <label for="email">Email</label>
+              </div>
+              <div class="form-floating mb-3">
+                <input type="password" class="form-control password-input" id="password" placeholder="Password">
+                <label for="password">Password</label>
+                <i class="toggle-password fa fa-eye"></i>
+              </div>
+              <div class="form-group"></div>
+                <button class="btn btn-primary btn-user btn-block" id="registerSubmit">
+                Register
+                </button>
+      </div>
+      <?php }else{ ?>
+
               <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
-              <div class="col-lg-6">
-                <div class="p-5">
-                  <div class="text-center">
-                    <h1 class="h4 mb-4">Please login</h1>
-                  </div>
-                  <div id="msg"></div>
-                  <div class="user" id="login">
-                  
-                    <div class="form-group">
-                      <label for="login_email" class="form-label">Email</label>
-                      <input type="text" class="form-control form-control-user" name="login_email" id="login_email">
+                <div class="col-lg-6">
+                  <div class="p-5">
+                    <div class="text-center">
+                      <h1 class="h4 mb-4">Please login</h1>
                     </div>
-                    <div class="form-group">
-                      <label for="login_pass" class="form-label">Password</label>
-                      <input type="password" class="form-control form-control-user" name="login_pass" id="login_pass">
+                    <div id="msg"></div>
+                    <div class="user" id="login">
+                  
+                    <div class="form-floating mb-3">
+                      <input type="email" class="form-control" id="login_email" placeholder="name@example.com">
+                      <label for="login_email">Email address</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                      <input type="password" class="form-control" id="login_pass" placeholder="Password">
+                      <label for="login_pass">Password</label>
                     </div>
                     <div class="form-group"></div>
                     <button class="btn btn-primary btn-user btn-block" id="login_btn">
@@ -219,17 +219,16 @@ if(isset($_SESSION['parfumvault'])){
                     </button>
                   </div>
                  <?php if(getenv('PASS_RESET_INFO' ?: $PASS_RESET_INFO) !== "DISABLED"){ ?>
-
                   <hr />
                   <div class="text-center">
-                    <a class="small" href="#" data-bs-toggle="modal" data-bs-target="#forgot_pass">Forgot Password?</a>
-                  </div>
+                  <a class="small" href="#" data-bs-toggle="modal" data-bs-target="#forgot_pass">Forgot Password?</a>
+              </div>
             <?php
 				 }
 			 } 
 			?>		 		 
-                  <hr />
-                  <div class="copyright text-center my-auto">
+          <hr />
+          <div class="copyright text-center my-auto">
 				  <label class="small">Version: <?php echo $ver; ?> |<a href="https://www.perfumersvault.com/" class="mx-1" target="_blank"><?php echo $product; ?></a></label>
                   </div>
                 </div>
@@ -361,7 +360,7 @@ $(document).ready(function() {
 				$('#msg').html(msg);
 			},
 			error: function (request, status, error) {
-        		$('#msg').html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>Unable to handle request, server returned an error: ' + request.status + ' - ' +error + '</div>');
+        $('#msg').html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>Unable to handle request, server returned an error: ' + request.status + ' - ' +error + '</div>');
 				$("#login_btn span").remove();
 				$("#login_email").prop("disabled", false);
 				$("#login_pass").prop("disabled", false);

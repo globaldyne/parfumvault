@@ -37,7 +37,7 @@ if ($res === TRUE) {
 	$zip->close();
 	pvCopy(__ROOT__.'/tmp/CoreUpgrade/parfumvault-'.$data, __ROOT__.'/');
 			
-	$r = '<div class="alert alert-success"></div>';
+	$r = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i></div>';
 	$response["success"] = "Update complete. Please refresh this page.";
 	echo json_encode($response);
 			

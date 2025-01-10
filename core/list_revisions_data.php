@@ -12,10 +12,27 @@ $order = isset($_POST['order_as']) && in_array(strtoupper($_POST['order_as']), [
 
 $extra = "ORDER BY ".$order_by." ".$order;
 
-$current_rev = mysqli_fetch_array(mysqli_query($conn, "SELECT id,revision FROM formulasMetaData WHERE fid = '".$_GET['fid']."'"));
+$role = (int)$user['role'];
+$userID = (int)$user['id'];
 
 $f = "WHERE fid = '".$_GET['fid']."' GROUP BY revision";
-$q = "SELECT id,name,fid,revision,revisionDate,revisionMethod FROM formulasRevisions $f $extra LIMIT $row, $limit";
+
+
+if ($role === 1) {
+    // Admin: No restrictions
+	$current_rev = mysqli_fetch_array(mysqli_query($conn, "SELECT id,revision FROM formulasMetaData WHERE fid = '".$_GET['fid']."'"));
+	$q = "SELECT id,name,fid,revision,revisionDate,revisionMethod FROM formulasRevisions $f $extra LIMIT $row, $limit";
+} else {
+    // Non-admin: Restrict to their own data
+    $current_rev = mysqli_fetch_array(mysqli_query($conn, "SELECT id,revision FROM formulasMetaData WHERE fid = '".$_GET['fid']."' AND owner_id = '$userID'"));
+    $q = "SELECT id,name,fid,revision,revisionDate,revisionMethod FROM formulasRevisions $f AND owner_id = '$userID' $extra LIMIT $row, $limit";
+}
+
+if(!$current_rev['id']){		
+	$response['error'] = (string)'Requested id is not valid.';    
+	echo json_encode($response);
+	return;
+}
 
 $sql = mysqli_query($conn, $q);
 
@@ -45,7 +62,6 @@ foreach ($revs as $rev) {
 $response = array(
   "draw" => (int)$_POST['draw'],
   "recordsTotal" => (int)$i,
-  "debug" => $q,
   "data" => $rx
 );
 

@@ -25,12 +25,12 @@ if ($_POST['action'] == 'login') {
         echo json_encode($response);
         return;
 	}
-
+    
     $email = mysqli_real_escape_string($conn, strtolower($_POST['email']));
     $password = $_POST['password'];
 
     // Fetch user details from the database
-    $result = mysqli_query($conn, "SELECT id, email, password FROM users WHERE email='$email'");
+    $result = mysqli_query($conn, "SELECT id, email, password, role FROM users WHERE email='$email'");
     if ($result && mysqli_num_rows($result) > 0) {
         $row = mysqli_fetch_assoc($result);
 
@@ -65,6 +65,7 @@ if ($_POST['action'] == 'login') {
             // Set session variables
             $_SESSION['parfumvault'] = true;
             $_SESSION['userID'] = $row['id'];
+            $_SESSION['role'] = $row['role'];
 
             // Determine redirection
             $redirect = $_POST['do'] ? '/index.php?do=' . $_POST['do'] :

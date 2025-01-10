@@ -87,7 +87,7 @@ $ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
       </div>
       <div id="backupArea">
           <div class="form-group">
-              <label class="col-md-3 control-label">Backup file:</label>
+              <label class="col-md-3 control-label">Backup file</label>
               <div class="col-md-8">
                  <input type="file" name="backupFile" id="backupFile" class="form-control" />
               </div>
