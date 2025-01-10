@@ -6,7 +6,6 @@ define('__ROOT__', dirname(dirname(__FILE__)));
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
-
 require_once(__ROOT__.'/func/calcCosts.php');
 require_once(__ROOT__.'/func/calcPerc.php');
 require_once(__ROOT__.'/func/checkIng.php');
@@ -15,11 +14,31 @@ require_once(__ROOT__.'/func/ml2L.php');
 require_once(__ROOT__.'/func/countElement.php');
 require_once(__ROOT__.'/func/getIngSupplier.php');
 require_once(__ROOT__.'/func/getCatByID.php');
-
 require_once(__ROOT__.'/func/validateFormula.php');
 
+// Get user role and ID
+$role = (int)$user['role'];
+$userID = (int)$user['id'];
+
+
 if(!$_REQUEST['id']){		
-	$response['data'] = [];    
+	$response['data'] = [];  
+	$response['error'] = "Invalid or missing ID.";  
+	header('Content-Type: application/json; charset=utf-8');
+	echo json_encode($response);
+	return;
+}
+$id = mysqli_real_escape_string($conn, $_REQUEST['id']);
+
+// Define SQL queries based on user role
+$query = $role === 1
+    ? "SELECT name,fid,catClass,finalType,defView,isProtected,notes,product_name,owner_id FROM formulasMetaData WHERE id = '$id'"
+    : "SELECT name,fid,catClass,finalType,defView,isProtected,notes,product_name,owner_id FROM formulasMetaData WHERE owner_id = '$userID' AND id = '$id'";
+
+$meta = mysqli_fetch_array(mysqli_query($conn, $query));
+
+if (!$meta || !$meta['fid']) {
+	$response['error'] = "Requested ID is not valid or you do not have access.";
 	header('Content-Type: application/json; charset=utf-8');
 	echo json_encode($response);
 	return;
@@ -31,11 +50,6 @@ if($_GET['qStep']){
 
 $defPercentage = $settings['defPercentage'];
 
-		 
-		 
-$id = mysqli_real_escape_string($conn, $_REQUEST['id']);
-
-$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT name,fid,catClass,finalType,defView,isProtected,notes,product_name FROM formulasMetaData WHERE id = '$id'"));
 
 if(!$meta['fid']){		
 	$response['Error'] = (string)'Requested id is not valid.';    
@@ -121,20 +135,8 @@ while ($formula = mysqli_fetch_array($formula_q)){
 foreach ($form as $formula){
 	
 	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT id, name, cas, $defCatClass, profile, odor, category, physical_state,usage_type AS classification, type, byPassIFRA FROM ingredients WHERE name = '".$formula['ingredient']."'"));
-	/*
-	$reps = mysqli_query($conn,"SELECT ing_rep_name FROM ingReplacements WHERE ing_name = '".$formula['ingredient']."'");
-	if (mysqli_num_rows($reps)==0) { 
-		$reps = mysqli_query($conn,"SELECT ing_name FROM ingReplacements WHERE ing_rep_name = '".$formula['ingredient']."'");
-	}
-	while($replacements = mysqli_fetch_array($reps)){
-		$replacement[] = $replacements;
-	}
-	*/
 	$totalcontainsOthers = mysqli_num_rows(mysqli_query($conn, "SELECT name,$defPercentage,cas FROM ingredient_compounds WHERE ing = '".$formula['ingredient']."'"));
-	
-	
 	$inventory = mysqli_fetch_array(mysqli_query($conn, "SELECT stock,mUnit,batch,purchased FROM suppliers WHERE ingID = '".$ing_q['id']."' AND preferred = '1'"));
-	
 	$conc = $formula['concentration'] / 100 * $formula['quantity']/$mg['total_mg'] * 100;
   	$conc_final = $formula['concentration'] / 100 * $formula['quantity']/$mg['total_mg'] * $meta['finalType'];
 	

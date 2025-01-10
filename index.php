@@ -77,11 +77,6 @@ $(document).ready(function() {
 			$('#release_notes').modal('show');
 		<?php } ?>
 	
-		// Check for formulas list
-		<?php if ($_GET['do'] === 'listFormulas') { ?>
-			listFormulas();
-		<?php } ?>
-	
 		// Check for version updates if needed
 	<?php 
 	if (isset($disable_updates)) {
@@ -100,19 +95,6 @@ $(document).ready(function() {
 
 	});
 	
-	// Function to list formulas
-	function listFormulas() {
-		$.ajax({
-			url: '/pages/listFormulas.php',
-			dataType: 'html',
-			success: function (data) {
-				$('#list_formulas').html(data);
-			},
-			error: function () {
-				$('#list_formulas').html('<div class="alert alert-danger">Failed to load formulas. Please try again later.</div>');
-			}
-		});
-	};
 	
 	// Function to update the system
 	function updateSYS() {
@@ -291,23 +273,7 @@ $(document).ready(function() {
       } elseif ($_GET['do'] == 'IFRA') {
           require_once(__ROOT__.'/pages/views/regulatory/IFRA.php');
       } elseif ($_GET['do'] == 'listFormulas') {
-    ?>
-        <div id="content-wrapper" class="d-flex flex-column">
-          <?php require_once(__ROOT__.'/pages/top.php'); ?>
-          <div class="container-fluid">
-            <div>
-              <div class="card shadow mb-4">
-                <div id="list_formulas">
-                  <div class="loader-center">
-                    <div class="loader"></div>
-                    <div class="loader-text"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-    <?php
+          require_once(__ROOT__.'/pages/listFormulas.php');   
       } elseif ($_GET['do'] == 'genFinishedProduct') {
           require_once(__ROOT__.'/pages/genFinishedProduct.php');        
       } elseif ($_GET['do'] == 'bottles') {
@@ -335,9 +301,9 @@ $(document).ready(function() {
       } else {
           require_once(__ROOT__.'/pages/dashboard.php');
       }
+      
+      require_once(__ROOT__.'/pages/footer.php'); 
     ?>
-    
-    <?php require_once(__ROOT__.'/pages/footer.php'); ?>
 
     <!-- TOAST -->
     <div class="position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 11">

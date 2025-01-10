@@ -46,7 +46,7 @@ if($pv_meta['schema_ver'] < $db_ver){
             
             <div class="topbar-divider d-none d-sm-block"></div>
             <li class="nav-item dropdown no-arrow">
-            	<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            	<a class="mx-4 nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span class="mx-2 d-none d-lg-inline text-white small"><?php echo $user['fullName'];?></span>
                	<div class="icon-container">
                      <?php if ($doc['avatar']){ ?>

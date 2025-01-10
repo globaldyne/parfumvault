@@ -48,10 +48,11 @@ $(document).ready(function() {
 		mark: true,
 		language: {
 			loadingRecords: '&nbsp;',
-			processing: 'Please Wait...',
-			zeroRecords: 'Nothing found',
-			search: 'Quick Search:',
-			searchPlaceholder: 'Name..',
+			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
+			emptyTable: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>No entries yet</strong></div></div>',
+			zeroRecords: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>Nothing found</strong></div></div>',
+			search: '',
+			searchPlaceholder: 'Search by name...',
 		},
 		buttons: [{
         	extend: "csv",
@@ -114,7 +115,12 @@ $(document).ready(function() {
 	}
 	
 	function actions(data, type, row){
-		return '<i rel="tip" title="Remove '+ row.name +'" class="pv_point_gen fas fa-trash link-danger" id="cart_remove" data-name="'+ row.name +'" data-id='+ row.id +'></i>';    
+		data = '<div class="dropdown">' +
+		'<button type="button" class="btn btn-floating hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+			'<ul class="dropdown-menu">';
+		data += '<li><a class="dropdown-item text-danger" href="#" id="cart_remove" data-name="'+ row.name +'" data-id='+ row.id +'><i class="fas fa-trash mx-2"></i>Remove</a></i>';    
+		data += '</ul></div>';
+		return data;
 	}
 	
 	function reload_cart_data() {

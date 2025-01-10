@@ -117,6 +117,8 @@ var isProtected = true;
 <?php } ?>
 var reCalc=0;
 $(document).ready(function() {
+	$.fn.dataTable.ext.errMode = 'none';
+
   	var groupColumn = 0;
   	var formula_table = $('#formula').DataTable( {
 		columnDefs: [
@@ -280,7 +282,10 @@ $(document).ready(function() {
             });
 			extrasShow();
 	   }
-	});
+	}).on('error.dt', function(e, settings, techNote, message) {
+            var m = message.split(' - ');
+            $('#fetch_formula').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i><strong>' + m[1] + '</strong></div>');
+    });
 	
 	formula_table.on('click', '.expandAccord', function (e) {
 		let tr = $(this).closest('tr');

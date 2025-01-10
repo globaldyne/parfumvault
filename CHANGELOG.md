@@ -1,4 +1,20 @@
 # CHANGELOG
+### Version 12.4
+- Add dilutant in API formulas
+- API has been extended to provide IFRA library data
+- Rewritten the core upgrade process
+- Added update log history
+- Renamed Measurement Unit to Purchase Unit for ingredients supplier for better clarity
+- Restructure Index.php
+- Update empty table for cart
+- Update actions menu for cart
+- Update ingredients datatable empty table function
+- Various security updates across the app and user access management
+- Better error handling for datatables
+- Improve formula revisions
+- Remove formulas export menu if no formulas
+- Import formulas from a text
+
 ### Version 12.3
 - Fix API log file
 - PV Online has been renamed to PV Library

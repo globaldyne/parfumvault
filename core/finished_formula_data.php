@@ -15,8 +15,37 @@ require_once(__ROOT__.'/func/searchIFRA.php');
 require_once(__ROOT__.'/func/getIngSupplier.php');
 require_once(__ROOT__.'/func/validateFormula.php');
 
-if(!$_POST['id']){		
+$role = (int)$user['role'];
+$userID = (int)$user['id'];
+
+if (!$_POST['id']) {		
 	$response['data'] = [];    
+	header('Content-Type: application/json; charset=utf-8');
+	echo json_encode($response);
+	return;
+}
+
+// Secure input
+$id = mysqli_real_escape_string($conn, $_POST['id']);
+
+// Adjust query based on role
+if ($role === 1) {
+    // Admin can fetch all data
+    $metaQuery = "SELECT name, fid, catClass, finalType, defView, isProtected, notes, product_name 
+                  FROM formulasMetaData WHERE id = '$id'";
+} else {
+    // Non-admin users can only access their own data
+    $metaQuery = "SELECT name, fid, catClass, finalType, defView, isProtected, notes, product_name 
+                  FROM formulasMetaData 
+                  WHERE id = '$id' AND owner_id = '$userID'";
+}
+
+// Fetch metadata
+$metaResult = mysqli_query($conn, $metaQuery);
+$meta = mysqli_fetch_array($metaResult);
+
+if (!$meta || !$meta['fid']) {		
+	$response['error'] = 'Requested id is not valid or unauthorized access.';    
 	header('Content-Type: application/json; charset=utf-8');
 	echo json_encode($response);
 	return;
@@ -75,7 +104,12 @@ if($_POST['batch_id'] == '1'){
 }
 
 
-$formula_q = mysqli_query($conn, "SELECT id,ingredient,concentration,quantity FROM formulas WHERE fid = '".$meta['fid']."' ORDER BY ingredient ASC");
+$formulaQuery = ($role === 1)
+    ? "SELECT id, ingredient, concentration, quantity FROM formulas WHERE fid = '".$meta['fid']."' ORDER BY ingredient ASC"
+    : "SELECT id, ingredient, concentration, quantity FROM formulas WHERE fid = '".$meta['fid']."' AND owner_id = '$userID' ORDER BY ingredient ASC";
+
+$formula_q = mysqli_query($conn, $formulaQuery);
+
 while ($formula = mysqli_fetch_array($formula_q)){
 	    $form[] = $formula;
 }

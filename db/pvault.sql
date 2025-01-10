@@ -320,6 +320,13 @@ CREATE TABLE `pv_meta` (
   `updated_at_at` timestamp on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
+CREATE TABLE update_history (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    prev_ver VARCHAR(10) NOT NULL COMMENT 'Previous schema version',
+    new_ver VARCHAR(10) NOT NULL COMMENT 'New schema version',
+    update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'Timestamp of the update'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Tracks schema update history';
+
 CREATE TABLE `settings` (
   `id` int(11) NOT NULL,
   `currency` varchar(255) NOT NULL DEFAULT '£',
@@ -361,9 +368,12 @@ INSERT INTO `settings` (`id`, `currency`, `top_n`, `heart_n`, `base_n`, `chem_vs
 
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
-  `email` varchar(255) COLLATE utf8_general_ci NOT NULL,
-  `password` varchar(255) COLLATE utf8_general_ci NOT NULL,
-  `fullName` varchar(255) COLLATE utf8_general_ci NOT NULL
+  `email` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `fullName` varchar(255) NOT NULL,
+  `role` INT NOT NULL DEFAULT '1',
+  `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 

@@ -1,4 +1,14 @@
-Whats New in v12.3
+Whats New in v12.4
 --------------------------
-- PV Online has been renamed to PV Library
+- API has been extended to provide IFRA library data
+- Rewritten the core upgrade process
+- Renamed Measurement Unit to Purchase Unit for ingredients supplier for better clarity
+- Update empty table for cart
+- Update actions menu for cart
+- Update ingredients datatable empty table function
+- Various security updates across the app and user access management
+- Better error handling for datatables
+- Improve formula revisions
+- Remove formulas export menu if no formulas
+- Import formulas from a text
 - This release may include more changes, for full details please refer to the CHANGELOG

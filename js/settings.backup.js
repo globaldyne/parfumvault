@@ -34,15 +34,25 @@ $("#backupFile").change(function(){
 	var file = this.files[0];
 	var fileType = file.type;
 	var fileSize = file.size;
+	var fileName = file.name;
+	var regex = /^[a-zA-Z0-9._-]+$/;
+
 	$("#DBRestMsg").html('');
 	var fileSizePHP = $("#raw").data("size");
 	if(!allowedTypes.includes(fileType)){
-		$("#DBRestMsg").html('<div class="alert alert-info">Invalid backup file selected. Please select a file exported from PV backup.</div>');
+		$("#DBRestMsg").html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>Invalid backup file selected. Please select a file exported from PV backup.</div>');
 		$("#backupFile").val('');
 		$("#btnRestore").prop("disabled", true);
 		return false;
 	}
-	
+
+	if (!regex.test(fileName)) {
+		$("#DBRestMsg").html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>Invalid characters in file name. Please select a file exported from PV backup.</div>');
+		$("#backupFile").val('');
+		$("#btnRestore").prop("disabled", true);
+		return false;
+	}
+
 	if (fileSize > fileSizePHP){
 		$("#DBRestMsg").html('<div class="alert alert-info">File size <strong>('+formatBytes(fileSize)+')</strong> is exceeding your server file upload limit '+ formatBytes(fileSizePHP)+'</div>');
 		$("#backupFile").val('');
@@ -96,7 +106,7 @@ $('#btnRestore').click(function() {
 				$("#backupArea").css('display', 'none');
 
 			}else if(data.error){
-				var msg = '<div class="alert alert-danger">'+data.error+'</div>';
+				var msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>'+data.error+'</div>';
 				$("#btnRestore").show();
 				$("#btnRestore").prop("disabled", false);
 				$('#btnRestore').prop('value', 'Restore');

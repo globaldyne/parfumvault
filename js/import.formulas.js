@@ -2,6 +2,43 @@
 IMPORT FORMULAS JSON
 */
 
+//RESTORE
+$('#addtxtFormula').click(function(event) {
+	event.preventDefault(); // Prevent default form submission
+
+	// Disable form elements
+	$('#txtImpName, #txtImpFormula, #addtxtFormula').prop('disabled', true);
+	$('#close_imp_txt').prop('disabled', true);
+
+	$.ajax({
+		url: '/core/core.php',
+		type: 'POST',
+		data: {
+			action: 'importTXTFormula',
+			formulaName: $('#txtImpName').val(),
+			formulaData: $('#txtImpFormula').val(),
+		},
+		dataType: 'json',
+		success: function(data) {
+			if(data.success){
+				$('#txtImpMsg').html('<div class="alert alert-success"><i class="fa-regular fa-circle-check mx-2"></i>' + data.success + '</div>');
+				$('#all-table').DataTable().ajax.reload(null, true);
+			} else {
+				$('#txtImpMsg').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>' + data.error + '</div>');
+			}
+		},
+		error: function(xhr, status, error) {
+			// Handle error
+			$('#txtImpMsg').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>Error: ' + error + '</div>');
+		},
+		complete: function() {
+			// Re-enable form elements
+			$('#txtImpName, #txtImpFormula, #addtxtFormula, #close_imp_txt').prop('disabled', false);
+		}
+	});
+});
+
+
 function uploadProgressHandler(event) {
 	$("#loaded_n_total").html("Uploaded " + event.loaded + " bytes of " + event.total);
 	var percent = (event.loaded / event.total) * 100;

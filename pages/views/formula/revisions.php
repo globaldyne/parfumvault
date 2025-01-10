@@ -27,6 +27,7 @@
 
 <script>
 $(document).ready(function() {
+	$.fn.dataTable.ext.errMode = 'none';
 
 	$('[data-bs-toggle="tooltip"]').tooltip();
 		var tdRevisions = $('#tdRevisions').DataTable( {
@@ -81,7 +82,10 @@ $(document).ready(function() {
 			 type: "POST"
 		  });
 		}
-	});
+	}).on('error.dt', function(e, settings, techNote, message) {
+        var m = message.split(' - ');
+        $('#fetch_revisions').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i><strong>' + m[1] + '</strong></div>');
+    });
 
 
 	function actions(data, type, row){
