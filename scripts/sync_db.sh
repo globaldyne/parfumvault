@@ -34,7 +34,7 @@ generate_diff() {
 # Function to update the database schema
 apply_updates() {
     echo "Applying updates to the database..."
-    mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" < "$SQL_FILE"
+    mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASS" "$DB_NAME" < "$SQL_FILE"
     if [ $? -ne 0 ]; then
         echo "Error applying updates. Please check your SQL file."
         exit 1
