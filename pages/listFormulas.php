@@ -53,33 +53,41 @@ $cFormoulas = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaDa
                                         <i class="fa-solid fa-plus mx-2"></i>Add new formula
                                     </a>
                                 </li>
-                                <li>
-                                    <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#add_formula_csv">
-                                        <i class="fa-solid fa-file-csv mx-2"></i>Import from CSV
-                                    </a>
-                                </li>
+
                                 <div class="dropdown-divider"></div>
                                 <li>
                                     <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#add_formula_cat">
                                         <i class="fa-solid fa-circle-plus mx-2"></i>Create formula category
                                     </a>
                                 </li>
+								<?php if ($cFormoulas) { ?>
                                 <div class="dropdown-divider"></div>
                                 <li>
                                     <a class="dropdown-item" href="/core/core.php?action=exportFormulas">
-                                        <i class="fa-solid fa-file-export mx-2"></i>Export Formulas as JSON
+                                        <i class="fa-solid fa-file-export mx-2"></i>Export all formulas as JSON
+                                    </a>
+                                </li>
+								<?php } ?>
+                                <li>
+                                    <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#import_formulas_json">
+                                        <i class="fa-solid fa-file-import mx-2"></i>Import from JSON
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#import_formulas_json">
-                                        <i class="fa-solid fa-file-import mx-2"></i>Import Formulas from JSON
+                                    <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#add_formula_csv">
+                                        <i class="fa-solid fa-file-csv mx-2"></i>Import from CSV
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#add_formula_text">
+                                        <i class="fa-solid fa-file-lines mx-2"></i>Import from text
                                     </a>
                                 </li>
                                 <?php if ($cFormoulas) { ?>
                                 <div class="dropdown-divider"></div>
                                 <li>
                                     <a class="dropdown-item text-danger" href="#" id="wipe_all_formulas">
-                                        <i class="fa-solid fa-trash mx-2"></i>Delete all
+                                        <i class="fa-solid fa-trash mx-2"></i>Delete all formulas
                                     </a>
                                 </li>
                                 <?php } ?>
@@ -996,5 +1004,38 @@ $(document).ready(function() {
     </div>
   </div>
 </div>
+
+<!-- IMPORT FROM TEXT -->
+<div class="modal fade" id="add_formula_text" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Paste a formula in text format</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      
+      <div class="modal-body">
+        <div id="txtImpMsg" class="mb-3"></div>
+	    <div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i>We will try to automatically match the provided format, although please refer to the guide <a href="https://www.perfumersvault.com/knowledge-base/import-formula-from-text/" target="_blank" class="text-link">here</a> for the right format.</div>
+        <div class="form-floating mb-3">
+          <input type="text" class="form-control" id="txtImpName" name="fcatName" placeholder="Formula name">
+          <label for="txtImpName">Formula Name</label>
+        </div>
+
+        <div class="form-floating">
+          <textarea class="form-control" id="txtImpFormula" name="txtImpFormula" placeholder="Formula in text format" style="height: 150px;"></textarea>
+          <label for="txtImpFormula">Formula in text format</label>
+        </div>
+      </div>
+	  
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="close_imp_txt">Cancel</button>
+        <button type="submit" name="btn-txtFormula" class="btn btn-primary" id="addtxtFormula">Import</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 
 <script src="/js/import.formulas.js"></script>

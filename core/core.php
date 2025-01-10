@@ -14,6 +14,124 @@ require_once(__ROOT__.'/func/sanChar.php');
 require_once(__ROOT__.'/func/priceScrape.php');
 require_once(__ROOT__.'/func/create_thumb.php');
 
+$userID = (int)$user['id'];
+$role = (int)$user['role'];
+
+//IMPORT FORMULA FROM TEXT
+if ($_POST['action'] == 'importTXTFormula') {
+    require_once(__ROOT__ . '/func/genFID.php');
+
+    $formulaName = isset($_POST['formulaName']) ? trim($_POST['formulaName']) : '';
+    $formulaData = isset($_POST['formulaData']) ? trim($_POST['formulaData']) : '';
+
+    $response = [];
+
+    if (empty($formulaName) || empty($formulaData)) {
+        $response['error'] = 'Formula name and data are required.';
+        echo json_encode($response);
+        return;
+    }
+
+	// Replace commas with dots in formula data
+	$formulaData = str_replace(',', '.', $formulaData);
+    // Check if formula name exists
+    $query = "SELECT COUNT(*) as count FROM formulasMetaData WHERE name = ? AND owner_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param('si', $formulaName, $userID);
+
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+
+    if ($row['count'] > 0) {
+        $response['error'] = 'Formula name already exists.';
+        echo json_encode($response);
+        return;
+    }
+
+    // Insert new formula metadata
+    $fid = random_str(40, '1234567890abcdefghijklmnopqrstuvwxyz');
+    $notes = "Imported via text";
+
+    $insertQuery = "INSERT INTO formulasMetaData (fid, name, notes, owner_id) VALUES (?, ?, ?, ?)";
+    $stmt = $conn->prepare($insertQuery);
+    $stmt->bind_param('sssi', $fid, $formulaName, $notes, $userID);
+
+    if ($stmt->execute()) {
+        // Get the last inserted ID
+        $last_id = $conn->insert_id;
+
+        // Parse and insert formula data
+        $rows = explode("\n", $formulaData);
+        $formulaInsertSuccess = true;
+
+        foreach ($rows as $row) {
+            // Match flexible patterns for quantity, ingredient name, and percentage
+            if (preg_match('/^(\d+(\.\d+)?)\s+(.+?)(\d+(\.\d+)?%)?$|(.+?)\s*(\d+(\.\d+)?%)?\s+(\d+(\.\d+)?)$/', $row, $matches)) {
+                if (!empty($matches[1])) {
+                    // Format: Quantity first (e.g., "5.00 phenyl acetaldehyde 50%")
+                    $quantity = floatval($matches[1]);
+                    $ingredient = trim($matches[3]);
+                    $percentage = isset($matches[4]) ? floatval($matches[4]) : 100;
+                } else {
+                    // Format: Quantity last (e.g., "phenyl acetaldehyde 50% 5")
+                    $quantity = floatval($matches[9]);
+                    $ingredient = trim($matches[6]);
+                    $percentage = isset($matches[7]) ? floatval($matches[7]) : 100;
+                }
+
+                $dilutant = $percentage < 100 ? 'DPG' : 'None';
+
+                // Clean up the ingredient name
+                $baseIngredient = preg_replace('/\s*\d+(\.\d+)?%\s*/', '', $ingredient);
+                $baseIngredient = ucwords($baseIngredient);
+
+                // Check if the ingredient exists in the database
+                $getIngQuery = "SELECT id FROM ingredients WHERE name = ?";
+                $getIngStmt = $conn->prepare($getIngQuery);
+                $getIngStmt->bind_param('s', $baseIngredient);
+                $getIngStmt->execute();
+                $getIngResult = $getIngStmt->get_result();
+                $ingredientRow = $getIngResult->fetch_assoc();
+
+                $ingredient_id = $ingredientRow['id'] ?? 0; // Use ID if found, otherwise 0
+
+                // Insert into formulas table
+                $ingredientQuery = "INSERT INTO formulas (fid, name, ingredient_id, ingredient, quantity, concentration, dilutant) VALUES (?, ?, ?, ?, ?, ?, ?)";
+                $ingredientStmt = $conn->prepare($ingredientQuery);
+                $ingredientStmt->bind_param('ssisdss', $fid, $formulaName, $ingredient_id, $baseIngredient, $quantity, $percentage, $dilutant);
+
+                if (!$ingredientStmt->execute()) {
+                    $formulaInsertSuccess = false;
+                    break;
+                }
+            }
+        }
+
+        // Insert tag associated with the formula
+        if ($formulaInsertSuccess) {
+            $tagQuery = "INSERT INTO formulasTags (formula_id, tag_name) VALUES (?, 'Imported formula')";
+            $tagStmt = $conn->prepare($tagQuery);
+            $tagStmt->bind_param('i', $last_id);
+
+            if ($tagStmt->execute()) {
+                $response['success'] = 'Formula imported successfully.';
+            } else {
+                $response['error'] = 'Failed to insert formula tag.';
+            }
+        } else {
+            $response['error'] = 'Failed to insert formula data.';
+        }
+    } else {
+        $response['error'] = 'Failed to import formula metadata.';
+    }
+
+    // Return JSON response
+    echo json_encode($response);
+    return;
+}
+
+
 if($_GET['update_user_avatar']){
 	$allowed_ext = "png, jpg, jpeg, gif, bmp";
 
@@ -1525,10 +1643,10 @@ if($_GET['createRev'] == 'man'){
 	$fid = $_GET['fid'];
 	
 	if($l = createFormulaRevision($fid,'Manually',$conn)){
-		$response["success"] = 'Revision created (If changes detected)';
+		$response["success"] = 'Revision created';
 		echo json_encode($response);
 	}else{
-		$response["error"] = 'Unable to create revision, please make sure formula exists and contains at least one ingredient.';
+		$response["error"] = 'No changes detected in formula';
 		echo json_encode($response);
 	}
 	return;
