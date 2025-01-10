@@ -34,12 +34,10 @@ function createFormulaRevision($fid, $method, $conn){
 		if(compareFormula($formula_rev, $formula_a, array('ingredient','concentration','dilutant','quantity','notes'),null, null)){
 			mysqli_query($conn, $q);
 			mysqli_query($conn, $q_meta);
+			return true;
 		}
-	}else{
-		mysqli_query($conn, $q);
-		mysqli_query($conn, $q_meta);
 	}
-	return true;
+	return false;
 	
 }
 ?>

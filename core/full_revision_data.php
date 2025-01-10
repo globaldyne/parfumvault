@@ -20,7 +20,16 @@ $fid = $_GET['fid'];
 $revID = $_GET['revID'];
 $i = 0;
 
-$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT fid FROM formulasMetaData WHERE fid = '$fid'"));
+$role = (int)$user['role'];
+$userID = (int)$user['id'];
+
+if ($role === 1) {
+	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT fid FROM formulasMetaData WHERE fid = '$fid'"));
+	$sql = "SELECT * FROM formulasRevisions WHERE fid = '".$fid."' AND revision = '".$revID."'";
+} else {
+    $meta = mysqli_fetch_array(mysqli_query($conn, "SELECT fid FROM formulasMetaData WHERE fid = '$fid' AND owner_id = '$userID'"));
+    $sql = "SELECT * FROM formulasRevisions WHERE fid = '".$fid."' AND revision = '".$revID."' AND owner_id = '$userID' ORDER BY revisionDate DESC";
+}
 
 if(!$meta['fid']){		
 	$response['Error'] = (string)'Requested id is not valid.';    
@@ -28,7 +37,6 @@ if(!$meta['fid']){
 	return;
 }
 
-$sql = "SELECT * FROM formulasRevisions WHERE fid = '".$fid."' AND revision = '".$revID."'";
 
 $q = mysqli_query($conn, $sql);
 while ($res = mysqli_fetch_array($q)){

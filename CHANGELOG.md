@@ -1,6 +1,5 @@
 # CHANGELOG
 ### Version 12.4
-- Remove password hashing detection
 - Add dilutant in API formulas
 - API has been extended to provide IFRA library data
 - Rewritten the core upgrade process
@@ -12,6 +11,9 @@
 - Update ingredients datatable empty table function
 - Various security updates across the app and user access management
 - Better error handling for datatables
+- Improve formula revisions
+- Remove formulas export menu if no formulas
+- Import formulas from a text
 
 ### Version 12.3
 - Fix API log file
