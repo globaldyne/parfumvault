@@ -26,7 +26,8 @@ RUN microdnf --setopt=tsflags=nodocs -y install \
 	mysql \
 	ncurses \
 	nginx \
-	procps-ng 
+	procps-ng \
+	diffutils
 
 
 
