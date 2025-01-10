@@ -1,9 +1,11 @@
 #!/bin/bash
 
 echo "----------------------------------"
-echo "READY - Perfumer's Vault Ver $(cat /html/VERSION.md)"
-echo "Starting web server"
+echo "Starting Perfumers Vault Ver $(cat /html/VERSION.md)"
 
+# Configuration
+RETRY_INTERVAL=5 # Retry every 5 seconds
+MAX_RETRIES=6    # Retry for up to 30 seconds (6 * 5 seconds)
 
 # Ensure required directories exist
 if [ ! -d "/tmp/php" ]; then
