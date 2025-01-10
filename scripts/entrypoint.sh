@@ -53,12 +53,12 @@ while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
             touch "$ERROR_LOG"
         fi
 
-        # Execute the add_role_column.sh script
-        /usr/bin/add_role_column.sh
+        # Execute the sync_db.sh script
+        /usr/bin/sync_db.sh
         if [ $? -eq 0 ]; then
-            echo "add_role_column.sh executed successfully."
+            echo "Database is up to date."
         else
-            echo "add_role_column.sh execution failed. Please check the logs."
+            echo "sync_db script failed. Please check the logs."
         fi
 
         # Tail error logs
