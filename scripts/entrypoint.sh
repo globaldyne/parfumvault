@@ -22,6 +22,7 @@ else
     echo "Failed to start nginx."
 fi
 touch /tmp/php-fpm-www-error.log
+/usr/bin/add_role_column.sh
+
 tail -f /tmp/php-fpm-www-error.log
 
-/usr/bin/add_role_column.sh
