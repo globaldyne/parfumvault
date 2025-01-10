@@ -54,12 +54,12 @@ while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
         fi
 
         # Execute the sync_db.sh script
-        /usr/bin/sync_db.sh
-        if [ $? -eq 0 ]; then
-            echo "Database is up to date."
-        else
-            echo "sync_db script failed. Please check the logs."
-        fi
+        #/usr/bin/sync_db.sh
+        #if [ $? -eq 0 ]; then
+        #    echo "Database is up to date."
+        #else
+        #    echo "sync_db script failed. Please check the logs."
+        #fi
 
         # Tail error logs
         echo "Tailing error logs from $ERROR_LOG..."
