@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 12.5
+
 ### Version 12.4
 - Add dilutant in API formulas
 - API has been extended to provide IFRA library data
