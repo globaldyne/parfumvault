@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 12.5
+- Added auto DB schema sync
 
 ### Version 12.4
 - Add dilutant in API formulas

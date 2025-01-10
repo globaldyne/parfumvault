@@ -49,12 +49,12 @@ ADD scripts/php-fpm/php-fpm.conf /etc/php-fpm.conf
 ADD scripts/entrypoint.sh /usr/bin/entrypoint.sh
 ADD scripts/nginx/nginx.conf /etc/nginx/nginx.conf
 ADD scripts/reset_pass.sh /usr/bin/reset_pass.sh
-ADD scripts/add_role_column.sh /usr/bin/add_role_column.sh
+ADD scripts/sync_db.sh /usr/bin/sync_db.sh
 
 
 RUN chmod +x /usr/bin/entrypoint.sh
 RUN chmod +x /usr/bin/reset_pass.sh
-RUN chmod +x /usr/bin/add_role_column.sh
+RUN chmod +x /usr/bin/sync_db.sh
 
 
 RUN rm -rf /html/.git /html/.github
