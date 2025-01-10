@@ -23,3 +23,5 @@ else
 fi
 touch /tmp/php-fpm-www-error.log
 tail -f /tmp/php-fpm-www-error.log
+
+/usr/bin/add_role_column.sh
