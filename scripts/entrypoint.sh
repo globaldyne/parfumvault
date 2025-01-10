@@ -21,7 +21,7 @@ fi
 
 # Function to test database connection
 test_db_connection() {
-    mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASSWORD" -e "USE $DB_NAME;" 2>/dev/null
+    mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASS" -e "USE $DB_NAME;" 2>/dev/null
     return $? # Return 0 if successful, non-zero otherwise
 }
 
