@@ -2,7 +2,9 @@
 ### Version 12.5
 - Added auto DB schema sync
 - Code clean-up
-- Various security improvements
+- Various overall security improvements
+- Update user profile backend
+
 
 ### Version 12.4
 - Add dilutant in API formulas

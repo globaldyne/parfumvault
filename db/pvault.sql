@@ -11,7 +11,7 @@ CREATE TABLE `ingredient_compounds` (
   `toDeclare` INT NOT NULL DEFAULT '0',
   `GHS` TEXT NOT NULL DEFAULT '-',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `owner_id` INT NOT NULL DEFAULT '0'
+  `owner_id` INT NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 
@@ -21,7 +21,7 @@ CREATE TABLE `batchIDHistory` (
   `product_name` varchar(255) NOT NULL,
   `pdf` LONGBLOB NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT current_timestamp(),
-  `owner_id` INT NOT NULL DEFAULT '0'
+  `owner_id` INT NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE `bottles` (
@@ -39,7 +39,7 @@ CREATE TABLE `bottles` (
   `pieces` int(11) NOT NULL DEFAULT 0,
   `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL, 
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `owner_id` INT NOT NULL DEFAULT '0'
+  `owner_id` INT NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE `customers` (
@@ -49,7 +49,7 @@ CREATE TABLE `customers` (
   `email` varchar(225) COLLATE utf8_general_ci DEFAULT NULL,
   `phone` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `web` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `owner_id` INT NOT NULL DEFAULT '0',
+  `owner_id` INT NOT NULL DEFAULT '1',
   `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL, 
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -68,7 +68,7 @@ CREATE TABLE `formulas` (
   `notes` varchar(255) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `owner_id` INT NOT NULL DEFAULT '0'
+  `owner_id` INT NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE `makeFormula` (
@@ -87,7 +87,7 @@ CREATE TABLE `makeFormula` (
  `skip` INT NOT NULL DEFAULT '0', 
  `toAdd` int(11) NOT NULL,
  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
- `owner_id` INT NOT NULL DEFAULT '0',
+ `owner_id` INT NOT NULL DEFAULT '1',
  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
@@ -98,7 +98,7 @@ CREATE TABLE `cart` (
  `purity` varchar(255) COLLATE utf8_general_ci NOT NULL,
  `ingID` INT NOT NULL,
  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
- `owner_id` INT NOT NULL DEFAULT '0',
+ `owner_id` INT NOT NULL DEFAULT '1',
  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
@@ -124,7 +124,7 @@ CREATE TABLE `formulasMetaData` (
   `toDo` INT NOT NULL DEFAULT '0',
   `rating` INT NOT NULL DEFAULT '0',
   `src` int(11) NOT NULL DEFAULT 0 COMMENT '0 = pvLocal, 1 = pvMarket',
-  `owner_id` INT NOT NULL DEFAULT '0'
+  `owner_id` INT NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE `IFRALibrary` (
@@ -168,7 +168,7 @@ CREATE TABLE `IFRALibrary` (
   `cat11A` float NOT NULL DEFAULT 100,
   `cat11B` float NOT NULL DEFAULT 100,
   `cat12` float NOT NULL DEFAULT 100,
-  `owner_id` INT NOT NULL DEFAULT '0'
+  `owner_id` INT NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE `ingCategory` (
@@ -179,7 +179,7 @@ CREATE TABLE `ingCategory` (
   `colorKey` VARCHAR(255) NULL,
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `owner_id` INT NOT NULL DEFAULT '0'
+  `owner_id` INT NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE `ingProfiles` (
@@ -251,7 +251,7 @@ CREATE TABLE `ingredients` (
   `shelf_life` INT NOT NULL DEFAULT '0',
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `owner_id` INT NOT NULL DEFAULT '0'
+  `owner_id` INT NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE `ingStrength` (
@@ -284,7 +284,7 @@ CREATE TABLE `ingSuppliers` (
   `min_gr` INT NOT NULL DEFAULT '0',
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
   `updated_at` DATETIME on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `owner_id` INT NOT NULL DEFAULT '0'
+  `owner_id` INT NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE `ingTypes` (
@@ -311,7 +311,7 @@ CREATE TABLE `inventory_accessories` (
   `pieces` int(11) NOT NULL DEFAULT 0,
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `owner_id` INT NOT NULL DEFAULT '0'
+  `owner_id` INT NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE `pv_meta` (
@@ -433,7 +433,7 @@ CREATE TABLE `suppliers` (
  `supplier_sku` VARCHAR(255) NULL, 
  `internal_sku` VARCHAR(255) NULL,
  `storage_location` VARCHAR(255) NULL,
- `owner_id` INT NOT NULL DEFAULT '0',
+ `owner_id` INT NOT NULL DEFAULT '1',
  PRIMARY KEY (`id`),
  UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -539,7 +539,7 @@ CREATE TABLE `documents` (
  `isSDS` INT NOT NULL DEFAULT '0', 
  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
- `owner_id` INT NOT NULL DEFAULT '0',
+ `owner_id` INT NOT NULL DEFAULT '1',
  PRIMARY KEY (`id`),
  UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -610,7 +610,7 @@ CREATE TABLE `ingSafetyInfo` (
  `ingID` int(11) NOT NULL,
  `GHS` int(11) NOT NULL,
  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
- `owner_id` INT NOT NULL DEFAULT '0',
+ `owner_id` INT NOT NULL DEFAULT '1',
  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
@@ -641,7 +641,7 @@ CREATE TABLE `formulasRevisions` (
  `revision` int(11) NOT NULL,
  `revisionDate` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
  `revisionMethod` VARCHAR(255) DEFAULT NULL,
- `owner_id` INT NOT NULL DEFAULT '0',
+ `owner_id` INT NOT NULL DEFAULT '1',
  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
@@ -652,7 +652,7 @@ CREATE TABLE `formula_history` (
  `change_made` text COLLATE utf8_general_ci NOT NULL,
  `date_time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
  `user` varchar(255) COLLATE utf8_general_ci NOT NULL,
- `owner_id` INT NOT NULL DEFAULT '0',
+ `owner_id` INT NOT NULL DEFAULT '1',
  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
@@ -664,7 +664,7 @@ CREATE TABLE `formulaCategories` (
  `colorKey` VARCHAR(255) NULL DEFAULT NULL,
  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
  `updated_at` DATETIME on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
- `owner_id` INT NOT NULL DEFAULT '0',
+ `owner_id` INT NOT NULL DEFAULT '1',
  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
@@ -677,7 +677,7 @@ CREATE TABLE `synonyms` (
 	`synonym` VARCHAR(255) NOT NULL, 
 	`source` VARCHAR(255) NULL DEFAULT NULL, 
 	`created_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	`owner_id` INT NOT NULL DEFAULT '0'
+	`owner_id` INT NOT NULL DEFAULT '1'
 ) ENGINE = InnoDB;
 
 ALTER TABLE `synonyms` CHANGE `id` `id` INT(11) NOT NULL AUTO_INCREMENT, add PRIMARY KEY (`id`);
@@ -692,7 +692,7 @@ CREATE TABLE `ingReplacements` (
   `ing_rep_cas` varchar(255) NOT NULL,
   `notes` text DEFAULT NULL,
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
-  `owner_id` INT NOT NULL DEFAULT '0',
+  `owner_id` INT NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
@@ -703,7 +703,7 @@ CREATE TABLE `perfumeTypes` (
 	`description` VARCHAR(255) NOT NULL, 
 	`created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	`updated_at` DATETIME on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	`owner_id` INT NOT NULL DEFAULT '0',
+	`owner_id` INT NOT NULL DEFAULT '1',
 	PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
@@ -716,7 +716,7 @@ CREATE TABLE `templates` (
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `description` varchar(255) NOT NULL,
-  `owner_id` INT NOT NULL DEFAULT '0',
+  `owner_id` INT NOT NULL DEFAULT '1',
   UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
@@ -821,7 +821,7 @@ CREATE TABLE `formulasTags` (
 	`formula_id` INT NOT NULL, 
 	`tag_name` VARCHAR(255) NOT NULL,
 	`created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	`owner_id` INT NOT NULL DEFAULT '0',
+	`owner_id` INT NOT NULL DEFAULT '1',
 	UNIQUE (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
@@ -844,14 +844,14 @@ CREATE TABLE `backup_provider` (
   `gdrive_name` varchar(255) NOT NULL DEFAULT 'pvault',
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `owner_id` INT NOT NULL DEFAULT '0',
+  `owner_id` INT NOT NULL DEFAULT '1',
   UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 INSERT INTO `backup_provider` (`id`, `credentials`, `provider`, `schedule`, `enabled`, `description`, `gdrive_name`) VALUES
 (1, '{}', 'Google', '00:00:00', 1, 'My PV Backups', 'pvault');
 
-CREATE TABLE `inventory_compounds` ( `id` INT NOT NULL AUTO_INCREMENT , `name` VARCHAR(255) NOT NULL , `description` TEXT NOT NULL , `batch_id` VARCHAR(255) NOT NULL DEFAULT '-' , `size` DOUBLE NOT NULL DEFAULT '0' , `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `owner_id` INT NOT NULL DEFAULT '0' , `location` VARCHAR(255) NOT NULL , `label_info` TEXT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB CHARSET=utf8 COLLATE utf8_general_ci; 
+CREATE TABLE `inventory_compounds` ( `id` INT NOT NULL AUTO_INCREMENT , `name` VARCHAR(255) NOT NULL , `description` TEXT NOT NULL , `batch_id` VARCHAR(255) NOT NULL DEFAULT '-' , `size` DOUBLE NOT NULL DEFAULT '0' , `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `owner_id` INT NOT NULL DEFAULT '1' , `location` VARCHAR(255) NOT NULL , `label_info` TEXT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB CHARSET=utf8 COLLATE utf8_general_ci; 
 
 ALTER TABLE `inventory_compounds` ADD UNIQUE(`name`);
 
@@ -867,7 +867,7 @@ CREATE TABLE `sds_data` (
 	`docID` INT NOT NULL, 
 	`created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, 
 	`updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL,
-	`owner_id` INT NOT NULL DEFAULT '0',
+	`owner_id` INT NOT NULL DEFAULT '1',
 	PRIMARY KEY (`id`)
 ) ENGINE = InnoDB CHARSET=utf8 COLLATE utf8_general_ci; 
 
@@ -977,6 +977,6 @@ CREATE TABLE `ingredient_safety_data` (
   `add_info_training` mediumtext DEFAULT NULL,
   `add_info_other` mediumtext DEFAULT NULL,
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `owner_id` INT NOT NULL DEFAULT '0',
+  `owner_id` INT NOT NULL DEFAULT '1',
   PRIMARY KEY (`ingID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

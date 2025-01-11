@@ -90,9 +90,9 @@ if ($_POST['action'] == 'importTXTFormula') {
                 $baseIngredient = ucwords($baseIngredient);
 
                 // Check if the ingredient exists in the database
-                $getIngQuery = "SELECT id FROM ingredients WHERE name = ?";
+                $getIngQuery = "SELECT id FROM ingredients WHERE name = ? AND owner_id = ?";
                 $getIngStmt = $conn->prepare($getIngQuery);
-                $getIngStmt->bind_param('s', $baseIngredient);
+                $getIngStmt->bind_param('si', $baseIngredient, $userID);
                 $getIngStmt->execute();
                 $getIngResult = $getIngStmt->get_result();
                 $ingredientRow = $getIngResult->fetch_assoc();
@@ -100,9 +100,9 @@ if ($_POST['action'] == 'importTXTFormula') {
                 $ingredient_id = $ingredientRow['id'] ?? 0; // Use ID if found, otherwise 0
 
                 // Insert into formulas table
-                $ingredientQuery = "INSERT INTO formulas (fid, name, ingredient_id, ingredient, quantity, concentration, dilutant) VALUES (?, ?, ?, ?, ?, ?, ?)";
+                $ingredientQuery = "INSERT INTO formulas (fid, name, ingredient_id, ingredient, quantity, concentration, dilutant, owner_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
                 $ingredientStmt = $conn->prepare($ingredientQuery);
-                $ingredientStmt->bind_param('ssisdss', $fid, $formulaName, $ingredient_id, $baseIngredient, $quantity, $percentage, $dilutant);
+                $ingredientStmt->bind_param('ssisdssi', $fid, $formulaName, $ingredient_id, $baseIngredient, $quantity, $percentage, $dilutant, $userID);
 
                 if (!$ingredientStmt->execute()) {
                     $formulaInsertSuccess = false;
@@ -113,9 +113,9 @@ if ($_POST['action'] == 'importTXTFormula') {
 
         // Insert tag associated with the formula
         if ($formulaInsertSuccess) {
-            $tagQuery = "INSERT INTO formulasTags (formula_id, tag_name) VALUES (?, 'Imported formula')";
+            $tagQuery = "INSERT INTO formulasTags (formula_id, tag_name, owner_id) VALUES (?, 'Imported formula', ?)";
             $tagStmt = $conn->prepare($tagQuery);
-            $tagStmt->bind_param('i', $last_id);
+            $tagStmt->bind_param('ii', $last_id, $userID);
 
             if ($tagStmt->execute()) {
                 $response['success'] = 'Formula imported successfully.';
@@ -136,97 +136,127 @@ if ($_POST['action'] == 'importTXTFormula') {
 
 
 if($_GET['update_user_avatar']){
-	$allowed_ext = "png, jpg, jpeg, gif, bmp";
 
-	$filename = $_FILES["avatar"]["tmp_name"];  
-    $file_ext = strtolower(end(explode('.',$_FILES['avatar']['name'])));
-	$file_tmp = $_FILES['avatar']['tmp_name'];
-    $ext = explode(', ',strtolower($allowed_ext));
+	$allowed_ext = ['png', 'jpg', 'jpeg', 'gif', 'bmp'];
+    $response = [];
+
+	$file_info = $_FILES['avatar'];
+    $file_ext = strtolower(pathinfo($file_info['name'], PATHINFO_EXTENSION));
+    $file_tmp = $file_info['tmp_name'];
 
 	
-	if(!$filename){
-		$response["error"] = 'Please choose a file to upload';
-		echo json_encode($response);
-		return;
-	}	
-	
+    if (!isset($_FILES['avatar']) || $_FILES['avatar']['error'] !== UPLOAD_ERR_OK) {
+        $response['error'] = 'Please choose a valid file to upload.';
+        echo json_encode($response);
+        return;
+    }	
+
+	if (!in_array($file_ext, $allowed_ext)) {
+        $response['error'] = 'Invalid file extension. Allowed: ' . implode(', ', $allowed_ext);
+        echo json_encode($response);
+        return;
+    }
+
 	if (!file_exists($tmp_path."/uploads/logo/")) {
 		mkdir($tmp_path."/uploads/logo/", 0740, true);
 	}
 		
-	if(in_array($file_ext,$ext)===false){
-		$response["error"] = '<strong>File upload error: </strong>Extension not allowed, please choose a '.$allowed_ext.' file';
-		echo json_encode($response);
-		return;
-	}
+    $unique_filename = uniqid('avatar_', true) . '.' . $file_ext;
+    $destination = $tmp_path . "/uploads/logo/" . $unique_filename;
 		
-	if($_FILES["avatar"]["size"] > 0){
-		move_uploaded_file($file_tmp,$tmp_path."/uploads/logo/".base64_encode($filename));
-		$avatar = "/uploads/logo/".base64_encode($filename);		
-		create_thumb($tmp_path.$avatar,250,250); 
-		$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents($tmp_path.$avatar));
-		
-		mysqli_query($conn, "DELETE FROM documents WHERE ownerID = '".$user['id']."' AND type = '3' AND name = 'avatar'");
-		if(mysqli_query($conn, "INSERT INTO documents (ownerID,type,name,notes,docData) VALUES ('".$user['id']."','3','avatar','Main Profile Avatar','$docData')")){	
-			unlink($tmp_path.$avatar);
-			$response["success"] = array( "msg" => "User avatar updated!", "avatar" => $docData);
-			echo json_encode($response);
-			return;
-		}
-	}
+	if (move_uploaded_file($file_tmp, $destination)) {
+        create_thumb($destination, 250, 250);
+
+        $docData = 'data:image/' . $file_ext . ';base64,' . base64_encode(file_get_contents($destination));
+
+        $stmt = $conn->prepare("DELETE FROM documents WHERE ownerID = ? AND type = '3' AND name = 'avatar' AND owner_id = ?");
+        $stmt->bind_param('ii', $user['id'], $userID);
+        $stmt->execute();
+
+        $stmt = $conn->prepare("INSERT INTO documents (ownerID, type, name, notes, docData, owner_id) VALUES (?, '3', 'avatar', 'Main Profile Avatar', ?, ?)");
+        $stmt->bind_param('iss', $user['id'], $docData, $userID);
+
+        if ($stmt->execute()) {
+            unlink($destination);
+            $response['success'] = [
+                'msg' => 'User avatar updated!',
+                'avatar' => $docData,
+            ];
+            echo json_encode($response);
+            return;
+        } else {
+            $response['error'] = 'Database error occurred.';
+            echo json_encode($response);
+            return;
+        }
+    } else {
+        $response['error'] = 'Failed to upload the file.';
+        echo json_encode($response);
+        return;
+    }
 
 	return;
 }
 
 if ($_POST['update_user_profile']) {
     if (getenv('USER_EMAIL') && getenv('USER_NAME') && getenv('USER_PASSWORD')) {
-        $response["error"] = "User information is externally managed and cannot be updated here.";
-        echo json_encode($response);
+        echo json_encode(["error" => "User information is externally managed and cannot be updated here."]);
         return;
     }
 
     // Validate required fields
     if (empty($_POST['user_fname']) || empty($_POST['user_email'])) {
-        $response["error"] = "All fields are required";
-        echo json_encode($response);
+        echo json_encode(["error" => "All fields are required"]);
         return;
     }
 
     // Validate full name length
     if (strlen($_POST['user_fname']) < 5) {
-        $response['error'] = "Full name must be at least 5 characters long!";
-        echo json_encode($response);
+        echo json_encode(["error" => "Full name must be at least 5 characters long"]);
         return;
     }
 
+	// Validate email format
+	if (!filter_var($_POST['user_email'], FILTER_VALIDATE_EMAIL)) {
+		echo json_encode(["error" => "Invalid email address"]);
+		return;
+	}
+
     // Sanitize inputs
-    $fullName = mysqli_real_escape_string($conn, $_POST['user_fname']);
-    $email = mysqli_real_escape_string($conn, $_POST['user_email']);
+    $fullName = trim($_POST['user_fname']);
+    $email = trim($_POST['user_email']);
     $password = $_POST['user_pass'];
 
+ 
     // Handle password update
-    $p = '';
+    $passwordClause = '';
     if (!empty($password)) {
         if (strlen($password) < 5) {
-            $response["error"] = "Password must be at least 5 characters long";
-            echo json_encode($response);
+            echo json_encode(["error" => "Password must be at least 5 characters long"]);
             return;
-        } else {
-            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-            $p = ", password='$hashedPassword'";
         }
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+        $passwordClause = ", password=?";
     }
 
-    // Update user details
-    $updateQuery = "UPDATE users SET fullName = '$fullName', email = '$email' $p";
-    if (mysqli_query($conn, $updateQuery)) {
-        $response["success"] = "User details updated";
-        echo json_encode($response);
+    // Prepare the SQL query
+	$query = "UPDATE users SET fullName = ?, email = ?" . $passwordClause . " WHERE id = ?";
+	$stmt = $conn->prepare($query);
+	
+    if ($passwordClause) {
+        $stmt->bind_param('sssi', $fullName, $email, $hashedPassword, $userID);
     } else {
-        $response["error"] = 'Failed to update user details: ' . mysqli_error($conn);
-        echo json_encode($response);
+        $stmt->bind_param('ssi', $fullName, $email, $userID);
     }
 
+    if ($stmt->execute()) {
+        echo json_encode(["success" => "User details updated"]);
+    } else {
+        error_log("Database error: " . $stmt->error); // Log the error
+        echo json_encode(["error" => "Failed to update user details. Please try again later."]);
+    }
+
+    $stmt->close();
     return;
 }
 
@@ -332,135 +362,216 @@ if($_POST['manage'] == 'brand'){
 }
 
 //ADD CATEGORY
-if($_POST['manage'] == 'category'){
-	$cat = mysqli_real_escape_string($conn, $_POST['category']);
-	$notes = mysqli_real_escape_string($conn, $_POST['cat_notes']);
-	
-	if(empty($cat)){
-		$response["error"] = 'Category name is required.';
-		echo json_encode($response);
-		return;
-	}
-	
-	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingCategory WHERE name = '$cat'"))){
-		$response["error"] = 'Category name '.$cat.' already exists!';
-		echo json_encode($response);
-		return;
-	}
-	if(mysqli_query($conn, "INSERT INTO ingCategory (name,notes) VALUES ('$cat', '$notes')")){
-		$response["success"] = 'Category '.$cat.' added!';
-		echo json_encode($response);
-	}else{
-		$response["error"] = 'Something went wrong, '.mysqli_error($conn);
-		echo json_encode($response);
-	}
-	return;
-}					
+if ($_POST['manage'] == 'category') {
+    // Sanitize user inputs
+    $cat = mysqli_real_escape_string($conn, $_POST['category']);
+    $notes = mysqli_real_escape_string($conn, $_POST['cat_notes']);
+    
+    // Check if category name is empty
+    if (empty($cat)) {
+        $response["error"] = 'Category name is required';
+        echo json_encode($response);
+        return;
+    }
+
+    // Check if category already exists using prepared statements
+    $stmt = $conn->prepare("SELECT name FROM ingCategory WHERE name = ? AND owner_id = ?");
+    $stmt->bind_param('si', $cat, $userID);
+    $stmt->execute();
+    $stmt->store_result();
+
+    if ($stmt->num_rows > 0) {
+        $response["error"] = 'Category "' . $cat . '" already exists';
+        echo json_encode($response);
+        $stmt->close();
+        return;
+    }
+
+    // Insert the new category using prepared statements
+    $stmt = $conn->prepare("INSERT INTO ingCategory (name, notes, owner_id) VALUES (?, ?, ?)");
+    $stmt->bind_param('ssi', $cat, $notes, $userID);
+
+    if ($stmt->execute()) {
+        $response["success"] = 'Category "' . $cat . '" added successfully';
+        echo json_encode($response);
+    } else {
+        // Log the error for debugging
+        error_log("Error inserting category: " . $stmt->error);
+        $response["error"] = 'Something went wrong, please try again later';
+        echo json_encode($response);
+    }
+
+    $stmt->close();
+    return;
+}
 
 //DELETE CATEGORY
-if($_POST['action'] == 'delete' && $_POST['catId']){
-	$catId = mysqli_real_escape_string($conn, $_POST['catId']);
-	if(mysqli_query($conn, "DELETE FROM ingCategory WHERE id = '$catId'")){
-		$response["success"] = 'Category deleted';
-	}else{
-		$response["error"] = 'Error deleting category';
-	}
-	echo json_encode($response);
-	return;
+if ($_POST['action'] == 'delete' && isset($_POST['catId'])) {
+    $catId = mysqli_real_escape_string($conn, $_POST['catId']);
+    $stmt = $conn->prepare("DELETE FROM ingCategory WHERE id = ? AND owner_id = ?");
+    $stmt->bind_param('ii', $catId, $userID);
+
+    if ($stmt->execute()) {
+        $response["success"] = 'Category deleted successfully';
+        echo json_encode($response);
+    } else {
+        error_log("Error deleting category with ID $catId: " . $stmt->error);
+        $response["error"] = 'Error deleting category, please try again later';
+        echo json_encode($response);
+    }
+    $stmt->close();
+    return;
 }
 
 //ADD INGREDIENT PROFILE
-if($_POST['manage'] == 'add_ingprof'){
-	$profile = mysqli_real_escape_string($conn, $_POST['profile']);
-	$description = mysqli_real_escape_string($conn, $_POST['description']);
-	
-	if(empty($profile)){
-		$response["error"] = 'Profile name is required.';
-		echo json_encode($response);
-		return;
-	}
-	
-	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingProfiles WHERE name = '$profile'"))){
-		$response["error"] = 'Profile name '.$profile.' already exists';
-		echo json_encode($response);
-		return;
-	}
-	if(mysqli_query($conn, "INSERT INTO ingProfiles (name,notes) VALUES ('$profile', '$description')")){
-		$response["success"] = 'Profile '.$profile.' added';
-		echo json_encode($response);
-	}else{
-		$response["error"] = 'Something went wrong, '.mysqli_error($conn);
-		echo json_encode($response);
-	}
-	return;
-}					
+//TODO - ADMIN SIDE ONLY
+if ($_POST['action'] == 'add_ingprof') {
+    $profile = mysqli_real_escape_string($conn, $_POST['profile']);
+    $description = mysqli_real_escape_string($conn, $_POST['description']);
+    if (empty($profile)) {
+        $response["error"] = 'Profile name is required';
+        echo json_encode($response);
+        return;
+    }
+
+    $stmt = $conn->prepare("SELECT name FROM ingProfiles WHERE name = ? AND owner_id = ?");
+    $stmt->bind_param('si', $profile, $userID);
+    $stmt->execute();
+    $stmt->store_result();
+
+    if ($stmt->num_rows > 0) {
+        $response["error"] = 'Profile "' . $profile . '" already exists';
+        echo json_encode($response);
+        $stmt->close();
+        return;
+    }
+
+    // Insert the new profile using prepared statements
+    $stmt = $conn->prepare("INSERT INTO ingProfiles (name, notes, owner_id) VALUES (?, ?, ?)");
+    $stmt->bind_param('ssi', $profile, $description, $userID);
+
+    if ($stmt->execute()) {
+        $response["success"] = 'Profile "' . $profile . '" added successfully';
+        echo json_encode($response);
+    } else {
+        // Log the detailed error for debugging purposes
+        error_log("Error inserting profile: " . $stmt->error);
+        $response["error"] = 'Something went wrong, please try again later';
+        echo json_encode($response);
+    }
+
+    $stmt->close();
+    return;
+}
+				
 
 //DELETE INGREDIENT PROFILE
-if($_POST['action'] == 'ingProfile' && $_POST['profId']){
-	$profId = mysqli_real_escape_string($conn, $_POST['profId']);
-	if(mysqli_query($conn, "DELETE FROM ingProfiles WHERE id = '$profId'")){
-		$response["success"] = 'Profile deleted';
-	}else{
-		$response["error"] = 'Error deleting profile';
-	}
-	echo json_encode($response);
-	return;
+//TODO - ADMIN SIDE ONLY
+if ($_POST['action'] == 'delete_ingprof' && isset($_POST['profId'])) {
+    $profId = mysqli_real_escape_string($conn, $_POST['profId']);
+    
+    $stmt = $conn->prepare("DELETE FROM ingProfiles WHERE id = ? AND owner_id = ?");
+    $stmt->bind_param('ii', $profId, $userID);
+
+    if ($stmt->execute()) {
+        $response["success"] = 'Profile deleted successfully';
+        echo json_encode($response);
+    } else {
+        // Log the error for debugging
+        error_log("Error deleting profile with ID $profId: " . $stmt->error);
+        $response["error"] = 'Something went wrong, please try again later';
+        echo json_encode($response);
+    }
+
+    $stmt->close();
+    return;
 }
 
+
 //ADD FORMULA CATEGORY
-if($_POST['manage'] == 'add_frmcategory'){
-	$cat = mysqli_real_escape_string($conn, $_POST['category']);
-	$type = mysqli_real_escape_string($conn, $_POST['cat_type']);
-	
-	if(empty($cat)){
-		$response["error"] = 'Category name is required.';
-		echo json_encode($response);
-		return;
-	}
-	
-	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM formulaCategories WHERE name = '$cat'"))){
-		$response["error"] = 'Category name '.$cat.' already exists!';
-		echo json_encode($response);
-		return;
-	}
-	
-	if(mysqli_query($conn, "INSERT INTO formulaCategories (name,cname,type) VALUES ('$cat', '".strtolower(str_replace(' ', '',$cat))."', '$type')")){
-		$response["success"] = 'Category '.$cat.' created!';
-	}else{
-		$response["error"] = 'Something went wrong, '.mysqli_error($conn);
-	}
-	echo json_encode($response);
-	return;
-}					
+if ($_POST['manage'] == 'add_frmcategory') {
+    $cat = mysqli_real_escape_string($conn, $_POST['category']);
+    $type = mysqli_real_escape_string($conn, $_POST['cat_type']);
+    if (empty($cat)) {
+        $response["error"] = 'Category name is required';
+        echo json_encode($response);
+        return;
+    }
+
+    $stmt = $conn->prepare("SELECT name FROM formulaCategories WHERE name = ? AND owner_id = ?");
+    $stmt->bind_param('si', $cat, $userID);
+    $stmt->execute();
+    $stmt->store_result();
+
+    if ($stmt->num_rows > 0) {
+        $response["error"] = 'Category "' . $cat . '" already exists';
+        echo json_encode($response);
+        $stmt->close();
+        return;
+    }
+
+    $stmt = $conn->prepare("INSERT INTO formulaCategories (name, cname, type, owner_id) VALUES (?, ?, ?, ?)");
+    $cname = strtolower(str_replace(' ', '', $cat));
+    $stmt->bind_param('sssi', $cat, $cname, $type, $userID);
+
+    if ($stmt->execute()) {
+        $response["success"] = 'Category "' . $cat . '" created successfully';
+        echo json_encode($response);
+    } else {
+        // Log the error for debugging
+        error_log("Error inserting category: " . $stmt->error);
+        $response["error"] = 'Something went wrong, please try again later';
+        echo json_encode($response);
+    }
+
+    $stmt->close();
+    return;
+}
+				
 
 //DELETE FORMULA CATEGORY
-if($_POST['action'] == 'del_frmcategory' && $_POST['catId']){
-	$catId = mysqli_real_escape_string($conn, $_POST['catId']);
-	if(mysqli_query($conn, "DELETE FROM formulaCategories WHERE id = '$catId'")){
-		$response["success"] = 'Category deleted';
-	}else{
-		$response["error"] = 'Error deleting category';
-	}
-	echo json_encode($response);
-	return;
+if ($_POST['action'] == 'del_frmcategory' && isset($_POST['catId'])) {
+    $catId = mysqli_real_escape_string($conn, $_POST['catId']);
+    $stmt = $conn->prepare("DELETE FROM formulaCategories WHERE id = ? AND owner_id = ?");
+    $stmt->bind_param('ii', $catId, $userID);
+
+    if ($stmt->execute()) {
+        $response["success"] = 'Category deleted successfully';
+        echo json_encode($response);
+    } else {
+        // Log the error for debugging purposes
+        error_log("Error deleting category with ID $catId: " . $stmt->error);
+        $response["error"] = 'Something went wrong, please try again later';
+        echo json_encode($response);
+    }
+
+    $stmt->close();
+    return;
 }
 
 
 //DELETE BATCH
-if($_POST['action'] == 'batch' && $_POST['bid'] && $_POST['remove'] == true){
-	$id = mysqli_real_escape_string($conn, $_POST['bid']);
-	$name = mysqli_real_escape_string($conn, $_POST['name']);
+if ($_POST['action'] == 'batch' && isset($_POST['bid']) && isset($_POST['remove']) && $_POST['remove'] == 'true') {
+    $id = mysqli_real_escape_string($conn, $_POST['bid']);
+    $name = mysqli_real_escape_string($conn, $_POST['name']);
 
-	if(mysqli_query($conn, "DELETE FROM batchIDHistory WHERE id = '$id'")){
-	
-		$response["success"] = 'Batch '.$id.' for product '.$name.' deleted';
-	}else{
-		$response["error"] = 'Something went wrong '.mysqli_error($conn);
-	}
-	
-	echo json_encode($response);
-	return;	
+    $stmt = $conn->prepare("DELETE FROM batchIDHistory WHERE id = ? AND owner_id = ?");
+    $stmt->bind_param('ii', $id, $userID); 
+
+    if ($stmt->execute()) {
+        $response["success"] = 'Batch ' . $id . ' for product ' . $name . ' deleted successfully';
+        echo json_encode($response);
+    } else {
+        // Log the error for debugging
+        error_log("Error deleting batch with ID $id for product $name: " . $stmt->error);
+        $response["error"] = 'Something went wrong, please try again later';
+        echo json_encode($response);
+    }
+
+    $stmt->close();
+    return;
 }
+
 
 //UPDATE SDS DISCLAIMER
 if($_POST['action'] == 'sdsDisclaimerContent'){
@@ -484,20 +595,43 @@ if($_POST['action'] == 'sdsDisclaimerContent'){
 
 
 //DELETE SDS
-if($_POST['action'] == 'delete' && $_POST['SDSID'] && $_POST['type'] == 'SDS'){
-	$id = mysqli_real_escape_string($conn, $_POST['SDSID']);
-	
-	if(mysqli_query($conn, "DELETE FROM documents WHERE ownerID = '$id' AND isSDS = '1'")){
-		mysqli_query($conn, "DELETE FROM sds_data WHERE id = '$id'");
-		
-		$response["success"] = 'SDS deleted';
-	}else{
-		$response["error"] = 'Something went wrong '.mysqli_error($conn);
-	}
-	
-	echo json_encode($response);
-	return;	
+if ($_POST['action'] == 'delete' && isset($_POST['SDSID']) && $_POST['type'] == 'SDS') {
+    $id = mysqli_real_escape_string($conn, $_POST['SDSID']);
+    mysqli_begin_transaction($conn);
+
+    try {
+        $stmt1 = $conn->prepare("DELETE FROM documents WHERE ownerID = ? AND isSDS = '1' AND owner_id = ?");
+        $stmt1->bind_param('ii', $id, $userID);
+
+        if ($stmt1->execute()) {
+            $stmt2 = $conn->prepare("DELETE FROM sds_data WHERE id = ? AND owner_id = ?");
+            $stmt2->bind_param('ii', $id, $userID);
+
+            if ($stmt2->execute()) {
+                mysqli_commit($conn);
+                $response["success"] = 'SDS deleted successfully';
+            } else {
+                mysqli_rollback($conn);
+                $response["error"] = 'Failed to delete from sds_data';
+            }
+            $stmt2->close();
+        } else {
+            mysqli_rollback($conn);
+            $response["error"] = 'Failed to delete from documents';
+        }
+
+        $stmt1->close();
+    } catch (Exception $e) {
+        // Rollback transaction if any error occurs
+        mysqli_rollback($conn);
+        $response["error"] = 'Something went wrong, please try again later';
+        error_log("Error deleting SDS with ID $id: " . $e->getMessage());  // Log error for debugging
+    }
+
+    echo json_encode($response);
+    return;
 }
+
 
 //ADD INVENTORY COMPOUND
 if($_POST['action'] == 'add' && $_POST['type'] == 'invCmp'){
