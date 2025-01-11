@@ -30,7 +30,8 @@ require_once(__ROOT__.'/inc/sec.php');
 </table>
 <script>
 $(document).ready(function() {
-		
+	$.fn.dataTable.ext.errMode = 'none';
+
 	var tdTempls = $('#tdTempls').DataTable( {
 		columnDefs: [
 			{ className: 'text-center', targets: '_all' },
@@ -80,8 +81,10 @@ $(document).ready(function() {
 			 type: "POST"
 		  });
 		},	
-	});
-	
+	}).on('error.dt', function(e, settings, techNote, message) {
+		var m = message.split(' - ');
+		$('#tdTempls').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i><strong>' + m[1] + '</strong></div>');
+    });
 
 
 	function name(data, type, row){

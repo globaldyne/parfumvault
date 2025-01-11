@@ -541,7 +541,7 @@ $(document).ready(function() {
 		params: function(params) {
         	var category = String($(params).attr('name').split(' ')[0]).toUpperCase();
 	        return {
-    	        IFRA: 'edit',
+				action: 'editIFRA',
         	    type: category,
             	value: parseFloat(params.value),
 				pk: params.pk

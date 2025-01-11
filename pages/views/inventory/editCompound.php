@@ -6,91 +6,138 @@ require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 
 
-$rs = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM inventory_compounds WHERE id = '".$_GET['id']."'")); 
-$q = mysqli_query($conn, "SELECT id,name FROM documents WHERE type = '5' AND isBatch = '1'");
-while($res = mysqli_fetch_array($q)){
+// Use prepared statements to prevent SQL injection
+$stmt = $conn->prepare("SELECT * FROM inventory_compounds WHERE id = ? AND owner_id = ?");
+$stmt->bind_param("si", $_GET['id'], $userID);
+$stmt->execute();
+$result = $stmt->get_result();
+$rs = $result->fetch_assoc();
+
+// Check if $rs is valid
+if (!$rs) {
+    die("No record found or insufficient permissions.");
+}
+
+// Query for documents
+$data = [];
+$docStmt = $conn->prepare("SELECT id, name FROM documents WHERE type = ? AND isBatch = ? AND owner_id = ?");
+$type = 5;
+$isBatch = 1;
+$docStmt->bind_param("iii", $type, $isBatch, $userID);
+$docStmt->execute();
+$docResult = $docStmt->get_result();
+
+// Fetch data
+while ($res = $docResult->fetch_assoc()) {
     $data[] = $res;
-}  
+}
+
+$stmt->close();
+$docStmt->close();
 
 ?>
 
-<div class="modal-body">
-	<div id="cmp_edit_inf"></div>
+<div class="modal-body" id="edit_compound">
+    <div id="cmp_edit_inf"></div>
     <div class="row">
-          <div class="mb-3">
+        <!-- Compound Name -->
+        <div class="mb-3">
             <label for="cmp_edit_name" class="form-label">Compound name</label>
-            <input name="cmp_edit_name" type="cmp_edit_name" class="form-control" id="cmp_edit_name" value="<?php echo $rs['name'];?>">
-          </div>
-          
-          <div class="mb-3">
+            <input name="cmp_edit_name" type="text" class="form-control" id="cmp_edit_name" 
+                   value="<?= htmlspecialchars($rs['name']) ?>">
+        </div>
+
+        <!-- Batch -->
+        <div class="mb-3">
             <label for="cmp_edit_batch" class="form-label">Batch</label>
-            <select name="cmp_edit_batch" id="cmp_edit_batch" class="form-control" data-live-search="true" >
-            <?php foreach($data as $b) { ?>
-            	<option value="<?php echo $b['id'];?>" <?php echo ($rs['batch_id']==$b['id'])?"selected=\"selected\"":""; ?>><?php echo $b['name'];?></option>
-            <?php } ?>
+            <select name="cmp_edit_batch" id="cmp_edit_batch" class="form-control" data-live-search="true">
+                <?php foreach ($data as $b): ?>
+                    <option value="<?= htmlspecialchars($b['id']) ?>" 
+                            <?= $rs['batch_id'] == $b['id'] ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($b['name']) ?>
+                    </option>
+                <?php endforeach; ?>
             </select>
-          </div>
-         
-          <div class="mb-3">
-            <label for="cmp_edit_size" class="form-label">Bottle size (<?php echo $settings['mUnit']; ?>)</label>
-            <input name="cmp_edit_size" type="text" class="form-control" id="cmp_edit_size" value="<?php echo $rs['size'];?>">
-          </div>
-          
-          <div class="mb-3">
+        </div>
+
+        <!-- Bottle Size -->
+        <div class="mb-3">
+            <label for="cmp_edit_size" class="form-label">Bottle size (<?= htmlspecialchars($settings['mUnit']) ?>)</label>
+            <input name="cmp_edit_size" type="text" class="form-control" id="cmp_edit_size" 
+                   value="<?= htmlspecialchars($rs['size']) ?>">
+        </div>
+
+        <!-- Location -->
+        <div class="mb-3">
             <label for="cmp_edit_location" class="form-label">Location</label>
-            <input name="cmp_edit_location" type="text" class="form-control" id="cmp_edit_location" value="<?php echo $rs['location'];?>">
-          </div>
-          
-          
-          <div class="mb-3">
+            <input name="cmp_edit_location" type="text" class="form-control" id="cmp_edit_location" 
+                   value="<?= htmlspecialchars($rs['location']) ?>">
+        </div>
+
+        <!-- Short Description -->
+        <div class="mb-3">
             <label for="cmp_edit_desc" class="form-label">Short Description</label>
-            <input name="cmp_edit_desc" type="text" class="form-control" id="cmp_edit_desc" value="<?php echo $rs['description'];?>">
-          </div>
-          
-         <div class="col-sm">
-           <label for="cmp_edit_label_info" class="form-label">Label info</label>
-           <textarea class="form-control" name="cmp_edit_label_info" id="cmp_edit_label_info" rows="5"><?php echo $rs['label_info'];?></textarea>
-         </div>
-    
+            <input name="cmp_edit_desc" type="text" class="form-control" id="cmp_edit_desc" 
+                   value="<?= htmlspecialchars($rs['description']) ?>">
+        </div>
+
+        <!-- Label Info -->
+        <div class="col-sm">
+            <label for="cmp_edit_label_info" class="form-label">Label info</label>
+            <textarea class="form-control" name="cmp_edit_label_info" id="cmp_edit_label_info" rows="5"><?= htmlspecialchars($rs['label_info']) ?></textarea>
+        </div>
     </div>
 
     <div class="dropdown-divider mb-3"></div>
-    
-      <div class="modal-footer">
-        <input type="submit" class="btn btn-primary" id="cmp_edit_save" value="Save">
-      </div>
 
-</div>  
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="cmp_edit_save">Save</button>
+    </div>
+</div>
+
 <script>
 $(document).ready(function() {
+    const cmpId = <?= json_encode($rs['id']) ?>;
 
-	$('#cmp_edit_save').click(function() {
-		$.ajax({ 
-			url: '/core/core.php', 
-			type: 'POST',
-			data: {
-				update_inv_compound_data: 1,
-				cmp_id:  "<?=$rs['id']?>",
-				name: $("#cmp_edit_name").val(),
-				batch_id: $("#cmp_edit_batch").val(),
-				description: $("#cmp_edit_desc").val(),
-				size: $("#cmp_edit_size").val(),
-				location: $("#cmp_edit_location").val(),
-				label_info: $("#cmp_edit_label_info").val(),
-			},
-			dataType: 'json',
-			success: function (data) {
-				if(data.success){
-					var msg = '<div class="alert alert-success">'+data.success+'</div>';
-				}else if( data.error){
-					var msg = '<div class="alert alert-danger">'+data.error+'</div>';
-				}
-				$('#cmp_edit_inf').html(msg);
-			}
-		  });
-	
-	});
-	
+    $('#edit_compound #cmp_edit_save').click(function() {
+        const payload = {
+            action: 'update_inv_compound_data',
+            cmp_id: cmpId,
+            name: $('#cmp_edit_name').val(),
+            batch_id: $('#cmp_edit_batch').val(),
+            description: $('#cmp_edit_desc').val(),
+            size: $('#cmp_edit_size').val(),
+            location: $('#cmp_edit_location').val(),
+            label_info: $('#cmp_edit_label_info').val()
+        };
+
+        $.ajax({
+            url: '/core/core.php',
+            type: 'POST',
+            data: payload,
+            dataType: 'json',
+            success: function(response) {
+                let msg;
+                if (response.success) {
+                    msg = `<div class="alert alert-success">
+                                <i class="fa-solid fa-circle-check mx-2"></i>${response.success}
+                           </div>`;
+                    $('#tdDataCompounds').DataTable().ajax.reload(null, true);
+                } else if (response.error) {
+                    msg = `<div class="alert alert-danger">
+                                <i class="fa-solid fa-circle-exclamation mx-2"></i>${response.error}
+                           </div>`;
+                }
+                $('#cmp_edit_inf').html(msg);
+            },
+            error: function() {
+                $('#cmp_edit_inf').html(
+                    '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred. Please try again.</div>'
+                );
+            }
+        });
+    });
 });
-
 </script>
+

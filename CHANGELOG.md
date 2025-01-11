@@ -4,7 +4,9 @@
 - Code clean-up
 - Various overall security improvements
 - Update user profile backend
-
+- Update db schema for a default owner id 1
+- Fix update form for compounds
+- Replacing mysqli queries with mysql statements (WIP)
 
 ### Version 12.4
 - Add dilutant in API formulas
