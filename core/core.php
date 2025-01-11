@@ -14,8 +14,11 @@ require_once(__ROOT__.'/func/sanChar.php');
 require_once(__ROOT__.'/func/priceScrape.php');
 require_once(__ROOT__.'/func/create_thumb.php');
 
-$userID = (int)$user['id'];
-$role = (int)$user['role'];
+// Ensure the user is authenticated
+if (!isset($userID) || $userID === '' || !is_numeric($userID)) {
+    echo json_encode(['error' => 'Unauthorized']);
+    return;
+}
 
 //IMPORT FORMULA FROM TEXT
 if ($_POST['action'] == 'importTXTFormula') {

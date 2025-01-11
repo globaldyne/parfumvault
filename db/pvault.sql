@@ -367,13 +367,14 @@ INSERT INTO `settings` (`id`, `currency`, `top_n`, `heart_n`, `base_n`, `chem_vs
 (1, '&pound;', '25', '50', '25', 0, 1, 'My Brand Name', 'My Address', 'info@mybrand.com', '123456', NULL);
 
 CREATE TABLE `users` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `fullName` varchar(255) NOT NULL,
   `role` INT NOT NULL DEFAULT '1',
   `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL,
-  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
+   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 
@@ -483,10 +484,6 @@ ALTER TABLE `inventory_accessories` ADD UNIQUE(`name`);
 ALTER TABLE `settings`
   ADD PRIMARY KEY (`id`);
 
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`);
-
-
 ALTER TABLE `ingredient_compounds`
   ADD PRIMARY KEY (`id`);
 
@@ -526,9 +523,6 @@ ALTER TABLE `ingTypes`
 ALTER TABLE `inventory_accessories` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `settings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
-ALTER TABLE `users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `ingredient_compounds`

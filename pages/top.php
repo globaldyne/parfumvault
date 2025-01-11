@@ -47,22 +47,24 @@ if($pv_meta['schema_ver'] < $db_ver){
             <div class="topbar-divider d-none d-sm-block"></div>
             <li class="nav-item dropdown no-arrow">
             	<a class="mx-4 nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="mx-2 d-none d-lg-inline text-white small"><?php echo $user['fullName'];?></span>
+              <?php if($role == 1){?>
+              <span class="badge bg-success bg-opacity-75">ADMIN</span>
+              <?php } ?>
+              <span class="mx-2 d-none d-lg-inline text-white small"><?php echo $user['fullName'];?></span>
                	<div class="icon-container">
                      <?php if ($doc['avatar']){ ?>
                         <img src="<?=$doc['avatar']?: '/img/ICO_TR.png'; ?>" class="img-profile rounded-circle">
                     <?php } else { ?>
-						<i class="fa-regular fa-user fa-2xl text-info"></i>
+						            <i class="fa-regular fa-user fa-2xl text-info"></i>
                    <?php } ?>
-				</div>
-              </a>
-              <div class="mx-2 dropdown-menu dropdown-menu-end shadow animated--grow-in" aria-labelledby="userDropdown">
-              
-				<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#editUser">
+				        </div>
+            </a>
+
+        <div class="mx-2 dropdown-menu dropdown-menu-end shadow animated--grow-in" aria-labelledby="userDropdown">  
+				      <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#editUser">
                   <i class="fas fa-user fa-sm fa-fw mx-2 text-gray-400"></i>
                   Edit my details
                 </a>
-                
                 <a class="dropdown-item" href="/?do=settings">
                   <i class="fas fa-cogs fa-sm fa-fw mx-2 text-gray-400"></i>
                   Settings
@@ -71,13 +73,11 @@ if($pv_meta['schema_ver'] < $db_ver){
                   <i class="fas fa-tools fa-sm fa-fw mx-2 text-gray-400"></i>
                   Calculation Tools
                 </a>
-                
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="https://discord.gg/WxNE8kR8ug" target="_blank">
                   <i class="fas fa-book fa-sm fa-fw mx-2 text-gray-400"></i>
                   Join our Discord Server
                 </a>
-                
                 <a class="dropdown-item" href="https://www.perfumersvault.com/knowledge-base" target="_blank">
                   <i class="fas fa-book fa-sm fa-fw mx-2 text-gray-400"></i>
                   Documentation

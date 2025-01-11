@@ -3,16 +3,13 @@ define('__ROOT__', dirname(dirname(__FILE__)));
 
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/getIngSupplier.php');
 
-//session_start();
-$userID = isset($_SESSION['userID']) ? (int)$_SESSION['userID'] : 0;
-$role = isset($_SESSION['role']) ? (int)$_SESSION['role'] : 0;
 
 // Ensure the user is authenticated
-if (!$userID) {
-    http_response_code(401); // Unauthorized
-    echo json_encode(['error' => 'User not authenticated']);
+if (!isset($userID) || $userID === '' || !is_numeric($userID)) {
+    echo json_encode(['error' => 'Unauthorized']);
     return;
 }
 

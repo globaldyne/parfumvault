@@ -8,11 +8,21 @@ require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/inc/product.php');
 require_once(__ROOT__.'/libs/fpdf.php');
 
+// Ensure the user is authenticated
+if (!isset($userID) || $userID === '' || !is_numeric($userID)) {
+    echo json_encode(['error' => 'Unauthorized']);
+    return;
+}
+
+// Build the query filter
+$filter = ($role === 1) ? "" : "AND owner_id = ?";
+
+
 $imageData = base64_decode(explode(',', $settings['brandLogo'])[1]);
 $tempImagePath = $tmp_path.'/temp_logo.png';
 
 if (!file_exists($tmp_path)) {
-			mkdir($tmp_path, 0740, true);
+	mkdir($tmp_path, 0740, true);
 }
 
 file_put_contents($tempImagePath, $imageData);
@@ -24,19 +34,14 @@ if ($_REQUEST['action'] == 'generateDOC' && $_REQUEST['kind'] == 'ingredient'){
 	$ingID = $_REQUEST['id'];
 	define('__INGNAME__',$ingName);
 
-	// Use prepared statements to avoid SQL injection
-	$stmt = $conn->prepare("SELECT cas, INCI, reach, einecs, chemical_name, formula, flash_point, appearance FROM ingredients WHERE id = ?");
-	$stmt->bind_param("i", $ingID);
-	$stmt->execute();
-	$ingData = $stmt->get_result()->fetch_assoc();
-	
 	$ingredient_compounds_count = 0;
 	
-	// Fetch ingredient details
-	$stmt = $conn->prepare("SELECT * FROM ingredients WHERE id = ?");
-	$stmt->bind_param("i", $ingID);
-	$stmt->execute();
-	$res = $stmt->get_result()->fetch_assoc();
+    // Fetch ingredient details
+    $query = "SELECT * FROM ingredients WHERE id = ? $filter";
+    $stmt = $conn->prepare($query);
+    ($role === 1) ? $stmt->bind_param("i", $ingID) : $stmt->bind_param("ii", $ingID, $userID);
+    $stmt->execute();
+    $res = $stmt->get_result()->fetch_assoc();
 	
 	$g = [
 		'name' => (string)$res['name'],
@@ -87,11 +92,13 @@ if ($_REQUEST['action'] == 'generateDOC' && $_REQUEST['kind'] == 'ingredient'){
 	$ifra[] = $i;
 	$tech[] = $t;
 	
-	// Fetch ingredient compounds
-	$stmt = $conn->prepare("SELECT * FROM ingredient_compounds WHERE ing = ?");
-	$stmt->bind_param("s", $g['name']);
-	$stmt->execute();
-	$result = $stmt->get_result();
+    // Fetch ingredient compounds
+    $query = "SELECT * FROM ingredient_compounds WHERE ing = ? $filter";
+    $stmt = $conn->prepare($query);
+    ($role === 1) ? $stmt->bind_param("s", $g['name']) : $stmt->bind_param("si", $g['name'], $userID);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
 	
 	$cmp = [];
 	while ($res = $result->fetch_assoc()) {
@@ -107,11 +114,12 @@ if ($_REQUEST['action'] == 'generateDOC' && $_REQUEST['kind'] == 'ingredient'){
 		$ingredient_compounds_count++;
 	}
 	
-	// Fetch ingredient synonyms
-	$stmt = $conn->prepare("SELECT synonym,source FROM synonyms WHERE ing = ?");
-	$stmt->bind_param("s", $g['name']);
-	$stmt->execute();
-	$result = $stmt->get_result();
+    // Fetch ingredient synonyms
+    $query = "SELECT synonym, source FROM synonyms WHERE ing = ? $filter";
+    $stmt = $conn->prepare($query);
+    ($role === 1) ? $stmt->bind_param("s", $g['name']) : $stmt->bind_param("si", $g['name'], $userID);
+    $stmt->execute();
+    $result = $stmt->get_result();
 	
 	$syn = [];
 	while ($res = $result->fetch_assoc()) {
@@ -124,11 +132,12 @@ if ($_REQUEST['action'] == 'generateDOC' && $_REQUEST['kind'] == 'ingredient'){
 	
 
 
-	// Fetch GHS information
-	$stmt = $conn->prepare("SELECT id, ingID, GHS FROM ingSafetyInfo WHERE ingID = ?");
-	$stmt->bind_param("i", $ingID);
-	$stmt->execute();
-	$result = $stmt->get_result();
+    // Fetch GHS information
+    $query = "SELECT id, ingID, GHS FROM ingSafetyInfo WHERE ingID = ? $filter";
+    $stmt = $conn->prepare($query);
+    ($role === 1) ? $stmt->bind_param("i", $ingID) : $stmt->bind_param("ii", $ingID, $userID);
+    $stmt->execute();
+    $result = $stmt->get_result();
 	
 	$ghs = [];
 	while ($res = $result->fetch_assoc()) {
@@ -333,13 +342,18 @@ if ($_REQUEST['action'] == 'generateDOC' && $_REQUEST['kind'] == 'ingredient'){
 
 
 	//DIRTY WAY TO CLEANUP //TODO
-	mysqli_query($conn, "DELETE FROM documents WHERE ownerID = '$ingID' AND type = '0' AND isSDS = '0' AND notes = 'PV Generated'");
+	$content = mysqli_real_escape_string($conn, $pdf->Output("S"));
+    $deleteQuery = "DELETE FROM documents WHERE ownerID = ? AND owner_id = ? AND type = 0 AND isSDS = 0 AND notes = 'PV Generated'";
+    $stmt = $conn->prepare($deleteQuery);
+    $stmt->bind_param("ii", $ingID, $userID);
+    $stmt->execute();
 	
-	if(mysqli_query($conn, "INSERT INTO documents(ownerID,type,name,docData,notes) values('$ingID','0','$ingName','$content','PV Generated')")){
+	if(mysqli_query($conn, "INSERT INTO documents(ownerID,type,name,docData,notes, owner_id) values('$ingID', 0, '$ingName', '$content', 'PV Generated', '$userID')")){
 		$response["success"] = '<i class="fa-solid fa-file-pdf mr-2"></i><a href="/pages/viewDoc.php?id='.mysqli_insert_id($conn).'&type=internal" target="_blank">Download file</a>';
 	}else{
 		$response["error"] = "Unable to generate PDF";
 	}
+
 
 
 	echo json_encode($response);

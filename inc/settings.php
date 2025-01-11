@@ -8,4 +8,8 @@ $pv_meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM pv_meta"));
 
 $pubChemApi = 'https://pubchem.ncbi.nlm.nih.gov/rest';
 $pvLibraryAPI = $settings['pv_library_api_url'];
+
+$userID = (int)$user['id'];
+$role = (int)$user['role'];
+
 ?>

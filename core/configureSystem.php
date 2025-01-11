@@ -41,8 +41,8 @@ if ($_POST['action'] == 'register') {
 
     // Insert user into the database
     $insertUserQuery = "
-        INSERT INTO users (email, password, fullName) 
-        VALUES ('$email', '$hashedPassword', '$fullName')";
+        INSERT INTO users (id, email, password, fullName, role) 
+        VALUES (1, '$email', '$hashedPassword', '$fullName', 1)";
     
     if (mysqli_query($conn, $insertUserQuery)) {
         $db_ver = trim(file_get_contents(__ROOT__ . '/db/schema.ver'));
@@ -96,7 +96,7 @@ if ($_POST['action'] == 'install') {
         $email = strtolower(mysqli_real_escape_string($conn, $_POST['email']));
         $fullName = mysqli_real_escape_string($conn, $_POST['fullName']);
 
-        $insertUser = "INSERT INTO users (id, email, password, fullName) VALUES ('1', '$email', '$hashedPassword', '$fullName')";
+        $insertUser = "INSERT INTO users (id, email, password, fullName, role) VALUES (1, '$email', '$hashedPassword', '$fullName', 1)";
         if (!mysqli_query($conn, $insertUser)) {
             $response['error'] = 'Failed to create admin user: ' . mysqli_error($conn);
             echo json_encode($response);

@@ -23,23 +23,21 @@ $res_SDStmpl = mysqli_query($conn, "SELECT * FROM templates ORDER BY name ASC");
   	<link href="/css/bootstrap.min.css" rel="stylesheet">
   	<link href="/css/jquery-ui.css" rel="stylesheet">
   	<link href="/css/vault.css" rel="stylesheet">
-	<script src="/js/jquery/jquery.min.js"></script>
+	  <script src="/js/jquery/jquery.min.js"></script>
     <script src="/js/datatables.min.js"></script> 
     <script src="/js/jquery-ui.js"></script>
     <script src="/js/bootstrap.bundle.min.js"></script>
     <script src="/js/bootstrap-select.js"></script>
     <script src="/js/bootbox.min.js"></script>
-    <script src="/js/sb-admin-2.js"></script>
     <script src="/js/validate-session.js"></script>
   	<script src="/js/bootstrap-editable.js"></script>
 
-	<link href="/css/bootstrap-editable.css" rel="stylesheet">
+	  <link href="/css/bootstrap-editable.css" rel="stylesheet">
     <link href="/css/select2.css" rel="stylesheet">
     <script src="/js/select2.js"></script> 
     <script src="/js/regulatory.js"></script> 
     <script src="/js/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="/js/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
-
 </head>
 
 <body>
