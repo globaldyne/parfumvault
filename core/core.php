@@ -2513,7 +2513,7 @@ if($_POST['update_customer_data'] && $_POST['customer_id']){
 	return;	
 }
 
-//MGM INGREDIENT ---- LOL
+//MGM INGREDIENT
 if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'general'){
 	$ing = mysqli_real_escape_string($conn, $_POST['ing']);
 
@@ -2600,18 +2600,18 @@ if ($_POST['manage'] === 'ingredient' && $_POST['tab'] === 'usage_limits') {
         usage_type = ?, allergen = ?, cat1 = ?, cat2 = ?, cat3 = ?, cat4 = ?, 
         cat5A = ?, cat5B = ?, cat5C = ?, cat5D = ?, cat6 = ?, cat7A = ?, cat7B = ?, 
         cat8 = ?, cat9 = ?, cat10A = ?, cat10B = ?, cat11A = ?, cat11B = ?, 
-        cat12 = ? WHERE id = ?"
+        cat12 = ? WHERE id = ? AND owner_id = ?"
     );
 
     $stmt->bind_param(
-        'iiisiddddddddddddddddddi',
+        'iiisiddddddddddddddddddii',
         $byPassIFRA, $noUsageLimit, $flavor_use, $usage_type, $allergen, 
         $categories['cat1'], $categories['cat2'], $categories['cat3'], 
         $categories['cat4'], $categories['cat5A'], $categories['cat5B'], 
         $categories['cat5C'], $categories['cat5D'], $categories['cat6'], 
         $categories['cat7A'], $categories['cat7B'], $categories['cat8'], 
         $categories['cat9'], $categories['cat10A'], $categories['cat10B'], 
-        $categories['cat11A'], $categories['cat11B'], $categories['cat12'], $ingID
+        $categories['cat11A'], $categories['cat11B'], $categories['cat12'], $ingID, $userID
     );
 
     if ($stmt->execute()) {
@@ -2641,7 +2641,7 @@ if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'tech_data'){
 	$shelf_life = mysqli_real_escape_string($conn, $_POST["shelf_life"]) ?: 0;
 
 	
-	$query = "UPDATE ingredients SET tenacity='$tenacity',flash_point='$flash_point',chemical_name='$chemical_name',formula='$formula',logp = '$logp',soluble = '$soluble',molecularWeight = '$molecularWeight',appearance='$appearance',rdi='$rdi', shelf_life = '$shelf_life' WHERE id='$ingID'";
+	$query = "UPDATE ingredients SET tenacity='$tenacity',flash_point='$flash_point',chemical_name='$chemical_name',formula='$formula',logp = '$logp',soluble = '$soluble',molecularWeight = '$molecularWeight',appearance='$appearance',rdi='$rdi', shelf_life = '$shelf_life' WHERE id='$ingID' AND owner_id = '$userID'";
 	if(mysqli_query($conn, $query)){
 		$response["success"] = 'Technical data has been updated';
 	}else{
@@ -2657,7 +2657,7 @@ if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'note_impact'){
 	$impact_base = mysqli_real_escape_string($conn, $_POST["impact_base"]);
 	$impact_heart = mysqli_real_escape_string($conn, $_POST["impact_heart"]);
 
-	$query = "UPDATE ingredients SET impact_top = '$impact_top',impact_heart = '$impact_heart',impact_base = '$impact_base' WHERE id='$ingID'";
+	$query = "UPDATE ingredients SET impact_top = '$impact_top',impact_heart = '$impact_heart',impact_base = '$impact_base' WHERE id='$ingID' AND owner_id = '$userID'";
 	if(mysqli_query($conn, $query)){
 		$response["success"] = 'Note impact has been updated';
 	}else{
@@ -2671,7 +2671,7 @@ if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'privacy'){
 	$ingID = (int)$_POST['ingID'];
 	if($_POST['isPrivate'] == 'true'){ $isPrivate = '1'; }else{ $isPrivate = '0'; }
 	
-	$query = "UPDATE ingredients SET isPrivate = '$isPrivate' WHERE id='$ingID'";
+	$query = "UPDATE ingredients SET isPrivate = '$isPrivate' WHERE id='$ingID' AND owner_id = '$userID'";
 	if(mysqli_query($conn, $query)){
 		$response["success"] = 'Privacy settings has been updated!';
 	}else{
@@ -2686,8 +2686,8 @@ if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'safety_info' && $_POST[
 	$ingID = (int)$_POST['ingID'];
 	$GHS = (int)$_POST['pictogram'];
 
-	if(mysqli_query($conn, "INSERT INTO ingSafetyInfo (GHS, ingID) VALUES ('$GHS','$ingID') ON DUPLICATE KEY UPDATE GHS = VALUES(GHS), ingID = VALUES(ingID)")){
-		$response["success"] = 'Safety data has been updated!';
+	if(mysqli_query($conn, "INSERT INTO ingSafetyInfo (GHS, ingID, owner_id) VALUES ('$GHS','$ingID','$userID') ON DUPLICATE KEY UPDATE GHS = VALUES(GHS), ingID = VALUES(ingID), owner_id = VALUES(owner_id)")){
+		$response["success"] = 'Safety data has been updated';
 	}else{
 		$response["error"] = 'Something went wrong '.mysqli_error($conn);
 	}
@@ -2701,8 +2701,8 @@ if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'safety_info' && $_POST[
 	$ingID = (int)$_POST['ingID'];
 	$GHS = (int)$_POST['pictogram_id'];
 	
-	if(mysqli_query($conn, "DELETE FROM ingSafetyInfo WHERE GHS = '$GHS' AND ingID = '$ingID'")){
-		$response["success"] = 'Safety data has been updated!';
+	if(mysqli_query($conn, "DELETE FROM ingSafetyInfo WHERE GHS = '$GHS' AND ingID = '$ingID' AND owner_id = '$userID'")){
+		$response["success"] = 'Safety data has been updated';
 	}else{
 		$response["error"] = 'Something went wrong '.mysqli_error($conn);
 	}
@@ -2710,58 +2710,105 @@ if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'safety_info' && $_POST[
 	return;
 }
 
-
+//DEPRECATED????
 if($_GET['import'] == 'ingredient'){
-		$name = sanChar(mysqli_real_escape_string($conn, base64_decode($_GET["name"])));
-		$query = "INSERT INTO ingredients (name, INCI, cas, notes, odor) VALUES ('$name', '$INCI', '$cas', 'Auto Imported', '$odor')";
-		
-		if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '$name'"))){
-			echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>Error: </strong>'.$name.' already exists!</div>';
+	$name = sanChar(mysqli_real_escape_string($conn, base64_decode($_GET["name"])));
+	$query = "INSERT INTO ingredients (name, INCI, cas, notes, odor, owner_id) VALUES ('$name', '$INCI', '$cas', 'Auto Imported', '$odor', '$userID')";
+	
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '$name' AND owner_id = '$userID'"))){
+		$response["error"] = $name.' already exists';
+	}else{
+		if(mysqli_query($conn, $query)){
+			$response["success"] = $name.' imported';
 		}else{
-			if(mysqli_query($conn, $query)){
-				echo '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>Ingredient <strong>'.$name.'</strong> added!</div>';
-			}else{
-				echo '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Failed to add '.mysqli_error($conn).'</div>';
-			}
-		}	
+			$response["error"] = 'Something went wrong '.mysqli_error($conn);
+		}
+	}
+	echo json_encode($response);	
 	return;
 }
 
 //DUPLICATE INGREDIENT
-if($_POST['action'] == 'duplicate_ingredient' && $_POST['old_ing_name'] && $_POST['ing_id']){
-	$ing_id = mysqli_real_escape_string($conn, $_POST['ing_id']);
+if ($_POST['action'] == 'duplicate_ingredient' && isset($_POST['old_ing_name'], $_POST['ing_id'], $_POST['new_ing_name'])) {
+    // Sanitize inputs
+    $ing_id = (int)$_POST['ing_id'];
+    $old_ing_name = mysqli_real_escape_string($conn, trim($_POST['old_ing_name']));
+    $new_ing_name = mysqli_real_escape_string($conn, trim($_POST['new_ing_name']));
 
-	$old_ing_name = mysqli_real_escape_string($conn, $_POST['old_ing_name']);
-	$new_ing_name = mysqli_real_escape_string($conn, $_POST['new_ing_name']);
-	if(empty($new_ing_name)){
-		$response['error'] = 'Please provide a name';
-		echo json_encode($response);
-		return;
-	}
-	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '$new_ing_name'"))){
-		$response['error'] = $new_ing_name.' already exists';
-		echo json_encode($response);
-		return;
-	}
-	
-	$sql.=mysqli_query($conn, "INSERT INTO ingredient_compounds (ing,name,cas,min_percentage,max_percentage) SELECT '$new_ing_name',name,cas,min_percentage,max_percentage FROM ingredient_compounds WHERE ing = '$old_ing_name'");
-	
+    // Check if a new ingredient name is provided
+    if (empty($new_ing_name)) {
+        $response['error'] = 'Please provide a name';
+        echo json_encode($response);
+        return;
+    }
 
-	$sql.=mysqli_query($conn, "INSERT INTO ingredients (name,INCI,type,strength,category,purity,cas,FEMA,reach,tenacity,chemical_name,formula,flash_point,appearance,notes,profile,solvent,odor,allergen,flavor_use,soluble,logp,cat1,cat2,cat3,cat4,cat5A,cat5B,cat5C,cat5D,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12,impact_top,impact_heart,impact_base,usage_type,noUsageLimit,isPrivate,molecularWeight,physical_state) SELECT '$new_ing_name',INCI,type,strength,category,purity,cas,FEMA,reach,tenacity,chemical_name,formula,flash_point,appearance,notes,profile,solvent,odor,allergen,flavor_use,soluble,logp,cat1,cat2,cat3,cat4,cat5A,cat5B,cat5C,cat5D,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12,impact_top,impact_heart,impact_base,usage_type,noUsageLimit,isPrivate,molecularWeight,physical_state FROM ingredients WHERE id = '$ing_id'");
+    // Check if the new ingredient name already exists
+    $checkNameQuery = "SELECT name FROM ingredients WHERE name = '$new_ing_name' AND owner_id = '$userID'";
+    if (mysqli_num_rows(mysqli_query($conn, $checkNameQuery)) > 0) {
+        $response['error'] = $new_ing_name . ' already exists';
+        echo json_encode($response);
+        return;
+    }
 
-	$newID = mysqli_insert_id($conn);
-	
-	$sql.=mysqli_query($conn, "INSERT INTO suppliers (ingSupplierID,ingID,supplierLink,price,size,manufacturer,preferred,batch,purchased,mUnit,stock,status,supplier_sku,internal_sku,storage_location) SELECT ingSupplierID,'$newID',supplierLink,price,size,manufacturer,preferred,batch,purchased,mUnit,stock,status,supplier_sku,internal_sku,storage_location FROM suppliers WHERE ingID = '$ing_id'");
+    // Begin the duplication process
+    $queries = [];
 
-	if($nID = mysqli_fetch_array(mysqli_query($conn, "SELECT id,name FROM ingredients WHERE name = '$new_ing_name'"))){
+    // Duplicate ingredient compounds
+    $queries[] = "INSERT INTO ingredient_compounds (ing, name, cas, min_percentage, max_percentage, owner_id)
+                  SELECT '$new_ing_name', name, cas, min_percentage, max_percentage, '$userID'
+                  FROM ingredient_compounds WHERE ing = '$old_ing_name' AND owner_id = '$userID'";
 
-		$response['success'] = $old_ing_name.' duplicated as <a href="/pages/mgmIngredient.php?id='.$nID['id'].'" >'.$new_ing_name.'</a>';
-		echo json_encode($response);
-		return;
-	}
-	
-	return;
+    // Duplicate ingredient details
+	$queries[] = "INSERT INTO ingredients (name, INCI, type, strength, category, purity, cas, FEMA, reach, tenacity, chemical_name, formula, 
+				flash_point, appearance, notes, profile, solvent, odor, allergen, flavor_use, soluble, logp, cat1, cat2, cat3, cat4, cat5A, 
+				cat5B, cat5C, cat5D, cat6, cat7A, cat7B, cat8, cat9, cat10A, cat10B, cat11A, cat11B, cat12, impact_top, impact_heart, impact_base, 
+				usage_type, noUsageLimit, isPrivate, molecularWeight, physical_state, owner_id)
+				SELECT '$new_ing_name', INCI, type, strength, category, purity, cas, FEMA, reach, tenacity, chemical_name, formula, 
+				flash_point, appearance, notes, profile, solvent, odor, allergen, flavor_use, soluble, logp, cat1, cat2, cat3, cat4, cat5A, 
+				cat5B, cat5C, cat5D, cat6, cat7A, cat7B, cat8, cat9, cat10A, cat10B, cat11A, cat11B, cat12, impact_top, impact_heart, impact_base, 
+				usage_type, noUsageLimit, isPrivate, molecularWeight, physical_state, '$userID'
+				FROM ingredients WHERE id = '$ing_id' AND owner_id = '$userID'
+				ON DUPLICATE KEY UPDATE notes = VALUES(notes)";
+
+
+    // Capture the newly inserted ingredient ID
+    $newID = 0;
+    if (mysqli_query($conn, end($queries))) {
+        $newID = mysqli_insert_id($conn);
+    }
+
+    // Duplicate suppliers
+    $queries[] = "INSERT INTO suppliers (ingSupplierID, ingID, supplierLink, price, size, manufacturer, preferred, batch, purchased, 
+                  mUnit, stock, status, supplier_sku, internal_sku, storage_location, owner_id)
+                  SELECT ingSupplierID, '$newID', supplierLink, price, size, manufacturer, preferred, batch, purchased, 
+                  mUnit, stock, status, supplier_sku, internal_sku, storage_location, '$userID'
+                  FROM suppliers WHERE ingID = '$ing_id' AND owner_id = '$userID'";
+
+    // Execute all queries
+    foreach ($queries as $query) {
+        if (!mysqli_query($conn, $query)) {
+            $response['error'] = 'Error during duplication: ' . mysqli_error($conn);
+            error_log("PV error: $query - " . mysqli_error($conn)); // Log the specific query and error
+            echo json_encode($response);
+            return;
+        }
+    }
+
+    // Verify the new ingredient and return success
+    $newIngredientQuery = "SELECT id, name FROM ingredients WHERE name = '$new_ing_name' AND owner_id = '$userID'";
+    if ($newIngredient = mysqli_fetch_assoc(mysqli_query($conn, $newIngredientQuery))) {
+        $response['success'] = $old_ing_name . ' duplicated as <a href="/pages/mgmIngredient.php?id=' . $newIngredient['id'] . '">' . $new_ing_name . '</a>';
+        echo json_encode($response);
+        return;
+    }
+
+    // Handle unexpected cases
+    $response['error'] = 'Unknown error occurred during duplication';
+    error_log("PV error: Unknown duplication issue for ingredient - Old: $old_ing_name, New: $new_ing_name");
+    echo json_encode($response);
+    return;
 }
+
 
 
 

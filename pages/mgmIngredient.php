@@ -276,6 +276,13 @@ body {
 			</div>
 			<div class="modal-body">
 				<div id="duplicate_msg"></div>
+				<div class="alert alert-info">The info bellow will be duplicated:
+					<p>
+						<li>General info</li>
+						<li>Suppliers info</li>
+						<li>Compounds info</li>
+					</p>
+				</div>
 				<label for="duplicateIngName" class="form-label">Name</label>
 				<input class="form-control" name="duplicateIngName" id="duplicateIngName" type="text" value="" />            
 				<div class="modal-footer">

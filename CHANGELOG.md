@@ -13,6 +13,7 @@
 - Fixed synonyms delete
 - Improve PubChem structure images fetch
 - Fixed redirection when adding ingredient if already exists with the same name
+- Update ingredient duplication function
 
 ### Version 12.4
 - Add dilutant in API formulas
