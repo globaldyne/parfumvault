@@ -10,17 +10,17 @@ require_once(__ROOT__.'/func/profileImg.php');
 
 
 if($ingID = $_GET["id"]){
-	if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE id = '$ingID'"))){
+	if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE id = '$ingID' AND owner_id = '$userID'"))){
 		echo '<div class="alert alert-danger">No such ingredient found</div>';
 		return;
 	}
 }
 $res_ingTypes = mysqli_query($conn, "SELECT id,name FROM ingTypes ORDER BY name ASC");
 $res_ingStrength = mysqli_query($conn, "SELECT id,name FROM ingStrength ORDER BY name ASC");
-$res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCategory ORDER BY name ASC");
+$res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCategory  WHERE owner_id = '$userID' ORDER BY name ASC");
 $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles ORDER BY id ASC");
 
-$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE id = '$ingID'"));
+$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE id = '$ingID' AND owner_id = '$userID'"));
 
 ?>
 <!doctype html>

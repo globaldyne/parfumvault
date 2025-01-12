@@ -1995,13 +1995,13 @@ if($_POST['updateQuantity'] && $_POST['ingQuantityID'] &&  $_POST['ingQuantityNa
 		}
 		$formulaSolventID = $_POST['formulaSolventID'];
 		
-		if(mysqli_num_rows(mysqli_query($conn,"SELECT id FROM ingredients WHERE id = '".$ingID."' AND profile='solvent'"))){
+		if(mysqli_num_rows(mysqli_query($conn,"SELECT id FROM ingredients WHERE id = '".$ingID."' AND profile='solvent' AND owner_id = '$userID'"))){
 			$response["error"] = 'You cannot exchange a solvent with a solvent';
 			echo json_encode($response);
 			return;
 		}
 		
-		$slv = mysqli_fetch_array(mysqli_query($conn,"SELECT quantity FROM formulas WHERE ingredient_id = '".$formulaSolventID."' AND fid = '".$fid."'"));
+		$slv = mysqli_fetch_array(mysqli_query($conn,"SELECT quantity FROM formulas WHERE ingredient_id = '".$formulaSolventID."' AND fid = '".$fid."' AND owner_id = '$userID'"));
 		
 		$fq = $_POST['ingQuantity'] - $_POST['curQuantity'];
 		
@@ -2016,11 +2016,11 @@ if($_POST['updateQuantity'] && $_POST['ingQuantityID'] &&  $_POST['ingQuantityNa
     		return sprintf("%+.4f",$num);
 		}
 		
-		$curV = mysqli_fetch_array(mysqli_query($conn, "SELECT quantity FROM formulas WHERE fid = '$fid' AND id = '".$ingredient."'"));
+		$curV = mysqli_fetch_array(mysqli_query($conn, "SELECT quantity FROM formulas WHERE fid = '$fid' AND id = '".$ingredient."' AND owner_id = '$userID'"));
 		$diff = number_format($curV['quantity'] -  $value  , 4);
 		$v = formatVal($diff);
 		
-		$qs ="UPDATE formulas SET quantity = quantity $v WHERE fid = '$fid' AND ingredient_id = '".$formulaSolventID."'";
+		$qs ="UPDATE formulas SET quantity = quantity $v WHERE fid = '$fid' AND ingredient_id = '".$formulaSolventID."' AND owner_id = '$userID'";
 		if(!mysqli_query($conn, $qs)){
 			$response["error"] = 'Error updating solvent: '.mysqli_error($conn);
 			$response["query"] = $qs;
@@ -2029,20 +2029,21 @@ if($_POST['updateQuantity'] && $_POST['ingQuantityID'] &&  $_POST['ingQuantityNa
 		}
 	}
 		
-	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,isProtected FROM formulasMetaData WHERE fid = '".$_POST['fid']."'"));
+	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,isProtected FROM formulasMetaData WHERE fid = '".$_POST['fid']."' AND owner_id = '$userID'"));
 	
 	if($meta['isProtected'] == FALSE){
 		
 		if(mysqli_query($conn, "UPDATE formulas SET quantity = '$value' WHERE fid = '$fid' AND id = '$ingredient'")){
 			
 			$lg = "CHANGED: ".$ing_name." Set $name to $value";
-			mysqli_query($conn, "INSERT INTO formula_history (fid,ing_id,change_made,user) VALUES ('".$meta['id']."','$ingredient','$lg','".$user['fullName']."')");
+			mysqli_query($conn, "INSERT INTO formula_history (fid,ing_id,change_made,user,owner_id) VALUES ('".$meta['id']."','$ingredient','$lg','".$user['fullName']."','$userID')");
 			
 			$response["success"] = 'Quantity updated';
 			echo json_encode($response);
 		
 		}else{
 			$response["error"] = mysqli_error($conn);
+			error_log("PV error: " . mysqli_error($conn));  // Log the error for debugging
 			echo json_encode($response);
 		}
 		
@@ -2056,18 +2057,19 @@ if($_POST['value'] && $_GET['formula'] && $_POST['pk']){
 	$ingredient = mysqli_real_escape_string($conn, $_POST['pk']);
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 	
-	$ing_name =  mysqli_fetch_array(mysqli_query($conn, "SELECT ingredient FROM formulas WHERE id = '$ingredient' AND fid = '".$_GET['formula']."'"));
+	$ing_name =  mysqli_fetch_array(mysqli_query($conn, "SELECT ingredient FROM formulas WHERE id = '$ingredient' AND fid = '".$_GET['formula']."' AND owner_id = '$userID'"));
 	
-	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,isProtected FROM formulasMetaData WHERE fid = '".$_GET['formula']."'"));
+	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,isProtected FROM formulasMetaData WHERE fid = '".$_GET['formula']."' AND owner_id = '$userID'"));
 	if($meta['isProtected'] == FALSE){
 					
-		if(mysqli_query($conn, "UPDATE formulas SET $name = '$value' WHERE fid = '$formula' AND id = '$ingredient'")){
+		if(mysqli_query($conn, "UPDATE formulas SET $name = '$value' WHERE fid = '$formula' AND id = '$ingredient' AND owner_id = '$userID'")){
 			
 			$lg = "CHANGED: ".$ing_name['ingredient']." Set $name to $value";
-			mysqli_query($conn, "INSERT INTO formula_history (fid,ing_id,change_made,user) VALUES ('".$meta['id']."','$ingredient','$lg','".$user['fullName']."')");
+			mysqli_query($conn, "INSERT INTO formula_history (fid,ing_id,change_made,user,owner_id) VALUES ('".$meta['id']."','$ingredient','$lg','".$user['fullName']."','$userID')");
 			$response["success"] = 'Formula updated';
 		} else {
 			$response["error"] = mysqli_error($conn);
+			error_log("PV error: " . mysqli_error($conn));  // Log the error for debugging
 		}
 	}
 	echo json_encode($response);
@@ -2080,10 +2082,11 @@ if($_GET['formulaMeta']){
 	$id = mysqli_real_escape_string($conn, $_POST['pk']);
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 
-	if(mysqli_query($conn, "UPDATE formulasMetaData SET $name = '$value' WHERE id = '$id'")){
+	if(mysqli_query($conn, "UPDATE formulasMetaData SET $name = '$value' WHERE id = '$id' AND owner_id = '$userID'")){
 		$response["success"] = 'Formula meta updated';
 	} else {
 		$response["error"] = mysqli_error($conn);
+		error_log("PV error: " . mysqli_error($conn));  // Log the error for debugging
 	}
 	echo json_encode($response);
 	return;
@@ -2115,7 +2118,7 @@ if($_GET['protect']){
 		$isProtected = '0';
 		$l = 'unlocked';
 	}
-	if(mysqli_query($conn, "UPDATE formulasMetaData SET isProtected = '$isProtected' WHERE fid = '$fid'")){
+	if(mysqli_query($conn, "UPDATE formulasMetaData SET isProtected = '$isProtected' WHERE fid = '$fid' AND owner_id = '$userID'")){
 		$response["success"] = 'Formula '.$l;
 		echo json_encode($response);
 	}else{
@@ -2130,7 +2133,7 @@ if($_POST['formulaSettings'] &&  $_POST['set']){
 	$set = mysqli_real_escape_string($conn, $_POST['set']);
 	$val = mysqli_real_escape_string($conn, $_POST['val']);
 
-	if(mysqli_query($conn, "UPDATE formulasMetaData SET $set = '$val' WHERE fid = '$fid'")){
+	if(mysqli_query($conn, "UPDATE formulasMetaData SET $set = '$val' WHERE fid = '$fid' AND owner_id = '$userID'")){
 		$response["success"] = "Formula settings updated";
 		echo json_encode($response);
 	}else{
@@ -2151,13 +2154,13 @@ if($_GET['action'] == 'rename' && $_GET['fid']){
 		echo json_encode($response);
 		return;
 	}
-	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM formulasMetaData WHERE name = '$value'"))){
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM formulasMetaData WHERE name = '$value' AND owner_id = '$userID'"))){
 		$response["error"] = 'Name already exists';
 		echo json_encode($response);
 	
 	}else{
-		mysqli_query($conn, "UPDATE formulasMetaData SET name = '$value' WHERE id = '$id'");
-		if(mysqli_query($conn, "UPDATE formulas SET name = '$value' WHERE fid = '$fid'")){
+		mysqli_query($conn, "UPDATE formulasMetaData SET name = '$value' WHERE id = '$id' AND owner_id = '$userID'");
+		if(mysqli_query($conn, "UPDATE formulas SET name = '$value' WHERE fid = '$fid' AND owner_id = '$userID'")){
 			$response["success"] = 'Formula renamed';
 			$response["msg"] = $value;
 			echo json_encode($response);
@@ -2173,31 +2176,44 @@ if($_GET['action'] == 'ingredientCategories'){
 	$cat_id = mysqli_real_escape_string($conn, $_POST['pk']);
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 
-	if(mysqli_query($conn, "UPDATE ingCategory SET $name = '$value' WHERE id = '$cat_id'")){
+	if(mysqli_query($conn, "UPDATE ingCategory SET $name = '$value' WHERE id = '$cat_id' AND owner_id = '$userID'")){
 		$response["success"] = 'Ingredient category updated';
 	}else{
 		$response["error"] = mysqli_error($conn);
+        error_log("PV error: " . $error_message);  // Log the error for debugging
 	}
 	
 	echo json_encode($response);
 	return;
 }
 
-if($_GET['settings'] == 'prof'){
-	$value = mysqli_real_escape_string($conn, $_POST['value']);
-	$id = mysqli_real_escape_string($conn, $_POST['pk']);
-	$name = mysqli_real_escape_string($conn, $_POST['name']);
-
-	mysqli_query($conn, "UPDATE ingProfiles SET $name = '$value' WHERE id = '$id'");
+if ($_GET['settings'] == 'prof') {
+    $value = mysqli_real_escape_string($conn, $_POST['value']);
+    $id = mysqli_real_escape_string($conn, $_POST['pk']);
+    $name = mysqli_real_escape_string($conn, $_POST['name']);
+    
+    $query = "UPDATE ingProfiles SET $name = '$value' WHERE id = '$id' AND owner_id = '$userID'";
+    
+    if (mysqli_query($conn, $query)) {
+        // If the query is successful, no action needed here
+        return;
+    } else {
+        $error_message = 'Error updating profile: ' . mysqli_error($conn);
+        error_log("PV error: " . $error_message);  // Log the error for debugging
+        $response["error"] = $error_message;
+        echo json_encode($response);
+        return;
+    }
 	return;
 }
+
 
 if($_GET['settings'] == 'fcat' && $_GET['action'] == 'updateFormulaCategory' ){
 	$value = mysqli_real_escape_string($conn, $_POST['value']);
 	$cat_id = mysqli_real_escape_string($conn, $_POST['pk']);
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 
-	if(mysqli_query($conn, "UPDATE formulaCategories SET $name = '$value' WHERE id = '$cat_id'")){
+	if(mysqli_query($conn, "UPDATE formulaCategories SET $name = '$value' WHERE id = '$cat_id' AND owner_id = '$userID'")){
 		$response["success"] = 'Formula actegory updated';
 	} else {
 		$response["error"] = mysqli_error($conn);
@@ -2211,10 +2227,11 @@ if($_GET['kind'] == 'suppliers' && $_GET['action'] == 'supplier_update'){
 	$sup_id = mysqli_real_escape_string($conn, $_POST['pk']);
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 
-	if(mysqli_query($conn, "UPDATE ingSuppliers SET $name = '$value' WHERE id = '$sup_id'")){
+	if(mysqli_query($conn, "UPDATE ingSuppliers SET $name = '$value' WHERE id = '$sup_id'  AND owner_id = '$userID'")){
 		$response["success"] = 'Supplier updated';
 	} else {
 		$response["error"] = mysqli_error($conn);
+		error_log("PV error: " . mysqli_error($conn));  // Log the error for debugging
 	}
 	echo json_encode($response);
 	return;	
@@ -2232,8 +2249,8 @@ if($_POST['supp'] == 'edit'){
 	$email = mysqli_real_escape_string($conn, $_POST['email']);
 	
 	
-	if(mysqli_query($conn, "UPDATE ingSuppliers SET address = '$address', po='$po', country='$country', telephone='$telephone', url='$url', email='$email' WHERE id = '$id'")){
-		$response["success"] = 'Supplier '.$name.' updated!';
+	if(mysqli_query($conn, "UPDATE ingSuppliers SET address = '$address', po='$po', country='$country', telephone='$telephone', url='$url', email='$email' WHERE id = '$id' AND owner_id = '$userID'")){
+		$response["success"] = 'Supplier '.$name.' updated';
 		echo json_encode($response);
 	}else{
 		$response["error"] = 'Something went wrong: '.mysqli_error($conn);
@@ -2272,18 +2289,18 @@ if($_POST['supp'] == 'add'){
 	}		 
 	
 	if(empty($name)){
-		$response["error"] = '<strong>Error: </strong> Supplier name required';
+		$response["error"] = 'Supplier name required';
 		echo json_encode($response);
 		return;
 	}
-	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingSuppliers WHERE name = '$name'"))){
-		$response["error"] = '<strong>'.$name.'</strong> Supplier already exists!';
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingSuppliers WHERE name = '$name' AND owner_id = '$userID'"))){
+		$response["error"] = $name.' supplier name already exists';
 		echo json_encode($response);
 		return;
 	}
 
-	if(mysqli_query($conn, "INSERT INTO ingSuppliers (name,address,po,country,telephone,url,email,platform,price_tag_start,price_tag_end,add_costs,notes,min_ml,min_gr) VALUES ('$name','$address','$po','$country','$telephone','$url','$email','$platform','$price_tag_start','$price_tag_end','$add_costs','$description','$min_ml','$min_gr')")){
-		$response["success"] = 'Supplier '.$name.' added!';
+	if(mysqli_query($conn, "INSERT INTO ingSuppliers (name,address,po,country,telephone,url,email,platform,price_tag_start,price_tag_end,add_costs,notes,min_ml,min_gr,owner_id) VALUES ('$name','$address','$po','$country','$telephone','$url','$email','$platform','$price_tag_start','$price_tag_end','$add_costs','$description','$min_ml','$min_gr','$userID')")){
+		$response["success"] = 'Supplier '.$name.' added';
 		echo json_encode($response);
 	}else{
 		$response["error"] = 'Something went wrong: '.mysqli_error($conn);
@@ -2294,10 +2311,10 @@ if($_POST['supp'] == 'add'){
 
 if($_GET['supp'] == 'delete' && $_GET['ID']){
 	$ID = mysqli_real_escape_string($conn, $_GET['ID']);
-	$supplier = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingSuppliers WHERE id = '$ID'"));
+	$supplier = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingSuppliers WHERE id = '$ID' AND owner_id = '$userID'"));
 
 	if(mysqli_query($conn, "DELETE FROM ingSuppliers WHERE id = '$ID'")){
-		$response["success"] = 'Supplier <strong>'.$supplier['name'].'</strong> deleted!';
+		$response["success"] = 'Supplier '.$supplier['name'].' deleted';
 	}else{
 		$response["error"] = 'Something went wrong: '.mysqli_error($conn);
 	}
@@ -2359,21 +2376,21 @@ if($_POST['composition'] == 'add'){
 		return;
 	}
 	
-	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredient_compounds WHERE name = '$allgName' AND ing = '$ing'"))){
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredient_compounds WHERE name = '$allgName' AND ing = '$ing'  AND owner_id = '$userID'"))){
 		$response["error"] = $allgName.' already exists';
 		echo json_encode($response);
 		return;
 	}
 	
-	if(mysqli_query($conn, "INSERT INTO ingredient_compounds (name, cas, ec, min_percentage, max_percentage, GHS, toDeclare, ing) VALUES ('$allgName','$allgCAS','$allgEC','$minPerc','$maxPerc','$GHS','$declare','$ing')")){
+	if(mysqli_query($conn, "INSERT INTO ingredient_compounds (name, cas, ec, min_percentage, max_percentage, GHS, toDeclare, ing, owner_id) VALUES ('$allgName','$allgCAS','$allgEC','$minPerc','$maxPerc','$GHS','$declare','$ing','$userID')")){
 		$response["success"] = $allgName.' added to the composition';
 	}else{
 		$response["error"] = mysqli_error($conn);
 	}
 	
 	if($_POST['addToIng'] == 'true'){
-		if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$allgName'")))){
-			mysqli_query($conn, "INSERT INTO ingredients (name,cas,einecs) VALUES ('$allgName','$allgCAS','$allgEC')");		
+		if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$allgName' AND owner_id = '$userID'")))){
+			mysqli_query($conn, "INSERT INTO ingredients (name,cas,einecs,owner_id) VALUES ('$allgName','$allgCAS','$allgEC','$userID')");		
 		}
 	}
 	
@@ -2387,7 +2404,7 @@ if($_GET['composition'] == 'update'){
 	$id = mysqli_real_escape_string($conn, $_POST['pk']);
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 
-	if(mysqli_query($conn, "UPDATE ingredient_compounds SET $name = '$value' WHERE id = '$id'")){
+	if(mysqli_query($conn, "UPDATE ingredient_compounds SET $name = '$value' WHERE id = '$id' AND owner_id = '$userID'")){
 		$response["success"] = 'Ingredient updated';
 	} else {
 		$response["error"] = mysqli_error($conn);
@@ -2403,7 +2420,7 @@ if($_POST['composition'] == 'delete'){
 	$id = mysqli_real_escape_string($conn, $_POST['allgID']);
 	//$ing = base64_decode($_POST['ing']);
 
-	$delQ = mysqli_query($conn, "DELETE FROM ingredient_compounds WHERE id = '$id'");	
+	$delQ = mysqli_query($conn, "DELETE FROM ingredient_compounds WHERE id = '$id' AND owner_id = '$userID'");	
 	if($delQ){
 		$response["success"] = $ing.' deleted';
 	}else {
@@ -2418,18 +2435,18 @@ if($_POST['composition'] == 'delete'){
 if($_POST['ingredient'] == 'delete' && $_POST['ing_id']){
 
 	$id = mysqli_real_escape_string($conn, $_POST['ing_id']);
-	$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE id = '$id'"));
+	$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE id = '$id' AND owner_id = '$userID'"));
 	
 	if($_POST['forceDelIng'] == "false"){
 
-			if(mysqli_num_rows(mysqli_query($conn, "SELECT ingredient FROM formulas WHERE ingredient = '".$ing['name']."'"))){
+			if(mysqli_num_rows(mysqli_query($conn, "SELECT ingredient FROM formulas WHERE ingredient = '".$ing['name']."' AND owner_id = '$userID'"))){
 			$response["error"] = $ing['name'].' is in use by at least one formula and cannot be deleted';
 			echo json_encode($response);
 			return;
 		}
 	}
-	if(mysqli_query($conn, "DELETE FROM ingredients WHERE id = '$id'")){
-		mysqli_query($conn,"DELETE FROM ingredient_compounds WHERE ing = '".$ing['name']."'");
+	if(mysqli_query($conn, "DELETE FROM ingredients WHERE id = '$id' AND owner_id = '$userID'")){
+		mysqli_query($conn,"DELETE FROM ingredient_compounds WHERE ing = '".$ing['name']."' AND owner_id = '$userID'");
 		$response["success"] = 'Ingredient '.$ing['name'].' and its data deleted';
 	}
 	
@@ -2449,9 +2466,9 @@ if($_POST['customer'] == 'add'){
 	$address = mysqli_real_escape_string($conn, $_POST['address']);
 	$email = mysqli_real_escape_string($conn, $_POST['email']);
 	$web = mysqli_real_escape_string($conn, $_POST['web']);
-	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM customers WHERE name = '$name'"))){
-		$response["error"] = 'Error: '.$name.' already exists!';
-	}elseif(mysqli_query($conn, "INSERT INTO customers (name,address,email,web,owner_id) VALUES ('$name', '$address', '$email', '$web', '".$user['id']."')")){
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM customers WHERE name = '$name' AND owner_id = '$userID'"))){
+		$response["error"] = $name.' already exists';
+	}elseif(mysqli_query($conn, "INSERT INTO customers (name,address,email,web,owner_id) VALUES ('$name', '$address', '$email', '$web', '$userID')")){
 		$response["success"] = 'Customer '.$name.' added!';
 	}else{
 		$response["error"] = 'Error adding customer.';
@@ -2463,8 +2480,8 @@ if($_POST['customer'] == 'add'){
 //CUSTOMERS - DELETE
 if($_POST['action'] == 'delete' && $_POST['type'] == 'customer' && $_POST['customer_id']){
 	$customer_id = mysqli_real_escape_string($conn, $_POST['customer_id']);
-	if(mysqli_query($conn, "DELETE FROM customers WHERE id = '$customer_id'")){
-		$response["success"] = 'Customer deleted!';
+	if(mysqli_query($conn, "DELETE FROM customers WHERE id = '$customer_id' AND owner_id = '$userID'")){
+		$response["success"] = 'Customer deleted';
 	}else{
 		$response["error"] = 'Error deleting customer '.mysqli_error($conn);
 	}
@@ -2478,7 +2495,7 @@ if($_POST['update_customer_data'] && $_POST['customer_id']){
 	$id = $_POST['customer_id'];
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 	if(empty($name)){
-		$response["error"] = 'Name cannot be empty ';
+		$response["error"] = 'Name cannot be empty';
 		echo json_encode($response);
 		return;
 	}
@@ -2487,8 +2504,8 @@ if($_POST['update_customer_data'] && $_POST['customer_id']){
 	$web = mysqli_real_escape_string($conn, $_POST['web'])?:'N/A';
 	$phone = mysqli_real_escape_string($conn, $_POST['phone'])?:'N/A';
 
-	if(mysqli_query($conn, "UPDATE customers SET name = '$name', address = '$address', email = '$email', web = '$web', phone = '$phone' WHERE id = '$id'")){
-		$response["success"] = 'Customer details updated!';
+	if(mysqli_query($conn, "UPDATE customers SET name = '$name', address = '$address', email = '$email', web = '$web', phone = '$phone' WHERE id = '$id' AND owner_id = '$userID'")){
+		$response["success"] = 'Customer details updated';
 	}else{
 		$response["error"] = 'Error updating customer '.mysqli_error($conn);
 	}
@@ -2496,7 +2513,7 @@ if($_POST['update_customer_data'] && $_POST['customer_id']){
 	return;	
 }
 
-//MGM INGREDIENT
+//MGM INGREDIENT ---- LOL
 if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'general'){
 	$ing = mysqli_real_escape_string($conn, $_POST['ing']);
 
@@ -2514,23 +2531,25 @@ if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'general'){
 	$odor = ucfirst(trim(mysqli_real_escape_string($conn, $_POST["odor"])));
 	$notes = ucfirst(trim(mysqli_real_escape_string($conn, $_POST["notes"])));
 	
-//	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '".$_POST['name']."'"))){
 	if(empty($_POST['name'])){
 	
-		$query = "UPDATE ingredients SET INCI = '$INCI',cas = '$cas',solvent='".$_POST["solvent"]."', einecs = '$einecs', reach = '$reach',FEMA = '$fema',purity='$purity',profile='$profile',type = '$type',strength = '$strength', category='$category',physical_state = '$physical_state',odor = '$odor',notes = '$notes' WHERE name='$ing'";
+		$query = "UPDATE ingredients SET INCI = '$INCI',cas = '$cas',solvent='".$_POST["solvent"]."', einecs = '$einecs', reach = '$reach',FEMA = '$fema',purity='$purity',profile='$profile',type = '$type',strength = '$strength', category='$category',physical_state = '$physical_state',odor = '$odor',notes = '$notes' WHERE name='$ing' AND owner_id = '$userID'";
 		
 		if(mysqli_query($conn, $query)){
-			$response["success"] = 'General details have been updated!';
+			$response["success"] = 'General details have been updated';
 		}else{
 			$response["error"] = 'Unable to update database: '.mysqli_error($conn);
 		}
 	}else{
 		$name = sanChar(mysqli_real_escape_string($conn, $_POST["name"]));
 
-		$query = "INSERT INTO ingredients (name, INCI, cas, einecs, reach, FEMA, type, strength, category, profile, notes, odor, purity, solvent, physical_state) VALUES ('$name', '$INCI', '$cas', '$einecs', '$reach', '$fema', '$type', '$strength', '$category', '$profile',  '$notes', '$odor', '$purity', '$solvent', '1')";
+		$query = "INSERT INTO ingredients (name, INCI, cas, einecs, reach, FEMA, type, strength, category, profile, notes, odor, purity, solvent, physical_state,owner_id) VALUES ('$name', '$INCI', '$cas', '$einecs', '$reach', '$fema', '$type', '$strength', '$category', '$profile',  '$notes', '$odor', '$purity', '$solvent', '1','$userID')";
 		
-		if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '$name'"))){
-			$response["error"] = $name.' already exists!';
+		if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '$name' AND owner_id = '$userID'"))){
+			$response["error"] = $name.' already exists';
+			$ing = mysqli_fetch_array(mysqli_query($conn,"SELECT id FROM ingredients WHERE name = '$name' AND owner_id = '$userID'"));
+			$response["ingid"] = (int)$ing['id'];
+
 		}else{
 			if(mysqli_query($conn, $query)){
 				$response["success"] = 'Ingredient '.$name.' created';

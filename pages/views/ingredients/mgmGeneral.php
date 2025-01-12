@@ -2,20 +2,22 @@
 define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__))))); 
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/inc/settings.php');
+
 require_once(__ROOT__.'/func/profileImg.php');
 
 
 $ingID = $_GET["id"];
 $res_ingTypes = mysqli_query($conn, "SELECT id,name FROM ingTypes ORDER BY name ASC");
 $res_ingStrength = mysqli_query($conn, "SELECT id,name FROM ingStrength ORDER BY name ASC");
-$res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCategory ORDER BY name ASC");
+$res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCategory WHERE owner_id = '$userID' ORDER BY name ASC");
 $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles ORDER BY id ASC");
-$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE id = '$ingID'"));
+$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE id = '$ingID' AND owner_id = '$userID'"));
 
 if($_GET["newIngName"]){
 	$newIngName = mysqli_real_escape_string($conn, base64_decode($_GET["newIngName"]));
 
-	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$ingName'")))){
+	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$ingName' AND owner_id = '$userID'")))){
 		$ing['cas'] = mysqli_real_escape_string($conn, $_GET["newIngCAS"]);
 	}
 }
@@ -201,7 +203,7 @@ $(document).ready(function() {
 				<?php } ?>
 			},
 			error: function (xhr, status, error) {
-				$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+				$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error);
 				$('.toast-header').removeClass().addClass('toast-header alert-danger');
 				$('.toast').toast('show');
 			}

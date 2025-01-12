@@ -11,13 +11,9 @@ $response = [
     "draw" => (int)($_POST['draw'] ?? 0),
     "recordsTotal" => 0,
     "recordsFiltered" => 0,
-    "data" => [],
-    "error" => null,
+    "data" => []
 ];
 
-// Get user role and ID
-$role = (int)$user['role'];
-$userID = (int)$user['id'];
 
 // Validate the requested ID
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
@@ -27,16 +23,8 @@ if ($id <= 0) {
     return;
 }
 
-// Define SQL queries based on user role
-if ($role === 1) {
-    // Admin: No restrictions
-    $metaQuery = "SELECT id, name FROM formulasMetaData WHERE id = '$id'";
-    $historyQuery = "SELECT * FROM formula_history WHERE fid = '$id' ORDER BY date_time DESC";
-} else {
-    // Non-admin: Restrict to their own data
-    $metaQuery = "SELECT id, name FROM formulasMetaData WHERE id = '$id' AND owner_id = '$userID'";
-    $historyQuery = "SELECT * FROM formula_history WHERE fid = '$id' AND owner_id = '$userID' ORDER BY date_time DESC";
-}
+$metaQuery = "SELECT id, name FROM formulasMetaData WHERE id = '$id' AND owner_id = '$userID'";
+$historyQuery = "SELECT * FROM formula_history WHERE fid = '$id' AND owner_id = '$userID' ORDER BY date_time DESC";
 
 // Fetch metadata
 $metaResult = mysqli_query($conn, $metaQuery);
