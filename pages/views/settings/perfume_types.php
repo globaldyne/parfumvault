@@ -29,7 +29,8 @@ require_once(__ROOT__.'/inc/sec.php');
 </table>
 <script>
 $(document).ready(function() {
-		
+	$.fn.dataTable.ext.errMode = 'none';
+
 	$('[data-bs-toggle="tooltip"]').tooltip();
 	var tdperfTypes = $('#tdperfTypes').DataTable( {
 		columnDefs: [
@@ -76,7 +77,10 @@ $(document).ready(function() {
 			 type: "POST"
 		  });
 		},
-	});
+	}).on('error.dt', function(e, settings, techNote, message) {
+		var m = message.split(' - ');
+		$('#tdperfTypes').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i><strong>' + m[1] + '</strong></div>');
+    });
 
 	function name(data, type, row){
 		return '<a href="#" class="name pv_point_gen" data-name="name" data-type="text" data-pk="'+row.id+'">'+row.name+'</a>';
@@ -120,7 +124,7 @@ $(document).ready(function() {
 			}
 		},
 		error: function (xhr, status, error) {
-			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An error occurred, check server logs for more info. '+ error);
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
 			$('.toast-header').removeClass().addClass('toast-header alert-danger');
 			$('.toast').toast('show');
 		},		
@@ -250,7 +254,7 @@ $(document).ready(function() {
 			url: '/core/core.php', 
 			type: 'POST',
 			data: {
-				perfType: 'add',
+				action: 'perfTypeAdd',
 				perfType_name: $("#perfType_name").val(),
 				perfType_conc: $("#perfType_conc").val(),
 				perfType_desc: $("#perfType_desc").val(),	
@@ -258,7 +262,7 @@ $(document).ready(function() {
 			dataType: 'json',
 			success: function (data) {
 				if(data.success){
-					var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><i class="fa-solid fa-check mx-2"></i>' + data.success + '</div>';
+					var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><i class="fa-solid fa-circle-check mx-2"></i>' + data.success + '</div>';
 				}else{
 					var msg ='<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + data.error + '</div>';
 				}

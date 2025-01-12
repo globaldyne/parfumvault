@@ -164,6 +164,8 @@ while ($suppliers = mysqli_fetch_array($sup)){
 
 <script> 
 $(document).ready(function() {
+	$.fn.dataTable.ext.errMode = 'none';
+
 	$('#mainTitle').click(function() {
 	 	reload_data();
   	});
@@ -239,7 +241,10 @@ $(document).ready(function() {
 			extrasShow();
 		},
 
-	});
+	}).on('error.dt', function(e, settings, techNote, message) {
+		var m = message.split(' - ');
+		$('#tdDataAccessories').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i><strong>' + m[1] + '</strong></div>');
+    });
 	
 	
 	tdDataAccessories.on('requestChild.dt', function (e, row) {

@@ -994,18 +994,28 @@ if ($_REQUEST['action'] === 'htmlTmplUpdate') {
 }
 
 //DELETE HTML TEMPLATE
-if($_POST['action'] == 'htmlTmplDelete' && $_POST['tmplID']){
-	$id = $_POST['tmplID'];
-	$name = $_POST['tmplName'];
+if ($_POST['action'] === 'htmlTmplDelete' && isset($_POST['tmplID']) && isset($_POST['tmplName'])) {
+    $id = filter_var($_POST['tmplID'], FILTER_SANITIZE_NUMBER_INT);
+    $name = filter_var($_POST['tmplName'], FILTER_SANITIZE_STRING);
 
-	if(mysqli_query($conn, "DELETE FROM templates WHERE owner_id = '$userID' AND id = '$id'")){
-		$response["success"] = 'Template '.$name.' deleted';
-	}else{
-		$response["error"] = 'Something went wrong '.mysqli_error($conn);
-	}
-	
+    if (empty($id) || empty($name) || !is_numeric($id)) {
+        $response["error"] = 'Invalid input data.';
+        echo json_encode($response);
+        return;
+    }
+
+    $stmt = $conn->prepare("DELETE FROM templates WHERE owner_id = ? AND id = ?");
+    $stmt->bind_param("ii", $userID, $id);
+
+    if ($stmt->execute()) {
+        $response["success"] = 'Template ' . htmlspecialchars($name) . ' deleted successfully.';
+    } else {
+        $response["error"] = 'Error: ' . $stmt->error;
+    }
+
+    $stmt->close();
 	echo json_encode($response);
-	return;	
+	return;
 }
 
 //ADD NEW TEMPLATE
@@ -1033,14 +1043,14 @@ if($_POST['action'] == 'htmlTmplAdd'){
 	$html = mysqli_real_escape_string($conn,$_POST['tmpl_content']);
 	$desc = mysqli_real_escape_string($conn,$_POST['tmpl_desc']);
 
-	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM templates WHERE name = '$name'"))){
-		$response["error"] = $name.' already exists!';
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM templates WHERE name = '$name' AND owner_id = '$userID' "))){
+		$response["error"] = $name.' already exists';
 		echo json_encode($response);
 		return;
 	}
 	
-	if(mysqli_query($conn, "INSERT INTO templates (name,content,description) VALUES ('$name','$html','$desc')")){
-		$response["success"] = $name.' created!';
+	if(mysqli_query($conn, "INSERT INTO templates (name,content,description,owner_id) VALUES ('$name','$html','$desc','$userID')")){
+		$response["success"] = $name.' created';
 	}else{
 		$response["error"] = 'Error: '.mysqli_error($conn);
 	}
@@ -1056,10 +1066,11 @@ if($_GET['perfType'] == 'update'){
 	$id = mysqli_real_escape_string($conn, $_POST['pk']);
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 
-	if(mysqli_query($conn, "UPDATE perfumeTypes SET $name = '$value' WHERE id = '$id'")){
+	if(mysqli_query($conn, "UPDATE perfumeTypes SET $name = '$value' WHERE id = '$id' AND owner_id = '$userID'")){
 		$response["success"] = 'Perfume type updated';
 	}else{
 		$response["error"] = 'Error: '.mysqli_error($conn);
+		error_log("PV error: " . $stmt->error);
 	}
 	
 	echo json_encode($response);
@@ -1067,245 +1078,372 @@ if($_GET['perfType'] == 'update'){
 }
 
 //DELETE PERFUME TYPE
-if($_POST['perfType'] == 'delete' && $_POST['pID']){
-	$id = $_POST['pID'];
-	$name = $_POST['pName'];
+if ($_POST['perfType'] === 'delete' && isset($_POST['pID']) && isset($_POST['pName'])) {
+    $id = filter_var($_POST['pID'], FILTER_SANITIZE_NUMBER_INT);
+    $name = filter_var($_POST['pName'], FILTER_SANITIZE_STRING);
 
-	if(mysqli_query($conn, "DELETE FROM perfumeTypes WHERE id = '$id'")){
-		$response["success"] = 'Pefume type '.$name.' deleted';
-	}else{
-		$response["error"] = 'Something went wrong '.mysqli_error($conn);
-	}
-	
-	echo json_encode($response);
-	return;	
+    if (empty($id) || empty($name) || !is_numeric($id)) {
+        $response["error"] = 'Invalid input data.';
+        echo json_encode($response);
+        return;
+    }
+
+    $stmt = $conn->prepare("DELETE FROM perfumeTypes WHERE id = ? AND owner_id = ?");
+    $stmt->bind_param("ii", $id, $userID);
+
+    if ($stmt->execute()) {
+        $response["success"] = 'Perfume type ' . htmlspecialchars($name) . ' deleted successfully.';
+    } else {
+        $response["error"] = 'Something went wrong. Please try again.';
+		error_log("PV error: " . $stmt->error);
+    }
+
+    $stmt->close();
+    echo json_encode($response);
+    return;
 }
+
 
 //ADD PERFUME TYPE
-if($_POST['perfType'] == 'add'){
-	
-	if(empty($_POST['perfType_name'])){
-		$response["error"] = 'Name is required';
-		echo json_encode($response);
-		return;
-	}
-	
-	if(empty($_POST['perfType_conc'])){
-		$response["error"] = 'Concentration is required';
-		echo json_encode($response);
-		return;
-	}
+if ($_POST['action'] === 'perfTypeAdd') {
+    if (empty($_POST['perfType_name'])) {
+        $response["error"] = 'Name is required';
+        echo json_encode($response);
+        return;
+    }
 
-	if(!is_numeric($_POST['perfType_conc'])){
-		$response["error"] = 'Concentration must be integer.';
-		echo json_encode($response);
-		return;
-	}
-	
-	$name = $_POST['perfType_name'];
-	$conc = $_POST['perfType_conc'];
-	$desc = $_POST['perfType_desc'];
+    if (empty($_POST['perfType_conc'])) {
+        $response["error"] = 'Concentration is required';
+        echo json_encode($response);
+        return;
+    }
 
-	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM perfumeTypes WHERE name = '$name'"))){
-		$response["error"] = $name.' already exists!';
-		echo json_encode($response);
-		return;
-	}
-	
-	if(mysqli_query($conn, "INSERT INTO perfumeTypes (name,concentration,description) VALUES ('$name','$conc','$desc')")){
-		$response["success"] = $name.' created!';
-	}else{
-		$response["error"] = 'Error: '.mysqli_error($conn);
-	}
-	echo json_encode($response);
-	return;
+    if (!is_numeric($_POST['perfType_conc'])) {
+        $response["error"] = 'Concentration must be a number';
+        echo json_encode($response);
+        return;
+    }
+
+    $name = trim(filter_var($_POST['perfType_name'], FILTER_SANITIZE_STRING));
+    $conc = trim($_POST['perfType_conc']);
+    $desc = isset($_POST['perfType_desc']) ? trim(filter_var($_POST['perfType_desc'], FILTER_SANITIZE_STRING)) : '';
+
+    $stmtCheck = $conn->prepare("SELECT COUNT(*) FROM perfumeTypes WHERE name = ? AND owner_id = ?");
+    $stmtCheck->bind_param("si", $name, $userID);
+    $stmtCheck->execute();
+    $stmtCheck->bind_result($count);
+    $stmtCheck->fetch();
+    $stmtCheck->close();
+
+    if ($count > 0) {
+        $response["error"] = $name . ' already exists, try a diffrent name';
+        echo json_encode($response);
+        return;
+    }
+
+    // Insert the new perfume type
+    $stmtInsert = $conn->prepare("INSERT INTO perfumeTypes (name, concentration, description, owner_id) VALUES (?, ?, ?, ?)");
+    if (!$stmtInsert) {
+        $response["error"] = 'Failed to prepare the query.';
+        error_log("PV error: " . $conn->error);
+        echo json_encode($response);
+        return;
+    }
+
+    $stmtInsert->bind_param("sssi", $name, $conc, $desc, $userID);
+
+    if ($stmtInsert->execute()) {
+        $response["success"] = $name . ' added';
+    } else {
+        $response["error"] = 'Error adding the perfume type.';
+        error_log("PV error: " . $stmtInsert->error);
+    }
+
+    $stmtInsert->close();
+    echo json_encode($response);
+    return;
 }
+
 
 //UPDATE ACCESSORY PIC
-if($_GET['update_accessory_pic']){
-	$allowed_ext = "png, jpg, jpeg, gif, bmp";
+if ($_GET['action'] === 'update_accessory_pic') {
+    $allowed_ext = "png, jpg, jpeg, gif, bmp";
+    $allowed_ext_array = explode(', ', strtolower($allowed_ext));
 
-	$filename = $_FILES["accessory_pic"]["tmp_name"];  
-    $file_ext = strtolower(end(explode('.',$_FILES['accessory_pic']['name'])));
-	$file_tmp = $_FILES['accessory_pic']['tmp_name'];
-    $ext = explode(', ',strtolower($allowed_ext));
+    $file_tmp = $_FILES['accessory_pic']['tmp_name'];
+    $file_name = $_FILES['accessory_pic']['name'];
+    $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
 
-	if(!$filename){
-		return;
-	}	
-	
-	if (!file_exists($tmp_path)) {
-		mkdir($tmp_path, 0740, true);
-	}
-		
-	if(in_array($file_ext,$ext)===false){
-		$response["error"] = 'Extension not allowed, please choose a '.$allowed_ext.' file';
-		echo json_encode($response);
-		return;
-	}
-	$accessory = $_GET['accessory_id'];
-	if($_FILES["accessory_pic"]["size"] > 0){
-		move_uploaded_file($file_tmp,$tmp_path.base64_encode($filename));
-		$pic = base64_encode($filename);		
-		create_thumb($tmp_path.$pic,250,250); 
-		$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents($tmp_path.$pic));
-		
-		mysqli_query($conn, "DELETE FROM documents WHERE ownerID = '".$accessory."' AND type = '5'");
-		if(mysqli_query($conn, "INSERT INTO documents (ownerID,name,type,notes,docData) VALUES ('".$accessory."','-','5','-','$docData')")){	
-			unlink($tmp_path.$pic);
-			$response["success"] = array( "msg" => "Photo updated", "accessory_pic" => $docData);
-			echo json_encode($response);
-			return;
-		}
-		$response["error"] = mysqli_error($conn);
-		echo json_encode($response);
-		return;
-	}
+    if (!$file_tmp) {
+        $response["error"] = "No file uploaded";
+        echo json_encode($response);
+        return;
+    }
 
-	return;
+    // Ensure temp directory exists
+    if (!file_exists($tmp_path)) {
+        if (!mkdir($tmp_path, 0740, true) && !is_dir($tmp_path)) {
+            error_log("PV error: Failed to create directory at $tmp_path");
+            $response["error"] = "Server error. Unable to create directory.";
+            echo json_encode($response);
+            return;
+        }
+    }
+
+    // Validate file extension
+    if (!in_array($file_ext, $allowed_ext_array, true)) {
+        $response["error"] = 'Extension not allowed, please choose a ' . $allowed_ext . ' file.';
+        echo json_encode($response);
+        return;
+    }
+
+    $accessory = intval($_GET['accessory_id']);
+
+    if ($_FILES['accessory_pic']['size'] > 0) {
+        $encoded_filename = base64_encode($file_name);
+        $upload_path = $tmp_path . $encoded_filename;
+
+        if (!move_uploaded_file($file_tmp, $upload_path)) {
+            error_log("PV error: Failed to move uploaded file to $upload_path");
+            $response["error"] = "Failed to upload file.";
+            echo json_encode($response);
+            return;
+        }
+
+        create_thumb($upload_path, 250, 250);
+
+        $docData = 'data:image/' . $file_ext . ';base64,' . base64_encode(file_get_contents($upload_path));
+
+        // Delete previous document entries
+        $stmtDelete = $conn->prepare("DELETE FROM documents WHERE ownerID = ? AND type = '5' AND owner_id = ?");
+        $stmtDelete->bind_param("ii", $accessory, $userID);
+        if (!$stmtDelete->execute()) {
+            error_log("PV error: Failed to delete old document. " . $stmtDelete->error);
+            $response["error"] = "Failed to update photo. Please try again.";
+            echo json_encode($response);
+            return;
+        }
+        $stmtDelete->close();
+
+        // Insert the new document
+        $stmtInsert = $conn->prepare("INSERT INTO documents (ownerID, name, type, notes, docData, owner_id) VALUES (?, '-', '5', '-', ?, ?)");
+        $stmtInsert->bind_param("isi", $accessory, $docData, $userID);
+
+        if ($stmtInsert->execute()) {
+            unlink($upload_path); // Clean up temporary file
+            $response["success"] = [
+                "msg" => "Photo updated",
+                "accessory_pic" => $docData
+            ];
+            echo json_encode($response);
+            return;
+        } else {
+            error_log("PV error: Failed to insert new document. " . $stmtInsert->error);
+            $response["error"] = "Failed to save photo.";
+            echo json_encode($response);
+            return;
+        }
+    }
+
+    $response["error"] = "No file to process.";
+    echo json_encode($response);
+    return;
 }
+
 
 //UPDATE BOTTLE PIC
-if($_GET['update_bottle_pic']){
-	$allowed_ext = "png, jpg, jpeg, gif, bmp";
+if ($_GET['update_bottle_pic']) {
+    $allowed_ext = "png, jpg, jpeg, gif, bmp";
+    $bottle_id = $_GET['bottle_id'];
 
-	$filename = $_FILES["bottle_pic"]["tmp_name"];  
-    $file_ext = strtolower(end(explode('.',$_FILES['bottle_pic']['name'])));
-	$file_tmp = $_FILES['bottle_pic']['tmp_name'];
-    $ext = explode(', ',strtolower($allowed_ext));
+    if (!$bottle_id || !is_numeric($bottle_id)) {
+        error_log("PV error: Invalid or missing bottle ID.");
+        $response["error"] = "Invalid bottle ID.";
+        echo json_encode($response);
+        return;
+    }
 
-	
-	if(!$filename){
-		//$response["error"] = 'Please choose a file to upload';
-		//echo json_encode($response);
-		return;
-	}	
-	
-	if (!file_exists($tmp_path)) {
-		mkdir($tmp_path, 0740, true);
-	}
-		
-	if(in_array($file_ext,$ext)===false){
-		$response["error"] = 'Extension not allowed, please choose a '.$allowed_ext.' file';
-		echo json_encode($response);
-		return;
-	}
-	$bottle = $_GET['bottle_id'];
-	if($_FILES["bottle_pic"]["size"] > 0){
-		move_uploaded_file($file_tmp,$tmp_path.base64_encode($filename));
-		$bottle_pic = base64_encode($filename);		
-		create_thumb($tmp_path.$bottle_pic,250,250); 
-		$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents($tmp_path.$bottle_pic));
-		
-		mysqli_query($conn, "DELETE FROM documents WHERE ownerID = '".$bottle."' AND type = '4'");
-		if(mysqli_query($conn, "INSERT INTO documents (ownerID,name,type,notes,docData) VALUES ('".$bottle."','-','4','-','$docData')")){	
-			unlink($tmp_path.$bottle_pic);
-			$response["success"] = array( "msg" => "File uploaded", "file" => $docData);
-			echo json_encode($response);
-			return;
-		}
-		$response["error"] = mysqli_error($conn);
-		echo json_encode($response);
-		return;
-	}
+    if (!isset($_FILES['bottle_pic']) || $_FILES['bottle_pic']['size'] === 0) {
+        $response["error"] = "Please choose a file to upload.";
+        echo json_encode($response);
+        return;
+    }
 
-	return;
+    $file_name = $_FILES['bottle_pic']['name'];
+    $file_size = $_FILES['bottle_pic']['size'];
+    $file_tmp = $_FILES['bottle_pic']['tmp_name'];
+    $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+    $allowed_ext_array = explode(', ', strtolower($allowed_ext));
+
+    // Validate file extension
+    if (!in_array($file_ext, $allowed_ext_array, true)) {
+        $response["error"] = "Extension not allowed. Please choose a $allowed_ext file.";
+        echo json_encode($response);
+        return;
+    }
+
+    // Validate file size
+    if ($file_size > $max_filesize) {
+        $response["error"] = "File size must not exceed " . ($max_filesize / (1024 * 1024)) . " MB.";
+        echo json_encode($response);
+        return;
+    }
+
+    // Ensure temporary directory exists
+    if (!file_exists($tmp_path) && !mkdir($tmp_path, 0740, true) && !is_dir($tmp_path)) {
+        error_log("PV error: Failed to create temporary directory at $tmp_path");
+        $response["error"] = "Server error. Unable to create directory.";
+        echo json_encode($response);
+        return;
+    }
+
+    // Encode file name
+    $encoded_filename = base64_encode($file_name);
+    $upload_path = $tmp_path . $encoded_filename;
+
+    if (move_uploaded_file($file_tmp, $upload_path)) {
+        // Create thumbnail
+        create_thumb($upload_path, 250, 250);
+
+        // Generate base64 encoded data
+        $docData = 'data:image/' . $file_ext . ';base64,' . base64_encode(file_get_contents($upload_path));
+
+        // Delete previous document entry
+        $stmtDelete = $conn->prepare("DELETE FROM documents WHERE ownerID = ? AND type = '4' AND owner_id = ?");
+        $stmtDelete->bind_param("ii", $bottle_id, $userID);
+
+        if (!$stmtDelete->execute()) {
+            error_log("PV error: Failed to delete existing document for bottle ID $bottle_id. " . $stmtDelete->error);
+        }
+        $stmtDelete->close();
+
+        // Insert new document entry
+        $stmtInsert = $conn->prepare("INSERT INTO documents (ownerID, name, type, notes, docData, owner_id) VALUES (?, '-', '4', '-', ?, ?)");
+        $stmtInsert->bind_param("isi", $bottle_id, $docData, $userID);
+
+        if ($stmtInsert->execute()) {
+            unlink($upload_path); // Clean up temporary file
+            $response["success"] = ["msg" => "File uploaded", "file" => $docData];
+        } else {
+            error_log("PV error: Failed to insert document for bottle ID $bottle_id. " . $stmtInsert->error);
+            $response["error"] = "Failed to upload file.";
+        }
+        $stmtInsert->close();
+    } else {
+        error_log("PV error: Failed to move uploaded file to $upload_path");
+        $response["error"] = "Failed to upload file.";
+    }
+
+    echo json_encode($response);
+    return;
 }
+
 
 //UPDATE BOTTLE DATA
-if($_POST['update_bottle_data']){
-	
-	if(!$_POST['name']){
-		$response["error"] = "Name is required";
-		echo json_encode($response);
-		return;
-	}
-	
-	if(!is_numeric($_POST['size']) || $_POST['size'] <= 0) {
-		$response["error"] = "Size is invalid";
-		echo json_encode($response);
-		return;
-	}
-	
-	if (!is_numeric($_POST['price']) || $_POST['price'] <= 0) {
-		$response["error"] = "Price is invalid";
-		echo json_encode($response);
-		return;
-	}
-		
-	$id = $_POST['bottle_id'];
-	$name = mysqli_real_escape_string($conn, $_POST['name']);
-	$ml = $_POST['size'];
-	$price = $_POST['price'];
-	$height = $_POST['height'];
-	$width = $_POST['width'];
-	$diameter = $_POST['diameter'];
-	$supplier = $_POST['supplier'];
-	$supplier_link = $_POST['supplier_link'];
-	$notes = $_POST['notes'];
-	$pieces = $_POST['pieces']?:0;
-	$weight = $_POST['weight']?:0;
+if ($_POST['action'] === 'update_bottle_data') {
 
-	$q = mysqli_query($conn,"UPDATE bottles SET name= '$name', ml = '$ml', price = '$price', height = '$height', width = '$width', diameter = '$diameter', supplier = '$supplier', supplier_link = '$supplier_link', notes = '$notes', pieces = '$pieces', weight = '$weight' WHERE id = '$id'");
-	
+    // Validate required fields
+    if (empty($_POST['name'])) {
+        $response["error"] = "Name is required";
+        echo json_encode($response);
+        return;
+    }
 
-	if($q){
-		$response['success'] = "Bottle updated";
-	}else{
-		$response['error'] = "Error updating bottle data ".mysqli_error($conn);
-	}
-	
-	echo json_encode($response);
-	
-	
+    if (!is_numeric($_POST['size']) || $_POST['size'] <= 0) {
+        $response["error"] = "Size is invalid";
+        echo json_encode($response);
+        return;
+    }
 
-	return;
+    if (!is_numeric($_POST['price']) || $_POST['price'] <= 0) {
+        $response["error"] = "Price is invalid";
+        echo json_encode($response);
+        return;
+    }
+
+    // Retrieve and sanitize input data
+    $id = $_POST['bottle_id'];
+    $name = mysqli_real_escape_string($conn, $_POST['name']);
+    $ml = $_POST['size'];
+    $price = $_POST['price'];
+    $height = $_POST['height'];
+    $width = $_POST['width'];
+    $diameter = $_POST['diameter'];
+    $supplier = $_POST['supplier'];
+    $supplier_link = $_POST['supplier_link'];
+    $notes = $_POST['notes'];
+    $pieces = $_POST['pieces'] ?: 0;
+    $weight = $_POST['weight'] ?: 0;
+
+    $stmt = $conn->prepare("UPDATE bottles 
+                            SET name = ?, ml = ?, price = ?, height = ?, width = ?, diameter = ?, 
+                                supplier = ?, supplier_link = ?, notes = ?, pieces = ?, weight = ? 
+                            WHERE id = ? AND owner_id = ?");
+    
+	$stmt->bind_param("sdddddsssidii", $name, $ml, $price, $height, $width, $diameter, 
+	$supplier, $supplier_link, $notes, $pieces, $weight, $id, $userID);
+
+    if ($stmt->execute()) {
+        $response['success'] = "Bottle updated";
+    } else {
+        $response['error'] = "Error updating bottle data: " . $stmt->error;
+        error_log("PV error: " . $stmt->error);  // Log error for debugging
+    }
+
+    $stmt->close();
+
+    echo json_encode($response);
+    return;
 }
+
 
 //UPDATE ACCESSORY DATA
-if($_POST['update_accessory_data']){
-	
-	if(!$_POST['name']){
-		$response["error"] = "Name is required";
-		echo json_encode($response);
-		return;
-	}
-	$id = $_POST['accessory_id'];
-	$name = $_POST['name'];
-	$accessory = $_POST['accessory'];
-	$supplier = $_POST['supplier'];
-	$supplier_link = $_POST['supplier_link'];
-	$pieces = $_POST['pieces']?:0;
-	
-	if (!is_numeric($_POST['price']) || $_POST['price'] <= 0 ) {
-    	$response["error"] = 'Price cannot be empty or 0';
-    	echo json_encode($response);
-    	return;
-	}
-	
-	$price = $_POST['price'];
-	
-	$q = mysqli_query($conn,"UPDATE inventory_accessories SET name = '$name', accessory = '$accessory', price = '$price', supplier = '$supplier', supplier_link = '$supplier_link', pieces = '$pieces' WHERE id = '$id'");
-	
+if ($_POST['action'] === 'update_accessory_data') {
+    if (empty($_POST['name'])) {
+        $response["error"] = "Name is required";
+        echo json_encode($response);
+        return;
+    }
 
-	if($q){
-		$response['success'] = "Accessory updated";
-	}else{
-		$response['error'] = "Error updating accessory data ".mysqli_error($conn);
-	}
-	
-	echo json_encode($response);
-	
-	
+    if (!is_numeric($_POST['price']) || $_POST['price'] <= 0) {
+        $response["error"] = 'Price cannot be empty or 0';
+        echo json_encode($response);
+        return;
+    }
 
-	return;
+    $id = $_POST['accessory_id'];
+    $name = mysqli_real_escape_string($conn, $_POST['name']);
+    $accessory = $_POST['accessory'];
+    $supplier = $_POST['supplier'];
+    $supplier_link = $_POST['supplier_link'];
+    $pieces = $_POST['pieces'] ?: 0;
+    $price = $_POST['price'];
+
+    $stmt = $conn->prepare("UPDATE inventory_accessories 
+                            SET name = ?, accessory = ?, price = ?, supplier = ?, supplier_link = ?, pieces = ? 
+                            WHERE id = ? AND owner_id = ?");
+    
+    $stmt->bind_param("ssdsdiii", $name, $accessory, $price, $supplier, $supplier_link, $pieces, $id, $userID);
+
+    if ($stmt->execute()) {
+        $response['success'] = "Accessory updated";
+    } else {
+        $response['error'] = "Error updating accessory data: " . $stmt->error;
+        error_log("PV error: " . $stmt->error);  // Log error for debugging
+    }
+
+    $stmt->close();
+
+    echo json_encode($response);
+    return;
 }
+
 //DELETE BOTTLE
 if($_POST['action'] == 'delete' && $_POST['btlId'] && $_POST['type'] == 'bottle'){
 	$id = mysqli_real_escape_string($conn, $_POST['btlId']);
 	
-	if(mysqli_query($conn, "DELETE FROM bottles WHERE id = '$id'")){
-		mysqli_query($conn, "DELETE FROM documents WHERE ownerID = '$id' AND type = '4'");
+	if(mysqli_query($conn, "DELETE FROM bottles WHERE id = '$id' AND owner_id = '$userID' ")){
+		mysqli_query($conn, "DELETE FROM documents WHERE ownerID = '$id' AND type = '4' AND owner_id = '$userID'");
 		$response["success"] = 'Bottle deleted';
 	}else{
 		$response["error"] = 'Something went wrong '.mysqli_error($conn);
@@ -1319,8 +1457,8 @@ if($_POST['action'] == 'delete' && $_POST['btlId'] && $_POST['type'] == 'bottle'
 if($_POST['action'] == 'delete' && $_POST['accessoryId'] && $_POST['type'] == 'accessory'){
 	$id = mysqli_real_escape_string($conn, $_POST['accessoryId']);
 	
-	if(mysqli_query($conn, "DELETE FROM inventory_accessories WHERE id = '$id'")){
-		mysqli_query($conn, "DELETE FROM documents WHERE ownerID = '$id' AND type = '5'");
+	if(mysqli_query($conn, "DELETE FROM inventory_accessories WHERE id = '$id' AND owner_id = '$userID'")){
+		mysqli_query($conn, "DELETE FROM documents WHERE ownerID = '$id' AND type = '5' AND owner_id = '$userID'");
 		$response["success"] = 'Accessory deleted';
 	}else{
 		$response["error"] = 'Something went wrong '.mysqli_error($conn);
@@ -1331,50 +1469,75 @@ if($_POST['action'] == 'delete' && $_POST['accessoryId'] && $_POST['type'] == 'a
 }
 
 //IMPORT IMAGES FROM PUBCHEM
-if(isset($_GET['IFRA_PB']) && $_GET['IFRA_PB'] === 'import'){
+if (isset($_GET['IFRA_PB']) && $_GET['IFRA_PB'] === 'import') {
     require_once(__ROOT__.'/func/pvFileGet.php');
     
     $i = 0;
     $response = [];
 
-    $qCas = mysqli_query($conn, "SELECT cas FROM IFRALibrary WHERE image IS NULL OR image = '' OR image = '-'");
+    // Ensure the query only fetches necessary data (avoiding huge datasets)
+    $qCas = mysqli_query($conn, "SELECT cas FROM IFRALibrary WHERE (image IS NULL OR image = '' OR image = '-') AND owner_id = '$userID'");
 
-    if(!$qCas || mysqli_num_rows($qCas) == 0){
-        $response["error"] = 'IFRA Database is currently empty or there was a problem with the query.';
+    // Error handling for database query failure
+    if (!$qCas) {
+        $response["error"] = 'Database query failed: ' . mysqli_error($conn);
+        echo json_encode($response);
+        return;
+    }
+
+    // Check if no records to update
+    if (mysqli_num_rows($qCas) == 0) {
+        $response["error"] = 'No records need updating in the IFRA Database.';
         echo json_encode($response);
         return;
     }
 
     $view = $settings['pubchem_view'];
-
-    while($cas = mysqli_fetch_assoc($qCas)){
+    
+    // Begin processing CAS numbers
+    while ($cas = mysqli_fetch_assoc($qCas)) {
         $casNumber = trim($cas['cas']);
-        $imageUrl = $pubChemApi.'/pug/compound/name/'.$casNumber.'/PNG?record_type='.$view.'&image_size=small';
+        $imageUrl = $pubChemApi . '/pug/compound/name/' . $casNumber . '/PNG?record_type=' . $view . '&image_size=small';
+
+        // Fetch image content from PubChem API using helper function
         $imageContent = pv_file_get_contents($imageUrl);
-        
-        if($imageContent !== false){
-            $image = base64_encode($imageContent);
-            $stmt = $conn->prepare("UPDATE IFRALibrary SET image = ? WHERE cas = ?");
-            $stmt->bind_param('ss', $image, $casNumber);
 
-            if($stmt->execute()){
-                $i++;
-            } else {
-                $response["error"] = 'Error updating image for CAS: '.$casNumber.' - '.mysqli_error($conn);
-                echo json_encode($response);
-                return;
-            }
-
-            $stmt->close();
+        // Check if image was fetched successfully
+        if ($imageContent === false) {
+			error_log("PV error: " . "Failed to fetch image for CAS: $casNumber");  // Log error for debugging
+            continue;
         }
 
-        usleep(100000); // 0.1 seconds delay
+        // Encode image content in base64
+        $image = base64_encode($imageContent);
+
+        // Prepare SQL statement to update image in the database
+        $stmt = $conn->prepare("UPDATE IFRALibrary SET image = ? WHERE cas = ? AND owner_id = ?");
+        $stmt->bind_param('sss', $image, $casNumber, $userID);
+
+        // Execute the update statement and handle any errors
+        if ($stmt->execute()) {
+            $i++;
+        } else {
+            $response["error"] = 'Error updating image for CAS: ' . $casNumber . ' - ' . mysqli_error($conn);
+            $stmt->close();
+            echo json_encode($response);
+            return;
+        }
+
+        // Clean up the prepared statement
+        $stmt->close();
+
+        // Adding a small delay to avoid overwhelming the PubChem API
+        usleep(100000); // 0.1 seconds delay between requests
     }
 
-    $response["success"] = $i.' images updated!';
+    // Success response with the count of images updated
+    $response["success"] = "$i images updated successfully!";
     echo json_encode($response);
     return;
 }
+
 
 
 //Update data FROM PubChem
@@ -1388,16 +1551,16 @@ if($_POST['pubChemData'] == 'update' && $_POST['cas']){
 	$ExactMass = trim($_POST['ExactMass']);
 	
 	if($molecularWeight){
-		$q = mysqli_query($conn, "UPDATE ingredients SET molecularWeight = '$molecularWeight' WHERE cas='$cas'");
+		$q = mysqli_query($conn, "UPDATE ingredients SET molecularWeight = '$molecularWeight' WHERE cas='$cas' AND owner_id = '$userID' ");
 	}
 	if($logP){
-		$q.= mysqli_query($conn, "UPDATE ingredients SET logp = '$logP' WHERE cas='$cas'");
+		$q.= mysqli_query($conn, "UPDATE ingredients SET logp = '$logP' WHERE cas='$cas' AND owner_id = '$userID'");
 	}
 	if($molecularFormula){
-		$q.= mysqli_query($conn, "UPDATE ingredients SET formula = '$molecularFormula' WHERE cas='$cas'");
+		$q.= mysqli_query($conn, "UPDATE ingredients SET formula = '$molecularFormula' WHERE cas='$cas' AND owner_id = '$userID'");
 	}
 	if($InChI){
-		$q.= mysqli_query($conn, "UPDATE ingredients SET INCI = '$InChI' WHERE cas='$cas'");
+		$q.= mysqli_query($conn, "UPDATE ingredients SET INCI = '$InChI' WHERE cas='$cas' AND owner_id = '$userID'");
 	}
 	if($q){
 		$response["success"] = 'Local data updated';
@@ -1409,45 +1572,91 @@ if($_POST['pubChemData'] == 'update' && $_POST['cas']){
 }
 
 //IMPORT SYNONYMS FROM PubChem
-if($_POST['synonym'] == 'import' && $_POST['method'] == 'pubchem'){
-	$ing = base64_decode($_POST['ing']);
-	$cas = trim($_POST['cas']);
+if ($_POST['synonym'] == 'import' && $_POST['method'] == 'pubchem') {
+    $ing = base64_decode($_POST['ing']);
+    $cas = trim($_POST['cas']);
 
-	$u = $pubChemApi.'/pug/compound/name/'.$cas.'/synonyms/JSON';
-	$json = file_get_contents($u);
-	$json = json_decode($json);
-	$data = $json->InformationList->Information[0]->Synonym;
-	$cid = $json->InformationList->Information[0]->CID;
-	$source = 'PubChem';
-	if(empty($data)){
-		$response["error"] = 'No data found';
-		echo json_encode($response);
-		return;
-	}
-	$i=0;
-	foreach($data as $d){
-		$einecs = explode('EINECS ',$d);
-		if($einecs['1']){
-			mysqli_query($conn, "UPDATE ingredients SET einecs = '".$einecs['1']."' WHERE cas = '$cas'");
-		}
-		$fema = explode('FEMA ',$d);
-		if($fema['1']){
-			mysqli_query($conn, "UPDATE ingredients SET FEMA = '".preg_replace("/[^0-9]/", "", $fema['1'])."' WHERE cas = '$cas'");
-		}
-		$sql = mysqli_query($conn, "SELECT synonym FROM synonyms WHERE synonym = '$d' AND ing = '$ing'");
-		if(!$sql || !mysqli_num_rows($sql)){
-			$r = mysqli_query($conn, "INSERT INTO synonyms (ing,cid,synonym,source) VALUES ('$ing','$cid','$d','$source')");		
-		 	$i++;
-		}
-	}
-	if($r){
-		$response["success"] = $i.' synonym(s) imported';
-	}else{
-		$response["error"] = 'Data already in sync';
-	}
-	echo json_encode($response);
-	return;
+    // Construct the PubChem API URL
+    $url = $pubChemApi . '/pug/compound/name/' . $cas . '/synonyms/JSON';
+    $json = file_get_contents($url);
+    
+    // Decode JSON response from PubChem API
+    $json = json_decode($json);
+
+    if (!isset($json->InformationList->Information[0])) {
+        $response["error"] = 'No data found from PubChem for CAS: ' . $cas;
+        echo json_encode($response);
+        return;
+    }
+
+    // Extract synonyms and CID from PubChem response
+    $data = $json->InformationList->Information[0]->Synonym;
+    $cid = $json->InformationList->Information[0]->CID;
+    $source = 'PubChem';
+
+    // If no synonyms found, return an error
+    if (empty($data)) {
+        $response["error"] = 'No synonyms found for CAS: ' . $cas;
+        echo json_encode($response);
+        return;
+    }
+
+    $i = 0;
+    $stmt = $conn->prepare("SELECT synonym FROM synonyms WHERE synonym = ? AND ing = ? AND owner_id = ?");
+    $insertStmt = $conn->prepare("INSERT INTO synonyms (ing, cid, synonym, source, owner_id) VALUES (?, ?, ?, ?, ?)");
+
+    foreach ($data as $d) {
+        // Process EINECS data
+        if (strpos($d, 'EINECS ') !== false) {
+            $einecs = explode('EINECS ', $d);
+            if (isset($einecs[1])) {
+                $updateStmt = $conn->prepare("UPDATE ingredients SET einecs = ? WHERE cas = ? AND owner_id = ?");
+                $updateStmt->bind_param('ssi', $einecs[1], $cas, $userID);
+                $updateStmt->execute();
+                $updateStmt->close();
+            }
+        }
+
+        // Process FEMA data
+        if (strpos($d, 'FEMA ') !== false) {
+            $fema = explode('FEMA ', $d);
+            if (isset($fema[1])) {
+                $femaNumber = preg_replace("/[^0-9]/", "", $fema[1]);
+                $updateStmt = $conn->prepare("UPDATE ingredients SET FEMA = ? WHERE cas = ? AND owner_id = ?");
+                $updateStmt->bind_param('ssi', $femaNumber, $cas, $userID);
+                $updateStmt->execute();
+                $updateStmt->close();
+            }
+        }
+
+        // Check if synonym already exists
+        $stmt->bind_param('ssi', $d, $ing, $userID);
+        $stmt->execute();
+        $stmt->store_result();
+
+        if ($stmt->num_rows == 0) {
+            // Insert new synonym if it doesn't exist
+            $insertStmt->bind_param('ssssi', $ing, $cid, $d, $source, $userID);
+            if ($insertStmt->execute()) {
+                $i++;
+            }
+        }
+    }
+
+    // Close prepared statements
+    $stmt->close();
+    $insertStmt->close();
+
+    if ($i > 0) {
+        $response["success"] = $i . ' synonym(s) imported';
+    } else {
+        $response["error"] = 'No new synonyms were added, data already in sync.';
+    }
+
+    echo json_encode($response);
+    return;
 }
+
 
 //ADD SYNONYM
 if($_POST['synonym'] == 'add'){
@@ -1462,13 +1671,13 @@ if($_POST['synonym'] == 'add'){
 		return;
 	}
 	
-	if(mysqli_num_rows(mysqli_query($conn, "SELECT synonym FROM synonyms WHERE synonym = '$synonym' AND ing = '$ing'"))){
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT synonym FROM synonyms WHERE synonym = '$synonym' AND ing = '$ing' AND owner_id = '$userID'"))){
 		$response["error"] = $synonym.' already exists';
 		echo json_encode($response);
 		return;
 	}
 	
-	if(mysqli_query($conn, "INSERT INTO synonyms (synonym,source,ing) VALUES ('$synonym','$source','$ing')")){
+	if(mysqli_query($conn, "INSERT INTO synonyms (synonym,source,ing,owner_id) VALUES ('$synonym','$source','$ing','$userID')")){
 		$response["success"] = $synonym.' added to the list';
 		echo json_encode($response);
 	}
@@ -1484,7 +1693,7 @@ if($_GET['synonym'] == 'update'){
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 	$ing = base64_decode($_GET['ing']);
 
-	if(mysqli_query($conn, "UPDATE synonyms SET $name = '$value' WHERE id = '$id' AND ing='$ing'")){
+	if(mysqli_query($conn, "UPDATE synonyms SET $name = '$value' WHERE id = '$id' AND ing='$ing' AND owner_id = '$userID'")){
 		$response["success"] = 'Synonym updated';
 	} else {
 		$response["error"] = mysqli_error($conn);
@@ -1497,7 +1706,7 @@ if($_GET['synonym'] == 'update'){
 //DELETE ING SYNONYM	
 if($_GET['synonym'] == 'delete'){
 	$id = mysqli_real_escape_string($conn, $_GET['id']);
-	if(mysqli_query($conn, "DELETE FROM synonyms WHERE id = '$id'")){
+	if(mysqli_query($conn, "DELETE FROM synonyms WHERE id = '$id' AND owner_id = '$userID'")){
 		$response["success"] = 'Synonym deleted';	
 	} else {
 		$response["error"] = mysqli_error($conn);
@@ -1507,37 +1716,51 @@ if($_GET['synonym'] == 'delete'){
 }
 
 //ADD REPLACEMENT
-if($_POST['replacement'] == 'add'){
-	
-	$ing_name = base64_decode($_POST['ing_name']);
-	$ing_cas = trim($_POST['ing_cas']);
+if ($_POST['replacement'] == 'add') {
+    $ing_name = base64_decode($_POST['ing_name']);
+    $ing_cas = trim($_POST['ing_cas']);
+    
+    if (empty($_POST['rName'])) {
+        $response["error"] = 'Name is required';
+        echo json_encode($response);
+        return;
+    }
 
-	if(empty($_POST['rName'])){
-		$response["error"] = 'Name is required';
-		echo json_encode($response);
-		return;
-	}
-	
-	if(empty($_POST['rCAS'])){
-		$response["error"] = 'CAS is required';
-		echo json_encode($response);
-		return;
-	}
+    if (empty($_POST['rCAS'])) {
+        $response["error"] = 'CAS is required';
+        echo json_encode($response);
+        return;
+    }
+    
+    $stmt = $conn->prepare("SELECT ing_rep_name FROM ingReplacements WHERE owner_id = ? AND ing_name = ? AND ing_rep_name = ?");
+    $stmt->bind_param('iss', $userID, $ing_name, $_POST['rName']);
+    $stmt->execute();
+    $stmt->store_result();
 
-	if(mysqli_num_rows(mysqli_query($conn, "SELECT ing_rep_name FROM ingReplacements WHERE ing_name = '$ing_name' AND ing_rep_name = '".$_POST['rName']."'"))){
-		$response["error"] = $_POST['rName'].' already exists!';
-		echo json_encode($response);
-		return;
-	}
-	
-	if(mysqli_query($conn, "INSERT INTO ingReplacements (ing_id,ing_name,ing_cas,ing_rep_id,ing_rep_name,ing_rep_cas,notes) VALUES ('".$_POST['ing_id']."','$ing_name','$ing_cas','".$_POST['rIngId']."','".$_POST['rName']."','".$_POST['rCAS']."','".$_POST['rNotes']."')")){
-		$response["success"] = $_POST['rName'].' added to the list!';
-	}else{
-		$response["error"] = 'Error: '.mysqli_error($conn);
-	}
-	echo json_encode($response);
-	return;
+    if ($stmt->num_rows > 0) {
+        $response["error"] = $_POST['rName'] . ' already exists';
+        echo json_encode($response);
+        return;
+    }
+    
+    $insertStmt = $conn->prepare("INSERT INTO ingReplacements (ing_id, ing_name, ing_cas, ing_rep_id, ing_rep_name, ing_rep_cas, notes, owner_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+    $insertStmt->bind_param('ississss', $_POST['ing_id'], $ing_name, $ing_cas, $_POST['rIngId'], $_POST['rName'], $_POST['rCAS'], $_POST['rNotes'], $userID);
+    
+    if ($insertStmt->execute()) {
+        $response["success"] = $_POST['rName'] . ' added to the list';
+    } else {
+		error_log("PV error: " . $insertStmt->error);  // Log the error for debugging
+        $response["error"] = 'Error: ' . $insertStmt->error;
+    }
+
+    // Close the prepared statements
+    $stmt->close();
+    $insertStmt->close();
+    
+    echo json_encode($response);
+    return;
 }
+
 
 //UPDATE ING REPLACEMENT
 if($_GET['replacement'] == 'update'){
@@ -1546,9 +1769,10 @@ if($_GET['replacement'] == 'update'){
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 	$ing = base64_decode($_GET['ing']);
 
-	if(mysqli_query($conn, "UPDATE ingReplacements SET $name = '$value' WHERE id = '$id' AND ing_name='$ing'")){
+	if(mysqli_query($conn, "UPDATE ingReplacements SET $name = '$value' WHERE id = '$id' AND ing_name='$ing' AND owner_id = '$userID'")){
 		$response["success"] = $ing.' replacement updated';
 	}else{
+		error_log("PV error: " . mysqli_error($conn));  // Log the error for debugging
 		$response["error"] = 'Error: '.mysqli_error($conn);
 	}
 	
@@ -1560,9 +1784,10 @@ if($_GET['replacement'] == 'update'){
 //DELETE ING REPLACEMENT	
 if($_POST['replacement'] == 'delete'){
 	$id = mysqli_real_escape_string($conn, $_POST['id']);
-	if(mysqli_query($conn, "DELETE FROM ingReplacements WHERE id = '$id'")){
+	if(mysqli_query($conn, "DELETE FROM ingReplacements WHERE id = '$id' AND owner_id = '$userID'")){
 		$response["success"] = $_POST['name'].' replacement removed';
 	}else{
+		error_log("PV error: " . mysqli_error($conn));  // Log the error for debugging
 		$response["error"] = 'Error: '.mysqli_error($conn);
 	}
 	echo json_encode($response);
@@ -1577,10 +1802,11 @@ if($_GET['action'] == 'updateDocument'){
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 	$ownerID = mysqli_real_escape_string($conn, $_GET['ingID']);
 
-	if(mysqli_query($conn, "UPDATE documents SET $name = '$value' WHERE ownerID = '$ownerID' AND id='$id'")){
+	if(mysqli_query($conn, "UPDATE documents SET $name = '$value' WHERE ownerID = '$ownerID' AND id='$id' AND owner_id = '$userID'")){
 		$response["success"] = 'Document updated';
 	}else{
 		$response["error"] = 'Error: '.mysqli_error($conn);
+		error_log("PV error: " . mysqli_error($conn));  // Log the error for debugging
 	}
 	echo json_encode($response);
 	return;
@@ -1592,9 +1818,10 @@ if($_GET['action'] == 'deleteDocument'){
 	$id = mysqli_real_escape_string($conn, $_GET['id']);
 	$ownerID = mysqli_real_escape_string($conn, $_GET['ownerID']);
 							
-	if(mysqli_query($conn, "DELETE FROM documents WHERE id = '$id' AND ownerID='$ownerID'")){
+	if(mysqli_query($conn, "DELETE FROM documents WHERE id = '$id' AND ownerID='$ownerID' AND owner_id = '$userID'")){
 		$response["success"] = 'Document deletetd';
 	}else{
+		error_log("PV error: " . mysqli_error($conn));  // Log the error for debugging
 		$response["error"] = 'Error: '.mysqli_error($conn);
 	}
 	echo json_encode($response);
@@ -1608,10 +1835,10 @@ if($_POST['ingSupplier'] == 'getPrice'){
 	$size = mysqli_real_escape_string($conn, $_POST['size']);
 	$supplier_link = urldecode($_POST['sLink']);
 	
-	$supp_data = mysqli_fetch_array(mysqli_query($conn, "SELECT price_tag_start,price_tag_end,add_costs,price_per_size FROM ingSuppliers WHERE id = '$ingSupplierID'"));
+	$supp_data = mysqli_fetch_array(mysqli_query($conn, "SELECT price_tag_start,price_tag_end,add_costs,price_per_size FROM ingSuppliers WHERE id = '$ingSupplierID' AND owner_id = '$userID'"));
 	
 	if($newPrice = priceScrape($supplier_link,$size,$supp_data['price_tag_start'],$supp_data['price_tag_end'],$supp_data['add_costs'],$supp_data['price_per_size'])){
-		if(mysqli_query($conn, "UPDATE suppliers SET price = '$newPrice' WHERE ingSupplierID = '$ingSupplierID' AND ingID='$ingID'")){
+		if(mysqli_query($conn, "UPDATE suppliers SET price = '$newPrice' WHERE ingSupplierID = '$ingSupplierID' AND ingID='$ingID' AND owner_id = '$userID'")){
 			$response["success"] = '<strong>Price updated</strong>';
 			echo json_encode($response);
 		}
@@ -1653,21 +1880,22 @@ if($_POST['ingSupplier'] == 'add'){
 	$storage_location = mysqli_real_escape_string($conn, $_POST['storage_location']);
 
 
-	if(mysqli_num_rows(mysqli_query($conn, "SELECT ingSupplierID FROM suppliers WHERE ingSupplierID = '$supplier_id' AND ingID = '$ingID'"))){
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT ingSupplierID FROM suppliers WHERE ingSupplierID = '$supplier_id' AND ingID = '$ingID' AND owner_id = '$userID'"))){
 		$response["error"] = $supplier_name['name'].' already exists';
 		echo json_encode($response);
 		return;
 	}
 		
-	if(!mysqli_num_rows(mysqli_query($conn, "SELECT ingSupplierID FROM suppliers WHERE ingID = '$ingID'"))){
+	if(!mysqli_num_rows(mysqli_query($conn, "SELECT ingSupplierID FROM suppliers WHERE ingID = '$ingID' AND owner_id = '$userID'"))){
 	   $preferred = '1';
 	}else{
 		$preferred = '0';
 	}
 		
-	if(mysqli_query($conn, "INSERT INTO suppliers (ingSupplierID,ingID,supplierLink,price,size,manufacturer,preferred,batch,purchased,stock,mUnit,status,supplier_sku,internal_sku,storage_location) VALUES ('$supplier_id','$ingID','$supplier_link','$supplier_price','$supplier_size','$supplier_manufacturer','$preferred','$supplier_batch','$purchased','$stock','$mUnit','$status','$supplier_sku','$internal_sku','$storage_location')")){
+	if(mysqli_query($conn, "INSERT INTO suppliers (ingSupplierID,ingID,supplierLink,price,size,manufacturer,preferred,batch,purchased,stock,mUnit,status,supplier_sku,internal_sku,storage_location,owner_id) VALUES ('$supplier_id','$ingID','$supplier_link','$supplier_price','$supplier_size','$supplier_manufacturer','$preferred','$supplier_batch','$purchased','$stock','$mUnit','$status','$supplier_sku','$internal_sku','$storage_location','$userID')")){
 		$response["success"] = $supplier_name['name'].' added';
 	}else{
+		error_log("PV error: " . mysqli_error($conn));  // Log the error for debugging
 		$response["error"] = mysqli_error($conn);
 	}
 	
@@ -1682,9 +1910,10 @@ if($_GET['ingSupplier'] == 'update'){
 	$name = mysqli_real_escape_string($conn, $_POST['name']);
 	$ingID = mysqli_real_escape_string($conn, $_GET['ingID']);
 
-	if(mysqli_query($conn, "UPDATE suppliers SET $name = '$value' WHERE id = '$id' AND ingID='$ingID'")){
+	if(mysqli_query($conn, "UPDATE suppliers SET $name = '$value' WHERE id = '$id' AND ingID='$ingID' AND owner_id = '$userID'")){
 		$response["success"] = 'Supplier updated';
 	} else {
+		error_log("PV error: " . mysqli_error($conn));  // Log the error for debugging
 		$response["error"] = mysqli_error($conn);
 	}
 	
@@ -1699,9 +1928,10 @@ if($_GET['ingSupplier'] == 'preferred'){
 	$status = mysqli_real_escape_string($conn, $_GET['status']);
 	
 	mysqli_query($conn, "UPDATE suppliers SET preferred = '0' WHERE ingID='$ingID'");
-	if(mysqli_query($conn, "UPDATE suppliers SET preferred = '$status' WHERE ingSupplierID = '$sID' AND ingID='$ingID'")){
+	if(mysqli_query($conn, "UPDATE suppliers SET preferred = '$status' WHERE ingSupplierID = '$sID' AND ingID='$ingID' AND owner_id = '$userID'")){
 		$response["success"] = 'Supplier set to prefered';
 	} else {
+		error_log("PV error: " . mysqli_error($conn));  // Log the error for debugging
 		$response["error"] = mysqli_error($conn);
 	}
 	echo json_encode($response);
@@ -1714,17 +1944,18 @@ if($_GET['ingSupplier'] == 'delete'){
 	$sID = mysqli_real_escape_string($conn, $_GET['sID']);
 	$ingID = mysqli_real_escape_string($conn, $_GET['ingID']);
 	
-	$supplierCount = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM suppliers WHERE ingID = '$ingID'"));
+	$supplierCount = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM suppliers WHERE ingID = '$ingID' AND owner_id = '$userID'"));
     if ($supplierCount <= 1) {
         $response["error"] = 'Cannot delete the last supplier for this ingredient';
 		echo json_encode($response);
 		return;
     }
 								
-	if(mysqli_query($conn, "DELETE FROM suppliers WHERE id = '$sID' AND ingID='$ingID'")){
+	if(mysqli_query($conn, "DELETE FROM suppliers WHERE id = '$sID' AND ingID='$ingID' AND owner_id = '$userID'")){
 		$response["success"] = 'Supplier deleted';
 	} else {
 		$response["error"] = mysqli_error($conn);
+		error_log("PV error: " . mysqli_error($conn));  // Log the error for debugging
 	}
 	echo json_encode($response);
 	return;

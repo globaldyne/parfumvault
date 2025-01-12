@@ -3,14 +3,41 @@ define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__)))));
 
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/inc/settings.php');
 
+$bottleId = $_GET['id'];
 
-$bottle = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM bottles WHERE id = '".$_GET['id']."'")); 
-$doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS photo FROM documents WHERE ownerID = '".$bottle['id']."' AND type = '4'"));
-$sup = mysqli_query($conn, "SELECT id,name FROM ingSuppliers ORDER BY name ASC");
-while ($suppliers = mysqli_fetch_array($sup)){
-	    $supplier[] = $suppliers;
+if ($bottleId && is_numeric($bottleId)) {
+    $stmtBottle = $conn->prepare("SELECT * FROM bottles WHERE id = ? AND owner_id = ?");
+    $stmtBottle->bind_param("ii", $bottleId, $userID);
+    $stmtBottle->execute();
+    $resultBottle = $stmtBottle->get_result();
+    $bottle = $resultBottle->fetch_array(MYSQLI_ASSOC);
+    $stmtBottle->close();
+} else {
+    $response["error"] = "Invalid or missing bottle ID.";
+    echo json_encode($response);
+    return;
 }
+
+$stmtDoc = $conn->prepare("SELECT docData AS photo FROM documents WHERE ownerID = ? AND type = '4' AND owner_id = ?");
+$stmtDoc->bind_param("ii", $bottle['id'], $userID);
+$stmtDoc->execute();
+$resultDoc = $stmtDoc->get_result();
+$doc = $resultDoc->fetch_array(MYSQLI_ASSOC);
+$stmtDoc->close();
+
+$supplier = [];
+$stmtSup = $conn->prepare("SELECT id, name FROM ingSuppliers WHERE owner_id = ? ORDER BY name ASC");
+$stmtSup->bind_param("i", $userID);
+$stmtSup->execute();
+$resultSup = $stmtSup->get_result();
+
+while ($suppliers = $resultSup->fetch_array(MYSQLI_ASSOC)) {
+    $supplier[] = $suppliers;
+}
+$stmtSup->close();
+
 ?>
 
 
@@ -91,7 +118,7 @@ $('#bottle-save').click(function() {
 		url: '/core/core.php', 
 		type: 'POST',
 		data: {
-			update_bottle_data: 1,
+			action: "update_bottle_data",
 			bottle_id:  "<?=$bottle['id']?>",
 			name: $("#bottle-name").val(),			
 			size: $("#bottle-size").val(),
@@ -109,6 +136,7 @@ $('#bottle-save').click(function() {
 		success: function (data) {
 			if(data.success){
 				var msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>'+data.success+'</div>';
+                $('#tdDataBottles').DataTable().ajax.reload(null, true);
 			}else if( data.error){
 				var msg = '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>'+data.error+'</div>';
 			}
@@ -134,6 +162,7 @@ $('#bottle-save').click(function() {
 			success: function (data) {
 				if(data.success){
 					$('#bottle_pic').html('<img class="img-profile-avatar" src="'+data.success.file+'">');
+                    $('#tdDataBottles').DataTable().ajax.reload(null, true);
 				}else if( data.error){
 					$('#bottle-inf').html('<div class="alert alert-danger">'+data.error+'</div>');
 				}

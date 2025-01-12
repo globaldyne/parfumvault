@@ -191,70 +191,118 @@ if($_GET['type'] == 'bottle'){
 	return;
 }
 
-if($_GET['type'] == 'accessory' && $_GET['name']){
-	
-	$name = base64_decode($_GET['name']);
-	$accessory = base64_decode($_GET['accessory']);
-	
-	if (!is_numeric($_GET['price']) || $_GET['price'] <= 0 ) {
-    	$response["error"] = 'Price cannot be empty or 0';
-    	echo json_encode($response);
-    	return;
-	}
-	
-	$price = $_GET['price'];
-	$supplier = base64_decode($_GET['supplier']);
-	$supplier_link = base64_decode($_GET['supplier_link']);
-	$pieces = $_GET['pieces'] ?: 0;
-	
+//UPLOAD ACCESSORY PIC
+if ($_GET['type'] == 'accessory') {
+    $name = base64_decode($_GET['name']);
+    $accessory = base64_decode($_GET['accessory']);
+    $price = $_GET['price'];
+    $supplier = base64_decode($_GET['supplier']);
+    $supplier_link = base64_decode($_GET['supplier_link']);
+    $pieces = $_GET['pieces'] ?: 0;
+    $allowed_ext = "png, jpg, jpeg, gif, bmp";
 
-	if(isset($_FILES['pic_file']['name'])){
-		$file_name = $_FILES['pic_file']['name'];
-      	$file_size = $_FILES['pic_file']['size'];
-      	$file_tmp = $_FILES['pic_file']['tmp_name'];
-      	$file_type = $_FILES['pic_file']['type'];
-      	$file_ext = strtolower(end(explode('.',$_FILES['pic_file']['name'])));
-	  
-	  	if (!file_exists($tmp_path)) {
-			mkdir($tmp_path, 0740, true);
-	   	}
 
-		$allowed_ext = "png, jpg, jpeg, gif, bmp";
-	  	$ext = explode(', ', $allowed_ext);
-	  
-      	if(in_array($file_ext,$ext)===false){
-			$response["error"] = 'Extension not allowed, please choose a '.$allowed_ext.' file';
-			echo json_encode($response);
-			return;
-		}
-	  	if($file_size > $max_filesize){
-			 $response["error"] = 'File size must not exceed '.formatBytes($max_filesize);
-			 echo json_encode($response);
-			 return;
-     	}
-	   	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM inventory_accessories WHERE name = '$name'"))){
-			$response["error"] = $name.' already exists';
-			echo json_encode($response);
-			return;
-		}
-		if(move_uploaded_file($file_tmp,$tmp_path.base64_encode($file_name))){
-			$photo = base64_encode($file_name);
-			create_thumb($tmp_path.$photo,250,250); 
-			$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents($tmp_path.$photo));
-		
-			if(mysqli_query($conn, "INSERT INTO inventory_accessories (name, accessory, price, supplier, supplier_link, pieces) VALUES ('$name', '$accessory', '$price', '$supplier', '$supplier_link', '$pieces')") ){
-				$accessory_id = mysqli_insert_id($conn);
-				mysqli_query($conn, "INSERT INTO documents (ownerID,name,type,notes,docData) VALUES ('".$accessory_id."','$name','5','-','$docData')");
-				unlink($tmp_path.$photo);
-				$response["success"] = $name.' added';
-			}else{
-				$response["error"] =  'Failed to add '.$name.' - '.mysqli_error($conn);
-			}
-		}
-	  }
-	echo json_encode($response);  
-	return;
+    if (!$_GET['name']) {
+        $response["error"] = 'Name cannot be empty';
+        echo json_encode($response);
+        return;
+    }
+
+    if (!is_numeric($price) || $price <= 0) {
+        $response["error"] = 'Price cannot be empty or 0';
+        echo json_encode($response);
+        return;
+    }
+
+    // Check if file is uploaded
+    if (isset($_FILES['pic_file']['name'])) {
+        $file_name = $_FILES['pic_file']['name'];
+        $file_size = $_FILES['pic_file']['size'];
+        $file_tmp = $_FILES['pic_file']['tmp_name'];
+        $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+        $allowed_ext_array = explode(', ', strtolower($allowed_ext));
+
+        // Ensure the temporary directory exists
+        if (!file_exists($tmp_path)) {
+            if (!mkdir($tmp_path, 0740, true) && !is_dir($tmp_path)) {
+                error_log("PV error: Failed to create directory at $tmp_path");
+                $response["error"] = "Server error. Unable to create directory.";
+                echo json_encode($response);
+                return;
+            }
+        }
+
+        // Validate file extension
+        if (!in_array($file_ext, $allowed_ext_array, true)) {
+            $response["error"] = 'Extension not allowed, please choose a ' . $allowed_ext . ' file.';
+            echo json_encode($response);
+            return;
+        }
+
+        // Validate file size
+        if ($file_size > $max_filesize) {
+            $response["error"] = 'File size must not exceed ' . formatBytes($max_filesize);
+            echo json_encode($response);
+            return;
+        }
+
+        // Check if accessory already exists
+        $stmtCheck = $conn->prepare("SELECT id FROM inventory_accessories WHERE name = ? AND owner_id = ?");
+        $stmtCheck->bind_param("si", $name, $userID);
+        if (!$stmtCheck->execute()) {
+            error_log("PV error: Failed to check for existing accessory. " . $stmtCheck->error);
+            $response["error"] = "Failed to verify accessory existence.";
+            echo json_encode($response);
+            return;
+        }
+        if ($stmtCheck->get_result()->num_rows > 0) {
+            $response["error"] = $name . ' already exists';
+            echo json_encode($response);
+            return;
+        }
+        $stmtCheck->close();
+
+        // Process uploaded file
+        $encoded_filename = base64_encode($file_name);
+        $upload_path = $tmp_path . $encoded_filename;
+
+        if (move_uploaded_file($file_tmp, $upload_path)) {
+            create_thumb($upload_path, 250, 250);
+            $docData = 'data:image/' . $file_ext . ';base64,' . base64_encode(file_get_contents($upload_path));
+
+            // Insert accessory details
+            $stmtInsert = $conn->prepare("INSERT INTO inventory_accessories (name, accessory, price, supplier, supplier_link, pieces, owner_id) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            $stmtInsert->bind_param("ssdssii", $name, $accessory, $price, $supplier, $supplier_link, $pieces, $userID);
+
+            if ($stmtInsert->execute()) {
+                $accessory_id = $stmtInsert->insert_id;
+                $stmtInsertDoc = $conn->prepare("INSERT INTO documents (ownerID, name, type, notes, docData, owner_id) VALUES (?, ?, '5', '-', ?, ?)");
+                $stmtInsertDoc->bind_param("issi", $accessory_id, $name, $docData, $userID);
+
+                if (!$stmtInsertDoc->execute()) {
+                    error_log("PV error: Failed to insert document. " . $stmtInsertDoc->error);
+                }
+                $stmtInsertDoc->close();
+
+                unlink($upload_path); // Clean up temporary file
+                $response["success"] = $name . ' added';
+            } else {
+                error_log("PV error: Failed to insert accessory. " . $stmtInsert->error);
+                $response["error"] = 'Failed to add ' . $name;
+            }
+            $stmtInsert->close();
+        } else {
+            error_log("PV error: Failed to move uploaded file to $upload_path");
+            $response["error"] = "Failed to upload file.";
+        }
+    } else {
+        $response["error"] = "No file uploaded.";
+    }
+
+    echo json_encode($response);
+    return;
 }
+
 
 if($_GET['type'] && $_GET['id']){
 	

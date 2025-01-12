@@ -27,15 +27,16 @@ while ($suppliers = mysqli_fetch_array($sup)){
         <input type="text" class="form-control" name="accessory-name" id="accessory-name" value="<?=$accessory['name']?>" />
     </div>
     
-    <div class="mb-3">
-        <label for="accessory" class="form-label">Accessory</label>
-        <select name="accessory" id="accessory" class="form-select">
-            <option value="Lid" <?= $accessory['accessory'] == "Lid" ? 'selected' : '' ?>>Bottle lid</option>
-            <option value="Ribbon" <?= $accessory['accessory'] == "Ribbon" ? 'selected' : '' ?>>Ribbon</option>
-            <option value="Packaging" <?= $accessory['accessory'] == "Packaging" ? 'selected' : '' ?>>Packaging</option>
-            <option value="Other" <?= $accessory['accessory'] == "Other" ? 'selected' : '' ?>>Other</option>
-        </select>
-    </div>
+	<div class="mb-3">
+    	<label for="accessory" class="form-label">Accessory</label>
+		<select name="accessory" id="accessory-type" class="form-select">
+			<option value="Lid" <?= isset($accessory['accessory']) && $accessory['accessory'] == "Lid" ? 'selected' : '' ?>>Bottle lid</option>
+			<option value="Ribbon" <?= isset($accessory['accessory']) && $accessory['accessory'] == "Ribbon" ? 'selected' : '' ?>>Ribbon</option>
+			<option value="Packaging" <?= isset($accessory['accessory']) && $accessory['accessory'] == "Packaging" ? 'selected' : '' ?>>Packaging</option>
+			<option value="Other" <?= isset($accessory['accessory']) && $accessory['accessory'] == "Other" ? 'selected' : '' ?>>Other</option>
+		</select>
+	</div>
+
     
     <div class="mb-3">
         <label for="accessory-price" class="form-label">Price</label>
@@ -85,11 +86,11 @@ $(document).ready(function() {
 			url: '/core/core.php', 
 			type: 'POST',
 			data: {
-				update_accessory_data: 1,
+				action: 'update_accessory_data',
 				accessory_id:  "<?=$accessory['id']?>",
 				name: $("#accessory-name").val(),
 				price: $("#accessory-price").val(),
-				accessory: $("#accessory").val(),
+				accessory: $("#accessory-type").val(),
 				pieces: $("#accessory-pieces").val(),
 				supplier: $("#accessory-supplier").val(),
 				supplier_link: $("#accessory-supplier_link").val(),
@@ -98,6 +99,7 @@ $(document).ready(function() {
 			success: function (data) {
 				if(data.success){
 					var msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>'+data.success+'</div>';
+					$('#tdDataAccessories').DataTable().ajax.reload(null, true);
 				}else if( data.error){
 					var msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>'+data.error+'</div>';
 				}
@@ -116,7 +118,7 @@ $(document).ready(function() {
 			fd.append('accessory_pic',files[0]);
 		
 			$.ajax({ 
-				url: '/core/core.php?update_accessory_pic=1&accessory_id=<?=$accessory['id']?>', 
+				url: '/core/core.php?action=update_accessory_pic&accessory_id=<?=$accessory['id']?>', 
 				type: 'POST',
 				data: fd,
 				contentType: false,
@@ -126,6 +128,7 @@ $(document).ready(function() {
 				success: function (data) {
 					if(data.success){
 						$('#accessory_pic').html('<img class="img-profile-avatar" src="'+data.success.accessory_pic+'">');
+						$('#tdDataAccessories').DataTable().ajax.reload(null, true);
 					}else if( data.error){
 						$('#accessory-inf').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>'+data.error+'</div>');
 					}

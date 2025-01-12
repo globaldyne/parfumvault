@@ -7,6 +7,12 @@
 - Update db schema for a default owner id 1
 - Fix update form for compounds
 - Replacing mysqli queries with mysql statements (WIP)
+- Overall improvements accross the app
+- Updated core backend for better security handling and error logging
+- Fixed accessory type update
+- Fixed synonyms delete
+- Improve PubChem structure images fetch
+
 
 ### Version 12.4
 - Add dilutant in API formulas
