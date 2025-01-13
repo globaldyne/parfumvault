@@ -2960,162 +2960,275 @@ if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'faid_info') {
 //FIREFIGHTING
 if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'fire_info') {
     $ingID = (int)$_POST['ingID'];
-    
-    $firefighting_suitable_media = $_POST['firefighting_suitable_media'];
-    $firefighting_non_suitable_media = $_POST['firefighting_non_suitable_media'];
-    $firefighting_special_hazards = $_POST['firefighting_special_hazards'];
-    $firefighting_advice = $_POST['firefighting_advice'];
-    $firefighting_other_info = $_POST['firefighting_other_info'];
-    
-    // Check if all fields are populated
-    if (
-        empty($ingID) || empty($firefighting_suitable_media) || empty($firefighting_non_suitable_media) ||
-        empty($firefighting_special_hazards) || empty($firefighting_advice) || empty($firefighting_other_info)
-    ) {
-        $response["error"] = 'All fields are required';
+
+    $firefighting_suitable_media = trim($_POST['firefighting_suitable_media']);
+    $firefighting_non_suitable_media = trim($_POST['firefighting_non_suitable_media']);
+    $firefighting_special_hazards = trim($_POST['firefighting_special_hazards']);
+    $firefighting_advice = trim($_POST['firefighting_advice']);
+    $firefighting_other_info = trim($_POST['firefighting_other_info']);
+
+    // Validate required fields
+    $missingFields = [];
+    if (empty($ingID)) $missingFields[] = "Ingredient ID";
+    if (empty($firefighting_suitable_media)) $missingFields[] = "Firefighting Suitable Media";
+    if (empty($firefighting_non_suitable_media)) $missingFields[] = "Firefighting Non-Suitable Media";
+    if (empty($firefighting_special_hazards)) $missingFields[] = "Firefighting Special Hazards";
+    if (empty($firefighting_advice)) $missingFields[] = "Firefighting Advice";
+    if (empty($firefighting_other_info)) $missingFields[] = "Firefighting Other Info";
+
+    if (!empty($missingFields)) {
+        $response["error"] = "The following fields are required: " . implode(", ", $missingFields);
         echo json_encode($response);
         return;
     }
-    
-    // Prepare the SQL statement
-    $stmt = $conn->prepare(
-        "INSERT INTO ingredient_safety_data (
-            ingID, firefighting_suitable_media, firefighting_non_suitable_media, 
-            firefighting_special_hazards, firefighting_advice, firefighting_other_info
-        ) VALUES (?, ?, ?, ?, ?, ?)
-        ON DUPLICATE KEY UPDATE 
-            firefighting_suitable_media = VALUES(firefighting_suitable_media),
-            firefighting_non_suitable_media = VALUES(firefighting_non_suitable_media),
-            firefighting_special_hazards = VALUES(firefighting_special_hazards),
-            firefighting_advice = VALUES(firefighting_advice),
-            firefighting_other_info = VALUES(firefighting_other_info)"
+
+    // Check if the record exists for this `ingID` and `owner_id`
+    $checkStmt = $conn->prepare(
+        "SELECT COUNT(*) FROM ingredient_safety_data WHERE ingID = ? AND owner_id = ?"
     );
-    
-    // Bind the parameters
-    $stmt->bind_param(
-        'isssss', $ingID, $firefighting_suitable_media, $firefighting_non_suitable_media, 
-        $firefighting_special_hazards, $firefighting_advice, $firefighting_other_info
-    );
-    
+    $checkStmt->bind_param('ii', $ingID, $userID);
+    $checkStmt->execute();
+    $checkStmt->bind_result($count);
+    $checkStmt->fetch();
+    $checkStmt->close();
+
+    if ($count > 0) {
+        // Update existing record
+        $stmt = $conn->prepare(
+            "UPDATE ingredient_safety_data
+            SET 
+                firefighting_suitable_media = ?, 
+                firefighting_non_suitable_media = ?, 
+                firefighting_special_hazards = ?, 
+                firefighting_advice = ?, 
+                firefighting_other_info = ?
+            WHERE ingID = ? AND owner_id = ?"
+        );
+
+        $stmt->bind_param(
+            'ssssiii',
+            $firefighting_suitable_media,
+            $firefighting_non_suitable_media,
+            $firefighting_special_hazards,
+            $firefighting_advice,
+            $firefighting_other_info,
+            $ingID,
+            $userID
+        );
+    } else {
+        // Insert a new record
+        $stmt = $conn->prepare(
+            "INSERT INTO ingredient_safety_data (
+                ingID, firefighting_suitable_media, firefighting_non_suitable_media, 
+                firefighting_special_hazards, firefighting_advice, firefighting_other_info, owner_id
+            ) VALUES (?, ?, ?, ?, ?, ?, ?)"
+        );
+
+        $stmt->bind_param(
+            'isssssi',
+            $ingID,
+            $firefighting_suitable_media,
+            $firefighting_non_suitable_media,
+            $firefighting_special_hazards,
+            $firefighting_advice,
+            $firefighting_other_info,
+            $userID
+        );
+    }
+
     // Execute the statement
     if ($stmt->execute()) {
-        $response["success"] = 'Firefighting data has been updated';
+        $response["success"] = 'Firefighting data has been successfully saved.';
     } else {
-        $response["error"] = 'Something went wrong ' . $stmt->error;
+        $errorMessage = "Failed to execute SQL: " . $stmt->error;
+        error_log("PV error: $errorMessage");
+        $response["error"] = 'Something went wrong. Please check the logs.';
     }
-    
+
     // Close the statement
     $stmt->close();
-    
+
     echo json_encode($response);
     return;
 }
+
 
 
 //ACCIDENTAL RELEASE
 if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'save_acc_rel') {
     $ingID = (int)$_POST['ingID'];
-    
-    $accidental_release_per_precautions = $_POST['accidental_release_per_precautions'];
-    $accidental_release_env_precautions = $_POST['accidental_release_env_precautions'];
-    $accidental_release_cleaning = $_POST['accidental_release_cleaning'];
-	$accidental_release_refs =  $_POST['accidental_release_refs'];
-    $accidental_release_other_info = $_POST['accidental_release_other_info'];
-    
+    $accidental_release_per_precautions = trim($_POST['accidental_release_per_precautions']);
+    $accidental_release_env_precautions = trim($_POST['accidental_release_env_precautions']);
+    $accidental_release_cleaning = trim($_POST['accidental_release_cleaning']);
+    $accidental_release_refs = trim($_POST['accidental_release_refs']);
+    $accidental_release_other_info = trim($_POST['accidental_release_other_info']);
+
     // Check if all fields are populated
     if (
         empty($ingID) || empty($accidental_release_per_precautions) || empty($accidental_release_env_precautions) ||
-        empty($accidental_release_cleaning) ||  empty($accidental_release_refs) || empty($accidental_release_other_info)
+        empty($accidental_release_cleaning) || empty($accidental_release_refs) || empty($accidental_release_other_info)
     ) {
         $response["error"] = 'All fields are required';
         echo json_encode($response);
         return;
     }
-    
-    // Prepare the SQL statement
-    $stmt = $conn->prepare(
-        "INSERT INTO ingredient_safety_data (
-            ingID, accidental_release_per_precautions, accidental_release_env_precautions, 
-            accidental_release_cleaning, accidental_release_refs, accidental_release_other_info
-        ) VALUES (?, ?, ?, ?, ?, ?)
-        ON DUPLICATE KEY UPDATE 
-            accidental_release_per_precautions = VALUES(accidental_release_per_precautions),
-            accidental_release_env_precautions = VALUES(accidental_release_env_precautions),
-            accidental_release_cleaning = VALUES(accidental_release_cleaning),
-			accidental_release_refs = VALUES(accidental_release_refs),
-            accidental_release_other_info = VALUES(accidental_release_other_info)"
+
+    // Check if the record exists for this `ingID` and `owner_id`
+    $checkStmt = $conn->prepare(
+        "SELECT COUNT(*) FROM ingredient_safety_data WHERE ingID = ? AND owner_id = ?"
     );
-    
-    // Bind the parameters
-    $stmt->bind_param(
-        'isssss', $ingID, $accidental_release_per_precautions, $accidental_release_env_precautions, 
-        $accidental_release_cleaning, $accidental_release_refs, $accidental_release_other_info
-    );
-    
+    $checkStmt->bind_param('ii', $ingID, $userID);
+    $checkStmt->execute();
+    $checkStmt->bind_result($count);
+    $checkStmt->fetch();
+    $checkStmt->close();
+
+    if ($count > 0) {
+        // Update existing record
+        $stmt = $conn->prepare(
+            "UPDATE ingredient_safety_data
+            SET 
+                accidental_release_per_precautions = ?, 
+                accidental_release_env_precautions = ?, 
+                accidental_release_cleaning = ?, 
+                accidental_release_refs = ?, 
+                accidental_release_other_info = ?
+            WHERE ingID = ? AND owner_id = ?"
+        );
+
+        $stmt->bind_param(
+            'ssssiii',
+            $accidental_release_per_precautions,
+            $accidental_release_env_precautions,
+            $accidental_release_cleaning,
+            $accidental_release_refs,
+            $accidental_release_other_info,
+            $ingID,
+            $userID
+        );
+    } else {
+        // Insert a new record
+        $stmt = $conn->prepare(
+            "INSERT INTO ingredient_safety_data (
+                ingID, accidental_release_per_precautions, accidental_release_env_precautions, 
+                accidental_release_cleaning, accidental_release_refs, accidental_release_other_info, owner_id
+            ) VALUES (?, ?, ?, ?, ?, ?, ?)"
+        );
+
+        $stmt->bind_param(
+            'isssssi',
+            $ingID,
+            $accidental_release_per_precautions,
+            $accidental_release_env_precautions,
+            $accidental_release_cleaning,
+            $accidental_release_refs,
+            $accidental_release_other_info,
+            $userID
+        );
+    }
+
     // Execute the statement
     if ($stmt->execute()) {
-        $response["success"] = 'Accidental release data has been updated';
+        $response["success"] = 'Accidental release data has been successfully saved.';
     } else {
-        $response["error"] = 'Something went wrong ' . $stmt->error;
+        $errorMessage = "Failed to execute SQL: " . $stmt->error;
+        error_log("PV error: $errorMessage");
+        $response["error"] = 'Something went wrong. Please check the logs.';
     }
-    
+
     // Close the statement
     $stmt->close();
-    
+
     echo json_encode($response);
     return;
 }
 
+
 //HANDLING & STORAGE
 if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'HS') {
     $ingID = (int)$_POST['ingID'];
-    
-    $handling_protection = $_POST['handling_protection'];
-    $handling_hygiene = $_POST['handling_hygiene'];
-    $handling_safe_storage = $_POST['handling_safe_storage'];
-	$handling_joint_storage =  $_POST['handling_joint_storage'];
-    $handling_specific_uses = $_POST['handling_specific_uses'];
-    
+    $handling_protection = trim($_POST['handling_protection']);
+    $handling_hygiene = trim($_POST['handling_hygiene']);
+    $handling_safe_storage = trim($_POST['handling_safe_storage']);
+    $handling_joint_storage = trim($_POST['handling_joint_storage']);
+    $handling_specific_uses = trim($_POST['handling_specific_uses']);
+
     // Check if all fields are populated
     if (
         empty($ingID) || empty($handling_protection) || empty($handling_hygiene) ||
-        empty($handling_safe_storage) ||  empty($handling_joint_storage) || empty($handling_specific_uses)
+        empty($handling_safe_storage) || empty($handling_joint_storage) || empty($handling_specific_uses)
     ) {
         $response["error"] = 'All fields are required';
         echo json_encode($response);
         return;
     }
-    
-    // Prepare the SQL statement
-    $stmt = $conn->prepare(
-        "INSERT INTO ingredient_safety_data (
-            ingID, handling_protection, handling_hygiene, 
-            handling_safe_storage, handling_joint_storage, handling_specific_uses
-        ) VALUES (?, ?, ?, ?, ?, ?)
-        ON DUPLICATE KEY UPDATE 
-            handling_protection = VALUES(handling_protection),
-            handling_hygiene = VALUES(handling_hygiene),
-            handling_safe_storage = VALUES(handling_safe_storage),
-			handling_joint_storage = VALUES(handling_joint_storage),
-            handling_specific_uses = VALUES(handling_specific_uses)"
+
+    // Check if the record exists for this `ingID` and `owner_id`
+    $checkStmt = $conn->prepare(
+        "SELECT COUNT(*) FROM ingredient_safety_data WHERE ingID = ? AND owner_id = ?"
     );
-    
-    // Bind the parameters
-    $stmt->bind_param(
-        'isssss', $ingID, $handling_protection, $handling_hygiene, 
-        $handling_safe_storage, $handling_joint_storage, $handling_specific_uses
-    );
-    
+    $checkStmt->bind_param('ii', $ingID, $userID);
+    $checkStmt->execute();
+    $checkStmt->bind_result($count);
+    $checkStmt->fetch();
+    $checkStmt->close();
+
+    if ($count > 0) {
+        // Update existing record
+        $stmt = $conn->prepare(
+            "UPDATE ingredient_safety_data
+            SET 
+                handling_protection = ?, 
+                handling_hygiene = ?, 
+                handling_safe_storage = ?, 
+                handling_joint_storage = ?, 
+                handling_specific_uses = ?
+            WHERE ingID = ? AND owner_id = ?"
+        );
+
+        $stmt->bind_param(
+            'ssssiii',
+            $handling_protection,
+            $handling_hygiene,
+            $handling_safe_storage,
+            $handling_joint_storage,
+            $handling_specific_uses,
+            $ingID,
+            $userID
+        );
+    } else {
+        // Insert a new record
+        $stmt = $conn->prepare(
+            "INSERT INTO ingredient_safety_data (
+                ingID, handling_protection, handling_hygiene, 
+                handling_safe_storage, handling_joint_storage, handling_specific_uses, owner_id
+            ) VALUES (?, ?, ?, ?, ?, ?, ?)"
+        );
+
+        $stmt->bind_param(
+            'isssssi',
+            $ingID,
+            $handling_protection,
+            $handling_hygiene,
+            $handling_safe_storage,
+            $handling_joint_storage,
+            $handling_specific_uses,
+            $userID
+        );
+    }
+
     // Execute the statement
     if ($stmt->execute()) {
-        $response["success"] = 'Handling and storage data has been updated';
+        $response["success"] = 'Handling and storage data has been successfully saved.';
     } else {
-        $response["error"] = 'Something went wrong ' . $stmt->error;
+        $errorMessage = "Failed to execute SQL: " . $stmt->error;
+        error_log("PV error: $errorMessage");
+        $response["error"] = 'Something went wrong. Please check the logs.';
     }
-    
+
     // Close the statement
     $stmt->close();
-    
+
     echo json_encode($response);
     return;
 }
@@ -3125,16 +3238,16 @@ if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'exposure_data') {
     $ingID = (int)$_POST['ingID'];
 
     // New fields for exposure data
-    $exposure_occupational_limits = $_POST['exposure_occupational_limits'];
-    $exposure_biological_limits = $_POST['exposure_biological_limits'];
-    $exposure_intented_use_limits = $_POST['exposure_intented_use_limits'];
-    $exposure_other_remarks = $_POST['exposure_other_remarks'];
-    $exposure_face_protection = $_POST['exposure_face_protection'];
-    $exposure_skin_protection = $_POST['exposure_skin_protection'];
-    $exposure_respiratory_protection = $_POST['exposure_respiratory_protection'];
-    $exposure_env_exposure = $_POST['exposure_env_exposure'];
-    $exposure_consumer_exposure = $_POST['exposure_consumer_exposure'];
-    $exposure_other_info = $_POST['exposure_other_info'];
+    $exposure_occupational_limits = trim($_POST['exposure_occupational_limits']);
+    $exposure_biological_limits = trim($_POST['exposure_biological_limits']);
+    $exposure_intented_use_limits = trim($_POST['exposure_intented_use_limits']);
+    $exposure_other_remarks = trim($_POST['exposure_other_remarks']);
+    $exposure_face_protection = trim($_POST['exposure_face_protection']);
+    $exposure_skin_protection = trim($_POST['exposure_skin_protection']);
+    $exposure_respiratory_protection = trim($_POST['exposure_respiratory_protection']);
+    $exposure_env_exposure = trim($_POST['exposure_env_exposure']);
+    $exposure_consumer_exposure = trim($_POST['exposure_consumer_exposure']);
+    $exposure_other_info = trim($_POST['exposure_other_info']);
 
     // Check if all fields are populated
     if (
@@ -3148,42 +3261,85 @@ if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'exposure_data') {
         return;
     }
 
-    // Prepare the SQL statement
-    $stmt = $conn->prepare(
-        "INSERT INTO ingredient_safety_data (
-            ingID, exposure_occupational_limits, exposure_biological_limits, 
-            exposure_intented_use_limits, exposure_other_remarks, 
-            exposure_face_protection, exposure_skin_protection, 
-            exposure_respiratory_protection, exposure_env_exposure, 
-            exposure_consumer_exposure, exposure_other_info
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ON DUPLICATE KEY UPDATE 
-            exposure_occupational_limits = VALUES(exposure_occupational_limits),
-            exposure_biological_limits = VALUES(exposure_biological_limits),
-            exposure_intented_use_limits = VALUES(exposure_intented_use_limits),
-            exposure_other_remarks = VALUES(exposure_other_remarks),
-            exposure_face_protection = VALUES(exposure_face_protection),
-            exposure_skin_protection = VALUES(exposure_skin_protection),
-            exposure_respiratory_protection = VALUES(exposure_respiratory_protection),
-            exposure_env_exposure = VALUES(exposure_env_exposure),
-            exposure_consumer_exposure = VALUES(exposure_consumer_exposure),
-            exposure_other_info = VALUES(exposure_other_info)"
+    // Check if the record exists for this `ingID` and `owner_id`
+    $checkStmt = $conn->prepare(
+        "SELECT COUNT(*) FROM ingredient_safety_data WHERE ingID = ? AND owner_id = ?"
     );
+    $checkStmt->bind_param('ii', $ingID, $userID);
+    $checkStmt->execute();
+    $checkStmt->bind_result($count);
+    $checkStmt->fetch();
+    $checkStmt->close();
 
-    // Bind the parameters
-    $stmt->bind_param(
-        'issssssssss', $ingID, $exposure_occupational_limits, $exposure_biological_limits, 
-        $exposure_intented_use_limits, $exposure_other_remarks, 
-        $exposure_face_protection, $exposure_skin_protection, 
-        $exposure_respiratory_protection, $exposure_env_exposure, 
-        $exposure_consumer_exposure, $exposure_other_info
-    );
+    if ($count > 0) {
+        // Update existing record
+        $stmt = $conn->prepare(
+            "UPDATE ingredient_safety_data
+            SET 
+                exposure_occupational_limits = ?, 
+                exposure_biological_limits = ?, 
+                exposure_intented_use_limits = ?, 
+                exposure_other_remarks = ?, 
+                exposure_face_protection = ?, 
+                exposure_skin_protection = ?, 
+                exposure_respiratory_protection = ?, 
+                exposure_env_exposure = ?, 
+                exposure_consumer_exposure = ?, 
+                exposure_other_info = ?
+            WHERE ingID = ? AND owner_id = ?"
+        );
+
+        $stmt->bind_param(
+            'ssssssssssii',
+            $exposure_occupational_limits,
+            $exposure_biological_limits,
+            $exposure_intented_use_limits,
+            $exposure_other_remarks,
+            $exposure_face_protection,
+            $exposure_skin_protection,
+            $exposure_respiratory_protection,
+            $exposure_env_exposure,
+            $exposure_consumer_exposure,
+            $exposure_other_info,
+            $ingID,
+            $userID
+        );
+    } else {
+        // Insert a new record
+        $stmt = $conn->prepare(
+            "INSERT INTO ingredient_safety_data (
+                ingID, exposure_occupational_limits, exposure_biological_limits, 
+                exposure_intented_use_limits, exposure_other_remarks, 
+                exposure_face_protection, exposure_skin_protection, 
+                exposure_respiratory_protection, exposure_env_exposure, 
+                exposure_consumer_exposure, exposure_other_info, owner_id
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        );
+
+        $stmt->bind_param(
+            'isssssssssii',
+            $ingID,
+            $exposure_occupational_limits,
+            $exposure_biological_limits,
+            $exposure_intented_use_limits,
+            $exposure_other_remarks,
+            $exposure_face_protection,
+            $exposure_skin_protection,
+            $exposure_respiratory_protection,
+            $exposure_env_exposure,
+            $exposure_consumer_exposure,
+            $exposure_other_info,
+            $userID
+        );
+    }
 
     // Execute the statement
     if ($stmt->execute()) {
-        $response["success"] = 'Exposure data has been updated';
+        $response["success"] = 'Exposure data has been successfully saved.';
     } else {
-        $response["error"] = 'Something went wrong ' . $stmt->error;
+        $errorMessage = "Failed to execute SQL: " . $stmt->error;
+        error_log("PV error: $errorMessage");
+        $response["error"] = 'Something went wrong. Please check the logs.';
     }
 
     // Close the statement
