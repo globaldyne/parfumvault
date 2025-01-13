@@ -2849,63 +2849,113 @@ if($_POST['action'] == 'rename' && $_POST['old_ing_name'] && $_POST['ing_id']){
 //FIRST AID INFO
 if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'faid_info') {
     $ingID = (int)$_POST['ingID'];
-    
-    $first_aid_general = $_POST['first_aid_general'];
-    $first_aid_inhalation = $_POST['first_aid_inhalation'];
-    $first_aid_skin = $_POST['first_aid_skin'];
-    $first_aid_eye = $_POST['first_aid_eye'];
-    $first_aid_ingestion = $_POST['first_aid_ingestion'];
-    $first_aid_self_protection = $_POST['first_aid_self_protection'];
-    $first_aid_symptoms = $_POST['first_aid_symptoms'];
-    $first_aid_dr_notes = $_POST['first_aid_dr_notes'];
-    
-	 // Check if all fields are populated
-    if (
-        empty($ingID) || empty($first_aid_general) || empty($first_aid_inhalation) ||
-        empty($first_aid_skin) || empty($first_aid_eye) || empty($first_aid_ingestion) ||
-        empty($first_aid_self_protection) || empty($first_aid_symptoms) || empty($first_aid_dr_notes)
-    ) {
-        $response["error"] = 'All fields are required.';
+    $first_aid_general = trim($_POST['first_aid_general']);
+    $first_aid_inhalation = trim($_POST['first_aid_inhalation']);
+    $first_aid_skin = trim($_POST['first_aid_skin']);
+    $first_aid_eye = trim($_POST['first_aid_eye']);
+    $first_aid_ingestion = trim($_POST['first_aid_ingestion']);
+    $first_aid_self_protection = trim($_POST['first_aid_self_protection']);
+    $first_aid_symptoms = trim($_POST['first_aid_symptoms']);
+    $first_aid_dr_notes = trim($_POST['first_aid_dr_notes']);
+
+    // Validate required fields
+    $missingFields = [];
+    if (empty($ingID)) $missingFields[] = "Ingredient ID";
+    if (empty($first_aid_general)) $missingFields[] = "First Aid (General)";
+    if (empty($first_aid_inhalation)) $missingFields[] = "First Aid (Inhalation)";
+    if (empty($first_aid_skin)) $missingFields[] = "First Aid (Skin)";
+    if (empty($first_aid_eye)) $missingFields[] = "First Aid (Eye)";
+    if (empty($first_aid_ingestion)) $missingFields[] = "First Aid (Ingestion)";
+    if (empty($first_aid_self_protection)) $missingFields[] = "First Aid (Self-Protection)";
+    if (empty($first_aid_symptoms)) $missingFields[] = "First Aid (Symptoms)";
+    if (empty($first_aid_dr_notes)) $missingFields[] = "First Aid (Doctor Notes)";
+
+    if (!empty($missingFields)) {
+        $response["error"] = "The following fields are required: " . implode(", ", $missingFields);
         echo json_encode($response);
         return;
     }
-	
-    // Prepare the SQL statement
-    $stmt = $conn->prepare(
-        "INSERT INTO ingredient_safety_data (
-            ingID, first_aid_general, first_aid_inhalation, first_aid_skin, first_aid_eye, 
-            first_aid_ingestion, first_aid_self_protection, first_aid_symptoms, first_aid_dr_notes
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ON DUPLICATE KEY UPDATE 
-            first_aid_general = VALUES(first_aid_general),
-            first_aid_inhalation = VALUES(first_aid_inhalation),
-            first_aid_skin = VALUES(first_aid_skin),
-            first_aid_eye = VALUES(first_aid_eye),
-            first_aid_ingestion = VALUES(first_aid_ingestion),
-            first_aid_self_protection = VALUES(first_aid_self_protection),
-            first_aid_symptoms = VALUES(first_aid_symptoms),
-            first_aid_dr_notes = VALUES(first_aid_dr_notes)"
+
+    // Check if the record exists for this `ingID` and `owner_id`
+    $checkStmt = $conn->prepare(
+        "SELECT COUNT(*) FROM ingredient_safety_data WHERE ingID = ? AND owner_id = ?"
     );
-    
-    // Bind the parameters
-    $stmt->bind_param(
-        'issssssss', $ingID, $first_aid_general, $first_aid_inhalation, $first_aid_skin, $first_aid_eye, 
-        $first_aid_ingestion, $first_aid_self_protection, $first_aid_symptoms, $first_aid_dr_notes
-    );
-    
+    $checkStmt->bind_param('ii', $ingID, $userID);
+    $checkStmt->execute();
+    $checkStmt->bind_result($count);
+    $checkStmt->fetch();
+    $checkStmt->close();
+
+    if ($count > 0) {
+        // Update existing record
+        $stmt = $conn->prepare(
+            "UPDATE ingredient_safety_data
+            SET 
+                first_aid_general = ?, 
+                first_aid_inhalation = ?, 
+                first_aid_skin = ?, 
+                first_aid_eye = ?, 
+                first_aid_ingestion = ?, 
+                first_aid_self_protection = ?, 
+                first_aid_symptoms = ?, 
+                first_aid_dr_notes = ?
+            WHERE ingID = ? AND owner_id = ?"
+        );
+
+        $stmt->bind_param(
+            'ssssssssii',
+            $first_aid_general,
+            $first_aid_inhalation,
+            $first_aid_skin,
+            $first_aid_eye,
+            $first_aid_ingestion,
+            $first_aid_self_protection,
+            $first_aid_symptoms,
+            $first_aid_dr_notes,
+            $ingID,
+            $userID
+        );
+    } else {
+        // Insert a new record
+        $stmt = $conn->prepare(
+            "INSERT INTO ingredient_safety_data (
+                ingID, first_aid_general, first_aid_inhalation, first_aid_skin, 
+                first_aid_eye, first_aid_ingestion, first_aid_self_protection, 
+                first_aid_symptoms, first_aid_dr_notes, owner_id
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        );
+
+        $stmt->bind_param(
+            'issssssssi',
+            $ingID,
+            $first_aid_general,
+            $first_aid_inhalation,
+            $first_aid_skin,
+            $first_aid_eye,
+            $first_aid_ingestion,
+            $first_aid_self_protection,
+            $first_aid_symptoms,
+            $first_aid_dr_notes,
+            $userID
+        );
+    }
+
     // Execute the statement
     if ($stmt->execute()) {
-        $response["success"] = 'First aid data has been updated!';
+        $response["success"] = 'First aid data has been successfully saved.';
     } else {
-        $response["error"] = 'Something went wrong ' . $stmt->error;
+        $errorMessage = "Failed to execute SQL: " . $stmt->error;
+        error_log("PV error: $errorMessage");
+        $response["error"] = 'Something went wrong. Please check the logs.';
     }
-    
+
     // Close the statement
     $stmt->close();
-    
+
     echo json_encode($response);
     return;
 }
+
 
 //FIREFIGHTING
 if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'fire_info') {

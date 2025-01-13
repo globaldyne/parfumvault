@@ -872,6 +872,7 @@ CREATE TABLE `sds_data` (
 ) ENGINE = InnoDB CHARSET=utf8 COLLATE utf8_general_ci; 
 
 CREATE TABLE `ingredient_safety_data` (
+	`id` INT NOT NULL AUTO_INCREMENT,
   `ingID` int(11) NOT NULL,
   `first_aid_general` longtext DEFAULT NULL,
   `first_aid_inhalation` longtext DEFAULT NULL,
@@ -977,6 +978,7 @@ CREATE TABLE `ingredient_safety_data` (
   `add_info_training` mediumtext DEFAULT NULL,
   `add_info_other` mediumtext DEFAULT NULL,
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `owner_id` INT NOT NULL DEFAULT '1',
-  PRIMARY KEY (`ingID`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
