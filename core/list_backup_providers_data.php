@@ -3,6 +3,7 @@ define('__ROOT__', dirname(dirname(__FILE__)));
 
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/inc/settings.php');
 
 
 $row = $_POST['start']?:0;
@@ -17,7 +18,9 @@ $s = trim($_POST['search']['value']);
 $t = "backup_provider";
 
 if($s != ''){
-   $f = "WHERE 1 AND (provider LIKE '%".$s."%')";
+   $f = " WHERE 1 AND (provider LIKE '%".$s."%') AND owner_id = '$userID'";
+} else {
+	$f = " WHERE owner_id = '$userID'";
 }
 $q = mysqli_query($conn, "SELECT * FROM $t $f $extra LIMIT $row, $limit");
 while($res = mysqli_fetch_array($q)){
@@ -37,7 +40,7 @@ foreach ($rs as $rq) {
 
 
 
-$total = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM $t"));
+$total = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM $t  AND owner_id = '$userID'"));
 $filtered = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM $t ".$f));
 
 $response = array(

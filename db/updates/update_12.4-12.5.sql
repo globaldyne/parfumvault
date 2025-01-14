@@ -56,9 +56,15 @@ UPDATE `suppliers` SET `owner_id` = '1';
 UPDATE `synonyms` SET `owner_id` = '1'; 
 UPDATE `templates` SET `owner_id` = '1'; 
 
+ALTER TABLE `ingredient_safety_data` CHANGE `owner_id` `owner_id` INT(11) NOT NULL; 
+ALTER TABLE `ingredients` DROP INDEX `name`;
+ALTER TABLE `ingSuppliers` DROP INDEX `name`;
+ALTER TABLE `ingSuppliers` CHANGE `notes` `notes` TEXT NULL; 
+
 ALTER TABLE `ingredient_safety_data` DROP PRIMARY KEY;
 ALTER TABLE `ingredient_safety_data` ADD `id` INT NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`id`); 
 ALTER TABLE `ingredient_safety_data` ADD `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `created_at`; 
+
 
 ALTER TABLE `bottles` CHANGE `ml` `ml` DOUBLE NOT NULL; 
 ALTER TABLE `bottles` CHANGE `height` `height` DOUBLE NULL DEFAULT 0; 

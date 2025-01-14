@@ -639,6 +639,7 @@ $(document).ready(function() {
 							if ( data.success ) {
 								$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
 								$('.toast-header').removeClass().addClass('toast-header alert-success');
+								$('#tdDataIng').DataTable().ajax.reload(null, false);
 							} else {
 								$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
 								$('.toast-header').removeClass().addClass('toast-header alert-danger');

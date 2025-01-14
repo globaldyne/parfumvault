@@ -15,6 +15,10 @@
 - Fixed redirection when adding ingredient if already exists with the same name
 - Update ingredient duplication function
 - Change default primary key for safety data
+- Change policy when importing ingredients from json, any ingredients matching name will be ignored
+- Reload ingredient data after a succesfull import
+- Removed collation from db fields
+- Only admins can take/restore backups
 
 ### Version 12.4
 - Add dilutant in API formulas

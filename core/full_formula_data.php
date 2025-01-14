@@ -16,10 +16,6 @@ require_once(__ROOT__.'/func/getIngSupplier.php');
 require_once(__ROOT__.'/func/getCatByID.php');
 require_once(__ROOT__.'/func/validateFormula.php');
 
-// Get user role and ID
-$role = (int)$user['role'];
-$userID = (int)$user['id'];
-
 
 if(!$_REQUEST['id']){		
 	$response['data'] = [];  
@@ -30,10 +26,7 @@ if(!$_REQUEST['id']){
 }
 $id = mysqli_real_escape_string($conn, $_REQUEST['id']);
 
-// Define SQL queries based on user role
-$query = $role === 1
-    ? "SELECT name,fid,catClass,finalType,defView,isProtected,notes,product_name,owner_id FROM formulasMetaData WHERE id = '$id'"
-    : "SELECT name,fid,catClass,finalType,defView,isProtected,notes,product_name,owner_id FROM formulasMetaData WHERE owner_id = '$userID' AND id = '$id'";
+$query = "SELECT name,fid,catClass,finalType,defView,isProtected,notes,product_name,owner_id FROM formulasMetaData WHERE owner_id = '$userID' AND id = '$id'";
 
 $meta = mysqli_fetch_array(mysqli_query($conn, $query));
 
@@ -60,7 +53,7 @@ if(!$meta['fid']){
 
 if($_POST['solvents_only'] === 'true'){
 	
-	$q = mysqli_query($conn,"SELECT formulas.ingredient,formulas.ingredient_id,formulas.quantity,ingredients.profile FROM formulas,ingredients WHERE fid = '".$meta['fid']."' AND ingredients.id = formulas.ingredient_id AND ingredients.profile='solvent'");
+	$q = mysqli_query($conn,"SELECT formulas.ingredient,formulas.ingredient_id,formulas.quantity,ingredients.profile FROM formulas,ingredients WHERE fid = '".$meta['fid']."' AND ingredients.id = formulas.ingredient_id AND ingredients.profile='solvent' AND owner_id = '$userID'");
 	while($res = mysqli_fetch_array($q)){
     	$solvents[] = $res;
 	}
@@ -124,7 +117,7 @@ if(isset($_GET['stats_only'])){
 
 $defCatClass = $meta['catClass'] ?: $settings['defCatClass'];
 
-$formula_q = mysqli_query($conn, "SELECT id,ingredient,concentration,quantity,dilutant,notes,exclude_from_calculation FROM formulas WHERE fid = '".$meta['fid']."' $q ORDER BY ingredient ASC");
+$formula_q = mysqli_query($conn, "SELECT id,ingredient,concentration,quantity,dilutant,notes,exclude_from_calculation FROM formulas WHERE fid = '".$meta['fid']."' $q  AND owner_id = '$userID' ORDER BY ingredient ASC");
 while ($formula = mysqli_fetch_array($formula_q)){
 	    $form[] = $formula;
 		if ( $formula['exclude_from_calculation'] != 1 ){
@@ -134,14 +127,14 @@ while ($formula = mysqli_fetch_array($formula_q)){
 
 foreach ($form as $formula){
 	
-	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT id, name, cas, $defCatClass, profile, odor, category, physical_state,usage_type AS classification, type, byPassIFRA FROM ingredients WHERE name = '".$formula['ingredient']."'"));
-	$totalcontainsOthers = mysqli_num_rows(mysqli_query($conn, "SELECT name,$defPercentage,cas FROM ingredient_compounds WHERE ing = '".$formula['ingredient']."'"));
-	$inventory = mysqli_fetch_array(mysqli_query($conn, "SELECT stock,mUnit,batch,purchased FROM suppliers WHERE ingID = '".$ing_q['id']."' AND preferred = '1'"));
+	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT id, name, cas, $defCatClass, profile, odor, category, physical_state,usage_type AS classification, type, byPassIFRA FROM ingredients WHERE name = '".$formula['ingredient']."' AND owner_id = '$userID'"));
+	$totalcontainsOthers = mysqli_num_rows(mysqli_query($conn, "SELECT name,$defPercentage,cas FROM ingredient_compounds WHERE ing = '".$formula['ingredient']."' AND owner_id = '$userID'"));
+	$inventory = mysqli_fetch_array(mysqli_query($conn, "SELECT stock,mUnit,batch,purchased FROM suppliers WHERE ingID = '".$ing_q['id']."' AND preferred = '1' AND owner_id = '$userID'"));
 	$conc = $formula['concentration'] / 100 * $formula['quantity']/$mg['total_mg'] * 100;
   	$conc_final = $formula['concentration'] / 100 * $formula['quantity']/$mg['total_mg'] * $meta['finalType'];
 	
 	if($settings['multi_dim_perc'] == '1'){
-		$compos = mysqli_query($conn, "SELECT name,$defPercentage,cas FROM ingredient_compounds WHERE ing = '".$formula['ingredient']."'");
+		$compos = mysqli_query($conn, "SELECT name,$defPercentage,cas FROM ingredient_compounds WHERE ing = '".$formula['ingredient']."' AND owner_id = '$userID'");
 		
 		while($compo = mysqli_fetch_array($compos)){
 			$cmp[] = $compo;
@@ -163,7 +156,7 @@ foreach ($form as $formula){
 	}
 						
  	if($settings['chem_vs_brand'] == '1'){
-		$chName = mysqli_fetch_array(mysqli_query($conn,"SELECT chemical_name FROM ingredients WHERE name = '".$formula['ingredient']."'"));
+		$chName = mysqli_fetch_array(mysqli_query($conn,"SELECT chemical_name FROM ingredients WHERE name = '".$formula['ingredient']."' AND owner_id = '$userID'"));
 		$ingName = $chName['chemical_name'];
 	}
 	$r['formula_ingredient_id'] = (int)$formula['id'];  

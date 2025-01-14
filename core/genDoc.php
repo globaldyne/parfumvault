@@ -8,15 +8,6 @@ require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/inc/product.php');
 require_once(__ROOT__.'/libs/fpdf.php');
 
-// Ensure the user is authenticated
-if (!isset($userID) || $userID === '' || !is_numeric($userID)) {
-    echo json_encode(['error' => 'Unauthorized']);
-    return;
-}
-
-// Build the query filter
-$filter = ($role === 1) ? "" : "AND owner_id = ?";
-
 
 $imageData = base64_decode(explode(',', $settings['brandLogo'])[1]);
 $tempImagePath = $tmp_path.'/temp_logo.png';
@@ -37,9 +28,9 @@ if ($_REQUEST['action'] == 'generateDOC' && $_REQUEST['kind'] == 'ingredient'){
 	$ingredient_compounds_count = 0;
 	
     // Fetch ingredient details
-    $query = "SELECT * FROM ingredients WHERE id = ? $filter";
+    $query = "SELECT * FROM ingredients WHERE id = ? AND owner_id = ?";
     $stmt = $conn->prepare($query);
-    ($role === 1) ? $stmt->bind_param("i", $ingID) : $stmt->bind_param("ii", $ingID, $userID);
+    $stmt->bind_param("ii", $ingID, $userID);
     $stmt->execute();
     $res = $stmt->get_result()->fetch_assoc();
 	
@@ -93,9 +84,9 @@ if ($_REQUEST['action'] == 'generateDOC' && $_REQUEST['kind'] == 'ingredient'){
 	$tech[] = $t;
 	
     // Fetch ingredient compounds
-    $query = "SELECT * FROM ingredient_compounds WHERE ing = ? $filter";
+    $query = "SELECT * FROM ingredient_compounds WHERE ing = ? AND owner_id = ?";
     $stmt = $conn->prepare($query);
-    ($role === 1) ? $stmt->bind_param("s", $g['name']) : $stmt->bind_param("si", $g['name'], $userID);
+    $stmt->bind_param("si", $g['name'], $userID);
     $stmt->execute();
     $result = $stmt->get_result();
 
@@ -115,9 +106,9 @@ if ($_REQUEST['action'] == 'generateDOC' && $_REQUEST['kind'] == 'ingredient'){
 	}
 	
     // Fetch ingredient synonyms
-    $query = "SELECT synonym, source FROM synonyms WHERE ing = ? $filter";
+    $query = "SELECT synonym, source FROM synonyms WHERE ing = ? AND owner_id = ?";
     $stmt = $conn->prepare($query);
-    ($role === 1) ? $stmt->bind_param("s", $g['name']) : $stmt->bind_param("si", $g['name'], $userID);
+    $stmt->bind_param("si", $g['name'], $userID);
     $stmt->execute();
     $result = $stmt->get_result();
 	
@@ -133,9 +124,9 @@ if ($_REQUEST['action'] == 'generateDOC' && $_REQUEST['kind'] == 'ingredient'){
 
 
     // Fetch GHS information
-    $query = "SELECT id, ingID, GHS FROM ingSafetyInfo WHERE ingID = ? $filter";
+    $query = "SELECT id, ingID, GHS FROM ingSafetyInfo WHERE ingID = ? AND owner_id = ?";
     $stmt = $conn->prepare($query);
-    ($role === 1) ? $stmt->bind_param("i", $ingID) : $stmt->bind_param("ii", $ingID, $userID);
+    $stmt->bind_param("ii", $ingID, $userID);
     $stmt->execute();
     $result = $stmt->get_result();
 	
@@ -353,8 +344,6 @@ if ($_REQUEST['action'] == 'generateDOC' && $_REQUEST['kind'] == 'ingredient'){
 	}else{
 		$response["error"] = "Unable to generate PDF";
 	}
-
-
 
 	echo json_encode($response);
 	return;	

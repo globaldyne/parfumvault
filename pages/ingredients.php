@@ -146,7 +146,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
           	<strong>IMPORTANT</strong>
             <ul>
               <li><div id="raw" data-size="<?=getMaximumFileUploadSizeRaw()?>">Maximum file size: <strong><?=getMaximumFileUploadSize()?></strong></div></li>
-              <li>Any ingredient with the same ID will be replaced. Please make sure you have taken a backup before importing a JSON file.</li>
+              <li>Any ingredient with the same name will be ignored.</li>
             </ul>
             </div>
           </div>

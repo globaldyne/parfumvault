@@ -318,7 +318,7 @@ if($_GET['format'] == 'json' && $_GET['kind'] == 'ingredients'){
 		$s['manufacturer'] = (string)$res['manufacturer']?: 'N/A';
 		$s['preferred'] = (int)$res['preferred'] ?: 0;
 		$s['batch'] = (string)$res['batch'] ?: 'N/A';
-		$s['purchased'] = (string)$res['purchased'] ?: 'N/A';
+		$s['purchased'] = (string)$res['purchased'] ?: date('Y-m-d H:i:s');
 		$s['mUnit'] = (string)$res['mUnit'] ?: 'N/A';
 		$s['stock'] = (double)$res['stock'] ?: 0;
 		$s['status'] = (int)$res['status'] ?: 1;

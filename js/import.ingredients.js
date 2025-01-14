@@ -95,6 +95,7 @@ $('#btnRestoreIngredients').click(function() {
 					msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>' + data.success + '</div>';
 					$("#btnRestoreIngredients").hide();
 					$("#backupArea").css('display', 'none');
+					$('#tdDataIng').DataTable().ajax.reload(null, false);
 				}
 				
 				if (data.warning) {
@@ -113,6 +114,8 @@ $('#btnRestoreIngredients').click(function() {
 				$('#JSRestMsg').html(msg);
 			},
 			error: function (xhr, status, error) {
+				$("#btnRestoreIngredients").prop("disabled", false);
+				$('#btnRestoreIngredients').prop('value', 'Import');
 				msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>';
 				$('#JSRestMsg').html(msg);
 			}

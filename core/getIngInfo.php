@@ -16,7 +16,7 @@ if (isset($_GET['id']) && isset($_GET['filter'])) {
             continue;
         }
 
-        $query = "SELECT $filter FROM ingredients WHERE id = '$id'";
+        $query = "SELECT $filter FROM ingredients WHERE id = '$id' AND owner_id = '$userID'";
         $info = mysqli_fetch_array(mysqli_query($conn, $query));
 
         if ($info && isset($info[$filter])) {
