@@ -19,6 +19,16 @@
 - Reload ingredient data after a succesfull import
 - Removed collation from db fields
 - Only admins can take/restore backups
+- Fixed wording when no batches found
+- Fixed formula attachements created date display
+- Uknown defaults replaced with '-' instead of 'N/A'
+- Improve count cart function
+- Deprecating old db update scripts
+- Google backups section is only available to admin users
+- Added better error logging for datatables
+- Prevent IFRA document creation if formula isn't compatible with the IFRA library standards
+- Remove id field from json exports
+- Refactor JSON exports
 
 ### Version 12.4
 - Add dilutant in API formulas

@@ -3,8 +3,9 @@ define('__ROOT__', dirname(dirname(__FILE__)));
 
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/inc/settings.php');
 
-$cat_q = mysqli_query($conn, "SELECT id, name, cname, type, colorKey FROM formulaCategories");
+$cat_q = mysqli_query($conn, "SELECT id, name, cname, type, colorKey FROM formulaCategories WHERE owner_id = '$userID'");
 
 $response = ['data' => []];
 

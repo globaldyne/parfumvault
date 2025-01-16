@@ -32,6 +32,8 @@ require_once(__ROOT__.'/inc/sec.php');
 
 <script>
 $(document).ready(function() {
+	$.fn.dataTable.ext.errMode = 'none';
+
 	var fid = '<?=$_GET["fid"]?>';
 	var tdAnalysis = $('#tdAnalysis').DataTable( {
 		columnDefs: [
@@ -102,6 +104,9 @@ $(document).ready(function() {
 		lengthMenu: [[150, 250, 350, -1], [150, 250, 350, "All"]],
 		pageLength: 150,
 		displayLength: 150
+	}).on('error.dt', function(e, settings, techNote, message) {
+		var m = message.split(' - ');
+		$('#tdAnalysis').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i><strong>' + m[1] + '</strong></div>');
 	});
 
 

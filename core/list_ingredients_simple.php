@@ -25,10 +25,10 @@ if ($_POST['isDeepQ'] == "true"){
 	
 }else{
 	$t = "ingredients";	
-	$filter = "WHERE name LIKE '%$s%' OR cas LIKE '%$s%' OR INCI LIKE '%$s%'";
+	$filter = " WHERE (name LIKE '%$s%' OR cas LIKE '%$s%' OR INCI LIKE '%$s%') ";
 }
 
-$q = mysqli_query($conn, "SELECT ingredients.id,name,INCI,cas,einecs,type,odor,physical_state,profile FROM $t $filter ORDER BY name ASC");
+$q = mysqli_query($conn, "SELECT ingredients.id,name,INCI,cas,einecs,type,odor,physical_state,profile FROM $t $filter AND owner_id = '$userID' ORDER BY name ASC");
 while($res = mysqli_fetch_array($q)){
     $ingredients[] = $res;
 }
@@ -40,11 +40,11 @@ foreach ($ingredients as $ingredient) {
 		
 		$r['id'] = (int)$ingredient['id'];
 		$r['name'] = (string)$ingredient['name'];
-		$r['IUPAC'] = (string)$ingredient['INCI']?: 'N/A';
-		$r['cas'] = (string)$ingredient['cas']?: 'N/A';
-		$r['einecs'] = (string)$ingredient['einecs']?: 'N/A';
+		$r['IUPAC'] = (string)$ingredient['INCI']?: '-';
+		$r['cas'] = (string)$ingredient['cas']?: '-';
+		$r['einecs'] = (string)$ingredient['einecs']?: '-';
 		$r['type'] = (string)$ingredient['type'] ?: 'Unknown';
-		$r['description'] = (string)$ingredient['odor'] ?: 'N/A';
+		$r['description'] = (string)$ingredient['odor'] ?: '-';
 		$r['physical_state'] = (int)$ingredient['physical_state'] ?: 1;
 		$r['profile'] = (string)$ingredient['profile'] ?: 'Uknwown';
 		$r['stock'] = (float)number_format($supp['stock'], $settings['qStep']) ?: 0;
@@ -55,9 +55,6 @@ foreach ($ingredients as $ingredient) {
 	}
 }
 
-$response = array(
-  "data" => $rx
-);
 
 $response = array(
   "recordsTotal" => (int)$i,

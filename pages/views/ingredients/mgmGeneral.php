@@ -8,10 +8,10 @@ require_once(__ROOT__.'/func/profileImg.php');
 
 
 $ingID = $_GET["id"];
-$res_ingTypes = mysqli_query($conn, "SELECT id,name FROM ingTypes ORDER BY name ASC");
-$res_ingStrength = mysqli_query($conn, "SELECT id,name FROM ingStrength ORDER BY name ASC");
+$res_ingTypes = mysqli_query($conn, "SELECT id,name FROM ingTypes ORDER BY name ASC"); //PUBLIC
+$res_ingStrength = mysqli_query($conn, "SELECT id,name FROM ingStrength ORDER BY name ASC"); //PUBLIC
 $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCategory WHERE owner_id = '$userID' ORDER BY name ASC");
-$res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles ORDER BY id ASC");
+$res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles ORDER BY id ASC"); //PUBLIC
 $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE id = '$ingID' AND owner_id = '$userID'"));
 
 if($_GET["newIngName"]){
@@ -70,7 +70,7 @@ if($_GET["newIngName"]){
         <option value="" selected disabled>Solvent</option>
         <option value="None">None</option>
         <?php
-        $res_dil = mysqli_query($conn, "SELECT id, name FROM ingredients WHERE type = 'Solvent' OR type = 'Carrier' ORDER BY name ASC");
+        $res_dil = mysqli_query($conn, "SELECT id, name FROM ingredients WHERE (type = 'Solvent' OR type = 'Carrier') AND owner_id = '$userID' ORDER BY name ASC");
         while ($r_dil = mysqli_fetch_array($res_dil)){
             $selected=($ing['solvent'] == $r_dil['name'])? "selected" : "";
             echo '<option '.$selected.' value="'.$r_dil['name'].'">'.$r_dil['name'].'</option>';

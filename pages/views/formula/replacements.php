@@ -24,6 +24,7 @@ $fid = mysqli_real_escape_string($conn, $_POST["fid"]);
 
 <script>
 $(document).ready(function() {
+	$.fn.dataTable.ext.errMode = 'none';
 
 	var tdReplacements = $('#tdReplacements').DataTable( {
 		columnDefs: [
@@ -57,10 +58,13 @@ $(document).ready(function() {
 		drawCallback: function ( settings ) {
 			extrasShow();
 		},
-			order: [[ 0, 'asc' ]],
-			lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
-			pageLength: 20,
-			displayLength: 20
+		order: [[ 0, 'asc' ]],
+		lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
+		pageLength: 20,
+		displayLength: 20
+	}).on('error.dt', function(e, settings, techNote, message) {
+		var m = message.split(' - ');
+		$('#tdReplacements').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i><strong>' + m[1] + '</strong></div>');
 	});
 
 

@@ -3,7 +3,7 @@
 require_once(__ROOT__.'/pages/top.php'); 
 require_once(__ROOT__.'/func/php-settings.php');
 
-$sup = mysqli_query($conn, "SELECT id,name FROM ingSuppliers ORDER BY name ASC");
+$sup = mysqli_query($conn, "SELECT id,name FROM ingSuppliers WHERE owner_id = '$userID' ORDER BY name ASC");
 while ($suppliers = mysqli_fetch_array($sup)){
 	    $supplier[] = $suppliers;
 }

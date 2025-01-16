@@ -134,7 +134,7 @@ $(document).ready(function() {
 			}
 		},
 		error: function (xhr, status, error) {
-			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An error occurred, check server logs for more info. '+ error);
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
 			$('.toast-header').removeClass().addClass('toast-header alert-danger');
 			$('.toast').toast('show');
 		},
@@ -165,7 +165,7 @@ $(document).ready(function() {
 			}
 		},
 		error: function (xhr, status, error) {
-			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An error occurred, check server logs for more info. '+ error);
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
 			$('.toast-header').removeClass().addClass('toast-header alert-danger');
 			$('.toast').toast('show');
 		},		
@@ -203,7 +203,7 @@ $(document).ready(function() {
 							reload_data();
 						},
 						error: function (xhr, status, error) {
-							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An error occurred, check server logs for more info. '+ error);
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
 							$('.toast-header').removeClass().addClass('toast-header alert-danger');
 							$('.toast').toast('show');
 						},
@@ -244,7 +244,7 @@ $(document).ready(function() {
 				$('#tmpl_inf').html(msg);
 			},
 			error: function (xhr, status, error) {
-				$('#tmpl_inf').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An error occurred, check server logs for more info. '+ error +'</div>');
+				$('#tmpl_inf').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error +'</div>');
 			}
 		  });
 	});

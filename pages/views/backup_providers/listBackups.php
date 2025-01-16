@@ -21,6 +21,8 @@
 <script>
 $(document).ready(function() {
 	var SERV_AVAIL;
+	$('#srv_avail').html('<div class="spinner-grow mx-2"></div>Please Wait...');
+	$.fn.dataTable.ext.errMode = 'none';
 
 	$.ajax({
 		url: "/pages/views/backup_providers/manage.php?action=version",
@@ -65,6 +67,9 @@ $(document).ready(function() {
 			lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
 			pageLength: 20,
 			displayLength: 20,
+		}).on('error.dt', function(e, settings, techNote, message) {
+		var m = message.split(' - ');
+			$('#backupTable').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i><strong>' + m[1] + '</strong></div>');
 		});
 	}
 

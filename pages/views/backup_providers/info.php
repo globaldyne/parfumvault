@@ -18,7 +18,7 @@
 
 <script>
 $(document).ready(function() {
-
+	$('#srv_info').html('<div class="spinner-grow mx-2"></div>Please Wait...');
 	$.ajax({
 		url: "/pages/views/backup_providers/manage.php?action=version",
 		type: "GET",

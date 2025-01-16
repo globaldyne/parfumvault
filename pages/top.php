@@ -1,6 +1,6 @@
 <?php
 if (!defined('pvault_panel')){ die('Not Found');}
-$doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM documents WHERE ownerID = '".$_SESSION['userID']."' AND name = 'avatar' AND type = '3'"));
+$doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM documents WHERE ownerID = '".$userID."' AND name = 'avatar' AND type = '3' AND owner_id = '$userID'"));
 
 $db_ver = trim(file_get_contents(__ROOT__.'/db/schema.ver'));
 if($pv_meta['schema_ver'] < $db_ver){
@@ -22,10 +22,10 @@ if($pv_meta['schema_ver'] < $db_ver){
               </a>
               <!-- Dropdown - cart -->
               <div class="dropdown-list dropdown-menu dropdown-menu-end shadow animated--grow-in" aria-labelledby="messagesDropdown">
-                <?php if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM cart GROUP BY name"))){ ?>
+                <?php if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM cart WHERE owner_id = '$userID' GROUP BY name"))){ ?>
 				<a href="/?do=cart" class="dropdown-header">To be ordered</a>
 				<?php
-					$qC = mysqli_query($conn, "SELECT name,ingID FROM cart ORDER BY name ASC LIMIT 5");
+					$qC = mysqli_query($conn, "SELECT name,ingID FROM cart WHERE owner_id = '$userID' ORDER BY name ASC LIMIT 5");
 					while ($pC = mysqli_fetch_array($qC)){
 						$supDetails = getPrefSupplier($pC['ingID'],$conn);
 				?>

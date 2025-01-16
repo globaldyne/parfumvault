@@ -3,7 +3,7 @@ if (!defined('pvault_panel')){ die('Not Found');}
 define('__ROOT__', dirname(dirname(__FILE__))); 
 
 function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $defCatClass, $qStep, $defPercentage, $formulaTable = 'formulas'){
-	global $conn;
+    global $userID, $conn;
 	
 	class PDF extends FPDF {
 		function Header() {
@@ -116,19 +116,19 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $defCatClass, $qSt
 }		
 
 	$display_heading = array('name'=> 'Product', 'ingredient'=> 'Ingredient','concentration'=> 'Concentration',);	
-	$formula_q = mysqli_query($conn, "SELECT * FROM formulas WHERE fid = '$fid' ORDER BY ingredient ASC");
+	$formula_q = mysqli_query($conn, "SELECT * FROM formulas WHERE fid = '$fid' AND owner_id = '$userID' ORDER BY ingredient ASC");
 	
 	$header = array('Ingredient', 'CAS#', 'Purity %', 'Dilutant', 'Quantity', 'Concentration %');
 	$hd_blends = array('Ingredient', 'Contains','CAS#', 'Concentration %');
 	$hd_extras = array('Ingredient', 'Notes');
 	$hd_replacements = array('Ingredient', 'Replacement');
 
-	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE fid = '$fid'"));
+	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE fid = '$fid' AND owner_id = '$userID'"));
 	
-	$fq = mysqli_query($conn, "SELECT ingredient FROM $formulaTable WHERE fid = '$fid'");
+	$fq = mysqli_query($conn, "SELECT ingredient FROM $formulaTable WHERE fid = '$fid' AND owner_id = '$userID'");
 	while($ing = mysqli_fetch_array($fq)){
-		$getIngAlergen = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '".$ing['ingredient']."' AND allergen = '1'"));
-		$qAll = mysqli_query($conn, "SELECT name FROM ingredient_compounds WHERE ing = '".$ing['ingredient']."'");
+		$getIngAlergen = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '".$ing['ingredient']."' AND allergen = '1' AND owner_id = '$userID'"));
+		$qAll = mysqli_query($conn, "SELECT name FROM ingredient_compounds WHERE ing = '".$ing['ingredient']."' AND owner_id = '$userID'");
 		
 		while($getAllergen = mysqli_fetch_array($qAll)){
 			$allergen[] = $getAllergen['name'];
@@ -170,7 +170,7 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $defCatClass, $qSt
 		$pdf->Ln();
 		$pdf->SetFont('Arial','',9);
 					  
-		$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT $defCatClass,profile,cas FROM ingredients WHERE name = '".$formula['ingredient']."'"));
+		$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT $defCatClass,profile,cas FROM ingredients WHERE name = '".$formula['ingredient']."' AND owner_id = '$userID'"));
 		$new_quantity = $formula['quantity']/$mg*$new_conc;
 		$conc = $new_quantity/$bottle * 100;
 		$conc_p = number_format($formula['concentration'] / 100 * $conc, $qStep);
@@ -210,14 +210,14 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $defCatClass, $qSt
 		$pdf->Cell(68,12,$heading,1,0,'C');
 	}
 	if($formulaTable == "makeFormula"){
-		$qAllIng = mysqli_query($conn, "SELECT ingredient,quantity,concentration,notes,replacement_id FROM makeFormula WHERE fid = '$fid'");
+		$qAllIng = mysqli_query($conn, "SELECT ingredient,quantity,concentration,notes,replacement_id FROM makeFormula WHERE fid = '$fid' AND owner_id = '$userID'");
 	} else {
-		$qAllIng = mysqli_query($conn, "SELECT ingredient,quantity,concentration FROM $formulaTable WHERE fid = '$fid'");
+		$qAllIng = mysqli_query($conn, "SELECT ingredient,quantity,concentration FROM $formulaTable WHERE fid = '$fid' AND owner_id = '$userID'");
 
 	}
 	while ($res_all_ing = mysqli_fetch_array($qAllIng)) {
 		
-		if($bldQ = mysqli_query($conn, "SELECT ing,name,cas,$defPercentage FROM ingredient_compounds WHERE ing = '".$res_all_ing['ingredient']."'")){
+		if($bldQ = mysqli_query($conn, "SELECT ing,name,cas,$defPercentage FROM ingredient_compounds WHERE ing = '".$res_all_ing['ingredient']."' AND owner_id = '$userID'")){
 			while($bld = mysqli_fetch_array($bldQ)){
 				$pdf->Ln();
 				$pdf->SetFont('Arial','',8);
@@ -242,9 +242,9 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $defCatClass, $qSt
 		$pdf->Cell(140,12,$heading,1,0,'C');
 	}
 	if($formulaTable == "makeFormula"){
-		$qExtras = mysqli_query($conn, "SELECT DISTINCT A.ingredient, B.notes FROM formulas A JOIN makeFormula B ON A.ingredient = B.ingredient WHERE A.fid = '$fid' ORDER BY ingredient ASC");
+		$qExtras = mysqli_query($conn, "SELECT DISTINCT A.ingredient, B.notes FROM formulas A JOIN makeFormula B ON A.ingredient = B.ingredient WHERE A.fid = '$fid' AND A.owner_id = '$userID' ORDER BY ingredient ASC");
 	} else {
-		$qExtras = mysqli_query($conn, "SELECT ingredient,notes FROM formulas WHERE fid = '$fid'");
+		$qExtras = mysqli_query($conn, "SELECT ingredient,notes FROM formulas WHERE fid = '$fid' AND owner_id = '$userID'");
 
 	}
 	while ($res_extras = mysqli_fetch_array($qExtras)) {
@@ -265,10 +265,10 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $defCatClass, $qSt
 			$pdf->Cell(140,12,$heading,1,0,'C');
 		}
 		
-			$qRepl = mysqli_query($conn, "SELECT DISTINCT A.ingredient, B.replacement_id FROM formulas A JOIN makeFormula B ON A.ingredient = B.ingredient WHERE A.fid = '$fid' ORDER BY ingredient ASC");
+			$qRepl = mysqli_query($conn, "SELECT DISTINCT A.ingredient, B.replacement_id FROM formulas A JOIN makeFormula B ON A.ingredient = B.ingredient WHERE A.fid = '$fid' AND A.owner_id = '$userID' ORDER BY ingredient ASC");
 		
 		while ($res_repl = mysqli_fetch_array($qRepl)) {
-			$repInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE id = '".$res_repl['replacement_id']."'"));
+			$repInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE id = '".$res_repl['replacement_id']."' AND owner_id = '$userID' "));
 	
 			$pdf->Ln();
 			$pdf->SetFont('Arial','',8);
@@ -285,16 +285,16 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $defCatClass, $qSt
 	$docData = 'data:application/pdf;base64,' .$pdf;
 	try {
         if($formulaTable == "makeFormula"){
-            $query = "INSERT INTO documents (ownerID,type,name,notes,docData,isBatch) 
-                      VALUES (".$meta['id'].",'5','$batchID','Auto generated by Formula Make','$docData','1')";
+            $query = "INSERT INTO documents (ownerID,type,name,notes,docData,isBatch,owner_id) 
+                      VALUES (".$meta['id'].",'5','$batchID','Auto generated by Formula Make','$docData','1','$userID')";
 
             if(!mysqli_query($conn, $query)){
                 throw new Exception(mysqli_error($conn));
             }
 
         } else {
-            $query = "INSERT INTO batchIDHistory (id,fid,pdf,product_name) 
-                      VALUES ('$batchID','$fid','$pdf','".$meta['product_name']."')";
+            $query = "INSERT INTO batchIDHistory (id,fid,pdf,product_name,owner_id) 
+                      VALUES ('$batchID','$fid','$pdf','".$meta['product_name']."','$userID')";
 
             if(!mysqli_query($conn, $query)){
                 throw new Exception(mysqli_error($conn));

@@ -1,7 +1,14 @@
 <?php
 define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__))))); 
+require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/func/php-settings.php');
+require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/inc/settings.php');
 
+if ($role !== 1){
+  echo json_encode(['success' => false, 'error' => 'Not authorised']);
+  return;
+}
 $ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
 
 ?>
@@ -114,87 +121,86 @@ $ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
  </div>
 </div>
 <script>
-$('#btnClear').click(function() {
-	$("#btnClear").prop("disabled", true);			
+$(document).ready(function () {
 
-	$.ajax({
-		url: '/core/core.php',
-		data: {
-			do: 'userPerfClear',
-		},
-		cache: false,
-		
-		success: function (data) {
-			$("#btnClear").prop("disabled", false);	
-			$('#clear_user_pref').modal('hide');
-		},
-		error: function (request, status, error) {
-			$("#btnClear").prop("disabled", false);
-			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
-			$('.toast-header').removeClass().addClass('toast-header alert-danger');
-			$('.toast').toast('show');
-		},
-			
-	});
+  $('#btnClear').click(function() {
+    $("#btnClear").prop("disabled", true);
+    $.ajax({
+      url: '/core/core.php',
+      data: {
+        do: 'userPerfClear',
+      },
+      cache: false,
+      success: function (data) {
+        $("#btnClear").prop("disabled", false);	
+        $('#clear_user_pref').modal('hide');
+      },
+      error: function (request, status, error) {
+        $("#btnClear").prop("disabled", false);
+        $('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+        $('.toast-header').removeClass().addClass('toast-header alert-danger');
+        $('.toast').toast('show');
+      }, 
+    });
+  });
 
-});
+  $(function () {
+    $('[data-bs-toggle="tooltip"]').tooltip();
+  });
 
-$(function () {
-  $('[data-bs-toggle="tooltip"]').tooltip();
-});
+  $('#bk_modal_open').click(function() {
+    $('#restore_db').modal('hide');
+  });
 
-$('#bk_modal_open').click(function() {
-	$('#restore_db').modal('hide');
-});
-
-$('#btnBackup').click(function() {
-	$('#DBMsg').html('');
-	$("#btnBackup").prop("disabled", true);
-	$("#btnCloseBK").prop("disabled", true);
- 	$('#btnBackup').prepend('<span class="spinner-border spinner-border-sm mx-2" id="bk_span" aria-hidden="true"></span>');
-	$.ajax({
-		url: '/core/core.php',
-		data: {
-			do: 'backupDB',
-			column_statistics: $('#column-statistics').prop("checked")
-		},
-		cache: false,
-		xhr: function () {
-			var xhr = new XMLHttpRequest();
-			xhr.onreadystatechange = function () {
-				if (xhr.readyState == 2) {
-					if (xhr.status == 200) {
-						xhr.responseType = "blob";
-					} else {
-						xhr.responseType = "text";
-					}
-				}
-			};
-			return xhr;
-		},
-		success: function (data) {
-			$('span[id^="bk_span"]').remove();
-			$("#btnBackup").prop("disabled", false);
-			$("#btnCloseBK").prop("disabled", false);
-			var blob = new Blob([data], { type: "application/octetstream" });
-			
-			var url = window.URL || window.webkitURL;
-			link = url.createObjectURL(blob);
-			var a = $("<a />");
-			a.attr("download", 'backup_<?=$ver?>_<?=date("d-m-Y")?>.sql.gz');
-			a.attr("href", link);
-			$("body").append(a);
-			a[0].click();
-			$("body").remove(a);
-		},
-		error: function (request, status, error) {
-			$('#DBMsg').html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mr2"></i>Unable to handle request, server returned an error: '+request.status+'</div>');
-			$('span[id^="bk_span"]').remove();
-			$("#btnBackup").prop("disabled", false);
-			$("#btnCloseBK").prop("disabled", false);
-		},
-			
-	});
+  $('#btnBackup').click(function() {
+    $('#DBMsg').html('');
+    $("#btnBackup").prop("disabled", true);
+    $("#btnCloseBK").prop("disabled", true);
+    $('#btnBackup').prepend('<span class="spinner-border spinner-border-sm mx-2" id="bk_span" aria-hidden="true"></span>');
+    $.ajax({
+      url: '/core/core.php',
+      data: {
+        do: 'backupDB',
+        column_statistics: $('#column-statistics').prop("checked")
+      },
+      cache: false,
+      xhr: function () {
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState == 2) {
+            if (xhr.status == 200) {
+              xhr.responseType = "blob";
+            } else {
+              xhr.responseType = "text";
+            }
+          }
+        };
+        return xhr;
+      },
+      success: function (data) {
+        $('span[id^="bk_span"]').remove();
+        $("#btnBackup").prop("disabled", false);
+        $("#btnCloseBK").prop("disabled", false);
+        var blob = new Blob([data], { type: "application/octetstream" });
+        
+        var url = window.URL || window.webkitURL;
+        link = url.createObjectURL(blob);
+        var a = $("<a />");
+        a.attr("download", 'backup_<?=$ver?>_<?=date("d-m-Y")?>.sql.gz');
+        a.attr("href", link);
+        $("body").append(a);
+        a[0].click();
+        $("body").remove(a);
+      },
+      error: function (request, status, error) {
+        $('#DBMsg').html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>Unable to handle request, server returned an error: '+request.status+'</div>');
+        $('span[id^="bk_span"]').remove();
+        $("#btnBackup").prop("disabled", false);
+        $("#btnCloseBK").prop("disabled", false);
+      },
+        
+    });
+  });
 });
 </script>
 <script src="/js/settings.backup.js"></script>

@@ -8,13 +8,8 @@ require_once(__ROOT__.'/inc/settings.php');
 $id = $_GET['id'];
 $type = $_GET['type'];
 
-if ($role == 1) {
-    // Admin or elevated role: no filtering applied
-    $filter = "";
-} else {
-    // Regular user: apply filtering based on owner_id
-    $filter = " AND owner_id = '$userID'";
-}
+
+$filter = " AND owner_id = '$userID'";
 
 // Validate input and ensure `$id` and `$type` are sanitized
 $id = mysqli_real_escape_string($conn, $id);

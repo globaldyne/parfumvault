@@ -2,7 +2,7 @@
 	"id":"local",
 	"name":"Local DB",
 	"slug":"local",
-	"version":"1.0",
+	"version":"1.0.1",
 	"fileName":"local",
 	"icon":"fas fa-database"
 }

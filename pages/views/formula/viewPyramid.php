@@ -14,7 +14,7 @@ if(!$_GET['formula']){
 }
 $formula = mysqli_real_escape_string($conn, $_GET['formula']);
 $fid = mysqli_real_escape_string($conn, $_GET['fid']);
-if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulas WHERE fid = '$fid'")))){
+if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulas WHERE fid = '$fid' AND owner_id = '$userID'")))){
 	echo '<div class="alert alert-info">Incomplete formula.</div>';
 	return;
 }

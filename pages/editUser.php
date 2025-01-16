@@ -3,10 +3,11 @@ define('__ROOT__', dirname(dirname(__FILE__)));
 
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/inc/settings.php');
 
 
-$user = mysqli_fetch_array(mysqli_query($conn, "SELECT email,fullName FROM users")); 
-$doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM documents WHERE ownerID = '".$_SESSION['userID']."' AND name = 'avatar' AND type = '3'"));
+$user = mysqli_fetch_array(mysqli_query($conn, "SELECT email,fullName FROM users WHERE id = '$userID'")); 
+$doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM documents WHERE ownerID = '".$_SESSION['userID']."' AND name = 'avatar' AND type = '3' AND owner_id = '$userID'"));
 
 ?>
 
@@ -90,7 +91,7 @@ $(document).ready(function () {
 			error: function (xhr, status, error) {
 				$('#msgU').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 			}
-		  });
+		});
 	});
 	
 	$('#upload-avatar').click(function() {
@@ -119,7 +120,7 @@ $(document).ready(function () {
 				$('#msgU').html(msg);
 			},
 			error: function (xhr, status, error) {
-				$('#msgU').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+				$('#msgU').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 			}
 		  });
 	});

@@ -11,7 +11,7 @@ require_once(__ROOT__.'/inc/opendb.php');
 <div class="card-body">
   <div class="text-right">
     <div class="btn-group" id="menu">
-        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
+        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
         <div class="dropdown-menu">
           <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#add_ingredient_cat"><i class="fa-solid fa-plus mx-2"></i>Add ingredient category</a></li>
           <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#import_categories_json"><i class="fa-solid fa-file-import mx-2"></i>Import from JSON</a></li>
@@ -216,7 +216,7 @@ $(document).ready(function() {
 		url: "/core/core.php?action=ingredientCategories",
 		source: [
 		 <?php
-			$getCK = mysqli_query($conn, "SELECT name,rgb FROM colorKey ORDER BY name ASC");
+			$getCK = mysqli_query($conn, "SELECT name,rgb FROM colorKey ORDER BY name ASC"); //PUBLIC
 			while ($r = mysqli_fetch_array($getCK)){
 				echo '{value: "'.$r['rgb'].'", text: "'.$r['name'].'", ck: "color: rgb('.$r['rgb'].')"},';
 			}

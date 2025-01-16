@@ -4,7 +4,7 @@ define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__)))));
 
 require_once(__ROOT__.'/inc/sec.php');
 
-$id = $_POST["id"];
+$id = (int)$_POST["id"];
 
 ?>
 
@@ -35,6 +35,7 @@ $id = $_POST["id"];
 
 <script>
 $(document).ready(function() {
+	$.fn.dataTable.ext.errMode = 'none';
 
 	$('[data-bs-toggle="tooltip"]').tooltip();
 	var tdAttachments = $('#tdAttachments').DataTable( {
@@ -64,7 +65,7 @@ $(document).ready(function() {
 		  { data : 'docData', title: 'File', render: docData},
 		  { data : 'notes', title: 'Notes', render: notes},
 		  { data : 'docSize', title: 'Size', render: docSize},
-		  { data : 'created', title: 'Created', render: created},
+		  { data : 'created_at', title: 'Created', render: created},
 		  { data : null, title: '', render: actions},		   
 		],
 		
@@ -75,6 +76,9 @@ $(document).ready(function() {
 		lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
 		pageLength: 20,
 		displayLength: 20
+	}).on('error.dt', function(e, settings, techNote, message) {
+		var m = message.split(' - ');
+		$('#tdAttachments').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i><strong>' + m[1] + '</strong></div>');
 	});
 
 
@@ -96,7 +100,7 @@ $(document).ready(function() {
 	};
 	
 	function created(data, type, row){
-		return '<a href="#" class="pv_point_gen">'+row.created+'</a>';    
+		return '<a href="#" class="pv_point_gen">'+row.created_at+'</a>';    
 	};
 	
 	function actions(data, type, row){

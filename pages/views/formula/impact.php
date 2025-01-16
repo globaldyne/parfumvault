@@ -4,11 +4,13 @@ define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__)))));
 
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/inc/settings.php');
+
 require_once(__ROOT__.'/func/getIngUsage.php');
 
 $fid = mysqli_real_escape_string($conn, $_GET['id']);
 
-if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulas WHERE fid = '$fid'")) == 0){
+if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulas WHERE fid = '$fid' AND owner_id = '$userID'")) == 0){
 	echo '<div class="alert alert-info alert-dismissible">Incomplete formula.</div>';
 	return;
 }
@@ -35,16 +37,16 @@ var chart = AmCharts.makeChart( "chartImpact", {
   "theme": "none",
   "dataProvider": [ 
 <?php
-$ing = mysqli_query($conn, "SELECT ingredient AS name FROM formulas WHERE fid = '$fid' ORDER BY ingredient ASC");
+$ing = mysqli_query($conn, "SELECT ingredient AS name FROM formulas WHERE fid = '$fid' AND owner_id = '$userID' ORDER BY ingredient ASC");
 
 
 while($allIng =  mysqli_fetch_array($ing)){
 ?>
 {
     "ingredient": "<?=$allIng['name'];?>",
-    "impact_top": "<?=getNoteImpact($allIng['name'],'top',$conn)['int']; ?>",
-    "impact_heart": "<?=getNoteImpact($allIng['name'],'heart',$conn)['int']; ?>",
-    "impact_base": "<?=getNoteImpact($allIng['name'],'base',$conn)['int']; ?>",
+    "impact_top": "<?=getNoteImpact($allIng['name'],'top')['int']; ?>",
+    "impact_heart": "<?=getNoteImpact($allIng['name'],'heart')['int']; ?>",
+    "impact_base": "<?=getNoteImpact($allIng['name'],'base')['int']; ?>",
 },
 <?php } ?>				   
 

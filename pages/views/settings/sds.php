@@ -3,7 +3,6 @@ define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__)))));
 
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
-
 require_once(__ROOT__.'/inc/settings.php');
 
 ?>
@@ -21,7 +20,7 @@ require_once(__ROOT__.'/inc/settings.php');
 <script>
 $(document).ready(function() {
 
-$('#sds_set_update').click(function() {
+	$('#sds_set_update').click(function() {
 
 	$.ajax({ 
 		url: '/core/core.php', 
@@ -42,7 +41,7 @@ $('#sds_set_update').click(function() {
 			$('.toast').toast('show');
 		},
 		error: function (xhr, status, error) {
-			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An error occurred, check server logs for more info. '+ error);
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
 			$('.toast-header').removeClass().addClass('toast-header alert-danger');
 			$('.toast').toast('show');
 		}

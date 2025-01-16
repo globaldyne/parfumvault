@@ -2,10 +2,12 @@
 if (!defined('pvault_panel')){ die('Not Found');}
 
 function calcPerc($id, $profile, $percent, $conn){
-	$formula = mysqli_fetch_array(mysqli_query($conn, "SELECT fid FROM formulasMetaData WHERE id = '$id'"));
-	$formula_q = mysqli_query($conn, "SELECT ingredient FROM formulas WHERE fid = '".$formula['fid']."'");
+	global $userID;
+
+	$formula = mysqli_fetch_array(mysqli_query($conn, "SELECT fid FROM formulasMetaData WHERE id = '$id' AND owner_id = '$userID' "));
+	$formula_q = mysqli_query($conn, "SELECT ingredient FROM formulas WHERE fid = '".$formula['fid']."' AND owner_id = '$userID'");
 	while ($formula = mysqli_fetch_array($formula_q)) {
-		$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT profile FROM ingredients WHERE name = '".$formula['ingredient']."'"));
+		$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT profile FROM ingredients WHERE name = '".$formula['ingredient']."' AND owner_id = '$userID'"));
 		$prf[] = $ing_q['profile'];
 	}
 	if($prf){
@@ -36,9 +38,10 @@ function multi_dim_search($array, $key, $value) {
 
 
 function multi_dim_perc($conn, $form, $ingCas, $qStep, $defPercentage) {
+	global $userID;
+
 	foreach ($form as $formula){
-		
-		if($compos = mysqli_query($conn, "SELECT name,$defPercentage,cas FROM ingredient_compounds WHERE ing = '".$formula['ingredient']."'")){
+		if($compos = mysqli_query($conn, "SELECT name,$defPercentage,cas FROM ingredient_compounds WHERE ing = '".$formula['ingredient']."' AND owner_id = '$userID'")){
 		
 			while($compo = mysqli_fetch_array($compos)){
 				$cmp[] = $compo;

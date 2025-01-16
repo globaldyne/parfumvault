@@ -7,74 +7,69 @@ require_once(__ROOT__.'/inc/settings.php');
 
 $row = isset($_POST['start']) ? (int)$_POST['start'] : 0;
 $limit = isset($_POST['length']) ? (int)$_POST['length'] : 10;
-
 $order_by = isset($_POST['order_by']) ? $_POST['order_by'] : 'created';
 $order = isset($_POST['order_as']) && in_array(strtoupper($_POST['order_as']), ['ASC', 'DESC']) ? strtoupper($_POST['order_as']) : 'ASC';
-
-$extra = "ORDER BY $order_by $order";
-
 $search_value = isset($_POST['search']['value']) ? trim($_POST['search']['value']) : '';
-$f = '';
+
+// Construct SQL parts
+$extra = "ORDER BY `$order_by` $order";
+$where = "WHERE owner_id = $userID";
 
 if (!empty($search_value)) {
-    $f = "WHERE id LIKE ? OR product_name LIKE ?";
+    $search_value = mysqli_real_escape_string($conn, $search_value);
+    $where .= " AND (id LIKE '%$search_value%' OR product_name LIKE '%$search_value%')";
 }
 
-$query = "SELECT * FROM batchIDHistory $f $extra LIMIT ?, ?";
-$stmt = $conn->prepare($query);
+// Main query with pagination
+$query = "SELECT * FROM batchIDHistory $where $extra LIMIT $row, $limit";
+$result = mysqli_query($conn, $query);
 
-if (!empty($search_value)) {
-    $search_param = "%$search_value%";
-    $stmt->bind_param('ssii', $search_param, $search_param, $row, $limit);
-} else {
-    $stmt->bind_param('ii', $row, $limit);
+if (!$result) {
+    error_log("PV error: Query execution failed: " . mysqli_error($conn));
+    echo json_encode(["error" => "Internal server error"]);
+    return;
 }
 
-$stmt->execute();
-$result = $stmt->get_result();
-
+// Process results
 $rs = [];
-while ($res = $result->fetch_assoc()) {
-    $rs[] = $res;
-}
-
-$rx = [];
-foreach ($rs as $rq) {
-    $state = 0;
-    if (file_exists(__ROOT__.'/'.$rq['pdf'])) {
-        $state = 1;
-    }
-
-    $r = [
-        'id' => (string)$rq['id'],
-        'fid' => (string)$rq['fid'],
-        'product_name' => (string)$rq['product_name'] ?: 'N/A',
-        'pdf' => (string)$rq['pdf'],
+while ($res = mysqli_fetch_assoc($result)) {
+    $state = file_exists(__ROOT__ . '/' . $res['pdf']) ? 1 : 0;
+    $rs[] = [
+        'id' => (string)$res['id'],
+        'fid' => (string)$res['fid'],
+        'product_name' => $res['product_name'] ?: '-',
+        'pdf' => (string)$res['pdf'],
         'state' => (int)$state,
-        'created' => (string)$rq['created']
+        'created' => (string)$res['created']
     ];
-
-    $rx[] = $r;
 }
 
-$total_query = "SELECT COUNT(id) AS entries FROM batchIDHistory";
-$total_result = mysqli_fetch_assoc(mysqli_query($conn, $total_query));
-
-$filtered_query = "SELECT COUNT(id) AS entries FROM batchIDHistory $f";
-$filtered_stmt = $conn->prepare($filtered_query);
-
-if (!empty($search_value)) {
-    $filtered_stmt->bind_param('ss', $search_param, $search_param);
+// Get total records
+$total_query = "SELECT COUNT(id) AS entries FROM batchIDHistory WHERE owner_id = $userID";
+$total_result = mysqli_query($conn, $total_query);
+if (!$total_result) {
+    error_log("PV error: Total query failed: " . mysqli_error($conn));
+    echo json_encode(["error" => "Internal server error"]);
+    return;
 }
-$filtered_stmt->execute();
-$filtered_result = $filtered_stmt->get_result();
-$filtered = $filtered_result->fetch_assoc();
+$total_entries = mysqli_fetch_assoc($total_result)['entries'] ?? 0;
 
+// Get filtered records
+$filtered_query = "SELECT COUNT(id) AS entries FROM batchIDHistory $where";
+$filtered_result = mysqli_query($conn, $filtered_query);
+if (!$filtered_result) {
+    error_log("PV error: Filtered query failed: " . mysqli_error($conn));
+    echo json_encode(["error" => "Internal server error"]);
+    return;
+}
+$filtered_entries = mysqli_fetch_assoc($filtered_result)['entries'] ?? 0;
+
+// Response
 $response = [
     "draw" => isset($_POST['draw']) ? (int)$_POST['draw'] : 1,
-    "recordsTotal" => (int)$total_result['entries'],
-    "recordsFiltered" => (int)$filtered['entries'],
-    "data" => !empty($rx) ? $rx : []
+    "recordsTotal" => (int)$total_entries,
+    "recordsFiltered" => (int)$filtered_entries,
+    "data" => $rs
 ];
 
 header('Content-Type: application/json; charset=utf-8');

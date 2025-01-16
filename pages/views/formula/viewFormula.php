@@ -11,7 +11,7 @@ require_once(__ROOT__.'/func/php-settings.php');
 $id = mysqli_real_escape_string($conn, $_GET['id']);
 
 
-$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,fid,name,isProtected,finalType,defView,notes FROM formulasMetaData WHERE id = '$id'"));
+$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,fid,name,isProtected,finalType,defView,notes FROM formulasMetaData WHERE id = '$id' AND owner_id = '$userID'"));
 $f_name = $meta['name'];
 $fid = $meta['fid'];
 ?>
@@ -822,7 +822,7 @@ $(document).ready(function() {
 		title: 'Choose solvent',
 		source: [
 		<?php
-			$res_ing = mysqli_query($conn, "SELECT id, name FROM ingredients WHERE type = 'Solvent' OR type = 'Carrier' ORDER BY name ASC");
+			$res_ing = mysqli_query($conn, "SELECT id, name FROM ingredients WHERE (type = 'Solvent' OR type = 'Carrier')  AND owner_id = '$userID' ORDER BY name ASC");
 			while ($r_ing = mysqli_fetch_array($res_ing)){
 			echo '{value: "'.$r_ing['name'].'", text: "'.$r_ing['name'].'"},';
 		}

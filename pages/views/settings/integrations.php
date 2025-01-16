@@ -5,7 +5,7 @@ require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 
-$bkData = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM backup_provider WHERE id = '1'"));
+$bkData = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM backup_provider WHERE id = '1' AND owner_id = '$userID'"));
 
 if($bkData['enabled']){
 	$state = '<span class="card-subtitle badge badge-success ml-2">Enabled</span>';
@@ -36,7 +36,7 @@ if($settings['pv_scale_enabled']){
                         <p class="card-text">Backup PV database automatically in Google Drive.</p>
                         <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#configure"><i
                                 class="fas fa-gears mx-2"></i>Configure</a>
-                        <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#listBackup"><i
+                        <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#listBackup"><iw
                                 class="fas fa-list-check mx-2"></i>List backups</a>
                         <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#runBackup"><i
                                 class="fas fa-person-running mx-2"></i>Take a backup</a>

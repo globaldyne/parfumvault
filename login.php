@@ -42,7 +42,7 @@ if(isset($_SESSION['parfumvault'])){
           <div class="card-body p-0">
             <!-- Nested Row within Card Body -->
             <div class="row">
-			<?php
+			      <?php
             if (!file_exists(__ROOT__ . '/inc/config.php') && 
                 !getenv('DB_HOST') && 
                 !getenv('DB_USER') && 

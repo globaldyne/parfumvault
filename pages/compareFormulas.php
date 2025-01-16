@@ -8,12 +8,12 @@
         </div>
         <div class="card-body">
           <?php 
-            if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))== 0){
+            if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE owner_id = '$userID'"))== 0){
               echo '<div class="alert alert-info"><i class="fa-solid fa-triangle-exclamation mx-2"></i>You need to <a href="/?do=listFormulas">create</a> at least one formula first.</div>';
               return;
             }
             
-            if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE type = 'Carrier' OR type = 'Solvent'"))== 0){
+            if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE (type = 'Carrier' OR type = 'Solvent')  AND owner_id = '$userID' "))== 0){
               echo '<div class="alert alert-info"><i class="fa-solid fa-triangle-exclamation mx-2"></i>You need to <a href="/?do=ingredients">add</a> at least one solvent or carrier first.</div>';
               return;
             }
@@ -24,7 +24,7 @@
               <div class="col-sm-10">
                 <select name="formula_a" id="formula_a" class="form-control selectpicker" data-live-search="true">
                   <?php
-                    $a = mysqli_query($conn, "SELECT id,name FROM formulasMetaData ORDER BY name ASC");
+                    $a = mysqli_query($conn, "SELECT id,name FROM formulasMetaData WHERE owner_id = '$userID' ORDER BY name ASC");
                     while ($formula_a = mysqli_fetch_array($a)){
                       echo '<option value="'.$formula_a['id'].'">'.$formula_a['name'].'</option>';
                     }
@@ -37,7 +37,7 @@
               <div class="col-sm-10">
                 <select name="formula_b" id="formula_b" class="form-control selectpicker" data-live-search="true">
                   <?php
-                    $b = mysqli_query($conn, "SELECT id,name FROM formulasMetaData ORDER BY name ASC");
+                    $b = mysqli_query($conn, "SELECT id,name FROM formulasMetaData WHERE owner_id = '$userID' ORDER BY name ASC");
                     while ($formula_b = mysqli_fetch_array($b)){
                       echo '<option value="'.$formula_b['id'].'">'.$formula_b['name'].'</option>';
                     }

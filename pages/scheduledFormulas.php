@@ -44,6 +44,8 @@ require_once(__ROOT__.'/func/php-settings.php');
 </div>
 <script>
 $(document).ready(function() {
+	$.fn.dataTable.ext.errMode = 'none';
+
 	function extrasShow() {
 		$('[rel=tip]').tooltip({
 			"html": true,
@@ -116,6 +118,9 @@ $(document).ready(function() {
 				type: "POST"
 			});
 		},
+	}).on('error.dt', function(e, settings, techNote, message) {
+		var m = message.split(' - ');
+		$('#tdDataScheduled').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i><strong>' + m[1] + '</strong></div>');
 	});
 
 	

@@ -3,9 +3,10 @@ define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__)))));
 
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/inc/settings.php');
 
 
-$q = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM customers WHERE id = '".$_GET['id']."'")); 
+$q = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM customers WHERE id = '".$_GET['id']."' AND owner_id = '$userID'")); 
 
 ?>
 

@@ -31,6 +31,7 @@ require_once(__ROOT__.'/pages/top.php');
     
 <script>
 $(document).ready(function() {
+	$.fn.dataTable.ext.errMode = 'none';
 
 	var tdDataCustomers = $('#tdDataBatches').DataTable( {
 		columnDefs: [
@@ -46,7 +47,7 @@ $(document).ready(function() {
 			loadingRecords: '&nbsp;',
 			processing: '<div class="spinner-grow"></div> Please Wait...',
 			zeroRecords: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>Nothing found</strong></div></div>',
-			emptyTable: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>No pending ingredients</strong></div></div>',
+			emptyTable: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>No batch history yet</strong></div></div>',
 			search: '',
 			searchPlaceholder: 'Search by Batch ID or Product name...',
 		},
@@ -93,6 +94,9 @@ $(document).ready(function() {
 				 type: "POST"
 			  });
 			},
+		}).on('error.dt', function(e, settings, techNote, message) {
+			var m = message.split(' - ');
+			$('#tdDataBatches').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i><strong>' + m[1] + '</strong></div>');
 		});
 	
 	

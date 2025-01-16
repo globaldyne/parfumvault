@@ -8,7 +8,7 @@ require_once(__ROOT__.'/func/convertTime.php');
 
 $session_validity_calc = convertTime($session_timeout);
 
-$cats_q = mysqli_query($conn, "SELECT id,name,description,type FROM IFRACategories ORDER BY id ASC");
+$cats_q = mysqli_query($conn, "SELECT id,name,description,type FROM IFRACategories ORDER BY id ASC"); //PUBLIC
 
 while($cats_res = mysqli_fetch_array($cats_q)){
     $cats[] = $cats_res;

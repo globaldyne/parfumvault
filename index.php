@@ -193,7 +193,7 @@ $(document).ready(function() {
             <a class="collapse-item <?php echo $_GET['do'] === 'genFinishedProduct' ? 'active' : ''; ?>" href="/?do=genFinishedProduct">Finished Product</a>
             <a class="collapse-item <?php echo $_GET['do'] === 'sellFormula' ? 'active' : ''; ?>" href="/?do=sellFormula">Sell Formula</a>
             <a class="collapse-item <?php echo $_GET['do'] === 'scheduledFormulas' ? 'active' : ''; ?>" href="/?do=scheduledFormulas">Scheduled Formulas 
-              <span class="badge badge-danger badge-counter"><?php echo countPending(NULL, NULL, $conn); ?></span>
+              <span class="badge badge-danger badge-counter"><?php echo countPending(NULL, NULL); ?></span>
             </a>
             <a class="collapse-item <?php echo $_GET['do'] === 'batches' ? 'active' : ''; ?>" href="/?do=batches">Batch history</a>
           </div>

@@ -20,14 +20,14 @@ require_once(__ROOT__.'/inc/product.php');
 
 $fid = mysqli_real_escape_string($conn, $_GET['fid']);
 
-if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$fid'"))){
-	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM formulasMetaData WHERE fid = '$fid'"));
-	if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = '$fid' AND toAdd = '1'"))){
+if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$fid' AND owner_id = '$userID'"))){
+	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM formulasMetaData WHERE fid = '$fid' AND owner_id = '$userID'"));
+	if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = '$fid' AND toAdd = '1' AND owner_id = '$userID'"))){
 			$msg = '<div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><a href="#" id="markComplete"><strong>All materials added. Mark formula as complete?</strong></a></div>';
 	
 	}
 	
-	$qS = mysqli_query($conn, "SELECT id,name FROM ingSuppliers ORDER BY name ASC");
+	$qS = mysqli_query($conn, "SELECT id,name FROM ingSuppliers WHERE owner_id = '$userID' ORDER BY name ASC");
 	while($res = mysqli_fetch_array($qS)){
 		$res_ingSupplier[] = $res;
 	}
@@ -86,7 +86,7 @@ if($formula_not_found){
         <div class="card-body">
           <div class="table-responsive">
           <div id="errors"></div>
-          <div id="msg"><?=$msg?></div>
+          <div id="msg"><?=isset($msg)?></div>
           <div class="btn-group mb-3" id="menu">
             <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
             <div class="dropdown-menu dropdown-menu-left">

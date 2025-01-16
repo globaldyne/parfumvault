@@ -8,8 +8,8 @@ require_once(__ROOT__.'/inc/settings.php');
 
 $ingID = mysqli_real_escape_string($conn, $_GET["id"]);
 
-$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT name,physical_state FROM ingredients WHERE id ='$ingID'"));
-$res_ingSupplier = mysqli_query($conn, "SELECT id,name,min_ml,min_gr FROM ingSuppliers ORDER BY name ASC");
+$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT name,physical_state FROM ingredients WHERE id ='$ingID' AND owner_id = '$userID'"));
+$res_ingSupplier = mysqli_query($conn, "SELECT id,name,min_ml,min_gr FROM ingSuppliers WHERE owner_id = '$userID' ORDER BY name ASC");
 
 ?>
 <?php if($_GET['standAlone'] == 1){ ?>
@@ -77,6 +77,8 @@ $res_ingSupplier = mysqli_query($conn, "SELECT id,name,min_ml,min_gr FROM ingSup
 </table>
 <script>
 $(document).ready(function() {
+	$.fn.dataTable.ext.errMode = 'none';
+
 	$("#supplier_name").change(function () {
     	vol = $(this).children(':selected').data('vol');
     	$("#supplier_size").focus().val(vol);    
@@ -97,6 +99,7 @@ $(document).ready(function() {
 			loadingRecords: '&nbsp;',
 			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
 			emptyTable: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>No suppliers added yet. You have to add at least one supplier to be able to use this ingredient in formulas</strong></div></div>',
+			zeroRecords: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>Nothing found</strong></div></div>',
 			search: '',
 			searchPlaceholder: 'Search by name...',
 		},
@@ -144,6 +147,9 @@ $(document).ready(function() {
 			 type: "POST"
 		  });
 		},
+	}).on('error.dt', function(e, settings, techNote, message) {
+		var m = message.split(' - ');
+		$('#cart_data').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i><strong>' + m[1] + '</strong></div>');
 	});
 	
 	
@@ -296,7 +302,7 @@ $(document).ready(function() {
 		url: "/core/core.php?ingSupplier=update&ingID=<?=$ingID?>",
 		source: [
 		 <?php
-			$res_ing = mysqli_query($conn, "SELECT id,name FROM ingSuppliers ORDER BY name ASC");
+			$res_ing = mysqli_query($conn, "SELECT id,name FROM ingSuppliers WHERE owner_id = '$userID' ORDER BY name ASC");
 			while ($r_ing = mysqli_fetch_array($res_ing)){
 				echo '{value: "'.htmlspecialchars($r_ing['id']).'", text: "'.htmlspecialchars($r_ing['name']).'"},';
 		}

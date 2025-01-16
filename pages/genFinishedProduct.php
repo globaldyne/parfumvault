@@ -9,39 +9,39 @@
                 <?php 
                 if (!defined('pvault_panel')){ die('Not Found');}
 
-                  if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))){
+                  if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE owner_id = '$userID'"))){
                     echo '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>You need to <a href="/?do=listFormulas">create</a> at least one formula before you be able to generate a finished product</div>';
                     return;
                   }
-                  if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM bottles"))){
+                  if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM bottles WHERE owner_id = '$userID'"))){
                     echo '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>You need to <a href="/?do=bottles">add</a> at least one bottle in your inventory first</div>';
                     return;
                   }
                   
-                  if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM bottles WHERE price <= '0'"))){
+                  if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM bottles WHERE price <= '0' AND owner_id = '$userID'"))){
                     echo '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>Please make sure all your bottles suppliers contains valid prices</div>';
                     return;
                   }
                   
-                  if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE type = 'Carrier' OR type = 'Solvent'"))){
+                  if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE (type = 'Carrier' OR type = 'Solvent')  AND owner_id = '$userID'"))){
                     echo '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>You need to <a href="/?do=ingredients">add</a> at least one solvent or carrier first</div>';
                     return;
                   }
                   
-                  if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM suppliers WHERE price <= '0'"))){
+                  if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM suppliers WHERE price <= '0' AND owner_id = '$userID'"))){
                     echo '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>Please make sure all your ingredients suppliers contains valid prices</div>';
                     return;
                   }
                   
-                  $cats_q = mysqli_query($conn, "SELECT name,description FROM IFRACategories ORDER BY id ASC");
+                  $cats_q = mysqli_query($conn, "SELECT name,description FROM IFRACategories ORDER BY id ASC");//PUBLIC
                   while($cats_res = mysqli_fetch_array($cats_q)){
                     $cats[] = $cats_res;
                   }
-                  $sup_q = mysqli_query($conn, "SELECT id,name FROM ingSuppliers ORDER BY id ASC");
+                  $sup_q = mysqli_query($conn, "SELECT id,name FROM ingSuppliers WHERE owner_id = '$userID' ORDER BY id ASC");
                   while($r = mysqli_fetch_array($sup_q)){
                     $suppliers[] = $r;
                   }
-                  $fTypes_q = mysqli_query($conn, "SELECT id,name,description,concentration FROM perfumeTypes ORDER BY id ASC");
+                  $fTypes_q = mysqli_query($conn, "SELECT id,name,description,concentration FROM perfumeTypes WHERE owner_id = '$userID' ORDER BY id ASC");
                     while($fTypes_res = mysqli_fetch_array($fTypes_q)){
                     $fTypes[] = $fTypes_res;
                   }
@@ -54,11 +54,11 @@
                             <select name="formulaID" id="formulaID" class="form-control selectpicker"
                                 data-live-search="true">
                                 <?php
-                  $sql = mysqli_query($conn, "SELECT id,fid,name,product_name FROM formulasMetaData WHERE product_name IS NOT NULL ORDER BY name ASC");
-                  while ($formula = mysqli_fetch_array($sql)){
-                    echo '<option value="'.$formula['id'].'">'.$formula['name'].' ('.$formula['product_name'].')</option>';
-                  }
-                ?>
+                                    $sql = mysqli_query($conn, "SELECT id,fid,name,product_name FROM formulasMetaData WHERE owner_id = '$userID' AND product_name IS NOT NULL ORDER BY name ASC");
+                                    while ($formula = mysqli_fetch_array($sql)){
+                                        echo '<option value="'.$formula['id'].'">'.$formula['name'].' ('.$formula['product_name'].')</option>';
+                                    }
+                                ?>
                             </select>
                         </div>
                     </div>
@@ -124,11 +124,11 @@
                             <select name="bottle_id" id="bottle_id" class="form-control selectpicker"
                                 data-live-search="true">
                                 <?php
-                  $sql = mysqli_query($conn, "SELECT id,name,ml FROM bottles WHERE ml != 0 ORDER BY ml DESC");
-                  while ($bottle = mysqli_fetch_array($sql)){
-                    echo '<option value="'.$bottle['id'].'">'.$bottle['name'].' ('.$bottle['ml'].'ml)</option>';
-                  }
-                ?>
+                                $sql = mysqli_query($conn, "SELECT id,name,ml FROM bottles WHERE ml != 0  AND owner_id = '$userID' ORDER BY ml DESC");
+                                while ($bottle = mysqli_fetch_array($sql)){
+                                    echo '<option value="'.$bottle['id'].'">'.$bottle['name'].' ('.$bottle['ml'].'ml)</option>';
+                                }
+                                ?>
                             </select>
                         </div>
                     </div>
@@ -141,11 +141,11 @@
                             <select name="carrier_id" id="carrier_id" class="form-control selectpicker"
                                 data-live-search="true">
                                 <?php
-                  $sql = mysqli_query($conn, "SELECT name,id FROM ingredients WHERE type = 'Carrier' OR type = 'Solvent' ORDER BY name ASC");
-                  while ($carrier = mysqli_fetch_array($sql)){
-                    echo '<option value="'.$carrier['id'].'">'.$carrier['name'].'</option>';
-                  }
-                ?>
+                                $sql = mysqli_query($conn, "SELECT name,id FROM ingredients WHERE (type = 'Carrier' OR type = 'Solvent') AND owner_id = '$userID' ORDER BY name ASC");
+                                while ($carrier = mysqli_fetch_array($sql)){
+                                    echo '<option value="'.$carrier['id'].'">'.$carrier['name'].'</option>';
+                                }
+                                ?>
                             </select>
                         </div>
                     </div>
@@ -156,11 +156,11 @@
                                 data-live-search="true">
                                 <option selected="selected">None</option>
                                 <?php
-                  $sql = mysqli_query($conn, "SELECT id, name, accessory FROM inventory_accessories ORDER BY name ASC");
-                  while ($accessory = mysqli_fetch_array($sql)){
-                    echo '<option value="'.$accessory['id'].'">'.$accessory['name'].' ('.$accessory['accessory'].')</option>';
-                  }
-                ?>
+                                $sql = mysqli_query($conn, "SELECT id, name, accessory FROM inventory_accessories WHERE owner_id = '$userID' ORDER BY name ASC");
+                                while ($accessory = mysqli_fetch_array($sql)){
+                                    echo '<option value="'.$accessory['id'].'">'.$accessory['name'].' ('.$accessory['accessory'].')</option>';
+                                }
+                                ?>
                             </select>
                         </div>
                     </div>
@@ -177,24 +177,27 @@
     <div id="results"></div>
 </div>
 <script>
-$('#btnGEN').click(function() {
-    $.ajax({
-        url: '/pages/views/formula/finishedProduct.php',
-        type: 'POST',
-        data: {
-            fid: $("#formulaID").val(),
-            bottle_id: $("#bottle_id").val(),
-            carrier_id: $("#carrier_id").val(),
-            accessory_id: $("#accessory_id").val(),
-            concentration: $("#concentration").val(),
-            defCatClass: $("#defCatClass").val(),
-            supplier_id: $("#supplier_id").val(),
-            batch_id: $("#batch_id").val()
-        },
-        dataType: 'html',
-        success: function(data) {
-            $('#results').html(data);
-        }
+$(document).ready(function () {
+    $('#btnGEN').click(function() {
+        $.ajax({
+            url: '/pages/views/formula/finishedProduct.php',
+            type: 'POST',
+            data: {
+                fid: $("#formulaID").val(),
+                bottle_id: $("#bottle_id").val(),
+                carrier_id: $("#carrier_id").val(),
+                accessory_id: $("#accessory_id").val(),
+                concentration: $("#concentration").val(),
+                defCatClass: $("#defCatClass").val(),
+                supplier_id: $("#supplier_id").val(),
+                batch_id: $("#batch_id").val()
+            },
+            dataType: 'html',
+            success: function(data) {
+                $('#results').html(data);
+            }
+        });
     });
 });
+
 </script>

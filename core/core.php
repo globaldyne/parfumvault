@@ -5,7 +5,7 @@ require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/inc/product.php');
-require_once(__ROOT__.'/func/labelMap.php');
+//require_once(__ROOT__.'/func/labelMap.php');
 require_once(__ROOT__.'/func/get_formula_notes.php');
 require_once(__ROOT__.'/func/pvPost.php');
 require_once(__ROOT__.'/func/pvFileGet.php');
@@ -6032,18 +6032,43 @@ if($_POST['accordName'] && $_POST['accordProfile'] && $_POST['fid']){
 }
 
 //RESTORE REVISION
-if($_GET['restore'] == 'rev' && $_GET['revision'] && $_GET['fid']){
-	$fid = mysqli_real_escape_string($conn,$_GET['fid']);
-	$revision = $_GET['revision'];
-	
-	mysqli_query($conn, "DELETE FROM formulas WHERE fid = '$fid'");
-	if(mysqli_query($conn, "INSERT INTO formulas (fid, name, ingredient, ingredient_id, concentration, dilutant, quantity, notes, onwer_id) SELECT fid, name, ingredient, ingredient_id, concentration, dilutant, quantity, notes, '$userID' FROM formulasRevisions WHERE fid = '$fid' AND revision = '$revision' AND owner_id = '$userID'")){
-		mysqli_query($conn, "UPDATE formulasMetaData SET revision = '$revision' WHERE fid = '$fid' AND owner_id = '$userID'");
-		$response['success'] = 'Formula revision restored';
-	}else{
-		$response['error'] = 'Unable to restore revision '.mysqli_error($conn);
-	}
-	echo json_encode($response);
+if ($_GET['restore'] === 'rev' && !empty($_GET['revision']) && !empty($_GET['fid'])) {
+    // Escape inputs to prevent SQL injection
+    $fid = mysqli_real_escape_string($conn, $_GET['fid']);
+    $revision = mysqli_real_escape_string($conn, $_GET['revision']);
+
+    // Delete existing formula
+    $deleteQuery = "DELETE FROM formulas WHERE fid = '$fid' AND owner_id = '$userID'";
+    if (!mysqli_query($conn, $deleteQuery)) {
+        error_log("PV error: Failed to delete formula: " . mysqli_error($conn));
+        echo json_encode(['error' => 'Failed to delete formula']);
+        return;
+    }
+
+    // Restore formula from revision
+    $restoreQuery = "
+        INSERT INTO formulas (fid, name, ingredient, ingredient_id, concentration, dilutant, quantity, notes, owner_id)
+        SELECT fid, name, ingredient, ingredient_id, concentration, dilutant, quantity, notes, '$userID'
+        FROM formulasRevisions
+        WHERE fid = '$fid' AND revision = '$revision' AND owner_id = '$userID'";
+    if (mysqli_query($conn, $restoreQuery)) {
+        // Update metadata with the restored revision
+        $updateMetaQuery = "
+            UPDATE formulasMetaData 
+            SET revision = '$revision' 
+            WHERE fid = '$fid' AND owner_id = '$userID'";
+        if (!mysqli_query($conn, $updateMetaQuery)) {
+            error_log("PV error: Failed to update formula metadata: " . mysqli_error($conn));
+            echo json_encode(['error' => 'Failed to update formula metadata']);
+            return;
+        }
+
+        // Success response
+        echo json_encode(['success' => 'Formula revision restored']);
+    } else {
+        error_log("PV error: Failed to restore formula revision: " . mysqli_error($conn));
+        echo json_encode(['error' => 'Unable to restore revision']);
+    }
 	return;
 }
 

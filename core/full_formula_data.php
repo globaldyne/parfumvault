@@ -53,7 +53,7 @@ if(!$meta['fid']){
 
 if($_POST['solvents_only'] === 'true'){
 	
-	$q = mysqli_query($conn,"SELECT formulas.ingredient,formulas.ingredient_id,formulas.quantity,ingredients.profile FROM formulas,ingredients WHERE fid = '".$meta['fid']."' AND ingredients.id = formulas.ingredient_id AND ingredients.profile='solvent' AND owner_id = '$userID'");
+	$q = mysqli_query($conn,"SELECT formulas.ingredient,formulas.ingredient_id,formulas.quantity,ingredients.profile FROM formulas,ingredients WHERE fid = '".$meta['fid']."' AND ingredients.id = formulas.ingredient_id AND ingredients.profile='solvent' AND ingredients.owner_id = '$userID'");
 	while($res = mysqli_fetch_array($q)){
     	$solvents[] = $res;
 	}
@@ -274,7 +274,7 @@ if(empty($r)){
 	return;
 }
 
-$m['total_ingredients'] = (int)countElement("formulas WHERE fid = '".$meta['fid']."'",$conn);	
+$m['total_ingredients'] = (int)countElement("formulas", "fid = '".$meta['fid']."'");	
 $m['total_quantity'] =  ml2l($mg['total_mg'], $settings['qStep'], $settings['mUnit']);
 $m['quantity_unit'] = (string)$settings['mUnit'];
 $m['cat_class'] = (string)$defCatClass;

@@ -111,65 +111,67 @@ $stmtSup->close();
  
 <hr>
 <script>
-$('#bottle_pic').html('<img class="img-profile-avatar" src="<?=$doc['photo']?: '/img/logo_def.png'; ?>">');
+$(document).ready(function() {
 
-$('#bottle-save').click(function() {
-	$.ajax({ 
-		url: '/core/core.php', 
-		type: 'POST',
-		data: {
-			action: "update_bottle_data",
-			bottle_id:  "<?=$bottle['id']?>",
-			name: $("#bottle-name").val(),			
-			size: $("#bottle-size").val(),
-			price: $("#bottle-price").val(),
-			height: $("#bottle-height").val(),
-			width: $("#bottle-width").val(),
-			diameter: $("#bottle-diameter").val(),
-			pieces: $("#bottle-pieces").val(),
-			weight: $("#bottle-weight").val(),
-			notes: $("#bottle-notes").val(),
-			supplier: $("#bottle-supplier").val(),
-			supplier_link: $("#bottle-supplier_link").val(),
-		},
-		dataType: 'json',
-		success: function (data) {
-			if(data.success){
-				var msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>'+data.success+'</div>';
-                $('#tdDataBottles').DataTable().ajax.reload(null, true);
-			}else if( data.error){
-				var msg = '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>'+data.error+'</div>';
-			}
-			$('#bottle-inf').html(msg);
-		},error: function (xhr, status, error) {
-			$('#bottle-inf').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');
-		}
-	});
-
-	var fd = new FormData();
-    var files = $('#bottle_pic_file')[0].files;
-
-    if(files.length > 0 ){
-		fd.append('bottle_pic',files[0]);
-		$.ajax({ 
-			url: '/core/core.php?update_bottle_pic=1&bottle_id=<?=$bottle['id']?>', 
-			type: 'POST',
-			data: fd,
-			contentType: false,
-			processData: false,
-			cache: false,
-			dataType: 'json',
-			success: function (data) {
-				if(data.success){
-					$('#bottle_pic').html('<img class="img-profile-avatar" src="'+data.success.file+'">');
+    $('#bottle_pic').html('<img class="img-profile-avatar" src="<?=$doc['photo']?: '/img/logo_def.png'; ?>">');
+    $('#bottle-save').click(function() {
+        $.ajax({ 
+            url: '/core/core.php', 
+            type: 'POST',
+            data: {
+                action: "update_bottle_data",
+                bottle_id:  "<?=$bottle['id']?>",
+                name: $("#bottle-name").val(),			
+                size: $("#bottle-size").val(),
+                price: $("#bottle-price").val(),
+                height: $("#bottle-height").val(),
+                width: $("#bottle-width").val(),
+                diameter: $("#bottle-diameter").val(),
+                pieces: $("#bottle-pieces").val(),
+                weight: $("#bottle-weight").val(),
+                notes: $("#bottle-notes").val(),
+                supplier: $("#bottle-supplier").val(),
+                supplier_link: $("#bottle-supplier_link").val(),
+            },
+            dataType: 'json',
+            success: function (data) {
+                if(data.success){
+                    var msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>'+data.success+'</div>';
                     $('#tdDataBottles').DataTable().ajax.reload(null, true);
-				}else if( data.error){
-					$('#bottle-inf').html('<div class="alert alert-danger">'+data.error+'</div>');
-				}
-			},error: function (xhr, status, error) {
-				$('#bottle-inf').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');
-			}
-		  });
-	}
-});
+                }else if( data.error){
+                    var msg = '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>'+data.error+'</div>';
+                }
+                $('#bottle-inf').html(msg);
+            },error: function (xhr, status, error) {
+                $('#bottle-inf').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');
+            }
+        });
+
+        var fd = new FormData();
+        var files = $('#bottle_pic_file')[0].files;
+
+        if(files.length > 0 ){
+            fd.append('bottle_pic',files[0]);
+            $.ajax({ 
+                url: '/core/core.php?update_bottle_pic=1&bottle_id=<?=$bottle['id']?>', 
+                type: 'POST',
+                data: fd,
+                contentType: false,
+                processData: false,
+                cache: false,
+                dataType: 'json',
+                success: function (data) {
+                    if(data.success){
+                        $('#bottle_pic').html('<img class="img-profile-avatar" src="'+data.success.file+'">');
+                        $('#tdDataBottles').DataTable().ajax.reload(null, true);
+                    }else if( data.error){
+                        $('#bottle-inf').html('<div class="alert alert-danger">'+data.error+'</div>');
+                    }
+                },error: function (xhr, status, error) {
+                    $('#bottle-inf').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');
+                }
+            });
+        }
+    });
+});   
 </script>

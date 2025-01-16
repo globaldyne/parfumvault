@@ -4,8 +4,8 @@ if (!defined('pvault_panel')){ die('Not Found');}
 require_once(__ROOT__.'/func/profileImg.php');
 require_once(__ROOT__.'/func/php-settings.php');
 
-$res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles ORDER BY name ASC");
-$res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCategory ORDER BY name ASC");
+$res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles ORDER BY name ASC"); //PUBLIC
+$res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCategory WHERE owner_id = '$userID' ORDER BY name ASC");
 
 ?>
 <style>

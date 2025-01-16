@@ -598,87 +598,102 @@ if($_GET['type'] == 'frmCSVImport'){
 	return;
 }
 
-if($_GET['type'] == 'IFRA'){
-	if(isset($_FILES['ifraXLS'])){
-		$filename = $_FILES["ifraXLS"]["tmp_name"];  
-		$file_ext = strtolower(end(explode('.',$_FILES['ifraXLS']['name'])));
-		$all_ext = "xls,xlsx";
-		$ext = explode(",",$all_ext);
-	
-		if(in_array($file_ext,$ext)=== false){
-			$response['error'] = 'Extension not allowed, please choose a '.$all_ext.' file';
-			echo json_encode($response);
-			return;
-		}
-		
-		if($_FILES["ifraXLS"]["size"] > 0){
-			require_once(__ROOT__.'/func/SimpleXLSX.php');
-			
-			if($_GET['overwrite'] == 'true'){
-				mysqli_query($conn, "TRUNCATE IFRALibrary");
-			}
-			
-			$xlsx = SimpleXLSX::parse($filename);
-		
-			try {
-			   $link = new PDO( "mysql:host=$dbhost;dbname=$dbname", $dbuser, $dbpass);
-			   $link->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-			}catch(PDOException $e){
-				echo $sql . "<br>" . $e->getMessage();
-			}
-			
-			switch ($_GET['IFRAVer']) {
-				case 0:
-					$response['error'] =  '<strong>Please select IFRA amendment</strong>'.$e;
-					echo json_encode($response);
-					return;
-					break;
-				case 49:
-					$fields = 'ifra_key,image,amendment,prev_pub,last_pub,deadline_existing ,deadline_new,name,cas,cas_comment,synonyms,formula,flavor_use,prohibited_notes,restricted_photo_notes,restricted_notes,specified_notes,type,risk,contrib_others,contrib_others_notes,cat1,cat2,cat3,cat4,cat5A ,cat5B,cat5C,cat5D,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12';
-					break;
-				case 51:
-					$fields = 'ifra_key,amendment,prev_pub,last_pub,deadline_existing ,deadline_new,name,cas,cas_comment,synonyms,type,risk,flavor_use,prohibited_notes,restricted_photo_notes,restricted_notes,specified_notes,contrib_others,contrib_others_notes,cat1,cat2,cat3,cat4,cat5A ,cat5B,cat5C,cat5D,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12';
-					break;
-			}
-		
+if ($_GET['type'] == 'IFRA') {
+    if (isset($_FILES['ifraXLS'])) {
+        $filename = $_FILES["ifraXLS"]["tmp_name"];
+        $fileExt = strtolower(pathinfo($_FILES['ifraXLS']['name'], PATHINFO_EXTENSION));
+        $allowedExt = ['xls', 'xlsx'];
 
-			$values = substr(str_repeat('?,', count(explode(',' , $fields))), 0 , strlen($x) - 1);
-			$stmt = $link->prepare( "INSERT INTO IFRALibrary ($fields) VALUES ($values)");
-			$cols = $xlsx->dimension()[0];//$dim[0];
-				foreach ( $xlsx->rows() as $k => $r ) {
-					for ( $i = 0; $i < $cols; $i ++ ) {
-						$l = $i+1;
-						//$stmt->bindValue( $l, $r[ $i]);
-						$columnName = explode(',', $fields)[$i];
-                    
-						// Check if the category columns contains non-numeric data
-						if (strpos($columnName, 'cat') === 0 && !is_numeric($r[$i])) {
-							$stmt->bindValue($l, 100);
-						} else {
-							$stmt->bindValue($l, $r[$i]);
-						}
-					}
-					try {
-						$stmt->execute();
-						$err = '0';
-					} catch (Exception $e) {
-						$err = '1';
-					}
-				}
-				if($err){
-					$response['error'] =  '<strong>Import error: </strong>'.$e;
-					echo json_encode($response);
-					return;
-				}
-				if($_GET['updateCAS'] == 'true'){
-					fixIFRACas($conn);
-				}
-				$response['success'] =  '<strong>Import success </strong>';
-				echo json_encode($response);
-				return;
+        // Check file extension
+        if (!in_array($fileExt, $allowedExt)) {
+            $response['error'] = 'Extension not allowed, please choose an xls or xlsx file.';
+            echo json_encode($response);
+            return;
+        }
 
-		}
-	}
-	return;
+        // Check file size
+        if ($_FILES["ifraXLS"]["size"] > 0) {
+            require_once(__ROOT__ . '/func/SimpleXLSX.php');
+
+            // Truncate table if overwrite is enabled
+            if ($_GET['overwrite'] == 'true') {
+                mysqli_query($conn, "DELETE FROM IFRALibrary WHERE owner_id = '$userID'");
+            }
+
+            $xlsx = SimpleXLSX::parse($filename);
+            $dbHost = mysqli_real_escape_string($conn, $dbhost);
+            $dbName = mysqli_real_escape_string($conn, $dbname);
+            $dbUser = mysqli_real_escape_string($conn, $dbuser);
+            $dbPass = mysqli_real_escape_string($conn, $dbpass);
+
+            // Establish PDO connection
+            try {
+                $link = new PDO("mysql:host=$dbHost;dbname=$dbName", $dbUser, $dbPass);
+                $link->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            } catch (PDOException $e) {
+                error_log("PV error: Failed to connect to the database: " . $e->getMessage());
+                $response['error'] = 'Database connection error.';
+                echo json_encode($response);
+                return;
+            }
+
+            // Determine fields based on IFRA version
+            switch ($_GET['IFRAVer']) {
+                case 49:
+                    $fields = 'ifra_key,image,amendment,prev_pub,last_pub,deadline_existing,deadline_new,name,cas,cas_comment,synonyms,formula,flavor_use,prohibited_notes,restricted_photo_notes,restricted_notes,specified_notes,type,risk,contrib_others,contrib_others_notes,cat1,cat2,cat3,cat4,cat5A,cat5B,cat5C,cat5D,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12,owner_id';
+                    break;
+                case 51:
+                    $fields = 'ifra_key,amendment,prev_pub,last_pub,deadline_existing,deadline_new,name,cas,cas_comment,synonyms,type,risk,flavor_use,prohibited_notes,restricted_photo_notes,restricted_notes,specified_notes,contrib_others,contrib_others_notes,cat1,cat2,cat3,cat4,cat5A,cat5B,cat5C,cat5D,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12,owner_id';
+                    break;
+                default:
+                    $response['error'] = 'Invalid IFRA version selected.';
+                    echo json_encode($response);
+                    return;
+            }
+
+            // Prepare insert statement
+            $valuesPlaceholder = implode(',', array_fill(0, count(explode(',', $fields)), '?'));
+            $stmt = $link->prepare("INSERT INTO IFRALibrary ($fields) VALUES ($valuesPlaceholder)");
+            $columns = explode(',', $fields);
+            $colsCount = count($columns);
+
+            foreach ($xlsx->rows() as $rowIndex => $row) {
+                if ($rowIndex === 0) continue; // Skip header row
+
+                foreach ($columns as $colIndex => $columnName) {
+                    $value = $row[$colIndex] ?? null;
+
+                    // Handle category columns for invalid numeric data
+                    if (strpos($columnName, 'cat') === 0 && !is_numeric($value)) {
+                        $value = 100;
+                    }
+
+                    $stmt->bindValue($colIndex + 1, $value);
+                }
+
+                // Add owner_id
+                $stmt->bindValue($colsCount, $userID);
+
+                try {
+                    $stmt->execute();
+                } catch (Exception $e) {
+                    error_log("PV error: Failed to insert row into IFRALibrary: " . $e->getMessage());
+                    $response['error'] = 'Error importing data. Please check the file format.';
+                    echo json_encode($response);
+                    return;
+                }
+            }
+
+            // Update CAS if enabled
+            if ($_GET['updateCAS'] == 'true') {
+                fixIFRACas($conn);
+            }
+
+            $response['success'] = 'Import successful.';
+            echo json_encode($response);
+            return;
+        }
+    }
 }
+
 ?>

@@ -20,12 +20,12 @@ $type = $_POST['conc'];
 $defCatClass = $settings['defCatClass'];
 $defPercentage = $settings['defPercentage'];
 
-if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM IFRALibrary"))){
+if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM IFRALibrary WHERE owner_id = '$userID' "))){
 	echo '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>You need to <a href="/?do=IFRA" target="_blank">import</a> the IFRA xls first</div>';
 	return;
 }
 
-if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM templates"))){
+if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM templates WHERE owner_id = '$userID'"))){
 	echo '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>You need to <a href="/?do=settings" target="_blank">add</a> an IFRA template first</div>';
 	return;
 }
@@ -40,18 +40,18 @@ $fid = mysqli_real_escape_string($conn, $_POST['fid']);
 
 
 $cid = mysqli_real_escape_string($conn, $_POST['customer']);
-$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE fid = '$fid'"));
-$customers = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM customers WHERE id = '$cid'"));
+$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE fid = '$fid' AND owner_id = '$userID'"));
+$customers = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM customers WHERE id = '$cid' AND owner_id = '$userID'"));
 
-$mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE fid = '$fid'"));
+$mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE fid = '$fid' AND owner_id = '$userID'"));
 
 $new_conc = $bottle/100*$type;
-/*
+
 if(validateFormula($fid, $bottle, $new_conc, $mg['total_mg'], $defCatClass, $settings['qStep']) !== 0){
 	echo '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>Your formula contains materials not compatible with IFRA standards</div>';
 	return;
 }
-*/
+
 
 if ( empty($settings['brandLogo']) ){ 
 	$logo = "/img/logo.png";
@@ -97,7 +97,7 @@ while ($category = mysqli_fetch_array($cats_q)) {
 
 
 $formulas = [];
-$formula_q = mysqli_query($conn, "SELECT ingredient, quantity, concentration,exclude_from_calculation FROM formulas WHERE fid = '" . mysqli_real_escape_string($conn, $fid) . "'");
+$formula_q = mysqli_query($conn, "SELECT ingredient, quantity, concentration,exclude_from_calculation FROM formulas WHERE fid = '" . mysqli_real_escape_string($conn, $fid) . "' AND owner_id = '$userID'");
 while ($formula = mysqli_fetch_array($formula_q)) {
     $formulas[] = $formula;
 }
@@ -109,10 +109,10 @@ foreach ($formulas as $formula) {
 		$mg['total_mg'] += $formulas['quantity'];
 	}
     $ingredient = mysqli_real_escape_string($conn, $formula['ingredient']);
-    $cas = mysqli_fetch_array(mysqli_query($conn, "SELECT cas, $defCatClass FROM ingredients WHERE name = '$ingredient'"));
+    $cas = mysqli_fetch_array(mysqli_query($conn, "SELECT cas, $defCatClass FROM ingredients WHERE name = '$ingredient' AND owner_id = '$userID'"));
 
     if ($cas['cas']) {
-        $q2 = mysqli_query($conn, "SELECT DISTINCT name, $defCatClass, risk, type, cas FROM IFRALibrary WHERE name LIKE '$ingredient' OR cas = '" . $cas['cas'] . "' GROUP BY name");
+        $q2 = mysqli_query($conn, "SELECT DISTINCT name, $defCatClass, risk, type, cas FROM IFRALibrary WHERE (name LIKE '$ingredient' OR cas = '" . $cas['cas'] . "') AND owner_id = '$userID' GROUP BY name");
 
         while ($ifra = mysqli_fetch_array($q2)) {
             $new_quantity = $formula['quantity'] / $mg['total_mg'] * $new_conc;
@@ -139,6 +139,8 @@ foreach ($formulas as $formula) {
         WHERE ingredient_compounds.ing = '$ingredient' 
         AND toDeclare = '1' 
         AND IFRALibrary.name = ingredient_compounds.name 
+        AND ingredient_compounds.owner_id = '$userID'
+        AND IFRALibrary.owner_id = '$userID'
         GROUP BY name");
 
     while ($cmp = mysqli_fetch_array($qCMP)) {

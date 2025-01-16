@@ -11,7 +11,7 @@ if(!$_GET['ingID']){
 	return;
 }
 
-$query = "SELECT id, tenacity, flash_point, chemical_name, formula, logp, soluble, molecularWeight, appearance, rdi, shelf_life FROM ingredients WHERE id = '".$_GET['ingID']."'";
+$query = "SELECT id, tenacity, flash_point, chemical_name, formula, logp, soluble, molecularWeight, appearance, rdi, shelf_life FROM ingredients WHERE id = '".$_GET['ingID']."' AND owner_id = '$userID'";
 $result = mysqli_query($conn, $query);
 $ing = mysqli_fetch_array($result);
 

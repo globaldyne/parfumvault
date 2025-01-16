@@ -30,19 +30,19 @@ $(document).ready(function() {
 		loadingRecords: '&nbsp;',
 		processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
 		emptyTable: 'No data found.',
-		},
+		zeroRecords: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>Nothing found</strong></div></div>',
+	},
 	ajax: {	url: '/core/stats_inv_data.php' },
 	columns: [
-			  { data : 'type', title: 'Type', render: type },
-			  { data : 'worth', title: 'Worth', render: worth},
-			 ],
+			{ data : 'type', title: 'Type', render: type },
+			{ data : 'worth', title: 'Worth', render: worth},
+		]
 	});
 
 
 	function type(data, type, row){
 		return "Ingredients";    
 	}
-	
 	
 	function worth(data, type, row){
 		return row.currency + row.ingredients.total_worth;    

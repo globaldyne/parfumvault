@@ -5,7 +5,12 @@ require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 
-$bk = mysqli_fetch_array(mysqli_query($conn,"SELECT * FROM backup_provider WHERE id = '1'"));
+if ($role !== 1){
+  echo json_encode(['success' => false, 'error' => 'Not authorised']);
+  return;
+}
+
+$bk = mysqli_fetch_array(mysqli_query($conn,"SELECT * FROM backup_provider WHERE id = '1' AND owner_id = '$userID'"));
 
 ?>
 <div class="card-body">
@@ -69,42 +74,40 @@ $bk = mysqli_fetch_array(mysqli_query($conn,"SELECT * FROM backup_provider WHERE
 
 <script>
 
-
 $('#bk-save').click(function() {
-    var enabled = $('#enabled').is(':checked') ? '1' : '0';
-    try {
-        JSON.parse($("#bk-creds").val());
-    } catch (error) {
-		var msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>Credentials must be a valid JSON string</div>';
-		$('#bk-inf').html(msg);
-        return;
-    }
-    $.ajax({
-        url: '/core/core.php',
-        type: 'POST',
-        data: {
-            bkProv: 'update',
-            creds: $("#bk-creds").val(),
-            enabled: enabled,
-            schedule: $("#time").val(),
-            bkDesc: $("#desc").val(),
+  var enabled = $('#enabled').is(':checked') ? '1' : '0';
+  try {
+    JSON.parse($("#bk-creds").val());
+  } catch (error) {
+    var msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>Credentials must be a valid JSON string</div>';
+	  $('#bk-inf').html(msg);
+    return;
+  }
+  $.ajax({
+    url: '/core/core.php',
+    type: 'POST',
+    data: {
+      bkProv: 'update',
+      creds: $("#bk-creds").val(),
+      enabled: enabled,
+      schedule: $("#time").val(),
+      bkDesc: $("#desc").val(),
 			gdrive_name: $("#gdrive_name").val(),
 			bk_srv_host: $("#bk_srv_host").val()
-        },
-        dataType: 'json',
-        success: function(data) {
-            if (data.success) {
-                var msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>' + data.success + '</div>';
-            } else {
-                var msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + data.error + '</div>';
-            }
-            $('#bk-inf').html(msg);
-        },
+    },
+    dataType: 'json',
+    success: function(data) {
+      if (data.success) {
+        var msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>' + data.success + '</div>';
+      } else {
+        var msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + data.error + '</div>';
+      }
+      $('#bk-inf').html(msg);
+    },
 		error: function (xhr, status, error) {
-			$('#bk-inf').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+		  $('#bk-inf').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>' + status + ', check server logs for more info. '+ error + '</div>');
 		}
-    });
+  });
 });
-
 
 </script>

@@ -2,13 +2,13 @@
 if (!defined('pvault_panel')){ die('Not Found');}
 
 function validateFormula($fid, $bottle, $new_conc, $mg, $defCatClass, $qStep, $isFormula = 0) {
-	global $conn;
+    global $conn, $userID;
 	
     // Initialize arrays to collect validation results and error messages
     $errors = array();
 
     // Fetch formula details
-    $formula_query = mysqli_query($conn, "SELECT ingredient, quantity, concentration FROM formulas WHERE fid = '$fid' AND  	exclude_from_calculation = '0' ");
+    $formula_query = mysqli_query($conn, "SELECT ingredient, quantity, concentration FROM formulas WHERE fid = '$fid' AND exclude_from_calculation = '0' AND owner_id = '$userID'");
     if (!$formula_query) {
         return array("Error fetching formula details");
     }
@@ -16,7 +16,7 @@ function validateFormula($fid, $bottle, $new_conc, $mg, $defCatClass, $qStep, $i
     // Process each ingredient in the formula
     while ($formula = mysqli_fetch_array($formula_query)) {
         $ingredient_name = $formula['ingredient'];
-        $ingredient_query = mysqli_query($conn, "SELECT cas, $defCatClass FROM ingredients WHERE name = '$ingredient_name'");
+        $ingredient_query = mysqli_query($conn, "SELECT cas, $defCatClass FROM ingredients WHERE name = '$ingredient_name' AND owner_id = '$userID'");
         if (!$ingredient_query) {
             $errors[] = "Error fetching ingredient details for $ingredient_name";
             continue;

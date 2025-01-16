@@ -17,7 +17,7 @@
               <div class="col-sm-9">
                 <select id="formulaID" class="form-control selectpicker" data-live-search="true">
                   <?php
-                  $sql = mysqli_query($conn, "SELECT id, name, product_name FROM formulasMetaData ORDER BY name ASC");
+                  $sql = mysqli_query($conn, "SELECT id, name, product_name FROM formulasMetaData WHERE owner_id = '$userID' ORDER BY name ASC");
                   while ($formula = mysqli_fetch_array($sql)){
                     echo '<option value="'.$formula['id'].'">'.$formula['name'].' ('.$formula['product_name'].')</option>';
                   }
@@ -31,7 +31,7 @@
               <div class="col-sm-9">
                 <select id="customerID" class="form-control selectpicker" data-live-search="true">
                   <?php
-                  $res = mysqli_query($conn, "SELECT id, name FROM customers ORDER BY name ASC");
+                  $res = mysqli_query($conn, "SELECT id, name FROM customers WHERE owner_id = '$userID' ORDER BY name ASC");
                   while ($q = mysqli_fetch_array($res)){
                     echo '<option value="'.$q['name'].'">'.$q['name'].'</option>';
                   }
