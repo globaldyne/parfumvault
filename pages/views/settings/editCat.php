@@ -41,9 +41,7 @@ $cat = mysqli_fetch_array(mysqli_query($conn, "SELECT image,name FROM ingCategor
 
 <script>
 $(document).ready(function () {
-
 	$('#cat-pic').html('<img class="img-profile-avatar" src="<?=$cat['image']?: '/img/molecule.png'; ?>">');
-	
 	$('#update-cat').click(function() {
 		var fd = new FormData();
 		var files = $('#cat-pic-file')[0].files;
@@ -62,9 +60,10 @@ $(document).ready(function () {
 			success: function (data) {
 				if(data.success){
 					$('#cat-pic').html('<img class="img-profile-avatar" src="'+data.success.pic+'">');
+					$('#cat-msg').html('');
 					$('#tdDataCat').DataTable().ajax.reload(null, true);
 				}else if( data.error){
-					$('#cat-msg').html('<div class="alert alert-danger">'+data.error+'</div>');
+					$('#cat-msg').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>'+data.error+'</div>');
 				}
 			},
 			error: function (xhr, status, error) {

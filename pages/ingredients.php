@@ -173,7 +173,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
         <div id="CSVImportMsg"></div>
         <div id="process_area">
           <div class="mb-3">
-            <label for="CSVFile" class="form-label">CSV File:</label>
+            <label for="CSVFile" class="form-label">CSV File</label>
             <input type="file" class="form-control" id="CSVFile" name="CSVFile">
           </div>
         </div>
@@ -183,7 +183,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseCsv">Cancel</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseCsv">Close</button>
         <input type="submit" class="btn btn-primary" id="btnImportCSV" value="Import">
       </div>
     </div>

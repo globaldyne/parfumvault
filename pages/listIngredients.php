@@ -8,6 +8,7 @@ require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/loadModules.php');
 
 $defCatClass = $settings['defCatClass'];
+$cIngredients = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE owner_id = '$userID'"));
 
 ?>
 <div class="col mb-4">
@@ -22,9 +23,10 @@ $defCatClass = $settings['defCatClass'];
         <div class="dropdown-divider"></div>
         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#csv_import"><i class="fa-solid fa-file-import mx-2"></i>Import from CSV</a></li>
         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#import_ingredients_json"><i class="fa-solid fa-file-import mx-2"></i>Import from JSON</a></li>
-        <div class="dropdown-divider"></div>
-        <li><a class="dropdown-item text-danger" href="#" id="wipe_all_ing"><i class="fa-solid fa-trash mx-2"></i>Delete all</a></li>
-
+		<?php if ($cIngredients) { ?>
+			<div class="dropdown-divider"></div>
+        	<li><a class="dropdown-item text-danger" href="#" id="wipe_all_ing"><i class="fa-solid fa-trash mx-2"></i>Delete all ingredients</a></li>
+		<?php } ?>
       </div>
      </div>                    
     </div>
@@ -493,16 +495,16 @@ $(document).ready(function() {
 						dataType: 'json',
 						success: function (data) {
 							if ( data.success ) {
-								$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+								$('#toast-title').html('<i class="fa-solid fa-circle-check mx-2"></i>' + data.success);
 								$('.toast-header').removeClass().addClass('toast-header alert-success');
 							} else {
-								$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+								$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>' + data.error);
 								$('.toast-header').removeClass().addClass('toast-header alert-danger');
 							}
 							$('.toast').toast('show');
 						},
 						error: function (xhr, status, error) {
-							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error);
 							$('.toast-header').removeClass().addClass('toast-header alert-danger');
 							$('.toast').toast('show');
 						}
@@ -562,7 +564,7 @@ $(document).ready(function() {
 							$('.toast').toast('show');
 						},
 						error: function (xhr, status, error) {
-							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error);
 							$('.toast-header').removeClass().addClass('toast-header alert-danger');
 							$('.toast').toast('show');
 						}
@@ -621,7 +623,7 @@ $(document).ready(function() {
 		
 		bootbox.dialog({
 		   title: "Confirm ingredient wipe",
-		   message : 'This will remove ALL your ingredients from the database.\nThis cannot be reverted so please make sure you have taken a backup first.',
+		   message : '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>This will remove ALL your ingredients and their related data from the database.\nThis cannot be reverted so please make sure you have taken a backup first.</div>',
 		   buttons :{
 			   main: {
 				   label : "DELETE ALL",
@@ -637,17 +639,17 @@ $(document).ready(function() {
 						dataType: 'json',
 						success: function (data) {
 							if ( data.success ) {
-								$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+								$('#toast-title').html('<i class="fa-solid fa-circle-check mx-2"></i>' + data.success);
 								$('.toast-header').removeClass().addClass('toast-header alert-success');
 								$('#tdDataIng').DataTable().ajax.reload(null, false);
 							} else {
-								$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+								$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>' + data.error);
 								$('.toast-header').removeClass().addClass('toast-header alert-danger');
 							}
 							$('.toast').toast('show');
 						},
 						error: function (xhr, status, error) {
-							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error);
 							$('.toast-header').removeClass().addClass('toast-header alert-danger');
 							$('.toast').toast('show');
 						}

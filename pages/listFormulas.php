@@ -24,7 +24,7 @@ while($fTypes_res = mysqli_fetch_array($fTypes_q)){
     $fTypes[] = $fTypes_res;
 }
 
-$cFormoulas = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE owner_id = '$userID'"));
+$cFormulas = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE owner_id = '$userID'"));
 ?>
 <script src="/js/raty/jquery.raty.js"></script>
 <script src="/js/rating.js"></script>
@@ -60,7 +60,7 @@ $cFormoulas = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaDa
                                         <i class="fa-solid fa-circle-plus mx-2"></i>Create formula category
                                     </a>
                                 </li>
-								<?php if ($cFormoulas) { ?>
+								<?php if ($cFormulas) { ?>
                                 <div class="dropdown-divider"></div>
                                 <li>
                                     <a class="dropdown-item" href="/core/core.php?action=exportFormulas">
@@ -83,7 +83,7 @@ $cFormoulas = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaDa
                                         <i class="fa-solid fa-file-lines mx-2"></i>Import from text
                                     </a>
                                 </li>
-                                <?php if ($cFormoulas) { ?>
+                                <?php if ($cFormulas) { ?>
                                 <div class="dropdown-divider"></div>
                                 <li>
                                     <a class="dropdown-item text-danger" href="#" id="wipe_all_formulas">
@@ -100,7 +100,7 @@ $cFormoulas = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaDa
                 if (empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE owner_id = '$userID'")))) {
                     echo '<div class="row g-3"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>No ingredients yet, click <a href="/?do=ingredients">here</a> to create a new one</strong></div></div>';
                 }
-                if (empty($cFormoulas)) {
+                if (empty($cFormulas)) {
                     echo '<div class="row g-3"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>No formulas yet, click <a href="#" data-bs-toggle="modal" data-bs-target="#add_formula">here</a> to add or use the <a href="/?do=marketplace">Marketplace</a> to import a demo one</strong></div></div>';
                 } else {
                 ?>

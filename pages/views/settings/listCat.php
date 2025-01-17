@@ -118,6 +118,8 @@ $(document).ready(function() {
 		data = '<div class="dropdown">' +
 		'<button type="button" class="btn btn-floating hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
 			'<ul class="dropdown-menu">';
+		
+		data += '<li><a class="dropdown-item" href="#" data-id="'+row.id+'" data-bs-toggle="modal" data-bs-target="#editCategory"><i class="fa-solid fa-file-import mx-2"></i>Upload pic</a></li>';
 		data += '<li><a class="dropdown-item text-danger" href="#" id="catDel" rel="tip" title="Delete '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-trash mx-2"></i>Delete</a></li>';
 		data += '</ul></div>';
 		return data;		

@@ -29,6 +29,8 @@
 - Prevent IFRA document creation if formula isn't compatible with the IFRA library standards
 - Remove id field from json exports
 - Refactor JSON exports
+- Improve file uploads
+- Improve CSV imports
 
 ### Version 12.4
 - Add dilutant in API formulas
