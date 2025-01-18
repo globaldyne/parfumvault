@@ -10,7 +10,7 @@ require_once(__ROOT__.'/func/php-settings.php');
   <h2 class="m-0 mb-4">Settings</h2>
   <div id="settings">
     <ul>
-        <li class="active"><a href="#general" id="general_tab" role="tab" data-bs-toggle="tab">My prefernces</a></li>
+        <li class="active"><a href="#general" id="general_tab" role="tab" data-bs-toggle="tab">My preferences</a></li>
         <?php if($role === 1){?>
           <li class="active"><a href="#systemSettings" id="systemSettings_tab" role="tab" data-bs-toggle="tab">System settings</a></li>
           <li class="active"><a href="#users" id="users_tab" role="tab" data-bs-toggle="tab">Users</a></li>

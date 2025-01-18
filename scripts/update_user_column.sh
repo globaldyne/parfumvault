@@ -31,7 +31,6 @@ add_columns() {
     fi
 }
 
-# Check if the 'role' column exists in the 'users' table
 COLUMN_EXISTS=$(check_column_exists "isActive" "users")
 
 if [ "$COLUMN_EXISTS" -eq 0 ]; then

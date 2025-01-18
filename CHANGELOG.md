@@ -38,6 +38,7 @@
 - Added users export
 - Added user impersonation
 - API key and status is now configured per user
+- Seperated system settings from user settings
 
 ### Version 12.4
 - Add dilutant in API formulas

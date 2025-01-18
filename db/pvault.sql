@@ -985,3 +985,26 @@ CREATE TABLE `ingredient_safety_data` (
   `owner_id` INT NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `system_settings` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT ,
+    `key_name` VARCHAR(255) NOT NULL ,
+    `value` VARCHAR(255) NOT NULL , 
+    `slug` VARCHAR(255) NOT NULL , 
+    `type` VARCHAR(255) NOT NULL , 
+    `description` VARCHAR(255) NOT NULL , 
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
+    `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL , 
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB; 
+
+
+INSERT INTO `system_settings` (`id`, `key_name`, `value`, `slug`, `type`, `description`) VALUES
+(1, 'SMTP_host', '', 'SMTP Host', 'text', 'Configure SMTP host'),
+(2, 'SSO_status', '0', 'Enable SSO', 'checkbox', 'Enable or disable SSO'),
+(3, 'SSO_clientID', '', 'Client ID', 'text', 'Your SSO client ID'),
+(4, 'SSO_clientSecret', '', 'Client Secret', 'password', 'Your SSO secret'),
+(5, 'SSO_redirectUri', '', 'Redirect URI', 'text', 'SSO redirect URI'),
+(6, 'SSO_authUrl', '', 'Auth URL', 'text', 'SSO auth URL'),
+(7, 'SSO_tokenUrl', '', 'Token URL', 'text', 'SSO token url'),
+(8, 'SSO_userInfoUrl', '', 'User Info URL', 'text', 'SSO info url');
