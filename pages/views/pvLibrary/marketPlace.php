@@ -111,9 +111,9 @@
 </div>
 
 <?php
-$qPVfids = mysqli_query($conn,"SELECT fid FROM formulasMetaData WHERE src = '1'");
+$qPVfids = mysqli_query($conn,"SELECT name FROM formulasMetaData WHERE src = '1' AND owner_id = '$userID'");
 while ($rPVFIDS = mysqli_fetch_array($qPVfids)){
-	$result_fids[] = $rPVFIDS['fid'];	
+	$result_fids[] = $rPVFIDS['name'];	
 }
 $json_fids = json_encode($result_fids);
 ?>
@@ -252,7 +252,7 @@ $(document).ready(function() {
 	
 	function status(data, type, row, meta){
 		
-		if ( arrayFIDS.includes(row.fid)) {	
+		if ( arrayFIDS.includes(row.name)) {	
 			data = '<span class="badge pv-label label-md bg-success"><strong>Downloaded</strong></span>';
 		}else{
 			data = '<span class="badge pv-label label-md bg-warning"><strong>NEW!!!</strong></span>';
@@ -265,15 +265,10 @@ $(document).ready(function() {
 			data = '<div class="dropdown">' +
 			'<button type="button" class="btn" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
 				'<ul class="dropdown-menu dropdown-menu-right">';
-			
 			data += '<li><i class="pv_point_gen pv_gen_li dropdown-item" id="import-market-formula" data-id="'+row.id+'" data-name="'+row.name+'" rel="tip" title="Import '+ row.name +' to my database" ><i class="fas fa-download mx-2"></i>Import Formula</i></li>';
-			
 			data += '<li><i class="pv_point_gen pv_gen_li dropdown-item open-contact-dialog" data-bs-toggle="modal"  data-bs-target="#contact-formula-author" data-id="'+row.id+'" data-name="'+row.name+'" rel="tip" title="Contact '+ row.author.name +' regarding the formula"><i class="fas fa-id-card mx-2"></i>Contact the author</i></li>';
-			
 			data += '<div class="dropdown-divider"></div>';
-			
 			data += '<li><i class="pv_point_gen pv_gen_li dropdown-item open-report-dialog link-danger" data-bs-toggle="modal"  data-bs-target="#report-market-formula" rel="tip" title="Report '+ row.name +' to admins" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-bug mx-2"></i>Report formula</i></li>';
-			
 			data += '</ul></div>';
 		
 		return data;
