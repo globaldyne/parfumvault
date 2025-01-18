@@ -371,7 +371,10 @@ CREATE TABLE `users` (
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `fullName` varchar(255) NOT NULL,
+  `provider` INT NOT NULL DEFAULT '1' COMMENT '1=Local,2=SSO', 
   `role` INT NOT NULL,
+  `isActive` INT NOT NULL DEFAULT '1',
+  `country` VARCHAR(255) NULL DEFAULT NULL, 
   `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
    PRIMARY KEY (`id`)

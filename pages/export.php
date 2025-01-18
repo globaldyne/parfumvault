@@ -6,6 +6,67 @@ require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/inc/product.php');
 
+
+if($role === 1){
+
+    //EXPORT USERS JSON
+    if ($_GET['format'] === 'json' && $_GET['kind'] === 'users') {
+
+        // Fetch user data
+        $userQuery = "SELECT * FROM users";
+        $userResult = mysqli_query($conn, $userQuery);
+
+        if (!$userResult) {
+            // Handle query failure
+            error_log("PV error: Failed to fetch users. MySQL error: " . mysqli_error($conn));
+            echo json_encode(['error' => 'Failed to fetch user data.']);
+            return;
+        }
+
+        $users = [];
+        while ($row = mysqli_fetch_assoc($userResult)) {
+            $users[] = [
+                'id'         => (int) $row['id'],
+                'fullName'   => (string) $row['fullName'],
+                'email'      => (string) $row['email'],
+                'password'   => (string) $row['password'],
+                'provider'   => (int) $row['provider'],
+                'isActive'   => (int) $row['isActive'],
+                'role'       => (int) $row['role'],
+                'country'    => (string) $row['country'],
+                'updated_at' => (string) $row['updated_at'],
+                'created_at' => (string) $row['created_at'],
+            ];
+        }
+
+        // Count the number of users
+        $usersCount = count($users);
+
+        // Add metadata
+        $metaData = [
+            'product'   => $product,
+            'version'   => $ver,
+            'users'     => $usersCount,
+            'timestamp' => date('d/m/Y H:i:s'),
+        ];
+
+        // Prepare the result
+        $result = [
+            'users'  => $users,
+            'pvMeta' => $metaData,
+        ];
+
+        // Send JSON headers and output the result
+        header('Content-Disposition: attachment; filename=pv_users.json');
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode($result, JSON_PRETTY_PRINT);
+        return;
+    }
+}
+
+
+
+
 //EXPORT ACCESSORIES JSON
 if ($_GET['format'] === 'json' && $_GET['kind'] === 'accessories') {
     // Validate if there are accessories to export

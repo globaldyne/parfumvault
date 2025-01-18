@@ -18,19 +18,19 @@ check_column_exists() {
 # Function to add the required columns if they do not exist
 add_columns() {
     ALTER_QUERY="ALTER TABLE \`users\` 
-                 ADD \`role\` INT NOT NULL DEFAULT '1' AFTER \`email\`, 
-                 ADD \`updated_at\` TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL AFTER \`role\`, 
-                 ADD \`created_at\` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER \`updated_at\`;"
+                ADD \`isActive\` INT NOT NULL DEFAULT '1' AFTER \`role\`,
+                ADD \`country\` VARCHAR(255) NULL DEFAULT NULL AFTER \`isActive\`, 
+                ADD \`provider\` INT NOT NULL DEFAULT '1' COMMENT '1=Local,2=SSO' AFTER \`fullName\`;"
     mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASS" -D "$DB_NAME" -e "$ALTER_QUERY"
     if [ $? -eq 0 ]; then
-        echo "Columns 'role', 'updated_at', and 'created_at' added successfully."
+        echo "Columns 'isActive' and 'provider' added successfully."
     else
         echo "Failed to add columns. Please check your database permissions."
     fi
 }
 
 # Check if the 'role' column exists in the 'users' table
-COLUMN_EXISTS=$(check_column_exists "role" "users")
+COLUMN_EXISTS=$(check_column_exists "isActive" "users")
 
 if [ "$COLUMN_EXISTS" -eq 0 ]; then
     echo "The db schema needs to be modified. Adding the required columns..."

@@ -9,6 +9,14 @@ $(document).ready(function() {
 		get_general();
 	});
 	
+	$('#systemSettings_tab').on( 'click', function () {
+		get_systemSettings();
+	});
+
+	$('#users_tab').on( 'click', function () {
+		get_users();
+	});
+
 	$('#cat_tab').on( 'click', function () {
 		list_cat();
 	});
@@ -65,6 +73,35 @@ $(document).ready(function() {
 		get_syslogs();
 	});
 	
+
+	function get_users(){
+		$.ajax({ 
+			url: '/pages/views/users/users.php', 
+			dataType: 'html',
+			success: function (data) {
+				$('#users').html(data);
+			},
+			error: function (xhr, status, error) {
+				$('#users').html('<div class="mt-4 alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check configuration as this page may have been disabled / restricted. '+ error +'</div>');
+			}
+		});
+	}
+
+
+	function get_systemSettings(){
+		$.ajax({ 
+			url: '/pages/views/settings/systemSettings.php', 
+			dataType: 'html',
+			success: function (data) {
+				$('#systemSettings').html(data);
+			},
+			error: function (xhr, status, error) {
+				$('#systemSettings').html('<div class="mt-4 alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check configuration as this page may have been disabled / restricted. '+ error +'</div>');
+			}
+		});
+	}
+
+
 	function get_syslogs(){
 		$.ajax({ 
 			url: '/pages/views/settings/sysLogs.php', 
@@ -73,7 +110,7 @@ $(document).ready(function() {
 				$('#syslogs').html(data);
 			},
 			error: function (xhr, status, error) {
-				$('#syslogs').html('<div class="mt-4 alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check configuration as this page may have been disabled / restricted. '+ error +'</div>');
+				$('#syslogs').html('<div class="mt-4 alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check configuration as this page may have been disabled / restricted. '+ error +'</div>');
 			}
 		});
 	}

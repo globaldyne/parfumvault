@@ -20,6 +20,215 @@ if (!isset($userID) || $userID === '' || !is_numeric($userID)) {
     return;
 }
 
+
+
+
+//UPDATE USER INFO BY ADMIN
+if (isset($_POST['request']) && $_POST['request'] === 'updateuser') {
+    // Validate required fields
+    if (empty($_POST['user_id']) || empty($_POST['full_name']) || empty($_POST['email']) ) {
+        echo json_encode(['error' => 'Full name and email are required']);
+        return;
+    }
+
+    // Sanitize input
+    $user_id = $conn->real_escape_string($_POST['user_id']);
+    $full_name = $conn->real_escape_string($_POST['full_name']);
+    $email = $conn->real_escape_string($_POST['email']);
+    $password = $_POST['password'] ?? null;
+    $country = $conn->real_escape_string($_POST['country']);
+    $role = (int)$_POST['role'];
+    $isActive = (int)$_POST['isActive'];
+
+    // Validate password if provided
+    if (!empty($password) && !isPasswordComplex($password)) {
+        echo json_encode(['error' => 'Password does not meet complexity requirements']);
+        return;
+    }
+
+    // Check for last admin user restrictions
+    if ($role === 2) {
+        $checkAdminQuery = $conn->prepare("SELECT role FROM users WHERE id = ?");
+        $checkAdminQuery->bind_param("i", $user_id);
+        $checkAdminQuery->execute();
+        $result = $checkAdminQuery->get_result();
+        $user = $result->fetch_assoc();
+
+        if ($user['role'] === 1) {
+            $adminCountQuery = $conn->prepare("SELECT COUNT(*) as admin_count FROM users WHERE role = 1");
+            $adminCountQuery->execute();
+            $adminCountResult = $adminCountQuery->get_result();
+            $adminCount = $adminCountResult->fetch_assoc()['admin_count'];
+
+            if ($adminCount <= 1) {
+                echo json_encode(['error' => 'Cannot change the last admin user to a different access level']);
+                return;
+            }
+        }
+    }
+
+    // Fetch owner_id
+    $ownerQuery = $conn->prepare("SELECT id FROM users WHERE id = ?");
+    $ownerQuery->bind_param("i", $user_id);
+    $ownerQuery->execute();
+    $ownerResult = $ownerQuery->get_result();
+
+    if ($ownerResult->num_rows === 0) {
+        echo json_encode(['error' => 'User not found']);
+        return;
+    }
+
+    // Prepare queries
+    $updateQuery = "UPDATE users SET fullName = ?, email = ?, country = ?, role = ?, isActive = ?";
+    if (!empty($password)) {
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+        $updateQuery .= ", password = ?";
+    }
+    $updateQuery .= " WHERE id = ?";
+
+	//$user_id = $ownerResult->fetch_assoc()['id'];
+
+    // Execute user update query
+    $stmt = $conn->prepare($updateQuery);
+    if (!empty($password)) {
+        $stmt->bind_param(
+            "sssiisi",
+            $full_name,
+            $email,
+            $country,
+            $role,
+            $isActive,
+            $hashedPassword,
+            $user_id
+        );
+    } else {
+        $stmt->bind_param(
+            "sssiii",
+            $full_name,
+            $email,
+            $country,
+            $role,
+            $isActive,
+            $user_id
+        );
+    }
+
+    if ($stmt->execute()) {
+        echo json_encode(['success' => 'User updated successfully']);        
+    } else {
+        echo json_encode(['error' => 'Failed to update user: ' . $conn->error]);
+    }
+
+    // Close statements
+    $stmt->close();
+    $ownerQuery->close();
+    return;
+}
+
+
+
+
+
+
+
+
+//CREATE USER BY ADMIN
+if (isset($_POST['request']) && $_POST['request'] === 'adduser') {
+
+    if (empty($_POST['email']) || empty($_POST['password']) || empty($_POST['full_name']) || empty($_POST['country'])) {
+        $response['error'] = 'Email, password, name and country are required';
+        echo json_encode($response);
+        return;
+    }
+
+    $email = mysqli_real_escape_string($conn, $_POST['email']);
+    $password = mysqli_real_escape_string($conn, $_POST['password']);
+    $full_name = mysqli_real_escape_string($conn, $_POST['full_name']);
+    $role = (int)$_POST['role'];
+    $country = mysqli_real_escape_string($conn, $_POST['country']);
+    $isActive = mysqli_real_escape_string($conn, $_POST['isActive']);
+
+    if (!isPasswordComplex($password)) {
+        $response['error'] = 'Password does not meet complexity requirements';
+        echo json_encode($response);
+        return;
+    }
+	
+    // Check if email is already registered
+    $emailCheckQuery = "SELECT id FROM users WHERE email = '$email'";
+    $emailCheckResult = mysqli_query($conn, $emailCheckQuery);
+//	$userId = bin2hex(random_bytes(16)); // Generates a 32-character unique string
+
+    if (mysqli_num_rows($emailCheckResult) > 0) {
+        $response['error'] = 'Email is already registered';
+        echo json_encode($response);
+        return;
+    }
+
+    // Hash the password
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+    // Insert new user into the database
+    $insertQuery = "INSERT INTO users (email, password, fullName, role, country, isActive) 
+                VALUES ('$email', '$hashedPassword', '$full_name', '$role', '$country', '$isActive')";
+
+
+    if (mysqli_query($conn, $insertQuery)) {
+     //   welcomeNewUser($fname,$email,$token);
+        $response['success'] = 'User created successfully';
+    } else {
+        $response['error'] = 'Database error: ' . mysqli_error($conn);
+    }
+
+
+    echo json_encode($response);
+    return;
+}
+
+//DELETE USER BY ADMIN
+if (isset($_POST['request']) && $_POST['request'] === 'deleteuser') {
+    $user_id = mysqli_real_escape_string($conn, $_POST['user_id']);
+    
+    // Check if the user is an admin
+    $checkAdminQuery = "SELECT role FROM users WHERE id = '$user_id'";
+    $result = mysqli_query($conn, $checkAdminQuery);
+    $user = mysqli_fetch_assoc($result);
+
+    if ($user['role'] === '1') {
+        // Check if this is the last admin
+        $adminCountQuery = "SELECT COUNT(*) as admin_count FROM users WHERE role = '1'";
+        $adminCountResult = mysqli_query($conn, $adminCountQuery);
+        $adminCount = mysqli_fetch_assoc($adminCountResult)['admin_count'];
+
+        if ($adminCount <= 1) {
+            $response['error'] = 'Cannot delete the last admin user';
+            echo json_encode($response);
+            return;
+        }
+    }
+    // Fetch user_id for the user
+    $userQuery = "SELECT id FROM users WHERE id = '$user_id'";
+    $userResult = mysqli_query($conn, $userQuery);
+    $userData = mysqli_fetch_assoc($userResult);
+
+    if ($userData) {
+		// Proceed with deletion
+		$deleteQuery = "DELETE FROM users WHERE id = '$user_id'";
+		if (mysqli_query($conn, $deleteQuery)) {
+			$response['success'] = 'User deleted successfully';
+		} else {
+			$response['error'] = 'Database error: ' . mysqli_error($conn);
+		}
+    } else {
+        $response['error'] = 'User not found';
+        echo json_encode($response);
+        return;
+    }
+
+    echo json_encode($response);
+    return;
+}
+
 //IMPORT FORMULA FROM TEXT
 if ($_POST['action'] == 'importTXTFormula') {
     require_once(__ROOT__ . '/func/genFID.php');

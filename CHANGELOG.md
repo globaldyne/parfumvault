@@ -31,6 +31,9 @@
 - Refactor JSON exports
 - Improve file uploads
 - Improve CSV imports
+- Added multi user support
+- Renamed General settings to My preferences as will contain only personal user settings
+- Added System Settings page to administer the system - only available to admins
 
 ### Version 12.4
 - Add dilutant in API formulas
