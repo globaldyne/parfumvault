@@ -50,7 +50,7 @@ ADD scripts/php-fpm/php-fpm.conf /etc/php-fpm.conf
 ADD scripts/entrypoint.sh /usr/bin/entrypoint.sh
 ADD scripts/nginx/nginx.conf /etc/nginx/nginx.conf
 ADD scripts/reset_pass.sh /usr/bin/reset_pass.sh
-ADD scripts/sync_db.sh /usr/bin/sync_db.sh
+ADD scripts/update_user_column.sh /usr/bin/update_user_column.sh
 
 
 RUN chmod +x /usr/bin/entrypoint.sh
