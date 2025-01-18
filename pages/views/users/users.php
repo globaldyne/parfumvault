@@ -22,7 +22,7 @@ if($role !== 1){
                 <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="#" id="addUser" data-bs-toggle="modal" data-bs-target="#addUserModal" aria-controls="addUser"><i class="bi bi-plus mx-2"></i>Add new user</a></li>
                     <li><a class="dropdown-item" href="/pages/export.php?format=json&kind=users"><i class="bi bi-download mx-2"></i>Export to JSON</a></li>
-                    <li><a class="dropdown-item" href="#"><i class="bi bi-upload mx-2"></i>Import from JSON</a></li>
+                    <li><a class="dropdown-item" href="#" id="importUser" data-bs-toggle="modal" data-bs-target="#importUserModal" aria-controls="importUser"><i class="bi bi-upload mx-2"></i>Import from JSON</a></li>
                 </ul>
             </div>
         </div>
@@ -62,8 +62,6 @@ if($role !== 1){
     </div>
 </div>
 
-
-
 <div class="modal fade" id="editUserModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -79,6 +77,30 @@ if($role !== 1){
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary" id="saveUserChanges">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="importUserModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="importUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="importUserModalLabel">Import Users from JSON</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div id="importUserModalMsg"></div>
+            <div class="modal-body" id="importUserModalBody">
+                <form id="importUserForm" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="jsonFile" class="form-label">Select JSON file</label>
+                        <input class="form-control" type="file" id="jsonFile" name="jsonFile" accept=".json">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="importUsers">Import Users</button>
             </div>
         </div>
     </div>
@@ -201,12 +223,59 @@ $(document).ready(function() {
 		'<button type="button" class="btn btn-floating hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="bi bi-three-dots-vertical"></i></button>' +
 			'<ul class="dropdown-menu">';	
         data += '<li><a class="dropdown-item" href="#" data-bs-target="#editUser" data-bs-toggle="editUser" id="editUser" rel="tip" title="Edit ' + row.full_name + '" data-id=' + row.id + ' data-name="' + row.full_name +'"><i class="bi bi-pencil-square mx-2"></i>Edit</a></li>';
+        if (row.id !== <?php echo $userID; ?>) {
+            data += '<li><a class="dropdown-item" href="#" id="impersonateUser" rel="tip" title="Impersonate ' + row.full_name + '" data-id=' + row.id + ' data-name="' + row.full_name + '"><i class="bi bi-person-bounding-box mx-2"></i>Impersonate</a></li>';
+        }
 		data += '<li><a class="dropdown-item text-danger" href="#" id="deleteUser" rel="tip" title="Delete ' + row.full_name + '" data-id=' + row.id + ' data-name="' + row.full_name + '"><i class="bi bi-trash mx-2"></i>Delete</a></li>';
 		data += '</ul></div>';
 		return data;
 	};
 	
-	
+    $('#tdUsers').on('click', '#impersonateUser', function() {
+        var id = $(this).data('id');
+        var name = $(this).data('name');
+
+        bootbox.confirm({
+            title: 'Impersonate User',
+            message: 'Are you sure you want to impersonate <strong>' + name + '</strong>?',
+            buttons: {
+                confirm: {
+                    label: 'Yes, Impersonate',
+                    className: 'btn-primary'
+                },
+                cancel: {
+                    label: 'Cancel',
+                    className: 'btn-secondary'
+                }
+            },
+            callback: function(result) {
+                if (result) {
+                    $.ajax({
+                        url: '/core/core.php',
+                        type: 'POST',
+                        data: {
+                            request: 'impersonateuser',
+                            impersonate_user_id: id
+                        },
+                        dataType: 'json',
+                        success: function(data) {
+                            if (data.success) {
+                                window.location.href = data.redirect_url;
+                            } else {
+                                bootbox.alert('<div class="alert alert-danger"><i class="bi bi-exclamation-circle mx-2"></i>' + data.error + '</div>');
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            bootbox.alert('<div class="alert alert-danger"><i class="bi bi-exclamation-circle mx-2"></i>An error occurred, check server logs for more info. ' + error + '</div>');
+                        }
+                    });
+                }
+            }
+        });
+    });
+
+    
+    
     $('#tdUsers').on('click', '#deleteUser', function() {
         var id = $(this).data('id');
         var name = $(this).data('name');
@@ -232,7 +301,7 @@ $(document).ready(function() {
                        type: 'POST',
                        data: {
                            request: 'deleteuser',
-                           user_id: id 
+                           user_id: id
                        },
                        dataType: 'json',
                        success: function (data) {
@@ -240,11 +309,11 @@ $(document).ready(function() {
                                reload_data();
                                bootbox.hideAll(); // Close the dialog on success
                            } else {
-                               $('#resp_area').html('<div class="alert alert-danger"><i class="bi bi-exclamation-diamond mx-2"></i>' + data.error + '</div>');
+                               $('#resp_area').html('<div class="alert alert-danger"><i class="bi bi-exclamation-circle mx-2"></i>' + data.error + '</div>');
                            }
                        },
                        error: function (xhr, status, error) {
-                           $('#resp_area').html('<div class="alert alert-danger"><i class="bi bi-exclamation-diamond mx-2"></i>An error occurred, check server logs for more info. ' + error + '</div>');
+                           $('#resp_area').html('<div class="alert alert-danger"><i class="bi bi-exclamation-circle mx-2"></i>An error occurred, check server logs for more info. ' + error + '</div>');
                        }
                    });
                    return false;
@@ -267,7 +336,7 @@ $(document).ready(function() {
                 $('#addUserModalBody').html(data);
             },
             error: function(xhr, status, error) {
-                $('#addUserModalBody').html('<div class="alert alert-danger"><i class="bi bi-exclamation-diamond mx-2"></i>An error occurred while loading the form. ' + error + '</div>');
+                $('#addUserModalBody').html('<div class="alert alert-danger"><i class="bi bi-exclamation-circle mx-2"></i>An error occurred while loading the form. ' + error + '</div>');
             }
         });
     });
@@ -291,12 +360,35 @@ $(document).ready(function() {
                 $('#editUserModalBody').html(data);
             },
             error: function(xhr, status, error) {
-                $('#editUserModalBody').html('<div class="alert alert-danger"><i class="bi bi-exclamation-diamond mx-2"></i>An error occurred while loading user data. ' + error + '</div>');
+                $('#editUserModalBody').html('<div class="alert alert-danger"><i class="bi bi-exclamation-circle mx-2"></i>An error occurred while loading user data. ' + error + '</div>');
             }
         });
     
     });
 	
+    $('#importUsers').click(function() {
+        var formData = new FormData($('#importUserForm')[0]);
+        $.ajax({
+            url: '/pages/views/users/import_users.php',
+            type: 'POST',
+            data: formData,
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            success: function(data) {
+                if (data.success) {
+                    $('#importUserModalMsg').html('<div class="alert alert-success"><i class="bi bi-check-circle mx-2"></i>' + data.message + '</div>');
+                    reload_data();
+                } else {
+                    $('#importUserModalMsg').html('<div class="alert alert-danger"><i class="bi bi-exclamation-circle mx-2"></i>' + data.message + '</div>');
+                }
+            },
+            error: function(xhr, status, error) {
+                $('#importUserModalMsg').html('<div class="alert alert-danger"><i class="bi bi-exclamation-circle mx-2"></i>An error occurred while importing users. ' + error + '</div>');
+            }
+        });
+    });
+
 	function reload_data() {
 		$('#tdUsers').DataTable().ajax.reload(null, true);
 	};
@@ -310,8 +402,6 @@ $(document).ready(function() {
 			 delay: {"show": 100, "hide": 0},
 		 });
 	};
-	
-
 
 });
 </script>

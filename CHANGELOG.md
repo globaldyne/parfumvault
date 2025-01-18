@@ -34,6 +34,9 @@
 - Added multi user support
 - Renamed General settings to My preferences as will contain only personal user settings
 - Added System Settings page to administer the system - only available to admins
+- Added users import
+- Added users export
+- Added user impersonation
 
 ### Version 12.4
 - Add dilutant in API formulas

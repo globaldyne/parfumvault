@@ -20,7 +20,31 @@ if (!isset($userID) || $userID === '' || !is_numeric($userID)) {
     return;
 }
 
+//IMPERSONATE USER
+if (isset($_POST['impersonate_user_id']) && is_numeric($_POST['impersonate_user_id'])) {
+	$impersonate_user_id = (int)$_POST['impersonate_user_id'];
 
+	// Fetch user details
+	$impersonateQuery = $conn->prepare("SELECT id, fullName, email, role FROM users WHERE id = ?");
+	$impersonateQuery->bind_param("i", $impersonate_user_id);
+	$impersonateQuery->execute();
+	$result = $impersonateQuery->get_result();
+
+	if ($result->num_rows > 0) {
+		$impersonateUser = $result->fetch_assoc();
+
+		//$_SESSION['parfumvault'] = true;
+		$_SESSION['userID'] = $impersonateUser['id'];
+		$_SESSION['role'] = $impersonateUser['role'];
+
+		echo json_encode(['success' => 'User impersonation started', 'redirect_url' => '/']);
+	} else {
+		echo json_encode(['error' => 'User not found']);
+	}
+
+	$impersonateQuery->close();
+	return;
+}
 
 
 //UPDATE USER INFO BY ADMIN
