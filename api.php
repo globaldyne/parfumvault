@@ -33,11 +33,17 @@ file_put_contents(LOG_PATH . LOG_API_FILE, $reqDump, FILE_APPEND);
  * Check API authentication
  */
 function apiCheckAuth($key, $conn) {
-    $query = "SELECT id FROM settings WHERE api = '1' AND api_key = ?";
+    global $userID;
+    $query = "SELECT id FROM users WHERE isAPIActive = '1' AND isActive = '1' AND API_key = ?";
     $stmt = mysqli_prepare($conn, $query);
     mysqli_stmt_bind_param($stmt, 's', $key);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_store_result($stmt);
+
+    mysqli_stmt_bind_result($stmt, $id);
+    if (mysqli_stmt_fetch($stmt)) {
+        $userID = $id;
+    }
     return mysqli_stmt_num_rows($stmt) > 0;
 }
 
@@ -52,8 +58,6 @@ function validateKeyAndExecute($conn, $key, $callback) {
     }
     return $callback();
 }
-$user = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM users WHERE id = '".$_SESSION['userID']."'")); 
-$userID = (int)$user['id'];
 
 // Validate required parameters
 $key = $_REQUEST['key'] ?? null;

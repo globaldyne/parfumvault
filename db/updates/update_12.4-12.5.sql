@@ -56,6 +56,8 @@ UPDATE `suppliers` SET `owner_id` = '1';
 UPDATE `synonyms` SET `owner_id` = '1'; 
 UPDATE `templates` SET `owner_id` = '1'; 
 
+ALTER TABLE `settings` DROP `api`, DROP `api_key`; 
+  
 ALTER TABLE `ingredient_safety_data` CHANGE `owner_id` `owner_id` INT(11) NOT NULL; 
 ALTER TABLE `ingredients` DROP INDEX `name`;
 ALTER TABLE `ingSuppliers` DROP INDEX `name`;

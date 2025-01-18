@@ -2,21 +2,26 @@
 
 if (!defined('pvault_panel')){ die('Not Found');}
 
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 global $conn, $userID;
 
+$stmt = $conn->prepare("SELECT ingSupplierID, ingID, supplierLink, price, size, manufacturer, preferred FROM suppliers WHERE owner_id = ?");
+$stmt->bind_param("i", $userID);
+$stmt->execute();
+$result = $stmt->get_result();
 
-$sql = mysqli_query($conn, "SELECT ingSupplierID, ingID, supplierLink, price, size, manufacturer, preferred FROM suppliers WHERE owner_id = '$userID'");
 $rows = array();
-while($r = mysqli_fetch_assoc($sql)) {
-  if (empty($r['manufacturer'])) {
-	 $r['manufacturer'] = "-";
-  }
-  if (empty($r['supplierLink'])) {
-	 $r['supplierLink'] = "-";
-  }
+while($r = $result->fetch_assoc()) {
+  $r['manufacturer'] = $r['manufacturer'] ?: "-";
+  $r['supplierLink'] = $r['supplierLink'] ?: "-";
   $rows['suppliers'][] = $r;
 }
-header('Content-Type: application/json; charset=utf-8');
-echo json_encode($rows, JSON_NUMERIC_CHECK, JSON_PRETTY_PRINT);
+
+if (empty($rows)) {
+  echo json_encode(array('message' => 'No suppliers found'), JSON_NUMERIC_CHECK | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+} else {
+  echo json_encode($rows, JSON_NUMERIC_CHECK | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+}
+
+$stmt->close();
 return;

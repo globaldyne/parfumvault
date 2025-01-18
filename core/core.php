@@ -569,6 +569,7 @@ if($_POST['manage'] == 'general'){
 	return;
 }
 
+//UPDATE API SETTINGS
 if($_POST['manage'] == 'api'){
 	
 	$api = $_POST['api'];
@@ -584,8 +585,8 @@ if($_POST['manage'] == 'api'){
 		$api = '0';
 	}
 	
-	if(mysqli_query($conn, "UPDATE settings SET api = '$api', api_key='$api_key'")){
-		$response['success'] = 'API settings updated!';	
+	if(mysqli_query($conn, "UPDATE users SET isAPIActive = '$api', API_key='$api_key'")){
+		$response['success'] = 'API settings updated';	
 	}else{
 		$response['error'] = 'An error occured '.mysqli_error($conn);	
 	}

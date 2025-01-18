@@ -37,6 +37,7 @@
 - Added users import
 - Added users export
 - Added user impersonation
+- API key and status is now configured per user
 
 ### Version 12.4
 - Add dilutant in API formulas

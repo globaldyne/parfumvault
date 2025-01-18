@@ -19,7 +19,9 @@ check_column_exists() {
 add_columns() {
     ALTER_QUERY="ALTER TABLE \`users\` 
                 ADD \`isActive\` INT NOT NULL DEFAULT '1' AFTER \`role\`,
-                ADD \`country\` VARCHAR(255) NULL DEFAULT NULL AFTER \`isActive\`, 
+                ADD \`country\` VARCHAR(255) NULL DEFAULT NULL AFTER \`isActive\`,
+                ADD \`isAPIActive\` INT NOT NULL DEFAULT '0' AFTER \`country\`,
+                ADD \`API_key\` VARCHAR(255) NULL DEFAULT NULL AFTER \`isAPIActive\`, 
                 ADD \`provider\` INT NOT NULL DEFAULT '1' COMMENT '1=Local,2=SSO' AFTER \`fullName\`;"
     mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASS" -D "$DB_NAME" -e "$ALTER_QUERY"
     if [ $? -eq 0 ]; then
