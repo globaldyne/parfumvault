@@ -3,7 +3,7 @@
 if (!defined('pvault_panel')){ die('Not Found');}
 
 header('Content-Type: application/json');
-global $conn;
+global $conn, $userID;
 // Pagination setup
 $itemsPerPage = isset($_GET['limit']) ? (int)$_GET['limit'] : 10; // Default to 10 items per page
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Default to page 1
@@ -12,7 +12,8 @@ $offset = ($page - 1) * $itemsPerPage;
 
 // Query to fetch paginated data
 $sql = mysqli_query($conn, "SELECT id, ownerID, type, name, notes, docData, created_at, updated_at 
-                            FROM documents 
+                            FROM documents
+                            WHERE owner_id = '$userID'
                             LIMIT $itemsPerPage OFFSET $offset");
 
 // Check if the query was successful

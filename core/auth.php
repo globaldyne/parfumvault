@@ -30,7 +30,7 @@ if ($_POST['action'] == 'login') {
     $password = $_POST['password'];
 
     // Fetch user details from the database
-    $result = mysqli_query($conn, "SELECT id, email, password, role FROM users WHERE email='$email'");
+    $result = mysqli_query($conn, "SELECT id, email, password, role FROM users WHERE email='$email' AND isActive = '1'");
     if ($result && mysqli_num_rows($result) > 0) {
         $row = mysqli_fetch_assoc($result);
 

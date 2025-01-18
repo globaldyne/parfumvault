@@ -52,6 +52,8 @@ function validateKeyAndExecute($conn, $key, $callback) {
     }
     return $callback();
 }
+$user = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM users WHERE id = '".$_SESSION['userID']."'")); 
+$userID = (int)$user['id'];
 
 // Validate required parameters
 $key = $_REQUEST['key'] ?? null;

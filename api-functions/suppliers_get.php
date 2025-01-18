@@ -3,17 +3,17 @@
 if (!defined('pvault_panel')){ die('Not Found');}
 
 header('Content-Type: application/json');
-global $conn;
+global $conn, $userID;
 
 
-$sql = mysqli_query($conn, "SELECT ingSupplierID, ingID, supplierLink, price, size, manufacturer, preferred FROM suppliers");
+$sql = mysqli_query($conn, "SELECT ingSupplierID, ingID, supplierLink, price, size, manufacturer, preferred FROM suppliers WHERE owner_id = '$userID'");
 $rows = array();
 while($r = mysqli_fetch_assoc($sql)) {
   if (empty($r['manufacturer'])) {
-	 $r['manufacturer'] = "N/A";
+	 $r['manufacturer'] = "-";
   }
   if (empty($r['supplierLink'])) {
-	 $r['supplierLink'] = "N/A";
+	 $r['supplierLink'] = "-";
   }
   $rows['suppliers'][] = $r;
 }

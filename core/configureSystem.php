@@ -41,8 +41,8 @@ if ($_POST['action'] == 'register') {
 
     // Insert user into the database
     $insertUserQuery = "
-        INSERT INTO users (id, email, password, fullName, role) 
-        VALUES (1, '$email', '$hashedPassword', '$fullName', 1)";
+        INSERT INTO users (id, email, password, fullName, role, isActive) 
+        VALUES (1, '$email', '$hashedPassword', '$fullName', 1, 1)";
     
     if (mysqli_query($conn, $insertUserQuery)) {
         $db_ver = trim(file_get_contents(__ROOT__ . '/db/schema.ver'));
