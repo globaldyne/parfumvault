@@ -1,0 +1,317 @@
+<?php
+define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__))))); 
+
+require_once(__ROOT__.'/inc/sec.php');
+require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/inc/settings.php');
+
+
+if($role !== 1){
+    echo 'Unauthorised';
+    return;
+}
+
+?>
+<h3>Users</h3>
+<hr>
+<div class="card-body">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <div class="btn-toolbar mb-2 mb-md-0 ms-auto">
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#" id="addUser" data-bs-toggle="modal" data-bs-target="#addUserModal" aria-controls="addUser"><i class="bi bi-plus mx-2"></i>Add new user</a></li>
+                    <li><a class="dropdown-item" href="/pages/export.php?format=json&kind=users"><i class="bi bi-download mx-2"></i>Export to JSON</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="bi bi-upload mx-2"></i>Import from JSON</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<table id="tdUsers" class="table table-striped" style="width:100%">
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Status</th>
+          <th>Role</th>
+          <th>Provider</th>
+          <th>Created</th>
+          <th>Updated</th>
+          <th></th>
+      </tr>
+   </thead>
+</table>
+
+<div class="modal fade" id="addUserModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addUserModalLabel">Add new user</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div id="addUserModalMsg"></div>
+            <div class="modal-body" id="addUserModalBody">
+                <!-- Content will be loaded here from the AJAX call -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="saveNewUser">Save User</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="editUserModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+        <input type="hidden" name="id" id="id" />
+            <div class="modal-header">
+                <h5 class="modal-title" id="editUserModalLabel">Edit User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div id="editUserModalMsg"></div>
+            <div class="modal-body" id="editUserModalBody">
+                <!-- Content will be loaded here from the AJAX call -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="saveUserChanges">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+	$.fn.dataTable.ext.errMode = 'none';
+
+	var tdUsers = $('#tdUsers').DataTable( {
+		columnDefs: [
+			{ className: 'text-center', targets: '_all' },
+			{ orderable: false, targets: [7] }
+		],
+		dom: 'lfrtip',
+		processing: true,
+		language: {
+			loadingRecords: '&nbsp;',
+			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
+			emptyTable: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>No users added yet</strong></div></div>',
+			zeroRecords: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>Nothing found</strong></div></div>',
+			search: '',
+			searchPlaceholder: 'Search by name...',
+		},
+		ajax: {	url: '/core/users_data.php' },
+		columns: [
+		    { data : 'full_name', title: 'Full name'},
+		    { data : 'email', title: 'Username'},
+            { data : 'status', title: 'Status', render: status},
+            { data : 'role', title: 'Role', render: role},
+            { data : 'provider', title: 'Provider', render: provider},
+            { data : 'created_at', title: 'Created', render: created_at},
+			{ data : 'updated_at', title: 'Updated', render: updated_at},
+			{ data : null, title: '', render: actions},		   
+		],
+		order: [[ 1, 'asc' ]],
+		lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
+		pageLength: 20,
+		displayLength: 20,
+		drawCallback: function( settings ) {
+			extrasShow();
+		},
+		stateSave: true,
+		stateDuration: -1,
+		stateLoadCallback: function (settings, callback) {
+			$.ajax( {
+				url: '/core/update_user_settings.php?set=listUsersl&action=load',
+				dataType: 'json',
+				success: function (json) {
+					callback( json );
+				}
+			});
+		},
+		stateSaveCallback: function (settings, data) {
+		   $.ajax({
+			 url: "/core/update_user_settings.php?set=listUsers&action=save",
+			 data: data,
+			 dataType: "json",
+			 type: "POST"
+		  });
+		},	
+	}).on('error.dt', function(e, settings, techNote, message) {
+		var m = message.split(' - ');
+		$('#tdUsers').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i><strong>' + m[1] + '</strong></div>');
+    });
+
+
+    function status(data, type, row){
+        if(row.status == 1){
+            var data = '<span class="badge rounded-pill d-block p-2 text-bg-success">Active</span>';
+        }
+        if(row.status == 0){
+            var data = '<span class="badge rounded-pill d-block p-2 text-bg-danger">Inactive</span>';
+        }
+        return data;
+    };
+	
+	function role(data, type, row){
+		if(row.role == 2){
+            var data = '<span class="badge rounded-pill d-block p-2 text-bg-secondary">User</span>';
+        }
+        if(row.role == 1){
+            var data = '<span class="badge rounded-pill d-block p-2 text-bg-success">Admin</span>';
+        }
+        return data;
+	};
+
+	function provider(data, type, row){
+        if(row.provider == 2){
+            var data = '<span class="badge rounded-pill d-block p-2 text-bg-danger">SSO</span>';
+        }
+        if(row.provider == 1){
+            var data = '<span class="badge rounded-pill d-block p-2 text-bg-secondary">Email</span>';
+        }
+        return data;
+
+    };
+
+    function updated_at(data, type, row){
+		const date = new Date(data);
+		return date.toLocaleDateString(navigator.language || 'en-GB', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
+	};
+
+    function created_at(data, type, row){
+		const date = new Date(data);
+		return date.toLocaleDateString(navigator.language || 'en-GB', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
+	};
+
+	
+    function actions(data, type, row) {
+		data = '<div class="dropdown">' +
+		'<button type="button" class="btn btn-floating hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="bi bi-three-dots-vertical"></i></button>' +
+			'<ul class="dropdown-menu">';	
+        data += '<li><a class="dropdown-item" href="#" data-bs-target="#editUser" data-bs-toggle="editUser" id="editUser" rel="tip" title="Edit ' + row.full_name + '" data-id=' + row.id + ' data-name="' + row.full_name +'"><i class="bi bi-pencil-square mx-2"></i>Edit</a></li>';
+		data += '<li><a class="dropdown-item text-danger" href="#" id="deleteUser" rel="tip" title="Delete ' + row.full_name + '" data-id=' + row.id + ' data-name="' + row.full_name + '"><i class="bi bi-trash mx-2"></i>Delete</a></li>';
+		data += '</ul></div>';
+		return data;
+	};
+	
+	
+    $('#tdUsers').on('click', '#deleteUser', function() {
+        var id = $(this).data('id');
+        var name = $(this).data('name');
+
+        bootbox.confirm({
+           title: name,
+           message : 'Delete <strong>' + name + '</strong>?'+
+           '<div id="resp_area"></div>',
+           buttons: {
+               confirm: {
+                   label: "Confirm Delete",
+                   className: "btn-danger"
+               },
+               cancel: {
+                   label: "Cancel",
+                   className: "btn-secondary"
+               }
+           },
+           callback: function (result) {
+               if (result) {
+                   $.ajax({ 
+                       url: '/core/core.php', 
+                       type: 'POST',
+                       data: {
+                           request: 'deleteuser',
+                           user_id: id 
+                       },
+                       dataType: 'json',
+                       success: function (data) {
+                           if (data.success) {
+                               reload_data();
+                               bootbox.hideAll(); // Close the dialog on success
+                           } else {
+                               $('#resp_area').html('<div class="alert alert-danger"><i class="bi bi-exclamation-diamond mx-2"></i>' + data.error + '</div>');
+                           }
+                       },
+                       error: function (xhr, status, error) {
+                           $('#resp_area').html('<div class="alert alert-danger"><i class="bi bi-exclamation-diamond mx-2"></i>An error occurred, check server logs for more info. ' + error + '</div>');
+                       }
+                   });
+                   return false;
+               }
+           },
+           onEscape: function () {
+               return true;
+           }
+       });
+    });
+
+    $('#addUser').click(function() {
+        $('#addUserModal').modal('show');
+        $('#addUserModalBody').html('Loading...');
+        addUserModalMsg.innerHTML = '';
+        $.ajax({
+            url: '/pages/views/users/add_user.php',
+            type: 'GET',
+            success: function(data) {
+                $('#addUserModalBody').html(data);
+            },
+            error: function(xhr, status, error) {
+                $('#addUserModalBody').html('<div class="alert alert-danger"><i class="bi bi-exclamation-diamond mx-2"></i>An error occurred while loading the form. ' + error + '</div>');
+            }
+        });
+    });
+
+
+    $('#tdUsers').on('click', '#editUser', function() {
+        var id = $(this).data('id');
+        var name = $(this).data('name');
+        editUserModalMsg.innerHTML = '';
+        $('#editUserModal #id').val(id);
+        $('#editUserModal').modal('show');
+        $('#editUserModalLabel').html(name);
+        $('#editUserModalBody').html('Loading...');
+        $.ajax({
+            url: '/pages/views/users/edit_user.php',
+            type: 'GET',
+            data: { 
+                id: id 
+            },
+            success: function(data) {
+                $('#editUserModalBody').html(data);
+            },
+            error: function(xhr, status, error) {
+                $('#editUserModalBody').html('<div class="alert alert-danger"><i class="bi bi-exclamation-diamond mx-2"></i>An error occurred while loading user data. ' + error + '</div>');
+            }
+        });
+    
+    });
+	
+	function reload_data() {
+		$('#tdUsers').DataTable().ajax.reload(null, true);
+	};
+	
+	function extrasShow() {
+		$('[rel=tip]').tooltip({
+			 html: true,
+			 boundary: "window",
+			 overflow: "auto",
+			 container: "body",
+			 delay: {"show": 100, "hide": 0},
+		 });
+	};
+	
+
+
+});
+</script>
