@@ -55,7 +55,7 @@ ADD scripts/update_user_column.sh /usr/bin/update_user_column.sh
 
 RUN chmod +x /usr/bin/entrypoint.sh
 RUN chmod +x /usr/bin/reset_pass.sh
-RUN chmod +x /usr/bin/sync_db.sh
+RUN chmod +x /usr/bin/update_user_column.sh
 
 
 RUN rm -rf /html/.git /html/.github
