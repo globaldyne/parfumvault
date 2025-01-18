@@ -43,7 +43,7 @@ if($role !== 1){
             <?php
             $countries = json_decode($countriesJson, true);
             foreach ($countries as $country) {
-                echo '<option value="' . htmlspecialchars($country['name']) . '">' . htmlspecialchars($country['name']) . '</option>';
+                echo '<option value="' . htmlspecialchars($country['isoAlpha2']) . '">' . htmlspecialchars($country['name']) . '</option>';
             }
             ?>
         </select>

@@ -150,12 +150,6 @@ if (isset($_POST['request']) && $_POST['request'] === 'updateuser') {
 }
 
 
-
-
-
-
-
-
 //CREATE USER BY ADMIN
 if (isset($_POST['request']) && $_POST['request'] === 'adduser') {
 
@@ -214,15 +208,18 @@ if (isset($_POST['request']) && $_POST['request'] === 'deleteuser') {
     $user_id = mysqli_real_escape_string($conn, $_POST['user_id']);
     
     // Check if the user is an admin
-    $checkAdminQuery = "SELECT role FROM users WHERE id = '$user_id'";
-    $result = mysqli_query($conn, $checkAdminQuery);
-    $user = mysqli_fetch_assoc($result);
+    $checkAdminQuery = $conn->prepare("SELECT role FROM users WHERE id = ?");
+    $checkAdminQuery->bind_param("i", $user_id);
+    $checkAdminQuery->execute();
+    $result = $checkAdminQuery->get_result();
+    $user = $result->fetch_assoc();
 
-    if ($user['role'] === '1') {
+    if ($user['role'] === 1) {
         // Check if this is the last admin
-        $adminCountQuery = "SELECT COUNT(*) as admin_count FROM users WHERE role = '1'";
-        $adminCountResult = mysqli_query($conn, $adminCountQuery);
-        $adminCount = mysqli_fetch_assoc($adminCountResult)['admin_count'];
+        $adminCountQuery = $conn->prepare("SELECT COUNT(*) as admin_count FROM users WHERE role = '1'");
+        $adminCountQuery->execute();
+        $adminCountResult = $adminCountQuery->get_result();
+        $adminCount = $adminCountResult->fetch_assoc()['admin_count'];
 
         if ($adminCount <= 1) {
             $response['error'] = 'Cannot delete the last admin user';
@@ -230,23 +227,43 @@ if (isset($_POST['request']) && $_POST['request'] === 'deleteuser') {
             return;
         }
     }
+
     // Fetch user_id for the user
-    $userQuery = "SELECT id FROM users WHERE id = '$user_id'";
-    $userResult = mysqli_query($conn, $userQuery);
-    $userData = mysqli_fetch_assoc($userResult);
+    $userQuery = $conn->prepare("SELECT id FROM users WHERE id = ?");
+    $userQuery->bind_param("i", $user_id);
+    $userQuery->execute();
+    $userResult = $userQuery->get_result();
+    $userData = $userResult->fetch_assoc();
 
     if ($userData) {
-		// Proceed with deletion
-		$deleteQuery = "DELETE FROM users WHERE id = '$user_id'";
-		if (mysqli_query($conn, $deleteQuery)) {
-			$response['success'] = 'User deleted successfully';
-		} else {
-			$response['error'] = 'Database error: ' . mysqli_error($conn);
-		}
+        // Proceed with deletion
+        $deleteQuery = $conn->prepare("DELETE FROM users WHERE id = ?");
+        $deleteQuery->bind_param("i", $user_id);
+
+        $tables = [
+            "backup_provider", "batchIDHistory", "bottles", "cart", "customers", "documents",
+            "formulaCategories", "formulas", "formulasMetaData", "formulasRevisions", "formulasTags",
+            "formula_history", "IFRALibrary", "ingCategory", "ingredients", "ingredient_compounds",
+            "ingredient_safety_data", "ingReplacements", "ingSafetyInfo", "ingSuppliers", "inventory_accessories",
+            "inventory_compounds", "makeFormula", "perfumeTypes", "sds_data", "suppliers", "synonyms",
+            "templates", "user_prefs"
+        ];
+
+        foreach ($tables as $table) {
+            $deleteStmt = $conn->prepare("DELETE FROM $table WHERE owner_id = ?");
+            $deleteStmt->bind_param("i", $user_id);
+            $deleteStmt->execute();
+            $deleteStmt->close();
+        }
+
+        if ($deleteQuery->execute()) {
+            $response['success'] = 'User deleted successfully';
+        } else {
+            $response['error'] = 'Database error: ' . $deleteQuery->error;
+        }
+        $deleteQuery->close();
     } else {
         $response['error'] = 'User not found';
-        echo json_encode($response);
-        return;
     }
 
     echo json_encode($response);
