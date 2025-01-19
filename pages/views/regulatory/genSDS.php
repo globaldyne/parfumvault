@@ -8,6 +8,7 @@ require_once(__ROOT__.'/inc/product.php');
 
 $defCatClass = $settings['defCatClass'];
 $defPercentage = $settings['defPercentage'];
+$branding = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM branding WHERE owner_id = '$userID'"));
 
 
 if ($_POST['do'] = 'genSDS') {
@@ -44,8 +45,7 @@ if ($_POST['do'] = 'genSDS') {
   $productState = $_POST['productState'];
 
 
-  $brand_name = $settings['brandName'];
-  //$disclaimer = $settings['sds_disclaimer'];
+  $brand_name = $branding['brandName'];
   
   $disclaimer = nl2br(htmlspecialchars_decode($settings['sds_disclaimer'], ENT_QUOTES));
 
@@ -61,10 +61,10 @@ if ($_POST['do'] = 'genSDS') {
   $ingSafetyInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredient_safety_data WHERE ingID = '$ingID' AND owner_id = '$userID'"));
   $ingAllInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE id = '$ingID' AND owner_id = '$userID'"));
 
-  if ( empty($settings['brandLogo']) ){ 
+  if ( empty($branding['brandLogo']) ){ 
     $logo = "/img/logo.png";
   }else{
-    $logo = $settings['brandLogo'];
+    $logo = $branding['brandLogo'];
   }
 
   $search  = array(

@@ -8,8 +8,9 @@ require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/inc/product.php');
 require_once(__ROOT__.'/libs/fpdf.php');
 
+$branding = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM branding WHERE owner_id = '$userID'"));
 
-$imageData = base64_decode(explode(',', $settings['brandLogo'])[1]);
+$imageData = base64_decode(explode(',', $branding['brandLogo'])[1]);
 $tempImagePath = $tmp_path.'/temp_logo.png';
 
 if (!file_exists($tmp_path)) {
@@ -160,10 +161,10 @@ if ($_REQUEST['action'] == 'generateDOC' && $_REQUEST['kind'] == 'ingredient'){
 		'Compositions' => $cmp,
 		'Synonyms' => $syn,
 		'contact' => [
-			"Name" => $settings['brandName'],
-			"Address" => $settings['brandAddress'],
-			"Email" => $settings['brandEmail'],
-			"Phone" => $settings['brandPhone']
+			"Name" => $branding['brandName'],
+			"Address" => $branding['brandAddress'],
+			"Email" => $branding['brandEmail'],
+			"Phone" => $branding['brandPhone']
 		]
 	];
 	

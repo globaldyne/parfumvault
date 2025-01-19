@@ -7048,45 +7048,37 @@ if($_POST['action'] == 'removeFromCart' && $_POST['materialId']){
 
 //VIEW BOX BACK LABEL
 if($_GET['action'] == 'viewBoxLabel' && $_GET['fid']){
-	$fid = $_GET['fid'];
-	
-	$q = mysqli_fetch_array(mysqli_query($conn, "SELECT name,product_name FROM formulasMetaData WHERE fid = '".$fid."' AND owner_id = '$userID'"));
-	$name = $q['name'];
-	$qIng = mysqli_query($conn, "SELECT ingredient FROM formulas WHERE fid = '".$fid."' AND owner_id = '$userID'");
+    $fid = mysqli_real_escape_string($conn, $_GET['fid']);
+    
+    $q = mysqli_fetch_array(mysqli_query($conn, "SELECT name, product_name FROM formulasMetaData WHERE fid = '$fid' AND owner_id = '$userID'"));
+    $name = $q['name'];
+    $qIng = mysqli_query($conn, "SELECT ingredient FROM formulas WHERE fid = '$fid' AND owner_id = '$userID'");
+    $branding = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM branding WHERE owner_id = '$userID'"));
 
-	while($ing = mysqli_fetch_array($qIng)){
-		$chName = mysqli_fetch_array(mysqli_query($conn, "SELECT chemical_name,name FROM ingredients WHERE name = '".$ing['ingredient']."' AND allergen = '1' AND owner_id = '$userID'"));
-		
-		if($qCMP = mysqli_query($conn, "SELECT name FROM ingredient_compounds WHERE ing = '".$ing['ingredient']."' AND toDeclare = '1' AND owner_id = '$userID'")){
-			while($cmp = mysqli_fetch_array($qCMP)){
-				$allergen[] = $cmp['name'];
-			}
-		}
-		$allergen[] = $chName['chemical_name']?:$chName['name'];
-	}
-	$allergen[] = 'Denatured Ethyl Alcohol '.$_GET['carrier'].'% Vol, Fragrance, DPG, Distilled Water';
-	
-	if($_GET['batchID']){
-		$bNo = $_GET['batchID'];
-	}else{
-		$bNO = 'N/A';
-	}
-	if($settings['brandName']){
-		$brand = $settings['brandName'];
-	}else{
-		$brand = 'PV Pro';
-	}
-	$allergenFinal = implode(", ",array_filter(array_unique($allergen)));
-	$info = "FOR EXTERNAL USE ONLY. \nKEEP AWAY FROM HEAT AND FLAME. \nKEEP OUT OF REACH OF CHILDREN. \nAVOID SPRAYING IN EYES. \n \nProduction: ".date("d/m/Y")." \nB. NO: ".$bNo." \n$brand";
+    $allergen = [];
+    while($ing = mysqli_fetch_array($qIng)){
+        $chName = mysqli_fetch_array(mysqli_query($conn, "SELECT chemical_name, name FROM ingredients WHERE name = '".$ing['ingredient']."' AND allergen = '1' AND owner_id = '$userID'"));
+        
+        if($qCMP = mysqli_query($conn, "SELECT name FROM ingredient_compounds WHERE ing = '".$ing['ingredient']."' AND toDeclare = '1' AND owner_id = '$userID'")){
+            while($cmp = mysqli_fetch_array($qCMP)){
+                $allergen[] = $cmp['name'];
+            }
+        }
+        $allergen[] = $chName['chemical_name'] ?: $chName['name'];
+    }
+    $allergen[] = 'Denatured Ethyl Alcohol '.$_GET['carrier'].'% Vol, Fragrance, DPG, Distilled Water';
+    
+    $bNo = $_GET['batchID'] ?: 'N/A';
+    $brand = $branding['brandName'] ?: 'PV Pro';
+    $allergenFinal = implode(", ", array_filter(array_unique($allergen)));
+    $info = "FOR EXTERNAL USE ONLY. \nKEEP AWAY FROM HEAT AND FLAME. \nKEEP OUT OF REACH OF CHILDREN. \nAVOID SPRAYING IN EYES. \n \nProduction: ".date("d/m/Y")." \nB. NO: $bNo \n$brand";
 
+    echo "<pre>";
+    echo "<strong>$name</strong>\n\n";
+    echo "INGREDIENTS\n\n";
+    echo wordwrap($allergenFinal, 90)."\n\n";
+    echo wordwrap($info, 50)."\n\n";
+    echo "</pre>";
 
-	echo "<pre>";
-	echo "<strong>".$name."</strong>\n\n";
-	echo 'INGREDIENTS'."\n\n";
-	echo wordwrap ($allergenFinal, 90)."\n\n";
-	echo wordwrap ($info, 50)."\n\n";
-	echo '</pre>';
-
-
-	return;
+    return;
 }

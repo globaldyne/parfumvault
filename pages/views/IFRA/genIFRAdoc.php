@@ -19,6 +19,7 @@ $bottle = $_POST['bottle'];
 $type = $_POST['conc'];
 $defCatClass = $settings['defCatClass'];
 $defPercentage = $settings['defPercentage'];
+$branding = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM branding WHERE owner_id = '$userID'"));
 
 if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM IFRALibrary WHERE owner_id = '$userID' "))){
 	echo '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>You need to <a href="/?do=IFRA" target="_blank">import</a> the IFRA xls first</div>';
@@ -53,13 +54,13 @@ if(validateFormula($fid, $bottle, $new_conc, $mg['total_mg'], $defCatClass, $set
 }
 
 
-if ( empty($settings['brandLogo']) ){ 
+if ( empty($branding['brandLogo']) ){ 
 	$logo = "/img/logo.png";
 }else{
-	$logo = $settings['brandLogo'];
+	$logo = $branding['brandLogo'];
 }
-if ( empty($settings['brandName']) || empty($settings['brandAddress']) || empty($settings['brandEmail']) || empty($settings['brandPhone']) ){
-	echo '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>Missing brand info, please update your brand details in <a href="/?do=settings">settings</a> page first</div>';
+if ( empty($branding['brandName']) || empty($branding['brandAddress']) || empty($branding['brandEmail']) || empty($branding['brandPhone']) ){
+	echo '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>Missing brand info, please update your brand details in <a href="/?do=settings">branding</a> page first</div>';
 	return;
 }
 if ( empty($customers['name']) || empty($customers['address']) || empty($customers['email']) ){
@@ -68,7 +69,7 @@ if ( empty($customers['name']) || empty($customers['address']) || empty($custome
 }
 
 $template_id = mysqli_real_escape_string($conn, $_POST['template']);
-$template_query = "SELECT name, content FROM templates WHERE id = '$template_id'";
+$template_query = "SELECT name, content FROM templates WHERE id = '$template_id' AND owner_id = '$userID'";
 $template_result = mysqli_query($conn, $template_query);
 $tmpl = mysqli_fetch_array($template_result);
 
@@ -81,8 +82,8 @@ $search = array(
 
 $replace = array(
     $logo, 
-    $settings['brandName'], $settings['brandAddress'], $settings['brandEmail'], 
-    $settings['brandPhone'], $customers['name'], $customers['address'], 
+    $branding['brandName'], $branding['brandAddress'], $branding['brandEmail'], 
+    $branding['brandPhone'], $customers['name'], $customers['address'], 
     $customers['email'], $customers['web'], $meta['product_name'], $bottle, 
     $type, getIFRAMeta('MAX(amendment)', $conn), 
     getIFRAMeta('MAX(last_pub)', $conn), date('d/M/Y')
