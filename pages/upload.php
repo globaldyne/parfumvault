@@ -372,51 +372,62 @@ if($_GET['type'] && $_GET['id']){
 	return;	
 }
 
+//UPLOAD BRAND LOGO
+if ($_GET['type'] == 'brand') {
+    if (isset($_FILES['brandLogo']['name'])) {
+        $file_name = $_FILES['brandLogo']['name'];
+        $file_size = $_FILES['brandLogo']['size'];
+        $file_tmp = $_FILES['brandLogo']['tmp_name'];
+        $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
 
-if($_GET['type'] == 'brand'){
-		
-	if(isset($_FILES['brandLogo']['name'])){
-     	$file_name = $_FILES['brandLogo']['name'];
-      	$file_size = $_FILES['brandLogo']['size'];
-      	$file_tmp = $_FILES['brandLogo']['tmp_name'];
-      	$file_type = $_FILES['brandLogo']['type'];
-      	$file_ext = strtolower(end(explode('.',$_FILES['brandLogo']['name'])));
-	  
-		if (file_exists($tmp_path) === FALSE) {
-			mkdir($tmp_path, 0740, true);
-		}
-	
-		$ext = explode(', ', $allowed_ext);
-		  
-		if(in_array($file_ext,$ext)=== false){
-			$response['error'] = 'Extension not allowed, please choose a '.$allowed_ext.' file';
-			echo json_encode($response);
-			return;
-		}
-			
-		if($file_size > $max_filesize){
-			$response['error'] = 'File size must not exceed '.formatBytes($max_filesize);
-			echo json_encode($response);
-			return;
-		}
-	  
-         if(move_uploaded_file($file_tmp,$tmp_path.base64_encode($file_name))){
-			$pic = base64_encode($file_name);		
-			create_thumb($tmp_path.$pic,250,250); 
-			$docData = 'data:application/' . $file_ext . ';base64,' . base64_encode(file_get_contents($tmp_path.$pic));
+        if (!file_exists($tmp_path)) {
+            mkdir($tmp_path, 0740, true);
+        }
 
-		 	$brandLogoF = $tmp_path.base64_encode($file_name);
-		 	if(mysqli_query($conn, "UPDATE settings SET brandLogo = '$docData'")){
-				unlink($tmp_path.$file_name);
-				$response["success"] = array( "msg" => "Pic updated", "pic" => $docData);
-				echo json_encode($response);
-				return;
-			}
-		 }
-	  }
-   
-	
-	return;	
+        $allowed_ext_array = explode(', ', $allowed_ext);
+        if (!in_array($file_ext, $allowed_ext_array)) {
+            $response['error'] = 'Extension not allowed, please choose a ' . $allowed_ext . ' file';
+            echo json_encode($response);
+            return;
+        }
+
+        if ($file_size > $max_filesize) {
+            $response['error'] = 'File size must not exceed ' . formatBytes($max_filesize);
+            echo json_encode($response);
+            return;
+        }
+
+        $encoded_file_name = base64_encode($file_name);
+        $upload_path = $tmp_path . $encoded_file_name;
+
+        if (move_uploaded_file($file_tmp, $upload_path)) {
+            create_thumb($upload_path, 250, 250);
+            $docData = 'data:image/' . $file_ext . ';base64,' . base64_encode(file_get_contents($upload_path));
+
+            $checkQuery = "SELECT id FROM branding WHERE owner_id = '$userID'";
+            $result = mysqli_query($conn, $checkQuery);
+
+            if (mysqli_num_rows($result) > 0) {
+                $query = "UPDATE branding SET brandLogo = '$docData' WHERE owner_id = '$userID'";
+            } else {
+                $query = "INSERT INTO branding (brandLogo, owner_id) VALUES ('$docData', '$userID')";
+            }
+
+            if (mysqli_query($conn, $query)) {
+                unlink($upload_path);
+                $response["success"] = array("msg" => "Pic updated", "pic" => $docData);
+            } else {
+                $response['error'] = 'Failed to update branding information.';
+            }
+        } else {
+            $response['error'] = 'Failed to upload the file.';
+        }
+    } else {
+        $response['error'] = 'No file uploaded.';
+    }
+
+    echo json_encode($response);
+    return;
 }
 
 //IMPORT COMPOSITIONS FROM CSV

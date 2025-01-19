@@ -39,6 +39,11 @@
 - Added user impersonation
 - API key and status is now configured per user
 - Seperated system settings from user settings
+- Integrations, logs and maintenance pages will now be available to admins only
+- Search preferences reset has been moved in per user basis and globally for admins
+- Session validity will only be visible to admins
+- My Brand page renamed to Branding
+- Branding can now be configured per user
 
 ### Version 12.4
 - Add dilutant in API formulas

@@ -179,10 +179,15 @@ while($cats_res = mysqli_fetch_array($cats_q)){
         </div>
        <hr />
        <div class="col-sm-auto">
+            <a href="#" data-bs-toggle="modal" data-bs-target="#clear_search_pref">Clear search preferences</a>
+       </div>
+       <?php if ($role === 1){ ?>
+       <hr />
+       <div class="col-sm-auto">
 			User session validity: <?php echo "Hours: " . $session_validity_calc['hours'] . ", Minutes: " . $session_validity_calc['minutes']; ?>
             <a href="#" class="ms-2 fas fa-question-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Please refer to the KB article how to modify this if needed"></a>
-
        </div>
+       <?php } ?>
     </div>
 
 
@@ -192,6 +197,25 @@ while($cats_res = mysqli_fetch_array($cats_q)){
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="clear_search_pref" tabindex="-1" aria-labelledby="clearSearchPrefLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="clearSearchPrefLabel">Clear Search Preferences</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to clear your search preferences? This action cannot be undone.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirm-clear-search-pref">Clear Preferences</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <script>
 $(document).ready(function() {
@@ -265,4 +289,31 @@ $(document).ready(function() {
 	
 });
 
+$('#confirm-clear-search-pref').click(function() {
+    $.ajax({
+        url: '/core/core.php',
+        type: 'GET',
+        data: {
+            action: 'userPerfClear'
+        },
+        dataType: 'json',
+        success: function(data) {
+            if (data.success) {
+                $('#toast-title').html('<i class="fa-solid fa-circle-check mx-2"></i>' + data.success);
+                $('.toast-header').removeClass().addClass('toast-header alert-success');
+            } else if (data.error) {
+                $('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+                $('.toast-header').removeClass().addClass('toast-header alert-danger');
+            }
+            $('.toast').toast('show');
+            $('#clear_search_pref').modal('hide');
+        },
+        error: function(xhr, status, error) {
+            $('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. ' + error);
+            $('.toast-header').removeClass().addClass('toast-header alert-danger');
+            $('.toast').toast('show');
+            $('#clear_search_pref').modal('hide');
+        }
+    });
+});
 </script>

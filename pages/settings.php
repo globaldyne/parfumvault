@@ -20,11 +20,13 @@ require_once(__ROOT__.'/func/php-settings.php');
         <li><a href="#perfumeTypes" id="perfume_types_tab" role="tab" data-bs-toggle="tab">Perfume Types</a></li>
         <li><a href="#templates" id="templates_tab" role="tab" data-bs-toggle="tab">HTML Templates</a></li>
         <li><a href="#sds" id="sds_tab" role="tab" data-bs-toggle="tab">SDS Settings</a></li>
-        <li><a href="#brand" id="brand_tab" role="tab" data-bs-toggle="tab">My Brand</span></a></li>
-        <li><a href="#maintenance" id="maintenance_tab">Maintenance</a></li>
-        <li><a href="#integrations" id="integrations_tab">Integrations</a></li>
+        <li><a href="#brand" id="brand_tab" role="tab" data-bs-toggle="tab">Branding</span></a></li>
+        <?php if($role === 1){?>
+          <li><a href="#maintenance" id="maintenance_tab" role="tab" data-bs-toggle="tab">Maintenance</a></li>
+          <li><a href="#integrations" id="integrations_tab" role="tab" data-bs-toggle="tab">Integrations</a></li>
+          <li><a href="#syslogs" id="logs_tab" role="tab" data-bs-toggle="tab">System logs</a></li>
+        <?php } ?>
         <li><a href="#api" id="api_tab" role="tab" data-bs-toggle="tab">API</a></li>
-        <li><a href="#syslogs" id="logs_tab" role="tab" data-bs-toggle="tab">System logs</a></li>
         <li><a href="#about" id="about_tab" role="tab" data-bs-toggle="tab">About</a></li>
     </ul>
     
@@ -119,28 +121,26 @@ require_once(__ROOT__.'/func/php-settings.php');
           <div class="loader-text"></div>
         </div>
       </div>
-        
+      <?php if($role === 1){?>  
       <div id="maintenance">
         <div class="loader-center">
           <div class="loader"></div>
           <div class="loader-text"></div>
         </div>
       </div>
-        
       <div id="integrations">
         <div class="loader-center">
           <div class="loader"></div>
           <div class="loader-text"></div>
         </div>
-      </div>
-        
+      </div>      
       <div id="syslogs">
         <div class="loader-center">
           <div class="loader"></div>
           <div class="loader-text"></div>
         </div>
       </div>
-          
+      <?php } ?>    
       <div id="about">
         <div class="loader-center">
           <div class="loader"></div>

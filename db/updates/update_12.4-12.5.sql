@@ -64,10 +64,9 @@ CREATE TABLE `system_settings` (
     `type` VARCHAR(255) NOT NULL , 
     `description` VARCHAR(255) NOT NULL , 
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
-    `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL , 
+    `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB; 
-
 
 INSERT INTO `system_settings` (`id`, `key_name`, `value`, `slug`, `type`, `description`) VALUES
 (1, 'SMTP_host', '', 'SMTP Host', 'text', 'Configure SMTP host'),
@@ -79,8 +78,29 @@ INSERT INTO `system_settings` (`id`, `key_name`, `value`, `slug`, `type`, `descr
 (7, 'SSO_tokenUrl', '', 'Token URL', 'text', 'SSO token url'),
 (8, 'SSO_userInfoUrl', '', 'User Info URL', 'text', 'SSO info url');
 
-ALTER TABLE `settings` DROP `api`, DROP `api_key`; 
-  
+
+ALTER TABLE `settings`
+  DROP `api`,
+  DROP `api_key`,
+  DROP `brandName`,
+  DROP `brandAddress`,
+  DROP `brandEmail`,
+  DROP `brandPhone`,
+  DROP `brandLogo`;
+
+CREATE TABLE `branding` ( 
+    `id` INT NOT NULL AUTO_INCREMENT , 
+    `brandName` VARCHAR(255) NULL , 
+    `brandAddress` VARCHAR(255) NULL , 
+    `brandEmail` VARCHAR(255) NULL , 
+    `brandPhone` VARCHAR(255) NULL , 
+    `brandLogo` LONGBLOB NULL , 
+    `owner_id` INT NOT NULL , 
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
+    `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB; 
+
 ALTER TABLE `ingredient_safety_data` CHANGE `owner_id` `owner_id` INT(11) NOT NULL; 
 ALTER TABLE `ingredients` DROP INDEX `name`;
 ALTER TABLE `ingSuppliers` DROP INDEX `name`;

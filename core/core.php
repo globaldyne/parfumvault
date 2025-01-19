@@ -20,6 +20,41 @@ if (!isset($userID) || $userID === '' || !is_numeric($userID)) {
     return;
 }
 
+//UPDATE SYSTEM SETTINGS
+if (isset($_POST['request']) && $_POST['request'] === 'updatesys') {
+    $response = [];
+
+    // Prepare the SQL query
+    $query = "UPDATE system_settings SET value = ? WHERE key_name = ?";
+    $stmt = $conn->prepare($query);
+
+    // Update each setting
+    foreach ($_POST as $key => $value) {
+        if ($key === 'request') {
+            continue;
+        }
+
+        // Bind parameters
+        $stmt->bind_param('ss', $value, $key);
+
+        if ($stmt->execute()) {
+            $response['success'] = 'System settings updated';
+        } else {
+            $response['error'] = 'Failed to update system settings';
+        }
+    }
+
+    // Close the statement
+    $stmt->close();
+
+    echo json_encode($response);
+    return;
+}
+
+
+
+
+
 //IMPERSONATE USER
 if (isset($_POST['impersonate_user_id']) && is_numeric($_POST['impersonate_user_id'])) {
 	$impersonate_user_id = (int)$_POST['impersonate_user_id'];
@@ -596,20 +631,30 @@ if($_POST['manage'] == 'api'){
 
 
 
-//BRAND
-if($_POST['manage'] == 'brand'){
-	$brandName = mysqli_real_escape_string($conn, $_POST['brandName']);
-	$brandAddress = mysqli_real_escape_string($conn, $_POST['brandAddress']);
-	$brandEmail = mysqli_real_escape_string($conn, $_POST['brandEmail']);
-	$brandPhone = mysqli_real_escape_string($conn, $_POST['brandPhone']);
+//BRANDING
+if($_POST['action'] == 'branding'){
+    $brandName = mysqli_real_escape_string($conn, $_POST['brandName']);
+    $brandAddress = mysqli_real_escape_string($conn, $_POST['brandAddress']);
+    $brandEmail = mysqli_real_escape_string($conn, $_POST['brandEmail']);
+    $brandPhone = mysqli_real_escape_string($conn, $_POST['brandPhone']);
 
-	if(mysqli_query($conn, "UPDATE settings SET brandName = '$brandName', brandAddress = '$brandAddress', brandEmail = '$brandEmail', brandPhone = '$brandPhone'")){
-		$response['success'] = 'Brand details updated';
-	}else{
-		$response['error'] = 'Error updating brand info';
-	}
-	echo json_encode($response);
-	return;
+    // Check if branding information already exists
+    $result = mysqli_query($conn, "SELECT * FROM branding WHERE owner_id = '$userID'");
+    if(mysqli_num_rows($result) > 0){
+        // Update existing branding information
+        $query = "UPDATE branding SET brandName = '$brandName', brandAddress = '$brandAddress', brandEmail = '$brandEmail', brandPhone = '$brandPhone' WHERE owner_id = '$userID'";
+    } else {
+        // Insert new branding information
+        $query = "INSERT INTO branding (brandName, brandAddress, brandEmail, brandPhone, owner_id) VALUES ('$brandName', '$brandAddress', '$brandEmail', '$brandPhone', '$userID')";
+    }
+
+    if(mysqli_query($conn, $query)){
+        $response['success'] = 'Brand details updated';
+    }else{
+        $response['error'] = 'Error updating brand info';
+    }
+    echo json_encode($response);
+    return;
 }
 
 //ADD CATEGORY
@@ -4639,14 +4684,27 @@ if($_POST['action'] == 'report' && $_POST['src'] == 'pvMarket'){
 	
 }	
 
-//CLEAR USER PREFS
-if($_GET['do'] == 'userPerfClear'){
+//CLEAR USER PREFS BY ADMIN
+if($_GET['action'] == 'userPerfClearGlobal'){
+
+	if(mysqli_query($conn, "DELETE FROM user_prefs")){
+		$result['success'] = "User preferences removed for all users";
+	}else{
+		$result['error'] = 'Something went wrong, '.mysqli_error($conn);
+		
+	}
+	unset($_SESSION['user_prefs']);
+	echo json_encode($result);
+	return;
+}
+
+//CLEAR USER PREFS BY USER
+if($_GET['action'] == 'userPerfClear'){
 
 	if(mysqli_query($conn, "DELETE FROM user_prefs WHERE owner_id = '".$userID."'")){
 		$result['success'] = "User preferences removed";
 	}else{
 		$result['error'] = 'Something went wrong, '.mysqli_error($conn);
-		
 	}
 	unset($_SESSION['user_prefs']);
 	echo json_encode($result);

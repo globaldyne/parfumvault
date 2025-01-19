@@ -26,12 +26,12 @@ $ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
     </div>
     <div class="row mb-2">
         <div class="col">
-            <li><a href="#" data-bs-toggle="modal" data-bs-target="#clear_user_pref">Clear user preferences</a></li>
+            <li><a href="#" data-bs-toggle="modal" data-bs-target="#clear_search_pref_global">Clear user preferences globally</a></li>
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="clear_user_pref" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="clear_user_pref" aria-hidden="true">
+<div class="modal fade" id="clear_search_pref_global" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="clear_search_pref_global" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -39,9 +39,7 @@ $ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
       </div>
       <div class="modal-body">
         <div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i>
-        	You can reset any user modifications like table sorting.
-            This will bring Perfumers Vault instalation to its defaults.
-            Your data will not be affected.
+        	You can reset any user modifications like table sorting for all users. This will bring Perfumers Vault instalation to its defaults globally. Your data will not be affected.
         </div>
       </div>
 	  <div class="modal-footer">
@@ -128,16 +126,16 @@ $(document).ready(function () {
     $.ajax({
       url: '/core/core.php',
       data: {
-        do: 'userPerfClear',
+        action: 'userPerfClearGlobal',
       },
       cache: false,
       success: function (data) {
         $("#btnClear").prop("disabled", false);	
-        $('#clear_user_pref').modal('hide');
+        $('#clear_search_pref_global').modal('hide');
       },
       error: function (request, status, error) {
         $("#btnClear").prop("disabled", false);
-        $('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+        $('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error);
         $('.toast-header').removeClass().addClass('toast-header alert-danger');
         $('.toast').toast('show');
       }, 

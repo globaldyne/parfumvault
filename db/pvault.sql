@@ -336,11 +336,6 @@ CREATE TABLE `settings` (
   `base_n` varchar(10) NOT NULL,
   `chem_vs_brand` int(11) NOT NULL,
   `grp_formula` int(11) DEFAULT NULL,
-  `brandName` varchar(255) DEFAULT NULL,
-  `brandAddress` varchar(255) DEFAULT NULL,
-  `brandEmail` varchar(255) DEFAULT NULL,
-  `brandPhone` varchar(255) DEFAULT NULL,
-  `brandLogo` LONGBLOB NULL DEFAULT NULL,
   `pubChem` int(11) DEFAULT NULL,
   `chkVersion` int(11) DEFAULT NULL,
   `qStep` INT(5) NOT NULL DEFAULT '2',
@@ -350,8 +345,6 @@ CREATE TABLE `settings` (
   `defCatClass` VARCHAR(255) NOT NULL DEFAULT 'cat4',
   `defPercentage` VARCHAR(255) NOT NULL DEFAULT 'max_percentage',
   `pv_library_api_url` varchar(255) NOT NULL DEFAULT 'https://library.perfumersvault.com/api-data/api.php',
-  `api` INT NOT NULL DEFAULT '0',
-  `api_key` VARCHAR(255) NULL,
   `editor` int(11) NOT NULL DEFAULT 1 COMMENT '1 = Inline, 2 = Advanced',
   `user_pref_eng` INT NOT NULL DEFAULT '1',
   `bk_srv_host` varchar(255) NOT NULL DEFAULT 'localhost',
@@ -994,10 +987,9 @@ CREATE TABLE `system_settings` (
     `type` VARCHAR(255) NOT NULL , 
     `description` VARCHAR(255) NOT NULL , 
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
-    `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL , 
+    `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB; 
-
 
 INSERT INTO `system_settings` (`id`, `key_name`, `value`, `slug`, `type`, `description`) VALUES
 (1, 'SMTP_host', '', 'SMTP Host', 'text', 'Configure SMTP host'),
@@ -1007,4 +999,18 @@ INSERT INTO `system_settings` (`id`, `key_name`, `value`, `slug`, `type`, `descr
 (5, 'SSO_redirectUri', '', 'Redirect URI', 'text', 'SSO redirect URI'),
 (6, 'SSO_authUrl', '', 'Auth URL', 'text', 'SSO auth URL'),
 (7, 'SSO_tokenUrl', '', 'Token URL', 'text', 'SSO token url'),
-(8, 'SSO_userInfoUrl', '', 'User Info URL', 'text', 'SSO info url');
+(8, 'SSO_userInfoUrl', '', 'User Info URL', 'text', 'SSO info url'),
+(9, 'INTEGRATIONS_enable', '0', 'Enable or disable integrations', 'checkbox', 'Enable or disable integrations');
+
+CREATE TABLE `branding` ( 
+    `id` INT NOT NULL AUTO_INCREMENT , 
+    `brandName` VARCHAR(255) NULL , 
+    `brandAddress` VARCHAR(255) NULL , 
+    `brandEmail` VARCHAR(255) NULL , 
+    `brandPhone` VARCHAR(255) NULL , 
+    `brandLogo` LONGBLOB NULL , 
+    `owner_id` INT NOT NULL , 
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
+    `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB; 
