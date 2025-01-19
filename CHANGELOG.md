@@ -44,6 +44,7 @@
 - Session validity will only be visible to admins
 - My Brand page renamed to Branding
 - Branding can now be configured per user
+- SDS settings moved to per user basis
 
 ### Version 12.4
 - Add dilutant in API formulas

@@ -872,23 +872,35 @@ if ($_POST['action'] == 'batch' && isset($_POST['bid']) && isset($_POST['remove'
 
 
 //UPDATE SDS DISCLAIMER
-if($_POST['action'] == 'sdsDisclaimerContent'){
-	$sds_disc_content = mysqli_real_escape_string($conn, $_POST['sds_disc_content']);
-	
-	if(empty($sds_disc_content)){
-		$response["error"] = 'Disclaimer text is required.';
-		echo json_encode($response);
-		return;
-	}
+if ($_POST['action'] == 'sdsDisclaimerContent') {
+    $sds_disc_content = mysqli_real_escape_string($conn, $_POST['sds_disc_content']);
 
+    if (empty($sds_disc_content)) {
+        $response["error"] = 'Disclaimer text is required.';
+        echo json_encode($response);
+        return;
+    }
 
-	if(mysqli_query($conn, "UPDATE settings SET  sds_disclaimer = '$sds_disc_content'")){
-		$response["success"] = 'SDS Disclaimer text updated';
-	}else{
-		$response["error"] = 'Error '.mysqli_error($conn);
-	}
-	echo json_encode($response);
-	return;
+    // Check if the disclaimer already exists
+    $result = mysqli_query($conn, "SELECT COUNT(*) as count FROM sdsSettings WHERE owner_id = '$userID'");
+    $row = mysqli_fetch_assoc($result);
+
+    if ($row['count'] > 0) {
+        // Update existing disclaimer
+        $query = "UPDATE sdsSettings SET sds_disclaimer = '$sds_disc_content' WHERE owner_id = '$userID'";
+    } else {
+        // Insert new disclaimer
+        $query = "INSERT INTO sdsSettings (sds_disclaimer, owner_id) VALUES ('$sds_disc_content', '$userID')";
+    }
+
+    if (mysqli_query($conn, $query)) {
+        $response["success"] = 'SDS Disclaimer text updated';
+    } else {
+        $response["error"] = 'Error ' . mysqli_error($conn);
+    }
+
+    echo json_encode($response);
+    return;
 }
 
 

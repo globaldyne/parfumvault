@@ -351,7 +351,6 @@ CREATE TABLE `settings` (
   `pv_scale_host` varchar(255) NOT NULL DEFAULT 'localhost',
   `pv_scale_enabled` INT NOT NULL DEFAULT '0',
   `pv_host` VARCHAR(255) NOT NULL DEFAULT 'localhost',
-  `sds_disclaimer` MEDIUMTEXT NOT NULL DEFAULT 'PLEASE ADD A PROPER DISCLAIMER MESSAGE',
   `bs_theme` VARCHAR(255) NOT NULL DEFAULT 'light',
   `temp_sys` VARCHAR(255) NOT NULL DEFAULT '°C'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -1014,3 +1013,12 @@ CREATE TABLE `branding` (
     `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB; 
+
+CREATE TABLE `sdsSettings` ( 
+  `id` INT NOT NULL AUTO_INCREMENT , 
+  `sds_disclaimer` TEXT NOT NULL DEFAULT 'PLEASE ADD A PROPER DISCLAIMER MESSAGE' , 
+  `owner_id` INT NOT NULL , 
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
+  `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
+  PRIMARY KEY (`id`)
+) ENGINE = InnoDB;

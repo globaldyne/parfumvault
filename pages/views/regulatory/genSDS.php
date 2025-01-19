@@ -9,6 +9,7 @@ require_once(__ROOT__.'/inc/product.php');
 $defCatClass = $settings['defCatClass'];
 $defPercentage = $settings['defPercentage'];
 $branding = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM branding WHERE owner_id = '$userID'"));
+$sds_settings = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM sdsSettings WHERE owner_id = '$userID'"));
 
 
 if ($_POST['do'] = 'genSDS') {
@@ -47,7 +48,7 @@ if ($_POST['do'] = 'genSDS') {
 
   $brand_name = $branding['brandName'];
   
-  $disclaimer = nl2br(htmlspecialchars_decode($settings['sds_disclaimer'], ENT_QUOTES));
+  $disclaimer = nl2br(htmlspecialchars_decode($sds_settings['sds_disclaimer'], ENT_QUOTES));
 
   $qHtml = mysqli_fetch_array(mysqli_query($conn, "SELECT id, content FROM templates WHERE id = '$sds_tmpl' AND owner_id = '$userID'"));
   $htmlContent =  $qHtml['content'];

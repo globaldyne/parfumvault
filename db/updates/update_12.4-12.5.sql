@@ -86,8 +86,9 @@ ALTER TABLE `settings`
   DROP `brandAddress`,
   DROP `brandEmail`,
   DROP `brandPhone`,
-  DROP `brandLogo`;
-
+  DROP `brandLogo`
+  DROP `sds_disclaimer`;
+  
 CREATE TABLE `branding` ( 
     `id` INT NOT NULL AUTO_INCREMENT , 
     `brandName` VARCHAR(255) NULL , 
