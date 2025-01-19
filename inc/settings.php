@@ -17,7 +17,7 @@ if ($system_result = mysqli_query($conn, $system_query)) {
 
 $countriesJson = file_get_contents(__ROOT__.'/db/countries.json');
 $pubChemApi = 'https://pubchem.ncbi.nlm.nih.gov/rest';
-$pvLibraryAPI = $settings['pv_library_api_url'];
+$pvLibraryAPI = $system_settings['LIBRARY_apiurl'];
 
 $userID = (int)$user['id'];
 $role = (int)$user['role'];

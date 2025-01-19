@@ -17,8 +17,7 @@ while($cats_res = mysqli_fetch_array($cats_q)){
 <div class="card-body row">
     <div class="col-sm-6">
         <div class="row">
-            <div class="mb-3 col-md-6">
-                <label for="currency" class="form-label">Currency</label>
+            <div class="mb-3 col-md-6 form-floating">
                 <select name="currency" id="currency" class="form-select">
                     <?php
                     $json = file_get_contents(__ROOT__.'/inc/currencies.json');
@@ -31,47 +30,47 @@ while($cats_res = mysqli_fetch_array($cats_q)){
                     }
                     ?>
                 </select>
+                <label for="currency" class="form-label">Currency</label>
             </div>
-            <div class="mb-3 col-md-6">
-                <label for="user_pref_eng" class="form-label">User preferences engine</label>
+            <div class="mb-3 col-md-6 form-floating">
                 <select name="user_pref_eng" id="user_pref_eng" class="form-select">
                     <option value="1" <?= $settings['user_pref_eng'] == "1" ? 'selected' : '' ?>>PHP SESSION</option>
                     <option value="2" <?= $settings['user_pref_eng'] == "2" ? 'selected' : '' ?>>DB Backend</option>
                 </select>
+                <label for="user_pref_eng" class="form-label">User preferences engine</label>
             </div>
         </div>
 
         <div class="row">
-            <div class="mb-3 col-md-6">
-                <label for="grp_formula" class="form-label">Group formula</label>
+            <div class="mb-3 col-md-6 form-floating">
                 <select name="grp_formula" id="grp_formula" class="form-select">
                     <option value="0" <?= $settings['grp_formula'] == "0" ? 'selected' : '' ?>>Plain</option>
                     <option value="1" <?= $settings['grp_formula'] == "1" ? 'selected' : '' ?>>By notes</option>
                     <option value="2" <?= $settings['grp_formula'] == "2" ? 'selected' : '' ?>>By category</option>
                 </select>
+                <label for="grp_formula" class="form-label">Group formula</label>
             </div>
-            <div class="mb-3 col-md-6">
-                <label for="pubchem_view" class="form-label">PubChem view</label>
+            <div class="mb-3 col-md-6 form-floating">
                 <select name="pubchem_view" id="pubchem_view" class="form-select">
                     <option value="2d" <?= $settings['pubchem_view'] == "2d" ? 'selected' : '' ?>>2D</option>
                     <option value="3d" <?= $settings['pubchem_view'] == "3d" ? 'selected' : '' ?>>3D</option>
                 </select>
+                <label for="pubchem_view" class="form-label">PubChem view</label>
             </div>
         </div>
 
         <div class="row">
-            <div class="mb-3 col-md-6">
-                <label for="qStep" class="form-label">Quantity Decimal</label>
+            <div class="mb-3 col-md-6 form-floating">
                 <select name="qStep" id="qStep" class="form-select">
                     <option value="1" <?= $settings['qStep'] == "1" ? 'selected' : '' ?>>0.0</option>
                     <option value="2" <?= $settings['qStep'] == "2" ? 'selected' : '' ?>>0.00</option>
                     <option value="3" <?= $settings['qStep'] == "3" ? 'selected' : '' ?>>0.000</option>
                     <option value="4" <?= $settings['qStep'] == "4" ? 'selected' : '' ?>>0.0000</option>
                 </select>
+                <label for="qStep" class="form-label">Quantity Decimal</label>
             </div>
 
-            <div class="mb-3 col-md-6">
-                <label for="defCatClass" class="form-label">Default Category</label>
+            <div class="mb-3 col-md-6 form-floating">
                 <select name="defCatClass" id="defCatClass" class="form-select">
                     <?php foreach ($cats as $IFRACategories) {?>
                     <option value="cat<?= htmlspecialchars($IFRACategories['name']) ?>" <?= $settings['defCatClass'] == 'cat' . $IFRACategories['name'] ? 'selected' : '' ?>>
@@ -79,57 +78,57 @@ while($cats_res = mysqli_fetch_array($cats_q)){
                     </option>
                     <?php } ?>
                 </select>
+                <label for="defCatClass" class="form-label">Default Category</label>
             </div>
         </div>
 
         <div class="row">
-            <div class="mb-3 col-md-6">
-                <label for="mUnit" class="form-label">Measurement Unit</label>
+            <div class="mb-3 col-md-6 form-floating">
                 <select name="mUnit" id="mUnit" class="form-select">
                     <option value="ml" <?= $settings['mUnit'] == "ml" ? 'selected' : '' ?>>Milliliter</option>
                     <option value="g" <?= $settings['mUnit'] == "g" ? 'selected' : '' ?>>Grams</option>
                     <option value="L" <?= $settings['mUnit'] == "L" ? 'selected' : '' ?>>Liter</option>
                     <option value="fl. oz." <?= $settings['mUnit'] == "fl. oz." ? 'selected' : '' ?>>Fluid ounce (fl. oz.)</option>
                 </select>
+                <label for="mUnit" class="form-label">Measurement Unit</label>
             </div>
-            <div class="mb-3 col-md-6">
-                <label for="editor" class="form-label">Formula editor</label>
+            <div class="mb-3 col-md-6 form-floating">
                 <select name="editor" id="editor" class="form-select">
                     <option value="1" <?= $settings['editor'] == "1" ? 'selected' : '' ?>>Standard</option>
                     <option value="2" <?= $settings['editor'] == "2" ? 'selected' : '' ?>>Advanced</option>
                 </select>
+                <label for="editor" class="form-label">Formula editor</label>
             </div>
 
-            <div class="mb-3 col-md-6">
-                <label for="pvHost" class="form-label">PV URL</label>
+            <div class="mb-3 col-md-6 form-floating">
                 <input name="pvHost" type="text" class="form-control" id="pvHost" value="<?= htmlspecialchars($settings['pv_host']) ?>"/>
+                <label for="pvHost" class="form-label">PV URL</label>
             </div>
 
-            <div class="mb-3 col-md-6">
-                <label for="defPercentage" class="form-label">Calculate sub materials as</label>
+            <div class="mb-3 col-md-6 form-floating">
                 <select name="defPercentage" id="defPercentage" class="form-select">
                     <option value="min_percentage" <?= $settings['defPercentage'] == "min_percentage" ? 'selected' : '' ?>>Minimum value</option>
                     <option value="max_percentage" <?= $settings['defPercentage'] == "max_percentage" ? 'selected' : '' ?>>Maximum value</option>
                     <!-- <option value="avg_percentage" <?= $settings['defPercentage'] == "avg_percentage" ? 'selected' : '' ?>>Average value</option> -->
                 </select>
+                <label for="defPercentage" class="form-label">Calculate sub materials as</label>
             </div>
 
-            <div class="mb-3 col-md-6">
-                <label for="bs_theme" class="form-label">Theme</label>
-                <a href="#" class="ms-2 fas fa-question-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="A page refresh may be required for the changes to take effect fully"></a>
+            <div class="mb-3 col-md-6 form-floating">
                 <select name="bs_theme" id="bs_theme" class="form-select">
                     <option value="light" <?= $settings['bs_theme'] == "light" ? 'selected' : '' ?>>Light</option>
                     <option value="dark" <?= $settings['bs_theme'] == "dark" ? 'selected' : '' ?>>Dark</option>
                 </select>
+                <label for="bs_theme" class="form-label">Theme</label>
             </div>
             
-            <div class="mb-3 col-md-6">
-               <label for="temp_sys" class="form-label">Temprature unit</label>
+            <div class="mb-3 col-md-6 form-floating">
                <select name="temp_sys" id="temp_sys" class="form-select">
                    <option value="°C" <?= $settings['temp_sys'] == "°C" ? 'selected' : '' ?>>Celsius (°C)</option>
                    <option value="°F" <?= $settings['temp_sys'] == "°F" ? 'selected' : '' ?>>Fahrenheit (°F)</option>
                    <option value="K" <?= $settings['temp_sys'] == "K" ? 'selected' : '' ?>>Kelvin (K)</option>
                </select>
+               <label for="temp_sys" class="form-label">Temperature unit</label>
             </div>
             
         </div>
@@ -184,7 +183,7 @@ while($cats_res = mysqli_fetch_array($cats_q)){
        <?php if ($role === 1){ ?>
        <hr />
        <div class="col-sm-auto">
-			User session validity: <?php echo "Hours: " . $session_validity_calc['hours'] . ", Minutes: " . $session_validity_calc['minutes']; ?>
+            User session validity: <?php echo "Hours: " . $session_validity_calc['hours'] . ", Minutes: " . $session_validity_calc['minutes']; ?>
             <a href="#" class="ms-2 fas fa-question-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Please refer to the KB article how to modify this if needed"></a>
        </div>
        <?php } ?>
@@ -197,6 +196,7 @@ while($cats_res = mysqli_fetch_array($cats_q)){
         </div>
     </div>
 </div>
+
 
 <div class="modal fade" id="clear_search_pref" tabindex="-1" aria-labelledby="clearSearchPrefLabel" aria-hidden="true">
     <div class="modal-dialog">

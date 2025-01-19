@@ -344,7 +344,6 @@ CREATE TABLE `settings` (
   `multi_dim_perc` INT NOT NULL DEFAULT '0', 
   `defCatClass` VARCHAR(255) NOT NULL DEFAULT 'cat4',
   `defPercentage` VARCHAR(255) NOT NULL DEFAULT 'max_percentage',
-  `pv_library_api_url` varchar(255) NOT NULL DEFAULT 'https://library.perfumersvault.com/api-data/api.php',
   `editor` int(11) NOT NULL DEFAULT 1 COMMENT '1 = Inline, 2 = Advanced',
   `user_pref_eng` INT NOT NULL DEFAULT '1',
   `bk_srv_host` varchar(255) NOT NULL DEFAULT 'localhost',
@@ -355,8 +354,8 @@ CREATE TABLE `settings` (
   `temp_sys` VARCHAR(255) NOT NULL DEFAULT '°C'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
-INSERT INTO `settings` (`id`, `currency`, `top_n`, `heart_n`, `base_n`, `chem_vs_brand`, `grp_formula`, `brandName`, `brandAddress`, `brandEmail`, `brandPhone`, `brandLogo`) VALUES
-(1, '&pound;', '25', '50', '25', 0, 1, 'My Brand Name', 'My Address', 'info@mybrand.com', '123456', NULL);
+INSERT INTO `settings` (`id`, `currency`, `top_n`, `heart_n`, `base_n`, `chem_vs_brand`, `grp_formula`) VALUES
+(1, '&pound;', '25', '50', '25', 0, 1);
 
 CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -999,7 +998,8 @@ INSERT INTO `system_settings` (`id`, `key_name`, `value`, `slug`, `type`, `descr
 (6, 'SSO_authUrl', '', 'Auth URL', 'text', 'SSO auth URL'),
 (7, 'SSO_tokenUrl', '', 'Token URL', 'text', 'SSO token url'),
 (8, 'SSO_userInfoUrl', '', 'User Info URL', 'text', 'SSO info url'),
-(9, 'INTEGRATIONS_enable', '0', 'Enable or disable integrations', 'checkbox', 'Enable or disable integrations');
+(9, 'INTEGRATIONS_enable', '0', 'Enable or disable integrations', 'checkbox', 'Enable or disable integrations'),
+(10 'LIBRARY_apiurl', 'https://library.perfumersvault.com/api-data/api.php', 'Library API URL', 'text', 'Library API URL');
 
 CREATE TABLE `branding` ( 
     `id` INT NOT NULL AUTO_INCREMENT , 

@@ -45,6 +45,7 @@
 - My Brand page renamed to Branding
 - Branding can now be configured per user
 - SDS settings moved to per user basis
+- PV Library API moved to system settings
 
 ### Version 12.4
 - Add dilutant in API formulas

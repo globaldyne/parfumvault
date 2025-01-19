@@ -87,8 +87,9 @@ ALTER TABLE `settings`
   DROP `brandEmail`,
   DROP `brandPhone`,
   DROP `brandLogo`
-  DROP `sds_disclaimer`;
-  
+  DROP `sds_disclaimer`,
+  DROP `pv_library_api_url`; 
+
 CREATE TABLE `branding` ( 
     `id` INT NOT NULL AUTO_INCREMENT , 
     `brandName` VARCHAR(255) NULL , 
