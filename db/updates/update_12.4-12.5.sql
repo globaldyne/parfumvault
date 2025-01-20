@@ -66,7 +66,7 @@ CREATE TABLE `system_settings` (
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
     `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
     PRIMARY KEY (`id`)
-) ENGINE = InnoDB; 
+) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 INSERT INTO `system_settings` (`id`, `key_name`, `value`, `slug`, `type`, `description`) VALUES
 (1, 'SMTP_host', '', 'SMTP Host', 'text', 'Configure SMTP host'),
@@ -78,17 +78,18 @@ INSERT INTO `system_settings` (`id`, `key_name`, `value`, `slug`, `type`, `descr
 (7, 'SSO_tokenUrl', '', 'Token URL', 'text', 'SSO token url'),
 (8, 'SSO_userInfoUrl', '', 'User Info URL', 'text', 'SSO info url');
 
+CREATE TABLE `user_settings` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT ,
+    `key_name` VARCHAR(255) NOT NULL ,
+    `value` VARCHAR(255) NOT NULL , 
+    `owner_id` INT NOT NULL, 
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
+    `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
-ALTER TABLE `settings`
-  DROP `api`,
-  DROP `api_key`,
-  DROP `brandName`,
-  DROP `brandAddress`,
-  DROP `brandEmail`,
-  DROP `brandPhone`,
-  DROP `brandLogo`
-  DROP `sds_disclaimer`,
-  DROP `pv_library_api_url`; 
+
+DROP TABLE `settings`;
 
 CREATE TABLE `branding` ( 
     `id` INT NOT NULL AUTO_INCREMENT , 
@@ -101,7 +102,7 @@ CREATE TABLE `branding` (
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
     `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
     PRIMARY KEY (`id`)
-) ENGINE = InnoDB; 
+) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 ALTER TABLE `ingredient_safety_data` CHANGE `owner_id` `owner_id` INT(11) NOT NULL; 
 ALTER TABLE `ingredients` DROP INDEX `name`;

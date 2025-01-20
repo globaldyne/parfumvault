@@ -327,35 +327,6 @@ CREATE TABLE update_history (
     update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'Timestamp of the update'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Tracks schema update history';
 
-CREATE TABLE `settings` (
-  `id` int(11) NOT NULL,
-  `currency` varchar(255) NOT NULL DEFAULT '£',
-  `currency_code` VARCHAR(255) NOT NULL DEFAULT 'GBP', 
-  `top_n` varchar(10) NOT NULL,
-  `heart_n` varchar(10) NOT NULL,
-  `base_n` varchar(10) NOT NULL,
-  `chem_vs_brand` int(11) NOT NULL,
-  `grp_formula` int(11) DEFAULT NULL,
-  `pubChem` int(11) DEFAULT NULL,
-  `chkVersion` int(11) DEFAULT NULL,
-  `qStep` INT(5) NOT NULL DEFAULT '2',
-  `pubchem_view` VARCHAR(4) NOT NULL DEFAULT '2d',
-  `mUnit` VARCHAR(10) NOT NULL DEFAULT 'ml',
-  `multi_dim_perc` INT NOT NULL DEFAULT '0', 
-  `defCatClass` VARCHAR(255) NOT NULL DEFAULT 'cat4',
-  `defPercentage` VARCHAR(255) NOT NULL DEFAULT 'max_percentage',
-  `editor` int(11) NOT NULL DEFAULT 1 COMMENT '1 = Inline, 2 = Advanced',
-  `user_pref_eng` INT NOT NULL DEFAULT '1',
-  `bk_srv_host` varchar(255) NOT NULL DEFAULT 'localhost',
-  `pv_scale_host` varchar(255) NOT NULL DEFAULT 'localhost',
-  `pv_scale_enabled` INT NOT NULL DEFAULT '0',
-  `pv_host` VARCHAR(255) NOT NULL DEFAULT 'localhost',
-  `bs_theme` VARCHAR(255) NOT NULL DEFAULT 'light',
-  `temp_sys` VARCHAR(255) NOT NULL DEFAULT '°C'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
-INSERT INTO `settings` (`id`, `currency`, `top_n`, `heart_n`, `base_n`, `chem_vs_brand`, `grp_formula`) VALUES
-(1, '&pound;', '25', '50', '25', 0, 1);
 
 CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -975,7 +946,7 @@ CREATE TABLE `ingredient_safety_data` (
   `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `owner_id` INT NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE `system_settings` (
     `id` INT(11) NOT NULL AUTO_INCREMENT ,
@@ -987,7 +958,7 @@ CREATE TABLE `system_settings` (
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
     `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
     PRIMARY KEY (`id`)
-) ENGINE = InnoDB; 
+) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 INSERT INTO `system_settings` (`id`, `key_name`, `value`, `slug`, `type`, `description`) VALUES
 (1, 'SMTP_host', '', 'SMTP Host', 'text', 'Configure SMTP host'),
@@ -1001,6 +972,16 @@ INSERT INTO `system_settings` (`id`, `key_name`, `value`, `slug`, `type`, `descr
 (9, 'INTEGRATIONS_enable', '0', 'Enable or disable integrations', 'checkbox', 'Enable or disable integrations'),
 (10 'LIBRARY_apiurl', 'https://library.perfumersvault.com/api-data/api.php', 'Library API URL', 'text', 'Library API URL');
 
+CREATE TABLE `user_settings` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT ,
+    `key_name` VARCHAR(255) NOT NULL ,
+    `value` VARCHAR(255) NOT NULL , 
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
+    `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+
 CREATE TABLE `branding` ( 
     `id` INT NOT NULL AUTO_INCREMENT , 
     `brandName` VARCHAR(255) NULL , 
@@ -1012,7 +993,7 @@ CREATE TABLE `branding` (
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
     `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
     PRIMARY KEY (`id`)
-) ENGINE = InnoDB; 
+) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE `sdsSettings` ( 
   `id` INT NOT NULL AUTO_INCREMENT , 
@@ -1021,4 +1002,4 @@ CREATE TABLE `sdsSettings` (
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
   `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
   PRIMARY KEY (`id`)
-) ENGINE = InnoDB;
+) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;

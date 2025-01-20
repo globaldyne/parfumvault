@@ -20,93 +20,224 @@ if (!isset($userID) || $userID === '' || !is_numeric($userID)) {
     return;
 }
 
-//UPDATE SYSTEM SETTINGS
-if (isset($_POST['request']) && $_POST['request'] === 'updatesys') {
-    $response = [];
+// Ensure the user is an admin
+if($role === 1) {
+    //UPDATE SYSTEM SETTINGS
+    if (isset($_POST['request']) && $_POST['request'] === 'updatesys') {
+        $response = [];
 
-    // Prepare the SQL query
-    $query = "UPDATE system_settings SET value = ? WHERE key_name = ?";
-    $stmt = $conn->prepare($query);
+        // Prepare the SQL query
+        $query = "UPDATE system_settings SET value = ? WHERE key_name = ?";
+        $stmt = $conn->prepare($query);
 
-    // Update each setting
-    foreach ($_POST as $key => $value) {
-        if ($key === 'request') {
-            continue;
+        // Update each setting
+        foreach ($_POST as $key => $value) {
+            if ($key === 'request') {
+                continue;
+            }
+            // Bind parameters
+            $stmt->bind_param('ss', $value, $key);
+
+            if ($stmt->execute()) {
+                $response['success'] = 'System settings updated';
+            } else {
+                $response['error'] = 'Failed to update system settings';
+            }
+        }
+        // Close the statement
+        $stmt->close();
+        echo json_encode($response);
+        return;
+    }
+
+    //IMPERSONATE USER
+    if (isset($_POST['impersonate_user_id']) && is_numeric($_POST['impersonate_user_id'])) {
+        $impersonate_user_id = (int)$_POST['impersonate_user_id'];
+
+        // Fetch user details
+        $impersonateQuery = $conn->prepare("SELECT id, fullName, email, role FROM users WHERE id = ?");
+        $impersonateQuery->bind_param("i", $impersonate_user_id);
+        $impersonateQuery->execute();
+        $result = $impersonateQuery->get_result();
+
+        if ($result->num_rows > 0) {
+            $impersonateUser = $result->fetch_assoc();
+
+            //$_SESSION['parfumvault'] = true;
+            $_SESSION['userID'] = $impersonateUser['id'];
+            $_SESSION['role'] = $impersonateUser['role'];
+
+            echo json_encode(['success' => 'User impersonation started', 'redirect_url' => '/']);
+        } else {
+            echo json_encode(['error' => 'User not found']);
         }
 
-        // Bind parameters
-        $stmt->bind_param('ss', $value, $key);
+        $impersonateQuery->close();
+        return;
+    }
+
+
+    //UPDATE USER INFO BY ADMIN
+    if (isset($_POST['request']) && $_POST['request'] === 'updateuser') {
+        // Validate required fields
+        if (empty($_POST['user_id']) || empty($_POST['full_name']) || empty($_POST['email']) ) {
+            echo json_encode(['error' => 'Full name and email are required']);
+            return;
+        }
+
+        // Sanitize input
+        $user_id = $conn->real_escape_string($_POST['user_id']);
+        $full_name = $conn->real_escape_string($_POST['full_name']);
+        $email = $conn->real_escape_string($_POST['email']);
+        $password = $_POST['password'] ?? null;
+        $country = $conn->real_escape_string($_POST['country']);
+        $role = (int)$_POST['role'];
+        $isActive = (int)$_POST['isActive'];
+
+        // Validate password if provided
+        if (!empty($password) && !isPasswordComplex($password)) {
+            echo json_encode(['error' => 'Password does not meet complexity requirements']);
+            return;
+        }
+
+        // Check for last admin user restrictions
+        if ($role === 2) {
+            $checkAdminQuery = $conn->prepare("SELECT role FROM users WHERE id = ?");
+            $checkAdminQuery->bind_param("i", $user_id);
+            $checkAdminQuery->execute();
+            $result = $checkAdminQuery->get_result();
+            $user = $result->fetch_assoc();
+
+            if ($user['role'] === 1) {
+                $adminCountQuery = $conn->prepare("SELECT COUNT(*) as admin_count FROM users WHERE role = 1");
+                $adminCountQuery->execute();
+                $adminCountResult = $adminCountQuery->get_result();
+                $adminCount = $adminCountResult->fetch_assoc()['admin_count'];
+
+                if ($adminCount <= 1) {
+                    echo json_encode(['error' => 'Cannot change the last admin user to a different access level']);
+                    return;
+                }
+            }
+        }
+
+        // Fetch owner_id
+        $ownerQuery = $conn->prepare("SELECT id FROM users WHERE id = ?");
+        $ownerQuery->bind_param("i", $user_id);
+        $ownerQuery->execute();
+        $ownerResult = $ownerQuery->get_result();
+
+        if ($ownerResult->num_rows === 0) {
+            echo json_encode(['error' => 'User not found']);
+            return;
+        }
+
+        // Prepare queries
+        $updateQuery = "UPDATE users SET fullName = ?, email = ?, country = ?, role = ?, isActive = ?";
+        if (!empty($password)) {
+            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+            $updateQuery .= ", password = ?";
+        }
+        $updateQuery .= " WHERE id = ?";
+
+        //$user_id = $ownerResult->fetch_assoc()['id'];
+
+        // Execute user update query
+        $stmt = $conn->prepare($updateQuery);
+        if (!empty($password)) {
+            $stmt->bind_param(
+                "sssiisi",
+                $full_name,
+                $email,
+                $country,
+                $role,
+                $isActive,
+                $hashedPassword,
+                $user_id
+            );
+        } else {
+            $stmt->bind_param(
+                "sssiii",
+                $full_name,
+                $email,
+                $country,
+                $role,
+                $isActive,
+                $user_id
+            );
+        }
 
         if ($stmt->execute()) {
-            $response['success'] = 'System settings updated';
+            echo json_encode(['success' => 'User updated successfully']);        
         } else {
-            $response['error'] = 'Failed to update system settings';
+            echo json_encode(['error' => 'Failed to update user: ' . $conn->error]);
         }
-    }
 
-    // Close the statement
-    $stmt->close();
-
-    echo json_encode($response);
-    return;
-}
-
-
-
-
-
-//IMPERSONATE USER
-if (isset($_POST['impersonate_user_id']) && is_numeric($_POST['impersonate_user_id'])) {
-	$impersonate_user_id = (int)$_POST['impersonate_user_id'];
-
-	// Fetch user details
-	$impersonateQuery = $conn->prepare("SELECT id, fullName, email, role FROM users WHERE id = ?");
-	$impersonateQuery->bind_param("i", $impersonate_user_id);
-	$impersonateQuery->execute();
-	$result = $impersonateQuery->get_result();
-
-	if ($result->num_rows > 0) {
-		$impersonateUser = $result->fetch_assoc();
-
-		//$_SESSION['parfumvault'] = true;
-		$_SESSION['userID'] = $impersonateUser['id'];
-		$_SESSION['role'] = $impersonateUser['role'];
-
-		echo json_encode(['success' => 'User impersonation started', 'redirect_url' => '/']);
-	} else {
-		echo json_encode(['error' => 'User not found']);
-	}
-
-	$impersonateQuery->close();
-	return;
-}
-
-
-//UPDATE USER INFO BY ADMIN
-if (isset($_POST['request']) && $_POST['request'] === 'updateuser') {
-    // Validate required fields
-    if (empty($_POST['user_id']) || empty($_POST['full_name']) || empty($_POST['email']) ) {
-        echo json_encode(['error' => 'Full name and email are required']);
+        // Close statements
+        $stmt->close();
+        $ownerQuery->close();
         return;
     }
 
-    // Sanitize input
-    $user_id = $conn->real_escape_string($_POST['user_id']);
-    $full_name = $conn->real_escape_string($_POST['full_name']);
-    $email = $conn->real_escape_string($_POST['email']);
-    $password = $_POST['password'] ?? null;
-    $country = $conn->real_escape_string($_POST['country']);
-    $role = (int)$_POST['role'];
-    $isActive = (int)$_POST['isActive'];
 
-    // Validate password if provided
-    if (!empty($password) && !isPasswordComplex($password)) {
-        echo json_encode(['error' => 'Password does not meet complexity requirements']);
+    //CREATE USER BY ADMIN
+    if (isset($_POST['request']) && $_POST['request'] === 'adduser') {
+
+        if (empty($_POST['email']) || empty($_POST['password']) || empty($_POST['full_name']) || empty($_POST['country'])) {
+            $response['error'] = 'Email, password, name and country are required';
+            echo json_encode($response);
+            return;
+        }
+
+        $email = mysqli_real_escape_string($conn, $_POST['email']);
+        $password = mysqli_real_escape_string($conn, $_POST['password']);
+        $full_name = mysqli_real_escape_string($conn, $_POST['full_name']);
+        $role = (int)$_POST['role'];
+        $country = mysqli_real_escape_string($conn, $_POST['country']);
+        $isActive = mysqli_real_escape_string($conn, $_POST['isActive']);
+
+        if (!isPasswordComplex($password)) {
+            $response['error'] = 'Password does not meet complexity requirements';
+            echo json_encode($response);
+            return;
+        }
+        
+        // Check if email is already registered
+        $emailCheckQuery = "SELECT id FROM users WHERE email = '$email'";
+        $emailCheckResult = mysqli_query($conn, $emailCheckQuery);
+    //	$userId = bin2hex(random_bytes(16)); // Generates a 32-character unique string
+
+        if (mysqli_num_rows($emailCheckResult) > 0) {
+            $response['error'] = 'Email is already registered';
+            echo json_encode($response);
+            return;
+        }
+
+        // Hash the password
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+        // Insert new user into the database
+        $insertQuery = "INSERT INTO users (email, password, fullName, role, country, isActive) 
+                    VALUES ('$email', '$hashedPassword', '$full_name', '$role', '$country', '$isActive')";
+
+
+        if (mysqli_query($conn, $insertQuery)) {
+        //   welcomeNewUser($fname,$email,$token);
+            $response['success'] = 'User created successfully';
+        } else {
+            $response['error'] = 'Database error: ' . mysqli_error($conn);
+        }
+
+
+        echo json_encode($response);
         return;
     }
 
-    // Check for last admin user restrictions
-    if ($role === 2) {
+    //DELETE USER BY ADMIN
+    if (isset($_POST['request']) && $_POST['request'] === 'deleteuser') {
+        $user_id = mysqli_real_escape_string($conn, $_POST['user_id']);
+        
+        // Check if the user is an admin
         $checkAdminQuery = $conn->prepare("SELECT role FROM users WHERE id = ?");
         $checkAdminQuery->bind_param("i", $user_id);
         $checkAdminQuery->execute();
@@ -114,137 +245,68 @@ if (isset($_POST['request']) && $_POST['request'] === 'updateuser') {
         $user = $result->fetch_assoc();
 
         if ($user['role'] === 1) {
-            $adminCountQuery = $conn->prepare("SELECT COUNT(*) as admin_count FROM users WHERE role = 1");
+            // Check if this is the last admin
+            $adminCountQuery = $conn->prepare("SELECT COUNT(*) as admin_count FROM users WHERE role = '1'");
             $adminCountQuery->execute();
             $adminCountResult = $adminCountQuery->get_result();
             $adminCount = $adminCountResult->fetch_assoc()['admin_count'];
 
             if ($adminCount <= 1) {
-                echo json_encode(['error' => 'Cannot change the last admin user to a different access level']);
+                $response['error'] = 'Cannot delete the last admin user';
+                echo json_encode($response);
                 return;
             }
         }
-    }
 
-    // Fetch owner_id
-    $ownerQuery = $conn->prepare("SELECT id FROM users WHERE id = ?");
-    $ownerQuery->bind_param("i", $user_id);
-    $ownerQuery->execute();
-    $ownerResult = $ownerQuery->get_result();
+        // Fetch user_id for the user
+        $userQuery = $conn->prepare("SELECT id FROM users WHERE id = ?");
+        $userQuery->bind_param("i", $user_id);
+        $userQuery->execute();
+        $userResult = $userQuery->get_result();
+        $userData = $userResult->fetch_assoc();
 
-    if ($ownerResult->num_rows === 0) {
-        echo json_encode(['error' => 'User not found']);
-        return;
-    }
+        if ($userData) {
+            // Proceed with deletion
+            $deleteQuery = $conn->prepare("DELETE FROM users WHERE id = ?");
+            $deleteQuery->bind_param("i", $user_id);
 
-    // Prepare queries
-    $updateQuery = "UPDATE users SET fullName = ?, email = ?, country = ?, role = ?, isActive = ?";
-    if (!empty($password)) {
-        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-        $updateQuery .= ", password = ?";
-    }
-    $updateQuery .= " WHERE id = ?";
+            $tables = [
+                "backup_provider", "batchIDHistory", "bottles", "cart", "customers", "documents",
+                "formulaCategories", "formulas", "formulasMetaData", "formulasRevisions", "formulasTags",
+                "formula_history", "IFRALibrary", "ingCategory", "ingredients", "ingredient_compounds",
+                "ingredient_safety_data", "ingReplacements", "ingSafetyInfo", "ingSuppliers", "inventory_accessories",
+                "inventory_compounds", "makeFormula", "perfumeTypes", "sds_data", "suppliers", "synonyms",
+                "templates", "user_prefs", "user_settings"
+            ];
 
-	//$user_id = $ownerResult->fetch_assoc()['id'];
+            foreach ($tables as $table) {
+                $deleteStmt = $conn->prepare("DELETE FROM $table WHERE owner_id = ?");
+                $deleteStmt->bind_param("i", $user_id);
+                $deleteStmt->execute();
+                $deleteStmt->close();
+            }
 
-    // Execute user update query
-    $stmt = $conn->prepare($updateQuery);
-    if (!empty($password)) {
-        $stmt->bind_param(
-            "sssiisi",
-            $full_name,
-            $email,
-            $country,
-            $role,
-            $isActive,
-            $hashedPassword,
-            $user_id
-        );
-    } else {
-        $stmt->bind_param(
-            "sssiii",
-            $full_name,
-            $email,
-            $country,
-            $role,
-            $isActive,
-            $user_id
-        );
-    }
+            if ($deleteQuery->execute()) {
+                $response['success'] = 'User deleted successfully';
+            } else {
+                $response['error'] = 'Database error: ' . $deleteQuery->error;
+            }
+            $deleteQuery->close();
+        } else {
+            $response['error'] = 'User not found';
+        }
 
-    if ($stmt->execute()) {
-        echo json_encode(['success' => 'User updated successfully']);        
-    } else {
-        echo json_encode(['error' => 'Failed to update user: ' . $conn->error]);
-    }
-
-    // Close statements
-    $stmt->close();
-    $ownerQuery->close();
-    return;
-}
-
-
-//CREATE USER BY ADMIN
-if (isset($_POST['request']) && $_POST['request'] === 'adduser') {
-
-    if (empty($_POST['email']) || empty($_POST['password']) || empty($_POST['full_name']) || empty($_POST['country'])) {
-        $response['error'] = 'Email, password, name and country are required';
         echo json_encode($response);
         return;
     }
+} // End of admin-only actions
 
-    $email = mysqli_real_escape_string($conn, $_POST['email']);
-    $password = mysqli_real_escape_string($conn, $_POST['password']);
-    $full_name = mysqli_real_escape_string($conn, $_POST['full_name']);
-    $role = (int)$_POST['role'];
-    $country = mysqli_real_escape_string($conn, $_POST['country']);
-    $isActive = mysqli_real_escape_string($conn, $_POST['isActive']);
-
-    if (!isPasswordComplex($password)) {
-        $response['error'] = 'Password does not meet complexity requirements';
-        echo json_encode($response);
-        return;
-    }
-	
-    // Check if email is already registered
-    $emailCheckQuery = "SELECT id FROM users WHERE email = '$email'";
-    $emailCheckResult = mysqli_query($conn, $emailCheckQuery);
-//	$userId = bin2hex(random_bytes(16)); // Generates a 32-character unique string
-
-    if (mysqli_num_rows($emailCheckResult) > 0) {
-        $response['error'] = 'Email is already registered';
-        echo json_encode($response);
-        return;
-    }
-
-    // Hash the password
-    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
-    // Insert new user into the database
-    $insertQuery = "INSERT INTO users (email, password, fullName, role, country, isActive) 
-                VALUES ('$email', '$hashedPassword', '$full_name', '$role', '$country', '$isActive')";
-
-
-    if (mysqli_query($conn, $insertQuery)) {
-     //   welcomeNewUser($fname,$email,$token);
-        $response['success'] = 'User created successfully';
-    } else {
-        $response['error'] = 'Database error: ' . mysqli_error($conn);
-    }
-
-
-    echo json_encode($response);
-    return;
-}
-
-//DELETE USER BY ADMIN
-if (isset($_POST['request']) && $_POST['request'] === 'deleteuser') {
-    $user_id = mysqli_real_escape_string($conn, $_POST['user_id']);
+//DELETE PROFILE
+if (isset($_GET['action']) && $_GET['action'] === 'deleteprofile') {
     
     // Check if the user is an admin
     $checkAdminQuery = $conn->prepare("SELECT role FROM users WHERE id = ?");
-    $checkAdminQuery->bind_param("i", $user_id);
+    $checkAdminQuery->bind_param("i", $userID);
     $checkAdminQuery->execute();
     $result = $checkAdminQuery->get_result();
     $user = $result->fetch_assoc();
@@ -265,7 +327,7 @@ if (isset($_POST['request']) && $_POST['request'] === 'deleteuser') {
 
     // Fetch user_id for the user
     $userQuery = $conn->prepare("SELECT id FROM users WHERE id = ?");
-    $userQuery->bind_param("i", $user_id);
+    $userQuery->bind_param("i", $userID);
     $userQuery->execute();
     $userResult = $userQuery->get_result();
     $userData = $userResult->fetch_assoc();
@@ -273,7 +335,7 @@ if (isset($_POST['request']) && $_POST['request'] === 'deleteuser') {
     if ($userData) {
         // Proceed with deletion
         $deleteQuery = $conn->prepare("DELETE FROM users WHERE id = ?");
-        $deleteQuery->bind_param("i", $user_id);
+        $deleteQuery->bind_param("i", $userID);
 
         $tables = [
             "backup_provider", "batchIDHistory", "bottles", "cart", "customers", "documents",
@@ -281,12 +343,12 @@ if (isset($_POST['request']) && $_POST['request'] === 'deleteuser') {
             "formula_history", "IFRALibrary", "ingCategory", "ingredients", "ingredient_compounds",
             "ingredient_safety_data", "ingReplacements", "ingSafetyInfo", "ingSuppliers", "inventory_accessories",
             "inventory_compounds", "makeFormula", "perfumeTypes", "sds_data", "suppliers", "synonyms",
-            "templates", "user_prefs"
+            "templates", "user_prefs", "user_settings"
         ];
 
         foreach ($tables as $table) {
             $deleteStmt = $conn->prepare("DELETE FROM $table WHERE owner_id = ?");
-            $deleteStmt->bind_param("i", $user_id);
+            $deleteStmt->bind_param("i", $userID);
             $deleteStmt->execute();
             $deleteStmt->close();
         }
@@ -304,6 +366,7 @@ if (isset($_POST['request']) && $_POST['request'] === 'deleteuser') {
     echo json_encode($response);
     return;
 }
+
 
 //IMPORT FORMULA FROM TEXT
 if ($_POST['action'] == 'importTXTFormula') {
@@ -545,63 +608,63 @@ if ($_POST['update_user_profile']) {
     return;
 }
 
+//UPDATE USER SETTINGS
+if ($_POST['action'] === 'update_user_settings') {
+    $currency = mysqli_real_escape_string($conn, $_POST['currency']);
+    $currency_code = mysqli_real_escape_string($conn, $_POST['currency_code']);
 
-if($_POST['manage'] == 'general'){
-	$currency = $_POST['currency'];
-	$currency_code = $_POST['currency_code'];
+    $top_n = mysqli_real_escape_string($conn, $_POST['top_n']);
+    $heart_n = mysqli_real_escape_string($conn, $_POST['heart_n']);
+    $base_n = mysqli_real_escape_string($conn, $_POST['base_n']);
+    
+    $qStep = mysqli_real_escape_string($conn, $_POST['qStep']);
+    $defCatClass = mysqli_real_escape_string($conn, $_POST['defCatClass']);
+    $grp_formula = mysqli_real_escape_string($conn, $_POST['grp_formula']);
+    $pubchem_view = mysqli_real_escape_string($conn, $_POST['pubchem_view']);
+    $mUnit = mysqli_real_escape_string($conn, $_POST['mUnit']);
+    $editor = mysqli_real_escape_string($conn, $_POST['editor']);
+    $user_pref_eng = mysqli_real_escape_string($conn, $_POST['user_pref_eng']);
+    $defPercentage = $_POST['defPercentage'];
+    $bs_theme = $_POST['bs_theme'];
+    $temp_sys = $_POST['temp_sys'];
+    
+    $chem_vs_brand = isset($_POST["chem_vs_brand"]) && $_POST["chem_vs_brand"] === 'true' ? '1' : '0';
+    $pubChem = isset($_POST["pubChem"]) && $_POST["pubChem"] === 'true' ? '1' : '0';
+    $chkVersion = isset($_POST["chkVersion"]) && $_POST["chkVersion"] === 'true' ? '1' : '0';
+    $multi_dim_perc = isset($_POST["multi_dim_perc"]) && $_POST["multi_dim_perc"] === 'true' ? '1' : '0';
+    
+    $response = [];
+    foreach ($_POST as $key => $value) {
+        if ($key === 'action') {
+            continue;
+        }
+   
+        $key = mysqli_real_escape_string($conn, $key);
+        $value = mysqli_real_escape_string($conn, $value);
 
-	$top_n = mysqli_real_escape_string($conn, $_POST['top_n']);
-	$heart_n = mysqli_real_escape_string($conn, $_POST['heart_n']);
-	$base_n = mysqli_real_escape_string($conn, $_POST['base_n']);
-	
-	$qStep = mysqli_real_escape_string($conn, $_POST['qStep']);
-	$defCatClass = mysqli_real_escape_string($conn, $_POST['defCatClass']);
-	$grp_formula = mysqli_real_escape_string($conn, $_POST['grp_formula']);
-	$pubchem_view = mysqli_real_escape_string($conn, $_POST['pubchem_view']);
-	$mUnit = mysqli_real_escape_string($conn, $_POST['mUnit']);
-	$editor = mysqli_real_escape_string($conn, $_POST['editor']);
-	$user_pref_eng = mysqli_real_escape_string($conn, $_POST['user_pref_eng']);
-	$defPercentage =  $_POST['defPercentage'];
-	$bs_theme = $_POST['bs_theme'];
-	$temp_sys = $_POST['temp_sys'];
-	
-	if($_POST["chem_vs_brand"] == 'true') {
-		$chem_vs_brand = '1';
-	}else{
-		$chem_vs_brand = '0';
-	}
-	
-	if($_POST["pubChem"] == 'true') {
-		$pubChem = '1';
-	}else{
-		$pubChem = '0';
-	}
-	
-	if($_POST["chkVersion"] == 'true') {
-		$chkVersion = '1';
-	}else{
-		$chkVersion = '0';
-	}
-	
-	if($_POST["multi_dim_perc"] == 'true') {
-		$multi_dim_perc = '1';
-	}else{
-		$multi_dim_perc = '0';
-	}
-		
-	if(empty($_POST['pv_host']) || empty($_POST['currency'])){
-		$response["error"] = 'Fields cannot be empty';
-		echo json_encode($response);
-		return;
-	}
-	
-	if(mysqli_query($conn, "UPDATE settings SET currency = '$currency', currency_code = '$currency_code', top_n = '$top_n', heart_n = '$heart_n', base_n = '$base_n', chem_vs_brand = '$chem_vs_brand', grp_formula = '$grp_formula', pubChem='$pubChem', chkVersion='$chkVersion', qStep = '$qStep', defCatClass = '$defCatClass', pubchem_view = '$pubchem_view', multi_dim_perc = '$multi_dim_perc', mUnit = '$mUnit', editor = '$editor', user_pref_eng = '$user_pref_eng', pv_host = '".$_POST['pv_host']."', defPercentage = '$defPercentage', bs_theme = '$bs_theme', temp_sys = '$temp_sys' ")){
-		$response["success"] = 'Settings updated';
-	}else{
-		$response["error"] = 'An error occured '.mysqli_error($conn);	
-	}
-	echo json_encode($response);
-	return;
+        $stmt = $conn->prepare("SELECT COUNT(*) FROM user_settings WHERE key_name = ? AND owner_id = ?");
+        $stmt->bind_param('si', $key, $userID);
+        $stmt->execute();
+        $stmt->bind_result($count);
+        $stmt->fetch();
+        $stmt->close();
+
+        if ($count > 0) {
+            $stmt = $conn->prepare("UPDATE user_settings SET value = ? WHERE key_name = ? AND owner_id = ?");
+            $stmt->bind_param('ssi', $value, $key, $userID);
+        } else {
+            $stmt = $conn->prepare("INSERT INTO user_settings (key_name, value, owner_id) VALUES (?, ?, ?)");
+            $stmt->bind_param('ssi', $key, $value, $userID);
+        }
+
+        if ($stmt->execute()) {
+            $response["success"] = 'Settings updated';
+        } else {
+            $response["error"] = 'An error occurred: ' . $stmt->error;
+        }
+    }
+    echo json_encode($response);
+    return;
 }
 
 //UPDATE API SETTINGS
@@ -620,7 +683,7 @@ if($_POST['manage'] == 'api'){
 		$api = '0';
 	}
 	
-	if(mysqli_query($conn, "UPDATE users SET isAPIActive = '$api', API_key='$api_key'")){
+	if(mysqli_query($conn, "UPDATE users SET isAPIActive = '$api', API_key='$api_key' WHERE id = '$userID'")){
 		$response['success'] = 'API settings updated';	
 	}else{
 		$response['error'] = 'An error occured '.mysqli_error($conn);	

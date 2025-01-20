@@ -51,6 +51,53 @@ $doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM docu
 		</div>
 	</div>
 </div>
+<div class="col-12 text-end mt-3">
+	<a href="#" id="delete-profile" class="text-danger">Delete my profile</a>
+</div>
+
+<script>
+$(document).ready(function () {
+	$('#delete-profile').click(function(e) {
+		e.preventDefault();
+		bootbox.confirm({
+			title: "Delete Profile",
+			message: "Are you sure you want to delete your profile? This action cannot be reverted and all data will be lost.",
+			buttons: {
+				confirm: {
+					label: 'DELETE PROFILE',
+					className: 'btn-danger'
+				},
+				cancel: {
+					label: 'Cancel',
+					className: 'btn-secondary'
+				}
+			},
+			callback: function (result) {
+				if (result) {
+					$.ajax({
+						url: '/core/core.php',
+						type: 'GET',
+						data: { 
+							action: 'deleteprofile'
+						},
+						dataType: 'json',
+						success: function (data) {
+							if (data.success) {
+								window.location.href = '/logout.php';
+							} else if (data.error) {
+								$('#msgU').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>' + data.error + '</div>');
+							}
+						},
+						error: function (xhr, status, error) {
+							$('#msgU').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. ' + error + '</div>');
+						}
+					});
+				}
+			}
+		});
+	});
+});
+</script>
 
 <script>
 $(document).ready(function () {
