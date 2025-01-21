@@ -6,8 +6,7 @@ require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 
 
-$user = mysqli_fetch_array(mysqli_query($conn, "SELECT email,fullName FROM users WHERE id = '$userID'")); 
-$doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM documents WHERE ownerID = '".$_SESSION['userID']."' AND name = 'avatar' AND type = '3' AND owner_id = '$userID'"));
+$doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM documents WHERE ownerID = '".$userID."' AND name = 'avatar' AND type = '3' AND owner_id = '$userID'"));
 
 ?>
 
@@ -39,6 +38,17 @@ $doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM docu
 				<input type="password" class="form-control password-input" id="password" name="password" placeholder="Password" <?php if (getenv('USER_PASSWORD')){?>disabled<?php } ?> value="">
 				<label for="password">Password</label>
 				<i class="toggle-password fa fa-eye position-absolute top-50 end-0 translate-middle-y me-3"></i>
+			</div>
+			<div class="form-floating mb-3">
+				<select class="form-select" name="country" id="country">
+					<option value="">Choose your country</option>
+					<?php foreach ($countries as $country): ?>
+						<option value="<?php echo htmlspecialchars($country['isoAlpha2']); ?>" <?php echo $user['country'] == $country['isoAlpha2'] ? 'selected' : ''; ?>>
+							<?php echo htmlspecialchars($country['name']); ?>
+						</option>
+					<?php endforeach; ?>
+				</select>
+				<label for="country">Country</label>
 			</div>
 			<div class="dropdown-divider"></div>
 			<div class="form-row">
@@ -121,10 +131,11 @@ $(document).ready(function () {
 			url: '/core/core.php', 
 			type: 'POST',
 			data: {
-				update_user_profile: 1,
+				action: 'update_user_profile',
 				user_fname: $("#fullName").val(),			
 				user_email: $("#email").val(),
-				user_pass: $("#password").val()
+				user_pass: $("#password").val(),
+				user_country: $("#country").val()
 			},
 			dataType: 'json',
 			success: function (data) {

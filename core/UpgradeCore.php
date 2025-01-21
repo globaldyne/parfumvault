@@ -5,10 +5,16 @@ define('__ROOT__', dirname(dirname(__FILE__)));
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
-
 require_once(__ROOT__.'/func/pvFileGet.php');
 require_once(__ROOT__.'/func/pvCopy.php');		
 
+if($role != 1){
+	$response["error"] = "You are not authorized to perform this action";
+	echo json_encode($response);
+	return;
+}
+
+$response = array();
 $githubVer = 'https://raw.githubusercontent.com/globaldyne/parfumvault/master/VERSION.md';
 $data = trim(pv_file_get_contents($githubVer));
 if(trim(file_get_contents(__ROOT__.'/VERSION.md')) > $data){

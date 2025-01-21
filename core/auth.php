@@ -66,6 +66,7 @@ if ($_POST['action'] == 'login') {
             $_SESSION['parfumvault'] = true;
             $_SESSION['userID'] = $row['id'];
             $_SESSION['role'] = $row['role'];
+            $_SESSION['user_email'] = $row['email'];
 
             // Determine redirection
             $redirect = $_POST['do'] ? '/index.php?do=' . $_POST['do'] :

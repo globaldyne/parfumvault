@@ -349,7 +349,7 @@ if ($_GET['format'] == 'json' && $_GET['kind'] == 'ingredients') {
     $ing = [];
     while ($res = mysqli_fetch_assoc($q)) {
         $r = [
-			'id' => (string) $res['id'],
+			'id' => (int) $res['id'],
             'name' => (string) $res['name'],
             'INCI' => (string) $res['INCI'],
             'cas' => (string) $res['cas'],

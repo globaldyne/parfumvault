@@ -2,6 +2,24 @@
 IMPORT INGREDIENTS JSON
 */
 
+function resetModalElements() {
+	$("#loaded_n_total").html("");
+	$("#uploadProgressBar").html("0 %");
+	$("#uploadProgressBar").css("width", "0%");
+	$("#status").html("");
+	$("#JSRestMsg").html("");
+	$("#backupFile").val('');
+	$("#btnRestoreIngredients").prop("disabled", true);
+	$("#btnRestoreIngredientsCloseBK").prop("disabled", true);
+	$(".progress").hide();
+	$("#btnRestoreIngredients").show();
+	$("#backupArea").css('display', 'block');
+}
+
+$('#import_ingredients_json').on('show.bs.modal', function (e) {
+	resetModalElements();
+});
+
 function uploadProgressHandler(event) {
 	$("#loaded_n_total").html("Uploaded " + event.loaded + " bytes of " + event.total);
 	var percent = (event.loaded / event.total) * 100;
@@ -13,22 +31,22 @@ function uploadProgressHandler(event) {
 function loadHandler(event) {
 	$("#status").html(event.target.responseText);
 	$(".progress").hide();
-	//$("#btnRestoreIngredients").hide();
 	$("#backupFile").val('');
 	$('#btnCloseBK').prop('value', 'Close');
 	$("#uploadProgressBar").css("width", "0%");
 }
 
 function errorHandler(event) {
-	$("#JSRestMsg").html('<div class="alert alert-danger">Upload failed</div>');
+	$("#JSRestMsg").html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>Upload failed</div>');
 }
 
 function abortHandler(event) {
-	$("#JSRestMsg").html('<div class="alert alert-info">Upload Aborted</div>');
+	$("#JSRestMsg").html('<div class="alert alert-info"><i class="fa-solid fa-circle-exclamation mx-2"></i>Upload Aborted</div>');
 }
 	
 $(".progress").hide();
 $("#btnRestoreIngredients").prop("disabled", true);
+$("#btnRestoreIngredientsCloseBK").prop("disabled", true);
 $("#backupFile").change(function(){
 	var allowedTypes = ['application/json'];
 	var file = this.files[0];
@@ -37,14 +55,14 @@ $("#backupFile").change(function(){
 	$("#JSRestMsg").html('');
 	var fileSizePHP = $("#raw").data("size");
 	if(!allowedTypes.includes(fileType)){
-		$("#JSRestMsg").html('<div class="alert alert-info">Invalid file selected. Please select a JSON file exported from PV.</div>');
+		$("#JSRestMsg").html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>Invalid file selected. Please select a JSON file exported from PV.</div>');
 		$("#backupFile").val('');
 		$("#btnRestoreIngredients").prop("disabled", true);
 		return false;
 	}
 	
 	if (fileSize > fileSizePHP){
-		$("#JSRestMsg").html('<div class="alert alert-info">File size <strong>('+formatBytes(fileSize)+')</strong> is exceeding your server file upload limit '+ formatBytes(fileSizePHP)+'</div>');
+		$("#JSRestMsg").html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>File size <strong>('+formatBytes(fileSize)+')</strong> is exceeding your server file upload limit '+ formatBytes(fileSizePHP)+'</div>');
 		$("#backupFile").val('');
 		$("#btnRestoreIngredients").prop("disabled", true);
 		return false;
@@ -59,9 +77,9 @@ $('#btnRestoreIngredients').click(function() {
 	
 	event.preventDefault();
 	var fd = new FormData();
-    var files = $('#backupFile')[0].files;
+	var files = $('#backupFile')[0].files;
 
-    if(files.length > 0 ){
+	if(files.length > 0 ){
 		fd.append('backupFile',files[0]);
 	}
 	
@@ -70,23 +88,24 @@ $('#btnRestoreIngredients').click(function() {
 		type: 'POST',
 		data: fd,
 		contentType: false,
-      	processData: false,
+		processData: false,
 		cache: false,
 		dataType: 'json',
 		xhr: function () {
-                var xhr = new window.XMLHttpRequest();
-                xhr.upload.addEventListener("progress",
-                    uploadProgressHandler,
-                    false
-                );
-                xhr.addEventListener("load", loadHandler, false);
-                xhr.addEventListener("error", errorHandler, false);
-                xhr.addEventListener("abort", abortHandler, false);
+				var xhr = new window.XMLHttpRequest();
+				xhr.upload.addEventListener("progress",
+					uploadProgressHandler,
+					false
+				);
+				xhr.addEventListener("load", loadHandler, false);
+				xhr.addEventListener("error", errorHandler, false);
+				xhr.addEventListener("abort", abortHandler, false);
 				$(".progress").show();
 				$("#btnRestoreIngredients").prop("disabled", true);
+				$("#btnRestoreIngredientsCloseBK").prop("disabled", true);
 				$('#btnRestoreIngredients').prop('value', 'Please wait...');
-                return xhr;
-            },
+				return xhr;
+			},
 			
 			success: function (data) {
 				let msg = '';
@@ -107,16 +126,21 @@ $('#btnRestoreIngredients').click(function() {
 					$("#btnRestoreIngredients").show();
 					$("#btnRestoreIngredients").prop("disabled", false);
 					$('#btnRestoreIngredients').prop('value', 'Import');
+					$("#btnRestoreIngredientsCloseBK").prop("disabled", false);
+
 				}
 			
 				$('#btnRestoreIngredients').prop('value', 'Import');
 				$("#btnRestoreIngredients").prop("disabled", false);
+				$("#btnRestoreIngredientsCloseBK").prop("disabled", false);
+
 				$('#JSRestMsg').html(msg);
 			},
 			error: function (xhr, status, error) {
 				$("#btnRestoreIngredients").prop("disabled", false);
+				$("#btnRestoreIngredientsCloseBK").prop("disabled", false);
 				$('#btnRestoreIngredients').prop('value', 'Import');
-				msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>';
+				msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error + '</div>';
 				$('#JSRestMsg').html(msg);
 			}
 
@@ -125,10 +149,10 @@ $('#btnRestoreIngredients').click(function() {
 });
 
 function formatBytes(bytes, decimals = 2) {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const dm = decimals < 0 ? 0 : decimals;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+	if (bytes === 0) return '0 Bytes';
+	const k = 1024;
+	const dm = decimals < 0 ? 0 : decimals;
+	const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+	const i = Math.floor(Math.log(bytes) / Math.log(k));
+	return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 }

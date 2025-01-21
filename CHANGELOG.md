@@ -49,6 +49,11 @@
 - Added settings per users
 - Droped table settings
 - Added user profile self delete
+- Added user email to the session data
+- Added country in user profile
+- Validate email for user before allow updating it
+- Refactor index.php
+- Refactor ingredients import
 
 ### Version 12.4
 - Add dilutant in API formulas

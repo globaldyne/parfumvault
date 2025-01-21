@@ -17,7 +17,9 @@ $defImage = base64_encode(file_get_contents(__ROOT__.'/img/pv_molecule.png'));
 $s = trim($_POST['search']['value']);
 
 if($s != ''){
-   $f = "WHERE 1 AND (name LIKE '%".$s."%' OR cas LIKE '%".$s."%' OR synonyms LIKE '%".$s."%' OR risk LIKE '%".$s."%')  AND owner_id = '$userID'";
+	$f = "WHERE 1 AND (name LIKE '%".$s."%' OR cas LIKE '%".$s."%' OR synonyms LIKE '%".$s."%' OR risk LIKE '%".$s."%')  AND owner_id = '$userID'";
+} else {
+	$f = "WHERE 1 AND owner_id = '$userID'";
 }
 
 $q = mysqli_query($conn, "SELECT * FROM IFRALibrary $f $extra LIMIT $row, $limit");
@@ -69,7 +71,6 @@ foreach ($ifra as $IFRA) {
 	$r['defCat']['class'] = (string)$defCatClass?:'-';
 	$r['defCat']['limit'] = (float)$IFRA[$defCatClass]?:'0';
  	$r['image'] = (string)$IFRA['image']?:$defImage;
-	
 
 
 	$rx[]=$r;

@@ -196,6 +196,8 @@ require_once(__ROOT__.'/func/php-settings.php');
 
 <script>
 $(document).ready(function() {
+	$.fn.dataTable.ext.errMode = 'none';
+
 	$('#mainTitle').click(function() {
 	 	reload_data();
   	});
@@ -209,8 +211,8 @@ $(document).ready(function() {
 		],
 		dom: 'lrftip',
 		buttons: [{
-				extend: 'csvHtml5',
-				title: "IFRALibrary"
+			extend: 'csvHtml5',
+			title: "IFRALibrary"
 		}],
 		processing: true,
 		serverSide: true,
@@ -289,6 +291,9 @@ $(document).ready(function() {
 		  });
 		},
 	
+	}).on('error.dt', function(e, settings, techNote, message) {
+		var m = message.split(' - ');
+		$('#tdDataIFRA').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i><strong>' + m[1] + '</strong></div>');
 	});
 
 	tdDataIFRA.on('requestChild.dt', function (e, row) {

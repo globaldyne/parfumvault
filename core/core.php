@@ -546,7 +546,8 @@ if($_GET['update_user_avatar']){
 	return;
 }
 
-if ($_POST['update_user_profile']) {
+//UPDATE USER PROFILE
+if ($_POST['action'] === 'update_user_profile') {
     if (getenv('USER_EMAIL') && getenv('USER_NAME') && getenv('USER_PASSWORD')) {
         echo json_encode(["error" => "User information is externally managed and cannot be updated here."]);
         return;
@@ -564,18 +565,31 @@ if ($_POST['update_user_profile']) {
         return;
     }
 
-	// Validate email format
-	if (!filter_var($_POST['user_email'], FILTER_VALIDATE_EMAIL)) {
-		echo json_encode(["error" => "Invalid email address"]);
-		return;
-	}
+    // Validate email format
+    if (!filter_var($_POST['user_email'], FILTER_VALIDATE_EMAIL)) {
+        echo json_encode(["error" => "Invalid email address"]);
+        return;
+    }
 
     // Sanitize inputs
-    $fullName = trim($_POST['user_fname']);
-    $email = trim($_POST['user_email']);
+    $fullName = trim(mysqli_real_escape_string($conn, $_POST['user_fname']));
+    $email = trim(mysqli_real_escape_string($conn, $_POST['user_email']));
     $password = $_POST['user_pass'];
+    $country = mysqli_real_escape_string($conn, $_POST['user_country']);
 
- 
+    // Check if email already exists
+    $stmt = $conn->prepare("SELECT id FROM users WHERE email = ? AND id != ?");
+    $stmt->bind_param('si', $email, $userID);
+    $stmt->execute();
+    $stmt->store_result();
+
+    if ($stmt->num_rows > 0) {
+        echo json_encode(["error" => "Email address is already in use"]);
+        $stmt->close();
+        return;
+    }
+    $stmt->close();
+
     // Handle password update
     $passwordClause = '';
     if (!empty($password)) {
@@ -588,19 +602,28 @@ if ($_POST['update_user_profile']) {
     }
 
     // Prepare the SQL query
-	$query = "UPDATE users SET fullName = ?, email = ?" . $passwordClause . " WHERE id = ?";
-	$stmt = $conn->prepare($query);
-	
+    $query = "UPDATE users SET fullName = ?, email = ?, country = ?" . $passwordClause . " WHERE id = ?";
+    $stmt = $conn->prepare($query);
+
     if ($passwordClause) {
-        $stmt->bind_param('sssi', $fullName, $email, $hashedPassword, $userID);
+        $stmt->bind_param('ssssi', $fullName, $email, $country, $hashedPassword, $userID);
     } else {
-        $stmt->bind_param('ssi', $fullName, $email, $userID);
+        $stmt->bind_param('sssi', $fullName, $email, $country, $userID);
     }
 
     if ($stmt->execute()) {
-        echo json_encode(["success" => "User details updated"]);
+        if ($stmt->affected_rows > 0) {
+            if ($email !== $_SESSION['user_email']) {
+                echo json_encode(["success" => "User details updated. Please log in again with your new email address."]);
+                session_destroy();
+            } else {
+                echo json_encode(["success" => "User details updated"]);
+            }
+        } else {
+            echo json_encode(["success" => "No changes were made"]);
+        }
     } else {
-        error_log("Database error: " . $stmt->error); // Log the error
+        error_log("PV error: " . $stmt->error); // Log the error
         echo json_encode(["error" => "Failed to update user details. Please try again later."]);
     }
 
@@ -5154,210 +5177,7 @@ if($_GET['action'] == 'restoreFormulas'){
 
 //IMPORT INGREDIENTS
 if($_GET['action'] == 'restoreIngredients') {
-    if (!file_exists($tmp_path)) {
-        mkdir($tmp_path, 0777, true);
-    }
-    
-    if (!is_writable($tmp_path)) {
-        $result['error'] = "Upload directory not writable. Make sure you have write permissions.";
-        echo json_encode($result);
-        return;
-    }
-    
-    $target_path = $tmp_path . basename($_FILES['backupFile']['name']); 
-
-    if (move_uploaded_file($_FILES['backupFile']['tmp_name'], $target_path)) {
-        $data = json_decode(file_get_contents($target_path), true);
-        
-        if (!$data['ingredients']) {
-            $result['error'] = "JSON File seems invalid. Please make sure you are importing the right file";
-            echo json_encode($result);
-            return;
-        }
-
-        // Process `ingredient_compounds`
-        foreach ($data['compositions'] as $cmp) {
-            $ing = mysqli_real_escape_string($conn, $cmp['ing']);
-            $name = mysqli_real_escape_string($conn, $cmp['name']);
-            $cas = mysqli_real_escape_string($conn, $cmp['cas']);
-            $ec = mysqli_real_escape_string($conn, $cmp['ec']);
-            $min_percentage = mysqli_real_escape_string($conn, $cmp['min_percentage']);
-            $max_percentage = mysqli_real_escape_string($conn, $cmp['max_percentage']);
-            $GHS = mysqli_real_escape_string($conn, $cmp['GHS']);
-            $toDeclare = mysqli_real_escape_string($conn, $cmp['toDeclare']);
-
-            // Check if record exists
-            $query_check = "SELECT COUNT(*) FROM `ingredient_compounds` WHERE `name` = '$name' AND `owner_id` = '$userID'";
-            $result_check = mysqli_query($conn, $query_check);
-            $exists = mysqli_fetch_row($result_check)[0];
-
-            if ($exists == 0) {
-                // Insert if record does not exist
-                $query = "INSERT INTO `ingredient_compounds` (`ing`, `name`, `cas`, `ec`, `min_percentage`, `max_percentage`, `GHS`, `toDeclare`, `created_at`, `owner_id`) 
-                          VALUES ('$ing', '$name', '$cas', '$ec', '$min_percentage', '$max_percentage', '$GHS', '$toDeclare', CURRENT_TIMESTAMP(), '$userID')";
-                
-                if (!mysqli_query($conn, $query)) {
-                    $result['error'] = 'Error executing query: ' . mysqli_error($conn);
-                    echo json_encode($result);
-                    return;
-                }
-            }
-        }
-
-        // Process `suppliers`
-        foreach ($data['suppliers'] as $sup) {
-            $id = mysqli_real_escape_string($conn, $sup['id']);
-            $ingSupplierID = mysqli_real_escape_string($conn, $sup['ingSupplierID']);
-            $ingID = mysqli_real_escape_string($conn, $sup['ingID']);
-            $supplierLink = mysqli_real_escape_string($conn, $sup['supplierLink']);
-            $price = mysqli_real_escape_string($conn, $sup['price']);
-            $size = mysqli_real_escape_string($conn, $sup['size']);
-            $manufacturer = mysqli_real_escape_string($conn, $sup['manufacturer']);
-            $preferred = mysqli_real_escape_string($conn, $sup['preferred']);
-            $batch = mysqli_real_escape_string($conn, $sup['batch']);
-            $purchased = mysqli_real_escape_string($conn, $sup['purchased']);
-            $mUnit = mysqli_real_escape_string($conn, $sup['mUnit']);
-            $stock = mysqli_real_escape_string($conn, $sup['stock']);
-            $status = mysqli_real_escape_string($conn, $sup['status']);
-            $supplier_sku = mysqli_real_escape_string($conn, $sup['supplier_sku']);
-            $internal_sku = mysqli_real_escape_string($conn, $sup['internal_sku']);
-            $storage_location = mysqli_real_escape_string($conn, $sup['storage_location']);
-
-            // Validate that price is numeric, non-empty, and non-zero
-            if (!is_numeric($price) || empty($price) || $price == 0) {
-                $warn .= "Invalid price for supplier ID $id - Ignoring<br/>";
-                continue; // Skip to the next entry
-            }
-
-            // Check if record exists
-            $query_check = "SELECT COUNT(*) FROM `suppliers` WHERE `ingSupplierID` = '$ingSupplierID' AND `owner_id` = '$userID'";
-            $result_check = mysqli_query($conn, $query_check);
-            $exists = mysqli_fetch_row($result_check)[0];
-
-            if ($exists == 0) {
-                // Insert if record does not exist
-                $query = "INSERT INTO `suppliers` (`id`, `ingSupplierID`, `ingID`, `supplierLink`, `price`, `size`, `manufacturer`, `preferred`, `batch`, `purchased`, `mUnit`, `stock`, `status`, `supplier_sku`, `internal_sku`, `storage_location`, `created_at`, `owner_id`) 
-                          VALUES ('$id', '$ingSupplierID', '$ingID', '$supplierLink', '$price', '$size', '$manufacturer', '$preferred', '$batch', '$purchased', '$mUnit', '$stock', '$status', '$supplier_sku', '$internal_sku', '$storage_location', CURRENT_TIMESTAMP(), '$userID')";
-                
-                if (!mysqli_query($conn, $query)) {
-                    $result['error'] = 'Error executing query: ' . mysqli_error($conn);
-                    echo json_encode($result);
-                    return;
-                }
-            }
-        }
-
-        // Process `ingSuppliers`
-        foreach ($data['ingSuppliers'] as $is) {
-            $id = mysqli_real_escape_string($conn, $is['id']);
-            $name = mysqli_real_escape_string($conn, $is['name']);
-            $address = mysqli_real_escape_string($conn, $is['address']);
-            $po = mysqli_real_escape_string($conn, $is['po']);
-            $country = mysqli_real_escape_string($conn, $is['country']);
-            $telephone = mysqli_real_escape_string($conn, $is['telephone']);
-            $url = mysqli_real_escape_string($conn, $is['url']);
-            $email = mysqli_real_escape_string($conn, $is['email']);
-            $notes = mysqli_real_escape_string($conn, $is['notes']) ?: '-';
-
-            // Check if record exists
-            $query_check = "SELECT COUNT(*) FROM `ingSuppliers` WHERE `name` = '$name' AND `owner_id` = '$userID'";
-            $result_check = mysqli_query($conn, $query_check);
-            $exists = mysqli_fetch_row($result_check)[0];
-
-            if ($exists == 0) {
-                // Insert if record does not exist
-                $query = "INSERT INTO `ingSuppliers` (`id`, `name`, `address`, `po`, `country`, `telephone`, `url`, `email`, `notes`, `owner_id`) 
-                          VALUES ('$id', '$name', '$address', '$po', '$country', '$telephone', '$url', '$email', '$notes', '$userID')";
-                
-                if (!mysqli_query($conn, $query)) {
-                    $result['error'] = 'Error executing query: ' . mysqli_error($conn);
-                    echo json_encode($result);
-                    return;
-                }
-            }
-        }
-
-        // Process `ingredients`
-        foreach ($data['ingredients'] as $ingredient) {
-            $name = mysqli_real_escape_string($conn, $ingredient['name']);
-            $INCI = mysqli_real_escape_string($conn, $ingredient['INCI']);
-            $cas = mysqli_real_escape_string($conn, $ingredient['cas']);
-            $FEMA = mysqli_real_escape_string($conn, $ingredient['FEMA']);
-            $type = mysqli_real_escape_string($conn, $ingredient['type']);
-            $strength = mysqli_real_escape_string($conn, $ingredient['strength']);
-            $category = mysqli_real_escape_string($conn, $ingredient['category']);
-            $purity = mysqli_real_escape_string($conn, $ingredient['purity']);
-            $einecs = mysqli_real_escape_string($conn, $ingredient['einecs']);
-            $reach = mysqli_real_escape_string($conn, $ingredient['reach']);
-            $tenacity = mysqli_real_escape_string($conn, $ingredient['tenacity']);
-            $chemical_name = mysqli_real_escape_string($conn, $ingredient['chemical_name']);
-            $formula = mysqli_real_escape_string($conn, $ingredient['formula']);
-            $flash_point = mysqli_real_escape_string($conn, $ingredient['flash_point']);
-            $notes = mysqli_real_escape_string($conn, $ingredient['notes']);
-            $flavor_use = mysqli_real_escape_string($conn, $ingredient['flavor_use']);
-            $soluble = mysqli_real_escape_string($conn, $ingredient['soluble']);
-            $logp = mysqli_real_escape_string($conn, $ingredient['logp']);
-            $cat1 = mysqli_real_escape_string($conn, $ingredient['cat1']);
-            $cat2 = mysqli_real_escape_string($conn, $ingredient['cat2']);
-            $cat3 = mysqli_real_escape_string($conn, $ingredient['cat3']);
-            $cat4 = mysqli_real_escape_string($conn, $ingredient['cat4']);
-            $cat5A = mysqli_real_escape_string($conn, $ingredient['cat5A']);
-            $cat5B = mysqli_real_escape_string($conn, $ingredient['cat5B']);
-            $cat5C = mysqli_real_escape_string($conn, $ingredient['cat5C']);
-            $cat6 = mysqli_real_escape_string($conn, $ingredient['cat6']);
-            $cat7A = mysqli_real_escape_string($conn, $ingredient['cat7A']);
-            $cat7B = mysqli_real_escape_string($conn, $ingredient['cat7B']);
-            $cat8 = mysqli_real_escape_string($conn, $ingredient['cat8']);
-            $cat9 = mysqli_real_escape_string($conn, $ingredient['cat9']);
-            $cat10A = mysqli_real_escape_string($conn, $ingredient['cat10A']);
-            $cat10B = mysqli_real_escape_string($conn, $ingredient['cat10B']);
-            $cat11A = mysqli_real_escape_string($conn, $ingredient['cat11A']);
-            $cat11B = mysqli_real_escape_string($conn, $ingredient['cat11B']);
-            $cat12 = mysqli_real_escape_string($conn, $ingredient['cat12']);
-            $profile = mysqli_real_escape_string($conn, $ingredient['profile']);
-            $physical_state = mysqli_real_escape_string($conn, $ingredient['physical_state']);
-            $allergen = mysqli_real_escape_string($conn, $ingredient['allergen']);
-            $odor = mysqli_real_escape_string($conn, $ingredient['odor']);
-            $impact_top = mysqli_real_escape_string($conn, $ingredient['impact_top']);
-            $impact_heart = mysqli_real_escape_string($conn, $ingredient['impact_heart']);
-            $impact_base = mysqli_real_escape_string($conn, $ingredient['impact_base']);
-            $usage_type = mysqli_real_escape_string($conn, $ingredient['usage_type']);
-            $noUsageLimit = mysqli_real_escape_string($conn, $ingredient['noUsageLimit']);
-            $byPassIFRA = mysqli_real_escape_string($conn, $ingredient['byPassIFRA']);
-            $isPrivate = mysqli_real_escape_string($conn, $ingredient['isPrivate']);
-            $molecularWeight = mysqli_real_escape_string($conn, $ingredient['molecularWeight']);
-        
-            // Check if record exists
-            $query_check = "SELECT COUNT(*) FROM `ingredients` WHERE `name` = '$name' AND `owner_id` = '$userID'";
-            $result_check = mysqli_query($conn, $query_check);
-            $exists = mysqli_fetch_row($result_check)[0];
-
-            if ($exists == 0) {
-                // Insert if record does not exist
-                $query = "INSERT INTO ingredients (name, INCI, cas, FEMA, type, strength, category, purity, einecs, reach, tenacity, chemical_name, formula, flash_point, notes, flavor_use, soluble, logp, cat1, cat2, cat3, cat4, cat5A, cat5B, cat5C, cat6, cat7A, cat7B, cat8, cat9, cat10A, cat10B, cat11A, cat11B, cat12, profile, physical_state, allergen, odor, impact_top, impact_heart, impact_base, usage_type, noUsageLimit, byPassIFRA, isPrivate, molecularWeight, owner_id) 
-                          VALUES ('$name', '$INCI', '$cas', '$FEMA', '$type', '$strength', '$category', '$purity', '$einecs', '$reach', '$tenacity', '$chemical_name', '$formula', '$flash_point', '$notes', '$flavor_use', '$soluble', '$logp', '$cat1', '$cat2', '$cat3', '$cat4', '$cat5A', '$cat5B', '$cat5C', '$cat6', '$cat7A', '$cat7B', '$cat8', '$cat9', '$cat10A', '$cat10B', '$cat11A', '$cat11B', '$cat12', '$profile', '$physical_state', '$allergen', '$odor', '$impact_top', '$impact_heart', '$impact_base', '$usage_type', '$noUsageLimit', '$byPassIFRA', '$isPrivate', '$molecularWeight', '$userID')";
-                
-                if (!mysqli_query($conn, $query)) {
-                    $result['error'] = 'Error executing query: ' . mysqli_error($conn);
-                    echo json_encode($result);
-                    return;
-                }
-            }
-        }
-
-        $result['success'] = "Import complete";
-
-        if ($warn) {
-            $result['warning'] = $warn;  // Set warning message if $warn is not empty
-        }
-
-        unlink($target_path);
-    } else {
-        $result['error'] = "There was an error processing json file $target_path, please try again!";
-        echo json_encode($result);
-    }
-    
-    echo json_encode($result);
+    require_once(__ROOT__.'/core/import_ingredients.php');
     return;
 }
 

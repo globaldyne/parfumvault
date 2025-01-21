@@ -26,7 +26,6 @@ if (!$user) {
     echo json_encode($response);
     return;
 }
-$countries = json_decode(file_get_contents(__ROOT__.'/db/countries.json'), true);
 
 ?>
 <div id="editUserForm">

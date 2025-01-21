@@ -153,7 +153,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseBK">Close</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnRestoreIngredientsCloseBK">Close</button>
         <input type="submit" name="btnRestore" class="btn btn-primary" id="btnRestoreIngredients" value="Import">
       </div>
     </div>  
