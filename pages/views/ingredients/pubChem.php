@@ -13,6 +13,12 @@ require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/pvFileGet.php');
 
+if($system_settings['SYSTEM_pubChem']!== '1') {
+	$response["error"] = 'PubChem is disabled';
+	echo json_encode($response);
+	return;
+}
+
 $cas = trim($_GET['cas']);
 $type = 'PNG';
 

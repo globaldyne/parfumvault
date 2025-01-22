@@ -51,10 +51,16 @@ while($cats_res = mysqli_fetch_array($cats_q)){
                 <label for="grp_formula" class="form-label">Group formula</label>
             </div>
             <div class="mb-3 col-md-6 form-floating">
+                <?php if ($system_settings['SYSTEM_pubChem'] == '1') { ?>
                 <select name="pubchem_view" id="pubchem_view" class="form-select">
                     <option value="2d" <?= $user_settings ['pubchem_view'] == "2d" ? 'selected' : '' ?>>2D</option>
                     <option value="3d" <?= $user_settings ['pubchem_view'] == "3d" ? 'selected' : '' ?>>3D</option>
                 </select>
+                <?php } else { ?>
+                <select name="pubchem_view" id="pubchem_view" class="form-select" disabled>
+                    <option value="">Disabled by admin</option>
+                </select>
+                <?php } ?>
                 <label for="pubchem_view" class="form-label">PubChem view</label>
             </div>
         </div>
@@ -145,12 +151,7 @@ while($cats_res = mysqli_fetch_array($cats_q)){
         </div>
     </div>
 
-    <div class="col-sm-3">
-        <div class="form-check mb-3">
-            <input name="pubChem" type="checkbox" class="form-check-input" id="pubChem" value="1" <?= $user_settings ['pubChem'] == '1' ? 'checked' : '' ?>/>
-            <label class="form-check-label" for="pubChem">Enable PubChem</label>
-        </div>
-        
+    <div class="col-sm-3">       
         <div class="form-check mb-3">
             <input name="chem_vs_brand" type="checkbox" class="form-check-input" id="chem_vs_brand" value="1" <?= $user_settings ['chem_vs_brand'] == '1' ? 'checked' : '' ?>/>
             <label class="form-check-label" for="chem_vs_brand">Show chemical names</label>
@@ -164,6 +165,9 @@ while($cats_res = mysqli_fetch_array($cats_q)){
        <hr />
        <div class="col-sm-auto">
             <a href="#" data-bs-toggle="modal" data-bs-target="#clear_search_pref">Clear search preferences</a>
+       </div>
+       <div class="col-sm-auto">
+            <a href="#" data-bs-toggle="modal" data-bs-target="#clear_my_settings">Reset all settings to default</a>
        </div>
        <?php if ($role === 1){ ?>
        <hr />
@@ -200,6 +204,23 @@ while($cats_res = mysqli_fetch_array($cats_q)){
         </div>
     </div>
 </div>
+<div class="modal fade" id="clear_my_settings" tabindex="-1" aria-labelledby="clearMySettingsLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="clearMySettingsLabel">Reset All Settings to Default</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to reset all settings to default? This action cannot be undone.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirm-clear-my-settings">Reset Settings</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <script>
@@ -221,10 +242,11 @@ $(document).ready(function() {
 				base_n: $("#base_n").val(),
 				qStep: $("#qStep").val(),
 				defCatClass: $("#defCatClass").val(),
+                <?php if($system_settings['SYSTEM_pubChem'] == '1'){ ?>
 				pubchem_view: $("#pubchem_view").val(),
+                <?php } ?>
 				grp_formula: $("#grp_formula").val(),
                 chem_vs_brand: $("#chem_vs_brand").is(':checked') ? 1 : 0,
-                pubChem: $("#pubChem").is(':checked') ? 1 : 0,
                 multi_dim_perc: $("#multi_dim_perc").is(':checked') ? 1 : 0,
 				mUnit: $("#mUnit").val(),
 				editor: $("#editor").val(),
@@ -298,4 +320,45 @@ $('#confirm-clear-search-pref').click(function() {
         }
     });
 });
+
+
+$('#confirm-clear-my-settings').click(function() {
+    $.ajax({
+        url: '/core/core.php',
+        type: 'GET',
+        data: {
+            action: 'reset_user_settings'
+        },
+        dataType: 'json',
+        success: function(data) {
+            if (data.success) {
+                $('#toast-title').html('<i class="fa-solid fa-circle-check mx-2"></i>' + data.success);
+                $('.toast-header').removeClass().addClass('toast-header alert-success');
+                get_general();
+            } else if (data.error) {
+                $('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
+                $('.toast-header').removeClass().addClass('toast-header alert-danger');
+            }
+            $('.toast').toast('show');
+            $('#clear_my_settings').modal('hide');
+        },
+        error: function(xhr, status, error) {
+            $('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. ' + error);
+            $('.toast-header').removeClass().addClass('toast-header alert-danger');
+            $('.toast').toast('show');
+            $('#clear_my_settings').modal('hide');
+        }
+    });
+});
+
+function get_general(){
+    $.ajax({ 
+        url: '/pages/views/settings/general.php', 
+        dataType: 'html',
+        success: function (data) {
+            $('#general').html(data);
+        }
+    });
+};
+
 </script>

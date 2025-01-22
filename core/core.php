@@ -652,7 +652,6 @@ if ($_POST['action'] === 'update_user_settings') {
     $temp_sys = $_POST['temp_sys'];
     
     $chem_vs_brand = isset($_POST["chem_vs_brand"]) && $_POST["chem_vs_brand"] === 'true' ? '1' : '0';
-    $pubChem = isset($_POST["pubChem"]) && $_POST["pubChem"] === 'true' ? '1' : '0';
     $chkVersion = isset($_POST["chkVersion"]) && $_POST["chkVersion"] === 'true' ? '1' : '0';
     $multi_dim_perc = isset($_POST["multi_dim_perc"]) && $_POST["multi_dim_perc"] === 'true' ? '1' : '0';
     
@@ -4808,6 +4807,19 @@ if($_GET['action'] == 'userPerfClear'){
 	echo json_encode($result);
 	return;
 }
+
+//CLEAR USER SETTINGS BY USER
+if($_GET['action'] == 'reset_user_settings'){
+
+    if(mysqli_query($conn, "DELETE FROM user_settings WHERE owner_id = '".$userID."'")){
+        $response['success'] = "User settings reset";
+    }else{
+        $response['error'] = 'Something went wrong, '.mysqli_error($conn);
+    }
+    echo json_encode($response);
+    return;
+}
+
 
 //DB UPDATE
 if (isset($_GET['do']) && $_GET['do'] === 'db_update') {

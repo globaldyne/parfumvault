@@ -4,6 +4,7 @@ define('__ROOT__', dirname(__FILE__));
 
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/product.php');
+require_once(__ROOT__.'/inc/settings.php');
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -196,33 +197,39 @@ if(isset($_SESSION['parfumvault'])){
       </div>
       <?php }else{ ?>
 
-              <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
+                <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
                 <div class="col-lg-6">
                   <div class="p-5">
-                    <div class="text-center">
-                      <h1 class="h4 mb-4">Please login</h1>
-                    </div>
-                    <div id="msg"></div>
-                    <div class="user" id="login">
+                  <div class="text-center">
+                    <h1 class="h4 mb-4">Please login</h1>
+                  </div>
+                  <div id="msg"></div>
+                  <div class="user" id="login">
                   
-                    <div class="form-floating mb-3">
-                      <input type="email" class="form-control" id="login_email" placeholder="name@example.com">
-                      <label for="login_email">Email address</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                      <input type="password" class="form-control" id="login_pass" placeholder="Password">
-                      <label for="login_pass">Password</label>
-                    </div>
-                    <div class="form-group"></div>
-                    <button class="btn btn-primary btn-user btn-block" id="login_btn">
-                      Login
-                    </button>
+                  <div class="form-floating mb-3">
+                    <input type="email" class="form-control" id="login_email" placeholder="name@example.com">
+                    <label for="login_email">Email address</label>
+                  </div>
+                  <div class="form-floating mb-3">
+                    <input type="password" class="form-control" id="login_pass" placeholder="Password">
+                    <label for="login_pass">Password</label>
+                  </div>
+                  <div class="form-group"></div>
+                  <button class="btn btn-primary btn-user btn-block" id="login_btn">
+                    Login
+                  </button>
                   </div>
                  <?php if(getenv('PASS_RESET_INFO' ?: $PASS_RESET_INFO) !== "DISABLED"){ ?>
                   <hr />
                   <div class="text-center">
                   <a class="small" href="#" data-bs-toggle="modal" data-bs-target="#forgot_pass">Forgot Password?</a>
-              </div>
+                </div>
+                <?php } ?>
+                <?php if ($system_settings['USER_selfRegister'] == '1') { ?>
+                <hr />
+                <div class="text-center">
+                  <a class="small" href="/register.php">Create an Account!</a>
+                </div>
             <?php
 				 }
 			 } 
@@ -253,6 +260,8 @@ if(isset($_SESSION['parfumvault'])){
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
+      <?php if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM users")) == 0){ ?>
+
         <p>
           When you first installed <strong><?=$product?></strong>, you were prompted to set a password. 
           This password is stored securely in an encrypted format and cannot be retrieved later.
@@ -269,6 +278,11 @@ if(isset($_SESSION['parfumvault'])){
             If the user does not exist, create a new record with a randomly generated password.
           </p>
         <?php } ?>
+      <?php } else { ?>
+        <p>
+          If you have forgotten your password, please contact your system administrator for assistance.
+        </p>
+      <?php } ?>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>

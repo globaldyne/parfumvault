@@ -960,17 +960,15 @@ CREATE TABLE `system_settings` (
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
-INSERT INTO `system_settings` (`id`, `key_name`, `value`, `slug`, `type`, `description`) VALUES
-(1, 'SMTP_host', '', 'SMTP Host', 'text', 'Configure SMTP host'),
-(2, 'SSO_status', '0', 'Enable SSO', 'checkbox', 'Enable or disable SSO'),
-(3, 'SSO_clientID', '', 'Client ID', 'text', 'Your SSO client ID'),
-(4, 'SSO_clientSecret', '', 'Client Secret', 'password', 'Your SSO secret'),
-(5, 'SSO_redirectUri', '', 'Redirect URI', 'text', 'SSO redirect URI'),
-(6, 'SSO_authUrl', '', 'Auth URL', 'text', 'SSO auth URL'),
-(7, 'SSO_tokenUrl', '', 'Token URL', 'text', 'SSO token url'),
-(8, 'SSO_userInfoUrl', '', 'User Info URL', 'text', 'SSO info url'),
-(9, 'INTEGRATIONS_enable', '0', 'Enable or disable integrations', 'checkbox', 'Enable or disable integrations'),
-(10 'LIBRARY_apiurl', 'https://library.perfumersvault.com/api-data/api.php', 'Library API URL', 'text', 'Library API URL');
+INSERT INTO `system_settings` ( `key_name`, `value`, `slug`, `type`, `description`) VALUES
+('SYSTEM_chkVersion', '1', 'Check for updates', 'checkbox', 'Check for updates'),
+('SYSTEM_pubChem', '1', 'Enable PubChem', 'checkbox', 'Enable or disable pubChem integration'),
+('INTEGRATIONS_enable', '0', 'Enable integrations', 'checkbox', 'Enable or disable integrations'),
+('USER_selfRegister', '0', 'Enable user registration', 'checkbox', 'Enable or disable user self registartion'),
+('USER_terms_url', 'https://www.perfumersvault.com/terms-of-service', 'Terms and Conditions', 'text', 'Point this to your web site that hosts the terms and confitions info for users'),
+('LIBRARY_enable', '1', 'Enanle PV Library', 'checkbox', 'Enable or disable PV Library'),
+('LIBRARY_apiurl', 'https://library.perfumersvault.com/api-data/api.php', 'Library API URL', 'text', 'Library API URL'),
+('announcements', '', 'Announcement', 'textarea', 'Add here any anouncement for your users when login');
 
 CREATE TABLE `user_settings` (
     `id` INT(11) NOT NULL AUTO_INCREMENT ,

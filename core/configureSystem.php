@@ -2,9 +2,51 @@
 define('__ROOT__', dirname(dirname(__FILE__)));
 define('pvault_panel', TRUE);
 
-error_reporting(E_ALL);
-ini_set('log_errors', '1');
-ini_set('error_log', '/var/log/php-fpm/www-error.log');
+if ($_POST['action'] == 'selfregister') {
+    require_once(__ROOT__ . '/inc/opendb.php');
+    require_once(__ROOT__ . '/inc/settings.php');
+
+    if ($system_settings['USER_selfRegister'] == '0') {
+        $response['error'] = 'Self registration is disabled';
+        echo json_encode($response);
+        return;
+    }
+
+    $fullName = mysqli_real_escape_string($conn, $_POST['fullName']);
+    $email = mysqli_real_escape_string($conn, $_POST['email']);
+    $password = $_POST['password'];
+
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $response['error'] = 'Invalid email address';
+        echo json_encode($response);
+        return;
+    }
+    $checkEmailQuery = "SELECT id FROM users WHERE email = '$email'";
+    $result = mysqli_query($conn, $checkEmailQuery);
+    if (mysqli_num_rows($result) > 0) {
+        $response['error'] = 'Email already exists';
+        echo json_encode($response);
+        return;
+    }
+    
+    if (strlen($password) < 5) {
+        $response['error'] = 'Password must be at least 5 characters long';
+        echo json_encode($response);
+        return;
+    }
+
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+    $insertUser = "INSERT INTO users (email, password, fullName, role, isActive) VALUES ('$email', '$hashedPassword', '$fullName', 2, 1)";
+    if (mysqli_query($conn, $insertUser)) {
+        $response['success'] = 'User created';
+        echo json_encode($response);
+    } else {
+        $response['error'] = 'Failed to create user: ' . mysqli_error($conn);
+        echo json_encode($response);
+    }
+
+    return;
+}
 
 if ($_POST['action'] == 'register') {
     require_once(__ROOT__ . '/inc/opendb.php');

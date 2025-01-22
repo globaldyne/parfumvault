@@ -46,6 +46,7 @@ if ($_POST['action'] == 'login') {
                     'samesite' => 'Strict', // Protect against CSRF
                 ]);
                 session_start();
+                session_regenerate_id(true); // Regenerate session ID to prevent session fixation
             }
 
             // Handle session timeout
@@ -83,6 +84,7 @@ if ($_POST['action'] == 'login') {
             echo json_encode($response);
             return;
         }
+
     } else {
         // Email not found
         $response['auth']['error'] = true;

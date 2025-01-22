@@ -6,7 +6,18 @@ require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/pvPost.php');
 
-
+if ($system_settings['LIBRARY_enable'] == '0') {
+    $response = [
+        'draw' => isset($_POST['draw']) ? (int) $_POST['draw'] : 0,
+        'recordsTotal' => 0,
+        'recordsFiltered' => 0,
+        'data' => [],
+        'error' => 'PV Library service is currently disabled by your administrator.'
+    ];
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode($response, JSON_UNESCAPED_UNICODE);
+    return;
+}
 $row = isset($_POST['start']) ? (int)$_POST['start'] : 0;
 $limit = isset($_POST['length']) ? (int)$_POST['length'] : 10;
 $order_by = isset($_POST['order_by']) ? $_POST['order_by'] : 'name';

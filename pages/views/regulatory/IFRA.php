@@ -19,7 +19,7 @@ require_once(__ROOT__.'/func/php-settings.php');
                                 	  
                          <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#import_ifra_json"><i class="fa-solid fa-file-import mx-2"></i>Import from JSON</a></li>
 
-                        <?php if($settings['pubChem'] == '1'){?>
+                        <?php if($system_settings['SYSTEM_pubChem'] == '1'){?>
                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#pubChem_import"><i class="fa-solid fa-file-import mx-2"></i>Import images</a></li>
                         <?php } ?>
                         <li class="dropdown-header">Export</li> 

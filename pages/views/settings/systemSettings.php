@@ -17,7 +17,7 @@ if($role !== 1){
             $query = "SELECT * FROM system_settings";
             $result = mysqli_query($conn, $query);
 
-            if ($result) {
+            if ($result && mysqli_num_rows($result) > 0) {
                 $grouped_settings = [];
 
                 while ($row = mysqli_fetch_assoc($result)) {
@@ -30,6 +30,7 @@ if($role !== 1){
                         $label = $row['slug'];
                         $value = $row['value'];
                         $type = $row['type'];
+                        $description = $row['description'];
                         $checked = ($type == 'checkbox' && $value == 1) ? 'checked' : '';
                         ?>
                         <div class="mb-3 mx-2 row form-floating">
@@ -37,32 +38,43 @@ if($role !== 1){
                                 <div class="form-check">
                                     <input type="hidden" name="<?php echo $row['key_name']; ?>" value="0">
                                     <input type="checkbox" class="form-check-input" id="<?php echo $row['key_name']; ?>" name="<?php echo $row['key_name']; ?>" value="1" <?php echo $checked; ?>>
-                                    <label for="<?php echo $row['key_name']; ?>" class="form-check-label"><strong><?php echo $label; ?></strong></label>
+                                    <label for="<?php echo $row['key_name']; ?>" class="form-check-label"><strong><?php echo $label; ?></strong> <i class="fa fa-info-circle" data-toggle="tooltip" title="<?php echo $description; ?>"></i></label>
                                 </div>
+                            <?php } elseif ($type == 'textarea') { ?>
+                                <textarea class="form-control" id="<?php echo $row['key_name']; ?>" name="<?php echo $row['key_name']; ?>" rows="4"><?php echo $value; ?></textarea>
+                                <label for="<?php echo $row['key_name']; ?>"><strong><?php echo $label; ?></strong> <i class="fa fa-info-circle pe-auto" data-toggle="tooltip" title="<?php echo $description; ?>"></i></label>
                             <?php } else { ?>
                                 <input type="<?php echo $type; ?>" class="form-control" id="<?php echo $row['key_name']; ?>" name="<?php echo $row['key_name']; ?>" value="<?php echo $value; ?>">
-                                <label for="<?php echo $row['key_name']; ?>"><strong><?php echo $label; ?></strong></label>
+                                <label for="<?php echo $row['key_name']; ?>"><strong><?php echo $label; ?></strong> <i class="fa fa-info-circle pe-auto" data-toggle="tooltip" title="<?php echo $description; ?>"></i></label>
                             <?php } ?>
                         </div>
                         <?php
                     }
                 }
 
-                echo '<div class="row">';
+                echo '<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">';
                 foreach ($grouped_settings as $prefix => $settings) {
-                    echo '<div class="col-md-3 mb-3"><h4 class="mb-3">' . ucfirst(strtolower($prefix)) . ' <i class="fa fa-info-circle" data-toggle="tooltip" title="' . $settings[0]['description'] . '"></i></h4>';
+                    echo '<div class="col">
+                            <div class="card shadow-sm p-3 mb-3">
+                                <h5 class="card-title">' . ucfirst(strtolower($prefix)) . '</h5>';
                     renderSettings($settings);
-                    echo '</div>';
+                    echo '  </div>
+                          </div>';
                 }
                 echo '</div>';
+                ?>
+                <div class="app-card-footer p-4 mt-auto">
+                    <button type="submit" class="btn btn-primary" id="update_sys_settings">Save</button>
+                </div>
+                <?php
+            } else {
+                echo '<div class="alert alert-danger" role="alert">No system settings found.</div>';
             }
             ?>
-            <div class="app-card-footer p-4 mt-auto">
-                <button type="submit" class="btn btn-primary" id="update_sys_settings">Save</button>
-            </div>
         </form>
     </div>
 </div>
+
 
 <script>
     $(document).ready(function () {

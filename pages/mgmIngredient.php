@@ -1,4 +1,4 @@
-3<?php 
+<?php 
 define('__ROOT__', dirname(dirname(__FILE__))); 
 
 require_once(__ROOT__.'/inc/sec.php');
@@ -64,7 +64,7 @@ var myIngID;
 
 myIngID = "<?=$ing['id']?>";
 var myCAS = "<?=$ing['cas']?>";
-var myPCH = "<?=$settings['pubChem']?>";
+var myPCH = "<?=$system_settings['SYSTEM_pubChem']?>";
 <?php } ?>
 
 
@@ -133,7 +133,7 @@ body {
 			<li class="nav-item" role="presentation">
             <a href="#safety_info" id="safety_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-biohazard mx-2"></i>Safety</a>
             </li>
-			<?php if($settings['pubChem'] == '1' && $ing['cas']){?>
+			<?php if($system_settings['SYSTEM_pubChem'] == '1' && $ing['cas']){?>
 				<li class="nav-item" role="presentation">
                 	<a href="#pubChem" id="pubChem_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-atom mx-2"></i>Pub Chem</a>
                 </li>
@@ -239,7 +239,7 @@ body {
         </div>
     </div>
 
-<?php if($settings['pubChem'] == '1' && $ing['cas']){?>
+<?php if($system_settings['SYSTEM_pubChem'] == '1' && $ing['cas']){?>
 	<div class="tab-pane fade" id="pubChem">
 		<div id="pubChemData">
         	<div class="row justify-content-md-center">

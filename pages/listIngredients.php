@@ -82,7 +82,8 @@ $cIngredients = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients 
 
 <script>
 $(document).ready(function() {
-	
+	$.fn.dataTable.ext.errMode = 'none';
+
 	var tdDataIng = $('#tdDataIng').DataTable( {
 		columnDefs: [
 			{ className: 'pv_vertical_middle text-center', targets: '_all' },
@@ -238,6 +239,9 @@ $(document).ready(function() {
 		  });
 		},
 
+	}).on('error.dt', function(e, settings, techNote, message) {
+		var m = message.split(' - ');
+		$('#tdDataIng').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i><strong>' + m[1] + '</strong></div>');
 	});
 	    
 	$('#ing_search').keyup(function() {

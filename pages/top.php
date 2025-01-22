@@ -26,7 +26,40 @@ if (empty($user_settings) && $_SERVER['REQUEST_URI'] !== '/?do=settings') {
   </script>';
 }
 
+if (!empty($system_settings['announcements'])) {
+  $announcement = $system_settings['announcements'];
+  $announcementHash = md5($announcement);
+
+  if (!isset($_SESSION['announcement']) || $_SESSION['announcement'] !== $announcementHash) {
+    echo '<script>
+      $(document).ready(function() {
+        $("#announcementModal").modal({
+          backdrop: "static",
+          keyboard: false
+        }).modal("show");
+      });
+    </script>';
+    $_SESSION['announcement'] = $announcementHash;
+  }
+}
 ?>
+
+<!-- Announcement Modal -->
+<div class="modal fade" id="announcementModal" tabindex="-1" aria-labelledby="announcementModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="announcementModalLabel">Announcement</h5>
+      </div>
+      <div class="modal-body">
+        <p><?php echo htmlspecialchars($announcement); ?></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 <div id="content">

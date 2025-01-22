@@ -54,6 +54,12 @@
 - Validate email for user before allow updating it
 - Refactor index.php
 - Refactor ingredients import
+- Admins can now enable or disable PV Library
+- Added user self register
+- Improve forgot password
+- Added user anouncement text
+- Improved session security
+- Add user settings reset
 
 ### Version 12.4
 - Add dilutant in API formulas
