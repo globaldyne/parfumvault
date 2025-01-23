@@ -8,5 +8,5 @@ inc/config.php
 *.swp
 t.php
 tests/
-modules/suppliers/pvLibraryBK.json
-modules/suppliers/pvLibraryBK.php
+modules/suppliers/pvLibraryDEV.json
+modules/suppliers/pvLibraryDEV.php

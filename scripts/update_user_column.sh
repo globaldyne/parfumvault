@@ -1,5 +1,19 @@
 #!/bin/bash
 
+
+# Function to check if a table exists in the database
+check_table_exists() {
+    TABLE_NAME=$1
+    
+    QUERY="SELECT COUNT(*) 
+           FROM INFORMATION_SCHEMA.TABLES 
+           WHERE TABLE_SCHEMA='$DB_NAME' 
+           AND TABLE_NAME='$TABLE_NAME';"
+           
+    RESULT=$(mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASS" -e "$QUERY" -s -N)
+    echo "$RESULT"
+}
+
 # Function to check if a column exists in a table
 check_column_exists() {
     COLUMN_NAME=$1
@@ -30,6 +44,18 @@ add_columns() {
         echo "Failed to add columns. Please check your database permissions."
     fi
 }
+
+TABLE_EXISTS=$(check_table_exists "users")
+
+if [ "$TABLE_EXISTS" -eq 0 ]; then
+    echo "Table 'users' does not exist. Importing schema from /html/db/pvault.sql..."
+    mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASS" "$DB_NAME" < /html/db/pvault.sql
+    if [ $? -eq 0 ]; then
+        echo "Schema imported successfully."
+    else
+        echo "Failed to import schema. Please check your database permissions."
+    fi
+fi
 
 COLUMN_EXISTS=$(check_column_exists "isActive" "users")
 

@@ -29,7 +29,7 @@ $data = [
 
 // Make API request and decode the JSON response
 //$output = json_decode(pvPost('https://online-dev.jbparfum.com/api-data/api.php', $data));
-$output = json_decode(pvPost('https://pv-online-dev.apps.cloud.globaldyne.co.uk/api-data/api.php', $data));
+$output = json_decode(pvPost('http://library-dev.perfumersvault.com/api-data/api.php', $data));
 
 // Initialize response array
 $rx = [];
