@@ -52,6 +52,10 @@ if (!$user) {
         <input type="checkbox" class="form-check-input" name="isActive" id="isActive" <?php echo $user['isActive'] ? 'checked' : ''; ?>>
         <label for="isActive" class="form-check-label">Active</label>
     </div>
+    <div class="form-check form-check-inline mb-3">
+        <input type="checkbox" class="form-check-input" name="isVerified" id="isVerified" <?php echo $user['isVerified'] ? 'checked' : ''; ?>>
+        <label for="isVerified" class="form-check-label">Email Verified</label>
+    </div>
     <div class="form-floating mb-3">
         <select class="form-select" name="country" id="country">
             <option value="">Choose your country</option>
@@ -79,7 +83,9 @@ $(document).ready(function() {
         var role = $('#editUserForm #role').val();
         var country = $('#editUserForm #country').val();
         var isActive = $('#editUserForm #isActive').is(':checked') ? 1 : 0;
+        var isVerified = $('#editUserForm #isVerified').is(':checked') ? 1 : 0;
 
+        
         $.ajax({
             url: '/core/core.php',
             type: 'POST',
@@ -92,6 +98,7 @@ $(document).ready(function() {
                 role: role,
                 country: country,
                 isActive: isActive,
+                isVerified: isVerified
             },
             dataType: 'json',
             success: function(data) {

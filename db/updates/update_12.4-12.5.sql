@@ -27,6 +27,8 @@ ALTER TABLE `suppliers` CHANGE `owner_id` `owner_id` INT(11) NOT NULL DEFAULT '1
 ALTER TABLE `synonyms` CHANGE `owner_id` `owner_id` INT(11) NOT NULL DEFAULT '1'; 
 ALTER TABLE `templates` CHANGE `owner_id` `owner_id` INT(11) NOT NULL DEFAULT '1'; 
 
+ALTER TABLE `user_prefs` DROP INDEX `pref_name`;
+
 UPDATE `backup_provider` SET `owner_id` = '1'; 
 UPDATE `batchIDHistory` SET `owner_id` = '1'; 
 UPDATE `bottles` SET `owner_id` = '1'; 
@@ -59,7 +61,7 @@ UPDATE `templates` SET `owner_id` = '1';
 CREATE TABLE `system_settings` (
     `id` INT(11) NOT NULL AUTO_INCREMENT ,
     `key_name` VARCHAR(255) NOT NULL ,
-    `value` VARCHAR(255) NOT NULL , 
+    `value` LONGTEXT NOT NULL , 
     `slug` VARCHAR(255) NOT NULL , 
     `type` VARCHAR(255) NOT NULL , 
     `description` VARCHAR(255) NOT NULL , 
@@ -82,13 +84,20 @@ INSERT INTO `system_settings` ( `key_name`, `value`, `slug`, `type`, `descriptio
 CREATE TABLE `user_settings` (
     `id` INT(11) NOT NULL AUTO_INCREMENT ,
     `key_name` VARCHAR(255) NOT NULL ,
-    `value` VARCHAR(255) NOT NULL , 
+    `value` LONGTEXT NOT NULL , 
     `owner_id` INT NOT NULL, 
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
     `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
+CREATE TABLE `password_resets` ( 
+    `id` INT NOT NULL AUTO_INCREMENT , 
+    `user_id` INT NOT NULL , 
+    `token` VARCHAR(255) NOT NULL , 
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB CHARSET=utf8mb3 COLLATE utf8_general_ci; 
 
 DROP TABLE `settings`;
 

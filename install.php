@@ -1,6 +1,7 @@
 <?php 
 if (!defined('pvault_panel')){ die('Not Found');}
 define('__ROOT__', dirname(__FILE__)); 
+die("Non containerized installation is been removed");
 
 require_once(__ROOT__.'/inc/product.php');
 $first_time = 1;

@@ -36,7 +36,7 @@ if ($_POST['action'] == 'selfregister') {
     }
 
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-    $insertUser = "INSERT INTO users (email, password, fullName, role, isActive) VALUES ('$email', '$hashedPassword', '$fullName', 2, 1)";
+    $insertUser = "INSERT INTO users (email, password, fullName, role, isActive, isVerified) VALUES ('$email', '$hashedPassword', '$fullName', 2, 1, 0)";
     if (mysqli_query($conn, $insertUser)) {
         $response['success'] = 'User created';
         echo json_encode($response);
@@ -48,6 +48,7 @@ if ($_POST['action'] == 'selfregister') {
     return;
 }
 
+//FIRST TIME REGISTRATION
 if ($_POST['action'] == 'register') {
     require_once(__ROOT__ . '/inc/opendb.php');
 
@@ -83,8 +84,8 @@ if ($_POST['action'] == 'register') {
 
     // Insert user into the database
     $insertUserQuery = "
-        INSERT INTO users (id, email, password, fullName, role, isActive) 
-        VALUES (1, '$email', '$hashedPassword', '$fullName', 1, 1)";
+        INSERT INTO users (id, email, password, fullName, role, isActive, isVerified) 
+        VALUES (1, '$email', '$hashedPassword', '$fullName', 1, 1, 1)";
     
     if (mysqli_query($conn, $insertUserQuery)) {
         $db_ver = trim(file_get_contents(__ROOT__ . '/db/schema.ver'));
@@ -99,7 +100,7 @@ if ($_POST['action'] == 'register') {
     return;
 }
 
-
+/* DROP NON CONTAINERIZED INSTALLATION
 if ($_POST['action'] == 'install') {
     if (file_exists(__ROOT__ . '/inc/config.php') === true && getenv('PLATFROM') !== 'CLOUD') {
         echo '<div class="alert alert-info"><strong>System is already configured</strong></div>';
@@ -191,4 +192,5 @@ $session_timeout = 1800; // Time in seconds
     echo json_encode($response);
     return;
 }
+*/
 ?>

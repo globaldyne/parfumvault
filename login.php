@@ -166,7 +166,7 @@ if(isset($_SESSION['parfumvault'])){
 			}
     ?>
 
-    <?php if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM users")) == 0){ $first_time = 1; ?>
+    <?php if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM users")) == 0){ ?>
 
       <div class="col-lg-6 d-none d-lg-block bg-register-image"></div>
         <div class="col-lg-6">

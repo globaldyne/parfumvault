@@ -5,7 +5,6 @@ require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/inc/product.php');
-//require_once(__ROOT__.'/func/labelMap.php');
 require_once(__ROOT__.'/func/get_formula_notes.php');
 require_once(__ROOT__.'/func/pvPost.php');
 require_once(__ROOT__.'/func/pvFileGet.php');
@@ -35,6 +34,10 @@ if($role === 1) {
             if ($key === 'request') {
                 continue;
             }
+            // Sanitize inputs
+            $key = mysqli_real_escape_string($conn, $key);
+            $value = mysqli_real_escape_string($conn, $value);
+
             // Bind parameters
             $stmt->bind_param('ss', $value, $key);
 
@@ -42,6 +45,7 @@ if($role === 1) {
                 $response['success'] = 'System settings updated';
             } else {
                 $response['error'] = 'Failed to update system settings';
+                error_log("Error updating system settings: " . $stmt->error . " Query: " . $query . " Params: value=" . $value . ", key_name=" . $key);
             }
         }
         // Close the statement
@@ -93,6 +97,7 @@ if($role === 1) {
         $country = $conn->real_escape_string($_POST['country']);
         $role = (int)$_POST['role'];
         $isActive = (int)$_POST['isActive'];
+        $isVerified = (int)$_POST['isVerified'];
 
         // Validate password if provided
         if (!empty($password) && !isPasswordComplex($password)) {
@@ -133,7 +138,7 @@ if($role === 1) {
         }
 
         // Prepare queries
-        $updateQuery = "UPDATE users SET fullName = ?, email = ?, country = ?, role = ?, isActive = ?";
+        $updateQuery = "UPDATE users SET fullName = ?, email = ?, country = ?, role = ?, isActive = ?, isVerified = ?";
         if (!empty($password)) {
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
             $updateQuery .= ", password = ?";
@@ -146,23 +151,25 @@ if($role === 1) {
         $stmt = $conn->prepare($updateQuery);
         if (!empty($password)) {
             $stmt->bind_param(
-                "sssiisi",
+                "sssiiisi",
                 $full_name,
                 $email,
                 $country,
                 $role,
                 $isActive,
+                $isVerified,
                 $hashedPassword,
                 $user_id
             );
         } else {
             $stmt->bind_param(
-                "sssiii",
+                "sssiiii",
                 $full_name,
                 $email,
                 $country,
                 $role,
                 $isActive,
+                $isVerified,
                 $user_id
             );
         }
@@ -195,6 +202,7 @@ if($role === 1) {
         $role = (int)$_POST['role'];
         $country = mysqli_real_escape_string($conn, $_POST['country']);
         $isActive = mysqli_real_escape_string($conn, $_POST['isActive']);
+        $isVerified = mysqli_real_escape_string($conn, $_POST['isVerified']);
 
         if (!isPasswordComplex($password)) {
             $response['error'] = 'Password does not meet complexity requirements';
@@ -217,8 +225,8 @@ if($role === 1) {
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
         // Insert new user into the database
-        $insertQuery = "INSERT INTO users (email, password, fullName, role, country, isActive) 
-                    VALUES ('$email', '$hashedPassword', '$full_name', '$role', '$country', '$isActive')";
+        $insertQuery = "INSERT INTO users (email, password, fullName, role, country, isActive, isVerified) 
+                    VALUES ('$email', '$hashedPassword', '$full_name', '$role', '$country', '$isActive', '$isVerified')";
 
 
         if (mysqli_query($conn, $insertQuery)) {
@@ -1303,30 +1311,36 @@ if ($_POST['action'] === 'import' && $_POST['source'] === 'PVLibrary' && $_POST[
         $stmtCheck->execute();
         $result = $stmtCheck->get_result();
 
-		// Dynamically prepare the INSERT query
-		$columns = '`' . implode('`,`', array_keys($insertPairs)) . '`';
-		$placeholders = implode(',', array_fill(0, count($insertPairs), '?'));
-		$values = array_values($insertPairs);
+        if ($result->num_rows > 0) {
+            $response['error'] = 'Ingredient ' . $insertPairs['name'] . ' already exists.';
+            echo json_encode($response);
+            return;
+        }
 
-		$stmtInsert = $conn->prepare("INSERT INTO ingredients ({$columns}, `owner_id`) VALUES ({$placeholders}, ?)");
+        // Dynamically prepare the INSERT query
+        $columns = '`' . implode('`,`', array_keys($insertPairs)) . '`';
+        $placeholders = implode(',', array_fill(0, count($insertPairs), '?'));
+        $values = array_values($insertPairs);
 
-		$types = str_repeat('s', count($values)) . 'i';
-		$params = array_merge([$types], $values, [$userID]);
+        $stmtInsert = $conn->prepare("INSERT INTO ingredients ({$columns}, `owner_id`) VALUES ({$placeholders}, ?)");
 
-		call_user_func_array([$stmtInsert, 'bind_param'], $params);
+        $types = str_repeat('s', count($values)) . 'i';
+        $params = array_merge([$types], $values, [$userID]);
 
-		if ($stmtInsert->execute()) {
-			$response["success"] = 'Ingredient data imported successfully.';
-		} else {
-			$response["error"] = 'Error inserting ingredient: ' . htmlspecialchars($stmtInsert->error);
-		}
+        call_user_func_array([$stmtInsert, 'bind_param'], $params);
 
-		$stmtInsert->close();
+        if ($stmtInsert->execute()) {
+            $response["success"] = 'Ingredient data imported successfully.';
+        } else {
+            $response["error"] = 'Error inserting ingredient: ' . htmlspecialchars($stmtInsert->error);
+        }
+
+        $stmtInsert->close();
     }
 
     echo json_encode($response);
     return;
-} 
+}
 
 
 //UPDATE BK PROVIDER
@@ -4798,6 +4812,7 @@ if($_GET['action'] == 'userPerfClearGlobal'){
 //CLEAR USER PREFS BY USER
 if($_GET['action'] == 'userPerfClear'){
 
+    $result = [];
 	if(mysqli_query($conn, "DELETE FROM user_prefs WHERE owner_id = '".$userID."'")){
 		$result['success'] = "User preferences removed";
 	}else{

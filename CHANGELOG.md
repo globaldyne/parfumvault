@@ -60,6 +60,9 @@
 - Added user anouncement text
 - Improved session security
 - Add user settings reset
+- Add DB initialisation in docker
+- Refactor of user search prefernces in db
+- Removing non-containerised installation support
 
 ### Version 12.4
 - Add dilutant in API formulas

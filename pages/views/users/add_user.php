@@ -37,6 +37,10 @@ if($role !== 1){
         <input type="checkbox" class="form-check-input" name="isActive" id="isActive">
         <label for="isActive" class="form-check-label">Active</label>
     </div>
+    <div class="form-check form-check-inline mb-3">
+        <input type="checkbox" class="form-check-input" name="isVerified" id="isVerified">
+        <label for="isVerified" class="form-check-label">Email Verified</label>
+    </div>
     <div class="form-floating mb-3">
         <select class="form-select" name="country" id="country">
             <option value="">Choose your country</option>
@@ -71,6 +75,7 @@ $('#saveNewUser').click(function() {
             role: $('#addUserForm #role').val(),
             country: $('#addUserForm #country').val(),
             isActive: $('#addUserForm #isActive').is(':checked') ? 1 : 0,
+            isVerified: $('#addUserForm #isVerified').is(':checked') ? 1 : 0
         },
         dataType: 'json',
         success: function(data) {

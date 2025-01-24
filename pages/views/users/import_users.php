@@ -27,8 +27,17 @@ if ($_FILES['jsonFile']['error'] === UPLOAD_ERR_OK) {
         }
 
         foreach ($users['users'] as $user) {
-            if (!isset($user['fullName'], $user['email'], $user['isActive'], $user['role'], $user['provider'], $user['password'], $user['country'])) {
-                $response['message'] = 'Missing required user fields';
+            $requiredFields = ['fullName', 'email', 'isActive', 'role', 'provider', 'password', 'country', 'isAPIActive', 'isVerified'];
+            $missingFields = [];
+
+            foreach ($requiredFields as $field) {
+                if (!isset($user[$field])) {
+                    $missingFields[] = $field;
+                }
+            }
+
+            if (!empty($missingFields)) {
+                $response['message'] = 'Missing required user fields: ' . implode(', ', $missingFields);
                 echo json_encode($response);
                 exit;
             }
@@ -40,6 +49,9 @@ if ($_FILES['jsonFile']['error'] === UPLOAD_ERR_OK) {
             $provider = $user['provider'];
             $password = $user['password'];
             $country = $user['country'];
+            $isAPIActive = $user['isAPIActive'];
+            $API_key = $user['API_key'];
+            $isVerified = $user['isVerified'];
 
             // Check if email already exists
             $checkStmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
@@ -53,8 +65,8 @@ if ($_FILES['jsonFile']['error'] === UPLOAD_ERR_OK) {
             }
             $checkStmt->close();
 
-            $stmt = $conn->prepare("INSERT INTO users (fullName, email, isActive, role, provider, password, country) VALUES (?, ?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param("ssiiiss", $fullName, $email, $status, $role, $provider, $password, $country);
+            $stmt = $conn->prepare("INSERT INTO users (fullName, email, isActive, role, provider, password, country, isAPIActive, API_key, isVerified ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("ssiiissisi", $fullName, $email, $status, $role, $provider, $password, $country, $isAPIActive, $API_key, $isVerified);
 
             if (!$stmt->execute()) {
                 $response['message'] = 'Error inserting user: ' . $stmt->error;

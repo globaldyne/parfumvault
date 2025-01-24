@@ -46,6 +46,10 @@ foreach ($userData as $user) {
         'provider' => $user['provider'],
         'role' => $user['role'],
         'status' => $user['isActive'],
+        'country' => $user['country'],
+        'is_api_active' => $user['isAPIActive'],
+        'api_key' => $user['API_key'],
+        'is_verified' => $user['isVerified'],
         'created_at' => $user['created_at'],
         'updated_at' => $user['updated_at']
     ];

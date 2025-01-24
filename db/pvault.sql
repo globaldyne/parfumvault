@@ -339,10 +339,20 @@ CREATE TABLE `users` (
   `country` VARCHAR(255) NULL DEFAULT NULL,
   `isAPIActive` INT NOT NULL DEFAULT '0',
   `API_key` VARCHAR(255) NULL DEFAULT NULL,
+  `isVerified` INT NOT NULL,
+  `token` VARCHAR(255) NULL, 
   `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+CREATE TABLE `password_resets` ( 
+    `id` INT NOT NULL AUTO_INCREMENT , 
+    `user_id` INT NOT NULL , 
+    `token` VARCHAR(255) NOT NULL , 
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB CHARSET=utf8mb3 COLLATE utf8_general_ci; 
 
 
 CREATE TABLE `IFRACategories` (
@@ -797,7 +807,6 @@ CREATE TABLE `user_prefs` (
 	`created_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL,
 	`owner_id` INT NOT NULL 
 ) ENGINE = InnoDB CHARSET=utf8 COLLATE utf8_general_ci; 
-ALTER TABLE `user_prefs` ADD UNIQUE (pref_name);
 
 CREATE TABLE `backup_provider` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -951,7 +960,7 @@ CREATE TABLE `ingredient_safety_data` (
 CREATE TABLE `system_settings` (
     `id` INT(11) NOT NULL AUTO_INCREMENT ,
     `key_name` VARCHAR(255) NOT NULL ,
-    `value` VARCHAR(255) NOT NULL , 
+    `value` LONGTEXT NOT NULL , 
     `slug` VARCHAR(255) NOT NULL , 
     `type` VARCHAR(255) NOT NULL , 
     `description` VARCHAR(255) NOT NULL , 
@@ -973,7 +982,7 @@ INSERT INTO `system_settings` ( `key_name`, `value`, `slug`, `type`, `descriptio
 CREATE TABLE `user_settings` (
     `id` INT(11) NOT NULL AUTO_INCREMENT ,
     `key_name` VARCHAR(255) NOT NULL ,
-    `value` VARCHAR(255) NOT NULL , 
+    `value` LONGTEXT NOT NULL , 
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
     `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
     PRIMARY KEY (`id`)

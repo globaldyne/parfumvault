@@ -36,6 +36,8 @@ add_columns() {
                 ADD \`country\` VARCHAR(255) NULL DEFAULT NULL AFTER \`isActive\`,
                 ADD \`isAPIActive\` INT NOT NULL DEFAULT '0' AFTER \`country\`,
                 ADD \`API_key\` VARCHAR(255) NULL DEFAULT NULL AFTER \`isAPIActive\`, 
+                ADD \`isVerified\` INT NOT NULL AFTER \`API_key\`,
+                ADD \`token\` VARCHAR(255) NULL AFTER \`isVerified\`, 
                 ADD \`provider\` INT NOT NULL DEFAULT '1' COMMENT '1=Local,2=SSO' AFTER \`fullName\`;"
     mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASS" -D "$DB_NAME" -e "$ALTER_QUERY"
     if [ $? -eq 0 ]; then

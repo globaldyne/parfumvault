@@ -35,7 +35,7 @@ if($role !== 1){
           <th>Email</th>
           <th>Status</th>
           <th>Role</th>
-          <th>Provider</th>
+          <th>Verified</th>
           <th>Created</th>
           <th>Updated</th>
           <th></th>
@@ -131,7 +131,7 @@ $(document).ready(function() {
 		    { data : 'email', title: 'Username'},
             { data : 'status', title: 'Status', render: status},
             { data : 'role', title: 'Role', render: role},
-            { data : 'provider', title: 'Provider', render: provider},
+            { data : 'isVerified', title: 'Verified', render: isVerified},
             { data : 'created_at', title: 'Created', render: created_at},
 			{ data : 'updated_at', title: 'Updated', render: updated_at},
 			{ data : null, title: '', render: actions},		   
@@ -188,12 +188,12 @@ $(document).ready(function() {
         return data;
 	};
 
-	function provider(data, type, row){
-        if(row.provider == 2){
-            var data = '<span class="badge rounded-pill d-block p-2 text-bg-danger">SSO</span>';
+	function isVerified(data, type, row){
+        if(row.is_verified == 0){
+            var data = '<span class="badge rounded-pill d-block p-2 text-bg-danger">No</span>';
         }
-        if(row.provider == 1){
-            var data = '<span class="badge rounded-pill d-block p-2 text-bg-secondary">Email</span>';
+        if(row.is_verified == 1){
+            var data = '<span class="badge rounded-pill d-block p-2 text-bg-success">Yes</span>';
         }
         return data;
 

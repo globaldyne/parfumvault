@@ -34,6 +34,9 @@ if($role === 1){
                 'isActive'   => (int) $row['isActive'],
                 'role'       => (int) $row['role'],
                 'country'    => (string) $row['country'],
+                'isAPIActive'=> (int) $row['isAPIActive'],
+                'API_key'    => (string) $row['API_key'],
+                'isVerified'  => (int) $row['isVerified'],
                 'updated_at' => (string) $row['updated_at'],
                 'created_at' => (string) $row['created_at'],
             ];

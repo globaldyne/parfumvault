@@ -26,20 +26,41 @@ if (empty($user_settings) && $_SERVER['REQUEST_URI'] !== '/?do=settings') {
   </script>';
 }
 
-if (!empty($system_settings['announcements'])) {
+//HANDLE ANNOUNCEMENTS
+if (!empty($system_settings['announcements']) && !empty($user_settings)) {
   $announcement = $system_settings['announcements'];
   $announcementHash = md5($announcement);
 
-  if (!isset($_SESSION['announcement']) || $_SESSION['announcement'] !== $announcementHash) {
-    echo '<script>
-      $(document).ready(function() {
-        $("#announcementModal").modal({
-          backdrop: "static",
-          keyboard: false
-        }).modal("show");
-      });
-    </script>';
-    $_SESSION['announcement'] = $announcementHash;
+  try {
+    // Fetch the stored announcement hash from the database
+    $stmt = $conn->prepare("SELECT pref_data FROM user_prefs WHERE owner_id = ? AND pref_name = 'announcement'");
+    $stmt->bind_param("i", $userID);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $storedHash = $result->fetch_assoc()['pref_data'] ?? '';
+
+    if ($storedHash !== $announcementHash) {
+      echo '<script>
+        $(document).ready(function() {
+          $("#announcementModal").modal({
+            backdrop: "static",
+            keyboard: false
+          }).modal("show");
+        });
+      </script>';
+
+      // Update the stored announcement hash in the database
+      if ($storedHash) {
+        $updateStmt = $conn->prepare("UPDATE user_prefs SET pref_data = ? WHERE owner_id = ? AND pref_name = 'announcement'");
+        $updateStmt->bind_param("ss", $announcementHash, $userID);
+      } else {
+        $updateStmt = $conn->prepare("INSERT INTO user_prefs (owner_id, pref_name, pref_data) VALUES (?, 'announcement', ?)");
+        $updateStmt->bind_param("ss", $userID, $announcementHash);
+      }
+      $updateStmt->execute();
+    }
+  } catch (Exception $e) {
+    error_log("Error handling announcement: " . $e->getMessage());
   }
 }
 ?>
@@ -52,7 +73,7 @@ if (!empty($system_settings['announcements'])) {
         <h5 class="modal-title" id="announcementModalLabel">Announcement</h5>
       </div>
       <div class="modal-body">
-        <p><?php echo htmlspecialchars($announcement); ?></p>
+        <?php echo htmlspecialchars($announcement, ENT_QUOTES, 'UTF-8'); ?>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
