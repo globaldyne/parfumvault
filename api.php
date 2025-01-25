@@ -6,11 +6,10 @@ define('DEFAULT_IMAGE', __ROOT__ . '/img/pv_molecule.png');
 define('LOG_API_FILE', 'pv-api.log');
 
 require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/rgbToHex.php');
-// Load settings
-$settingsQuery = "SELECT * FROM settings";
-$settings = mysqli_fetch_array(mysqli_query($conn, $settingsQuery));
-$defCatClass = $settings['defCatClass'];
+
+// Default image for formulas
 $defImage = base64_encode(file_get_contents(DEFAULT_IMAGE));
 
 // Create log directory and file

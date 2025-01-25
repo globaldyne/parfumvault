@@ -93,9 +93,9 @@ CREATE TABLE `user_settings` (
 
 CREATE TABLE `password_resets` ( 
     `id` INT NOT NULL AUTO_INCREMENT , 
-    `user_id` INT NOT NULL , 
+    `email` varchar(255) NOT NULL,
     `token` VARCHAR(255) NOT NULL , 
-    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
+    `expiry` TIMESTAMP NOT NULL , 
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB CHARSET=utf8mb3 COLLATE utf8_general_ci; 
 

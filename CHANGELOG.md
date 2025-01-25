@@ -63,6 +63,11 @@
 - Add DB initialisation in docker
 - Refactor of user search prefernces in db
 - Removing non-containerised installation support
+- Update api.php for the new settings format
+- Password complexity is now enforced
+- Added SMTP email server support
+- Added user self register
+- Added password reset as a self service
 
 ### Version 12.4
 - Add dilutant in API formulas

@@ -22,6 +22,7 @@ RUN microdnf --setopt=tsflags=nodocs -y install \
 	php-gd \
 	php-mbstring \
 	php-fpm \
+	php-pear-Mail \
 	openssl \
 	mysql \
 	ncurses \

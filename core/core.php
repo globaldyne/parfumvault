@@ -12,6 +12,7 @@ require_once(__ROOT__.'/func/validateInput.php');
 require_once(__ROOT__.'/func/sanChar.php');
 require_once(__ROOT__.'/func/priceScrape.php');
 require_once(__ROOT__.'/func/create_thumb.php');
+require_once(__ROOT__.'/func/mailSys.php');
 
 // Ensure the user is authenticated
 if (!isset($userID) || $userID === '' || !is_numeric($userID)) {

@@ -166,7 +166,7 @@ if(isset($_SESSION['parfumvault'])){
 			}
     ?>
 
-    <?php if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM users")) == 0){ ?>
+    <?php if ($conn->query("SELECT id FROM users LIMIT 1")->num_rows == 0) { ?>
 
       <div class="col-lg-6 d-none d-lg-block bg-register-image"></div>
         <div class="col-lg-6">
@@ -195,8 +195,13 @@ if(isset($_SESSION['parfumvault'])){
                 Register
                 </button>
       </div>
-      <?php }else{ ?>
-
+      <?php 
+      }else{
+        if (isset($_SESSION['temp_response'])) {
+            echo '<script>$(document).ready(function() { $("#msg").html("<div class=\"alert alert-success alert-dismissible fade show\" role=\"alert\"><i class=\"fa-solid fa-circle-check mx-2\"></i>' . $_SESSION['temp_response'] . '<button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\" aria-label=\"Close\"></button></div>"); });</script>';
+            unset($_SESSION['temp_response']);
+        }
+        ?>
                 <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
                 <div class="col-lg-6">
                   <div class="p-5">
@@ -249,7 +254,66 @@ if(isset($_SESSION['parfumvault'])){
  </body>
 </html>
 
-<?php if(getenv('PASS_RESET_INFO' ?: $PASS_RESET_INFO) !== "DISABLED"){ ?>
+<?php 
+if(getenv('PASS_RESET_INFO' ?: $PASS_RESET_INFO) !== "DISABLED"){
+if($system_settings['EMAIL_isEnabled'] == 1){ ?>
+
+<!-- Forgot Password Modal -->
+<div class="modal fade" id="forgot_pass" data-bs-backdrop="static" tabindex="-1" aria-labelledby="forgot_pass_label" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="forgot_pass_label">Forgot Password</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="forgot_msg"></div>
+        <div class="form-floating mb-3">
+          <input type="email" class="form-control" id="forgot_email" placeholder="name@example.com">
+          <label for="forgot_email">Email address</label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="forgot_submit">Reset Password</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+$(document).ready(function() {
+  $('#forgot_submit').click(function() {
+    var email = $('#forgot_email').val();
+    $('#forgot_submit').prop('disabled', true);
+    $('#forgot_msg').html('<div class="alert alert-info"><img src="/img/loading.gif"/> Please wait...</div>');
+
+    $.ajax({
+			url: '/core/configureSystem.php', 
+      type: 'POST',
+      data: { 
+        action: 'resetPassword',
+        email: email
+      },
+      dataType: 'json',
+      success: function(data) {
+        if (data.success) {
+          $('#forgot_msg').html('<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>' + data.success + '</div>');
+        } else {
+          $('#forgot_msg').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>' + data.error + '</div>');
+        }
+        $('#forgot_submit').prop('disabled', false);
+      },
+      error: function(xhr, status, error) {
+        $('#forgot_msg').html('<div class="alert alert-danger">Server error: ' + error + '</div>');
+        $('#forgot_submit').prop('disabled', false);
+      }
+    });
+  });
+});
+</script>
+
+<?php } else { ?>
 
 <!--FORGOT PASS INFO-->
 <div class="modal fade" id="forgot_pass" data-bs-backdrop="static" tabindex="-1" aria-labelledby="forgot_pass_label" aria-hidden="true">
@@ -260,7 +324,7 @@ if(isset($_SESSION['parfumvault'])){
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-      <?php if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM users")) == 0){ ?>
+      <?php if ($conn->query("SELECT id FROM users LIMIT 1")->num_rows == 0) { ?>
 
         <p>
           When you first installed <strong><?=$product?></strong>, you were prompted to set a password. 
@@ -292,7 +356,10 @@ if(isset($_SESSION['parfumvault'])){
 </div>
 
 
-<?php  } ?>
+<?php
+  }
+} 
+?>
 
 <script>
 $(document).ready(function() {
