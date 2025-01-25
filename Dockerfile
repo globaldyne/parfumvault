@@ -10,6 +10,7 @@ LABEL co.uk.globaldyne.component="perfumers-vault-container"  description="Perfu
 ARG uid=100001
 ARG gid=100001
 
+RUN microdnf -y install epel-release 
 RUN microdnf -y update 
 
 #A temp workaround to address microdnf module version conflicts
