@@ -136,6 +136,46 @@ if ($_POST['action'] == 'resetPassword') {
     require_once(__ROOT__ . '/func/mailSys.php');
     require_once(__ROOT__ . '/func/validateInput.php');
 
+    $response = [];
+    if (isset($_POST['token']) && isset($_POST['newPassword'])) {
+        $token = mysqli_real_escape_string($conn, $_POST['token']);
+        $newPassword = $_POST['newPassword'];
+
+        if (!isPasswordComplex($newPassword)) {
+            $response['error'] = 'Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character';
+            echo json_encode($response);
+            return;
+        }
+
+        $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+
+        $checkTokenQuery = "SELECT email FROM password_resets WHERE token = '$token' AND expiry > NOW()";
+        $result = mysqli_query($conn, $checkTokenQuery);
+        if (mysqli_num_rows($result) == 0) {
+            $response['error'] = 'Invalid or expired token';
+            echo json_encode($response);
+            return;
+        }
+
+        $row = mysqli_fetch_assoc($result);
+        $email = $row['email'];
+
+        $updatePasswordQuery = "UPDATE users SET password = '$hashedPassword' WHERE email = '$email'";
+        if (mysqli_query($conn, $updatePasswordQuery)) {
+            mysqli_query($conn, "DELETE FROM password_resets WHERE email = '$email'");
+            $response['success'] = 'Password has been reset successfully';
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+            $_SESSION['temp_response'] = $response['success'];
+        } else {
+            $response['error'] = 'Failed to reset password: ' . mysqli_error($conn);
+        }
+
+        echo json_encode($response);
+        return;
+    }
+
     $email = mysqli_real_escape_string($conn, $_POST['email']);
 
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -151,7 +191,13 @@ if ($_POST['action'] == 'resetPassword') {
         echo json_encode($response);
         return;
     }
-
+    $checkTokenQuery = "SELECT token FROM password_resets WHERE email = '$email' AND expiry > NOW()";
+    $result = mysqli_query($conn, $checkTokenQuery);
+    if (mysqli_num_rows($result) > 0) {
+        $response['error'] = 'Password reset already requested. Please check your email.';
+        echo json_encode($response);
+        return;
+    }
     $token = bin2hex(random_bytes(16)); // Generates a 32-character unique string
     $expiry = date('Y-m-d H:i:s', strtotime('+1 hour')); // Token expires in 1 hour
 

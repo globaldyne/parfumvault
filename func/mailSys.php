@@ -84,10 +84,10 @@ function sendPasswordResetEmail($userEmail, $userToken){
     global $conn, $system_settings;
 
     $userID = mysqli_fetch_assoc(mysqli_query($conn, "SELECT id FROM users WHERE email = '$userEmail'"))['id'];
-    $branding = mysqli_fetch_array(mysqli_query($conn, "SELECT brandLogo FROM branding WHERE owner_id = '$userID'"));
+    $brandinglogo = mysqli_fetch_array(mysqli_query($conn, "SELECT brandLogo FROM branding WHERE owner_id = '$userID'"));
 
-    $resetLink = $system_settings['SYSTEM_server_url'].'/?do=reset-password&token='.$userToken;
-
+    $resetLink = $system_settings['SYSTEM_server_url'].'/login.php?do=reset-password&token='.$userToken;
+    
     $mail = file_get_contents(__ROOT__ . '/emailTemplates/userPasswordReset.html');
     $mail = str_replace('__NAME__', $userEmail, $mail);
     $mail = str_replace('__RESET_LINK__', $resetLink, $mail);

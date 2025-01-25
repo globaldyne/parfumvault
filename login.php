@@ -167,41 +167,108 @@ if(isset($_SESSION['parfumvault'])){
     ?>
 
     <?php if ($conn->query("SELECT id FROM users LIMIT 1")->num_rows == 0) { ?>
+    <div class="col-lg-6 d-none d-lg-block bg-register-image"></div>
+    <div class="col-lg-6">
+      <div class="p-5">
+        <div class="text-center">
+          <h1 class="h4 text-gray-900 mb-4">Please register a user</h1>
+        </div>
+        <div id="msg"></div>
+        <div class="user" id="reg_form">
+          <hr>
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="fullName" placeholder="Full name">
+            <label for="fullName">Full name</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input type="email" class="form-control" id="email" placeholder="Email">
+            <label for="email">Email</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input type="password" class="form-control password-input" id="password" placeholder="Password">
+            <label for="password">Password</label>
+            <i class="toggle-password fa fa-eye"></i>
+          </div>
+          <div class="form-group"></div>
+          <button class="btn btn-primary btn-user btn-block" id="registerSubmit">
+            Register
+          </button>
+        </div>
+  
+      <?php }else
+             if($_GET['do'] == 'reset-password' && $_GET['token']){ ?>
+                <div class="col-lg-6 d-none d-lg-block bg-register-image"></div>
+                <div class="col-lg-6">
+                <div class="p-5">
+                  <div class="text-center">
+                  <h1 class="h4 text-gray-900 mb-4">Reset Password</h1>
+                  </div>
+                  <div id="msg"></div>
+                  <div class="user" id="reset_pass">
+                  <hr>
+                  <div class="form-floating mb-3">
+                    <input type="password" class="form-control password-input" id="password" placeholder="Password">
+                    <label for="password">Password</label>
+                  </div>
+                  <div class="form-floating mb-3">
+                    <input type="password" class="form-control password-input" id="confirm_password" placeholder="Confirm Password">
+                    <label for="confirm_password">Confirm Password</label>
+                  </div>
+                  <div class="form-group"></div>
+                  <button class="btn btn-primary btn-user btn-block" id="reset_pass_btn">
+                    Reset Password
+                  </button>
+                  </div>
+                </div>
 
-      <div class="col-lg-6 d-none d-lg-block bg-register-image"></div>
-        <div class="col-lg-6">
-          <div class="p-5">
-            <div class="text-center">
-                <h1 class="h4 text-gray-900 mb-4">Please register a user</h1>
-            </div>
-            <div id="msg"></div>
-            <div class="user" id="reg_form">
-              <hr>
-              <div class="form-floating mb-3">
-                <input type="text" class="form-control" id="fullName" placeholder="Full name">
-                <label for="fullName">Full name</label>
-              </div>
-              <div class="form-floating mb-3">
-                <input type="email" class="form-control" id="email" placeholder="Email">
-                <label for="email">Email</label>
-              </div>
-              <div class="form-floating mb-3">
-                <input type="password" class="form-control password-input" id="password" placeholder="Password">
-                <label for="password">Password</label>
-                <i class="toggle-password fa fa-eye"></i>
-              </div>
-              <div class="form-group"></div>
-                <button class="btn btn-primary btn-user btn-block" id="registerSubmit">
-                Register
-                </button>
-      </div>
+        <script>
+        $(document).ready(function() {
+   
+          $('#reset_pass_btn').click(function() {
+            var password = $('#password').val();
+            var confirmPassword = $('#confirm_password').val();
+
+            if (password !== confirmPassword) {
+              $('#msg').html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>Passwords do not match.</div>');
+              return;
+            }
+
+            $('#reset_pass_btn').prop('disabled', true);
+            $('#msg').html('<div class="alert alert-info"><img src="/img/loading.gif"/> Please wait...</div>');
+
+            $.ajax({
+              url: '/core/configureSystem.php',
+              type: 'POST',
+              data: {
+                action: 'resetPassword',
+                token: '<?php echo $_GET['token']; ?>',
+                newPassword: password
+              },
+              dataType: 'json',
+              success: function(data) {
+                if (data.success) {
+                  //$('#msg').html('<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>' + data.success + '</div>');
+                  window.location = '/';
+                } else {
+                  $('#msg').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>' + data.error + '</div>');
+                }
+                $('#reset_pass_btn').prop('disabled', false);
+              },
+              error: function(xhr, status, error) {
+                $('#msg').html('<div class="alert alert-danger">Server error: ' + error + '</div>');
+                $('#reset_pass_btn').prop('disabled', false);
+              }
+            });
+          });
+        });
+        </script>
       <?php 
-      }else{
+        }else{
         if (isset($_SESSION['temp_response'])) {
             echo '<script>$(document).ready(function() { $("#msg").html("<div class=\"alert alert-success alert-dismissible fade show\" role=\"alert\"><i class=\"fa-solid fa-circle-check mx-2\"></i>' . $_SESSION['temp_response'] . '<button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\" aria-label=\"Close\"></button></div>"); });</script>';
             unset($_SESSION['temp_response']);
         }
-        ?>
+      ?>
                 <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
                 <div class="col-lg-6">
                   <div class="p-5">
@@ -238,6 +305,7 @@ if(isset($_SESSION['parfumvault'])){
             <?php
 				 }
 			 } 
+    
 			?>		 		 
           <hr />
           <div class="copyright text-center my-auto">
@@ -299,6 +367,8 @@ $(document).ready(function() {
       success: function(data) {
         if (data.success) {
           $('#forgot_msg').html('<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>' + data.success + '</div>');
+          $('#forgot_email').hide();
+          $('#forgot_submit').hide();
         } else {
           $('#forgot_msg').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>' + data.error + '</div>');
         }
