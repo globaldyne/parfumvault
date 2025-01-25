@@ -5,7 +5,6 @@ if (!defined('pvault_panel')){ die('Not Found');}
 require_once ('Mail.php');
 
 
-
 function sendMail($destination, $subject, $content) {
     global $system_settings;
     
@@ -52,20 +51,19 @@ function sendMail($destination, $subject, $content) {
 }
 
 
-
 function welcomeNewUser($userName, $userEmail, $userToken){
-    global $conn, $userID, $system_settings;
+    global $conn, $system_settings;
+    define('__ROOT__', dirname(dirname(__FILE__)));
 
-    $branding = mysqli_fetch_array(mysqli_query($conn, "SELECT brandLogo FROM branding WHERE owner_id = '$userID'"));
     $content = file_get_contents(__ROOT__.'/emailTemplates/newUserWelcome.html');
 
     $regLink1 = "https://www.perfumersvault.com/";
     $regLink2 = $system_settings['USER_terms_url'];
     $regLink3 = "https://www.perfumersvault.com/privacy-policy/";
-    $regConfirm = $system_settings['SYSTEM_server_url']."/?do=confirm-email&token=$userToken"; ;
+    $regConfirm = $system_settings['SYSTEM_server_url']."/login.php?do=confirm-email&token=$userToken"; ;
 
     $serverurl = $system_settings['SYSTEM_server_url'];
-    $brandinglogo = $serverurl.'/'.$branding['brandLogo'] ?: '/img/logo_def.png';
+    $brandinglogo = 'data:image/png;base64,' . base64_encode(file_get_contents(__ROOT__.'/img/logo_def.png'));
 
     $mail = str_replace('__NAME__', $userName, $content);
     $mail = str_replace('__CONFIRMATION_LINK__', $regConfirm, $mail);
@@ -73,7 +71,7 @@ function welcomeNewUser($userName, $userEmail, $userToken){
     $mail = str_replace('__LINK2__', $regLink2, $mail);
     $mail = str_replace('__LINK3__', $regLink3, $mail);
     $mail = str_replace('__SERVER_URL__', $serverurl, $mail);
-    $mail = str_replace('__BRANDING_LOGO__', $brandinglogo['brandLogo'], $mail);
+    $mail = str_replace('__BRANDING_LOGO__', $brandinglogo, $mail);
 
     $sendMail = sendMail($userEmail, "Welcome to Perfumers Vault", $mail);
 	
@@ -84,48 +82,50 @@ function sendPasswordResetEmail($userEmail, $userToken){
     global $conn, $system_settings;
 
     $userID = mysqli_fetch_assoc(mysqli_query($conn, "SELECT id FROM users WHERE email = '$userEmail'"))['id'];
-    $brandinglogo = mysqli_fetch_array(mysqli_query($conn, "SELECT brandLogo FROM branding WHERE owner_id = '$userID'"));
-
+    $branding = mysqli_fetch_array(mysqli_query($conn, "SELECT brandLogo FROM branding WHERE owner_id = '$userID'"));
+    $brandinglogo = !empty($branding['brandLogo']) ? $branding['brandLogo'] : 'data:image/png;base64,' . base64_encode(file_get_contents(__ROOT__.'/img/logo_def.png')); 
+ 
     $resetLink = $system_settings['SYSTEM_server_url'].'/login.php?do=reset-password&token='.$userToken;
     
     $mail = file_get_contents(__ROOT__ . '/emailTemplates/userPasswordReset.html');
     $mail = str_replace('__NAME__', $userEmail, $mail);
     $mail = str_replace('__RESET_LINK__', $resetLink, $mail);
-    $mail = str_replace('__BRANDING_LOGO__', $brandinglogo['brandLogo'], $mail);
+    $mail = str_replace('__BRANDING_LOGO__', $brandinglogo, $mail);
 
     // Send the email with the reset link
     $sendMail = sendMail($userEmail, "Password Reset Request", $mail);
 
-	return $sendMail;
-
+    return $sendMail;
 }
 
-function notifyAdminForNewUser($regName,$regEmail){
-	global $conn;
-	global $email_sys_from;
-	global $smtp_host;
-	global $admin_email;
+function notifyAdminForNewUser($userName, $userEmail, $userAction) {
+    global $conn, $system_settings;
 
-	$m = file_get_contents(__ROOT__.'/emailTemplates/newUserAdmin.html');
+    $brandinglogo = 'data:image/png;base64,' . base64_encode(file_get_contents(__ROOT__.'/img/logo_def.png'));
 
-	$m = str_replace('__NAME__', $regName, $m);
-	$m = str_replace('__EMAIL__', $regEmail, $m);
-	$m = str_replace('__PV__', $pvVer, $m);
-	$s = sendMail($admin_email,"New user just registered ",$m,$email_sys_from,$smtp_host);
+    $mail = file_get_contents(__ROOT__.'/emailTemplates/newUserAdmin.html');
+    $mail = str_replace('__USER_NAME__', $userName, $mail);
+    $mail = str_replace('__USER_EMAIL__', $userEmail, $mail);
+    $mail = str_replace('__USER_ACTION__', $userAction, $mail);
+    $mail = str_replace('__BRANDING_LOGO__', $brandinglogo, $mail);
 
-	return $s;
-
+    $adminQuery = mysqli_query($conn, "SELECT email FROM users WHERE role = 1");
+    while ($admin = mysqli_fetch_assoc($adminQuery)) {
+        $adminEmail = $admin['email'];
+        sendMail($adminEmail, "New user just $userAction", $mail);
+    }
 }
 
-function userGoodbye($fname,$email){
-	global $conn;
-	global $email_sys_from;
-	global $smtp_host;
-	global $admin_email;
+function userGoodbye($userName, $userEmail){
+    global $conn, $system_settings;
+    $brandinglogo = 'data:image/png;base64,' . base64_encode(file_get_contents(__ROOT__.'/img/logo_def.png'));
 
-	$msg = file_get_contents(__ROOT__.'/emailTemplates/userGoodbye.html');
-	$m = str_replace('__NAME__', $fname, $msg);
-	$s = sendMail($email,"PV Online account deleted",$m,$email_sys_from,$smtp_host);
-	return $s;
+	$mail = file_get_contents(__ROOT__.'/emailTemplates/userGoodbye.html');
+	$mail = str_replace('__NAME__', $userName, $mail);
+    $mail = str_replace('__BRANDING_LOGO__', $brandinglogo, $mail);
+
+	$sendMail = sendMail($userEmail, "PV Online account deleted", $mail);
+	
+    return $sendMail;
 }
 ?>

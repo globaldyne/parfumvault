@@ -195,8 +195,7 @@ if(isset($_SESSION['parfumvault'])){
           </button>
         </div>
   
-      <?php }else
-             if($_GET['do'] == 'reset-password' && $_GET['token']){ ?>
+      <?php }elseif($_GET['do'] == 'reset-password' && $_GET['token']){ ?>
                 <div class="col-lg-6 d-none d-lg-block bg-register-image"></div>
                 <div class="col-lg-6">
                 <div class="p-5">
@@ -263,6 +262,30 @@ if(isset($_SESSION['parfumvault'])){
         });
         </script>
       <?php 
+      }elseif($_GET['do'] == 'confirm-email' && $_GET['token']){
+          // CONFIRM EMAIL
+            $token = mysqli_real_escape_string($conn, $_GET['token']);
+            $checkTokenQuery = "SELECT email FROM users WHERE token = '$token' AND isVerified = 0";
+            $result = mysqli_query($conn, $checkTokenQuery);
+            if (mysqli_num_rows($result) == 0) {
+                $response['error'] = 'Invalid or expired token';
+                echo json_encode($response);
+                return;
+            }
+            $row = mysqli_fetch_assoc($result);
+            $email = $row['email'];
+            $updateUserQuery = "UPDATE users SET isVerified = 1, isActive = 1, token = NULL WHERE email = '$email'";
+            if (mysqli_query($conn, $updateUserQuery)) {
+                $response['success'] = 'Email has been confirmed successfully';
+                if (session_status() === PHP_SESSION_NONE) {
+                    session_start();
+                }
+                $_SESSION['temp_response'] = $response['success'];
+                header('Location: /login.php');
+            } else {
+              $_SESSION['temp_response'] = $response['success'];
+              header('Location: /login.php');
+            }
         }else{
         if (isset($_SESSION['temp_response'])) {
             echo '<script>$(document).ready(function() { $("#msg").html("<div class=\"alert alert-success alert-dismissible fade show\" role=\"alert\"><i class=\"fa-solid fa-circle-check mx-2\"></i>' . $_SESSION['temp_response'] . '<button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\" aria-label=\"Close\"></button></div>"); });</script>';

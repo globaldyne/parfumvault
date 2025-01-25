@@ -49,6 +49,7 @@ if ($_POST['action'] == 'selfregister') {
 
     if($system_settings['EMAIL_isEnabled']){
         if(welcomeNewUser($fullName,$email,$token)){
+            notifyAdminForNewUser($fullName, $email, 'registered');
             error_log("Email sent to $email");
         } else {
             $response['error'] = 'Failed to complete registration, unable to send email';

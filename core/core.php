@@ -335,7 +335,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'deleteprofile') {
     }
 
     // Fetch user_id for the user
-    $userQuery = $conn->prepare("SELECT id FROM users WHERE id = ?");
+    $userQuery = $conn->prepare("SELECT id,email,fullName FROM users WHERE id = ?");
     $userQuery->bind_param("i", $userID);
     $userQuery->execute();
     $userResult = $userQuery->get_result();
@@ -352,7 +352,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'deleteprofile') {
             "formula_history", "IFRALibrary", "ingCategory", "ingredients", "ingredient_compounds",
             "ingredient_safety_data", "ingReplacements", "ingSafetyInfo", "ingSuppliers", "inventory_accessories",
             "inventory_compounds", "makeFormula", "perfumeTypes", "sds_data", "suppliers", "synonyms",
-            "templates", "user_prefs", "user_settings"
+            "templates", "user_prefs", "user_settings", "branding"
         ];
 
         foreach ($tables as $table) {
@@ -364,6 +364,8 @@ if (isset($_GET['action']) && $_GET['action'] === 'deleteprofile') {
 
         if ($deleteQuery->execute()) {
             $response['success'] = 'User deleted successfully';
+            notifyAdminForNewUser($userData['fullName'], $userData['email'], 'deleted');
+            userGoodbye($userData['fullName'], $userData['email']);
         } else {
             $response['error'] = 'Database error: ' . $deleteQuery->error;
         }
