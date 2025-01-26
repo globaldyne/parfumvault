@@ -4982,73 +4982,76 @@ if($_GET['restore'] == 'db_bk'){
 
 //EXPORT IFRA
 if($_GET['action'] == 'exportIFRA'){
-	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM IFRALibrary")))){
-		$msg['error'] = 'No data found to export.';
-		echo json_encode($msg);
-		return;
-	}
-	$IFRA_Data = 0;
-	$q = mysqli_query($conn, "SELECT * FROM IFRALibrary WHERE owner_id = '$userID'");
-	while($ifra = mysqli_fetch_assoc($q)){
-		
-		//$r['id'] = (int)$ifra['id'];
-		$r['ifra_key'] = (string)$ifra['ifra_key']?: "-";
-		$r['image'] = (string)$ifra['image']?: "-";
-		$r['amendment'] = (string)$ifra['amendment']?: "-";
-		$r['prev_pub'] = (string)$ifra['prev_pub']?: "-";
-		$r['last_pub'] = (string)$ifra['last_pub']?: "-";
-		$r['deadline_existing'] = (string)$ifra['deadline_existing']?: "-";
-		$r['deadline_new'] = (string)$ifra['deadline_new']?: "-";
-		$r['name'] = (string)$ifra['name']?: "-";
-		$r['cas'] = (string)$ifra['cas']?: "-";
-		$r['cas_comment'] = (string)$ifra['cas_comment']?: "-";
-		$r['synonyms'] = (string)$ifra['synonyms']?: "-";
-		$r['formula'] = (string)$ifra['formula']?: "-";//DEPRECATED IN IFRA 51
-		$r['flavor_use'] = (string)$ifra['flavor_use']?: "-";
-		$r['prohibited_notes'] = (string)$ifra['prohibited_notes'] ?: "-";
-		$r['restricted_photo_notes'] = (string)$ifra['restricted_photo_notes']?: "-";
-		$r['restricted_notes'] = (string)$ifra['restricted_notes']?: "-";
-		$r['specified_notes'] = (string)$ifra['specified_notes']?: "-";
-		$r['type'] = (string)$ifra['type']?: "-";
-		$r['risk'] = (string)$ifra['risk']?: "-";
-		$r['contrib_others'] = (string)$ifra['contrib_others']?: "-";
-		$r['contrib_others_notes'] = (string)$ifra['contrib_others_notes']?: "-";
-		$r['cat1'] = (double)$ifra['cat1']?: 100;
-		$r['cat2'] = (double)$ifra['cat2']?: 100;
-		$r['cat3'] = (double)$ifra['cat3']?: 100;
-		$r['cat4'] = (double)$ifra['cat4']?: 100;
-		$r['cat5A'] = (double)$ifra['cat5A']?: 100;
-		$r['cat5B'] = (double)$ifra['cat5B']?: 100;
-		$r['cat5C'] = (double)$ifra['cat5C']?: 100;
-		$r['cat5D'] = (double)$ifra['cat5D']?: 100;
-		$r['cat6'] = (double)$ifra['cat6']?: 100;
-		$r['cat7A'] = (double)$ifra['cat7A']?: 100;
-		$r['cat7B'] = (double)$ifra['cat7B']?: 100;
-		$r['cat8'] = (double)$ifra['cat8']?: 100;
-		$r['cat9'] = (double)$ifra['cat9']?: 100;
-		$r['cat10A'] = (double)$ifra['cat10A']?: 100;
-		$r['cat10B'] = (double)$ifra['cat10B']?: 100;
-		$r['cat11A'] = (double)$ifra['cat11A']?: 100;
-		$r['cat11B'] = (double)$ifra['cat11B']?: 100;
-		$r['cat12'] = (double)$ifra['cat12']?: 100;
+    if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM IFRALibrary WHERE owner_id = '$userID'")))){
+        $msg['error'] = 'No data found to export.';
+        echo json_encode($msg);
+        return;
+    }
+    $IFRA_Data = 0;
+    $q = mysqli_query($conn, "SELECT * FROM IFRALibrary WHERE owner_id = '$userID'");
+    while($ifra = mysqli_fetch_assoc($q)){
+        $r = [
+            'ifra_key' => (string)$ifra['ifra_key'] ?: "-",
+            'image' => (string)$ifra['image'] ?: "-",
+            'amendment' => (string)$ifra['amendment'] ?: "-",
+            'prev_pub' => (string)$ifra['prev_pub'] ?: "-",
+            'last_pub' => (string)$ifra['last_pub'] ?: "-",
+            'deadline_existing' => (string)$ifra['deadline_existing'] ?: "-",
+            'deadline_new' => (string)$ifra['deadline_new'] ?: "-",
+            'name' => (string)$ifra['name'] ?: "-",
+            'cas' => (string)$ifra['cas'] ?: "-",
+            'cas_comment' => (string)$ifra['cas_comment'] ?: "-",
+            'synonyms' => (string)$ifra['synonyms'] ?: "-",
+            'formula' => (string)$ifra['formula'] ?: "-", // DEPRECATED IN IFRA 51
+            'flavor_use' => (string)$ifra['flavor_use'] ?: "-",
+            'prohibited_notes' => (string)$ifra['prohibited_notes'] ?: "-",
+            'restricted_photo_notes' => (string)$ifra['restricted_photo_notes'] ?: "-",
+            'restricted_notes' => (string)$ifra['restricted_notes'] ?: "-",
+            'specified_notes' => (string)$ifra['specified_notes'] ?: "-",
+            'type' => (string)$ifra['type'] ?: "-",
+            'risk' => (string)$ifra['risk'] ?: "-",
+            'contrib_others' => (string)$ifra['contrib_others'] ?: "-",
+            'contrib_others_notes' => (string)$ifra['contrib_others_notes'] ?: "-",
+            'cat1' => (double)$ifra['cat1'] ?: 100,
+            'cat2' => (double)$ifra['cat2'] ?: 100,
+            'cat3' => (double)$ifra['cat3'] ?: 100,
+            'cat4' => (double)$ifra['cat4'] ?: 100,
+            'cat5A' => (double)$ifra['cat5A'] ?: 100,
+            'cat5B' => (double)$ifra['cat5B'] ?: 100,
+            'cat5C' => (double)$ifra['cat5C'] ?: 100,
+            'cat5D' => (double)$ifra['cat5D'] ?: 100,
+            'cat6' => (double)$ifra['cat6'] ?: 100,
+            'cat7A' => (double)$ifra['cat7A'] ?: 100,
+            'cat7B' => (double)$ifra['cat7B'] ?: 100,
+            'cat8' => (double)$ifra['cat8'] ?: 100,
+            'cat9' => (double)$ifra['cat9'] ?: 100,
+            'cat10A' => (double)$ifra['cat10A'] ?: 100,
+            'cat10B' => (double)$ifra['cat10B'] ?: 100,
+            'cat11A' => (double)$ifra['cat11A'] ?: 100,
+            'cat11B' => (double)$ifra['cat11B'] ?: 100,
+            'cat12' => (double)$ifra['cat12'] ?: 100
+        ];
 
-		$IFRA_Data++;
-		$if[] = $r;
-	}
-	
-	$vd['product'] = $product;
-	$vd['version'] = $ver;
-	$vd['ifra_entries'] = $IFRA_Data;
-	$vd['timestamp'] = date('d/m/Y H:i:s');
+        $IFRA_Data++;
+        $if[] = $r;
+    }
+    
+    $vd = [
+        'product' => $product,
+        'version' => $ver,
+        'ifra_entries' => $IFRA_Data,
+        'timestamp' => date('d/m/Y H:i:s')
+    ];
 
-	
-	$result['IFRALibrary'] = $if;
-	$result['pvMeta'] = $vd;
-	
-	header('Content-disposition: attachment; filename=IFRALibrary.json');
-	header('Content-type: application/json');
-	echo json_encode($result, JSON_PRETTY_PRINT);
-	return;
+    $result = [
+        'IFRALibrary' => $if,
+        'pvMeta' => $vd
+    ];
+    
+    header('Content-disposition: attachment; filename=IFRALibrary.json');
+    header('Content-type: application/json');
+    echo json_encode($result, JSON_PRETTY_PRINT);
+    return;
 }
 
 //EXPORT FORMULAS
@@ -5969,162 +5972,197 @@ if ($_GET['action'] == 'importMaking') {
 
 
 //EXPORT INGREDIENT CATEGORIES
-if($_GET['action'] == 'exportIngCat'){
-	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingCategory WHERE owner_id = '$userID'")))){
-		$msg['error'] = 'No data found to export';
-		echo json_encode($msg);
-		return;
-	}
-	$data = 0;
-	$q = mysqli_query($conn, "SELECT * FROM ingCategory");
-	while($resData = mysqli_fetch_assoc($q)){
-		
-		//$r['id'] = (int)$resData['id'];
-		$r['name'] = (string)$resData['name']?: "-";
-		$r['notes'] = (string)$resData['notes']?: "-";
-		$r['image'] = (string)$resData['image'] ?: "-";
-		$r['colorKey'] = (string)$resData['colorKey']?: "-";
-		
-		$data++;
-		$cat[] = $r;
-	}
-	
-	$vd['product'] = $product;
-	$vd['version'] = $ver;
-	$vd['ingCategory'] = $data;
-	$vd['timestamp'] = date('d/m/Y H:i:s');
+if ($_GET['action'] == 'exportIngCat') {
+    $query = "SELECT id FROM ingCategory WHERE owner_id = '$userID'";
+    $result = mysqli_query($conn, $query);
 
-	
-	$result['ingCategory'] = $cat;
-	$result['pvMeta'] = $vd;
-	
-	header('Content-disposition: attachment; filename=Ingredient_Categories.json');
-	header('Content-type: application/json');
-	echo json_encode($result, JSON_PRETTY_PRINT);
-	return;
+    if (mysqli_num_rows($result) == 0) {
+        $msg['error'] = 'No data found to export';
+        echo json_encode($msg);
+        return;
+    }
+
+    $data = 0;
+    $categories = [];
+    $query = "SELECT * FROM ingCategory WHERE owner_id = '$userID'";
+    $result = mysqli_query($conn, $query);
+
+    while ($resData = mysqli_fetch_assoc($result)) {
+        $category = [
+            'name' => (string)$resData['name'] ?: "-",
+            'notes' => (string)$resData['notes'] ?: "-",
+            'image' => (string)$resData['image'] ?: "-",
+            'colorKey' => (string)$resData['colorKey'] ?: "-"
+        ];
+
+        $data++;
+        $categories[] = $category;
+    }
+
+    $meta = [
+        'product' => $product,
+        'version' => $ver,
+        'ingCategory' => $data,
+        'timestamp' => date('d/m/Y H:i:s')
+    ];
+
+    $result = [
+        'ingCategory' => $categories,
+        'pvMeta' => $meta
+    ];
+
+    header('Content-disposition: attachment; filename=Ingredient_Categories.json');
+    header('Content-type: application/json');
+    echo json_encode($result, JSON_PRETTY_PRINT);
+    return;
 }
 
 //EXPORT FORMULA CATEGORIES
-if($_GET['action'] == 'exportFrmCat'){
-	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulaCategories WHERE owner_id = '$userID'")))){
-		$msg['error'] = 'No data found to export.';
-		echo json_encode($msg);
-		return;
-	}
-	$data = 0;
-	$q = mysqli_query($conn, "SELECT * FROM formulaCategories");
-	while($resData = mysqli_fetch_assoc($q)){
-		
-		//$r['id'] = (int)$resData['id'];
-		$r['name'] = (string)$resData['name']?: "-";
-		$r['cname'] = (string)$resData['cname']?: "-";
-		$r['type'] = (string)$resData['type'] ?: "-";
-		$r['colorKey'] = (string)$resData['colorKey']?: "-";
-		
-		$data++;
-		$cat[] = $r;
-	}
-	
-	$vd['product'] = $product;
-	$vd['version'] = $ver;
-	$vd['formulaCategories'] = $data;
-	$vd['timestamp'] = date('d/m/Y H:i:s');
+if ($_GET['action'] == 'exportFrmCat') {
+    $query = "SELECT id FROM formulaCategories WHERE owner_id = '$userID'";
+    $result = mysqli_query($conn, $query);
 
-	
-	$result['formulaCategories'] = $cat;
-	$result['pvMeta'] = $vd;
-	
-	header('Content-disposition: attachment; filename=Formula_Categories.json');
-	header('Content-type: application/json');
-	echo json_encode($result, JSON_PRETTY_PRINT);
-	return;
+    if (mysqli_num_rows($result) == 0) {
+        $msg['error'] = 'No data found to export.';
+        echo json_encode($msg);
+        return;
+    }
+
+    $data = 0;
+    $categories = [];
+    $query = "SELECT * FROM formulaCategories WHERE owner_id = '$userID'";
+    $result = mysqli_query($conn, $query);
+
+    while ($resData = mysqli_fetch_assoc($result)) {
+        $category = [
+            'name' => (string)$resData['name'] ?: "-",
+            'cname' => (string)$resData['cname'] ?: "-",
+            'type' => (string)$resData['type'] ?: "-",
+            'colorKey' => (string)$resData['colorKey'] ?: "-"
+        ];
+
+        $data++;
+        $categories[] = $category;
+    }
+
+    $meta = [
+        'product' => $product,
+        'version' => $ver,
+        'formulaCategories' => $data,
+        'timestamp' => date('d/m/Y H:i:s')
+    ];
+
+    $result = [
+        'formulaCategories' => $categories,
+        'pvMeta' => $meta
+    ];
+
+    header('Content-disposition: attachment; filename=Formula_Categories.json');
+    header('Content-type: application/json');
+    echo json_encode($result, JSON_PRETTY_PRINT);
+    return;
 }
 
 //EXPORT PERFUME TYPES
-if($_GET['action'] == 'exportPerfTypes'){
-	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM perfumeTypes WHERE owner_id = '$userID'")))){
-		$msg['error'] = 'No data found to export.';
-		echo json_encode($msg);
-		return;
-	}
-	$data = 0;
-	$q = mysqli_query($conn, "SELECT * FROM perfumeTypes");
-	while($resData = mysqli_fetch_assoc($q)){
-		
-		//$r['id'] = (int)$resData['id'];
-		$r['name'] = (string)$resData['name']?: "-";
-		$r['concentration'] = (int)$resData['concentration']?: 100;
-		$r['description'] = (string)$resData['description'] ?: "-";
-		
-		$data++;
-		$cat[] = $r;
-	}
-	
-	$vd['product'] = $product;
-	$vd['version'] = $ver;
-	$vd['perfumeTypes'] = $data;
-	$vd['timestamp'] = date('d/m/Y H:i:s');
+if ($_GET['action'] == 'exportPerfTypes') {
+    $query = "SELECT id FROM perfumeTypes WHERE owner_id = '$userID'";
+    $result = mysqli_query($conn, $query);
 
-	
-	$result['perfumeTypes'] = $cat;
-	$result['pvMeta'] = $vd;
-	
-	header('Content-disposition: attachment; filename=Perfume_Types.json');
-	header('Content-type: application/json');
-	echo json_encode($result, JSON_PRETTY_PRINT);
-	return;
+    if (mysqli_num_rows($result) == 0) {
+        $msg['error'] = 'No data found to export.';
+        echo json_encode($msg);
+        return;
+    }
+
+    $data = 0;
+    $perfumeTypes = [];
+    $query = "SELECT * FROM perfumeTypes WHERE owner_id = '$userID'";
+    $result = mysqli_query($conn, $query);
+
+    while ($resData = mysqli_fetch_assoc($result)) {
+        $type = [
+            'name' => (string)$resData['name'] ?: "-",
+            'concentration' => (int)$resData['concentration'] ?: 100,
+            'description' => (string)$resData['description'] ?: "-"
+        ];
+
+        $data++;
+        $perfumeTypes[] = $type;
+    }
+
+    $meta = [
+        'product' => $product,
+        'version' => $ver,
+        'perfumeTypes' => $data,
+        'timestamp' => date('d/m/Y H:i:s')
+    ];
+
+    $result = [
+        'perfumeTypes' => $perfumeTypes,
+        'pvMeta' => $meta
+    ];
+
+    header('Content-disposition: attachment; filename=Perfume_Types.json');
+    header('Content-type: application/json');
+    echo json_encode($result, JSON_PRETTY_PRINT);
+    return;
 }
 
 
 
 //EXPORT MAKING FORMULA
 if($_GET['action'] == 'exportMaking'){
-	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE owner_id = '$userID'")))){
-		$msg['error'] = 'No data found to export.';
-		echo json_encode($msg);
-		return;
-	}
-	$data = 0;
-	if($fid = $_GET['fid']){
-		 
-		$filter = " WHERE fid = '$fid' ";	
-	}
-	
-	$q = mysqli_query($conn, "SELECT * FROM makeFormula $filter");
-	while($resData = mysqli_fetch_assoc($q)){
-		
-		//$r['id'] = (int)$resData['id'];
-		$r['fid'] = (string)$resData['fid'];
-		$r['name'] = (string)$resData['name'];
-		$r['ingredient'] = (string)$resData['ingredient'];
-		$r['ingredient_id'] = (int)$resData['ingredient_id'];
-		$r['replacement_id'] = (int)$resData['replacement_id'];		
-		$r['concentration'] = (double)$resData['concentration'];
-		$r['dilutant'] = (string)$resData['dilutant'];
-		$r['quantity'] = (double)$resData['quantity'];
-		$r['overdose'] = (double)$resData['overdose'];
-		$r['originalQuantity'] = (double)$resData['originalQuantity'];
-		$r['notes'] = (string)$resData['notes'];
-		$r['skip'] = (int)$resData['skip'];
-		$r['toAdd'] = (int)$resData['toAdd'];
+    if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE owner_id = '$userID'")))){
+        $msg['error'] = 'No data found to export.';
+        echo json_encode($msg);
+        return;
+    }
+    $data = 0;
+    $filter = "";
+    if($fid = $_GET['fid']){
+        $filter = " WHERE fid = '$fid' AND owner_id = '$userID'";    
+    } else {
+        $filter = " WHERE owner_id = '$userID'";
+    }
+    
+    $q = mysqli_query($conn, "SELECT * FROM makeFormula $filter");
+    while($resData = mysqli_fetch_assoc($q)){
+        $r = [
+            'fid' => (string)$resData['fid'],
+            'name' => (string)$resData['name'],
+            'ingredient' => (string)$resData['ingredient'],
+            'ingredient_id' => (int)$resData['ingredient_id'],
+            'replacement_id' => (int)$resData['replacement_id'],
+            'concentration' => (double)$resData['concentration'],
+            'dilutant' => (string)$resData['dilutant'],
+            'quantity' => (double)$resData['quantity'],
+            'overdose' => (double)$resData['overdose'],
+            'originalQuantity' => (double)$resData['originalQuantity'],
+            'notes' => (string)$resData['notes'],
+            'skip' => (int)$resData['skip'],
+            'toAdd' => (int)$resData['toAdd']
+        ];
 
-		$data++;
-		$dat_arr[] = $r;
-	}
-	
-	$vd['product'] = $product;
-	$vd['version'] = $ver;
-	$vd['makeFormula'] = $data;
-	$vd['timestamp'] = date('d/m/Y H:i:s');
+        $data++;
+        $dat_arr[] = $r;
+    }
+    
+    $vd = [
+        'product' => $product,
+        'version' => $ver,
+        'makeFormula' => $data,
+        'timestamp' => date('d/m/Y H:i:s')
+    ];
 
-	
-	$result['makeFormula'] = $dat_arr;
-	$result['pvMeta'] = $vd;
-	
-	header('Content-disposition: attachment; filename=MakeFormula.json');
-	header('Content-type: application/json');
-	echo json_encode($result, JSON_PRETTY_PRINT);
-	return;
+    $result = [
+        'makeFormula' => $dat_arr,
+        'pvMeta' => $vd
+    ];
+    
+    header('Content-disposition: attachment; filename=MakeFormula.json');
+    header('Content-type: application/json');
+    echo json_encode($result, JSON_PRETTY_PRINT);
+    return;
 }
 
 //EXPORT INGREDIENT PROFILES
