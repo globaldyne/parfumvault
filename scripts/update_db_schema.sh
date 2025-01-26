@@ -9,7 +9,7 @@ check_table_exists() {
            WHERE TABLE_SCHEMA='$DB_NAME' 
            AND TABLE_NAME='$TABLE_NAME';"
            
-    RESULT=$(mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASS" -e "$QUERY" -s -N)
+    RESULT=$(mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASS" -e "$QUERY" -s -N 2>/dev/null)
     echo "$RESULT"
 }
 
@@ -24,7 +24,7 @@ check_column_exists() {
            AND TABLE_NAME='$TABLE_NAME' 
            AND COLUMN_NAME='$COLUMN_NAME';"
            
-    RESULT=$(mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASS" -e "$QUERY" -s -N)
+    RESULT=$(mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASS" -e "$QUERY" -s -N 2>/dev/null)
     echo "$RESULT"
 }
 
@@ -38,7 +38,7 @@ add_columns() {
                 ADD \`isVerified\` INT NOT NULL AFTER \`API_key\`,
                 ADD \`token\` VARCHAR(255) NULL AFTER \`isVerified\`, 
                 ADD \`provider\` INT NOT NULL DEFAULT '1' COMMENT '1=Local,2=SSO' AFTER \`fullName\`;"
-    mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASS" -D "$DB_NAME" -e "$ALTER_QUERY"
+    mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASS" -D "$DB_NAME" -e "$ALTER_QUERY" 2>/dev/null
     if [ $? -eq 0 ]; then
         echo "Columns 'isActive' and 'provider' added successfully."
     else
@@ -50,7 +50,7 @@ TABLE_EXISTS=$(check_table_exists "users")
 
 if [ "$TABLE_EXISTS" -eq 0 ]; then
     echo "Table 'users' does not exist. Importing schema from /html/db/pvault.sql..."
-    mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASS" "$DB_NAME" < /html/db/pvault.sql
+    mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASS" "$DB_NAME" < /html/db/pvault.sql 2>/dev/null
     if [ $? -eq 0 ]; then
         echo "Schema imported successfully."
     else
@@ -80,7 +80,7 @@ if [ "$USER_SETTINGS_TABLE_EXISTS" -eq 0 ]; then
         \`updated_at\` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         PRIMARY KEY (\`id\`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;"
-    mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASS" -D "$DB_NAME" -e "$CREATE_TABLE_QUERY"
+    mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASS" -D "$DB_NAME" -e "$CREATE_TABLE_QUERY" 2>/dev/null
     if [ $? -eq 0 ]; then
         echo "Table 'user_settings' created successfully."
     else
@@ -103,7 +103,7 @@ if [ "$SYSTEM_SETTINGS_TABLE_EXISTS" -eq 0 ]; then
         \`updated_at\` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         PRIMARY KEY (\`id\`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;"
-    mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASS" -D "$DB_NAME" -e "$CREATE_TABLE_QUERY"
+    mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASS" -D "$DB_NAME" -e "$CREATE_TABLE_QUERY" 2>/dev/null
     if [ $? -eq 0 ]; then
         echo "Table 'system_settings' created successfully."
         INSERT_QUERY="INSERT INTO \`system_settings\` (\`key_name\`, \`value\`, \`slug\`, \`type\`, \`description\`) VALUES
@@ -124,7 +124,7 @@ if [ "$SYSTEM_SETTINGS_TABLE_EXISTS" -eq 0 ]; then
         ('EMAIL_smtp_user', '', 'Username', 'text', 'Optional field, use only if your email server requires authentication'),
         ('EMAIL_smtp_pass', '', 'Password', 'password', 'Optional field, use only if your email server requires authentication'),
         ('EMAIL_smtp_secure', '0', 'Enable SSL', 'checkbox', 'Enable secure connection if your server supports it');"
-        mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASS" -D "$DB_NAME" -e "$INSERT_QUERY"
+        mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASS" -D "$DB_NAME" -e "$INSERT_QUERY" 2>/dev/null
         if [ $? -eq 0 ]; then
             echo "Default settings inserted into 'system_settings' table successfully."
         else
