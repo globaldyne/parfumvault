@@ -331,9 +331,14 @@ if(isset($_SESSION['parfumvault'])){
     
 			?>		 		 
           <hr />
-          <div class="copyright text-center my-auto">
-				  <label class="small">Version: <?php echo $ver; ?> |<a href="https://www.perfumersvault.com/" class="mx-1" target="_blank"><?php echo $product; ?></a></label>
-                  </div>
+            <div class="copyright text-center my-auto">
+            <label class="small">Version: <?php echo $ver; ?> |<a href="https://www.perfumersvault.com/" class="mx-1" target="_blank"><?php echo $product; ?></a></label>
+            </div>
+            <?php if ($system_settings['USER_selfRegister'] == '1' && !empty($system_settings['USER_privacy_url'])) { ?>
+            <div class="text-center">
+              <a class="small" href="<?php echo $system_settings['USER_privacy_url']; ?>" target="_blank">Privacy Policy</a>
+            </div>
+            <?php } ?>
                 </div>
               </div>
             </div>
