@@ -5053,88 +5053,89 @@ if($_GET['action'] == 'exportIFRA'){
 
 //EXPORT FORMULAS
 if($_GET['action'] == 'exportFormulas'){
-	if($_GET['fid']){
-		$filter = " WHERE fid ='".$_GET['fid']."' AND owner_id = '$userID'";
-	} else {
-		$filter = " WHERE owner_id = '$userID'";
-	}
-	if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE owner_id = '$userID'")))){
-		$msg['error'] = 'No formulas found to export';
-		echo json_encode($msg);
-		return;
-	}
-	$formulas = 0;
-	$ingredients = 0;
-	
-	$qfmd = mysqli_query($conn, "SELECT * FROM formulasMetaData $filter");
-	while($meta = mysqli_fetch_assoc($qfmd)){
-		
-		//$r['id'] = (int)$meta['id'];
-		$r['name'] = (string)$meta['name'];
-		$r['product_name'] = (string)$meta['product_name'];
-		$r['fid'] = (string)$meta['fid'];
-		$r['profile'] = (string)$meta['profile'];
-		$r['category'] = (string)$meta['profile'] ?: 'Default';
-		$r['gender'] = (string)$meta['gender'];
-		$r['notes'] = (string)$meta['notes'] ?: 'None';
-		$r['created_at'] = (string)$meta['created_at'];
-		$r['isProtected'] = (int)$meta['isProtected'] ?: 0;
-		$r['defView'] = (int)$meta['defView'];
-		$r['catClass'] = (string)$meta['catClass'];
-		$r['revision'] = (int)$meta['revision'] ?: 0;
-		$r['finalType'] = (int)$meta['finalType'] ?: 100;
-		$r['isMade'] = (int)$meta['isMade'];
-		$r['madeOn'] = (string)$meta['madeOn'] ?: "0000-00-00 00:00:00";
-		$r['scheduledOn'] = (string)$meta['scheduledOn'];
-		$r['customer_id'] = (int)$meta['customer_id'];
-		$r['status'] = (int)$meta['status'];
-		$r['toDo'] = (int)$meta['toDo'];
-		$r['rating'] = (int)$meta['rating'] ?: 0;
-		
-		$formulas++;
-		$fm[] = $r;
-	}
-	
-	$qfm = mysqli_query($conn, "SELECT * FROM formulas $filter");
-	while($formula = mysqli_fetch_assoc($qfm)){
-		
-		//$f['id'] = (int)$formula['id'];
-		$f['fid'] = (string)$formula['fid'];
-		$f['name'] = (string)$formula['name'];
-		$f['ingredient'] = (string)$formula['ingredient'];
-		$f['ingredient_id'] = (int)$formula['ingredient_id'] ?: 0;
-		$f['concentration'] = (float)$formula['concentration'] ?: 100;
-		$f['dilutant'] = (string)$formula['dilutant'] ?: 'None';
-		$f['quantity'] = (float)$formula['quantity'];
-		$f['exclude_from_summary'] = (int)$formula['exclude_from_summary'];
-		$f['exclude_from_calculation'] = (int)$formula['exclude_from_calculation'];
-		$f['notes'] = (string)$formula['notes'] ?: 'None';
-		$f['created_at'] = (string)$formula['created_at'];
-		$f['updated'] = (string)$formula['updated'];
-		
-		$ingredients++;
-		$fd[] = $f;
-	}
-	
-	$vd['product'] = $product;
-	$vd['version'] = $ver;
-	$vd['formulas'] = $formulas;
-	$vd['ingredients'] = $ingredients;
-	$vd['timestamp'] = date('d/m/Y H:i:s');
+    if($_GET['fid']){
+        $filter = " WHERE fid ='".$_GET['fid']."' AND owner_id = '$userID'";
+    } else {
+        $filter = " WHERE owner_id = '$userID'";
+    }
+    if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE owner_id = '$userID'")))){
+        $msg['error'] = 'No formulas found to export';
+        echo json_encode($msg);
+        return;
+    }
+    $formulas = 0;
+    $ingredients = 0;
+    
+    $qfmd = mysqli_query($conn, "SELECT * FROM formulasMetaData $filter");
+    while($meta = mysqli_fetch_assoc($qfmd)){
+        $r = [
+            'name' => (string)$meta['name'],
+            'product_name' => (string)$meta['product_name'],
+            'fid' => (string)$meta['fid'],
+            'profile' => (string)$meta['profile'],
+            'category' => (string)$meta['profile'] ?: 'Default',
+            'gender' => (string)$meta['gender'],
+            'notes' => (string)$meta['notes'] ?: 'None',
+            'created_at' => (string)$meta['created_at'],
+            'isProtected' => (int)$meta['isProtected'] ?: 0,
+            'defView' => (int)$meta['defView'],
+            'catClass' => (string)$meta['catClass'],
+            'revision' => (int)$meta['revision'] ?: 0,
+            'finalType' => (int)$meta['finalType'] ?: 100,
+            'isMade' => (int)$meta['isMade'],
+            'madeOn' => (string)$meta['madeOn'] ?: "0000-00-00 00:00:00",
+            'scheduledOn' => (string)$meta['scheduledOn'],
+            'customer_id' => (int)$meta['customer_id'],
+            'status' => (int)$meta['status'],
+            'toDo' => (int)$meta['toDo'],
+            'rating' => (int)$meta['rating'] ?: 0
+        ];
+        $formulas++;
+        $fm[] = $r;
+    }
+    
+    $qfm = mysqli_query($conn, "SELECT * FROM formulas $filter");
+    while($formula = mysqli_fetch_assoc($qfm)){
+        $f = [
+            'fid' => (string)$formula['fid'],
+            'name' => (string)$formula['name'],
+            'ingredient' => (string)$formula['ingredient'],
+            'ingredient_id' => (int)$formula['ingredient_id'] ?: 0,
+            'concentration' => (float)$formula['concentration'] ?: 100,
+            'dilutant' => (string)$formula['dilutant'] ?: 'None',
+            'quantity' => (float)$formula['quantity'],
+            'exclude_from_summary' => (int)$formula['exclude_from_summary'],
+            'exclude_from_calculation' => (int)$formula['exclude_from_calculation'],
+            'notes' => (string)$formula['notes'] ?: 'None',
+            'created_at' => (string)$formula['created_at'],
+            'updated' => (string)$formula['updated']
+        ];
+        $ingredients++;
+        $fd[] = $f;
+    }
+    
+    $vd = [
+        'product' => $product,
+        'version' => $ver,
+        'formulas' => $formulas,
+        'ingredients' => $ingredients,
+        'timestamp' => date('d/m/Y H:i:s')
+    ];
 
-	
-	$result['formulasMetaData'] = $fm;
-	$result['formulas'] = $fd;
-	$result['pvMeta'] = $vd;
+    $result = [
+        'formulasMetaData' => $fm,
+        'formulas' => $fd,
+        'pvMeta' => $vd
+    ];
 
-	if(!$_GET['fid']){
-		$f['name'] = "All_formulas";
-	}
-	
-	header('Content-disposition: attachment; filename='.$f['name'].'.json');
-	header('Content-type: application/json');
-	echo json_encode($result, JSON_PRETTY_PRINT);
-	return;
+    if(!$_GET['fid']){
+        $f['name'] = "All_formulas";
+    }
+    
+    header('Content-disposition: attachment; filename='.$f['name'].'.json');
+    header('Content-type: application/json');
+    echo json_encode($result, JSON_PRETTY_PRINT);
+    return;
 }
 
 //IMPORT FORMULAS
