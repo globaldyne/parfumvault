@@ -3,6 +3,8 @@ define('__ROOT__', dirname(dirname(__FILE__)));
 define('pvault_panel', TRUE);
 
 require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/inc/settings.php');
+
 //require_once(__ROOT__.'/func/cleanupNonHashedPasswords.php');
 
 if(getenv('PLATFORM') === "CLOUD"){
@@ -30,7 +32,11 @@ if ($_POST['action'] == 'login') {
     $password = $_POST['password'];
 
     // Fetch user details from the database
-    $result = mysqli_query($conn, "SELECT id, email, password, role FROM users WHERE email='$email' AND isActive = '1' AND isVerified = '1'");
+    if ($system_settings['EMAIL_isEnabled'] == 0) {
+        $result = mysqli_query($conn, "SELECT id, email, password, role FROM users WHERE email='$email' AND isActive = '1' AND role = '1'");
+    } else {
+        $result = mysqli_query($conn, "SELECT id, email, password, role FROM users WHERE email='$email' AND isActive = '1' AND (role = '1' OR isVerified = '1')");
+    }
     if ($result && mysqli_num_rows($result) > 0) {
         $row = mysqli_fetch_assoc($result);
 
