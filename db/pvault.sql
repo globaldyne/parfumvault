@@ -457,8 +457,6 @@ ALTER TABLE `ingTypes`
 ALTER TABLE `inventory_accessories` ADD PRIMARY KEY (`id`);
 ALTER TABLE `inventory_accessories` ADD UNIQUE(`name`);
 
-ALTER TABLE `settings`
-  ADD PRIMARY KEY (`id`);
 
 ALTER TABLE `ingredient_compounds`
   ADD PRIMARY KEY (`id`);
@@ -497,8 +495,6 @@ ALTER TABLE `ingTypes`
 
 ALTER TABLE `inventory_accessories` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
-ALTER TABLE `settings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `ingredient_compounds`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
