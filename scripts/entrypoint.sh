@@ -53,12 +53,12 @@ while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
             touch "$ERROR_LOG"
         fi
 
-        # Execute the update_user_column.sh script
-        /usr/bin/update_user_column.sh
+        # Execute the update_db_schema.sh script
+        /usr/bin/update_db_schema.sh
         if [ $? -eq 0 ]; then
             echo "Users table is up to date."
         else
-            echo "update_user_column.sh script failed. Please check the logs."
+            echo "update_db_schema.sh script failed. Please check the logs."
         fi
 
         # Execute the sync_db.sh script
