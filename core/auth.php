@@ -33,7 +33,7 @@ if ($_POST['action'] == 'login') {
 
     // Fetch user details from the database
     if ($system_settings['EMAIL_isEnabled'] == 0) {
-        $result = mysqli_query($conn, "SELECT id, email, password, role FROM users WHERE email='$email' AND isActive = '1' AND role = '1'");
+        $result = mysqli_query($conn, "SELECT id, email, password, role FROM users WHERE email='$email' AND isActive = '1'");
     } else {
         $result = mysqli_query($conn, "SELECT id, email, password, role FROM users WHERE email='$email' AND isActive = '1' AND (role = '1' OR isVerified = '1')");
     }
