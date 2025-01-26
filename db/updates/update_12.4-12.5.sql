@@ -59,10 +59,6 @@ UPDATE `synonyms` SET `owner_id` = '1';
 UPDATE `templates` SET `owner_id` = '1'; 
 
 
-
-
-
-
 CREATE TABLE `password_resets` ( 
     `id` INT NOT NULL AUTO_INCREMENT , 
     `email` varchar(255) NOT NULL,
