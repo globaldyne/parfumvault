@@ -5,6 +5,17 @@ if(defined('__ROOT__') == FALSE){
 	define('__ROOT__', dirname(dirname(__FILE__))); 
 }
 
+if (!file_exists(__ROOT__ . '/inc/config.php') && 
+    !getenv('DB_HOST') && 
+    !getenv('DB_USER') && 
+    !getenv('DB_PASS') && 
+    !getenv('DB_NAME')) {
+        $error_msg = 'Required parameters not found. Please make sure your provided all the required variables as per <a href="https://www.perfumersvault.com/knowledge-base/howto-docker/" target="_blank">documentation</a>';
+        require_once(__ROOT__.'/pages/error.php');
+        error_log("Configuration file not found.");
+        exit;
+}
+
 if ( (! empty($_SERVER['REQUEST_SCHEME']) && $_SERVER['REQUEST_SCHEME'] == 'https') ||
      (! empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ||
      (! empty($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == '443') ) {
@@ -39,7 +50,7 @@ if (isset($_SESSION['parfumvault_time'])) {
 }
 
 if(!isset($_SESSION['parfumvault'])){
-	if($_GET['do']){
+	if(isset($_GET['do'])){
 		$redirect = '?do='.$_GET['do'];
 	}
 	$login = $server_request_scheme.'://'.$_SERVER['HTTP_HOST'].'/login.php'.$redirect;

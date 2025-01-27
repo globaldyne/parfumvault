@@ -19,7 +19,7 @@ $cIngredients = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients 
        	<li><a class="dropdown-item popup-link" href="/pages/mgmIngredient.php"><i class="fa-solid fa-plus mx-2"></i>Create new ingredient</a></li>
         <div class="dropdown-divider"></div>
         <li><a class="dropdown-item" id="csv_export" href="/pages/export.php?format=csv&kind=ingredients"><i class="fa-solid fa-file-csv mx-2"></i>Export to CSV</a></li>
-        <li><a class="dropdown-item" id="json_export" href="/pages/export.php?format=json&kind=ingredients"><i class="fa-solid fa-file-code mx-2"></i>Export to JSON</a></li>
+		<li><a class="dropdown-item" id="json_export" href="#" data-bs-toggle="modal" data-bs-target="#export_options_modal"><i class="fa-solid fa-file-code mx-2"></i>Export to JSON</a></li>
         <div class="dropdown-divider"></div>
         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#csv_import"><i class="fa-solid fa-file-import mx-2"></i>Import from CSV</a></li>
         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#import_ingredients_json"><i class="fa-solid fa-file-import mx-2"></i>Import from JSON</a></li>
@@ -79,6 +79,53 @@ $cIngredients = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients 
       </tr>
    </thead>
 </table>
+
+<li><a class="dropdown-item" id="json_export" href="#" data-bs-toggle="modal" data-bs-target="#export_options_modal"><i class="fa-solid fa-file-code mx-2"></i>Export to JSON</a></li>
+
+<!-- Modal -->
+<div class="modal fade" id="export_options_modal" tabindex="-1" aria-labelledby="exportOptionsLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exportOptionsLabel">Export Options</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<form id="export_options_form">
+					<div id="exportmsg"></div>
+					<div class="mb-3">
+						<label class="form-label">Include</label>
+						<div class="form-check">
+						<input class="form-check-input" type="checkbox" value="suppliers" id="include_suppliers" name="include_suppliers">
+						<label class="form-check-label" for="include_suppliers">
+						Suppliers
+						</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" value="compositions" id="include_compositions" name="include_compositions">
+						<label class="form-check-label" for="include_compositions">
+						Compositions
+						</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" value="documents" id="include_documents" name="include_documents">
+						<label class="form-check-label" for="include_documents">
+						Documents
+						</label>
+					</div>
+					<div id="documents_warning" class="alert alert-warning mt-3" style="display: none;">
+						<i class="fa-solid fa-triangle-exclamation mx-2"></i>Exporting documents may take a while and result in a large file size. This may require a large amount of server memory and will only export documents as the allocated memory allows.
+					</div>
+					</div>
+				</form>
+			</div>
+		<div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+			<button type="button" class="btn btn-primary" id="export_confirm_btn">Export</button>
+		</div>
+	</div>
+	</div>
+</div>
 
 <script>
 $(document).ready(function() {
@@ -672,6 +719,44 @@ $(document).ready(function() {
 		   },onEscape: function () {return true;}
 	   });
 	});
+
+	$('#include_documents').change(function() {
+		if ($(this).is(':checked')) {
+			$('#documents_warning').show();
+		} else {
+			$('#documents_warning').hide();
+		}
+	});
+
+	$('#export_confirm_btn').click(function() {
+		var includeSuppliers = $('#include_suppliers').is(':checked') ? 1 : 0;
+		var includeCompositions = $('#include_compositions').is(':checked') ? 1 : 0;
+		var includeDocuments = $('#include_documents').is(':checked') ? 1 : 0;
+		var url = '/pages/export.php?format=json&kind=ingredients&includeSuppliers=' + includeSuppliers + '&includeCompositions=' + includeCompositions + '&includeDocuments=' + includeDocuments;
+		
+		$('#export_confirm_btn').prop('disabled', true).text('Please wait...');
+		
+		$.ajax({
+			url: url,
+			type: 'GET',
+			dataType: 'json',
+			success: function(data) {
+				if(data.error) {
+					$('#exportmsg').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>' + data.error + '</div>');
+					$('#export_confirm_btn').prop('disabled', false).text('Export');
+					return;
+				}
+				window.location.href = url;
+				$('#export_options_modal').modal('hide');
+				$('#export_confirm_btn').prop('disabled', false).text('Export');
+			},
+			error: function(xhr, status, error) {
+				$('#exportmsg').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred: ' + error + '</div>');
+				$('#export_confirm_btn').prop('disabled', false).text('Export');
+			}
+		});
+	});
+
 });
 </script>
 <script src="/js/import.ingredients.js"></script>

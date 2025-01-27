@@ -159,7 +159,7 @@ $(document).ready(function() {
 							}
 						},
 						error: function (xhr, status, error) {
-							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error);
 							$('.toast-header').removeClass().addClass('toast-header alert-danger');
 							$('.toast').toast('show');
 						}
@@ -210,23 +210,23 @@ $(document).ready(function() {
 						$("#doc_upload").prop("disabled", false);
 						$("#doc_upload").prop('value', 'Upload');
 						reload_doc_data();
-						var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + response.success + '</div>';
+						var msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><i class="fa-solid fa-circle-check mx-2"></i>' + response.success.msg + '</div>';
 								
 					} else {
 						$("#doc_upload").prop("disabled", false);
 						$("#doc_upload").prop('value', 'Upload');
-						var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>' + response.error + '</strong></div>';
+						var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong><i class="fa-solid fa-circle-exclamation mx-2"></i>' + response.error + '</strong></div>';
 					}
 					$('#doc_inf').html(msg);
 				  },
 					error: function (xhr, status, error) {
-						$('#doc_inf').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+						$('#doc_inf').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 						$("#doc_upload").prop("disabled", false);
 						$("#doc_upload").prop('value', 'Upload');
 					}
 			   });
 			}else{
-				$("#doc_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a file to upload!</div>');
+				$("#doc_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><i class="fa-solid fa-circle-exclamation mx-2"></i>Please select a file to upload!</div>');
 				$("#doc_upload").prop("disabled", false);
 				$("#doc_upload").prop('value', 'Upload');
 			}

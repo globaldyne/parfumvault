@@ -69,18 +69,24 @@ $(document).ready(function() {
 
 
 	function repName(data, type, row){
-		return '<i class="ing_name pv_point_gen" data-name="ing_name" data-type="text" data-pk="'+row.id+'">'+row.ing_name+'</i>';    
+		if (row.original_id == 0 || row.original_id == '' || typeof row.original_id === 'undefined') {
+			return row.ing_name;
+		} else {
+			return '<a class="popup-link" href="/pages/mgmIngredient.php?id=' + row.original_id + '">'+row.ing_name+'</a> <i class="fas fa-external-link-alt"></i>';
+		}
 	};
-	
+
 	function repIng(data, type, row){
-		return '<a class="popup-link ing_rep_name pv_point_gen" href="/pages/mgmIngredient.php?id=' + btoa(row.ing_rep_name) + '">' + row.ing_rep_name + '</a> <i class="fas fa-info-circle pv_point_gen" rel="tip" title="'+row.notes+'"></i>';
+		return '<a class="popup-link ing_rep_name pv_point_gen" href="/pages/mgmIngredient.php?id=' + row.replacement_id + '">' + row.ing_rep_name + '</a> <i class="fas fa-info-circle pv_point_gen" rel="tip" title="'+row.notes+'"></i>';
 	};
 	
 	function extrasShow() {
+		
 		$('[rel=tip]').tooltip({
 			"html": true,
 			"delay": {"show": 100, "hide": 0},
 		});
+
 		$('.popup-link').magnificPopup({
 			type: 'iframe',
 			closeOnContentClick: false,

@@ -1,4 +1,18 @@
 Whats New in v12.5
 --------------------------
-
+- **Improved**: Code clean-up, overall security, PubChem structure images fetch, file uploads, CSV imports, forgot password, session security, documents upload
+- **Updated**: User profile backend, core backend for better security handling and error logging, ingredient duplication function, default primary key for safety data, policy when importing ingredients from json, ingredient data reload after import, count cart function, API key and status configuration per user, index.php, ingredients import, api.php for the new settings format
+- **Fixed**: Update form for compounds, accessory type update, synonyms delete, redirection when adding ingredient if already exists with the same name, wording when no batches found, formula attachments created date display, ingredient replacements links
+- **Replaced**: Mysqli queries with mysql statements (WIP), unknown defaults with '-' instead of 'N/A'
+- **Removed**: Collation from db fields, id field from json exports, non-containerized installation support, installation wizard for non-container
+- **Refactored**: JSON exports, user search preferences in db
+- **Added**: Multi-user support, System Settings page for admins, users import/export, user impersonation, integrations/logs/maintenance pages for admins, settings per users, user profile self-delete, user email to session data, country in user profile, email validation before updating, user self-register, user announcement text, user settings reset, DB initialization in docker, SMTP email server support, password reset as a self-service, error screen for missing configuration
+- **Renamed**: General settings to My preferences, My Brand page to Branding
+- **Separated**: System settings from user settings
+- **Moved**: Search preferences reset to per user basis and globally for admins, session validity visibility to admins, Branding configuration per user, SDS settings to per user basis, PV Library API to system settings
+- **Deprecated**: Old db update scripts
+- **Changed**: Only admins can take/restore backups
+- **Prevented**: IFRA document creation if formula isn't compatible with the IFRA library standards
+- **Dropped**: Table settings
+- **Enforced**: Password complexity
 - This release may include more changes, for full details please refer to the CHANGELOG

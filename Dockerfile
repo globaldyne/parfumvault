@@ -35,8 +35,8 @@ RUN microdnf --setopt=tsflags=nodocs -y install \
 
 RUN sed -i \
 	-e 's~^;date.timezone =$~date.timezone = UTC~g' \
-	-e 's~^upload_max_filesize.*$~upload_max_filesize = 400M~g' \
-	-e 's~^post_max_size.*$~post_max_size = 400M~g' \
+	-e 's~^upload_max_filesize.*$~upload_max_filesize = 500M~g' \
+	-e 's~^post_max_size.*$~post_max_size = 500M~g' \
 	-e 's~^session.auto_start.*$~session.auto_start = 1~g' \
 	/etc/php.ini
 

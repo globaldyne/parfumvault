@@ -1693,8 +1693,8 @@ if ($_GET['update_bottle_pic']) {
     }
 
     // Validate file size
-    if ($file_size > $max_filesize) {
-        $response["error"] = "File size must not exceed " . ($max_filesize / (1024 * 1024)) . " MB.";
+    if ($file_size > $upload_max_filesize) {
+        $response["error"] = "File size must not exceed " . ($upload_max_filesize / (1024 * 1024)) . " MB.";
         echo json_encode($response);
         return;
     }

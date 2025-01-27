@@ -342,17 +342,22 @@ if ($_GET['format'] == 'json' && $_GET['kind'] == 'ingredients') {
         return;
     }
 
+    $includeSuppliers = $_GET['includeSuppliers'] ?? false;
+    $includeCompositions = $_GET['includeCompositions'] ?? false;
+    $includeDocuments = $_GET['includeDocuments'] ?? false;
+
     $ingredients_count = 0;
     $suppliers_count = 0;
     $ing_suppliers_count = 0;
     $ingredient_compounds_count = 0;
-    
+    $ingredient_documents_coun = 0;
+
     // Get ingredients
     $q = mysqli_query($conn, "SELECT * FROM ingredients WHERE owner_id = '$userID'");
     $ing = [];
     while ($res = mysqli_fetch_assoc($q)) {
         $r = [
-			'id' => (int) $res['id'],
+            'id' => (int) $res['id'],
             'name' => (string) $res['name'],
             'INCI' => (string) $res['INCI'],
             'cas' => (string) $res['cas'],
@@ -406,73 +411,114 @@ if ($_GET['format'] == 'json' && $_GET['kind'] == 'ingredients') {
         $ing[] = $r;
     }
     
-    // Get ingredient compounds
-    $q = mysqli_query($conn, "SELECT * FROM ingredient_compounds WHERE owner_id = '$userID'");
+    // Get ingredient compounds if requested
     $cmp = [];
-    while ($res = mysqli_fetch_assoc($q)) {
-        $c = [
-            'id' => (int) $res['id'],
-            'ing' => (string) $res['ing'],
-            'name' => (string) $res['name'],
-            'cas' => (string) ($res['cas'] ?: '-'),
-            'ec' => (string) ($res['ec'] ?: '-'),
-            'min_percentage' => (double) $res['min_percentage'],
-            'max_percentage' => (double) $res['max_percentage'],
-            'GHS' => (string) $res['GHS'],
-            'toDeclare' => (int) $res['toDeclare'],
-            'created_at' => (string) $res['created_at']
-        ];
-        $ingredient_compounds_count++;
-        $cmp[] = $c;
+    if ($includeCompositions) {
+        $q = mysqli_query($conn, "SELECT * FROM ingredient_compounds WHERE owner_id = '$userID'");
+        while ($res = mysqli_fetch_assoc($q)) {
+            $c = [
+                'id' => (int) $res['id'],
+                'ing' => (string) $res['ing'],
+                'name' => (string) $res['name'],
+                'cas' => (string) ($res['cas'] ?: '-'),
+                'ec' => (string) ($res['ec'] ?: '-'),
+                'min_percentage' => (double) $res['min_percentage'],
+                'max_percentage' => (double) $res['max_percentage'],
+                'GHS' => (string) $res['GHS'],
+                'toDeclare' => (int) $res['toDeclare'],
+                'created_at' => (string) $res['created_at']
+            ];
+            $ingredient_compounds_count++;
+            $cmp[] = $c;
+        }
     }
     
-    // Get suppliers
-    $q = mysqli_query($conn, "SELECT * FROM suppliers WHERE owner_id = '$userID'");
+    // Get suppliers if requested
     $sup = [];
-    while ($res = mysqli_fetch_assoc($q)) {
-        $sd = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingSuppliers WHERE id = '" . $res['ingSupplierID'] . "' AND owner_id = '$userID'"));
-        $s = [
-            'id' => (int) $res['id'],
-            'name' => (string) ($sd['name'] ?: 'Unknown'),
-            'ingSupplierID' => (int) $res['ingSupplierID'],
-            'ingID' => (int) $res['ingID'],
-            'supplierLink' => (string) ($res['supplierLink'] ?: '-'),
-            'price' => (double) $res['price'],
-            'size' => (double) ($res['size'] ?: 10),
-            'manufacturer' => (string) ($res['manufacturer'] ?: '-'),
-            'preferred' => (int) ($res['preferred'] ?: 0),
-            'batch' => (string) ($res['batch'] ?: '-'),
-            'purchased' => (string) ($res['purchased'] ?: '-'),
-            'mUnit' => (string) ($res['mUnit'] ?: '-'),
-            'stock' => (double) ($res['stock'] ?: 0),
-            'status' => (int) ($res['status'] ?: 1),
-            'created_at' => (string) $res['created_at'],
-            'updated_at' => (string) $res['updated_at'],
-            'supplier_sku' => (string) ($res['supplier_sku'] ?: '-'),
-            'internal_sku' => (string) ($res['internal_sku'] ?: '-'),
-            'storage_location' => (string) ($res['storage_location'] ?: '-')
-        ];
-        $sup[] = $s;
-        $suppliers_count++;
-    }
-    
-    // Get ingredient suppliers
-    $qs = mysqli_query($conn, "SELECT * FROM ingSuppliers WHERE owner_id = '$userID'");
     $ingSup = [];
-    while ($res_sup = mysqli_fetch_assoc($qs)) {
-        $is = [
-            'id' => (int) $res_sup['id'],
-            'name' => (string) $res_sup['name'],
-            'address' => (string) ($res_sup['address'] ?: '-'),
-            'po' => (string) ($res_sup['po'] ?: '-'),
-            'country' => (string) ($res_sup['country'] ?: '-'),
-            'telephone' => (string) ($res_sup['telephone'] ?: '-'),
-            'url' => (string) ($res_sup['url'] ?: '-'),
-            'email' => (string) ($res_sup['email'] ?: '-')
-        ];
-        $ingSup[] = $is;
-        $ing_suppliers_count++;
+    if ($includeSuppliers) {
+        $q = mysqli_query($conn, "SELECT * FROM suppliers WHERE owner_id = '$userID'");
+        while ($res = mysqli_fetch_assoc($q)) {
+            $sd = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingSuppliers WHERE id = '" . $res['ingSupplierID'] . "' AND owner_id = '$userID'"));
+            $s = [
+                'id' => (int) $res['id'],
+                'name' => (string) ($sd['name'] ?: 'Unknown'),
+                'ingSupplierID' => (int) $res['ingSupplierID'],
+                'ingID' => (int) $res['ingID'],
+                'supplierLink' => (string) ($res['supplierLink'] ?: '-'),
+                'price' => (double) $res['price'],
+                'size' => (double) ($res['size'] ?: 10),
+                'manufacturer' => (string) ($res['manufacturer'] ?: '-'),
+                'preferred' => (int) ($res['preferred'] ?: 0),
+                'batch' => (string) ($res['batch'] ?: '-'),
+                'purchased' => (string) ($res['purchased'] ?: '-'),
+                'mUnit' => (string) ($res['mUnit'] ?: '-'),
+                'stock' => (double) ($res['stock'] ?: 0),
+                'status' => (int) ($res['status'] ?: 1),
+                'created_at' => (string) $res['created_at'],
+                'updated_at' => (string) $res['updated_at'],
+                'supplier_sku' => (string) ($res['supplier_sku'] ?: '-'),
+                'internal_sku' => (string) ($res['internal_sku'] ?: '-'),
+                'storage_location' => (string) ($res['storage_location'] ?: '-')
+            ];
+            $sup[] = $s;
+            $suppliers_count++;
+        }
+        
+        // Get ingredient suppliers
+        $qs = mysqli_query($conn, "SELECT * FROM ingSuppliers WHERE owner_id = '$userID'");
+        while ($res_sup = mysqli_fetch_assoc($qs)) {
+            $is = [
+                'id' => (int) $res_sup['id'],
+                'name' => (string) $res_sup['name'],
+                'address' => (string) ($res_sup['address'] ?: '-'),
+                'po' => (string) ($res_sup['po'] ?: '-'),
+                'country' => (string) ($res_sup['country'] ?: '-'),
+                'telephone' => (string) ($res_sup['telephone'] ?: '-'),
+                'url' => (string) ($res_sup['url'] ?: '-'),
+                'email' => (string) ($res_sup['email'] ?: '-')
+            ];
+            $ingSup[] = $is;
+            $ing_suppliers_count++;
+        }
     }
+
+    //Get ingredient documents
+    $docs = [];
+    if ($includeDocuments) {
+        try {
+            $memoryLimit = ini_get('memory_limit');
+            $memoryLimitBytes = (int)str_replace('M', '', $memoryLimit) * 1024 * 1024;
+            $memoryUsageBefore = memory_get_usage();
+            $memoryAvailable = $memoryLimitBytes - $memoryUsageBefore;
+
+            $q = mysqli_query($conn, "SELECT * FROM documents WHERE type = 1 AND owner_id = '$userID'");
+            while ($res = mysqli_fetch_assoc($q)) {
+                $d = [
+                    'id' => (int) $res['ownerID'],
+                    'name' => (string) $res['name'],
+                    'notes' => (string) ($res['notes'] ?: '-'),
+                    'docData' => base64_encode($res['docData']),
+                    'updated_at' => (string) $res['updated_at'],
+                    'created_at' => (string) $res['created_at']
+                ];
+                $ingredient_documents_count++;
+                $docs[] = $d;
+
+                $memoryUsageAfter = memory_get_usage();
+                if ($memoryUsageAfter - $memoryUsageBefore > $memoryAvailable * 0.9) {
+                    ini_set('memory_limit', (int)($memoryLimitBytes / (1024 * 1024) + 10) . 'M'); // Increase memory limit by 10MB
+                    $memoryLimitBytes = (int)str_replace('M', '', ini_get('memory_limit')) * 1024 * 1024;
+                    $memoryAvailable = $memoryLimitBytes - $memoryUsageAfter;
+                }
+            }
+        } catch (Exception $e) {
+            error_log("Memory error: " . $e->getMessage());
+            echo json_encode(['error' => $e->getMessage(), 'memoryAvailable' => $memoryAvailable]);
+            return;
+        }
+    }
+
 
     // Metadata
     $vd = [
@@ -490,6 +536,7 @@ if ($_GET['format'] == 'json' && $_GET['kind'] == 'ingredients') {
         'compositions' => $cmp,
         'suppliers' => $sup,
         'ingSuppliers' => $ingSup,
+        'documents' => $docs,
         'pvMeta' => $vd
     ];
 

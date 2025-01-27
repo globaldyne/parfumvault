@@ -10,3 +10,4 @@ t.php
 tests/
 modules/suppliers/pvLibraryDEV.json
 modules/suppliers/pvLibraryDEV.php
+classes/

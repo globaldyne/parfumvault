@@ -44,14 +44,7 @@ if(isset($_SESSION['parfumvault'])){
             <!-- Nested Row within Card Body -->
             <div class="row">
 			      <?php
-            if (!file_exists(__ROOT__ . '/inc/config.php') && 
-                !getenv('DB_HOST') && 
-                !getenv('DB_USER') && 
-                !getenv('DB_PASS') && 
-                !getenv('DB_NAME')) {
-                require __ROOT__ . '/install.php';
-                return;
-            }
+
             $isDemo = getenv('DEMO_MODE') ?: 0;
             // Check if the `pv_meta` table exists
             $schemaCheckQuery = "

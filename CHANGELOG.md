@@ -1,13 +1,12 @@
 # CHANGELOG
 ### Version 12.5
-- Added auto DB schema sync
 - Code clean-up
 - Various overall security improvements
 - Update user profile backend
-- Update db schema for a default owner id 1
+- Update db schema for a default owner id 1 - This will be removed/refacored in the next release
 - Fix update form for compounds
 - Replacing mysqli queries with mysql statements (WIP)
-- Overall improvements accross the app
+- Overall improvements across the app
 - Updated core backend for better security handling and error logging
 - Fixed accessory type update
 - Fixed synonyms delete
@@ -16,12 +15,12 @@
 - Update ingredient duplication function
 - Change default primary key for safety data
 - Change policy when importing ingredients from json, any ingredients matching name will be ignored
-- Reload ingredient data after a succesfull import
+- Reload ingredient data after a successful import
 - Removed collation from db fields
 - Only admins can take/restore backups
 - Fixed wording when no batches found
-- Fixed formula attachements created date display
-- Uknown defaults replaced with '-' instead of 'N/A'
+- Fixed formula attachments created date display
+- Unknown defaults replaced with '-' instead of 'N/A'
 - Improve count cart function
 - Deprecating old db update scripts
 - Google backups section is only available to admin users
@@ -31,15 +30,15 @@
 - Refactor JSON exports
 - Improve file uploads
 - Improve CSV imports
-- Added multi user support
+- Added multi-user support
 - Renamed General settings to My preferences as will contain only personal user settings
 - Added System Settings page to administer the system - only available to admins
 - Added users import
 - Added users export
 - Added user impersonation
 - API key and status is now configured per user
-- Seperated system settings from user settings
-- Integrations, logs and maintenance pages will now be available to admins only
+- Separated system settings from user settings
+- Integrations, logs, and maintenance pages will now be available to admins only
 - Search preferences reset has been moved in per user basis and globally for admins
 - Session validity will only be visible to admins
 - My Brand page renamed to Branding
@@ -47,27 +46,36 @@
 - SDS settings moved to per user basis
 - PV Library API moved to system settings
 - Added settings per users
-- Droped table settings
-- Added user profile self delete
+- Dropped table settings
+- Added user profile self-delete
 - Added user email to the session data
 - Added country in user profile
-- Validate email for user before allow updating it
+- Validate email for user before allowing updating it
 - Refactor index.php
 - Refactor ingredients import
 - Admins can now enable or disable PV Library
-- Added user self register
+- Added user self-register
 - Improve forgot password
-- Added user anouncement text
+- Added user announcement text
 - Improved session security
 - Add user settings reset
-- Add DB initialisation in docker
-- Refactor of user search prefernces in db
-- Removing non-containerised installation support
+- Add DB initialization in docker
+- Refactor of user search preferences in db
+- Removing non-containerized installation support
 - Update api.php for the new settings format
 - Password complexity is now enforced
 - Added SMTP email server support
-- Added user self register
-- Added password reset as a self service
+- Added user self-register
+- Added password reset as a self-service
+- Improved documents upload
+- Fixed ingredient replacements links
+- Installation wizard for non-container has been removed
+- Added error screen for missing configuration
+- Added export options for ingredients (JSON Format only)
+- Added parameterized memory and upload limit size, defaults to 500MB
+- Changed enviroment variable from MAX_FILESIZE to UPLOAD_MAX_FILESIZE
+- Modules README update
+- Rewrite integrations to add modularity
 
 ### Version 12.4
 - Add dilutant in API formulas

@@ -164,10 +164,10 @@ while($cats_res = mysqli_fetch_array($cats_q)){
         </div>
        <hr />
        <div class="col-sm-auto">
-            <a href="#" data-bs-toggle="modal" data-bs-target="#clear_search_pref">Clear search preferences</a>
+            <a href="#" data-bs-toggle="modal" data-bs-target="#clear_search_pref"><i class="bi bi-arrow-counterclockwise mx-2"></i><b>Clear search preferences</a></a>
        </div>
        <div class="col-sm-auto">
-            <a href="#" data-bs-toggle="modal" data-bs-target="#clear_my_settings">Reset all settings to default</a>
+            <a href="#" data-bs-toggle="modal" data-bs-target="#clear_my_settings"><i class="bi bi-arrow-counterclockwise mx-2"></i><b>Reset all settings to default</b></a>
        </div>
        <?php if ($role === 1){ ?>
        <hr />

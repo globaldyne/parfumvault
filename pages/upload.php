@@ -147,8 +147,8 @@ if (isset($_GET['type']) && $_GET['type'] === 'bottle') {
         }
 
         // Validate file size
-        if ($file_size > $max_filesize) {
-            $response["error"] = 'File size must not exceed ' . formatBytes($max_filesize) . '.';
+        if ($file_size > $upload_max_filesize) {
+            $response["error"] = 'File size must not exceed ' . formatBytes($upload_max_filesize) . '.';
             echo json_encode($response);
             return;
         }
@@ -253,8 +253,8 @@ if ($_GET['type'] == 'accessory') {
         }
 
         // Validate file size
-        if ($file_size > $max_filesize) {
-            $response["error"] = 'File size must not exceed ' . formatBytes($max_filesize);
+        if ($file_size > $upload_max_filesize) {
+            $response["error"] = 'File size must not exceed ' . formatBytes($upload_max_filesize);
             echo json_encode($response);
             return;
         }
@@ -347,8 +347,8 @@ if($_GET['type'] && $_GET['id']){
 			return;
 		}
 		
-		if($file_size > $max_filesize){
-			$response['error'] = 'File size must not exceed '.formatBytes($max_filesize);
+		if($file_size > $upload_max_filesize){
+			$response['error'] = 'File size must not exceed '.formatBytes($upload_max_filesize);
 			echo json_encode($response);
 			return;
       	}
@@ -391,8 +391,8 @@ if ($_GET['type'] == 'brand') {
             return;
         }
 
-        if ($file_size > $max_filesize) {
-            $response['error'] = 'File size must not exceed ' . formatBytes($max_filesize);
+        if ($file_size > $upload_max_filesize) {
+            $response['error'] = 'File size must not exceed ' . formatBytes($upload_max_filesize);
             echo json_encode($response);
             return;
         }
