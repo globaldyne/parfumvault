@@ -1,5 +1,5 @@
 <?php 
-define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__))))); 
+define('__ROOT__', dirname(dirname(dirname(__FILE__)))); 
 
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
@@ -9,53 +9,86 @@ if ($role !== 1){
     echo json_encode(['success' => false, 'error' => 'Not authorised']);
 	return;
 }
-$PVSCALE = $settings['pv_scale_host'];
+$PVSCALE = $user_settings['pv_scale_host'];
 
 
 if ($_POST['action'] == 'update' ){
 	
+	$result = [];
 	if (!filter_var($_POST['pv_scale_host'], FILTER_VALIDATE_IP)) {
-    	$result['error'] = "Scale IP is invalid";
+		$result['error'] = "Scale IP is invalid";
 		echo json_encode($result);
 		return;
 	}
-	$pv_scale_enabled = (int)$_POST['enabled'];
-	$q = mysqli_query($conn,"UPDATE settings SET pv_scale_enabled = '$pv_scale_enabled'");
+		
+	$pv_scale_enabled = isset($_POST["pv_scale_enabled"]) && $_POST["pv_scale_enabled"] === 'true' ? '1' : '0';
 	
-	if($q){
-		$result['success'] = "Settings updated";
-	} else {
-		$result['error'] = "Unable to update settings ".mysqli_error($conn);
+	$response = [];
+	foreach ($_POST as $key => $value) {
+		if ($key === 'action') {
+			continue;
+		}
+	
+		$key = mysqli_real_escape_string($conn, $key);
+		$value = mysqli_real_escape_string($conn, $value);
+
+		$stmt = $conn->prepare("SELECT COUNT(*) FROM user_settings WHERE key_name = ? AND owner_id = ?");
+		$stmt->bind_param('si', $key, $userID);
+		$stmt->execute();
+		$stmt->bind_result($count);
+		$stmt->fetch();
+		$stmt->close();
+
+		if ($count > 0) {
+			$stmt = $conn->prepare("UPDATE user_settings SET value = ? WHERE key_name = ? AND owner_id = ?");
+			$stmt->bind_param('ssi', $value, $key, $userID);
+		} else {
+			$stmt = $conn->prepare("INSERT INTO user_settings (key_name, value, owner_id) VALUES (?, ?, ?)");
+			$stmt->bind_param('ssi', $key, $value, $userID);
+		}
+
+		if ($stmt->execute()) {
+			$response["success"] = 'Settings updated';
+		} else {
+			$response["error"] = 'An error occurred: ' . $stmt->error;
+		}
 	}
-	
-	echo json_encode($result);
+	echo json_encode($response);
 	return;
+
 }
 
 
-if ($_POST['ping']){
+if ($_POST['ping']) {
 	$pvScHost = $_POST['pv_scale_host'];
 	$timeout = 30; // Timeout in seconds
-	
+
 	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, $pvScHost."/ping");
+	curl_setopt($ch, CURLOPT_URL, $pvScHost . "/ping");
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
 	curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
 	$response = curl_exec($ch);
 	$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+	$curl_error = curl_error($ch);
 	curl_close($ch);
-	
+
 	if ($http_code == 200 && $response == '{"response":"pong"}') {
-		$sysResponse = file_get_contents("http://".$pvScHost."/sys");
-		echo json_encode([
-			'success' => true,
-			'data' => $response,
-			'sysData' => json_decode($sysResponse, true),
-			'msg' => "Connection was successful"
+		$sysResponse = file_get_contents("http://" . $pvScHost . "/sys");
+		if ($sysResponse !== false) {
+			echo json_encode([
+				'success' => true,
+				'data' => $response,
+				'sysData' => json_decode($sysResponse, true),
+				'msg' => "Connection was successful"
 			]);
+		} else {
+			error_log("Error fetching system data from $pvScHost/sys");
+			echo json_encode(['success' => false, 'error' => 'Error fetching system data']);
+		}
 	} else {
-		echo json_encode(['success' => false, 'data' => $response]);
+		error_log("Ping request to $pvScHost failed with HTTP code $http_code and response: $response. Curl error: $curl_error");
+		echo json_encode(['success' => false, 'error' => 'Ping request failed', 'data' => $response]);
 	}
 	return;
 }

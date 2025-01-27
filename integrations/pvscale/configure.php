@@ -1,5 +1,5 @@
 <?php 
-define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__))))); 
+define('__ROOT__', dirname(dirname(dirname(__FILE__)))); 
 
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
@@ -7,7 +7,7 @@ require_once(__ROOT__.'/inc/settings.php');
 
 if ($role !== 1){
   echo json_encode(['success' => false, 'error' => 'Not authorised']);
-return;
+  return;
 }
 ?>
 <div class="card-body">
@@ -51,4 +51,4 @@ return;
 </div>
 
 
-<script src="/js/pvScale.js"></script>
+<script src="/integrations/pvscale/js/pvScale.js"></script>

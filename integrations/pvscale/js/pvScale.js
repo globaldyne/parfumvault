@@ -11,8 +11,9 @@ $(document).ready(function() {
 	});
 
 	$('#scaleScreenOn').click(function(event) {
-	  	$.ajax({
-			url: '/pages/views/pvscale/manage.php',
+		$('#scmsg').html('<div class="alert alert-info"><i class="spinner-border spinner-border-sm mx-2"></i>Turning screen on...</div>');
+		$.ajax({
+			url: '/integrations/pvscale/manage.php',
 			type: 'GET',
 			data: {
 				action: 'screen',
@@ -26,13 +27,17 @@ $(document).ready(function() {
 					msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + data.error + '</div>';
 				}
 				$('#scmsg').html(msg);
+			},
+			error: function() {
+				$('#scmsg').html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>Network error</div>');
 			}
 		});
 	});
 	
 	$('#scaleScreenOff').click(function(event) {
+		$('#scmsg').html('<div class="alert alert-info"><i class="spinner-border spinner-border-sm mx-2"></i>Turning screen off...</div>');
 		$.ajax({
-			url: '/pages/views/pvscale/manage.php',
+			url: '/integrations/pvscale/manage.php',
 			type: 'GET',
 			data: {
 				action: 'screen',
@@ -41,11 +46,14 @@ $(document).ready(function() {
 			dataType: 'json',
 			success: function(data) {
 				if (data.success) {
-					msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>Scrreen off</div>';
+					msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>Screen off</div>';
 				} else {
 					msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + data.error + '</div>';
 				}
 				$('#scmsg').html(msg);
+			},
+			error: function() {
+				$('#scmsg').html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>Network error</div>');
 			}
 		});
 	});
@@ -54,7 +62,7 @@ $(document).ready(function() {
 		$('#scmsg').html('<div class="alert alert-info"><i class="spinner-border spinner-border-sm mx-2"></i>Please wait...</div>');
 
 		$.ajax({
-			url: '/pages/views/pvscale/manage.php',
+			url: '/integrations/pvscale/manage.php',
 			type: 'GET',
 			data: {
 				action: 'firmwareCheck'
@@ -76,7 +84,7 @@ $(document).ready(function() {
 					$('#scmsg').html('<div class="alert alert-info"><i class="spinner-border spinner-border-sm mx-2"></i>Please wait...</div>');
 			
 					$.ajax({
-						url: '/pages/views/pvscale/manage.php',
+						url: '/integrations/pvscale/manage.php',
 						type: 'GET',
 						data: {
 							action: 'firmwareUpdate'
@@ -112,11 +120,11 @@ $(document).ready(function() {
 				var pv_scale_enabled = '0';
 			}
 			$.ajax({
-				url: '/pages/views/pvscale/manage.php',
+				url: '/integrations/pvscale/manage.php',
 				type: 'POST',
 				data: {
 					action: 'update',
-					enabled: pv_scale_enabled,
+					pv_scale_enabled: pv_scale_enabled,
 					pv_scale_host: $("#pv_scale_host").val()
 				},
 				dataType: 'json',
@@ -146,7 +154,7 @@ $(document).ready(function() {
 
 
     $.ajax({
-        url: '/pages/views/pvscale/manage.php',
+        url: '/integrations/pvscale/manage.php',
         type: 'POST',
         data: {
             ping: 1,
@@ -168,7 +176,7 @@ $(document).ready(function() {
                 success = true;
 				
 					$.ajax({
-						url: '/pages/views/pvscale/manage.php',
+						url: '/integrations/pvscale/manage.php',
 						type: 'GET',
 						data: {
 							action: 'completeSetup',

@@ -1,3 +1,13 @@
+<?php
+
+if($user_settings['pv_scale_enabled']){
+	$pedro_state = '<span class="card-subtitle badge badge-success ml-2">Enabled</span>';
+}else{
+	$pedro_state = '<span class="card-subtitle badge badge-danger ml-2">Disabled</span>';
+}
+
+?>
+
 
 <script>
 $(document).ready(function() {
@@ -7,7 +17,7 @@ $(document).ready(function() {
 		const id = e.relatedTarget.dataset.id;
 		const name = e.relatedTarget.dataset.name;
 	
-		$.get("/pages/views/pvscale/configure.php")
+		$.get("/integrations/pvscale/configure.php")
 			.then(data => {
 			$(".modal-body", this).html(data);
 		});
@@ -17,7 +27,7 @@ $(document).ready(function() {
 		const id = e.relatedTarget.dataset.id;
 		const name = e.relatedTarget.dataset.name;
 	
-		$.get("/pages/views/pvscale/buy.php")
+		$.get("/integrations/pvscale/buy.php")
 			.then(data => {
 			$(".modal-body", this).html(data);
 		});

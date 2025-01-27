@@ -1,36 +1,26 @@
 <?php 
-define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__))))); 
+define('__ROOT__', dirname(dirname(dirname(__FILE__)))); 
 
 require_once(__ROOT__.'/inc/sec.php');
-require_once(__ROOT__.'/inc/opendb.php');
-require_once(__ROOT__.'/inc/settings.php');
-
 
 ?>
 <div class="card-body">
   <div id="scmsg"></div>
   <div class="row g-2">
- 
     <div class="col-sm">
       <div class="mb-3">
-        <img src="/img/pvScaleSP1.png" />
+        <img src="/integrations/pvscale/assets/pvScaleSP1.png" alt="PV Scale Image" class="img-fluid" />
       </div>
     </div>
-    
     <div class="col-sm">
-     
-    
       <div class="mb-3">
-       PV Scale is a specially designed formulation scale which will weight, guide you and automatically update your inventory when you formulating.
-       <br>
-       Its currently not available to buy but you can use discussions page in github to request/discuss features and to be notified when is available.
+        <p>PV Scale is a specially designed formulation scale which will weigh, guide you, and automatically update your inventory when you are formulating.</p>
+        <p>It is currently not available to buy, but you can use the discussions page on GitHub to request/discuss features and to be notified when it becomes available.</p>
       </div>
-      
     </div>
-    
   </div>
   <div class="dropdown-divider"></div>
   <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
   </div>
 </div>

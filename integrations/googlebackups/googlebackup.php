@@ -1,3 +1,19 @@
+<?php
+if($user_settings['pv_googlebackup_enabled']){
+	$googlebackup_state = '<span class="card-subtitle badge badge-success ml-2">Enabled</span>';
+}else{
+	$googlebackup_state = '<span class="card-subtitle badge badge-danger ml-2">Disabled</span>';
+}
+/*
+$bkData = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM backup_provider WHERE id = '1' AND owner_id = '$userID'"));
+
+if($bkData['enabled']){
+	$state = '<span class="card-subtitle badge badge-success ml-2">Enabled</span>';
+}else{
+	$state = '<span class="card-subtitle badge badge-danger ml-2">Disabled</span>';
+}
+*/
+?>
 
 <script>
 $(document).ready(function() {
