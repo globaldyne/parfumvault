@@ -5,11 +5,6 @@ require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 
-if($role !== 1){
-    die('You do not have permission to access this page');
-}
-
-
 ?>
 
 <h3>Integrations</h3>
@@ -51,11 +46,14 @@ if($role !== 1){
 		usort($integrationData, function($a, $b) {
 			return $a['order_id'] <=> $b['order_id'];
 		});
-
 		foreach ($integrationData as $metaData) {
 			$integration = $metaData['integration'];
 			$stateVar = $metaData['slug'] . '_state';
 			$state = isset($$stateVar) ? $$stateVar : '';
+
+			if (isset($metaData['adminrequired']) && $metaData['adminrequired'] === true && $role != 1) {
+				continue;
+			}
 
 			echo '<div class="col-sm-3">';
 			echo '<div id="' . htmlspecialchars($integration) . '">';
@@ -64,11 +62,15 @@ if($role !== 1){
 			echo '<i class="' . htmlspecialchars($metaData['icon']) . ' pv-fa-2xl" style="color: ' . htmlspecialchars($metaData['color']) . ';"></i>';
 			echo '</div>';
 			echo '<div class="card-body">';
-			echo '<h5 class="card-title">' . htmlspecialchars($metaData['title']) . (isset($state) ? $state : '') . '</h5>';
+			echo '<h5 class="card-title">' . htmlspecialchars($metaData['title']) . (isset($state) ? $state : '');
+			if (isset($metaData['adminrequired']) && $metaData['adminrequired'] === true) {
+				echo ' <i class="fa fa-user-tie" data-bs-toggle="tooltip" data-bs-placement="top" title="This integration will only be available to admins"></i>';
+			}
+			echo '</h5>';
 			echo '<h6 class="card-subtitle mb-2 text-muted">version ' . htmlspecialchars($metaData['version']) . '</h6>';
 			echo '<p class="card-text">' . htmlspecialchars($metaData['description']) . '</p>';
 			foreach ($metaData['actions'] as $action) {
-				echo '<a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#' . htmlspecialchars($action['target']) . '"><i class="' . htmlspecialchars($action['icon']) . ' mx-2"></i>' . htmlspecialchars($action['label']) . '</a>';
+				echo '<a href="#" class="dropdown-item mb-2" data-bs-toggle="modal" data-bs-target="#' . htmlspecialchars($action['target']) . '"><i class="' . htmlspecialchars($action['icon']) . ' mx-2"></i>' . htmlspecialchars($action['label']) . '</a>';
 			}
 			echo '</div>';
 			echo '</div>';
@@ -80,3 +82,10 @@ if($role !== 1){
 	</div>
 
 	
+<script>
+
+$(document).ready(function() {     
+	$('[data-bs-toggle="tooltip"]').tooltip();
+});
+
+</script>

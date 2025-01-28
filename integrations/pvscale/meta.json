@@ -9,6 +9,7 @@
     "slug": "pedro",
     "version": "1.0.0",
     "build": "beta",
+    "adminrequired": false,
     "actions": [
         {
             "label": "Configure",

@@ -1,3 +1,16 @@
+<?php 
+define('__ROOT__', dirname(dirname(dirname(__FILE__)))); 
+
+require_once(__ROOT__.'/inc/sec.php');
+require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/inc/settings.php');
+
+if ($role !== 1){
+  echo json_encode(['success' => false, 'error' => 'Not authorised']);
+  return;
+}
+?>
+
 <div class="card-body">
     <div class="row" id="srv_avail">
         <div id="resBK_data"></div>
@@ -25,7 +38,7 @@ $(document).ready(function() {
 	$.fn.dataTable.ext.errMode = 'none';
 
 	$.ajax({
-		url: "/pages/views/backup_providers/manage.php?action=version",
+		url: "/integrations/googlebackups/manage.php?action=version",
 		type: "GET",
 		dataType: 'json',
 		success: function (data) {
@@ -55,7 +68,7 @@ $(document).ready(function() {
 				emptyTable: 'No backups found.',
 				search: 'Search:'
 			},
-			ajax: {	url: '/pages/views/backup_providers/manage.php?action=getRemoteBackups' },
+			ajax: {	url: '/integrations/googlebackups/manage.php?action=getRemoteBackups' },
 			columns: [
 				{ data : 'file_name', title: 'File name' },
 				{ data : 'file_id', title: 'File ID'},
@@ -95,7 +108,7 @@ $(document).ready(function() {
 					className : "btn-danger",
 					callback: function (){
 						$.ajax({ 
-							url: "/pages/views/backup_providers/manage.php?action=deleteRemoteBackup&id=" + bk.ID, 
+							url: "/integrations/googlebackups/manage.php?action=deleteRemoteBackup&id=" + bk.ID, 
 							type: 'GET',
 							dataType: 'json',
 							success: function (data) {

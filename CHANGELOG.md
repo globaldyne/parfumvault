@@ -76,6 +76,8 @@
 - Changed enviroment variable from MAX_FILESIZE to UPLOAD_MAX_FILESIZE
 - Modules README update
 - Rewrite integrations to add modularity
+- Dopped backup settings page - admin has to reconfigure
+- Rewrite of backup integrations
 
 ### Version 12.4
 - Add dilutant in API formulas

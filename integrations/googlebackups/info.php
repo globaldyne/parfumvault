@@ -1,3 +1,15 @@
+<?php 
+define('__ROOT__', dirname(dirname(dirname(__FILE__)))); 
+
+require_once(__ROOT__.'/inc/sec.php');
+require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/inc/settings.php');
+
+if ($role !== 1){
+  echo json_encode(['success' => false, 'error' => 'Not authorised']);
+  return;
+}
+?>
 <div class="card-body">
     <div class="row" id="srv_info">
         <div class="col-mb-3">
@@ -20,7 +32,7 @@
 $(document).ready(function() {
 	$('#srv_info').html('<div class="spinner-grow mx-2"></div>Please Wait...');
 	$.ajax({
-		url: "/pages/views/backup_providers/manage.php?action=version",
+		url: "/integrations/googlebackups/manage.php?action=version",
 		type: "GET",
 		dataType: 'json',
 		success: function (data) {

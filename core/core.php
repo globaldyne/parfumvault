@@ -1346,34 +1346,6 @@ if ($_POST['action'] === 'import' && $_POST['source'] === 'PVLibrary' && $_POST[
 }
 
 
-//UPDATE BK PROVIDER
-if ($_REQUEST['bkProv'] == 'update') {
-    if ( empty($_POST['creds']) || empty($_POST['schedule']) || empty($_POST['bkDesc']) || empty($_POST['gdrive_name'])) {
-        $response["error"] = 'Missing fields';
-        echo json_encode($response);
-        return;
-    }
-    
-    $enabled = mysqli_real_escape_string($conn, $_POST['enabled']);
-    $schedule = mysqli_real_escape_string($conn, $_POST['schedule']);
-    $bkDesc = mysqli_real_escape_string($conn, $_POST['bkDesc']);
-    $creds = mysqli_real_escape_string($conn, $_POST['creds']);
-    $gdrive_name = mysqli_real_escape_string($conn, $_POST['gdrive_name']);
-	$bk_srv_host = $_POST['bk_srv_host'];
-
-
-    if (mysqli_query($conn, "UPDATE backup_provider SET credentials = '$creds', enabled = '$enabled', schedule = '$schedule', description = '$bkDesc', gdrive_name = '$gdrive_name' WHERE id = '1'")) {
-		mysqli_query($conn, "UPDATE settings SET bk_srv_host = '$bk_srv_host'");
-        $response["success"] = 'Settings updated';
-    } else {
-        $response["error"] = 'Error: ' . mysqli_error($conn);
-    }
-
-    echo json_encode($response);
-    return;
-}
-
-
 //UPDATE HTML TEMPLATE
 if ($_REQUEST['action'] === 'htmlTmplUpdate') {
     // Sanitize input

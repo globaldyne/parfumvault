@@ -1,40 +1,44 @@
 <?php
-if($user_settings['pv_googlebackup_enabled']){
-	$googlebackup_state = '<span class="card-subtitle badge badge-success ml-2">Enabled</span>';
-}else{
-	$googlebackup_state = '<span class="card-subtitle badge badge-danger ml-2">Disabled</span>';
-}
-/*
-$bkData = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM backup_provider WHERE id = '1' AND owner_id = '$userID'"));
+ 
+define('__ROOT__', dirname(dirname(dirname(__FILE__)))); 
 
-if($bkData['enabled']){
-	$state = '<span class="card-subtitle badge badge-success ml-2">Enabled</span>';
-}else{
-	$state = '<span class="card-subtitle badge badge-danger ml-2">Disabled</span>';
+require_once(__ROOT__.'/inc/sec.php');
+require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/inc/settings.php');
+
+if ($role !== 1){
+  echo json_encode(['success' => false, 'error' => 'Not authorised']);
+  return;
 }
-*/
+
+if($integrations_settings['googlebackups_enabled']){
+	$googlebackups_state = '<span class="card-subtitle badge badge-success ml-2">Enabled</span>';
+}else{
+	$googlebackups_state = '<span class="card-subtitle badge badge-danger ml-2">Disabled</span>';
+}
+
 ?>
 
 <script>
 $(document).ready(function() {
 	var SERV_AVAIL;
-	
+/*	
 	$("#edit").on("show.bs.modal", function(e) {
 		const id = e.relatedTarget.dataset.id;
 		const name = e.relatedTarget.dataset.name;
 	
-		$.get("/pages/views/backup_providers/edit.php")
+		$.get("/integrations/googlebackups/edit.php")
 			.then(data => {
 			$("#editLabel", this).html(name);
 			$(".modal-body", this).html(data);
 		});
 	});
-
+*/
 	$("#info").on("show.bs.modal", function(e) {
 		const id = e.relatedTarget.dataset.id;
 		const name = e.relatedTarget.dataset.name;
 	
-		$.get("/pages/views/backup_providers/info.php")
+		$.get("/integrations/googlebackups/info.php")
 			.then(data => {
 			$(".modal-body", this).html(data);
 		});
@@ -44,7 +48,7 @@ $(document).ready(function() {
 		const id = e.relatedTarget.dataset.id;
 		const name = e.relatedTarget.dataset.name;
 	
-		$.get("/pages/views/backup_providers/configure.php")
+		$.get("/integrations/googlebackups/configure.php")
 			.then(data => {
 			$(".modal-body", this).html(data);
 		});
@@ -55,7 +59,7 @@ $(document).ready(function() {
 		const id = e.relatedTarget.dataset.id;
 		const name = e.relatedTarget.dataset.name;
 	
-		$.get("/pages/views/backup_providers/listBackups.php")
+		$.get("/integrations/googlebackups/listBackups.php")
 			.then(data => {
 			$(".modal-body", this).html(data);
 		});
@@ -63,7 +67,7 @@ $(document).ready(function() {
 
 	$('#runBackup').on('click', '[id*=cBK]', function () {
 		$.ajax({
-			url: "/pages/views/backup_providers/manage.php?action=version",
+			url: "/integrations/googlebackups/manage.php?action=version",
 			type: "GET",
 			dataType: 'json',
 			success: function (data) {
@@ -83,7 +87,7 @@ $(document).ready(function() {
 			$("#cBK").prop("disabled", true);
 			$("#bk_inf_run").html('<div class="alert alert-info"><div class="spinner-grow mx-2"></div>Please wait, this may take a while depending the size of your database and your internet connection.</div>');
 			$.ajax({
-				url: "/pages/views/backup_providers/manage.php?action=createBackup",
+				url: "/integrations/googlebackups/manage.php?action=createBackup",
 				type: "GET",
 				dataType: 'json',
 				//timeout: 10000,
@@ -120,7 +124,7 @@ $(document).ready(function() {
 	function fetchVersionAfterRestart() {
 		setTimeout(function() {
 			$.ajax({
-				url: "/pages/views/backup_providers/manage.php?action=version",
+				url: "/integrations/googlebackups/manage.php?action=version",
 				type: "GET",
 				dataType: 'json',
 				timeout: 1000,
@@ -147,7 +151,7 @@ $(document).ready(function() {
 	}
 
 	$.ajax({
-		url: "/pages/views/backup_providers/manage.php?action=version",
+		url: "/integrations/googlebackups/manage.php?action=version",
 		type: "GET",
 		dataType: 'json',
 		success: function (data) {
@@ -165,7 +169,7 @@ $(document).ready(function() {
 	
 	function try_restart(){
 		$.ajax({
-			url: "/pages/views/backup_providers/manage.php?action=restart",
+			url: "/integrations/googlebackups/manage.php?action=restart",
 			type: "GET",
 			dataType: 'json',
 			success: function (data) {

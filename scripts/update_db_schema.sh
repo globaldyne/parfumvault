@@ -135,3 +135,23 @@ if [ "$SYSTEM_SETTINGS_TABLE_EXISTS" -eq 0 ]; then
         echo "Failed to create table 'system_settings'. Please check your database permissions."
     fi
 fi
+
+INTEGRATIONS_SETTINGS_TABLE_EXISTS=$(check_table_exists "integrations_settings")
+
+if [ "$INTEGRATIONS_SETTINGS_TABLE_EXISTS" -eq 0 ]; then
+    echo "Table 'integrations_settings' does not exist. Creating table..."
+    CREATE_TABLE_QUERY="CREATE TABLE \`integrations_settings\` (
+        \`id\` INT(11) NOT NULL AUTO_INCREMENT,
+        \`key_name\` VARCHAR(255) NOT NULL,
+        \`value\` LONGTEXT NOT NULL,
+        \`created_at\` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        \`updated_at\` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (\`id\`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;"
+    mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASS" -D "$DB_NAME" -e "$CREATE_TABLE_QUERY" 2>/dev/null
+    if [ $? -eq 0 ]; then
+        echo "Table 'integrations_settings' created successfully."
+    else
+        echo "Failed to create table 'integrations_settings'. Please check your database permissions."
+    fi
+fi

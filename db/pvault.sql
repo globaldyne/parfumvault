@@ -804,22 +804,6 @@ CREATE TABLE `user_prefs` (
 	`owner_id` INT NOT NULL 
 ) ENGINE = InnoDB CHARSET=utf8 COLLATE utf8_general_ci; 
 
-CREATE TABLE `backup_provider` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `credentials` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT '{}' CHECK (json_valid(`credentials`)),
-  `provider` varchar(255) NOT NULL,
-  `schedule` time NOT NULL DEFAULT '00:00:00',
-  `enabled` int(11) NOT NULL DEFAULT 0,
-  `description` varchar(255) NOT NULL,
-  `gdrive_name` varchar(255) NOT NULL DEFAULT 'pvault',
-  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` DATETIME on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `owner_id` INT NOT NULL,
-  UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
-INSERT INTO `backup_provider` (`id`, `credentials`, `provider`, `schedule`, `enabled`, `description`, `gdrive_name`) VALUES
-(1, '{}', 'Google', '00:00:00', 1, 'My PV Backups', 'pvault');
 
 CREATE TABLE `inventory_compounds` ( `id` INT NOT NULL AUTO_INCREMENT , `name` VARCHAR(255) NOT NULL , `description` TEXT NOT NULL , `batch_id` VARCHAR(255) NOT NULL DEFAULT '-' , `size` DOUBLE NOT NULL DEFAULT '0' , `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `owner_id` INT NOT NULL , `location` VARCHAR(255) NOT NULL , `label_info` TEXT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB CHARSET=utf8 COLLATE utf8_general_ci; 
 
@@ -1017,4 +1001,13 @@ CREATE TABLE `sdsSettings` (
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
   `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
   PRIMARY KEY (`id`)
+) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+CREATE TABLE `integrations_settings` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT ,
+    `key_name` VARCHAR(255) NOT NULL ,
+    `value` LONGTEXT NOT NULL , 
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
+    `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
+    PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;

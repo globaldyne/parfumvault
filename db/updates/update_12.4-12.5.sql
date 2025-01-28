@@ -1,4 +1,3 @@
-ALTER TABLE `backup_provider` CHANGE `owner_id` `owner_id` INT(11) NOT NULL DEFAULT '1'; 
 ALTER TABLE `batchIDHistory` CHANGE `owner_id` `owner_id` INT(11) NOT NULL DEFAULT '1'; 
 ALTER TABLE `bottles` CHANGE `owner_id` `owner_id` INT(11) NOT NULL DEFAULT '1'; 
 ALTER TABLE `cart` CHANGE `owner_id` `owner_id` INT(11) NOT NULL DEFAULT '1'; 
@@ -68,6 +67,7 @@ CREATE TABLE `password_resets` (
 ) ENGINE = InnoDB CHARSET=utf8mb3 COLLATE utf8_general_ci; 
 
 DROP TABLE `settings`;
+DROP TABLE `backup_provider`;
 
 CREATE TABLE `branding` ( 
     `id` INT NOT NULL AUTO_INCREMENT , 
@@ -81,6 +81,7 @@ CREATE TABLE `branding` (
     `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
 
 ALTER TABLE `ingredient_safety_data` CHANGE `owner_id` `owner_id` INT(11) NOT NULL; 
 ALTER TABLE `ingredients` DROP INDEX `name`;
