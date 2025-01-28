@@ -11,3 +11,4 @@ tests/
 modules/suppliers/pvLibraryDEV.json
 modules/suppliers/pvLibraryDEV.php
 classes/
+integrations/pvscale
