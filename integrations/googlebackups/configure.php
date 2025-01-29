@@ -32,10 +32,20 @@ if ($role !== 1){
 
         <div class="col-sm-6">
             <div class="mb-3">
-                <label for="googlebackups_agent_srv_host" class="form-label">Backup agent hostname or IP</label>
-                <input name="googlebackups_agent_srv_host" type="text" class="form-control"
-                    id="googlebackups_agent_srv_host"
-                    value="<?=$integrations_settings['googlebackups_agent_srv_host']?>">
+              <label for="googlebackups_agent_srv_host" class="form-label">Backup agent hostname or IP
+              <i class="fa-solid fa-circle-info mx-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Defaults to localhost"></i>
+              </label>
+              <input name="googlebackups_agent_srv_host" type="text" class="form-control"
+                id="googlebackups_agent_srv_host"
+                value="<?=$integrations_settings['googlebackups_agent_srv_host']?>">
+            </div>
+
+            <div class="mb-3">
+              <label for="googlebackups_agent_srv_port" class="form-label">Backup agent TCP port
+              <i class="fa-solid fa-circle-info mx-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Defaults to 3000"></i>
+              </label>
+              <input name="googlebackups_agent_srv_port" type="text" class="form-control" id="googlebackups_agent_srv_port"
+              value="<?=$integrations_settings['googlebackups_agent_srv_port']?>">
             </div>
 
             <div class="mb-3">
@@ -45,9 +55,9 @@ if ($role !== 1){
             </div>
 
             <div class="mb-3">
-                <label for="googlebackups_schedule" class="form-label">Scheduled Time</label>
-                <input name="googlebackups_schedule" type="time" class="form-control" id="googlebackups_schedule"
-                    value="<?=$integrations_settings['googlebackups_schedule']?>">
+              <label for="googlebackups_schedule" class="form-label">Scheduled Time</label>
+              <input name="googlebackups_schedule" type="time" class="form-control" id="googlebackups_schedule"
+              value="<?= date('H:i', $integrations_settings['googlebackups_schedule']) ?>">
             </div>
 
             <div class="mb-3">
@@ -75,46 +85,50 @@ if ($role !== 1){
 
 
 <script>
-$('#googlebackups_save').click(function() {
-    var googlebackups_enabled = $('#googlebackups_enabled').is(':checked') ? '1' : '0';
-    try {
-        JSON.parse($("#googlebackups_credentials").val());
-    } catch (error) {
-        var msg =
-          '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>Credentials must be a valid JSON string</div>';
-          $('#bk-inf').html(msg);
-          return;
-    }
-    $.ajax({
-        url: '/integrations/googlebackups/manage.php',
-        type: 'POST',
-        data: {
-          action: 'googlebackups_update',
-          googlebackups_credentials: JSON.stringify(JSON.parse($("#googlebackups_credentials").val())),
-          googlebackups_enabled: googlebackups_enabled,
-          googlebackups_schedule: $("#googlebackups_schedule").val(),
-          googlebackups_description: $("#googlebackups_description").val(),
-          googlebackups_gdrive_name: $("#googlebackups_gdrive_name").val(),
-          googlebackups_agent_srv_host: $("#googlebackups_agent_srv_host").val()
-        },
-        dataType: 'json',
-        success: function(data) {
-            if (data.success) {
-                var msg =
-                    '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>' +
-                    data.success + '</div>';
-            } else {
-                var msg =
-                    '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>' +
-                    data.error + '</div>';
-            }
+$(document).ready(function() {
+  $('[data-bs-toggle="tooltip"]').tooltip();
+  $('#googlebackups_save').click(function() {
+      var googlebackups_enabled = $('#googlebackups_enabled').is(':checked') ? '1' : '0';
+      try {
+          JSON.parse($("#googlebackups_credentials").val());
+      } catch (error) {
+          var msg =
+            '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>Credentials must be a valid JSON string</div>';
             $('#bk-inf').html(msg);
-        },
-        error: function(xhr, status, error) {
-            $('#bk-inf').html(
-                '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>' +
-                status + ', check server logs for more info. ' + error + '</div>');
-        }
-    });
+            return;
+      }
+      $.ajax({
+          url: '/integrations/googlebackups/manage.php',
+          type: 'POST',
+          data: {
+            action: 'googlebackups_update',
+            googlebackups_credentials: JSON.stringify(JSON.parse($("#googlebackups_credentials").val())),
+            googlebackups_enabled: googlebackups_enabled,
+            googlebackups_schedule: $("#googlebackups_schedule").val(),
+            googlebackups_description: $("#googlebackups_description").val(),
+            googlebackups_gdrive_name: $("#googlebackups_gdrive_name").val(),
+            googlebackups_agent_srv_host: $("#googlebackups_agent_srv_host").val(),
+            googlebackups_agent_srv_port: $("#googlebackups_agent_srv_port").val()
+          },
+          dataType: 'json',
+          success: function(data) {
+              if (data.success) {
+                  var msg =
+                      '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>' +
+                      data.success + '</div>';
+              } else {
+                  var msg =
+                      '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>' +
+                      data.error + '</div>';
+              }
+              $('#bk-inf').html(msg);
+          },
+          error: function(xhr, status, error) {
+              $('#bk-inf').html(
+                  '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>' +
+                  status + ', check server logs for more info. ' + error + '</div>');
+          }
+      });
+  });
 });
 </script>

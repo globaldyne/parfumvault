@@ -27,6 +27,8 @@ if ($_POST['action'] == 'googlebackups_update') {
         $key = mysqli_real_escape_string($conn, $key);
         if ($key === 'googlebackups_credentials') {
             $value = json_encode(json_decode($value, true)); // Ensure it's properly formatted JSON
+        } elseif ($key === 'googlebackups_schedule') {
+            $value = strtotime($value); // Convert to timestamp
         } else {
             $value = mysqli_real_escape_string($conn, $value);
         }
@@ -56,29 +58,25 @@ if ($_POST['action'] == 'googlebackups_update') {
     return;
 }
 
-$BKPOD = $integrations_settings['googlebackups_agent_srv_host'];
+$BKPOD_HOST = $integrations_settings['googlebackups_agent_srv_host'];
+$BKPOD_PORT = $integrations_settings['googlebackups_agent_srv_port'];
 
-if($BKPOD == ''){
+if($BKPOD_HOST == ''){
     echo json_encode(['success' => false, 'error' => 'Backup agent hostname or IP not set']);
     return;
 }
 
-if ($_GET['action'] == 'restart'){
-	$url = "http://$BKPOD/restart";
-	$response = file_get_contents($url);
-	if ($response !== false) {
-		echo json_encode(['success' => true]);
-	} else {
-		echo json_encode(['success' => false, 'error' => 'Error occurred while restarting service']);
-	}
-	return;
+if($BKPOD_PORT == ''){
+    echo json_encode(['success' => false, 'error' => 'Backup agent TCP port not set']);
+    return;
 }
+$BKPOD = $BKPOD_HOST . ':' . $BKPOD_PORT;
 
-
-if ($_GET['action'] == 'version'){
-	$url = "http://$BKPOD/version";
+if ($_GET['action'] == 'info'){
+	$url = "http://$BKPOD/info";
 	$response = file_get_contents($url);
 
+    
 	if ($response !== false) {
 		$responseData = json_decode($response);
         if ($responseData !== null) {
@@ -115,7 +113,6 @@ if ($_GET['action'] == 'createBackup') {
 if ($_GET['action'] == 'getRemoteBackups') {
     $url = "http://$BKPOD/getRemoteBackups";
     $response = file_get_contents($url);
-    
     if ($response !== false) {
         $responseData = json_decode($response);
         if ($responseData !== null) {
@@ -123,12 +120,15 @@ if ($_GET['action'] == 'getRemoteBackups') {
             $numItems = count($responseData->data);
             for ($i = 0; $i < $numItems; $i++) {
                 $item = $responseData->data[$i];
-                $formattedData[] = [
-                    'file_name' => $item->file_name,
-                    'file_id' => $item->file_id,
-                    'file_size' => $item->file_size,
-                    'download_link' => $item->download_link
-                ];
+                if ($item->size > 0) {
+                    $formattedData[] = [
+                        'name' => $item->name,
+                        'id' => $item->id,
+                        'size' => $item->size,
+                        'createdTime' => $item->createdTime,
+                        'DownloadLink' => $item->webViewLink
+                    ];
+                }
             }
             echo json_encode(['success' => true, 'data' => $formattedData]);
         } else {

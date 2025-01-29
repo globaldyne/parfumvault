@@ -34,11 +34,11 @@ if ($role !== 1){
 <script>
 $(document).ready(function() {
 	var SERV_AVAIL;
-	$('#srv_avail').html('<div class="spinner-grow mx-2"></div>Please Wait...');
+	//$('#srv_avail').html('<div class="spinner-grow mx-2"></div>Please Wait...');
 	$.fn.dataTable.ext.errMode = 'none';
 
 	$.ajax({
-		url: "/integrations/googlebackups/manage.php?action=version",
+		url: "/integrations/googlebackups/manage.php?action=info",
 		type: "GET",
 		dataType: 'json',
 		success: function (data) {
@@ -58,23 +58,28 @@ $(document).ready(function() {
 		var tdlistBackup = $('#backupTable').DataTable({
 			columnDefs: [
 				{ className: 'text-center', targets: '_all' },
-				{ orderable: false, targets: [3, 4] }
+				{ orderable: false, targets: [4] }
 			],
-			dom: 'lfrtip',
+			dom: 'lfrti',
 			processing: true,
+			serverSide: false,
 			language: {
 				loadingRecords: '&nbsp;',
 				processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
-				emptyTable: 'No backups found.',
-				search: 'Search:'
+				emtyTable: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>Nothing found</strong></div></div>',
+				zeroRecords: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>No backups found</strong></div></div>',
+				search: '',
+				placeholder: 'Search...',
 			},
-			ajax: {	url: '/integrations/googlebackups/manage.php?action=getRemoteBackups' },
+			ajax: {	
+				url: '/integrations/googlebackups/manage.php?action=getRemoteBackups' 
+			},
 			columns: [
-				{ data : 'file_name', title: 'File name' },
-				{ data : 'file_id', title: 'File ID'},
-				{ data : 'file_size', title: 'Size'},
-				{ data : null, title: '', render: action_download},
-				{ data : null, title: '', render: action_delete},		   
+				{ data : 'name', title: 'File name' },
+				{ data : 'id', title: 'File ID'},
+				{ data : 'size', title: 'Size', render: bkSize},
+				{ data : 'createdTime', title: 'Created Time'},
+				{ data : null, title: '', render: actions}
 			],
 			order: [[ 1, 'asc' ]],
 			lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
@@ -86,15 +91,28 @@ $(document).ready(function() {
 		});
 	}
 
-	function action_download(data, type, row){
-		return '<a href="' + row.download_link + '" target="_blank">Download</a>';
+	function bkSize(data, type, row){
+		if (data >= 1073741824) {
+			return (data / 1073741824).toFixed(2) + ' GB';
+		} else if (data >= 1048576) {
+			return (data / 1048576).toFixed(2) + ' MB';
+		} else {
+			return (data / 1024).toFixed(2) + ' KB';
+		}
 	}
-	
-	function action_delete(data, type, row){
-		return '<a class="dropdown-item text-danger" href="#" id="sDel" rel="tip" title="Delete '+ row.file_name +'" data-id='+ row.file_id +' data-name="'+ row.file_name +'"><i class="fas fa-trash mx-2"></i>Delete</a>';
-	}
-	
-	$('#backupTable').on('click', '[id*=sDel]', function () {
+
+
+	function actions(data, type, row) {
+		data = '<div class="dropdown">' +
+		'<button type="button" class="btn btn-floating hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="bi bi-three-dots-vertical"></i></button>' +
+			'<ul class="dropdown-menu">';	
+		data += '<li><a class="dropdown-item" href="' + row.DownloadLink + '" target="_blank"><i class="bi bi-download mx-2"></i>Download</a></li>';
+		data += '<li><a class="dropdown-item text-danger" href="#" id="deleteBackup" data-id=' + row.id + ' data-name="' + row.name + '"><i class="bi bi-trash mx-2"></i>Delete</a></li>';
+		data += '</ul></div>';
+		return data;
+	};
+
+	$('#backupTable').on('click', '[id*=deleteBackup]', function () {
 		var bk = {};
 		bk.ID = $(this).attr('data-id');
 		bk.Name = $(this).attr('data-name');
@@ -104,7 +122,7 @@ $(document).ready(function() {
 			message : 'Delete <strong>'+ bk.Name +'</strong>?',
 			buttons : {
 				main: {
-					label : "Remove",
+					label : "Delete",
 					className : "btn-danger",
 					callback: function (){
 						$.ajax({ 

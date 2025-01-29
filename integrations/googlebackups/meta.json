@@ -30,12 +30,6 @@
             "label": "Info",
             "icon": "fa fa-info-circle",
             "target": "info"
-        },
-        {
-            "label": "Restart",
-            "icon": "fa fa-sync",
-            "target": "restart"
         }
-
     ]
 }

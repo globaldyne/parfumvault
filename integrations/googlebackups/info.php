@@ -10,36 +10,41 @@ if ($role !== 1){
   return;
 }
 ?>
-<div class="card-body">
-    <div class="row" id="srv_info">
-        <div class="col-mb-3">
-          <label for="bk-ver" class="form-label mx-2">Version:</label>
-          <div id="dataVer" style="display: inline;"></div>
-        </div>
-        <div class="col-mb-3">
-          <label for="bk-build" class="form-label mx-2">Build:</label>
-          <div id="dataBuild" style="display: inline;"></div>
-        </div>
-        <div class="col-mb-3">
-          <label for="bk-changelog" class="form-label mx-2">Release notes:</label>
-          <div id="dataChangelog"></div>
-        </div>
-    </div>
+<div class="card">
+	<div class="card-header">
+		Google Backups Info
+	</div>
+	<div class="card-body">
+		<div class="row" id="srv_info">
+			<div class="col-md-4 mb-3">
+				<label for="version" class="form-label">Version:</label>
+				<div id="version" class="form-text"></div>
+			</div>
+			<div class="col-md-4 mb-3">
+				<label for="backup_folder" class="form-label">Backup Folder:</label>
+				<div id="backup_folder" class="form-text"></div>
+			</div>
+			<div class="col-md-4 mb-3">
+				<label for="next_run" class="form-label">Next Run:</label>
+				<div id="next_run" class="form-text"></div>
+			</div>
+		</div>
+	</div>
 </div>
  
 
 <script>
 $(document).ready(function() {
-	$('#srv_info').html('<div class="spinner-grow mx-2"></div>Please Wait...');
 	$.ajax({
-		url: "/integrations/googlebackups/manage.php?action=version",
+		url: "/integrations/googlebackups/manage.php?action=info",
 		type: "GET",
 		dataType: 'json',
 		success: function (data) {
+			console.log(data.data.version);
 			if(data.success){
-				$("#dataVer").text(data.data.version);
-				$("#dataBuild").text(data.data.build);
-				$("#dataChangelog").text(data.data.changelog);
+				$("#version").text(data.data.version);
+				$("#backup_folder").text(data.data.backup_folder);
+				$("#next_run").text(data.data.next_run);
 			} else {
 				$('#srv_info').html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>Service not available, please make sure the service is installed and running</div>');
 			}
@@ -49,7 +54,6 @@ $(document).ready(function() {
 		}
 	});
 	
-		
 });
 
 </script>
