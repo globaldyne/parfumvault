@@ -13,7 +13,7 @@ if ($role !== 1){
 //UPDATE BK PROVIDER
 if ($_POST['action'] == 'googlebackups_update') {
     $response = [];
-    if (empty($_POST['googlebackups_agent_srv_host']) || empty($_POST['googlebackups_credentials']) || empty($_POST['googlebackups_schedule']) || empty($_POST['googlebackups_description']) || empty($_POST['googlebackups_gdrive_name'])) {
+    if (empty($_POST['googlebackups_agent_srv_host']) || empty($_POST['googlebackups_credentials']) || empty($_POST['googlebackups_schedule']) || empty($_POST['googlebackups_description'])) {
         $response["error"] = 'Missing fields';
         echo json_encode($response);
         return;
@@ -158,5 +158,21 @@ if ($_GET['action'] == 'deleteRemoteBackup') {
     return;
 }
 
+if ($_GET['action'] == 'ping') {
+    $url = "http://$BKPOD/ping";
+    $response = file_get_contents($url);
+    
+    if ($response !== false) {
+        $responseData = json_decode($response);
+        if ($responseData !== null) {
+            echo '<i class="fa-solid fa-circle-check mx-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Service is running"></i>';
+        } else {
+            echo '<i class="fa-solid fa-circle-xmark mx-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Error decoding JSON response"></i>';
+        }
+    } else {
+        echo '<i class="fa-solid fa-circle-xmark mx-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Error connecting to the agent"></i>';
+    }
+    return;
+}
 
 ?>

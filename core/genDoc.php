@@ -31,7 +31,7 @@ if ($_REQUEST['action'] == 'generateDOC' && $_REQUEST['kind'] == 'ingredient'){
     // Fetch ingredient details
     $query = "SELECT * FROM ingredients WHERE id = ? AND owner_id = ?";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("ii", $ingID, $userID);
+    $stmt->bind_param("is", $ingID, $userID);
     $stmt->execute();
     $res = $stmt->get_result()->fetch_assoc();
 	
@@ -87,7 +87,7 @@ if ($_REQUEST['action'] == 'generateDOC' && $_REQUEST['kind'] == 'ingredient'){
     // Fetch ingredient compounds
     $query = "SELECT * FROM ingredient_compounds WHERE ing = ? AND owner_id = ?";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("si", $g['name'], $userID);
+    $stmt->bind_param("ss", $g['name'], $userID);
     $stmt->execute();
     $result = $stmt->get_result();
 
@@ -109,7 +109,7 @@ if ($_REQUEST['action'] == 'generateDOC' && $_REQUEST['kind'] == 'ingredient'){
     // Fetch ingredient synonyms
     $query = "SELECT synonym, source FROM synonyms WHERE ing = ? AND owner_id = ?";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("si", $g['name'], $userID);
+    $stmt->bind_param("ss", $g['name'], $userID);
     $stmt->execute();
     $result = $stmt->get_result();
 	
@@ -127,7 +127,7 @@ if ($_REQUEST['action'] == 'generateDOC' && $_REQUEST['kind'] == 'ingredient'){
     // Fetch GHS information
     $query = "SELECT id, ingID, GHS FROM ingSafetyInfo WHERE ingID = ? AND owner_id = ?";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("ii", $ingID, $userID);
+    $stmt->bind_param("is", $ingID, $userID);
     $stmt->execute();
     $result = $stmt->get_result();
 	
@@ -337,7 +337,7 @@ if ($_REQUEST['action'] == 'generateDOC' && $_REQUEST['kind'] == 'ingredient'){
 	$content = mysqli_real_escape_string($conn, $pdf->Output("S"));
     $deleteQuery = "DELETE FROM documents WHERE ownerID = ? AND owner_id = ? AND type = 0 AND isSDS = 0 AND notes = 'PV Generated'";
     $stmt = $conn->prepare($deleteQuery);
-    $stmt->bind_param("ii", $ingID, $userID);
+    $stmt->bind_param("is", $ingID, $userID);
     $stmt->execute();
 	
 	if(mysqli_query($conn, "INSERT INTO documents(ownerID,type,name,docData,notes, owner_id) values('$ingID', 0, '$ingName', '$content', 'PV Generated', '$userID')")){

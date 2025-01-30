@@ -14,8 +14,6 @@ $fid = mysqli_real_escape_string($conn, $_GET['fid']);
 
 $extra = "ORDER BY ".$order_by." ".$order;
 
-$role = (int)$user['role'];
-$userID = (int)$user['id'];
 
 $f = "WHERE fid = '".$fid."' AND owner_id = '$userID' GROUP BY revision";
 

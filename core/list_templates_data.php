@@ -56,14 +56,14 @@ foreach ($rs as $rq) {
 
 // Get total records count
 $stmtTotal = $conn->prepare("SELECT COUNT(id) AS entries FROM $table WHERE owner_id = ?");
-$stmtTotal->bind_param("i", $userID);
+$stmtTotal->bind_param("s", $userID);
 $stmtTotal->execute();
 $total_query = $stmtTotal->get_result();
 $total = $total_query->fetch_assoc()['entries'];
 
 // Get filtered records count
 $stmtFiltered = $conn->prepare("SELECT COUNT(id) AS entries FROM $table $filter");
-$stmtFiltered->bind_param("i", $userID);
+$stmtFiltered->bind_param("s", $userID);
 if ($search_value !== '') {
     $stmtFiltered->bind_param("ss", "%$search_value%", $userID);
 }

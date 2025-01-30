@@ -39,7 +39,7 @@ $pubChemApi = 'https://pubchem.ncbi.nlm.nih.gov/rest';
 $pvLibraryAPI = $system_settings['LIBRARY_apiurl'];
 $countries = json_decode(file_get_contents(__ROOT__.'/db/countries.json'), true);
 
-$userID = (int)$user['id'];
+$userID = $user['id'];
 $role = (int)$user['role'];
 
 ?>

@@ -74,27 +74,6 @@ $(document).ready(function() {
   <?php } ?>
 
   <?php if ($role === 1) { ?>
-  function updateSYS() {
-    $('#sysUpdMsg').html('<div class="alert alert-info"><img src="/img/loading.gif"/> Core system upgrade in progress. Please wait, DO NOT close, refresh or navigate away from this page. The process may take a while...</div>');
-    $('#sysUpBtn, #sysUpOk').hide();
-
-    $.ajax({
-      url: '/core/UpgradeCore.php',
-      type: 'GET',
-      dataType: 'json',
-      success: function (data) {
-        let msg = data.success ? `<div class="alert alert-success">${data.success}</div>` : `<div class="alert alert-danger">${data.error}</div>`;
-        $('#sysUpdMsg').html(msg);
-        if (!data.success) {
-          $('#sysUpBtn').show();
-        }
-      },
-      error: function () {
-        $('#sysUpdMsg').html('<div class="alert alert-danger">Upgrade failed. Please try again later.</div>');
-        $('#sysUpBtn').show();
-      }
-    });
-  }
 
   function chkUpdate() {
     $.ajax({

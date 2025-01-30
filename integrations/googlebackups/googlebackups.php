@@ -22,6 +22,18 @@ if($integrations_settings['googlebackups_enabled']){
 <script>
 $(document).ready(function() {
 	var SERV_AVAIL;
+	$("#googlebackups_status").addClass('fa fa-circle-notch fa-spin');
+
+	setInterval(function() {
+		$.get("/integrations/googlebackups/manage.php", { action: 'ping' })
+			.done(data => {
+				$("#googlebackups_status").html(data).removeClass('fa fa-circle-notch fa-spin');
+			})
+			.fail(() => {
+				$("#googlebackups_status").html('<div class="alert alert-danger">Unable to connect to the agent</div>').removeClass('fa fa-circle-notch fa-spin');
+			});
+	}, 10000);
+
 
 	$("#info").on("show.bs.modal", function(e) {
 		const id = e.relatedTarget.dataset.id;
@@ -141,9 +153,6 @@ $(document).ready(function() {
 			</div>
 			<div class="modal-body">
 				<div class="alert alert-danger">Unable to get data</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 			</div>
 		</div>
 	</div>

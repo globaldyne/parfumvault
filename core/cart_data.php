@@ -7,12 +7,6 @@ require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/getIngSupplier.php');
 
 
-// Ensure the user is authenticated
-if (!isset($userID) || $userID === '' || !is_numeric($userID)) {
-    echo json_encode(['error' => 'Unauthorized']);
-    return;
-}
-
 $row = isset($_POST['start']) ? (int)$_POST['start'] : 0;
 $limit = isset($_POST['length']) ? (int)$_POST['length'] : 10;
 $order_by = in_array($_POST['order_by'], ['name', 'quantity', 'purity']) ? $_POST['order_by'] : 'name';
@@ -32,9 +26,9 @@ $stmt = $conn->prepare($query);
 // Non-admins: bind userID, search term, row, and limit
 if ($s !== '') {
     $search = "%$s%";
-    $stmt->bind_param('isii', $userID, $search, $row, $limit);
+    $stmt->bind_param('ssii', $userID, $search, $row, $limit);
 } else {
-    $stmt->bind_param('iii', $userID, $row, $limit);
+    $stmt->bind_param('sii', $userID, $row, $limit);
 }
 
 

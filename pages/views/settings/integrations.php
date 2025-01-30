@@ -63,6 +63,7 @@ require_once(__ROOT__.'/inc/settings.php');
 			echo '</div>';
 			echo '<div class="card-body">';
 			echo '<h5 class="card-title">' . htmlspecialchars($metaData['title']) . (isset($state) ? $state : '');
+			echo ' <i id="' . htmlspecialchars($metaData['slug']) . '_status"></i>';
 			if (isset($metaData['adminrequired']) && $metaData['adminrequired'] === true) {
 				echo ' <i class="fa fa-user-tie" data-bs-toggle="tooltip" data-bs-placement="top" title="This integration will only be available to admins"></i>';
 			}

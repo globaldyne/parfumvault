@@ -204,7 +204,7 @@ if ($_GET['format'] === 'json' && $_GET['kind'] === 'customers') {
             'email'      => (string)$row['email'],
             'phone'      => (string)$row['phone'],
             'web'        => (string)$row['web'],
-            'owner_id'   => (int)$row['owner_id'],
+            'owner_id'   => $row['owner_id'],
             'created_at' => (string)$row['created_at'],
             'updated_at' => (string)$row['updated_at'],
         ];
@@ -255,7 +255,7 @@ if ($_GET['format'] === 'json' && $_GET['kind'] === 'inventory_compounds') {
             'description' => (string)$row['description'],
             'batch_id'    => (int)$row['batch_id'],
             'size'        => (string)$row['size'],
-            'owner_id'    => (int)$row['owner_id'],
+            'owner_id'    => $row['owner_id'],
             'location'    => (string)$row['location'],
             'label_info'  => (string)$row['label_info'],
             'created_at'  => (string)$row['created_at'],

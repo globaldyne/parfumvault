@@ -6,7 +6,7 @@ header('Content-Type: application/json; charset=utf-8');
 global $conn, $userID;
 
 $stmt = $conn->prepare("SELECT ingSupplierID, ingID, supplierLink, price, size, manufacturer, preferred FROM suppliers WHERE owner_id = ?");
-$stmt->bind_param("i", $userID);
+$stmt->bind_param("s", $userID);
 $stmt->execute();
 $result = $stmt->get_result();
 

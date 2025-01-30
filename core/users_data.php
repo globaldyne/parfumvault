@@ -39,8 +39,7 @@ while ($allFormulas = mysqli_fetch_assoc($users)) {
 $rx = [];
 foreach ($userData as $user) {
     $r = [
-        'id' => (int)$user['id'],
-        'user_id' => $user['user_id'],
+        'id' => $user['id'],
         'email' => $user['email'],
         'full_name' => $user['fullName'],
         'provider' => $user['provider'],

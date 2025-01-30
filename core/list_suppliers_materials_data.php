@@ -10,13 +10,13 @@ $ingredient = 0;
 $rx = [];
 
 $stmt = $conn->prepare("SELECT ingID, supplierLink FROM suppliers WHERE ingSupplierID = ? AND owner_id = ?");
-$stmt->bind_param("ii", $supplierID,$userID);
+$stmt->bind_param("is", $supplierID,$userID);
 $stmt->execute();
 $result = $stmt->get_result();
 
 while ($res = $result->fetch_assoc()) {
     $ingredientStmt = $conn->prepare("SELECT id, name, cas, created_at, odor FROM ingredients WHERE id = ? AND owner_id = ?");
-    $ingredientStmt->bind_param("ii", $res['ingID'],$userID);
+    $ingredientStmt->bind_param("is", $res['ingID'],$userID);
     $ingredientStmt->execute();
     $ingredientResult = $ingredientStmt->get_result();
 

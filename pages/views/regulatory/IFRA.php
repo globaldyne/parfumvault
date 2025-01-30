@@ -517,44 +517,23 @@ $(document).ready(function() {
 	
 	$('#tdDataIFRA').editable({
 		container: 'body',
-	  	selector: 'a.cas',
-	  	url: "/core/core.php?IFRA=edit&type=cas",
-	  	title: 'CAS#',
-	  	ajaxOptions: { 
-			dataType: 'json'
-	  	},
-	  	success: function(response, newValue) {
-			if(response.error){
-				return response.error; 
-			}else{ 
-				reload_data();
-			}
-	  	},
-	  	validate: function(value){
-			if($.trim(value) == ''){
-				return 'This field is required';
-			}
-	  	}
-	});
-	
-	$('#tdDataIFRA').editable({
-		container: 'body',
-		selector: 'a.cat1, a.cat2, a.cat3, a.cat4, a.cat5A, a.cat5B, a.cat5C, a.cat5D, a.cat6, a.cat7A, a.cat7B, a.cat8, a.cat9, a.cat10A, a.cat11A, a.cat11B, a.cat12',
+		selector: 'a.cas, a.cat1, a.cat2, a.cat3, a.cat4, a.cat5A, a.cat5B, a.cat5C, a.cat5D, a.cat6, a.cat7A, a.cat7B, a.cat8, a.cat9, a.cat10A, a.cat11A, a.cat11B, a.cat12',
 		type: 'POST',
 		url: "/core/core.php",
-		
+
 		params: function(params) {
-        	var category = String($(params).attr('name').split(' ')[0]).toUpperCase();
-	        return {
+			var name = $(params).attr('name');
+			var isCategory = /^cat\d+[A-Z]*$/.test(name); // Checks if it's a category
+			return {
 				action: 'editIFRA',
-        	    type: category,
-            	value: parseFloat(params.value),
+				type: name,
+				value: isCategory ? parseFloat(params.value) : String(params.value),
 				pk: params.pk
-        	};
-    	},
+			};
+		},
 		title: function(params) {
-			var category = $(params).attr('data-name').split(' ')[0];
-			return category.toUpperCase() + '%';
+			var name = $(params).attr('data-name');
+			return name.toUpperCase() + (/^cat\d+[A-Z]*$/.test(name) ? '%' : '');
 		},
 		ajaxOptions: { 
 			dataType: 'json'
@@ -570,11 +549,17 @@ $(document).ready(function() {
 			if ($.trim(value) === '') {
 				return 'This field is required';
 			}
-			if (!/^\d+(\.\d+)?$/.test(value)) {
+			var name = $(this).attr('name');
+			if (/^cat\d+[A-Z]*$/.test(name) && !/^\d+(\.\d+)?$/.test(value)) {
 				return 'Please enter a valid number (e.g., 1.23)';
 			}
+			var numValue = parseFloat(value);
+            if (numValue < 0 || numValue > 100) {
+                return 'Value must be between 0 and 100';
+            }
 		}
 	});
+
 
 
 });

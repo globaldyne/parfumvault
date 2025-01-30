@@ -37,7 +37,7 @@ if ($role !== 1){
               </label>
               <input name="googlebackups_agent_srv_host" type="text" class="form-control"
                 id="googlebackups_agent_srv_host"
-                value="<?=$integrations_settings['googlebackups_agent_srv_host']?>">
+                value="<?=$integrations_settings['googlebackups_agent_srv_host'] ?: 'gbkagent'?>">
             </div>
 
             <div class="mb-3">
@@ -45,13 +45,7 @@ if ($role !== 1){
               <i class="fa-solid fa-circle-info mx-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Defaults to 3000"></i>
               </label>
               <input name="googlebackups_agent_srv_port" type="text" class="form-control" id="googlebackups_agent_srv_port"
-              value="<?=$integrations_settings['googlebackups_agent_srv_port']?>">
-            </div>
-
-            <div class="mb-3">
-                <label for="googlebackups_gdrive_name" class="form-label">Backup folder</label>
-                <input name="googlebackups_gdrive_name" type="text" class="form-control" id="googlebackups_gdrive_name"
-                    value="<?=$integrations_settings['googlebackups_gdrive_name']?>">
+              value="<?=$integrations_settings['googlebackups_agent_srv_port'] ?: 3000?>">
             </div>
 
             <div class="mb-3">

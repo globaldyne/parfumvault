@@ -41,10 +41,11 @@ if ($_POST['action'] == 'selfregister') {
 
     $token = bin2hex(random_bytes(16)); // Generates a 32-character unique string
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+    $_id = bin2hex(random_bytes(16)); // Generates a 32-character unique string
     if($system_settings['EMAIL_isEnabled']){
-        $insertUser = "INSERT INTO users (email, password, fullName, role, isActive, isVerified, token) VALUES ('$email', '$hashedPassword', '$fullName', 2, 0, 0, '$token')";
+        $insertUser = "INSERT INTO users (id, email, password, fullName, role, isActive, isVerified, token) VALUES ('$_id', '$email', '$hashedPassword', '$fullName', 2, 0, 0, '$token')";
     } else {
-        $insertUser = "INSERT INTO users (email, password, fullName, role, isActive, isVerified, token) VALUES ('$email', '$hashedPassword', '$fullName', 2, 1, 1, '$token')";
+        $insertUser = "INSERT INTO users (id, email, password, fullName, role, isActive, isVerified, token) VALUES ('$_id','$email', '$hashedPassword', '$fullName', 2, 1, 1, '$token')";
     }
 
     if($system_settings['EMAIL_isEnabled']){
@@ -203,15 +204,16 @@ if ($_POST['action'] == 'resetPassword') {
     $expiry = date('Y-m-d H:i:s', strtotime('+1 hour')); // Token expires in 1 hour
 
     $insertTokenQuery = "INSERT INTO password_resets (email, token, expiry) VALUES ('$email', '$token', '$expiry') ON DUPLICATE KEY UPDATE token='$token', expiry='$expiry'";
-    if (mysqli_query($conn, $insertTokenQuery)) {
+  //  if (mysqli_query($conn, $insertTokenQuery)) {
         if (sendPasswordResetEmail($email, $token)) {
+            mysqli_query($conn, $insertTokenQuery);
             $response['success'] = 'Password reset email sent';
         } else {
             $response['error'] = 'Failed to send password reset email';
         }
-    } else {
-        $response['error'] = 'Failed to generate reset token: ' . mysqli_error($conn);
-    }
+   // } else {
+    //    $response['error'] = 'Failed to generate reset token: ' . mysqli_error($conn);
+   // }
 
     echo json_encode($response);
     return;

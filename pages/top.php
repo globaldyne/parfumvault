@@ -34,7 +34,7 @@ if (!empty($system_settings['announcements']) && !empty($user_settings)) {
   try {
     // Fetch the stored announcement hash from the database
     $stmt = $conn->prepare("SELECT pref_data FROM user_prefs WHERE owner_id = ? AND pref_name = 'announcement'");
-    $stmt->bind_param("i", $userID);
+    $stmt->bind_param("s", $userID);
     $stmt->execute();
     $result = $stmt->get_result();
     $storedHash = $result->fetch_assoc()['pref_data'] ?? '';

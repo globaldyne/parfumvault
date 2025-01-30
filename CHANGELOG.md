@@ -78,6 +78,10 @@
 - Rewrite integrations to add modularity
 - Dopped backup settings page - admin has to reconfigure
 - Rewrite of backup integrations
+- k8s templates updated to use the backup agent
+- Docker compose file updated for the backup agent
+- User id has been altered to a string
+- Fixed cas update in IFRA library
 
 ### Version 12.4
 - Add dilutant in API formulas

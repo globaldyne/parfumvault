@@ -15,7 +15,7 @@ require_once(__ROOT__.'/func/create_thumb.php');
 require_once(__ROOT__.'/func/mailSys.php');
 
 // Ensure the user is authenticated
-if (!isset($userID) || $userID === '' || !is_numeric($userID)) {
+if (!isset($userID) || $userID === '') {
     echo json_encode(['error' => 'Unauthorized']);
     return;
 }
@@ -56,12 +56,12 @@ if($role === 1) {
     }
 
     //IMPERSONATE USER
-    if (isset($_POST['impersonate_user_id']) && is_numeric($_POST['impersonate_user_id'])) {
-        $impersonate_user_id = (int)$_POST['impersonate_user_id'];
+    if (isset($_POST['impersonate_user_id'])) {
+        $impersonate_user_id = $_POST['impersonate_user_id'];
 
         // Fetch user details
         $impersonateQuery = $conn->prepare("SELECT id, fullName, email, role FROM users WHERE id = ?");
-        $impersonateQuery->bind_param("i", $impersonate_user_id);
+        $impersonateQuery->bind_param("s", $impersonate_user_id);
         $impersonateQuery->execute();
         $result = $impersonateQuery->get_result();
 
@@ -109,7 +109,7 @@ if($role === 1) {
         // Check for last admin user restrictions
         if ($role === 2) {
             $checkAdminQuery = $conn->prepare("SELECT role FROM users WHERE id = ?");
-            $checkAdminQuery->bind_param("i", $user_id);
+            $checkAdminQuery->bind_param("s", $user_id);
             $checkAdminQuery->execute();
             $result = $checkAdminQuery->get_result();
             $user = $result->fetch_assoc();
@@ -129,7 +129,7 @@ if($role === 1) {
 
         // Fetch owner_id
         $ownerQuery = $conn->prepare("SELECT id FROM users WHERE id = ?");
-        $ownerQuery->bind_param("i", $user_id);
+        $ownerQuery->bind_param("s", $user_id);
         $ownerQuery->execute();
         $ownerResult = $ownerQuery->get_result();
 
@@ -152,7 +152,7 @@ if($role === 1) {
         $stmt = $conn->prepare($updateQuery);
         if (!empty($password)) {
             $stmt->bind_param(
-                "sssiiisi",
+                "sssiiiss",
                 $full_name,
                 $email,
                 $country,
@@ -164,7 +164,7 @@ if($role === 1) {
             );
         } else {
             $stmt->bind_param(
-                "sssiiii",
+                "sssiiis",
                 $full_name,
                 $email,
                 $country,
@@ -214,7 +214,7 @@ if($role === 1) {
         // Check if email is already registered
         $emailCheckQuery = "SELECT id FROM users WHERE email = '$email'";
         $emailCheckResult = mysqli_query($conn, $emailCheckQuery);
-    //	$userId = bin2hex(random_bytes(16)); // Generates a 32-character unique string
+    	$_id = bin2hex(random_bytes(16)); // Generates a 32-character unique string
 
         if (mysqli_num_rows($emailCheckResult) > 0) {
             $response['error'] = 'Email is already registered';
@@ -226,8 +226,8 @@ if($role === 1) {
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
         // Insert new user into the database
-        $insertQuery = "INSERT INTO users (email, password, fullName, role, country, isActive, isVerified) 
-                    VALUES ('$email', '$hashedPassword', '$full_name', '$role', '$country', '$isActive', '$isVerified')";
+        $insertQuery = "INSERT INTO users (id, email, password, fullName, role, country, isActive, isVerified) 
+                    VALUES ('$_id','$email', '$hashedPassword', '$full_name', '$role', '$country', '$isActive', '$isVerified')";
 
 
         if (mysqli_query($conn, $insertQuery)) {
@@ -248,7 +248,7 @@ if($role === 1) {
         
         // Check if the user is an admin
         $checkAdminQuery = $conn->prepare("SELECT role FROM users WHERE id = ?");
-        $checkAdminQuery->bind_param("i", $user_id);
+        $checkAdminQuery->bind_param("s", $user_id);
         $checkAdminQuery->execute();
         $result = $checkAdminQuery->get_result();
         $user = $result->fetch_assoc();
@@ -269,7 +269,7 @@ if($role === 1) {
 
         // Fetch user_id for the user
         $userQuery = $conn->prepare("SELECT id FROM users WHERE id = ?");
-        $userQuery->bind_param("i", $user_id);
+        $userQuery->bind_param("s", $user_id);
         $userQuery->execute();
         $userResult = $userQuery->get_result();
         $userData = $userResult->fetch_assoc();
@@ -277,10 +277,10 @@ if($role === 1) {
         if ($userData) {
             // Proceed with deletion
             $deleteQuery = $conn->prepare("DELETE FROM users WHERE id = ?");
-            $deleteQuery->bind_param("i", $user_id);
+            $deleteQuery->bind_param("s", $user_id);
 
             $tables = [
-                "backup_provider", "batchIDHistory", "bottles", "cart", "customers", "documents",
+                "batchIDHistory", "bottles", "cart", "customers", "documents",
                 "formulaCategories", "formulas", "formulasMetaData", "formulasRevisions", "formulasTags",
                 "formula_history", "IFRALibrary", "ingCategory", "ingredients", "ingredient_compounds",
                 "ingredient_safety_data", "ingReplacements", "ingSafetyInfo", "ingSuppliers", "inventory_accessories",
@@ -290,7 +290,7 @@ if($role === 1) {
 
             foreach ($tables as $table) {
                 $deleteStmt = $conn->prepare("DELETE FROM $table WHERE owner_id = ?");
-                $deleteStmt->bind_param("i", $user_id);
+                $deleteStmt->bind_param("s", $user_id);
                 $deleteStmt->execute();
                 $deleteStmt->close();
             }
@@ -315,7 +315,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'deleteprofile') {
     
     // Check if the user is an admin
     $checkAdminQuery = $conn->prepare("SELECT role FROM users WHERE id = ?");
-    $checkAdminQuery->bind_param("i", $userID);
+    $checkAdminQuery->bind_param("s", $userID);
     $checkAdminQuery->execute();
     $result = $checkAdminQuery->get_result();
     $user = $result->fetch_assoc();
@@ -336,7 +336,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'deleteprofile') {
 
     // Fetch user_id for the user
     $userQuery = $conn->prepare("SELECT id,email,fullName FROM users WHERE id = ?");
-    $userQuery->bind_param("i", $userID);
+    $userQuery->bind_param("s", $userID);
     $userQuery->execute();
     $userResult = $userQuery->get_result();
     $userData = $userResult->fetch_assoc();
@@ -344,10 +344,10 @@ if (isset($_GET['action']) && $_GET['action'] === 'deleteprofile') {
     if ($userData) {
         // Proceed with deletion
         $deleteQuery = $conn->prepare("DELETE FROM users WHERE id = ?");
-        $deleteQuery->bind_param("i", $userID);
+        $deleteQuery->bind_param("s", $userID);
 
         $tables = [
-            "backup_provider", "batchIDHistory", "bottles", "cart", "customers", "documents",
+            "batchIDHistory", "bottles", "cart", "customers", "documents",
             "formulaCategories", "formulas", "formulasMetaData", "formulasRevisions", "formulasTags",
             "formula_history", "IFRALibrary", "ingCategory", "ingredients", "ingredient_compounds",
             "ingredient_safety_data", "ingReplacements", "ingSafetyInfo", "ingSuppliers", "inventory_accessories",
@@ -357,7 +357,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'deleteprofile') {
 
         foreach ($tables as $table) {
             $deleteStmt = $conn->prepare("DELETE FROM $table WHERE owner_id = ?");
-            $deleteStmt->bind_param("i", $userID);
+            $deleteStmt->bind_param("s", $userID);
             $deleteStmt->execute();
             $deleteStmt->close();
         }
@@ -399,7 +399,7 @@ if ($_POST['action'] == 'importTXTFormula') {
     // Check if formula name exists
     $query = "SELECT COUNT(*) as count FROM formulasMetaData WHERE name = ? AND owner_id = ?";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param('si', $formulaName, $userID);
+    $stmt->bind_param('ss', $formulaName, $userID);
 
     $stmt->execute();
     $result = $stmt->get_result();
@@ -417,7 +417,7 @@ if ($_POST['action'] == 'importTXTFormula') {
 
     $insertQuery = "INSERT INTO formulasMetaData (fid, name, notes, owner_id) VALUES (?, ?, ?, ?)";
     $stmt = $conn->prepare($insertQuery);
-    $stmt->bind_param('sssi', $fid, $formulaName, $notes, $userID);
+    $stmt->bind_param('ssss', $fid, $formulaName, $notes, $userID);
 
     if ($stmt->execute()) {
         // Get the last inserted ID
@@ -451,7 +451,7 @@ if ($_POST['action'] == 'importTXTFormula') {
                 // Check if the ingredient exists in the database
                 $getIngQuery = "SELECT id FROM ingredients WHERE name = ? AND owner_id = ?";
                 $getIngStmt = $conn->prepare($getIngQuery);
-                $getIngStmt->bind_param('si', $baseIngredient, $userID);
+                $getIngStmt->bind_param('ss', $baseIngredient, $userID);
                 $getIngStmt->execute();
                 $getIngResult = $getIngStmt->get_result();
                 $ingredientRow = $getIngResult->fetch_assoc();
@@ -461,7 +461,7 @@ if ($_POST['action'] == 'importTXTFormula') {
                 // Insert into formulas table
                 $ingredientQuery = "INSERT INTO formulas (fid, name, ingredient_id, ingredient, quantity, concentration, dilutant, owner_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
                 $ingredientStmt = $conn->prepare($ingredientQuery);
-                $ingredientStmt->bind_param('ssisdssi', $fid, $formulaName, $ingredient_id, $baseIngredient, $quantity, $percentage, $dilutant, $userID);
+                $ingredientStmt->bind_param('ssisdsss', $fid, $formulaName, $ingredient_id, $baseIngredient, $quantity, $percentage, $dilutant, $userID);
 
                 if (!$ingredientStmt->execute()) {
                     $formulaInsertSuccess = false;
@@ -474,7 +474,7 @@ if ($_POST['action'] == 'importTXTFormula') {
         if ($formulaInsertSuccess) {
             $tagQuery = "INSERT INTO formulasTags (formula_id, tag_name, owner_id) VALUES (?, 'Imported formula', ?)";
             $tagStmt = $conn->prepare($tagQuery);
-            $tagStmt->bind_param('ii', $last_id, $userID);
+            $tagStmt->bind_param('is', $last_id, $userID);
 
             if ($tagStmt->execute()) {
                 $response['success'] = 'Formula imported successfully.';
@@ -529,7 +529,7 @@ if($_GET['update_user_avatar']){
         $docData = 'data:image/' . $file_ext . ';base64,' . base64_encode(file_get_contents($destination));
 
         $stmt = $conn->prepare("DELETE FROM documents WHERE ownerID = ? AND type = '3' AND name = 'avatar' AND owner_id = ?");
-        $stmt->bind_param('ii', $user['id'], $userID);
+        $stmt->bind_param('is', $user['id'], $userID);
         $stmt->execute();
 
         $stmt = $conn->prepare("INSERT INTO documents (ownerID, type, name, notes, docData, owner_id) VALUES (?, '3', 'avatar', 'Main Profile Avatar', ?, ?)");
@@ -590,7 +590,7 @@ if ($_POST['action'] === 'update_user_profile') {
 
     // Check if email already exists
     $stmt = $conn->prepare("SELECT id FROM users WHERE email = ? AND id != ?");
-    $stmt->bind_param('si', $email, $userID);
+    $stmt->bind_param('ss', $email, $userID);
     $stmt->execute();
     $stmt->store_result();
 
@@ -617,9 +617,9 @@ if ($_POST['action'] === 'update_user_profile') {
     $stmt = $conn->prepare($query);
 
     if ($passwordClause) {
-        $stmt->bind_param('ssssi', $fullName, $email, $country, $hashedPassword, $userID);
+        $stmt->bind_param('sssss', $fullName, $email, $country, $hashedPassword, $userID);
     } else {
-        $stmt->bind_param('sssi', $fullName, $email, $country, $userID);
+        $stmt->bind_param('ssss', $fullName, $email, $country, $userID);
     }
 
     if ($stmt->execute()) {
@@ -676,7 +676,7 @@ if ($_POST['action'] === 'update_user_settings') {
         $value = mysqli_real_escape_string($conn, $value);
 
         $stmt = $conn->prepare("SELECT COUNT(*) FROM user_settings WHERE key_name = ? AND owner_id = ?");
-        $stmt->bind_param('si', $key, $userID);
+        $stmt->bind_param('ss', $key, $userID);
         $stmt->execute();
         $stmt->bind_result($count);
         $stmt->fetch();
@@ -684,10 +684,10 @@ if ($_POST['action'] === 'update_user_settings') {
 
         if ($count > 0) {
             $stmt = $conn->prepare("UPDATE user_settings SET value = ? WHERE key_name = ? AND owner_id = ?");
-            $stmt->bind_param('ssi', $value, $key, $userID);
+            $stmt->bind_param('sss', $value, $key, $userID);
         } else {
             $stmt = $conn->prepare("INSERT INTO user_settings (key_name, value, owner_id) VALUES (?, ?, ?)");
-            $stmt->bind_param('ssi', $key, $value, $userID);
+            $stmt->bind_param('sss', $key, $value, $userID);
         }
 
         if ($stmt->execute()) {
@@ -768,7 +768,7 @@ if ($_POST['manage'] == 'category') {
 
     // Check if category already exists using prepared statements
     $stmt = $conn->prepare("SELECT name FROM ingCategory WHERE name = ? AND owner_id = ?");
-    $stmt->bind_param('si', $cat, $userID);
+    $stmt->bind_param('ss', $cat, $userID);
     $stmt->execute();
     $stmt->store_result();
 
@@ -781,7 +781,7 @@ if ($_POST['manage'] == 'category') {
 
     // Insert the new category using prepared statements
     $stmt = $conn->prepare("INSERT INTO ingCategory (name, notes, owner_id) VALUES (?, ?, ?)");
-    $stmt->bind_param('ssi', $cat, $notes, $userID);
+    $stmt->bind_param('sss', $cat, $notes, $userID);
 
     if ($stmt->execute()) {
         $response["success"] = 'Category "' . $cat . '" added successfully';
@@ -801,7 +801,7 @@ if ($_POST['manage'] == 'category') {
 if ($_POST['action'] == 'delete' && isset($_POST['catId'])) {
     $catId = mysqli_real_escape_string($conn, $_POST['catId']);
     $stmt = $conn->prepare("DELETE FROM ingCategory WHERE id = ? AND owner_id = ?");
-    $stmt->bind_param('ii', $catId, $userID);
+    $stmt->bind_param('is', $catId, $userID);
 
     if ($stmt->execute()) {
         $response["success"] = 'Category deleted successfully';
@@ -893,7 +893,7 @@ if ($_POST['manage'] == 'add_frmcategory') {
     }
 
     $stmt = $conn->prepare("SELECT name FROM formulaCategories WHERE name = ? AND owner_id = ?");
-    $stmt->bind_param('si', $cat, $userID);
+    $stmt->bind_param('ss', $cat, $userID);
     $stmt->execute();
     $stmt->store_result();
 
@@ -906,7 +906,7 @@ if ($_POST['manage'] == 'add_frmcategory') {
 
     $stmt = $conn->prepare("INSERT INTO formulaCategories (name, cname, type, owner_id) VALUES (?, ?, ?, ?)");
     $cname = strtolower(str_replace(' ', '', $cat));
-    $stmt->bind_param('sssi', $cat, $cname, $type, $userID);
+    $stmt->bind_param('ssss', $cat, $cname, $type, $userID);
 
     if ($stmt->execute()) {
         $response["success"] = 'Category "' . $cat . '" created successfully';
@@ -927,7 +927,7 @@ if ($_POST['manage'] == 'add_frmcategory') {
 if ($_POST['action'] == 'del_frmcategory' && isset($_POST['catId'])) {
     $catId = mysqli_real_escape_string($conn, $_POST['catId']);
     $stmt = $conn->prepare("DELETE FROM formulaCategories WHERE id = ? AND owner_id = ?");
-    $stmt->bind_param('ii', $catId, $userID);
+    $stmt->bind_param('is', $catId, $userID);
 
     if ($stmt->execute()) {
         $response["success"] = 'Category deleted successfully';
@@ -950,7 +950,7 @@ if ($_POST['action'] == 'batch' && isset($_POST['bid']) && isset($_POST['remove'
     $name = mysqli_real_escape_string($conn, $_POST['name']);
 
     $stmt = $conn->prepare("DELETE FROM batchIDHistory WHERE id = ? AND owner_id = ?");
-    $stmt->bind_param('ii', $id, $userID); 
+    $stmt->bind_param('is', $id, $userID); 
 
     if ($stmt->execute()) {
         $response["success"] = 'Batch ' . $id . ' for product ' . $name . ' deleted successfully';
@@ -1007,11 +1007,11 @@ if ($_POST['action'] == 'delete' && isset($_POST['SDSID']) && $_POST['type'] == 
 
     try {
         $stmt1 = $conn->prepare("DELETE FROM documents WHERE ownerID = ? AND isSDS = '1' AND owner_id = ?");
-        $stmt1->bind_param('ii', $id, $userID);
+        $stmt1->bind_param('is', $id, $userID);
 
         if ($stmt1->execute()) {
             $stmt2 = $conn->prepare("DELETE FROM sds_data WHERE id = ? AND owner_id = ?");
-            $stmt2->bind_param('ii', $id, $userID);
+            $stmt2->bind_param('is', $id, $userID);
 
             if ($stmt2->execute()) {
                 mysqli_commit($conn);
@@ -1063,7 +1063,7 @@ if ($_POST['action'] == 'add' && $_POST['type'] == 'invCmp') {
     try {
         // Check if compound already exists
         $stmt = $conn->prepare("SELECT COUNT(*) FROM inventory_compounds WHERE name = ? AND owner_id = ?");
-        $stmt->bind_param('si', $name, $userID);
+        $stmt->bind_param('ss', $name, $userID);
         $stmt->execute();
         $stmt->bind_result($count);
         $stmt->fetch();
@@ -1079,7 +1079,7 @@ if ($_POST['action'] == 'add' && $_POST['type'] == 'invCmp') {
             "INSERT INTO inventory_compounds (name, description, batch_id, size, owner_id, location, label_info)
              VALUES (?, ?, ?, ?, ?, ?, ?)"
         );
-        $stmt->bind_param('sssdsis', $name, $description, $batch_id, $size, $userID, $location, $label_info);
+        $stmt->bind_param('sssdsss', $name, $description, $batch_id, $size, $userID, $location, $label_info);
 
         if ($stmt->execute()) {
             echo json_encode(["success" => "Compound $name added successfully."]);
@@ -1128,7 +1128,7 @@ if ($_POST['action'] == 'update_inv_compound_data') {
         $stmt = $conn->prepare(
             "UPDATE inventory_compounds SET name = ?, description = ?, batch_id = ?, size = ?, location = ?, label_info = ? WHERE id = ? AND owner_id = ?"
         );
-        $stmt->bind_param('sssdssii', $name, $description, $batch_id, $size, $location, $label_info, $id, $userID);
+        $stmt->bind_param('sssdssis', $name, $description, $batch_id, $size, $location, $label_info, $id, $userID);
 
         if ($stmt->execute()) {
             echo json_encode(["success" => "Compound updated successfully"]);
@@ -1159,7 +1159,7 @@ if ($_POST['action'] === 'delete' && !empty($_POST['compoundId']) && $_POST['typ
 
     // Use prepared statement to delete the record
     $stmt = $conn->prepare("DELETE FROM inventory_compounds WHERE id = ? AND owner_id = ?");
-    $stmt->bind_param("ii", $id, $userID);
+    $stmt->bind_param("is", $id, $userID);
 
     if ($stmt->execute()) {
         $response["success"] = 'Compound deleted successfully.';
@@ -1221,28 +1221,35 @@ if($_POST['ingredient_wipe'] == 'true'){
 
 //UPDATE CAS IFRA ENTRY
 if($_POST['action'] == 'editIFRA'){
-	$type = $_REQUEST['type'];
-	if(mysqli_query($conn, "UPDATE IFRALibrary SET $type = '".$_REQUEST['value']."' WHERE owner_id = '$userID' AND id = '".$_REQUEST['pk']."'")){
-		$response["success"] = 'IFRA entry updated';
-	}else{
-		$response["error"] = 'Something went wrong '.mysqli_error($conn);
-	}
-	
-	echo json_encode($response);
-	return;	
+    $type = $_REQUEST['type'];
+    $value = $_REQUEST['value'];
+    $pk = $_REQUEST['pk'];
+
+    $stmt = $conn->prepare("UPDATE IFRALibrary SET $type = ? WHERE owner_id = ? AND id = ?");
+    $stmt->bind_param('ssi', $value, $userID, $pk);
+
+    if($stmt->execute()){
+        $response["success"] = 'IFRA entry updated';
+    }else{
+        $response["error"] = 'Something went wrong '. $stmt->error;
+    }
+
+    $stmt->close();
+    echo json_encode($response);
+    return;	
 }
 
 //DELETE IFRA ENTRY
 if($_POST['IFRA'] == 'delete' && $_POST['ID'] && $_POST['type'] == 'IFRA'){
-	
-	if(mysqli_query($conn, "DELETE FROM IFRALibrary WHERE WHERE owner_id = '$userID' AND id = '".$_POST['ID']."'")){
-		$response["success"] = 'IFRA entry deleted';
-	}else{
-		$response["error"] = 'Something went wrong '.mysqli_error($conn);
-	}
-	
-	echo json_encode($response);
-	return;	
+    
+    if(mysqli_query($conn, "DELETE FROM IFRALibrary WHERE owner_id = '$userID' AND id = '".$_POST['ID']."'")){
+        $response["success"] = 'IFRA entry deleted';
+    }else{
+        $response["error"] = 'Something went wrong '.mysqli_error($conn);
+    }
+    
+    echo json_encode($response);
+    return;	
 }
 
 //Merge ingredients
@@ -1310,7 +1317,7 @@ if ($_POST['action'] === 'import' && $_POST['source'] === 'PVLibrary' && $_POST[
 
         // Check if the ingredient already exists
         $stmtCheck = $conn->prepare("SELECT name FROM ingredients WHERE owner_id = ? AND name = ?");
-        $stmtCheck->bind_param("is", $userID, $insertPairs['name']);
+        $stmtCheck->bind_param("ss", $userID, $insertPairs['name']);
         $stmtCheck->execute();
         $result = $stmtCheck->get_result();
 
@@ -1362,7 +1369,7 @@ if ($_REQUEST['action'] === 'htmlTmplUpdate') {
 
     // Use a prepared statement to update the database
     $stmt = $conn->prepare("UPDATE templates SET $name = ? WHERE owner_id = ? AND id = ?");
-    $stmt->bind_param("sii", $value, $userID, $id);
+    $stmt->bind_param("ssi", $value, $userID, $id);
 
     if ($stmt->execute()) {
         $response["success"] = 'Template updated successfully.';
@@ -1387,7 +1394,7 @@ if ($_POST['action'] === 'htmlTmplDelete' && isset($_POST['tmplID']) && isset($_
     }
 
     $stmt = $conn->prepare("DELETE FROM templates WHERE owner_id = ? AND id = ?");
-    $stmt->bind_param("ii", $userID, $id);
+    $stmt->bind_param("si", $userID, $id);
 
     if ($stmt->execute()) {
         $response["success"] = 'Template ' . htmlspecialchars($name) . ' deleted successfully.';
@@ -1471,7 +1478,7 @@ if ($_POST['perfType'] === 'delete' && isset($_POST['pID']) && isset($_POST['pNa
     }
 
     $stmt = $conn->prepare("DELETE FROM perfumeTypes WHERE id = ? AND owner_id = ?");
-    $stmt->bind_param("ii", $id, $userID);
+    $stmt->bind_param("is", $id, $userID);
 
     if ($stmt->execute()) {
         $response["success"] = 'Perfume type ' . htmlspecialchars($name) . ' deleted successfully.';
@@ -1511,7 +1518,7 @@ if ($_POST['action'] === 'perfTypeAdd') {
     $desc = isset($_POST['perfType_desc']) ? trim(filter_var($_POST['perfType_desc'], FILTER_SANITIZE_STRING)) : '';
 
     $stmtCheck = $conn->prepare("SELECT COUNT(*) FROM perfumeTypes WHERE name = ? AND owner_id = ?");
-    $stmtCheck->bind_param("si", $name, $userID);
+    $stmtCheck->bind_param("ss", $name, $userID);
     $stmtCheck->execute();
     $stmtCheck->bind_result($count);
     $stmtCheck->fetch();
@@ -1532,7 +1539,7 @@ if ($_POST['action'] === 'perfTypeAdd') {
         return;
     }
 
-    $stmtInsert->bind_param("sssi", $name, $conc, $desc, $userID);
+    $stmtInsert->bind_param("ssss", $name, $conc, $desc, $userID);
 
     if ($stmtInsert->execute()) {
         $response["success"] = $name . ' added';
@@ -1598,7 +1605,7 @@ if ($_GET['action'] === 'update_accessory_pic') {
 
         // Delete previous document entries
         $stmtDelete = $conn->prepare("DELETE FROM documents WHERE ownerID = ? AND type = '5' AND owner_id = ?");
-        $stmtDelete->bind_param("ii", $accessory, $userID);
+        $stmtDelete->bind_param("is", $accessory, $userID);
         if (!$stmtDelete->execute()) {
             error_log("PV error: Failed to delete old document. " . $stmtDelete->error);
             $response["error"] = "Failed to update photo. Please try again.";
@@ -1609,7 +1616,7 @@ if ($_GET['action'] === 'update_accessory_pic') {
 
         // Insert the new document
         $stmtInsert = $conn->prepare("INSERT INTO documents (ownerID, name, type, notes, docData, owner_id) VALUES (?, '-', '5', '-', ?, ?)");
-        $stmtInsert->bind_param("isi", $accessory, $docData, $userID);
+        $stmtInsert->bind_param("iss", $accessory, $docData, $userID);
 
         if ($stmtInsert->execute()) {
             unlink($upload_path); // Clean up temporary file
@@ -1692,7 +1699,7 @@ if ($_GET['update_bottle_pic']) {
 
         // Delete previous document entry
         $stmtDelete = $conn->prepare("DELETE FROM documents WHERE ownerID = ? AND type = '4' AND owner_id = ?");
-        $stmtDelete->bind_param("ii", $bottle_id, $userID);
+        $stmtDelete->bind_param("is", $bottle_id, $userID);
 
         if (!$stmtDelete->execute()) {
             error_log("PV error: Failed to delete existing document for bottle ID $bottle_id. " . $stmtDelete->error);
@@ -1701,7 +1708,7 @@ if ($_GET['update_bottle_pic']) {
 
         // Insert new document entry
         $stmtInsert = $conn->prepare("INSERT INTO documents (ownerID, name, type, notes, docData, owner_id) VALUES (?, '-', '4', '-', ?, ?)");
-        $stmtInsert->bind_param("isi", $bottle_id, $docData, $userID);
+        $stmtInsert->bind_param("iss", $bottle_id, $docData, $userID);
 
         if ($stmtInsert->execute()) {
             unlink($upload_path); // Clean up temporary file
@@ -1762,7 +1769,7 @@ if ($_POST['action'] === 'update_bottle_data') {
                                 supplier = ?, supplier_link = ?, notes = ?, pieces = ?, weight = ? 
                             WHERE id = ? AND owner_id = ?");
     
-	$stmt->bind_param("sdddddsssidii", $name, $ml, $price, $height, $width, $diameter, 
+	$stmt->bind_param("sdddddsssidis", $name, $ml, $price, $height, $width, $diameter, 
 	$supplier, $supplier_link, $notes, $pieces, $weight, $id, $userID);
 
     if ($stmt->execute()) {
@@ -1805,7 +1812,7 @@ if ($_POST['action'] === 'update_accessory_data') {
                             SET name = ?, accessory = ?, price = ?, supplier = ?, supplier_link = ?, pieces = ? 
                             WHERE id = ? AND owner_id = ?");
     
-    $stmt->bind_param("ssdsdiii", $name, $accessory, $price, $supplier, $supplier_link, $pieces, $id, $userID);
+    $stmt->bind_param("ssdsdiis", $name, $accessory, $price, $supplier, $supplier_link, $pieces, $id, $userID);
 
     if ($stmt->execute()) {
         $response['success'] = "Accessory updated";
@@ -1993,7 +2000,7 @@ if ($_POST['synonym'] == 'import' && $_POST['method'] == 'pubchem') {
             $einecs = explode('EINECS ', $d);
             if (isset($einecs[1])) {
                 $updateStmt = $conn->prepare("UPDATE ingredients SET einecs = ? WHERE cas = ? AND owner_id = ?");
-                $updateStmt->bind_param('ssi', $einecs[1], $cas, $userID);
+                $updateStmt->bind_param('sss', $einecs[1], $cas, $userID);
                 $updateStmt->execute();
                 $updateStmt->close();
             }
@@ -2005,20 +2012,20 @@ if ($_POST['synonym'] == 'import' && $_POST['method'] == 'pubchem') {
             if (isset($fema[1])) {
                 $femaNumber = preg_replace("/[^0-9]/", "", $fema[1]);
                 $updateStmt = $conn->prepare("UPDATE ingredients SET FEMA = ? WHERE cas = ? AND owner_id = ?");
-                $updateStmt->bind_param('ssi', $femaNumber, $cas, $userID);
+                $updateStmt->bind_param('sss', $femaNumber, $cas, $userID);
                 $updateStmt->execute();
                 $updateStmt->close();
             }
         }
 
         // Check if synonym already exists
-        $stmt->bind_param('ssi', $d, $ing, $userID);
+        $stmt->bind_param('sss', $d, $ing, $userID);
         $stmt->execute();
         $stmt->store_result();
 
         if ($stmt->num_rows == 0) {
             // Insert new synonym if it doesn't exist
-            $insertStmt->bind_param('ssssi', $ing, $cid, $d, $source, $userID);
+            $insertStmt->bind_param('sssss', $ing, $cid, $d, $source, $userID);
             if ($insertStmt->execute()) {
                 $i++;
             }
@@ -2115,7 +2122,7 @@ if ($_POST['replacement'] == 'add') {
     }
     
     $stmt = $conn->prepare("SELECT ing_rep_name FROM ingReplacements WHERE owner_id = ? AND ing_name = ? AND ing_rep_name = ?");
-    $stmt->bind_param('iss', $userID, $ing_name, $_POST['rName']);
+    $stmt->bind_param('sss', $userID, $ing_name, $_POST['rName']);
     $stmt->execute();
     $stmt->store_result();
 
@@ -2221,7 +2228,7 @@ if($_POST['ingSupplier'] == 'getPrice'){
 	
 	if($newPrice = priceScrape($supplier_link,$size,$supp_data['price_tag_start'],$supp_data['price_tag_end'],$supp_data['add_costs'],$supp_data['price_per_size'])){
 		if(mysqli_query($conn, "UPDATE suppliers SET price = '$newPrice' WHERE ingSupplierID = '$ingSupplierID' AND ingID='$ingID' AND owner_id = '$userID'")){
-			$response["success"] = '<strong>Price updated</strong>';
+			$response["success"] = 'Price updated';
 			echo json_encode($response);
 		}
 	}else{
@@ -2986,7 +2993,7 @@ if ($_POST['manage'] === 'ingredient' && $_POST['tab'] === 'usage_limits') {
     );
 
     $stmt->bind_param(
-        'iiisiddddddddddddddddddii',
+        'iiisiddddddddddddddddddis',
         $byPassIFRA, $noUsageLimit, $flavor_use, $usage_type, $allergen, 
         $categories['cat1'], $categories['cat2'], $categories['cat3'], 
         $categories['cat4'], $categories['cat5A'], $categories['cat5B'], 
@@ -3262,7 +3269,7 @@ if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'faid_info') {
     $checkStmt = $conn->prepare(
         "SELECT COUNT(*) FROM ingredient_safety_data WHERE ingID = ? AND owner_id = ?"
     );
-    $checkStmt->bind_param('ii', $ingID, $userID);
+    $checkStmt->bind_param('is', $ingID, $userID);
     $checkStmt->execute();
     $checkStmt->bind_result($count);
     $checkStmt->fetch();
@@ -3285,7 +3292,7 @@ if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'faid_info') {
         );
 
         $stmt->bind_param(
-            'ssssssssii',
+            'ssssssssis',
             $first_aid_general,
             $first_aid_inhalation,
             $first_aid_skin,
@@ -3308,7 +3315,7 @@ if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'faid_info') {
         );
 
         $stmt->bind_param(
-            'issssssssi',
+            'isssssssss',
             $ingID,
             $first_aid_general,
             $first_aid_inhalation,
@@ -3368,7 +3375,7 @@ if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'fire_info') {
     $checkStmt = $conn->prepare(
         "SELECT COUNT(*) FROM ingredient_safety_data WHERE ingID = ? AND owner_id = ?"
     );
-    $checkStmt->bind_param('ii', $ingID, $userID);
+    $checkStmt->bind_param('is', $ingID, $userID);
     $checkStmt->execute();
     $checkStmt->bind_result($count);
     $checkStmt->fetch();
@@ -3388,7 +3395,7 @@ if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'fire_info') {
         );
 
         $stmt->bind_param(
-            'ssssiii',
+            'ssssiis',
             $firefighting_suitable_media,
             $firefighting_non_suitable_media,
             $firefighting_special_hazards,
@@ -3407,7 +3414,7 @@ if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'fire_info') {
         );
 
         $stmt->bind_param(
-            'isssssi',
+            'issssss',
             $ingID,
             $firefighting_suitable_media,
             $firefighting_non_suitable_media,
@@ -3459,7 +3466,7 @@ if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'save_acc_rel') {
     $checkStmt = $conn->prepare(
         "SELECT COUNT(*) FROM ingredient_safety_data WHERE ingID = ? AND owner_id = ?"
     );
-    $checkStmt->bind_param('ii', $ingID, $userID);
+    $checkStmt->bind_param('is', $ingID, $userID);
     $checkStmt->execute();
     $checkStmt->bind_result($count);
     $checkStmt->fetch();
@@ -3479,7 +3486,7 @@ if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'save_acc_rel') {
         );
 
         $stmt->bind_param(
-            'ssssiii',
+            'ssssiis',
             $accidental_release_per_precautions,
             $accidental_release_env_precautions,
             $accidental_release_cleaning,
@@ -3498,7 +3505,7 @@ if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'save_acc_rel') {
         );
 
         $stmt->bind_param(
-            'isssssi',
+            'issssss',
             $ingID,
             $accidental_release_per_precautions,
             $accidental_release_env_precautions,
@@ -3549,7 +3556,7 @@ if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'HS') {
     $checkStmt = $conn->prepare(
         "SELECT COUNT(*) FROM ingredient_safety_data WHERE ingID = ? AND owner_id = ?"
     );
-    $checkStmt->bind_param('ii', $ingID, $userID);
+    $checkStmt->bind_param('is', $ingID, $userID);
     $checkStmt->execute();
     $checkStmt->bind_result($count);
     $checkStmt->fetch();
@@ -3569,7 +3576,7 @@ if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'HS') {
         );
 
         $stmt->bind_param(
-            'ssssiii',
+            'ssssiis',
             $handling_protection,
             $handling_hygiene,
             $handling_safe_storage,
@@ -3588,7 +3595,7 @@ if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'HS') {
         );
 
         $stmt->bind_param(
-            'isssssi',
+            'issssss',
             $ingID,
             $handling_protection,
             $handling_hygiene,
@@ -3647,7 +3654,7 @@ if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'exposure_data') {
     $checkStmt = $conn->prepare(
         "SELECT COUNT(*) FROM ingredient_safety_data WHERE ingID = ? AND owner_id = ?"
     );
-    $checkStmt->bind_param('ii', $ingID, $userID);
+    $checkStmt->bind_param('is', $ingID, $userID);
     $checkStmt->execute();
     $checkStmt->bind_result($count);
     $checkStmt->fetch();
@@ -3672,7 +3679,7 @@ if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'exposure_data') {
         );
 
         $stmt->bind_param(
-            'ssssssssssii',
+            'ssssssssssis',
             $exposure_occupational_limits,
             $exposure_biological_limits,
             $exposure_intented_use_limits,
@@ -3699,7 +3706,7 @@ if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'exposure_data') {
         );
 
         $stmt->bind_param(
-            'isssssssssii',
+            'isssssssssis',
             $ingID,
             $exposure_occupational_limits,
             $exposure_biological_limits,
@@ -3781,7 +3788,7 @@ if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'pcp') {
     $checkStmt = $conn->prepare(
         "SELECT COUNT(*) FROM ingredient_safety_data WHERE ingID = ? AND owner_id = ?"
     );
-    $checkStmt->bind_param('ii', $ingID, $userID);
+    $checkStmt->bind_param('is', $ingID, $userID);
     $checkStmt->execute();
     $checkStmt->bind_result($count);
     $checkStmt->fetch();
@@ -3803,7 +3810,7 @@ if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'pcp') {
         );
 
 		$stmt->bind_param(
-			'sssssssssssssssssssssssii', // 25 placeholders
+			'sssssssssssssssssssssssis', // 25 placeholders
 			$odor_threshold, $pH, $melting_point, $boiling_point, $flash_point, 
 			$evaporation_rate, $solubility, $auto_infl_temp, $decomp_temp, 
 			$viscosity, $explosive_properties, $oxidising_properties, $particle_chars, 
@@ -3825,7 +3832,7 @@ if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'pcp') {
         );
 
         $stmt->bind_param(
-            'isssssssssssssssssssssssi', 
+            'issssssssssssssssssssssss', 
             $ingID, $odor_threshold, $pH, $melting_point, $boiling_point, 
             $flash_point, $evaporation_rate, $solubility, $auto_infl_temp, $decomp_temp, 
             $viscosity, $explosive_properties, $oxidising_properties, $particle_chars, 
@@ -3875,7 +3882,7 @@ if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'sr_info') {
     $checkStmt = $conn->prepare(
         "SELECT COUNT(*) FROM ingredient_safety_data WHERE ingID = ? AND owner_id = ?"
     );
-    $checkStmt->bind_param('ii', $ingID, $userID);
+    $checkStmt->bind_param('is', $ingID, $userID);
 
     if (!$checkStmt->execute()) {
         error_log("SR Info Error: Failed to check existence for ingID: $ingID, Error: " . $checkStmt->error);
@@ -3905,7 +3912,7 @@ if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'sr_info') {
         }
 
         $stmt->bind_param(
-            'ssssssi', $stabillity_reactivity, $stabillity_chemical, $stabillity_reactions,
+            'sssssss', $stabillity_reactivity, $stabillity_chemical, $stabillity_reactions,
             $stabillity_avoid, $stabillity_incompatibility, $ingID, $userID
         );
     } else {
@@ -3925,7 +3932,7 @@ if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'sr_info') {
         }
 
         $stmt->bind_param(
-            'isssssi', $ingID, $stabillity_reactivity, $stabillity_chemical, $stabillity_reactions,
+            'issssss', $ingID, $stabillity_reactivity, $stabillity_chemical, $stabillity_reactions,
             $stabillity_avoid, $stabillity_incompatibility, $userID
         );
     }
@@ -3984,7 +3991,7 @@ if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'tx_info') {
     $checkStmt = $conn->prepare(
         "SELECT COUNT(*) FROM ingredient_safety_data WHERE ingID = ? AND owner_id = ?"
     );
-    $checkStmt->bind_param('ii', $ingID, $userID);
+    $checkStmt->bind_param('is', $ingID, $userID);
 
     if (!$checkStmt->execute()) {
         error_log("Toxicological Info Error: Failed to check existence for ingID: $ingID, Error: " . $checkStmt->error);
@@ -4017,7 +4024,7 @@ if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'tx_info') {
         }
 
         $stmt->bind_param(
-            'ssssssssssssssii', $toxicological_acute_oral, $toxicological_acute_dermal, 
+            'ssssssssssssssis', $toxicological_acute_oral, $toxicological_acute_dermal, 
             $toxicological_acute_inhalation, $toxicological_skin, $toxicological_eye, 
             $toxicological_sensitisation, $toxicological_organ_repeated, $toxicological_organ_single, 
             $toxicological_carcinogencity, $toxicological_reproductive, $toxicological_cell_mutation, 
@@ -4044,7 +4051,7 @@ if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'tx_info') {
         }
 
         $stmt->bind_param(
-            'isssssssssssssii', $ingID, $toxicological_acute_oral, $toxicological_acute_dermal, 
+            'isssssssssssssis', $ingID, $toxicological_acute_oral, $toxicological_acute_dermal, 
             $toxicological_acute_inhalation, $toxicological_skin, $toxicological_eye, 
             $toxicological_sensitisation, $toxicological_organ_repeated, $toxicological_organ_single, 
             $toxicological_carcinogencity, $toxicological_reproductive, $toxicological_cell_mutation, 
@@ -4099,7 +4106,7 @@ if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'ec_info') {
     $checkStmt = $conn->prepare(
         "SELECT COUNT(*) FROM ingredient_safety_data WHERE ingID = ? AND owner_id = ?"
     );
-    $checkStmt->bind_param('ii', $ingID, $userID);
+    $checkStmt->bind_param('is', $ingID, $userID);
 
     if (!$checkStmt->execute()) {
         error_log("EC Info Error: Failed to check existence for ingID: $ingID, Error: " . $checkStmt->error);
@@ -4130,7 +4137,7 @@ if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'ec_info') {
         }
 
         $stmt->bind_param(
-            'sssssssiii', $ecological_toxicity, $ecological_persistence, $ecological_bioaccumulative, 
+            'sssssssiis', $ecological_toxicity, $ecological_persistence, $ecological_bioaccumulative, 
             $ecological_soil_mobility, $ecological_PBT_vPvB, $ecological_endocrine_properties, 
             $ecological_other_adv_effects, $ecological_additional_ecotoxicological_info, 
             $ingID, $userID
@@ -4153,7 +4160,7 @@ if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'ec_info') {
         }
 
         $stmt->bind_param(
-            'issssssssi', $ingID, $ecological_toxicity, $ecological_persistence, 
+            'isssssssss', $ingID, $ecological_toxicity, $ecological_persistence, 
             $ecological_bioaccumulative, $ecological_soil_mobility, $ecological_PBT_vPvB, 
             $ecological_endocrine_properties, $ecological_other_adv_effects, 
             $ecological_additional_ecotoxicological_info, $userID
@@ -4195,7 +4202,7 @@ if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'dis_info') {
     $checkStmt = $conn->prepare(
         "SELECT COUNT(*) FROM ingredient_safety_data WHERE ingID = ? AND owner_id = ?"
     );
-    $checkStmt->bind_param('ii', $ingID, $userID);
+    $checkStmt->bind_param('is', $ingID, $userID);
 
     if (!$checkStmt->execute()) {
         error_log("Disposal Info Error: Failed to check existence for ingID: $ingID, Error: " . $checkStmt->error);
@@ -4224,7 +4231,7 @@ if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'dis_info') {
         }
 
         $stmt->bind_param(
-            'ssii', $disposal_product, $disposal_remarks, $ingID, $userID
+            'ssis', $disposal_product, $disposal_remarks, $ingID, $userID
         );
     } else {
         // Insert a new entry
@@ -4242,7 +4249,7 @@ if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'dis_info') {
         }
 
         $stmt->bind_param(
-            'issi', $ingID, $disposal_product, $disposal_remarks, $userID
+            'isss', $ingID, $disposal_product, $disposal_remarks, $userID
         );
     }
 
@@ -4291,7 +4298,7 @@ if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'trans_info') {
     $checkStmt = $conn->prepare(
         "SELECT COUNT(*) FROM ingredient_safety_data WHERE ingID = ? AND owner_id = ?"
     );
-    $checkStmt->bind_param('ii', $ingID, $userID);
+    $checkStmt->bind_param('is', $ingID, $userID);
 
     if (!$checkStmt->execute()) {
         error_log("Transportation Info Error: Failed to check existence for ingID: $ingID, Error: " . $checkStmt->error);
@@ -4322,7 +4329,7 @@ if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'trans_info') {
         }
 
         $stmt->bind_param(
-            'sssssssii', $transport_un_number, $transport_shipping_name, $transport_hazard_class, 
+            'sssssssis', $transport_un_number, $transport_shipping_name, $transport_hazard_class, 
             $transport_packing_group, $transport_env_hazards, $transport_precautions, $transport_bulk_shipping, 
             $ingID, $userID
         );
@@ -4343,7 +4350,7 @@ if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'trans_info') {
         }
 
         $stmt->bind_param(
-            'isssssssi', $ingID, $transport_un_number, $transport_shipping_name, $transport_hazard_class, 
+            'issssssss', $ingID, $transport_un_number, $transport_shipping_name, $transport_hazard_class, 
             $transport_packing_group, $transport_env_hazards, $transport_precautions, 
             $transport_bulk_shipping, $userID
         );
@@ -4389,7 +4396,7 @@ if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'leg_info') {
     $checkStmt = $conn->prepare(
         "SELECT COUNT(*) FROM ingredient_safety_data WHERE ingID = ? AND owner_id = ?"
     );
-    $checkStmt->bind_param('ii', $ingID, $userID);
+    $checkStmt->bind_param('is', $ingID, $userID);
 
     if (!$checkStmt->execute()) {
         error_log("Legislation Info Error: Failed to check existence for ingID: $ingID, Error: " . $checkStmt->error);
@@ -4419,7 +4426,7 @@ if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'leg_info') {
         }
 
         $stmt->bind_param(
-            'ssssii', $legislation_safety, $legislation_eu, $legislation_chemical_safety_assessment, 
+            'ssssis', $legislation_safety, $legislation_eu, $legislation_chemical_safety_assessment, 
             $legislation_other_info, $ingID, $userID
         );
     } else {
@@ -4439,7 +4446,7 @@ if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'leg_info') {
         }
 
         $stmt->bind_param(
-            'issssi', $ingID, $legislation_safety, $legislation_eu, $legislation_chemical_safety_assessment, 
+            'isssss', $ingID, $legislation_safety, $legislation_eu, $legislation_chemical_safety_assessment, 
             $legislation_other_info, $userID
         );
     }
@@ -4529,12 +4536,12 @@ if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'add_info') {
     // Bind parameters
     if ($exists) {
         $stmt->bind_param(
-            'ssssssssi', $add_info_changes, $add_info_acronyms, $add_info_references, $add_info_HazCom, 
+            'sssssssss', $add_info_changes, $add_info_acronyms, $add_info_references, $add_info_HazCom, 
             $add_info_GHS, $add_info_training, $add_info_other, $userID, $ingID
         );
     } else {
         $stmt->bind_param(
-            'isssssssi', $ingID, $add_info_changes, $add_info_acronyms, $add_info_references, $add_info_HazCom, 
+            'issssssss', $ingID, $add_info_changes, $add_info_acronyms, $add_info_references, $add_info_HazCom, 
             $add_info_GHS, $add_info_training, $add_info_other, $userID
         );
     }
@@ -4576,7 +4583,7 @@ if ($_POST['action'] == 'import' && $_POST['kind'] == 'formula') {
     // Check if the formula has already been downloaded by the user
     $sql_check = "SELECT fid FROM formulasMetaData WHERE name = ? AND src = 1 AND owner_id = ?";
     $stmt_check = $conn->prepare($sql_check);
-    $stmt_check->bind_param("si", $jsonData['meta']['name'], $userID);
+    $stmt_check->bind_param("ss", $jsonData['meta']['name'], $userID);
     $stmt_check->execute();
     $stmt_check->store_result();
     
@@ -4594,7 +4601,7 @@ if ($_POST['action'] == 'import' && $_POST['kind'] == 'formula') {
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?)";
     
     $stmt_insert = $conn->prepare($sql_insert);
-    $stmt_insert->bind_param("ssssssssssi", 
+    $stmt_insert->bind_param("sssssssssss", 
         $jsonData['meta']['name'], $jsonData['meta']['product_name'], $fid, 
         $jsonData['meta']['profile'], $jsonData['meta']['gender'], $jsonData['meta']['notes'], 
         $jsonData['meta']['defView'], $jsonData['meta']['catClass'], $jsonData['meta']['finalType'], 
@@ -4613,7 +4620,7 @@ if ($_POST['action'] == 'import' && $_POST['kind'] == 'formula') {
     // Insert the formula source tag
     $source = $jsonData['meta']['source'];
     $stmt_tag = $conn->prepare("INSERT INTO formulasTags (formula_id, tag_name, owner_id) VALUES (?, ?, ?)");
-    $stmt_tag->bind_param("isi", $last_id, $source, $userID);
+    $stmt_tag->bind_param("iss", $last_id, $source, $userID);
     if (!$stmt_tag->execute()) {
         $response['error'] = 'Unable to insert formula source tag: ' . $stmt_tag->error;
         echo json_encode($response);
@@ -4630,14 +4637,14 @@ if ($_POST['action'] == 'import' && $_POST['kind'] == 'formula') {
         
         // Check if the ingredient exists in the database
         $stmt_get_ing = $conn->prepare("SELECT id FROM ingredients WHERE name = ? AND owner_id = ?");
-        $stmt_get_ing->bind_param("si", $ingredient, $userID);
+        $stmt_get_ing->bind_param("ss", $ingredient, $userID);
         $stmt_get_ing->execute();
         $stmt_get_ing->store_result();
         
         if ($stmt_get_ing->num_rows == 0) {
             // Insert the ingredient if it doesn't exist
             $stmt_insert_ing = $conn->prepare("INSERT INTO ingredients (name, owner_id) VALUES (?, ?)");
-            $stmt_insert_ing->bind_param("si", $ingredient, $userID);
+            $stmt_insert_ing->bind_param("ss", $ingredient, $userID);
             if (!$stmt_insert_ing->execute()) {
                 $response['error'] = 'Unable to insert ingredient: ' . $stmt_insert_ing->error;
                 echo json_encode($response);
@@ -5189,6 +5196,7 @@ if($_GET['action'] == 'restoreIngredients') {
 
 //IMPORT IFRA JSON
 if($_GET['action'] == 'restoreIFRA'){
+    $result = [];
 	if (!file_exists($tmp_path)) {
 		mkdir($tmp_path, 0777, true);
 	}
@@ -5260,15 +5268,15 @@ if($_GET['action'] == 'restoreIFRA'){
 					`restricted_notes`, `specified_notes`, `type`, `risk`, `contrib_others`, 
 					`contrib_others_notes`, `cat1`, `cat2`, `cat3`, `cat4`, `cat5A`, 
 					`cat5B`, `cat5C`, `cat5D`, `cat6`, `cat7A`, `cat7B`, `cat8`, `cat9`, 
-					`cat10A`, `cat10B`, `cat11A`, `cat11B`, `cat12`,`owner_id`
+					`cat10A`, `cat10B`, `cat11A`, `cat11B`, `cat12`, `owner_id`
 				) VALUES (
 					'$ifra_key', '$image', '$amendment', '$prev_pub', '$last_pub', 
 					'$deadline_existing', '$deadline_new', '$name', '$cas', '$cas_comment', 
 					'$synonyms', '$formula', '$flavor_use', '$prohibited_notes', '$restricted_photo_notes', 
 					'$restricted_notes', '$specified_notes', '$type', '$risk', '$contrib_others', 
-					'$contrib_others_notes', $cat1, $cat2, $cat3, $cat4, $cat5A, 
-					$cat5B, $cat5C, $cat5D, $cat6, $cat7A, $cat7B, $cat8, $cat9, 
-					$cat10A, $cat10B, $cat11A, $cat11B, $cat12, $userID
+					'$contrib_others_notes', '$cat1', '$cat2', '$cat3', '$cat4', '$cat5A', 
+					'$cat5B', '$cat5C', '$cat5D', '$cat6', '$cat7A', '$cat7B', '$cat8', '$cat9', 
+                    '$cat10A', '$cat10B', '$cat11A', '$cat11B', '$cat12', '$userID'
 				)
 			");
 		}
@@ -5746,7 +5754,7 @@ if ($_GET['action'] == 'importCategories') {
         if ($data['ingCategory']) {
             $stmt = $conn->prepare("INSERT INTO `ingCategory` (`name`, `notes`, `image`, `colorKey`, `owner_id`) VALUES (?, ?, ?, ?, ?)");
             foreach ($data['ingCategory'] as $d) {
-                $stmt->bind_param("ssssi", $d['name'], $d['notes'], $d['image'], $d['colorKey'], $userID);
+                $stmt->bind_param("sssss", $d['name'], $d['notes'], $d['image'], $d['colorKey'], $userID);
                 if (!$stmt->execute()) {
                     $success = false;
                     $result['error'] = "Error adding category: " . $stmt->error;
@@ -5759,7 +5767,7 @@ if ($_GET['action'] == 'importCategories') {
         if ($data['formulaCategories']) {
             $stmt = $conn->prepare("INSERT INTO `formulaCategories` (`name`, `cname`, `type`, `colorKey`, `owner_id`) VALUES (?, ?, ?, ?, ?)");
             foreach ($data['formulaCategories'] as $d) {
-                $stmt->bind_param("ssssi", $d['name'], $d['cname'], $d['type'], $d['colorKey'], $userID);
+                $stmt->bind_param("sssss", $d['name'], $d['cname'], $d['type'], $d['colorKey'], $userID);
                 if (!$stmt->execute()) {
                     $success = false;
                     $result['error'] = "Error adding formula category: " . $stmt->error;
@@ -5772,7 +5780,7 @@ if ($_GET['action'] == 'importCategories') {
 		if ($data['ingProfiles']) {
             $stmt = $conn->prepare("INSERT INTO `ingProfiles` (`name`, `notes`, `image`, `owner_id`) VALUES (?, ?, ?, ?)");
             foreach ($data['ingProfiles'] as $d) {
-                $stmt->bind_param("sssi", $d['name'], $d['notes'], $d['image'], $userID);
+                $stmt->bind_param("ssss", $d['name'], $d['notes'], $d['image'], $userID);
                 if (!$stmt->execute()) {
                     $success = false;
                     $result['error'] = "Error adding profile: " . $stmt->error;
@@ -5844,7 +5852,7 @@ if ($_GET['action'] == 'importMaking') {
                 ON DUPLICATE KEY UPDATE name=VALUES(name), todo=VALUES(todo)
             ");
             $todo = 1;
-            $stmtMeta->bind_param("ssii", $data['makeFormula'][0]['name'], $data['makeFormula'][0]['fid'], $todo, $userID);
+            $stmtMeta->bind_param("ssis", $data['makeFormula'][0]['name'], $data['makeFormula'][0]['fid'], $todo, $userID);
             if (!$stmtMeta->execute()) {
                 throw new Exception("Error inserting into formulasMetaData: " . $stmtMeta->error);
             }
@@ -5853,7 +5861,7 @@ if ($_GET['action'] == 'importMaking') {
             foreach ($data['makeFormula'] as $d) {
                 // Fetch or Insert `ingredient_id`
                 $stmtIngredient = $conn->prepare("SELECT id FROM `ingredients` WHERE name = ? AND owner_id = ?");
-                $stmtIngredient->bind_param("si", $d['ingredient'], $userID);
+                $stmtIngredient->bind_param("ss", $d['ingredient'], $userID);
                 $stmtIngredient->execute();
                 $stmtIngredient->bind_result($ingredient_id);
                 $stmtIngredient->fetch();
@@ -5861,7 +5869,7 @@ if ($_GET['action'] == 'importMaking') {
 
                 if (empty($ingredient_id)) {
                     $stmtInsertIngredient = $conn->prepare("INSERT INTO `ingredients` (name, owner_id) VALUES (?, ?)");
-                    $stmtInsertIngredient->bind_param("si", $d['ingredient'], $userID);
+                    $stmtInsertIngredient->bind_param("ss", $d['ingredient'], $userID);
                     if (!$stmtInsertIngredient->execute()) {
                         throw new Exception("Error inserting into ingredients: " . $stmtInsertIngredient->error);
                     }
@@ -5871,7 +5879,7 @@ if ($_GET['action'] == 'importMaking') {
 
                 // Insert into `makeFormula`
                 $stmtFormula->bind_param(
-                    "sssssssssssssi",
+                    "ssssssssssssss",
                     $d['fid'],
                     $d['name'],
                     $d['ingredient'],
@@ -5902,14 +5910,14 @@ if ($_GET['action'] == 'importMaking') {
             foreach ($data['makeFormula'] as $d) {
                 // Fetch `ingredient_id` again in case it was updated earlier
                 $stmtIngredient = $conn->prepare("SELECT id FROM `ingredients` WHERE name = ? AND owner_id = ?");
-                $stmtIngredient->bind_param("si", $d['ingredient'], $userID);
+                $stmtIngredient->bind_param("ss", $d['ingredient'], $userID);
                 $stmtIngredient->execute();
                 $stmtIngredient->bind_result($ingredient_id);
                 $stmtIngredient->fetch();
                 $stmtIngredient->close();
 
                 $stmtInsertFormulas->bind_param(
-                    "sssssssi",
+                    "ssssssss",
                     $d['name'],
                     $d['fid'],
                     $d['ingredient'],
@@ -6726,7 +6734,7 @@ if($_POST['action'] == 'deleteFormula' && $_POST['fid']){
 	}
 	
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$fid' AND isProtected = '1' AND owner_id = '$userID'"))){
-		$response['error'] = 'Formula '.$fname.' is protected</div>';
+		$response['error'] = 'Formula '.$fname.' is protected and cannot be deleted';
 		echo json_encode($response);
 		return;
 	}

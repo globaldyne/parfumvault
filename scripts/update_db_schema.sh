@@ -75,7 +75,7 @@ if [ "$USER_SETTINGS_TABLE_EXISTS" -eq 0 ]; then
         \`id\` INT(11) NOT NULL AUTO_INCREMENT,
         \`key_name\` VARCHAR(255) NOT NULL,
         \`value\` LONGTEXT NOT NULL,
-        \`owner_id\` INT NOT NULL,
+        \`owner_id\` VARCHAR(255) NOT NULL,
         \`created_at\` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         \`updated_at\` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         PRIMARY KEY (\`id\`)

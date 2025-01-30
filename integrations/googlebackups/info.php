@@ -40,7 +40,6 @@ $(document).ready(function() {
 		type: "GET",
 		dataType: 'json',
 		success: function (data) {
-			console.log(data.data.version);
 			if(data.success){
 				$("#version").text(data.data.version);
 				$("#backup_folder").text(data.data.backup_folder);

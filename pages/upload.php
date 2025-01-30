@@ -69,7 +69,7 @@ if (isset($_GET['upload_ing_cat_pic'], $_GET['catID'])) {
     // Update the database
     $query = "UPDATE ingCategory SET image = ? WHERE id = ? AND owner_id = ?";
     $stmt = mysqli_prepare($conn, $query);
-    mysqli_stmt_bind_param($stmt, "ssi", $docData, $id, $userID);
+    mysqli_stmt_bind_param($stmt, "sss", $docData, $id, $userID);
 
     if (mysqli_stmt_execute($stmt)) {
         // Clean up the temporary file
@@ -261,7 +261,7 @@ if ($_GET['type'] == 'accessory') {
 
         // Check if accessory already exists
         $stmtCheck = $conn->prepare("SELECT id FROM inventory_accessories WHERE name = ? AND owner_id = ?");
-        $stmtCheck->bind_param("si", $name, $userID);
+        $stmtCheck->bind_param("ss", $name, $userID);
         if (!$stmtCheck->execute()) {
             error_log("PV error: Failed to check for existing accessory. " . $stmtCheck->error);
             $response["error"] = "Failed to verify accessory existence.";
@@ -285,12 +285,12 @@ if ($_GET['type'] == 'accessory') {
 
             // Insert accessory details
             $stmtInsert = $conn->prepare("INSERT INTO inventory_accessories (name, accessory, price, supplier, supplier_link, pieces, owner_id) VALUES (?, ?, ?, ?, ?, ?, ?)");
-            $stmtInsert->bind_param("ssdssii", $name, $accessory, $price, $supplier, $supplier_link, $pieces, $userID);
+            $stmtInsert->bind_param("ssdssis", $name, $accessory, $price, $supplier, $supplier_link, $pieces, $userID);
 
             if ($stmtInsert->execute()) {
                 $accessory_id = $stmtInsert->insert_id;
                 $stmtInsertDoc = $conn->prepare("INSERT INTO documents (ownerID, name, type, notes, docData, owner_id) VALUES (?, ?, '5', '-', ?, ?)");
-                $stmtInsertDoc->bind_param("issi", $accessory_id, $name, $docData, $userID);
+                $stmtInsertDoc->bind_param("isss", $accessory_id, $name, $docData, $userID);
 
                 if (!$stmtInsertDoc->execute()) {
                     error_log("PV error: Failed to insert document. " . $stmtInsertDoc->error);
