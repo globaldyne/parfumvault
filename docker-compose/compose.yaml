@@ -28,17 +28,17 @@ services:
       TMP_PATH: /tmp/
       FILE_EXT: 'pdf, doc, docx, xls, csv, xlsx, png, jpg, jpeg, gif'
       DB_BACKUP_PARAMETERS: '--column-statistics=1'
-  gbkagent:
-    image: globaldyne/gbkagent:latest
-    ports:
-      - 3000:3000
-    restart: always
-    environment:
-      DB_HOST: pvdb
-      DB_USER: pvault
-      DB_PASS: pvault
-      DB_NAME: pvault
-      VERBOSE: true
+  #gbkagent:
+  #  image: globaldyne/gbkagent:latest
+  #  ports:
+  #    - 3000:3000
+  #  restart: always
+  #  environment:
+  #    DB_HOST: pvdb
+  #    DB_USER: pvault
+  #    DB_PASS: pvault
+  #    DB_NAME: pvault
+  #    VERBOSE: true
   phpmyadmin:
     image: globaldyne/phpmyadmin:cloud
     ports:
