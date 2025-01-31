@@ -998,7 +998,7 @@ $(document).ready(function() {
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseBK">Cancel</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseBK">Close</button>
         <button type="submit" name="btnRestore" class="btn btn-primary" id="btnRestoreFormulas">Import</button>
       </div>
     </div>

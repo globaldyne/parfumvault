@@ -127,12 +127,12 @@ $('#btnRestoreFormulas').click(function() {
 			
 		success: function (data) {
 			if(data.success){
-				var msg = '<div class="alert alert-success">'+data.success+'</div>';
+				var msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>'+data.success+'</div>';
 				$("#btnRestoreFormulas").hide();
 				$("#backupArea").css('display', 'none');
 
 			}else if(data.error){
-				var msg = '<div class="alert alert-danger">'+data.error+'</div>';
+				var msg = '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>'+data.error+'</div>';
 				$("#btnRestoreFormulas").show();
 				$("#btnRestoreFormulas").prop("disabled", false);
 				$('#btnRestoreFormulas').prop('value', 'Import');

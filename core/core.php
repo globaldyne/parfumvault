@@ -5122,6 +5122,7 @@ if($_GET['action'] == 'exportFormulas'){
 
 //IMPORT FORMULAS
 if($_GET['action'] == 'restoreFormulas'){
+    $result = [];
 	if (!file_exists($tmp_path)) {
 		mkdir($tmp_path, 0777, true);
 	}
@@ -5303,6 +5304,7 @@ if($_GET['action'] == 'restoreIFRA'){
 
 //IMPORT SUPPLIERS
 if ($_GET['action'] == 'importSuppliers') {
+    $result = [];
     if (!file_exists($tmp_path)) {
         mkdir($tmp_path, 0777, true);
     }
@@ -5400,6 +5402,7 @@ if ($_GET['action'] == 'importSuppliers') {
 
 //IMPORT CUSTOMERS
 if ($_GET['action'] == 'importCustomers') {
+    $result = [];
     if (!file_exists($tmp_path)) {
         mkdir($tmp_path, 0777, true);
     }
@@ -5477,6 +5480,7 @@ if ($_GET['action'] == 'importCustomers') {
 
 //IMPORT BOTTLES
 if ($_GET['action'] == 'importBottles') {
+    $result = [];
     if (!file_exists($tmp_path)) {
         mkdir($tmp_path, 0777, true);
     }
@@ -5566,6 +5570,7 @@ if ($_GET['action'] == 'importBottles') {
 
 //IMPORT ACCESSORIES
 if ($_GET['action'] == 'importAccessories') {
+    $result = [];
     if (!file_exists($tmp_path)) {
         mkdir($tmp_path, 0777, true);
     }
@@ -5646,6 +5651,7 @@ if ($_GET['action'] == 'importAccessories') {
 
 //IMPORT COMPOUNDS
 if ($_GET['action'] == 'importCompounds') {
+    $result = [];
     if (!file_exists($tmp_path)) {
         mkdir($tmp_path, 0777, true);
     }
@@ -5726,6 +5732,8 @@ if ($_GET['action'] == 'importCompounds') {
 
 // IMPORT CATEGORIES
 if ($_GET['action'] == 'importCategories') {
+    $result = [];
+
     if (!file_exists($tmp_path)) {
         mkdir($tmp_path, 0777, true);
     }
@@ -5812,6 +5820,7 @@ if ($_GET['action'] == 'importCategories') {
 
 // IMPORT MAKING
 if ($_GET['action'] == 'importMaking') {
+    $result = [];
     if (!file_exists($tmp_path)) {
         mkdir($tmp_path, 0777, true);
     }
@@ -5837,25 +5846,28 @@ if ($_GET['action'] == 'importMaking') {
         $success = true;
 
         try {
+        foreach ($data['makeFormula'] as $d) {
+
             // Insert into `makeFormula`
             $stmtFormula = $conn->prepare("
                 INSERT INTO `makeFormula` 
-                (`fid`, `name`, `ingredient`, `ingredient_id`, `replacement_id`, `concentration`, `dilutant`, `quantity`, `overdose`, `originalQuantity`, `notes`, `skip`, `toAdd`, `owner_id`) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                (`fid`, `name`, `ingredient`, `ingredient_id`, `replacement_id`, `concentration`, `dilutant`, `quantity`, `overdose`, `originalQuantity`, `notes`, `skip`, `toAdd`, `created_at`, `owner_id`) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ");
 
-            // Insert into `formulasMetaData`
+            // Insert or update `formulasMetaData`
             $stmtMeta = $conn->prepare("
                 INSERT INTO formulasMetaData 
-                (name, fid, todo, owner_id) 
-                VALUES (?, ?, ?, ?) 
-                ON DUPLICATE KEY UPDATE name=VALUES(name), todo=VALUES(todo)
+                (name, fid, todo, scheduledOn, owner_id) 
+                VALUES (?, ?, ?, ?, ?) 
+                ON DUPLICATE KEY UPDATE name=VALUES(name), todo=VALUES(todo), scheduledOn=VALUES(scheduledOn)
             ");
             $todo = 1;
-            $stmtMeta->bind_param("ssis", $data['makeFormula'][0]['name'], $data['makeFormula'][0]['fid'], $todo, $userID);
+            $stmtMeta->bind_param("ssiss", $d['name'], $d['fid'], $todo, date('Y-m-d H:i:s'), $userID);
             if (!$stmtMeta->execute()) {
                 throw new Exception("Error inserting into formulasMetaData: " . $stmtMeta->error);
             }
+        }
             $stmtMeta->close();
 
             foreach ($data['makeFormula'] as $d) {
@@ -5877,35 +5889,77 @@ if ($_GET['action'] == 'importMaking') {
                     $stmtInsertIngredient->close();
                 }
 
-                // Insert into `makeFormula`
-                $stmtFormula->bind_param(
-                    "ssssssssssssss",
-                    $d['fid'],
-                    $d['name'],
-                    $d['ingredient'],
-                    $ingredient_id,
-                    $d['replacement_id'],
-                    $d['concentration'],
-                    $d['dilutant'],
-                    $d['quantity'],
-                    $d['overdose'],
-                    $d['originalQuantity'],
-                    $d['notes'],
-                    $d['skip'],
-                    $d['toAdd'],
-                    $userID
-                );
-                if (!$stmtFormula->execute()) {
-                    throw new Exception("Error inserting into makeFormula: " . $stmtFormula->error);
+                // Check if the entry exists in `makeFormula`
+                $stmtCheck = $conn->prepare("SELECT COUNT(*) FROM `makeFormula` WHERE fid = ? AND ingredient = ? AND owner_id = ?");
+                $stmtCheck->bind_param("sss", $d['fid'], $d['ingredient'], $userID);
+                $stmtCheck->execute();
+                $stmtCheck->bind_result($exists);
+                $stmtCheck->fetch();
+                $stmtCheck->close();
+
+                if ($exists > 0) {
+                    // Update existing entry
+                    $stmtUpdate = $conn->prepare("
+                        UPDATE `makeFormula` SET 
+                        replacement_id = ?, concentration = ?, dilutant = ?, quantity = ?, overdose = ?, originalQuantity = ?, notes = ?, skip = ?, toAdd = ?, created_at = ?
+                        WHERE fid = ? AND ingredient = ? AND owner_id = ?
+                    ");
+                    $stmtUpdate->bind_param(
+                        "sssssssssssss",
+                        $d['replacement_id'],
+                        $d['concentration'],
+                        $d['dilutant'],
+                        $d['quantity'],
+                        $d['overdose'],
+                        $d['originalQuantity'],
+                        $d['notes'],
+                        $d['skip'],
+                        $d['toAdd'],
+                        date('Y-m-d H:i:s'),
+                        $d['fid'],
+                        $d['ingredient'],
+                        $userID
+                    );
+                    if (!$stmtUpdate->execute()) {
+                        throw new Exception("Error updating makeFormula: " . $stmtUpdate->error);
+                    }
+                    $stmtUpdate->close();
+                } else {
+                    // Insert new entry
+                    $stmtFormula->bind_param(
+                        "sssssssssssssss",
+                        $d['fid'],
+                        $d['name'],
+                        $d['ingredient'],
+                        $ingredient_id,
+                        $d['replacement_id'],
+                        $d['concentration'],
+                        $d['dilutant'],
+                        $d['quantity'],
+                        $d['overdose'],
+                        $d['originalQuantity'],
+                        $d['notes'],
+                        $d['skip'],
+                        $d['toAdd'],
+                        date('Y-m-d H:i:s'),
+                        $userID
+                    );
+                    if (!$stmtFormula->execute()) {
+                        throw new Exception("Error inserting into makeFormula: " . $stmtFormula->error);
+                    }
                 }
             }
             $stmtFormula->close();
 
             // Insert into `formulas`
             $stmtInsertFormulas = $conn->prepare("
-                INSERT IGNORE INTO formulas 
+                INSERT INTO formulas 
                 (name, fid, ingredient, ingredient_id, concentration, dilutant, quantity, owner_id) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                ON DUPLICATE KEY UPDATE 
+                concentration = VALUES(concentration), 
+                dilutant = VALUES(dilutant), 
+                quantity = VALUES(quantity)
             ");
             foreach ($data['makeFormula'] as $d) {
                 // Fetch `ingredient_id` again in case it was updated earlier
@@ -5916,19 +5970,49 @@ if ($_GET['action'] == 'importMaking') {
                 $stmtIngredient->fetch();
                 $stmtIngredient->close();
 
-                $stmtInsertFormulas->bind_param(
-                    "ssssssss",
-                    $d['name'],
-                    $d['fid'],
-                    $d['ingredient'],
-                    $ingredient_id,
-                    $d['concentration'],
-                    $d['dilutant'],
-                    $d['quantity'],
-                    $userID
-                );
-                if (!$stmtInsertFormulas->execute()) {
-                    throw new Exception("Error inserting into formulas: " . $stmtInsertFormulas->error);
+                // Check if the ingredient already exists in the formulas table
+                $stmtCheckFormula = $conn->prepare("SELECT COUNT(*) FROM `formulas` WHERE ingredient = ? AND owner_id = ?");
+                $stmtCheckFormula->bind_param("ss", $d['ingredient'], $userID);
+                $stmtCheckFormula->execute();
+                $stmtCheckFormula->bind_result($exists);
+                $stmtCheckFormula->fetch();
+                $stmtCheckFormula->close();
+
+                if ($exists > 0) {
+                    // Update existing entry
+                    $stmtUpdateFormula = $conn->prepare("
+                        UPDATE `formulas` SET 
+                        concentration = ?, dilutant = ?, quantity = ? 
+                        WHERE ingredient = ? AND owner_id = ?
+                    ");
+                    $stmtUpdateFormula->bind_param(
+                        "sssss",
+                        $d['concentration'],
+                        $d['dilutant'],
+                        $d['quantity'],
+                        $d['ingredient'],
+                        $userID
+                    );
+                    if (!$stmtUpdateFormula->execute()) {
+                        throw new Exception("Error updating formulas: " . $stmtUpdateFormula->error);
+                    }
+                    $stmtUpdateFormula->close();
+                } else {
+                    // Insert new entry
+                    $stmtInsertFormulas->bind_param(
+                        "ssssssss",
+                        $d['name'],
+                        $d['fid'],
+                        $d['ingredient'],
+                        $ingredient_id,
+                        $d['concentration'],
+                        $d['dilutant'],
+                        $d['quantity'],
+                        $userID
+                    );
+                    if (!$stmtInsertFormulas->execute()) {
+                        throw new Exception("Error inserting into formulas: " . $stmtInsertFormulas->error);
+                    }
                 }
             }
             $stmtInsertFormulas->close();
