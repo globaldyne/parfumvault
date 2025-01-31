@@ -29,7 +29,7 @@ services:
       FILE_EXT: 'pdf, doc, docx, xls, csv, xlsx, png, jpg, jpeg, gif'
       DB_BACKUP_PARAMETERS: '--column-statistics=1'
   #gbkagent:
-  #  image: globaldyne/gbkagent:latest
+  #  image: harbor01.cloud.globaldyne.co.uk/cloud/gbkagent
   #  ports:
   #    - 3000:3000
   #  restart: always
