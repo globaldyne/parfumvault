@@ -80,7 +80,6 @@ $cIngredients = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients 
    </thead>
 </table>
 
-<li><a class="dropdown-item" id="json_export" href="#" data-bs-toggle="modal" data-bs-target="#export_options_modal"><i class="fa-solid fa-file-code mx-2"></i>Export to JSON</a></li>
 
 <!-- Modal -->
 <div class="modal fade" id="export_options_modal" tabindex="-1" aria-labelledby="exportOptionsLabel" aria-hidden="true">
@@ -465,7 +464,7 @@ $(document).ready(function() {
 					'<ul class="dropdown-menu dropdown-menu-right">';
 			data += '<li><a href="/pages/mgmIngredient.php?id=' + row.id + '" class="dropdown-item popup-link"><i class="fas fa-edit mx-2"></i>Manage</a></li>';
 			
-			data += '<li><a class="dropdown-item" href="/pages/export.php?format=json&kind=single-ingredient&id=' + row.id + '" rel="tip" title="Export '+ row.name +' as JSON" ><i class="fas fa-download mx-2"></i>Export as JSON</a></li>';
+			data += '<li><a class="dropdown-item" href="/pages/export.php?format=json&kind=single-ingredient&id=' + row.id + '" rel="tip" title="Export '+ row.name +' as JSON" ><i class="fas fa-download mx-2"></i>Export to JSON</a></li>';
 	
 			data += '<div class="dropdown-divider"></div>';
 	
