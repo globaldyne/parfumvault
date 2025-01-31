@@ -67,9 +67,11 @@ if($BKPOD_HOST == ''){
 }
 
 if($BKPOD_PORT == ''){
-    echo json_encode(['success' => false, 'error' => 'Backup agent TCP port not set']);
+   // echo json_encode(['success' => false, 'error' => 'Backup agent TCP port not set']);
+    echo '<i class="fa-solid fa-circle-xmark mx-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Backup agent TCP port not set"></i>';
     return;
 }
+
 $BKPOD = $BKPOD_HOST . ':' . $BKPOD_PORT;
 
 if ($_GET['action'] == 'info'){
