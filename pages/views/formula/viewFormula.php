@@ -43,7 +43,7 @@ $fid = $meta['fid'];
            <li><a class="dropdown-item export_as" href="#" data-format="csv"><i class="fa-solid fa-file-csv mx-2"></i>Export as CSV</a></li>
            <li><a class="dropdown-item export_as" href="#" data-format="pdf"><i class="fa-solid fa-file-pdf mx-2"></i>Export as PDF</a></li>
            <li><a class="dropdown-item" href="/core/core.php?action=exportFormulas&fid=<?=$meta['fid']?>"><i class="fa-solid fa-file-code mx-2"></i>Export as JSON</a></li>
-           <li><a class="dropdown-item" href="#" id="print"><i class="fa-solid fa-print mx-2"></i>Print fFormula</a></li>
+           <li><a class="dropdown-item" href="#" id="print"><i class="fa-solid fa-print mx-2"></i>Print Formula</a></li>
            <div class="dropdown-divider"></div>
            <li class="dropdown-header">Scale Formula</li> 
            <li><a class="dropdown-item manageQuantity" href="#" data-action="multiply"><i class="fa-solid fa-xmark mx-2"></i>Multiply x2</a></li>

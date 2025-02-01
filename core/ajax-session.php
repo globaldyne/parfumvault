@@ -49,6 +49,8 @@ if(!isset( $_SESSION['parfumvault']) || $_SESSION['parfumvault'] === false) {
 		echo json_encode( 
 			array(
 				'session_status' => false,
+				'session_timeout' => $session_timeout,
+				'session_time' => $_SESSION['parfumvault_time'] ?? null
 			)
 		);
 		session_unset();
