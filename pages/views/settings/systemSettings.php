@@ -52,7 +52,7 @@ if($role !== 1){
                     }
                 }
 
-                echo '<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">';
+                echo '<div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">';
                 foreach ($grouped_settings as $prefix => $settings) {
                     echo '<div class="col">
                             <div class="card shadow-sm p-3 mb-3">
