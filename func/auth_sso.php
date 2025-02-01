@@ -60,7 +60,9 @@ function auth_sso() {
     $user = fetchUserInfo($userInfoUrl, $accessToken);
 
     if (!$user || !isset($user['email'])) {
-        echo json_encode(['auth' => ['error' => true, 'msg' => 'Failed to fetch user info']]);
+        //echo json_encode(['auth' => ['error' => true, 'msg' => 'Failed to fetch user info']]);
+        error_log("Failed to fetch user info");
+        header('Location: /index.php');
         return;
     }
 
@@ -114,9 +116,20 @@ function auth_sso() {
             } else {
                 error_log("Error: " . $insertQuery . " - " . $conn->error);
             }
-            // Notify or log as needed
-            welcomeNewUser($fullName, $email);
-            notifyAdminForNewUser($fullName, $email);
+            // Notify or login as needed
+            if($system_settings['EMAIL_isEnabled']){
+                require_once(__ROOT__.'/func/mailSys.php');
+
+                if(welcomeNewUser($fullName,$email,$token)){
+                    notifyAdminForNewUser($fullName, $email, 'registered');
+                    error_log("Email sent to $email");
+                } else {
+                    $response['error'] = 'Failed to complete registration, unable to send email';
+                    echo json_encode($response);
+                    error_log("Failed to send email to $email");
+                    return;
+                }
+            }
             session_regenerate_id(true); // Prevent session fixation
 
             $_SESSION['parfumvault'] = true;

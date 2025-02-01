@@ -18,7 +18,7 @@ if (!$_GET['id']) {
 } 
 
 $id = $_GET['id'];
-$result = mysqli_query($conn, "SELECT * FROM users WHERE id = $id");
+$result = mysqli_query($conn, "SELECT * FROM users WHERE id = '$id'");
 $user = mysqli_fetch_array($result, MYSQLI_ASSOC);
 
 if (!$user) {
@@ -29,6 +29,10 @@ if (!$user) {
 
 ?>
 <div id="editUserForm">
+    <?php if ($user['provider'] == 2): ?>
+        <div class="alert alert-warning"><i class="bi bi-exclamation-triangle-fill mx-2"></i>This user is managed via an external SSO provider. Any changes made here will not be reflected in the SSO provider and will be overridden.</div>
+    <?php endif; ?>
+
     <div class="form-floating mb-3">
         <input type="email" class="form-control" name="email" id="email" value="<?php echo htmlspecialchars($user['email']); ?>" required>
         <label for="email">Email</label>

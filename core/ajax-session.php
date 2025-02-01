@@ -6,6 +6,23 @@ define('__ROOT__', dirname(dirname(__FILE__)));
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+require_once(__ROOT__.'/inc/sec.php');
+
+require_once(__ROOT__.'/inc/opendb.php');
+
+$userInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT isActive FROM users WHERE id = '".$_SESSION['userID'] ."'"));
+
+if (!$userInfo || empty($userInfo['isActive'])) {
+	
+	echo json_encode( 
+		array(
+			'session_status' => false,
+		)
+	);
+	session_unset();
+	session_destroy();
+	return;
+}
 
 if(getenv('PLATFORM') === "CLOUD"){
 	$session_timeout = getenv('SYS_TIMEOUT') ?: 1800;
@@ -46,5 +63,8 @@ if(!isset( $_SESSION['parfumvault']) || $_SESSION['parfumvault'] === false) {
 			'session_time' => $_SESSION['parfumvault_time']
 		)
 	);
+	return;
 }
+
+
 ?>
