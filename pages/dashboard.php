@@ -97,7 +97,7 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE ow
                         <div class="card-body py-4">
                             <div class="d-flex align-items-start">
                                 <div class="flex-grow-1">
-                                    <h3 class="mb-2"><?php echo countElement("makeFormula", "toAdd = 1 GROUP BY name"); ?></h3>
+                                    <h3 class="mb-2"><?php echo countPending(NULL, NULL); ?></h3>
                                     <p class="mb-2"><a href="/?do=scheduledFormulas">Pending Formulas</a></p>
                                     <div class="mb-0">
                                         <span class="text-muted">See and manage formulas you have in schedule to make or started making already</span>

@@ -5821,6 +5821,8 @@ if ($_GET['action'] == 'importCategories') {
 
 // IMPORT MAKING
 if ($_GET['action'] == 'importMaking') {
+    require_once(__ROOT__.'/func/genFID.php');
+
     $result = [];
     if (!file_exists($tmp_path)) {
         mkdir($tmp_path, 0777, true);
@@ -5847,28 +5849,30 @@ if ($_GET['action'] == 'importMaking') {
         $success = true;
 
         try {
-        foreach ($data['makeFormula'] as $d) {
+            $fid = random_str(40, '1234567890abcdefghijklmnopqrstuvwxyz');
 
-            // Insert into `makeFormula`
-            $stmtFormula = $conn->prepare("
-                INSERT INTO `makeFormula` 
-                (`fid`, `name`, `ingredient`, `ingredient_id`, `replacement_id`, `concentration`, `dilutant`, `quantity`, `overdose`, `originalQuantity`, `notes`, `skip`, `toAdd`, `created_at`, `owner_id`) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            ");
+            foreach ($data['makeFormula'] as $d) {
 
-            // Insert or update `formulasMetaData`
-            $stmtMeta = $conn->prepare("
-                INSERT INTO formulasMetaData 
-                (name, fid, todo, scheduledOn, owner_id) 
-                VALUES (?, ?, ?, ?, ?) 
-                ON DUPLICATE KEY UPDATE name=VALUES(name), todo=VALUES(todo), scheduledOn=VALUES(scheduledOn)
-            ");
-            $todo = 1;
-            $stmtMeta->bind_param("ssiss", $d['name'], $d['fid'], $todo, date('Y-m-d H:i:s'), $userID);
-            if (!$stmtMeta->execute()) {
-                throw new Exception("Error inserting into formulasMetaData: " . $stmtMeta->error);
+                // Insert into `makeFormula`
+                $stmtFormula = $conn->prepare("
+                    INSERT INTO `makeFormula` 
+                    (`fid`, `name`, `ingredient`, `ingredient_id`, `replacement_id`, `concentration`, `dilutant`, `quantity`, `overdose`, `originalQuantity`, `notes`, `skip`, `toAdd`, `created_at`, `owner_id`) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ");
+
+                // Insert or update `formulasMetaData`
+                $stmtMeta = $conn->prepare("
+                    INSERT INTO formulasMetaData 
+                    (name, fid, todo, scheduledOn, owner_id) 
+                    VALUES (?, ?, ?, ?, ?) 
+                    ON DUPLICATE KEY UPDATE name=VALUES(name), todo=VALUES(todo), scheduledOn=VALUES(scheduledOn)
+                ");
+                $todo = 1;
+                $stmtMeta->bind_param("ssiss", $d['name'], $fid, $todo, date('Y-m-d H:i:s'), $userID);
+                if (!$stmtMeta->execute()) {
+                    throw new Exception("Error inserting into formulasMetaData: " . $stmtMeta->error);
+                }
             }
-        }
             $stmtMeta->close();
 
             foreach ($data['makeFormula'] as $d) {
@@ -5892,7 +5896,7 @@ if ($_GET['action'] == 'importMaking') {
 
                 // Check if the entry exists in `makeFormula`
                 $stmtCheck = $conn->prepare("SELECT COUNT(*) FROM `makeFormula` WHERE fid = ? AND ingredient = ? AND owner_id = ?");
-                $stmtCheck->bind_param("sss", $d['fid'], $d['ingredient'], $userID);
+                $stmtCheck->bind_param("sss", $fid, $d['ingredient'], $userID);
                 $stmtCheck->execute();
                 $stmtCheck->bind_result($exists);
                 $stmtCheck->fetch();
@@ -5917,7 +5921,7 @@ if ($_GET['action'] == 'importMaking') {
                         $d['skip'],
                         $d['toAdd'],
                         date('Y-m-d H:i:s'),
-                        $d['fid'],
+                        $fid,
                         $d['ingredient'],
                         $userID
                     );
@@ -5929,7 +5933,7 @@ if ($_GET['action'] == 'importMaking') {
                     // Insert new entry
                     $stmtFormula->bind_param(
                         "sssssssssssssss",
-                        $d['fid'],
+                        $fid,
                         $d['name'],
                         $d['ingredient'],
                         $ingredient_id,
@@ -6003,7 +6007,7 @@ if ($_GET['action'] == 'importMaking') {
                     $stmtInsertFormulas->bind_param(
                         "ssssssss",
                         $d['name'],
-                        $d['fid'],
+                        $fid,
                         $d['ingredient'],
                         $ingredient_id,
                         $d['concentration'],
