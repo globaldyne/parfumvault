@@ -55,7 +55,7 @@ if(!isset( $_SESSION['parfumvault']) || $_SESSION['parfumvault'] === false) {
 		);
 		session_unset();
 		session_destroy();
-		return;
+		//return;
 	}
 	echo json_encode( 
 		array(
