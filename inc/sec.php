@@ -1,5 +1,7 @@
 <?php
-define('pvault_panel', TRUE);
+if (!defined('pvault_panel')) {
+    define('pvault_panel', TRUE);
+}
 
 if(defined('__ROOT__') == FALSE){
 	define('__ROOT__', dirname(dirname(__FILE__))); 

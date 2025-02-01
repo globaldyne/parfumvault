@@ -1677,3 +1677,15 @@ th.dt-center, td.dt-center {
   margin-left: .5em;
 }
 
+.beta-badge {
+  position: absolute;
+  top: 4px;
+  background-color: rgb(253, 30, 30);
+  color: white;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 3px;
+  left: 210px;
+  opacity: 0.8;
+}
