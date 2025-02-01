@@ -36,6 +36,7 @@ if($role !== 1){
           <th>Status</th>
           <th>Role</th>
           <th>Verified</th>
+          <th>Auth method</th>
           <th>Created</th>
           <th>Updated</th>
           <th></th>
@@ -132,6 +133,7 @@ $(document).ready(function() {
             { data : 'status', title: 'Status', render: status},
             { data : 'role', title: 'Role', render: role},
             { data : 'isVerified', title: 'Verified', render: isVerified},
+            { data : 'provider', title: 'Auth method', render: provider},
             { data : 'created_at', title: 'Created', render: created_at},
 			{ data : 'updated_at', title: 'Updated', render: updated_at},
 			{ data : null, title: '', render: actions},		   
@@ -167,6 +169,16 @@ $(document).ready(function() {
 		$('#tdUsers').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i><strong>' + m[1] + '</strong></div>');
     });
 
+
+    function provider(data, type, row){
+        if(row.provider == '1'){
+            var data = '<span class="badge rounded-pill d-block p-2 text-bg-primary">Local DB</span>';
+        }
+        if(row.provider == '2'){
+            var data = '<span class="badge rounded-pill d-block p-2 text-bg-danger">SSO</span>';
+        }
+        return data;
+    };
 
     function status(data, type, row){
         if(row.status == 1){
