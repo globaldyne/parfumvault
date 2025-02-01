@@ -390,7 +390,7 @@ if($system_settings['EMAIL_isEnabled'] == 1){ ?>
 <script>
 $(document).ready(function() {
 <?php if ($system_settings['SSO_status'] === '1') { ?>
- $('#login_sso').click(function() {
+ $('#login_form #login_sso').click(function() {
     console.log('SSO AUTH');
 	
     $('#login_form :input, #login_form button').prop('disabled', true);
