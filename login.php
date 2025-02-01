@@ -389,7 +389,7 @@ if($system_settings['EMAIL_isEnabled'] == 1){ ?>
 
 <script>
 $(document).ready(function() {
-<?php if ($system_settings['SSO_status'] == '1') { ?>
+<?php //if ($system_settings['SSO_status'] == '1') { ?>
  $('#login_form #login_sso').click(function() {
     console.log('SSO AUTH');
 	
@@ -418,7 +418,7 @@ $(document).ready(function() {
     	},		
 	});
  });
-<?php } ?>
+<?php //} ?>
     $('#forgot_submit').click(function() {
     var email = $('#forgot_email').val();
     $('#forgot_submit').prop('disabled', true);
