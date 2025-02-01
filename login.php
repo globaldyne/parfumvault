@@ -390,36 +390,35 @@ if($system_settings['EMAIL_isEnabled'] == 1){ ?>
 <script>
 $(document).ready(function() {
 <?php if ($system_settings['SSO_status'] === '1') { ?>
- $('#login_sso, #signup_sso').click(function() {
-		$('#login_form :input, #login_form button').prop('disabled', true);
- 		$('#login_sso').append('<span class="spinner-border spinner-border-sm mx-1" role="status" aria-hidden="true"></span>');
-		$.ajax({ 
-			url: '/core/auth.php', 
-			type: 'POST',
-			data: {
-        action: "auth_sso",
-			},
-			dataType: 'json',
-			success: function (data) {
-				if(data.auth.success){
-					
-					window.location = data.auth.redirect ;
-					
-				}else if( data.auth.error){
-					$('#msg').html('<div class="alert alert-danger"><i class="bi bi-exclamation-circle-fill mx-2"></i>'+data.auth.msg+'</div>');
-					$("#login_form .spinner-border").remove();
-					$('#login_form :input, #login_form button').prop('disabled', false);
-				}				
-			},
-			error: function (request, status, error) {
-        		$('#msg').html('<div class="alert alert-danger"><i class="bi bi-exclamation-circle-fill mx-2"></i>Unable to handle request, server returned an error: '+request.status+'</div>');
+ $('#login_sso').click(function() {
+    console.log('SSO AUTH');
+	
+    $('#login_form :input, #login_form button').prop('disabled', true);
+ 	$('#login_sso').append('<span class="spinner-border spinner-border-sm mx-1" role="status" aria-hidden="true"></span>');
+	$.ajax({ 
+		url: '/core/auth.php', 
+		type: 'POST',
+		data: {
+           action: "auth_sso",
+		},
+		dataType: 'json',
+		success: function (data) {
+		    if(data.auth.success){
+				window.location = data.auth.redirect ;			
+			}else if( data.auth.error){
+				$('#msg').html('<div class="alert alert-danger"><i class="bi bi-exclamation-circle-fill mx-2"></i>'+data.auth.msg+'</div>');
 				$("#login_form .spinner-border").remove();
 				$('#login_form :input, #login_form button').prop('disabled', false);
-    		},
-			
-	  });
-  });
-	<?php } ?>
+			}				
+		},
+		error: function (request, status, error) {
+        	$('#msg').html('<div class="alert alert-danger"><i class="bi bi-exclamation-circle-fill mx-2"></i>Unable to handle request, server returned an error: '+request.status+'</div>');
+			$("#login_form .spinner-border").remove();
+			$('#login_form :input, #login_form button').prop('disabled', false);
+    	},		
+	});
+ });
+<?php } ?>
     $('#forgot_submit').click(function() {
     var email = $('#forgot_email').val();
     $('#forgot_submit').prop('disabled', true);
