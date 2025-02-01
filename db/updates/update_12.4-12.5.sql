@@ -96,3 +96,8 @@ ALTER TABLE `ingredient_safety_data` ADD `updated_at` TIMESTAMP on update CURREN
 
 ALTER TABLE `bottles` CHANGE `ml` `ml` DOUBLE NOT NULL; 
 ALTER TABLE `bottles` CHANGE `height` `height` DOUBLE NULL DEFAULT 0; 
+ALTER TABLE `inventory_accessories` DROP INDEX `name`;
+ALTER TABLE `bottles` DROP INDEX `name`;
+
+
+ALTER TABLE `customers` DROP INDEX `name`;

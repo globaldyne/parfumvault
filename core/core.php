@@ -20,6 +20,7 @@ if (!isset($userID) || $userID === '') {
     return;
 }
 
+
 // Ensure the user is an admin
 if($role === 1) {
     //UPDATE SYSTEM SETTINGS

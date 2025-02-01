@@ -455,17 +455,14 @@ ALTER TABLE `ingTypes`
   ADD PRIMARY KEY (`id`);
 
 ALTER TABLE `inventory_accessories` ADD PRIMARY KEY (`id`);
-ALTER TABLE `inventory_accessories` ADD UNIQUE(`name`);
 
 
 ALTER TABLE `ingredient_compounds`
   ADD PRIMARY KEY (`id`);
 
 ALTER TABLE `bottles` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `bottles` ADD UNIQUE(`name`);
 
 ALTER TABLE `customers` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `customers` ADD UNIQUE(`name`);
 
 ALTER TABLE `formulas`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;

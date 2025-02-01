@@ -1655,3 +1655,25 @@ th.dt-center, td.dt-center {
 .pv-fa-2xl {
   font-size: 20em;
 }
+
+.separator {
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+
+.separator::before,
+.separator::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid;
+}
+
+.separator:not(:empty)::before {
+  margin-right: .5em;
+}
+
+.separator:not(:empty)::after {
+  margin-left: .5em;
+}
+

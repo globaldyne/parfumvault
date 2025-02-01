@@ -7,6 +7,16 @@ require_once(__ROOT__.'/inc/settings.php');
 
 //require_once(__ROOT__.'/func/cleanupNonHashedPasswords.php');
 
+//SSO AUTHENTICATION
+if ($_REQUEST['action'] === 'auth_sso') {
+    // Include the OIDC library
+    error_log("OIDC SSO authentication started");
+    require_once(__ROOT__ . '/func/auth_sso.php');
+    auth_sso();
+
+    return;
+}
+
 if(getenv('PLATFORM') === "CLOUD"){
 	$session_timeout = getenv('SYS_TIMEOUT') ?: 1800;
 } else {

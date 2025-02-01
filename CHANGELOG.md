@@ -82,6 +82,9 @@
 - Docker compose file updated for the backup agent
 - User id has been altered to a string
 - Fixed cas update in IFRA library
+- Implement SSO authentication
+- Rewrite login page
+- Remove DEMO support
 
 ### Version 12.4
 - Add dilutant in API formulas
