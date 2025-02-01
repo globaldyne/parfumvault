@@ -37,7 +37,9 @@ require_once(__ROOT__.'/inc/settings.php');
 				if (file_exists($metaFile)) {
 					$metaData = json_decode(file_get_contents($metaFile), true);
 					if ($metaData && isset($metaData['fileName'])) {
-						require_once($dir . $integration . '/' . $metaData['fileName'] . '.php');
+						if (!isset($metaData['adminrequired']) || $metaData['adminrequired'] !== true || $role == 1) {
+							require_once($dir . $integration . '/' . $metaData['fileName'] . '.php');
+						}
 					}
 				}
 			}
