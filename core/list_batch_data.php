@@ -13,7 +13,7 @@ $search_value = isset($_POST['search']['value']) ? trim($_POST['search']['value'
 
 // Construct SQL parts
 $extra = "ORDER BY `$order_by` $order";
-$where = "WHERE owner_id = $userID";
+$where = "WHERE owner_id = '$userID'";
 
 if (!empty($search_value)) {
     $search_value = mysqli_real_escape_string($conn, $search_value);
@@ -45,7 +45,7 @@ while ($res = mysqli_fetch_assoc($result)) {
 }
 
 // Get total records
-$total_query = "SELECT COUNT(id) AS entries FROM batchIDHistory WHERE owner_id = $userID";
+$total_query = "SELECT COUNT(id) AS entries FROM batchIDHistory WHERE owner_id = '$userID'";
 $total_result = mysqli_query($conn, $total_query);
 if (!$total_result) {
     error_log("PV error: Total query failed: " . mysqli_error($conn));
