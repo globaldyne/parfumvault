@@ -138,7 +138,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
         </div>
         <div id="backupArea">
           <div class="mb-3">
-            <label for="backupFile" class="form-label">JSON file:</label>
+            <label for="backupFile" class="form-label">JSON file</label>
             <input type="file" name="backupFile" id="backupFile" class="form-control" />
           </div>
           <div>

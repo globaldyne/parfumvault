@@ -14,6 +14,12 @@ if (!is_writable($tmp_path)) {
 
 $target_path = $tmp_path . basename($_FILES['backupFile']['name']);
 
+// Validate JSON decoding
+if (json_last_error() !== JSON_ERROR_NONE) {
+    respondWithError("Invalid JSON format: " . json_last_error_msg());
+}
+
+
 if (!move_uploaded_file($_FILES['backupFile']['tmp_name'], $target_path)) {
     respondWithError("There was an error processing json file $target_path, please try again!");
 }
@@ -30,6 +36,7 @@ $warn = '';
 processIngredients($data['ingredients']);
 processSuppliers($data['ingSuppliers']);
 processIngredientCompounds($data['compositions']);
+processIngredientDocuments($data['documents']);
 
 $result['success'] = "Import complete";
 if ($warn) {
@@ -138,6 +145,28 @@ function processIngredientCompounds($compounds) {
         if ($exists == 0) {
             $query = "INSERT INTO `ingredient_compounds` (ing, name, cas, ec, min_percentage, max_percentage, GHS, toDeclare, created_at, owner_id) 
                       VALUES ('{$cmp['ing']}', '{$cmp['name']}', '{$cmp['cas']}', '{$cmp['ec']}', '{$cmp['min_percentage']}', '{$cmp['max_percentage']}', '{$cmp['GHS']}', '{$cmp['toDeclare']}', CURRENT_TIMESTAMP(), '$userID')";
+            
+            if (!mysqli_query($conn, $query)) {
+                respondWithError('Error executing query: ' . mysqli_error($conn));
+            }
+        }
+    }
+}
+
+function processIngredientDocuments($documents) {
+    global $conn, $userID;
+
+    foreach ($documents as $docs) {
+        $docs = array_map(function($value) use ($conn) {
+            return mysqli_real_escape_string($conn, $value);
+        }, $docs);
+
+        $query_check = "SELECT COUNT(*) FROM `documents` WHERE `name` = '{$docs['name']}' AND `owner_id` = '$userID' AND `type` = '{$docs['type']}'";
+        $exists = mysqli_fetch_row(mysqli_query($conn, $query_check))[0];
+
+        if ($exists == 0) {
+            $query = "INSERT INTO `documents` (ownerID, type, name, notes, docData, isBatch, isSDS, created_at, updated_at, owner_id) 
+                      VALUES ('{$docs['ownerID']}', '{$docs['type']}', '{$docs['name']}', '{$docs['notes']}', '{$docs['docData']}', '{$docs['isBatch']}', '{$docs['isSDS']}', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP(), '$userID')";
             
             if (!mysqli_query($conn, $query)) {
                 respondWithError('Error executing query: ' . mysqli_error($conn));

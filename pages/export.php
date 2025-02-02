@@ -495,10 +495,13 @@ if ($_GET['format'] == 'json' && $_GET['kind'] == 'ingredients') {
             $q = mysqli_query($conn, "SELECT * FROM documents WHERE type = 1 AND owner_id = '$userID'");
             while ($res = mysqli_fetch_assoc($q)) {
                 $d = [
-                    'id' => (int) $res['ownerID'],
+                    'ownerID' => (int) $res['ownerID'],
+                    'type' => (int) $res['type'],
                     'name' => (string) $res['name'],
                     'notes' => (string) ($res['notes'] ?: '-'),
                     'docData' => base64_encode($res['docData']),
+                    'isBatch' => (int) $res['isBatch'],
+                    'isSDS' => (int) $res['isSDS'],
                     'updated_at' => (string) $res['updated_at'],
                     'created_at' => (string) $res['created_at']
                 ];
@@ -527,6 +530,7 @@ if ($_GET['format'] == 'json' && $_GET['kind'] == 'ingredients') {
         'ingredients' => $ingredients_count,
         'suppliers' => $ing_suppliers_count,
         'ingredient_compounds' => $ingredient_compounds_count,
+        'documents' => $ingredient_documents_count,
         'timestamp' => date('d/m/Y H:i:s')
     ];
 
