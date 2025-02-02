@@ -7,65 +7,60 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-
-if(getenv('PLATFORM') === "CLOUD"){
-	$session_timeout = getenv('SYS_TIMEOUT') ?: 1800;
+if (getenv('PLATFORM') === "CLOUD") {
+    $session_timeout = getenv('SYS_TIMEOUT') ?: 1800;
 } else {
-	require_once(__ROOT__.'/inc/config.php');
+    require_once(__ROOT__.'/inc/config.php');
 }
 
-if ((time() - $_SESSION['parfumvault_time']) > $session_timeout) {
+$current_time = time();
+$session_start_time = $_SESSION['parfumvault_time'] ?? $current_time;
+$time_left = max(0, ($session_start_time + $session_timeout - $current_time) / 60); // Convert to minutes
+
+if (($current_time - $session_start_time) > $session_timeout) {
     session_unset();
     session_destroy();
         
-    echo json_encode( 
-		array(
-			'session_status' => false,
-			'session_timeout' => $session_timeout,
-			'session_time' => $_SESSION['parfumvault_time'] ?? null
-		)
-	);
+    echo json_encode([
+        'session_status' => false,
+        'session_timeout' => $session_timeout,
+        'session_time' => $session_start_time,
+        'time_left' => 0
+    ]);
     return;
 }
 
-if(!isset( $_SESSION['parfumvault']) || $_SESSION['parfumvault'] === false) {
-    //session is expired
-	echo json_encode( 
-		array(
-			'session_status' => false,
-			'session_timeout' => $session_timeout,
-			'session_time' => $_SESSION['parfumvault_time'] ?? null
-		)
-	);
+if (!isset($_SESSION['parfumvault']) || $_SESSION['parfumvault'] === false) {
+    echo json_encode([
+        'session_status' => false,
+        'session_timeout' => $session_timeout,
+        'session_time' => $session_start_time,
+        'time_left' => 0
+    ]);
     session_destroy();
 } else {
-    //session is valid
-	require_once(__ROOT__.'/inc/sec.php');
-	require_once(__ROOT__.'/inc/opendb.php');
+    require_once(__ROOT__.'/inc/sec.php');
+    require_once(__ROOT__.'/inc/opendb.php');
 
-	$userInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT isActive FROM users WHERE id = '".$_SESSION['userID'] ."'"));
-	if (!$userInfo || empty($userInfo['isActive'])) {
-		
-		echo json_encode( 
-			array(
-				'session_status' => false,
-				'session_timeout' => $session_timeout,
-				'session_time' => $_SESSION['parfumvault_time'] ?? null
-			)
-		);
-		session_unset();
-		session_destroy();
-		//return;
-	}
-	echo json_encode( 
-		array(
-			'session_status' => true,
-			'session_timeout' => $session_timeout,
-			'session_time' => $_SESSION['parfumvault_time']
-		)
-	);
-	return;
+    $userInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT isActive FROM users WHERE id = '".$_SESSION['userID']."'"));
+    if (!$userInfo || empty($userInfo['isActive'])) {
+        echo json_encode([
+            'session_status' => false,
+            'session_timeout' => $session_timeout,
+            'session_time' => $session_start_time,
+            'time_left' => 0
+        ]);
+        session_unset();
+        session_destroy();
+        return;
+    }
+
+    echo json_encode([
+        'session_status' => true,
+        'session_timeout' => $session_timeout,
+        'session_time' => $session_start_time,
+        'time_left' => round($time_left, 2) // Keeping precision up to 2 decimal places
+    ]);
 }
-
 
 ?>
