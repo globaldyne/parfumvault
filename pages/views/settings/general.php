@@ -47,6 +47,8 @@ while($cats_res = mysqli_fetch_array($cats_q)){
                     <option value="0" <?= $user_settings ['grp_formula'] == "0" ? 'selected' : '' ?>>Plain</option>
                     <option value="1" <?= $user_settings ['grp_formula'] == "1" ? 'selected' : '' ?>>By notes</option>
                     <option value="2" <?= $user_settings ['grp_formula'] == "2" ? 'selected' : '' ?>>By category</option>
+                    <option value="3" <?= $user_settings ['grp_formula'] == "3" ? 'selected' : '' ?>>By physical state</option>
+
                 </select>
                 <label for="grp_formula" class="form-label">Group formula</label>
             </div>

@@ -86,6 +86,7 @@
 - Rewrite login page
 - Remove DEMO support
 - Fixed text imported formula incorrect percentage handling
+- Added ingredient group by physical state
 
 ### Version 12.4
 - Add dilutant in API formulas
