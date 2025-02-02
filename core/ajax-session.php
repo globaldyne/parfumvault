@@ -9,6 +9,10 @@ if (session_status() === PHP_SESSION_NONE) {
 
 if (getenv('PLATFORM') === "CLOUD") {
     $session_timeout = getenv('SYS_TIMEOUT') ?: 1800;
+    $dbhost = getenv('DB_HOST');
+	$dbuser = getenv('DB_USER');
+	$dbpass = getenv('DB_PASS');
+	$dbname = getenv('DB_NAME');
 } else {
     require_once(__ROOT__.'/inc/config.php');
 }
