@@ -110,9 +110,9 @@ $(document).ready(function() {
     <div class="sidebar-brand-icon mt-4 mb-4">
       <div class="pvLogo">
       <img src="/img/logo.png" alt="Logo">
-
-      <span class="beta-badge">BETA</span>
-
+      <?php if(getenv('ISBETA') === 'true' ) { ?>
+        <span class="beta-badge">BETA</span>
+      <?php } ?>
       </div>
     </div>
     </a>
