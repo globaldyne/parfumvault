@@ -444,13 +444,16 @@ if ($_POST['action'] == 'importTXTFormula') {
                 }
 
                 $dilutant = $percentage < 100 ? 'DPG' : 'None';
-
+                if(!$percentage){
+                    $percentage = 100;
+                    $dilutant = 'None';
+                }
                 // Clean up the ingredient name
                 $baseIngredient = preg_replace('/\s*\d+(\.\d+)?%\s*/', '', $ingredient);
                 $baseIngredient = ucwords($baseIngredient);
 
                 // Check if the ingredient exists in the database
-                $getIngQuery = "SELECT id FROM ingredients WHERE name = ? AND owner_id = ?";
+                $getIngQuery = "SELECT id, name FROM ingredients WHERE name = ? AND owner_id = ?";
                 $getIngStmt = $conn->prepare($getIngQuery);
                 $getIngStmt->bind_param('ss', $baseIngredient, $userID);
                 $getIngStmt->execute();
@@ -458,11 +461,12 @@ if ($_POST['action'] == 'importTXTFormula') {
                 $ingredientRow = $getIngResult->fetch_assoc();
 
                 $ingredient_id = $ingredientRow['id'] ?? 0; // Use ID if found, otherwise 0
+                $ingredient_name = $ingredientRow['name'] ?? $baseIngredient;
 
                 // Insert into formulas table
                 $ingredientQuery = "INSERT INTO formulas (fid, name, ingredient_id, ingredient, quantity, concentration, dilutant, owner_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
                 $ingredientStmt = $conn->prepare($ingredientQuery);
-                $ingredientStmt->bind_param('ssisdsss', $fid, $formulaName, $ingredient_id, $baseIngredient, $quantity, $percentage, $dilutant, $userID);
+                $ingredientStmt->bind_param('ssisdsss', $fid, $formulaName, $ingredient_id, $ingredient_name, $quantity, $percentage, $dilutant, $userID);
 
                 if (!$ingredientStmt->execute()) {
                     $formulaInsertSuccess = false;

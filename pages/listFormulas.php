@@ -1029,7 +1029,7 @@ $(document).ready(function() {
       </div>
 	  
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="close_imp_txt">Cancel</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="close_imp_txt">Close</button>
         <button type="submit" name="btn-txtFormula" class="btn btn-primary" id="addtxtFormula">Import</button>
       </div>
     </div>

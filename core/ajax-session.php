@@ -47,7 +47,7 @@ if (!isset($_SESSION['parfumvault']) || $_SESSION['parfumvault'] === false) {
 	$conn = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
     $userInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT id, email, isActive FROM users WHERE id = '".$_SESSION['userID']."'"));
     
-	error_log("userInfo: ".json_encode($userInfo).", time_left: ".round($time_left, 2));
+	//error_log("userInfo: ".json_encode($userInfo).", time_left: ".round($time_left, 2));
 
 	if (!$userInfo || empty($userInfo['isActive'])) {
         echo json_encode([
