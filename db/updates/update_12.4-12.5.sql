@@ -101,3 +101,13 @@ ALTER TABLE `bottles` DROP INDEX `name`;
 
 
 ALTER TABLE `customers` DROP INDEX `name`;
+
+CREATE TABLE `session_info` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `owner_id` varchar(255) NOT NULL,
+  `remaining_time` decimal(10,2) NOT NULL,
+  `last_updated` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `owner_id_2` (`owner_id`),
+  KEY `owner_id` (`owner_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;

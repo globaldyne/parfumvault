@@ -21,7 +21,11 @@ $current_time = time();
 $session_start_time = $_SESSION['parfumvault_time'] ?? $current_time;
 $time_left = max(0, ($session_start_time + $session_timeout - $current_time) / 60); // Convert to minutes
 
+$conn = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
+
 if (($current_time - $session_start_time) > $session_timeout) {
+    $userID = $_SESSION['userID'];
+    mysqli_query($conn, "DELETE FROM session_info WHERE owner_id = '$userID'");
     session_unset();
     session_destroy();
         
@@ -35,6 +39,8 @@ if (($current_time - $session_start_time) > $session_timeout) {
 }
 
 if (!isset($_SESSION['parfumvault']) || $_SESSION['parfumvault'] === false) {
+    $userID = $_SESSION['userID'];
+    mysqli_query($conn, "DELETE FROM session_info WHERE owner_id = '$userID'");
     echo json_encode([
         'session_status' => false,
         'session_timeout' => $session_timeout,
@@ -43,13 +49,11 @@ if (!isset($_SESSION['parfumvault']) || $_SESSION['parfumvault'] === false) {
     ]);
     session_destroy();
 } else {
-	
-	$conn = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
     $userInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT id, email, isActive FROM users WHERE id = '".$_SESSION['userID']."'"));
     
-	//error_log("userInfo: ".json_encode($userInfo).", time_left: ".round($time_left, 2));
-
-	if (!$userInfo || empty($userInfo['isActive'])) {
+    if (!$userInfo || empty($userInfo['isActive'])) {
+        $userID = $_SESSION['userID'];
+        mysqli_query($conn, "DELETE FROM session_info WHERE owner_id = '$userID'");
         echo json_encode([
             'session_status' => false,
             'session_timeout' => $session_timeout,
@@ -61,12 +65,17 @@ if (!isset($_SESSION['parfumvault']) || $_SESSION['parfumvault'] === false) {
         return;
     }
 
+    $userID = $_SESSION['userID'];
+    $remaining_time = round($time_left, 2);
+    mysqli_query($conn, "REPLACE INTO session_info (owner_id, remaining_time) VALUES ('$userID', '$remaining_time')");
+
     echo json_encode([
         'session_status' => true,
         'session_timeout' => $session_timeout,
         'session_time' => $session_start_time,
-        'time_left' => round($time_left, 2) // Keeping precision up to 2 decimal places
+        'time_left' => $remaining_time // Keeping precision up to 2 decimal places
     ]);
 }
+mysqli_close($conn);
 
 ?>

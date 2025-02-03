@@ -128,7 +128,7 @@ $(document).ready(function() {
 		},
 		ajax: {	url: '/core/users_data.php' },
 		columns: [
-		    { data : 'full_name', title: 'Full name'},
+		    { data : 'full_name', title: 'Full name', render: name},
 		    { data : 'email', title: 'Username'},
             { data : 'status', title: 'Status', render: status},
             { data : 'role', title: 'Role', render: role},
@@ -168,6 +168,17 @@ $(document).ready(function() {
 		var m = message.split(' - ');
 		$('#tdUsers').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i><strong>' + m[1] + '</strong></div>');
     });
+
+
+    function name(data, type, row) {
+        var name = row.full_name;
+        if (row.is_logged_in == 1) {
+            name = '<span class="text-success" rel="tip" title="Online"><i class="fa fa-circle mx-2"></i></span>' + name;
+        } else if (row.is_logged_in == 0) {
+            name = '<span class="text-danger" rel="tip" title="Offline"><i class="fa fa-circle mx-2"></i></span>' + name;
+        }
+        return name;
+    };
 
 
     function provider(data, type, row){

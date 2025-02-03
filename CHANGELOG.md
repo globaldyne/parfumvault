@@ -87,6 +87,8 @@
 - Remove DEMO support
 - Fixed text imported formula incorrect percentage handling
 - Added ingredient group by physical state
+- Added users currently online
+- Prevent re-activating a user if the account is locally in active
 
 ### Version 12.4
 - Add dilutant in API formulas

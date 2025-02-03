@@ -283,8 +283,15 @@ if(isset($_SESSION['parfumvault'])){
             }
         }else{
           if (isset($_SESSION['temp_response'])) {
-              echo '<script>$(document).ready(function() { $("#msg").html("<div class=\"alert alert-success alert-dismissible fade show\" role=\"alert\"><i class=\"fa-solid fa-circle-check mx-2\"></i>' . $_SESSION['temp_response'] . '<button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\" aria-label=\"Close\"></button></div>"); });</script>';
-              unset($_SESSION['temp_response']);
+            error_log('Temp response: ' . print_r($_SESSION['temp_response'], true));
+
+            if (isset($_SESSION['temp_response']['error'])) {
+                echo '<script>$(document).ready(function() { $("#msg").html("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\"><i class=\"fa-solid fa-circle-exclamation mx-2\"></i>' . $_SESSION['temp_response']['error'] . '<button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\" aria-label=\"Close\"></button></div>"); });</script>';
+            } else {
+                echo '<script>$(document).ready(function() { $("#msg").html("<div class=\"alert alert-success alert-dismissible fade show\" role=\"alert\"><i class=\"fa-solid fa-circle-check mx-2\"></i>' . $_SESSION['temp_response'] . '<button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\" aria-label=\"Close\"></button></div>"); });</script>';
+            }
+            
+            unset($_SESSION['temp_response']);
           }
 
   ?>

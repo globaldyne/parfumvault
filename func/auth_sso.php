@@ -84,11 +84,20 @@ function auth_sso() {
     
     try {
         // Check if user already exists
-        $checkQuery = $conn->prepare("SELECT id FROM users WHERE email = ? AND provider = ?");
+        $checkQuery = $conn->prepare("SELECT id,isActive FROM users WHERE email = ? AND provider = ?");
         $checkQuery->bind_param("si", $email, $provider);
         $checkQuery->execute();
         $checkQuery->store_result();
+        $checkQuery->bind_result($userId, $isActive);
+        $checkQuery->fetch();
 
+        if ($isActive == 0) {
+            $response = [];
+            $response['error'] = 'User account is inactive';
+            $_SESSION['temp_response'] = $response;
+            header('Location: /index.php');
+            return;
+        }
         if ($checkQuery->num_rows > 0) {
             // Update existing user
             $updateQuery = $conn->prepare("UPDATE users SET fullName = ?, password = ?, token = ?, role = ?, isActive = ?, isVerified = ? WHERE email = ? AND provider = ?");

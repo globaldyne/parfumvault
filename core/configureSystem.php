@@ -186,7 +186,7 @@ if ($_POST['action'] == 'resetPassword') {
         return;
     }
 
-    $checkEmailQuery = "SELECT id FROM users WHERE email = '$email' AND isActive = 1";
+    $checkEmailQuery = "SELECT id FROM users WHERE email = '$email' AND isActive = 1 AND provider = 1";
     $result = mysqli_query($conn, $checkEmailQuery);
     if (mysqli_num_rows($result) == 0) {
         $response['error'] = 'Email does not exist or user is inactive';

@@ -38,6 +38,7 @@ while ($allFormulas = mysqli_fetch_assoc($users)) {
 
 $rx = [];
 foreach ($userData as $user) {
+    $isLoggedIn = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS entries FROM session_info WHERE owner_id = '".$user['id']."'"));
     $r = [
         'id' => $user['id'],
         'email' => $user['email'],
@@ -49,6 +50,7 @@ foreach ($userData as $user) {
         'is_api_active' => $user['isAPIActive'],
         'api_key' => $user['API_key'],
         'is_verified' => $user['isVerified'],
+        'is_logged_in' => (int)$isLoggedIn['entries'],
         'created_at' => $user['created_at'],
         'updated_at' => $user['updated_at']
     ];
