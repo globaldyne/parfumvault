@@ -30,19 +30,19 @@ if (!$user) {
 ?>
 <div id="editUserForm">
     <?php if ($user['provider'] == 2): ?>
-        <div class="alert alert-warning"><i class="bi bi-exclamation-triangle-fill mx-2"></i>This user is managed via an external SSO provider. Any changes made here will not be reflected in the SSO provider and will be overridden.</div>
+        <div class="alert alert-warning"><i class="bi bi-exclamation-triangle-fill mx-2"></i>This user is managed by an external SSO provider. Some fields may not be editable here. Please refer to your SSO provider for changes.</div>
     <?php endif; ?>
 
     <div class="form-floating mb-3">
-        <input type="email" class="form-control" name="email" id="email" value="<?php echo htmlspecialchars($user['email']); ?>" required>
+        <input type="email" class="form-control" name="email" id="email" value="<?php echo htmlspecialchars($user['email']); ?>" <?php echo $user['provider'] == 2 ? 'disabled' : ''; ?> required>
         <label for="email">Email</label>
     </div>
     <div class="form-floating mb-3">
-        <input type="password" class="form-control" name="password" id="password" required>
+        <input type="password" class="form-control" name="password" id="password" <?php echo $user['provider'] == 2 ? 'disabled' : ''; ?> required>
         <label for="password">Password</label>
     </div>
     <div class="form-floating mb-3">
-        <input type="text" class="form-control" name="full_name" id="full_name" value="<?php echo htmlspecialchars($user['fullName']); ?>" required>
+        <input type="text" class="form-control" name="full_name" id="full_name" value="<?php echo htmlspecialchars($user['fullName']); ?>" <?php echo $user['provider'] == 2 ? 'disabled' : ''; ?> required>
         <label for="full_name">First Name</label>
     </div>
     <div class="form-floating mb-3">
@@ -57,7 +57,7 @@ if (!$user) {
         <label for="isActive" class="form-check-label">Active</label>
     </div>
     <div class="form-check form-check-inline mb-3">
-        <input type="checkbox" class="form-check-input" name="isVerified" id="isVerified" <?php echo $user['isVerified'] ? 'checked' : ''; ?>>
+        <input type="checkbox" class="form-check-input" name="isVerified" id="isVerified" <?php echo $user['isVerified'] ? 'checked' : ''; ?> <?php echo $user['provider'] == 2 ? 'disabled' : ''; ?>>
         <label for="isVerified" class="form-check-label">Email Verified</label>
     </div>
     <div class="form-floating mb-3">

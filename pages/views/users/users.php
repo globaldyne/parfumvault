@@ -186,7 +186,7 @@ $(document).ready(function() {
             var data = '<span class="badge rounded-pill d-block p-2 text-bg-primary">Local DB</span>';
         }
         if(row.provider == '2'){
-            var data = '<span class="badge rounded-pill d-block p-2 text-bg-danger">SSO</span>';
+            var data = '<span class="badge rounded-pill d-block p-2 text-bg-warning">SSO</span>';
         }
         return data;
     };
@@ -203,10 +203,10 @@ $(document).ready(function() {
 	
 	function role(data, type, row){
 		if(row.role == 2){
-            var data = '<span class="badge rounded-pill d-block p-2 text-bg-secondary">User</span>';
+            var data = '<span class="badge rounded-pill d-block p-2 text-bg-secondary">Standard user</span>';
         }
         if(row.role == 1){
-            var data = '<span class="badge rounded-pill d-block p-2 text-bg-success">Admin</span>';
+            var data = '<span class="badge rounded-pill d-block p-2 text-bg-success">System admin</span>';
         }
         return data;
 	};
@@ -223,13 +223,16 @@ $(document).ready(function() {
     };
 
     function updated_at(data, type, row){
-		const date = new Date(data);
-		return date.toLocaleDateString(navigator.language || 'en-GB', {
+        const date = new Date(data);
+        if (isNaN(date.getTime())) {
+            return '-';
+        }
+        return date.toLocaleDateString(navigator.language || 'en-GB', {
             day: '2-digit',
             month: '2-digit',
             year: 'numeric'
         });
-	};
+    };
 
     function created_at(data, type, row){
 		const date = new Date(data);

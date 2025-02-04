@@ -55,9 +55,9 @@ if ($role !== 1){
             </div>
 
             <div class="mb-3">
-                <label for="googlebackups_description" class="form-label">Short Description</label>
-                <input name="googlebackups_description" type="text" class="form-control" id="googlebackups_description"
-                    value="<?=$integrations_settings['googlebackups_description']?>">
+                <label for="googlebackups_prefix" class="form-label">Prefix</label>
+                <input name="googlebackups_prefix" type="text" class="form-control" id="googlebackups_prefix"
+                    value="<?=$integrations_settings['googlebackups_prefix']?>">
             </div>
 
             <div class="mb-3 form-check">
@@ -99,7 +99,7 @@ $(document).ready(function() {
             googlebackups_credentials: JSON.stringify(JSON.parse($("#googlebackups_credentials").val())),
             googlebackups_enabled: googlebackups_enabled,
             googlebackups_schedule: $("#googlebackups_schedule").val(),
-            googlebackups_description: $("#googlebackups_description").val(),
+            googlebackups_prefix: $("#googlebackups_prefix").val(),
             googlebackups_gdrive_name: $("#googlebackups_gdrive_name").val(),
             googlebackups_agent_srv_host: $("#googlebackups_agent_srv_host").val(),
             googlebackups_agent_srv_port: $("#googlebackups_agent_srv_port").val()

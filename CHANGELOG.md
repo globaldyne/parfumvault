@@ -89,6 +89,8 @@
 - Added ingredient group by physical state
 - Added users currently online
 - Prevent re-activating a user if the account is locally in active
+- IFRA file upload improvements
+- Set prefix for google backups
 
 ### Version 12.4
 - Add dilutant in API formulas

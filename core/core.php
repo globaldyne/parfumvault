@@ -1865,70 +1865,75 @@ if($_POST['action'] == 'delete' && $_POST['accessoryId'] && $_POST['type'] == 'a
 //IMPORT IMAGES FROM PUBCHEM
 if (isset($_GET['IFRA_PB']) && $_GET['IFRA_PB'] === 'import') {
     require_once(__ROOT__.'/func/pvFileGet.php');
-    
+
     $i = 0;
     $response = [];
 
-    // Ensure the query only fetches necessary data (avoiding huge datasets)
-    $qCas = mysqli_query($conn, "SELECT cas FROM IFRALibrary WHERE (image IS NULL OR image = '' OR image = '-') AND owner_id = '$userID'");
+    // Fetch CAS numbers that need updating
+    $query = "SELECT cas FROM IFRALibrary WHERE (image IS NULL OR image = '' OR image = '-') AND owner_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $userID);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-    // Error handling for database query failure
-    if (!$qCas) {
-        $response["error"] = 'Database query failed: ' . mysqli_error($conn);
-        echo json_encode($response);
+    // Check for database query errors
+    if (!$result) {
+        error_log("PV error: Database query failed: " . $conn->error);
+        echo json_encode(["error" => "Database query failed."]);
         return;
     }
 
-    // Check if no records to update
-    if (mysqli_num_rows($qCas) == 0) {
-        $response["error"] = 'No records need updating in the IFRA Database.';
-        echo json_encode($response);
+    // If no records found, return an error message
+    if ($result->num_rows === 0) {
+        echo json_encode(["error" => "No records need updating in the IFRA Database."]);
         return;
     }
 
     $view = $settings['pubchem_view'];
-    
-    // Begin processing CAS numbers
-    while ($cas = mysqli_fetch_assoc($qCas)) {
-        $casNumber = trim($cas['cas']);
-        $imageUrl = $pubChemApi . '/pug/compound/name/' . $casNumber . '/PNG?record_type=' . $view . '&image_size=small';
 
-        // Fetch image content from PubChem API using helper function
-        $imageContent = pv_file_get_contents($imageUrl);
+    while ($row = $result->fetch_assoc()) {
+        $casNumber = trim($row['cas']);
 
-        // Check if image was fetched successfully
-        if ($imageContent === false) {
-			error_log("PV error: " . "Failed to fetch image for CAS: $casNumber");  // Log error for debugging
+        // Skip empty CAS numbers
+        if (empty($casNumber)) {
+            error_log("PV error: Skipping empty CAS number entry.");
             continue;
         }
 
-        // Encode image content in base64
-        $image = base64_encode($imageContent);
+        $imageUrl = $pubChemApi . '/pug/compound/name/' . urlencode($casNumber) . '/PNG?record_type=' . $view . '&image_size=small';
 
-        // Prepare SQL statement to update image in the database
-        $stmt = $conn->prepare("UPDATE IFRALibrary SET image = ? WHERE cas = ? AND owner_id = ?");
-        $stmt->bind_param('sss', $image, $casNumber, $userID);
+        // Fetch image content
+        $imageContent = pv_file_get_contents($imageUrl);
 
-        // Execute the update statement and handle any errors
-        if ($stmt->execute()) {
-            $i++;
-        } else {
-            $response["error"] = 'Error updating image for CAS: ' . $casNumber . ' - ' . mysqli_error($conn);
-            $stmt->close();
-            echo json_encode($response);
-            return;
+        // Handle failed fetch attempts
+        if ($imageContent === false || empty($imageContent)) {
+            error_log("PV error: Failed to fetch image structure for CAS: $casNumber");
+            continue;
         }
 
-        // Clean up the prepared statement
-        $stmt->close();
+        // Encode image data
+        $image = base64_encode($imageContent);
 
-        // Adding a small delay to avoid overwhelming the PubChem API
-        usleep(100000); // 0.1 seconds delay between requests
+        // Update database
+        $updateStmt = $conn->prepare("UPDATE IFRALibrary SET image = ? WHERE cas = ? AND owner_id = ?");
+        $updateStmt->bind_param("sss", $image, $casNumber, $userID);
+
+        if ($updateStmt->execute()) {
+            $i++;
+        } else {
+            error_log("PV error: Error updating image for CAS: $casNumber - " . $updateStmt->error);
+        }
+
+        $updateStmt->close();
+
+        // Shorter delay to improve performance while respecting API limits
+        usleep(50000); // 50 milliseconds
     }
 
-    // Success response with the count of images updated
-    $response["success"] = "$i images updated successfully!";
-    echo json_encode($response);
+    $stmt->close();
+
+    // Send success response
+    echo json_encode(["success" => "$i images updated successfully!"]);
     return;
 }
 

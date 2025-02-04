@@ -760,14 +760,9 @@ if ($_GET['type'] == 'IFRA') {
             }
 
             $xlsx = SimpleXLSX::parse($filename);
-            $dbHost = mysqli_real_escape_string($conn, $dbhost);
-            $dbName = mysqli_real_escape_string($conn, $dbname);
-            $dbUser = mysqli_real_escape_string($conn, $dbuser);
-            $dbPass = mysqli_real_escape_string($conn, $dbpass);
-
             // Establish PDO connection
             try {
-                $link = new PDO("mysql:host=$dbHost;dbname=$dbName", $dbUser, $dbPass);
+                $link = new PDO("mysql:host=$dbhost;dbname=$dbname", $dbuser, $dbpass);
                 $link->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             } catch (PDOException $e) {
                 error_log("PV error: Failed to connect to the database: " . $e->getMessage());
@@ -797,7 +792,7 @@ if ($_GET['type'] == 'IFRA') {
             $colsCount = count($columns);
 
             foreach ($xlsx->rows() as $rowIndex => $row) {
-                if ($rowIndex === 0) continue; // Skip header row
+                if ($rowIndex < 3) continue; // Skip first 3 rows as they contain headers
 
                 foreach ($columns as $colIndex => $columnName) {
                     $value = $row[$colIndex] ?? null;

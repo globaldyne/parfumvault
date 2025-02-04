@@ -42,7 +42,11 @@ function auth_sso() {
     // Step 2: Validate state parameter
     if (empty($_GET['state']) || ($_GET['state'] !== $_SESSION['oauth2state'])) {
         unset($_SESSION['oauth2state']);
-        echo json_encode(['auth' => ['error' => true, 'msg' => 'Invalid state parameter']]);
+        error_log("Invalid state parameter");
+        $response = [];
+        $response['error'] = 'Invalid state parameter, check your sso settings';
+        $_SESSION['temp_response'] = $response;
+        header('Location: /index.php');
         return;
     }
 
@@ -51,7 +55,11 @@ function auth_sso() {
     $response = fetchAccessToken($tokenUrl, $clientId, $clientSecret, $redirectUri, $code);
 
     if (!isset($response['access_token'])) {
-        echo json_encode(['auth' => ['error' => true, 'msg' => 'Failed to retrieve access token']]);
+        error_log("Failed to retrieve access token");
+        $response = [];
+        $response['error'] = 'Failed to retrieve access token, check your sso settings';
+        $_SESSION['temp_response'] = $response;
+        header('Location: /index.php');
         return;
     }
     
@@ -60,8 +68,10 @@ function auth_sso() {
     $user = fetchUserInfo($userInfoUrl, $accessToken);
 
     if (!$user || !isset($user['email'])) {
-        //echo json_encode(['auth' => ['error' => true, 'msg' => 'Failed to fetch user info']]);
         error_log("Failed to fetch user info");
+        $response = [];
+        $response['error'] = 'Failed to fetch user info, check your sso settings';
+        $_SESSION['temp_response'] = $response;
         header('Location: /index.php');
         return;
     }
@@ -84,11 +94,11 @@ function auth_sso() {
     
     try {
         // Check if user already exists
-        $checkQuery = $conn->prepare("SELECT id,isActive FROM users WHERE email = ? AND provider = ?");
+        $checkQuery = $conn->prepare("SELECT id, isActive, role FROM users WHERE email = ? AND provider = ?");
         $checkQuery->bind_param("si", $email, $provider);
         $checkQuery->execute();
         $checkQuery->store_result();
-        $checkQuery->bind_result($userId, $isActive);
+        $checkQuery->bind_result($userId, $isActive, $role);
         $checkQuery->fetch();
 
         if ($isActive == 0) {
@@ -101,7 +111,7 @@ function auth_sso() {
         if ($checkQuery->num_rows > 0) {
             // Update existing user
             $updateQuery = $conn->prepare("UPDATE users SET fullName = ?, password = ?, token = ?, role = ?, isActive = ?, isVerified = ? WHERE email = ? AND provider = ?");
-            $role = 2;
+            //$role = 2;
             $updateQuery->bind_param("sssiiisi", $fullName, $hashedPassword, $token, $role, $isActive, $isVerified, $email, $provider);
             $updateQuery->execute();
             error_log("User found in auth_kc: " . $email);

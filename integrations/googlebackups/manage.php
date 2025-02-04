@@ -13,7 +13,7 @@ if ($role !== 1){
 //UPDATE BK PROVIDER
 if ($_POST['action'] == 'googlebackups_update') {
     $response = [];
-    if (empty($_POST['googlebackups_agent_srv_host']) || empty($_POST['googlebackups_credentials']) || empty($_POST['googlebackups_schedule']) || empty($_POST['googlebackups_description'])) {
+    if (empty($_POST['googlebackups_agent_srv_host']) || empty($_POST['googlebackups_credentials']) || empty($_POST['googlebackups_schedule']) || empty($_POST['googlebackups_prefix'])) {
         $response["error"] = 'Missing fields';
         echo json_encode($response);
         return;

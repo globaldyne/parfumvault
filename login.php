@@ -305,7 +305,7 @@ if(isset($_SESSION['parfumvault'])){
           <div class="user" id="login_form">
               <?php if ($system_settings['SSO_status'] === '1') { ?>
               <div class="text-center">
-                  <button type="button" class="btn btn-danger me-2" id="login_sso">Sign in with Google</button>
+                  <button type="button" class="btn btn-danger me-2" data-provider="google" id="login_sso">Sign in with Google</button>
               </div>
               <div class="separator mt-2 mb-2">or</div>
               <?php } ?>
@@ -327,8 +327,7 @@ if(isset($_SESSION['parfumvault'])){
           <?php if(getenv('PASS_RESET_INFO' ?: $PASS_RESET_INFO) !== "DISABLED"){ ?>
           <hr />
           <div class="text-center">
-              <a class="small" href="#" data-bs-toggle="modal"
-                  data-bs-target="#forgot_pass">Forgot Password?</a>
+              <a class="small" href="#" data-bs-toggle="modal" data-bs-target="#forgot_pass">Forgot Password?</a>
           </div>
           <?php } ?>
           <?php if ($system_settings['USER_selfRegister'] == '1') { ?>
@@ -381,14 +380,14 @@ if($system_settings['EMAIL_isEnabled'] == 1){ ?>
             </div>
             <div class="modal-body">
                 <div id="forgot_msg"></div>
-                <div class="form-floating mb-3">
+                <div class="form-floating mb-3" id="forgot_email_form">
                     <input type="email" class="form-control" id="forgot_email" placeholder="name@example.com">
                     <label for="forgot_email">Email address</label>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id="forgot_submit">Reset Password</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="forgot_submit">Reset Password</button>
             </div>
         </div>
     </div>
@@ -400,7 +399,7 @@ $(document).ready(function() {
     var email = $('#forgot_email').val();
     $('#forgot_submit').prop('disabled', true);
     $('#forgot_msg').html(
-        '<div class="alert alert-info"><img src="/img/loading.gif"/> Please wait...</div>');
+        '<div class="alert alert-info mx-2"><img src="/img/loading.gif"/>Please wait...</div>');
 
       $.ajax({
           url: '/core/configureSystem.php',
@@ -415,7 +414,7 @@ $(document).ready(function() {
                   $('#forgot_msg').html(
                       '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>' +
                       data.success + '</div>');
-                  $('#forgot_email').hide();
+                  $('#forgot_email_form').hide();
                   $('#forgot_submit').hide();
               } else {
                   $('#forgot_msg').html(
@@ -491,33 +490,35 @@ $(document).ready(function() {
 
 <?php if ($system_settings['SSO_status'] === '1') { ?>
     $('#login_form #login_sso').click(function() {
-    console.log('SSO AUTH');
+
+        console.log('SSO AUTH');
 	
-    $('#login_form :input, #login_form button').prop('disabled', true);
- 	$('#login_sso').append('<span class="spinner-border spinner-border-sm mx-1" role="status" aria-hidden="true"></span>');
-	$.ajax({ 
-		url: '/core/auth.php', 
-		type: 'POST',
-		data: {
-           action: "auth_sso",
-		},
-		dataType: 'json',
-		success: function (data) {
-		    if(data.auth.success){
-				window.location = data.auth.redirect ;			
-			}else if( data.auth.error){
-				$('#msg').html('<div class="alert alert-danger"><i class="bi bi-exclamation-circle-fill mx-2"></i>'+data.auth.msg+'</div>');
-				$("#login_form .spinner-border").remove();
-				$('#login_form :input, #login_form button').prop('disabled', false);
-			}				
-		},
-		error: function (request, status, error) {
-        	$('#msg').html('<div class="alert alert-danger"><i class="bi bi-exclamation-circle-fill mx-2"></i>Unable to handle request, server returned an error: '+request.status+'</div>');
-			$("#login_form .spinner-border").remove();
-			$('#login_form :input, #login_form button').prop('disabled', false);
-    	},		
-	});
- });
+        $('#login_form :input, #login_form button').prop('disabled', true);
+        $('#login_sso').append('<span class="spinner-border spinner-border-sm mx-1" role="status" aria-hidden="true"></span>');
+        $.ajax({ 
+            url: '/core/auth.php', 
+            type: 'POST',
+            data: {
+                action: "auth_sso",
+                provider: $(this).data('provider'),
+            },
+            dataType: 'json',
+            success: function (data) {
+                if(data.auth.success){
+                    window.location = data.auth.redirect ;			
+                }else if( data.auth.error){
+                    $('#msg').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>'+data.auth.msg+'</div>');
+                    $("#login_form .spinner-border").remove();
+                    $('#login_form :input, #login_form button').prop('disabled', false);
+                }				
+            },
+            error: function (request, status, error) {
+                $('#msg').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>Unable to handle request, server returned an error: ' + request.status + '</div>');
+                $("#login_form .spinner-border").remove();
+                $('#login_form :input, #login_form button').prop('disabled', false);
+            },		
+        });
+    });
 <?php } ?>
     $(".toggle-password").click(function() {
         var passwordInput = $($(this).siblings(".password-input"));
