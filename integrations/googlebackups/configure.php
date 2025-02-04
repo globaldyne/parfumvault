@@ -35,29 +35,25 @@ if ($role !== 1){
               <label for="googlebackups_agent_srv_host" class="form-label">Backup agent hostname or IP
               <i class="fa-solid fa-circle-info mx-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Defaults to localhost"></i>
               </label>
-              <input name="googlebackups_agent_srv_host" type="text" class="form-control"
-                id="googlebackups_agent_srv_host"
-                value="<?=$integrations_settings['googlebackups_agent_srv_host'] ?: 'gbkagent'?>">
+              <input name="googlebackups_agent_srv_host" type="text" class="form-control" id="googlebackups_agent_srv_host" value="<?=$integrations_settings['googlebackups_agent_srv_host'] ?: 'gbkagent'?>">
             </div>
 
             <div class="mb-3">
               <label for="googlebackups_agent_srv_port" class="form-label">Backup agent TCP port
               <i class="fa-solid fa-circle-info mx-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Defaults to 3000"></i>
               </label>
-              <input name="googlebackups_agent_srv_port" type="text" class="form-control" id="googlebackups_agent_srv_port"
-              value="<?=$integrations_settings['googlebackups_agent_srv_port'] ?: 3000?>">
+              <input name="googlebackups_agent_srv_port" type="text" class="form-control" id="googlebackups_agent_srv_port" value="<?=$integrations_settings['googlebackups_agent_srv_port'] ?: 3000?>">
             </div>
 
             <div class="mb-3">
               <label for="googlebackups_schedule" class="form-label">Scheduled Time</label>
-              <input name="googlebackups_schedule" type="time" class="form-control" id="googlebackups_schedule"
-              value="<?= date('H:i', $integrations_settings['googlebackups_schedule']) ?>">
+              <input name="googlebackups_schedule" type="time" class="form-control" id="googlebackups_schedule" value="<?= date('H:i', $integrations_settings['googlebackups_schedule']) ?>">
             </div>
-
             <div class="mb-3">
-                <label for="googlebackups_prefix" class="form-label">Prefix</label>
-                <input name="googlebackups_prefix" type="text" class="form-control" id="googlebackups_prefix"
-                    value="<?=$integrations_settings['googlebackups_prefix']?>">
+                <label for="googlebackups_prefix" class="form-label">Prefix
+                <i class="fa-solid fa-circle-info mx-2" data-bs-toggle="tooltip" data-bs-placement="top" title="This will be added as a prefix to backups"></i>
+                </label>
+                <input name="googlebackups_prefix" type="text" class="form-control" id="googlebackups_prefix" value="<?=$integrations_settings['googlebackups_prefix']?>">
             </div>
 
             <div class="mb-3 form-check">
@@ -81,6 +77,9 @@ if ($role !== 1){
 <script>
 $(document).ready(function() {
   $('[data-bs-toggle="tooltip"]').tooltip();
+  $('#googlebackups_prefix').on('input', function() {
+    this.value = this.value.toLowerCase().replace(/[^a-z]/g, '');
+  });
   $('#googlebackups_save').click(function() {
       var googlebackups_enabled = $('#googlebackups_enabled').is(':checked') ? '1' : '0';
       try {
