@@ -69,7 +69,13 @@ if (!isset($_SESSION['parfumvault']) || $_SESSION['parfumvault'] === false) {
 
     $userID = $_SESSION['userID'];
     $remaining_time = round($time_left, 2);
-    mysqli_query($conn, "REPLACE INTO session_info (owner_id, remaining_time) VALUES ('$userID', '$remaining_time')");
+    try {
+        if (!mysqli_query($conn, "REPLACE INTO session_info (owner_id, remaining_time) VALUES ('$userID', '$remaining_time')")) {
+            throw new Exception(mysqli_error($conn));
+        }
+    } catch (Exception $e) {
+        error_log("Failed to update session info: " . $e->getMessage());
+    }
 
     echo json_encode([
         'session_status' => true,
