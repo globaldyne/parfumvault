@@ -42,7 +42,13 @@ if (!isset($_SESSION['parfumvault']) || $_SESSION['parfumvault'] === false) {
     if (isset($_SESSION['userID'])) {
         $userID = $_SESSION['userID'];
     }
-    mysqli_query($conn, "DELETE FROM session_info WHERE owner_id = '$userID'");
+    try {
+        if (!mysqli_query($conn, "DELETE FROM session_info WHERE owner_id = '$userID'")) {
+            throw new Exception(mysqli_error($conn));
+        }
+    } catch (Exception $e) {
+        error_log("Failed to delete session info: " . $e->getMessage());
+    }
     echo json_encode([
         'session_status' => false,
         'session_timeout' => $session_timeout,
