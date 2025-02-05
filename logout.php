@@ -17,7 +17,13 @@ if (getenv('PLATFORM') === "CLOUD") {
 $userID = $_SESSION['userID'];
 error_log("User $userID logged out");
 $conn = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
-mysqli_query($conn, "DELETE FROM session_info WHERE owner_id = '$userID'");
+try {
+    if (!mysqli_query($conn, "DELETE FROM session_info WHERE owner_id = '$userID'")) {
+        throw new Exception("Failed to delete session info for user $userID: " . mysqli_error($conn));
+    }
+} catch (Exception $e) {
+    error_log($e->getMessage());
+}
 
 session_unset();
 session_destroy();

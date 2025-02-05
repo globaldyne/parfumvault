@@ -39,7 +39,9 @@ if (($current_time - $session_start_time) > $session_timeout) {
 }
 
 if (!isset($_SESSION['parfumvault']) || $_SESSION['parfumvault'] === false) {
-    $userID = $_SESSION['userID'];
+    if (isset($_SESSION['userID'])) {
+        $userID = $_SESSION['userID'];
+    }
     mysqli_query($conn, "DELETE FROM session_info WHERE owner_id = '$userID'");
     echo json_encode([
         'session_status' => false,

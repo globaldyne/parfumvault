@@ -40,9 +40,16 @@ if (isset($_SESSION['parfumvault_time'])) {
     if ((time() - $_SESSION['parfumvault_time']) > $session_timeout) {
         session_unset();
         session_destroy();
-        $response['auth']['error'] = true;
-		$response['auth']['msg'] = 'You have been automatically logged out due to inactivity of '.$session_timeout.' seconds. Please log in again. ';
-		echo json_encode($response);
+        $response = [
+            'auth' => [
+            'error' => true,
+            'msg' => 'You have been automatically logged out due to inactivity of ' . $session_timeout . ' seconds. Please log in again.'
+            ]
+        ];
+        session_start();
+        $_SESSION['temp_response'] = ['error' => 'You have been automatically logged out due to inactivity. Please log in again.'];
+        echo json_encode($response);
+        header('Location: '.$server_request_scheme.'://'.$_SERVER['HTTP_HOST'].'/login.php');
         return;
     } else {
         $_SESSION['parfumvault_time'] = time();

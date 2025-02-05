@@ -1,35 +1,34 @@
-ALTER TABLE `batchIDHistory` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL DEFAULT '1'; 
-ALTER TABLE `bottles` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL DEFAULT '1'; 
-ALTER TABLE `cart` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL DEFAULT '1'; 
-ALTER TABLE `customers` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL DEFAULT '1'; 
-ALTER TABLE `documents` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL DEFAULT '1'; 
-ALTER TABLE `formulaCategories` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL DEFAULT '1'; 
-ALTER TABLE `formulas` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL DEFAULT '1'; 
-ALTER TABLE `formulasMetaData` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL DEFAULT '1'; 
-ALTER TABLE `formulasRevisions` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL DEFAULT '1'; 
-ALTER TABLE `formulasTags` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL DEFAULT '1'; 
-ALTER TABLE `formula_history` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL DEFAULT '1'; 
-ALTER TABLE `IFRALibrary` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL DEFAULT '1'; 
-ALTER TABLE `ingCategory` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL DEFAULT '1'; 
-ALTER TABLE `ingredients` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL DEFAULT '1'; 
-ALTER TABLE `ingredient_compounds` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL DEFAULT '1'; 
-ALTER TABLE `ingredient_safety_data` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL DEFAULT '1'; 
-ALTER TABLE `ingReplacements` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL DEFAULT '1'; 
-ALTER TABLE `ingSafetyInfo` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL DEFAULT '1'; 
-ALTER TABLE `ingSuppliers` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL DEFAULT '1'; 
-ALTER TABLE `inventory_accessories` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL DEFAULT '1'; 
-ALTER TABLE `inventory_compounds` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL DEFAULT '1'; 
-ALTER TABLE `makeFormula` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL DEFAULT '1'; 
-ALTER TABLE `perfumeTypes` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL DEFAULT '1'; 
-ALTER TABLE `sds_data` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL DEFAULT '1'; 
-ALTER TABLE `suppliers` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL DEFAULT '1'; 
-ALTER TABLE `synonyms` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL DEFAULT '1'; 
-ALTER TABLE `templates` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL DEFAULT '1'; 
+ALTER TABLE `batchIDHistory` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL ; 
+ALTER TABLE `bottles` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL ; 
+ALTER TABLE `cart` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL ; 
+ALTER TABLE `customers` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL ; 
+ALTER TABLE `documents` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL ; 
+ALTER TABLE `formulaCategories` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL ; 
+ALTER TABLE `formulas` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL ; 
+ALTER TABLE `formulasMetaData` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL ; 
+ALTER TABLE `formulasRevisions` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL ; 
+ALTER TABLE `formulasTags` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL ; 
+ALTER TABLE `formula_history` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL ; 
+ALTER TABLE `IFRALibrary` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL ; 
+ALTER TABLE `ingCategory` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL ; 
+ALTER TABLE `ingredients` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL ; 
+ALTER TABLE `ingredient_compounds` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL ; 
+ALTER TABLE `ingredient_safety_data` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL ; 
+ALTER TABLE `ingReplacements` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL ; 
+ALTER TABLE `ingSafetyInfo` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL ; 
+ALTER TABLE `ingSuppliers` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL ; 
+ALTER TABLE `inventory_accessories` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL ; 
+ALTER TABLE `inventory_compounds` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL ; 
+ALTER TABLE `makeFormula` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL ; 
+ALTER TABLE `perfumeTypes` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL ; 
+ALTER TABLE `sds_data` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL ; 
+ALTER TABLE `suppliers` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL ; 
+ALTER TABLE `synonyms` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL ; 
+ALTER TABLE `templates` CHANGE `owner_id` `owner_id` VARCHAR(255) NOT NULL ; 
 
 ALTER TABLE `user_prefs` DROP INDEX `pref_name`;
 ALTER TABLE `users` CHANGE `id` `id` VARCHAR(255) NOT NULL; 
 
-UPDATE `backup_provider` SET `owner_id` = '1'; 
 UPDATE `batchIDHistory` SET `owner_id` = '1'; 
 UPDATE `bottles` SET `owner_id` = '1'; 
 UPDATE `cart` SET `owner_id` = '1'; 
@@ -108,6 +107,6 @@ CREATE TABLE `session_info` (
   `remaining_time` decimal(10,2) NOT NULL,
   `last_updated` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),
-  UNIQUE KEY `owner_id_2` (`owner_id`),
-  KEY `owner_id` (`owner_id`)
+  UNIQUE KEY `owner_id` (`owner_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+

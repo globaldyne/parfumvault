@@ -44,61 +44,61 @@ if(isset($_SESSION['parfumvault'])){
                     <div class="card-body p-0">
                         <!-- Nested Row within Card Body -->
                         <div class="row">
-            <?php
-            // Check if the `pv_meta` table exists
-            $schemaCheckQuery = "
-                SELECT 1 
-                FROM information_schema.tables 
-                WHERE table_schema = ? 
-                  AND table_name = 'pv_meta' 
-                LIMIT 1";
-            $schemaExistsStmt = $conn->prepare($schemaCheckQuery);
-            
-            if ($schemaExistsStmt) {
-                $dbName = getenv('DB_NAME');
-                $schemaExistsStmt->bind_param('s', $dbName);
-                $schemaExistsStmt->execute();
-                $schemaExistsStmt->store_result();
-            
-                if ($schemaExistsStmt->num_rows === 0 && getenv('DB_HOST') && getenv('DB_USER') && getenv('DB_PASS') && getenv('DB_NAME')) {
-                    // Run schema creation script
-                    $cmd = sprintf(
-                        'mysql -u%s -p%s -h%s %s < %s/db/pvault.sql',
-                        escapeshellarg(getenv('DB_USER')),
-                        escapeshellarg(getenv('DB_PASS')),
-                        escapeshellarg(getenv('DB_HOST')),
-                        escapeshellarg(getenv('DB_NAME')),
-                        escapeshellarg(__ROOT__)
-                    );
-                    passthru($cmd, $exitCode);
-            
-                    if ($exitCode === 0) {
-                        // Insert schema and app versions
-                        $app_ver = trim(file_get_contents(__ROOT__ . '/VERSION.md'));
-                        $db_ver = trim(file_get_contents(__ROOT__ . '/db/schema.ver'));
-            
-                        $insertMetaQuery = "
-                            INSERT INTO pv_meta (schema_ver, app_ver) 
-                            VALUES (?, ?)";
-                        $metaStmt = $conn->prepare($insertMetaQuery);
-                        $metaStmt->bind_param('ss', $db_ver, $app_ver);
-                        $metaStmt->execute();
-						            header('Location: /');
-                    } else {
-                        // Handle schema creation error
-                        $response = [
-                            'error' => sprintf(
-                                'DB Schema Creation error. Make sure the database %s exists on your MySQL server %s, user %s has full permissions on it, and it is empty.',
-                                getenv('DB_NAME'),
-                                getenv('DB_HOST'),
-                                getenv('DB_USER')
-                            )
-                        ];
-                        echo json_encode($response);
-                        return;
+                <?php
+                // Check if the `pv_meta` table exists
+                $schemaCheckQuery = "
+                    SELECT 1 
+                    FROM information_schema.tables 
+                    WHERE table_schema = ? 
+                    AND table_name = 'pv_meta' 
+                    LIMIT 1";
+                $schemaExistsStmt = $conn->prepare($schemaCheckQuery);
+                
+                if ($schemaExistsStmt) {
+                    $dbName = getenv('DB_NAME');
+                    $schemaExistsStmt->bind_param('s', $dbName);
+                    $schemaExistsStmt->execute();
+                    $schemaExistsStmt->store_result();
+                
+                    if ($schemaExistsStmt->num_rows === 0 && getenv('DB_HOST') && getenv('DB_USER') && getenv('DB_PASS') && getenv('DB_NAME')) {
+                        // Run schema creation script
+                        $cmd = sprintf(
+                            'mysql -u%s -p%s -h%s %s < %s/db/pvault.sql',
+                            escapeshellarg(getenv('DB_USER')),
+                            escapeshellarg(getenv('DB_PASS')),
+                            escapeshellarg(getenv('DB_HOST')),
+                            escapeshellarg(getenv('DB_NAME')),
+                            escapeshellarg(__ROOT__)
+                        );
+                        passthru($cmd, $exitCode);
+                
+                        if ($exitCode === 0) {
+                            // Insert schema and app versions
+                            $app_ver = trim(file_get_contents(__ROOT__ . '/VERSION.md'));
+                            $db_ver = trim(file_get_contents(__ROOT__ . '/db/schema.ver'));
+                
+                            $insertMetaQuery = "
+                                INSERT INTO pv_meta (schema_ver, app_ver) 
+                                VALUES (?, ?)";
+                            $metaStmt = $conn->prepare($insertMetaQuery);
+                            $metaStmt->bind_param('ss', $db_ver, $app_ver);
+                            $metaStmt->execute();
+                                        header('Location: /');
+                        } else {
+                            // Handle schema creation error
+                            $response = [
+                                'error' => sprintf(
+                                    'DB Schema Creation error. Make sure the database %s exists on your MySQL server %s, user %s has full permissions on it, and it is empty.',
+                                    getenv('DB_NAME'),
+                                    getenv('DB_HOST'),
+                                    getenv('DB_USER')
+                                )
+                            ];
+                            echo json_encode($response);
+                            return;
+                        }
                     }
                 }
-            }
 				// Check and manage user creation or update
 				$userCheckQuery = "SELECT id FROM users LIMIT 1";
 				$userResult = $conn->query($userCheckQuery);
@@ -303,7 +303,13 @@ if(isset($_SESSION['parfumvault'])){
           </div>
           <div id="msg"></div>
           <div class="user" id="login_form">
-              <?php if ($system_settings['SSO_status'] === '1') { ?>
+              <?php if ($system_settings['SSO_status'] === '1') { 
+                if (isset($_SESSION['temp_response'])) {
+                    error_log('Temp response: ' . print_r($_SESSION['temp_response']['error'], true));
+                    echo '<script>$(document).ready(function() { $("#msg").html("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\"><i class=\"fa-solid fa-circle-exclamation mx-2\"></i>' . $_SESSION['temp_response']['error'] . '<button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\" aria-label=\"Close\"></button></div>"); });</script>';
+                    unset($_SESSION['temp_response']);
+                }
+                ?>
               <div class="text-center">
                   <button type="button" class="btn btn-danger me-2" data-provider="google" id="login_sso">Sign in with Google</button>
               </div>

@@ -329,7 +329,7 @@ CREATE TABLE update_history (
 
 
 CREATE TABLE `users` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `fullName` varchar(255) NOT NULL,
@@ -1015,7 +1015,6 @@ CREATE TABLE `session_info` (
   `remaining_time` decimal(10,2) NOT NULL,
   `last_updated` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),
-  UNIQUE KEY `owner_id_2` (`owner_id`),
-  KEY `owner_id` (`owner_id`)
+  UNIQUE KEY `owner_id` (`owner_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
