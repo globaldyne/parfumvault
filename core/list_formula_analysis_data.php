@@ -11,10 +11,14 @@ require_once(__ROOT__.'/func/calcPerc.php');
 $defCatClass = $settings['defCatClass'];
 
 // Fetch formula data with owner_id condition
-$query1 = "SELECT ingredient, quantity FROM formulas WHERE fid = '{$_POST['fid']}' AND owner_id = '$userID'";
-$result1 = mysqli_query($conn, $query1);
+$query1 = "SELECT ingredient, quantity FROM formulas WHERE fid = ? AND owner_id = ?";
+$stmt1 = $conn->prepare($query1);
+$stmt1->bind_param('ss', $_POST['fid'], $userID);
+$stmt1->execute();
+$result1 = $stmt1->get_result();
+
 if (!$result1) {
-    error_log("PV error: Failed to fetch formula data: " . mysqli_error($conn));
+    error_log("PV error: Failed to fetch formula data: " . $stmt1->error);
     echo json_encode(["error" => "Internal server error"]);
     return;
 }
@@ -43,8 +47,12 @@ $ingredients_escaped = array_map(function($ingredient) use ($conn) {
 $ingredient_list = implode("','", $ingredients_escaped);
 $query2 = "SELECT id, ing, name, cas, min_percentage, max_percentage 
            FROM ingredient_compounds 
-           WHERE ing IN ('$ingredient_list') AND owner_id = '$userID'";
-$result2 = mysqli_query($conn, $query2);
+           WHERE owner_id = ? AND ing IN (" . implode(',', array_fill(0, count($ingredients), '?')) . ")";
+           
+$stmt2 = $conn->prepare($query2);
+$stmt2->bind_param(str_repeat('s', count($ingredients) + 1), $userID, ...$ingredients);
+$stmt2->execute();
+$result2 = $stmt2->get_result();
 
 if (!$result2) {
     error_log("PV error: Failed to fetch ingredient compounds: " . mysqli_error($conn));
@@ -72,9 +80,13 @@ foreach ($get_data_ings as $get_data_ing) {
 
     // Fetch ingredient ID with owner_id condition
     if (!isset($ingredientIds[$get_data_ing['ing']])) {
-        $query3 = "SELECT id FROM ingredients WHERE name = '{$get_data_ing['ing']}' AND owner_id = '$userID'";
-        $result3 = mysqli_query($conn, $query3);
-
+        $query3 = "SELECT id FROM ingredients WHERE name = ? AND owner_id = ?";
+        $stmt3 = $conn->prepare($query3);
+        $stmt3->bind_param('ss', $get_data_ing['ing'], $userID);
+        $stmt3->execute();
+        $result3 = $stmt3->get_result();
+        
+        
         if (!$result3) {
             error_log("PV error: Failed to fetch ingredient ID: " . mysqli_error($conn));
             echo json_encode(["error" => "Internal server error"]);

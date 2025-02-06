@@ -88,7 +88,7 @@ foreach ($data['ingredients'] as $ingredient) {
         '$tenacity', '$chemical_name', '$formula', '$flash_point', '$appearance', $rdi, '$notes', '$profile', 
         '$solvent', '$odor', $allergen, $flavor_use, '$soluble', '$logp', $cat1, $cat2, $cat3, $cat4, $cat5A, 
         $cat5B, $cat5C, $cat5D, $cat6, $cat7A, $cat7B, $cat8, $cat9, $cat10A, $cat10B, $cat11A, $cat11B, 
-        $cat12, '$impact_top', '$impact_heart', '$impact_base', NOW(), NOW(), $userID, '$usage_type', 
+        $cat12, '$impact_top', '$impact_heart', '$impact_base', NOW(), NOW(), '$userID', '$usage_type', 
         $noUsageLimit, $byPassIFRA, $isPrivate, '$molecularWeight', $physical_state, $cid, $shelf_life)";
     
     // Execute the SQL query

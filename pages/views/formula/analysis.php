@@ -41,7 +41,7 @@ $(document).ready(function() {
 			{ orderable: false, targets: '_all' }
 		],
 		dom: 'lfrtip',
-	   buttons: [
+	   	buttons: [
         	{
 				extend: 'csvHtml5',
 				title: "Formula Analysis"
@@ -73,7 +73,6 @@ $(document).ready(function() {
 			  { data : 'sub_ing', title: 'Contains', render: subIng },
 			  { data : 'contained_percentage', title: 'Percentage in formula(%)' },
 			  { data : 'max_allowed_val', title: 'Max allowed(%)', render: maxAllowedReason },
-
 		],
 		rowsGroup: [
       		'main_ing:name'

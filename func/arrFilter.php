@@ -1,6 +1,12 @@
 <?php 
 if (!defined('pvault_panel')){ die('Not Found');}
 
+/**
+ * Filters an array of associative arrays by 'name' key and restructures the result.
+ *
+ * @param array $arr The input array to filter.
+ * @return array The filtered and restructured array.
+ */
 function arrFilter($arr){
 	$result = array();
 

@@ -1018,3 +1018,9 @@ CREATE TABLE `session_info` (
   UNIQUE KEY `owner_id` (`owner_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
+ALTER TABLE `formulasMetaData` ADD INDEX(`owner_id`);
+ALTER TABLE `formulas` ADD INDEX(`owner_id`);
+ALTER TABLE `formulas` ADD INDEX(`fid`);
+ALTER TABLE `formulas` ADD INDEX(`ingredient`);
+ALTER TABLE `ingredients` ADD INDEX(`owner_id`);
+ALTER TABLE `ingredients` ADD INDEX(`name`);

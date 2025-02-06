@@ -84,6 +84,9 @@ if (!empty($system_settings['announcements']) && !empty($user_settings)) {
 
 
 <div id="content">
+  <?php if($_SESSION['impersonateuser']){ ?>
+  <div class="mt-3 alert alert-warning text-center mx-2 fs-5"><i class="fa-solid fa-triangle-exclamation mx-2"></i><strong>USER IS CURRENTLY IMPERSONATED</strong></div>
+  <?php } ?>
   <nav class="navbar navbar-expand bg-gradient-primary-navbar topbar mb-4 static-top shadow">
     <ul class="navbar-nav float-end ml-auto">
       <div class="mt-3" id="chkUpdMsg"></div>

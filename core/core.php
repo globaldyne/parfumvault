@@ -57,7 +57,7 @@ if($role === 1) {
     }
 
     //IMPERSONATE USER
-    if (isset($_POST['impersonate_user_id'])) {
+    if (isset($_POST['request']) && $_POST['request'] === 'impersonateuser' && isset($_POST['impersonate_user_id'])) {
         $impersonate_user_id = $_POST['impersonate_user_id'];
 
         // Fetch user details
@@ -69,9 +69,10 @@ if($role === 1) {
         if ($result->num_rows > 0) {
             $impersonateUser = $result->fetch_assoc();
 
-            //$_SESSION['parfumvault'] = true;
+            // Start impersonation
             $_SESSION['userID'] = $impersonateUser['id'];
             $_SESSION['role'] = $impersonateUser['role'];
+            $_SESSION['impersonateuser'] = true;
 
             echo json_encode(['success' => 'User impersonation started', 'redirect_url' => '/']);
         } else {

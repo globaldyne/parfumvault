@@ -91,6 +91,11 @@
 - Prevent re-activating a user if the account is locally in active
 - IFRA file upload improvements
 - Set prefix for google backups
+- Improved formula analysis security
+- Improved costs calculations function
+- Improved multi demension formula calculation
+- Added indexes for formulas and ingredients to improve speed
+- API ingredients upload user id type update
 
 ### Version 12.4
 - Add dilutant in API formulas

@@ -99,7 +99,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
               <select name="category" id="ing_category" class="form-control selectpicker" data-live-search="true">
                 <option value="" selected>Any</option>
                 <?php while ($row_ingCategory = mysqli_fetch_array($res_ingCategory)){ ?>
-    <option data-content="<img class='img_ing_sel' src='<?php if($row_ingCategory['image']){ echo $row_ingCategory['image']; }else{ echo '/img/molecule.png';}?>'><?=$row_ingCategory['name']?>" data-text="<?=$row_ingCategory['name']?>" value="<?=$row_ingCategory['id'];?>"></option>
+                  <option data-content="<img class='img_ing_sel' src='<?php if($row_ingCategory['image']){ echo $row_ingCategory['image']; }else{ echo '/img/molecule.png';}?>'><?=$row_ingCategory['name']?>" data-text="<?=$row_ingCategory['name']?>" value="<?=$row_ingCategory['id'];?>"></option>
                 <?php } ?>
               </select>
             </div>
@@ -220,13 +220,13 @@ $(document).ready(function() {
 		var profile = $('#ing_profile').val();
 		var cat = $('#ing_category').val();
 		var synonym = $('#ing_synonym').val();
-    	var retainModal = $('#retainModal').is(':checked');
+    var retainModal = $('#retainModal').is(':checked');
 
 		$.ajax({ 
 			url: '/pages/listIngredients.php',
 			type: 'GET',
 			data: {
-				"adv": 1,
+				"advanced": 1,
 				"name": name,
 				"cas": cas,
 				"einecs": einecs,
@@ -241,7 +241,6 @@ $(document).ready(function() {
 					if (!retainModal) {
         				$('#adv_search').modal('hide');
     				}
-					
 			},
 			error: function (xhr, status, error) {
 				$('#advsearchmsg').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-xmark mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');

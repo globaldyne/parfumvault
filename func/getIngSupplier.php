@@ -1,20 +1,25 @@
 <?php 
 if (!defined('pvault_panel')){ die('Not Found');}
 
-function getIngSupplier($ingID,$getStock,$conn){
-	global $userID;
+function getIngSupplier($ingID, $getStock, $conn) {
+    global $userID;
 
-	if($getStock == 1){
-		$result = mysqli_fetch_array(mysqli_query($conn, "SELECT mUnit, price, SUM(stock) AS stock FROM suppliers WHERE ingID = '$ingID' AND owner_id = '$userID'"));	
-	}else{
-		$q = mysqli_query($conn, "SELECT ingSupplierID,supplierLink,status FROM suppliers WHERE ingID = '$ingID' AND owner_id = '$userID'");
-		while($r = mysqli_fetch_array($q)){
-			$sup = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingSuppliers WHERE id = '".$r['ingSupplierID']."' AND owner_id = '$userID'"));
+    if ($getStock == 1) {
+        // Single optimized query for stock retrieval
+        $query = "SELECT mUnit, price, SUM(stock) AS stock 
+                  FROM suppliers 
+                  WHERE ingID = '$ingID' AND owner_id = '$userID'";
+        return mysqli_fetch_assoc(mysqli_query($conn, $query)) ?: null;
+    } else {
+        // Batch fetch supplier data
+        $query = "SELECT s.ingSupplierID, s.supplierLink, s.status, i.name 
+                  FROM suppliers s
+                  JOIN ingSuppliers i ON s.ingSupplierID = i.id 
+                  WHERE s.ingID = '$ingID' AND s.owner_id = '$userID' AND i.owner_id = '$userID'";
 
-			$result[] = array_merge((array)$r, (array)$sup);
-		}
-	}
-	return $result;
+        $result = mysqli_query($conn, $query);
+        return mysqli_fetch_all($result, MYSQLI_ASSOC) ?: null;
+    }
 }
 
 

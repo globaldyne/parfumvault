@@ -22,7 +22,7 @@ $order = in_array(strtoupper($_POST['order_as']), ['ASC', 'DESC']) ? strtoupper(
 
 $filter = "WHERE ingredients.owner_id = '$userID'"; // Base filter for user-specific data
 
-if ($_POST['adv']) {
+if ($_POST['advanced']) {
     if ($name = trim(mysqli_real_escape_string($conn, $_POST['name']))) {
         $n = $name;
     } else {
