@@ -3,20 +3,6 @@ kind: Namespace
 metadata:
   name: pvault
 ---
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  labels:
-    com.jbparfum.service: db-data
-  name: db-data
-  namespace: pvault
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 100Mi
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -44,37 +30,6 @@ spec:
             - containerPort: 8000
               protocol: TCP
       restartPolicy: Always
----
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    com.jbparfum.service: phpmyadmin
-  name: phpmyadmin
-  namespace: pvault
-spec:
-  ports:
-    - name: "9000"
-      port: 9000
-      targetPort: 8000
-  selector:
-    com.jbparfum.service: phpmyadmin
----
-apiVersion: v1
-kind: Service
-metadata:
-
-  labels:
-    com.jbparfum.service: pvault
-  name: pvault
-  namespace: pvault
-spec:
-  ports:
-    - name: "8000"
-      port: 8000
-      targetPort: 8000
-  selector:
-    com.jbparfum.service: pvault
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -107,7 +62,7 @@ spec:
               value: pvault
             - name: FILE_EXT
               value: pdf, doc, docx, xls, csv, xlsx, png, jpg, jpeg, gif
-            - name: MAX_FILE_SIZE
+            - name: UPLOAD_MAX_FILESIZE
               value: "4194304"
             - name: PLATFORM
               value: CLOUD
@@ -119,6 +74,22 @@ spec:
           name: pvault
           ports:
             - containerPort: 8000
+              protocol: TCP
+        - env:
+            - name: DB_HOST
+              value: pvdb
+            - name: DB_NAME
+              value: pvault
+            - name: DB_PASS
+              value: pvault
+            - name: DB_USER
+              value: pvault
+            - name: VERBOSE
+              value: 'true'
+          image: globaldyne/gbkagent:latest
+          name: gbkagent
+          ports:
+            - containerPort: 3000
               protocol: TCP
       restartPolicy: Always
 ---
@@ -167,6 +138,51 @@ spec:
         - name: db-data
           persistentVolumeClaim:
             claimName: db-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    com.jbparfum.service: phpmyadmin
+  name: phpmyadmin
+  namespace: pvault
+spec:
+  ports:
+    - name: "9000"
+      port: 9000
+      targetPort: 8000
+  selector:
+    com.jbparfum.service: phpmyadmin
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    com.jbparfum.service: pvault
+  name: pvault
+  namespace: pvault
+spec:
+  ports:
+    - name: "8000"
+      port: 8000
+      targetPort: 8000
+  selector:
+    com.jbparfum.service: pvault
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    com.jbparfum.service: gbkagent
+  name: gbkagent
+  namespace: pvault
+spec:
+  ports:
+    - name: "3000"
+      port: 3000
+      targetPort: 3000
+  selector:
+    com.jbparfum.service: gbkagent
 ---
 apiVersion: v1
 kind: Service

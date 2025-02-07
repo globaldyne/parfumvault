@@ -15,8 +15,6 @@ require_once(__ROOT__.'/func/searchIFRA.php');
 require_once(__ROOT__.'/func/getIngSupplier.php');
 require_once(__ROOT__.'/func/validateFormula.php');
 
-$role = (int)$user['role'];
-$userID = (int)$user['id'];
 
 if (!$_POST['id']) {		
 	$response['data'] = [];    
@@ -28,17 +26,7 @@ if (!$_POST['id']) {
 // Secure input
 $id = mysqli_real_escape_string($conn, $_POST['id']);
 
-// Adjust query based on role
-if ($role === 1) {
-    // Admin can fetch all data
-    $metaQuery = "SELECT name, fid, catClass, finalType, defView, isProtected, notes, product_name 
-                  FROM formulasMetaData WHERE id = '$id'";
-} else {
-    // Non-admin users can only access their own data
-    $metaQuery = "SELECT name, fid, catClass, finalType, defView, isProtected, notes, product_name 
-                  FROM formulasMetaData 
-                  WHERE id = '$id' AND owner_id = '$userID'";
-}
+$metaQuery = "SELECT name, fid, catClass, finalType, defView, isProtected, notes, product_name FROM formulasMetaData WHERE id = '$id' AND owner_id = '$userID'";
 
 // Fetch metadata
 $metaResult = mysqli_query($conn, $metaQuery);
@@ -57,7 +45,7 @@ $defPercentage = $settings['defPercentage'];
 $defCatClass = $_POST['defCatClass'] ?: $settings['defCatClass'];		 
 $id = mysqli_real_escape_string($conn, $_POST['id']);
 
-$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT name,fid,catClass,finalType,defView,isProtected,notes,product_name FROM formulasMetaData WHERE id = '$id'"));
+$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT name,fid,catClass,finalType,defView,isProtected,notes,product_name FROM formulasMetaData WHERE id = '$id' AND owner_id = '$userID'"));
 
 if(!$meta['fid']){		
 	$response['Error'] = (string)'Requested id is not valid.';    
@@ -67,7 +55,7 @@ if(!$meta['fid']){
 }
 
 	
-$mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE fid = '".$meta['fid']."'"));
+$mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE fid = '".$meta['fid']."' AND owner_id = '$userID'"));
 	
 $bottle_id = $_POST['bottle_id'];
 $concentration =  $_POST['concentration'];
@@ -79,7 +67,7 @@ $bottle = mysqli_fetch_array(mysqli_query($conn, "SELECT price,ml,name FROM bott
 $carrier_cost = mysqli_fetch_array(mysqli_query($conn, "SELECT price,size FROM suppliers WHERE ingID = '$carrier_id'"));
 
 if($_POST['accessory_id']){
-	if(!$accessory = mysqli_fetch_array(mysqli_query($conn, "SELECT name, price, accessory FROM inventory_accessories WHERE id = '$accessory_id'"))){
+	if(!$accessory = mysqli_fetch_array(mysqli_query($conn, "SELECT name, price, accessory FROM inventory_accessories WHERE id = '$accessory_id' AND owner_id = '$userID'"))){
 	//}else{
 		$accessory['price'] = 0;
 		$accessory['accessory'] = 'none';
@@ -104,9 +92,7 @@ if($_POST['batch_id'] == '1'){
 }
 
 
-$formulaQuery = ($role === 1)
-    ? "SELECT id, ingredient, concentration, quantity FROM formulas WHERE fid = '".$meta['fid']."' ORDER BY ingredient ASC"
-    : "SELECT id, ingredient, concentration, quantity FROM formulas WHERE fid = '".$meta['fid']."' AND owner_id = '$userID' ORDER BY ingredient ASC";
+$formulaQuery = "SELECT id, ingredient, concentration, quantity FROM formulas WHERE fid = '".$meta['fid']."' AND owner_id = '$userID' ORDER BY ingredient ASC";
 
 $formula_q = mysqli_query($conn, $formulaQuery);
 
@@ -116,7 +102,7 @@ while ($formula = mysqli_fetch_array($formula_q)){
 
 foreach ($form as $formula){
 	
-	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT id, name, cas, $defCatClass, profile, odor, category, physical_state,usage_type AS classification, type, byPassIFRA FROM ingredients WHERE name = '".$formula['ingredient']."'"));
+	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT id, name, cas, $defCatClass, profile, odor, category, physical_state,usage_type AS classification, type, byPassIFRA FROM ingredients WHERE name = '".$formula['ingredient']."' AND owner_id = '$userID'"));
 	
 	$new_quantity = $formula['quantity'] / $mg['total_mg'] * $new_conc;
 
@@ -124,7 +110,7 @@ foreach ($form as $formula){
   	$conc_final = $formula['concentration'] / 100 * $formula['quantity']/$mg['total_mg'] * $concentration;
 	
 	if($settings['multi_dim_perc'] == '1'){
-		$compos = mysqli_query($conn, "SELECT name,$defPercentage,cas FROM ingredient_compounds WHERE ing = '".$formula['ingredient']."'");
+		$compos = mysqli_query($conn, "SELECT name,$defPercentage,cas FROM ingredient_compounds WHERE ing = '".$formula['ingredient']."' AND owner_id = '$userID'");
 		
 		while($compo = mysqli_fetch_array($compos)){
 			$cmp[] = $compo;

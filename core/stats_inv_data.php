@@ -5,7 +5,7 @@ require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 
-$q = mysqli_query($conn, "SELECT price, stock, size FROM suppliers WHERE stock <> ''");
+$q = mysqli_query($conn, "SELECT price, stock, size FROM suppliers WHERE stock <> '' AND owner_id = '$userID'");
 
 $data = [];
 $w = [];

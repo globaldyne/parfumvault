@@ -14,14 +14,14 @@ require_once(__ROOT__.'/inc/settings.php');
     <div class="col-2">
         <label for="pv_api">Enable API</label>
         <input class="mx-2" name="pv_api" type="checkbox" id="pv_api" value="1" 
-        <?php if($settings['api'] == '1'){ ?> checked="checked" <?php } ?>/>
+        <?php if($user['isAPIActive'] === '1'){ ?> checked="checked" <?php } ?>/>
     </div>
 </div>
 <div class="row mb-3">
     <div class="col-4">
         <label for="pv_api_key">API Key</label>
         <div class="col-md-8 password-input-container">
-        	<input name="pv_api_key" type="password" class="form-control password-input" id="pv_api_key" value="<?=$settings['api_key']?>" />
+        	<input name="pv_api_key" type="password" class="form-control password-input" id="pv_api_key" value="<?=$user['API_key']?>" />
         	<i class="toggle-password fa fa-eye"></i>
         </div>
     </div>

@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    url: https://www.perfumersvault.com/knowledge-base/
+    about: Please refer to the documentation first
+  - name: Feature Request
+    url: https://discord.gg/WxNE8kR8ug
+    about: feature-request channel
+  - name: Discord Server
+    url: https://discord.gg/WxNE8kR8ug
+    about: support channel

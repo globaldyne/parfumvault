@@ -1,6 +1,6 @@
 <?php
 if (!defined('pvault_panel')){ die('Not Found');}
-global $conn;
+global $conn,$userID;
 
 $json = file_get_contents('php://input');
 $data = json_decode($json, true);
@@ -33,8 +33,8 @@ foreach ($data['formulas'] as $row) {
     $revision = (int)($row['revision'] ?? 0);
     $madeOn = mysqli_real_escape_string($conn, $row['madeOn'] ?? date('Y-m-d H:i:s'));
 
-    $query = "INSERT INTO formulasMetaData (fid, name, product_name, notes, finalType, status, isProtected, rating, profile, src, customer_id, revision, madeOn) 
-              VALUES ('$fid', '$name', '$product_name', '$notes', '$concentration', '$status', '$isProtected', '$rating', '$profile', '$src', '$customer_id', '$revision', '$madeOn')";
+    $query = "INSERT INTO formulasMetaData (fid, name, product_name, notes, finalType, status, isProtected, rating, profile, src, customer_id, revision, madeOn, owner_id) 
+              VALUES ('$fid', '$name', '$product_name', '$notes', '$concentration', '$status', '$isProtected', '$rating', '$profile', '$src', '$customer_id', '$revision', '$madeOn', '$userID')";
 
     if (!mysqli_query($conn, $query)) {
         error_log(mysqli_error($conn));

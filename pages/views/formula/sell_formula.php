@@ -13,11 +13,11 @@ if(!$_POST['id']){
 	
 $id = mysqli_real_escape_string($conn, $_POST['id']);
 
-if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulasMetaData WHERE id = '$id'")) == FALSE){
+if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulasMetaData WHERE id = '$id' AND owner_id = '$userID'")) == FALSE){
 	echo '<div class="alert alert-info">Incomplete formula. Please add ingredients.</div>';
 	return;
 }
-$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,fid,name,notes FROM formulasMetaData WHERE id = '$id'"));
+$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,fid,name,notes FROM formulasMetaData WHERE id = '$id' AND owner_id = '$userID'"));
 $f_name = $meta['name'];
 $fid = $meta['fid'];
 ?>
@@ -60,6 +60,7 @@ $fid = $meta['fid'];
 
 <script>
 $(document).ready(function() {
+	$.fn.dataTable.ext.errMode = 'none';
 
 	var myFID = "<?=$meta['fid']?>";
 	var myFNAME = "<?=$meta['name']?>";
@@ -156,6 +157,9 @@ $(document).ready(function() {
 		pageLength: 200,
 		displayLength: 200
 		  
+	}).on('error.dt', function(e, settings, techNote, message) {
+		var m = message.split(' - ');
+		$('#formula').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i><strong>' + m[1] + '</strong></div>');
 	});
 	
 	$('#export_pdf').click(() => {

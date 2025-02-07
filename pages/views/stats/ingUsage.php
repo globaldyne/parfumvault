@@ -3,11 +3,12 @@ define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__)))));
 
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/getIngUsage.php');
 
 
-if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulas"))){
-	echo '<div class="alert alert-info alert-dismissible"><strong>INFO: </strong> to generate statistics, add at least one formula first.</div>';
+if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulas WHERE owner_id = '$userID'"))){
+	echo '<div class="alert alert-info"><strong>INFO: </strong> to generate statistics, add at least one formula first.</div>';
 	return;
 }
 ?>
@@ -17,12 +18,12 @@ var chart = AmCharts.makeChart( "chartIngUsage", {
   "theme": "none",
   "dataProvider": [ 
 <?php
-$ing = mysqli_query($conn, "SELECT DISTINCT ingredient AS name FROM formulas ORDER BY ingredient ASC");
+$ing = mysqli_query($conn, "SELECT DISTINCT ingredient AS name FROM formulas WHERE owner_id = '$userID' ORDER BY ingredient ASC");
 while($allIng =  mysqli_fetch_array($ing)){
 ?>
 {
     "ingredient": "<?php echo $allIng['name'];?>",
-    "usage": "<?php getIngUsage($allIng['name'],$conn); ?>"
+    "usage": "<?php getIngUsage($allIng['name']); ?>"
 }, 
 <?php } ?>				   
 

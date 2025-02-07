@@ -17,7 +17,9 @@ $defImage = base64_encode(file_get_contents(__ROOT__.'/img/pv_molecule.png'));
 $s = trim($_POST['search']['value']);
 
 if($s != ''){
-   $f = "WHERE 1 AND (name LIKE '%".$s."%' OR cas LIKE '%".$s."%' OR synonyms LIKE '%".$s."%' OR risk LIKE '%".$s."%')";
+	$f = "WHERE 1 AND (name LIKE '%".$s."%' OR cas LIKE '%".$s."%' OR synonyms LIKE '%".$s."%' OR risk LIKE '%".$s."%')  AND owner_id = '$userID'";
+} else {
+	$f = "WHERE 1 AND owner_id = '$userID'";
 }
 
 $q = mysqli_query($conn, "SELECT * FROM IFRALibrary $f $extra LIMIT $row, $limit");
@@ -27,26 +29,26 @@ while($res = mysqli_fetch_array($q)){
 
 foreach ($ifra as $IFRA) { 
 	$r['id'] = (int)$IFRA['id'];
-	$r['ifra_key'] = (string)$IFRA['ifra_key']?:'N/A';
+	$r['ifra_key'] = (string)$IFRA['ifra_key']?:'-';
 	$r['amendment'] = (int)$IFRA['amendment']?:0;
-	$r['prev_pub'] = (string)$IFRA['prev_pub']?:'N/A';
-	$r['last_pub'] = (string)$IFRA['last_pub']?:'N/A';
-	$r['deadline_existing'] = (string)$IFRA['deadline_existing']?:'N/A';
-	$r['deadline_new'] = (string)$IFRA['deadline_new']?:'N/A';
-	$r['name'] = (string)$IFRA['name']?:'N/A';
-	$r['cas'] = (string)$IFRA['cas']?:'N/A';
-	$r['cas_comment'] = (string)$IFRA['cas_comment']?:'N/A';
-	$r['synonyms'] = (string)$IFRA['synonyms']?:'N/A';
-	$r['formula'] = (string)$IFRA['formula']?:'N/A';
-	$r['flavor_use'] = (string)$IFRA['flavor_use']?:'N/A';
-	$r['prohibited_notes'] = (string)$IFRA['prohibited_notes']?:'N/A';
-	$r['restricted_photo_notes'] = (string)$IFRA['restricted_photo_notes']?:'N/A';
-	$r['restricted_notes'] = (string)$IFRA['restricted_notes']?:'N/A';
-	$r['specified_notes'] = (string)$IFRA['specified_notes']?:'N/A';
-	$r['type'] = (string)$IFRA['type']?:'N/A';
-	$r['risk'] = (string)$IFRA['risk']?:'N/A';
-	$r['contrib_others'] = (string)$IFRA['contrib_others']?:'N/A';
-	$r['contrib_others_notes'] = (string)$IFRA['contrib_others_notes']?:'N/A';
+	$r['prev_pub'] = (string)$IFRA['prev_pub']?:'-';
+	$r['last_pub'] = (string)$IFRA['last_pub']?:'-';
+	$r['deadline_existing'] = (string)$IFRA['deadline_existing']?:'-';
+	$r['deadline_new'] = (string)$IFRA['deadline_new']?:'-';
+	$r['name'] = (string)$IFRA['name']?:'-';
+	$r['cas'] = (string)$IFRA['cas']?:'-';
+	$r['cas_comment'] = (string)$IFRA['cas_comment']?:'-';
+	$r['synonyms'] = (string)$IFRA['synonyms']?:'-';
+	$r['formula'] = (string)$IFRA['formula']?:'-';
+	$r['flavor_use'] = (string)$IFRA['flavor_use']?:'-';
+	$r['prohibited_notes'] = (string)$IFRA['prohibited_notes']?:'-';
+	$r['restricted_photo_notes'] = (string)$IFRA['restricted_photo_notes']?:'-';
+	$r['restricted_notes'] = (string)$IFRA['restricted_notes']?:'-';
+	$r['specified_notes'] = (string)$IFRA['specified_notes']?:'-';
+	$r['type'] = (string)$IFRA['type']?:'-';
+	$r['risk'] = (string)$IFRA['risk']?:'-';
+	$r['contrib_others'] = (string)$IFRA['contrib_others']?:'-';
+	$r['contrib_others_notes'] = (string)$IFRA['contrib_others_notes']?:'-';
 	$r['cat1'] = (float)$IFRA['cat1'];
 	$r['cat2'] = (float)$IFRA['cat2'];
 	$r['cat3'] = (float)$IFRA['cat3'];
@@ -66,15 +68,14 @@ foreach ($ifra as $IFRA) {
 	$r['cat11B'] = (float)$IFRA['cat11B'];
 	$r['cat12'] = (float)$IFRA['cat12'];
 
-	$r['defCat']['class'] = (string)$defCatClass?:'N/A';
+	$r['defCat']['class'] = (string)$defCatClass?:'-';
 	$r['defCat']['limit'] = (float)$IFRA[$defCatClass]?:'0';
  	$r['image'] = (string)$IFRA['image']?:$defImage;
-	
 
 
 	$rx[]=$r;
 }
-$total = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM IFRALibrary"));
+$total = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM IFRALibrary WHERE owner_id = '$userID' "));
 $filtered = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM IFRALibrary ".$f));
 
 $response = array(

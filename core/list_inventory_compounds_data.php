@@ -17,7 +17,7 @@ $s = trim($_POST['search']['value']);
 $t = 'inventory_compounds';
 
 if($s != ''){
-   $f = "WHERE 1 AND (name LIKE '%".$s."%')";
+   $f = "WHERE 1 AND (name LIKE '%".$s."%') AND owner_id = '$userID'";
 }
 
 $q = mysqli_query($conn, "SELECT * FROM $t $f $extra LIMIT $row, $limit");
@@ -34,7 +34,7 @@ function calculateBottles($totalVolume, $alcoholPercentage, $defBtlSize) {
 }
 
 
-$pt = mysqli_query($conn, "SELECT id,name,concentration,description FROM perfumeTypes");
+$pt = mysqli_query($conn, "SELECT id,name,concentration,description FROM perfumeTypes WHERE owner_id = '$userID' ");
 while($rt = mysqli_fetch_array($pt)){
     $types[] = $rt;
 }
@@ -43,8 +43,8 @@ $rx = [];
 
 foreach ($rs as $rq) { 
     $r['id'] = (int)$rq['id'];
-    $r['name'] = (string)$rq['name'] ?: 'N/A';
-    $r['description'] = (string)$rq['description'] ?: 'N/A';
+    $r['name'] = (string)$rq['name'] ?: '-';
+    $r['description'] = (string)$rq['description'] ?: '-';
     $r['batch_id'] = (int)$rq['batch_id'];
     $r['size'] = (double)$rq['size'] ?: 0;
     $r['updated_at'] = (string)$rq['updated_at'] ?: '00:00:00';
@@ -68,7 +68,7 @@ foreach ($rs as $rq) {
     $rx[] = $r;
 }
 
-$total = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM $t"));
+$total = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM $t WHERE owner_id = '$userID'"));
 $filtered = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(id) AS entries FROM $t ".$f));
 
 $response = array(

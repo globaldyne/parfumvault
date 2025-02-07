@@ -16,7 +16,7 @@ $categories = [
 
 $m = [];
 $mg['total_mg'] = 0;
-$formula_q = mysqli_query($conn, "SELECT concentration,quantity,exclude_from_calculation FROM formulas WHERE fid = '".$fid."'");
+$formula_q = mysqli_query($conn, "SELECT concentration,quantity,exclude_from_calculation FROM formulas WHERE fid = '".$fid."' AND owner_id = '$userID'");
 while ($formula = mysqli_fetch_array($formula_q)){
 	    $form[] = $formula;
 		if ( $formula['exclude_from_calculation'] != 1 ){

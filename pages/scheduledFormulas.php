@@ -17,7 +17,7 @@ require_once(__ROOT__.'/func/php-settings.php');
                 <div class="dropdown-menu dropdown-menu-right">
                   <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#required_materials"><i class="fa-solid fa-pallet mx-2"></i>Required ingredients</a></li>
                   <div class="dropdown-divider"></div>
-                  <li><a class="dropdown-item" href="/core/core.php?action=exportMaking"><i class="fa-solid fa-file-export mx-2"></i>Export as JSON</a></li>
+                  <li><a class="dropdown-item" href="/core/core.php?action=exportMaking"><i class="fa-solid fa-file-export mx-2"></i>Export to JSON</a></li>
                   <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#import_making_json"><i class="fa-solid fa-file-import mx-2"></i>Import from JSON</a></li>
                 </div>
             </div>
@@ -44,6 +44,8 @@ require_once(__ROOT__.'/func/php-settings.php');
 </div>
 <script>
 $(document).ready(function() {
+	$.fn.dataTable.ext.errMode = 'none';
+
 	function extrasShow() {
 		$('[rel=tip]').tooltip({
 			"html": true,
@@ -116,6 +118,9 @@ $(document).ready(function() {
 				type: "POST"
 			});
 		},
+	}).on('error.dt', function(e, settings, techNote, message) {
+		var m = message.split(' - ');
+		$('#tdDataScheduled').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i><strong>' + m[1] + '</strong></div>');
 	});
 
 	

@@ -10,17 +10,17 @@ require_once(__ROOT__.'/func/profileImg.php');
 
 
 if($ingID = $_GET["id"]){
-	if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE id = '$ingID'"))){
+	if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE id = '$ingID' AND owner_id = '$userID'"))){
 		echo '<div class="alert alert-danger">No such ingredient found</div>';
 		return;
 	}
 }
-$res_ingTypes = mysqli_query($conn, "SELECT id,name FROM ingTypes ORDER BY name ASC");
-$res_ingStrength = mysqli_query($conn, "SELECT id,name FROM ingStrength ORDER BY name ASC");
-$res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCategory ORDER BY name ASC");
-$res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles ORDER BY id ASC");
+$res_ingTypes = mysqli_query($conn, "SELECT id,name FROM ingTypes ORDER BY name ASC"); //PUBLIC
+$res_ingStrength = mysqli_query($conn, "SELECT id,name FROM ingStrength ORDER BY name ASC"); //PUBLIC
+$res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCategory WHERE owner_id = '$userID' ORDER BY name ASC");
+$res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles ORDER BY id ASC"); //PUBLIC
 
-$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE id = '$ingID'"));
+$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE id = '$ingID' AND owner_id = '$userID'"));
 
 ?>
 <!doctype html>
@@ -64,7 +64,7 @@ var myIngID;
 
 myIngID = "<?=$ing['id']?>";
 var myCAS = "<?=$ing['cas']?>";
-var myPCH = "<?=$settings['pubChem']?>";
+var myPCH = "<?=$system_settings['SYSTEM_pubChem']?>";
 <?php } ?>
 
 
@@ -133,7 +133,7 @@ body {
 			<li class="nav-item" role="presentation">
             <a href="#safety_info" id="safety_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-biohazard mx-2"></i>Safety</a>
             </li>
-			<?php if($settings['pubChem'] == '1' && $ing['cas']){?>
+			<?php if($system_settings['SYSTEM_pubChem'] == '1' && $ing['cas']){?>
 				<li class="nav-item" role="presentation">
                 	<a href="#pubChem" id="pubChem_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-atom mx-2"></i>Pub Chem</a>
                 </li>
@@ -239,7 +239,7 @@ body {
         </div>
     </div>
 
-<?php if($settings['pubChem'] == '1' && $ing['cas']){?>
+<?php if($system_settings['SYSTEM_pubChem'] == '1' && $ing['cas']){?>
 	<div class="tab-pane fade" id="pubChem">
 		<div id="pubChemData">
         	<div class="row justify-content-md-center">
@@ -276,6 +276,13 @@ body {
 			</div>
 			<div class="modal-body">
 				<div id="duplicate_msg"></div>
+				<div class="alert alert-info">The info bellow will be duplicated:
+					<p>
+						<li>General info</li>
+						<li>Suppliers info</li>
+						<li>Compounds info</li>
+					</p>
+				</div>
 				<label for="duplicateIngName" class="form-label">Name</label>
 				<input class="form-control" name="duplicateIngName" id="duplicateIngName" type="text" value="" />            
 				<div class="modal-footer">

@@ -2,61 +2,62 @@
 if (!defined('pvault_panel')){ die('Not Found');}
 
 function calcPerc($id, $profile, $percent, $conn){
-	$formula = mysqli_fetch_array(mysqli_query($conn, "SELECT fid FROM formulasMetaData WHERE id = '$id'"));
-	$formula_q = mysqli_query($conn, "SELECT ingredient FROM formulas WHERE fid = '".$formula['fid']."'");
-	while ($formula = mysqli_fetch_array($formula_q)) {
-		$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT profile FROM ingredients WHERE name = '".$formula['ingredient']."'"));
-		$prf[] = $ing_q['profile'];
-	}
-	if($prf){
-		$number = array_count_values($prf); 
-    	return ($number[$profile] / $percent) * 100;
-	}
-	return;
+    global $userID;
+
+    $stmt = $conn->prepare("SELECT fid FROM formulasMetaData WHERE id = ? AND owner_id = ?");
+    $stmt->bind_param("is", $id, $userID);
+    $stmt->execute();
+    $stmt->bind_result($fid);
+    $stmt->fetch();
+    $stmt->close();
+
+    if ($fid) {
+        $stmt = $conn->prepare("
+            SELECT i.profile 
+            FROM formulas f 
+            JOIN ingredients i ON f.ingredient = i.name 
+            WHERE f.fid = ? AND f.owner_id = ? AND i.owner_id = ?
+        ");
+        $stmt->bind_param("iss", $fid, $userID, $userID);
+        $stmt->execute();
+        $formula_q = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+
+        if ($formula_q) {
+            $prf = array_column($formula_q, 'profile'); // Extract profile values
+            $countValues = array_count_values($prf);
+            return isset($countValues[$profile]) ? ($countValues[$profile] / $percent) * 100 : 0;
+        }
+    }
+    return 0;
 }
 
 function multi_dim_search($array, $key, $value) {
-    $results = array();
+    $results = [];
 
-    if (is_array($array)) {
-        if (isset($array[$key]) && $array[$key] == $value) {
-            $results[] = $array;
-        }
-
-        foreach ($array as $subarray) {
-            $subresults = multi_dim_search($subarray, $key, $value);
-            if (!empty($subresults)) {
-                $results = array_merge($results, $subresults);
-            }
+    foreach ($array as $subarray) {
+        if (is_array($subarray) && isset($subarray[$key]) && $subarray[$key] == $value) {
+            $results[] = $subarray;
         }
     }
-
     return $results;
 }
 
-
 function multi_dim_perc($conn, $form, $ingCas, $qStep, $defPercentage) {
-	foreach ($form as $formula){
-		
-		if($compos = mysqli_query($conn, "SELECT name,$defPercentage,cas FROM ingredient_compounds WHERE ing = '".$formula['ingredient']."'")){
-		
-			while($compo = mysqli_fetch_array($compos)){
-				$cmp[] = $compo;
-			}
-			
-			foreach ($cmp as $a){
-				$arrayLength = count($a);
-				$i = 0;
-				while ($i < $arrayLength){
-					$c = multi_dim_search($a, 'cas', $a['cas'])[$i];
-					$conc[$a['cas']] += number_format($c[$defPercentage]/100 * $formula['quantity'] * $formula['concentration'] / 100, $qStep);
-	
-					$i++;
-				}
-			}
-		}
-	}
-	return $conc;
-}
+    global $userID;
+    $conc = [];
 
-?>
+    $stmt = $conn->prepare("SELECT cas, $defPercentage FROM ingredient_compounds WHERE ing = ? AND owner_id = ?");
+    $stmt->bind_param("ss", $ingCas, $userID);
+    $stmt->execute();
+    $compos = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    $stmt->close();
+
+    foreach ($compos as $a) {
+        $cas = $a['cas'];
+        $conc[$cas] = isset($conc[$cas]) ? $conc[$cas] : 0;
+        $conc[$cas] += number_format(($a[$defPercentage] / 100) * ($form['quantity'] * $form['concentration'] / 100), $qStep);
+    }
+
+    return $conc;
+}

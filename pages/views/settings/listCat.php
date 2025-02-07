@@ -11,7 +11,7 @@ require_once(__ROOT__.'/inc/opendb.php');
 <div class="card-body">
   <div class="text-right">
     <div class="btn-group" id="menu">
-        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr2"></i>Actions</button>
+        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
         <div class="dropdown-menu">
           <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#add_ingredient_cat"><i class="fa-solid fa-plus mx-2"></i>Add ingredient category</a></li>
           <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#import_categories_json"><i class="fa-solid fa-file-import mx-2"></i>Import from JSON</a></li>
@@ -118,6 +118,8 @@ $(document).ready(function() {
 		data = '<div class="dropdown">' +
 		'<button type="button" class="btn btn-floating hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
 			'<ul class="dropdown-menu">';
+		
+		data += '<li><a class="dropdown-item" href="#" data-id="'+row.id+'" data-bs-toggle="modal" data-bs-target="#editCategory"><i class="fa-solid fa-file-import mx-2"></i>Upload pic</a></li>';
 		data += '<li><a class="dropdown-item text-danger" href="#" id="catDel" rel="tip" title="Delete '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-trash mx-2"></i>Delete</a></li>';
 		data += '</ul></div>';
 		return data;		
@@ -216,7 +218,7 @@ $(document).ready(function() {
 		url: "/core/core.php?action=ingredientCategories",
 		source: [
 		 <?php
-			$getCK = mysqli_query($conn, "SELECT name,rgb FROM colorKey ORDER BY name ASC");
+			$getCK = mysqli_query($conn, "SELECT name,rgb FROM colorKey ORDER BY name ASC"); //PUBLIC
 			while ($r = mysqli_fetch_array($getCK)){
 				echo '{value: "'.$r['rgb'].'", text: "'.$r['name'].'", ck: "color: rgb('.$r['rgb'].')"},';
 			}

@@ -1,11 +1,11 @@
 <?php
 if (!defined('pvault_panel')){ die('Not Found');}
-global $conn;
+global $conn,$userID;
 
 if ($fid = mysqli_real_escape_string($conn, $_REQUEST['fid'])) {
-    $sql = mysqli_query($conn, "SELECT id, fid, name, product_name, notes, finalType AS concentration, status, created_at, isProtected, rating, profile, src, customer_id, revision, madeOn FROM formulasMetaData WHERE fid = '$fid'");
+    $sql = mysqli_query($conn, "SELECT id, fid, name, product_name, notes, finalType AS concentration, status, created_at, isProtected, rating, profile, src, customer_id, revision, madeOn FROM formulasMetaData WHERE fid = '$fid' AND owner_id = '$userID'");
 } else {
-    $sql = mysqli_query($conn, "SELECT id, fid, name, product_name, notes, finalType AS concentration, status, created_at, isProtected, rating, profile, src, customer_id, revision, madeOn FROM formulasMetaData");
+    $sql = mysqli_query($conn, "SELECT id, fid, name, product_name, notes, finalType AS concentration, status, created_at, isProtected, rating, profile, src, customer_id, revision, madeOn FROM formulasMetaData WHERE owner_id = '$userID'");
 }
 
 $rows = ["formulas" => []];
@@ -13,8 +13,8 @@ $rows = ["formulas" => []];
 if ($sql && mysqli_num_rows($sql) > 0) {
     while ($r = mysqli_fetch_assoc($sql)) {
         $C = date_format(date_create($r['created_at']), "Y-m-d H:i:s");
-        $I = mysqli_fetch_array(mysqli_query($conn, "SELECT docData FROM documents WHERE ownerID = '" . $r['id'] . "' AND type = '2'"));
-        $sql_ing = mysqli_query($conn, "SELECT ingredient AS name, fid, ingredient, concentration, dilutant, quantity, notes FROM formulas WHERE fid = '" . $r['fid'] . "'");
+        $I = mysqli_fetch_array(mysqli_query($conn, "SELECT docData FROM documents WHERE ownerID = '" . $r['id'] . "' AND type = '2' AND owner_id = '$userID'"));
+        $sql_ing = mysqli_query($conn, "SELECT ingredient AS name, fid, ingredient, concentration, dilutant, quantity, notes FROM formulas WHERE fid = '" . $r['fid'] . "' AND owner_id = '$userID'");
 
         $formula = [
             'fid' => (string)$r['fid'],

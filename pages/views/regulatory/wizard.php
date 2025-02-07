@@ -5,8 +5,8 @@ require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 
-$res_ingSupplier = mysqli_query($conn, "SELECT * FROM ingSuppliers ORDER BY name ASC");
-$res_SDStmpl = mysqli_query($conn, "SELECT * FROM templates ORDER BY name ASC");
+$res_ingSupplier = mysqli_query($conn, "SELECT * FROM ingSuppliers WHERE owner_id = '$userID' ORDER BY name ASC");
+$res_SDStmpl = mysqli_query($conn, "SELECT * FROM templates WHERE owner_id = '$userID' ORDER BY name ASC");
 
 ?>
 <!doctype html>
@@ -23,23 +23,21 @@ $res_SDStmpl = mysqli_query($conn, "SELECT * FROM templates ORDER BY name ASC");
   	<link href="/css/bootstrap.min.css" rel="stylesheet">
   	<link href="/css/jquery-ui.css" rel="stylesheet">
   	<link href="/css/vault.css" rel="stylesheet">
-	<script src="/js/jquery/jquery.min.js"></script>
+	  <script src="/js/jquery/jquery.min.js"></script>
     <script src="/js/datatables.min.js"></script> 
     <script src="/js/jquery-ui.js"></script>
     <script src="/js/bootstrap.bundle.min.js"></script>
     <script src="/js/bootstrap-select.js"></script>
     <script src="/js/bootbox.min.js"></script>
-    <script src="/js/sb-admin-2.js"></script>
     <script src="/js/validate-session.js"></script>
   	<script src="/js/bootstrap-editable.js"></script>
 
-	<link href="/css/bootstrap-editable.css" rel="stylesheet">
+	  <link href="/css/bootstrap-editable.css" rel="stylesheet">
     <link href="/css/select2.css" rel="stylesheet">
     <script src="/js/select2.js"></script> 
     <script src="/js/regulatory.js"></script> 
     <script src="/js/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="/js/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
-
 </head>
 
 <body>
@@ -268,53 +266,52 @@ $(document).ready(function() {
 
 	
 
-    // Initialize select2
-    $("#prodName").select2({
-        width: '100%',
-        placeholder: 'Search for material..',
-        allowClear: true,
-        dropdownAutoWidth: true,
-        containerCssClass: "prodName",
+  // Initialize select2
+  $("#prodName").select2({
+    width: '100%',
+    placeholder: 'Search for material..',
+    allowClear: true,
+    dropdownAutoWidth: true,
+    containerCssClass: "prodName",
 		//dropdownParent: $('#createSDS'),
-        minimumInputLength: 2,
-        ajax: {
-            url: '/core/list_ingredients_simple.php',
-            dataType: 'json',
-            type: 'POST',
-            delay: 100,
-            quietMillis: 250,
-            data: function (params) {
-                return {
-                    search: { term: params.term },
-                };
-            },
-            processResults: function(data) {
-                return {
-                    results: $.map(data.data, function(obj) {
-                        return {
-                            id: obj.id,
-                            text: obj.name || 'No material found...',
+    minimumInputLength: 2,
+    ajax: {
+      url: '/core/list_ingredients_simple.php',
+      dataType: 'json',
+      type: 'POST',
+      delay: 100,
+      quietMillis: 250,
+      data: function (params) {
+        return {
+          search: { term: params.term },
+        };
+      },
+      processResults: function(data) {
+        return {
+          results: $.map(data.data, function(obj) {
+            return {
+              id: obj.id,
+              text: obj.name || 'No material found...',
 							physical_state: obj.physical_state
-                        }
-                    })
-                };
-            },
-            cache: false,
-        }
+            }
+          })
+        };
+      },
+      cache: false,
+    }
     }).on('select2:selecting', function (e) {
-        prodName = e.params.args.data.text;
-        ingID = e.params.args.data.id;
-		physical_state = e.params.args.data.physical_state;
+      prodName = e.params.args.data.text;
+      ingID = e.params.args.data.id;
+		  physical_state = e.params.args.data.physical_state;
 		
-		if (physical_state == 1) {
-            $('#inlineLiquid').prop('checked', true);
-        } else if (physical_state == 2) {
-            $('#inlineSolid').prop('checked', true);
-        } else if (physical_state == 3) {
-            $('#inlineGAS').prop('checked', true);
-        }
-		
-    });
+      if (physical_state == 1) {
+        $('#inlineLiquid').prop('checked', true);
+      } else if (physical_state == 2) {
+        $('#inlineSolid').prop('checked', true);
+      } else if (physical_state == 3) {
+        $('#inlineGAS').prop('checked', true);
+      }
+   });
 
 	$('#downloadSDS').click(function (e) {
 		e.preventDefault();
@@ -344,13 +341,14 @@ $(document).ready(function() {
 			success: function (data) {
 				if(data.success){
 					$('#sdsResult').html('<div class="alert alert-success"><i class="fa-solid fa-file-pdf mx-2"></i>' + data.success + '</div>');
+          $('#tdDataSDS').DataTable().ajax.reload(null, true);
 				}else if(data.error){
-					$('#sdsResult').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error + '</div>');
+					$('#sdsResult').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>' + data.error + '</div>');
 				}
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
 				console.error("Failed to fetch data: ", textStatus, errorThrown);
-				$('#sdsResult').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mr-2"></i>Failed to fetch data</div>');
+				$('#sdsResult').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>Failed to fetch data</div>');
 			}
 	  });
 	  

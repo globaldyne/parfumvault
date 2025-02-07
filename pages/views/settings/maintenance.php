@@ -1,7 +1,14 @@
 <?php
 define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__))))); 
+require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/func/php-settings.php');
+require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/inc/settings.php');
 
+if ($role !== 1){
+  echo json_encode(['success' => false, 'error' => 'Not authorised']);
+  return;
+}
 $ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
 
 ?>
@@ -19,12 +26,12 @@ $ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
     </div>
     <div class="row mb-2">
         <div class="col">
-            <li><a href="#" data-bs-toggle="modal" data-bs-target="#clear_user_pref">Clear user preferences</a></li>
+            <li><a href="#" data-bs-toggle="modal" data-bs-target="#clear_search_pref_global">Clear user preferences globally</a></li>
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="clear_user_pref" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="clear_user_pref" aria-hidden="true">
+<div class="modal fade" id="clear_search_pref_global" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="clear_search_pref_global" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -32,9 +39,7 @@ $ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
       </div>
       <div class="modal-body">
         <div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i>
-        	You can reset any user modifications like table sorting.
-            This will bring Perfumers Vault instalation to its defaults.
-            Your data will not be affected.
+        	You can reset any user modifications like table sorting for all users. This will bring Perfumers Vault instalation to its defaults globally. Your data will not be affected.
         </div>
       </div>
 	  <div class="modal-footer">
@@ -114,87 +119,86 @@ $ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
  </div>
 </div>
 <script>
-$('#btnClear').click(function() {
-	$("#btnClear").prop("disabled", true);			
+$(document).ready(function () {
 
-	$.ajax({
-		url: '/core/core.php',
-		data: {
-			do: 'userPerfClear',
-		},
-		cache: false,
-		
-		success: function (data) {
-			$("#btnClear").prop("disabled", false);	
-			$('#clear_user_pref').modal('hide');
-		},
-		error: function (request, status, error) {
-			$("#btnClear").prop("disabled", false);
-			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
-			$('.toast-header').removeClass().addClass('toast-header alert-danger');
-			$('.toast').toast('show');
-		},
-			
-	});
+  $('#btnClear').click(function() {
+    $("#btnClear").prop("disabled", true);
+    $.ajax({
+      url: '/core/core.php',
+      data: {
+        action: 'userPerfClearGlobal',
+      },
+      cache: false,
+      success: function (data) {
+        $("#btnClear").prop("disabled", false);	
+        $('#clear_search_pref_global').modal('hide');
+      },
+      error: function (request, status, error) {
+        $("#btnClear").prop("disabled", false);
+        $('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error);
+        $('.toast-header').removeClass().addClass('toast-header alert-danger');
+        $('.toast').toast('show');
+      }, 
+    });
+  });
 
-});
+  $(function () {
+    $('[data-bs-toggle="tooltip"]').tooltip();
+  });
 
-$(function () {
-  $('[data-bs-toggle="tooltip"]').tooltip();
-});
+  $('#bk_modal_open').click(function() {
+    $('#restore_db').modal('hide');
+  });
 
-$('#bk_modal_open').click(function() {
-	$('#restore_db').modal('hide');
-});
-
-$('#btnBackup').click(function() {
-	$('#DBMsg').html('');
-	$("#btnBackup").prop("disabled", true);
-	$("#btnCloseBK").prop("disabled", true);
- 	$('#btnBackup').prepend('<span class="spinner-border spinner-border-sm mx-2" id="bk_span" aria-hidden="true"></span>');
-	$.ajax({
-		url: '/core/core.php',
-		data: {
-			do: 'backupDB',
-			column_statistics: $('#column-statistics').prop("checked")
-		},
-		cache: false,
-		xhr: function () {
-			var xhr = new XMLHttpRequest();
-			xhr.onreadystatechange = function () {
-				if (xhr.readyState == 2) {
-					if (xhr.status == 200) {
-						xhr.responseType = "blob";
-					} else {
-						xhr.responseType = "text";
-					}
-				}
-			};
-			return xhr;
-		},
-		success: function (data) {
-			$('span[id^="bk_span"]').remove();
-			$("#btnBackup").prop("disabled", false);
-			$("#btnCloseBK").prop("disabled", false);
-			var blob = new Blob([data], { type: "application/octetstream" });
-			
-			var url = window.URL || window.webkitURL;
-			link = url.createObjectURL(blob);
-			var a = $("<a />");
-			a.attr("download", 'backup_<?=$ver?>_<?=date("d-m-Y")?>.sql.gz');
-			a.attr("href", link);
-			$("body").append(a);
-			a[0].click();
-			$("body").remove(a);
-		},
-		error: function (request, status, error) {
-			$('#DBMsg').html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mr2"></i>Unable to handle request, server returned an error: '+request.status+'</div>');
-			$('span[id^="bk_span"]').remove();
-			$("#btnBackup").prop("disabled", false);
-			$("#btnCloseBK").prop("disabled", false);
-		},
-			
-	});
+  $('#btnBackup').click(function() {
+    $('#DBMsg').html('');
+    $("#btnBackup").prop("disabled", true);
+    $("#btnCloseBK").prop("disabled", true);
+    $('#btnBackup').prepend('<span class="spinner-border spinner-border-sm mx-2" id="bk_span" aria-hidden="true"></span>');
+    $.ajax({
+      url: '/core/core.php',
+      data: {
+        do: 'backupDB',
+        column_statistics: $('#column-statistics').prop("checked")
+      },
+      cache: false,
+      xhr: function () {
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState == 2) {
+            if (xhr.status == 200) {
+              xhr.responseType = "blob";
+            } else {
+              xhr.responseType = "text";
+            }
+          }
+        };
+        return xhr;
+      },
+      success: function (data) {
+        $('span[id^="bk_span"]').remove();
+        $("#btnBackup").prop("disabled", false);
+        $("#btnCloseBK").prop("disabled", false);
+        var blob = new Blob([data], { type: "application/octetstream" });
+        
+        var url = window.URL || window.webkitURL;
+        link = url.createObjectURL(blob);
+        var a = $("<a />");
+        a.attr("download", 'backup_<?=$ver?>_<?=date("d-m-Y")?>.sql.gz');
+        a.attr("href", link);
+        $("body").append(a);
+        a[0].click();
+        $("body").remove(a);
+      },
+      error: function (request, status, error) {
+        $('#DBMsg').html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>Unable to handle request, server returned an error: '+request.status+'</div>');
+        $('span[id^="bk_span"]').remove();
+        $("#btnBackup").prop("disabled", false);
+        $("#btnCloseBK").prop("disabled", false);
+      },
+        
+    });
+  });
 });
 </script>
 <script src="/js/settings.backup.js"></script>

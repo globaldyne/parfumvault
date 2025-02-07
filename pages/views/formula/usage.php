@@ -47,6 +47,8 @@
 </div>
 <script>
 $(document).ready(function() {
+	$.fn.dataTable.ext.errMode = 'none';
+
 	var tdDataUsage = $('#tdDataUsage').DataTable( {
 		columnDefs: [
 			{ className: 'pv_vertical_middle text-center', targets: '_all' },
@@ -90,6 +92,9 @@ $(document).ready(function() {
 			{ data: 'cat11B', title: 'Cat11B%'},
 			{ data: 'cat12', title: 'Cat12%'}
 		]
+	}).on('error.dt', function(e, settings, techNote, message) {
+		var m = message.split(' - ');
+		$('#tdDataUsage').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i><strong>' + m[1] + '</strong></div>');
 	});
 	
 	var tdDataIFRACat = $('#tdDataIFRACat').DataTable( {
@@ -111,13 +116,14 @@ $(document).ready(function() {
 			{ data: 'name', title: 'Category name', render: catFullName},
 			{ data: 'description', title: 'Purpose'}
 		]
+	}).on('error.dt', function(e, settings, techNote, message) {
+		var m = message.split(' - ');
+		$('#tdDataIFRACat').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i><strong>' + m[1] + '</strong></div>');
 	});
 	
 	
 	function catFullName(data, type, row){
-		
-		return 'Cat' + row.name;   
-		 
+		return 'Cat' + row.name; 
 	};
 
 	$("#exportCSV").click(() => {

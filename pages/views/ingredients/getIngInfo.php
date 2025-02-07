@@ -16,7 +16,7 @@ require_once(__ROOT__.'/func/getIngStock.php');
 if($_GET['replacementsOnly']){
 	$s = trim($_GET['search']);
 
-	$getAllIng = mysqli_query($conn, "SELECT id,name FROM ingredients WHERE name LIKE '%$s%' OR cas LIKE '%$s%' ORDER BY name ASC");
+	$getAllIng = mysqli_query($conn, "SELECT id,name FROM ingredients WHERE (name LIKE '%$s%' OR cas LIKE '%$s%') AND owner_id = '$userID' ORDER BY name ASC");
 	while($allIng = mysqli_fetch_array($getAllIng)){
 		$ingredient[] = $allIng;
 	}
@@ -42,12 +42,12 @@ if($_GET['replacementsOnly']){
 	return;
 }
 
-$genIng = mysqli_fetch_array(mysqli_query($conn, "SELECT name,cas,notes,odor FROM ingredients WHERE id  = '$id'"));
-$getIFRA = mysqli_fetch_array(mysqli_query($conn, "SELECT image,amendment,cas_comment,formula,synonyms,cat4,risk FROM IFRALibrary WHERE cas = '".$genIng['cas']."'"));
+$genIng = mysqli_fetch_array(mysqli_query($conn, "SELECT name,cas,notes,odor FROM ingredients WHERE id  = '$id' AND owner_id = '$userID'"));
+$getIFRA = mysqli_fetch_array(mysqli_query($conn, "SELECT image,amendment,cas_comment,formula,synonyms,cat4,risk FROM IFRALibrary WHERE cas = '".$genIng['cas']."' AND owner_id = '$userID'"));
 
-$reps = mysqli_query($conn,"SELECT ing_rep_name,ing_rep_id FROM ingReplacements WHERE ing_name = '".$genIng['name']."'");
+$reps = mysqli_query($conn,"SELECT ing_rep_name,ing_rep_id FROM ingReplacements WHERE ing_name = '".$genIng['name']."' AND owner_id = '$userID'");
 	if (!mysqli_num_rows($reps)) { 
-		$reps = mysqli_query($conn,"SELECT ing_name,ing_id FROM ingReplacements WHERE ing_rep_name = '".$genIng['name']."'");
+		$reps = mysqli_query($conn,"SELECT ing_name,ing_id FROM ingReplacements WHERE ing_rep_name = '".$genIng['name']."' AND owner_id = '$userID'");
 	}
 while($replacements = mysqli_fetch_array($reps)){
 		$replacement[] = $replacements;

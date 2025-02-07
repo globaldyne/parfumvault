@@ -2,12 +2,12 @@
 if (!defined('pvault_panel')){ die('Not Found');}
 
 require_once(__ROOT__.'/func/countElement.php');
-if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients"))){
+if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE owner_id = '$userID'"))){
 	$ingredientsConf = TRUE;
 }else{
 	$ingredientsConf = FALSE;
 }
-if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))){
+if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE owner_id = '$userID'"))){
 	$formulasConf = TRUE;
 }else{
 	$formulasConf = FALSE;
@@ -57,7 +57,7 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))){
                         <div class="card-body py-4">
                             <div class="d-flex align-items-start">
                                 <div class="flex-grow-1">
-                                    <h3 class="mb-2"><?php echo countElement("formulasMetaData", $conn); ?></h3>
+                                    <h3 class="mb-2"><?php echo countElement("formulasMetaData"); ?></h3>
                                     <p class="mb-2"><a href="/?do=listFormulas">My Formulas</a></p>
                                     <div class="mb-0">
                                         <span class="text-muted">Manage formulas you own or create new ones</span>
@@ -77,7 +77,7 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))){
                         <div class="card-body py-4">
                             <div class="d-flex align-items-start">
                                 <div class="flex-grow-1">
-                                    <h3 class="mb-2"><?php echo countElement("ingredients", $conn); ?></h3>
+                                    <h3 class="mb-2"><?php echo countElement("ingredients"); ?></h3>
                                     <p class="mb-2"><a href="/?do=ingredients">My Ingredients</a></p>
                                     <div class="mb-0">
                                         <span class="text-muted">Manage your ingredients inventory, add, edit, delete, etc</span>
@@ -97,7 +97,7 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))){
                         <div class="card-body py-4">
                             <div class="d-flex align-items-start">
                                 <div class="flex-grow-1">
-                                    <h3 class="mb-2"><?php echo countElement("makeFormula WHERE toAdd = '1' GROUP BY name", $conn); ?></h3>
+                                    <h3 class="mb-2"><?php echo countPending(NULL, NULL); ?></h3>
                                     <p class="mb-2"><a href="/?do=scheduledFormulas">Pending Formulas</a></p>
                                     <div class="mb-0">
                                         <span class="text-muted">See and manage formulas you have in schedule to make or started making already</span>
@@ -148,7 +148,7 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))){
                                     <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                                         <a href="/?do=suppliers">Suppliers</a>
                                     </div>
-                                    <div class="h5 mb-0 font-weight-bold"><?php echo countElement("ingSuppliers", $conn); ?></div>
+                                    <div class="h5 mb-0 font-weight-bold"><?php echo countElement("ingSuppliers"); ?></div>
                                 </div>
                                 <div class="col-auto">
                                     <i class="fas fa-store fa-2x text-gray-300"></i>
@@ -165,7 +165,7 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))){
                                     <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                         <a href="/?do=IFRA">IFRA Entries</a>
                                     </div>
-                                    <div class="h5 mb-0 font-weight-bold"><?php echo countElement("IFRALibrary", $conn); ?></div>
+                                    <div class="h5 mb-0 font-weight-bold"><?php echo countElement("IFRALibrary"); ?></div>
                                 </div>
                                 <div class="col-auto">
                                     <i class="fas fa-university fa-2x text-gray-300"></i>
@@ -183,7 +183,7 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))){
                                     <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                         <a href="/?do=settings#categories">Categories</a>
                                     </div>
-                                    <div class="h5 mb-0 font-weight-bold"><?php echo countElement("ingCategory", $conn); ?></div>
+                                    <div class="h5 mb-0 font-weight-bold"><?php echo countElement("ingCategory"); ?></div>
                                 </div>
                                 <div class="col-auto">
                                     <i class="fas fa-puzzle-piece fa-2x text-gray-300"></i>
@@ -200,7 +200,7 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))){
                                     <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                                         <a href="/?do=bottles">Bottles</a>
                                     </div>
-                                    <div class="h5 mb-0 font-weight-bold"><?php echo countElement("bottles", $conn); ?></div>
+                                    <div class="h5 mb-0 font-weight-bold"><?php echo countElement("bottles"); ?></div>
                                 </div>
                                 <div class="col-auto">
                                     <i class="fas fa-spray-can fa-2x text-gray-300"></i>
@@ -217,7 +217,7 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"))){
                                     <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                         <a href="/?do=accessories">Accessories</a>
                                     </div>
-                                    <div class="h5 mb-0 font-weight-bold"><?php echo countElement("inventory_accessories", $conn); ?></div>
+                                    <div class="h5 mb-0 font-weight-bold"><?php echo countElement("inventory_accessories"); ?></div>
                                 </div>
                                 <div class="col-auto">
                                     <i class="fas fa-prescription-bottle fa-2x text-gray-300"></i>
@@ -290,7 +290,7 @@ $(document).ready(function() {
 			labels: ['Aroma Chemicals ', 'Essential Oils', 'Unategorised'],
 			datasets: [{
 				label: 'Ingredients',
-				data: [<?php echo countElement("ingredients WHERE type = 'AC'",$conn); ?>, <?php echo countElement("ingredients WHERE type = 'EO'",$conn); ?>, <?php echo countElement("ingredients WHERE type IS NULL",$conn); ?>],
+				data: [<?php echo countElement("ingredients","type = 'AC'"); ?>, <?php echo countElement("ingredients", "type = 'EO'"); ?>, <?php echo countElement("ingredients", "type IS NULL"); ?>],
 				backgroundColor: [
 					'rgba(255, 99, 132, 0.8)',
 					'rgba(54, 162, 235, 0.8)',

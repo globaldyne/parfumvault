@@ -8,7 +8,7 @@ require_once(__ROOT__.'/inc/settings.php');
 ?>
 <div class="row">
     <div class="col">
-        <strong>Perfumer's Vault Pro</strong>
+        <strong>Perfumers Vault Pro</strong>
     </div>
 </div>
 <div class="row my-4">

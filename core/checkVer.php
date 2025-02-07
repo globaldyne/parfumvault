@@ -4,6 +4,15 @@ define('__ROOT__', dirname(dirname(__FILE__)));
 
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/func/pvFileGet.php');
+require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/inc/settings.php');
+
+if($role !== 1){
+    $response["error"] = 'Unauthorized access.';
+    echo json_encode($response);
+    http_response_code(401);
+    exit;
+}
 
 // Sanitize input
 $app_ver = filter_input(INPUT_GET, 'app_ver', FILTER_SANITIZE_FULL_SPECIAL_CHARS);

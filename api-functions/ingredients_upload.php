@@ -3,7 +3,7 @@
 if (!defined('pvault_panel')){ die('Not Found');}
 
 header('Content-Type: application/json');
-global $conn;
+global $conn, $userID;
 
 $rawData = file_get_contents("php://input");
 $data = json_decode($rawData, true);
@@ -66,7 +66,7 @@ foreach ($data['ingredients'] as $ingredient) {
     $impact_top = mysqli_real_escape_string($conn, $ingredient['impact_top'] ?? null);
     $impact_heart = mysqli_real_escape_string($conn, $ingredient['impact_heart'] ?? null);
     $impact_base = mysqli_real_escape_string($conn, $ingredient['impact_base'] ?? null);
-    $owner_id = (int)($ingredient['owner_id'] ?? 0);
+    //$owner_id = (int)($ingredient['owner_id'] ?? 0);
     $usage_type = mysqli_real_escape_string($conn, $ingredient['usage_type'] ?? null);
     $noUsageLimit = (int)($ingredient['noUsageLimit'] ?? 0);
     $byPassIFRA = (int)($ingredient['byPassIFRA'] ?? 0);
@@ -88,7 +88,7 @@ foreach ($data['ingredients'] as $ingredient) {
         '$tenacity', '$chemical_name', '$formula', '$flash_point', '$appearance', $rdi, '$notes', '$profile', 
         '$solvent', '$odor', $allergen, $flavor_use, '$soluble', '$logp', $cat1, $cat2, $cat3, $cat4, $cat5A, 
         $cat5B, $cat5C, $cat5D, $cat6, $cat7A, $cat7B, $cat8, $cat9, $cat10A, $cat10B, $cat11A, $cat11B, 
-        $cat12, '$impact_top', '$impact_heart', '$impact_base', NOW(), NOW(), $owner_id, '$usage_type', 
+        $cat12, '$impact_top', '$impact_heart', '$impact_base', NOW(), NOW(), '$userID', '$usage_type', 
         $noUsageLimit, $byPassIFRA, $isPrivate, '$molecularWeight', $physical_state, $cid, $shelf_life)";
     
     // Execute the SQL query

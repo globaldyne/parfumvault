@@ -44,6 +44,8 @@ require_once(__ROOT__.'/func/php-settings.php');
                 
 <script>
 $(document).ready(function() {
+	$.fn.dataTable.ext.errMode = 'none';
+
 	$('#mainTitle').click(function() {
 	 	reload_data();
   	});
@@ -114,6 +116,9 @@ $(document).ready(function() {
 			 type: "POST"
 		  });
 		},
+	}).on('error.dt', function(e, settings, techNote, message) {
+		var m = message.split(' - ');
+		$('#cart_data').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i><strong>' + m[1] + '</strong></div>');
 	});
 
 

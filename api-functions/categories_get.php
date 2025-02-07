@@ -3,9 +3,9 @@
 if (!defined('pvault_panel')){ die('Not Found');}
 
 header('Content-Type: application/json');
-global $conn;
+global $conn, $userID;
 
-$sql = mysqli_query($conn, "SELECT id, name, notes, image, colorKey FROM ingCategory");
+$sql = mysqli_query($conn, "SELECT id, name, notes, image, colorKey FROM ingCategory WHERE owner_id = '$userID'");
 
 if (!$sql) {
 	error_log(mysqli_error($conn));

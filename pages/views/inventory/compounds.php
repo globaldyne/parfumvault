@@ -3,7 +3,7 @@
 require_once(__ROOT__.'/pages/top.php');
 require_once(__ROOT__.'/func/php-settings.php');
 
-$q = mysqli_query($conn, "SELECT id,name FROM documents WHERE type = '5' AND isBatch = '1'");
+$q = mysqli_query($conn, "SELECT id,name FROM documents WHERE type = '5' AND isBatch = '1' AND owner_id = '$userID' ");
 while($res = mysqli_fetch_array($q)){
     $data[] = $res;
 }
@@ -170,8 +170,7 @@ while($res = mysqli_fetch_array($q)){
 
 <script> 
 $(document).ready(function() {
-
-	
+	$.fn.dataTable.ext.errMode = 'none';
 	var tdDataCompounds = $('#tdDataCompounds').DataTable( {
 		columnDefs: [
 			{ className: 'pv_vertical_middle text-center', targets: '_all' },
@@ -219,8 +218,7 @@ $(document).ready(function() {
 			{ data : 'location', title: 'Location' },
 			{ data : 'created_at', title: 'Inventory add' },
 			{ data : 'updated_at', title: 'Inventory update' },
-			{ data : null, title: '', render: actions },
-	
+			{ data : null, title: '', render: actions }
 		],
 		order: [[ 0, 'asc' ]],
 		lengthMenu: [[20, 50, 100, 200, 400], [20, 50, 100, 200, 400]],
@@ -249,7 +247,10 @@ $(document).ready(function() {
 			extrasShow();
 		},
 
-	});
+	}).on('error.dt', function(e, settings, techNote, message) {
+		var m = message.split(' - ');
+		$('#tdDataCompounds').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i><strong>' + m[1] + '</strong></div>');
+    });
 	
 	
     // Function to expand all child rows

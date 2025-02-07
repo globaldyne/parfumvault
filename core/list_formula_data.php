@@ -13,13 +13,7 @@ $order_by = isset($_POST['order_by']) ? mysqli_real_escape_string($conn, $_POST[
 $order = isset($_POST['order_as']) ? mysqli_real_escape_string($conn, $_POST['order_as']) : 'ASC';
 
 $extra = "ORDER BY $order_by $order";
-/*
-$cats = [];
-$cats_q = mysqli_query($conn, "SELECT id, name, description, type FROM IFRACategories ORDER BY id ASC");
-while ($cats_res = mysqli_fetch_assoc($cats_q)) {
-    $cats[] = $cats_res;
-}
-*/
+
 $filters = [];
 if (!empty($_GET['filter']) && (!empty($_GET['profile']) || !empty($_GET['gender']))) {
     if (!empty($_GET['profile'])) {
@@ -33,22 +27,14 @@ if (!empty($_GET['filter']) && (!empty($_GET['profile']) || !empty($_GET['gender
 $s = trim($_POST['search']['value'] ?? '');
 if ($s !== '') {
     $searchTerm = mysqli_real_escape_string($conn, $s);
-    $filters[] = "(name LIKE '%$searchTerm%' OR product_name LIKE '%$searchTerm%' OR notes LIKE '%$searchTerm%')";
+    $filters[] = "(name LIKE '%$searchTerm%' OR product_name LIKE '%$searchTerm%' OR notes LIKE '%$searchTerm%') AND owner_id = '$userID'";
 }
 
-$f = !empty($filters) ? 'WHERE ' . implode(' AND ', $filters) : '';
+$f = !empty($filters) ? 'WHERE ' . implode(' AND ', $filters) : " WHERE owner_id = '$userID'";
 
 $Query = "
-    SELECT 
-        id, fid, name, product_name, isProtected, profile, gender, created_at, 
-        catClass, isMade, madeOn, status, rating, revision, 
-        (SELECT updated_at FROM formulas WHERE fid = formulasMetaData.fid ORDER BY updated_at DESC LIMIT 1) AS updated_at, 
-        (SELECT COUNT(dilutant) FROM formulas WHERE fid = formulasMetaData.fid) AS ingredients 
-    FROM formulasMetaData 
-    $f 
-    $extra 
-    LIMIT $row, $limit
-";
+    SELECT id, fid, name, product_name, isProtected, profile, gender, created_at, catClass, isMade, madeOn, status, rating, revision, (SELECT updated_at FROM formulas WHERE fid = formulasMetaData.fid AND owner_id = '$userID' ORDER BY updated_at DESC LIMIT 1) AS updated_at, 
+        (SELECT COUNT(id) FROM formulas WHERE fid = formulasMetaData.fid AND owner_id = '$userID') AS ingredients FROM formulasMetaData $f $extra LIMIT $row, $limit";
 
 $formulas = mysqli_query($conn, $Query);
 
@@ -62,17 +48,17 @@ foreach ($formulaData as $formula) {
     $r = [
         'id' => (int)$formula['id'],
         'fid' => (string)$formula['fid'],
-        'product_name' => (string)($formula['product_name'] ?: 'N/A'),
+        'product_name' => (string)($formula['product_name'] ?: '-'),
         'name' => (string)($formula['name'] ?: 'Unnamed'),
         'isProtected' => (int)($formula['isProtected'] ?: 0),
-        'profile' => (string)($formula['profile'] ?: 'N/A'),
+        'profile' => (string)($formula['profile'] ?: '-'),
         'gender' => (string)($formula['gender'] ?: 'unisex'),
         'created_at' => (string)($formula['created_at'] ?: '0000-00-00 00:00:00'),
         'updated_at' => (string)($formula['updated_at'] ?: '0000-00-00 00:00:00'),
-        'catClass' => (string)($formula['catClass'] ?: 'N/A'),
+        'catClass' => (string)($formula['catClass'] ?: '-'),
         'ingredients' => (int)($formula['ingredients'] ?: 0),
         'isMade' => (int)($formula['isMade'] ?: 0),
-        'madeOn' => (string)($formula['madeOn'] ?: 'N/A'),
+        'madeOn' => (string)($formula['madeOn'] ?: '-'),
         'status' => (int)($formula['status'] ?: 0),
         'rating' => (int)($formula['rating'] ?: 0),
         'revision' => (int)($formula['revision'] ?: 0)
@@ -81,7 +67,7 @@ foreach ($formulaData as $formula) {
     $rx[] = $r;
 }
 
-$total = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS entries FROM formulasMetaData"));
+$total = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS entries FROM formulasMetaData WHERE owner_id = '$userID'"));
 $filtered = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS entries FROM formulasMetaData $f"));
 
 $response = [

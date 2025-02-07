@@ -3,12 +3,6 @@
 require_once(__ROOT__.'/pages/top.php');
 require_once(__ROOT__.'/func/php-settings.php');
 
-$q = mysqli_query($conn, "SELECT id,name FROM documents WHERE type = '0' AND isSDS = '1'");
-while($res = mysqli_fetch_array($q)){
-    $data[] = $res;
-}
-
-
 ?>
 <style>
 .mfp-iframe-holder .mfp-content {
@@ -60,6 +54,7 @@ while($res = mysqli_fetch_array($q)){
 
 <script> 
 $(document).ready(function() {
+	$.fn.dataTable.ext.errMode = 'none';
 
 	$('.popup-link').magnificPopup({
 		type: 'iframe',
@@ -133,6 +128,9 @@ $(document).ready(function() {
 			extrasShow();
 		},
 
+	}).on('error.dt', function(e, settings, techNote, message) {
+		var m = message.split(' - ');
+		$('#tdDataSDS').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i><strong>' + m[1] + '</strong></div>');
 	});
 	
 	

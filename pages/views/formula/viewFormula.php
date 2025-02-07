@@ -11,7 +11,7 @@ require_once(__ROOT__.'/func/php-settings.php');
 $id = mysqli_real_escape_string($conn, $_GET['id']);
 
 
-$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,fid,name,isProtected,finalType,defView,notes FROM formulasMetaData WHERE id = '$id'"));
+$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,fid,name,isProtected,finalType,defView,notes FROM formulasMetaData WHERE id = '$id' AND owner_id = '$userID'"));
 $f_name = $meta['name'];
 $fid = $meta['fid'];
 ?>
@@ -43,7 +43,7 @@ $fid = $meta['fid'];
            <li><a class="dropdown-item export_as" href="#" data-format="csv"><i class="fa-solid fa-file-csv mx-2"></i>Export as CSV</a></li>
            <li><a class="dropdown-item export_as" href="#" data-format="pdf"><i class="fa-solid fa-file-pdf mx-2"></i>Export as PDF</a></li>
            <li><a class="dropdown-item" href="/core/core.php?action=exportFormulas&fid=<?=$meta['fid']?>"><i class="fa-solid fa-file-code mx-2"></i>Export as JSON</a></li>
-           <li><a class="dropdown-item" href="#" id="print"><i class="fa-solid fa-print mx-2"></i>Print fFormula</a></li>
+           <li><a class="dropdown-item" href="#" id="print"><i class="fa-solid fa-print mx-2"></i>Print Formula</a></li>
            <div class="dropdown-divider"></div>
            <li class="dropdown-header">Scale Formula</li> 
            <li><a class="dropdown-item manageQuantity" href="#" data-action="multiply"><i class="fa-solid fa-xmark mx-2"></i>Multiply x2</a></li>
@@ -822,7 +822,7 @@ $(document).ready(function() {
 		title: 'Choose solvent',
 		source: [
 		<?php
-			$res_ing = mysqli_query($conn, "SELECT id, name FROM ingredients WHERE type = 'Solvent' OR type = 'Carrier' ORDER BY name ASC");
+			$res_ing = mysqli_query($conn, "SELECT id, name FROM ingredients WHERE (type = 'Solvent' OR type = 'Carrier')  AND owner_id = '$userID' ORDER BY name ASC");
 			while ($r_ing = mysqli_fetch_array($res_ing)){
 			echo '{value: "'.$r_ing['name'].'", text: "'.$r_ing['name'].'"},';
 		}

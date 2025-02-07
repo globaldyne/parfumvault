@@ -2,10 +2,84 @@
 define('__ROOT__', dirname(dirname(__FILE__)));
 define('pvault_panel', TRUE);
 
-error_reporting(E_ALL);
-ini_set('log_errors', '1');
-ini_set('error_log', '/var/log/php-fpm/www-error.log');
+//SELF REGISTER
+if ($_POST['action'] == 'selfregister') {
+    require_once(__ROOT__ . '/inc/opendb.php');
+    require_once(__ROOT__ . '/inc/settings.php');
+    require_once(__ROOT__.'/func/mailSys.php');
+    require_once(__ROOT__.'/func/validateInput.php');
 
+
+    if ($system_settings['USER_selfRegister'] == '0') {
+        $response['error'] = 'Self registration is disabled';
+        echo json_encode($response);
+        return;
+    }
+
+    $fullName = mysqli_real_escape_string($conn, $_POST['fullName']);
+    $email = mysqli_real_escape_string($conn, $_POST['email']);
+    $password = $_POST['password'];
+
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $response['error'] = 'Invalid email address';
+        echo json_encode($response);
+        return;
+    }
+    $checkEmailQuery = "SELECT id FROM users WHERE email = '$email'";
+    $result = mysqli_query($conn, $checkEmailQuery);
+    if (mysqli_num_rows($result) > 0) {
+        $response['error'] = 'Email already exists';
+        echo json_encode($response);
+        return;
+    }
+    
+    if (!isPasswordComplex($password)) {
+        $response['error'] = 'Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character';
+        echo json_encode($response);
+        return;
+    }
+
+    $token = bin2hex(random_bytes(16)); // Generates a 32-character unique string
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+    $_id = bin2hex(random_bytes(16)); // Generates a 32-character unique string
+    if($system_settings['EMAIL_isEnabled']){
+        $insertUser = "INSERT INTO users (id, email, password, fullName, role, isActive, isVerified, token) VALUES ('$_id', '$email', '$hashedPassword', '$fullName', 2, 0, 0, '$token')";
+    } else {
+        $insertUser = "INSERT INTO users (id, email, password, fullName, role, isActive, isVerified, token) VALUES ('$_id','$email', '$hashedPassword', '$fullName', 2, 1, 1, '$token')";
+    }
+
+    if($system_settings['EMAIL_isEnabled']){
+        if(welcomeNewUser($fullName,$email,$token)){
+            notifyAdminForNewUser($fullName, $email, 'registered');
+            error_log("Email sent to $email");
+        } else {
+            $response['error'] = 'Failed to complete registration, unable to send email';
+            echo json_encode($response);
+            error_log("Failed to send email to $email");
+            return;
+        }
+    }
+
+    if (mysqli_query($conn, $insertUser)) {
+        if($system_settings['EMAIL_isEnabled']){
+            $response['success'] = 'User created, please check your email to verify your account';
+        } else {
+            $response['success'] = 'User created';
+        }
+        echo json_encode($response);
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        $_SESSION['temp_response'] = $response['success'];
+    } else {
+        $response['error'] = 'Failed to create user: ' . mysqli_error($conn);
+        echo json_encode($response);
+    }
+
+    return;
+}
+
+//FIRST TIME REGISTRATION
 if ($_POST['action'] == 'register') {
     require_once(__ROOT__ . '/inc/opendb.php');
 
@@ -18,7 +92,7 @@ if ($_POST['action'] == 'register') {
 
     // Validate full name length
     if (strlen($_POST['fullName']) < 5) {
-        $response['error'] = "Full name must be at least 5 characters long!";
+        $response['error'] = "Full name must be at least 8 characters long!";
         echo json_encode($response);
         return;
     }
@@ -30,8 +104,8 @@ if ($_POST['action'] == 'register') {
     $app_ver = trim(file_get_contents(__ROOT__ . '/VERSION.md'));
 
     // Validate password length
-    if (strlen($_POST['password']) < 5) {
-        $response['error'] = "Password must be at least 5 characters long!";
+    if (strlen($_POST['password']) < 8) {
+        $response['error'] = "Password must be at least 8 characters long!";
         echo json_encode($response);
         return;
     }
@@ -41,8 +115,8 @@ if ($_POST['action'] == 'register') {
 
     // Insert user into the database
     $insertUserQuery = "
-        INSERT INTO users (email, password, fullName) 
-        VALUES ('$email', '$hashedPassword', '$fullName')";
+        INSERT INTO users (id, email, password, fullName, role, isActive, isVerified) 
+        VALUES (1, '$email', '$hashedPassword', '$fullName', 1, 1, 1)";
     
     if (mysqli_query($conn, $insertUserQuery)) {
         $db_ver = trim(file_get_contents(__ROOT__ . '/db/schema.ver'));
@@ -57,96 +131,93 @@ if ($_POST['action'] == 'register') {
     return;
 }
 
+// RESET PASSWORD
+if ($_POST['action'] == 'resetPassword') {
+    require_once(__ROOT__ . '/inc/opendb.php');
+    require_once(__ROOT__ . '/inc/settings.php');
+    require_once(__ROOT__ . '/func/mailSys.php');
+    require_once(__ROOT__ . '/func/validateInput.php');
 
-if ($_POST['action'] == 'install') {
-    if (file_exists(__ROOT__ . '/inc/config.php') === true && getenv('PLATFROM') !== 'CLOUD') {
-        echo '<div class="alert alert-info"><strong>System is already configured</strong></div>';
-        return;
-    }
+    $response = [];
+    if (isset($_POST['token']) && isset($_POST['newPassword'])) {
+        $token = mysqli_real_escape_string($conn, $_POST['token']);
+        $newPassword = $_POST['newPassword'];
 
-    if (strlen($_POST['password']) < 5) {
-        $response['error'] = 'Password must be at least 5 characters long';
-        echo json_encode($response);
-        return;
-    }
-
-    if (!$_POST['dbhost'] || !$_POST['dbuser'] || !$_POST['dbpass'] || !$_POST['dbname'] || !$_POST['fullName'] || !$_POST['email']) {
-        $response['error'] = 'All fields are required';
-        echo json_encode($response);
-        return;
-    }
-
-    if (!is_writable(dirname(__FILE__))) {
-        $response['error'] = 'Home directory isn\'t writable.<p>Please refer to our <a href="https://www.perfumersvault.com/knowledge-base/" target="_blank">KB</a> for help.</p>';
-        echo json_encode($response);
-        return;
-    }
-
-    if (!$conn = mysqli_connect($_POST['dbhost'], $_POST['dbuser'], $_POST['dbpass'], $_POST['dbname'])) {
-        $response['error'] = 'Error connecting to the database. Ensure the details provided are correct, the database exists, and the user has full permissions on it '. mysqli_error($conn);
-        echo json_encode($response);
-        return;
-    }
-
-    $cmd = 'mysql -u' . escapeshellarg($_POST['dbuser']) . ' -p' . escapeshellarg($_POST['dbpass']) . ' -h' . escapeshellarg($_POST['dbhost']) . ' ' . escapeshellarg($_POST['dbname']) . ' < ' . __ROOT__ . '/db/pvault.sql';
-    passthru($cmd, $e);
-
-    if (!$e) {
-        $hashedPassword = password_hash($_POST['password'], PASSWORD_DEFAULT);
-        $email = strtolower(mysqli_real_escape_string($conn, $_POST['email']));
-        $fullName = mysqli_real_escape_string($conn, $_POST['fullName']);
-
-        $insertUser = "INSERT INTO users (id, email, password, fullName) VALUES ('1', '$email', '$hashedPassword', '$fullName')";
-        if (!mysqli_query($conn, $insertUser)) {
-            $response['error'] = 'Failed to create admin user: ' . mysqli_error($conn);
+        if (!isPasswordComplex($newPassword)) {
+            $response['error'] = 'Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character';
             echo json_encode($response);
             return;
         }
 
-        $conf = '<?php
-// AUTO-GENERATED BY INSTALLATION WIZARD
-if (!defined("pvault_panel")) { die("Not Found"); }
-$dbhost = "' . $_POST['dbhost'] . '"; // MySQL Hostname
-$dbuser = "' . $_POST['dbuser'] . '"; // MySQL Username
-$dbpass = "' . $_POST['dbpass'] . '"; // MySQL Password
-$dbname = "' . $_POST['dbname'] . '"; // MySQL DB name
+        $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
 
-$tmp_path = "/tmp/";
-$allowed_ext = "pdf, doc, docx, xls, csv, xlsx, png, jpg, jpeg, gif";
-$max_filesize = "4194304"; // in bytes
-$session_timeout = 1800; // Time in seconds
-?>';
-
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
+        $checkTokenQuery = "SELECT email FROM password_resets WHERE token = '$token' AND expiry > NOW()";
+        $result = mysqli_query($conn, $checkTokenQuery);
+        if (mysqli_num_rows($result) == 0) {
+            $response['error'] = 'Invalid or expired token';
+            echo json_encode($response);
+            return;
         }
 
-        $_SESSION['parfumvault'] = true;
-        $_SESSION['userID'] = mysqli_insert_id($conn);
-    } else {
-        $response['error'] = 'DB Schema Creation error. Ensure the database exists in your MySQL server and is empty.';
+        $row = mysqli_fetch_assoc($result);
+        $email = $row['email'];
+
+        $updatePasswordQuery = "UPDATE users SET password = '$hashedPassword' WHERE email = '$email'";
+        if (mysqli_query($conn, $updatePasswordQuery)) {
+            mysqli_query($conn, "DELETE FROM password_resets WHERE email = '$email'");
+            $response['success'] = 'Password has been reset successfully';
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+            $_SESSION['temp_response'] = $response['success'];
+        } else {
+            $response['error'] = 'Failed to reset password: ' . mysqli_error($conn);
+        }
+
         echo json_encode($response);
         return;
     }
 
-    $cfg = __ROOT__ . '/inc/config.php';
-    if (file_put_contents($cfg, $conf) === false) {
-        $response['error'] = 'Failed to create config file <strong>' . $cfg . '</strong><p> Make sure your web server has write permissions to the install directory.';
+    $email = mysqli_real_escape_string($conn, $_POST['email']);
+
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $response['error'] = 'Invalid email address';
         echo json_encode($response);
         return;
     }
 
-    $app_ver = trim(file_get_contents(__ROOT__ . '/VERSION.md'));
-    $db_ver = trim(file_get_contents(__ROOT__ . '/db/schema.ver'));
-    $insertMeta = "INSERT INTO pv_meta (schema_ver, app_ver) VALUES ('$db_ver', '$app_ver')";
-    if (!mysqli_query($conn, $insertMeta)) {
-        $response['error'] = 'Failed to update meta information: ' . mysqli_error($conn);
+    $checkEmailQuery = "SELECT id FROM users WHERE email = '$email' AND isActive = 1 AND provider = 1";
+    $result = mysqli_query($conn, $checkEmailQuery);
+    if (mysqli_num_rows($result) == 0) {
+        $response['error'] = 'Email does not exist or user is inactive';
         echo json_encode($response);
         return;
     }
+    $checkTokenQuery = "SELECT token FROM password_resets WHERE email = '$email' AND expiry > NOW()";
+    $result = mysqli_query($conn, $checkTokenQuery);
+    if (mysqli_num_rows($result) > 0) {
+        $response['error'] = 'Password reset already requested. Please check your email.';
+        echo json_encode($response);
+        return;
+    }
+    $token = bin2hex(random_bytes(16)); // Generates a 32-character unique string
+    $expiry = date('Y-m-d H:i:s', strtotime('+1 hour')); // Token expires in 1 hour
 
-    $response['success'] = 'System configured';
+    $insertTokenQuery = "INSERT INTO password_resets (email, token, expiry) VALUES ('$email', '$token', '$expiry') ON DUPLICATE KEY UPDATE token='$token', expiry='$expiry'";
+  //  if (mysqli_query($conn, $insertTokenQuery)) {
+        if (sendPasswordResetEmail($email, $token)) {
+            mysqli_query($conn, $insertTokenQuery);
+            $response['success'] = 'Password reset email sent';
+        } else {
+            $response['error'] = 'Failed to send password reset email';
+        }
+   // } else {
+    //    $response['error'] = 'Failed to generate reset token: ' . mysqli_error($conn);
+   // }
+
     echo json_encode($response);
     return;
 }
+
+
 ?>

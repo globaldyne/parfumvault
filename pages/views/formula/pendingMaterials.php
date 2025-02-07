@@ -69,7 +69,8 @@ require_once(__ROOT__.'/inc/sec.php');
 
 $(document).ready(function() {
 	$("#pendingMaterialsTabs").tabs();
-	
+	$.fn.dataTable.ext.errMode = 'none';
+
 	var tdDataM = $("#tdDataM").DataTable( {
 		columnDefs: [
 			{ className: "text-center", targets: "_all" },
@@ -116,6 +117,9 @@ $(document).ready(function() {
 		lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
         pageLength: 20,
 		displayLength: 20
+	}).on('error.dt', function(e, settings, techNote, message) {
+		var m = message.split(' - ');
+		$('#tdDataM').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i><strong>' + m[1] + '</strong></div>');
 	});
 	
 	var tdDataS = $("#tdDataS").DataTable( {
@@ -158,6 +162,9 @@ $(document).ready(function() {
 		lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
         pageLength: 20,
 		displayLength: 20
+	}).on('error.dt', function(e, settings, techNote, message) {
+		var m = message.split(' - ');
+		$('#tdDataS').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i><strong>' + m[1] + '</strong></div>');
 	});
 	
 	function formulaName(data, type, row){

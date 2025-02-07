@@ -24,7 +24,7 @@ function cleanupNonHashedPasswords($conn) {
                 // Delete entry if the password is not hashed
                 $deleteUserQuery = "DELETE FROM users WHERE id = ?";
                 $deleteUserStmt = $conn->prepare($deleteUserQuery);
-                $deleteUserStmt->bind_param('i', $userId);
+                $deleteUserStmt->bind_param('s', $userId);
 
                 if ($deleteUserStmt->execute()) {
                     $userDeleted = true;

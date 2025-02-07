@@ -1,11 +1,45 @@
 <?php
 if (!defined('pvault_panel')){ die('Not Found');}
 
-$settings = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM settings")); 
 $user = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM users WHERE id = '".$_SESSION['userID']."'")); 
 $pv_meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM pv_meta")); 
 
+$system_settings = [];
+$system_query = "SELECT * FROM system_settings";
+if ($system_result = mysqli_query($conn, $system_query)) {
+    while ($system_row = mysqli_fetch_assoc($system_result)) {
+        $system_settings[$system_row['key_name']] = $system_row['value'];
+    }
+    mysqli_free_result($system_result);
+}
 
+$user_settings = [];
+$settings = [];
+$query = "SELECT * FROM user_settings WHERE owner_id = '".$_SESSION['userID']."'";
+if ($result = mysqli_query($conn, $query)) {
+    while ($row = mysqli_fetch_assoc($result)) {
+        $user_settings[$row['key_name']] = $row['value'];
+        $settings[$row['key_name']] = $row['value'];
+
+    }
+    mysqli_free_result($result);
+}
+
+$integrations_settings = [];
+$integrations_query = "SELECT * FROM integrations_settings";
+if ($integrations_result = mysqli_query($conn, $integrations_query)) {
+    while ($integrations_row = mysqli_fetch_assoc($integrations_result)) {
+        $integrations_settings[$integrations_row['key_name']] = $integrations_row['value'];
+    }
+    mysqli_free_result($integrations_result);
+}
+
+$countriesJson = file_get_contents(__ROOT__.'/db/countries.json');
 $pubChemApi = 'https://pubchem.ncbi.nlm.nih.gov/rest';
-$pvLibraryAPI = $settings['pv_library_api_url'];
+$pvLibraryAPI = $system_settings['LIBRARY_apiurl'];
+$countries = json_decode(file_get_contents(__ROOT__.'/db/countries.json'), true);
+
+$userID = $user['id'];
+$role = (int)$user['role'];
+
 ?>

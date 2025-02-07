@@ -10,23 +10,16 @@ $limit = isset($_POST['length']) ? (int)$_POST['length'] : 10;
 $order_by = isset($_POST['order_by']) ? mysqli_real_escape_string($conn, $_POST['order_by']) : 'revisionDate';
 $order = isset($_POST['order_as']) && in_array(strtoupper($_POST['order_as']), ['ASC', 'DESC']) ? strtoupper($_POST['order_as']) : 'ASC';
 
+$fid = mysqli_real_escape_string($conn, $_GET['fid']);
+
 $extra = "ORDER BY ".$order_by." ".$order;
 
-$role = (int)$user['role'];
-$userID = (int)$user['id'];
 
-$f = "WHERE fid = '".$_GET['fid']."' GROUP BY revision";
+$f = "WHERE fid = '".$fid."' AND owner_id = '$userID' GROUP BY revision";
 
+$current_rev = mysqli_fetch_array(mysqli_query($conn, "SELECT id,revision FROM formulasMetaData WHERE fid = '".$_GET['fid']."' AND owner_id = '$userID'"));
+$q = "SELECT id,name,fid,revision,revisionDate,revisionMethod FROM formulasRevisions $f $extra LIMIT $row, $limit";
 
-if ($role === 1) {
-    // Admin: No restrictions
-	$current_rev = mysqli_fetch_array(mysqli_query($conn, "SELECT id,revision FROM formulasMetaData WHERE fid = '".$_GET['fid']."'"));
-	$q = "SELECT id,name,fid,revision,revisionDate,revisionMethod FROM formulasRevisions $f $extra LIMIT $row, $limit";
-} else {
-    // Non-admin: Restrict to their own data
-    $current_rev = mysqli_fetch_array(mysqli_query($conn, "SELECT id,revision FROM formulasMetaData WHERE fid = '".$_GET['fid']."' AND owner_id = '$userID'"));
-    $q = "SELECT id,name,fid,revision,revisionDate,revisionMethod FROM formulasRevisions $f AND owner_id = '$userID' $extra LIMIT $row, $limit";
-}
 
 if(!$current_rev['id']){		
 	$response['error'] = (string)'Requested id is not valid.';    
