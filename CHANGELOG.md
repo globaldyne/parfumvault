@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 12.6
+
 ### Version 12.5
 - Code clean-up
 - Various overall security improvements
