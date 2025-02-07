@@ -66,6 +66,7 @@ foreach ($userData as $user) {
     $suppliersCount = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS entries FROM suppliers WHERE owner_id = '".$user['id']."'"));
     $synonymsCount = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS entries FROM synonyms WHERE owner_id = '".$user['id']."'"));
     $templatesCount = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS entries FROM templates WHERE owner_id = '".$user['id']."'"));
+    $sessionValidUntil = mysqli_fetch_array(mysqli_query($conn, "SELECT remaining_time FROM session_info WHERE owner_id = '".$user['id']."'"));
 
     $r = [
         'id' => $user['id'],
@@ -79,6 +80,8 @@ foreach ($userData as $user) {
         'api_key' => $user['API_key'],
         'is_verified' => $user['isVerified'],
         'is_logged_in' => (int)$isLoggedIn['entries'],
+        'session_valid_until' => round($sessionValidUntil['remaining_time'] / 3600, 2) . ' hours (' . round($sessionValidUntil['remaining_time'] / 60, 2) . ' mins)',
+        //'session_valid_until_raw' => (float)$sessionValidUntil['remaining_time'],
         'stats' => [
             'total_formulas' => (int)$formulaCount['entries'],
             'total_ingredients' => (int)$ingredientCount['entries'],

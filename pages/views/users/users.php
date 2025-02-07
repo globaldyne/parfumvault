@@ -179,6 +179,7 @@ $(document).ready(function() {
         var name = row.full_name;
         if (row.is_logged_in == 1) {
             name = '<span class="text-success" rel="tip" title="Online"><i class="fa fa-circle mx-2"></i></span>' + name;
+            name += '<br><a href="#" rel="tip" title="Session validity">' + row.session_valid_until + '</a>';
         } else if (row.is_logged_in == 0) {
             name = '<span class="text-danger" rel="tip" title="Offline"><i class="fa fa-circle mx-2"></i></span>' + name;
         }
