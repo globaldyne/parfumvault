@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 12.6
+- Added meta data (formulas, ingredients,...) count for users in the admin dashboard
 
 ### Version 12.5
 - Code clean-up

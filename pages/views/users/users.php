@@ -31,6 +31,7 @@ if($role !== 1){
 <table id="tdUsers" class="table table-striped" style="width:100%">
   <thead>
       <tr>
+          <th>UUID</th>
           <th>Name</th>
           <th>Email</th>
           <th>Status</th>
@@ -114,7 +115,6 @@ $(document).ready(function() {
 	var tdUsers = $('#tdUsers').DataTable( {
 		columnDefs: [
 			{ className: 'text-center', targets: '_all' },
-			{ orderable: false, targets: [7] }
 		],
 		dom: 'lfrtip',
 		processing: true,
@@ -128,15 +128,16 @@ $(document).ready(function() {
 		},
 		ajax: {	url: '/core/users_data.php' },
 		columns: [
+            { data : 'id', title: 'UUID', render: UUID, orderable: false},
 		    { data : 'full_name', title: 'Full name', render: name},
-		    { data : 'email', title: 'Username'},
+		    { data : 'email', title: 'Username',},
             { data : 'status', title: 'Status', render: status},
             { data : 'role', title: 'Role', render: role},
             { data : 'isVerified', title: 'Verified', render: isVerified},
             { data : 'provider', title: 'Auth method', render: provider},
             { data : 'created_at', title: 'Created', render: created_at},
 			{ data : 'updated_at', title: 'Updated', render: updated_at},
-			{ data : null, title: '', render: actions},		   
+			{ data : null, title: '', render: actions, orderable: false},		   
 		],
 		order: [[ 1, 'asc' ]],
 		lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
@@ -169,6 +170,10 @@ $(document).ready(function() {
 		$('#tdUsers').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i><strong>' + m[1] + '</strong></div>');
     });
 
+
+    function UUID(data, type, row) {
+        return '<span class="text-decoration-underline" id="UUID">' + row.id + '</span>';
+    };
 
     function name(data, type, row) {
         var name = row.full_name;
@@ -257,6 +262,28 @@ $(document).ready(function() {
 		return data;
 	};
 	
+    tdUsers.on('click', '#UUID', function (e) {
+		let tr = e.target.closest('tr');
+		let row = tdUsers.row(tr); 
+		if (row.child.isShown()) {
+			row.child.hide();
+		} else {
+			row.child(format(row.data())).show();
+		}
+	});
+
+    function format(d) {
+        var details = '<strong>' + d.email + '</strong><br><hr/>';
+        $.each(d.stats, function(i, stats) {
+            if (i.includes('_')) {
+                i = i.replace(/.*?_/, '');
+            }
+            details += '<span class="details"><strong>' + stats + ' ' + i + '</span><br>';
+        });
+        return details;
+    };
+
+
     $('#tdUsers').on('click', '#impersonateUser', function() {
         var id = $(this).data('id');
         var name = $(this).data('name');
