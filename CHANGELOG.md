@@ -1,4 +1,102 @@
 # CHANGELOG
+### Version 12.5
+- Code clean-up
+- Various overall security improvements
+- Update user profile backend
+- Update db schema for a default owner id 1 - This will be removed/refacored in the next release
+- Fix update form for compounds
+- Replacing mysqli queries with mysql statements (WIP)
+- Overall improvements across the app
+- Updated core backend for better security handling and error logging
+- Fixed accessory type update
+- Fixed synonyms delete
+- Improve PubChem structure images fetch
+- Fixed redirection when adding ingredient if already exists with the same name
+- Update ingredient duplication function
+- Change default primary key for safety data
+- Change policy when importing ingredients from json, any ingredients matching name will be ignored
+- Reload ingredient data after a successful import
+- Removed collation from db fields
+- Only admins can take/restore backups
+- Fixed wording when no batches found
+- Fixed formula attachments created date display
+- Unknown defaults replaced with '-' instead of 'N/A'
+- Improve count cart function
+- Deprecating old db update scripts
+- Google backups section is only available to admin users
+- Added better error logging for datatables
+- Prevent IFRA document creation if formula isn't compatible with the IFRA library standards
+- Remove id field from json exports
+- Refactor JSON exports
+- Improve file uploads
+- Improve CSV imports
+- Added multi-user support
+- Renamed General settings to My preferences as will contain only personal user settings
+- Added System Settings page to administer the system - only available to admins
+- Added users import
+- Added users export
+- Added user impersonation
+- API key and status is now configured per user
+- Separated system settings from user settings
+- Integrations, logs, and maintenance pages will now be available to admins only
+- Search preferences reset has been moved in per user basis and globally for admins
+- Session validity will only be visible to admins
+- My Brand page renamed to Branding
+- Branding can now be configured per user
+- SDS settings moved to per user basis
+- PV Library API moved to system settings
+- Added settings per users
+- Dropped table settings
+- Added user profile self-delete
+- Added user email to the session data
+- Added country in user profile
+- Validate email for user before allowing updating it
+- Refactor index.php
+- Refactor ingredients import
+- Admins can now enable or disable PV Library
+- Added user self-register
+- Improve forgot password
+- Added user announcement text
+- Improved session security
+- Add user settings reset
+- Add DB initialization in docker
+- Refactor of user search preferences in db
+- Removing non-containerized installation support
+- Update api.php for the new settings format
+- Password complexity is now enforced
+- Added SMTP email server support
+- Added user self-register
+- Added password reset as a self-service
+- Improved documents upload
+- Fixed ingredient replacements links
+- Installation wizard for non-container has been removed
+- Added error screen for missing configuration
+- Added export options for ingredients (JSON Format only)
+- Added parameterized memory and upload limit size, defaults to 500MB
+- Changed enviroment variable from MAX_FILESIZE to UPLOAD_MAX_FILESIZE
+- Modules README update
+- Rewrite integrations to add modularity
+- Dopped backup settings page - admin has to reconfigure
+- Rewrite of backup integrations
+- k8s templates updated to use the backup agent
+- Docker compose file updated for the backup agent
+- User id has been altered to a string
+- Fixed cas update in IFRA library
+- Implement SSO authentication
+- Rewrite login page
+- Remove DEMO support
+- Fixed text imported formula incorrect percentage handling
+- Added ingredient group by physical state
+- Added users currently online
+- Prevent re-activating a user if the account is locally in active
+- IFRA file upload improvements
+- Set prefix for google backups
+- Improved formula analysis security
+- Improved costs calculations function
+- Improved multi demension formula calculation
+- Added indexes for formulas and ingredients to improve speed
+- API ingredients upload user id type update
+
 ### Version 12.4
 - Add dilutant in API formulas
 - API has been extended to provide IFRA library data

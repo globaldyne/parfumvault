@@ -3,7 +3,19 @@ define('__ROOT__', dirname(dirname(__FILE__)));
 define('pvault_panel', TRUE);
 
 require_once(__ROOT__.'/inc/opendb.php');
-require_once(__ROOT__.'/func/cleanupNonHashedPasswords.php');
+require_once(__ROOT__.'/inc/settings.php');
+
+//require_once(__ROOT__.'/func/cleanupNonHashedPasswords.php');
+
+//SSO AUTHENTICATION
+if ($_REQUEST['action'] === 'auth_sso') {
+    // Include the OIDC library
+    error_log("OIDC SSO authentication started");
+    require_once(__ROOT__ . '/func/auth_sso.php');
+    auth_sso();
+
+    return;
+}
 
 if(getenv('PLATFORM') === "CLOUD"){
 	$session_timeout = getenv('SYS_TIMEOUT') ?: 1800;
@@ -18,19 +30,23 @@ if ($_POST['action'] == 'login') {
         echo json_encode($response);
         return;
     }
-    
+    /*  
 	if(cleanupNonHashedPasswords($conn)){
 		$response['auth']['error'] = true;
         $response['auth']['msg'] = 'Your password has to be reset. Please <a href="/">reload</a> the page to recreate your user';
         echo json_encode($response);
         return;
 	}
-    
+    */
     $email = mysqli_real_escape_string($conn, strtolower($_POST['email']));
     $password = $_POST['password'];
 
     // Fetch user details from the database
-    $result = mysqli_query($conn, "SELECT id, email, password, role FROM users WHERE email='$email'");
+    if ($system_settings['EMAIL_isEnabled'] == 0) {
+        $result = mysqli_query($conn, "SELECT id, email, password, role FROM users WHERE email='$email' AND isActive = '1'");
+    } else {
+        $result = mysqli_query($conn, "SELECT id, email, password, role FROM users WHERE email='$email' AND isActive = '1' AND (role = '1' OR isVerified = '1')");
+    }
     if ($result && mysqli_num_rows($result) > 0) {
         $row = mysqli_fetch_assoc($result);
 
@@ -46,6 +62,7 @@ if ($_POST['action'] == 'login') {
                     'samesite' => 'Strict', // Protect against CSRF
                 ]);
                 session_start();
+                session_regenerate_id(true); // Regenerate session ID to prevent session fixation
             }
 
             // Handle session timeout
@@ -66,6 +83,7 @@ if ($_POST['action'] == 'login') {
             $_SESSION['parfumvault'] = true;
             $_SESSION['userID'] = $row['id'];
             $_SESSION['role'] = $row['role'];
+            $_SESSION['user_email'] = $row['email'];
 
             // Determine redirection
             $redirect = $_POST['do'] ? '/index.php?do=' . $_POST['do'] :
@@ -82,6 +100,7 @@ if ($_POST['action'] == 'login') {
             echo json_encode($response);
             return;
         }
+
     } else {
         // Email not found
         $response['auth']['error'] = true;

@@ -2,9 +2,18 @@
 define('__ROOT__', dirname(dirname(__FILE__))); 
 
 require_once(__ROOT__.'/inc/sec.php');
+require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/inc/settings.php');
 
 
 $sysLogs = strtoupper(getenv('SYS_LOGS')) === 'ENABLED' || getenv('SYS_LOGS') === '1';
+
+if($role !== '1'){
+    $response["error"] = 'Not authorized';
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode($response);
+    return;
+}
 
 if (!$sysLogs) {
     $response["error"] = 'Function is disabled';

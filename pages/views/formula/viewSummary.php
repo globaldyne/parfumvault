@@ -3,7 +3,10 @@
 define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__))))); 
 define('pvault_panel', TRUE);
 
+require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/inc/settings.php');
+
 require_once(__ROOT__.'/func/arrFilter.php');
 require_once(__ROOT__.'/func/get_formula_notes.php');
 
@@ -14,12 +17,12 @@ if(!$_GET['id']){
 	
 $fid = mysqli_real_escape_string($conn, $_GET['id']);
 
-if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulas WHERE fid = '$fid'")) == 0){
+if(mysqli_num_rows(mysqli_query($conn, "SELECT fid FROM formulas WHERE fid = '$fid' AND owner_id = '$userID'")) == 0){
 	echo '<div class="alert alert-info">Incomplete formula. Please add ingredients.</div>';
 	return;
 }
 
-$description = mysqli_fetch_array(mysqli_query($conn, "SELECT notes FROM formulasMetaData WHERE fid = '$fid'"));
+$description = mysqli_fetch_array(mysqli_query($conn, "SELECT notes FROM formulasMetaData WHERE fid = '$fid' AND owner_id = '$userID'"));
 
 $top_cat = get_formula_notes($conn, $fid, 'top');
 $heart_cat = get_formula_notes($conn, $fid, 'heart');

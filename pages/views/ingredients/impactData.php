@@ -8,9 +8,10 @@ if(!$_GET['ingID']){
 
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/inc/settings.php');
 
 
-$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT id,impact_top,impact_heart,impact_base FROM ingredients WHERE id = '".$_GET['ingID']."'"));
+$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT id,impact_top,impact_heart,impact_base FROM ingredients WHERE id = '".$_GET['ingID']."' AND owner_id = '$userID'"));
 
 ?>
 

@@ -16,7 +16,7 @@ function fetch_generalData(){
 			$('#fetch_generalData').html(data);
 		},
 		error: function (xhr, status, error) {
-			$('#fetch_generalData').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+			$('#fetch_generalData').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 		}
 	});
 };
@@ -34,7 +34,7 @@ function fetch_whereUsed(){
 			$('#fetch_whereUsed').html(data);
 		},
 		error: function (xhr, status, error) {
-			$('#fetch_whereUsed').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+			$('#fetch_whereUsed').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 		}
 	});
 }
@@ -69,7 +69,7 @@ function fetch_sups(){
 			$('#fetch_suppliers').html(data);
 		},
 		error: function (xhr, status, error) {
-			$('#fetch_suppliers').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+			$('#fetch_suppliers').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 		}
 	});
 }
@@ -86,7 +86,7 @@ function fetch_techs(){
 			$('#fetch_tech_data').html(data);
 		},
 		error: function (xhr, status, error) {
-			$('#fetch_tech_data').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+			$('#fetch_tech_data').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 		}
 	});
 }
@@ -103,7 +103,7 @@ function fetch_docs(){
 			$('#fetch_documents').html(data);
 		},
 		error: function (xhr, status, error) {
-			$('#fetch_documents').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+			$('#fetch_documents').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 		}
 	});
 }
@@ -121,7 +121,7 @@ function fetch_impact(){
 			$('#fetch_impact').html(data);
 		},
 		error: function (xhr, status, error) {
-			$('#fetch_impact').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+			$('#fetch_impact').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 		}
 	});
 }
@@ -139,7 +139,7 @@ function fetch_cmps(){
 			$('#fetch_composition').html(data);
 		},
 		error: function (xhr, status, error) {
-			$('#fetch_composition').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+			$('#fetch_composition').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 		}
 	});
 }
@@ -156,7 +156,7 @@ function fetch_safety(){
 			$('#fetch_safety').html(data);
 		},
 		error: function (xhr, status, error) {
-			$('#fetch_safety').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+			$('#fetch_safety').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 		}
 	});
 }
@@ -188,7 +188,7 @@ function fetch_syn(){
 			$('#fetch_synonyms').html(data);
 		},
 		error: function (xhr, status, error) {
-			$('#fetch_synonyms').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+			$('#fetch_synonyms').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 		}
 	});
 }
@@ -207,7 +207,7 @@ function fetch_reps(){
 			$('#fetch_replacements').html(data);
 		},
 		error: function (xhr, status, error) {
-			$('#fetch_replacements').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+			$('#fetch_replacements').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 		}
 	});
 }
@@ -233,7 +233,7 @@ $('#duplicateIng').on('click', '[id*=duplicateME]', function () {
 			$('#duplicate_msg').html(msg);
 		},
 		error: function (xhr, status, error) {
-			$('#duplicate_msg').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+			$('#duplicate_msg').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 		}
 	});
 });
@@ -293,7 +293,7 @@ $('#renameIng').on('click', '[id*=renameME]', function () {
 			$('#rename_msg').html(msg);
 		},
 		error: function (xhr, status, error) {
-			$('#rename_msg').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+			$('#rename_msg').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 		}
 	});
 });
@@ -312,7 +312,7 @@ if (typeof myCAS !== 'undefined' && myPCH == '1') {
 				$('#pubChemData').html(data);
 			},
 			error: function (xhr, status, error) {
-				$('#pubChemData').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+				$('#pubChemData').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 			}
 		});
 	}

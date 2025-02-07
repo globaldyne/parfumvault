@@ -5,7 +5,7 @@ This needs to be run only if you are upgrading from versions up to 3.3 to a newe
 
 WARNING: Please take a full back up of your database before you run this script.
 */
-
+die("DEPRECATED");
 error_reporting(0);
 define('pvault_panel', TRUE);
 define('__ROOT__', dirname(dirname(__FILE__))); 

@@ -19,13 +19,14 @@ $bottle = $_POST['bottle'];
 $type = $_POST['conc'];
 $defCatClass = $settings['defCatClass'];
 $defPercentage = $settings['defPercentage'];
+$branding = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM branding WHERE owner_id = '$userID'"));
 
-if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM IFRALibrary"))){
+if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM IFRALibrary WHERE owner_id = '$userID' "))){
 	echo '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>You need to <a href="/?do=IFRA" target="_blank">import</a> the IFRA xls first</div>';
 	return;
 }
 
-if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM templates"))){
+if(!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM templates WHERE owner_id = '$userID'"))){
 	echo '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>You need to <a href="/?do=settings" target="_blank">add</a> an IFRA template first</div>';
 	return;
 }
@@ -40,26 +41,26 @@ $fid = mysqli_real_escape_string($conn, $_POST['fid']);
 
 
 $cid = mysqli_real_escape_string($conn, $_POST['customer']);
-$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE fid = '$fid'"));
-$customers = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM customers WHERE id = '$cid'"));
+$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE fid = '$fid' AND owner_id = '$userID'"));
+$customers = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM customers WHERE id = '$cid' AND owner_id = '$userID'"));
 
-$mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE fid = '$fid'"));
+$mg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(quantity) AS total_mg FROM formulas WHERE fid = '$fid' AND owner_id = '$userID'"));
 
 $new_conc = $bottle/100*$type;
-/*
+
 if(validateFormula($fid, $bottle, $new_conc, $mg['total_mg'], $defCatClass, $settings['qStep']) !== 0){
 	echo '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>Your formula contains materials not compatible with IFRA standards</div>';
 	return;
 }
-*/
 
-if ( empty($settings['brandLogo']) ){ 
+
+if ( empty($branding['brandLogo']) ){ 
 	$logo = "/img/logo.png";
 }else{
-	$logo = $settings['brandLogo'];
+	$logo = $branding['brandLogo'];
 }
-if ( empty($settings['brandName']) || empty($settings['brandAddress']) || empty($settings['brandEmail']) || empty($settings['brandPhone']) ){
-	echo '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>Missing brand info, please update your brand details in <a href="/?do=settings">settings</a> page first</div>';
+if ( empty($branding['brandName']) || empty($branding['brandAddress']) || empty($branding['brandEmail']) || empty($branding['brandPhone']) ){
+	echo '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>Missing brand info, please update your brand details in <a href="/?do=settings">branding</a> page first</div>';
 	return;
 }
 if ( empty($customers['name']) || empty($customers['address']) || empty($customers['email']) ){
@@ -68,7 +69,7 @@ if ( empty($customers['name']) || empty($customers['address']) || empty($custome
 }
 
 $template_id = mysqli_real_escape_string($conn, $_POST['template']);
-$template_query = "SELECT name, content FROM templates WHERE id = '$template_id'";
+$template_query = "SELECT name, content FROM templates WHERE id = '$template_id' AND owner_id = '$userID'";
 $template_result = mysqli_query($conn, $template_query);
 $tmpl = mysqli_fetch_array($template_result);
 
@@ -81,8 +82,8 @@ $search = array(
 
 $replace = array(
     $logo, 
-    $settings['brandName'], $settings['brandAddress'], $settings['brandEmail'], 
-    $settings['brandPhone'], $customers['name'], $customers['address'], 
+    $branding['brandName'], $branding['brandAddress'], $branding['brandEmail'], 
+    $branding['brandPhone'], $customers['name'], $customers['address'], 
     $customers['email'], $customers['web'], $meta['product_name'], $bottle, 
     $type, getIFRAMeta('MAX(amendment)', $conn), 
     getIFRAMeta('MAX(last_pub)', $conn), date('d/M/Y')
@@ -97,7 +98,7 @@ while ($category = mysqli_fetch_array($cats_q)) {
 
 
 $formulas = [];
-$formula_q = mysqli_query($conn, "SELECT ingredient, quantity, concentration,exclude_from_calculation FROM formulas WHERE fid = '" . mysqli_real_escape_string($conn, $fid) . "'");
+$formula_q = mysqli_query($conn, "SELECT ingredient, quantity, concentration,exclude_from_calculation FROM formulas WHERE fid = '" . mysqli_real_escape_string($conn, $fid) . "' AND owner_id = '$userID'");
 while ($formula = mysqli_fetch_array($formula_q)) {
     $formulas[] = $formula;
 }
@@ -109,10 +110,10 @@ foreach ($formulas as $formula) {
 		$mg['total_mg'] += $formulas['quantity'];
 	}
     $ingredient = mysqli_real_escape_string($conn, $formula['ingredient']);
-    $cas = mysqli_fetch_array(mysqli_query($conn, "SELECT cas, $defCatClass FROM ingredients WHERE name = '$ingredient'"));
+    $cas = mysqli_fetch_array(mysqli_query($conn, "SELECT cas, $defCatClass FROM ingredients WHERE name = '$ingredient' AND owner_id = '$userID'"));
 
     if ($cas['cas']) {
-        $q2 = mysqli_query($conn, "SELECT DISTINCT name, $defCatClass, risk, type, cas FROM IFRALibrary WHERE name LIKE '$ingredient' OR cas = '" . $cas['cas'] . "' GROUP BY name");
+        $q2 = mysqli_query($conn, "SELECT DISTINCT name, $defCatClass, risk, type, cas FROM IFRALibrary WHERE (name LIKE '$ingredient' OR cas = '" . $cas['cas'] . "') AND owner_id = '$userID' GROUP BY name");
 
         while ($ifra = mysqli_fetch_array($q2)) {
             $new_quantity = $formula['quantity'] / $mg['total_mg'] * $new_conc;
@@ -139,6 +140,8 @@ foreach ($formulas as $formula) {
         WHERE ingredient_compounds.ing = '$ingredient' 
         AND toDeclare = '1' 
         AND IFRALibrary.name = ingredient_compounds.name 
+        AND ingredient_compounds.owner_id = '$userID'
+        AND IFRALibrary.owner_id = '$userID'
         GROUP BY name");
 
     while ($cmp = mysqli_fetch_array($qCMP)) {

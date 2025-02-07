@@ -153,25 +153,47 @@ a {
 }
 
 .Top_notes {
-    background-image: url('/img/Pyramid/Pyramid_Slice_Top.png');
-    background-size: 30px 30px;
-    background-repeat:no-repeat;
-    display: inline-block;
-    height: 30px;
-    content:"";
+  background-image: url('/img/Pyramid/Pyramid_Slice_Top.png');
+  background-size: 30px 30px;
+  background-repeat:no-repeat;
+  display: inline-block;
+  height: 30px;
+  content:"";
 	padding: 5px 0px 0px 35px;
 	font-weight: bold;
 }
 
 .Solvent_notes, .Unknown_notes {
-    background-image: url('/img/molecule.png');
-    background-size: 30px 30px;
-    background-repeat:no-repeat;
-    display: inline-block;
-    height: 30px;
-    content:"";
+  background-image: url('/img/molecule.png');
+  background-size: 30px 30px;
+  background-repeat:no-repeat;
+  display: inline-block;
+  height: 30px;
+  content:"";
 	padding: 5px 0px 0px 35px;
 	font-weight: bold;
+}
+
+.Solid_notes {
+  background-image: url('/img/solid.png');
+  background-size: 30px 30px;
+  background-repeat:no-repeat;
+  display: inline-block;
+  height: 30px;
+  content:"";
+  padding: 5px 0px 0px 35px;
+  font-weight: bold;
+}
+
+.Liquid_notes {
+  background-image: url('/img/liquid.png');
+  background-size: 30px 30px;
+  background-repeat:no-repeat;
+  display: inline-block;
+  height: 30px;
+  content:"";
+  padding: 5px 0px 0px 35px;
+  font-weight: bold;
 }
 
 .custom_profile_notes {
@@ -1654,4 +1676,38 @@ th.dt-center, td.dt-center {
 
 .pv-fa-2xl {
   font-size: 20em;
+}
+
+.separator {
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+
+.separator::before,
+.separator::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid;
+}
+
+.separator:not(:empty)::before {
+  margin-right: .5em;
+}
+
+.separator:not(:empty)::after {
+  margin-left: .5em;
+}
+
+.beta-badge {
+  position: absolute;
+  top: 4px;
+  background-color: rgb(253, 30, 30);
+  color: white;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 3px;
+  left: 210px;
+  opacity: 0.8;
 }

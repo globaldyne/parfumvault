@@ -13,12 +13,13 @@ $id_b = mysqli_real_escape_string($conn, $_POST['id_b']);
 <script>
 
 $(document).ready(function() {
+	$.fn.dataTable.ext.errMode = 'none';
+
+	var formula_a_length;
+	var formula_a_name = '<?=$_POST['name_a']?>';
+	var formula_b_name = '<?=$_POST['name_b']?>';
 	
-	  var formula_a_length;
-	  var formula_a_name = '<?=$_POST['name_a']?>';
-	  var formula_b_name = '<?=$_POST['name_b']?>';
-	  
-	  var formula_a_table = $('#formula_a_table').DataTable({
+	var formula_a_table = $('#formula_a_table').DataTable({
 		dom: '<"top"f><"formula-name-a">rt<"bottom"lip><"clear">',
 		processing: true,
 		language: {

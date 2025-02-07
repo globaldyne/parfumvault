@@ -7,24 +7,24 @@ require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/php-settings.php');
 
-$getFCats = mysqli_query($conn, "SELECT name,cname,type FROM formulaCategories");
+$getFCats = mysqli_query($conn, "SELECT name,cname,type FROM formulaCategories WHERE owner_id = '$userID'");
 while($fcats = mysqli_fetch_array($getFCats)){
 	$fcat[] =$fcats;
 }
-$cats_q = mysqli_query($conn, "SELECT id,name,description,type FROM IFRACategories ORDER BY id ASC");
+$cats_q = mysqli_query($conn, "SELECT id,name,description,type FROM IFRACategories ORDER BY id ASC"); //PUBLIC
 while($cats_res = mysqli_fetch_array($cats_q)){
     $cats[] = $cats_res;
 }
-$cust = mysqli_query($conn, "SELECT id,name FROM customers ORDER BY id ASC");
+$cust = mysqli_query($conn, "SELECT id,name FROM customers WHERE owner_id = '$userID' ORDER BY id ASC");
 while($customers = mysqli_fetch_array($cust)){
     $customer[] = $customers;
 }
-$fTypes_q = mysqli_query($conn, "SELECT id,name,description,concentration FROM perfumeTypes ORDER BY id ASC");
+$fTypes_q = mysqli_query($conn, "SELECT id,name,description,concentration FROM perfumeTypes WHERE owner_id = '$userID' ORDER BY id ASC");
 while($fTypes_res = mysqli_fetch_array($fTypes_q)){
     $fTypes[] = $fTypes_res;
 }
 
-$cFormoulas = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData"));
+$cFormulas = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE owner_id = '$userID'"));
 ?>
 <script src="/js/raty/jquery.raty.js"></script>
 <script src="/js/rating.js"></script>
@@ -60,7 +60,7 @@ $cFormoulas = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaDa
                                         <i class="fa-solid fa-circle-plus mx-2"></i>Create formula category
                                     </a>
                                 </li>
-								<?php if ($cFormoulas) { ?>
+								<?php if ($cFormulas) { ?>
                                 <div class="dropdown-divider"></div>
                                 <li>
                                     <a class="dropdown-item" href="/core/core.php?action=exportFormulas">
@@ -83,7 +83,7 @@ $cFormoulas = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaDa
                                         <i class="fa-solid fa-file-lines mx-2"></i>Import from text
                                     </a>
                                 </li>
-                                <?php if ($cFormoulas) { ?>
+                                <?php if ($cFormulas) { ?>
                                 <div class="dropdown-divider"></div>
                                 <li>
                                     <a class="dropdown-item text-danger" href="#" id="wipe_all_formulas">
@@ -97,11 +97,11 @@ $cFormoulas = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaDa
                 </div>
 
                 <?php
-                if (empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients")))) {
-                    echo '<div class="row g-3"><div class="alert alert-info alert-dismissible"><i class="fa-solid fa-circle-info mx-2"></i><strong>No ingredients yet, click <a href="/?do=ingredients">here</a> to create a new one</strong></div></div>';
+                if (empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE owner_id = '$userID'")))) {
+                    echo '<div class="row g-3"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>No ingredients yet, click <a href="/?do=ingredients">here</a> to create a new one</strong></div></div>';
                 }
-                if (empty($cFormoulas)) {
-                    echo '<div class="row g-3"><div class="alert alert-info alert-dismissible"><i class="fa-solid fa-circle-info mx-2"></i><strong>No formulas yet, click <a href="#" data-bs-toggle="modal" data-bs-target="#add_formula">here</a> to add or use the <a href="/?do=marketplace">Marketplace</a> to import a demo one</strong></div></div>';
+                if (empty($cFormulas)) {
+                    echo '<div class="row g-3"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>No formulas yet, click <a href="#" data-bs-toggle="modal" data-bs-target="#add_formula">here</a> to add or use the <a href="/?do=marketplace">Marketplace</a> to import a demo one</strong></div></div>';
                 } else {
                 ?>
                 <div id="listFormulas">
@@ -998,7 +998,7 @@ $(document).ready(function() {
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseBK">Cancel</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseBK">Close</button>
         <button type="submit" name="btnRestore" class="btn btn-primary" id="btnRestoreFormulas">Import</button>
       </div>
     </div>
@@ -1029,7 +1029,7 @@ $(document).ready(function() {
       </div>
 	  
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="close_imp_txt">Cancel</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="close_imp_txt">Close</button>
         <button type="submit" name="btn-txtFormula" class="btn btn-primary" id="addtxtFormula">Import</button>
       </div>
     </div>

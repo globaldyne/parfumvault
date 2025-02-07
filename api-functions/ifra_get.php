@@ -3,9 +3,9 @@
 if (!defined('pvault_panel')){ die('Not Found');}
 
 header('Content-Type: application/json');
-global $conn;
+global $conn, $userID;
 
-$sql = mysqli_query($conn, "SELECT * FROM IFRALibrary");
+$sql = mysqli_query($conn, "SELECT * FROM IFRALibrary WHERE owner_id = '$userID'");
 
 if (!$sql) {
 	error_log(mysqli_error($conn));

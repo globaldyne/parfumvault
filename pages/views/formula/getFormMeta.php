@@ -12,7 +12,7 @@ if(!$_GET['id']){
 }
 
 $id = mysqli_real_escape_string($conn, $_GET['id']);
-$info = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE id = '$id'"));
+$info = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE id = '$id' AND owner_id = '$userID' "));
 
 if(empty($info['id'])){
 	echo 'Formula not found';
@@ -22,23 +22,23 @@ $cats_q = mysqli_query($conn, "SELECT id,name,description,type FROM IFRACategori
 while($cats_res = mysqli_fetch_array($cats_q)){
     $cats[] = $cats_res;
 }
-$getFCats = mysqli_query($conn, "SELECT name,cname,type FROM formulaCategories");
+$getFCats = mysqli_query($conn, "SELECT name,cname,type FROM formulaCategories WHERE owner_id = '$userID'");
 while($fcats = mysqli_fetch_array($getFCats)){
 	$fcat[] =$fcats;
 }
-$cust = mysqli_query($conn, "SELECT id,name FROM customers ORDER BY id ASC");
+$cust = mysqli_query($conn, "SELECT id,name FROM customers WHERE owner_id = '$userID' ORDER BY id ASC");
 while($customers = mysqli_fetch_array($cust)){
     $customer[] = $customers;
 }
 
-$fTypes_q = mysqli_query($conn, "SELECT id,name,description,concentration FROM perfumeTypes ORDER BY id ASC");
+$fTypes_q = mysqli_query($conn, "SELECT id,name,description,concentration FROM perfumeTypes WHERE owner_id = '$userID' ORDER BY concentration DESC");
 while($fTypes_res = mysqli_fetch_array($fTypes_q)){
     $fTypes[] = $fTypes_res;
 }
 
 // Generate array with tags data 
 $tagsData = array(); 
-$tagsQ = mysqli_query($conn,"SELECT tag_name FROM formulasTags WHERE formula_id = '$id'");
+$tagsQ = mysqli_query($conn,"SELECT tag_name FROM formulasTags WHERE formula_id = '$id' AND owner_id = '$userID'");
 while($qTags = mysqli_fetch_array($tagsQ)){
 	
 	$tags = $qTags['tag_name'];

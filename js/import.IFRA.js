@@ -44,7 +44,7 @@ $("#backupFile").change(function(){
 	}
 	
 	if (fileSize > fileSizePHP){
-		$("#JSRestMsg").html('<div class="alert alert-info">File size <strong>('+formatBytes(fileSize)+')</strong> is exceeding your server file upload limit '+ formatBytes(fileSizePHP)+'</div>');
+		$("#JSRestMsg").html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>File size <strong>('+formatBytes(fileSize)+')</strong> is exceeding your server file upload limit '+ formatBytes(fileSizePHP)+'</div>');
 		$("#backupFile").val('');
 		$("#btnRestoreIFRA").prop("disabled", true);
 		return false;
@@ -90,12 +90,12 @@ $('#btnRestoreIFRA').click(function() {
 			
 		success: function (data) {
 			if(data.success){
-				var msg = '<div class="alert alert-success">'+data.success+'</div>';
+				var msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>'+data.success+'</div>';
 				$("#btnRestoreIFRA").hide();
 				$("#backupArea").css('display', 'none');
 				$('#tdDataIFRA').DataTable().ajax.reload(null, true);
 			}else if(data.error){
-				var msg = '<div class="alert alert-danger">'+data.error+'</div>';
+				var msg = '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>'+data.error+'</div>';
 				$("#btnRestoreIFRA").show();
 				$("#btnRestoreIFRA").prop("disabled", false);
 				$('#btnRestoreIFRA').prop('value', 'Import');

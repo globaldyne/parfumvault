@@ -24,10 +24,21 @@ services:
       DB_USER: pvault
       DB_PASS: pvault
       DB_NAME: pvault
-      MAX_FILE_SIZE: '4194304'
+      UPLOAD_MAX_FILESIZE: '4194304'
       TMP_PATH: /tmp/
       FILE_EXT: 'pdf, doc, docx, xls, csv, xlsx, png, jpg, jpeg, gif'
       DB_BACKUP_PARAMETERS: '--column-statistics=1'
+  #gbkagent:
+  #  image: harbor01.cloud.globaldyne.co.uk/cloud/gbkagent
+  #  ports:
+  #    - 3000:3000
+  #  restart: always
+  #  environment:
+  #    DB_HOST: pvdb
+  #    DB_USER: pvault
+  #    DB_PASS: pvault
+  #    DB_NAME: pvault
+  #    VERBOSE: true
   phpmyadmin:
     image: globaldyne/phpmyadmin:cloud
     ports:

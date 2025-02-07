@@ -207,7 +207,7 @@ $(document).ready(function() {
 		url: "/core/core.php?settings=fcat&action=updateFormulaCategory",
 		source: [
 			<?php
-			$getCK = mysqli_query($conn, "SELECT name,rgb FROM colorKey ORDER BY name ASC");
+			$getCK = mysqli_query($conn, "SELECT name,rgb FROM colorKey ORDER BY name ASC"); //PUBLIC
 			while ($r = mysqli_fetch_array($getCK)){
 				echo '{value: "'.$r['rgb'].'", text: "'.$r['name'].'", ck: "color: rgb('.$r['rgb'].')"},';
 			}

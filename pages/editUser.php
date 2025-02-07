@@ -3,10 +3,10 @@ define('__ROOT__', dirname(dirname(__FILE__)));
 
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/inc/settings.php');
 
 
-$user = mysqli_fetch_array(mysqli_query($conn, "SELECT email,fullName FROM users")); 
-$doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM documents WHERE ownerID = '".$_SESSION['userID']."' AND name = 'avatar' AND type = '3'"));
+$doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM documents WHERE ownerID = '".$userID."' AND name = 'avatar' AND type = '3' AND owner_id = '$userID'"));
 
 ?>
 
@@ -39,6 +39,17 @@ $doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM docu
 				<label for="password">Password</label>
 				<i class="toggle-password fa fa-eye position-absolute top-50 end-0 translate-middle-y me-3"></i>
 			</div>
+			<div class="form-floating mb-3">
+				<select class="form-select" name="country" id="country">
+					<option value="">Choose your country</option>
+					<?php foreach ($countries as $country): ?>
+						<option value="<?php echo htmlspecialchars($country['isoAlpha2']); ?>" <?php echo $user['country'] == $country['isoAlpha2'] ? 'selected' : ''; ?>>
+							<?php echo htmlspecialchars($country['name']); ?>
+						</option>
+					<?php endforeach; ?>
+				</select>
+				<label for="country">Country</label>
+			</div>
 			<div class="dropdown-divider"></div>
 			<div class="form-row">
 				<div class="col-sm-auto">
@@ -50,6 +61,53 @@ $doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM docu
 		</div>
 	</div>
 </div>
+<div class="col-12 text-end mt-3">
+	<a href="#" id="delete-profile" class="text-danger">Delete my profile</a>
+</div>
+
+<script>
+$(document).ready(function () {
+	$('#delete-profile').click(function(e) {
+		e.preventDefault();
+		bootbox.confirm({
+			title: "Delete Profile",
+			message: "Are you sure you want to delete your profile? This action cannot be reverted and all data will be lost.",
+			buttons: {
+				confirm: {
+					label: 'DELETE PROFILE',
+					className: 'btn-danger'
+				},
+				cancel: {
+					label: 'Cancel',
+					className: 'btn-secondary'
+				}
+			},
+			callback: function (result) {
+				if (result) {
+					$.ajax({
+						url: '/core/core.php',
+						type: 'GET',
+						data: { 
+							action: 'deleteprofile'
+						},
+						dataType: 'json',
+						success: function (data) {
+							if (data.success) {
+								window.location.href = '/logout.php';
+							} else if (data.error) {
+								$('#msgU').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>' + data.error + '</div>');
+							}
+						},
+						error: function (xhr, status, error) {
+							$('#msgU').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. ' + error + '</div>');
+						}
+					});
+				}
+			}
+		});
+	});
+});
+</script>
 
 <script>
 $(document).ready(function () {
@@ -73,10 +131,11 @@ $(document).ready(function () {
 			url: '/core/core.php', 
 			type: 'POST',
 			data: {
-				update_user_profile: 1,
+				action: 'update_user_profile',
 				user_fname: $("#fullName").val(),			
 				user_email: $("#email").val(),
-				user_pass: $("#password").val()
+				user_pass: $("#password").val(),
+				user_country: $("#country").val()
 			},
 			dataType: 'json',
 			success: function (data) {
@@ -90,7 +149,7 @@ $(document).ready(function () {
 			error: function (xhr, status, error) {
 				$('#msgU').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 			}
-		  });
+		});
 	});
 	
 	$('#upload-avatar').click(function() {
@@ -119,7 +178,7 @@ $(document).ready(function () {
 				$('#msgU').html(msg);
 			},
 			error: function (xhr, status, error) {
-				$('#msgU').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+				$('#msgU').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 			}
 		  });
 	});

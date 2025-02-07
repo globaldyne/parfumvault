@@ -10,6 +10,7 @@ LABEL co.uk.globaldyne.component="perfumers-vault-container"  description="Perfu
 ARG uid=100001
 ARG gid=100001
 
+RUN microdnf -y install epel-release 
 RUN microdnf -y update 
 
 #A temp workaround to address microdnf module version conflicts
@@ -22,18 +23,20 @@ RUN microdnf --setopt=tsflags=nodocs -y install \
 	php-gd \
 	php-mbstring \
 	php-fpm \
+	php-pear-Mail \
 	openssl \
 	mysql \
 	ncurses \
 	nginx \
-	procps-ng 
+	procps-ng \
+	diffutils
 
 
 
 RUN sed -i \
 	-e 's~^;date.timezone =$~date.timezone = UTC~g' \
-	-e 's~^upload_max_filesize.*$~upload_max_filesize = 400M~g' \
-	-e 's~^post_max_size.*$~post_max_size = 400M~g' \
+	-e 's~^upload_max_filesize.*$~upload_max_filesize = 500M~g' \
+	-e 's~^post_max_size.*$~post_max_size = 500M~g' \
 	-e 's~^session.auto_start.*$~session.auto_start = 1~g' \
 	/etc/php.ini
 
@@ -49,12 +52,12 @@ ADD scripts/php-fpm/php-fpm.conf /etc/php-fpm.conf
 ADD scripts/entrypoint.sh /usr/bin/entrypoint.sh
 ADD scripts/nginx/nginx.conf /etc/nginx/nginx.conf
 ADD scripts/reset_pass.sh /usr/bin/reset_pass.sh
-ADD scripts/add_role_column.sh /usr/bin/add_role_column.sh
+ADD scripts/update_db_schema.sh /usr/bin/update_db_schema.sh
 
 
 RUN chmod +x /usr/bin/entrypoint.sh
 RUN chmod +x /usr/bin/reset_pass.sh
-RUN chmod +x /usr/bin/add_role_column.sh
+RUN chmod +x /usr/bin/update_db_schema.sh
 
 
 RUN rm -rf /html/.git /html/.github

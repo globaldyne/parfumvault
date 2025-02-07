@@ -14,7 +14,7 @@ $search_value = isset($_POST['search']['value']) ? trim(mysqli_real_escape_strin
 $table = 'sds_data';
 $extra = "ORDER BY $order_by $order";
 
-$filter = $search_value !== '' ? "WHERE product_name LIKE '%$search_value%'" : '';
+$filter = $search_value !== '' ? "WHERE product_name LIKE '%$search_value%' AND owner_id = '$userID' " : " WHERE owner_id = '$userID' ";
 
 $query = mysqli_query($conn, "SELECT * FROM $table $filter $extra LIMIT $row, $limit");
 
@@ -40,7 +40,7 @@ foreach ($rs as $rq) {
     ];
 }
 
-$total_query = mysqli_query($conn, "SELECT COUNT(id) AS entries FROM $table");
+$total_query = mysqli_query($conn, "SELECT COUNT(id) AS entries FROM $table WHERE owner_id = '$userID' ");
 $total = mysqli_fetch_assoc($total_query)['entries'];
 
 $filtered_query = mysqli_query($conn, "SELECT COUNT(id) AS entries FROM $table $filter");

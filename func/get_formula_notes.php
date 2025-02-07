@@ -1,22 +1,38 @@
 <?php 
 if (!defined('pvault_panel')){ die('Not Found');}
+
+
 function get_formula_notes($conn, $fid, $cat) {
-    $formulas = mysqli_query($conn, "SELECT ingredient FROM formulas WHERE fid = '$fid' ORDER BY exclude_from_summary");
+    global $userID;
+
     $categories = ['top' => 'Top', 'heart' => 'Heart', 'base' => 'Base'];
     $results = ['top' => [], 'heart' => [], 'base' => []];
 
-    while ($formula = mysqli_fetch_array($formulas)) {
+    // Fetch formulas based on the provided formula ID
+    $formulas = mysqli_query($conn, "SELECT ingredient FROM formulas WHERE fid = '$fid' AND owner_id = '$userID' ORDER BY exclude_from_summary");
+    if (!$formulas) {
+        error_log("PV error: Failed to fetch formulas for fid $fid: " . mysqli_error($conn));
+        return null;
+    }
+
+    // Process each formula ingredient
+    while ($formula = mysqli_fetch_assoc($formulas)) {
         foreach ($categories as $key => $profile) {
-            $ingredient = mysqli_fetch_array(
-                mysqli_query($conn, "SELECT name AS ing, category FROM ingredients 
-                                     WHERE name = '{$formula['ingredient']}' AND profile = '$profile' AND category IS NOT NULL")
-            );
+            $ingredientQuery = "SELECT name AS ing, category 
+                                FROM ingredients 
+                                WHERE name = '{$formula['ingredient']}' 
+                                  AND profile = '$profile' 
+                                  AND category IS NOT NULL 
+                                  AND owner_id = '$userID'";
+            $ingredient = mysqli_fetch_assoc(mysqli_query($conn, $ingredientQuery));
 
             if ($ingredient) {
-                $categoryData = mysqli_fetch_array(
-                    mysqli_query($conn, "SELECT image, name FROM ingCategory 
-                                         WHERE id = '{$ingredient['category']}' AND image IS NOT NULL")
-                );
+                $categoryQuery = "SELECT image, name 
+                                  FROM ingCategory 
+                                  WHERE id = '{$ingredient['category']}' 
+                                    AND image IS NOT NULL 
+                                    AND owner_id = '$userID'";
+                $categoryData = mysqli_fetch_assoc(mysqli_query($conn, $categoryQuery));
 
                 if ($categoryData) {
                     $results[$key][] = [
@@ -33,26 +49,49 @@ function get_formula_notes($conn, $fid, $cat) {
 }
 
 function get_formula_excludes($conn, $fid, $cat) {
-    $formulas = mysqli_query($conn, "SELECT ingredient FROM formulas WHERE fid = '$fid' AND exclude_from_summary = '1'");
+    global $userID;
+
     $categories = ['top' => 'Top', 'heart' => 'Heart', 'base' => 'Base'];
     $excludes = [];
 
-    while ($formula = mysqli_fetch_array($formulas)) {
-        if (isset($categories[$cat])) {
-            $profile = $categories[$cat];
-            $category = mysqli_fetch_array(
-                mysqli_query($conn, "SELECT category FROM ingredients 
-                                     WHERE name = '{$formula['ingredient']}' AND profile = '$profile' AND category IS NOT NULL")
-            );
+    if (!isset($categories[$cat])) {
+        error_log("PV error: Invalid category $cat provided for exclusion.");
+        return [];
+    }
 
-            if ($category) {
-                $categoryName = mysqli_fetch_array(
-                    mysqli_query($conn, "SELECT name FROM ingCategory WHERE id = '{$category['category']}'")
-                );
+    // Fetch formulas marked for exclusion
+    $formulasQuery = "SELECT ingredient 
+                      FROM formulas 
+                      WHERE fid = '$fid' 
+                        AND exclude_from_summary = '1' 
+                        AND owner_id = '$userID'";
+    $formulas = mysqli_query($conn, $formulasQuery);
 
-                if ($categoryName) {
-                    $excludes[] = $categoryName['name'];
-                }
+    if (!$formulas) {
+        error_log("PV error: Failed to fetch formulas for exclusion for fid $fid: " . mysqli_error($conn));
+        return [];
+    }
+
+    // Process each formula ingredient for exclusion
+    while ($formula = mysqli_fetch_assoc($formulas)) {
+        $profile = $categories[$cat];
+        $ingredientQuery = "SELECT category 
+                            FROM ingredients 
+                            WHERE name = '{$formula['ingredient']}' 
+                              AND profile = '$profile' 
+                              AND category IS NOT NULL 
+                              AND owner_id = '$userID'";
+        $ingredient = mysqli_fetch_assoc(mysqli_query($conn, $ingredientQuery));
+
+        if ($ingredient) {
+            $categoryQuery = "SELECT name 
+                              FROM ingCategory 
+                              WHERE id = '{$ingredient['category']}' 
+                                AND owner_id = '$userID'";
+            $categoryName = mysqli_fetch_assoc(mysqli_query($conn, $categoryQuery));
+
+            if ($categoryName) {
+                $excludes[] = $categoryName['name'];
             }
         }
     }

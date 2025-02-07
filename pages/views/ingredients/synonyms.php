@@ -40,6 +40,7 @@ $ingName = mysqli_real_escape_string($conn, $_GET["name"]);
 
 <script>
 $(document).ready(function() {
+	$.fn.dataTable.ext.errMode = 'none';
 
 	var tdSynonyms = $('#tdSynonyms').DataTable( {
 		columnDefs: [
@@ -67,6 +68,9 @@ $(document).ready(function() {
 		displayLength: 20,
 		scrollCollapse: false,
     	scrollY: '500px'
+	}).on('error.dt', function(e, settings, techNote, message) {
+		var m = message.split(' - ');
+		$('#tdSynonyms').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i><strong>' + m[1] + '</strong></div>');
 	});
 
 
@@ -83,7 +87,7 @@ $(document).ready(function() {
 		data = '<div class="dropdown">' +
 		'<button type="button" class="btn btn-floating hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
 			'<ul class="dropdown-menu">';
-		data += '<li><a class="dropdown-item text-danger" href="#" id="synDel"><i class="fas fa-trash mx-2"></i>Delete</a></li>';
+		data += '<li><a class="dropdown-item text-danger" href="#" id="synDel" data-name="'+row.synonym+'" data-id="'+row.id+'" ><i class="fas fa-trash mx-2"></i>Delete</a></li>';
 		data += '</ul></div>';
 		return data;
 	};
@@ -164,7 +168,7 @@ $(document).ready(function() {
 							reload_data();
 						},
 						error: function (xhr, status, error) {
-							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error);
 							$('.toast-header').removeClass().addClass('toast-header alert-danger');
 							$('.toast').toast('show');
 						}

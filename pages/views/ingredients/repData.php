@@ -40,6 +40,7 @@ $ingID = mysqli_real_escape_string($conn, $_GET["ingID"]);
 
 <script>
 $(document).ready(function() {
+	$.fn.dataTable.ext.errMode = 'none';
 
 	$('[data-bs-toggle="tooltip"]').tooltip();
 	var tdReplacements = $('#tdReplacements').DataTable( {
@@ -53,6 +54,7 @@ $(document).ready(function() {
 			loadingRecords: '&nbsp;',
 			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
 			emptyTable: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>No replacements added yet</strong></div></div>',
+			zeroRecords: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>Nothing found</strong></div></div>',
 			search: '',
 			searchPlaceholder: 'Search by name...',
 		},
@@ -75,7 +77,11 @@ $(document).ready(function() {
 		lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
 		pageLength: 20,
 		displayLength: 20
+	}).on('error.dt', function(e, settings, techNote, message) {
+		var m = message.split(' - ');
+		$('#tdReplacements').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i><strong>' + m[1] + '</strong></div>');
 	});
+
 
 	
 	function repName(data, type, row){

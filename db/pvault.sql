@@ -2,84 +2,84 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 
 CREATE TABLE `ingredient_compounds` (
   `id` int(11) NOT NULL,
-  `ing` varchar(255) COLLATE utf8_general_ci NOT NULL,
-  `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
-  `cas` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `ec` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `ing` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `cas` varchar(255) DEFAULT NULL,
+  `ec` varchar(255) DEFAULT NULL,
   `min_percentage` DECIMAL(8,4) NOT NULL,
   `max_percentage` DECIMAL(8,4) NOT NULL,
   `toDeclare` INT NOT NULL DEFAULT '0',
   `GHS` TEXT NOT NULL DEFAULT '-',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `owner_id` INT NOT NULL DEFAULT '0'
+  `owner_id` VARCHAR(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 
 CREATE TABLE `batchIDHistory` (
-  `id` varchar(255) COLLATE utf8_general_ci NOT NULL,
-  `fid` varchar(255) COLLATE utf8_general_ci NOT NULL,
+  `id` varchar(255) NOT NULL,
+  `fid` varchar(255) NOT NULL,
   `product_name` varchar(255) NOT NULL,
   `pdf` LONGBLOB NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT current_timestamp(),
-  `owner_id` INT NOT NULL DEFAULT '0'
+  `owner_id` VARCHAR(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE `bottles` (
   `id` int(11) NOT NULL,
-  `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
-  `ml` varchar(255) COLLATE utf8_general_ci NOT NULL,
-  `price` DOUBLE DEFAULT 0,
-  `height` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `width` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `diameter` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `weight` DOUBLE NOT NULL DEFAULT '0', 
-  `supplier` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `supplier_link` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `notes` text COLLATE utf8_general_ci DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  `ml` DOUBLE NOT NULL,
+  `price` DOUBLE NOT NULL,
+  `height` DOUBLE NOT NULL,
+  `width` DOUBLE NOT NULL,
+  `diameter` DOUBLE NOT NULL,
+  `weight` DOUBLE NOT NULL, 
+  `supplier` varchar(255) DEFAULT NULL,
+  `supplier_link` varchar(255) DEFAULT NULL,
+  `notes` text DEFAULT NULL,
   `pieces` int(11) NOT NULL DEFAULT 0,
   `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL, 
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `owner_id` INT NOT NULL DEFAULT '0'
+  `owner_id` VARCHAR(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE `customers` (
   `id` int(11) NOT NULL,
-  `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
-  `address` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `email` varchar(225) COLLATE utf8_general_ci DEFAULT NULL,
-  `phone` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `web` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `owner_id` INT NOT NULL DEFAULT '0',
+  `name` varchar(255) NOT NULL,
+  `address` varchar(255) DEFAULT NULL,
+  `email` varchar(225) DEFAULT NULL,
+  `phone` varchar(255) DEFAULT NULL,
+  `web` varchar(255) DEFAULT NULL,
+  `owner_id` VARCHAR(255) NOT NULL,
   `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL, 
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE `formulas` (
   `id` int(11) NOT NULL,
-  `fid` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
-  `ingredient` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `fid` varchar(255) DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  `ingredient` varchar(255) DEFAULT NULL,
   `ingredient_id` int(11) NULL DEFAULT NULL,
   `concentration` decimal(5,2) DEFAULT 100.00,
-  `dilutant` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `dilutant` varchar(255) DEFAULT NULL,
   `quantity` decimal(10,4) DEFAULT NULL,
   `exclude_from_summary` INT NOT NULL DEFAULT '0', 
   `exclude_from_calculation` INT NOT NULL DEFAULT '0',
   `notes` varchar(255) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `owner_id` INT NOT NULL DEFAULT '0'
+  `owner_id` VARCHAR(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE `makeFormula` (
  `id` int(11) NOT NULL AUTO_INCREMENT,
- `fid` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
- `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
- `ingredient` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+ `fid` varchar(255) DEFAULT NULL,
+ `name` varchar(255) NOT NULL,
+ `ingredient` varchar(255) DEFAULT NULL,
  `ingredient_id` INT NOT NULL,
  `replacement_id` INT NOT NULL DEFAULT '0', 
  `concentration` decimal(5,2) DEFAULT 100.00,
- `dilutant` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+ `dilutant` varchar(255) DEFAULT NULL,
  `quantity` decimal(10,4) DEFAULT NULL,
  `overdose` double(10,4) NOT NULL DEFAULT 0.0000,
  `originalQuantity` double(8,4) DEFAULT NULL,
@@ -87,18 +87,18 @@ CREATE TABLE `makeFormula` (
  `skip` INT NOT NULL DEFAULT '0', 
  `toAdd` int(11) NOT NULL,
  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
- `owner_id` INT NOT NULL DEFAULT '0',
+ `owner_id` VARCHAR(255) NOT NULL,
  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE `cart` (
  `id` int(11) NOT NULL AUTO_INCREMENT,
- `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
- `quantity` varchar(255) COLLATE utf8_general_ci NOT NULL,
- `purity` varchar(255) COLLATE utf8_general_ci NOT NULL,
+ `name` varchar(255) NOT NULL,
+ `quantity` varchar(255) NOT NULL,
+ `purity` varchar(255) NOT NULL,
  `ingID` INT NOT NULL,
  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
- `owner_id` INT NOT NULL DEFAULT '0',
+ `owner_id` VARCHAR(255) NOT NULL,
  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
@@ -106,13 +106,13 @@ CREATE TABLE `formulasMetaData` (
   `id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
   `product_name` varchar(255) DEFAULT NULL,
-  `fid` varchar(255) COLLATE utf8_general_ci NOT NULL,
-  `profile` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `gender` varchar(255) COLLATE utf8_general_ci DEFAULT 'unisex',
-  `notes` text COLLATE utf8_general_ci DEFAULT NULL,
+  `fid` varchar(255) NOT NULL,
+  `profile` varchar(255) DEFAULT NULL,
+  `gender` varchar(255) DEFAULT 'unisex',
+  `notes` text DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `isProtected` INT NULL DEFAULT '0',
-  `defView` INT NULL DEFAULT '1',
+  `defView` INT NULL,
   `catClass` VARCHAR(10) NULL,
   `revision` INT NOT NULL DEFAULT '0',
   `finalType` INT NOT NULL DEFAULT '100',
@@ -124,7 +124,7 @@ CREATE TABLE `formulasMetaData` (
   `toDo` INT NOT NULL DEFAULT '0',
   `rating` INT NOT NULL DEFAULT '0',
   `src` int(11) NOT NULL DEFAULT 0 COMMENT '0 = pvLocal, 1 = pvMarket',
-  `owner_id` INT NOT NULL DEFAULT '0'
+  `owner_id` VARCHAR(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE `IFRALibrary` (
@@ -168,24 +168,24 @@ CREATE TABLE `IFRALibrary` (
   `cat11A` float NOT NULL DEFAULT 100,
   `cat11B` float NOT NULL DEFAULT 100,
   `cat12` float NOT NULL DEFAULT 100,
-  `owner_id` INT NOT NULL DEFAULT '0'
+  `owner_id` VARCHAR(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE `ingCategory` (
   `id` int(11) NOT NULL,
-  `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
-  `notes` text COLLATE utf8_general_ci DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  `notes` text DEFAULT NULL,
   `image` LONGBLOB NULL,
   `colorKey` VARCHAR(255) NULL,
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `owner_id` INT NOT NULL DEFAULT '0'
+  `owner_id` VARCHAR(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE `ingProfiles` (
   `id` int(11) NOT NULL,
-  `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
-  `notes` text COLLATE utf8_general_ci DEFAULT NULL
+  `name` varchar(255) NOT NULL,
+  `notes` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 INSERT INTO `ingProfiles` (`id`, `name`, `notes`) VALUES
@@ -196,30 +196,30 @@ INSERT INTO `ingProfiles` (`id`, `name`, `notes`) VALUES
 
 CREATE TABLE `ingredients` (
   `id` int(11) NOT NULL,
-  `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
-  `INCI` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `type` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `strength` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  `INCI` varchar(255) DEFAULT NULL,
+  `type` varchar(255)  DEFAULT NULL,
+  `strength` varchar(255)  DEFAULT NULL,
   `category` int(10) NOT NULL DEFAULT '1',
-  `purity` varchar(11) COLLATE utf8_general_ci DEFAULT NULL,
-  `cas` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `einecs` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `reach` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `FEMA` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `tenacity` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `chemical_name` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `formula` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `flash_point` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `appearance` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `purity` varchar(11)  DEFAULT NULL,
+  `cas` varchar(255)  DEFAULT NULL,
+  `einecs` varchar(255)  DEFAULT NULL,
+  `reach` varchar(255)  DEFAULT NULL,
+  `FEMA` varchar(255)  DEFAULT NULL,
+  `tenacity` varchar(255)  DEFAULT NULL,
+  `chemical_name` varchar(255)  DEFAULT NULL,
+  `formula` varchar(255)  DEFAULT NULL,
+  `flash_point` varchar(255)  DEFAULT NULL,
+  `appearance` varchar(255)  DEFAULT NULL,
   `rdi` INT NOT NULL DEFAULT '0',
-  `notes` text COLLATE utf8_general_ci DEFAULT NULL,
-  `profile` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `notes` text  DEFAULT NULL,
+  `profile` varchar(255)  DEFAULT NULL,
   `solvent` VARCHAR(255) DEFAULT NULL, 
-  `odor` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `odor` varchar(255)  DEFAULT NULL,
   `allergen` int(11) DEFAULT NULL,
   `flavor_use` int(10) DEFAULT NULL,
-  `soluble` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `logp` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `soluble` varchar(255)  DEFAULT NULL,
+  `logp` varchar(255)  DEFAULT NULL,
   `cat1` float NOT NULL DEFAULT 100,
   `cat2` float NOT NULL DEFAULT 100,
   `cat3` float NOT NULL DEFAULT 100,
@@ -238,10 +238,10 @@ CREATE TABLE `ingredients` (
   `cat11A` float NOT NULL DEFAULT 100,
   `cat11B` float NOT NULL DEFAULT 100,
   `cat12` float NOT NULL DEFAULT 100,
-  `impact_top` varchar(10) COLLATE utf8_general_ci DEFAULT NULL,
-  `impact_heart` varchar(10) COLLATE utf8_general_ci DEFAULT NULL,
-  `impact_base` varchar(10) COLLATE utf8_general_ci DEFAULT NULL,
-  `usage_type` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `impact_top` varchar(10)  DEFAULT NULL,
+  `impact_heart` varchar(10)  DEFAULT NULL,
+  `impact_base` varchar(10)  DEFAULT NULL,
+  `usage_type` varchar(255)  DEFAULT NULL,
   `noUsageLimit` INT NULL DEFAULT '0',
   `byPassIFRA` INT NULL DEFAULT '0',
   `isPrivate` INT NULL DEFAULT '0',
@@ -251,12 +251,12 @@ CREATE TABLE `ingredients` (
   `shelf_life` INT NOT NULL DEFAULT '0',
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `owner_id` INT NOT NULL DEFAULT '0'
+  `owner_id` VARCHAR(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE `ingStrength` (
   `id` int(11) NOT NULL,
-  `name` varchar(255) COLLATE utf8_general_ci NOT NULL
+  `name` varchar(255)  NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 INSERT INTO `ingStrength` (`id`, `name`) VALUES
@@ -267,29 +267,29 @@ INSERT INTO `ingStrength` (`id`, `name`) VALUES
 
 CREATE TABLE `ingSuppliers` (
   `id` int(11) NOT NULL,
-  `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
-  `address` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `po` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `country` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `telephone` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `url` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `email` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `platform` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `price_tag_start` text COLLATE utf8_general_ci DEFAULT NULL,
-  `price_tag_end` text COLLATE utf8_general_ci DEFAULT NULL,
-  `add_costs` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  `address` varchar(255) DEFAULT NULL,
+  `po` varchar(255) DEFAULT NULL,
+  `country` varchar(255) DEFAULT NULL,
+  `telephone` varchar(255) DEFAULT NULL,
+  `url` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `platform` varchar(255) DEFAULT NULL,
+  `price_tag_start` text DEFAULT NULL,
+  `price_tag_end` text DEFAULT NULL,
+  `add_costs` varchar(255) DEFAULT NULL,
   `price_per_size` INT NOT NULL DEFAULT '0', 
-  `notes` text COLLATE utf8_general_ci NOT NULL,
+  `notes` text  DEFAULT NULL,
   `min_ml` INT NOT NULL DEFAULT '0', 
   `min_gr` INT NOT NULL DEFAULT '0',
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
   `updated_at` DATETIME on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `owner_id` INT NOT NULL DEFAULT '0'
+  `owner_id` VARCHAR(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE `ingTypes` (
   `id` int(11) NOT NULL,
-  `name` varchar(255) COLLATE utf8_general_ci NOT NULL
+  `name` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 INSERT INTO `ingTypes` (`id`, `name`) VALUES
@@ -311,12 +311,12 @@ CREATE TABLE `inventory_accessories` (
   `pieces` int(11) NOT NULL DEFAULT 0,
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `owner_id` INT NOT NULL DEFAULT '0'
+  `owner_id` VARCHAR(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE `pv_meta` (
-  `schema_ver` varchar(255) COLLATE utf8_general_ci NOT NULL,
-  `app_ver` varchar(255) COLLATE utf8_general_ci NOT NULL,
+  `schema_ver` varchar(255) NOT NULL,
+  `app_ver` varchar(255) NOT NULL,
   `updated_at_at` timestamp on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
@@ -327,60 +327,38 @@ CREATE TABLE update_history (
     update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'Timestamp of the update'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Tracks schema update history';
 
-CREATE TABLE `settings` (
-  `id` int(11) NOT NULL,
-  `currency` varchar(255) NOT NULL DEFAULT '£',
-  `currency_code` VARCHAR(255) NOT NULL DEFAULT 'GBP', 
-  `top_n` varchar(10) COLLATE utf8_general_ci NOT NULL,
-  `heart_n` varchar(10) COLLATE utf8_general_ci NOT NULL,
-  `base_n` varchar(10) COLLATE utf8_general_ci NOT NULL,
-  `chem_vs_brand` int(11) NOT NULL,
-  `grp_formula` int(11) DEFAULT NULL,
-  `brandName` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `brandAddress` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `brandEmail` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `brandPhone` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `brandLogo` LONGBLOB NULL DEFAULT NULL,
-  `pubChem` int(11) DEFAULT NULL,
-  `chkVersion` int(11) DEFAULT NULL,
-  `qStep` INT(5) NOT NULL DEFAULT '2',
-  `pubchem_view` VARCHAR(4) NOT NULL DEFAULT '2d',
-  `mUnit` VARCHAR(10) NOT NULL DEFAULT 'ml',
-  `multi_dim_perc` INT NOT NULL DEFAULT '0', 
-  `defCatClass` VARCHAR(255) NOT NULL DEFAULT 'cat4',
-  `defPercentage` VARCHAR(255) NOT NULL DEFAULT 'max_percentage',
-  `pv_library_api_url` varchar(255) COLLATE utf8_general_ci NOT NULL DEFAULT 'https://library.perfumersvault.com/api-data/api.php',
-  `api` INT NOT NULL DEFAULT '0',
-  `api_key` VARCHAR(255) NULL,
-  `editor` int(11) NOT NULL DEFAULT 1 COMMENT '1 = Inline, 2 = Advanced',
-  `user_pref_eng` INT NOT NULL DEFAULT '1',
-  `bk_srv_host` varchar(255) COLLATE utf8_general_ci NOT NULL DEFAULT 'localhost',
-  `pv_scale_host` varchar(255) COLLATE utf8_general_ci NOT NULL DEFAULT 'localhost',
-  `pv_scale_enabled` INT NOT NULL DEFAULT '0',
-  `pv_host` VARCHAR(255) NOT NULL DEFAULT 'localhost',
-  `sds_disclaimer` MEDIUMTEXT NOT NULL DEFAULT 'PLEASE ADD A PROPER DISCLAIMER MESSAGE',
-  `bs_theme` VARCHAR(255) NOT NULL DEFAULT 'light',
-  `temp_sys` VARCHAR(255) NOT NULL DEFAULT '°C'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
-INSERT INTO `settings` (`id`, `currency`, `top_n`, `heart_n`, `base_n`, `chem_vs_brand`, `grp_formula`, `brandName`, `brandAddress`, `brandEmail`, `brandPhone`, `brandLogo`) VALUES
-(1, '&pound;', '25', '50', '25', 0, 1, 'My Brand Name', 'My Address', 'info@mybrand.com', '123456', NULL);
 
 CREATE TABLE `users` (
-  `id` int(11) NOT NULL,
+  `id` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `fullName` varchar(255) NOT NULL,
-  `role` INT NOT NULL DEFAULT '1',
+  `provider` INT NOT NULL DEFAULT '1' COMMENT '1=Local,2=SSO', 
+  `role` INT NOT NULL,
+  `isActive` INT NOT NULL DEFAULT '1',
+  `country` VARCHAR(255) NULL DEFAULT NULL,
+  `isAPIActive` INT NOT NULL DEFAULT '0',
+  `API_key` VARCHAR(255) NULL DEFAULT NULL,
+  `isVerified` INT NOT NULL,
+  `token` VARCHAR(255) NULL, 
   `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL,
-  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
+   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+CREATE TABLE `password_resets` ( 
+    `id` INT NOT NULL AUTO_INCREMENT , 
+    `email` varchar(255) NOT NULL,
+    `token` VARCHAR(255) NOT NULL , 
+    `expiry` TIMESTAMP NOT NULL , 
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB CHARSET=utf8mb3 COLLATE utf8_general_ci; 
 
 
 CREATE TABLE `IFRACategories` (
  `id` int(11) NOT NULL AUTO_INCREMENT,
- `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
- `description` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+ `name` varchar(255) NOT NULL,
+ `description` varchar(255) DEFAULT NULL,
  `type` int(11) NOT NULL COMMENT '1=Standard, 2=Custom',
  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -388,8 +366,8 @@ CREATE TABLE `IFRACategories` (
 
 CREATE TABLE IF NOT EXISTS `colorKey` (
   `id` int(11) NOT NULL,
-  `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
-  `rgb` varchar(255) COLLATE utf8_general_ci NOT NULL
+  `name` varchar(255) NOT NULL,
+  `rgb` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 
@@ -417,10 +395,10 @@ CREATE TABLE `suppliers` (
  `id` int(11) NOT NULL AUTO_INCREMENT,
  `ingSupplierID` int(11) NOT NULL,
  `ingID` int(11) NOT NULL,
- `supplierLink` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+ `supplierLink` varchar(255) DEFAULT NULL,
  `price` DOUBLE DEFAULT 0,
  `size` float DEFAULT 10,
- `manufacturer` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+ `manufacturer` varchar(255) DEFAULT NULL,
  `preferred` int(11) NOT NULL DEFAULT 0,
  `batch` VARCHAR(255) NULL,
  `purchased` DATE NULL,
@@ -432,7 +410,7 @@ CREATE TABLE `suppliers` (
  `supplier_sku` VARCHAR(255) NULL, 
  `internal_sku` VARCHAR(255) NULL,
  `storage_location` VARCHAR(255) NULL,
- `owner_id` INT NOT NULL DEFAULT '0',
+ `owner_id` VARCHAR(255) NOT NULL,
  PRIMARY KEY (`id`),
  UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -465,8 +443,7 @@ ALTER TABLE `ingProfiles`
 
 ALTER TABLE `ingredients`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `id` (`id`),
-  ADD UNIQUE KEY `name` (`name`);
+  ADD UNIQUE KEY `id` (`id`);
 
 ALTER TABLE `ingStrength`
   ADD PRIMARY KEY (`id`);
@@ -478,23 +455,14 @@ ALTER TABLE `ingTypes`
   ADD PRIMARY KEY (`id`);
 
 ALTER TABLE `inventory_accessories` ADD PRIMARY KEY (`id`);
-ALTER TABLE `inventory_accessories` ADD UNIQUE(`name`);
-
-ALTER TABLE `settings`
-  ADD PRIMARY KEY (`id`);
-
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`);
 
 
 ALTER TABLE `ingredient_compounds`
   ADD PRIMARY KEY (`id`);
 
 ALTER TABLE `bottles` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `bottles` ADD UNIQUE(`name`);
 
 ALTER TABLE `customers` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `customers` ADD UNIQUE(`name`);
 
 ALTER TABLE `formulas`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
@@ -518,18 +486,12 @@ ALTER TABLE `ingStrength`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `ingSuppliers` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `ingSuppliers` ADD UNIQUE(`name`);
 
 ALTER TABLE `ingTypes`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `inventory_accessories` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
-ALTER TABLE `settings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
-ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `ingredient_compounds`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
@@ -538,14 +500,14 @@ CREATE TABLE `documents` (
  `id` int(11) NOT NULL AUTO_INCREMENT,
  `ownerID` int(11) NOT NULL,
  `type` int(11) NOT NULL,
- `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
- `notes` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+ `name` varchar(255) NOT NULL,
+ `notes` varchar(255) DEFAULT NULL,
  `docData` longblob NOT NULL,
  `isBatch` INT NOT NULL DEFAULT '0', 
  `isSDS` INT NOT NULL DEFAULT '0', 
  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
- `owner_id` INT NOT NULL DEFAULT '0',
+ `owner_id` VARCHAR(255) NOT NULL,
  PRIMARY KEY (`id`),
  UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -616,7 +578,7 @@ CREATE TABLE `ingSafetyInfo` (
  `ingID` int(11) NOT NULL,
  `GHS` int(11) NOT NULL,
  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
- `owner_id` INT NOT NULL DEFAULT '0',
+ `owner_id` VARCHAR(255) NOT NULL,
  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
@@ -626,7 +588,7 @@ ALTER TABLE ingSafetyInfo ADD CONSTRAINT unique_ghs_ingid UNIQUE (GHS, ingID);
 
 CREATE TABLE `pictograms` (
  `id` int(11) NOT NULL AUTO_INCREMENT,
- `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
+ `name` varchar(255) NOT NULL,
  `code` int(11) NOT NULL,
  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -635,19 +597,19 @@ INSERT INTO `pictograms` (`id`, `name`, `code`) VALUES (NULL, 'Explosive', '1'),
 
 CREATE TABLE `formulasRevisions` (
  `id` int(11) NOT NULL AUTO_INCREMENT,
- `fid` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
- `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
- `ingredient` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+ `fid` varchar(255) DEFAULT NULL,
+ `name` varchar(255) NOT NULL,
+ `ingredient` varchar(255) DEFAULT NULL,
  `ingredient_id` int(11) NULL DEFAULT NULL,
  `concentration` decimal(5,2) DEFAULT 100.00,
- `dilutant` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+ `dilutant` varchar(255) DEFAULT NULL,
  `quantity` decimal(10,4) DEFAULT NULL,
- `notes` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+ `notes` varchar(255) DEFAULT NULL,
  `exclude_from_summary` int(11) NOT NULL DEFAULT 0,
  `revision` int(11) NOT NULL,
  `revisionDate` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
  `revisionMethod` VARCHAR(255) DEFAULT NULL,
- `owner_id` INT NOT NULL DEFAULT '0',
+ `owner_id` VARCHAR(255) NOT NULL,
  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
@@ -655,22 +617,22 @@ CREATE TABLE `formula_history` (
  `id` int(11) NOT NULL AUTO_INCREMENT,
  `fid` int(11) NOT NULL,
  `ing_id` INT NOT NULL DEFAULT '0', 
- `change_made` text COLLATE utf8_general_ci NOT NULL,
+ `change_made` text NOT NULL,
  `date_time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
- `user` varchar(255) COLLATE utf8_general_ci NOT NULL,
- `owner_id` INT NOT NULL DEFAULT '0',
+ `user` varchar(255) NOT NULL,
+ `owner_id` VARCHAR(255) NOT NULL,
  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE `formulaCategories` (
  `id` int(11) NOT NULL AUTO_INCREMENT,
- `name` varchar(255) COLLATE utf8_general_ci NOT NULL,
- `cname` varchar(255) COLLATE utf8_general_ci NOT NULL,
- `type` varchar(255) COLLATE utf8_general_ci NOT NULL,
+ `name` varchar(255) NOT NULL,
+ `cname` varchar(255) NOT NULL,
+ `type` varchar(255) NOT NULL,
  `colorKey` VARCHAR(255) NULL DEFAULT NULL,
  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
  `updated_at` DATETIME on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
- `owner_id` INT NOT NULL DEFAULT '0',
+ `owner_id` VARCHAR(255) NOT NULL,
  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
@@ -683,7 +645,7 @@ CREATE TABLE `synonyms` (
 	`synonym` VARCHAR(255) NOT NULL, 
 	`source` VARCHAR(255) NULL DEFAULT NULL, 
 	`created_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	`owner_id` INT NOT NULL DEFAULT '0'
+	`owner_id` VARCHAR(255) NOT NULL
 ) ENGINE = InnoDB;
 
 ALTER TABLE `synonyms` CHANGE `id` `id` INT(11) NOT NULL AUTO_INCREMENT, add PRIMARY KEY (`id`);
@@ -698,7 +660,7 @@ CREATE TABLE `ingReplacements` (
   `ing_rep_cas` varchar(255) NOT NULL,
   `notes` text DEFAULT NULL,
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
-  `owner_id` INT NOT NULL DEFAULT '0',
+  `owner_id` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
@@ -709,7 +671,7 @@ CREATE TABLE `perfumeTypes` (
 	`description` VARCHAR(255) NOT NULL, 
 	`created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	`updated_at` DATETIME on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	`owner_id` INT NOT NULL DEFAULT '0',
+	`owner_id` VARCHAR(255) NOT NULL,
 	PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
@@ -722,11 +684,11 @@ CREATE TABLE `templates` (
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `description` varchar(255) NOT NULL,
-  `owner_id` INT NOT NULL DEFAULT '0',
+  `owner_id` VARCHAR(255) NOT NULL,
   UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
-INSERT INTO `templates` (`id`, `name`, `content`, `created_at`, `updated_at`, `description`) VALUES (NULL, 'IFRA Document Template', '<!doctype html>
+INSERT INTO `templates` (`id`, `name`, `content`, `created_at`, `updated_at`, `description`, `owner_id`) VALUES (NULL, 'IFRA Document Template', '<!doctype html>
 <html lang="en">
 <head>
  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -816,10 +778,10 @@ INSERT INTO `templates` (`id`, `name`, `content`, `created_at`, `updated_at`, `d
  </p>
  </div>
 </body>
-</html>', current_timestamp(), current_timestamp(), 'The default IFRA document template');
+</html>', current_timestamp(), current_timestamp(), 'The default IFRA document template', 1);
 
-INSERT INTO `templates` (`id`, `name`, `content`, `created_at`, `updated_at`, `description`) VALUES
-(9, 'SDS Example template', '<!doctype html>\n<html lang=\"en\">\n\n<head>\n    <link href=\"/css/bootstrap.min.css\" rel=\"stylesheet\">\n    <link href=\"/css/bootstrap-icons/font/bootstrap-icons.min.css\" rel=\"stylesheet\" type=\"text/css\">\n    <link href=\"/css/fontawesome-free/css/all.min.css\" rel=\"stylesheet\">\n    <link href=\"/css/regulatory.css\" rel=\"stylesheet\">\n</head>\n\n<body>\n    <div class=\"container\">\n        <div class=\"sds\">\n            <div class=\"sds-company text-inverse fw-bold\">\n                <img src=\"%LOGO%\" class=\"img-thumbnail float-start\">\n            </div>\n            <div class=\"sds-date\">\n                <div class=\"fw-bold\">%SDS_PRODUCT_NAME%</div>\n                <small>Language %SDS_LANGUAGE%</small>\n                <div class=\"date small\">%CURRENT_DATE%</div>\n                <div class=\"sds-detail\">According to Regulation (EC) No. 1907/2006 (amended by Regulation (EU) No. 2020/878)</div>\n            </div>\n            <div id=\"section-1\">\n                <div class=\"sds-header\">\n                    <div class=\"sds-to\">\n                        <h4>1. Identification of the substance/mixture and of the company/undertaking</h4>\n                    </div>\n                </div>\n                <div class=\"sds-content mt-2\">\n                    <div class=\"mb-4\">\n                        <div class=\"fw-bold\">1.1 Product identifier</div>\n                        <div class=\"mt-2\">\n                            <div class=\"fw-bold\">Trade name/designation</div>\n                            <div>%SDS_PRODUCT_NAME%</div>\n                        </div>\n                    </div>\n                    <div class=\"mb-4\">\n                        <div class=\"fw-bold\">1.2 Relevant identified uses of the substance or mixture and uses advised against</div>\n                        <div class=\"mt-2\">\n                            <div class=\"fw-bold\">Relevant identified uses</div>\n                            <div>%SDS_PRODUCT_USE%</div>\n                        </div>\n                        <div class=\"mt-2\">\n                            <div class=\"fw-bold\">Uses advised against</div>\n                            <div>%SDS_PRODUCT_ADA%</div>\n                        </div>\n                    </div>\n\n                    <div class=\"mb-4\">\n                        <div class=\"fw-bold\">1.3 Details of the supplier of the safety data sheet</div>\n                        <div class=\"mt-2\">\n                            <div class=\"fw-bold\">Supplier</div>\n                            <div>%SDS_SUPPLIER_NAME%</div>\n                            <div>%SDS_SUPPLIER_ADDRESS%, %SDS_SUPPLIER_COUNTRY%, %SDS_SUPPLIER_PO%</div>\n                            <div>%SDS_SUPPLIER_EMAIL%</div>\n                            <div>%SDS_SUPPLIER_PHONE%</div>\n                            <div>%SDS_SUPPLIER_WEB%</div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n            <div id=\"section-2\">\n                <div class=\"sds-header\">\n                    <div class=\"sds-to\">\n                        <h4>2. Hazards identification</h4>\n                    </div>\n                </div>\n                <div class=\"alert alert-info mt-4\"><i class=\"fa-solid fa-info mx-2\"></i>\n                    2.2 Labeling\n                    <p>\n                        <span class=\"me-3\"><i class=\"fa fa-fw fa-lg mt-2\"></i>Label elements according to the regulation (EC) n°1272/2008 (CLP) and its amendments</span>\n                    </p>\n                </div>\n                <div class=\"sds-content mt-2\">\n                    %GHS_LABEL_LIST%\n                </div>\n            </div>\n            <div id=\"section-3\">\n                <div class=\"sds-header\">\n                    <div class=\"sds-to\">\n                        <h4>3. Composition/information on ingredients</h4>\n                    </div>\n                </div>\n                <div class=\"alert alert-info mt-4\"><i class=\"fa-solid fa-info mx-2\"></i>\n                    In accordance with the product knowledge, no nanomaterials have been identified. The mixture does not contain any substances classified as Substances of Very High Concern (SVHC) by the European Chemicals Agency (ECHA) under article 57 of REACH: http://echa.europa.eu/en/candidate-list-table</div>\n                <div class=\"sds-content mt-2\">\n                    <div class=\"d-flex flex-wrap\">\n                       <table width=\"100%\" class=\"table table-sds\">\n                          <tbody>\n                             <th>Name</th>\n                             <th>CAS</th>\n                             <th>EINES</th>\n                             <th>Min percentage</th>\n                             <th>Max percentage</th>\n                             <th>GHS</th>\n                             %CMP_MATERIALS_LIST%\n                         </tbody>\n                     </table>\n                 </div>\n             </div>\n         </div>\n        <div id=\"section-4\">\n            <div class=\"sds-header\">\n                <div class=\"sds-to\">\n                    <h4>4. First aid measures</h4>\n                </div>\n            </div>\n            <div class=\"alert alert-info mt-4\"><i class=\"fa-solid fa-info mx-2\"></i>\n                Description of first aid measures\n            </div>\n            <div class=\"sds-content mt-2\">\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">General information</div>\n                    <div>%FIRST_AID_GENERAL%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Following inhalation</div>\n                    <div>%FIRST_AID_INHALATION%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Following skin contact</div>\n                    <div>%FIRST_AID_SKIN%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Following eye contact</div>\n                    <div>%FIRST_AID_EYE%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Following ingestion</div>\n                    <div>%FIRST_AID_INGESTION%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Self-protection of the first aider</div>\n                    <div>%FIRST_AID_SELF_PROTECTION%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Most important symptoms and effects, both acute and delayed</div>\n                    <div>%FIRST_AID_SYMPTOMS%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Notes for the doctor</div>\n                    <div>%FIRST_AID_DR_NOTES%</div>\n                </div>\n            </div>\n        </div>\n        <div id=\"section-5\">\n            <div class=\"sds-header\">\n                <div class=\"sds-to\">\n                    <h4>5. Firefighting measures</h4>\n                </div>\n            </div>\n            <div class=\"sds-content mt-2\">\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Suitable extinguishing media</div>\n                    <div>%FIRE_SUIT_MEDIA%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Unsuitable extinguishing media</div>\n                    <div>%FIRE_NONSUIT_MEDIA%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Special hazards arising from the substance or mixture</div>\n                    <div>%FIRE_SPECIAL_HAZARDS%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Advice for firefighters</div>\n                    <div>%FIRE_ADVICE%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Additional information</div>\n                    <div>%FIRE_OTHER_INFO%</div>\n                </div>\n            </div>\n        </div>\n        <div id=\"section-6\">\n            <div class=\"sds-header\">\n                <div class=\"sds-to\">\n                    <h4>6. Accidental release measures</h4>\n                </div>\n            </div>\n            <div class=\"sds-content mt-2\">\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Personal precautions, protective equipment and emergency procedures</div>\n                    <div>%ACC_REL_PERSONAL_CAUTIONS%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Environmental precautions</div>\n                    <div>%ACC_REL_ENV_CAUTIONS%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Methods and material for containment and cleaning up</div>\n                    <div>%ACC_REL_CLEANING%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Reference to other sections</div>\n                    <div>%ACC_REL_REFERENCES%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Additional information</div>\n                    <div>%ACC_REL_OTHER_INFO%</div>\n                </div>\n            </div>\n        </div>\n        <div id=\"section-7\">\n            <div class=\"sds-header\">\n                <div class=\"sds-to\">\n                    <h4>7. Handling and Storage</h4>\n                </div>\n            </div>\n            <div class=\"sds-content mt-2\">\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Precautions for safe handling</div>\n                    <div>%HS_PROTECTION%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Advices on general occupational hygiene</div>\n                    <div>%HS_HYGIENE%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Conditions for safe storage, including any incompatibilities</div>\n                    <div>%HS_SAFE_STORE%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Advice on joint storage</div>\n                    <div>%HS_JOINT_STORE%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Specific end uses</div>\n                    <div>%HS_SPECIFIC_USES%</div>\n                </div>\n            </div>\n        </div>\n        <div id=\"section-8\">\n            <div class=\"sds-header\">\n                <div class=\"sds-to\">\n                    <h4>8. Exposure controls/personal protection</h4>\n                </div>\n            </div>\n            <div class=\"sds-content mt-2\">\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Occupational exposure limits</div>\n                    <div>%EXPOSURE_OCC_LIMIT%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Biological limit values</div>\n                    <div>%EXPOSURE_BIO_LIMIT%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Exposure limits at intended use</div>\n                    <div>%EXPOSURE_USE_LIMIT%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Remarks</div>\n                    <div>%EXPOSURE_OTHER_REM%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Eye/face protection</div>\n                    <div>%EXPOSURE_FACE_PROTECTION%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Skin protection</div>\n                    <div>%EXPOSURE_SKIN_PROTECTION%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Respiratory protection</div>\n                    <div>%EXPOSURE_RESP_PROTECTION%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Environmental exposure controls</div>\n                    <div>%EXPOSURE_ENV_EXPOSURE%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Consumer exposure controls</div>\n                    <div>%EXPOSURE_CONS_EXPOSURE%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Additional information</div>\n                    <div>%EXPOSURE_OTHER_INFO%</div>\n                </div>\n            </div>\n        </div>\n        <div id=\"section-9\">\n            <div class=\"sds-header\">\n                <div class=\"sds-to\">\n                    <h4>9. Physical and chemical Properties</h4>\n                </div>\n            </div>\n            <div class=\"sds-content mt-2\">\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Physical state</div>\n                    <div>%PHYSICAL_STATE%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Color</div>\n                    <div>%COLOR%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Odor</div>\n                    <div>%ODOR%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Odor threshold</div>\n                    <div>%ODOR_THRESHOLD%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">pH</div>\n                    <div>%PH%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Melting/Freezing point</div>\n                    <div>%MELTING_POINT%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Boiling point</div>\n                    <div>%BOILING_POINT%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Flash point</div>\n                    <div>%FLASH_POINT%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Evaporation rate</div>\n                    <div>%EVAPORATION_RATE%</div>\n                </div> \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Water solubility</div>\n                    <div>%SOLUBILITY%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Partition coefficient, n-octanol/water (log Pow)</div>\n                    <div>%LOGP%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Auto-inflammability temperature</div>\n                    <div>%AUTO_INFL_TEMP%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Decomposition temperature</div>\n                    <div>%DECOMP_TEMP%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Viscosity</div>\n                    <div>%VISCOSITY%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Explosive properties</div>\n                    <div>%EXPLOSIVE_PROPERTIES%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Oxidising properties</div>\n                    <div>%OXIDISING_PROPERTIES%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Solubility in other Solvents</div>\n                    <div>%SOLVENTS%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Particle characteristics</div>\n                    <div>%PARTICLE_CHARACTERISTICS%</div>\n                </div>                \n            </div>\n        </div>\n        <div id=\"section-10\">\n            <div class=\"sds-header\">\n                <div class=\"sds-to\">\n                    <h4>10. Stability and Reactivity</h4>\n                </div>\n            </div>\n            <div class=\"sds-content mt-2\">\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Reactivity</div>\n                    <div>%STABILLITY_REACTIVITY%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Chemical stability</div>\n                    <div>%STABILLITY_CHEMICAL%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Possibility of hazardous reactions</div>\n                    <div>%STABILLITY_REACTIONS%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Conditions to avoid</div>\n                    <div>%STABILLITY_AVOID%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Incompatible materials</div>\n                    <div>%STABILLITY_INCOMPATIBILITY%</div>\n                </div>             \n            </div>           \n        </div>\n        <div id=\"section-11\">\n            <div class=\"sds-header\">\n                <div class=\"sds-to\">\n                    <h4>11. Toxicological information</h4>\n                </div>\n            </div>\n            <div class=\"sds-content mt-2\">\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Acute oral toxicity</div>\n                    <div>%TOXICOLOGICAL_ACUTE_ORAL%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Acute dermal toxicity</div>\n                    <div>%TOXICOLOGICAL_ACUTE_DERMAL%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Acute inhalation toxicity</div>\n                    <div>%TOXICOLOGICAL_ACUTE_INHALATION%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Skin corrosion/irritation</div>\n                    <div>%TOXICOLOGICAL_SKIN%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Serious eye damage/irritation</div>\n                    <div>%TOXICOLOGICAL_EYE%</div>\n                </div>  \n\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Skin sensitisation</div>\n                    <div>%TOXICOLOGICAL_SENSITISATION%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Specific target organ toxicity (repeated exposure)</div>\n                    <div>%TOXICOLOGICAL_ORGAN_REPEATED%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Specific target organ toxicity (single exposure)</div>\n                    <div>%TOXICOLOGICAL_ORGAN_SINGLE%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Carcinogenicity</div>\n                    <div>%TOXICOLOGICAL_CARCINOGENCITY%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Reproductive toxicity</div>\n                    <div>%TOXICOLOGICAL_REPRODUCTIVE%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Germ cell mutagenicity</div>\n                    <div>%TOXICOLOGICAL_CELL_MUTATION%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Sensitisation to the respiratory tract</div>\n                    <div>%TOXICOLOGICAL_RESP_TRACT%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Additional information</div>\n                    <div>%TOXICOLOGICAL_OTHER_INFO%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Information on other hazards</div>\n                    <div>%TOXICOLOGICAL_OTHER_HAZARDS%</div>\n                </div>\n            </div>  \n        </div>\n\n        <div id=\"section-12\">\n            <div class=\"sds-header\">\n                <div class=\"sds-to\">\n                    <h4>12. Ecological information</h4>\n                </div>\n            </div>\n            <div class=\"sds-content mt-2\">\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Toxicity</div>\n                    <div>%ECOLOGICAL_TOXICITY%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Persistence and degradability</div>\n                    <div>%ECOLOGICAL_PERSISTENCE%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Bioaccumulative potential</div>\n                    <div>%ECOLOGICAL_BIOACCUMULATIVE%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Mobility in soil</div>\n                    <div>%ECOLOGICAL_SOIL_MOBILITY%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Results of PBT and vPvB assessment</div>\n                    <div>%ECOLOGICAL_PBT_VPVB%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Endocrine disrupting properties</div>\n                    <div>%ECOLOGICAL_ENDOCRINE_PROPERTIES%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Other adverse effects</div>\n                    <div>%ECOLOGICAL_OTHER_ADV_EFFECTS%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Additional ecotoxicological information</div>\n                    <div>%ECOLOGICAL_ADDITIONAL_ECOTOXICOLOGICAL_INFO%</div>\n                </div>\n            </div>  \n        </div>\n        <div id=\"section-13\">\n            <div class=\"sds-header\">\n                <div class=\"sds-to\">\n                    <h4>13. Disposal considerations</h4>\n                </div>\n            </div>\n            <div class=\"sds-content mt-2\">\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Product/Packaging disposal</div>\n                    <div>%DISPOSAL_PRODUCT%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Remark</div>\n                    <div>%DISPOSAL_REMARKS%</div>\n                </div>  \n            </div>  \n        </div>\n\n        <div id=\"section-14\">\n            <div class=\"sds-header\">\n                <div class=\"sds-to\">\n                    <h4>14. Transport information</h4>\n                </div>\n            </div>\n            <div class=\"sds-content mt-2\"> \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">UN number</div>\n                    <div>%TRANSPORT_UN_NUMBER%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">UN proper shipping name</div>\n                    <div>%TRANSPORT_SHIPPING_NAME%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Transport hazard class(es)</div>\n                    <div>%TRANSPORT_HAZARD_CLASS%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Packing group</div>\n                    <div>%TRANSPORT_PACKING_GROUP%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Environmental hazards</div>\n                    <div>%TRANSPORT_ENV_HAZARDS%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Special precautions for user</div>\n                    <div>%TRANSPORT_PRECAUTIONS%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Bulk shipping according to IMO instruments</div>\n                    <div>%TRANSPORT_BULK_SHIPPING%</div>\n                </div>\n            </div>  \n        </div>    \n        <div id=\"section-15\">\n            <div class=\"sds-header\">\n                <div class=\"sds-to\">\n                    <h4>15. Regulatory information</h4>\n                </div>\n            </div>\n            <div class=\"sds-content mt-2\"> \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Safety, health and environmental regulations/legislation specific for the substance or mixture</div>\n                    <div>%LEGISLATION_SAFETY%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">EU legislation</div>\n                    <div>%LEGISLATION_EU%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Chemical Safety Assessment</div>\n                    <div>%LEGISLATION_CHEMICAL_SAFETY_ASSESSMENT%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Additional information</div>\n                    <div>%LEGISLATION_OTHER_INFO%</div>\n                </div>\n            </div>  \n        </div>\n\n\n        <div id=\"section-16\">\n            <div class=\"sds-header\">\n                <div class=\"sds-to\">\n                    <h4>16. Other information</h4>\n                </div>\n            </div>\n            <div class=\"sds-content mt-2\"> \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Indication of changes</div>\n                    <div>%ADD_INFO_CHANGES%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Abbreviations and acronyms</div>\n                    <div>%ADD_INFO_ACRONYMS%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Key literature references and sources for data</div>\n                    <div>%ADD_INFO_REFERENCES%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">The classification of the mixture is in accordance with the evaluation method described in HazCom 2012</div>\n                    <div>%ADD_INFO_HAZCOM%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">The classification of the mixture is in accordance with the evaluation method described in the GHS</div>\n                    <div>%ADD_INFO_GHS%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Training advice</div>\n                    <div>%ADD_INFO_TRAINING%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Additional information</div>\n                    <div>%ADD_INFO_OTHER%</div>\n                </div>\n            </div>  \n        </div>\n\n        <div class=\"sds-note\"><span class=\"text-center mb-3 fw-bold\">%BRAND_NAME%</span><br> \n            Creation date: %CURRENT_DATE%\n        </div>\n        <div class=\"sds-note alert alert-warning mt-4\"><i class=\"fa-solid fa-info mx-2\"></i>\n            %SDS_DISCLAIMER%\n        </div>\n        <div class=\"sds-footer\">\n            <p class=\"text-center mb-3 fw-bold\">\n            %BRAND_NAME%\n            </p>\n            <p class=\"text-center\">\n                <span class=\"me-3\"><i class=\"fa fa-fw fa-lg fa-globe mx-2\"></i>www.perfumersvault.com</span>\n            </p>\n        </div>\n    </div>\n</div>\n</body>\n</html>\n', '2024-06-22 10:23:11', '2024-06-27 08:47:38', 'This is an example template');
+INSERT INTO `templates` (`id`, `name`, `content`, `created_at`, `updated_at`, `description`, `owner_id`) VALUES
+(9, 'SDS Example template', '<!doctype html>\n<html lang=\"en\">\n\n<head>\n    <link href=\"/css/bootstrap.min.css\" rel=\"stylesheet\">\n    <link href=\"/css/bootstrap-icons/font/bootstrap-icons.min.css\" rel=\"stylesheet\" type=\"text/css\">\n    <link href=\"/css/fontawesome-free/css/all.min.css\" rel=\"stylesheet\">\n    <link href=\"/css/regulatory.css\" rel=\"stylesheet\">\n</head>\n\n<body>\n    <div class=\"container\">\n        <div class=\"sds\">\n            <div class=\"sds-company text-inverse fw-bold\">\n                <img src=\"%LOGO%\" class=\"img-thumbnail float-start\">\n            </div>\n            <div class=\"sds-date\">\n                <div class=\"fw-bold\">%SDS_PRODUCT_NAME%</div>\n                <small>Language %SDS_LANGUAGE%</small>\n                <div class=\"date small\">%CURRENT_DATE%</div>\n                <div class=\"sds-detail\">According to Regulation (EC) No. 1907/2006 (amended by Regulation (EU) No. 2020/878)</div>\n            </div>\n            <div id=\"section-1\">\n                <div class=\"sds-header\">\n                    <div class=\"sds-to\">\n                        <h4>1. Identification of the substance/mixture and of the company/undertaking</h4>\n                    </div>\n                </div>\n                <div class=\"sds-content mt-2\">\n                    <div class=\"mb-4\">\n                        <div class=\"fw-bold\">1.1 Product identifier</div>\n                        <div class=\"mt-2\">\n                            <div class=\"fw-bold\">Trade name/designation</div>\n                            <div>%SDS_PRODUCT_NAME%</div>\n                        </div>\n                    </div>\n                    <div class=\"mb-4\">\n                        <div class=\"fw-bold\">1.2 Relevant identified uses of the substance or mixture and uses advised against</div>\n                        <div class=\"mt-2\">\n                            <div class=\"fw-bold\">Relevant identified uses</div>\n                            <div>%SDS_PRODUCT_USE%</div>\n                        </div>\n                        <div class=\"mt-2\">\n                            <div class=\"fw-bold\">Uses advised against</div>\n                            <div>%SDS_PRODUCT_ADA%</div>\n                        </div>\n                    </div>\n\n                    <div class=\"mb-4\">\n                        <div class=\"fw-bold\">1.3 Details of the supplier of the safety data sheet</div>\n                        <div class=\"mt-2\">\n                            <div class=\"fw-bold\">Supplier</div>\n                            <div>%SDS_SUPPLIER_NAME%</div>\n                            <div>%SDS_SUPPLIER_ADDRESS%, %SDS_SUPPLIER_COUNTRY%, %SDS_SUPPLIER_PO%</div>\n                            <div>%SDS_SUPPLIER_EMAIL%</div>\n                            <div>%SDS_SUPPLIER_PHONE%</div>\n                            <div>%SDS_SUPPLIER_WEB%</div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n            <div id=\"section-2\">\n                <div class=\"sds-header\">\n                    <div class=\"sds-to\">\n                        <h4>2. Hazards identification</h4>\n                    </div>\n                </div>\n                <div class=\"alert alert-info mt-4\"><i class=\"fa-solid fa-info mx-2\"></i>\n                    2.2 Labeling\n                    <p>\n                        <span class=\"me-3\"><i class=\"fa fa-fw fa-lg mt-2\"></i>Label elements according to the regulation (EC) n°1272/2008 (CLP) and its amendments</span>\n                    </p>\n                </div>\n                <div class=\"sds-content mt-2\">\n                    %GHS_LABEL_LIST%\n                </div>\n            </div>\n            <div id=\"section-3\">\n                <div class=\"sds-header\">\n                    <div class=\"sds-to\">\n                        <h4>3. Composition/information on ingredients</h4>\n                    </div>\n                </div>\n                <div class=\"alert alert-info mt-4\"><i class=\"fa-solid fa-info mx-2\"></i>\n                    In accordance with the product knowledge, no nanomaterials have been identified. The mixture does not contain any substances classified as Substances of Very High Concern (SVHC) by the European Chemicals Agency (ECHA) under article 57 of REACH: http://echa.europa.eu/en/candidate-list-table</div>\n                <div class=\"sds-content mt-2\">\n                    <div class=\"d-flex flex-wrap\">\n                       <table width=\"100%\" class=\"table table-sds\">\n                          <tbody>\n                             <th>Name</th>\n                             <th>CAS</th>\n                             <th>EINES</th>\n                             <th>Min percentage</th>\n                             <th>Max percentage</th>\n                             <th>GHS</th>\n                             %CMP_MATERIALS_LIST%\n                         </tbody>\n                     </table>\n                 </div>\n             </div>\n         </div>\n        <div id=\"section-4\">\n            <div class=\"sds-header\">\n                <div class=\"sds-to\">\n                    <h4>4. First aid measures</h4>\n                </div>\n            </div>\n            <div class=\"alert alert-info mt-4\"><i class=\"fa-solid fa-info mx-2\"></i>\n                Description of first aid measures\n            </div>\n            <div class=\"sds-content mt-2\">\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">General information</div>\n                    <div>%FIRST_AID_GENERAL%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Following inhalation</div>\n                    <div>%FIRST_AID_INHALATION%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Following skin contact</div>\n                    <div>%FIRST_AID_SKIN%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Following eye contact</div>\n                    <div>%FIRST_AID_EYE%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Following ingestion</div>\n                    <div>%FIRST_AID_INGESTION%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Self-protection of the first aider</div>\n                    <div>%FIRST_AID_SELF_PROTECTION%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Most important symptoms and effects, both acute and delayed</div>\n                    <div>%FIRST_AID_SYMPTOMS%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Notes for the doctor</div>\n                    <div>%FIRST_AID_DR_NOTES%</div>\n                </div>\n            </div>\n        </div>\n        <div id=\"section-5\">\n            <div class=\"sds-header\">\n                <div class=\"sds-to\">\n                    <h4>5. Firefighting measures</h4>\n                </div>\n            </div>\n            <div class=\"sds-content mt-2\">\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Suitable extinguishing media</div>\n                    <div>%FIRE_SUIT_MEDIA%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Unsuitable extinguishing media</div>\n                    <div>%FIRE_NONSUIT_MEDIA%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Special hazards arising from the substance or mixture</div>\n                    <div>%FIRE_SPECIAL_HAZARDS%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Advice for firefighters</div>\n                    <div>%FIRE_ADVICE%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Additional information</div>\n                    <div>%FIRE_OTHER_INFO%</div>\n                </div>\n            </div>\n        </div>\n        <div id=\"section-6\">\n            <div class=\"sds-header\">\n                <div class=\"sds-to\">\n                    <h4>6. Accidental release measures</h4>\n                </div>\n            </div>\n            <div class=\"sds-content mt-2\">\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Personal precautions, protective equipment and emergency procedures</div>\n                    <div>%ACC_REL_PERSONAL_CAUTIONS%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Environmental precautions</div>\n                    <div>%ACC_REL_ENV_CAUTIONS%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Methods and material for containment and cleaning up</div>\n                    <div>%ACC_REL_CLEANING%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Reference to other sections</div>\n                    <div>%ACC_REL_REFERENCES%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Additional information</div>\n                    <div>%ACC_REL_OTHER_INFO%</div>\n                </div>\n            </div>\n        </div>\n        <div id=\"section-7\">\n            <div class=\"sds-header\">\n                <div class=\"sds-to\">\n                    <h4>7. Handling and Storage</h4>\n                </div>\n            </div>\n            <div class=\"sds-content mt-2\">\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Precautions for safe handling</div>\n                    <div>%HS_PROTECTION%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Advices on general occupational hygiene</div>\n                    <div>%HS_HYGIENE%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Conditions for safe storage, including any incompatibilities</div>\n                    <div>%HS_SAFE_STORE%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Advice on joint storage</div>\n                    <div>%HS_JOINT_STORE%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Specific end uses</div>\n                    <div>%HS_SPECIFIC_USES%</div>\n                </div>\n            </div>\n        </div>\n        <div id=\"section-8\">\n            <div class=\"sds-header\">\n                <div class=\"sds-to\">\n                    <h4>8. Exposure controls/personal protection</h4>\n                </div>\n            </div>\n            <div class=\"sds-content mt-2\">\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Occupational exposure limits</div>\n                    <div>%EXPOSURE_OCC_LIMIT%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Biological limit values</div>\n                    <div>%EXPOSURE_BIO_LIMIT%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Exposure limits at intended use</div>\n                    <div>%EXPOSURE_USE_LIMIT%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Remarks</div>\n                    <div>%EXPOSURE_OTHER_REM%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Eye/face protection</div>\n                    <div>%EXPOSURE_FACE_PROTECTION%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Skin protection</div>\n                    <div>%EXPOSURE_SKIN_PROTECTION%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Respiratory protection</div>\n                    <div>%EXPOSURE_RESP_PROTECTION%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Environmental exposure controls</div>\n                    <div>%EXPOSURE_ENV_EXPOSURE%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Consumer exposure controls</div>\n                    <div>%EXPOSURE_CONS_EXPOSURE%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Additional information</div>\n                    <div>%EXPOSURE_OTHER_INFO%</div>\n                </div>\n            </div>\n        </div>\n        <div id=\"section-9\">\n            <div class=\"sds-header\">\n                <div class=\"sds-to\">\n                    <h4>9. Physical and chemical Properties</h4>\n                </div>\n            </div>\n            <div class=\"sds-content mt-2\">\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Physical state</div>\n                    <div>%PHYSICAL_STATE%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Color</div>\n                    <div>%COLOR%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Odor</div>\n                    <div>%ODOR%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Odor threshold</div>\n                    <div>%ODOR_THRESHOLD%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">pH</div>\n                    <div>%PH%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Melting/Freezing point</div>\n                    <div>%MELTING_POINT%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Boiling point</div>\n                    <div>%BOILING_POINT%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Flash point</div>\n                    <div>%FLASH_POINT%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Evaporation rate</div>\n                    <div>%EVAPORATION_RATE%</div>\n                </div> \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Water solubility</div>\n                    <div>%SOLUBILITY%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Partition coefficient, n-octanol/water (log Pow)</div>\n                    <div>%LOGP%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Auto-inflammability temperature</div>\n                    <div>%AUTO_INFL_TEMP%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Decomposition temperature</div>\n                    <div>%DECOMP_TEMP%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Viscosity</div>\n                    <div>%VISCOSITY%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Explosive properties</div>\n                    <div>%EXPLOSIVE_PROPERTIES%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Oxidising properties</div>\n                    <div>%OXIDISING_PROPERTIES%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Solubility in other Solvents</div>\n                    <div>%SOLVENTS%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Particle characteristics</div>\n                    <div>%PARTICLE_CHARACTERISTICS%</div>\n                </div>                \n            </div>\n        </div>\n        <div id=\"section-10\">\n            <div class=\"sds-header\">\n                <div class=\"sds-to\">\n                    <h4>10. Stability and Reactivity</h4>\n                </div>\n            </div>\n            <div class=\"sds-content mt-2\">\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Reactivity</div>\n                    <div>%STABILLITY_REACTIVITY%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Chemical stability</div>\n                    <div>%STABILLITY_CHEMICAL%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Possibility of hazardous reactions</div>\n                    <div>%STABILLITY_REACTIONS%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Conditions to avoid</div>\n                    <div>%STABILLITY_AVOID%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Incompatible materials</div>\n                    <div>%STABILLITY_INCOMPATIBILITY%</div>\n                </div>             \n            </div>           \n        </div>\n        <div id=\"section-11\">\n            <div class=\"sds-header\">\n                <div class=\"sds-to\">\n                    <h4>11. Toxicological information</h4>\n                </div>\n            </div>\n            <div class=\"sds-content mt-2\">\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Acute oral toxicity</div>\n                    <div>%TOXICOLOGICAL_ACUTE_ORAL%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Acute dermal toxicity</div>\n                    <div>%TOXICOLOGICAL_ACUTE_DERMAL%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Acute inhalation toxicity</div>\n                    <div>%TOXICOLOGICAL_ACUTE_INHALATION%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Skin corrosion/irritation</div>\n                    <div>%TOXICOLOGICAL_SKIN%</div>\n                </div>\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Serious eye damage/irritation</div>\n                    <div>%TOXICOLOGICAL_EYE%</div>\n                </div>  \n\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Skin sensitisation</div>\n                    <div>%TOXICOLOGICAL_SENSITISATION%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Specific target organ toxicity (repeated exposure)</div>\n                    <div>%TOXICOLOGICAL_ORGAN_REPEATED%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Specific target organ toxicity (single exposure)</div>\n                    <div>%TOXICOLOGICAL_ORGAN_SINGLE%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Carcinogenicity</div>\n                    <div>%TOXICOLOGICAL_CARCINOGENCITY%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Reproductive toxicity</div>\n                    <div>%TOXICOLOGICAL_REPRODUCTIVE%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Germ cell mutagenicity</div>\n                    <div>%TOXICOLOGICAL_CELL_MUTATION%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Sensitisation to the respiratory tract</div>\n                    <div>%TOXICOLOGICAL_RESP_TRACT%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Additional information</div>\n                    <div>%TOXICOLOGICAL_OTHER_INFO%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Information on other hazards</div>\n                    <div>%TOXICOLOGICAL_OTHER_HAZARDS%</div>\n                </div>\n            </div>  \n        </div>\n\n        <div id=\"section-12\">\n            <div class=\"sds-header\">\n                <div class=\"sds-to\">\n                    <h4>12. Ecological information</h4>\n                </div>\n            </div>\n            <div class=\"sds-content mt-2\">\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Toxicity</div>\n                    <div>%ECOLOGICAL_TOXICITY%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Persistence and degradability</div>\n                    <div>%ECOLOGICAL_PERSISTENCE%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Bioaccumulative potential</div>\n                    <div>%ECOLOGICAL_BIOACCUMULATIVE%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Mobility in soil</div>\n                    <div>%ECOLOGICAL_SOIL_MOBILITY%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Results of PBT and vPvB assessment</div>\n                    <div>%ECOLOGICAL_PBT_VPVB%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Endocrine disrupting properties</div>\n                    <div>%ECOLOGICAL_ENDOCRINE_PROPERTIES%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Other adverse effects</div>\n                    <div>%ECOLOGICAL_OTHER_ADV_EFFECTS%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Additional ecotoxicological information</div>\n                    <div>%ECOLOGICAL_ADDITIONAL_ECOTOXICOLOGICAL_INFO%</div>\n                </div>\n            </div>  \n        </div>\n        <div id=\"section-13\">\n            <div class=\"sds-header\">\n                <div class=\"sds-to\">\n                    <h4>13. Disposal considerations</h4>\n                </div>\n            </div>\n            <div class=\"sds-content mt-2\">\n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Product/Packaging disposal</div>\n                    <div>%DISPOSAL_PRODUCT%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Remark</div>\n                    <div>%DISPOSAL_REMARKS%</div>\n                </div>  \n            </div>  \n        </div>\n\n        <div id=\"section-14\">\n            <div class=\"sds-header\">\n                <div class=\"sds-to\">\n                    <h4>14. Transport information</h4>\n                </div>\n            </div>\n            <div class=\"sds-content mt-2\"> \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">UN number</div>\n                    <div>%TRANSPORT_UN_NUMBER%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">UN proper shipping name</div>\n                    <div>%TRANSPORT_SHIPPING_NAME%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Transport hazard class(es)</div>\n                    <div>%TRANSPORT_HAZARD_CLASS%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Packing group</div>\n                    <div>%TRANSPORT_PACKING_GROUP%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Environmental hazards</div>\n                    <div>%TRANSPORT_ENV_HAZARDS%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Special precautions for user</div>\n                    <div>%TRANSPORT_PRECAUTIONS%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Bulk shipping according to IMO instruments</div>\n                    <div>%TRANSPORT_BULK_SHIPPING%</div>\n                </div>\n            </div>  \n        </div>    \n        <div id=\"section-15\">\n            <div class=\"sds-header\">\n                <div class=\"sds-to\">\n                    <h4>15. Regulatory information</h4>\n                </div>\n            </div>\n            <div class=\"sds-content mt-2\"> \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Safety, health and environmental regulations/legislation specific for the substance or mixture</div>\n                    <div>%LEGISLATION_SAFETY%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">EU legislation</div>\n                    <div>%LEGISLATION_EU%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Chemical Safety Assessment</div>\n                    <div>%LEGISLATION_CHEMICAL_SAFETY_ASSESSMENT%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Additional information</div>\n                    <div>%LEGISLATION_OTHER_INFO%</div>\n                </div>\n            </div>  \n        </div>\n\n\n        <div id=\"section-16\">\n            <div class=\"sds-header\">\n                <div class=\"sds-to\">\n                    <h4>16. Other information</h4>\n                </div>\n            </div>\n            <div class=\"sds-content mt-2\"> \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Indication of changes</div>\n                    <div>%ADD_INFO_CHANGES%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Abbreviations and acronyms</div>\n                    <div>%ADD_INFO_ACRONYMS%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Key literature references and sources for data</div>\n                    <div>%ADD_INFO_REFERENCES%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">The classification of the mixture is in accordance with the evaluation method described in HazCom 2012</div>\n                    <div>%ADD_INFO_HAZCOM%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">The classification of the mixture is in accordance with the evaluation method described in the GHS</div>\n                    <div>%ADD_INFO_GHS%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Training advice</div>\n                    <div>%ADD_INFO_TRAINING%</div>\n                </div>  \n                <div class=\"mb-2\">\n                    <div class=\"fw-bold\">Additional information</div>\n                    <div>%ADD_INFO_OTHER%</div>\n                </div>\n            </div>  \n        </div>\n\n        <div class=\"sds-note\"><span class=\"text-center mb-3 fw-bold\">%BRAND_NAME%</span><br> \n            Creation date: %CURRENT_DATE%\n        </div>\n        <div class=\"sds-note alert alert-warning mt-4\"><i class=\"fa-solid fa-info mx-2\"></i>\n            %SDS_DISCLAIMER%\n        </div>\n        <div class=\"sds-footer\">\n            <p class=\"text-center mb-3 fw-bold\">\n            %BRAND_NAME%\n            </p>\n            <p class=\"text-center\">\n                <span class=\"me-3\"><i class=\"fa fa-fw fa-lg fa-globe mx-2\"></i>www.perfumersvault.com</span>\n            </p>\n        </div>\n    </div>\n</div>\n</body>\n</html>\n', '2024-06-22 10:23:11', '2024-06-27 08:47:38', 'This is an example template',1);
 
 
 CREATE TABLE `formulasTags` ( 
@@ -827,7 +789,7 @@ CREATE TABLE `formulasTags` (
 	`formula_id` INT NOT NULL, 
 	`tag_name` VARCHAR(255) NOT NULL,
 	`created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	`owner_id` INT NOT NULL DEFAULT '0',
+	`owner_id` VARCHAR(255) NOT NULL,
 	UNIQUE (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
@@ -836,28 +798,11 @@ CREATE TABLE `user_prefs` (
 	`pref_data` LONGTEXT NOT NULL,
 	`pref_tab` VARCHAR(255) NULL,
 	`created_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL,
-	`owner_id` INT NOT NULL 
+	`owner_id` VARCHAR(255) NOT NULL 
 ) ENGINE = InnoDB CHARSET=utf8 COLLATE utf8_general_ci; 
-ALTER TABLE `user_prefs` ADD UNIQUE (pref_name);
 
-CREATE TABLE `backup_provider` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `credentials` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT '{}' CHECK (json_valid(`credentials`)),
-  `provider` varchar(255) NOT NULL,
-  `schedule` time NOT NULL DEFAULT '00:00:00',
-  `enabled` int(11) NOT NULL DEFAULT 0,
-  `description` varchar(255) NOT NULL,
-  `gdrive_name` varchar(255) NOT NULL DEFAULT 'pvault',
-  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` DATETIME on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `owner_id` INT NOT NULL DEFAULT '0',
-  UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
-INSERT INTO `backup_provider` (`id`, `credentials`, `provider`, `schedule`, `enabled`, `description`, `gdrive_name`) VALUES
-(1, '{}', 'Google', '00:00:00', 1, 'My PV Backups', 'pvault');
-
-CREATE TABLE `inventory_compounds` ( `id` INT NOT NULL AUTO_INCREMENT , `name` VARCHAR(255) NOT NULL , `description` TEXT NOT NULL , `batch_id` VARCHAR(255) NOT NULL DEFAULT '-' , `size` DOUBLE NOT NULL DEFAULT '0' , `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `owner_id` INT NOT NULL DEFAULT '0' , `location` VARCHAR(255) NOT NULL , `label_info` TEXT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB CHARSET=utf8 COLLATE utf8_general_ci; 
+CREATE TABLE `inventory_compounds` ( `id` INT NOT NULL AUTO_INCREMENT , `name` VARCHAR(255) NOT NULL , `description` TEXT NOT NULL , `batch_id` VARCHAR(255) NOT NULL DEFAULT '-' , `size` DOUBLE NOT NULL DEFAULT '0' , `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `owner_id` VARCHAR(255) NOT NULL , `location` VARCHAR(255) NOT NULL , `label_info` TEXT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB CHARSET=utf8 COLLATE utf8_general_ci; 
 
 ALTER TABLE `inventory_compounds` ADD UNIQUE(`name`);
 
@@ -873,11 +818,12 @@ CREATE TABLE `sds_data` (
 	`docID` INT NOT NULL, 
 	`created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, 
 	`updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL,
-	`owner_id` INT NOT NULL DEFAULT '0',
+	`owner_id` VARCHAR(255) NOT NULL,
 	PRIMARY KEY (`id`)
 ) ENGINE = InnoDB CHARSET=utf8 COLLATE utf8_general_ci; 
 
 CREATE TABLE `ingredient_safety_data` (
+	`id` INT NOT NULL AUTO_INCREMENT,
   `ingID` int(11) NOT NULL,
   `first_aid_general` longtext DEFAULT NULL,
   `first_aid_inhalation` longtext DEFAULT NULL,
@@ -983,6 +929,98 @@ CREATE TABLE `ingredient_safety_data` (
   `add_info_training` mediumtext DEFAULT NULL,
   `add_info_other` mediumtext DEFAULT NULL,
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `owner_id` INT NOT NULL DEFAULT '0',
-  PRIMARY KEY (`ingID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `owner_id` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+CREATE TABLE `system_settings` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT ,
+    `key_name` VARCHAR(255) NOT NULL ,
+    `value` LONGTEXT NOT NULL , 
+    `slug` VARCHAR(255) NOT NULL , 
+    `type` VARCHAR(255) NOT NULL , 
+    `description` VARCHAR(255) NOT NULL , 
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
+    `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+INSERT INTO `system_settings` ( `key_name`, `value`, `slug`, `type`, `description`) VALUES
+('SYSTEM_chkVersion', '1', 'Check for updates', 'checkbox', 'Check for updates'),
+('SYSTEM_pubChem', '1', 'Enable PubChem', 'checkbox', 'Enable or disable pubChem integration'),
+('SYSTEM_server_url', '', 'Server URL', 'text', 'This is your Perfumers Vault installation server URL.'),
+('INTEGRATIONS_enable', '0', 'Enable integrations', 'checkbox', 'Enable or disable integrations'),
+('USER_selfRegister', '0', 'Enable user registration', 'checkbox', 'Enable or disable user self registration'),
+('USER_terms_url', 'https://www.perfumersvault.com/terms-of-service', 'Terms and Conditions', 'text', 'Point this to your web site that hosts the terms and conditions info for users'),
+('USER_privacy_url', 'https://www.perfumersvault.com/privacy-policy', 'Privacy Policy URL', 'text', 'Point this to your web site that hosts the privacy policy info for users'),
+('LIBRARY_enable', '1', 'Enanle PV Library', 'checkbox', 'Enable or disable PV Library'),
+('LIBRARY_apiurl', 'https://library.perfumersvault.com/api-data/api.php', 'Library API URL', 'text', 'Library API URL'),
+('announcements', '', 'Announcement', 'textarea', 'Add here any announcement for your users when login'),
+('EMAIL_isEnabled', '0', 'Enable email', 'checkbox', 'Enable or disable email functions, like user welcome email when register, password reset, email confirmation etc'),
+('EMAIL_smtp_host', '', 'SMPT Host', 'text', 'This is your smtp email server ip or hostname'),
+('EMAIL_smtp_port', '', 'SMTP Port', 'text', 'Optional, Defaults to 25'),
+('EMAIL_from', '', 'From', 'text', 'This is the From address'),
+('EMAIL_from_display_name', 'Perfumers Vault', 'From display name', 'text', 'A user-friendly name for the \'From\' address (optional).'),
+('EMAIL_smtp_user', '', 'Username', 'text', 'Optional field, use only if your email server requires authentication'),
+('EMAIL_smtp_pass', '', 'Password', 'password', 'Optional field, use only if your email server requires authentication'),
+('EMAIL_smtp_secure', '0', 'Enable SSL', 'checkbox', 'Enable secure connection if your server supports it');
+
+
+CREATE TABLE `user_settings` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT ,
+    `key_name` VARCHAR(255) NOT NULL ,
+    `value` LONGTEXT NOT NULL , 
+    `owner_id` VARCHAR(255) NOT NULL ,
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
+    `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+
+CREATE TABLE `branding` ( 
+    `id` INT NOT NULL AUTO_INCREMENT , 
+    `brandName` VARCHAR(255) NULL , 
+    `brandAddress` VARCHAR(255) NULL , 
+    `brandEmail` VARCHAR(255) NULL , 
+    `brandPhone` VARCHAR(255) NULL , 
+    `brandLogo` LONGBLOB NULL , 
+    `owner_id` VARCHAR(255) NOT NULL , 
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
+    `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+CREATE TABLE `sdsSettings` ( 
+  `id` INT NOT NULL AUTO_INCREMENT , 
+  `sds_disclaimer` TEXT NOT NULL DEFAULT 'PLEASE ADD A PROPER DISCLAIMER MESSAGE' , 
+  `owner_id` VARCHAR(255) NOT NULL , 
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
+  `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
+  PRIMARY KEY (`id`)
+) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+CREATE TABLE `integrations_settings` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT ,
+    `key_name` VARCHAR(255) NOT NULL ,
+    `value` LONGTEXT NOT NULL , 
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
+    `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+CREATE TABLE `session_info` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `owner_id` varchar(255) NOT NULL,
+  `remaining_time` decimal(10,2) NOT NULL,
+  `last_updated` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `owner_id` (`owner_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+ALTER TABLE `formulasMetaData` ADD INDEX(`owner_id`);
+ALTER TABLE `formulas` ADD INDEX(`owner_id`);
+ALTER TABLE `formulas` ADD INDEX(`fid`);
+ALTER TABLE `formulas` ADD INDEX(`ingredient`);
+ALTER TABLE `ingredients` ADD INDEX(`owner_id`);
+ALTER TABLE `ingredients` ADD INDEX(`name`);

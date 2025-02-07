@@ -5,75 +5,80 @@ require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 
+$branding = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM branding WHERE owner_id = '$userID'"));
 ?>
 
 <div class="card-body">
 	<div class="row pt-4">
-      
-      <div class="col-md-8">
-        <div id="brandMsg"></div>
-        
-          <div class="row mb-3">
-            <label class="col-sm-1 control-label">Brand Name</label>
-            <div class="col-sm-8">
-              <input name="brandName" type="text" class="form-control" id="brandName" value="<?php echo $settings['brandName'];?>" />
-            </div>
-          </div>
-          <div class="row mb-3">
-            <label class="col-sm-1 control-label">Address</label>
-            <div class="col-md-8">
-              <input name="brandAddress" type="text" class="form-control" id="brandAddress" value="<?php echo $settings['brandAddress'];?>"/>
-            </div>
-          </div>
-          <div class="row mb-3">
-            <label class="col-sm-1 control-label">Email</label>
-            <div class="col-md-8">
-              <input name="brandEmail" type="text" class="form-control" id="brandEmail" value="<?php echo $settings['brandEmail'];?>" />
-            </div>
-          </div>
-          <div class="row mb-3">
-            <label class="col-sm-1 control-label">Contact No</label>
-            <div class="col-md-8">
-              <input name="brandPhone" type="text" class="form-control" id="brandPhone" value="<?php echo $settings['brandPhone'];?>" />
-            </div>
-          </div>          
-          <div class="dropdown-divider"></div>
-          <div class="form-row">
+	  
+	  <div class="col-md-8">
+		<div id="brandMsg"></div>
+		
+		  <div class="row mb-3 form-floating">
+			<input name="brandName" type="text" class="form-control" id="brandName" placeholder="Brand Name" value="<?php echo $branding['brandName'];?>" />
+			<label for="brandName">Brand Name</label>
+		  </div>
+		  <div class="row mb-3 form-floating">
+			<input name="brandAddress" type="text" class="form-control" id="brandAddress" placeholder="Address" value="<?php echo $branding['brandAddress'];?>"/>
+			<label for="brandAddress">Address</label>
+		  </div>
+		  <div class="row mb-3 form-floating">
+			<input name="brandEmail" type="text" class="form-control" id="brandEmail" placeholder="Email" value="<?php echo $branding['brandEmail'];?>" />
+			<label for="brandEmail">Email</label>
+		  </div>
+		  <div class="row mb-3 form-floating">
+			<input name="brandPhone" type="text" class="form-control" id="brandPhone" placeholder="Contact No" value="<?php echo $branding['brandPhone'];?>" />
+			<label for="brandPhone">Contact No</label>
+		  </div>          
+		  <div class="dropdown-divider"></div>
+		  <div class="form-row">
 			<div class="col-sm-1">
 				<button type="button" id="save-brand" name="save-brand" class="btn btn-primary">Update</button>
 			</div>
-          </div>
-      </div>
-      <div class="col-md-4">
-        <div class="text-center">
-          <div id="brandLogo_pic" class="mb-3"><div class="loader"></div></div>
-          <input type="file" id="brandLogo" name="brandLogo" class="form-control" />
-        </div>
-        <div class="dropdown-divider"></div>
-        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+		  </div>
+	  </div>
+	  <div class="col-md-4">
+		<div class="text-center">
+		  <div id="brandLogo_pic" class="mb-3"><div class="loader"></div></div>
+		  <input type="file" id="brandLogo" name="brandLogo" class="form-control" />
+		</div>
+		<div class="dropdown-divider"></div>
+		<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
 			<div class="text-right mt-3">
-        		<input type="button" class="btn btn-primary" value="Upload" id="brandLogo_upload" />
-        	</div>
-        </div>
-      </div>
+				<input type="button" class="btn btn-primary" value="Upload" id="brandLogo_upload" />
+			</div>
+		</div>
+	  </div>
   </div>
 </div>
 
 <script>
 $(document).ready(function() {
 
-	$('#brandLogo_pic').html('<img class="img-profile-avatar" src="<?=$settings['brandLogo']?: '/img/logo_def.png'; ?>">');
+	$('#brandLogo_pic').html('<img class="img-profile-avatar" src="<?=$branding['brandLogo']?: '/img/logo_def.png'; ?>">');
 	
 	$('#save-brand').click(function() {
+		var brandName = $("#brandName").val().trim();
+		var brandAddress = $("#brandAddress").val().trim();
+		var brandEmail = $("#brandEmail").val().trim();
+		var brandPhone = $("#brandPhone").val().trim();
+
+		if (brandName === "" || brandAddress === "" || brandEmail === "" || brandPhone === "") {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>All fields are required.');
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+			return;
+		}
+
 		$.ajax({ 
 			url: '/core/core.php', 
 			type: 'POST',
 			data: {
-				manage: 'brand',
-				brandName: $("#brandName").val(),
-				brandAddress: $("#brandAddress").val(),
-				brandEmail: $("#brandEmail").val(),
-				brandPhone: $("#brandPhone").val()
+				action: 'branding',
+				brandName: brandName,
+				brandAddress: brandAddress,
+				brandEmail: brandEmail,
+				brandPhone: brandPhone
 			},
 			dataType: 'json',
 			success: function (data) {
@@ -87,7 +92,7 @@ $(document).ready(function() {
 				$('.toast').toast('show');
 			},
 			error: function (xhr, status, error) {
-				$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+				$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error);
 				$('.toast-header').removeClass().addClass('toast-header alert-danger');
 				$('.toast').toast('show');
 			}

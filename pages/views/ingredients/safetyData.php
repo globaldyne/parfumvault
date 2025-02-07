@@ -7,19 +7,20 @@ if(!$_GET['ingID']){
 
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
+require_once(__ROOT__.'/inc/settings.php');
 
 
-$ingSafetyInfo = mysqli_query($conn, "SELECT id,ingID,GHS FROM ingSafetyInfo WHERE ingID = '".$_GET['ingID']."'");
+$ingSafetyInfo = mysqli_query($conn, "SELECT id,ingID,GHS FROM ingSafetyInfo WHERE ingID = '".$_GET['ingID']."' AND owner_id = '$userID'");
 while($safety_res = mysqli_fetch_array($ingSafetyInfo)){
   $safety[] = $safety_res;
 }
 
-$pictograms = mysqli_query($conn, "SELECT id,name,code FROM pictograms");
+$pictograms = mysqli_query($conn, "SELECT id,name,code FROM pictograms"); //PUBLIC
 while($pictograms_res = mysqli_fetch_array($pictograms)){
   $pictogram[] = $pictograms_res;
 }
 
-$ingSafetyInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredient_safety_data WHERE ingID = '".$_GET['ingID']."'"));
+$ingSafetyInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredient_safety_data WHERE ingID = '".$_GET['ingID']."' AND owner_id = '$userID'"));
 
 
 ?>

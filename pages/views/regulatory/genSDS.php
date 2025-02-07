@@ -8,6 +8,8 @@ require_once(__ROOT__.'/inc/product.php');
 
 $defCatClass = $settings['defCatClass'];
 $defPercentage = $settings['defPercentage'];
+$branding = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM branding WHERE owner_id = '$userID'"));
+$sds_settings = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM sdsSettings WHERE owner_id = '$userID'"));
 
 
 if ($_POST['do'] = 'genSDS') {
@@ -44,27 +46,26 @@ if ($_POST['do'] = 'genSDS') {
   $productState = $_POST['productState'];
 
 
-  $brand_name = $settings['brandName'];
-  //$disclaimer = $settings['sds_disclaimer'];
+  $brand_name = $branding['brandName'];
   
-  $disclaimer = nl2br(htmlspecialchars_decode($settings['sds_disclaimer'], ENT_QUOTES));
+  $disclaimer = nl2br(htmlspecialchars_decode($sds_settings['sds_disclaimer'], ENT_QUOTES));
 
-  $qHtml = mysqli_fetch_array(mysqli_query($conn, "SELECT id, content FROM templates WHERE id = '$sds_tmpl'"));
+  $qHtml = mysqli_fetch_array(mysqli_query($conn, "SELECT id, content FROM templates WHERE id = '$sds_tmpl' AND owner_id = '$userID'"));
   $htmlContent =  $qHtml['content'];
 
 
-  $ingSafetyInfo = mysqli_query($conn, "SELECT id,ingID,GHS FROM ingSafetyInfo WHERE ingID = '$ingID'");
+  $ingSafetyInfo = mysqli_query($conn, "SELECT id,ingID,GHS FROM ingSafetyInfo WHERE ingID = '$ingID' AND owner_id = '$userID'");
   while($safety_res = mysqli_fetch_array($ingSafetyInfo)){
     $safety[] = $safety_res;
   }
   
-  $ingSafetyInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredient_safety_data WHERE ingID = '$ingID'"));
-  $ingAllInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE id = '$ingID'"));
+  $ingSafetyInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredient_safety_data WHERE ingID = '$ingID' AND owner_id = '$userID'"));
+  $ingAllInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE id = '$ingID' AND owner_id = '$userID'"));
 
-  if ( empty($settings['brandLogo']) ){ 
+  if ( empty($branding['brandLogo']) ){ 
     $logo = "/img/logo.png";
   }else{
-    $logo = $settings['brandLogo'];
+    $logo = $branding['brandLogo'];
   }
 
   $search  = array(
@@ -372,60 +373,59 @@ if ($_POST['do'] = 'genSDS') {
     date('d/M/Y')
   );
   
-foreach($safety as $pictogram){
-  $y .= '<img class="img-fluid mx-2" style="width: 100px; height: 100px;" src="/img/Pictograms/GHS0'.$pictogram['GHS'].'.png">';
-}
-
-if($qCMP = mysqli_query($conn, "SELECT *  FROM ingredient_compounds WHERE ing = '".$name."' ORDER BY name ")){
-  while($cmp = mysqli_fetch_array($qCMP)){
-    $x .='<tr>
-    <td align="center">'.$cmp['name'].'</td>
-    <td align="center">'.$cmp['cas'].'</td>
-    <td align="center">'.$cmp['ec'].'</td>
-    <td align="center">'.$cmp['min_percentage'].'</td>
-    <td align="center">'.$cmp['min_percentage'].'</td>
-    <td align="center">'.$cmp['GHS'].'</td>
-    </tr>';
+  foreach($safety as $pictogram){
+    $y .= '<img class="img-fluid mx-2" style="width: 100px; height: 100px;" src="/img/Pictograms/GHS0'.$pictogram['GHS'].'.png">';
   }
 
-}
+  if($qCMP = mysqli_query($conn, "SELECT *  FROM ingredient_compounds WHERE ing = '".$name."' AND owner_id = '$userID' ORDER BY name ")){
+    while($cmp = mysqli_fetch_array($qCMP)){
+      $x .='<tr>
+      <td align="center">'.$cmp['name'].'</td>
+      <td align="center">'.$cmp['cas'].'</td>
+      <td align="center">'.$cmp['ec'].'</td>
+      <td align="center">'.$cmp['min_percentage'].'</td>
+      <td align="center">'.$cmp['min_percentage'].'</td>
+      <td align="center">'.$cmp['GHS'].'</td>
+      </tr>';
+    }
+  }
 
-$contents = str_replace(
-  $search,
-  $replace,
-  preg_replace('#(%CMP_MATERIALS_LIST%)#ms', $x,
-    preg_replace('#(%GHS_LABEL_LIST%)#ms', $y,
-      $qHtml['content']
+  $contents = str_replace(
+    $search,
+    $replace,
+    preg_replace('#(%CMP_MATERIALS_LIST%)#ms', $x,
+      preg_replace('#(%GHS_LABEL_LIST%)#ms', $y,
+        $qHtml['content']
+      )
     )
-  )
-);
+  );
 
 
-$insert_sds_data = mysqli_query($conn, "INSERT INTO sds_data (product_name,product_use,country,language,product_type,state_type,supplier_id,docID) VALUES ('$name','$prodUse','$country','$language','$product_type','$state_type','$supplier_id','0')");
+  $insert_sds_data = mysqli_query($conn, "INSERT INTO sds_data (product_name,product_use,country,language,product_type,state_type,supplier_id,docID,owner_id) VALUES ('$name','$prodUse','$country','$language','$product_type','$state_type','$supplier_id','0','$userID')");
 
-if ($insert_sds_data) {
-  $ownerID = mysqli_insert_id($conn);
+  if ($insert_sds_data) {
+    $ownerID = mysqli_insert_id($conn);
 
-  $stmt = $conn->prepare("INSERT INTO documents (docData, isSDS, name, type, notes, ownerID) VALUES (?, '1', ?, '0', ?, ?)");
-  $stmt->bind_param("bssi", $contents, $name, $notes, $ownerID);
-  $stmt->send_long_data(0, $contents);
-  $sds = $stmt->execute();
+    $stmt = $conn->prepare("INSERT INTO documents (docData, isSDS, name, type, notes, ownerID, owner_id) VALUES (?, '1', ?, '0', ?, ?, ?)");
+    $stmt->bind_param("bssii", $contents, $name, $notes, $ownerID, $userID);
+    $stmt->send_long_data(0, $contents);
+    $sds = $stmt->execute();
 
-  if ($sds) {
-    $result['success'] = '<a href="/pages/viewDoc.php?type=sds&id='.$ownerID.'" target="_blank">View the SDS file</a>';
+    if ($sds) {
+      $result['success'] = '<a href="/pages/viewDoc.php?type=sds&id='.$ownerID.'" target="_blank">View the SDS file</a>';
+    } else {
+      $result['error'] = "Error: " . $stmt->error;
+    }
+
+    $stmt->close();
   } else {
-    $result['error'] = "Error: " . $stmt->error;
+    $result['error'] = "Error: " . mysqli_error($conn);
   }
 
-  $stmt->close();
-} else {
-  $result['error'] = "Error: " . mysqli_error($conn);
-}
+  $conn->close();
 
-$conn->close();
-
-echo json_encode($result);
-return;
+  echo json_encode($result);
+  return;
 }
 
 ?>

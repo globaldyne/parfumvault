@@ -19,8 +19,8 @@ require_once(__ROOT__.'/func/php-settings.php');
                                 	  
                          <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#import_ifra_json"><i class="fa-solid fa-file-import mx-2"></i>Import from JSON</a></li>
 
-                        <?php if($settings['pubChem'] == '1'){?>
-                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#pubChem_import"><i class="fa-solid fa-file-import mx-2"></i>Import images</a></li>
+                        <?php if($system_settings['SYSTEM_pubChem'] == '1'){?>
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#pubChem_import"><i class="fa-solid fa-file-import mx-2"></i>Import structure images</a></li>
                         <?php } ?>
                         <li class="dropdown-header">Export</li> 
            				<li><a class="dropdown-item" href="/core/core.php?action=exportIFRA"><i class="fa-solid fa-file-code mx-2"></i>Export as JSON</a></li>
@@ -126,11 +126,11 @@ require_once(__ROOT__.'/func/php-settings.php');
            
        </div>
        <div class="dropdown-divider"></div>
-       <div class="col-sm col-sm-10 text-xs-center">
+       <div class="col-sm col-sm-10 text-xs-center mb-3">
        		<strong>The IFRA xls can be downloaded from its official <a href="https://ifrafragrance.org/safe-use/standards-guidance" target="_blank">web site</a></strong>
        </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnIFRAC">Cancel</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnIFRAC">Close</button>
         <input type="submit" name="btnImportIFRA" class="btn btn-primary" id="btnImportIFRA" value="Import">
       </div>
     </div>
@@ -142,7 +142,7 @@ require_once(__ROOT__.'/func/php-settings.php');
   <div class="modal-dialog modal-dialog-centered modal-pubChem" role="document">
     <div class="modal-content modal-lg">
       <div class="modal-header">
-        <h5 class="modal-title">Import images from PubChem</h5>
+        <h5 class="modal-title">Import structure images from PubChem</h5>
       </div>
       <div class="modal-body">
        <div id="pbmportMsg"></div>
@@ -151,7 +151,7 @@ require_once(__ROOT__.'/func/php-settings.php');
        <p>By using this service, you agree with <a href="https://pubchemdocs.ncbi.nlm.nih.gov/about" target="_blank">PubChem's</a> terms</p>
        </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="ImportpbC">Cancel</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="ImportpbC">Close</button>
         <input type="submit" name="btnImport" class="btn btn-primary" id="Importpb" value="Import">
       </div>
     </div>
@@ -196,6 +196,8 @@ require_once(__ROOT__.'/func/php-settings.php');
 
 <script>
 $(document).ready(function() {
+	$.fn.dataTable.ext.errMode = 'none';
+
 	$('#mainTitle').click(function() {
 	 	reload_data();
   	});
@@ -209,8 +211,8 @@ $(document).ready(function() {
 		],
 		dom: 'lrftip',
 		buttons: [{
-				extend: 'csvHtml5',
-				title: "IFRALibrary"
+			extend: 'csvHtml5',
+			title: "IFRALibrary"
 		}],
 		processing: true,
 		serverSide: true,
@@ -289,6 +291,9 @@ $(document).ready(function() {
 		  });
 		},
 	
+	}).on('error.dt', function(e, settings, techNote, message) {
+		var m = message.split(' - ');
+		$('#tdDataIFRA').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i><strong>' + m[1] + '</strong></div>');
 	});
 
 	tdDataIFRA.on('requestChild.dt', function (e, row) {
@@ -392,7 +397,7 @@ $(document).ready(function() {
 			   dataType: 'json',
 			   success: function(response){
 				 if(response.success){
-					 $("#IFRAImportMsg").html('<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+response.success+'</div>');
+					 $("#IFRAImportMsg").html('<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><i class="fa-solid fa-circle-check mx-2"></i>'+response.success+'</div>');
 					// $("#btnImportIFRA").hide();
 					 $("#btnIFRAC").html('Close');
 					 $("#btnImportIFRA").prop("disabled", false);
@@ -400,14 +405,14 @@ $(document).ready(function() {
 					 $("#ifraXLS").val('');
 					 reload_data();
 				  }else{
-					$("#IFRAImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+response.error+'</div>');
+					$("#IFRAImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><i class="fa-solid fa-circle-exclamation mx-2"></i>'+response.error+'</div>');
 					$("#btnImportIFRA").prop("disabled", false);
 					$("#btnIFRAC").prop("disabled", false);
 				  }
 				},
 			});
 	  }else{
-		$("#IFRAImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> Please select a file to upload!</div>');
+		$("#IFRAImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><i class="fa-solid fa-circle-exclamation mx-2"></i>Please select a file to upload!</div>');
 		$("#btnImportIFRA").prop("disabled", false);
 	  }	
 	});
@@ -490,7 +495,7 @@ $(document).ready(function() {
 							$('.toast').toast('show');
 						},
 						error: function (xhr, status, error) {
-							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error);
 							$('.toast-header').removeClass().addClass('toast-header alert-danger');
 							$('.toast').toast('show');
 						}
@@ -512,44 +517,23 @@ $(document).ready(function() {
 	
 	$('#tdDataIFRA').editable({
 		container: 'body',
-	  	selector: 'a.cas',
-	  	url: "/core/core.php?IFRA=edit&type=cas",
-	  	title: 'CAS#',
-	  	ajaxOptions: { 
-			dataType: 'json'
-	  	},
-	  	success: function(response, newValue) {
-			if(response.error){
-				return response.error; 
-			}else{ 
-				reload_data();
-			}
-	  	},
-	  	validate: function(value){
-			if($.trim(value) == ''){
-				return 'This field is required';
-			}
-	  	}
-	});
-	
-	$('#tdDataIFRA').editable({
-		container: 'body',
 		selector: 'a.cat1, a.cat2, a.cat3, a.cat4, a.cat5A, a.cat5B, a.cat5C, a.cat5D, a.cat6, a.cat7A, a.cat7B, a.cat8, a.cat9, a.cat10A, a.cat11A, a.cat11B, a.cat12',
 		type: 'POST',
 		url: "/core/core.php",
-		
+
 		params: function(params) {
-        	var category = String($(params).attr('name').split(' ')[0]).toUpperCase();
-	        return {
-    	        IFRA: 'edit',
-        	    type: category,
-            	value: parseFloat(params.value),
+			var name = $(params).attr('name');
+			var isCategory = /^cat\d+[A-Z]*$/.test(name); // Checks if it's a category
+			return {
+				action: 'editIFRA',
+				type: name,
+				value: isCategory ? parseFloat(params.value) : String(params.value),
 				pk: params.pk
-        	};
-    	},
+			};
+		},
 		title: function(params) {
-			var category = $(params).attr('data-name').split(' ')[0];
-			return category.toUpperCase() + '%';
+			var name = $(params).attr('data-name');
+			return name.toUpperCase() + (/^cat\d+[A-Z]*$/.test(name) ? '%' : '');
 		},
 		ajaxOptions: { 
 			dataType: 'json'
@@ -565,8 +549,46 @@ $(document).ready(function() {
 			if ($.trim(value) === '') {
 				return 'This field is required';
 			}
-			if (!/^\d+(\.\d+)?$/.test(value)) {
-				return 'Please enter a valid number (e.g., 1.23)';
+			var name = $(this).attr('name');
+			if (/^cat\d+[A-Z]*$/.test(name)) {
+				if (!/^\d+(\.\d+)?$/.test(value)) {
+					return 'Please enter a valid number (e.g., 1.23)';
+				}
+			}
+			var numValue = parseFloat(value);
+			if (numValue < 0 || numValue > 100) {
+				return 'Value must be between 0 and 100';
+			}
+		}
+	});
+
+	$('#tdDataIFRA').editable({
+		container: 'body',
+		selector: 'a.cas',
+		type: 'POST',
+		url: "/core/core.php",
+
+		params: function(params) {
+			return {
+				action: 'editIFRA',
+				type: 'cas',
+				value: String(params.value),
+				pk: params.pk
+			};
+		},
+		ajaxOptions: { 
+			dataType: 'json'
+		},
+		success: function(response, newValue) {
+			if (response.error) {
+				return response.error; 
+			} else { 
+				reload_data();
+			}
+		},
+		validate: function(value) {
+			if ($.trim(value) === '') {
+				return 'This field is required';
 			}
 		}
 	});

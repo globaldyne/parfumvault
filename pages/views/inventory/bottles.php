@@ -3,7 +3,7 @@
 require_once(__ROOT__.'/pages/top.php'); 
 require_once(__ROOT__.'/func/php-settings.php');
         
-$sup = mysqli_query($conn, "SELECT id,name FROM ingSuppliers ORDER BY name ASC");
+$sup = mysqli_query($conn, "SELECT id,name FROM ingSuppliers WHERE owner_id = '$userID' ORDER BY name ASC");
 while ($suppliers = mysqli_fetch_array($sup)){
 	    $supplier[] = $suppliers;
 }
@@ -181,6 +181,8 @@ while ($suppliers = mysqli_fetch_array($sup)){
 
 <script> 
 $(document).ready(function() {
+	$.fn.dataTable.ext.errMode = 'none';
+
 	$('#mainTitle').click(function() {
 	 	reload_data();
   	});
@@ -256,7 +258,10 @@ $(document).ready(function() {
 			 type: "POST"
 		  });
 		},	
-	});
+	}).on('error.dt', function(e, settings, techNote, message) {
+		var m = message.split(' - ');
+		$('#tdDataBottles').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i><strong>' + m[1] + '</strong></div>');
+    });
 	
 	tdDataBottles.on('requestChild.dt', function (e, row) {
 		row.child(format(row.data())).show();
@@ -296,7 +301,7 @@ $(document).ready(function() {
 			data += '<li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editBottle" rel="tip" title="Edit '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-edit mx-2"></i>Edit</a></li>';
 			data += '<li><a href="'+ row.supplier_link +'" class="dropdown-item" target="_blank" rel="tip" title="Open '+ row.supplier +' page"><i class="fas fa-shopping-cart mx-2"></i>Go to supplier</a></li>';
 			data += '<div class="dropdown-divider"></div>';
-			data += '<li><a class="dropdown-item" href="#" id="btlDel" style="color: #c9302c;" rel="tip" title="Delete '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-trash mx-2"></i>Delete</a></li>';
+			data += '<li><a class="dropdown-item text-danger" href="#" id="btlDel" rel="tip" title="Delete '+ row.name +'" data-id='+ row.id +' data-name="'+ row.name +'"><i class="fas fa-trash mx-2"></i>Delete</a></li>';
 			data += '</ul></div>';
 		return data;
 	};
@@ -330,17 +335,17 @@ $(document).ready(function() {
 						dataType: 'json',
 						success: function (data) {
 							if(data.success){
-								$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+								$('#toast-title').html('<i class="fa-solid fa-circle-check mx-2"></i>' + data.success);
 								$('.toast-header').removeClass().addClass('toast-header alert-success');
 								reload_data();
 							}else if(data.error){
-								$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+								$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>' + data.error);
 								$('.toast-header').removeClass().addClass('toast-header alert-danger');
 							}
 							$('.toast').toast('show');
 						},
 						error: function (xhr, status, error) {
-							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error);
 							$('.toast-header').removeClass().addClass('toast-header alert-danger');
 							$('.toast').toast('show');
 						}
@@ -400,13 +405,15 @@ $(document).ready(function() {
 						$("#bottle_add").prop("value", "Add");
 						reload_data();
 					 }else{
-						$("#bottle_inf").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+response.error+'</div>');
+						$("#bottle_inf").html('<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-circle-exclamation mx-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+response.error+'</div>');
 						$("#bottle_add").prop("disabled", false);
 						$("#bottle_add").prop("value", 'Add');
 					 }
 				  },
 					error: function (xhr, status, error) {
-						$('#bottle_inf').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+						$('#bottle_inf').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+						$("#bottle_add").prop("disabled", false);
+						$("#bottle_add").prop("value", 'Add');
 					}
 			   });
 			}else{

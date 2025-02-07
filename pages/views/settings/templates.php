@@ -30,7 +30,8 @@ require_once(__ROOT__.'/inc/sec.php');
 </table>
 <script>
 $(document).ready(function() {
-		
+	$.fn.dataTable.ext.errMode = 'none';
+
 	var tdTempls = $('#tdTempls').DataTable( {
 		columnDefs: [
 			{ className: 'text-center', targets: '_all' },
@@ -80,8 +81,10 @@ $(document).ready(function() {
 			 type: "POST"
 		  });
 		},	
-	});
-	
+	}).on('error.dt', function(e, settings, techNote, message) {
+		var m = message.split(' - ');
+		$('#tdTempls').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i><strong>' + m[1] + '</strong></div>');
+    });
 
 
 	function name(data, type, row){
@@ -131,7 +134,7 @@ $(document).ready(function() {
 			}
 		},
 		error: function (xhr, status, error) {
-			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An error occurred, check server logs for more info. '+ error);
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
 			$('.toast-header').removeClass().addClass('toast-header alert-danger');
 			$('.toast').toast('show');
 		},
@@ -162,7 +165,7 @@ $(document).ready(function() {
 			}
 		},
 		error: function (xhr, status, error) {
-			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An error occurred, check server logs for more info. '+ error);
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
 			$('.toast-header').removeClass().addClass('toast-header alert-danger');
 			$('.toast').toast('show');
 		},		
@@ -200,7 +203,7 @@ $(document).ready(function() {
 							reload_data();
 						},
 						error: function (xhr, status, error) {
-							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An error occurred, check server logs for more info. '+ error);
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
 							$('.toast-header').removeClass().addClass('toast-header alert-danger');
 							$('.toast').toast('show');
 						},
@@ -241,7 +244,7 @@ $(document).ready(function() {
 				$('#tmpl_inf').html(msg);
 			},
 			error: function (xhr, status, error) {
-				$('#tmpl_inf').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An error occurred, check server logs for more info. '+ error +'</div>');
+				$('#tmpl_inf').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error +'</div>');
 			}
 		  });
 	});

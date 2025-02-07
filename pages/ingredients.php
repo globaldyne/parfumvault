@@ -4,8 +4,8 @@ if (!defined('pvault_panel')){ die('Not Found');}
 require_once(__ROOT__.'/func/profileImg.php');
 require_once(__ROOT__.'/func/php-settings.php');
 
-$res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles ORDER BY name ASC");
-$res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCategory ORDER BY name ASC");
+$res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles ORDER BY name ASC"); //PUBLIC
+$res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCategory WHERE owner_id = '$userID' ORDER BY name ASC");
 
 ?>
 <style>
@@ -99,7 +99,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
               <select name="category" id="ing_category" class="form-control selectpicker" data-live-search="true">
                 <option value="" selected>Any</option>
                 <?php while ($row_ingCategory = mysqli_fetch_array($res_ingCategory)){ ?>
-    <option data-content="<img class='img_ing_sel' src='<?php if($row_ingCategory['image']){ echo $row_ingCategory['image']; }else{ echo '/img/molecule.png';}?>'><?=$row_ingCategory['name']?>" data-text="<?=$row_ingCategory['name']?>" value="<?=$row_ingCategory['id'];?>"></option>
+                  <option data-content="<img class='img_ing_sel' src='<?php if($row_ingCategory['image']){ echo $row_ingCategory['image']; }else{ echo '/img/molecule.png';}?>'><?=$row_ingCategory['name']?>" data-text="<?=$row_ingCategory['name']?>" value="<?=$row_ingCategory['id'];?>"></option>
                 <?php } ?>
               </select>
             </div>
@@ -138,7 +138,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
         </div>
         <div id="backupArea">
           <div class="mb-3">
-            <label for="backupFile" class="form-label">JSON file:</label>
+            <label for="backupFile" class="form-label">JSON file</label>
             <input type="file" name="backupFile" id="backupFile" class="form-control" />
           </div>
           <div>
@@ -146,14 +146,14 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
           	<strong>IMPORTANT</strong>
             <ul>
               <li><div id="raw" data-size="<?=getMaximumFileUploadSizeRaw()?>">Maximum file size: <strong><?=getMaximumFileUploadSize()?></strong></div></li>
-              <li>Any ingredient with the same ID will be replaced. Please make sure you have taken a backup before importing a JSON file.</li>
+              <li>Any ingredient with the same name will be ignored.</li>
             </ul>
             </div>
           </div>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseBK">Close</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnRestoreIngredientsCloseBK">Close</button>
         <input type="submit" name="btnRestore" class="btn btn-primary" id="btnRestoreIngredients" value="Import">
       </div>
     </div>  
@@ -173,7 +173,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
         <div id="CSVImportMsg"></div>
         <div id="process_area">
           <div class="mb-3">
-            <label for="CSVFile" class="form-label">CSV File:</label>
+            <label for="CSVFile" class="form-label">CSV File</label>
             <input type="file" class="form-control" id="CSVFile" name="CSVFile">
           </div>
         </div>
@@ -183,7 +183,7 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseCsv">Cancel</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseCsv">Close</button>
         <input type="submit" class="btn btn-primary" id="btnImportCSV" value="Import">
       </div>
     </div>
@@ -220,13 +220,13 @@ $(document).ready(function() {
 		var profile = $('#ing_profile').val();
 		var cat = $('#ing_category').val();
 		var synonym = $('#ing_synonym').val();
-    	var retainModal = $('#retainModal').is(':checked');
+    var retainModal = $('#retainModal').is(':checked');
 
 		$.ajax({ 
 			url: '/pages/listIngredients.php',
 			type: 'GET',
 			data: {
-				"adv": 1,
+				"advanced": 1,
 				"name": name,
 				"cas": cas,
 				"einecs": einecs,
@@ -241,7 +241,6 @@ $(document).ready(function() {
 					if (!retainModal) {
         				$('#adv_search').modal('hide');
     				}
-					
 			},
 			error: function (xhr, status, error) {
 				$('#advsearchmsg').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-xmark mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error +'</div>');

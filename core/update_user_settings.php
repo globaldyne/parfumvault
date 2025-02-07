@@ -14,14 +14,19 @@ if( $_GET['set'] && $_GET['action'] == 'save'){
 		case 'DB':
 		case '2':
 			$data = serialize($_POST);
-			mysqli_query($conn, "INSERT INTO user_prefs (pref_name, pref_data, pref_tab, owner_id) VALUES ('".$pref_name."', '".$data."', '".$pref_tab."', '".$_SESSION['userID']."') ON DUPLICATE KEY UPDATE pref_name = VALUES(pref_name), pref_data = VALUES(pref_data), pref_tab = VALUES(pref_tab)");
+			$existing = mysqli_query($conn, "SELECT * FROM user_prefs WHERE pref_name = '".$pref_name."' AND owner_id = '".$userID."' AND pref_tab = '".$pref_tab."'");
+			if(mysqli_num_rows($existing) > 0) {
+				mysqli_query($conn, "UPDATE user_prefs SET pref_data = '".$data."' WHERE pref_name = '".$pref_name."' AND owner_id = '".$userID."' AND pref_tab = '".$pref_tab."'");
+			} else {
+				mysqli_query($conn, "INSERT INTO user_prefs (pref_name, pref_data, pref_tab, owner_id) VALUES ('".$pref_name."', '".$data."', '".$pref_tab."', '".$userID."')");
+			}
 			break;
 			
 		case '1':
-    	case 'PHP_SESS':
+		case 'PHP_SESS':
 		default:
 			$_SESSION["user_prefs"]["$pref_name"] = $_POST;
-	   		break;
+			break;
 		   
 	} 
 	return;
@@ -34,7 +39,7 @@ if($a = $_GET['set'] && $_GET['action'] == 'load'){
 	switch ($pref_storage) {
 		case 'DB':
 		case '2':
-			$data  = mysqli_fetch_array(mysqli_query($conn, "SELECT pref_data FROM user_prefs WHERE pref_name = '".$pref_name."' AND owner_id = '".$_SESSION['userID']."' AND pref_tab = '".$pref_tab."' "));
+			$data  = mysqli_fetch_array(mysqli_query($conn, "SELECT pref_data FROM user_prefs WHERE pref_name = '".$pref_name."' AND owner_id = '".$userID."' AND pref_tab = '".$pref_tab."' "));
 			
 			echo json_encode(unserialize($data['pref_data']));
 			break;

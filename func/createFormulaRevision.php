@@ -3,8 +3,9 @@ if (!defined('pvault_panel')){ die('Not Found');}
 require_once(__ROOT__.'/func/compareFormulas.php');
 
 function createFormulaRevision($fid, $method, $conn){
-	
-	$q_a = mysqli_query($conn, "SELECT name, ingredient, concentration, dilutant, quantity, notes FROM formulas WHERE fid = '$fid'");
+	global $userID;
+
+	$q_a = mysqli_query($conn, "SELECT name, ingredient, concentration, dilutant, quantity, notes FROM formulas WHERE fid = '$fid' AND owner_id = '$userID'");
 	
 	if(empty(mysqli_num_rows($q_a))){
 		
@@ -12,14 +13,14 @@ function createFormulaRevision($fid, $method, $conn){
 		
 	}
 	
-	$current_rev = mysqli_fetch_array(mysqli_query($conn, "SELECT revision FROM formulasMetaData WHERE fid = '$fid'"));
+	$current_rev = mysqli_fetch_array(mysqli_query($conn, "SELECT revision FROM formulasMetaData WHERE fid = '$fid' AND owner_id = '$userID'"));
 	$nr = $current_rev['revision']+1;
 	
-	$q_b = mysqli_query($conn, "SELECT name, ingredient, concentration, dilutant, quantity, notes FROM formulasRevisions WHERE fid = '$fid' AND revision = '".$current_rev['revision']."'");
+	$q_b = mysqli_query($conn, "SELECT name, ingredient, concentration, dilutant, quantity, notes FROM formulasRevisions WHERE fid = '$fid' AND revision = '".$current_rev['revision']."' AND owner_id = '$userID'");
 	
-	$q = "INSERT INTO formulasRevisions (fid, name, ingredient, ingredient_id, concentration, dilutant, quantity, notes,revision,revisionMethod) SELECT fid, name, ingredient, ingredient_id, concentration, dilutant, quantity, notes, '$nr','$method' FROM formulas WHERE fid = '$fid'";
+	$q = "INSERT INTO formulasRevisions (fid, name, ingredient, ingredient_id, concentration, dilutant, quantity, notes,revision,revisionMethod, owner_id) SELECT fid, name, ingredient, ingredient_id, concentration, dilutant, quantity, notes, '$nr','$method', '$userID' FROM formulas WHERE fid = '$fid' AND owner_id = '$userID'";
 	
-	$q_meta = "UPDATE formulasMetaData SET revision = '$nr' WHERE fid = '$fid'";
+	$q_meta = "UPDATE formulasMetaData SET revision = '$nr' WHERE fid = '$fid' AND owner_id = '$userID'";
 	
 	
 	while ($formula = mysqli_fetch_array($q_a)){

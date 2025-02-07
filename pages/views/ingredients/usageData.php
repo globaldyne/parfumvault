@@ -11,7 +11,7 @@ require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/func/searchIFRA.php');
 require_once(__ROOT__.'/inc/settings.php');
 
-$StandardIFRACategories = mysqli_query($conn, "SELECT name,description,type FROM IFRACategories WHERE type = '1' ORDER BY id ASC");
+$StandardIFRACategories = mysqli_query($conn, "SELECT name,description,type FROM IFRACategories WHERE type = '1' ORDER BY id ASC"); //PUBLIC
 while($cats_res = mysqli_fetch_array($StandardIFRACategories)){
 	$cats[] = $cats_res;
 }
@@ -22,7 +22,7 @@ $cols = 3;
 $usageStyle = array('even_ing','odd_ing');
 $defCatClass = $settings['defCatClass'];
 
-$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT id, cas,name,usage_type,noUsageLimit,byPassIFRA,flavor_use,allergen,cat1,cat2,cat3,cat4,cat5A,cat5B,cat5C,cat5D,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12 FROM ingredients WHERE id = '".$_GET['ingID']."'"));
+$ing = mysqli_fetch_array(mysqli_query($conn, "SELECT id, cas,name,usage_type,noUsageLimit,byPassIFRA,flavor_use,allergen,cat1,cat2,cat3,cat4,cat5A,cat5B,cat5C,cat5D,cat6,cat7A,cat7B,cat8,cat9,cat10A,cat10B,cat11A,cat11B,cat12 FROM ingredients WHERE id = '".$_GET['ingID']."' AND owner_id = '$userID'"));
 
 $usageLimit = searchIFRA($ing['cas'],$ing['name'],null,$defCatClass);
 

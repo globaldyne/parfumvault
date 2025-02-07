@@ -3,7 +3,7 @@
 if (!defined('pvault_panel')){ die('Not Found');}
 
 header('Content-Type: application/json; charset=utf-8');
-global $conn;
+global $conn, $userID;
 
 // Function to fetch data as associative array
 function fetch_assoc($conn, $query) {
@@ -12,7 +12,7 @@ function fetch_assoc($conn, $query) {
 }
 
 // Function to sanitize and normalize values
-function normalize_value($value, $type = 'string', $default = 'N/A') {
+function normalize_value($value, $type = 'string', $default = '-') {
     if (is_null($value) || empty($value)) {
         return $default;
     }
@@ -29,13 +29,13 @@ function normalize_value($value, $type = 'string', $default = 'N/A') {
 
 // Fetch ingredients data
 $sql = "SELECT id, INCI, name, cas, odor, profile, physical_state, category, purity, allergen 
-        FROM ingredients";
+        FROM ingredients WHERE owner_id = '$userID'";
 $result = mysqli_query($conn, $sql);
 
 $r = [];
 while ($rx = mysqli_fetch_assoc($result)) {
     // Fetch IFRALibrary data
-    $ifra_query = "SELECT * FROM IFRALibrary WHERE cas = '{$rx['cas']}'";
+    $ifra_query = "SELECT * FROM IFRALibrary WHERE cas = '{$rx['cas']}' AND owner_id = '$userID'";
     $ifra = fetch_assoc($conn, $ifra_query);
 
     //if ($ifra) {
@@ -49,15 +49,15 @@ while ($rx = mysqli_fetch_assoc($result)) {
 
     // Fetch supplier data
     $supplier_query = "SELECT ingSupplierID, price, size, stock 
-                       FROM suppliers WHERE ingID = '{$rx['id']}' AND preferred = 1";
+                       FROM suppliers WHERE ingID = '{$rx['id']}' AND preferred = 1 AND owner_id = '$userID'";
     $gSupQ = fetch_assoc($conn, $supplier_query);
 
     // Fetch supplier name
-    $supplier_name_query = "SELECT name FROM ingSuppliers WHERE id = '{$gSupQ['ingSupplierID']}'";
+    $supplier_name_query = "SELECT name FROM ingSuppliers WHERE id = '{$gSupQ['ingSupplierID']}' AND owner_id = '$userID'";
     $gSupN = fetch_assoc($conn, $supplier_name_query);
 
     // Fetch category details
-    $category_query = "SELECT name, notes, colorKey FROM ingCategory WHERE id = '{$rx['category']}'";
+    $category_query = "SELECT name, notes, colorKey FROM ingCategory WHERE id = '{$rx['category']}' AND owner_id = '$userID'";
     $gCatQ = fetch_assoc($conn, $category_query);
 
     // Calculate defaults

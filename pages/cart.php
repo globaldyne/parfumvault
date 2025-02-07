@@ -6,7 +6,7 @@
     <div class="card-header py-3">
       <h2 class="m-0 font-weight-bold text-primary"><a href="#" id="mainTitle">Cart</a></h2>
     </div>
-    <div class="card-body">
+    <div class="card-body" id="cart_data">
       <div class="table-responsive">
       <div id="innermsg"></div>
       <div class="mt-4 mr-4 text-right">
@@ -36,6 +36,7 @@
 <script>
 $(document).ready(function() {
 
+	$.fn.dataTable.ext.errMode = 'none';
 	var tdDataCart = $('#tdDataCart').DataTable( {
 		columnDefs: [
 			{ className: 'pv_vertical_middle text-center', targets: '_all' },
@@ -85,7 +86,11 @@ $(document).ready(function() {
 		lengthMenu: [[20, 50, 100, 200, 400], [20, 50, 100, 200, 400]],
 		pageLength: 20,
 		displayLength: 20
-	});
+
+	}).on('error.dt', function(e, settings, techNote, message) {
+		var m = message.split(' - ');
+		$('#cart_data').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i><strong>' + m[1] + '</strong></div>');
+    });
 	
 	$('#mainTitle').click(function() {
 	 	reload_cart_data();
