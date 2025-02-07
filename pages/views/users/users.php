@@ -442,10 +442,27 @@ $(document).ready(function() {
         });
     });
 
-	function reload_data() {
-		$('#tdUsers').DataTable().ajax.reload(null, true);
-	};
-	
+    function reload_data() {
+        var table = $('#tdUsers').DataTable();
+        $.ajax({
+            url: '/core/users_data.php',
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                var localData = table.ajax.json().data;
+                if (JSON.stringify(localData) !== JSON.stringify(data.data)) {
+                    table.ajax.reload(null, true);
+                    console.log('Changes detected, data reloaded');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error checking data:', error);
+            }
+        });
+    };
+
+    setInterval(reload_data, 10000); // Check for updates every 10 seconds
+
 	function extrasShow() {
 		$('[rel=tip]').tooltip({
 			 html: true,
