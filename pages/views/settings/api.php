@@ -11,6 +11,14 @@ require_once(__ROOT__.'/inc/settings.php');
 <hr />
 
 <div class="row mb-3">
+	<?php if (!isset($system_settings['API_enabled']) || $system_settings['API_enabled'] != 1) { ?>
+		<div class="col-12">
+			<div class="alert alert-danger">
+				<i class="fa-solid fa-circle-exclamation mx-2"></i> The API has been administratively disabled.
+			</div>
+		</div>
+		<?php return; ?>
+	<?php } ?>
     <div class="col-2">
         <label for="pv_api">Enable API</label>
         <input class="mx-2" name="pv_api" type="checkbox" id="pv_api" value="1" 
@@ -67,6 +75,7 @@ $(document).ready(function() {
     });
 	
    $('#endpointsTable').DataTable({
+		$.fn.dataTable.ext.errMode = 'none';
 	   	dom: '',
 		processing: true,
         language: {
@@ -86,7 +95,11 @@ $(document).ready(function() {
 			{ data: 'type', title: 'Type' },
 			{ data: '', title: 'Syntax', render: syntax}
 		]
+	}).on('error.dt', function(e, settings, techNote, message) {
+		var m = message.split(' - ');
+		$('#endpointsTable').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i><strong>' + m[1] + '</strong></div>');
 	});
+
 	
 	function syntax(data, type, row){
 		var furl = '/api.php?key=' + api_key + '&do=' + row.do + '&type=' + row.type;
