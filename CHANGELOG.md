@@ -5,6 +5,7 @@
 - Added last login for users
 - Formula making improvements
 - Validate size upload limit function improvements
+- Added support for Google analytics
 
 ### Version 12.5
 - Code clean-up
