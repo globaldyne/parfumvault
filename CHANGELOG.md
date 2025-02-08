@@ -4,6 +4,7 @@
 - Monitor user changes in users admin dashboard
 - Added last login for users
 - Formula making improvements
+- Validate size upload limit function improvements
 
 ### Version 12.5
 - Code clean-up
