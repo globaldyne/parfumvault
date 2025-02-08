@@ -377,57 +377,7 @@ if(isset($_SESSION['parfumvault'])){
     gtag('js', new Date());
 
     gtag('config', '<?= htmlspecialchars($system_settings['GOOGLE_analytics_key']) ?>');
-</script>
 
-<!-- Cookie Consent Banner -->
-<div id="cookieConsent">
-    <div class="cookieConsentContainer">
-        <div class="cookieTitle">
-            <a>Cookies.</a>
-        </div>
-        <div class="cookieDesc">
-            <p>By using this site, you agree to our use of cookies to deliver a better site experience.</p>
-        </div>
-        <div class="cookieButton">
-            <a onclick="acceptCookies();">I understand</a>
-        </div>
-    </div>
-</div>
-<style>
-    #cookieConsent {
-        background-color: rgba(20,20,20,0.8);
-        min-height: 26px;
-        font-size: 14px;
-        color: #ccc;
-        line-height: 26px;
-        padding: 8px 0 8px 0;
-        z-index: 9999;
-        text-align: center;
-        position: fixed;
-        width: 100%;
-        bottom: 0;
-        left: 0;
-    }
-    #cookieConsent a {
-        color: #4B8EE7;
-        text-decoration: none;
-    }
-    .cookieConsentContainer {
-        max-width: 1140px;
-        margin: 0 auto;
-    }
-    .cookieTitle a {
-        font-weight: 700;
-        color: #fff;
-    }
-    .cookieButton a {
-        color: #fff;
-        background-color: #4B8EE7;
-        padding: 0 15px;
-        border-radius: 3px;
-    }
-</style>
-<script>
     function acceptCookies() {
         document.getElementById('cookieConsent').style.display = 'none';
         // Set a cookie to remember the user's consent
@@ -439,6 +389,20 @@ if(isset($_SESSION['parfumvault'])){
         document.getElementById('cookieConsent').style.display = 'block';
     }
 </script>
+<!-- Cookie Consent Banner -->
+<div id="cookieConsent" class="bg-danger text-white p-3">
+    <div class="cookieConsentContainer">
+        <div class="cookieTitle">
+            <a class="text-white">Cookies Notice</a>
+        </div>
+        <div class="cookieDesc">
+            <p>We use cookies to enhance your browsing experience and provide personalized content. By continuing to use our site, you accept our use of cookies.</p>
+        </div>
+        <div class="cookieButton">
+            <a class="btn btn-light" onclick="acceptCookies();">I Understand</a>
+        </div>
+    </div>
+</div>
 <?php } ?>
 </html>
 

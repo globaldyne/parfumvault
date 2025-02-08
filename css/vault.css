@@ -1711,3 +1711,35 @@ th.dt-center, td.dt-center {
   left: 210px;
   opacity: 0.8;
 }
+
+#cookieConsent {
+  min-height: 26px;
+  font-size: 14px;
+  color: #ccc;
+  line-height: 26px;
+  padding: 8px 0 8px 0;
+  z-index: 9999;
+  text-align: center;
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+}
+#cookieConsent a {
+  color: #4B8EE7;
+  text-decoration: none;
+}
+.cookieConsentContainer {
+  max-width: 1140px;
+  margin: 0 auto;
+}
+.cookieTitle a {
+  font-weight: 700;
+  color: #fff;
+}
+.cookieButton a {
+  color: #fff;
+  padding: 0 15px;
+  border-radius: 3px;
+}
+
