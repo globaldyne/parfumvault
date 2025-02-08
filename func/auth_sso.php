@@ -113,9 +113,11 @@ function auth_sso() {
             $updateQuery = $conn->prepare("UPDATE users SET fullName = ?, password = ?, token = ?, role = ?, isActive = ?, isVerified = ? WHERE email = ? AND provider = ?");
             //$role = 2;
             $updateQuery->bind_param("sssiiisi", $fullName, $hashedPassword, $token, $role, $isActive, $isVerified, $email, $provider);
-            $updateQuery->execute();
-            error_log("User found in auth_kc: " . $email);
-            error_log("Update Query: " . $updateQuery->error);
+            if ($updateQuery->execute()) {
+                error_log("User found in auth_kc: " . $email);
+            } else {
+                error_log("Update Query Error: " . $updateQuery->error);
+            }
 
 
             session_regenerate_id(true); // Prevent session fixation
