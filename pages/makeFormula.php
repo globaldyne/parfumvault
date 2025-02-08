@@ -248,7 +248,9 @@ $(document).ready(function() {
 	<?php if(isset($settings['pv_scale_enabled'])) { ?>
 	$('#tdDataPending tbody').on('click', 'tr', function () {
 		var rowData = tdDataPending.row(this).data();
+		<?php if($settings['pv_scale_enabled']) { ?>
 		rowClickedFunction(rowData);
+		<?php } ?>
 	});
 	<?php } ?>
 
@@ -307,11 +309,33 @@ $(document).ready(function() {
 		
 		return st;
 	};
-	
+	/**
 	function reload_data() {
 		$('#tdDataPending').DataTable().ajax.reload(null, true);
 	};
-	
+	**/
+	function reload_data() {
+        var table = $('#tdDataPending').DataTable();
+        $.ajax({
+			url: '/core/pending_formulas_data.php?meta=0&fid=' + fid,
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                var localData = table.ajax.json().data;
+                if (JSON.stringify(localData) !== JSON.stringify(data.data)) {
+                    table.ajax.reload(null, true);
+                    console.log('Changes detected, data reloaded');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error checking data:', error);
+            }
+        });
+    };
+
+    setInterval(reload_data, 10000); // Check for updates every 10 seconds
+
+
 	function extrasShow() {
 		$('[rel=tip]').tooltip({
 			"html": true,

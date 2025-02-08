@@ -6858,7 +6858,7 @@ if($_POST['action'] == 'makeFormula' && $_POST['fid'] && $_POST['qr'] && $_POST[
 		if($getStock['stock'] < $q){
 			$w = "<p>Amount exceeds quantity available in stock (".$getStock['stock'].$getStock['mUnit']."). The maximum available will be deducted from stock</p>";
 			
-			$q = $getStock['stock'];
+			$q = $getStock['stock'] ?: 0;
 		}
 		mysqli_query($conn, "UPDATE suppliers SET stock = stock - $q WHERE ingID = '$ingID' AND ingSupplierID = '".$_POST['supplier']."' AND owner_id = '$userID'");
 		$response['success'] .= "<br/><strong>Stock deducted by ".$q.$settings['mUnit']."</strong>";
