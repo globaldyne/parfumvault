@@ -125,15 +125,6 @@ function auth_sso() {
             $_SESSION['role'] = 2;
             $_SESSION['user_email'] = $user['email'];
             header('Location: /index.php');
-            // Update last_login timestamp
-            try {
-                $update_query = "UPDATE users SET last_login = NOW() WHERE id = '" . $row['id'] . "'";
-                if (!mysqli_query($conn, $update_query)) {
-                    throw new Exception('Failed to update last login timestamp: ' . mysqli_error($conn));
-                }
-            } catch (Exception $e) {
-                error_log($e->getMessage());
-            }
         } else {
             // Insert new user
             error_log("User NOT found in auth_sso: " . $email);
@@ -166,17 +157,16 @@ function auth_sso() {
             $_SESSION['user_email'] = $user['email'];
 
             header('Location: /index.php');
-            // Update last_login timestamp
-            try {
-                $update_query = "UPDATE users SET last_login = NOW() WHERE id = '" . $row['id'] . "'";
-                if (!mysqli_query($conn, $update_query)) {
-                    throw new Exception('Failed to update last login timestamp: ' . mysqli_error($conn));
-                }
-            } catch (Exception $e) {
-                error_log($e->getMessage());
-            }
         }
-
+        // Update last_login timestamp
+        try {
+            $update_query = "UPDATE users SET last_login = NOW() WHERE id = '" . $user['sub'] . "'";
+            if (!mysqli_query($conn, $update_query)) {
+                throw new Exception('Failed to update last login timestamp: ' . mysqli_error($conn));
+            }
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+        }
         // Close statements
         $checkQuery->close();
         if (isset($updateQuery)) $updateQuery->close();

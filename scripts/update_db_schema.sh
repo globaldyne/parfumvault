@@ -32,10 +32,10 @@ check_column_exists() {
 add_columns() {
     ALTER_QUERY="ALTER TABLE \`users\` 
                 ADD \`last_login\` TIMESTAMP NULL DEFAULT NULL AFTER \`created_at\`;"
-                
+
     mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASS" -D "$DB_NAME" -e "$ALTER_QUERY" 2>/dev/null
     if [ $? -eq 0 ]; then
-        echo "Columns 'isActive' and 'provider' added successfully."
+        echo "users schema updated successfully."
     else
         echo "Failed to add columns. Please check your database permissions."
     fi
