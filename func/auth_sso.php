@@ -128,12 +128,16 @@ function auth_sso() {
         } else {
             // Insert new user
             error_log("User NOT found in auth_sso: " . $email);
+            $insertQuery = $conn->prepare("INSERT INTO users (id, fullName, email, password, provider, token, role, isActive, isVerified) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $role = 2;
+            $isActive = 1;
+            $isVerified = 1;
+            $insertQuery->bind_param("ssssisiis", $userId, $fullName, $email, $hashedPassword, $provider, $token, $role, $isActive, $isVerified);
 
-            $insertQuery = "INSERT INTO users (id, fullName, email, password, provider, token, role, isActive, isVerified) VALUES ('$userId', '$fullName', '$email', '$hashedPassword', $provider, '$token', 2, 1, 1)";
-            if ($conn->query($insertQuery) === TRUE) {
+            if ($insertQuery->execute()) {
                 error_log("New user created successfully: " . $email);
             } else {
-                error_log("Error: " . $insertQuery . " - " . $conn->error);
+                error_log("Error: " . $insertQuery->error);
             }
             // Notify or login as needed
             if($system_settings['EMAIL_isEnabled']){
