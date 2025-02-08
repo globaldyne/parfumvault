@@ -102,6 +102,17 @@ $(document).ready(function() {
   <?php } ?>
 });
 </script>
+<?php if (isset($system_settings['GOOGLE_analytics_status']) && $system_settings['GOOGLE_analytics_status'] == 1) { ?>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=<?= htmlspecialchars($system_settings['GOOGLE_analytics_key']) ?>"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', '<?= htmlspecialchars($system_settings['GOOGLE_analytics_key']) ?>');
+</script>
+<?php } ?>
 </head>
 <body id="page-top">
   <div id="wrapper" class="d-flex">
@@ -309,15 +320,4 @@ $(document).ready(function() {
   </div>
 
 </body>
-<?php if (isset($system_settings['GOOGLE_analytics_status']) && $system_settings['GOOGLE_analytics_status'] == 1) { ?>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=<?= htmlspecialchars($system_settings['GOOGLE_analytics_key']) ?>"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', '<?= htmlspecialchars($system_settings['GOOGLE_analytics_key']) ?>');
-</script>
-<?php } ?>
 </html>
