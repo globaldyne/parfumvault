@@ -333,7 +333,7 @@ $(document).ready(function() {
         });
     };
 
-    setInterval(reload_data, 10000); // Check for updates every 10 seconds
+    setInterval(reload_data, 5000); // Check for updates every 5 seconds
 
 
 	function extrasShow() {

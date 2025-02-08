@@ -69,7 +69,9 @@ if ($meta === 0) {
                 ]
             ],
             'toAdd' => (int)$rq['toAdd'],
-            'toSkip' => (int)$rq['skip']
+            'toSkip' => (int)$rq['skip'],
+            'created_at' => (string)$rq['created_at'],
+            'updated_at' => (string)$rq['updated_at']
         ];
         
         $rx[] = $r;
