@@ -92,6 +92,17 @@ if ($_POST['action'] == 'login') {
             $response['auth']['success'] = true;
             $response['auth']['redirect'] = $redirect;
             echo json_encode($response);
+
+            // Update last_login timestamp
+            try {
+                $update_query = "UPDATE users SET last_login = NOW() WHERE id = '" . $row['id'] . "'";
+                if (!mysqli_query($conn, $update_query)) {
+                    throw new Exception('Failed to update last login timestamp: ' . mysqli_error($conn));
+                }
+            } catch (Exception $e) {
+                error_log($e->getMessage());
+            }
+
             return;
         } else {
             // Incorrect password

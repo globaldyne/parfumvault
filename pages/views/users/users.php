@@ -39,7 +39,7 @@ if($role !== 1){
           <th>Verified</th>
           <th>Auth method</th>
           <th>Created</th>
-          <th>Updated</th>
+          <th>Last login</th>
           <th></th>
       </tr>
    </thead>
@@ -136,7 +136,7 @@ $(document).ready(function() {
             { data : 'isVerified', title: 'Verified', render: isVerified},
             { data : 'provider', title: 'Auth method', render: provider},
             { data : 'created_at', title: 'Created', render: created_at},
-			{ data : 'updated_at', title: 'Updated', render: updated_at},
+			{ data : 'last_login', title: 'Last login', render: last_login},
 			{ data : null, title: '', render: actions, orderable: false},		   
 		],
 		order: [[ 1, 'asc' ]],
@@ -226,6 +226,21 @@ $(document).ready(function() {
         }
         return data;
 
+    };
+
+    function last_login(data, type, row){
+        const date = new Date(data);
+        if (isNaN(date.getTime())) {
+            return '-';
+        }
+        return date.toLocaleDateString(navigator.language || 'en-GB', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        }) + ' ' + date.toLocaleTimeString(navigator.language || 'en-GB', {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
     };
 
     function updated_at(data, type, row){

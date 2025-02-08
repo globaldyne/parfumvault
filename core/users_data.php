@@ -7,7 +7,7 @@ require_once(__ROOT__.'/inc/settings.php');
 
 if($role !== 1){
     header('Location: /');
-    return;
+    exit;
 }
 
 $row = isset($_POST['start']) ? (int)$_POST['start'] : 0;
@@ -112,7 +112,8 @@ foreach ($userData as $user) {
             'total_templates' => (int)$templatesCount['entries']
         ],
         'created_at' => $user['created_at'],
-        'updated_at' => $user['updated_at']
+        'updated_at' => $user['updated_at'],
+        'last_login' => $user['last_login']
     ];
     
     $rx[] = $r;

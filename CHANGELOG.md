@@ -2,6 +2,7 @@
 ### Version 12.6
 - Added meta data (formulas, ingredients,...) count for users in the admin dashboard
 - Monitor user changes in users admin dashboard
+- Added last login for users
 
 ### Version 12.5
 - Code clean-up
