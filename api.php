@@ -8,6 +8,7 @@ define('LOG_API_FILE', 'pv-api.log');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/rgbToHex.php');
+
 // Check if API is enabled in system settings
 if (!isset($system_settings['API_enabled']) || $system_settings['API_enabled'] != 1) {
     header('Content-Type: application/json; charset=utf-8');
@@ -20,6 +21,7 @@ if (!isset($system_settings['API_enabled']) || $system_settings['API_enabled'] !
     ]);
     return;
 }
+
 // Default image for formulas
 $defImage = base64_encode(file_get_contents(DEFAULT_IMAGE));
 
@@ -42,11 +44,11 @@ file_put_contents(LOG_PATH . LOG_API_FILE, $reqDump, FILE_APPEND);
 /**
  * Check API authentication
  */
-function apiCheckAuth($key, $user_id) {
-    global $conn;
-    $query = "SELECT id FROM users WHERE isAPIActive = '1' AND isActive = '1' AND API_key = ? AND id = ?";
+function apiCheckAuth($key, $conn) {
+    global $userID;
+    $query = "SELECT id FROM users WHERE isAPIActive = '1' AND isActive = '1' AND API_key = ?";
     $stmt = mysqli_prepare($conn, $query);
-    mysqli_stmt_bind_param($stmt, 'ss', $key, $user_id);    
+    mysqli_stmt_bind_param($stmt, 's', $key);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_store_result($stmt);
 
@@ -60,8 +62,8 @@ function apiCheckAuth($key, $user_id) {
 /**
  * Validate API Key and Execute Request
  */
-function validateKeyAndExecute($key, $user_id, $callback) {
-    if (!apiCheckAuth($key, $user_id)) {
+function validateKeyAndExecute($conn, $key, $callback) {
+    if (!apiCheckAuth($key, $conn)) {
         header('Content-Type: application/json; charset=utf-8');
         echo json_encode(['status' => 'Auth failed']);
         return false;
@@ -71,13 +73,12 @@ function validateKeyAndExecute($key, $user_id, $callback) {
 
 // Validate required parameters
 $key = $_REQUEST['key'] ?? null;
-$user_id = $_REQUEST['user_id'] ?? null;
 $do = strtolower($_REQUEST['do'] ?? '');
 $type = $_REQUEST['type'] ?? null;
 
 
 if ($key && $do === 'auth') {
-    if(!apiCheckAuth($key, $user_id)) {
+    if(!apiCheckAuth($key, $conn)) {
         header('Content-Type: application/json; charset=utf-8');
         echo json_encode(['type'=>'auth','status' => 'failed']);
         return;
@@ -109,7 +110,7 @@ function getValidEndpoints($endpoints) {
 switch ($do) {
     case 'upload':
         if ($type === 'formulas') {
-            validateKeyAndExecute($key, $user_id, function () {
+            validateKeyAndExecute($conn, $key, function () {
                 require_once(__ROOT__ . '/api-functions/formulas_upload.php');
             });
         } elseif ($type === 'ingredients') {
@@ -136,7 +137,7 @@ switch ($do) {
             'ifra' => '/api-functions/ifra_get.php'
         ];
         if (isset($apiFileMap[$type])) {
-            validateKeyAndExecute($key, $user_id, function () use ($type, $apiFileMap) {
+            validateKeyAndExecute($conn, $key, function () use ($type, $apiFileMap) {
                 require_once(__ROOT__ . $apiFileMap[$type]);
             });
         } else {

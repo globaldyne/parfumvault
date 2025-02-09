@@ -3,9 +3,9 @@
 if (!defined('pvault_panel')){ die('Not Found');}
 
 header('Content-Type: application/json');
-global $conn, $user_id;
+global $conn, $userID;
 
-$sql = mysqli_query($conn, "SELECT * FROM IFRALibrary WHERE owner_id = '$user_id'");
+$sql = mysqli_query($conn, "SELECT * FROM IFRALibrary WHERE owner_id = '$userID'");
 
 if (!$sql) {
 	error_log(mysqli_error($conn));
@@ -31,7 +31,8 @@ while ($r = mysqli_fetch_assoc($sql)) {
     }
 
     // Cast id to integer
-    $r['id'] = (int)$r['id'];
+   // $r['id'] = (int)$r['id'];
+    unset($r['id']);
     $r['amendment'] = (int)$r['amendment'];
     $r['cas'] = (string)$r['cas'] ?: '-';
     $r['flavor_use'] = (string)$r['flavor_use'] ?: '-';

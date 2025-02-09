@@ -707,30 +707,80 @@ if ($_POST['action'] === 'update_user_settings') {
 }
 
 //UPDATE API SETTINGS
-if($_POST['manage'] == 'api'){
-	
-	$api = $_POST['api'];
-	$api_key = mysqli_real_escape_string($conn, $_POST['api_key']);
-	if(strlen($api_key) < 8){
-		$response['error'] =  'API key must be at least 8 characters long';	
-		echo json_encode($response);
-		return;
-	}
-	if($_POST["api"] == 'true') {
-		$api = '1';
-	}else{
-		$api = '0';
-	}
-	
-	if(mysqli_query($conn, "UPDATE users SET isAPIActive = '$api', API_key='$api_key' WHERE id = '$userID'")){
-		$response['success'] = 'API settings updated';	
-	}else{
-		$response['error'] = 'An error occured '.mysqli_error($conn);	
-	}
-	echo json_encode($response);
-	return;
+if ($_POST['manage'] === 'api') {
+    $api = $_POST['api'] === 'true' ? '1' : '0';
+    
+    // Check if API_key is empty
+    $stmt = $conn->prepare("SELECT API_key FROM users WHERE id = ?");
+    $stmt->bind_param('s', $userID);
+    $stmt->execute();
+    $stmt->bind_result($apiKey);
+    $stmt->fetch();
+    $stmt->close();
+
+    if (empty($apiKey)) {
+        // Generate a unique 32-character string
+        $newApiKey = bin2hex(random_bytes(16));
+        $stmt = $conn->prepare("UPDATE users SET API_key = ? WHERE id = ?");
+        $stmt->bind_param('ss', $newApiKey, $userID);
+        $stmt->execute();
+        $stmt->close();
+        $apiKey = $newApiKey;
+    }
+
+    $stmt = $conn->prepare("UPDATE users SET isAPIActive = ? WHERE id = ?");
+    $stmt->bind_param('ss', $api, $userID);
+
+    if ($stmt->execute()) {
+        $response['success'] = 'API settings updated';
+        $response['API_key'] = $apiKey;
+    } else {
+        $response['error'] = 'An error occurred: ' . $stmt->error;
+    }
+
+    $stmt->close();
+    echo json_encode($response);
+    return;
 }
 
+//GENERATE API KEY
+if (!empty($_POST['regenerate-api-key']) && $_POST['regenerate-api-key'] === 'true') {
+    do {
+        $newApiKey = bin2hex(random_bytes(16)); // Generates a 32-character random string
+        $stmt = $conn->prepare("SELECT COUNT(*) FROM users WHERE API_key = ?");
+        
+        if (!$stmt) {
+            error_log("PV error: Failed to prepare statement for uniqueness check - " . $conn->error);
+            echo json_encode(['error' => 'Failed to regenerate API key']);
+            return;
+        }
+
+        $stmt->bind_param('s', $newApiKey);
+        $stmt->execute();
+        $stmt->bind_result($count);
+        $stmt->fetch();
+        $stmt->close();
+    } while ($count > 0); // Regenerate if the key is not unique
+
+    $stmt = $conn->prepare("UPDATE users SET API_key = ? WHERE id = ?");
+    if (!$stmt) {
+        error_log("PV error: Failed to prepare statement for updating API key - " . $conn->error);
+        echo json_encode(['error' => 'Failed to regenerate API key']);
+        return;
+    }
+
+    $stmt->bind_param('ss', $newApiKey, $userID);
+    
+    if ($stmt->execute()) {
+        echo json_encode(['success' => 'API key regenerated successfully', 'API_key' => $newApiKey]);
+    } else {
+        error_log("PV error: Failed to regenerate API key - " . $stmt->error);
+        echo json_encode(['error' => 'Failed to regenerate API key']);
+    }
+
+    $stmt->close();
+    return;
+}
 
 
 //BRANDING

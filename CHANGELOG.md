@@ -6,6 +6,8 @@
 - Formula making improvements
 - Validate size upload limit function improvements
 - Added support for Google analytics
+- Improved API security
+- Implemented a unique auto generate 32 bit key for API access
 
 ### Version 12.5
 - Code clean-up
