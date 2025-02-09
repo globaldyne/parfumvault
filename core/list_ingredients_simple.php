@@ -28,7 +28,7 @@ if ($_POST['isDeepQ'] == "true"){
 	$filter = " WHERE (name LIKE '%$s%' OR cas LIKE '%$s%' OR INCI LIKE '%$s%') ";
 }
 
-$q = mysqli_query($conn, "SELECT ingredients.id,name,INCI,cas,einecs,type,odor,physical_state,profile FROM $t $filter AND owner_id = '$userID' ORDER BY name ASC");
+$q = mysqli_query($conn, "SELECT ingredients.id,name,INCI,cas,einecs,type,odor,physical_state,profile FROM $t $filter AND ingredients.owner_id = '$userID' ORDER BY name ASC");
 while($res = mysqli_fetch_array($q)){
     $ingredients[] = $res;
 }
