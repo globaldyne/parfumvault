@@ -23,6 +23,18 @@ $time_left = max(0, ($session_start_time + $session_timeout - $current_time) / 6
 
 $conn = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
 
+$result = mysqli_query($conn, "SELECT owner_id, last_updated FROM session_info");
+if ($result) {
+    while ($row = mysqli_fetch_assoc($result)) {
+        $last_updated = strtotime($row['last_updated']);
+        if (($current_time - $last_updated) > $session_timeout) {
+            mysqli_query($conn, "DELETE FROM session_info WHERE owner_id = '".$row['owner_id']."'");
+            error_log("Session for user ID ".$row['owner_id']." has expired");
+        }
+    }
+    mysqli_free_result($result);
+}
+
 if (($current_time - $session_start_time) > $session_timeout) {
     $userID = $_SESSION['userID'];
     mysqli_query($conn, "DELETE FROM session_info WHERE owner_id = '$userID'");
