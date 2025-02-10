@@ -612,6 +612,23 @@ if ($_GET['format'] === 'json' && $_GET['kind'] === 'single-ingredient' && isset
             'byPassIFRA'     => (int)$row['byPassIFRA'],
             'isPrivate'      => (int)$row['isPrivate'],
             'molecularWeight'=> (string)($row['molecularWeight'] ?: '-'),
+            'cat1' => (double)($row['cat1'] ?? 100),
+            'cat2' => (double)($row['cat2'] ?? 100),
+            'cat3' => (double)($row['cat3'] ?? 100),
+            'cat4' => (double)($row['cat4'] ?? 100),
+            'cat5A' => (double)($row['cat5A'] ?? 100),
+            'cat5B' => (double)($row['cat5B'] ?? 100),
+            'cat5C' => (double)($row['cat5C'] ?? 100),
+            'cat6' => (double)($row['cat6'] ?? 100),
+            'cat7A' => (double)($row['cat7A'] ?? 100),
+            'cat7B' => (double)($row['cat7B'] ?? 100),
+            'cat8' => (double)($row['cat8'] ?? 100),
+            'cat9' => (double)($row['cat9'] ?? 100),
+            'cat10A' => (double)($row['cat10A'] ?? 100),
+            'cat10B' => (double)($row['cat10B'] ?? 100),
+            'cat11A' => (double)($row['cat11A'] ?? 100),
+            'cat11B' => (double)($row['cat11B'] ?? 100),
+            'cat12' => (double)($row['cat12'] ?? 100),
         ];
         $ingredientCount++;
     }
@@ -642,7 +659,7 @@ if ($_GET['format'] === 'json' && $_GET['kind'] === 'single-ingredient' && isset
 
     while ($row = mysqli_fetch_assoc($supplierResult)) {
         $suppliers[] = [
-            'id'              => (int)$row['id'],
+           // 'id'              => (int)$row['id'],
             'ingSupplierID'   => (int)$row['ingSupplierID'],
             'ingID'           => (int)$row['ingID'],
             'supplierLink'    => (string)($row['supplierLink'] ?: '-'),

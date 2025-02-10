@@ -10,6 +10,7 @@
 - Implemented a unique auto generate 32 bit key for API access
 - Fixed synonym search
 - Price scraper improvements
+- Ingedients import, suppliers handle
 
 ### Version 12.5
 - Code clean-up
