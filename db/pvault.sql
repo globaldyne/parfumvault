@@ -318,7 +318,7 @@ CREATE TABLE `inventory_accessories` (
 CREATE TABLE `pv_meta` (
   `schema_ver` varchar(255) NOT NULL,
   `app_ver` varchar(255) NOT NULL,
-  `updated_at_at` timestamp on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `updated_at` timestamp on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE update_history (
@@ -407,7 +407,7 @@ CREATE TABLE `suppliers` (
  `mUnit` VARCHAR(255) NULL, 
  `stock` decimal(10,3) NOT NULL,
  `status` INT NOT NULL DEFAULT '1' COMMENT '1 = Available\r\n2 = Limited Availability\r\n3 = Not available', 
- `updated_at_at` TIMESTAMP on update CURRENT_TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+ `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
  `supplier_sku` VARCHAR(255) NULL, 
  `internal_sku` VARCHAR(255) NULL,
