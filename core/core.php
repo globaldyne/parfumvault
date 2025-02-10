@@ -2279,24 +2279,41 @@ if($_GET['action'] == 'deleteDocument'){
 }
 
 //GET SUPPLIER PRICE
-if($_POST['ingSupplier'] == 'getPrice'){
-	$ingID = mysqli_real_escape_string($conn, $_POST['ingID']);
-	$ingSupplierID = mysqli_real_escape_string($conn, $_POST['ingSupplierID']);
-	$size = mysqli_real_escape_string($conn, $_POST['size']);
-	$supplier_link = urldecode($_POST['sLink']);
-	
-	$supp_data = mysqli_fetch_array(mysqli_query($conn, "SELECT price_tag_start,price_tag_end,add_costs,price_per_size FROM ingSuppliers WHERE id = '$ingSupplierID' AND owner_id = '$userID'"));
-	
-	if($newPrice = priceScrape($supplier_link,$size,$supp_data['price_tag_start'],$supp_data['price_tag_end'],$supp_data['add_costs'],$supp_data['price_per_size'])){
-		if(mysqli_query($conn, "UPDATE suppliers SET price = '$newPrice' WHERE ingSupplierID = '$ingSupplierID' AND ingID='$ingID' AND owner_id = '$userID'")){
-			$response["success"] = 'Price updated';
-			echo json_encode($response);
-		}
-	}else{
-	 	$response["error"] = '<strong>Error getting the price from the supplier. Previous value has been retained.</strong>';
-		echo json_encode($response);
-	}
-	return;
+if ($_POST['ingSupplier'] == 'getPrice') {
+    $ingID = mysqli_real_escape_string($conn, $_POST['ingID']);
+    $ingSupplierID = mysqli_real_escape_string($conn, $_POST['ingSupplierID']);
+    $size = mysqli_real_escape_string($conn, $_POST['size']);
+    $supplier_link = urldecode($_POST['sLink']);
+
+    $query = "SELECT price_tag_start, price_tag_end, add_costs, price_per_size FROM ingSuppliers WHERE id = ? AND owner_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param('is', $ingSupplierID, $userID);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $supp_data = $result->fetch_assoc();
+    $stmt->close();
+
+    if ($supp_data) {
+        $newPrice = priceScrape($supplier_link, $size, $supp_data['price_tag_start'], $supp_data['price_tag_end'], $supp_data['add_costs'], $supp_data['price_per_size']);
+        if ($newPrice !== false) {
+            $updateQuery = "UPDATE suppliers SET price = ? WHERE ingSupplierID = ? AND ingID = ? AND owner_id = ?";
+            $updateStmt = $conn->prepare($updateQuery);
+            $updateStmt->bind_param('diis', $newPrice, $ingSupplierID, $ingID, $userID);
+            if ($updateStmt->execute()) {
+                $response["success"] = 'Price updated, please validate data is correct';
+            } else {
+                $response["error"] = 'Error updating the price in the database.';
+            }
+            $updateStmt->close();
+        } else {
+            $response["error"] = 'Error getting the price from the supplier. Previous value has been retained.';
+        }
+    } else {
+        $response["error"] = 'Supplier data not found.';
+    }
+
+    echo json_encode($response);
+    return;
 }
 
 //ADD ING SUPPLIER
