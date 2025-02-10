@@ -1,5 +1,6 @@
 Whats New in v12.6
 --------------------------
+- Fixed synonym search
 - Improved API security
 - Implemented a unique auto generate 32 bit key for API access
 - Formula making improvements

@@ -52,8 +52,7 @@ if ($_POST['advanced']) {
     }
 
     if ($synonym = mysqli_real_escape_string($conn, $_POST['synonym'])) {
-        $t = "synonyms,";
-        $filter = "WHERE $synonym LIKE '%$synonym%' AND ing = name AND ingredients.owner_id = '$userID' GROUP BY name";
+        $filter .= " AND ingredients.name IN (SELECT ing FROM synonyms WHERE synonym LIKE '%$synonym%' AND owner_id = '$userID')";
     }
 }
 
@@ -76,7 +75,7 @@ $query = "
     $extra
     LIMIT $row, $limit
 ";
-
+error_log("PV Info: Query: $query");
 $result = mysqli_query($conn, $query);
 
 if (!$result) {
