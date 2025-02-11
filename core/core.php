@@ -1390,7 +1390,7 @@ if ($_POST['action'] === 'import' && $_POST['source'] === 'PVLibrary' && $_POST[
 
         $stmtInsert = $conn->prepare("INSERT INTO ingredients ({$columns}, `owner_id`) VALUES ({$placeholders}, ?)");
 
-        $types = str_repeat('s', count($values)) . 'i';
+        $types = str_repeat('s', count($values)) . 's';
         $params = array_merge([$types], $values, [$userID]);
 
         call_user_func_array([$stmtInsert, 'bind_param'], $params);
