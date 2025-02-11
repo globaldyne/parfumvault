@@ -106,9 +106,9 @@ func cleanupUnverifiedUsers(db *sql.DB) {
 	for _, userID := range unverifiedUsers {
 		_, err := db.Exec(deleteQuery, userID)
 		if err != nil {
-			error_log(fmt.Sprintf("Error deleting unverified user %d: %v", userID, err))
+			error_log(fmt.Sprintf("Error deleting unverified user %s: %v", userID, err))
 		} else {
-			log.Printf("Deleted unverified user: %d", userID)
+			log.Printf("Deleted unverified user: %s", userID)
 		}
 	}
 }
