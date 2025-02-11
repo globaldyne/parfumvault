@@ -1,12 +1,9 @@
-.htaccess
 request.log
 tmp/
 logs/
 uploads/
 batches/
 inc/config.php
-*.swp
-t.php
 tests/
 modules/suppliers/pvLibraryDEV.json
 modules/suppliers/pvLibraryDEV.php

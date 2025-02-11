@@ -60,7 +60,7 @@ RUN chmod +x /usr/bin/reset_pass.sh
 RUN chmod +x /usr/bin/update_db_schema.sh
 
 
-RUN rm -rf /html/.git /html/.github
+RUN rm -rf /html/.git /html/.github /html/helpers /html/docker-compose /html/k8s 
 RUN microdnf clean all && rm -rf /var/cache/yum/*
 
 WORKDIR /html
