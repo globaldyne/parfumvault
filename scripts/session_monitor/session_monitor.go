@@ -60,7 +60,7 @@ func cleanupExpiredSessions(db *sql.DB, sessionTimeout int64) {
 	}
 
 	if len(expiredUsers) == 0 {
-		log.Println("No expired sessions found.")
+		//	log.Println("No expired sessions found.")
 		return
 	}
 
@@ -98,7 +98,7 @@ func cleanupUnverifiedUsers(db *sql.DB) {
 	}
 
 	if len(unverifiedUsers) == 0 {
-		log.Println("No unverified users found.")
+		//log.Println("No unverified users found.")
 		return
 	}
 
