@@ -65,9 +65,9 @@ RUN rm -rf /html/.git /html/.github /html/helpers /html/docker-compose /html/k8s
 RUN microdnf clean all && rm -rf /var/cache/yum/*
 
 WORKDIR /html/scripts/session_monitor
-RUN go mod init session_monitor
-RUN go mod tidy
-RUN go build -o session_monitor
+RUN [ ! -f go.mod ] && go mod init session_monitor || true
+RUN go mod tidy && go build -o session_monitor .
+
 RUN cp session_monitor /usr/bin/session_monitor
 RUN chmod +x /usr/bin/session_monitor
 RUN rm -rf /html/scripts/session_monitor
