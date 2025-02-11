@@ -61,6 +61,13 @@ while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
             echo "update_db_schema.sh script failed. Please check the logs."
         fi
 
+        # Start the session monitor
+        /usr/bin/session_monitor &
+        if [ $? -ne 0 ]; then
+            echo "Failed to start session monitor. Exiting."
+            exit 1
+        fi
+        
         # Execute the sync_db.sh script
         #/usr/bin/sync_db.sh
         #if [ $? -eq 0 ]; then

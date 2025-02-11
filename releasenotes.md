@@ -1,5 +1,8 @@
 Whats New in v12.6
 --------------------------
+- Separated column added to users to indicate if online or not
+- Inform only active admin accounts for new/deleted users
+- Added session and user clean-up daemon
 - Price scraper improvements
 - Fixed synonym search
 - Improved API security

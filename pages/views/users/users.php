@@ -31,16 +31,17 @@ if($role !== 1){
 <table id="tdUsers" class="table table-striped" style="width:100%">
   <thead>
       <tr>
-          <th>UUID</th>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Status</th>
-          <th>Role</th>
-          <th>Verified</th>
-          <th>Auth method</th>
-          <th>Created</th>
-          <th>Last login</th>
-          <th></th>
+        <th>Online</th>
+        <th>UUID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Status</th>
+        <th>Role</th>
+        <th>Verified</th>
+        <th>Auth method</th>
+        <th>Created</th>
+        <th>Last login</th>
+        <th></th>
       </tr>
    </thead>
 </table>
@@ -128,6 +129,7 @@ $(document).ready(function() {
 		},
 		ajax: {	url: '/core/users_data.php' },
 		columns: [
+            { data : 'is_logged_in', title: 'Online', render: is_logged_in },
             { data : 'id', title: 'UUID', render: UUID, orderable: false},
 		    { data : 'full_name', title: 'Full name', render: name},
 		    { data : 'email', title: 'Username',},
@@ -171,20 +173,21 @@ $(document).ready(function() {
     });
 
 
+    function is_logged_in (data, type, row) {
+        if (row.is_logged_in == 1) {
+            return '<span class="text-success" rel="tip" title="Session validity ' + row.session_valid_until + '"><i class="fa fa-circle mx-2"></i></span>';
+        } else if (row.is_logged_in == 0) {
+            return '<span class="text-danger" rel="tip" title="Offline"><i class="fa fa-circle mx-2"></i></span>';
+        }
+    };
+
     function UUID(data, type, row) {
         return '<span class="text-decoration-underline" id="UUID">' + row.id + '</span>';
     };
 
     function name(data, type, row) {
         var name = row.full_name;
-        if (row.is_logged_in == 1) {
-            name = '<span class="text-success" rel="tip" title="Online"><i class="fa fa-circle mx-2"></i></span>' + name;
-            if (row.id !== "<?php echo $userID; ?>") {
-                name += '<br><a href="#" rel="tip" title="Session validity">' + row.session_valid_until + '</a>';
-            }
-        } else if (row.is_logged_in == 0) {
-            name = '<span class="text-danger" rel="tip" title="Offline"><i class="fa fa-circle mx-2"></i></span>' + name;
-        }
+    
         return name;
     };
 
