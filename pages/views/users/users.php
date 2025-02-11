@@ -175,7 +175,11 @@ $(document).ready(function() {
 
     function is_logged_in (data, type, row) {
         if (row.is_logged_in == 1) {
-            return '<span class="text-success" rel="tip" title="Session validity ' + row.session_valid_until + '"><i class="fa fa-circle mx-2"></i></span>';
+            data = '<span class="text-success" rel="tip" title="Session validity ' + row.session_valid_until + '"><i class="fa fa-circle mx-2"></i></span>';
+            if (row.id !== "<?php echo $userID; ?>") {
+                data += '<br><a href="#" rel="tip" title="Session validity">' + row.session_valid_until + '</a>';
+            }
+            return data;
         } else if (row.is_logged_in == 0) {
             return '<span class="text-danger" rel="tip" title="Offline"><i class="fa fa-circle mx-2"></i></span>';
         }
@@ -187,7 +191,6 @@ $(document).ready(function() {
 
     function name(data, type, row) {
         var name = row.full_name;
-    
         return name;
     };
 

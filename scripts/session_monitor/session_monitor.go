@@ -87,9 +87,9 @@ func cleanupUnverifiedUsers(db *sql.DB) {
 	}
 	defer rows.Close()
 
-	var unverifiedUsers []int
+	var unverifiedUsers []string
 	for rows.Next() {
-		var userID int
+		var userID string
 		if err := rows.Scan(&userID); err != nil {
 			error_log(fmt.Sprintf("Error scanning row: %v", err))
 			continue
