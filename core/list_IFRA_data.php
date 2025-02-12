@@ -15,14 +15,16 @@ $defCatClass = $settings['defCatClass'];
 $defImage = base64_encode(file_get_contents(__ROOT__.'/img/pv_molecule.png'));
 
 $s = trim($_POST['search']['value']);
+$safe_s = mysqli_real_escape_string($conn, $s);
 
-if($s != ''){
-	$f = "WHERE 1 AND (name LIKE '%".$s."%' OR cas LIKE '%".$s."%' OR synonyms LIKE '%".$s."%' OR risk LIKE '%".$s."%')  AND owner_id = '$userID'";
+if($safe_s != ''){
+	$f = "WHERE 1 AND (name LIKE '%".$safe_s."%' OR cas LIKE '%".$safe_s."%' OR synonyms LIKE '%".$safe_s."%' OR risk LIKE '%".$safe_s."%') AND owner_id = '".$userID."'";
 } else {
-	$f = "WHERE 1 AND owner_id = '$userID'";
+	$f = "WHERE 1 AND owner_id = '".$userID."'";
 }
 
 $q = mysqli_query($conn, "SELECT * FROM IFRALibrary $f $extra LIMIT $row, $limit");
+
 while($res = mysqli_fetch_array($q)){
     $ifra[] = $res;
 }
