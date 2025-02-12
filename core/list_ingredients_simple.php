@@ -14,6 +14,7 @@ if(!$_POST['search']){
 }
 
 $s = trim($_POST['search']['term']);
+$s = preg_replace("/[^a-zA-Z0-9\s\-]/", "", $s); // Remove illegal characters
 
 if ($_POST['isDeepQ'] == "true"){
 	$t = "synonyms,ingredients";
@@ -28,7 +29,20 @@ if ($_POST['isDeepQ'] == "true"){
 	$filter = " WHERE (name LIKE '%$s%' OR cas LIKE '%$s%' OR INCI LIKE '%$s%') ";
 }
 
-$q = mysqli_query($conn, "SELECT ingredients.id,name,INCI,cas,einecs,type,odor,physical_state,profile FROM $t $filter AND ingredients.owner_id = '$userID' ORDER BY name ASC");
+try {
+	$query = "SELECT ingredients.id,name,INCI,cas,einecs,type,odor,physical_state,profile FROM $t $filter AND ingredients.owner_id = ? ORDER BY name ASC";
+	$stmt = $conn->prepare($query);
+	$stmt->bind_param("s", $userID);
+	//error_log("Executing query: " . $query);
+	$stmt->execute();
+	$q = $stmt->get_result();
+	if (!$q) {
+		throw new Exception("Database Query Failed: " . $stmt->error);
+	}
+} catch (Exception $e) {
+	error_log($e->getMessage());
+	error_log("Executing query: " . $query);
+}
 while($res = mysqli_fetch_array($q)){
     $ingredients[] = $res;
 }
