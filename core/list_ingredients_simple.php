@@ -18,7 +18,7 @@ $s = preg_replace("/[^a-zA-Z0-9\s\-]/", "", $s); // Remove illegal characters
 
 if ($_POST['isDeepQ'] == "true"){
 	$t = "synonyms,ingredients";
-	$filter = "WHERE synonym LIKE '%$s%' AND ing = name GROUP BY name";
+	$filter = "WHERE synonym LIKE '%$s%' AND ing = name AND synonyms.owner_id = '$userID' GROUP BY name";
 
 } else if($_POST['isAbsolute'] == "true"){
 	$t = "ingredients";	
