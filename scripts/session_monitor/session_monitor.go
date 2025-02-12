@@ -198,7 +198,7 @@ func main() {
 	stopChan := make(chan os.Signal, 1)
 	signal.Notify(stopChan, os.Interrupt, syscall.SIGTERM)
 
-	log.Println("Daemon started. Checking for expired sessions and unverified users...")
+	log.Println("Session monitoring daemon started...")
 
 	// Daemon loop
 	for {

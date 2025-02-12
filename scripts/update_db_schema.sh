@@ -59,7 +59,7 @@ if [ "$COLUMN_EXISTS" -eq 0 ]; then
     echo "The db schema needs to be modified. Adding the required columns..."
     add_columns
 else
-    echo "The db schema is updated. No changes needed."
+    echo "The db schema is up to date. No changes needed."
 fi
 
 

@@ -56,7 +56,7 @@ while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
         # Execute the update_db_schema.sh script
         /usr/bin/update_db_schema.sh
         if [ $? -eq 0 ]; then
-            echo "Users table is up to date."
+            echo "The users schema is up to date. No changes needed."
         else
             echo "update_db_schema.sh script failed. Please check the logs."
         fi
