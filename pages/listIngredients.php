@@ -226,14 +226,14 @@ $(document).ready(function() {
 			data: function(d) {
 				d.pvSearch =  '<?=$_GET['search']?>'
 				d.provider = $('#pv_search_btn').attr('data-provider')
-				d.advanced = '<?=$_GET['advanced']?:0?>'
-				d.profile = '<?=$_GET['profile']?:null?>'
-				d.name = '<?=$_GET['name']?:null?>'
-				d.cas = '<?=$_GET['cas']?:null?>'
-				d.einecs = '<?=$_GET['einecs']?:null?>'
-				d.odor = '<?=$_GET['odor']?:null?>'
-				d.cat = '<?=$_GET['cat']?:null?>'
-				d.synonym = '<?=$_GET['synonym']?:null?>'
+				d.advanced = '<?=htmlspecialchars($_POST['advanced']?:0, ENT_QUOTES, 'UTF-8')?>'
+				d.profile = '<?=htmlspecialchars($_POST['profile']?:null, ENT_QUOTES, 'UTF-8')?>'
+				d.name = '<?=htmlspecialchars($_POST['name']?:null, ENT_QUOTES, 'UTF-8')?>'
+				d.cas = '<?=htmlspecialchars($_POST['cas']?:null, ENT_QUOTES, 'UTF-8')?>'
+				d.einecs = '<?=htmlspecialchars($_POST['einecs']?:null, ENT_QUOTES, 'UTF-8')?>'
+				d.odor = '<?=htmlspecialchars($_POST['odor']?:null, ENT_QUOTES, 'UTF-8')?>'
+				d.cat = '<?=htmlspecialchars($_POST['cat']?:null, ENT_QUOTES, 'UTF-8')?>'
+				d.synonym = '<?=htmlspecialchars($_POST['synonym']?:null, ENT_QUOTES, 'UTF-8')?>'
 				if (d.order.length>0){
 					d.order_by = d.columns[d.order[0].column].data
 					d.order_as = d.order[0].dir

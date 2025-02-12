@@ -224,7 +224,7 @@ $(document).ready(function() {
 
 		$.ajax({ 
 			url: '/pages/listIngredients.php',
-			type: 'GET',
+			type: 'POST',
 			data: {
 				"advanced": 1,
 				"name": name,
