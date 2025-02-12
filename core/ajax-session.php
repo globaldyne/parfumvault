@@ -41,7 +41,7 @@ if (($current_time - $session_start_time) > $session_timeout) {
 if (!isset($_SESSION['parfumvault']) || $_SESSION['parfumvault'] === false) {
     if (isset($_SESSION['userID'])) {
         $userID = $_SESSION['userID'];
-    //}
+    }
         try {
             if (!mysqli_query($conn, "DELETE FROM session_info WHERE owner_id = '$userID'")) {
                 throw new Exception(mysqli_error($conn));
@@ -56,7 +56,7 @@ if (!isset($_SESSION['parfumvault']) || $_SESSION['parfumvault'] === false) {
             'time_left' => 0
         ]);
         session_destroy();
-    }
+    //}
 } else {
     $userInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT id, email, isActive FROM users WHERE id = '".$_SESSION['userID']."'"));
     
