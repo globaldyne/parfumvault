@@ -183,7 +183,7 @@ while($cats_res = mysqli_fetch_array($cats_q)){
 
     <div class="row">
         <div class="col-sm-12 text-start">
-            <input type="submit" name="save-general" id="save-general" value="Save" class="btn btn-primary"/>
+            <button type="submit" name="save-general" id="save-general" value="Save" class="btn btn-primary">Save</button>
         </div>
     </div>
 </div>

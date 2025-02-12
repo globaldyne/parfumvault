@@ -126,6 +126,8 @@ function auth_sso() {
             $_SESSION['userID'] = $user['sub'];
             $_SESSION['role'] = 2;
             $_SESSION['user_email'] = $user['email'];
+            logAuditEvent($user['email'], 'login_attempt', 'success');
+
             header('Location: /index.php');
         } else {
             // Insert new user
@@ -161,6 +163,7 @@ function auth_sso() {
             $_SESSION['userID'] = $user['sub'];
             $_SESSION['role'] = 2;
             $_SESSION['user_email'] = $user['email'];
+            logAuditEvent($user['email'], 'login_attempt', 'success');
 
             header('Location: /index.php');
         }

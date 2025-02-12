@@ -15,6 +15,10 @@
 - Added session and user clean-up daemon
 - Separated column added to users to indicate if online or not
 - Fix PV Library ingredient import failing for some users
+- Session monitor disabled by default
+- Inactive users will be removed after 30 days of inactivity
+- Audit added - manual configuration is required
+- Filter full name for illegal chars
 
 ### Version 12.5
 - Code clean-up

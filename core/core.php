@@ -582,6 +582,12 @@ if ($_POST['action'] === 'update_user_profile') {
         return;
     }
 
+    if (!preg_match("/^[a-zA-Z\s]+$/", $_POST['user_fname'])) {
+        $response['error'] = 'Full name can only contain letters and spaces';
+        echo json_encode($response);
+        return;
+    }
+
     // Validate email format
     if (!filter_var($_POST['user_email'], FILTER_VALIDATE_EMAIL)) {
         echo json_encode(["error" => "Invalid email address"]);

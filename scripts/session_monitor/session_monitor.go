@@ -103,12 +103,67 @@ func cleanupUnverifiedUsers(db *sql.DB) {
 	}
 
 	deleteQuery := "DELETE FROM users WHERE id = ?"
+	auditQuery := "INSERT INTO audit_log (email, ip, browser, timestamp, action, result) VALUES (?, ?, ?, ?, ?, ?)"
 	for _, userID := range unverifiedUsers {
 		_, err := db.Exec(deleteQuery, userID)
 		if err != nil {
 			error_log(fmt.Sprintf("Error deleting unverified user %s: %v", userID, err))
+			_, auditErr := db.Exec(auditQuery, userID, "-", "-", time.Now(), "delete_unverified_user", fmt.Sprintf("failed: %v", err))
+			if auditErr != nil {
+				error_log(fmt.Sprintf("Error logging audit for user %s: %v", userID, auditErr))
+			}
 		} else {
 			log.Printf("Deleted unverified user: %s", userID)
+			_, auditErr := db.Exec(auditQuery, "", "", "", time.Now(), "delete_unverified_user", "success")
+			if auditErr != nil {
+				error_log(fmt.Sprintf("Error logging audit for user %s: %v", userID, auditErr))
+			}
+		}
+	}
+}
+
+// cleanupInactiveUsers deletes users who haven't logged in for the past 30 days
+func cleanupInactiveUsers(db *sql.DB) {
+	thirtyDaysAgo := time.Now().Add(-30 * 24 * time.Hour).Unix()
+
+	query := "SELECT id FROM users WHERE UNIX_TIMESTAMP(last_login) < ?"
+	rows, err := db.Query(query, thirtyDaysAgo)
+	if err != nil {
+		error_log(fmt.Sprintf("Error querying inactive users: %v", err))
+		return
+	}
+	defer rows.Close()
+
+	var inactiveUsers []string
+	for rows.Next() {
+		var userID string
+		if err := rows.Scan(&userID); err != nil {
+			error_log(fmt.Sprintf("Error scanning row: %v", err))
+			continue
+		}
+		inactiveUsers = append(inactiveUsers, userID)
+	}
+
+	if len(inactiveUsers) == 0 {
+		return
+	}
+
+	deleteQuery := "DELETE FROM users WHERE id = ?"
+	auditQuery := "INSERT INTO audit_log (email, ip, browser, timestamp, action, result) VALUES (?, ?, ?, ?, ?, ?)"
+	for _, userID := range inactiveUsers {
+		_, err := db.Exec(deleteQuery, userID)
+		if err != nil {
+			error_log(fmt.Sprintf("Error deleting inactive user %s: %v", userID, err))
+			_, auditErr := db.Exec(auditQuery, userID, "-", "-", time.Now(), "delete_inactive_user", fmt.Sprintf("failed: %v", err))
+			if auditErr != nil {
+				error_log(fmt.Sprintf("Error logging audit for user %s: %v", userID, auditErr))
+			}
+		} else {
+			log.Printf("Deleted inactive user: %s", userID)
+			_, auditErr := db.Exec(auditQuery, userID, "", "", time.Now(), "delete_inactive_user", "success")
+			if auditErr != nil {
+				error_log(fmt.Sprintf("Error logging audit for user %s: %v", userID, auditErr))
+			}
 		}
 	}
 }
@@ -154,6 +209,7 @@ func main() {
 		default:
 			cleanupExpiredSessions(db, sessionTimeout)
 			cleanupUnverifiedUsers(db)
+			cleanupInactiveUsers(db)
 			time.Sleep(checkInterval * time.Second)
 		}
 	}
