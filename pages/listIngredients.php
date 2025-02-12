@@ -80,8 +80,6 @@ $cIngredients = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients 
    </thead>
 </table>
 
-<li><a class="dropdown-item" id="json_export" href="#" data-bs-toggle="modal" data-bs-target="#export_options_modal"><i class="fa-solid fa-file-code mx-2"></i>Export to JSON</a></li>
-
 <!-- Modal -->
 <div class="modal fade" id="export_options_modal" tabindex="-1" aria-labelledby="exportOptionsLabel" aria-hidden="true">
 	<div class="modal-dialog">

@@ -19,6 +19,7 @@
 - Inactive users will be removed after 30 days of inactivity
 - Audit added - manual configuration is required
 - Filter full name for illegal chars
+- Security updates
 
 ### Version 12.5
 - Code clean-up
